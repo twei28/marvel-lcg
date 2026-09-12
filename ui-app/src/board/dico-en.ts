@@ -866,4 +866,18 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Crise : la menace ne peut pas être retirée d’ici tant que':
     'Crisis: threat cannot be removed from here while',
   'est en jeu.': 'is in play.',
+  // Le plateau portrait en bandes (12/09/2026)
+  'Manigances': 'Schemes',
+  'Aucun méchant': 'No villain',
+  'Aucune manigance': 'No scheme',
+  'Aucun héros': 'No hero',
+  'Piles': 'Piles',
+  'Menu': 'Menu',
+  'Aucune pile': 'No pile',
+  'Ton deck': 'Your deck',
+  'Ta défausse': 'Your discard pile',
+  'Deck rencontre': 'Encounter deck',
+  'Défausse rencontre': 'Encounter discard',
+  'Défausse spéciale': 'Special discard',
+
 }

@@ -46,6 +46,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-12",
+        genre: "jeu",
+        fr: "Le plateau du téléphone change : quatre bandes qu'on fait glisser du doigt (méchant, manigances, engagés, ton héros), avec de vraies cartes lisibles. Ta main se range derrière l'encoche de droite et sort d'un swipe ou toute seule quand le jeu te demande une carte ; les piles sont derrière l'encoche de gauche. Fin du tour et le menu « … » sont dans le bandeau du haut.",
+        en: "The phone board changes: four strips you swipe through (villain, schemes, engaged, your hero), with real, readable cards. Your hand tucks behind the right-hand notch and slides out with a swipe, or by itself when the game asks for a card; the piles sit behind the left-hand notch. End turn and the “…” menu live in the top bar.",
+    },
+    {
+        date: "2026-09-12",
         genre: "heros",
         fr: "Les héros fan-made dont l'auteur n'a pas publié de deck n'ont plus de deck de départ inventé pour eux. Au lancement, choisis un paquet d'aspect conseillé ou construis ton deck dans l'éditeur. Les decks fournis par leur auteur (Yondu, Hellcat, Venompool, Lockjaw, Moon Knight…) ne changent pas.",
         en: "Fan-made heroes whose author did not publish a deck no longer get a made-up starter deck. When you start a game, pick a suggested aspect package or build your deck in the editor. Decks provided by their author (Yondu, Hellcat, Venompool, Lockjaw, Moon Knight…) are unchanged.",

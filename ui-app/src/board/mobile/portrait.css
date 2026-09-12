@@ -1,330 +1,595 @@
+/* portrait.css : le plateau du telephone en BANDES (spec du 12/09/2026,
+   docs/superpowers/specs/2026-09-12-plateau-portrait-en-bandes-design.md).
+
+   Un bandeau fixe en haut, une table qui defile verticalement, quatre bandes
+   qui defilent horizontalement, la main et les piles derriere deux encoches.
+   Meme feuille en paysage : seule la taille des cartes change (en bas).
+
+   ⚠ ORDRE DES COUCHES CASSE EN PRODUCTION. La declaration d'ordre
+   `@layer socle, legacy, base, composants, utilitaires;` de styles/tokens.css
+   DISPARAIT du bundle de production (verifie dans public/app/assets/*.css).
+   L'ordre reel redevient celui de la premiere apparition de chaque nom :
+   « composants, utilitaires, socle, base, legacy », donc `base` (board.css)
+   bat `composants` ET `utilitaires`. Deux consequences ici :
+   - toute surcharge d'une regle de board.css porte `!important` ;
+   - toute surcharge de ScanCard.css (couche `composants`, qui pose
+     `.scan-card { --card-w: 108px }` sous 520 px) vit en `utilitaires`. */
 @layer composants {
-  /* Une colonne, la hauteur de l'ecran, et RIEN qui deborde : le plateau
-     portrait ne defile jamais (spec du 11/09/2026). Les blocs se partagent la
-     hauteur, la main et la barre restent collees en bas. */
   .plateau-portrait {
     position: fixed;
     inset: 0;
     display: grid;
-    /* Sans colonne explicite, la grille en cree une implicite en
-       `grid-auto-columns: auto`, resolue sur le max-content de son contenu
-       AVANT la repartition de la place libre : elle grandit au-dela de
-       l'ecran (855 px mesures a 500x844) et pousse le nom des cartes et leurs
-       chiffres hors champ. `min-width: 0` sur l'enfant n'y suffit pas : ce
-       n'est pas l'enfant qui refuse de retrecir, c'est la piste qui est trop
-       large. `minmax(0, 1fr)` la borne au conteneur. */
+    /* `minmax(0, 1fr)` : une piste `auto` se resoudrait sur le max-content
+       des rails et pousserait tout hors de l'ecran. */
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto 1fr;
     overflow: hidden;
     background: var(--fond);
+    color: #e8e9ee;
   }
 
-  .ecran-paysage {
-    position: fixed;
-    inset: 0;
-    z-index: 900;
-    display: grid;
-    place-content: center;
-    gap: 14px;
-    justify-items: center;
-    text-align: center;
-    color: #f8fafc;
-    background: var(--fond);
-  }
-
-  .ecran-paysage-icone {
-    width: 42px;
-    height: 66px;
-    border: 3px solid currentColor;
-    border-radius: 9px;
-    transform: rotate(90deg);
-  }
-
+  /* --- Le bandeau ------------------------------------------------------- */
   .portrait-bandeau {
+    position: relative;
+    z-index: 46;
     display: flex;
-    align-items: baseline;
-    gap: 10px;
-    padding: 8px 12px;
+    align-items: center;
+    gap: 8px;
+    /* Pas de marge verticale : les feuilles (menus-mobile.css) laissent
+       exactement 44 px libres en haut, le bouton « … / × » doit y tenir. */
+    min-height: 44px;
+    padding: 0 8px 0 12px;
     background: var(--cadre);
     border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   }
-
-  .portrait-bandeau strong {
-    font-size: 0.95rem;
+  .portrait-bandeau-etat {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.15;
+  }
+  .portrait-bandeau-etat strong {
+    font-size: 0.82rem;
     font-weight: 900;
     text-transform: uppercase;
     color: var(--menace);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-
-  .portrait-bandeau span {
-    font-size: 0.82rem;
-    color: #cbd5e1;
-  }
-
-  .portrait-bandeau em {
-    margin-left: auto;
-    font-style: normal;
+  .portrait-bandeau-etat span {
     font-size: 0.78rem;
+    color: #cbd5e1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .portrait-bandeau-etat em {
+    font-style: normal;
+    font-size: 0.7rem;
     font-weight: 900;
     text-transform: uppercase;
     color: var(--info);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .portrait-menu-bouton,
+  .portrait-action {
+    flex: 0 0 auto;
+    /* Le voile et le menu sont rendus DANS le bandeau (meme contexte
+       d'empilement) : sans ce z-index, le voile recouvrait les boutons et
+       la croix ne repondait plus (mesure par le filet Playwright). */
+    position: relative;
+    z-index: 641;
+    min-height: 44px;
+    height: 44px;
+    align-self: flex-start;
+    font: inherit;
+    font-weight: 900;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .portrait-menu-bouton {
+    min-width: 44px;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+  }
+  .portrait-menu-bouton.est-actif {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .portrait-action {
+    padding: 0 14px;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--fond);
+    background: var(--menace);
+    border: none;
+  }
+  .portrait-action.est-suggere {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
   }
 
-  /* Rangee du milieu de la grille `.plateau-portrait` (auto 1fr auto), donc
-     seule rangee dont la hauteur doit s'ADAPTER a l'ecran plutot que le
-     contraire. Un enfant de grille garde `min-height: auto` par defaut : il
-     refuse de retrecir sous la hauteur de son contenu, la rangee `1fr`
-     grandit alors au-dela de l'ecran et pousse la main + la barre du bas
-     hors champ (`.plateau-portrait` les rogne en silence via `overflow:
-     hidden`, sans qu'aucun defilement ne le trahisse : `scrollHeight` reste
-     egal a `innerHeight` puisque c'est la DECOUPE qui cache le debordement,
-     pas de la place libre). `min-height: 0` annule ce refus ; `overflow-y:
-     auto` fait alors defiler CETTE zone seule quand la table deborde,
-     conformement au releve sur play.marvelsimulator.com (bandeau et bas
-     toujours visibles, jamais la page entiere qui defile). */
+  /* Le menu « … » : une feuille basse qui contient le `.board-actions` du
+     plateau PC, mis en colonne. Ses popovers (Options, Historique...) sont
+     deja des feuilles par menus-mobile.css et passent devant. */
+  .portrait-menu-voile {
+    position: fixed;
+    inset: 0;
+    z-index: 638;
+    background: rgba(0, 0, 0, 0.45);
+  }
+  .portrait-menu {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 639;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 88dvh;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 10px 14px calc(14px + env(safe-area-inset-bottom, 0px));
+    background: rgba(24, 26, 32, 0.98);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.6);
+  }
+  .portrait-menu-poignee,
+  .main-feuille-poignee {
+    display: block;
+    width: 44px;
+    height: 4px;
+    margin: 0 auto 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+  .portrait-menu .board-actions {
+    /* board.css pose `flex: 0 0 auto` et une rangee en couche `base`. */
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+    min-width: 0;
+  }
+  .portrait-menu .bh-etat {
+    /* Le bandeau le dit deja, en haut. */
+    display: none !important;
+  }
+  .portrait-menu .bh-separateur,
+  .portrait-menu .bh-fin-tour {
+    /* Fin du tour vit deja dans le bandeau, a droite. */
+    display: none !important;
+  }
+  .portrait-menu .popover-sauvegardes-ancre {
+    display: block;
+  }
+  .portrait-menu .bh-bouton {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 48px !important;
+    padding: 0 14px !important;
+    font-size: 1rem !important;
+    text-align: left;
+  }
+  .portrait-menu .bh-vue {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .portrait-menu .bh-vue .bh-bouton {
+    width: auto;
+  }
+
+  /* --- La table et ses bandes ------------------------------------------ */
   .portrait-table {
+    /* Un enfant de grille garde `min-height: auto` : sans `0`, la rangee
+       `1fr` grandirait au-dela de l'ecran et rien ne defilerait. */
     min-height: 0;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: 32px;
   }
-
-  /* Les onglets du multijoueur : PAS un enfant direct de `.plateau-portrait`
-     (sa grille n'a que trois rangees explicites, `auto 1fr auto` ; un
-     quatrieme enfant y decalerait le rang `1fr` sur les onglets au lieu de la
-     table, qui deborderait). Premier enfant de `.portrait-table` a la place :
-     un simple bloc en flux normal, sans toucher la grille. */
+  .bande {
+    padding: 4px 0 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .bande-entete {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 26px;
+    padding: 2px 12px;
+  }
+  .bande-titre {
+    margin: 0;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--info);
+  }
+  .bande-vide {
+    display: grid;
+    place-items: center;
+    min-height: 72px;
+    margin: 0;
+    color: #8a94a3;
+    font-size: 0.85rem;
+  }
+  .portrait-vide {
+    margin: 0;
+    padding: 12px;
+    color: #8a94a3;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  .bande-rail {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    /* 22 px en bas : la jauge de PV que ScanCard pose SOUS le cadre, et les
+       statuts. Le plateau-unite (board.css) glisse ses upgrades a droite en
+       absolu et reserve lui-meme leur place par `padding-right`. */
+    padding: 4px 12px 22px;
+  }
+  .bande-carte {
+    position: relative;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    /* Le tap est lu a la capture, le maintien sur le conteneur : le menu
+       contextuel d'Android volerait sinon l'appui long. */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .bande-carte.est-epinglee {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    padding-left: 12px;
+    margin-left: -12px;
+    background: var(--fond);
+    box-shadow: 10px 0 12px -8px rgba(0, 0, 0, 0.85);
+  }
+  /* Les onglets du multijoueur, dans l'en-tete de la bande du heros. */
   .portrait-onglets {
     display: flex;
     gap: 4px;
-    padding: 4px 8px;
     overflow-x: auto;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   }
-
   .portrait-onglet {
     flex: 0 0 auto;
-    min-height: 34px;
-    padding: 0 12px;
+    min-height: 30px;
+    padding: 0 10px;
     font: inherit;
-    font-size: 0.78rem;
+    font-size: 0.74rem;
     font-weight: 800;
     color: #cbd5e1;
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 6px;
   }
-
   .portrait-onglet.est-actif {
     color: var(--fond);
     background: var(--menace);
     border-color: var(--menace-clair);
   }
 
-  /* La barre du bas reutilise `actionsPartie`, la barre du plateau PC. Celle-ci
-     porte `flex-shrink: 0` (board.css, couche `base`) : elle refusait de
-     retrecir et sortait de l'ecran (1055 px mesures dans 500 ; Sauver,
-     Historique, Options et Fin du tour invisibles). `flex-wrap: wrap` seul ne
-     suffit pas : le passage a la ligne ne se declenche qu'une fois le
-     conteneur pret a retrecir, d'ou `flex: 1 1 auto`. */
-  .portrait-bas .board-actions {
-    /* `!important` a contrecoeur, et pour une raison precise : la declaration
-       d'ordre `@layer socle, legacy, base, composants, utilitaires;` de
-       styles/tokens.css DISPARAIT du bundle de production (verifie dans
-       public/app/assets/*.css : elle n'y figure nulle part). L'ordre reel
-       redevient alors celui de la premiere apparition de chaque nom, soit
-       « composants, utilitaires, socle, base, legacy » : `base` bat
-       `composants` ET `utilitaires`. La declaration ci-dessous perdait donc
-       contre la declaration `flex: 0 0 auto` que board.css pose sur
-       `.board-actions` en couche `base`,
-       mesure a l'appui (flex-shrink calcule : 0). Une declaration
-       `!important` inverse l'ordre des couches et repasse devant.
-       A retirer le jour ou l'ordre des couches sera retabli au build. */
-    flex: 1 1 auto !important;
-    flex-wrap: wrap;
-    min-width: 0;
+  /* --- Les encoches ------------------------------------------------------ */
+  .encoche {
+    position: fixed;
+    bottom: 22vh;
+    z-index: 45;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    gap: 1px;
+    width: 48px;
+    min-height: 72px;
+    padding: 6px 0;
+    font: inherit;
+    color: #fff;
+    background: var(--cadre);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    touch-action: none;
   }
-
-  /* `.bh-etat` ecrit « Round 1 / Tour de X / A toi de jouer », mot pour mot ce
-     que `.portrait-bandeau` affiche deja en haut. Sur telephone la place ne
-     permet pas de le dire deux fois. */
-  .portrait-bas .bh-etat {
-    /* `!important` pour la meme raison que juste au-dessus : sans lui,
-       la declaration `display: grid` posee par board.css sur `.bh-etat`
-       en couche `base` l'emporte. */
-    display: none !important;
+  .encoche-main {
+    right: 0;
+    border-right: none;
+    border-radius: 12px 0 0 12px;
   }
-
-  /* PAS de loupe au survol sur telephone. `ScanCard.css` agrandit
-     `.scan-visuel` de 2,5x sur `:hover` et `:focus-visible` : c'est la
-     consultation a la souris du plateau PC. Ici il n'y a pas de souris, et le
-     tap POSE LE FOCUS — la carte grossissait donc a chaque fois qu'on la
-     jouait, et sortait de l'ecran par la gauche (mesure : bord a -69 px sur
-     500, nom et etiquette coupes). Le portrait a son propre geste de lecture,
-     le tap qui ouvre la carte.
-
-     Meme couche que ScanCard.css (`composants`) : c'est la specificite qui
-     trie, pas besoin d'`!important` ici. */
-  .plateau-portrait .scan-card:hover .scan-visuel,
-  .plateau-portrait .scan-card:focus-visible .scan-visuel {
-    transform: none;
+  .encoche-piles {
+    left: 0;
+    border-left: none;
+    border-radius: 0 12px 12px 0;
+    font-size: 1.3rem;
   }
-
-  /* La carte en petit, son nom, et les chiffres a cote : trois colonnes. */
-  .portrait-carte {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 12px;
-    --card-w: 64px;
-  }
-
-  .portrait-surtitre {
-    display: block;
-    font-size: 0.68rem;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--info);
-  }
-
-  .portrait-nom {
+  .encoche-nombre {
     font-size: 1.25rem;
-    line-height: 1.05;
-    text-transform: uppercase;
-  }
-
-  .portrait-carte-chiffres {
-    display: flex;
-    gap: 12px;
-  }
-
-  .portrait-chiffre {
-    display: grid;
-    justify-items: center;
-  }
-
-  .portrait-chiffre b {
-    font-size: 1.5rem;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .portrait-chiffre small {
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #8a94a3;
-  }
-
-  .barre-menace-bloc {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0 12px 6px;
-  }
-
-  .barre-menace {
-    display: flex;
-    flex: 1;
-    gap: 3px;
-  }
-
-  .barre-menace-case {
-    flex: 1;
-    height: 10px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-  }
-
-  .barre-menace-case.est-pose {
-    background: var(--menace);
-    border-color: var(--menace-clair);
-  }
-
-  .barre-menace-compte b {
-    font-size: 1.5rem;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .barre-menace-compte small {
-    font-size: 0.8rem;
-    color: #8a94a3;
-  }
-
-  .barre-menace-compte em {
-    margin-left: 6px;
-    font-style: normal;
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #8a94a3;
-  }
-
-  .portrait-compteurs {
-    display: flex;
-    gap: 18px;
-    padding: 4px 12px 8px;
-  }
-
-  /* Engages et heros/allies : meme gabarit que les autres blocs (titre discret,
-     puis une pile de .portrait-carte). */
-  .portrait-bloc {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .portrait-bloc-titre {
-    margin: 0;
-    padding: 8px 12px 2px;
-    font-size: 0.7rem;
     font-weight: 900;
+    line-height: 1;
+    color: var(--menace);
+    font-variant-numeric: tabular-nums;
+  }
+  .encoche-libelle {
+    font-size: 0.55rem;
+    font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #8a94a3;
+    color: #cbd5e1;
   }
 
-  .portrait-vide {
-    margin: 0;
-    padding: 2px 12px 8px;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.35);
+  /* --- La main en feuille ----------------------------------------------- */
+  .main-feuille-voile,
+  .tiroir-voile {
+    position: fixed;
+    inset: 0;
+    z-index: 630;
+    background: rgba(0, 0, 0, 0.4);
   }
-
-  .main-portrait-bloc {
+  .main-feuille {
+    position: fixed;
+    left: 0;
+    right: 0;
+    /* Au-dessus de la feuille de question du bas quand il y en a une
+       (hauteur-de-question.ts). */
+    bottom: var(--question-h, 0px);
+    z-index: 640;
     display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 12px;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
+    background: rgba(24, 26, 32, 0.98);
     border-top: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.6);
+    touch-action: pan-x;
   }
-
-  /* Elle DEFILE : c'est la seule zone ou les cartes gardent une taille lisible,
-     et sept cartes ne tiennent pas dans 500 px. */
   .main-portrait.defile {
     display: flex;
-    flex: 1;
-    gap: 6px;
+    gap: 8px;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x proximity;
-    --card-w: 96px;
+    padding: 4px 12px;
   }
-
-  /* La carte est desormais portee par un <span> (main-portrait-carte) qui
-     recoit aussi le geste d'appui long : c'est donc lui, et non plus
-     `.scan-card` directement, qui doit rester l'enfant flex/scroll-snap. */
   .main-portrait.defile > .main-portrait-carte {
     display: flex;
     flex: 0 0 auto;
     scroll-snap-align: center;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .main-feuille-pied {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+  }
+  .main-portrait-compte {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+  }
+  .main-portrait-compte b {
+    font-size: 1.1rem;
+    color: #fff;
+  }
+  .main-feuille-fermer,
+  .tiroir-fermer {
+    min-height: 44px;
+    padding: 0 18px;
+    font: inherit;
+    font-weight: 800;
+    color: #e8e9ee;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 99px;
   }
 
-  /* La troisieme rangee de la grille : main puis barre du bas, empilees. */
-  .portrait-bas {
+  /* --- Le tiroir des piles ---------------------------------------------- */
+  .tiroir {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 640;
     display: flex;
     flex-direction: column;
+    gap: 8px;
+    width: min(78vw, 360px);
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    overflow: auto;
+    overscroll-behavior: contain;
+    background: rgba(24, 26, 32, 0.98);
+    border-right: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 12px 0 40px rgba(0, 0, 0, 0.6);
+  }
+  .tiroir-titre {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--info);
+  }
+  .tiroir-liste {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tiroir-pile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 56px;
+    padding: 4px 10px 4px 6px;
+    font: inherit;
+    color: #e8e9ee;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+  }
+  .tiroir-pile:disabled {
+    opacity: 0.55;
+  }
+  .tiroir-pile-vignette {
+    flex: 0 0 auto;
+    pointer-events: none;
+  }
+  .tiroir-pile-nom {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-weight: 800;
+  }
+  .tiroir-pile-compte {
+    flex: 0 0 auto;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: var(--menace);
+  }
+  .tiroir-fermer {
+    margin-top: auto;
+  }
+
+  /* --- La carte ouverte en grand ---------------------------------------- */
+  .carte-ouverte-voile {
+    position: fixed;
+    inset: 0;
+    z-index: 650;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(20, 20, 20, 0.82);
+  }
+  .carte-ouverte {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    max-height: calc(100vh - 40px);
+  }
+  .carte-ouverte-aide {
+    align-self: center;
+    pointer-events: none;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(8, 10, 18, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .carte-ouverte-scan {
+    pointer-events: auto;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .carte-ouverte-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .carte-ouverte-agir,
+  .carte-ouverte-fermer {
+    min-height: 44px;
+    padding: 9px 20px;
+    font: inherit;
+    font-weight: 800;
+    border-radius: 99px;
+    cursor: pointer;
+  }
+  .carte-ouverte-agir {
+    color: var(--fond);
+    background: var(--menace);
+    border: none;
+  }
+  .carte-ouverte-fermer {
+    color: #e8e9ee;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* --- Pas de loupe au doigt --------------------------------------------
+     ScanCard.css agrandit `.scan-visuel` de 2,5x sur `:hover` et
+     `:focus-visible` : c'est la consultation a la souris du plateau PC. Ici
+     il n'y a pas de souris, et le tap POSE LE FOCUS — la carte grossissait
+     donc a chaque fois qu'on la jouait. Le portrait a son propre geste de
+     lecture, le tap qui ouvre la carte. Meme couche que ScanCard.css. */
+  .plateau-portrait .scan-card:hover .scan-visuel,
+  .plateau-portrait .scan-card:focus-visible .scan-visuel {
+    transform: none;
+  }
+  .plateau-portrait .plateau-unite:hover {
+    z-index: auto;
+  }
+}
+
+/* --- Les tailles de cartes ----------------------------------------------
+   En `utilitaires`, la seule couche qui passe devant `.scan-card
+   { --card-w: 108px }` de ScanCard.css (voir l'en-tete). Trois cartes par
+   largeur d'ecran en portrait, cinq en paysage (spec du 12/09/2026). */
+@layer utilitaires {
+  .plateau-portrait .scan-card {
+    --inspect-scale: 1;
+  }
+  .bande-rail .scan-card {
+    --card-w: clamp(140px, calc((100vw - 48px) / 3), 200px);
+  }
+  .main-portrait.defile .scan-card {
+    --card-w: clamp(110px, calc((100vw - 56px) / 3.5), 170px);
+  }
+  .tiroir-pile-vignette .scan-card {
+    --card-w: 42px;
+  }
+  /* Les statuts (Tough, Stunned, Confused) sont de petits marqueurs sous le
+     personnage : board.css ne les reduit que sous `.plateau-scene`, qui
+     n'existe pas ici. Memes valeurs. */
+  .bande-rail .est-statut .scan-card {
+    --card-w: 50px;
+  }
+  .bande-rail .est-statut .scan-card.is-landscape {
+    --card-w: 74px;
+  }
+  .carte-ouverte-scan .scan-card {
+    --card-w: min(320px, 86vw);
+  }
+  @media (orientation: landscape) {
+    .bande-rail .scan-card {
+      --card-w: clamp(120px, calc((100vw - 72px) / 5), 180px);
+    }
+    .main-portrait.defile .scan-card {
+      --card-w: clamp(100px, calc((100vw - 84px) / 6), 150px);
+    }
+    .encoche {
+      bottom: 30vh;
+    }
   }
 }
 
@@ -338,7 +603,7 @@
    descendant `.plateau-portrait .deroule-phase` ne matcherait donc JAMAIS.
    `:has()` avec un combinateur de fratrie suivante est la seule facon de
    conditionner ce style a « on est en portrait telephone » depuis la feuille
-   seule, sans toucher a board.tsx (hors perimetre de cette session).
+   seule, sans toucher a board.tsx.
 
    Cette regle vit dans la couche `utilitaires`, PAS `composants` : la regle
    generale de .deroule-phase (board.css) y vit deja, et dans ce projet

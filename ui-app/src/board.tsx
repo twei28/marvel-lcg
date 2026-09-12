@@ -3152,6 +3152,14 @@ function PagePartie({
         // Le bandeau portrait n'a pas de quoi recalculer « qui agit » (il ne
         // connait ni aNous, ni connecte, ni demande) : on le lui passe deja fait.
         quiAgit={quiAgit}
+        // Le bouton Fin du tour du telephone vit dans le bandeau portrait
+        // (spec du 12/09/2026) : le flottant `.bouton-fin-tour` n'y est plus
+        // rendu (voir plus bas).
+        actionPrincipale={
+          afficherFinTourSimple
+            ? { libelle: t('Fin du tour'), suggere: finDeTourSuggeree, agir: interaction.annuler }
+            : undefined
+        }
         // Onglets du multijoueur (tache 10) : ignores par le plateau PC
         // (props optionnelles), lus par PlateauPortrait pour proposer la
         // bascule que la barre PC offre deja plus bas via `vueForcee`.
@@ -3457,7 +3465,7 @@ function PagePartie({
         }
       />
 
-      {afficherFinTourSimple && !designEssai ? (
+      {afficherFinTourSimple && !designEssai && modePlateau !== 'mobile' ? (
         <button
           type="button"
           className={`bouton-fin-tour${finDeTourSuggeree ? ' est-suggere' : ''}`}

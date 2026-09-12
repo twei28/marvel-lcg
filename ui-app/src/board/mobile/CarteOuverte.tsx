@@ -12,7 +12,7 @@
 import { ScanCard, type ScanCardProps } from '../../components/ScanCard'
 import { t } from '../langue'
 import { useAppuiLong } from './useAppuiLong'
-import './medaillon.css'
+import './portrait.css'
 
 export function CarteOuverte({
   carte,

@@ -14,6 +14,12 @@
    a 1 050 px du haut (invisible), Historique en popover PC coupe, la
    question du moteur flottante et tronquee. */
 @layer utilitaires {
+  /* Plus de barre en bas depuis le plateau en bandes (12/09/2026) : les
+     feuilles descendent jusqu'au bord. Le repli `96px` des `var()` ci-dessous
+     date de la barre portrait ; cette variable le neutralise. */
+  body.mode-plateau-portrait {
+    --feuille-bas: 0px;
+  }
   /* --- La feuille, le motif commun ---------------------------------------- */
   body.mode-plateau-portrait .popover-sauvegardes,
   body.mode-plateau-portrait .historique-panneau,

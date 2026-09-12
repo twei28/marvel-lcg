@@ -19,7 +19,7 @@ import type { World } from '../world'
 // defaut (de vraies cartes, sans classe .medaillon). On demande donc
 // explicitement l'ancien rendu, comme le filet Playwright depuis la tache 1.
 beforeEach(() => {
-  window.history.pushState({}, '', '/?medaillons')
+  window.history.pushState({}, '', '/')
 })
 
 class ResizeObserverBouchon {
@@ -38,7 +38,7 @@ const MONDE = {
   players: [],
 } as unknown as World
 
-/** Un plateau reduit a la bande des heros : l'identite y est un medaillon. */
+/** Un plateau reduit a la bande des heros : l'identite y est epinglee. */
 const PLATEAU: Plateau = {
   emplacements: [
     {
@@ -62,9 +62,9 @@ const PLATEAU: Plateau = {
   nombreIgnore: 0,
 }
 
-function medaillon(id: string): HTMLElement {
-  const cible = document.querySelector<HTMLElement>(`.medaillon[data-card-id="${id}"]`)
-  if (!cible) throw new Error(`medaillon introuvable : ${id}`)
+function carteDeBande(id: string): HTMLElement {
+  const cible = document.querySelector<HTMLElement>(`.bande-carte[data-card-id="${id}"] .scan-card`)
+  if (!cible) throw new Error(`carte introuvable dans les bandes : ${id}`)
   return cible
 }
 
@@ -84,7 +84,7 @@ describe('paiement par l identite sur le plateau mobile', () => {
 
     // Un paiement est en cours : le plateau doit le signaler et laisser
     // l'identite en pleine lumiere, sinon elle passe pour eteinte.
-    expect(medaillon(String(IDENTITE))).toHaveClass('state-playable')
+    expect(carteDeBande(String(IDENTITE))).toHaveClass('state-playable')
   })
 
   it('declenche le paiement depuis le panneau de la carte', () => {
@@ -101,8 +101,8 @@ describe('paiement par l identite sur le plateau mobile', () => {
       />
     )
 
-    // Un medaillon s'OUVRE d'abord (il ne porte ni nom ni texte de regles).
-    fireEvent.click(medaillon(String(IDENTITE)))
+    // Le tap OUVRE la carte en grand (le tap n'agit jamais par surprise).
+    fireEvent.click(carteDeBande(String(IDENTITE)))
     const panneau = screen.getByRole('dialog', { name: 'Venom' })
     expect(panneau).toBeInTheDocument()
 

@@ -99,17 +99,5 @@ export default defineConfig({
         deviceScaleFactor: 1,
       },
     },
-    {
-      name: 's24-paysage',
-      testMatch: /plateau-paysage\.spec\.ts$/,
-      // Voir le commentaire sur le projet s24 : meme boucle sur 34 etats.
-      timeout: 90_000,
-      use: {
-        viewport: GABARITS.s24paysage,
-        hasTouch: true,
-        isMobile: true,
-        deviceScaleFactor: 1,
-      },
-    },
   ],
 });

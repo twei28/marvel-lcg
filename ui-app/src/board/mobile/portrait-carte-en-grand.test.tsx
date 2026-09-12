@@ -38,7 +38,7 @@ describe('taper une carte de la table', () => {
     )
     // `fireEvent` et non `.click()` : le clic natif change bien l'etat React,
     // mais hors d'`act()` le re-rendu n'a pas encore eu lieu quand on inspecte.
-    fireEvent.click(document.querySelector('.portrait-carte .scan-card')!)
+    fireEvent.click(document.querySelector('.bande-carte .scan-card')!)
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(document.querySelector('.carte-ouverte')).toBeInTheDocument()
   })
@@ -51,7 +51,7 @@ describe('taper une carte de la table', () => {
         plateau={plateau('rencontre', unite('7', { name: 'Rhino' }))}
       />
     )
-    fireEvent.click(document.querySelector('.portrait-carte .scan-card')!)
+    fireEvent.click(document.querySelector('.bande-carte .scan-card')!)
     fireEvent.pointerDown(document.querySelector('.carte-ouverte-voile')!)
     expect(document.querySelector('.carte-ouverte')).not.toBeInTheDocument()
   })

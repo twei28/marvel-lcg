@@ -46,24 +46,26 @@ async function ouvrirLEtat(page: Page) {
   const garder = page.locator('.assistant-confirmer').first();
   await garder.waitFor({ state: 'visible', timeout: 60_000 });
   await garder.tap();
-  await expect(page.locator('.bh-options').first()).toBeVisible({ timeout: 30_000 });
+  // Depuis le plateau en bandes (12/09/2026), Options, Historique et « … »
+  // vivent dans le menu du bandeau : on l'ouvre d'abord.
+  const menu = page.locator('.portrait-menu-bouton');
+  await expect(menu).toBeVisible({ timeout: 30_000 });
+  await menu.tap();
+  await expect(page.locator('.portrait-menu .bh-options').first()).toBeVisible({ timeout: 30_000 });
 }
 
-/** La feuille tient dans l'ecran et s'arrete au-dessus de la barre du bas. */
+/** La feuille tient dans l'ecran (plus de barre du bas depuis le 12/09/2026). */
 async function verifierLaFeuille(page: Page, selecteur: string) {
   const feuille = page.locator(selecteur).first();
   await expect(feuille, `${selecteur} ne s'est pas ouverte`).toBeVisible();
   const boite = await feuille.boundingBox();
-  const barre = await page.locator('.pm-barre').first().boundingBox();
   const ecran = page.viewportSize()!;
   expect(boite, 'feuille sans boite').not.toBeNull();
   expect(boite!.x, 'la feuille commence au bord gauche').toBeLessThanOrEqual(1);
   expect(boite!.width, 'la feuille est pleine largeur').toBeGreaterThanOrEqual(ecran.width - 2);
   expect(boite!.y, 'la feuille commence dans l’ecran').toBeGreaterThanOrEqual(0);
   expect(boite!.y + boite!.height, 'la feuille ne deborde pas de l’ecran').toBeLessThanOrEqual(ecran.height + 1);
-  if (barre) {
-    expect(boite!.y + boite!.height, 'la feuille s’arrete au-dessus de la barre du bas').toBeLessThanOrEqual(barre.y + 1);
-  }
+  expect(boite!.y + boite!.height, 'la feuille touche le bas de l’ecran').toBeGreaterThanOrEqual(ecran.height - 1);
   // Ce qu'on touche : chaque bouton visible de la feuille fait au moins 44 px.
   const boutons = feuille.locator('button');
   const n = await boutons.count();
@@ -78,13 +80,15 @@ async function verifierLaFeuille(page: Page, selecteur: string) {
 }
 
 test.describe('Les menus du plateau portrait en feuilles', () => {
-  test('Options : une feuille au-dessus de la barre, refermee par son bouton', async ({ page }) => {
+  test('Options : une feuille jusqu au bas de l ecran, refermee par la croix du bandeau', async ({ page }) => {
     await ouvrirLEtat(page);
-    const bouton = page.locator('.bh-options').first();
-    await bouton.tap();
+    await page.locator('.bh-options').first().tap();
     await verifierLaFeuille(page, '.popover-options');
-    await bouton.tap();
+    // La feuille couvre le menu : c'est la croix du bandeau, toujours libre
+    // en haut, qui referme tout d'un coup.
+    await page.locator('.portrait-menu-bouton').tap();
     await expect(page.locator('.popover-options')).toHaveCount(0);
+    await expect(page.locator('.portrait-menu')).toHaveCount(0);
   });
 
   test('Historique : une feuille haute, refermee par un tap en dehors', async ({ page }) => {
@@ -104,22 +108,31 @@ test.describe('Les menus du plateau portrait en feuilles', () => {
     await page.goBack();
     await expect(page.locator('.popover-options')).toHaveCount(0);
     expect(page.url(), 'le Retour a quitte le plateau').toContain('/app/board.html');
+    // Le menu du bandeau est encore la : un second Retour le referme.
+    await expect(page.locator('.portrait-menu')).toBeVisible();
+    await page.goBack();
+    await expect(page.locator('.portrait-menu')).toHaveCount(0);
     await expect(page.locator('.plateau-portrait')).toBeVisible();
-    // Une carte ouverte au tap se referme de la meme facon.
-    const carte = page.locator('.main-portrait .scan-card').first();
+    // La main derriere son encoche, puis une carte ouverte au tap : deux
+    // Retour, dans l'ordre inverse, et la page reste.
+    await page.locator('.encoche-main').tap();
+    const carte = page.locator('.main-feuille .scan-card').first();
     await carte.tap();
     await expect(page.locator('.carte-ouverte-voile')).toBeVisible();
     await page.goBack();
     await expect(page.locator('.carte-ouverte-voile')).toHaveCount(0);
+    await expect(page.locator('.main-feuille')).toBeVisible();
+    await page.goBack();
+    await expect(page.locator('.main-feuille')).toHaveCount(0);
     expect(page.url()).toContain('/app/board.html');
   });
 
-  test('Le menu « … » : une feuille basse aux lignes de 48 px', async ({ page }) => {
+  test('Le menu du bandeau : une feuille basse aux lignes de 48 px, et son sous-menu « … »', async ({ page }) => {
     await ouvrirLEtat(page);
-    const bouton = page.locator('.bh-plus').first();
-    await bouton.tap();
+    await verifierLaFeuille(page, '.portrait-menu');
+    await page.locator('.bh-plus').first().tap();
     await verifierLaFeuille(page, '.popover-plus');
-    await bouton.tap();
+    await page.locator('.portrait-menu-bouton').tap();
     await expect(page.locator('.popover-plus')).toHaveCount(0);
   });
 });

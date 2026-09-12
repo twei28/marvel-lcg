@@ -13,7 +13,7 @@ import { readFileSync } from 'node:fs'
 import { catalogueVide } from '../catalogue'
 import { carteSurTable, siege, tableAvec } from '../plateau-de-test'
 import { construirePlateau } from '../zones'
-import { repartirEnBlocs } from './blocs-portrait'
+import { repartirEnBandes } from './bandes-portrait'
 import type { World, WorldPlayer } from '../world'
 
 /** Deux joueurs, chacun avec son heros et son allie. */
@@ -33,9 +33,8 @@ function nomsDuBlocHeros(seulCeJoueur: boolean): string[] {
     catalogue: catalogueVide,
     seulCeJoueur,
   })
-  return repartirEnBlocs(plateau)
-    .find((bloc) => bloc.cle === 'heros')!
-    .unites.map((unite) => unite.carte.name)
+  const heros = repartirEnBandes(plateau).heros
+  return [heros.epinglee, ...heros.unites].flatMap((unite) => (unite ? [unite.carte.name] : []))
 }
 
 describe('le bloc « Ton héros » en multijoueur', () => {

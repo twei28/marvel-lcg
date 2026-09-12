@@ -1,23 +1,21 @@
-// La main, en rangee qui defile horizontalement.
+// La main du joueur, en FEUILLE au bas de l'ecran (spec du 12/09/2026) :
+// cachee derriere l'encoche de droite, elle sort d'un tap ou d'un swipe, et
+// toute seule quand une question du moteur porte sur une carte en main. Elle
+// se referme d'un tap sur le voile, d'un swipe vers la droite, du Retour
+// Android (`.main-feuille-voile` est dans FERMABLES).
 //
-// Choix de l'utilisateur le 11/09/2026, contre l'eventail : les cartes gardent
-// une taille LISIBLE et on fait glisser le doigt. C'est la seule zone du
-// portrait ou les cartes se lisent a vue ; tout le reste de la table est en
-// petit avec ses chiffres a cote.
+// La rangee elle-meme est celle du 11/09 : cartes a taille lisible, qui
+// defilent horizontalement. TAP = lire la carte en grand, APPUI LONG = jouer.
 //
-// ECART ASSUME avec CarteAvecChiffres (regle centrale du chantier : jamais de
-// chiffre sur l'illustration) : ici on rend ScanCard EN DIRECT, sans retirer
-// stats/jauge/allyHp/schemeThreat. La regle protege les VIGNETTES (petites,
-// lues via leurs chiffres a cote) ; la main n'en est pas une, elle se lit a
-// vue comme une vraie carte, coût et texte imprimes compris. Une carte de
-// main n'est de toute facon pas en jeu : le moteur ne lui connait ni PV ni
-// stat courante (ces champs viennent de l'unite POSEE), donc ScanCard n'a
-// rien a superposer dessus dans les faits.
-import type { ReactElement } from 'react'
+// ⚠ ScanCard est rendu EN DIRECT : ses pastilles (cout, PV) restent sur la
+// carte, c'est le choix de la spec du 12/09 (« une pastille par valeur »).
+import { useRef, type ReactElement } from 'react'
 import { ScanCard } from '../../components/ScanCard'
 import { t } from '../langue'
 import type { UniteAffichee } from '../zones'
 import { useAppuiLong } from './useAppuiLong'
+
+export const SEUIL_FERMETURE = 40
 
 /**
  * Une carte de la main, avec son geste. `useAppuiLong` tient un minuteur par
@@ -36,14 +34,13 @@ function CarteMainPortrait({
 }): ReactElement {
   const appui = useAppuiLong(onJouer ? () => onJouer(unite) : undefined)
   return (
-    <span className="main-portrait-carte" {...appui.gestes}>
+    <span className="main-portrait-carte" data-tactile="carte-main" {...appui.gestes}>
       <ScanCard
         {...unite.carte}
         highlight={false}
         onSelect={() => {
           // Le maintien vient de jouer la carte : le clic qui suit le
-          // relachement du doigt ne doit pas AUSSI l'ouvrir, sinon un seul
-          // geste ferait les deux actions a la fois.
+          // relachement du doigt ne doit pas AUSSI l'ouvrir.
           if (appui.vientDeDeclencher()) return
           onOuvrir(unite)
         }}
@@ -54,28 +51,63 @@ function CarteMainPortrait({
 
 export function MainPortrait({
   unites,
+  ouverte,
+  onFermer,
   onOuvrir,
   onJouer,
 }: {
   unites: UniteAffichee[]
+  ouverte: boolean
+  onFermer: () => void
   onOuvrir: (unite: UniteAffichee) => void
   /** Appui long : jouer la carte directement, sans passer par la lecture. */
   onJouer?: (unite: UniteAffichee) => void
-}): ReactElement {
-  if (unites.length === 0) {
-    return <p className="portrait-vide main-portrait-vide">{t('Ta main est vide')}</p>
-  }
+}): ReactElement | null {
+  const depart = useRef<number | undefined>(undefined)
+  if (!ouverte) return null
   return (
-    <div className="main-portrait-bloc">
-      <div className="main-portrait defile">
-        {unites.map((unite) => (
-          <CarteMainPortrait key={unite.cle} unite={unite} onOuvrir={onOuvrir} onJouer={onJouer} />
-        ))}
-      </div>
-      <span className="portrait-chiffre main-portrait-compte">
-        <b>{unites.length}</b>
-        <small>{t('en main')}</small>
-      </span>
-    </div>
+    <>
+      <div className="main-feuille-voile" onPointerDown={onFermer} />
+      <section
+        className="main-feuille"
+        role="dialog"
+        aria-label={t('Ta main')}
+        onPointerDown={(evenement) => {
+          depart.current = evenement.clientX
+        }}
+        onPointerMove={(evenement) => {
+          if (depart.current === undefined) return
+          if (evenement.clientX - depart.current >= SEUIL_FERMETURE) {
+            depart.current = undefined
+            onFermer()
+          }
+        }}
+        onPointerUp={() => {
+          depart.current = undefined
+        }}
+        onPointerCancel={() => {
+          depart.current = undefined
+        }}
+      >
+        <span className="main-feuille-poignee" aria-hidden="true" />
+        {unites.length === 0 ? (
+          <p className="portrait-vide main-portrait-vide">{t('Ta main est vide')}</p>
+        ) : (
+          <div className="main-portrait defile">
+            {unites.map((unite) => (
+              <CarteMainPortrait key={unite.cle} unite={unite} onOuvrir={onOuvrir} onJouer={onJouer} />
+            ))}
+          </div>
+        )}
+        <div className="main-feuille-pied">
+          <span className="main-portrait-compte">
+            <b>{unites.length}</b> {t('en main')}
+          </span>
+          <button type="button" className="main-feuille-fermer" onClick={onFermer}>
+            {t('Fermer')}
+          </button>
+        </div>
+      </section>
+    </>
   )
 }

@@ -151,7 +151,7 @@ export function avecInteraction(
   }
 }
 
-function Unite({
+export function Unite({
   unite,
   interactifs,
   effets,
@@ -621,6 +621,12 @@ export type BoardProps = {
   /** Force la main a rester deployee pendant une selection/paiement. */
   mainVisibleForcee?: boolean
   /**
+   * Le bouton d'action principal du telephone (Fin du tour, et sa variante
+   * suggeree) : le portrait le pose dans son bandeau (spec du 12/09/2026).
+   * Le plateau PC l'ignore, il garde son bouton flottant.
+   */
+  actionPrincipale?: { libelle: string; suggere?: boolean; agir: () => void }
+  /**
    * Un effet d'ambiance efface les couleurs (le noir et blanc). Le plateau
    * desature alors les SCANS et rend l'aspect par un lisere colore, qui, lui,
    * n'est pas desature parce qu'il est dessine hors de l'image.
@@ -1036,7 +1042,7 @@ export function Board({
  * On clique le voile (ou « Close ») pour fermer. Reutilise l'habillage de la
  * modale « cartes regardees ».
  */
-function PileRegardee({
+export function PileRegardee({
   titre,
   cartes,
   groupes,

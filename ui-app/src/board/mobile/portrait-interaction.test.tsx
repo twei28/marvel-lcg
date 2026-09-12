@@ -51,7 +51,7 @@ describe('l\'interaction sur le plateau portrait', () => {
     )
     // `avecInteraction` traduit le role en `state` : sans lui, la carte reste
     // dans son etat par defaut et rien ne signale au joueur qu'elle est cible.
-    const carte = container.querySelector('.portrait-carte .scan-card')
+    const carte = container.querySelector('.bande-carte .scan-card')
     expect(carte?.className).toContain('state-targetable')
   })
 
@@ -66,7 +66,7 @@ describe('l\'interaction sur le plateau portrait', () => {
         interactifs={new Map([[7, interactif(agir)]])}
       />
     )
-    fireEvent.pointerDown(document.querySelector('.portrait-carte')!)
+    fireEvent.pointerDown(document.querySelector('.bande-carte')!)
     vi.advanceTimersByTime(APPUI_LONG_MS)
     expect(agir).toHaveBeenCalledTimes(1)
   })
@@ -81,7 +81,7 @@ describe('l\'interaction sur le plateau portrait', () => {
         interactifs={new Map([[7, interactif(agir)]])}
       />
     )
-    fireEvent.click(document.querySelector('.portrait-carte .scan-card')!)
+    fireEvent.click(document.querySelector('.bande-carte .scan-card')!)
     // Lire n'est pas jouer : le tap montre la carte, il ne declenche pas
     // l'action que le moteur propose. C'est l'appui long qui joue.
     expect(document.querySelector('.carte-ouverte')).toBeInTheDocument()

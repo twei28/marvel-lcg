@@ -47,4 +47,12 @@ créer un nouveau personnage.
    Deck-builder et campagne mesurés OK à 480 px (boutons visibles, pas de
    défilement horizontal) ; le salon « Joueurs & tchat » n'est pas
    mesurable en local, à vérifier sur le terrain.
-4. Terrain : à toi, sur narwhalchampions.com depuis le S24 Ultra.
+4. Terrain : premier test du 12/09 au soir, « je vois plein de problèmes »
+   → refonte en BANDES, décidée en dix-neuf questions
+   (`docs/superpowers/specs/2026-09-12-plateau-portrait-en-bandes-design.md`,
+   plan `2026-09-12-plateau-portrait-en-bandes.md`) : quatre bandes qui
+   défilent du doigt (méchant, manigances, engagés, mon héros), la main
+   derrière une encoche à droite, les piles derrière une encoche à gauche,
+   le bandeau qui porte le menu « … » et Fin du tour, plus de barre en bas,
+   même plateau en paysage. L'ancien modèle `?medaillons` est retiré du
+   dépôt. Livré le 12/09 au soir, à tester par toi sur le téléphone.

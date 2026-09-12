@@ -1,14 +1,17 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+// Le plateau en bandes (spec du 12/09/2026) : quatre bandes, la main derriere
+// son encoche, les piles derriere la leur, le bandeau qui porte le menu et
+// l'action principale.
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { PlateauPortrait } from './PlateauPortrait'
+import { PlateauPortrait, questionSurLaMain } from './PlateauPortrait'
 import { APPUI_LONG_MS } from './useAppuiLong'
 import type { BoardProps } from '../Board'
-import type { EmplacementAffiche, Plateau, UniteAffichee } from '../zones'
-import type { CleEmplacement } from '../zones'
+import type { EtatInteractif } from '../interaction'
+import type { CleEmplacement, EmplacementAffiche, Plateau, UniteAffichee } from '../zones'
 import type { ScanCardProps } from '../../components/ScanCard'
 
-const unite = (cle: string, carte: Partial<ScanCardProps>): UniteAffichee =>
-  ({ cle, carte: { id: cle, name: cle, kind: 'unknown', imageUrl: '', ...carte }, attachees: [] }) as UniteAffichee
+const unite = (cle: string, carte: Partial<ScanCardProps>, extra: Partial<UniteAffichee> = {}): UniteAffichee =>
+  ({ cle, carte: { id: cle, name: cle, kind: 'unknown', imageUrl: '', ...carte }, attachees: [], ...extra }) as UniteAffichee
 
 const emplacement = (cle: CleEmplacement, ...unites: UniteAffichee[]): EmplacementAffiche =>
   ({ cle, titre: cle, groupes: [unites], nombreSurLaLigne: unites.length }) as EmplacementAffiche
@@ -18,469 +21,212 @@ const plateau = (...emplacements: EmplacementAffiche[]): Plateau =>
 
 const monde = { render_id: 1, round_id: 1, phase: 'Player 1 Turn', players: [] } as unknown as BoardProps['world']
 
-describe('PlateauPortrait — bloc complot', () => {
-  it('pose la manigance principale en petit, avec sa menace en cases a cote', () => {
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(
-          emplacement(
-            'complot-principal',
-            unite('L’Effraction', { name: 'L’Effraction', kind: 'main-scheme', schemeThreat: '3/6' })
-          )
-        )}
-      />
-    )
-    expect(container.querySelector('.portrait-nom')).toHaveTextContent('L’Effraction')
-    expect(document.querySelectorAll('.barre-menace-case')).toHaveLength(6)
-    expect(document.querySelectorAll('.barre-menace-case.est-pose')).toHaveLength(3)
-  })
+const rendre = (props: Partial<BoardProps>) =>
+  render(<PlateauPortrait world={monde} playerId={0} plateau={plateau()} {...props} />)
 
-  it('ne pose jamais de chiffre sur l illustration de la manigance', () => {
-    // Regle centrale du chantier (deja violee une fois a la tache 4) : un
-    // chiffre ne va jamais sur le scan. Meme si `stats` trainait dessus.
-    render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(
-          emplacement(
-            'complot-principal',
-            unite('Complot', {
-              name: 'Complot',
-              kind: 'main-scheme',
-              schemeThreat: '2/5',
-              stats: [{ label: 'ATQ', value: 2 }],
-            })
-          )
-        )}
-      />
-    )
-    expect(document.querySelector('.scan-card .scan-stats-calee')).toBeNull()
-  })
-
-  it('ne pose aucune pastille de menace sur l illustration : la BarreMenace suffit', () => {
-    // Defaut corrige (post tache 6) : CarteAvecChiffres ne retirait pas
-    // `schemeThreat`, donc ScanCard posait SA PROPRE pastille de menace sur
-    // le scan en plus de la BarreMenace, doublon exactement inverse de celui
-    // que la BarreMenace existe pour eviter.
-    render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(
-          emplacement(
-            'complot-principal',
-            unite('Complot', { name: 'Complot', kind: 'main-scheme', schemeThreat: '3/6' })
-          )
-        )}
-      />
-    )
-    expect(document.querySelector('.scan-card .scheme-threat-badge')).toBeNull()
-  })
-
-  it('sans manigance principale, ne dessine ni carte ni barre', () => {
-    const { container } = render(<PlateauPortrait world={monde} playerId={0} plateau={plateau()} />)
-    expect(container.querySelector('.barre-menace-bloc')).toBeNull()
-  })
+afterEach(() => {
+  vi.useRealTimers()
 })
 
-describe('PlateauPortrait — bloc vilain', () => {
-  it('montre les PV du vilain a cote, jamais sur l illustration', () => {
-    // Defaut corrige (post tache 6) : chiffresDe ne lisait QUE `stats`, vide
-    // tant qu'aucune stat n'est modifiee — le vilain n'affichait donc
-    // quasiment jamais ses PV a cote, pendant que ScanCard les dessinait
-    // LUI-MEME sur la carte (jauge-carte). Repere sur play.marvelsimulator.com :
-    // le vilain montre son "10/10" a cote.
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(
-          emplacement(
-            // Le mechant vit dans l'emplacement `rencontre` (zones.ts :
-            // `airesVilains(world)`), pas `terrain-combat` (allies/sbires
-            // engages/environnement) — defaut corrige le 11/09/2026, le
-            // mechant ne s'affichait alors NULLE PART.
-            'rencontre',
-            unite('Rhino', {
-              name: 'Rhino',
-              kind: 'villain',
-              jauge: { remplissage: 1, genre: 'pv', alarme: false, texte: '10 / 10' },
-            })
-          )
-        )}
-      />
-    )
-    expect(screen.getByText('10 / 10')).toBeInTheDocument()
-    expect(container.querySelector('.scan-card .jauge-carte')).toBeNull()
-  })
-})
-
-describe('PlateauPortrait — compteurs de rencontre', () => {
-  it('compte le deck et la defausse de rencontre', () => {
-    render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(
-          emplacement(
-            'piles-rencontre',
-            unite('rencontre-encounter-deck', { pileCount: 33 }),
-            unite('rencontre-encounter-discard', { pileCount: 0 })
-          )
-        )}
-      />
-    )
-    expect(screen.getByText('33')).toBeInTheDocument()
-    expect(screen.getAllByText('0').length).toBeGreaterThan(0)
-  })
-
-  it('sans pile de rencontre, montre des compteurs a zero plutot que rien', () => {
-    // Un bloc qui apparait/disparait ferait sauter la hauteur des autres
-    // (spec du 11/09/2026) : la rencontre montre toujours ses compteurs.
-    const { container } = render(<PlateauPortrait world={monde} playerId={0} plateau={plateau()} />)
-    expect(container.querySelector('.portrait-compteurs')).not.toBeNull()
-  })
-})
-
-describe('PlateauPortrait — ennemis engages, heros et allies', () => {
-  it('dit qu aucun ennemi n est engage quand le bloc est vide', () => {
-    render(<PlateauPortrait world={monde} playerId={0} plateau={plateau()} />)
+describe('PlateauPortrait — les quatre bandes', () => {
+  it('rend les quatre bandes dans l ordre, chacune avec son texte quand elle est vide', () => {
+    const { container } = rendre({})
+    const bandes = [...container.querySelectorAll('.bande')].map((b) => b.className)
+    expect(bandes).toEqual(['bande bande-vilain est-vide', 'bande bande-manigances est-vide', 'bande bande-engages est-vide', 'bande bande-heros est-vide'])
     expect(screen.getByText('Aucun ennemi engagé')).toBeInTheDocument()
+    expect(screen.getByText('Aucune manigance')).toBeInTheDocument()
   })
 
-  it('montre les ennemis engages quand il y en a', () => {
-    // getByText('Baron Zemo') matcherait DEUX noeuds : le nom affiche
-    // (.portrait-nom) et le texte de secours que ScanCard pose derriere
-    // l'image (.scan-fallback, aria-hidden mais toujours dans le DOM). On
-    // cible donc le nom affiche precisement, comme les autres tests de ce
-    // fichier (bloc complot, ci-dessus).
-    //
-    // L'ennemi est pose dans `terrain-combat` et NON dans `nemesis` : `nemesis`
-    // est le set nemesis mis de cote, hors jeu. Ces fixtures l'y placaient, et
-    // verrouillaient ainsi le defaut au lieu de l'attraper (recette du
-    // 11/09/2026, « Baron Zemo » range sous Engagés sans etre sur la table).
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(emplacement('terrain-combat', unite('Baron Zemo', { name: 'Baron Zemo', kind: 'minion' })))}
-      />
-    )
-    expect(container.querySelector('.portrait-engages .portrait-nom')).toHaveTextContent('Baron Zemo')
-    expect(screen.queryByText('Aucun ennemi engagé')).toBeNull()
-  })
-
-  it('montre le heros et ses allies', () => {
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(
-          emplacement(
-            'terrain-soutien',
-            unite('Steve Rogers', { name: 'Steve Rogers', kind: 'hero' }),
-            unite('Hope Summers', { name: 'Hope Summers', kind: 'ally' })
-          )
-        )}
-      />
-    )
-    const noms = Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
-    expect(noms).toEqual(['Steve Rogers', 'Hope Summers'])
-  })
-
-  it('montre les PV d un ennemi engage a cote (jauge), rien sur l illustration', () => {
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(
-          emplacement(
-            'terrain-combat',
-            unite('Baron Zemo', {
-              name: 'Baron Zemo',
-              kind: 'minion',
-              jauge: { remplissage: 0.5, genre: 'pv', alarme: false, texte: '5 / 10' },
-            })
-          )
-        )}
-      />
-    )
-    expect(screen.getByText('5 / 10')).toBeInTheDocument()
-    expect(container.querySelector('.scan-card .jauge-carte')).toBeNull()
-  })
-
-  it('montre les PV d un allie a cote (allyHp, sans jauge calculable), rien sur l illustration', () => {
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(
-          emplacement('terrain-soutien', unite('Hope Summers', { name: 'Hope Summers', kind: 'ally', allyHp: '3/3' }))
-        )}
-      />
-    )
-    expect(screen.getByText('3/3')).toBeInTheDocument()
-    expect(container.querySelector('.scan-card .ally-hp-badge')).toBeNull()
-  })
-
-  it('ne pose jamais de chiffre sur l illustration d un engage ou d un allie', () => {
-    // Meme regle que pour le complot (tache 5) : `stats` ne doit jamais
-    // atterrir sur ScanCard directement, meme via ces nouveaux blocs.
-    render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(
-          emplacement(
-            'terrain-combat',
-            unite('Rhino', { name: 'Rhino', kind: 'minion', stats: [{ label: 'ATQ', value: 4 }] })
-          )
-        )}
-      />
-    )
-    expect(document.querySelector('.scan-card .scan-stats-calee')).toBeNull()
-  })
-})
-
-describe('PlateauPortrait — main et barre du bas', () => {
-  it('affiche les cartes de la main : sixieme bloc de repartirEnBlocs, pas seulement teste en isolation', () => {
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(
-          emplacement(
-            'main',
-            unite('Quinjet', { name: 'Quinjet', kind: 'event' }),
-            unite('Backflip', { name: 'Backflip', kind: 'event' })
-          )
-        )}
-      />
-    )
-    expect(container.querySelectorAll('.main-portrait .scan-card')).toHaveLength(2)
-  })
-
-  // Le tap n'appelle PLUS `props.onCardClick` et ne passe plus par
-  // `carteFocalisee` : il ouvre la carte EN GRAND, au milieu de l'ecran
-  // (demande de l'utilisateur, 11/09/2026). `onCardClick` ouvre les ACTIONS du
-  // moteur, et seulement quand il en propose : taper une carte pour la LIRE ne
-  // produisait donc rien, alors que c'est le geste central du portrait et que
-  // les vignettes de la table font 64 px.
-  it('un tap sur une carte de la main l ouvre en grand', () => {
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(emplacement('main', unite('Quinjet', { name: 'Quinjet', kind: 'event' })))}
-      />
-    )
-    fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
-    const ouverte = document.querySelector('.carte-ouverte')
-    expect(ouverte).toBeInTheDocument()
-    expect(ouverte).toHaveTextContent('Quinjet')
-  })
-
-  it('la carte ouverte se referme quand on tape a cote', () => {
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(emplacement('main', unite('Quinjet', { name: 'Quinjet', kind: 'event' })))}
-      />
-    )
-    fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
-    fireEvent.pointerDown(document.querySelector('.carte-ouverte-voile') as Element)
-    expect(document.querySelector('.carte-ouverte')).not.toBeInTheDocument()
-  })
-
-  describe('appui long sur une carte de la main : jouer directement', () => {
-    afterEach(() => {
-      vi.useRealTimers()
+  it('epingle le mechant, la manigance principale et l identite au bord gauche de leur bande', () => {
+    const { container } = rendre({
+      plateau: plateau(
+        emplacement('rencontre', unite('rhino', { kind: 'villain' })),
+        emplacement('complot-principal', unite('effraction', { kind: 'main-scheme', schemeThreat: '3/7' })),
+        emplacement('complots-secondaires', unite('annexe', { kind: 'side-scheme' })),
+        emplacement('terrain-soutien', unite('peter', { kind: 'alter-ego' }), unite('soutien', { kind: 'support' }))
+      ),
     })
+    expect(container.querySelector('.bande-vilain .est-epinglee [data-card-id="rhino"]')).not.toBeNull()
+    expect(container.querySelector('.bande-manigances .est-epinglee [data-card-id="effraction"]')).not.toBeNull()
+    expect(container.querySelector('.bande-manigances .bande-carte:not(.est-epinglee)[data-card-id="annexe"]')).not.toBeNull()
+    expect(container.querySelector('.bande-heros .est-epinglee[data-card-id="peter"]')).not.toBeNull()
+    expect(container.querySelector('.bande-heros .bande-carte:not(.est-epinglee)[data-card-id="soutien"]')).not.toBeNull()
+  })
 
-    it('joue la carte via onSelect quand le moteur en pose un, sans passer par onCardClick', () => {
-      vi.useFakeTimers()
-      const onCardClick = vi.fn()
-      const onSelect = vi.fn()
-      const { container } = render(
-        <PlateauPortrait
-          world={monde}
-          playerId={0}
-          onCardClick={onCardClick}
-          plateau={plateau(emplacement('main', unite('Quinjet', { name: 'Quinjet', kind: 'event', onSelect })))}
-        />
-      )
-      const porteuse = container.querySelector('.main-portrait-carte') as Element
-      fireEvent.pointerDown(porteuse)
-      vi.advanceTimersByTime(APPUI_LONG_MS)
-      expect(onSelect).toHaveBeenCalledTimes(1)
-      expect(onCardClick).not.toHaveBeenCalled()
+  it('dessine les attachements sous leur porteuse, comme le plateau PC', () => {
+    const { container } = rendre({
+      plateau: plateau(
+        emplacement('rencontre', unite('rhino', { kind: 'villain' }, { attachees: [{ id: 'armure', name: 'Armure', kind: 'attachment', imageUrl: '' } as ScanCardProps] }))
+      ),
     })
+    expect(container.querySelector('.bande-vilain .plateau-unite .est-attachee .scan-card')).not.toBeNull()
+  })
 
-    it('a defaut d onSelect, joue via onCardClick (meme repli que MainEventail/MainMedaillons)', () => {
-      vi.useFakeTimers()
-      const onCardClick = vi.fn()
-      const { container } = render(
-        <PlateauPortrait
-          world={monde}
-          playerId={0}
-          onCardClick={onCardClick}
-          plateau={plateau(emplacement('main', unite('Quinjet', { name: 'Quinjet', kind: 'event' })))}
-        />
-      )
-      const porteuse = container.querySelector('.main-portrait-carte') as Element
-      fireEvent.pointerDown(porteuse)
-      vi.advanceTimersByTime(APPUI_LONG_MS)
-      expect(onCardClick).toHaveBeenCalledTimes(1)
-      expect(onCardClick.mock.calls[0]?.[0]).toMatchObject({ id: 'Quinjet' })
+  it('laisse ScanCard poser ses pastilles (PV, menace) sur la carte', () => {
+    const { container } = rendre({
+      plateau: plateau(emplacement('rencontre', unite('rhino', { kind: 'villain', allyHp: '12/14' }))),
     })
+    expect(container.querySelector('.bande-vilain .scan-card')?.textContent).toContain('12/14')
   })
 
-  it('une demande du moteur (props.bas) fait basculer la barre : elle seule s affiche, pas les outils', () => {
-    // BarreBas.tsx:25 — quand `demande` est fourni, elle remplace tout le
-    // reste plutot que de s'y ajouter. Un test qui verifierait juste que
-    // `bas` apparait, sans verifier que les outils disparaissent, passerait
-    // meme si `demande`/`outils`/`onglets` etaient intervertis.
-    render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        bas={<span>Choisis une cible</span>}
-        actionsPartie={<button type="button">Annuler</button>}
-        outils={<button type="button">Vue</button>}
-        plateau={plateau()}
-      />
-    )
-    expect(screen.getByText('Choisis une cible')).toBeInTheDocument()
-    expect(screen.queryByText('Annuler')).toBeNull()
-    expect(screen.queryByText('Vue')).toBeNull()
-  })
-
-  it('sans demande, chaque prop atteint la bonne case de BarreBas (pas juste presente n importe ou)', () => {
-    // getByText('Annuler')/getByText('Vue') passerait meme si `actionsPartie`
-    // et `outils` etaient permutes en entrant dans BarreBas (les deux se
-    // rendent, juste dans le mauvais conteneur) : on verifie donc la case
-    // precise (BarreBas.tsx : outils -> .pm-outils, onglets -> .pm-onglets).
-    const { container } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        actionsPartie={<button type="button">Annuler</button>}
-        outils={<button type="button">Vue</button>}
-        plateau={plateau()}
-      />
-    )
-    expect(container.querySelector('.pm-outils')).toHaveTextContent('Annuler')
-    expect(container.querySelector('.pm-onglets')).toHaveTextContent('Vue')
-  })
-})
-
-describe('PlateauPortrait — onglets du multijoueur', () => {
-  // CORRECTION (voir suite du rapport de tache 10) : PlateauPortrait ne filtre
-  // plus RIEN lui-meme. Les onglets ne font qu'appeler `choisirJoueurRegarde`
-  // (= `setVueForcee` dans board.tsx), qui reconstruit `props.plateau` sur
-  // l'autre joueur en amont (construirePlateau braque deja toute la table,
-  // main comprise, sur `playerId` — zones.ts). Ces tests verifient donc le
-  // CONTRAT des props, pas un filtrage local qui n'existe plus.
-
-  it('sans `joueursAffichables` (plateau PC/paysage) : aucun onglet', () => {
-    render(<PlateauPortrait world={monde} playerId={0} plateau={plateau()} />)
-    expect(screen.queryByRole('tablist')).toBeNull()
-  })
-
-  it('un seul joueur dans `joueursAffichables` : aucun onglet (bruit en solo)', () => {
-    render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau()}
-        joueursAffichables={[{ id: 0, nom: 'Steve Rogers' }]}
-        joueurRegarde={0}
-        choisirJoueurRegarde={() => {}}
-      />
-    )
-    expect(screen.queryByRole('tablist')).toBeNull()
-  })
-
-  it('deux joueurs : un onglet par heros, celui regarde est marque', () => {
-    render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau()}
-        joueursAffichables={[{ id: 0, nom: 'Steve Rogers' }, { id: 1, nom: 'Hulk' }]}
-        joueurRegarde={1}
-        choisirJoueurRegarde={() => {}}
-      />
-    )
-    expect(screen.getByRole('tab', { name: 'Hulk' })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByRole('tab', { name: 'Steve Rogers' })).toHaveAttribute('aria-selected', 'false')
-  })
-
-  it('taper un onglet appelle `choisirJoueurRegarde` avec le bon identifiant, sans toucher au plateau recu', () => {
+  it('les onglets du multijoueur vivent dans l en-tete de la bande du heros', () => {
     const choisir = vi.fn()
-    render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau()}
-        joueursAffichables={[{ id: 0, nom: 'Steve Rogers' }, { id: 1, nom: 'Hulk' }]}
-        joueurRegarde={0}
-        choisirJoueurRegarde={choisir}
-      />
-    )
+    const { container } = rendre({
+      joueursAffichables: [
+        { id: 0, nom: 'Spider-Man' },
+        { id: 1, nom: 'Hulk' },
+      ],
+      joueurRegarde: 0,
+      choisirJoueurRegarde: choisir,
+    })
+    expect(container.querySelector('.bande-heros .bande-entete .portrait-onglets')).not.toBeNull()
     fireEvent.click(screen.getByRole('tab', { name: 'Hulk' }))
     expect(choisir).toHaveBeenCalledWith(1)
   })
+})
 
-  it('le plateau affiche suit le joueur regarde : un nouveau `plateau`/`playerId` suffit, sans etat local qui s y accroche', () => {
-    // Simule ce que fait board.tsx apres un clic d'onglet : il RECONSTRUIT
-    // `plateau` pour l'autre joueur (construirePlateau braque `notre` sur
-    // `playerId`) et repasse par ici avec un nouveau `plateau`/`playerId`. Si
-    // PlateauPortrait gardait la moindre memoire locale du joueur precedent
-    // (comme le faisait la version filtree, corrigee), ce rerender montrerait
-    // encore Steve Rogers apres le changement de props.
-    const { container, rerender } = render(
-      <PlateauPortrait
-        world={monde}
-        playerId={0}
-        plateau={plateau(emplacement('terrain-soutien', unite('Steve Rogers', { name: 'Steve Rogers', kind: 'hero' })))}
-        joueursAffichables={[{ id: 0, nom: 'Steve Rogers' }, { id: 1, nom: 'Hulk' }]}
-        joueurRegarde={0}
-        choisirJoueurRegarde={() => {}}
-      />
+describe('PlateauPortrait — le geste sur une carte', () => {
+  it('tap = ouvrir en grand, sans agir', () => {
+    const agir = vi.fn()
+    const { container } = rendre({
+      plateau: plateau(emplacement('rencontre', unite('7', { name: 'Rhino', kind: 'villain' }))),
+      interactifs: new Map([[7, { role: 'cible', choisie: false, agir } as EtatInteractif]]),
+    })
+    fireEvent.click(container.querySelector('.bande-carte .scan-card')!)
+    expect(screen.getByRole('dialog', { name: 'Rhino' })).toBeInTheDocument()
+    expect(agir).not.toHaveBeenCalled()
+    // La carte ouverte est DECOREE : l'action du moteur y est proposee.
+    fireEvent.click(screen.getByRole('button', { name: /Utiliser cette carte/ }))
+    expect(agir).toHaveBeenCalledTimes(1)
+  })
+
+  it('appui long = agir avec l action du moteur', () => {
+    vi.useFakeTimers()
+    const agir = vi.fn()
+    const { container } = rendre({
+      plateau: plateau(emplacement('rencontre', unite('7', { name: 'Rhino', kind: 'villain' }))),
+      interactifs: new Map([[7, { role: 'cible', choisie: false, agir } as EtatInteractif]]),
+    })
+    fireEvent.pointerDown(container.querySelector('.bande-carte')!)
+    act(() => {
+      vi.advanceTimersByTime(APPUI_LONG_MS)
+    })
+    expect(agir).toHaveBeenCalledTimes(1)
+  })
+
+  it('appui long sans action directe = le menu des actions de la carte (onCardClick)', () => {
+    vi.useFakeTimers()
+    const onCardClick = vi.fn()
+    const { container } = rendre({
+      plateau: plateau(emplacement('rencontre', unite('7', { name: 'Rhino', kind: 'villain' }))),
+      onCardClick,
+    })
+    fireEvent.pointerDown(container.querySelector('.bande-carte')!)
+    act(() => {
+      vi.advanceTimersByTime(APPUI_LONG_MS)
+    })
+    expect(onCardClick).toHaveBeenCalledTimes(1)
+    expect(onCardClick.mock.calls[0]?.[0]).toMatchObject({ id: '7' })
+  })
+})
+
+describe('PlateauPortrait — la main derriere son encoche', () => {
+  const avecMain = plateau(emplacement('main', unite('quinjet', { kind: 'support' }), unite('backflip', { kind: 'event' })))
+
+  it('est fermee au depart, l encoche dit combien de cartes, un tap l ouvre, le voile la ferme', () => {
+    rendre({ plateau: avecMain })
+    expect(document.querySelector('.main-feuille')).toBeNull()
+    const encoche = document.querySelector('.encoche-main')!
+    expect(encoche).toHaveAttribute('data-tactile', 'main')
+    expect(encoche.querySelector('.encoche-nombre')).toHaveTextContent('2')
+    fireEvent.click(encoche)
+    expect(document.querySelectorAll('.main-feuille .main-portrait-carte')).toHaveLength(2)
+    fireEvent.pointerDown(document.querySelector('.main-feuille-voile')!)
+    expect(document.querySelector('.main-feuille')).toBeNull()
+  })
+
+  it('un swipe vers la gauche sur l encoche l ouvre aussi', () => {
+    rendre({ plateau: avecMain })
+    const encoche = document.querySelector('.encoche-main')!
+    // jsdom n'a pas de PointerEvent : un MouseEvent au meme nom porte clientX.
+    fireEvent(encoche, new MouseEvent('pointerdown', { bubbles: true, clientX: 470 }))
+    fireEvent(encoche, new MouseEvent('pointermove', { bubbles: true, clientX: 430 }))
+    expect(document.querySelector('.main-feuille')).not.toBeNull()
+  })
+
+  it('s ouvre toute seule quand une question porte sur une carte en main, et se range apres', () => {
+    const { rerender } = render(
+      <PlateauPortrait world={monde} playerId={0} plateau={avecMain} interactifs={new Map()} />
     )
-    expect(
-      Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
-    ).toEqual(['Steve Rogers'])
-
+    expect(document.querySelector('.main-feuille')).toBeNull()
     rerender(
       <PlateauPortrait
         world={monde}
-        playerId={1}
-        plateau={plateau(
-          emplacement(
-            'terrain-soutien',
-            unite('Hulk', { name: 'Hulk', kind: 'hero' }),
-            unite('Falcon', { name: 'Falcon', kind: 'ally' })
-          ),
-          emplacement('main', unite('Smash', { name: 'Smash', kind: 'event' }))
-        )}
-        joueursAffichables={[{ id: 0, nom: 'Steve Rogers' }, { id: 1, nom: 'Hulk' }]}
-        joueurRegarde={1}
-        choisirJoueurRegarde={() => {}}
+        playerId={0}
+        plateau={avecMain}
+        interactifs={new Map([[Number('quinjet') || 0, { role: 'ressource', choisie: false, agir: () => {} } as EtatInteractif]])}
       />
     )
-    expect(
-      Array.from(container.querySelectorAll('.portrait-heros .portrait-nom')).map((el) => el.textContent)
-    ).toEqual(['Hulk', 'Falcon'])
-    // La main suit aussi : meme mecanisme (construirePlateau la construit
-    // depuis `notre?.hand_cards`, `notre = joueurs[playerId]`), la decision
-    // « mains comprises » n'est donc plus un manque de cette tache.
-    expect(container.querySelector('.main-portrait')?.textContent).toContain('Smash')
-    expect(screen.getByRole('tab', { name: 'Hulk' })).toHaveAttribute('aria-selected', 'true')
+    // `quinjet` n'est pas un id numerique : on passe par un id qui l'est.
+    expect(questionSurLaMain([unite('12', { kind: 'event' })], new Map([[12, { role: 'cible', choisie: false } as EtatInteractif]]))).toBe(true)
+    expect(questionSurLaMain([unite('12', { kind: 'event' })], new Map([[12, { role: 'indisponible', choisie: false } as EtatInteractif]]))).toBe(false)
+    // Une carte simplement JOUABLE (porteur) n'est pas une question : sinon
+    // la main serait ouverte pendant tout le tour.
+    expect(questionSurLaMain([unite('12', { kind: 'event' })], new Map([[12, { role: 'porteur', choisie: false } as EtatInteractif]]))).toBe(false)
+    expect(questionSurLaMain([unite('12', { kind: 'event' })], new Map([[99, { role: 'cible', choisie: false } as EtatInteractif]]))).toBe(false)
+  })
+
+  it('en vrai : la question ouvre la main, sa fin la referme, mais pas si le joueur l avait ouverte lui-meme', () => {
+    const main = plateau(emplacement('main', unite('12', { kind: 'event' })))
+    const question = new Map([[12, { role: 'cible', choisie: false, agir: () => {} } as EtatInteractif]])
+    const { rerender } = render(<PlateauPortrait world={monde} playerId={0} plateau={main} interactifs={new Map()} />)
+    rerender(<PlateauPortrait world={monde} playerId={0} plateau={main} interactifs={question} />)
+    expect(document.querySelector('.main-feuille')).not.toBeNull()
+    rerender(<PlateauPortrait world={monde} playerId={0} plateau={main} interactifs={new Map()} />)
+    expect(document.querySelector('.main-feuille')).toBeNull()
+    // Ouverte a la main, elle survit a la question.
+    fireEvent.click(document.querySelector('.encoche-main')!)
+    rerender(<PlateauPortrait world={monde} playerId={0} plateau={main} interactifs={question} />)
+    rerender(<PlateauPortrait world={monde} playerId={0} plateau={main} interactifs={new Map()} />)
+    expect(document.querySelector('.main-feuille')).not.toBeNull()
+  })
+})
+
+describe('PlateauPortrait — le tiroir des piles', () => {
+  it('l encoche de gauche ouvre le tiroir, une pile par ligne, la consultable s etale', () => {
+    rendre({
+      plateau: plateau(
+        emplacement(
+          'piles-joueur',
+          unite('joueur-deck', { name: 'Deck', pileCount: 30 }),
+          unite('joueur-defausse', { name: 'Haymaker' }, { pileContenu: [{ id: 'h', name: 'Haymaker', kind: 'event', imageUrl: '' } as ScanCardProps], pileTitre: 'Défausse' })
+        )
+      ),
+    })
+    expect(document.querySelector('.tiroir')).toBeNull()
+    fireEvent.click(document.querySelector('.encoche-piles')!)
+    const piles = document.querySelectorAll('.tiroir-pile')
+    expect(piles).toHaveLength(2)
+    expect(piles[0]).toBeDisabled()
+    expect(piles[0].textContent).toContain('Ton deck')
+    expect(piles[0].textContent).toContain('30')
+    fireEvent.click(piles[1])
+    expect(document.querySelector('.plateau-regardees')).not.toBeNull()
+    expect(document.querySelector('.tiroir')).toBeNull()
+  })
+})
+
+describe('PlateauPortrait — le bandeau', () => {
+  it('porte le menu « … » (les actions de partie) et l action principale', () => {
+    const agir = vi.fn()
+    rendre({
+      actionsPartie: <div className="board-actions"><button type="button" className="bh-bouton bh-options">Options</button></div>,
+      actionPrincipale: { libelle: 'Fin du tour', agir },
+    })
+    expect(document.querySelector('.pm-barre')).toBeNull()
+    fireEvent.click(document.querySelector('.portrait-menu-bouton')!)
+    expect(document.querySelector('.portrait-menu .bh-options')).not.toBeNull()
+    fireEvent.click(document.querySelector('.portrait-action')!)
+    expect(agir).toHaveBeenCalledTimes(1)
   })
 })

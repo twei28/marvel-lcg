@@ -27,6 +27,12 @@ export const FERMABLES: readonly Fermable[] = [
   { selecteur: '.carte-ouverte-voile', bouton: '.carte-ouverte-fermer' },
   { selecteur: '.plateau-regardees-voile' },
   { selecteur: '.plateau-selecteur' },
+  // Le plateau en bandes (12/09/2026) : le menu du bandeau, la main en
+  // feuille, le tiroir des piles, le menu des actions d'une carte.
+  { selecteur: '.portrait-menu-voile', bouton: '.portrait-menu-bouton' },
+  { selecteur: '.main-feuille-voile', bouton: '.main-feuille-fermer' },
+  { selecteur: '.tiroir-voile', bouton: '.tiroir-fermer' },
+  { selecteur: '.menu-actions-carte' },
 ]
 
 const MARQUE = 'feuilleMobile'

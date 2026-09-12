@@ -1,80 +1,85 @@
-// Le tiroir des piles, au bord gauche.
+// Le TIROIR des piles, derriere l'encoche de gauche (spec du 12/09/2026) :
+// un panneau lateral, une pile par ligne (dos ou derniere carte, nom,
+// compte). Un tap sur une pile consultable l'etale dans la modale « cartes
+// regardees » du plateau PC. Deck, defausse, rencontre, nemesis, cartes
+// ecartees, deck special : tout ce qu'on ne regarde presque jamais.
 //
-// Les decks et les défausses occupaient deux zones entières du plateau PC
-// (piles-rencontre et piles-joueur). Sur un téléphone, c'est la place de deux
-// rangées de médaillons pour une information qu'on consulte rarement. Elles
-// vivent donc ici, à un balayage depuis le bord — avec une languette visible,
-// parce qu'un geste que rien n'annonce n'est découvert par personne.
-//
-// En PAYSAGE, le tiroir ne sert pas : la largeur permet une colonne de piles
-// visible en permanence, comme sur le plateau PC. PlateauMobile ne monte donc
-// ce composant qu'en portrait.
-
-import { useState } from 'react'
-import type { ScanCardProps } from '../../components/ScanCard'
-import type { UniteAffichee } from '../zones'
+// Les piles sont reperees par leur CLE (zones.ts), jamais par leur nom : le
+// nom d'une pile est celui de sa carte du dessus (« Rhino »...).
+import type { ReactElement } from 'react'
+import { ScanCard, type ScanCardProps } from '../../components/ScanCard'
 import { t } from '../langue'
-import './mobile.css'
+import type { GroupeDePile } from '../zones'
+import type { PileAffichee } from './bandes-portrait'
 
-export type PileAffichee = {
-  cle: string
-  titre: string
-  unite: UniteAffichee
-  /** Nombre de cartes, quand le moteur le donne. */
-  compte?: number
+const LIBELLES: Record<string, string> = {
+  'joueur-deck': 'Ton deck',
+  'joueur-defausse': 'Ta défausse',
+  'rencontre-encounter-deck': 'Deck rencontre',
+  'rencontre-encounter-discard': 'Défausse rencontre',
+  'nemesis-set': 'Némésis',
+  'annexes-visibles': 'Cartes visibles',
+  'annexes-cachees': 'Cartes cachées',
+  'soutien-deck': 'Deck spécial',
+  'soutien-defausse': 'Défausse spéciale',
 }
 
-export type TiroirPilesProps = {
+export function libelleDePile(pile: PileAffichee): string {
+  const connu = LIBELLES[pile.cle]
+  return connu ? t(connu) : pile.titre
+}
+
+export function TiroirPiles({
+  piles,
+  ouvert,
+  onFermer,
+  onOuvrirPile,
+}: {
   piles: PileAffichee[]
+  ouvert: boolean
+  onFermer: () => void
   /** Étaler une pile publique pour la consulter. */
-  onOuvrirPile: (titre: string, cartes: ScanCardProps[]) => void
-}
-
-export function TiroirPiles({ piles, onOuvrirPile }: TiroirPilesProps) {
-  const [ouvert, setOuvert] = useState(false)
-
+  onOuvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
+}): ReactElement | null {
+  if (!ouvert) return null
   return (
     <>
-      <button
-        type="button"
-        className={`tiroir-languette${ouvert ? ' est-ouvert' : ''}`}
-        onClick={() => setOuvert((etat) => !etat)}
-        data-tactile="tiroir"
-        aria-expanded={ouvert}
-        aria-label={t('Piles')}
-      >
-        <span aria-hidden="true">{ouvert ? '‹' : '›'}</span>
-      </button>
-
-      {ouvert ? (
-        <>
-          <div className="tiroir-voile" onPointerDown={() => setOuvert(false)} />
-          <aside className="tiroir" aria-label={t('Piles')}>
-            <h2 className="tiroir-titre">{t('Piles')}</h2>
-            <ul className="tiroir-liste">
-              {piles.map((pile) => {
-                const contenu = pile.unite.pileContenu
-                const consultable = contenu !== undefined && contenu.length > 0
-                return (
-                  <li key={pile.cle}>
-                    <button
-                      type="button"
-                      className="tiroir-pile"
-                      disabled={!consultable}
-                      onClick={() => {
-                        if (consultable) onOuvrirPile(pile.unite.pileTitre ?? pile.titre, contenu)
-                      }}
-                    >
-                      <span className="tiroir-pile-nom">{pile.titre}</span>
-                      <span className="tiroir-pile-compte">{pile.compte ?? contenu?.length ?? 0}</span>
-                    </button>
-                  </li>
-                )
-              })}
-            </ul>
-          </aside>
-        </>
-      ) : null}
+      <div className="tiroir-voile" onPointerDown={onFermer} />
+      <aside className="tiroir" aria-label={t('Piles')}>
+        <h2 className="tiroir-titre">{t('Piles')}</h2>
+        {piles.length === 0 ? <p className="portrait-vide">{t('Aucune pile')}</p> : null}
+        <ul className="tiroir-liste">
+          {piles.map((pile) => {
+            const contenu = pile.unite.pileContenu
+            const consultable = contenu !== undefined && contenu.length > 0
+            const libelle = libelleDePile(pile)
+            return (
+              <li key={pile.cle}>
+                <button
+                  type="button"
+                  className="tiroir-pile"
+                  data-tactile="pile"
+                  disabled={!consultable}
+                  onClick={() => {
+                    if (!consultable) return
+                    onOuvrirPile(pile.unite.pileTitre ?? libelle, contenu, pile.unite.pileGroupes)
+                    onFermer()
+                  }}
+                >
+                  <span className="tiroir-pile-vignette">
+                    <ScanCard {...pile.unite.carte} onSelect={undefined} highlight={false} pileCount={undefined} masquerType />
+                  </span>
+                  <span className="tiroir-pile-nom">{libelle}</span>
+                  {pile.compte !== undefined ? <span className="tiroir-pile-compte">{pile.compte}</span> : null}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+        <button type="button" className="tiroir-fermer" onClick={onFermer}>
+          {t('Fermer')}
+        </button>
+      </aside>
     </>
   )
 }
