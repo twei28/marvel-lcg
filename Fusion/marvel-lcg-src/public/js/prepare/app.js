@@ -8,6 +8,7 @@ import { validate } from "/public/js/prepare/validation.js";
 import { launch } from "/public/js/prepare/launcher.js?v=62115d60";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
+import { aDeckDeBase } from "/public/js/prepare/catalog.js";
 // Panneau « Documents ». Importe ICI plutot que pose en balise dans
 // prepare.html : deux URL differentes (avec et sans ?v=) chargeraient le
 // module deux fois et poseraient deux boutons dans l'en-tete.
@@ -2508,7 +2509,14 @@ async function loadDecks(i) {
     if (p.deckAuto) {
         p.deckAuto = false;
         const dernierId = prefs.lastDeckFor(p.hero.heroCardId);
-        const dk = dernierId != null ? decks.find((d) => d.id === dernierId) : null;
+        let dk = dernierId != null ? decks.find((d) => d.id === dernierId) : null;
+        // Sans deck de base (player_deck vide : PROCESSUS-HEROS etape 3), le
+        // deck pose a l'assignation ne fait que 15 cartes et ne se joue pas :
+        // le premier paquet d'aspect (conseille en tete) prend sa place.
+        if (!dk && !aDeckDeBase(p.hero)) {
+            dk = decks.find((d) => d.source === "aspect" && verifierDeck(d.deck).length === 0)
+                || decks.find((d) => d.source === "aspect") || null;
+        }
         if (dk && dk.deck !== p.deck) {
             p.deck = dk.deck;
             p.deckSource = dk.source;
@@ -2528,7 +2536,7 @@ async function loadDecks(i) {
         // Contrôle de construction : signalé, jamais bloquant.
         const ecarts = verifierDeck(dk.deck);
         const etiquette = dk.source === "base" ? "Base"
-            : dk.source === "aspect" ? t("Conseillé")
+            : dk.source === "aspect" ? (dk.recommande ? t("Conseillé") : t("Paquet"))
             : dk.source === "campagne" ? t("En cours")
             : t("Sauvegardé");
         return el("button", {
@@ -2576,6 +2584,8 @@ async function loadDecks(i) {
     const enfants = principaux.map(option);
 
     if (aspects.length) {
+        // Sans deck de base, les paquets SONT le choix : ils s'ouvrent d'office.
+        if (!aDeckDeBase(p.hero)) aspectsDeplies.add(i);
         const deplie = aspectsDeplies.has(i);
         const liste = el("div", { class: "deck-aspects" + (deplie ? " est-deplie" : "") },
             ...aspects.map(option));
@@ -2583,7 +2593,7 @@ async function loadDecks(i) {
             type: "button",
             class: "deck-aspects-bascule" + (deplie ? " est-deplie" : ""),
             "aria-expanded": deplie ? "true" : "false",
-        }, `${t("Paquets d’aspect conseillés")} (${aspects.length})`);
+        }, `${t("Paquets d’aspect")} (${aspects.length})`);
         bascule.addEventListener("click", () => {
             const ouvert = !aspectsDeplies.has(i);
             if (ouvert) aspectsDeplies.add(i); else aspectsDeplies.delete(i);

@@ -59,8 +59,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-12",
         genre: "heros",
-        fr: "Les héros fan-made dont l'auteur n'a pas publié de deck n'ont plus de deck de départ inventé pour eux. Au lancement, choisis un paquet d'aspect conseillé ou construis ton deck dans l'éditeur. Les decks fournis par leur auteur (Yondu, Hellcat, Venompool, Lockjaw, Moon Knight…) ne changent pas.",
-        en: "Fan-made heroes whose author did not publish a deck no longer get a made-up starter deck. When you start a game, pick a suggested aspect package or build your deck in the editor. Decks provided by their author (Yondu, Hellcat, Venompool, Lockjaw, Moon Knight…) are unchanged.",
+        fr: "Les héros fan-made dont l'auteur n'a pas publié de deck n'ont plus de deck de départ inventé pour eux. À la place, tous les paquets d'aspect du tableur (Brutish Aggression, Evasive Justice…) sont proposés à tous les héros, les conseillés en tête. Les decks fournis par leur auteur (Yondu, Hellcat, Venompool, Lockjaw, Moon Knight…) ne changent pas.",
+        en: "Fan-made heroes whose author did not publish a deck no longer get a made-up starter deck. Instead, every aspect package from the spreadsheet (Brutish Aggression, Evasive Justice…) is offered to every hero, recommended ones first. Decks provided by their author (Yondu, Hellcat, Venompool, Lockjaw, Moon Knight…) are unchanged.",
     },
     {
         date: "2026-09-12",

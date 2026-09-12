@@ -231,17 +231,30 @@ function identiteLiee(deck) {
 function isHomebrew(extension) {
     return !extension || /custom/i.test(extension);
 }
-/** Packages d'aspect proposables à un héros ABSENT du tableur : uniquement les
- *  génériques. Tout ce qui porte un nom d'équipe (X-Men, X-Force, S.H.I.E.L.D.,
- *  Web-Warrior, Guardian, Champion, Guerrilla, Assembled) ou de héros
- *  (Spider-Woman, Adam Warlock, Silly 'Pool) est écarté : ces decks supposent
- *  des traits ou des règles que le héros n'a probablement pas. */
-const GENERIQUES = [
+/** Un paquet du tableur est COMPLET quand il peut faire un deck a lui seul
+ *  avec les 15 cartes signature : au moins 24 cartes (Venomized en a 24, les
+ *  autres 30). Les colonnes bi-aspect de Spider-Woman (11 cartes) ne le sont
+ *  pas : elles n'existent qu'assemblees par deux (resoudrePackage). */
+const PAQUET_COMPLET_MIN = 24;
+
+/** L'ordre de presentation des paquets, apres ceux que le tableur conseille :
+ *  les generiques d'abord (un aspect, aucun trait exige), puis les paquets
+ *  d'equipe (X-Men, Guardian, Champion...) et les speciaux (Venomized, Silly
+ *  'Pool), dans l'ordre du tableur. */
+const GENERIQUES_D_ABORD = [
     "Brutish Aggression", "Graceful Aggression", "Warrior's Aggression", "Reckless Aggression",
     "Defiant Justice", "Evasive Justice", "Strategic Justice",
     "Courageous Leadership", "Commanding Leadership", "Sacrificial Leadership",
     "Unyielding Protection", "Debilitating Protection",
 ];
+
+/** Un heros a un deck de base quand son fichier porte une moitie d'aspect :
+ *  les officiels, et les fan-made dont l'auteur a publie sa decklist. Les
+ *  autres ont `player_deck` vide (PROCESSUS-HEROS, etape 3) : leur deck de
+ *  base ne se joue pas, on ne le propose pas. */
+export function aDeckDeBase(hero) {
+    return !!(hero && hero.deck && (hero.deck.player_deck || []).length);
+}
 
 /** Les trois ressources de base, socle commun à TOUTES les colonnes du tableur.
  *
@@ -388,10 +401,12 @@ export const catalog = {
         return _setsMasques;
     },
 
-    /** Decks jouables pour un héros donné : base + identités alternatives + sauvegardés. */
+    /** Decks jouables pour un héros donné : base (s'il en a un) + sauvegardés + paquets d'aspect. */
     async decksForHero(hero) {
         await cards.load();
-        const out = [{ id: hero.baseDeckId, name: hero.deck.name || hero.name, source: "base", deck: hero.deck, aspects: hero.aspects }];
+        const out = aDeckDeBase(hero)
+            ? [{ id: hero.baseDeckId, name: hero.deck.name || hero.name, source: "base", deck: hero.deck, aspects: hero.aspects }]
+            : [];
         try {
             const savedIds = (await api.listSavedDecks()).map(fileName);
             for (const id of savedIds) {
@@ -411,10 +426,12 @@ export const catalog = {
      *  Les 30 cartes d'un package ne sont que la partie « aspect » : on y colle
      *  les cartes signature, l'obligation et le nemesis du deck de base.
      *
-     *  On ne propose QUE les 4 packages que le tableur conseille au heros. Lui
-     *  offrir les 32 reviendrait a proposer le deck d'Adam Warlock a Black
-     *  Widow. Pour un heros absent du tableur, on retombe sur une liste
-     *  generique, sans aucun package lie a une equipe ou a un autre heros. */
+     *  TOUS les paquets complets du tableur, pour TOUS les heros (decision de
+     *  l'utilisateur du 12/09/2026 : « tu les presentes tous pour tous les
+     *  personnages »), ceux que le tableur conseille au heros en tete, marques
+     *  « Conseille ». Avant, seuls les 4 conseilles (ou 12 generiques) etaient
+     *  offerts. Les colonnes bi-aspect (Spider-Woman) n'apparaissent que
+     *  composees, dans les conseils. */
     async packagesAspect(hero) {
         let data;
         try {
@@ -447,24 +464,22 @@ export const catalog = {
             return [];
         };
 
-        let choisis;
-        if (conseille) {
-            const vus = new Set();
-            choisis = [];
-            for (const nom of Object.values(conseille)) {
-                const parties = resoudrePackage(nom);
-                if (!parties.length || vus.has(nom)) continue;
-                vus.add(nom);
-                choisis.push({ libelle: nom, parties });
-            }
-        } else {
-            // Heros hors tableur : que du generique, jamais un package d'equipe
-            // (X-Men, Avengers, S.H.I.E.L.D....) ni lie a un heros precis.
-            choisis = GENERIQUES.filter((n) => packages[n])
-                .map((n) => ({ libelle: n, parties: [n] }));
+        const choisis = [];
+        const vus = new Set();
+        for (const nom of Object.values(conseille || {})) {
+            const parties = resoudrePackage(nom);
+            if (!parties.length || vus.has(nom)) continue;
+            vus.add(nom);
+            choisis.push({ libelle: nom, parties, conseille: true });
+        }
+        const restants = [...GENERIQUES_D_ABORD.filter((n) => packages[n]), ...Object.keys(packages)];
+        for (const nom of restants) {
+            if (vus.has(nom) || (packages[nom] || []).length < PAQUET_COMPLET_MIN) continue;
+            vus.add(nom);
+            choisis.push({ libelle: nom, parties: [nom], conseille: false });
         }
 
-        return choisis.map(({ libelle, parties }) => {
+        return choisis.map(({ libelle, parties, conseille }) => {
             const cartes = parties.flatMap((p) => packages[p] || []);
             // Un package assemblé à partir de PLUSIEURS colonnes vient des
             // colonnes bi-aspect, qui ne listent que l'aspect : 11 + 11 = 22, là
@@ -476,7 +491,7 @@ export const catalog = {
             const deck = { ...hero.deck, name: libelle, player_deck: cartes };
             return {
                 id: "aspect:" + libelle, name: libelle, source: "aspect", deck,
-                aspects: aspectsOfDeck(deck), recommande: !!conseille,
+                aspects: aspectsOfDeck(deck), recommande: conseille,
             };
         });
     },

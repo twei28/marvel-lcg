@@ -45,4 +45,26 @@ test.describe("L'assistant au telephone", () => {
     await expect(page.locator('.fiche-heros')).toHaveCount(0);
     await expect(tuile).toHaveClass(/\bchosen\b/);
   });
+
+  // Un heros sans deck de base (player_deck vide) : pas de deck fantome de
+  // 15 cartes, tous les paquets d'aspect du tableur, deplies, le premier
+  // paquet legal choisi d'office (decision du 12/09/2026).
+  test('un heros sans deck de base recoit tous les paquets d aspect, le premier legal choisi', async ({ page }) => {
+    await page.goto('/prepare.html');
+    await page.getByRole('button', { name: /^Solo/ }).first().tap();
+    await page.locator('.tb-port').first().waitFor({ timeout: 30_000 });
+    await page.getByRole('button', { name: /fan-made/i }).first().tap();
+    const tuile = page.locator('.tb-port[data-hero="angela"]');
+    await tuile.waitFor({ timeout: 15_000 });
+    await tuile.tap();
+    await page.locator('.fiche-heros').getByRole('button', { name: /choisir ce héros/i }).tap();
+    await page.getByRole('button', { name: /continuer/i }).first().tap();
+    await page.locator('.do-name').first().waitFor({ timeout: 30_000 });
+    await expect(page.locator('.tb-deck .tag', { hasText: /^base$/i })).toHaveCount(0);
+    await expect(page.locator('.deck-aspects.est-deplie')).toHaveCount(1);
+    expect(await page.locator('.deck-aspects .tb-deck').count()).toBeGreaterThanOrEqual(25);
+    const choisi = page.locator('.tb-deck.chosen');
+    await expect(choisi.locator('.do-name')).toHaveText('Brutish Aggression');
+    await expect(choisi.locator('.do-alerte')).toHaveCount(0);
+  });
 });
