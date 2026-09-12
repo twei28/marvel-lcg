@@ -5820,7 +5820,10 @@
 @layer composants {
   .bandeau-triche {
     position: fixed;
-    top: 6px;
+    /* SOUS la barre du haut, pas dessus : centre a 6 px, il recouvrait
+       Options et Fin du tour des que la fenetre se resserrait (releve de
+       l'utilisateur, 12/09/2026). */
+    top: 50px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 900;
