@@ -2,7 +2,7 @@
 // qui ouvre la liste des livrets de règles et des carnets de campagne. Un clic
 // ouvre le PDF dans un nouvel onglet, dans la visionneuse du navigateur.
 //
-// ⚠ MODULE, pas un script classique comme panneau-joueurs.js et lien-admin.js.
+// ⚠ MODULE, pas un script classique comme lien-admin.js.
 // C'est délibéré : il lui faut `catalog.extensions()`, qui donne le nom de
 // chaque extension. Sans lui il faudrait tenir à la main une table de 27
 // titres, qui se périmerait au premier PDF ajouté.
@@ -264,7 +264,7 @@ function basculer(veut) {
 }
 
 /** La rangée de boutons de l'en-tête, créée par le premier module qui arrive.
- *  Même repli que panneau-joueurs.js : si rien ne l'a créée, on la crée. */
+ *  Si rien ne l'a créée, on la crée. */
 function rangeeBoutons() {
     let rangee = document.querySelector(".reprise-boutons");
     if (rangee) return rangee;

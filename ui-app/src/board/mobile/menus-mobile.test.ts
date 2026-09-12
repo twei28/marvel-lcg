@@ -24,7 +24,6 @@ describe('menus-mobile.css : les panneaux deviennent des feuilles', () => {
     '.plateau-selecteur',
     '.plateau-regardees',
     '.panneau-journal',
-    '.salon-panneau',
     '.menu-actions-carte',
   ])('%s est colle en bas de l’ecran, sous la classe du plateau portrait', (selecteur) => {
     expect(CSS).toContain(`body.mode-plateau-portrait ${selecteur}`)

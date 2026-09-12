@@ -2842,58 +2842,10 @@
      Meme grammaire que le panneau Historique juste en dessous : ancre sous son
      bouton, fond sombre, lisere. Il ne se montre que la ou le tchat repond
      (voir PanneauSalon.tsx). */
-  .salon-partie {
-    position: relative;
-  }
 
   /* Coupure reseau APRES un tchat qui repondait : sobre, pas d'alarme, mais
      dit clairement ce qui se passe plutot que de disparaitre en silence (voir
      PanneauSalon.tsx, futActif). */
-  .salon-deconnecte {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .bh-salon-etat {
-    color: #b8c2cc;
-    cursor: default;
-  }
-
-  .bh-salon-etat:hover {
-    background: var(--cadre);
-  }
-
-  .salon-pastille {
-    margin-left: 6px;
-    padding: 0 6px;
-    font-style: normal;
-    font-weight: 900;
-    font-size: 0.72rem;
-    color: var(--fond);
-    background: var(--menace);
-    border-radius: 999px;
-  }
-
-  .salon-panneau {
-    position: absolute;
-    z-index: 520;
-    top: calc(100% + 8px);
-    left: 0;
-    width: min(420px, calc(100vw - 24px));
-    display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 8px;
-    padding: 10px;
-    color: #f8fafc;
-    background: rgba(30, 30, 30, 0.96);
-    border: 1px solid rgba(240, 185, 95, 0.48);
-    border-radius: 8px;
-    box-shadow:
-      0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 24px 58px rgba(0, 0, 0, 0.64);
-    backdrop-filter: blur(10px);
-  }
 
   /* --- Les icones de ressources dans les textes ------------------------------
      Police ChampionsIcons (celle du jeu, servie par le moteur) : P poing, M
@@ -3807,64 +3759,7 @@
     color: rgba(251, 191, 36, 0.85);
   }
 
-  .salon-fil {
-    max-height: min(46dvh, 360px);
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .salon-vide {
-    margin: 0;
-    padding: 12px 4px;
-    text-align: center;
-    color: rgba(248, 250, 252, 0.6);
-  }
-
-  .salon-message {
-    margin: 0;
-    display: grid;
-    gap: 1px;
-    padding: 6px 8px;
-    font-size: 0.86rem;
-    line-height: 1.35;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    /* Un message peut etre une longue phrase sans espace : il se coupe plutot
-       que d'elargir le panneau. */
-    overflow-wrap: anywhere;
-  }
-
   /* Les notres, cotes a droite : on retrouve d'un coup d'oeil qui a dit quoi. */
-  .salon-message.est-moi {
-    background: rgba(240, 185, 95, 0.14);
-  }
-
-  .salon-message b {
-    font-size: 0.72rem;
-    color: var(--menace);
-  }
-
-  .salon-saisie {
-    display: flex;
-    gap: 6px;
-  }
-
-  .salon-saisie input {
-    flex: 1;
-    min-width: 0;
-    padding: 7px 9px;
-    color: #f8fafc;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 6px;
-  }
-
-  .salon-saisie input:focus-visible {
-    outline: 2px solid rgba(240, 185, 95, 0.7);
-    outline-offset: 1px;
-  }
 
   .historique-panneau {
     position: absolute;

@@ -57,7 +57,6 @@ import {
   moteurAttendUneReponse,
 } from './board/DemandeCentrale'
 import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
-import { PanneauSalon } from './board/PanneauSalon'
 import { peutSuivre } from './board/suivi-vue'
 import { deltasStatuts } from './board/effets-statuts'
 import { traduireMoteur } from './board/vocabulaire-moteur'
@@ -3235,9 +3234,6 @@ function PagePartie({
             {/* Signaler un bug : le journal de toute la partie part avec la
                 description et la capture. Ne s'affiche que si un site ecoute. */}
             <PanneauBug outils={rapport} />
-            {/* Tchat des comptes, le MEME qu'a la preparation : il ne s'affiche
-                que la ou il a un sens (siege du titulaire, site derriere). */}
-            <PanneauSalon />
             {(etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>
                 <span className="bh-vue-label">{t('Vue')}</span>

@@ -62,7 +62,6 @@
   /* --- La feuille, le motif commun ---------------------------------------- */
   body.mode-plateau-portrait .popover-sauvegardes,
   body.mode-plateau-portrait .historique-panneau,
-  body.mode-plateau-portrait .salon-panneau,
   body.mode-plateau-portrait .panneau-journal,
   body.mode-plateau-portrait .plateau-selecteur,
   body.mode-plateau-portrait .plateau-regardees,
@@ -101,7 +100,6 @@
   /* La poignee, en tete de chaque feuille. */
   body.mode-plateau-portrait .popover-sauvegardes::before,
   body.mode-plateau-portrait .historique-panneau::before,
-  body.mode-plateau-portrait .salon-panneau::before,
   body.mode-plateau-portrait .panneau-journal::before,
   body.mode-plateau-portrait .plateau-selecteur::before,
   body.mode-plateau-portrait .plateau-regardees::before,
@@ -120,7 +118,6 @@
 
   /* Les feuilles HAUTES : leur contenu defile, la feuille prend la hauteur. */
   body.mode-plateau-portrait .historique-panneau,
-  body.mode-plateau-portrait .salon-panneau,
   body.mode-plateau-portrait .panneau-journal,
   body.mode-plateau-portrait .plateau-selecteur,
   body.mode-plateau-portrait .plateau-regardees {
@@ -157,9 +154,6 @@
   /* Les popovers ancres a la barre : l'ancre ne doit plus contraindre. */
   body.mode-plateau-portrait .popover-sauvegardes-ancre,
   body.mode-plateau-portrait .historique-partie,
-  body.mode-plateau-portrait .salon-partie {
-    position: static;
-  }
 
   /* --- Ce qu'on touche au doigt : 48 px, pleine largeur ------------------- */
   body.mode-plateau-portrait .popover-sauvegardes button,

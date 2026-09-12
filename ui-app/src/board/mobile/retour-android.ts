@@ -1,7 +1,7 @@
 // Le RETOUR (Android, ou le geste de bord) ferme la feuille du sommet au lieu
 // de quitter la partie (spec du 07/09/2026, §5.1).
 //
-// Les panneaux du plateau (Options, Historique, « … », journal, salon, carte
+// Les panneaux du plateau (Options, Historique, « … », journal, carte
 // ouverte, selecteur, modales de cartes) gardent chacun leur etat, dans leur
 // composant : on ne les reecrit pas. Ce module les OBSERVE dans le DOM : une
 // feuille qui apparait pousse une entree d'historique, le Retour la retire et
@@ -22,7 +22,6 @@ export const FERMABLES: readonly Fermable[] = [
   { selecteur: '.popover-plus', bouton: '.bh-plus' },
   { selecteur: '.popover-sauvegardes:not(.popover-options):not(.popover-plus)', bouton: '.bh-save' },
   { selecteur: '.historique-panneau', bouton: '.bh-history' },
-  { selecteur: '.salon-panneau', bouton: '.bh-salon' },
   { selecteur: '.panneau-journal', bouton: '.panneau-journal-fermer' },
   { selecteur: '.carte-ouverte-voile', bouton: '.carte-ouverte-fermer' },
   { selecteur: '.plateau-regardees-voile' },
