@@ -128,3 +128,8 @@ Au passage, un fait relevé pour mémoire : une révélation faite pendant notre
 tour est bien notée par le moteur (`player_action.py`, `RecordFaitMechant`)
 et ressort dans le cartouche de la phase du méchant du même round, à
 contretemps. Sans conséquence signalée en jeu.
+
+## Décision du 12/09/2026 : le menu Options à quatre modes est RETIRÉ du backlog
+
+Demande de l'utilisateur. Les deux modes actuels (Détaillé / Instantané)
+suffisent ; la spec du 06/09 (§ Le mode) n'est plus à suivre sur ce point.
