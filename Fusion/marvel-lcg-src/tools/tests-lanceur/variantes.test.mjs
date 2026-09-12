@@ -7,7 +7,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-    regrouperVariantes, versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, VERSION_DE_BASE,
+    regrouperVariantes, versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion, VERSION_DE_BASE,
 } from "../../public/js/prepare/variantes.js";
 
 const deck = (id, meta, extra) => ({ id, deck: { name: id, hero: ["x001a,x001b"], metadata: meta || {}, ...(extra || {}) } });
@@ -67,4 +67,17 @@ test("la clé d'une identité est le couple de faces, pas la face héros seule",
     assert.equal(cleIdentite({ hero: ["su001a,su001c"], heroCardId: "su001a" }), "su001a,su001c");
     assert.equal(cleIdentite({ heroCardId: "th001c" }), "th001c");
     assert.equal(cleIdentite(null), "");
+});
+
+test("la vignette d'une version est la carte que les autres versions n'ont pas, base comprise", () => {
+    const heroes = regrouperVariantes([
+        deck("hellcat", { variante_nom: "Iron Man (allié signature)" }, { hero_deck: ["hc002", "hc003"] }),
+        deck("hellcat_she_hulk", { variante_de: "hellcat", variante_nom: "Miss Hulk" }, { hero_deck: ["hc012", "hc003"] }),
+    ]);
+    const [base, variante] = versionsDe(heroes[0]);
+    assert.equal(apercuVersion(heroes[0], base), "hc002");
+    assert.equal(apercuVersion(heroes[0], variante), "hc012");
+    // Une seule version : la carte de heros.
+    const seul = regrouperVariantes([deck("spider_man")])[0];
+    assert.equal(apercuVersion(seul, versionsDe(seul)[0]), "x001a");
 });

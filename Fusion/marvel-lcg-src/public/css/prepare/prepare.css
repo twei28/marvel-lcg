@@ -2241,16 +2241,36 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     -webkit-overflow-scrolling: touch;
   }
 
+  /* Tout doit tenir SANS defiler (demande du 12/09/2026) : la largeur des
+     vignettes se deduit de la place verticale et du nombre de sections
+     (`--sections`, pose par app.js). Une option fait ~1,9 fois sa largeur
+     de haut (image 326/225 + une ligne d'etiquette). */
   .vh-panel .ra-option {
-    flex: 0 0 96px;
-    width: 96px;
+    --vh-largeur: clamp(58px, calc((92dvh - 230px) / var(--sections, 2) / 1.9), 96px);
+    flex: 0 0 var(--vh-largeur);
+    width: var(--vh-largeur);
+    padding: 3px;
     scroll-snap-align: start;
   }
+  .vh-panel .ra-option span {
+    max-width: 100%;
+    font-size: 11px;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .vh-panel .dm-head { margin-bottom: 6px; gap: 10px; }
+  .vh-panel .dm-head b { font-size: 20px; }
+  .vh-panel .res-art { margin-top: 8px; padding-top: 8px; }
+  .vh-panel .ra-tete { margin-bottom: 4px; }
+  .vh-panel .ra-choix { padding-bottom: 2px; }
+  .vh-panel .vh-note { margin-top: 6px; font-size: 12px; }
 
   .vh-panel .vh-actions {
     position: sticky;
     bottom: 0;
-    margin: 16px -12px 0;
+    margin: 8px -12px 0;
     padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
     background: var(--ink2);
     border-top: 1px solid var(--line);

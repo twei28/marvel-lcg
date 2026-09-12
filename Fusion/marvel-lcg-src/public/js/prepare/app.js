@@ -7,7 +7,7 @@ import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
 import { launch } from "/public/js/prepare/launcher.js?v=62115d60";
 import { prefs } from "/public/js/prepare/prefs.js";
-import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite } from "/public/js/prepare/variantes.js";
+import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 // Panneau « Documents ». Importe ICI plutot que pose en balise dans
 // prepare.html : deux URL differentes (avec et sans ?v=) chargeraient le
 // module deux fois et poseraient deux boutons dans l'en-tete.
@@ -1936,18 +1936,6 @@ function siegeDuHeros(h) {
     return i >= 0 ? i : state.activeSlot;
 }
 
-/** La carte qui distingue une version de la base : la première qui diffère
- *  (l'allié signature de Hellcat, l'alter ego de Superior Spider-Man). */
-function apercuVersion(hero, version) {
-    const base = hero.deck || {};
-    const cartes = (d) => [
-        ...(d.hero || []).flatMap((x) => String(x).split(",")),
-        ...(d.hero_deck || []), ...(d.obligations || []),
-    ];
-    const socle = new Set(cartes(base));
-    const propre = cartes(version.deck || {}).find((id) => !socle.has(id));
-    return propre || (String((version.deck || {}).hero && version.deck.hero[0] || hero.heroCardId).split(",")[0]);
-}
 
 /** Une section de la modale : un titre, un sous-titre, des vignettes. */
 function sectionVariantes(titre, sous, options, actuel, surChoix) {
@@ -2027,7 +2015,9 @@ function ouvrirModaleVariantes(i, h) {
             choix.ressources, (code) => { choix.ressources = code; }));
     }
     const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
-        el("div", { class: "deck-modal-panel vh-panel" },
+        // `--sections` : sur telephone, la feuille dimensionne ses vignettes
+        // pour que TOUTES les sections tiennent sans defiler (prepare.css).
+        el("div", { class: "deck-modal-panel vh-panel", style: { "--sections": String(sections.length) } },
             el("div", { class: "dm-head" },
                 el("b", { class: "mvl" }, nomAffiche(h)),
                 el("span", { class: "dm-sub" }, t("Options de ce héros")),

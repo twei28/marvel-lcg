@@ -108,3 +108,27 @@ export function cleIdentite(identite) {
     const hero = identite.hero && identite.hero[0];
     return hero ? String(hero) : String(identite.heroCardId || "");
 }
+
+/**
+ * La carte qui ILLUSTRE une version du deck de héros : celle que cette
+ * version a et que les autres n'ont pas (l'allié signature de Hellcat,
+ * l'alter ego de Superior Spider-Man). À défaut, la carte de héros.
+ *
+ * ⚠ Comparée à TOUTES les autres versions, pas seulement au deck de base :
+ * la version de base n'a rien de plus que le deck de base (c'est le même),
+ * et sa vignette retombait sur la carte de héros là où celle de la variante
+ * montrait bien son alliée (Hellcat : Iron Man affiché en Hellcat, Miss Hulk
+ * bien affichée, releve de l'utilisateur du 12/09/2026).
+ */
+export function apercuVersion(hero, version) {
+    const cartes = (d) => [
+        ...((d && d.hero) || []).flatMap((x) => String(x).split(",")),
+        ...((d && d.hero_deck) || []), ...((d && d.obligations) || []),
+    ];
+    const autres = versionsDe(hero).filter((v) => v !== version && v.id !== version.id);
+    const socle = new Set(autres.flatMap((v) => cartes(v.deck)));
+    const propre = autres.length ? cartes(version.deck).find((id) => !socle.has(id)) : undefined;
+    const heros = (version.deck && version.deck.hero && version.deck.hero[0]) || (hero && hero.heroCardId) || "";
+    return propre || String(heros).split(",")[0];
+}
+
