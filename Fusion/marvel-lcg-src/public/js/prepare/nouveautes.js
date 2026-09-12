@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-12",
         genre: "correction",
+        fr: "Dans le déroulé de la phase du méchant, survoler une carte de la scène l'affiche de nouveau en grand. Et une carte qui garde de la menace sans être une manigance (Policière en Patrouille, Détective Privé, l'Armure d'Howard…) montre enfin combien elle en porte.",
+        en: "In the villain phase walkthrough, hovering a card in the scene shows it large again. And a card that holds threat without being a scheme (Beat Cop, Private Investigator, Howard's Iron Suit…) finally shows how much it carries.",
+    },
+    {
+        date: "2026-09-12",
+        genre: "correction",
         fr: "En mode Détaillé, une carte à jouer « quand la menace va être placée » ouvrait une question sans aucun bouton au tout début de la phase du méchant, et la partie restait bloquée. La question s'affiche maintenant, avec Passer.",
         en: "In Detailed mode, a card playable “when threat would be placed” opened a question with no button at the very start of the villain phase, and the game stayed stuck. The question now shows up, with Pass.",
     },

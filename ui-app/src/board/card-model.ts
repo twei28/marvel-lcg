@@ -169,10 +169,17 @@ function pvAffiches(card: WorldCard, catalogue: Catalogue): string | undefined {
  * descendent vers zero : le courant suffit.
  */
 function menaceAffichee(card: WorldCard): string | undefined {
-  if (!isScheme(card)) return undefined
-
   const courante = nombre(card.info.k_threat)
   if (courante === undefined) return undefined
+
+  // UNE CARTE QUI N'EST PAS UN COMPLOT PEUT PORTER DE LA MENACE : Beat Cop
+  // (« move 1 threat from a scheme to here »), Private Investigator, Iron
+  // Suit, Stealth, Alert Level, Supporting Actor. La pastille ne s'affichait
+  // que sur les complots : le joueur ne voyait pas ce que sa Policiere en
+  // Patrouille avait pris (signale en jeu le 12/09/2026). Pour elles, le
+  // compte seul, et seulement s'il y a quelque chose : un « 0 » sur chaque
+  // soutien serait du bruit, la ou un complot a 0 dit quelque chose.
+  if (!isScheme(card)) return courante > 0 ? `${courante}` : undefined
 
   const cible = nombre(card.info.target_threat)
   return cible !== undefined && cible > 0 ? `${courante}/${cible}` : `${courante}`
@@ -381,7 +388,7 @@ export function autresFacesDe(card: WorldCard, catalogue: Catalogue): AutreFace[
  * sur la carte a chaque etape de degats, qui est un geste, pas un etat.
  */
 function jetonMenace(card: WorldCard): number | undefined {
-  if (!isScheme(card)) return undefined
+  // Meme regle que `menaceAffichee` : toute carte qui porte de la menace.
   const courante = nombre(card.info.k_threat)
   return courante !== undefined && courante > 0 ? courante : undefined
 }

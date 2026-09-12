@@ -48,4 +48,15 @@ describe('les decorations des cartes de la scene', () => {
       expect(bloc(selecteur)).toContain('pointer-events: none')
     }
   )
+
+  // L'inverse, et c'est le defaut du 12/09/2026 : la CARTE, elle, doit garder
+  // le pointeur. `.deroule-carte .scan-card { pointer-events: none }` (« ni
+  // curseur, ni survol ») faisait tomber la souris sur la figure, jamais sur
+  // `.scan-card`, et la loupe ne s'ouvrait plus sur aucune carte de la scene.
+  // Mesure dans Chrome : `elementFromPoint` au centre de la carte rendait
+  // `figure.deroule-carte`, et un `mouseover` envoye directement a la carte
+  // ouvrait bien la loupe.
+  it('la carte elle-meme garde le pointeur, sinon la loupe est morte', () => {
+    expect(bloc('.deroule-carte .scan-card')).not.toContain('pointer-events')
+  })
 })

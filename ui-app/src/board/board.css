@@ -3137,9 +3137,23 @@
     gap: 6px;
   }
 
-  /* Les cartes de la scene ne sont pas jouables : ni curseur, ni survol. */
+  /* Les cartes de la scene ne sont pas jouables : ni curseur de main, ni
+     soulevement au survol. MAIS ELLES GARDENT LE POINTEUR : la loupe
+     (apercu-survol.ts) cherche `.scan-card` sous la souris, et un
+     `pointer-events: none` pose ici l'avait eteinte pour de bon, la figure
+     recevant le survol a la place de la carte. Signale en jeu le 12/09/2026,
+     verrouille par deroule-survol.test.ts. */
   .deroule-carte .scan-card {
-    pointer-events: none;
+    cursor: default;
+  }
+
+  .deroule-carte .scan-card:hover {
+    filter: none;
+    z-index: auto;
+  }
+
+  .deroule-carte .scan-card:hover .scan-visuel {
+    transform: none;
   }
 
   /* Une carte dont le scan manque (fait degrade, index pas encore lu) : son
