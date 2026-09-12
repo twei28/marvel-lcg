@@ -312,6 +312,15 @@
     cursor: pointer;
     touch-action: none;
   }
+  /* Pendant qu'on fait defiler la table, les encoches s'effacent : elles se
+     posent sur la bande du heros et cachaient une carte sous le doigt. */
+  .plateau-portrait.est-en-defilement .encoche {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .encoche {
+    transition: opacity 180ms ease;
+  }
   .encoche-main {
     right: 0;
     border-right: none;
@@ -490,8 +499,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
-    max-height: calc(100vh - 40px);
+    gap: 10px;
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
   }
   .carte-ouverte-aide {
     align-self: center;
@@ -511,6 +521,25 @@
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
+  }
+  /* Ses attachees et ses statuts, en petit sous la carte : un tap ouvre. */
+  .carte-ouverte-attachees {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    max-width: 100%;
+  }
+  .carte-ouverte-attachee {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 2px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
   }
   .carte-ouverte-actions {
     display: flex;
@@ -577,16 +606,26 @@
   .bande-rail .est-statut .scan-card.is-landscape {
     --card-w: 74px;
   }
+  /* La loupe des stades (board.css : 20 px de haut) au format du doigt. */
+  .bande-rail .stages-bouton {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+    padding: 0 10px;
+    font-size: 0.85rem;
+  }
   /* Les pastilles au-dessus de la carte (type, Crise, Actif...) gardent la
      taille du PC quelle que soit la carte : a trois cartes par ecran, elles
      debordaient sur la voisine (releve sur le S24, 12/09/2026). Plus petites,
      et jamais plus larges que la carte. */
-  .bande-rail .top-strip {
+  .bande-rail .top-strip,
+  .carte-ouverte-attachee .top-strip {
     min-height: 18px;
     gap: 3px;
     overflow: hidden;
   }
-  .bande-rail .top-strip > span {
+  .bande-rail .top-strip > span,
+  .carte-ouverte-attachee .top-strip > span {
     min-height: 18px;
     padding: 0 5px;
     font-size: 0.52rem;
@@ -596,7 +635,18 @@
     text-overflow: ellipsis;
   }
   .carte-ouverte-scan .scan-card {
-    --card-w: min(320px, 86vw);
+    /* Jamais plus haute que l'ecran moins les boutons : telephone couche,
+       « Utiliser cette carte » sortait de l'ecran (sonde du 12/09/2026). */
+    --card-w: min(320px, 86vw, calc((100dvh - 170px) * 127 / 176));
+  }
+  .carte-ouverte-attachee .scan-card {
+    --card-w: 84px;
+  }
+  .carte-ouverte-attachee.est-statut .scan-card {
+    --card-w: 50px;
+  }
+  .carte-ouverte-attachee.est-statut .scan-card.is-landscape {
+    --card-w: 74px;
   }
   @media (orientation: landscape) {
     .bande-rail .scan-card {
@@ -638,11 +688,19 @@
     right: 0;
     bottom: 0;
     width: 100%;
+    /* Sans border-box, `width: 100%` PLUS le padding de board.css debordait
+       de 44 px a droite : « Suivant » sortait de l'ecran (S24, 12/09/2026). */
+    box-sizing: border-box;
     max-width: none;
     transform: none;
     max-height: 50dvh;
     overflow-y: auto;
     border-radius: 0;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .deroule-phase:has(~ .plateau-portrait) .bh-bouton {
+    min-height: 44px;
   }
 
   /* .est-question releve `bottom` a 34vh sur PC pour degager la main

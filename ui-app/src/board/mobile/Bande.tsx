@@ -25,8 +25,9 @@ type Decor = {
   effets: Map<number, CardEffectDelta>
   heroActifId?: number
   ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
-  /** Tap : lire la carte en grand. Recoit la carte DECOREE (etat, onSelect). */
-  ouvrirCarte: (carte: ScanCardProps) => void
+  /** Tap : lire la carte en grand, avec ses attachees si c'est la porteuse.
+   *  Recoit la carte DECOREE (etat, onSelect). */
+  ouvrirCarte: (carte: ScanCardProps, attachees?: ScanCardProps[]) => void
   /** Appui long : agir avec la carte porteuse. Recoit la carte decoree. */
   agir: (carte: ScanCardProps) => void
 }
@@ -57,7 +58,10 @@ function CarteBande({
     if (appui.vientDeDeclencher()) return
     const id = scan.dataset.cardId
     const carte = [unite.carte, ...unite.attachees].find((c) => String(c.id) === id) ?? unite.carte
-    decor.ouvrirCarte(avecInteraction(carte, decor.interactifs, decor.effets))
+    const attachees = carte === unite.carte
+      ? unite.attachees.map((a) => avecInteraction(a, decor.interactifs, decor.effets))
+      : []
+    decor.ouvrirCarte(avecInteraction(carte, decor.interactifs, decor.effets), attachees)
   }
 
   return (

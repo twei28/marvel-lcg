@@ -228,6 +228,7 @@ export function Unite({
           <button
             type="button"
             className="stages-bouton"
+            data-tactile="stades"
             aria-label={`${t('Voir les')} ${unite.stagesTout?.length ?? 0} ${t('stades')}`}
             disabled={bloquerActionsPassives}
             onClick={(evenement) => {

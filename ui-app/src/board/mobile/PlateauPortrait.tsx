@@ -27,6 +27,7 @@ import { OngletsJoueurs } from './OngletsJoueurs'
 import { TiroirPiles } from './TiroirPiles'
 import { repartirEnBandes } from './bandes-portrait'
 import { useHauteurDeQuestion } from './hauteur-de-question'
+import { useDefilerVersLaCible } from './defiler-vers-la-cible'
 import './portrait.css'
 
 const AUCUNE_INTERACTION: Map<number, EtatInteractif> = new Map()
@@ -73,7 +74,25 @@ export function PlateauPortrait(props: BoardProps) {
   // La carte lue EN GRAND, au milieu de l'ecran. `props.onCardClick` ne sert
   // pas a lire une carte : il ouvre les ACTIONS du moteur. Lire est un etat
   // local, comme sur le portrait du 11/09.
-  const [carteLue, setCarteLue] = useState<ScanCardProps | undefined>()
+  const [carteLue, setCarteLue] = useState<{ carte: ScanCardProps; attachees: ScanCardProps[] } | undefined>()
+  const ouvrirCarte = useCallback(
+    (carte: ScanCardProps, attachees: ScanCardProps[] = []) => setCarteLue({ carte, attachees }),
+    []
+  )
+  // Les encoches s'effacent pendant le defilement de la table (elles se
+  // posent sur la bande du heros).
+  const [enDefilement, setEnDefilement] = useState(false)
+  const finDeDefilement = useRef<number | undefined>(undefined)
+  const surDefilement = useCallback(() => {
+    setEnDefilement(true)
+    if (finDeDefilement.current !== undefined) window.clearTimeout(finDeDefilement.current)
+    finDeDefilement.current = window.setTimeout(() => setEnDefilement(false), 600)
+  }, [])
+  useEffect(() => () => {
+    if (finDeDefilement.current !== undefined) window.clearTimeout(finDeDefilement.current)
+  }, [])
+  // Une cible allumee hors de l'ecran : la table defile jusqu'a elle.
+  useDefilerVersLaCible(props.interactifs)
   const [pileRegardee, setPileRegardee] = useState<
     { titre: string; cartes: ScanCardProps[]; groupes?: GroupeDePile[] } | undefined
   >()
@@ -120,10 +139,10 @@ export function PlateauPortrait(props: BoardProps) {
       effets,
       heroActifId: props.heroActifId,
       ouvrirPile,
-      ouvrirCarte: setCarteLue,
+      ouvrirCarte,
       agir,
     }),
-    [interactifs, effets, props.heroActifId, ouvrirPile, agir]
+    [interactifs, effets, props.heroActifId, ouvrirPile, ouvrirCarte, agir]
   )
 
   // Les onglets ne trient PAS des cartes deja recues : ils rappellent
@@ -139,14 +158,17 @@ export function PlateauPortrait(props: BoardProps) {
     ) : undefined
 
   return (
-    <main className="plateau-portrait" style={{ '--question-h': `${hauteurDeQuestion}px` } as CSSProperties}>
+    <main
+      className={`plateau-portrait${enDefilement ? ' est-en-defilement' : ''}`}
+      style={{ '--question-h': `${hauteurDeQuestion}px` } as CSSProperties}
+    >
       <BandeauPortrait
         monde={props.world}
         quiAgit={props.quiAgit}
         menu={props.actionsPartie}
         actionPrincipale={props.actionPrincipale}
       />
-      <div className="portrait-table">
+      <div className="portrait-table" onScroll={surDefilement}>
         <Bande cle="vilain" titre={t('Méchant')} texteVide={t('Aucun méchant')} decor={decor} {...bandes.vilain} />
         <Bande
           cle="manigances"
@@ -179,10 +201,17 @@ export function PlateauPortrait(props: BoardProps) {
           ouvertePourLaQuestion.current = false
           setMainOuverte(false)
         }}
-        onOuvrir={(unite) => setCarteLue(unite.carte)}
+        onOuvrir={(unite) => ouvrirCarte(unite.carte)}
         onJouer={(unite) => agir(unite.carte)}
       />
-      {carteLue ? <CarteOuverte carte={carteLue} onFermer={() => setCarteLue(undefined)} /> : null}
+      {carteLue ? (
+        <CarteOuverte
+          carte={carteLue.carte}
+          attachees={carteLue.attachees}
+          onOuvrirAttachee={(carte) => ouvrirCarte(carte)}
+          onFermer={() => setCarteLue(undefined)}
+        />
+      ) : null}
       {pileRegardee ? (
         <PileRegardee
           titre={pileRegardee.titre}

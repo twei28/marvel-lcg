@@ -68,4 +68,23 @@ describe('taper une carte de la table', () => {
     // Sans ouvrir : le maintien joue, comme avant.
     expect(document.querySelector('.carte-ouverte')).not.toBeInTheDocument()
   })
+
+  it('montre les attachees et statuts de la porteuse sous la carte, et un tap ouvre l attachee', () => {
+    const armure = { id: 'armure', name: 'Armure', kind: 'upgrade', imageUrl: '' } as ScanCardProps
+    const tough = { id: 'tough', name: 'Tough', kind: 'status', imageUrl: '' } as ScanCardProps
+    render(
+      <PlateauPortrait
+        world={monde}
+        playerId={0}
+        plateau={plateau('rencontre', { ...unite('rhino', { name: 'Rhino', kind: 'villain' }), attachees: [armure, tough] } as UniteAffichee)}
+      />
+    )
+    fireEvent.click(document.querySelector('.bande-carte > .plateau-unite > .scan-card')!)
+    const attachees = document.querySelectorAll('.carte-ouverte-attachee')
+    expect(attachees).toHaveLength(2)
+    expect(attachees[0]).toHaveClass('est-statut')
+    fireEvent.click(attachees[1])
+    expect(screen.getByRole('dialog', { name: 'Armure' })).toBeInTheDocument()
+    expect(document.querySelectorAll('.carte-ouverte-attachee')).toHaveLength(0)
+  })
 })

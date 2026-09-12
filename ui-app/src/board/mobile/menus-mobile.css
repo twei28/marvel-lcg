@@ -28,12 +28,36 @@
     padding: 6px 0 10px;
   }
   body.mode-plateau-portrait .ma-carte .scan-card {
-    --card-w: min(220px, 50vw);
+    /* Jamais plus haute que ce que l'ecran laisse aux boutons : telephone
+       couche, la carte prenait tout et « Jouer » passait sous le pli. */
+    --card-w: min(220px, 50vw, calc((100dvh - 300px) * 127 / 176));
     --inspect-scale: 1;
+  }
+  /* Couche, quand la main est deja ouverte, la carte y est visible : la
+     repeter dans la feuille des actions poussait la main hors de l'ecran. */
+  @media (orientation: landscape) {
+    body.mode-plateau-portrait:has(.main-feuille) .ma-carte {
+      display: none;
+    }
   }
   body.mode-plateau-portrait .ma-carte .scan-card:hover .scan-visuel,
   body.mode-plateau-portrait .ma-carte .scan-card:focus-visible .scan-visuel {
     transform: none;
+  }
+  /* Le bandeau du bac a sable : « Clic droit sur une carte » n'a pas de sens
+     au doigt, et sur deux lignes il recouvrait l'etat de la partie. */
+  body.mode-plateau-portrait .bandeau-triche-aide {
+    display: none;
+  }
+  body.mode-plateau-portrait .bandeau-triche {
+    /* Sous le bandeau, a droite : en bas il se posait sur les feuilles. */
+    top: 50px;
+    bottom: auto;
+    left: auto;
+    right: 8px;
+    transform: none;
+    padding: 2px 10px;
+    font-size: 0.7rem;
   }
   /* --- La feuille, le motif commun ---------------------------------------- */
   body.mode-plateau-portrait .popover-sauvegardes,
