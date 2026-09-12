@@ -23,6 +23,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Retour': 'Back',
   'Abandonner': 'Cancel',
   'Continuer': 'Continue',
+  // ---- Fenetre de reaction (12/09/2026) ----
+  'peut réagir': 'can react',
+  'Tu peux réagir': 'You can react',
   // ---- Un sbire entre en jeu en pleine phase du mechant (12/09/2026) ----
   'Un sbire entre en jeu': 'A minion enters play',
   'Un sbire qui entre en jeu pendant la phase du méchant s\'active à l\'étape des sbires, s\'il est arrivé avant elle.':

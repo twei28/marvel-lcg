@@ -57,6 +57,55 @@ function rendre(props: Partial<Parameters<typeof DemandeCentrale>[0]> = {}) {
   )
 }
 
+describe('DemandeCentrale — une fenetre de reaction se comprend sans survoler', () => {
+  // « I Object! » de Jennifer Walters avant la menace du point 1 : le panneau
+  // ne montrait que le nom de la capacite et « Passer ». Signale en jeu le
+  // 12/09/2026 : « pour un nouveau joueur c'est pas du tout user-friendly ».
+  const objection = (): Option => ({ ...option(), id: 1, name: '"I_Object!"', bind_id: 12 })
+  const fenetre = (): Demande =>
+    ({
+      options: [objection()],
+      prompt_text: '[(48,01097b) The Break-In!] s’apprête à recevoir 1⚠ (Main Scheme Phase Place Threat)',
+      event_name: 'WhenSchemeWouldPlaceThreat',
+      show_cancel: true,
+      ability_type: 'Interrupt',
+    }) as unknown as Demande
+  const jennifer = new Map<number, WorldCard>([
+    [12, { id: 12, name: 'Jennifer Walters', card_type: 'AlterEgo', card_id: '01019b' } as unknown as WorldCard],
+  ])
+
+  it('dit qui peut reagir, montre la carte porteuse et le texte de la capacite', () => {
+    rendre({
+      demande: fenetre(),
+      options: [objection()],
+      cartesParId: jennifer,
+      carteAuSurvol: () => ({ ...scan, name: 'Jennifer Walters' }),
+      texteCapacite: () =>
+        '"I Object!" — Interrupt: When threat would be placed on a scheme, prevent 1 of that threat. (Limit once per round.)',
+    })
+    expect(screen.getByText('Jennifer Walters peut réagir')).toBeInTheDocument()
+    // La parenthese technique du moteur a disparu du titre.
+    expect(screen.getByText(/s’apprête à recevoir 1/)).not.toHaveTextContent('Main Scheme Phase')
+    expect(screen.getByText(/prevent 1 of that threat/)).toBeInTheDocument()
+    // La vignette de la carte porteuse, sans survol.
+    expect(document.querySelector('.dc-vignette')).not.toBeNull()
+    expect(screen.getByRole('button', { name: /Passer/ })).toBeInTheDocument()
+  })
+
+  it('sur un choix ordinaire, ni phrase de reaction ni texte de capacite', () => {
+    rendre({
+      demande: { ...fenetre(), show_cancel: false, ability_type: 'Normal', event_name: 'Choose' } as unknown as Demande,
+      options: [objection()],
+      cartesParId: jennifer,
+      carteAuSurvol: () => scan,
+      texteCapacite: () => 'un texte qui ne doit pas apparaitre',
+    })
+    expect(screen.queryByText(/peut réagir|Tu peux réagir/)).toBeNull()
+    expect(screen.queryByText('un texte qui ne doit pas apparaitre')).toBeNull()
+    expect(document.querySelector('.dc-vignette')).toBeNull()
+  })
+})
+
 describe('DemandeCentrale — la carte au survol', () => {
   it('ouvre l’agrandissement de la carte porteuse quand on survole son bouton', () => {
     rendre({ carteAuSurvol: () => scan })

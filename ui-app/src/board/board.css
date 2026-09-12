@@ -1034,6 +1034,24 @@
     backdrop-filter: blur(8px);
   }
 
+  /* « Jennifer Walters peut réagir » : sous la phrase du moteur, en clair. */
+  .dc-reagit {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(240, 185, 95, 0.95);
+  }
+
+  /* Le texte de la capacite proposee, sous son bouton : ce qu'elle FAIT. */
+  .dc-capacite {
+    display: block;
+    max-width: 260px;
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.35;
+    color: rgba(248, 250, 252, 0.88);
+    text-align: center;
+  }
+
   .dc-texte strong {
     color: #ffffff;
     font-size: 0.98rem;

@@ -43,6 +43,9 @@ import { CoucheTriche, useTriche } from './board/CoucheTriche'
 import { useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
+import { extraireCapacite } from './board/texte-capacite'
+import { TEXTES_FR } from './board/textes-fr'
+import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
 import { kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
 import { carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
@@ -1772,6 +1775,21 @@ function PagePartie({
     },
     [carteDeLOption, cartesMondeParId, joueurActif, catalogue]
   )
+  // Le TEXTE de la capacite qu'une option declenche, pour les fenetres de
+  // reaction (« I Object! » de Jennifer Walters avant la menace) : le francais
+  // quand le plateau l'a (cartes sans scan FR, fan-made), l'anglais de
+  // cards.json sinon. Decision utilisateur du 12/09/2026 : mieux vaut le texte
+  // en anglais qu'un nom de capacite muet.
+  const texteCapaciteDeLOption = useCallback(
+    (option: Option): string | undefined => {
+      const porteuse = option.bind_id !== 0 ? cartesMondeParId.get(option.bind_id) : undefined
+      if (!porteuse) return undefined
+      const cardId = porteuse.card_id
+      const texte = TEXTES_FR[cardId] ?? TEXTES_FR_FANMADE[cardId] ?? catalogue.texte(cardId)
+      return extraireCapacite(texte, option.name, etat.demande?.ability_type)
+    },
+    [cartesMondeParId, catalogue, etat.demande?.ability_type]
+  )
   // Les cartes de la scene du deroule detaille : lues dans l'index du MONDE,
   // jamais sur la table. Face visible sur demande : la carte revelee et les
   // boosts sont encore face cachee dans le monde de la trame retenue (le fait
@@ -2807,6 +2825,7 @@ function PagePartie({
           carteDeLOption={carteDeLOption}
           carteAuSurvol={carteAuSurvol}
           nomPorteur={nomPorteurFr}
+          texteCapacite={texteCapaciteDeLOption}
         />
       ) : null}
 
@@ -3004,6 +3023,7 @@ function PagePartie({
                   carteDeLOption={carteDeLOption}
                   carteAuSurvol={carteAuSurvol}
                   nomPorteur={nomPorteurFr}
+                  texteCapacite={texteCapaciteDeLOption}
                   enScene
                 />
               ) : undefined

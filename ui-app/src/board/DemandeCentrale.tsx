@@ -39,6 +39,12 @@ type DemandeCentraleProps = {
   /** Le nom (francais si connu) de la carte qui porte l'option, comme dans la barre d'action. */
   nomPorteur?: (bindId: number) => string | undefined
   /**
+   * Le TEXTE de la capacite que l'option declenche, a lire sous le bouton
+   * (texte-capacite.ts). Pour une fenetre de reaction seulement : « I Object!
+   * » ne dit rien a un nouveau joueur, le texte dit tout.
+   */
+  texteCapacite?: (option: Option) => string | undefined
+  /**
    * Loge dans la scene du deroule detaille (DeroulePhase, prop `question`)
    * plutot que pose au centre de la table : plus de placement, plus de
    * position fixe, le panneau coule dans la scene a la place de ses boutons.
@@ -117,6 +123,49 @@ function titreDepuisSource(
   const source = sources.length === 1 ? cartesParId.get(sources[0]!) : undefined
   const nom = source ? nomAffiche(source) : undefined
   return nom ? `${nom} — ${t('choisis une option')}` : texteDemande(demande)
+}
+
+/**
+ * UNE FENETRE DE REACTION : le moteur s'arrete avant (ou apres) un evenement
+ * pour laisser jouer une interruption ou une reponse, et « Passer » est
+ * toujours possible. C'est la ou un nouveau joueur est perdu : le jeu attend,
+ * une capacite au nom obscur est proposee, rien ne dit ce qu'elle fait.
+ */
+export function estFenetreDeReaction(demande: Demande): boolean {
+  if (!demande.show_cancel) return false
+  if (/interrupt|response/i.test(demande.ability_type)) return true
+  return /^(When|After)/.test(demande.event_name) && demande.event_name !== 'WhenPlayerInTurn'
+}
+
+/** « Le Crimson Cowl s’apprête à recevoir 1⚠ (Menace de la phase du Méchant) » -> sans la parenthese technique. */
+function sansParentheseTechnique(texte: string): string {
+  return texte.replace(/\s*\([^()]*\)\s*$/, '').trim()
+}
+
+/**
+ * « Jennifer Walters peut réagir » : qui porte les options d'une fenetre de
+ * reaction. Plusieurs porteurs : « Tu peux réagir ».
+ */
+export function phraseDeReaction(
+  options: Option[],
+  cartesParId: Map<number, WorldCard>,
+  nomPorteur?: (bindId: number) => string | undefined
+): string {
+  const porteurs = [...new Set(options.map((o) => o.bind_id).filter((id) => id !== 0))]
+  if (porteurs.length === 1) {
+    const nom = nomSourceParId(porteurs[0]!, cartesParId, nomPorteur)
+    if (nom) return `${nom} ${t('peut réagir')}`
+  }
+  return t('Tu peux réagir')
+}
+
+function nomSourceParId(
+  bindId: number,
+  cartesParId: Map<number, WorldCard>,
+  nomPorteur?: (bindId: number) => string | undefined
+): string | undefined {
+  const porteur = cartesParId.get(bindId)
+  return nomPorteur?.(bindId) || (porteur ? nomAffiche(porteur) : undefined)
 }
 
 export function demandeDoitApparaitreAuCentre(demande: Demande | undefined): boolean {
@@ -245,8 +294,10 @@ export function DemandeCentrale({
   carteDeLOption,
   carteAuSurvol,
   nomPorteur,
+  texteCapacite,
   enScene = false,
 }: DemandeCentraleProps) {
+  const reaction = estFenetreDeReaction(demande)
   const [raisonVisible, setRaisonVisible] = useState<number | undefined>(undefined)
   // Carte regardee : l'agrandissement s'ouvre au survol du bouton, comme au
   // survol d'une carte de la table, et avec le meme panneau (texte francais
@@ -329,7 +380,18 @@ export function DemandeCentrale({
     >
       <div className="dc-texte">
         <span className="plateau-eyebrow">{libelleTypeDemande(demande)}</span>
-        <strong>{avecIcones(marquerRessources(titreDepuisSource(demande, options, cartesParId)))}</strong>
+        <strong>
+          {avecIcones(
+            marquerRessources(
+              reaction
+                ? sansParentheseTechnique(titreDepuisSource(demande, options, cartesParId))
+                : titreDepuisSource(demande, options, cartesParId)
+            )
+          )}
+        </strong>
+        {/* Qui peut reagir, en clair : le nom de la capacite seul (« I Object! »)
+            ne le dit pas a un nouveau joueur. */}
+        {reaction ? <span className="dc-reagit">{phraseDeReaction(options, cartesParId, nomPorteur)}</span> : null}
       </div>
 
       <div className="af-boutons dc-boutons" onMouseOver={survolerZone} onMouseLeave={quitterZone}>
@@ -339,7 +401,11 @@ export function DemandeCentrale({
           const cibles = resumeCibles(option, cartesParId)
           const indisponible = option.failure_reason !== ''
           const montrerRaison = indisponible && raisonVisible === option.id
-          const carte = carteDeLOption?.(option)
+          // La vignette : la carte nommee, sinon, sur une fenetre de reaction,
+          // la carte PORTEUSE (elle n'apparaissait qu'au survol). Reconnaitre
+          // la carte est la moitie de la comprehension.
+          const carte = carteDeLOption?.(option) ?? (reaction ? carteAuSurvol?.(option) : undefined)
+          const capacite = reaction ? texteCapacite?.(option) : undefined
           return (
             <span
               className={`af-action-wrap${carte ? ' a-vignette' : ''}`}
@@ -376,6 +442,7 @@ export function DemandeCentrale({
                 {cibles ? <small className="af-cibles">{cibles}</small> : null}
               </button>
               {montrerRaison ? <span className="af-raison">{option.failure_reason}</span> : null}
+              {capacite ? <span className="dc-capacite">{avecIcones(marquerRessources(capacite))}</span> : null}
             </span>
           )
         })}

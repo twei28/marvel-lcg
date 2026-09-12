@@ -97,6 +97,14 @@ export type Catalogue = {
    * moteur, seul le catalogue sait s'il se lit en paysage.
    */
   type(cardId: string): string | undefined
+  /**
+   * Le TEXTE de regles imprime, tel que cards.json l'ecrit (balises <b>/<i>,
+   * [[Trait]], [mental]...). Anglais : c'est la langue des donnees. Sert a
+   * dire ce que fait une capacite au moment ou le moteur propose de la
+   * declencher (« I Object! » de Jennifer Walters), sans obliger le joueur a
+   * survoler la carte. Ajoute le 12/09/2026.
+   */
+  texte(cardId: string): string | undefined
 }
 
 /** Catalogue absent : le plateau s'affiche quand meme, sans les PV maximum. */
@@ -107,6 +115,7 @@ export const catalogueVide: Catalogue = {
   surpayable: () => false,
   aspect: () => undefined,
   type: () => undefined,
+  texte: () => undefined,
 }
 
 /**
@@ -137,6 +146,7 @@ export function construire(donnees: unknown): Catalogue {
   const surpayables = new Set<string>()
   const aspects = new Map<string, Aspect>()
   const types = new Map<string, string>()
+  const textes = new Map<string, string>()
 
   // cards.json = { "<nom de paquet>": [cartes...], "checksum": "<hexa>" }.
   for (const paquet of Object.values(donnees as Record<string, unknown>)) {
@@ -144,6 +154,7 @@ export function construire(donnees: unknown): Catalogue {
     for (const carte of paquet as CartePapier[]) {
       const id = carte?.card_id
       if (typeof id !== 'string') continue
+      if (typeof carte.text === 'string' && carte.text.trim()) textes.set(id, carte.text)
       const pv = pvImprimes(carte.desc?.HP)
       if (pv !== undefined) parCarte.set(id, pv)
       const stats: Partial<Record<string, number>> = {}
@@ -179,6 +190,7 @@ export function construire(donnees: unknown): Catalogue {
     surpayable: (cardId) => surpayables.has(cardId),
     aspect: (cardId) => aspects.get(cardId),
     type: (cardId) => types.get(cardId),
+    texte: (cardId) => textes.get(cardId),
   }
 }
 
