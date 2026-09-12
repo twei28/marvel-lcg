@@ -237,8 +237,30 @@ export function paiementCourant(option: Option, cibles: number[]): Paiement | un
 /** Nombre de ressources a depenser. undefined = le moteur en jugera. */
 export function nombreDeRessources(paiement: Paiement | undefined): number | undefined {
   if (!paiement) return undefined
-  const n = Number(paiement.cost)
-  return Number.isInteger(n) && n >= 0 ? n : undefined
+  return totalDuCout(paiement.cost)
+}
+
+/**
+ * Combien de ressources coute un cout, cout MIXTE compris.
+ *
+ * Le moteur ecrit le cout en `color_text` (game/element/rbyg.py) : d'abord une
+ * lettre par type EXIGE, puis le nombre de ressources libres. Une carte a
+ * Requirement paie donc « Y1 » (Thunder Strike : cout 2, dont une energie) ou
+ * « YYY2 » (Wrath of Olympus : cout 5, dont trois energies).
+ *
+ * ⚠ Sans cette lecture, `Number('Y1')` valait NaN : le plateau ne connaissait
+ * plus le total, n'affichait aucune pastille de cout, annoncait « Payer le
+ * cout » au lieu de « Payer 2 », et se disait pret des l'energie posee. Vu en
+ * partie le 12/09/2026 sur Thunder Strike (« il me demande qu'une ressource »).
+ * Dix-huit cartes du depot ont ce cout mixte.
+ */
+export function totalDuCout(cout: string): number | undefined {
+  const n = Number(cout)
+  if (Number.isInteger(n) && n >= 0) return n
+  const decoupe = /^([RBYGLrbygl]*)(\d*)$/.exec(cout)
+  if (!decoupe) return undefined
+  const total = decoupe[1].length + (decoupe[2] ? Number(decoupe[2]) : 0)
+  return total > 0 ? total : undefined
 }
 
 /** Nom lisible d'un type de ressource, pour dire au joueur ce qui manque. */
@@ -415,17 +437,11 @@ export function reponsePrete(
   }
 
   const paiement = paiementCourant(option, cibles)
-  const requis = nombreDeRessources(paiement)
-  const paye = valeurPayee(paiement, ressources)
-  if (requis !== undefined && !paiementFacultatif(paiement) && paye < requis) {
-    return {
-      prete: false,
-      raison: `Pay ${requis - paye} more resource(s)`,
-    }
-  }
 
-  // Cout exprime en types (« BY ») : le compte de ressources ne dit rien, seuls
-  // les types comblent. Sans ce controle, l'action se disait prete des la
+  // Cout exprime en types (« BY », « Y1 ») : le compte de ressources ne dit
+  // pas LESQUELLES manquent. Ce controle passe en premier, parce que sa raison
+  // est la plus utile au joueur (« Pay 1 mental resource(s) » plutot que
+  // « Pay 1 more resource(s) »). Sans lui, l'action se disait prete des la
   // premiere ressource et le moteur la refusait sans explication.
   if (!paiementFacultatif(paiement)) {
     const manquants = Object.entries(typesManquants(paiement, ressources))
@@ -434,6 +450,17 @@ export function reponsePrete(
         .map(([type, nombre]) => `${nombre} ${NOM_TYPE[type] ?? type}`)
         .join(' and ')
       return { prete: false, raison: `Pay ${detail} resource(s)` }
+    }
+  }
+
+  // Puis le TOTAL. Un cout mixte (« Y1 ») a ses types couverts bien avant son
+  // compte : Thunder Strike coute 2, dont une energie.
+  const requis = nombreDeRessources(paiement)
+  const paye = valeurPayee(paiement, ressources)
+  if (requis !== undefined && !paiementFacultatif(paiement) && paye < requis) {
+    return {
+      prete: false,
+      raison: `Pay ${requis - paye} more resource(s)`,
     }
   }
 
