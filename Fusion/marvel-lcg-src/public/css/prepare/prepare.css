@@ -2199,3 +2199,65 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     padding-bottom: 84px;
   }
 }
+
+/* --- La modale du héros au téléphone (12/09/2026) --------------------------
+   Mesuré à 480x1050 : la modale des variantes (version, identité, art,
+   ressources) faisait 7 853 px de haut, ses 40 collections de ressources sur
+   cinq colonnes, et Valider/Annuler tout en bas. Ici elle devient une feuille
+   basse : pleine largeur, plafonnée à 92 % de l'écran, les collections en
+   bande qui défile de côté, les actions collées en bas, 48 px de haut. */
+@media (max-width: 600px), (pointer: coarse) and (max-width: 900px) {
+  .deck-modal {
+    place-items: end center;
+    /* La feuille touche les bords : plus de gouttiere de 28 px autour. */
+    padding: 0;
+  }
+
+  .deck-modal-panel.vh-panel {
+    width: 100vw;
+    max-width: none;
+    max-height: 92dvh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px 16px 0 0;
+    padding: 12px 12px 0;
+  }
+
+  .deck-modal-panel.vh-panel::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 44px;
+    height: 4px;
+    margin: 0 auto 10px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  .vh-panel .ra-choix {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .vh-panel .ra-option {
+    flex: 0 0 96px;
+    width: 96px;
+    scroll-snap-align: start;
+  }
+
+  .vh-panel .vh-actions {
+    position: sticky;
+    bottom: 0;
+    margin: 16px -12px 0;
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    background: var(--ink2);
+    border-top: 1px solid var(--line);
+  }
+
+  .vh-panel .vh-actions .tampon {
+    flex: 1 1 0;
+    min-height: 48px;
+  }
+}

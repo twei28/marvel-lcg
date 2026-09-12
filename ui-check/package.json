@@ -28,7 +28,8 @@
     "campagne-professor-x": "playwright test tests/campagne-professor-x.spec.ts --project=pc",
     "glisser": "playwright test tests/glisser-plateau.spec.ts --project=pc",
     "import-marvelcdb": "playwright test tests/import-marvelcdb-autre-heros.spec.ts --project=pc",
-    "modale-heros": "playwright test tests/modale-heros.spec.ts --project=pc"
+    "modale-heros": "playwright test tests/modale-heros.spec.ts --project=pc",
+    "menus-mobile": "playwright test tests/menus-mobile.spec.ts --project=s24"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0"

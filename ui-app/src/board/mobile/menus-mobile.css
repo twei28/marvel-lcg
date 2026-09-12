@@ -1,0 +1,202 @@
+/* menus-mobile.css : sur le plateau portrait, tout panneau qui s'ouvre
+   par-dessus la table est une FEUILLE (spec du 07/09/2026, §5).
+
+   Une feuille BASSE monte depuis le bas de l'ecran, pleine largeur, poignee,
+   boutons de 48 px ; une feuille HAUTE monte jusqu'a 92 % de l'ecran quand
+   son contenu defile. Tout est sous `body.mode-plateau-portrait`, posee par
+   board.tsx quand le rendu mobile est actif : le rendu PC ne voit rien.
+
+   Les composants ne sont pas reecrits : on repositionne ce qui existe.
+   Couche `utilitaires` : c'est la derniere de board.css, et c'est la que
+   vivent deja des regles de ces panneaux (.popover-options) ; une couche
+   anterieure perdrait quelle que soit sa specificite.
+   Mesure avant (12/09/2026, 480x1050) : Options en popover de 1 093 px pose
+   a 1 050 px du haut (invisible), Historique en popover PC coupe, la
+   question du moteur flottante et tronquee. */
+@layer utilitaires {
+  /* --- La feuille, le motif commun ---------------------------------------- */
+  body.mode-plateau-portrait .popover-sauvegardes,
+  body.mode-plateau-portrait .historique-panneau,
+  body.mode-plateau-portrait .salon-panneau,
+  body.mode-plateau-portrait .panneau-journal,
+  body.mode-plateau-portrait .plateau-selecteur,
+  body.mode-plateau-portrait .plateau-regardees,
+  body.mode-plateau-portrait .menu-actions-carte,
+  body.mode-plateau-portrait .actions-flottantes,
+  body.mode-plateau-portrait .evenement-centrale,
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    /* AU-DESSUS DE LA BARRE, jamais dessus : les composants n'ont pas de
+       bouton Fermer (on ne les reecrit pas), c'est le bouton de la barre qui
+       a ouvert la feuille qui la referme, et il doit rester sous le doigt.
+       96 px = la barre portrait (pm-barre, 95 px mesures) et un liseré. */
+    bottom: var(--feuille-bas, 96px);
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    transform: none;
+    margin: 0;
+    box-sizing: border-box;
+    max-height: calc(100dvh - var(--feuille-bas, 96px) - 44px);
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 14px 14px calc(14px + env(safe-area-inset-bottom, 0px));
+    border-radius: 18px 18px 0 0;
+    border-width: 1px 0 0;
+    /* Opaque : une feuille se lit, elle ne laisse pas voir la table (ni une
+       autre feuille) au travers. */
+    background: rgba(24, 26, 32, 0.98);
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.6);
+    z-index: 640;
+  }
+
+  /* La poignee, en tete de chaque feuille. */
+  body.mode-plateau-portrait .popover-sauvegardes::before,
+  body.mode-plateau-portrait .historique-panneau::before,
+  body.mode-plateau-portrait .salon-panneau::before,
+  body.mode-plateau-portrait .panneau-journal::before,
+  body.mode-plateau-portrait .plateau-selecteur::before,
+  body.mode-plateau-portrait .plateau-regardees::before,
+  body.mode-plateau-portrait .menu-actions-carte::before,
+  body.mode-plateau-portrait .actions-flottantes::before,
+  body.mode-plateau-portrait .evenement-centrale::before,
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene)::before {
+    content: '';
+    display: block;
+    width: 44px;
+    height: 4px;
+    margin: 0 auto 10px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  /* Les feuilles HAUTES : leur contenu defile, la feuille prend la hauteur. */
+  body.mode-plateau-portrait .historique-panneau,
+  body.mode-plateau-portrait .salon-panneau,
+  body.mode-plateau-portrait .panneau-journal,
+  body.mode-plateau-portrait .plateau-selecteur,
+  body.mode-plateau-portrait .plateau-regardees {
+    height: calc(100dvh - var(--feuille-bas, 96px) - 44px);
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+
+  body.mode-plateau-portrait .plateau-selecteur,
+  body.mode-plateau-portrait .plateau-regardees {
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+  }
+
+  /* Le journal : l'aside est la feuille (poignee, bouton Fermer, journal) ;
+     le journal lui-meme prend la place qui reste et defile. */
+  body.mode-plateau-portrait .panneau-journal {
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+
+  body.mode-plateau-portrait .panneau-journal .journal-heros {
+    min-height: 0;
+    overflow: auto;
+  }
+
+  body.mode-plateau-portrait .panneau-journal-fermer {
+    min-height: 44px;
+  }
+
+  /* Le voile des modales de cartes : la feuille se pose dessus, en bas. */
+  body.mode-plateau-portrait .plateau-regardees-voile {
+    display: block;
+  }
+
+  /* Les popovers ancres a la barre : l'ancre ne doit plus contraindre. */
+  body.mode-plateau-portrait .popover-sauvegardes-ancre,
+  body.mode-plateau-portrait .historique-partie,
+  body.mode-plateau-portrait .salon-partie {
+    position: static;
+  }
+
+  /* --- Ce qu'on touche au doigt : 48 px, pleine largeur ------------------- */
+  body.mode-plateau-portrait .popover-sauvegardes button,
+  body.mode-plateau-portrait .popover-sauvegardes .ligne-option,
+  body.mode-plateau-portrait .historique-panneau .hp-entete-actions button,
+  body.mode-plateau-portrait .journal-heros button,
+  body.mode-plateau-portrait .menu-actions-carte button,
+  body.mode-plateau-portrait .actions-flottantes button,
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) .af-action,
+  body.mode-plateau-portrait .evenement-centrale button {
+    min-height: 48px;
+  }
+
+  body.mode-plateau-portrait .popover-sauvegardes .ligne-option {
+    align-items: center;
+  }
+
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) .dc-boutons,
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) .af-boutons {
+    max-width: none;
+    width: 100%;
+  }
+
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) .af-action-wrap {
+    flex: 1 1 140px;
+  }
+
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) .af-action,
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) .af-action-wrap {
+    max-width: none;
+    width: 100%;
+  }
+
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) .dc-texte,
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) .dc-capacites {
+    max-width: none;
+  }
+
+  /* L'historique en feuille haute : la liste ne s'etire pas pour remplir la
+     hauteur (ses entrees garderaient chacune 300 px), l'en-tete passe a la
+     ligne plutot que d'ecraser ses boutons. */
+  body.mode-plateau-portrait .historique-panneau .hp-liste {
+    align-content: start;
+  }
+
+  body.mode-plateau-portrait .historique-panneau .hp-entete {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  body.mode-plateau-portrait .historique-panneau .hp-entete-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+  }
+
+  body.mode-plateau-portrait .historique-panneau .hp-entete-actions button {
+    min-height: 44px;
+    flex: 1 1 100px;
+  }
+
+  /* Le selecteur et les modales de cartes : trois colonnes au doigt. */
+  body.mode-plateau-portrait .plateau-selecteur .scan-card,
+  body.mode-plateau-portrait .plateau-regardees .scan-card {
+    --card-w: 140px;
+  }
+
+  /* L'aperçu au survol n'a pas de sens au doigt : la carte s'ouvre au tap
+     (CarteOuverte). */
+  body.mode-plateau-portrait .carte-apercu {
+    display: none;
+  }
+
+  /* --- La fin de partie : plein ecran vertical, boutons empiles ----------- */
+  body.mode-plateau-portrait .fin-partie-carte {
+    width: calc(100vw - 32px);
+    max-width: none;
+  }
+
+  body.mode-plateau-portrait .fin-partie-carte button {
+    width: 100%;
+    min-height: 48px;
+  }
+}

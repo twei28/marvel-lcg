@@ -85,7 +85,7 @@ export default defineConfig({
       // qui n'existent pas (references/<ecran>/s24.png). Ce ne serait pas une
       // regression detectee (aucune reference existante ne bouge), mais ca
       // ferait echouer la commande pour une raison hors sujet.
-      testMatch: /plateau-(mobile|paysage)\.spec\.ts$/,
+      testMatch: /(plateau-(mobile|paysage)|menus-mobile)\.spec\.ts$/,
       // 34 vraies navigations reseau (une par etat enregistre) depassent le
       // budget par defaut de 30s : mesure sur ce poste, la boucle complete
       // prend environ 30s a elle seule, sans marge pour une machine plus

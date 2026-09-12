@@ -13,10 +13,12 @@
 // board.tsx de choisir l'un ou l'autre sans rien adapter.
 
 import type { BoardProps } from '../Board'
+import { useEffect } from 'react'
 import { EcranPaysage } from './EcranPaysage'
 import { PlateauMedaillons } from './PlateauMedaillons'
 import { PlateauPortrait } from './PlateauPortrait'
 import { useOrientation } from './useOrientation'
+import './menus-mobile.css'
 
 export function veutLesMedaillons(recherche: string): boolean {
   return new URLSearchParams(recherche).has('medaillons')
@@ -26,6 +28,15 @@ export function PlateauMobile(props: BoardProps) {
   // useOrientation() est un hook : il doit s'executer avant tout `return`
   // conditionnel, sous peine de violer les regles des hooks React.
   const orientation = useOrientation()
+  // La classe qui fait basculer les PANNEAUX en feuilles (menus-mobile.css,
+  // spec du 07/09 §5.3) : Options, Historique, question du moteur... Posee
+  // ICI, par le rendu mobile lui-meme, pour valoir aussi bien en partie que
+  // sur un etat enregistre (`?etat=`). Sans elle, les panneaux gardaient leur
+  // position PC : popover hors ecran, panneau flottant tronque (12/09/2026).
+  useEffect(() => {
+    document.body.classList.add('mode-plateau-portrait')
+    return () => document.body.classList.remove('mode-plateau-portrait')
+  }, [])
   if (veutLesMedaillons(window.location.search)) return <PlateauMedaillons {...props} />
   if (orientation === 'paysage') return <EcranPaysage />
   return <PlateauPortrait {...props} />

@@ -82,6 +82,11 @@ export type ResultatPlacement = {
 
 const VIDE: ResultatPlacement = { style: {}, genant: false }
 
+/** Le plateau portrait a pose sa classe : les panneaux sont des feuilles. */
+export function enModeFeuille(): boolean {
+  return typeof document !== 'undefined' && document.body.classList.contains('mode-plateau-portrait')
+}
+
 export function usePlacement(
   ref: RefObject<HTMLElement | null>,
   options: OptionsPlacement
@@ -102,7 +107,11 @@ export function usePlacement(
   const clesPanneaux = useMemo(() => (options.panneaux ?? []).join(','), [options.panneaux])
 
   useLayoutEffect(() => {
-    if (!actif) {
+    // En mode feuille (plateau portrait, body.mode-plateau-portrait), le
+    // panneau est colle en bas de l'ecran par menus-mobile.css : aucun
+    // contournement a calculer, et un style en ligne l'emporterait sur la
+    // feuille. On ne mesure donc rien (spec du 07/09, §5.3, point 1).
+    if (!actif || enModeFeuille()) {
       setPlace(undefined)
       return
     }

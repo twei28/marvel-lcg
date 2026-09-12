@@ -2639,6 +2639,7 @@ function PagePartie({
     return () => document.body.classList.remove('plateau-sans-animations')
   }, [animations])
 
+
   useSons(etat.monde, sons, etat.demande !== undefined)
   useMusique(etat.monde, musique)
 
