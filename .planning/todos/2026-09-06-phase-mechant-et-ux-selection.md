@@ -116,3 +116,15 @@ et le déroulé des effets pendant le tour du joueur.
   raccourci, le menu Options à quatre choix, les étapes de distribution et de
   premier joueur, le déroulé des effets pendant le tour du joueur. Passer par
   `superpowers:brainstorming`, une question à la fois.
+
+## Décision du 12/09/2026 : « les effets subis pendant notre tour », on oublie
+
+Ouvert en questions une à une (périmètre choisi : les cartes rencontre
+révélées en plein tour), puis **abandonné par l'utilisateur à la question du
+rythme** : « c'est parfait comme c'est actuellement ». Le cartouche reste
+muet hors phase du méchant, et c'est voulu. Ne pas rouvrir sans demande.
+
+Au passage, un fait relevé pour mémoire : une révélation faite pendant notre
+tour est bien notée par le moteur (`player_action.py`, `RecordFaitMechant`)
+et ressort dans le cartouche de la phase du méchant du même round, à
+contretemps. Sans conséquence signalée en jeu.
