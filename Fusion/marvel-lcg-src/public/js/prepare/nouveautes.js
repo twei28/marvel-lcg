@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-12",
         genre: "jeu",
+        fr: "La barre du haut s'allège : Annuler, Sauver, Bug, un bouton Réglages qui range tout le reste (historique, options, journal, musique, langue), et Fin du tour, qui revient aussi en bas de l'écran. Le dessin des cartes ressources se choisit désormais à l'étape des decks.",
+        en: "The top bar slims down: Undo, Save, Bug, a Settings button holding everything else (history, options, log, music, language), and End turn, which also returns at the bottom of the screen. The resource cards’ artwork is now picked at the decks step.",
+    },
+    {
+        date: "2026-09-12",
+        genre: "jeu",
         fr: "Les cartes d'état (Tenace, Sonné, Désorienté) sont de vrais scans, nets en grand, en français comme en anglais.",
         en: "Status cards (Tough, Stunned, Confused) are now real scans, sharp when enlarged, in French and in English.",
     },

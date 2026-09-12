@@ -873,6 +873,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Aucun héros': 'No hero',
   'Piles': 'Piles',
   'Menu': 'Menu',
+  'Réglages': 'Settings',
+  'Historique, options, journal, musique, langue': 'History, options, log, music, language',
   'Aucune pile': 'No pile',
   'Ton deck': 'Your deck',
   'Ta défausse': 'Your discard pile',

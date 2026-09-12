@@ -2766,14 +2766,37 @@
     white-space: nowrap;
   }
 
-  /* Le popover « … » : trois boutons en colonne, pleine largeur. */
-  .popover-plus {
-    min-width: 220px;
+  /* Le menu ⚙ Reglages : des lignes en colonne, pleine largeur, sans la
+     pastille de l'Historique (decision du 12/09/2026 : plus de pastille). */
+  .popover-reglages {
+    min-width: 240px;
   }
 
-  .popover-plus .bh-bouton {
+  .popover-reglages .bh-bouton {
     justify-content: flex-start;
     width: 100%;
+  }
+
+  .popover-reglages .historique-partie,
+  .popover-reglages .popover-sauvegardes-ancre {
+    display: block;
+    width: 100%;
+  }
+
+  .popover-reglages .bh-history em,
+  .portrait-menu .bh-history em {
+    display: none;
+  }
+
+  .popover-reglages .bh-vue {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .popover-reglages .bh-vue .bh-bouton {
+    width: auto;
   }
 
   .bh-separateur {

@@ -35,6 +35,7 @@ import {
   zonesDeLaSource,
 } from './board/glisser/cibles'
 import { PlateauMobile } from './board/mobile/PlateauMobile'
+import { enModeFeuille } from './board/placement/usePlacement'
 import { useModeMobile, type ReglageMode } from './board/mobile/useModeMobile'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
@@ -922,25 +923,30 @@ async function lireMetaSauvegarde(nom: string): Promise<MetaSauvegarde | undefin
  * Les fichiers vivent dans replays/ (hors .game : ils survivent aux rebuilds).
  */
 /**
- * Les trois boutons qu'on touche une fois par partie, ou jamais : le journal
- * en fichier, la musique, la langue. Ils prenaient trois places dans la barre
- * du haut, au meme poids qu'Annuler. Un seul bouton « … » les replie.
+ * ⚙ Reglages : tout ce qu'on ne touche pas a chaque tour (Historique, Options,
+ * journal, log, musique, langue, vue, retour au menu), replie derriere un seul
+ * bouton (12/09/2026). La barre ne garde visibles qu'Annuler, Sauver, Bug et
+ * Fin du tour.
+ *
+ * Sur telephone, la feuille « … » du bandeau montre deja la barre en colonne :
+ * un menu dans le menu n'aurait aucun sens, les lignes sont rendues a plat.
  */
-function PopoverPlus({ children }: { children: React.ReactNode }) {
+function PopoverReglages({ children }: { children: React.ReactNode }) {
   const [ouvert, setOuvert] = useState(false)
+  if (enModeFeuille()) return <>{children}</>
   return (
     <span className="popover-sauvegardes-ancre">
       <button
         type="button"
-        className={`bh-bouton bh-plus${ouvert ? ' est-actif' : ''}`}
+        className={`bh-bouton bh-reglages${ouvert ? ' est-actif' : ''}`}
         onClick={() => setOuvert((o) => !o)}
         aria-expanded={ouvert}
-        title={t('Journal, musique, langue')}
+        title={t('Historique, options, journal, musique, langue')}
       >
-        <span aria-hidden="true">…</span>
+        <span aria-hidden="true">⚙</span> {t('Réglages')}
       </button>
       {ouvert ? (
-        <div className="popover-sauvegardes popover-plus" role="menu">
+        <div className="popover-sauvegardes popover-reglages" role="menu">
           {children}
         </div>
       ) : null}
@@ -3216,9 +3222,16 @@ function PagePartie({
               <span aria-hidden="true">↶</span> {langueActuelle() === 'fr' ? 'Annuler' : 'Undo'}
             </button>
             <PopoverSauvegardes />
+            {/* Signaler un bug : le journal de toute la partie part avec la
+                description et la capture. Ne s'affiche que si un site ecoute. */}
+            <PanneauBug outils={rapport} />
 
-            <span className="bh-separateur" aria-hidden="true" />
-
+            {/* ⚙ Reglages (12/09/2026, demande de l'utilisateur : « juste
+                Annuler, Sauver, Bug, et un bouton qui reprend tout le reste »).
+                Historique, Options, journal, log, musique, langue, vue et
+                retour au menu vivent dans ce menu deroulant. Sur telephone,
+                PopoverReglages rend ses lignes a plat dans la feuille « … ». */}
+            <PopoverReglages>
             <HistoriquePartie
               entrees={historique.entrees}
               effacer={historique.effacer}
@@ -3231,9 +3244,6 @@ function PagePartie({
                 qu'on a le moins envie de chercher. Toute la partie, en texte
                 lisible, parce que c'est ce qu'on relit et ce qu'on transmet. */}
             <MessageRapport message={rapport.message} />
-            {/* Signaler un bug : le journal de toute la partie part avec la
-                description et la capture. Ne s'affiche que si un site ecoute. */}
-            <PanneauBug outils={rapport} />
             {(etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>
                 <span className="bh-vue-label">{t('Vue')}</span>
@@ -3263,11 +3273,6 @@ function PagePartie({
               </span>
             ) : null}
 
-            <span className="bh-separateur" aria-hidden="true" />
-
-            {designEssai ? null : (
-              <ModeActionsBoutons modeActions={modeActions} changerModeActions={changerModeActions} />
-            )}
             <PanneauOptions
               animations={animations}
               basculerAnimations={basculerAnimations}
@@ -3309,7 +3314,6 @@ function PagePartie({
               montrerDisposition={surAppareilMobile}
             />
 
-            <PopoverPlus>
               {/* Le journal du heros, en panneau : ce qui est arrive a CE
                   heros, dans l'ordre. Il vivait sur la table, dans la colonne
                   des manigances, qu'il rognait. */}
@@ -3361,24 +3365,18 @@ function PagePartie({
               >
                 {langueActuelle() === 'fr' ? 'Français → English' : 'English → Français'}
               </button>
-              {/* Design essai : Menu quitte la barre pour « … », et laisse
-                  la derniere place a Fin du tour, seul bouton colore. */}
-              {designEssai ? (
-                <button
-                  type="button"
-                  className="bh-bouton bh-menu"
-                  onClick={retourMenuPrincipal}
-                  title={t('Revenir au menu principal')}
-                >
-                  <span aria-hidden="true">⌂</span> Menu
-                </button>
-              ) : null}
-            </PopoverPlus>
-
-            <span className="bh-separateur" aria-hidden="true" />
-
-            {designEssai ? (
               <button
+                type="button"
+                className="bh-bouton bh-menu"
+                onClick={retourMenuPrincipal}
+                title={t('Revenir au menu principal')}
+              >
+                <span aria-hidden="true">⌂</span> Menu
+              </button>
+            </PopoverReglages>
+
+            {/* Fin du tour : le seul bouton colore, toujours a droite. */}
+            <button
                 type="button"
                 className={`bh-bouton bh-fin-tour${finDeTourSuggeree ? ' est-suggere' : ''}`}
                 disabled={!finDeTourDisponible}
@@ -3393,17 +3391,7 @@ function PagePartie({
               >
                 <span aria-hidden="true">▷</span> {t('Fin du tour')}
                 {finDeTourSuggeree ? ' ✓' : ''}
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="bh-bouton bh-menu"
-                onClick={retourMenuPrincipal}
-                title={t('Revenir au menu principal')}
-              >
-                <span aria-hidden="true">⌂</span> Menu
-              </button>
-            )}
+            </button>
           </div>
         }
         interactifs={interactifsAvecPulse}
@@ -3461,7 +3449,7 @@ function PagePartie({
         }
       />
 
-      {afficherFinTourSimple && !designEssai && modePlateau !== 'mobile' ? (
+      {afficherFinTourSimple && modePlateau !== 'mobile' ? (
         <button
           type="button"
           className={`bouton-fin-tour${finDeTourSuggeree ? ' est-suggere' : ''}`}

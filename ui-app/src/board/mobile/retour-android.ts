@@ -19,8 +19,8 @@ type Fermable = {
 
 export const FERMABLES: readonly Fermable[] = [
   { selecteur: '.popover-options', bouton: '.bh-options' },
-  { selecteur: '.popover-plus', bouton: '.bh-plus' },
-  { selecteur: '.popover-sauvegardes:not(.popover-options):not(.popover-plus)', bouton: '.bh-save' },
+  { selecteur: '.popover-reglages', bouton: '.bh-reglages' },
+  { selecteur: '.popover-sauvegardes:not(.popover-options):not(.popover-reglages)', bouton: '.bh-save' },
   { selecteur: '.historique-panneau', bouton: '.bh-history' },
   { selecteur: '.panneau-journal', bouton: '.panneau-journal-fermer' },
   { selecteur: '.carte-ouverte-voile', bouton: '.carte-ouverte-fermer' },

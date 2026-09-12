@@ -127,12 +127,16 @@ test.describe('Les menus du plateau portrait en feuilles', () => {
     expect(page.url()).toContain('/app/board.html');
   });
 
-  test('Le menu du bandeau : une feuille basse aux lignes de 48 px, et son sous-menu « … »', async ({ page }) => {
+  test('Le menu du bandeau : une feuille basse aux lignes de 48 px, Reglages a plat', async ({ page }) => {
     await ouvrirLEtat(page);
     await verifierLaFeuille(page, '.portrait-menu');
-    await page.locator('.bh-plus').first().tap();
-    await verifierLaFeuille(page, '.popover-plus');
+    // Sur telephone, le menu ⚙ Reglages du PC n'existe pas : ses lignes
+    // (journal, log, musique, langue, menu) sont a plat dans la feuille.
+    await expect(page.locator('.portrait-menu .bh-reglages')).toHaveCount(0);
+    for (const ligne of ['.bh-history', '.bh-options', '.bh-journal', '.bh-log', '.bh-musique', '.bh-langue', '.bh-menu']) {
+      await expect(page.locator(`.portrait-menu ${ligne}`).first(), `${ligne} manque dans la feuille`).toBeVisible();
+    }
     await page.locator('.portrait-menu-bouton').tap();
-    await expect(page.locator('.popover-plus')).toHaveCount(0);
+    await expect(page.locator('.portrait-menu')).toHaveCount(0);
   });
 });
