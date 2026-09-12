@@ -148,7 +148,14 @@ if ($faireCode) {
       "! -name 'rapports' -exec rm -rf {} + ; true)"
   }
   $razage = if ($razCode.Count -gt 0) { ($razCode -join " && ") + " && " } else { "" }
-  Ssh-Exec "mkdir -p $DIST && ${razage}tar -xzf /tmp/narwhal-code.tgz -C $DIST && rm -f /tmp/narwhal-code.tgz && chown -R narwhal:narwhal $DIST"
+  # ⚠ `-m` (12/09/2026) : les fichiers prennent la DATE DE L'EXTRACTION, pas
+  # leur date d'origine. launcher_fast.py ne recompile une source vers .game
+  # que si elle est plus recente que son .pyc ; avec les dates d'origine, un
+  # asset.py modifie a 15:08 arrivait APRES un .pyc compile a 15:10 depuis
+  # l'ancienne version, et n'etait jamais recompile. Le moteur d'une table a
+  # plante sur ce vieux bytecode (Hellcat, hc010), et le plantage a tue le
+  # service d'images de la table : « pourquoi j'ai plus les images ? ».
+  Ssh-Exec "mkdir -p $DIST && ${razage}tar -xzmf /tmp/narwhal-code.tgz -C $DIST && rm -f /tmp/narwhal-code.tgz && chown -R narwhal:narwhal $DIST"
   Remove-Item $tgz -Force
   Write-Host "   code deploye"
 }
