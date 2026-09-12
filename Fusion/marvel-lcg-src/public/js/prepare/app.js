@@ -1991,7 +1991,6 @@ function ouvrirModaleVariantes(i, h) {
         version: p.version || h.id,
         identite: p.identity ? cleIdentite(p.identity) : (identites[0] ? cleIdentite(identites[0]) : ""),
         art: prefs.heroArt(h.heroCardId) || "standard",
-        ressources: prefs.resourceArt(h.heroCardId, collectionDuHeros(h.name)),
     };
     const sections = [];
     if (opts.versions.length) {
@@ -2009,11 +2008,6 @@ function ouvrirModaleVariantes(i, h) {
             [{ code: "standard", nom: t("Standard"), apercu: base }]
                 .concat(opts.arts.map((a) => ({ code: a.code, nom: t(a.nom), apercu: `${base}_${a.code}` }))),
             choix.art, (code) => { choix.art = code; }));
-    }
-    if (opts.ressources) {
-        sections.push(sectionVariantes(t("Cartes ressources doubles"), t("Energy · Genius · Strength — même collection"),
-            COLLECTIONS_RESSOURCES.map((c) => ({ code: c.code, nom: t(c.nom), trio: c.apercu || "" })),
-            choix.ressources, (code) => { choix.ressources = code; }));
     }
     const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
         // `--sections` : sur telephone, la feuille dimensionne ses vignettes
@@ -2036,8 +2030,39 @@ function ouvrirModaleVariantes(i, h) {
                     p.deckAuto = true;
                     p.identity = identites.find((v) => cleIdentite(v) === choix.identite) || null;
                     prefs.setHeroArt(h.heroCardId, choix.art);
-                    prefs.setResourceArt(h.heroCardId, choix.ressources);
                     prefs.setVariantes(h.id, { version: choix.version, identite: choix.identite });
+                    hideHover();
+                    fermerModale(overlay);
+                    render();
+                } }, t("Valider")),
+            ),
+        ),
+    );
+    ouvrirModale(overlay);
+}
+
+/** L'art des cartes ressources doubles, à l'étape des decks (12/09/2026 :
+ *  l'utilisateur ne voulait plus ce choix dans la modale du héros, « c'est
+ *  vraiment dans le truc des decks »). Un choix par héros, mémorisé. */
+function ouvrirModaleRessources(i, h) {
+    const p = state.players[i];
+    if (!p) return;
+    let choix = prefs.resourceArt(h.heroCardId, collectionDuHeros(h.name));
+    const section = sectionVariantes(t("Cartes ressources doubles"), t("Energy · Genius · Strength — même collection"),
+        COLLECTIONS_RESSOURCES.map((c) => ({ code: c.code, nom: t(c.nom), trio: c.apercu || "" })),
+        choix, (code) => { choix = code; });
+    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
+        el("div", { class: "deck-modal-panel vh-panel", style: { "--sections": "1" } },
+            el("div", { class: "dm-head" },
+                el("b", { class: "mvl" }, nomAffiche(h)),
+                el("span", { class: "dm-sub" }, t("Ressources : art alternatif")),
+            ),
+            section,
+            el("div", { class: "vh-note" }, t("Mémorisé pour ce héros sur cet appareil")),
+            el("div", { class: "vh-actions" },
+                el("button", { class: "tampon", onclick: () => { hideHover(); fermerModale(overlay); } }, t("Annuler")),
+                el("button", { class: "tampon jaune", onclick: () => {
+                    prefs.setResourceArt(h.heroCardId, choix);
                     hideHover();
                     fermerModale(overlay);
                     render();
@@ -2067,11 +2092,6 @@ function rappelVariantes(p, i) {
         const code = prefs.heroArt(h.heroCardId) || "standard";
         const a = opts.arts.find((x) => x.code === code);
         parts.push(t(a ? a.nom : "Standard"));
-    }
-    if (opts.ressources) {
-        const code = prefs.resourceArt(h.heroCardId, collectionDuHeros(h.name));
-        const c = COLLECTIONS_RESSOURCES.find((x) => x.code === code);
-        parts.push(t("Ressources") + " : " + t(c ? c.nom : "Standard"));
     }
     return el("div", { class: "tb-variantes-rappel" },
         el("span", { class: "tb-variantes-texte" }, parts.join(" · ")),
@@ -2453,10 +2473,16 @@ function rendreOutilsDeck() {
                 title: t("Construire un deck personnalisé pour ce héros"),
                 onclick: () => { window.open("/deck-builder.html?hero=" + encodeURIComponent(p.hero.id), "_blank"); },
             }, t("Éditeur de deck")),
+            el("button", {
+                class: "tampon tb-ressources",
+                title: t("Choisir le dessin des cartes Energy, Genius et Strength de ce deck"),
+                onclick: () => ouvrirModaleRessources(i, p.hero),
+            }, t("Ressources : art alternatif")),
             el("span", { class: "mcdb-status", id: "mcdb-st-" + i }),
         ),
-        // Version, identité, art, ressources : tout se choisit dans la modale
-        // du héros (11/09/2026). Ici, seulement un rappel et « Modifier ».
+        // Version, identité, art de la carte de héros : dans la modale du
+        // héros (11/09/2026), ici un rappel et « Modifier ». Les ressources,
+        // elles, ont leur bouton juste au-dessus (12/09/2026).
         rappelVariantes(p, i),
     );
 }

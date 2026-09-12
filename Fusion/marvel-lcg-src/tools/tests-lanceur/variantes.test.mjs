@@ -49,15 +49,15 @@ test("le deck de la version choisie, et le deck de base si la mémoire est péri
 
 test("aucune option : la modale ne s'ouvre pas ; une seule suffit à l'ouvrir", () => {
     const seul = regrouperVariantes([deck("spider_man")])[0];
-    assert.equal(optionsDuHeros(seul, { arts: [], collection: null }).aucune, true);
-    // Les ressources n'ouvrent la modale que si le héros a SA collection.
-    assert.equal(optionsDuHeros(seul, { arts: [], collection: "sm" }).aucune, false);
-    assert.equal(optionsDuHeros(seul, { arts: [], collection: "sm" }).ressources, true);
-    // Un art alternatif suffit, et il invite les ressources.
-    const o = optionsDuHeros(seul, { arts: [{ code: "m3t" }], collection: null });
+    assert.equal(optionsDuHeros(seul, { arts: [] }).aucune, true);
+    // Les ressources ne sont plus une option du héros : même avec SA
+    // collection, rien à ouvrir (elles vivent à l'étape des decks).
+    assert.equal(optionsDuHeros(seul, { arts: [], collection: "sm" }).aucune, true);
+    assert.equal(optionsDuHeros(seul, { arts: [], collection: "sm" }).ressources, false);
+    // Un art alternatif suffit.
+    const o = optionsDuHeros(seul, { arts: [{ code: "m3t" }] });
     assert.equal(o.aucune, false);
     assert.equal(o.arts.length, 1);
-    assert.equal(o.ressources, true);
     // Deux versions suffisent.
     const deux = regrouperVariantes([deck("a"), deck("b", { variante_de: "a" })])[0];
     assert.equal(optionsDuHeros(deux, {}).versions.length, 2);

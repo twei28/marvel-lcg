@@ -498,6 +498,8 @@ export const DICO_EN_BASE = {
     "énergie": "energy",
     "libre": "wild",
     "Ressources": "Resources",
+    "Ressources : art alternatif": "Resources: alternate art",
+    "Choisir le dessin des cartes Energy, Genius et Strength de ce deck": "Pick the artwork of this deck’s Energy, Genius and Strength cards",
     "— Héros —": "— Hero —",
     "Partir de :": "Start from:",
     "Vide": "Empty",

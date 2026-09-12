@@ -77,12 +77,9 @@ export function deckDeLaVersion(hero, versionId) {
  * Ce héros a-t-il quelque chose à proposer ? Sinon la modale ne s'ouvre pas
  * (décision utilisateur : jamais de modale vide).
  *
- * `contexte` : `arts` (liste des arts alternatifs de la carte de héros),
- * `collection` (code de la collection de ressources au nom du héros, ou null).
- * Les ressources ne suffisent PAS à ouvrir la modale à elles seules : toutes
- * les collections existent pour tout le monde, la modale s'ouvrirait pour
- * chaque héros. Elles s'y invitent quand le héros a SA collection, ou quand
- * une autre section justifie déjà l'ouverture.
+ * `contexte` : `arts` (liste des arts alternatifs de la carte de héros).
+ * Les ressources n'en font plus partie : leur art alternatif se choisit à
+ * l'étape des decks (décision utilisateur du 12/09/2026).
  */
 export function optionsDuHeros(hero, contexte) {
     const ctx = contexte || {};
@@ -95,9 +92,10 @@ export function optionsDuHeros(hero, contexte) {
         arts: arts.length ? arts : [],
         ressources: false,
     };
+    // Les ressources ne sont PLUS une option du heros (12/09/2026) : leur art
+    // se choisit a l'etape des decks, bouton « Ressources : art alternatif ».
     const autreChose = options.versions.length > 0 || options.identites.length > 0 || options.arts.length > 0;
-    options.ressources = !!ctx.collection || autreChose;
-    options.aucune = !autreChose && !ctx.collection;
+    options.aucune = !autreChose;
     return options;
 }
 
