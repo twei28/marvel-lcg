@@ -46,6 +46,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-12",
+        genre: "heros",
+        fr: "Les héros fan-made dont l'auteur n'a pas publié de deck n'ont plus de deck de départ inventé pour eux. Au lancement, choisis un paquet d'aspect conseillé ou construis ton deck dans l'éditeur. Les decks fournis par leur auteur (Yondu, Hellcat, Venompool, Lockjaw, Moon Knight…) ne changent pas.",
+        en: "Fan-made heroes whose author did not publish a deck no longer get a made-up starter deck. When you start a game, pick a suggested aspect package or build your deck in the editor. Decks provided by their author (Yondu, Hellcat, Venompool, Lockjaw, Moon Knight…) are unchanged.",
+    },
+    {
+        date: "2026-09-12",
         genre: "jeu",
         fr: "Sur téléphone, le bouton Retour referme la feuille ouverte (menu, historique, carte en grand) au lieu de quitter la partie. Et dans l'assistant, le premier tap sur un héros ouvre sa fiche : portrait, biographie, ses cartes, avant de le choisir.",
         en: "On a phone, the Back button now closes the open sheet (menu, history, enlarged card) instead of leaving the game. And in the assistant, the first tap on a hero opens their profile: portrait, biography, their cards, before you pick them.",

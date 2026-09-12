@@ -3,14 +3,12 @@
     "name": "Hulk (Rainy)",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist fournie par l'auteur (Rainy) : le zip ne contient que les 2 faces heros, les 15 exemplaires signature, l'obligation et un visuel de boite. Aspect AGRESSIVITE choisi par l'utilisateur le 02/09/2026, et c'est aussi l'aspect du Hulk officiel. Tout le kit paie sur les DEGATS SUBIS : hk001a Anger rend 1 degat a chaque fois que Hulk encaisse, hk010 Intimidating Roar retire de la menace quand il est frappe, hk005 Interception et hk006 Reckless Charge se blessent volontairement. Le deck pousse donc dans ce sens plutot que vers la seule grosse frappe.",
-        "degats_subis_note": "10015 Toe to Toe (« Choose an enemy. That enemy attacks you. ») et 10016 « You'll Pay for That! » (« After the villain attacks you, remove 1 threat ») sont les deux pieces maitresses : elles transforment les coups recus en degats rendus par Anger, en menace retiree par Intimidating Roar, et en menace retiree tout court. 08030 Counterattack et 43019 « Now I'm Mad » completent la meme idee.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage, aspect arbitre le 02/09/2026).",
         "forme_note": "13014 Surprise Attack (« Hero Response (attack): After you change form, deal 3 damage to a minion ») s'ajoute a hk009 The Other Guy, qui recompense DEJA chaque changement de forme. Le pack force la bascule par construction : hk007 Natural Genius ne se depense qu'en alter-ego, hk008 Unnatural Strength qu'en heros, et hk003 Brilliant Mind est une Alter-Ego Action.",
         "thw_note": "⚠ Hulk a CTR 0 en forme heros. La menee passe donc entierement par Bruce Banner (hk003 Brilliant Mind), par hk009 The Other Guy, et cote aspect par 10016 « You'll Pay for That! », 10011 * Brawn (« After Brawn attacks, remove 1 threat ») et hk002 Black Widow. C'est le vrai trou du kit, et le deck le comble sans changer d'aspect.",
         "couleurs_note": "Le pack lit la COULEUR du paiement sur trois cartes, avec trois exigences differentes : hk003 veut « only [mental] », hk006 « a [physical] », hk005 un SURPAIEMENT en [energy] ou [physical]. D'ou un deck volontairement bicolore : 01089 Genius (BB) et les cartes mentales pour hk003, 01090 Strength (RR) et la masse de cartes physiques pour hk006 et le cout de hk001b. ⚠ 01055 The Power of Aggression est WILD : le moteur le convertit, il compte donc comme « only mental » pour hk003.",
         "nemesis_note": "Le zip ne fournit AUCUNE carte nemesis — son dossier s'appelle pourtant « Nemesis & Obligation » et ne contient que l'obligation. Sur decision de l'utilisateur (02/09/2026), on emprunte le set nemesis du HULK OFFICIEL : 10026 * Abomination, 10027 Total Destruction, 10028 Clash of the Titans x3. ⚠ Cet emprunt n'etait PAS jouable avant le correctif moteur du meme jour : `IsNemesis` comparait des noms de set, « Hulk Nemesis » ne correspond pas a « Hulk (Rainy) », et 01190 Shadow of the Past n'aurait jamais mis Abomination en jeu.",
-        "collision_note": "Deux cartes du kit sont homonymes de cartes signature du HULK OFFICIEL : « Hulk Smash » (hk004 ici, 10003 la-bas) et « Limitless Strength » (hk012 ici, 10007 la-bas — et c'est une RESSOURCE chez lui, une amelioration chez nous). Aucune carte de classe Hero d'un autre heros n'entre dans ce deck : le controle du §10 de PROCESSUS-HEROS reste vert. « Black Widow » (hk002) a six homonymes, dont l'allie officiel 01075, aux stats DIFFERENTES. ⚠ 10011 * Brawn porte le nom du heros fan-made bw001a (pack `brawn`) : sans consequence en solo, a surveiller en multijoueur au titre de la regle d'unicite.",
-        "exclusions_note": "01050 * Hulk (allie d'Agressivite, cout 2) est VOLONTAIREMENT exclu : il porte le nom de notre propre heros, et la regle d'unicite interdirait de le poser. Les ressources 10017 et 10020-10024 du pack officiel sont ecartees aussi : ce sont des `full_link` vers 01088-01090, donc les memes cartes avec l'art du Hulk officiel."
+        "collision_note": "Deux cartes du kit sont homonymes de cartes signature du HULK OFFICIEL : « Hulk Smash » (hk004 ici, 10003 la-bas) et « Limitless Strength » (hk012 ici, 10007 la-bas — et c'est une RESSOURCE chez lui, une amelioration chez nous). Aucune carte de classe Hero d'un autre heros n'entre dans ce deck : le controle du §10 de PROCESSUS-HEROS reste vert. « Black Widow » (hk002) a six homonymes, dont l'allie officiel 01075, aux stats DIFFERENTES. ⚠ 10011 * Brawn porte le nom du heros fan-made bw001a (pack `brawn`) : sans consequence en solo, a surveiller en multijoueur au titre de la regle d'unicite."
     },
     "hero": [
         "hk001a,hk001b"
@@ -43,31 +41,5 @@
         "10028",
         "10028"
     ],
-    "player_deck": [
-        "01051",
-        "01054",
-        "01054",
-        "01055",
-        "01055",
-        "01057",
-        "01088",
-        "01089",
-        "01090",
-        "08030",
-        "09037",
-        "09037",
-        "10011",
-        "10014",
-        "10014",
-        "10015",
-        "10015",
-        "10015",
-        "10016",
-        "10016",
-        "10016",
-        "13014",
-        "13014",
-        "43019",
-        "56013"
-    ]
+    "player_deck": []
 }

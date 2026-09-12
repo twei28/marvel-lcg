@@ -3,15 +3,12 @@
     "name": "Night Thrasher",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist fournie par l'auteur (DESIGNHACKER) : le zip contient les 2 faces d'identite, les 2 faces de la Battle Board, les 15 exemplaires signature, l'obligation et les 5 cartes nemesis, rien d'autre. Aspect JUSTICE choisi par l'utilisateur le 03/09/2026. Le kit y pousse de partout : QUATRE cartes du pack recompensent le trait SKILL (nt001a Varial Heelflip se declenche dessus, nt001b Tech Deck et Manual les recyclent, nt008 The Mancave en reduit le cout, nt010 Multi-Skilled ne finance QUE ca), et Justice est le plus gros vivier de cartes SKILL du jeu : 12. Justice compense aussi la vraie faiblesse du heros, une CTR imprimee de 1.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Justice + Agressivite (construite par le portage, aspect arbitre le 03/09/2026).",
         "planche_note": "LA MECANIQUE VEDETTE. nt003a/nt003b Battle Board est une amelioration PERMANENTE RECTO-VERSO qui bascule entre VEHICLE (+1 CTR, `agile 1`, 1 menace retiree a chaque retour) et WEAPON (+1 ATQ, +1 DEF, 1 degat a chaque retour). NEUF des quinze cartes du deck la retournent ou testent sa face : nt001a, nt002, nt004, nt005, nt006, nt007, nt009, nt011, et l'obligation nt012 la bloque. Les statistiques de base du heros sont MINUSCULES (1/1/1) : la planche vaut la moitie de sa fiche, et la retourner au bon moment EST le jeu. ⚠ ELLE EST DANS `hero_deck`, PAS DANS `set_aside`, et c'est un correctif du 03/09/2026 verifie en VRAIE PARTIE (sonde qui monte le jeu et regarde le terrain : `en_jeu: false` en set_aside, `en_jeu: true` dans le deck). Le moteur ne CHARGE pas `set_aside` (player_setup.py:213, appel en commentaire) : une carte qui y vit n'existe que si le HEROS la cree lui-meme, par `SetupPutIntoPlay` — ce que font Jean Grey pour Phoenix Force, Peter Parker pour Spider Armor, sr001b pour Impact Webbing et hd001b pour Nexus of all Realities. La Battle Board, elle, n'a AUCUNE identite qui la pose : elle porte `desc.Setup` sur la carte (motif 04159a), et world.py:531 ne scanne le mot-cle Setup que dans le DECK DU JOUEUR. Placee en set_aside, elle n'entrait jamais en jeu et 20 cas de test sur 29 tombaient d'un coup. Le deck compte donc 16 entrees signature, dont une quitte le deck des la mise en place : 15 restent, comme la numerotation imprimee de l'auteur (1..16, la planche en 13).",
         "agile_note": "Mot-cle MAISON `agile 1`, porte par la seule face VEHICLE : « reduce damage from attacks with boost cards by 1 ». DEFINI PAR L'AUTEUR entre parentheses sur la carte, donc aucun arbitrage — mais AUCUNE primitive moteur non plus. Fiche complete et montage retenu : docs/reference/mots-cles/agile.md. Le moteur ne garde la liste des cartes de boost d'une attaque que dans les messages d'APRES-COUP ; le montage s'accroche donc au retournement d'une carte de boost pendant une attaque, avec un garde-fou qui empeche la reduction de se cumuler.",
-        "skill_note": "Le deck est construit autour du trait SKILL : DOUZE des 25 cartes d'aspect le portent, ce qui nourrit `nt001a` Varial Heelflip (une bascule de planche par phase), `nt008` The Mancave et `nt010` Multi-Skilled. UNE SEULE vient d'un autre aspect, 06015 Mean Swing (Agressivite) — `41019` Directed Force et `16024` Deft Focus sont de classe Basic, donc legales partout. On reste tres en dessous du plafond de 4 qu'autorise `nt001b` Tech Deck, et cette regle est de toute facon appliquee par le deck-builder, pas par le moteur, qui ne valide pas les decks. 06015 Mean Swing et 41019 Directed Force ne sont pas la par hasard : la premiere exige une amelioration WEAPON sur le heros — `nt003b` Battle Board cote arme et `nt009` Escrima Sticks en sont — et la seconde recompense une attaque a mot-cle, ce que `nt009` donne justement cote VEHICLE.",
         "obligation_note": "nt012 Practice ne reste PAS en jeu : ses trois branches la font toutes partir, deux en la retirant de la PARTIE et une en la DEFAUSSANT. La troisieme est la plus punitive du pack : elle interdit de retourner la Battle Board jusqu'au debut de la phase du vilain, ce qui ampute nt002, nt004, nt006, nt007 et nt009 de leur moitie utile.",
         "collision_note": "⚠ « * Night Thrasher » est aussi le nom de l'allie officiel dt125 (pack determination). Notre face heros porte le meme nom : c'est le set_name qui differe. Aucune carte de classe Hero d'un autre heros n'entre dans ce deck, le controle de l'etape 10 de PROCESSUS-HEROS est vert. Les autres noms du pack (Battle Board, Prewind Stance, The Mancave, Escrima Sticks, Multi-Skilled, Kickflip, Melon Grab, Tailblock, Drop In, Disaster, Practice, Terrax the Tamer, Cemented, Cosmic Connection, Cosmic Ax) ont ete verifies LIBRES le 03/09/2026.",
-        "materiel_note": "⚠ PIEGES DU ZIP. (1) Les noms de FICHIERS ne sont pas les noms de CARTES : `UPGRADE - Night Thrasher_s Suit.png` contient « Prewind Stance » (nt011) et `SUPPORT - The Man Cave.png` contient « The Mancave » (nt008, en un mot). (2) Le dossier ENCOUNTER SET contient une carte ETRANGERE, « Fired Up », bandeau « MAGMA NEMESIS (2/5) », art et texte de Selene : ECARTEE sur decision de l'utilisateur (03/09/2026), le set nemesis de Night Thrasher etant complet sans elle. A reprendre le jour ou Magma sera portee. (3) Les exemplaires multiples ont ete compares AU PIXEL sur leur zone de regles : ils ne different que par leur numero de collection.",
-        "cartes_ecartees_note": "⚠ CORRECTIF du 03/09/2026, trouve par la batterie de cas. Une premiere version du deck contenait QUATRE cartes MORTES pour ce heros, chacune conditionnee a un trait qu'il n'a pas : 08018 Spycraft (« Play only if you control a [[Spy]] character »), 19031 « Think Fast! » (« only if your identity has the [[guardian]] trait »), 20028 Shake it Off (« After a [[guardian]] character takes damage ») et 52034 Quick Quip (« Deal 1 damage to a [[Web-Umbrella]] character you control »). Night Thrasher est AVENGER et NEW WARRIOR, rien d'autre. Une carte injouable ne casse aucun outil — le moteur ne valide pas les decks — mais elle occupe une place pour rien : c'est un cas de test qui a fini par le dire, en constatant que 08018 n'entrait pas en jeu.",
-        "courbe_note": "⚠ CORRECTIF du 03/09/2026, apres une premiere fournee d'autoplay : 32 parties, 0 erreur et 0 blocage, mais 23 ELIMINATIONS sur 32 et 2,2 rounds tenus contre Klaw expert. Le heros a 9 PV, DEF 1 et ATQ 1 — il est fragile par conception, la Battle Board valant la moitie de sa fiche — mais le deck n'aidait pas : il ne comptait que DEUX allies, or l'allie est la principale eponge a degats du jeu. Deux ameliorations « Max 1 par joueur » lentes (41017 Float Like a Butterfly, 37013 Operative Skill) ont ete remplacees par 01058 * Daredevil et 08012 * Quake, ce qui porte le deck a QUATRE allies. Le deck garde 10 cartes de trait SKILL, largement de quoi nourrir Varial Heelflip une fois par phase."
+        "materiel_note": "⚠ PIEGES DU ZIP. (1) Les noms de FICHIERS ne sont pas les noms de CARTES : `UPGRADE - Night Thrasher_s Suit.png` contient « Prewind Stance » (nt011) et `SUPPORT - The Man Cave.png` contient « The Mancave » (nt008, en un mot). (2) Le dossier ENCOUNTER SET contient une carte ETRANGERE, « Fired Up », bandeau « MAGMA NEMESIS (2/5) », art et texte de Selene : ECARTEE sur decision de l'utilisateur (03/09/2026), le set nemesis de Night Thrasher etant complet sans elle. A reprendre le jour ou Magma sera portee. (3) Les exemplaires multiples ont ete compares AU PIXEL sur leur zone de regles : ils ne different que par leur numero de collection."
     },
     "hero": [
         "nt001a,nt001b"
@@ -45,31 +42,5 @@
         "nt015",
         "nt016"
     ],
-    "player_deck": [
-        "01065",
-        "04047",
-        "20013",
-        "20013",
-        "41015",
-        "41015",
-        "14030",
-        "06015",
-        "41019",
-        "16024",
-        "01058",
-        "01059",
-        "08011",
-        "08012",
-        "01060",
-        "01060",
-        "04049",
-        "04049",
-        "01061",
-        "01063",
-        "01064",
-        "01062",
-        "01088",
-        "01089",
-        "01090"
-    ]
+    "player_deck": []
 }

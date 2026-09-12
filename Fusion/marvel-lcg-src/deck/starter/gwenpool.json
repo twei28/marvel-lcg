@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Gwenpool",
     "metadata": {
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes 'Pool (construite par le portage). Les re-skins du pack qui s'y trouvaient (gp015, gp016, gp017) restent au catalogue et au deck-builder.",
         "url": "https://drive.google.com/drive/folders/1Yg77nVnx76-7excowPYe6hyQtOn_8y2t"
     },
     "hero": [
@@ -35,31 +36,5 @@
         "gp013",
         "gp014"
     ],
-    "player_deck": [
-        "44016",
-        "44044",
-        "44018",
-        "44019",
-        "44024",
-        "44053",
-        "44053",
-        "44028",
-        "44028",
-        "44029",
-        "44055",
-        "44056",
-        "44056",
-        "44056",
-        "44030",
-        "44057",
-        "44057",
-        "44057",
-        "gp015",
-        "gp016",
-        "gp017",
-        "01091",
-        "08023",
-        "35022",
-        "38019"
-    ]
+    "player_deck": []
 }

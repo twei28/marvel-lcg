@@ -4,7 +4,7 @@
     "metadata": {
         "url": "",
         "author": "Arnaud",
-        "aspect_note": "L'auteur (« Rainy ») ne fournit aucune decklist d'aspect : l'insert du pack n'en contient pas. Aspect Protection retenu avec l'utilisateur le 7/8/2026, sur le deck Protection du Set de base. Raison : « The Complete Package » ne genere une ressource que si Brawn est EPUISE, et Calculated Defense le redresse en defendant tout en piochant — defendre devient donc rentable, ce que Brawn's Suit et la riposte de Hulk Out renforcent.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Protection (construite par le portage).",
         "team_up_note": "Les deux cartes Team-Up du pack (bw024 Strong as Silk, bw025 Brains and Brawn) sont de classe Basic et restent disponibles au deck-builder. Elles ne sont pas dans ce deck de depart, qui tient deja ses 25 cartes d'aspect.",
         "ally_note": "bw003 Ironheart est l'allie signature ALTERNATIF de bw002 Silk (les deux portent le meme numero, BRAWN 1/15). Le deck de depart joue Silk ; Ironheart se substitue a elle au deck-builder, avec Brains and Brawn en team-up correspondant."
     },
@@ -39,31 +39,5 @@
         "bw022",
         "bw023"
     ],
-    "player_deck": [
-        "01075",
-        "01076",
-        "01077",
-        "01077",
-        "01078",
-        "01078",
-        "01079",
-        "01079",
-        "01080",
-        "01080",
-        "01081",
-        "01081",
-        "01082",
-        "01082",
-        "01083",
-        "01084",
-        "01085",
-        "01086",
-        "01087",
-        "01088",
-        "01089",
-        "01090",
-        "01091",
-        "01092",
-        "01093"
-    ]
+    "player_deck": []
 }

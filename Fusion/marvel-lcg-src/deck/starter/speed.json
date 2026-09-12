@@ -3,9 +3,7 @@
     "name": "Speed",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist d'aspect fournie par l'auteur (CptScorp, Cycle 2) : le zip 'Speed' ne contient que les 2 faces heros, les 15 cartes signature, l'obligation, le set nemesis, l'insert de regles et deux jetons cosmetiques. Aspect AGGRESSION choisi par l'utilisateur le 30/08/2026 : le kit multiplie les attaques de base (Blasting Velocity, Kinetic Flurry, Explosive Touch qui redresse Speed) et surtout Hyperkinetic Fuel exige de payer des EVENEMENTS avec des ressources energie seules — Aggression est l'aspect le plus dense en evenements et en icones energie, et il corrige l'ATQ 1 imprimee.",
-        "energie_note": "Le deck est charge en sources d'energie et de wild, parce que Hyperkinetic Fuel ne se declenche que si l'evenement est paye UNIQUEMENT en energie (le moteur compte le wild comme energie, cf. Resources.OnlyHasColor) : 2x Energy 01088, 2x The Power of Aggression 01055 (wild), les 2x Top Speed sd011/sd012 et Never Ending Spark sd015.",
-        "tenacity_note": "01093 Tenacity est volontairement ABSENTE : c'est la seule carte OFFICIELLE connue pour bloquer une partie d'autoplay (point ouvert du 20/08/2026). La garder aurait pollue la comparaison avec le heros temoin.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage, aspect arbitre le 30/08/2026).",
         "collision_note": "Le jeu contient DEJA un allie officiel 'Speed' (15010, Thomas Shepherd, classe Justice, pack Scarlet Witch) et un sbire 'Speed' (57060, set Scarlet Twins). L'aspect Aggression evite la premiere collision par construction ; en Justice il aurait fallu exclure 15010 a la main.",
         "nemesis_note": "Le set nemesis compte CINQ cartes physiques, et la cinquieme (sd022 Conflicted Feelings) est elle-meme une OBLIGATION, numerotee 'SPEED NEMESIS (5/5)' sur le scan : elle appartient donc au nemesis_set (melangee au deck rencontre avec le reste du set), pas a la cle obligations, qui ne porte que sd017 No Outrunning This."
     },
@@ -40,31 +38,5 @@
         "sd021",
         "sd022"
     ],
-    "player_deck": [
-        "01050",
-        "01051",
-        "01052",
-        "01052",
-        "01053",
-        "01053",
-        "01053",
-        "01054",
-        "01054",
-        "01055",
-        "01055",
-        "01056",
-        "01057",
-        "01057",
-        "01057",
-        "01084",
-        "01085",
-        "01086",
-        "01087",
-        "01087",
-        "01087",
-        "01088",
-        "01088",
-        "01090",
-        "01092"
-    ]
+    "player_deck": []
 }

@@ -4,7 +4,7 @@
     "metadata": {
         "url": "",
         "author": "CptScorp (Marvel Champions Custom Project, Cycle 2)",
-        "aspect_note": "Aucune decklist d'aspect fournie par l'auteur. Aspect Justice retenu : Kate est une Private Investigator (kb001b) dont plusieurs signatures portent le trait SKILL (kb004, kb005, kb010), en echo au texte d'ambiance « Skillful » (regle de deck-building non validee cote moteur, cf. commentaire de kb001b.py).",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Justice (construite par le portage).",
         "hero_deck_note": "12 cartes signature distinctes (kb002-kb013) pour un deck de 15 : kb004 Infiltrate, kb005 Quick Draw et kb009 Lucky doublees (cartes peu chere, a jouer plusieurs fois par manche), le reste en exemplaire unique."
     },
     "hero": [
@@ -38,31 +38,5 @@
         "kb019",
         "kb020"
     ],
-    "player_deck": [
-        "01058",
-        "01059",
-        "01060",
-        "01060",
-        "01061",
-        "01061",
-        "01062",
-        "01062",
-        "01063",
-        "01063",
-        "01064",
-        "01064",
-        "01065",
-        "01065",
-        "01083",
-        "01084",
-        "01085",
-        "01086",
-        "01087",
-        "01088",
-        "01089",
-        "01090",
-        "01091",
-        "01092",
-        "01093"
-    ]
+    "player_deck": []
 }

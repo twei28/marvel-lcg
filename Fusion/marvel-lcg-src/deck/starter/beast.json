@@ -3,11 +3,13 @@
     "name": "Beast",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist fournie par l'auteur. Aspect PROTECTION choisi par l'utilisateur le 31/08/2026 : le pack est batî autour de la defense (DEF 3 imprime, parmi les meilleurs du jeu ; Thick Skinned repeche n'importe quelle carte des que Beast encaisse 0 ; Experimental Warfare est un evenement DEFENSE ; Civilian Disguise pioche apres chaque defense ; Hunter Gear donne +1 DEF). Le deck monte la DEF pour rendre Thick Skinned quasi systematique : Armored Vest et Hunter Gear amenent Beast a DEF 5, Desperate Defense et Defensive Training vont plus haut encore, et Counter-Punch x3 transforme chaque defense reussie en degats. Les CINQ ameliorations d'aspect (Armored Vest, Indomitable x2, Electrostatic Armor, Unflappable) nourrissent aussi Experimental Warfare, qui gagne +1 DEF par amelioration inclinee. Les TROIS soutiens (Defensive Training, X-Mansion, The Night Nurse) donnent a Ambush (carte Discovery) de quoi payer son cout : sans soutien en jeu, elle est injouable. X-Mansion et Cerebro ecartes du lot final au profit d'un soutien a 2 : la courbe reste basse (moyenne 1,4), Beast n'ayant que 5 cartes en main.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Protection (construite par le portage, aspect arbitre le 31/08/2026).",
         "collision_note": "Trois noms du pack existent deja ailleurs : « Beast » est un allie Leadership officiel (33011, pack Cyclops), « Wonder Man » un allie Leadership (03014) et un heros (58001a), « Phoenix » un allie signature de Cyclops (33002), un heros (34001a) et un allie Leadership (49014). Aucun des trois n'est dans ce deck : la regle d'unicite interdirait de les avoir en jeu en meme temps que la carte du pack. « Peter Parker » (bt014, allie Discovery) porte le nom de l'ALTER-EGO de Spider-Man (01001b) : en multijoueur avec un Spider-Man a la table, une identite et un allie du meme nom peuvent coexister, le moteur ne l'interdit pas.",
         "variante_note": "L'auteur livre DEUX alliés numerotes 1/15 (Wonder Man) et 1B/15 (Phoenix), meme texte et memes valeurs, traits differents. Sur decision de l'utilisateur, ils ne sont PAS cumules : ce deck-ci monte Wonder Man, et deck/custom/beast_phoenix.json monte Phoenix. Le joueur choisit a la selection du deck."
     },
-    "hero": ["bt001a,bt001b"],
+    "hero": [
+        "bt001a,bt001b"
+    ],
     "hero_deck": [
         "bt002",
         "bt004",
@@ -32,7 +34,9 @@
         "bt017",
         "bt018"
     ],
-    "obligations": ["bt019"],
+    "obligations": [
+        "bt019"
+    ],
     "nemesis_set": [
         "bt020",
         "bt020",
@@ -40,31 +44,5 @@
         "bt022",
         "bt023"
     ],
-    "player_deck": [
-        "01077",
-        "01077",
-        "01077",
-        "09015",
-        "09015",
-        "27016",
-        "27016",
-        "09016",
-        "01081",
-        "01082",
-        "01082",
-        "10031",
-        "09020",
-        "22034",
-        "09019",
-        "32049",
-        "09012",
-        "09013",
-        "01083",
-        "25024",
-        "01079",
-        "01079",
-        "01088",
-        "01089",
-        "01090"
-    ]
+    "player_deck": []
 }

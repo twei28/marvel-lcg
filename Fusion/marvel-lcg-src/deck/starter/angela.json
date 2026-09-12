@@ -3,7 +3,7 @@
  "name": "Angela",
  "metadata": {
   "url": "",
-  "aspect_note": "Aucune decklist fournie par l'auteur (Juri Krasko) : le zip ne contient que les 2 faces heros, les 15 cartes signature, l'obligation, le set nemesis et un jeton de PV. Aspect AGRESSIVITE choisi par l'utilisateur le 31/08/2026. Raison : TOUT le kit recompense le fait de VAINCRE UN SBIRE — Frenzy (an001a) la redresse, Xiphos (an009) fait piocher, Murderous Glare (an004) retire 1 menace de plus par sbire tue ce round, Asgard's Assassin (an007) generate [wild] au lieu de [physical]. an005 Single Out va meme CHERCHER un sbire dans le deck de rencontre pour le mettre en jeu. L'Agressivite est le seul aspect qui alimente directement ce moteur : le deck est donc charge en cartes qui ATTIRENT ou TUENT des sbires (Looking for Trouble x2, Get Over Here!, Relentless Assault x2, Lie in Wait, Marked, Target Spotter) plutot qu'en degats bruts sur le vilain. Justice comblerait son CTR 1, mais Murderous Glare couvre deja la menace ; Leadership repondrait a Hel-Wolf (an013, qui force a defendre avec un allie) mais ne nourrit pas le moteur.",
+  "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage, aspect arbitre le 31/08/2026).",
   "collision_note": "DEUX homonymes preexistants. (1) « Angela » : 18011 est un ALLIE d'AGRESSIVITE (pack gam). Un heros ne peut pas avoir un allie a son propre nom : il est explicitement EXCLU de ce deck, alors meme que l'aspect retenu est justement l'Agressivite et qu'il aurait ete un choix naturel. (2) « Hela » : an012, le sbire nemesis, porte le nom d'un VILAIN OFFICIEL jouable (21136a/b et 21137a/b, pack mts « The Mad Titan's Shadow »). Aucune carte du pack ne resout « Hela » par son nom, il n'y a donc pas d'ambiguite de code ; en revanche jouer Angela CONTRE le scenario Hela mettrait deux Hela sur la table, ce qui est un choc thematique a signaler au joueur.",
   "auteur": "Juri Krasko"
  },
@@ -38,31 +38,5 @@
   "an014",
   "an015"
  ],
- "player_deck": [
-  "16043",
-  "16043",
-  "06014",
-  "01053",
-  "01053",
-  "06018",
-  "54017",
-  "01051",
-  "06012",
-  "51038",
-  "13017",
-  "33032",
-  "01088",
-  "01089",
-  "01090",
-  "13024",
-  "13024",
-  "01083",
-  "01084",
-  "01091",
-  "01092",
-  "05023",
-  "05033",
-  "16024",
-  "15031"
- ]
+ "player_deck": []
 }

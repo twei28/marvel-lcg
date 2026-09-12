@@ -3,7 +3,7 @@
     "name": "Okoye",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist d'aspect n'est fournie par l'auteur (BLUEHG) : le dossier 'Okoye [3.0]' ne contient que les cartes signature, le nemesis set et les extras cosmetiques, aucun insert de liste. Aspect Leadership CONFIRME par l'utilisateur le 29/08/2026 (aucun aspect n'etant impose par le materiel source)."
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Commandement (construite par le portage, aspect arbitre le 29/08/2026)."
     },
     "hero": [
         "ok001a,ok001b"
@@ -36,31 +36,5 @@
         "ok023",
         "ok024"
     ],
-    "player_deck": [
-        "01066",
-        "01067",
-        "01068",
-        "01069",
-        "01069",
-        "01070",
-        "01070",
-        "01071",
-        "01071",
-        "01072",
-        "01072",
-        "01073",
-        "01074",
-        "01074",
-        "01083",
-        "01084",
-        "01085",
-        "01086",
-        "01087",
-        "01088",
-        "01089",
-        "01090",
-        "01091",
-        "01092",
-        "01093"
-    ]
+    "player_deck": []
 }

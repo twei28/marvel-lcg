@@ -3,8 +3,7 @@
  "name": "Howard the Duck",
  "metadata": {
   "url": "",
-  "aspect_note": "Aucune decklist d'aspect fournie par l'auteur (RyCoRan) : le zip 'Howard the Duck (05-23 Final)' ne contient que les 16 cartes signature, les 3 ressources re-skinnees et le set nemesis. Aspect JUSTICE choisi par l'utilisateur le 30/08/2026 : le kit entier tourne autour des manigances annexes (poser puis vaincre ses 3 manigances-joueur, Private Eye qui previent la menace, Response au sbire d'une manigance qui entre en jeu, Fowl Play, Ducktective Agency), et THW 2 / ATK 1 confirme l'orientation.",
-  "ressources_note": "Les 3 ressources basiques du deck sont les re-skins du pack (hd018 Energy, hd019 Genius, hd020 Strength, en full_link vers 01088/01089/01090) et NON les cartes officielles : c'est tout l'interet de leur presence dans le zip. Ne jamais ajouter 01088/01089/01090 en plus, MaxPerDeck vaut 1.",
+  "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Justice (construite par le portage, aspect arbitre le 30/08/2026). Les re-skins du pack qui s'y trouvaient (hd018, hd019, hd020) restent au catalogue et au deck-builder.",
   "setup_note": "hd017 Nexus of all Realities est une carte Setup + Permanent : elle commence la partie EN JEU et n'est pas melangee au deck. La clé `set_aside` d'un deck de depart est purement DOCUMENTAIRE dans ce depot — SceneLoader.NewScene ne la lit pas (loader.py:98-108 ne construit le HeroDescriptor qu'avec hero / hero_deck / obligations / nemesis_set / player_deck), et seul le chemin « puzzle » s'en sert (server_new_game.py:109/122). Le mecanisme REEL, commun aux 20 autres heros a set_aside non vide (Wolverine 35001b, Vision 26001b, Spider-Man Rainy sr001b, Storm, Doctor Strange...), est porte par l'IDENTITE : `AbilityFactory.SetupPutIntoPlay([...])` genere la carte depuis son card_id sans qu'elle ait besoin d'etre dans un deck (setup.py:6-31). hd001b (Howard Duckson) porte donc `SetupPutIntoPlay([\"hd017\"])`."
  },
  "hero": [
@@ -40,31 +39,5 @@
   "hd026",
   "hd027"
  ],
- "player_deck": [
-  "01058",
-  "01059",
-  "01060",
-  "01060",
-  "01060",
-  "01061",
-  "01061",
-  "01062",
-  "01062",
-  "01062",
-  "01063",
-  "01063",
-  "01064",
-  "01065",
-  "01065",
-  "01084",
-  "01085",
-  "01086",
-  "01087",
-  "01091",
-  "01092",
-  "01093",
-  "hd018",
-  "hd019",
-  "hd020"
- ]
+ "player_deck": []
 }

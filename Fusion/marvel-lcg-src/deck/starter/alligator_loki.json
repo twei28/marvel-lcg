@@ -3,7 +3,7 @@
     "name": "Alligator Loki",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist fournie par l'auteur (Ripper3). Aspect AGRESSIVITE choisi par l'utilisateur le 01/09/2026 : tout le kit tourne autour de l'attaque de base (Lock Jaws s'accroche sur une attaque OU une defense de base, Chomp! x4 fait 6 degats une fois accroche, Unbreakable Grip et Lurking ajoutent de l'ATK) et de la chasse aux sbires (Lurking x3 attaque tout sbire qui entre, Throg al002 offre l'overkill). Comparaison : Wolverine (483 decks MarvelCDB en Agressivite) et Valkyrie (198), deux heros d'attaques de base repetees. Combat Training x2 et Skilled Strike x2 portent l'ATK 2 de base ; Looking for Trouble x2 et Bring It! nourrissent Lurking, Battle Fury et Lie in Wait (PREPARATION, que Butterfly Swamp remelange) ; Hall of Heroes, Jarnbjorn, The Bifrost et Valkyrie exploitent le trait ASGARD (The Bifrost VERIFIEE : verrou sur l'identite ASGARD, Alligator Loki est ASGARD/CREATURE). Precision Strike x2 soigne un heros a 9 PV qui prend des coups en s'accrochant. Courbe ~1,5, Helicarrier seule carte a 3. Stinger, Avengers Mansion-boost et Sentry VERIFIES puis ECARTES : Alligator Loki n'est pas AVENGER. Little Rascals (al023, Team-Up Honey Badger) ecartee du deck de depart : injouable en solo, a ajouter en multijoueur avec X-23 ou Wolverine (X-23).",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage, aspect arbitre le 01/09/2026).",
         "collision_note": "Homonymes verifies avant montage : « Throg » existe QUATRE fois (al002 sbire de joueur signature, al019 sbire nemesis, 25014 allie Aggression officiel de Valkyrie, lj019 allie signature fan-made de Lockjaw). L'allie 25014 est volontairement ECARTE : al019 defausse « tout autre Throg » en entrant et al018 ne laisse attaquer que « Throg » par nom, l'allie brouillerait les deux textes (meme reserve en multijoueur avec Lockjaw). « Loki » (al010 soutien PERSONA vs vilain officiel 21160-21164 et sbire nemesis de Thor 06028) : unicite par nom ET type, aucun conflit. « Honey Badger » (43003 officiel, wx003 fan-made) : al023 reconnait les deux par nom. « Lightning Bolt » (al020/al021 vs 02044 Power Drain, wd023 Power Drain II, 36011 evenement de Storm) : al020/al021 sont liees par ability_link a 02044, meme texte, identifiants distincts."
     },
     "hero": [
@@ -38,31 +38,5 @@
         "al020",
         "al021"
     ],
-    "player_deck": [
-        "01057",
-        "01057",
-        "09037",
-        "09037",
-        "16043",
-        "16043",
-        "19030",
-        "06018",
-        "13017",
-        "06019",
-        "06017",
-        "25023",
-        "06012",
-        "16040",
-        "35014",
-        "01053",
-        "18012",
-        "35018",
-        "35018",
-        "01055",
-        "01055",
-        "01088",
-        "01089",
-        "01090",
-        "01092"
-    ]
+    "player_deck": []
 }

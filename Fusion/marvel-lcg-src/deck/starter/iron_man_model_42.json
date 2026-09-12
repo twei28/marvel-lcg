@@ -3,7 +3,7 @@
     "name": "Iron Man (Model 42)",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist fournie par l'auteur (Rainy). Aspect AGRESSIVITE choisi par l'utilisateur le 03/09/2026, et c'est aussi celui du deck de depart de l'Iron Man officiel. Le deck est construit sur une contrainte que le kit impose : im001a Reactor Cores exige des ressources ENERGIE IMPRIMEES, donc 21 des 25 cartes d'aspect portent une icone [energy] imprimee, 22 icones au total puisque 01088 Energy en porte deux. Une carte d'aspect n'est plus seulement un effet, c'est aussi du carburant.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage, aspect arbitre le 03/09/2026).",
         "reactor_note": "LA MECANIQUE VEDETTE. `reactor` est un compteur MAISON, ajoute a l'enum COUNTER du moteur pour ce pack. Quatre cartes en posent (im001a en convertissant des cartes energie de la main, im004 si Iron Man est deja AERIAL, im006 en forme civile, im009 a la demande) et huit en depensent (im002 +3 degats, im003 +3 menaces, im007 previent 2, im008 +2 degats et Portee, im009 redresse, im011 annule une traitrise, im013 +2 menaces et ignore Patrouille, im014 l'obligation en retire 2 de force). Avec 10 PV seulement, le compteur est a la fois la ressource offensive ET la reserve de survie.",
         "printed_note": "⚠ ARBITRAGE DE L'UTILISATEUR (03/09/2026) : « Spend X PRINTED [energy] resources » se lit LITTERALEMENT. Seules les cartes dont l'icone imprimee est [energy] chargent le reacteur. Consequence directe : im005 Stark Tower ne peut PAS le charger (elle GENERE un wild), ni 01055 The Power of Aggression. En revanche 01088 Energy, qui porte DEUX icones energie imprimees, vaut deux compteurs a lui seul.",
         "aerial_note": "La seconde boucle du pack. im010 Rocket Boots donne AERIAL en permanence, im004 Take Flight pour le round. AERIAL debloque la repartition libre des degats (im002) et de la menace (im003), rend im004 auto-nourri, et c'est aussi ce qui active 42029 Bombs Away cote aspect — la seule carte d'Agressivite du deck qui exige un personnage AERIAL.",
@@ -42,31 +42,5 @@
         "01173",
         "01174"
     ],
-    "player_deck": [
-        "01053",
-        "01053",
-        "06014",
-        "06014",
-        "42029",
-        "42029",
-        "28014",
-        "28014",
-        "13013",
-        "12030",
-        "19030",
-        "13017",
-        "28016",
-        "35015",
-        "01050",
-        "04040",
-        "06012",
-        "16040",
-        "46016",
-        "54016",
-        "01055",
-        "01055",
-        "01088",
-        "01089",
-        "01090"
-    ]
+    "player_deck": []
 }

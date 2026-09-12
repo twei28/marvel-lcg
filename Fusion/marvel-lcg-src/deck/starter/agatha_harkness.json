@@ -3,7 +3,7 @@
     "name": "Agatha Harkness",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist fournie par l'auteur (Ripper3), mais un indice fort : le zip embarque DEUX cartes d'aspect Leadership (aa020 Pixie, aa021 Coven of Chaos, cette derniere verrouillee aux identites MYSTIC) et une Justice (aa019 Wiccan). Aspect LEADERSHIP choisi par l'utilisateur le 31/08/2026 sur cette base. Le deck exploite les deux axes du kit : les allies MYSTIC (Kaluu, Adam Warlock, Pixie, plus la signature Scarlet Witch) que Coven of Chaos x2 ressuscite depuis n'importe quelle defausse, et le moulin a deck (Summoning Spell, Spiritual Meditation x3) qui nourrit Occult Knowledge (aa007) et les branches de Wake Thy Power. Quincarrier, Stinger et Mighty Avengers VERIFIES puis ECARTES : verrous AVENGER, Agatha n'est que MYSTIC ; Spiritual Meditation et The Sorcerer Supreme verifies COMPATIBLES (verrou MYSTIC). Make the Call x3 et Rapid Response x2 recyclent un banc qui meurt volontiers (Scarlet Witch 2 PV, Pixie 2 PV), Team Training le durcit. Courbe ~1,6, Nick Fury seule carte a 4 (pioche). Version 13 menaces d'Agatha All Along (zip) retenue par l'utilisateur - la version Discord affiche 10.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Commandement (construite par le portage, aspect arbitre le 31/08/2026). Les re-skins du pack qui s'y trouvaient (aa020, aa021) restent au catalogue et au deck-builder.",
         "collision_note": "Homonymes verifies avant montage, tous dans d'autres sets, aucun partage d'identifiant : « Agatha Harkness » (15007 est un SOUTIEN SIGNATURE du pack officiel Scarlet Witch - jouer les deux ensemble est legal, l'unicite ne s'applique qu'entre cartes de meme nom ET meme type d'unicite), « Scarlet Witch » (aa002 vs hero officiel 15001a, allie signature 14002 de Quicksilver, allie Justice 58014 - l'unicite interdit aa002 en jeu face au hero Wanda), « Wiccan » (aa019 vs HERO fan-made wc001a, allie Justice officiel 15011, allie signature 56030 de Hulkling, sbire 57061 ; aa019 est exclu d'office des decks du heros wiccan par la regle du nom), « Pixie » (aa020 vs 36017, alliee Leadership officielle de la MEME classe - une seule en jeu), « Death » (aa016 vs vilain officiel 45084a/b des Four Horsemen), « Deaths Embrace » (aa018 clin d'oeil assume a 15026 Magical Suspension, nemesis officielle de Scarlet Witch, quasi meme texte)."
     },
     "hero": [
@@ -39,31 +39,5 @@
         "aa018",
         "aa018"
     ],
-    "player_deck": [
-        "aa020",
-        "aa021",
-        "aa021",
-        "21014",
-        "17011",
-        "01067",
-        "01084",
-        "01083",
-        "01071",
-        "01071",
-        "01071",
-        "08031",
-        "08031",
-        "21055",
-        "04016",
-        "01073",
-        "15019",
-        "15019",
-        "15019",
-        "09026",
-        "01088",
-        "01089",
-        "01090",
-        "01072",
-        "01072"
-    ]
+    "player_deck": []
 }

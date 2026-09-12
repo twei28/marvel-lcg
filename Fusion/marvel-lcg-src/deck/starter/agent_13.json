@@ -4,7 +4,7 @@
     "metadata": {
         "url": "",
         "author": "Arnaud",
-        "aspect_note": "Aspect Agression retenu avec l'utilisateur le 7/8/2026 : Agent 13 est une combattante de terrain (Burst Fire, Takedown, Physical Training), le profil offensif colle mieux que Justice ou Protection a une carriere d'agent de terrain armee. Modele repris du deck de depart de Squirrel Girl (deja livre, 22 Aggression + 3 Basic), en substituant deux allies generiques par deux allies traits S.H.I.E.L.D deja presents dans le pool (Winter Soldier 53035, Spider-Woman 52033) pour coller a son identite d'agent."
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage)."
     },
     "hero": [
         "ag001a,ag001b"
@@ -37,31 +37,5 @@
         "ag014",
         "ag014"
     ],
-    "player_deck": [
-        "53035",
-        "52033",
-        "01051",
-        "10011",
-        "18011",
-        "16043",
-        "16043",
-        "54016",
-        "54016",
-        "09037",
-        "09037",
-        "28014",
-        "28014",
-        "19030",
-        "10018",
-        "01057",
-        "56013",
-        "06018",
-        "06018",
-        "06017",
-        "01055",
-        "01055",
-        "01088",
-        "01089",
-        "01090"
-    ]
+    "player_deck": []
 }

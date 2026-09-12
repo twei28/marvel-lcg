@@ -3,7 +3,7 @@
     "name": "Black Cat",
     "metadata": {
         "url": "",
-        "aspect_note": "Aspect PROTECTION, arbitrage utilisateur du 05/09/2026 : le zip n'a AUCUNE decklist. Black Cat est la plus fragile du depot pour un heros — 9 PV, ATQ 1, DEF 2 — et TROIS de ses neuf cartes signature sont deja defensives : bc011 Nine Lives previent des degats, bc007 Misfortune donne -ATQ et -MNG a l'ennemi qui s'active, bc003 Spider-Man ANNULE une activation. La Protection prolonge exactement ce que le pack fait deja, et Armored Vest repond aux 9 PV.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Protection (construite par le portage, aspect arbitre le 05/09/2026).",
         "nemesis_note": "⚠ AUCUN SET NEMESIS DANS LE ZIP. Les 13 fichiers livres sont les deux faces, les neuf cartes signature (dont Spider-Man en deux versions) et l'obligation : pas une seule carte de rencontre. `nemesis_set` est donc VIDE, ce qui est un cas unique sur les 124 decks de depart. Consequence en jeu, verifiee et non supposee : 01190 Shadow of the Past ne trouve aucun sbire de nemesis a mettre en jeu et gagne simplement Deferlement, ce que son propre texte prevoit (« If your nemesis minion does not enter the game this way, this card gains surge »). Rien a inventer, rien a emprunter a un autre heros.",
         "multiverse_note": "⚠ bc002 ET bc003 SONT DEUX VERSIONS DU MEME NUMERO DE SET (« BLACK CAT 1/15 »), toutes deux nommees « * Spider-Man ». Stats, traits et capacites differents : PV 4 SYMBIOTE/WEB-WARRIOR contre PV 3 AVENGER. bc003 porte le mot-cle maison Multiverse, fiche docs/reference/mots-cles/multiverse.md creee pour ce pack. Les DEUX sont dans le deck, precedent thor_jane_foster dont le hero_deck compte 16 entrees pour la meme raison : le mot-cle n'interdit pas de les emporter toutes les deux, seulement d'en avoir deux EN JEU, et l'unicite native s'en charge. D'ou 16 cartes signature pour 15 numerotees.",
         "homonymes_note": "⚠ « * Black Cat » est DEJA le nom de TROIS cartes du depot : 01002 (alliee du set Spider-Man), wd045 (SBIRE du set Electro) et vp002 (alliee de Venompool). Et « * Spider-Man » existe QUINZE fois. Aucune carte du pack ne cherche par le NOM : toutes passent par le TYPE ou par « YourHero ». Troisieme homonyme sans consequence : « Grappling Hook » est deja 08008 et 50069, deux cartes de Black Widow. En revanche « Felicia Hardy » n'a AUCUN homonyme, le desc.GiveTo de l'obligation bc012 est donc sans ambiguite — contrairement a « Peter Parker », pris quatre fois.",
@@ -35,31 +35,5 @@
         "bc012"
     ],
     "nemesis_set": [],
-    "player_deck": [
-        "01081",
-        "01081",
-        "01082",
-        "01082",
-        "03033",
-        "03033",
-        "09015",
-        "09015",
-        "01077",
-        "01077",
-        "01080",
-        "09019",
-        "01075",
-        "31014",
-        "01076",
-        "01087",
-        "01087",
-        "14022",
-        "14022",
-        "01092",
-        "01084",
-        "01088",
-        "01089",
-        "01090",
-        "13024"
-    ]
+    "player_deck": []
 }

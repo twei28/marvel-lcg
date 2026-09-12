@@ -3,7 +3,7 @@
     "name": "Spider-Man Noir",
     "metadata": {
         "url": "",
-        "aspect_note": "Aspect JUSTICE, arbitrage utilisateur du 05/09/2026 : le zip n'a AUCUN dossier Extras, donc aucune decklist. Le choix tient a sn009 Fancy Fedora, qui glisse sous l'identite chaque complot annexe THWART ET VAINCU : la Justice en cree et en vainc en permanence, c'est la seule facon de remplir la pile sans passer par le deck de rencontre. 15015 Turn the Tide et 04049 Clear the Area declenchent sur le meme evenement, et 01059 Jessica Jones gagne +1 CTR par complot annexe en jeu.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Justice (construite par le portage, aspect arbitre le 05/09/2026).",
         "pile_note": "⚠ TOUT LE PACK REPOSE SUR LA PILE GLISSEE SOUS L'IDENTITE. Le heros a ATQ 0 et CTR 0 IMPRIMEES et gagne +X aux deux, X = nombre de cartes glissees (plafond 3). Sans pile il ne frappe ni ne contre. Onze des seize cartes la lisent ou l'alimentent. La zone est portee par la CARTE et non par la face (card_face.py:1017) : les deux faces la partagent, ce que le texte imprime suppose en ecrivant tantot « under him », tantot « here », tantot « under your hero », tantot « under your identity ».",
         "homonymes_note": "⚠ « Spider-Man Noir » est DEJA le nom de deux ALLIES du depot (31015 pack spdr, wd118 pack web_of_deceit) : aucune carte du pack ne cherche le heros par son NOM, toutes passent par le TYPE ou par « YourHero ». Et « Peter Parker » est pris quatre fois (01001b, sr001b, as001b, plus l'allie bt014) : l'obligation sn011 ecrit malgre tout GiveTo = « Peter Parker », comme les TROIS obligations deja livrees qui font pareil (01165, sr013, as014). Trois autres homonymes sans consequence : Enhanced Spider-Sense (01004, un evenement), Organic Webbing (30011, 52009) et Thunderstorm (36004)."
     },
@@ -38,31 +38,5 @@
         "sn014",
         "sn015"
     ],
-    "player_deck": [
-        "01060",
-        "01060",
-        "04049",
-        "04049",
-        "15013",
-        "15013",
-        "15015",
-        "15015",
-        "01062",
-        "01062",
-        "01063",
-        "01064",
-        "04047",
-        "01059",
-        "01058",
-        "01087",
-        "01087",
-        "14022",
-        "14022",
-        "01092",
-        "01084",
-        "01088",
-        "01089",
-        "01090",
-        "13024"
-    ]
+    "player_deck": []
 }

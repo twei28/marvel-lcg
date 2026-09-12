@@ -3,7 +3,7 @@
     "name": "Iron Lad",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist d'aspect n'est fournie par l'auteur (CptScorp) : le zip 'Iron Lad' ne contient que les cartes hero/signature/obligation, le nemesis set et un insert de regles, aucune liste d'aspect. Aspect Justice CONFIRME par l'utilisateur le 29/08/2026 (theme manipulation de deck/main du kit signature)."
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Justice (construite par le portage, aspect arbitre le 29/08/2026)."
     },
     "hero": [
         "il001a,il001b"
@@ -36,31 +36,5 @@
         "il021",
         "il022"
     ],
-    "player_deck": [
-        "01058",
-        "01059",
-        "01060",
-        "01060",
-        "01060",
-        "01061",
-        "01061",
-        "01062",
-        "01062",
-        "01062",
-        "01063",
-        "01063",
-        "01064",
-        "01064",
-        "01065",
-        "01065",
-        "01065",
-        "01084",
-        "01085",
-        "01086",
-        "01087",
-        "01088",
-        "01089",
-        "01092",
-        "01093"
-    ]
+    "player_deck": []
 }

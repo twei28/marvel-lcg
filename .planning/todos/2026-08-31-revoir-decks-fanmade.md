@@ -1,4 +1,22 @@
-# À FAIRE : revoir les decks de départ que Claude a construits
+# ✅ CLOS LE 12/09/2026 : les decks générés sont RETIRÉS, pas revus
+
+**Décision utilisateur du 12/09/2026**, à la question « jusqu'où va la revue ? » :
+« On vire tous les decks générés pour les fan-made ». Application de la consigne
+du 06/09/2026 (PROCESSUS-HEROS étape 3) à tout l'existant : 33 decks de départ
+vidés de leur moitié d'aspect (les 12 de ce TODO, plus les 16 arbitrés entre le
+29/08 et le 05/09, plus 5 copies d'un deck officiel ou sans note : spider_man_rainy,
+venom_rainy, thor_jane_foster, albert, gwenpool). Chaque fichier garde une
+`metadata.deck_note`. Les 7 decks illégaux ci-dessous disparaissent avec eux,
+sauf `jubilee` (officiel, Unlikely Duo ×2, laissé tel quel) et le paquet
+« Commanding Leadership » de `data/decks_aspect.json` (Hawkeye ×2, liste publiée,
+laissée telle quelle). Conservés : les decks d'auteur, `wolverine_x23` (deck
+officiel de X-23, dont il est le re-skin) et les substitutions de Human Torch,
+Mister Fantastic, The Thing et Invisible Woman (cartes d'auteur absentes du moteur,
+remplacées une pour une dans une liste d'auteur).
+
+---
+
+# (Ancien texte) À FAIRE : revoir les decks de départ que Claude a construits
 
 **Demandé par l'utilisateur le 31/08/2026.** À traiter **quand tous les
 personnages fan-made auront été portés**, pas avant.

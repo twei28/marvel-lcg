@@ -58,9 +58,14 @@ némésis.
 Vérifié le 06/09/2026 : un deck à `player_deck` vide **monte bien une partie**
 (`DECK_NOM=sunfire` → « identite sf001a, main 6, deck 9 »).
 
-⚠ Les décks livrés **avant** cette date gardent leurs 25 cartes d'aspect
-(`throg`, `spider_man_noir`, `black_cat`…) : la consigne vaut pour la suite, pas
-rétroactivement.
+⚠ **Appliquée rétroactivement le 12/09/2026** (décision utilisateur : « on
+vire tous les decks générés pour les fan-made ») : les 33 moitiés d'aspect
+construites par le portage ou copiées d'un héros officiel ont été vidées
+(`angela`, `throg`, `spider_man_noir`, `black_cat`, `spider_man_rainy`,
+`gwenpool`…), chaque fichier gardant une `metadata.deck_note` qui dit ce qui a
+été retiré. Restent pleins les seuls decks **fournis par l'auteur** (`yondu`,
+`hellcat`, `venompool`, `lockjaw`, `moon_knight`, `blink`, `texas_twister`…)
+et `wolverine_x23`, re-skin de X-23 qui reprend son deck officiel.
 
 ⚠ `set_aside` ne sert qu'aux clients (catalogue, lanceur) : le moteur ne lit
 pas ce champ en vraie partie (`HeroDescriptor` ne l'a pas, la génération est

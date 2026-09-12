@@ -3,7 +3,7 @@
     "name": "Scarlet Spider",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist d'aspect fournie par l'auteur (CptScorp) : le zip 'Scarlet Spider' ne contient que Hero Cards et Encounter Cards, aucun insert de liste d'aspect. Aspect Aggression choisi par Claude le 29/08/2026 (comme pour Iron Lad, aucun aspect n'etant impose par le materiel source) : le kit signature est domine par des degats a cible unique (Precise Force, Unrestrained, Stings of Kaine, tous RES physique) et la synergie overkill/piercing, theme naturellement Aggression."
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage, aspect arbitre le 29/08/2026)."
     },
     "hero": [
         "ss001a,ss001b"
@@ -36,31 +36,5 @@
         "ss021",
         "ss022"
     ],
-    "player_deck": [
-        "01050",
-        "01051",
-        "01052",
-        "01052",
-        "01053",
-        "01053",
-        "01054",
-        "01054",
-        "01055",
-        "01055",
-        "01055",
-        "01056",
-        "01056",
-        "01057",
-        "01057",
-        "01084",
-        "01085",
-        "01086",
-        "01087",
-        "01088",
-        "01089",
-        "01090",
-        "01091",
-        "01092",
-        "01093"
-    ]
+    "player_deck": []
 }

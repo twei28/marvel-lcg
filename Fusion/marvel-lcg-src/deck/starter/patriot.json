@@ -3,10 +3,9 @@
     "name": "Patriot",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist d'aspect fournie par l'auteur (CptScorp, Cycle 2) : le zip 'Patriot' ne contient que les 2 faces heros, les 15 cartes signature, l'obligation, le set nemesis et un jeton cosmetique. Aspect LEADERSHIP choisi par l'utilisateur le 30/08/2026 : tout le kit ne parle que d'ALLIES (Will to Protect encaisse a leur place, Hawkingbird leur donne +1 PV, Aided Defense et Covered Fire les epuisent, Revenge / Throwing Stars / Working Together s'attachent a eux) et l'alter-ego imprime une regle de deck-building sur les allies. Sans allies en jeu, la moitie du pack est morte. Le deck est donc volontairement charge en allies : 4 en plus des 2 signature.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Commandement (construite par le portage, aspect arbitre le 30/08/2026).",
         "collision_note": "DEUX allies OFFICIELS s'appellent deja 'Patriot' : 29016 (Rayshaun Lucas, classe LEADERSHIP, pack ironheart) et 56041 (Elijah Bradley lui-meme, classe PROTECTION, pack cw). Un heros ne peut pas avoir un allie a son propre nom : 29016 est donc explicitement EXCLU de ce deck Leadership, et 56041 le serait si l'aspect avait ete Protection. Aucun module du pack ne fait de recherche par nom non bornee sur 'Patriot'.",
-        "leader_note": "La regle 'Leader' imprimee sur pt001b (allies YOUNG AVENGER de n'importe quel aspect) n'a AUJOURD'HUI aucune cible legale : les deux seuls allies YOUNG AVENGER du catalogue sont il002 Stature et wc002 Hulkling, tous deux de classe Hero, donc cartes signature d'autres heros, interdites de deck par PROCESSUS-HEROS §10. La regle est implementee et documentee, elle ne mordra qu'a l'arrivee d'un allie YOUNG AVENGER d'aspect.",
-        "tenacity_note": "01093 Tenacity est volontairement ABSENTE, comme pour speed : c'est le seul bloqueur d'autoplay officiel connu du projet. Le temoin okoye, lui, la contient — l'ecart joue donc en faveur du heros custom et doit etre lu comme tel."
+        "leader_note": "La regle 'Leader' imprimee sur pt001b (allies YOUNG AVENGER de n'importe quel aspect) n'a AUJOURD'HUI aucune cible legale : les deux seuls allies YOUNG AVENGER du catalogue sont il002 Stature et wc002 Hulkling, tous deux de classe Hero, donc cartes signature d'autres heros, interdites de deck par PROCESSUS-HEROS §10. La regle est implementee et documentee, elle ne mordra qu'a l'arrivee d'un allie YOUNG AVENGER d'aspect."
     },
     "hero": [
         "pt001a,pt001b"
@@ -39,31 +38,5 @@
         "pt021",
         "pt022"
     ],
-    "player_deck": [
-        "01066",
-        "01067",
-        "01068",
-        "01069",
-        "01069",
-        "01070",
-        "01070",
-        "01071",
-        "01071",
-        "01072",
-        "01072",
-        "01073",
-        "01074",
-        "01074",
-        "01074",
-        "01083",
-        "01084",
-        "01085",
-        "01086",
-        "01086",
-        "01087",
-        "01088",
-        "01089",
-        "01090",
-        "01092"
-    ]
+    "player_deck": []
 }

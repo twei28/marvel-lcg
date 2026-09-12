@@ -2,9 +2,9 @@
     "version": "0.5.9",
     "name": "Superior Iron Man",
     "metadata": {
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Protection (construite par le portage, aspect arbitre le 29/08/2026).",
         "url": "",
-        "author": "Merlin",
-        "note": "Pack custom de Merlin (xb.fanmade.org), re-skin d'Iron Man/Tony Stark. Seules les 16 cartes signature + obligation + nemesis sont fournies par l'auteur : aucun aspect ni deck de 25 cartes. Aspect choisi avec l'utilisateur (29/08/2026) : Protection (coherent avec Sauvetage theatral et l'Armure Endo-Sym, tournees vers la prevention de degats). Deck = precon Protection officiel (Black Widow, Luke Cage, Counter-Punch, Get Behind Me!, The Power of Protection, Med Team, Armored Vest, Indomitable) + basiques (Emergency, First Aid, les 3 resources de type, Nick Fury, Avengers Mansion). Tenacity (01093) volontairement EXCLUE : autoplay.py documente ce card_id comme bloquant connu (Hero Action reproposee alors que le heros est deja pret, defaut du pilote de test/moteur, pas de la carte -- mais evite quand meme en jeu reel pour ne pas exposer l'utilisateur au meme blocage)."
+        "author": "Merlin"
     },
     "hero": [
         "si001a,si001b"
@@ -39,31 +39,5 @@
         "si017",
         "si017"
     ],
-    "player_deck": [
-        "01075",
-        "01076",
-        "01077",
-        "01077",
-        "01078",
-        "01078",
-        "01079",
-        "01079",
-        "01080",
-        "01080",
-        "01081",
-        "01081",
-        "01082",
-        "01082",
-        "01085",
-        "01085",
-        "01086",
-        "01086",
-        "01087",
-        "01087",
-        "01088",
-        "01089",
-        "01090",
-        "01084",
-        "01091"
-    ]
+    "player_deck": []
 }

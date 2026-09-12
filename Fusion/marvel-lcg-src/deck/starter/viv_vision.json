@@ -3,10 +3,7 @@
     "name": "Viv Vision",
     "metadata": {
         "url": "",
-        "aspect_note": "Aucune decklist fournie par l'auteur (Rainy) : le zip 'Viv Vision' ne contient que les 2 faces heros, les 15 exemplaires signature et l'obligation, sans insert de regles ni liste de deck. Aspect PROTECTION choisi par l'utilisateur le 02/09/2026 : vv004 Phase Up previent TOUS les degats et donne stalwart, vv009 Insubstantial Flight redresse le heros, vv010 Solar Gem se redresse a chaque fin de phase du vilain (donc de l'energie disponible pour defendre), et Viv a besoin d'aide avec 10 PV, REC 3 et DEF 1. C'est aussi l'aspect du Vision officiel.",
-        "requirement_note": "Le deck est choisi pour nourrir vv008 Computer Mind, qui pioche 1 carte par ressource EXIGEE de la carte jouee. Sur les 5 647 cartes du depot, seules TROIS cartes non-signature portent le mot-cle Requirement, et elles sont toutes ici : 27016 What Doesn't Kill Me (Req [physical], pioche 1), 52019 Ready for a Fight (Req [physical], pioche 1) et 27049 * Spider-Man (Req [energy][mental][physical], pioche 3, le plus gros declencheur possible). Le reste des declenchements vient du kit lui-meme (vv002, vv004, vv005, vv009).",
-        "energie_note": "vv001a Density Manipulation coute une ressource ENERGIE par activation, et quatre cartes du kit portent Requirement ([energy]). D'ou 2x 01079 The Power of Protection (wild) et 01088 Energy. ⚠ Seule 01088 porte une icone energie IMPRIMEE : c'est donc la seule carte d'aspect que le Recharge de vv001b peut repecher, le moteur comparant la couleur imprimee sans convertir le wild (checker.py:436).",
-        "android_note": "26024 Reboot (« Ready a friendly [[Android]] character and heal 1 damage from it ») est classe Basic et vise le trait ANDROID que porte Viv : c'est une carte quasi taillee pour elle, signalee comme telle par la critique BGG du pack. 2 exemplaires.",
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Protection (construite par le portage, aspect arbitre le 02/09/2026).",
         "nemesis_note": "Le zip ne fournit AUCUNE carte nemesis. La critique BGG du pack rapporte que Rainy recommande a cette place le modulaire officiel Zzzax (Ironheart, 29036-29040) : 1 sbire, 1 manigance annexe et 3 cartes, soit exactement la forme d'un set nemesis, et son theme (attaquer les ressources energie) mord precisement sur l'economie de Viv. Choix confirme par l'utilisateur le 02/09/2026. ⚠ Si le joueur choisit AUSSI Zzzax comme modulaire du scenario, les cinq cartes existent en double.",
         "collision_note": "Deux cartes du kit sont homonymes de cartes signature du VISION OFFICIEL : « Solar Beam » (vv005 ici, 26008 chez Vision, plus la traitrise 57051) et « Superdense Strike » (vv006 ici, 26009 chez Vision, plus 57052). Aucune carte de classe Hero d'un autre heros n'entre dans ce deck : le controle du §10 de PROCESSUS-HEROS reste vert. « Grounded » (vv011) est aussi une obligation de Jubilee (47023) et un environnement d'Electro (wd041). « Viv's Solar Gem » (vv010) ne doit pas etre confondue avec « * Solar Gem » 57047, attachement du scenario Synthezoid.",
         "alt_note": "Le sous-dossier « Vivian alt cards » du zip n'est PAS de l'art alternatif : meme illustration, mais identite renommee « Vivian », trait CIVILIAN ajoute a l'alter-ego, et limite « once per POWER per round » au lieu de « once per round ». Variante de REGLES, ecartee sur decision de l'utilisateur du 02/09/2026. Aucune entree metadata.hero_alts n'est donc posee."
@@ -42,31 +39,5 @@
         "29039",
         "29040"
     ],
-    "player_deck": [
-        "01077",
-        "01077",
-        "01079",
-        "01079",
-        "01081",
-        "01082",
-        "01082",
-        "01083",
-        "01088",
-        "01089",
-        "01090",
-        "09013",
-        "09015",
-        "09015",
-        "09019",
-        "09020",
-        "10031",
-        "22034",
-        "22034",
-        "26024",
-        "26024",
-        "27016",
-        "27016",
-        "27049",
-        "52019"
-    ]
+    "player_deck": []
 }

@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Venom (Eddie Brock)",
     "metadata": {
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Protection (copie du deck de depart du Black Panther officiel (deck Protection)).",
         "url": "https://drive.google.com/drive/folders/1UPfLYdHHdXtyMNtHdhKF-HNZEGZkTEUg"
     },
     "hero": [
@@ -35,31 +36,5 @@
         "vr015",
         "vr015"
     ],
-    "player_deck": [
-        "01075",
-        "01076",
-        "01077",
-        "01077",
-        "01078",
-        "01078",
-        "01079",
-        "01079",
-        "01080",
-        "01080",
-        "01081",
-        "01081",
-        "01082",
-        "01082",
-        "01083",
-        "01084",
-        "01085",
-        "01086",
-        "01087",
-        "01088",
-        "01089",
-        "01090",
-        "01091",
-        "01092",
-        "01093"
-    ]
+    "player_deck": []
 }

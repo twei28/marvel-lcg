@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Albert",
     "metadata": {
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage).",
         "url": "https://drive.google.com/drive/folders/1QKPpM7ji7Z-ap8Odpwb5rffCTE1zS4LA"
     },
     "hero": [
@@ -35,31 +36,5 @@
         "ab015",
         "ab016"
     ],
-    "player_deck": [
-        "18011",
-        "16040",
-        "01052",
-        "01052",
-        "20026",
-        "20026",
-        "35018",
-        "35018",
-        "35018",
-        "10015",
-        "10015",
-        "46018",
-        "01057",
-        "03031",
-        "28016",
-        "10018",
-        "13018",
-        "12033",
-        "12033",
-        "01086",
-        "01086",
-        "26024",
-        "26024",
-        "26024",
-        "29027"
-    ]
+    "player_deck": []
 }

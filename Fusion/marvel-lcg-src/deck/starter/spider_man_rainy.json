@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Spider-Man (Rainy)",
     "metadata": {
+        "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Justice (copie du deck de depart du Spider-Man officiel (deck Justice)).",
         "url": "https://drive.google.com/drive/folders/1DH8XbXvSC3y9mV4PJj-_eFpLI7anDky5"
     },
     "hero": [
@@ -37,31 +38,5 @@
         "sr016",
         "sr017"
     ],
-    "player_deck": [
-        "01058",
-        "01059",
-        "01060",
-        "01060",
-        "01061",
-        "01061",
-        "01062",
-        "01062",
-        "01063",
-        "01063",
-        "01064",
-        "01064",
-        "01065",
-        "01065",
-        "01083",
-        "01084",
-        "01085",
-        "01086",
-        "01087",
-        "01088",
-        "01089",
-        "01090",
-        "01091",
-        "01092",
-        "01093"
-    ]
+    "player_deck": []
 }
