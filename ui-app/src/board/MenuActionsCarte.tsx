@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
-import { kindLabel, type ScanCardProps } from '../components/ScanCard'
+import { ScanCard, kindLabel, type ScanCardProps } from '../components/ScanCard'
 import { nombreDeRessources, paiementCourant, type Option } from './ask'
 import { classeTonaliteAction } from './action-style'
 import { nomLisible } from './BarreAction'
 import type { Catalogue } from './catalogue'
 import { t } from './langue'
 import { nomAffiche } from './noms-cartes-fr'
-import { usePlacement } from './placement/usePlacement'
+import { enModeFeuille, usePlacement } from './placement/usePlacement'
 import { codeMarvelcdb, urlMarvelcdb } from './marvelcdb'
 import { isScheme, isUnit, isVisibleFor, type WorldCard } from './world'
 
@@ -599,6 +599,14 @@ export function MenuActionsCarte({
         role="dialog"
         aria-label={`${t('Actions de')} ${carte.name}`}
       >
+        {/* Telephone (12/09/2026) : la carte en grand AU-DESSUS de ce qu'elle
+            peut faire. Sur PC la carte est deja sous la souris, on ne la
+            repete pas. */}
+        {enModeFeuille() ? (
+          <div className="ma-carte">
+            <ScanCard {...carte} onSelect={undefined} highlight={false} />
+          </div>
+        ) : null}
         <button type="button" className="af-fermer" aria-label={t('Fermer')} onClick={fermer}>
           X
         </button>
@@ -647,6 +655,11 @@ export function MenuActionsCarte({
       role="dialog"
       aria-label={`${t('Actions de')} ${carte.name}`}
     >
+      {enModeFeuille() ? (
+        <div className="ma-carte">
+          <ScanCard {...carte} onSelect={undefined} highlight={false} />
+        </div>
+      ) : null}
       <header className="ma-entete">
         <div>
           <span className="plateau-eyebrow">

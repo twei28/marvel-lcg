@@ -20,6 +20,21 @@
   body.mode-plateau-portrait {
     --feuille-bas: 0px;
   }
+  /* La carte en grand en tete du menu de ses actions (12/09/2026) : sur
+     telephone, rien n'est sous la souris, il faut la voir pour choisir. */
+  body.mode-plateau-portrait .ma-carte {
+    display: flex;
+    justify-content: center;
+    padding: 6px 0 10px;
+  }
+  body.mode-plateau-portrait .ma-carte .scan-card {
+    --card-w: min(220px, 50vw);
+    --inspect-scale: 1;
+  }
+  body.mode-plateau-portrait .ma-carte .scan-card:hover .scan-visuel,
+  body.mode-plateau-portrait .ma-carte .scan-card:focus-visible .scan-visuel {
+    transform: none;
+  }
   /* --- La feuille, le motif commun ---------------------------------------- */
   body.mode-plateau-portrait .popover-sauvegardes,
   body.mode-plateau-portrait .historique-panneau,
