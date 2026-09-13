@@ -1695,6 +1695,69 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 }
 .acc-nombre:hover{color:#1e1e1e;border-color:var(--affiche-jaune);background:var(--affiche-jaune)}
 
+/* L'aide d'un mode (13/09/2026) : une phrase qui dit ce que le mode fait, dans
+   une bulle sous la tuile. Les cinq tuiles ne portaient qu'un sous-titre de
+   trois mots, et « Bac a sable » ou « Bataille » ne disent rien a qui ne
+   connait pas le jeu.
+
+   ⚠ ELLE NE BLOQUE RIEN : `pointer-events:none`. La bulle deborde sous la
+   tuile et passerait sinon devant celle d'en dessous, qui ne repondrait plus au
+   clic.
+
+   ⚠ ET ELLE SORT AUSSI AU CLAVIER (`:focus-visible`). Une aide qui n'existe
+   qu'a la souris n'existe pas pour qui navigue au Tab. */
+/* L'enveloppe d'une tuile : elle porte la bulle, que la tuile ne peut pas
+   porter elle-meme (son `clip-path` la decouperait). C'est elle, desormais, la
+   case de la grille. */
+.acc-tuile{position:relative;display:flex}
+.acc-tuile>.acc-mode{width:100%}
+
+.acc-aide{
+  position:absolute;
+  left:14px;right:14px;top:calc(100% + 8px);
+  z-index:40;
+  padding:9px 12px;
+  color:var(--txt);
+  font-size:13px;line-height:1.35;
+  text-transform:none;letter-spacing:0;
+  border:2px solid var(--affiche-jaune);
+  background:#12161c;
+  box-shadow:4px 4px 0 #1e1e1e;
+  opacity:0;visibility:hidden;
+  transform:translateY(-4px);
+  transition:opacity var(--dur),transform var(--dur),visibility var(--dur);
+  pointer-events:none;
+}
+.acc-tuile:hover .acc-aide,
+.acc-mode:focus-visible+.acc-aide{opacity:1;visibility:visible;transform:translateY(0)}
+
+/* ⚠ LA TUILE SURVOLEE PASSE DEVANT, ET SANS CETTE LIGNE LA BULLE EST INVISIBLE.
+   Chaque tuile est `position:relative` sans `z-index` : elles s'empilent donc
+   dans l'ordre du DOM, et la rangee du dessous recouvrait la bulle de celle du
+   dessus. Le `z-index` de la bulle n'y pouvait rien, il ne joue qu'a
+   l'interieur de sa propre tuile. */
+.acc-tuile:hover,
+.acc-tuile:focus-within{z-index:41}
+
+@media (prefers-reduced-motion:reduce){
+  .acc-aide{transition:none}
+}
+
+/* ⚠ UN ECRAN TACTILE N'A PAS DE SURVOL, et un appui sur la tuile LANCE le mode :
+   il n'y a aucun geste disponible pour demander l'aide. Elle y est donc
+   toujours affichee, en troisieme ligne de la tuile, sous le sous-titre. Ceux
+   qui en ont le plus besoin sont justement ceux qui jouent au telephone. */
+@media (hover:none){
+  .acc-tuile{flex-direction:column}
+  .acc-aide{
+    position:static;
+    opacity:1;visibility:visible;transform:none;
+    margin:6px 2px 0;padding:0;
+    color:var(--mute);font-size:12px;
+    border:0;background:none;box-shadow:none;
+  }
+}
+
 /* Le bloc « Nouveautes » de l'accueil (8 septembre 2026). Sous les tuiles, il
    dit aux joueurs ce qui a change depuis leur derniere visite. Volontairement
    sobre : c'est une note de bas de page, pas une tuile de plus. Le depliage

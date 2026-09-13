@@ -72,6 +72,20 @@ export const DICO_EN_BASE = {
     "Campagne": "Campaign",
     "1 héros": "1 hero",
     "2 à 4 héros": "2 to 4 heroes",
+    // L'aide des cinq tuiles de mode (13/09/2026). Une phrase chacune, montree
+    // au survol. Celle de Bataille reprend le nom que le livret officiel donne
+    // au mode (mc56 p.14, « competitive mode »).
+    "Tu joues un seul héros contre le méchant.": "You play a single hero against the villain.",
+    "À plusieurs sur le même écran, ou seul avec plusieurs héros.":
+        "Several players on one screen, or one player with several heroes.",
+    "Chacun sur son écran. Tu envoies un lien, ils rejoignent.":
+        "Everyone on their own screen. You send a link, they join.",
+    "Tu enchaînes les scénarios d'une boîte, dans l'ordre.":
+        "You play through a box's scenarios, in order.",
+    "Mêmes règles, mais tu poses et retires ce que tu veux.":
+        "Same rules, but you can put anything into play and take it back out.",
+    "Le mode compétitif de Civil War, joueurs contre joueurs.":
+        "The Civil War competitive mode, players against players.",
     "Joueurs": "Players",
     "Joueur": "Player",
     "Retour": "Back",

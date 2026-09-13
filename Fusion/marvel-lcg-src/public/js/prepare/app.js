@@ -116,18 +116,29 @@ const ASPECTS = {
     // exactement comme le lisere du plateau (board.css). Une couleur, partout.
     venomized: "#6b6b7a",
 };
+// ⚠ `aide` : LA PHRASE QUI EXPLIQUE LE MODE, montrée au survol (et toujours
+// visible sur un écran tactile, qui n'a pas de survol : voir `.acc-aide` dans
+// prepare.css). Textes arrêtés avec l'utilisateur le 13/09/2026 : une phrase,
+// pas deux, écrite pour quelqu'un qui ne connaît pas encore le jeu. Celle de
+// Bataille reprend le nom que lui donne le livret (mc56 p.14, « competitive
+// mode »).
 const MODES = [
-    { id: "solo", label: "Solo", desc: t("1 héros"), players: 1, fixed: true, mark: "1" },
-    { id: "hotseat", label: t("Coop locale"), desc: t("2 à 4 héros"), players: 2, min: 2, max: 4, mark: "4" },
-    { id: "campaign", label: t("Campagne"), desc: "Progression", players: 1, min: 1, max: 4, mark: "C" },
+    { id: "solo", label: "Solo", desc: t("1 héros"), players: 1, fixed: true, mark: "1",
+      aide: t("Tu joues un seul héros contre le méchant.") },
+    { id: "hotseat", label: t("Coop locale"), desc: t("2 à 4 héros"), players: 2, min: 2, max: 4, mark: "4",
+      aide: t("À plusieurs sur le même écran, ou seul avec plusieurs héros.") },
+    { id: "campaign", label: t("Campagne"), desc: "Progression", players: 1, min: 1, max: 4, mark: "C",
+      aide: t("Tu enchaînes les scénarios d'une boîte, dans l'ordre.") },
     // Bac a sable : partie normale (mêmes règles, mêmes choix), mais le plateau
     // démarre garni côté vilain et le panneau de triche s'ouvre à côté.
-    { id: "sandbox", label: t("Bac à sable"), desc: t("Test des cartes"), players: 1, fixed: true, mark: "T" },
+    { id: "sandbox", label: t("Bac à sable"), desc: t("Test des cartes"), players: 1, fixed: true, mark: "T",
+      aide: t("Mêmes règles, mais tu poses et retires ce que tu veux.") },
     // Bataille : le mode competitif de Civil War et Synthezoid Smackdown. Deux
     // equipes s'affrontent, chacune face au leader prepare par l'autre. Le
     // livret (mc56 p.14) n'en connait que deux formats, 1v1 et 2v2 : d'ou 2 ou
     // 4 joueurs, et le camp deduit du siege plutot que demande.
-    { id: "bataille", label: t("Bataille"), desc: t("2 équipes, 1v1 ou 2v2"), players: 2, min: 2, max: 4, mark: "B" },
+    { id: "bataille", label: t("Bataille"), desc: t("2 équipes, 1v1 ou 2v2"), players: 2, min: 2, max: 4, mark: "B",
+      aide: t("Le mode compétitif de Civil War, joueurs contre joueurs.") },
     // Decouverte : partie FIGEE (Spider-Man / Rhino / seed 42) doublee d'un
     // coach qui donne une mission a la fois. Les lecons NOMMENT des cartes
     // precises, d'ou le seed impose : voir tools/test_seed_tutoriel.py.
@@ -990,12 +1001,16 @@ function accueilView() {
     const tuiles = [];
     for (const m of MODES) {
         if (m.id === "hotseat" && state.salon.multi) {
-            tuiles.push({ mode: m, distant: false, mark: m.mark, libelle: m.label, detail: m.desc });
+            tuiles.push({ mode: m, distant: false, mark: m.mark, libelle: m.label,
+                          detail: m.desc, aide: m.aide, cle: m.id });
             tuiles.push({ mode: m, distant: true, mark: "@", libelle: t("Coop en ligne"),
-                          detail: t("2 à 4 héros, chacun choisit le sien") });
+                          detail: t("2 à 4 héros, chacun choisit le sien"),
+                          aide: t("Chacun sur son écran. Tu envoies un lien, ils rejoignent."),
+                          cle: m.id + "-en-ligne" });
             continue;
         }
-        tuiles.push({ mode: m, distant: null, mark: m.mark, libelle: m.label, detail: m.desc });
+        tuiles.push({ mode: m, distant: null, mark: m.mark, libelle: m.label,
+                      detail: m.desc, aide: m.aide, cle: m.id });
     }
 
     const partir = (tuile, nombre) => {
@@ -1030,16 +1045,34 @@ function accueilView() {
         }
         // Pas de lettre ni de chiffre devant le nom : sur une grande tuile, le
         // nom se suffit.
-        grille.append(el("button", {
-            class: "acc-mode cut" + (nombres.length ? " avec-nombres" : ""),
-            onclick: () => partir(tuile, null),
-        },
-            el("span", { class: "acc-copy" },
-                el("b", { class: "mvl" }, tuile.libelle),
-                el("small", {}, tuile.detail),
+        //
+        // L'AIDE : une phrase qui dit ce que fait le mode, dans une bulle au
+        // survol. `aria-describedby` la relie au bouton, donc un lecteur
+        // d'écran l'annonce APRÈS le nom du mode, comme une précision, sans
+        // l'écraser. Sur un écran tactile, qui n'a pas de survol, la même
+        // phrase reste visible en permanence : voir `.acc-aide` dans
+        // prepare.css.
+        // ⚠ LA BULLE EST DEHORS, PAS DANS LE BOUTON. Les tuiles portent la
+        // classe `cut`, donc un `clip-path` pour leur coin coupe : il DECOUPE
+        // tout ce qu'elles contiennent. Une bulle placee a l'interieur etait
+        // bien la, visible pour le navigateur comme pour les tests, et
+        // n'apparaissait a l'ecran nulle part. D'ou l'enveloppe.
+        const idAide = "acc-aide-" + tuile.cle;
+        grille.append(el("div", { class: "acc-tuile" },
+            el("button", {
+                class: "acc-mode cut" + (nombres.length ? " avec-nombres" : ""),
+                onclick: () => partir(tuile, null),
+                ...(tuile.aide ? { "aria-describedby": idAide } : {}),
+            },
+                el("span", { class: "acc-copy" },
+                    el("b", { class: "mvl" }, tuile.libelle),
+                    el("small", {}, tuile.detail),
+                ),
+                nombres.length ? el("span", { class: "acc-nombres" },
+                    el("small", {}, t("héros")), ...nombres) : null,
             ),
-            nombres.length ? el("span", { class: "acc-nombres" },
-                el("small", {}, t("héros")), ...nombres) : null,
+            tuile.aide ? el("span", { class: "acc-aide", id: idAide, role: "tooltip" },
+                            tuile.aide) : null,
         ));
     }
 
