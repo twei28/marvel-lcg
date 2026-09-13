@@ -27,8 +27,7 @@ outil pour que ce soit tenable.
 
 | Point | Décision |
 |---|---|
-| **Périmètre** | **Tout le catalogue**, 4324 cartes. Cartes joueur, rencontres, vilains : `Supply Run` et `Art Imitates Death` portent sur n'importe quelle carte. |
-| **Où vit l'outil** | Une **page du jeu réservée à l'administrateur**, atteignable depuis `/admin`. Le relevé est un arbitrage : deux avis différents donneraient une liste incohérente. |
+| **Périmètre** | **Tout le catalogue**. ⚠ Le chiffre de 4324 cartes écrit ici le 13/09 était faux : le catalogue en compte **6153**, qui ne portent que **5746 illustrations distinctes** (`pic_id` et `full_link` en partagent). Corrigé au moment de faire. || **Où vit l'outil** | Une **page du jeu réservée à l'administrateur**, atteignable depuis `/admin`. Le relevé est un arbitrage : deux avis différents donneraient une liste incohérente. |
 | **Combien de personnages par carte** | **Autant qu'on veut**, cases à cocher. `Art Imitates Death` dit « chaque personnage dont l'image était sur cette carte » : au pluriel. |
 | **Liste proposée** | **Les identités du jeu** : héros officiels et fan-made avec leur alter ego, vilains, sbires uniques. Ce sont les seuls personnages que les cartes de Muse désignent. |
 | **Carte sans identité** | **Un seul bouton « Aucune identité »** : lieu, civil, objet, explosion, même réponse. La nuance ne changerait rien en jeu. |
@@ -40,19 +39,41 @@ outil pour que ce soit tenable.
 
 ⚠ **Une carte non relevée garde l'approximation actuelle** (carte signature).
 Le relevé n'est donc jamais bloquant : on peut s'arrêter, reprendre, et le jeu
-reste jouable à chaque instant. C'est ce qui permet d'attaquer 4324 cartes sans
-promettre de les finir.
+reste jouable à chaque instant. C'est ce qui permet d'attaquer 5746
+illustrations sans promettre de les finir.
 
-## Reste à préciser au moment de faire
+⚠ **Vérifié, pas supposé** : les 12 cas Muse de `test_capacites.py` sont
+repassés verts avec un relevé vide, donc l'ancien comportement est intact tant
+que rien n'est relevé.
 
-- La forme exacte de `images_cartes.json` : `{ "<card_id>": ["<id identité>"] }`
-  avec une liste vide pour « aucune identité », et l'absence de clé pour
-  « pas encore relevée ». Deux états distincts, à ne pas confondre.
-- La route d'écriture côté moteur, sur le modèle de `save_legacy`.
-- Comment `EstUneCarteSignature` (pack `muse`) consulte le relevé, et comment
-  `Art Imitates Death` et `Supply Run` s'en servent pour désigner leurs cibles.
-- Le compteur d'avancement : combien de cartes relevées sur 4324.
+## Ce qui a été tranché en faisant
+
+- **La clé est l'IMAGE, pas la carte.** `{ "<id image>": ["<id personne>"] }`,
+  l'id image étant `pic_id`, sinon la carte d'origine d'une réimpression,
+  sinon la carte elle-même. Même résolution côté moteur, côté page et côté
+  outil d'import. Sans cela, une réimpression aurait pu contredire son original.
+- **Une personne n'est pas une carte.** D'où `data/identites.json`, généré par
+  `outils/annuaire-identites.py` : Rhino est quatre cartes, Spider-Man douze
+  faces. ⚠ Le regroupement se fait sur le **couple héros + alter ego**, jamais
+  sur le seul nom de code : « Spider-Man » seul fondait Peter Parker, Miles
+  Morales et Miguel O'Hara en une personne.
+- **`EstUneCarteSignature` n'est plus la règle, c'est le repli.** La règle est
+  `PorteLImageDe(face, joueur)`, et elle est *discrète* : elle ne retombe sur
+  l'approximation que pour une image **jamais regardée**. Une image relevée
+  sans personne dessus répond non, même sur une carte signature, sinon relever
+  une carte n'aurait aucun effet.
+- **`mu005` Grim Inspiration garde `CartesSignatureDe`** : c'est la seule carte
+  du set dont le texte imprimé dit vraiment « an identity-specific card ».
+- **Un lot peut venir d'une IA qui voit les images.** Prompt et CSV dans
+  `.planning/releve-images/`, versement par `outils/importer-releve-images.py`,
+  qui refuse le lot entier si un seul identifiant est inventé.
 
 ## Statut
 
-Décisions prises, **non commencé**.
+**Fait** (commit `1596c595`). Le relevé lui-même est à zéro : c'est le travail
+de saisie qui commence, il n'est jamais bloquant.
+
+Reste ouvert : personne n'a encore relevé une seule carte, donc le chemin
+« relevé non vide » n'a été prouvé que par `outils/test_releve_images.py` et
+par la spec Playwright, jamais en partie réelle. Le jour où le premier lot est
+versé, rejouer les 12 cas Muse de `test_capacites.py` pour voir ce qui change.
