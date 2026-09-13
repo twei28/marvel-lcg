@@ -145,6 +145,37 @@ ssh -i $cle $srv "sudo -u narwhal RACINE=/opt/narwhal narwhal-sauvegarde --verif
 
 ---
 
+## Les comptes qui dorment
+
+Il n'y a que vingt places, et une place n'est pas qu'une ligne dans une base :
+c'est un **espace de jeu**, avec ses decks, ses campagnes en cours et ses hauts
+faits.
+
+**Quatre semaines sans venir, et le compte passe en « expire ».** Sa session se
+ferme, sa table s'éteint, il ne compte plus dans le quota. Mais **il n'est pas
+supprimé** : sa ligne reste dans `/admin`, et son espace de jeu l'attend tant
+que personne n'a pris sa place.
+
+Sa place n'est reprise qu'au moment où quelqu'un en a besoin, et elle est
+effacée à ce moment-là seulement. Si la personne revient avant, elle retrouve
+tout.
+
+**Pour la remettre en service** : bouton « Valider » sur sa ligne dans
+`/admin`. Si sa place a déjà été donnée, elle en reçoit une neuve et repart de
+zéro.
+
+La colonne **Dernière visite** est ce qui décide : elle suit l'ouverture du jeu,
+pas la saisie du mot de passe. Une session dure trois mois, donc quelqu'un qui
+joue tous les soirs sans jamais retaper son mot de passe reste bien « vu
+aujourd'hui ».
+
+Le site ne sait pas envoyer de courriel : personne ne peut être prévenu de son
+expiration. La règle est donc écrite sur l'écran de connexion, où tout le monde
+passe.
+
+Pour changer le délai : variable d'environnement `EXPIRATION_JOURS` du service
+(28 par défaut).
+
 ## Les rapports de bug
 
 Depuis n'importe quel écran du jeu, un bouton **« Signaler un bug »** ouvre un

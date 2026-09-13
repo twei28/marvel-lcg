@@ -1473,6 +1473,141 @@ _code, _, _page_admin = appel("GET", "/admin", entetes=cookie_de(o.ADMIN))
 verifier("sans annonce, la page n'offre rien a annuler",
          _code == 200 and b"Annuler l'annonce" not in _page_admin, str(_code))
 
+# --- Les comptes inactifs, et la place qu'ils tiennent ----------------------
+# AJOUT du 13/09/2026. Il n'y a que MAX_COMPTES places, et une place n'est pas
+# qu'une ligne en base : c'est un EMPLACEMENT, avec ses decks, ses campagnes en
+# cours et ses hauts faits. Quatre semaines sans venir, et elle retourne au pot.
+#
+# Ce qui doit tenir :
+#   - on ne juge PAS sur `derniere_connexion` seule : une session dure
+#     quatre-vingt-dix jours, quelqu'un qui joue tous les soirs sans retaper son
+#     mot de passe passerait pour absent depuis des mois ;
+#   - le compte n'est pas supprime : il EXPIRE, sa ligne reste et son
+#     emplacement avec, tant que personne ne prend sa place ;
+#   - sa place n'est reprise QU'AU MOMENT ou quelqu'un en a besoin, et elle est
+#     effacee a ce moment-la, sinon le nouveau venu heriterait des decks du
+#     precedent ;
+#   - l'administrateur n'expire jamais : c'est lui qui remet les autres en
+#     service.
+import datetime as _dt_exp                                  # noqa: E402
+
+
+def _vieillir(pseudo, jours):
+    """Fait comme si ce compte n'avait plus donne signe de vie depuis N jours."""
+    vieux = (_dt_exp.datetime.now() - _dt_exp.timedelta(days=jours)).strftime("%Y-%m-%d %H:%M")
+    with o._cx() as cx:
+        cx.execute("UPDATE comptes SET vu_le=?, derniere_connexion=?, cree=?"
+                   " WHERE pseudo=?", (vieux, vieux, vieux, pseudo))
+
+
+o.PARTIES.clear()
+o.EMPLACEMENTS.clear()
+for _p in ("dormeur", "assidu"):
+    try:
+        o.inscrire(_p, _p + "@exemple.fr", "motdepasse123")
+    except ValueError:
+        pass
+    o.changer_statut(_p, "valide")
+
+# L'assidu n'a pas retape son mot de passe depuis longtemps, mais il ouvre son
+# jeu tous les jours : `/entrer` touche `vu_le`. Il ne doit PAS expirer.
+_vieillir("assidu", o.EXPIRATION_JOURS + 20)
+o.toucher_presence("assidu")
+_vieillir("dormeur", o.EXPIRATION_JOURS + 3)
+
+_place_dormeur = o.emplacement_de("dormeur")
+verifier("le dormeur tient bien une place avant d'expirer",
+         _place_dormeur is not None, str(_place_dormeur))
+
+_expires = o.expirer_comptes_inactifs()
+verifier("le compte inactif expire", "dormeur" in _expires, str(_expires))
+verifier("mais pas celui qui vient de jouer sans se reconnecter",
+         "assidu" not in _expires, str(_expires))
+verifier("l'administrateur n'expire jamais", o.ADMIN not in _expires, str(_expires))
+
+_c = o.compte("dormeur")
+verifier("le compte n'est PAS supprime, il est marque expire",
+         _c is not None and _c["statut"] == "expire", str(_c and _c["statut"]))
+verifier("et sa place l'attend tant que personne ne la prend",
+         _c is not None and _c["emplacement"] == _place_dormeur,
+         str(_c and _c["emplacement"]))
+verifier("il ne compte plus dans le quota",
+         o.nb_valides() == len([1 for _x in o.liste_comptes() if _x["statut"] == "valide"]))
+
+# ⚠ ET IL SAIT POURQUOI. « Ton compte attend ma validation » aurait envoye
+# quelqu'un attendre indefiniment quelque chose qui ne viendra pas.
+try:
+    o.verifier("dormeur", "motdepasse123")
+    _dit = ""
+except ValueError as _e:
+    _dit = str(_e)
+verifier("la connexion d'un compte expire dit pourquoi", "expire" in _dit, _dit)
+verifier("et dit quoi faire", "Ecris-moi" in _dit, _dit)
+
+# Sa session en cours est coupee : le statut est relu en base a chaque requete.
+verifier("un compte expire ne garde pas sa session",
+         o.pseudo_de_session(o.ouvrir_session("dormeur")) is None)
+
+# --- La place n'est reprise qu'au moment ou quelqu'un en a besoin -----------
+# ⚠ LE CAS QUI DONNE SON SENS A L'EXPIRATION. Sans recyclage, le quota se
+# libere sur le papier mais la personne suivante s'entend quand meme repondre
+# « Plus aucun espace de jeu disponible » : les places sont toutes tenues par
+# des comptes qui ne viennent plus.
+_places_avant = o.NB_EMPLACEMENTS
+o.NB_EMPLACEMENTS = len([1 for _x in o.liste_comptes() if _x["emplacement"] is not None])
+try:
+    o.inscrire("nouveau", "nouveau@exemple.fr", "motdepasse123")
+    _refus = ""
+except ValueError as _e:
+    _refus = str(_e)
+verifier("le site plein d'un compte expire accepte quand meme une inscription",
+         _refus == "", _refus)
+verifier("et le nouveau venu recoit la place du compte expire",
+         o.emplacement_de("nouveau") == _place_dormeur,
+         "%s / %s" % (o.emplacement_de("nouveau"), _place_dormeur))
+verifier("le compte expire n'a plus de place",
+         o.compte("dormeur")["emplacement"] is None)
+verifier("l'assidu, lui, n'a pas bouge", o.emplacement_de("assidu") is not None)
+
+# Plus rien a recycler : cette fois, c'est vraiment complet.
+try:
+    o.inscrire("detrop", "detrop@exemple.fr", "motdepasse123")
+    _refus = ""
+except ValueError as _e:
+    _refus = str(_e)
+verifier("sans compte expire a recycler, le site se dit complet",
+         "espace de jeu" in _refus, _refus or "aucun refus")
+o.NB_EMPLACEMENTS = _places_avant
+
+# --- Le remettre en service --------------------------------------------------
+o.changer_statut("dormeur", "valide")
+verifier("remis en service, il redevient valide",
+         o.compte("dormeur")["statut"] == "valide")
+verifier("et il recoit une nouvelle place, puisque l'ancienne est donnee",
+         o.emplacement_de("dormeur") not in (None, _place_dormeur),
+         str(o.emplacement_de("dormeur")))
+
+# --- La page /admin montre la VRAIE derniere visite --------------------------
+# ⚠ Elle affichait `derniere_connexion` seule, et c'etait trompeur : c'est ce
+# chiffre-la qui decide de l'expiration, la page doit montrer celui qui compte.
+verifier("la visite lisible suit `vu_le`, pas la seule reconnexion",
+         "jamais" not in o._visite_lisible(o.compte("assidu")),
+         o._visite_lisible(o.compte("assidu")))
+_code, _, _page_c = appel("GET", "/admin", entetes=cookie_de(o.ADMIN))
+verifier("la page /admin s'affiche avec des comptes expires",
+         _code == 200 and b"Derniere visite" in _page_c, str(_code))
+verifier("et elle rappelle la regle a l'administrateur",
+         "retourne au pot".encode("utf-8") in _page_c)
+
+# ⚠ LA REGLE EST ANNONCEE, PAS SUBIE. Le site ne sait pas envoyer de courriel :
+# personne ne peut etre prevenu de son expiration. La seule facon honnete de la
+# faire accepter est de l'ecrire la ou tout le monde passe.
+_code, _, _page_co = appel("GET", "/connexion")
+verifier("l'ecran de connexion annonce la regle aux joueurs",
+         _code == 200 and "retourne au pot".encode("utf-8") in _page_co, str(_code))
+verifier("et il donne le nombre de jours",
+         str(o.EXPIRATION_JOURS).encode("utf-8") in _page_co)
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:

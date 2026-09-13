@@ -574,14 +574,29 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     return True
 
 
+# Un compte qui expire a deja quatre semaines de retard : le verifier toutes
+# les heures est bien assez, et evite de relire toute la table chaque minute.
+PERIODE_EXPIRATION_S = 3600
+
+
 def faucheur() -> None:
-    """Rend les emplacements dont le moteur est mort ou la partie trop vieille."""
+    """Rend les emplacements dont le moteur est mort ou la partie trop vieille,
+    et fait expirer les comptes que plus personne n'habite."""
+    prochaine_revue = 0.0
     while True:
         time.sleep(60)
         for code, partie in list(PARTIES.items()):
             trop_vieille = (time.time() - partie.debut) > DUREE_MAX_HEURES * 3600
             if not partie.vivant() or trop_vieille:
                 eteindre_jeu(code, "minuteur" if trop_vieille else "moteur arrete")
+        if time.time() >= prochaine_revue:
+            prochaine_revue = time.time() + PERIODE_EXPIRATION_S
+            try:
+                expirer_comptes_inactifs()
+            except Exception as souci:
+                # Le faucheur tient AUSSI les tables : une revue des comptes
+                # qui echoue ne doit pas emporter le fil avec elle.
+                print(f"  ⚠ revue des comptes en echec : {souci}")
 
 
 # --------------------------------------------------------------------------
@@ -592,6 +607,23 @@ VERROU_COMPTES = threading.Lock()
 # Une session dure trois mois. Le but est de ne PLUS retaper son mot de passe
 # d'une soiree de jeu a l'autre ; c'est un site prive, a inscription fermee.
 DUREE_SESSION_JOURS = 90
+
+# QUATRE SEMAINES SANS VENIR, ET LA PLACE RETOURNE AU POT (13/09/2026).
+#
+# Il n'y a que `MAX_COMPTES` places, et une place n'est pas qu'une ligne en
+# base : c'est un EMPLACEMENT, avec ses decks, ses campagnes en cours et ses
+# hauts faits. Quelqu'un qui ne revient pas immobilise tout cela.
+#
+# ⚠ LE COMPTE N'EST PAS SUPPRIME, IL EXPIRE. Son statut passe a `expire` : sa
+# session se ferme, sa table s'eteint, il ne compte plus dans le quota. Mais sa
+# ligne reste, ET SON EMPLACEMENT AUSSI : ses decks et ses campagnes l'attendent
+# tant que personne n'a pris sa place. Il recontacte l'administrateur, qui le
+# revalide d'un clic, et il retrouve tout.
+#
+# ⚠ ET SI QUELQU'UN PREND SA PLACE, elle est effacee a ce moment-la, pas avant
+# (voir `_attribuer_emplacements_manquants`). Sans cet effacement, le nouveau
+# venu heriterait des decks et des campagnes du precedent.
+EXPIRATION_JOURS = int(os.environ.get("EXPIRATION_JOURS", "28"))
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS comptes (
@@ -777,20 +809,70 @@ def initialiser_base() -> None:
     _attribuer_emplacements_manquants()
 
 
+def _prendre_un_emplacement(cx, pour: str = "") -> int:
+    """Une place libre, quitte a la reprendre a un compte EXPIRE. -1 si aucune.
+
+    ⚠ C'EST ICI QUE L'EXPIRATION SERT A QUELQUE CHOSE. Sans ce recyclage, un
+    compte expire garderait sa place pour toujours : le quota se libererait
+    sur le papier, mais la vingtieme personne s'entendrait quand meme repondre
+    « Plus aucun espace de jeu disponible ».
+
+    ⚠ ET L'EFFACEMENT SE FAIT ICI, AU MOMENT DE DONNER LA PLACE, jamais avant.
+    C'est ce qui permet a un compte expire de retrouver ses decks et ses
+    campagnes s'il revient a temps, et ce qui empeche le nouveau venu
+    d'heriter de ceux du precedent. `lancer_jeu` n'efface plus rien : si on ne
+    le faisait pas ici, personne ne le ferait.
+
+    On reprend au plus anciennement inactif : celui qui a le moins de chances
+    de revenir.
+    """
+    pris = {r["emplacement"] for r in cx.execute(
+        "SELECT emplacement FROM comptes WHERE emplacement IS NOT NULL")}
+    libre = next((n for n in range(1, NB_EMPLACEMENTS + 1) if n not in pris), None)
+    if libre is not None:
+        return libre
+    recyclable = cx.execute(
+        "SELECT pseudo, emplacement FROM comptes"
+        " WHERE statut = 'expire' AND emplacement IS NOT NULL"
+        " ORDER BY MAX(COALESCE(vu_le, ''), COALESCE(derniere_connexion, ''),"
+        "              COALESCE(cree, '')) LIMIT 1").fetchone()
+    if recyclable is None:
+        return -1
+    cx.execute("UPDATE comptes SET emplacement = NULL WHERE pseudo = ?",
+               (recyclable["pseudo"],))
+    _nettoyer_emplacement(recyclable["emplacement"])
+    print(f"  place {recyclable['emplacement']} reprise a « {recyclable['pseudo']} »"
+          f" (compte expire){' pour « %s »' % pour if pour else ''}")
+    return recyclable["emplacement"]
+
+
 def _attribuer_emplacements_manquants() -> None:
-    """Donne un emplacement aux comptes qui n'en ont pas encore."""
+    """Donne un emplacement aux comptes qui n'en ont pas encore.
+
+    ⚠ QUAND IL N'Y A PLUS DE PLACE NEUVE, ON RECYCLE CELLE D'UN COMPTE EXPIRE,
+    le plus anciennement inactif d'abord. C'est ce qui donne tout son sens a
+    l'expiration : sans ce recyclage, un compte expire garderait son
+    emplacement pour toujours et la place ne serait rendue que sur le papier.
+
+    ⚠ ET ON EFFACE L'EMPLACEMENT AU MOMENT DE LE DONNER, jamais avant. C'est
+    ce qui permet a un compte expire de retrouver ses decks et ses campagnes
+    s'il revient a temps, et ce qui empeche le nouveau venu d'heriter de ceux
+    du precedent. `lancer_jeu` n'efface plus rien depuis longtemps : si on ne
+    le faisait pas ici, personne ne le ferait.
+    """
     with _cx() as cx:
-        pris = {r["emplacement"] for r in cx.execute(
-            "SELECT emplacement FROM comptes WHERE emplacement IS NOT NULL")}
-        for c in cx.execute(
-                "SELECT pseudo FROM comptes WHERE emplacement IS NULL ORDER BY cree"):
-            libre = next((n for n in range(1, NB_EMPLACEMENTS + 1) if n not in pris), None)
-            if libre is None:
-                print(f"  ⚠ plus d'emplacement libre pour « {c['pseudo']} »")
+        # ⚠ ON LIT LA LISTE D'ABORD. `_prendre_un_emplacement` ecrit dans la
+        # meme table : parcourir un curseur ouvert dessus reviendrait a se lire
+        # en train de s'ecrire.
+        sans_place = [r["pseudo"] for r in cx.execute(
+            "SELECT pseudo FROM comptes WHERE emplacement IS NULL ORDER BY cree")]
+        for pseudo in sans_place:
+            libre = _prendre_un_emplacement(cx, pseudo)
+            if libre < 0:
+                print(f"  ⚠ plus d'emplacement libre pour « {pseudo} »")
                 break
             cx.execute("UPDATE comptes SET emplacement = ? WHERE pseudo = ?",
-                       (libre, c["pseudo"]))
-            pris.add(libre)
+                       (libre, pseudo))
 
 
 def mot_de_passe_jeu(pseudo: str) -> str:
@@ -928,10 +1010,10 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
         # pourrait valider le premier compte.
         statut = "valide" if (invite or pseudo == ADMIN) else "attente"
         sel = secrets.token_bytes(16).hex()
-        pris = {r["emplacement"] for r in cx.execute(
-            "SELECT emplacement FROM comptes WHERE emplacement IS NOT NULL")}
-        libre = next((n for n in range(1, NB_EMPLACEMENTS + 1) if n not in pris), None)
-        if libre is None:
+        # Quitte a reprendre la place d'un compte expire : c'est tout l'objet
+        # de l'expiration. Voir `_prendre_un_emplacement`.
+        libre = _prendre_un_emplacement(cx, pseudo)
+        if libre < 0:
             raise ValueError("Plus aucun espace de jeu disponible.")
         cx.execute(
             "INSERT INTO comptes"
@@ -1029,6 +1111,13 @@ def verifier(identifiant: str, mot_de_passe: str) -> str:
     # fuir l'empreinte par le temps de reponse.
     if not secrets.compare_digest(_empreinte(mot_de_passe, ligne["sel"]), ligne["empreinte"]):
         raise ValueError("Identifiant ou mot de passe incorrect.")
+    if ligne["statut"] == "expire":
+        # ⚠ ON DIT POURQUOI, ET QUOI FAIRE. « Ton compte attend ma validation »
+        # aurait envoye quelqu'un attendre indefiniment quelque chose qui ne
+        # viendra pas : personne ne sait, cote site, qu'il est revenu.
+        raise ValueError(
+            "Ton compte a expire : plus de %d jours sans venir, et la place est "
+            "retournee au pot. Ecris-moi, je te la rends." % EXPIRATION_JOURS)
     if ligne["statut"] != "valide":
         raise ValueError("Ton compte attend encore ma validation.")
     with _cx() as cx:
@@ -1038,13 +1127,77 @@ def verifier(identifiant: str, mot_de_passe: str) -> str:
 
 
 def changer_statut(pseudo: str, statut: str) -> None:
-    if statut not in ("valide", "attente", "refuse"):
+    if statut not in ("valide", "attente", "refuse", "expire"):
         return
+    # Remettre en service un compte expire dont la place a ete recyclee : il
+    # lui en faut une nouvelle, sinon il se connecte dans le vide.
+    rendre_une_place = (statut == "valide" and emplacement_de(pseudo) is None)
     with VERROU_COMPTES, _cx() as cx:
         cx.execute("UPDATE comptes SET statut = ? WHERE pseudo = ?", (statut, pseudo))
     if statut != "valide":
         # Un compte devalide ne doit pas continuer sa session en cours.
         fermer_sessions_de(pseudo)
+    elif rendre_une_place:
+        _attribuer_emplacements_manquants()
+
+
+def derniere_activite(ligne) -> str:
+    """Le dernier signe de vie de ce compte, quel qu'il soit.
+
+    ⚠ TROIS SOURCES, ET IL EN FAUT TROIS. `derniere_connexion` ne bouge qu'a
+    la saisie du mot de passe, or une session dure quatre-vingt-dix jours :
+    quelqu'un qui joue tous les soirs sans jamais retaper son mot de passe
+    aurait l'air absent depuis des mois. `vu_le` est touche a chaque `/entrer`,
+    c'est-a-dire chaque fois qu'on ouvre son jeu, et c'est le vrai signal. Et
+    `cree` rattrape le compte tout neuf qui n'a encore rien fait.
+    """
+    return max(ligne["vu_le"] or "", ligne["derniere_connexion"] or "",
+               ligne["cree"] or "")
+
+
+def _visite_lisible(ligne) -> str:
+    """« 2026-09-13 10:04 (il y a 3 j) », ou « jamais ».
+
+    ⚠ ON N'AFFICHE PLUS `derniere_connexion` SEULE, et c'etait trompeur : une
+    session dure quatre-vingt-dix jours, donc quelqu'un qui joue tous les soirs
+    sans retaper son mot de passe y apparaissait absent depuis des mois. C'est
+    aussi ce chiffre-la qui decide de l'expiration : la page doit montrer celui
+    qui compte. Voir `derniere_activite`.
+    """
+    quand = derniere_activite(ligne)
+    if not quand:
+        return "jamais"
+    depuis = _il_y_a(quand)
+    return "%s (%s)" % (quand, depuis) if depuis else quand
+
+
+def expirer_comptes_inactifs() -> list:
+    """Fait expirer les comptes sans signe de vie depuis EXPIRATION_JOURS.
+
+    Rend la liste des pseudos expires. Voir le commentaire de
+    `EXPIRATION_JOURS` : le compte n'est pas supprime, sa place retourne au pot
+    et ses donnees l'attendent tant que personne ne la prend.
+
+    ⚠ L'ADMINISTRATEUR N'EXPIRE JAMAIS. C'est lui qui remet les autres en
+    service : s'il se verrouillait dehors, plus personne ne pourrait rentrer.
+    """
+    seuil = EXPIRATION_JOURS * 86400
+    expires = []
+    for c in liste_comptes():
+        if c["statut"] != "valide" or c["pseudo"] == ADMIN:
+            continue
+        ecart = _secondes_depuis(derniere_activite(c))
+        if ecart is None or ecart < seuil:
+            continue
+        expires.append(c["pseudo"])
+    for pseudo in expires:
+        # La table d'abord : un compte expire ne doit pas garder un moteur
+        # allume, qui tient un port et de la memoire pour personne.
+        if pseudo in PARTIES:
+            eteindre_jeu(pseudo, "compte expire")
+        changer_statut(pseudo, "expire")
+        print(f"  compte « {pseudo} » expire : {EXPIRATION_JOURS} jours sans venir")
+    return expires
 
 
 def liste_comptes():
@@ -1886,9 +2039,10 @@ PAGE_ADMIN = """<!doctype html>
   {annonce_annuler}
 
   <h1>Comptes</h1>
-  <p class="sous">{valides} valide(s) sur {max}. <a href="/">Retour au site</a></p>
+  <p class="sous">{valides} valide(s) sur {max}. {regle_expiration}
+  <a href="/">Retour au site</a></p>
   <table>
-    <tr><th>Pseudo</th><th>Adresse</th><th>Demande le</th><th>Derniere connexion</th>
+    <tr><th>Pseudo</th><th>Adresse</th><th>Demande le</th><th>Derniere visite</th>
         <th>Statut</th><th></th></tr>
     {lignes}
   </table>
@@ -2531,7 +2685,13 @@ class Handler(BaseHTTPRequestHandler):
                   + ' Deja un compte ? <a href="/connexion">Se connecter</a>.'
                   if inscription else
                   'Pas encore de compte ? <a href="/inscription">En demander un</a>.'
-                  ' Mot de passe oublie ? Demande un lien de reinitialisation a l\'administrateur.'),
+                  ' Mot de passe oublie ? Demande un lien de reinitialisation a l\'administrateur.'
+                  # ⚠ LA REGLE EST ANNONCEE, PAS SUBIE. Le site ne sait pas
+                  # envoyer de courriel : personne ne peut etre prevenu de son
+                  # expiration. La seule facon honnete de la faire accepter est
+                  # de l'ecrire la ou tout le monde passe.
+                  ' Les places sont comptees : %d jours sans venir et la tienne'
+                  ' retourne au pot. Ecris-moi, je te la rends.' % EXPIRATION_JOURS),
         ).encode("utf-8")
 
     def _formulaire_reinitialisation(self, jeton: str, erreur: str = "") -> bytes:
@@ -2600,7 +2760,7 @@ class Handler(BaseHTTPRequestHandler):
                 "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
                     html.escape(c["pseudo"]), html.escape(c["email"] or "—"),
                     html.escape(c["cree"] or ""),
-                    html.escape(c["derniere_connexion"] or "jamais"),
+                    html.escape(_visite_lisible(c)),
                     html.escape(statut), actions))
         base = ("https://%s" % DOMAINE) if DOMAINE else "http://127.0.0.1:%d" % PORT_SITE
         inv = []
@@ -2686,6 +2846,12 @@ class Handler(BaseHTTPRequestHandler):
                                  invitations="".join(inv),
                                  reinitialisations="".join(reinit),
                                  rapports=rapports, pastille=pastille,
+                                 regle_expiration=(
+                                     "Sans visite pendant %d jours, un compte passe"
+                                     " en « expire » : sa place retourne au pot, ses"
+                                     " decks et ses campagnes l'attendent tant que"
+                                     " personne ne la prend. « Valider » le remet en"
+                                     " service." % EXPIRATION_JOURS),
                                  annonce_etat=annonce_etat,
                                  annonce_annuler=annonce_annuler,
                                  annonce_max=ANNONCE_MINUTES_MAX,
