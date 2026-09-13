@@ -1706,6 +1706,39 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 
    ⚠ ET ELLE SORT AUSSI AU CLAVIER (`:focus-visible`). Une aide qui n'existe
    qu'a la souris n'existe pas pour qui navigue au Tab. */
+/* LEGACY (13/09/2026) : ce qui n'est pas encore debloque reste SOUS LES YEUX,
+   grise, avec sa condition. Absent de la grille, on ne saurait pas ce qu'on
+   rate ; grise sans un mot, on ne saurait pas quoi faire. */
+.tb-port.est-verrou{filter:grayscale(1) brightness(.45);cursor:not-allowed}
+.tb-port.est-verrou:hover{transform:none}
+.tb-port.est-verrou:hover::after{box-shadow:none}
+.tb-port.est-verrou.est-achetable{cursor:pointer;filter:grayscale(.6) brightness(.7)}
+.tb-port.est-verrou.est-achetable:hover{filter:grayscale(0) brightness(1)}
+.tb-verrou{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  padding:5px 7px;font-size:10px;line-height:1.25;color:#ffe08a;
+  background:rgba(0,0,0,.78);text-align:left;white-space:normal;
+}
+.tb-port.est-verrou .tb-port-nom{opacity:.8}
+/* Le bandeau Legacy en tete de l'etape : ou l'on en est, et combien de jetons. */
+.legacy-bande{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;
+  margin:0 0 10px;padding:8px 12px;
+  border:2px solid var(--affiche-jaune);background:#1a1707;color:var(--txt);font-size:13px;
+}
+.legacy-bande b{color:var(--affiche-jaune);text-transform:uppercase;letter-spacing:.04em}
+.legacy-bande .legacy-jetons{margin-left:auto;font-weight:900}
+.legacy-bande .legacy-suite{flex-basis:100%;color:var(--dim);font-size:12px}
+/* La question posee une fois, a l'activation. */
+.legacy-choix{display:grid;gap:10px;margin:14px 0}
+.legacy-choix button{
+  text-align:left;padding:12px 14px;color:var(--txt);
+  border:2px solid var(--line);background:#161b22;cursor:pointer;
+}
+.legacy-choix button:hover{border-color:var(--affiche-jaune)}
+.legacy-choix b{display:block;font-size:15px}
+.legacy-choix small{display:block;color:var(--dim);margin-top:3px}
+
 /* L'enveloppe d'une tuile : elle porte la bulle, que la tuile ne peut pas
    porter elle-meme (son `clip-path` la decouperait). C'est elle, desormais, la
    case de la grille. */

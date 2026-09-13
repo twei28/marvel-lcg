@@ -35,7 +35,9 @@
     "aide-modes": "playwright test tests/aide-des-modes.spec.ts --project=pc",
     "legacy": "playwright test tests/legacy-regles.spec.ts --project=pc",
     "legacy-paliers": "playwright test tests/legacy-paliers.spec.ts --project=pc",
-    "legacy-fiche": "playwright test tests/legacy-fiche.spec.ts --project=pc"
+    "legacy-fiche": "playwright test tests/legacy-fiche.spec.ts --project=pc",
+    "legacy-verrou": "playwright test tests/legacy-verrou.spec.ts --project=pc",
+    "legacy-ecran": "playwright test tests/legacy-ecran.spec.ts --project=pc"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0"

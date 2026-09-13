@@ -132,15 +132,15 @@ prendre.
 |---|---|---|
 | 1 | **Les règles**, pures et testées : `public/js/prepare/legacy.js`. Paliers, jetons, conditions, ordre des vagues, table rase. | ✅ **Faite le 13/09/2026.** 13 cas, `npm run legacy`. |
 | 2 | **Les paliers depuis le catalogue** : `public/js/prepare/legacy-catalogue.js`. | ✅ **Faite le 13/09/2026.** 5 cas, `npm run legacy-paliers`. |
-| 3 | **La fiche du compte** : la lire, l'écrire à chaque fin de partie, la reconstruire depuis `games_history`. | à faire |
-| 4 | **L'écran** : la sixième tuile, la grille grisée avec ses conditions, la boutique de jetons. | à faire |
-| 5 | **Garder les parties terminées** : allumer `auto_save_after_game_over`, rétention à 50. | à faire |
+| 3 | **La fiche du compte** : `legacy-fiche.js`, routes `/get_legacy` et `/save_legacy`. | ✅ **Faite le 13/09/2026.** 10 cas, `npm run legacy-fiche`. |
+| 4 | **L'écran** : la sixième tuile, la question à l'activation, la grille grisée avec l'étiquette de sa boîte et la condition en infobulle, le bandeau, l'achat d'un fan-made d'un clic. `legacy-verrou.js` + branchement dans `app.js`. | ✅ **Faite le 13/09/2026.** 7 cas `npm run legacy-verrou`, 8 cas `npm run legacy-ecran`. |
+| 5 | **Garder les parties terminées** : `auto_save_after_game_over` allumé dans `config_serveur.py`, ménage à 50 dans `eteindre_jeu`, les trois emplacements du plateau jamais touchés. | ✅ **Faite le 13/09/2026.** |
 
 ⚠ La tranche 1 ne lit ni réseau, ni stockage, ni catalogue : on lui passe tout,
 elle répond. Tout le reste s'y branche, rien ne s'y mélange.
 
 ## Statut
 
-Spec **complète** : douze règles arrêtées, nom arrêté, **non commencée**.
+**Livré le 13/09/2026**, les cinq tranches. Non déployé à cette date.
 Plus aucune question ouverte. Il reste un chiffre à relever, le poids d'un
 enregistrement de partie, qui peut faire revoir la rétention.

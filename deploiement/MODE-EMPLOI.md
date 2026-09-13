@@ -145,6 +145,22 @@ ssh -i $cle $srv "sudo -u narwhal RACINE=/opt/narwhal narwhal-sauvegarde --verif
 
 ---
 
+## Le mode Legacy
+
+Sixième tuile de l'accueil. On commence avec la boîte de base et ses cinq
+héros, et on ouvre la suite boîte par boîte en gagnant : tous les vilains de la
+vague battus, tous ses héros vainqueurs. Ce qui est fermé reste visible, grisé,
+avec le nom de sa boîte ; la condition complète est en infobulle et dans le
+bandeau jaune en tête de l'étape.
+
+Les héros fan-made s'achètent : une première victoire avec un héros officiel
+donne un jeton, deux en expert. Un clic sur un fan-made grisé le débloque.
+
+La progression de chacun vit dans `legacy-serveur-N.json`, à côté de son
+historique. Le fichier ne contient que ce qui ne se déduit pas de l'historique
+(date de départ, jetons dépensés) : le reste se recalcule à chaque ouverture.
+Le supprimer ne fait perdre que ces deux choses.
+
 ## Les parties terminées, et comment les revoir
 
 Depuis le 13/09/2026, **chaque partie terminée laisse un enregistrement

@@ -86,6 +86,33 @@ export const DICO_EN_BASE = {
         "Same rules, but you can put anything into play and take it back out.",
     "Le mode compétitif de Civil War, joueurs contre joueurs.":
         "The Civil War competitive mode, players against players.",
+    // Legacy (13/09/2026)
+    "Boîte par boîte": "Box by box",
+    "Tu commences avec la boîte de base et tu débloques la suite en gagnant.":
+        "You start with the core set and unlock the rest by winning.",
+    "D'abord": "First",
+    "bats": "beat",
+    "gagne avec": "win with",
+    "méchants": "villains",
+    "et": "and",
+    "1 jeton : clique pour le débloquer": "1 token: click to unlock",
+    "1 jeton. Gagne d'abord avec un héros officiel.": "1 token. Win with an official hero first.",
+    "Vague ouverte": "Wave open",
+    "jeton(s)": "token(s)",
+    "1 jeton": "1 token",
+    "Tout est débloqué. Bravo.": "Everything is unlocked. Well done.",
+    "Pour ouvrir la suite": "To open the next box",
+    "Tes parties déjà jouées comptent-elles ?": "Do your past games count?",
+    "Reprendre mes parties passées": "Count my past games",
+    "Tout ce que tu as déjà gagné est acquis. Tu repars d'où tu en es.":
+        "Everything you have already won counts. You continue from where you are.",
+    "Repartir de zéro": "Start from scratch",
+    "Seules les parties jouées à partir de maintenant comptent. Le vrai parcours.":
+        "Only games played from now on count. The real journey.",
+    "Ce choix ne se refait pas.": "This choice cannot be changed later.",
+    "Débloquer ce héros pour 1 jeton ?": "Unlock this hero for 1 token?",
+    "Débloquer": "Unlock",
+    "Legacy": "Legacy",
     "Joueurs": "Players",
     "Joueur": "Player",
     "Retour": "Back",

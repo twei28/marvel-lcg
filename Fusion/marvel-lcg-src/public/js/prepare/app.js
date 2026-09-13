@@ -9,6 +9,10 @@ import { launch } from "/public/js/prepare/launcher.js?v=62115d60";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
+// LEGACY (13/09/2026) : la fiche du compte, et le verrou qui dit ce qui est
+// ouvert. Tout le calcul vit dans ces modules ; ici on ne fait que lire.
+import { etat as etatLegacy, activer as activerLegacy, acheter as acheterLegacy } from "/public/js/prepare/legacy-fiche.js";
+import { fabriquerVerrou } from "/public/js/prepare/legacy-verrou.js";
 // Panneau « Documents ». Importe ICI plutot que pose en balise dans
 // prepare.html : deux URL differentes (avec et sans ?v=) chargeraient le
 // module deux fois et poseraient deux boutons dans l'en-tete.
@@ -139,6 +143,13 @@ const MODES = [
     // 4 joueurs, et le camp deduit du siege plutot que demande.
     { id: "bataille", label: t("Bataille"), desc: t("2 équipes, 1v1 ou 2v2"), players: 2, min: 2, max: 4, mark: "B",
       aide: t("Le mode compétitif de Civil War, joueurs contre joueurs.") },
+    // Legacy (13/09/2026) : on commence avec la seule boîte de base et on ouvre
+    // la suite en gagnant. Ce n'est pas un mode de jeu au sens du moteur : une
+    // partie Legacy est une partie Solo ou Coop locale ordinaire, jouée sur
+    // une grille VERROUILLÉE. `partir` pose `state.legacy` et bascule sur le
+    // vrai mode selon le nombre de héros. Spec : .planning/todos/2026-09-13-mode-legacy.md
+    { id: "legacy", label: "Legacy", desc: t("Boîte par boîte"), players: 1, min: 1, max: 4, mark: "L",
+      aide: t("Tu commences avec la boîte de base et tu débloques la suite en gagnant.") },
     // Decouverte : partie FIGEE (Spider-Man / Rhino / seed 42) doublee d'un
     // coach qui donne une mission a la fois. Les lecons NOMMENT des cartes
     // precises, d'ou le seed impose : voir tools/test_seed_tutoriel.py.
@@ -239,6 +250,8 @@ const state = {
     // homebrew : decoche = uniquement les heros officiels, coche = uniquement
     // les fan-made (Stan Lee, Hulk (Rainy), Thor (Jane Foster)).
     heroFilters: { q: "", vague: "", fav: false, homebrew: false },
+    // Legacy : null hors du mode ; sinon { etat, verrou } (voir entrerLegacy).
+    legacy: null,
     scenario: null,
     // Bataille : le scenario pose devant la SECONDE equipe. Chaque equipe
     // affronte celui apporte par l'autre (mc56 p.14, etape 4).
@@ -326,7 +339,9 @@ const prev = () => {
 
 async function randomize() {
     if (state.step === 0) {
-        const heroes = await catalog.heroes();
+        const tous = await catalog.heroes();
+        // Legacy : le hasard ne pioche que dans ce qui est débloqué.
+        const heroes = state.legacy ? tous.filter((h) => state.legacy.verrou.heros(h).ouvert) : tous;
         const used = new Set(activePlayers().filter((p) => p.hero).map((p) => p.hero.id));
         for (let i = 0; i < state.playerCount; i++) {
             if (state.players[i].hero) continue;
@@ -339,7 +354,8 @@ async function randomize() {
     } else if (state.step === 2) {
         // En campagne, l'ordre est imposé : on ne tire pas de scénario au hasard.
         if (!isCampaignMode()) {
-            const scs = await catalog.scenariosForExtension(state.extensionTab);
+            const tous = await catalog.scenariosForExtension(state.extensionTab);
+            const scs = state.legacy ? tous.filter((sc) => state.legacy.verrou.scenario(sc).ouvert) : tous;
             if (scs.length) selectScenario(rnd(scs));
         }
         render();
@@ -762,6 +778,7 @@ function stepView() {
  */
 function libelleMode(m) {
     if (!m) return "-";
+    if (state.legacy) return "Legacy";
     return enLigne() && m.id === "hotseat" ? t("Coop en ligne") : m.label;
 }
 
@@ -989,6 +1006,132 @@ function bandeauEnLigne() {
     );
 }
 
+/* ---- LEGACY ---------------------------------------------------------------
+   Entrer dans le mode, poser la question de l'activation, tenir le verrou.
+   Les règles sont dans legacy.js, la fiche dans legacy-fiche.js, le verrou
+   dans legacy-verrou.js : ici, seulement ce qui touche l'écran. */
+
+/** Recharge l'état et le verrou depuis le moteur. À appeler après un achat. */
+async function rafraichirLegacy() {
+    const e = await etatLegacy(t);
+    const heroes = await catalog.heroes();
+    state.legacy = { etat: e, verrou: fabriquerVerrou(e, heroes, t) };
+    return state.legacy;
+}
+
+/** La tuile Legacy : on pose la question une fois, puis on entre. */
+async function entrerLegacy(nombre) {
+    const e = await etatLegacy(t);
+    if (!e.fiche.actif) {
+        const repartir = await demanderDepartLegacy();
+        if (repartir === null) return;            // a renoncé
+        await activerLegacy(repartir);
+    }
+    await rafraichirLegacy();
+    const n = Math.max(1, Math.min(4, nombre || 1));
+    state.mode = n === 1 ? MODES.find((m) => m.id === "solo") : MODES.find((m) => m.id === "hotseat");
+    state.coopEnLigne = false;
+    state.playerCount = n;
+    state.activeSlot = 0;
+    state.scenario = null;
+    // On ne masque pas les fan-made : ils se voient grisés, avec leur prix.
+    state.heroFilters.homebrew = false;
+    goto(0);
+}
+
+/** « Tes parties déjà jouées comptent-elles ? » Rend true (repartir de zéro),
+ *  false (reprendre), ou null si on referme sans répondre.
+ *
+ *  ⚠ CE CHOIX NE SE REFAIT PAS, et la modale le dit. Reprendre ses parties
+ *  passées peut ouvrir d'un coup plusieurs vagues ; repartir de zéro est le
+ *  vrai parcours. Les deux sont légitimes, aucun n'est le défaut. */
+function demanderDepartLegacy() {
+    return new Promise((resolve) => {
+        const finir = (valeur) => { hideHover(); fermerModale(overlay); resolve(valeur); };
+        const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) finir(null); } },
+            el("div", { class: "deck-modal-panel vh-panel" },
+                el("div", { class: "dm-head" },
+                    el("b", { class: "mvl" }, "Legacy"),
+                    el("span", { class: "dm-sub" }, t("Tes parties déjà jouées comptent-elles ?")),
+                ),
+                el("div", { class: "legacy-choix" },
+                    el("button", { onclick: () => finir(false) },
+                        el("b", {}, t("Reprendre mes parties passées")),
+                        el("small", {}, t("Tout ce que tu as déjà gagné est acquis. Tu repars d'où tu en es."))),
+                    el("button", { onclick: () => finir(true) },
+                        el("b", {}, t("Repartir de zéro")),
+                        el("small", {}, t("Seules les parties jouées à partir de maintenant comptent. Le vrai parcours."))),
+                ),
+                el("div", { class: "vh-note" }, t("Ce choix ne se refait pas.")),
+                el("div", { class: "vh-actions" },
+                    el("button", { class: "tampon", onclick: () => finir(null) }, t("Annuler")),
+                ),
+            ),
+        );
+        ouvrirModale(overlay);
+    });
+}
+
+/** Le bandeau en tête de l'étape : où on en est, et combien de jetons. */
+function bandeLegacy() {
+    if (!state.legacy) return null;
+    const v = state.legacy.verrou;
+    const suite = v.prochaine
+        ? `${t("Pour ouvrir la suite")} : ${conditionLegacy(v.prochaine)}`
+        : t("Tout est débloqué. Bravo.");
+    return el("div", { class: "legacy-bande" },
+        el("b", {}, "Legacy"),
+        el("span", {}, `${t("Vague ouverte")} : ${v.prochaine ? v.prochaine.nom : v.vagueOuverte}`),
+        el("span", { class: "legacy-jetons" }, `${v.jetons.restants} ${t("jeton(s)")}`),
+        el("span", { class: "legacy-suite" }, suite),
+    );
+}
+
+/** La phrase de condition d'une étape, dans la langue de l'écran. */
+function conditionLegacy(etape) {
+    const noms = (liste) => liste.map((x) => x.nom || x.id);
+    const vilains = noms(etape.vilainsRestants || []);
+    const heros = noms(etape.herosRestants || []);
+    const morceaux = [];
+    if (vilains.length) morceaux.push(vilains.length <= 3 ? `${t("bats")} ${vilains.join(", ")}` : `${t("bats")} ${vilains.length} ${t("méchants")}`);
+    if (heros.length) morceaux.push(heros.length <= 3 ? `${t("gagne avec")} ${heros.join(", ")}` : `${t("gagne avec")} ${heros.length} ${t("héros")}`);
+    return morceaux.join(` ${t("et")} `);
+}
+
+/** Un clic sur un héros fan-made grisé : l'acheter, si on a de quoi. */
+async function acheterHerosLegacy(h, portraitEl) {
+    const v = state.legacy && state.legacy.verrou.heros(h);
+    if (!v || v.ouvert || !v.achetable) return;
+    const oui = await confirmerLegacy(t("Débloquer ce héros pour 1 jeton ?"), nomAffiche(h));
+    if (!oui) return;
+    const r = await acheterLegacy(h.heroCardId, t);
+    if (!r.ok) { alert(r.raison || "?"); return; }
+    await rafraichirLegacy();
+    await refreshHeroGrid();
+    const bande = document.querySelector(".legacy-bande");
+    if (bande) bande.replaceWith(bandeLegacy());
+    recruterVraiment(h, portraitEl);
+}
+
+function confirmerLegacy(question, detail) {
+    return new Promise((resolve) => {
+        const finir = (valeur) => { hideHover(); fermerModale(overlay); resolve(valeur); };
+        const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) finir(false); } },
+            el("div", { class: "deck-modal-panel vh-panel" },
+                el("div", { class: "dm-head" },
+                    el("b", { class: "mvl" }, detail),
+                    el("span", { class: "dm-sub" }, question),
+                ),
+                el("div", { class: "vh-actions" },
+                    el("button", { class: "tampon", onclick: () => finir(false) }, t("Annuler")),
+                    el("button", { class: "tampon jaune", onclick: () => finir(true) }, t("Débloquer")),
+                ),
+            ),
+        );
+        ouvrirModale(overlay);
+    });
+}
+
 /**
  * L'écran d'accueil : le titre, et une seule question, comment on joue.
  *
@@ -1020,6 +1163,10 @@ function accueilView() {
         jouerSon(SON.mode);
         if (tuile.distant !== null) state.coopEnLigne = tuile.distant;
         if (m.id === "campaign") { window.location.href = "/campagne.html"; return; }
+        // On quitte Legacy dès qu'on choisit autre chose : le jeu libre n'est
+        // jamais verrouillé.
+        state.legacy = null;
+        if (m.id === "legacy") { void entrerLegacy(nombre); return; }
         const wasCampaign = isCampaignMode();
         state.mode = m;
         if ((m.id === "campaign") !== wasCampaign) state.scenario = null;
@@ -1204,6 +1351,7 @@ function stepTeam() {
     const droite = el("div", { class: "tb-droite" },
         bandeauEnLigne(),
         creationCampagne() ? el("div", { class: "command-band" }, modeStrip()) : null,
+        bandeLegacy(),
         choixCoop(),
         // La vue « cartes du héros » prend la place du roster (voir
         // ouvrirCartesHeros) ; les deux vivent côte à côte, une seule visible.
@@ -1683,17 +1831,27 @@ async function refreshHeroGrid(pre) {
     }
     grid.replaceChildren(...list.map((h) => {
         const chosen = activePlayers().some((p) => p.hero && p.hero.id === h.id);
+        // Legacy : ce qui n'est pas débloqué reste sous les yeux, grisé, avec
+        // sa condition. Un fan-made se débloque d'un clic si on a un jeton.
+        const verrou = state.legacy ? state.legacy.verrou.heros(h) : null;
+        const ferme = !!verrou && !verrou.ouvert;
         return el("button", {
-            class: "tb-port" + (chosen ? " chosen" : ""),
+            class: "tb-port" + (chosen ? " chosen" : "") + (ferme ? " est-verrou" : "")
+                + (ferme && verrou.achetable ? " est-achetable" : ""),
             "data-hero": h.id,
-            title: nomAffiche(h),
-            onclick: (e) => recruter(h, e.currentTarget),
+            "aria-disabled": ferme && !verrou.achetable ? "true" : null,
+            title: ferme ? verrou.condition : nomAffiche(h),
+            onclick: (e) => {
+                if (!ferme) return recruter(h, e.currentTarget);
+                if (verrou.achetable) return void acheterHerosLegacy(h, e.currentTarget);
+            },
             onmouseenter: () => { herosSurvole = h; rendreScene(h); },
             onmouseleave: () => { herosSurvole = null; rendreScene(herosDuSiegeActif()); },
             onfocus: () => { herosSurvole = h; rendreScene(h); },
         },
             portraitHeros(h),
             el("span", { class: "tb-port-nom" }, nomAffiche(h)),
+            ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
             el("span", {
                 class: "hc-fav" + (prefs.isFavHero(h.id) ? " on" : ""),
                 title: t("Favori"),
@@ -3163,16 +3321,20 @@ async function loadScnGrid() {
     if (compte) compte.textContent = scs.length + " " + t("scénarios");
     grid.replaceChildren(...scs.map((sc) => {
         const on = state.scenario && state.scenario.id === sc.id;
+        const verrou = state.legacy ? state.legacy.verrou.scenario(sc) : null;
+        const ferme = !!verrou && !verrou.ouvert;
         return el("button", {
-            class: "tb-port" + (on ? " chosen" : ""),
+            class: "tb-port" + (on ? " chosen" : "") + (ferme ? " est-verrou" : ""),
             "data-scn": sc.id,
-            title: sc.name,
-            onclick: () => verrouillerCible(sc),
+            "aria-disabled": ferme ? "true" : null,
+            title: ferme ? verrou.condition : sc.name,
+            onclick: () => { if (!ferme) verrouillerCible(sc); },
             onmouseenter: () => rendreSceneMechant(sc),
             onmouseleave: () => rendreSceneMechant(state.scenario),
         },
             portraitScenario(sc),
             el("span", { class: "tb-port-nom" }, sc.name),
+            ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
             (sc.challenges && sc.challenges.length) ? el("span", { class: "st-exp" }, t("DÉFI")) : null,
             sc.hasExpertVariant ? el("span", { class: "st-exp" }, "EXPERT") : null,
         );
