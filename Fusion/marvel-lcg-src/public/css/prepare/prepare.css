@@ -2304,6 +2304,18 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     background-position: 50% 22%;
   }
 
+  /* ⚠ ET LE BLOC MENACE NE SE PLAFONNE PLUS (13/09/2026). Il est borne a
+     190 px avec un defilement interne, pense pour un grand ecran ou la colonne
+     de droite est figee. Mesure a 480 px : son contenu en fait 202, donc la
+     puce du set modulaire recommande (« Bomb Scare ») etait coupee en deux,
+     sans que rien ne suggere qu'on puisse defiler dedans.
+     Sur telephone la PAGE defile deja (`.team-b{height:auto}` plus haut) : le
+     plafond n'a plus lieu d'etre, le bloc prend sa hauteur et tout se lit. */
+  .tb-menace {
+    max-height: none;
+    overflow: visible;
+  }
+
   /* --- 3 bis. L'ecran final : le « VS » ne mange plus les noms ------------
      L'etoile fait 275 px de cote sur un ecran de 500, et les deux camps 250
      chacun : elle mordait de 137 px sur chaque cote, par-dessus le nom du
