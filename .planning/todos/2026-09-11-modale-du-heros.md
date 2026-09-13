@@ -1,7 +1,15 @@
 # Modale du héros : un seul héros par tuile, ses variantes dans une modale — FAIT le 11/09/2026
 
 **Idée de l'utilisateur, 11/09/2026**, cadrée en quatre questions une à une.
-**À faire après la clôture de Hellcat et le déploiement** (sa décision).
+
+> ⚠ **CETTE FICHE EST CLOSE.** Le travail est livré et vérifié dans un
+> navigateur (voir la fin du fichier). La ligne « à faire après la clôture de
+> Hellcat » ci-dessous décrit la décision du 11/09 au matin, pas un reste à
+> faire : elle m'a induit en erreur le 13/09, où j'ai reproposé ce chantier à
+> l'utilisateur alors qu'il était fait depuis deux jours. Lire jusqu'au bout
+> avant de conclure qu'une fiche est ouverte.
+
+~~À faire après la clôture de Hellcat et le déploiement~~ (sa décision, tenue).
 Premier cas concret : les deux entrées Hellcat (Iron Man / Miss Hulk) et les
 deux Superior Spider-Man.
 
