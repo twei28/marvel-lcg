@@ -1904,11 +1904,29 @@ verifier("le service worker est servi en javascript",
 # ⚠ ET IL NE MET RIEN EN CACHE. Ce site se bat contre les caches perimes : un
 # worker qui servirait un vieux JS apres un deploiement serait le defaut qu'on
 # a chasse. On lit le code : aucun `caches`, aucun `respondWith`.
-# On traque les APPELS, `caches.` et `respondWith(`, pas le mot dans un
-# commentaire : la premiere version du cas mordait sur sa propre explication.
-verifier("et il ne met rien en cache",
-         b"caches." not in _corps and b"respondWith(" not in _corps,
-         _corps[:120].decode("utf-8", "replace"))
+# ⚠ IL NE GARDE QU'UNE PAGE, ET JAMAIS LE JEU. Le worker met en cache l'ecran
+# « Pas de connexion », et rien d'autre : ce site se bat contre le cache
+# perime, un worker qui servirait un vieux JS apres un deploiement serait le
+# defaut qu'on a chasse. Deux verrous a tenir, et il faut les deux.
+_sw = _corps.decode("utf-8", "replace")
+verifier("le worker ne met en cache QUE l'ecran hors ligne",
+         _sw.count("c.add(") == 1 and "'/hors-ligne.html'" in _sw
+         and "addAll" not in _sw, _sw[:150])
+verifier("il n'intercepte que les navigations, pas le JS ni les API",
+         "request.mode !== 'navigate'" in _sw, _sw[:150])
+# ⚠ LE RESEAU D'ABORD, TOUJOURS. Une reponse du serveur, meme une erreur, doit
+# gagner sur la page de secours : l'inverse servirait un ecran « hors ligne » a
+# quelqu'un qui est parfaitement connecte.
+verifier("et il va au reseau d'abord, la page de secours en repli",
+         "fetch(e.request).catch(" in _sw, _sw[:150])
+_code, _tetes, _corps_hl = appel("GET", "/hors-ligne.html")
+verifier("l'ecran hors ligne est servi", _code == 200 and b"Pas de connexion" in _corps_hl,
+         str(_code))
+# Elle ne peut RIEN aller chercher : tout ce qu'elle reclamerait serait
+# justement ce qui manque.
+verifier("et il ne reclame ni image, ni feuille de style, ni script externe",
+         b"<img" not in _corps_hl and b"<link" not in _corps_hl
+         and b"src=" not in _corps_hl)
 # La page de connexion, ou tout le monde passe, propose l'installation.
 _code, _, _corps = appel("GET", "/connexion")
 verifier("la page de connexion lie le manifeste",

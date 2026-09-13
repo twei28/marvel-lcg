@@ -165,9 +165,14 @@ la table (`p<N>.narwhalchampions.com`), une fine barre avec l'adresse reste en
 haut, l'appli ayant changé de domaine. On l'a préférée à une appli par table,
 qui ne répondait plus table éteinte.
 
-⚠ **Le service worker (`/sw.js`) ne met rien en cache**, et il ne doit jamais
-le faire : ce site se bat déjà contre les caches périmés. Il n'existe que parce
-que le navigateur en exige un pour proposer l'installation.
+⚠ **Le service worker (`/sw.js`) ne garde qu'une seule page : l'écran « Pas de
+connexion » (`/hors-ligne.html`), et jamais le jeu.** Ce site se bat contre le
+cache périmé ; un worker qui servirait un vieux JS après un déploiement serait
+le défaut qu'on a chassé. Deux verrous le tiennent, et il faut les deux : il
+n'intercepte que les *navigations* (ni JS, ni CSS, ni appel d'API), et il va
+**toujours au réseau d'abord**, la page de secours ne servant que si le réseau
+échoue. Un cas de test lit son code et refuse qu'il grossisse ; vérifié en le
+cassant exprès.
 
 Les icônes sont le **narval** (image fournie le 13/09/2026) : `site/static/app-192.png`
 et `app-512.png` pour l'appli, `site/static/favicon.png` pour l'onglet du site,

@@ -2796,14 +2796,64 @@ MANIFESTE_APPLI = json.dumps({
     ],
 }, ensure_ascii=False).encode("utf-8")
 
+# L'ECRAN « PAS DE CONNEXION » (13/09/2026).
+#
+# Sans lui, ouvrir l'appli sans reseau donne la page d'erreur du navigateur, qui
+# ne dit rien du jeu. Celle-ci dit ce qui se passe, pourquoi, et propose de
+# reessayer. Elle est volontairement AUTONOME : aucune feuille de style, aucune
+# image, aucun script externe. Tout ce qu'elle reclamerait serait justement ce
+# qu'on ne peut pas aller chercher.
+PAGE_HORS_LIGNE = """<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pas de connexion - NarwhalChampions</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+         font:16px/1.6 system-ui,sans-serif; background:#0e1116; color:#e6edf3; padding:2rem 1.2rem; }
+  main { max-width:26rem; text-align:center; }
+  h1 { font-size:1.4rem; margin:0 0 .6rem; }
+  p { color:#9aa7b4; margin:0 0 1.4rem; }
+  button { font:inherit; background:#1f6feb; color:#fff; border:0; border-radius:.5rem;
+           padding:.7rem 1.4rem; cursor:pointer; }
+</style>
+<main>
+  <h1>Pas de connexion</h1>
+  <p>NarwhalChampions a besoin du reseau pour tourner : la partie se joue sur
+  le serveur, pas sur ton telephone. Reconnecte-toi et reessaie.</p>
+  <button onclick="location.replace('/entrer')">Reessayer</button>
+</main>
+""".encode("utf-8")
+
 SERVICE_WORKER = """// NarwhalChampions : un service worker qui ne fait RIEN, et c'est voulu.
 // Le navigateur en exige un pour proposer « Ajouter a l'ecran d'accueil ».
-// Il ne met rien en cache : ce site se bat deja contre le cache perime,
-// un worker qui servirait un vieux JS apres un deploiement serait le defaut
-// qu'on a chasse. Chaque requete part au reseau, comme sans lui.
-self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
-self.addEventListener('fetch', () => {});
+// ⚠ IL NE MET EN CACHE QU'UNE SEULE PAGE, ET JAMAIS LE JEU. Ce site se bat
+// contre le cache perime : un worker qui servirait un vieux JS apres un
+// deploiement serait le defaut qu'on a chasse. La seule chose gardee ici est
+// l'ecran « Pas de connexion », qui n'est JAMAIS servi quand le reseau repond.
+//
+// Deux verrous, et il faut les deux :
+//   - on n'intercepte que les NAVIGATIONS (request.mode === 'navigate') : ni JS,
+//     ni CSS, ni image, ni appel d'API ne passent par ici ;
+//   - on va TOUJOURS au reseau d'abord, et on ne rend la page de secours que
+//     si le reseau echoue. Une reponse du serveur, meme une erreur, gagne.
+const SECOURS = '/hors-ligne.html';
+const BOITE = 'narwhal-secours-v1';
+
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(BOITE).then((c) => c.add(SECOURS)).then(() => self.skipWaiting()));
+});
+self.addEventListener('activate', (e) => {
+  // Les boites d'une version precedente partent : rien de ce qu'elles
+  // contiennent ne doit survivre a une mise a jour.
+  e.waitUntil(caches.keys()
+    .then((noms) => Promise.all(noms.filter((n) => n !== BOITE).map((n) => caches.delete(n))))
+    .then(() => self.clients.claim()));
+});
+self.addEventListener('fetch', (e) => {
+  if (e.request.mode !== 'navigate') return;
+  e.respondWith(fetch(e.request).catch(() => caches.match(SECOURS)));
+});
 """.encode("utf-8")
 
 # Les lignes a poser dans <head> de chaque page publique.
@@ -3392,6 +3442,8 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(corps)
         elif self.path == "/manifest.webmanifest":
             self._repondre(200, MANIFESTE_APPLI, "application/manifest+json; charset=utf-8")
+        elif self.path == "/hors-ligne.html":
+            self._repondre(200, PAGE_HORS_LIGNE, "text/html; charset=utf-8")
         elif self.path == "/sw.js":
             # ⚠ SANS CACHE HTTP non plus : un worker mis en cache par le
             # navigateur survivrait a sa propre mise a jour.
