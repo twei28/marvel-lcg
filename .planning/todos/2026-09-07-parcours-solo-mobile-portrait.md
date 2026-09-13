@@ -55,4 +55,12 @@ créer un nouveau personnage.
    derrière une encoche à droite, les piles derrière une encoche à gauche,
    le bandeau qui porte le menu « … » et Fin du tour, plus de barre en bas,
    même plateau en paysage. L'ancien modèle `?medaillons` est retiré du
-   dépôt. Livré le 12/09 au soir, à tester par toi sur le téléphone.
+   dépôt. Livré le 12/09 au soir.
+
+## ✅ CLOS LE 13/09/2026
+
+**Le plateau téléphone est validé par l'utilisateur**, sur son téléphone :
+« le plateau du téléphone c'est bon ». Les quatre sous-projets sont livrés et
+éprouvés à la main. Ce qui reste du parcours mobile n'appartient plus à cette
+fiche : le salon « Joueurs & tchat » n'a jamais été mesuré à 480 px, faute de
+pouvoir le monter en local.
