@@ -106,10 +106,30 @@ export function PlateauPortrait(props: BoardProps) {
   // sur elle, et se range quand la question est passee — mais seulement si
   // c'est la question qui l'avait ouverte, jamais si le joueur l'a sortie
   // lui-meme.
+  //
+  // ⚠ ET ELLE NE SE ROUVRE PLUS DANS LE DOS DU JOUEUR. Rapport joueur du
+  // 13/09/2026 : « quand on doit payer des ressources avec des cartes sur la
+  // table, c'est impossible ». Mesure : payer une carte POSEE demande de
+  // refermer la main (son voile couvre tout l'ecran), puis d'ouvrir la fiche
+  // de la carte et d'appuyer sur « Utiliser cette carte ». Or CHAQUE ressource
+  // choisie fait repasser le plateau par un rendu SANS question, le temps que
+  // le moteur reponde : `laQuestion` retombait a faux puis remontait, et la
+  // main se rouvrait. Sur un cout a 3, il fallait la refermer trois fois.
+  //
+  // `refuseeParLeJoueur` retient le geste : une fois la main rangee a la main,
+  // elle ne ressort que si le joueur la rappelle par son encoche, ou quand la
+  // situation change vraiment (phase ou round). Le voile, lui, reste : c'est
+  // par lui qu'on ferme d'un geste.
   const laQuestion = questionSurLaMain(bandes.main, props.interactifs)
   const ouvertePourLaQuestion = useRef(false)
+  const refuseeParLeJoueur = useRef(false)
+  const situation = `${props.world?.round_id ?? ''}/${props.world?.phase ?? ''}`
+  useEffect(() => {
+    refuseeParLeJoueur.current = false
+  }, [situation])
   useEffect(() => {
     if (laQuestion) {
+      if (refuseeParLeJoueur.current) return
       setMainOuverte((ouverte) => {
         if (!ouverte) ouvertePourLaQuestion.current = true
         return true
@@ -189,7 +209,15 @@ export function PlateauPortrait(props: BoardProps) {
       </div>
 
       <Encoche cote="gauche" libelle={t('Piles')} onOuvrir={() => setTiroirOuvert(true)} />
-      <Encoche cote="droite" libelle={t('Main')} nombre={bandes.main.length} onOuvrir={() => setMainOuverte(true)} />
+      <Encoche
+        cote="droite"
+        libelle={t('Main')}
+        nombre={bandes.main.length}
+        onOuvrir={() => {
+          refuseeParLeJoueur.current = false
+          setMainOuverte(true)
+        }}
+      />
 
       <TiroirPiles piles={bandes.piles} ouvert={tiroirOuvert} onFermer={() => setTiroirOuvert(false)} onOuvrirPile={ouvrirPile} />
       {/* Tap = lire la carte en grand (CarteOuverte), appui long = jouer
@@ -199,6 +227,7 @@ export function PlateauPortrait(props: BoardProps) {
         ouverte={mainOuverte}
         onFermer={() => {
           ouvertePourLaQuestion.current = false
+          refuseeParLeJoueur.current = true
           setMainOuverte(false)
         }}
         onOuvrir={(unite) => ouvrirCarte(unite.carte)}

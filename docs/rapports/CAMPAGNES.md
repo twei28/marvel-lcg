@@ -25,7 +25,7 @@ fichier `data/campagnes/*.json`, ses planches de livret et son mode expert :
 | Boîte | Code | Ce qu'elle a de particulier |
 |---|---|---|
 | L'Avènement de Crâne Rouge | `trors` | 3 décisions de joueur (améliorations) |
-| Intentions Sinistres | `sm` | la piste de réputation, le score final, le matériel Osborn tiré au sort |
+| Sinistres Motivations | `sm` | la piste de réputation, le score final, le matériel Osborn tiré au sort |
 | The Mad Titan's Shadow | `mts` | tout au collecteur moteur |
 | La Genèse des Mutants | `mut_gen` | le rôle, choisi en jeu, et le role-building |
 | NeXt Evolution | `next_evol` | les manigances de campagne et leurs environnements |

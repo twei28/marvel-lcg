@@ -36,7 +36,7 @@ test.describe('La police Marvel', () => {
   test("l'ecran des campagnes n'affiche aucun accent en police Marvel", async ({ page }) => {
     await page.goto('/campagne.html', { waitUntil: 'networkidle' });
     // L'ecran de creation est celui qui porte les noms de boites, donc les
-    // accents : « L'Avenement de Crane Rouge », « Intentions Sinistres ».
+    // accents : « L'Avenement de Crane Rouge », « Sinistres Motivations ».
     const nouvelle = page.getByRole('button', { name: /nouvelle campagne|new campaign/i }).first();
     await expect(
       nouvelle,
