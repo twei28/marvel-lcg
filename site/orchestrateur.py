@@ -479,6 +479,43 @@ ERREURS_DEMARRAGE: dict[str, str] = {}
 VERROU_DEMARRAGE = threading.Lock()
 
 
+# Les joueurs qui ont demande a reprendre leur partie interrompue. Rempli par
+# la route /reprendre, vide par `demarrer_en_fond` une fois le chargement
+# demande au moteur. En memoire : si le site redemarre entre-temps, le bandeau
+# se reproposera, ce qui est le bon repli.
+A_REPRENDRE: set[str] = set()
+
+
+def charger_partie_interrompue(partie: "Partie", pseudo: str) -> bool:
+    """Demande au moteur de recharger la partie sauvegardee de ce joueur.
+
+    ⚠ NE LEVE JAMAIS ET NE BLOQUE RIEN. Un chargement qui echoue doit laisser
+    la table ouverte sur l'ecran des heros, pas priver quelqu'un de son jeu.
+    C'est le cas qui compte : une sauvegarde ecrite par une version anterieure
+    du moteur peut etre refusee (`VerifyVersion`), et un deploiement change
+    justement de version.
+
+    Rend `True` si le moteur a accepte. Dans tous les cas la partie retenue est
+    OUBLIEE : proposer indefiniment une reprise qui echoue serait pire que de
+    ne rien proposer.
+    """
+    attendue = partie_interrompue(pseudo)
+    oublier_partie_interrompue(pseudo)
+    if not attendue:
+        return False
+    try:
+        # `:-1` = reprendre au DERNIER pas enregistre, comme le bouton
+        # « Reprendre » de l'assistant.
+        lien = "http://127.0.0.1:%d/debug?/load %s:-1" % (
+            partie.port, urllib.parse.quote(attendue["fichier"]))
+        with urllib.request.urlopen(lien, timeout=30) as reponse:
+            reponse.read()
+        return True
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        sys.stderr.write("reprise impossible pour %s : %r\n" % (pseudo, exc))
+        return False
+
+
 def demarrer_en_fond(pseudo: str) -> None:
     """Allume le moteur SANS retenir la requete HTTP.
 
@@ -497,6 +534,11 @@ def demarrer_en_fond(pseudo: str) -> None:
         try:
             partie = lancer_jeu(pseudo)
             journal_partie_ouverte(partie, pseudo)
+            # ⚠ APRES `lancer_jeu`, QUI ATTEND DEJA QUE LE MOTEUR REPONDE : lui
+            # demander de charger avant qu'il ecoute ne donnerait rien.
+            if pseudo in A_REPRENDRE:
+                A_REPRENDRE.discard(pseudo)
+                charger_partie_interrompue(partie, pseudo)
         except Exception as erreur:
             ERREURS_DEMARRAGE[pseudo] = str(erreur)
         finally:
@@ -568,8 +610,8 @@ def limiter_sauvegardes(emplacement: int) -> int:
     return efface
 
 
-def _sauvegarder_avant_extinction(partie: "Partie") -> None:
-    """Demande au moteur d'ecrire sa partie avant qu'on le tue.
+def _sauvegarder_avant_extinction(partie: "Partie", cause: str = "", fiche=None) -> None:
+    """Demande au moteur d'ecrire sa partie avant qu'on le tue, et RETIENT ou.
 
     ⚠ NE LEVE JAMAIS, et ne retient pas l'extinction plus que son delai. Une
     sauvegarde manquee est un regret ; une exception ici empecherait la table
@@ -577,6 +619,12 @@ def _sauvegarder_avant_extinction(partie: "Partie") -> None:
 
     Le moteur decide lui-meme s'il y a quelque chose a ecrire : une table ou
     personne n'a quitte l'ecran des heros n'est pas une partie.
+
+    ⚠ ET ON GARDE LE CHEMIN, ce qu'on ne faisait pas : la reponse du moteur le
+    contient, on la jetait, et le joueur devait retrouver sa partie tout seul
+    dans « Reprendre ». `fiche` est ce que `_fiche_moteur` a deja demande au
+    moteur juste avant (scenario, heros, tour) : on la reutilise pour decrire
+    la partie au retour, sans le rappeler une seconde fois.
     """
     try:
         if not partie.vivant():
@@ -584,9 +632,40 @@ def _sauvegarder_avant_extinction(partie: "Partie") -> None:
         lien = "http://127.0.0.1:%d/sauver_pour_le_site?jeton=%s" % (
             partie.port, urllib.parse.quote(partie.jeton_site or ""))
         with urllib.request.urlopen(lien, timeout=10) as reponse:
-            reponse.read()
+            brut = reponse.read().decode("utf-8", "replace")
+        donnees = json.loads(brut) if brut else {}
+        fichier = str(donnees.get("fichier") or "")
+        if donnees.get("sauve") and fichier:
+            retenir_partie_interrompue(partie.code, fichier, cause, fiche or {})
     except (urllib.error.URLError, OSError, ValueError) as exc:
         sys.stderr.write("partie non sauvegardee avant extinction : %r\n" % (exc,))
+
+
+def retenir_partie_interrompue(pseudo: str, fichier: str, cause: str, fiche: dict) -> None:
+    """Note la partie qui attend ce joueur. Remplace la precedente."""
+    heros = ", ".join(str(j.get("heros") or j.get("nom") or "")
+                      for j in (fiche.get("joueurs") or []) if isinstance(j, dict))
+    with _cx() as cx:
+        cx.execute(
+            "INSERT OR REPLACE INTO parties_interrompues"
+            " (pseudo, fichier, quand, cause, version, scenario, heros, tour)"
+            " VALUES (?,?,?,?,?,?,?,?)",
+            (pseudo, fichier, _maintenant(), cause, str(fiche.get("version") or ""),
+             str(fiche.get("scenario") or ""), heros, int(fiche.get("round") or 0)))
+
+
+def partie_interrompue(pseudo: str):
+    """La partie qui attend ce joueur, ou None."""
+    with _cx() as cx:
+        ligne = cx.execute("SELECT * FROM parties_interrompues WHERE pseudo = ?",
+                           (pseudo,)).fetchone()
+    return dict(ligne) if ligne else None
+
+
+def oublier_partie_interrompue(pseudo: str) -> None:
+    """Le joueur a repris, ou choisi autre chose : on ne lui reproposera pas."""
+    with _cx() as cx:
+        cx.execute("DELETE FROM parties_interrompues WHERE pseudo = ?", (pseudo,))
 
 
 def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
@@ -607,11 +686,12 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     # mort, et la partie n'aura jamais existe pour personne.
     # (`_noter_abandon` est defini plus bas, avec le reste du suivi : Python
     # resout les globales a l'appel, pas a la lecture du fichier.)
-    _noter_abandon(partie, cause)
+    fiche = _fiche_moteur(partie) if partie.vivant() else {}
+    _noter_abandon(partie, cause, fiche)
     # ⚠ ET ON SAUVE AVANT DE TUER. Fermer une table pour cause d'inactivite
     # perdait la partie en cours : a huit heures on pouvait s'en accommoder, a
-    # trois quarts d'heure non. Le joueur la retrouve sous « Reprendre ».
-    _sauvegarder_avant_extinction(partie)
+    # trois quarts d'heure non. Le joueur se la voit proposer a son retour.
+    _sauvegarder_avant_extinction(partie, cause, fiche)
     # ⚠ ET LE MENAGE JUSTE APRES, pas avant : la partie qu'on vient d'ecrire
     # doit compter parmi les cinquante gardees.
     try:
@@ -899,6 +979,33 @@ CREATE TABLE IF NOT EXISTS annonces (
     texte   TEXT NOT NULL,
     jusqu_a INTEGER NOT NULL,
     pose_le TEXT NOT NULL
+);
+-- LA PARTIE INTERROMPUE QUI ATTEND SON JOUEUR (13/09/2026).
+--
+-- Chaque extinction de table ecrit la partie en cours dans les sauvegardes
+-- (`_sauvegarder_avant_extinction`). Jusqu'ici l'orchestrateur JETAIT la
+-- reponse du moteur, qui contient pourtant le chemin du fichier : le joueur
+-- devait retrouver sa partie tout seul dans « Reprendre ». On la retient donc,
+-- pour la lui proposer a son retour.
+--
+-- ⚠ UNE SEULE LIGNE PAR JOUEUR : une nouvelle interruption remplace la
+-- precedente. Proposer la partie d'avant-hier quand celle d'hier existe n'a
+-- aucun sens, et empiler serait une liste que personne ne trie.
+--
+-- ⚠ ET ON GARDE LA VERSION DU MOTEUR qui l'a ecrite. Un deploiement change
+-- souvent cette version, et le moteur casse net sur une sauvegarde plus
+-- ancienne que sa version minimale supportee (`VerifyVersion`, engine/lib) :
+-- c'est ce qui permet de le dire au joueur plutot que de lui montrer une
+-- erreur.
+CREATE TABLE IF NOT EXISTS parties_interrompues (
+    pseudo    TEXT PRIMARY KEY,
+    fichier   TEXT NOT NULL,
+    quand     TEXT NOT NULL,
+    cause     TEXT,
+    version   TEXT,
+    scenario  TEXT,
+    heros     TEXT,
+    tour      INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS abandons (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -2093,6 +2200,44 @@ def _barre(pseudo: str) -> str:
             % (html.escape(pseudo), admin))
 
 
+def page_reprise(pseudo: str, attendue: dict) -> bytes:
+    """« Ta partie t'attend » : reprendre, ou commencer autre chose.
+
+    ⚠ ON PROPOSE, ON NE FORCE PAS (decision de l'utilisateur, 13/09/2026).
+    Quelqu'un qui revient le lendemain ne veut pas forcement reprendre la
+    partie de la veille, et une reprise automatique lui enleve le choix.
+
+    ⚠ ET LA PAGE DIT D'OU VIENT LA COUPURE. « Ta table s'est fermee » sans
+    raison laisse croire a un plantage ; le motif est deja traduit pour la page
+    de suivi (`CAUSES_ABANDON`), on le reutilise.
+    """
+    quoi = " · ".join(x for x in (attendue.get("scenario"), attendue.get("heros")) if x)
+    tour = int(attendue.get("tour") or 0)
+    if tour:
+        quoi += (" · " if quoi else "") + "round %d" % tour
+    motif = CAUSES_ABANDON.get(attendue.get("cause") or "", attendue.get("cause") or "")
+    corps = ('<div class="table">'
+             '<div class="entete"><strong>Ta partie t\'attend</strong>'
+             '<span class="mdp">%s</span></div>'
+             '<p class="mdp">Interrompue le %s%s. Elle a ete sauvegardee : '
+             'tu peux la reprendre la ou tu l\'avais laissee.</p>'
+             '<div class="choix" style="margin-top:1rem">'
+             '<form method="get" action="/reprendre">'
+             '<button type="submit"><b>Reprendre cette partie</b>'
+             '<em>On recharge la sauvegarde et on te remet au plateau.</em>'
+             '</button></form>'
+             '<form method="get" action="/nouvelle-partie">'
+             '<button type="submit" class="calme"><b>Commencer autre chose</b>'
+             '<em>La sauvegarde reste dans « Reprendre », sur l\'ecran de '
+             'preparation.</em></button></form>'
+             '</div></div>'
+             % (html.escape(quoi), html.escape(attendue.get("quand") or ""),
+                (", " + html.escape(motif)) if motif else ""))
+    return PAGE.format(tete="", sous="Tu etais en pleine partie.",
+                       barre=_barre(pseudo), corps=corps,
+                       heures=int(DUREE_MAX_HEURES)).encode("utf-8")
+
+
 def page_attente(pseudo: str) -> bytes:
     """Le seul ecran du site entre la connexion et le jeu.
 
@@ -2391,7 +2536,7 @@ CAUSES_ABANDON = {
 }
 
 
-def _noter_abandon(partie: "Partie", cause: str) -> None:
+def _noter_abandon(partie: "Partie", cause: str, fiche: dict | None = None) -> None:
     """La photo d'une partie qu'on eteint alors qu'elle etait EN COURS.
 
     ⚠ NE LEVE JAMAIS. Une trace manquee est un regret ; une exception ici
@@ -2405,7 +2550,11 @@ def _noter_abandon(partie: "Partie", cause: str) -> None:
     try:
         if not partie.vivant():
             return
-        fiche = _fiche_moteur(partie)
+        # ⚠ UNE SEULE INTERROGATION DU MOTEUR. `eteindre_jeu` a deja demande sa
+        # fiche pour la sauvegarde : la redemander ici doublait le delai de
+        # chaque extinction, sur un moteur qu'on s'apprete a tuer.
+        if fiche is None:
+            fiche = _fiche_moteur(partie)
         if not fiche.get("en_cours"):
             return
         with _cx() as cx:
@@ -3357,12 +3506,32 @@ class Handler(BaseHTTPRequestHandler):
                 self._rediriger("/entrer")
             else:
                 self._repondre(200, self._formulaire("connexion"))
-        elif self.path == "/entrer":
+        elif self.path in ("/entrer", "/reprendre", "/nouvelle-partie"):
             if not pseudo:
                 self._rediriger("/")
                 return
+            # ⚠ « Commencer autre chose » OUBLIE la partie, il ne la charge pas :
+            # sans cela le bandeau revenait a chaque visite, et le joueur devait
+            # le refuser indefiniment.
+            if self.path == "/nouvelle-partie":
+                oublier_partie_interrompue(pseudo)
+                self._rediriger("/entrer")
+                return
+            # Le joueur a dit oui : on note qu'il faut charger sa partie des que
+            # son moteur repond. `demarrer_en_fond` peut prendre une dizaine de
+            # secondes, on ne bloque pas la reponse pour autant.
+            if self.path == "/reprendre":
+                A_REPRENDRE.add(pseudo)
             toucher_presence(pseudo)
             partie = jeu_de(pseudo)
+            # ⚠ LA QUESTION NE SE POSE QUE TABLE ETEINTE. Une partie
+            # interrompue n'existe que parce que la table a ete tuee ; si le
+            # moteur tourne deja, il n'y a rien a reprendre et rien a demander.
+            if self.path == "/entrer" and (partie is None or not partie.vivant()):
+                attendue = partie_interrompue(pseudo)
+                if attendue:
+                    self._repondre(200, page_reprise(pseudo, attendue))
+                    return
             if partie is not None and partie.vivant() and _moteur_repond(partie.port):
                 # Redirection vers un AUTRE hote (p<N>.domaine) : c'est voulu,
                 # le client du jeu utilise des chemins absolus et ne supporte

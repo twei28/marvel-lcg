@@ -255,6 +255,11 @@ class GameServerGet(GameServerBase):
             campaign = getattr(getattr(game, 'scene', None), 'campaign', None)
             fiche = {
                 'en_cours': True,
+                # La version du MOTEUR qui joue cette partie. Le site la retient
+                # avec la sauvegarde : un deploiement change souvent de version,
+                # et une sauvegarde plus ancienne que la version minimale
+                # supportee fait echouer le chargement (VerifyVersion).
+                'version': str(getattr(getattr(game, 'session', None), 'version', '') or ''),
                 'round': int(getattr(world, 'round_id', 0) or 0),
                 'scenario': str(getattr(campaign, 'name', '') or ''),
                 'expert': bool(getattr(campaign, 'expert', False)),

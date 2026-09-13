@@ -1948,6 +1948,101 @@ _code, _, _corps = appel("GET", "/manifest.webmanifest")
 verifier("le manifeste le dit aussi, dans la boite d'installation",
          "hors ligne".encode("utf-8") in _corps)
 
+# --- La partie interrompue qui attend son joueur ---------------------------
+# AJOUT du 13/09/2026, demande de l'utilisateur : « relancer la partie des
+# joueurs comme c'etait avant la coupure ». Chaque extinction ecrit deja la
+# partie en cours ; l'orchestrateur JETAIT le chemin que le moteur lui rendait,
+# et le joueur devait la retrouver seul dans « Reprendre ».
+#
+# ⚠ ON PROPOSE, ON NE FORCE PAS. Quelqu'un qui revient le lendemain ne veut pas
+# forcement reprendre la partie de la veille.
+o.oublier_partie_interrompue("hote")
+verifier("sans coupure, rien n'attend personne",
+         o.partie_interrompue("hote") is None)
+
+o.retenir_partie_interrompue(
+    "hote", "../replays/serveur-4/partie.json", "arret du site",
+    {"scenario": "Rhino", "round": 7, "version": "0.5.9.200",
+     "joueurs": [{"heros": "Spider-Man"}]})
+_att = o.partie_interrompue("hote")
+verifier("la partie retenue porte son fichier", _att and _att["fichier"].endswith("partie.json"), str(_att))
+verifier("et de quoi la decrire au joueur",
+         _att["scenario"] == "Rhino" and _att["tour"] == 7 and _att["heros"] == "Spider-Man",
+         str(_att))
+# ⚠ LA VERSION DU MOTEUR EST GARDEE : un deploiement en change souvent, et une
+# sauvegarde plus ancienne que la version minimale supportee fait echouer le
+# chargement. C'est ce qui permettra de le dire au joueur.
+verifier("et la version du moteur qui l'a ecrite", _att["version"] == "0.5.9.200", str(_att))
+
+# ⚠ UNE SEULE LIGNE PAR JOUEUR : proposer la partie d'avant-hier quand celle
+# d'hier existe n'a aucun sens.
+o.retenir_partie_interrompue("hote", "../replays/serveur-4/autre.json", "minuteur",
+                             {"scenario": "Klaw", "round": 2})
+_att = o.partie_interrompue("hote")
+verifier("une nouvelle coupure remplace la precedente",
+         _att["fichier"].endswith("autre.json") and _att["scenario"] == "Klaw", str(_att))
+with o._cx() as _cx_i:
+    _n = _cx_i.execute("SELECT COUNT(*) AS n FROM parties_interrompues WHERE pseudo='hote'").fetchone()["n"]
+verifier("et il n'y a jamais qu'une ligne", _n == 1, str(_n))
+
+# --- Ce que le joueur voit en revenant --------------------------------------
+_code, _, _page_r = appel("GET", "/entrer", entetes=cookie_de("hote"))
+verifier("a son retour, on lui propose de reprendre",
+         _code == 200 and "Ta partie t'attend".encode("utf-8") in _page_r, str(_code))
+# ⚠ ET ELLE DIT D'OU VIENT LA COUPURE. « Ta table s'est fermee » sans raison
+# laisse croire a un plantage ; le motif est deja traduit pour la page de
+# suivi (CAUSES_ABANDON), on le reutilise.
+_texte_r = _page_r.decode("utf-8", "replace")
+verifier("la page decrit la partie et dit d'ou vient la coupure",
+         "Klaw" in _texte_r and "round 2" in _texte_r
+         and "Interrompue le" in _texte_r and "table ferm" in _texte_r,
+         _texte_r[_texte_r.find("Ta partie"):][:160])
+verifier("et elle offre les deux chemins",
+         b'action="/reprendre"' in _page_r and b'action="/nouvelle-partie"' in _page_r)
+
+# ⚠ « COMMENCER AUTRE CHOSE » OUBLIE LA PARTIE, il ne la charge pas : sans
+# cela le bandeau revenait a chaque visite, et le joueur devait le refuser
+# indefiniment.
+_code, _tetes, _ = appel("GET", "/nouvelle-partie", entetes=cookie_de("hote"))
+verifier("« commencer autre chose » renvoie vers l'entree",
+         _code == 303 and _tetes.get("Location") == "/entrer", str(_code))
+verifier("et la partie ne sera plus proposee",
+         o.partie_interrompue("hote") is None)
+
+# --- Reprendre : on note qu'il faudra charger, sans bloquer la reponse ------
+o.retenir_partie_interrompue("hote", "../replays/serveur-4/partie.json", "arret du site",
+                             {"scenario": "Rhino", "round": 7})
+o.A_REPRENDRE.discard("hote")
+_code, _, _ = appel("GET", "/reprendre", entetes=cookie_de("hote"))
+verifier("« reprendre » note le chargement a faire",
+         "hote" in o.A_REPRENDRE, str(o.A_REPRENDRE))
+
+# ⚠ UN CHARGEMENT QUI ECHOUE NE PRIVE PERSONNE DE SON JEU. Une sauvegarde
+# ecrite par une version anterieure peut etre refusee : la table doit rester
+# ouverte sur l'ecran des heros, et la partie ne plus etre proposee — la
+# reproposer indefiniment serait pire que de ne rien proposer.
+_appels_reprise = []
+
+
+def _ouverture_qui_echoue(lien, timeout=None):
+    _appels_reprise.append(lien)
+    raise o.urllib.error.URLError("moteur qui refuse")
+
+
+_avant = o.urllib.request.urlopen
+o.urllib.request.urlopen = _ouverture_qui_echoue
+try:
+    _table = o.Partie(4, "hote", "Jeu de hote")
+    _ok = o.charger_partie_interrompue(_table, "hote")
+finally:
+    o.urllib.request.urlopen = _avant
+verifier("un chargement refuse ne leve pas", _ok is False)
+verifier("et il a bien demande le bon fichier, au dernier pas",
+         _appels_reprise and "partie.json" in _appels_reprise[0]
+         and _appels_reprise[0].endswith(":-1"), str(_appels_reprise))
+verifier("et la partie n'est plus proposee, meme apres un echec",
+         o.partie_interrompue("hote") is None)
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:

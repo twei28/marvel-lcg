@@ -46,6 +46,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-13",
+        genre: "jeu",
+        fr: "Si ta table se ferme pendant que tu joues (mise à jour, inactivité), ta partie est sauvegardée et le site te propose de la reprendre là où tu l'avais laissée dès ta prochaine visite. Tu peux aussi commencer autre chose : la sauvegarde reste dans « Reprendre ».",
+        en: "If your table closes while you are playing (update, inactivity), your game is saved and the site offers to resume it right where you left off on your next visit. You can also start something else: the save stays under “Resume”.",
+    },
+    {
+        date: "2026-09-13",
         genre: "correction",
         fr: "En partie, quand le méchant t'attaque, les boutons Défendre / Demander / Passer restent collés au bas de la fenêtre : plus besoin de faire défiler pour trouver quoi répondre.",
         en: "In game, when the villain attacks you, the Defend / Ask / Pass buttons now stay pinned to the bottom of the window: no more scrolling to find what to answer.",

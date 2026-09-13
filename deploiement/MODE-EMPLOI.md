@@ -236,8 +236,19 @@ quelqu'un en pleine partie. Une table dont on n'arrive pas à lire le journal
 n'est jamais fermée au hasard.
 
 **La partie est sauvegardée avant que la table se ferme**, quel que soit le
-motif. Le joueur la retrouve sous « Reprendre ». À huit heures on pouvait s'en
-passer, à trois quarts d'heure non.
+motif, et **le site la propose au joueur à son retour** : une page « Ta partie
+t'attend » avec le scénario, les héros, le round et la raison de la coupure, et
+deux boutons, *Reprendre* ou *Commencer autre chose*.
+
+⚠ **On propose, on ne force pas.** Quelqu'un qui revient le lendemain ne veut
+pas forcément reprendre la partie de la veille.
+
+⚠ **Une reprise peut échouer, et c'est prévu.** Une sauvegarde porte la version
+du moteur qui l'a écrite ; un déploiement en change souvent, et le moteur refuse
+une sauvegarde plus ancienne que sa version minimale supportée. Dans ce cas la
+table s'ouvre normalement sur l'écran des héros, et la partie n'est plus
+proposée : la reproposer indéfiniment serait pire que de ne rien proposer. La
+sauvegarde, elle, reste dans « Reprendre ».
 
 Mettre `INACTIVITE_MINUTES=0` dans le service éteint cette règle sans toucher au
 reste.
