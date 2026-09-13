@@ -2316,6 +2316,28 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     overflow: visible;
   }
 
+  /* ⚠ L'ECRAN FINAL REMPLIT L'ECRAN (13/09/2026). Sous 900 px, `.face-a-face`
+     passe en hauteur AUTOMATIQUE : l'ecran ne faisait plus que 520 px sur les
+     1050 du telephone, et les 450 px restants etaient noirs, ce qui donnait
+     une page inachevee. On lui rend une hauteur minimale, `.faceoff` etant
+     deja en `flex:1` : il prend la place, et les cartes grandissent avec.
+
+     `min-height` et non `height` : si le bloc « Avance » est deplie, l'ecran
+     doit pouvoir depasser et la page defiler, pas ecraser son contenu. */
+  .face-a-face {
+    min-height: calc(100dvh - 140px);
+  }
+
+  /* La place gagnee va aux cartes. ⚠ ET LE FREIN N'ETAIT NI `--fo-heros-w` NI
+     LA PENTE DU BIAIS : c'est `@media(max-width:560px){.fo-card{width:146px}}`,
+     un chiffre pose en dur. Deux essais l'ont montre, la mesure revenant a
+     146 px a chaque fois. Les deux camps font 240 px de large avec 22 px de
+     marge : 196 px sont disponibles, on en prend 180 pour garder de l'air. */
+  .fo-card,
+  .fo-empty {
+    width: 180px;
+  }
+
   /* --- 3 bis. L'ecran final : le « VS » ne mange plus les noms ------------
      L'etoile fait 275 px de cote sur un ecran de 500, et les deux camps 250
      chacun : elle mordait de 137 px sur chaque cote, par-dessus le nom du

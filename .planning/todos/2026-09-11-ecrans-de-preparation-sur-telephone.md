@@ -71,7 +71,7 @@ suit est le relevé de ce qui restait vraiment.
 | Héros | 7853 | **Deux défauts, corrigés.** Le cadrage montrait la zone de texte de la carte sous le nom ; le bloc ne débordait pas sur les côtés. |
 | Decks | 1050 | Bon. Deux decks côte à côte, les 28 paquets d'aspect repliés, import et boutons en pile. |
 | Méchant | 1050 | **Un défaut, corrigé** : le bloc menace plafonné à 190 px coupait la puce du set modulaire. |
-| Final | 1050 | Debout, mais **450 px de vide** sous le bloc « Avancé ». Pas cassé, jamais rempli. |
+| Final | 1050 | **Un défaut, corrigé** : 520 px de contenu sur 1050, donc 450 px de noir, et des cartes bornées à 146 px. |
 
 ### Corrigé le 13/09/2026
 
@@ -82,14 +82,22 @@ suit est le relevé de ce qui restait vraiment.
    le plafond ne servait qu'à couper une puce en deux.
 
 Filet : `ui-check/tests/preparation-telephone.spec.ts`, `npm run
-preparation-telephone`. Trois cas, témoins vérifiés en remettant les anciennes
-valeurs.
+preparation-telephone`. Quatre cas, témoins vérifiés un par un en remettant les
+anciennes valeurs.
+
+3. **L'écran final**, qui ne faisait que 520 px sur 1050 et laissait 450 px de
+   noir : sous 900 px, `.face-a-face` passe en hauteur automatique. Il reprend
+   une hauteur minimale, `.faceoff` étant déjà en `flex:1`. Et la carte, bornée
+   à 146 px par un chiffre posé en dur dans une règle de 560 px, passe à 180.
+
+   ⚠ Deux fausses pistes avant de trouver, toutes deux écartées **par la
+   mesure** : `--fo-heros-w` (la carte restait à 146) puis `--fo-pente`, la
+   pente du biais (elle est déjà remise à plat sous 900 px). Le coupable était
+   un chiffre en dur, pas une variable.
 
 ### Ce qui reste
 
-- **L'écran final et ses 450 px de vide.** Le face-à-face fait 487 px sur 1050 ;
-  le reste est noir. De quoi remonter le bouton « Lancer la partie », ou y
-  mettre ce qu'on ne voit nulle part ailleurs (le deck retenu, les sets).
 - **Les 7853 px de l'écran des héros** : 69 héros sur deux colonnes font
   35 rangées. La recherche et les filtres existent ; une troisième colonne
-  diviserait la hauteur par deux, au prix de vignettes de 110 px.
+  diviserait la hauteur par deux, au prix de vignettes de 110 px. Seul point
+  encore ouvert, et il n'a rien de cassé : c'est un arbitrage.

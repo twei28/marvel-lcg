@@ -93,6 +93,36 @@ test('le bloc de la menace ne coupe aucune puce', async ({ page }) => {
   expect(g.coupees, `puces coupees : ${g.coupees.join(', ')}`).toEqual([]);
 });
 
+// ⚠ LE TROISIEME DEFAUT DU 13/09/2026. Sous 900 px, `.face-a-face` passe en
+// hauteur AUTOMATIQUE : l'ecran final ne faisait plus que 520 px sur les 1050
+// du telephone, et les 450 px restants etaient noirs, ce qui donnait une page
+// inachevee. Et la carte etait bornee a 146 px par un chiffre pose en dur.
+test('l ecran final remplit l ecran, et ses cartes sont lisibles', async ({ page }) => {
+  await jusquA(page, 'mechant');
+  await page.locator('#scn-grid .tb-port').first().click();
+  await page.waitForTimeout(800);
+  await page.getByRole('button', { name: /continuer/i }).click();
+  await page.waitForSelector('.faceoff', { timeout: 20000 });
+  const g = await page.evaluate(() => {
+    const f = document.querySelector('.faceoff') as HTMLElement;
+    const c = document.querySelector('.fo-card') as HTMLElement;
+    const nav = document.querySelector('.nav') as HTMLElement;
+    return { faceoff: Math.round(f.getBoundingClientRect().height),
+             basFaceoff: Math.round(f.getBoundingClientRect().bottom),
+             hautNav: Math.round(nav.getBoundingClientRect().top),
+             carte: Math.round(c.getBoundingClientRect().width),
+             vue: window.innerHeight };
+  });
+  console.log('FINAL ' + JSON.stringify(g));
+  // Le face-a-face occupe au moins les trois quarts de la hauteur utile : plus
+  // de bande noire sous le contenu.
+  expect(g.faceoff).toBeGreaterThan(g.vue * 0.75);
+  // Et il s'arrete avant la barre du bas, qu'il ne doit jamais recouvrir.
+  expect(g.basFaceoff).toBeLessThanOrEqual(g.hautNav + 60);
+  // La carte se lit : 146 px etait le chiffre pose en dur qu'on a releve.
+  expect(g.carte).toBeGreaterThan(160);
+});
+
 // Rien ne doit sortir du cadre par les cotes : sur un telephone, un debordement
 // horizontal se paie par un defilement lateral parasite sur toute la page.
 test('aucun ecran ne deborde sur les cotes', async ({ page }) => {
