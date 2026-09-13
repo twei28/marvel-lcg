@@ -74,6 +74,9 @@ Fusion/marvel-lcg-src/save_*.json
 Fusion/marvel-lcg-src/statistics.json
 Fusion/marvel-lcg-src/achievements.json
 Fusion/marvel-lcg-src/games_history*.json
+# La fiche du mode Legacy : elle appartient au compte, comme l'historique.
+Fusion/marvel-lcg-src/legacy.json
+Fusion/marvel-lcg-src/legacy-serveur-*.json
 Fusion/marvel-lcg-src/campaign_log_last.json
 Fusion/marvel-lcg-src/campagnes/
 Fusion/marvel-lcg-src/replays/

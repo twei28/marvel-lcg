@@ -80,6 +80,7 @@ import {
 } from './board/attente-table'
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { BandeauAnnonce } from './board/BandeauAnnonce'
+import { cheminEmplacement } from './board/sauvegardes'
 import { useAnnonce, usePassage } from './board/annonce'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
@@ -923,16 +924,18 @@ async function lireMetaSauvegarde(nom: string): Promise<MetaSauvegarde | undefin
  * Popover de sauvegardes : 3 emplacements nommes (save_1..3.json, comme le
  * client original), chacun avec Save / Load, plus l'export en fichier.
  * Les fichiers vivent dans replays/ (hors .game : ils survivent aux rebuilds).
- */
-/**
- * ⚙ Reglages : tout ce qu'on ne touche pas a chaque tour (Historique, Options,
- * journal, log, musique, langue, vue, retour au menu), replie derriere un seul
- * bouton (12/09/2026). La barre ne garde visibles qu'Annuler, Sauver, Bug et
- * Fin du tour.
  *
- * Sur telephone, la feuille « … » du bandeau montre deja la barre en colonne :
- * un menu dans le menu n'aurait aucun sens, les lignes sont rendues a plat.
+ * ⚠ LE DOSSIER VIENT DU MOTEUR, ET JAMAIS D'ICI (correctif du 13/09/2026).
+ * Ce fichier ecrivait « ../replays/save_1.json » en dur : le dossier COMMUN,
+ * le meme pour tout le monde. Sur un serveur a vingt places, les trois
+ * emplacements etaient donc PARTAGES entre tous les comptes — chacun ecrasait
+ * la sauvegarde du voisin et chargeait des parties qu'il n'avait jamais
+ * jouees. La configuration disait pourtant la verite depuis toujours
+ * (`replay_folders`, separe par place) ; c'est le client qui inventait un
+ * chemin au lieu de la lire. Il la demande maintenant a
+ * `/get_dossier_sauvegardes`.
  */
+
 function PopoverReglages({ children }: { children: React.ReactNode }) {
   const [ouvert, setOuvert] = useState(false)
   if (enModeFeuille()) return <>{children}</>
@@ -964,9 +967,9 @@ function PopoverSauvegardes() {
 
   const rafraichir = useCallback(() => {
     for (const slot of [1, 2, 3]) {
-      void lireMetaSauvegarde(`../replays/save_${slot}.json`).then((meta) =>
-        setMetas((m) => ({ ...m, [slot]: meta }))
-      )
+      void cheminEmplacement(slot)
+        .then((chemin) => lireMetaSauvegarde(chemin))
+        .then((meta) => setMetas((m) => ({ ...m, [slot]: meta })))
     }
   }, [])
 
@@ -980,9 +983,11 @@ function PopoverSauvegardes() {
   const sauverSlot = useCallback(
     (slot: number) => {
       setOccupe(`save-${slot}`)
-      // Chemin EXPLICITE vers replays/ (hors .game) : la commande /save ecrit
-      // sinon dans le repertoire courant, detruit a chaque reconstruction.
-      fetch(`/debug?/save ../replays/save_${slot}.json`)
+      // Chemin EXPLICITE (la commande /save ecrirait sinon dans le repertoire
+      // courant, detruit a chaque reconstruction), mais DEMANDE AU MOTEUR :
+      // c'est lui qui sait quel dossier appartient a cette table.
+      void cheminEmplacement(slot)
+        .then((chemin) => fetch(`/debug?/save ${chemin}`))
         .then(() => window.setTimeout(rafraichir, 600))
         .catch(() => undefined)
         .finally(() => setOccupe(undefined))
@@ -1000,7 +1005,8 @@ function PopoverSauvegardes() {
     if (!accepte) return
     setOccupe(`load-${slot}`)
     // `:-1` = reprendre au DERNIER pas enregistre (semantique du client original).
-    fetch(`/debug?/load ../replays/save_${slot}.json:-1`)
+    void cheminEmplacement(slot)
+      .then((chemin) => fetch(`/debug?/load ${chemin}:-1`))
       .then(() => {
         window.location.href = '/app/board.html?p=0'
       })

@@ -10,6 +10,9 @@ from engine.config import ConfigVariables
 READ_ONLY_FIRST_REPLAY_FOLDER   = ConfigVariables.Bool('read_only_first_replay_folder', True)
 CARDS_JSON_FILE         = ConfigVariables.File('cards_json_file')
 REPLAY_FOLDERS          = ConfigVariables.Folders('replay_folders')
+# La fiche du mode Legacy, separee par place comme l'historique et les hauts
+# faits : la progression appartient au compte, pas au serveur.
+LEGACY_FILE             = ConfigVariables.File('legacy_file', '../legacy.json')
 DECK_FOLDERS            = ConfigVariables.Folders('deck_folders')
 STARTER_DECK_FOLDER     = ConfigVariables.Folder('starter_deck_folder')
 ENCOUNTER_SETS_FOLDERS  = ConfigVariables.Folders('encounter_sets_folders')
@@ -586,6 +589,81 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'site injoignable'}, status=503)
         return web.json_response({'ok': True})
 
+    async def get_dossier_sauvegardes(self, request: web.Request) -> web.Response:
+        """Le dossier ou CETTE table range ses trois emplacements de sauvegarde.
+
+        ⚠ CORRECTIF DU 13/09/2026, ET LE DEFAUT ETAIT GRAVE. Le plateau ecrivait
+        en dur « ../replays/save_1.json » : le dossier COMMUN, le meme pour tout
+        le monde. Sur un serveur a vingt places, les trois emplacements etaient
+        donc PARTAGES entre tous les comptes — chacun ecrasait la sauvegarde du
+        voisin, et chargeait des parties qu'il n'avait jamais jouees. Signale
+        par un joueur (« j'ai charge un truc que je n'ai jamais fait »),
+        confirme en production : `replays/save_1..3.json` existaient a la racine
+        pendant que les dossiers `replays/serveur-N/` de chacun restaient vides.
+
+        La configuration disait pourtant la verite depuis toujours
+        (`replay_folders`, separe par place dans `tools/config_serveur.py`) :
+        c'est le client qui inventait un chemin au lieu de la lire. Il la
+        demande desormais ici, et n'invente plus rien.
+        """
+        dossier = (REPLAY_FOLDERS.value or ['../replays/'])[0]
+        if not dossier.endswith('/'):
+            dossier += '/'
+        return web.json_response({'dossier': dossier})
+
+    async def get_legacy(self, request: web.Request) -> web.Response:
+        """La fiche du mode Legacy de ce compte, ou une fiche vide.
+
+        AJOUT du 13/09/2026. Ce que le mode retient et qui NE SE DEDUIT PAS de
+        l'historique des parties : la date de depart (« repartir de zero »),
+        les jetons depenses, et un instantane de la progression pour l'afficher
+        sans tout recalculer.
+
+        ⚠ L'INSTANTANE N'EST PAS LA VERITE. La verite est
+        `games_history-serveur-N.json`, ecrit par le moteur a chaque fin de
+        partie : l'instantane n'est qu'une commodite, et l'assistant sait le
+        reconstruire. Deux sources de verite finissent toujours par diverger ;
+        celle-ci a le droit de se tromper parce qu'elle est jetable.
+        """
+        import json as json_lib
+        import os
+        chemin = LEGACY_FILE.value
+        if not chemin or not os.path.isfile(chemin):
+            return web.json_response({})
+        try:
+            with open(chemin, encoding='utf-8') as f:
+                fiche = json_lib.load(f)
+            return web.json_response(fiche if isinstance(fiche, dict) else {})
+        except Exception:
+            # Fiche illisible : on repond vide plutot que d'echouer. L'assistant
+            # la reconstruira depuis l'historique, qui lui n'a pas bouge.
+            return web.json_response({})
+
+    async def save_legacy(self, request: web.Request) -> web.Response:
+        """Ecrit la fiche du mode Legacy. Remplace tout.
+
+        ⚠ ECRITURE ATOMIQUE. Le fichier porte la progression de quelqu'un : une
+        coupure au milieu d'un `write` la laisserait tronquee, donc illisible,
+        et le joueur repartirait a zero sans comprendre. On ecrit a cote, puis
+        on renomme, ce que le systeme de fichiers garantit indivisible.
+        """
+        import json as json_lib
+        import os
+        fiche = await request.json()
+        if not isinstance(fiche, dict):
+            return web.json_response({'error': 'fiche invalide'}, status=400)
+        chemin = LEGACY_FILE.value
+        if not chemin:
+            return web.json_response({'error': 'pas de fichier legacy'}, status=500)
+        dossier = os.path.dirname(chemin)
+        if dossier:
+            os.makedirs(dossier, exist_ok=True)
+        provisoire = chemin + '.tmp'
+        with open(provisoire, 'w', encoding='utf-8') as f:
+            json_lib.dump(fiche, f, ensure_ascii=False, indent=2)
+        os.replace(provisoire, chemin)
+        return web.json_response({'ok': True})
+
     async def sauver_pour_le_site(self, request: web.Request) -> web.Response:
         """Ecrit la partie en cours dans les sauvegardes, a la demande du site.
 
@@ -809,6 +887,9 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/post_salon_message', self.post_salon_message)
         self.AddAwaitGetSecurity('/get_rapport_actif', self.get_rapport_actif)
         self.AddAwaitGetSecurity('/get_annonce', self.get_annonce)
+        self.AddAwaitGetSecurity('/get_dossier_sauvegardes', self.get_dossier_sauvegardes)
+        self.AddAwaitGetSecurity('/get_legacy', self.get_legacy)
+        self.AddPostSecurity('/save_legacy', self.save_legacy)
         # Sauvegarde demandee par le SITE avant de fermer une table inactive :
         # jeton du site en guise d'authentification, et pas de controle de
         # version (le site n'est pas un client du jeu).
