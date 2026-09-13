@@ -63,6 +63,25 @@ NB_EMPLACEMENTS = int(os.environ.get("NB_EMPLACEMENTS", "20"))
 # permette de savoir si quelqu'un joue encore. C'est un plafond de duree, et
 # il est volontairement large. Le bouton « Terminer » reste le moyen propre.
 DUREE_MAX_HEURES = float(os.environ.get("DUREE_MAX_HEURES", "8"))
+
+# TROIS QUARTS D'HEURE SANS RIEN FAIRE, ET LA TABLE SE FERME (13/09/2026).
+#
+# Une table allumee tient un port, un processus et sa memoire, sur vingt places.
+# Le minuteur des huit heures ne regardait que l'AGE de la table : quelqu'un qui
+# ouvrait son jeu le matin et partait travailler l'immobilisait toute la
+# journee.
+#
+# ⚠ ON NE JUGE PAS SUR LE « VU » DU SITE. Il ne bouge qu'a l'ouverture du jeu :
+# pendant qu'on joue, le navigateur parle au MOTEUR, pas au site. S'y fier
+# aurait ferme la table de quelqu'un en pleine partie au bout de 45 minutes.
+# Le signal est la derniere ecriture du JOURNAL DU MOTEUR, que l'orchestrateur
+# tient lui-meme (`_ouvrir_journal_moteur`) : le moteur y ecrit a chaque action
+# de jeu, et rien du tout quand personne ne joue.
+#
+# ⚠ ET LA PARTIE EST SAUVEGARDEE AVANT, jamais perdue : voir
+# `_sauvegarder_avant_extinction`. A huit heures on pouvait s'en passer, a
+# trois quarts d'heure non.
+INACTIVITE_MINUTES = float(os.environ.get("INACTIVITE_MINUTES", "45"))
 DELAI_DEMARRAGE = 240                 # secondes d'attente avant d'abandonner
 
 # --- Comptes ---------------------------------------------------------------
@@ -500,6 +519,27 @@ def _groupe_vivant(groupe: int) -> bool:
     return True
 
 
+def _sauvegarder_avant_extinction(partie: "Partie") -> None:
+    """Demande au moteur d'ecrire sa partie avant qu'on le tue.
+
+    ⚠ NE LEVE JAMAIS, et ne retient pas l'extinction plus que son delai. Une
+    sauvegarde manquee est un regret ; une exception ici empecherait la table
+    de s'eteindre, donc l'emplacement d'etre rendu.
+
+    Le moteur decide lui-meme s'il y a quelque chose a ecrire : une table ou
+    personne n'a quitte l'ecran des heros n'est pas une partie.
+    """
+    try:
+        if not partie.vivant():
+            return
+        lien = "http://127.0.0.1:%d/sauver_pour_le_site?jeton=%s" % (
+            partie.port, urllib.parse.quote(partie.jeton_site or ""))
+        with urllib.request.urlopen(lien, timeout=10) as reponse:
+            reponse.read()
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        sys.stderr.write("partie non sauvegardee avant extinction : %r\n" % (exc,))
+
+
 def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     """Arrete le moteur. ⚠ NE TOUCHE PAS AUX DONNEES : elles appartiennent au
     compte et doivent etre la au prochain allumage.
@@ -519,6 +559,10 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     # (`_noter_abandon` est defini plus bas, avec le reste du suivi : Python
     # resout les globales a l'appel, pas a la lecture du fichier.)
     _noter_abandon(partie, cause)
+    # ⚠ ET ON SAUVE AVANT DE TUER. Fermer une table pour cause d'inactivite
+    # perdait la partie en cours : a huit heures on pouvait s'en accommoder, a
+    # trois quarts d'heure non. Le joueur la retrouve sous « Reprendre ».
+    _sauvegarder_avant_extinction(partie)
     # ⚠ ET LA FERMETURE SE NOTE ICI, PAS CHEZ L'APPELANT. Elle ne l'etait que
     # dans deux des six chemins d'extinction (le faucheur et le bouton
     # « Eteindre ») : ni l'arret du site — donc CHAQUE deploiement — ni le
@@ -579,16 +623,66 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
 PERIODE_EXPIRATION_S = 3600
 
 
+def secondes_sans_jouer(partie) -> float:
+    """Depuis combien de temps ce moteur n'a plus rien fait. -1 si on ne sait pas.
+
+    ⚠ LE SIGNAL EST LE JOURNAL DU MOTEUR, PAS LE « VU » DU SITE. Celui-ci ne
+    bouge qu'a l'ouverture du jeu : pendant qu'on joue, le navigateur parle au
+    moteur et le site n'entend plus rien. S'y fier aurait ferme la table de
+    quelqu'un en pleine partie.
+
+    Le moteur ecrit dans ce journal a chaque action de jeu, et rien du tout
+    quand personne ne joue : c'est exactement la mesure qu'on cherche.
+    L'orchestrateur ouvre lui-meme ce fichier (`_ouvrir_journal_moteur`), donc
+    il existe toujours.
+
+    ⚠ ET ON RENVOIE -1 PLUTOT QUE ZERO quand le fichier manque. Zero se lirait
+    « vient de jouer » et la table ne se fermerait jamais ; -1 dit « on ne sait
+    pas », et l'appelant s'abstient. Une table qu'on n'arrive pas a juger ne
+    doit pas etre fermee au hasard.
+    """
+    chemin = os.path.join(RACINE_JEU, ".site", f"moteur-{partie.emplacement}.log")
+    try:
+        return max(0.0, time.time() - os.path.getmtime(chemin))
+    except OSError:
+        return -1.0
+
+
+def table_oisive(code: str, partie) -> bool:
+    """Cette table doit-elle etre fermee faute d'avoir servi ?
+
+    ⚠ L'ADMINISTRATEUR N'EST JAMAIS FAUCHE POUR INACTIVITE. C'est sa table qui
+    sert a regarder ce qui se passe sur le site, souvent sans y jouer : la
+    fermer sous son nez serait exactement le contraire du service rendu. Le
+    minuteur des huit heures, lui, continue de s'appliquer a tout le monde.
+
+    Fonction a part, et non deux lignes dans le faucheur : c'est la seule
+    decision de ce fil qu'on puisse eprouver sans le faire tourner.
+    """
+    if code == ADMIN or INACTIVITE_MINUTES <= 0:
+        return False
+    depuis = secondes_sans_jouer(partie)
+    # -1 = on ne sait pas. Une table qu'on n'arrive pas a juger ne se ferme pas.
+    return depuis >= 0 and depuis > INACTIVITE_MINUTES * 60
+
+
 def faucheur() -> None:
-    """Rend les emplacements dont le moteur est mort ou la partie trop vieille,
-    et fait expirer les comptes que plus personne n'habite."""
+    """Rend les emplacements dont le moteur est mort, la partie trop vieille ou
+    la table abandonnee, et fait expirer les comptes que plus personne n'habite."""
     prochaine_revue = 0.0
     while True:
         time.sleep(60)
         for code, partie in list(PARTIES.items()):
             trop_vieille = (time.time() - partie.debut) > DUREE_MAX_HEURES * 3600
-            if not partie.vivant() or trop_vieille:
-                eteindre_jeu(code, "minuteur" if trop_vieille else "moteur arrete")
+            oisive = table_oisive(code, partie)
+            if not partie.vivant() or trop_vieille or oisive:
+                if not partie.vivant():
+                    cause = "moteur arrete"
+                elif trop_vieille:
+                    cause = "minuteur"
+                else:
+                    cause = "inactivite"
+                eteindre_jeu(code, cause)
         if time.time() >= prochaine_revue:
             prochaine_revue = time.time() + PERIODE_EXPIRATION_S
             try:
@@ -2165,6 +2259,7 @@ def _il_y_a_horodatage(quand: float) -> str:
 CAUSES_ABANDON = {
     "extinction": "table \u00e9teinte par le joueur",
     "minuteur": "table ferm\u00e9e apr\u00e8s %d h" % int(DUREE_MAX_HEURES),
+    "inactivite": "table ferm\u00e9e apr\u00e8s %d min sans jouer" % int(INACTIVITE_MINUTES),
     "moteur arrete": "moteur arr\u00eat\u00e9",
     "arret du site": "red\u00e9marrage du site",
 }

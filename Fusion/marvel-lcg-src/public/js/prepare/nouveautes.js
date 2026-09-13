@@ -46,6 +46,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-13",
+        genre: "coulisses",
+        fr: "Une table laissée ouverte sans qu'on y joue se ferme au bout de trois quarts d'heure, pour rendre la place à quelqu'un d'autre. Ta partie est sauvegardée avant : tu la retrouves avec « Reprendre ».",
+        en: "A table left open without anyone playing closes after forty-five minutes, to give the seat back to someone else. Your game is saved first: you will find it again under “Resume”.",
+    },
+    {
+        date: "2026-09-13",
         genre: "heros",
         fr: "Sentinel rejoint le roster. Ce Sentinelle de T-Wrecks porte quatre composants qu'on installe sur lui ; les coups les détruisent un à un, et il passe la partie à les réparer. Il amène aussi un nouvel état, Exposé, qui fait encaisser plus cher la prochaine attaque.",
         en: "Sentinel joins the roster. T-Wrecks’ Sentinel carries four components attached to it; hits destroy them one by one, and it spends the game repairing them. It also brings a new status, Exposed, which makes the next attack hurt more.",

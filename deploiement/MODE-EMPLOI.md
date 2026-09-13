@@ -145,6 +145,29 @@ ssh -i $cle $srv "sudo -u narwhal RACINE=/opt/narwhal narwhal-sauvegarde --verif
 
 ---
 
+## Les tables qui ne servent plus
+
+Une table allumée tient un port, un processus et sa mémoire, sur vingt places.
+Deux minuteurs la ferment :
+
+- **Huit heures d'âge**, quoi qu'il arrive (`DUREE_MAX_HEURES`) ;
+- **Trois quarts d'heure sans jouer** (`INACTIVITE_MINUTES`, 45 par défaut).
+  **Ta table à toi n'est jamais fermée pour inactivité** : elle sert à regarder
+  ce qui se passe, souvent sans y jouer.
+
+⚠ **Le signal est le journal du moteur, pas le « vu » du site.** Celui-ci ne
+bouge qu'à l'ouverture du jeu : pendant qu'on joue, le navigateur parle au
+moteur et le site n'entend plus rien. S'y fier aurait fermé la table de
+quelqu'un en pleine partie. Une table dont on n'arrive pas à lire le journal
+n'est jamais fermée au hasard.
+
+**La partie est sauvegardée avant que la table se ferme**, quel que soit le
+motif. Le joueur la retrouve sous « Reprendre ». À huit heures on pouvait s'en
+passer, à trois quarts d'heure non.
+
+Mettre `INACTIVITE_MINUTES=0` dans le service éteint cette règle sans toucher au
+reste.
+
 ## Les comptes qui dorment
 
 Il n'y a que vingt places, et une place n'est pas qu'une ligne dans une base :

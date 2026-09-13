@@ -586,6 +586,42 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'site injoignable'}, status=503)
         return web.json_response({'ok': True})
 
+    async def sauver_pour_le_site(self, request: web.Request) -> web.Response:
+        """Ecrit la partie en cours dans les sauvegardes, a la demande du site.
+
+        AJOUT du 13/09/2026. Le site ferme une table restee inactive
+        trois quarts d'heure. Sans cette route, la partie mourait avec le
+        moteur : c'est le geste qui la rend a son joueur, qui la retrouvera
+        sous « Reprendre ».
+
+        ⚠ MEME LAISSEZ-PASSER QUE `/get_partie_en_cours`, et pour la meme
+        raison : l'orchestrateur n'a pas de cookie de siege. Le jeton que le
+        site a remis au moteur a l'allumage en tient lieu, et il meurt avec la
+        table.
+
+        ⚠ ET ELLE NE SAUVE QUE S'IL Y A QUELQUE CHOSE A SAUVER. Une table
+        allumee ou personne n'a quitte l'ecran des heros n'est pas une partie :
+        l'ecrire encombrerait la liste des reprises d'entrees vides.
+        """
+        from engine.device.web.server.server_base import SITE_JETON
+        jeton = request.rel_url.query.get('jeton', '')
+        if SITE_JETON.value:
+            if jeton != SITE_JETON.value:
+                return web.json_response({'error': 'jeton'}, status=403)
+        elif (request.remote or '') not in ('127.0.0.1', '::1'):
+            return web.json_response({'error': 'local'}, status=403)
+        try:
+            game = self.controller_manager.game
+            world = getattr(game, 'world', None)
+            if world is None or not game.state.is_running:
+                return web.json_response({'sauve': False, 'raison': 'aucune partie'})
+            chemin = game.session.SaveScene(delete_old=False)
+            return web.json_response({'sauve': bool(chemin), 'fichier': chemin or ''})
+        except Exception as souci:
+            # Rien ici ne doit empecher la table de s'eteindre : le site
+            # enchaine sur l'extinction quoi qu'il arrive.
+            return web.json_response({'sauve': False, 'raison': str(souci)})
+
     async def get_annonce(self, request: web.Request) -> web.Response:
         """L'annonce en cours sur le site, relayee au plateau et a l'assistant.
 
@@ -773,6 +809,11 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/post_salon_message', self.post_salon_message)
         self.AddAwaitGetSecurity('/get_rapport_actif', self.get_rapport_actif)
         self.AddAwaitGetSecurity('/get_annonce', self.get_annonce)
+        # Sauvegarde demandee par le SITE avant de fermer une table inactive :
+        # jeton du site en guise d'authentification, et pas de controle de
+        # version (le site n'est pas un client du jeu).
+        self.AddAwaitGetSecurity('/sauver_pour_le_site', self.sauver_pour_le_site,
+                                 need_auth=False, need_check_version=False)
         self.AddPostSecurity('/post_rapport_bug', self.post_rapport_bug)
         self.AddAwaitGetSecurity('/set_language', self.set_language)
         self.AddAwaitGetSecurity('/get_language', self.get_language)

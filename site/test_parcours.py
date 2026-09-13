@@ -1608,6 +1608,137 @@ verifier("l'ecran de connexion annonce la regle aux joueurs",
 verifier("et il donne le nombre de jours",
          str(o.EXPIRATION_JOURS).encode("utf-8") in _page_co)
 
+# --- La table restee allumee pour personne --------------------------------
+# AJOUT du 13/09/2026. Une table tient un port, un processus et sa memoire, sur
+# vingt places. Le minuteur des huit heures ne regardait que l'AGE de la table :
+# quelqu'un qui ouvrait son jeu le matin et partait travailler l'immobilisait
+# toute la journee.
+#
+# ⚠ LE SIGNAL EST LE JOURNAL DU MOTEUR, PAS LE « VU » DU SITE. Celui-ci ne bouge
+# qu'a l'ouverture du jeu : pendant qu'on joue, le navigateur parle au moteur et
+# le site n'entend plus rien. S'y fier aurait ferme la table de quelqu'un en
+# pleine partie au bout de 45 minutes. C'est le cas central de ce bloc.
+_racine_oisive = o.RACINE_JEU
+_bac_oisif = tempfile.mkdtemp(prefix="nc-oisive-")
+o.RACINE_JEU = _bac_oisif
+os.makedirs(os.path.join(_bac_oisif, ".site"), exist_ok=True)
+
+_table = o.Partie(7, "hote", "Jeu de hote")
+_table.processus = FauxProcessus()
+_journal = os.path.join(_bac_oisif, ".site", "moteur-7.log")
+
+# Sans journal du tout : on ne sait pas, et on ne ferme pas au hasard.
+verifier("sans journal, l'inactivite est inconnue",
+         o.secondes_sans_jouer(_table) == -1.0, str(o.secondes_sans_jouer(_table)))
+
+with open(_journal, "w", encoding="utf-8") as _j:
+    _j.write("le moteur vient d'ecrire\n")
+verifier("un journal tout frais donne une inactivite quasi nulle",
+         0 <= o.secondes_sans_jouer(_table) < 5, str(o.secondes_sans_jouer(_table)))
+
+# On vieillit le journal d'une heure : la table n'a plus rien fait.
+_vieux = _time_journal.time() - 3600
+os.utime(_journal, (_vieux, _vieux))
+verifier("un journal d'il y a une heure se voit",
+         3500 < o.secondes_sans_jouer(_table) < 3700, str(o.secondes_sans_jouer(_table)))
+verifier("une heure depasse le seuil des trois quarts d'heure",
+         o.secondes_sans_jouer(_table) > o.INACTIVITE_MINUTES * 60)
+
+# ⚠ ET UNE TABLE OU L'ON JOUE N'EST PAS OISIVE, meme si le site n'a plus vu
+# passer son proprietaire depuis des heures : c'est toute la difference entre
+# le journal du moteur et le « vu » du site.
+os.utime(_journal, None)
+verifier("une table ou l'on joue n'est jamais oisive",
+         o.secondes_sans_jouer(_table) < o.INACTIVITE_MINUTES * 60)
+
+# --- Qui se fait faucher, et qui non ---------------------------------------
+os.utime(_journal, (_vieux, _vieux))
+verifier("une table oisive d'un joueur ordinaire se ferme",
+         o.table_oisive("hote", _table) is True)
+# ⚠ SAUF LA MIENNE. La table de l'administrateur sert a regarder ce qui se
+# passe sur le site, souvent sans y jouer.
+verifier("celle de l'administrateur, jamais",
+         o.table_oisive(o.ADMIN, _table) is False)
+# Le reglage a zero eteint la regle, sans toucher au reste du faucheur.
+_seuil_avant = o.INACTIVITE_MINUTES
+o.INACTIVITE_MINUTES = 0
+verifier("a zero minute, plus personne n'est fauche pour inactivite",
+         o.table_oisive("hote", _table) is False)
+o.INACTIVITE_MINUTES = _seuil_avant
+# Sans journal lisible, on s'abstient : une table qu'on n'arrive pas a juger ne
+# se ferme pas au hasard.
+os.remove(_journal)
+verifier("sans journal, on ne ferme pas au hasard",
+         o.table_oisive("hote", _table) is False)
+
+o.RACINE_JEU = _racine_oisive
+shutil.rmtree(_bac_oisif, ignore_errors=True)
+
+# --- La partie est sauvegardee AVANT que le moteur soit tue ----------------
+# ⚠ A huit heures on pouvait s'en passer ; a trois quarts d'heure non. C'est ce
+# qui fait la difference entre « ta table s'est fermee » et « ta partie est
+# perdue ».
+_appels_sauvegarde = []
+
+
+class _FausseReponse:
+    def read(self):
+        return b"{}"
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        return False
+
+
+def _fausse_ouverture(lien, timeout=None):
+    _appels_sauvegarde.append(lien)
+    return _FausseReponse()
+
+
+_ouverture_avant = o.urllib.request.urlopen
+o.urllib.request.urlopen = _fausse_ouverture
+try:
+    _a_sauver = o.Partie(7, "hote", "Jeu de hote")
+    _a_sauver.processus = FauxProcessus()
+    o._sauvegarder_avant_extinction(_a_sauver)
+finally:
+    o.urllib.request.urlopen = _ouverture_avant
+
+verifier("le site demande au moteur d'ecrire sa partie",
+         len(_appels_sauvegarde) == 1
+         and "/sauver_pour_le_site" in _appels_sauvegarde[0],
+         str(_appels_sauvegarde))
+verifier("et il presente le jeton de la table",
+         _appels_sauvegarde and "jeton=" in _appels_sauvegarde[0],
+         str(_appels_sauvegarde))
+
+# ⚠ ET UN MOTEUR DEJA MORT NE RETIENT PERSONNE. Sans ce garde-fou, chaque
+# extinction d'une table plantee attendait le delai de la requete pour rien.
+_appels_sauvegarde.clear()
+
+
+class _ProcessusMort:
+    def poll(self):
+        return 1
+
+
+_morte = o.Partie(7, "hote", "Jeu de hote")
+_morte.processus = _ProcessusMort()
+o.urllib.request.urlopen = _fausse_ouverture
+try:
+    o._sauvegarder_avant_extinction(_morte)
+finally:
+    o.urllib.request.urlopen = _ouverture_avant
+verifier("un moteur deja mort n'est pas interroge", _appels_sauvegarde == [],
+         str(_appels_sauvegarde))
+
+# La cause est lisible dans le suivi, comme les autres.
+verifier("la fermeture pour inactivite porte un motif lisible",
+         "sans jouer" in o.CAUSES_ABANDON.get("inactivite", ""),
+         o.CAUSES_ABANDON.get("inactivite", ""))
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:
