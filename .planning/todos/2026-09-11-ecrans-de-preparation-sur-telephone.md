@@ -95,9 +95,14 @@ anciennes valeurs.
    pente du biais (elle est déjà remise à plat sous 900 px). Le coupable était
    un chiffre en dur, pas une variable.
 
-### Ce qui reste
+4. **La grille des héros passe à trois colonnes.** À 145 px, trois vignettes
+   plus leurs deux écarts de 8 faisaient 451 px pour 448 disponibles : il en
+   manquait **trois**, et la grille retombait à deux colonnes. À 142 px elle
+   tient, la page passe de **7853 à 5265 px**, et la vignette ne perd que trois
+   pixels de large — « Black Panther (Shuri) », le nom le plus long du roster,
+   se lit toujours.
 
-- **Les 7853 px de l'écran des héros** : 69 héros sur deux colonnes font
-  35 rangées. La recherche et les filtres existent ; une troisième colonne
-  diviserait la hauteur par deux, au prix de vignettes de 110 px. Seul point
-  encore ouvert, et il n'a rien de cassé : c'est un arbitrage.
+## Statut
+
+**Terminé le 13/09/2026.** Les cinq écrans sont mesurés, les quatre défauts
+corrigés, cinq cas au filet avec leurs témoins. Rien n'est laissé ouvert.

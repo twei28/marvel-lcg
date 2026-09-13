@@ -2213,8 +2213,14 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
      (132 px de fonte) qui mangeait la hauteur, pas l'image. */
   .step {
     --affiche-nom: 30px;
-    --affiche-portrait: 145px;
-    --affiche-portrait-h: 200px;
+    /* ⚠ TROIS COLONNES, ET NON DEUX (13/09/2026). A 145 px, trois vignettes
+       plus leurs deux ecarts de 8 font 451 px pour 448 disponibles : il en
+       manquait TROIS, et la grille retombait a deux colonnes. Les 69 heros
+       faisaient alors 35 rangees, soit 7853 px a faire defiler. A 142 px on
+       tient (442), la hauteur tombe de moitie, et la vignette ne perd que
+       trois pixels de large. */
+    --affiche-portrait: 142px;
+    --affiche-portrait-h: 196px;
   }
 
   .tb-scene {

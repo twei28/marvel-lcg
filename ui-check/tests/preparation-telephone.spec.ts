@@ -72,6 +72,28 @@ test('les vignettes cadrent l illustration, pas la zone de texte', async ({ page
   expect(cadre.largeurAffichee).toBeLessThanOrEqual(615);
 });
 
+// ⚠ TROIS COLONNES, ET NON DEUX. A 145 px, trois vignettes plus leurs deux
+// ecarts de 8 faisaient 451 px pour 448 disponibles : il en manquait TROIS, et
+// la grille retombait a deux colonnes. Les 69 heros faisaient alors 35 rangees,
+// soit 7853 px a faire defiler pour en voir le bout.
+test('la grille des heros tient sur trois colonnes', async ({ page }) => {
+  await jusquA(page, 'heros');
+  const g = await page.evaluate(() => {
+    const grille = document.querySelector('#hero-grid') as HTMLElement;
+    const tuile = document.querySelector('#hero-grid .tb-port') as HTMLElement;
+    return { colonnes: getComputedStyle(grille).gridTemplateColumns.split(' ').length,
+             tuile: Math.round(tuile.getBoundingClientRect().width),
+             hauteur: document.documentElement.scrollHeight };
+  });
+  console.log('GRILLE ' + JSON.stringify(g));
+  expect(g.colonnes).toBe(3);
+  // La vignette reste assez large pour que le nom se lise (« Black Panther
+  // (Shuri) » est le plus long du roster).
+  expect(g.tuile).toBeGreaterThanOrEqual(135);
+  // Et la page a bien maigri : 7853 px avant, un tiers de moins attendu.
+  expect(g.hauteur).toBeLessThan(6000);
+});
+
 // ⚠ L'AUTRE DEFAUT DU 13/09/2026. Le bloc de la menace est borne a 190 px avec
 // un defilement interne, pense pour un grand ecran ou la colonne de droite est
 // figee. Son contenu en fait 202 sur telephone : la puce du set modulaire
