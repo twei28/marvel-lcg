@@ -29,6 +29,7 @@ filtre dans le wizard.
 | **Coop** | Une victoire à plusieurs coche **tous les héros de la table**, et le vilain. Fidèle au jeu de plateau, et ça récompense de jouer à plusieurs. |
 | **Parties déjà jouées** | **Au choix, une fois, à l'activation** : « reprendre mes parties passées » ou « repartir de zéro ». Deux chemins à tenir, assumés. |
 | **Nom** | **Legacy**, arrêté le 13/09/2026. « Archives du Collectionneur » avait été retenu quelques heures plus tôt, puis écarté : trop long pour une tuile, et le mot Legacy dit mieux ce qu'on fait, reprendre le jeu depuis son origine. |
+| **Sous-titre de la tuile** | « Boîte par boîte ». La petite ligne sous le nom, comme « 1 héros » pour Solo et « Progression » pour Campagne : elle dit le rythme du mode. |
 | **Phrase au survol** | « Tu commences avec la boîte de base et tu débloques la suite en gagnant. » Même ton que les cinq autres tuiles, voir `MODES` dans `public/js/prepare/app.js`. |
 | **Où on entre** | Une **sixième tuile sur l'accueil**, à côté de Solo, Coop, Campagne, Bac à sable et Bataille. On y entre comme dans un mode, on en sort en revenant à l'accueil. Le jeu libre n'est jamais verrouillé. |
 | **Ce qui est verrouillé** | **Grisé, avec sa condition affichée** : « Gagne une fois avec Thor pour ouvrir la vague 2 ». Le catalogue entier reste sous les yeux, ce qui donne envie, et on sait toujours ce qui reste à faire. |
