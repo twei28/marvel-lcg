@@ -413,3 +413,8 @@ ordinaires sans incident, `ui-app` 461 tests + `tsc` propres.
 **Ce qui n'est PAS mesuré** : l'écran. Aucune partie de Bataille n'a été jouée
 dans un navigateur, et le plateau ne connaît toujours pas les zones de jeu —
 c'est le point 1 bis du §10, et il demande un humain.
+
+## Clos le 13/09/2026
+
+Décision de l'utilisateur : le mode sort du backlog tel quel, mesuré par le
+moteur et jamais joué dans un navigateur. « S'il y a un souci, on verra ça. »

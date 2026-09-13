@@ -91,3 +91,10 @@ Autre repère : l'auteur des CARTES n'est pas toujours celui qui partage le
 Drive. Les cartes de Professor X sont signées **DESIGNHACKER**, déjà connu du
 projet (packs `determination`, `human_torch`, `mister_fantastic`, et trois
 collections de ressources doubles).
+
+## Clos le 13/09/2026 : Galactic Storm et Skrull Menace
+
+Décision de l'utilisateur : ces deux boîtes sortent du backlog. Les archives ne
+contenaient pas les cartes, les trois options restaient à trancher, elles ne le
+seront pas. Les 766 Mo de doublons relevés à cette occasion ne sont pas
+nettoyés non plus.

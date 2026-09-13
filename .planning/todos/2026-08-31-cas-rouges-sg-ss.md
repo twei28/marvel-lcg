@@ -58,3 +58,8 @@ première insertion de cas.
   log suffirait à le fausser sans aucune régression de jeu.
 - Dater la casse : `git log` sur les modules sg/ss et sur le harnais, puis
   rejouer les cas aux commits candidats (le `[filtre]` rend ça rapide).
+
+## Clos le 13/09/2026
+
+Décision de l'utilisateur : les quatre cas rouges restants sortent du backlog.
+Ils restent dans le harnais, comptés dans le total, sans travail prévu dessus.
