@@ -163,8 +163,11 @@ qui ne répondait plus table éteinte.
 le faire : ce site se bat déjà contre les caches périmés. Il n'existe que parce
 que le navigateur en exige un pour proposer l'installation.
 
-Les icônes sont dans `site/static/app-192.png` et `app-512.png`, rendues depuis
-`assets/textures/mvc_logo.svg` sur fond `#0e1116`.
+Les icônes sont le **narval** (image fournie le 13/09/2026) : `site/static/app-192.png`
+et `app-512.png` pour l'appli, `site/static/favicon.png` pour l'onglet du site,
+`public/favicon.ico` pour l'onglet du jeu, et `assets/textures/narwhal.png` pour
+l'en-tête de l'assistant, servi par son nom (`/narwhal`, sans extension, comme
+une carte).
 
 ## Le mode Legacy
 

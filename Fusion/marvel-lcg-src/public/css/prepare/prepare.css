@@ -232,6 +232,9 @@ button{cursor:pointer}
 }
 .brand-lockup.logo{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
 .brand-logo{height:48px;width:auto;display:block;border-radius:3px}
+/* Le narval du site, a la meme hauteur que le logo, juste avant lui. */
+.brand-narwhal{height:48px;width:48px;display:block;margin-right:8px}
+.brand-lockup{display:flex;align-items:center}
 .steps{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
 .pstep{
   display:flex;
@@ -2099,6 +2102,11 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 
   .brand-logo {
     height: 24px;
+  }
+  .brand-narwhal {
+    height: 24px;
+    width: 24px;
+    margin-right: 4px;
   }
 
   /* Meme raison que plus bas pour la taille des libelles : la feuille injectee

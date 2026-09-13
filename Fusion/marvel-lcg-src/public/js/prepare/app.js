@@ -616,6 +616,15 @@ function progressBar() {
         el("a", { class: "brand", href: "main" },
             el("span", { class: "brand-back" }, "<"),
             el("span", { class: "brand-lockup logo" },
+                // Le narval, mascotte du site (image de l'utilisateur, 13/09/2026),
+                // a cote du logo officiel. Le meme sert d'icone d'onglet et
+                // d'icone de l'appli sur telephone.
+                // ⚠ SANS EXTENSION : le moteur sert les images par leur NOM
+                // (server_files.py), en cherchant .webp/.jpg/.png dans les
+                // dossiers d'images puis assets/textures. « /narwhal.png »
+                // repondait 404 ; « /narwhal » trouve assets/textures/narwhal.png,
+                // exactement comme « /01001a » trouve un scan de carte.
+                el("img", { class: "brand-narwhal", src: "/narwhal", alt: "NarwhalChampions" }),
                 el("img", { class: "brand-logo", src: "/mvc_logo.svg", alt: "Marvel Champions" }),
             ),
         ),

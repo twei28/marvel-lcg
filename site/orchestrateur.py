@@ -2804,7 +2804,10 @@ self.addEventListener('fetch', () => {});
 # Les lignes a poser dans <head> de chaque page publique.
 TETE_APPLI = ('<link rel="manifest" href="/manifest.webmanifest">'
               '<meta name="theme-color" content="#0e1116">'
-              '<link rel="icon" href="/app-192.png">'
+              # L'onglet prend le narval DETOURE (fond transparent) ; l'icone
+              # d'accueil, elle, est pleine, bord a bord, comme les stores le
+              # demandent.
+              '<link rel="icon" type="image/png" href="/favicon.png">'
               '<link rel="apple-touch-icon" href="/app-192.png">'
               '<meta name="apple-mobile-web-app-capable" content="yes">'
               '<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){});</script>')
@@ -2854,7 +2857,7 @@ PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("{tete_appli}", _TETE_POUR_FORMAT).rep
 
 
 def _icone_appli(nom: str) -> bytes | None:
-    if nom not in ("app-192.png", "app-512.png"):
+    if nom not in ("app-192.png", "app-512.png", "favicon.png"):
         return None
     try:
         with open(os.path.join(RACINE_SITE, "static", nom), "rb") as f:
@@ -3383,8 +3386,10 @@ class Handler(BaseHTTPRequestHandler):
             # ⚠ SANS CACHE HTTP non plus : un worker mis en cache par le
             # navigateur survivrait a sa propre mise a jour.
             self._repondre(200, SERVICE_WORKER, "application/javascript; charset=utf-8")
-        elif self.path in ("/app-192.png", "/app-512.png"):
-            image = _icone_appli(self.path[1:])
+        elif self.path in ("/app-192.png", "/app-512.png", "/favicon.png", "/favicon.ico"):
+            # /favicon.ico : les navigateurs le demandent d'office, on leur
+            # rend le meme narval plutot qu'un 404 a chaque page.
+            image = _icone_appli("favicon.png" if self.path == "/favicon.ico" else self.path[1:])
             if image is None:
                 self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
                 return

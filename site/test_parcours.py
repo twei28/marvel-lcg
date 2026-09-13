@@ -1892,6 +1892,12 @@ for _ic in ("/app-192.png", "/app-512.png"):
     _code, _tetes, _corps = appel("GET", _ic)
     verifier("l'icone %s est servie" % _ic,
              _code == 200 and _corps[:4] == b"\x89PNG", "%s %r" % (_code, _corps[:4]))
+# L'icone d'onglet : le narval detoure, et /favicon.ico que les navigateurs
+# demandent d'office rend la meme image plutot qu'un 404 a chaque page.
+for _ic in ("/favicon.png", "/favicon.ico"):
+    _code, _tetes, _corps = appel("GET", _ic)
+    verifier("l'icone d'onglet %s est servie" % _ic,
+             _code == 200 and _corps[:4] == b"\x89PNG", "%s %r" % (_code, _corps[:4]))
 _code, _tetes, _corps = appel("GET", "/sw.js")
 verifier("le service worker est servi en javascript",
          _code == 200 and "javascript" in (_tetes.get("Content-Type") or ""), str(_code))
