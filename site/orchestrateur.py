@@ -2776,7 +2776,12 @@ MANIFESTE_SUIVI = json.dumps({
 MANIFESTE_APPLI = json.dumps({
     "name": "NarwhalChampions",
     "short_name": "Narwhal",
-    "description": "Marvel Champions, en ligne, entre amis.",
+    # ⚠ « EN LIGNE » EST DANS LA DESCRIPTION, ET C'EST VOLONTAIRE. Android la
+    # montre dans la boite d'installation. Une icone sur l'ecran d'accueil
+    # promet implicitement le hors ligne ; ici c'est impossible par
+    # construction, le moteur tourne sur le serveur et chaque action passe
+    # par lui. Mieux vaut le dire avant l'installation qu'apres.
+    "description": "Marvel Champions entre amis. Raccourci vers le jeu : une connexion est necessaire pour jouer, rien ne fonctionne hors ligne.",
     "start_url": "/entrer",
     "scope": "/",
     "display": "standalone",
@@ -2829,6 +2834,11 @@ BOUTON_APPLI = (
     'Installer l\'application sur ce telephone</button>'
     '<p id="appli-ios" hidden style="margin:.4rem 0 0;color:#9aa7b4">Sur iPhone : bouton Partager, '
     'puis « Sur l\'ecran d\'accueil ».</p>'
+    # ⚠ DIT AVANT L'INSTALLATION, pas apres. Une icone sur l'ecran d'accueil
+    # laisse croire au hors ligne ; le jeu tourne sur le serveur, il n'y a
+    # rien a jouer sans connexion.
+    '<p style="margin:.5rem 0 0;color:#9aa7b4;font-size:.85rem">C\'est un raccourci '
+    'vers le jeu, pas une version hors ligne : il faut une connexion pour jouer.</p>'
     '</div>'
     '<script>(function(){'
     'var bloc=document.getElementById("appli-installer"),bouton=document.getElementById("appli-bouton"),'

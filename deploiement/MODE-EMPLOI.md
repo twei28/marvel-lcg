@@ -152,6 +152,12 @@ d'accueil »** (Chrome propose aussi une bannière d'installation). Le jeu a son
 icône et s'ouvre en plein écran, sans barre d'adresse. Rien à publier sur un
 store.
 
+⚠ **Ce n'est pas une version hors ligne, et il faut le dire.** Une icône sur
+l'écran d'accueil le promet implicitement, mais le moteur de jeu tourne sur le
+serveur : chaque action passe par lui, il n'y a rien à jouer sans connexion. Le
+bouton d'installation, le manifeste et le journal des nouveautés le disent tous
+les trois, avant l'installation plutôt qu'après.
+
 **Elle est installée sur le site, pas sur la table.** L'icône ouvre `/entrer`,
 qui allume la table au besoin et y envoie : ça marche toujours, table éteinte ou
 non, et même si la place d'un compte change un jour. Contrepartie : une fois sur

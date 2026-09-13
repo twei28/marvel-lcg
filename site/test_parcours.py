@@ -1921,6 +1921,14 @@ verifier("et le bouton d'installation, arme sur beforeinstallprompt",
          and b'id="appli-installer" hidden' in _corps)
 verifier("avec le chemin a suivre sur iPhone, qui n'a pas d'evenement",
          b"Partager" in _corps)
+# ⚠ ET IL DIT QU'IL N'Y A PAS DE HORS LIGNE. Une icone sur l'ecran d'accueil le
+# promet implicitement ; le moteur tourne sur le serveur, chaque action passe
+# par lui, il n'y a rien a jouer sans connexion. Le dire avant l'installation.
+verifier("et il previent qu'il n'y a pas de hors ligne",
+         "hors ligne".encode("utf-8") in _corps)
+_code, _, _corps = appel("GET", "/manifest.webmanifest")
+verifier("le manifeste le dit aussi, dans la boite d'installation",
+         "hors ligne".encode("utf-8") in _corps)
 
 print()
 print("ECHECS : %d" % len(echecs))
