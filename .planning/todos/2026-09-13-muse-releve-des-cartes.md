@@ -79,3 +79,32 @@ renforce de ses propres cartes, ce que dit l'illustration, et cela se prévoit.
 | Environnement | 1 |
 | Traîtrises | 2 distinctes, 3 exemplaires |
 | **Total** | **6 distinctes, 7 exemplaires** |
+
+## Mise de côté, 13/09/2026
+
+À la demande de l'utilisateur, **Muse ne doit pas partir en production**, même
+lors d'un déploiement. Le set reste intégralement en place (cartes, scripts,
+images, douze cas de test) : il est simplement **masqué dans le jeu**.
+
+Le drapeau est une donnée, `"indisponible": true` sur l'entrée
+`174. Custom (Muse)` de `data/sets_info.json`, à côté d'une note qui dit
+pourquoi et comment revenir en arrière. Même esprit que le `indisponible` du
+deck de départ d'un héros retiré, mais au niveau du set.
+
+Ce que le drapeau fait, dans `public/js/prepare/catalog.js` :
+
+- `extensions()` écarte l'extension, donc pas d'onglet vide ;
+- `encounterSets()` écarte ses sets de rencontre, donc ni chip
+  « Personnalisés », ni tirage « Aléatoire ».
+
+Ce que le drapeau ne fait PAS : le moteur n'ouvre jamais `sets_info.json` pour
+monter une partie (il n'y lit qu'un checksum, et le sert tel quel sur
+`get_sets_json`). `tools/autoplay.py --modulaires muse` continue donc de
+fonctionner, et les douze cas de `tools/test_capacites.py` restent verts.
+
+Filet : `ui-check/tests/sets-masques.spec.ts`, `npm run sets-masques`. Il ne
+nomme aucun set : il lit ce qui est marqué indisponible et exige que le
+catalogue l'ait écarté. Vérifié rouge sans le filtre.
+
+**Pour remettre Muse en service** : supprimer la clé `indisponible` de
+`data/sets_info.json`. Rien d'autre.

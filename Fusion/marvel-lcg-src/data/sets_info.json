@@ -1534,7 +1534,9 @@
   "encounters": [
    "muse"
   ],
-  "max_id": "mu006"
+  "max_id": "mu006",
+  "indisponible": true,
+  "indisponible_note": "Set modulaire mis de cote le 13/09/2026, a la demande de l'utilisateur : il ne doit pas partir en production. Les fichiers restent en place (cartes, scripts, cas de test) pour que le harnais continue de tourner ; seul l'ecran de preparation cesse de le proposer. Pour le remettre : supprimer la cle `indisponible`."
  },
  "checksum": "34b4fcadd1f25f2d8a348df106a352bb3d7d56c4d3de40b3263d92cfdb62da47"
 }

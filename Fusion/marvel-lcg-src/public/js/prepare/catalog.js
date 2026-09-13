@@ -272,6 +272,11 @@ function encounterKind(name) {
 }
 
 let _extensions = null, _heroes = null, _encounterSets = null;
+// Sets de rencontre d'une extension marquee `indisponible` dans sets_info.json.
+// Rempli par extensions(), lu par encounterSets() : l'ecran de preparation ne
+// propose pas un set mis de cote. Meme principe que `_setsMasques` juste en
+// dessous, mais pour les sets modulaires plutot que pour les cartes signature.
+let _setsRencontreMasques = new Set();
 // `set_name` des héros marqués `metadata.indisponible` dans leur deck de
 // départ. Rempli par heroes(), lu par setsMasques() : le deckbuilder s'en sert
 // pour ne pas proposer les cartes signature d'un héros retiré du jeu.
@@ -282,7 +287,19 @@ export const catalog = {
     async extensions() {
         if (_extensions) return _extensions;
         const raw = await api.setsInfo();
-        _extensions = Object.entries(raw).map(([key, v]) => ({
+        // Extensions MISES DE COTE : `indisponible: true` dans sets_info.json.
+        // L'entree reste dans le fichier, les cartes restent construites et les
+        // cas de test continuent de tourner ; seule l'interface cesse de les
+        // montrer. Ajoute le 13/09/2026 pour le set modulaire Muse, qui ne doit
+        // pas partir en production. Pour remettre une extension : supprimer la
+        // cle `indisponible`.
+        _setsRencontreMasques = new Set();
+        Object.entries(raw).forEach(([, v]) => {
+            if (!v || !v.indisponible) return;
+            (v.encounters || []).forEach((n) => _setsRencontreMasques.add(n));
+        });
+        _extensions = Object.entries(raw).filter(([, v]) => !(v && v.indisponible))
+            .map(([key, v]) => ({
             key, code: v.name, scenarios: v.scenarios || [], heroes: v.heroes || [],
             encounters: v.encounters || [], maxId: v.max_id,
         })).sort((a, b) => num(a.key) - num(b.key));
@@ -572,8 +589,15 @@ export const catalog = {
 
     async encounterSets() {
         if (_encounterSets) return _encounterSets;
+        // extensions() d'abord : c'est elle qui remplit `_setsRencontreMasques`.
+        // Le fichier du set reste dans data/encounter_sets et le moteur sait
+        // toujours le monter (autoplay --modulaires s'en sert) ; on le retire
+        // seulement des listes que voit un joueur, chips « Personnalises » et
+        // tirage « Aleatoire » compris.
+        await this.extensions();
         const names = (await api.listEncounterSets()).map(fileName);
-        _encounterSets = names.map((n) => ({ name: n, displayName: titleize(n), kind: encounterKind(n) }));
+        _encounterSets = names.filter((n) => !_setsRencontreMasques.has(n))
+            .map((n) => ({ name: n, displayName: titleize(n), kind: encounterKind(n) }));
         return _encounterSets;
     },
 
