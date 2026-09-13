@@ -2983,6 +2983,40 @@
       0 30px 80px rgba(0, 0, 0, 0.7);
   }
 
+  /* ⚠ LES BOUTONS DE DECISION RESTENT SOUS LES YEUX (13/09/2026).
+     Le panneau defile en entier quand il est trop haut — et il l'est souvent :
+     chronologie, les deux cartes de l'attaque, le titre geant, « 0 degat
+     annonce », le bandeau « A toi de jouer », les cartes candidates, PUIS les
+     boutons, PUIS le texte des capacites. Resultat rapporte par l'utilisateur,
+     capture a l'appui : « on doit scroll et c'est pas clair du tout » — il
+     fallait faire defiler le panneau pour trouver Defendre / Demander / Passer,
+     alors que ce sont eux la question posee.
+
+     Le commentaire du `max-height` ci-dessus disait deja vouloir eviter « que
+     ses boutons deviennent inatteignables » : le defilement seul n'y suffisait
+     pas. Ils sont maintenant colles au bas du panneau, le reste defile dessous.
+
+     `bottom: -16px` : la valeur du `padding-bottom` du panneau, pour que la
+     bande affleure son bord au lieu de flotter au-dessus. Les marges negatives
+     lui rendent toute la largeur, le degrade masque ce qui passe derriere. */
+  .deroule-phase .dc-boutons,
+  .deroule-phase .cibles-scene-boutons {
+    position: sticky;
+    bottom: -16px;
+    z-index: 3;
+    max-width: none;
+    margin: 10px -22px -16px;
+    padding: 12px 22px 16px;
+    background: linear-gradient(180deg, rgba(38, 38, 38, 0) 0, var(--fond) 30%);
+  }
+
+  /* Le texte des capacites passe DERRIERE la bande des boutons : il explique ce
+     qu'elles font, il ne doit pas les repousser hors de vue. */
+  .deroule-phase .dc-capacites {
+    position: relative;
+    z-index: 1;
+  }
+
   /* La bande oblique en haut de la case, sous la chronologie. */
   .deroule-phase::before {
     content: '';

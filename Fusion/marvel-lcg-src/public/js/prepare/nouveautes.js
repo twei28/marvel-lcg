@@ -46,6 +46,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-13",
+        genre: "correction",
+        fr: "En partie, quand le méchant t'attaque, les boutons Défendre / Demander / Passer restent collés au bas de la fenêtre : plus besoin de faire défiler pour trouver quoi répondre.",
+        en: "In game, when the villain attacks you, the Defend / Ask / Pass buttons now stay pinned to the bottom of the window: no more scrolling to find what to answer.",
+    },
+    {
+        date: "2026-09-13",
         genre: "jeu",
         fr: "À ta prochaine visite, le jeu te demande une fois dans quelle langue tu veux tes cartes. Tu peux changer d'avis quand tu veux avec le bouton FR / EN, en haut de l'écran.",
         en: "On your next visit, the game asks you once which language you want your cards in. You can change your mind whenever you like with the FR / EN button at the top of the screen.",
