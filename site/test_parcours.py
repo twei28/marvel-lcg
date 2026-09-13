@@ -343,7 +343,13 @@ import threading                                            # noqa: E402
 from http.server import ThreadingHTTPServer                 # noqa: E402
 
 _serveur = ThreadingHTTPServer(("127.0.0.1", 0), o.Handler)
-_port = _serveur.server_address[1]
+# ⚠ `_port_serveur`, ET PAS `_port`. Le nom `_port` est repris plus bas par la
+# section du moteur zombie (`_port = o.PORT_BASE + _place`) : tant qu'aucun cas
+# n'appelait `appel()` APRES elle, personne ne l'a vu. Le premier qui l'a fait
+# (les cas de l'annonce, 13/09/2026) est tombe sur « Connection refused »,
+# l'appel visant desormais le port d'une table au lieu de celui du serveur de
+# test. Un nom a part, et le piege disparait.
+_port_serveur = _serveur.server_address[1]
 threading.Thread(target=_serveur.serve_forever, daemon=True).start()
 
 
@@ -356,7 +362,7 @@ def appel(methode, chemin, corps=b"", entetes=None, annonce=None, delai=5):
     mettrait a lire ces octets qui n'arrivent jamais ferait echouer le cas au
     lieu de bloquer le fichier de test pour toujours.
     """
-    lien = http.client.HTTPConnection("127.0.0.1", _port, timeout=delai)
+    lien = http.client.HTTPConnection("127.0.0.1", _port_serveur, timeout=delai)
     tetes = dict(entetes or {})
     if methode == "POST":
         tetes.setdefault("Content-Type", "application/x-www-form-urlencoded")
@@ -1337,6 +1343,135 @@ verifier("les archives d'une table ne sont pas celles d'une autre",
 o.JOURNAUX_MOTEUR_GARDES = _gardes_avant
 o.RACINE_JEU = _racine_journal_avant
 shutil.rmtree(_bac_journal, ignore_errors=True)
+
+# --- L'annonce aux joueurs, et son decompte ---------------------------------
+# AJOUT du 13/09/2026. Un deploiement fait `systemctl restart narwhal` et
+# emporte tous les moteurs : toute partie en cours est perdue. L'annonce est le
+# seul moyen de prevenir quelqu'un qui joue. Ce qui doit tenir :
+#   - une annonce posee est lisible, avec le TEMPS QUI RESTE et pas une heure
+#     absolue (le navigateur du joueur n'est pas a l'heure du serveur) ;
+#   - une annonce perimee disparait toute seule, sans menage a faire ;
+#   - poser remplace, jamais n'empile : deux decomptes contradictoires seraient
+#     pires que pas d'annonce du tout ;
+#   - annuler efface vraiment, parce qu'un deploiement qui glisse ne doit pas
+#     laisser un decompte mensonger tourner devant les joueurs.
+o.retirer_annonce()
+verifier("sans annonce posee, il n'y a rien a dire",
+         o.annonce_courante() is None)
+
+o.poser_annonce(10)
+_a = o.annonce_courante()
+verifier("l'annonce posee est rendue", _a is not None)
+verifier("elle porte les SECONDES QUI RESTENT, pas une heure",
+         _a is not None and 9 * 60 < _a["secondes"] <= 10 * 60, str(_a))
+verifier("sans texte, c'est le preavis de mise a jour",
+         _a is not None and "Save" in _a["texte"], str(_a))
+
+o.poser_annonce(30, "Coupure reseau chez l'hebergeur.")
+_a = o.annonce_courante()
+verifier("poser une annonce remplace la precedente",
+         _a is not None and _a["texte"] == "Coupure reseau chez l'hebergeur."
+         and _a["secondes"] > 20 * 60, str(_a))
+with o._cx() as _cx_a:
+    _combien = _cx_a.execute("SELECT COUNT(*) AS n FROM annonces").fetchone()["n"]
+verifier("une seule annonce est gardee en base", _combien == 1, str(_combien))
+
+# Une duree qui n'a pas de sens ne doit pas passer telle quelle : un preavis de
+# 4000 minutes est une faute de frappe, pas une intention.
+o.poser_annonce(99999)
+_a = o.annonce_courante()
+verifier("une duree aberrante est ramenee au plafond",
+         _a is not None and _a["secondes"] <= o.ANNONCE_MINUTES_MAX * 60, str(_a))
+
+# Perimee : on triche sur l'instant de fin plutot que d'attendre.
+with o._cx() as _cx_a:
+    _cx_a.execute("UPDATE annonces SET jusqu_a = ?", (int(_time_journal.time()) - 5,))
+verifier("une annonce perimee ne s'affiche plus", o.annonce_courante() is None)
+
+o.poser_annonce(5)
+o.retirer_annonce()
+verifier("annuler efface l'annonce", o.annonce_courante() is None)
+
+# --- L'annonce PAR LA ROUTE : ce que le moteur recoit vraiment --------------
+# Les cas ci-dessus prouvent que les fonctions sont justes. Ils ne disent rien
+# du CABLAGE, et c'est lui qui casse : `/api/annonce` est appelee par le
+# MOTEUR, en 127.0.0.1, avec le jeton de la table, et le navigateur du joueur
+# n'y arrive jamais directement. Une route mal branchee se verrait uniquement
+# en production, un jour de deploiement, c'est-a-dire trop tard.
+import json as _json_annonce                                # noqa: E402
+
+o.retirer_annonce()
+_jeton_annonce = "jeton-annonce-de-test"
+o.JETONS_SITE[_jeton_annonce] = "hote"
+_corps_annonce = ("jeton=" + _jeton_annonce).encode("utf-8")
+
+_code, _, _rep = appel("POST", "/api/annonce", corps=_corps_annonce)
+verifier("sans annonce, la route repond un objet vide",
+         _code == 200 and _json_annonce.loads(_rep) == {}, "%s %s" % (_code, _rep))
+
+o.poser_annonce(10)
+_code, _, _rep = appel("POST", "/api/annonce", corps=_corps_annonce)
+_vu = _json_annonce.loads(_rep)
+verifier("la route rend le texte et les secondes restantes",
+         _code == 200 and "Save" in _vu.get("texte", "") and _vu.get("secondes", 0) > 9 * 60,
+         "%s %s" % (_code, _rep))
+# ⚠ L'INSTANT DE FIN NE DOIT PAS SORTIR. Le navigateur d'un joueur n'est pas a
+# l'heure du serveur : il afficherait un decompte faux, voire negatif.
+verifier("la route n'envoie aucune heure absolue", "jusqu_a" not in _vu, str(_vu))
+
+# Le jeton est le laissez-passer : sans lui, rien.
+_code, _, _ = appel("POST", "/api/annonce", corps=b"jeton=invente")
+verifier("un jeton inconnu n'obtient pas l'annonce", _code == 403, str(_code))
+
+# --- Poser et annuler DEPUIS /admin ----------------------------------------
+# ⚠ ET SEULEMENT DEPUIS /admin. La page nomme les joueurs et commande le site :
+# un compte ordinaire n'a rien a y faire.
+o.retirer_annonce()
+_code, _, _ = appel("POST", "/admin", corps=b"action=annonce&minutes=15",
+                    entetes=cookie_de("hote"))
+verifier("un compte ordinaire ne pose pas d'annonce",
+         _code == 403 and o.annonce_courante() is None, str(_code))
+
+try:
+    o.inscrire(o.ADMIN, "admin@exemple.fr", "motdepasse123")
+except ValueError:
+    pass
+o.changer_statut(o.ADMIN, "valide")
+_code, _tetes, _ = appel("POST", "/admin", corps=b"action=annonce&minutes=15",
+                         entetes=cookie_de(o.ADMIN))
+_a = o.annonce_courante()
+verifier("l'administrateur pose l'annonce depuis /admin",
+         _code == 303 and _a is not None and _a["secondes"] > 14 * 60,
+         "%s %s" % (_code, _a))
+
+_code, _, _ = appel("POST", "/admin",
+                    corps=b"action=annonce&minutes=5&texte=Coupure+reseau",
+                    entetes=cookie_de(o.ADMIN))
+_a = o.annonce_courante()
+verifier("le texte libre du formulaire est repris",
+         _a is not None and _a["texte"] == "Coupure reseau", str(_a))
+
+# ⚠ LE CAS QUI A DEJA MORDU. Le bouton d'annulation etait un second bouton
+# DANS le formulaire de pose, qui porte deja un champ cache `action=annonce` :
+# `_champs` ne garde que la premiere valeur, et « Annuler » reposait une
+# annonce au lieu de l'effacer. Il a fallu un formulaire separe.
+_code, _, _ = appel("POST", "/admin", corps=b"action=annonce_annuler",
+                    entetes=cookie_de(o.ADMIN))
+verifier("le bouton Annuler efface vraiment l'annonce",
+         _code == 303 and o.annonce_courante() is None, str(_code))
+
+# Et la page se relit sans exploser une fois l'annonce posee : elle y affiche
+# son etat et le bouton d'annulation.
+o.poser_annonce(8, "Coupure reseau")
+_code, _, _page_admin = appel("GET", "/admin", entetes=cookie_de(o.ADMIN))
+verifier("la page /admin montre l'annonce en cours",
+         _code == 200 and b"Annuler l'annonce" in _page_admin
+         and "Coupure reseau".encode("utf-8") in _page_admin,
+         str(_code))
+o.retirer_annonce()
+_code, _, _page_admin = appel("GET", "/admin", entetes=cookie_de(o.ADMIN))
+verifier("sans annonce, la page n'offre rien a annuler",
+         _code == 200 and b"Annuler l'annonce" not in _page_admin, str(_code))
 
 print()
 print("ECHECS : %d" % len(echecs))

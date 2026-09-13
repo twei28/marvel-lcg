@@ -586,6 +586,26 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'site injoignable'}, status=503)
         return web.json_response({'ok': True})
 
+    async def get_annonce(self, request: web.Request) -> web.Response:
+        """L'annonce en cours sur le site, relayee au plateau et a l'assistant.
+
+        AJOUT du 13/09/2026. Un deploiement fait `systemctl restart narwhal` :
+        l'orchestrateur emporte tous ses moteurs, et TOUTE PARTIE EN COURS EST
+        PERDUE. Le joueur n'a aucun moyen de le savoir, et pas d'autre recours
+        que le bouton Save du plateau. Cette route est ce qui lui donne le
+        temps de s'en servir.
+
+        ⚠ AUCUNE RESERVE DE SIEGE, a la difference du tchat. Un preavis
+        d'extinction concerne toute la table, invite compris : c'est meme lui
+        qui n'a aucun autre moyen d'etre prevenu.
+
+        Sans site derriere (partie locale), `_appeler_site` rend None et l'on
+        repond un objet vide : le client ne dessine rien. Rien ici ne doit
+        pouvoir interrompre une partie.
+        """
+        donnees = await self._appeler_site('/api/annonce', {}, secondes=3)
+        return web.json_response(donnees or {})
+
     async def get_rapport_actif(self, request: web.Request) -> web.Response:
         """Un site ecoute-t-il derriere ce moteur ?
 
@@ -752,6 +772,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity(r'/{path:.+\.pdf}', self.get_document_pdf)
         self.AddPostSecurity('/post_salon_message', self.post_salon_message)
         self.AddAwaitGetSecurity('/get_rapport_actif', self.get_rapport_actif)
+        self.AddAwaitGetSecurity('/get_annonce', self.get_annonce)
         self.AddPostSecurity('/post_rapport_bug', self.post_rapport_bug)
         self.AddAwaitGetSecurity('/set_language', self.set_language)
         self.AddAwaitGetSecurity('/get_language', self.get_language)

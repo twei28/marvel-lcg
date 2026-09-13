@@ -30,7 +30,8 @@
     "modale-heros": "playwright test tests/modale-heros.spec.ts --project=pc",
     "menus-mobile": "playwright test tests/menus-mobile.spec.ts --project=s24",
     "assistant-mobile": "playwright test tests/assistant-mobile.spec.ts --project=s24",
-    "sets-masques": "playwright test tests/sets-masques.spec.ts --project=pc"
+    "sets-masques": "playwright test tests/sets-masques.spec.ts --project=pc",
+    "annonce": "playwright test tests/annonce-preavis.spec.ts --project=pc"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0"

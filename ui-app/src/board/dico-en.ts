@@ -7,6 +7,10 @@
 // Une clé absente laisse le texte en français : rien ne casse.
 
 export const DICO_EN_BASE: Record<string, string> = {
+  // ---- Préavis du site (bandeau d'annonce) ----
+  'moins d’une minute': 'less than a minute',
+  '1 minute': '1 minute',
+  'minutes': 'minutes',
   // ---- Partagé (boutons, libellés courts) ----
   'autres': 'others',
   'Fermer': 'Close',

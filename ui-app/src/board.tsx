@@ -79,6 +79,8 @@ import {
   useTableSilencieuse,
 } from './board/attente-table'
 import { BandeauAbsent } from './board/BandeauAbsent'
+import { BandeauAnnonce } from './board/BandeauAnnonce'
+import { useAnnonce } from './board/annonce'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
 import { CiblesScene } from './board/CiblesScene'
@@ -1628,6 +1630,10 @@ function PagePartie({
     avancerPasAPas,
     signalerActivite,
   } = usePartieEnCours(playerId)
+  // Le preavis du site (mise a jour imminente, coupure). Interroge le moteur,
+  // qui relaie le site : en partie locale il n'y a personne derriere, et le
+  // bandeau ne s'affiche jamais.
+  const annonce = useAnnonce()
   // Fin de tour SUGGEREE : le moteur nous interroge, mais aucune option n'est
   // reellement jouable (toutes portent une failure_reason). Le bouton End Turn
   // devient vert et pulse — jamais d'auto-pass, le joueur garde la main.
@@ -2931,6 +2937,10 @@ function PagePartie({
         onReponseFigee={setReponseAmbiance}
       />
       <CoucheSucces monde={etat.monde} demande={etat.demande} actif={succes} />
+      {/* Le preavis du site (mise a jour, coupure). Au-DESSUS du bandeau
+          d'absence, qui garde sa place a 58 px : les deux peuvent tomber en
+          meme temps, et celui-ci parle de la partie entiere. */}
+      {annonce ? <BandeauAnnonce texte={annonce.texte} secondes={annonce.secondes} /> : null}
       {etat.joueurDemande !== undefined &&
       etat.siegesAbsents.includes(etat.joueurDemande) ? (
         <BandeauAbsent

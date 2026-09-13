@@ -31,7 +31,23 @@ Clic droit sur **`installer-serveur.ps1`** → *Exécuter avec PowerShell*.
 Compter cinq à dix minutes : Python 3.10, Caddy avec le module DNS Cloudflare,
 le pare-feu (22, 80, 443 et **rien d'autre**), les services et les minuteries.
 
-### 2. Déployer le jeu — à chaque mise à jour
+### 2. Prévenir les joueurs — dix minutes avant
+
+**`deployer.ps1` fait `systemctl restart narwhal`, et l'orchestrateur emporte
+tous ses moteurs avec lui : toute partie en cours est perdue.** Quelqu'un qui
+joue n'a aucun moyen de le deviner, et son seul recours est le bouton 💾 Save
+du plateau.
+
+Sur `https://narwhalchampions.com/admin`, tout en haut, **Annonce aux
+joueurs** : un délai en minutes, un message facultatif, et « Prévenir ». Un
+bandeau rouge apparaît dans la minute en haut du plateau de chaque table
+allumée et de l'écran de préparation, avec le décompte. Si le déploiement
+glisse, « Annuler l'annonce » l'efface.
+
+Le message par défaut dit déjà ce qu'il faut faire ; laissez le champ vide. Le
+champ ne sert qu'aux annonces d'une autre nature (coupure chez l'hébergeur).
+
+### 3. Déployer le jeu — à chaque mise à jour
 
 Clic droit sur **`deployer.ps1`** → *Exécuter avec PowerShell*.
 

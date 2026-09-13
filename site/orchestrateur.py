@@ -700,6 +700,25 @@ CREATE INDEX IF NOT EXISTS idx_rapports_etat ON rapports(etat);
 -- brulait, puis disparaissait sans laisser une ligne. On prend sa photo juste
 -- avant d'eteindre la table (`_noter_abandon`), et elle rejoint la liste des
 -- parties terminees avec la mention « abandonnee ».
+-- L'ANNONCE EN COURS, et il n'y en a qu'une. Ajoutee le 13/09/2026 pour un
+-- besoin precis : prevenir les joueurs qu'un deploiement approche. Le
+-- deploiement fait `systemctl restart narwhal`, l'orchestrateur emporte ses
+-- moteurs, et TOUTE PARTIE EN COURS EST PERDUE. Sans preavis, la personne
+-- decouvre l'ardoise vide sans comprendre. Avec, elle a le temps d'appuyer sur
+-- le bouton Save du plateau.
+--
+-- ⚠ `jusqu_a` est un INSTANT UNIX, pas une date lisible comme le reste de la
+-- base. Le navigateur en fait un decompte qui descend tout seul ; une chaine a
+-- la minute l'obligerait a deviner le fuseau du serveur.
+--
+-- Une SEULE ligne est gardee : poser une annonce efface la precedente. Il n'y
+-- a rien a archiver, une annonce perimee n'interesse plus personne.
+CREATE TABLE IF NOT EXISTS annonces (
+    id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    texte   TEXT NOT NULL,
+    jusqu_a INTEGER NOT NULL,
+    pose_le TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS abandons (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     quand       TEXT NOT NULL,
@@ -1479,6 +1498,70 @@ def dire(pseudo: str, texte: str, destinataire: str = "") -> None:
                    "  ORDER BY id DESC LIMIT ?)", (PRIVES_GARDES,))
 
 
+# --------------------------------------------------------------------------
+# L'annonce en cours
+# --------------------------------------------------------------------------
+# AJOUT du 13/09/2026. Une seule annonce a la fois, avec une heure de fin.
+# Elle est relayee aux moteurs par `/api/annonce`, et de la au plateau et a
+# l'assistant de preparation. Voir le commentaire de la table `annonces`.
+
+# Un preavis ne se pose pas pour la semaine prochaine : au-dela, c'est une
+# erreur de frappe, pas une intention.
+ANNONCE_MINUTES_MAX = 180
+
+# La phrase par defaut, ECRITE POUR UN JOUEUR. Elle dit ce qui va se passer et
+# ce qu'il faut faire, dans cet ordre. Le decompte est ajoute par le client,
+# qui seul sait combien de minutes il reste au moment ou il dessine.
+ANNONCE_DEPLOIEMENT = ("Mise a jour du jeu en approche : les parties en cours "
+                       "seront interrompues. Sauvegarde la tienne avec le "
+                       "bouton Save du plateau.")
+
+
+def poser_annonce(minutes: int, texte: str = "") -> dict:
+    """Pose l'annonce et rend ce qu'un client en verra.
+
+    `minutes` est une DUREE a partir de maintenant, jamais une heure : c'est
+    ainsi qu'on y pense (« dans dix minutes »), et ca evite de se tromper de
+    fuseau. Le texte est libre ; vide, il prend la phrase de preavis.
+    """
+    minutes = max(1, min(ANNONCE_MINUTES_MAX, int(minutes)))
+    texte = (texte or "").strip() or ANNONCE_DEPLOIEMENT
+    jusqu_a = int(time.time()) + minutes * 60
+    with _cx() as cx:
+        cx.execute("DELETE FROM annonces")
+        cx.execute("INSERT INTO annonces (texte, jusqu_a, pose_le) VALUES (?,?,?)",
+                   (texte[:400], jusqu_a, _maintenant()))
+    return {"texte": texte[:400], "jusqu_a": jusqu_a}
+
+
+
+def retirer_annonce() -> None:
+    """Annule l'annonce. Un deploiement qui glisse ne doit pas laisser un
+    decompte mensonger tourner devant les joueurs."""
+    with _cx() as cx:
+        cx.execute("DELETE FROM annonces")
+
+
+def annonce_courante() -> dict | None:
+    """L'annonce encore valable, ou None.
+
+    ⚠ ON NE RECOPIE PAS `jusqu_a` TEL QUEL AU CLIENT. Le navigateur d'un
+    joueur n'est pas a l'heure du serveur, parfois a plusieurs minutes pres :
+    un instant absolu lui ferait afficher un decompte faux, voire negatif. On
+    envoie donc les SECONDES QUI RESTENT, qui ne dependent d'aucune horloge
+    commune.
+    """
+    with _cx() as cx:
+        ligne = cx.execute("SELECT texte, jusqu_a FROM annonces"
+                           " ORDER BY id DESC LIMIT 1").fetchone()
+    if ligne is None:
+        return None
+    restant = int(ligne["jusqu_a"]) - int(time.time())
+    if restant <= 0:
+        return None                 # perimee : elle s'efface d'elle-meme
+    return {"texte": ligne["texte"], "secondes": restant}
+
+
 def messages_depuis(depuis: int = 0, moi: str = "", avec: str = ""):
     """Les messages d'UNE conversation, apres `depuis`.
 
@@ -1782,6 +1865,26 @@ PAGE_ADMIN = """<!doctype html>
 </style>
 {styles_suivi}
 <main>
+  <!-- L'ANNONCE EST EN TETE, ET C'EST VOULU. On vient ici pour la poser quand
+       le deploiement est deja lance dans l'autre fenetre : elle doit tomber
+       sous la main, pas au bout d'un defilement. -->
+  <h1>Annonce aux joueurs</h1>
+  <p class="sous">{annonce_etat}</p>
+  <form method="post" action="/admin" style="margin-bottom:2rem">
+    <input type="hidden" name="action" value="annonce">
+    <label style="color:#9aa7b4;font-size:.9rem">Dans
+      <input name="minutes" type="number" min="1" max="{annonce_max}" value="10"
+             style="width:4.5rem;font:inherit;background:#161b22;color:inherit;
+                    border:1px solid #30363d;border-radius:.4rem;padding:.3rem .5rem">
+      minutes</label>
+    <input name="texte" type="text" maxlength="400" placeholder="Message (vide = preavis de mise a jour)"
+           style="width:100%;box-sizing:border-box;margin:.5rem 0;font:inherit;
+                  background:#161b22;color:inherit;border:1px solid #30363d;
+                  border-radius:.4rem;padding:.4rem .6rem">
+    <button class="oui" type="submit">Prevenir</button>
+  </form>
+  {annonce_annuler}
+
   <h1>Comptes</h1>
   <p class="sous">{valides} valide(s) sur {max}. <a href="/">Retour au site</a></p>
   <table>
@@ -2541,6 +2644,27 @@ class Handler(BaseHTTPRequestHandler):
                             "".join(self._bloc_rapport(r) for r in groupe)))
         if not rapports:
             rapports = '<p class="sous">Aucun rapport. Bonne nouvelle.</p>'
+        # L'annonce : son etat en une phrase, et le bouton d'annulation qui
+        # n'existe que s'il y a quelque chose a annuler.
+        en_cours = annonce_courante()
+        if en_cours is None:
+            annonce_etat = ("Aucune annonce. Le message apparait en haut du "
+                            "plateau et de l'assistant, avec le decompte, "
+                            "chez tous les joueurs connectes.")
+            annonce_annuler = ""
+        else:
+            annonce_etat = ('Annonce en cours, encore %d minute(s) : « %s »'
+                            % (max(1, round(en_cours["secondes"] / 60)),
+                               html.escape(en_cours["texte"])))
+            # ⚠ UN FORMULAIRE A PART, PAS UN SECOND BOUTON. Dans le
+            # formulaire ci-dessus, le champ cache `action` part en premier et
+            # `_champs` ne garde que la premiere valeur : le bouton d'annulation
+            # aurait repose une annonce au lieu de l'effacer.
+            annonce_annuler = ('<form method="post" action="/admin"'
+                               ' style="margin:-1.5rem 0 2rem">'
+                               '<input type="hidden" name="action" value="annonce_annuler">'
+                               '<button class="non" type="submit">Annuler l\'annonce</button>'
+                               '</form>')
         nb_invitations = len(invitations_libres()) + len(invitations_utilisees())
         nb_reinit = len(reinitialisations_ouvertes())
         nouveaux = nb_rapports_nouveaux()
@@ -2562,6 +2686,9 @@ class Handler(BaseHTTPRequestHandler):
                                  invitations="".join(inv),
                                  reinitialisations="".join(reinit),
                                  rapports=rapports, pastille=pastille,
+                                 annonce_etat=annonce_etat,
+                                 annonce_annuler=annonce_annuler,
+                                 annonce_max=ANNONCE_MINUTES_MAX,
                                  nb_rapports=len(tous_rapports),
                                  nb_invitations=nb_invitations, nb_reinit=nb_reinit,
                                  # Une section s'ouvre d'elle-meme quand elle
@@ -2848,7 +2975,15 @@ class Handler(BaseHTTPRequestHandler):
                 return
             champs = self._champs()
             action = champs.get("action", "")
-            if action == "inviter":
+            if action == "annonce":
+                try:
+                    minutes = int(champs.get("minutes", "10") or "10")
+                except ValueError:
+                    minutes = 10
+                poser_annonce(minutes, champs.get("texte", ""))
+            elif action == "annonce_annuler":
+                retirer_annonce()
+            elif action == "inviter":
                 creer_invitation()
             elif action == "annuler":
                 supprimer_invitation(champs.get("jeton", ""))
@@ -2874,7 +3009,7 @@ class Handler(BaseHTTPRequestHandler):
                                champs.get("statut", ""))
             self._rediriger("/admin")
 
-        elif self.path in ("/api/vue", "/api/dire", "/api/bug"):
+        elif self.path in ("/api/vue", "/api/dire", "/api/bug", "/api/annonce"):
             # ⚠ CES ROUTES NE SONT PAS POUR LE NAVIGATEUR. Elles sont appelees
             # par le MOTEUR, en 127.0.0.1, et s'authentifient par le jeton de
             # partie plutot que par le cookie de session : le navigateur est sur
@@ -2907,6 +3042,18 @@ class Handler(BaseHTTPRequestHandler):
                     return
                 numero = enregistrer_rapport(qui, champs)
                 self._repondre(200, json.dumps({"ok": True, "numero": numero}).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            if self.path == "/api/annonce":
+                # ⚠ AUCUNE RESERVE DE SIEGE, ET AUCUN SIGNE DE VIE NON PLUS.
+                # Un preavis d'extinction concerne tout le monde a la table,
+                # invite compris : c'est meme lui qui n'a aucun autre moyen
+                # d'etre prevenu. Et ce n'est pas un geste du joueur, juste une
+                # horloge qui tourne : la compter comme une presence ferait
+                # apparaitre « en ligne » quelqu'un qui a laisse un onglet
+                # ouvert.
+                self._repondre(200, json.dumps(annonce_courante() or {},
+                                               ensure_ascii=False).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return
             if self.path == "/api/dire":

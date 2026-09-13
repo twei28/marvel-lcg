@@ -5834,6 +5834,40 @@
   }
 
   .bandeau-absent-agir:hover { filter: brightness(1.1); }
+
+  /* Le preavis du site : mise a jour imminente, coupure annoncee.
+     PLUS HAUT que le bandeau d'absence (58 px) et au-dessus de lui dans la
+     pile : les deux peuvent tomber en meme temps, et celui-ci parle de la
+     partie entiere, pas d'un siege. Rouge, parce qu'il annonce une perte. */
+  .bandeau-annonce {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 645;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: min(640px, calc(100vw - 24px));
+    padding: 8px 16px;
+    border: 1px solid #f2665a;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(46, 16, 14, 0.98), rgba(24, 10, 9, 0.98));
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+  }
+
+  .bandeau-annonce-delai {
+    flex: none;
+    padding: 2px 10px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #2b0f0d;
+    background: #f2665a;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  .bandeau-annonce-texte { color: #f6c9c4; font-size: 0.85rem; }
 }
 
 /* --- Mode Bac a sable ------------------------------------------------------
