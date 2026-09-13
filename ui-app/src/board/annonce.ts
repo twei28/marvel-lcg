@@ -26,6 +26,10 @@ export type Annonce = { texte: string; secondes: number }
 export const PERIODE_INTERROGATION_MS = 30_000
 /** Le decompte descend a la seconde, pour qu'il ne paraisse jamais fige. */
 export const PERIODE_DECOMPTE_MS = 1_000
+/** Le bandeau PASSE toutes les 30 s. Voir `usePassage`. */
+export const PERIODE_PASSAGE_MS = 30_000
+/** ...et reste deux secondes. Le temps de lire une phrase, pas davantage. */
+export const DUREE_PASSAGE_MS = 2_000
 
 export async function lireAnnonce(): Promise<Annonce | null> {
   try {
@@ -72,4 +76,38 @@ export function useAnnonce(): Annonce | null {
   // Echeance passee : on se tait sans attendre la prochaine interrogation.
   if (restant <= 0) return null
   return { texte: recue.annonce.texte, secondes: restant }
+}
+
+/** Le bandeau est-il visible EN CE MOMENT ?
+ *
+ *  ⚠ IL PASSE, IL NE S'INSTALLE PAS (demande de l'utilisateur, 13/09/2026).
+ *  Deux secondes toutes les trente, et entre deux passages l'ecran de jeu est
+ *  entierement libre. Une bande posee a demeure se regarde une fois puis ne se
+ *  voit plus ; celle-ci revient, et c'est ce qui la fait lire.
+ *
+ *  Le PREMIER passage est immediat : une annonce qui arrive alors qu'on joue
+ *  ne doit pas attendre trente secondes pour se montrer.
+ */
+export function usePassage(actif: boolean): boolean {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (!actif) {
+      setVisible(false)
+      return
+    }
+    let fin = 0
+    const passer = () => {
+      setVisible(true)
+      fin = window.setTimeout(() => setVisible(false), DUREE_PASSAGE_MS)
+    }
+    passer()
+    const battement = window.setInterval(passer, PERIODE_PASSAGE_MS)
+    return () => {
+      window.clearInterval(battement)
+      window.clearTimeout(fin)
+    }
+  }, [actif])
+
+  return visible
 }

@@ -5836,38 +5836,73 @@
   .bandeau-absent-agir:hover { filter: brightness(1.1); }
 
   /* Le preavis du site : mise a jour imminente, coupure annoncee.
-     PLUS HAUT que le bandeau d'absence (58 px) et au-dessus de lui dans la
-     pile : les deux peuvent tomber en meme temps, et celui-ci parle de la
-     partie entiere, pas d'un siege. Rouge, parce qu'il annonce une perte. */
+     Rouge, parce qu'il annonce une PERTE : la partie en cours ne survit pas au
+     redemarrage du serveur.
+
+     ⚠ IL BARRE LE DIXIEME SUPERIEUR DE L'ECRAN, ET C'EST VOULU (demande de
+     l'utilisateur, 13/09/2026). Une bande discrete en coin se regarde une fois
+     puis ne se voit plus. Celle-ci traverse deux secondes toutes les trente
+     (usePassage, annonce.ts), et entre deux passages l'ecran est libre.
+
+     ⚠ ET IL NE BLOQUE RIEN : `pointer-events: none`. Un clic le traverse et
+     atteint la carte qui est dessous. Sans cette ligne, deux secondes sur
+     trente seraient deux secondes ou le jeu ne repond plus, ce qui serait
+     pire que de ne pas prevenir. */
   .bandeau-annonce {
     position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 645;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 700;
     display: flex;
     align-items: center;
-    gap: 10px;
-    max-width: min(640px, calc(100vw - 24px));
-    padding: 8px 16px;
-    border: 1px solid #f2665a;
-    border-radius: 10px;
-    background: linear-gradient(180deg, rgba(46, 16, 14, 0.98), rgba(24, 10, 9, 0.98));
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+    justify-content: center;
+    gap: 16px;
+    box-sizing: border-box;
+    min-height: max(10vh, 54px);
+    padding: 10px 24px;
+    border-bottom: 2px solid #f2665a;
+    background: linear-gradient(180deg, rgba(120, 24, 18, 0.97), rgba(46, 12, 10, 0.95));
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    animation: annonce-passage 260ms ease-out;
+  }
+
+  @keyframes annonce-passage {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bandeau-annonce { animation: none; }
   }
 
   .bandeau-annonce-delai {
     flex: none;
-    padding: 2px 10px;
-    font-size: 0.78rem;
+    padding: 4px 14px;
+    font-size: 1rem;
     font-weight: 800;
     color: #2b0f0d;
-    background: #f2665a;
+    background: #ffd9d4;
     border-radius: 99px;
     white-space: nowrap;
   }
 
-  .bandeau-annonce-texte { color: #f6c9c4; font-size: 0.85rem; }
+  .bandeau-annonce-texte {
+    color: #ffe8e5;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Telephone : la phrase du site est longue, la bande la laisse respirer sur
+     deux lignes plutot que de la rogner. */
+  @media (max-width: 700px) {
+    .bandeau-annonce { flex-direction: column; gap: 6px; padding: 8px 14px; }
+    .bandeau-annonce-texte { font-size: 0.9rem; }
+    .bandeau-annonce-delai { font-size: 0.85rem; }
+  }
 }
 
 /* --- Mode Bac a sable ------------------------------------------------------

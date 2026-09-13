@@ -39,10 +39,16 @@ joue n'a aucun moyen de le deviner, et son seul recours est le bouton 💾 Save
 du plateau.
 
 Sur `https://narwhalchampions.com/admin`, tout en haut, **Annonce aux
-joueurs** : un délai en minutes, un message facultatif, et « Prévenir ». Un
-bandeau rouge apparaît dans la minute en haut du plateau de chaque table
-allumée et de l'écran de préparation, avec le décompte. Si le déploiement
-glisse, « Annuler l'annonce » l'efface.
+joueurs** : un délai en minutes, un message facultatif, et « Prévenir ». Si le
+déploiement glisse, « Annuler l'annonce » l'efface.
+
+Ce que voient les joueurs, dans la minute qui suit :
+
+- **en partie**, une bande rouge barre le dixième supérieur de l'écran avec le
+  décompte, **deux secondes toutes les trente**, puis s'efface complètement.
+  Elle laisse passer les clics : on continue de jouer pendant qu'elle est là ;
+- **sur l'écran de préparation**, le même message reste affiché en haut, sans
+  clignoter : personne n'est en train de jouer, rien ne presse.
 
 Le message par défaut dit déjà ce qu'il faut faire ; laissez le champ vide. Le
 champ ne sert qu'aux annonces d'une autre nature (coupure chez l'hébergeur).

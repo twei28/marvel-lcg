@@ -5,13 +5,20 @@
 // Jusqu'ici, le joueur decouvrait l'ardoise vide sans rien avoir vu venir. Ce
 // bandeau lui donne le temps d'appuyer sur 💾 Save.
 //
+// ⚠ IL PASSE, IL NE S'INSTALLE PAS (demande de l'utilisateur, 13/09/2026).
+// Une bande discrete en coin se regarde une fois puis ne se voit plus : c'est
+// exactement ce qu'il ne faut pas pour un avertissement qu'on ne peut pas
+// rattraper. Il prend donc TOUTE LA LARGEUR et le dixieme superieur de
+// l'ecran, deux secondes, toutes les trente secondes. Entre deux passages
+// l'ecran est entierement libre.
+//
+// Et il ne gene JAMAIS le jeu : `pointer-events: none` dans la feuille de
+// style. Un clic le traverse et atteint la carte qui est dessous.
+//
 // Le texte vient du site, ecrit a la main dans /admin. Le DECOMPTE, lui, est
 // calcule ici : le serveur n'envoie que les secondes restantes, jamais une
 // heure absolue, parce que le navigateur d'un joueur n'est pas a l'heure du
 // serveur et afficherait un compte a rebours faux.
-//
-// Pas de croix pour le fermer, volontairement : ce n'est pas une reclame, et
-// une partie perdue ne se rattrape pas.
 
 import { t } from './langue'
 

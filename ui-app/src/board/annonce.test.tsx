@@ -12,7 +12,10 @@
 import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest'
 import { render, act, renderHook } from '@testing-library/react'
 import { BandeauAnnonce, delaiLisible } from './BandeauAnnonce'
-import { useAnnonce, lireAnnonce, PERIODE_INTERROGATION_MS } from './annonce'
+import {
+  useAnnonce, usePassage, lireAnnonce,
+  PERIODE_INTERROGATION_MS, PERIODE_PASSAGE_MS, DUREE_PASSAGE_MS,
+} from './annonce'
 
 function repondre(corps: unknown, ok = true) {
   return vi.fn().mockResolvedValue({
@@ -95,6 +98,65 @@ describe('decompte', () => {
   })
 })
 
+// ⚠ IL PASSE, IL NE S'INSTALLE PAS (demande de l'utilisateur, 13/09/2026).
+// Une bande posee a demeure se regarde une fois puis ne se voit plus, et c'est
+// exactement ce qu'il ne faut pas pour un avertissement qu'on ne peut pas
+// rattraper. Ces cas tiennent le rythme : deux secondes toutes les trente,
+// ecran libre entre deux.
+describe('passage du bandeau', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  it('se montre TOUT DE SUITE, sans attendre le premier tour d horloge', () => {
+    const { result } = renderHook(() => usePassage(true))
+    expect(result.current).toBe(true)
+  })
+
+  it('s efface au bout de deux secondes', () => {
+    const { result } = renderHook(() => usePassage(true))
+    act(() => { vi.advanceTimersByTime(DUREE_PASSAGE_MS + 10) })
+    expect(result.current).toBe(false)
+  })
+
+  it('laisse l ecran libre entre deux passages', () => {
+    const { result } = renderHook(() => usePassage(true))
+    act(() => { vi.advanceTimersByTime(DUREE_PASSAGE_MS + 10) })
+    // Au milieu de l'intervalle : rien, l'ecran de jeu est degage.
+    act(() => { vi.advanceTimersByTime(PERIODE_PASSAGE_MS / 2) })
+    expect(result.current).toBe(false)
+  })
+
+  it('revient toutes les trente secondes', () => {
+    const { result } = renderHook(() => usePassage(true))
+    act(() => { vi.advanceTimersByTime(DUREE_PASSAGE_MS + 10) })
+    expect(result.current).toBe(false)
+    // Jusqu'au tour d'horloge suivant, a 30 s du depart : le bandeau repasse.
+    act(() => { vi.advanceTimersByTime(PERIODE_PASSAGE_MS - DUREE_PASSAGE_MS) })
+    expect(result.current).toBe(true)
+  })
+
+  it('ne passe jamais sans annonce a montrer', () => {
+    const { result } = renderHook(() => usePassage(false))
+    expect(result.current).toBe(false)
+    act(() => { vi.advanceTimersByTime(PERIODE_PASSAGE_MS * 3) })
+    expect(result.current).toBe(false)
+  })
+
+  // L'annonce annulee depuis /admin, ou l'echeance atteinte : le bandeau
+  // s'arrete, il ne continue pas de traverser un ecran qui n'a plus rien a
+  // apprendre.
+  it('s arrete des que l annonce disparait', () => {
+    const { result, rerender } = renderHook(({ actif }) => usePassage(actif),
+                                            { initialProps: { actif: true } })
+    expect(result.current).toBe(true)
+    rerender({ actif: false })
+    expect(result.current).toBe(false)
+    act(() => { vi.advanceTimersByTime(PERIODE_PASSAGE_MS * 2) })
+    expect(result.current).toBe(false)
+  })
+})
+
 describe('le bandeau', () => {
   it('montre le message du site et le delai', () => {
     const { container } = render(<BandeauAnnonce texte="Mise a jour du jeu" secondes={420} />)
@@ -116,6 +178,18 @@ describe('le bandeau', () => {
 
   // Le bandeau s'adresse a quelqu'un qui regarde ailleurs : il doit etre
   // annonce aux lecteurs d'ecran sans qu'on aille le chercher.
+  // ⚠ DEUX SECONDES SUR TRENTE OU LE JEU NE REPONDRAIT PLUS SERAIENT PIRES
+  // QUE DE NE PAS PREVENIR. La bande couvre le haut de l'ecran : elle doit
+  // laisser passer les clics vers les cartes qui sont dessous.
+  it('laisse passer les clics', () => {
+    const { container } = render(<BandeauAnnonce texte="Mise a jour" secondes={60} />)
+    const bande = container.querySelector('.bandeau-annonce') as HTMLElement
+    // La regle vit dans board.css (non charge par les tests) : on verifie ici
+    // qu'AUCUN style en ligne ne vient la contredire, et board.css porte le
+    // commentaire qui l'explique.
+    expect(bande.style.pointerEvents).not.toBe('auto')
+  })
+
   it('se signale comme une alerte', () => {
     const { container } = render(<BandeauAnnonce texte="Mise a jour" secondes={60} />)
     expect(container.querySelector('.bandeau-annonce')?.getAttribute('role')).toBe('alert')
