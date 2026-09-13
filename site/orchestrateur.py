@@ -2076,6 +2076,7 @@ PAGE = """<!doctype html>
   <p class="sous">{sous}</p>
   {barre}
   {corps}
+  {bouton_appli}
   <footer>Ton espace de jeu est a toi : tes decks, tes campagnes en cours et
   tes hauts faits t'y attendent d'une fois sur l'autre. Eteindre le jeu
   n'efface rien. Tes invites, eux, rejoignent ta partie par leur lien sans
@@ -2164,6 +2165,7 @@ PAGE_FORMULAIRE = """<!doctype html>
     <button type="submit">{bouton}</button>
   </form>
   <p>{pied}</p>
+  {bouton_appli}
 </main>
 """
 
@@ -2806,6 +2808,36 @@ TETE_APPLI = ('<link rel="manifest" href="/manifest.webmanifest">'
               '<link rel="apple-touch-icon" href="/app-192.png">'
               '<meta name="apple-mobile-web-app-capable" content="yes">'
               '<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){});</script>')
+# LE BOUTON « INSTALLER L'APPLICATION » (13/09/2026, demande de l'utilisateur :
+# « un vrai bouton qu'on peut installer sous Android »).
+#
+# Sous Android, Chrome previent la page quand l'installation est possible
+# (`beforeinstallprompt`). On retient l'evenement, on montre le bouton, et un
+# clic ouvre la boite d'installation native. Sans ce bouton, le geste restait
+# cache dans le menu du navigateur. Sur iPhone il n'y a pas d'evenement : on
+# affiche a la place le chemin a suivre, Partager puis « Sur l'ecran
+# d'accueil ». Une fois installee, l'appli tourne en plein ecran et le bouton
+# n'a plus lieu d'etre : on le tait.
+BOUTON_APPLI = (
+    '<div id="appli-installer" hidden style="margin:1.2rem 0 0;padding:.8rem .9rem;'
+    'border:1px solid #30363d;border-radius:.5rem;background:#161b22;font-size:.9rem">'
+    '<button id="appli-bouton" type="button" style="width:100%;font:inherit;background:#238636;'
+    'color:#fff;border:0;border-radius:.5rem;padding:.7rem;cursor:pointer">'
+    'Installer l\'application sur ce telephone</button>'
+    '<p id="appli-ios" hidden style="margin:.4rem 0 0;color:#9aa7b4">Sur iPhone : bouton Partager, '
+    'puis « Sur l\'ecran d\'accueil ».</p>'
+    '</div>'
+    '<script>(function(){'
+    'var bloc=document.getElementById("appli-installer"),bouton=document.getElementById("appli-bouton"),'
+    'ios=document.getElementById("appli-ios"),retenu=null;'
+    'if(window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true)return;'
+    'window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();retenu=e;bloc.hidden=false;});'
+    'bouton.addEventListener("click",function(){if(!retenu)return;retenu.prompt();'
+    'retenu.userChoice.then(function(){retenu=null;bloc.hidden=true;});});'
+    'window.addEventListener("appinstalled",function(){bloc.hidden=true;});'
+    'if(/iPhone|iPad|iPod/.test(navigator.userAgent)){bouton.hidden=true;ios.hidden=false;bloc.hidden=false;}'
+    '})();</script>')
+
 # ⚠ POSEE UNE FOIS, ICI, ET NON PAR UN ARGUMENT DE `.format`. Les gabarits sont
 # formates a six endroits differents ; une cle oubliee a l'un d'eux faisait
 # tomber le serveur sur cette page (KeyError, connexion fermee sans reponse),
@@ -2816,8 +2848,9 @@ TETE_APPLI = ('<link rel="manifest" href="/manifest.webmanifest">'
 # un `{}` que `.format` prendrait pour un champ positionnel (IndexError, vu au
 # premier essai). Doublees, elles redeviennent des accolades pour lui.
 _TETE_POUR_FORMAT = TETE_APPLI.replace("{", "{{").replace("}", "}}")
-PAGE = PAGE.replace("{tete_appli}", _TETE_POUR_FORMAT)
-PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("{tete_appli}", _TETE_POUR_FORMAT)
+_BOUTON_POUR_FORMAT = BOUTON_APPLI.replace("{", "{{").replace("}", "}}")
+PAGE = PAGE.replace("{tete_appli}", _TETE_POUR_FORMAT).replace("{bouton_appli}", _BOUTON_POUR_FORMAT)
+PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("{tete_appli}", _TETE_POUR_FORMAT).replace("{bouton_appli}", _BOUTON_POUR_FORMAT)
 
 
 def _icone_appli(nom: str) -> bytes | None:

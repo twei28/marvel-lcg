@@ -1907,6 +1907,14 @@ verifier("et il ne met rien en cache",
 _code, _, _corps = appel("GET", "/connexion")
 verifier("la page de connexion lie le manifeste",
          _code == 200 and b'rel="manifest"' in _corps and b"serviceWorker" in _corps, str(_code))
+# Et elle porte le bouton « Installer », cache tant que le navigateur n'a pas
+# dit que l'installation etait possible : sans `beforeinstallprompt`, un bouton
+# toujours visible ne ferait rien au clic.
+verifier("et le bouton d'installation, arme sur beforeinstallprompt",
+         b'id="appli-bouton"' in _corps and b"beforeinstallprompt" in _corps
+         and b'id="appli-installer" hidden' in _corps)
+verifier("avec le chemin a suivre sur iPhone, qui n'a pas d'evenement",
+         b"Partager" in _corps)
 
 print()
 print("ECHECS : %d" % len(echecs))
