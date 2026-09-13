@@ -2019,6 +2019,7 @@ PAGE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 {tete}
+{tete_appli}
 <title>NarwhalChampions</title>
 <style>
   :root {{ color-scheme: dark; }}
@@ -2137,6 +2138,7 @@ PAGE_FORMULAIRE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{titre} — NarwhalChampions</title>
+{tete_appli}
 <style>
   :root {{ color-scheme: dark; }}
   body {{ margin:0; font:16px/1.5 system-ui,sans-serif; background:#0e1116; color:#e6edf3;
@@ -2752,6 +2754,82 @@ MANIFESTE_SUIVI = json.dumps({
 }, ensure_ascii=False).encode("utf-8")
 
 
+# L'APPLI INSTALLABLE (13/09/2026, premiere des idees marvelsimulator).
+#
+# « Ajouter a l'ecran d'accueil » depuis le navigateur du telephone : une icone,
+# un plein ecran sans barre d'adresse, rien a publier sur un store. Trois pieces
+# suffisent : ce manifeste, deux icones, et un service worker.
+#
+# ⚠ INSTALLEE SUR LE SITE, PAS SUR LA TABLE (decision de l'utilisateur). Une
+# appli est liee a UNE adresse ; la table d'un compte est sur p<N>.<domaine>,
+# qui ne repond pas quand elle est eteinte. `/entrer` allume la table au besoin
+# et y envoie : ca marche toujours. Contrepartie assumee : une fois sur la
+# table, le navigateur garde une fine barre d'adresse, l'appli ayant change de
+# domaine.
+#
+# ⚠ LE SERVICE WORKER NE MET RIEN EN CACHE. Le navigateur en exige un pour
+# proposer l'installation, et c'est son seul role ici : ce site se bat deja
+# contre les caches perimes (cookie de version), un worker qui servirait un
+# vieux JS apres un deploiement serait exactement le defaut qu'on a chasse.
+MANIFESTE_APPLI = json.dumps({
+    "name": "NarwhalChampions",
+    "short_name": "Narwhal",
+    "description": "Marvel Champions, en ligne, entre amis.",
+    "start_url": "/entrer",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#0e1116",
+    "theme_color": "#0e1116",
+    "lang": "fr",
+    "icons": [
+        {"src": "/app-192.png", "sizes": "192x192", "type": "image/png"},
+        {"src": "/app-512.png", "sizes": "512x512", "type": "image/png"},
+        {"src": "/app-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+    ],
+}, ensure_ascii=False).encode("utf-8")
+
+SERVICE_WORKER = """// NarwhalChampions : un service worker qui ne fait RIEN, et c'est voulu.
+// Le navigateur en exige un pour proposer « Ajouter a l'ecran d'accueil ».
+// Il ne met rien en cache : ce site se bat deja contre le cache perime,
+// un worker qui servirait un vieux JS apres un deploiement serait le defaut
+// qu'on a chasse. Chaque requete part au reseau, comme sans lui.
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+self.addEventListener('fetch', () => {});
+""".encode("utf-8")
+
+# Les lignes a poser dans <head> de chaque page publique.
+TETE_APPLI = ('<link rel="manifest" href="/manifest.webmanifest">'
+              '<meta name="theme-color" content="#0e1116">'
+              '<link rel="icon" href="/app-192.png">'
+              '<link rel="apple-touch-icon" href="/app-192.png">'
+              '<meta name="apple-mobile-web-app-capable" content="yes">'
+              '<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){});</script>')
+# ⚠ POSEE UNE FOIS, ICI, ET NON PAR UN ARGUMENT DE `.format`. Les gabarits sont
+# formates a six endroits differents ; une cle oubliee a l'un d'eux faisait
+# tomber le serveur sur cette page (KeyError, connexion fermee sans reponse),
+# constate au premier passage du test de parcours. Les accolades des gabarits
+# sont doublees (`{{ }}`) sauf les cles : on substitue la notre avant tout
+# `.format`, et elle n'existe plus pour lui.
+# ⚠ ET LES ACCOLADES DU SCRIPT SONT DOUBLEES : `catch(function(){})` contient
+# un `{}` que `.format` prendrait pour un champ positionnel (IndexError, vu au
+# premier essai). Doublees, elles redeviennent des accolades pour lui.
+_TETE_POUR_FORMAT = TETE_APPLI.replace("{", "{{").replace("}", "}}")
+PAGE = PAGE.replace("{tete_appli}", _TETE_POUR_FORMAT)
+PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("{tete_appli}", _TETE_POUR_FORMAT)
+
+
+def _icone_appli(nom: str) -> bytes | None:
+    if nom not in ("app-192.png", "app-512.png"):
+        return None
+    try:
+        with open(os.path.join(RACINE_SITE, "static", nom), "rb") as f:
+            return f.read()
+    except OSError:
+        return None
+
+
 def _icone_suivi(nom: str) -> bytes | None:
     if nom not in ("suivi-192.png", "suivi-512.png"):
         return None
@@ -3266,6 +3344,18 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(len(corps)))
             self.end_headers()
             self.wfile.write(corps)
+        elif self.path == "/manifest.webmanifest":
+            self._repondre(200, MANIFESTE_APPLI, "application/manifest+json; charset=utf-8")
+        elif self.path == "/sw.js":
+            # ⚠ SANS CACHE HTTP non plus : un worker mis en cache par le
+            # navigateur survivrait a sa propre mise a jour.
+            self._repondre(200, SERVICE_WORKER, "application/javascript; charset=utf-8")
+        elif self.path in ("/app-192.png", "/app-512.png"):
+            image = _icone_appli(self.path[1:])
+            if image is None:
+                self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
+                return
+            self._repondre(200, image, "image/png")
         elif self.path == "/suivi.webmanifest":
             # Public : le manifeste ne contient que des libelles, et le
             # navigateur le demande SANS cookie.

@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-13",
         genre: "jeu",
+        fr: "Le jeu s'installe sur ton téléphone : sur narwhalchampions.com, menu du navigateur, « Ajouter à l'écran d'accueil ». Une icône, un plein écran, et il t'amène droit à ta table.",
+        en: "The game installs on your phone: on narwhalchampions.com, browser menu, “Add to Home screen”. An icon, full screen, and it takes you straight to your table.",
+    },
+    {
+        date: "2026-09-13",
+        genre: "jeu",
         fr: "Nouveau mode Legacy, sur l'accueil : tu commences avec la boîte de base et ses cinq héros, et tu débloques la suite boîte par boîte en gagnant. Ce qui est fermé reste visible, grisé, avec ce qu'il faut faire pour l'ouvrir. Chaque première victoire avec un héros officiel donne un jeton, qui débloque le héros fan-made de ton choix ; en expert, deux. Le deck-building suit : seules les cartes des boîtes déjà ouvertes s'ajoutent au deck.",
         en: "New Legacy mode on the home screen: you start with the core set and its five heroes, and unlock the rest box by box by winning. Locked content stays visible, greyed out, with what it takes to open it. Every first win with an official hero grants a token, which unlocks the fan-made hero of your choice; two on expert. Deck-building follows suit: only cards from boxes you have opened can go in the deck.",
     },

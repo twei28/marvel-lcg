@@ -1874,6 +1874,40 @@ _code, _, _ = appel("POST", "/admin", corps=b"action=message&a=hote&texte=Coucou
                     entetes=cookie_de("hote"))
 verifier("un compte ordinaire n'ecrit pas depuis /admin", _code == 403, str(_code))
 
+# --- L'appli installable ------------------------------------------------------
+# AJOUT du 13/09/2026. « Ajouter a l'ecran d'accueil » depuis le telephone :
+# une icone, un plein ecran. Trois pieces, toutes servies SANS cookie parce que
+# le navigateur les demande sans : le manifeste, les icones, le service worker.
+_code, _tetes, _corps = appel("GET", "/manifest.webmanifest")
+verifier("le manifeste est servi sans cookie", _code == 200, str(_code))
+verifier("et avec le bon type",
+         "manifest+json" in (_tetes.get("Content-Type") or ""), str(_tetes.get("Content-Type")))
+_m = _json_annonce.loads(_corps)
+verifier("il demarre sur /entrer, qui allume la table au besoin",
+         _m.get("start_url") == "/entrer" and _m.get("display") == "standalone", str(_m))
+verifier("il porte deux icones, dont une masquable",
+         len(_m.get("icons", [])) >= 2 and any(i.get("purpose") == "maskable" for i in _m["icons"]),
+         str(_m.get("icons")))
+for _ic in ("/app-192.png", "/app-512.png"):
+    _code, _tetes, _corps = appel("GET", _ic)
+    verifier("l'icone %s est servie" % _ic,
+             _code == 200 and _corps[:4] == b"\x89PNG", "%s %r" % (_code, _corps[:4]))
+_code, _tetes, _corps = appel("GET", "/sw.js")
+verifier("le service worker est servi en javascript",
+         _code == 200 and "javascript" in (_tetes.get("Content-Type") or ""), str(_code))
+# ⚠ ET IL NE MET RIEN EN CACHE. Ce site se bat contre les caches perimes : un
+# worker qui servirait un vieux JS apres un deploiement serait le defaut qu'on
+# a chasse. On lit le code : aucun `caches`, aucun `respondWith`.
+# On traque les APPELS, `caches.` et `respondWith(`, pas le mot dans un
+# commentaire : la premiere version du cas mordait sur sa propre explication.
+verifier("et il ne met rien en cache",
+         b"caches." not in _corps and b"respondWith(" not in _corps,
+         _corps[:120].decode("utf-8", "replace"))
+# La page de connexion, ou tout le monde passe, propose l'installation.
+_code, _, _corps = appel("GET", "/connexion")
+verifier("la page de connexion lie le manifeste",
+         _code == 200 and b'rel="manifest"' in _corps and b"serviceWorker" in _corps, str(_code))
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:

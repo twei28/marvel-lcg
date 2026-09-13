@@ -145,6 +145,27 @@ ssh -i $cle $srv "sudo -u narwhal RACINE=/opt/narwhal narwhal-sauvegarde --verif
 
 ---
 
+## L'appli sur le téléphone
+
+Sur `narwhalchampions.com`, menu du navigateur, **« Ajouter à l'écran
+d'accueil »** (Chrome propose aussi une bannière d'installation). Le jeu a son
+icône et s'ouvre en plein écran, sans barre d'adresse. Rien à publier sur un
+store.
+
+**Elle est installée sur le site, pas sur la table.** L'icône ouvre `/entrer`,
+qui allume la table au besoin et y envoie : ça marche toujours, table éteinte ou
+non, et même si la place d'un compte change un jour. Contrepartie : une fois sur
+la table (`p<N>.narwhalchampions.com`), une fine barre avec l'adresse reste en
+haut, l'appli ayant changé de domaine. On l'a préférée à une appli par table,
+qui ne répondait plus table éteinte.
+
+⚠ **Le service worker (`/sw.js`) ne met rien en cache**, et il ne doit jamais
+le faire : ce site se bat déjà contre les caches périmés. Il n'existe que parce
+que le navigateur en exige un pour proposer l'installation.
+
+Les icônes sont dans `site/static/app-192.png` et `app-512.png`, rendues depuis
+`assets/textures/mvc_logo.svg` sur fond `#0e1116`.
+
 ## Le mode Legacy
 
 Sixième tuile de l'accueil. On commence avec la boîte de base et ses cinq
