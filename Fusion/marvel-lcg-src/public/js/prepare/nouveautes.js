@@ -45,6 +45,48 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-09-13",
+        genre: "heros",
+        fr: "Sentinel rejoint le roster. Ce Sentinelle de T-Wrecks porte quatre composants qu'on installe sur lui ; les coups les détruisent un à un, et il passe la partie à les réparer. Il amène aussi un nouvel état, Exposé, qui fait encaisser plus cher la prochaine attaque.",
+        en: "Sentinel joins the roster. T-Wrecks’ Sentinel carries four components attached to it; hits destroy them one by one, and it spends the game repairing them. It also brings a new status, Exposed, which makes the next attack hurt more.",
+    },
+    {
+        date: "2026-09-13",
+        genre: "jeu",
+        fr: "Quand une mise à jour approche, un bandeau rouge traverse le haut de l'écran toutes les trente secondes, avec le temps qu'il reste. Il ne gêne pas le jeu : les clics le traversent. C'est le moment de sauvegarder ta partie, elle ne survit pas au redémarrage.",
+        en: "When an update is coming, a red banner sweeps across the top of the screen every thirty seconds with the time left. It never blocks play: clicks go straight through it. That is the moment to save your game, it does not survive the restart.",
+    },
+    {
+        date: "2026-09-13",
+        genre: "coulisses",
+        fr: "Les places sont comptées. Quatre semaines sans venir et ton compte se met en pause : sa place retourne au pot, mais tes decks et tes campagnes t'attendent tant que personne ne l'a prise. Écris-moi, je te la rends.",
+        en: "Seats are limited. Four weeks without visiting and your account goes on hold: its seat returns to the pool, but your decks and campaigns wait for you until someone takes it. Write to me and I will give it back.",
+    },
+    {
+        date: "2026-09-13",
+        genre: "jeu",
+        fr: "Sur l'écran d'accueil, chaque mode dit ce qu'il fait quand tu passes la souris dessus. Sur téléphone, la phrase est affichée en permanence sous la tuile.",
+        en: "On the home screen, each mode now explains itself when you hover over it. On a phone, the sentence is shown under the tile at all times.",
+    },
+    {
+        date: "2026-09-13",
+        genre: "correction",
+        fr: "Sur téléphone, la fenêtre de choix des ressources se rouvrait toute seule dès qu'on la fermait : impossible de payer avec les cartes posées sur la table. Elle reste fermée tant que tu ne la rappelles pas.",
+        en: "On a phone, the resource picker reopened by itself as soon as you closed it, making it impossible to pay with the cards already on the table. It now stays closed until you call it back.",
+    },
+    {
+        date: "2026-09-13",
+        genre: "correction",
+        fr: "Une carte qui réduisait un coût de plusieurs ressources n'en valait qu'une au moment de payer. Les réductions comptent maintenant pour leur vraie valeur.",
+        en: "A card reducing a cost by several resources only counted as one when paying. Reductions are now worth their real value.",
+    },
+    {
+        date: "2026-09-13",
+        genre: "correction",
+        fr: "L'extension des Spider-Man s'appelle Sinistres Motivations, et non Intentions Sinistres.",
+        en: "The Spider-Man expansion is called Sinister Motives.",
+    },
+    {
         date: "2026-09-12",
         genre: "jeu",
         fr: "La barre du haut s'allège : Annuler, Sauver, Bug, un bouton Réglages qui range tout le reste (historique, options, journal, musique, langue), et Fin du tour, qui revient aussi en bas de l'écran. Le dessin des cartes ressources se choisit désormais à l'étape des decks.",
