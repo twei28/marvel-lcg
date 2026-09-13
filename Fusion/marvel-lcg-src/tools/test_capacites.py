@@ -29740,6 +29740,41 @@ CAS = [
         "attendu": {"hors_jeu": ["01110"], "menace": [["01097b", 3]]},
     },
     {
+        "nom": "40015 Fantomex — en entrant en jeu, il va VRAIMENT chercher E.V.A. au deck",
+        "pourquoi": ("signale en partie par Yarro le 13/09/2026 : « l'effet reponse est "
+                     "bien propose mais ne va pas chercher la carte ». Journal du "
+                     "rapport 5 en main, E.V.A. n'etait PAS dans son deck (import "
+                     "marvelcdb incomplet), et son second rapport le confirme : une fois "
+                     "la carte ajoutee, `E.V.A. entered play (Fantomex)`. Ce cas fige la "
+                     "mecanique pour qu'on n'ait plus a relire un journal : E.V.A. est "
+                     "posee sur le deck, Fantomex entre en jeu, elle doit arriver EN JEU "
+                     "et non en main"),
+        "scenario": "rhino", "heros": "star_lord",
+        "mise_en_place": ["Puzzle.ChangeToFace('17001b', '17001a')",
+                          "Puzzle.PutIntoDeck('40021')"],
+        "main_exclusive": ["01088", "01088"],
+        "declencher": ["Puzzle.PutIntoPlay('40015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["40015", "40021"]},
+    },
+    {
+        "nom": "17001a Star-Lord — « What could go wrong? » paie A ELLE SEULE une carte a 3",
+        "pourquoi": ("signale en partie par Yarro le 13/09/2026 : « l'action de Star-Lord "
+                     "ne reduit le cout que de 1 » (exemple Element Gun). La capacite "
+                     "n'est pas une ressource, c'est une REDUCTION : le moteur l'offre "
+                     "comme moyen de paiement mais son texte vaut « -3 », pas une suite "
+                     "d'icones. Element Gun coute 3, la main ne contient QU'ELLE, et "
+                     "elle doit partir en jeu sans la moindre autre ressource. "
+                     "⚠ Le meme defaut existait des DEUX cotes : `valeurMoyen` (ask.ts) "
+                     "comptait 1, le pilote de ce harnais comptait 2 (`len(\"-3\")`)"),
+        "scenario": "rhino", "heros": "star_lord",
+        "mise_en_place": ["Puzzle.ChangeToFace('17001b', '17001a')"],
+        "main_exclusive": ["17007"],
+        "declencher": [], "jouer": ["17007"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["17007"]},
+    },
+    {
         "nom": "SURGE (moteur) — TEMOIN : un renfort revele UNE carte, et la carte revelee ne renforce pas d'elle-meme",
         "pourquoi": ("Temoin moteur du 11/09/2026. Assault revelee en alter-ego gagne surge et "
                      "revele Illegal Arms Factory (set Klaw, sans surge) qui entre en jeu : "
@@ -36817,12 +36852,27 @@ def executer_un_cas(game_dir, port, index):
             # une carte = une ressource, donc il renoncait a payer un cout de 2
             # finance par une seule carte, et l'effet echouait en silence : la
             # carte semblait inerte alors qu'elle etait correcte.
+            # CORRECTIF 13/09/2026 : UNE REDUCTION DE COUT N'EST PAS UNE ICONE.
+            # Star-Lord (17001a) reduit de 3 le cout de la carte jouee ; le
+            # moteur l'offre comme un moyen de paiement ordinaire, mais son
+            # texte est « -3 » et non une suite de lettres
+            # (`Resources.color_text`). `len("-3")` valait 2 : le pilote croyait
+            # couvrir 2 des 3 ressources d'Element Gun, le moteur refusait le
+            # paiement, et la carte tombait « injouable » sans motif. Meme
+            # defaut, le meme jour, dans le plateau (`valeurMoyen`, ask.ts),
+            # signale en partie par Yarro.
+            def valeur_du_moyen(texte):
+                mot = str(texte).strip()
+                if mot.startswith("-") and mot[1:].isdigit():
+                    return int(mot[1:])
+                return max(1, len(mot))
+
             poids = {}
             for entree in infos.get("payment") or []:
                 for objet_id, couleur in entree.items():
                     if str(objet_id) not in interdits:
                         candidates.append(str(objet_id))
-                        poids[str(objet_id)] = max(1, len(str(couleur)))
+                        poids[str(objet_id)] = valeur_du_moyen(couleur)
                     break
             # « surpayer » : depenser TOUT ce qui est disponible. Indispensable
             # aux cartes a cout X (mw008), dont le cout annonce est nul : sans
@@ -37111,13 +37161,22 @@ def executer_un_cas(game_dir, port, index):
 
 
 # Un deck de depart fan-made sans decklist d'auteur a `player_deck` VIDE
-# (PROCESSUS-HEROS etape 3, retroactif depuis le 12/09/2026). Le harnais lui
-# rend une moitie d'aspect INERTE : sinon la main de depart n'est faite que de
-# cartes signature, et le pilote declenche leurs interruptions au milieu de la
-# mise en place (mesure : Bulletproof Chica ma012 a evite les 3 degats poses
-# par `Puzzle.Damage`, 53 cas rouges d'un coup). Des ressources basiques, rien
-# d'autre : elles ne reagissent a rien, comme l'ancien deck en pratique.
-REMPLISSAGE_DECK_VIDE = ["01088", "01089", "01090"] * 8 + ["01090"]
+# (PROCESSUS-HEROS etape 3, retroactif depuis le 12/09/2026). Le harnais rend
+# sa moitie d'aspect a CELUI QUI EN AVAIT UNE : sinon la main de depart n'est
+# faite que de cartes signature, et le pilote declenche leurs interruptions au
+# milieu de la mise en place (mesure : Bulletproof Chica ma012 a evite les 3
+# degats poses par `Puzzle.Damage`, 53 cas rouges d'un coup).
+#
+# ⚠ ET SEULEMENT A CELUI-LA. Le repli « 25 ressources basiques inertes » pour
+# les heros INCONNUS de la table etait un defaut, corrige le 13/09/2026 :
+# Blade, Spider-Man 2099, Superior Spider-Man et Zeus n'ont JAMAIS eu de
+# moitie d'aspect, leurs cas ont ete ecrits contre un deck de 9 cartes
+# signature, et leur ajouter 25 ressources changeait ce que ces cas COMPTENT.
+# Six cas rouges depuis le 12/09, tous verts des le repli retire : bl015 (le
+# pieu ne partait plus), sm014 x2 et sm016 (ils comptent les icones [energy]
+# des cartes defaussees du dessus du deck), su019 (repartition des degats
+# indirects), ze010 (Thunder Strike introuvable en defausse).
+# Un deck inconnu reste donc VIDE, exactement comme en partie reelle.
 # Mieux : la moitie d'aspect que le heros AVAIT quand ses cas ont ete ecrits
 # (`tools/decks-de-test.json`, cle = face heros). Des ressources seules
 # changeaient encore les choix du pilote (ho009, hd012 rouges) ; l'ancien deck
@@ -37133,14 +37192,17 @@ def _decks_de_test():
 
 
 def remplir_les_decks_vides(scene):
-    """Complete chaque joueur de la scene sans player_deck : son ancienne moitie
-    d'aspect si decks-de-test.json la connait, sinon 25 ressources inertes."""
+    """Rend a chaque joueur sans player_deck son ancienne moitie d'aspect, SI
+    decks-de-test.json la connait. Sinon on ne touche a rien (voir ci-dessus)."""
     decks = _decks_de_test()
     for joueur in getattr(scene, "players", None) or []:
         if getattr(joueur, "player_deck", None):
             continue
         face = str((getattr(joueur, "hero", None) or [""])[0]).split(",")[0]
-        joueur.player_deck = list(decks.get(face) or REMPLISSAGE_DECK_VIDE)
+        connu = decks.get(face)
+        if connu is None:
+            continue
+        joueur.player_deck = list(connu)
 
 
 # ------------------------------------------------------------- orchestration --

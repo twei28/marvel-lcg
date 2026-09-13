@@ -368,10 +368,20 @@ export function foisDisponible(paiement: Paiement | undefined, effectId: number)
  * (Symbol.Clean), il ne reste que les lettres de couleur R/B/Y/G/L. La valeur est
  * donc le nombre de ces lettres. Un effet sans lettre lisible vaut 1 (au moins
  * une ressource, comme l'ancien comptage).
+ *
+ * ⚠ SAUF UNE REDUCTION DE COUT, qui n'a aucune icone. Le moteur l'ecrit en
+ * NEGATIF : « -3 » pour Star-Lord (`Resources.color_text`,
+ * game/element/resources.py:55), qui reduit de 3 le cout de la carte jouee.
+ * Elle tombait donc dans le repli « au moins 1 » et ne valait qu'UNE ressource :
+ * Element Gun, qui coute 3, restait bloquee a 1/3. Signale en partie par Yarro
+ * le 13/09/2026.
  */
 export function valeurMoyen(resText: string): number {
   const icones = (resText.match(/[rbygl]/gi) ?? []).length
-  return icones > 0 ? icones : 1
+  if (icones > 0) return icones
+  const reduction = /^-(\d+)$/.exec(resText.trim())
+  if (reduction) return Number(reduction[1])
+  return 1
 }
 
 /**
