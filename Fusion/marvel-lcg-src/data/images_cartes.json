@@ -1,0 +1,5 @@
+{
+  "_lisez_moi": "Qui est represente sur l'ILLUSTRATION de chaque carte. Releve a la main depuis la page /releve-images.html, reservee a l'administrateur. Une cle presente avec une liste vide veut dire « aucune identite dessus » (un lieu, un objet, un civil) ; une cle ABSENTE veut dire « pas encore releve », et le jeu retombe alors sur son approximation. Ne pas confondre les deux. Voir .planning/todos/2026-09-13-releve-des-images-de-cartes.md",
+  "version": 1,
+  "cartes": {}
+}

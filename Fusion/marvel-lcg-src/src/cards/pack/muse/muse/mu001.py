@@ -14,8 +14,11 @@ from . import *
 #    son identite d'autant.
 #
 # ⚠ ARBITRAGE, decision utilisateur du 13/09/2026 (deux questions posees).
-#  1. « l'image de votre identite » = une CARTE SIGNATURE (helper
-#     `EstUneCarteSignature`, voir le `__init__.py` du set).
+#  1. « l'image de votre identite » = ce que dit le RELEVE des illustrations
+#     (helper `PorteLImageDe`, voir le `__init__.py` du set). Le premier
+#     arbitrage du jour disait « une carte signature » ; l'utilisateur l'a
+#     renverse le meme jour : c'est l'image qui fait foi. L'approximation
+#     signature ne sert plus que pour les images pas encore relevees.
 #  2. « chaque PERSONNAGE dont l'image etait sur cette carte » : c'est le
 #     HEROS DONT C'EST LE DECK qui encaisse, quoi que montre la carte. Une
 #     carte signature ne represente pas toujours son heros — Nova Prime montre
@@ -41,7 +44,7 @@ def GetAbilities() -> Sequence['Ability']:
 
         def peindre(joueur: 'Player') -> None:
             defaussees = joueur.DiscardDeckTopCards(3, effect)
-            combien = len(CartesSignatureDe(defaussees))
+            combien = len(CartesAvecLImageDe(defaussees, joueur))
             if combien <= 0:
                 return
             identite = joueur.GetIdentity()

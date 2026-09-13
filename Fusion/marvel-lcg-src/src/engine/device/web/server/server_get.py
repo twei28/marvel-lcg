@@ -518,6 +518,116 @@ class GameServerGet(GameServerBase):
             return web.json_response({'url': ''})
         return web.json_response({'url': url})
 
+    def _est_administrateur(self, request: web.Request) -> bool:
+        """Ce client est-il l'administrateur du site, sur son propre siege ?
+
+        Meme garde que `get_site_admin`, et pour la meme raison : c'est le SITE
+        qui decide, jamais le client. `site_admin_url` n'est renseignee par
+        l'orchestrateur que pour la table de l'administrateur, et le siege 0 est
+        celui du titulaire du compte — un invite arrive par un lien de siege n'y
+        a rien a faire.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS, SITE_ADMIN_URL
+        if not (SITE_ADMIN_URL.value or ''):
+            return False
+        passwords = SEAT_PASSWORDS.value
+        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
+            return False
+        return True
+
+    async def get_images_cartes(self, request: web.Request) -> web.Response:
+        """Le releve : qui est sur l'illustration de chaque carte.
+
+        AJOUT du 13/09/2026. Quatre cartes du set Muse parlent de « la carte qui
+        porte l'image de ton identite », et le moteur ne voit pas les
+        illustrations. On les releve donc a la main.
+
+        ⚠ LECTURE OUVERTE, ECRITURE RESERVEE. Le jeu a besoin de ce releve a
+        chaque carte jouee, pour tous les joueurs de la table ; seul
+        l'administrateur le modifie.
+
+        ⚠ UNE LISTE VIDE ET UNE CLE ABSENTE NE VEULENT PAS DIRE LA MEME CHOSE :
+        vide = « aucune identite dessus, c'est releve » ; absente = « pas encore
+        regardee », et le jeu retombe sur son approximation.
+        """
+        from cards.images_cartes import ImagesCartes
+        # `_charger` avale deja fichier absent et fichier abime : un releve vide,
+        # jamais une erreur. La page de releve doit s'ouvrir meme le premier jour.
+        return web.json_response({'cartes': ImagesCartes._charger()})
+
+    async def get_identites(self, request: web.Request) -> web.Response:
+        """L'annuaire des personnes, pour la page de releve.
+
+        Lecture ouverte : il ne contient que des noms deja lisibles sur les
+        cartes. Le fichier est GENERE par `outils/annuaire-identites.py` et sert
+        aussi au moteur (`cards/images_cartes.py`).
+        """
+        import json as json_lib
+        from cards.images_cartes import IDENTITES_FILE
+        try:
+            with open(IDENTITES_FILE.value, encoding='utf-8') as f:
+                donnees = json_lib.load(f)
+            liste = donnees.get('identites') if isinstance(donnees, dict) else None
+            return web.json_response({'identites': liste if isinstance(liste, list) else []})
+        except Exception:
+            # ⚠ Annuaire absent : la page doit le DIRE, pas proposer une liste
+            # vide ou l'administrateur croirait qu'il n'y a personne a cocher.
+            return web.json_response({'identites': [], 'erreur': 'annuaire absent'})
+
+    async def save_images_cartes(self, request: web.Request) -> web.Response:
+        """Ecrit le releve d'UNE carte. Reserve a l'administrateur.
+
+        ⚠ UNE CARTE A LA FOIS, ET LE FICHIER RELU A CHAQUE FOIS. Envoyer tout le
+        releve a chaque clic ferait grossir la requete a mesure du travail, et
+        un onglet reste ouvert ecraserait le travail d'un autre avec sa copie
+        perimee. Ici deux onglets ne peuvent se marcher dessus que sur la meme
+        carte.
+
+        ⚠ ECRITURE ATOMIQUE : ce fichier porte des heures de relevé a la main.
+        Une coupure au milieu d'un `write` le laisserait tronque, donc illisible,
+        et tout serait a refaire.
+        """
+        import json as json_lib
+        import os
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        data = await request.json()
+        carte = str(data.get('carte') or '').strip()
+        identites = data.get('identites')
+        if not carte or not isinstance(identites, list):
+            return web.json_response({'error': 'carte ou identites manquantes'}, status=400)
+        propres = []
+        for x in identites:
+            x = str(x or '').strip()
+            if x and x not in propres:
+                propres.append(x)
+        from cards.images_cartes import IMAGES_CARTES_FILE, ImagesCartes
+        chemin = IMAGES_CARTES_FILE.value
+        donnees = {'version': 1, 'cartes': {}}
+        try:
+            with open(chemin, encoding='utf-8') as f:
+                lu = json_lib.load(f)
+            if isinstance(lu, dict) and isinstance(lu.get('cartes'), dict):
+                donnees = lu
+        except Exception:
+            pass
+        if data.get('oublier'):
+            donnees['cartes'].pop(carte, None)
+        else:
+            donnees['cartes'][carte] = propres
+        dossier = os.path.dirname(chemin)
+        if dossier:
+            os.makedirs(dossier, exist_ok=True)
+        provisoire = chemin + '.tmp'
+        with open(provisoire, 'w', encoding='utf-8') as f:
+            json_lib.dump(donnees, f, ensure_ascii=False, indent=1, sort_keys=True)
+        os.replace(provisoire, chemin)
+        # ⚠ Le moteur garde le releve en cache. Sans ceci, une carte relevee
+        # pendant une partie ne serait prise en compte qu'au prochain
+        # redemarrage du serveur, et l'administrateur croirait a un bug.
+        ImagesCartes.Recharger()
+        return web.json_response({'ok': True, 'relevees': len(donnees['cartes'])})
+
     async def _appeler_site(self, chemin: str, champs: dict, secondes: int = 5,
                             avec_statut: bool = False):
         """Relaie un appel au site, en 127.0.0.1, avec le jeton de la partie.
@@ -925,6 +1035,9 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_dossier_sauvegardes', self.get_dossier_sauvegardes)
         self.AddAwaitGetSecurity('/get_messages_prives', self.get_messages_prives)
         self.AddPostSecurity('/post_messages_lus', self.post_messages_lus)
+        self.AddAwaitGetSecurity('/get_images_cartes', self.get_images_cartes)
+        self.AddAwaitGetSecurity('/get_identites', self.get_identites)
+        self.AddPostSecurity('/save_images_cartes', self.save_images_cartes)
         self.AddAwaitGetSecurity('/get_legacy', self.get_legacy)
         self.AddPostSecurity('/save_legacy', self.save_legacy)
         # Sauvegarde demandee par le SITE avant de fermer une table inactive :

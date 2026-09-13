@@ -1,0 +1,3990 @@
+image,priorite,nom,type,set
+01002,0,Black Cat,Ally,Spider-Man
+01003,0,Backflip,Event,Spider-Man
+01004,0,Enhanced Spider-Sense,Event,Spider-Man
+01005,0,Swinging Web Kick,Event,Spider-Man
+01006,0,Aunt May,Support,Spider-Man
+01007,0,Spider-Tracer,Upgrade,Spider-Man
+01008,0,Web-Shooter,Upgrade,Spider-Man
+01009,0,Webbed Up,Upgrade,Spider-Man
+01011,0,Spider-Woman,Ally,Captain Marvel
+01012,0,Crisis Interdiction,Event,Captain Marvel
+01013,0,Photonic Blast,Event,Captain Marvel
+01014,0,Energy Absorption,Resource,Captain Marvel
+01015,0,Alpha Flight Station,Support,Captain Marvel
+01016,0,Captain Marvel's Helmet,Upgrade,Captain Marvel
+01017,0,Cosmic Flight,Upgrade,Captain Marvel
+01018,0,Energy Channel,Upgrade,Captain Marvel
+01020,0,Hellcat,Ally,She-Hulk
+01021,0,Gamma Slam,Event,She-Hulk
+01022,0,Ground Stomp,Event,She-Hulk
+01023,0,Legal Practice,Event,She-Hulk
+01024,0,One-Two Punch,Event,She-Hulk
+01025,0,Split Personality,Event,She-Hulk
+01026,0,Superhuman Law Division,Support,She-Hulk
+01027,0,Focused Rage,Upgrade,She-Hulk
+01028,0,Superhuman Strength,Upgrade,She-Hulk
+01030,0,War Machine,Ally,Iron Man
+01031,0,Repulsor Blast,Event,Iron Man
+01032,0,Supersonic Punch,Event,Iron Man
+01033,0,Pepper Potts,Support,Iron Man
+01034,0,Stark Tower,Support,Iron Man
+01035,0,Arc Reactor,Upgrade,Iron Man
+01036,0,Mark V Armor,Upgrade,Iron Man
+01037,0,Mark V Helmet,Upgrade,Iron Man
+01038,0,Powered Gauntlets,Upgrade,Iron Man
+01039,0,Rocket Boots,Upgrade,Iron Man
+01041,0,Shuri,Ally,Black Panther
+01042,0,Ancestral Knowledge,Event,Black Panther
+01043a,0,Wakanda Forever!,Event,Black Panther
+01043b,0,Wakanda Forever!,Event,Black Panther
+01043c,0,Wakanda Forever!,Event,Black Panther
+01043d,0,Wakanda Forever!,Event,Black Panther
+01044,0,Vibranium,Resource,Black Panther
+01045,0,The Golden City,Support,Black Panther
+01046,0,Energy Daggers,Upgrade,Black Panther
+01047,0,Panther Claws,Upgrade,Black Panther
+01048,0,Tactical Genius,Upgrade,Black Panther
+01049,0,Vibranium Suit,Upgrade,Black Panther
+03002,0,Agent 13,Ally,Captain America
+03003,0,Fearless Determination,Event,Captain America
+03004,0,Heroic Strike,Event,Captain America
+03005,0,Shield Block,Event,Captain America
+03006,0,Shield Toss,Event,Captain America
+03007,0,Steve's Apartment,Support,Captain America
+03008,0,Captain America's Helmet,Upgrade,Captain America
+03009,0,Captain America's Shield,Upgrade,Captain America
+03010,0,Super-Soldier Serum,Upgrade,Captain America
+04002,0,Hawkeye's Bow,Upgrade,Hawkeye
+04003,0,Hawkeye's Quiver,Upgrade,Hawkeye
+04004,0,Mockingbird,Ally,Hawkeye
+04005,0,Sonic Arrow,Event,Hawkeye
+04006,0,Explosive Arrow,Event,Hawkeye
+04007,0,Electric Arrow,Event,Hawkeye
+04008,0,Cable Arrow,Event,Hawkeye
+04009,0,Vibranium Arrow,Event,Hawkeye
+04010,0,Expert Marksman,Upgrade,Hawkeye
+04032,0,Captain Marvel,Ally,Spider-Woman
+04033,0,Finesse,Upgrade,Spider-Woman
+04034,0,Jessica Drew's Apartment,Support,Spider-Woman
+04035,0,Venom Blast,Event,Spider-Woman
+04036,0,Pheromones,Event,Spider-Woman
+04037,0,Contaminant Immunity,Event,Spider-Woman
+04038,0,Inconspicuous,Event,Spider-Woman
+04039,0,Self-Propelled Glide,Event,Spider-Woman
+05002,0,Red Dagger,Ally,Ms. Marvel
+05003,0,Big Hands,Event,Ms. Marvel
+05004,0,Sneak By,Event,Ms. Marvel
+05005,0,Wiggle Room,Event,Ms. Marvel
+05006,0,Aamir Khan,Support,Ms. Marvel
+05007,0,Bruno Carrelli,Support,Ms. Marvel
+05008,0,Nakia Bahadir,Support,Ms. Marvel
+05009,0,Biokinetic Polymer Suit,Upgrade,Ms. Marvel
+05010,0,Embiggen!,Upgrade,Ms. Marvel
+05011,0,Shrink,Upgrade,Ms. Marvel
+06002,0,Lady Sif,Ally,Thor
+06003,0,Defender of the Nine Realms,Event,Thor
+06004,0,For Asgard!,Event,Thor
+06005,0,Hammer Throw,Event,Thor
+06006,0,Lightning Strike,Event,Thor
+06007,0,Asgard,Support,Thor
+06008,0,God of Thunder,Upgrade,Thor
+06009,0,Mjolnir,Upgrade,Thor
+06010,0,Thor's Helmet,Upgrade,Thor
+08002,0,Winter Soldier,Ally,Black Widow
+08003,0,Covert Ops,Event,Black Widow
+08004,0,Dance of Death,Event,Black Widow
+08005,0,Safe House #29,Support,Black Widow
+08006,0,Attacrobatics,Upgrade,Black Widow
+08007,0,Black Widow's Gauntlet,Upgrade,Black Widow
+08008,0,Grappling Hook,Upgrade,Black Widow
+08009,0,Synth-Suit,Upgrade,Black Widow
+08010,0,Widow's Bite,Upgrade,Black Widow
+09002,0,Wong,Ally,Doctor Strange
+09003,0,Astral Projection,Event,Doctor Strange
+09004,0,Magic Blast,Event,Doctor Strange
+09005,0,Master of the Mystic Arts,Event,Doctor Strange
+09006,0,Mystical Studies,Event,Doctor Strange
+09007,0,Protective Ward,Event,Doctor Strange
+09008,0,Sanctum Sanctorum,Support,Doctor Strange
+09009,0,Cloak of Levitation,Upgrade,Doctor Strange
+09010,0,Magical Enhancements,Upgrade,Doctor Strange
+09011,0,The Eye of Agamotto,Upgrade,Doctor Strange
+09032,0,Crimson Bands of Cyttorak,Event,Invocation
+09033,0,Images of Ikonn,Event,Invocation
+09034,0,Seven Rings of Raggadorr,Event,Invocation
+09035,0,Vapors of Valtorr,Event,Invocation
+09036,0,Winds of Watoomb,Event,Invocation
+10002,0,Crushing Blow,Event,Hulk
+10003,0,Hulk Smash,Event,Hulk
+10004,0,Sub-Orbital Leap,Event,Hulk
+10005,0,Thunderclap,Event,Hulk
+10006,0,Unstoppable Force,Event,Hulk
+10007,0,Limitless Strength,Resource,Hulk
+10008,0,Banner's Laboratory,Support,Hulk
+10009,0,Boundless Rage,Upgrade,Hulk
+10010,0,Immovable Object,Upgrade,Hulk
+12002,0,Wasp,Ally,Ant-Man
+12003,0,Giant Stomp,Event,Ant-Man
+12004,0,Hive Mind,Event,Ant-Man
+12005,0,Resize,Event,Ant-Man
+12006,0,Pym Particles,Resource,Ant-Man
+12007,0,Army of Ants,Support,Ant-Man
+12008,0,Ant-Man's Helmet,Upgrade,Ant-Man
+12009,0,Giant Strength,Upgrade,Ant-Man
+12010,0,Wrist Gauntlets,Upgrade,Ant-Man
+13002,0,Ant-Man,Ally,Wasp
+13003,0,Giant Help,Event,Wasp
+13004,0,Pinpoint Strike,Event,Wasp
+13005,0,Rapid Growth,Event,Wasp
+13006,0,Wasp Sting,Event,Wasp
+13008,0,Red Room Training,Upgrade,Wasp
+13009,0,Bio-Synthetic Wings,Upgrade,Wasp
+13010,0,Wasp's Helmet,Upgrade,Wasp
+14002,0,Scarlet Witch,Ally,Quicksilver
+14003,0,Always Be Running,Event,Quicksilver
+14004,0,Double Time,Event,Quicksilver
+14005,0,Maximum Velocity,Event,Quicksilver
+14006,0,Speed Cyclone,Event,Quicksilver
+14007,0,Serval Industries,Support,Quicksilver
+14008,0,Accelerated Reflex,Upgrade,Quicksilver
+14009,0,Friction Resistance,Upgrade,Quicksilver
+14010,0,Hyper Perception,Upgrade,Quicksilver
+14011,0,Reinforced Sinew,Upgrade,Quicksilver
+15002,0,Quicksilver,Ally,Scarlet Witch
+15003,0,Chaos Magic,Event,Scarlet Witch
+15004,0,Hex Bolt,Event,Scarlet Witch
+15005,0,Molecular Decay,Event,Scarlet Witch
+15006,0,Warp Reality,Event,Scarlet Witch
+15007,0,Agatha Harkness,Support,Scarlet Witch
+15008,0,Magic Shield,Upgrade,Scarlet Witch
+15009,0,Scarlet Witch's Crest,Upgrade,Scarlet Witch
+16002,0,Fruition,Event,Groot
+16003,0,"""I am Groot""",Event,Groot
+16004,0,"""I. AM. GROOT!""",Event,Groot
+16005,0,Root Stomp,Event,Groot
+16006,0,"""We Are Groot""",Event,Groot
+16007,0,Fertile Ground,Support,Groot
+16008,0,Entangling Vines,Upgrade,Groot
+16009,0,Lashing Vines,Upgrade,Groot
+16010,0,Vine Shield,Upgrade,Groot
+16011,0,Vine Spikes,Upgrade,Groot
+16030,0,I've Got a Plan,Event,Rocket Raccoon
+16031,0,Reload,Event,Rocket Raccoon
+16032,0,Schadenfreude,Event,Rocket Raccoon
+16033,0,Salvage,Resource,Rocket Raccoon
+16034,0,Battery Pack,Upgrade,Rocket Raccoon
+16035,0,Cybernetic Skeleton,Upgrade,Rocket Raccoon
+16036,0,Particle Cannon,Upgrade,Rocket Raccoon
+16037,0,Rocket Launcher,Upgrade,Rocket Raccoon
+16038,0,Rocket's Pistol,Upgrade,Rocket Raccoon
+16039,0,Thruster Boots,Upgrade,Rocket Raccoon
+17002,0,Nova Prime,Ally,Star-Lord
+17003,0,Daring Escape,Event,Star-Lord
+17004,0,Gutsy Move,Event,Star-Lord
+17005,0,Sliding Shot,Event,Star-Lord
+17006,0,Bad Boy,Support,Star-Lord
+17007,0,Element Gun,Upgrade,Star-Lord
+17008,0,Jet Boots,Upgrade,Star-Lord
+17009,0,Leader of the Guardians,Upgrade,Star-Lord
+17010,0,Star-Lord's Helmet,Upgrade,Star-Lord
+18002,0,Nebula,Ally,Gamora
+18003,0,Acrobatic Move,Event,Gamora
+18004,0,Crosscounter,Event,Gamora
+18005,0,Set the Pace,Event,Gamora
+18006,0,Decisive Blow,Event,Gamora
+18007,0,Forward Momentum,Event,Gamora
+18008,0,Conditioning Room,Support,Gamora
+18009,0,Keen Instincts,Upgrade,Gamora
+18010,0,Gamora's Sword,Upgrade,Gamora
+19002,0,Mantis,Ally,Drax
+19003,0,"""Fight Me, Coward!""",Event,Drax
+19004,0,Intimidation,Event,Drax
+19005,0,Knife Leap,Event,Drax
+19006,0,Parry,Event,Drax
+19007,0,Payback,Event,Drax
+19008,0,Drax's Knife,Upgrade,Drax
+19009,0,Drax's Other Knife,Upgrade,Drax
+19010,0,DWI Theet Mastery,Upgrade,Drax
+19011,0,Too Stubborn to Die,Upgrade,Drax
+20002,0,Behind Enemy Lines,Event,Venom
+20003,0,Grasping Tendrils,Event,Venom
+20004,0,Locked and Loaded,Event,Venom
+20005,0,Run and Gun,Event,Venom
+20006,0,Savage Attack,Event,Venom
+20007,0,Project Rebirth 2.0,Support,Venom
+20008,0,Multi-Gun,Upgrade,Venom
+20009,0,Spider-Sense,Upgrade,Venom
+20010,0,Venom's Pistol,Upgrade,Venom
+21002,0,Gamma,Upgrade,Spectrum
+21003,0,Photon,Upgrade,Spectrum
+21004,0,Pulsar,Upgrade,Spectrum
+21005,0,Blue Marvel,Ally,Spectrum
+21006,0,Energy Duplication,Upgrade,Spectrum
+21007,0,Gamma Blast,Event,Spectrum
+21008,0,Photon Speed,Event,Spectrum
+21009,0,Pulsar Shield,Event,Spectrum
+21010,0,Speed of Light,Event,Spectrum
+21032,0,Pip the Troll,Ally,Adam Warlock
+21033,0,Soul World,Support,Adam Warlock
+21034,0,Karmic Staff,Upgrade,Adam Warlock
+21035,0,Warlock's Cape,Upgrade,Adam Warlock
+21036,0,Cosmic Ward,Upgrade,Adam Warlock
+21037,0,Mystic Senses,Upgrade,Adam Warlock
+21038,0,Karmic Blast,Event,Adam Warlock
+21039,0,Cosmic Awareness,Event,Adam Warlock
+21040,0,Quantum Magic,Event,Adam Warlock
+22002,0,Gamora,Ally,Nebula
+22003,0,Nebula's Ship,Support,Nebula
+22004,0,Cutthroat Ambition,Upgrade,Nebula
+22005,0,Evasive Maneuvering,Upgrade,Nebula
+22006,0,Unyielding Persistence,Upgrade,Nebula
+22007,0,Weapons Master,Upgrade,Nebula
+22008,0,Wide Stance,Upgrade,Nebula
+22009,0,Combat Ready,Event,Nebula
+22010,0,Lethal Intent,Event,Nebula
+23002,0,Iron Man,Ally,War Machine
+23003,0,Munitions Bunker,Support,War Machine
+23004,0,Upgraded Chassis,Upgrade,War Machine
+23005,0,Gauntlet Gun,Upgrade,War Machine
+23006,0,Missile Launcher,Upgrade,War Machine
+23007,0,Shoulder Cannon,Upgrade,War Machine
+23008,0,Repulsor Beam,Event,War Machine
+23009,0,Targeted Strike,Event,War Machine
+23010,0,Scorched Earth,Event,War Machine
+23011,0,Full Auto,Event,War Machine
+25002,0,Death-Glow,Upgrade,Valkyrie
+25003,0,Annabelle Riggs,Ally,Valkyrie
+25004,0,Valhalla,Support,Valkyrie
+25005,0,Valkyrie's Spear,Upgrade,Valkyrie
+25006,0,Dragonfang,Upgrade,Valkyrie
+25007,0,Aragorn,Upgrade,Valkyrie
+25008,0,Flight of the Valkyrior,Upgrade,Valkyrie
+25009,0,Visit Valhalla,Event,Valkyrie
+25010,0,Chooser of the Slain,Event,Valkyrie
+25011,0,Shieldmaiden,Event,Valkyrie
+25012,0,Have at Thee!,Event,Valkyrie
+26002a,0,Intangible,Upgrade,Vision
+26002b,0,Dense,Upgrade,Vision
+26003,0,Vivian,Ally,Vision
+26004,0,616 Hickory Branch Lane,Support,Vision
+26005,0,Solar Gem,Upgrade,Vision
+26006,0,Vision's Cape,Upgrade,Vision
+26007,0,Density Control,Upgrade,Vision
+26008,0,Solar Beam,Event,Vision
+26009,0,Superdense Strike,Event,Vision
+26010,0,Just Passing Through,Event,Vision
+26011,0,Phase Disruption,Event,Vision
+26012,0,Mass Increase,Event,Vision
+27002,0,Ghost Kick,Event,Ghost-Spider
+27003,0,Parental Guidance,Event,Ghost-Spider
+27004,0,Phantom Flip,Event,Ghost-Spider
+27005,0,Pirouette and Punch,Event,Ghost-Spider
+27006,0,Web Binding,Event,Ghost-Spider
+27007,0,George Stacy,Support,Ghost-Spider
+27008,0,Ticket to the Multiverse,Upgrade,Ghost-Spider
+27009,0,Web-Bracelet,Upgrade,Ghost-Spider
+27031,0,Arachnobatics,Event,Spider-Man - Miles Morales
+27032,0,Double Life,Event,Spider-Man - Miles Morales
+27033,0,Swing In,Event,Spider-Man - Miles Morales
+27034,0,Web-Shot,Event,Spider-Man - Miles Morales
+27035,0,Ganke Lee,Support,Spider-Man - Miles Morales
+27036,0,Jefferson Davis,Support,Spider-Man - Miles Morales
+27037,0,Power Within,Upgrade,Spider-Man - Miles Morales
+27038,0,Defense Mechanism,Upgrade,Spider-Man - Miles Morales
+27039,0,Web-Shooter,Upgrade,Spider-Man - Miles Morales
+28002,0,Ms. Marvel,Ally,Nova
+28003,0,Forcefield Projection,Event,Nova
+28004,0,Lightspeed Flight,Event,Nova
+28005,0,Pot Shot,Event,Nova
+28006,0,Unleash Nova Force,Event,Nova
+28007,0,Connection to the Worldmind,Resource,Nova
+28008,0,Jesse Alexander,Support,Nova
+28009,0,Supernova Helmet,Upgrade,Nova
+29004,0,Brawn,Ally,Ironheart
+29005,0,Fly Over,Event,Ironheart
+29006,0,Photon Beam,Event,Ironheart
+29007,0,New and Improved,Event,Ironheart
+29008,0,Sector Scan,Event,Ironheart
+29009,0,Stroke of Genius,Resource,Ironheart
+29010,0,Ronnie Williams,Support,Ironheart
+29011,0,Tony Stark A.I.,Support,Ironheart
+29012,0,Photon Blasters,Upgrade,Ironheart
+29013,0,Propulsion Jets,Upgrade,Ironheart
+30002,0,Captain Americat,Ally,Spider-Ham
+30003,0,Ham It Up,Event,Spider-Ham
+30004,0,Hogwashed,Event,Spider-Ham
+30005,0,"""I Don't Think So!""",Event,Spider-Ham
+30006,0,Petulant Pig,Event,Spider-Ham
+30007,0,Swinging Web Pig,Event,Spider-Ham
+30008,0,The Daily Beagle,Support,Spider-Ham
+30009,0,Cartoon Physics,Upgrade,Spider-Ham
+30010,0,Huge Wooden Hammer,Upgrade,Spider-Ham
+30011,0,Organic Webbing,Upgrade,Spider-Ham
+31001b,0,SP//dr Suit,Support,SP//dr
+31002b,0,SP//dr,Upgrade,SP//dr
+31003,0,VEN#m,Ally,SP//dr
+31004,0,All Systems Go!,Event,SP//dr
+31005,0,Rapid Deployment,Event,SP//dr
+31006,0,Web-Trap,Event,SP//dr
+31007,0,Aunt May & Uncle Ben,Support,SP//dr
+31008,0,Ejection Protocol,Support,SP//dr
+31009,0,SP//dr Command,Support,SP//dr
+31010,0,Host Spider,Upgrade,SP//dr
+31011,0,Psychic Link,Upgrade,SP//dr
+31012,0,Speed-Metal Alloy,Upgrade,SP//dr
+31013,0,Web-Fluid Compressor,Upgrade,SP//dr
+32002,0,Shadowcat,Ally,Colossus
+32003,0,Piotr's Studio,Support,Colossus
+32004,0,Iron Will,Upgrade,Colossus
+32005,0,Titanium Muscles,Upgrade,Colossus
+32006,0,Organic Steel,Upgrade,Colossus
+32007,0,Made of Rage,Event,Colossus
+32008,0,Steel Fist,Event,Colossus
+32009,0,Bulletproof Protector,Event,Colossus
+32010,0,Armor Up,Event,Colossus
+32031a,0,Solid,Upgrade,Shadowcat
+32031b,0,Phased,Upgrade,Shadowcat
+32032,0,Lockheed,Ally,Shadowcat
+32033,0,Kitty's Room,Support,Shadowcat
+32034,0,Acute Control,Upgrade,Shadowcat
+32035,0,Intangible Interference,Upgrade,Shadowcat
+32036,0,Phased and Confused,Upgrade,Shadowcat
+32037,0,Shadowcat Surprise,Event,Shadowcat
+32038,0,Phase Strike,Event,Shadowcat
+32039,0,Airwalk,Event,Shadowcat
+32040,0,Quick Shift,Event,Shadowcat
+33002,0,Phoenix,Ally,Cyclops
+33003,0,Ruby Quartz Visor,Upgrade,Cyclops
+33004,0,Field Commander,Upgrade,Cyclops
+33005,0,Exploit Weakness,Upgrade,Cyclops
+33006,0,Practiced Defense,Upgrade,Cyclops
+33007,0,Priority Target,Upgrade,Cyclops
+33008,0,Full Blast,Event,Cyclops
+33009,0,Ricochet Beam,Event,Cyclops
+33010,0,Tactical Brilliance,Event,Cyclops
+34002a,0,Phoenix Force,Upgrade,Phoenix
+34002b,0,Phoenix Force,Upgrade,Phoenix
+34003,0,Cyclops,Ally,Phoenix
+34004,0,White Hot Room,Support,Phoenix
+34005,0,Phoenix Suit,Upgrade,Phoenix
+34006,0,Rise from the Ashes,Upgrade,Phoenix
+34007,0,Telekinetic Shield,Upgrade,Phoenix
+34008,0,Mental Paralysis,Upgrade,Phoenix
+34009,0,Mind Control,Upgrade,Phoenix
+34010,0,Telekinetic Attack,Event,Phoenix
+34011,0,Psychic Blast,Event,Phoenix
+34012,0,Telepathic Trickery,Event,Phoenix
+34013,0,Phoenix Firebird,Event,Phoenix
+35002,0,Wolverine's Claws,Upgrade,Wolverine
+35003,0,Jubilee,Ally,Wolverine
+35004,0,Adamantium Skeleton,Upgrade,Wolverine
+35005,0,Berserker Frenzy,Upgrade,Wolverine
+35006,0,"""I Got Better""",Upgrade,Wolverine
+35007,0,Logan's Cabin,Support,Wolverine
+35008,0,Berserker Barrage,Event,Wolverine
+35009,0,Slice and Dice,Event,Wolverine
+35010,0,Lunging Strike,Event,Wolverine
+35011,0,Track by Scent,Event,Wolverine
+35012,0,Regenerative Healing,Event,Wolverine
+36002,0,Clear Skies,Support,Weather
+36003,0,Hurricane,Support,Weather
+36004,0,Thunderstorm,Support,Weather
+36005,0,Blizzard,Support,Weather
+36006,0,Storm's Crown,Upgrade,Storm
+36007,0,Storm's Cape,Upgrade,Storm
+36008,0,Ororo's Garden,Support,Storm
+36009,0,Weather Goddess,Event,Storm
+36010,0,Torrential Rain,Event,Storm
+36011,0,Lightning Bolt,Event,Storm
+36012,0,Flash Freeze,Event,Storm
+36013,0,Blast of Wind,Event,Storm
+37002,0,Rogue,Ally,Gambit
+37003,0,The Thieves Guild,Support,Gambit
+37004,0,Gambit's Staff,Upgrade,Gambit
+37005,0,Gambit's Guild Armor,Upgrade,Gambit
+37006,0,Charged Card,Event,Gambit
+37007,0,Royal Flush,Event,Gambit
+37008,0,Natural Agility,Event,Gambit
+37009,0,Creole Charmer,Event,Gambit
+37010,0,Molecular Acceleration,Resource,Gambit
+38002,0,Touched,Upgrade,Rogue
+38003,0,Gambit,Ally,Rogue
+38004,0,Rogue's Jacket,Upgrade,Rogue
+38005,0,Goin' Rogue,Event,Rogue
+38006,0,Southern Cross,Event,Rogue
+38007,0,Energy Transfer,Event,Rogue
+38008,0,Bulletproof Belle,Event,Rogue
+38009,0,Superpower Adaptation,Event,Rogue
+40002,0,Bodyslide,Event,Cable
+40003,0,Mind Scan,Event,Cable
+40004,0,Precognition,Event,Cable
+40005,0,Telekinetic Blast,Event,Cable
+40006,0,Technovirus Purge,PlayerSideScheme,Cable
+40007,0,Graymalkin,Support,Cable
+40008,0,Professor,Support,Cable
+40009,0,Askani'son,Upgrade,Cable
+40010,0,Forced Amnesia,Upgrade,Cable
+40011,0,Plasma Rifle,Upgrade,Cable
+40012,0,Telekinetic Force Field,Upgrade,Cable
+40013,0,Temporal Leap,Upgrade,Cable
+40038,0,Diamondback,Ally,Domino
+40039,0,Outlaw,Ally,Domino
+40040,0,A Good Workout,Event,Domino
+40041,0,Luck Be a Lady,Event,Domino
+40042,0,"Right Place, Right Time",Event,Domino
+40043,0,Jackpot!,Resource,Domino
+40044,0,Pip the Pug,Support,Domino
+40045,0,The Painted Lady,Support,Domino
+40046,0,Domino's Pistol,Upgrade,Domino
+40047,0,Lucky and Good,Upgrade,Domino
+40048,0,Lucky Break,Upgrade,Domino
+40049,0,Probability Field,Upgrade,Domino
+41002a,0,Psi-Knife,Upgrade,Psylocke
+41002b,0,Psi-Katana,Upgrade,Psylocke
+41003,0,Angel,Ally,Psylocke
+41004,0,Flurry of Blades,Event,Psylocke
+41005,0,Mental Detection,Event,Psylocke
+41006,0,Psionic Redirect,Event,Psylocke
+41007,0,Telepathic Suggestion,Event,Psylocke
+41008,0,Training Regimen,Support,Psylocke
+41009,0,Martial Arts Training,Upgrade,Psylocke
+41010,0,Psionic Training,Upgrade,Psylocke
+41011,0,Weapons Training,Upgrade,Psylocke
+42002,0,Psylocke,Ally,Angel
+42003,0,Adaptive Plumage,Event,Angel
+42004,0,Aerial Agility,Event,Angel
+42005,0,Metamorphosis,Event,Angel
+42006,0,Natural Flight,Event,Angel
+42007,0,Razor Dive,Event,Angel
+42008,0,Avian Anatomy,Resource,Angel
+42009,0,Worthington Industries,Support,Angel
+42010,0,Techno-Organic Wings,Upgrade,Angel
+43002,0,X-23's Claws,Upgrade,X-23
+43003,0,Honey Badger,Ally,X-23
+43004,0,Animal Instinct,Event,X-23
+43005,0,Claw Mastery,Event,X-23
+43006,0,Regenerative Longevity,Event,X-23
+43007,0,Sisterly Bond,Event,X-23
+43008,0,Sisterhood,Support,X-23
+43009,0,Adamantium Lacing,Upgrade,X-23
+43010,0,Grim Resolve,Upgrade,X-23
+43011,0,Pain Tolerance,Upgrade,X-23
+43012,0,Puncture Wound,Upgrade,X-23
+44002,0,Cable,Ally,Deadpool
+44003,0,Exhausting Personality,Event,Deadpool
+44004,0,Maximum Effort,Event,Deadpool
+44005,0,Metaknowledge,Event,Deadpool
+44006,0,"""Yoo-Hoo!""",Event,Deadpool
+44007,0,Montage,Resource,Deadpool
+44008,0,Chimichanga Truck,Support,Deadpool
+44009,0,Armed to the Teeth,Upgrade,Deadpool
+44010,0,Deadpool's Katana,Upgrade,Deadpool
+44011,0,It Ain't Over...,Upgrade,Deadpool
+44012,0,This Card is Fire,Event,Deadpool
+45002,0,Malcolm,Ally,Bishop
+45003,0,Randall,Ally,Bishop
+45004,0,Bishop's Rifle,Upgrade,Bishop
+45005,0,Bishop's Uniform,Upgrade,Bishop
+45006,0,Super-Charged,Upgrade,Bishop
+45007,0,Concussive Blast,Event,Bishop
+45008,0,Command Authority,Event,Bishop
+45009,0,Energy Conversion,Event,Bishop
+45010,0,Stored Energy,Resource,Bishop
+45031,0,Colossus,Ally,Magik
+45032,0,Limbo,Support,Magik
+45033,0,Magik's Crown,Upgrade,Magik
+45034,0,Soulsword,Upgrade,Magik
+45035,0,Mystical Armor,Upgrade,Magik
+45036,0,Scrying,Event,Magik
+45037,0,Stepping Disc,Event,Magik
+45038,0,Exorcism,Event,Magik
+45039,0,Soul Strike,Event,Magik
+45040,0,Magic Barrier,Event,Magik
+46002,0,Frostbite,Upgrade,Frostbite
+46003,0,Snow Clone,Ally,Iceman
+46004,0,Power Belt,Upgrade,Iceman
+46005,0,Cryokinetic Perception,Upgrade,Iceman
+46006,0,Ice Slide,Upgrade,Iceman
+46007,0,Frozen Solid,Upgrade,Iceman
+46008,0,Ice Wall,Support,Iceman
+46009,0,Arctic Attack,Event,Iceman
+46010,0,Ice Blast,Event,Iceman
+46011,0,Chill Out!,Event,Iceman
+47002,0,Wolverine,Ally,Jubilee
+47003,0,Shopping Spree,PlayerSideScheme,Jubilee
+47004,0,Jubilee's Coat,Upgrade,Jubilee
+47005,0,Jubilee's Sunglasses,Upgrade,Jubilee
+47006,0,Blinding Flash,Event,Jubilee
+47007a,0,Firecracker,Event,Jubilee
+47007b,0,Firecracker,Event,Jubilee
+47007c,0,Firecracker,Event,Jubilee
+47008a,0,Flash of Light,Event,Jubilee
+47008b,0,Flash of Light,Event,Jubilee
+47008c,0,Flash of Light,Event,Jubilee
+47009,0,Grande Finale,Event,Jubilee
+47010a,0,Plasmoid Energy,Resource,Jubilee
+47010b,0,Plasmoid Energy,Resource,Jubilee
+47010c,0,Plasmoid Energy,Resource,Jubilee
+48002,0,Daytripper,Ally,Nightcrawler
+48003,0,Kurt's Chapel,Support,Nightcrawler
+48004,0,Kurt's Cutlasses,Upgrade,Nightcrawler
+48005,0,Prehensile Tail,Upgrade,Nightcrawler
+48006,0,Bamf!,Upgrade,Nightcrawler
+48007,0,'Port and Punch,Event,Nightcrawler
+48008,0,Teleport Drop,Event,Nightcrawler
+48009,0,Scout Ahead,Event,Nightcrawler
+48010,0,'Port Away,Event,Nightcrawler
+48011,0,Tally Ho!,Event,Nightcrawler
+49002,0,Asteroid M,Support,Magneto
+49003,0,Magneto's Helmet,Upgrade,Magneto
+49004,0,Magneto's Armor,Upgrade,Magneto
+49005,0,Magneto's Cape,Upgrade,Magneto
+49006,0,Magnetic Bubble,Upgrade,Magneto
+49007,0,Wrapped in Metal,Upgrade,Magneto
+49008,0,Electromagnetic Blast,Event,Magneto
+49009,0,Metal Shards,Event,Magneto
+49010,0,Magnetic Missile,Event,Magneto
+49011,0,Master of Magnetism,Resource,Magneto
+50002,0,Nick Fury,Ally,Maria Hill
+50003,0,All-Points Bulletin,Event,Maria Hill
+50004,0,On the Double,Event,Maria Hill
+50005,0,Reinforcements,Event,Maria Hill
+50006,0,The Hard Call,Event,Maria Hill
+50007,0,Special Funding,Resource,Maria Hill
+50008,0,Support Staff,Support,Maria Hill
+50009,0,The Iliad,Support,Maria Hill
+50010,0,Life Model Decoy,Upgrade,Maria Hill
+50011,0,S.H.I.E.L.D. Director,Upgrade,Maria Hill
+50035a,0,Assault,Upgrade,Nick Fury
+50035b,0,Stealth,Upgrade,Nick Fury
+50036,0,Maria Hill,Ally,Nick Fury
+50037,0,Concentrated Fire,Event,Nick Fury
+50038,0,Covert Surveillance,Event,Nick Fury
+50039,0,Spray Fire,Event,Nick Fury
+50040,0,Fury's Flying Car,Support,Nick Fury
+50041,0,Safe House #221,Support,Nick Fury
+50042,0,EM Shield,Upgrade,Nick Fury
+50043,0,Eyepatch Camera,Upgrade,Nick Fury
+50044,0,Fury's Watch,Upgrade,Nick Fury
+50045,0,Intelligence Analysis,Upgrade,Nick Fury
+50046,0,Secret Agent,Upgrade,Nick Fury
+51002,0,T'Challa,Ally,Black Panther (Shuri)
+51003,0,Clawed Strike,Event,Black Panther (Shuri)
+51004,0,On the Prowl,Event,Black Panther (Shuri)
+51005,0,Wakanda Forever!,Event,Black Panther (Shuri)
+51006,0,Vibranium,Resource,Black Panther (Shuri)
+51007,0,The Elephant's Trunk,Support,Black Panther (Shuri)
+51008,0,Queen Ramonda,Support,Black Panther (Shuri)
+51009,0,Aja-Adanna,Upgrade,Black Panther (Shuri)
+51010,0,Kimoyo Beads,Upgrade,Black Panther (Shuri)
+51011,0,Panther Claws,Upgrade,Black Panther (Shuri)
+51012,0,Spider Bites,Upgrade,Black Panther (Shuri)
+51013,0,Vibranium Suit,Upgrade,Black Panther (Shuri)
+52002,0,Smooth as Silk,Event,Silk
+52003,0,Swinging Silk Kick,Event,Silk
+52004,0,Wallcrawl,Event,Silk
+52005,0,Get the Scoop,PlayerSideScheme,Silk
+52006,0,Albert Moon,Support,Silk
+52007,0,J. Jonah Jameson,Support,Silk
+52008,0,Eidetic Memory,Upgrade,Silk
+52009,0,Organic Webbing,Upgrade,Silk
+52010,0,Outwit,Upgrade,Silk
+52011,0,Spider Claws,Upgrade,Silk
+52012,0,Spider Reflexes,Upgrade,Silk
+53002,0,Redwing,Ally,Falcon
+53003,0,Bird of Prey,Event,Falcon
+53004,0,Bird's-Eye View,Event,Falcon
+53005,0,"Up, Up, and Away",Event,Falcon
+53006,0,Falcon's Flock,Support,Falcon
+53007,0,Soup Kitchen,Support,Falcon
+53008,0,Aerial Evacuation,Upgrade,Falcon
+53009,0,Aerial Recon,Upgrade,Falcon
+53010,0,Battlefield Awareness,Upgrade,Falcon
+53011,0,Draw Their Fire,Upgrade,Falcon
+53012,0,Talon Line,Upgrade,Falcon
+53013,0,Vibranium Microweave,Upgrade,Falcon
+54002,0,Cybernetic Arm,Upgrade,Winter Soldier
+54003,0,Black Widow,Ally,Winter Soldier
+54004,0,Arm Block,Event,Winter Soldier
+54005,0,Metal Punch,Event,Winter Soldier
+54006,0,Electrical Discharge,Event,Winter Soldier
+54007,0,Safe House #30,Support,Winter Soldier
+54008,0,Silent Infiltration,Upgrade,Winter Soldier
+54009,0,Winter Armor,Upgrade,Winter Soldier
+54010,0,Winter Mask,Upgrade,Winter Soldier
+54011,0,Winter Rifle,Upgrade,Winter Soldier
+56002,0,Moon Knight,Ally,Tigra
+56003,0,Precinct HQ,Support,Tigra
+56004,0,Cat's Head Amulet,Upgrade,Tigra
+56005,0,Sharp Claws,Upgrade,Tigra
+56006,0,Cat-Like Reflexes,Upgrade,Tigra
+56007,0,Hunted,Upgrade,Tigra
+56008,0,Tooth and Claw,Event,Tigra
+56009,0,Feline Senses,Event,Tigra
+56030,0,Wiccan,Ally,Hulkling
+56031,0,Altman Residence,Support,Hulkling
+56032,0,Winged Shape,Upgrade,Hulkling
+56033,0,Hulk Shape,Upgrade,Hulkling
+56034,0,Armored Shape,Upgrade,Hulkling
+56035,0,Imitation Shape,Upgrade,Hulkling
+56036,0,Alien Physiology,Upgrade,Hulkling
+56037,0,Shapeshifter Strike,Event,Hulkling
+56038,0,Armored Defense,Event,Hulkling
+56039,0,Impersonation,Event,Hulkling
+56040,0,Shapeshifter,Event,Hulkling
+58002,0,Ionic Physiology,Upgrade,Wonder Man
+58003,0,Active Altruism,Event,Wonder Man
+58004,0,Ionic Blast,Event,Wonder Man
+58005,0,Starstruck,Event,Wonder Man
+58006,0,Energy Siphon,Resource,Wonder Man
+58007,0,Wonder Fans,Support,Wonder Man
+58008,0,Jet Belt,Upgrade,Wonder Man
+58009,0,Mr. Hollywood,Upgrade,Wonder Man
+58010,0,Signature Sunglasses,Upgrade,Wonder Man
+58011,0,"""What Are You?""",Upgrade,Wonder Man
+59005,0,Nemean Lion Skin,Upgrade,Gift Deck
+59006,0,Shield of Perseus,Upgrade,Gift Deck
+59007,0,Sword of Peleus,Upgrade,Gift Deck
+59008,0,Amadeus Cho,Ally,Hercules
+59009,0,The Gift of Battle,Event,Hercules
+59010,0,Son of Zeus,Event,Hercules
+59011,0,Wisdom of Athena,Event,Hercules
+59012,0,Olympus,Support,Hercules
+59013,0,Gauntlets of Hercules,Upgrade,Hercules
+59014,0,Golden Mace,Upgrade,Hercules
+59015,0,Herc's Helm,Upgrade,Hercules
+59016,0,Lion of Olympus,Upgrade,Hercules
+59017,0,Prince of Power,Upgrade,Hercules
+60002,0,Acute Tactility,Upgrade,Sense Deck
+60003,0,Enhanced Olfaction,Upgrade,Sense Deck
+60004,0,Heightened Hearing,Upgrade,Sense Deck
+60005,0,Radar Sense,Upgrade,Sense Deck
+60006,0,Superior Taste,Upgrade,Sense Deck
+60007,0,Elektra,Ally,Daredevil
+60008,0,Cross-Examination,Event,Daredevil
+60009,0,Deposition,Event,Daredevil
+60010,0,Living Lie Detector,Event,Daredevil
+60011,0,Raising Hell,Event,Daredevil
+60012,0,Focus the Senses,PlayerSideScheme,Daredevil
+60013,0,Foggy Nelson,Support,Daredevil
+60014,0,Karen Page,Support,Daredevil
+60015,0,Nelson and Murdock,Support,Daredevil
+60016,0,Sister Maggie,Support,Daredevil
+60017,0,Daredevil's Billy Club,Upgrade,Daredevil
+60018,0,The Man Without Fear,Upgrade,Daredevil
+60039,0,Daredevil,Ally,Echo
+60040a,0,Photographic Reflexes,Event,Echo
+60040b,0,Photographic Reflexes,Event,Echo
+60040c,0,Photographic Reflexes,Event,Echo
+60041,0,Study the Tape,Event,Echo
+60042,0,The Rez,Support,Echo
+60043,0,American Sign Language,Upgrade,Echo
+60044,0,Choreography,Upgrade,Echo
+60045,0,Echo's Katana,Upgrade,Echo
+60046,0,Improvisation,Upgrade,Echo
+60047,0,Muscle Memory,Upgrade,Echo
+61002,0,Alias Investigations,Support,Jessica Jones
+61003,0,Luke Cage,Ally,Jessica Jones
+61004,0,"""Big Mistake""",Event,Jessica Jones
+61005,0,Breakthrough,Event,Jessica Jones
+61006,0,Snooping Around,Event,Jessica Jones
+61007,0,Piecing It All Together,PlayerSideScheme,Jessica Jones
+61008,0,Calling in Favors,Support,Jessica Jones
+61009,0,4K Digital Camcorder,Upgrade,Jessica Jones
+61010,0,Circumstantial Evidence,Upgrade,Jessica Jones
+61011,0,Leather Jacket,Upgrade,Jessica Jones
+61012,0,"""Now I'm Ticked Off!""",Upgrade,Jessica Jones
+61013,0,Reluctant Flier,Upgrade,Jessica Jones
+61014,0,Stakeout,Upgrade,Jessica Jones
+62002,0,Jessica Jones,Ally,Luke Cage
+62003,0,Harlem's Hero,Event,Luke Cage
+62004,0,Knuckle Sandwich,Event,Luke Cage
+62005,0,"""Stand with Me!""",Event,Luke Cage
+62006,0,"""Sweet Christmas!""",Event,Luke Cage
+62007,0,Fogwell's Gym,Support,Luke Cage
+62008,0,Burstein Process,Upgrade,Luke Cage
+62009,0,Cruisin' for a Bruisin',Upgrade,Luke Cage
+62010,0,Metal Bracer,Upgrade,Luke Cage
+62011,0,Power Man,Upgrade,Luke Cage
+01001a,1,Spider-Man,Hero,Spider-Man
+01001b,1,Peter Parker,AlterEgo,Spider-Man
+01010a,1,Captain Marvel,Hero,Captain Marvel
+01010b,1,Carol Danvers,AlterEgo,Captain Marvel
+01019a,1,She-Hulk,Hero,She-Hulk
+01019b,1,Jennifer Walters,AlterEgo,She-Hulk
+01029a,1,Iron Man,Hero,Iron Man
+01029b,1,Tony Stark,AlterEgo,Iron Man
+01040a,1,Black Panther,Hero,Black Panther
+01040b,1,T'Challa,AlterEgo,Black Panther
+01050,1,Hulk,Ally,
+01051,1,Tigra,Ally,
+01052,1,Chase Them Down,Event,
+01053,1,Relentless Assault,Event,
+01054,1,Uppercut,Event,
+01055,1,The Power of Aggression,Resource,
+01056,1,Tac Team,Support,
+01057,1,Combat Training,Upgrade,
+01058,1,Daredevil,Ally,
+01059,1,Jessica Jones,Ally,
+01060,1,For Justice!,Event,
+01061,1,Great Responsibility,Event,
+01062,1,The Power of Justice,Resource,
+01063,1,Interrogation Room,Support,
+01064,1,Surveillance Team,Support,
+01065,1,Heroic Intuition,Upgrade,
+01066,1,Hawkeye,Ally,
+01067,1,Maria Hill,Ally,
+01068,1,Vision,Ally,
+01069,1,Get Ready,Event,
+01070,1,Lead from the Front,Event,
+01071,1,Make the Call,Event,
+01072,1,The Power of Leadership,Resource,
+01073,1,The Triskelion,Support,
+01074,1,Inspired,Upgrade,
+01075,1,Black Widow,Ally,
+01076,1,Luke Cage,Ally,
+01077,1,Counter-Punch,Event,
+01078,1,Get Behind Me!,Event,
+01079,1,The Power of Protection,Resource,
+01080,1,Med Team,Support,
+01081,1,Armored Vest,Upgrade,
+01082,1,Indomitable,Upgrade,
+01083,1,Mockingbird,Ally,
+01084,1,Nick Fury,Ally,
+01085,1,Emergency,Event,
+01086,1,First Aid,Event,
+01087,1,Haymaker,Event,
+01088,1,Energy,Resource,
+01089,1,Genius,Resource,
+01090,1,Strength,Resource,
+01091,1,Avengers Mansion,Support,
+01092,1,Helicarrier,Support,
+01093,1,Tenacity,Upgrade,
+03001a,1,Captain America,Hero,Captain America
+03001b,1,Steve Rogers,AlterEgo,Captain America
+03011,1,Falcon,Ally,
+03013,1,Squirrel Girl,Ally,
+03014,1,Wonder Man,Ally,
+03015,1,Avengers Assemble!,Event,
+03017,1,Strength In Numbers,Event,
+03019,1,Quinjet,Support,
+03024,1,Avengers Tower,Support,
+03025,1,Honorary Avenger,Upgrade,
+03031,1,Enraged,Upgrade,
+03032,1,Followed,Upgrade,
+03033,1,Expert Defense,Event,
+03034,1,Enhanced Awareness,Upgrade,
+04001a,1,Hawkeye,Hero,Hawkeye
+04001b,1,Clint Barton,AlterEgo,Hawkeye
+04011,1,Hawkeye,Ally,
+04012,1,Black Knight,Ally,
+04013,1,Goliath,Ally,
+04014,1,U.S. Agent,Ally,
+04015,1,Sky Cycle,Upgrade,
+04016,1,Team Training,Support,
+04017,1,Ready for Action,Event,
+04020,1,War Machine,Ally,
+04022,1,Earth's Mightiest Heroes,Event,
+04031a,1,Spider-Woman,Hero,Spider-Woman
+04031b,1,Jessica Drew,AlterEgo,Spider-Woman
+04040,1,Spider-Girl,Ally,
+04043,1,Press the Advantage,Event,
+04044,1,Piercing Strike,Event,
+04045,1,Spider-Man,Ally,
+04047,1,Skilled Investigator,Upgrade,
+04049,1,Clear the Area,Event,
+04097,1,Moon Knight,Ally,Taskmaster
+04098,1,Shang-Chi,Ally,Taskmaster
+04099,1,White Tiger,Ally,Taskmaster
+04100,1,Elektra,Ally,Taskmaster
+04155,1,Adrenal Stims,Upgrade,Hydra Campaign
+04156,1,Tactical Scanner,Upgrade,Hydra Campaign
+04157,1,Emergency Teleporter,Upgrade,Hydra Campaign
+04158,1,Laser Cannon,Upgrade,Hydra Campaign
+04159a,1,Basic Thwart Upgrade,Upgrade,Hydra Campaign
+04159b,1,Improved Thwart Upgrade,Upgrade,Hydra Campaign
+04160a,1,Basic Attack Upgrade,Upgrade,Hydra Campaign
+04160b,1,Improved Attack Upgrade,Upgrade,Hydra Campaign
+04161a,1,Basic Defense Upgrade,Upgrade,Hydra Campaign
+04161b,1,Improved Defense Upgrade,Upgrade,Hydra Campaign
+04162a,1,Basic Recovery Upgrade,Upgrade,Hydra Campaign
+04162b,1,Improved Recovery Upgrade,Upgrade,Hydra Campaign
+05001a,1,Ms. Marvel,Hero,Ms. Marvel
+05001b,1,Kamala Khan,AlterEgo,Ms. Marvel
+05012,1,Nova,Ally,
+05014,1,Preemptive Strike,Event,
+05015,1,Tackle,Event,
+05017,1,Energy Barrier,Upgrade,
+05018,1,Lockjaw,Ally,
+05023,1,Endurance,Upgrade,
+05024,1,Enhanced Reflexes,Upgrade,
+05030,1,Melee,Event,
+05031,1,Concussive Blow,Event,
+05032,1,Morale Boost,Event,
+05033,1,Down Time,Upgrade,
+06001a,1,Thor,Hero,Thor
+06001b,1,Odinson,AlterEgo,Thor
+06011,1,Hercules,Ally,
+06012,1,Valkyrie,Ally,
+06014,1,Get Over Here!,Event,
+06015,1,Mean Swing,Event,
+06017,1,Hall of Heroes,Support,
+06018,1,Battle Fury,Upgrade,
+06019,1,Jarnbjorn,Upgrade,
+06020,1,Heimdall,Ally,
+06021,1,Invulnerability,Event,
+06031,1,Under Surveillance,Upgrade,
+06032,1,Teamwork,Event,
+06033,1,Second Wind,Event,
+06034,1,Enhanced Physique,Upgrade,
+08001a,1,Black Widow,Hero,Black Widow
+08001b,1,Natasha Romanoff,AlterEgo,Black Widow
+08011,1,Agent Coulson,Ally,
+08012,1,Quake,Ally,
+08013,1,Stealth Strike,Event,
+08017,1,Counterintelligence,Upgrade,
+08018,1,Spycraft,Upgrade,
+08023,1,Quincarrier,Support,
+08024,1,Target Acquired,Upgrade,
+08030,1,Counterattack,Upgrade,
+08031,1,Rapid Response,Upgrade,
+08032,1,Defensive Stance,Upgrade,
+08033,1,Espionage,Upgrade,
+09001a,1,Doctor Strange,Hero,Doctor Strange
+09001b,1,Stephen Strange,AlterEgo,Doctor Strange
+09012,1,Brother Voodoo,Ally,
+09013,1,Clea,Ally,
+09014,1,Iron Fist,Ally,
+09015,1,Desperate Defense,Event,
+09016,1,Momentum Shift,Event,
+09019,1,The Night Nurse,Support,
+09020,1,Unflappable,Upgrade,
+09021,1,Warning,Event,
+09026,1,The Sorcerer Supreme,Upgrade,
+09037,1,Skilled Strike,Event,
+09038,1,Foiled!,Event,
+09039,1,Iron Man,Ally,
+10001a,1,Hulk,Hero,Hulk
+10001b,1,Bruce Banner,AlterEgo,Hulk
+10011,1,Brawn,Ally,
+10012,1,Sentry,Ally,
+10013,1,She-Hulk,Ally,
+10014,1,Drop Kick,Event,
+10015,1,Toe to Toe,Event,
+10016,1,"""You'll Pay for That!""",Event,
+10018,1,Martial Prowess,Upgrade,
+10019,1,To the Rescue!,Event,
+10029,1,Beat Cop,Support,
+10030,1,Inspiring Presence,Event,
+10031,1,Electrostatic Armor,Upgrade,
+10032,1,Resourceful,Upgrade,
+12001a,1,Ant-Man,Hero,Ant-Man
+12001b,1,Scott Lang,AlterEgo,Ant-Man
+12001c,1,Ant-Man,Hero,Ant-Man
+12011,1,Ant-Man,Ally,
+12012,1,Giant-Man,Ally,
+12013,1,Ronin,Ally,
+12014,1,Stinger,Ally,
+12015,1,Call for Aid,Event,
+12016,1,Moxie,Event,
+12017,1,Power Gloves,Upgrade,
+12018,1,Reinforced Suit,Upgrade,
+12020,1,Swarm Tactics,Event,
+12024,1,Team-Building Exercise,Support,
+12030,1,Moment of Triumph,Event,
+12031,1,Lay Down the Law,Event,
+12032,1,Muster Courage,Event,
+12033,1,Assess the Situation,Event,
+13001a,1,Wasp,Hero,Wasp
+13001b,1,Nadia Van Dyne,AlterEgo,Wasp
+13001c,1,Wasp,Hero,Wasp
+13011,1,Thor,Ally,
+13012,1,Wasp,Ally,
+13013,1,Into the Fray,Event,
+13014,1,Surprise Attack,Event,
+13016,1,Boot Camp,Support,
+13017,1,Lie in Wait,Upgrade,
+13018,1,Ironheart,Ally,
+13019,1,Spider-Man,Ally,
+13024,1,The Power in All of Us,Resource,
+13031,1,Running Interference,Event,
+13032,1,All for One,Event,
+13033,1,Perseverance,Event,
+13034,1,Athletic Conditioning,Event,
+14001a,1,Quicksilver,Hero,Quicksilver
+14001b,1,Pietro Maximoff,AlterEgo,Quicksilver
+14012,1,Multiple Man,Ally,
+14013,1,Warlock,Ally,
+14014,1,Never Back Down,Event,
+14015,1,Side Step,Event,
+14017,1,Nerves of Steel,Upgrade,
+14018,1,Order and Chaos,Event,
+14022,1,Adrenaline Rush,Upgrade,
+14023,1,Civic Duty,Upgrade,
+14029,1,Brute Force,Upgrade,
+14030,1,Sense of Justice,Upgrade,
+14031,1,United We Stand,Event,
+14032,1,Beat 'Em Up,Event,
+15001a,1,Scarlet Witch,Hero,Scarlet Witch
+15001b,1,Wanda Maximoff,AlterEgo,Scarlet Witch
+15010,1,Speed,Ally,
+15011,1,Wiccan,Ally,
+15012,1,Crisis Averted,Event,
+15013,1,Multitasking,Event,
+15014,1,Swift Retribution,Event,
+15015,1,Turn the Tide,Event,
+15019,1,Spiritual Meditation,Event,
+15028,1,Browbeat,Event,
+15029,1,Last Stand,Event,
+15030,1,Bait and Switch,Event,
+15031,1,Recuperation,Event,
+16001a,1,Groot,Hero,Groot
+16001b,1,Groot,AlterEgo,Groot
+16012,1,Starhawk,Ally,
+16014,1,Fighting Fit,Event,
+16016,1,Dauntless,Upgrade,
+16017,1,Hard to Ignore,Upgrade,
+16019,1,Rocket Raccoon,Ally,
+16020,1,Flora and Fauna,Event,
+16024,1,Deft Focus,Upgrade,
+16029a,1,Rocket Raccoon,Hero,Rocket Raccoon
+16029b,1,Rocket Raccoon,AlterEgo,Rocket Raccoon
+16040,1,Bug,Ally,
+16043,1,Looking for Trouble,Event,
+16045,1,Follow Through,Upgrade,
+16046,1,Hand Cannon,Upgrade,
+16047,1,Groot,Ally,
+16052,1,Booster Boots,Upgrade,
+16142,1,Milano,Support,Ship Command
+16150,1,Brainstorm,Event,The Market
+16151,1,By Any Means,Event,The Market
+16152,1,Contingency Plan,Event,The Market
+16153,1,In Defiance,Event,The Market
+16154,1,Calculate the Odds,Event,The Market
+16155,1,Creative Solution,Event,The Market
+16156,1,Grapple,Event,The Market
+16157,1,Wing It,Event,The Market
+16158,1,Close Call,Event,The Market
+16159,1,Defy Danger,Event,The Market
+16160,1,In Harm's Way,Event,The Market
+16161,1,Take the Fight to Them,Event,The Market
+16162,1,Armor Plating,Upgrade,The Market
+16163,1,Heavy Cannon,Upgrade,The Market
+16164,1,Hyper Thrusters,Upgrade,The Market
+16165,1,Reactor Core,Upgrade,The Market
+16166,1,Ardent Resolve,Event,The Market
+16167,1,Onrush,Event,The Market
+16168,1,Safeguard,Event,The Market
+16169,1,Sure Gamble,Event,The Market
+16170,1,Cargo Hold,Upgrade,The Market
+16171,1,Mounted Laser,Upgrade,The Market
+16172,1,Navigation Column,Upgrade,The Market
+16173,1,Targeting Screen,Upgrade,The Market
+16174,1,Grand Strategy,Event,The Market
+16175,1,Power Unleashed,Event,The Market
+16176,1,Tried and True,Event,The Market
+16177,1,Triple Threat,Event,The Market
+17001a,1,Star-Lord,Hero,Star-Lord
+17001b,1,Peter Quill,AlterEgo,Star-Lord
+17011,1,Adam Warlock,Ally,
+17012,1,Beta Ray Bill,Ally,
+17013,1,Yondu,Ally,
+17014,1,Air Supremacy,Event,
+17015,1,Blaze of Glory,Event,
+17017,1,Target Practice,Support,
+17019,1,Laser Blaster,Upgrade,
+17020,1,Cosmo,Ally,
+17021,1,C.I.T.T.,Support,
+17022,1,Knowhere,Support,
+17023,1,Pulse Grenade,Upgrade,
+17028,1,Dive Bomb,Event,
+17029,1,Agile Flight,Event,
+17030,1,Ever Vigilant,Event,
+18001a,1,Gamora,Hero,Gamora
+18001b,1,Gamora,AlterEgo,Gamora
+18011,1,Angela,Ally,
+18012,1,Clobber,Event,
+18013,1,Plan of Attack,Event,
+18015,1,First Hit,Event,
+18016,1,Impede,Event,
+18018,1,Godslayer,Upgrade,
+18019,1,Drax,Ally,
+18020,1,Hit and Run,Event,
+18029,1,Pivotal Moment,Event,
+18030,1,Comms Implant,Upgrade,
+18031,1,True Grit,Event,
+19001a,1,Drax,Hero,Drax
+19001b,1,Drax,AlterEgo,Drax
+19012,1,Martyr,Ally,
+19013,1,Moondragon,Ally,
+19015,1,Deflection,Event,
+19016,1,Hard Knocks,Event,
+19017,1,Leading Blow,Event,
+19018,1,Subdue,Event,
+19020,1,Gamora,Ally,
+19030,1,"""Bring It!""",Event,
+19031,1,"""Think Fast!""",Event,
+19032,1,Regroup,Support,
+20001a,1,Venom,Hero,Venom
+20001b,1,Flash Thompson,AlterEgo,Venom
+20011,1,Jack Flag,Ally,
+20012,1,Scare Tactic,Event,
+20013,1,Making an Entrance,Event,
+20015,1,Sonic Rifle,Upgrade,
+20016,1,Star-Lord,Ally,
+20021,1,Side Holster,Upgrade,
+20022,1,Plasma Pistol,Upgrade,
+20026,1,Fusillade,Event,
+20027,1,"""Welcome Aboard""",Event,
+20028,1,Shake it Off,Event,
+20029,1,Crew Quarters,Support,
+21001a,1,Spectrum,Hero,Spectrum
+21001b,1,Monica Rambeau,AlterEgo,Spectrum
+21011,1,Captain America,Ally,
+21012,1,Power Man,Ally,
+21013,1,White Tiger,Ally,
+21014,1,Kaluu,Ally,
+21015,1,Mighty Avengers,Support,
+21016,1,Mass Attack,Event,
+21018,1,Band Together,Resource,
+21019,1,Blade,Ally,
+21022,1,Ready to Rumble,Upgrade,
+21031a,1,Adam Warlock,Hero,Adam Warlock
+21031b,1,Adam Warlock,AlterEgo,Adam Warlock
+21041,1,Marvel Boy,Ally,
+21042,1,In-Betweener,Event,
+21043,1,Magic Attack,Event,
+21046,1,Audacity,Resource,
+21047,1,Quasar,Ally,
+21048,1,Living Tribunal,Event,
+21050,1,Zone of Silence,Event,
+21052,1,Determination,Resource,
+21053,1,Major Victory,Ally,
+21054,1,Eternity,Event,
+21055,1,Summoning Spell,Event,
+21058,1,Innovation,Resource,
+21059,1,Charlie-27,Ally,
+21060,1,The Gardener,Event,
+21061,1,Shield Spell,Event,
+21064,1,Preservation,Resource,
+21065,1,Martinex,Ally,
+21139a,1,Odin,Ally,Hela
+21139b,1,Odin,Ally,Hela
+21180b,1,Cosmo,Ally,The Mad Titan's Shadow Campaign
+21183,1,Shawarma,Resource,The Mad Titan's Shadow Campaign
+21187a,1,Norn Stone,Upgrade,The Mad Titan's Shadow Campaign
+21187b,1,Norn Stone,Upgrade,The Mad Titan's Shadow Campaign
+21190,1,Lady Sif,Ally,The Mad Titan's Shadow Campaign
+21191,1,Fandral,Ally,The Mad Titan's Shadow Campaign
+21192,1,Hogun,Ally,The Mad Titan's Shadow Campaign
+21193,1,Volstagg,Ally,The Mad Titan's Shadow Campaign
+22001a,1,Nebula,Hero,Nebula
+22001b,1,Nebula,AlterEgo,Nebula
+22011,1,Eros,Ally,
+22012,1,Wraith,Ally,
+22013,1,Venom,Ally,
+22014,1,Justice Served,Upgrade,
+22015,1,One Way or Another,Event,
+22018,1,Brains Over Brawn,Event,
+22022,1,Daughters of Thanos,Event,
+22032,1,Energy Spear,Upgrade,
+22033,1,Guardians of the Galaxy,Support,
+22034,1,Defensive Training,Support,
+22035,1,Honorary Guardian,Upgrade,
+23001a,1,War Machine,Hero,War Machine
+23001b,1,James Rhodes,AlterEgo,War Machine
+23012,1,Black Panther,Ally,
+23013,1,Captain Marvel,Ally,
+23016,1,Command Team,Support,
+23017,1,Sneak Attack,Event,
+23018,1,Save the Day,Event,
+23019,1,Go Down Swinging,Event,
+23024,1,Two Against the World,Event,
+23032,1,As One!,Event,
+23033,1,Vigilante Training,Support,
+23034,1,Stand Together,Event,
+23035,1,Sidearm,Upgrade,
+25001a,1,Valkyrie,Hero,Valkyrie
+25001b,1,Brunnhilde,AlterEgo,Valkyrie
+25013,1,Thor,Ally,
+25014,1,Throg,Ally,
+25018,1,Quick Strike,Event,
+25019,1,Smash the Problem,Event,
+25020,1,The Best Defense...,Event,
+25023,1,The Bifrost,Support,
+25024,1,Godlike Stamina,Event,
+25033,1,Problem Solvers,Event,
+25034,1,Leadership Training,Support,
+25035,1,Anticipation,Upgrade,
+25036,1,Cosmic Alliance,Event,
+26001a,1,Vision,Hero,Vision
+26001b,1,Vision,AlterEgo,Vision
+26013,1,Jocasta,Ally,
+26014,1,Protector,Ally,
+26015,1,Victor Mancha,Ally,
+26016,1,Flow Like Water,Upgrade,
+26018,1,Defiance,Event,
+26022,1,Machine Man,Ally,
+26024,1,Reboot,Event,
+26033,1,Assault Training,Support,
+26034,1,Chance Encounter,Upgrade,
+26035,1,Joining Forces,Event,
+26036,1,Meditation,Event,
+27001a,1,Ghost-Spider,Hero,Ghost-Spider
+27001b,1,Gwen Stacy,AlterEgo,Ghost-Spider
+27010,1,Silk,Ally,
+27011,1,Spider-Man,Ally,
+27012,1,Spider-UK,Ally,
+27014,1,Jump Flip,Event,
+27015,1,Return the Favor,Event,
+27016,1,What Doesn't Kill Me,Event,
+27017,1,Spider-Man,Ally,
+27018,1,Across the Spider-Verse,Event,
+27019,1,Young Love,Event,
+27023,1,Web of Life and Destiny,Support,
+27024,1,Plan B,Upgrade,
+27030a,1,Spider-Man,Hero,Spider-Man - Miles Morales
+27030b,1,Miles Morales,AlterEgo,Spider-Man - Miles Morales
+27040,1,Monica Chang,Ally,
+27041,1,Spider-Woman,Ally,
+27042,1,Homeland Intervention,Event,
+27043,1,Global Logistics,Event,
+27044,1,Field Agent,Support,
+27046,1,Agent 13,Ally,
+27047,1,Dum Dum Dugan,Ally,
+27048,1,Ghost-Spider,Ally,
+27049,1,Spider-Man,Ally,
+27054,1,Government Liaison,Support,
+27055,1,Sky-Destroyer,Support,
+27182a,1,Compact Darts,Upgrade,Shield Tech
+27182b,1,Compact Darts,Upgrade,Shield Tech
+27183a,1,Impact-Dampening Suit,Upgrade,Shield Tech
+27183b,1,Impact-Dampening Suit,Upgrade,Shield Tech
+27184a,1,Laser Goggles,Upgrade,Shield Tech
+27184b,1,Laser Goggles,Upgrade,Shield Tech
+27185a,1,Propulsion Gauntlet,Upgrade,Shield Tech
+27185b,1,Propulsion Gauntlet,Upgrade,Shield Tech
+27186a,1,Retinal Display,Upgrade,Shield Tech
+27186b,1,Retinal Display,Upgrade,Shield Tech
+27187a,1,Shock Knuckles,Upgrade,Shield Tech
+27187b,1,Shock Knuckles,Upgrade,Shield Tech
+27188a,1,Wave Bracers,Upgrade,Shield Tech
+27188b,1,Wave Bracers,Upgrade,Shield Tech
+27189a,1,Wrist Navigators,Upgrade,Shield Tech
+27189b,1,Wrist Navigators,Upgrade,Shield Tech
+27190,1,Venom,Ally,
+27191,1,Symbiote Suit,Upgrade,
+28001a,1,Nova,Hero,Nova
+28001b,1,Sam Alexander,AlterEgo,Nova
+28010,1,The Locust,Ally,
+28012,1,Pitchback,Event,
+28013,1,No Quarter,Event,
+28014,1,One by One,Event,
+28016,1,Fluid Motion,Upgrade,
+28017,1,Honed Technique,Upgrade,
+28018,1,Moon Girl,Ally,
+28019,1,Everyday Hero,Resource,
+28020,1,Champions Mobile Bunker,Support,
+28026,1,Yaw and Roll,Event,
+28027,1,Height Advantage,Upgrade,
+29001a,1,Ironheart,Hero,Ironheart
+29001b,1,Riri Williams,AlterEgo,Ironheart
+29002a,1,Ironheart,Hero,Ironheart
+29002b,1,Riri Williams,AlterEgo,Ironheart
+29003a,1,Ironheart,Hero,Ironheart
+29003b,1,Riri Williams,AlterEgo,Ironheart
+29014,1,Cloud 9,Ally,
+29015,1,Falcon,Ally,
+29016,1,Patriot,Ally,
+29017,1,Go All Out,Event,
+29018,1,Push Ahead,Event,
+29020,1,R&D Facility,Support,
+29023,1,Snowguard,Ally,
+29024,1,Vivian,Ally,
+29025,1,"""Go for Champions!""",Event,
+29027,1,Ingenuity,Upgrade,
+29033,1,Bombshell,Ally,
+29034,1,Wasp,Ally,
+29035,1,Pinpoint,Ally,
+30001a,1,Spider-Ham,Hero,Spider-Ham
+30001b,1,Peter Porker,AlterEgo,Spider-Ham
+30012,1,Lady Spider,Ally,
+30013,1,Spider-Man,Ally,
+30014,1,Even the Odds,Event,
+30019,1,Overwatch,Upgrade,
+30020,1,Scarlet Spider,Ally,
+30021,1,SP//dr,Ally,
+30029,1,Warrior of the Great Web,Upgrade,
+31001a,1,SP//dr Suit,Hero,SP//dr
+31002a,1,Peni Parker,AlterEgo,SP//dr
+31014,1,Daredevil,Ally,
+31015,1,Spider-Man Noir,Ally,
+31016,1,Repurpose,Event,
+31017,1,Thwip! Thwip!,Event,
+31019,1,Forcefield Generator,Upgrade,
+31020,1,Spider-Tingle,Upgrade,
+31021,1,Spider-Ham,Ally,
+31022,1,Spider-Man,Ally,
+31023,1,Limitless Stamina,Event,
+31024,1,Unshakable,Upgrade,
+31029,1,Clarity of Purpose,Upgrade,
+32001a,1,Colossus,Hero,Colossus
+32001b,1,Piotr Rasputin,AlterEgo,Colossus
+32011,1,Nightcrawler,Ally,
+32012,1,Polaris,Ally,
+32013,1,Protective Training,Upgrade,
+32014,1,Powerful Punch,Event,
+32017,1,Mutant Protectors,Event,
+32018,1,Defensive Energy,Resource,
+32019,1,Professor X,Ally,
+32020,1,The X-Jet,Support,
+32021,1,Shadow and Steel,Event,
+32030a,1,Shadowcat,Hero,Shadowcat
+32030b,1,Kitty Pryde,AlterEgo,Shadowcat
+32041,1,Wolverine,Ally,
+32042,1,Magik,Ally,
+32043,1,Attack Training,Upgrade,
+32044,1,Gatekeeper,Upgrade,
+32045,1,Team Strike,Event,
+32047,1,Aggressive Energy,Resource,
+32048,1,Colossus,Ally,
+32049,1,X-Mansion,Support,
+32066,1,Robert Kelly,Ally,Sabretooth
+32088b,1,Jubilee,Ally,Project Wideawake
+32089,1,Rictor,Ally,Project Wideawake
+32090,1,Boom Boom,Ally,Project Wideawake
+32091,1,Cannonball,Ally,Project Wideawake
+32092,1,Wolfsbane,Ally,Project Wideawake
+32171b,1,Metro P.D.,Support,Mutant Genesis Campaign
+32172b,1,Magneto,Ally,Mutant Genesis Campaign
+32176,1,Coup de Grâce,Upgrade,Brawler
+32177,1,Swagger,Upgrade,Brawler
+32178,1,Brazen Defense,Upgrade,Brawler
+32179,1,Ferocious Attack,Upgrade,Brawler
+32180,1,War Cry,Upgrade,Brawler
+32181,1,Coup de Grâce,Upgrade,Commander
+32182,1,Compassion,Upgrade,Commander
+32183,1,Group Assault,Upgrade,Commander
+32184,1,Shock and Awe,Upgrade,Commander
+32185,1,Improvisation,Upgrade,Commander
+32186,1,Swagger,Upgrade,Defender
+32187,1,Surprise!,Upgrade,Defender
+32188,1,Heroic Intervention,Upgrade,Defender
+32189,1,Determined Defense,Upgrade,Defender
+32190,1,Bodyguard,Upgrade,Defender
+32191,1,Surprise!,Upgrade,Peacekeeper
+32192,1,Compassion,Upgrade,Peacekeeper
+32193,1,Rescue Operation,Upgrade,Peacekeeper
+32194,1,Mentorship,Upgrade,Peacekeeper
+32195,1,Fortitude,Upgrade,Peacekeeper
+33001a,1,Cyclops,Hero,Cyclops
+33001b,1,Scott Summers,AlterEgo,Cyclops
+33011,1,Beast,Ally,
+33012,1,Dust,Ally,
+33013,1,Rockslide,Ally,
+33014,1,Blindfold,Ally,
+33015,1,Danger Room Training,Upgrade,
+33016,1,Coordinated Attack,Upgrade,
+33017,1,Teamwork,Event,
+33018,1,Effective Leadership,Resource,
+33019,1,Angel,Ally,
+33020,1,Utopia,Support,
+33021,1,Danger Room,Support,
+33022,1,Game Time,Event,
+33023,1,Psychic Rapport,Event,
+33032,1,Marked,Upgrade,
+33033,1,Befuddle,Upgrade,
+33034,1,Pinned Down,Upgrade,
+33035,1,Honorary X-Men,Upgrade,
+34001a,1,Phoenix,Hero,Phoenix
+34001b,1,Jean Grey,AlterEgo,Phoenix
+34014,1,Banshee,Ally,
+34015,1,Marvel Girl,Ally,
+34016,1,Mission Training,Upgrade,
+34017,1,Psychic Manipulation,Event,
+34018,1,Mutant Peacekeepers,Event,
+34020,1,Passion for Justice,Resource,
+34021,1,Storm,Ally,
+34022,1,Cerebro,Support,
+34032,1,Psychic Assault,Event,
+34033,1,Psychic Misdirection,Event,
+34034,1,Psychic Kicker,Event,
+34035,1,Soul Sisters,Event,
+35001a,1,Wolverine,Hero,Wolverine
+35001b,1,Logan,AlterEgo,Wolverine
+35013,1,Psylocke,Ally,
+35014,1,Sunfire,Ally,
+35015,1,Battle Fury,Upgrade,
+35016,1,Warrior Skill,Upgrade,
+35017,1,Outta My Way!,Event,
+35018,1,Precision Strike,Event,
+35022,1,Weapon X,Support,
+35023,1,Fastball Special,Event,
+35032,1,Command Center,Support,
+35033,1,Longshot,Ally,
+36001a,1,Storm,Hero,Storm
+36001b,1,Ororo Munroe,AlterEgo,Storm
+36014,1,Havok,Ally,
+36015,1,Mirage,Ally,
+36016,1,Gentle,Ally,
+36017,1,Pixie,Ally,
+36018,1,Uncanny X-Men,Support,
+36019,1,Leadership Skill,Upgrade,
+36020,1,"""To Me, My X-Men!""",Event,
+36022,1,Forge,Ally,
+36035,1,Hangar Bay,Support,
+37001a,1,Gambit,Hero,Gambit
+37001b,1,Remy LeBeau,AlterEgo,Gambit
+37011,1,Bishop,Ally,
+37012,1,Dazzler,Ally,
+37013,1,Operative Skill,Upgrade,
+37014,1,Stealth Strike,Event,
+37015,1,Breaking and Entering,Event,
+37019,1,Beauty and the Thief,Event,
+37021,1,Mutant Education,Event,
+37030,1,War Room,Support,
+37031,1,X-Men Instruction,Event,
+38001a,1,Rogue,Hero,Rogue
+38001b,1,Anna Marie,AlterEgo,Rogue
+38010,1,Iceman,Ally,
+38011,1,Karma,Ally,
+38012,1,Armor,Ally,
+38014,1,Judoka Skill,Upgrade,
+38015,1,Preemptive Strike,Event,
+38016,1,Not Today!,Event,
+38018,1,Moira MacTaggert,Support,
+38019,1,X-Gene,Upgrade,
+38028,1,Med Lab,Support,
+39071,1,Longshot,Ally,Longshot
+40001a,1,Cable,Hero,Cable
+40001b,1,Nathan Summers,AlterEgo,Cable
+40014,1,Caliban,Ally,
+40015,1,Fantomex,Ally,
+40016,1,Sunspot,Ally,
+40017,1,Mission Planning,Event,
+40018,1,Call for Backup,PlayerSideScheme,
+40019,1,Lock and Load,PlayerSideScheme,
+40020,1,Establish Perimeter,PlayerSideScheme,
+40021,1,E.V.A.,Support,
+40022,1,Uncanny X-Force,Support,
+40023,1,Mission Leader,Upgrade,
+40024,1,Deadpool,Ally,
+40025,1,Deathlok,Ally,
+40026,1,Frenemies,Event,
+40027,1,Build Support,PlayerSideScheme,
+40028,1,The Power of the Mind,Resource,
+40029,1,Psimitar,Upgrade,
+40037a,1,Domino,Hero,Domino
+40037b,1,Neena Thurman,AlterEgo,Domino
+40050,1,Feral,Ally,
+40051,1,Wolfsbane,Ally,
+40053,1,Team Investigation,Event,
+40054,1,Take Out the Guards,PlayerSideScheme,
+40056,1,Atlas Bear,Ally,
+40057,1,White Fox,Ally,
+40058,1,The Posse,Event,
+40059,1,Superpower Training,PlayerSideScheme,
+40060,1,Digging Deep,Resource,
+40064,1,Sharpshooter,Upgrade,
+40079,1,Morlock,Ally,Morlock Siege
+40130,1,Hope Summers,Ally,Hope Summers
+40190a,1,Assemble the Team,PlayerSideScheme,Next Evolution Campaign
+40191a,1,Establish Safehouse,PlayerSideScheme,Next Evolution Campaign
+40192a,1,Gear Up,PlayerSideScheme,Next Evolution Campaign
+40193a,1,Mission Prep,PlayerSideScheme,Next Evolution Campaign
+40194a,1,Practice Maneuvers,PlayerSideScheme,Next Evolution Campaign
+40195a,1,Prepare Defenses,PlayerSideScheme,Next Evolution Campaign
+40196,1,Pouches,Resource,Next Evolution Campaign
+40197,1,Safehouse,Support,Next Evolution Campaign
+40204,1,Hope Summers,Ally,
+41001a,1,Psylocke,Hero,Psylocke
+41001b,1,Betsy Braddock,AlterEgo,Psylocke
+41012,1,Captain Britain,Ally,
+41013,1,Cypher,Ally,
+41014,1,Concussive Blow,Event,
+41015,1,Upside the Head,Event,
+41016,1,Lay the Trap,PlayerSideScheme,
+41017,1,Float Like a Butterfly,Upgrade,
+41018,1,Pete Wisdom,Ally,
+41019,1,Directed Force,Event,
+41020,1,Soaring Hearts,Event,
+41022,1,IPAC,Support,
+41023,1,X-Bunker,Support,
+41024,1,Telepathy,Upgrade,
+41030,1,Psi-Bow Attack,Event,
+41031,1,Domino,Ally,
+41032,1,Psi-Flail Strike,Event,
+41033,1,Telekinesis,Upgrade,
+42001a,1,Angel,Hero,Angel
+42001b,1,Warren Worthington III,AlterEgo,Angel
+42001c,1,Archangel,Hero,Angel
+42011,1,Elixir,Ally,
+42012,1,Siryn,Ally,
+42013,1,Warpath,Ally,
+42014,1,Aerial Intervention,Event,
+42015,1,Ever Vigilant,Event,
+42016,1,Taunt,Event,
+42017,1,Render Medical Aid,PlayerSideScheme,
+42018,1,Angel's Aerie,Support,
+42019,1,Containment Strategy,Upgrade,
+42020,1,Cannonball,Ally,
+42022,1,The Power of Flight,Resource,
+42023,1,Soaring Acrobatics,Upgrade,
+42029,1,Bombs Away,Event,
+42030,1,Eyes in the Sky,Upgrade,
+42031,1,Flying Formation,Event,
+42032,1,X-Force Recruit,Upgrade,
+43001a,1,X-23,Hero,X-23
+43001b,1,Laura Kinney,AlterEgo,X-23
+43013,1,Boom Boom,Ally,
+43014,1,Rictor,Ally,
+43015,1,Shatterstar,Ally,
+43016,1,Critical Hit,Event,
+43018,1,Keep Them Busy,PlayerSideScheme,
+43019,1,"""Now I'm Mad""",Upgrade,
+43020,1,The Direct Approach,Upgrade,
+43021,1,Specialized Training,PlayerSideScheme,
+43034,1,Combat Specialist,Upgrade,
+43035,1,Defense Specialist,Upgrade,
+43036,1,Front Line Specialist,Upgrade,
+43037,1,Surveillance Specialist,Upgrade,
+43038,1,Predictable Ploy,Event,
+43039,1,Rally the Troops,PlayerSideScheme,
+43040,1,Anticipated Attack,Event,
+44001a,1,Deadpool,Hero,Deadpool
+44001b,1,Wade Wilson,AlterEgo,Deadpool
+44013,1,Dogpool,Ally,
+44014,1,Headpool,Ally,
+44015,1,Kidpool,Ally,
+44016,1,Lady Deadpool,Ally,
+44017,1,Barely a Scratch,Event,
+44018,1,Cutupper,Event,
+44019,1,Da Bomb,Event,
+44020,1,Get Rage-y,Event,
+44021,1,"""I Got This""",Event,
+44022,1,Not my Responsibility,Event,
+44023,1,'Pool Inspection,Event,
+44024,1,Live Dangerously,PlayerSideScheme,
+44025,1,Self Confidence,Resource,
+44026,1,Self Control,Resource,
+44027,1,Self Preservation,Resource,
+44028,1,Git Gud,Upgrade,
+44029,1,Healing Factor,Upgrade,
+44030,1,Stick-To-Itiveness,Upgrade,
+44043,1,"Bob, Agent of Hydra",Ally,
+44044,1,Negasonic Teenage Warhead,Ally,
+44045,1,Pandapool,Ally,
+44046,1,Break Time,Event,
+44047,1,Get in Front of Me!,Event,
+44048,1,Mulligan,Event,
+44049,1,Deadpool Corps Ship,Support,
+44050,1,Plot Convenience,Support,
+44051,1,Ambush,Upgrade,
+44052,1,Bazooka,Upgrade,
+44053,1,Blackout,Upgrade,
+44054,1,Distraction,Upgrade,
+44055,1,Laser Swords,Upgrade,
+44056,1,"Rock, Paper, Scissors",Upgrade,
+44057,1,Tic-Tac-Toe,Upgrade,
+44058,1,War,Upgrade,
+45001a,1,Bishop,Hero,Bishop
+45001b,1,Lucas Bishop,AlterEgo,Bishop
+45011,1,Cable,Ally,
+45012,1,X-23,Ally,
+45014,1,Advanced Suit,Upgrade,
+45015,1,Sidekick,Upgrade,
+45016,1,Side-by-Side,Event,
+45017,1,Suit Up,Event,
+45018,1,Lead from the Front,Event,
+45020,1,Legion,Ally,
+45021,1,Marrow,Ally,
+45030a,1,Magik,Hero,Magik
+45030b,1,Illyana Rasputin,AlterEgo,Magik
+45041,1,Goldballs,Ally,
+45042,1,Tempus,Ally,
+45043,1,Blood Rage,Upgrade,
+45044,1,Test the Defense,Upgrade,
+45045,1,Full-Body Charge,Event,
+45048,1,Triage,Ally,
+45049,1,Stepford Cuckoos,Support,
+45050,1,Bloodgem,Upgrade,
+45051,1,Basic Spell,Event,
+45052,1,Spiritual Meditation,Event,
+45171a,1,Mission Team,Support,Campaign
+45171b,1,Mission Team,Support,Campaign
+45172,1,Destiny,Ally,Campaign
+45173,1,Blink,Ally,Campaign
+45174,1,Morph,Ally,Campaign
+45175,1,X-Man,Ally,Campaign
+45176,1,Desperate Measures,Upgrade,Campaign
+46001a,1,Iceman,Hero,Iceman
+46001b,1,Bobby Drake,AlterEgo,Iceman
+46012,1,Shark-Girl,Ally,
+46013,1,Glob,Ally,
+46014,1,Suppressing Fire,Upgrade,
+46015,1,Surprise Move,Event,
+46016,1,Take That!,Event,
+46017,1,Looking for Trouble,Event,
+46018,1,Keep Up the Pressure,PlayerSideScheme,
+46019,1,Shadowcat,Ally,
+46020,1,Beak,Ally,
+46023,1,The Power in All of Us,Resource,
+47001a,1,Jubilee,Hero,Jubilee
+47001b,1,Jubilation Lee,AlterEgo,Jubilee
+47011,1,Chamber,Ally,
+47012,1,Husk,Ally,
+47013,1,Disguise,Upgrade,
+47014,1,Waylay,Event,
+47015,1,Three Steps Ahead,Event,
+47016,1,Generation X,PlayerSideScheme,
+47018,1,Synch,Ally,
+47019,1,Cell Phone,Upgrade,
+47021,1,Multitalented,Event,
+47022,1,Unlikely Duo,Event,
+47028,1,Mutant Mayhem,Event,
+47029,1,Serve and Protect,Event,
+48001a,1,Nightcrawler,Hero,Nightcrawler
+48001b,1,Kurt Wagner,AlterEgo,Nightcrawler
+48012,1,Rogue,Ally,
+48013,1,Northstar,Ally,
+48014,1,Change of Fortune,Upgrade,
+48015,1,Under Control,Upgrade,
+48016,1,"""Come Get Me, Bub!""",Event,
+48018,1,Riposte,Event,
+48020,1,Astonishing X-Men,PlayerSideScheme,
+48021,1,Gambit,Ally,
+48031,1,Combine Forces,Event,
+48032,1,Gunboat Diplomacy,Event,
+49001a,1,Magneto,Hero,Magneto
+49001b,1,Erik Lehnsherr,AlterEgo,Magneto
+49012,1,M,Ally,
+49013,1,Kid Omega,Ally,
+49014,1,Phoenix,Ally,
+49015,1,Cyclops,Ally,
+49016,1,Won't Stay Down,Support,
+49017,1,Squared Off,Event,
+49018,1,Noble Sacrifice,Event,
+49019,1,"""You Got This!""",Event,
+49020,1,New Recruits,PlayerSideScheme,
+49021,1,White Queen,Ally,
+49022,1,Face the Past,Event,
+49033,1,Surge,Ally,
+49034,1,Anole,Ally,
+49035,1,Bling!,Ally,
+49036,1,Indra,Ally,
+49037,1,Children of the Atom,Support,
+50001a,1,Maria Hill,Hero,Maria Hill
+50001b,1,Maria Hill,AlterEgo,Maria Hill
+50012,1,Victoria Hand,Ally,
+50013,1,Slingshot,Ally,
+50014,1,Organizational Support,Resource,
+50015,1,Agents of S.H.I.E.L.D.,Support,
+50017,1,The Circe,Support,
+50018,1,The Bellerophon,Support,
+50019,1,The Douglass,Support,
+50020,1,The Pericles,Support,
+50022,1,Grant Ward,Ally,
+50023,1,Melinda May,Ally,
+50024,1,Super Spies,Event,
+50028,1,Front Organization,Support,
+50034a,1,Nick Fury,Hero,Nick Fury
+50034b,1,Nick Fury,AlterEgo,Nick Fury
+50050,1,Informant,Upgrade,
+50051,1,Intelligence,Upgrade,
+50052,1,Prism Dust,Upgrade,
+50054,1,"Nick Fury, Sr.",Ally,
+50055,1,Jemma Simmons,Support,
+50056,1,Leo Fitz,Support,
+50058,1,Practiced Plan,Upgrade,
+50091,1,Rescued Captive,Ally,Batroc
+50105b,1,Flying Inhuman,Ally,M.O.D.O.K
+50106b,1,Psionic Inhuman,Ally,M.O.D.O.K
+50107b,1,Sarah Garza,Ally,M.O.D.O.K
+50108b,1,Strong Inhuman,Ally,M.O.D.O.K
+51001a,1,Black Panther,Hero,Black Panther (Shuri)
+51001b,1,Shuri,AlterEgo,Black Panther (Shuri)
+51014,1,Manifold,Ally,
+51015,1,Infiltration,Event,
+51016,1,Going Undercover,PlayerSideScheme,
+51017,1,Show of Empathy,PlayerSideScheme,
+51018,1,The Raft,Support,
+51019,1,Invisibility Gear,Upgrade,
+51021,1,Sting Operation,Upgrade,
+51022,1,Aneka,Ally,
+51023,1,Ayo,Ally,
+51024,1,Okoye,Ally,
+51025,1,Heart of the Panther,Event,
+51026,1,Build Support,PlayerSideScheme,
+51030,1,Dora Milaje,Support,
+51036,1,Redemption,Upgrade,
+51037,1,White Wolf,Ally,
+51038,1,Target Spotter,Support,
+52001a,1,Silk,Hero,Silk
+52001b,1,Cindy Moon,AlterEgo,Silk
+52013,1,Scarlet Spider,Ally,
+52014,1,Spider-Byte,Ally,
+52016,1,"""Stop Hitting Yourself""",Event,
+52017,1,Dr. Sinclair,Support,
+52018,1,Energy Shield,Upgrade,
+52019,1,Ready for a Fight,Upgrade,
+52020,1,Stun Gun,Upgrade,
+52021,1,Madame Web,Ally,
+52024,1,Investigative Journalism,Event,
+52032,1,Spider-Man 2099,Ally,
+52033,1,Spider-Woman,Ally,
+52034,1,Quick Quip,Event,
+53001a,1,Falcon,Hero,Falcon
+53001b,1,Sam Wilson,AlterEgo,Falcon
+53015,1,Aero,Ally,
+53017,1,Hugin & Munin,Ally,
+53018,1,Spectrum,Ally,
+53019,1,Strength in Diversity,Event,
+53020,1,Flight Squadron,Support,
+53021,1,Resource Reserve,Support,
+53023,1,Captain America,Upgrade,
+53024,1,Wingman,Upgrade,
+53034,1,Captain America's Shield,Upgrade,
+53035,1,Winter Soldier,Ally,
+53036,1,Misty Knight,Ally,
+53037,1,Ops Room,Support,
+54001a,1,Winter Soldier,Hero,Winter Soldier
+54001b,1,Bucky Barnes,AlterEgo,Winter Soldier
+54012,1,Captain America,Ally,
+54013,1,Deathlok,Ally,
+54014,1,Firepower,Event,
+54016,1,Spoiling for a Fight,Event,
+54017,1,Aggressive Stance,Upgrade,
+54018,1,Bambino,Upgrade,
+54019,1,Man on the Wall,Upgrade,
+54020,1,S.H.I.E.L.D. Sidearm,Upgrade,
+54022,1,Super-Soldiers,Event,
+54023,1,"Winter, Widow, Soldier, Spy",Event,
+54032,1,White Widow,Ally,
+54033,1,S.H.I.E.L.D. Deputy,Upgrade,
+55063,1,Absorbing Man,Ally,Trickster Magic
+55064,1,Titania,Ally,Trickster Magic
+55065,1,Whirlwind,Ally,Trickster Magic
+55066,1,Zzzax,Ally,Trickster Magic
+56001a,1,Tigra,Hero,Tigra
+56001b,1,Greer Nelson,AlterEgo,Tigra
+56010,1,Two-Gun Kid,Ally,
+56012,1,Air Cover,Support,
+56013,1,Aggressive Conditioning,Upgrade,
+56016,1,Coup de Grâce,Event,
+56017,1,Savage Strike,Event,
+56019,1,Yellow Jacket,Ally,
+56029a,1,Hulkling,Hero,Hulkling
+56029b,1,Teddy Altman,AlterEgo,Hulkling
+56041,1,Patriot,Ally,
+56043,1,Hidden Base,Support,
+56045,1,Excelsior,Upgrade,
+56046,1,Defensive Conditioning,Upgrade,
+56047,1,"""I Can Do This All Day""",Event,
+56048,1,Taunt,Event,
+56050,1,Cuts Both Ways,Event,
+56052,1,Iron Lad,Ally,
+56129,1,The Futurist,Event,Iron Man
+56130,1,Target Lock,Event,Iron Man
+56131,1,High-Tech Suit,Upgrade,Iron Man
+56132,1,Suit Up,Resource,Iron Man
+56133,1,Provoked Response,Upgrade,Captain Marvel
+56134,1,You Started This,Event,Captain Marvel
+56135,1,Alpha Flight Recruit,Upgrade,Captain Marvel
+56136,1,Raw Power,Resource,Captain Marvel
+56207,1,"No, You Move!",Upgrade,Captain America
+56208,1,Fighting Dirty,Event,Captain America
+56209,1,Recruited by Cap,Event,Captain America
+56210,1,The People's Hero,Resource,Captain America
+56211,1,Double Agent,Event,Spider Woman
+56212,1,Spider-Blast,Event,Spider Woman
+56213,1,Hard to Hit,Upgrade,Spider Woman
+56214,1,Secret Contact,Resource,Spider Woman
+57032,1,You're Out of Order!,Event,She-Hulk
+57033,1,She-Hulk Smash,Event,She-Hulk
+57034,1,Make Me Angry,Upgrade,She-Hulk
+57035,1,Legal Counsel,Resource,She-Hulk
+57074,1,Calculated Risk,Event,Vision
+57075,1,Synthezoid Strike,Event,Vision
+57076,1,Phased Out,Event,Vision
+57077,1,Android Assistance,Resource,Vision
+58001a,1,Wonder Man,Hero,Wonder Man
+58001b,1,Simon Williams,AlterEgo,Wonder Man
+58012,1,Firebird,Ally,
+58013,1,Hawkeye,Ally,
+58014,1,Scarlet Witch,Ally,
+58015,1,Sentry,Ally,
+58016,1,Battlefield Benevolence,Event,
+58017,1,Bombs Away,Event,
+58018,1,Everywhere All at Once,Event,
+58019,1,Stronger Together,Event,
+58020,1,Unified Strike,Event,
+58021,1,Heroic Conditioning,Upgrade,
+58022,1,Swordsman,Ally,
+58024,1,Jarvis,Support,
+58030,1,Caught in the Crossfire,Upgrade,
+58031,1,Cameo,Support,
+58032,1,Coordinated Effort,Upgrade,
+58033,1,Disarming Defense,Event,
+58034,1,Avengers Compound,Support,
+59001a,1,Hercules,Hero,Hercules
+59001b,1,Hercules,AlterEgo,Hercules
+59018,1,Deathcry,Ally,
+59019,1,Namora,Ally,
+59020,1,Thor,Ally,
+59022,1,Call for Backup,PlayerSideScheme,
+59023,1,Recruitment Drive,Support,
+59024,1,"""Avenge Me!""",Upgrade,
+59025,1,Gilgamesh,Ally,
+59026,1,Ancient Rivalry,Event,
+59028,1,Evaluate Threat,PlayerSideScheme,
+60001a,1,Daredevil,Hero,Daredevil
+60001b,1,Matt Murdock,AlterEgo,Daredevil
+60019,1,Blindspot,Ally,
+60020,1,Cloak,Ally,
+60021,1,Dagger,Ally,
+60022,1,Ghost Rider,Ally,
+60023,1,Know Your Enemy,Event,
+60024,1,De-escalation,PlayerSideScheme,
+60025,1,Chance Encounter,Upgrade,
+60026,1,Legal Trouble,Upgrade,
+60027,1,Move in Shadow,Upgrade,
+60028,1,Stealth Training,Upgrade,
+60029,1,Stick,Support,
+60030,1,Contingency Planning,Upgrade,
+60031,1,Dance with the Devil,Upgrade,
+60037a,1,Echo,Hero,Echo
+60037b,1,Maya Lopez,AlterEgo,Echo
+60038,1,Innate Reflexes,Upgrade,
+60048,1,Army of One,Event,
+60049,1,Get Their Attention,Event,
+60050,1,In Harm's Way,Event,
+60052,1,The Best Offense...,Upgrade,
+60053,1,Ronin,Upgrade,
+60054,1,Stand Alone,Upgrade,
+60055,1,"See No Evil, Hear No Evil",Event,
+61001a,1,Jessica Jones,Hero,Jessica Jones
+61001b,1,Jessica Jones,AlterEgo,Jessica Jones
+61015,1,Captain Marvel,Ally,
+61016,1,Spider-Woman,Ally,
+61017,1,Squirrel Girl,Ally,
+61018,1,Lay Down the Law,Event,
+61019,1,Strategy Session,Event,
+61020,1,Run Them to Ground,PlayerSideScheme,
+61021,1,Lay the Trap,PlayerSideScheme,
+61022,1,Determination,Resource,
+61023,1,Grapnel Launcher,Upgrade,
+61024,1,Entrapment,Upgrade,
+61025,1,Hellcat,Ally,
+61026,1,Joys of Life,Event,
+61027,1,Unbreakable Bond,Event,
+61028,1,Second Chance,PlayerSideScheme,
+61029,1,Defend Our City,PlayerSideScheme,
+61034,1,Innate Aggression,Upgrade,
+61035,1,Shakedown,Upgrade,
+61036,1,Innate Perception,Upgrade,
+61037,1,Innate Inspiration,Upgrade,
+61038,1,Echo,Ally,
+61039,1,Lay Low,PlayerSideScheme,
+61040,1,Mitigated Threat,Upgrade,
+62001a,1,Luke Cage,Hero,Luke Cage
+62001b,1,Luke Cage,AlterEgo,Luke Cage
+62012,1,Iron Fist,Ally,
+62013,1,Misty Knight,Ally,
+62014,1,Valkyrie,Ally,
+62015,1,Take a Stand,Event,
+62018,1,Defensive Formation,Support,
+62019,1,Righteous Purpose,Support,
+62020,1,Hulk,Ally,
+62021,1,She-Hulk,Ally,
+62022,1,Dynamic Duo,Event,
+62023,1,Power Man and Iron Fist,Event,
+62034,1,Size Advantage,Event,
+62035,1,Observe,Event,
+62036,1,Toughen Up,Upgrade,
+62037,1,Black Belt,Upgrade,
+01094,2,Rhino,Villain,Rhino
+01095,2,Rhino,Villain,Rhino
+01096,2,Rhino,Villain,Rhino
+01097a,2,The Break-In!,MainScheme,Rhino
+01097b,2,The Break-In!,MainScheme,Rhino
+01098,2,Armored Rhino Suit,Attachment,Rhino
+01099,2,Charge,Attachment,Rhino
+01100,2,Enhanced Ivory Horn,Attachment,Rhino
+01101,2,Hydra Mercenary,Minion,Rhino
+01102,2,Sandman,Minion,Rhino
+01103,2,Shocker,Minion,Rhino
+01104,2,Hard to Keep Down,Treachery,Rhino
+01105,2,"""I'm Tough""",Treachery,Rhino
+01106,2,Stampede,Treachery,Rhino
+01107,2,Breakin' & Takin',SideScheme,Rhino
+01108,2,Crowd Control,SideScheme,Rhino
+01109,2,Bomb Scare,SideScheme,Bomb Scare
+01110,2,Hydra Bomber,Minion,Bomb Scare
+01111,2,Explosion,Treachery,Bomb Scare
+01112,2,False Alarm,Treachery,Bomb Scare
+01113,2,Klaw,Villain,Klaw
+01114,2,Klaw,Villain,Klaw
+01115,2,Klaw,Villain,Klaw
+01116a,2,Underground Distribution,MainScheme,Klaw
+01116b,2,Underground Distribution,MainScheme,Klaw
+01117a,2,Secret Rendezvous,MainScheme,Klaw
+01117b,2,Secret Rendezvous,MainScheme,Klaw
+01118,2,Sonic Converter,Attachment,Klaw
+01119,2,Solid-Sound Body,Attachment,Klaw
+01120,2,Armored Guard,Minion,Klaw
+01121,2,Weapons Runner,Minion,Klaw
+01122,2,Klaw's Vengeance,Treachery,Klaw
+01123,2,Sonic Boom,Treachery,Klaw
+01124,2,Sound Manipulation,Treachery,Klaw
+01125,2,Defense Network,SideScheme,Klaw
+01126,2,Illegal Arms Factory,SideScheme,Klaw
+01127,2,"The ""Immortal"" Klaw",SideScheme,Klaw
+01128,2,The Masters of Evil,SideScheme,Masters of Evil
+01129,2,Radioactive Man,Minion,Masters of Evil
+01130,2,Whirlwind,Minion,Masters of Evil
+01131,2,Tiger Shark,Minion,Masters of Evil
+01132,2,Melter,Minion,Masters of Evil
+01133,2,Masters of Mayhem,Treachery,Masters of Evil
+01134,2,Ultron,Villain,Ultron
+01135,2,Ultron,Villain,Ultron
+01136,2,Ultron,Villain,Ultron
+01137a,2,The Crimson Cowl,MainScheme,Ultron
+01137b,2,The Crimson Cowl,MainScheme,Ultron
+01138a,2,Assault on NORAD,MainScheme,Ultron
+01138b,2,Assault on NORAD,MainScheme,Ultron
+01139a,2,Countdown to Oblivion,MainScheme,Ultron
+01139b,2,Countdown to Oblivion,MainScheme,Ultron
+01140,2,Ultron Drones,Environment,Ultron
+01141,2,Program Transmitter,Attachment,Ultron
+01142,2,Upgraded Drones,Attachment,Ultron
+01143,2,Advanced Ultron Drone,Minion,Ultron
+01144a,2,Android Efficiency,Treachery,Ultron
+01144b,2,Android Efficiency,Treachery,Ultron
+01144c,2,Android Efficiency,Treachery,Ultron
+01145,2,Rage of Ultron,Treachery,Ultron
+01146,2,Repair Sequence,Treachery,Ultron
+01147,2,Swarm Attack,Treachery,Ultron
+01148,2,Drone Factory,SideScheme,Ultron
+01149,2,Invasive AI,SideScheme,Ultron
+01150,2,Ultron's Imperative,SideScheme,Ultron
+01151,2,Under Attack,SideScheme,Under Attack
+01152,2,Vibranium Armor,Attachment,Under Attack
+01153,2,Concussion Blasters,Attachment,Under Attack
+01154,2,Concussive Blast,Treachery,Under Attack
+01155,2,Affairs of State,Obligation,Black Panther
+01156,2,Usurp The Throne,SideScheme,Black Panther Nemesis
+01157,2,Killmonger,Minion,Black Panther Nemesis
+01158,2,Heart-Shaped Herb,Treachery,Black Panther Nemesis
+01159,2,Ritual Combat,Treachery,Black Panther Nemesis
+01160,2,Legal Work,Obligation,She-Hulk
+01161,2,Personal Challenge,SideScheme,She-Hulk Nemesis
+01162,2,Titania,Minion,She-Hulk Nemesis
+01163,2,Genetically Enhanced,Attachment,She-Hulk Nemesis
+01164,2,Titania's Fury,Treachery,She-Hulk Nemesis
+01165,2,Eviction Notice,Obligation,Spider-Man
+01166,2,Highway Robbery,SideScheme,Spider-Man Nemesis
+01167,2,Vulture,Minion,Spider-Man Nemesis
+01168,2,Sweeping Swoop,Treachery,Spider-Man Nemesis
+01169,2,The Vulture's Plans,Treachery,Spider-Man Nemesis
+01170,2,Business Problems,Obligation,Iron Man
+01171,2,Imminent Overload,SideScheme,Iron Man Nemesis
+01172,2,Whiplash,Minion,Iron Man Nemesis
+01173,2,Electric Whip Attack,Treachery,Iron Man Nemesis
+01174,2,Electromagnetic Backlash,Treachery,Iron Man Nemesis
+01175,2,Family Emergency,Obligation,Captain Marvel
+01176,2,The Psyche-Magnitron,SideScheme,Captain Marvel Nemesis
+01177,2,Yon-Rogg,Minion,Captain Marvel Nemesis
+01178,2,Kree Manipulator,Treachery,Captain Marvel Nemesis
+01179,2,Yon-Rogg's Treason,Treachery,Captain Marvel Nemesis
+01180,2,Legions of Hydra,SideScheme,Legions of Hydra
+01181,2,Madame Hydra,Minion,Legions of Hydra
+01182,2,Hydra Soldier,Minion,Legions of Hydra
+01183,2,The Doomsday Chair,SideScheme,The Doomsday Chair
+01184,2,M.O.D.O.K.,Minion,The Doomsday Chair
+01185,2,Biomechanical Upgrades,Attachment,The Doomsday Chair
+01186,2,Advance,Treachery,Standard
+01187,2,Assault,Treachery,Standard
+01188,2,Caught Off Guard,Treachery,Standard
+01189,2,Gang-Up,Treachery,Standard
+01190,2,Shadow of the Past,Treachery,Standard
+01191,2,Exhaustion,Treachery,Expert
+01192,2,Masterplan,Treachery,Expert
+01193,2,Under Fire,Treachery,Expert
+02001a,2,Norman Osborn,Villain,Risky Business
+02001b,2,Green Goblin,Villain,Risky Business
+02002a,2,Norman Osborn,Villain,Risky Business
+02002b,2,Green Goblin,Villain,Risky Business
+02003a,2,Norman Osborn,Villain,Risky Business
+02003b,2,Green Goblin,Villain,Risky Business
+02004a,2,Hostile Takeover,MainScheme,Risky Business
+02004b,2,Hostile Takeover,MainScheme,Risky Business
+02005a,2,Corporate Acquisition,MainScheme,Risky Business
+02005b,2,Corporate Acquisition,MainScheme,Risky Business
+02006a,2,Criminal Enterprise,Environment,Risky Business
+02006b,2,State of Madness,Environment,Risky Business
+02007,2,Hired Gun,Minion,Risky Business
+02008,2,Private Security Specialist,Minion,Risky Business
+02009,2,Collapsing Bridge,SideScheme,Risky Business
+02010,2,Oscorp Manufacturing,SideScheme,Risky Business
+02011,2,Payoff,SideScheme,Risky Business
+02012,2,All in a Day's Work,Treachery,Risky Business
+02013,2,Mad Genius,Treachery,Risky Business
+02014,2,Green Goblin,Villain,Mutagen Formula
+02015,2,Green Goblin,Villain,Mutagen Formula
+02016,2,Green Goblin,Villain,Mutagen Formula
+02017a,2,Unleashing the Mutagen,MainScheme,Mutagen Formula
+02017b,2,Unleashing the Mutagen,MainScheme,Mutagen Formula
+02018a,2,Mutagen Cloud,MainScheme,Mutagen Formula
+02018b,2,Mutagen Cloud,MainScheme,Mutagen Formula
+02019,2,Goblin Glider,Attachment,Mutagen Formula
+02020,2,Hysteria,Attachment,Mutagen Formula
+02021,2,Pumpkin Bombs,Attachment,Mutagen Formula
+02022,2,Goblin Knight,Minion,Mutagen Formula
+02023,2,Goblin Soldier,Minion,Mutagen Formula
+02024,2,Goblin Thrall,Minion,Mutagen Formula
+02025,2,Monster,Minion,Mutagen Formula
+02026,2,Goblin Reinforcements,SideScheme,Mutagen Formula
+02027,2,Goblin Nation,SideScheme,Mutagen Formula
+02028,2,Overrun,SideScheme,Mutagen Formula
+02029,2,Death from Above,Treachery,Mutagen Formula
+02030,2,I See You,Treachery,Mutagen Formula
+02031,2,Overconfidence,Treachery,Mutagen Formula
+02032,2,Wicked Ambitions,Treachery,Mutagen Formula
+02035,2,Intimidation,Treachery,Goblin Gimmicks
+02036,2,Regenerative Healing,Treachery,Goblin Gimmicks
+02037,2,A Mess of Things,SideScheme,A Mess of Things
+02038,2,Scorpion,Minion,A Mess of Things
+02040,2,Tail Sweep,Treachery,A Mess of Things
+02041,2,Power Drain,SideScheme,Power Drain
+02042,2,Electro,Minion,Power Drain
+02043,2,Electromagnetic Pulse,Treachery,Power Drain
+02044,2,Lightning Bolt,Treachery,Power Drain
+02045,2,Shock Therapy,Treachery,Power Drain
+02046,2,Running Interference,SideScheme,Running Interference
+02047,2,Tombstone,Minion,Running Interference
+02048,2,All Tied Up,Attachment,Running Interference
+02049,2,Media Coverage,Attachment,Running Interference
+03026,2,Man Out of Time,Obligation,Captain America
+03027,2,Hit Squad,SideScheme,Captain America Nemesis
+03028,2,Baron Zemo,Minion,Captain America Nemesis
+03030,2,Hail Hydra!,Treachery,Captain America Nemesis
+04026,2,Criminal Past,Obligation,Hawkeye
+04027,2,Crossfire,Minion,Hawkeye Nemesis
+04028,2,Marked for Death,SideScheme,Hawkeye Nemesis
+04029,2,Crossfire's Rifle,Attachment,Hawkeye Nemesis
+04030,2,Sniper Shot,Treachery,Hawkeye Nemesis
+04053,2,Uncertain Loyalties,Obligation,Spider-Woman
+04054,2,The Viper,Minion,Spider-Woman Nemesis
+04055,2,The Viper's Ambition,SideScheme,Spider-Woman Nemesis
+04056,2,Hydra Regular,Minion,Spider-Woman Nemesis
+04058,2,Crossbones,Villain,Crossbones
+04059,2,Crossbones,Villain,Crossbones
+04060,2,Crossbones,Villain,Crossbones
+04061a,2,Attack on Mount Athena,MainScheme,Crossbones
+04061b,2,Attack on Mount Athena,MainScheme,Crossbones
+04062a,2,The Infinity Stone,MainScheme,Crossbones
+04062b,2,The Infinity Stone,MainScheme,Crossbones
+04063a,2,The Getaway,MainScheme,Crossbones
+04063b,2,The Getaway,MainScheme,Crossbones
+04064,2,Crossbones' Machine Gun,Attachment,Crossbones
+04065,2,Crossbones' Armor,Attachment,Crossbones
+04067,2,Full Auto,Treachery,Crossbones
+04068,2,Hard as Nails,Treachery,Crossbones
+04069,2,Raid the Armory,Treachery,Crossbones
+04070,2,Crossbones' Assault,SideScheme,Crossbones
+04071,2,Cornered Staff,SideScheme,Crossbones
+04072,2,Laser Rifle,Attachment,Experimental Weapons
+04073,2,Energy Shield,Attachment,Experimental Weapons
+04074,2,Power Gauntlets,Attachment,Experimental Weapons
+04075,2,Exo-Suit,Attachment,Experimental Weapons
+04076,2,Absorbing Man,Villain,Absorbing Man
+04077,2,Absorbing Man,Villain,Absorbing Man
+04078,2,Absorbing Man,Villain,Absorbing Man
+04079a,2,None Shall Pass,MainScheme,Absorbing Man
+04079b,2,None Shall Pass,MainScheme,Absorbing Man
+04080,2,Dense Forest,Environment,Absorbing Man
+04081,2,Snowy Hillside,Environment,Absorbing Man
+04082,2,Rocky Outcrop,Environment,Absorbing Man
+04083,2,Abandoned Facility,Environment,Absorbing Man
+04084,2,Ball and Chain,Attachment,Absorbing Man
+04085,2,Stall Tactics,Treachery,Absorbing Man
+04086,2,Swinging Stone,Treachery,Absorbing Man
+04087,2,Steel Kick,Treachery,Absorbing Man
+04088,2,Piercing Thorns,Treachery,Absorbing Man
+04089,2,Omni-Morph Duplication,Treachery,Absorbing Man
+04090,2,Icy Grip,Treachery,Absorbing Man
+04091,2,Avalanche!,SideScheme,Absorbing Man
+04092,2,Super Absorbing Power,SideScheme,Absorbing Man
+04093,2,Taskmaster,Villain,Taskmaster
+04094,2,Taskmaster,Villain,Taskmaster
+04095,2,Taskmaster,Villain,Taskmaster
+04096a,2,Hunting Down Heroes,MainScheme,Taskmaster
+04096b,2,Hunting Down Heroes,MainScheme,Taskmaster
+04101,2,Hydra Hunter,Minion,Taskmaster
+04102,2,Taskmaster's Sword,Attachment,Taskmaster
+04103,2,Taskmaster's Shield,Attachment,Taskmaster
+04104,2,Photographic Reflexes,Attachment,Taskmaster
+04105,2,Mimicry,Treachery,Taskmaster
+04106,2,Hunted by Hydra,Treachery,Taskmaster
+04107,2,Captured by Hydra,SideScheme,Taskmaster
+04108,2,Taskmaster's Training Camp,SideScheme,Taskmaster
+04109,2,Zola,Villain,Zola
+04110,2,Zola,Villain,Zola
+04111,2,Zola,Villain,Zola
+04112a,2,The Island of Dr. Zola,MainScheme,Zola
+04112b,2,The Island of Dr. Zola,MainScheme,Zola
+04113a,2,The Mad Doctor,MainScheme,Zola
+04113b,2,The Mad Doctor,MainScheme,Zola
+04114,2,Ultimate Bio-Servant,Minion,Zola
+04115,2,Zola's Mutate,Minion,Zola
+04116,2,Berserk Mutate,Minion,Zola
+04117,2,Defensive Programming,Attachment,Zola
+04118,2,Pain Inhibitors,Attachment,Zola
+04119,2,Neurological Implants,Attachment,Zola
+04120,2,Mind Ray,Treachery,Zola
+04121,2,Technological Enhancements,Treachery,Zola
+04122,2,Hydra Prison,SideScheme,Zola
+04123,2,Test Subjects,SideScheme,Zola
+04124,2,Zola's Experiments,SideScheme,Zola
+04125,2,Red Skull,Villain,Red Skull
+04126,2,Red Skull,Villain,Red Skull
+04127,2,Red Skull,Villain,Red Skull
+04128a,2,The Rise of Red Skull,MainScheme,Red Skull
+04128b,2,The Rise of Red Skull,MainScheme,Red Skull
+04129a,2,New World Hydra,MainScheme,Red Skull
+04129b,2,New World Hydra,MainScheme,Red Skull
+04130,2,The Sleeper,Minion,Red Skull
+04131,2,Hydra Exo-Soldier,Minion,Red Skull
+04132,2,Red Skull's Luger,Attachment,Red Skull
+04133,2,Red Skull's Right Hook,Attachment,Red Skull
+04134,2,Master Strategist,Attachment,Red Skull
+04135,2,Twisted Reality,Attachment,Red Skull
+04136,2,Bitter Rival,Treachery,Red Skull
+04137,2,Spreading Lies,Treachery,Red Skull
+04138,2,Infinite Power,Treachery,Red Skull
+04139,2,The Red House,SideScheme,Red Skull
+04140,2,The Sleeper Awakened,SideScheme,Red Skull
+04141,2,Prison Camps,SideScheme,Red Skull
+04142,2,Censor the Past,SideScheme,Red Skull
+04143,2,Hydra Reinforcements,SideScheme,Red Skull
+04144,2,Mass Chaos,SideScheme,Red Skull
+04145,2,Hydra Flame-Soldier,Minion,Hydra Assault
+04146,2,Hydra Jet-Trooper,Minion,Hydra Assault
+04148,2,Combat Knife,Attachment,Weapon Master
+04149,2,Hydra Sidearm,Attachment,Weapon Master
+04150,2,Weapon Master,Treachery,Weapon Master
+04151,2,Concussion Grenade,Treachery,Weapon Master
+04152,2,Hydra Regular,Minion,Hydra Patrol
+04154,2,Hydra Patrol,SideScheme,Hydra Patrol
+04163,2,Zola's Algorithm,Obligation,Expert Campaign
+04164,2,Medical Emergency,Obligation,Expert Campaign
+04165,2,Martial Law,Obligation,Expert Campaign
+04166,2,Anti-Hero Propaganda,Obligation,Expert Campaign
+05025,2,Home by Dawn,Obligation,Ms. Marvel
+05026,2,Generation Why?,SideScheme,Ms. Marvel Nemesis
+05027,2,Thomas Edison,Minion,Ms. Marvel Nemesis
+05028,2,Edison's Giant Robot,Minion,Ms. Marvel Nemesis
+05029,2,Harvest,Treachery,Ms. Marvel Nemesis
+06026,2,Odin's Anger,Obligation,Thor
+06027,2,Family Feud,SideScheme,Thor Nemesis
+06028,2,Loki,Minion,Thor Nemesis
+06029,2,Frost Giant,Minion,Thor Nemesis
+06030,2,Trickster,Treachery,Thor Nemesis
+07001a,2,Breakout,MainScheme,Wrecking Crew
+07001b,2,Breakout,MainScheme,Wrecking Crew
+07002,2,Wrecker,Villain,Wrecker
+07003,2,Wrecker,Villain,Wrecker
+07004,2,Day of Reckoning,SideScheme,Wrecker
+07005,2,Held Hostage,Attachment,Wrecker
+07006,2,Magic Crowbar,Attachment,Wrecker
+07007,2,Wrecker's Command,Attachment,Wrecker
+07008,2,Corrupt Prison Guard,Minion,Wrecker
+07009,2,Escaped Convict,Minion,Wrecker
+07010,2,Buddy System,Treachery,Wrecker
+07011,2,Chaos In the Prison,Treachery,Wrecker
+07012,2,Crowbar Toss,Treachery,Wrecker
+07013,2,Get Wrecked!,Treachery,Wrecker
+07014,2,I've Been Waiting For This!,Treachery,Wrecker
+07015,2,Mystical Link,Treachery,Wrecker
+07016,2,You're Dead Meat!,Treachery,Wrecker
+07017,2,Thunderball,Villain,Thunderball
+07018,2,Thunderball,Villain,Thunderball
+07019,2,Thunderstruck,SideScheme,Thunderball
+07020,2,Ball and Chain,Attachment,Thunderball
+07022,2,Radioactive Buildup,Attachment,Thunderball
+07023,2,Corrupt Prison Guard,Minion,Thunderball
+07027,2,Energy Projectiles,Treachery,Thunderball
+07030,2,Lightning Blast,Treachery,Thunderball
+07031,2,Tactical Prowess,Treachery,Thunderball
+07032,2,Piledriver,Villain,Piledriver
+07033,2,Piledriver,Villain,Piledriver
+07034,2,Pile It On!,SideScheme,Piledriver
+07035,2,Distracting Taunts,Attachment,Piledriver
+07037,2,Corrupt Prison Guard,Minion,Piledriver
+07042,2,Oversized Hands,Treachery,Piledriver
+07043,2,Escape Plan,Treachery,Piledriver
+07044,2,Pummel,Treachery,Piledriver
+07045,2,Uncanny Resilience,Treachery,Piledriver
+07046,2,Bulldozer,Villain,Bulldozer
+07047,2,Bulldozer,Villain,Bulldozer
+07048,2,Clear the Road,SideScheme,Bulldozer
+07049,2,Bulldozer's Helmet,Attachment,Bulldozer
+07051,2,Ramming Speed,Attachment,Bulldozer
+07052,2,Corrupt Prison Guard,Minion,Bulldozer
+07055,2,Bull Rush,Treachery,Bulldozer
+07058,2,Headbutt,Treachery,Bulldozer
+07059,2,Leading the Charge,Treachery,Bulldozer
+08025,2,Burn Notice,Obligation,Black Widow
+08026,2,Taskmaster,Minion,Black Widow Nemesis
+08027,2,Killer for Hire,SideScheme,Black Widow Nemesis
+08028,2,Hydra Mercenary,Minion,Black Widow Nemesis
+08029,2,Deadly Shot,Treachery,Black Widow Nemesis
+09027,2,Physical Toll,Obligation,Doctor Strange
+09028,2,Baron Mordo,Minion,Doctor Strange Nemesis
+09029,2,Open the Dark Dimension,SideScheme,Doctor Strange Nemesis
+09030,2,Counterspell,Attachment,Doctor Strange Nemesis
+09031,2,Thoughtcasting,Treachery,Doctor Strange Nemesis
+10025,2,Inner Demons,Obligation,Hulk
+10026,2,Abomination,Minion,Hulk Nemesis
+10027,2,Total Destruction,SideScheme,Hulk Nemesis
+10028,2,Clash Of The Titans,Treachery,Hulk Nemesis
+11001,2,Kang (The Conqueror),Villain,Kang
+11002,2,Kang (Immortus),Villain,Kang
+11003,2,Kang (Iron Lad),Villain,Kang
+11004,2,Kang (Rama-Tut),Villain,Kang
+11005,2,Kang (Scarlet Centurion),Villain,Kang
+11006,2,Kang (The Conqueror),Villain,Kang
+11007a,2,Kang's Arrival,MainScheme,Kang
+11007b,2,Kang's Arrival,MainScheme,Kang
+11008a,2,The Master of Time,MainScheme,Kang
+11008b,2,The Master of Time,MainScheme,Kang
+11009a,2,The Chronopolis,MainScheme,Kang
+11009b,2,The Chronopolis,MainScheme,Kang
+11010a,2,Inexorable Fate,MainScheme,Kang
+11010b,2,Inexorable Fate,MainScheme,Kang
+11011a,2,The Realm of Rama-Tut,MainScheme,Kang
+11011b,2,The Realm of Rama-Tut,MainScheme,Kang
+11012a,2,The Present Future War,MainScheme,Kang
+11012b,2,The Present Future War,MainScheme,Kang
+11013a,2,Kang's Wrath,MainScheme,Kang
+11013b,2,Kang's Wrath,MainScheme,Kang
+11014,2,Temporal Shield,Attachment,Kang
+11015,2,Future Weapon,Attachment,Kang
+11016,2,Frozen in Time,Attachment,Kang
+11017,2,Macrobots,Minion,Kang
+11018,2,Weakened,Obligation,Kang
+11019,2,Stolen Memories,Obligation,Kang
+11020,2,Depowered,Obligation,Kang
+11021,2,Time-Travel Hijinks,Obligation,Kang
+11022,2,Corrupted Timestream,SideScheme,Kang
+11023,2,Kang's Dominion,SideScheme,Kang
+11024,2,Pinned Down,SideScheme,Kang
+11025,2,Rampage,SideScheme,Kang
+11026,2,Energy Blast,Treachery,Kang
+11027,2,Manipulated Timestream,Treachery,Kang
+11028,2,Time-Travel Tactics,Treachery,Kang
+11029,2,Past Machinations,Treachery,Kang
+11030,2,Ancient Warrior,Minion,Temporal
+11031,2,Chitauri Soldier,Minion,Temporal
+11032,2,Tyrannosaurus Rex,Minion,Temporal
+11033,2,Time Portal,SideScheme,Temporal
+11034,2,Kang (The Conqueror),Villain,Expert Kang
+11035,2,Kang (Immortus),Villain,Expert Kang
+11036,2,Kang (Iron Lad),Villain,Expert Kang
+11037,2,Kang (Rama-Tut),Villain,Expert Kang
+11038,2,Kang (Scarlet Centurion),Villain,Expert Kang
+11039,2,Kang (The Conqueror),Villain,Expert Kang
+11040,2,Apocryphus,Minion,Anachronauts
+11041,2,Deathunt 9000,Minion,Anachronauts
+11042,2,Sir Raston,Minion,Anachronauts
+11043,2,Terminatrix,Minion,Anachronauts
+11044,2,Wildrun,Minion,Anachronauts
+11045,2,The Anachronauts,SideScheme,Anachronauts
+11046,2,Kang's Chosen,Treachery,Anachronauts
+11047,2,Kang (Master of Time),Minion,Master of Time
+11048,2,Time-Displaced Soldier,Minion,Master of Time
+11049,2,Fear of Kang,Obligation,Master of Time
+11050,2,Light of Centuries Sphere,SideScheme,Master of Time
+11051,2,Ancient Grudge,Treachery,Master of Time
+12025,2,Care for Cassie,Obligation,Ant-Man
+12026,2,Tech Theft,SideScheme,Ant-Man Nemesis
+12027,2,Yellowjacket,Minion,Ant-Man Nemesis
+12028,2,Size Increase,Attachment,Ant-Man Nemesis
+12029,2,Yellowjacket's Plan,Treachery,Ant-Man Nemesis
+13026,2,Red Dreams,Obligation,Wasp
+13027,2,Mother's Orders,SideScheme,Wasp Nemesis
+13028,2,Beetle,Minion,Wasp Nemesis
+13029,2,Beetle Armor MK IV,Attachment,Wasp Nemesis
+13030,2,Beetle Mania,Treachery,Wasp Nemesis
+14024,2,Need for Speed,Obligation,Quicksilver
+14025,2,Extortion of Seismic Proportion,SideScheme,Quicksilver Nemesis
+14026,2,Avalanche,Minion,Quicksilver Nemesis
+14027,2,Vibration Resistance,Attachment,Quicksilver Nemesis
+14028,2,Earthquake,Treachery,Quicksilver Nemesis
+15023,2,Slipping Sanity,Obligation,Scarlet Witch
+15024,2,The Next Evolution,SideScheme,Scarlet Witch Nemesis
+15025,2,Luminous,Minion,Scarlet Witch Nemesis
+15026,2,Magical Suspension,Attachment,Scarlet Witch Nemesis
+15027,2,Chaos Manipulation,Treachery,Scarlet Witch Nemesis
+16025,2,Wilt,Obligation,Groot
+16026,2,Blazing Inferno,SideScheme,Groot Nemesis
+16027,2,Furnax,Minion,Groot Nemesis
+16028,2,Fan the Flames,Treachery,Groot Nemesis
+16053,2,Crisis on Halfworld,Obligation,Rocket Raccoon
+16054,2,Vendetta,SideScheme,Rocket Raccoon Nemesis
+16055,2,Blackjack O'Hare,Minion,Rocket Raccoon Nemesis
+16056,2,Blackjack's Bazooka,Attachment,Rocket Raccoon Nemesis
+16057,2,Planetary Invasion,Treachery,Rocket Raccoon Nemesis
+16058,2,Drang,Villain,Brotherhood Of Badoon
+16059,2,Drang,Villain,Brotherhood Of Badoon
+16060,2,Drang,Villain,Brotherhood Of Badoon
+16061a,2,Terrestrial Invasion,MainScheme,Brotherhood Of Badoon
+16061b,2,Terrestrial Invasion,MainScheme,Brotherhood Of Badoon
+16062a,2,Protect the Planet,MainScheme,Brotherhood Of Badoon
+16062b,2,Protect the Planet,MainScheme,Brotherhood Of Badoon
+16063,2,Badoon Ship,Environment,Brotherhood Of Badoon
+16064,2,Drang's Spear,Attachment,Brotherhood Of Badoon
+16065,2,Badoon Engineer,Minion,Brotherhood Of Badoon
+16066,2,Blockade,SideScheme,Brotherhood Of Badoon
+16067,2,Bombardment,SideScheme,Brotherhood Of Badoon
+16068,2,Oppressive Armada,SideScheme,Brotherhood Of Badoon
+16069,2,Spatial Positioning,SideScheme,Brotherhood Of Badoon
+16070,2,Collector,Villain,Collector 1
+16071,2,Collector,Villain,Collector 1
+16072,2,Collector,Villain,Collector 1
+16073a,2,The Grand Collection,MainScheme,Collector 1
+16073b,2,The Grand Collection,MainScheme,Collector 1
+16074,2,Biogram Image,Attachment,Collector 1
+16075,2,Monarch Starstalker,Minion,Collector 1
+16076,2,Inconspicuous Box,Treachery,Collector 1
+16077,2,View the Cosmos,Treachery,Collector 1
+16078,2,Stay Awhile,Treachery,Collector 1
+16080a,2,Collector,Villain,Collector 2
+16080b,2,Collector,Villain,Collector 2
+16081a,2,Collector,Villain,Collector 2
+16081b,2,Collector,Villain,Collector 2
+16082a,2,The Missing Milano,MainScheme,Collector 2
+16082b,2,The Missing Milano,MainScheme,Collector 2
+16083a,2,Lost in the Museum,MainScheme,Collector 2
+16083b,2,Lost in the Museum,MainScheme,Collector 2
+16084a,2,The Great Escape,MainScheme,Collector 2
+16084b,2,The Great Escape,MainScheme,Collector 2
+16085a,2,Library Labyrinth,Environment,Collector 2
+16085b,2,Museum Ship,Environment,Collector 2
+16086,2,"""I Have You Now!""",Treachery,Collector 2
+16087,2,Impossible Geometry,Treachery,Collector 2
+16088,2,Nebula,Villain,Nebula
+16089,2,Nebula,Villain,Nebula
+16090,2,Nebula,Villain,Nebula
+16091a,2,The Art of Evasion,MainScheme,Nebula
+16091b,2,The Art of Evasion,MainScheme,Nebula
+16092a,2,Warp Drive Initiated,MainScheme,Nebula
+16092b,2,Warp Drive Initiated,MainScheme,Nebula
+16093,2,Nebula's Ship,Environment,Nebula
+16094,2,Cutthroat Ambition,Attachment,Nebula
+16095,2,Evasive Maneuvering,Attachment,Nebula
+16096,2,Unyielding Persistence,Attachment,Nebula
+16097,2,Weapon Mastery,Attachment,Nebula
+16098,2,Wide Stance,Attachment,Nebula
+16099,2,Lethal Intent,SideScheme,Nebula
+16100,2,Barrel Roll,Treachery,Nebula
+16101,2,Combat Ready,Treachery,Nebula
+16102,2,Combat Ready,Treachery,Nebula
+16103,2,Ronan the Accuser,Villain,Ronan
+16104,2,Ronan the Accuser,Villain,Ronan
+16105,2,Ronan the Accuser,Villain,Ronan
+16106a,2,Interception Imminent,MainScheme,Ronan
+16106b,2,Interception Imminent,MainScheme,Ronan
+16107a,2,"""Take What Is Mine""",MainScheme,Ronan
+16107b,2,"""Take What Is Mine""",MainScheme,Ronan
+16108,2,Kree Command Ship,Environment,Ronan
+16109,2,Universal Weapon,Attachment,Ronan
+16110,2,Fanaticism,Attachment,Ronan
+16111,2,Cut the Power,SideScheme,Ronan
+16112,2,Pincer Maneuver,SideScheme,Ronan
+16113,2,Superior Tactics,SideScheme,Ronan
+16114,2,Single-Minded Fury,Treachery,Ronan
+16115,2,Kree Physiology,Treachery,Ronan
+16116,2,"""You Stand Accused!""",Treachery,Ronan
+16117,2,Badoon Assassin,Minion,Band Of Badoon
+16118,2,Badoon Grunt,Minion,Band Of Badoon
+16119,2,Badoon Lieutenant,Minion,Band Of Badoon
+16120,2,Badoon Sentry,Minion,Band Of Badoon
+16121,2,Badoon Warlord,Minion,Band Of Badoon
+16122,2,Cloak of Hercules,Attachment,Galactic Artifacts
+16123,2,Obedience Potion,Attachment,Galactic Artifacts
+16124,2,The Beyonder's Blazer,Attachment,Galactic Artifacts
+16125,2,The Poison,Attachment,Galactic Artifacts
+16126,2,Vandarian Power Stone,Attachment,Galactic Artifacts
+16127,2,Hujahdarian Monarch Egg,SideScheme,Galactic Artifacts
+16128,2,Magical Teapot,SideScheme,Galactic Artifacts
+16129,2,Philosopher's Stone,SideScheme,Galactic Artifacts
+16130,2,Crystal Ball,SideScheme,Galactic Artifacts
+16131,2,Kree Combat Armor,Attachment,Kree Militants
+16132,2,Kree Commando,Minion,Kree Militants
+16133,2,Kree Lieutenant,Minion,Kree Militants
+16134,2,Kree Private,Minion,Kree Militants
+16135,2,Psionic Ghost,Minion,Menagerie Medley
+16136,2,Servant Bot,Minion,Menagerie Medley
+16137,2,Starshark,Minion,Menagerie Medley
+16138,2,Pirate Commander,Minion,Space Pirates
+16139,2,Pirate Lackey,Minion,Space Pirates
+16140,2,Sound the Alarms,SideScheme,Space Pirates
+16141,2,Honor Among Thieves,Treachery,Space Pirates
+16143,2,Rogue Vessel,Environment,Ship Command
+16144,2,Cannonade,SideScheme,Ship Command
+16145,2,Blind Side,Treachery,Ship Command
+16146,2,Hull Breach,Treachery,Ship Command
+16147,2,Power Siphon,Treachery,Ship Command
+16148,2,Special Delivery,Treachery,Ship Command
+16149,2,Power Stone,Attachment,Power Stone
+16178a,2,Badoon Blitz,SideScheme,Challenge
+16178b,2,Badoon Blitz,SideScheme,Challenge
+16179a,2,Gallery of Splendor,SideScheme,Challenge
+16179b,2,Gallery of Splendor,SideScheme,Challenge
+16180a,2,"""There is No Escape""",SideScheme,Challenge
+16180b,2,"""There is No Escape""",SideScheme,Challenge
+16181a,2,Guerrilla Tactics,SideScheme,Challenge
+16181b,2,Guerrilla Tactics,SideScheme,Challenge
+16182a,2,Kree Supremacy,SideScheme,Challenge
+16182b,2,Kree Supremacy,SideScheme,Challenge
+16183,2,Badoon Headhunter,Minion,Badoon Headhunter
+16184,2,On the Hunt,Treachery,Badoon Headhunter
+16185,2,Dead to Rights,Treachery,Badoon Headhunter
+16186,2,Headhunter's Henchman,Minion,Badoon Headhunter
+16187,2,Fugitive Recovery,SideScheme,Badoon Headhunter
+17024,2,Banishment,Obligation,Star-Lord
+17025,2,Budding Crime Syndicate,SideScheme,Star-Lord Nemesis
+17026,2,Mister Knife,Minion,Star-Lord Nemesis
+17027,2,Spartoi Cunning,Treachery,Star-Lord Nemesis
+18024,2,Unfulfilled Destiny,Obligation,Gamora
+18025,2,Sibling Rivalry,SideScheme,Gamora Nemesis
+18026,2,Nebula,Minion,Gamora Nemesis
+18027,2,In A Bind,Attachment,Gamora Nemesis
+18028,2,Waylay,Treachery,Gamora Nemesis
+19025,2,Memories of Another Life,Obligation,Drax
+19026,2,Cull the Weak,SideScheme,Drax Nemesis
+19027,2,Yotat the Destroyer,Minion,Drax Nemesis
+19028,2,Challenge Accepted,Attachment,Drax Nemesis
+19029,2,"""I Will Destroy You!""",Treachery,Drax Nemesis
+20023,2,Struggle for Control,Obligation,Venom
+20024,2,Klyntar Frenzy,SideScheme,Venom Nemesis
+20025,2,Enraged Symbiote,Minion,Venom Nemesis
+21026,2,Loss of Control,Obligation,Spectrum
+21027,2,Radioactive Man,Minion,Spectrum Nemesis
+21028,2,Reactor Meltdown,SideScheme,Spectrum Nemesis
+21029,2,Sap Power,Attachment,Spectrum Nemesis
+21030,2,Radioactive Blast,Treachery,Spectrum Nemesis
+21066,2,Regeneration Cycle,Obligation,Adam Warlock
+21067,2,The Magus,Minion,Adam Warlock Nemesis
+21068,2,Universal Church of Truth,SideScheme,Adam Warlock Nemesis
+21069,2,Zealot of Truth,Minion,Adam Warlock Nemesis
+21070,2,Cosmic Inquisition,Treachery,Adam Warlock Nemesis
+21071,2,Ebony Maw,Villain,Ebony Maw
+21072,2,Ebony Maw,Villain,Ebony Maw
+21073,2,Ebony Maw,Villain,Ebony Maw
+21074a,2,Attack on Knowhere,MainScheme,Ebony Maw
+21074b,2,Attack on Knowhere,MainScheme,Ebony Maw
+21075a,2,The Power Stone,MainScheme,Ebony Maw
+21075b,2,The Power Stone,MainScheme,Ebony Maw
+21076,2,Fireball,Environment,Ebony Maw
+21077,2,Manipulation,Environment,Ebony Maw
+21078,2,Pacification,Environment,Ebony Maw
+21079,2,Rubblestorm,Environment,Ebony Maw
+21080,2,Agent of Thanos,Treachery,Ebony Maw
+21081,2,Channeling Trance,Treachery,Ebony Maw
+21082,2,Abjuration,Attachment,Ebony Maw
+21083,2,Restrained,Attachment,Ebony Maw
+21084,2,Reactor Overload,SideScheme,Ebony Maw
+21085,2,Black Dwarf,Minion,Black Order
+21086,2,Supergiant,Minion,Black Order
+21087,2,The Black Order,SideScheme,Black Order
+21088,2,Blood to Spare,Treachery,Black Order
+21089,2,Black Order Infantry,Minion,Armies of Titan
+21090,2,Outrider,Minion,Armies of Titan
+21091,2,Landing Craft,SideScheme,Armies of Titan
+21092,2,Proxima Midnight,Villain,The Tower Defense
+21093,2,Proxima Midnight,Villain,The Tower Defense
+21094,2,Proxima Midnight,Villain,The Tower Defense
+21095,2,Corvus Glaive,Villain,The Tower Defense
+21096,2,Corvus Glaive,Villain,The Tower Defense
+21097,2,Corvus Glaive,Villain,The Tower Defense
+21098a,2,Under Siege,MainScheme,The Tower Defense
+21098b,2,Under Siege,MainScheme,The Tower Defense
+21099a,2,The Armies of Thanos,MainScheme,The Tower Defense
+21099b,2,The Armies of Thanos,MainScheme,The Tower Defense
+21100a,2,Avengers Tower,Environment,The Tower Defense
+21100b,2,Avengers Tower,Environment,The Tower Defense
+21101,2,Focused Defense,Attachment,The Tower Defense
+21102,2,Black Order Besieger,Minion,The Tower Defense
+21103,2,Proxima's Spear,Attachment,The Tower Defense
+21104,2,Corvus's Glaive,Attachment,The Tower Defense
+21105,2,Direct Assault,Attachment,The Tower Defense
+21106,2,Proxima's Power,Treachery,The Tower Defense
+21107,2,Corvus's Cunning,Treachery,The Tower Defense
+21108,2,Bound by Blood,Treachery,The Tower Defense
+21109,2,Rain Fire,Treachery,The Tower Defense
+21110,2,City Under Attack,SideScheme,The Tower Defense
+21111,2,Thanos,Villain,Thanos
+21112,2,Thanos,Villain,Thanos
+21113,2,Thanos,Villain,Thanos
+21114a,2,The Infinity Stones,MainScheme,Thanos
+21114b,2,The Infinity Stones,MainScheme,Thanos
+21115a,2,Balance the Scales,MainScheme,Thanos
+21115b,2,Balance the Scales,MainScheme,Thanos
+21116,2,Sanctuary,SideScheme,Thanos
+21117,2,Thanos's Armor,Attachment,Thanos
+21118,2,Thanos's Helmet,Attachment,Thanos
+21119,2,Master of the Stones,Attachment,Thanos
+21120,2,Avatar of Death,Treachery,Thanos
+21121,2,Deviant Syndrome,Treachery,Thanos
+21122,2,"""I Am Inevitable""",Treachery,Thanos
+21123,2,The Mad Titan,Treachery,Thanos
+21124,2,The Titan's Throne,SideScheme,Thanos
+21125,2,Corvus Glaive,Minion,Children of Thanos
+21126,2,Proxima Midnight,Minion,Children of Thanos
+21127,2,Ebony Maw,Minion,Children of Thanos
+21128,2,Tribute,SideScheme,Children of Thanos
+21129,2,Infinity Gauntlet,Attachment,Infinity Gauntlet
+21130,2,Mind Stone,Environment,Infinity Gauntlet
+21131,2,Power Stone,Environment,Infinity Gauntlet
+21132,2,Reality Stone,Environment,Infinity Gauntlet
+21133,2,Soul Stone,Environment,Infinity Gauntlet
+21134,2,Space Stone,Environment,Infinity Gauntlet
+21135,2,Time Stone,Environment,Infinity Gauntlet
+21136a,2,Hela,Villain,Hela
+21136b,2,Hela,Villain,Hela
+21137a,2,Hela,Villain,Hela
+21137b,2,Hela,Villain,Hela
+21138a,2,Odin's Torment,MainScheme,Hela
+21138b,2,Odin's Torment,MainScheme,Hela
+21140,2,Gnipahellir,SideScheme,Hela
+21141,2,Gjallerbru,SideScheme,Hela
+21142,2,Hall of Nastrond,SideScheme,Hela
+21143,2,Garm,Minion,Hela
+21144,2,Skurge,Minion,Hela
+21145,2,Nidhogg,Minion,Hela
+21146,2,Nightsword,Attachment,Hela
+21147,2,Hela's Crown,Attachment,Hela
+21148,2,Hela's Cloak,Attachment,Hela
+21149,2,Hela's Domain,Treachery,Hela
+21150,2,The Queen of Hel,Treachery,Hela
+21151,2,The Wastes of Niffleheim,Treachery,Hela
+21152,2,Draugr,Minion,Legions of Hel
+21153,2,Fallen Warrior,Attachment,Legions of Hel
+21154,2,No Place for the Living,Treachery,Legions of Hel
+21155,2,Legions of Hel,SideScheme,Legions of Hel
+21156,2,Laufey,Minion,Frost Giants
+21158,2,Frozen,Attachment,Frost Giants
+21159,2,Unnatural Storm,SideScheme,Frost Giants
+21160,2,Loki,Villain,Loki
+21161,2,Loki,Villain,Loki
+21162,2,Loki,Villain,Loki
+21163,2,Loki,Villain,Loki
+21164,2,Loki,Villain,Loki
+21165a,2,All Hail King Loki,MainScheme,Loki
+21165b,2,All Hail King Loki,MainScheme,Loki
+21166,2,Casket of Ancient Winters,SideScheme,Loki
+21167,2,War in Asgard,SideScheme,Loki
+21168,2,Madness on Midgard,SideScheme,Loki
+21169,2,Open the Bifrost,SideScheme,Loki
+21170,2,Loki's Staff,Attachment,Loki
+21171,2,Loki's Crown,Attachment,Loki
+21172,2,Loki's Cape,Attachment,Loki
+21173,2,Master of Illusions,Attachment,Loki
+21174,2,Devious Sorcery,Treachery,Loki
+21175,2,Infinite Mischief,Treachery,Loki
+21176,2,The Trickster,Treachery,Loki
+21177,2,Enchantress,Minion,Enchantress
+21178,2,Beguiled,Attachment,Enchantress
+21179,2,Seduced,Attachment,Enchantress
+21180a,2,Secure the Landing Pad,SideScheme,The Mad Titan's Shadow Campaign
+21181,2,Security Breach,SideScheme,The Mad Titan's Shadow Campaign
+21182a,2,Save the Shawarma Place,SideScheme,The Mad Titan's Shadow Campaign
+21182b,2,Black Swan,Minion,The Mad Titan's Shadow Campaign
+21184a,2,Hack Sanctuary's Computer,SideScheme,The Mad Titan's Shadow Campaign
+21184b,2,Defensive Protocols,SideScheme,The Mad Titan's Shadow Campaign
+21185,2,System Shock,Obligation,The Mad Titan's Shadow Campaign
+21186a,2,Find the Norn Stones,SideScheme,The Mad Titan's Shadow Campaign
+21186b,2,Retrieve Odin's Armor,SideScheme,The Mad Titan's Shadow Campaign
+21188,2,Summoned Back,Treachery,The Mad Titan's Shadow Campaign
+21189a,2,Open the Dungeons,SideScheme,The Mad Titan's Shadow Campaign
+21189b,2,Jormungand,Attachment,The Mad Titan's Shadow Campaign
+22027,2,Inferiority Complex,Obligation,Nebula
+22028,2,Gamora,Minion,Nebula Nemesis
+22029,2,Self-Preservation,SideScheme,Nebula Nemesis
+22030,2,Lethal Weapon,Attachment,Nebula Nemesis
+22031,2,Old Rivals,Treachery,Nebula Nemesis
+23028,2,Equipment Malfunction,Obligation,War Machine
+23029,2,Living Laser,Minion,War Machine Nemesis
+23030,2,Deadly Light Show,SideScheme,War Machine Nemesis
+23031,2,Laser Strike,Treachery,War Machine Nemesis
+24001,2,The Hood,Villain,The Hood
+24002,2,The Hood,Villain,The Hood
+24003,2,The Hood,Villain,The Hood
+24004a,2,Making Connections,MainScheme,The Hood
+24004b,2,Making Connections,MainScheme,The Hood
+24005a,2,Promised Prosperity,MainScheme,The Hood
+24005b,2,Promised Prosperity,MainScheme,The Hood
+24006a,2,Crime State,MainScheme,The Hood
+24006b,2,Crime State,MainScheme,The Hood
+24007,2,Established Dominance,Attachment,The Hood
+24008,2,The Hood's Mantle,Attachment,The Hood
+24009,2,The Hood's Pistol,Attachment,The Hood
+24010,2,Madame Masque,Minion,The Hood
+24011,2,Unbridled Ambition,SideScheme,The Hood
+24012,2,Field Recruitment,Treachery,The Hood
+24013,2,Upper Hand,Treachery,The Hood
+24014,2,Beast Mode,SideScheme,Beasty Boys
+24015,2,Griffin,Minion,Beasty Boys
+24016,2,Mandrill,Minion,Beasty Boys
+24017,2,Double Trouble,Treachery,Beasty Boys
+24018,2,Brothers Grimm,Minion,Brothers Grimm
+24019,2,Blackbird Pellets,Attachment,Brothers Grimm
+24020,2,Corrosive Egg Bomb,Attachment,Brothers Grimm
+24021,2,Paralytic Stardust,Attachment,Brothers Grimm
+24022,2,Unbreakable Thread,Attachment,Brothers Grimm
+24023,2,Out for Blood,SideScheme,Crossfire's Crew
+24024,2,Controller,Minion,Crossfire's Crew
+24025,2,Corruptor,Minion,Crossfire's Crew
+24026,2,Crossfire,Minion,Crossfire's Crew
+24027,2,Mister Fear,Minion,Crossfire's Crew
+24028,2,Caught in the Crossfire,Treachery,Crossfire's Crew
+24029,2,Cruel Intentions,Treachery,Expert II
+24030,2,Ruination,Treachery,Expert II
+24031,2,Seek and Destroy,Treachery,Expert II
+24032,2,Slug It Out,Treachery,Expert II
+24033,2,Self-Experimentation,SideScheme,Mister Hyde
+24034,2,Calvin Zabo,Minion,Mister Hyde
+24035,2,Mister Hyde,Minion,Mister Hyde
+24036,2,Hyde Formula,Treachery,Mister Hyde
+24037,2,Flamethrower,Attachment,Ransacked Armory
+24038,2,Holoshield Generator,Attachment,Ransacked Armory
+24039,2,Jetpack,Attachment,Ransacked Armory
+24040,2,Tech Gauntlets,Attachment,Ransacked Armory
+24041,2,Armored Guard,Minion,Ransacked Armory
+24042,2,Crime Pays,SideScheme,Sinister Syndicate
+24043,2,Beetle,Minion,Sinister Syndicate
+24044,2,Boomerang,Minion,Sinister Syndicate
+24045,2,Shocker,Minion,Sinister Syndicate
+24046,2,Speed Demon,Minion,Sinister Syndicate
+24047,2,White Rabbit,Minion,Sinister Syndicate
+24048,2,Sinister Onslaught,Treachery,Sinister Syndicate
+24049a,2,Formidable Foe,Environment,Standard II
+24049b,2,Formidable Foe,Environment,Standard II
+24050,2,Dark Dealings,Treachery,Standard II
+24051,2,Mob Mentality,Treachery,Standard II
+24052,2,Overwhelming Force,Treachery,Standard II
+24054,2,Total Annihilation,Treachery,Standard II
+24055,2,Feisty Heist,SideScheme,State of Emergency
+24056,2,Disaster at the Docks,SideScheme,State of Emergency
+24057,2,Offshore Inferno,SideScheme,State of Emergency
+24058,2,Hot Pursuit,SideScheme,State of Emergency
+24059,2,Citywide Crisis,Treachery,State of Emergency
+24060,2,Back-Alley Enclave,Environment,Streets of Mayhem
+24061,2,Secret Lair,Environment,Streets of Mayhem
+24062,2,Sewer Tunnels,Environment,Streets of Mayhem
+24063,2,Warehouse District,Environment,Streets of Mayhem
+24064,2,Top Talent,SideScheme,Wrecking Crew
+24065,2,Wrecker,Minion,Wrecking Crew
+24066,2,Bulldozer,Minion,Wrecking Crew
+24067,2,Piledriver,Minion,Wrecking Crew
+24068,2,Thunderball,Minion,Wrecking Crew
+24069,2,Combined Effort,Treachery,Wrecking Crew
+24070,2,Magic Muscle,Treachery,Wrecking Crew
+25028,2,Trouble in Otherworld,Obligation,Valkyrie
+25029,2,Enchantress,Minion,Valkyrie Nemesis
+25030,2,Powerful Enchantments,SideScheme,Valkyrie Nemesis
+26028,2,Corrupted Programming,Obligation,Vision
+26029,2,Ultron,Minion,Vision Nemesis
+26030,2,Ultron Unleashed,SideScheme,Vision Nemesis
+26032,2,Relentless Android,Treachery,Vision Nemesis
+27025,2,Worried Father,Obligation,Ghost-Spider
+27026,2,Regenerative Research,SideScheme,Ghost-Spider Nemesis
+27027,2,The Lizard,Minion,Ghost-Spider Nemesis
+27028,2,Experimental Injection,Attachment,Ghost-Spider Nemesis
+27029,2,In Cold Blood,Treachery,Ghost-Spider Nemesis
+27056,2,Keeping Secrets,Obligation,Spider-Man - Miles Morales
+27057,2,Tracking Prey,SideScheme,Spider-Man - Morales Nemesis
+27058,2,Prowler,Minion,Spider-Man - Morales Nemesis
+27059,2,Razor Claws,Attachment,Spider-Man - Morales Nemesis
+27060,2,Slice and Dice,Treachery,Spider-Man - Morales Nemesis
+27061,2,Sandman,Villain,Sandman
+27062,2,Sandman,Villain,Sandman
+27063,2,Sandman,Villain,Sandman
+27064a,2,Hapless Pedestrians,MainScheme,Sandman
+27064b,2,Hapless Pedestrians,MainScheme,Sandman
+27065,2,City Streets,Environment,Sandman
+27066,2,Sand Form,Attachment,Sandman
+27067,2,Sand Clone,Minion,Sandman
+27068,2,Dirt Trap,SideScheme,Sandman
+27069,2,Tidal Sands,SideScheme,Sandman
+27070,2,Sandslide,Treachery,Sandman
+27071,2,Sand Storm,Treachery,Sandman
+27072,2,Sand Smash,Treachery,Sandman
+27073,2,Venom,Villain,Venom
+27074,2,Venom,Villain,Venom
+27075,2,Venom,Villain,Venom
+27076a,2,"""Leave Us Alone!""",MainScheme,Venom
+27076b,2,"""Leave Us Alone!""",MainScheme,Venom
+27077a,2,Bell Tower,Environment,Venom
+27077b,2,Bell Tower,Environment,Venom
+27078,2,"""Now We're Angry!""",Attachment,Venom
+27079,2,Guard the Bell Tower,SideScheme,Venom
+27080,2,Lashing Out,SideScheme,Venom
+27081,2,Tooth and Nail,SideScheme,Venom
+27082,2,Biting Retort,Treachery,Venom
+27083,2,For Whom the Bell Tolls,Treachery,Venom
+27084,2,Mysterio,Villain,Mysterio
+27085,2,Mysterio,Villain,Mysterio
+27086,2,Mysterio,Villain,Mysterio
+27087a,2,Maze of Mirrors,MainScheme,Mysterio
+27087b,2,Maze of Mirrors,MainScheme,Mysterio
+27088a,2,Edge of Reality,MainScheme,Mysterio
+27088b,2,Edge of Reality,MainScheme,Mysterio
+27089,2,Humongous Hallucination,Attachment,Mysterio
+27090,2,Masterful Mirage,Attachment,Mysterio
+27091,2,Shifting Apparition,Minion,Mysterio
+27092,2,Déjà Vu,Treachery,Mysterio
+27093,2,Fearmonger,Treachery,Mysterio
+27094,2,Doctor Octopus,Villain,Sinister Six
+27095,2,Electro,Villain,Sinister Six
+27096,2,Hobgoblin,Villain,Sinister Six
+27097,2,Kraven the Hunter,Villain,Sinister Six
+27098,2,Scorpion,Villain,Sinister Six
+27099,2,Vulture,Villain,Sinister Six
+27100a,2,Sinister Synchronization,MainScheme,Sinister Six
+27100b,2,Sinister Synchonization,MainScheme,Sinister Six
+27101a,2,Sinister Beatdown,MainScheme,Sinister Six
+27101b,2,Sinister Beatdown,MainScheme,Sinister Six
+27102a,2,Light at the End,SideScheme,Sinister Six
+27102b,2,Light at the End,SideScheme,Sinister Six
+27103,2,Heightened Morale,Attachment,Sinister Six
+27104,2,Taunting Presence,Attachment,Sinister Six
+27105,2,Team Leader,Attachment,Sinister Six
+27106,2,Take One for the Team,Attachment,Sinister Six
+27107,2,Brute Force Barricade,SideScheme,Sinister Six
+27108,2,Frequent Flyers,Treachery,Sinister Six
+27109,2,High Fashion,Treachery,Sinister Six
+27110,2,Robotic Enhancements,Treachery,Sinister Six
+27111,2,Partnership of Pain,Treachery,Sinister Six
+27112,2,Surprise!,Treachery,Sinister Six
+27113,2,Venom Goblin,Villain,Venom Goblin
+27114,2,Venom Goblin,Villain,Venom Goblin
+27115,2,Venom Goblin,Villain,Venom Goblin
+27116a,2,Skies Over New York,MainScheme,Venom Goblin
+27116b,2,Skies Over New York,Environment,Venom Goblin
+27117a,2,Lower Manhattan,MainScheme,Venom Goblin
+27117b,2,Lower Manhattan,Environment,Venom Goblin
+27118a,2,Midtown Manhattan,MainScheme,Venom Goblin
+27118b,2,Midtown Manhattan,Environment,Venom Goblin
+27119a,2,Upper Manhattan,MainScheme,Venom Goblin
+27119b,2,Upper Manhattan,Environment,Venom Goblin
+27120,2,We Are One,Attachment,Venom Goblin
+27121,2,Symbiotic Berserker,Minion,Venom Goblin
+27122,2,Symbiotic Monstrosity,Minion,Venom Goblin
+27123,2,Symbiotic Thrall,Minion,Venom Goblin
+27124,2,Festering Mass,SideScheme,Venom Goblin
+27125,2,Joy Ride,SideScheme,Venom Goblin
+27126,2,Spreading Panic,Treachery,Venom Goblin
+27127,2,Panic in the Streets,SideScheme,City in Chaos
+27128,2,Rhino,Minion,City in Chaos
+27129,2,Calling in Favors,Treachery,City in Chaos
+27130,2,Now or Never,Treachery,City in Chaos
+27131,2,Common Criminal,Minion,Down to Earth
+27132,2,Friends and Family,Obligation,Down to Earth
+27133,2,Volunteer Work,SideScheme,Down to Earth
+27134,2,"""Threat or Menace?""",Treachery,Down to Earth
+27135,2,Loose Ends,Treachery,Down to Earth
+27136,2,Advanced Glider,Attachment,Goblin Gear
+27137,2,Concussive Bombs,Attachment,Goblin Gear
+27138,2,Incendiary Bombs,Attachment,Goblin Gear
+27139,2,Smoke Bombs,Attachment,Goblin Gear
+27140,2,Limitless Supply,SideScheme,Goblin Gear
+27141,2,Remote Navigation,Treachery,Goblin Gear
+27142,2,Life-Size Decoy,Minion,Guerrilla Tactics
+27143,2,Coordinated Effort,SideScheme,Guerrilla Tactics
+27144,2,Hidden in Shadow,SideScheme,Guerrilla Tactics
+27145,2,Teamwork Makes the Dream Work,SideScheme,Guerrilla Tactics
+27146,2,From Every Direction,Treachery,Guerrilla Tactics
+27147,2,Arm Cannon,Attachment,Osborn Tech
+27148,2,Ionic Boots,Attachment,Osborn Tech
+27149,2,Kinetic Armor,Attachment,Osborn Tech
+27150,2,Neocarbon Scales,Attachment,Osborn Tech
+27151,2,Spiked Gauntlet,Attachment,Osborn Tech
+27152,2,Tracking Display,Attachment,Osborn Tech
+27153,2,Induced Panic,Attachment,Personal Nightmare
+27154,2,Evil Doppelgänger,Minion,Personal Nightmare
+27155,2,Fool's Paradise,SideScheme,Personal Nightmare
+27156,2,Weakness from Within,SideScheme,Personal Nightmare
+27157,2,Deepest Fears,Treachery,Personal Nightmare
+27158,2,Doctor Octopus,Minion,Sinister Assault
+27159,2,Electro,Minion,Sinister Assault
+27160,2,Hobgoblin,Minion,Sinister Assault
+27161,2,Kraven the Hunter,Minion,Sinister Assault
+27162,2,Scorpion,Minion,Sinister Assault
+27163,2,Vulture,Minion,Sinister Assault
+27164,2,Improvised Weapons,Attachment,Symbiotic Strength
+27165,2,Violent Tendencies,Attachment,Symbiotic Strength
+27166,2,Webbed Up,Attachment,Symbiotic Strength
+27167,2,Enraged Symbiote,Minion,Symbiotic Strength
+27168,2,Swinging Assault,Treachery,Symbiotic Strength
+27169,2,Unstable Sentience,Treachery,Symbiotic Strength
+27170,2,Delusion of Collusion,Attachment,Whispers of Paranoia
+27171,2,Manipulated Mind,Attachment,Whispers of Paranoia
+27172,2,Old Grudge,Attachment,Whispers of Paranoia
+27173,2,Analysis Paralysis,SideScheme,Whispers of Paranoia
+27174a,2,Public Outcry,Environment,Bad Publicity
+27174b,2,Public Outcry,Environment,Bad Publicity
+27175,2,Smear Campaign,Treachery,Bad Publicity
+27176,2,Back Alley Burglary,SideScheme,Community Service
+27177,2,Cat in a Tree,SideScheme,Community Service
+27178,2,Henchmen Heist,SideScheme,Community Service
+27179,2,Off the Rails,SideScheme,Community Service
+27180,2,Rubble Rescue,SideScheme,Community Service
+27181,2,Snitches Get Stitches,Attachment,Snitches get Stitches
+28021,2,Weight of the World,Obligation,Nova
+28022,2,"""Bring the War!""",SideScheme,Nova Nemesis
+28023,2,Warbringer,Minion,Nova Nemesis
+28024,2,War Delivery,Treachery,Nova Nemesis
+28025,2,"""The War's Been Brought""",Treachery,Nova Nemesis
+28028,2,Armored Assault,SideScheme,Armadillo
+28029,2,Armadillo,Minion,Armadillo
+28030,2,"Rollin', Rollin'",Attachment,Armadillo
+28031,2,Tough and Tumble,Treachery,Armadillo
+28032,2,Tough It Out,Treachery,Armadillo
+29028,2,A Minor Setback,Obligation,Ironheart
+29029,2,Rule by Force,SideScheme,Ironheart Nemesis
+29030,2,Lucia von Bardas,Minion,Ironheart Nemesis
+29031,2,Cyborg Tech,Attachment,Ironheart Nemesis
+29032,2,Political Retribution,Treachery,Ironheart Nemesis
+29036,2,Feedback Loop,SideScheme,Zzzax
+29037,2,Zzzax,Minion,Zzzax
+29038,2,Haywire,Attachment,Zzzax
+29039,2,Air Static,Environment,Zzzax
+29040,2,Zzzap!,Treachery,Zzzax
+30024,2,"""I Really Want a Hot Dog!""",Obligation,Spider-Ham
+30025,2,Nefarious Trap,SideScheme,Spider-Ham Nemesis
+30026,2,The Green Gobbler,Minion,Spider-Ham Nemesis
+30027,2,Gobbler Glider,Attachment,Spider-Ham Nemesis
+30028,2,"""Feast on This!""",Treachery,Spider-Ham Nemesis
+30030,2,Hunting the Spider-Totems,SideScheme,The Inheritors
+30031,2,Bora,Minion,The Inheritors
+30032,2,Brix,Minion,The Inheritors
+30033,2,Daemos,Minion,The Inheritors
+30034,2,Jennix,Minion,The Inheritors
+30035,2,Karn,Minion,The Inheritors
+30036,2,Morlun,Minion,The Inheritors
+30037,2,Solus,Minion,The Inheritors
+30038,2,Verna,Minion,The Inheritors
+31025,2,Inherited Burden,Obligation,SP//dr
+31026,2,Giant Monster Attack,SideScheme,SP//dr Nemesis
+31027,2,M.O.R.B.I.U.S.,Minion,SP//dr Nemesis
+31028,2,Energy Drain,Treachery,SP//dr Nemesis
+31030,2,Grand Larceny,SideScheme,Iron Spider's Sinister Six
+31031,2,Bombshell,Minion,Iron Spider's Sinister Six
+31032,2,Electro,Minion,Iron Spider's Sinister Six
+31033,2,Hobgoblin,Minion,Iron Spider's Sinister Six
+31034,2,Iron Spider,Minion,Iron Spider's Sinister Six
+31035,2,Sandman,Minion,Iron Spider's Sinister Six
+31036,2,Spot,Minion,Iron Spider's Sinister Six
+31037,2,Surge in Crime,Environment,Iron Spider's Sinister Six
+32025,2,Homesick,Obligation,Colossus
+32026,2,Juggernaut,Minion,Colossus Nemesis
+32027,2,Rampaging Juggernaut,SideScheme,Colossus Nemesis
+32028,2,Unstoppable,Attachment,Colossus Nemesis
+32029,2,Slammed,Treachery,Colossus Nemesis
+32055,2,Permanently Phased,Obligation,Shadowcat
+32056,2,White Queen,Minion,Shadowcat Nemesis
+32057,2,The Hellfire Club,SideScheme,Shadowcat Nemesis
+32058,2,Hellfire Pawn,Minion,Shadowcat Nemesis
+32059,2,Telepathic Restraint,Attachment,Shadowcat Nemesis
+32060,2,Sabretooth,Villain,Sabretooth
+32061,2,Sabretooth,Villain,Sabretooth
+32062,2,Sabretooth,Villain,Sabretooth
+32063a,2,Stalked by Sabretooth 1A,MainScheme,Sabretooth
+32063b,2,Stalked by Sabretooth 1B,MainScheme,Sabretooth
+32064a,2,The Injured Senator 2A,MainScheme,Sabretooth
+32064b,2,The Injured Senator 2B,MainScheme,Sabretooth
+32065a,2,Find the Senator,SideScheme,Sabretooth
+32065b,2,Protect the Senator,Environment,Sabretooth
+32067,2,Adamantium Claws,Attachment,Sabretooth
+32068,2,Animal Ferocity,Attachment,Sabretooth
+32069,2,Sabretooth Strikes,Treachery,Sabretooth
+32070,2,Unrelenting Savage,Treachery,Sabretooth
+32071,2,Medical Emergency,SideScheme,Sabretooth
+32072,2,Feral Rage,SideScheme,Sabretooth
+32073,2,Avalanche,Minion,Brotherhood
+32074,2,Blob,Minion,Brotherhood
+32075,2,Pyro,Minion,Brotherhood
+32076,2,Toad,Minion,Brotherhood
+32077,2,Homo Superior,Attachment,Brotherhood
+32078,2,Mutant Terrorists,Treachery,Brotherhood
+32079,2,The Brotherhood,SideScheme,Brotherhood
+32080,2,Mystique,Minion,Mystique
+32081,2,Metamorphic Mayhem,SideScheme,Mystique
+32082,2,Infiltration,Treachery,Mystique
+32083,2,Shapeshifter Surprise,Treachery,Mystique
+32084,2,Sentinel,Villain,Project Wideawake
+32085,2,Sentinel,Villain,Project Wideawake
+32086,2,Sentinel,Villain,Project Wideawake
+32087a,2,Night of the Sentinels A,MainScheme,Project Wideawake
+32087b,2,Night of the Sentinels B,MainScheme,Project Wideawake
+32088a,2,Mutants at the Mall,SideScheme,Project Wideawake
+32093,2,Sentinel Mark IV,Minion,Project Wideawake
+32094,2,Gauntlet Beam,Attachment,Project Wideawake
+32095,2,Learning A.I.,Attachment,Project Wideawake
+32096,2,Adaptive Armor,Attachment,Project Wideawake
+32097,2,Self-Repair,Treachery,Project Wideawake
+32098,2,Mutant Detected,Treachery,Project Wideawake
+32099,2,Warn the Others,Obligation,Project Wideawake
+32100,2,Abduction Protocols,SideScheme,Project Wideawake
+32101,2,Sentinel Mark II,Minion,Zero Tolerance
+32102,2,Sentinel Mark III,Minion,Zero Tolerance
+32103,2,Energy Barrier,Attachment,Zero Tolerance
+32104,2,Operation Zero Tolerance,SideScheme,Zero Tolerance
+32105,2,Sentinel Mark V,Minion,Sentinels
+32106,2,Sentinel Mark VI,Minion,Sentinels
+32107,2,Targeted for Elimination,Attachment,Sentinels
+32108,2,Relentless Robots,SideScheme,Sentinels
+32109,2,Master Mold,Villain,Master Mold
+32110,2,Master Mold,Villain,Master Mold
+32111,2,Master Mold,Villain,Master Mold
+32112a,2,The Sentinel Factory A,MainScheme,Master Mold
+32112b,2,The Sentinel Factory B,MainScheme,Master Mold
+32113a,2,Master Mold's Agenda A,MainScheme,Master Mold
+32113b,2,Master Mold's Agenda B,MainScheme,Master Mold
+32114,2,Sentinel Mark VIII,Minion,Master Mold
+32115,2,Unit Upgrade,Attachment,Master Mold
+32116,2,Stun Beam,Attachment,Master Mold
+32117,2,Master Mold's Children,Treachery,Master Mold
+32118,2,Shields Up,Treachery,Master Mold
+32119,2,Intruder Alert!,SideScheme,Master Mold
+32120,2,Insert Virus Program,SideScheme,Master Mold
+32121a,2,Avalanche A,Villain,Mansion Attack
+32121b,2,Avalanche B,Villain,Mansion Attack
+32122a,2,Blob A,Villain,Mansion Attack
+32122b,2,Blob B,Villain,Mansion Attack
+32123a,2,Pyro A,Villain,Mansion Attack
+32123b,2,Pyro B,Villain,Mansion Attack
+32124a,2,Toad A,Villain,Mansion Attack
+32124b,2,Toad B,Villain,Mansion Attack
+32125a,2,The Brotherhood Strikes! A,MainScheme,Mansion Attack
+32125b,2,The Brotherhood Strikes! B,MainScheme,Mansion Attack
+32126a,2,The Atrium A,MainScheme,Mansion Attack
+32126b,2,The Atrium B,MainScheme,Mansion Attack
+32127b,2,The Cafeteria B,MainScheme,Mansion Attack
+32128b,2,The Basketball Court B,MainScheme,Mansion Attack
+32129b,2,The Courtyard B,MainScheme,Mansion Attack
+32130,2,Save the School,Environment,Mansion Attack
+32131,2,Brotherhood Beatdown,Treachery,Mansion Attack
+32132,2,Ground Swell,Treachery,Mansion Attack
+32133,2,Immovable,Treachery,Mansion Attack
+32134,2,Pyromaniac,Treachery,Mansion Attack
+32135,2,Hopping Mad,Treachery,Mansion Attack
+32136,2,Protect the Students,SideScheme,Mansion Attack
+32137,2,Under Siege,SideScheme,Mansion Attack
+32138,2,Magneto,Villain,Magneto
+32139,2,Magneto,Villain,Magneto
+32140,2,Magneto,Villain,Magneto
+32141a,2,Asteroid M A,MainScheme,Magneto
+32141b,2,Asteroid M B,MainScheme,Magneto
+32142a,2,Factory Online A,MainScheme,Magneto
+32142b,2,Factory Online B,MainScheme,Magneto
+32143a,2,The Rule of Magnus A,MainScheme,Magneto
+32143b,2,The Rule of Magnus B,MainScheme,Magneto
+32144a,2,Boarding Party,SideScheme,Magneto
+32144b,2,Sabotage Master Mold,SideScheme,Magneto
+32145a,2,Orbital Decay,SideScheme,Magneto
+32145b,2,Physical Strain,Attachment,Magneto
+32146,2,M-Type Sentinel,Minion,Magneto
+32147,2,Magneto's Helmet,Attachment,Magneto
+32148,2,Magneto's Armor,Attachment,Magneto
+32149,2,Magnetic Bubble,Attachment,Magneto
+32150,2,Wrapped in Metal,Attachment,Magneto
+32151,2,Master of Magnetism,Treachery,Magneto
+32152,2,Electric Shock,Treachery,Magneto
+32153,2,Electromagnetic Blast,Treachery,Magneto
+32154,2,Metal Shards,Treachery,Magneto
+32155,2,Magnetic Missile,Treachery,Magneto
+32156,2,Magnetic Mayhem,SideScheme,Magneto
+32157,2,Magnetically Sealed,SideScheme,Magneto
+32158,2,Seized!,SideScheme,Magneto
+32159,2,Fabian Cortez,Minion,Acolytes
+32160,2,Amelia Voght,Minion,Acolytes
+32161,2,Senyaka,Minion,Acolytes
+32162,2,Delgado,Minion,Acolytes
+32163,2,Unuscione,Minion,Acolytes
+32164,2,Zeal for the Cause,Treachery,Acolytes
+32165,2,The Acolytes,SideScheme,Acolytes
+32166,2,Nimrod,Minion,Future Past
+32167,2,Bastion,Minion,Future Past
+32168,2,Nimrod's Portal,SideScheme,Future Past
+32169,2,Bastion's Machinations,SideScheme,Future Past
+32170,2,Nano-Sentinel Tech,Attachment,Future Past
+32171a,2,Frightened Police,SideScheme,Mutant Genesis Campaign
+32172a,2,Enemy of My Enemy,SideScheme,Mutant Genesis Campaign
+32173a,2,Find the Prisoners,SideScheme,Mutant Genesis Campaign
+32173b,2,Rescue Captives,Environment,Mutant Genesis Campaign
+32174a,2,Surprise Attack,SideScheme,Mutant Genesis Campaign
+32174b,2,Reactive Defense,Obligation,Mutant Genesis Campaign
+32175a,2,Magneto's Fortress,SideScheme,Mutant Genesis Campaign
+32175b,2,Magneto's Power,Attachment,Mutant Genesis Campaign
+33027,2,Lost Visor,Obligation,Cyclops
+33028,2,Mister Sinister,Minion,Cyclops Nemesis
+33029,2,Genetic Manipulation,SideScheme,Cyclops Nemesis
+33030,2,Gene Therapy,Attachment,Cyclops Nemesis
+33031,2,Concussive Force,Treachery,Cyclops Nemesis
+34028,2,Burning Hunger,Obligation,Phoenix
+34029,2,Dark Phoenix,Minion,Phoenix Nemesis
+34030,2,Consume the World,SideScheme,Phoenix Nemesis
+34031,2,Fiery Rage,Treachery,Phoenix Nemesis
+35027,2,Past Demons,Obligation,Wolverine
+35028,2,Omega Red,Minion,Wolverine Nemesis
+35029,2,The Carbonadium Synthesizer,SideScheme,Wolverine Nemesis
+35030,2,Death Factor,Attachment,Wolverine Nemesis
+35031,2,Tentacle Strike,Treachery,Wolverine Nemesis
+35034,2,Lady Deathstrike,Minion,Deathstrike
+35035,2,Seeking Vengeance,SideScheme,Deathstrike
+35036,2,Adamantium Upgrades,Attachment,Deathstrike
+35037,2,Hack 'n' Slash,Treachery,Deathstrike
+36030,2,Claustrophobia,Obligation,Storm
+36031,2,Callisto,Minion,Storm Nemesis
+36032,2,Leader of the Morlocks,SideScheme,Storm Nemesis
+36033,2,Switchblade,Attachment,Storm Nemesis
+36034,2,Knife Fight,Treachery,Storm Nemesis
+36036,2,The Shadow King,Minion,Shadow King
+36037,2,Ruler of the Astral Plane,SideScheme,Shadow King
+36038,2,Possessed,Attachment,Shadow King
+36039,2,Astral Attack,Treachery,Shadow King
+37025,2,Guild Business,Obligation,Gambit
+37026,2,Belladonna,Minion,Gambit Nemesis
+37027,2,The Assassins Guild,SideScheme,Gambit Nemesis
+37028,2,Guild Assassin,Minion,Gambit Nemesis
+37029,2,Assassination Attempt,Treachery,Gambit Nemesis
+37032,2,Exodus,Minion,Exodus
+37033,2,Herald of Avalon,SideScheme,Exodus
+37034,2,Psionic Shield,Attachment,Exodus
+37035,2,Acolyte Frenzy,Treachery,Exodus
+38024,2,Deadly Touch,Obligation,Rogue
+38025,2,Mystique,Minion,Rogue Nemesis
+38026,2,Mystique's Manipulations,SideScheme,Rogue Nemesis
+38027,2,Misled,Treachery,Rogue Nemesis
+38029,2,Donald Pierce,Minion,Reavers
+38030,2,Skullbuster,Minion,Reavers
+38031,2,Bonebreaker,Minion,Reavers
+38032,2,Wade Cole,Minion,Reavers
+38033,2,Murray Reese,Minion,Reavers
+38034,2,The Reavers,SideScheme,Reavers
+38035,2,Cybernetic Enhancements,Attachment,Reavers
+39001a,2,MaGog,Villain,Magog
+39001b,2,MaGog,Villain,Magog
+39002a,2,Melee in the Mojo-seum,MainScheme,Magog
+39002b,2,Melee in the Mojo-seum,MainScheme,Magog
+39003a,2,The Champion,Environment,Magog
+39003b,2,The Champion,Environment,Magog
+39004a,2,The Challengers,Environment,Magog
+39004b,2,The Challengers,Environment,Magog
+39005,2,Jolt of Adrenaline,Attachment,Magog
+39006,2,Surge of Aggression,Attachment,Magog
+39007,2,Surprise Contender,Minion,Magog
+39008,2,Pump Up the Crowd,SideScheme,Magog
+39009,2,Break a Leg,Treachery,Magog
+39010,2,Defend the Title,Treachery,Magog
+39011,2,Stage Fright,Treachery,Magog
+39012a,2,Spiral,Villain,Spiral
+39012b,2,Spiral,Villain,Spiral
+39013a,2,Spiral,Villain,Spiral
+39013b,2,Spiral,Villain,Spiral
+39014a,2,Spiral,Villain,Spiral
+39014b,2,Spiral,Villain,Spiral
+39015a,2,Across the Mojoverse,MainScheme,Spiral
+39015b,2,Across the Mojoverse,MainScheme,Spiral
+39016,2,The Search for Spiral,SideScheme,Spiral
+39017,2,Cornered!,Treachery,Spiral
+39018,2,Spiral's Swords,Attachment,Spiral
+39019,2,Erratic Teleportation,Treachery,Spiral
+39020,2,The Show Must Go On,Treachery,Spiral
+39021,2,Well-Armed,Treachery,Spiral
+39022,2,Mojo,Villain,Mojo
+39023,2,Mojo,Villain,Mojo
+39024,2,Mojo,Villain,Mojo
+39025a,2,MojoMania,MainScheme,Mojo
+39025b,2,MojoMania,MainScheme,Mojo
+39026a,2,Wheel of Genres,Environment,Mojo
+39026b,2,Wheel of Genres,Environment,Mojo
+39027,2,Major Domo,Attachment,Mojo
+39028,2,Stinger Tail,Attachment,Mojo
+39029,2,Supporting Actor,Minion,Mojo
+39030,2,Paparazzi,Obligation,Mojo
+39031,2,Undercover Mojo,SideScheme,Mojo
+39032,2,Curtain Call,Treachery,Mojo
+39033,2,Director's Directions,Treachery,Mojo
+39034,2,Top Billing,Treachery,Mojo
+39035,2,Dial M for Mojo,Environment,Crime
+39036,2,Build the Case,Obligation,Crime
+39037,2,Crime Scene Investigation,SideScheme,Crime
+39038,2,Law & Order,SideScheme,Crime
+39039,2,Dragnet,SideScheme,Crime
+39040,2,"Elementary, My Dear Mojo",Treachery,Crime
+39041,2,A Game of Mojo's,Environment,Fantasy
+39042,2,Dragon,Minion,Fantasy
+39043,2,Goblin,Minion,Fantasy
+39044,2,Troll,Minion,Fantasy
+39045,2,Fetch Quest,SideScheme,Fantasy
+39046,2,Mana Drain,Treachery,Fantasy
+39047,2,The Mojo Files,Environment,Horror
+39048,2,Bandolier of Stakes,Attachment,Horror
+39049,2,Cultist,Minion,Horror
+39050,2,The Kraken,Minion,Horror
+39051,2,Vampire,Minion,Horror
+39052,2,Werewolf Pack,Minion,Horror
+39053,2,Mojo Runner,Environment,Sci-Fi
+39054,2,Avalanche 9.0,Minion,Sci-Fi
+39055,2,Blob 3.14,Minion,Sci-Fi
+39056,2,Magneto 2.6,Minion,Sci-Fi
+39057,2,Pyro 4.0,Minion,Sci-Fi
+39058,2,Toad 2.0,Minion,Sci-Fi
+39059,2,ICE-Teroid M,SideScheme,Sci-Fi
+39060,2,Mojo in the Middle,Environment,Sitcom
+39061,2,Family Matters,Obligation,Sitcom
+39062,2,Growing Pains,Obligation,Sitcom
+39063,2,The Odd Couple,Obligation,Sitcom
+39064,2,The One with the Breakup,Obligation,Sitcom
+39065,2,Watch Me Play,Obligation,Sitcom
+39066,2,Wild Wild Mojo,Environment,Western
+39067,2,Dead or Alive,Attachment,Western
+39068,2,Card Shark,Minion,Western
+39069,2,Gunslinger,Minion,Western
+39070,2,A Game of Cards,Treachery,Western
+40031,2,Technovirus Resurgence,Obligation,Cable
+40032,2,Stryfe,Minion,Cable Nemesis
+40033,2,Back to the Future,SideScheme,Cable Nemesis
+40034,2,Telekinetic Force Field,Attachment,Cable Nemesis
+40035,2,Mind Scan,Treachery,Cable Nemesis
+40036,2,Telekinetic Blast,Treachery,Cable Nemesis
+40065,2,Memories of Armageddon,Obligation,Domino
+40066,2,Topaz,Minion,Domino Nemesis
+40067,2,Not My Lucky Day,SideScheme,Domino Nemesis
+40068,2,Prototype,Minion,Domino Nemesis
+40069,2,Superpower Feedback,Attachment,Domino Nemesis
+40070a,2,Arclight,Villain,Marauders
+40070b,2,Arclight,Villain,Marauders
+40071a,2,Blockbuster,Villain,Marauders
+40071b,2,Blockbuster,Villain,Marauders
+40072a,2,Chimera,Villain,Marauders
+40072b,2,Chimera,Villain,Marauders
+40073a,2,Greycrow,Villain,Marauders
+40073b,2,Greycrow,Villain,Marauders
+40074a,2,Harpoon,Villain,Marauders
+40074b,2,Harpoon,Villain,Marauders
+40075a,2,Riptide,Villain,Marauders
+40075b,2,Riptide,Villain,Marauders
+40076a,2,Vertigo,Villain,Marauders
+40076b,2,Vertigo,Villain,Marauders
+40077a,2,"Knock, Knock",MainScheme,Morlock Siege
+40077b,2,"Knock, Knock",MainScheme,Morlock Siege
+40078a,2,Mutant Massacre,MainScheme,Morlock Siege
+40078b,2,Mutant Massacre,MainScheme,Morlock Siege
+40080,2,Hide!,Treachery,Morlock Siege
+40081a,2,Routed,Environment,Morlock Siege
+40081b,2,Routed,Environment,Morlock Siege
+40082,2,Bolstered by Wrath,Attachment,Morlock Siege
+40083,2,Pushed to the Limit,Attachment,Morlock Siege
+40084,2,By Any Means,SideScheme,Morlock Siege
+40085,2,In the Midst of Chaos,SideScheme,Morlock Siege
+40086,2,Maraudin' Ain't Easy,SideScheme,Morlock Siege
+40087,2,Territorial Control,SideScheme,Morlock Siege
+40088,2,Back in Action,Treachery,Morlock Siege
+40089,2,Seek the Weak,Treachery,Morlock Siege
+40090,2,Heavy Armament,Attachment,Military Grade
+40091,2,Titanium Exoskeleton,Attachment,Military Grade
+40092,2,Inhibitor Collar,Attachment,Military Grade
+40093,2,The Senator's Support,SideScheme,Military Grade
+40094,2,Arclight,Minion,Mutant Slayers
+40095,2,Blockbuster,Minion,Mutant Slayers
+40096,2,Chimera,Minion,Mutant Slayers
+40097,2,Greycrow,Minion,Mutant Slayers
+40098,2,Harpoon,Minion,Mutant Slayers
+40099,2,Riptide,Minion,Mutant Slayers
+40100,2,Vertigo,Minion,Mutant Slayers
+40101,2,Mutant Slayers,SideScheme,Mutant Slayers
+40102,2,Bound by Business,Treachery,Mutant Slayers
+40103a,2,Gotta Get Away,MainScheme,On the Run
+40103b,2,Gotta Get Away,MainScheme,On the Run
+40104a,2,Escaping with Hope,MainScheme,On the Run
+40104b,2,Escaping with Hope,MainScheme,On the Run
+40105a,2,Hope's Captor,Attachment,On the Run
+40105b,2,Hope's Captor,Attachment,On the Run
+40106,2,Hidden in the Clutter,Attachment,On the Run
+40107,2,Favored Weapon,Attachment,On the Run
+40108,2,Bushwhack,SideScheme,On the Run
+40109,2,Pure Force,SideScheme,On the Run
+40110,2,Dizzying Deeds,Treachery,On the Run
+40111,2,Tag Team,Treachery,On the Run
+40112,2,Gorgeous George,Minion,Nasty Boys
+40113,2,Hairbag,Minion,Nasty Boys
+40114,2,Ramrod,Minion,Nasty Boys
+40115,2,Ruckus,Minion,Nasty Boys
+40116,2,Slab,Minion,Nasty Boys
+40117,2,Get Nasty,SideScheme,Nasty Boys
+40118,2,Juggernaut,Villain,Juggernaut
+40119,2,Juggernaut,Villain,Juggernaut
+40120,2,Juggernaut,Villain,Juggernaut
+40121a,2,The Unstoppable Juggernaut,MainScheme,Juggernaut
+40121b,2,The Unstoppable Juggernaut,MainScheme,Juggernaut
+40122a,2,Juggernaut's Helmet,Attachment,Juggernaut
+40122b,2,Juggernaut Exposed,Attachment,Juggernaut
+40123,2,Head of Steam,Attachment,Juggernaut
+40124,2,Building Momentum,SideScheme,Juggernaut
+40125,2,Breakthrough,Treachery,Juggernaut
+40126,2,Flatten,Treachery,Juggernaut
+40127,2,Ground Pound,Treachery,Juggernaut
+40128,2,Trample,Treachery,Juggernaut
+40129,2,Cyttorak's Exemplar,Treachery,Juggernaut
+40131,2,Captive Hope,SideScheme,Hope Summers
+40132,2,Black Tom Cassidy,Minion,Black Tom Cassidy
+40133,2,Creeping Willow,Minion,Black Tom Cassidy
+40134,2,Making Green,SideScheme,Black Tom Cassidy
+40135,2,A Sound Thrashing,Treachery,Black Tom Cassidy
+40136,2,Mister Sinister,Villain,Mister Sinister
+40137,2,Mister Sinister,Villain,Mister Sinister
+40138,2,Mister Sinister,Villain,Mister Sinister
+40139a,2,Sinister Intent,MainScheme,Mister Sinister
+40139b,2,Sinister Intent,MainScheme,Mister Sinister
+40140a,2,Sinister Experiment,MainScheme,Mister Sinister
+40140b,2,Taking Off,MainScheme,Mister Sinister
+40141b,2,Bulking Up,MainScheme,Mister Sinister
+40142b,2,Focusing In,MainScheme,Mister Sinister
+40143a,2,Sinister Ends,MainScheme,Mister Sinister
+40143b,2,Sinister Ends,MainScheme,Mister Sinister
+40144,2,Sinister Disguise,Attachment,Mister Sinister
+40145,2,Sinister Soldier,Minion,Mister Sinister
+40146,2,Teleported Away,SideScheme,Mister Sinister
+40147,2,Genetic Mastery,Treachery,Mister Sinister
+40148,2,Molecular Control,Treachery,Mister Sinister
+40149,2,Sinister Schemes,Treachery,Mister Sinister
+40150,2,Sinister Strike,Treachery,Mister Sinister
+40151,2,Flight,Attachment,Flight
+40152,2,Aerial Bombardment,Attachment,Flight
+40153,2,Out of Reach,Attachment,Flight
+40154,2,High Ground,Treachery,Flight
+40155,2,Super Strength,Attachment,Super Strength
+40156,2,Impervious,Attachment,Super Strength
+40157,2,Thrown Object,Attachment,Super Strength
+40158,2,"""I'll Take That""",Treachery,Super Strength
+40159,2,Telepathy,Attachment,Telepathy
+40160,2,Manufactured Drama,Obligation,Telepathy
+40161,2,Sowing Discord,Obligation,Telepathy
+40162,2,One Step Ahead,Treachery,Telepathy
+40163,2,Stryfe,Villain,Stryfe
+40164,2,Stryfe,Villain,Stryfe
+40165,2,Stryfe,Villain,Stryfe
+40166a,2,Uncontrollable Power,MainScheme,Stryfe
+40166b,2,Uncontrollable Power,MainScheme,Stryfe
+40167a,2,Left to Your Fate,MainScheme,Stryfe
+40167b,2,Left to Your Fate,MainScheme,Stryfe
+40168a,2,Stryfe's Grasp,SideScheme,Stryfe
+40168b,2,Living Bomb,SideScheme,Stryfe
+40169,2,Mental Transferal,Attachment,Stryfe
+40170,2,Mind Alteration,Attachment,Stryfe
+40171,2,Mind Trap,Attachment,Stryfe
+40172,2,Psionic Amnesia,Attachment,Stryfe
+40173,2,Psychic Inertia,Attachment,Stryfe
+40174,2,Zero,Minion,Stryfe
+40175,2,Cerebral Erasure,SideScheme,Stryfe
+40176,2,Telepathic Camouflage,SideScheme,Stryfe
+40177,2,Psionic Surge,Treachery,Stryfe
+40178,2,Psychic Override,Treachery,Stryfe
+40179,2,Telekinetic Wave,Treachery,Stryfe
+40180,2,Strobe,Minion,Extreme Measures
+40181,2,Tempo,Minion,Extreme Measures
+40182,2,Thumbelina,Minion,Extreme Measures
+40183,2,Wildside,Minion,Extreme Measures
+40184,2,Extreme Measures,SideScheme,Extreme Measures
+40185,2,Dragoness,Minion,Mutant Insurrection
+40186,2,Forearm,Minion,Mutant Insurrection
+40187,2,Reaper,Minion,Mutant Insurrection
+40188,2,Samurai,Minion,Mutant Insurrection
+40189,2,Mutant Insurrection,SideScheme,Mutant Insurrection
+40190b,2,Team Assembled,Environment,Next Evolution Campaign
+40191b,2,Safehouse Established,Environment,Next Evolution Campaign
+40192b,2,Geared Up,Environment,Next Evolution Campaign
+40193b,2,Mission Prepped,Environment,Next Evolution Campaign
+40194b,2,Practiced Maneuvers,Environment,Next Evolution Campaign
+40195b,2,Prepared Defenses,Environment,Next Evolution Campaign
+40198,2,Lady Mastermind,Minion,Next Evolution Campaign
+40199,2,Malice,Minion,Next Evolution Campaign
+40200,2,Scrambler,Minion,Next Evolution Campaign
+40201,2,Vanisher,Minion,Next Evolution Campaign
+40202,2,Under Pressure,SideScheme,Next Evolution Campaign
+40203,2,Overburdened,Treachery,Next Evolution Campaign
+41025,2,Body Swapped,Obligation,Psylocke
+41026,2,Chimera,Minion,Psylocke Nemesis
+41027,2,Interdimensional Plunder,SideScheme,Psylocke Nemesis
+41028,2,Psionic Illusion,Attachment,Psylocke Nemesis
+41029,2,Telekinetic Dragon,Treachery,Psylocke Nemesis
+42024,2,Apocalyptic Influence,Obligation,Angel
+42025,2,Harpoon,Minion,Angel Nemesis
+42026,2,"Hook, Line, and Sinker",SideScheme,Angel Nemesis
+42027,2,Harpoon's Harpoon,Attachment,Angel Nemesis
+42028,2,Spear Shot,Treachery,Angel Nemesis
+43028,2,Self-Isolation,Obligation,X-23
+43029,2,Lady Deathstrike,Minion,X-23 Nemesis
+43030,2,In the Name of Vengence,SideScheme,X-23 Nemesis
+43031,2,Cybermods,Attachment,X-23 Nemesis
+43032,2,Critical Wound,Attachment,X-23 Nemesis
+43033,2,Hack 'n' Slash,Treachery,X-23 Nemesis
+44032,2,The Merc with the Mouth,Obligation,Deadpool
+44033,2,Butler,Minion,Deadpool Nemesis
+44034,2,Involuntary Procedures,SideScheme,Deadpool Nemesis
+44035,2,Tabula Rasa 16,Attachment,Deadpool Nemesis
+44036,2,Mutated Soldier,Minion,Deadpool Nemesis
+44037,2,Crisis of Infinite Deadpools,Treachery,Dreadpool
+44038,2,Dreadpool,Minion,Dreadpool
+44039,2,Dreadful Deeds,SideScheme,Dreadpool
+44040,2,Anti-Regeneration Ray,Attachment,Dreadpool
+44041,2,'Pool-ized,Attachment,Dreadpool
+44042,2,Metacidal Tendencies,Treachery,Dreadpool
+45025,2,Fear the Future,Obligation,Bishop
+45026,2,Trevor Fitzroy,Minion,Bishop Nemesis
+45027,2,Portal Through Time,SideScheme,Bishop Nemesis
+45028,2,Bantam,Minion,Bishop Nemesis
+45029,2,Temporal Trickery,Treachery,Bishop Nemesis
+45053,2,Darkchilde,Obligation,Magik
+45054,2,Belasco,Minion,Magik Nemesis
+45055,2,Ruler of Limbo,SideScheme,Magik Nemesis
+45056,2,S'ym,Minion,Magik Nemesis
+45057,2,Witchfire,Minion,Magik Nemesis
+45058,2,Battle for Limbo,Treachery,Magik Nemesis
+45059,2,Unus,Villain,Unus
+45060,2,Unus,Villain,Unus
+45061,2,Unus,Villain,Unus
+45062a,2,Hunting Gene Traitors,MainScheme,Unus
+45062b,2,Hunting Gene Traitors,MainScheme,Unus
+45063,2,Prelate Sidearm,Attachment,Unus
+45064,2,Prelate Armor,Attachment,Unus
+45065,2,Infinite Hunter,Minion,Unus
+45066,2,Genetic Experiments,Attachment,Unus
+45067,2,Infinite Prelate,Treachery,Unus
+45068,2,Endless Ranks,SideScheme,Unus
+45069,2,Infinite Soldier,Minion,Infinites
+45070,2,Culling the Weak,Treachery,Infinites
+45071,2,Gene Pool,SideScheme,Infinites
+45072,2,Hunted,Obligation,Dystopian Nightmare
+45073,2,War-Weary,Treachery,Dystopian Nightmare
+45074,2,Targeted for Extermination,SideScheme,Dystopian Nightmare
+45075a,2,Pursued by the Past,Environment,Standard III
+45075b,2,Pursued by the Past,Environment,Standard III
+45076,2,Dark Design,Treachery,Standard III
+45077,2,Sinister Strike,Treachery,Standard III
+45078,2,Evil Alliance,Treachery,Standard III
+45079,2,Nowhere is Safe,Treachery,Standard III
+45080,2,Drawing Near,Obligation,Standard III
+45081a,2,War,Villain,Four Horsemen
+45081b,2,War,Villain,Four Horsemen
+45082a,2,Famine,Villain,Four Horsemen
+45082b,2,Famine,Villain,Four Horsemen
+45083a,2,Pestilence,Villain,Four Horsemen
+45083b,2,Pestilence,Villain,Four Horsemen
+45084a,2,Death,Villain,Four Horsemen
+45084b,2,Death,Villain,Four Horsemen
+45085a,2,The Horsemen of Apocalypse,MainScheme,Four Horsemen
+45085b,2,The Horsemen of Apocalypse,MainScheme,Four Horsemen
+45086,2,The Ravages of War,SideScheme,Four Horsemen
+45087,2,A Time of Famine,SideScheme,Four Horsemen
+45088,2,Plague and Pestilence,SideScheme,Four Horsemen
+45089,2,The Specter of Death,SideScheme,Four Horsemen
+45090,2,Golden Horse,Attachment,Four Horsemen
+45091,2,Metal Wings,Attachment,Four Horsemen
+45092,2,Horseman of War,Treachery,Four Horsemen
+45093,2,Horseman of Famine,Treachery,Four Horsemen
+45094,2,Horseman of Pestilence,Treachery,Four Horsemen
+45095,2,Horseman of Death,Treachery,Four Horsemen
+45096,2,Rough Riders,Treachery,Four Horsemen
+45097,2,Ahab,Minion,Hounds
+45098,2,Hound,Minion,Hounds
+45099,2,Ahab's Energy Spear,Attachment,Hounds
+45100,2,Release the Hounds,SideScheme,Hounds
+45101a,2,Apocalypse,Villain,Apocalypse
+45101b,2,Apocalypse,Villain,Apocalypse
+45102a,2,Apocalypse,Villain,Apocalypse
+45102b,2,Apocalypse,Villain,Apocalypse
+45103a,2,The Age of Apocalypse,MainScheme,Apocalypse
+45103b,2,The Age of Apocalypse,MainScheme,Apocalypse
+45104a,2,Heart of the Empire,SideScheme,Apocalypse
+45104b,2,The Towering Citadel,SideScheme,Apocalypse
+45105a,2,The Tyrant's Throne,SideScheme,Apocalypse
+45105b,2,No Longer Worthy,Attachment,Apocalypse
+45106,2,Cyberpathy,Attachment,Apocalypse
+45107,2,Biomorphing,Attachment,Apocalypse
+45108,2,Molecular Control,Attachment,Apocalypse
+45109,2,The Fittest,Attachment,Apocalypse
+45110,2,Wolf Among Sheep,Treachery,Apocalypse
+45111,2,The Apocalypse Solution,SideScheme,Apocalypse
+45112,2,Gauntlet,Minion,Dark Riders
+45113,2,Barrage,Minion,Dark Riders
+45114,2,Hard-Drive,Minion,Dark Riders
+45115,2,Tusk,Minion,Dark Riders
+45116,2,Psynapse,Minion,Dark Riders
+45117,2,The Dark Riders,SideScheme,Dark Riders
+45118,2,Dark Beast,Villain,Dark Beast
+45119,2,Dark Beast,Villain,Dark Beast
+45120,2,Dark Beast,Villain,Dark Beast
+45121a,2,Dark Beast's Bogus Journey,MainScheme,Dark Beast
+45121b,2,Dark Beast's Bogus Journey,MainScheme,Dark Beast
+45122,2,High-Tech Goggles,Attachment,Dark Beast
+45123,2,Genetic Enhancement,Attachment,Dark Beast
+45124,2,Cruel Experiment,Attachment,Dark Beast
+45125,2,Evil Genius,Treachery,Dark Beast
+45126,2,Time-Travel Shenanigans,SideScheme,Dark Beast
+45127,2,The Savage Land,Environment,Savage Land
+45128,2,Pterosaur,Minion,Savage Land
+45129,2,Velociraptor,Minion,Savage Land
+45130,2,Giant Ape,Minion,Savage Land
+45131,2,Land Out of Time,Treachery,Savage Land
+45132,2,Village Under Attack,SideScheme,Savage Land
+45133,2,Genosha,Environment,Genosha
+45134,2,Magistrate,Minion,Genosha
+45135,2,Armored Unibike,Minion,Genosha
+45136,2,Genoshan Mech,Minion,Genosha
+45137,2,Escaped Mutant,Attachment,Genosha
+45138,2,Police State,SideScheme,Genosha
+45139,2,Blue Area of the Moon,Environment,Blue Moon
+45140,2,Gladiator,Minion,Blue Moon
+45141,2,Oracle,Minion,Blue Moon
+45142,2,Manta,Minion,Blue Moon
+45143,2,Earthquake,Minion,Blue Moon
+45144,2,Warstar,Minion,Blue Moon
+45145,2,Imperial Guardsman,Attachment,Blue Moon
+45146,2,Trial by Combat,SideScheme,Blue Moon
+45147a,2,En Sabah Nur's Pyramid,MainScheme,En Sabah Nur
+45147b,2,En Sabah Nur's Pyramid,MainScheme,En Sabah Nur
+45148a,2,The Rise of Apocalypse,MainScheme,En Sabah Nur
+45148b,2,The Rise of Apocalypse,MainScheme,En Sabah Nur
+45149,2,Staggering Strength,Attachment,En Sabah Nur
+45150,2,Biomorphic Blast,Treachery,En Sabah Nur
+45151,2,Technological Interface,Treachery,En Sabah Nur
+45152,2,Giant-Sized Despot,Treachery,En Sabah Nur
+45153,2,Source of Power,SideScheme,En Sabah Nur
+45154,2,Plugged In,SideScheme,En Sabah Nur
+45155,2,Giant Growth,SideScheme,En Sabah Nur
+45156,2,Celestial Armor,Attachment,Celestial Tech
+45157,2,Celestial Weapon,Attachment,Celestial Tech
+45158,2,Celestial Tech,Treachery,Celestial Tech
+45159,2,Ozymandias,Minion,Clan Akkaba
+45160,2,Scarab,Minion,Clan Akkaba
+45161,2,Clan Akkaba Zealot,Minion,Clan Akkaba
+45162,2,Tyrant Worship,Treachery,Clan Akkaba
+45163,2,Ancient Ritual,SideScheme,Clan Akkaba
+45164,2,Agent of Apocalypse,Minion,Age of Apocalypse
+45165,2,Worldwide Crisis,Treachery,Age of Apocalypse
+45166a,2,Liberate the Seattle Core,SideScheme,Campaign
+45167a,2,Evacuate Survivors,SideScheme,Campaign
+45168a,2,Sabotage the Sea Wall,SideScheme,Campaign
+45169a,2,Find Lost Mutants,SideScheme,Campaign
+45170a,2,Protect the Professor,SideScheme,Campaign
+45177,2,North American Sea Wall,SideScheme,Campaign
+45178,2,Panicked Refugees,Obligation,Campaign
+45179a,2,Mister Sinister,Minion,Prelates
+45179b,2,Mister Sinister,Minion,Prelates
+45180a,2,The Shadow King,Minion,Prelates
+45180b,2,The Shadow King,Minion,Prelates
+45181a,2,Abyss,Minion,Prelates
+45181b,2,Abyss,Minion,Prelates
+45182a,2,Sugar Man,Minion,Prelates
+45182b,2,Sugar Man,Minion,Prelates
+45183a,2,Mikhail Rasputin,Minion,Prelates
+45183b,2,Mikhail Rasputin,Minion,Prelates
+45184a,2,Apocalypse,Villain,En Sabah Nur
+45184b,2,Apocalypse,Villain,En Sabah Nur
+45184c,2,Apocalypse,Villain,En Sabah Nur
+45185a,2,Apocalypse,Villain,En Sabah Nur
+45185b,2,Apocalypse,Villain,En Sabah Nur
+45185c,2,Apocalypse,Villain,En Sabah Nur
+45186a,2,Apocalypse,Villain,En Sabah Nur
+45186b,2,Apocalypse,Villain,En Sabah Nur
+45186c,2,Apocalypse,Villain,En Sabah Nur
+46024,2,Hot-Headed,Obligation,Iceman
+46025,2,Pyro,Minion,Iceman Nemesis
+46026,2,Playing with Fire,SideScheme,Iceman Nemesis
+46027,2,Pyro's Flamethrower,Attachment,Iceman Nemesis
+46028,2,Burn!,Treachery,Iceman Nemesis
+46029,2,Sauron,Minion,Sauron
+46030,2,Sauron Lives!,SideScheme,Sauron
+46031,2,Life Drain,Attachment,Sauron
+46032,2,The Eye of Sauron,Treachery,Sauron
+47023,2,Grounded,Obligation,Jubilee
+47024,2,Nanny,Minion,Jubilee Nemesis
+47025,2,Naughty Children,SideScheme,Jubilee Nemesis
+47026,2,Battle Suit,Attachment,Jubilee Nemesis
+47027,2,"""Lost"" Child",Attachment,Jubilee Nemesis
+47030,2,Arcade,Minion,Arcade
+47031,2,Welcome to Murderworld,SideScheme,Arcade
+47032,2,Arcade's Funhouse,SideScheme,Arcade
+47033,2,Hall of Mirrors,SideScheme,Arcade
+47034,2,Elaborate Trap,Treachery,Arcade
+48026,2,Crisis of Faith,Obligation,Nightcrawler
+48027,2,Azazel,Minion,Nightcrawler Nemesis
+48028,2,Brimstone Dimension,SideScheme,Nightcrawler Nemesis
+48029,2,Azazel's Sword,Attachment,Nightcrawler Nemesis
+48030,2,Brimstone Strike,Treachery,Nightcrawler Nemesis
+48033,2,The Crazy Gang,SideScheme,Crazy Gang
+48034,2,Queen of Hearts,Minion,Crazy Gang
+48035,2,Jester,Minion,Crazy Gang
+48036,2,Executioner,Minion,Crazy Gang
+48037,2,Tweedledope,Minion,Crazy Gang
+48038,2,"""Off with His Head!""",Treachery,Crazy Gang
+49027,2,Old Grievances,Obligation,Magneto
+49028,2,Exodus,Minion,Magneto Nemesis
+49029,2,Martyr for Mutants,SideScheme,Magneto Nemesis
+49030,2,Fabian Cortez,Minion,Magneto Nemesis
+49031,2,Frenzy,Minion,Magneto Nemesis
+49032,2,Angry Acolyte,Treachery,Magneto Nemesis
+49038,2,Sebastian Shaw,Minion,Hellfire
+49039,2,Selene,Minion,Hellfire
+49040,2,Hellfire Pawn,Minion,Hellfire
+49041,2,The Inner Circle,SideScheme,Hellfire
+49042,2,Power and Decadence,Treachery,Hellfire
+50029,2,Press Conference,Obligation,Maria Hill
+50030,2,Controller,Minion,Maria Hill Nemesis
+50031,2,Army of the Controlled,SideScheme,Maria Hill Nemesis
+50032,2,Controlled Innocents,Environment,Maria Hill Nemesis
+50033,2,Diabolical Discs,Treachery,Maria Hill Nemesis
+50059,2,Discovered,Obligation,Nick Fury
+50060,2,Orion,Minion,Nick Fury Nemesis
+50061,2,Acquire Infinity Formula,SideScheme,Nick Fury Nemesis
+50062,2,Leviathan Soldier,Minion,Nick Fury Nemesis
+50063,2,Cold Storage,Treachery,Nick Fury Nemesis
+50064,2,Black Widow,Villain,Black Widow
+50065,2,Black Widow,Villain,Black Widow
+50066,2,Black Widow,Villain,Black Widow
+50067a,2,The Widow's Web,MainScheme,Black Widow
+50067b,2,The Widow's Web,MainScheme,Black Widow
+50068,2,Black Widow's Gauntlet,Attachment,Black Widow
+50069,2,Grappling Hook,Attachment,Black Widow
+50070,2,Night Vision Goggles,Attachment,Black Widow
+50071,2,Stun Net,Attachment,Black Widow
+50072,2,A.I.M. Commando,Minion,Black Widow
+50073,2,A.I.M. Grunt,Minion,Black Widow
+50074,2,Automated Defenses,SideScheme,Black Widow
+50075,2,Destroy Evidence,SideScheme,Black Widow
+50076,2,Attacrobatics,Treachery,Black Widow
+50077,2,Covert Ops,Treachery,Black Widow
+50078,2,Dance of Death,Treachery,Black Widow
+50079,2,Widow's Bite,Treachery,Black Widow
+50080,2,A.I.M. Abductor,Minion,A.I.M. Abduction
+50081,2,Abduct Superhumans,SideScheme,A.I.M. Abduction
+50082,2,Nabbed!,Treachery,A.I.M. Abduction
+50083,2,A.I.M. Scientist,Minion,A.I.M. Science
+50084,2,A.I.M. Soldier,Minion,A.I.M. Science
+50085,2,Mad Science,SideScheme,A.I.M. Science
+50086a,2,Batroc,Villain,Batroc
+50086b,2,Batroc,Villain,Batroc
+50087a,2,Infiltrate A.I.M. Island Embassy,MainScheme,Batroc
+50087b,2,Infiltrate A.I.M. Island Embassy,MainScheme,Batroc
+50088a,2,Locate Missing Person,MainScheme,Batroc
+50088b,2,Locate Missing Person,MainScheme,Batroc
+50089a,2,Extract Captives,MainScheme,Batroc
+50089b,2,Extract Captives,MainScheme,Batroc
+50090a,2,Alert Level,Environment,Batroc
+50090b,2,Alert Level,Environment,Batroc
+50092,2,Heightened Reflexes,Attachment,Batroc
+50093,2,Embassy Guard,Minion,Batroc
+50094,2,Embassy Patrol,Minion,Batroc
+50095,2,Commandeer Security Office,SideScheme,Batroc
+50096,2,Leaping Kick,Treachery,Batroc
+50097,2,Security Cameras,Treachery,Batroc
+50098,2,Machete,Minion,Batroc's Brigade
+50099,2,Rapido,Minion,Batroc's Brigade
+50100,2,Zaran,Minion,Batroc's Brigade
+50101,2,Batroc's Brigade,SideScheme,Batroc's Brigade
+50102,2,Soldiers of Fortune,Treachery,Batroc's Brigade
+50103a,2,M.O.D.O.K.,Villain,M.O.D.O.K
+50103b,2,M.O.D.O.K.,Villain,M.O.D.O.K
+50104a,2,Upgrading Adaptoids,MainScheme,M.O.D.O.K
+50104b,2,Upgrading Adaptoids,MainScheme,M.O.D.O.K
+50105a,2,Holding Cell,Environment,M.O.D.O.K
+50106a,2,Holding Cell,Environment,M.O.D.O.K
+50107a,2,Holding Cell,Environment,M.O.D.O.K
+50108a,2,Holding Cell,Environment,M.O.D.O.K
+50109,2,Flying Upgrade,Environment,M.O.D.O.K
+50110,2,Psionic Upgrade,Environment,M.O.D.O.K
+50111,2,Sarah Garza Upgrade,Environment,M.O.D.O.K
+50112,2,Strong Upgrade,Environment,M.O.D.O.K
+50113,2,Adaptoid,Minion,M.O.D.O.K
+50114,2,Automated Mobile Unit,Attachment,M.O.D.O.K
+50115,2,Focusing Crystal,Attachment,M.O.D.O.K
+50116,2,Nanobots,Attachment,M.O.D.O.K
+50117,2,Psionic Force Field,Attachment,M.O.D.O.K
+50118,2,Psionic Machetes,Attachment,M.O.D.O.K
+50119,2,Reverse Engineering,Attachment,M.O.D.O.K
+50120,2,A.I.M. Jailer,Minion,M.O.D.O.K
+50121,2,Hostage Situation,SideScheme,M.O.D.O.K
+50122,2,Psionic Enhancement,SideScheme,M.O.D.O.K
+50123,2,"""It's Alive!""",Treachery,M.O.D.O.K
+50124,2,Psionic Blast,Treachery,M.O.D.O.K
+50125,2,Scientist Supreme,Minion,Scientist Supreme
+50126,2,Monica Rappaccini,Minion,Scientist Supreme
+50127,2,Diplomatic Immunity,SideScheme,Scientist Supreme
+50128,2,Diplomatic Sanctions,Treachery,Scientist Supreme
+50129a,2,Citizen V,Villain,Thunderbolts
+50129b,2,Citizen V,Villain,Thunderbolts
+50130a,2,Apprehending Rogue Agents,MainScheme,Thunderbolts
+50130b,2,Apprehending Rogue Agents,MainScheme,Thunderbolts
+50131a,2,"Justice, Like Lightning",Environment,Thunderbolts
+50131b,2,Thunderbolt Backup,Environment,Thunderbolts
+50132,2,Citizen V's Sword,Attachment,Thunderbolts
+50133,2,Jolt,Minion,Thunderbolts
+50134,2,Innocent Bystanders,Obligation,Thunderbolts
+50135,2,The Coming Storm,SideScheme,Thunderbolts
+50136,2,Rumbling Thunder,SideScheme,Thunderbolts
+50137,2,Down but Not Out,Treachery,Thunderbolts
+50138,2,Tap In,Treachery,Thunderbolts
+50139,2,Moonstone,Minion,Gravitational Pull
+50140,2,Rule the Skies,SideScheme,Gravitational Pull
+50141,2,Gravitational Pull,Treachery,Gravitational Pull
+50142,2,Psychological Manipulation,Treachery,Gravitational Pull
+50143,2,Songbird,Minion,Hard Sound
+50144,2,Solid Sound Constructs,Attachment,Hard Sound
+50145,2,Hard Sound Bindings,Attachment,Hard Sound
+50146,2,Sonic Bubble,SideScheme,Hard Sound
+50147,2,Hard Sound,Treachery,Hard Sound
+50148,2,Black Widow,Minion,Pale Little Spider
+50149,2,Handspring,Attachment,Pale Little Spider
+50150,2,Pride of the Red Room,SideScheme,Pale Little Spider
+50151,2,Pale Little Spider,Treachery,Pale Little Spider
+50152,2,Radioactive Man,Minion,Power of the Atom
+50153,2,Radiation Exposure,Attachment,Power of the Atom
+50154,2,Runaway Nuclear Reaction,SideScheme,Power of the Atom
+50155,2,Power of the Atom,Treachery,Power of the Atom
+50156,2,MACH-IV,Minion,Supersonic
+50157,2,Blasters,Attachment,Supersonic
+50158,2,Heat-Seeking Missiles,Attachment,Supersonic
+50159,2,Aerial Dogfight,SideScheme,Supersonic
+50160,2,Supersonic,Treachery,Supersonic
+50161,2,Batroc,Minion,The Leaper
+50162,2,Coup de Foudre,SideScheme,The Leaper
+50163,2,Batroc the Leaper,Treachery,The Leaper
+50164,2,Parcours du Combattant,Treachery,The Leaper
+50165a,2,Baron Zemo,Villain,Baron Zemo
+50165b,2,Baron Zemo,Villain,Baron Zemo
+50166a,2,Baron Zemo,Villain,Baron Zemo
+50166b,2,Baron Zemo,Villain,Baron Zemo
+50167a,2,Zemo's Manipulations,MainScheme,Baron Zemo
+50167b,2,Zemo's Manipulations,MainScheme,Baron Zemo
+50168a,2,The Accusation,MainScheme,Baron Zemo
+50168b,2,The Accusation,MainScheme,Baron Zemo
+50169a,2,Fighting Zemo,MainScheme,Baron Zemo
+50169b,2,Fighting Zemo,MainScheme,Baron Zemo
+50170,2,Baron Zemo's Sword,Attachment,Baron Zemo
+50171,2,Reluctant Foe,Attachment,Baron Zemo
+50172,2,S.H.I.E.L.D. Agent,Minion,Baron Zemo
+50173,2,Divided Loyalties,SideScheme,Baron Zemo
+50174,2,Undermine Support,SideScheme,Baron Zemo
+50175,2,Battle of Wits,Treachery,Baron Zemo
+50176,2,Might Makes Right,Treachery,Baron Zemo
+50177,2,The Ends Justify the Means,Treachery,Baron Zemo
+50178,2,S.H.I.E.L.D. Trooper,Minion,S.H.I.E.L.D.
+50179,2,Arrest Warrant,Obligation,S.H.I.E.L.D.
+50180,2,Disavowed,SideScheme,S.H.I.E.L.D.
+50181a,2,Chief Medical Officer,Environment,S.H.I.E.L.D. Executive Board
+50181b,2,Medical Officer's Aid,Attachment,S.H.I.E.L.D. Executive Board
+50182a,2,Chief Surveillance Officer,Environment,S.H.I.E.L.D. Executive Board
+50182b,2,Surveillance Officer's Aid,Attachment,S.H.I.E.L.D. Executive Board
+50183a,2,Chief Tactical Officer,Environment,S.H.I.E.L.D. Executive Board
+50183b,2,Tactical Officer's Aid,Attachment,S.H.I.E.L.D. Executive Board
+50184a,2,A.I.M. Interference ([energy]),Treachery,S.H.I.E.L.D. Executive Board
+50184b,2,A.I.M. Interference ([mental]),Treachery,S.H.I.E.L.D. Executive Board
+50184c,2,A.I.M. Interference ([physical]),Treachery,S.H.I.E.L.D. Executive Board
+50185,2,Medical Records,Evidence,Executive Board Evidence
+50186,2,Wiretap,Evidence,Executive Board Evidence
+50187,2,Security Scanner,Evidence,Executive Board Evidence
+50188,2,Money,Evidence,Executive Board Evidence
+50189,2,Blackmail,Evidence,Executive Board Evidence
+50190,2,Ideology,Evidence,Executive Board Evidence
+50191,2,Security Clearance,Evidence,Executive Board Evidence
+50192,2,Travel,Evidence,Executive Board Evidence
+50193,2,Authority,Evidence,Executive Board Evidence
+51031,2,T'Challa's Shadow,Obligation,Black Panther (Shuri)
+51032,2,Klaw,Minion,Black Panther (Shuri) Nemesis
+51033,2,Manipulated M.U.S.I.C.,SideScheme,Black Panther (Shuri) Nemesis
+51034,2,M.U.S.I.C.,Minion,Black Panther (Shuri) Nemesis
+51035,2,M.U.S.I.C.,Treachery,Black Panther (Shuri) Nemesis
+51039,2,Joystick,Minion,Extreme Risk
+51040,2,Energy Truncheon,Attachment,Extreme Risk
+51041,2,Playing for Keeps,SideScheme,Extreme Risk
+51042,2,Extreme Risk,Treachery,Extreme Risk
+52028,2,Silk Sense Overload,Obligation,Silk
+52029,2,Morlun,Minion,Silk Nemesis
+52030,2,The Great Hunt,SideScheme,Silk Nemesis
+52031,2,Hunting the Spider-Bride,Treachery,Silk Nemesis
+52035,2,Atlas,Minion,Growing Strong
+52036,2,Grow Invulnerable,SideScheme,Growing Strong
+52037,2,Growing Strong,Treachery,Growing Strong
+52038,2,Titanic Proportions,Treachery,Growing Strong
+53029,2,Harlem's Protector,Obligation,Falcon
+53030,2,Viper,Minion,Falcon Nemesis
+53031,2,Serpent Solutions,SideScheme,Falcon Nemesis
+53032,2,Serpent Soldier,Minion,Falcon Nemesis
+53033,2,Adder-tisement,Treachery,Falcon Nemesis
+53038,2,Fixer,Minion,Techno
+53039,2,Jet Pack,Attachment,Techno
+53040,2,Tech-Pac,Attachment,Techno
+53041,2,Technological Innovation,SideScheme,Techno
+53042,2,Techno,Treachery,Techno
+54027,2,Red Room Programming,Obligation,Winter Soldier
+54028,2,Crossbones,Minion,Winter Soldier Nemesis
+54029,2,Hydra Hit Squad,SideScheme,Winter Soldier Nemesis
+54030,2,High-Tech Armament,Attachment,Winter Soldier Nemesis
+54031,2,Hydra Mercenary,Minion,Winter Soldier Nemesis
+54034,2,Blizzard,Minion,Whiteout
+54035,2,Encased in Ice,Attachment,Whiteout
+54036,2,Slippery Conditions,SideScheme,Whiteout
+54037,2,Whiteout,Treachery,Whiteout
+55001,2,Enchantress,Villain,Enchantress
+55002,2,Enchantress,Villain,Enchantress
+55003,2,Enchantress,Villain,Enchantress
+55004a,2,Prime Real Estate,MainScheme,Enchantress
+55004b,2,Prime Real Estate,MainScheme,Enchantress
+55005a,2,Sovereign Sorceress,MainScheme,Enchantress
+55005b,2,Sovereign Sorceress,MainScheme,Enchantress
+55006,2,Future of Despair,SideScheme,Enchantress
+55007a,2,Hypnotic Gaze,Attachment,Enchantress
+55007b,2,Trance of Envy,Attachment,Enchantress
+55008b,2,Trance of Greed,Attachment,Enchantress
+55009b,2,Trance of Pride,Attachment,Enchantress
+55010b,2,Trance of Sloth,Attachment,Enchantress
+55011b,2,Trance of Wrath,Attachment,Enchantress
+55012,2,Alluring Call,Attachment,Enchantress
+55013,2,Kiss of Temptation,Attachment,Enchantress
+55014,2,Love Concoction,Attachment,Enchantress
+55015,2,Seduced,Attachment,Enchantress
+55016,2,Crown of the Enchantress,Attachment,Enchantress
+55017,2,Enthralled Lackey,Minion,Enchantress
+55018,2,Enthralled Brute,Minion,Enchantress
+55019,2,Sindr,Minion,Enchantress
+55020,2,Ulik,Minion,Enchantress
+55021,2,Law of Attraction,SideScheme,Enchantress
+55022,2,Spellbound,SideScheme,Enchantress
+55023,2,"""Do My Bidding""",Treachery,Enchantress
+55024,2,Magical Restraints,Treachery,Enchantress
+55025,2,Spell Blast,Treachery,Enchantress
+55026,2,Spell Shards,Treachery,Enchantress
+55027a,2,"Loki, God of Lies",Villain,God of Lies
+55027b,2,"Loki, God of Lies",Villain,God of Lies
+55028a,2,Worlds Collide,MainScheme,God of Lies
+55028b,2,Worlds Collide,MainScheme,God of Lies
+55029a,2,Loki the Rascal,Villain,God of Lies
+55029b,2,Fading Figment,Villain,God of Lies
+55030a,2,Loki the Miscreant,Villain,God of Lies
+55030b,2,Fading Figment,Villain,God of Lies
+55031a,2,Loki the Knave,Villain,God of Lies
+55031b,2,Fading Figment,Villain,God of Lies
+55032a,2,Loki the Wretch,Villain,God of Lies
+55032b,2,Fading Figment,Villain,God of Lies
+55033a,2,Mischief and Mayhem,MainScheme,God of Lies
+55033b,2,Mischief and Mayhem,MainScheme,God of Lies
+55034a,2,Intense Focus,Attachment,God of Lies
+55034b,2,Total Focus,Attachment,God of Lies
+55035,2,Wrapped in Chains,Attachment,God of Lies
+55036,2,Dark Scepter,Attachment,God of Lies
+55037,2,Draugr Buddy,Minion,God of Lies
+55038,2,Grendell,Minion,God of Lies
+55039,2,Malekith,Minion,God of Lies
+55040,2,Minotaur,Minion,God of Lies
+55041,2,The Mangog,Minion,God of Lies
+55042,2,Fenris Wolf,Minion,God of Lies
+55043,2,Hraesvelgr,Minion,God of Lies
+55044,2,Laufey,Minion,God of Lies
+55045,2,Aura of Stasis,SideScheme,God of Lies
+55046,2,Door Between Worlds,SideScheme,God of Lies
+55047,2,Lofty Goals,SideScheme,God of Lies
+55048,2,New Jotunheim,SideScheme,God of Lies
+55049,2,Dark Arts,Treachery,God of Lies
+55050,2,Dirty Trick,Treachery,God of Lies
+55051,2,Stories and Lies,Treachery,God of Lies
+55052,2,Domineering Force,Environment,God of Lies
+55053,2,Feigned Retreat,Environment,God of Lies
+55054,2,Mounting Resistance,Environment,God of Lies
+55055,2,Unified Front,Environment,God of Lies
+55056,2,Absorbing Man,Minion,Trickster Magic
+55057,2,Titania,Minion,Trickster Magic
+55058,2,Whirlwind,Minion,Trickster Magic
+55059,2,Zzzax,Minion,Trickster Magic
+55060,2,The Trickster Tango,SideScheme,Trickster Magic
+55061,2,Puppet Master,SideScheme,Trickster Magic
+55062,2,Love Triangle,Attachment,Trickster Magic
+56023,2,In Too Deep,Obligation,Tigra
+56024,2,The Hood,Minion,Tigra Nemesis
+56025,2,Criminal Underworld,SideScheme,Tigra Nemesis
+56026,2,The Hood's Mantle,Attachment,Tigra Nemesis
+56027,2,Madame Masque,Minion,Tigra Nemesis
+56028,2,Jigsaw,Minion,Tigra Nemesis
+56054,2,Complicated Lineage,Obligation,Hulkling
+56055,2,Super Skrull,Minion,Hulkling Nemesis
+56056,2,Skrull Business,SideScheme,Hulkling Nemesis
+56057,2,Fantastic Powers,Attachment,Hulkling Nemesis
+56058,2,You're Coming With Me!,Treachery,Hulkling Nemesis
+56059,2,Iron Man,Leader,Iron Man
+56060,2,Iron Man,Leader,Iron Man
+56061,2,Iron Man,Leader,Iron Man
+56062,2,Iron Man,Leader,Iron Man
+56063a,2,Superhero Registration Act,MainScheme,Registration
+56063b,2,Cut Off Support,MainScheme,Registration
+56064a,2,Pro-Registration Tactics,MainScheme,Registration
+56064b,2,Negative Zone Prison,MainScheme,Registration
+56065,2,Powered Gauntlets,Attachment,Iron Man
+56066,2,Rocket Boots,Attachment,Iron Man
+56067,2,Mark V Helmet,Attachment,Iron Man
+56068,2,Arc Reactor,Attachment,Iron Man
+56069,2,Mark V Armor,Attachment,Iron Man
+56070,2,Repulsor Blast,Treachery,Iron Man
+56071,2,Supersonic Punch,Treachery,Iron Man
+56072,2,Stark Tower,SideScheme,Iron Man
+56073,2,Yellow Jacket,Minion,Mighty Avengers
+56074,2,Wasp,Minion,Mighty Avengers
+56075,2,U.S. Agent,Minion,Mighty Avengers
+56076,2,Mighty Avengers,Treachery,Mighty Avengers
+56077,2,Earth's Mightiest Heroes,SideScheme,Mighty Avengers
+56078,2,Doc Samson,Minion,The Initiative
+56079,2,Hellcat,Minion,The Initiative
+56080,2,Drafted,Attachment,The Initiative
+56081,2,Mighty Avengers,Treachery,The Initiative
+56082,2,The Fifty State Initiative,SideScheme,The Initiative
+56083,2,Maria Hill,Minion,Maria Hill
+56084,2,Life Model Decoy,Attachment,Maria Hill
+56085,2,Executive Order,Treachery,Maria Hill
+56086,2,S.H.I.E.L.D. Helicarrier,SideScheme,Maria Hill
+56087,2,Venom,Minion,Dangerous Recruits
+56088,2,Bullseye,Minion,Dangerous Recruits
+56089,2,Justice Like Lightning,Treachery,Dangerous Recruits
+56090,2,Excessive Force,Treachery,Dangerous Recruits
+56091,2,Dangerous Recruits,SideScheme,Dangerous Recruits
+56092,2,Captain Marvel,Leader,Captain Marvel
+56093,2,Captain Marvel,Leader,Captain Marvel
+56094,2,Captain Marvel,Leader,Captain Marvel
+56095,2,Captain Marvel,Leader,Captain Marvel
+56096b,2,S.H.I.E.L.D. Recruits,MainScheme,Registration
+56097b,2,Hunting Rebel Heroes,MainScheme,Registration
+56098,2,Energy Channel,Attachment,Captain Marvel
+56099,2,Captain Marvel's Helmet,Attachment,Captain Marvel
+56100,2,Cosmic Flight,Attachment,Captain Marvel
+56101,2,Photonic Blast,Treachery,Captain Marvel
+56102,2,Crisis Interdiction,Treachery,Captain Marvel
+56103,2,Energy Absorption,Treachery,Captain Marvel
+56104,2,Alpha Flight Station,SideScheme,Captain Marvel
+56105,2,Cape-Killer,Minion,Cape-Killer
+56106,2,Unregistered Super,Obligation,Cape-Killer
+56107,2,Bring Them In,Treachery,Cape-Killer
+56108,2,Arrest Order,SideScheme,Cape-Killer
+56109,2,S.H.I.E.L.D. Soldier,Minion,Martial Law
+56110,2,Rapid Response,Treachery,Martial Law
+56111,2,S.H.I.E.L.D. Patrol,SideScheme,Martial Law
+56112,2,Colleen Wing,Minion,Heroes for Hire
+56113,2,Shang-Chi,Minion,Heroes for Hire
+56114,2,Unregistered Super,Obligation,Heroes for Hire
+56115,2,Bounty Hunting,Treachery,Heroes for Hire
+56116,2,Heroes for Hire,SideScheme,Heroes for Hire
+56117,2,Paladin,Minion,Paladin
+56118,2,Paladin's Pistol,Attachment,Paladin
+56119,2,Bounty Hunting,Treachery,Paladin
+56120,2,Government Contractor,SideScheme,Paladin
+56121b,2,Homeland Security,MainScheme,Registration
+56122b,2,Public Outrage,MainScheme,Registration
+56123b,2,The Initiative,MainScheme,Registration
+56124b,2,No Going Back,MainScheme,Registration
+56125,2,Righteous Cause,Treachery,Standard PVP
+56126,2,Whatever It Takes,Treachery,Standard PVP
+56127,2,Targeted Strike,Treachery,Standard PVP
+56128a,2,Choosing Sides,SideScheme,Standard PVP
+56128b,2,Now It's Personal,Obligation,Standard PVP
+56137,2,Captain America,Leader,Captain America
+56138,2,Captain America,Leader,Captain America
+56139,2,Captain America,Leader,Captain America
+56140,2,Captain America,Leader,Captain America
+56141a,2,Superhero Resistance,MainScheme,Resistance
+56141b,2,Gathering Support,MainScheme,Resistance
+56142a,2,Resistance Tactics,MainScheme,Resistance
+56142b,2,Secret Avengers,MainScheme,Resistance
+56143,2,Cap's Shield,Attachment,Captain America
+56144,2,Cap's Helmet,Attachment,Captain America
+56145,2,Super-Soldier Serum,Attachment,Captain America
+56146,2,Shield Block,Treachery,Captain America
+56147,2,Shield Toss,Treachery,Captain America
+56148,2,Heroic Strike,Treachery,Captain America
+56149,2,Fearless Determination,SideScheme,Captain America
+56150,2,Falcon,Minion,New Avengers
+56151,2,Hercules,Minion,New Avengers
+56152,2,Goliath,Minion,New Avengers
+56153,2,Freedom Fighters,Treachery,New Avengers
+56154,2,New Avengers,SideScheme,New Avengers
+56155,2,Black Panther,Minion,Secret Avengers
+56156,2,Spectrum,Minion,Secret Avengers
+56157,2,Freedom Fighters,Treachery,Secret Avengers
+56158,2,Switching Sides,Treachery,Secret Avengers
+56159,2,Secret Avengers,SideScheme,Secret Avengers
+56160,2,Namor,Minion,Namor
+56161,2,Neptune's Trident,Attachment,Namor
+56162,2,Horn of Proteus,Attachment,Namor
+56163,2,Imperius Rex!,Treachery,Namor
+56164,2,Ruler of Atlantis,SideScheme,Namor
+56165,2,Atlantean Guard,Minion,Atlanteans
+56166,2,Atlanteans,Treachery,Atlanteans
+56167,2,Atlantis Attacks,SideScheme,Atlanteans
+56168,2,Spider-Woman,Leader,Spider Woman
+56169,2,Spider-Woman,Leader,Spider Woman
+56170,2,Spider-Woman,Leader,Spider Woman
+56171,2,Spider-Woman,Leader,Spider Woman
+56172b,2,Open Rebellion,MainScheme,Resistance
+56173a,2,Resistance Tactics,MainScheme,Resistance
+56173b,2,Neighborhood Protectors,MainScheme,Resistance
+56174,2,Finesse,Attachment,Spider Woman
+56175,2,Contaminant Immunity,Attachment,Spider Woman
+56176,2,Pheromones,Treachery,Spider Woman
+56177,2,Venom Blast,Treachery,Spider Woman
+56178,2,Inconspicuous,Treachery,Spider Woman
+56179,2,Self-propelled Glide,SideScheme,Spider Woman
+56180,2,Spider-Man,Minion,Spider-Man
+56181,2,Tangled Up,Attachment,Spider-Man
+56182,2,Spectacular!,Treachery,Spider-Man
+56183,2,Neighborhood Hero,SideScheme,Spider-Man
+56184,2,Luke Cage,Minion,Defenders
+56185,2,Jessica Jones,Minion,Defenders
+56186,2,Protect the Innocent,Treachery,Defenders
+56187,2,Street Defenders,Treachery,Defenders
+56188,2,The Defenders,SideScheme,Defenders
+56189,2,Daredevil,Minion,Hell's Kitchen
+56190,2,Iron Fist,Minion,Hell's Kitchen
+56191,2,Resistance Fighter,Attachment,Hell's Kitchen
+56192,2,Street Defenders,Treachery,Hell's Kitchen
+56193,2,Defend Hell's Kitchen,SideScheme,Hell's Kitchen
+56194,2,Cloak,Minion,Cloak & Dagger
+56195,2,Dagger,Minion,Cloak & Dagger
+56196,2,Darkforce,Attachment,Cloak & Dagger
+56197,2,Lightforce,Treachery,Cloak & Dagger
+56198,2,Cloak and Dagger,SideScheme,Cloak & Dagger
+56199b,2,Rallying Call,MainScheme,Resistance
+56200b,2,Going Underground,MainScheme,Resistance
+57001,2,She-Hulk,Leader,She-Hulk
+57002,2,She-Hulk,Leader,She-Hulk
+57003,2,She-Hulk,Leader,She-Hulk
+57004,2,She-Hulk,Leader,She-Hulk
+57005a,2,Superhero Registration Act,MainScheme,Registration
+57005b,2,Enforce the Law,MainScheme,Registration
+57006a,2,Pro-Registration Tactics,MainScheme,Registration
+57006b,2,Mighty Avengers,MainScheme,Registration
+57007,2,Superhuman Strength,Attachment,She-Hulk
+57008,2,Focused Rage,Attachment,She-Hulk
+57009,2,One-Two Punch,Treachery,She-Hulk
+57010,2,Ground Stomp,Treachery,She-Hulk
+57011,2,Gamma Slam,Treachery,She-Hulk
+57012,2,Legal Practice,SideScheme,She-Hulk
+57013,2,S.H.I.E.L.D. Operator,Minion,S.H.I.E.L.D. Ops
+57014,2,Strategic Overwatch,Treachery,S.H.I.E.L.D. Ops
+57015,2,Rapid Response,Treachery,S.H.I.E.L.D. Ops
+57016,2,Homeland Security,SideScheme,S.H.I.E.L.D. Ops
+57017,2,Atlas,Minion,Thunderbolts
+57018,2,Songbird,Minion,Thunderbolts
+57019,2,Penance,Minion,Thunderbolts
+57020,2,Justice Like Lightning,Treachery,Thunderbolts
+57021,2,The Thunderbolts,SideScheme,Thunderbolts
+57022,2,Taskmaster,Minion,Taskmaster
+57023,2,Taskmaster's Sword,Attachment,Taskmaster
+57024,2,Taskmaster's Shield,Attachment,Taskmaster
+57025,2,Mimicked Move,Treachery,Taskmaster
+57026,2,Taskmaster's Academy,SideScheme,Taskmaster
+57027,2,Jester,Minion,Deadly Duo
+57028,2,Jack O'Lantern,Minion,Deadly Duo
+57029,2,Mad Jack's Platform,Attachment,Deadly Duo
+57030,2,Jester's Yo-Yo,Treachery,Deadly Duo
+57031,2,Deadly Duo,SideScheme,Deadly Duo
+57036,2,Righteous Cause,Treachery,Standard PVP
+57037,2,Whatever It Takes,Treachery,Standard PVP
+57038,2,Targeted Strike,Treachery,Standard PVP
+57039a,2,Choosing Sides,SideScheme,Standard PVP
+57039b,2,Now It's Personal,Obligation,Standard PVP
+57040,2,Vision,Leader,Vision
+57041,2,Vision,Leader,Vision
+57042,2,Vision,Leader,Vision
+57043,2,Vision,Leader,Vision
+57044a,2,Superhero Resistance,MainScheme,Resistance
+57044b,2,Protect Secret Identities,MainScheme,Resistance
+57045a,2,Resistance Tactics,MainScheme,Resistance
+57045b,2,Expose Overreach,MainScheme,Resistance
+57046a,2,Dense,Attachment,Vision
+57046b,2,Intangible,Attachment,Vision
+57047,2,Solar Gem,Attachment,Vision
+57048,2,Vision's Cape,Attachment,Vision
+57049,2,Mass Increase,Attachment,Vision
+57050,2,Density Control,Attachment,Vision
+57051,2,Solar Beam,Treachery,Vision
+57052,2,Superdense Strike,Treachery,Vision
+57053,2,Phase Disruption,Treachery,Vision
+57054,2,Just Passing Through,SideScheme,Vision
+57055,2,Patriot,Minion,Young Avengers
+57056,2,Hawkeye,Minion,Young Avengers
+57057,2,Stature,Minion,Young Avengers
+57058,2,Teenage Superheroes,Treachery,Young Avengers
+57059,2,Young Avengers,SideScheme,Young Avengers
+57060,2,Speed,Minion,Scarlet Twins
+57061,2,Wiccan,Minion,Scarlet Twins
+57062,2,Superspeed,Treachery,Scarlet Twins
+57063,2,Spellcasting,Obligation,Scarlet Twins
+57064,2,Superpowered Siblings,SideScheme,Scarlet Twins
+57065,2,Moon Knight,Minion,Moon Knight
+57066,2,Crescent Dart,Attachment,Moon Knight
+57067,2,Fist of Khonshu,Treachery,Moon Knight
+57068,2,Khonshu's Avatar,SideScheme,Moon Knight
+57069,2,Janus,Minion,Royal Guard
+57070,2,Amir,Minion,Royal Guard
+57071,2,Atlanteans,Treachery,Royal Guard
+57072,2,Blood Debt,Obligation,Royal Guard
+57073,2,The Royal Guard,SideScheme,Royal Guard
+58025,2,Pacifism,Obligation,Wonder Man
+58026,2,Grim Reaper,Minion,Wonder Man Nemesis
+58027,2,Brother vs. Brother,SideScheme,Wonder Man Nemesis
+58028,2,Scythe Strike,Treachery,Wonder Man Nemesis
+58029,2,Death Cannot Die,Treachery,Wonder Man Nemesis
+59002,2,Defeat the Hydra,Attachment,Labor Deck
+59003,2,Embody Pathos,Attachment,Labor Deck
+59004,2,Protect Humanity,Obligation,Labor Deck
+59035,2,Appeal to Athena,Obligation,Hercules
+59036,2,Ares,Minion,Hercules Nemesis
+59037,2,Lernean Hydra,Minion,Hercules Nemesis
+59038,2,Olympic Feud,SideScheme,Hercules Nemesis
+59039,2,Ares's Axe,Attachment,Hercules Nemesis
+59040,2,God of War,Treachery,Hercules Nemesis
+59041,2,All Versus All,SideScheme,All Versus All
+59042,2,Hecate,Minion,All Versus All
+59043,2,Kyknos,Minion,All Versus All
+59044,2,Bewitched Officer,Minion,All Versus All
+59045,2,Roving Mobs,SideScheme,All Versus All
+60032,2,Sensory Overload,Obligation,Daredevil
+60033,2,Bullseye,Minion,Daredevil Nemesis
+60034,2,Deadliest Man Alive,SideScheme,Daredevil Nemesis
+60035,2,Stolen Sai,Attachment,Daredevil Nemesis
+60036,2,Eye on the Target,Treachery,Daredevil Nemesis
+60060,2,Raised by the Kingpin,Obligation,Echo
+60061,2,Kingpin,Minion,Echo Nemesis
+60062,2,Master Manipulator,SideScheme,Echo Nemesis
+60063,2,Kingpin's Henchman,Minion,Echo Nemesis
+60064,2,Pawn of the Kingpin,Treachery,Echo Nemesis
+61030,2,Work-Life Balance,Obligation,Jessica Jones Nemesis
+61031,2,Purple Man,Minion,Jessica Jones Nemesis
+61032,2,Indomitable Will,SideScheme,Jessica Jones Nemesis
+61033a,2,Suggestion ([energy]),Obligation,Jessica Jones Nemesis
+61033b,2,Suggestion ([mental]),Obligation,Jessica Jones Nemesis
+61033c,2,Suggestion ([physical]),Obligation,Jessica Jones Nemesis
+62028,2,Internal Injury,Obligation,Luke Cage Nemesis
+62029,2,Cottonmouth,Minion,Luke Cage Nemesis
+62030,2,Venomous Whispers,SideScheme,Luke Cage Nemesis
+62031,2,Augmented Jaws,Attachment,Luke Cage Nemesis
+62032,2,Asp,Minion,Luke Cage Nemesis
+62033,2,Sidewinder,Minion,Luke Cage Nemesis
+90001,2,Ronan the Accuser,Minion,Kree Fanatic
+90002,2,"Judge, Jury, Executioner",SideScheme,Kree Fanatic
+90003,2,The Accused,Attachment,Kree Fanatic
+90004,2,Bring the Hammer Down,Treachery,Kree Fanatic
+90005,2,You Dare Oppose Me?,Treachery,Kree Fanatic

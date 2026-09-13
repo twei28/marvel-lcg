@@ -1,0 +1,502 @@
+id,nom,autres_noms,role
+abomination,Abomination,,adversaire
+absorbing-man,Absorbing Man,,adversaire
+abyss,Abyss,,adversaire
+adam-warlock,Adam Warlock,,jouable
+agatha-harkness,Agatha Harkness,,jouable
+agent-13-sharon-carter,Agent 13,Sharon Carter,jouable
+agent-anti-venom-flash-thompson,Agent Anti-Venom,Flash Thompson,jouable
+ahab,Ahab,,adversaire
+albert,Albert,,jouable
+alligator-loki,Alligator Loki,,jouable
+amelia-voght,Amelia Voght,,adversaire
+amir,Amir,,adversaire
+ana-kraven,Ana Kraven,,adversaire
+angel-warren-worthington-iii,Angel,Warren Worthington III,jouable
+angela-aldrif-odinsdottir,Angela,Aldrif Odinsdottir,jouable
+annihilus,Annihilus,,adversaire
+ant-man-scott-lang,Ant-Man,Scott Lang,jouable
+apocalypse,Apocalypse,,adversaire
+apocryphus,Apocryphus,,adversaire
+arcade,Arcade,,adversaire
+arclight,Arclight,,adversaire
+ares,Ares,,jouable
+armadillo,Armadillo,,adversaire
+armored-spidey-peter-parker,Armored Spidey,Peter Parker,jouable
+asp,Asp,,adversaire
+athena,Athena,,adversaire
+atlas,Atlas,,adversaire
+avalanche,Avalanche,,adversaire
+avalanche-a,Avalanche A,,adversaire
+avalanche-b,Avalanche B,,adversaire
+azazel,Azazel,,adversaire
+bantam,Bantam,,adversaire
+baron-mordo,Baron Mordo,,adversaire
+baron-zemo,Baron Zemo,,adversaire
+barrage,Barrage,,adversaire
+bastion,Bastion,,adversaire
+batroc,Batroc,,adversaire
+beast-dr-hank-mccoy,Beast,Dr Hank McCoy,jouable
+beetle,Beetle,,adversaire
+belasco,Belasco,,adversaire
+bella-donna,Bella Donna,,adversaire
+belladonna,Belladonna,,adversaire
+beta-ray-bill,Beta Ray Bill,,jouable
+bishop-lucas-bishop,Bishop,Lucas Bishop,jouable
+black-cat,Black Cat,,adversaire
+black-cat-felicia-hardy,Black Cat,Felicia Hardy,jouable
+black-dwarf,Black Dwarf,,adversaire
+black-panther,Black Panther,,adversaire
+black-panther-shuri,Black Panther,Shuri,jouable
+black-panther-t-challa,Black Panther,T'Challa,jouable
+black-swan,Black Swan,,adversaire
+black-tom-cassidy,Black Tom Cassidy,,adversaire
+black-widow,Black Widow,,adversaire
+black-widow-natasha-romanoff,Black Widow,Natasha Romanoff,jouable
+blackheart,Blackheart,,adversaire
+blackjack-o-hare,Blackjack O'Hare,,adversaire
+blade-eric-brooks,Blade,Eric Brooks,jouable
+blink-clarice-ferguson,Blink,Clarice Ferguson,jouable
+blizzard,Blizzard,,adversaire
+blob,Blob,,adversaire
+blob-a,Blob A,,adversaire
+blob-b,Blob B,,adversaire
+blockbuster,Blockbuster,,adversaire
+bombshell,Bombshell,,adversaire
+bonebreaker,Bonebreaker,,adversaire
+boomerang,Boomerang,,adversaire
+bora,Bora,,adversaire
+brawn-amadeus-cho,Brawn,Amadeus Cho,jouable
+brix,Brix,,adversaire
+brothers-grimm,Brothers Grimm,,adversaire
+bulldozer,Bulldozer,,adversaire
+bullseye,Bullseye,,adversaire
+bushman,Bushman,,adversaire
+butler,Butler,,adversaire
+cable-nathan-summers,Cable,Nathan Summers,jouable
+callisto,Callisto,,adversaire
+calvin-zabo,Calvin Zabo,,adversaire
+captain-america,Captain America,,adversaire
+captain-america-steve-rogers,Captain America,Steve Rogers,jouable
+captain-marvel-carol-danvers,Captain Marvel,Carol Danvers,jouable
+carnage,Carnage,,adversaire
+catalina-chavez,Catalina Chavez,,adversaire
+chameleon,Chameleon,,adversaire
+chimera,Chimera,,adversaire
+citizen-v,Citizen V,,adversaire
+cloak,Cloak,,adversaire
+cloak-tyrone-johnson,Cloak,Tyrone Johnson,jouable
+coat-of-arms,Coat of Arms,,adversaire
+coldwar,Coldwar,,adversaire
+collector,Collector,,adversaire
+colleen-wing,Colleen Wing,,adversaire
+colossus-piotr-rasputin,Colossus,Piotr Rasputin,jouable
+controller,Controller,,adversaire
+corruptor,Corruptor,,adversaire
+corvus-glaive,Corvus Glaive,,adversaire
+cottonmouth,Cottonmouth,,adversaire
+crossbones,Crossbones,,adversaire
+crossfire,Crossfire,,adversaire
+curt-connors,Curt Connors,,adversaire
+cyclops-scott-summers,Cyclops,Scott Summers,jouable
+daemos,Daemos,,adversaire
+dagger,Dagger,,adversaire
+dagger-tandy-bowen,Dagger,Tandy Bowen,jouable
+daimon-hellstrom,Daimon Hellstrom,,adversaire
+daken,Daken,,adversaire
+daredevil,Daredevil,,adversaire
+daredevil-matt-murdock,Daredevil,Matt Murdock,jouable
+dark-beast,Dark Beast,,adversaire
+dark-phoenix,Dark Phoenix,,adversaire
+dazzler-alison-blaire,Dazzler,Alison Blaire,jouable
+deadpool-wade-wilson,Deadpool,Wade Wilson,jouable
+death,Death,,adversaire
+deathunt-9000,Deathunt 9000,,adversaire
+delgado,Delgado,,adversaire
+disir,Disir,,adversaire
+doc-samson,Doc Samson,,adversaire
+doctor-doom,Doctor Doom,,adversaire
+doctor-doom-victor-von-doom,Doctor Doom,Victor von Doom,jouable
+doctor-druid-anthony-druid,Doctor Druid,Anthony Druid,jouable
+doctor-faustus,Doctor Faustus,,adversaire
+doctor-octopus,Doctor Octopus,,adversaire
+doctor-strange,Doctor Strange,,adversaire
+doctor-strange-stephen-strange,Doctor Strange,Stephen Strange,jouable
+domino-neena-thurman,Domino,Neena Thurman,jouable
+donald-pierce,Donald Pierce,,adversaire
+dracula,Dracula,,adversaire
+dragoness,Dragoness,,adversaire
+drang,Drang,,adversaire
+drax,Drax,,jouable
+earthquake,Earthquake,,adversaire
+ebony-maw,Ebony Maw,,adversaire
+echo-maya-lopez,Echo,Maya Lopez,jouable
+edison-s-giant-robot,Edison's Giant Robot,,adversaire
+electro,Electro,,adversaire
+electro-noir,Electro Noir,,adversaire
+enchantress,Enchantress,,adversaire
+evil-gwenpool,Evil Gwenpool,,adversaire
+executioner,Executioner,,adversaire
+exodus,Exodus,,adversaire
+fabian-cortez,Fabian Cortez,,adversaire
+falcon,Falcon,,adversaire
+falcon-sam-wilson,Falcon,Sam Wilson,jouable
+famine,Famine,,adversaire
+fenris-wolf,Fenris Wolf,,adversaire
+fin-fang-foom,Fin Fang Foom,,adversaire
+fixer,Fixer,,adversaire
+forearm,Forearm,,adversaire
+frenzy,Frenzy,,adversaire
+furnax,Furnax,,adversaire
+gambit-remy-lebeau,Gambit,Remy LeBeau,jouable
+gamora,Gamora,,jouable
+garm,Garm,,adversaire
+gauntlet,Gauntlet,,adversaire
+ghost,Ghost,,adversaire
+ghost-rider,Ghost Rider,,adversaire
+ghost-spider-gwen-stacy,Ghost-Spider,Gwen Stacy,jouable
+gladiator,Gladiator,,adversaire
+goblin-knight,Goblin Knight,,adversaire
+goliath,Goliath,,adversaire
+gorgeous-george,Gorgeous George,,adversaire
+gorr-the-god-butcher,Gorr the God Butcher,,adversaire
+green-goblin,Green Goblin,,adversaire
+green-goblin-harry-osborn,Green Goblin,Harry Osborn,jouable
+grendell,Grendell,,adversaire
+greycrow,Greycrow,,adversaire
+griffin,Griffin,,adversaire
+grim-reaper,Grim Reaper,,adversaire
+groot,Groot,,jouable
+guzz,Guzz,,adversaire
+gwenpool-gwendolyn-poole,Gwenpool,Gwendolyn Poole,jouable
+hairbag,Hairbag,,adversaire
+hard-drive,Hard-Drive,,adversaire
+harpoon,Harpoon,,adversaire
+harvester,Harvester,,adversaire
+hawkeye,Hawkeye,,adversaire
+hawkeye-clint-barton,Hawkeye,Clint Barton,jouable
+hawkeye-kate-bishop,Hawkeye,Kate Bishop,jouable
+hecate,Hecate,,adversaire
+hel-wolf,Hel-Wolf,,adversaire
+hela,Hela,,adversaire
+hellcat,Hellcat,,adversaire
+hellcat-patsy-walker,Hellcat,Patsy Walker,jouable
+hellcow,Hellcow,,adversaire
+hercules,Hercules,,jouable
+hobgoblin,Hobgoblin,,adversaire
+howard-the-duck-howard-duckson,Howard the Duck,Howard Duckson,jouable
+hraesvelgr,Hraesvelgr,,adversaire
+hulk,Hulk,,adversaire
+hulk-bruce-banner,Hulk,Bruce Banner,jouable
+hulkling-teddy-altman,Hulkling,Teddy Altman,jouable
+human-torch-johnny-storm,Human Torch,Johnny Storm,jouable
+hydro-man,Hydro-Man,,adversaire
+iceman-bobby-drake,Iceman,Bobby Drake,jouable
+infected-scorpion,Infected Scorpion,,adversaire
+invisible-woman-sue-storm,Invisible Woman,Sue Storm,jouable
+iron-fist,Iron Fist,,adversaire
+iron-lad,Iron Lad,,jouable
+iron-man-tony-stark,Iron Man,Tony Stark,jouable
+iron-patriot-norman-osborn,Iron Patriot,Norman Osborn,jouable
+iron-spider,Iron Spider,,adversaire
+ironheart-riri-williams,Ironheart,Riri Williams,jouable
+jack-o-lantern,Jack O'Lantern,,adversaire
+janus,Janus,,adversaire
+jennix,Jennix,,adversaire
+jessica-jones,Jessica Jones,,jouable
+jester,Jester,,adversaire
+jigsaw,Jigsaw,,adversaire
+jolt,Jolt,,adversaire
+joystick,Joystick,,adversaire
+jubilee-jubilation-lee,Jubilee,Jubilation Lee,jouable
+juggernaut,Juggernaut,,adversaire
+kang-immortus,Kang (Immortus),,adversaire
+kang-iron-lad,Kang (Iron Lad),,adversaire
+kang-master-of-time,Kang (Master of Time),,adversaire
+kang-rama-tut,Kang (Rama-Tut),,adversaire
+kang-scarlet-centurion,Kang (Scarlet Centurion),,adversaire
+kang-the-conqueror,Kang (The Conqueror),,adversaire
+karn,Karn,,adversaire
+killer-thrill,Killer Thrill,,adversaire
+killmonger,Killmonger,,adversaire
+kingpin,Kingpin,,adversaire
+klaw,Klaw,,adversaire
+krackalakassian,Krackalakassian,,adversaire
+kraven-the-hunter,Kraven the Hunter,,adversaire
+kyknos,Kyknos,,adversaire
+lady-bullseye,Lady Bullseye,,adversaire
+lady-deathstrike,Lady Deathstrike,,adversaire
+lady-hellbender,Lady Hellbender,,adversaire
+lady-mastermind,Lady Mastermind,,adversaire
+lady-sif,Lady Sif,,jouable
+laufey,Laufey,,adversaire
+lernean-hydra,Lernean Hydra,,adversaire
+living-laser,Living Laser,,adversaire
+lockjaw,Lockjaw,,jouable
+loki,Loki,,adversaire
+loki-god-of-lies,"Loki, God of Lies",,adversaire
+loki-the-knave,Loki the Knave,,adversaire
+loki-the-miscreant,Loki the Miscreant,,adversaire
+loki-the-rascal,Loki the Rascal,,adversaire
+loki-the-wretch,Loki the Wretch,,adversaire
+lucia-von-bardas,Lucia von Bardas,,adversaire
+luke-cage,Luke Cage,,jouable
+luminous,Luminous,,adversaire
+m-o-d-o-k,M.O.D.O.K.,,adversaire
+m-u-s-i-c,M.U.S.I.C.,,adversaire
+mach-iv,MACH-IV,,adversaire
+machete,Machete,,adversaire
+madame-hydra,Madame Hydra,,adversaire
+madame-masque,Madame Masque,,adversaire
+madame-web-cassandra-webb,Madame Web,Cassandra Webb,jouable
+magik-illyana-rasputin,Magik,Illyana Rasputin,jouable
+magneto,Magneto,,adversaire
+magneto-erik-lehnsherr,Magneto,Erik Lehnsherr,jouable
+magog,MaGog,,adversaire
+malekith,Malekith,,adversaire
+malice,Malice,,adversaire
+man-bull,Man-Bull,,adversaire
+mandrill,Mandrill,,adversaire
+maniac,Maniac,,adversaire
+manta,Manta,,adversaire
+maria-hill,Maria Hill,,jouable
+mark-vii-a,Mark VII-A,,adversaire
+master-mold,Master Mold,,adversaire
+master-pandemonium,Master Pandemonium,,adversaire
+melter,Melter,,adversaire
+mikhail-rasputin,Mikhail Rasputin,,adversaire
+mimic-27,Mimic-27,,adversaire
+minotaur,Minotaur,,adversaire
+mister-fantastic,Mister Fantastic,,adversaire
+mister-fantastic-reed-richards,Mister Fantastic,Reed Richards,jouable
+mister-fear,Mister Fear,,adversaire
+mister-hyde,Mister Hyde,,adversaire
+mister-knife,Mister Knife,,adversaire
+mister-negative,Mister Negative,,adversaire
+mister-sinister,Mister Sinister,,adversaire
+mojo,Mojo,,adversaire
+molecule-man,Molecule Man,,adversaire
+monarch-starstalker,Monarch Starstalker,,adversaire
+monica-rappaccini,Monica Rappaccini,,adversaire
+monster,Monster,,adversaire
+moon-knight,Moon Knight,,adversaire
+moon-knight-marc-spector,Moon Knight,Marc Spector,jouable
+moonstone,Moonstone,,adversaire
+morlun,Morlun,,adversaire
+mr-hyde,Mr. Hyde,,adversaire
+ms-america-america-chavez,Ms. America,America Chavez,jouable
+ms-marvel,Ms. Marvel,,adversaire
+ms-marvel-kamala-khan,Ms. Marvel,Kamala Khan,jouable
+murray-reese,Murray Reese,,adversaire
+muse,Muse,,adversaire
+mysterio,Mysterio,,adversaire
+mystique,Mystique,,adversaire
+namor,Namor,,adversaire
+nanny,Nanny,,adversaire
+nebula,Nebula,,jouable
+necro-raven-gestalt,Necro-Raven Gestalt,,adversaire
+nekra,Nekra,,adversaire
+nick-fury,Nick Fury,,jouable
+nidhogg,Nidhogg,,adversaire
+night-thrasher-dwayne-taylor,Night Thrasher,Dwayne Taylor,jouable
+nightcrawler-kurt-wagner,Nightcrawler,Kurt Wagner,jouable
+nimrod,Nimrod,,adversaire
+norman-osborn,Norman Osborn,,adversaire
+nova-sam-alexander,Nova,Sam Alexander,jouable
+nyx,Nyx,,adversaire
+okoye,Okoye,,jouable
+omega-red,Omega Red,,adversaire
+oracle,Oracle,,adversaire
+orion,Orion,,adversaire
+paladin,Paladin,,adversaire
+patch,Patch,,adversaire
+patriot,Patriot,,adversaire
+patriot-elijah-bradley,Patriot,Elijah Bradley,jouable
+penance,Penance,,adversaire
+pestilence,Pestilence,,adversaire
+phoenix-jean-grey,Phoenix,Jean Grey,jouable
+piledriver,Piledriver,,adversaire
+princess-python,Princess Python,,adversaire
+prototype,Prototype,,adversaire
+prowler,Prowler,,adversaire
+proxima-midnight,Proxima Midnight,,adversaire
+psycho-man,Psycho-Man,,adversaire
+psylocke-betsy-braddock,Psylocke,Betsy Braddock,jouable
+psynapse,Psynapse,,adversaire
+puma,Puma,,adversaire
+puppet-master,Puppet Master,,adversaire
+purple-man,Purple Man,,adversaire
+pyro,Pyro,,adversaire
+pyro-a,Pyro A,,adversaire
+pyro-b,Pyro B,,adversaire
+queen-of-hearts,Queen of Hearts,,adversaire
+quicksilver-pietro-maximoff,Quicksilver,Pietro Maximoff,jouable
+radioactive-man,Radioactive Man,,adversaire
+ramrod,Ramrod,,adversaire
+rapido,Rapido,,adversaire
+ratatoskr,Ratatoskr,,adversaire
+reaper,Reaper,,adversaire
+red-guardian-alexei-shostakov,Red Guardian,Alexei Shostakov,jouable
+red-skull,Red Skull,,adversaire
+rhino,Rhino,,adversaire
+riptide,Riptide,,adversaire
+rocket-raccoon,Rocket Raccoon,,jouable
+rocket-racer,Rocket Racer,,adversaire
+rogue-anna-marie,Rogue,Anna Marie,jouable
+ronan-the-accuser,Ronan the Accuser,,adversaire
+ruckus,Ruckus,,adversaire
+s-ym,S'ym,,adversaire
+sabretooth,Sabretooth,,adversaire
+samurai,Samurai,,adversaire
+sandman,Sandman,,adversaire
+sauron,Sauron,,adversaire
+sav-rkk,Sav'rkk,,adversaire
+scarlet-spider-kaine-parker,Scarlet Spider,Kaine Parker,jouable
+scarlet-witch-wanda-maximoff,Scarlet Witch,Wanda Maximoff,jouable
+scientist-supreme,Scientist Supreme,,adversaire
+scorpion,Scorpion,,adversaire
+scrambler,Scrambler,,adversaire
+sebastian-shaw,Sebastian Shaw,,adversaire
+selene,Selene,,adversaire
+sentinel,Sentinel,,jouable
+senyaka,Senyaka,,adversaire
+shadowcat-kitty-pryde,Shadowcat,Kitty Pryde,jouable
+shang-chi,Shang-Chi,,adversaire
+she-hulk-jennifer-walters,She-Hulk,Jennifer Walters,jouable
+shocker,Shocker,,adversaire
+sidewinder,Sidewinder,,adversaire
+silk-cindy-moon,Silk,Cindy Moon,jouable
+silver-samurai,Silver Samurai,,adversaire
+sindr,Sindr,,adversaire
+sir-raston,Sir Raston,,adversaire
+skullbuster,Skullbuster,,adversaire
+skurge,Skurge,,adversaire
+slab,Slab,,adversaire
+solus,Solus,,adversaire
+songbird,Songbird,,adversaire
+sp-dr-suit-peni-parker,SP//dr Suit,Peni Parker,jouable
+spectrum,Spectrum,,adversaire
+spectrum-monica-rambeau,Spectrum,Monica Rambeau,jouable
+speed,Speed,,adversaire
+speed-demon,Speed Demon,,adversaire
+speed-thomas-shepherd,Speed,Thomas Shepherd,jouable
+spider-ham-peter-porker,Spider-Ham,Peter Porker,jouable
+spider-man,Spider-Man,,adversaire
+spider-man-miguel-o-hara,Spider-Man,Miguel O'Hara,jouable
+spider-man-miles-morales,Spider-Man,Miles Morales,jouable
+spider-man-noir-peter-parker,Spider-Man Noir,Peter Parker,jouable
+spider-man-peter-parker,Spider-Man,Peter Parker,jouable
+spider-woman,Spider-Woman,,adversaire
+spider-woman-jessica-drew,Spider-Woman,Jessica Drew,jouable
+spider-woman-julia-carpenter,Spider-Woman,Julia Carpenter,jouable
+spiral,Spiral,,adversaire
+spot,Spot,,adversaire
+squirrel-girl-doreen-green,Squirrel Girl,Doreen Green,jouable
+star-lord-peter-quill,Star-Lord,Peter Quill,jouable
+stature,Stature,,adversaire
+stegron,Stegron,,adversaire
+storm-ororo-munroe,Storm,Ororo Munroe,jouable
+strobe,Strobe,,adversaire
+stryfe,Stryfe,,adversaire
+sugar-man,Sugar Man,,adversaire
+sunfire-shiro-yoshida,Sunfire,Shiro Yoshida,jouable
+super-skrull,Super Skrull,,adversaire
+supergiant,Supergiant,,adversaire
+superior-iron-man-tony-stark,Superior Iron Man,Tony Stark,jouable
+surprise-contender,Surprise Contender,,adversaire
+taskmaster,Taskmaster,,adversaire
+tempo,Tempo,,adversaire
+terminatrix,Terminatrix,,adversaire
+terrax-the-tamer,Terrax the Tamer,,adversaire
+texas-twister-drew-daniels,Texas Twister,Drew Daniels,jouable
+thanos,Thanos,,adversaire
+the-green-gobbler,The Green Gobbler,,adversaire
+the-hood,The Hood,,adversaire
+the-kraken,The Kraken,,adversaire
+the-lizard,The Lizard,,adversaire
+the-magus,The Magus,,adversaire
+the-mangog,The Mangog,,adversaire
+the-shadow-king,The Shadow King,,adversaire
+the-sleeper,The Sleeper,,adversaire
+the-spot,The Spot,,adversaire
+the-thing-ben-grimm,The Thing,Ben Grimm,jouable
+the-viper,The Viper,,adversaire
+thomas-edison,Thomas Edison,,adversaire
+thor,Thor,,adversaire
+thor-jane-foster,Thor,Jane Foster,jouable
+thor-odinson,Thor,Odinson,jouable
+throg,Throg,,adversaire
+throg-puddlegulp,Throg,Puddlegulp,jouable
+thumbelina,Thumbelina,,adversaire
+thunderball,Thunderball,,adversaire
+tiger-shark,Tiger Shark,,adversaire
+tigra-greer-nelson,Tigra,Greer Nelson,jouable
+timebroker,Timebroker,,adversaire
+titania,Titania,,adversaire
+toad,Toad,,adversaire
+toad-a,Toad A,,adversaire
+toad-b,Toad B,,adversaire
+tombstone,Tombstone,,adversaire
+tony-stark-a-i,Tony Stark A.I.,,adversaire
+topaz,Topaz,,adversaire
+totally-awesome-hulk-amadeus-cho,Totally Awesome Hulk,Amadeus Cho,jouable
+trevor-fitzroy,Trevor Fitzroy,,adversaire
+tusk,Tusk,,adversaire
+tweedledope,Tweedledope,,adversaire
+typhoid-mary,Typhoid Mary,,adversaire
+u-s-agent,U.S. Agent,,adversaire
+ulik,Ulik,,adversaire
+ultron,Ultron,,adversaire
+undead-hand-ninja,Undead Hand Ninja,,adversaire
+unus,Unus,,adversaire
+unuscione,Unuscione,,adversaire
+valkyrie-brunnhilde,Valkyrie,Brunnhilde,jouable
+vanisher,Vanisher,,adversaire
+venom,Venom,,adversaire
+venom-eddie-brock,Venom,Eddie Brock,jouable
+venom-flash-thompson,Venom,Flash Thompson,jouable
+venom-goblin,Venom Goblin,,adversaire
+venompool-wade-wilson,Venompool,Wade Wilson,jouable
+verna,Verna,,adversaire
+vertigo,Vertigo,,adversaire
+viper,Viper,,adversaire
+vision,Vision,,jouable
+viv-vision,Viv Vision,,jouable
+vulture,Vulture,,adversaire
+wade-cole,Wade Cole,,adversaire
+war,War,,adversaire
+war-machine-james-rhodes,War Machine,James Rhodes,jouable
+war-witches,War Witches,,adversaire
+warbringer,Warbringer,,adversaire
+warstar,Warstar,,adversaire
+wasp,Wasp,,adversaire
+wasp-nadia-van-dyne,Wasp,Nadia Van Dyne,jouable
+weapon-x,Weapon X,,adversaire
+whiplash,Whiplash,,adversaire
+whirlwind,Whirlwind,,adversaire
+white-queen,White Queen,,adversaire
+white-rabbit,White Rabbit,,adversaire
+wiccan,Wiccan,,adversaire
+wiccan-billy-kaplan,Wiccan,Billy Kaplan,jouable
+wildrun,Wildrun,,adversaire
+wildside,Wildside,,adversaire
+winter-soldier-bucky-barnes,Winter Soldier,Bucky Barnes,jouable
+witchfire,Witchfire,,adversaire
+wizard,Wizard,,adversaire
+wolverine,Wolverine,,adversaire
+wolverine-laura-kinney,Wolverine,Laura Kinney,jouable
+wolverine-logan,Wolverine,Logan,jouable
+wonder-man-simon-williams,Wonder Man,Simon Williams,jouable
+wrecker,Wrecker,,adversaire
+x-23-laura-kinney,X-23,Laura Kinney,jouable
+yellow-jacket,Yellow Jacket,,adversaire
+yellowjacket,Yellowjacket,,adversaire
+yon-rogg,Yon-Rogg,,adversaire
+yondu-yondu-udonta,Yondu,Yondu Udonta,jouable
+yotat-the-destroyer,Yotat the Destroyer,,adversaire
+zaran,Zaran,,adversaire
+zero,Zero,,adversaire
+zeus-zeus-panhellenios,Zeus,Zeus Panhellenios,jouable
+zola,Zola,,adversaire
+zombie-wolvie,Zombie Wolvie,,adversaire
+zzzax,Zzzax,,adversaire

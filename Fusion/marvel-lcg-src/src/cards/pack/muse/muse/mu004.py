@@ -64,7 +64,7 @@ def GetAbilities() -> Sequence['Ability']:
             taguer,
             conditions=[
                 lambda effect, message:
-                    EstUneCarteSignature(message.played_face)
+                    PorteLImageDe(message.played_face, message.to_player)
             ],
         ),
         AbilityFactory.WhenInYourPlayTurn(

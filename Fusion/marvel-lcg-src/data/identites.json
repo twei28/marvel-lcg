@@ -1,0 +1,5148 @@
+{
+ "_lisez_moi": "Annuaire des personnes du jeu. GENERE par outils/annuaire-identites.py, ne pas editer a la main. Sert au releve des illustrations (data/images_cartes.json).",
+ "version": 1,
+ "identites": [
+  {
+   "id": "abomination",
+   "nom": "Abomination",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "10026"
+   ]
+  },
+  {
+   "id": "absorbing-man",
+   "nom": "Absorbing Man",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "04076",
+    "04077",
+    "04078",
+    "55056"
+   ]
+  },
+  {
+   "id": "abyss",
+   "nom": "Abyss",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45181a",
+    "45181b"
+   ]
+  },
+  {
+   "id": "adam-warlock",
+   "nom": "Adam Warlock",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "21031a",
+    "21031b"
+   ]
+  },
+  {
+   "id": "agatha-harkness",
+   "nom": "Agatha Harkness",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "aa001a",
+    "aa001b"
+   ]
+  },
+  {
+   "id": "agent-13-sharon-carter",
+   "nom": "Agent 13",
+   "alias": [
+    "Sharon Carter"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "ag001a",
+    "ag001b"
+   ]
+  },
+  {
+   "id": "agent-anti-venom-flash-thompson",
+   "nom": "Agent Anti-Venom",
+   "alias": [
+    "Flash Thompson"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "av001a",
+    "av001b"
+   ]
+  },
+  {
+   "id": "ahab",
+   "nom": "Ahab",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45097"
+   ]
+  },
+  {
+   "id": "albert",
+   "nom": "Albert",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "ab001a",
+    "ab001b"
+   ]
+  },
+  {
+   "id": "alligator-loki",
+   "nom": "Alligator Loki",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "al001a",
+    "al001b",
+    "tg013"
+   ]
+  },
+  {
+   "id": "amelia-voght",
+   "nom": "Amelia Voght",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32160"
+   ]
+  },
+  {
+   "id": "amir",
+   "nom": "Amir",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "57070"
+   ]
+  },
+  {
+   "id": "ana-kraven",
+   "nom": "Ana Kraven",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "mw017"
+   ]
+  },
+  {
+   "id": "angel-warren-worthington-iii",
+   "nom": "Angel",
+   "alias": [
+    "Warren Worthington III"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "42001a",
+    "42001b",
+    "42001c"
+   ]
+  },
+  {
+   "id": "angela-aldrif-odinsdottir",
+   "nom": "Angela",
+   "alias": [
+    "Aldrif Odinsdottir"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "an001a",
+    "an001b"
+   ]
+  },
+  {
+   "id": "annihilus",
+   "nom": "Annihilus",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "lj015"
+   ]
+  },
+  {
+   "id": "ant-man-scott-lang",
+   "nom": "Ant-Man",
+   "alias": [
+    "Scott Lang"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "12001a",
+    "12001b",
+    "12001c"
+   ]
+  },
+  {
+   "id": "apocalypse",
+   "nom": "Apocalypse",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45101a",
+    "45101b",
+    "45102a",
+    "45102b",
+    "45184a",
+    "45184b",
+    "45184c",
+    "45185a",
+    "45185b",
+    "45185c",
+    "45186a",
+    "45186b",
+    "45186c"
+   ]
+  },
+  {
+   "id": "apocryphus",
+   "nom": "Apocryphus",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11040"
+   ]
+  },
+  {
+   "id": "arcade",
+   "nom": "Arcade",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "47030"
+   ]
+  },
+  {
+   "id": "arclight",
+   "nom": "Arclight",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40070a",
+    "40070b",
+    "40094"
+   ]
+  },
+  {
+   "id": "ares",
+   "nom": "Ares",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "ar001a",
+    "ar001b",
+    "59036",
+    "ip030"
+   ]
+  },
+  {
+   "id": "armadillo",
+   "nom": "Armadillo",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "28029"
+   ]
+  },
+  {
+   "id": "armored-spidey-peter-parker",
+   "nom": "Armored Spidey",
+   "alias": [
+    "Peter Parker"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "as001a",
+    "as001b"
+   ]
+  },
+  {
+   "id": "asp",
+   "nom": "Asp",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "62032"
+   ]
+  },
+  {
+   "id": "athena",
+   "nom": "Athena",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ar012"
+   ]
+  },
+  {
+   "id": "atlas",
+   "nom": "Atlas",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "52035",
+    "57017"
+   ]
+  },
+  {
+   "id": "avalanche",
+   "nom": "Avalanche",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "14026",
+    "32073"
+   ]
+  },
+  {
+   "id": "avalanche-a",
+   "nom": "Avalanche A",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32121a"
+   ]
+  },
+  {
+   "id": "avalanche-b",
+   "nom": "Avalanche B",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32121b"
+   ]
+  },
+  {
+   "id": "azazel",
+   "nom": "Azazel",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "48027"
+   ]
+  },
+  {
+   "id": "bantam",
+   "nom": "Bantam",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45028"
+   ]
+  },
+  {
+   "id": "baron-mordo",
+   "nom": "Baron Mordo",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "09028"
+   ]
+  },
+  {
+   "id": "baron-zemo",
+   "nom": "Baron Zemo",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "03028",
+    "50165a",
+    "50165b",
+    "50166a",
+    "50166b"
+   ]
+  },
+  {
+   "id": "barrage",
+   "nom": "Barrage",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45113"
+   ]
+  },
+  {
+   "id": "bastion",
+   "nom": "Bastion",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32167"
+   ]
+  },
+  {
+   "id": "batroc",
+   "nom": "Batroc",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50086a",
+    "50086b",
+    "50161"
+   ]
+  },
+  {
+   "id": "beast-dr-hank-mccoy",
+   "nom": "Beast",
+   "alias": [
+    "Dr Hank McCoy"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "bt001a",
+    "bt001b"
+   ]
+  },
+  {
+   "id": "beetle",
+   "nom": "Beetle",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24043"
+   ]
+  },
+  {
+   "id": "belasco",
+   "nom": "Belasco",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45054"
+   ]
+  },
+  {
+   "id": "bella-donna",
+   "nom": "Bella Donna",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ss019"
+   ]
+  },
+  {
+   "id": "belladonna",
+   "nom": "Belladonna",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "37026"
+   ]
+  },
+  {
+   "id": "beta-ray-bill",
+   "nom": "Beta Ray Bill",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "br001a",
+    "br001b"
+   ]
+  },
+  {
+   "id": "bishop-lucas-bishop",
+   "nom": "Bishop",
+   "alias": [
+    "Lucas Bishop"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "45001a",
+    "45001b"
+   ]
+  },
+  {
+   "id": "black-cat",
+   "nom": "Black Cat",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "wd045"
+   ]
+  },
+  {
+   "id": "black-cat-felicia-hardy",
+   "nom": "Black Cat",
+   "alias": [
+    "Felicia Hardy"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "bc001a",
+    "bc001b"
+   ]
+  },
+  {
+   "id": "black-dwarf",
+   "nom": "Black Dwarf",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21085"
+   ]
+  },
+  {
+   "id": "black-panther",
+   "nom": "Black Panther",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56155"
+   ]
+  },
+  {
+   "id": "black-panther-shuri",
+   "nom": "Black Panther",
+   "alias": [
+    "Shuri"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "51001a",
+    "51001b"
+   ]
+  },
+  {
+   "id": "black-panther-t-challa",
+   "nom": "Black Panther",
+   "alias": [
+    "T'Challa"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "01040a",
+    "01040b"
+   ]
+  },
+  {
+   "id": "black-swan",
+   "nom": "Black Swan",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21182b"
+   ]
+  },
+  {
+   "id": "black-tom-cassidy",
+   "nom": "Black Tom Cassidy",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40132"
+   ]
+  },
+  {
+   "id": "black-widow",
+   "nom": "Black Widow",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50064",
+    "50065",
+    "50066",
+    "50148"
+   ]
+  },
+  {
+   "id": "black-widow-natasha-romanoff",
+   "nom": "Black Widow",
+   "alias": [
+    "Natasha Romanoff"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "08001a",
+    "08001b"
+   ]
+  },
+  {
+   "id": "blackheart",
+   "nom": "Blackheart",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "hc015"
+   ]
+  },
+  {
+   "id": "blackjack-o-hare",
+   "nom": "Blackjack O'Hare",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "16055"
+   ]
+  },
+  {
+   "id": "blade-eric-brooks",
+   "nom": "Blade",
+   "alias": [
+    "Eric Brooks"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "bl001a",
+    "bl001b"
+   ]
+  },
+  {
+   "id": "blink-clarice-ferguson",
+   "nom": "Blink",
+   "alias": [
+    "Clarice Ferguson"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "bk001a",
+    "bk001b"
+   ]
+  },
+  {
+   "id": "blizzard",
+   "nom": "Blizzard",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "54034"
+   ]
+  },
+  {
+   "id": "blob",
+   "nom": "Blob",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32074"
+   ]
+  },
+  {
+   "id": "blob-a",
+   "nom": "Blob A",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32122a"
+   ]
+  },
+  {
+   "id": "blob-b",
+   "nom": "Blob B",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32122b"
+   ]
+  },
+  {
+   "id": "blockbuster",
+   "nom": "Blockbuster",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40071a",
+    "40071b",
+    "40095"
+   ]
+  },
+  {
+   "id": "bombshell",
+   "nom": "Bombshell",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "31031"
+   ]
+  },
+  {
+   "id": "bonebreaker",
+   "nom": "Bonebreaker",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "38031"
+   ]
+  },
+  {
+   "id": "boomerang",
+   "nom": "Boomerang",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24044"
+   ]
+  },
+  {
+   "id": "bora",
+   "nom": "Bora",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "30031"
+   ]
+  },
+  {
+   "id": "brawn-amadeus-cho",
+   "nom": "Brawn",
+   "alias": [
+    "Amadeus Cho"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "bw001a",
+    "bw001b"
+   ]
+  },
+  {
+   "id": "brix",
+   "nom": "Brix",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "30032"
+   ]
+  },
+  {
+   "id": "brothers-grimm",
+   "nom": "Brothers Grimm",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24018"
+   ]
+  },
+  {
+   "id": "bulldozer",
+   "nom": "Bulldozer",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "07046",
+    "07047",
+    "24066"
+   ]
+  },
+  {
+   "id": "bullseye",
+   "nom": "Bullseye",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56088",
+    "60033",
+    "ho016",
+    "ip023"
+   ]
+  },
+  {
+   "id": "bushman",
+   "nom": "Bushman",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "mk013"
+   ]
+  },
+  {
+   "id": "butler",
+   "nom": "Butler",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "44033"
+   ]
+  },
+  {
+   "id": "cable-nathan-summers",
+   "nom": "Cable",
+   "alias": [
+    "Nathan Summers"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "40001a",
+    "40001b"
+   ]
+  },
+  {
+   "id": "callisto",
+   "nom": "Callisto",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "36031"
+   ]
+  },
+  {
+   "id": "calvin-zabo",
+   "nom": "Calvin Zabo",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24034"
+   ]
+  },
+  {
+   "id": "captain-america",
+   "nom": "Captain America",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "rg013"
+   ]
+  },
+  {
+   "id": "captain-america-steve-rogers",
+   "nom": "Captain America",
+   "alias": [
+    "Steve Rogers"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "03001a",
+    "03001b"
+   ]
+  },
+  {
+   "id": "captain-marvel-carol-danvers",
+   "nom": "Captain Marvel",
+   "alias": [
+    "Carol Danvers"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "01010a",
+    "01010b"
+   ]
+  },
+  {
+   "id": "carnage",
+   "nom": "Carnage",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "vr014"
+   ]
+  },
+  {
+   "id": "catalina-chavez",
+   "nom": "Catalina Chavez",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ma018"
+   ]
+  },
+  {
+   "id": "chameleon",
+   "nom": "Chameleon",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "sp010"
+   ]
+  },
+  {
+   "id": "chimera",
+   "nom": "Chimera",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40072a",
+    "40072b",
+    "40096",
+    "41026"
+   ]
+  },
+  {
+   "id": "citizen-v",
+   "nom": "Citizen V",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50129a",
+    "50129b"
+   ]
+  },
+  {
+   "id": "cloak",
+   "nom": "Cloak",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56194"
+   ]
+  },
+  {
+   "id": "cloak-tyrone-johnson",
+   "nom": "Cloak",
+   "alias": [
+    "Tyrone Johnson"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "cd001a",
+    "cd001b"
+   ]
+  },
+  {
+   "id": "coat-of-arms",
+   "nom": "Coat of Arms",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "sd019"
+   ]
+  },
+  {
+   "id": "coldwar",
+   "nom": "Coldwar",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "vp014"
+   ]
+  },
+  {
+   "id": "collector",
+   "nom": "Collector",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "16070",
+    "16071",
+    "16072",
+    "16080a",
+    "16080b",
+    "16081a",
+    "16081b",
+    "hd023"
+   ]
+  },
+  {
+   "id": "colleen-wing",
+   "nom": "Colleen Wing",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56112"
+   ]
+  },
+  {
+   "id": "colossus-piotr-rasputin",
+   "nom": "Colossus",
+   "alias": [
+    "Piotr Rasputin"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "32001a",
+    "32001b"
+   ]
+  },
+  {
+   "id": "controller",
+   "nom": "Controller",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24024",
+    "50030"
+   ]
+  },
+  {
+   "id": "corruptor",
+   "nom": "Corruptor",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24025"
+   ]
+  },
+  {
+   "id": "corvus-glaive",
+   "nom": "Corvus Glaive",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21095",
+    "21096",
+    "21097",
+    "21125"
+   ]
+  },
+  {
+   "id": "cottonmouth",
+   "nom": "Cottonmouth",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "62029"
+   ]
+  },
+  {
+   "id": "crossbones",
+   "nom": "Crossbones",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "04058",
+    "04059",
+    "04060",
+    "54028"
+   ]
+  },
+  {
+   "id": "crossfire",
+   "nom": "Crossfire",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "04027",
+    "24026"
+   ]
+  },
+  {
+   "id": "curt-connors",
+   "nom": "Curt Connors",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "wd054b"
+   ]
+  },
+  {
+   "id": "cyclops-scott-summers",
+   "nom": "Cyclops",
+   "alias": [
+    "Scott Summers"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "33001a",
+    "33001b"
+   ]
+  },
+  {
+   "id": "daemos",
+   "nom": "Daemos",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "30033"
+   ]
+  },
+  {
+   "id": "dagger",
+   "nom": "Dagger",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56195"
+   ]
+  },
+  {
+   "id": "dagger-tandy-bowen",
+   "nom": "Dagger",
+   "alias": [
+    "Tandy Bowen"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "cd002a",
+    "cd002b"
+   ]
+  },
+  {
+   "id": "daimon-hellstrom",
+   "nom": "Daimon Hellstrom",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "hc016"
+   ]
+  },
+  {
+   "id": "daken",
+   "nom": "Daken",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ip024"
+   ]
+  },
+  {
+   "id": "daredevil",
+   "nom": "Daredevil",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56189"
+   ]
+  },
+  {
+   "id": "daredevil-matt-murdock",
+   "nom": "Daredevil",
+   "alias": [
+    "Matt Murdock"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "60001a",
+    "60001b"
+   ]
+  },
+  {
+   "id": "dark-beast",
+   "nom": "Dark Beast",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45118",
+    "45119",
+    "45120",
+    "bt022"
+   ]
+  },
+  {
+   "id": "dark-phoenix",
+   "nom": "Dark Phoenix",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "34029"
+   ]
+  },
+  {
+   "id": "dazzler-alison-blaire",
+   "nom": "Dazzler",
+   "alias": [
+    "Alison Blaire"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "dz001a",
+    "dz001b"
+   ]
+  },
+  {
+   "id": "deadpool-wade-wilson",
+   "nom": "Deadpool",
+   "alias": [
+    "Wade Wilson"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "44001a",
+    "44001b"
+   ]
+  },
+  {
+   "id": "death",
+   "nom": "Death",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45084a",
+    "45084b",
+    "aa016"
+   ]
+  },
+  {
+   "id": "deathunt-9000",
+   "nom": "Deathunt 9000",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11041"
+   ]
+  },
+  {
+   "id": "delgado",
+   "nom": "Delgado",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32162"
+   ]
+  },
+  {
+   "id": "disir",
+   "nom": "Disir",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "an014"
+   ]
+  },
+  {
+   "id": "doc-samson",
+   "nom": "Doc Samson",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56078"
+   ]
+  },
+  {
+   "id": "doctor-doom",
+   "nom": "Doctor Doom",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ip016"
+   ]
+  },
+  {
+   "id": "doctor-doom-victor-von-doom",
+   "nom": "Doctor Doom",
+   "alias": [
+    "Victor von Doom"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "dd001a",
+    "dd001b"
+   ]
+  },
+  {
+   "id": "doctor-druid-anthony-druid",
+   "nom": "Doctor Druid",
+   "alias": [
+    "Anthony Druid"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "dr001a",
+    "dr001b"
+   ]
+  },
+  {
+   "id": "doctor-faustus",
+   "nom": "Doctor Faustus",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ag012"
+   ]
+  },
+  {
+   "id": "doctor-octopus",
+   "nom": "Doctor Octopus",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "27094"
+   ]
+  },
+  {
+   "id": "doctor-strange",
+   "nom": "Doctor Strange",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "mk017"
+   ]
+  },
+  {
+   "id": "doctor-strange-stephen-strange",
+   "nom": "Doctor Strange",
+   "alias": [
+    "Stephen Strange"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "09001a",
+    "09001b"
+   ]
+  },
+  {
+   "id": "domino-neena-thurman",
+   "nom": "Domino",
+   "alias": [
+    "Neena Thurman"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "40037a",
+    "40037b"
+   ]
+  },
+  {
+   "id": "donald-pierce",
+   "nom": "Donald Pierce",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "38029"
+   ]
+  },
+  {
+   "id": "dracula",
+   "nom": "Dracula",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "bl013"
+   ]
+  },
+  {
+   "id": "dragoness",
+   "nom": "Dragoness",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40185"
+   ]
+  },
+  {
+   "id": "drang",
+   "nom": "Drang",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "16058",
+    "16059",
+    "16060"
+   ]
+  },
+  {
+   "id": "drax",
+   "nom": "Drax",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "19001a",
+    "19001b"
+   ]
+  },
+  {
+   "id": "earthquake",
+   "nom": "Earthquake",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45143"
+   ]
+  },
+  {
+   "id": "ebony-maw",
+   "nom": "Ebony Maw",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21071",
+    "21072",
+    "21073",
+    "21127"
+   ]
+  },
+  {
+   "id": "echo-maya-lopez",
+   "nom": "Echo",
+   "alias": [
+    "Maya Lopez"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "60037a",
+    "60037b"
+   ]
+  },
+  {
+   "id": "edison-s-giant-robot",
+   "nom": "Edison's Giant Robot",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "05028"
+   ]
+  },
+  {
+   "id": "electro",
+   "nom": "Electro",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "02042",
+    "27095",
+    "31032",
+    "wd021",
+    "wd025",
+    "wd035",
+    "wd036",
+    "wd037",
+    "wd046",
+    "wd047",
+    "sm015"
+   ]
+  },
+  {
+   "id": "electro-noir",
+   "nom": "Electro Noir",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "sn013"
+   ]
+  },
+  {
+   "id": "enchantress",
+   "nom": "Enchantress",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21177",
+    "25029",
+    "55001",
+    "55002",
+    "55003",
+    "ls014"
+   ]
+  },
+  {
+   "id": "evil-gwenpool",
+   "nom": "Evil Gwenpool",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "gp012"
+   ]
+  },
+  {
+   "id": "executioner",
+   "nom": "Executioner",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "48036"
+   ]
+  },
+  {
+   "id": "exodus",
+   "nom": "Exodus",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "37032",
+    "49028"
+   ]
+  },
+  {
+   "id": "fabian-cortez",
+   "nom": "Fabian Cortez",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32159",
+    "49030"
+   ]
+  },
+  {
+   "id": "falcon",
+   "nom": "Falcon",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56150"
+   ]
+  },
+  {
+   "id": "falcon-sam-wilson",
+   "nom": "Falcon",
+   "alias": [
+    "Sam Wilson"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "53001a",
+    "53001b"
+   ]
+  },
+  {
+   "id": "famine",
+   "nom": "Famine",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45082a",
+    "45082b"
+   ]
+  },
+  {
+   "id": "fenris-wolf",
+   "nom": "Fenris Wolf",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55042"
+   ]
+  },
+  {
+   "id": "fin-fang-foom",
+   "nom": "Fin Fang Foom",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ah016"
+   ]
+  },
+  {
+   "id": "fixer",
+   "nom": "Fixer",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "53038"
+   ]
+  },
+  {
+   "id": "forearm",
+   "nom": "Forearm",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40186"
+   ]
+  },
+  {
+   "id": "frenzy",
+   "nom": "Frenzy",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "49031"
+   ]
+  },
+  {
+   "id": "furnax",
+   "nom": "Furnax",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "16027"
+   ]
+  },
+  {
+   "id": "gambit-remy-lebeau",
+   "nom": "Gambit",
+   "alias": [
+    "Remy LeBeau"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "37001a",
+    "37001b"
+   ]
+  },
+  {
+   "id": "gamora",
+   "nom": "Gamora",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "18001a",
+    "18001b",
+    "22028"
+   ]
+  },
+  {
+   "id": "garm",
+   "nom": "Garm",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21143"
+   ]
+  },
+  {
+   "id": "gauntlet",
+   "nom": "Gauntlet",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45112"
+   ]
+  },
+  {
+   "id": "ghost",
+   "nom": "Ghost",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ip025"
+   ]
+  },
+  {
+   "id": "ghost-rider",
+   "nom": "Ghost Rider",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "mk018"
+   ]
+  },
+  {
+   "id": "ghost-spider-gwen-stacy",
+   "nom": "Ghost-Spider",
+   "alias": [
+    "Gwen Stacy"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "27001a",
+    "27001b"
+   ]
+  },
+  {
+   "id": "gladiator",
+   "nom": "Gladiator",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45140"
+   ]
+  },
+  {
+   "id": "goblin-knight",
+   "nom": "Goblin Knight",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "02022"
+   ]
+  },
+  {
+   "id": "goliath",
+   "nom": "Goliath",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56152"
+   ]
+  },
+  {
+   "id": "gorgeous-george",
+   "nom": "Gorgeous George",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40112"
+   ]
+  },
+  {
+   "id": "gorr-the-god-butcher",
+   "nom": "Gorr the God Butcher",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "gb001",
+    "gb002",
+    "gb003"
+   ]
+  },
+  {
+   "id": "green-goblin",
+   "nom": "Green Goblin",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "02001b",
+    "02002b",
+    "02003b",
+    "02014",
+    "02015",
+    "02016",
+    "wd033"
+   ]
+  },
+  {
+   "id": "green-goblin-harry-osborn",
+   "nom": "Green Goblin",
+   "alias": [
+    "Harry Osborn"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "ho001a",
+    "ho001b"
+   ]
+  },
+  {
+   "id": "grendell",
+   "nom": "Grendell",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55038"
+   ]
+  },
+  {
+   "id": "greycrow",
+   "nom": "Greycrow",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40073a",
+    "40073b",
+    "40097"
+   ]
+  },
+  {
+   "id": "griffin",
+   "nom": "Griffin",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24015"
+   ]
+  },
+  {
+   "id": "grim-reaper",
+   "nom": "Grim Reaper",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "58026"
+   ]
+  },
+  {
+   "id": "groot",
+   "nom": "Groot",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "16001a",
+    "16001b"
+   ]
+  },
+  {
+   "id": "guzz",
+   "nom": "Guzz",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "vp015"
+   ]
+  },
+  {
+   "id": "gwenpool-gwendolyn-poole",
+   "nom": "Gwenpool",
+   "alias": [
+    "Gwendolyn Poole"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "gp001a",
+    "gp001b"
+   ]
+  },
+  {
+   "id": "hairbag",
+   "nom": "Hairbag",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40113"
+   ]
+  },
+  {
+   "id": "hard-drive",
+   "nom": "Hard-Drive",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45114"
+   ]
+  },
+  {
+   "id": "harpoon",
+   "nom": "Harpoon",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40074a",
+    "40074b",
+    "40098",
+    "42025"
+   ]
+  },
+  {
+   "id": "harvester",
+   "nom": "Harvester",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ss020"
+   ]
+  },
+  {
+   "id": "hawkeye",
+   "nom": "Hawkeye",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "57056"
+   ]
+  },
+  {
+   "id": "hawkeye-clint-barton",
+   "nom": "Hawkeye",
+   "alias": [
+    "Clint Barton"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "04001a",
+    "04001b"
+   ]
+  },
+  {
+   "id": "hawkeye-kate-bishop",
+   "nom": "Hawkeye",
+   "alias": [
+    "Kate Bishop"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "kb001a",
+    "kb001b"
+   ]
+  },
+  {
+   "id": "hecate",
+   "nom": "Hecate",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "59042"
+   ]
+  },
+  {
+   "id": "hel-wolf",
+   "nom": "Hel-Wolf",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "an013"
+   ]
+  },
+  {
+   "id": "hela",
+   "nom": "Hela",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21136a",
+    "21136b",
+    "21137a",
+    "21137b",
+    "an012"
+   ]
+  },
+  {
+   "id": "hellcat",
+   "nom": "Hellcat",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56079"
+   ]
+  },
+  {
+   "id": "hellcat-patsy-walker",
+   "nom": "Hellcat",
+   "alias": [
+    "Patsy Walker"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "hc001a",
+    "hc001b"
+   ]
+  },
+  {
+   "id": "hellcow",
+   "nom": "Hellcow",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "hd024"
+   ]
+  },
+  {
+   "id": "hercules",
+   "nom": "Hercules",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "59001a",
+    "59001b",
+    "56151"
+   ]
+  },
+  {
+   "id": "hobgoblin",
+   "nom": "Hobgoblin",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "27096",
+    "31033",
+    "wd034",
+    "su016"
+   ]
+  },
+  {
+   "id": "howard-the-duck-howard-duckson",
+   "nom": "Howard the Duck",
+   "alias": [
+    "Howard Duckson"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "hd001a",
+    "hd001b"
+   ]
+  },
+  {
+   "id": "hraesvelgr",
+   "nom": "Hraesvelgr",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55043"
+   ]
+  },
+  {
+   "id": "hulk",
+   "nom": "Hulk",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "th014"
+   ]
+  },
+  {
+   "id": "hulk-bruce-banner",
+   "nom": "Hulk",
+   "alias": [
+    "Bruce Banner"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "10001a",
+    "10001b",
+    "hk001a",
+    "hk001b"
+   ]
+  },
+  {
+   "id": "hulkling-teddy-altman",
+   "nom": "Hulkling",
+   "alias": [
+    "Teddy Altman"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "56029a",
+    "56029b"
+   ]
+  },
+  {
+   "id": "human-torch-johnny-storm",
+   "nom": "Human Torch",
+   "alias": [
+    "Johnny Storm"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "ht001a",
+    "ht001b"
+   ]
+  },
+  {
+   "id": "hydro-man",
+   "nom": "Hydro-Man",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ht012"
+   ]
+  },
+  {
+   "id": "iceman-bobby-drake",
+   "nom": "Iceman",
+   "alias": [
+    "Bobby Drake"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "46001a",
+    "46001b"
+   ]
+  },
+  {
+   "id": "infected-scorpion",
+   "nom": "Infected Scorpion",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "av015"
+   ]
+  },
+  {
+   "id": "invisible-woman-sue-storm",
+   "nom": "Invisible Woman",
+   "alias": [
+    "Sue Storm"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "iw001a",
+    "iw001b",
+    "iw001c"
+   ]
+  },
+  {
+   "id": "iron-fist",
+   "nom": "Iron Fist",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56190",
+    "mk019"
+   ]
+  },
+  {
+   "id": "iron-lad",
+   "nom": "Iron Lad",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "il001a",
+    "il001b"
+   ]
+  },
+  {
+   "id": "iron-man-tony-stark",
+   "nom": "Iron Man",
+   "alias": [
+    "Tony Stark"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "01029a",
+    "01029b",
+    "im001a",
+    "im001b"
+   ]
+  },
+  {
+   "id": "iron-patriot-norman-osborn",
+   "nom": "Iron Patriot",
+   "alias": [
+    "Norman Osborn"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "ip001a",
+    "ip001b"
+   ]
+  },
+  {
+   "id": "iron-spider",
+   "nom": "Iron Spider",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "31034"
+   ]
+  },
+  {
+   "id": "ironheart-riri-williams",
+   "nom": "Ironheart",
+   "alias": [
+    "Riri Williams"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "29001a",
+    "29001b",
+    "29002a",
+    "29002b",
+    "29003a",
+    "29003b"
+   ]
+  },
+  {
+   "id": "jack-o-lantern",
+   "nom": "Jack O'Lantern",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "57028"
+   ]
+  },
+  {
+   "id": "janus",
+   "nom": "Janus",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "57069"
+   ]
+  },
+  {
+   "id": "jennix",
+   "nom": "Jennix",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "30034"
+   ]
+  },
+  {
+   "id": "jessica-jones",
+   "nom": "Jessica Jones",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "61001a",
+    "61001b",
+    "jj001a",
+    "jj001b",
+    "56185"
+   ]
+  },
+  {
+   "id": "jester",
+   "nom": "Jester",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "48035",
+    "57027"
+   ]
+  },
+  {
+   "id": "jigsaw",
+   "nom": "Jigsaw",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56028"
+   ]
+  },
+  {
+   "id": "jolt",
+   "nom": "Jolt",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50133"
+   ]
+  },
+  {
+   "id": "joystick",
+   "nom": "Joystick",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "51039"
+   ]
+  },
+  {
+   "id": "jubilee-jubilation-lee",
+   "nom": "Jubilee",
+   "alias": [
+    "Jubilation Lee"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "47001a",
+    "47001b"
+   ]
+  },
+  {
+   "id": "juggernaut",
+   "nom": "Juggernaut",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32026",
+    "40118",
+    "40119",
+    "40120"
+   ]
+  },
+  {
+   "id": "kang-immortus",
+   "nom": "Kang (Immortus)",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11002",
+    "11035"
+   ]
+  },
+  {
+   "id": "kang-iron-lad",
+   "nom": "Kang (Iron Lad)",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11003",
+    "11036"
+   ]
+  },
+  {
+   "id": "kang-master-of-time",
+   "nom": "Kang (Master of Time)",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11047"
+   ]
+  },
+  {
+   "id": "kang-rama-tut",
+   "nom": "Kang (Rama-Tut)",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11004",
+    "11037"
+   ]
+  },
+  {
+   "id": "kang-scarlet-centurion",
+   "nom": "Kang (Scarlet Centurion)",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11005",
+    "11038"
+   ]
+  },
+  {
+   "id": "kang-the-conqueror",
+   "nom": "Kang (The Conqueror)",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11001",
+    "11006",
+    "11034",
+    "11039",
+    "il019"
+   ]
+  },
+  {
+   "id": "karn",
+   "nom": "Karn",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "30035"
+   ]
+  },
+  {
+   "id": "killer-thrill",
+   "nom": "Killer Thrill",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "vp013"
+   ]
+  },
+  {
+   "id": "killmonger",
+   "nom": "Killmonger",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01157"
+   ]
+  },
+  {
+   "id": "kingpin",
+   "nom": "Kingpin",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "60061",
+    "wd091",
+    "wd092",
+    "wd093",
+    "ho015",
+    "as023"
+   ]
+  },
+  {
+   "id": "klaw",
+   "nom": "Klaw",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01113",
+    "01114",
+    "01115",
+    "51032",
+    "dz020"
+   ]
+  },
+  {
+   "id": "krackalakassian",
+   "nom": "Krackalakassian",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ah017"
+   ]
+  },
+  {
+   "id": "kraven-the-hunter",
+   "nom": "Kraven the Hunter",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "27097",
+    "mw019",
+    "wd108"
+   ]
+  },
+  {
+   "id": "kyknos",
+   "nom": "Kyknos",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "59043"
+   ]
+  },
+  {
+   "id": "lady-bullseye",
+   "nom": "Lady Bullseye",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "wd102"
+   ]
+  },
+  {
+   "id": "lady-deathstrike",
+   "nom": "Lady Deathstrike",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "35034",
+    "43029"
+   ]
+  },
+  {
+   "id": "lady-hellbender",
+   "nom": "Lady Hellbender",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ah014"
+   ]
+  },
+  {
+   "id": "lady-mastermind",
+   "nom": "Lady Mastermind",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40198"
+   ]
+  },
+  {
+   "id": "lady-sif",
+   "nom": "Lady Sif",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "ls001a",
+    "ls001b"
+   ]
+  },
+  {
+   "id": "laufey",
+   "nom": "Laufey",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21156",
+    "55044"
+   ]
+  },
+  {
+   "id": "lernean-hydra",
+   "nom": "Lernean Hydra",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "59037"
+   ]
+  },
+  {
+   "id": "living-laser",
+   "nom": "Living Laser",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "23029",
+    "sp012"
+   ]
+  },
+  {
+   "id": "lockjaw",
+   "nom": "Lockjaw",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "lj001a",
+    "lj001b"
+   ]
+  },
+  {
+   "id": "loki",
+   "nom": "Loki",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "06028",
+    "21160",
+    "21161",
+    "21162",
+    "21163",
+    "21164",
+    "ip031"
+   ]
+  },
+  {
+   "id": "loki-god-of-lies",
+   "nom": "Loki, God of Lies",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55027a",
+    "55027b"
+   ]
+  },
+  {
+   "id": "loki-the-knave",
+   "nom": "Loki the Knave",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55031a"
+   ]
+  },
+  {
+   "id": "loki-the-miscreant",
+   "nom": "Loki the Miscreant",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55030a"
+   ]
+  },
+  {
+   "id": "loki-the-rascal",
+   "nom": "Loki the Rascal",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55029a"
+   ]
+  },
+  {
+   "id": "loki-the-wretch",
+   "nom": "Loki the Wretch",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55032a"
+   ]
+  },
+  {
+   "id": "lucia-von-bardas",
+   "nom": "Lucia von Bardas",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "29030"
+   ]
+  },
+  {
+   "id": "luke-cage",
+   "nom": "Luke Cage",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "62001a",
+    "62001b",
+    "56184"
+   ]
+  },
+  {
+   "id": "luminous",
+   "nom": "Luminous",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "15025"
+   ]
+  },
+  {
+   "id": "m-o-d-o-k",
+   "nom": "M.O.D.O.K.",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01184",
+    "50103a",
+    "50103b"
+   ]
+  },
+  {
+   "id": "m-u-s-i-c",
+   "nom": "M.U.S.I.C.",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "51034"
+   ]
+  },
+  {
+   "id": "mach-iv",
+   "nom": "MACH-IV",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50156"
+   ]
+  },
+  {
+   "id": "machete",
+   "nom": "Machete",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50098"
+   ]
+  },
+  {
+   "id": "madame-hydra",
+   "nom": "Madame Hydra",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01181"
+   ]
+  },
+  {
+   "id": "madame-masque",
+   "nom": "Madame Masque",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24010",
+    "56027",
+    "kb017",
+    "ip026"
+   ]
+  },
+  {
+   "id": "madame-web-cassandra-webb",
+   "nom": "Madame Web",
+   "alias": [
+    "Cassandra Webb"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "mw001a",
+    "mw001b"
+   ]
+  },
+  {
+   "id": "magik-illyana-rasputin",
+   "nom": "Magik",
+   "alias": [
+    "Illyana Rasputin"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "45030a",
+    "45030b"
+   ]
+  },
+  {
+   "id": "magneto",
+   "nom": "Magneto",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32138",
+    "32139",
+    "32140"
+   ]
+  },
+  {
+   "id": "magneto-erik-lehnsherr",
+   "nom": "Magneto",
+   "alias": [
+    "Erik Lehnsherr"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "49001a",
+    "49001b"
+   ]
+  },
+  {
+   "id": "magog",
+   "nom": "MaGog",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "39001a",
+    "39001b"
+   ]
+  },
+  {
+   "id": "malekith",
+   "nom": "Malekith",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55039",
+    "ra028"
+   ]
+  },
+  {
+   "id": "malice",
+   "nom": "Malice",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40199",
+    "ok021"
+   ]
+  },
+  {
+   "id": "man-bull",
+   "nom": "Man-Bull",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "sw021"
+   ]
+  },
+  {
+   "id": "mandrill",
+   "nom": "Mandrill",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24016"
+   ]
+  },
+  {
+   "id": "maniac",
+   "nom": "Maniac",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "av013"
+   ]
+  },
+  {
+   "id": "manta",
+   "nom": "Manta",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45142"
+   ]
+  },
+  {
+   "id": "maria-hill",
+   "nom": "Maria Hill",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "50001a",
+    "50001b",
+    "56083"
+   ]
+  },
+  {
+   "id": "mark-vii-a",
+   "nom": "Mark VII-A",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "st015"
+   ]
+  },
+  {
+   "id": "master-mold",
+   "nom": "Master Mold",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32109",
+    "32110",
+    "32111"
+   ]
+  },
+  {
+   "id": "master-pandemonium",
+   "nom": "Master Pandemonium",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "tt021"
+   ]
+  },
+  {
+   "id": "melter",
+   "nom": "Melter",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01132"
+   ]
+  },
+  {
+   "id": "mikhail-rasputin",
+   "nom": "Mikhail Rasputin",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45183a",
+    "45183b"
+   ]
+  },
+  {
+   "id": "mimic-27",
+   "nom": "Mimic-27",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ok022"
+   ]
+  },
+  {
+   "id": "minotaur",
+   "nom": "Minotaur",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55040"
+   ]
+  },
+  {
+   "id": "mister-fantastic",
+   "nom": "Mister Fantastic",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "dd015"
+   ]
+  },
+  {
+   "id": "mister-fantastic-reed-richards",
+   "nom": "Mister Fantastic",
+   "alias": [
+    "Reed Richards"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "mf001a",
+    "mf001b"
+   ]
+  },
+  {
+   "id": "mister-fear",
+   "nom": "Mister Fear",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24027"
+   ]
+  },
+  {
+   "id": "mister-hyde",
+   "nom": "Mister Hyde",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24035"
+   ]
+  },
+  {
+   "id": "mister-knife",
+   "nom": "Mister Knife",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "17026"
+   ]
+  },
+  {
+   "id": "mister-negative",
+   "nom": "Mister Negative",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "cd015"
+   ]
+  },
+  {
+   "id": "mister-sinister",
+   "nom": "Mister Sinister",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "33028",
+    "40136",
+    "40137",
+    "40138",
+    "45179a",
+    "45179b"
+   ]
+  },
+  {
+   "id": "mojo",
+   "nom": "Mojo",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "39022",
+    "39023",
+    "39024"
+   ]
+  },
+  {
+   "id": "molecule-man",
+   "nom": "Molecule Man",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ip034"
+   ]
+  },
+  {
+   "id": "monarch-starstalker",
+   "nom": "Monarch Starstalker",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "16075"
+   ]
+  },
+  {
+   "id": "monica-rappaccini",
+   "nom": "Monica Rappaccini",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50126"
+   ]
+  },
+  {
+   "id": "monster",
+   "nom": "Monster",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "02025"
+   ]
+  },
+  {
+   "id": "moon-knight",
+   "nom": "Moon Knight",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "57065"
+   ]
+  },
+  {
+   "id": "moon-knight-marc-spector",
+   "nom": "Moon Knight",
+   "alias": [
+    "Marc Spector"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "mk001a",
+    "mk001b",
+    "mk001c",
+    "mk001d",
+    "mk001e"
+   ]
+  },
+  {
+   "id": "moonstone",
+   "nom": "Moonstone",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50139",
+    "ip027"
+   ]
+  },
+  {
+   "id": "morlun",
+   "nom": "Morlun",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "30036",
+    "52029"
+   ]
+  },
+  {
+   "id": "mr-hyde",
+   "nom": "Mr. Hyde",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "pt019"
+   ]
+  },
+  {
+   "id": "ms-america-america-chavez",
+   "nom": "Ms. America",
+   "alias": [
+    "America Chavez"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "ma001a",
+    "ma001b"
+   ]
+  },
+  {
+   "id": "ms-marvel",
+   "nom": "Ms. Marvel",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "sw025"
+   ]
+  },
+  {
+   "id": "ms-marvel-kamala-khan",
+   "nom": "Ms. Marvel",
+   "alias": [
+    "Kamala Khan"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "05001a",
+    "05001b"
+   ]
+  },
+  {
+   "id": "murray-reese",
+   "nom": "Murray Reese",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "38033"
+   ]
+  },
+  {
+   "id": "muse",
+   "nom": "Muse",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "mu003"
+   ]
+  },
+  {
+   "id": "mysterio",
+   "nom": "Mysterio",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "27084",
+    "27085",
+    "27086",
+    "sr015"
+   ]
+  },
+  {
+   "id": "mystique",
+   "nom": "Mystique",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32080",
+    "38025"
+   ]
+  },
+  {
+   "id": "namor",
+   "nom": "Namor",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56160",
+    "bw020"
+   ]
+  },
+  {
+   "id": "nanny",
+   "nom": "Nanny",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "47024"
+   ]
+  },
+  {
+   "id": "nebula",
+   "nom": "Nebula",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "22001a",
+    "22001b",
+    "16088",
+    "16089",
+    "16090",
+    "18026"
+   ]
+  },
+  {
+   "id": "necro-raven-gestalt",
+   "nom": "Necro-Raven Gestalt",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "gb008"
+   ]
+  },
+  {
+   "id": "nekra",
+   "nom": "Nekra",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "dr011"
+   ]
+  },
+  {
+   "id": "nick-fury",
+   "nom": "Nick Fury",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "50034a",
+    "50034b"
+   ]
+  },
+  {
+   "id": "nidhogg",
+   "nom": "Nidhogg",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21145"
+   ]
+  },
+  {
+   "id": "night-thrasher-dwayne-taylor",
+   "nom": "Night Thrasher",
+   "alias": [
+    "Dwayne Taylor"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "nt001a",
+    "nt001b"
+   ]
+  },
+  {
+   "id": "nightcrawler-kurt-wagner",
+   "nom": "Nightcrawler",
+   "alias": [
+    "Kurt Wagner"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "48001a",
+    "48001b"
+   ]
+  },
+  {
+   "id": "nimrod",
+   "nom": "Nimrod",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32166"
+   ]
+  },
+  {
+   "id": "norman-osborn",
+   "nom": "Norman Osborn",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "02001a",
+    "02002a",
+    "02003a"
+   ]
+  },
+  {
+   "id": "nova-sam-alexander",
+   "nom": "Nova",
+   "alias": [
+    "Sam Alexander"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "28001a",
+    "28001b"
+   ]
+  },
+  {
+   "id": "nyx",
+   "nom": "Nyx",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ze013"
+   ]
+  },
+  {
+   "id": "okoye",
+   "nom": "Okoye",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "ok001a",
+    "ok001b"
+   ]
+  },
+  {
+   "id": "omega-red",
+   "nom": "Omega Red",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "35028"
+   ]
+  },
+  {
+   "id": "oracle",
+   "nom": "Oracle",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45141"
+   ]
+  },
+  {
+   "id": "orion",
+   "nom": "Orion",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50060"
+   ]
+  },
+  {
+   "id": "paladin",
+   "nom": "Paladin",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56117"
+   ]
+  },
+  {
+   "id": "patch",
+   "nom": "Patch",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ab014"
+   ]
+  },
+  {
+   "id": "patriot",
+   "nom": "Patriot",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "57055"
+   ]
+  },
+  {
+   "id": "patriot-elijah-bradley",
+   "nom": "Patriot",
+   "alias": [
+    "Elijah Bradley"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "pt001a",
+    "pt001b"
+   ]
+  },
+  {
+   "id": "penance",
+   "nom": "Penance",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "57019",
+    "ip032"
+   ]
+  },
+  {
+   "id": "pestilence",
+   "nom": "Pestilence",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45083a",
+    "45083b"
+   ]
+  },
+  {
+   "id": "phoenix-jean-grey",
+   "nom": "Phoenix",
+   "alias": [
+    "Jean Grey"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "34001a",
+    "34001b"
+   ]
+  },
+  {
+   "id": "piledriver",
+   "nom": "Piledriver",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "07032",
+    "07033",
+    "24067"
+   ]
+  },
+  {
+   "id": "princess-python",
+   "nom": "Princess Python",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "wd064"
+   ]
+  },
+  {
+   "id": "prototype",
+   "nom": "Prototype",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40068"
+   ]
+  },
+  {
+   "id": "prowler",
+   "nom": "Prowler",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "27058"
+   ]
+  },
+  {
+   "id": "proxima-midnight",
+   "nom": "Proxima Midnight",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21092",
+    "21093",
+    "21094",
+    "21126"
+   ]
+  },
+  {
+   "id": "psycho-man",
+   "nom": "Psycho-Man",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "iw014"
+   ]
+  },
+  {
+   "id": "psylocke-betsy-braddock",
+   "nom": "Psylocke",
+   "alias": [
+    "Betsy Braddock"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "41001a",
+    "41001b"
+   ]
+  },
+  {
+   "id": "psynapse",
+   "nom": "Psynapse",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45116"
+   ]
+  },
+  {
+   "id": "puma",
+   "nom": "Puma",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "sp008"
+   ]
+  },
+  {
+   "id": "puppet-master",
+   "nom": "Puppet Master",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "th012"
+   ]
+  },
+  {
+   "id": "purple-man",
+   "nom": "Purple Man",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "jj019",
+    "61031"
+   ]
+  },
+  {
+   "id": "pyro",
+   "nom": "Pyro",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32075",
+    "46025"
+   ]
+  },
+  {
+   "id": "pyro-a",
+   "nom": "Pyro A",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32123a"
+   ]
+  },
+  {
+   "id": "pyro-b",
+   "nom": "Pyro B",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32123b"
+   ]
+  },
+  {
+   "id": "queen-of-hearts",
+   "nom": "Queen of Hearts",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "48034"
+   ]
+  },
+  {
+   "id": "quicksilver-pietro-maximoff",
+   "nom": "Quicksilver",
+   "alias": [
+    "Pietro Maximoff"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "14001a",
+    "14001b"
+   ]
+  },
+  {
+   "id": "radioactive-man",
+   "nom": "Radioactive Man",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01129",
+    "21027",
+    "50152"
+   ]
+  },
+  {
+   "id": "ramrod",
+   "nom": "Ramrod",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40114"
+   ]
+  },
+  {
+   "id": "rapido",
+   "nom": "Rapido",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50099"
+   ]
+  },
+  {
+   "id": "ratatoskr",
+   "nom": "Ratatoskr",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "sg019"
+   ]
+  },
+  {
+   "id": "reaper",
+   "nom": "Reaper",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40187"
+   ]
+  },
+  {
+   "id": "red-guardian-alexei-shostakov",
+   "nom": "Red Guardian",
+   "alias": [
+    "Alexei Shostakov"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "rg001a",
+    "rg001b"
+   ]
+  },
+  {
+   "id": "red-skull",
+   "nom": "Red Skull",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "04125",
+    "04126",
+    "04127"
+   ]
+  },
+  {
+   "id": "rhino",
+   "nom": "Rhino",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01094",
+    "01095",
+    "01096",
+    "27128"
+   ]
+  },
+  {
+   "id": "riptide",
+   "nom": "Riptide",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40075a",
+    "40075b",
+    "40099"
+   ]
+  },
+  {
+   "id": "rocket-raccoon",
+   "nom": "Rocket Raccoon",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "16029a",
+    "16029b"
+   ]
+  },
+  {
+   "id": "rocket-racer",
+   "nom": "Rocket Racer",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "sp007"
+   ]
+  },
+  {
+   "id": "rogue-anna-marie",
+   "nom": "Rogue",
+   "alias": [
+    "Anna Marie"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "38001a",
+    "38001b"
+   ]
+  },
+  {
+   "id": "ronan-the-accuser",
+   "nom": "Ronan the Accuser",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "16103",
+    "16104",
+    "16105",
+    "90001"
+   ]
+  },
+  {
+   "id": "ruckus",
+   "nom": "Ruckus",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40115"
+   ]
+  },
+  {
+   "id": "s-ym",
+   "nom": "S'ym",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45056"
+   ]
+  },
+  {
+   "id": "sabretooth",
+   "nom": "Sabretooth",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32060",
+    "32061",
+    "32062"
+   ]
+  },
+  {
+   "id": "samurai",
+   "nom": "Samurai",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40188"
+   ]
+  },
+  {
+   "id": "sandman",
+   "nom": "Sandman",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01102",
+    "27061",
+    "27062",
+    "27063",
+    "31035",
+    "wd006"
+   ]
+  },
+  {
+   "id": "sauron",
+   "nom": "Sauron",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "46029"
+   ]
+  },
+  {
+   "id": "sav-rkk",
+   "nom": "Sav'rkk",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "yd015"
+   ]
+  },
+  {
+   "id": "scarlet-spider-kaine-parker",
+   "nom": "Scarlet Spider",
+   "alias": [
+    "Kaine Parker"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "ss001a",
+    "ss001b"
+   ]
+  },
+  {
+   "id": "scarlet-witch-wanda-maximoff",
+   "nom": "Scarlet Witch",
+   "alias": [
+    "Wanda Maximoff"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "15001a",
+    "15001b"
+   ]
+  },
+  {
+   "id": "scientist-supreme",
+   "nom": "Scientist Supreme",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50125"
+   ]
+  },
+  {
+   "id": "scorpion",
+   "nom": "Scorpion",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "02038",
+    "27098",
+    "wd007"
+   ]
+  },
+  {
+   "id": "scrambler",
+   "nom": "Scrambler",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40200"
+   ]
+  },
+  {
+   "id": "sebastian-shaw",
+   "nom": "Sebastian Shaw",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "49038"
+   ]
+  },
+  {
+   "id": "selene",
+   "nom": "Selene",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "49039"
+   ]
+  },
+  {
+   "id": "sentinel",
+   "nom": "Sentinel",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "st001a",
+    "st001b"
+   ]
+  },
+  {
+   "id": "senyaka",
+   "nom": "Senyaka",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32161"
+   ]
+  },
+  {
+   "id": "shadowcat-kitty-pryde",
+   "nom": "Shadowcat",
+   "alias": [
+    "Kitty Pryde"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "32030a",
+    "32030b"
+   ]
+  },
+  {
+   "id": "shang-chi",
+   "nom": "Shang-Chi",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56113"
+   ]
+  },
+  {
+   "id": "she-hulk-jennifer-walters",
+   "nom": "She-Hulk",
+   "alias": [
+    "Jennifer Walters"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "01019a",
+    "01019b"
+   ]
+  },
+  {
+   "id": "shocker",
+   "nom": "Shocker",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01103",
+    "24045",
+    "wd001a",
+    "wd001b"
+   ]
+  },
+  {
+   "id": "sidewinder",
+   "nom": "Sidewinder",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "62033"
+   ]
+  },
+  {
+   "id": "silk-cindy-moon",
+   "nom": "Silk",
+   "alias": [
+    "Cindy Moon"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "52001a",
+    "52001b"
+   ]
+  },
+  {
+   "id": "silver-samurai",
+   "nom": "Silver Samurai",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "sf012"
+   ]
+  },
+  {
+   "id": "sindr",
+   "nom": "Sindr",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55019"
+   ]
+  },
+  {
+   "id": "sir-raston",
+   "nom": "Sir Raston",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11042"
+   ]
+  },
+  {
+   "id": "skullbuster",
+   "nom": "Skullbuster",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "38030"
+   ]
+  },
+  {
+   "id": "skurge",
+   "nom": "Skurge",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21144",
+    "ls015"
+   ]
+  },
+  {
+   "id": "slab",
+   "nom": "Slab",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40116"
+   ]
+  },
+  {
+   "id": "solus",
+   "nom": "Solus",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "30037"
+   ]
+  },
+  {
+   "id": "songbird",
+   "nom": "Songbird",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50143",
+    "57018"
+   ]
+  },
+  {
+   "id": "sp-dr-suit-peni-parker",
+   "nom": "SP//dr Suit",
+   "alias": [
+    "Peni Parker"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "31001a",
+    "31002a"
+   ]
+  },
+  {
+   "id": "spectrum",
+   "nom": "Spectrum",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56156"
+   ]
+  },
+  {
+   "id": "spectrum-monica-rambeau",
+   "nom": "Spectrum",
+   "alias": [
+    "Monica Rambeau"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "21001a",
+    "21001b"
+   ]
+  },
+  {
+   "id": "speed",
+   "nom": "Speed",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "57060"
+   ]
+  },
+  {
+   "id": "speed-demon",
+   "nom": "Speed Demon",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24046"
+   ]
+  },
+  {
+   "id": "speed-thomas-shepherd",
+   "nom": "Speed",
+   "alias": [
+    "Thomas Shepherd"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "sd001a",
+    "sd001b"
+   ]
+  },
+  {
+   "id": "spider-ham-peter-porker",
+   "nom": "Spider-Ham",
+   "alias": [
+    "Peter Porker"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "30001a",
+    "30001b"
+   ]
+  },
+  {
+   "id": "spider-man",
+   "nom": "Spider-Man",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56180"
+   ]
+  },
+  {
+   "id": "spider-man-miguel-o-hara",
+   "nom": "Spider-Man",
+   "alias": [
+    "Miguel O'Hara"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "sm001a",
+    "sm001b"
+   ]
+  },
+  {
+   "id": "spider-man-miles-morales",
+   "nom": "Spider-Man",
+   "alias": [
+    "Miles Morales"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "27030a",
+    "27030b"
+   ]
+  },
+  {
+   "id": "spider-man-noir-peter-parker",
+   "nom": "Spider-Man Noir",
+   "alias": [
+    "Peter Parker"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "sn001a",
+    "sn001b"
+   ]
+  },
+  {
+   "id": "spider-man-peter-parker",
+   "nom": "Spider-Man",
+   "alias": [
+    "Peter Parker"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "01001a",
+    "01001b",
+    "sr001a",
+    "sr001b",
+    "su001a",
+    "su001b",
+    "su001c"
+   ]
+  },
+  {
+   "id": "spider-woman",
+   "nom": "Spider-Woman",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "mw013"
+   ]
+  },
+  {
+   "id": "spider-woman-jessica-drew",
+   "nom": "Spider-Woman",
+   "alias": [
+    "Jessica Drew"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "04031a",
+    "04031b"
+   ]
+  },
+  {
+   "id": "spider-woman-julia-carpenter",
+   "nom": "Spider-Woman",
+   "alias": [
+    "Julia Carpenter"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "sw001a",
+    "sw001b"
+   ]
+  },
+  {
+   "id": "spiral",
+   "nom": "Spiral",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "39012a",
+    "39012b",
+    "39013a",
+    "39013b",
+    "39014a",
+    "39014b"
+   ]
+  },
+  {
+   "id": "spot",
+   "nom": "Spot",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "31036"
+   ]
+  },
+  {
+   "id": "squirrel-girl-doreen-green",
+   "nom": "Squirrel Girl",
+   "alias": [
+    "Doreen Green"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "sg001a",
+    "sg001b"
+   ]
+  },
+  {
+   "id": "star-lord-peter-quill",
+   "nom": "Star-Lord",
+   "alias": [
+    "Peter Quill"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "17001a",
+    "17001b"
+   ]
+  },
+  {
+   "id": "stature",
+   "nom": "Stature",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "57057"
+   ]
+  },
+  {
+   "id": "stegron",
+   "nom": "Stegron",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "wd070"
+   ]
+  },
+  {
+   "id": "storm-ororo-munroe",
+   "nom": "Storm",
+   "alias": [
+    "Ororo Munroe"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "36001a",
+    "36001b"
+   ]
+  },
+  {
+   "id": "strobe",
+   "nom": "Strobe",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40180"
+   ]
+  },
+  {
+   "id": "stryfe",
+   "nom": "Stryfe",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40032",
+    "40163",
+    "40164",
+    "40165"
+   ]
+  },
+  {
+   "id": "sugar-man",
+   "nom": "Sugar Man",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45182a",
+    "45182b"
+   ]
+  },
+  {
+   "id": "sunfire-shiro-yoshida",
+   "nom": "Sunfire",
+   "alias": [
+    "Shiro Yoshida"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "sf001a",
+    "sf001b"
+   ]
+  },
+  {
+   "id": "super-skrull",
+   "nom": "Super Skrull",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56055"
+   ]
+  },
+  {
+   "id": "supergiant",
+   "nom": "Supergiant",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21086"
+   ]
+  },
+  {
+   "id": "superior-iron-man-tony-stark",
+   "nom": "Superior Iron Man",
+   "alias": [
+    "Tony Stark"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "si001a",
+    "si001b"
+   ]
+  },
+  {
+   "id": "surprise-contender",
+   "nom": "Surprise Contender",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "39007"
+   ]
+  },
+  {
+   "id": "taskmaster",
+   "nom": "Taskmaster",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "04093",
+    "04094",
+    "04095",
+    "08026",
+    "57022",
+    "ip028"
+   ]
+  },
+  {
+   "id": "tempo",
+   "nom": "Tempo",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40181"
+   ]
+  },
+  {
+   "id": "terminatrix",
+   "nom": "Terminatrix",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11043"
+   ]
+  },
+  {
+   "id": "terrax-the-tamer",
+   "nom": "Terrax the Tamer",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "nt013"
+   ]
+  },
+  {
+   "id": "texas-twister-drew-daniels",
+   "nom": "Texas Twister",
+   "alias": [
+    "Drew Daniels"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "tt001a",
+    "tt001b"
+   ]
+  },
+  {
+   "id": "thanos",
+   "nom": "Thanos",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21111",
+    "21112",
+    "21113"
+   ]
+  },
+  {
+   "id": "the-green-gobbler",
+   "nom": "The Green Gobbler",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "30026"
+   ]
+  },
+  {
+   "id": "the-hood",
+   "nom": "The Hood",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24001",
+    "24002",
+    "24003",
+    "56024",
+    "ip033"
+   ]
+  },
+  {
+   "id": "the-kraken",
+   "nom": "The Kraken",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "39050"
+   ]
+  },
+  {
+   "id": "the-lizard",
+   "nom": "The Lizard",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "27027",
+    "wd054a"
+   ]
+  },
+  {
+   "id": "the-magus",
+   "nom": "The Magus",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "21067"
+   ]
+  },
+  {
+   "id": "the-mangog",
+   "nom": "The Mangog",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55041"
+   ]
+  },
+  {
+   "id": "the-shadow-king",
+   "nom": "The Shadow King",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "36036",
+    "45180a",
+    "45180b"
+   ]
+  },
+  {
+   "id": "the-sleeper",
+   "nom": "The Sleeper",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "04130"
+   ]
+  },
+  {
+   "id": "the-spot",
+   "nom": "The Spot",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "sp002",
+    "sp003",
+    "sp004",
+    "sp005"
+   ]
+  },
+  {
+   "id": "the-thing-ben-grimm",
+   "nom": "The Thing",
+   "alias": [
+    "Ben Grimm"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "th001a",
+    "th001b",
+    "th001c",
+    "th001d"
+   ]
+  },
+  {
+   "id": "the-viper",
+   "nom": "The Viper",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "04054"
+   ]
+  },
+  {
+   "id": "thomas-edison",
+   "nom": "Thomas Edison",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "05027"
+   ]
+  },
+  {
+   "id": "thor",
+   "nom": "Thor",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "mk020"
+   ]
+  },
+  {
+   "id": "thor-jane-foster",
+   "nom": "Thor",
+   "alias": [
+    "Jane Foster"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "ra001a",
+    "ra001b"
+   ]
+  },
+  {
+   "id": "thor-odinson",
+   "nom": "Thor",
+   "alias": [
+    "Odinson"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "06001a",
+    "06001b"
+   ]
+  },
+  {
+   "id": "throg",
+   "nom": "Throg",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "al019"
+   ]
+  },
+  {
+   "id": "throg-puddlegulp",
+   "nom": "Throg",
+   "alias": [
+    "Puddlegulp"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "tg001a",
+    "tg001b"
+   ]
+  },
+  {
+   "id": "thumbelina",
+   "nom": "Thumbelina",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40182"
+   ]
+  },
+  {
+   "id": "thunderball",
+   "nom": "Thunderball",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "07017",
+    "07018",
+    "24068"
+   ]
+  },
+  {
+   "id": "tiger-shark",
+   "nom": "Tiger Shark",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01131"
+   ]
+  },
+  {
+   "id": "tigra-greer-nelson",
+   "nom": "Tigra",
+   "alias": [
+    "Greer Nelson"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "56001a",
+    "56001b"
+   ]
+  },
+  {
+   "id": "timebroker",
+   "nom": "Timebroker",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "bk018"
+   ]
+  },
+  {
+   "id": "titania",
+   "nom": "Titania",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01162",
+    "55057"
+   ]
+  },
+  {
+   "id": "toad",
+   "nom": "Toad",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32076"
+   ]
+  },
+  {
+   "id": "toad-a",
+   "nom": "Toad A",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32124a"
+   ]
+  },
+  {
+   "id": "toad-b",
+   "nom": "Toad B",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32124b"
+   ]
+  },
+  {
+   "id": "tombstone",
+   "nom": "Tombstone",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "02047"
+   ]
+  },
+  {
+   "id": "tony-stark-a-i",
+   "nom": "Tony Stark A.I.",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "si016"
+   ]
+  },
+  {
+   "id": "topaz",
+   "nom": "Topaz",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40066"
+   ]
+  },
+  {
+   "id": "totally-awesome-hulk-amadeus-cho",
+   "nom": "Totally Awesome Hulk",
+   "alias": [
+    "Amadeus Cho"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "ah001a",
+    "ah001b",
+    "ah001c"
+   ]
+  },
+  {
+   "id": "trevor-fitzroy",
+   "nom": "Trevor Fitzroy",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45026"
+   ]
+  },
+  {
+   "id": "tusk",
+   "nom": "Tusk",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45115"
+   ]
+  },
+  {
+   "id": "tweedledope",
+   "nom": "Tweedledope",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "48037"
+   ]
+  },
+  {
+   "id": "typhoid-mary",
+   "nom": "Typhoid Mary",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "wd101"
+   ]
+  },
+  {
+   "id": "u-s-agent",
+   "nom": "U.S. Agent",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56075"
+   ]
+  },
+  {
+   "id": "ulik",
+   "nom": "Ulik",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "55020"
+   ]
+  },
+  {
+   "id": "ultron",
+   "nom": "Ultron",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01134",
+    "01135",
+    "01136",
+    "26029"
+   ]
+  },
+  {
+   "id": "undead-hand-ninja",
+   "nom": "Undead Hand Ninja",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ss021"
+   ]
+  },
+  {
+   "id": "unus",
+   "nom": "Unus",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45059",
+    "45060",
+    "45061"
+   ]
+  },
+  {
+   "id": "unuscione",
+   "nom": "Unuscione",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32163"
+   ]
+  },
+  {
+   "id": "valkyrie-brunnhilde",
+   "nom": "Valkyrie",
+   "alias": [
+    "Brunnhilde"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "25001a",
+    "25001b"
+   ]
+  },
+  {
+   "id": "vanisher",
+   "nom": "Vanisher",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40201"
+   ]
+  },
+  {
+   "id": "venom",
+   "nom": "Venom",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "27073",
+    "27074",
+    "27075",
+    "56087",
+    "ip029"
+   ]
+  },
+  {
+   "id": "venom-eddie-brock",
+   "nom": "Venom",
+   "alias": [
+    "Eddie Brock"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "vr001a",
+    "vr001b"
+   ]
+  },
+  {
+   "id": "venom-flash-thompson",
+   "nom": "Venom",
+   "alias": [
+    "Flash Thompson"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "20001a",
+    "20001b"
+   ]
+  },
+  {
+   "id": "venom-goblin",
+   "nom": "Venom Goblin",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "27113",
+    "27114",
+    "27115"
+   ]
+  },
+  {
+   "id": "venompool-wade-wilson",
+   "nom": "Venompool",
+   "alias": [
+    "Wade Wilson"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "vp001a",
+    "vp001b"
+   ]
+  },
+  {
+   "id": "verna",
+   "nom": "Verna",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "30038"
+   ]
+  },
+  {
+   "id": "vertigo",
+   "nom": "Vertigo",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40076a",
+    "40076b",
+    "40100"
+   ]
+  },
+  {
+   "id": "viper",
+   "nom": "Viper",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "53030"
+   ]
+  },
+  {
+   "id": "vision",
+   "nom": "Vision",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "26001a",
+    "26001b"
+   ]
+  },
+  {
+   "id": "viv-vision",
+   "nom": "Viv Vision",
+   "alias": [],
+   "genre": "joueur",
+   "faces": [
+    "vv001a",
+    "vv001b"
+   ]
+  },
+  {
+   "id": "vulture",
+   "nom": "Vulture",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01167",
+    "27099",
+    "wd008",
+    "wd074",
+    "wd075",
+    "wd076",
+    "wd162",
+    "wd163",
+    "wd164"
+   ]
+  },
+  {
+   "id": "wade-cole",
+   "nom": "Wade Cole",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "38032"
+   ]
+  },
+  {
+   "id": "war",
+   "nom": "War",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45081a",
+    "45081b"
+   ]
+  },
+  {
+   "id": "war-machine-james-rhodes",
+   "nom": "War Machine",
+   "alias": [
+    "James Rhodes"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "23001a",
+    "23001b"
+   ]
+  },
+  {
+   "id": "war-witches",
+   "nom": "War Witches",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ra029"
+   ]
+  },
+  {
+   "id": "warbringer",
+   "nom": "Warbringer",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "28023"
+   ]
+  },
+  {
+   "id": "warstar",
+   "nom": "Warstar",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45144"
+   ]
+  },
+  {
+   "id": "wasp",
+   "nom": "Wasp",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56074"
+   ]
+  },
+  {
+   "id": "wasp-nadia-van-dyne",
+   "nom": "Wasp",
+   "alias": [
+    "Nadia Van Dyne"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "13001a",
+    "13001b",
+    "13001c"
+   ]
+  },
+  {
+   "id": "weapon-x",
+   "nom": "Weapon X",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ab015"
+   ]
+  },
+  {
+   "id": "whiplash",
+   "nom": "Whiplash",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01172"
+   ]
+  },
+  {
+   "id": "whirlwind",
+   "nom": "Whirlwind",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01130",
+    "55058"
+   ]
+  },
+  {
+   "id": "white-queen",
+   "nom": "White Queen",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "32056"
+   ]
+  },
+  {
+   "id": "white-rabbit",
+   "nom": "White Rabbit",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "24047"
+   ]
+  },
+  {
+   "id": "wiccan",
+   "nom": "Wiccan",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "57061"
+   ]
+  },
+  {
+   "id": "wiccan-billy-kaplan",
+   "nom": "Wiccan",
+   "alias": [
+    "Billy Kaplan"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "wc001a",
+    "wc001b"
+   ]
+  },
+  {
+   "id": "wildrun",
+   "nom": "Wildrun",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "11044"
+   ]
+  },
+  {
+   "id": "wildside",
+   "nom": "Wildside",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40183"
+   ]
+  },
+  {
+   "id": "winter-soldier-bucky-barnes",
+   "nom": "Winter Soldier",
+   "alias": [
+    "Bucky Barnes"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "54001a",
+    "54001b"
+   ]
+  },
+  {
+   "id": "witchfire",
+   "nom": "Witchfire",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "45057"
+   ]
+  },
+  {
+   "id": "wizard",
+   "nom": "Wizard",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "mf014"
+   ]
+  },
+  {
+   "id": "wolverine",
+   "nom": "Wolverine",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ab012"
+   ]
+  },
+  {
+   "id": "wolverine-laura-kinney",
+   "nom": "Wolverine",
+   "alias": [
+    "Laura Kinney"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "wx001a",
+    "wx001b"
+   ]
+  },
+  {
+   "id": "wolverine-logan",
+   "nom": "Wolverine",
+   "alias": [
+    "Logan"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "35001a",
+    "35001b"
+   ]
+  },
+  {
+   "id": "wonder-man-simon-williams",
+   "nom": "Wonder Man",
+   "alias": [
+    "Simon Williams"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "58001a",
+    "58001b"
+   ]
+  },
+  {
+   "id": "wrecker",
+   "nom": "Wrecker",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "07002",
+    "07003",
+    "24065"
+   ]
+  },
+  {
+   "id": "x-23-laura-kinney",
+   "nom": "X-23",
+   "alias": [
+    "Laura Kinney"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "43001a",
+    "43001b"
+   ]
+  },
+  {
+   "id": "yellow-jacket",
+   "nom": "Yellow Jacket",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "56073"
+   ]
+  },
+  {
+   "id": "yellowjacket",
+   "nom": "Yellowjacket",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "12027"
+   ]
+  },
+  {
+   "id": "yon-rogg",
+   "nom": "Yon-Rogg",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "01177"
+   ]
+  },
+  {
+   "id": "yondu-yondu-udonta",
+   "nom": "Yondu",
+   "alias": [
+    "Yondu Udonta"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "yd001a",
+    "yd001b"
+   ]
+  },
+  {
+   "id": "yotat-the-destroyer",
+   "nom": "Yotat the Destroyer",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "19027"
+   ]
+  },
+  {
+   "id": "zaran",
+   "nom": "Zaran",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "50100"
+   ]
+  },
+  {
+   "id": "zero",
+   "nom": "Zero",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "40174"
+   ]
+  },
+  {
+   "id": "zeus-zeus-panhellenios",
+   "nom": "Zeus",
+   "alias": [
+    "Zeus Panhellenios"
+   ],
+   "genre": "joueur",
+   "faces": [
+    "ze001a",
+    "ze001b"
+   ]
+  },
+  {
+   "id": "zola",
+   "nom": "Zola",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "04109",
+    "04110",
+    "04111"
+   ]
+  },
+  {
+   "id": "zombie-wolvie",
+   "nom": "Zombie Wolvie",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "ab016"
+   ]
+  },
+  {
+   "id": "zzzax",
+   "nom": "Zzzax",
+   "alias": [],
+   "genre": "adverse",
+   "faces": [
+    "29037",
+    "55059"
+   ]
+  }
+ ]
+}

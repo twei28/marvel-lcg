@@ -30,8 +30,11 @@ from . import *
 #    engage le sbire avec ce joueur, c'est le comportement du moteur.
 #  ⚠ Boost ETOILE : aucune valeur `Boost` dans `desc` (verifie contre `01144a`),
 #    une capacite `WhenCardBecomeBoost` a la place.
-#  ⚠ X peut valoir ZERO : une main sans carte signature n'ajoute rien, et la
-#    carte ne fait alors aucun boost. C'est bien ce que dit le texte.
+#  ⚠ X peut valoir ZERO : une main sans aucune image de l'identite du defenseur
+#    n'ajoute rien, et la carte ne fait alors aucun boost. C'est bien ce que dit
+#    le texte.
+#  ⚠ « your identity's picture » : le RELEVE des illustrations tranche
+#    (`CartesAvecLImageDe`), pas la classe de la carte. Voir le `__init__.py`.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -67,8 +70,8 @@ def GetAbilities() -> Sequence['Ability']:
         joueur = message.GetToPlayer()
         if joueur is None:
             return
-        combien = len(CartesSignatureDe(
-            [c for c in joueur.hand_cards.Get() if c is not None]))
+        combien = len(CartesAvecLImageDe(
+            [c for c in joueur.hand_cards.Get() if c is not None], joueur))
         if combien > 0:
             this.GainBoostIcons(combien, effect)
 

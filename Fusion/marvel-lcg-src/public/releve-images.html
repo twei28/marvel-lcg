@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relevé des illustrations · Marvel Champions</title>
+    <link rel="stylesheet" href="/public/css/releve-images.css?v=1">
+</head>
+<body>
+    <header class="r-entete">
+        <a class="r-retour" href="/prepare.html">←</a>
+        <h1>Relevé des illustrations</h1>
+        <span class="r-avancement" id="avancement"></span>
+    </header>
+
+    <p class="r-message" id="message">Chargement…</p>
+
+    <main class="r-atelier" id="atelier" hidden>
+        <section class="r-carte">
+            <img id="scan" alt="" decoding="async">
+            <p class="r-legende" id="legende"></p>
+            <nav class="r-navigation">
+                <button type="button" id="btn-precedent" title="Carte précédente (←)">←</button>
+                <span id="position"></span>
+                <button type="button" id="btn-suivant" title="Carte suivante (→)">→</button>
+            </nav>
+        </section>
+
+        <section class="r-choix">
+            <p class="r-question">Qui est dessiné sur cette carte ?</p>
+
+            <div class="r-suggestions" id="suggestions"></div>
+
+            <input type="search" id="recherche" placeholder="Chercher un personnage…"
+                   autocomplete="off" spellcheck="false">
+            <div class="r-liste" id="liste"></div>
+
+            <div class="r-retenus" id="retenus"></div>
+
+            <div class="r-actions">
+                <button type="button" class="r-valider" id="btn-valider">Valider</button>
+                <button type="button" class="r-aucune" id="btn-aucune">Aucune identité</button>
+                <button type="button" class="r-plus-tard" id="btn-plus-tard">Je verrai plus tard</button>
+            </div>
+
+            <p class="r-aide">
+                Raccourcis : <kbd>1</kbd>…<kbd>9</kbd> une suggestion,
+                <kbd>Entrée</kbd> valider, <kbd>0</kbd> aucune identité,
+                <kbd>→</kbd> plus tard.
+            </p>
+
+            <label class="r-filtre">
+                <input type="checkbox" id="toggle-tout">
+                <span>Revoir aussi les cartes déjà relevées</span>
+            </label>
+        </section>
+    </main>
+
+    <script type="module" src="/public/js/releve/app.js?v=1"></script>
+</body>
+</html>

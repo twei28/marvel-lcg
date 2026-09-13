@@ -1,6 +1,7 @@
-// lien-admin.js — ajoute un bouton « ⚙ Administration » sur l'écran de
+// lien-admin.js — ajoute les boutons d'administration sur l'écran de
 // préparation, quand la partie a été lancée par le site ET que c'est le compte
-// administrateur qui joue.
+// administrateur qui joue : « ⚙ Administration » (le site) et « 🖼 Relevé des
+// illustrations » (la page qui dit qui est dessiné sur chaque carte).
 //
 // Même pattern que lien-galerie.js : script CLASSIQUE (defer + IIFE), donc pas
 // d'import de js/prepare/langue.js ; on duplique la lecture de
@@ -22,6 +23,8 @@
   var DICO_EN_LOCAL = {
     'Administration': 'Admin',
     'Comptes et invitations du site': 'Site accounts and invitations',
+    'Relevé des illustrations': 'Artwork survey',
+    'Dire qui est dessiné sur chaque carte': 'Record who is drawn on each card',
   };
   function t(fr) {
     return LANGUE === 'en' && Object.prototype.hasOwnProperty.call(DICO_EN_LOCAL, fr)
@@ -62,7 +65,20 @@
     bouton.addEventListener('click', function () {
       window.open(url, '_blank', 'noopener');
     });
-    rangeeBoutons().append(bouton);
+    var rangee = rangeeBoutons();
+    rangee.append(bouton);
+
+    // Le relevé des illustrations. Même condition d'affichage, et même
+    // remarque : /save_images_cartes refuse l'écriture (403) à qui n'est pas
+    // l'administrateur, quoi que montre ce bouton.
+    var releve = document.createElement('button');
+    releve.type = 'button';
+    releve.textContent = '🖼️ ' + t('Relevé des illustrations');
+    releve.title = t('Dire qui est dessiné sur chaque carte');
+    releve.addEventListener('click', function () {
+      window.open('/releve-images.html', '_blank', 'noopener');
+    });
+    rangee.append(releve);
   }).catch(function () {
     // Moteur lancé à la main, route absente : pas de bouton, pas d'erreur.
   });
