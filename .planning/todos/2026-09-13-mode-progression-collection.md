@@ -29,6 +29,38 @@ filtre dans le wizard.
 | **Coop** | Une victoire à plusieurs coche **tous les héros de la table**, et le vilain. Fidèle au jeu de plateau, et ça récompense de jouer à plusieurs. |
 | **Parties déjà jouées** | **Au choix, une fois, à l'activation** : « reprendre mes parties passées » ou « repartir de zéro ». Deux chemins à tenir, assumés. |
 | **Nom** | **Archives du Collectionneur**, retenu le 13/09/2026. Référence au Collectionneur Marvel, et le mode consiste bien à compléter une collection. |
+| **Où on entre** | Une **sixième tuile sur l'accueil**, à côté de Solo, Coop, Campagne, Bac à sable et Bataille. On y entre comme dans un mode, on en sort en revenant à l'accueil. Le jeu libre n'est jamais verrouillé. |
+| **Ce qui est verrouillé** | **Grisé, avec sa condition affichée** : « Gagne une fois avec Thor pour ouvrir la vague 2 ». Le catalogue entier reste sous les yeux, ce qui donne envie, et on sait toujours ce qui reste à faire. |
+| **Où vit la progression** | **Le plus complet et le plus sûr** : une fiche par compte, écrite noir sur blanc à chaque fin de partie (vilains battus, héros vainqueurs, vague atteinte, jetons gagnés et dépensés). Et, parce que deux sources de vérité finissent toujours par diverger, **elle doit pouvoir être reconstruite** à partir de `games_history` : un outil de reconstruction, pas une promesse. |
+
+## Et tant qu'on y est : garder les parties terminées
+
+**Demande de l'utilisateur, 13/09/2026 :** « garder les logs des parties
+terminées, afin que je puisse les revoir comme si j'y étais ».
+
+Ce qui est déjà là, et personne ne s'en sert :
+
+- le moteur sait écrire un **replay complet** d'une partie (`game_session.SaveScene`),
+  et il le fait tout seul à la sortie d'une partie **si `auto_save_after_game_over`
+  vaut vrai**. Ce drapeau existe, il vaut `False` par défaut, et **rien ne le met
+  à vrai** : aujourd'hui une partie finie ne laisse aucune trace jouable, sauf si
+  quelqu'un a pensé à appuyer sur 💾 Save ;
+- le bouton **« Revoir »** de l'assistant (`reprise.js`) rejoue déjà un replay pas
+  à pas, par `/debug?/load <nom>:-1`. Il n'y a donc rien à écrire côté lecture.
+
+Ce qu'il reste à faire, et à vérifier :
+
+1. **Allumer `auto_save_after_game_over`** dans la configuration du serveur
+   (`tools/config_serveur.py`). ⚠ Le crochet est `OnExitGameInternal`, la SORTIE
+   de partie, pas la fin : à mesurer sur une vraie partie web avant d'y croire.
+2. **Mesurer le poids d'un replay.** Inconnu à ce jour, mesure non faite : le
+   pilote `autoplay` n'emprunte pas ce chemin. Il en faut un vrai avant de
+   décider d'une politique de rétention.
+3. **Décider de la rétention.** Le modèle existe déjà pour les journaux de
+   moteur (`JOURNAUX_MOTEUR_GARDES`, les dix plus récents).
+4. ⚠ **Attention à l'expiration des comptes.** `_nettoyer_emplacement` efface
+   `replays/serveur-N/` quand une place est recyclée. Les parties d'un compte
+   expiré partent donc avec sa place, et c'est cohérent, mais il faut le savoir.
 
 ## La grille de départ, pour se figurer le rythme
 
@@ -38,19 +70,19 @@ cinq victoires rapportent cinq jetons fan-made, dix si elles sont prises en expe
 
 ## Ce qui reste à trancher avant d'écrire
 
-- **Ce que « verrouillé » veut dire à l'écran** : héros grisé avec sa condition
-  affichée, ou simplement absent de la grille ?
-- **Où vit la progression** : calculée à la volée depuis l'historique du compte, ou
-  stockée ? Le choix « repartir de zéro » impose de stocker au moins une date de
-  départ et la liste des jetons dépensés.
-- **Les scénarios sans héros** (la boîte Bouffon Vert en a deux, zéro héros) et les
-  **héros sans scénario** : la condition doit tolérer une liste vide des deux côtés.
+- **Combien de parties on garde**, et pour quel poids sur le disque. À mesurer
+  d'abord, à décider ensuite.
 - **Les sets modulaires et les défis**, hors vagues (`vague: null` au-delà de la
   boîte 61) : probablement toujours libres, à confirmer.
-- **Le mode est-il un interrupteur** à côté du jeu libre, ou remplace-t-il la
-  sélection ? Hypothèse de travail : un interrupteur, on ne verrouille pas le jeu
-  de quelqu'un qui n'a rien demandé.
+
+## Décidé sans demander, parce que la réponse va de soi
+
+- **Les scénarios sans héros** (la boîte Bouffon Vert en a deux, zéro héros) et les
+  **héros sans scénario** : la condition tolère une liste vide des deux côtés. Une
+  vague sans héros s'ouvre sur ses seuls vilains, et réciproquement. Sans cela,
+  une boîte entière bloquerait la progression pour toujours.
 
 ## Statut
 
-Spec validée sur ses sept règles, nom arrêté, **non commencée**.
+Spec validée sur ses onze règles, nom arrêté, **non commencée**. Deux
+points restent ouverts, tous les deux sur la rétention des parties gardées.
