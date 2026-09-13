@@ -25,6 +25,7 @@
   "starter_deck_folder": "./deck/starter/",
   "cache_max_age": 60,
   "games_history_file": "../games_history.json",
+  "legacy_file": "../legacy.json",
   "cards_json_custom_file": "./data/cards_custom.json",
   "deck_folders": [
     "./deck/custom/"

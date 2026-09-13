@@ -519,6 +519,55 @@ def _groupe_vivant(groupe: int) -> bool:
     return True
 
 
+# COMBIEN DE PARTIES TERMINEES ON GARDE, PAR COMPTE (13/09/2026).
+#
+# Le moteur ecrit desormais un enregistrement complet a la fin de chaque partie
+# (`auto_save_after_game_over`, tools/config_serveur.py) : de quoi la revoir pas
+# a pas. Sans plafond, le dossier grossirait sans fin. Cinquante, c'est une
+# campagne entiere et ses alentours ; mesure faite, un enregistrement pese
+# environ 44 Ko, donc 2 Mo par compte et 44 Mo pour les vingt places.
+SAUVEGARDES_GARDEES = int(os.environ.get("SAUVEGARDES_GARDEES", "50"))
+
+# ⚠ LES TROIS EMPLACEMENTS DU PLATEAU NE SONT JAMAIS EMPORTES. Ce sont des
+# sauvegardes VOULUES, posees a la main sur les boutons Save 1, 2 et 3 : les
+# ranger avec les enregistrements automatiques reviendrait a effacer ce que
+# quelqu'un a delibérement garde.
+EMPLACEMENTS_A_LA_MAIN = {"save_1.json", "save_2.json", "save_3.json"}
+
+
+def limiter_sauvegardes(emplacement: int) -> int:
+    """Ne garde que les `SAUVEGARDES_GARDEES` parties les plus recentes.
+
+    Rend le nombre de fichiers effaces. Ne leve jamais : un menage manque est
+    un regret, une exception ici empecherait la table de s'eteindre.
+    """
+    if SAUVEGARDES_GARDEES <= 0:
+        return 0
+    dossier = os.path.join(RACINE_JEU, "replays", f"serveur-{emplacement}")
+    try:
+        fichiers = [f for f in os.listdir(dossier)
+                    if f.endswith(".json") and f not in EMPLACEMENTS_A_LA_MAIN]
+    except OSError:
+        return 0
+    if len(fichiers) <= SAUVEGARDES_GARDEES:
+        return 0
+    # Le plus recent en tete : on garde le dessus de la pile.
+    def age(nom):
+        try:
+            return os.path.getmtime(os.path.join(dossier, nom))
+        except OSError:
+            return 0.0
+    fichiers.sort(key=age, reverse=True)
+    efface = 0
+    for vieux in fichiers[SAUVEGARDES_GARDEES:]:
+        try:
+            os.remove(os.path.join(dossier, vieux))
+            efface += 1
+        except OSError:
+            pass
+    return efface
+
+
 def _sauvegarder_avant_extinction(partie: "Partie") -> None:
     """Demande au moteur d'ecrire sa partie avant qu'on le tue.
 
@@ -563,6 +612,12 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     # perdait la partie en cours : a huit heures on pouvait s'en accommoder, a
     # trois quarts d'heure non. Le joueur la retrouve sous « Reprendre ».
     _sauvegarder_avant_extinction(partie)
+    # ⚠ ET LE MENAGE JUSTE APRES, pas avant : la partie qu'on vient d'ecrire
+    # doit compter parmi les cinquante gardees.
+    try:
+        limiter_sauvegardes(partie.emplacement)
+    except Exception as souci:
+        sys.stderr.write("menage des sauvegardes non fait : %r\n" % (souci,))
     # ⚠ ET LA FERMETURE SE NOTE ICI, PAS CHEZ L'APPELANT. Elle ne l'etait que
     # dans deux des six chemins d'extinction (le faucheur et le bouton
     # « Eteindre ») : ni l'arret du site — donc CHAQUE deploiement — ni le

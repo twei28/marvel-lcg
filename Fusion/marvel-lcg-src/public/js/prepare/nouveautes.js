@@ -46,6 +46,18 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-13",
+        genre: "jeu",
+        fr: "Chaque partie terminée est gardée : tu peux la revoir pas à pas avec le bouton « Revoir », comme si tu y étais. Les cinquante dernières restent disponibles.",
+        en: "Every finished game is kept: you can replay it step by step with the “Resume” button, as if you were there. The last fifty stay available.",
+    },
+    {
+        date: "2026-09-13",
+        genre: "correction",
+        fr: "Les trois emplacements de sauvegarde étaient les mêmes pour tout le monde : on pouvait écraser la partie d'un autre, ou en charger une qu'on n'avait jamais jouée. Chacun a désormais les siens.",
+        en: "The three save slots were shared by everyone: you could overwrite someone else's game, or load one you had never played. Everyone now has their own.",
+    },
+    {
+        date: "2026-09-13",
         genre: "coulisses",
         fr: "Une table laissée ouverte sans qu'on y joue se ferme au bout de trois quarts d'heure, pour rendre la place à quelqu'un d'autre. Ta partie est sauvegardée avant : tu la retrouves avec « Reprendre ».",
         en: "A table left open without anyone playing closes after forty-five minutes, to give the seat back to someone else. Your game is saved first: you will find it again under “Resume”.",

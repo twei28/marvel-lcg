@@ -1739,6 +1739,61 @@ verifier("la fermeture pour inactivite porte un motif lisible",
          "sans jouer" in o.CAUSES_ABANDON.get("inactivite", ""),
          o.CAUSES_ABANDON.get("inactivite", ""))
 
+# --- Les parties terminees qu'on garde ------------------------------------
+# AJOUT du 13/09/2026. Le moteur ecrit desormais un enregistrement complet a la
+# fin de chaque partie : de quoi la revoir pas a pas. Sans plafond, le dossier
+# grossirait sans fin.
+#
+# ⚠ ET LES TROIS EMPLACEMENTS DU PLATEAU NE SONT JAMAIS EMPORTES. Ce sont des
+# sauvegardes VOULUES, posees a la main sur les boutons Save 1, 2 et 3 : les
+# ranger avec les enregistrements automatiques reviendrait a effacer ce que
+# quelqu'un a delibérement garde. C'est le cas central de ce bloc.
+_racine_sauv = o.RACINE_JEU
+_bac_sauv = tempfile.mkdtemp(prefix="nc-sauvegardes-")
+o.RACINE_JEU = _bac_sauv
+_dossier_sauv = os.path.join(_bac_sauv, "replays", "serveur-4")
+os.makedirs(_dossier_sauv, exist_ok=True)
+
+_gardees_avant = o.SAUVEGARDES_GARDEES
+o.SAUVEGARDES_GARDEES = 3
+
+# Cinq parties automatiques, d'age croissant, plus les trois emplacements.
+for _n in range(5):
+    _f = os.path.join(_dossier_sauv, "partie-%d.json" % _n)
+    with open(_f, "w", encoding="utf-8") as _j:
+        _j.write("{}")
+    os.utime(_f, (_time_journal.time() - (5 - _n) * 60,) * 2)
+for _nom in ("save_1.json", "save_2.json", "save_3.json"):
+    _f = os.path.join(_dossier_sauv, _nom)
+    with open(_f, "w", encoding="utf-8") as _j:
+        _j.write("{}")
+    # Les plus vieux de tous : s'ils devaient partir, ils partiraient d'abord.
+    os.utime(_f, (_time_journal.time() - 99999,) * 2)
+
+_efface = o.limiter_sauvegardes(4)
+_restants = sorted(os.listdir(_dossier_sauv))
+verifier("le menage efface les parties en trop", _efface == 2, str(_efface))
+verifier("et garde les plus RECENTES",
+         "partie-4.json" in _restants and "partie-0.json" not in _restants,
+         str(_restants))
+verifier("les trois emplacements du plateau survivent, meme tres vieux",
+         all(n in _restants for n in ("save_1.json", "save_2.json", "save_3.json")),
+         str(_restants))
+
+# Rappeler le menage ne fait plus rien : on est sous le plafond.
+verifier("un second menage n'efface plus rien", o.limiter_sauvegardes(4) == 0)
+
+# Un dossier qui n'existe pas ne doit pas lever : une table neuve n'en a pas.
+verifier("un dossier absent ne fait pas d'histoire", o.limiter_sauvegardes(19) == 0)
+
+# A zero, la regle s'eteint.
+o.SAUVEGARDES_GARDEES = 0
+verifier("a zero, plus aucun menage", o.limiter_sauvegardes(4) == 0)
+
+o.SAUVEGARDES_GARDEES = _gardees_avant
+o.RACINE_JEU = _racine_sauv
+shutil.rmtree(_bac_sauv, ignore_errors=True)
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:

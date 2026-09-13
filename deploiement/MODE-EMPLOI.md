@@ -145,6 +145,23 @@ ssh -i $cle $srv "sudo -u narwhal RACINE=/opt/narwhal narwhal-sauvegarde --verif
 
 ---
 
+## Les parties terminées, et comment les revoir
+
+Depuis le 13/09/2026, **chaque partie terminée laisse un enregistrement
+complet**, écrit tout seul par le moteur. On la revoit pas à pas avec le bouton
+**« Revoir »** de l'écran de préparation, exactement comme si on y était.
+
+Ils vivent dans `replays/serveur-N/`, un dossier par compte. On en garde les
+**cinquante plus récents** par personne (`SAUVEGARDES_GARDEES`) : un
+enregistrement pèse environ 44 Ko, donc 2 Mo par compte et 44 Mo pour les vingt
+places.
+
+⚠ **Les trois emplacements du plateau (Save 1, 2, 3) ne sont jamais emportés par
+ce ménage.** Ce sont des sauvegardes voulues, posées à la main.
+
+⚠ Ils partent en revanche avec la place quand un compte expiré se la fait
+reprendre : `_nettoyer_emplacement` vide le dossier.
+
 ## Les tables qui ne servent plus
 
 Une table allumée tient un port, un processus et sa mémoire, sur vingt places.

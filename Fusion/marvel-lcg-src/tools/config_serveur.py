@@ -32,6 +32,15 @@ def construire_config(base: dict, place: int) -> dict:
     cfg = json.loads(json.dumps(base))  # copie profonde, la base reste intacte
     cfg["server_addresses"] = [f"127.0.0.1:{PORT_BASE + place}"]
     cfg["replay_folders"] = [f"../replays/serveur-{place}/"]
+    # GARDER LES PARTIES TERMINEES (13/09/2026, demande de l'utilisateur :
+    # « que je puisse les revoir comme si j'y etais »).
+    #
+    # Le moteur sait ecrire un enregistrement complet a la sortie d'une partie
+    # (`game.py`, OnExitGameInternal). Le drapeau existait depuis toujours et
+    # valait False : une partie finie ne laissait aucune trace jouable, sauf si
+    # quelqu'un avait pense a appuyer sur Save. Le bouton « Revoir » de
+    # l'assistant, lui, savait deja les rejouer.
+    cfg["auto_save_after_game_over"] = True
     cfg["games_history_file"] = f"../games_history-serveur-{place}.json"
     cfg["game_statistics_file"] = f"../statistics-serveur-{place}.json"
     # Sans separation, les quatre places partagent le meme dossier que la
@@ -39,6 +48,10 @@ def construire_config(base: dict, place: int) -> dict:
     # sont des boites livrees, en lecture seule).
     cfg["campagne_folder"] = f"../campagnes-serveur-{place}/"
     cfg["achievements_file"] = f"../achievements-serveur-{place}.json"
+    # La fiche du mode Legacy : la vague atteinte, les jetons. Separee comme
+    # le reste de ce qui appartient au compte, sans quoi la progression de
+    # l'un ouvrirait les boites de l'autre.
+    cfg["legacy_file"] = f"../legacy-serveur-{place}.json"
     cfg["campaign_log_last_file"] = f"./campaign-log-last-serveur-{place}.json"
     # L'ordre compte : le moteur ECRIT dans deck_folders[0] et LIT toute la
     # liste (server_get.py, save_deck et list_deck). L'ami construit donc ses
