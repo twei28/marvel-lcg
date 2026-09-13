@@ -56,8 +56,12 @@ Ce qu'il reste à faire, et à vérifier :
 2. **Mesurer le poids d'un replay.** Inconnu à ce jour, mesure non faite : le
    pilote `autoplay` n'emprunte pas ce chemin. Il en faut un vrai avant de
    décider d'une politique de rétention.
-3. **Décider de la rétention.** Le modèle existe déjà pour les journaux de
-   moteur (`JOURNAUX_MOTEUR_GARDES`, les dix plus récents).
+3. **Rétention : les 50 dernières parties de chaque joueur** (décision du
+   13/09/2026). De quoi revoir une campagne entière et ses alentours. Le modèle
+   existe déjà pour les journaux de moteur (`JOURNAUX_MOTEUR_GARDES`, les dix
+   plus récents) : même forme, autre chiffre. ⚠ À confirmer une fois le poids
+   d'un enregistrement mesuré — 50 parties par joueur, fois 20 places, fait 1000
+   fichiers sur un serveur que personne ne surveille.
 4. ⚠ **Attention à l'expiration des comptes.** `_nettoyer_emplacement` efface
    `replays/serveur-N/` quand une place est recyclée. Les parties d'un compte
    expiré partent donc avec sa place, et c'est cohérent, mais il faut le savoir.
@@ -68,12 +72,32 @@ Set de base : 5 héros, 3 scénarios. Il faut donc 3 vilains battus et 5 héros
 vainqueurs, soit **5 victoires bien réparties** pour ouvrir la vague 1. Et ces
 cinq victoires rapportent cinq jetons fan-made, dix si elles sont prises en expert.
 
+## Les sets modulaires et les défis
+
+**Décision du 13/09/2026 : un set modulaire s'ouvre avec la boîte dont il
+vient.** Cohérent avec l'idée de collection : on ne pioche pas dans un paquet
+qu'on n'a pas encore.
+
+Relevé fait le même jour, et il y a un piège. Sur **172 sets modulaires**, 156
+sont rattachés à une extension par la clé `encounters` de `sets_info.json`, donc
+à une vague. **Seize ne le sont pas :**
+
+```
+age_of_apocalypse_WIP, bodyguard, city_sewers, community_service, crime_wave,
+electro, god_of_lies, kingpin, kraven_the_hunter, power_drain_ii, shocker,
+snitches_get_stitches, the_lizard, the_spot, underling, vulture
+```
+
+Ils restent **libres**, faute de boîte à laquelle les rattacher. Inventer une
+vague pour eux serait arbitraire, et les enfermer jusqu'à la fin du parcours les
+rendrait invisibles pour toujours. À rattacher un par un si l'envie vient, mais
+pas avant d'avoir écrit le reste.
+
 ## Ce qui reste à trancher avant d'écrire
 
-- **Combien de parties on garde**, et pour quel poids sur le disque. À mesurer
-  d'abord, à décider ensuite.
-- **Les sets modulaires et les défis**, hors vagues (`vague: null` au-delà de la
-  boîte 61) : probablement toujours libres, à confirmer.
+Plus rien. Les douze règles sont arrêtées. Reste à mesurer le poids d'un
+enregistrement de partie, ce qui est un chiffre à relever, pas une décision à
+prendre.
 
 ## Décidé sans demander, parce que la réponse va de soi
 
@@ -84,5 +108,6 @@ cinq victoires rapportent cinq jetons fan-made, dix si elles sont prises en expe
 
 ## Statut
 
-Spec validée sur ses onze règles, nom arrêté, **non commencée**. Deux
-points restent ouverts, tous les deux sur la rétention des parties gardées.
+Spec **complète** : douze règles arrêtées, nom arrêté, **non commencée**.
+Plus aucune question ouverte. Il reste un chiffre à relever, le poids d'un
+enregistrement de partie, qui peut faire revoir la rétention.
