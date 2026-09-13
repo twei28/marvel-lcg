@@ -68,11 +68,29 @@ Ce qu'il reste à faire, et à vérifier :
    `replays/serveur-N/` quand une place est recyclée. Les parties d'un compte
    expiré partent donc avec sa place, et c'est cohérent, mais il faut le savoir.
 
-## La grille de départ, pour se figurer le rythme
+## La grille réelle, mesurée le 13/09/2026
 
-Set de base : 5 héros, 3 scénarios. Il faut donc 3 vilains battus et 5 héros
-vainqueurs, soit **5 victoires bien réparties** pour ouvrir la vague 1. Et ces
-cinq victoires rapportent cinq jetons fan-made, dix si elles sont prises en expert.
+Douze paliers, relevés sur le vrai catalogue par `legacy-catalogue.js` :
+
+| Vague | Scénarios | Héros |
+|---|---|---|
+| 0 · Set de base | 3 | 5 |
+| 1 | 3 | 6 |
+| 2 · The Rise of Red Skull | 6 | 6 |
+| 3 · The Galaxy's Most Wanted | 5 | 6 |
+| 4 · The Mad Titan's Shadow | 6 | 6 |
+| 5 · Sinister Motives | 5 | 6 |
+| 6 · Mutant Genesis | 8 | 8 |
+| 7 · NeXt Evolution | 5 | 6 |
+| 8 · Age of Apocalypse | 5 | 6 |
+| 9 · Agents of S.H.I.E.L.D. | 7 | 6 |
+
+La marche la plus lourde est la vague 6, huit et huit. Aucune ne dépasse ça :
+la progression reste proportionnelle à la boîte, comme voulu.
+
+Set de base : il faut 3 vilains battus et 5 héros vainqueurs, soit **5 victoires
+bien réparties** pour ouvrir la vague 1. Et ces cinq victoires rapportent cinq
+jetons fan-made, dix si elles sont prises en expert.
 
 ## Les sets modulaires et les défis
 
@@ -113,7 +131,7 @@ prendre.
 | # | Tranche | État |
 |---|---|---|
 | 1 | **Les règles**, pures et testées : `public/js/prepare/legacy.js`. Paliers, jetons, conditions, ordre des vagues, table rase. | ✅ **Faite le 13/09/2026.** 13 cas, `npm run legacy`. |
-| 2 | **Les paliers depuis le catalogue** : transformer les vagues, héros et scénarios réels en la forme que la tranche 1 attend. C'est là que se joue le raccord entre le nom de scénario de l'historique et celui du catalogue. | à faire |
+| 2 | **Les paliers depuis le catalogue** : `public/js/prepare/legacy-catalogue.js`. | ✅ **Faite le 13/09/2026.** 5 cas, `npm run legacy-paliers`. |
 | 3 | **La fiche du compte** : la lire, l'écrire à chaque fin de partie, la reconstruire depuis `games_history`. | à faire |
 | 4 | **L'écran** : la sixième tuile, la grille grisée avec ses conditions, la boutique de jetons. | à faire |
 | 5 | **Garder les parties terminées** : allumer `auto_save_after_game_over`, rétention à 50. | à faire |

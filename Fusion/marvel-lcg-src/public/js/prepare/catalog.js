@@ -608,4 +608,9 @@ export const catalog = {
     },
 };
 
-export { titleize, titreDeVague };
+// `vagueDeLExtension` est exportee depuis le 13/09/2026 pour le mode Legacy,
+// qui range les extensions par vague. Elle lit BORNES_VAGUES, la SEULE table
+// qui dise a quelle vague appartient une boite : la recopier ailleurs aurait
+// cree une seconde verite, et la boite du Bouffon Vert (n°2, vague 1) est
+// justement le contre-exemple qu'aucune approximation ne retrouve.
+export { titleize, titreDeVague, vagueDeLExtension };
