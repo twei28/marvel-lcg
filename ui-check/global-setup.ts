@@ -6,6 +6,11 @@
 //     (donc sans erreur visible). On figerait 18 fois la meme image.
 //  2. Verifier tout de suite que le jeu est bien lance. Mieux vaut un message
 //     clair en francais qu'une serie de captures fausses.
+//  3. Repondre une fois pour toutes a la question de la langue (13/09/2026).
+//     Elle s'affiche a la premiere visite et se pose SUR l'ecran : sans cela
+//     elle intercepte le premier clic de chaque parcours, et tout le harnais
+//     tombe. Le cas qui la couvre (langue-premiere-fois.spec.ts) efface la cle
+//     lui-meme, donc il la voit quand meme.
 import { chromium, type FullConfig } from '@playwright/test';
 import fs from 'node:fs';
 import { ADRESSE_JEU } from './playwright.config';
@@ -32,6 +37,10 @@ export default async function globalSetup(_config: FullConfig) {
           `Si oui, relance-le avec launcher_fast.py, puis reessaie.`
       );
     }
+
+    // La question de la langue est deja repondue pour tous les parcours : on
+    // ecrit la cle sur l'ORIGINE du jeu, celle que les tests visitent.
+    await page.evaluate(() => localStorage.setItem('marvel-langue-choisie', '1'));
 
     fs.mkdirSync('./.auth', { recursive: true });
     await ctx.storageState({ path: './.auth/state.json' });

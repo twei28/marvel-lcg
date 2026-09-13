@@ -40,7 +40,8 @@
     "legacy-ecran": "playwright test tests/legacy-ecran.spec.ts --project=pc",
     "legacy-cartes": "playwright test tests/legacy-cartes.spec.ts --project=pc",
     "legacy-deckbuilder": "playwright test tests/legacy-deckbuilder.spec.ts --project=pc",
-    "preparation-telephone": "playwright test tests/preparation-telephone.spec.ts --project=pc"
+    "preparation-telephone": "playwright test tests/preparation-telephone.spec.ts --project=pc",
+    "langue": "playwright test tests/langue-premiere-fois.spec.ts --project=pc"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0"

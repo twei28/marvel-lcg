@@ -59,6 +59,58 @@ export async function basculerLangue() {
     location.reload();
 }
 
+/* --- LE CHOIX DE LA LANGUE, POSÉ UNE FOIS ---------------------------------
+   Demandé par l'utilisateur le 13/09/2026 : « qu'à la première connexion il
+   demande dans quelle langue on veut les cartes, en indiquant bien qu'on peut
+   toujours changer en jeu ».
+
+   ⚠ UNE CLÉ NEUVE, ET C'EST VOULU. `marvel-langue` existe déjà chez tout le
+   monde : s'y fier n'aurait jamais posé la question aux joueurs actuels, alors
+   qu'ils n'ont jamais choisi — ils ont hérité du français par défaut. Cette
+   clé-ci n'existe chez personne, donc chacun se la voit poser une fois, sa
+   langue actuelle déjà cochée. C'est le « reset » demandé, sans rien effacer.
+
+   ⚠ ET ON N'ÉCRIT RIEN AVANT D'AVOIR RÉPONDU : tant que la question n'a pas
+   eu de réponse, `marvel-langue` garde sa valeur. Poser la clé à l'affichage
+   aurait fait disparaître la question au premier rechargement. */
+const CLE_LANGUE_CHOISIE = "marvel-langue-choisie";
+
+/** La question a-t-elle déjà été posée à cette personne, sur cet appareil ? */
+export function langueDejaChoisie() {
+    try {
+        return localStorage.getItem(CLE_LANGUE_CHOISIE) === "1";
+    } catch (e) {
+        // Stockage indisponible (navigation privée) : on ne harcèle pas, on se
+        // tait. Mieux vaut ne pas demander que demander à chaque page.
+        return true;
+    }
+}
+
+/** Retient la réponse, et applique la langue choisie.
+ *
+ *  Rend `true` si la page doit être rechargée : changer de langue recharge,
+ *  comme `basculerLangue`, parce que tout l'écran est déjà dessiné. Garder la
+ *  même langue n'a rien à recharger. */
+export async function retenirLangue(langue) {
+    const choisie = langue === "en" ? "en" : "fr";
+    const change = choisie !== langueActuelle();
+    try {
+        localStorage.setItem(CLE_LANGUE_CHOISIE, "1");
+    } catch (e) { /* sans stockage, la question reviendra : tant pis */ }
+    if (!change) {
+        // Même sans changement, le moteur doit connaître la langue : c'est
+        // peut-être la première fois qu'on la lui dit.
+        try { await fetch("/set_language?" + choisie); } catch (e) { /* hors ligne */ }
+        return false;
+    }
+    try { localStorage.setItem(CLE_LANGUE, choisie); } catch (e) { /* idem */ }
+    try {
+        localStorage.setItem(CLE_SCANS_FR_PLATEAU, choisie === "fr" ? "on" : "off");
+    } catch (e) { /* préférence non critique */ }
+    try { await fetch("/set_language?" + choisie); } catch (e) { /* hors ligne */ }
+    return true;
+}
+
 /** Bouton FR/EN prêt à poser dans un header (élément DOM autonome). */
 export function boutonLangue(classe) {
     const bouton = document.createElement("button");

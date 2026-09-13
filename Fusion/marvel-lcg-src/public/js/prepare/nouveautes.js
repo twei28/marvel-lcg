@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-13",
         genre: "jeu",
+        fr: "À ta prochaine visite, le jeu te demande une fois dans quelle langue tu veux tes cartes. Tu peux changer d'avis quand tu veux avec le bouton FR / EN, en haut de l'écran.",
+        en: "On your next visit, the game asks you once which language you want your cards in. You can change your mind whenever you like with the FR / EN button at the top of the screen.",
+    },
+    {
+        date: "2026-09-13",
+        genre: "jeu",
         fr: "Le jeu s'installe sur ton téléphone : sur narwhalchampions.com, menu du navigateur, « Ajouter à l'écran d'accueil ». Une icône, un plein écran, et il t'amène droit à ta table. C'est un raccourci, pas une version hors ligne : le jeu tourne sur le serveur, il faut une connexion pour jouer.",
         en: "The game installs on your phone: on narwhalchampions.com, browser menu, “Add to Home screen”. An icon, full screen, and it takes you straight to your table. It is a shortcut, not an offline version: the game runs on the server, you need a connection to play.",
     },

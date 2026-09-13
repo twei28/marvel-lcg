@@ -115,6 +115,13 @@ export const DICO_EN_BASE = {
     "Débloquer ce héros pour 1 jeton ?": "Unlock this hero for 1 token?",
     "Débloquer": "Unlock",
     "Legacy": "Legacy",
+    // Le choix de la langue, pose une fois (13/09/2026)
+    "Bienvenue": "Welcome",
+    "Dans quelle langue veux-tu tes cartes ?": "Which language do you want your cards in?",
+    "Cartes, interface et récit de la partie en français.": "Cards, interface and game log in French.",
+    "Cards, interface and game log in English.": "Cards, interface and game log in English.",
+    "Tu peux changer à tout moment : le bouton FR / EN, en haut de l'écran.":
+        "You can change at any time: the FR / EN button, at the top of the screen.",
     "Joueurs": "Players",
     "Joueur": "Player",
     "Retour": "Back",

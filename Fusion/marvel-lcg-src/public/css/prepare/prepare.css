@@ -1709,6 +1709,18 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 
    ⚠ ET ELLE SORT AUSSI AU CLAVIER (`:focus-visible`). Une aide qui n'existe
    qu'a la souris n'existe pas pour qui navigue au Tab. */
+/* Le choix de la langue, pose une seule fois (13/09/2026). Deux grandes
+   cibles : sur un telephone, un choix qui engage doit se toucher sans viser. */
+.langue-modal .lg-choix-grille{display:grid;gap:12px;margin:14px 0}
+.langue-modal .lg-choix{
+  text-align:left;padding:16px;color:var(--txt);cursor:pointer;
+  border:2px solid var(--line);background:#161b22;
+}
+.langue-modal .lg-choix:hover{border-color:var(--affiche-jaune)}
+.langue-modal .lg-choix.on{border-color:var(--affiche-jaune)}
+.langue-modal .lg-choix b{display:block;font-size:19px}
+.langue-modal .lg-choix small{display:block;color:var(--dim);margin-top:4px;font-size:13px}
+
 /* LEGACY (13/09/2026) : ce qui n'est pas encore debloque reste SOUS LES YEUX,
    grise, avec sa condition. Absent de la grille, on ne saurait pas ce qu'on
    rate ; grise sans un mot, on ne saurait pas quoi faire. */

@@ -23,7 +23,8 @@ import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-d
 // session et par le tirage aleatoire, et un son s'y jouerait tout seul au
 // chargement de la page.
 import { jouerSon, SON } from "/public/js/prepare/sons.js";
-import { boutonLangue, synchroniserLangueServeur, t, langueActuelle } from "/public/js/prepare/langue.js";
+import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
+         langueDejaChoisie, retenirLangue } from "/public/js/prepare/langue.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
 import { GENRES, nouveautesTriees } from "/public/js/prepare/nouveautes.js";
@@ -1014,6 +1015,49 @@ function bandeauEnLigne() {
         el("span", {}, t("Choisis seulement TON héros et TON deck. Les autres joueurs choisissent les leurs depuis le lien que tu leur as envoyé.")),
         el("ul", { class: "salon-sieges" }, ...lignes),
     );
+}
+
+/** « Dans quelle langue veux-tu tes cartes ? », posée une seule fois.
+ *
+ *  Demandée par l'utilisateur le 13/09/2026. Le jeu part en français pour tout
+ *  le monde sans avoir rien demandé ; ceux qui préfèrent l'anglais ne savent
+ *  pas forcément que le bouton FR/EN existe.
+ *
+ *  ⚠ ELLE DIT QU'ON PEUT CHANGER, et le montre : la phrase nomme le bouton
+ *  FR/EN et sa place. Une question posée une fois sans porte de sortie
+ *  inquiète plus qu'elle n'aide.
+ *
+ *  ⚠ ET ELLE NE SE FERME PAS EN CLIQUANT À CÔTÉ, à la différence des autres
+ *  modales de cet écran : un clic distrait vaudrait réponse, et la question ne
+ *  reviendrait jamais. On répond par l'un des deux drapeaux, point.
+ */
+function demanderLaLangue() {
+    return new Promise((resolve) => {
+        const choisir = async (langue) => {
+            const recharger = await retenirLangue(langue);
+            fermerModale(overlay);
+            if (recharger) location.reload(); else resolve();
+        };
+        const carte = (code, titre, sous) => el("button", {
+            class: "lg-choix" + (langueActuelle() === code ? " on" : ""),
+            onclick: () => { void choisir(code); },
+        }, el("b", {}, titre), el("small", {}, sous));
+        const overlay = el("div", { class: "deck-modal langue-modal" },
+            el("div", { class: "deck-modal-panel vh-panel" },
+                el("div", { class: "dm-head" },
+                    el("b", { class: "mvl" }, t("Bienvenue")),
+                    el("span", { class: "dm-sub" }, t("Dans quelle langue veux-tu tes cartes ?")),
+                ),
+                el("div", { class: "lg-choix-grille" },
+                    carte("fr", "Français", t("Cartes, interface et récit de la partie en français.")),
+                    carte("en", "English", t("Cards, interface and game log in English.")),
+                ),
+                el("div", { class: "vh-note" },
+                    t("Tu peux changer à tout moment : le bouton FR / EN, en haut de l'écran.")),
+            ),
+        );
+        ouvrirModale(overlay);
+    });
 }
 
 /* ---- LEGACY ---------------------------------------------------------------
@@ -3605,6 +3649,13 @@ function blocAvance() {
         console.error("reprise equipe campagne:", e);
     }
     render();
+    // ⚠ APRES `render()`, ET NON AVANT. La modale se pose sur `document.body` ;
+    // posee avant, le premier rendu la balayait. Et on ne la montre pas en
+    // creation d'equipe de campagne : on y arrive depuis un autre ecran, la
+    // question y tomberait de nulle part.
+    if (!langueDejaChoisie() && !creationCampagne()) {
+        await demanderLaLangue();
+    }
     // Le salon ne concerne que le multi, mais on sonde toujours : la reponse
     // dit elle-meme si on y est (multi:false en solo, et tout reste inerte).
     await sonderSalon();
