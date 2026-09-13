@@ -23,4 +23,8 @@ récentes :
 
 ## Statut
 
-Non commencé.
+**Terminé le 13/09/2026.** Rapport complet et 26 gabarits PROCESSUS-CARTE :
+`2026-09-13-sentinel-gabarits-processus-carte.md`.
+
+Reste à faire, et c'est écrit noir sur blanc : **une vraie partie jouée à la
+main dans le navigateur**, sur PC et sur téléphone. Aucun outil ne la remplace.

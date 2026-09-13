@@ -1591,4 +1591,16 @@ export const HEROS_INFO = {
         apparition: "The Superior Spider-Man #1 (2013)",
     },
 
+    "st001a": {
+        bio: "Juston Seyfert est un adolescent du New Jersey qui a trouvé, dans une casse, la carcasse d'un Sentinelle Mark VII abattu. Bricoleur obstiné, il l'a réparé et reprogrammé pour qu'il n'obéisse qu'à lui, transformant la machine conçue pour traquer les mutants en garde du corps et en ami. Le robot le protège avec une loyauté absolue, mais son code d'origine n'a jamais complètement disparu : chaque combat risque de le réveiller. Juston pilote donc un colosse de plusieurs tonnes tout en sachant qu'il tient une bombe à retardement.",
+        bioEn: "Juston Seyfert is a New Jersey teenager who found the wreck of a downed Mark VII Sentinel in a scrapyard. A stubborn tinkerer, he repaired and reprogrammed it to answer to him alone, turning a machine built to hunt mutants into a bodyguard and a friend. The robot protects him with absolute loyalty, but its original code never fully went away: every fight risks waking it. Juston pilots a multi-ton colossus knowing full well he is holding a time bomb.",
+        civil: "Juston Seyfert",
+        base: "Stanton (New Jersey), puis l'Institut Jean Grey",
+        baseEn: "Stanton, New Jersey, later the Jean Grey School",
+        equipes: "Avengers Academy, Jean Grey School",
+        ennemis: "Bastion, les Sentinelles, Mark VII-A",
+        ennemisEn: "Bastion, the Sentinels, Mark VII-A",
+        apparition: "Sentinel #1 (2003)",
+    },
+
 };

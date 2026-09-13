@@ -79,6 +79,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "MASTERS OF EVIL", "DRONE", "ANDROID", "BRUTE", "CHAMPION", "PSIONIC",
         "THWART", "SPY", "ASGARD", "GAMMA", "VEHICLE", "BLACK PANTHER", "GIANT",
         "TINY", "SPELL", "MYSTIC", "SYMBIOTE", "GUARDIAN", "WEB-WARRIOR",
+        # CORRECTIF : traits du pack sentinel (T-Wrecks, set 173, 12/09/2026).
+        # COMPONENT / INTACT / DESTROYED portent les quatre ameliorations
+        # recto-verso du heros ; HACKED est donne aux ameliorations par la
+        # manigance nemesis Rogue Asset ; SENTINEL est le trait du sbire.
+        "COMPONENT", "INTACT", "DESTROYED", "HACKED", "SENTINEL",
         "QUIET", "CIVILIAN",
         "ICE", "STONE", "METAL", "WOOD",
         # CORRECTIF : traits du pack custom superior_iron_man (Merlin).
@@ -315,7 +320,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
     ]
 
     STATUS = Literal[
-        "Confused", "Stunned", "Tough"
+        # CORRECTIF : « Exposed », quatrieme carte d'etat, ajoutee pour le pack
+        # sentinel (12/09/2026, fiche docs/reference/mots-cles/exposed.md).
+        # Contrairement aux trois autres, sa regle n'est pas dans le moteur :
+        # elle est scriptee sur la carte (cards/pack/status/exposed.py).
+        "Confused", "Stunned", "Tough", "Exposed"
     ]
 
     ATTACK_KEYWORD = Literal[

@@ -327,6 +327,20 @@ class RunPuzzle:
         else:
             Faces.GiveStatus([unit], "Tough", DebugRule(unit))
 
+    def Expose(self, card: CardName):
+        """Pose (ou retire) une carte d'etat Exposed, pack `sentinel`.
+
+        ⚠ Contrairement a Coriace, Sonne et Desoriente, Exposed S'EMPILE : le
+        bascule ici retire TOUTES les cartes d'un coup, pour rester previsible
+        dans un cas de test.
+        """
+        from game.operate.faces import Faces
+        unit = self.FindOrCreateFace(card).CastTo(Unit2)
+        if unit.components.status.exposed:
+            unit.LoseState("Exposed", DebugRule(unit), rule="All")
+        else:
+            Faces.GiveStatus([unit], "Exposed", DebugRule(unit))
+
     def ChangeToFace(self, card: CardName, to: str):
         """Bascule une identite vers une face PRECISE, designee par son card_id.
 

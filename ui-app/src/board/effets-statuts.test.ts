@@ -33,6 +33,15 @@ describe('deltas de statuts', () => {
     expect(deltasStatuts(avant, apres)).toEqual([[97, { kind: 'status', statut: 'stunned', value: -1 }]])
   })
 
+  // Quatrieme carte d'etat, pack `sentinel`. Sans son entree dans STATUTS,
+  // `estStatut` la rejetterait et le badge ne partirait jamais.
+  it('signale Exposé, la quatrieme carte d etat', () => {
+    const avant = monde(klaw)
+    const apres = monde(klaw, carte(202, 'StatusCard', 'exposed', 97))
+    expect(deltasStatuts(avant, apres)).toEqual([[97, { kind: 'status', statut: 'exposed', value: 1 }]])
+    expect(libelleStatut('exposed', 1, 'fr')).toBe('Exposé')
+  })
+
   it('ne dit rien quand rien ne change, meme avec un statut en place', () => {
     const m = monde(klaw, carte(200, 'StatusCard', 'tough', 97))
     expect(deltasStatuts(m, m)).toEqual([])

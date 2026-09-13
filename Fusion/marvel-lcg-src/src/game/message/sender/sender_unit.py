@@ -373,11 +373,19 @@ class SenderUnit:
         def __init__(self, unit: 'Unit2', status: 'StatusCard', by_effect: 'Effect') -> None:
             # from game.message import OnEvent
             self.status: Final = status
+            # CORRECTIF (13/09/2026, pack `sentinel`) : « Exposed », quatrieme
+            # carte d'etat. La table etait figee a trois entrees et levait un
+            # `KeyError` A CHAQUE defausse d'un Exposé. Le harnais ne l'a pas
+            # vu — le moteur attrape l'exception, ecrit crash.json et continue —
+            # mais 47 tracebacks sont sortis des journaux d'autoplay.
+            # `Symbol.get` plutot qu'une quatrieme entree en dur : le jour ou un
+            # cinquieme etat arrive, le message le nommera au lieu de planter.
             display_name = {
                 'Tough': Symbol.tough,
                 'Stunned': Symbol.stunned,
-                'Confused': Symbol.confused
-            }[status.name]
+                'Confused': Symbol.confused,
+                'Exposed': Symbol.exposed,
+            }.get(status.name, status.name)
             super().__init__(trigger=unit)
             text = TransText("{unit} lost {status} ({by_effect})", unit=unit, status=display_name, by_effect=by_effect.this)
             self.Present(text, "", unit, status, by_effect.this)

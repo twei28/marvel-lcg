@@ -118,6 +118,9 @@ export const REPLIQUES = {
     moon_knight: ["I am Moon Knight.", "Random bullshit, go!"],
     ms_america: ["I am America.", "The multiverse has room for me."],
     night_thrasher: ["The streets fight back tonight."],
+    // Les deux repliques de Sentinel sont les TEXTES D'AMBIANCE IMPRIMES du
+    // pack (Size Advantage et Reboot), pas des phrases inventees.
+    sentinel: ["THREAT DETECTED. THREAT INSIGNIFICANT.", "There you are. Knew I could get you back."],
     okoye: ["For Wakanda!", "I am loyal to that throne, no matter who sits upon it."],
     patriot: ["Young heroes, assemble."],
     red_guardian: ["I am Red Guardian.", "Have you ever met Captain America?"],

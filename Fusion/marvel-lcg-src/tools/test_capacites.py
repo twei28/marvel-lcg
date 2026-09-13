@@ -29754,10 +29754,702 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"dans_deck_rencontre": ["01133"], "en_jeu": ["01126"], "defausse_rencontre": ["01187"]},
     },
+    # ------------------------------------------------------------------------
+    # SENTINEL (T-Wrecks, pack `sentinel`, prefixe `st`).
+    #
+    # Le pack tient sur QUATRE AMELIORATIONS RECTO-VERSO posees au setup, les
+    # COMPONENT : Head (st002), Arms (st003), Torso (st004), Legs (st005).
+    # Face INTACT, chacune donne une action de heros a inclinaison ; face
+    # DESTROYED, un malus permanent. Deux mots-cles maison, fiches lues avant
+    # tout code : DESTROY (2 degats imblocables + retournement) et EXPOSED
+    # (la QUATRIEME carte d'etat du moteur).
+    #
+    # Cartes de decor utilisees : 01094 Rhino (PV 14, ATQ 2), 01097b la
+    # manigance principale, 01101 Hydra Mercenary (PV 3), 01109 Bomb Scare
+    # (manigance annexe), 04043 Press the Advantage (evenement ATTACK a 1),
+    # 04049 Clear the Area (evenement THWART a 1), 01086 First Aid (1 icone de
+    # ressource), 01088 Energy (2 icones).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "st002a-st005a Components — les quatre pieces arrivent AU SETUP, face INTACT",
+        "pourquoi": ("le point de depart de tout le pack. `desc.Setup` sur chaque face "
+                     "INTACT (modele nt003a Battle Board) : aucun module ne les pose, et "
+                     "st001b ne doit SURTOUT PAS les poser une seconde fois. Sans elles, "
+                     "onze des vingt et une cartes du pack n'ont plus rien a lire"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": [], "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["st002a", "st003a", "st004a", "st005a"]},
+    },
+    {
+        "nom": "st002a Head (Intact) — l'action expose DEUX ennemis",
+        "pourquoi": ("« expose 2 enemies » n'est pas « up to 2 » : `range=(\"Zero\", 2)` "
+                     "impose d'en prendre autant que possible, plafonne a deux. Exposer "
+                     "n'est pas une primitive moteur, c'est poser la carte d'etat maison "
+                     "Exposed (fiche mots-cles/exposed.md)"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "declencher": ["Puzzle.Action('st002a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Exposed"], ["01101", "Exposed"]],
+                    "exhausted": ["st002a"]},
+    },
+    {
+        "nom": "exposed (pose par st002a) — la prochaine ATTAQUE contre le porteur inflige 1 degat de plus, et l'etat part",
+        "pourquoi": ("cas central de la quatrieme carte d'etat. Sentinel frappe a 1 ; "
+                     "avec un Exposed, l'attaque passe a 2, et la carte d'etat est "
+                     "defaussee dans la foulee. `IncreaseDamage` sur "
+                     "`WhenUnitWouldAttackUnit`, pas `GainATKForThisAttack`. "
+                     "⚠ `Puzzle.Attack(x)` fait ATTAQUER x : c'est donc `st001a` qu'on "
+                     "nomme, jamais le vilain. Nommer le vilain le faisait attaquer LE "
+                     "HEROS, et le cas ne mesurait plus rien — il est reste ainsi une "
+                     "journee parce que son NOM ne contenait pas `st0` et que le filtre "
+                     "du pack ne le voyait pas (13/09/2026)"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Expose('01094')"],
+        "declencher": ["Puzzle.Attack('st001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]],
+                    "statuts_absents": [["01094", "Exposed"]]},
+    },
+    {
+        "nom": "exposed (st002a) — TEMOIN : des degats HORS attaque ne consomment pas l'etat",
+        "pourquoi": ("premier piege de la fiche exposed.md : « est attaque » n'est pas "
+                     "« subit des degats ». Un declencheur de degats ferait partir la "
+                     "carte d'etat ici, et le bonus serait offert a toutes les sources"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Expose('01094')"],
+        "declencher": ["Puzzle.Damage('01094', 1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1]],
+                    "statuts": [["01094", "Exposed"]]},
+    },
+    {
+        "nom": "st002b Head (Destroyed) — un evenement THWART coute 1 de plus et reste en main",
+        "pourquoi": ("main reduite a l'evenement PLUS UNE seule carte-ressource : cout 1 "
+                     "payable, cout 2 non. La fabrique du moteur ne filtre que par TYPE "
+                     "de carte, d'ou le helper du pack qui ajoute le TRAIT. ⚠ LA PREUVE "
+                     "EST L'ABSENCE D'EFFET, pas la carte restee en main : un cout "
+                     "impayable ne renvoie PAS la carte en main, le moteur la pose sur "
+                     "la table puis la defausse (trace du 12/09/2026). C'est le jumeau "
+                     "positif ci-dessous qui prouve que la cible, elle, existait"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Flip('st002a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["04049", "01086"],
+        "declencher": [], "jouer": ["04049"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 5]], "en_jeu": ["st002b"]},
+    },
+    {
+        "nom": "st002b — TEMOIN : Head encore INTACTE, le meme evenement THWART part",
+        "pourquoi": ("le jumeau positif, sans lequel le cas precedent passerait au vert "
+                     "pour n'importe quelle raison (carte injouable, cible absente). "
+                     "Meme main, meme menace : seule la face de Head change"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["04049", "01086"],
+        "declencher": [], "jouer": ["04049"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["04049"], "menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "st003a Arms (Intact) — l'action inflige 1 degat a un ennemi",
+        "pourquoi": ("action de heros ETIQUETEE `attack` : les degats sont une vraie "
+                     "attaque, donc soumise a riposte, Coriace et Exposed. C'est le "
+                     "COMPONENT qui frappe, aucune statistique du heros n'intervient"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')"],
+        "declencher": ["Puzzle.Action('st003a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1]], "exhausted": ["st003a"]},
+    },
+    {
+        "nom": "st003b Arms (Destroyed) — un evenement ATTACK coute 1 de plus et reste en main",
+        "pourquoi": ("jumeau de st002b sur l'autre trait. Press the Advantage coute 1 ; "
+                     "avec Arms detruite il coute 2, et la main n'offre qu'une seule "
+                     "carte-ressource"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Flip('st003a')"],
+        "main_exclusive": ["04043", "01086"],
+        "declencher": [], "jouer": ["04043"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "en_jeu": ["st003b"]},
+    },
+    {
+        "nom": "st003b — TEMOIN : Arms encore INTACTE, le meme evenement ATTACK part",
+        "pourquoi": "le jumeau positif, meme main et meme cible : seule la face d'Arms change",
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')"],
+        "main_exclusive": ["04043", "01086"],
+        "declencher": [], "jouer": ["04043"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["04043"], "degats": [["01094", 2]]},
+    },
+    {
+        "nom": "st004a Torso (Intact) — l'action soigne 1 degat de Sentinel",
+        "pourquoi": ("`canbe_heal=True` sur la cible : sans lui l'action resterait "
+                     "proposee a un Sentinel indemne et ne ferait rien. Trois degats "
+                     "poses, il doit en rester deux. ⚠ LES QUATRE PIECES SONT DETRUITES "
+                     "AVANT LA BLESSURE, puis Torso seule est remontee : sans cela "
+                     "Ablative Protocol (st001a) INTERCEPTE les 3 degats, aucun ne "
+                     "tombe, et l'action de soin n'a plus de cible legale"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Flip('st002a')", "Puzzle.Flip('st003a')",
+                          "Puzzle.Flip('st004a')", "Puzzle.Flip('st005a')",
+                          "Puzzle.Damage('st001a', 3)",
+                          "Puzzle.Flip('st004b')"],
+        "declencher": ["Puzzle.Action('st004a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "exhausted": ["st004a"]},
+    },
+    {
+        "nom": "st004b Torso (Destroyed) — une amelioration coute 1 de plus et reste en main",
+        "pourquoi": ("le seul des trois malus de cout que la fabrique du moteur sait "
+                     "rendre telle quelle (`EachCardYouPlayCostAdditionalResource("
+                     "Upgrade, +1)`, modele 39062) : le filtre est un TYPE, pas un trait. "
+                     "Targeting Protocol coute 1 et n'a aucun cout additionnel"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Flip('st004a')"],
+        "main_exclusive": ["st013", "01086"],
+        "declencher": [], "jouer": ["st013"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["st013"], "en_jeu": ["st004b"]},
+    },
+    {
+        "nom": "st005a Legs (Intact) — l'action rend gratuite la prochaine carte jouee",
+        "pourquoi": ("main reduite au SEUL evenement, sans la moindre carte-ressource : "
+                     "il ne peut partir que si son cout 1 tombe a 0. ⚠ ARBITRAGE : "
+                     "l'auteur ecrit « the next card you play » sans duree, le moteur "
+                     "exige \"Phase\" ou \"Turn\" ; on retient \"Phase\", la duree "
+                     "officielle de cet effet (05008, 54019)"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["04049"],
+        "declencher": ["Puzzle.Action('st005a')"],
+        "jouer": ["04049"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["04049"], "menace": [["01097b", 3]],
+                    "exhausted": ["st005a"]},
+    },
+    {
+        "nom": "st005a — TEMOIN : sans l'action, la meme carte reste en main faute de ressource",
+        "pourquoi": ("prouve que c'est bien la reduction qui paie, et non une main de "
+                     "depart qui trainerait : main identique, action non declenchee"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["04049"],
+        "declencher": [], "jouer": ["04049"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 5]]},
+    },
+    {
+        "nom": "st005b Legs (Destroyed) — la taille de main baisse de 1",
+        "pourquoi": ("« **You** get -1 hand size » vise les DEUX faces de l'identite, "
+                     "d'ou la cible `\"You\"` et non un nom propre (piege inverse de "
+                     "nt003a). Modele 04165 Martial Law"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Flip('st005a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"hand_size": -1}, "en_jeu": ["st005b"]},
+    },
+    {
+        "nom": "st001a Ablative Protocol — les degats sont REMPLACES par la destruction d'un Component",
+        "pourquoi": ("« instead » : les degats d'origine disparaissent ENTIEREMENT, d'ou "
+                     "`SetBeInstead` et non `PreventDamage(n)`. Les QUATRE pieces sont "
+                     "intactes : 5 degats arrivent, UNE SEULE piece tombe, et Sentinel "
+                     "n'encaisse que les 2 degats de la destruction. "
+                     "⚠ C'EST LE CAS QUI PROUVE LE MOT-CLE. Les 2 degats sont "
+                     "IMBLOCABLES (`DamageProperty.unpreventable`, drapeau ajoute au "
+                     "moteur pour ce pack) : sans lui ils relancent l'interruption, et "
+                     "le robot se demonte ENTIEREMENT sur une seule blessure — quatre "
+                     "pieces retournees, mesure du 12/09/2026. "
+                     "⚠ L'ORDRE COMPTE AUSSI : on retourne AVANT de blesser. L'inverse "
+                     "laissait la meme piece intacte au moment de la relance et la "
+                     "boucle ne finissait jamais (trois parties d'autoplay bloquees)"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')"],
+        "declencher": ["Puzzle.Damage('st001a', 5)"],
+        "verifier": "sentinel_pieces_detruites",
+        "attendu": {"pieces_detruites": 1, "degats_identite": 2},
+    },
+    {
+        "nom": "st001a — TEMOIN : plus aucun Component intact, les degats passent entiers",
+        "pourquoi": ("« destroy **a** COMPONENT upgrade » : sans cible legale, "
+                     "l'interruption ne se declenche pas. C'est aussi ce qui borne la "
+                     "chaine du cas precedent. Les 5 degats doivent arriver tels quels"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Flip('st002a')", "Puzzle.Flip('st003a')",
+                          "Puzzle.Flip('st004a')", "Puzzle.Flip('st005a')"],
+        "declencher": ["Puzzle.Damage('st001a', 5)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 5},
+    },
+    {
+        "nom": "st001b Sentinel (alter-ego) — l'Action ramene Juston Seyfert du deck en main",
+        "pourquoi": ("modele 06001b Odinson : `Search.PlayerCard` sur le deck ET la "
+                     "defausse, puis `GainCard`. La partie commence en alter-ego, donc "
+                     "aucune bascule n'est necessaire. ⚠ `main_exclusive` VIDE LA MAIN D'ABORD, et "
+                     "ce n'est pas un detail : Juston est dans un deck de quinze cartes "
+                     "dont six sont piochees au setup, il pouvait donc etre en main SANS "
+                     "que la capacite ait rien fait. Le cas passait alors au vert sans "
+                     "son module (substituer_pack, 12/09/2026)"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": [],
+        "main_exclusive": ["01086"],
+        "declencher": ["Puzzle.Action('st001b', index=0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["st010"], "taille_main": 2},
+    },
+    {
+        "nom": "st001b — TEMOIN D'EPUISEMENT : la seconde recherche de la meme phase ne ramene rien",
+        "pourquoi": ("« (Limite d'une fois par phase.) » est IMPRIME : l'etape 7 bis de "
+                     "PROCESSUS-CARTE exige un temoin qui prouve le REFUS du second "
+                     "declenchement, pas seulement la reussite du premier. ⚠ Un seul "
+                     "Juston au deck ne prouverait RIEN : la seconde recherche "
+                     "echouerait faute de carte, limite ou pas. Le deck est donc refait "
+                     "avec DEUX exemplaires, et la preuve est un CHIFFRE — la main passe "
+                     "de 1 a 2 carte(s), et s'y arrete"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('st010', 'st010')"],
+        "main_exclusive": ["01086"],
+        "declencher": ["Puzzle.Action('st001b', index=0)"],
+        "declencher_tolerant": ["Puzzle.Action('st001b', index=0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2, "en_main": ["st010"]},
+    },
+    {
+        "nom": "st001b — defausser 1 carte REDRESSE TOUTES les pieces detruites d'un coup",
+        "pourquoi": ("« flip **each** COMPONENT (DESTROYED side) » : tous ensemble, sans "
+                     "selection. Deux pieces sont retournees avant le test, les deux "
+                     "doivent revenir. C'est la seule soupape du pack contre la spirale "
+                     "de destruction"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.Flip('st002a')", "Puzzle.Flip('st003a')"],
+        "declencher": ["Puzzle.Action('st001b', index=1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["st002a", "st003a"],
+                    "hors_jeu": ["st002b", "st003b"]},
+    },
+    {
+        "nom": "st006 Exterminate — 7 degats rangés perçants deferlants, puis l'ennemi est expose",
+        "pourquoi": ("la plus grosse carte du pack. Cout additionnel A DEUX PIECES : "
+                     "Arms (Intact) est IMPOSEE (condition de la capacite) et une autre "
+                     "piece intacte est choisie (selecteur de cout). Les trois mots-cles "
+                     "tiennent dans un seul `AttackProperty`"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')"],
+        "main_exclusive": ["st006", "01088"],
+        "declencher": [], "jouer": ["st006"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 7]], "statuts": [["01094", "Exposed"]],
+                    "defausse": ["st006"]},
+    },
+    {
+        "nom": "st006 — TEMOIN : sans Arms (Intact), la carte reste en main",
+        "pourquoi": ("« exhaust or destroy **Arms (Intact)** and any one other » : la "
+                     "premiere piece est NOMMEE, pas au choix. Arms detruite, la "
+                     "condition tombe et le cout additionnel n'est plus payable"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Flip('st003a')"],
+        "main_exclusive": ["st006", "01088"],
+        "declencher": [], "jouer": ["st006"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["st006"], "degats": [["01094", 0]]},
+    },
+    {
+        "nom": "st007 Hardwire Access — 3 menaces retirees quand aucun Exposed n'est en jeu",
+        "pourquoi": ("« remove 3 threat from **among** schemes in play, plus X » : la "
+                     "menace se REPARTIT (`repeat_rules=\"Threat\"`, modele 03011 Falcon) "
+                     "et X se lit AU MOMENT DE LA SELECTION. Ici X vaut zero : 6 - 3 = 3. "
+                     "⚠ JAMAIS 7 MENACES NI PLUS sur 01097b : son seuil vaut 7*, la "
+                     "manigance s'accomplirait et la partie serait perdue avant le test"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["st007", "01086"],
+        "declencher": [], "jouer": ["st007"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]], "defausse": ["st007"],
+                    "exhausted": ["st002a"]},
+    },
+    {
+        "nom": "st007 — deux Exposed en jeu : 3 + 2 = 5 menaces retirees",
+        "pourquoi": ("« Exposed status cards **in play** » compte TOUT le plateau, pas "
+                     "seulement la cible ni seulement les ennemis. Les deux etats sont "
+                     "poses l'un sur le VILAIN, l'autre sur SENTINEL LUI-MEME : c'est ce "
+                     "second qui prouve que le decompte ne se limite pas aux ennemis. "
+                     "6 - (3 + 2) = 1. Sans ce cas, un X fige a zero passerait inapercu"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Expose('01094')", "Puzzle.Expose('st001a')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["st007", "01086"],
+        "declencher": [], "jouer": ["st007"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 1]], "defausse": ["st007"]},
+    },
+    {
+        "nom": "st008 Rocket Punch — 5 degats deferlants, Arms inclinee en cout",
+        "pourquoi": ("le cout additionnel le plus simple du pack : une piece NOMMEE, "
+                     "inclinee ou detruite. Le pilote prend la premiere branche, "
+                     "l'inclinaison"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')"],
+        "main_exclusive": ["st008", "01086"],
+        "declencher": [], "jouer": ["st008"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "exhausted": ["st003a"],
+                    "defausse": ["st008"]},
+    },
+    {
+        "nom": "st008 — Arms DEJA INCLINEE : la carte part quand meme, en detruisant la piece",
+        "pourquoi": ("LE CAS QUI JUSTIFIE LE MOT-CLE. « inclinez OU detruisez » est un "
+                     "choix DANS LE COUT : une piece deja inclinee reste payable par la "
+                     "destruction, ce qui permet de rejouer un evenement dans le meme "
+                     "tour en payant de sa carrosserie. La destruction coute 2 degats "
+                     "imblocables a Sentinel et retourne Arms"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Exhaust('st003a')"],
+        "main_exclusive": ["st008", "01086"],
+        "declencher": [], "jouer": ["st008"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "degats_identite": 2,
+                    "en_jeu": ["st003b"], "hors_jeu": ["st003a"]},
+    },
+    {
+        "nom": "st009 Threat Suppression — 1 degat a chaque ennemi, et les deux sont assommes",
+        "pourquoi": ("« stun up to 2 **of those** enemies » : l'assommement ne vise que "
+                     "les ennemis QUI VIENNENT D'ETRE BLESSES, d'ou une selection reprise "
+                     "de `effect.targets` et non un second selecteur ouvert sur toute la "
+                     "table. ⚠ LE SBIRE EST SHOCKER (01103), PAS HYDRA MERCENARY : ce "
+                     "dernier porte GARDE, le vilain cesse alors d'etre une cible legale "
+                     "et le cas ne frapperait qu'un seul ennemi"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.PutIntoPlay('01103')"],
+        "main_exclusive": ["st009", "01086"],
+        "declencher": [], "jouer": ["st009"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1], ["01103", 1]],
+                    "statuts": [["01094", "Stunned"], ["01103", "Stunned"]],
+                    "exhausted": ["st005a"]},
+    },
+    {
+        "nom": "st010 Juston Seyfert — attache a une manigance annexe, il en retire 1 menace",
+        "pourquoi": ("⚠ CORRECTIF MOTEUR : `Support` n'heritait pas de `CanAttach`, et "
+                     "« Action: Attach to a side scheme » sur un SOUTIEN etait "
+                     "impossible. Ce cas prouve l'attache SANS la lire directement : "
+                     "l'action ne retire de la menace que « from **attached** side "
+                     "scheme ». 3 menaces au depart, 2 attendues"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 3)"],
+        "main_exclusive": ["st010", "01086"],
+        "declencher": [], "jouer": ["st010"],
+        "declencher_apres": ["Puzzle.Action('st010')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01109", 2]], "exhausted": ["st010"]},
+    },
+    {
+        "nom": "st010 — la manigance attachee vaincue, Juston revient en jeu et redresse Sentinel",
+        "pourquoi": ("« put Juston Seyfert in play **under your control** » : il quitte "
+                     "la manigance vaincue au lieu de la suivre a la defausse, d'ou la "
+                     "fenetre « When ... be defeated », avant que la manigance n'emporte "
+                     "ses cartes attachees. Sentinel est incline avant le contre pour "
+                     "que le redressement se voie. ⚠ `pret` EST LA PREUVE, pas `en_jeu` : sans "
+                     "son module Juston est un soutien ordinaire, il entre dans la zone "
+                     "du joueur tout seul et y reste quand la manigance tombe. Seul le "
+                     "redressement de Sentinel appartient vraiment a la carte "
+                     "(substituer_pack, 12/09/2026)"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 1)"],
+        "main_exclusive": ["st010", "01086"],
+        "declencher": [], "jouer": ["st010"],
+        "declencher_apres": ["Puzzle.Thwart('st001a')"],
+        "cibles": ["01109"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["st010"], "hors_jeu": ["01109"],
+                    "pret": ["st001a"]},
+    },
+    {
+        "nom": "st011 Propulsion Array — incliner une piece redresse Sentinel, et la carte retourne au deck",
+        "pourquoi": ("« Shuffle this card into your deck » est la PREMIERE instruction de "
+                     "l'effet, pas un cout : la carte part meme si la branche choisie ne "
+                     "fait rien. Cout de jeu : incliner Legs (Intact), sans branche "
+                     "destruction"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')"],
+        "main_exclusive": ["st011"],
+        "declencher": [], "jouer": ["st011"],
+        "declencher_apres": ["Puzzle.Exhaust('st001a')",
+                             "Puzzle.Action('st011')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["st001a"], "dans_deck_joueur": ["st011"],
+                    "exhausted": ["st005a"]},
+    },
+    {
+        "nom": "st012 Reinforced Plating — la defausser retourne une piece detruite et donne Coriace",
+        "pourquoi": ("« Discard Reinforced Plating → » : la fleche fait de la defausse un "
+                     "COUT (modele an006). Head est detruite avant le test, elle doit "
+                     "revenir INTACTE ; le Coriace va au HEROS, pas au Component"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Flip('st002a')"],
+        "main_exclusive": ["st012", "01086"],
+        "declencher": [], "jouer": ["st012"],
+        "declencher_apres": ["Puzzle.Action('st012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["st002a"], "hors_jeu": ["st002b"],
+                    "statuts": [["st001a", "Tough"]], "defausse": ["st012"],
+                    "exhausted": ["st004a"]},
+    },
+    {
+        "nom": "st013 Targeting Protocol — la premiere branche expose deux ennemis",
+        "pourquoi": ("seule carte du deck SANS cout additionnel, et seule amelioration "
+                     "TECH : c'est elle que Rogue Asset pirate en premier. Le pilote "
+                     "prend la premiere branche du choix"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["st013", "01086"],
+        "declencher": [], "jouer": ["st013"],
+        "declencher_apres": ["Puzzle.Action('st013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01094", "Exposed"], ["01101", "Exposed"]],
+                    "exhausted": ["st013"]},
+    },
+    {
+        "nom": "st014 Prime Directive — sans allie, la seule branche pose 3 menaces et la carte part",
+        "pourquoi": ("« Deal 3 damage to **another** friendly character » : un AUTRE que "
+                     "vous, donc un allie. Sans allie en jeu, `condition=` retire la "
+                     "branche et la menace devient le seul choix — c'est le comportement "
+                     "voulu, pas un blocage. Les deux branches defaussent l'obligation"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.SetThreat('01097b', 0)"],
+        "declencher": ["Puzzle.Reveal('st014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]], "hors_jeu": ["st014"]},
+    },
+    {
+        "nom": "st015 Mark VII-A — une attaque non defendue RETOURNE une piece, sans les 2 degats du mot-cle",
+        "pourquoi": ("⚠ « FLIP », PAS « DESTROY » : l'auteur a volontairement ecrit "
+                     "« flip ... to its DESTROYED side ». Le mot-cle maison ferait subir "
+                     "2 degats imblocables EN PLUS. Le heros est incline pour que "
+                     "l'attaque soit NON DEFENDUE (`is_undefended_attack=True`). "
+                     "⚠ VERIFICATION OUTILLEE OBLIGATOIRE : `en_jeu_trait` s'appuie sur "
+                     "`IsInPlay()`, qui accepte n'importe quelle face du meme NOM COURT "
+                     "— la face DESTROYED d'une piece intacte y compte deja, et le cas "
+                     "restait vert sans son module (substituer_pack : rouges 0/1). La "
+                     "fonction compte les faces REELLEMENT visibles. "
+                     "⚠ DEUX PIECES TOMBENT, ET C'EST JUSTE : les 2 degats de l'attaque "
+                     "declenchent d'abord Ablative Protocol (st001a), qui en detruit une "
+                     "A LA PLACE ; la Reponse forcee de Mark VII-A en retourne une "
+                     "seconde. Sans le module du sbire il n'en tomberait qu'UNE, et "
+                     "c'est cela que le chiffre mesure. Les 2 degats de la destruction, "
+                     "eux, sont IMBLOCABLES et ne relancent rien"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Exhaust('st001a')",
+                          "Puzzle.PutIntoPlay('st015')"],
+        "declencher": ["Puzzle.Attack('st015')"],
+        "verifier": "sentinel_pieces_detruites",
+        "attendu": {"pieces_detruites": 2},
+    },
+    {
+        "nom": "st016 Rogue Asset — les pieces INTACTES gagnent le trait HACKED",
+        "pourquoi": ("carte-pivot du set nemesis : trois traitrises ne font rien sans "
+                     "elle. Modele 04092 Super Absorbing Power pour l'octroi de traits "
+                     "depuis une carte en jeu"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.PutIntoPlay('st016')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"traits_de": [["st002a", "HACKED"], ["st003a", "HACKED"]]},
+    },
+    {
+        "nom": "st016 — TEMOIN : une piece DETRUITE ne porte pas HACKED",
+        "pourquoi": ("« COMPONENT upgrades (**INTACT** side up) » : retourner une piece "
+                     "la desinfecte, et c'est une vraie decision de jeu face aux trois "
+                     "traitrises. Un filtre sur le seul trait COMPONENT effacerait cette "
+                     "porte de sortie"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.Flip('st002a')", "Puzzle.PutIntoPlay('st016')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu_trait": [["HACKED", 3]]},
+    },
+    {
+        "nom": "st017 Disabled — sans amelioration piratee, Rogue Asset entre en jeu",
+        "pourquoi": ("« If you cannot, search ... and put it into play » : sans Rogue "
+                     "Asset en jeu, aucune amelioration ne porte HACKED, donc rien ne "
+                     "peut etre incline et le repli s'applique. La manigance est semee "
+                     "dans le deck de rencontre pour que la recherche la trouve"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('st016')"],
+        "declencher": ["Puzzle.Reveal('st017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["st016"]},
+    },
+    {
+        "nom": "st017 — Rogue Asset DEJA en jeu : les pieces piratees s'inclinent",
+        "pourquoi": ("la branche principale, celle qui mord une fois la manigance posee. "
+                     "Quatre Component intacts, tous piratés, tous inclines"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.PutIntoPlay('st016')"],
+        "declencher": ["Puzzle.Reveal('st017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["st002a", "st003a", "st004a", "st005a"]},
+    },
+    {
+        "nom": "st018 Viral Assault — sans amelioration piratee, Rogue Asset entre en jeu",
+        "pourquoi": ("TROIS branches, et la troisieme ne s'ouvre QUE sans amelioration "
+                     "HACKED : avec des pieces piratees en jeu, refuser la defausse mene "
+                     "aux degats, jamais a Rogue Asset"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('st016')"],
+        "declencher": ["Puzzle.Reveal('st018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["st016"]},
+    },
+    {
+        "nom": "st019 Hostile Override — sans amelioration piratee, l'identite est desorientee",
+        "pourquoi": ("la branche de repli, la seule atteignable sans Rogue Asset en jeu. "
+                     "Le boost etoile fait la meme chose, et `desc` ne porte donc AUCUNE "
+                     "valeur de boost (verifie contre 01144a)"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')"],
+        "declencher": ["Puzzle.Reveal('st019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["st001a", "Confused"]]},
+    },
+    {
+        "nom": "st019 — avec une piece piratee, la premiere branche frappe a la valeur d'ATQ",
+        "pourquoi": ("« deal damage to a friendly character equal to your **ATK** "
+                     "value » : la valeur COURANTE de l'identite, pas l'imprimee. "
+                     "Sentinel frappe a 1, et le pilote prend la premiere branche. "
+                     "⚠ LES QUATRE PIECES SONT DETRUITES D'ABORD : sinon Ablative "
+                     "Protocol intercepte ce degat et le remplace par une destruction a "
+                     "2 degats. Elles gardent le trait TECH sur leur face DESTROYED, "
+                     "donc Rogue Asset les pirate quand meme et la branche s'ouvre"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Flip('st002a')", "Puzzle.Flip('st003a')",
+                          "Puzzle.Flip('st004a')", "Puzzle.Flip('st005a')",
+                          "Puzzle.PutIntoPlay('st016')"],
+        "declencher": ["Puzzle.Reveal('st019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1,
+                    "statuts_absents": [["st001a", "Confused"]]},
+    },
+    {
+        "nom": "st020 Size Advantage — le trait GIANT porte les degats a 6",
+        "pourquoi": ("carte EXTRA hors set du heros, jouable par tout heros "
+                     "d'Agressivite. « GIANT **or** more remaining hit points » : une "
+                     "seule condition suffit, et Sentinel a GIANT imprime"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')"],
+        "main_exclusive": ["st020", "01088"],
+        "declencher": [], "jouer": ["st020"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]], "defausse": ["st020"]},
+    },
+    {
+        "nom": "st021 Reboot — redresse un personnage ANDROID et lui soigne 1 degat",
+        "pourquoi": ("carte EXTRA hors set, BASIC. « **Action** » nue, pas « Hero "
+                     "Action ». PAS de filtre `canbe_ready` : la carte fait DEUX choses, "
+                     "soigner un personnage deja redresse reste legal"),
+        "scenario": "rhino", "heros": "sentinel",
+        "mise_en_place": ["Puzzle.ChangeToFace('st001b', 'st001a')",
+                          "Puzzle.Exhaust('st001a')",
+                          "Puzzle.Damage('st001a', 2)"],
+        "main_exclusive": ["st021", "01086"],
+        "declencher": [], "jouer": ["st021"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["st001a"], "degats_identite": 1,
+                    "defausse": ["st021"]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
 VERIFICATIONS = r'''
+
+# --- pack sentinel ----------------------------------------------------------
+def sentinel_pieces_detruites(monde, aides):
+    """Combien de COMPONENT montrent VRAIMENT leur face DESTROYED.
+
+    Le nombre attendu se lit dans `attendu["pieces_detruites"]`.
+
+    ⚠ POURQUOI CETTE FONCTION EXISTE, et pourquoi `en_jeu_trait` ne suffit pas.
+    `CardFace.IsInPlay()` accepte, par defaut, n'importe quelle face du MEME NOM
+    (card_face.py:1007), et `ModelName.SetName` coupe la parenthese finale :
+    « Head (Intact) » et « Head (Destroyed) » portent toutes deux le nom court
+    « Head ». La face DESTROYED d'une piece INTACTE est donc « en jeu » pour le
+    moteur, et `en_jeu_trait [["DESTROYED", 1]]` comptait QUATRE pieces sur un
+    plateau ou aucune n'etait detruite — le cas st015 passait au vert sans son
+    module (mesure du 12/09/2026, `substituer_pack.py st0` : rouges 0/1).
+
+    On compte donc les faces REELLEMENT VISIBLES, `IsThisFaceUp()`.
+    """
+    attendu = (aides["cas"].get("attendu") or {}).get("pieces_detruites")
+    assert isinstance(attendu, int), "le cas doit dire attendu['pieces_detruites']"
+
+    detruites = []
+    intactes = []
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is None or not face.card.IsOnField() or not face.IsThisFaceUp():
+            continue
+        if not face.HasTrait("COMPONENT"):
+            continue
+        cid = getattr(face.paper, "card_id", "?")
+        if face.HasTrait("DESTROYED"):
+            detruites.append(cid)
+        else:
+            intactes.append(cid)
+
+    if len(detruites) != attendu:
+        return False, (f"{len(detruites)} piece(s) sur leur face DESTROYED "
+                       f"(attendu exactement {attendu}) : detruites={detruites} "
+                       f"intactes={intactes}")
+    if len(intactes) != 4 - attendu:
+        return False, (f"{len(intactes)} piece(s) encore INTACTE(s) "
+                       f"(attendu {4 - attendu}) : intactes={intactes}")
+    # `degats_identite` en option : sur st001a c'est LUI qui prouve que les
+    # degats d'origine ont bien disparu et que seuls les 2 de la destruction
+    # sont tombes.
+    voulus = (aides["cas"].get("attendu") or {}).get("degats_identite")
+    if voulus is not None:
+        identite = aides["identite"](monde)
+        subis = identite.max_health - identite.health
+        if subis != voulus:
+            return False, (f"{len(detruites)} piece(s) retournee(s) mais l'identite a "
+                           f"subi {subis} degat(s) (attendu {voulus})")
+
+    return True, f"{len(detruites)} piece(s) retournee(s) : {detruites}"
+
 
 # --- SONDE TEMPORAIRE (portage throg, 05/09/2026) ---------------------------
 def throg_sonde(monde, aides):

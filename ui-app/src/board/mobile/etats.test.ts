@@ -13,6 +13,12 @@ describe('etatDe', () => {
     expect(etatDe(carte(' confused '))?.nom).toBe('Désorienté')
   })
 
+  // Quatrieme carte d'etat, ajoutee par le pack `sentinel` : elle a son nom
+  // francais et sa classe propre, et ne retombe pas sur le repli generique.
+  it('reconnait Exposé, la quatrieme carte d etat', () => {
+    expect(etatDe(carte('Exposed'))).toEqual({ lettre: 'E', classe: 'est-expose', nom: 'Exposé' })
+  })
+
   // Le moteur pose les statuts avec kind 'status' (Board.tsx:174). Un statut
   // dont le nom serait traduit ou inconnu reste un etat, avec son initiale.
   it('traite toute carte de kind status comme un etat, meme au nom inconnu', () => {

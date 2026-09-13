@@ -2639,4 +2639,63 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'ze014': "<b>Une fois révélée</b> : chaque joueur cherche dans son deck et sa pile de défausse 2 cartes portant une icône [energy] imprimée et les place face cachée sous cette carte. Placez 1 menace supplémentaire ici pour chaque carte placée face cachée de cette façon.\n<b>Une fois déjouée</b> : renvoyez chaque carte face cachée d'ici dans la pile de défausse de son propriétaire.",
   'ze015': "Attachez-la à votre identité.\nVous ne pouvez pas dépenser de ressources [energy] pour payer des cartes.\n<b>Action d'alter ego</b> : dépensez 2 ressources de n'importe quel type → défaussez cette carte.",
   'ze016': "<b>Une fois révélée</b> : défaussez les 3 cartes du dessus de votre deck. Subissez 1 dégât indirect pour chaque événement défaussé de cette façon. Si un événement portant une capacité « <b>Spécial</b> » imprimée est défaussé de cette façon, vous êtes sonné.\n<hr />\n[star] <b>Boost</b> : donnez une carte de boost supplémentaire à l'ennemi qui s'active.",
+  // ------------------------------------------------------------------ sentinel
+  // Pack `sentinel` (T-Wrecks, 12/09/2026). Deux mots-cles MAISON, traduits ici
+  // pour la premiere fois : **Detruisez** (2 degats imblocables puis
+  // retournement de la piece, fiche docs/reference/mots-cles/destroy.md) et
+  // **Expose** (quatrieme carte d'etat du moteur, fiche exposed.md). Les traits
+  // du pack restent en anglais comme partout ailleurs : le joueur a la carte
+  // anglaise sous les yeux.
+  // sentinel — Sentinel (Hero)
+  'st001a': "<i>Protocole ablatif</i> — <b>Interruption</b> : quand vous devriez subir n'importe quelle quantité de dégâts, détruisez plutôt une amélioration [[COMPONENT]]. <i>(Voir l'encart.)</i>",
+  // sentinel — Sentinel (AlterEgo)
+  'st001b': "<b>Action</b> : cherchez Juston Seyfert dans votre deck et votre pile de défausse et ajoutez-le à votre main. <i>(Limite d'une fois par phase.)</i>\n<b>Action</b> : défaussez 1 carte de votre main → retournez chaque amélioration [[COMPONENT]] (face [[DESTROYED]]) sur sa face [[INTACT]].\n<b>Mise en place</b> : mettez chaque amélioration [[COMPONENT]] en jeu (face [[INTACT]] visible).",
+  // sentinel — Head (Intact) (Upgrade permanente, mise en place)
+  'st002a': "Permanente.\n<b>Action de héros</b> : inclinez Head (Intact) → exposez 2 ennemis.",
+  // sentinel — Head (Destroyed) (Upgrade permanente)
+  'st002b': "Permanente.\nVos événements [[THWART]] coûtent 1 ressource de plus.",
+  // sentinel — Arms (Intact) (Upgrade permanente, mise en place)
+  'st003a': "Permanente.\n<b>Action de héros</b> <i>(attaque)</i> : inclinez Arms (Intact) → infligez 1 dégât à un ennemi.",
+  // sentinel — Arms (Destroyed) (Upgrade permanente)
+  'st003b': "Permanente.\nVos événements [[ATTACK]] coûtent 1 ressource de plus.",
+  // sentinel — Torso (Intact) (Upgrade permanente, mise en place)
+  'st004a': "Permanente.\n<b>Action de héros</b> : inclinez Torso (Intact) → soignez 1 dégât de Sentinel.",
+  // sentinel — Torso (Destroyed) (Upgrade permanente)
+  'st004b': "Permanente.\nVos améliorations coûtent 1 ressource de plus.",
+  // sentinel — Legs (Intact) (Upgrade permanente, mise en place)
+  'st005a': "Permanente.\n<b>Action de héros</b> : inclinez Legs (Intact) → réduisez de 1 le coût de la prochaine carte que vous jouez.",
+  // sentinel — Legs (Destroyed) (Upgrade permanente)
+  'st005b': "Permanente.\nVous avez -1 à votre taille de main.",
+  // sentinel — Exterminate (Event, x2)
+  'st006': "[star] En coût additionnel pour jouer cet événement, inclinez ou détruisez Arms (Intact) ET une autre amélioration [[COMPONENT]] (face [[INTACT]] visible).\n<b>Action de héros</b> <i>(attaque)</i> : infligez 7 dégâts à un ennemi. Cette attaque gagne À distance, Perçant et Déferlement. Exposez 2 ennemis.",
+  // sentinel — Hardwire Access (Event, x3)
+  'st007': "[star] En coût additionnel pour jouer cet événement, inclinez Head (Intact) ou détruisez-la.\n<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces réparties entre les manigances en jeu, plus X, X étant le nombre de cartes d'état Exposé en jeu.",
+  // sentinel — Rocket Punch (Event, x3)
+  'st008': "[star] En coût additionnel pour jouer cet événement, inclinez Arms (Intact) ou détruisez-la.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. Cette attaque gagne Déferlement.",
+  // sentinel — Threat Suppression (Event, x2)
+  'st009': "[star] En coût additionnel pour jouer cet événement, inclinez Legs (Intact) ou détruisez-la.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un maximum de 3 ennemis différents et sonnez un maximum de 2 de ces ennemis.",
+  // sentinel — Juston Seyfert (Support unique)
+  'st010': "<b>Action</b> : attachez-le à une manigance annexe.\n<b>Action de héros</b> : inclinez Juston Seyfert → retirez 1 menace de la manigance annexe attachée.\n<b>Réponse forcée</b> : après que la manigance annexe attachée est déjouée, mettez Juston Seyfert en jeu sous votre contrôle. Redressez Sentinel ou jusqu'à 2 améliorations [[COMPONENT]].",
+  // sentinel — Propulsion Array (Upgrade)
+  'st011': "[star] En coût additionnel pour jouer cette amélioration, inclinez Legs (Intact).\n<b>Action de héros</b> : remélangez cette carte dans votre deck. Choisissez :\n• inclinez 1 amélioration [[COMPONENT]] (face [[INTACT]] visible) → redressez Sentinel ;\n• inclinez Sentinel → redressez jusqu'à 2 améliorations [[COMPONENT]] (face [[INTACT]] visible).",
+  // sentinel — Reinforced Plating (Upgrade, x2)
+  'st012': "[star] En coût additionnel pour jouer cette amélioration, inclinez Torso (Intact).\n<b>Action de héros</b> : défaussez Reinforced Plating → retournez 1 amélioration [[COMPONENT]] (face [[DESTROYED]] visible) sur sa face [[INTACT]]. Gagnez une carte d'état Robuste.",
+  // sentinel — Targeting Protocol (Upgrade)
+  'st013': "<b>Action de héros</b> : inclinez cette carte → exposez 2 ennemis, ou retirez d'une manigance autant de menaces qu'il y a de cartes d'état Exposé en jeu <i>(maximum 3)</i>.",
+  // sentinel — Prime Directive (Obligation)
+  'st014': "<b><i>Donnez-la au joueur Sentinel.</i></b>\n<b>Action forcée</b> : choisissez :\n• infligez 3 dégâts à un AUTRE personnage allié ([[MUTANT]] si possible) → défaussez cette carte ;\n• placez 3 menaces sur la manigance principale → défaussez cette carte.",
+  // sentinel — Mark VII-A (Minion némésis)
+  'st015': "[star] <b>Réponse forcée</b> : après que Mark VII-A vous a porté une attaque non défendue, retournez une amélioration [[COMPONENT]] (face [[INTACT]] visible) sur sa face [[DESTROYED]]. Si vous ne pouvez pas, défaussez 1 amélioration que vous contrôlez.\n<i>(Sbire némésis de Sentinel.)</i>",
+  // sentinel — Rogue Asset (SideScheme némésis)
+  'st016': "Les améliorations [[COMPONENT]] (face [[INTACT]] visible) et les améliorations [[TECH]] gagnent le trait [[HACKED]].",
+  // sentinel — Disabled (Treachery némésis)
+  'st017': "<b>Une fois révélée</b> : inclinez chaque amélioration [[HACKED]] que vous contrôlez. Si vous ne pouvez pas, cherchez la manigance annexe Rogue Asset dans le deck rencontre et sa pile de défausse et mettez-la en jeu. Si Rogue Asset est déjà en jeu, votre identité est sonnée.\n<hr />\n[star] <b>Boost</b> : votre identité est sonnée.",
+  // sentinel — Viral Assault (Treachery némésis)
+  'st018': "<b>Une fois révélée</b> : vous pouvez défausser 1 amélioration [[HACKED]] que vous contrôlez. Sinon, subissez 1 dégât par amélioration [[HACKED]] que vous contrôlez. Si vous ne contrôlez aucune amélioration [[HACKED]], cherchez la manigance annexe Rogue Asset dans le deck rencontre et sa pile de défausse et mettez-la en jeu. Si Rogue Asset est déjà en jeu, cette carte gagne Déferlement.",
+  // sentinel — Hostile Override (Treachery némésis)
+  'st019': "<b>Une fois révélée</b> : si vous contrôlez au moins une amélioration [[HACKED]], infligez à un personnage allié des dégâts égaux à votre valeur d'ATQ, ou placez sur la manigance principale des menaces égales à votre valeur de CTR. Si vous ne contrôlez aucune amélioration [[HACKED]], vous êtes désorienté.\n<hr />\n[star] <b>Boost</b> : vous êtes désorienté.",
+  // sentinel — Size Advantage (Event, Agressivité, hors set du héros)
+  'st020': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi <i>(6 dégâts à la place si vous avez le trait [[GIANT]] ou s'il vous reste plus de points de vie qu'à cet ennemi)</i>.",
+  // sentinel — Reboot (Event, Basic, hors set du héros)
+  'st021': "<b>Action</b> : redressez un personnage allié [[ANDROID]] et soignez-lui 1 dégât.",
 }

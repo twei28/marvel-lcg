@@ -832,10 +832,14 @@ class Ability:
             if target == Friend:                target = "Friend"
             if target == Scheme2:               target = "Scheme2"
 
+            # CORRECTIF (13/09/2026, pack `sentinel`) : « Exposed » ajoute aux
+            # trois etats connus, sans quoi `SetTarget(name="Exposed")` ne
+            # viserait pas une carte d'etat.
+            ETATS = ["Confused", "Stunned", "Tough", "Exposed"]
             if names:
-                if "Confused" in names or "Stunned" in names or "Tough" in names:
+                if any(n in names for n in ETATS):
                     target = "StatusCard"
-            if name in ["Confused", "Stunned", "Tough"]:
+            if name in ETATS:
                 target = "StatusCard"
 
         select_target: SELECT.HELPER_TYPE|None = None

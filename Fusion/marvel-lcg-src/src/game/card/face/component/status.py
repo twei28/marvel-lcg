@@ -3,6 +3,9 @@ from . import *
 CONFUSED_FINDER = CardFinder(name="Confused")
 STUNNED_FINDER = CardFinder(name="Stunned")
 TOUGH_FINDER = CardFinder(name="Tough")
+# CORRECTIF : quatrieme carte d'etat, ajoutee pour le pack `sentinel`
+# (fiche docs/reference/mots-cles/exposed.md).
+EXPOSED_FINDER = CardFinder(name="Exposed")
 
 class Status(Component):
     @override
@@ -22,6 +25,10 @@ class Status(Component):
     @property
     def tough(self):
         return self.deck.FindCardSize(TOUGH_FINDER)
+
+    @property
+    def exposed(self):
+        return self.deck.FindCardSize(EXPOSED_FINDER)
 
     @override
     def OnParentReset(self):

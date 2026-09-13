@@ -14,7 +14,10 @@ class StatusCard(FinalType):
         self.symbol_name: str = {
             "Tough": Symbol.tough,
             "Stunned": Symbol.stunned,
-            "Confused": Symbol.confused
+            "Confused": Symbol.confused,
+            # CORRECTIF : « Exposed », quatrieme carte d'etat (pack sentinel,
+            # 12/09/2026). Sa regle vit sur la carte, pas ici.
+            "Exposed": Symbol.exposed,
         }[self.name]
 
     @override

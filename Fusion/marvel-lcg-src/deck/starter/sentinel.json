@@ -1,0 +1,48 @@
+{
+    "version": "0.5.8",
+    "name": "Sentinel",
+    "metadata": {
+        "url": "",
+        "auteur": "T-Wrecks",
+        "deck_note": "⚠ `player_deck` VIDE. Consigne utilisateur du 06/09/2026, retroactive depuis le 12/09/2026 : on n'invente pas de deck d'aspect pour un heros homebrew, et l'auteur n'en fournit aucun (le zip n'a ni dossier Extras ni liste imprimee). Ce fichier ne contient donc que de l'IMPRIME : l'identite, les 15 cartes signature, les 4 composants recto-verso, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement.",
+        "composants_note": "LA MECANIQUE VEDETTE. Les quatre COMPONENT (st002 Head, st003 Arms, st004 Torso, st005 Legs) sont des ameliorations PERMANENTES RECTO-VERSO posees au setup par l'alter-ego (`desc.Setup` sur la face INTACT, modele nt003a Battle Board). Face Intacte : une action de heros a inclinaison. Face Detruite : un malus permanent. Le mot-cle maison DESTROY (fiche docs/reference/mots-cles/destroy.md) les retourne au prix de 2 degats imblocables, et l'alter-ego les redresse tous d'un coup en defaussant une carte.",
+        "exposed_note": "Le pack ajoute une QUATRIEME CARTE D'ETAT au moteur, `exposed` (fiche docs/reference/mots-cles/exposed.md) : cinq cartes la posent ou la comptent. Elle vit dans le pack `status` de data/cards.json, a cote de tough, stunned et confused.",
+        "hors_set_note": "st020 Size Advantage (Agressivite) et st021 Reboot (Basic) ne sont PAS des cartes signature : l'auteur les livre en Extras, elles entrent au vivier general et deviennent jouables par tous les heros, comme les cartes d'aspect maison de texas_twister."
+    },
+    "hero": [
+        "st001a,st001b"
+    ],
+    "hero_deck": [
+        "st002a,st002b",
+        "st003a,st003b",
+        "st004a,st004b",
+        "st005a,st005b",
+        "st006",
+        "st006",
+        "st007",
+        "st007",
+        "st007",
+        "st008",
+        "st008",
+        "st008",
+        "st009",
+        "st009",
+        "st010",
+        "st011",
+        "st012",
+        "st012",
+        "st013"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "st014"
+    ],
+    "nemesis_set": [
+        "st015",
+        "st016",
+        "st017",
+        "st018",
+        "st019"
+    ],
+    "player_deck": []
+}

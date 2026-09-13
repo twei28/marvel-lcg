@@ -141,9 +141,13 @@ export type CardEffectDelta =
       kind: 'damage' | 'heal' | 'threat'
     }
   | {
-      /** Un statut pose (+1) ou retire (-1) : le badge porte son NOM, pas un chiffre. */
+      /**
+       * Un statut pose (+1) ou retire (-1) : le badge porte son NOM, pas un
+       * chiffre. `exposed` est le quatrieme etat, ajoute par le pack
+       * `sentinel` (voir board/effets-statuts.ts).
+       */
       kind: 'status'
-      statut: 'stunned' | 'confused' | 'tough'
+      statut: 'stunned' | 'confused' | 'tough' | 'exposed'
       value: 1 | -1
     }
 

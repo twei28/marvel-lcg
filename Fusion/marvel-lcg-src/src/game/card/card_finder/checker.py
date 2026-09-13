@@ -223,7 +223,9 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
         if not Unit2.IsType(face):
             return False
         if self.has_status == "Any":
-            check_status = ["Confused", "Stunned", "Tough"]
+            # CORRECTIF (13/09/2026, pack `sentinel`) : « Exposed » est le
+            # quatrieme etat. `has_status="Any"` l'ignorait.
+            check_status = ["Confused", "Stunned", "Tough", "Exposed"]
         elif not isinstance(self.has_status, list):
             check_status = [self.has_status]
         else:
@@ -239,13 +241,17 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
             if staus == "Stunned" and face.IsStunned():
                 is_has_status = True
                 break
+            if staus == "Exposed" and face.exposed > 0:
+                is_has_status = True
+                break
         if not is_has_status:
             return False
     if self.canbe_status:
         if not Unit2.IsType(face):
             return False
         if self.canbe_status == "Any":
-            check_status = ["Confused", "Stunned", "Tough"]
+            # CORRECTIF (13/09/2026) : idem pour « peut recevoir un etat ».
+            check_status = ["Confused", "Stunned", "Tough", "Exposed"]
         elif not isinstance(self.canbe_status, list):
             check_status = [self.canbe_status]
         else:
@@ -259,6 +265,11 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
                 is_canbe_status = True
                 break
             if staus == "Stunned" and face.CanbeStunned():
+                is_canbe_status = True
+                break
+            # ⚠ Exposé N'A AUCUN PLAFOND : il s'empile, contrairement a
+            # Coriace (`tough_max`). Tout personnage en jeu peut en recevoir.
+            if staus == "Exposed":
                 is_canbe_status = True
                 break
         if not is_canbe_status:

@@ -715,6 +715,14 @@ class SenderDamage:
             text = TransText("The value of this damage has been updated {diff_value:+} ({by_effect})", diff_value=diff_value, by_effect=by_effect.this)
             self.Present(text, "", by_effect.this)
 
+    class CannotPreventUnpreventableDamage_Text(TextMessage):
+        """Trace du refus : sans elle, une carte de prevention semblerait s'etre
+        declenchee pour rien. Voir `DamageProperty.unpreventable`."""
+        def __init__(self, unit: 'CardFace', by_effect: 'Effect') -> None:
+            super().__init__(world=by_effect.world)
+            text = TransText("This damage to {unit} is unpreventable ({by_effect})", unit=unit, by_effect=by_effect.this)
+            self.Present(text, "", unit, by_effect.this)
+
     class WhenUnitWouldTakeDamage(TriggerUnitMessage, AttackerNoneMessage, DamageMessage, HasEndEventMessage, CanBeInstead):
         def __init__(self, unit: 'Unit2', source: 'CardFace', property: DamageProperty, effect: 'Effect', would_deal_damage_message: 'Message.WhenFaceWouldDealDamage') -> None:
             from game.message import Message
@@ -805,8 +813,31 @@ class SenderDamage:
             self.be_prevent = True
             return prevent_damage
 
+        def IsUnpreventable(self) -> bool:
+            """« Unpreventable damage » : rien ne l'arrete (voir DamageProperty).
+
+            Trois portes a fermer, pas une : la prevention chiffree
+            (`PreventDamage`), le remplacement pur et simple (`SetBeInstead`,
+            par lequel passent Coriace et toutes les cartes « a la place »), et
+            la carte Coriace elle-meme — celle-la etait deja fermee par
+            `ignore_tough`, qu'on force ici pour n'avoir qu'un seul drapeau a
+            poser cote carte.
+            """
+            return self.property.unpreventable
+
+        @override
+        def SetBeInstead(self, by_effect: 'Effect'):
+            if self.IsUnpreventable():
+                from game.message import Message
+                Message.CannotPreventUnpreventableDamage_Text(self.trigger, by_effect)
+                return
+            super().SetBeInstead(by_effect)
+
         def PreventDamage(self, value: int|Literal["All"], by_effect: 'Effect') -> int:
             from game.message import Message
+            if self.IsUnpreventable():
+                Message.CannotPreventUnpreventableDamage_Text(self.trigger, by_effect)
+                return 0
             if value == "All":
                 prevent_damage = self.PreventAllDamageInternal()
             else:

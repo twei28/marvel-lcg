@@ -709,7 +709,10 @@ class OnEvent:
     class Status(TemplateTrigger):
         MESSAGE_TYPE: TypeAlias = Message.AfterStatusCardPlaceOn|Message.AfterStatusDiscardFrom
 
-        def __init__(self, which_card: CardType, which_status: Literal['Tough','Stunned','Confused']) -> None:
+        # CORRECTIF (13/09/2026, pack `sentinel`) : « Exposed » ajoute a
+        # l'annotation. Purement declaratif, mais un declencheur ecrit contre
+        # le quatrieme etat serait signale a tort par le controle de types.
+        def __init__(self, which_card: CardType, which_status: Literal['Tough','Stunned','Confused','Exposed']) -> None:
             self.which_card: Final = which_card
             self.which_status: Final = which_status
 

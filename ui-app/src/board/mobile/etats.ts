@@ -1,4 +1,4 @@
-// Les etats poses sur un personnage : coriace, sonne, desoriente.
+// Les etats poses sur un personnage : coriace, sonne, desoriente, expose.
 //
 // Le moteur les attache comme des CARTES (kind 'status'). Sur une carte de
 // 100 px, une carte glissee derriere ne se lit pas : ces etats deviennent des
@@ -14,6 +14,10 @@ export const ETATS: Record<string, Etat> = {
   tough: { lettre: 'T', classe: 'est-coriace', nom: 'Coriace' },
   stunned: { lettre: 'S', classe: 'est-sonne', nom: 'Sonné' },
   confused: { lettre: 'C', classe: 'est-desoriente', nom: 'Désorienté' },
+  // QUATRIEME carte d'etat, ajoutee par le pack `sentinel` (T-Wrecks). Sans
+  // cette ligne le repli generique plus bas afficherait deja un « E », mais
+  // avec le nom ANGLAIS et la classe fourre-tout.
+  exposed: { lettre: 'E', classe: 'est-expose', nom: 'Exposé' },
 }
 
 export function etatDe(carte: ScanCardProps): Etat | undefined {

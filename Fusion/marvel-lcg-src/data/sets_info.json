@@ -1518,5 +1518,14 @@
   "encounters": [],
   "max_id": "hc026"
  },
- "checksum": "2301ccda2247cfc3ceef6f226e48182e43a8150f3ef2653fb6910605ca3f72a5"
+ "173. Custom (Sentinel)": {
+  "name": "sentinel",
+  "scenarios": [],
+  "heroes": [
+   "sentinel"
+  ],
+  "encounters": [],
+  "max_id": "st021"
+ },
+ "checksum": "8909f9fb8a760e71f20a22f14afa3e04ace8440457345bfc629cfecfb36971fc"
 }

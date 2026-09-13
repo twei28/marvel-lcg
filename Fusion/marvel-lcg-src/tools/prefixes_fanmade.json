@@ -174,6 +174,13 @@
    "depuis": "2026-08-29",
    "note": "RESERVE, pas encore cree. Difficulte 5/5. CAMPAGNE COMPLETE (pas un simple heros/vilain) : 5 scenarios + 2 interludes + epilogue, 305 cartes, 4 sets modulaires additionnels, 2 nouveaux heros jouables (Binary, Quasar) a stater entierement. Rulebook 24 pages. A traiter en toute fin de plan vu l'ampleur. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
   },
+  "hc": {
+   "pack": "hellcat",
+   "libelle": "172. Custom (Hellcat)",
+   "cartes": 27,
+   "depuis": "2026-09-11",
+   "note": "Auteur jakxin (Drive partage). hc001a/b identite, hc002-hc011 set heros (10 cartes distinctes, 15 exemplaires), hc012 She-Hulk alliee signature ALTERNATIVE (deck hellcat_she_hulk), hc013 obligation, hc014-hc017 set nemesis (4 distinctes, 5 exemplaires), hc018-hc022 cartes custom du deck imprime (Firestar, Monica, Green Hell, Hell-Iron, Divas), hc023-hc026 reskins de 01052/01088/01089/01090 (decision utilisateur : doublons avec l'art de jakxin). Black Cat listee mais absente du dossier, laissee de cote. Mecanique neuve : Outer Demons donne Villainous a l'HEROINE (carte boost tiree a chaque activation de base). Voir .planning/todos/2026-09-11-hellcat-releve-des-cartes.md."
+  },
   "hd": {
    "pack": "howard_the_duck",
    "libelle": "135. Custom (Howard the Duck)",
@@ -392,6 +399,13 @@
    "depuis": "2026-08-29",
    "note": "Pack fan-made CptScorp (Marvel Champions Custom Project), zip 'Scarlet Spider' (Kaine Parker). 2 faces heros + 15 signature + 1 obligation + 5 nemesis, aucune decklist d'aspect fournie."
   },
+  "st": {
+   "pack": "sentinel",
+   "libelle": "173. Custom (Sentinel)",
+   "cartes": 26,
+   "depuis": "2026-09-12",
+   "note": "Cree le 12/09/2026. Auteur T-Wrecks, 19 cartes numerotees. st001a/b identite (ANDROID, GIANT, 14 PV), st002a/b Head, st003a/b Arms, st004a/b Torso, st005a/b Legs : QUATRE AMELIORATIONS RECTO-VERSO posees au setup (`desc.Setup` sur la face INTACT, modele nt003a), face INTACT une action de heros a inclinaison, face DESTROYED un malus permanent. st006-st013 signature (15 exemplaires), st014 obligation Prime Directive, st015-st019 set nemesis Mark VII-A, st020 et st021 livres en Extras donc au vivier general. DEUX MOTS-CLES MAISON : DESTROY (docs/reference/mots-cles/destroy.md, 2 degats imblocables puis retournement, neuf cartes l'emploient) et EXPOSED (docs/reference/mots-cles/exposed.md), QUATRIEME CARTE D'ETAT du moteur, ajoutee au pack `status` a cote de tough/stunned/confused. TROIS CORRECTIFS MOTEUR ASSUMES : `Support` herite de `CanAttach` et son `bind_face` repasse la main a CanAttach dans une zone d'ameliorations (st010 Juston Seyfert est un SOUTIEN qui s'attache a une manigance annexe) ; `HasStatus`, `Status.exposed` et `Puzzle.Expose` connaissent le quatrieme etat. player_deck VIDE (consigne du 06/09/2026 : pas de deck d'aspect invente, l'auteur n'en fournit aucun). HOMONYMES, verifies au catalogue le 12/09/2026 : (1) « Sentinel » est deja le nom des trois vilains 32084-32086 du set Project Wideawake — aucun script du pack ne cherche par ce nom, tout passe par `YourIdentity` ; (2) st020 Size Advantage est un RESKIN de 62034, meme texte au mot pres mais AGRESSIVITE au lieu de Justice et SANS le trait ATTACK imprime (il echappe donc au malus d'Arms detruite, et c'est l'image qui tranche) ; (3) st021 Reboot est un reskin exact de 26024 (Basic, meme cout, meme texte). Precedent de reskins assume : hc023-hc026 du pack hellcat."
+  },
   "su": {
    "pack": "superior_spider_man",
    "libelle": "167. Custom (Superior Spider-Man)",
@@ -487,13 +501,6 @@
    "cartes": 17,
    "depuis": "2026-09-11",
    "note": "Auteur Mozilla (Drive « Zeus (Released) »). ze001a/b identite, ze002-ze011 set heros (10 cartes distinctes, 15 exemplaires), ze012 obligation, ze013-ze016 set nemesis Nyx (4 cartes distinctes, 5 exemplaires). ⚠ CE PACK INVENTE UNE RESSOURCE : l'ECLAIR, cinquieme couleur du moteur `L` ajoutee le 11/09/2026 (fiche docs/reference/mots-cles/eclair.md), imprimee sur les 4 Thunder Strike et fabriquee par Mount Olympus. Skyfather's Tempest exige une ENERGIE officielle ET un ECLAIR sur le paiement d'un meme evenement ; le set nemesis vise l'energie, pas l'eclair. Sept cartes portent une capacite « Special » resolue depuis la main ou au paiement. Homonymes : 40004 Precognition (next_evol), 50131b Thunderbolt Backup, 57021 The Thunderbolts, 59010 Son of Zeus. Aucune decklist d'auteur : player_deck vide. Voir .planning/todos/2026-09-11-zeus-releve-des-cartes.md."
-  },
-  "hc": {
-   "pack": "hellcat",
-   "libelle": "172. Custom (Hellcat)",
-   "cartes": 27,
-   "depuis": "2026-09-11",
-   "note": "Auteur jakxin (Drive partage). hc001a/b identite, hc002-hc011 set heros (10 cartes distinctes, 15 exemplaires), hc012 She-Hulk alliee signature ALTERNATIVE (deck hellcat_she_hulk), hc013 obligation, hc014-hc017 set nemesis (4 distinctes, 5 exemplaires), hc018-hc022 cartes custom du deck imprime (Firestar, Monica, Green Hell, Hell-Iron, Divas), hc023-hc026 reskins de 01052/01088/01089/01090 (decision utilisateur : doublons avec l'art de jakxin). Black Cat listee mais absente du dossier, laissee de cote. Mecanique neuve : Outer Demons donne Villainous a l'HEROINE (carte boost tiree a chaque activation de base). Voir .planning/todos/2026-09-11-hellcat-releve-des-cartes.md."
   }
  }
 }

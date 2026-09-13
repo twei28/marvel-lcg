@@ -34,6 +34,10 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
     @property
     def tough(self) -> int:
         return self.components.status.tough
+    @property
+    def exposed(self) -> int:
+        # CORRECTIF (12/09/2026, pack `sentinel`) : quatrieme carte d'etat.
+        return self.components.status.exposed
 
     @property
     def tough_max(self) -> int:
@@ -176,13 +180,20 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
 
     def HasStatus(self, name: "CardFace.STATUS|Literal['Any']") -> bool:
         if name == "Any":
-            return self.confused > 0 or self.stunned > 0 or self.tough > 0
+            # CORRECTIF (12/09/2026, pack `sentinel`) : « Exposed » compte
+            # parmi les statuts. Sans lui, `has_status="Any"` aurait ignore la
+            # quatrieme carte d'etat, et l'assertion plus bas aurait fait
+            # PLANTER toute carte qui demande `HasStatus("Exposed")`.
+            return self.confused > 0 or self.stunned > 0 or self.tough > 0 \
+                or self.exposed > 0
         if name == "Confused":
             return self.confused > 0
         if name == "Stunned":
             return self.stunned > 0
         if name == "Tough":
             return self.tough > 0
+        if name == "Exposed":
+            return self.exposed > 0
         assert False, f"{self=} {name=}"
 
     def GetStatusSize(self) -> int:

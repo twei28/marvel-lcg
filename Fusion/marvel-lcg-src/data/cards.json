@@ -221,6 +221,15 @@
    "desc": {},
    "traits": [],
    "set_name": ""
+  },
+  {
+   "card_id": "exposed",
+   "type": "Status",
+   "name": "Exposed",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": ""
   }
  ],
  "core": [
@@ -94047,5 +94056,438 @@
    "text": "Max 1 per deck."
   }
  ],
- "checksum": "feb538f8975a38e5382e3261984e780e46f36c1ea6bafaa017aa11f0724e23ea"
+ "sentinel": [
+  {
+   "card_id": "st001a",
+   "type": "Hero",
+   "name": "* Sentinel",
+   "subtitle": "",
+   "desc": {
+    "HP": "14",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "ANDROID",
+    "GIANT"
+   ],
+   "set_name": "Sentinel",
+   "text": "<i>Ablative Protocol</i> — <b>Interrupt</b>: When you would take any amount of damage, destroy a [[COMPONENT]] upgrade instead.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st001b",
+   "type": "AlterEgo",
+   "name": "* Sentinel",
+   "subtitle": "",
+   "desc": {
+    "HP": "14",
+    "REC": "4",
+    "HS": "6"
+   },
+   "traits": [
+    "ANDROID",
+    "GIANT"
+   ],
+   "set_name": "Sentinel",
+   "text": "<b>Action</b>: Search your deck and discard pile for Juston Seyfert and add him to your hand. <i>(Limit once per phase.)</i>\n<b>Action</b>: Discard 1 card from your hand → flip each [[COMPONENT]] ([[DESTROYED]] side) upgrade to its [[INTACT]] side.\n<b>Setup</b>: Put each [[COMPONENT]] upgrade ([[INTACT]] side up) into play.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st002a",
+   "type": "Upgrade",
+   "name": "* Head (Intact)",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Setup": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "COMPONENT",
+    "INTACT",
+    "TECH"
+   ],
+   "set_name": "Sentinel",
+   "text": "Permanent.\n<b>Hero Action</b>: Exhaust Head (Intact) → expose 2 enemies.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st002b",
+   "type": "Upgrade",
+   "name": "* Head (Destroyed)",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "COMPONENT",
+    "DESTROYED",
+    "TECH"
+   ],
+   "set_name": "Sentinel",
+   "text": "Permanent.\nYour [[THWART]] events cost 1 additional resource.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st003a",
+   "type": "Upgrade",
+   "name": "* Arms (Intact)",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Setup": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "COMPONENT",
+    "INTACT",
+    "TECH"
+   ],
+   "set_name": "Sentinel",
+   "text": "Permanent.\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Arms (Intact) → deal 1 damage to an enemy.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st003b",
+   "type": "Upgrade",
+   "name": "* Arms (Destroyed)",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "COMPONENT",
+    "DESTROYED",
+    "TECH"
+   ],
+   "set_name": "Sentinel",
+   "text": "Permanent.\nYour [[ATTACK]] events cost 1 additional resource.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st004a",
+   "type": "Upgrade",
+   "name": "* Torso (Intact)",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Setup": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "COMPONENT",
+    "INTACT",
+    "TECH"
+   ],
+   "set_name": "Sentinel",
+   "text": "Permanent.\n<b>Hero Action</b>: Exhaust Torso (Intact) → heal 1 damage from Sentinel.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st004b",
+   "type": "Upgrade",
+   "name": "* Torso (Destroyed)",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "COMPONENT",
+    "DESTROYED",
+    "TECH"
+   ],
+   "set_name": "Sentinel",
+   "text": "Permanent.\nYour upgrades cost 1 additional resource.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st005a",
+   "type": "Upgrade",
+   "name": "* Legs (Intact)",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Setup": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "COMPONENT",
+    "INTACT",
+    "TECH"
+   ],
+   "set_name": "Sentinel",
+   "text": "Permanent.\n<b>Hero Action</b>: Exhaust Legs (Intact) → reduce the cost of the next card you play by 1.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st005b",
+   "type": "Upgrade",
+   "name": "* Legs (Destroyed)",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "COMPONENT",
+    "DESTROYED",
+    "TECH"
+   ],
+   "set_name": "Sentinel",
+   "text": "Permanent.\nYou get -1 hand size.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st006",
+   "type": "Event",
+   "name": "Exterminate",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Sentinel",
+   "text": "[star] As an additional cost to play this event, exhaust or destroy Arms (Intact) and any one other [[COMPONENT]] upgrade ([[INTACT]] side up).\n<b>Hero Action</b> <i>(attack)</i>: Deal 7 damage to an enemy. This attack gains ranged, piercing, and overkill. Expose 2 enemies.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st007",
+   "type": "Event",
+   "name": "Hardwire Access",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Sentinel",
+   "text": "[star] As an additional cost to play this event, exhaust Head (Intact) or destroy it.\n<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from among schemes in play, plus X, where X is the number of Exposed status cards in play.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st008",
+   "type": "Event",
+   "name": "Rocket Punch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Sentinel",
+   "text": "[star] As an additional cost to play this event, exhaust Arms (Intact) or destroy it.\n<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. This attack gains overkill.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st009",
+   "type": "Event",
+   "name": "Threat Suppression",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Sentinel",
+   "text": "[star] As an additional cost to play this event, exhaust Legs (Intact) or destroy it.\n<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage to up to 3 different enemies and stun up to 2 of those enemies.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st010",
+   "type": "Support",
+   "name": "* Juston Seyfert",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PERSONA"
+   ],
+   "set_name": "Sentinel",
+   "text": "<b>Action</b>: Attach to a side scheme.\n<b>Hero Action</b>: Exhaust Juston Seyfert → remove 1 threat from attached side scheme.\n<b>Forced Response</b>: After attached side scheme is defeated, put Juston Seyfert in play under your control. Ready Sentinel or up to 2 [[COMPONENT]] upgrades.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st011",
+   "type": "Upgrade",
+   "name": "Propulsion Array",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Sentinel",
+   "text": "[star] As an additional cost to play this upgrade, exhaust Legs (Intact).\n<b>Hero Action</b>: Shuffle this card into your deck. Choose one:\n• Exhaust 1 [[COMPONENT]] ([[INTACT]] side up) upgrade → ready Sentinel.\n• Exhaust Sentinel → ready up to 2 [[COMPONENT]] ([[INTACT]] side up) upgrades.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st012",
+   "type": "Upgrade",
+   "name": "Reinforced Plating",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Sentinel",
+   "text": "[star] As an additional cost to play this upgrade, exhaust Torso (Intact).\n<b>Hero Action</b>: Discard Reinforced Plating → flip 1 [[COMPONENT]] ([[DESTROYED]] side up) upgrade to its [[INTACT]] side. Gain a tough status card.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st013",
+   "type": "Upgrade",
+   "name": "Targeting Protocol",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH"
+   ],
+   "set_name": "Sentinel",
+   "text": "<b>Hero Action</b>: Exhaust this card → expose 2 enemies, or remove threat from a scheme equal to the number of exposed status cards in play <i>(to a maximum of 3)</i>.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st014",
+   "type": "Obligation",
+   "name": "Prime Directive",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3",
+    "GiveTo": "Sentinel"
+   },
+   "traits": [],
+   "set_name": "Sentinel",
+   "text": "<b><i>Give to the Sentinel player.</i></b>\n<b>Forced Action</b>: Choose one:\n• Deal 3 damage to another friendly character ([[MUTANT]] if able) → discard this card.\n• Place 3 threat on the main scheme → discard this card.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st015",
+   "type": "Minion",
+   "name": "* Mark VII-A",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "2",
+    "ATK": "2*",
+    "Boost": "3",
+    "Nemesis": "Sentinel"
+   },
+   "traits": [
+    "ELITE",
+    "SENTINEL"
+   ],
+   "set_name": "Sentinel Nemesis",
+   "text": "[star] <b>Forced Response</b>: After Mark VII-A makes an undefended attack against you, flip a [[COMPONENT]] upgrade ([[INTACT]] side up) to its [[DESTROYED]] side. If you cannot, discard 1 upgrade you control.\n<i>(Sentinel's nemesis minion.)</i>",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st016",
+   "type": "SideScheme",
+   "name": "Rogue Asset",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Sentinel Nemesis",
+   "text": "[[COMPONENT]] upgrades ([[INTACT]] side up), and [[TECH]] upgrades gain the [[HACKED]] trait.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st017",
+   "type": "Treachery",
+   "name": "Disabled",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Sentinel Nemesis",
+   "text": "<b>When Revealed</b>: Exhaust each [[HACKED]] upgrade under your control. If you cannot, search the encounter deck and discard pile for the Rogue Asset side scheme and put it into play. If Rogue Asset is already in play, stun your identity.\n[star] <b>Boost</b>: Stun your identity.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st018",
+   "type": "Treachery",
+   "name": "Viral Assault",
+   "subtitle": "",
+   "desc": {
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Sentinel Nemesis",
+   "text": "<b>When Revealed</b>: You may discard 1 [[HACKED]] upgrade you control. If you do not, take 1 damage for each [[HACKED]] upgrade you control. If you control no [[HACKED]] upgrades, search the encounter deck and discard pile for the Rogue Asset side scheme and put it into play. If Rogue Asset is already in play, this card gains surge.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st019",
+   "type": "Treachery",
+   "name": "Hostile Override",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Sentinel Nemesis",
+   "text": "<b>When Revealed</b>: If you control at least one [[HACKED]] upgrade, deal damage to a friendly character equal to your ATK value, or place threat on the main scheme equal to your THW value. If you control no [[HACKED]] upgrades, you are confused.\n[star] <b>Boost</b>: You are confused.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st020",
+   "type": "Event",
+   "name": "Size Advantage",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Aggression"
+   },
+   "traits": [],
+   "set_name": "Sentinel",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy <i>(6 damage instead if you have the [[GIANT]] trait or more remaining hit points than that enemy)</i>.",
+   "custom": "T-WRECKS"
+  },
+  {
+   "card_id": "st021",
+   "type": "Event",
+   "name": "Reboot",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Sentinel",
+   "text": "<b>Action</b>: Ready a friendly [[ANDROID]] character and heal 1 damage from it.",
+   "custom": "T-WRECKS"
+  }
+ ],
+ "checksum": "b2130d4ef1a7ea45bc0302ea6b1deece71e6967735c414f55f963393bee1cc33"
 }
