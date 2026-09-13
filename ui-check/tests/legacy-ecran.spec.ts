@@ -141,6 +141,30 @@ test('les scenarios de la boite du Bouffon Vert sont grises, Rhino est libre', a
   await page.screenshot({ path: 'C:/tmp/legacy-4-scenarios.png' });
 });
 
+// Le deck-building aussi construit avec ce qu'on a (idee de l'utilisateur,
+// 13/09/2026). A l'etape des decks, un deck tout fait qui contient une carte
+// d'une boite fermee est CACHE : les paquets d'aspect du tableur piochent dans
+// toutes les vagues, aucun ne passe au Set de base. Le deck de base reste.
+test('a l etape des decks, seuls les decks jouables avec ce qu on a sont proposes', async ({ page }) => {
+  await entrer(page);
+  await page.locator('#hero-grid .tb-port').filter({ hasText: /^Spider-Man/ }).first().click();
+  const options = page.locator('.deck-modal');
+  if (await options.count()) await options.getByRole('button', { name: /valider/i }).click();
+  await page.getByRole('button', { name: /continuer/i }).click();
+  await page.waitForSelector('#deck-liste .tb-deck', { timeout: 20000 });
+  const etiquettes = await page.$$eval('#deck-liste .tb-deck', (n) => n.map((x) => x.textContent || ''));
+  console.log('DECKS PROPOSES :', JSON.stringify(etiquettes.map((e) => e.slice(0, 40))));
+  expect(etiquettes.some((e) => /Base/.test(e))).toBe(true);
+  expect(etiquettes.some((e) => /Paquet|Conseill/.test(e))).toBe(false);
+  // Et l'editeur de deck s'ouvre en Legacy : il verrouillera les memes cartes.
+  const [popup] = await Promise.all([
+    page.waitForEvent('popup'),
+    page.getByRole('button', { name: /diteur de deck/ }).click(),
+  ]);
+  expect(popup.url()).toContain('legacy=1');
+  await popup.close();
+});
+
 // Le jeu libre n'est jamais verrouille : sortir de Legacy rend tout.
 test('choisir un autre mode leve le verrou', async ({ page }) => {
   await entrer(page);

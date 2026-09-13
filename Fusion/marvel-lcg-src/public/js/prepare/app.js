@@ -13,6 +13,7 @@ import { aDeckDeBase } from "/public/js/prepare/catalog.js";
 // ouvert. Tout le calcul vit dans ces modules ; ici on ne fait que lire.
 import { etat as etatLegacy, activer as activerLegacy, acheter as acheterLegacy } from "/public/js/prepare/legacy-fiche.js";
 import { fabriquerVerrou } from "/public/js/prepare/legacy-verrou.js";
+import { fabriquerDisponibilite } from "/public/js/prepare/legacy-cartes.js";
 // Panneau « Documents ». Importe ICI plutot que pose en balise dans
 // prepare.html : deux URL differentes (avec et sans ?v=) chargeraient le
 // module deux fois et poseraient deux boutons dans l'en-tete.
@@ -1015,7 +1016,13 @@ function bandeauEnLigne() {
 async function rafraichirLegacy() {
     const e = await etatLegacy(t);
     const heroes = await catalog.heroes();
-    state.legacy = { etat: e, verrou: fabriquerVerrou(e, heroes, t) };
+    // Les CARTES aussi (idée de l'utilisateur, 13/09/2026) : on construit
+    // avec ce qu'on a. `dispo.deck(d)` dit si un deck tout fait est jouable.
+    await cards.load();
+    const extensions = await catalog.extensions();
+    const paquetDe = (id) => { const c = cards.get(id); return c ? c.package_name : ""; };
+    state.legacy = { etat: e, verrou: fabriquerVerrou(e, heroes, t),
+                     dispo: fabriquerDisponibilite(e, extensions, paquetDe, t) };
     return state.legacy;
 }
 
@@ -2443,7 +2450,8 @@ function showDeckCards(deck, hero, deckId) {
                     onclick: (e) => {
                         e.stopPropagation();
                         const q = "/deck-builder.html?hero=" + encodeURIComponent(hero.id) +
-                            (deckId ? "&deck=" + encodeURIComponent(deckId) : "");
+                            (deckId ? "&deck=" + encodeURIComponent(deckId) : "") +
+                            (state.legacy ? "&legacy=1" : "");
                         window.open(q, "_blank");
                     },
                 }, t("Modifier")) : null,
@@ -2662,7 +2670,8 @@ function rendreOutilsDeck() {
             el("button", {
                 class: "tampon",
                 title: t("Construire un deck personnalisé pour ce héros"),
-                onclick: () => { window.open("/deck-builder.html?hero=" + encodeURIComponent(p.hero.id), "_blank"); },
+                onclick: () => { window.open("/deck-builder.html?hero=" + encodeURIComponent(p.hero.id)
+                                             + (state.legacy ? "&legacy=1" : ""), "_blank"); },
             }, t("Éditeur de deck")),
             el("button", {
                 class: "tampon tb-ressources",
@@ -2708,7 +2717,13 @@ async function loadDecks(i) {
         id: "saved-" + idx, name: d.name || t("Deck importé"), source: "saved", deck: d,
         aspects: [...new Set((d.player_deck || []).map((id) => cards.aspectOf(id)).filter((a) => a && a !== "basic"))],
     }));
-    const decks = [...catDecks, ...saved];
+    let decks = [...catDecks, ...saved];
+    // Legacy : un deck tout fait qui contient une carte d'une boîte pas encore
+    // ouverte est CACHÉ (décision de l'utilisateur, 13/09/2026). Le filtrer
+    // carte par carte le laisserait sous les 40 obligatoires ; le montrer
+    // fermé n'apporterait rien, on ne le débloque pas d'un clic. Le deck de
+    // base, lui, vient du paquet du héros : il passe toujours.
+    if (state.legacy) decks = decks.filter((d) => state.legacy.dispo.deck(d.deck).ouvert);
     // Le deck deja joue par cette equipe n'est dans aucune de ces listes : ni
     // deck de base, ni deck sauvegarde, ni package d'aspect. Il lui faut sa
     // propre entree, sinon il serait le seul choix qu'un clic de curiosite

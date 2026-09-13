@@ -100,6 +100,8 @@ export const DICO_EN_BASE = {
     "Vague ouverte": "Wave open",
     "jeton(s)": "token(s)",
     "1 jeton": "1 token",
+    "Pas encore débloquée": "Not unlocked yet",
+    "Seules les cartes des boîtes déjà ouvertes s'ajoutent au deck.": "Only cards from boxes you have opened can go in the deck.",
     "Tout est débloqué. Bravo.": "Everything is unlocked. Well done.",
     "Pour ouvrir la suite": "To open the next box",
     "Tes parties déjà jouées comptent-elles ?": "Do your past games count?",

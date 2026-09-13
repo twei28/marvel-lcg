@@ -156,6 +156,12 @@ bandeau jaune en tête de l'étape.
 Les héros fan-made s'achètent : une première victoire avec un héros officiel
 donne un jeton, deux en expert. Un clic sur un fan-made grisé le débloque.
 
+**Le deck-building suit.** Dans l'éditeur de deck ouvert depuis Legacy, les
+cartes des boîtes pas encore ouvertes sont grisées et ne s'ajoutent pas. À
+l'étape des decks, un deck tout fait qui en contient une est caché : les
+paquets d'aspect du tableur piochent dans toutes les vagues, aucun ne passe au
+Set de base, il reste le deck de base et ce qu'on construit soi-même.
+
 La progression de chacun vit dans `legacy-serveur-N.json`, à côté de son
 historique. Le fichier ne contient que ce qui ne se déduit pas de l'historique
 (date de départ, jetons dépensés) : le reste se recalcule à chaque ouverture.

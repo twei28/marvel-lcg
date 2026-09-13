@@ -17,6 +17,11 @@
 import { api, cardImageUrl, fileName } from "/public/js/prepare/api.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog } from "/public/js/prepare/catalog.js";
+// LEGACY (13/09/2026) : en mode Legacy, on construit avec ce qu'on a. Les
+// cartes des boîtes pas encore ouvertes restent visibles, grisées, et ne
+// s'ajoutent pas. Voir legacy-cartes.js.
+import { etat as etatLegacy } from "/public/js/prepare/legacy-fiche.js";
+import { fabriquerDisponibilite } from "/public/js/prepare/legacy-cartes.js";
 import { t, synchroniserLangueServeur } from "/public/js/prepare/langue.js";
 import { nomFr, texteFr } from "/public/js/prepare/cartes-fr.js";
 // Les regles de construction vivent dans regles.js : l'ecran de preparation les
@@ -100,7 +105,15 @@ const etat = {
     choisies: new Map(),
     filtres: { texte: "", aspects: new Set(), types: new Set(), couts: new Set(), ressources: new Set(), motsCles: new Set() },
     brouillonId: null,
+    // Legacy : null hors du mode ; sinon la disponibilite (voir demarrer).
+    legacy: null,
 };
+
+/** En Legacy, une carte fermée ne s'ajoute pas et se grise. Hors Legacy,
+ *  tout est ouvert. */
+function dispoCarte(id) {
+    return etat.legacy ? etat.legacy.carte(id) : { ouvert: true, etiquette: "" };
+}
 
 /* ---------------- Donnees ---------------- */
 
@@ -343,9 +356,13 @@ async function rendreGrille() {
             // `data-carte` porte l'identifiant jusqu'au DOM : l'apercu du
             // panneau de droite ecoute la grille entiere plutot que de poser
             // un gestionnaire sur chacune des 400 vignettes.
-            return el("div", { class: `db-carte${n ? " est-choisie" : ""}`, "data-carte": id },
+            const dispo = dispoCarte(id);
+            return el("div", { class: `db-carte${n ? " est-choisie" : ""}${dispo.ouvert ? "" : " est-verrou"}`,
+                             "data-carte": id,
+                             title: dispo.ouvert ? undefined : `${t("Pas encore débloquée")} : ${dispo.etiquette}` },
                 el("img", { src: cardImageUrl(id), loading: "lazy", alt: nomFr(carte), onclick: () => ajouter(id) }),
                 badgeCustom(carte),
+                dispo.ouvert ? null : el("span", { class: "db-verrou" }, dispo.etiquette),
                 el("div", { class: "db-carte-pied" },
                     el("span", { class: `db-aspect-point aspect-${classeCss(carte.class)}` }),
                     el("b", {}, nomFr(carte)),
@@ -355,7 +372,7 @@ async function rendreGrille() {
                 ),
                 el("div", { class: "db-carte-boutons" },
                     el("button", { onclick: () => retirer(id), disabled: n === 0 ? "" : undefined }, "−"),
-                    el("button", { onclick: () => ajouter(id) }, "+"),
+                    el("button", { onclick: () => ajouter(id), disabled: dispo.ouvert ? undefined : "" }, "+"),
                 ),
             );
         }),
@@ -366,6 +383,11 @@ async function rendreGrille() {
 function ajouter(id) {
     const c = cards.get(id);
     if (!c) return;
+    // ⚠ LA GATE EST ICI, PAS SEULEMENT SUR LE BOUTON. Un clic sur l'image, un
+    // deck chargé, un raccourci : tout passe par `ajouter`, et une carte
+    // fermée ne rentre par aucune porte.
+    const dispo = dispoCarte(id);
+    if (!dispo.ouvert) { statut(`${t("Pas encore débloquée")} : ${dispo.etiquette}`, true); return; }
     const n = etat.choisies.get(id) || 0;
     if (n >= maxParDeck(c)) { statut(`Maximum ${maxParDeck(c)} ${t("exemplaires de")} « ${c.name} »`, true); return; }
     etat.choisies.set(id, n + 1);
@@ -499,7 +521,11 @@ async function rendreEnTete() {
 async function rendreSources() {
     const zone = $("#db-sources");
     if (!etat.hero) { remplacer(zone, ); return; }
-    const decks = await catalog.decksForHero(etat.hero);
+    let decks = await catalog.decksForHero(etat.hero);
+    // Legacy : un deck tout fait qui contient une carte fermée est caché,
+    // comme à l'étape des decks de l'assistant. Le charger ici l'aurait
+    // rempli de cartes qu'on ne peut pas ajouter.
+    if (etat.legacy) decks = decks.filter((d) => etat.legacy.deck(d.deck).ouvert);
     remplacer(zone, 
         el("span", { class: "db-sources-label" }, t("Partir de :")),
         el("button", { class: "db-chip", onclick: () => { etat.choisies.clear(); etat.brouillonId = null; rendreTout(); } }, t("Vide")),
@@ -610,6 +636,33 @@ function installerApercu() {
     });
 }
 
+/** Le bandeau Legacy en tête de page, et le style des cartes fermées. Posés
+ *  seulement quand le drapeau est là : hors Legacy, rien ne change. */
+function poserBandeLegacy(e) {
+    const style = document.createElement("style");
+    style.textContent = `
+      .db-legacy { display:flex; gap:14px; align-items:center; margin:0 0 10px; padding:8px 12px;
+        border:2px solid #ffd54a; background:#1a1707; color:#fff; font-size:13px; }
+      .db-legacy b { color:#ffd54a; text-transform:uppercase; letter-spacing:.04em; }
+      .db-carte.est-verrou img { filter:grayscale(1) brightness(.45); cursor:not-allowed; }
+      .db-carte.est-verrou .db-carte-pied { opacity:.7; }
+      .db-verrou { position:absolute; left:0; right:0; top:38%; z-index:2; padding:4px 6px; text-align:center;
+        font-size:11px; color:#ffe08a; background:rgba(0,0,0,.8); pointer-events:none; }
+      .db-carte { position:relative; }
+    `;
+    document.head.appendChild(style);
+    const etape = ((e.parcours && e.parcours.etapes) || []).find((x) => x.ouvert && !x.franchi);
+    const ou = etape ? etape.nom : t("Tout est débloqué. Bravo.");
+    const bande = el("div", { class: "db-legacy" },
+        el("b", {}, "Legacy"),
+        el("span", {}, `${t("Vague ouverte")} : ${ou}`),
+        el("span", {}, t("Seules les cartes des boîtes déjà ouvertes s'ajoutent au deck.")),
+    );
+    const zone = $("#db-sources");
+    if (zone && zone.parentNode) zone.parentNode.insertBefore(bande, zone);
+    else document.body.prepend(bande);
+}
+
 async function demarrer() {
     synchroniserLangueServeur();
     traduirePageStatique();
@@ -620,6 +673,16 @@ async function demarrer() {
     const params = new URLSearchParams(window.location.search);
     const heroParam = params.get("hero");
     if (heroParam) etat.hero = etat.heroes.find((h) => h.id === heroParam) || null;
+    // `?legacy=1` : ouvert depuis le mode Legacy de l'assistant. On construit
+    // avec ce qu'on a. Sans le drapeau, le deck-builder ne verrouille rien :
+    // le jeu libre n'est jamais verrouillé.
+    if (params.get("legacy") === "1") {
+        const e = await etatLegacy(t);
+        const extensions = await catalog.extensions();
+        etat.legacy = fabriquerDisponibilite(e, extensions,
+            (id) => { const c = cards.get(id); return c ? c.package_name : ""; }, t);
+        poserBandeLegacy(e);
+    }
     if (etat.hero) etat.nomDeck = `${etat.hero.name} custom`;
     // `?deck=<id>` ouvre l'editeur DEJA CHARGE, au lieu d'obliger a recliquer
     // la puce « Partir de : ». Les identifiants sont ceux de

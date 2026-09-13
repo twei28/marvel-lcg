@@ -134,6 +134,7 @@ prendre.
 | 2 | **Les paliers depuis le catalogue** : `public/js/prepare/legacy-catalogue.js`. | ✅ **Faite le 13/09/2026.** 5 cas, `npm run legacy-paliers`. |
 | 3 | **La fiche du compte** : `legacy-fiche.js`, routes `/get_legacy` et `/save_legacy`. | ✅ **Faite le 13/09/2026.** 10 cas, `npm run legacy-fiche`. |
 | 4 | **L'écran** : la sixième tuile, la question à l'activation, la grille grisée avec l'étiquette de sa boîte et la condition en infobulle, le bandeau, l'achat d'un fan-made d'un clic. `legacy-verrou.js` + branchement dans `app.js`. | ✅ **Faite le 13/09/2026.** 7 cas `npm run legacy-verrou`, 8 cas `npm run legacy-ecran`. |
+| 6 | **Le deck-building** (idée de l'utilisateur, après livraison) : `legacy-cartes.js`. Les cartes des boîtes fermées grisées et refusées dans l'éditeur, les decks tout faits qui en contiennent cachés à l'étape des decks. | ✅ **Faite le 13/09/2026.** 5 cas `npm run legacy-cartes`, 3 cas `npm run legacy-deckbuilder`, 1 cas de plus dans `legacy-ecran`. |
 | 5 | **Garder les parties terminées** : `auto_save_after_game_over` allumé dans `config_serveur.py`, ménage à 50 dans `eteindre_jeu`, les trois emplacements du plateau jamais touchés. | ✅ **Faite le 13/09/2026.** |
 
 ⚠ La tranche 1 ne lit ni réseau, ni stockage, ni catalogue : on lui passe tout,
