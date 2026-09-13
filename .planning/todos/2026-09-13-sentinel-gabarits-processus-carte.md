@@ -34,7 +34,7 @@ cartes, les deux derniers sont sortis du harnais :
 | `tools/verifier_coherence_cartes.py` | textes fr 26/26, images 26/26, cas cités 100 % |
 | `tools/verifier_traductions_fr.py` | 153 clés, 154 littéraux, 0 sans traduction |
 | `tools/test_cards.py` | 5565 cartes construites, **0 erreur** |
-| `tools/test_capacites.py`, batterie COMPLÈTE | **1905/1915**, 0 processus mort |
+| `tools/test_capacites.py`, batterie COMPLÈTE | **1913/1917**, 0 processus mort |
 | `verifier_tous_les_decks.py` (`DECK_NOM=sentinel`) | OK, « identité st001a, main 6, deck 9 » |
 | `tools/test_capacites.py` filtre `st0` | **42/42** |
 | `tools/substituer_pack.py st0` | **26/26** cartes avec au moins un cas rouge sans module |
@@ -50,10 +50,13 @@ le compte annonçait 40/40, et le cas nominal était **faux depuis le début**
 Trouvé par la batterie complète, pas par la passe filtrée. Les cas portent désormais
 `st002a` dans leur nom.
 
-Les 10 cas rouges de la batterie complète sont **antérieurs à ce pack** : quatre
-appartiennent à Squirrel Girl (héros mis de côté), et les six autres (`bl015`, `sm014`
-×2, `sm016`, `su019`, `ze010`) ont été rejoués **avec les correctifs moteur retirés
-par `git stash`** — ils tombent exactement pareil. Aucune régression.
+Les cas rouges de la batterie complète sont **antérieurs à ce pack**, vérifié en
+rejouant les six suspects **avec les correctifs moteur retirés par `git stash`** : ils
+tombaient exactement pareil. Six d'entre eux (`bl015`, `sm014` ×2, `sm016`, `su019`,
+`ze010`) ont été **réparés le 13/09/2026** : `remplir_les_decks_vides` donnait 25
+ressources inertes à quatre héros qui n'ont jamais eu de moitié d'aspect, et ces cas
+comptent précisément ce qui sort du dessus du deck. Il ne reste que les quatre du héros
+mis de côté.
 
 **Cas verts sans module, assumés** : ce sont tous des CONTRE-CAS d'absence d'effet, ou
 des cas qui appartiennent à une autre face.
