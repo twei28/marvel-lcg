@@ -2285,6 +2285,25 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
     display: none;
   }
 
+  /* ⚠ ET ON RECADRE SUR L'ILLUSTRATION (13/09/2026). Masquer les traits du
+     BANDEAU ne suffisait pas : ceux qu'on voyait sous le nom sont IMPRIMES
+     SUR LA CARTE. Le cadrage par defaut (`center 22%/154%`) montre de 8 % a
+     71 % de la carte, or la zone de texte commence vers 58 % : les traits
+     (« GARDIEN, MYSTIQUE. ») et le debut des regles (« defaussez 1 carte »)
+     passaient donc sous le bandeau, trois textes empiles dans 40 px.
+
+     A 210 % de large, la carte fait 435 px de haut pour 200 px visibles : on
+     en voit 46 %, et un decalage de 22 % la place de 12 % a 58 %, c'est-a-dire
+     l'ILLUSTRATION SEULE, entre le bandeau de titre imprime (0-10 %) et la
+     zone de texte (58 % et au-dela). Un premier essai a 190 % laissait
+     apparaitre le titre imprime, coupe en deux, au-dessus de l'image.
+     Le scan fait 615 px de large pour 304 px affiches : on zoome sans jamais
+     agrandir. */
+  .tb-roster .portrait {
+    background-size: 210%;
+    background-position: 50% 22%;
+  }
+
   /* --- 3 bis. L'ecran final : le « VS » ne mange plus les noms ------------
      L'etoile fait 275 px de cote sur un ecran de 500, et les deux camps 250
      chacun : elle mordait de 137 px sur chaque cote, par-dessus le nom du
