@@ -8,5 +8,10 @@
 <body>
     <div id="plateau">Loading...</div>
     <script type="module" src="/src/board.tsx"></script>
+    <!-- Pastille « un message t'attend ». MEME module que l'assistant
+         (public/js/prepare/messages.js) : il est autonome, sans dependance
+         a l'application, et rien ne s'affiche tant que personne n'ecrit.
+         Ne remet pas le tchat retire du jeu le 12/09/2026. -->
+    <script src="/public/js/prepare/messages.js?v=1" defer></script>
 </body>
 </html>

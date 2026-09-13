@@ -216,6 +216,24 @@ passe.
 Pour changer le délai : variable d'environnement `EXPIRATION_JOURS` du service
 (28 par défaut).
 
+## Écrire à un joueur
+
+Dans `/admin`, section **Joueurs** : qui est là, et la conversation avec chacun.
+Un bloc par compte, l'échange complet, et une case pour répondre. Ceux qui ont
+un message en attente s'ouvrent tout seuls, avec une pastille.
+
+Le message part tout de suite. **La personne voit une pastille verte en bas à
+droite de son écran**, dans l'assistant comme en pleine partie, qui ouvre la
+conversation dans un nouvel onglet. Elle disparaît dès qu'elle est lue.
+
+⚠ **Ce n'est pas le retour du tchat**, retiré du jeu le 12/09/2026. Rien ne
+s'affiche tant que personne n'écrit : la pastille n'existe que lorsqu'un
+message attend vraiment.
+
+Répondre depuis `/admin` marque aussi la conversation comme lue de ton côté :
+sans cela ta propre pastille restait allumée sur un échange que tu venais de
+traiter.
+
 ## Les rapports de bug
 
 Depuis n'importe quel écran du jeu, un bouton **« Signaler un bug »** ouvre un

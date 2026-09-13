@@ -950,6 +950,14 @@ def initialiser_base() -> None:
             cx.execute("ALTER TABLE messages ADD COLUMN destinataire TEXT")
         if "mdp_jeu" not in colonnes:
             cx.execute("ALTER TABLE comptes ADD COLUMN mdp_jeu TEXT")
+        # ⚠ CE QUE CHACUN A DEJA LU, et c'est tout ce qui manquait pour poser
+        # une pastille : l'identifiant du dernier message prive qu'il a vu
+        # passer. Sans lui, on ne sait pas distinguer « un message t'attend »
+        # de « tu l'as deja lu », et la pastille resterait allumee pour
+        # toujours. Ajoutee hors du SCHEMA comme les autres, pour les bases
+        # deja en service.
+        if "dernier_message_vu" not in colonnes:
+            cx.execute("ALTER TABLE comptes ADD COLUMN dernier_message_vu INTEGER")
         # Meme precaution pour les bases creees avant la purge des rapports.
         colonnes_rap = {r["name"] for r in cx.execute("PRAGMA table_info(rapports)")}
         if "traite_le" not in colonnes_rap:
@@ -1896,6 +1904,53 @@ def messages_depuis(depuis: int = 0, moi: str = "", avec: str = ""):
             for l in lignes]
 
 
+def messages_non_lus(moi: str) -> dict:
+    """Ce qui attend cette personne : combien, et de qui.
+
+    ⚠ SEULS LES MESSAGES RECUS COMPTENT. Les siens portent des identifiants
+    plus grands que le dernier qu'il a lu, forcement : les compter lui aurait
+    montre une pastille pour ses propres mots.
+    """
+    moi = (moi or "").strip().lower()
+    if not moi:
+        return {"nouveaux": 0, "de": []}
+    with _cx() as cx:
+        ligne = cx.execute("SELECT dernier_message_vu FROM comptes WHERE pseudo=?",
+                           (moi,)).fetchone()
+        vu = int((ligne["dernier_message_vu"] if ligne else 0) or 0)
+        lignes = cx.execute(
+            "SELECT pseudo, COUNT(*) AS combien FROM messages"
+            " WHERE destinataire = ? AND id > ? GROUP BY pseudo",
+            (moi, vu)).fetchall()
+    return {"nouveaux": sum(int(l["combien"]) for l in lignes),
+            "de": [l["pseudo"] for l in lignes]}
+
+
+def marquer_messages_lus(moi: str) -> None:
+    """Eteint la pastille : tout ce qui existe aujourd'hui est considere lu."""
+    moi = (moi or "").strip().lower()
+    if not moi:
+        return
+    with _cx() as cx:
+        dernier = cx.execute("SELECT MAX(id) AS m FROM messages").fetchone()
+        cx.execute("UPDATE comptes SET dernier_message_vu = ? WHERE pseudo = ?",
+                   (int((dernier["m"] if dernier else 0) or 0), moi))
+
+
+def conversation(moi: str, avec: str, combien: int = 40) -> list:
+    """Les derniers messages echanges entre deux comptes, le plus ancien en tete."""
+    moi = (moi or "").strip().lower()
+    avec = (avec or "").strip().lower()
+    if not moi or not avec:
+        return []
+    with _cx() as cx:
+        lignes = cx.execute(
+            "SELECT id, pseudo, texte, quand FROM messages"
+            " WHERE (pseudo=? AND destinataire=?) OR (pseudo=? AND destinataire=?)"
+            " ORDER BY id DESC LIMIT ?", (moi, avec, avec, moi, combien)).fetchall()
+    return [dict(l) for l in reversed(lignes)]
+
+
 def derniers_prives(moi: str) -> dict:
     """Pour chaque correspondant, l'identifiant du dernier message echange.
 
@@ -2164,6 +2219,11 @@ PAGE_ADMIN = """<!doctype html>
   .section .compte {{ color:#9aa7b4; font-weight:normal; font-size:.85rem; }}
   .groupe {{ margin:.6rem 0; }}
   .groupe > summary {{ cursor:pointer; color:#c9d1d9; font-size:.9rem; padding:.3rem 0; }}
+  .msg {{ border-left:3px solid #30363d; padding:.3rem .6rem; margin:.35rem 0;
+         font-size:.9rem; }}
+  .msg.moi {{ border-color:#1f6feb; }}
+  .msg.lui {{ border-color:#3fb950; }}
+  .msg .meta {{ color:#6e7681; font-size:.75rem; }}
 </style>
 {styles_suivi}
 <main>
@@ -2225,6 +2285,13 @@ PAGE_ADMIN = """<!doctype html>
   <p class="sous">Les 60 derniers, le plus recent en haut, ranges par etat.
   Deplie pour voir la capture et le journal de la partie.</p>
   {rapports}
+  </details>
+
+  <details class="section"{ouvrir_salon}>
+  <summary><h1>Joueurs {pastille_salon}</h1> <span class="compte">{nb_en_ligne}</span></summary>
+  <p class="sous">Qui est la, et de quoi on se parle. Un message part tout de
+  suite : la personne voit une pastille dans son jeu, et te repond de la.</p>
+  {salon}
   </details>
 
   <h1 style="margin-top:2.5rem">Parties <small id="maj" style="color:#9aa7b4;font-weight:normal;font-size:.8rem">chargement…</small></h1>
@@ -2975,6 +3042,50 @@ class Handler(BaseHTTPRequestHandler):
                                '<input type="hidden" name="action" value="annonce_annuler">'
                                '<button class="non" type="submit">Annuler l\'annonce</button>'
                                '</form>')
+        # Le panneau des joueurs : un bloc par personne, avec sa conversation
+        # et de quoi repondre. ⚠ ON MONTRE TOUT LE MONDE, pas seulement ceux
+        # qui sont en ligne : ecrire a quelqu'un d'absent est justement l'usage
+        # le plus courant, il lira en revenant.
+        qui = presence()
+        nb_en_ligne = sum(1 for p in qui if p["etat"] in ("ligne", "partie"))
+        attente_salon = messages_non_lus(ADMIN)
+        pastille_salon = ('<span class="pastille">%d nouveau%s</span>'
+                          % (attente_salon["nouveaux"],
+                             "x" if attente_salon["nouveaux"] > 1 else "")
+                          ) if attente_salon["nouveaux"] else ""
+        salon = ""
+        for personne in qui:
+            if personne["pseudo"] == ADMIN:
+                continue
+            echange = conversation(ADMIN, personne["pseudo"])
+            lignes_msg = "".join(
+                '<div class="msg %s"><b>%s</b> <span class="meta">%s</span><br>%s</div>'
+                % ("moi" if m["pseudo"] == ADMIN else "lui",
+                   html.escape(m["pseudo"]), html.escape(m["quand"]),
+                   html.escape(m["texte"]).replace("\n", "<br>"))
+                for m in echange) or '<p class="sous">Rien encore.</p>'
+            nouveau = personne["pseudo"] in attente_salon["de"]
+            salon += (
+                '<details class="rapport"%s><summary>'
+                '<span class="quoi"><b>%s</b> %s</span>'
+                '<span class="meta">%s</span></summary>'
+                '<div class="corps">%s'
+                '<form method="post" action="/admin" style="display:flex;gap:.5rem;margin-top:.6rem">'
+                '<input type="hidden" name="action" value="message">'
+                '<input type="hidden" name="a" value="%s">'
+                '<input name="texte" maxlength="%d" placeholder="Ecrire a %s" required'
+                ' style="flex:1;font:inherit;background:#161b22;color:inherit;'
+                'border:1px solid #30363d;border-radius:.4rem;padding:.4rem .6rem">'
+                '<button class="oui" type="submit">Envoyer</button>'
+                '</form></div></details>'
+                % (" open" if nouveau else "",
+                   html.escape(personne["pseudo"]),
+                   '<span class="pastille">nouveau</span>' if nouveau else "",
+                   html.escape(personne["detail"]),
+                   lignes_msg, html.escape(personne["pseudo"]),
+                   TAILLE_MESSAGE, html.escape(personne["pseudo"])))
+        if not salon:
+            salon = '<p class="sous">Aucun compte valide a qui ecrire.</p>'
         nb_invitations = len(invitations_libres()) + len(invitations_utilisees())
         nb_reinit = len(reinitialisations_ouvertes())
         nouveaux = nb_rapports_nouveaux()
@@ -2996,6 +3107,9 @@ class Handler(BaseHTTPRequestHandler):
                                  invitations="".join(inv),
                                  reinitialisations="".join(reinit),
                                  rapports=rapports, pastille=pastille,
+                                 salon=salon, nb_en_ligne=nb_en_ligne,
+                                 pastille_salon=pastille_salon,
+                                 ouvrir_salon=" open" if attente_salon["nouveaux"] else "",
                                  regle_expiration=(
                                      "Sans visite pendant %d jours, un compte passe"
                                      " en « expire » : sa place retourne au pot, ses"
@@ -3299,6 +3413,14 @@ class Handler(BaseHTTPRequestHandler):
                 poser_annonce(minutes, champs.get("texte", ""))
             elif action == "annonce_annuler":
                 retirer_annonce()
+            elif action == "message":
+                # ⚠ ON MARQUE LU EN MEME TEMPS QU'ON REPOND : repondre, c'est
+                # avoir lu. Sans cela, la pastille de l'administrateur restait
+                # allumee sur une conversation qu'il venait de traiter.
+                dire(ADMIN, champs.get("texte", ""), champs.get("a", ""))
+                marquer_messages_lus(ADMIN)
+            elif action == "messages_lus":
+                marquer_messages_lus(ADMIN)
             elif action == "inviter":
                 creer_invitation()
             elif action == "annuler":
@@ -3325,7 +3447,8 @@ class Handler(BaseHTTPRequestHandler):
                                champs.get("statut", ""))
             self._rediriger("/admin")
 
-        elif self.path in ("/api/vue", "/api/dire", "/api/bug", "/api/annonce"):
+        elif self.path in ("/api/vue", "/api/dire", "/api/bug", "/api/annonce",
+                           "/api/prives", "/api/prives_lus"):
             # ⚠ CES ROUTES NE SONT PAS POUR LE NAVIGATEUR. Elles sont appelees
             # par le MOTEUR, en 127.0.0.1, et s'authentifient par le jeton de
             # partie plutot que par le cookie de session : le navigateur est sur
@@ -3358,6 +3481,20 @@ class Handler(BaseHTTPRequestHandler):
                     return
                 numero = enregistrer_rapport(qui, champs)
                 self._repondre(200, json.dumps({"ok": True, "numero": numero}).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            if self.path == "/api/prives":
+                # ⚠ PAS DE `toucher_presence` ICI. C'est une horloge qui
+                # tourne, pas un geste du joueur : la compter comme une
+                # presence ferait apparaitre « en ligne » quelqu'un qui a
+                # laisse un onglet ouvert. Meme raison que pour l'annonce.
+                self._repondre(200, json.dumps(messages_non_lus(qui),
+                                               ensure_ascii=False).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            if self.path == "/api/prives_lus":
+                marquer_messages_lus(qui)
+                self._repondre(200, b'{"ok":true}',
                                "application/json; charset=utf-8")
                 return
             if self.path == "/api/annonce":

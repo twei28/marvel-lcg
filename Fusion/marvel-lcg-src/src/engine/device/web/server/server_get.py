@@ -589,6 +589,36 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'site injoignable'}, status=503)
         return web.json_response({'ok': True})
 
+    async def get_messages_prives(self, request: web.Request) -> web.Response:
+        """Un message prive attend-il ce joueur ?
+
+        AJOUT du 13/09/2026. Le tchat a ete retire du jeu le 12 : personne ne
+        s'en servait, et il encombrait deux ecrans pour rien. Mais
+        l'administrateur doit pouvoir joindre quelqu'un qui joue. D'ou cette
+        route minuscule, qui ne rend qu'un compte et des noms : rien ne
+        s'affiche tant que personne n'ecrit, et une pastille apparait quand
+        c'est le cas.
+
+        ⚠ RESERVE AU SIEGE 0, comme le tchat l'etait. Les messages sont ceux du
+        titulaire du compte ; un invite arrive par un lien de siege n'en fait
+        pas partie et n'a pas a savoir qu'il en a recu.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
+            return web.json_response({'nouveaux': 0, 'de': []})
+        donnees = await self._appeler_site('/api/prives', {}, secondes=3)
+        return web.json_response(donnees or {'nouveaux': 0, 'de': []})
+
+    async def post_messages_lus(self, request: web.Request) -> web.Response:
+        """Eteint la pastille : le joueur a ouvert sa conversation."""
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
+        await self._appeler_site('/api/prives_lus', {}, secondes=3)
+        return web.json_response({'ok': True})
+
     async def get_dossier_sauvegardes(self, request: web.Request) -> web.Response:
         """Le dossier ou CETTE table range ses trois emplacements de sauvegarde.
 
@@ -888,6 +918,8 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_rapport_actif', self.get_rapport_actif)
         self.AddAwaitGetSecurity('/get_annonce', self.get_annonce)
         self.AddAwaitGetSecurity('/get_dossier_sauvegardes', self.get_dossier_sauvegardes)
+        self.AddAwaitGetSecurity('/get_messages_prives', self.get_messages_prives)
+        self.AddPostSecurity('/post_messages_lus', self.post_messages_lus)
         self.AddAwaitGetSecurity('/get_legacy', self.get_legacy)
         self.AddPostSecurity('/save_legacy', self.save_legacy)
         # Sauvegarde demandee par le SITE avant de fermer une table inactive :

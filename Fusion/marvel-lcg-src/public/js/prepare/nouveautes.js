@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-13",
         genre: "jeu",
+        fr: "Si quelqu'un t'écrit, une pastille verte apparaît en bas à droite, dans la préparation comme en pleine partie, et ouvre la conversation. Tant que personne ne t'écrit, il n'y a rien à l'écran.",
+        en: "If someone writes to you, a green badge appears at the bottom right, on the setup screens and in game, and opens the conversation. As long as nobody writes, there is nothing on screen.",
+    },
+    {
+        date: "2026-09-13",
+        genre: "jeu",
         fr: "Chaque partie terminée est gardée : tu peux la revoir pas à pas avec le bouton « Revoir », comme si tu y étais. Les cinquante dernières restent disponibles.",
         en: "Every finished game is kept: you can replay it step by step with the “Resume” button, as if you were there. The last fifty stay available.",
     },

@@ -1794,6 +1794,86 @@ o.SAUVEGARDES_GARDEES = _gardees_avant
 o.RACINE_JEU = _racine_sauv
 shutil.rmtree(_bac_sauv, ignore_errors=True)
 
+# --- Ecrire a un joueur, et le lui faire savoir ----------------------------
+# AJOUT du 13/09/2026. Le tchat a ete retire du jeu la veille : personne ne s'en
+# servait. Mais l'administrateur doit pouvoir joindre quelqu'un qui joue. D'ou
+# une pastille qui n'apparait QUE s'il y a un message, et s'eteint des qu'il est
+# lu.
+#
+# ⚠ CE QUI MANQUAIT ETAIT LE « DEJA LU ». Sans lui, on ne distingue pas « un
+# message t'attend » de « tu l'as deja vu », et la pastille reste allumee pour
+# toujours.
+o.marquer_messages_lus("hote")
+verifier("sans message, rien n'attend personne",
+         o.messages_non_lus("hote")["nouveaux"] == 0,
+         str(o.messages_non_lus("hote")))
+
+o.dire(o.ADMIN, "Tu joues ce soir ?", "hote")
+_attente = o.messages_non_lus("hote")
+verifier("un message recu allume la pastille", _attente["nouveaux"] == 1, str(_attente))
+verifier("et elle dit de qui il vient", _attente["de"] == [o.ADMIN], str(_attente))
+
+# ⚠ SES PROPRES MOTS NE COMPTENT PAS. Ils portent forcement un identifiant plus
+# grand que le dernier qu'il a lu : les compter lui aurait montre une pastille
+# pour ce qu'il vient d'ecrire.
+o.dire("hote", "Oui, vers 21h", o.ADMIN)
+verifier("repondre n'allume pas sa propre pastille",
+         o.messages_non_lus("hote")["nouveaux"] == 1,
+         str(o.messages_non_lus("hote")))
+verifier("mais elle s'allume chez le destinataire",
+         o.messages_non_lus(o.ADMIN)["nouveaux"] >= 1,
+         str(o.messages_non_lus(o.ADMIN)))
+
+o.marquer_messages_lus("hote")
+verifier("lire eteint la pastille",
+         o.messages_non_lus("hote")["nouveaux"] == 0,
+         str(o.messages_non_lus("hote")))
+
+# La conversation se relit dans l'ordre, les deux sens melanges.
+_fil = o.conversation(o.ADMIN, "hote")
+verifier("la conversation garde les deux sens", len(_fil) == 2, str(_fil))
+verifier("et le plus ancien en tete",
+         _fil[0]["texte"] == "Tu joues ce soir ?", str(_fil))
+
+# --- Par la route, avec le jeton de la table -------------------------------
+o.JETONS_SITE[_jeton_annonce] = "hote"
+o.dire(o.ADMIN, "Encore un", "hote")
+_code, _, _rep = appel("POST", "/api/prives", corps=_corps_annonce)
+verifier("la route dit ce qui attend le joueur",
+         _code == 200 and _json_annonce.loads(_rep)["nouveaux"] == 1,
+         "%s %s" % (_code, _rep))
+_code, _, _ = appel("POST", "/api/prives_lus", corps=_corps_annonce)
+verifier("et la route de lecture eteint la pastille",
+         _code == 200 and o.messages_non_lus("hote")["nouveaux"] == 0, str(_code))
+_code, _, _ = appel("POST", "/api/prives", corps=b"jeton=invente")
+verifier("un jeton inconnu n'apprend rien", _code == 403, str(_code))
+
+# --- Et le panneau de /admin ------------------------------------------------
+o.dire("hote", "Une question sur Thor", o.ADMIN)
+_code, _, _page_s = appel("GET", "/admin", entetes=cookie_de(o.ADMIN))
+verifier("la page /admin montre le panneau des joueurs",
+         _code == 200 and b"Joueurs" in _page_s and b"Une question sur Thor" in _page_s,
+         str(_code))
+verifier("et elle signale la conversation qui attend",
+         b"nouveau" in _page_s)
+
+_code, _, _ = appel("POST", "/admin", corps=b"action=message&a=hote&texte=Je+regarde",
+                    entetes=cookie_de(o.ADMIN))
+verifier("l'administrateur ecrit depuis /admin",
+         _code == 303 and any(m["texte"] == "Je regarde"
+                              for m in o.conversation(o.ADMIN, "hote")),
+         str(_code))
+# ⚠ REPONDRE, C'EST AVOIR LU. Sans cela la pastille de l'administrateur restait
+# allumee sur une conversation qu'il venait de traiter.
+verifier("et repondre eteint sa propre pastille",
+         o.messages_non_lus(o.ADMIN)["nouveaux"] == 0,
+         str(o.messages_non_lus(o.ADMIN)))
+
+# ⚠ ET SEULEMENT LUI. La page nomme les joueurs et lit leurs conversations.
+_code, _, _ = appel("POST", "/admin", corps=b"action=message&a=hote&texte=Coucou",
+                    entetes=cookie_de("hote"))
+verifier("un compte ordinaire n'ecrit pas depuis /admin", _code == 403, str(_code))
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:
