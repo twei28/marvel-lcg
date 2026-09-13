@@ -1,4 +1,4 @@
-# À FAIRE : le mode de progression (nom non arrêté)
+# À FAIRE : le mode Archives du Collectionneur
 
 **Idée de l'utilisateur, 13/09/2026.** On commence avec la seule boîte de base et
 ses cinq héros ; on ouvre la suite en jouant. Décisions prises le jour même, une
@@ -28,7 +28,7 @@ filtre dans le wizard.
 | **Difficulté** | Une victoire compte pareil en normal et en expert — personne n'est bloqué. Mais une victoire **en expert rapporte un jeton fan-made de plus**. |
 | **Coop** | Une victoire à plusieurs coche **tous les héros de la table**, et le vilain. Fidèle au jeu de plateau, et ça récompense de jouer à plusieurs. |
 | **Parties déjà jouées** | **Au choix, une fois, à l'activation** : « reprendre mes parties passées » ou « repartir de zéro ». Deux chemins à tenir, assumés. |
-| **Nom** | ⚠ **NON ARRÊTÉ.** Collection, Chronologie, Recrutement et Campagne du collectionneur ont été proposés et écartés. |
+| **Nom** | **Archives du Collectionneur**, retenu le 13/09/2026. Référence au Collectionneur Marvel, et le mode consiste bien à compléter une collection. |
 
 ## La grille de départ, pour se figurer le rythme
 
@@ -38,7 +38,6 @@ cinq victoires rapportent cinq jetons fan-made, dix si elles sont prises en expe
 
 ## Ce qui reste à trancher avant d'écrire
 
-- **Le nom.**
 - **Ce que « verrouillé » veut dire à l'écran** : héros grisé avec sa condition
   affichée, ou simplement absent de la grille ?
 - **Où vit la progression** : calculée à la volée depuis l'historique du compte, ou
@@ -54,4 +53,4 @@ cinq victoires rapportent cinq jetons fan-made, dix si elles sont prises en expe
 
 ## Statut
 
-Spec validée sur ses sept règles, **non commencée**.
+Spec validée sur ses sept règles, nom arrêté, **non commencée**.
