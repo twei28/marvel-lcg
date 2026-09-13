@@ -94489,5 +94489,97 @@
    "custom": "T-WRECKS"
   }
  ],
- "checksum": "b2130d4ef1a7ea45bc0302ea6b1deece71e6967735c414f55f963393bee1cc33"
+ "muse": [
+  {
+   "card_id": "mu001",
+   "type": "SideScheme",
+   "name": "Art Imitates Death",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Muse",
+   "text": "<b>When Revealed</b>: Discard the top 3 cards of each player's deck. For each card discarded this way, deal 1 damage to each character whose picture was on that card.",
+   "custom": "RAINY"
+  },
+  {
+   "card_id": "mu002",
+   "type": "SideScheme",
+   "name": "Supply Run",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Muse",
+   "text": "<b>Forced Interrupt</b>: When a unique ([star]) enemy activates, discard the top card of the encounter deck. If the discarded card has a picture of that enemy on it, give it to them as a facedown boost card.",
+   "custom": "RAINY"
+  },
+  {
+   "card_id": "mu003",
+   "type": "Minion",
+   "name": "* Muse",
+   "subtitle": "",
+   "desc": {
+    "HP": "8",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "3",
+    "Toughness": "1"
+   },
+   "traits": [
+    "ARTIST",
+    "CRIMINAL",
+    "ELITE"
+   ],
+   "set_name": "Muse",
+   "text": "Toughness.\n<b>Forced Interrupt</b>: When a player plays a card that has their identity's picture on it, Muse activates against that player.",
+   "custom": "RAINY"
+  },
+  {
+   "card_id": "mu004",
+   "type": "Environment",
+   "name": "Graffitied Streets",
+   "subtitle": "",
+   "desc": {
+    "Uses": "3*,graffiti",
+    "Boost": "1"
+   },
+   "traits": [
+    "LOCATION"
+   ],
+   "set_name": "Muse",
+   "text": "Uses (3[per_hero] graffiti counters).\n<b>Forced Interrupt</b>: When you play a card with your identity's picture on it, place 1 threat on the main scheme.\n<b>Action</b>: Exhaust a character you control → remove graffiti counters from here equal to that character's THW. <i>(Limit once per round per player.)</i>",
+   "custom": "RAINY"
+  },
+  {
+   "card_id": "mu005",
+   "type": "Treachery",
+   "name": "Grim Inspiration",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "Muse",
+   "text": "Surge.\n<b>When Revealed</b>: Each player chooses an identity-specific card in their discard pile and places it on top of their deck. Give Muse and the villain a facedown boost card.",
+   "custom": "RAINY"
+  },
+  {
+   "card_id": "mu006",
+   "type": "Treachery",
+   "name": "Obsession",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Muse",
+   "text": "<b>When Revealed</b>: Muse activates against you. If he is not in play, find Muse and put him into play engaged with you.\n<hr />\n[star] <b>Boost</b>: This card gets +X boost icons ([boost]), where X is the number of cards in your hand with your identity's picture.",
+   "custom": "RAINY"
+  }
+ ],
+ "checksum": "002c698831a986e3005106a170b5041946a3c9a2c54ba80bd0d71b8ea11a6459"
 }

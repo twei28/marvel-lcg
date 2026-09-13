@@ -84,6 +84,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # recto-verso du heros ; HACKED est donne aux ameliorations par la
         # manigance nemesis Rogue Asset ; SENTINEL est le trait du sbire.
         "COMPONENT", "INTACT", "DESTROYED", "HACKED", "SENTINEL",
+        # CORRECTIF (13/09/2026) : trait du set modulaire custom `muse` (Rainy).
+        # Muse est un ARTIST, et c'est le seul du catalogue.
+        "ARTIST",
         "QUIET", "CIVILIAN",
         "ICE", "STONE", "METAL", "WOOD",
         # CORRECTIF : traits du pack custom superior_iron_man (Merlin).
@@ -212,6 +215,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'hate',  # CORRECTIF : compteur du pack custom doctor_druid (Kajislav), max 5 sur Nekra
         'shell',  # CORRECTIF : compteur du pack custom texas_twister (Kajislav), 2 sur Armadillo
         'unworthy',  # CORRECTIF : compteur du pack custom beta_ray_bill (Rainy), 2 sur l'obligation
+        'graffiti',  # CORRECTIF (13/09/2026) : compteur de mu004 Graffitied Streets,
+                     # set modulaire custom muse (Rainy). 3 par heros a l'entree en
+                     # jeu ; l'environnement se defausse quand le dernier part.
         # CORRECTIF : compteurs des packs officiels Jessica Jones (61xxx) et
         # Luke Cage (62xxx). Sans eux, `IsCounter` refuse le nom et toute carte
         # portant « Uses (N x counters) » tombe des la creation de la partie.

@@ -286,6 +286,13 @@
    "cartes": 28,
    "depuis": "2026-08-12"
   },
+  "mu": {
+   "pack": "muse",
+   "libelle": "174. Custom (Muse)",
+   "cartes": 6,
+   "depuis": "2026-09-13",
+   "note": "Porte le 13/09/2026. SET MODULAIRE de Rainy, 7 exemplaires pour 6 cartes distinctes (Obsession en double, seul le numero de collection differe). mu001 Art Imitates Death et mu002 Supply Run (manigances annexes), mu003 * Muse (sbire unique ELITE, Tenacite, 8 PV), mu004 Graffitied Streets (environnement LOCATION a compteurs graffiti), mu005 Grim Inspiration et mu006 Obsession (traitrises, la seconde a boost ETOILE). ARBITRAGE CENTRAL, decision utilisateur du 13/09/2026 : QUATRE cartes parlent d'« une carte avec l'image de votre identite dessus », que le moteur ne sait pas lire. On retient les CARTES SIGNATURE (card_class=IdentitySpecific), le vocabulaire de l'auteur lui-meme sur mu005. Deux arbitrages qui en decoulent : mu001 frappe le HEROS DONT C'EST LE DECK quoi que montre la carte defaussee ; mu002 reconnait « une image de cet ennemi » a une carte rencontre DU MEME SET que lui. Deux ajouts moteur : le compteur `graffiti` et le trait `ARTIST`, seul du catalogue. Aucun deck de depart : un set modulaire vit dans data/encounter_sets/muse.json et dans la cle `encounters` de sets_info."
+  },
   "mw": {
    "pack": "madame_web",
    "libelle": "107. Custom (Madame Web)",

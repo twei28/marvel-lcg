@@ -1134,6 +1134,26 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         if len(vilains) > 1:
             campagne["villain"] = vilains[1:]
 
+    # AJOUT 13/09/2026 : les SETS MODULAIRES, par la variable
+    # `AUTOPLAY_MODULAIRES` (« muse », ou « muse,necroverse »).
+    #
+    # Un set modulaire n'appartient a aucun scenario : sans ce levier, il
+    # n'existe AUCUNE facon de le faire jouer par le pilote, et un pack comme
+    # `muse` ne pouvait etre eprouve que carte par carte au harnais des
+    # capacites — jamais dans une vraie partie, ou ses cartes se croisent.
+    # Le champ `encounter_sets` de la campagne est celui que le moteur lit
+    # deja pour le set « expert » juste au-dessus : on y ajoute, sans rien
+    # retirer de ce que le scenario apporte.
+    modulaires = [m.strip() for m in
+                  (os.environ.get("AUTOPLAY_MODULAIRES") or "").split(",")
+                  if m.strip()]
+    if modulaires:
+        sets = list(campagne.get("encounter_sets") or [])
+        for nom in modulaires:
+            if nom not in sets:
+                sets.append(nom)
+        campagne["encounter_sets"] = sets
+
     scene = SceneLoader.NewFromJson(json.dumps(campagne), None, [texte_deck],
                                     graine, [], {})
     jeu = Engine.game
@@ -1166,6 +1186,9 @@ def main():
     ap.add_argument("--minuteur", type=int, default=600)
     ap.add_argument("--rapport", default="/tmp/autoplay.json")
     ap.add_argument("--trace", type=int, default=0)
+    ap.add_argument("--modulaires", default="",
+                    help="sets modulaires a ajouter au scenario, separes par "
+                         "des virgules (ex. : muse)")
     ap.add_argument("--reglages", default="",
                     help="JSON de seuils qui surchargent le profil")
     args = ap.parse_args()
@@ -1222,6 +1245,8 @@ def main():
         env = dict(os.environ, AUTOPLAY_LOT=json.dumps(lot))
         if args.reglages:
             env["AUTOPLAY_REGLAGES"] = args.reglages
+        if args.modulaires:
+            env["AUTOPLAY_MODULAIRES"] = args.modulaires
         proc = subprocess.Popen(
             [sys.executable, os.path.abspath(__file__), args.game_dir,
              "--trace", str(args.trace)],

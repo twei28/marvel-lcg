@@ -2698,4 +2698,22 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'st020': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi <i>(6 dégâts à la place si vous avez le trait [[GIANT]] ou s'il vous reste plus de points de vie qu'à cet ennemi)</i>.",
   // sentinel — Reboot (Event, Basic, hors set du héros)
   'st021': "<b>Action</b> : redressez un personnage allié [[ANDROID]] et soignez-lui 1 dégât.",
+  // ---------------------------------------------------------------------- muse
+  // SET MODULAIRE `muse` (Rainy, 13/09/2026), 6 cartes. Quatre d'entre elles
+  // parlent d'« une carte avec l'image de votre identite dessus » : ce sont les
+  // CARTES SIGNATURE (decision utilisateur, voir le relevé du pack). La
+  // traduction garde la formule imprimee et ajoute la precision entre
+  // parentheses, comme le ferait une FAQ.
+  // muse — Art Imitates Death (SideScheme)
+  'mu001': "<b>Une fois révélée</b> : défaussez les 3 cartes du dessus du deck de chaque joueur. Pour chaque carte défaussée ainsi, infligez 1 dégât à chaque personnage dont l'image était sur cette carte <i>(les cartes signature : le héros dont c'est le deck)</i>.",
+  // muse — Supply Run (SideScheme)
+  'mu002': "<b>Interruption forcée</b> : quand un ennemi unique ([star]) s'active, défaussez la carte du dessus du deck rencontre. Si elle porte une image de cet ennemi <i>(une carte de son set)</i>, donnez-la lui en carte de boost face cachée.",
+  // muse — Muse (Minion unique)
+  'mu003': "Ténacité.\n<b>Interruption forcée</b> : quand un joueur joue une carte qui porte l'image de son identité <i>(une carte signature)</i>, Muse s'active contre ce joueur.",
+  // muse — Graffitied Streets (Environment)
+  'mu004': "Réserve (3[per_hero] compteurs graffiti).\n<b>Interruption forcée</b> : quand vous jouez une carte qui porte l'image de votre identité <i>(une carte signature)</i>, placez 1 menace sur la manigance principale.\n<b>Action</b> : inclinez un personnage que vous contrôlez → retirez d'ici autant de compteurs graffiti que son CTR. <i>(Limite d'une fois par round et par joueur.)</i>",
+  // muse — Grim Inspiration (Treachery)
+  'mu005': "Déferlement.\n<b>Une fois révélée</b> : chaque joueur choisit une carte signature de sa pile de défausse et la place sur le dessus de son deck. Donnez à Muse et au vilain une carte de boost face cachée.",
+  // muse — Obsession (Treachery, x2)
+  'mu006': "<b>Une fois révélée</b> : Muse s'active contre vous. S'il n'est pas en jeu, cherchez Muse et mettez-le en jeu engagé avec vous.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +X icônes de boost ([boost]), X étant le nombre de cartes de votre main qui portent l'image de votre identité <i>(les cartes signature)</i>.",
 }

@@ -1527,5 +1527,14 @@
   "encounters": [],
   "max_id": "st021"
  },
- "checksum": "8909f9fb8a760e71f20a22f14afa3e04ace8440457345bfc629cfecfb36971fc"
+ "174. Custom (Muse)": {
+  "name": "muse",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "muse"
+  ],
+  "max_id": "mu006"
+ },
+ "checksum": "34b4fcadd1f25f2d8a348df106a352bb3d7d56c4d3de40b3263d92cfdb62da47"
 }
