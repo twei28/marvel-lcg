@@ -108,6 +108,19 @@ prendre.
   vague sans héros s'ouvre sur ses seuls vilains, et réciproquement. Sans cela,
   une boîte entière bloquerait la progression pour toujours.
 
+## Le découpage, et où on en est
+
+| # | Tranche | État |
+|---|---|---|
+| 1 | **Les règles**, pures et testées : `public/js/prepare/legacy.js`. Paliers, jetons, conditions, ordre des vagues, table rase. | ✅ **Faite le 13/09/2026.** 13 cas, `npm run legacy`. |
+| 2 | **Les paliers depuis le catalogue** : transformer les vagues, héros et scénarios réels en la forme que la tranche 1 attend. C'est là que se joue le raccord entre le nom de scénario de l'historique et celui du catalogue. | à faire |
+| 3 | **La fiche du compte** : la lire, l'écrire à chaque fin de partie, la reconstruire depuis `games_history`. | à faire |
+| 4 | **L'écran** : la sixième tuile, la grille grisée avec ses conditions, la boutique de jetons. | à faire |
+| 5 | **Garder les parties terminées** : allumer `auto_save_after_game_over`, rétention à 50. | à faire |
+
+⚠ La tranche 1 ne lit ni réseau, ni stockage, ni catalogue : on lui passe tout,
+elle répond. Tout le reste s'y branche, rien ne s'y mélange.
+
 ## Statut
 
 Spec **complète** : douze règles arrêtées, nom arrêté, **non commencée**.

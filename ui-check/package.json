@@ -32,7 +32,8 @@
     "assistant-mobile": "playwright test tests/assistant-mobile.spec.ts --project=s24",
     "sets-masques": "playwright test tests/sets-masques.spec.ts --project=pc",
     "annonce": "playwright test tests/annonce-preavis.spec.ts --project=pc",
-    "aide-modes": "playwright test tests/aide-des-modes.spec.ts --project=pc"
+    "aide-modes": "playwright test tests/aide-des-modes.spec.ts --project=pc",
+    "legacy": "playwright test tests/legacy-regles.spec.ts --project=pc"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0"
