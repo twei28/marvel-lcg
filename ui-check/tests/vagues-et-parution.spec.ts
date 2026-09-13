@@ -15,6 +15,11 @@ import { test, expect } from '@playwright/test';
 
 test('le menu des vagues porte le titre de la grande boite', async ({ page }) => {
   await page.goto('/prepare.html');
+  // ⚠ L'assistant s'ouvre sur l'ACCUEIL A TUILES depuis le 7 septembre : le
+  // menu des vagues n'existe qu'a l'etape des heros, derriere un mode. Ce
+  // test attendait le menu des l'ouverture et etait rouge depuis, sans que
+  // personne ne le relance (constate le 13/09/2026).
+  await page.getByRole('button', { name: /^Solo/ }).first().click();
   await page.waitForSelector('.vague-select option:nth-child(2)', { state: 'attached', timeout: 20000 });
   const libelles = await page.$$eval('.vague-select option', o => o.map(x => x.textContent!.trim()));
   console.log('LIBELLES FR :', JSON.stringify(libelles, null, 1));
@@ -37,12 +42,18 @@ test('les campagnes sont proposees dans l ordre de parution', async ({ page }) =
   const rangs = liste.map((c: any) => parseInt(String(c.cle_extension).split('.')[0], 10));
   expect(rangs).toEqual([...rangs].sort((a, b) => a - b));
   expect(rangs[0]).toBe(4);   // The Rise of Red Skull, 2020
-  expect(rangs[rangs.length - 1]).toBe(50); // Agents of S.H.I.E.L.D., 2025
+  // La derniere boite OFFICIELLE est Agents of S.H.I.E.L.D. (50) ; une
+  // campagne fan-made (120) s'est rangee apres elle depuis. Le tri croissant
+  // est ce qu'on verifie, pas l'identite du dernier : figer « 50 » rendait le
+  // test rouge a chaque campagne ajoutee (constate le 13/09/2026).
+  expect(rangs).toContain(50);
+  expect(rangs[rangs.length - 1]).toBeGreaterThanOrEqual(50);
 });
 
 test('en anglais, seul le mot Wave est traduit', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('marvel-langue', 'en'));
   await page.goto('/prepare.html');
+  await page.getByRole('button', { name: /^Solo/ }).first().click();
   await page.waitForSelector('.vague-select option:nth-child(2)', { state: 'attached', timeout: 20000 });
   const libelles = await page.$$eval('.vague-select option', o => o.map(x => x.textContent!.trim()));
   console.log('LIBELLES EN :', JSON.stringify(libelles, null, 1));

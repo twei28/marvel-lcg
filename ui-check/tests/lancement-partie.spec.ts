@@ -222,6 +222,13 @@ test.describe("Lancement d'une partie", () => {
       .getByRole('button', { name: /^Spider-Man/ })
       .first()
       .click();
+    // ⚠ Spider-Man a des variantes (art alternatif, ressources) : sa modale
+    // d'options s'ouvre D'ELLE-MEME au recrutement depuis le 11/09/2026 et
+    // intercepte tout clic tant qu'elle est la. Sans ces lignes, « Continuer »
+    // etait sous la modale et le test restait rouge (constate le 13/09/2026).
+    const options = page.locator('.deck-modal');
+    if (await options.count()) await options.getByRole('button', { name: /valider/i }).click();
+    await expect(options).toHaveCount(0);
     await continuer(page);
 
     //   Etape 2 - Decks ........ le deck de base est deja retenu.
