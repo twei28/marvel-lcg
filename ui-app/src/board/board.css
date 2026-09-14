@@ -4071,18 +4071,79 @@
     overflow: hidden;
   }
 
+  /* --- Le vol d'une carte, en DEUX couches (14/09/2026) ---------------------
+     La couche du dessus porte la TRANSLATION, celle du dessous le GESTE
+     (inclinaison, leger agrandissement, ombre).
+
+     ⚠ POURQUOI DEUX. Tout mettre dans un seul `transform` casserait le vol :
+     changer l'inclinaison a mi-chemin relancerait la transition de `transform`,
+     donc le deplacement lui-meme, et la carte repartirait de la ou elle en
+     etait. Separees, les deux s'animent sur leurs propres durees.
+
+     ⚠ NI DUREE NI COURBE ICI : elles dependent de CHAQUE vol (la duree suit la
+     distance, la courbe porte ou non le « clac ») et sont posees en ligne par
+     `CoucheAnimations.tsx`. */
   .vol-carte {
     position: absolute;
     top: 0;
     left: 0;
     transform-origin: 0 0;
+    transition-property: transform;
+    will-change: transform;
+  }
+
+  /* Le geste : la carte s'incline dans le sens ou elle part, se souleve de 4 %,
+     et son ombre s'ecarte. Elle DECOLLE au lieu de glisser. */
+  .vol-carte-geste {
+    width: 100%;
+    height: 100%;
+    border-radius: 9px;
+    transform: rotate(var(--angle, 0deg)) scale(1.04);
+    box-shadow: 0 20px 38px rgba(0, 0, 0, 0.62);
+    transition:
+      transform 180ms ease-out,
+      box-shadow 180ms ease-out;
+    will-change: transform;
+  }
+
+  /* A l'approche : elle se remet a plat et son ombre se resserre. Elle se pose
+     droite, jamais de travers. */
+  .vol-carte-geste.est-pose {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.42);
+  }
+
+  .vol-carte-image {
+    display: block;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     border-radius: 9px;
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.5);
-    /* Deceleration douce SANS depassement : le « clac »/rebond precedent rendait
-       l'arrivee groupee de plusieurs cartes fouillis. Arret net et propre. */
-    transition: transform 250ms cubic-bezier(0.22, 0.75, 0.3, 1);
-    will-change: transform;
+  }
+
+  /* La pile qui RECOIT tressaille de deux pixels : elle dit « c'est arrive la ».
+     ⚠ `translate` et NON `transform` : les cartes portent deja un `transform`
+     (inclinaison au survol, mise en avant), qu'une animation ecraserait. */
+  @keyframes pile-recoit {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    35% {
+      translate: 0 2px;
+    }
+  }
+
+  .scan-card.a-recu {
+    animation: pile-recoit 260ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vol-carte-geste,
+    .scan-card.a-recu {
+      transition: none;
+      animation: none;
+    }
   }
 
   /* --- Charge d'attaque / thwart (CoucheCharge) ----------------------------

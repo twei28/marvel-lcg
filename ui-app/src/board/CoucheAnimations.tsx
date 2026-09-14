@@ -16,7 +16,45 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 // d'ecran pour tout le plateau (voir placement/boites.ts).
 import { boiteDe, type Boite } from './placement/boites'
 
-const DUREE = 250
+/**
+ * LA DUREE SUIT LA DISTANCE, et c'est le coeur du poids.
+ *
+ * ⚠ C'ETAIT UNE CONSTANTE : 250 ms, qu'une carte traverse l'ecran ou bouge de
+ * trois centimetres. Rien ne pesait, rien ne prenait son elan. Constat de
+ * l'utilisateur le 14/09/2026 : « au niveau animation on est tres mauvais,
+ * je trouve ca tres mou ». C'est la premiere des six causes relevees
+ * (.planning/todos/2026-09-14-animations-molles.md).
+ *
+ * ⚠ RACINE CARREE, PAS PROPORTIONNEL. Une duree proportionnelle rendrait les
+ * petits deplacements quasi instantanes (invisibles) et les grands
+ * interminables. La racine resserre les ecarts : un trajet 9 fois plus long
+ * dure 3 fois plus longtemps, ce qui est la sensation juste.
+ */
+const DUREE_MIN = 130
+const DUREE_MAX = 400
+/** Au-dela de cette distance, on ne ralentit plus : c'est deja la traversee. */
+const DISTANCE_PLEINE = 900
+
+export function dureeDe(depart: Boite, arrivee: Boite): number {
+  const d = Math.hypot(arrivee.x - depart.x, arrivee.y - depart.y)
+  const part = Math.sqrt(Math.min(1, d / DISTANCE_PLEINE))
+  return Math.round(DUREE_MIN + (DUREE_MAX - DUREE_MIN) * part)
+}
+
+/**
+ * L'inclinaison pendant le vol, dans le sens du deplacement.
+ *
+ * ⚠ BORNEE A 3 DEGRES, et c'est voulu : au-dela on ne lit plus une carte
+ * lancee mais une carte qui tourne, ce que l'utilisateur a explicitement
+ * exclu (« sans que ce soit trop charge »).
+ */
+const ANGLE_MAX = 3
+
+export function inclinaisonDe(depart: Boite, arrivee: Boite): number {
+  const dx = arrivee.x - depart.x
+  return Math.max(-ANGLE_MAX, Math.min(ANGLE_MAX, dx / 120))
+}
+
 const CASCADE = 60
 /** Pause entre deux GROUPES (types de deck) enchaines l'un apres l'autre. */
 const GAP = 70
@@ -41,6 +79,20 @@ type Vol = {
   depart: Boite
   arrivee: Boite
   delai: number
+  /** Calculee sur la DISTANCE de ce vol-la : voir `dureeDe`. */
+  duree: number
+  /** Inclinaison pendant le trajet, en degres : voir `inclinaisonDe`. */
+  angle: number
+  /**
+   * Le « clac » a l'arrivee.
+   *
+   * ⚠ SEULEMENT QUAND LA CARTE EST SEULE. Le depassement avait ete retire du
+   * plateau parce qu'il rendait « fouillis » l'arrivee groupee de plusieurs
+   * cartes (commentaire de `.vol-carte` dans board.css). Le probleme n'etait
+   * donc pas le rebond, mais le rebond A PLUSIEURS : on le rend au coup
+   * unique, la ou il se lit, et on le refuse au reste.
+   */
+  clac: boolean
 }
 
 
@@ -75,13 +127,32 @@ let memoire = new Map<string, Mesure>()
  *  rendu (remontage/StrictMode) ; on ne diffe qu'une fois par rendu. */
 let dernierRender = -1
 
-/** Une carte fantome qui glisse de `depart` a `arrivee`, taille comprise. */
+/**
+ * Une carte fantome qui glisse de `depart` a `arrivee`, taille comprise.
+ *
+ * ⚠ DEUX COUCHES, ET C'EST LA CLE DU MONTAGE. La couche du dessus porte la
+ * TRANSLATION, celle du dessous le GESTE (inclinaison, leger agrandissement,
+ * ombre). Tout mettre dans un seul `transform` casserait le vol : changer
+ * l'inclinaison a mi-chemin relancerait la transition de `transform`, donc le
+ * deplacement lui-meme, et la carte repartirait de la ou elle en etait.
+ * Separees, les deux s'animent sur leurs propres durees sans se gener.
+ */
 function VolCarte({ vol }: { vol: Vol }) {
   const [pose, setPose] = useState(false)
+  const [atterri, setAtterri] = useState(false)
   useEffect(() => {
-    const t = window.setTimeout(() => setPose(true), 20)
-    return () => window.clearTimeout(t)
-  }, [])
+    const decolle = window.setTimeout(() => setPose(true), 20)
+    // Le geste se resorbe AVANT la fin du trajet : la carte se remet a plat en
+    // approchant, elle ne se pose pas de travers.
+    const pose_ = window.setTimeout(
+      () => setAtterri(true),
+      20 + vol.delai + Math.round(vol.duree * 0.62)
+    )
+    return () => {
+      window.clearTimeout(decolle)
+      window.clearTimeout(pose_)
+    }
+  }, [vol.delai, vol.duree])
 
   const b = pose ? vol.arrivee : vol.depart
   // On dimensionne le fantome a la taille d'ARRIVEE et on met le depart a
@@ -92,14 +163,28 @@ function VolCarte({ vol }: { vol: Vol }) {
     height: `${vol.arrivee.h}px`,
     transform: `translate(${b.x}px, ${b.y}px) scale(${echelle})`,
     transitionDelay: `${vol.delai}ms`,
-  }
+    transitionDuration: `${vol.duree}ms`,
+    // Le « clac » vit dans la COURBE, pas dans une animation de plus.
+    transitionTimingFunction: vol.clac
+      ? 'cubic-bezier(0.2, 0.9, 0.24, 1.06)'
+      : 'cubic-bezier(0.22, 0.75, 0.3, 1)',
+  } as const
+
+  const geste = {
+    // `--angle` sert la CSS, qui compose l'inclinaison et l'agrandissement.
+    '--angle': `${vol.angle}deg`,
+  } as Record<string, string>
 
   // Carte sans scan : c'est sa BOITE qui vole, pas une image. Un <img src="">
   // ferait recharger la page (meme raison que la garde de ScanCard), et une
   // image cassee ne montrait de toute facon rien de plus qu'un rectangle.
-  if (!vol.src) return <div className="vol-carte" style={style} />
-
-  return <img className="vol-carte" src={vol.src} alt="" style={style} />
+  return (
+    <div className="vol-carte" style={style}>
+      <div className={`vol-carte-geste${atterri ? ' est-pose' : ''}`} style={geste}>
+        {vol.src ? <img className="vol-carte-image" src={vol.src} alt="" /> : null}
+      </div>
+    </div>
+  )
 }
 
 export function CoucheAnimations({ renderId, actif }: { renderId: number; actif: boolean }) {
@@ -124,15 +209,23 @@ export function CoucheAnimations({ renderId, actif }: { renderId: number; actif:
     }
 
     // Ancres de pile : dans piles-joueur = [deck, defausse] ; idem rencontre.
-    const ancre = (zone: string, index: number): Boite | undefined => {
-      const els = scene.querySelectorAll<HTMLElement>(`.${zone} .scan-card[data-card-id]`)
-      const el = els[index]
-      return el ? boiteDe(el) : undefined
-    }
-    const deckJoueur = ancre('zone-piles-joueur', 0)
-    const defausseJoueur = ancre('zone-piles-joueur', 1) ?? deckJoueur
-    const deckRencontre = ancre('zone-piles-rencontre', 0)
-    const defausseRencontre = ancre('zone-piles-rencontre', 1) ?? deckRencontre
+    // On garde l'ELEMENT et pas seulement sa boite : la pile qui recoit une
+    // carte tressaille a l'atterrissage, et pour cela il faut pouvoir la
+    // toucher.
+    const ancreEl = (zone: string, index: number): HTMLElement | undefined =>
+      scene.querySelectorAll<HTMLElement>(`.${zone} .scan-card[data-card-id]`)[index]
+    const boiteOuRien = (el: HTMLElement | undefined): Boite | undefined =>
+      el ? boiteDe(el) : undefined
+
+    const deckJoueurEl = ancreEl('zone-piles-joueur', 0)
+    const defausseJoueurEl = ancreEl('zone-piles-joueur', 1) ?? deckJoueurEl
+    const deckRencontreEl = ancreEl('zone-piles-rencontre', 0)
+    const defausseRencontreEl = ancreEl('zone-piles-rencontre', 1) ?? deckRencontreEl
+
+    const deckJoueur = boiteOuRien(deckJoueurEl)
+    const defausseJoueur = boiteOuRien(defausseJoueurEl)
+    const deckRencontre = boiteOuRien(deckRencontreEl)
+    const defausseRencontre = boiteOuRien(defausseRencontreEl)
 
     // Respect du reglage systeme : si l'OS demande de reduire les animations, on
     // ne masque meme pas les vraies cartes (sinon elles clignoteraient sans
@@ -141,7 +234,16 @@ export function CoucheAnimations({ renderId, actif }: { renderId: number; actif:
 
     const prev = memoire
     if (actif && !reduit && prev.size > 0) {
-      type Brouillon = { groupe: number; src: string; depart: Boite; arrivee: Boite; el?: HTMLElement }
+      type Brouillon = {
+        groupe: number
+        src: string
+        depart: Boite
+        arrivee: Boite
+        /** La vraie carte a masquer pendant que son fantome vole. */
+        el?: HTMLElement
+        /** La PILE qui recoit, quand il y en a une : elle tressaille. */
+        elArrivee?: HTMLElement
+      }
       const brouillons: Brouillon[] = []
 
       // On n'anime QUE les mouvements qui touchent la MAIN du joueur (pioche,
@@ -170,7 +272,13 @@ export function CoucheAnimations({ renderId, actif }: { renderId: number; actif:
       for (const [id, avant] of prev) {
         if (courant.has(id)) continue
         if (avant.zone === 'zone-main' && defausseJoueur) {
-          brouillons.push({ groupe: GROUPE_DEFAUSSE, src: avant.src, depart: avant.rect, arrivee: defausseJoueur })
+          brouillons.push({
+            groupe: GROUPE_DEFAUSSE,
+            src: avant.src,
+            depart: avant.rect,
+            arrivee: defausseJoueur,
+            elArrivee: defausseJoueurEl,
+          })
         }
       }
 
@@ -186,23 +294,55 @@ export function CoucheAnimations({ renderId, actif }: { renderId: number; actif:
           liste.push(b)
           parGroupe.set(b.groupe, liste)
         }
-        const masquer = (el: HTMLElement, delai: number) => {
+        const masquer = (el: HTMLElement, delai: number, duree: number) => {
           el.style.visibility = 'hidden'
           window.setTimeout(() => {
             el.style.visibility = ''
-          }, 20 + delai + DUREE + 30)
+          }, 20 + delai + duree + 30)
+        }
+
+        /**
+         * La pile qui RECOIT tressaille de deux pixels a l'atterrissage.
+         *
+         * ⚠ Elle dit « c'est arrive LA ». Sans elle, une carte defaussee
+         * disparaissait au bord de l'ecran sans que rien ne signale ou : la
+         * defausse est l'endroit du plateau qu'on ne regarde jamais.
+         */
+        const tressaillir = (el: HTMLElement | undefined, quand: number) => {
+          if (!el) return
+          window.setTimeout(() => {
+            el.classList.add('a-recu')
+            window.setTimeout(() => el.classList.remove('a-recu'), 260)
+          }, quand)
         }
 
         const nouveaux: Vol[] = []
         let base = 0
+        let dureeMax = 0
         for (const groupe of [...parGroupe.keys()].sort((a, b) => a - b)) {
           const liste = parGroupe.get(groupe)!
+          // ⚠ Le « clac » ne part QUE si ce rendu ne fait voler qu'une seule
+          // carte, tous groupes confondus. Voir `Vol.clac`.
+          const seule = brouillons.length === 1
+          dureeMax = 0
           liste.forEach((b, i) => {
             const delai = base + i * CASCADE
-            nouveaux.push({ cle: `v${compteur.current++}`, src: b.src, depart: b.depart, arrivee: b.arrivee, delai })
-            if (b.el) masquer(b.el, delai)
+            const duree = dureeDe(b.depart, b.arrivee)
+            dureeMax = Math.max(dureeMax, duree)
+            nouveaux.push({
+              cle: `v${compteur.current++}`,
+              src: b.src,
+              depart: b.depart,
+              arrivee: b.arrivee,
+              delai,
+              duree,
+              angle: inclinaisonDe(b.depart, b.arrivee),
+              clac: seule,
+            })
+            if (b.el) masquer(b.el, delai, duree)
+            tressaillir(b.elArrivee, 20 + delai + duree)
           })
-          base += (liste.length - 1) * CASCADE + DUREE + GAP
+          base += (liste.length - 1) * CASCADE + dureeMax + GAP
         }
 
         setVols((v) => [...v, ...nouveaux])
