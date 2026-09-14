@@ -7697,9 +7697,20 @@
     font-size: 19px;
     font-weight: 600;
     line-height: 1.35;
-    text-shadow:
-      0 0 8px rgba(0, 0, 0, 0.95),
-      0 1px 3px rgba(0, 0, 0, 0.95);
+    /* ⚠ UN CONTOUR, PAS UNE OMBRE. La phrase se pose SUR DES CARTES, donc sur
+       un fond clair et chargé : une ombre portée s'y noyait. Constat de
+       l'utilisateur, 14/09/2026 : « on ne voit pas bien la phrase au-dessus du
+       bouton ». Quatre traitements lui ont été montrés sur le vrai plateau ; il
+       a retenu le contour noir, le plus léger qui règle vraiment le problème et
+       le seul qui n'ajoute rien à l'écran. C'est aussi le style des titres du
+       jeu.
+
+       `paint-order: stroke fill` est ce qui rend la chose utilisable : sans
+       lui, le trait est peint PAR-DESSUS les lettres et les ronge de moitié.
+       L'ombre reste, plus serrée, pour décoller le tout de la carte. */
+    -webkit-text-stroke: 4px #0b0b0b;
+    paint-order: stroke fill;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
   }
 
   /* Le nombre reprend la couleur du trait, et pour la même raison : elle dit de
