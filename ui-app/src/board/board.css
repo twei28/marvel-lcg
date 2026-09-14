@@ -177,11 +177,12 @@
     padding: 10px;
 
     border-radius: 10px;
-    background:
-      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(180deg, rgba(45, 55, 70, 0.96), rgba(30, 30, 30, 0.98));
-    background-size: 32px 32px, 32px 32px, auto;
+    /* Fond UNI, sans quadrillage (14/09/2026, demande de l'utilisateur).
+       Il y avait ici deux lignes blanches d'1 px, a 5 % et 4 % d'opacite,
+       repetees tous les 32 px, qui dessinaient une grille sur toute la table.
+       Retirees : elles ne portaient aucune information et l'oeil les suivait
+       au lieu d'aller aux cartes. Le degrade de fond, lui, reste. */
+    background: linear-gradient(180deg, rgba(45, 55, 70, 0.96), rgba(30, 30, 30, 0.98));
     box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.55);
   }
 
