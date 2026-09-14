@@ -58,7 +58,12 @@ export function contenuDuTrait(etape: EtapeDeroule): ContenuTrait {
   if (etape.statut) return { unite: etape.statut, ton: 'statut' }
 
   const table = UNITES[etape.titre]
-  const montant = etape.montant
+  // ⚠ SUR UNE ANNONCE, LE MONTANT PREVU. Le coup n'a pas eu lieu : l'etape ne
+  // porte aucun `montant`, seulement `valeurAnnoncee` (l'attaque imprimee).
+  // Choix de l'utilisateur parmi trois (14/09/2026) : « des l'annonce, avec le
+  // montant prevu », en sachant que ce nombre CHANGERA apres les boosts et sa
+  // defense. C'est le prix a payer pour decider si l'on defend.
+  const montant = etape.montant ?? etape.valeurAnnoncee
   if (!table) return { montant, unite: '', ton: 'neutre' }
   // ⚠ `Math.abs` : un retrait de menace est un nombre négatif dans le fait ;
   // l'unité s'accorde sur la quantité, pas sur le sens.

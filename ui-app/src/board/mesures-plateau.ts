@@ -79,3 +79,41 @@ export function boiteDuDeckRencontre(cadre: {
     h: r.height,
   }
 }
+
+/**
+ * Où une carte rencontre finit son voyage, une fois lue.
+ *
+ * Demande de l'utilisateur, 14/09/2026 : « on voit la carte et on doit la voir
+ * aller de là vers l'endroit où elle va se poser. Donc si c'est un sbire, le
+ * sbire va se mettre chez les sbires, si c'est un attachement, c'est un
+ * attachement, et sinon ça va dans la défausse. »
+ *
+ * ⚠ ON NE DEVINE PAS LA DESTINATION, ON LA CHERCHE. La carte est déjà à sa
+ * place sur la table au moment où l'étape s'affiche (le moteur est en avance
+ * sur le récit) : il suffit de la retrouver par son identifiant. Déduire
+ * « c'est un sbire donc zone des sbires » se tromperait dès la première carte
+ * qui s'attache, se met de côté ou part sous une autre.
+ *
+ * Rend la pile de DÉFAUSSE RENCONTRE quand la carte n'est nulle part : elle y
+ * est allée. C'est sa place, et il y a toujours une destination (décision de
+ * l'utilisateur). `undefined` seulement si même la défausse est introuvable.
+ */
+export function destinationDeLaCarte(
+  id: number | undefined,
+  cadre: { element: HTMLElement; origine: DOMRect }
+): Boite | undefined {
+  const surLaTable = boiteDeCarte(id, cadre)
+  if (surLaTable) return surLaTable
+  const defausse = cadre.element.querySelector<HTMLElement>(
+    '.zone-piles-rencontre .plateau-unite:last-child .scan-card'
+  )
+  if (!defausse) return undefined
+  const r = defausse.getBoundingClientRect()
+  if (r.width === 0) return undefined
+  return {
+    x: r.left - cadre.origine.left,
+    y: r.top - cadre.origine.top,
+    w: r.width,
+    h: r.height,
+  }
+}

@@ -115,3 +115,32 @@ describe('par où le trait passe', () => {
     expect(dansLaBoite(t.x2, t.y2, b)).toBe(false)
   })
 })
+
+describe('le trait sur une ANNONCE', () => {
+  // ⚠ Le coup n'a pas eu lieu : l'étape ne porte aucun `montant`, seulement
+  // `valeurAnnoncee`. Choix de l'utilisateur parmi trois (14/09/2026) : « dès
+  // l'annonce, avec le montant prévu », en sachant que ce nombre changera après
+  // les boosts et la défense. C'est le prix à payer pour décider si l'on défend.
+  it('porte le montant PRÉVU tant que le coup n’a pas eu lieu', () => {
+    const c = contenuDuTrait(
+      etape({ titre: 'attaque', etat: 'annonce', valeurAnnoncee: 3 })
+    )
+    expect(c.montant).toBe(3)
+    expect(c.unite).toBe('dégâts')
+  })
+
+  it('le montant RÉEL l’emporte dès que le coup est résolu', () => {
+    // Sur le pas suivant, `montant` existe : c'est lui qui compte, et il peut
+    // être bien plus petit (défense) ou plus grand (boosts).
+    const c = contenuDuTrait(
+      etape({ titre: 'attaque', etat: 'resolu', valeurAnnoncee: 3, montant: 1 })
+    )
+    expect(c.montant).toBe(1)
+    expect(c.unite).toBe('dégât')
+  })
+
+  it('une annonce sans valeur connue ne montre aucun nombre', () => {
+    const c = contenuDuTrait(etape({ titre: 'attaque', etat: 'annonce' }))
+    expect(c.montant).toBeUndefined()
+  })
+})

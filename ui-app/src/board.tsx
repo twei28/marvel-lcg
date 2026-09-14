@@ -1287,6 +1287,17 @@ function PageEtat({
           imageUrl: scanUrl('encounter'),
           facedown: true,
         }}
+        // ⚠ SANS `nomFr`, LES NOMS RESTENT EN ANGLAIS. Les faits du moteur
+        // portent le nom anglais en clair (« The Break-In! ») ; c'est ce
+        // rappel-la qui rend le nom francais de la carte. Le plateau d'une
+        // vraie partie le fournit depuis toujours ; cette page-ci ne le
+        // fournissait pas, et toutes les captures que j'en tirais montraient du
+        // francais mele d'anglais. Constate par l'utilisateur sur mes propres
+        // captures : « pourquoi il y a marque The Break-In ? ».
+        nomFr={(id) => {
+          const carte = indexerCartesMonde(monde).get(id)
+          return carte ? nomAffiche(carte) : undefined
+        }}
         onSuivant={() => {}}
         onTerminer={() => {}}
       />

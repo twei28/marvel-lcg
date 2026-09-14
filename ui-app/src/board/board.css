@@ -7805,3 +7805,40 @@
     }
   }
 }
+
+@layer utilitaires {
+  /* --- La carte rencontre qui rejoint sa place (14/09/2026) -------------------
+     « On voit la carte et on doit la voir aller de là vers l'endroit où elle va
+     se poser. » Elle part au clic, pas toute seule, et met DEUX SECONDES : un
+     vrai trajet, pas un saut (choix de l'utilisateur parmi trois).
+
+     Elle part de sa place LUE (agrandie, à côté du paquet) et arrive à sa place
+     définitive, en reprenant la taille des cartes de la table. Les deux places
+     sont mesurées en TypeScript ; la CSS ne fait que le mouvement. */
+  .rencontre-sortie.est-depart {
+    animation: rencontre-rejoint 2000ms cubic-bezier(0.35, 0, 0.2, 1) both;
+    /* Au-dessus des cartes de la table pendant le vol : elle passe par-dessus
+       ce qu'elle survole, comme une vraie carte qu'on déplace à la main. */
+    z-index: 135;
+  }
+
+  @keyframes rencontre-rejoint {
+    from {
+      transform: translate(var(--depart-x, 0), var(--depart-y, 0))
+        scale(var(--depart-echelle, 1));
+    }
+    to {
+      transform: translate(0, 0) scale(1);
+      opacity: 0;
+    }
+  }
+
+  /* ⚠ « MOUVEMENT RÉDUIT » : elle ne voyage pas. Elle s'efface là où elle
+     était, et la table montre déjà la carte à sa place. */
+  @media (prefers-reduced-motion: reduce) {
+    .rencontre-sortie.est-depart {
+      animation: none;
+      opacity: 0;
+    }
+  }
+}

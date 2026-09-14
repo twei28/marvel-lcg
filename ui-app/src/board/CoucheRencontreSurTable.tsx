@@ -17,13 +17,27 @@
 // dans le monde de la trame retenue. Les deux viennent de `carteScene`, qui les
 // sort de l'index du monde et les retourne pour nous.
 
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import type { EtapeDeroule } from './deroule-phase'
 import { sceneDe } from './deroule-scene'
 import { t } from './langue'
-import { boiteDeCarte, boiteDuDeckRencontre, cadreDuPlateau } from './mesures-plateau'
+import {
+  boiteDeCarte,
+  boiteDuDeckRencontre,
+  cadreDuPlateau,
+  destinationDeLaCarte,
+} from './mesures-plateau'
 import { placeDeLaRevelee, placesDesBoosts, type Boite } from './places-rencontre'
+
+/**
+ * Le temps que met une carte rencontre a rejoindre sa place.
+ *
+ * ⚠ DEUX SECONDES, choix de l'utilisateur parmi trois : « un vrai trajet, pas
+ * un saut ». C'est long pour une animation ; c'est voulu, on doit pouvoir
+ * suivre la carte des yeux jusqu'a sa destination.
+ */
+export const DUREE_VOL_MS = 2000
 
 export function CoucheRencontreSurTable({
   etape,
@@ -46,6 +60,33 @@ export function CoucheRencontreSurTable({
   const [seconde, setSeconde] = useState(0)
   const cle = etape?.cle
   const auteurId = etape?.carteId
+
+  /**
+   * LA CARTE QUI S'EN VA, une fois lue.
+   *
+   * Demande de l'utilisateur, 14/09/2026 : « on voit la carte et on doit la
+   * voir aller de là vers l'endroit où elle va se poser ». Et sur le moment :
+   * « au clic : on lit, puis elle part » — elle ne s'efface pas toute seule.
+   *
+   * ⚠ ELLE SURVIT A SON ETAPE. Au clic, l'étape change et la carte quitterait
+   * l'écran instantanément : on garde donc ICI ce qu'on montrait juste avant,
+   * le temps du vol. Deux secondes, sa décision : « un vrai trajet, pas un
+   * saut ».
+   */
+  const [sortie, setSortie] = useState<
+    { props: ScanCardProps; de: Boite; vers: Boite; cle: string } | undefined
+  >(undefined)
+  type CarteMontree = { id: number; props: ScanCardProps; place: Boite; cle: string }
+  /**
+   * ⚠ DEUX MEMOIRES, ET C'EST LA CLE. `courant` est ecrit PENDANT le rendu ;
+   * `precedent` n'est mis a jour que dans l'effet, APRES. Une seule memoire ne
+   * pouvait pas marcher : React rend la nouvelle etape AVANT de lancer les
+   * effets, si bien que la memoire portait deja la carte du pas suivant quand
+   * l'effet cherchait celle du pas d'avant. Deux revelations de suite ne
+   * faisaient alors voler personne. Mesure a l'ecran.
+   */
+  const courant = useRef<CarteMontree | undefined>(undefined)
+  const precedent = useRef<CarteMontree | undefined>(undefined)
 
   useLayoutEffect(() => {
     if (!actif) {
@@ -74,9 +115,27 @@ export function CoucheRencontreSurTable({
     return () => window.clearTimeout(minuteur)
   }, [actif, cle])
 
+  // L'ETAPE A CHANGE : la carte qu'on montrait part vers sa place.
+  useEffect(() => {
+    const avant = precedent.current
+    precedent.current = courant.current
+    if (!avant || avant.cle === cle) return
+    const c = cadreDuPlateau()
+    const vers = c ? destinationDeLaCarte(avant.id, c) : undefined
+    // Sans destination mesurable, pas de vol : la carte s'efface, plutôt que
+    // de partir vers un point inventé.
+    if (!vers) return
+    setSortie({ props: avant.props, de: avant.place, vers, cle: avant.cle })
+    const minuteur = window.setTimeout(() => setSortie(undefined), DUREE_VOL_MS + 120)
+    return () => window.clearTimeout(minuteur)
+  }, [cle])
+
   if (!actif || !etape || !ancre) return null
 
   const scene = sceneDe(etape)
+  // Aucune carte revelee sur cette etape : la memoire du rendu se vide, sinon
+  // une carte d'une etape ancienne repartirait en vol deux etapes plus tard.
+  courant.current = undefined
   const boosts = scene.cartes.filter((c) => c.role === 'boost').slice(0, boostsMontres)
   const revelee = scene.cartes.find((c) => c.role === 'revelee')
 
@@ -152,11 +211,35 @@ export function CoucheRencontreSurTable({
         </div>
       ) : null}
 
+      {/* LA CARTE QUI S'EN VA. Elle n'existe plus dans l'etape courante : c'est
+          `sortie` qui la garde, le temps du trajet. */}
+      {sortie ? (
+        <div
+          key={`sortie-${sortie.cle}`}
+          className="rencontre-sortie est-depart"
+          style={{
+            left: `${sortie.vers.x}px`,
+            top: `${sortie.vers.y}px`,
+            '--card-w': `${sortie.vers.w}px`,
+            // D'ou elle vient : le decalage de sa place LUE vers sa place
+            // FINALE. Le meme principe que la sortie du paquet, a l'envers.
+            '--depart-x': `${sortie.de.x - sortie.vers.x}px`,
+            '--depart-y': `${sortie.de.y - sortie.vers.y}px`,
+            '--depart-echelle': `${sortie.de.w / sortie.vers.w}`,
+          } as React.CSSProperties}
+        >
+          {carteNue(sortie.props)}
+        </div>
+      ) : null}
+
       {revelee && revelee.role !== 'dos'
         ? (() => {
             const props = carteScene?.(revelee.id, true)
             if (!props) return null
             const place = placeDeLaRevelee(ancre.deck, ancre.cadre)
+            // On retient ce qu'on montre : au prochain changement d'etape,
+            // c'est cette carte-la qui partira vers sa place.
+            courant.current = { id: revelee.id, props, place, cle: cle ?? '' }
             return (
               <div
                 className="rencontre-sortie est-revelee"
