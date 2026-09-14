@@ -7688,10 +7688,13 @@
      ⚠ NI ENCADRÉ NI FOND : c'est ce qui la distingue du panneau qu'on vient de
      retirer. Elle tient sur la table par son ombre portée, pas par une boîte. */
   .deroule-recit {
-    max-width: min(520px, 46vw);
+    max-width: min(640px, 52vw);
     text-align: center;
     color: #ffffff;
-    font-size: 14px;
+    /* ⚠ AGRANDI le 14/09/2026 (14 px -> 19 px) : « le texte peut être en plus
+       grand ». C'est la seule phrase de l'étape depuis que le panneau a
+       disparu ; elle doit se lire sans se pencher, à deux mètres d'un écran. */
+    font-size: 19px;
     font-weight: 600;
     line-height: 1.35;
     text-shadow:
@@ -7750,5 +7753,55 @@
   .deroule-recit b {
     font-weight: 800;
     color: #ffffff;
+  }
+}
+
+@layer utilitaires {
+  /* --- Le jeton de menace qui vole (14/09/2026) -------------------------------
+     Point 1 de la phase du méchant, mode « Sur la table ». Il part du MILIEU de
+     l'écran, là où le joueur vient de lire la phrase, et se pose sur la
+     manigance visée. Choix de l'utilisateur parmi trois : « le jeton part du
+     milieu de l'écran », et « le jeton avec son nombre dessus ».
+
+     Les deux positions sont calculées en TypeScript (`JetonMenaceVolant`) : la
+     CSS ne sait pas où est une manigance. Elle ne fait que la transition. */
+  .jeton-menace-volant {
+    position: absolute;
+    z-index: 140;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--menace, #f0b95f);
+    border: 2px solid #0b0b0b;
+    color: #0e1014;
+    font-family: Anton, Impact, system-ui, sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8);
+    transition:
+      left 700ms cubic-bezier(0.3, 0.1, 0.25, 1),
+      top 700ms cubic-bezier(0.3, 0.1, 0.25, 1),
+      transform 700ms cubic-bezier(0.3, 0.1, 0.25, 1),
+      opacity 260ms ease-out 640ms;
+  }
+
+  /* Arrivé : il grossit un instant puis s'efface, le temps que le compteur de
+     la manigance monte. Sans cette disparition il resterait posé sur la carte. */
+  .jeton-menace-volant.est-arrive {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+
+  /* ⚠ RESPECTER « MOUVEMENT RÉDUIT » : le jeton ne vole pas, il ne fait que
+     paraître sur la manigance. L'information reste, le trajet disparaît. */
+  @media (prefers-reduced-motion: reduce) {
+    .jeton-menace-volant {
+      transition: opacity 200ms ease-out 400ms;
+    }
+    .jeton-menace-volant.est-arrive {
+      transform: none;
+    }
   }
 }

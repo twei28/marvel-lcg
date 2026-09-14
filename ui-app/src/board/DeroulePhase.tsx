@@ -57,6 +57,7 @@ import { useDerouleScene } from './useDerouleScene'
 import { useAncrageSurTable } from './useAncrageSurTable'
 import { CoucheTraitPhase } from './CoucheTraitPhase'
 import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
+import { JetonMenaceVolant } from './JetonMenaceVolant'
 import { contenuDuTrait } from './trait-phase'
 
 /** Le temps de lire un boost a capacite avant le suivant. */
@@ -101,6 +102,7 @@ const TEMPS: { cle: TempsPhase; libelle: string }[] = [
 export function DeroulePhase({
   etapes,
   presentation = 'scene',
+  attendreBandeau = false,
   identitePhase,
   identitePartie,
   phaseMechantEnCours = false,
@@ -142,6 +144,20 @@ export function DeroulePhase({
    * memes bugs. Seul le RENDU change.
    */
   presentation?: 'scene' | 'table'
+  /**
+   * Le bandeau d'ouverture de la phase joue encore : ne rien montrer.
+   *
+   * ⚠ N'AGIT QUE DANS LA PRESENTATION « table ». Demande de l'utilisateur,
+   * 14/09/2026 : « d'abord le bandeau, puis apres on montre la manigance. On
+   * attend que le bandeau soit parti. » Les deux se superposaient. Le mode
+   * « Detaille » n'est pas touche : sa scene centrale coexiste avec le bandeau
+   * depuis toujours, et personne ne s'en est plaint.
+   *
+   * ⚠ ON RETOURNE `null` APRES TOUS LES HOOKS, jamais avant. Le composant garde
+   * son index, ses minuteurs et sa memoire d'etapes pendant ces deux secondes :
+   * s'effacer n'est pas se demonter.
+   */
+  attendreBandeau?: boolean
   /**
    * L'identite de la phase en cours. board.tsx y passe `etat.monde.round_id` :
    * il y a une phase du mechant par round, donc le round suffit a distinguer
@@ -1217,6 +1233,14 @@ export function DeroulePhase({
         <CoucheTraitPhase etape={etape} actif />
         {/* Les cartes qui sortent du paquet rencontre : les boosts a cote du
             deck, puis la carte revelee en grand. Meme portail, meme repere. */}
+        {/* Le jeton de menace, sur les etapes qui en posent (point 1, et une
+            manigance du mechant). Ailleurs il ne rend rien. */}
+        <JetonMenaceVolant
+          cibleId={etape?.cibleId}
+          montant={etape?.montant}
+          cle={etape?.cle}
+          actif={etape?.titre === 'menace' || etape?.titre === 'manigance'}
+        />
         <CoucheRencontreSurTable
           etape={etape}
           boostsMontres={boostsMontres}
@@ -1607,15 +1631,24 @@ export function DeroulePhase({
      faut voir les boutons. */
   // Le nombre de l'etape, dans son unite, EXACTEMENT comme le trait le dit.
   const contenu = contenuDuTrait(etapeLue)
+  const phraseEtape = titreEtape(etapeLue)
+  const nombreEnClair =
+    contenu.montant !== undefined
+      ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`
+      : contenu.unite
+        ? t(contenu.unite)
+        : ''
   const recit = {
     ton: contenu.ton,
-    texte:
-      contenu.montant !== undefined
-        ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`
-        : contenu.unite
-          ? t(contenu.unite)
-          : '',
+    // ⚠ PAS DEUX FOIS LE MEME NOMBRE. Certaines phrases le portent deja :
+    // « The Break-In! gagne 1 menace » suivi d'un « 1 menace » en jaune disait
+    // la meme chose a dix pixels d'ecart. Constate a l'ecran. On ne rajoute le
+    // nombre que quand la phrase ne le dit pas.
+    texte: nombreEnClair && phraseEtape.includes(nombreEnClair) ? '' : nombreEnClair,
   }
+
+  // Le bandeau d'ouverture joue encore : la table se tait. Voir la prop.
+  if (surTable && attendreBandeau) return null
 
   if (surTable && etape.temps !== 'bilan' && !defaiteLocale) {
     return enveloppe(
@@ -1643,7 +1676,7 @@ export function DeroulePhase({
               sans que la phrase crie comme un titre. Le decoupage se fait sur
               les noms que l'ETAPE porte, jamais sur le texte redige : chercher
               un nom dans une phrase traduite casserait a la premiere langue. */}
-          {decouperPhrase(titreEtape(etapeLue), [etapeLue.auteurNom, etapeLue.cibleNom]).map(
+          {decouperPhrase(phraseEtape, [etapeLue.auteurNom, etapeLue.cibleNom]).map(
             (m, i) => (m.gras ? <b key={i}>{m.texte}</b> : <span key={i}>{m.texte}</span>)
           )}
           {recit.texte ? <b className="deroule-recit-nombre">{recit.texte}</b> : null}

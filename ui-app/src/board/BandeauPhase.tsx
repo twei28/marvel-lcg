@@ -16,7 +16,27 @@ export const DUREE_COURTE_MS = 1000
 /** Round a partir duquel l'annonce se raccourcit. */
 export const ROUND_COURT = 4
 
-export function BandeauPhase({ round, actif }: { round: number; actif: boolean }) {
+export function BandeauPhase({
+  round,
+  actif,
+  onFini,
+}: {
+  round: number
+  actif: boolean
+  /**
+   * Appele quand le bandeau a fini de jouer.
+   *
+   * ⚠ AJOUTE LE 14/09/2026 POUR LE MODE « Sur la table ». L'utilisateur : « d'abord
+   * le bandeau, puis apres on montre la manigance. On attend que le bandeau soit
+   * parti. » Les deux se superposaient : la premiere etape s'affichait pendant
+   * que le bandeau passait encore.
+   *
+   * Le bandeau garde son minuteur - c'est lui qui sait combien de temps il dure,
+   * et il dure moins longtemps passe un certain round. Il se contente de dire
+   * quand il a fini.
+   */
+  onFini?: () => void
+}) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -26,10 +46,17 @@ export function BandeauPhase({ round, actif }: { round: number; actif: boolean }
     }
     setVisible(true)
     const duree = round >= ROUND_COURT ? DUREE_COURTE_MS : DUREE_LONGUE_MS
-    const minuteur = window.setTimeout(() => setVisible(false), duree)
+    const minuteur = window.setTimeout(() => {
+      setVisible(false)
+      onFini?.()
+    }, duree)
     // Nettoyage indispensable : sans lui, un changement de round pendant que
     // l'ancien minuteur court ferait apparaitre deux annonces superposees.
     return () => window.clearTimeout(minuteur)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `onFini` ne doit
+    // PAS re-armer le minuteur : une fonction recreee a chaque rendu du plateau
+    // le remettrait a zero plus vite qu'il n'arrive a echeance, et le bandeau
+    // ne partirait jamais.
   }, [actif, round])
 
   if (!visible) return null

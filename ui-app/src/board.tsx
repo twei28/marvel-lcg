@@ -1232,6 +1232,7 @@ function PageEtat({
     )
   }, [monde])
   const modePhaseEnregistre = lireModePhaseMechant()
+  const [bandeauFini, setBandeauFini] = useState(false)
 
   if (!monde || !plateau) {
     return (
@@ -1244,8 +1245,20 @@ function PageEtat({
   const Rendu = mode === 'mobile' ? PlateauMobile : Board
   return (
     <>
+    {/* ⚠ LE BANDEAU AUSSI, sinon la sequence « il joue seul, puis la phase
+        commence » ne s'observe nulle part hors d'une vraie partie - et c'est
+        exactement le manque qui avait laisse passer un cartouche invisible le
+        14/09/2026. */}
+    {modePhaseEnregistre !== 'instantane' && etapesEnregistrees.length > 0 ? (
+      <BandeauPhase
+        round={monde.round_id ?? 1}
+        actif
+        onFini={() => setBandeauFini(true)}
+      />
+    ) : null}
     {modePhaseEnregistre !== 'instantane' && etapesEnregistrees.length > 0 ? (
       <DeroulePhase
+        attendreBandeau={!bandeauFini}
         presentation={modePhaseEnregistre === 'detaille' ? 'scene' : 'table'}
         etapes={etapesEnregistrees}
         identitePhase={monde.round_id ?? 0}
@@ -2317,6 +2330,25 @@ function PagePartie({
    * rendre inchangeable ; c'est ici, a la source, qu'il cesse de s'appliquer.
    */
   const avanceAutoActive = sceneCentrale && avanceAuto
+  /**
+   * LE BANDEAU D'OUVERTURE JOUE SEUL, ET LA PHASE ATTEND QU'IL SOIT PARTI.
+   *
+   * Demande de l'utilisateur, 14/09/2026 : « d'abord le bandeau, puis apres on
+   * montre la manigance. On attend que le bandeau soit parti. » Les deux se
+   * superposaient : la premiere etape s'affichait pendant que le bandeau
+   * passait encore par-dessus.
+   *
+   * ⚠ REMIS A « pas encore passe » A CHAQUE NOUVELLE PHASE, sur le round : il y
+   * a une phase du mechant par round, et le bandeau rejoue a chacune. Sans cette
+   * remise a zero, il ne serait attendu qu'a la toute premiere.
+   */
+  const [bandeauPasse, setBandeauPasse] = useState(false)
+  const roundDuBandeau = useRef<number | undefined>(undefined)
+  const roundCourant = etat.monde?.round_id ?? 0
+  if (roundDuBandeau.current !== roundCourant) {
+    roundDuBandeau.current = roundCourant
+    if (bandeauPasse) setBandeauPasse(false)
+  }
   const basculerAvanceAuto = useCallback(() => {
     setAvanceAuto((a) => {
       const nouveau = !a
@@ -2905,12 +2937,14 @@ function PagePartie({
           <BandeauPhase
             round={etat.monde?.round_id ?? 1}
             actif={etapesPhaseMechant.length > 0}
+            onFini={() => setBandeauPasse(true)}
           />
           <DeroulePhase
             // Meme mecanique, deux endroits : le cartouche central du mode
             // « Detaille », ou le cartouche pose A COTE DE L'ACTION du mode
             // « Sur la table ».
             presentation={sceneCentrale ? 'scene' : 'table'}
+            attendreBandeau={!bandeauPasse}
             etapes={etapesPhaseMechant}
             // L'identite de la phase en cours, seule chose qui remet le
             // cartouche a zero. Il y a une phase du mechant par round, donc le
