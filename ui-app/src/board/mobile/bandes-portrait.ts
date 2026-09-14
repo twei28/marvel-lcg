@@ -35,7 +35,10 @@ export type BandesPortrait = {
 }
 
 const IDENTITES = new Set(['hero', 'alter-ego'])
-const EMPLACEMENTS_DE_PILES: CleEmplacement[] = ['piles-joueur', 'piles-rencontre', 'nemesis', 'annexes']
+// ⚠ « nemesis » a disparu de cette liste le 14/09/2026 : le set nemesis a
+// rejoint « annexes », qui y figure deja. Rien n'est perdu sur telephone, la
+// pile arrive juste par l'autre emplacement.
+const EMPLACEMENTS_DE_PILES: CleEmplacement[] = ['piles-joueur', 'piles-rencontre', 'annexes']
 const EMPLACEMENTS_SPECIAUX: CleEmplacement[] = ['deck-special', 'reserve']
 
 /** Une pile : elle se consulte (`pileContenu`) ou au moins se compte (`pileCount`). */

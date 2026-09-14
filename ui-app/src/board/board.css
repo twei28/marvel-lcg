@@ -167,10 +167,15 @@
        - rangees 2-3 = AIRE JOUEUR en deux rangees : ligne de combat (allies +
          sbires engages) puis le reste (soutiens/permanents/environnement) ;
        - rangee 4 = la main. Piles joueur a gauche, identite a droite. */
+    /* ⚠ LA RANGEE « nemesis » A DISPARU le 14/09/2026 : le set nemesis a
+       rejoint « Mises de côté / autres piles », dont il relève par les règles
+       (voir zones.ts). La colonne de gauche se lit désormais deck rencontre,
+       deck du héros, puis les autres piles sur DEUX rangées — elles en ont
+       besoin, elles portent une pile de plus. */
     grid-template-areas:
       "piles-rencontre rencontre       complot-principal"
-      "nemesis         terrain-combat  complots-secondaires"
-      "piles-joueur    terrain-soutien complots-secondaires"
+      "piles-joueur    terrain-combat  complots-secondaires"
+      "annexes         terrain-soutien complots-secondaires"
       "annexes         main            complots-secondaires";
     /* Zones rapprochees : moins d'espace perdu entre elles. */
     gap: 7px;
@@ -2453,13 +2458,11 @@
   .zone-annexes .plateau-cartes,
   .zone-complot-principal .plateau-cartes,
   .zone-complots-secondaires .plateau-cartes,
-  .zone-nemesis .plateau-cartes,
   .zone-piles-rencontre .plateau-groupe,
   .zone-piles-joueur .plateau-groupe,
   .zone-annexes .plateau-groupe,
   .zone-complot-principal .plateau-groupe,
-  .zone-complots-secondaires .plateau-groupe,
-  .zone-nemesis .plateau-groupe {
+  .zone-complots-secondaires .plateau-groupe {
     flex-wrap: wrap;
     align-content: flex-start;
     gap: 10px;
@@ -2469,8 +2472,7 @@
   .zone-piles-joueur .plateau-groupe,
   .zone-annexes .plateau-groupe,
   .zone-complot-principal .plateau-groupe,
-  .zone-complots-secondaires .plateau-groupe,
-  .zone-nemesis .plateau-groupe {
+  .zone-complots-secondaires .plateau-groupe {
     min-width: 0;
   }
 
@@ -2490,6 +2492,19 @@
   .zone-piles-joueur .plateau-emplacement-titre,
   .zone-annexes .plateau-emplacement-titre {
     left: 4px;
+  }
+
+  /* ⚠ « Mises de côté / autres piles » COUVRE DEUX RANGÉES depuis le
+     14/09/2026 (la rangée libérée par le set némésis), et ses cartes se posent
+     sur la ligne basse comme celles de la main, à côté. Sans `align-self: end`
+     la zone occupait les deux rangées en entier : son étiquette, qui flotte en
+     haut de la zone, se retrouvait à 200 px au-dessus de ses propres cartes.
+     Mesuré à l'écran. La zone se réduit donc à sa hauteur utile, calée en bas.
+
+     L'autre répartition essayée (la rangée au deck du héros) était pire : les
+     étiquettes « Deck du héros » et « Mises de côté » se chevauchaient. */
+  .zone-annexes {
+    align-self: end;
   }
 
   .zone-rencontre {
@@ -2647,17 +2662,11 @@
     left: auto;
   }
 
-  .zone-nemesis .plateau-cartes {
-    justify-content: center;
-  }
-
-  .zone-nemesis {
-    grid-area: nemesis;
-    --mc-zoom-origine: left center;
-    /* Menace personnelle en attente : accent rouge sombre, comme le camp adverse. */
-    border-color: rgba(166, 0, 0, 0.3);
-    background: rgba(166, 0, 0, 0.05);
-  }
+  /* ⚠ `.zone-nemesis` A DISPARU le 14/09/2026 : le set némésis a rejoint
+     « Mises de côté / autres piles » (voir zones.ts et la grille plus haut).
+     Son accent rouge sombre est parti avec elle ; la pile garde son étiquette
+     « Set némésis » et reste consultable d'un clic, c'est par là qu'on la
+     reconnaît maintenant. */
 
   .zone-main {
     grid-area: main;

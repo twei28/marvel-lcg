@@ -57,13 +57,19 @@ describe('repartirEnBandes', () => {
       plateau(
         emplacement('piles-joueur', unite('joueur-deck', { name: 'Deck', pileCount: 30 }), unite('joueur-defausse', { name: 'Haymaker' }, { pileContenu: [] })),
         emplacement('piles-rencontre', unite('rencontre-encounter-deck', { pileCount: 20 })),
-        emplacement('nemesis', unite('nemesis-set', { name: 'Vulture' }, { pileContenu: [{ id: 'x' } as ScanCardProps], pileTitre: 'Némésis' })),
-        emplacement('annexes', unite('annexes-visibles', { name: 'Victoire' }, { pileContenu: [] })),
+        // ⚠ Le set nemesis vit dans « annexes » depuis le 14/09/2026 : il n'a
+        // plus de zone a lui. Sur telephone, il arrive donc par cet
+        // emplacement-la, et doit toujours etre range comme une pile.
+        emplacement(
+          'annexes',
+          unite('annexes-nemesis', { name: 'Vulture' }, { pileContenu: [{ id: 'x' } as ScanCardProps], pileTitre: 'Némésis' }),
+          unite('annexes-visibles', { name: 'Victoire' }, { pileContenu: [] })
+        ),
         emplacement('deck-special', unite('soutien-deck', { pileCount: 5 }), unite('invocation', { kind: 'support' }))
       )
     )
     expect(bandes.piles.map((p) => p.cle)).toEqual([
-      'joueur-deck', 'joueur-defausse', 'rencontre-encounter-deck', 'nemesis-set', 'annexes-visibles', 'soutien-deck',
+      'joueur-deck', 'joueur-defausse', 'rencontre-encounter-deck', 'annexes-nemesis', 'annexes-visibles', 'soutien-deck',
     ])
     expect(bandes.piles[0].compte).toBe(30)
     expect(bandes.piles[3].titre).toBe('Némésis')

@@ -94,7 +94,6 @@ export type CleEmplacement =
   | 'terrain-soutien'
   | 'deck-special'
   | 'piles-joueur'
-  | 'nemesis'
   | 'annexes'
   | 'reserve'
   | 'main'
@@ -789,6 +788,42 @@ export function construirePlateau(world: World, options: Options): Plateau {
     // défausse, elle, est à côté du deck. L'ancien libellé laissait croire que
     // ces cartes étaient défaussées.
     emplacement('annexes', t('Mises de côté / autres piles'), [
+      // LE SET NEMESIS A REJOINT LES AUTRES PILES (14/09/2026).
+      //
+      // Il avait sa propre zone, sur toute une rangee de la colonne de gauche.
+      // Constat de l'utilisateur : « le set nemesis peut aller dans les autres
+      // piles, tant qu'il n'apparait pas en jeu ». Verifie : cette zone ne
+      // montrait JAMAIS une carte en jeu. Des qu'une carte nemesis entre en
+      // jeu, elle part chez le mechant, dans les sbires ou dans les manigances
+      // annexes ; il ne reste ici que `set_aside_nemesis_sets`. Par les regles,
+      // le set nemesis EST mis de cote a l'installation : sa place est ici.
+      //
+      // ⚠ PILE NOMMEE A PART, PAS FONDUE dans « Cartes visibles ». Fondu, il
+      // perdrait son etiquette et se repererait moins vite, alors que c'est la
+      // seule pile de cette zone qu'on consulte pour savoir ce qui nous
+      // attend. Choix de l'utilisateur parmi trois.
+      //
+      // ⚠ ET IL EST PERSONNEL (`notre`), la ou le reste de la zone est commun
+      // (`world.area_*`). Ce n'est pas une premiere : « Cartes cachees » porte
+      // deja `notre?.set_aside_deck`. En multijoueur il suit donc le heros
+      // AFFICHE, comme tout ce qui vient de `notre`.
+      piles(
+        'annexes',
+        [
+          {
+            cle: 'nemesis',
+            cartes: notre?.set_aside_nemesis_sets,
+            representant: representantNemesis,
+            nemesis: true,
+            // Le set nemesis est CONNU du joueur : il est imprime dans le pack
+            // du heros. Tant qu'il n'est pas en jeu, on doit pouvoir le
+            // consulter pour savoir ce qui nous attend (07/09/2026).
+            regardable: true,
+            titre: t('Set némésis'),
+          },
+        ],
+        rendu
+      ),
       posees(world.area_evidence, rendu),
       posees(world.area_rule, rendu),
       posees(world.area_resources, rendu),
@@ -834,28 +869,6 @@ export function construirePlateau(world: World, options: Options): Plateau {
       ),
     ]),
 
-    // Le set NEMESIS a sa propre zone (l'ancienne case « Other zones », a gauche) :
-    // c'est une menace personnelle en attente, pas une pile de jeu. On y montre le
-    // nemesis lui-meme (pas une treachery du set), etiquete « Nemesis ».
-    emplacement('nemesis', t('Némésis'), [
-      piles(
-        'nemesis',
-        [
-          {
-            cle: 'set',
-            cartes: notre?.set_aside_nemesis_sets,
-            representant: representantNemesis,
-            nemesis: true,
-            // Le set nemesis est CONNU du joueur : il est imprime dans le pack
-            // du heros. Tant qu'il n'est pas en jeu, on doit pouvoir le
-            // consulter pour savoir ce qui nous attend (07/09/2026).
-            regardable: true,
-            titre: t('Set némésis'),
-          },
-        ],
-        rendu
-      ),
-    ]),
 
     emplacement('main', t('Ta main'), [
       posees(notre?.hand_cards, rendu, {
