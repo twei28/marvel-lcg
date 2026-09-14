@@ -212,6 +212,12 @@ class CostFunc:
             from game.card.card_finder import CardFinder
             self.return_exhausted_cards: List['CardFace'] = []
             self.not_need_to_exhaust: List['CardFace'] = []
+            # ⚠ RETENU POUR LA GATE, pas pour le jeu : incliner « This » suppose
+            # que la carte est DEJA EN JEU. Une capacite de mise en jeu
+            # (`SetPlay`) qui reclamerait ce cout serait injouable pour
+            # toujours. `Ability.SetPlay` / `SetCostFunc` le refusent en lisant
+            # ce drapeau. Voir game/ability/ability.py.
+            self.exige_cette_carte_en_jeu = (target == "This")
 
             def on_check(effect: 'Effect'):
                 if self.not_need_to_exhaust:

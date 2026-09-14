@@ -665,6 +665,10 @@ class Ability:
             only_if_you_are_in_additional_from=only_if_you_are_in_additional_from,
             only_if_you_are_the_player=only_if_you_are_the_player,
         )
+        # ⚠ Le controle est fait des DEUX cotes : `SetPlay()` et `SetCostFunc()`
+        # s'appellent dans l'ordre qu'on veut, et il ne doit exister aucun ordre
+        # qui passe entre les mailles.
+        self._refuser_play_avec_cout_sur_soi()
         return self
 
     def NoOutOfPlayLimit(self) -> 'Ability':
@@ -1041,7 +1045,45 @@ class Ability:
 
     def SetCostFunc(self, cost_func: 'CostFunc.Base') -> 'Ability':
         self.cost_funcs.append(cost_func)
+        self._refuser_play_avec_cout_sur_soi()
         return self
+
+    def _refuser_play_avec_cout_sur_soi(self) -> None:
+        """UNE CAPACITE DE MISE EN JEU NE PEUT PAS COUTER D'INCLINER SA PROPRE CARTE.
+
+        ⚠ GATE, AJOUTEE LE 14/09/2026 APRES UN DEFAUT EN PARTIE, a la demande de
+        l'utilisateur : « il faut faire en sorte que ca n'arrive jamais, avec
+        aucune carte ».
+
+        Le defaut. `SetPlay()` baptise la capacite « Play » : le moteur la
+        presente comme la MISE EN JEU de la carte, et l'evalue pendant que la
+        carte est encore EN MAIN. Si son cout est `CostFunc.Exhaust("This")`, il
+        faudrait incliner une carte qui n'est pas sur la table : le cout n'a
+        aucune cible, `HasCostTargets` rend faux, et le moteur repond « rien a
+        depenser pour payer le cout » (`EffectFailure.NoCostTarget`).
+
+        ⚠ LA CARTE DEVIENT ALORS INJOUABLE POUR TOUJOURS, SANS AUCUNE ERREUR.
+        Rien ne plante, aucun test ne rougit, la carte est simplement absente
+        des options. C'est ce qui l'a rendue invisible : `62008` Burstein
+        Process arrivait en main par l'action de Luke Cage et ne pouvait jamais
+        etre posee. QUATRE AUTRES cartes portaient la meme faute (`61003`,
+        `61008`, `61009`, `62018`), elles aussi injouables.
+
+        ⚠ ON LEVE, ON NE CORRIGE PAS EN SILENCE. Retirer `SetPlay` d'office
+        ferait marcher la carte tout en cachant l'erreur a qui l'ecrit, et la
+        suivante serait ecrite pareil. Une capacite d'action se declare SANS
+        `SetPlay` : voir `aos/nick_fury/50041.py`, le modele officiel.
+        """
+        if "Play" not in self.func_names:
+            return
+        for cost_func in self.cost_funcs:
+            if getattr(cost_func, "exige_cette_carte_en_jeu", False):
+                raise AssertionError(
+                    'Capacite marquee SetPlay() avec un cout CostFunc.Exhaust("This") : '
+                    "la carte est encore EN MAIN quand ce cout est evalue, elle serait "
+                    "INJOUABLE sans qu'aucune erreur ne se voie. Une action se declare "
+                    "SANS SetPlay() ; modele officiel : aos/nick_fury/50041.py."
+                )
 
     def SetDefault(self) -> 'Ability':
         assert self.is_choose, f"{self.when=}"

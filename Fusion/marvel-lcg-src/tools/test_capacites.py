@@ -30640,6 +30640,51 @@ CAS = [
         "attendu": {"pret": ["st001a"], "degats_identite": 1,
                     "defausse": ["st021"]},
     },
+    # ---------------------------------------------------------------- LUKE CAGE --
+    # ⚠ CES DEUX CAS COMBLENT UN TROU QUI A COUTE CINQ CARTES INJOUABLES.
+    # Signale EN PARTIE le 14/09/2026 : `62008` Burstein Process arrivait en main
+    # par l'action de Luke Cage et le moteur repondait « rien a depenser pour
+    # payer le cout ». Cause : `.SetPlay()` baptisait la capacite « Play », donc
+    # le moteur presentait l'ACTION de la carte comme sa MISE EN JEU et en
+    # evaluait le cout (« incliner cette carte ») pendant qu'elle etait encore en
+    # MAIN, ou rien ne peut s'incliner.
+    #
+    # ⚠ ET RIEN NE LE SIGNALAIT. La carte n'apparaissait simplement pas dans les
+    # options : aucune exception, aucun test rouge. Le pack Luke Cage n'avait
+    # AUCUN cas dans cette batterie, celui de Jessica Jones non plus — c'est
+    # exactement ce qui a laisse passer la faute sur quatre autres cartes
+    # (`61003`, `61008`, `61009`, `62018`).
+    #
+    # Une gate l'interdit desormais a l'ecriture
+    # (`Ability._refuser_play_avec_cout_sur_soi`, teste par
+    # `outils/test_gate_play_exhaust.py`). Ces cas-ci prouvent l'autre moitie :
+    # que la carte se POSE vraiment.
+    {
+        "nom": "62008 Burstein Process — se pose depuis la main",
+        "pourquoi": ("la carte etait INJOUABLE : son cout d'action etait evalue comme "
+                     "cout de mise en jeu, depuis la main, ou rien ne s'incline"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": [],
+        "main_exclusive": ["62008", "01089", "01090"],
+        "declencher": [],
+        "jouer": ["62008"],
+        "verifier": "amelioration_posee_depuis_la_main",
+        "attendu": {"carte_posee": "62008"},
+    },
+    {
+        "nom": "61009 4K Digital Camcorder — se pose depuis la main",
+        "pourquoi": ("meme faute, autre pack : la correction doit valoir au-dela de la "
+                     "carte signalee, sinon on n'a repare qu'un symptome"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": [],
+        "main_exclusive": ["61009", "01089", "01090"],
+        "declencher": [],
+        "jouer": ["61009"],
+        "verifier": "amelioration_posee_depuis_la_main",
+        "attendu": {"carte_posee": "61009"},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -31486,6 +31531,34 @@ def brawn_heavy_lifting(monde, aides):
                 return True, (f"Brawn a {identite.attack} ATK et le complot principal "
                               f"porte {face.threat} menace(s)")
     return True, f"Brawn a {identite.attack} ATK apres deux [physical]"
+
+def amelioration_posee_depuis_la_main(monde, aides):
+    """La carte a quitte la main pour la TABLE, pas pour la defausse.
+
+    ⚠ ON REGARDE LES TROIS ZONES, et pas seulement « plus en main ». Une carte
+    refusee reste en main, mais une carte jouee PUIS defaussee aurait aussi
+    quitte la main : ne verifier que l'absence laisserait passer les deux.
+    """
+    attendu = aides["cas"].get("attendu", {}).get("carte_posee")
+    joueur = monde.players[0]
+    ids = lambda zone: [getattr(f.paper, "card_id", None) for f in zone]
+    main = ids(joueur.hand_cards.GetAll())
+    defausse = ids(joueur.discard_pile.Get())
+    en_jeu = []
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and face.IsInPlay():
+            en_jeu.append(getattr(face.paper, "card_id", None))
+
+    if attendu in en_jeu:
+        return True, f"{attendu} est posee sur la table"
+    if attendu in main:
+        return False, (f"{attendu} est restee EN MAIN : le moteur a refuse de la jouer "
+                       f"(main = {main})")
+    if attendu in defausse:
+        return False, f"{attendu} est partie a la DEFAUSSE au lieu d'etre posee"
+    return False, (f"{attendu} est introuvable (main = {main}, defausse = {defausse})")
+
 
 def brawn_team_up_joue_avec_allie(monde, aides):
     """bw024 : avec Silk en jeu, le Team-Up doit reellement se jouer."""
