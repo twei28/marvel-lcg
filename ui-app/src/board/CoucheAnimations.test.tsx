@@ -46,20 +46,26 @@ function poserScene(): { main: HTMLElement; table: HTMLElement } {
   return { main, table }
 }
 
+// ⚠ CES HOOKS SONT AU NIVEAU DU FICHIER, ET C'EST DELIBERE. Ils etaient dans
+// le premier `describe` : les `describe` ajoutes ensuite n'en heritaient donc
+// PAS, la memoire de module n'etait pas videe et le corps du document pas
+// nettoye. Les nouveaux cas s'appuyaient sur les restes du cas precedent, et
+// l'un d'eux ne voyait aucun vol parce que `document.querySelector` prenait la
+// scene d'un autre test. Constate le 14/09/2026.
+beforeEach(() => {
+  // Les fantomes se retirent par setTimeout : on ne veut pas de minuterie
+  // reelle qui traine apres le test.
+  vi.useFakeTimers()
+  // Vider la memoire de module : sans .plateau-scene, l'effet la remet a zero.
+  render(<CoucheAnimations renderId={rendu()} actif />).unmount()
+})
+
+afterEach(() => {
+  vi.useRealTimers()
+  document.body.innerHTML = ''
+})
+
 describe('CoucheAnimations : une carte sans scan vole quand meme', () => {
-  beforeEach(() => {
-    // Les fantomes se retirent par setTimeout : on ne veut pas de minuterie
-    // reelle qui traine apres le test.
-    vi.useFakeTimers()
-    // Vider la memoire de module : sans .plateau-scene, l'effet la remet a zero.
-    render(<CoucheAnimations renderId={rendu()} actif />).unmount()
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-    document.body.innerHTML = ''
-  })
-
   it('anime la pioche d\'une carte sans image, avec un fantome sans <img>', () => {
     const { main } = poserScene()
     const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
@@ -162,5 +168,51 @@ describe('la duree suit la distance, et l inclinaison le sens du trajet', () => 
 
   it('un deplacement purement vertical n incline pas', () => {
     expect(inclinaisonDe(boite(0, 0), boite(0, 600))).toBe(0)
+  })
+})
+
+/**
+ * LE FILET QUI PROTEGE LES AUTRES JOUEURS.
+ *
+ * Le poids, le geste et le « clac » sont des ESSAIS reserves a un seul compte
+ * (board/essais.ts). ⚠ Sans le drapeau, le rendu doit etre celui d'AVANT, a
+ * l'identique : 250 ms fixes, aucune inclinaison, aucun depassement. Si cette
+ * garde lachait, tous les joueurs recevraient un essai non valide sans que
+ * personne l'ait decide.
+ */
+describe('sans le drapeau d essai, le rendu est celui d avant', () => {
+  const volDe = (container: HTMLElement) =>
+    container.querySelector<HTMLElement>('.vol-carte')
+
+  it('la duree redevient fixe et l inclinaison nulle', () => {
+    const { main } = poserScene()
+    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
+    main.append(carte('20', 'https://exemple.test/scan.png'))
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
+
+    const vol = volDe(container)
+    expect(vol?.style.transitionDuration).toBe('250ms')
+    const geste = container.querySelector<HTMLElement>('.vol-carte-geste')
+    expect(geste?.style.getPropertyValue('--angle')).toBe('0deg')
+  })
+
+  it('la couche ne porte pas la classe des essais', () => {
+    const { main } = poserScene()
+    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
+    main.append(carte('21'))
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
+    expect(container.querySelector('.couche-animations.est-essai')).toBeNull()
+  })
+
+  it('avec le drapeau, la couche la porte et la duree suit la distance', () => {
+    // Meme structure exacte que le cas « duree fixe » ci-dessus, drapeau en plus :
+    // seule la presence de `essais` doit faire la difference.
+    const { main } = poserScene()
+    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif essais />)
+    main.append(carte('22', 'https://exemple.test/scan.png'))
+    rerender(<CoucheAnimations renderId={rendu()} actif essais />)
+    expect(volDe(container), 'aucun vol produit').not.toBeNull()
+    expect(container.querySelector('.couche-animations.est-essai')).not.toBeNull()
+    expect(volDe(container)?.style.transitionDuration).not.toBe('250ms')
   })
 })

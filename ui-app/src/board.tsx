@@ -146,6 +146,7 @@ import {
   type ReponseAmbiance,
 } from './board/moteur'
 import { FenetreReglages } from './board/FenetreReglages'
+import { essaisOuverts } from './board/essais'
 // CouchePasAPas et usePasAPas : DEBRANCHES a la demande de l'utilisateur, voir
 // les commentaires a leurs points d'appel plus bas pour les rallumer.
 import { SelecteurCibles } from './board/SelecteurCibles'
@@ -2391,6 +2392,19 @@ function PagePartie({
   // retenue entre deux parties : on ne veut pas rouvrir un ecran de reglages
   // par-dessus le plateau au chargement.
   const [reglagesOuverts, setReglagesOuverts] = useState(false)
+  // Les essais reserves a un seul compte (board/essais.ts). ⚠ Faux tant que le
+  // serveur n'a pas repondu : on n'ouvre jamais un essai « par defaut », le
+  // temps d'un aller-retour reseau.
+  const [essais, setEssais] = useState(false)
+  useEffect(() => {
+    let vivant = true
+    void essaisOuverts().then((ouverts) => {
+      if (vivant) setEssais(ouverts)
+    })
+    return () => {
+      vivant = false
+    }
+  }, [])
   const cyclerRevelation = useCallback(() => {
     setRevelation((r) => {
       const suivant: ModeRevelation = r === 'off' ? 'court' : r === 'court' ? 'long' : 'off'
@@ -3280,7 +3294,7 @@ function PagePartie({
       />
       <BandeauConnexion etat={etat} reconnecter={reconnecter} />
       {modeRevoir ? <BarreRevoir pasTotal={modeRevoir.pas} /> : null}
-      <CoucheAnimations renderId={etat.monde.render_id} actif={animations} />
+      <CoucheAnimations renderId={etat.monde.render_id} actif={animations} essais={essais} />
       <CoucheTriche actif={triche.actif} couche={triche.couche} />
       {/* En Detaille, pendant la phase du mechant, la scene montre deja la
           carte revelee face visible, avec ce qu'elle a fait : la couche a
