@@ -7347,11 +7347,15 @@
 }
 
 @layer utilitaires {
-  /* --- Le halo du héros (14/09/2026) ----------------------------------------
-     Une pointe de couleur dans le coin BAS DROIT, aux couleurs du héros qu'on
+  /* --- La marque du héros (14/09/2026) --------------------------------------
+     Une bande diagonale dans le coin BAS DROIT, aux couleurs du héros qu'on
      joue. Les couleurs viennent du contour de ses cartes
-     (`outils/palettes-heros.py`), et le dégradé est composé par
+     (`outils/palettes-heros.py`), et la bande est composée par
      `board/halo-heros.ts`, qui pose `--fond-plateau`.
+
+     ⚠ UNE BANDE, PAS UNE LUEUR D'ANGLE : la première version, faite de halos
+     ronds, a été rejetée le 14/09/2026. Forme choisie parmi quatre montrées
+     sur le vrai plateau.
 
      ⚠ LA CLASSE N'EST POSÉE QUE POUR LES ESSAIS, et seulement si le héros a
      une palette. Sans elle, le fond uni reste celui de tout le monde : c'est

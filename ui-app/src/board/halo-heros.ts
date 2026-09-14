@@ -46,32 +46,43 @@ export function oublierPalettes(): void {
 }
 
 /**
- * Le fond du plateau pour ces couleurs : un halo ancré au coin BAS DROIT.
+ * Le fond du plateau pour ces couleurs : UNE BANDE DIAGONALE au coin bas droit.
  *
- * ⚠ UN HALO D'ANGLE, PAS UNE DIAGONALE TRAVERSANTE. Les deux ont été montrées
- * à l'utilisateur ; il a retenu celle-ci, dans sa version marquée. La couleur
- * monte du coin et se perd avant le centre : elle n'atteint jamais la zone du
- * méchant, en haut à gauche, qui n'appartient pas au héros.
+ * ⚠ UNE BANDE, PAS UNE LUEUR D'ANGLE. Une premiere version posait trois halos
+ * ronds ancres dans le coin ; l'utilisateur l'a rejetee le 14/09/2026 (« je
+ * voulais une marque diagonale avec un leger degrade »). Il a ensuite choisi
+ * cette forme-ci parmi quatre montrees sur le vrai plateau : une seule bande
+ * large, ou les couleurs se succedent et s'eteignent ensemble.
  *
- * Les couleurs suivantes s'échelonnent le long de la diagonale, de moins en
- * moins denses : c'est ce qui fait lire « deux ou trois couleurs » plutôt qu'un
- * aplat.
+ * ⚠ ELLE S'ETEINT AVANT LE CENTRE (45 %). La couleur appartient au heros : elle
+ * ne doit jamais atteindre la zone du mechant, en haut a gauche.
+ *
+ * `315deg` progresse vers le HAUT GAUCHE : la position 0 % est donc le coin bas
+ * droit, celui que l'utilisateur a designe (« en diagonale, la couleur en bas a
+ * droite »).
  */
 export function fondDe(couleurs: readonly Couleur[] | undefined, sombre: string): string {
   if (!couleurs || couleurs.length === 0) return sombre
   const rgba = (c: Couleur, a: number) => `rgba(${c[0]},${c[1]},${c[2]},${a})`
-  // Ancrage, étendue et force de chaque couche, de la plus dense à la plus
-  // diffuse. Trois au plus : au-delà, les teintes se mélangent en boue.
-  const COUCHES: Array<{ at: string; force: number }> = [
-    { at: '90% 90% at 100% 100%', force: 0.28 },
-    { at: '70% 70% at 78% 82%', force: 0.22 },
-    { at: '55% 55% at 58% 70%', force: 0.15 },
+  // Position et force de chaque couleur le long de la bande, de la plus dense
+  // (au coin) a la plus diffuse. Trois arrets : au-dela les teintes se
+  // melangent en boue, en deca la bande n'a plus de degrade.
+  const ARRETS: Array<{ a: number; force: number }> = [
+    { a: 0, force: 0.32 },
+    { a: 15, force: 0.24 },
+    { a: 28, force: 0.14 },
   ]
-  const couches = couleurs.slice(0, COUCHES.length).map((c, i) => {
-    const { at, force } = COUCHES[i]
-    return `radial-gradient(${at}, ${rgba(c, force)} 0%, ${rgba(c, 0)} 66%)`
+  // ⚠ UN HEROS PEUT N'AVOIR QU'UNE OU DEUX COULEURS (onze cadres sont noirs ou
+  // gris, deux sets fan-made n'ont qu'un blanc). On repete alors la derniere :
+  // la bande garde sa longueur et son degrade, elle porte juste moins de
+  // teintes. C'est la forme exacte qui a ete montree et validee.
+  const derniere = couleurs[couleurs.length - 1]
+  const etapes = ARRETS.map((arret, i) => {
+    const couleur = couleurs[i] ?? derniere
+    return `${rgba(couleur, arret.force)} ${arret.a}%`
   })
-  return `${couches.join(', ')}, ${sombre}`
+  const fin = couleurs[ARRETS.length - 1] ?? derniere
+  return `linear-gradient(315deg, ${etapes.join(', ')}, ${rgba(fin, 0)} 45%), ${sombre}`
 }
 
 /** La forme minimale dont le halo a besoin : qui est assis, et sa carte d'identité. */

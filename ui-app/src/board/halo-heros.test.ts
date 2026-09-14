@@ -1,8 +1,8 @@
-// Le halo du heros : ce que le fond du plateau devient, et ce qu'il ne devient
-// jamais.
+// La marque du heros : ce que le fond du plateau devient, et ce qu'il ne
+// devient jamais.
 //
 // ⚠ LE CAS QUI COMPTE LE PLUS est `un heros sans palette garde le fond
-// commun`. Le halo est un agrement : un heros que l'outil n'a pas mesure, un
+// commun`. La marque est un agrement : un heros que l'outil n'a pas mesure, un
 // serveur sans le fichier, une reponse abimee, tout cela doit rendre un plateau
 // NORMAL. Un fond casse serait pire que pas de couleur du tout.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -13,56 +13,62 @@ const BLEU: Couleur = [32, 43, 114]
 const BLANC: Couleur = [219, 220, 222]
 const SOMBRE = 'linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98))'
 
-describe('le fond que compose une palette', () => {
+describe('la bande diagonale que compose une palette', () => {
   it('sans couleur, le fond commun est rendu tel quel', () => {
     expect(fondDe(undefined, SOMBRE)).toBe(SOMBRE)
     expect(fondDe([], SOMBRE)).toBe(SOMBRE)
   })
 
   it('le fond sombre reste TOUJOURS en dessous', () => {
-    // Les halos sont translucides : sans lui, le plateau serait transparent et
+    // La bande est translucide : sans lui, le plateau serait transparent et
     // laisserait voir la page derriere.
     expect(fondDe([ROUGE], SOMBRE).endsWith(SOMBRE)).toBe(true)
   })
 
-  it('la premiere couleur est ancree au coin BAS DROIT', () => {
-    // « En diagonale, la couleur en bas a droite » (utilisateur, 14/09/2026).
+  it('c est UNE bande diagonale, pas une lueur d angle', () => {
+    // ⚠ LE CAS QUI DIT LA FORME. Une premiere version posait trois
+    // `radial-gradient` ancres dans le coin ; l'utilisateur l'a rejetee le
+    // 14/09/2026 : « je voulais une marque diagonale avec un leger degrade ».
     const fond = fondDe([ROUGE, BLEU, BLANC], SOMBRE)
-    // Et c'est bien la PREMIERE couche, donc celle de la couleur principale :
-    // dans `radial-gradient(<forme> at <ancrage>, <couleur> ...)` la couleur
-    // vient APRES l'ancrage, c'est donc la meme couche.
-    const premiere = fond.slice(0, fond.indexOf('), '))
-    expect(premiere).toContain('at 100% 100%')
-    expect(premiere).toContain('140,41,31')
+    expect(fond).not.toContain('radial-gradient')
+    expect(fond.match(/linear-gradient/g)).toHaveLength(2) // la bande + le fond
+    // 315deg progresse vers le HAUT GAUCHE : la position 0 % est le coin BAS
+    // DROIT, celui que l'utilisateur a designe.
+    expect(fond).toContain('linear-gradient(315deg,')
   })
 
-  it('chaque couleur donne une couche, dans l ordre recu', () => {
+  it('la premiere couleur est celle du coin, la plus dense', () => {
     const fond = fondDe([ROUGE, BLEU, BLANC], SOMBRE)
-    expect(fond.match(/radial-gradient/g)).toHaveLength(3)
+    expect(fond).toContain('rgba(140,41,31,0.32) 0%')
     expect(fond.indexOf('140,41,31')).toBeLessThan(fond.indexOf('32,43,114'))
     expect(fond.indexOf('32,43,114')).toBeLessThan(fond.indexOf('219,220,222'))
   })
 
-  it('une seule couleur ne fait qu une couche', () => {
-    // Onze heros n'ont qu'un gris ou qu'un blanc sur leur cadre : le fond doit
-    // rester correct, pas seulement « pas trop moche ».
+  it('la bande s eteint avant le centre, pour ne pas teindre tout le plateau', () => {
+    // Elle ne doit jamais atteindre la zone du mechant, en haut a gauche.
+    expect(fondDe([ROUGE], SOMBRE)).toContain('rgba(140,41,31,0) 45%')
+  })
+
+  it('un heros a UNE seule couleur garde une bande complete', () => {
+    // Onze cadres sont noirs ou gris, deux sets fan-made n'ont qu'un blanc :
+    // la bande garde sa longueur et son degrade, elle porte juste une teinte.
     const fond = fondDe([BLANC], SOMBRE)
-    expect(fond.match(/radial-gradient/g)).toHaveLength(1)
+    expect(fond).toContain('rgba(219,220,222,0.32) 0%')
+    expect(fond).toContain('rgba(219,220,222,0.14) 28%')
+    expect(fond).toContain('rgba(219,220,222,0) 45%')
+  })
+
+  it('a DEUX couleurs, la seconde tient les deux derniers arrets', () => {
+    const fond = fondDe([ROUGE, BLANC], SOMBRE)
+    expect(fond).toContain('rgba(140,41,31,0.32) 0%')
+    expect(fond).toContain('rgba(219,220,222,0.24) 15%')
+    expect(fond).toContain('rgba(219,220,222,0.14) 28%')
   })
 
   it('au-dela de trois couleurs, les suivantes sont ignorees', () => {
-    // ⚠ Empiler plus de trois teintes translucides les melange en boue. Il n'y
-    // a que trois ancrages definis : une quatrieme n'aurait nulle part ou aller.
+    // ⚠ Trois arrets seulement : au-dela les teintes se melangent en boue.
     const fond = fondDe([ROUGE, BLEU, BLANC, [0, 255, 0]], SOMBRE)
-    expect(fond.match(/radial-gradient/g)).toHaveLength(3)
     expect(fond).not.toContain('0,255,0')
-  })
-
-  it('chaque couche s eteint avant le bord, pour ne pas teindre tout le plateau', () => {
-    // Le halo doit rester une POINTE de couleur dans un coin : il ne doit
-    // jamais atteindre la zone du mechant, en haut a gauche.
-    const fond = fondDe([ROUGE], SOMBRE)
-    expect(fond).toContain('rgba(140,41,31,0) 66%')
   })
 })
 
