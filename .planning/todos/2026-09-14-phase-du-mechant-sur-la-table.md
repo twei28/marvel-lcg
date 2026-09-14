@@ -1,4 +1,4 @@
-# La phase du méchant jouée SUR LA TABLE — PRÊT À COMMENCER (décisions prises, outillage fait)
+# La phase du méchant jouée SUR LA TABLE — LES TROIS GESTES SONT FAITS (à valider à l'usage)
 
 **Demande de l'utilisateur, 14/09/2026**, après avoir vu une vidéo de
 `play.marvelsimulator.com` et m'avoir envoyé cinq captures de leur phase du
@@ -256,18 +256,36 @@ après.
 - `board.tsx` ne compare plus le mode à « detaille » partout : deux noms disent
   ce que chaque site veut vraiment, `sceneCentrale` et `unCartouche`.
 
-**Reste à faire, les trois gestes de la demande :**
+**Livraison 2, le TRAIT** (`trait-phase.ts`, `CoucheTraitPhase.tsx`). Il relie
+l'auteur à la cible, de BORD à bord, et porte le nombre DANS SON UNITÉ, comme
+demandé : dégâts en rouge, menace en jaune, statut en violet avec son nom
+plutôt qu'un chiffre, cartes en neutre. Le montant est celui vraiment encaissé
+(`subi`) : vérifié à l'écran sur une attaque à 4 dont 3 bloqués, le trait dit
+« 1 dégât ». « Contre » est déjà dans la table des unités, prêt pour le jour où
+un effet rencontre retirera de la menace.
 
-1. Le TRAIT qui relie l'auteur à la cible, avec le montant. Tout est prêt :
-   l'étape porte `carteId`, `cibleId` et `montant`, et `CoucheAnimations` sait
-   déjà ancrer une carte disparue sur sa dernière position connue.
-2. Les cartes BOOST qui sortent du paquet pour se poser à côté, l'une après
-   l'autre sans clic entre elles, puis le total, puis OK.
-3. La carte RENCONTRE en grand À CÔTÉ DU PAQUET jusqu'au OK, puis son effet.
+**Livraison 3, LES DEUX GESTES DU PAQUET** (`places-rencontre.ts`,
+`CoucheRencontreSurTable.tsx`).
+
+- Les cartes BOOST sortent du deck rencontre et se posent à sa droite, l'une
+  après l'autre sans clic entre elles (le compteur `boostsMontres` que le
+  cartouche tenait déjà, 1,5 s par carte). Le total de l'élan s'affiche
+  dessous, à partir de DEUX boosts : sur un seul, la carte dit déjà tout.
+- La carte RENCONTRE sort du paquet et s'affiche à côté, agrandie 1,7 fois
+  (216 px, le seuil où son texte redevient déchiffrable), jusqu'au OK.
+
+⚠ Un oubli constaté à l'écran et corrigé : `PageEtat` ne passait pas
+`carteScene`. Sans lui, aucune de ces cartes ne peut être résolue (les boosts
+sont déjà à la défausse, la carte révélée est encore face cachée dans le monde
+retenu) et les deux gestes ne montraient rien.
+
+**Reste :** l'usage. Rien n'a encore été joué pour de vrai dans ce mode.
 
 ## Statut
 
-Décisions prises le 14/09/2026. **Livraison 1 faite, trois gestes restants.**
+Décisions prises le 14/09/2026. **Les trois livraisons sont faites**, réservées
+au compte de l'utilisateur (`board/essais.ts`), vérifiées sur les deux fixtures
+de phase du méchant. À valider à l'usage, en partie réelle.
 
 Preuve de faisabilité **faite** le 14/09/2026, et **le risque est levé** : le
 plateau garde déjà les positions du rendu précédent et sait ancrer une carte

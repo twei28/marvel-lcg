@@ -1251,6 +1251,29 @@ function PageEtat({
         identitePhase={monde.round_id ?? 0}
         identitePartie={fichier}
         phaseMechantEnCours={PHASES_DU_MECHANT.has(monde.phase ?? '')}
+        // ⚠ SANS `carteScene`, LES DEUX GESTES DU PAQUET NE MONTRENT RIEN. Les
+        // cartes boost sont deja parties a la defausse quand l'etape s'affiche,
+        // et la carte revelee est encore face cachee dans le monde retenu : ni
+        // l'une ni l'autre ne se lit sur la table. C'est cet acces a l'index du
+        // monde qui les sort et les retourne. Oubli constate a l'ecran : zero
+        // boost, zero carte revelee, sur une etape qui en portait.
+        carteScene={(id, faceVisible) => {
+          const carte = indexerCartesMonde(monde).get(id)
+          if (!carte) return undefined
+          return toScanCard(
+            faceVisible
+              ? { ...carte, visible_for_players: [playerId], is_face_up: true }
+              : carte,
+            { playerId, actives: new Set(), catalogue }
+          )
+        }}
+        dosRencontre={{
+          id: 'dos-rencontre',
+          name: t('Carte rencontre'),
+          kind: 'unknown',
+          imageUrl: scanUrl('encounter'),
+          facedown: true,
+        }}
         onSuivant={() => {}}
         onTerminer={() => {}}
       />

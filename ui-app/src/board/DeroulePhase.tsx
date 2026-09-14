@@ -55,6 +55,7 @@ import { sceneDe, type CarteDeScene } from './deroule-scene'
 import { useDerouleScene } from './useDerouleScene'
 import { useAncrageSurTable } from './useAncrageSurTable'
 import { CoucheTraitPhase } from './CoucheTraitPhase'
+import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
 
 /** Le temps de lire un boost a capacite avant le suivant. */
 const DELAI_BOOST_MS = 1500
@@ -1206,6 +1207,15 @@ export function DeroulePhase({
     return createPortal(
       <>
         <CoucheTraitPhase etape={etape} actif />
+        {/* Les cartes qui sortent du paquet rencontre : les boosts a cote du
+            deck, puis la carte revelee en grand. Meme portail, meme repere. */}
+        <CoucheRencontreSurTable
+          etape={etape}
+          boostsMontres={boostsMontres}
+          carteScene={carteScene}
+          dosRencontre={dosRencontre}
+          actif
+        />
         {contenu}
       </>,
       cadre

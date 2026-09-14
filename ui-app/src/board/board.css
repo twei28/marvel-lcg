@@ -7516,3 +7516,83 @@
     letter-spacing: 0.02em;
   }
 }
+
+@layer utilitaires {
+  /* --- Les cartes qui SORTENT du deck rencontre (14/09/2026) -----------------
+     Mode « Sur la table ». Les cartes boost se posent à côté du paquet, l'une
+     après l'autre, puis la carte rencontre s'y affiche en grand.
+
+     Les places sont calculées en TypeScript (`places-rencontre.ts`, pur et
+     testé) : la CSS ne sait pas où est le deck rencontre. Elle ne fait ici que
+     le mouvement, à partir du décalage `--depart-x/y` que le composant pose.
+
+     ⚠ AUCUN CLIC N'EST CAPTÉ. Ces cartes sont un RÉCIT, pas des cartes
+     jouables : les rendre cliquables laisserait croire qu'on peut les prendre,
+     et masquerait la table en dessous. */
+  .rencontre-sur-table {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* Au-dessus des cartes de la table, sous le cartouche qui porte le bouton. */
+    z-index: 130;
+  }
+
+  .rencontre-sortie {
+    position: absolute;
+    /* Le vol depuis le paquet : la carte part de SA position et glisse vers sa
+       place. `--depart-x/y` est le vecteur paquet -> place, en pixels. */
+    animation: rencontre-sort 320ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.7));
+  }
+
+  /* Chaque boost part un peu après le précédent : ils sortent l'un APRÈS
+     l'autre, comme on retourne des cartes à la main. Quatre suffisent : au-delà
+     le moteur n'en révèle pratiquement jamais, et le dernier délai reste. */
+  .rencontre-sortie.est-boost:nth-child(2) { animation-delay: 60ms; }
+  .rencontre-sortie.est-boost:nth-child(3) { animation-delay: 120ms; }
+  .rencontre-sortie.est-boost:nth-child(4) { animation-delay: 180ms; }
+
+  .rencontre-sortie .scan-card {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* La carte rencontre sort ET grandit : son cadre doré la détache du reste. */
+  .rencontre-sortie.est-revelee {
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 2px rgba(242, 167, 53, 0.85),
+      0 18px 44px rgba(0, 0, 0, 0.8);
+  }
+
+  @keyframes rencontre-sort {
+    from {
+      transform: translate(var(--depart-x, 0), var(--depart-y, 0)) scale(0.92);
+      opacity: 0;
+    }
+    to {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* ⚠ RESPECTER « MOUVEMENT RÉDUIT » : la carte se pose sans voler. Elle reste
+     visible et lisible, seul le trajet disparaît. */
+  @media (prefers-reduced-motion: reduce) {
+    .rencontre-sortie {
+      animation: none;
+    }
+  }
+
+  .rencontre-total {
+    position: absolute;
+    text-align: center;
+    font-family: Anton, Impact, system-ui, sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    color: #ffd479;
+    text-shadow:
+      0 0 6px rgba(0, 0, 0, 0.95),
+      0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+}

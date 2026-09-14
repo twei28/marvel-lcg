@@ -51,3 +51,31 @@ export function boiteDeCarte(
     h: r.height,
   }
 }
+
+/**
+ * Le rectangle du DECK RENCONTRE sur la table.
+ *
+ * C'est l'ancre des deux gestes du mode « Sur la table » qui parlent du paquet :
+ * les cartes boost qui en sortent pour se poser à côté, et la carte rencontre
+ * qu'on agrandit juste à côté de lui. L'utilisateur l'a demandé ainsi le
+ * 14/09/2026, parmi trois emplacements : « on voit d'où elle vient ».
+ *
+ * ⚠ LA PREMIÈRE CARTE DE LA ZONE, PAS UN IDENTIFIANT. Un deck n'est pas une
+ * carte du monde : il est dessiné comme une pile, et son représentant change à
+ * chaque pioche. La zone, elle, ne bouge pas.
+ */
+export function boiteDuDeckRencontre(cadre: {
+  element: HTMLElement
+  origine: DOMRect
+}): Boite | undefined {
+  const el = cadre.element.querySelector<HTMLElement>('.zone-piles-rencontre .scan-card')
+  if (!el) return undefined
+  const r = el.getBoundingClientRect()
+  if (r.width === 0) return undefined
+  return {
+    x: r.left - cadre.origine.left,
+    y: r.top - cadre.origine.top,
+    w: r.width,
+    h: r.height,
+  }
+}
