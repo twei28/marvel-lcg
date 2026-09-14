@@ -72,23 +72,23 @@ describe('sa place parmi les modes', () => {
   })
 })
 
-describe('le mode est FERMÉ pendant le chantier', () => {
-  // ⚠ Retiré le 14/09/2026 à la demande de l'utilisateur, après la première
-  // partie jouée dedans : « je le retire jusqu'à ce que ce soit prêt ».
+describe('l’interrupteur du mode', () => {
+  // ⚠ FERMÉ PUIS ROUVERT le 14/09/2026. Fermé après la première partie jouée
+  // dedans, rouvert une fois les 32 décisions de la refonte traitées.
   //
-  // ⚠ LE CAS QUI COMPTE est `celui qui l'avait choisi ne reste pas coincé`.
-  // Le mode ne paraît plus dans les Réglages : s'il restait actif dans le
-  // stockage, le joueur continuerait de jouer un mode en chantier sans aucun
-  // moyen d'en sortir.
+  // ⚠ L'INTERRUPTEUR RESTE, et ce n'est pas du code mort : c'est lui qui permet
+  // de retirer le mode en une ligne le jour où il redeviendrait gênant, sans
+  // toucher à rien d'autre. Il a déjà servi une fois, et ces cas sont son
+  // témoin : le rebasculer les fait rougir et rappelle de réécrire l'attente.
   beforeEach(() => window.localStorage.clear())
 
-  it('l’interrupteur est bien fermé', () => {
-    expect(MODE_SUR_TABLE_OUVERT).toBe(false)
+  it('il est ouvert', () => {
+    expect(MODE_SUR_TABLE_OUVERT).toBe(true)
   })
 
-  it('un stockage qui porte « sur-table » retombe sur « Détaillé »', () => {
+  it('un stockage qui porte « sur-table » est respecté', () => {
     window.localStorage.setItem(CLE_MODE_PHASE, 'sur-table')
-    expect(lireModePhaseMechant()).toBe('detaille')
+    expect(lireModePhaseMechant()).toBe('sur-table')
   })
 
   it('les deux autres modes ne sont pas touchés', () => {
@@ -98,8 +98,12 @@ describe('le mode est FERMÉ pendant le chantier', () => {
     expect(lireModePhaseMechant()).toBe('detaille')
   })
 
-  it('le code du mode reste en place : c’est un interrupteur, pas une suppression', () => {
-    // `decisionAccuse` sait toujours le traiter, et le type le connaît encore.
+  it('le défaut reste « Détaillé » sans rien de mémorisé', () => {
+    // Rouvrir le mode ne le rend pas actif pour autant : il se choisit.
+    expect(lireModePhaseMechant()).toBe('detaille')
+  })
+
+  it('le moteur le traite toujours comme « Détaillé » pour le rythme', () => {
     expect(MODES).toContain('sur-table')
     expect(decisionAccuse('sur-table', monde('Enemy Activation'))).toBe('attendre-clic')
   })

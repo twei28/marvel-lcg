@@ -75,10 +75,16 @@ export const DELAI_PAS_A_PAS_MAX = 3000
 /**
  * « Sur la table » est-il OUVERT AUX JOUEURS ?
  *
- * ⚠ FERME LE 14/09/2026, A LA DEMANDE DE L'UTILISATEUR, apres la premiere
- * partie jouee dedans : « je le retire jusqu'a ce que ce soit pret ». La
- * refonte est cadree dans
- * `.planning/todos/2026-09-14-phase-mechant-sur-la-table-v2.md` (32 decisions).
+ * ⚠ FERME PUIS ROUVERT LE 14/09/2026. Ferme apres la premiere partie jouee
+ * dedans (« je le retire jusqu'a ce que ce soit pret »), rouvert une fois les
+ * 32 decisions traitees, a sa demande. Il reste RESERVE AUX ESSAIS : c'est la
+ * garde de `board/essais.ts` qui decide qui le voit, pas cet interrupteur-ci.
+ * La refonte est cadree dans
+ * `.planning/todos/2026-09-14-phase-mechant-sur-la-table-v2.md`.
+ *
+ * ⚠ CET INTERRUPTEUR RESTE, et ce n'est pas du code mort : c'est lui qui permet
+ * de retirer le mode en une ligne le jour ou il redeviendrait genant, sans
+ * toucher a rien d'autre. Il a deja servi une fois.
  *
  * ⚠ IL NE SUFFIT PAS DE LE CACHER DES REGLAGES. Un joueur qui l'avait deja
  * choisi garde la valeur dans son stockage local : sans le repli ci-dessous il
@@ -87,7 +93,7 @@ export const DELAI_PAS_A_PAS_MAX = 3000
  *
  * Le code du mode reste en place : c'est un interrupteur, pas une suppression.
  */
-export const MODE_SUR_TABLE_OUVERT = false
+export const MODE_SUR_TABLE_OUVERT = true
 
 // « detaille » d'abord : c'est le mode par defaut, celui qu'on a en arrivant.
 // « sur-table » s'intercale : il raconte la meme chose que « detaille », au

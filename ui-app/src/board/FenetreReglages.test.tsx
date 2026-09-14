@@ -275,36 +275,36 @@ describe('la fenetre elle-meme', () => {
   })
 })
 
-describe('le mode « Sur la table » est FERMÉ pendant le chantier', () => {
-  // ⚠ RETIRE LE 14/09/2026, apres la premiere partie jouee dedans, a la demande
-  // de l'utilisateur : « je le retire jusqu'a ce que ce soit pret ». La refonte
-  // est cadree dans `2026-09-14-phase-mechant-sur-la-table-v2.md`.
+describe('le mode « Sur la table » est proposé aux essais', () => {
+  // ⚠ FERMÉ PUIS ROUVERT le 14/09/2026. Fermé après la première partie jouée
+  // dedans (« je le retire jusqu'à ce que ce soit prêt »), rouvert une fois les
+  // 32 décisions de la refonte traitées, à sa demande.
   //
-  // ⚠ CE FICHIER EST LE TEMOIN DE L'INTERRUPTEUR : le jour ou
-  // `MODE_SUR_TABLE_OUVERT` repasse a vrai, ces cas rougissent et rappellent de
-  // reecrire ce qu'on attend. Ils ne sont donc PAS ecrits « quel que soit
-  // l'interrupteur ».
+  // ⚠ CE FICHIER RESTE LE TÉMOIN DE L'INTERRUPTEUR : le jour où
+  // `MODE_SUR_TABLE_OUVERT` repasse à faux, ces cas rougissent et rappellent de
+  // réécrire ce qu'on attend. Ils ont déjà joué ce rôle une fois.
   const modes = () =>
     within(screen.getByText('Phase du méchant').closest('.ligne-option') as HTMLElement)
       .getAllByRole('button')
       .map((b) => b.textContent)
 
-  it('il n’est pas proposé, même aux essais', () => {
+  it('avec les essais, il apparaît entre les deux autres', () => {
+    // Il raconte la même chose que « Détaillé », au même rythme : sa place est
+    // à côté de lui, pas à la fin de la liste.
     render(<ContenuOnglet onglet="deroule" p={proprietes({ essais: true })} />)
-    expect(modes()).toEqual(['Détaillé', 'Instantané'])
+    expect(modes()).toEqual(['Détaillé', 'Sur la table', 'Instantané'])
   })
 
-  it('il n’est pas proposé non plus sans les essais', () => {
+  it('sans les essais, il n’est pas proposé', () => {
+    // La garde de `board/essais.ts` décide qui le voit, pas l'interrupteur.
     render(<ContenuOnglet onglet="deroule" p={proprietes({ essais: false })} />)
     expect(modes()).toEqual(['Détaillé', 'Instantané'])
   })
 
-  it('⚠ celui qui l’avait choisi ne reste pas coincé dedans', () => {
-    // Il ne parait plus dans la liste : s'il restait actif, on ne pourrait plus
-    // en sortir. `lireModePhaseMechant` le ramene sur « Detaille » (voir
-    // mode-sur-table.test.ts) ; ici on verifie seulement que la liste reste
-    // celle des deux modes ouverts.
-    render(<ContenuOnglet onglet="deroule" p={proprietes({ essais: true, modePhase: 'sur-table' })} />)
-    expect(modes()).toEqual(['Détaillé', 'Instantané'])
+  it('⚠ un mode DÉJÀ choisi reste dans la liste même sans les essais', () => {
+    // Sinon l'écran des réglages montrerait deux boutons dont aucun n'est
+    // actif, et le joueur n'aurait aucun moyen d'en sortir.
+    render(<ContenuOnglet onglet="deroule" p={proprietes({ essais: false, modePhase: 'sur-table' })} />)
+    expect(modes()).toEqual(['Détaillé', 'Sur la table', 'Instantané'])
   })
 })
