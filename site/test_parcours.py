@@ -285,8 +285,12 @@ verifier("et on le DIT", etats.get("chloe", ("", ""))[1] == "en partie", str(eta
 o.PARTIES.clear()
 
 # Une visite ancienne se raconte, elle ne se cache pas.
+# ⚠ `utcnow`, PAS `now` : la base stocke de l'UTC (voir `_maintenant`). Ecrite
+# en heure locale, cette ligne datait la visite de deux heures a cote sur une
+# machine en CEST, et le test echouait sur une faute a lui, pas au produit
+# (14/09/2026).
 from datetime import datetime, timedelta
-vieux = (datetime.now() - timedelta(hours=3)).isoformat(" ", "seconds")
+vieux = (datetime.utcnow() - timedelta(hours=3)).isoformat(" ", "seconds")
 with o._cx() as cx:
     cx.execute("UPDATE comptes SET vu_le=? WHERE pseudo='chloe'", (vieux,))
 detail = {j["pseudo"]: j["detail"] for j in o.presence()}.get("chloe", "")

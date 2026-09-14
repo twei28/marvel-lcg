@@ -14,7 +14,7 @@
 // titulaire du compte (un invite arrive par un lien de siege ne lit pas le tchat
 // des comptes). Le plateau doit alors se taire, pas afficher une erreur.
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { direSalon, lireSalon } from './salon'
+import { direSalon, heureLocale, lireSalon } from './salon'
 
 const repondre = (donnees: unknown, ok = true) =>
   vi.fn().mockResolvedValue({
@@ -109,5 +109,60 @@ describe('envoi dans le salon', () => {
   it('rend faux quand le moteur refuse', async () => {
     vi.stubGlobal('fetch', repondre({ error: 'not the host' }, false))
     expect(await direSalon('coucou')).toBe(false)
+  })
+})
+
+describe("l'heure est celle de qui lit, pas celle du serveur", () => {
+  // ⚠ Le serveur tourne en `Etc/UTC` (verifie le 14/09/2026). Afficher son
+  // « HH:MM » tel quel montrait 05:26 a quelqu'un dont la montre disait 07:26.
+  const messageAvecInstant = {
+    id: 1,
+    pseudo: 'arnaud',
+    texte: 'salut',
+    quand: '05:26',
+    // 2026-09-14 05:26:00 UTC
+    quandTs: 1789363560,
+  }
+
+  it("met l'instant a l'heure du navigateur, pas a celle du serveur", () => {
+    // En heure de Bruxelles (UTC+2 en septembre), 05:26 UTC se lit 07:26.
+    const lu = heureLocale(messageAvecInstant, 'fr-BE')
+    expect(lu).not.toBe('05:26')
+  })
+
+  it('deux fuseaux differents lisent deux heures differentes', () => {
+    // Le meme instant, la meme fonction : seule la machine change. On ne peut
+    // pas changer de fuseau dans un test, mais on peut prouver que la sortie
+    // vient bien de `quandTs` et non de la chaine du serveur.
+    const autre = { ...messageAvecInstant, quandTs: messageAvecInstant.quandTs + 3600 }
+    expect(heureLocale(autre, 'fr-BE')).not.toBe(heureLocale(messageAvecInstant, 'fr-BE'))
+  })
+
+  it("sans instant, garde la chaine du serveur plutot que rien", () => {
+    // Un serveur d'avant le 14/09/2026. Une heure decalee reste plus utile
+    // qu'une absence d'heure.
+    const vieux = { id: 2, pseudo: 'chloe', texte: 'hello', quand: '21:30' }
+    expect(heureLocale(vieux, 'fr-BE')).toBe('21:30')
+  })
+
+  it('un instant absurde ne fait pas afficher 1970', () => {
+    for (const mauvais of [0, -1, Number.NaN, Number.POSITIVE_INFINITY]) {
+      const casse = { ...messageAvecInstant, quandTs: mauvais }
+      expect(heureLocale(casse, 'fr-BE')).toBe('05:26')
+    }
+  })
+
+  it('le champ quand_ts du site devient quandTs sur le plateau', async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        actif: true,
+        pseudo: 'arnaud',
+        dernier: 1,
+        messages: [{ id: 1, pseudo: 'arnaud', texte: 'salut', quand: '05:26', quand_ts: 1789363560 }],
+      }),
+    }) as unknown as typeof fetch
+    const vue = await lireSalon(0)
+    expect(vue.messages[0].quandTs).toBe(1789363560)
   })
 })

@@ -1216,8 +1216,115 @@ def _empreinte(mot_de_passe: str, sel: str) -> str:
     return brut.hex()
 
 
+# ===========================================================================
+# LE TEMPS : LE SERVEUR ENVOIE UN INSTANT, LE NAVIGATEUR ECRIT L'HEURE.
+#
+# AJOUT du 14/09/2026, apres ce constat de l'utilisateur : « il faudra que tout
+# le jeu soit a l'heure locale du joueur, moi il est sept heures vingt six ».
+# Le serveur repondait 05:26 : il tourne en `Etc/UTC` (verifie le 14/09/2026
+# par `timedatectl`), Bruxelles est a UTC+2 l'ete. Deux heures d'ecart sur tout
+# ce que le site affichait.
+#
+# ⚠ ON NE MET PAS LE SERVEUR A L'HEURE DE BRUXELLES. Ce serait juste pour une
+# seule personne. Un joueur a Montreal verrait alors six heures d'ecart au lieu
+# de deux, et personne ne s'en apercevrait avant qu'il le dise.
+#
+# ⚠ LE SERVEUR NE FORMATE PLUS AUCUNE HEURE DESTINEE A UN HUMAIN. Il n'a aucun
+# moyen de connaitre le fuseau de qui regarde : seul le navigateur le sait. Le
+# serveur envoie donc un INSTANT (secondes depuis l'epoque, sans fuseau, le
+# meme partout sur Terre) et le navigateur le met en toutes lettres, avec
+# `toLocaleString`. Voir `_horodate` et `SCRIPT_HEURE_LOCALE`.
+#
+# ⚠ LES HORODATAGES STOCKES SONT EN UTC, ET LE RESTENT. Ils sont ecrits en
+# clair (« 2026-09-14 05:26 ») depuis l'origine, sans fuseau, par un serveur
+# qui a toujours ete en UTC. On les relit donc comme de l'UTC, explicitement.
+# `time.strftime` sans argument suivait le fuseau du serveur : si celui-ci
+# changeait un jour, les anciennes lignes deviendraient fausses en silence et
+# les nouvelles seraient decalees. `time.gmtime()` ferme la porte.
+# ===========================================================================
+
 def _maintenant() -> str:
-    return time.strftime("%Y-%m-%d %H:%M")
+    """L'instant present, en UTC, au format stocke en base.
+
+    ⚠ `time.gmtime()` et pas l'heure locale du serveur : voir l'avertissement
+    ci-dessus. Ne jamais montrer cette chaine telle quelle a un humain.
+    """
+    return time.strftime("%Y-%m-%d %H:%M", time.gmtime())
+
+
+def _epoque_de(horodatage) -> float | None:
+    """Un horodatage stocke -> secondes depuis l'epoque, ou None s'il est illisible.
+
+    ⚠ `calendar.timegm` et pas `time.mktime` : le premier lit un temps UTC, le
+    second le lit dans le fuseau du serveur. Sur un serveur en UTC les deux
+    donnent la meme chose ; le jour ou il changerait de fuseau, seul le premier
+    resterait juste.
+    """
+    import calendar
+    texte = str(horodatage or "").strip()
+    # ⚠ DEUX FORMES, ET C'EST VOULU. `_maintenant` ecrit a la minute
+    # (« 2026-09-14 05:26 »), mais d'anciennes lignes portent les secondes
+    # (« 2026-09-14 05:26:31 »), ecrites ailleurs par `isoformat`. Le premier
+    # jet ne lisait que la forme courte et rendait None sur les autres : une
+    # visite d'il y a trois heures redevenait « jamais vu ». Attrape par
+    # `site/test_parcours.py` le 14/09/2026.
+    for forme in ("%Y-%m-%d %H:%M", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M"):
+        try:
+            return calendar.timegm(time.strptime(texte, forme))
+        except (TypeError, ValueError):
+            continue
+    return None
+
+
+def _horodate(horodatage, secours: str = "") -> str:
+    """Une date, pour le HTML : un instant que le navigateur mettra a l'heure.
+
+    Rend `<time data-ts="...">…</time>`. Le texte a l'interieur est la chaine
+    UTC brute : c'est ce que verra quelqu'un dont le navigateur n'execute pas
+    JavaScript, et c'est mieux que rien. `SCRIPT_HEURE_LOCALE` la remplace par
+    l'heure du lecteur des que la page est chargee.
+    """
+    epoque = _epoque_de(horodatage)
+    texte = html.escape(str(horodatage or secours))
+    if epoque is None:
+        return texte
+    return '<time data-ts="%d">%s</time>' % (int(epoque), texte)
+
+
+# Mis dans chaque page qui montre des dates. ⚠ Il ne DEVINE rien : il ne touche
+# qu'aux elements qui portent `data-ts`, pose par `_horodate`. Une date ecrite
+# en dur ailleurs reste en UTC, et c'est voulu : mieux vaut qu'elle se voie.
+SCRIPT_HEURE_LOCALE = """
+<script>
+(function () {
+  function langue() {
+    try { return navigator.language || "fr-FR"; } catch (e) { return "fr-FR"; }
+  }
+  function mettreALHeure(racine) {
+    var noeuds = (racine || document).querySelectorAll("time[data-ts]");
+    for (var i = 0; i < noeuds.length; i++) {
+      var n = noeuds[i];
+      var ts = Number(n.getAttribute("data-ts"));
+      if (!isFinite(ts) || ts <= 0) continue;
+      var d = new Date(ts * 1000);
+      try {
+        n.textContent = d.toLocaleString(langue(), {
+          day: "2-digit", month: "2-digit", year: "numeric",
+          hour: "2-digit", minute: "2-digit"
+        });
+        n.setAttribute("datetime", d.toISOString());
+        n.title = "heure de votre appareil";
+      } catch (e) { /* navigateur sans Intl : la chaine UTC reste lisible */ }
+    }
+  }
+  mettreALHeure(document);
+  // Les parties de page redessinees apres coup (suivi, tchat) portent leurs
+  // propres `data-ts` : on repasse derriere elles.
+  window.mettreALHeureLocale = mettreALHeure;
+  document.addEventListener("DOMContentLoaded", function () { mettreALHeure(document); });
+})();
+</script>
+"""
 
 
 def compte(identifiant: str):
@@ -1552,10 +1659,11 @@ def creer_reinitialisation(pseudo: str) -> str:
 
 
 def _age_secondes(horodatage: str) -> float:
-    try:
-        return time.time() - time.mktime(time.strptime(horodatage, "%Y-%m-%d %H:%M"))
-    except (TypeError, ValueError):
-        return float("inf")
+    """⚠ Passe par `_epoque_de`, donc lit l'horodatage comme de l'UTC. Avec
+    `time.mktime`, un serveur qui changerait de fuseau aurait fait expirer les
+    liens de reinitialisation avec plusieurs heures d'avance ou de retard."""
+    epoque = _epoque_de(horodatage)
+    return float("inf") if epoque is None else time.time() - epoque
 
 
 def reinitialisation_valide(jeton: str) -> str | None:
@@ -1649,12 +1757,15 @@ def toucher_presence(pseudo: str) -> None:
 
 
 def _secondes_depuis(quand):
-    """Secondes ecoulees depuis cet horodatage, ou None s'il est illisible."""
-    from datetime import datetime
-    try:
-        return (datetime.now() - datetime.fromisoformat(quand)).total_seconds()
-    except (TypeError, ValueError):
-        return None
+    """Secondes ecoulees depuis cet horodatage, ou None s'il est illisible.
+
+    ⚠ Meme correction que `_age_secondes` le 14/09/2026 : `datetime.now()`
+    contre un `fromisoformat` sans fuseau melangeait l'heure du serveur et une
+    date UTC. Les « il y a 3 min » du suivi etaient donc faux de deux heures
+    des que le serveur n'etait pas en UTC.
+    """
+    epoque = _epoque_de(quand)
+    return None if epoque is None else time.time() - epoque
 
 
 def _il_y_a(quand: str) -> str:
@@ -1835,7 +1946,10 @@ def purger_rapports_traites(jours: int = JOURS_RAPPORTS_TRAITES) -> int:
         return 0
     # Meme format que `_maintenant()` : la comparaison de chaines suffit, ces
     # horodatages se trient dans l'ordre alphabetique comme dans le temps.
-    limite = (datetime.now() - timedelta(days=jours)).strftime("%Y-%m-%d %H:%M")
+    # ⚠ `utcnow`, pas `now` : la borne doit etre dans le meme fuseau que les
+    # lignes comparees, sans quoi la purge efface deux heures trop tot ou deux
+    # heures trop tard (corrige le 14/09/2026).
+    limite = (datetime.utcnow() - timedelta(days=jours)).strftime("%Y-%m-%d %H:%M")
     with _cx() as cx:
         # ⚠ TOLERER UNE BASE PAS ENCORE MIGREE. Cette fonction est appelee par
         # la purge hebdomadaire, dans un AUTRE processus que le service : lui
@@ -1999,15 +2113,16 @@ def messages_depuis(depuis: int = 0, moi: str = "", avec: str = ""):
                 " ORDER BY id LIMIT ?",
                 (depuis, moi, avec, avec, moi, MESSAGES_GARDES)).fetchall()
     # `quand` reste le « HH:MM » du serveur (les anciens clients le lisent
-    # tel quel) ; `quand_ts` est l'heure en secondes depuis l'epoque, que le
-    # navigateur formate dans SON fuseau. Le serveur vit en UTC, le joueur en
-    # Belgique : le « HH:MM » nu s'affichait deux heures en retard.
-    def _epoque(quand: str) -> float | None:
-        ecart = _secondes_depuis(quand)
-        return None if ecart is None else time.time() - ecart
-
+    # tel quel) ; `quand_ts` est l'instant, que le navigateur met a l'heure de
+    # CELUI QUI LIT. Le serveur vit en UTC, le joueur en Belgique : le
+    # « HH:MM » nu s'affichait deux heures en retard.
+    #
+    # ⚠ 14/09/2026 : `quand_ts` se calculait par `time.time() - _secondes_depuis(...)`,
+    # un aller-retour qui repassait par l'horloge courante et rendait un
+    # resultat legerement different a chaque appel. `_epoque_de` lit la date une
+    # fois pour toutes, et la lit explicitement comme de l'UTC.
     return [{"id": l["id"], "pseudo": l["pseudo"], "texte": l["texte"],
-             "quand": l["quand"][11:16], "quand_ts": _epoque(l["quand"])}
+             "quand": l["quand"][11:16], "quand_ts": _epoque_de(l["quand"])}
             for l in lignes]
 
 
@@ -2231,7 +2346,7 @@ def page_reprise(pseudo: str, attendue: dict) -> bytes:
              '<em>La sauvegarde reste dans « Reprendre », sur l\'ecran de '
              'preparation.</em></button></form>'
              '</div></div>'
-             % (html.escape(quoi), html.escape(attendue.get("quand") or ""),
+             % (html.escape(quoi), _horodate(attendue.get("quand") or ""),
                 (", " + html.escape(motif)) if motif else ""))
     return PAGE.format(tete="", sous="Tu etais en pleine partie.",
                        barre=_barre(pseudo), corps=corps,
@@ -3064,6 +3179,31 @@ _BOUTON_POUR_FORMAT = BOUTON_APPLI.replace("{", "{{").replace("}", "}}")
 PAGE = PAGE.replace("{tete_appli}", _TETE_POUR_FORMAT).replace("{bouton_appli}", _BOUTON_POUR_FORMAT)
 PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("{tete_appli}", _TETE_POUR_FORMAT).replace("{bouton_appli}", _BOUTON_POUR_FORMAT)
 
+# L'heure locale, ajoutee aux deux pages qui montrent des dates ABSOLUES.
+#
+# ⚠ MEME PIEGE QUE CI-DESSUS, ET LA MEME PARADE : le script est plein
+# d'accolades, `.format` y verrait des champs positionnels. On les double.
+#
+# ⚠ `PAGE_SUIVI` N'EN A PAS BESOIN, ET CE N'EST PAS UN OUBLI. Elle n'affiche
+# que des durees (« il y a 3 min », « allumee depuis 2 h »), qui ne dependent
+# d'aucun fuseau. Un premier jet l'incluait quand meme : le `replace` ne
+# trouvait aucun `</main>` (cette page n'en a pas) et ne faisait donc RIEN, en
+# silence. Une ligne qui ne sert a rien et qui en a l'air est pire que pas de
+# ligne : elle ferait croire le probleme traite ailleurs.
+_HEURE_POUR_FORMAT = SCRIPT_HEURE_LOCALE.replace("{", "{{").replace("}", "}}")
+
+
+def _avec_heure_locale(gabarit: str, nom: str) -> str:
+    """Colle le script avant la fin du gabarit. ⚠ LEVE si la balise manque :
+    un `replace` muet laisserait la page en UTC sans que personne le voie."""
+    if "</main>" not in gabarit:
+        raise RuntimeError(f"{nom} n'a pas de </main> : le script d'heure locale ne peut pas y entrer")
+    return gabarit.replace("</main>", "</main>" + _HEURE_POUR_FORMAT, 1)
+
+
+PAGE = _avec_heure_locale(PAGE, "PAGE")
+PAGE_ADMIN = _avec_heure_locale(PAGE_ADMIN, "PAGE_ADMIN")
+
 
 def _icone_appli(nom: str) -> bytes | None:
     if nom not in ("app-192.png", "app-512.png", "favicon.png"):
@@ -3311,11 +3451,11 @@ class Handler(BaseHTTPRequestHandler):
                        '<input type="hidden" name="action" value="annuler">'
                        '<input type="hidden" name="jeton" value="%s">'
                        '<button class="non" type="submit">Annuler</button></form></td></tr>'
-                       % (html.escape(lien), html.escape(i["cree_le"]),
+                       % (html.escape(lien), _horodate(i["cree_le"]),
                           html.escape(i["jeton"])))
         for i in invitations_utilisees():
             inv.append("<tr><td>—</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
-                html.escape(i["cree_le"]), html.escape(i["utilise_par"] or ""),
+                _horodate(i["cree_le"]), html.escape(i["utilise_par"] or ""),
                 html.escape(i["utilise_le"] or "")))
         if not inv:
             inv.append('<tr><td colspan="4">Aucune invitation. '
@@ -3329,7 +3469,7 @@ class Handler(BaseHTTPRequestHandler):
                           '<input type="hidden" name="jeton" value="%s">'
                           '<button class="non" type="submit">Annuler</button></form></td></tr>'
                           % (html.escape(r["pseudo"]), html.escape(lien),
-                             html.escape(r["cree_le"]), html.escape(r["jeton"])))
+                             _horodate(r["cree_le"]), html.escape(r["jeton"])))
         if not reinit:
             reinit.append('<tr><td colspan="4">Aucun lien en cours. Le bouton '
                           '« Mot de passe » d\'un compte en cree un.</td></tr>')
@@ -3384,7 +3524,7 @@ class Handler(BaseHTTPRequestHandler):
             lignes_msg = "".join(
                 '<div class="msg %s"><b>%s</b> <span class="meta">%s</span><br>%s</div>'
                 % ("moi" if m["pseudo"] == ADMIN else "lui",
-                   html.escape(m["pseudo"]), html.escape(m["quand"]),
+                   html.escape(m["pseudo"]), _horodate(m["quand"]),
                    html.escape(m["texte"]).replace("\n", "<br>"))
                 for m in echange) or '<p class="sous">Rien encore.</p>'
             nouveau = personne["pseudo"] in attente_salon["de"]
@@ -3492,7 +3632,7 @@ class Handler(BaseHTTPRequestHandler):
                 % (classe, html.escape(etat),
                    html.escape((r["description"] or "")[:110]),
                    html.escape(r["nom"] or "?"), html.escape(ou),
-                   html.escape(r["quand"] or ""),
+                   _horodate(r["quand"] or ""),
                    html.escape(r["description"] or "").replace("\n", "<br>"),
                    image, journal, boutons))
 
