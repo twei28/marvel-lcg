@@ -22,10 +22,17 @@ const ETAT = 'rhino__spider_man__phase-mechant-complet.js'
 /** Le temps d'observation sans toucher à rien. Plus long que tous nos délais. */
 const ATTENTE_MS = 5000
 
-async function ouvrirLaPhase(page: Page) {
+async function ouvrirLaPhase(page: Page, avanceAuto = false) {
   await page.goto('/get_version')
   await page.goto('/main.html')
-  await page.evaluate(() => localStorage.setItem('marvel-langue-choisie', '1'))
+  await page.evaluate((auto) => {
+    localStorage.setItem('marvel-langue-choisie', '1')
+    // ⚠ LE RÉGLAGE QUI A CAUSÉ LE DÉFAUT UNE PREMIÈRE FOIS. « Avance toute
+    // seule » était grisé hors du mode Détaillé, mais sa VALEUR s'appliquait
+    // quand même : griser ne désactive pas. Le mettre sur « on » ici est donc
+    // le témoin de cette cause-là, et non un réglage de confort.
+    localStorage.setItem('marvel-board-avance-auto', auto ? 'on' : 'off')
+  }, avanceAuto)
   // La garde des essais : c'est le SERVEUR qui décide en vrai, on la force ici
   // pour que le test n'ait pas besoin d'un compte administrateur.
   await page.route('**/get_site_admin', (r) =>
@@ -96,4 +103,26 @@ test('⚠ jamais deux panneaux au centre en même temps', async ({ page }) => {
     await bouton.first().click()
     await page.waitForTimeout(1200)
   }
+})
+
+test('⚠ même avec « Avance toute seule » ALLUMÉE, rien ne bouge sur la table', async ({ page }) => {
+  // LA PREMIÈRE DES TROIS CAUSES du « ça continue tout seul », re-vérifiée en
+  // jeu le 14/09/2026 : le réglage était grisé hors du mode Détaillé, mais sa
+  // valeur continuait de s'appliquer. Un réglage grisé doit AUSSI être sans
+  // effet, et c'est `avanceAutoActive` (board.tsx) qui le garantit.
+  test.setTimeout(90000)
+  await ouvrirLaPhase(page, true)
+
+  const avant = await phraseCourante(page)
+  expect(avant, 'aucune étape à observer').not.toBe('')
+  await page.waitForTimeout(ATTENTE_MS)
+  const apres = await phraseCourante(page)
+  expect(
+    apres,
+    `avec « Avance toute seule » allumée, l'étape a changé SANS CLIC : ` +
+      `« ${avant} » est devenu « ${apres} »`
+  ).toBe(avant)
+
+  // Et le bouton est toujours là pour avancer à la main.
+  await expect(page.locator('.deroule-rond').first()).toBeVisible()
 })

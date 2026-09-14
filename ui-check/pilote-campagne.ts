@@ -464,6 +464,15 @@ export type Lancement = {
   /** Campagne experte : c'est le FICHIER de scenario qui change, pas une regle. */
   expert?: boolean
   seed?: number
+  /**
+   * Les regles de la partie. Defaut : `REGLES_CAMPAGNE`.
+   *
+   * Une partie ORDINAIRE (hors campagne) se lance avec les trois premieres,
+   * sans `mode_campaign` : c'est ce que `ui-check/contrat-nouvelle-partie.json`
+   * appelle `regles_partie_standard`, et ce qu'envoie l'ecran de preparation
+   * quand on ne coche aucun mode.
+   */
+  regles?: readonly string[]
 }
 
 /**
@@ -491,7 +500,7 @@ export async function lancer(request: APIRequestContext, options: Lancement): Pr
             ...new Set([...(definition.encounter_sets ?? []), ...(definition.modular_sets ?? [])]),
           ],
           hero_json: decks,
-          rules: REGLES_CAMPAGNE,
+          rules: [...(options.regles ?? REGLES_CAMPAGNE)],
           seed: options.seed ?? 1234,
           timeout: 0,
         })
