@@ -5000,12 +5000,9 @@
 
 @layer utilitaires {
   /* --- Panneau d'options (⚙) ---------------------------------------------- */
-  .popover-options {
-    display: grid;
-    gap: 4px;
-    min-width: 250px;
-    padding: 8px;
-  }
+  /* `.popover-options` a ete SUPPRIME le 14/09/2026 : les reglages sont une
+     fenetre a onglets (.reglages-fenetre, plus bas dans ce fichier), et plus
+     un popover ouvert depuis un autre popover. */
 
   .ligne-option {
     display: flex;
@@ -5013,6 +5010,13 @@
     justify-content: space-between;
     gap: 14px;
     width: 100%;
+    /* ⚠ MESURE DU 14/09/2026, et pas une precaution de style. Le navigateur
+       met les `<button>` en `border-box` mais laisse les `<div>` et `<label>`
+       en `content-box` : avec `width: 100%` et 22 px de marge interieure, une
+       ligne en `<div>` (les choix, le curseur) faisait 446 px la ou une ligne
+       en `<button>` en faisait 422, et debordait de 24 px hors de la fenetre.
+       « Instantane » et « 5 s » etaient coupes au bord droit sur telephone. */
+    box-sizing: border-box;
     padding: 9px 11px;
     font: inherit;
     font-weight: 700;
@@ -6909,5 +6913,232 @@
     text-transform: uppercase;
     letter-spacing: 0.03em;
     padding-inline: 22px;
+  }
+}
+
+@layer utilitaires {
+  /* --- La fenêtre des réglages (14/09/2026) ---------------------------------
+     Remplace l'empilement « popover Réglages → popover Options ». Constat de
+     l'utilisateur : « il y a une colonne et puis quand j'ouvre les options, il
+     y a encore la colonne des options, et puis voilà ainsi de suite ».
+
+     ⚠ ELLE EST ANCRÉE À L'ÉCRAN, PAS À LA BARRE. `position: fixed` sur le fond :
+     ancrée dans la barre, elle aurait hérité de son `overflow` et de son
+     empilement, c'est-à-dire du travers qu'on corrige. */
+  .reglages-fond {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(6, 8, 12, 0.72);
+    backdrop-filter: blur(2px);
+  }
+
+  .reglages-fenetre {
+    display: grid;
+    /* Deux colonnes sur ordinateur : les onglets à gauche, le contenu à droite.
+       Les lignes sont l'en-tête, puis le corps. */
+    grid-template-columns: minmax(150px, 190px) 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'tete tete'
+      'onglets contenu';
+    width: min(720px, 100%);
+    max-height: min(640px, calc(100dvh - 32px));
+    border-radius: 14px;
+    background: rgba(18, 21, 30, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65);
+    overflow: hidden;
+  }
+
+  .reglages-tete {
+    grid-area: tete;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .reglages-tete h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 900;
+    color: #e8eef6;
+  }
+
+  .reglages-fermer {
+    font: inherit;
+    font-size: 1.4rem;
+    line-height: 1;
+    padding: 2px 10px 5px;
+    color: #b9c4d2;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .reglages-fermer:hover {
+    background: rgba(255, 255, 255, 0.13);
+    color: #fff;
+  }
+
+  .reglages-onglets {
+    grid-area: onglets;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 8px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+  }
+
+  .reglages-onglet {
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.86rem;
+    text-align: left;
+    padding: 9px 11px;
+    color: #b9c4d2;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .reglages-onglet:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #e8eef6;
+  }
+
+  .reglages-onglet.est-actif {
+    background: rgba(255, 255, 255, 0.11);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+
+  .reglages-contenu {
+    grid-area: contenu;
+    display: grid;
+    /* ⚠ `minmax(0, 1fr)` ET PAS `1fr`. Une colonne de grille se dimensionne par
+       défaut sur son contenu le plus large : une ligne un peu longue élargissait
+       la colonne au-delà de la fenêtre, et `overflow: hidden` coupait « Instantané »
+       et « 5 s » au bord droit sur téléphone (constaté en capture le 14/09/2026).
+       Le `minmax(0, ...)` autorise la colonne à être plus étroite que son contenu,
+       et c'est alors le contenu qui s'adapte. */
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 4px;
+    padding: 10px 12px 14px;
+    overflow-y: auto;
+  }
+
+  /* Un sous-réglage : en retrait sous son parent, et relié par un filet. Il
+     reste VISIBLE quand il est inutilisable (voir FenetreReglages.tsx) : un
+     réglage qui apparaît est un réglage qu'on ne découvre jamais. */
+  .ligne-option.est-enfant {
+    margin-left: 18px;
+    width: calc(100% - 18px);
+    position: relative;
+  }
+
+  .ligne-option.est-enfant::before {
+    content: '';
+    position: absolute;
+    left: -11px;
+    top: 50%;
+    width: 7px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  /* Une ligne « choix entre N » : le libellé à gauche, les pastilles à droite.
+     Elle ne se clique pas elle-même, seuls ses boutons agissent. */
+  .ligne-option-choix {
+    cursor: default;
+  }
+
+  .ligne-option-choix:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .ligne-option-choix .mode-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ⚠ Le libellé cède la place, jamais les pastilles. Sans `min-width: 0`, un
+     libellé long («  Phase du méchant  ») pousse les boutons hors de la
+     fenêtre : sur téléphone, « Instantané » et « 5 s » étaient coupés au bord
+     droit (constaté en capture le 14/09/2026). */
+  .ligne-option-choix .ligne-option-libelle {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ligne-option-choix.est-desactive .mode-actions button {
+    color: var(--cadre-clair);
+    cursor: not-allowed;
+  }
+
+  /* --- Sur téléphone : les onglets passent au-dessus, en bandeau ------------
+     Décidé avec l'utilisateur le 14/09/2026. Une colonne d'onglets à gauche ne
+     tient pas sur 400 px de large, et c'est là qu'il joue. Même balisage, même
+     logique : seul le sens de lecture change. */
+  @media (max-width: 640px) {
+    .reglages-fenetre {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto 1fr;
+      grid-template-areas:
+        'tete'
+        'onglets'
+        'contenu';
+      width: 100%;
+      max-height: calc(100dvh - 24px);
+    }
+
+    .reglages-onglets {
+      flex-direction: row;
+      gap: 6px;
+      padding: 8px 10px;
+      border-right: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      overflow-x: auto;
+      overflow-y: hidden;
+      /* Les pastilles glissent du doigt et s'arrêtent proprement sur l'une
+         d'elles, plutôt que de flotter entre deux. */
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .reglages-onglet {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      border-radius: 999px;
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    /* Quand libellé et pastilles ne tiennent pas sur une ligne, les pastilles
+       passent dessous plutôt que de rétrécir jusqu'à l'illisible. ⚠ Le retour
+       à la ligne n'est pas FORCÉ (pas de `flex-basis: 100%`) : sur la plupart
+       des réglages tout tient côte à côte, et une ligne coupée en deux sans
+       raison ferait perdre de la hauteur sur l'écran le plus étroit. */
+    .ligne-option-choix {
+      flex-wrap: wrap;
+      row-gap: 8px;
+    }
+
+    .ligne-option-choix .mode-actions {
+      margin-left: auto;
+    }
   }
 }

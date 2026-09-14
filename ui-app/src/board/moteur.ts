@@ -41,6 +41,18 @@ import { doitRattraperLesSieges, DELAI_PREMIERE_TRAME_MS } from './sieges-hot-se
  */
 export type ModePhaseMechant = 'detaille' | 'instantane'
 
+/**
+ * Niveau de detail de l'assistant d'action.
+ * ⚠ DEMENAGE ICI le 14/09/2026, depuis `board.tsx` ou il etait declare sans
+ * etre exporte. La fenetre des reglages en a besoin, et elle ne peut pas
+ * importer `board.tsx` qui l'importe deja : le cycle serait circulaire.
+ */
+export type ModeActions = 'simple' | 'detailed'
+
+/** Presentation des cartes revelees : coupee, breve ou longue. Meme
+ *  demenagement, et pour la meme raison. */
+export type ModeRevelation = 'off' | 'court' | 'long'
+
 export const CLE_MODE_PHASE = 'marvel-board-mode-phase-mechant'
 export const CLE_DELAI_PAS_A_PAS = 'marvel-board-delai-pas-a-pas'
 /** Avance auto : reglage independant, qui ne veut rien dire hors de « detaille ». */

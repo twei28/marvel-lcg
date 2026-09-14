@@ -140,9 +140,12 @@ import {
   DELAI_PAS_A_PAS_MAX,
   DELAI_PAS_A_PAS_MIN,
   type EtatMoteur,
+  type ModeActions,
   type ModePhaseMechant,
+  type ModeRevelation,
   type ReponseAmbiance,
 } from './board/moteur'
+import { FenetreReglages } from './board/FenetreReglages'
 // CouchePasAPas et usePasAPas : DEBRANCHES a la demande de l'utilisateur, voir
 // les commentaires a leurs points d'appel plus bas pour les rallumer.
 import { SelecteurCibles } from './board/SelecteurCibles'
@@ -174,7 +177,8 @@ const AUCUN_ID: Set<number> = new Set()
 const CLE_MODE_ACTIONS = 'marvel-board-action-mode'
 const CLE_ANIMATIONS = 'marvel-board-animations'
 
-type ModeActions = 'simple' | 'detailed'
+// `ModeActions` et `ModeRevelation` vivent dans board/moteur.ts (14/09/2026) :
+// la fenetre des reglages en a besoin et ne peut pas importer ce fichier.
 
 function lireModeActions(): ModeActions {
   try {
@@ -205,8 +209,6 @@ function lireSons(): boolean {
   }
 }
 
-/** Presentation des cartes revelees : coupee, breve ou longue. */
-type ModeRevelation = 'off' | 'court' | 'long'
 const DUREES_REVELATION: Record<ModeRevelation, number> = { off: 0, court: 2600, long: 5000 }
 
 function lireRevelation(): ModeRevelation {
@@ -936,7 +938,22 @@ async function lireMetaSauvegarde(nom: string): Promise<MetaSauvegarde | undefin
  * `/get_dossier_sauvegardes`.
  */
 
-function PopoverReglages({ children }: { children: React.ReactNode }) {
+/**
+ * Le menu « Partie » : ce qu'on CONSULTE en jouant.
+ *
+ * ⚠ ANCIENNEMENT « ⚙ Reglages », renomme le 14/09/2026 avec tout ce que ce
+ * changement implique. Il contenait a la fois des actions (historique, log,
+ * journal, retour au menu) et un SECOND bouton « ⚙ Options » ouvrant une
+ * deuxieme colonne de 18 reglages. Constat de l'utilisateur : « il y a une
+ * colonne et puis quand j'ouvre les options, il y a encore la colonne des
+ * options ».
+ *
+ * Les reglages sont partis dans `FenetreReglages`. Ce qui reste ici est
+ * exactement ce qui n'y avait pas sa place : on consulte un log EN JOUANT,
+ * souvent parce qu'un bug vient de se produire, et il serait absurde d'ouvrir
+ * une fenetre modale par-dessus le plateau pour cela.
+ */
+function PopoverPartie({ children }: { children: React.ReactNode }) {
   const [ouvert, setOuvert] = useState(false)
   if (enModeFeuille()) return <>{children}</>
   return (
@@ -946,9 +963,9 @@ function PopoverReglages({ children }: { children: React.ReactNode }) {
         className={`bh-bouton bh-reglages${ouvert ? ' est-actif' : ''}`}
         onClick={() => setOuvert((o) => !o)}
         aria-expanded={ouvert}
-        title={t('Historique, options, journal, musique, langue')}
+        title={t('Historique, log, journal du héros, retour au menu')}
       >
-        <span aria-hidden="true">⚙</span> {t('Réglages')}
+        <span aria-hidden="true">▶</span> {t('Partie')}
       </button>
       {ouvert ? (
         <div className="popover-sauvegardes popover-reglages" role="menu">
@@ -1234,281 +1251,11 @@ function LigneOption({
 }
 
 /** Panneau d'options du plateau : tous les reglages regroupes derriere ⚙. */
-function PanneauOptions({
-  animations,
-  basculerAnimations,
-  sons,
-  basculerSons,
-  meteo,
-  basculerMeteo,
-  apercuMeteo,
-  reglerApercuMeteo,
-  reponseAmbiance,
-  cyclerReponseAmbiance,
-  revelation,
-  cyclerRevelation,
-  autoCible,
-  basculerAutoCible,
-  curseurs,
-  basculerCurseurs,
-  scansFr,
-  basculerScansFr,
-  textesCdb,
-  basculerTextesCdb,
-  succes,
-  basculerSucces,
-  modePhase,
-  changerModePhase,
-  tempsParDecision,
-  avanceAuto,
-  basculerAvanceAuto,
-  delaiPasAPas,
-  reglerDelaiPasAPas,
-  validationCourte,
-  basculerValidationCourte,
-  reglageMode,
-  cyclerReglageMode,
-  montrerDisposition,
-  designEssai,
-  basculerDesignEssai,
-  modeActions,
-  changerModeActions,
-}: {
-  animations: boolean
-  basculerAnimations: () => void
-  sons: boolean
-  basculerSons: () => void
-  meteo: boolean
-  apercuMeteo: ApercuMeteo
-  reglerApercuMeteo: (valeur: ApercuMeteo) => void
-  basculerMeteo: () => void
-  reponseAmbiance: ReponseAmbiance
-  cyclerReponseAmbiance: () => void
-  revelation: ModeRevelation
-  cyclerRevelation: () => void
-  autoCible: boolean
-  basculerAutoCible: () => void
-  curseurs: boolean
-  basculerCurseurs: () => void
-  scansFr: boolean
-  basculerScansFr: () => void
-  textesCdb: boolean
-  basculerTextesCdb: () => void
-  succes: boolean
-  basculerSucces: () => void
-  modePhase: ModePhaseMechant
-  changerModePhase: (mode: ModePhaseMechant) => void
-  /** « Temps par decision » du moteur, en secondes ; 0 = sans limite. */
-  tempsParDecision: number
-  avanceAuto: boolean
-  basculerAvanceAuto: () => void
-  delaiPasAPas: number
-  reglerDelaiPasAPas: (ms: number) => void
-  validationCourte: boolean
-  basculerValidationCourte: () => void
-  reglageMode: ReglageMode
-  cyclerReglageMode: () => void
-  montrerDisposition: boolean
-  /** Design essai (board/design-essai.ts) : nouvelle barre, bandeau, assistant. */
-  designEssai: boolean
-  basculerDesignEssai: () => void
-  /** Sous le drapeau, Simple / Détaillé vit ici : c'est un réglage, pas une action. */
-  modeActions: ModeActions
-  changerModeActions: (mode: ModeActions) => void
-}) {
-  const [ouvert, setOuvert] = useState(false)
-  return (
-    <span className="popover-sauvegardes-ancre">
-      <button
-        type="button"
-        className={`bh-bouton bh-options${ouvert ? ' est-actif' : ''}`}
-        onClick={() => setOuvert((o) => !o)}
-        aria-expanded={ouvert}
-        title={t('Tous les réglages du plateau (animations, sons, ambiance, révélation)')}
-      >
-        <span aria-hidden="true">{'\u2699'}</span> {t('Options')}
-      </button>
-      {ouvert ? (
-        <div className="popover-sauvegardes popover-options" role="menu">
-          <LigneOption
-            libelle={t('Nouveau design')}
-            detail={t('Barre, bandeau et assistant d’action. Décoche pour revenir à l’ancien plateau.')}
-            actif={designEssai}
-            onBascule={basculerDesignEssai}
-          />
-          {designEssai ? (
-            <div className="ligne-option ligne-option-mode">
-              <span className="ligne-option-libelle">{t('Actions')}</span>
-              <ModeActionsBoutons modeActions={modeActions} changerModeActions={changerModeActions} />
-            </div>
-          ) : null}
-          <LigneOption
-            libelle={t('Animations')}
-            detail={t('Déplacements de cartes, secousse d\u2019impact, halo de statut')}
-            actif={animations}
-            onBascule={basculerAnimations}
-          />
-          <LigneOption
-            libelle={t('Sons')}
-            detail={t('Effets sonores du moteur')}
-            actif={sons}
-            onBascule={basculerSons}
-          />
-          <LigneOption
-            libelle={t('Succès')}
-            detail={t('Bannière quand un exploit est réalisé (Premier sang, Double K.O. ...)')}
-            actif={succes}
-            onBascule={basculerSucces}
-          />
-          <LigneOption
-            libelle={t('Scans en français')}
-            detail={t('Images des cartes en français quand elles existent')}
-            actif={scansFr}
-            onBascule={basculerScansFr}
-          />
-          <LigneOption
-            libelle={t('Textes marvelcdb (réseau)')}
-            detail={t('Texte officiel FR sous l\u2019aperçu des cartes, via fr.marvelcdb.com')}
-            actif={textesCdb}
-            onBascule={basculerTextesCdb}
-          />
-          <LigneOption
-            libelle={t('Curseurs des autres joueurs')}
-            detail={t('En multijoueur, montre où pointent les autres')}
-            actif={curseurs}
-            onBascule={basculerCurseurs}
-          />
-          <LigneOption
-            libelle={t('Auto-ciblage')}
-            detail={t('Sélectionne d\u2019office la cible quand une seule est légale')}
-            actif={autoCible}
-            onBascule={basculerAutoCible}
-          />
-          {/* DEUX positions, sur le modele exact du choix Simple/Detaille du
-              mode d'action (ModeActionsBoutons plus haut) : deux boutons cote
-              a cote, celui qui est actif porte la classe est-actif. Les
-              anciens « Manuel » (un clic par evenement important, sans jamais
-              rien montrer) et « Pas a pas » (mode a part entiere) ont
-              disparu : le premier n'apportait rien que « Detaille » ne fasse
-              deja mieux, le second est devenu le reglage « avance auto »
-              ci-dessous, a l'interieur de « Detaille ». */}
-          <div className="ligne-option est-etabli">
-            <span className="ligne-option-libelle">{t('Phase du méchant')}</span>
-          </div>
-          <div
-            className="mode-actions ligne-option-mode-phase"
-            role="group"
-            aria-label={t('Phase du méchant')}
-          >
-            <button
-              type="button"
-              className={modePhase === 'detaille' ? 'est-actif' : ''}
-              onClick={() => changerModePhase('detaille')}
-            >
-              {t(libelleModePhase('detaille'))}
-            </button>
-            <button
-              type="button"
-              className={modePhase === 'instantane' ? 'est-actif' : ''}
-              onClick={() => changerModePhase('instantane')}
-            >
-              {t(libelleModePhase('instantane'))}
-            </button>
-          </div>
-          {modePhase === 'detaille' ? (
-            <>
-              {/* L'hypothese du mode, dite la ou on le choisit : un « Temps par
-                  decision » regle a la preparation fait expirer les attentes du
-                  moteur, qui poursuit sans nous. Une mention, rien de plus. Le
-                  mode Instantane ne la porte pas : il ne retient rien, donc
-                  l'hypothese ne lui sert a rien. */}
-              {tempsParDecision > 0 ? (
-                <p className="ligne-option-note">{texteTempsParDecision()}</p>
-              ) : null}
-              <LigneOption
-                libelle={t('Avance toute seule')}
-                detail={t('Chaque étape se termine seule après un délai, sans attendre un clic')}
-                actif={avanceAuto}
-                onBascule={basculerAvanceAuto}
-              />
-              {avanceAuto ? (
-                <label className="ligne-option ligne-option-curseur">
-                  <span className="ligne-option-libelle">{t('Vitesse du déroulé')}</span>
-                  <input
-                    type="range"
-                    min={DELAI_PAS_A_PAS_MIN}
-                    max={DELAI_PAS_A_PAS_MAX}
-                    step={100}
-                    value={delaiPasAPas}
-                    onChange={(e) => reglerDelaiPasAPas(Number(e.target.value))}
-                    title={t('Temps d’affichage de chaque étape')}
-                  />
-                  <span className="ligne-option-etat" aria-hidden="true">
-                    {(delaiPasAPas / 1000).toFixed(1).replace('.', ',')} s
-                  </span>
-                </label>
-              ) : null}
-            </>
-          ) : null}
-          <LigneOption
-            libelle={t('Validation courte')}
-            detail={t('Supprime le « Valider » quand la cible est unique et le coût couvert')}
-            actif={validationCourte}
-            onBascule={basculerValidationCourte}
-          />
-          <LigneOption
-            libelle={t('Ambiance')}
-            detail={t('Météo, décor ou traitement de l’image, selon les cartes en jeu')}
-            actif={meteo}
-            onBascule={basculerMeteo}
-          />
-          {/* Aperçu d'ambiance et Demande d'ambiance : extraits dans
-              CoucheMeteo.tsx (ReglagesApercuAmbiance), grises et inertes tant
-              que « Ambiance » est coupee (voir ce composant et
-              basculerAmbiance, qui remet deja l'apercu sur Auto au moment de
-              la coupure). */}
-          <ReglagesApercuAmbiance
-            meteo={meteo}
-            apercuMeteo={apercuMeteo}
-            reglerApercuMeteo={reglerApercuMeteo}
-            reponseAmbiance={reponseAmbiance}
-            cyclerReponseAmbiance={cyclerReponseAmbiance}
-          />
-          <button
-            type="button"
-            className="ligne-option"
-            onClick={cyclerRevelation}
-            title={t('Présentation au centre des cartes révélées par la Rencontre')}
-          >
-            <span className="ligne-option-libelle">{t('Cartes révélées')}</span>
-            <span className="ligne-option-etat" aria-hidden="true">
-              {revelation === 'off' ? t('Non') : revelation === 'court' ? t('2,6 s') : t('5 s')}
-            </span>
-          </button>
-          {/* Reglage montre UNIQUEMENT sur un appareil mobile : sur un PC le
-              plateau est de toute facon rendu en mode PC, l'option n'aurait
-              aucun effet et c'est elle qui a enferme l'utilisateur. */}
-          {montrerDisposition ? (
-            <button
-              type="button"
-              className="ligne-option"
-              onClick={cyclerReglageMode}
-              title={t('Rendu du plateau : automatique selon l’appareil, ou forcer la table complète')}
-            >
-              <span className="ligne-option-libelle">{t('Disposition')}</span>
-              <span className="ligne-option-etat" aria-hidden="true">
-                {reglageMode === 'pc' ? t('Ordinateur') : t('Automatique')}
-              </span>
-            </button>
-          ) : null}
-          <p className="options-raccourcis">
-            {t('Raccourcis : E = fin du tour, U = annuler')}
-          </p>
-        </div>
-      ) : null}
-    </span>
-  )
-}
+/* `PanneauOptions` a ete SUPPRIME le 14/09/2026, remplace par
+   `board/FenetreReglages.tsx`. C'etait un popover de 18 reglages a plat,
+   ouvert depuis un autre popover : « il y a une colonne et puis quand j'ouvre
+   les options, il y a encore la colonne des options ». Rien n'a ete perdu au
+   passage, chaque reglage se retrouve dans l'un des quatre onglets. */
 
 /** Ecran de fin de partie : victoire ou defaite, avec retour au menu. */
 function EcranFinPartie({
@@ -2640,6 +2387,10 @@ function PagePartie({
   const [revelation, setRevelation] = useState<ModeRevelation>(lireRevelation)
   // Le panneau du journal du heros, ouvert depuis le menu « … ».
   const [journalOuvert, setJournalOuvert] = useState(false)
+  // La fenetre des reglages (board/FenetreReglages.tsx). ⚠ Volontairement PAS
+  // retenue entre deux parties : on ne veut pas rouvrir un ecran de reglages
+  // par-dessus le plateau au chargement.
+  const [reglagesOuverts, setReglagesOuverts] = useState(false)
   const cyclerRevelation = useCallback(() => {
     setRevelation((r) => {
       const suivant: ModeRevelation = r === 'off' ? 'court' : r === 'court' ? 'long' : 'off'
@@ -3247,12 +2998,11 @@ function PagePartie({
                 description et la capture. Ne s'affiche que si un site ecoute. */}
             <PanneauBug outils={rapport} />
 
-            {/* ⚙ Reglages (12/09/2026, demande de l'utilisateur : « juste
-                Annuler, Sauver, Bug, et un bouton qui reprend tout le reste »).
-                Historique, Options, journal, log, musique, langue, vue et
-                retour au menu vivent dans ce menu deroulant. Sur telephone,
-                PopoverReglages rend ses lignes a plat dans la feuille « … ». */}
-            <PopoverReglages>
+            {/* « Partie » (14/09/2026) : historique, log, journal du heros,
+                vue et retour au menu. Les REGLAGES n'y sont plus, ils ont leur
+                fenetre a onglets (bouton ⚙ juste apres). Sur telephone,
+                PopoverPartie rend ses lignes a plat dans la feuille « … ». */}
+            <PopoverPartie>
             <HistoriquePartie
               entrees={historique.entrees}
               effacer={historique.effacer}
@@ -3294,46 +3044,6 @@ function PagePartie({
               </span>
             ) : null}
 
-            <PanneauOptions
-              animations={animations}
-              basculerAnimations={basculerAnimations}
-              sons={sons}
-              basculerSons={basculerSons}
-              meteo={meteo}
-              apercuMeteo={apercuMeteo}
-              reglerApercuMeteo={reglerApercuMeteo}
-              reponseAmbiance={reponseAmbiance}
-              cyclerReponseAmbiance={cyclerReponseAmbiance}
-              basculerMeteo={basculerMeteo}
-              revelation={revelation}
-              cyclerRevelation={cyclerRevelation}
-              autoCible={autoCible}
-              basculerAutoCible={basculerAutoCible}
-              curseurs={curseurs}
-              basculerCurseurs={basculerCurseurs}
-              scansFr={scansFr}
-              basculerScansFr={basculerScansFr}
-              textesCdb={textesCdb}
-              basculerTextesCdb={basculerTextesCdb}
-              succes={succes}
-              basculerSucces={basculerSucces}
-              modePhase={modePhase}
-              changerModePhase={choisirModePhase}
-              tempsParDecision={etat.maxTimeout}
-              avanceAuto={avanceAuto}
-              basculerAvanceAuto={basculerAvanceAuto}
-              delaiPasAPas={delaiPasAPas}
-              reglerDelaiPasAPas={choisirDelaiPasAPas}
-              validationCourte={validationCourte}
-              basculerValidationCourte={basculerValidationCourte}
-              designEssai={designEssai}
-              basculerDesignEssai={basculerDesignEssai}
-              modeActions={modeActions}
-              changerModeActions={changerModeActions}
-              reglageMode={reglageMode}
-              cyclerReglageMode={cyclerReglageMode}
-              montrerDisposition={surAppareilMobile}
-            />
 
               {/* Le journal du heros, en panneau : ce qui est arrive a CE
                   heros, dans l'ordre. Il vivait sur la table, dans la colonne
@@ -3358,34 +3068,9 @@ function PagePartie({
               >
                 {t('Log de la partie')}
               </button>
-              {/* Le bouton musique sert aussi à la lancer : un navigateur refuse
-                  l'autoplay tant que la page n'a pas été cliquée, et ce clic-là
-                  fait office de geste. */}
-              <button
-                type="button"
-                className={`bh-bouton bh-musique${musique ? ' est-actif' : ''}`}
-                onClick={basculerMusique}
-                aria-pressed={musique}
-                title={
-                  musique
-                    ? t('Couper la musique')
-                    : t('Remettre la musique (nécessite un fichier dans assets/sounds)')
-                }
-              >
-                {musique ? t('Couper la musique') : t('Musique')}
-              </button>
-              <button
-                type="button"
-                className="bh-bouton bh-langue"
-                onClick={() => void basculerLangue()}
-                title={
-                  langueActuelle() === 'fr'
-                    ? 'Interface et narration en français — cliquer pour passer en anglais'
-                    : 'Interface and narration in English — click to switch to French'
-                }
-              >
-                {langueActuelle() === 'fr' ? 'Français → English' : 'English → Français'}
-              </button>
+              {/* Musique et langue sont partis dans la fenetre des reglages
+                  (onglet « Image et son ») le 14/09/2026 : ce sont des
+                  reglages, pas des actions de partie. */}
               <button
                 type="button"
                 className="bh-bouton bh-menu"
@@ -3394,7 +3079,20 @@ function PagePartie({
               >
                 <span aria-hidden="true">⌂</span> Menu
               </button>
-            </PopoverReglages>
+            </PopoverPartie>
+
+            {/* ⚙ Reglages : une FENETRE, pas un menu. Elle s'ouvre au centre,
+                en quatre onglets. Voir board/FenetreReglages.tsx pour le
+                pourquoi (14/09/2026). */}
+            <button
+              type="button"
+              className={`bh-bouton bh-options${reglagesOuverts ? ' est-actif' : ''}`}
+              onClick={() => setReglagesOuverts(true)}
+              aria-haspopup="dialog"
+              title={t('Tous les réglages du plateau, en quatre onglets')}
+            >
+              <span aria-hidden="true">{'\u2699'}</span> {t('Réglages')}
+            </button>
 
             {/* Fin du tour : le seul bouton colore, toujours a droite. */}
             <button
@@ -3504,6 +3202,57 @@ function PagePartie({
           />
         </aside>
       ) : null}
+      {/* La fenetre des reglages. ⚠ RENDUE HORS DE LA BARRE, au meme niveau
+          que les autres couches : ancree dans la barre, elle aurait herite de
+          son `overflow` et de son empilement, c'est-a-dire exactement le
+          travers qu'on corrige. */}
+      <FenetreReglages
+        ouvert={reglagesOuverts}
+        fermer={() => setReglagesOuverts(false)}
+        animations={animations}
+        basculerAnimations={basculerAnimations}
+        sons={sons}
+        basculerSons={basculerSons}
+        musique={musique}
+        basculerMusique={basculerMusique}
+        succes={succes}
+        basculerSucces={basculerSucces}
+        scansFr={scansFr}
+        basculerScansFr={basculerScansFr}
+        textesCdb={textesCdb}
+        basculerTextesCdb={basculerTextesCdb}
+        basculerLangue={basculerLangue}
+        modePhase={modePhase}
+        changerModePhase={choisirModePhase}
+        libelleModePhase={libelleModePhase}
+        tempsParDecision={etat.maxTimeout}
+        texteTempsParDecision={texteTempsParDecision}
+        avanceAuto={avanceAuto}
+        basculerAvanceAuto={basculerAvanceAuto}
+        delaiPasAPas={delaiPasAPas}
+        reglerDelaiPasAPas={choisirDelaiPasAPas}
+        validationCourte={validationCourte}
+        basculerValidationCourte={basculerValidationCourte}
+        autoCible={autoCible}
+        basculerAutoCible={basculerAutoCible}
+        revelation={revelation}
+        cyclerRevelation={cyclerRevelation}
+        meteo={meteo}
+        basculerMeteo={basculerMeteo}
+        apercuMeteo={apercuMeteo}
+        reglerApercuMeteo={reglerApercuMeteo}
+        reponseAmbiance={reponseAmbiance}
+        cyclerReponseAmbiance={cyclerReponseAmbiance}
+        designEssai={designEssai}
+        basculerDesignEssai={basculerDesignEssai}
+        modeActions={modeActions}
+        changerModeActions={changerModeActions}
+        curseurs={curseurs}
+        basculerCurseurs={basculerCurseurs}
+        montrerDisposition={surAppareilMobile}
+        reglageMode={reglageMode}
+        cyclerReglageMode={cyclerReglageMode}
+      />
       <BandeauConnexion etat={etat} reconnecter={reconnecter} />
       {modeRevoir ? <BarreRevoir pasTotal={modeRevoir.pas} /> : null}
       <CoucheAnimations renderId={etat.monde.render_id} actif={animations} />

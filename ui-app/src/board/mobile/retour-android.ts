@@ -18,9 +18,15 @@ type Fermable = {
 }
 
 export const FERMABLES: readonly Fermable[] = [
-  { selecteur: '.popover-options', bouton: '.bh-options' },
+  // ⚠ 14/09/2026 : `.popover-options` a disparu, les reglages sont une FENETRE
+  // (board/FenetreReglages.tsx). Sans cette ligne, le Retour la laissait
+  // ouverte et QUITTAIT LA PARTIE, ce que ce module existe precisement pour
+  // empecher. Defaut attrape par `menus-mobile.spec.ts`.
+  { selecteur: '.reglages-fond', bouton: '.reglages-fermer' },
+  // `.popover-reglages` est desormais le menu « Partie » (meme classe, meme
+  // bouton : seul son contenu a change).
   { selecteur: '.popover-reglages', bouton: '.bh-reglages' },
-  { selecteur: '.popover-sauvegardes:not(.popover-options):not(.popover-reglages)', bouton: '.bh-save' },
+  { selecteur: '.popover-sauvegardes:not(.popover-reglages)', bouton: '.bh-save' },
   { selecteur: '.historique-panneau', bouton: '.bh-history' },
   { selecteur: '.panneau-journal', bouton: '.panneau-journal-fermer' },
   { selecteur: '.carte-ouverte-voile', bouton: '.carte-ouverte-fermer' },

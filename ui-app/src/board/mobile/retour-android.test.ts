@@ -33,21 +33,22 @@ describe('le Retour Android sur les feuilles du plateau portrait', () => {
   it('une feuille qui s ouvre pousse une entree, le Retour la referme par son bouton', async () => {
     const { unmount } = renderHook(() => useRetourAndroid(true))
     const bouton = document.createElement('button')
-    bouton.className = 'bh-options'
+    bouton.className = 'reglages-fermer'
     const clics = vi.fn(() => feuille.remove())
     bouton.addEventListener('click', clics)
     document.body.append(bouton)
     const feuille = document.createElement('div')
-    feuille.className = 'popover-sauvegardes popover-options'
+    // La fenetre des reglages (14/09/2026) : elle a remplace le popover.
+    feuille.className = 'reglages-fond'
     document.body.append(feuille)
     await laisserObserver()
-    expect(pousses).toEqual([{ feuilleMobile: '.popover-options' }])
+    expect(pousses).toEqual([{ feuilleMobile: '.reglages-fond' }])
 
     await act(async () => {
       window.dispatchEvent(new PopStateEvent('popstate'))
     })
     expect(clics).toHaveBeenCalledTimes(1)
-    expect(document.querySelector('.popover-options')).toBeNull()
+    expect(document.querySelector('.reglages-fond')).toBeNull()
     await laisserObserver()
     // Refermee par le Retour : aucun history.back() de notre part.
     expect(window.history.back).not.toHaveBeenCalled()

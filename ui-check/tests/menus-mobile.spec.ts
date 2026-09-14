@@ -80,15 +80,36 @@ async function verifierLaFeuille(page: Page, selecteur: string) {
 }
 
 test.describe('Les menus du plateau portrait en feuilles', () => {
-  test('Options : une feuille jusqu au bas de l ecran, refermee par la croix du bandeau', async ({ page }) => {
+  // ⚠ 14/09/2026 : les reglages ne sont plus une feuille mais une FENETRE a
+  // onglets, ouverte au centre. Elle remplace l'empilement « popover Reglages
+  // -> popover Options » que l'utilisateur trouvait illisible. Ce cas verifie
+  // donc qu'elle tient dans l'ecran du telephone et que ses onglets sont la.
+  test('Reglages : une fenetre a onglets qui tient dans l ecran', async ({ page }) => {
     await ouvrirLEtat(page);
     await page.locator('.bh-options').first().tap();
-    await verifierLaFeuille(page, '.popover-options');
-    // La feuille couvre le menu : c'est la croix du bandeau, toujours libre
-    // en haut, qui referme tout d'un coup.
-    await page.locator('.portrait-menu-bouton').tap();
-    await expect(page.locator('.popover-options')).toHaveCount(0);
-    await expect(page.locator('.portrait-menu')).toHaveCount(0);
+    const fenetre = page.locator('.reglages-fenetre');
+    await expect(fenetre).toBeVisible();
+
+    const boite = (await fenetre.boundingBox())!;
+    const ecran = page.viewportSize()!;
+    expect(Math.round(boite.width), 'la fenetre deborde en largeur').toBeLessThanOrEqual(ecran.width);
+    expect(Math.round(boite.height), 'la fenetre deborde en hauteur').toBeLessThanOrEqual(ecran.height);
+
+    // Les quatre onglets, en bandeau horizontal sur telephone.
+    const onglets = page.locator('.reglages-onglet');
+    await expect(onglets).toHaveCount(4);
+    const premier = (await onglets.first().boundingBox())!;
+    const deuxieme = (await onglets.nth(1).boundingBox())!;
+    expect(deuxieme.y, 'les onglets doivent etre cote a cote, pas empiles').toBeCloseTo(premier.y, 0);
+
+    // ⚠ Un sous-reglage inutilisable reste VISIBLE : c'est le coeur du
+    // changement, un reglage qui apparait est un reglage qu'on ne decouvre
+    // jamais.
+    await page.getByRole('tab', { name: /Déroulé/ }).tap();
+    await expect(page.locator('.ligne-option', { hasText: 'Vitesse du déroulé' })).toBeVisible();
+
+    await page.locator('.reglages-fermer').tap();
+    await expect(fenetre).toHaveCount(0);
   });
 
   test('Historique : une feuille haute, refermee par un tap en dehors', async ({ page }) => {
@@ -104,9 +125,9 @@ test.describe('Les menus du plateau portrait en feuilles', () => {
   test('Le Retour referme la feuille au lieu de quitter la partie', async ({ page }) => {
     await ouvrirLEtat(page);
     await page.locator('.bh-options').first().tap();
-    await expect(page.locator('.popover-options')).toBeVisible();
+    await expect(page.locator('.reglages-fond')).toBeVisible();
     await page.goBack();
-    await expect(page.locator('.popover-options')).toHaveCount(0);
+    await expect(page.locator('.reglages-fond')).toHaveCount(0);
     expect(page.url(), 'le Retour a quitte le plateau').toContain('/app/board.html');
     // Le menu du bandeau est encore la : un second Retour le referme.
     await expect(page.locator('.portrait-menu')).toBeVisible();
@@ -130,10 +151,16 @@ test.describe('Les menus du plateau portrait en feuilles', () => {
   test('Le menu du bandeau : une feuille basse aux lignes de 48 px, Reglages a plat', async ({ page }) => {
     await ouvrirLEtat(page);
     await verifierLaFeuille(page, '.portrait-menu');
-    // Sur telephone, le menu ⚙ Reglages du PC n'existe pas : ses lignes
-    // (journal, log, musique, langue, menu) sont a plat dans la feuille.
+    // Sur telephone, le menu « Partie » du PC n'existe pas : ses lignes sont a
+    // plat dans la feuille.
+    // ⚠ `.bh-musique` et `.bh-langue` n'y sont PLUS depuis le 14/09/2026 : ce
+    // sont des reglages, ils vivent dans l'onglet « Image et son » de la
+    // fenetre. `.bh-options` reste, c'est le bouton qui l'ouvre.
     await expect(page.locator('.portrait-menu .bh-reglages')).toHaveCount(0);
-    for (const ligne of ['.bh-history', '.bh-options', '.bh-journal', '.bh-log', '.bh-musique', '.bh-langue', '.bh-menu']) {
+    for (const parti of ['.bh-musique', '.bh-langue']) {
+      await expect(page.locator(`.portrait-menu ${parti}`), `${parti} devrait etre dans les reglages`).toHaveCount(0);
+    }
+    for (const ligne of ['.bh-history', '.bh-options', '.bh-journal', '.bh-log', '.bh-menu']) {
       await expect(page.locator(`.portrait-menu ${ligne}`).first(), `${ligne} manque dans la feuille`).toBeVisible();
     }
     await page.locator('.portrait-menu-bouton').tap();
