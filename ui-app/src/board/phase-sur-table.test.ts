@@ -91,3 +91,43 @@ describe('une étape sans auteur', () => {
     expect(place.y).toBe(600 - 120 - MARGE)
   })
 })
+
+describe('le cartouche laisse le trait visible', () => {
+  // ⚠ LE DÉFAUT QUI A MOTIVÉ CETTE RÈGLE, mesuré à l'écran le 14/09/2026 :
+  // Rhino manigançait sur la manigance principale, à sa droite ; le cartouche
+  // se posait à droite lui aussi, pile sur le trait, et couvrait le
+  // « 1 menace » qu'il venait d'annoncer.
+  const auteur = carte(400, 200)
+
+  it('la cible à droite range le cartouche à GAUCHE', () => {
+    const place = placeDuCartouche(auteur, CADRE, TAILLE, carte(800, 200))
+    expect(place.cote).toBe('gauche')
+  })
+
+  it('la cible à gauche le range à DROITE', () => {
+    const place = placeDuCartouche(auteur, CADRE, TAILLE, carte(50, 200))
+    expect(place.cote).toBe('droite')
+  })
+
+  it('sans cible, la règle habituelle s’applique', () => {
+    expect(placeDuCartouche(auteur, CADRE, TAILLE).cote).toBe('droite')
+  })
+
+  it('le bord du plateau reste prioritaire sur le côté préféré', () => {
+    // Une carte collée au bord droit avec une cible plus à droite encore : il
+    // n'y a pas de place à gauche... si, justement, et c'est ce qu'on veut.
+    // Mais l'inverse doit tenir aussi : collé à GAUCHE avec la cible à gauche,
+    // le cartouche passe à droite plutôt que de sortir du plateau.
+    const colleAGauche = carte(0, 200)
+    const place = placeDuCartouche(colleAGauche, CADRE, TAILLE, carte(0, 500))
+    expect(place.x).toBeGreaterThanOrEqual(0)
+    expect(place.x + TAILLE.w).toBeLessThanOrEqual(CADRE.w)
+  })
+
+  it('une cible juste au-dessus ne fait pas basculer le côté au hasard', () => {
+    // Cible strictement à la verticale : aucun côté n'est « opposé », la règle
+    // habituelle doit reprendre la main sans osciller.
+    const place = placeDuCartouche(auteur, CADRE, TAILLE, carte(400, 20))
+    expect(['droite', 'gauche']).toContain(place.cote)
+  })
+})

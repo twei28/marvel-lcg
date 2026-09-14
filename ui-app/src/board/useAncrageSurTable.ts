@@ -7,15 +7,11 @@
 // mise à l'échelle (`--echelle`) et recentrée en permanence : une position
 // retenue d'une étape à l'autre serait fausse dès le premier redimensionnement.
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { placeDuCartouche, type Boite, type Place } from './phase-sur-table'
+import { placeDuCartouche, type Place } from './phase-sur-table'
+import { boiteDeCarte, cadreDuPlateau } from './mesures-plateau'
 
 /** La taille supposée du cartouche tant qu'il n'a pas été mesuré. */
 const TAILLE_PAR_DEFAUT = { w: 280, h: 140 }
-
-function boiteDe(el: Element, origine: DOMRect): Boite {
-  const r = el.getBoundingClientRect()
-  return { x: r.left - origine.left, y: r.top - origine.top, w: r.width, h: r.height }
-}
 
 /**
  * La place du cartouche pour l'étape en cours.
@@ -27,6 +23,7 @@ function boiteDe(el: Element, origine: DOMRect): Boite {
  */
 export function useAncrageSurTable(
   carteId: number | undefined,
+  cibleId: number | undefined,
   cle: string,
   actif: boolean,
   elementCartouche: HTMLElement | null
@@ -45,34 +42,35 @@ export function useAncrageSurTable(
       return
     }
     const mesurer = () => {
-      const cadreEl = document.querySelector<HTMLElement>('.plateau-cadre')
-      if (!cadreEl) return
-      const origine = cadreEl.getBoundingClientRect()
-      // ⚠ jsdom ne calcule aucune géométrie : tous les rectangles y valent 0.
-      // Un cadre de taille nulle ne peut rien ancrer, et le composant le sait.
-      if (origine.width === 0 || origine.height === 0) return
-      const cadre: Boite = { x: 0, y: 0, w: origine.width, h: origine.height }
-      const carteEl =
-        carteId === undefined
-          ? null
-          : cadreEl.querySelector<HTMLElement>(`.scan-card[data-card-id="${carteId}"]`)
+      const cadre = cadreDuPlateau()
+      if (!cadre) return
       const taille = elementCartouche
         ? { w: elementCartouche.offsetWidth, h: elementCartouche.offsetHeight }
         : TAILLE_PAR_DEFAUT
-      setPlace(placeDuCartouche(carteEl ? boiteDe(carteEl, origine) : undefined, cadre, taille))
+      setPlace(
+        placeDuCartouche(
+          boiteDeCarte(carteId, cadre),
+          cadre.boite,
+          taille,
+          // La cible ne sert qu'à choisir le CÔTÉ : on se range à l'opposé pour
+          // ne pas couvrir le trait. Elle peut manquer (carte détruite pendant
+          // la phase), et le placement retombe alors sur sa règle habituelle.
+          carteId === undefined ? undefined : boiteDeCarte(cibleId, cadre)
+        )
+      )
     }
     mesurer()
     window.addEventListener('resize', mesurer)
     return () => window.removeEventListener('resize', mesurer)
     // `cle` change à chaque étape : c'est lui qui déclenche la remesure.
-  }, [carteId, cle, actif, elementCartouche, seconde])
+  }, [carteId, cibleId, cle, actif, elementCartouche, seconde])
 
   useEffect(() => {
     if (!actif) return
     setSeconde(0)
     const minuteur = window.setTimeout(() => setSeconde(1), 260)
     return () => window.clearTimeout(minuteur)
-  }, [carteId, cle, actif])
+  }, [carteId, cibleId, cle, actif])
 
   return place
 }

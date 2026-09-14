@@ -17,6 +17,7 @@
 // attente que « La suite arrive… », ou c'est le joueur qui attend le moteur.
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import jetonMenaceImage from '../components/jetons/menace.png'
 import jetonDegatsImage from '../components/jetons/degats.png'
@@ -53,6 +54,7 @@ import { useApercuSurvol } from './apercu-survol'
 import { sceneDe, type CarteDeScene } from './deroule-scene'
 import { useDerouleScene } from './useDerouleScene'
 import { useAncrageSurTable } from './useAncrageSurTable'
+import { CoucheTraitPhase } from './CoucheTraitPhase'
 
 /** Le temps de lire un boost a capacite avant le suivant. */
 const DELAI_BOOST_MS = 1500
@@ -1164,6 +1166,7 @@ export function DeroulePhase({
   // avant, faute d'auteur » (deroule-phase.ts, `cibleId`).
   const place = useAncrageSurTable(
     etape?.carteId ?? etape?.cibleId,
+    etape?.carteId === undefined ? undefined : etape?.cibleId,
     etape?.cle ?? 'sans-etape',
     surTable,
     elCartouche
@@ -1179,6 +1182,36 @@ export function DeroulePhase({
       : { visibility: 'hidden' }
     : undefined
 
+  /**
+   * ⚠ SUR LA TABLE, LE CARTOUCHE VA DANS LE CADRE DU PLATEAU, par un portail.
+   *
+   * Les coordonnées calculées sont celles du CADRE (`.plateau-cadre`), mais ce
+   * composant est monté ailleurs dans l'arbre : posées telles quelles, elles
+   * décalaient tout de la hauteur de la barre d'outils. Mesuré à l'écran :
+   * le cartouche se posait 48 px trop haut, au-dessus de la carte au lieu d'être
+   * à côté d'elle.
+   *
+   * Un PORTAIL plutôt qu'un recalcul en coordonnées de page : l'état du
+   * composant reste où il est (index de l'étape, avance auto, minuteurs), seul
+   * le nœud DOM déménage. Et le trait, qui couvre tout le cadre, a besoin du
+   * même repère.
+   */
+  const enveloppe = (contenu: ReactNode): ReactNode => {
+    if (!surTable) return contenu
+    const cadre = document.querySelector<HTMLElement>('.plateau-cadre')
+    // Pas de cadre (premier rendu, jsdom) : on rend sur place. Le cartouche est
+    // alors mal placé mais PRÉSENT, donc mesurable, et la mesure suivante le
+    // remet où il faut. Le faire disparaître le rendrait impossible à mesurer.
+    if (!cadre) return contenu
+    return createPortal(
+      <>
+        <CoucheTraitPhase etape={etape} actif />
+        {contenu}
+      </>,
+      cadre
+    )
+  }
+
   // LA QUESTION AVANT LA PREMIERE ETAPE (12/09/2026). Le moteur peut ouvrir
   // une fenetre d'interruption avant tout fait de la phase : « la menace va
   // etre placee, veux-tu jouer De Grandes Responsabilites ? » (point 1, avant
@@ -1189,7 +1222,7 @@ export function DeroulePhase({
   // Sans etape, il n'y a ni chronologie ni scene a montrer : le bandeau
   // « A toi de jouer » et la question suffisent.
   if (!etape && !termine && !partieFinie && questionAuJoueur && question !== undefined) {
-    return (
+    return enveloppe(
       <section
         ref={setElCartouche}
         className={classeCartouche('est-question')}
@@ -1381,7 +1414,7 @@ export function DeroulePhase({
     // Le boost et la carte revelee se RETOURNENT : dos de carte rencontre
     // derriere, la face devant, une rotation a l'arrivee.
     const seRetourne = (carte.role === 'boost' || carte.role === 'revelee') && dosRencontre !== undefined
-    return (
+    return enveloppe(
       <figure
         key={`${carte.role}-${position}`}
         className={`deroule-carte est-${carte.role}`}
@@ -1461,7 +1494,7 @@ export function DeroulePhase({
   // mensonge : c'est le moteur qui attend). La chronologie reste, pour que le
   // joueur sache toujours ou il en est, et la mention dit qui attend qui.
   if (questionAuJoueur && question) {
-    return (
+    return enveloppe(
       <section
         ref={setElCartouche}
         className={classeCartouche('est-question')}
@@ -1492,7 +1525,7 @@ export function DeroulePhase({
   }
 
   if (questionAuJoueur) {
-    return (
+    return enveloppe(
       <>
         <section
           ref={setElCartouche}
@@ -1531,7 +1564,7 @@ export function DeroulePhase({
     )
   }
 
-  return (
+  return enveloppe(
     <>
       <section
         ref={setElCartouche}

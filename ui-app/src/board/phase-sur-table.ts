@@ -34,11 +34,15 @@ export type Place = {
  * la cacher pour annoncer ce qu'elle vient de faire n'aurait aucun sens. D'où
  * le passage à gauche quand la droite déborde, et le repli en bas seulement
  * quand aucun des deux côtés ne tient.
+ *
+ * `cible`, quand elle est connue, sert à choisir le côté : on se range à
+ * l'OPPOSÉ, pour laisser le trait et son étiquette visibles.
  */
 export function placeDuCartouche(
   carte: Boite | undefined,
   cadre: Boite,
-  taille: { w: number; h: number }
+  taille: { w: number; h: number },
+  cible?: Boite
 ): Place {
   // Sans carte (l'étape de menace n'a pas d'auteur : c'est une règle du jeu
   // qui pose la menace), le cartouche se met en bas au centre, là où il ne
@@ -61,6 +65,15 @@ export function placeDuCartouche(
     cadre.y + MARGE,
     cadre.y + cadre.h - taille.h - MARGE
   )
+
+  // ⚠ DU CÔTÉ OPPOSÉ À LA CIBLE, quand il y a le choix. Le trait part de cette
+  // carte vers la cible : se poser du côté de la cible, c'est se poser SUR le
+  // trait et cacher son étiquette. Constaté à l'écran dès la première capture,
+  // Rhino manigançant sur la manigance principale à sa droite : le cartouche
+  // couvrait le « 1 menace » qu'il venait d'annoncer.
+  const cibleAGauche = cible !== undefined && cible.x + cible.w / 2 < carte.x + carte.w / 2
+  if (cibleAGauche && tientADroite) return { x: aDroite, y, cote: 'droite' }
+  if (cible !== undefined && !cibleAGauche && tientAGauche) return { x: aGauche, y, cote: 'gauche' }
 
   if (tientADroite) return { x: aDroite, y, cote: 'droite' }
   if (tientAGauche) return { x: aGauche, y, cote: 'gauche' }

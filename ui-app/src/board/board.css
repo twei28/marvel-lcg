@@ -7407,3 +7407,76 @@
     opacity: 0.75;
   }
 }
+
+@layer utilitaires {
+  /* --- Le trait de la phase jouée sur la table (14/09/2026) -------------------
+     Qui frappe qui, et combien. Le tracé est calculé en TypeScript
+     (`trait-phase.ts`, pur et testé) : la CSS ne sait pas où sont les cartes.
+
+     ⚠ IL NE CAPTE AUCUN CLIC. Il couvre tout le cadre du plateau : sans
+     `pointer-events: none`, il rendrait la table entière inerte pendant la
+     phase, alors que le joueur doit pouvoir cliquer une carte pour répondre. */
+  .trait-phase {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* Au-dessus des cartes, sous le cartouche (qui, lui, porte le bouton). */
+    z-index: 120;
+    overflow: visible;
+  }
+
+  .trait-phase-ombre {
+    stroke: rgba(0, 0, 0, 0.75);
+    stroke-width: 7;
+    stroke-linecap: round;
+  }
+
+  .trait-phase-ligne {
+    stroke-width: 3;
+    stroke-linecap: round;
+    /* Un pointillé qui défile : le trait se lit dans le SENS du coup, de
+       l'auteur vers la cible, sans avoir besoin de lire la flèche. */
+    stroke-dasharray: 9 6;
+    animation: trait-phase-defile 700ms linear infinite;
+  }
+
+  /* La couleur dit de quoi on parle, comme partout ailleurs sur le plateau :
+     rouge pour les dégâts, jaune pour la menace. */
+  .trait-phase.est-degats .trait-phase-ligne { stroke: #f05545; }
+  .trait-phase.est-menaces .trait-phase-ligne { stroke: #ffc53d; }
+  .trait-phase.est-statut .trait-phase-ligne { stroke: #c084fc; }
+  .trait-phase.est-neutre .trait-phase-ligne { stroke: #d8dde6; }
+
+  @keyframes trait-phase-defile {
+    to {
+      stroke-dashoffset: -30;
+    }
+  }
+
+  /* ⚠ RESPECTER « MOUVEMENT RÉDUIT ». Un pointillé qui défile en boucle est
+     exactement ce que ce réglage système demande d'éteindre. Le trait garde sa
+     couleur et sa flèche : rien de l'information n'est perdu. */
+  @media (prefers-reduced-motion: reduce) {
+    .trait-phase-ligne {
+      animation: none;
+    }
+  }
+
+  .trait-phase-etiquette rect {
+    fill: #0b0b0b;
+    stroke: currentColor;
+    stroke-width: 2;
+  }
+
+  .trait-phase.est-degats .trait-phase-etiquette { color: #f05545; }
+  .trait-phase.est-menaces .trait-phase-etiquette { color: #ffc53d; }
+  .trait-phase.est-statut .trait-phase-etiquette { color: #c084fc; }
+  .trait-phase.est-neutre .trait-phase-etiquette { color: #d8dde6; }
+
+  .trait-phase-etiquette text {
+    fill: #f8fafc;
+    font-family: Anton, Impact, system-ui, sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+}
