@@ -10,6 +10,7 @@
     "fixtures": "playwright test tests/fixtures.spec.ts",
     "plateau-mobile": "playwright test tests/plateau-mobile.spec.ts --project=s24",
     "phase-sur-table": "playwright test tests/phase-sur-table.spec.ts --project=pc",
+    "phase-detaille-defense": "playwright test tests/phase-detaille-defense.spec.ts --project=pc",
     "lancement": "playwright test tests/lancement-partie.spec.ts --project=pc",
     "campagne-decks": "playwright test tests/campagne-decks.spec.ts --project=pc",
     "campagne-defaite": "playwright test tests/campagne-defaite.spec.ts --project=pc",

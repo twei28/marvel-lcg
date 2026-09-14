@@ -37,7 +37,8 @@ Il compile (~90 s) puis démarre. `bash ui-app/deployer.sh` reconstruit le
 plateau dans cette installation (il ne déploie RIEN en production).
 
 **2. Ouvrir une phase du méchant SANS jouer de partie**, grâce aux états
-capturés (`tools/autoplay.py` avec `AUTOPLAY_CAPTURE=<dossier>`) :
+capturés (`Fusion/marvel-lcg-src/tools/autoplay.py` avec
+`AUTOPLAY_CAPTURE=<dossier>`) :
 
 ```
 http://127.0.0.1:2348/app/board.html?phase=sur-table&etat=rhino__spider_man__phase-mechant-complet.js
@@ -63,6 +64,27 @@ filet, pas une preuve complète.
 
 **4. Regarder l'écran.** Capture d'écran Playwright, et la LIRE. Plusieurs
 défauts de cette liste n'étaient visibles qu'à l'œil.
+
+**5. JOUER UNE VRAIE PARTIE, sans toucher une souris.** C'est ce qui a permis
+de trouver la cause du défaut n°4, et les fixtures n'y suffisaient pas (elles
+ne portent aucune question du moteur). Recette, écrite pour être recopiée :
+
+- créer la partie : `GET /new?data=<descripteur>` (le descripteur est figé dans
+  `ui-check/contrat-nouvelle-partie.json`, et `lancement-partie.spec.ts` le
+  construit déjà) ; **le monde ne se met en place qu'une fois un client
+  connecté** : ouvrir `/app/board.html` PUIS attendre `render_id > 0` ;
+- garder la main de départ (bouton « Garder cette main ») ;
+- pour atteindre une ATTAQUE, il faut basculer en identité héros au tour 1
+  (option `Change_Form`), sinon le méchant manigance et n'attaque jamais ;
+- répondre au moteur comme le ferait un bouton :
+  `POST /post?p=0` avec `{"id":<option>,"targets":[…],"resources":[]}`, ou `{}`
+  pour passer. ⚠ Les options arrivent dans `options_json` (une CHAÎNE), et une
+  option qui exige des cibles (`target_num_range`) fait PLANTER le moteur si on
+  répond sans elles ;
+- ⚠ `GET /get_ask` répond un objet MÊME QUAND IL N'Y A RIEN À DEMANDER : il est
+  alors sans `event_name`. Le lire comme une question donne de faux défauts.
+
+Tout cela est écrit et commenté dans `ui-check/tests/phase-detaille-defense.spec.ts`.
 
 ---
 
@@ -108,31 +130,58 @@ vraie question du moteur** — la fixture n'en porte pas.
 - **Le moment : PAS FAIT.** Le jeton part dès que l'étape s'affiche, avant tout
   clic. Il doit partir AU CLIC, comme la carte rencontre.
 
-## 4. ⛔⛔ RÉGRESSION — en mode Détaillé, on ne sait plus quand on peut défendre
+## 4. ✅ Mode Détaillé : on ne savait plus quand on peut défendre — CAUSE TROUVÉE, CORRIGÉ, VÉRIFIÉ EN JEU
 
 > « Et en mode détaillé il n'indique même plus quand on peut défendre etc, il
 > fait cliquer sur la carte sans rien indiquer. C'est une putain de régression. »
 
-**LE PLUS GRAVE.** C'est le mode de tous les joueurs, il marchait, et quelque
-chose de la journée l'a cassé. **RIEN NE DOIT ÊTRE DÉPLOYÉ TANT QUE CE DÉFAUT
-N'EST PAS COMPRIS.**
+**Reproduit en jeu le 14/09/2026**, dans une vraie partie Rhino / Spider-Man
+sur le serveur de chantier (port 2348), mode Détaillé, jusqu'aux attaques du
+round 2. Relevé du rendu à la seconde près, à l'instant où le moteur demande
+« Défendre / Passer » :
 
-**Cause NON TROUVÉE.** Trois pistes ont été écartées PAR LECTURE, donc sans
-preuve, et il faut les reprendre en jeu :
-- `unCartouche` a remplacé `modePhase === 'detaille'` en huit endroits
-  (commit `56b6e6e8`) : les deux valent la même chose quand le mode EST
-  « detaille »… en théorie ;
-- l'extraction de `cartoucheEstAJour` : formule équivalente tant que `surTable`
-  est faux… en théorie ;
-- le silence du cartouche devant la question : gardé par `surTable`… en théorie.
+```
+effets = 1   afficherDemandeCentrale = false   questionEnScene = false
+cartouche : « deroule-phase est-replie », texte « tu peux défendre ou répondre »
+boutons visibles : AUCUN (seule la barre d'outils du haut)
+```
 
-**Où chercher** : `questionEnScene` et `afficherDemandeCentrale` (board.tsx), la
-prop `question` passée à `DeroulePhase`, `texteFenetreReponse()` dans la branche
-repliée, et la branche `questionAuJoueur && question`.
+**La cause.** `afficherDemandeCentrale` portait la condition `effets.size === 0`
+— « le panneau central cède la place à une animation en cours » — et
+`questionEnScene` était bâti PAR-DESSUS lui. Or une animation d'effet dure
+**1,7 s** (`useEffetsCartes`), et la seconde attaque d'une phase arrive
+toujours pendant l'animation des dégâts de la première. La question n'était
+alors logée NI dans le panneau central NI dans la scène : le cartouche se
+repliait sur une phrase SANS BOUTON, et il ne restait que le menu d'une carte
+de la table. Mot pour mot ce qui a été signalé.
 
-**Comment reproduire** : une vraie partie en mode Détaillé jusqu'à une attaque
-du méchant, et regarder si la fenêtre « Défendre / Passer » s'annonce.
-`git bisect` sur les commits de la journée est une piste sérieuse.
+⚠ **Ce n'était pas une régression de la journée** : la condition date du
+07/09/2026 (`5536a7a4`, naissance de `questionEnScene`). Ce qui a changé, ce
+sont les animations, qui ont rendu la fenêtre visible.
+
+**Le correctif** : la règle est sortie de `board.tsx` et vit désormais dans
+`ui-app/src/board/ou-va-la-question.ts`, avec sa gate de 12 cas. Le panneau
+central cède toujours à l'animation ; la SCÈNE, elle, ne cède qu'aux autres
+FAÇONS DE RÉPONDRE (un ciblage, le menu d'une carte), jamais à une animation,
+parce qu'il n'y a rien derrière elle. `EvenementCentrale` se tait aussi devant
+la question logée dans la scène, sans quoi la narration se poserait au centre,
+par-dessus les boutons.
+
+**La preuve** :
+- `ui-app/src/board/ou-va-la-question.test.ts` — 12 cas ; vérifié ROUGE en
+  remettant l'ancienne règle ;
+- `ui-check/tests/phase-detaille-defense.spec.ts` (`npm run
+  phase-detaille-defense`) — joue une VRAIE partie jusqu'à deux fenêtres de
+  défense et surveille le cartouche toutes les 200 ms après chaque clic.
+  Vérifié ROUGE avec l'ancienne règle remise et le plateau reconstruit, VERT
+  avec le correctif. ⚠ Un test qui s'arrêtait à la PREMIÈRE attaque passait au
+  vert à tort : c'est la seconde qui porte le défaut.
+- capture d'écran relue : titre, bandeau « À TOI DE JOUER », boutons
+  DÉFENDRE / PASSER, un seul panneau au centre.
+
+**Reste à voir** (constaté sur la capture, HORS de ce défaut) : en 1920×1080,
+le haut du cartouche (la chronologie MENACE / MÉCHANT / SBIRES…) déborde de
+l'écran par le haut.
 
 ## 5. ⛔ « Maîtres du Chaos révèle Maîtres du Chaos » — signalé DEUX FOIS
 
@@ -142,7 +191,9 @@ j'en avais conclu qu'il n'y avait rien. **Le défaut n'était pas dans la donné
 il était dans l'affichage.** Leçon : une donnée juste ne prouve pas un affichage
 juste.
 
-**Cause trouvée, CORRECTION NON ÉCRITE.** Dans `DeroulePhase` :
+**Cause trouvée, CORRECTION ÉCRITE dans `a02101a1` mais JAMAIS VUE EN JEU** —
+la ligne ci-dessous ne traduit plus l'auteur par `carteId` sur une révélation,
+et un cas de test la garde. Reste à le vérifier en partie. Dans `DeroulePhase` :
 
 ```ts
 auteurNom: enFrancais(etape.carteId, etape.auteurNom)
@@ -156,8 +207,8 @@ celui de la carte, des deux côtés de la phrase.
 09/09/2026 pour une raison jumelle (« prendre carteId ici écrivait *Klaw attaque
 Klaw* »). Le même piège, à une ligne d'écart.
 
-**À faire** : ne pas traduire l'auteur par `carteId` sur une révélation, **avec
-un cas de test** — ce fichier n'en a aucun sur ce point — puis vérifier en jeu.
+**À faire** : vérifier EN JEU qu'une révélation annonce bien « Jessica Jones
+révèle Maîtres du Chaos », et non le nom de la carte des deux côtés.
 
 ## 6. ⛔ Le texte marvelcdb sous la carte agrandie est en ANGLAIS
 
@@ -182,7 +233,8 @@ vérifier chaque source dans les deux langues.
 ## État exact du dépôt
 
 - **Déployé en production** : jusqu'à `b5c42238`.
-- **Commité mais PAS déployé** : tout ce qui suit `b5c42238`.
+- **Commité mais PAS déployé** : tout ce qui suit `b5c42238`, le correctif du
+  défaut n°4 compris.
 - ⚠ **Le code des défauts 1, 2 et 3 (forme) a été écrit et commité SANS AVOIR
   ÉTÉ VU EN JEU.** C'est précisément ce que cette fiche demande de reprendre.
 
@@ -190,3 +242,7 @@ vérifier chaque source dans les deux langues.
 
 **PRIORITÉ ABSOLUE**, ouverte le 14/09/2026. Six défauts.
 **Rien n'est prouvé tant que ce n'est pas vérifié en jeu par l'assistant.**
+
+Avancement au 14/09/2026, 19 h :
+- n°4 : **fait**, cause trouvée, corrigé, prouvé en jeu (rouge/vert mesurés).
+- n°1, 2, 3, 5, 6 : **à reprendre**, toujours rien de prouvé en jeu.

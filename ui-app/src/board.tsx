@@ -47,6 +47,12 @@ import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalog
 import { extraireCapacite } from './board/texte-capacite'
 import { quitterPleinEcran } from './board/mobile/plein-ecran'
 import { estFenetreDeReaction } from './board/DemandeCentrale'
+import {
+  narrationAuCentre,
+  questionDansLaScene,
+  questionDansLePanneau,
+  type EtatDeLaQuestion,
+} from './board/ou-va-la-question'
 import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
 import { kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
@@ -2755,19 +2761,31 @@ function PagePartie({
   // sur la facon dont on repond : c'est ce que le cartouche du deroule doit
   // savoir (voir moteurAttendUneReponse).
   const moteurAttendLeJoueur = moteurAttendUneReponse(etat)
-  // Le PANNEAU central, lui, cede la place a toutes les autres facons de
-  // repondre a cette meme question : un ciblage sur la table, le menu d'une
-  // carte, une animation d'effet en cours.
-  const afficherDemandeCentrale =
-    moteurAttendLeJoueur && effets.size === 0 && !interaction.option && !carteMenu
+  // ⚠ OU VA LA QUESTION : la regle vit dans `ou-va-la-question.ts`, avec sa
+  // gate. Elle est invisible comme celle du rythme — quand elle se trompe, le
+  // moteur attend et RIEN a l'ecran ne dit ou repondre. Sortie d'ici le
+  // 14/09/2026, apres le defaut mesure en partie : « en mode detaille il
+  // n'indique meme plus quand on peut defendre ».
+  const etatQuestion: EtatDeLaQuestion = {
+    moteurAttendLeJoueur,
+    demandePresente: etat.demande !== undefined,
+    effetEnCours: effets.size > 0,
+    ciblage: interaction.option !== undefined,
+    menuCarte: carteMenu !== undefined,
+    sceneCentrale,
+    phaseMechantEnCours,
+  }
+  // Le PANNEAU central cede la place a toutes les autres facons de repondre a
+  // cette meme question : un ciblage sur la table, le menu d'une carte, une
+  // animation d'effet en cours.
+  const afficherDemandeCentrale = questionDansLePanneau(etatQuestion)
   // Pendant la phase du mechant en Detaille, la question du moteur se joue
   // DANS la scene du deroule (livraison C de la spec du 7 septembre 2026) :
   // « Defendre ? » se decide en voyant l'attaque. Le panneau central se tait
   // alors, et DeroulePhase recoit la meme question par sa prop `question`.
   // Un ciblage (`interaction.option`) n'est pas concerne : le panneau cede
   // deja la place a la table, et la scene se replie pour la laisser cliquable.
-  const questionEnScene =
-    sceneCentrale && phaseMechantEnCours && afficherDemandeCentrale && etat.demande !== undefined
+  const questionEnScene = questionDansLaScene(etatQuestion)
   // Un CIBLAGE pendant la phase du mechant en Detaille (livraison D) : les
   // candidats se montrent aussi dans la scene, en cartes cliquables, avec la
   // validation. Ceux de la table gardent leur halo et restent cliquables
@@ -2778,13 +2796,14 @@ function PagePartie({
   // validation, ce panneau-la ne fait plus que narrer. Ses deux raisons
   // d'apparaitre (un effet en cours, ou un evenement narre important pendant
   // l'activation ennemie) doivent continuer de marcher telles quelles.
-  const afficherEvenementCentrale =
-    etat.connecte &&
-    (effets.size > 0 ||
-      (etat.monde.phase === 'Enemy Activation' && evenementNarreImportant(etat.monde))) &&
-    !afficherDemandeCentrale &&
-    !interaction.option &&
-    !carteMenu
+  // ⚠ ET ELLE SE TAIT AUSSI DEVANT LA QUESTION LOGEE DANS LA SCENE. Sans
+  // cette garde, la narration se posait AU CENTRE, par-dessus la scene qui
+  // porte desormais les boutons « Defendre / Passer » pendant une animation.
+  const afficherEvenementCentrale = narrationAuCentre(etatQuestion, {
+    connecte: etat.connecte,
+    evenementImportant:
+      etat.monde.phase === 'Enemy Activation' && evenementNarreImportant(etat.monde),
+  })
 
   // Mode simple : la barre du bas disparait. Il reste juste un bouton flottant
   // « End Turn » quand on est en phase libre (sinon plus aucun moyen visible de
