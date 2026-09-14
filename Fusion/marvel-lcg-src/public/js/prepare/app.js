@@ -586,6 +586,17 @@ function render() {
             rangee.classList.add("est-flottante");
             document.body.append(rangee);
         }
+        // FR / EN, MÊME SANS EN-TÊTE.
+        // ⚠ C'est ICI que la question de la langue est posée à la première
+        // connexion, et sa modale PROMET « tu peux changer à tout moment : le
+        // bouton FR / EN, en haut de l'écran ». Sans en-tête, ce bouton
+        // n'existait nulle part sur cet écran : le joueur fermait la modale et
+        // ne trouvait rien. Signalé par l'utilisateur le 14/09/2026.
+        // Il rejoint la rangée flottante, celle que ce commentaire décrit
+        // justement comme l'abri des outils quand l'en-tête est absent.
+        if (rangee && !rangee.querySelector(".btn-langue")) {
+            rangee.prepend(boutonLangue("btn ghost btn-langue"));
+        }
         root.replaceChildren(
             el("div", { class: "layout accueil-layout" },
                 el("main", { class: "stage accueil-stage" }, accueilView()),

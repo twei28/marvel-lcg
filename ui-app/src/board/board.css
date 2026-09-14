@@ -7260,3 +7260,15 @@
     --card-w: var(--w, 178px);
   }
 }
+
+@layer utilitaires {
+  /* --- FR / EN dans la barre (14/09/2026) ----------------------------------
+     Deux lettres, pas un libellé : la barre est déjà chargée, et c'est un
+     bouton qu'on reconnaît à sa forme plus qu'à son texte. Largeur fixe pour
+     que « FR » et « EN » n'en changent pas la place au clic. */
+  .bh-langue {
+    min-width: 42px;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+}

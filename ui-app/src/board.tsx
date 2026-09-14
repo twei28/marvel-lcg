@@ -3094,6 +3094,31 @@ function PagePartie({
               <span aria-hidden="true">{'\u2699'}</span> {t('Réglages')}
             </button>
 
+            {/* FR / EN, TOUJOURS VISIBLE EN JEU.
+                ⚠ REMIS LE 14/09/2026 APRES L'AVOIR RETIRE LE MATIN MEME. En
+                rangeant les reglages dans leur fenetre, la langue y avait suivi
+                les autres — sauf qu'elle n'est pas un reglage comme les autres :
+                la modale de premiere connexion PROMET « tu peux changer a tout
+                moment : le bouton FR / EN, en haut de l'ecran », et ce bouton
+                n'existait plus une fois la partie lancee. Une promesse faite au
+                joueur ne peut pas dependre d'un rangement.
+                Format court (FR / EN), comme dans l'assistant : l'ancien
+                « Français → English » mangeait la barre. La ligne « Langue » de
+                l'onglet « Image et son » reste, et les deux appellent la meme
+                fonction : c'est un raccourci, pas un second reglage. */}
+            <button
+              type="button"
+              className="bh-bouton bh-langue"
+              onClick={() => void basculerLangue()}
+              title={
+                langueActuelle() === 'fr'
+                  ? 'Interface et narration en français : cliquer pour passer en anglais'
+                  : 'Interface and narration in English: click to switch to French'
+              }
+            >
+              {langueActuelle() === 'fr' ? 'FR' : 'EN'}
+            </button>
+
             {/* Fin du tour : le seul bouton colore, toujours a droite. */}
             <button
                 type="button"

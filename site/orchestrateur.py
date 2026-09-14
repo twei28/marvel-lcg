@@ -3226,6 +3226,27 @@ def _icone_suivi(nom: str) -> bytes | None:
 
 
 class Handler(BaseHTTPRequestHandler):
+
+    @property
+    def chemin(self) -> str:
+        """Le chemin demande, SANS la chaine de requete.
+
+        ⚠ `self.path` LA CONTIENT, ET C'EST LE PIEGE. Un formulaire
+        `<form method="get" action="/reprendre">` sans champ envoie
+        « /reprendre? », avec le point d'interrogation : compare a
+        « /reprendre », l'egalite est fausse et le site repond « Introuvable ».
+
+        Defaut constate EN PRODUCTION le 14/09/2026 sur le bouton « Reprendre »
+        de la page de reprise : il n'a JAMAIS pu marcher depuis sa livraison, et
+        aucune erreur ne le signalait — une route qui ne correspond a rien tombe
+        simplement dans le `else` final. Les 33 comparaisons de ce fichier
+        portaient toutes sur `self.path`.
+
+        Toute route se compare desormais a `self.chemin`. Un test le fait
+        respecter (`site/test_routes_chemin.py`).
+        """
+        return urllib.parse.urlparse(self.path).path
+
     server_version = "NarwhalChampions"
 
     def log_message(self, fmt, *args):  # journal plus sobre
@@ -3638,7 +3659,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         pseudo = self._session()
-        if self.path in ("/", "/index.html"):
+        if self.chemin in ("/", "/index.html"):
             # ⚠ LE SITE N'EST QU'UNE PORTE. Qui est connecte n'a rien a faire
             # ici : il veut son jeu, pas une page d'accueil. Qui ne l'est pas
             # voit le formulaire tout de suite, sans page intermediaire.
@@ -3646,28 +3667,28 @@ class Handler(BaseHTTPRequestHandler):
                 self._rediriger("/entrer")
             else:
                 self._repondre(200, self._formulaire("connexion"))
-        elif self.path in ("/entrer", "/reprendre", "/nouvelle-partie"):
+        elif self.chemin in ("/entrer", "/reprendre", "/nouvelle-partie"):
             if not pseudo:
                 self._rediriger("/")
                 return
             # ⚠ « Commencer autre chose » OUBLIE la partie, il ne la charge pas :
             # sans cela le bandeau revenait a chaque visite, et le joueur devait
             # le refuser indefiniment.
-            if self.path == "/nouvelle-partie":
+            if self.chemin == "/nouvelle-partie":
                 oublier_partie_interrompue(pseudo)
                 self._rediriger("/entrer")
                 return
             # Le joueur a dit oui : on note qu'il faut charger sa partie des que
             # son moteur repond. `demarrer_en_fond` peut prendre une dizaine de
             # secondes, on ne bloque pas la reponse pour autant.
-            if self.path == "/reprendre":
+            if self.chemin == "/reprendre":
                 A_REPRENDRE.add(pseudo)
             toucher_presence(pseudo)
             partie = jeu_de(pseudo)
             # ⚠ LA QUESTION NE SE POSE QUE TABLE ETEINTE. Une partie
             # interrompue n'existe que parce que la table a ete tuee ; si le
             # moteur tourne deja, il n'y a rien a reprendre et rien a demander.
-            if self.path == "/entrer" and (partie is None or not partie.vivant()):
+            if self.chemin == "/entrer" and (partie is None or not partie.vivant()):
                 attendue = partie_interrompue(pseudo)
                 if attendue:
                     self._repondre(200, page_reprise(pseudo, attendue))
@@ -3683,12 +3704,12 @@ class Handler(BaseHTTPRequestHandler):
                 return
             demarrer_en_fond(pseudo)
             self._repondre(200, page_attente(pseudo))
-        elif self.path == "/arret":
+        elif self.chemin == "/arret":
             if not pseudo:
                 self._rediriger("/")
                 return
             self._repondre(200, page_arret(pseudo))
-        elif self.path.startswith("/inscription"):
+        elif self.chemin.startswith("/inscription"):
             import urllib.parse
             requete = urllib.parse.urlparse(self.path)
             jeton = urllib.parse.parse_qs(requete.query).get("i", [""])[0]
@@ -3697,9 +3718,9 @@ class Handler(BaseHTTPRequestHandler):
                     "inscription", "Il faut un lien d'invitation pour creer un compte ici."))
                 return
             self._repondre(200, self._formulaire("inscription", jeton=jeton))
-        elif self.path == "/connexion":
+        elif self.chemin == "/connexion":
             self._repondre(200, self._formulaire("connexion"))
-        elif self.path == "/deconnexion":
+        elif self.chemin == "/deconnexion":
             brut = self.headers.get("Cookie") or ""
             for morceau in brut.split(";"):
                 nom, _, valeur = morceau.strip().partition("=")
@@ -3715,7 +3736,7 @@ class Handler(BaseHTTPRequestHandler):
                              + self._secure())
             self.send_header("Content-Length", "0")
             self.end_headers()
-        elif self.path.startswith("/reinitialisation"):
+        elif self.chemin.startswith("/reinitialisation"):
             import urllib.parse
             jeton = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get("r", [""])[0]
             if reinitialisation_valide(jeton) is None:
@@ -3723,12 +3744,12 @@ class Handler(BaseHTTPRequestHandler):
                     "", "Ce lien n'est plus valable. Demande un nouveau lien a l'administrateur."))
                 return
             self._repondre(200, self._formulaire_reinitialisation(jeton))
-        elif self.path == "/admin":
+        elif self.chemin == "/admin":
             if pseudo != ADMIN:
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
                 return
             self._repondre(200, self._page_admin())
-        elif self.path == "/suivi":
+        elif self.chemin == "/suivi":
             # La page de suivi nomme les joueurs : reservee a l'administrateur,
             # comme /admin. Un visiteur non connecte est envoye au formulaire.
             if not pseudo:
@@ -3738,7 +3759,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
                 return
             self._repondre(200, PAGE_SUIVI.encode("utf-8"))
-        elif self.path == "/api/suivi":
+        elif self.chemin == "/api/suivi":
             if pseudo != ADMIN:
                 self._repondre(403, b'{"error":"admin"}', "application/json; charset=utf-8")
                 return
@@ -3749,33 +3770,33 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(len(corps)))
             self.end_headers()
             self.wfile.write(corps)
-        elif self.path == "/manifest.webmanifest":
+        elif self.chemin == "/manifest.webmanifest":
             self._repondre(200, MANIFESTE_APPLI, "application/manifest+json; charset=utf-8")
-        elif self.path == "/hors-ligne.html":
+        elif self.chemin == "/hors-ligne.html":
             self._repondre(200, PAGE_HORS_LIGNE, "text/html; charset=utf-8")
-        elif self.path == "/sw.js":
+        elif self.chemin == "/sw.js":
             # ⚠ SANS CACHE HTTP non plus : un worker mis en cache par le
             # navigateur survivrait a sa propre mise a jour.
             self._repondre(200, SERVICE_WORKER, "application/javascript; charset=utf-8")
-        elif self.path in ("/app-192.png", "/app-512.png", "/favicon.png", "/favicon.ico"):
+        elif self.chemin in ("/app-192.png", "/app-512.png", "/favicon.png", "/favicon.ico"):
             # /favicon.ico : les navigateurs le demandent d'office, on leur
             # rend le meme narval plutot qu'un 404 a chaque page.
-            image = _icone_appli("favicon.png" if self.path == "/favicon.ico" else self.path[1:])
+            image = _icone_appli("favicon.png" if self.chemin == "/favicon.ico" else self.chemin[1:])
             if image is None:
                 self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
                 return
             self._repondre(200, image, "image/png")
-        elif self.path == "/suivi.webmanifest":
+        elif self.chemin == "/suivi.webmanifest":
             # Public : le manifeste ne contient que des libelles, et le
             # navigateur le demande SANS cookie.
             self._repondre(200, MANIFESTE_SUIVI, "application/manifest+json; charset=utf-8")
-        elif self.path in ("/suivi-192.png", "/suivi-512.png"):
-            image = _icone_suivi(self.path[1:])
+        elif self.chemin in ("/suivi-192.png", "/suivi-512.png"):
+            image = _icone_suivi(self.chemin[1:])
             if image is None:
                 self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
                 return
             self._repondre(200, image, "image/png")
-        elif self.path.startswith("/admin/capture"):
+        elif self.chemin.startswith("/admin/capture"):
             # La capture d'un rapport, reservee a l'administrateur comme la
             # page qui l'affiche. On ne sert JAMAIS le nom de fichier venu de
             # l'adresse : on lit celui que la base associe au numero demande,
@@ -3784,7 +3805,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
                 return
             self._servir_capture()
-        elif self.path == "/etat":
+        elif self.chemin == "/etat":
             # ⚠ LES NOMS NE SORTENT PAS SANS COMPTE. `code` EST le pseudo
             # (`lancer_jeu` : `Partie(emplacement, pseudo, ...)`) et
             # `emplacement` donne le sous-domaine : servis a un visiteur
@@ -3819,7 +3840,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         pseudo = self._session()
 
-        if self.path == "/inscription":
+        if self.chemin == "/inscription":
             champs = self._champs()
             try:
                 jeton = champs.get("i", "")
@@ -3839,7 +3860,7 @@ class Handler(BaseHTTPRequestHandler):
                       "Ton compte attend une validation manuelle. Reviens une fois "
                       "qu'elle est faite.")).encode("utf-8"))
 
-        elif self.path == "/reinitialisation":
+        elif self.chemin == "/reinitialisation":
             champs = self._champs()
             try:
                 qui = reinitialiser_mot_de_passe(champs.get("r", ""), champs.get("mdp", ""))
@@ -3853,7 +3874,7 @@ class Handler(BaseHTTPRequestHandler):
                        'autocomplete="username" value="%s" required></label>' % html.escape(qui),
                 pied="Ton nouveau mot de passe est en place : connecte-toi.").encode("utf-8"))
 
-        elif self.path == "/connexion":
+        elif self.chemin == "/connexion":
             champs = self._champs()
             cle = cle_frein(self._adresse_client())
             # ⚠ ON LIT LE COMPTEUR AVANT DE L'INCREMENTER. Compter au fil de la
@@ -3894,7 +3915,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", "0")
             self.end_headers()
 
-        elif self.path == "/admin":
+        elif self.chemin == "/admin":
             # Le controle passe AVANT la lecture du corps : un inconnu n'a pas
             # a faire allouer un octet sur une route qui va le refuser.
             if pseudo != ADMIN:
@@ -3946,7 +3967,7 @@ class Handler(BaseHTTPRequestHandler):
                                champs.get("statut", ""))
             self._rediriger("/admin")
 
-        elif self.path in ("/api/vue", "/api/dire", "/api/bug", "/api/annonce",
+        elif self.chemin in ("/api/vue", "/api/dire", "/api/bug", "/api/annonce",
                            "/api/prives", "/api/prives_lus"):
             # ⚠ CES ROUTES NE SONT PAS POUR LE NAVIGATEUR. Elles sont appelees
             # par le MOTEUR, en 127.0.0.1, et s'authentifient par le jeton de
@@ -3964,7 +3985,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, b'{"error":"jeton inconnu"}',
                                "application/json; charset=utf-8")
                 return
-            if self.path == "/api/bug":
+            if self.chemin == "/api/bug":
                 # ⚠ N'IMPORTE QUI PEUT ARRIVER ICI. Le jeton dit de quelle
                 # TABLE vient le rapport, pas qui l'ecrit : un invite entre par
                 # un lien de siege et n'a pas de compte. D'ou le plafond de
@@ -3982,7 +4003,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(200, json.dumps({"ok": True, "numero": numero}).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return
-            if self.path == "/api/prives":
+            if self.chemin == "/api/prives":
                 # ⚠ PAS DE `toucher_presence` ICI. C'est une horloge qui
                 # tourne, pas un geste du joueur : la compter comme une
                 # presence ferait apparaitre « en ligne » quelqu'un qui a
@@ -3991,12 +4012,12 @@ class Handler(BaseHTTPRequestHandler):
                                                ensure_ascii=False).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return
-            if self.path == "/api/prives_lus":
+            if self.chemin == "/api/prives_lus":
                 marquer_messages_lus(qui)
                 self._repondre(200, b'{"ok":true}',
                                "application/json; charset=utf-8")
                 return
-            if self.path == "/api/annonce":
+            if self.chemin == "/api/annonce":
                 # ⚠ AUCUNE RESERVE DE SIEGE, ET AUCUN SIGNE DE VIE NON PLUS.
                 # Un preavis d'extinction concerne tout le monde a la table,
                 # invite compris : c'est meme lui qui n'a aucun autre moyen
@@ -4008,7 +4029,7 @@ class Handler(BaseHTTPRequestHandler):
                                                ensure_ascii=False).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return
-            if self.path == "/api/dire":
+            if self.chemin == "/api/dire":
                 dire(qui, champs.get("texte", ""), champs.get("a", ""))
                 self._repondre(200, b'{"ok":true}',
                                "application/json; charset=utf-8")
@@ -4035,7 +4056,7 @@ class Handler(BaseHTTPRequestHandler):
             self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
                            "application/json; charset=utf-8")
 
-        elif self.path == "/eteindre":
+        elif self.chemin == "/eteindre":
             # Aucun champ a lire ici : le bouton n'envoie rien, et le pseudo
             # vient du cookie. On ne touche donc pas au corps du tout.
             if not pseudo:

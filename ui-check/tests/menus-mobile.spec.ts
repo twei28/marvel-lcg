@@ -153,14 +153,17 @@ test.describe('Les menus du plateau portrait en feuilles', () => {
     await verifierLaFeuille(page, '.portrait-menu');
     // Sur telephone, le menu « Partie » du PC n'existe pas : ses lignes sont a
     // plat dans la feuille.
-    // ⚠ `.bh-musique` et `.bh-langue` n'y sont PLUS depuis le 14/09/2026 : ce
-    // sont des reglages, ils vivent dans l'onglet « Image et son » de la
-    // fenetre. `.bh-options` reste, c'est le bouton qui l'ouvre.
+    // ⚠ `.bh-musique` n'y est PLUS depuis le 14/09/2026 : c'est un reglage, il
+    // vit dans l'onglet « Image et son » de la fenetre.
+    // ⚠ MAIS `.bh-langue` Y EST RESTE, et c'est delibere : la modale de
+    // premiere connexion PROMET « le bouton FR / EN, en haut de l'ecran ». Une
+    // promesse faite au joueur ne peut pas dependre d'un rangement. Ce bouton a
+    // ete retire le matin du 14/09 puis remis le jour meme, l'utilisateur ayant
+    // constate qu'il n'y etait plus. Voir `bouton-langue.spec.ts`.
     await expect(page.locator('.portrait-menu .bh-reglages')).toHaveCount(0);
-    for (const parti of ['.bh-musique', '.bh-langue']) {
-      await expect(page.locator(`.portrait-menu ${parti}`), `${parti} devrait etre dans les reglages`).toHaveCount(0);
-    }
-    for (const ligne of ['.bh-history', '.bh-options', '.bh-journal', '.bh-log', '.bh-menu']) {
+    await expect(page.locator('.portrait-menu .bh-musique'),
+                 'la musique devrait etre dans les reglages').toHaveCount(0);
+    for (const ligne of ['.bh-history', '.bh-options', '.bh-journal', '.bh-log', '.bh-langue', '.bh-menu']) {
       await expect(page.locator(`.portrait-menu ${ligne}`).first(), `${ligne} manque dans la feuille`).toBeVisible();
     }
     await page.locator('.portrait-menu-bouton').tap();
