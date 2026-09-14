@@ -2507,6 +2507,24 @@
     align-self: end;
   }
 
+  /* ⚠ DEUX ÉTIQUETTES SE DISPUTAIENT LES MÊMES 20 PIXELS. Le titre de zone
+     (« Mises de côté / autres piles ») flotte à 4 px du haut ; la pastille
+     « NÉMÉSIS » de la pile se pose, elle, juste au-dessus de sa carte. Dans les
+     20 px de retrait que ces zones réservent, les deux se chevauchaient et le
+     badge rouge ressortait à moitié hors de la zone, détaché de tout.
+
+     Constat de l'utilisateur, capture à l'appui : « pourquoi la pile du némésis
+     est comme ça en deux morceaux, c'est nul ». C'est cette collision, pas la
+     pile elle-même.
+
+     Le retrait passe donc à 38 px POUR CETTE ZONE SEULEMENT : les deux autres
+     zones de piles n'ont aucune pastille au-dessus de leurs cartes et n'ont
+     donc rien à réserver. Le calage `align-self: end` fait grandir la zone vers
+     le haut, là où il y a de la place : rien ne bouge en bas. */
+  .zone-annexes .plateau-cartes {
+    padding-top: 38px;
+  }
+
   .zone-rencontre {
     grid-area: rencontre;
     --place: 1078px;
