@@ -72,6 +72,23 @@ export const DELAI_PAS_A_PAS_DEFAUT = 1200
 export const DELAI_PAS_A_PAS_MIN = 300
 export const DELAI_PAS_A_PAS_MAX = 3000
 
+/**
+ * « Sur la table » est-il OUVERT AUX JOUEURS ?
+ *
+ * ⚠ FERME LE 14/09/2026, A LA DEMANDE DE L'UTILISATEUR, apres la premiere
+ * partie jouee dedans : « je le retire jusqu'a ce que ce soit pret ». La
+ * refonte est cadree dans
+ * `.planning/todos/2026-09-14-phase-mechant-sur-la-table-v2.md` (32 decisions).
+ *
+ * ⚠ IL NE SUFFIT PAS DE LE CACHER DES REGLAGES. Un joueur qui l'avait deja
+ * choisi garde la valeur dans son stockage local : sans le repli ci-dessous il
+ * continuerait de jouer un mode en chantier, invisible dans les reglages, donc
+ * impossible a quitter. `lireModePhaseMechant` le ramene sur « detaille ».
+ *
+ * Le code du mode reste en place : c'est un interrupteur, pas une suppression.
+ */
+export const MODE_SUR_TABLE_OUVERT = false
+
 // « detaille » d'abord : c'est le mode par defaut, celui qu'on a en arrivant.
 // « sur-table » s'intercale : il raconte la meme chose que « detaille », au
 // meme rythme, d'ou sa place a cote et non a la fin.
@@ -131,7 +148,13 @@ export function migrerReglagesPhase(): void {
 export function lireModePhaseMechant(): ModePhaseMechant {
   try {
     const brut = window.localStorage.getItem(CLE_MODE_PHASE)
-    if (brut && (MODES as string[]).includes(brut)) return brut as ModePhaseMechant
+    if (brut && (MODES as string[]).includes(brut)) {
+      // ⚠ LE MODE EN CHANTIER NE SE JOUE PAS, meme deja choisi. Sans ce repli,
+      // celui qui l'avait selectionne resterait dedans sans pouvoir en sortir :
+      // il ne parait plus dans les reglages.
+      if (brut === 'sur-table' && !MODE_SUR_TABLE_OUVERT) return 'detaille'
+      return brut as ModePhaseMechant
+    }
     return 'detaille'
   } catch {
     return 'detaille'

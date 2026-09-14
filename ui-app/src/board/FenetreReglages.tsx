@@ -33,6 +33,7 @@ import {
   type ModePhaseMechant,
   type ModeRevelation,
   type ReponseAmbiance,
+  MODE_SUR_TABLE_OUVERT,
 } from './moteur'
 import type { ReglageMode } from './mobile/useModeMobile'
 
@@ -287,7 +288,7 @@ export function ContenuOnglet({
             // « Sur la table » : réservé aux essais, ou déjà choisi (voir la
             // prop `essais`). Un mode actif mais absent de la liste laisserait
             // un écran de réglages où plus rien n'est coché.
-            ...(p.essais || p.modePhase === 'sur-table'
+            ...(MODE_SUR_TABLE_OUVERT && (p.essais || p.modePhase === 'sur-table')
               ? [{ valeur: 'sur-table' as ModePhaseMechant, libelle: t(p.libelleModePhase('sur-table')) }]
               : []),
             { valeur: 'instantane' as ModePhaseMechant, libelle: t(p.libelleModePhase('instantane')) },

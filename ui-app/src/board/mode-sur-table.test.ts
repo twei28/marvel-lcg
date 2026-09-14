@@ -11,9 +11,12 @@
 // cartouche bloque la partie jusqu'au filet anti-blocage de 90 secondes,
 // puisque le cartouche est le SEUL à relâcher les trames retenues. C'est la
 // raison pour laquelle `unCartouche` (board.tsx) inclut « sur-table ».
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import {
+  CLE_MODE_PHASE,
   decisionAccuse,
+  lireModePhaseMechant,
+  MODE_SUR_TABLE_OUVERT,
   libelleModePhase,
   MODES,
   PHASES_DU_MECHANT,
@@ -66,5 +69,38 @@ describe('sa place parmi les modes', () => {
     // autre, et le panneau Options affichait « Instantané » pour « Détaillé ».
     const libelles = MODES.map((m: ModePhaseMechant) => libelleModePhase(m))
     expect(new Set(libelles).size).toBe(MODES.length)
+  })
+})
+
+describe('le mode est FERMÉ pendant le chantier', () => {
+  // ⚠ Retiré le 14/09/2026 à la demande de l'utilisateur, après la première
+  // partie jouée dedans : « je le retire jusqu'à ce que ce soit prêt ».
+  //
+  // ⚠ LE CAS QUI COMPTE est `celui qui l'avait choisi ne reste pas coincé`.
+  // Le mode ne paraît plus dans les Réglages : s'il restait actif dans le
+  // stockage, le joueur continuerait de jouer un mode en chantier sans aucun
+  // moyen d'en sortir.
+  beforeEach(() => window.localStorage.clear())
+
+  it('l’interrupteur est bien fermé', () => {
+    expect(MODE_SUR_TABLE_OUVERT).toBe(false)
+  })
+
+  it('un stockage qui porte « sur-table » retombe sur « Détaillé »', () => {
+    window.localStorage.setItem(CLE_MODE_PHASE, 'sur-table')
+    expect(lireModePhaseMechant()).toBe('detaille')
+  })
+
+  it('les deux autres modes ne sont pas touchés', () => {
+    window.localStorage.setItem(CLE_MODE_PHASE, 'instantane')
+    expect(lireModePhaseMechant()).toBe('instantane')
+    window.localStorage.setItem(CLE_MODE_PHASE, 'detaille')
+    expect(lireModePhaseMechant()).toBe('detaille')
+  })
+
+  it('le code du mode reste en place : c’est un interrupteur, pas une suppression', () => {
+    // `decisionAccuse` sait toujours le traiter, et le type le connaît encore.
+    expect(MODES).toContain('sur-table')
+    expect(decisionAccuse('sur-table', monde('Enemy Activation'))).toBe('attendre-clic')
   })
 })

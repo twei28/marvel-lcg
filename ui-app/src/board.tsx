@@ -2302,6 +2302,21 @@ function PagePartie({
   // du deroule (DeroulePhase, plus bas) qui s'avance tout seul, et qui
   // relache le moteur par le meme chemin que le clic « Suivant ».
   const [avanceAuto, setAvanceAuto] = useState(lireAvanceAuto)
+  /**
+   * ⚠ L'AVANCE AUTO N'EXISTE QUE DANS « Detaille », et il a fallu l'ecrire ici.
+   *
+   * Le reglage est GRISE hors de ce mode (FenetreReglages, `disponible`), mais
+   * sa VALEUR continuait d'etre transmise au cartouche : un joueur qui l'avait
+   * allumee en Detaille la gardait active en passant sur « Sur la table », ou
+   * elle n'a aucun sens. Constate en partie le 14/09/2026, premiere partie
+   * jouee dans le nouveau mode : « tout avance tout seul sans attendre le
+   * suivant », alors que ce mode est defini par l'inverse - un clic a chaque
+   * etape, sa demande la plus explicite.
+   *
+   * ⚠ UN REGLAGE GRISE DOIT AUSSI ETRE SANS EFFET. Le griser ne fait que le
+   * rendre inchangeable ; c'est ici, a la source, qu'il cesse de s'appliquer.
+   */
+  const avanceAutoActive = sceneCentrale && avanceAuto
   const basculerAvanceAuto = useCallback(() => {
     setAvanceAuto((a) => {
       const nouveau = !a
@@ -3015,7 +3030,7 @@ function PagePartie({
             // par la meme fonction que le clic « Suivant », donc l'accuse
             // ci-dessous part par le meme chemin, et le moteur ne peut pas
             // partir devant.
-            avanceAuto={avanceAuto}
+            avanceAuto={avanceAutoActive}
             delaiAvanceMs={delaiPasAPas}
             // L'accuse de reception. Il ne part plus a chaque « Suivant » : le
             // cartouche le declenche quand il n'a plus rien a montrer, donc
