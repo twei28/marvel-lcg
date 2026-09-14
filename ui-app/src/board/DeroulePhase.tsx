@@ -1574,6 +1574,66 @@ export function DeroulePhase({
     )
   }
 
+  /* ================= SUR LA TABLE : RIEN QU'UN BOUTON =======================
+     ⚠ LE PANNEAU ENTIER DISPARAIT ICI, et c'est le coeur de la demande.
+     L'utilisateur, le 14/09/2026, apres avoir vu la premiere version :
+     « ce que tu n'as pas compris, c'est que je ne voulais plus ces grosses
+     fenetres ». Le mode s'appelle « Sur la table » et je lui avais remis le
+     panneau du mode Detaille, juste deplace a cote de la carte : meme titre
+     geant, meme chronologie, meme regle depliable, memes deux boutons.
+
+     Quatre remplacements lui ont ete montres sur le vrai plateau ; il a retenu
+     le plus radical : un bouton rond contre la carte qui agit, RIEN D'AUTRE.
+     Ce qui raconte l'etape est deja sur la table : le trait porte qui frappe
+     qui, son nombre et sa couleur, les boosts sont sortis du paquet, la carte
+     rencontre s'affiche a cote de son deck.
+
+     ⚠ DEUX ETAPES GARDENT LEUR PANNEAU, et ce ne sont pas des exceptions de
+     confort : le BILAN de fin de phase est un recapitulatif, il n'a aucune
+     carte sur la table a montrer ; le COUP FATAL demande au joueur le droit de
+     reprendre la partie, pas de passer a la suite. Les reduire a un rond
+     perdrait ce qu'ils ont a dire.
+
+     ⚠ ET LA QUESTION DU MOTEUR AUSSI : ses branches sont plus haut dans ce
+     fichier et ne passent pas par ici. C'est la qu'on choisit de defendre ; il
+     faut voir les boutons. */
+  if (surTable && etape.temps !== 'bilan' && !defaiteLocale) {
+    return enveloppe(
+      <div
+        ref={setElCartouche}
+        className="deroule-rond-place"
+        style={styleCartouche}
+      >
+        <button
+          type="button"
+          className="deroule-rond"
+          onClick={avancer}
+          // Le texte de l'etape n'est PAS perdu : il devient le nom accessible
+          // du bouton et son infobulle. Un lecteur d'ecran l'annonce, et le
+          // survol le rend a qui le cherche.
+          aria-label={`${titreEtape(etapeLue)} — ${t('Suivant')}`}
+          title={titreEtape(etapeLue)}
+        >
+          {t('OK')}
+        </button>
+        {/* Les deux seules mentions qui survivent : « la suite arrive » quand on
+            attend le moteur ou un autre joueur, et le filet anti-blocage qui va
+            jouer. Toutes deux disent pourquoi RIEN NE SE PASSE ; sans elles, le
+            plateau parait fige. */}
+        {enAttente ? (
+          <span className="deroule-rond-mention" aria-live="polite">
+            {texteAttente({ autreJoueur: attendUnAutreJoueur, nom: nomJoueurAttendu })}
+          </span>
+        ) : null}
+        {secondesFilet !== undefined ? (
+          <span className="deroule-rond-mention" aria-live="polite">
+            {texteFiletProche(secondesFilet)}
+          </span>
+        ) : null}
+      </div>
+    )
+  }
+
   return enveloppe(
     <>
       <section

@@ -279,6 +279,29 @@ un effet rencontre retirera de la menace.
 sont déjà à la défausse, la carte révélée est encore face cachée dans le monde
 retenu) et les deux gestes ne montraient rien.
 
+**Livraison 4, LE PANNEAU DISPARAÎT.** ⚠ C'est la correction la plus
+importante de ce chantier, et elle annule une partie de la livraison 1.
+
+Après avoir vu le résultat : « ce que tu n'as pas compris, c'est que je ne
+voulais plus ces grosses fenêtres. Je ne sais pas comment expliquer. »
+
+Il avait raison et c'était mon erreur : le mode s'appelle « Sur la table », et
+je lui avais remis le panneau du mode Détaillé, simplement déplacé à côté de la
+carte. Même titre géant, même chronologie, même règle dépliable, mêmes deux
+boutons. Ce qui raconte l'étape était déjà sur la table (le trait et son
+nombre, les boosts sortis du paquet, la carte rencontre agrandie) et le panneau
+la recouvrait.
+
+Quatre remplacements lui ont été montrés sur le vrai plateau, puisqu'il ne
+savait pas l'expliquer. Il a retenu le plus radical : **un bouton rond contre
+la carte qui agit, rien d'autre.** Le texte de l'étape n'est pas perdu, il
+devient le nom accessible du bouton et son infobulle.
+
+Deux étapes gardent leur panneau, et ce ne sont pas des exceptions de confort :
+le BILAN de fin de phase n'a aucune carte à montrer sur la table, et le COUP
+FATAL demande le droit de reprendre la partie, pas de passer à la suite. La
+question du moteur garde la sienne aussi : c'est là qu'on choisit de défendre.
+
 **Reste :** l'usage. Rien n'a encore été joué pour de vrai dans ce mode.
 
 ## Statut

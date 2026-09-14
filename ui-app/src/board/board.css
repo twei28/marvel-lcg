@@ -7596,3 +7596,79 @@
       0 1px 2px rgba(0, 0, 0, 0.9);
   }
 }
+
+@layer utilitaires {
+  /* --- Le bouton seul, mode « Sur la table » (14/09/2026) --------------------
+     Il REMPLACE tout le cartouche sur une étape ordinaire. L'utilisateur, après
+     avoir vu la première version : « ce que tu n'as pas compris, c'est que je
+     ne voulais plus ces grosses fenêtres ». Choix retenu parmi quatre : un
+     bouton rond contre la carte qui agit, rien d'autre.
+
+     Sa place est calculée en TypeScript (`phase-sur-table.ts`), comme l'était
+     celle du cartouche : il se pose du côté opposé à la cible pour ne pas
+     couvrir le trait.
+
+     ⚠ IL RESTE DANS LE CADRE DU PLATEAU, par le même portail que le trait et
+     les cartes sorties du paquet : ses coordonnées sont celles du cadre. */
+  .deroule-rond-place {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    /* Au-dessus du trait (120) et des cartes sorties du paquet (130) : c'est
+       lui qu'on clique, il ne doit jamais passer dessous. */
+    z-index: 150;
+  }
+
+  .deroule-rond {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 3px solid #0b0b0b;
+    background: var(--rouge, #c8342b);
+    color: #fff;
+    font-family: Anton, Impact, system-ui, sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.75);
+    transition:
+      transform 120ms ease-out,
+      box-shadow 120ms ease-out;
+  }
+
+  .deroule-rond:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.85);
+  }
+
+  /* ⚠ LE FOCUS RESTE VISIBLE. C'est le seul élément cliquable de l'étape : au
+     clavier, ne pas voir où l'on est rendrait la phase injouable. */
+  .deroule-rond:focus-visible {
+    outline: 3px solid #ffd479;
+    outline-offset: 3px;
+  }
+
+  /* « La suite arrive… », ou le filet qui va jouer. Elles disent pourquoi rien
+     ne bouge ; sans elles, le plateau paraît figé. */
+  .deroule-rond-mention {
+    max-width: 190px;
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.3;
+    color: #cfd6e2;
+    text-shadow:
+      0 0 6px rgba(0, 0, 0, 0.95),
+      0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deroule-rond {
+      transition: none;
+    }
+    .deroule-rond:hover {
+      transform: none;
+    }
+  }
+}

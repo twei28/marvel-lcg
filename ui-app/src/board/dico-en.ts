@@ -511,6 +511,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Log': 'Log',
   'Instantané': 'Instant',
   'Élan': 'Boost',
+  'OK': 'OK',
   'Sur la table': 'On the table',
   'Rythme de la phase du méchant': 'Villain phase pacing',
   'Avance toute seule': 'Play automatically',
