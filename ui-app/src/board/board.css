@@ -7682,3 +7682,37 @@
     }
   }
 }
+
+@layer utilitaires {
+  /* --- Ce qui vient de se passer, en une ligne (14/09/2026) -------------------
+     Mode « Sur la table ». L'utilisateur, après avoir vu le bouton tout seul :
+     « est-ce que c'est possible de mettre ce qu'il s'est passé ? ». Quatre
+     formes lui ont été montrées ; il a retenu la plus sobre, la phrase posée
+     juste au-dessus du bouton.
+
+     ⚠ NI ENCADRÉ NI FOND : c'est ce qui la distingue du panneau qu'on vient de
+     retirer. Elle tient sur la table par son ombre portée, pas par une boîte. */
+  .deroule-recit {
+    max-width: min(520px, 46vw);
+    text-align: center;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-shadow:
+      0 0 8px rgba(0, 0, 0, 0.95),
+      0 1px 3px rgba(0, 0, 0, 0.95);
+  }
+
+  /* Le nombre reprend la couleur du trait, et pour la même raison : elle dit de
+     quoi on parle avant même qu'on ait lu le mot. */
+  .deroule-recit-nombre {
+    margin-left: 8px;
+    font-weight: 900;
+  }
+
+  .deroule-recit.est-degats .deroule-recit-nombre { color: #ff8a7a; }
+  .deroule-recit.est-menaces .deroule-recit-nombre { color: #ffd479; }
+  .deroule-recit.est-statut .deroule-recit-nombre { color: #d8b4fe; }
+  .deroule-recit.est-neutre .deroule-recit-nombre { color: #dfe5ee; }
+}

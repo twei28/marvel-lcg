@@ -56,6 +56,7 @@ import { useDerouleScene } from './useDerouleScene'
 import { useAncrageSurTable } from './useAncrageSurTable'
 import { CoucheTraitPhase } from './CoucheTraitPhase'
 import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
+import { contenuDuTrait } from './trait-phase'
 
 /** Le temps de lire un boost a capacite avant le suivant. */
 const DELAI_BOOST_MS = 1500
@@ -1603,6 +1604,18 @@ export function DeroulePhase({
      ⚠ ET LA QUESTION DU MOTEUR AUSSI : ses branches sont plus haut dans ce
      fichier et ne passent pas par ici. C'est la qu'on choisit de defendre ; il
      faut voir les boutons. */
+  // Le nombre de l'etape, dans son unite, EXACTEMENT comme le trait le dit.
+  const contenu = contenuDuTrait(etapeLue)
+  const recit = {
+    ton: contenu.ton,
+    texte:
+      contenu.montant !== undefined
+        ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}`
+        : contenu.unite
+          ? t(contenu.unite)
+          : '',
+  }
+
   if (surTable && etape.temps !== 'bilan' && !defaiteLocale) {
     return enveloppe(
       <div
@@ -1610,6 +1623,22 @@ export function DeroulePhase({
         className="deroule-rond-place"
         style={styleCartouche}
       >
+        {/* ⚠ CE QUI VIENT DE SE PASSER, EN UNE LIGNE. L'utilisateur, apres avoir
+            vu le bouton seul : « est-ce que c'est possible de mettre ce qu'il
+            s'est passe ? Je ne sais pas exactement si tu vois bien ce que je
+            veux dire. » Quatre formes lui ont ete montrees sur le vrai plateau
+            plutot que decrites ; il a retenu celle-ci, la plus sobre : la
+            phrase et son nombre, juste au-dessus du bouton, sans encadre ni
+            fond. On lit et on clique au meme endroit.
+
+            ⚠ ET C'EST LE MEME NOMBRE QUE LE TRAIT, par construction : les deux
+            passent par `contenuDuTrait`. Deux calculs auraient fini par se
+            contredire, et le joueur verrait « 4 degats » sur le trait et
+            « 1 degat » sous la phrase. */}
+        <span className={`deroule-recit est-${recit.ton}`}>
+          {titreEtape(etapeLue)}
+          {recit.texte ? <b className="deroule-recit-nombre">{recit.texte}</b> : null}
+        </span>
         <button
           type="button"
           className="deroule-rond"

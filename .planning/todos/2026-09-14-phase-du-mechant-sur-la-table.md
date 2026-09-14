@@ -302,6 +302,28 @@ le BILAN de fin de phase n'a aucune carte à montrer sur la table, et le COUP
 FATAL demande le droit de reprendre la partie, pas de passer à la suite. La
 question du moteur garde la sienne aussi : c'est là qu'on choisit de défendre.
 
+**Livraison 5, LE BOUTON ET LA LIGNE.** Deux retours successifs à l'usage :
+
+- « Le bouton OK n'est pas clair du tout. D'habitude, les autres sont carrés et
+  jaunes. Il faut que le joueur puisse se retrouver facilement. Tu peux
+  peut-être même mettre le truc au milieu de l'écran. » Il reprend donc la mise
+  en forme de « Fin du tour » (carré, doré, majuscules) et se pose AU CENTRE du
+  plateau. Ce que le premier choix n'avait pas prévu : la carte qui agit change
+  à chaque étape, donc le bouton changeait de place. On ne le cherchait pas une
+  fois, on le cherchait à chaque clic.
+- « Est-ce que c'est possible de mettre ce qu'il s'est passé ? Je ne sais pas
+  exactement si tu vois bien ce que je veux dire. » Quatre formes lui ont été
+  montrées sur le vrai plateau plutôt que décrites ; il a retenu la plus sobre :
+  la phrase et son nombre en UNE LIGNE, juste au-dessus du bouton, sans encadré
+  ni fond. Le nombre passe par `contenuDuTrait`, comme le trait : deux calculs
+  auraient fini par se contredire.
+
+⚠ LEÇON DE MÉTHODE DE CE CHANTIER. Trois fois de suite, l'utilisateur n'a pas
+su formuler ce qu'il voulait (« je ne sais pas comment expliquer », « je ne
+sais pas si tu vois ce que je veux dire »). Les trois fois, MONTRER quatre
+maquettes sur le vrai plateau a tranché en un message. Lui faire décrire aurait
+coûté plusieurs allers-retours et un résultat approximatif.
+
 **Reste :** l'usage. Rien n'a encore été joué pour de vrai dans ce mode.
 
 ## Statut
