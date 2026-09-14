@@ -29,14 +29,16 @@ body {
     #0b0c10;
 }
 
-/* La table elle-meme : quadrillage fin sur un degrade sombre, et un
-   assombrissement des bords qui recentre le regard. */
+/* La table elle-meme : un degrade sombre, et un assombrissement des bords qui
+   recentre le regard.
+   ⚠ LE QUADRILLAGE A ETE RETIRE LE 14/09/2026, en meme temps que celui du
+   nouveau plateau (`.plateau-scene`, ui-app/src/board/board.css). Demande de
+   l'utilisateur : deux lignes blanches d'1 px repetees tous les 32 px qui ne
+   portaient aucune information, et que l'oeil suivait au lieu d'aller aux
+   cartes. Les deux plateaux doivent se ressembler : corriger l'un sans l'autre
+   aurait fait diverger l'ancien ecran sans que personne s'en aperçoive. */
 #scene {
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(23, 31, 41, 0.96), rgba(10, 12, 16, 0.98));
-  background-size: 32px 32px, 32px 32px, auto;
+  background: linear-gradient(180deg, rgba(23, 31, 41, 0.96), rgba(10, 12, 16, 0.98));
   box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.55);
 }
 
