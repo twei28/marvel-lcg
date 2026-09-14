@@ -21,12 +21,22 @@ import type { World } from './world'
 import { doitRattraperLesSieges, DELAI_PREMIERE_TRAME_MS } from './sieges-hot-seat'
 
 /**
- * Le rythme de la phase du mechant, en DEUX positions.
+ * Le rythme de la phase du mechant, en TROIS positions.
  *
  *  - « detaille »   : une etape a la fois, validee avant la suivante (clic
  *                     sur « Suivant » du cartouche). Le defaut.
+ *  - « sur-table »  : MEME RYTHME que « detaille », un clic par etape, mais
+ *                     joue SUR LA TABLE au lieu d'une scene centrale : les
+ *                     cartes bougent vraiment, un trait relie qui frappe qui,
+ *                     et le bouton OK se pose a cote de l'action.
  *  - « instantane » : rien ne retient le moteur ; le bilan de fin de phase
  *                     raconte apres coup.
+ *
+ * ⚠ « sur-table » N'EST PAS UN RYTHME PLUS RAPIDE. La question a ete posee a
+ * l'utilisateur le 14/09/2026, parce qu'un troisieme mode au meme rythme que
+ * « detaille » pouvait sembler redondant : « je ne veux pas que ca se deroule
+ * seul, je veux qu'a chaque fois qu'il y a un truc on dise OK ou Suivant ».
+ * Ce qui les separe est la MISE EN SCENE, et elle seule. Il garde les deux.
  *
  * « Avance auto » (voir `lireAvanceAuto` / `ecrireAvanceAuto` plus bas) est
  * un REGLAGE, pas un troisieme mode : coche a l'interieur de « detaille », il
@@ -39,7 +49,7 @@ import { doitRattraperLesSieges, DELAI_PREMIERE_TRAME_MS } from './sieges-hot-se
  * Le rythme est un confort de LECTURE, pas une regle du jeu : il est donc
  * personnel (localStorage), et en multijoueur chacun le sien.
  */
-export type ModePhaseMechant = 'detaille' | 'instantane'
+export type ModePhaseMechant = 'detaille' | 'sur-table' | 'instantane'
 
 /**
  * Niveau de detail de l'assistant d'action.
@@ -63,7 +73,9 @@ export const DELAI_PAS_A_PAS_MIN = 300
 export const DELAI_PAS_A_PAS_MAX = 3000
 
 // « detaille » d'abord : c'est le mode par defaut, celui qu'on a en arrivant.
-export const MODES: ModePhaseMechant[] = ['detaille', 'instantane']
+// « sur-table » s'intercale : il raconte la meme chose que « detaille », au
+// meme rythme, d'ou sa place a cote et non a la fin.
+export const MODES: ModePhaseMechant[] = ['detaille', 'sur-table', 'instantane']
 
 /**
  * MIGRATION EXPLICITE de tout ce qui a existe avant les deux modes actuels,
@@ -229,6 +241,8 @@ export function libelleModePhase(mode: ModePhaseMechant): string {
   switch (mode) {
     case 'detaille':
       return 'Détaillé'
+    case 'sur-table':
+      return 'Sur la table'
     case 'instantane':
       return 'Instantané'
   }
@@ -300,6 +314,11 @@ export type DecisionAccuse = 'immediat' | 'attendre-clic'
 
 export function decisionAccuse(mode: ModePhaseMechant, monde: World | undefined): DecisionAccuse {
   if (mode === 'instantane') return 'immediat'
+  // ⚠ « sur-table » RETIENT COMME « detaille ». Les deux attendent un clic par
+  // etape : ils ne different que par l'endroit ou l'etape est racontee. Ecrire
+  // la regle sur le seul nom « detaille » aurait fait defiler toute la phase du
+  // mode « sur-table » d'un coup, sans un clic - exactement le defaut mesure le
+  // 07/09/2026 et corrige dans `setModePhaseMechant`.
   // « detaille » retient l'accuse de reception sur TOUTES les trames des quatre
   // phases du mechant, sans regarder ce que la trame raconte.
   //

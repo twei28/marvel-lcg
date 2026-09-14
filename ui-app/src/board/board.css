@@ -7365,3 +7365,45 @@
     background: var(--fond-plateau);
   }
 }
+
+@layer utilitaires {
+  /* --- Le cartouche POSÉ SUR LA TABLE (14/09/2026) ---------------------------
+     Mode « Sur la table ». Même cartouche, même mécanique, autre endroit : il
+     quitte le centre de l'écran et vient se coller à la carte qui vient d'agir.
+     Choix de l'utilisateur parmi trois emplacements : « l'œil est déjà là ».
+
+     Le placement lui-même est calculé en TypeScript (`phase-sur-table.ts`,
+     `useAncrageSurTable.ts`) et posé en `left`/`top` en ligne : la CSS ne peut
+     pas savoir où est une carte du plateau.
+
+     ⚠ `position: absolute` ET NON `fixed`, contrairement au cartouche central.
+     Les coordonnées sont mesurées dans le repère de `.plateau-cadre` ; en
+     `fixed` elles seraient lues dans celui de la fenêtre, et le cartouche
+     serait décalé de toute la barre du haut et de la marge de centrage. */
+  .deroule-phase.est-sur-table {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: auto;
+    transform: none;
+    /* Beaucoup plus étroit que le cartouche central : il se glisse entre deux
+       cartes, il ne barre pas la table. Il ne rejoue d'ailleurs aucune carte
+       (`cartesMontrees`), donc il n'a plus besoin de la place pour. */
+    width: min(300px, 34vw);
+    max-height: none;
+    overflow: visible;
+    padding: 10px 14px 12px;
+    /* L'ombre portée rouge décalée du cartouche central écrasait les cartes
+       voisines à cette taille-là. Une ombre neutre, plus serrée, suffit à le
+       détacher de la table. */
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
+    font-size: 13px;
+  }
+
+  /* La chronologie des quatre temps prend toute la largeur du cartouche
+     central. Ici elle la mangerait : le titre et le bouton passent d'abord. */
+  .deroule-phase.est-sur-table .deroule-chrono {
+    font-size: 11px;
+    opacity: 0.75;
+  }
+}

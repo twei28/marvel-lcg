@@ -1,4 +1,4 @@
-# La phase du méchant jouée SUR LA TABLE
+# La phase du méchant jouée SUR LA TABLE — PRÊT À COMMENCER (décisions prises, outillage fait)
 
 **Demande de l'utilisateur, 14/09/2026**, après avoir vu une vidéo de
 `play.marvelsimulator.com` et m'avoir envoyé cinq captures de leur phase du
@@ -35,7 +35,7 @@ Cinq questions, une à la fois.
 |---|---|
 | **Où tester** | **En production, mais réservé à son compte.** ⚠ RÉPONSE RÉVISÉE, voir ci-dessous. |
 | **Où jouer la phase** | **Sur la table**, comme eux. La scène centrale n'est pas utilisée dans ce mode. |
-| **Rythme** | **Ça se déroule seul et vite, et ça s'arrête quand le joueur peut agir.** ⚠ RÉPONSE RÉVISÉE, voir ci-dessous. |
+| **Rythme** | **Un clic à chaque étape.** ⚠ RÉPONSE RÉVISÉE DEUX FOIS, voir ci-dessous. |
 | **Étendue du trait** | **Tout ce qui va d'une carte à une autre** : activations du méchant et des sbires, attaques et manigances, et les effets des cartes rencontre. |
 | **Remplacement** | **Un troisième mode, à côté** : « Détaillé / Sur la table / Instantané ». Rien de ce qui marche n'est touché, et ne pas le choisir suffit à revenir en arrière. |
 
@@ -67,27 +67,54 @@ local pour s'octroyer le mode ne verrait qu'un écran en chantier, sans rien
 casser ni voir quoi que ce soit de privé. À ne pas traiter comme
 `save_images_cartes`, où l'écriture, elle, devait vraiment être fermée.
 
-## ⚠ Le rythme a été demandé DEUX FOIS, et la seconde réponse annule la première
+## ⚠ Le rythme a été demandé TROIS FOIS, et c'est la TROISIÈME qui fait foi
 
-Premier tour : « un clic par étape ». Puis, dans le message suivant :
-« l'idée, c'est que ce soit assez clair sans forcément que ça prenne beaucoup
-de temps », et il décrit un ENTRE-DEUX entre le mode Détaillé (« très clair »)
-et le mode Instantané (« ça va très vite »).
+1. « Un clic par étape. »
+2. Puis : « l'idée, c'est que ce soit assez clair sans forcément que ça prenne
+   beaucoup de temps », et il décrit un ENTRE-DEUX entre Détaillé et Instantané.
+   J'en ai conclu « ça se déroule tout seul et vite ».
+3. **Le 14/09/2026, il m'a arrêté net** : « je ne veux pas que ça se déroule
+   seul. Je veux qu'à chaque fois qu'il y a un truc, on dise OK ou Suivant. »
 
-Les deux ne tiennent pas ensemble : **le mode Détaillé a DÉJÀ un clic par
-étape**. Un troisième mode au même rythme n'aurait pas été un entre-deux, juste
-le même temps en plus joli. La contradiction lui a été montrée, et il a tranché
-pour la troisième voie.
+**DÉCISION RETENUE, la troisième : UN CLIC À CHAQUE ÉTAPE.** Il l'a dictée
+étape par étape, dans ses mots :
 
-**Décision retenue** : ça se déroule tout seul et vite, SAUF quand le joueur a
-une vraie décision à prendre (défendre, une interruption, un choix de cible) ;
-là ça l'attend.
+> « La phase une, c'est la manigance qui se met, on fait OK ou Suivant. Après,
+> le méchant manigance ou attaque, quand c'est fait on fait OK, sauf si
+> naturellement il y a une interruption qu'on peut faire à ce moment-là, tu
+> proposes d'abord l'interruption. Après, quand c'est les sbires, tu dis OK. Et
+> puis quand c'est une nouvelle carte de rencontre, je veux qu'elle sorte du
+> paquet et qu'on la voie bien, et qu'après elle fasse ce qu'elle a à faire. Et
+> quand c'est à nous, on dit OK. »
 
-✅ **Vérifié avant de l'inscrire** : `DeroulePhase.tsx` distingue déjà les deux
-sortes d'attente (`questionAuJoueur`, `attendUnAutreJoueur`, `enAttente`), et
-son commentaire documente même un défaut passé où elles avaient été confondues
-(« La suite arrive… » s'affichait par-dessus la question). La brique tourne,
-elle est à réutiliser et non à écrire.
+⚠ **CE QUE J'AVAIS ÉCRIT ICI ÉTAIT FAUX.** La section précédente affirmait
+« ça se déroule tout seul et vite, SAUF quand le joueur a une vraie décision à
+prendre ». C'était ma lecture de sa deuxième réponse, pas sa demande. Gardé
+écrit pour que l'erreur ne se refasse pas : quand il décrit un ressenti
+(« sans que ça prenne beaucoup de temps »), ce n'est pas une consigne de
+mécanique, et il faut le lui faire préciser.
+
+⚠ **ALORS QU'EST-CE QUI DISTINGUE CE MODE DE « DÉTAILLÉ », qui a déjà un clic
+par étape ?** La question lui a été posée telle quelle. Réponse : **la mise en
+scène, et elle seule**. Détaillé raconte la phase dans une scène centrale, par
+-dessus la table ; « Sur la table » la joue sur la table elle-même, les cartes
+bougent vraiment, et des traits relient qui frappe qui. Même rythme, deux
+récits. Il garde les deux.
+
+## Les cinq réglages du rythme, décidés le 14/09/2026
+
+Chacun posé en multichoix, une question à la fois, à sa demande expresse
+(« pose-moi vraiment des questions une à une, j'ai peur que tu repartes sur
+n'importe quoi »).
+
+| Question | Décision |
+|---|---|
+| **Combien de modes** | **Trois**, « Sur la table » s'ajoute. Détaillé n'est ni retiré ni modifié. |
+| **Où est le bouton OK** | **À côté de l'action**, près de la carte qui vient d'agir, avec le résumé de ce qui s'est passé. L'œil est déjà là. Coût accepté : le bouton se déplace à chaque étape. |
+| **Les cartes boost** | **Tout l'élan en UNE étape.** Les boosts sortent du paquet l'un après l'autre sans clic entre eux, le total s'affiche, puis OK. Une attaque = une étape. |
+| **La carte rencontre** | **En grand À CÔTÉ DU PAQUET**, jusqu'au OK. On voit d'où elle vient. Ensuite elle part faire son effet et rejoint sa place. |
+| **Les sbires** | **Un OK PAR SBIRE**, chacun avec son trait et son montant. Trois sbires = trois étapes. |
+| **Après une interruption** | **Le coup se résout, PUIS OK.** Sa réponse ne vaut pas clic : il doit voir le résultat de sa décision (trait et montant final) avant d'avancer. |
 
 ## Ce que la première enquête a établi
 
@@ -134,11 +161,34 @@ Trois conséquences, et elles changent la conception :
 ⚠ **CE QUI N'A PAS MARCHÉ, ET POURQUOI C'EST NOTÉ.** Trois tentatives de
 mesure par pilotage automatique d'une vraie partie (Playwright) ont échoué : la
 partie ne dépassait jamais le round 1, bloquée sur « Player Turn End », et
-aucune fixture existante ne porte de `faits_mechant`. **Il n'existe donc
-aujourd'hui aucun moyen simple d'observer une phase du méchant réelle hors du
-navigateur.** C'est un manque d'outillage à combler avant tout chantier sérieux
-sur cette phase, sans quoi chaque vérification coûtera une partie jouée à la
-main.
+aucune fixture existante ne portait de `faits_mechant`.
+
+✅ **COMBLÉ le 14/09/2026, EN DEUX TEMPS.**
+
+1. `tools/autoplay.py` capture le monde à chaque phase du méchant
+   (`capturer_si_phase_mechant`, sous la variable `AUTOPLAY_CAPTURE`, sans
+   aucun effet sans elle : c'est un outillage, pas un comportement). Deux
+   fixtures de référence en sont sorties :
+   `public/js/fixtures/rhino__spider_man__phase-mechant-complet.js` et
+   `...-attaques.js`.
+
+2. ⚠ **ET ÇA NE SUFFISAIT PAS, CONTRAIREMENT À CE QUI ÉTAIT ÉCRIT ICI.**
+   Mesuré le même jour en ouvrant la fixture dans le plateau : on voyait la
+   TABLE de la phase, jamais le CARTOUCHE qui la raconte. Cause : `?etat=`
+   monte `PageEtat` (board.tsx), une page réduite qui n'a jamais monté
+   `DeroulePhase`. La fixture produit pourtant bien six étapes
+   (`etapesDeroule` vérifiée dessus). `PageEtat` monte désormais le cartouche,
+   dans la présentation choisie, sans moteur derrière : « Suivant » ne relâche
+   rien, il fait avancer le cartouche.
+
+   La leçon à retenir : un outillage n'est comblé que quand on a REGARDÉ ce
+   qu'il montre. Trois tentatives de pilotage automatique avaient échoué, la
+   quatrième produisait la donnée, et l'écran restait muet.
+
+Une phase du méchant s'observe donc maintenant sans jouer une partie à la
+main :
+
+    /app/board.html?etat=rhino__spider_man__phase-mechant-complet.js
 
 ## ⚠ LE RISQUE EST LEVÉ, ET MON DIAGNOSTIC PRÉCÉDENT ÉTAIT TROP SOMBRE
 
@@ -184,14 +234,49 @@ après.
   d'affichage** qu'on reprend, pas une mise en œuvre.
 - La scène centrale du mode Détaillé n'est ni retirée ni modifiée.
 
+## Avancement
+
+**Livraison 1 faite le 14/09/2026 : le rythme et le cartouche posé sur la table.**
+
+- Le mode `sur-table` existe (`moteur.ts`), retient la trame EXACTEMENT comme
+  « detaille » (`decisionAccuse`), et porte son libellé.
+- Il n'est proposé dans les Réglages qu'aux ESSAIS, et reste dans la liste s'il
+  est déjà choisi (sinon l'écran montrerait des boutons dont aucun n'est actif).
+- `DeroulePhase` prend une prop `presentation` : même mécanique, deux endroits.
+  Rien n'est dupliqué, et c'est le point : remise à zéro entre deux phases,
+  avance auto, Échap, bilan, coup fatal, filet anti-blocage, tout cela a été
+  mesuré et corrigé en partie réelle, un second composant aurait refait les
+  mêmes bugs.
+- Le cartouche se pose à côté de la carte qui agit (`phase-sur-table.ts`, pur et
+  testé ; `useAncrageSurTable.ts` pour la mesure). Faute d'auteur, il s'ancre sur
+  la CIBLE : l'étape de menace n'a pas d'auteur, et sans ce repli le cartouche
+  se posait au milieu du plateau, par-dessus la main.
+- ⚠ Aucun voile sur la table dans ce mode. Le voile sert la scène centrale
+  (« la table n'est plus à lire ») ; ici la table EST le récit.
+- `board.tsx` ne compare plus le mode à « detaille » partout : deux noms disent
+  ce que chaque site veut vraiment, `sceneCentrale` et `unCartouche`.
+
+**Reste à faire, les trois gestes de la demande :**
+
+1. Le TRAIT qui relie l'auteur à la cible, avec le montant. Tout est prêt :
+   l'étape porte `carteId`, `cibleId` et `montant`, et `CoucheAnimations` sait
+   déjà ancrer une carte disparue sur sa dernière position connue.
+2. Les cartes BOOST qui sortent du paquet pour se poser à côté, l'une après
+   l'autre sans clic entre elles, puis le total, puis OK.
+3. La carte RENCONTRE en grand À CÔTÉ DU PAQUET jusqu'au OK, puis son effet.
+
 ## Statut
 
-Décisions prises le 14/09/2026, **non commencé**.
+Décisions prises le 14/09/2026. **Livraison 1 faite, trois gestes restants.**
 
 Preuve de faisabilité **faite** le 14/09/2026, et **le risque est levé** : le
 plateau garde déjà les positions du rendu précédent et sait ancrer une carte
 disparue. Aucune décision ne reste en attente.
 
-Reste un manque d'outillage à combler : aucun moyen simple d'observer une phase
-du méchant hors du navigateur (trois tentatives de pilotage automatique ont
-échoué, aucune fixture ne porte de `faits_mechant`).
+L'outillage manquant a été construit le 14/09/2026 (`AUTOPLAY_CAPTURE` dans
+`tools/autoplay.py`, deux fixtures de référence). **Plus aucun prérequis n'est
+ouvert côté outillage.**
+
+Le prérequis des animations reste : trois des six causes sont traitées et
+déployées derrière la garde du compte, les autres sont dans
+`2026-09-14-animations-molles.md`.

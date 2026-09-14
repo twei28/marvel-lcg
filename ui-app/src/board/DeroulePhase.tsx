@@ -16,7 +16,7 @@
 // chronologie et dit que le moteur attend le joueur. Ce n'est pas la meme
 // attente que « La suite arrive… », ou c'est le joueur qui attend le moteur.
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import jetonMenaceImage from '../components/jetons/menace.png'
 import jetonDegatsImage from '../components/jetons/degats.png'
@@ -52,6 +52,7 @@ import { CarteApercu } from './Board'
 import { useApercuSurvol } from './apercu-survol'
 import { sceneDe, type CarteDeScene } from './deroule-scene'
 import { useDerouleScene } from './useDerouleScene'
+import { useAncrageSurTable } from './useAncrageSurTable'
 
 /** Le temps de lire un boost a capacite avant le suivant. */
 const DELAI_BOOST_MS = 1500
@@ -94,6 +95,7 @@ const TEMPS: { cle: TempsPhase; libelle: string }[] = [
 
 export function DeroulePhase({
   etapes,
+  presentation = 'scene',
   identitePhase,
   identitePartie,
   phaseMechantEnCours = false,
@@ -118,6 +120,23 @@ export function DeroulePhase({
   onDefaiteVue,
 }: {
   etapes: EtapeDeroule[]
+  /**
+   * OU l'etape est racontee. Deux presentations, UNE SEULE mecanique.
+   *
+   *  - « scene » : le cartouche central, par-dessus la table, avec les cartes
+   *                de l'etape rejouees dedans. Le mode « Detaille », inchange.
+   *  - « table » : le cartouche se pose A COTE DE LA CARTE qui vient d'agir,
+   *                sur la table elle-meme, et ne rejoue aucune carte : ce sont
+   *                les vraies cartes qu'on regarde. Le mode « Sur la table ».
+   *
+   * ⚠ LA MECANIQUE N'EST PAS DUPLIQUEE, ET C'EST LE POINT. Remise a zero entre
+   * deux phases, avance auto, defilement d'Echap, bilan de fin, coup fatal,
+   * filet anti-blocage : tout cela a ete mesure et corrige en partie reelle a
+   * de multiples reprises (voir les commentaires de ce fichier). Un second
+   * composant qui refarait « la meme chose en plus joli » aurait refait les
+   * memes bugs. Seul le RENDU change.
+   */
+  presentation?: 'scene' | 'table'
   /**
    * L'identite de la phase en cours. board.tsx y passe `etat.monde.round_id` :
    * il y a une phase du mechant par round, donc le round suffit a distinguer
@@ -359,6 +378,8 @@ export function DeroulePhase({
   // cle de la premiere etape des qu'elle existe, sans quoi une etape qui
   // s'insererait AVANT elle (une menace journalisee apres une activation)
   // changerait ce que le joueur lit.
+  // Deux presentations, une seule mecanique (voir la prop `presentation`).
+  const surTable = presentation === 'table'
   const [cleCourante, setCleCourante] = useState<string>()
   // Vrai une fois la derniere etape validee : le cartouche doit alors
   // disparaitre de lui-meme. `onTerminer` relache desormais vraiment le
@@ -1091,7 +1112,13 @@ export function DeroulePhase({
   // ce composant a un `return null` plus bas, et un hook place apres lui fait
   // tomber tout le plateau (React compte alors un hook de plus au rendu
   // suivant).
-  useDerouleScene(etape, visible)
+  // ⚠ AUCUN VOILE SUR LA TABLE. Le voile assombrit la table pendant qu'une
+  // etape est a l'ecran : c'est juste, quand la scene CENTRALE rejoue les
+  // cartes par-dessus (spec du 07/09/2026, « la table n'est plus a lire »).
+  // Dans le mode « Sur la table », c'est exactement l'inverse : la table EST
+  // le recit, et l'assombrir reviendrait a eteindre ce qu'on demande de
+  // regarder. Constate a l'ecran des la premiere capture.
+  useDerouleScene(etape, visible && !surTable)
 
   // LE MOMENT OU L'ON PEUT AGIR change d'aspect : tant que la question du
   // moteur est logee dans la scene, le body porte `deroule-question` et
@@ -1119,6 +1146,39 @@ export function DeroulePhase({
   // false des que l'identite de phase change (voir le useEffect ci-dessus),
   // donc le deroule reapparait bien a la phase du mechant suivante.
   // `partieFinie` le fait disparaitre pour de bon : plus rien n'arrive apres.
+  /* ================= LA PRESENTATION « SUR LA TABLE » =======================
+     Le cartouche quitte le centre et vient se poser a cote de la carte qui
+     vient d'agir. Choix de l'utilisateur du 14/09/2026 parmi trois
+     emplacements : « l'oeil est deja la ».
+
+     ⚠ RIEN DE LA MECANIQUE N'EST TOUCHE ICI. Tout ce qui suit est du placement. */
+  const [elCartouche, setElCartouche] = useState<HTMLElement | null>(null)
+  // ⚠ `etape`, PAS `etapeLue` : ce bloc doit vivre AVANT le premier `return`,
+  // celui de la question posee avant toute etape (12/09/2026), qui rend lui
+  // aussi un cartouche a placer. `etapeLue` n'est construite que plus bas.
+  // ⚠ L'AUTEUR D'ABORD, LA CIBLE A DEFAUT. L'etape de menace n'a pas d'auteur :
+  // c'est une regle du jeu qui pose la menace, et sa seule carte est la
+  // manigance visee. Sans ce repli, le cartouche se posait au milieu du
+  // plateau, par-dessus la main, loin de la carte dont il parlait. C'est le
+  // meme choix que la scene centrale, qui « met alors la cible elle-meme en
+  // avant, faute d'auteur » (deroule-phase.ts, `cibleId`).
+  const place = useAncrageSurTable(
+    etape?.carteId ?? etape?.cibleId,
+    etape?.cle ?? 'sans-etape',
+    surTable,
+    elCartouche
+  )
+  const classeCartouche = (extra: string) =>
+    `deroule-phase${extra ? ' ' + extra : ''}${surTable ? ' est-sur-table' : ''}`
+  // ⚠ TANT QUE LA PLACE N'EST PAS CONNUE, LE CARTOUCHE RESTE INVISIBLE mais
+  // MONTE : il faut qu'il soit dans le DOM pour etre mesure, et il ne faut pas
+  // qu'il paraisse un instant en haut a gauche avant de sauter a sa place.
+  const styleCartouche: CSSProperties | undefined = surTable
+    ? place
+      ? { left: `${place.x}px`, top: `${place.y}px` }
+      : { visibility: 'hidden' }
+    : undefined
+
   // LA QUESTION AVANT LA PREMIERE ETAPE (12/09/2026). Le moteur peut ouvrir
   // une fenetre d'interruption avant tout fait de la phase : « la menace va
   // etre placee, veux-tu jouer De Grandes Responsabilites ? » (point 1, avant
@@ -1130,7 +1190,13 @@ export function DeroulePhase({
   // « A toi de jouer » et la question suffisent.
   if (!etape && !termine && !partieFinie && questionAuJoueur && question !== undefined) {
     return (
-      <section className="deroule-phase est-question" role="dialog" aria-label={t('Phase du méchant')}>
+      <section
+        ref={setElCartouche}
+        className={classeCartouche('est-question')}
+        style={styleCartouche}
+        role="dialog"
+        aria-label={t('Phase du méchant')}
+      >
         <p className="deroule-a-toi" aria-live="assertive">
           {t('À toi de jouer')}
         </p>
@@ -1384,19 +1450,31 @@ export function DeroulePhase({
       </div>
     ) : null
 
+  // ⚠ LES CARTES DE LA SCENE DISPARAISSENT SUR LA TABLE. Les rejouer dans le
+  // cartouche alors qu'il est POSE SUR LA TABLE les montrerait deux fois, a
+  // dix centimetres l'une de l'autre. Ce sont les vraies cartes qu'on regarde,
+  // c'est tout l'interet du mode.
+  const cartesMontrees = surTable ? null : cartesScene
+
   // Le moteur pose une question au joueur : le cartouche s'efface devant
   // elle. Ni titre, ni bouton, ni « La suite arrive… » (ce serait un
   // mensonge : c'est le moteur qui attend). La chronologie reste, pour que le
   // joueur sache toujours ou il en est, et la mention dit qui attend qui.
   if (questionAuJoueur && question) {
     return (
-      <section className="deroule-phase est-question" role="dialog" aria-label={t('Phase du méchant')}>
+      <section
+        ref={setElCartouche}
+        className={classeCartouche('est-question')}
+        style={styleCartouche}
+        role="dialog"
+        aria-label={t('Phase du méchant')}
+      >
         {/* Le bandeau rouge : impossible a confondre avec une etape a lire. */}
         <p className="deroule-a-toi" aria-live="assertive">
           {t('À toi de jouer')}
         </p>
         <div className="deroule-chrono">{chronologie}</div>
-        {cartesScene}
+        {cartesMontrees}
         {/* L'intention reste dite au-dessus de la question : « Ultron va
             attaquer Shuri », et le joueur decide en voyant le coup. Sur toute
             autre etape (l'ordre des sbires se demande avant tout fait), la
@@ -1416,7 +1494,13 @@ export function DeroulePhase({
   if (questionAuJoueur) {
     return (
       <>
-        <section className="deroule-phase est-replie" role="dialog" aria-label={t('Phase du méchant')}>
+        <section
+          ref={setElCartouche}
+          className={classeCartouche('est-replie')}
+          style={styleCartouche}
+          role="dialog"
+          aria-label={t('Phase du méchant')}
+        >
           <div className="deroule-chrono">{chronologie}</div>
           {/* L'INTENTION, et elle seule, reste dite pendant la question. C'est
               le second temps de la decision 7 : « Klaw va attaquer Colossus,
@@ -1449,7 +1533,13 @@ export function DeroulePhase({
 
   return (
     <>
-      <section className="deroule-phase" role="dialog" aria-label={t('Phase du méchant')}>
+      <section
+        ref={setElCartouche}
+        className={classeCartouche('')}
+        style={styleCartouche}
+        role="dialog"
+        aria-label={t('Phase du méchant')}
+      >
         <div className="deroule-chrono">
           {chronologie}
           {rang ? (
@@ -1462,7 +1552,7 @@ export function DeroulePhase({
           ) : null}
         </div>
 
-        {cartesScene}
+        {cartesMontrees}
 
         {/* Le titre dit le fait, et le compteur de la cible se lit a sa
             droite. Un titre generique suivi de la meme chose en dessous

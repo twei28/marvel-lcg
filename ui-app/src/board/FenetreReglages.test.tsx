@@ -25,9 +25,13 @@ function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
     basculerTextesCdb: vi.fn(),
     basculerLangue: vi.fn(),
 
+    // Essais fermes par defaut, comme pour presque tout le monde : le mode
+    // « Sur la table » ne doit alors pas etre propose.
+    essais: false,
     modePhase: 'detaille',
     changerModePhase: vi.fn(),
-    libelleModePhase: (m) => (m === 'detaille' ? 'Détaillé' : 'Instantané'),
+    libelleModePhase: (m) =>
+      m === 'detaille' ? 'Détaillé' : m === 'sur-table' ? 'Sur la table' : 'Instantané',
     tempsParDecision: 0,
     texteTempsParDecision: () => 'le moteur n’attend pas',
     avanceAuto: false,
@@ -268,5 +272,32 @@ describe('la fenetre elle-meme', () => {
     unmount()
     fireEvent.keyDown(document, { key: 'Escape' })
     expect(fermer).not.toHaveBeenCalled()
+  })
+})
+
+describe('le mode « Sur la table » n’est proposé qu’aux essais', () => {
+  const modes = () =>
+    within(screen.getByText('Phase du méchant').closest('.ligne-option') as HTMLElement)
+      .getAllByRole('button')
+      .map((b) => b.textContent)
+
+  it('sans les essais, deux modes seulement', () => {
+    render(<ContenuOnglet onglet="deroule" p={proprietes({ essais: false })} />)
+    expect(modes()).toEqual(['Détaillé', 'Instantané'])
+  })
+
+  it('avec les essais, le troisième apparaît entre les deux', () => {
+    // Il raconte la même chose que « Détaillé », au même rythme : sa place est
+    // à côté de lui, pas à la fin de la liste.
+    render(<ContenuOnglet onglet="deroule" p={proprietes({ essais: true })} />)
+    expect(modes()).toEqual(['Détaillé', 'Sur la table', 'Instantané'])
+  })
+
+  it('⚠ un mode DÉJÀ choisi reste dans la liste même sans les essais', () => {
+    // Sinon l'écran des réglages montrerait trois... non, DEUX boutons dont
+    // aucun n’est actif, et le joueur n’aurait aucun moyen d’en sortir : le
+    // mode resterait actif sans être visible nulle part.
+    render(<ContenuOnglet onglet="deroule" p={proprietes({ essais: false, modePhase: 'sur-table' })} />)
+    expect(modes()).toEqual(['Détaillé', 'Sur la table', 'Instantané'])
   })
 })

@@ -510,6 +510,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Télécharger le rapport complet': 'Download the full report',
   'Log': 'Log',
   'Instantané': 'Instant',
+  'Sur la table': 'On the table',
   'Rythme de la phase du méchant': 'Villain phase pacing',
   'Avance toute seule': 'Play automatically',
   'Chaque étape se termine seule après un délai, sans attendre un clic':

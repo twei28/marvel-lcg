@@ -34,17 +34,20 @@ describe('mode detaille', () => {
     expect(lireAvanceAuto()).toBe(false)
   })
 
-  // Ne garde plus que DEUX positions : « manuel » et « pas-a-pas » ont
-  // disparu (le premier n'apportait rien que « detaille » ne fasse deja
-  // mieux, le second est devenu le reglage « avance auto »).
-  it('ne garde que deux positions', () => {
-    expect(MODES).toEqual(['detaille', 'instantane'])
+  // « manuel » et « pas-a-pas » ont disparu (le premier n'apportait rien que
+  // « detaille » ne fasse deja mieux, le second est devenu le reglage « avance
+  // auto »). « sur-table » s'est ajoute le 14/09/2026 : meme rythme que
+  // « detaille », autre mise en scene, et il s'intercale entre les deux pour
+  // cette raison.
+  it('garde trois positions, dans cet ordre', () => {
+    expect(MODES).toEqual(['detaille', 'sur-table', 'instantane'])
   })
 
   it('affiche son propre libelle, pas celui d un autre mode', () => {
     // Le panneau Options affichait « Instantane » pour le mode detaille,
     // pourtant le defaut : un ternaire a trois branches sans branche pour lui.
     expect(libelleModePhase('detaille')).toBe('Détaillé')
+    expect(libelleModePhase('sur-table')).toBe('Sur la table')
     expect(libelleModePhase('instantane')).toBe('Instantané')
   })
 })

@@ -1195,6 +1195,39 @@ function PageEtat({
     [monde, playerId, catalogue]
   )
   const { mode } = useModeMobile()
+  /**
+   * LE CARTOUCHE DE LA PHASE DU MECHANT, SUR UN ETAT ENREGISTRE (14/09/2026).
+   *
+   * ⚠ POURQUOI CE BLOC EXISTE. `tools/autoplay.py` sait capturer une vraie
+   * phase du mechant (`AUTOPLAY_CAPTURE`), et deux fixtures en portent une avec
+   * son journal `faits_mechant`. Mais cette page-ci ne montait QUE la table :
+   * on voyait les cartes de la phase, jamais le cartouche qui la raconte. Le
+   * seul moyen de le regarder restait donc de jouer une partie a la main, ce
+   * que l'outillage etait precisement cense eviter. Mesure faite : la fixture
+   * `rhino__spider_man__phase-mechant-complet.js` produit six etapes, et aucune
+   * n'etait affichee.
+   *
+   * ⚠ AUCUN MOTEUR DERRIERE. « Suivant » ne relache rien (il n'y a pas de trame
+   * retenue) : il fait seulement avancer le cartouche, qui tient son propre
+   * index. C'est exactement ce qu'on veut regarder.
+   */
+  const etapesEnregistrees = useMemo(() => {
+    if (!monde) return []
+    const mechantIds = new Set<number>()
+    for (const carte of indexerCartesMonde(monde).values()) {
+      if (kindOf(carte) === 'villain') mechantIds.add(carte.id)
+    }
+    return etapesDeroule(
+      monde.faits_mechant ?? [],
+      [],
+      monde.round_id ?? 0,
+      mechantIds,
+      new Set(),
+      undefined,
+      (monde.players ?? []).map((joueur) => (joueur.area_hero ?? [])[0]?.name)
+    )
+  }, [monde])
+  const modePhaseEnregistre = lireModePhaseMechant()
 
   if (!monde || !plateau) {
     return (
@@ -1206,6 +1239,18 @@ function PageEtat({
 
   const Rendu = mode === 'mobile' ? PlateauMobile : Board
   return (
+    <>
+    {modePhaseEnregistre !== 'instantane' && etapesEnregistrees.length > 0 ? (
+      <DeroulePhase
+        presentation={modePhaseEnregistre === 'detaille' ? 'scene' : 'table'}
+        etapes={etapesEnregistrees}
+        identitePhase={monde.round_id ?? 0}
+        identitePartie={fichier}
+        phaseMechantEnCours={PHASES_DU_MECHANT.has(monde.phase ?? '')}
+        onSuivant={() => {}}
+        onTerminer={() => {}}
+      />
+    ) : null}
     <Rendu
       world={monde}
       playerId={playerId}
@@ -1220,6 +1265,7 @@ function PageEtat({
         </footer>
       }
     />
+    </>
   )
 }
 
@@ -2202,6 +2248,22 @@ function PagePartie({
   }, [])
 
   const [modePhase, setModePhase] = useState<ModePhaseMechant>(lireModePhaseMechant)
+  /**
+   * DEUX INTENTIONS DIFFERENTES, QUE LE SEUL NOM « detaille » CONFONDAIT.
+   *
+   *  - `sceneCentrale` : le cartouche central joue la phase par-dessus la
+   *    table (cartes rejouees dedans, question et ciblage dedans, revelation
+   *    laissee au cartouche). C'est le mode « Detaille », et lui seul.
+   *  - `unCartouche`   : une etape a la fois, un clic pour passer a la
+   *    suivante. VRAI POUR « detaille » ET POUR « sur-table ».
+   *
+   * ⚠ La distinction n'est pas cosmetique : le moteur RETIENT ses trames dans
+   * les deux modes (`decisionAccuse`), et seul le cartouche les relache. Un
+   * mode qui retiendrait sans afficher de cartouche bloquerait la partie
+   * jusqu'au filet anti-blocage de 90 secondes.
+   */
+  const sceneCentrale = modePhase === 'detaille'
+  const unCartouche = modePhase !== 'instantane'
   const choisirModePhase = useCallback((mode: ModePhaseMechant) => {
     setModePhase(mode)
     ecrireModePhaseMechant(mode)
@@ -2325,7 +2387,7 @@ function PagePartie({
 
   const partieFinieMoteur = Boolean(etat.monde?.game_over)
   const coupFatalAMontrer =
-    modePhase === 'detaille' && coupFatalLocal(etapesPhaseMechant, herosLocauxIds)
+    unCartouche && coupFatalLocal(etapesPhaseMechant, herosLocauxIds)
   // Le joueur a valide l'etape du coup fatal (« Continuer »), et le filet de
   // temps qui laisse paraitre l'ecran de fin quoi qu'il arrive.
   //
@@ -2595,12 +2657,12 @@ function PagePartie({
   // Un ciblage (`interaction.option`) n'est pas concerne : le panneau cede
   // deja la place a la table, et la scene se replie pour la laisser cliquable.
   const questionEnScene =
-    modePhase === 'detaille' && phaseMechantEnCours && afficherDemandeCentrale && etat.demande !== undefined
+    sceneCentrale && phaseMechantEnCours && afficherDemandeCentrale && etat.demande !== undefined
   // Un CIBLAGE pendant la phase du mechant en Detaille (livraison D) : les
   // candidats se montrent aussi dans la scene, en cartes cliquables, avec la
   // validation. Ceux de la table gardent leur halo et restent cliquables
   // derriere le voile : les deux chemins menent au meme `agir`.
-  const ciblageEnScene = modePhase === 'detaille' && phaseMechantEnCours && interaction.option !== undefined
+  const ciblageEnScene = sceneCentrale && phaseMechantEnCours && interaction.option !== undefined
   // etat.validationRequise n'entre pas dans la condition ci-dessous : c'est
   // desormais le cartouche du deroule detaille (DeroulePhase) qui garde la
   // validation, ce panneau-la ne fait plus que narrer. Ses deux raisons
@@ -2648,7 +2710,7 @@ function PagePartie({
 
       {/* En mode detaille, BandeauPhase (plus bas) annonce deja la phase du
           mechant, plus fort : ce splash-ci ne doit pas la doubler. */}
-      <SplashTour monde={etat.monde} annonceMechantAilleurs={modePhase === 'detaille'} />
+      <SplashTour monde={etat.monde} annonceMechantAilleurs={unCartouche} />
 
 
       <SelecteurCibles
@@ -2692,7 +2754,7 @@ function PagePartie({
           // En mode Détaillé, la validation appartient au cartouche
           // (DeroulePhase) : ce panneau ne doit plus jamais montrer de bouton
           // « Continuer », quelle que soit la valeur de etat.validationRequise.
-          validationRequise={modePhase === 'detaille' ? false : etat.validationRequise}
+          validationRequise={unCartouche ? false : etat.validationRequise}
           continuer={continuer}
           // Les cartes citees par l'evenement en cours : le bandeau raconte ce
           // qui leur arrive, il ne doit surtout pas les cacher.
@@ -2793,16 +2855,20 @@ function PagePartie({
       {/* Le joueur SANS cartouche (mode Instantane) : une ligne discrete, pas
           un plateau fige et muet. Le reglage est personnel, mais le rythme est
           celui de la table — c'est exactement ce que F5 reprochait. */}
-      {modePhase !== 'detaille' && attendUnAutreJoueur && phaseMechantEnCours ? (
+      {!unCartouche && attendUnAutreJoueur && phaseMechantEnCours ? (
         <AttenteTable nom={autreJoueurInterroge?.nom} />
       ) : null}
-      {modePhase === 'detaille' ? (
+      {unCartouche ? (
         <>
           <BandeauPhase
             round={etat.monde?.round_id ?? 1}
             actif={etapesPhaseMechant.length > 0}
           />
           <DeroulePhase
+            // Meme mecanique, deux endroits : le cartouche central du mode
+            // « Detaille », ou le cartouche pose A COTE DE L'ACTION du mode
+            // « Sur la table ».
+            presentation={sceneCentrale ? 'scene' : 'table'}
             etapes={etapesPhaseMechant}
             // L'identite de la phase en cours, seule chose qui remet le
             // cartouche a zero. Il y a une phase du mechant par round, donc le
@@ -2955,7 +3021,7 @@ function PagePartie({
         // ou le cartouche ne tenait pas le rythme et s'effaçait avant la fin de
         // la phase. Ce n'est plus le cas : la cause racine est corrigee
         // (86d8bd34) et le bilan du cartouche s'affiche vraiment (09e4bfa1).
-        actif={modePhase !== 'detaille'}
+        actif={!unCartouche}
         // La MEME definition de « la phase du mechant » que le cartouche, et la
         // meme valeur deja calculee : le recap avait son propre detecteur de
         // transition, sur sa propre photo de `monde.phase` (constat F6).
@@ -3288,6 +3354,9 @@ function PagePartie({
       <FenetreReglages
         ouvert={reglagesOuverts}
         fermer={() => setReglagesOuverts(false)}
+        // Le mode « Sur la table » n'est propose qu'aux essais, le temps que
+        // l'utilisateur le valide a l'usage (board/essais.ts).
+        essais={essais}
         animations={animations}
         basculerAnimations={basculerAnimations}
         sons={sons}
@@ -3342,7 +3411,7 @@ function PagePartie({
           par l'utilisateur : « il montre quand meme encore la derniere carte
           en grand, en dehors de la modale ». Hors de cette phase (une carte
           revelee par un effet pendant le tour du heros), elle garde son role. */}
-      {modePhase === 'detaille' && phaseMechantEnCours ? null : (
+      {unCartouche && phaseMechantEnCours ? null : (
         <CoucheRevelation
           monde={etat.monde}
           duree={DUREES_REVELATION[revelation]}

@@ -166,6 +166,20 @@ export type ProprietesReglages = {
   modePhase: ModePhaseMechant
   changerModePhase: (mode: ModePhaseMechant) => void
   libelleModePhase: (mode: ModePhaseMechant) => string
+  /**
+   * Les ESSAIS sont-ils ouverts pour ce client (`board/essais.ts`) ?
+   *
+   * Le mode « Sur la table » n'est proposé qu'à ce moment-là, le temps que
+   * l'utilisateur le valide à l'usage. Les autres joueurs continuent de voir
+   * deux modes, et rien ne change pour eux.
+   *
+   * ⚠ UN MODE ABSENT DE LA LISTE RESTE CHOISI S'IL EST DÉJÀ ÉCRIT. `LigneChoix`
+   * n'affiche que les choix reçus : quelqu'un dont le stockage porterait
+   * « sur-table » sans être en essais verrait une liste où aucun bouton n'est
+   * actif, et le mode resterait actif sans être visible. D'où la liste
+   * construite ci-dessous, qui l'ajoute AUSSI dans ce cas-là.
+   */
+  essais: boolean
   /** « Temps par decision » du moteur, en secondes ; 0 = sans limite. */
   tempsParDecision: number
   texteTempsParDecision: () => string
@@ -270,6 +284,12 @@ export function ContenuOnglet({
           valeur={p.modePhase}
           choix={[
             { valeur: 'detaille' as ModePhaseMechant, libelle: t(p.libelleModePhase('detaille')) },
+            // « Sur la table » : réservé aux essais, ou déjà choisi (voir la
+            // prop `essais`). Un mode actif mais absent de la liste laisserait
+            // un écran de réglages où plus rien n'est coché.
+            ...(p.essais || p.modePhase === 'sur-table'
+              ? [{ valeur: 'sur-table' as ModePhaseMechant, libelle: t(p.libelleModePhase('sur-table')) }]
+              : []),
             { valeur: 'instantane' as ModePhaseMechant, libelle: t(p.libelleModePhase('instantane')) },
           ]}
           onChoisir={p.changerModePhase}
