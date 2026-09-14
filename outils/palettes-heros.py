@@ -40,28 +40,49 @@ PART_MINIMALE = 0.10
 COULEURS_GARDEES = 3
 
 
+# ⚠ LES DEUX CATALOGUES. `cards.json` porte les cartes officielles,
+# `cards_custom.json` les sets maison ; le moteur charge les deux, et les
+# oublier laissait Stan Lee, Hulk (Rainy) et Rescue (Rainy) sans palette,
+# donc sans halo, alors que leurs scans sont bien la.
+CATALOGUES = ('cards.json', 'cards_custom.json')
+
+
 def cartes_du_catalogue():
-    with open(os.path.join(DATA, 'cards.json'), encoding='utf-8') as f:
-        brut = json.load(f)
-    for pack, liste in brut.items():
-        if not isinstance(liste, list):
+    for nom in CATALOGUES:
+        chemin = os.path.join(DATA, nom)
+        if not os.path.exists(chemin):
             continue
-        for carte in liste:
-            if isinstance(carte, dict) and carte.get('card_id'):
-                yield pack, carte
+        with open(chemin, encoding='utf-8') as f:
+            brut = json.load(f)
+        for pack, liste in brut.items():
+            if not isinstance(liste, list):
+                continue
+            for carte in liste:
+                if isinstance(carte, dict) and carte.get('card_id'):
+                    yield pack, carte
+
+
+# ⚠ LA PART COMMUNE DU NOIR ET DU GRIS, MESUREE SUR LES 133 SETS. Chaque
+# carte du jeu porte un liseré sombre et des gris d'ombre : ~21 % de noir et
+# ~18 % de gris en mediane, du plus clair (11 % / 1 %) au plus charge (58 % /
+# 57 %). Ces parts-la ne disent rien du heros, on les retranche. Ce qui DEPASSE,
+# lui, est bien la couleur du cadre : Venom pese 42 % de noir, Magneto 34 % de
+# gris. Une premiere version jetait ces deux seaux en bloc, et onze heros
+# (Venom, Magneto, Storm, Gamora, Winter Soldier, Black Cat...) ressortaient en
+# BLANC QUASI PUR, faute d'autre seau survivant. Leurs cadres sont noir et gris :
+# c'est leur vraie couleur, pas un defaut de mesure.
+PART_COMMUNE = {'sombre': 0.211, 'terne': 0.183}
 
 
 def seau_de(r, g, b):
-    """Dans quel groupe ranger ce pixel : une teinte, le clair, ou le sombre."""
+    """Dans quel groupe ranger ce pixel : une teinte, le clair, le gris, le noir."""
     h, l, s = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
     if l > 0.72 and s < 0.45:
         return 'clair'       # le BLANC, qui fait Captain America et Black Widow
     if l < 0.16:
-        return None          # ⚠ LE CADRE SOMBRE EST SUR TOUTES LES CARTES : il ne
-                             # caracterise aucun heros. Garde, il evincait le blanc
-                             # de Captain America, qui est pourtant bleu BLANC rouge.
+        return 'sombre'      # le NOIR, qui fait Venom et Gamora
     if s < 0.28:
-        return None          # un gris terne ne dit rien du heros
+        return 'terne'       # le GRIS, qui fait Magneto et Storm
     return int(h * 360) // 20
 
 
@@ -111,13 +132,24 @@ def palette_du_set(cartes):
             continue
         if contour(chemin, seaux):
             lues += 1
-    total = sum(a[3] for a in seaux.values())
-    if not total or lues < 2:
+    brut = sum(a[3] for a in seaux.values())
+    if not brut or lues < 2:
         return None, lues
-    tri = sorted(seaux.values(), key=lambda a: -a[3])
+    # Le poids RETENU de chaque seau : sa part, moins la part que porte n'importe
+    # quelle carte (voir PART_COMMUNE). Un seau qui ne depasse pas sa ligne de
+    # base ne caracterise pas ce heros et disparait.
+    pesees = []
+    for cle, a in seaux.items():
+        part = a[3] / brut - PART_COMMUNE.get(cle, 0.0)
+        if part > 0:
+            pesees.append((part, a))
+    total = sum(p for p, _ in pesees)
+    if not total:
+        return None, lues
+    pesees.sort(key=lambda x: -x[0])
     couleurs = [
         [round(a[0] / a[3]), round(a[1] / a[3]), round(a[2] / a[3])]
-        for a in tri if a[3] / total >= PART_MINIMALE
+        for part, a in pesees if part / total >= PART_MINIMALE
     ][:COULEURS_GARDEES]
     return (couleurs or None), lues
 
@@ -141,7 +173,13 @@ def main():
     palettes = {}
     sans = []
     for set_name, faces in sorted(identites.items()):
-        couleurs, lues = palette_du_set(par_set.get(set_name, []))
+        # ⚠ LES CARTES SIGNATURE D'ABORD, LES FACES D'IDENTITE EN SECOURS. Tout
+        # un set donne une couleur stable ; une ou deux cartes donnent celle de
+        # LEUR illustration. Mais un set peut n'avoir aucune carte signature
+        # (Stan Lee n'est que ses deux faces) : sans ce repli il n'aurait aucun
+        # halo, alors que son cadre porte bien ses couleurs.
+        cartes = par_set.get(set_name) or faces
+        couleurs, lues = palette_du_set(cartes)
         if not couleurs:
             sans.append((set_name, lues))
             continue

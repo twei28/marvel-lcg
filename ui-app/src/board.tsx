@@ -147,6 +147,7 @@ import {
 } from './board/moteur'
 import { FenetreReglages } from './board/FenetreReglages'
 import { essaisOuverts } from './board/essais'
+import { fondDe, identiteAffichee, palettes, type Couleur } from './board/halo-heros'
 // CouchePasAPas et usePasAPas : DEBRANCHES a la demande de l'utilisateur, voir
 // les commentaires a leurs points d'appel plus bas pour les rallumer.
 import { SelecteurCibles } from './board/SelecteurCibles'
@@ -1454,6 +1455,7 @@ function PagePartie({
   }, [etat.joueurDemande, joueurSuivi, demandeJouable, etat.monde, playerId])
 
   const joueurActif = vueForcee ?? joueurSuivi ?? etat.joueurDemande ?? playerId
+
   // Les onglets du multijoueur en portrait (tache 10) : la MEME liste que les
   // boutons « Vue » ci-dessous (elimines exclus), pour que taper un onglet
   // fasse exactement setVueForcee(id), sans etat parallele qui pourrait
@@ -2405,6 +2407,44 @@ function PagePartie({
       vivant = false
     }
   }, [])
+  /**
+   * LE FOND PREND LA COULEUR DU HEROS AFFICHE.
+   *
+   * ⚠ IL SUIT `joueurActif`, PAS LA PARTIE. En multijoueur, changer de vue
+   * change la teinte : « quand on change de heros, la couleur doit changer »
+   * (utilisateur, 14/09/2026). C'est aussi pour cela que la carte d'identite
+   * est relue a chaque rendu : elle change de face quand on se transforme, et
+   * les deux faces portent la meme palette.
+   *
+   * ⚠ RESERVE AUX ESSAIS tant que l'utilisateur ne l'a pas valide a l'usage :
+   * sans le drapeau, la classe n'est pas posee et la CSS garde le fond uni.
+   */
+  const identite = identiteAffichee(etat.monde, joueurActif)
+  useEffect(() => {
+    const racine = document.documentElement
+    const corps = document.body
+    let vivant = true
+    if (!essais || !identite) {
+      corps.classList.remove('a-halo-heros')
+      return
+    }
+    void palettes().then((catalogue) => {
+      if (!vivant) return
+      const couleurs: Couleur[] | undefined = catalogue[identite]
+      if (!couleurs || couleurs.length === 0) {
+        corps.classList.remove('a-halo-heros')
+        return
+      }
+      racine.style.setProperty(
+        '--fond-plateau',
+        fondDe(couleurs, 'linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98))')
+      )
+      corps.classList.add('a-halo-heros')
+    })
+    return () => {
+      vivant = false
+    }
+  }, [essais, identite])
   const cyclerRevelation = useCallback(() => {
     setRevelation((r) => {
       const suivant: ModeRevelation = r === 'off' ? 'court' : r === 'court' ? 'long' : 'off'

@@ -7345,3 +7345,19 @@
     letter-spacing: 0.04em;
   }
 }
+
+@layer utilitaires {
+  /* --- Le halo du héros (14/09/2026) ----------------------------------------
+     Une pointe de couleur dans le coin BAS DROIT, aux couleurs du héros qu'on
+     joue. Les couleurs viennent du contour de ses cartes
+     (`outils/palettes-heros.py`), et le dégradé est composé par
+     `board/halo-heros.ts`, qui pose `--fond-plateau`.
+
+     ⚠ LA CLASSE N'EST POSÉE QUE POUR LES ESSAIS, et seulement si le héros a
+     une palette. Sans elle, le fond uni reste celui de tout le monde : c'est
+     ce qui garantit qu'un essai non validé ne fuit pas chez les autres
+     joueurs. */
+  body.a-halo-heros .plateau-scene {
+    background: var(--fond-plateau);
+  }
+}

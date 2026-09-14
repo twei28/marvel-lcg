@@ -574,6 +574,19 @@ class GameServerGet(GameServerBase):
             # vide ou l'administrateur croirait qu'il n'y a personne a cocher.
             return web.json_response({'identites': [], 'erreur': 'annuaire absent'})
 
+    async def get_palettes_heros(self, request: web.Request) -> web.Response:
+        """Les couleurs de chaque heros, tirees du contour de ses cartes.
+
+        GENERE par `outils/palettes-heros.py`, sert a teinter le coin bas droit
+        du plateau. Lecture ouverte : ce ne sont que des couleurs, et chaque
+        joueur en a besoin pour la table qu'il regarde.
+
+        ⚠ `Toutes()` avale deja fichier absent et fichier abime et rend un
+        releve vide : un plateau SANS teinte, jamais une erreur.
+        """
+        from cards.palettes_heros import PalettesHeros
+        return web.json_response({'palettes': PalettesHeros.Toutes()})
+
     async def save_images_cartes(self, request: web.Request) -> web.Response:
         """Ecrit le releve d'UNE carte. Reserve a l'administrateur.
 
@@ -1037,6 +1050,7 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/post_messages_lus', self.post_messages_lus)
         self.AddAwaitGetSecurity('/get_images_cartes', self.get_images_cartes)
         self.AddAwaitGetSecurity('/get_identites', self.get_identites)
+        self.AddAwaitGetSecurity('/get_palettes_heros', self.get_palettes_heros)
         self.AddPostSecurity('/save_images_cartes', self.save_images_cartes)
         self.AddAwaitGetSecurity('/get_legacy', self.get_legacy)
         self.AddPostSecurity('/save_legacy', self.save_legacy)
