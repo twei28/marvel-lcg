@@ -93,16 +93,44 @@ Tout cela est écrit et commenté dans `ui-check/tests/phase-detaille-defense.sp
 > « Je te l'ai dit mille fois, pourquoi est-ce que ça continue tout seul sans
 > que moi je mette suivant ? Ça ne devrait pas arriver putain. »
 
-| # | Cause | Prétendu état | À FAIRE |
+| # | Cause | État au 14/09/2026, 20 h | Preuve |
 |---|---|---|---|
-| 1 | « Avance toute seule » GRISÉ hors Détaillé mais dont la valeur s'appliquait quand même. **Griser ne désactive pas.** | corrigé, déployé (`b201c6d4`) | **re-vérifier en jeu** |
+| 1 | « Avance toute seule » GRISÉ hors Détaillé mais dont la valeur s'appliquait quand même. **Griser ne désactive pas.** | **vérifié EN JEU** | `phase-sur-table.spec.ts`, cas « même avec Avance toute seule ALLUMÉE, rien ne bouge » : cinq secondes d'attente, rien ne bouge. |
 | 2 | le mode lui-même | sans objet | — |
-| 3 | **Le cartouche acquitte le moteur TOUT SEUL sur une étape d'ANNONCE** (décision 7 de la spec du 07/09 pour le mode Détaillé : « pas de clic sur *va attaquer* »), ce qui contredit sa décision : deux clics par attaque, l'annonce portant le premier « parce que c'est là aussi où on peut choisir de défendre ». | corrigé, commité `<voir plus bas>` | **re-vérifier en jeu** |
+| 3 | **Le cartouche acquitte le moteur TOUT SEUL sur une étape d'ANNONCE** (décision 7 de la spec du 07/09 pour le mode Détaillé : « pas de clic sur *va attaquer* »), ce qui contredit sa décision : deux clics par attaque, l'annonce portant le premier « parce que c'est là aussi où on peut choisir de défendre ». | **PAS ENCORE PROUVÉ EN JEU** | gate unitaire seulement (`cartouche-a-jour.test.ts`, 11 cas) |
 
 Règle extraite dans `ui-app/src/board/cartouche-a-jour.ts`, gate de onze cas.
 
 ⚠ **Ce défaut ne se voit pas** : rien ne plante, rien ne rougit, la phase défile.
 Le seul contrôle valable est d'ATTENDRE sans cliquer et de regarder.
+
+### ⚠ CE QU'ON A APPRIS EN ESSAYANT DE PROUVER LA CAUSE 3 (à ne pas refaire)
+
+- **Le filet sur état enregistré NE PEUT PAS la garder.** `?etat=` ne rejoue
+  aucune trame du moteur : il n'y a rien à relâcher, donc rien à retenir.
+  Mesuré en retirant la garde `!surTable` et en reconstruisant : les cas de
+  `phase-sur-table.spec.ts` restent VERTS. Ils gardent l'avance auto (cause 1),
+  pas l'acquittement (cause 3).
+- **La fixture `…phase-mechant-complet.js` ne contient AUCUNE annonce** (menace,
+  deux manigances, révélations). C'est `…phase-mechant-attaques.js` qui en porte
+  une : « Rhino va attaquer Spider-Man · 3 dégâts », au 4ᵉ temps.
+- **Un test en vraie partie a été écrit, essayé six fois, puis ABANDONNÉ** : il
+  demande sept minutes et reste fragile. Ce qui coûte : atteindre une attaque
+  exige de jouer un tour de héros en forme HÉROS, et sur la table chaque temps
+  demande un clic.
+- **Observé EN JEU malgré tout, sans être figé dans un test** : l'annonce
+  « Rhino va attaquer Spider-Man · 2 dégâts » s'affiche, et cinq secondes plus
+  tard le déroulé n'a PAS sauté au temps suivant — le cartouche s'est tu et le
+  panneau du moteur (« Défendre / Passer ») a pris sa place, ce qui est le
+  comportement voulu. **Ce n'est pas une preuve, c'est une observation.**
+- Deux pièges du harnais, pour la prochaine fois :
+  - une route interceptée (`page.route('**/get_site_admin')`) empêche le
+    `waitUntil: 'networkidle'` d'`ouvrirEtMettreEnPlace` de se satisfaire, et le
+    test reste bloqué cinq minutes avant sa première boucle ;
+  - appeler `avancerLaPartie` PENDANT la phase du méchant le fait attendre une
+    question qui ne viendra jamais : sur la table, le cartouche retient la trame
+    tant que le joueur n'a pas cliqué. Le tour du héros se joue par le pilote,
+    la phase du méchant par l'écran.
 
 ## 2. ⛔ Trois panneaux superposés au centre
 
@@ -243,6 +271,8 @@ vérifier chaque source dans les deux langues.
 **PRIORITÉ ABSOLUE**, ouverte le 14/09/2026. Six défauts.
 **Rien n'est prouvé tant que ce n'est pas vérifié en jeu par l'assistant.**
 
-Avancement au 14/09/2026, 19 h :
+Avancement au 14/09/2026, 20 h :
 - n°4 : **fait**, cause trouvée, corrigé, prouvé en jeu (rouge/vert mesurés).
-- n°1, 2, 3, 5, 6 : **à reprendre**, toujours rien de prouvé en jeu.
+- n°1 : cause 1 **vérifiée en jeu** ; cause 3 **toujours pas prouvée en jeu**
+  (voir l'encadré de ce défaut : le filet sur fixture ne peut pas la garder).
+- n°2, 3, 5, 6 : **à reprendre**, toujours rien de prouvé en jeu.

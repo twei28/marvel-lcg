@@ -19,6 +19,20 @@
 import { test, expect, type Page } from '@playwright/test'
 
 const ETAT = 'rhino__spider_man__phase-mechant-complet.js'
+/**
+ * ⚠ CE FILET NE GARDE PAS LE RYTHME DU MOTEUR, ET IL FAUT LE SAVOIR.
+ *
+ * Un état ENREGISTRÉ (`?etat=`) ne rejoue aucune trame : il n'y a rien à
+ * relâcher, donc rien à retenir. Mesuré le 14/09/2026 — en retirant la garde
+ * `!surTable` de `cartouche-a-jour.ts` et en reconstruisant le plateau, ces cas
+ * restent VERTS.
+ *
+ * Ce qu'ils gardent vraiment : le CLIENT n'avance pas tout seul d'une étape à
+ * la suivante (l'avance auto, PREMIÈRE cause du défaut « ça continue tout
+ * seul »). La TROISIÈME cause — l'annonce qui acquitte le moteur — ne se voit
+ * que dans une vraie partie, et elle n'est gardée à ce jour que par la gate
+ * unitaire `ui-app/src/board/cartouche-a-jour.test.ts`.
+ */
 /** Le temps d'observation sans toucher à rien. Plus long que tous nos délais. */
 const ATTENTE_MS = 5000
 
@@ -126,3 +140,4 @@ test('⚠ même avec « Avance toute seule » ALLUMÉE, rien ne bouge sur la tab
   // Et le bouton est toujours là pour avancer à la main.
   await expect(page.locator('.deroule-rond').first()).toBeVisible()
 })
+
