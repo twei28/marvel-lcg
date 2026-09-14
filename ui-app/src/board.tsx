@@ -954,6 +954,10 @@ async function lireMetaSauvegarde(nom: string): Promise<MetaSauvegarde | undefin
  * exactement ce qui n'y avait pas sa place : on consulte un log EN JOUANT,
  * souvent parce qu'un bug vient de se produire, et il serait absurde d'ouvrir
  * une fenetre modale par-dessus le plateau pour cela.
+ *
+ * ⚠ ET LE RETOUR AU MENU EN EST SORTI le 14/09/2026, a la demande de
+ * l'utilisateur : tout ce qui reste ici se CONSULTE, lui fait SORTIR. Il est
+ * dans la barre, en tete.
  */
 function PopoverPartie({ children }: { children: React.ReactNode }) {
   const [ouvert, setOuvert] = useState(false)
@@ -965,7 +969,7 @@ function PopoverPartie({ children }: { children: React.ReactNode }) {
         className={`bh-bouton bh-reglages${ouvert ? ' est-actif' : ''}`}
         onClick={() => setOuvert((o) => !o)}
         aria-expanded={ouvert}
-        title={t('Historique, log, journal du héros, retour au menu')}
+        title={t('Historique, log et journal du héros')}
       >
         <span aria-hidden="true">▶</span> {t('Partie')}
       </button>
@@ -3103,6 +3107,24 @@ function PagePartie({
                 {designEssai && quiAgit ? <em>{quiAgit}</em> : null}
               </div>
             ) : null}
+            {/* ⌂ MENU : DANS LA BARRE, PAS DANS « Partie » (14/09/2026).
+                Demande de l'utilisateur : « le bouton home devrait etre sur le
+                header, et pas dans le bouton Partie ». Il etait au fond d'un
+                menu deroulant, derriere deux clics, alors que quitter une
+                partie est une action qu'on cherche directement. Les autres
+                entrees de « Partie » se CONSULTENT en jouant (historique, log,
+                journal) ; celle-ci fait SORTIR, et n'a rien a faire avec elles.
+
+                En tete de barre : c'est le geste qui ramene en arriere, il se
+                lit avant tout le reste, comme dans un navigateur. */}
+            <button
+              type="button"
+              className="bh-bouton bh-menu"
+              onClick={retourMenuPrincipal}
+              title={t('Revenir au menu principal')}
+            >
+              <span aria-hidden="true">⌂</span> {t('Menu')}
+            </button>
             <button
               type="button"
               className="bh-bouton bh-undo"
@@ -3191,14 +3213,6 @@ function PagePartie({
               {/* Musique et langue sont partis dans la fenetre des reglages
                   (onglet « Image et son ») le 14/09/2026 : ce sont des
                   reglages, pas des actions de partie. */}
-              <button
-                type="button"
-                className="bh-bouton bh-menu"
-                onClick={retourMenuPrincipal}
-                title={t('Revenir au menu principal')}
-              >
-                <span aria-hidden="true">⌂</span> Menu
-              </button>
             </PopoverPartie>
 
             {/* ⚙ Reglages : une FENETRE, pas un menu. Elle s'ouvre au centre,
