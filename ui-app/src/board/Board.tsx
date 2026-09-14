@@ -67,6 +67,38 @@ export function phaseAffichee(phase: string): string {
 }
 
 /**
+ * La LARGEUR DE LA VIGNETTE servie par le moteur, en pixels.
+ *
+ * `tools/generer_vignettes.py` reduit chaque scan a 246 px sur le petit cote.
+ * C'est elle qui borne l'agrandissement de la table : au-dela, le navigateur
+ * etire une image trop petite et le texte devient flou. Mesure, pas suppose.
+ */
+const LARGEUR_VIGNETTE = 246
+
+/** La largeur d'une carte de table a l'echelle 1 (`--card-w`, board.css). */
+const LARGEUR_CARTE = 127
+
+/**
+ * Jusqu'ou la table peut grandir, sur CET ecran.
+ *
+ * ⚠ LA BORNE VIENT DE L'IMAGE, PAS D'UN GOUT. Une carte occupe
+ * `LARGEUR_CARTE * echelle` pixels CSS, donc `* devicePixelRatio` pixels REELS.
+ * Des que ce nombre depasse `LARGEUR_VIGNETTE`, on demande au navigateur
+ * d'agrandir une image qu'il n'a pas : les cartes grandissent et deviennent
+ * MOINS nettes, ce qui est exactement l'inverse du but.
+ *
+ * ⚠ ET ELLE NE DESCEND JAMAIS SOUS 1 : sur un ecran a forte densite (dpr 2), la
+ * formule donnerait 0,97 et RETRECIRAIT la table par rapport a aujourd'hui. On
+ * ne degrade pas l'existant pour appliquer une regle. Le prix a payer est dit
+ * franchement : sur un tel ecran, la table ne grandit pas, et le seul levier
+ * restant serait de regenerer les vignettes plus grandes.
+ */
+function echelleMaximale(): number {
+  const dpr = typeof window === 'undefined' ? 1 : window.devicePixelRatio || 1
+  return Math.max(1, LARGEUR_VIGNETTE / (LARGEUR_CARTE * dpr))
+}
+
+/**
  * Echelle de la table, et hauteur de scene reellement utilisee.
  *
  * L'echelle est celle de l'ancien plateau : min(largeur/1920, hauteur/940), donc
@@ -76,14 +108,19 @@ export function phaseAffichee(phase: string): string {
  * de laisser du vide. Elle ne descend jamais sous la hauteur minimale, sinon les
  * cartes ne tiendraient plus dans leur rangee.
  *
- * L'echelle est aussi plafonnee a 1 : au-dela, la scene ne grossit plus, elle
- * s'etire (largeur/hauteur ci-dessous) pour occuper le surplus d'ecran. Plusieurs
- * formules CSS divisent par --echelle pour garder une taille fixe a l'ecran
- * (epaisseur de la jauge de PV dans ScanCard.css, --inspect-scale dans board.css) ;
- * les laisser recevoir une echelle superieure a 1 leur ferait retomber sous leur
- * taille minimale sur un tres grand ecran. Plafonner ici, a la source, les corrige
- * toutes d'un coup plutot que de rajouter un clamp() dans chaque fichier CSS qui
- * consomme la variable.
+ * ⚠ ELLE PEUT DEPASSER 1 DEPUIS LE 14/09/2026, et c'etait tout le probleme.
+ * Elle etait plafonnee a 1 : sur un ecran 2560x1440, le plateau disposait de
+ * 2560x1316 et dessinait quand meme des cartes de 127 px, toute la place en plus
+ * perdue. Constat de l'utilisateur : les cartes sont trop petites pour etre
+ * lues. Mesure a l'ecran : sans le plafond, la meme carte passe a 169 px et son
+ * texte devient lisible.
+ *
+ * ⚠ CE QUE LE PLAFOND PROTEGEAIT, ET QUI EST TRAITE AILLEURS. Douze formules CSS
+ * divisent par --echelle pour garder une taille FIXE A L'ECRAN quand la table
+ * retrecit (epaisseur de la jauge de PV, --inspect-scale, ombres d'un pixel).
+ * Leur diviseur est desormais `--echelle-fixe`, qui vaut `min(1, --echelle)` :
+ * en dessous de 1 rien ne change, au-dessus ces details grandissent avec le
+ * reste de la table, ce qui est le comportement voulu. Voir board.css.
  */
 function useEchelle(cadre: React.RefObject<HTMLDivElement | null>) {
   const [mise, setMise] = useState({
@@ -99,7 +136,11 @@ function useEchelle(cadre: React.RefObject<HTMLDivElement | null>) {
     const recalculer = () => {
       const { width, height } = element.getBoundingClientRect()
       if (width === 0 || height === 0) return
-      const echelle = Math.min(1, width / SCENE.largeur, height / SCENE.hauteur)
+      const echelle = Math.min(
+        echelleMaximale(),
+        width / SCENE.largeur,
+        height / SCENE.hauteur
+      )
       setMise({
         echelle,
         largeur: Math.max(SCENE.largeur, width / echelle),
@@ -998,6 +1039,13 @@ export function Board({
           style={
             {
               '--echelle': echelle,
+              // ⚠ LE DIVISEUR DES DETAILS QUI DOIVENT RESTER FINS, jamais
+              // au-dessus de 1. Douze formules CSS divisent par lui pour garder
+              // une taille fixe a l'ecran quand la table RETRECIT ; au-dessus
+              // de 1 la table GRANDIT, et ces details doivent grandir avec elle.
+              // `min()` en CSS aurait fait la meme chose, mais la regle se lit
+              // mieux ici, a cote de l'echelle dont elle derive.
+              '--echelle-fixe': Math.min(1, echelle),
               width: `${largeur}px`,
               height: `${hauteur}px`,
             } as CSSProperties

@@ -16,7 +16,7 @@
      debord sous la carte, et une variable posee sur la bande elle-meme n'est
      lisible que par elle et ses enfants, jamais par son parent. */
   :root {
-    --jauge-epaisseur: calc(16px / var(--echelle, 1));
+    --jauge-epaisseur: calc(16px / var(--echelle-fixe, 1));
     --jauge-debord: calc(var(--jauge-epaisseur) * 1.15);
   }
 
@@ -325,8 +325,8 @@
     /* Un cerne net : la bande longe le halo de camp (vert ou rouge) de la carte,
        et sans lui les deux se confondaient. */
     box-shadow:
-      0 0 0 calc(1px / var(--echelle, 1)) rgba(0, 0, 0, 0.9),
-      0 0 calc(4px / var(--echelle, 1)) rgba(0, 0, 0, 0.7);
+      0 0 0 calc(1px / var(--echelle-fixe, 1)) rgba(0, 0, 0, 0.9),
+      0 0 calc(4px / var(--echelle-fixe, 1)) rgba(0, 0, 0, 0.7);
     overflow: hidden;
     pointer-events: none;
     /* La bande se remplit DEPUIS LA GAUCHE : elle se vide vers la gauche quand
@@ -343,15 +343,15 @@
     inset: 0;
     display: grid;
     place-items: center;
-    font-size: calc(11px / var(--echelle, 1));
+    font-size: calc(11px / var(--echelle-fixe, 1));
     line-height: 1;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.02em;
     color: #fff;
     text-shadow:
-      0 0 calc(3px / var(--echelle, 1)) rgba(0, 0, 0, 0.95),
-      0 calc(1px / var(--echelle, 1)) calc(2px / var(--echelle, 1)) rgba(0, 0, 0, 0.9);
+      0 0 calc(3px / var(--echelle-fixe, 1)) rgba(0, 0, 0, 0.95),
+      0 calc(1px / var(--echelle-fixe, 1)) calc(2px / var(--echelle-fixe, 1)) rgba(0, 0, 0, 0.9);
     pointer-events: none;
   }
 
@@ -365,8 +365,8 @@
       hsl(var(--jauge-teinte, 140deg) 85% 38%)
     );
     box-shadow:
-      0 0 calc(6px / var(--echelle, 1)) hsl(var(--jauge-teinte, 140deg) 90% 50% / 0.7),
-      inset 0 0 0 calc(1px / var(--echelle, 1)) rgba(255, 255, 255, 0.22);
+      0 0 calc(6px / var(--echelle-fixe, 1)) hsl(var(--jauge-teinte, 140deg) 90% 50% / 0.7),
+      inset 0 0 0 calc(1px / var(--echelle-fixe, 1)) rgba(255, 255, 255, 0.22);
     transition:
       width 320ms ease,
       background 320ms ease;

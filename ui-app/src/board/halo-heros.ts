@@ -54,8 +54,14 @@ export function oublierPalettes(): void {
  * cette forme-ci parmi quatre montrees sur le vrai plateau : une seule bande
  * large, ou les couleurs se succedent et s'eteignent ensemble.
  *
- * ⚠ ELLE S'ETEINT AVANT LE CENTRE (45 %). La couleur appartient au heros : elle
+ * ⚠ ELLE S'ETEINT AVANT LE CENTRE (50 %). La couleur appartient au heros : elle
  * ne doit jamais atteindre la zone du mechant, en haut a gauche.
+ *
+ * ⚠ LES FORCES ONT ETE MONTEES le 14/09/2026 (0,32 / 0,24 / 0,14 -> 0,46 / 0,34
+ * / 0,20) a la demande de l'utilisateur : « pousse un peu la colorisation du
+ * halo pour qu'on le voie mieux ». Les aplats colores des zones (rouge sur la
+ * ligne de combat, jaune sur les manigances annexes) ont ete retires dans le
+ * meme mouvement : ils se superposaient a la bande et brouillaient les deux.
  *
  * `315deg` progresse vers le HAUT GAUCHE : la position 0 % est donc le coin bas
  * droit, celui que l'utilisateur a designe (« en diagonale, la couleur en bas a
@@ -68,9 +74,9 @@ export function fondDe(couleurs: readonly Couleur[] | undefined, sombre: string)
   // (au coin) a la plus diffuse. Trois arrets : au-dela les teintes se
   // melangent en boue, en deca la bande n'a plus de degrade.
   const ARRETS: Array<{ a: number; force: number }> = [
-    { a: 0, force: 0.32 },
-    { a: 15, force: 0.24 },
-    { a: 28, force: 0.14 },
+    { a: 0, force: 0.46 },
+    { a: 16, force: 0.34 },
+    { a: 30, force: 0.2 },
   ]
   // ⚠ UN HEROS PEUT N'AVOIR QU'UNE OU DEUX COULEURS (onze cadres sont noirs ou
   // gris, deux sets fan-made n'ont qu'un blanc). On repete alors la derniere :
@@ -82,7 +88,7 @@ export function fondDe(couleurs: readonly Couleur[] | undefined, sombre: string)
     return `${rgba(couleur, arret.force)} ${arret.a}%`
   })
   const fin = couleurs[ARRETS.length - 1] ?? derniere
-  return `linear-gradient(315deg, ${etapes.join(', ')}, ${rgba(fin, 0)} 45%), ${sombre}`
+  return `linear-gradient(315deg, ${etapes.join(', ')}, ${rgba(fin, 0)} 50%), ${sombre}`
 }
 
 /** La forme minimale dont le halo a besoin : qui est assis, et sa carte d'identité. */

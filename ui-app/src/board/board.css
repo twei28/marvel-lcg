@@ -2235,19 +2235,19 @@
      taille REELLE constante, celle validee sur la vitrine (300px de large en
      portrait, 370px en paysage). */
   .plateau-scene .scan-card {
-    --inspect-scale: calc(2.36 / var(--echelle, 1));
+    --inspect-scale: calc(2.36 / var(--echelle-fixe, 1));
   }
 
   .plateau-scene .scan-card.is-landscape {
-    --inspect-scale: calc(2.1 / var(--echelle, 1));
+    --inspect-scale: calc(2.1 / var(--echelle-fixe, 1));
   }
 
   .plateau-scene .est-attachee .scan-card {
-    --inspect-scale: calc(3.4 / var(--echelle, 1));
+    --inspect-scale: calc(3.4 / var(--echelle-fixe, 1));
   }
 
   .plateau-scene .est-attachee .scan-card.is-landscape {
-    --inspect-scale: calc(3 / var(--echelle, 1));
+    --inspect-scale: calc(3 / var(--echelle-fixe, 1));
   }
 
   /* --- Survol sur le PLATEAU : leger surlignage, PAS le gros zoom -----------
@@ -2540,7 +2540,11 @@
     --place: 1078px;
     --mc-zoom-origine: center bottom;
     border-color: rgba(166, 0, 0, 0.24);
-    background: rgba(166, 0, 0, 0.045);
+    /* ⚠ PLUS DE FOND ROUGE ICI (14/09/2026, demande de l'utilisateur : « enlève
+       le fond jaune derrière les manigances annexes et le rouge au niveau des
+       sbires »). Le liseré suffit à dire le camp ; l'aplat, lui, se superposait
+       à la bande de couleur du héros dans le coin bas droit et brouillait les
+       deux. Il ne portait aucune information que le liseré ne porte déjà. */
   }
 
   /* Aire joueur, rangee basse : soutiens, permanents, ameliorations. */
@@ -2664,7 +2668,12 @@
     --mc-zoom-origine: right center;
     align-items: flex-start;
     border-color: rgba(242, 167, 53, 0.22);
-    background: rgba(242, 167, 53, 0.035);
+    /* ⚠ PLUS DE FOND JAUNE ICI, même raison et même demande que la ligne de
+       combat ci-dessus. Le liseré orangé reste : c'est lui qui dit « menace ».
+
+       Les zones « deck spécial » (violet) et « réserve » (vert) gardent le
+       leur : elles occupent la MÊME place sur la table et leur teinte est le
+       seul moyen de ne pas les confondre. Ce n'est pas une décoration. */
   }
 
   .zone-complots-secondaires .plateau-cartes {

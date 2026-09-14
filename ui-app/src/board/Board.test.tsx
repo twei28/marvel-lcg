@@ -109,22 +109,62 @@ function mesurerEchelle(largeur: number, hauteur: number): number {
   return Number(scene.style.getPropertyValue('--echelle'))
 }
 
-describe('useEchelle : plafond a 1', () => {
+// LE PLAFOND D'ECHELLE, ET CE QUI LE FIXE (revu le 14/09/2026).
+//
+// Il valait 1, en dur. Consequence mesuree : sur un ecran 2560x1440 le plateau
+// disposait de 2560x1316 et dessinait quand meme des cartes de 127 px, toute la
+// place en plus perdue, et le texte illisible. Le plafond vient desormais de la
+// SOURCE D'IMAGE : 246 px de vignette pour une carte de 127 px a l'echelle 1,
+// donc 246 / (127 * devicePixelRatio).
+//
+// ⚠ LE CAS QUI COMPTE LE PLUS est `il ne descend jamais sous 1`. Sur un ecran a
+// forte densite (dpr 2) la formule donne 0,97 : appliquee telle quelle, elle
+// RETRECIRAIT la table par rapport a aujourd'hui. On ne degrade pas l'existant
+// pour appliquer une regle.
+describe('useEchelle : le plafond vient de la source d image', () => {
   beforeEach(() => {
     ;(globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverBouchon
   })
 
-  it('plafonne l echelle a 1 sur un tres grand ecran (5120x2160, ratio brut ~2,3)', () => {
-    expect(mesurerEchelle(5120, 2160)).toBe(1)
+  const avecDpr = (dpr: number, faire: () => void) => {
+    const avant = window.devicePixelRatio
+    Object.defineProperty(window, 'devicePixelRatio', { value: dpr, configurable: true })
+    try {
+      faire()
+    } finally {
+      Object.defineProperty(window, 'devicePixelRatio', { value: avant, configurable: true })
+    }
+  }
+
+  it('laisse la table GRANDIR sur un grand ecran ordinaire (dpr 1)', () => {
+    // 246 / 127 = 1,94 : un ecran deux fois trop grand ne monte que jusque-la.
+    avecDpr(1, () => {
+      expect(mesurerEchelle(5120, 2160)).toBeCloseTo(1.94, 2)
+    })
   })
 
-  it('plafonne aussi a une echelle brute de 1,6 (ecran juste plus grand que la scene)', () => {
-    // 1920*1.6=3072, 940*1.6=1504 : ratio brut = 1.6, doit retomber a 1.
-    expect(mesurerEchelle(3072, 1504)).toBe(1)
+  it('grandit jusqu au ratio de l ecran quand il est sous le plafond', () => {
+    // 1920*1.6=3072, 940*1.6=1504 : ratio 1,6, en dessous de 1,94, donc garde.
+    avecDpr(1, () => {
+      expect(mesurerEchelle(3072, 1504)).toBeCloseTo(1.6, 2)
+    })
+  })
+
+  it('⚠ ne RETRECIT jamais la table sur un ecran a forte densite', () => {
+    // 246 / (127*2) = 0,97 : la formule seule ferait reculer l'existant.
+    avecDpr(2, () => {
+      expect(mesurerEchelle(5120, 2160)).toBe(1)
+    })
   })
 
   it('laisse l echelle inchangee en dessous de 1 (table ordinaire)', () => {
     // 1920*0.67=1286.4, 940*0.67=629.8 : le plus petit ratio reste ~0.67.
     expect(mesurerEchelle(1286, 630)).toBeCloseTo(0.67, 2)
+  })
+
+  it('un petit ecran n est pas concerne par le plafond, quel que soit le dpr', () => {
+    avecDpr(2, () => {
+      expect(mesurerEchelle(1286, 630)).toBeCloseTo(0.67, 2)
+    })
   })
 })
