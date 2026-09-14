@@ -112,10 +112,35 @@ navigateur.** C'est un manque d'outillage à combler avant tout chantier sérieu
 sur cette phase, sans quoi chaque vérification coûtera une partie jouée à la
 main.
 
-## Décision qui reste à prendre
+## ⚠ LE RISQUE EST LEVÉ, ET MON DIAGNOSTIC PRÉCÉDENT ÉTAIT TROP SOMBRE
 
-Que fait le trait quand sa cible (ou son auteur) n'a plus de place sur la
-table ? À trancher avec l'utilisateur avant d'écrire l'affichage.
+La question a été posée à l'utilisateur, qui a répondu : « on montre l'attaque
+AVANT qu'il parte à la défausse ; je ne comprends pas la question ». Il avait
+raison, et la question était mal posée.
+
+Ma crainte était que le plateau ne sache plus OÙ dessiner une carte déjà
+partie. Vérification faite : **il le sait**. `CoucheAnimations` tient un index
+`prev` des positions écran du rendu précédent, et il s'en sert DÉJÀ pour ce cas
+exact — une carte absente du rendu courant vole depuis `avant.rect`, sa
+dernière place réelle, jusqu'à la défausse :
+
+```js
+for (const [id, avant] of prev) {
+  if (avant.zone === 'zone-main' && defausseJoueur) {
+    brouillons.push({ ..., depart: avant.rect, arrivee: defausseJoueur })
+  }
+}
+```
+
+C'est exactement ce dont un trait a besoin : un point d'ancrage à l'écran pour
+une carte qui n'est plus là. **La brique existe, il n'y a rien à inventer.**
+
+Le bon ordre de récit est donc celui que l'utilisateur a énoncé d'instinct :
+on montre le coup avec la cible ENCORE en place, puis elle part.
+
+## Décisions restantes
+
+Aucune. Le chantier peut commencer.
 
 ## ⚠ Prérequis : les animations
 
@@ -135,6 +160,10 @@ après.
 
 Décisions prises le 14/09/2026, **non commencé**.
 
-Preuve de faisabilité **faite** le 14/09/2026 : le risque est confirmé et borné
-(voir plus haut). Reste à trancher la règle de repli, puis à combler le manque
-d'outillage qui empêche d'observer une phase du méchant hors du navigateur.
+Preuve de faisabilité **faite** le 14/09/2026, et **le risque est levé** : le
+plateau garde déjà les positions du rendu précédent et sait ancrer une carte
+disparue. Aucune décision ne reste en attente.
+
+Reste un manque d'outillage à combler : aucun moyen simple d'observer une phase
+du méchant hors du navigateur (trois tentatives de pilotage automatique ont
+échoué, aucune fixture ne porte de `faits_mechant`).
