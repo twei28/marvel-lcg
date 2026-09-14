@@ -7842,3 +7842,40 @@
     }
   }
 }
+
+@layer utilitaires {
+  /* --- La ligne des temps, dans la barre du haut (14/09/2026) -----------------
+     Mode « Sur la table ». Elle vivait dans le panneau, qui a disparu ; la
+     laisser au centre aurait remis un bloc de texte par-dessus la table. Choix
+     de l'utilisateur parmi trois : « oui, dans la barre du haut ».
+
+     Un temps VIDE y est barré et marqué « (Aucun) » : c'est déjà ce que fait
+     `chronologie`, et c'est exactement sa décision « on la saute, mais on le
+     dit ». Il ne coûte aucun clic. */
+  .deroule-temps-barre {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+  }
+
+  .deroule-temps-barre .deroule-temps {
+    margin: 0;
+    padding: 0;
+    font-size: 10px;
+    gap: 8px;
+  }
+
+  /* ⚠ REPLI QUAND LA BARRE N'EXISTE PAS : la page des états enregistrés
+     (`?etat=`) ne la monte pas, et la ligne serait alors invisible dans le seul
+     outil qui permet d'observer une phase du méchant hors du navigateur. */
+  .deroule-temps-barre.est-sans-barre {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 150;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(10, 11, 14, 0.9);
+  }
+}

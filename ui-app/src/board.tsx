@@ -2470,6 +2470,31 @@ function PagePartie({
     [etat.monde?.players, playerId]
   )
 
+  /**
+   * LES IDENTITES DES AUTRES JOUEURS, pour savoir quelles etapes ne sont pas
+   * les miennes.
+   *
+   * ⚠ ON NE PEUT PAS LE DEDUIRE DE `herosLocauxIds` SEUL. « Une cible qui n'est
+   * pas mon heros » designe aussi la manigance principale, un sbire, un allie :
+   * declencher l'avance automatique la-dessus ferait defiler toute la phase.
+   * Il faut la liste des IDENTITES, et rien qu'elle.
+   *
+   * ⚠ VIDE EN SOLO ET EN HOT-SEAT, ou tous les heros sont locaux. La regle qui
+   * s'en sert ne joue donc qu'en vrai multijoueur, et ne peut rien casser
+   * ailleurs.
+   */
+  const herosDesAutresIds = useMemo(() => {
+    const autres = new Set<number>()
+    for (const joueur of etat.monde?.players ?? []) {
+      for (const carte of joueur.area_hero ?? []) {
+        const famille = kindOf(carte)
+        if (famille !== 'hero' && famille !== 'alter-ego') continue
+        if (!herosLocauxIds.has(carte.id)) autres.add(carte.id)
+      }
+    }
+    return autres
+  }, [etat.monde?.players, herosLocauxIds])
+
   const partieFinieMoteur = Boolean(etat.monde?.game_over)
   const coupFatalAMontrer =
     unCartouche && coupFatalLocal(etapesPhaseMechant, herosLocauxIds)
@@ -3046,6 +3071,7 @@ function PagePartie({
             // coupe plus le deroule de ce siege-ci, elle y reste une etape
             // marquee et la phase continue (constat F5).
             herosLocauxIds={herosLocauxIds}
+            herosDesAutresIds={herosDesAutresIds}
             // La table attend quelqu'un d'AUTRE : le cartouche le dit a la
             // place de « La suite arrive… », qui parle du moteur. Le nom est
             // connu quand le moteur interroge ce siege-la OU quand il publie

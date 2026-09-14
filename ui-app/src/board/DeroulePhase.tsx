@@ -60,6 +60,15 @@ import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
 import { contenuDuTrait } from './trait-phase'
 
+/**
+ * Le temps de VOIR une etape qui vise un autre joueur, avant qu'elle passe.
+ *
+ * Assez long pour suivre le coup des yeux, assez court pour ne pas faire
+ * attendre celui qui ne peut rien y faire. C'est son joueur a lui qui donne le
+ * vrai rythme : le moteur attend SON accuse de reception, pas le notre.
+ */
+const DELAI_ETAPE_D_UN_AUTRE_MS = 2200
+
 /** Le temps de lire un boost a capacite avant le suivant. */
 const DELAI_BOOST_MS = 1500
 
@@ -113,6 +122,7 @@ export function DeroulePhase({
   nomFr,
   question,
   herosLocauxIds,
+  herosDesAutresIds,
   attendUnAutreJoueur = false,
   nomJoueurAttendu,
   pvMaxParNom,
@@ -261,6 +271,16 @@ export function DeroulePhase({
    * defaite compte comme la notre, c'est-a-dire le comportement d'avant.
    */
   herosLocauxIds?: ReadonlySet<number>
+  /**
+   * Les identites des AUTRES joueurs (board.tsx : `herosDesAutresIds`).
+   *
+   * ⚠ VIDE EN SOLO ET EN HOT-SEAT : la regle qui s'en sert ne joue qu'en vrai
+   * multijoueur. Choix de l'utilisateur (14/09/2026) : « tout se joue sous tes
+   * yeux, mais tu ne cliques que pour tes etapes ». Un coup porte a un autre
+   * heros se montre, puis passe tout seul ; c'est SON joueur qui donne le
+   * rythme, et le moteur l'attend de toute facon.
+   */
+  herosDesAutresIds?: ReadonlySet<number>
   /**
    * LA TABLE ATTEND QUELQU'UN D'AUTRE (board.tsx : `joueurAttendu`,
    * `joueurEnRetard` et `useTableSilencieuse`, dans `attente-table.ts`).
@@ -674,6 +694,46 @@ export function DeroulePhase({
   // « La phase s'arrete ici. », pas de bouton « Continuer », pas d'ecran de fin
   // retenu. La phase continue, et ce joueur-ci a encore des coups a lire.
   const defaiteLocale = etape !== undefined && estDefaiteLocale(etape, herosLocauxIds)
+  /**
+   * LE COUP FATAL SE VOIT SUR LA TABLE AVANT SON PANNEAU.
+   *
+   * Choix de l'utilisateur parmi trois (14/09/2026) : « le panneau, mais apres
+   * avoir vu le coup ». Le coup se joue d'abord comme n'importe quelle etape -
+   * le trait, le nombre, les points de vie a zero - et le panneau n'arrive
+   * qu'au clic suivant. On voit ce qui nous a tues.
+   *
+   * ⚠ SEULEMENT DANS LA PRESENTATION « table ». Le mode « Detaille » montre le
+   * coup DANS son panneau, avec les cartes rejouees : il n'a rien a attendre.
+   *
+   * ⚠ REMIS A ZERO A CHAQUE ETAPE, sinon un second coup fatal (un autre heros,
+   * une autre partie) sauterait directement au panneau.
+   */
+  const [coupFatalVuSurTable, setCoupFatalVuSurTable] = useState(false)
+  const cleDuCoupFatal = useRef<string | undefined>(undefined)
+  if (cleDuCoupFatal.current !== etape?.cle) {
+    cleDuCoupFatal.current = etape?.cle
+    if (coupFatalVuSurTable) setCoupFatalVuSurTable(false)
+  }
+  /**
+   * CETTE ETAPE VISE-T-ELLE UN AUTRE JOUEUR ?
+   *
+   * Choix de l'utilisateur (14/09/2026) : « tout se joue sous tes yeux, mais tu
+   * ne cliques que pour tes etapes ». Un coup porte a un autre heros se montre,
+   * puis passe tout seul apres un temps de lecture ; c'est SON joueur qui donne
+   * le rythme, et le moteur attend son accuse de reception de toute facon.
+   *
+   * ⚠ SEULEMENT SUR UNE IDENTITE D'UN AUTRE JOUEUR, jamais sur « une cible qui
+   * n'est pas la mienne ». La manigance principale, un sbire, un allie ne sont
+   * les heros de personne : les compter ici ferait defiler toute la phase.
+   *
+   * ⚠ ET L'ENSEMBLE EST VIDE EN SOLO ET EN HOT-SEAT. Cette regle ne peut donc
+   * rien changer hors d'une vraie table a plusieurs machines.
+   */
+  const viseUnAutreJoueur =
+    etape?.cibleId !== undefined && (herosDesAutresIds?.has(etape.cibleId) ?? false)
+
+  /** Le coup fatal est joue sur la table, son panneau attend un clic. */
+  const fatalAMontrerSurTable = surTable && defaiteLocale && !coupFatalVuSurTable
 
   // Adoption de la premiere cle. Tant que le cartouche n'en retient aucune, il
   // lit l'etape 0 : une etape qui s'insererait devant elle changerait alors ce
@@ -1058,7 +1118,16 @@ export function DeroulePhase({
   // Le delai avant que l'etape courante ne se valide seule, ou `undefined`
   // quand elle attend un clic. Le defilement d'Echap l'emporte sur l'avance
   // auto : il ne lit pas, il fait voir passer.
-  const delaiAvant = defilement ? DELAI_DEFILEMENT_MS : avanceAuto ? delaiAvanceMs : undefined
+  // ⚠ UNE ETAPE QUI VISE UN AUTRE JOUEUR PASSE TOUTE SEULE, le temps de la
+  // lire. Voir `viseUnAutreJoueur` : elle se montre, mais elle ne demande pas
+  // NOTRE clic. Le delai est celui du defilement, assez long pour voir le coup.
+  const delaiAvant = defilement
+    ? DELAI_DEFILEMENT_MS
+    : surTable && viseUnAutreJoueur
+      ? DELAI_ETAPE_D_UN_AUTRE_MS
+      : avanceAuto
+        ? delaiAvanceMs
+        : undefined
 
   // L'HORLOGE du cartouche, la seule de toute la phase. Elle sert a l'avance
   // auto (delai de lecture) comme au defilement d'Echap (pas de lecture).
@@ -1230,6 +1299,16 @@ export function DeroulePhase({
     if (!cadre) return contenu
     return createPortal(
       <>
+        {/* ⚠ LA LIGNE DES TEMPS MONTE DANS LA BARRE DU HAUT. Choix de
+            l'utilisateur parmi trois (14/09/2026) : « oui, dans la barre du
+            haut ». Elle vivait dans le panneau, qui a disparu ; la laisser au
+            centre aurait remis un bloc de texte par-dessus la table.
+
+            Un temps VIDE y est barre et marque « (Aucun) » : c'est deja le
+            comportement de `chronologie`, et c'est exactement sa decision
+            « on la saute, mais on le dit ». Il ne coute aucun clic, puisque
+            `etapesDeroule` ne fabrique pas d'etape pour lui. */}
+        {chronologieEnBarre}
         <CoucheTraitPhase etape={etape} actif />
         {/* Les cartes qui sortent du paquet rencontre : les boosts a cote du
             deck, puis la carte revelee en grand. Meme portail, meme repere. */}
@@ -1423,6 +1502,25 @@ export function DeroulePhase({
   // seule carte, rangee a gauche. Le jeton tombe sur elle quand meme.
   const porteLeJeton = (carte: CarteDeScene) =>
     carte.role === 'cible' || (carte.role === 'auteur' && etape.cibleId === etape.carteId)
+
+  /**
+   * La ligne des temps, portee dans la BARRE DU HAUT.
+   *
+   * ⚠ DEUX CIBLES POSSIBLES, ET CE N'EST PAS UN CAPRICE. `.board-actions` est
+   * sa vraie place, mais cette barre n'existe que dans une vraie partie : la
+   * page des etats enregistres (`?etat=`) ne la monte pas. Sans repli, la ligne
+   * serait invisible dans le seul outil qui permet d'observer une phase du
+   * mechant hors du navigateur - et c'est exactement le trou qui avait laisse
+   * passer un cartouche invisible plus tot dans la journee.
+   */
+  const chronologieEnBarre = (() => {
+    if (!surTable) return null
+    const barre = document.querySelector<HTMLElement>('.board-actions')
+    if (barre) {
+      return createPortal(<span className="deroule-temps-barre">{chronologie}</span>, barre)
+    }
+    return <span className="deroule-temps-barre est-sans-barre">{chronologie}</span>
+  })()
 
   const rendreCarte = (carte: CarteDeScene, position: number) => {
     const props = propsDe(carte)
@@ -1650,7 +1748,7 @@ export function DeroulePhase({
   // Le bandeau d'ouverture joue encore : la table se tait. Voir la prop.
   if (surTable && attendreBandeau) return null
 
-  if (surTable && etape.temps !== 'bilan' && !defaiteLocale) {
+  if (surTable && etape.temps !== 'bilan' && (!defaiteLocale || fatalAMontrerSurTable)) {
     return enveloppe(
       <div
         ref={setElCartouche}
@@ -1681,6 +1779,10 @@ export function DeroulePhase({
           )}
           {recit.texte ? <b className="deroule-recit-nombre">{recit.texte}</b> : null}
         </span>
+        {/* ⚠ PAS DE BOUTON SUR L'ETAPE D'UN AUTRE JOUEUR : elle passe toute
+            seule. En montrer un laisserait croire qu'on tient le rythme, alors
+            que le moteur attend l'autre siege. */}
+        {viseUnAutreJoueur ? null : (
         <span className="deroule-rond-rangee">
           {/* ⚠ LA FLECHE RETOUR, choisie par l'utilisateur (14/09/2026) : « oui,
               une petite fleche a cote ». A COTE, donc, et pas au-dessus : elle
@@ -1700,7 +1802,10 @@ export function DeroulePhase({
           <button
             type="button"
             className="deroule-rond"
-            onClick={avancer}
+            // ⚠ SUR UN COUP FATAL, CE BOUTON N'AVANCE PAS : il fait paraitre le
+            // panneau, qui demandera ensuite le droit de reprendre la partie.
+            // Avancer ici sauterait la fin de la partie du joueur.
+            onClick={fatalAMontrerSurTable ? () => setCoupFatalVuSurTable(true) : avancer}
             // Le texte de l'etape n'est PAS perdu : il devient le nom accessible
             // du bouton et son infobulle. Un lecteur d'ecran l'annonce, et le
             // survol le rend a qui le cherche.
@@ -1710,6 +1815,7 @@ export function DeroulePhase({
             {t('Suivant')}
           </button>
         </span>
+        )}
         {/* Les deux seules mentions qui survivent : « la suite arrive » quand on
             attend le moteur ou un autre joueur, et le filet anti-blocage qui va
             jouer. Toutes deux disent pourquoi RIEN NE SE PASSE ; sans elles, le

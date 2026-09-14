@@ -111,5 +111,40 @@ intermédiaire à tester.
 
 ## Statut
 
-Décisions prises le 14/09/2026, **non commencé**. Le mode est retiré du site
-en attendant.
+Décisions prises le 14/09/2026, **les 32 sont traitées**. Le mode reste retiré
+du site : il attend d'être joué.
+
+### Ce qui a été CONSTRUIT
+
+Le bandeau qui joue seul · le jeton de menace qui part du milieu avec son
+nombre · le trait qui porte le montant prévu dès l'annonce · les boosts contre
+l'attaquant · l'encadré à la taille de sa carte · la carte rencontre qui
+rejoint sa place en deux secondes, destination CHERCHÉE et non devinée · la
+phrase à 19 px, noms en gras, sans doublon de nombre · la flèche retour · la
+ligne des temps dans la barre du haut · le coup fatal joué sur la table avant
+son panneau · les étapes d'un autre joueur qui passent seules.
+
+### Ce qui ÉTAIT DÉJÀ LÀ, vérifié plutôt que réécrit
+
+- **Les deux temps « annonce puis coup », et exactement quand on peut réagir.**
+  Le moteur n'émet un fait non résolu que lorsqu'il ouvre une fenêtre
+  d'interruption : sa décision 13 était déjà le comportement du moteur. Il
+  manquait le trait.
+- **Les temps vides barrés et marqués « (Aucun) »**, sans coûter de clic :
+  `etapesDeroule` ne fabrique aucune étape pour eux. Décision 1, déjà acquise.
+- **Échap fait défiler** (décision 4), **le bilan garde son panneau**
+  (décision 2), **chacun son rythme à la table** (décision 28) : le moteur
+  attend déjà l'accusé de réception de chaque siège.
+
+### Ce qui reste OUVERT, et il faut le dire
+
+- **Les boosts face cachée à l'annonce** (partie de la décision 11). Le moteur
+  ne connaît pas encore les cartes à ce moment-là : elles ne sont ni tirées ni
+  retournées. Rien à afficher sans l'inventer. À reprendre côté moteur si ça
+  compte.
+- **« L'Homme-Radioactif révèle L'Homme-Radioactif »**, vu sur sa capture.
+  NON REPRODUIT : une partie Jessica Jones contre Klaw capturée avec
+  `AUTOPLAY_CAPTURE` donne bien `joueur_nom = 'Jessica Jones'`. Un Log de la
+  partie où il l'a vu trancherait.
+- **Le multijoueur n'a pas été joué.** La règle des étapes d'un autre joueur est
+  testée en pur, mais l'ensemble n'a jamais tourné sur deux machines.
