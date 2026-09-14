@@ -56,6 +56,7 @@ import { sceneDe, type CarteDeScene } from './deroule-scene'
 import { useDerouleScene } from './useDerouleScene'
 import { useAncrageSurTable } from './useAncrageSurTable'
 import { CoucheTraitPhase } from './CoucheTraitPhase'
+import { cartoucheEstAJour } from './cartouche-a-jour'
 import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
 import { contenuDuTrait } from './trait-phase'
@@ -964,12 +965,20 @@ export function DeroulePhase({
   // L'annonce, elle, garde sa raison d'acquitter toute seule (decision 7 : pas
   // de clic sur « va attaquer »), sans plus avoir a s'inquieter des questions.
   const etapeEstAnnonce = etape?.etat === 'annonce'
-  const cartoucheAJour =
-    termine ||
-    partieFinie ||
-    etapesAffichees.length === 0 ||
-    questionAuJoueur ||
-    (surLaDerniereEtape && (etapeValidee || etapeEstAnnonce))
+  // ⚠ LA REGLE VIT DANS `cartouche-a-jour.ts`, avec sa gate. C'est la seule qui
+  // decide du rythme de toute la phase, et une erreur dedans ne se voit pas :
+  // la phase defile toute seule, ou elle se fige. Elle est sortie d'ici le
+  // 14/09/2026 apres que le defaut est revenu TROIS FOIS.
+  const cartoucheAJour = cartoucheEstAJour({
+    termine,
+    partieFinie,
+    sansEtape: etapesAffichees.length === 0,
+    questionAuJoueur,
+    surLaDerniereEtape,
+    etapeValidee,
+    etapeEstAnnonce,
+    surTable,
+  })
 
   // L'accuse de reception, seul endroit d'ou il part.
   //
@@ -1368,7 +1377,21 @@ export function DeroulePhase({
     (id !== undefined ? nomFr?.(id) : undefined) || nom
   const etapeLue: EtapeDeroule = {
     ...etape,
-    auteurNom: enFrancais(etape.carteId, etape.auteurNom),
+    // ⚠ SUR UNE REVELATION, L'AUTEUR N'EST PAS `carteId`. `carteId` designe la
+    // carte REVELEE ; l'auteur, lui, est le HEROS qui la revele, et il n'a pas
+    // d'identifiant dans l'etape. Traduire l'auteur par `carteId` remplacait
+    // donc le nom du heros par celui de la carte, et le cartouche annoncait
+    // « Maitres du Chaos revele Maitres du Chaos ».
+    //
+    // Signale DEUX FOIS par l'utilisateur (14/09/2026), et introuvable dans les
+    // faits du moteur : une capture d'autoplay montre bien
+    // `joueur_nom = 'Jessica Jones'`. Le defaut n'etait pas dans la donnee mais
+    // ICI, dans la traduction. La ligne voisine (`cibleNom`) portait deja le
+    // meme cas particulier, pour la meme raison, depuis le 09/09/2026.
+    auteurNom: enFrancais(
+      etape.titre === 'revelation' ? undefined : etape.carteId,
+      etape.auteurNom
+    ),
     // Sur une vraie revelation, la « cible » est la carte revelee elle-meme
     // (carteId). Mais une ATTAQUE rangee sous Revelation (le vilain qu'une
     // carte fait frapper une seconde fois) a une vraie cible : prendre
@@ -1662,6 +1685,23 @@ export function DeroulePhase({
         {mentionTempsParDecision}
       </section>
     )
+  }
+
+  // ⚠ SUR LA TABLE, LE CARTOUCHE SE TAIT DEVANT LA QUESTION DU MOTEUR.
+  //
+  // Le panneau du moteur (« Choisir la cible », « Defendre / Passer ») s'ouvre
+  // au centre, et le cartouche s'y repliait AU MEME ENDROIT pour dire « le
+  // moteur attend ta reponse ». Depuis que tout est centre, les deux se
+  // superposaient - avec le selecteur de cibles par-dessus, cela faisait TROIS
+  // panneaux empiles. Capture a l'appui de l'utilisateur, 14/09/2026 : « c'est
+  // quoi cette merde qui se superpose ».
+  //
+  // Il n'a rien a ajouter : le panneau du moteur dit deja qu'il attend, et il
+  // porte les boutons. `enveloppe(null)` garde le reste du recit (le trait, les
+  // cartes sorties du paquet, la ligne des temps dans la barre) : seul le
+  // panneau redondant disparait.
+  if (surTable && questionAuJoueur && question === undefined) {
+    return enveloppe(null)
   }
 
   if (questionAuJoueur) {

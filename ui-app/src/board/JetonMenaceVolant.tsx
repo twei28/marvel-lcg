@@ -7,8 +7,15 @@
 // là où il vient de lire la phrase.
 //
 // Sur son allure, parmi trois formes proposées : « le jeton avec son nombre
-// dessus » — il porte « +1 » pendant tout son vol, pour qu'on sache combien
+// dessus ». Il porte « +1 » pendant tout son vol, pour qu'on sache combien
 // arrive sans attendre que le compteur de la manigance monte.
+//
+// ⚠ C'EST LE VRAI JETON DU JEU, pas un rond dessiné. Première version : un
+// disque jaune. Constat de l'utilisateur, 14/09/2026 : « qu'il ait déjà la même
+// forme que le triangle là. Pourquoi tu me fais un rond ? » L'image existait
+// déjà et servait à la scène du mode Détaillé (`components/jetons/menace.png`,
+// le triangle de menace) : il n'y avait rien à dessiner, seulement à s'en
+// servir.
 //
 // ⚠ IL NE REMPLACE PAS LE COMPTEUR, il l'annonce. C'est le moteur qui pose la
 // menace ; ce jeton-ci est un récit, il ne change rien à la partie.
@@ -18,6 +25,7 @@
 // repartirait à zéro à chaque trame et le jeton resterait collé au départ.
 
 import { useEffect, useLayoutEffect, useState } from 'react'
+import jetonMenaceImage from '../components/jetons/menace.png'
 import { boiteDeCarte, cadreDuPlateau } from './mesures-plateau'
 import type { Boite } from './places-rencontre'
 
@@ -55,7 +63,9 @@ export function JetonMenaceVolant({
       setVol(undefined)
       return
     }
-    const TAILLE = 34
+    // La taille du jeton posé sur une manigance, pour qu'il arrive à la bonne
+    // échelle plutôt que de rapetisser en se posant.
+    const TAILLE = 52
     setArrive(false)
     setVol({
       depart: {
@@ -88,7 +98,13 @@ export function JetonMenaceVolant({
   return (
     <span
       className={`jeton-menace-volant${arrive ? ' est-arrive' : ''}`}
-      style={{ left: `${ou.x}px`, top: `${ou.y}px`, width: `${ou.w}px`, height: `${ou.h}px` }}
+      style={{
+        left: `${ou.x}px`,
+        top: `${ou.y}px`,
+        width: `${ou.w}px`,
+        height: `${ou.h}px`,
+        backgroundImage: `url(${jetonMenaceImage})`,
+      }}
       aria-hidden="true"
     >
       {montant !== undefined ? `+${montant}` : ''}
