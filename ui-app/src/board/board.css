@@ -182,7 +182,10 @@
        repetees tous les 32 px, qui dessinaient une grille sur toute la table.
        Retirees : elles ne portaient aucune information et l'oeil les suivait
        au lieu d'aller aux cartes. Le degrade de fond, lui, reste. */
-    background: linear-gradient(180deg, rgba(45, 55, 70, 0.96), rgba(30, 30, 30, 0.98));
+    /* FOND PRESQUE NOIR (14/09/2026, choix de l'utilisateur parmi quatre
+       niveaux montres cote a cote). Les cartes ressortent au maximum et le
+       plateau s'efface derriere elles. */
+    background: linear-gradient(180deg, rgba(14, 18, 24, 0.96), rgba(6, 6, 8, 0.98));
     box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.55);
   }
 
