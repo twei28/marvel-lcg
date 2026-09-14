@@ -22,6 +22,7 @@ import {
   texteFenetreReponse,
   texteLigneBilan,
   titreEtape,
+  decouperPhrase,
 } from './deroule-textes'
 import type { EtapeDeroule, LigneBilan } from './deroule-phase'
 
@@ -572,5 +573,56 @@ describe('les cartes de statut dans le cartouche', () => {
     expect(
       texteLigneBilan({ cle: 'k', genre: 'statuts', statut: 'Tough', cibleNom: 'Klaw', total: 2 })
     ).toBe('Klaw gagne Robuste x2')
+  })
+})
+
+describe('les noms de cartes se détachent dans la phrase', () => {
+  // Choix de l'utilisateur parmi trois formes (14/09/2026) : « moitié-moitié,
+  // les noms en gras ». Ni texte plat, ni gros titre.
+  const gras = (m: { texte: string; gras: boolean }[]) => m.filter((x) => x.gras).map((x) => x.texte)
+  const recolle = (m: { texte: string; gras: boolean }[]) => m.map((x) => x.texte).join('')
+
+  it('met l’auteur et la cible en gras, le reste en texte normal', () => {
+    const m = decouperPhrase('Klaw attaque Jessica Jones', ['Klaw', 'Jessica Jones'])
+    expect(gras(m)).toEqual(['Klaw', 'Jessica Jones'])
+    expect(m.find((x) => !x.gras)?.texte).toBe(' attaque ')
+  })
+
+  it('⚠ ne perd JAMAIS un morceau de la phrase', () => {
+    // Le cas qui compte : recollés, les morceaux doivent redonner la phrase
+    // exacte. Un découpage qui mange un espace change le texte affiché.
+    for (const noms of [['Klaw'], ['Jessica Jones'], ['Klaw', 'Jessica Jones'], []]) {
+      expect(recolle(decouperPhrase('Klaw attaque Jessica Jones', noms))).toBe(
+        'Klaw attaque Jessica Jones'
+      )
+    }
+  })
+
+  it('un nom absent de la phrase ne casse rien', () => {
+    const m = decouperPhrase('Klaw attaque Jessica Jones', ['Ultron'])
+    expect(gras(m)).toEqual([])
+    expect(recolle(m)).toBe('Klaw attaque Jessica Jones')
+  })
+
+  it('⚠ un nom CONTENU dans un autre ne se coupe pas en deux', () => {
+    // « Spider-Man » est contenu dans « Spider-Man 2099 » : traité du plus
+    // court au plus long, le second serait découpé en « Spider-Man » + « 2099 ».
+    const m = decouperPhrase('Spider-Man 2099 attaque Spider-Man', [
+      'Spider-Man',
+      'Spider-Man 2099',
+    ])
+    expect(gras(m)).toEqual(['Spider-Man 2099', 'Spider-Man'])
+    expect(recolle(m)).toBe('Spider-Man 2099 attaque Spider-Man')
+  })
+
+  it('un auteur qui est aussi la cible ne double pas le gras', () => {
+    const m = decouperPhrase('Klaw attaque Klaw', ['Klaw', 'Klaw'])
+    expect(gras(m)).toEqual(['Klaw', 'Klaw'])
+    expect(recolle(m)).toBe('Klaw attaque Klaw')
+  })
+
+  it('sans nom du tout, la phrase reste entière et sans gras', () => {
+    const m = decouperPhrase('Fin de la phase du méchant', [undefined, ''])
+    expect(m).toEqual([{ texte: 'Fin de la phase du méchant', gras: false }])
   })
 })

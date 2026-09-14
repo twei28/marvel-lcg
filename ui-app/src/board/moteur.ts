@@ -145,7 +145,32 @@ export function migrerReglagesPhase(): void {
 }
 
 /** Bete : lit sa propre cle, rend son defaut si elle est absente ou invalide. */
+/**
+ * LA PORTE DE CHANTIER : `?phase=sur-table` dans l'adresse du plateau.
+ *
+ * ⚠ POURQUOI ELLE EXISTE. Le mode est ferme (`MODE_SUR_TABLE_OUVERT`), donc
+ * introuvable : sans cette porte, le VERIFIER demanderait de basculer
+ * l'interrupteur, de reconstruire, et de penser a le refermer avant de
+ * deployer. Un oubli suffirait a remettre en ligne un mode en chantier.
+ *
+ * ⚠ ET C'EST UN CONFORT, PAS UNE FUITE. Ce mode ne change que l'AFFICHAGE de
+ * la phase du mechant. Quelqu'un qui trouverait ce parametre verrait un ecran
+ * en travaux, rien de plus, et il lui suffit de retirer le parametre pour en
+ * sortir. Meme raisonnement que `board/essais.ts`.
+ *
+ * Elle ne sert QUE pour ce mode-la : elle ne peut pas changer un reglage
+ * enregistre ni en choisir un autre.
+ */
+function porteDeChantier(): boolean {
+  try {
+    return new URLSearchParams(window.location.search).get('phase') === 'sur-table'
+  } catch {
+    return false
+  }
+}
+
 export function lireModePhaseMechant(): ModePhaseMechant {
+  if (porteDeChantier()) return 'sur-table'
   try {
     const brut = window.localStorage.getItem(CLE_MODE_PHASE)
     if (brut && (MODES as string[]).includes(brut)) {

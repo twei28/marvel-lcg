@@ -406,3 +406,54 @@ export function regleEtape(etape: EtapeDeroule): string {
   const regle = REGLES[etape.regle]
   return regle ? t(regle) : ''
 }
+
+
+/** Un morceau de phrase : du texte, en gras ou non. */
+export type MorceauDePhrase = { texte: string; gras: boolean }
+
+/**
+ * La phrase de l'etape, decoupee pour mettre les NOMS DE CARTES en gras.
+ *
+ * Choix de l'utilisateur parmi trois formes (14/09/2026) : « moitie-moitie,
+ * les noms en gras ». On repere qui fait quoi a qui d'un coup d'oeil, sans que
+ * la phrase crie comme un titre.
+ *
+ * ⚠ RETOURNE DES DONNEES, PAS DU JSX. Ce fichier est la mise en PHRASE, pas la
+ * mise en page : il reste en `.ts`, testable sans rendu, et c'est le composant
+ * qui decide a quoi ressemble un morceau en gras.
+ *
+ * ⚠ ON DECOUPE SUR LES NOMS QUE L'ETAPE PORTE, jamais sur le texte redige.
+ * `titreEtape` compose « <auteur> attaque <cible> » a partir de `auteurNom` et
+ * `cibleNom` : ce sont exactement ces chaines-la qui figurent dans la phrase,
+ * quelle que soit la langue. Chercher « un nom propre » dans une phrase
+ * traduite casserait a la premiere traduction.
+ *
+ * ⚠ ET LES NOMS PEUVENT SE CONTENIR. « Spider-Man » et « Spider-Man 2099 », ou
+ * un auteur qui est aussi la cible : on traite donc du PLUS LONG au plus court,
+ * et on ne repasse jamais sur un morceau deja mis en gras.
+ */
+export function decouperPhrase(
+  phrase: string,
+  noms: Array<string | undefined>
+): MorceauDePhrase[] {
+  const cherches = [...new Set(noms.filter((n): n is string => Boolean(n && n.trim())))].sort(
+    (a, b) => b.length - a.length
+  )
+  let morceaux: MorceauDePhrase[] = [{ texte: phrase, gras: false }]
+  for (const nom of cherches) {
+    const suivants: MorceauDePhrase[] = []
+    for (const morceau of morceaux) {
+      if (morceau.gras) {
+        suivants.push(morceau)
+        continue
+      }
+      const parts = morceau.texte.split(nom)
+      parts.forEach((part, i) => {
+        if (i > 0) suivants.push({ texte: nom, gras: true })
+        if (part) suivants.push({ texte: part, gras: false })
+      })
+    }
+    morceaux = suivants
+  }
+  return morceaux
+}

@@ -7552,11 +7552,6 @@
   .rencontre-sortie.est-boost:nth-child(3) { animation-delay: 120ms; }
   .rencontre-sortie.est-boost:nth-child(4) { animation-delay: 180ms; }
 
-  .rencontre-sortie .scan-card {
-    width: 100%;
-    height: 100%;
-  }
-
   /* La carte rencontre sort ET grandit : son cadre doré la détache du reste. */
   .rencontre-sortie.est-revelee {
     border-radius: 10px;
@@ -7715,4 +7710,45 @@
   .deroule-recit.est-menaces .deroule-recit-nombre { color: #ffd479; }
   .deroule-recit.est-statut .deroule-recit-nombre { color: #d8b4fe; }
   .deroule-recit.est-neutre .deroule-recit-nombre { color: #dfe5ee; }
+}
+
+@layer utilitaires {
+  /* La rangée du bouton : la flèche retour à gauche, le bouton au milieu.
+     ⚠ La flèche ne paraît qu'à partir de la deuxième étape (voir DeroulePhase) :
+     sur la première il n'y a rien derrière. Choix de l'utilisateur, 14/09/2026 :
+     « oui, une petite flèche à côté ». */
+  .deroule-rond-rangee {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .deroule-rond-retour {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.28);
+    background: rgba(12, 13, 16, 0.9);
+    color: #dfe5ee;
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.7);
+  }
+
+  .deroule-rond-retour:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+  }
+
+  .deroule-rond-retour:focus-visible {
+    outline: 3px solid #ffd479;
+    outline-offset: 2px;
+  }
+
+  /* Les noms de cartes, dans la phrase de l'étape. */
+  .deroule-recit b {
+    font-weight: 800;
+    color: #ffffff;
+  }
 }

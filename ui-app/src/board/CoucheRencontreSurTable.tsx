@@ -22,7 +22,7 @@ import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import type { EtapeDeroule } from './deroule-phase'
 import { sceneDe } from './deroule-scene'
 import { t } from './langue'
-import { boiteDuDeckRencontre, cadreDuPlateau } from './mesures-plateau'
+import { boiteDeCarte, boiteDuDeckRencontre, cadreDuPlateau } from './mesures-plateau'
 import { placeDeLaRevelee, placesDesBoosts, type Boite } from './places-rencontre'
 
 export function CoucheRencontreSurTable({
@@ -38,11 +38,14 @@ export function CoucheRencontreSurTable({
   dosRencontre?: ScanCardProps
   actif: boolean
 }) {
-  const [ancre, setAncre] = useState<{ deck: Boite; cadre: Boite } | undefined>(undefined)
+  const [ancre, setAncre] = useState<
+    { deck: Boite; cadre: Boite; attaquant: Boite | undefined } | undefined
+  >(undefined)
   // Une seconde mesure au repos : au premier rendu de l'étape, les cartes de la
   // table peuvent encore être en vol.
   const [seconde, setSeconde] = useState(0)
   const cle = etape?.cle
+  const auteurId = etape?.carteId
 
   useLayoutEffect(() => {
     if (!actif) {
@@ -54,12 +57,15 @@ export function CoucheRencontreSurTable({
       if (!c) return
       const deck = boiteDuDeckRencontre(c)
       if (!deck) return
-      setAncre({ deck, cadre: c.boite })
+      // ⚠ L'ATTAQUANT, PAS LE PAQUET, pour poser les boosts. Il peut manquer
+      // (carte detruite pendant la phase) : on retombe alors sur le paquet
+      // plutot que d'inventer une position.
+      setAncre({ deck, cadre: c.boite, attaquant: boiteDeCarte(auteurId, c) })
     }
     mesurer()
     window.addEventListener('resize', mesurer)
     return () => window.removeEventListener('resize', mesurer)
-  }, [actif, cle, seconde])
+  }, [actif, cle, auteurId, seconde])
 
   useEffect(() => {
     if (!actif) return
@@ -98,7 +104,7 @@ export function CoucheRencontreSurTable({
     />
   )
 
-  const places = placesDesBoosts(ancre.deck, ancre.cadre, boosts.length)
+  const places = placesDesBoosts(ancre.attaquant ?? ancre.deck, ancre.cadre, boosts.length)
 
   return (
     <div className="rencontre-sur-table" aria-hidden="true">
@@ -113,8 +119,12 @@ export function CoucheRencontreSurTable({
             style={{
               left: `${place.x}px`,
               top: `${place.y}px`,
-              width: `${place.w}px`,
-              height: `${place.h}px`,
+              // ⚠ `--card-w`, PAS `width`. `ScanCard` se dimensionne sur cette
+              // variable (ScanCard.css) : lui imposer une largeur par-dessus
+              // laissait la carte a sa taille d'origine DANS un encadre plus
+              // grand. Defaut vu en partie : « il y a un grand encadre, mais il
+              // n'y a rien du tout dans la carte ».
+              '--card-w': `${place.w}px`,
               // D'où elle vient : le décalage de départ de l'animation, en
               // pixels, du paquet vers sa place. C'est CE décalage qui fait
               // « sortir du paquet » plutôt qu'« apparaître à côté ».
@@ -153,8 +163,9 @@ export function CoucheRencontreSurTable({
                 style={{
                   left: `${place.x}px`,
                   top: `${place.y}px`,
-                  width: `${place.w}px`,
-                  height: `${place.h}px`,
+                  // Voir le commentaire des boosts : c'est `--card-w` qui
+                  // dimensionne une ScanCard, jamais `width`.
+                  '--card-w': `${place.w}px`,
                   '--depart-x': `${ancre.deck.x - place.x}px`,
                   '--depart-y': `${ancre.deck.y - place.y}px`,
                 } as React.CSSProperties}

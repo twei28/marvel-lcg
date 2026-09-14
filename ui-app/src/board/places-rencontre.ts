@@ -26,24 +26,31 @@ export const ECART = 8
 export const AGRANDISSEMENT = 1.7
 
 /**
- * Les places des cartes boost, à la suite, à DROITE du paquet.
+ * Les places des cartes boost, à la suite de l'ATTAQUANT.
  *
- * ⚠ ET À GAUCHE SI ELLES N'Y TIENNENT PAS. Le deck rencontre est en haut à
- * gauche de la table, donc la droite est presque toujours libre ; mais sur un
- * plateau étroit, une rangée de quatre boosts en sortirait. Mieux vaut les
- * poser du mauvais côté que hors de l'écran.
+ * ⚠ CONTRE LA CARTE QUI FRAPPE, PAS CONTRE LE PAQUET. Elles se posaient à côté
+ * du deck rencontre, en haut à gauche, loin du méchant : « à côté du méchant
+ * qui frappe » (choix de l'utilisateur parmi trois, 14/09/2026). On voit à qui
+ * appartient cet élan, et ça vaut aussi pour un sbire. Le trajet depuis le
+ * paquet reste visible, puisque c'est de là qu'elles partent.
+ *
+ * ⚠ ET À GAUCHE SI ELLES N'Y TIENNENT PAS. Mieux vaut les poser du mauvais
+ * côté que hors de l'écran.
+ *
+ * `ancre` est la carte de l'attaquant ; à défaut (attaquant disparu de la
+ * table) l'appelant passe le paquet, et on retrouve l'ancien comportement.
  */
-export function placesDesBoosts(deck: Boite, cadre: Boite, nombre: number): Boite[] {
+export function placesDesBoosts(ancre: Boite, cadre: Boite, nombre: number): Boite[] {
   if (nombre <= 0) return []
-  const largeurTotale = nombre * deck.w + (nombre - 1) * ECART
-  const aDroite = deck.x + deck.w + ECART
+  const largeurTotale = nombre * ancre.w + (nombre - 1) * ECART
+  const aDroite = ancre.x + ancre.w + ECART
   const tientADroite = aDroite + largeurTotale <= cadre.x + cadre.w
-  const depart = tientADroite ? aDroite : Math.max(cadre.x, deck.x - ECART - largeurTotale)
+  const depart = tientADroite ? aDroite : Math.max(cadre.x, ancre.x - ECART - largeurTotale)
   return Array.from({ length: nombre }, (_, i) => ({
-    x: depart + i * (deck.w + ECART),
-    y: deck.y,
-    w: deck.w,
-    h: deck.h,
+    x: depart + i * (ancre.w + ECART),
+    y: ancre.y,
+    w: ancre.w,
+    h: ancre.h,
   }))
 }
 

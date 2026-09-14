@@ -46,6 +46,7 @@ import {
   texteLigneBilan,
   texteTempsParDecision,
   titreEtape,
+  decouperPhrase,
 } from './deroule-textes'
 import { t } from './langue'
 import { DELAI_PAS_A_PAS_DEFAUT, ecrireRegleDepliee, lireRegleDepliee } from './moteur'
@@ -1636,21 +1637,46 @@ export function DeroulePhase({
             contredire, et le joueur verrait « 4 degats » sur le trait et
             « 1 degat » sous la phrase. */}
         <span className={`deroule-recit est-${recit.ton}`}>
-          {titreEtape(etapeLue)}
+          {/* ⚠ LES NOMS DE CARTES EN GRAS, le reste en texte normal. Choix de
+              l'utilisateur parmi trois formes (14/09/2026) : « moitie-moitie,
+              les noms en gras ». On repere qui fait quoi a qui d'un coup d'oeil
+              sans que la phrase crie comme un titre. Le decoupage se fait sur
+              les noms que l'ETAPE porte, jamais sur le texte redige : chercher
+              un nom dans une phrase traduite casserait a la premiere langue. */}
+          {decouperPhrase(titreEtape(etapeLue), [etapeLue.auteurNom, etapeLue.cibleNom]).map(
+            (m, i) => (m.gras ? <b key={i}>{m.texte}</b> : <span key={i}>{m.texte}</span>)
+          )}
           {recit.texte ? <b className="deroule-recit-nombre">{recit.texte}</b> : null}
         </span>
-        <button
-          type="button"
-          className="deroule-rond"
-          onClick={avancer}
-          // Le texte de l'etape n'est PAS perdu : il devient le nom accessible
-          // du bouton et son infobulle. Un lecteur d'ecran l'annonce, et le
-          // survol le rend a qui le cherche.
-          aria-label={`${titreEtape(etapeLue)} — ${t('Suivant')}`}
-          title={titreEtape(etapeLue)}
-        >
-          {t('Suivant')}
-        </button>
+        <span className="deroule-rond-rangee">
+          {/* ⚠ LA FLECHE RETOUR, choisie par l'utilisateur (14/09/2026) : « oui,
+              une petite fleche a cote ». A COTE, donc, et pas au-dessus : elle
+              partage la rangee du bouton. Elle ne parait qu'a partir de la
+              deuxieme etape - sur la premiere, il n'y a rien derriere. */}
+          {index > 0 ? (
+            <button
+              type="button"
+              className="deroule-rond-retour"
+              onClick={reculer}
+              aria-label={t('Précédent')}
+              title={t('Précédent')}
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className="deroule-rond"
+            onClick={avancer}
+            // Le texte de l'etape n'est PAS perdu : il devient le nom accessible
+            // du bouton et son infobulle. Un lecteur d'ecran l'annonce, et le
+            // survol le rend a qui le cherche.
+            aria-label={`${titreEtape(etapeLue)} — ${t('Suivant')}`}
+            title={titreEtape(etapeLue)}
+          >
+            {t('Suivant')}
+          </button>
+        </span>
         {/* Les deux seules mentions qui survivent : « la suite arrive » quand on
             attend le moteur ou un autre joueur, et le filet anti-blocage qui va
             jouer. Toutes deux disent pourquoi RIEN NE SE PASSE ; sans elles, le
