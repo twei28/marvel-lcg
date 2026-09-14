@@ -237,15 +237,40 @@ export function CoucheAnimations({
     const boiteOuRien = (el: HTMLElement | undefined): Boite | undefined =>
       el ? boiteDe(el) : undefined
 
+    /**
+     * LA PLACE DE LA DEFAUSSE, MEME QUAND ELLE EST VIDE.
+     *
+     * ⚠ UNE PILE VIDE N'EXISTE PAS DANS LE DOM. `zones.ts` fait `if (!carte)
+     * return []` : sans carte, aucune unite n'est produite, donc aucun element
+     * a viser. Le repli envoyait alors la carte defaussee voler vers le DECK,
+     * c'est-a-dire vers la pioche — exactement le contraire de ce qui se passe.
+     * Signale par l'utilisateur le 14/09/2026 : « le vrai point de depart et le
+     * vrai point d'arrivee ».
+     *
+     * On DEDUIT donc sa place : elle se pose a la droite du deck, meme taille,
+     * meme hauteur, a une gouttiere d'ecart. C'est ou elle apparaitra des
+     * qu'elle aura sa premiere carte.
+     */
+    const placeDeLaDefausse = (zone: string, deck: Boite | undefined): Boite | undefined => {
+      if (!deck) return undefined
+      const conteneur = scene.querySelector<HTMLElement>(`.${zone}`)
+      const gouttiere = conteneur
+        ? Number.parseFloat(getComputedStyle(conteneur).columnGap || '0') || 8
+        : 8
+      return { ...deck, x: deck.x + deck.w + gouttiere }
+    }
+
     const deckJoueurEl = ancreEl('zone-piles-joueur', 0)
-    const defausseJoueurEl = ancreEl('zone-piles-joueur', 1) ?? deckJoueurEl
+    const defausseJoueurEl = ancreEl('zone-piles-joueur', 1)
     const deckRencontreEl = ancreEl('zone-piles-rencontre', 0)
-    const defausseRencontreEl = ancreEl('zone-piles-rencontre', 1) ?? deckRencontreEl
+    const defausseRencontreEl = ancreEl('zone-piles-rencontre', 1)
 
     const deckJoueur = boiteOuRien(deckJoueurEl)
-    const defausseJoueur = boiteOuRien(defausseJoueurEl)
     const deckRencontre = boiteOuRien(deckRencontreEl)
-    const defausseRencontre = boiteOuRien(defausseRencontreEl)
+    const defausseJoueur =
+      boiteOuRien(defausseJoueurEl) ?? placeDeLaDefausse('zone-piles-joueur', deckJoueur)
+    const defausseRencontre =
+      boiteOuRien(defausseRencontreEl) ?? placeDeLaDefausse('zone-piles-rencontre', deckRencontre)
 
     // Respect du reglage systeme : si l'OS demande de reduire les animations, on
     // ne masque meme pas les vraies cartes (sinon elles clignoteraient sans

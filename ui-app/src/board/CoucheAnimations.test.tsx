@@ -7,7 +7,7 @@
 // Ces tests fixent le comportement attendu : le mouvement s'anime toujours,
 // c'est le fantome qui se passe d'image.
 
-import { render } from '@testing-library/react'
+import { act, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CoucheAnimations, dureeDe, inclinaisonDe } from './CoucheAnimations'
 
@@ -214,5 +214,53 @@ describe('sans le drapeau d essai, le rendu est celui d avant', () => {
     expect(volDe(container), 'aucun vol produit').not.toBeNull()
     expect(container.querySelector('.couche-animations.est-essai')).not.toBeNull()
     expect(volDe(container)?.style.transitionDuration).not.toBe('250ms')
+  })
+})
+
+/**
+ * LA DEFAUSSE VIDE A QUAND MEME UNE PLACE.
+ *
+ * ⚠ `zones.ts` fait `if (!carte) return []` : une pile vide ne produit AUCUN
+ * element dans le DOM. Il n'y a donc rien a viser, et le repli envoyait la
+ * carte defaussee voler vers le DECK, c'est-a-dire vers la pioche. Signale par
+ * l'utilisateur le 14/09/2026 : « le vrai point de depart et le vrai point
+ * d'arrivee ». Sa place se DEDUIT : a la droite du deck.
+ */
+describe('une carte defaussee ne vole pas vers le deck', () => {
+  /** Une scene ou la pile du joueur n'a QUE son deck, pas de defausse. */
+  function sceneSansDefausse() {
+    const scene = document.createElement('div')
+    scene.className = 'plateau-scene'
+    const piles = document.createElement('div')
+    piles.className = 'zone-piles-joueur'
+    piles.append(carte('deck', 'https://exemple.test/dos.png'))
+    const main = document.createElement('div')
+    main.className = 'zone-main'
+    scene.append(piles, main)
+    document.body.append(scene)
+    return { main }
+  }
+
+  it('elle vise la place de la defausse, a cote du deck', () => {
+    const { main } = sceneSansDefausse()
+    const jouee = carte('77', 'https://exemple.test/scan.png')
+    main.append(jouee)
+    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
+
+    jouee.remove()
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
+
+    const vol = container.querySelector<HTMLElement>('.vol-carte')
+    expect(vol, 'aucun vol produit').not.toBeNull()
+
+    // Le fantome part a sa position de DEPART, puis rejoint l'arrivee. On
+    // avance jusqu'au decollage pour lire la destination.
+    act(() => {
+      vi.advanceTimersByTime(60)
+    })
+    // En jsdom toutes les boites valent zero : le deck est donc a x=0, et la
+    // place deduite de la defausse a une gouttiere de la (8 px par defaut).
+    // Une arrivee a x=0 voudrait dire « la carte est partie sur le DECK ».
+    expect(vol?.style.transform).toContain('translate(8px')
   })
 })
