@@ -35,9 +35,31 @@ Cinq questions, une à la fois.
 |---|---|
 | **Où tester** | **Serveur de développement seulement.** Rien en production tant qu'il n'a pas validé. |
 | **Où jouer la phase** | **Sur la table**, comme eux. La scène centrale n'est pas utilisée dans ce mode. |
-| **Rythme** | **Un clic par étape.** Rien n'avance sans le joueur (ce qui *confirme* la décision n°3 du 07/09, elle ne change pas). |
+| **Rythme** | **Ça se déroule seul et vite, et ça s'arrête quand le joueur peut agir.** ⚠ RÉPONSE RÉVISÉE, voir ci-dessous. |
 | **Étendue du trait** | **Tout ce qui va d'une carte à une autre** : activations du méchant et des sbires, attaques et manigances, et les effets des cartes rencontre. |
 | **Remplacement** | **Un troisième mode, à côté** : « Détaillé / Sur la table / Instantané ». Rien de ce qui marche n'est touché, et ne pas le choisir suffit à revenir en arrière. |
+
+## ⚠ Le rythme a été demandé DEUX FOIS, et la seconde réponse annule la première
+
+Premier tour : « un clic par étape ». Puis, dans le message suivant :
+« l'idée, c'est que ce soit assez clair sans forcément que ça prenne beaucoup
+de temps », et il décrit un ENTRE-DEUX entre le mode Détaillé (« très clair »)
+et le mode Instantané (« ça va très vite »).
+
+Les deux ne tiennent pas ensemble : **le mode Détaillé a DÉJÀ un clic par
+étape**. Un troisième mode au même rythme n'aurait pas été un entre-deux, juste
+le même temps en plus joli. La contradiction lui a été montrée, et il a tranché
+pour la troisième voie.
+
+**Décision retenue** : ça se déroule tout seul et vite, SAUF quand le joueur a
+une vraie décision à prendre (défendre, une interruption, un choix de cible) ;
+là ça l'attend.
+
+✅ **Vérifié avant de l'inscrire** : `DeroulePhase.tsx` distingue déjà les deux
+sortes d'attente (`questionAuJoueur`, `attendUnAutreJoueur`, `enAttente`), et
+son commentaire documente même un défaut passé où elles avaient été confondues
+(« La suite arrive… » s'affichait par-dessus la question). La brique tourne,
+elle est à réutiliser et non à écrire.
 
 ## Ce que la première enquête a établi
 
@@ -58,6 +80,14 @@ qui n'existe plus n'a nulle part où pointer.
 Trois issues possibles, à trancher par la mesure et non par le raisonnement :
 la remettre le temps de l'étape, ancrer le trait sur sa dernière position
 connue, ou rejouer la phase depuis une photo du monde d'avant.
+
+## ⚠ Prérequis : les animations
+
+`2026-09-14-animations-molles.md`. L'utilisateur demande ici « un entre-deux
+qui fasse plus jeu de cartes, où on voit vraiment les cartes bouger ». Des
+cartes molles ruineraient tout l'effet : la durée de vol est FIXE (250 ms quelle
+que soit la distance), donc rien ne pèse. À traiter avant ou en même temps, pas
+après.
 
 ## Ce qu'on ne fait pas
 
