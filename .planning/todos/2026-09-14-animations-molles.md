@@ -51,6 +51,30 @@ hauteur.
 = une resynchronisation, pas un coup). Mais la coupure est brutale : rien
 n'anime au lieu d'animer autrement (une pile qui glisse d'un bloc, par exemple).
 
+### 6. La défausse n'est pas visée, c'est le deck qui l'est
+
+**Demande de l'utilisateur, 14/09/2026** : « il faut que le point de départ soit
+son vrai point de départ sur la table de jeu, et le point d'arrivée le vrai
+point d'arrivée ».
+
+Les cartes, elles, sont bien visées : `boiteDe(el)` lit la position réelle de
+chaque `.scan-card[data-card-id]`. Les PILES ne le sont pas :
+
+```js
+const defausseJoueur = ancre('zone-piles-joueur', 1) ?? deckJoueur
+const defausseRencontre = ancre('zone-piles-rencontre', 1) ?? deckRencontre
+```
+
+`ancre(zone, 1)` = la DEUXIÈME carte de la zone des piles. ⚠ Quand la défausse
+est vide, elle n'est pas dessinée : il n'y a pas de deuxième carte, et le repli
+`?? deckJoueur` envoie la carte voler **vers le deck**. Une carte défaussée part
+donc se poser sur la pioche, ce qui est le contraire de ce qui se passe.
+
+Même chose en sens inverse pour une carte qui revient de la défausse.
+
+À corriger en visant les ZONES elles-mêmes (leur boîte) plutôt qu'une carte
+dedans, pour que le point existe même quand la pile est vide.
+
 ## Lien avec la phase du méchant sur la table
 
 Cette fiche est un PRÉREQUIS de
