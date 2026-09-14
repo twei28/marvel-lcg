@@ -435,7 +435,14 @@ function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
       return {
         cle: `moteur:${index}:revelation:${fait.carte_id}`,
         genre: 'carte',
-        titre: fait.carte,
+        // ⚠ LE NOM DE LA TABLE, PAS CELUI DU FAIT. Le moteur inscrit les noms
+        // en ANGLAIS dans ses faits ; `noms.carte` les rend dans la langue du
+        // joueur. Sans ce passage, le bilan disait « The Break-In! » en pleine
+        // partie francaise. Signale par l'utilisateur, 14/09/2026 : « quand je
+        // joue en francais, le nom que tu indiques dans les phrases, ce sera
+        // bien en francais, dans tous les modes ». Repli sur le nom du fait,
+        // qui ne s'efface pas quand la carte quitte la table.
+        titre: noms.carte(fait.carte_id) ?? fait.carte,
         heros: fait.joueur_nom ?? noms.heros(fait.joueur ?? undefined),
         cibleId: fait.carte_id,
       }
@@ -472,9 +479,10 @@ function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
       return {
         cle: `moteur:${index}:annonce:${fait.auteur_id}:${fait.cible_id}`,
         genre: fait.genre === 'attaque' ? 'attaque' : 'manigance',
-        titre: `${fait.auteur} ${fait.genre === 'attaque' ? t('attaque') : t('manigance sur')} ${fait.cible}`,
+        // Meme raison que la revelation ci-dessus : les faits portent l'anglais.
+        titre: `${noms.carte(fait.auteur_id) ?? fait.auteur} ${fait.genre === 'attaque' ? t('attaque') : t('manigance sur')} ${noms.carte(fait.cible_id) ?? fait.cible}`,
         cibleId: fait.cible_id,
-        acteur: fait.auteur,
+        acteur: noms.carte(fait.auteur_id) ?? fait.auteur,
       }
     }
 
@@ -482,9 +490,9 @@ function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
       cle: `moteur:${index}:${fait.auteur_id}:${fait.cible_id}`,
       genre: fait.genre === 'attaque' ? 'attaque' : 'manigance',
       cause: fait.cause || undefined,
-      titre: `${fait.auteur} ${fait.genre === 'attaque' ? t('attaque') : t('manigance sur')} ${fait.cible}`,
+      titre: `${noms.carte(fait.auteur_id) ?? fait.auteur} ${fait.genre === 'attaque' ? t('attaque') : t('manigance sur')} ${noms.carte(fait.cible_id) ?? fait.cible}`,
       cibleId: fait.cible_id,
-      acteur: fait.auteur,
+      acteur: noms.carte(fait.auteur_id) ?? fait.auteur,
       // Les dégâts se comptent en négatif comme partout ailleurs ici : c'est la
       // variation du compteur de la cible (voir HistoriquePartie).
       valeur: fait.genre === 'attaque' ? -fait.subi : fait.subi,
@@ -493,7 +501,8 @@ function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
       calcul: { base: fait.base, boost: fait.boost, defense: fait.defense },
       boosts: fait.boosts.map((boost, rang) => ({
         cle: `moteur:${index}:boost:${rang}:${boost.id}`,
-        nom: boost.nom,
+        // Meme raison : le fait porte le nom anglais de la carte boost.
+        nom: noms.carte(boost.id) ?? boost.nom,
         cibleId: boost.id,
         apport: boost.apport,
       })),

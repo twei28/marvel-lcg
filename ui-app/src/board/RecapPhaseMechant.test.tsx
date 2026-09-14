@@ -29,6 +29,12 @@ const entree = (partiel: Partial<EntreeHistorique>): EntreeHistorique => ({
 const commeDansLHistorique = (...anciennesDAbord: EntreeHistorique[]) =>
   [...anciennesDAbord].reverse()
 
+// ⚠ CE BOUCHON NOMME TOUTE CARTE « Carte#<id> », y compris l'auteur d'une
+// attaque. Depuis le 14/09/2026, le bilan prend le nom que porte LA TABLE et
+// ne retombe sur celui du fait qu'a defaut : les faits du moteur sont en
+// ANGLAIS, et le bilan disait « Klaw attaque The Break-In! » en pleine partie
+// francaise. Les attentes ci-dessous lisent donc « Carte#3 » la ou elles
+// lisaient « Klaw » : c'est le bouchon qui parle, pas une regression.
 const noms: Noms = {
   carte: (id) => (id === undefined ? undefined : `Carte#${id}`),
   heros: (joueur) => (joueur === undefined ? undefined : `Héros${joueur}`),
@@ -308,11 +314,11 @@ describe('bilanDeLaPhase — journal du moteur', () => {
 
     const etape = bilan!.etapes.find((e) => e.numero === 2)!
     expect(etape.lignes).toHaveLength(1)
-    expect(etape.lignes[0].titre).toBe('Klaw attaque Black Panther')
+    expect(etape.lignes[0].titre).toBe('Carte#3 attaque Carte#9')
     expect(etape.lignes[0].calcul).toEqual({ base: 3, boost: 2, defense: 0 })
     expect(etape.lignes[0].boosts?.map((b) => `${b.nom} +${b.apport}`)).toEqual([
-      'Sonic Boom +2',
-      'T’Challa’s Shadow +0',
+      'Carte#21 +2',
+      'Carte#22 +0',
     ])
   })
 
@@ -391,7 +397,7 @@ describe('bilanDeLaPhase — où se range une activation', () => {
     expect(activations.lignes).toHaveLength(1)
     expect(activations.lignes[0].cause).toBeUndefined()
     // Dans l'étape 4, l'attaque suit IMMÉDIATEMENT la carte qui l'a causée.
-    expect(revelees.lignes.map((l) => l.titre)).toEqual(['Assault', 'Klaw attaque Black Panther'])
+    expect(revelees.lignes.map((l) => l.titre)).toEqual(['Assault', 'Carte#3 attaque Carte#9'])
     expect(revelees.lignes[1].cause).toBe('Assault')
   })
 
@@ -563,9 +569,11 @@ describe('bilanDeLaPhase — les quatre points viennent des faits', () => {
     const titres = bilan?.etapes.flatMap((e) => e.lignes.map((l) => l.titre))
     expect(titres).toEqual([
       'Carte#7',
-      'Klaw attaque Black Panther',
+      'Carte#3 attaque Carte#9',
       'Carte rencontre distribuée',
-      'Gang-Up',
+      // La revelation prend desormais le nom de la TABLE (voir le bouchon
+      // `noms` en tete de fichier) : le fait disait « Gang-Up », en anglais.
+      'Carte#44',
     ])
   })
 
