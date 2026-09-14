@@ -103,3 +103,33 @@ export function placeDuCartouche(
 function borner(valeur: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, valeur))
 }
+
+/**
+ * La place du bouton AU CENTRE du plateau.
+ *
+ * ⚠ CHANGEMENT DU 14/09/2026, APRÈS AVOIR VU LE BOUTON À CÔTÉ DE L'ACTION.
+ * L'utilisateur avait d'abord choisi « à côté de la carte qui agit » parmi
+ * trois emplacements, sur l'argument que l'œil y est déjà. À l'usage il a
+ * tranché autrement : « il n'est pas clair du tout [...] il faut que le joueur
+ * puisse se retrouver facilement. Tu peux peut-être même mettre le truc au
+ * milieu de l'écran. »
+ *
+ * Ce que le premier choix n'avait pas prévu : le bouton CHANGE DE PLACE à
+ * chaque étape, puisque la carte qui agit change. On ne le cherche pas une
+ * fois, on le cherche à chaque clic. Un point fixe se trouve une seule fois.
+ */
+export function placeAuCentre(cadre: Boite, taille: { w: number; h: number }): Place {
+  return {
+    x: borner(
+      cadre.x + (cadre.w - taille.w) / 2,
+      cadre.x + MARGE,
+      cadre.x + cadre.w - taille.w - MARGE
+    ),
+    y: borner(
+      cadre.y + (cadre.h - taille.h) / 2,
+      cadre.y + MARGE,
+      cadre.y + cadre.h - taille.h - MARGE
+    ),
+    cote: 'centre',
+  }
+}

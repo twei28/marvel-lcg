@@ -5,7 +5,7 @@
 // cartouche à moitié dehors est une partie bloquée jusqu'au filet anti-blocage
 // de 90 secondes.
 import { describe, expect, it } from 'vitest'
-import { MARGE, placeDuCartouche, type Boite } from './phase-sur-table'
+import { MARGE, placeAuCentre, placeDuCartouche, type Boite } from './phase-sur-table'
 
 const CADRE: Boite = { x: 0, y: 0, w: 1000, h: 600 }
 const TAILLE = { w: 240, h: 120 }
@@ -129,5 +129,38 @@ describe('le cartouche laisse le trait visible', () => {
     // habituelle doit reprendre la main sans osciller.
     const place = placeDuCartouche(auteur, CADRE, TAILLE, carte(400, 20))
     expect(['droite', 'gauche']).toContain(place.cote)
+  })
+})
+
+describe('le bouton au centre du plateau', () => {
+  // ⚠ POURQUOI IL N'EST PLUS À CÔTÉ DE L'ACTION (14/09/2026). Le premier choix
+  // de l'utilisateur était « à côté de la carte qui agit », sur l'argument que
+  // l'œil y est déjà. À l'usage il a tranché autrement : le bouton CHANGEAIT DE
+  // PLACE à chaque étape, puisque la carte qui agit change. « Il faut que le
+  // joueur puisse se retrouver facilement. »
+  it('se pose au milieu, quelle que soit la carte qui agit', () => {
+    const place = placeAuCentre(CADRE, TAILLE)
+    expect(place.x).toBe((1000 - 240) / 2)
+    expect(place.y).toBe((600 - 120) / 2)
+    expect(place.cote).toBe('centre')
+  })
+
+  it('ne bouge pas d’une étape à l’autre', () => {
+    // Le test qui tient la promesse : deux appels, une seule place.
+    expect(placeAuCentre(CADRE, TAILLE)).toEqual(placeAuCentre(CADRE, TAILLE))
+  })
+
+  it('suit le cadre quand il est décalé dans la page', () => {
+    const decale: Boite = { x: 160, y: 48, w: 1000, h: 600 }
+    const place = placeAuCentre(decale, TAILLE)
+    expect(place.x).toBe(160 + (1000 - 240) / 2)
+    expect(place.y).toBe(48 + (600 - 120) / 2)
+  })
+
+  it('reste dans le plateau même quand il est plus petit que lui', () => {
+    const minuscule: Boite = { x: 0, y: 0, w: 200, h: 100 }
+    const place = placeAuCentre(minuscule, TAILLE)
+    expect(place.x).toBeGreaterThanOrEqual(0)
+    expect(place.y).toBeGreaterThanOrEqual(0)
   })
 })

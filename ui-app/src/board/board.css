@@ -7612,6 +7612,9 @@
      les cartes sorties du paquet : ses coordonnées sont celles du cadre. */
   .deroule-rond-place {
     position: absolute;
+    /* ⚠ AU CENTRE DU PLATEAU, ET TOUJOURS AU MEME ENDROIT. Il suivait la carte
+       qui agit, donc il changeait de place a chaque etape. Voir
+       `phase-sur-table.ts`, `placeAuCentre`. */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -7621,26 +7624,33 @@
     z-index: 150;
   }
 
+  /* ⚠ LE MEME BOUTON QUE LES AUTRES, ET C'EST TOUT L'ENJEU. Il etait rond et
+     rouge : « il n'est pas clair du tout, d'habitude les autres sont carres et
+     jaunes » (utilisateur, 14/09/2026). Un bouton qui ne ressemble a aucun
+     autre ne se reconnait pas comme un bouton. Il reprend donc exactement la
+     mise en forme de « Fin du tour » : carre, dore (`--menace`), majuscules. */
   .deroule-rond {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    border: 3px solid #0b0b0b;
-    background: var(--rouge, #c8342b);
-    color: #fff;
+    min-height: 40px;
+    padding: 0 22px;
+    border-radius: 7px;
+    border: 2px solid var(--menace-clair);
+    background: var(--menace);
+    color: var(--fond);
     font-family: Anton, Impact, system-ui, sans-serif;
-    font-size: 15px;
-    letter-spacing: 0.06em;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.8);
     transition:
       transform 120ms ease-out,
-      box-shadow 120ms ease-out;
+      filter 120ms ease-out;
   }
 
   .deroule-rond:hover {
-    transform: scale(1.08);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.85);
+    transform: scale(1.05);
+    filter: brightness(1.08);
   }
 
   /* ⚠ LE FOCUS RESTE VISIBLE. C'est le seul élément cliquable de l'étape : au

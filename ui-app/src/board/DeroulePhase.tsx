@@ -1170,7 +1170,13 @@ export function DeroulePhase({
     etape?.carteId === undefined ? undefined : etape?.cibleId,
     etape?.cle ?? 'sans-etape',
     surTable,
-    elCartouche
+    elCartouche,
+    // ⚠ LE BOUTON NE SUIT PLUS LA CARTE. Il se posait a cote de celle qui agit,
+    // donc il CHANGEAIT DE PLACE a chaque etape : on ne le cherchait pas une
+    // fois mais a chaque clic. « Il faut que le joueur puisse se retrouver
+    // facilement » (utilisateur, 14/09/2026). Les panneaux qui restent (bilan,
+    // coup fatal, question) parlent d'une carte precise et gardent leur ancrage.
+    'centre'
   )
   const classeCartouche = (extra: string) =>
     `deroule-phase${extra ? ' ' + extra : ''}${surTable ? ' est-sur-table' : ''}`
@@ -1614,7 +1620,7 @@ export function DeroulePhase({
           aria-label={`${titreEtape(etapeLue)} — ${t('Suivant')}`}
           title={titreEtape(etapeLue)}
         >
-          {t('OK')}
+          {t('Suivant')}
         </button>
         {/* Les deux seules mentions qui survivent : « la suite arrive » quand on
             attend le moteur ou un autre joueur, et le filet anti-blocage qui va

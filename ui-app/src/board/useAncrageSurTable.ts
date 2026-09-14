@@ -7,7 +7,7 @@
 // mise à l'échelle (`--echelle`) et recentrée en permanence : une position
 // retenue d'une étape à l'autre serait fausse dès le premier redimensionnement.
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { placeDuCartouche, type Place } from './phase-sur-table'
+import { placeAuCentre, placeDuCartouche, type Place } from './phase-sur-table'
 import { boiteDeCarte, cadreDuPlateau } from './mesures-plateau'
 
 /** La taille supposée du cartouche tant qu'il n'a pas été mesuré. */
@@ -26,7 +26,14 @@ export function useAncrageSurTable(
   cibleId: number | undefined,
   cle: string,
   actif: boolean,
-  elementCartouche: HTMLElement | null
+  elementCartouche: HTMLElement | null,
+  /**
+   * `centre` ignore les cartes et pose l'élément au milieu du plateau : c'est
+   * la place du BOUTON, qui doit se retrouver sans le chercher. `a-cote` suit
+   * la carte qui agit : c'est celle des panneaux qui restent (bilan, coup
+   * fatal, question), lesquels parlent d'une carte précise.
+   */
+  ou: 'a-cote' | 'centre' = 'a-cote'
 ): Place | undefined {
   const [place, setPlace] = useState<Place | undefined>(undefined)
   // ⚠ UNE SECONDE MESURE, AU REPOS. Une carte qui vient d'arriver sur la table
@@ -47,6 +54,10 @@ export function useAncrageSurTable(
       const taille = elementCartouche
         ? { w: elementCartouche.offsetWidth, h: elementCartouche.offsetHeight }
         : TAILLE_PAR_DEFAUT
+      if (ou === 'centre') {
+        setPlace(placeAuCentre(cadre.boite, taille))
+        return
+      }
       setPlace(
         placeDuCartouche(
           boiteDeCarte(carteId, cadre),
@@ -63,7 +74,7 @@ export function useAncrageSurTable(
     window.addEventListener('resize', mesurer)
     return () => window.removeEventListener('resize', mesurer)
     // `cle` change à chaque étape : c'est lui qui déclenche la remesure.
-  }, [carteId, cibleId, cle, actif, elementCartouche, seconde])
+  }, [carteId, cibleId, cle, actif, elementCartouche, seconde, ou])
 
   useEffect(() => {
     if (!actif) return
