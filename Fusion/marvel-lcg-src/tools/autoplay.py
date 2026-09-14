@@ -191,6 +191,46 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         print("RESULTAT:", json.dumps(resultat, ensure_ascii=False), flush=True)
         os._exit(0)
 
+    # ------------------------------------- capture d'une phase du mechant --
+    # ⚠ AUCUN EFFET SANS `AUTOPLAY_CAPTURE`. C'est un outillage, pas un
+    # changement de comportement : sans la variable, cette fonction rend la main
+    # au premier test et autoplay se comporte exactement comme avant.
+    #
+    # Pourquoi elle existe (14/09/2026) : il n'existait AUCUN moyen d'observer
+    # une phase du mechant hors du navigateur. Aucune fixture ne portait de
+    # `faits_mechant`, et trois tentatives de pilotage automatique du navigateur
+    # ont echoue (la partie ne depassait pas le round 1). Chaque verification
+    # coutait donc une partie jouee a la main.
+    #
+    # ⚠ ON CAPTURE LE DESCRIPTEUR, PAS L'OBJET `world`. C'est `world.render.descriptor`
+    # que la route `/get_world` envoie au client (server_sync.py) : capturer autre
+    # chose donnerait une fixture que le plateau ne saurait pas lire.
+    capture = {"dossier": os.environ.get("AUTOPLAY_CAPTURE") or "", "faits": 0, "n": 0}
+
+    def capturer_si_phase_mechant():
+        if not capture["dossier"]:
+            return
+        try:
+            from engine import Engine
+            from engine.lib import Json
+            d = Engine.game.world.render.descriptor
+            faits = list(getattr(d, "faits_mechant", None) or [])
+            # On n'ecrit QUE quand le journal s'est enrichi : sans ce garde-fou,
+            # une phase produirait autant de fichiers que de questions posees.
+            if len(faits) <= capture["faits"]:
+                return
+            capture["faits"] = len(faits)
+            capture["n"] += 1
+            nom = f"phase-mechant-{etiquette}-{capture['n']:02d}.js"
+            chemin = os.path.join(capture["dossier"], nom)
+            corps = Json.Dumps(d, indent=1)
+            with open(chemin, "w", encoding="utf-8") as f:
+                f.write("// ETAT CAPTURE par tools/autoplay.py (AUTOPLAY_CAPTURE).\n")
+                f.write(f"// {len(faits)} fait(s) de phase du mechant.\n")
+                f.write("export default " + corps + "\n")
+        except Exception as exc:
+            print("CAPTURE ECHOUEE:", exc, flush=True)
+
     # ------------------------------------------------- lecture de l'etat --
     def lire_etat():
         """Photographie du monde utile a la decision, tolerante aux absences."""
@@ -820,6 +860,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
     def pilote(self, data, player_id, check):
         self_pilote = lambda d, p, c: pilote(self, d, p, c)
         etat["asks"] += 1
+        capturer_si_phase_mechant()
         if etat["asks"] > MAX_ASKS:
             rendre("bloquee", f"plafond de {MAX_ASKS} questions atteint")
         try:
