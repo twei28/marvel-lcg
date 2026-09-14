@@ -406,6 +406,23 @@ class GameServerGet(GameServerBase):
         except Exception:
             return web.json_response({'error': 'offline'}, status=502)
         data = {k: brut.get(k) for k in ('name', 'text', 'flavor', 'traits') if brut.get(k)}
+        # ⚠ UNE CARTE NON TRADUITE NE DOIT PAS PASSER POUR DU FRANCAIS.
+        #
+        # Defaut signale en partie le 14/09/2026 : « je suis en FR et le texte
+        # dans le tooltip sous la carte est en anglais............... ».
+        # fr.marvelcdb.com REND L'ANGLAIS quand la traduction n'existe pas
+        # (mesure : Hulk Shape 56033, Silk 52001a, Winter Soldier 54001a), et
+        # rien dans la reponse ne le dit... sauf ceci : `text` et `real_text`
+        # sont alors IDENTIQUES. Sur une carte traduite ils different
+        # (Spider-Man 01001a : « Sens d'Araignee » contre « Spider-Sense »).
+        #
+        # On retire alors le texte plutot que de l'afficher : le client ne
+        # montre son bloc que s'il y a un texte, et le joueur francais ne lit
+        # plus d'anglais sous une carte. Le reste (nom, traits) est conserve :
+        # un nom propre identique dans les deux langues n'a rien de faux.
+        if brut.get('text') and brut.get('text') == brut.get('real_text'):
+            data.pop('text', None)
+            data['non_traduit'] = True
         self.marvelcdb_cache[code] = data
         return web.json_response(data)
 

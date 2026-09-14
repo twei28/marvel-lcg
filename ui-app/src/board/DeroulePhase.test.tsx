@@ -69,6 +69,41 @@ describe('cartouche du deroule', () => {
     expect(screen.queryByText('Klaw attaque Klaw')).not.toBeInTheDocument()
   })
 
+  it('⚠ une REVELATION garde le nom du HEROS qui revele, pas celui de la carte', () => {
+    // LE DEFAUT SIGNALE DEUX FOIS le 14/09/2026 : « Maîtres du Chaos révèle
+    // Maîtres du Chaos », puis « L'Homme-Radioactif révèle L'Homme-Radioactif ».
+    //
+    // Sur une revelation, `carteId` designe la carte REVELEE ; l'auteur, lui,
+    // est le HEROS, et il n'a pas d'identifiant dans l'etape. Traduire l'auteur
+    // par `carteId` remplacait donc le nom du heros par celui de la carte, des
+    // DEUX cotes de la phrase.
+    //
+    // ⚠ CLASSE « NON REPRODUIT » A TORT une premiere fois : une capture
+    // d'autoplay montrait `joueur_nom` correct, et j'en avais conclu qu'il n'y
+    // avait rien. Le defaut n'etait pas dans la DONNEE, il etait dans
+    // l'AFFICHAGE. Une donnee juste ne prouve pas un affichage juste.
+    //
+    // Le cas jumeau, juste au-dessus, garde la CIBLE depuis le 09/09/2026 :
+    // le meme piege, a une ligne d'ecart.
+    const revelation: EtapeDeroule[] = [
+      {
+        cle: 'rev',
+        temps: 'revelation',
+        titre: 'revelation',
+        regle: 'regle:revelation',
+        // La carte revelee, et elle seule, porte un identifiant.
+        carteId: 77,
+        auteurNom: 'Jessica Jones',
+        cibleNom: 'Masters of Evil',
+        boosts: [],
+      },
+    ]
+    const nomFr = (id: number) => ({ 77: 'Maîtres du Chaos' })[id]
+    render(<DeroulePhase etapes={revelation} onTerminer={() => {}} nomFr={nomFr} />)
+    expect(screen.getByText('Jessica Jones révèle Maîtres du Chaos')).toBeInTheDocument()
+    expect(screen.queryByText('Maîtres du Chaos révèle Maîtres du Chaos')).not.toBeInTheDocument()
+  })
+
   it('avance d une etape au clic sur Suivant', () => {
     render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
     fireEvent.click(suivant())

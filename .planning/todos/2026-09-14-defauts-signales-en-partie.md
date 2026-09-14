@@ -88,7 +88,7 @@ Tout cela est écrit et commenté dans `ui-check/tests/phase-detaille-defense.sp
 
 ---
 
-## 1. ⛔ « Ça continue tout seul sans que je mette Suivant » — TROIS FOIS
+## 1. ✅ « Ça continue tout seul sans que je mette Suivant » — LES TROIS CAUSES
 
 > « Je te l'ai dit mille fois, pourquoi est-ce que ça continue tout seul sans
 > que moi je mette suivant ? Ça ne devrait pas arriver putain. »
@@ -97,7 +97,7 @@ Tout cela est écrit et commenté dans `ui-check/tests/phase-detaille-defense.sp
 |---|---|---|---|
 | 1 | « Avance toute seule » GRISÉ hors Détaillé mais dont la valeur s'appliquait quand même. **Griser ne désactive pas.** | **vérifié EN JEU** | `phase-sur-table.spec.ts`, cas « même avec Avance toute seule ALLUMÉE, rien ne bouge » : cinq secondes d'attente, rien ne bouge. |
 | 2 | le mode lui-même | sans objet | — |
-| 3 | **Le cartouche acquitte le moteur TOUT SEUL sur une étape d'ANNONCE** (décision 7 de la spec du 07/09 pour le mode Détaillé : « pas de clic sur *va attaquer* »), ce qui contredit sa décision : deux clics par attaque, l'annonce portant le premier « parce que c'est là aussi où on peut choisir de défendre ». | **PAS ENCORE PROUVÉ EN JEU** | gate unitaire seulement (`cartouche-a-jour.test.ts`, 11 cas) |
+| 3 | **Le cartouche acquitte le moteur TOUT SEUL sur une étape d'ANNONCE** (décision 7 de la spec du 07/09 pour le mode Détaillé : « pas de clic sur *va attaquer* »), ce qui contredit sa décision : deux clics par attaque, l'annonce portant le premier « parce que c'est là aussi où on peut choisir de défendre ». | **vérifié EN JEU** | `annonce-attend-le-clic.spec.ts`, VRAIE partie : l'annonce est lue, puis cinq secondes sans toucher à rien. Mesuré ROUGE en retirant la garde `!surTable` (l'annonce n'est alors JAMAIS lisible : elle défile seule) |
 
 Règle extraite dans `ui-app/src/board/cartouche-a-jour.ts`, gate de onze cas.
 
@@ -132,7 +132,7 @@ Le seul contrôle valable est d'ATTENDRE sans cliquer et de regarder.
     tant que le joueur n'a pas cliqué. Le tour du héros se joue par le pilote,
     la phase du méchant par l'écran.
 
-## 2. ⛔ Trois panneaux superposés au centre
+## 2. ✅ Trois panneaux superposés au centre — VÉRIFIÉ EN JEU
 
 > « C'est quoi cette merde qui se superpose. » / « On est quand même d'accord que
 > là il y a trois trucs qui se superposent, c'est n'importe quoi. »
@@ -141,22 +141,39 @@ Capture : le sélecteur de cibles (« CIBLES HORS TABLE »), le panneau du moteu
 (« CHOISIR LA CIBLE ») et le cartouche replié, tous les trois au centre.
 
 Cause : depuis que le bouton a été centré à sa demande, tout ce qui se pose « au
-centre » s'y retrouve ensemble.
+centre » s'y retrouvait ensemble.
 
-**Prétendu corrigé** (le cartouche se tait). **À re-vérifier en jeu, sur une
-vraie question du moteur** — la fixture n'en porte pas.
+**Vérifié sur de VRAIES questions du moteur, dans les deux modes** :
+- mode Détaillé — `phase-detaille-defense.spec.ts` compte les panneaux à chaque
+  fenêtre « Défendre / Passer » ;
+- mode « Sur la table » — `annonce-attend-le-clic.spec.ts` les compte à chaque
+  temps de la phase, question comprise.
 
-## 3. ⛔ Le jeton de menace : DEUX demandes, UNE SEULE traitée
+⚠ **On ne compte que les panneaux de PREMIER NIVEAU.** En mode Détaillé, la
+demande du moteur est IMBRIQUÉE dans le cartouche (`.deroule-question-scene`) :
+c'est un seul panneau, pas deux qui se recouvrent. Un premier comptage à plat
+faisait échouer le test sur un écran parfaitement correct.
+
+## 3. ✅ Le jeton de menace : LES DEUX demandes, traitées et vérifiées
 
 > « J'ai envie que la menace sur le trafic clandestin **se mette quand je fais
 > suivant** et qu'il ait déjà **la même forme que le triangle** là. Pourquoi tu
 > me fais un rond ? »
 
-- **La forme** : l'image du vrai jeton existait déjà
-  (`components/jetons/menace.png`), utilisée par la scène du mode Détaillé.
-  **Prétendu corrigé, JAMAIS VU À L'ÉCRAN.** À re-vérifier en jeu.
-- **Le moment : PAS FAIT.** Le jeton part dès que l'étape s'affiche, avant tout
-  clic. Il doit partir AU CLIC, comme la carte rencontre.
+- **La forme** : c'est bien le vrai jeton du jeu
+  (`ui-app/src/components/jetons/menace.png`, le triangle). **Vérifié à
+  l'écran**, et pas seulement dans le code : le test compare l'image portée par
+  le jeton au PNG lu sur le disque. ⚠ Le bundler inline les petites images en
+  `data:image/png;base64,…` : chercher le NOM du fichier dans la feuille de
+  style ne prouve rien, il n'y est plus.
+- **Le moment : FAIT.** Le jeton partait dès que l'étape s'affichait, donc avant
+  tout clic. Il est désormais retenu dans `volMenace` (DeroulePhase) et s'envole
+  sur la validation. ⚠ Il faut le retenir là, et non le lire sur l'étape
+  courante : le clic fait aussitôt passer au temps suivant.
+
+**La preuve** : `phase-sur-table.spec.ts`, cas « le jeton de menace part AU
+CLIC, pas avant » — aucun jeton pendant deux secondes d'attente, puis il
+apparaît au clic. Mesuré ROUGE en rebranchant le jeton sur l'étape courante.
 
 ## 4. ✅ Mode Détaillé : on ne savait plus quand on peut défendre — CAUSE TROUVÉE, CORRIGÉ, VÉRIFIÉ EN JEU
 
@@ -211,7 +228,7 @@ par-dessus les boutons.
 le haut du cartouche (la chronologie MENACE / MÉCHANT / SBIRES…) déborde de
 l'écran par le haut.
 
-## 5. ⛔ « Maîtres du Chaos révèle Maîtres du Chaos » — signalé DEUX FOIS
+## 5. ✅ « Maîtres du Chaos révèle Maîtres du Chaos » — CORRIGÉ ET GARDÉ
 
 D'abord « L'Homme-Radioactif révèle L'Homme-Radioactif », classé « non
 reproduit » à tort : une capture d'autoplay montrait `joueur_nom` correct, et
@@ -219,60 +236,77 @@ j'en avais conclu qu'il n'y avait rien. **Le défaut n'était pas dans la donné
 il était dans l'affichage.** Leçon : une donnée juste ne prouve pas un affichage
 juste.
 
-**Cause trouvée, CORRECTION ÉCRITE dans `a02101a1` mais JAMAIS VUE EN JEU** —
-la ligne ci-dessous ne traduit plus l'auteur par `carteId` sur une révélation,
-et un cas de test la garde. Reste à le vérifier en partie. Dans `DeroulePhase` :
+**Cause** : dans `DeroulePhase`, `auteurNom: enFrancais(etape.carteId, …)`. Sur
+une révélation, `carteId` désigne **la carte révélée**, pas le héros : le nom du
+héros était donc écrasé par celui de la carte, des deux côtés de la phrase. La
+ligne voisine (`cibleNom`) portait DÉJÀ ce cas particulier depuis le 09/09/2026,
+pour une raison jumelle (« prendre carteId ici écrivait *Klaw attaque Klaw* ») :
+le même piège, à une ligne d'écart.
 
-```ts
-auteurNom: enFrancais(etape.carteId, etape.auteurNom)
-```
+**Corrigé** (l'auteur n'est plus traduit par `carteId` sur une révélation) **et
+gardé** :
+- `DeroulePhase.test.tsx`, cas « une RÉVÉLATION garde le nom du HÉROS qui
+  révèle » — mesuré ROUGE en remettant l'ancienne ligne ;
+- en jeu : `phase-detaille-defense.spec.ts` refuse tout titre de la forme
+  « X RÉVÈLE X ». Relevé dans une vraie partie : « PETER PARKER RÉVÈLE ASSAUT ».
 
-`enFrancais(id, nom)` rend `nomFr(id) ?? nom`. Sur une révélation, `carteId`
-désigne **la carte révélée**, pas le héros. Le nom du héros est donc écrasé par
-celui de la carte, des deux côtés de la phrase.
-
-⚠ La ligne juste en dessous (`cibleNom`) porte DÉJÀ ce cas particulier, écrit le
-09/09/2026 pour une raison jumelle (« prendre carteId ici écrivait *Klaw attaque
-Klaw* »). Le même piège, à une ligne d'écart.
-
-**À faire** : vérifier EN JEU qu'une révélation annonce bien « Jessica Jones
-révèle Maîtres du Chaos », et non le nom de la carte des deux côtés.
-
-## 6. ⛔ Le texte marvelcdb sous la carte agrandie est en ANGLAIS
+## 6. ✅ Le texte marvelcdb sous la carte agrandie était en ANGLAIS — CAUSE TROUVÉE
 
 > « Je suis en FR et le texte dans le tooltip sous la carte est en
 > anglais............... »
 
-Capture : la carte Hulk agrandie, bloc « MARVELCDB » en dessous, en anglais, en
-pleine partie française.
+**LA CAUSE, mesurée sur l'API elle-même** : `fr.marvelcdb.com` **rend l'anglais
+quand la traduction française n'existe pas**, et rien dans sa réponse ne le dit.
+Relevé le 14/09/2026 : `Hulk Shape` (56033, pack Civil War — la carte de la
+capture), `Silk` (52001a), `Winter Soldier` (54001a) reviennent en anglais,
+tandis que Spider-Man, Hulk et tout le pack Hulk sont bien traduits. Ce n'était
+donc ni le réglage, ni le dictionnaire local, ni le proxy : c'était la source.
 
-**NON EXAMINÉ.** Chercher du côté du réglage « Textes marvelcdb » et de sa
-source : le proxy réseau (coupé par défaut, arrive après coup) contre le
-dictionnaire local (`noms-fr.ts`, `textes-fr-complets`).
+**Le signal qui le trahit** : `text` et `real_text` sont alors IDENTIQUES. Sur
+une carte traduite ils diffèrent (« Sens d'Araignée » contre « Spider-Sense »).
+
+**Corrigé dans le proxy du moteur** (`server_get.py`, `marvelcdb_card`) : le
+texte non traduit n'est plus servi, et la réponse porte `non_traduit: true`. Le
+plateau n'affiche son bloc que s'il y a un texte : le joueur français ne lit
+plus d'anglais sous une carte. Le nom et les traits restent, un nom identique
+dans les deux langues n'ayant rien de faux.
+
+**La preuve** : `marvelcdb-francais.spec.ts` (`npm run marvelcdb-francais`),
+deux cas, sur le vrai proxy. ⚠ Il touche le réseau : sans lui il s'arrête au
+lieu de passer au vert sans rien vérifier.
 
 ⚠ **Troisième défaut de langue de la journée**, après les 61 clés sans anglais
-et les noms anglais du bilan (les deux corrigés et déployés). Trois défauts de
-langue en un jour appellent **une passe de langue à part entière**, pas des
-correctifs au coup par coup : il faudrait lister tout ce qui s'affiche et
-vérifier chaque source dans les deux langues.
-
----
+et les noms anglais du bilan. **La passe de langue à part entière reste à
+faire** : lister tout ce qui s'affiche et vérifier chaque source dans les deux
+langues.
 
 ## État exact du dépôt
 
-- **Déployé en production** : jusqu'à `b5c42238`.
-- **Commité mais PAS déployé** : tout ce qui suit `b5c42238`, le correctif du
-  défaut n°4 compris.
-- ⚠ **Le code des défauts 1, 2 et 3 (forme) a été écrit et commité SANS AVOIR
-  ÉTÉ VU EN JEU.** C'est précisément ce que cette fiche demande de reprendre.
+- **Déployé en production** : jusqu'à `b5c42238` au matin du 14/09 ; les six
+  défauts de cette fiche partent avec le déploiement du soir.
+- ⚠ **Le code des défauts 1, 2 et 3 avait été écrit et commité SANS AVOIR ÉTÉ VU
+  EN JEU.** C'est ce que cette fiche demandait de reprendre : c'est fait, chaque
+  correctif a désormais sa mesure rouge/vert dans le navigateur.
 
 ## Statut
 
 **PRIORITÉ ABSOLUE**, ouverte le 14/09/2026. Six défauts.
 **Rien n'est prouvé tant que ce n'est pas vérifié en jeu par l'assistant.**
 
-Avancement au 14/09/2026, 20 h :
-- n°4 : **fait**, cause trouvée, corrigé, prouvé en jeu (rouge/vert mesurés).
-- n°1 : cause 1 **vérifiée en jeu** ; cause 3 **toujours pas prouvée en jeu**
-  (voir l'encadré de ce défaut : le filet sur fixture ne peut pas la garder).
-- n°2, 3, 5, 6 : **à reprendre**, toujours rien de prouvé en jeu.
+Avancement au 14/09/2026, 22 h : **LES SIX DÉFAUTS SONT TRAITÉS ET VÉRIFIÉS EN
+JEU**, chacun avec sa mesure rouge/vert.
+
+| # | Défaut | Preuve en jeu |
+|---|---|---|
+| 1 | ça continue tout seul | `phase-sur-table.spec.ts` (avance auto) + `annonce-attend-le-clic.spec.ts` (l'annonce, vraie partie) |
+| 2 | panneaux superposés | `phase-detaille-defense.spec.ts` + `annonce-attend-le-clic.spec.ts`, sur de vraies questions |
+| 3 | jeton de menace | `phase-sur-table.spec.ts` : forme (image comparée au PNG) et moment (au clic) |
+| 4 | fenêtre de défense | `phase-detaille-defense.spec.ts` + `ou-va-la-question.test.ts` |
+| 5 | « X révèle X » | `DeroulePhase.test.tsx` + contrôle en jeu dans `phase-detaille-defense.spec.ts` |
+| 6 | texte marvelcdb anglais | `marvelcdb-francais.spec.ts`, sur le vrai proxy |
+
+Ce qui RESTE ouvert, et n'appartient pas à cette fiche :
+- la **passe de langue** à part entière (défaut n°6, trois défauts de langue en
+  un jour) ;
+- en 1920×1080, le haut du cartouche du mode Détaillé (la chronologie MENACE /
+  MÉCHANT / SBIRES…) déborde de l'écran par le haut, constaté sur une capture.

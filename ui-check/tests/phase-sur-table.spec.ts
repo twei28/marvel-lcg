@@ -17,6 +17,9 @@
 // ⚠ IL NE LANCE AUCUNE PARTIE : il lit un état enregistré (`?etat=`), donc il
 // ne détruit rien et peut tourner à tout moment.
 import { test, expect, type Page } from '@playwright/test'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const ETAT = 'rhino__spider_man__phase-mechant-complet.js'
 /**
@@ -141,3 +144,52 @@ test('⚠ même avec « Avance toute seule » ALLUMÉE, rien ne bouge sur la tab
   await expect(page.locator('.deroule-rond').first()).toBeVisible()
 })
 
+
+test('⚠ le jeton de menace part AU CLIC, pas avant', async ({ page }) => {
+  // DEMANDE EXPLICITE DE L'UTILISATEUR, 14/09/2026 : « j'ai envie que la menace
+  // sur le trafic clandestin SE METTE QUAND JE FAIS SUIVANT et qu'il ait déjà
+  // la même forme que le triangle là. Pourquoi tu me fais un rond ? »
+  //
+  // DEUX demandes, et une seule avait été traitée. La FORME (le vrai jeton du
+  // jeu, `components/jetons/menace.png`) a été prise le 14/09 ; le MOMENT ne
+  // l'était pas : le jeton partait dès que l'étape s'affichait, donc avant tout
+  // clic, pendant que le joueur lisait encore la phrase.
+  test.setTimeout(90000)
+  await ouvrirLaPhase(page)
+
+  const jeton = page.locator('.jeton-menace-volant')
+  const premiere = await phraseCourante(page)
+  expect(premiere, 'la première étape devrait être la menace').toMatch(/menace/i)
+
+  // AVANT le clic : rien ne vole. On laisse même passer du temps, pour qu'un
+  // vol différé se voie.
+  await page.waitForTimeout(2000)
+  expect(
+    await jeton.count(),
+    `le jeton de menace a volé AVANT le clic, sur « ${premiere} »`
+  ).toBe(0)
+
+  // APRÈS le clic : il part.
+  await page.locator('.deroule-rond').first().click()
+  await expect(jeton.first(), 'le jeton de menace n’est pas parti au clic').toBeVisible({
+    timeout: 5000,
+  })
+
+  // Et c'est le VRAI JETON DU JEU, pas un rond dessiné. Première version : un
+  // disque jaune. Constat de l'utilisateur : « qu'il ait déjà la même forme que
+  // le triangle là. Pourquoi tu me fais un rond ? »
+  //
+  // ⚠ ON COMPARE L'IMAGE ELLE-MÊME, pas son nom de fichier : le bundler inline
+  // les petites images en `data:image/png;base64,…`, et aucun nom n'apparaît
+  // plus dans la feuille de style. On lit donc le PNG sur le disque et on
+  // vérifie que c'est bien lui que le jeton porte.
+  const fond = await jeton.first().evaluate((e) => getComputedStyle(e).backgroundImage)
+  const png = fs.readFileSync(
+    path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'ui-app', 'src', 'components', 'jetons', 'menace.png')
+  )
+  const debut = png.toString('base64').slice(0, 64)
+  expect(
+    fond.includes(debut),
+    `le jeton ne porte pas l'image menace.png du jeu (fond reçu : ${fond.slice(0, 80)}…)`
+  ).toBe(true)
+})

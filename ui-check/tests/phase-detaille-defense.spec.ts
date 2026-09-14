@@ -161,6 +161,27 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
       continue;
     }
 
+    // ⚠ AU PASSAGE, LE DÉFAUT N°5 : « Maîtres du Chaos révèle Maîtres du
+    // Chaos », signalé DEUX FOIS le 14/09/2026. Sur une révélation, `carteId`
+    // désigne la carte RÉVÉLÉE ; traduire l'auteur avec lui écrivait le nom de
+    // la carte des deux côtés de la phrase. On le regarde ici parce que la
+    // révélation tombe dans cette même phase, à deux clics de la défense.
+    // ⚠ `count()` D'ABORD, TOUJOURS. `innerText()` sur un élément absent ATTEND
+    // cinq secondes avant d'échouer, et le `.catch()` masque cette attente : à
+    // deux cents tours de boucle, un test de treize secondes en mettait cinq
+    // minutes. Mesuré le 14/09/2026, et c'est ce qui a fait abandonner un
+    // premier test en vraie partie.
+    const bloc = page.locator('.deroule-titre').first();
+    const titre = (await bloc.count()) ? await bloc.innerText() : '';
+    const revele = /^(.+?)\s+RÉVÈLE\s+(.+)$/i.exec(titre.replace(/\s+/g, ' ').trim());
+    if (revele) {
+      expect(
+        revele[1].trim().toLowerCase(),
+        `« ${titre.trim()} » : le héros qui révèle porte le nom de la carte révélée ` +
+          `(défaut n°5, voir DeroulePhase.tsx, auteurNom)`
+      ).not.toBe(revele[2].trim().toLowerCase());
+    }
+
     if ((await suivant.count()) && (await suivant.first().isVisible())) {
       await suivant.first().click();
       await page.waitForTimeout(500);

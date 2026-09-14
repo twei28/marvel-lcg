@@ -50,6 +50,18 @@ export type TexteCdb = {
   text?: string
   flavor?: string
   traits?: string
+  /**
+   * La carte n'a PAS de traduction française sur marvelcdb.
+   *
+   * ⚠ Le serveur RETIRE alors le texte, et c'est voulu. fr.marvelcdb.com rend
+   * l'anglais quand la traduction manque, sans le dire : le joueur français
+   * lisait donc de l'anglais sous une carte française (signalé en partie le
+   * 14/09/2026). Le proxy le détecte en comparant `text` et `real_text`, qui
+   * sont identiques dans ce cas. Ce drapeau reste pour qui voudrait un jour
+   * l'afficher autrement ; aujourd'hui, l'absence de texte suffit à ne rien
+   * montrer.
+   */
+  non_traduit?: boolean
 }
 
 const cache = new Map<string, TexteCdb | null>()

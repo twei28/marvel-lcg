@@ -767,6 +767,22 @@ export function DeroulePhase({
     validee.cle === etape.cle &&
     validee.etat === etape.etat
 
+  /**
+   * LE JETON DE MENACE PART AU CLIC, PAS A L'AFFICHAGE DE L'ETAPE.
+   *
+   * ⚠ DEMANDE EXPLICITE DE L'UTILISATEUR, 14/09/2026 : « j'ai envie que la
+   * menace sur le trafic clandestin SE METTE QUAND JE FAIS SUIVANT ». Le jeton
+   * partait dès que l'étape s'affichait, donc avant tout clic : le joueur
+   * lisait la phrase pendant que le jeton avait déjà volé.
+   *
+   * Il est retenu ICI, et non lu sur l'étape courante, parce que le clic fait
+   * aussitôt passer à l'étape suivante : lire `etape` au moment du vol
+   * donnerait la suivante, ou rien du tout.
+   */
+  const [volMenace, setVolMenace] = useState<
+    { cle: string; cibleId: number | undefined; montant: number | undefined } | undefined
+  >(undefined)
+
   const avancer = () => {
     // Hors phase du mechant, etapes est vide et il n'y a rien a avancer : une
     // touche pressee ne doit alors rien declencher.
@@ -784,6 +800,11 @@ export function DeroulePhase({
     // Une intention validee ici ne vaudra pas validation de la resolution qui
     // prendra sa place (voir `validee` et `cartoucheAJour`).
     setValidee({ cle: etape.cle, etat: etape.etat })
+    // Le jeton de menace s'envole MAINTENANT, sur l'étape que le joueur vient
+    // de valider (voir `volMenace`). Les autres étapes n'en posent pas.
+    if (etape.titre === 'menace' || etape.titre === 'manigance') {
+      setVolMenace({ cle: etape.cle, cibleId: etape.cibleId, montant: etape.montant })
+    }
     // Aucun accuse de reception ici, et c'est tout le sujet de cette reprise :
     // valider l'etape 1 sur 4 relachait le moteur, qui repartait produire la
     // suite pendant que le joueur lisait. L'accuse ne part que lorsque le
@@ -1324,10 +1345,10 @@ export function DeroulePhase({
         {/* Le jeton de menace, sur les etapes qui en posent (point 1, et une
             manigance du mechant). Ailleurs il ne rend rien. */}
         <JetonMenaceVolant
-          cibleId={etape?.cibleId}
-          montant={etape?.montant}
-          cle={etape?.cle}
-          actif={etape?.titre === 'menace' || etape?.titre === 'manigance'}
+          cibleId={volMenace?.cibleId}
+          montant={volMenace?.montant}
+          cle={volMenace?.cle}
+          actif={volMenace !== undefined}
         />
         <CoucheRencontreSurTable
           etape={etape}
