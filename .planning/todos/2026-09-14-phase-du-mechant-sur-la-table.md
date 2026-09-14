@@ -77,9 +77,45 @@ quitté la table pendant la phase** : sur les captures de l'utilisateur, Nick
 Fury est présent à l'image 4 et absent à l'image 5. Un trait vers une carte
 qui n'existe plus n'a nulle part où pointer.
 
-Trois issues possibles, à trancher par la mesure et non par le raisonnement :
-la remettre le temps de l'étape, ancrer le trait sur sa dernière position
-connue, ou rejouer la phase depuis une photo du monde d'avant.
+Trois issues possibles : la remettre le temps de l'étape, ancrer le trait sur
+sa dernière position connue, ou rejouer la phase depuis une photo du monde
+d'avant.
+
+## ✅ Preuve de faisabilité, 14/09/2026 : le risque est CONFIRMÉ et borné
+
+**Le cas existe, il est déjà rencontré, et il est déjà documenté dans le code.**
+`deroule-phase.ts` (champs `auteurNom` / `cibleNom`) :
+
+> « Une carte morte pendant la phase (ex. un minion tué par sa propre cible) a
+> disparu de l'index du monde au moment où l'étape s'affiche ; y chercher son
+> nom affichait "Ultron attaque #88" à la place. »
+
+Trois conséquences, et elles changent la conception :
+
+1. **On sait toujours QUI.** Les faits portent `auteur` et `cible` en clair,
+   précisément pour cette raison. `RecapPhaseMechant` fait le même choix pour
+   la même cause. Le texte d'une étape ne peut donc pas se tromper de nom.
+2. **On ne sait pas toujours OÙ.** Un trait a besoin d'une position à l'écran ;
+   une carte absente de l'index du monde n'en a aucune. Le contournement
+   existant ne couvre que le nom.
+3. **Ce n'est pas une exception rare.** Le cas a été rencontré assez souvent
+   pour que DEUX composants soient écrits en conséquence. ⚠ La fréquence n'a
+   PAS été mesurée : elle reste inconnue, et ce serait une erreur de la
+   présenter comme faible.
+
+⚠ **CE QUI N'A PAS MARCHÉ, ET POURQUOI C'EST NOTÉ.** Trois tentatives de
+mesure par pilotage automatique d'une vraie partie (Playwright) ont échoué : la
+partie ne dépassait jamais le round 1, bloquée sur « Player Turn End », et
+aucune fixture existante ne porte de `faits_mechant`. **Il n'existe donc
+aujourd'hui aucun moyen simple d'observer une phase du méchant réelle hors du
+navigateur.** C'est un manque d'outillage à combler avant tout chantier sérieux
+sur cette phase, sans quoi chaque vérification coûtera une partie jouée à la
+main.
+
+## Décision qui reste à prendre
+
+Que fait le trait quand sa cible (ou son auteur) n'a plus de place sur la
+table ? À trancher avec l'utilisateur avant d'écrire l'affichage.
 
 ## ⚠ Prérequis : les animations
 
@@ -99,6 +135,6 @@ après.
 
 Décisions prises le 14/09/2026, **non commencé**.
 
-Première étape prévue : une **preuve de faisabilité** sur une seule activation
-(le méchant attaque un héros), pour mesurer le cas « la cible a quitté la
-table » avant de construire quoi que ce soit d'autre.
+Preuve de faisabilité **faite** le 14/09/2026 : le risque est confirmé et borné
+(voir plus haut). Reste à trancher la règle de repli, puis à combler le manque
+d'outillage qui empêche d'observer une phase du méchant hors du navigateur.
