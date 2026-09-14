@@ -546,7 +546,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Incliner': 'Exhaust',
   'Rendre désorienté': 'Confuse',
   'Rendre sonné': 'Stun',
-  'Rendre coriace': 'Make tough',
+  'Rendre tenace': 'Make tough',
   'Ajouter des compteurs': 'Add counters',
   'Défausser': 'Discard',
   'Retirer de la partie': 'Remove from game',

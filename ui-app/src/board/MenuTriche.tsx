@@ -84,7 +84,10 @@ export function MenuTriche({ cible, x, y, onFermer, onIntervention }: MenuTriche
       { libelle: t('Incliner'), agir: () => triche.incliner(cible.id) },
       { libelle: t('Rendre désorienté'), agir: () => triche.rendreConfus(cible.id) },
       { libelle: t('Rendre sonné'), agir: () => triche.assommer(cible.id) },
-      { libelle: t('Rendre coriace'), agir: () => triche.rendreCoriace(cible.id) },
+      // ECART CORRIGE le 14/09/2026 : ce menu disait « coriace » la ou la carte,
+      // les mots-cles et les textes FR officiels disent tous « Tenace ». Le nom
+      // interne `rendreCoriace` n'est pas touche : il n'est vu par personne.
+      { libelle: t('Rendre tenace'), agir: () => triche.rendreCoriace(cible.id) },
     )
   }
 

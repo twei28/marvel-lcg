@@ -151,6 +151,48 @@ export function avecInteraction(
   }
 }
 
+/**
+ * Les statuts identiques repliés en un seul, avec leur nombre.
+ *
+ * ⚠ 14/09/2026. `.statuts` est un `flex` sans repli ni limite : chaque statut
+ * ajoutait 65 px à une rangée centrée sous une carte de 106. MESURÉ sur le
+ * plateau réel : 2 statuts débordent déjà de la carte, 3 font 192 px, 10 font
+ * 647 px, soit 270 px de débord de CHAQUE côté, par-dessus les zones voisines.
+ * Luke Cage n'a aucune limite de Tenaces (`ThisCanHaveAdditionalTough("Any")`,
+ * `62001a.py`) : le cas n'est pas théorique.
+ *
+ * Dix cartes identiques côte à côte n'apprennent d'ailleurs rien de plus
+ * qu'une seule : ce qui compte, c'est le NOMBRE. Le jeu de table empile les
+ * mêmes marqueurs, il ne les étale pas.
+ *
+ * ⚠ ON NE REPLIE PAS UN GROUPE OÙ QUELQU'UN EST CLIQUABLE. Le moteur peut
+ * demander de choisir UNE carte de statut (la défausser, la déplacer) : replier
+ * mettrait les autres hors d'atteinte et bloquerait le joueur. Même chose pour
+ * un statut qui porte un delta (+N/-N) : il a quelque chose à montrer de son
+ * propre chef. Dans ces cas-là on les remontre tous, débord compris — un
+ * affichage large vaut mieux qu'un coup impossible.
+ */
+export function grouperStatuts(
+  statuts: ScanCardProps[],
+  interactifs: Map<number, EtatInteractif>,
+  effets: Map<number, CardEffectDelta>
+): { carte: ScanCardProps; nombre: number }[] {
+  const singulier = statuts.some(
+    (s) => interactifs.has(Number(s.id)) || effets.has(Number(s.id))
+  )
+  if (singulier) return statuts.map((carte) => ({ carte, nombre: 1 }))
+
+  const groupes: { carte: ScanCardProps; nombre: number }[] = []
+  for (const statut of statuts) {
+    // La CLÉ est le nom, pas l'identifiant d'objet : deux Tenaces sont deux
+    // cartes différentes pour le moteur, la même chose pour le joueur.
+    const meme = groupes.find((g) => g.carte.name === statut.name)
+    if (meme) meme.nombre += 1
+    else groupes.push({ carte: statut, nombre: 1 })
+  }
+  return groupes
+}
+
 export function Unite({
   unite,
   interactifs,
@@ -250,9 +292,14 @@ export function Unite({
       ))}
       {statuts.length > 0 ? (
         <div className="statuts">
-          {statuts.map((statut) => (
-            <span className="est-statut" key={statut.id}>
-                <ScanCard {...avecInteraction(statut, interactifs, effets)} />
+          {grouperStatuts(statuts, interactifs, effets).map(({ carte, nombre }) => (
+            <span className="est-statut" key={carte.id}>
+              <ScanCard {...avecInteraction(carte, interactifs, effets)} />
+              {nombre > 1 ? (
+                <span className="statut-nombre" aria-label={`${carte.name} ×${nombre}`}>
+                  ×{nombre}
+                </span>
+              ) : null}
             </span>
           ))}
         </div>
@@ -486,9 +533,18 @@ export function CarteApercu({
               compteurs={carte.counters ?? []}
               dessous
             />
-            {(statuts ?? []).map((statut) => (
+            {/* Repliés comme sur la table (voir `grouperStatuts`). L'aperçu
+                est plus large, mais dix Tenaces y déborderaient tout autant,
+                et le nombre reste l'information utile. Ici rien n'est
+                cliquable (`onSelect: undefined`) : on peut toujours replier. */}
+            {grouperStatuts(statuts ?? [], new Map(), new Map()).map(({ carte: statut, nombre }) => (
               <span className="est-statut" key={statut.id}>
                 <ScanCard {...statut} onSelect={undefined} />
+                {nombre > 1 ? (
+                  <span className="statut-nombre" aria-label={`${statut.name} ×${nombre}`}>
+                    ×{nombre}
+                  </span>
+                ) : null}
               </span>
             ))}
           </div>

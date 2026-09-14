@@ -7142,3 +7142,44 @@
     }
   }
 }
+
+@layer utilitaires {
+  /* --- Le compteur des statuts identiques (14/09/2026) ---------------------
+     Luke Cage empile les Tenaces sans limite. Étalées, dix cartes de statut
+     font une rangée de 647 px sous une carte de 106 : elle recouvre le héros et
+     déborde de 270 px de chaque côté, par-dessus les zones voisines (mesuré sur
+     le plateau réel). On replie les identiques et on écrit leur nombre.
+
+     ⚠ Le badge est posé EN ABSOLU sur la mini-carte : il ne doit rien ajouter à
+     la largeur, sans quoi on aurait déplacé le problème au lieu de le régler. */
+  .est-statut {
+    position: relative;
+  }
+
+  .statut-nombre {
+    position: absolute;
+    right: -4px;
+    bottom: -5px;
+    z-index: 2;
+    min-width: 19px;
+    padding: 1px 4px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 900;
+    line-height: 1.35;
+    text-align: center;
+    color: #0e1116;
+    background: var(--gold, #f2c94c);
+    border: 1px solid rgba(0, 0, 0, 0.55);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+  }
+
+  /* Dans l'aperçu agrandi les mini-cartes sont plus grandes : le badge suit. */
+  .carte-apercu .statut-nombre {
+    font-size: 0.8rem;
+    min-width: 23px;
+    right: -5px;
+    bottom: -6px;
+  }
+}
