@@ -1,7 +1,21 @@
-# Modale : prévenir quand un paiement rendra le coup sans effet
+# Modale : prévenir quand un paiement rendra le coup sans effet — ✅ FAIT
 
-**Décidé avec l'utilisateur le 11/09/2026**, en questions une à une. À faire
-**après** le déploiement du verrou Crise (sa décision).
+**Livré le 11/09/2026 au soir.** Le détail est en bas de fiche (« FAIT LE
+11/09/2026 »), avec le moteur, la gate, le harnais et le plateau. Vérifié le
+14/09/2026 : `paid_with` dans `ability.py`, `coupSansEffet` dans `ask.ts`,
+`tools/verifier_ignore_crise.py` en place, `paiement-sans-effet.test.ts`
+11 cas verts.
+
+⚠ **LEÇON, DEUXIÈME FOIS.** Le 13/09 j'avais reproposé la « modale du héros »
+comme à faire alors qu'elle était close, pour avoir lu le haut de sa fiche et
+pas le bas. Le 14/09 j'ai refait exactement la même chose ici : la phrase
+ci-dessous disait « à faire après le déploiement du verrou Crise », le
+déploiement avait eu lieu, et le travail aussi. **Une fiche se lit en entier,
+et son titre porte le statut.** D'où le « ✅ FAIT » dans le titre.
+
+**Décidé avec l'utilisateur le 11/09/2026**, en questions une à une. Était à
+faire après le déploiement du verrou Crise (sa décision) ; ce déploiement a eu
+lieu, et la suite aussi.
 
 ## Le cas, en une phrase
 
