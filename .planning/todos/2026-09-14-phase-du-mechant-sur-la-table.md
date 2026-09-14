@@ -33,11 +33,39 @@ Cinq questions, une à la fois.
 
 | Question | Décision |
 |---|---|
-| **Où tester** | **Serveur de développement seulement.** Rien en production tant qu'il n'a pas validé. |
+| **Où tester** | **En production, mais réservé à son compte.** ⚠ RÉPONSE RÉVISÉE, voir ci-dessous. |
 | **Où jouer la phase** | **Sur la table**, comme eux. La scène centrale n'est pas utilisée dans ce mode. |
 | **Rythme** | **Ça se déroule seul et vite, et ça s'arrête quand le joueur peut agir.** ⚠ RÉPONSE RÉVISÉE, voir ci-dessous. |
 | **Étendue du trait** | **Tout ce qui va d'une carte à une autre** : activations du méchant et des sbires, attaques et manigances, et les effets des cartes rencontre. |
 | **Remplacement** | **Un troisième mode, à côté** : « Détaillé / Sur la table / Instantané ». Rien de ce qui marche n'est touché, et ne pas le choisir suffit à revenir en arrière. |
+
+## ⚠ Où tester : réponse révisée le 14/09/2026
+
+Premier tour : « serveur de développement seulement, rien en production ». Puis,
+plus tard : « tu pourras le déployer, mais QUE pour mon compte. Tu peux le
+mettre en tant que nouveau truc de base pour mon compte. Je vois trois
+possibilités différentes pour la phase du méchant, mais vraiment que pour moi. »
+
+**Décision retenue** :
+- le troisième mode part en production, mais n'est proposé qu'à son compte ;
+- pour lui, il devient le mode PAR DÉFAUT ;
+- les autres joueurs continuent de voir deux modes, et rien ne change pour eux.
+
+✅ **La mécanique existe déjà, elle tourne en production depuis ce matin.**
+`_est_administrateur` (`server_get.py`, écrit pour le relevé des illustrations)
+et la route `/get_site_admin` : le SITE ne renseigne `site_admin_url` que pour
+la table de l'administrateur, et seul le siège 0 compte. Vérifié le 14/09 en
+production, un non-administrateur reçoit 403.
+
+⚠ **À ajouter** : le plateau (`ui-app/`) ne consulte pas encore cette route.
+Ses deux seuls consommateurs sont dans l'assistant (`lien-admin.js`,
+`releve/app.js`). Le motif est établi, il reste à le porter.
+
+⚠ **ET ON NE CONSTRUIT PAS UNE FORTERESSE POUR UN RÉGLAGE D'AFFICHAGE.** Cette
+garde est un CONFORT, pas une sécurité : quelqu'un qui forcerait son stockage
+local pour s'octroyer le mode ne verrait qu'un écran en chantier, sans rien
+casser ni voir quoi que ce soit de privé. À ne pas traiter comme
+`save_images_cartes`, où l'écriture, elle, devait vraiment être fermée.
 
 ## ⚠ Le rythme a été demandé DEUX FOIS, et la seconde réponse annule la première
 
