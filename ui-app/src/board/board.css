@@ -7183,3 +7183,80 @@
     bottom: -6px;
   }
 }
+
+@layer utilitaires {
+  /* --- La rangée de statuts ne dépasse jamais la carte (14/09/2026) ---------
+     Le repli des statuts identiques règle le cas Luke Cage, pas celui-ci : un
+     personnage ORDINAIRE peut porter quatre cartes d'état DIFFÉRENTES en même
+     temps (Tenace + Sonné + Désorienté + Exposé), et un porteur de Steady deux
+     Sonné plus deux Désorienté. Étalées, quatre mini-cartes font ~257 px sous
+     une carte de 106 : ça déborde sur les zones voisines.
+
+     Les mini-cartes se chevauchent donc juste assez pour tenir, et pas plus :
+     tant qu'il y a la place, elles gardent leur écart naturel. Aucune n'est
+     cachée, et les quatre états restent reconnaissables (dessins et couleurs
+     très différents).
+
+     ⚠ `--largeur-cible` est déclarée PAR CONTEXTE et pas calculée en `100%` :
+     `.statuts` est en position absolue et ses enfants résoudraient un
+     pourcentage contre elle-même, pas contre le porteur — la référence serait
+     circulaire. Les deux valeurs ci-dessous sont MESURÉES sur le plateau. */
+  .statuts {
+    /* ⚠ CES VALEURS SONT EN PIXELS CSS, PAS EN PIXELS D'ÉCRAN. Le plateau est
+       rendu avec un zoom d'environ 0,845 : une mini-carte déclarée 74 px se
+       mesure 62 px à l'écran. Un premier jet est parti des pixels mesurés, et
+       la rangée faisait 128 px au lieu des 106 visés — l'écart tenait tout
+       entier dans ce facteur. On reprend donc `--card-w` tel qu'il est déclaré
+       plus haut dans ce fichier, et c'est le zoom qui fait le reste. */
+    --statut-w: 74px;    /* `.plateau-scene .est-statut .scan-card.is-landscape` */
+    --largeur-cible: 127px; /* `.plateau-scene .scan-card`, la carte du porteur */
+
+    /* ⚠ ON RÉTRÉCIT AVANT DE RECOUVRIR, et c'est la mesure qui l'a imposé. Un
+       premier jet gardait les vignettes à 74 px et les faisait se chevaucher
+       jusqu'à tenir : à quatre statuts il n'en restait que 24 % de visible, une
+       tranche de couleur où plus rien ne se reconnaît. Ici chaque vignette
+       montre toujours la même PART d'elle-même (`--part-visible`) ; c'est sa
+       taille qui cède, pas sa lisibilité.
+
+       largeur totale = w × (1 + (n-1) × part) = --largeur-cible, par
+       construction. À une seule vignette, `min()` la laisse à sa taille pleine. */
+    --part-visible: 0.55;
+    --w: min(
+      var(--statut-w),
+      calc(var(--largeur-cible) / (1 + max(var(--nb-statuts, 1) - 1, 0) * var(--part-visible)))
+    );
+    gap: 0; /* le recouvrement remplace la gouttière */
+  }
+
+  .plateau-scene .est-statut .scan-card,
+  .plateau-scene .est-statut .scan-card.is-landscape {
+    --card-w: var(--w, 74px);
+  }
+
+  .est-statut + .est-statut {
+    margin-left: calc(var(--w) * (var(--part-visible) - 1));
+  }
+
+  /* Chevauchées, elles se lisent mieux dans l'ordre d'arrivée : la dernière
+     posée passe devant. */
+  .est-statut {
+    z-index: 1;
+  }
+
+  .est-statut + .est-statut {
+    z-index: 2;
+  }
+
+  /* Dans l'aperçu agrandi, les mini-cartes et la carte sont plus grandes. */
+  /* Dans l'aperçu agrandi, mini-cartes et porteur sont plus grands. Valeurs
+     relues sur les règles `.carte-apercu` de ce fichier, même unité. */
+  .carte-apercu .statuts {
+    --statut-w: 178px;   /* `.carte-apercu .est-statut .scan-card.is-landscape` */
+    --largeur-cible: 320px; /* la carte agrandie */
+  }
+
+  .carte-apercu .est-statut .scan-card,
+  .carte-apercu .est-statut .scan-card.is-landscape {
+    --card-w: var(--w, 178px);
+  }
+}

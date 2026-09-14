@@ -291,7 +291,14 @@ export function Unite({
         </span>
       ))}
       {statuts.length > 0 ? (
-        <div className="statuts">
+        // `--nb-statuts` : le nombre de mini-cartes REELLEMENT dessinees (apres
+        // repli). La CSS s'en sert pour serrer la rangee jusqu'a la largeur du
+        // porteur : quatre statuts DIFFERENTS (Tenace + Sonne + Desoriente +
+        // Exposé) sont possibles sur n'importe quel personnage, et debordaient.
+        <div
+          className="statuts"
+          style={{ '--nb-statuts': grouperStatuts(statuts, interactifs, effets).length } as CSSProperties}
+        >
           {grouperStatuts(statuts, interactifs, effets).map(({ carte, nombre }) => (
             <span className="est-statut" key={carte.id}>
               <ScanCard {...avecInteraction(carte, interactifs, effets)} />
