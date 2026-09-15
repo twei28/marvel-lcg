@@ -15,6 +15,7 @@
     "site-en-anglais": "playwright test tests/site-en-anglais.spec.ts --project=pc",
     "partie-en-francais": "playwright test tests/partie-en-francais.spec.ts --project=pc",
     "spectateur-moteur": "playwright test tests/spectateur-moteur.spec.ts --project=pc",
+    "mains-privees": "playwright test tests/mains-privees.spec.ts --project=pc",
     "annonce-attend-le-clic": "playwright test tests/annonce-attend-le-clic.spec.ts --project=pc",
     "lancement": "playwright test tests/lancement-partie.spec.ts --project=pc",
     "campagne-decks": "playwright test tests/campagne-decks.spec.ts --project=pc",

@@ -114,6 +114,38 @@ class GameServerBase(WebServer):
         jeton = request.cookies.get(f'seat_token_{seat}')
         return bool(jeton) and jeton == self.seat_hash(attendu)
 
+    def sieges_visibles(self, request: web.Request) -> 'Set[int]|None':
+        """Les sieges dont ce client a le droit de VOIR les cartes cachees.
+
+        `None` veut dire « tout », et c'est le cas de la plupart des parties.
+
+        ⚠ CE N'EST PAS `allowed_seats`, ET LA NUANCE EST TOUT LE SUJET.
+        `allowed_seats` ouvre en plus tout siege ORPHELIN, pour qu'un joueur
+        deconnecte ne bloque pas la partie : c'est une regle d'ACTION, et elle a
+        raison de l'etre. Appliquee a la VUE, elle rendait la main de celui qui
+        vient de fermer son onglet a tous les autres. Mesure du 15/09/2026 : la
+        gate `mains-privees` est passee au rouge la-dessus, et c'etait juste.
+
+        On ne regarde donc que ce qu'on TIENT, cookie en main :
+
+          — table sans protection de sieges : rien a cacher. C'est la partie
+            locale, ou la meme personne joue plusieurs heros sur un ecran ;
+          — SPECTATEUR : tout, c'est sa raison d'etre (l'utilisateur, le
+            15/09/2026 : « oui, tout, je suis le proprio ») ;
+          — HOT-SEAT : plusieurs heros sur un seul ecran. Le client l'annonce,
+            et on ne le croit QUE s'il tient le siege 0, celui de l'hote. Un
+            invite qui ajouterait `hot_seat` a son adresse n'y gagne rien.
+        """
+        if self.est_spectateur(request):
+            return None
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return None
+        tenus = {s for s in range(len(passwords)) if self.tient_le_siege(request, s)}
+        if 'hot_seat' in request.rel_url.query and 0 in tenus:
+            return None
+        return tenus
+
     def allowed_seats(self, request: web.Request) -> 'Set[int]|None':
         """Sieges que CE client a le droit d'occuper. None = protection coupee."""
         # ⚠ LE SPECTATEUR N'EN A AUCUN, ET C'EST LA PREMIERE CHOSE QU'ON DIT.

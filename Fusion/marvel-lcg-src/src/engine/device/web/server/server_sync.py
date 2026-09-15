@@ -100,12 +100,74 @@ class GameServerSync(GameServerBase):
             from game.render.descriptor.world import WorldDescriptor
             data = WorldDescriptor()
 
+        # Le numero de trame AVANT le masquage : apres, `data` peut etre un
+        # dictionnaire, qui n'a pas d'attribut.
+        render_id = data.render_id
+        data = self.MasquerCeQuOnNaPasLeDroitDeVoir(data, request)
         compressed_data = Json.DumpGZip(data)
 
         self.device_manager.AddSize("World", len(compressed_data))
-        Log.DebugSilent("SYNC", f"[Client] Get world {data.render_id}, player_id: {player_ids}")
+        Log.DebugSilent("SYNC", f"[Client] Get world {render_id}, player_id: {player_ids}")
 
         return web.Response(body=compressed_data, content_type='application/json', headers={'Content-Encoding': 'gzip'})
+
+    def MasquerCeQuOnNaPasLeDroitDeVoir(self, descriptor, request: web.Request):
+        """Effacer l'identite des cartes que CE client n'a pas le droit de voir.
+
+        ⚠ POURQUOI, ET C'EST UNE FUITE, PAS UN CONFORT. Mesure du 15/09/2026,
+        en partie a deux heros : `/get_world` rend a n'importe quel client la
+        MAIN DE TOUS LES JOUEURS, nom des cartes compris, et l'ORDRE COMPLET DU
+        DECK RENCONTRE (32 cartes nommees, face cachee). Le plateau, lui,
+        cachait deja tout cela a l'ecran (`isVisibleFor`, world.ts) : la regle
+        existait cote client, et seulement la. Un `curl` en faisait le tour.
+
+        Demande de l'utilisateur, le meme jour : « ce n'est que moi qui doit
+        pouvoir voir les autres ».
+
+        ⚠ LA REGLE EST CELLE DU CLIENT, DEPLACEE ICI, PAS UNE NOUVELLE. Une
+        carte se voit si `visible_for_players` croise les sieges de ce client.
+        Mesure de controle avant d'ecrire une ligne : dans une partie a deux,
+        TOUT ce qui est sur la table (vilain, manigance, personnages en jeu)
+        porte `(0, 1)`, les mains portent `(0,)` et `(1,)`, les decks `()`.
+        Masquer sur cette regle ne cache donc rien de ce qui est public.
+
+        Ce qu'on efface : le nom, l'identifiant de carte, l'illustration, les
+        traits, le type, le cout. Ce qu'on garde : l'identifiant d'OBJET, l'etat
+        (engagee ou non), le dos a afficher, la zone. Le client dessine deja un
+        dos pour ces cartes-la : rien ne change a l'ecran.
+
+        Qui voit quoi est decide par `sieges_visibles` (server_base), et surtout
+        PAS par `allowed_seats` : celle-la ouvre tout siege orphelin pour qu'un
+        joueur deconnecte ne bloque pas la partie, ce qui, applique a la vue,
+        rendait sa main a tout le monde des qu'il fermait son onglet.
+        """
+        autorises = self.sieges_visibles(request)
+        if autorises is None:
+            return descriptor
+
+        from dataclasses import asdict
+        brut = asdict(descriptor)
+
+        def masquer(noeud) -> None:
+            if isinstance(noeud, dict):
+                vus = noeud.get('visible_for_players')
+                if isinstance(vus, list) and 'name' in noeud and not (set(vus) & autorises):
+                    noeud['name'] = ''
+                    noeud['card_id'] = ''
+                    noeud['pic_id'] = ''
+                    noeud['card_type'] = ''
+                    noeud['traits'] = {}
+                    noeud['info'] = {}
+                    noeud['buffs'] = {}
+                    noeud['cost'] = 0
+                for valeur in noeud.values():
+                    masquer(valeur)
+            elif isinstance(noeud, list):
+                for valeur in noeud:
+                    masquer(valeur)
+
+        masquer(brut)
+        return brut
 
     async def handle_post(self, request: web.Request) -> web.Response:
         post_data = await request.text()

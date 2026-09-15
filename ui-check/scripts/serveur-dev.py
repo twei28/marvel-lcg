@@ -55,6 +55,18 @@ def main() -> None:
     arg = argparse.ArgumentParser(description=__doc__)
     arg.add_argument("--port", type=int, default=2346, help="port d'ecoute (defaut : 2346)")
     arg.add_argument("--jeu", default=JEU_PAR_DEFAUT, help="racine du codebase de travail")
+    # ⚠ AJOUTE LE 15/09/2026 POUR UNE GATE QUI N'AVAIT AUCUN MOYEN DE MESURER.
+    # Le moteur ne masque la main des autres joueurs que sur une table dont les
+    # SIEGES sont proteges (`allowed_seats`) : sur une table ouverte, tout le
+    # monde voit tout, et c'est voulu (une partie locale a plusieurs heros se
+    # joue sur un seul ecran). Le serveur de dev est ouvert par construction :
+    # sans cette option, `mains-privees.spec.ts` se contentait de passer sans
+    # rien verifier.
+    arg.add_argument(
+        "--sieges-proteges",
+        action="store_true",
+        help="protege les 4 sieges par un mot de passe (siege N -> cle-N), comme en production",
+    )
     options = arg.parse_args()
 
     if sys.version_info[:2] != (3, 10):
@@ -77,6 +89,10 @@ def main() -> None:
         reglages = json.load(f)
     reglages["server_addresses"] = [f"127.0.0.1:{options.port}"]
     reglages["password"] = ""  # serveur de dev local : jamais de mot de passe, jamais de tunnel.
+    # Les cles sont FIXES et publiques : ce serveur ne protege rien, il
+    # REPRODUIT la forme d'une table de production pour qu'une gate puisse la
+    # mesurer.
+    reglages["seat_passwords"] = ["cle-0", "cle-1", "cle-2", "cle-3"] if options.sieges_proteges else []
     with open(config, "w", encoding="utf-8") as f:
         json.dump(reglages, f, indent=2)
 

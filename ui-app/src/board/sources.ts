@@ -10,6 +10,7 @@
 // Les etats enregistres vivent dans le codebase du jeu, hors depot, et ne
 // doivent jamais etre edites a la main. On les lit, c'est tout.
 
+import { estMultijoueur } from './moteur'
 import type { World } from './world'
 
 const DOSSIER_ETATS = '/public/js/fixtures'
@@ -63,7 +64,14 @@ export async function chargerEtat(fichier: string): Promise<World> {
 
 /** La partie en cours. Lecture seule : aucune action n'est envoyee au moteur. */
 export async function chargerPartieEnCours(playerId: number): Promise<World> {
-  const reponse = await fetch(`/get_world?p=${playerId}`, { cache: 'no-store' })
+  // ⚠ LE HOT-SEAT S'ANNONCE ICI AUSSI (15/09/2026). Depuis que le moteur
+  // masque les cartes qu'un client n'a pas le droit de voir, il doit savoir
+  // qu'un seul ecran joue PLUSIEURS heros : sans ce drapeau, la main du second
+  // heros revenait anonyme a son propre joueur. Le socket et l'accuse de
+  // reception le portaient deja (`adresseSocket`, `accuserReception`) ; cette
+  // route-ci, non, parce que rien n'en dependait avant.
+  const siege = estMultijoueur() ? `p=${playerId}` : `hot_seat&p=${playerId}`
+  const reponse = await fetch(`/get_world?${siege}`, { cache: 'no-store' })
   if (!reponse.ok) {
     throw new Error(`/get_world answered ${reponse.status}.`)
   }
