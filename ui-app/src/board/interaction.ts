@@ -33,6 +33,7 @@ import { useConfirmation } from './ConfirmationJeu'
 import type { Catalogue } from './catalogue'
 import { optionsDeLaSource } from './glisser/cibles'
 import { libellesCible } from './libelles-cible'
+import { demandeHorsPanneauManigance } from './manigance-face-a'
 import { t } from './langue'
 import type { ScanCardProps } from '../components/ScanCard'
 import type { World, WorldCard } from './world'
@@ -300,7 +301,11 @@ function estIdentiteJoueur(carte: WorldCard | undefined): boolean {
 
 export function useInteraction(
   world: World | undefined,
-  demande: Demande | undefined,
+  /**
+   * La demande BRUTE du moteur. Voir `demandeOrdinaire` juste en dessous : la
+   * question de la face A de la manigance ne franchit pas cette porte.
+   */
+  demandeBrute: Demande | undefined,
   repondre: (reponse: Reponse | null, bindPlayerId: number) => void,
   /** Cartes que la table dessine vraiment. Voir Plateau.idsAffiches. */
   idsAffiches: Set<number>,
@@ -326,6 +331,19 @@ export function useInteraction(
    * son rôle.
    */
   const [sourceDepot, setSourceDepot] = useState<number | undefined>(undefined)
+
+  /**
+   * ⚠ LA QUESTION DE LA MANIGANCE N'EXISTE PAS POUR LA TABLE. Son panneau la
+   * tient (voir `demandeHorsPanneauManigance`) : sans cette porte, la table
+   * posait son halo sur la manigance principale, son menu offrait l'option
+   * sous son libellé technique, et en mode Détaillé le clic sur la carte
+   * RÉPONDAIT — y compris pendant les 400 ms où l'overlay du panneau laisse
+   * passer les clics, donc à la question suivante.
+   *
+   * La référence est inchangée pour toute autre demande : aucune dépendance de
+   * hook n'est invalidée par ce passage.
+   */
+  const demande = demandeHorsPanneauManigance(demandeBrute)
 
   const options = demande?.options ?? []
   const optionsGenerales = useMemo(() => options.filter((o) => o.bind_id === 0), [options])

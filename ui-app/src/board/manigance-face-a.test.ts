@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   NOM_OPTION_MANIGANCE,
+  demandeHorsPanneauManigance,
   maniganceAMontrer,
   ouvertureEncoreVoilee,
   questionDeLaManigance,
@@ -159,5 +160,27 @@ describe('ouvertureEncoreVoilee', () => {
 
   it('ne voile pas une partie déjà commencée', () => {
     expect(ouvertureEncoreVoilee({ ...base, round: 3 })).toBe(false)
+  })
+})
+
+describe('demandeHorsPanneauManigance', () => {
+  it('retire la question du panneau de ce que la table lit', () => {
+    // Si cette porte sautait, le menu de la manigance principale rouvrirait :
+    // halo sur la carte, option au libelle technique brut, et en mode Detaille
+    // un clic qui REPOND a la place du panneau.
+    const demande = { options: [option(NOM_OPTION_MANIGANCE)] } as unknown as Demande
+    expect(demandeHorsPanneauManigance(demande)).toBeUndefined()
+  })
+
+  it('rend la MEME demande, a la reference pres, pour toute autre question', () => {
+    // La reference compte : un objet neuf a chaque rendu invaliderait les
+    // dependances de hook de `useInteraction` et rejouerait la composition en
+    // cours a chaque trame.
+    const demande = { options: [option('Attack'), option('Thwart')] } as unknown as Demande
+    expect(demandeHorsPanneauManigance(demande)).toBe(demande)
+  })
+
+  it('laisse passer l absence de demande', () => {
+    expect(demandeHorsPanneauManigance(undefined)).toBeUndefined()
   })
 })

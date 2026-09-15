@@ -115,6 +115,7 @@ import { nomAffiche } from './board/noms-cartes-fr'
 import { libellePhase, libelleQuiAgit, libelleRound } from './board/etat-partie'
 import { CLE_DESIGN_ESSAI, lireDesignEssai } from './board/design-essai'
 import {
+  demandeHorsPanneauManigance,
   maniganceAMontrer,
   ouvertureEncoreVoilee,
   questionDeLaManigance,
@@ -1619,9 +1620,15 @@ function PagePartie({
         : undefined,
     [etat.monde, joueurActif, catalogue, scansFr, vueForcee]
   )
+  // ⚠ LA TABLE NE VOIT PAS LA QUESTION DE LA MANIGANCE. Son panneau la tient
+  // (voir `demandeHorsPanneauManigance`) : le halo, le menu d'une carte et le
+  // clic direct du mode Detaille se construisent tous sur CETTE demande-ci,
+  // jamais sur `etat.demande`. La reference est la meme pour toute autre
+  // question : rien d'autre ne change.
+  const demandeOrdinaire = demandeHorsPanneauManigance(etat.demande)
   const interaction = useInteraction(
     etat.monde,
-    etat.demande,
+    demandeOrdinaire,
     repondre,
     plateau?.idsAffiches ?? AUCUN_ID,
     joueurActif,
@@ -3509,19 +3516,24 @@ function PagePartie({
                   return
                 }
                 if (modeActions === 'simple') {
-                  const optionsSource = etat.demande?.options.filter((option) => option.bind_id === id) ?? []
+                  const optionsSource =
+                    demandeOrdinaire?.options.filter((option) => option.bind_id === id) ?? []
                   const identiteId = etat.monde?.players?.[joueurActif]?.area_hero?.[0]?.id
                   const aActionsGenerales =
-                    id === identiteId && (etat.demande?.options.some((option) => option.bind_id === 0) ?? false)
+                    id === identiteId &&
+                    (demandeOrdinaire?.options.some((option) => option.bind_id === 0) ?? false)
                   const peutFinirTour =
-                    id === identiteId && etat.demande?.show_cancel === true
+                    id === identiteId && demandeOrdinaire?.show_cancel === true
                   if (optionsSource.length > 0 || aActionsGenerales || peutFinirTour) {
                     interaction.focaliserCarte(id)
                   }
                   return
                 }
                 const carteMonde = cartesMondeParId.get(id)
-                const actionsVersCible = optionsDisponiblesVersCible(etat.demande?.options ?? [], id)
+                const actionsVersCible = optionsDisponiblesVersCible(
+                  demandeOrdinaire?.options ?? [],
+                  id
+                )
                 if (actionsVersCible.length === 1) {
                   choisirOptionDepuisMenu(actionsVersCible[0]!, [id])
                   return

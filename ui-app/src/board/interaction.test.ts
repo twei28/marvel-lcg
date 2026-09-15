@@ -12,6 +12,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { Demande, Option } from './ask'
 import type { Catalogue } from './catalogue'
 import { useInteraction } from './interaction'
+import { NOM_OPTION_MANIGANCE } from './manigance-face-a'
 import type { World } from './world'
 
 const HEROS = 100
@@ -240,5 +241,99 @@ describe('useInteraction, une cible focalisee depuis un depot', () => {
     act(() => result.current.focaliserCible(VILAIN))
 
     expect(result.current.options.map((o) => o.id)).toEqual([1, 2])
+  })
+})
+
+// LA QUESTION DE LA MANIGANCE N'APPARTIENT QU'A SON PANNEAU.
+//
+// Defaut trouve en relecture le 15/09/2026 : la vague precedente avait ferme
+// `DemandeCentrale`, la scene et `BarreAction` (voir `ou-va-la-question.ts`),
+// mais PAS le menu d'une carte. `Reveal_Main_Scheme` porte `bind_id` = la
+// manigance principale : la table lui posait donc son halo, et son menu
+// offrait l'option sous son libelle technique brut. En mode Detaille, une
+// carte qui n'a qu'une action disponible la DECLENCHE au clic (`actionUnique`)
+// — le clic sur la manigance repondait donc directement a la question.
+//
+// Pourquoi c'est grave et pas seulement laid : pendant les 400 ms du
+// retournement, `board.css` met l'overlay du panneau en `pointer-events: none`
+// et la table redevient cliquable. Ce chemin-la contournait la garde « un seul
+// envoi » du panneau et pouvait repondre a la question SUIVANTE.
+describe('useInteraction, la question de la manigance est prise par son panneau', () => {
+  const MANIGANCE = 400
+
+  const MONDE_MANIGANCE = {
+    render_id: 1,
+    area_schemes_main: [carte(MANIGANCE, { card_type: 'main_scheme' })],
+    players: [{ area_hero: [carte(HEROS, { card_type: 'hero' })] }],
+  } as unknown as World
+
+  function demandeManigance(): Demande {
+    return {
+      options: [
+        {
+          id: 9,
+          name: NOM_OPTION_MANIGANCE,
+          bind_id: MANIGANCE,
+          bind_player_id: 0,
+          all_legal_targets: [],
+          target_num_range: [0, 0],
+          target_payment: {},
+          select_rule: '',
+          target_must_include_traits: [],
+          failure_reason: '',
+          is_search: false,
+        },
+      ],
+      refus: [],
+      prompt_text: '',
+      event_name: 'ConfirmMainSchemeReveal',
+      show_cancel: false,
+      ability_type: '',
+    }
+  }
+
+  function monterManigance(mode: 'simple' | 'detailed') {
+    return renderHook(() =>
+      useInteraction(
+        MONDE_MANIGANCE,
+        demandeManigance(),
+        vi.fn(),
+        new Set([MANIGANCE, HEROS]),
+        0,
+        CATALOGUE,
+        mode
+      )
+    )
+  }
+
+  it('ne pose aucun halo sur la manigance principale', () => {
+    // Si la gate sautait : `role: 'porteur'` reviendrait sur la carte, et le
+    // joueur verrait la table l'appeler alors que le panneau tient deja la
+    // reponse.
+    const { result } = monterManigance('simple')
+    expect(result.current.cartes.get(MANIGANCE)).toBeUndefined()
+  })
+
+  it('⚠ NE DONNE AUCUN MOYEN DE REPONDRE EN CLIQUANT LA MANIGANCE', () => {
+    // LE CAS QUI COMPTE. En mode Detaille, une carte qui n'a qu'une action
+    // disponible la declenche AU CLIC. Sans la gate, ce clic postait la
+    // reponse a la place du panneau — et, pendant le retournement, a la
+    // question SUIVANTE.
+    const { result } = monterManigance('detailed')
+    expect(result.current.cartes.get(MANIGANCE)?.agir).toBeUndefined()
+  })
+
+  it('n offre la question dans AUCUN menu de carte', () => {
+    const { result } = monterManigance('simple')
+    expect(result.current.options).toEqual([])
+    act(() => result.current.focaliserCarte(MANIGANCE))
+    expect(result.current.options).toEqual([])
+  })
+
+  it('ne touche a rien quand la question n est pas celle de la manigance', () => {
+    // La contre-epreuve : une action ordinaire garde son halo et son menu.
+    const { result } = monter(optionTroisCibles())
+    expect(result.current.cartes.get(HEROS)?.agir).toBeTypeOf('function')
+    expect(result.current.options).toHaveLength(1)
   })
 })

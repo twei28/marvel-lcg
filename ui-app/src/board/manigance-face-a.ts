@@ -67,6 +67,31 @@ export function maniganceAMontrer(
   return designee ?? zone[0]
 }
 
+/**
+ * LA DEMANDE TELLE QUE LA TABLE DOIT LA LIRE : sans la question du panneau.
+ *
+ * ⚠ DÉFAUT TROUVÉ EN RELECTURE, 15/09/2026. `ou-va-la-question.ts` avait fermé
+ * le panneau central, la scène et la barre du bas, mais PAS le menu d'une
+ * carte. `Reveal_Main_Scheme` porte `bind_id` = la manigance principale : la
+ * table lui posait donc son halo (`interaction.ts`) et son menu offrait
+ * l'option sous son libellé technique brut. Pire, en mode Détaillé une carte
+ * qui n'a qu'une seule action disponible la DÉCLENCHE au clic : cliquer la
+ * manigance répondait à la question.
+ *
+ * Et ce chemin-là n'est pas théorique. Pendant les 400 ms du retournement,
+ * `board.css` met l'overlay du panneau en `pointer-events: none` et la table
+ * redevient cliquable : le clic contournait la garde « un seul envoi » du
+ * panneau et pouvait répondre à la question SUIVANTE.
+ *
+ * ⚠ LA RÈGLE DE RECONNAISSANCE N'EST PAS DUPLIQUÉE : c'est
+ * `questionDeLaManigance` ci-dessus, et elle seule. Quand la question n'est
+ * pas celle du panneau, la MÊME référence ressort — aucun objet neuf, donc
+ * aucune dépendance de hook invalidée à chaque rendu.
+ */
+export function demandeHorsPanneauManigance(demande: Demande | undefined): Demande | undefined {
+  return questionDeLaManigance(demande) ? undefined : demande
+}
+
 /** Ce qu'il faut savoir pour décider si l'ouverture reste voilée. */
 export type EtatOuverture = {
   /** Le monde dit qu'une question de face A est attendue (`confirm_main_scheme`). */
