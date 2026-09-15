@@ -637,5 +637,48 @@ export const DICO_EN_BASE = {
     "La campagne n'a pas pu être créée :": "The campaign could not be created:",
     "Scénario introuvable dans le catalogue :": "Scenario not found in the catalog:",
 
-    "Choisir ce héros": "Choose this hero",
+    "Choisir ce héros": "Choose this hero",,
+
+  // ---- PASSE DE LANGUE DU 15/09/2026 ----------------------------------
+  // 29 cles s'affichaient en FRANCAIS sur un ecran anglais. Le PLATEAU
+  // etait garde depuis le 14/09 (board/dico-en.test.ts) ; le SITE, lui,
+  // n'avait aucun controle. Il en a un desormais :
+  // ui-app/src/site-langue.test.ts, qui lit les trois dictionnaires du
+  // site (celui-ci, les blocs enregistrerTraductions et les DICO_EN_LOCAL).
+  // campagne/app.js
+  'Dernier calcul': 'Last calculation',
+  'Enregistrer le score': 'Save the score',
+  'L\'enquête': 'The investigation',
+  'Les neuf preuves': 'The nine pieces of evidence',
+  'Mis hors de cause': 'Cleared',
+  'Piste cumulée au carnet': 'Lead recorded in the campaign log',
+  'Une carte inscrite au carnet a quitté le deck : elle doit y rester pour tout le reste de la campagne. Rien n\'a été modifié.':
+    'A card recorded in the campaign log has left the deck: it must stay there for the rest of the campaign. Nothing was changed.',
+  'combinaison possible': 'possible combination',
+  'combinaisons encore possibles': 'combinations still possible',
+  'combinaisons possibles': 'possible combinations',
+  'preuve obtenue': 'piece of evidence obtained',
+  'preuves obtenues': 'pieces of evidence obtained',
+  'une seule combinaison tient encore : la taupe est démasquée.':
+    'only one combination still holds: the mole is unmasked.',
+  // deckbuilder/app.js
+  'coût': 'cost',
+  // prepare/app.js
+  '2 équipes, 1v1 ou 2v2': 'Two teams, 1v1 or 2v2',
+  'Arsenal': 'Arsenal',
+  'Aucun scénario de bataille dans les données.': 'No battle scenario in the data.',
+  'Base': 'Base',
+  'Bataille': 'Battle',
+  'Chaque équipe affronte le scénario apporté par l\'autre.':
+    'Each team faces the scenario brought by the other.',
+  'Choisir le leader d\'en face': 'Choose the opposing leader',
+  'Decks': 'Decks',
+  'Fan-made': 'Fan-made',
+  'Némésis': 'Nemesis',
+  'Table du camp adverse': 'Opposing team\'s table',
+  // prepare/legacy-fiche.js
+  'aucun jeton': 'no token',
+  'déjà débloqué': 'already unlocked',
+  'héros inconnu': 'unknown hero',
+  'écriture refusée': 'write refused',
 };

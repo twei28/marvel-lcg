@@ -18,6 +18,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { DICO_EN_BASE } from './dico-en'
+import { libellesTraduisibles } from './mots-cles'
 
 const RACINE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -80,5 +81,24 @@ describe('le dictionnaire anglais couvre tout ce qui s’affiche', () => {
 
   it('la clé signalée par l’utilisateur est bien traduite', () => {
     expect(DICO_EN_BASE['Partie']).toBe('Game')
+  })
+})
+
+describe('⚠ les libellés qui passent par une VARIABLE', () => {
+  // ⚠ LA GATE CI-DESSUS NE LES VOIT PAS. Elle lit les `t('littéral')` du code ;
+  // ici les noms et définitions viennent de tables, et `t(variable)` ne se
+  // vérifie pas statiquement. Ils échappaient donc à tout contrôle.
+  //
+  // Deux défauts en deux jours, tous deux invisibles à qui joue en français :
+  // « Exigence » manquait entièrement (15/09/2026), et « Percée »
+  // (Breakthrough, mot-clé maison de viv_vision) s'affichait EN FRANÇAIS au
+  // milieu d'un plateau anglais, sa définition avec.
+  it('chaque mot-clé et sa définition ont leur anglais', () => {
+    const sansAnglais = libellesTraduisibles().filter((libelle) => !(libelle in DICO_EN_BASE))
+    expect(
+      sansAnglais,
+      `${sansAnglais.length} libellé(s) de mots-clés s'afficheraient en FRANÇAIS ` +
+        `sur un plateau anglais :\n  ${sansAnglais.join('\n  ')}`
+    ).toEqual([])
   })
 })

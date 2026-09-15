@@ -484,6 +484,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Copier': 'Copy',
   'Télécharger': 'Download',
   'Copier un rapport de bug': 'Copy a bug report',
+  // Repli de `RapportBug` quand le reseau tombe : `PanneauBug` l'affiche via
+  // `t(r.erreur)`, donc en anglais il donnait « The sending failed: echec reseau ».
+  'échec réseau': 'network failure',
   'Rapport envoyé': 'Report sent',
   'Signaler un bug': 'Report a bug',
   'Signaler un bug, avec le journal de la partie': 'Report a bug, with the game log',
@@ -643,6 +646,14 @@ export const DICO_EN_BASE: Record<string, string> = {
   'À Distance': 'Ranged',
   'Utilisations': 'Uses',
   'Exigence': 'Requirement',
+  // ⚠ CES TROIS-LA MANQUAIENT (15/09/2026), et rien ne le disait : leurs noms
+  // arrivent a `t` par une VARIABLE (une table de mots-cles), ce que la gate ne
+  // savait pas lire. « Percee » s'affichait donc EN FRANCAIS sur un plateau
+  // anglais, sa definition avec. Les deux autres sont identiques dans les deux
+  // langues, mais les ecrire les met sous la garde plutot que sous la chance.
+  'Percée': 'Breakthrough',
+  'Permanent': 'Permanent',
+  'Alliance': 'Alliance',
   // Les COULEURS listees par une Exigence (« Exigence (énergie, mentale) »).
   // « physique », « mentale », « énergie » et « éclair » sont deja traduits
   // plus haut ; « libre » (la ressource wild, nom de `RESSOURCES`) manquait, et
@@ -700,6 +711,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Cette attaque ignore Riposte.': 'This attack ignores Retaliate.',
   'Entre en jeu avec X jetons ; quand le dernier est dépensé, défaussez cette carte.':
     'Enters play with X tokens; when the last one is spent, discard this card.',
+  // Percée (Breakthrough), mot-clé MAISON du pack fan-made viv_vision : sa
+  // définition vient de la liste communautaire, détail dans
+  // docs/reference/mots-cles/breakthrough.md.
+  'Comme Déferlement, mais pour la menace : quand cette menée vide une manigance, la menée en excès est retirée d’une autre manigance de votre choix.':
+    'Like Overkill, but for threat: when this thwart clears a scheme, the excess thwart is removed from another scheme of your choice.',
   'Pour jouer cette carte, le paiement doit comporter les ressources indiquées. Ce n’est pas un coût en plus : elles sont comprises dans le coût.':
     'To play this card, the payment must include the listed resources. This is not an extra cost: they are part of the cost.',
 

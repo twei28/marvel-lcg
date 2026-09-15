@@ -136,3 +136,25 @@ export function motsClesDeCarte(
   }
   return trouves
 }
+
+/**
+ * TOUS LES LIBELLÉS QUE CE MODULE PEUT PASSER À `t()`.
+ *
+ * ⚠ POUR LA GATE DES TRADUCTIONS, ET POUR ELLE SEULE. `dico-en.test.ts` sait
+ * lire les appels à `t` écrits en toutes lettres, mais pas ceux qui reçoivent une
+ * VARIABLE : ici les noms
+ * et les définitions viennent de TABLES, et ils échappaient donc au contrôle.
+ *
+ * Deux défauts en deux jours l'ont prouvé, tous deux invisibles à qui joue en
+ * français : « Exigence » n'existait pas du tout (15/09/2026), et « Percée »
+ * (Breakthrough, mot-clé maison du pack viv_vision) s'affichait EN FRANÇAIS au
+ * milieu d'un plateau anglais, définition comprise.
+ */
+export function libellesTraduisibles(): string[] {
+  const mots = [...Object.values(DEPUIS_DESC), ...Object.values(DEPUIS_TEXTE), EXIGENCE]
+  return [
+    ...mots.flatMap((mot) => [mot.nom, mot.definition]),
+    // Les couleurs qu'une Exigence énumère (« Exigence (énergie, mentale) »).
+    ...RESSOURCES.map((ressource) => ressource.nom),
+  ]
+}
