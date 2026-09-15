@@ -76,10 +76,42 @@ describe('maniganceAMontrer', () => {
 })
 
 describe('ouvertureEncoreVoilee', () => {
-  const base = { confirmAttendue: true, round: 0, questionArrivee: false, dejaLevee: false }
+  const base = {
+    confirmAttendue: true,
+    round: 0,
+    questionArrivee: false,
+    dejaLevee: false,
+    demandePresente: false,
+  }
 
   it('voile la table pendant que le moteur monte la partie', () => {
+    // Le cas nominal, celui qui doit CONTINUER de voiler : la regle est
+    // posee, le moteur n'a encore rien demande, personne n'a rien vu.
     expect(ouvertureEncoreVoilee(base)).toBe(true)
+  })
+
+  it('leve le voile des que le moteur demande QUOI QUE CE SOIT au joueur', () => {
+    // Si le moteur pose une question au joueur, le joueur doit pouvoir voir sa
+    // table pour y repondre. Sans cette porte, un second siege (qui ne recoit
+    // jamais la question de la manigance, reservee au premier joueur) reste
+    // voile sur son propre mulligan.
+    expect(ouvertureEncoreVoilee({ ...base, demandePresente: true })).toBe(false)
+  })
+
+  it('⚠ UN RECHARGEMENT DE PAGE ENTRE LE OK ET LE PREMIER ROUND NE BLOQUE PAS LA PARTIE', () => {
+    // LE CAS QUI COMPTE. Apres le OK, la question est consommee, le mulligan
+    // est en cours et `round_id` vaut encore 0 (world.py:573). Au remontage du
+    // composant, le verrou « deja levee » repart a faux : sans la porte
+    // ci-dessus, le voile ne se leverait plus JAMAIS et le joueur ne pourrait
+    // plus repondre a son mulligan.
+    const apresRechargement = {
+      confirmAttendue: true,
+      round: 0,
+      questionArrivee: false,
+      dejaLevee: false,
+      demandePresente: true,
+    }
+    expect(ouvertureEncoreVoilee(apresRechargement)).toBe(false)
   })
 
   it('lève le voile quand la question arrive', () => {

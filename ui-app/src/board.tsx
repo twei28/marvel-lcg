@@ -2790,6 +2790,7 @@ function PagePartie({
         round: etat.monde.round_id ?? 0,
         questionArrivee: questionManigance !== undefined,
         dejaLevee: voileLeve.current,
+        demandePresente: etat.demande !== undefined,
       })
     : false
   if (etat.monde && !voile) voileLeve.current = true

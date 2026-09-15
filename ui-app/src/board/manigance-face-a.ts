@@ -54,6 +54,8 @@ export type EtatOuverture = {
   questionArrivee: boolean
   /** Le voile a déjà été levé une fois dans cette partie. */
   dejaLevee: boolean
+  /** Le moteur pose une demande au joueur de ce siège, quelle qu'elle soit. */
+  demandePresente: boolean
 }
 
 /**
@@ -68,5 +70,24 @@ export function ouvertureEncoreVoilee(etat: EtatOuverture): boolean {
   if (etat.dejaLevee) return false
   if (!etat.confirmAttendue) return false
   if (etat.round > 0) return false
+  // ⚠ SI LE MOTEUR POSE UNE QUESTION AU JOUEUR, LE JOUEUR DOIT POUVOIR VOIR SA
+  // TABLE POUR Y RÉPONDRE. Ce n'est pas une minuterie de secours : c'est une
+  // porte sur un fait du monde, et elle couvre tout ce que la seule arrivée de
+  // `Reveal_Main_Scheme` laissait bloqué.
+  //
+  // Défaut trouvé en relecture le 15/09/2026 : un rechargement de page entre
+  // le OK et le premier round figeait la partie pour de bon. `round_id` vaut
+  // encore 0 pendant tout le mulligan (world.py:573), le verrou « déjà levée »
+  // repart à faux au remontage, et la question a été consommée : le voile ne
+  // se levait plus jamais, sur « Connexion à la partie… », pendant que le
+  // moteur attendait une réponse au mulligan. Même blocage pour un second
+  // siège qui ouvre sa page après le OK : la question de la manigance est
+  // réservée au premier joueur, elle ne lui arrive jamais.
+  //
+  // Conséquence assumée : une capacité de mise en place qui interroge le
+  // joueur AVANT notre question lèvera le voile plus tôt, et on verra un bout
+  // de table se monter. Une partie jouable qui montre trop vaut mieux qu'une
+  // partie bloquée.
+  if (etat.demandePresente) return false
   return !etat.questionArrivee
 }
