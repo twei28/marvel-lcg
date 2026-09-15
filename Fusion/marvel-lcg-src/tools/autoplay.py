@@ -46,6 +46,54 @@ MAX_ASKS = 80000
 # propose puis refuse (vu sur Enhanced Ivory Horn) bloque la partie a l'infini.
 MAX_REPETITIONS = 2
 
+# ⚠ COMBIEN DE FOIS UNE CAPACITE NOMMEE PEUT ETRE REPRISE DANS UN MEME ROUND.
+#
+# Un humain prend une Action repetable une ou deux fois, puis passe a autre
+# chose. Le pilote, lui, la reprenait tant qu'elle gagnait au score : mesure du
+# 15/09/2026 sur `iron_patriot`, l'Action « Enlistment » de `ip002a` prise
+# 21 FOIS dans le seul round 1, 20 allies REGISTERED entres en jeu, partie
+# perdue au round 1,0 sur 16 parties sur 16.
+#
+# ⚠ LA DECROISSANCE DU SCORE (20/(1+n)) N'Y SUFFIT PAS, et la trace des scores
+# dit pourquoi. Vers la fin du round il ne reste que DEUX options, et la
+# seconde s'effondre plus vite que la premiere :
+#
+#     scores r1: [('Enlistment', 6.67), ('Change_Form', 2.82)]   -> Enlistment
+#     scores r1: [('Enlistment', 5.00), ('Change_Form', -2.64)]  -> Enlistment
+#     scores r1: [('Enlistment', 3.33), ('Change_Form', -13.55)] -> Enlistment
+#     scores r1: [('Enlistment', 2.86), ('Change_Form', -19.00)] -> Enlistment
+#
+# Chaque enrolement amene des sbires que le joueur ne controle pas : les degats
+# entrants montent, l'urgence de survie avec eux, et passer en forme heros
+# devient de plus en plus suicidaire aux yeux du scorer. Le pilote s'enterre, et
+# plus il s'enterre, plus s'enterrer encore est ce qu'il trouve de mieux.
+#
+# On ECARTE donc l'option au-dela du plafond, au lieu de la noter plus bas.
+# ⚠ Ecarter, pas annuler : noter negativement avait ete essaye le 11/09/2026 et
+# REJETE, parce que le bot declinait alors et que le moteur reposait la meme
+# question. Ici l'option sort de la liste et une AUTRE est choisie, donc la
+# partie avance. Et si toutes sont saturees, on rend la liste entiere : mieux
+# vaut rejouer la meme chose qu'etre bloque.
+PLAFOND_CAPACITE_NOMMEE = 3
+
+# Les noms que le scorer traite explicitement : ce sont les actions de BASE du
+# jeu, et elles ne sont jamais plafonnees. Attaquer trois fois avec trois allies
+# differents est normal ; reprendre trois fois la meme Action nommee ne l'est
+# pas. Tout ce qui n'est pas dans cette liste tombe dans la branche « capacite
+# nommee » du scorer (`fixe = 20.0 / (1 + deja_prise)`).
+ACTES_DE_BASE = {"Thwart", "Attack", "Defense", "Recover", "Play",
+                 "Change_Form", "Change Form", "End Phase", "End_Phase",
+                 "Resolve Mulligans"}
+
+
+def est_capacite_nommee(nom):
+    """Une capacite nommee, par opposition aux actions de base du jeu."""
+    nom = str(nom or "")
+    if nom in ACTES_DE_BASE or nom.startswith("Change_To_"):
+        return False
+    # « Play:Ally », « Play:Event »... : le journal detaille le type joue.
+    return not nom.startswith("Play:") and not nom.lower().startswith("exhaust")
+
 
 # --------------------------------------------------------------- profils --
 # Tous les seuils sont des ratios entre 0 et 1.
@@ -1090,6 +1138,39 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         # Ce que le bot a DEJA fait ce round, lisible par le scorer : c'est lui
         # qui fait decroitre une capacite nommee reprise en boucle.
         ctx["actes_du_round"] = ligne["actes"]
+
+        # ⚠ LES SCORES, ET AVANT LE CHOIX (15/09/2026).
+        #
+        # La trace ne montrait que `offres r1: ['Change_Form', 'Enlistment',
+        # 'Play', 'Attack', 'Thwart']`. On voyait CE QUI etait offert, jamais
+        # POURQUOI le pilote prenait l'un plutot que l'autre, et tout reglage du
+        # scorer se faisait a l'aveugle. C'est ce qui a coute le plus cher sur
+        # `iron_patriot` : il a fallu instrumenter le scorer a la main pour
+        # decouvrir que Contre et Attaque valaient MOINS CINQ. Premiere demande
+        # de `.planning/todos/2026-09-11-autoplay-aveugle-sur-iron-patriot.md`.
+        #
+        # ⚠ ET ELLE SE CALCULE ICI, PAS PLUS BAS. Pose apres le choix, elle
+        # affichait les scores D'APRES : le compteur du round venait d'etre
+        # incremente, et une capacite nommee s'y lisait deja decote. On lisait
+        # « Enlistment 6,67 » sur une decision prise a 10,0 — de quoi conclure
+        # l'inverse de ce qui s'est passe.
+        if trace and etat["asks"] <= trace:
+            notes = sorted(((str(o.get("name")), round(scorer(o, ctx), 2))
+                            for o in retenues), key=lambda x: -x[1])
+            print(f"    scores r{ctx['round']}: {notes}", flush=True)
+
+        # ⚠ UNE CAPACITE NOMMEE NE SE REPREND PAS INDEFINIMENT DANS UN ROUND.
+        # Voir `PLAFOND_CAPACITE_NOMMEE` : la decroissance du score ne suffit
+        # pas quand les autres options s'effondrent plus vite qu'elle.
+        saturees = {nom for nom, pris in ligne["actes"].items()
+                    if pris >= PLAFOND_CAPACITE_NOMMEE and est_capacite_nommee(nom)}
+        if saturees:
+            libres_du_plafond = [o for o in retenues
+                                 if str(o.get("name")) not in saturees]
+            # Rien d'autre a faire : on rend la liste entiere plutot que de
+            # bloquer la partie. Le plafond est une preference, pas une regle.
+            if libres_du_plafond:
+                retenues = libres_du_plafond
 
         meilleure = max(retenues, key=lambda o: scorer(o, ctx))
         # Une option notee a zero est jugee nuisible : passer vaut mieux que la
