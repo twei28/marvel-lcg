@@ -3038,7 +3038,17 @@
         2. la boite est en CONTENT-BOX : le padding vertical et les bordures
            s'AJOUTENT au `max-height`, soit 36 px de plus que la valeur ecrite
            (14 + 16 de padding, 3 + 3 de bordure). */
-    --bas: 31vh;
+    /* ⚠ LE BORD BAS S'EFFACE QUAND LA FENETRE EST COURTE (15/09/2026).
+       31vh sous le cartouche, c'est de la table laissee visible : un confort,
+       et il n'a plus lieu d'etre quand il ne reste plus la place d'afficher la
+       question. Choix de l'utilisateur, apres avoir vu et refuse une mise a
+       l'echelle qui rendait tout minuscule : « le cartouche prend toute la
+       hauteur ».
+
+       La rampe : 31vh tant que la fenetre est haute, puis on descend jusqu'a
+       16 px. Sur 1080 de haut, `100vh - 620px` vaut 460 et le minimum garde
+       les 31vh : rien ne change sur un grand ecran. */
+    --bas: min(31vh, max(16px, 100vh - 620px));
     --decor: 36px;
     bottom: var(--bas);
     width: min(860px, calc(100vw - 48px));
@@ -3066,8 +3076,13 @@
        ⚠ `transform-origin: bottom center` : le cartouche est ancre par le BAS
        (`bottom: var(--bas)`), il doit donc retrecir vers le haut et garder son
        bord bas exactement la ou il est. */
-    transform: translateX(-50%) scale(var(--ajust, 1));
-    transform-origin: bottom center;
+    transform: translateX(-50%);
+    /* ⚠ LE PLAFOND RESTE, il empeche le cartouche de sortir par le HAUT.
+       Retire un instant le 15/09/2026 en essayant la mise a l'echelle : sans
+       lui, le cartouche montait jusqu'a `top: -129px` sur un 1920x1080. C'est
+       `--bas` qui donne la place, pas la suppression du plafond. */
+    max-height: calc(100vh - var(--bas) - var(--decor) - 16px);
+    overflow-y: auto;
     z-index: 540;
     padding: 14px 22px 16px;
     color: #f8fafc;
@@ -3244,10 +3259,37 @@
     border-radius: 10px;
   }
 
+  /* ⚠ PENDANT UNE QUESTION ET SUR UNE FENETRE COURTE, LES CARTES DE L'ETAPE
+     S'EFFACENT DU CARTOUCHE. Elles sont deja sur la table, mises en avant par
+     la scene : les redessiner ici coute 190 px, et c'est ce qui faisait
+     DEFILER le cartouche sur une fenetre de 663 px de haut (mesure du
+     15/09/2026 : 809 px de contenu pour 598 px de place, meme apres avoir rendu
+     au cartouche toute la hauteur de l'ecran).
+
+     ⚠ SEULEMENT SOUS 800 px DE HAUT : sur un ecran ordinaire, tout tient, et
+     on ne retire rien a personne. */
+  @media (max-height: 800px) {
+    .deroule-phase.est-question .deroule-cartes {
+      display: none;
+    }
+
+    /* Et la vignette de la question suit la hauteur, sans descendre sous une
+       taille ou l'on reconnait encore la carte. Mesure du 15/09/2026 : sans
+       elle il restait NEUF pixels de trop (607 pour 598). */
+    .deroule-phase .dc-vignette .scan-card {
+      --card-w: clamp(72px, 13vh, 104px);
+    }
+  }
+
   .deroule-phase.est-question {
     /* Remonte de 3vh : la question se lit plus haut que le recit. La hauteur
-       maximale suit toute seule (voir `--bas`). */
-    --bas: 34vh;
+       maximale suit toute seule (voir `--bas`).
+
+       ⚠ ET ELLE S'EFFACE SUR UNE FENETRE COURTE, comme le bord bas ordinaire.
+       C'est CETTE variante qui s'applique a la fenetre de defense : sans la
+       meme rampe, elle ecrasait celle d'en haut et le cartouche n'avait
+       toujours que 416 px sur une fenetre de 663 (mesure du 15/09/2026). */
+    --bas: min(34vh, max(16px, 100vh - 620px));
     border-color: rgba(166, 0, 0, 0.7);
     box-shadow:
       0 0 0 2px rgba(166, 0, 0, 0.45),
