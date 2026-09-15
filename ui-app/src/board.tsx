@@ -2784,6 +2784,10 @@ function PagePartie({
   // rien a l'affichage de cette phase-la, et evite ce verrouillage premature.
   const voileLeve = useRef(false)
   const questionManigance = questionDeLaManigance(etat.demande)
+  // La carte a montrer est celle que la QUESTION designe par son `bind_id`, pas
+  // la premiere de la zone : le mode Bataille en met deux en jeu, et le moteur
+  // pose une question par manigance (voir maniganceAMontrer).
+  const carteManigance = maniganceAMontrer(etat.monde, questionManigance?.bind_id)
   const voile = etat.monde
     ? ouvertureEncoreVoilee({
         confirmAttendue: etat.monde.confirm_main_scheme === true,
@@ -3654,9 +3658,9 @@ function PagePartie({
           principale, montree en grand pendant que le moteur attend la
           confirmation avant de la retourner (World.ConfirmMainSchemeReveal).
           Le voile ci-dessus garantit que la table est deja montee derriere. */}
-      {questionManigance && maniganceAMontrer(etat.monde) ? (
+      {questionManigance && carteManigance ? (
         <PanneauManigance
-          carte={maniganceAMontrer(etat.monde)!}
+          carte={carteManigance}
           onValider={() =>
             repondre(
               { id: questionManigance.id, targets: [], resources: [] },

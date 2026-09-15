@@ -58,20 +58,48 @@ describe('questionDeLaManigance', () => {
 })
 
 describe('maniganceAMontrer', () => {
-  it('rend la manigance principale en jeu', () => {
+  /** Mode Bataille (21098a) : deux manigances principales en jeu ensemble. */
+  const deuxManigances = {
+    area_schemes_main: [
+      { id: 48, card_id: '21098b', name: 'Déjà retournée' },
+      { id: 49, card_id: '21099a', name: 'Celle que le moteur montre' },
+    ],
+  } as unknown as World
+
+  it('rend la manigance que la question DESIGNE, par son bind_id', () => {
     const monde = {
       area_schemes_main: [{ id: 48, card_id: '01097a', name: 'The Break-In!' }],
     } as unknown as World
-    expect(maniganceAMontrer(monde)?.card_id).toBe('01097a')
+    expect(maniganceAMontrer(monde, 48)?.card_id).toBe('01097a')
+  })
+
+  it('⚠ AVEC DEUX MANIGANCES PRINCIPALES, MONTRE LA BONNE', () => {
+    // LE CAS QUI COMPTE. A la mise en place, le moteur boucle sur TOUTES les
+    // manigances principales (world.py:546) et pose donc deux questions
+    // d'affilee. A la seconde, l'index 0 porte la carte DEJA RETOURNEE : le
+    // panneau montrait la mauvaise carte, et la face B par-dessus le marche.
+    //
+    // Le moteur remplit `bind_id` avec l'objet qui porte l'effet
+    // (effect.py:600, `bind_id = the_effect.this.card.object_id`) ; notre
+    // capacite est construite sur `GameRule(scheme)`, donc `bind_id` EST la
+    // manigance a montrer. On ne devine plus, on demande a la question.
+    expect(maniganceAMontrer(deuxManigances, 49)?.card_id).toBe('21099a')
+  })
+
+  it('se replie sur la zone quand bind_id ne designe aucune carte connue', () => {
+    // Repli explicite : mieux vaut la premiere manigance de la zone qu'aucun
+    // panneau du tout, qui laisserait le moteur attendre sans bouton.
+    expect(maniganceAMontrer(deuxManigances, 0)?.card_id).toBe('21098b')
+    expect(maniganceAMontrer(deuxManigances, undefined)?.card_id).toBe('21098b')
   })
 
   it('rend undefined quand la zone est vide', () => {
     const monde = { area_schemes_main: [] } as unknown as World
-    expect(maniganceAMontrer(monde)).toBeUndefined()
+    expect(maniganceAMontrer(monde, 48)).toBeUndefined()
   })
 
   it('rend undefined sans monde', () => {
-    expect(maniganceAMontrer(undefined)).toBeUndefined()
+    expect(maniganceAMontrer(undefined, 48)).toBeUndefined()
   })
 })
 

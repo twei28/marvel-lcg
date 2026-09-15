@@ -33,15 +33,38 @@ export function questionDeLaManigance(demande: Demande | undefined): Option | un
 }
 
 /**
- * La manigance à montrer en grand : celle qui est EN JEU à cet instant.
+ * La manigance à montrer en grand : celle que LA QUESTION DÉSIGNE.
  *
  * Au moment de la question, le moteur n'a pas encore retourné la carte : la
  * zone porte donc la face A. On ne déduit pas son identifiant, on lit la table.
+ *
+ * ⚠ ON NE DEVINE PLUS AVEC L'INDEX 0. Défaut trouvé en relecture le
+ * 15/09/2026 : à la mise en place, le moteur boucle sur TOUTES les manigances
+ * principales (world.py:546) et pose donc une question par manigance. Dès la
+ * seconde, l'index 0 porte la carte déjà retournée, et le panneau montrait la
+ * mauvaise carte sur sa face B. Le mode Bataille (21098a) met bien deux
+ * manigances principales en jeu ensemble.
+ *
+ * `bind_id` est renseigné par le moteur avec l'objet qui porte l'effet
+ * (`effect.py:600`, `bind_id = the_effect.this.card.object_id`), et notre
+ * capacité est construite sur `GameRule(scheme)` (`world.py:930`) : `bind_id`
+ * EST donc la manigance en cours de retournement. Vérifié dans le moteur le
+ * 15/09/2026 le long de la chaîne complète (`ChooseAbilities` →
+ * `WhenPlayerChooseAbility.by_effect` → `Effect.Render` → `CardDescriptor.id`,
+ * qui est le même `object_id`).
+ *
+ * Repli assumé sur la première carte de la zone quand `bind_id` ne désigne
+ * aucune carte connue : mieux vaut la mauvaise carte qu'aucun panneau, qui
+ * laisserait le moteur attendre une réponse sans bouton pour la donner.
  */
-export function maniganceAMontrer(monde: World | undefined): WorldCard | undefined {
+export function maniganceAMontrer(
+  monde: World | undefined,
+  bindId: number | undefined
+): WorldCard | undefined {
   const zone = monde?.area_schemes_main
   if (!Array.isArray(zone)) return undefined
-  return zone[0]
+  const designee = bindId !== undefined ? zone.find((carte) => carte.id === bindId) : undefined
+  return designee ?? zone[0]
 }
 
 /** Ce qu'il faut savoir pour décider si l'ouverture reste voilée. */
