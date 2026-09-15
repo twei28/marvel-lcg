@@ -114,6 +114,7 @@ import { CLE_TEXTES_CDB, codeMarvelcdb, lireTextesCdb, texteMarvelcdb } from './
 import { nomAffiche } from './board/noms-cartes-fr'
 import { libellePhase, libelleQuiAgit, libelleRound } from './board/etat-partie'
 import { CLE_DESIGN_ESSAI, lireDesignEssai } from './board/design-essai'
+import { ouvertureEncoreVoilee, questionDeLaManigance } from './board/manigance-face-a'
 import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
 import {
   CoucheMeteo,
@@ -2765,7 +2766,30 @@ function PagePartie({
       : `${nom} ${t('perd')} ${valeur} ${t('menace')}`
   }, [effets, cartesMondeParId])
 
-  if (!etat.monde || !plateau) {
+  // Le voile d'ouverture : on ne montre pas la table en train de se monter.
+  // Levé une fois pour toutes dès que la question de la manigance arrive.
+  //
+  // ⚠ TANT QUE `etat.monde` N'EST PAS ENCORE ARRIVE, ON NE DECIDE RIEN. Avant
+  // la premiere trame du moteur, `confirm_main_scheme` est forcement absent :
+  // le lire comme un « non » figerait le voile a leve des la toute premiere
+  // image (avant meme de savoir si une question est attendue), et il ne se
+  // relevrait plus jamais une fois le monde charge. Le garde-fou `!etat.monde`
+  // de la ligne suivante affiche deja le meme message de connexion : ne pas
+  // toucher au verrou tant qu'on n'a pas encore de reponse du moteur ne change
+  // rien a l'affichage de cette phase-la, et evite ce verrouillage premature.
+  const voileLeve = useRef(false)
+  const questionManigance = questionDeLaManigance(etat.demande)
+  const voile = etat.monde
+    ? ouvertureEncoreVoilee({
+        confirmAttendue: etat.monde.confirm_main_scheme === true,
+        round: etat.monde.round_id ?? 0,
+        questionArrivee: questionManigance !== undefined,
+        dejaLevee: voileLeve.current,
+      })
+    : false
+  if (etat.monde && !voile) voileLeve.current = true
+
+  if (!etat.monde || !plateau || voile) {
     return (
       <p className="plateau-message" role={etat.erreur ? 'alert' : undefined}>
         {etat.erreur ?? t('Connexion à la partie…')}

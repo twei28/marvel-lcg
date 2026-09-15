@@ -43,3 +43,30 @@ export function maniganceAMontrer(monde: World | undefined): WorldCard | undefin
   if (!Array.isArray(zone)) return undefined
   return zone[0]
 }
+
+/** Ce qu'il faut savoir pour décider si l'ouverture reste voilée. */
+export type EtatOuverture = {
+  /** Le monde dit qu'une question de face A est attendue (`confirm_main_scheme`). */
+  confirmAttendue: boolean
+  /** `round_id` : 0 pendant la mise en place, 1 au premier round. */
+  round: number
+  /** La question de la manigance est à l'écran. */
+  questionArrivee: boolean
+  /** Le voile a déjà été levé une fois dans cette partie. */
+  dejaLevee: boolean
+}
+
+/**
+ * Le voile d'ouverture : la table n'apparaît qu'une fois montée.
+ *
+ * ⚠ AUCUNE MINUTERIE DE SECOURS, et c'est voulu. Le repli « au bout de N
+ * secondes on affiche quand même » masquerait un vrai défaut le jour où la
+ * question ne vient pas. La porte est explicite : on ne voile QUE si le monde
+ * dit qu'une question est attendue.
+ */
+export function ouvertureEncoreVoilee(etat: EtatOuverture): boolean {
+  if (etat.dejaLevee) return false
+  if (!etat.confirmAttendue) return false
+  if (etat.round > 0) return false
+  return !etat.questionArrivee
+}

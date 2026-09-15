@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   NOM_OPTION_MANIGANCE,
   maniganceAMontrer,
+  ouvertureEncoreVoilee,
   questionDeLaManigance,
 } from './manigance-face-a'
 import type { Demande, Option } from './ask'
@@ -71,5 +72,32 @@ describe('maniganceAMontrer', () => {
 
   it('rend undefined sans monde', () => {
     expect(maniganceAMontrer(undefined)).toBeUndefined()
+  })
+})
+
+describe('ouvertureEncoreVoilee', () => {
+  const base = { confirmAttendue: true, round: 0, questionArrivee: false, dejaLevee: false }
+
+  it('voile la table pendant que le moteur monte la partie', () => {
+    expect(ouvertureEncoreVoilee(base)).toBe(true)
+  })
+
+  it('lève le voile quand la question arrive', () => {
+    expect(ouvertureEncoreVoilee({ ...base, questionArrivee: true })).toBe(false)
+  })
+
+  it('ne revoile jamais une fois levé', () => {
+    expect(ouvertureEncoreVoilee({ ...base, dejaLevee: true })).toBe(false)
+  })
+
+  it("ne voile pas une partie qui n'attend aucune question", () => {
+    // Sauvegarde antérieure au 15/09/2026, ou puzzle : la règle n'est pas
+    // posée, la question ne viendra jamais. Sans cette porte, le plateau
+    // resterait voilé pour toujours.
+    expect(ouvertureEncoreVoilee({ ...base, confirmAttendue: false })).toBe(false)
+  })
+
+  it('ne voile pas une partie déjà commencée', () => {
+    expect(ouvertureEncoreVoilee({ ...base, round: 3 })).toBe(false)
   })
 })
