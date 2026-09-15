@@ -463,11 +463,44 @@ journal : `[Power Surge] reçoit 1 pion(s) « acceleration_token »`.
 `autoplay` **8 parties Electro (normal et expert) sans un seul incident**,
 toutes perdues — le stade 2 est atteint et accompli, la boucle tourne.
 
-⚠️ **UN POINT OUVERT, qui n'est PAS du scénario #2** : `autoplay` bloque une
-partie de Shocker expert sur une question `When_Defeated` de **Power Drain
-(`wd020`, lié à la carte officielle `02041`)** — « chaque joueur défausse 1
-ressource par icône de boost ». Vérifié en remettant la donnée d'avant le
-correctif : **le blocage préexiste**, il ne vient pas du lot 2.
+⚠️ ~~**UN POINT OUVERT, qui n'est PAS du scénario #2**~~ ✅ **CLOS le
+15/09/2026, preuve à l'appui.** `autoplay` bloquait une partie de Shocker expert
+sur la question `When_Defeated` de **Power Drain (`wd020`, lié à l'officielle
+`02041`)** — « chaque joueur défausse 1 ressource par icône de boost ». Le
+blocage préexistait au lot 2 ; il ne se reproduit plus.
+
+⚠ **ET 16 PARTIES N'AURAIENT PAS SUFFI À LE PROUVER.** Première mesure : 8
+parties Shocker expert + 8 parties The Lizard expert, **zéro blocage** — sauf
+que la carte n'y est **jamais déjouée**, le pilote perd avant. Une fournée verte
+sur une question jamais posée ne prouve rien du tout, et c'est exactement le
+genre de vert qui a déjà trompé ce projet.
+
+**La mesure qui prouve** : `--modulaires power_drain_ii` sur Rhino en normal,
+un scénario que le pilote tient (6,1 rounds). 8 parties, **6 déjouements de
+Power Drain, 0 blocage**. Le journal montre la résolution complète :
+
+```
+262: [(75,wd020) Power Drain] vaincu
+263: [(75,wd020) Power Drain] s'active
+264: [(58,01103) Shocker] défaussée vers EncounterDiscardPile
+265: [(54,01100) Enhanced Ivory Horn] défaussée vers EncounterDiscardPile
+266: [(58,01103) Shocker] s'apprête à compter ses icônes de boost (✶✶)
+268: [[(46,01092) Helicarrier], [(15,01005) Swinging Web Kick]] défaussée(s)
+271: [(23,01058) Daredevil] s'active ...        ← la partie CONTINUE
+```
+
+**Aucun code n'a eu besoin d'être touché** : le remède était déjà en place dans
+`autoplay.py`, et il nomme cette carte-là — `cibles_bonus`, qui remonte la plage
+de cibles d'un cran à chaque répétition sans progrès (« Power Drain (02041)
+exige AUTANT de cartes que d'icônes de boost défaussées, un nombre que la
+question n'annonce pas »). S'y ajoute le désistement, écrit pour les deux
+cartes jumelles du même trio (Tenacity `01093`, Kingpin's Cane `wd100`).
+
+**Et la carte elle-même était déjà couverte** : `tools/test_capacites.py` porte
+le cas « wd020 Power Drain — la défaite fait défausser une ressource par icône
+de boost », vert. Son commentaire dit le piège en une phrase : le moteur régit
+ce choix par `select_rule: "CombinedResourceIcons"`, où la plage compte des
+ICÔNES et non des cartes.
 
 ---
 
@@ -556,7 +589,8 @@ pas — **« Vote for Fisk » n'entrait dans AUCUN scénario de la campagne** �
 1. Les scénarios **#4 Vulture** (set Vulture + modulaire Underling) et
    **#5 Kingpin** (set Kingpin + modulaire Kraven the Hunter).
 2. Les 50 cartes des 5 arbres de talents et `data/campagnes/web_of_deceit.json`.
-3. Le point ouvert de Power Drain (`wd020`), qui bloque une partie de Shocker
+3. ~~Le point ouvert de Power Drain (`wd020`)~~ ✅ CLOS le 15/09/2026, voir §16 —
+   qui bloquait une partie de Shocker
    expert et **préexiste** aux lots 2 et 3.
 
 ---
