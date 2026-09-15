@@ -57,6 +57,7 @@ import {
 } from './board/ou-va-la-question'
 import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
+import { animationsDuPlateau } from './board/animations-en-scene'
 import { kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
 import { carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
@@ -3662,7 +3663,19 @@ function PagePartie({
       />
       <BandeauConnexion etat={etat} reconnecter={reconnecter} />
       {modeRevoir ? <BarreRevoir pasTotal={modeRevoir.pas} /> : null}
-      <CoucheAnimations renderId={etat.monde.render_id} actif={animations} essais={essais} />
+      {/* ⚠ LA TABLE SE TAIT PENDANT QUE LA SCENE RACONTE (15/09/2026).
+          Voir `animations-en-scene.ts` : en mode Detaille, la fenetre montrait
+          l'etape pendant que le plateau rejouait le meme evenement en
+          mouvement, derriere elle. Deux recits en meme temps. */}
+      <CoucheAnimations
+        renderId={etat.monde.render_id}
+        actif={animationsDuPlateau({
+          reglage: animations,
+          sceneCentrale,
+          phaseMechantEnCours,
+        })}
+        essais={essais}
+      />
       <CoucheTriche actif={triche.actif} couche={triche.couche} />
       {/* En Detaille, pendant la phase du mechant, la scene montre deja la
           carte revelee face visible, avec ce qu'elle a fait : la couche a
@@ -3681,7 +3694,11 @@ function PagePartie({
         renderId={etat.monde.render_id}
         eventName={etat.monde.event_name ?? ''}
         activeIds={etat.monde.active_card_ids ?? []}
-        actif={animations}
+        actif={animationsDuPlateau({
+          reglage: animations,
+          sceneCentrale,
+          phaseMechantEnCours,
+        })}
       />
 
       {/* Le seul mouvement de toute l'ouverture : la face A de la manigance
