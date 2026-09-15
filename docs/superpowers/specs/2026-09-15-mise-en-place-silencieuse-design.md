@@ -190,3 +190,47 @@ langue posée le 15/09/2026 refuse le reste.
 - Les sons de l'ouverture : sujet à cadrer séparément
   (`.planning/todos/2026-09-14-revoir-les-sons.md`).
 - Le mode manuel, les couleurs du halo.
+
+---
+
+## Avenant du 15/09/2026 : les manigances ANNEXES aussi
+
+**Demande de l'utilisateur, en cours de chantier** : « s'il y a une sidescheme
+qui commence en partie je veux qu'on la voit aussi comme la principale, idem
+quand une sidescheme arrive en jeu après, par exemple que le méchant change de
+forme ».
+
+### Ce que ça ajoute
+
+Le même panneau de présentation, pour une manigance annexe :
+
+1. **à la mise en place**, quand le scénario en pose une d'entrée ;
+2. **en cours de partie**, quand une manigance annexe ENTRE EN JEU, quelle
+   qu'en soit la cause (changement de stade du vilain, carte rencontre, effet).
+
+### Ce qui est différent de la principale, et qu'il faut trancher
+
+⚠ **Une manigance annexe n'a pas de face A.** La principale a deux faces
+imprimées (`01097a` / `01097b`) et le moteur RETOURNE la carte, ce qui donne le
+moment naturel « on lit, on valide, elle se retourne ». Une annexe entre en jeu
+directement, d'une seule face. Le panneau ne peut donc pas être « avant le
+retournement » : ce sera « au moment de l'entrée en jeu ».
+
+⚠ **Elles peuvent arriver par paquets** (un « Une fois révélée » qui en pose
+deux, un changement de stade qui en pose plusieurs). Un panneau par carte, à la
+suite, ou un seul panneau qui les montre ensemble : à décider.
+
+⚠ **Le crochet moteur n'est pas le même.** `AdvanceMainScheme` ne sert que la
+principale. Pour une annexe il faut se brancher sur son entrée en jeu
+(`OnPutIntoPlay` / `OnWhenCardRevealed` du type `EncounterSideScheme`, à
+vérifier par une trace comme pour la principale).
+
+⚠ **Le risque de lassitude est réel** : une annexe par tour dans certains
+scénarios. Le panneau doit-il attendre un OK à chaque fois, ou seulement se
+montrer ?
+
+### Statut
+
+**Noté, non cadré.** Ces quatre points passent avant toute ligne de code, et ce
+n'est pas la même question que la principale. Le chantier en cours va jusqu'au
+bout d'abord.
