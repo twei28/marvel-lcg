@@ -114,7 +114,12 @@ import { CLE_TEXTES_CDB, codeMarvelcdb, lireTextesCdb, texteMarvelcdb } from './
 import { nomAffiche } from './board/noms-cartes-fr'
 import { libellePhase, libelleQuiAgit, libelleRound } from './board/etat-partie'
 import { CLE_DESIGN_ESSAI, lireDesignEssai } from './board/design-essai'
-import { ouvertureEncoreVoilee, questionDeLaManigance } from './board/manigance-face-a'
+import {
+  maniganceAMontrer,
+  ouvertureEncoreVoilee,
+  questionDeLaManigance,
+} from './board/manigance-face-a'
+import { PanneauManigance } from './board/PanneauManigance'
 import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
 import {
   CoucheMeteo,
@@ -3639,6 +3644,22 @@ function PagePartie({
         activeIds={etat.monde.active_card_ids ?? []}
         actif={animations}
       />
+
+      {/* Le seul mouvement de toute l'ouverture : la face A de la manigance
+          principale, montree en grand pendant que le moteur attend la
+          confirmation avant de la retourner (World.ConfirmMainSchemeReveal).
+          Le voile ci-dessus garantit que la table est deja montee derriere. */}
+      {questionManigance && maniganceAMontrer(etat.monde) ? (
+        <PanneauManigance
+          carte={maniganceAMontrer(etat.monde)!}
+          onValider={() =>
+            repondre(
+              { id: questionManigance.id, targets: [], resources: [] },
+              questionManigance.bind_player_id
+            )
+          }
+        />
+      ) : null}
 
       {/* L'ecran de fin attend que le coup fatal ait ete vu (mode Detaille,
           heros de ce siege), avec un filet de 20 s : voir

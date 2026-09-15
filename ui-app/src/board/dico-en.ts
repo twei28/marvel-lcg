@@ -640,6 +640,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Restreint': 'Restricted',
   'Entrave': 'Hinder',
   'Mise en place': 'Setup',
+  'Retourner la manigance': 'Flip the main scheme',
   'Collaboration': 'Teamwork',
   'Perçant': 'Piercing',
   'Déferlement': 'Overkill',

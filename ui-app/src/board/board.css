@@ -4209,6 +4209,34 @@
     }
   }
 
+  /* La face A de la manigance, montree en grand avant son retournement.
+     Le plateau reste visible derriere, assombri : on doit voir que la table
+     est montee, c'est tout l'interet de l'avoir attendue. */
+  .panneau-manigance {
+    position: fixed;
+    inset: 0;
+    z-index: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: rgba(8, 9, 12, 0.72);
+  }
+
+  .panneau-manigance-carte {
+    max-width: min(86vw, 620px);
+    max-height: 62vh;
+    border-radius: 12px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+  }
+
+  .panneau-manigance-ok {
+    min-height: 48px;
+    padding: 0 28px;
+    font-size: 1rem;
+  }
+
   /* --- Charge d'attaque / thwart (CoucheCharge) ----------------------------
      La carte agissante fonce sur sa cible puis revient. Le fantome porte un
      voile colore pendant le trajet : rouge = attaque, bleu = thwart/scheme,
