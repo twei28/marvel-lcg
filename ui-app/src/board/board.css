@@ -3001,12 +3001,29 @@
        la scene ne couvre que le milieu. La main occupe le bas de l'ecran sur
        environ 30 % de sa hauteur (grille de la scene, board.css). */
     top: auto;
-    bottom: 31vh;
+    /* ⚠ LE BORD BAS EST UNE VARIABLE, ET LA HAUTEUR MAXIMALE EN DECOULE.
+       Les variantes le deplacent (« est-question » le remonte, « est-replie »
+       le colle en bas) : ecrire les deux separement les a fait diverger, et le
+       cartouche sortait de l'ecran PAR LE HAUT.
+
+       Mesure du 15/09/2026, en 1920x1080, sur la fenetre de defense :
+       `top: -44px` — la chronologie (MENACE / MECHANT / SBIRES...) etait
+       coupee, et le panneau defilait alors qu'il avait la place.
+
+       Deux causes cumulees, et il fallait les deux :
+        1. `bottom: 34vh` (est-question) avec `max-height: 69vh` fait 103vh ;
+        2. la boite est en CONTENT-BOX : le padding vertical et les bordures
+           s'AJOUTENT au `max-height`, soit 36 px de plus que la valeur ecrite
+           (14 + 16 de padding, 3 + 3 de bordure). */
+    --bas: 31vh;
+    --decor: 36px;
+    bottom: var(--bas);
     transform: translateX(-50%);
     width: min(860px, calc(100vw - 48px));
     /* Sur un ecran bas, la scene defile en elle-meme plutot que de deborder,
-       ou ses boutons deviendraient inatteignables. */
-    max-height: calc(69vh - 24px);
+       ou ses boutons deviendraient inatteignables. Les 16 px sont la marge
+       laissee en haut de l'ecran. */
+    max-height: calc(100vh - var(--bas) - var(--decor) - 16px);
     overflow-y: auto;
     z-index: 540;
     padding: 14px 22px 16px;
@@ -3185,7 +3202,9 @@
   }
 
   .deroule-phase.est-question {
-    bottom: 34vh;
+    /* Remonte de 3vh : la question se lit plus haut que le recit. La hauteur
+       maximale suit toute seule (voir `--bas`). */
+    --bas: 34vh;
     border-color: rgba(166, 0, 0, 0.7);
     box-shadow:
       0 0 0 2px rgba(166, 0, 0, 0.45),
@@ -3801,7 +3820,7 @@
   /* Replie devant une question du moteur : la scene laisse le centre au
      panneau de la question et descend en bas, sur sa seule chronologie. */
   .deroule-phase.est-replie {
-    bottom: 16px;
+    --bas: 16px;
     width: min(560px, calc(100vw - 24px));
     padding: 10px 14px;
   }

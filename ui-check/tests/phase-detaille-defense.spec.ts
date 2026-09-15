@@ -147,7 +147,29 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
       });
       expect(panneaux, `${panneaux} panneaux empilés au centre`).toBeLessThanOrEqual(1);
 
-      // La preuve à l'œil, à la demande : un moteur au vert ne dit rien du rendu.
+      // ⚠ LE CARTOUCHE TIENT DANS L'ÉCRAN. Mesuré le 15/09/2026 en 1920×1080 :
+    // `top: -44px`, le haut du panneau (la chronologie MENACE / MÉCHANT /
+    // SBIRES…) était coupé par le bord de l'écran. Deux causes cumulées, dans
+    // `board.css` : la variante « est-question » remonte le bord bas à 34vh
+    // alors que la hauteur maximale en supposait 31, et la boîte est en
+    // content-box, donc padding et bordures s'ajoutent à cette hauteur.
+    const boite = await page.evaluate(() => {
+      const e = document.querySelector('.deroule-phase') as HTMLElement | null;
+      if (!e) return null;
+      const r = e.getBoundingClientRect();
+      return { haut: Math.round(r.top), bas: Math.round(r.bottom), ecran: window.innerHeight };
+    });
+    expect(boite, 'aucun cartouche à mesurer').not.toBeNull();
+    expect(
+      boite!.haut,
+      `le cartouche sort de l'écran par le HAUT (top ${boite!.haut}px) : son début est coupé`
+    ).toBeGreaterThanOrEqual(0);
+    expect(
+      boite!.bas,
+      `le cartouche sort de l'écran par le BAS (${boite!.bas}px pour ${boite!.ecran}px)`
+    ).toBeLessThanOrEqual(boite!.ecran);
+
+    // La preuve à l'œil, à la demande : un moteur au vert ne dit rien du rendu.
       if (process.env.CAPTURE_DEFENSE) {
         await page.screenshot({
           path: `${process.env.CAPTURE_DEFENSE}/defense-${defensesVues}.png`,
