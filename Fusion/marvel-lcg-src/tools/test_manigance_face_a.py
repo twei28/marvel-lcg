@@ -172,11 +172,30 @@ def cas_etape_suivante(game_dir, port):
     return "l'etape 2 pose la question elle aussi, et se retourne ensuite"
 
 
+def cas_regle_publiee(game_dir, port):
+    """La trame dit si la question est attendue, pour que le plateau le sache.
+
+    ⚠ Ne rappelle PAS `ToDescriptor.World(monde)` a cote : cette fonction
+    prend en verite `(world, event_name, sound_name)`, et un appel invente ici
+    construirait un second descripteur qui ne prouverait rien sur celui
+    envoye au client. Le vrai descripteur, c'est `monde.render.descriptor`
+    (`WorldRender.PresentInternal` l'y range a chaque rendu) : c'est
+    EXACTEMENT l'objet que `server_sync.handle_get_world` sert tel quel a
+    `GET /world` (voir `data = controller.world.render.descriptor`).
+    """
+    _, monde, _ = monter_le_moteur(game_dir, port, ["confirm_main_scheme"])
+    descripteur = monde.render.descriptor
+    assert getattr(descripteur, "confirm_main_scheme", None) is True, \
+        "la trame ne publie pas confirm_main_scheme"
+    return "la trame publie confirm_main_scheme"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "question_posee": cas_question_posee,
     "sans_drapeau": cas_sans_drapeau_aucune_question,
     "etape_suivante": cas_etape_suivante,
+    "regle_publiee": cas_regle_publiee,
 }
 
 

@@ -341,6 +341,12 @@ export type World = {
    * saura toujours si une victoire comptait.
    */
   mode_sandbox?: boolean
+  /**
+   * Le moteur s'arrête-t-il sur la face A de la manigance ? Posé par les
+   * parties neuves seulement : une sauvegarde antérieure au 15/09/2026 ne
+   * porte pas la règle, et le voile d'ouverture ne doit pas l'attendre.
+   */
+  confirm_main_scheme?: boolean
   event_name: string
   /**
    * Les activations ennemies du round en cours, telles que le MOTEUR les a

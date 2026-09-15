@@ -39,6 +39,11 @@ function buildRules(state) {
     if (estBataille(state)) rules.push("mode_competitive");
     rules.push("no_crisis_of_infinite_deadpools");
     rules.push("no_encounter_cards_ignore_crisis");
+    // Le temps d'arrêt sur la face A de la manigance principale (spec du
+    // 15/09/2026). Posé par les parties NEUVES uniquement : une sauvegarde
+    // rechargée garde les règles inscrites dans sa scène, donc ne pose pas la
+    // question et rejoue ses opérations sans décalage.
+    rules.push("confirm_main_scheme");
     return rules;
 }
 

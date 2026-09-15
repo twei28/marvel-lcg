@@ -17,6 +17,10 @@ class WorldDescriptor:
     # clic droit. Transmis a chaque rendu : il survit donc au
     # rechargement de page et au chargement d'une sauvegarde.
     mode_sandbox: bool = field(default=False)
+    # Le plateau tient son voile d'ouverture jusqu'a la question de la face A.
+    # Il doit donc savoir s'il y a une question a attendre : une sauvegarde
+    # ancienne ou un puzzle ne porte pas la regle, et n'en posera jamais.
+    confirm_main_scheme: bool = field(default=False)
     # play
     area_schemes_main: List[CardDescriptor] = field(default_factory=lambda: [])
     main_schemes_deck: List[CardDescriptor] = field(default_factory=lambda: [])
