@@ -111,7 +111,23 @@ def cas_drapeau_pose(game_dir, port):
     return "le drapeau confirm_main_scheme est pose"
 
 
-CAS = {"drapeau_pose": cas_drapeau_pose}
+def cas_question_posee(game_dir, port):
+    """Le client est VRAIMENT interroge sur la face A.
+
+    ⚠ Ce cas existe parce que le contraire a ete mesure le 15/09/2026 : une
+    question a une seule option avec `forced=True` (le defaut de
+    `AskChooseOneText`) est resolue par le moteur SANS jamais atteindre le
+    client. Le cas ne regarde donc pas l'etat final, il regarde le JOURNAL DES
+    QUESTIONS.
+    """
+    _, monde, journal = monter_le_moteur(game_dir, port, ["confirm_main_scheme"])
+    posees = [noms for noms in journal if "Reveal_Main_Scheme" in noms]
+    assert len(posees) == 1, \
+        f"la question devait etre posee 1 fois, journal={journal[:20]}"
+    return "la question Reveal_Main_Scheme a atteint le client"
+
+
+CAS = {"drapeau_pose": cas_drapeau_pose, "question_posee": cas_question_posee}
 
 
 def main():

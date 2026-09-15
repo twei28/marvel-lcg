@@ -894,6 +894,43 @@ class World(WorldAction, WorldFind):
 
     ################################################################################
     # Advance
+
+    # Le nom TECHNIQUE de l'option de confirmation de la face A. Il ne
+    # s'affiche jamais tel quel : le plateau le reconnait et pose son propre
+    # libelle traduit. Sans espace, parce que le moteur remplace les espaces
+    # par des underscores dans les noms d'options publies.
+    CONFIRM_MAIN_SCHEME_OPTION = "Reveal_Main_Scheme"
+
+    def ConfirmMainSchemeReveal(self, scheme: 'MainScheme') -> None:
+        """Le premier joueur retourne la manigance, comme sur une vraie table.
+
+        ⚠ `forced=False`, ET C'EST TOUT LE SUJET. Mesure du 15/09/2026 : avec
+        `forced=True` (le defaut de `AskChooseOneText`), une question a une
+        seule option ne quitte JAMAIS le moteur —
+        `PlayerAction.ChoiceAndSpellEffect` pose `need_choose = False` et
+        choisit a la place du joueur. Le client n'a rien vu passer : 0 appel a
+        `DoGetInput`. Avec `forced=False`, il est bien interroge.
+
+        ⚠ Le premier joueur SEUL (decision du 15/09/2026) : c'est lui qui tient
+        le jeton et qui retourne la carte. Personne d'autre n'est retenu.
+        """
+        from game.ability.factory import AbilityFactory
+        from game.effect.rule import GameRule
+
+        if not self.rule.confirm_main_scheme:
+            return
+        if self.is_game_over:
+            return
+        player = self.GetFirstPlayer()
+        if player is None or player.is_eliminated:
+            return
+
+        ability = AbilityFactory.ForChoiceAbility(
+            World.CONFIRM_MAIN_SCHEME_OPTION,
+            lambda targets: None,
+        )
+        player.ChooseAbilities(GameRule(scheme), ability, forced=False)
+
     def AdvanceMainScheme(self, prev_scheme: 'MainScheme', to_face: Literal["2A", "3A"]|CardFace|None, by_effect: 'Effect'):
         from game.message import Message
         from game.effect.rule import GameRule
@@ -906,6 +943,11 @@ class World(WorldAction, WorldFind):
             return
         if prev_scheme.card.printed_faces[0] == prev_scheme:
             card = prev_scheme.card
+            # Le temps d'arret sur la face A. Cette branche est la SEULE qui
+            # retourne une face A, mise en place et changements d'etape
+            # confondus : trace du 15/09/2026, 01097a a la mise en place et
+            # 01117a a l'etape 2 y passent tous les deux.
+            self.ConfirmMainSchemeReveal(prev_scheme)
             card.Flip(GameRule(card.face))
             # Reveal is call when `Filp`
             # card.face.Reveal(None, GameRule(card.face))
