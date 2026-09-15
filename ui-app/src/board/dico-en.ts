@@ -642,6 +642,12 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Déferlement': 'Overkill',
   'À Distance': 'Ranged',
   'Utilisations': 'Uses',
+  'Exigence': 'Requirement',
+  // Les COULEURS listees par une Exigence (« Exigence (énergie, mentale) »).
+  // « physique », « mentale », « énergie » et « éclair » sont deja traduits
+  // plus haut ; « libre » (la ressource wild, nom de `RESSOURCES`) manquait, et
+  // deux cartes a Requirement la portent (`desc.Requirement = "G"`).
+  'libre': 'wild',
 
   // ---- board/mots-cles.ts : définitions ----
   'Tant que ce sbire est engagé avec vous, vous ne pouvez pas attaquer le Méchant.':
@@ -694,6 +700,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Cette attaque ignore Riposte.': 'This attack ignores Retaliate.',
   'Entre en jeu avec X jetons ; quand le dernier est dépensé, défaussez cette carte.':
     'Enters play with X tokens; when the last one is spent, discard this card.',
+  'Pour jouer cette carte, le paiement doit comporter les ressources indiquées. Ce n’est pas un coût en plus : elles sont comprises dans le coût.':
+    'To play this card, the payment must include the listed resources. This is not an extra cost: they are part of the cost.',
 
   // --- Météo, musique, écran de fin (vague 8) ---
   'Ambiance': 'Ambience',

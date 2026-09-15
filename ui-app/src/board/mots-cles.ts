@@ -6,6 +6,7 @@
 // « Deferlement », Stalwart = « Robuste », Steady = « Solide ».
 
 import { t } from './langue'
+import { RESSOURCES } from './icones-ressources'
 
 export type MotCle = { nom: string; definition: string }
 
@@ -33,6 +34,49 @@ const DEPUIS_DESC: Record<string, { nom: string; definition: string }> = {
   Setup: { nom: 'Mise en place', definition: 'Commence la partie en jeu.' },
   Teamwork: { nom: 'Collaboration', definition: 'Deux personnages désignés peuvent s’incliner ensemble pour déclencher cette capacité.' },
   Alliance: { nom: 'Alliance', definition: 'N’importe quel joueur peut aider à payer cette carte.' },
+}
+
+/**
+ * EXIGENCE (`Requirement`), a part des autres, parce que sa VALEUR n'est pas un
+ * nombre mais une suite de COULEURS (« B », « BB », « YBR »).
+ *
+ * ⚠ SANS CE TRAITEMENT, le suffixe commun aurait ecrit « Exigence YBR » : la
+ * boucle ci-dessus colle la valeur de `desc` telle quelle apres le nom, ce qui
+ * marche pour « Entrave 2 » et ne veut rien dire ici. Meme motif que `Uses`,
+ * traite lui aussi a part plus bas.
+ *
+ * Nom officiel FR : « Exigence ». Verifie sur le texte FR des cartes
+ * (`textes-fr-complets.ts`, 27006 Web Binding : « Exigence ([mental]) ») et sur
+ * fr.marvelcdb, comme le reste de ce fichier.
+ *
+ * Fiche complete : `docs/reference/mots-cles/requirement.md`.
+ */
+const EXIGENCE = {
+  nom: 'Exigence',
+  definition:
+    'Pour jouer cette carte, le paiement doit comporter les ressources indiquées. Ce n’est pas un coût en plus : elles sont comprises dans le coût.',
+}
+
+/**
+ * « YBR » -> « (énergie, mentale, physique) ».
+ *
+ * ⚠ LES NOMS VIENNENT DE `RESSOURCES`, JAMAIS D'UNE TABLE RECOPIEE. B et Y ont
+ * deja ete INVERSES une fois dans ce plateau (voir `noms-ressources.test.ts`,
+ * qui relit la table du moteur pour l'empecher) : il annoncait « energie »
+ * quand il manquait une mentale. Une seconde table ici aurait pu rederiver en
+ * silence, exactement de la meme facon.
+ *
+ * La repetition est conservee (« BB » -> « mentale, mentale ») : elle dit qu'il
+ * en faut DEUX, ce qu'une liste dedoublonnee effacerait.
+ */
+export function couleursExigees(valeur: string): string {
+  const noms = valeur
+    .toUpperCase()
+    .split('')
+    .map((lettre) => RESSOURCES.find((r) => r.lettre === lettre)?.nom)
+    .filter((nom): nom is string => nom !== undefined)
+    .map((nom) => t(nom))
+  return noms.length > 0 ? `(${noms.join(', ')})` : ''
 }
 
 /** Mots-cles qui vivent dans le TEXTE de la carte, pas dans `desc`. */
@@ -79,6 +123,9 @@ export function motsClesDeCarte(
   }
   if (desc?.Uses !== undefined) {
     pousser('Uses', DEPUIS_TEXTE.Uses.nom, DEPUIS_TEXTE.Uses.definition, desc.Uses.split(',')[0])
+  }
+  if (desc?.Requirement !== undefined) {
+    pousser('Requirement', EXIGENCE.nom, EXIGENCE.definition, couleursExigees(desc.Requirement))
   }
 
   const minuscule = (texte ?? '').toLowerCase()
