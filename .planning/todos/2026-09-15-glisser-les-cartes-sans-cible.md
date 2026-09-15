@@ -52,3 +52,6 @@ bundle déployé : à jouer après le prochain déploiement.
 ## Statut
 
 **Fait le 15/09/2026.** Non déployé, pas encore essayé à la main.
+
+⚠ **Déployé le 15/09/2026 à 13h02** (bundle `board-CpIPLEv8.js`). Un rechargement
+forcé du navigateur (Ctrl+F5) est nécessaire pour le voir.

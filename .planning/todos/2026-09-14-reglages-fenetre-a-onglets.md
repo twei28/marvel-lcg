@@ -88,3 +88,6 @@ parent.
 
 Tests : `FenetreReglages.test.tsx` (21 cas), `menus-mobile` (4), `retour-android`
 (5), et les 1 396 cas du plateau au vert.
+
+⚠ **Déployé le 15/09/2026 à 13h02** (bundle `board-CpIPLEv8.js`). Un rechargement
+forcé du navigateur (Ctrl+F5) est nécessaire pour le voir.
