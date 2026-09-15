@@ -185,3 +185,33 @@ export function zonesDeLaSource(
   }
   return seules
 }
+
+/**
+ * Les zones du TERRAIN, celles ou l'on lache une carte qui ne vise rien.
+ *
+ * Les deux rangees de l'aire du joueur : ses heros et soutiens, sa ligne de
+ * combat. Pas la zone du mechant ni les piles : y lacher une carte voudrait
+ * dire « je vise ca », et une carte sans cible ne vise justement rien.
+ */
+export const ZONES_DU_TERRAIN = ['terrain-soutien', 'terrain-combat']
+
+/**
+ * Ou lacher une carte dont l'action ne vise RIEN (un evenement comme « One Way
+ * or Another », un pouvoir de heros sans cible).
+ *
+ * ⚠ SANS CETTE REGLE, CES CARTES NE SE GLISSAIENT NULLE PART.
+ * `zonesDeLaSource` ne connait que les options qui visent quelque chose : elle
+ * saute celles dont la plage de cibles est vide. Le plateau repondait donc
+ * « Pas ici » partout, et il fallait passer par le menu. Demande de
+ * l'utilisateur, 15/09/2026 : « les evenements qui n'ont pas de cible,
+ * j'aimerais aussi juste pouvoir les glisser sur le terrain de jeu ».
+ */
+export function zonesSansCible(
+  options: Option[],
+  sourceId: number,
+  identiteId?: number
+): Set<string> {
+  return optionsSansCible(options, sourceId, identiteId).length > 0
+    ? new Set(ZONES_DU_TERRAIN)
+    : new Set()
+}

@@ -7,6 +7,7 @@ import {
   optionsSansCible,
   raisonDuRefus,
   zonesDeLaSource,
+  zonesSansCible,
 } from './cibles'
 
 function option(partiel: Partial<Option>): Option {
@@ -185,5 +186,43 @@ describe('les zones qui acceptent la carte', () => {
   it('une cible hors de toute zone dessinee n ouvre rien', () => {
     const ailleurs = [option({ bind_id: 99, all_legal_targets: [999], target_num_range: [1, 1] })]
     expect(zonesDeLaSource(ailleurs, 99, zoneDe).size).toBe(0)
+  })
+})
+
+// Demande de l'utilisateur, 15/09/2026, capture a l'appui : « les evenements
+// qui n'ont pas de cible, j'aimerais aussi juste pouvoir les glisser sur le
+// terrain de jeu ». Son geste visait « Heros et soutiens », et le plateau
+// repondait « Not here » : aucune zone n'acceptait une carte sans cible,
+// puisque `zonesDeLaSource` ne connait que les options qui VISENT quelque chose.
+describe('ou se lache une carte qui ne vise rien', () => {
+  const EVENEMENT = 99
+
+  it('accepte le terrain quand la carte a une action sans cible', () => {
+    const options = [option({ id: 1, bind_id: EVENEMENT, target_num_range: [0, 0] })]
+    expect([...zonesSansCible(options, EVENEMENT)].sort()).toEqual([
+      'terrain-combat',
+      'terrain-soutien',
+    ])
+  })
+
+  it("n'accepte rien quand la seule action sans cible est refusee", () => {
+    const options = [
+      option({ id: 1, bind_id: EVENEMENT, target_num_range: [0, 0], failure_reason: 'trop cher' }),
+    ]
+    expect(zonesSansCible(options, EVENEMENT).size).toBe(0)
+  })
+
+  it("n'accepte rien pour une carte qui vise, elle", () => {
+    // Une carte qui a une cible se lache SUR sa cible : le terrain n'a pas a
+    // s'ouvrir, sinon on jouerait a cote sans savoir ce qu'on vise.
+    const options = [
+      option({ id: 1, bind_id: EVENEMENT, all_legal_targets: [RHINO], target_num_range: [1, 1] }),
+    ]
+    expect(zonesSansCible(options, EVENEMENT).size).toBe(0)
+  })
+
+  it('suit les actions generales quand la source est l identite', () => {
+    const options = [option({ id: 1, bind_id: 0, target_num_range: [0, 0] })]
+    expect(zonesSansCible(options, HEROS, HEROS).size).toBe(2)
   })
 })

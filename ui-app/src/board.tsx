@@ -31,8 +31,10 @@ import {
   ciblesDeLaSource,
   estSourceGlissable,
   optionsDuDepot,
+  optionsSansCible,
   raisonDuRefus,
   zonesDeLaSource,
+  zonesSansCible,
 } from './board/glisser/cibles'
 import { PlateauMobile } from './board/mobile/PlateauMobile'
 import { enModeFeuille } from './board/placement/usePlacement'
@@ -2137,7 +2139,14 @@ function PagePartie({
       estSource: (id) => estSourceGlissable(optionsCourantes, id, idIdentiteGlisser),
       ciblesLegales: (sourceId) =>
         ciblesDeLaSource(optionsCourantes, sourceId, plateau.idsAffiches, idIdentiteGlisser),
-      zonesLegales: (sourceId) => new Set(zonesPourSource(sourceId).keys()),
+      zonesLegales: (sourceId) =>
+        new Set([
+          ...zonesPourSource(sourceId).keys(),
+          // Une carte qui ne vise RIEN se lache sur le terrain : sans cette
+          // union, le plateau repondait « Pas ici » partout et il fallait
+          // passer par le menu. Demande de l'utilisateur, 15/09/2026.
+          ...zonesSansCible(optionsCourantes, sourceId, idIdentiteGlisser),
+        ]),
       libelle: (sourceId, cible) => {
         if (cible.carteId !== undefined) {
           const actions = optionsDuDepot(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser)
@@ -2161,6 +2170,13 @@ function PagePartie({
           const nomCible = nomPorteurFr(parZone) ?? ''
           if (actions[0] && actions.length === 1) return `${nomLisible(actions[0])} · ${nomCible}`
           if (actions.length > 1) return `${actions.length} ${t('actions possibles')} · ${nomCible}`
+        }
+        // La carte ne vise rien : c'est le TERRAIN qui l'accueille, et on
+        // annonce l'action elle-meme, sans nom de cible puisqu'il n'y en a pas.
+        if (cible.zone && zonesSansCible(optionsCourantes, sourceId, idIdentiteGlisser).has(cible.zone)) {
+          const sansCible = optionsSansCible(optionsCourantes, sourceId, idIdentiteGlisser)
+          if (sansCible[0] && sansCible.length === 1) return nomLisible(sansCible[0])
+          if (sansCible.length > 1) return `${sansCible.length} ${t('actions possibles')}`
         }
         return cible.zone ? t('Pas ici') : undefined
       },
@@ -2204,6 +2220,21 @@ function PagePartie({
               // Meme regle que ci-dessus : la zone vaut la cible, la source
               // reste la carte lachee.
               interaction.focaliserCible(parZone, sourceId)
+              return undefined
+            }
+          }
+          // Rien a viser dans cette zone : reste le cas de la carte qui ne
+          // vise RIEN. Elle se joue telle quelle, sans cible.
+          if (zonesSansCible(optionsCourantes, sourceId, idIdentiteGlisser).has(cible.zone)) {
+            const sansCible = optionsSansCible(optionsCourantes, sourceId, idIdentiteGlisser)
+            if (sansCible[0] && sansCible.length === 1) {
+              choisirOptionDepuisMenu(sansCible[0], [], true)
+              return undefined
+            }
+            if (sansCible.length > 1) {
+              // Plusieurs actions sans cible sur la meme carte : c'est a elle
+              // qu'il faut demander, pas a la zone.
+              interaction.focaliserCarte(sourceId)
               return undefined
             }
           }
