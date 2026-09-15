@@ -229,8 +229,34 @@ vérifier par une trace comme pour la principale).
 scénarios. Le panneau doit-il attendre un OK à chaque fois, ou seulement se
 montrer ?
 
+### Les décisions, prises le 15/09/2026
+
+| Question | Décision |
+|---|---|
+| **Le jeu s'arrête-t-il ?** | **Oui, un OK**, exactement comme la principale. Le moteur attend. |
+| **Plusieurs d'un coup ?** | **Une à la fois, un OK chacune.** On lit chaque carte pour elle-même, même si un effet en pose deux ou trois. |
+| **Celles que le joueur pose lui-même ?** | **Aucun panneau.** Il vient de la lire et de la choisir : le panneau ne lui apprendrait rien et lui coûterait un clic. Le panneau est réservé à ce que le SCÉNARIO impose. |
+| **Qui valide en multijoueur ?** | **Le premier joueur**, comme la principale. Une seule règle pour les deux panneaux. |
+
+### Ce qui reste à établir par une trace, pas à supposer
+
+⚠ **Par où passe l'entrée en jeu d'une manigance annexe ?** La principale avait
+UNE porte (`AdvanceMainScheme`), trouvée par trace. Il faut la même mesure ici :
+`OnPutIntoPlay`, `OnWhenCardRevealed`, ou les deux selon l'origine (mise en
+place, changement de stade du vilain, carte rencontre, effet d'une carte).
+
+⚠ **Comment distinguer ce que le scénario impose de ce que le joueur pose ?**
+C'est la décision n°3, et elle n'a de sens que si le moteur sait le dire. À
+vérifier : une `PlayerSideScheme` jouée depuis la main passe-t-elle par un
+chemin distinct d'une `EncounterSideScheme` mise en jeu par le scénario ?
+
+⚠ **Le doublon avec `CoucheRevelation`.** Une manigance annexe RÉVÉLÉE est déjà
+montrée en grand au centre aujourd'hui, avec disparition automatique. Si le
+panneau s'ajoute sans que la présentation existante se taise, on aura deux
+présentations de la même carte, l'une par-dessus l'autre. C'était le défaut n°2
+du 14/09/2026, il ne faut pas le refaire.
+
 ### Statut
 
-**Noté, non cadré.** Ces quatre points passent avant toute ligne de code, et ce
-n'est pas la même question que la principale. Le chantier en cours va jusqu'au
-bout d'abord.
+**Cadré le 15/09/2026, non commencé.** Les trois points ci-dessus passent avant
+la première ligne de code.

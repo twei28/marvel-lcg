@@ -23,4 +23,15 @@ parler avec lui : la fiche dira ce qui est déjà couvert et ce qui ne l'est pas
 
 ## Statut
 
-Noté le 14/09/2026, **à cadrer**. Ne rien commencer sans ses réponses.
+**Cadré le 15/09/2026**, cinq questions posées une à une. La spec fait foi :
+`docs/superpowers/specs/2026-09-15-refonte-des-sons-design.md`, qui porte la
+LISTE DE COURSES des 21 sons (ce que chacun doit évoquer, sa durée, sa
+fréquence).
+
+Décisions : l'utilisateur fournira les fichiers à partir de cette liste ; les
+sons de MOUVEMENT seront joués par le plateau, là où la carte vole, et non par
+le moteur ; le volume et les déclencheurs peuvent être traités avant les
+fichiers.
+
+⚠ Reste à lui faire nommer QUELS déclencheurs tombent au mauvais moment. Il dit
+que certains arrivent mal, on ne sait pas lesquels. Ne rien déplacer avant.
