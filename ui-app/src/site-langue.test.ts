@@ -16,7 +16,8 @@
 // premier `t()` ajouté ; le scan, non. Même principe que la gate du plateau.
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { execFileSync } from 'node:child_process'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 const ICI = path.dirname(fileURLToPath(import.meta.url))
@@ -107,6 +108,35 @@ function clesUtilisees(): Map<string, string[]> {
   parcourir(SITE)
   return cles
 }
+
+describe('⚠ les fichiers du site se chargent VRAIMENT', () => {
+  // ⚠ CE CAS EXISTE PARCE QUE J'AI CASSÉ LE SITE, le 15/09/2026, en ajoutant
+  // les traductions ci-dessous : une DOUBLE VIRGULE laissée par le script qui
+  // les a écrites. `dico-en.js` ne se parsait plus, donc plus rien ne se
+  // chargeait — wizard, galerie, campagne et deck-builder muets d'un coup.
+  //
+  // ⚠ ET LE CONTRÔLE DE LANGUE DISAIT VERT. Il comptait les lignes françaises
+  // à l'écran : une page morte n'en affiche aucune. Un écran vide passait donc
+  // pour un écran parfaitement traduit. C'est le pire genre de vert.
+  //
+  // `node --check` ne l'avait pas vu non plus : il lit le fichier comme du
+  // CommonJS. Il faut l'IMPORTER comme le navigateur le fait.
+  it('le dictionnaire du site se parse comme un vrai module', () => {
+    // ⚠ ON LE FAIT PARSER PAR NODE, DANS SON PROPRE PROCESSUS, et non par un
+    // `import()` du test : le bundler de tests intercepte les imports
+    // dynamiques et ne résout pas un chemin hors de son périmètre. Un
+    // sous-processus fait exactement ce que fait le navigateur.
+    const script = `import(${JSON.stringify(pathToFileURL(DICO).href)})` +
+      `.then((m) => { if (!m.DICO_EN_BASE) { console.error('SANS DICO_EN_BASE'); process.exit(2) }` +
+      ` console.log(Object.keys(m.DICO_EN_BASE).length) })` +
+      `.catch((e) => { console.error(e.message); process.exit(1) })`
+    const sortie = execFileSync(process.execPath, ['--input-type=module', '-e', script], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    })
+    expect(Number(sortie.trim()), 'le dictionnaire du site rend trop peu de clés').toBeGreaterThan(100)
+  })
+})
 
 describe('le dictionnaire anglais couvre tout ce que le SITE affiche', () => {
   it('⚠ aucune clé du site ne reste sans traduction', () => {

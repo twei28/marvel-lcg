@@ -637,7 +637,7 @@ export const DICO_EN_BASE = {
     "La campagne n'a pas pu être créée :": "The campaign could not be created:",
     "Scénario introuvable dans le catalogue :": "Scenario not found in the catalog:",
 
-    "Choisir ce héros": "Choose this hero",,
+    "Choisir ce héros": "Choose this hero",
 
   // ---- PASSE DE LANGUE DU 15/09/2026 ----------------------------------
   // 29 cles s'affichaient en FRANCAIS sur un ecran anglais. Le PLATEAU
