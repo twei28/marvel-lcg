@@ -51,7 +51,7 @@ bundle déployé : à jouer après le prochain déploiement.
 
 ## Statut
 
-**Fait le 15/09/2026.** Non déployé, pas encore essayé à la main.
+**Fait, déployé et VU EN JEU le 15/09/2026.**
 
 ⚠ **Déployé le 15/09/2026 à 13h02** (bundle `board-DJhLSY-t.js, redeploye a 14h07 apres les correctifs de la relecture d'ensemble`). Un rechargement
 forcé du navigateur (Ctrl+F5) est nécessaire pour le voir.

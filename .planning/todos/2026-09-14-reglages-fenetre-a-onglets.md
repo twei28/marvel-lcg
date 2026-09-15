@@ -79,7 +79,7 @@ toute seule ». Grisé et visible, il s'annonce lui-même.
 
 ## Statut
 
-**Fait le 14/09/2026.** Non déployé.
+**Fait le 14/09/2026, déployé le 15/09/2026.**
 
 Vérifié à l'écran, pas seulement en tests : capture PC (fenêtre 722×408 dans
 1600×950) et capture téléphone (448×492 dans 480×1050), les quatre onglets

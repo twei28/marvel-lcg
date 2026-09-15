@@ -39,7 +39,9 @@ header sur une partie à deux.**
 
 ## Statut
 
-**Corrigé le 15/09/2026.** Non déployé, preuve visuelle à faire.
+**Corrigé et déployé le 15/09/2026.** L'utilisateur a confirmé que la barre
+était bien tombée dans le bouton « Partie » sur l'ancien bundle : cause et
+correctif se rejoignent. Reste à la voir dans la barre à deux joueurs.
 
 ⚠ **Déployé le 15/09/2026 à 13h02** (bundle `board-DJhLSY-t.js, redeploye a 14h07 apres les correctifs de la relecture d'ensemble`). Un rechargement
 forcé du navigateur (Ctrl+F5) est nécessaire pour le voir.

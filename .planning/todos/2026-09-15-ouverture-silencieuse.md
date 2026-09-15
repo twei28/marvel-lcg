@@ -51,5 +51,7 @@ et deux vagues de correctifs. 1627 cas verts.
 
 ## Statut
 
-**Livré et déployé le 15/09/2026** (bundle `board-DJhLSY-t.js`, 14h07). Le
-moteur attend un redémarrage. Jamais vu en jeu.
+**Livré, déployé et VU EN JEU le 15/09/2026.** Le panneau s'est affiché sur une
+vraie partie (Kang, « Kang's Arrival » face 1A). Deux défauts s'y sont vus du
+premier coup, tous deux corrigés le jour même : la carte s'affichait debout, et
+le bouton ne ressemblait pas aux autres.

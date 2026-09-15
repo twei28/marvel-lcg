@@ -142,6 +142,6 @@ elle répond. Tout le reste s'y branche, rien ne s'y mélange.
 
 ## Statut
 
-**Livré le 13/09/2026**, les cinq tranches. Non déployé à cette date.
+**Livré le 13/09/2026**, les cinq tranches, **déployé le 15/09/2026**.
 Plus aucune question ouverte. Il reste un chiffre à relever, le poids d'un
 enregistrement de partie, qui peut faire revoir la rétention.

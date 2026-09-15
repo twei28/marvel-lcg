@@ -66,8 +66,8 @@ l'ancien code. À lancer après le prochain déploiement, pas avant.
 
 ## Statut
 
-Cause identifiée et **correctif écrit le 15/09/2026**, vérifié par trois cas
-unitaires vus rouges d'abord. Non déployé, et le bout-en-bout reste à jouer.
+Cause identifiée et **correctif écrit et déployé le 15/09/2026**, vérifié par
+trois cas unitaires vus rouges d'abord. Le bout-en-bout reste à jouer.
 
 ⚠ **Déployé le 15/09/2026 à 13h02** (bundle `board-DJhLSY-t.js, redeploye a 14h07 apres les correctifs de la relecture d'ensemble`). Un rechargement
 forcé du navigateur (Ctrl+F5) est nécessaire pour le voir.
