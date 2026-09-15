@@ -30,6 +30,15 @@ class WorldRule:
         self.additional_resolve_mulligans   = VariableBool(self, False, "additional_resolve_mulligans")
         self.disable_setup_draw_cards       = VariableBool(self, False, "disable_setup_draw_cards")
         self.create_player_deck_first       = VariableBool(self, False, "create_player_deck_first")
+        # Le temps d'arret sur la face A de la manigance principale (spec du
+        # 15/09/2026). PAR DEFAUT A FAUX, et ce n'est pas une precaution de
+        # confort : une question de plus pendant la mise en place DECALE la
+        # liste des operations rejouees (engine/controller/module/replay.py,
+        # controle CRC). Une sauvegarde ecrite avant ce changement ne porte pas
+        # la regle, ne pose donc pas la question, et se rejoue a l'identique.
+        # Seules les parties neuves lancees depuis l'ecran de preparation
+        # l'allument (public/js/prepare/launcher.js, buildRules).
+        self.confirm_main_scheme            = VariableBool(self, False, "confirm_main_scheme")
 
         self.v15_all                        = VariableBool(self, False, "v15_all")
 
