@@ -3067,15 +3067,17 @@
        chaque bloc au maximum le faisait tenir a quelques pixels pres, donc la
        premiere capacite au texte un peu long aurait redeborde.
 
-       La table, elle, resout ce probleme depuis toujours : elle SE MET A
-       L'ECHELLE de la fenetre (`--echelle`, Board.tsx). Le cartouche fait
-       desormais pareil : `--ajust` est mesure en JS (`useAjustementCartouche`),
-       vaut 1 quand tout tient, et retrecit juste ce qu'il faut sinon. Il n'y a
-       plus de plafond, donc plus rien a couper.
+       ⚠ LA MISE A L'ECHELLE DU CARTOUCHE ENTIER A ETE ESSAYEE PUIS RETIREE.
+       Un `transform: scale()` pilote en JS (`--ajust`) le faisait tenir, au
+       prix d'un texte flou et rapetisse la ou il y avait toute la place :
+       « si c'est comme ce que tu me montres la, ca ne va pas du tout, c'est de
+       la merde » (15/09/2026). Il n'en reste rien.
 
-       ⚠ `transform-origin: bottom center` : le cartouche est ancre par le BAS
-       (`bottom: var(--bas)`), il doit donc retrecir vers le haut et garder son
-       bord bas exactement la ou il est. */
+       Ce qui tient sa place aujourd'hui : les cartes de l'etape ne sont plus
+       dessinees (leurs noms les remplacent), et les deux qui restent — la carte
+       retournee et la vignette de la question — suivent la hauteur de la
+       fenetre (voir `.deroule-phase .deroule-cartes` plus bas). Mesure a cinq
+       tailles dans `ui-check/tests/phase-detaille-defense.spec.ts`. */
     transform: translateX(-50%);
     /* ⚠ LE PLAFOND RESTE, il empeche le cartouche de sortir par le HAUT.
        Retire un instant le 15/09/2026 en essayant la mise a l'echelle : sans
@@ -3130,6 +3132,78 @@
   .deroule-phase .dc-capacites {
     position: relative;
     z-index: 1;
+  }
+
+  /* ⚠ UNE SEULE LIGNE DANS LE CARTOUCHE, LE RESTE AU SURVOL (15/09/2026).
+     Choix de l'utilisateur, pose d'avance pour le jour ou ca ne rentrerait
+     toujours pas : « le texte de la capacite passe au survol ». Mesure du
+     meme jour, fenetre de defense en 1000x600 : 54 px pour ce bloc, sur 562
+     disponibles et 740 demandes.
+
+     Le texte entier reste lisible : il est dans le `title` du paragraphe
+     (DemandeCentrale.tsx). Une infobulle du navigateur se pose PAR-DESSUS
+     tout, la ou un panneau a nous serait rogne par le cartouche
+     (`overflow-y: auto`) ou tomberait sous le bord de l'ecran. */
+  .deroule-phase .dc-capacite {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: help;
+  }
+
+  /* ⚠ LES DEUX CARTES DU CARTOUCHE SUIVENT LA HAUTEUR DE LA FENETRE.
+     (15/09/2026, et c'est la mesure qui a tranche, pas un avis.)
+
+     Le cartouche de la fenetre de defense empile : le bandeau « A toi », la
+     chronologie, la carte de boost qui vient d'etre retournee, la phrase, la
+     vignette de la carte avec laquelle on repond, les boutons, le rappel de
+     regle. Mesure du jour, seconde fenetre de defense d'une vraie partie :
+
+       1920x1080 : 768 px demandes pour 691 visibles   (il DEFILAIT deja la)
+       1280x800  : 768 pour 598
+       1009x663  : 740 pour 598
+       1000x600  : 740 pour 562
+
+     Les deux cartes pesaient a elles seules 385 a 413 px de ce total, et la
+     vignette de la question ne regardait meme pas la hauteur : 104 px de large,
+     fixes, soit 196 a 218 px de haut.
+
+     `9.5vh` les met a la meme echelle que la table (`--echelle`, Board.tsx) :
+     110 px sur un 1080, 76 sur un 800, le plancher de 68 en dessous. Le
+     plafond garde un grand ecran identique a ce qu'il etait pour la vignette
+     (110 contre 104 avant), et retrecit la carte de boost, qui montait a
+     200 px. C'est ce qui rend « jamais de defilement » tenable a toutes les
+     tailles : « je t'ai dit que je voulais jamais scroll ». */
+  .deroule-phase .deroule-cartes,
+  .deroule-phase .deroule-cartes .scan-card,
+  .deroule-phase .dc-vignette .scan-card {
+    --card-w: clamp(56px, 8.5vh, 110px);
+  }
+
+  /* ⚠ ET LA VARIABLE SE POSE SUR LA CARTE, PAS SEULEMENT SUR SON CONTENEUR.
+     `ScanCard.css` declare `--card-w: 116px` SUR `.scan-card` : une valeur
+     posee plus haut est heritee, donc ecrasee, et la carte gardait ses 116 px
+     pendant que son cadre retrecissait. Mesure du 15/09/2026 : le conteneur
+     passait de 114 a 68 px de large, la carte restait a 195 px de haut. */
+
+  /* Les marges de la rangee, resserrees ICI seulement : le cartouche compte
+     ses pixels, la scene de la table non. */
+  .deroule-phase .deroule-cartes {
+    margin: 4px 0 6px;
+  }
+
+  /* Meme raison pour la bande des boutons : 22 px de marge et de rembourrage
+     au-dessus d'une question qui tient deja tout juste. */
+  .deroule-phase .dc-boutons,
+  .deroule-phase .cibles-scene-boutons {
+    margin-top: 6px;
+    padding-top: 8px;
+  }
+
+  /* Une carte PAYSAGE (un complot retourne dans la scene) garde son rapport :
+     elle est plus large a hauteur egale, et c'est la hauteur qu'on rationne. */
+  .deroule-phase .deroule-cartes .scan-card.is-landscape {
+    --card-w: clamp(94px, 13vh, 150px);
   }
 
   /* La bande oblique en haut de la case, sous la chronologie. */
@@ -3268,17 +3342,31 @@
 
      ⚠ SEULEMENT SOUS 800 px DE HAUT : sur un ecran ordinaire, tout tient, et
      on ne retire rien a personne. */
-  @media (max-height: 800px) {
-    .deroule-phase.est-question .deroule-cartes {
-      display: none;
-    }
+  /* ⚠ LE NOM D'UNE CARTE, DANS LA PHRASE, SE SURVOLE (15/09/2026).
+     « Arrete de montrer les cartes ; par contre, quand on hover sur le nom, on
+     voit la carte en question. Il faut voir qu'on peut hover sur le nom, donc
+     a la limite tu me le mets plus gras dans une autre typo. »
 
-    /* Et la vignette de la question suit la hauteur, sans descendre sous une
-       taille ou l'on reconnait encore la carte. Mesure du 15/09/2026 : sans
-       elle il restait NEUF pixels de trop (607 pour 598). */
-    .deroule-phase .dc-vignette .scan-card {
-      --card-w: clamp(72px, 13vh, 104px);
-    }
+     Les deux, donc, sur sa demande : la typo des titres du plateau, ET le
+     souligne pointille avec le curseur main, qui est la convention du web pour
+     « il y a quelque chose a voir ici ».
+
+     ⚠ SEULEMENT QUAND LA CARTE EST CONNUE. Un nom sans carte reste un gras
+     ordinaire (voir `MorceauDePhrase.carteId`) : un nom qui s'annonce
+     survolable et ne montre rien est pire que pas de souligne du tout. */
+  .deroule-nom {
+    font-family: 'Bangers', Impact, sans-serif;
+    font-size: 1.12em;
+    letter-spacing: 0.03em;
+    text-decoration: underline dotted currentColor 2px;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .deroule-nom:hover,
+  .deroule-nom:focus-visible {
+    color: var(--menace);
+    text-decoration-style: solid;
   }
 
   .deroule-phase.est-question {
@@ -3324,6 +3412,10 @@
 
        Le maximum reste 200px : sur un grand ecran, rien ne change. */
     --card-w: clamp(90px, 19vh, 200px);
+    /* ⚠ DANS LE CARTOUCHE, PLUS SERRE ENCORE : voir la regle dediee plus bas
+       (`.deroule-phase .deroule-cartes`). Elle s'y ajoute parce que le
+       cartouche partage sa hauteur avec la question du moteur, ses boutons et
+       sa vignette, ce que la scene seule n'a pas a faire. */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3386,70 +3478,13 @@
     position: relative;
   }
 
-  /* Le jeton qui tombe : les VRAIES images de jetons (celles des cartes,
-     jetons/menace.png et degats.png), le chiffre noir cerne de blanc dessus,
-     comme sur la table. Demande de l'utilisateur, 7 septembre 2026. */
-  .deroule-jeton {
-    position: absolute;
-    /* DECORATION : elle ne prend jamais le pointeur. Mesure dans Chrome le
-       11/09/2026 : ces 64x64 poses en haut a droite de la carte rendaient le
-       jeton a `elementFromPoint`, donc `closest('.scan-card')` vide, donc la
-       loupe se fermait des qu'on visait le triangle. Meme regle que SplashTour
-       et le coach : rien de decoratif n'avale le geste. */
-    pointer-events: none;
-    top: 6px;
-    right: 6px;
-    z-index: 3;
-    width: 64px;
-    height: 64px;
-    display: grid;
-    place-items: center;
-    background: center / contain no-repeat;
-    font-size: 1.5rem;
-    font-weight: 900;
-    font-variant-numeric: tabular-nums;
-    color: #000;
-    -webkit-text-stroke: 1px #fff;
-    paint-order: stroke fill;
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.7);
-    filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.6));
-    animation: deroule-jeton-tombe 500ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
-  }
-
-  /* Le chiffre du triangle de menace, un peu au-dessus de son centre. */
-  .deroule-jeton.est-menace {
-    padding-top: 6px;
-    height: 57px;
-  }
-
-  @keyframes deroule-jeton-tombe {
-    from {
-      opacity: 0;
-      transform: translateY(-70px) scale(1.8);
-    }
-    60% {
-      opacity: 1;
-      transform: translateY(4px) scale(0.96);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  /* Le compteur « 5 → 7 / 12 » s'ecrit apres que le jeton s'est pose. */
-  .deroule-compteur.est-apres-jeton {
-    animation: deroule-apparait 200ms ease-out 450ms both;
-  }
-
-  @keyframes deroule-apparait {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+  /* ⚠ LE JETON QUI TOMBAIT SUR LA CIBLE A DISPARU AVEC ELLE (15/09/2026).
+     Il se posait sur la carte visee, en haut a droite ; le cartouche ne dessine
+     plus l'auteur ni sa cible (« arrete de montrer les cartes »), et un jeton
+     n'a pas de sens pose sur rien. Ce qu'il disait est dans la phrase (« gagne
+     2 menaces ») et dans le compteur a sa droite (« 5 → 7 / 12 »), qui n'a plus
+     de raison d'attendre 450 ms avant de paraitre. Son `deroule-apparait` part
+     avec lui : plus personne ne s'en servait. */
 
   /* Le retournement : dos derriere, face devant, une rotation a l'arrivee. */
   .deroule-retourne {
@@ -3486,15 +3521,13 @@
     }
   }
 
-  body.plateau-sans-animations .deroule-jeton,
-  body.plateau-sans-animations .deroule-compteur.est-apres-jeton,
   body.plateau-sans-animations .deroule-retourne {
     animation: none;
   }
 
   .deroule-carte-legende {
-    /* Meme raison que .deroule-jeton : « Boost +1 » court sous la carte et
-       coupait le survol a cet endroit. */
+    /* DECORATION : elle ne prend jamais le pointeur. « Boost +1 » court sous
+       la carte et coupait le survol a cet endroit. */
     pointer-events: none;
     font-size: 0.8rem;
     font-weight: 900;

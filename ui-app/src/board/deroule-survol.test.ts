@@ -42,7 +42,11 @@ describe('l’aperçu d’une carte', () => {
 })
 
 describe('les decorations des cartes de la scene', () => {
-  it.each(['.deroule-jeton', '.deroule-carte-legende'])(
+  // ⚠ `.deroule-jeton` A DISPARU DE LA LISTE (15/09/2026). Le jeton se posait
+  // sur la carte visee ; le cartouche ne dessine plus l'auteur ni sa cible
+  // (« arrete de montrer les cartes »), et un jeton n'a pas de sens pose sur
+  // rien. Le nombre est dans la phrase et dans le compteur.
+  it.each(['.deroule-carte-legende'])(
     '%s ne prend pas le pointeur',
     (selecteur) => {
       expect(bloc(selecteur)).toContain('pointer-events: none')

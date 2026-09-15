@@ -112,6 +112,8 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
   // défectueux — vérifié le 14/09/2026 en remettant l'ancienne règle.
   const DEFENSES_A_VOIR = 2;
   let defensesVues = 0;
+  /** Le survol d'un nom ne s'éprouve qu'une fois : il ne dépend pas de l'étape. */
+  let nomEprouve = false;
 
   // ⚠ LE TOUR DU HÉROS SE JOUE PAR LE PILOTE, LA PHASE DU MÉCHANT PAR L'ÉCRAN.
   // En mode Détaillé, la phase n'avance QUE sur le clic « Suivant » du joueur :
@@ -169,57 +171,89 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
       `le cartouche sort de l'écran par le BAS (${boite!.bas}px pour ${boite!.ecran}px)`
     ).toBeLessThanOrEqual(boite!.ecran);
 
-    // ⚠ ET IL NE DÉFILE PAS, DANS UNE PETITE FENÊTRE NON PLUS.
+    // ⚠ ET IL NE DÉFILE JAMAIS, À AUCUNE TAILLE DE FENÊTRE.
     //
     // Signalé le 15/09/2026, capture à l'appui, dans une fenêtre de 1009×663 :
     // « on doit scroll putain, je t'ai dit que je voulais jamais scroll ». Le
     // cartouche TENAIT dans l'écran (les deux mesures ci-dessus passaient) mais
-    // son CONTENU débordait et une barre de défilement apparaissait dedans :
-    // les cartes de l'étape étaient figées à 200 px de large, sans jamais
-    // regarder la hauteur disponible.
+    // son CONTENU débordait et une barre de défilement apparaissait dedans.
     //
-    // On rétrécit donc la fenêtre ici même, à la taille exacte où il l'a vu,
-    // puis on la rend. Mesurer à 1920×1080 seulement ne prouvait rien.
+    // ⚠ PUIS J'AI CORRIGÉ LA PETITE FENÊTRE ET LAISSÉ LA GRANDE CASSÉE, parce
+    // que la règle était bornée à 800 px de haut. Signalé en partie, à juste
+    // titre : « tu te fous vraiment de ma gueule en fait ??? ». Mesurer une
+    // seule taille ne prouve rien.
+    //
+    // D'où cette liste, arrêtée avec lui le 15/09/2026 (« une mesure à
+    // plusieurs tailles de fenêtre », puis « les mêmes, plus un très grand
+    // écran ») : son écran, un très grand écran, un portable ordinaire, la
+    // fenêtre exacte de sa capture, et un plancher serré.
+    const TAILLES = [
+      { width: 1920, height: 1080 },
+      { width: 2560, height: 1440 },
+      { width: 1280, height: 800 },
+      { width: 1009, height: 663 },
+      { width: 1000, height: 600 },
+    ];
     const AVANT = page.viewportSize();
-    await page.setViewportSize({ width: 1009, height: 663 });
-    await page.waitForTimeout(300);
-    const defilement = await page.evaluate(() => {
-      const e = document.querySelector('.deroule-phase') as HTMLElement | null;
-      if (!e) return null;
-      // Le detail par enfant : quand ca defile, il faut savoir CE QUI prend la
-      // place, sinon on regle au hasard.
-      const h = (c: Element) => Math.round((c as HTMLElement).getBoundingClientRect().height);
-      const decrire = (c: Element): string => {
-        const nom = String(c.className || c.tagName).split(' ')[0];
-        // On ouvre le plus gros d'un cran : sans cela on sait QUE ca deborde,
-        // jamais CE QUI deborde.
-        const enfants = [...c.children];
-        const dedans = enfants.length && h(c) > 120
-          ? '(' + enfants.map((x) => {
-              const sous = [...x.children];
-              const detail2 = sous.length && h(x) > 120
-                ? '[' + sous.map((y) => `${String(y.className || y.tagName).split(' ')[0]}=${h(y)}`).join(' ') + ']'
-                : '';
-              return `${String(x.className || x.tagName).split(' ')[0]}=${h(x)}${detail2}`;
-            }).join(' ') + ')'
-          : '';
-        return `${nom}=${h(c)}${dedans}`;
-      };
-      const detail = [...e.children].map(decrire).join(' ');
-      return { contenu: e.scrollHeight, visible: e.clientHeight, largeur: window.innerWidth, hauteur: window.innerHeight, detail };
-    });
-    // La preuve a l'oeil, a la taille exacte du defaut, quand on la demande.
-    if (process.env.CAPTURE_PETITE) {
-      await page.screenshot({ path: `${process.env.CAPTURE_PETITE}/petite-${defensesVues}.png` });
+    for (const taille of TAILLES) {
+      await page.setViewportSize(taille);
+      await page.waitForTimeout(300);
+      const mesure = await page.evaluate(() => {
+        const e = document.querySelector('.deroule-phase') as HTMLElement | null;
+        if (!e) return null;
+        // Le détail par enfant : quand ça défile, il faut savoir CE QUI prend
+        // la place, sinon on règle au hasard. On descend tant que le bloc est
+        // gros : savoir QUE ça déborde ne sert à rien, il faut savoir QUOI.
+        const h = (c: Element) => Math.round((c as HTMLElement).getBoundingClientRect().height);
+        const l = (c: Element) => Math.round((c as HTMLElement).getBoundingClientRect().width);
+        const decrire = (c: Element, reste: number): string => {
+          const nom = `${String(c.className || c.tagName).split(' ')[0]}|${l(c)}w`;
+          const enfants = [...c.children];
+          const dedans =
+            reste > 0 && enfants.length > 0 && h(c) > 80
+              ? '(' + enfants.map((x) => decrire(x, reste - 1)).join(' ') + ')'
+              : '';
+          return `${nom}=${h(c)}${dedans}`;
+        };
+        const r = e.getBoundingClientRect();
+        return {
+          contenu: e.scrollHeight,
+          visible: e.clientHeight,
+          haut: Math.round(r.top),
+          bas: Math.round(r.bottom),
+          largeur: window.innerWidth,
+          hauteur: window.innerHeight,
+          detail: [...e.children].map((c) => decrire(c, 4)).join(' '),
+        };
+      });
+      expect(mesure, `aucun cartouche à mesurer en ${taille.width}×${taille.height}`).not.toBeNull();
+      // La preuve à l'œil, à chaque taille, quand on la demande.
+      if (process.env.CAPTURE_PETITE) {
+        await page.screenshot({
+          path: `${process.env.CAPTURE_PETITE}/${taille.width}x${taille.height}-${defensesVues}.png`,
+        });
+      }
+      expect.soft(
+        mesure!.contenu,
+        `le cartouche DÉFILE en ${mesure!.largeur}×${mesure!.hauteur} : ` +
+          `${mesure!.contenu}px de contenu pour ${mesure!.visible}px visibles` +
+          ` — par enfant : ${mesure!.detail}`
+      ).toBeLessThanOrEqual(mesure!.visible + 1);
+      // Et il reste dans l'écran, à cette taille-là aussi : un cartouche qui ne
+      // défile pas mais dont le haut est coupé ne vaut pas mieux.
+      expect.soft(
+        mesure!.haut,
+        `le cartouche sort de l'écran par le HAUT en ${mesure!.largeur}×${mesure!.hauteur} ` +
+          `(top ${mesure!.haut}px) — par enfant : ${mesure!.detail}`
+      ).toBeGreaterThanOrEqual(0);
+      expect.soft(
+        mesure!.bas,
+        `le cartouche sort de l'écran par le BAS en ${mesure!.largeur}×${mesure!.hauteur} ` +
+          `(${mesure!.bas}px pour ${mesure!.hauteur}px)`
+      ).toBeLessThanOrEqual(mesure!.hauteur);
     }
     if (AVANT) await page.setViewportSize(AVANT);
-    expect(defilement, 'aucun cartouche à mesurer en petite fenêtre').not.toBeNull();
-    expect(
-      defilement!.contenu,
-      `le cartouche DÉFILE en ${defilement!.largeur}×${defilement!.hauteur} : ` +
-        `${defilement!.contenu}px de contenu pour ${defilement!.visible}px visibles` +
-        ` — par enfant : ${defilement!.detail}`
-    ).toBeLessThanOrEqual(defilement!.visible + 1);
+    await page.waitForTimeout(200);
 
     // La preuve à l'œil, à la demande : un moteur au vert ne dit rien du rendu.
       if (process.env.CAPTURE_DEFENSE) {
@@ -256,6 +290,32 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
       ).not.toBe(revele[2].trim().toLowerCase());
     }
 
+    // ⚠ LE SURVOL D'UN NOM OUVRE SA CARTE, ET LA REFERME QUAND ON S'EN VA.
+    //
+    // C'est ce qui REMPLACE les cartes de l'etape depuis le 15/09/2026 : « il
+    // n'y a pas besoin de montrer les cartes ; par contre, quand on hover sur
+    // le nom, on voit la carte en question ». Si ce geste ne marche pas, la
+    // refonte a retire quelque chose sans rien rendre — on le verifie donc en
+    // vraie partie, une fois, sur le premier nom rencontre.
+    if (!nomEprouve && (await page.locator('.deroule-nom').count())) {
+      nomEprouve = true;
+      const nom = page.locator('.deroule-nom').first();
+      await nom.hover();
+      await expect(
+        page.locator('.carte-apercu'),
+        'survoler un nom de carte n’ouvre pas la carte en grand'
+      ).toBeVisible();
+      if (process.env.CAPTURE_PETITE) {
+        await page.screenshot({ path: `${process.env.CAPTURE_PETITE}/nom-survole.png` });
+      }
+      // « Dès que le curseur quitte le nom » : on s'en va, et rien ne reste.
+      await page.mouse.move(4, 4);
+      await expect(
+        page.locator('.carte-apercu'),
+        'la carte reste ouverte alors que le curseur a quitté le nom'
+      ).toBeHidden();
+    }
+
     if ((await suivant.count()) && (await suivant.first().isVisible())) {
       await suivant.first().click();
       await page.waitForTimeout(500);
@@ -285,6 +345,12 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
       CONDUITE
     );
   }
+
+  expect(
+    nomEprouve,
+    'aucun nom de carte survolable n’est apparu de toute la phase : le cartouche ne ' +
+      'montre plus les cartes de l’étape, il DOIT montrer leurs noms (15/09/2026)'
+  ).toBe(true);
 
   expect(
     defensesVues,

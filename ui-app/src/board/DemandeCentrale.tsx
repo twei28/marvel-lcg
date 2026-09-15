@@ -517,7 +517,18 @@ export function DemandeCentrale({
             const capacite = texteCapacite?.(option)
             if (!capacite) return null
             return (
-              <p className="dc-capacite" key={`capacite-${option.id}`}>
+              // ⚠ UNE LIGNE, ET LE RESTE AU SURVOL (15/09/2026). C'est ce que
+              // l'utilisateur a choisi le jour ou il a fallu decider ce qui
+              // cede quand le cartouche ne tient plus : « le rappel de regle
+              // sous les boutons devient une ligne courte qu'on survole pour
+              // lire en entier ». C'est le bloc le plus long et le moins urgent
+              // au moment de decider s'il faut defendre.
+              //
+              // Le `title` plutot qu'un panneau a nous : le cartouche est en
+              // `overflow-y: auto`, tout ce qu'on y dessinerait serait rogne, et
+              // au-dela de son bord bas il n'y a plus d'ecran. L'infobulle du
+              // navigateur, elle, se pose par-dessus tout et ne rogne rien.
+              <p className="dc-capacite" key={`capacite-${option.id}`} title={capacite}>
                 {options.length > 1 ? <b>{nomLisible(option)} — </b> : null}
                 {avecIcones(marquerRessources(capacite))}
               </p>

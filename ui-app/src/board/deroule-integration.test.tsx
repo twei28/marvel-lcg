@@ -13,7 +13,10 @@
 // moteur a franchies, et combien de clics le joueur a donnes.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useEffect, useState } from 'react'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render } from '@testing-library/react'
+// La phrase de l'etape est decoupee en plusieurs elements depuis que ses noms
+// de cartes sont survolables : voir `src/test-textes.ts`.
+import { ecran as screen } from '../test-textes'
 import { AttenteTable } from './AttenteTable'
 import { DELAI_SILENCE_TABLE_MS, useTableSilencieuse } from './attente-table'
 import { DeroulePhase } from './DeroulePhase'

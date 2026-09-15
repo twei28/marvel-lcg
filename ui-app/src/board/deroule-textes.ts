@@ -409,7 +409,19 @@ export function regleEtape(etape: EtapeDeroule): string {
 
 
 /** Un morceau de phrase : du texte, en gras ou non. */
-export type MorceauDePhrase = { texte: string; gras: boolean }
+export type MorceauDePhrase = {
+  texte: string
+  gras: boolean
+  /**
+   * La carte que ce nom désigne, quand on la connaît.
+   *
+   * ⚠ C'EST ELLE QUI REND LE NOM SURVOLABLE. Demande de l'utilisateur,
+   * 15/09/2026 : « arrête de montrer les cartes ; par contre, quand on hover
+   * sur le nom, on voit la carte en question ». Un nom sans carte connue reste
+   * du texte ordinaire : on ne promet que ce qu'on peut tenir.
+   */
+  carteId?: number
+}
 
 /**
  * La phrase de l'etape, decoupee pour mettre les NOMS DE CARTES en gras.
@@ -434,8 +446,18 @@ export type MorceauDePhrase = { texte: string; gras: boolean }
  */
 export function decouperPhrase(
   phrase: string,
-  noms: Array<string | undefined>
+  noms: Array<string | undefined>,
+  /**
+   * L'identifiant de carte de CHAQUE nom, dans le même ordre que `noms`.
+   * Facultatif : sans lui, le découpage se comporte exactement comme avant.
+   */
+  idsDesNoms: Array<number | undefined> = []
 ): MorceauDePhrase[] {
+  const idParNom = new Map<string, number>()
+  noms.forEach((nom, rang) => {
+    const id = idsDesNoms[rang]
+    if (nom && id !== undefined && !idParNom.has(nom)) idParNom.set(nom, id)
+  })
   const cherches = [...new Set(noms.filter((n): n is string => Boolean(n && n.trim())))].sort(
     (a, b) => b.length - a.length
   )
@@ -449,7 +471,7 @@ export function decouperPhrase(
       }
       const parts = morceau.texte.split(nom)
       parts.forEach((part, i) => {
-        if (i > 0) suivants.push({ texte: nom, gras: true })
+        if (i > 0) suivants.push({ texte: nom, gras: true, carteId: idParNom.get(nom) })
         if (part) suivants.push({ texte: part, gras: false })
       })
     }

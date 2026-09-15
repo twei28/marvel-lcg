@@ -51,8 +51,14 @@ export function useApercuSurvol<T>(
   const [id, setId] = useState<string | undefined>(undefined)
 
   const survol = useCallback((evenement: ReactMouseEvent) => {
-    const carte = (evenement.target as HTMLElement).closest<HTMLElement>('.scan-card')
-    setId(carte?.dataset.cardId ?? undefined)
+    // ⚠ UNE CARTE, OU UN NOM DE CARTE. Depuis le 15/09/2026, le cartouche du
+    // mode Detaille ne montre plus les cartes de l'etape : il montre leurs
+    // NOMS, et c'est en les survolant qu'on voit la carte (« arrete de montrer
+    // les cartes ; par contre, quand on hover sur le nom, on voit la carte en
+    // question »). Les deux portent le meme `data-card-id`, la regle ne change
+    // donc pas : on lit ce qu'il y a sous le pointeur, et rien d'autre.
+    const cible = (evenement.target as HTMLElement).closest<HTMLElement>('[data-card-id]')
+    setId(cible?.dataset.cardId ?? undefined)
   }, [])
 
   const quitter = useCallback(() => setId(undefined), [])

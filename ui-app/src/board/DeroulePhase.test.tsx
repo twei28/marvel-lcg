@@ -5,11 +5,15 @@
 // s'entend au-dessus de la MAIN du joueur, jamais par-dessus elle. On peut revenir en arriere pour relire,
 // ce qui ne rejoue rien dans la partie : c'est une relecture, pas un undo.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render } from '@testing-library/react'
 import { DELAI_ALERTE_FILET_MS, DELAI_DEFILEMENT_MS, DeroulePhase } from './DeroulePhase'
 import type { EtapeDeroule } from './deroule-phase'
 import type { ScanCardProps } from '../components/ScanCard'
 import { CLE_REGLE_DEPLIEE } from './moteur'
+import { ecran as screen } from '../test-textes'
+
+// Les requetes de texte tolerantes a une phrase decoupee : voir
+// `src/test-textes.ts`, qui dit pourquoi elles existent.
 
 const etapes: EtapeDeroule[] = [
   { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
@@ -1989,6 +1993,16 @@ describe('le bilan de fin de phase', () => {
   // La scene montre les cartes de l'etape ELLE-MEME, lues dans l'index du
   // monde par `carteScene`, jamais sur la table : la table peut etre en
   // avance sur le recit, et la carte revelee y est encore face cachee.
+  //
+  // ⚠ ET DEPUIS LE 15/09/2026, ELLE N'EN MONTRE PLUS QUE DEUX SORTES.
+  // L'utilisateur : « il n'y a pas besoin de montrer les cartes ; par contre,
+  // tu peux mettre le nom, et quand on hover sur le nom, on voit la carte en
+  // question. [...] Pour gagner de la place, arrete de montrer les cartes. »
+  // Parmi trois portees possibles, il a choisi « seulement celles de l'etape » :
+  // l'auteur et sa cible partent, remplaces par leurs noms dans la phrase ;
+  // le BOOST reste (« elles restent montrees » : il est retourne sous les yeux
+  // du joueur et change le resultat), la carte REVELEE et le DOS de la
+  // distribution aussi (une carte jamais vue, « un nom seul ne dirait rien »).
   describe('les cartes de la scene', () => {
     const scan = (id: number, nom: string): ScanCardProps => ({
       id: String(id),
@@ -1997,7 +2011,7 @@ describe('le bilan de fin de phase', () => {
       imageUrl: `/scan/${id}`,
     })
 
-    it('montre l auteur, ses boosts et la cible, tous par leur scan', () => {
+    it('ne dessine que le boost : l auteur et la cible sont des noms survolables', () => {
       const appels: [number, boolean][] = []
       const carteScene = (id: number, faceVisible: boolean) => {
         appels.push([id, faceVisible])
@@ -2020,18 +2034,52 @@ describe('le bilan de fin de phase', () => {
       const { container } = render(
         <DeroulePhase etapes={resolue} carteScene={carteScene} onTerminer={() => {}} />
       )
-      expect(container.querySelectorAll('.deroule-carte .scan-card')).toHaveLength(3)
-      // L'auteur et la cible tels qu'ils sont ; le boost face visible, il est
-      // encore face cachee dans le monde de cette trame.
-      expect(appels).toEqual(
-        expect.arrayContaining([
-          [50, false],
-          [77, true],
-          [12, false],
-        ])
-      )
-      expect(container.querySelector('.deroule-fleche')).not.toBeNull()
+      // UNE SEULE CARTE DESSINEE : le boost. L'auteur et la cible sont des
+      // noms, et c'est tout le sujet de la refonte.
+      expect(container.querySelectorAll('.deroule-carte .scan-card')).toHaveLength(1)
+      expect(container.querySelector('.deroule-carte.est-boost')).not.toBeNull()
+      expect(container.querySelector('.deroule-carte.est-auteur')).toBeNull()
+      expect(container.querySelector('.deroule-carte.est-cible')).toBeNull()
+      // Le boost est force face visible : il est encore face cachee dans le
+      // monde de cette trame.
+      expect(appels).toEqual(expect.arrayContaining([[77, true]]))
+      // Les deux noms portent l'identifiant moteur de leur carte, celui-la
+      // meme que `apercu-survol` lit sous le pointeur.
+      const noms = [...container.querySelectorAll('.deroule-nom')]
+      expect(noms.map((n) => n.textContent)).toEqual(['Klaw', 'Colossus'])
+      expect(noms.map((n) => n.getAttribute('data-card-id'))).toEqual(['50', '12'])
+      // « Non, la phrase suffit » (15/09/2026) : elle dit deja qui frappe qui,
+      // dans l'ordre.
+      expect(container.querySelector('.deroule-fleche')).toBeNull()
       expect(screen.getByText('Boost +1')).toBeInTheDocument()
+    })
+
+    it('laisse le nom en texte ordinaire quand le plateau ne sait pas montrer la carte', () => {
+      // « Il reste du texte ordinaire » (15/09/2026) : on ne promet que ce
+      // qu'on peut tenir. Un nom souligne qui n'ouvre rien au survol est pire
+      // que pas de souligne du tout. L'etape porte pourtant bien les deux
+      // identifiants : c'est l'INDEX DES SCANS qui ne les connait pas.
+      const resolue: EtapeDeroule[] = [
+        {
+          cle: 'a',
+          temps: 'mechant',
+          titre: 'attaque',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          auteurNom: 'Klaw',
+          cibleNom: 'Colossus',
+          montant: 4,
+          boosts: [],
+        },
+      ]
+      const { container } = render(
+        <DeroulePhase etapes={resolue} carteScene={() => undefined} onTerminer={() => {}} />
+      )
+      expect(container.querySelector('.deroule-nom')).toBeNull()
+      // Le nom reste ecrit, et toujours en gras : seul le souligne part.
+      expect(screen.getByText('Klaw')).toBeInTheDocument()
+      expect(screen.getByText('Colossus')).toBeInTheDocument()
     })
 
     it('montre la carte revelee face visible', () => {
@@ -2087,10 +2135,15 @@ describe('le bilan de fin de phase', () => {
     })
 
     // --- Le geste physique --------------------------------------------------
-    // Decide avec l'utilisateur le 7 septembre 2026 : un jeton qui tombe sur
-    // la carte visee (menace, degats), un boost qui arrive dos visible et se
-    // retourne, la carte rencontre qui se retourne sur place.
-    it('pose un jeton de menace sur la manigance', () => {
+    // Decide avec l'utilisateur le 7 septembre 2026 : un boost qui arrive dos
+    // visible et se retourne, la carte rencontre qui se retourne sur place.
+    //
+    // ⚠ LE JETON QUI TOMBAIT SUR LA CIBLE EST PARTI AVEC ELLE (15/09/2026). Il
+    // se posait sur la carte visee, qui n'est plus dessinee : un jeton n'a pas
+    // de sens pose sur rien. Ce qu'il disait n'est pas perdu, et les deux cas
+    // qui suivent le verrouillent — la phrase porte le nombre, le compteur
+    // porte l'avant et l'apres.
+    it('ne pose plus de jeton sur la manigance : la phrase et le compteur le disent', () => {
       const menace: EtapeDeroule[] = [
         {
           cle: 'm',
@@ -2108,12 +2161,15 @@ describe('le bilan de fin de phase', () => {
       const { container } = render(
         <DeroulePhase etapes={menace} carteScene={(id) => scan(id, 'Hunting Down Heroes')} onTerminer={() => {}} />
       )
-      const jeton = container.querySelector('.deroule-carte.est-cible .deroule-jeton.est-menace')
-      expect(jeton).not.toBeNull()
-      expect(jeton?.textContent).toBe('+2')
+      expect(container.querySelector('.deroule-jeton')).toBeNull()
+      expect(container.querySelector('.deroule-titre')).toHaveTextContent(
+        'Hunting Down Heroes gagne 2 menaces'
+      )
+      // « 5 → 7 / 12 » : l'avant, l'apres et le seuil, a droite de la phrase.
+      expect(container.querySelector('.deroule-compteur')?.textContent).toBe('5 → 7 / 12')
     })
 
-    it('pose un jeton de degats sur le heros attaque', () => {
+    it('ne pose plus de jeton de degats non plus : le compteur porte les PV', () => {
       const attaque: EtapeDeroule[] = [
         {
           cle: 'a',
@@ -2133,8 +2189,8 @@ describe('le bilan de fin de phase', () => {
       const { container } = render(
         <DeroulePhase etapes={attaque} carteScene={(id) => scan(id, String(id))} onTerminer={() => {}} />
       )
-      const jeton = container.querySelector('.deroule-carte.est-cible .deroule-jeton.est-degats')
-      expect(jeton?.textContent).toBe('3')
+      expect(container.querySelector('.deroule-jeton')).toBeNull()
+      expect(container.querySelector('.deroule-compteur')?.textContent).toContain('9')
     })
 
     it('ne pose aucun jeton sur une annonce, ni sur un coup a zero', () => {
@@ -2210,8 +2266,10 @@ describe('le bilan de fin de phase', () => {
         />
       )
       expect(container.querySelector('.deroule-carte.est-boost .deroule-retourne')).not.toBeNull()
-      expect(container.querySelector('.deroule-carte.est-auteur .deroule-retourne')).toBeNull()
-      expect(container.querySelector('.deroule-carte.est-cible .deroule-retourne')).toBeNull()
+      // L'auteur et la cible ne sont plus dessines du tout : il n'y a donc
+      // meme plus de figure a retourner.
+      expect(container.querySelector('.deroule-carte.est-auteur')).toBeNull()
+      expect(container.querySelector('.deroule-carte.est-cible')).toBeNull()
       // Le dos du retournement est le dos d'une carte rencontre.
       const dosBoost = container.querySelector('.deroule-carte.est-boost .deroule-retourne-dos img')
       expect(dosBoost?.getAttribute('src')).toBe('/scan/encounter')
@@ -2233,16 +2291,20 @@ describe('le bilan de fin de phase', () => {
         <DeroulePhase etapes={etapes} carteScene={(id) => scan(id, String(id))} onTerminer={() => {}} />
       )
       fireEvent.click(suivant())
-      const figure = container.querySelector('.deroule-carte.est-auteur')
-      expect(figure).not.toBeNull()
+      // ⚠ C'EST LE NOM QU'ON SURVOLE, DESORMAIS. « Quand on hover sur le nom,
+      // on voit la carte en question » (15/09/2026). Le nom porte le meme
+      // `data-card-id` qu'une carte : `apercu-survol` ne fait pas la
+      // difference, et c'est tout ce qu'il a fallu.
+      const nom = container.querySelector('.deroule-nom')
+      expect(nom?.textContent).toBe('Ultron')
       expect(document.querySelector('.carte-apercu')).toBeNull()
-      // Le survol est ecoute sur `.deroule-cartes` (`mouseOver`, qui remonte),
-      // plus sur chaque figure : regle commune d'`apercu-survol.ts`.
-      fireEvent.mouseOver(figure?.querySelector('.scan-card') as Element)
+      // Le survol est ecoute sur le TITRE (`mouseOver`, qui remonte), pas sur
+      // chaque nom : regle commune d'`apercu-survol.ts`.
+      fireEvent.mouseOver(nom as Element)
       expect(document.querySelector('.carte-apercu')).not.toBeNull()
-      // Le pointeur quitte les cartes sans quitter le panneau : rien ne doit
-      // plus etre montre en grand.
-      fireEvent.mouseOver(container.querySelector('.deroule-cartes') as Element)
+      // « Des que le curseur quitte le nom » (15/09/2026) : le pointeur revient
+      // sur le titre, hors de tout nom, et rien ne reste ouvert.
+      fireEvent.mouseOver(container.querySelector('.deroule-titre') as Element)
       expect(document.querySelector('.carte-apercu')).toBeNull()
       vi.unstubAllGlobals()
     })
@@ -2264,9 +2326,9 @@ describe('le bilan de fin de phase', () => {
         <DeroulePhase etapes={etapes} carteScene={(id) => scan(id, String(id))} onTerminer={() => {}} />
       )
       fireEvent.click(suivant())
-      const carte = container.querySelector('.deroule-carte.est-auteur .scan-card')
-      expect(carte).not.toBeNull()
-      fireEvent.mouseOver(carte as Element)
+      const nom = container.querySelector('.deroule-nom')
+      expect(nom).not.toBeNull()
+      fireEvent.mouseOver(nom as Element)
       expect(document.querySelector('.carte-apercu')).not.toBeNull()
       fireEvent.click(suivant())
       expect(document.querySelector('.carte-apercu')).toBeNull()
@@ -2323,16 +2385,30 @@ describe('le bilan de fin de phase', () => {
       expect(screen.getByText('3 imprimé + 1 (Chaos dans la Prison) = 4 menaces')).toBeInTheDocument()
     })
 
-    it('ecrit le nom a la place d une carte dont le scan manque', () => {
+    it('ecrit le nom a la place d une carte DESSINEE dont le scan manque', () => {
+      // La regle ne vaut plus que pour les cartes qui se dessinent encore : un
+      // boost, une carte revelee, un dos. Pour l'auteur et la cible, le « nom a
+      // la place de la carte » est devenu la regle generale, pas un repli.
+      const avecBoost: EtapeDeroule[] = [
+        {
+          cle: 'a',
+          temps: 'mechant',
+          titre: 'attaque',
+          regle: 'regle:activations',
+          carteId: 50,
+          cibleId: 12,
+          auteurNom: 'Ultron',
+          cibleNom: 'Shuri',
+          montant: 4,
+          boosts: [{ cle: 'b', nom: 'Whip', cibleId: 77, apport: 1 }],
+        },
+      ]
       const { container } = render(
-        <DeroulePhase etapes={etapes} carteScene={() => undefined} onTerminer={() => {}} />
+        <DeroulePhase etapes={avecBoost} carteScene={() => undefined} onTerminer={() => {}} />
       )
-      // L'etape de menace n'a pas de carte connue ; la suivante a un auteur.
-      fireEvent.click(suivant())
       const absentes = container.querySelectorAll('.deroule-carte-absente')
-      expect(absentes).toHaveLength(2)
-      expect(absentes[0]?.textContent).toBe('Ultron')
-      expect(absentes[1]?.textContent).toBe('Shuri')
+      expect(absentes).toHaveLength(1)
+      expect(absentes[0]?.textContent).toBe('Whip')
     })
 
     it('ne montre aucune carte sur le bilan', () => {
@@ -2399,10 +2475,14 @@ describe('le bilan de fin de phase', () => {
           onTerminer={() => {}}
         />
       )
-      // La scene entiere : chronologie, cartes de l'etape, titre de
-      // l'intention, et la question a la place des boutons du cartouche.
+      // La scene entiere : chronologie, titre de l'intention, et la question a
+      // la place des boutons du cartouche.
+      //
+      // ⚠ PLUS DE RANGEE DE CARTES ICI (15/09/2026) : cette etape n'a qu'un
+      // auteur et une cible, et ni l'un ni l'autre ne se dessine. Ce qui reste
+      // est justement ce qui compte au moment de decider — la phrase.
       expect(container.querySelector('.deroule-phase.est-replie')).toBeNull()
-      expect(container.querySelector('.deroule-cartes')).not.toBeNull()
+      expect(container.querySelector('.deroule-cartes')).toBeNull()
       expect(screen.getByText('Ultron va attaquer Shuri')).toBeInTheDocument()
       expect(container.querySelector('.deroule-question-scene')).not.toBeNull()
       expect(screen.getByRole('button', { name: 'Défendre' })).toBeInTheDocument()
@@ -2416,9 +2496,15 @@ describe('le bilan de fin de phase', () => {
       expect(document.body.classList.contains('deroule-question')).toBe(true)
     })
 
-    it('ouvre la loupe au survol d une carte de la scene PENDANT une question', () => {
+    it('ouvre la loupe au survol d un nom PENDANT une question', () => {
       // Capture de l'utilisateur, 11/09/2026 : « Defendre ? » dans la scene,
       // la carte revelee au milieu, et rien en grand au survol.
+      //
+      // ⚠ LA MEME GARANTIE, SUR LE NOM (15/09/2026). C'est la branche la plus
+      // exposee : c'est en decidant de defendre qu'on a le plus besoin de
+      // relire la carte qui frappe, et le cartouche n'y dessine plus qu'une
+      // question. Sans loupe rendue dans CETTE branche, survoler le nom
+      // n'ouvrait rien du tout.
       class ResizeObserverBouchon {
         observe() {}
         unobserve() {}
@@ -2451,9 +2537,9 @@ describe('le bilan de fin de phase', () => {
           onTerminer={() => {}}
         />
       )
-      const carte = container.querySelector('.deroule-cartes .deroule-carte.est-auteur .scan-card')
-      expect(carte).not.toBeNull()
-      fireEvent.mouseOver(carte as Element)
+      const nom = container.querySelector('.deroule-nom')
+      expect(nom?.textContent).toBe('Klaw')
+      fireEvent.mouseOver(nom as Element)
       expect(document.querySelector('.carte-apercu')).not.toBeNull()
       vi.unstubAllGlobals()
     })

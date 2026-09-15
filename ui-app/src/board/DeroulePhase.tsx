@@ -19,8 +19,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
-import jetonMenaceImage from '../components/jetons/menace.png'
-import jetonDegatsImage from '../components/jetons/degats.png'
 import {
   arreterSurDefaite,
   avecBilan,
@@ -1110,6 +1108,7 @@ export function DeroulePhase({
     regardee: carteDeSceneRegardee,
     survol: survolerScene,
     quitter: quitterScene,
+    viser: viserScene,
   } = useApercuSurvol(cartesVisibles, (carte) => propsDe(carte)?.id)
 
   useEffect(() => {
@@ -1528,25 +1527,91 @@ export function DeroulePhase({
     if (carte.role === 'boost') return etapeLue.boosts.find((b) => b.cibleId === carte.id)?.nom ?? ''
     return etapeLue.cibleNom ?? ''
   }
+  // ⚠ LA PHRASE DE L'ETAPE, ET SES NOMS DE CARTES SURVOLABLES (15/09/2026).
+  // C'est CE QUI REMPLACE les cartes de l'etape : « il n'y a pas besoin de
+  // montrer les cartes ; par contre, tu peux mettre le nom, et quand on hover
+  // sur le nom, on voit la carte en question ».
+  //
+  // Le nom porte le meme `data-card-id` qu'une carte de la table :
+  // `useApercuSurvol` ne fait aucune difference entre les deux, et c'est tout
+  // ce qu'il a fallu. Le decoupage se fait sur les noms que l'ETAPE porte,
+  // jamais sur le texte redige : chercher un nom dans une phrase traduite
+  // casserait a la premiere langue.
+  //
+  // ⚠ UN NOM DONT LA CARTE EST INCONNUE RESTE UN SIMPLE GRAS, sans souligne ni
+  // curseur main (« il reste du texte ordinaire », meme jour) : on ne promet
+  // que ce qu'on peut tenir, et un nom qui s'annonce survolable sans rien
+  // montrer est pire que pas de souligne du tout.
+  //
+  // ⚠ ET « CONNUE » VEUT DIRE MONTRABLE, PAS NOMMEE. L'etape porte toujours
+  // l'identifiant moteur de sa cible ; l'INDEX DES SCANS, lui, peut ne pas
+  // l'avoir (carte hors table, index pas encore lu). Se fier a l'identifiant
+  // seul souligne un nom qui n'ouvrira rien — exactement ce qui a ete ecarte.
+  // On ne souligne donc que ce que la loupe saura montrer, et c'est la MEME
+  // liste qu'elle interroge (`cartesVisibles`, `propsDe`).
+  const idsMontrables = new Set(
+    cartesVisibles.flatMap((carte) =>
+      carte.role === 'dos' || !propsDe(carte) ? [] : [carte.id]
+    )
+  )
+  const idSiMontrable = (id: number | undefined) =>
+    id !== undefined && idsMontrables.has(id) ? id : undefined
+
+  const phraseSurvolable = (phrase: string): ReactNode =>
+    decouperPhrase(
+      phrase,
+      [etapeLue.auteurNom, etapeLue.cibleNom],
+      [idSiMontrable(etapeLue.carteId), idSiMontrable(etapeLue.cibleId)]
+    ).map((morceau, rang) =>
+      morceau.gras ? (
+        morceau.carteId !== undefined ? (
+          <b
+            key={rang}
+            className="deroule-nom"
+            data-card-id={morceau.carteId}
+            tabIndex={0}
+            // Au doigt : un appui ouvre la carte, un appui ailleurs la referme
+            // (decision du 15/09/2026, « un appui sur le nom ouvre la carte »).
+            onClick={() => viserScene(String(morceau.carteId))}
+            onFocus={() => viserScene(String(morceau.carteId))}
+            onBlur={() => viserScene(undefined)}
+          >
+            {morceau.texte}
+          </b>
+        ) : (
+          <b key={rang}>{morceau.texte}</b>
+        )
+      ) : (
+        <span key={rang}>{morceau.texte}</span>
+      )
+    )
+
+  /**
+   * Le titre du cartouche : la meme phrase, survolable, quel que soit l'etat.
+   *
+   * ⚠ L'ECOUTE DU SURVOL EST SUR LE TITRE, pas sur chaque nom. C'est la regle
+   * de `apercu-survol.ts`, et elle est la pour une raison mesuree : un
+   * `mouseleave` pose sur un nom n'est jamais emis quand ce nom disparait sous
+   * le pointeur (l'etape avance), et l'agrandissement reste ouvert pour
+   * toujours.
+   */
+  const titreSurvolable = (classe: string) => (
+    <p className={classe} onMouseOver={survolerScene} onMouseLeave={quitterScene}>
+      {phraseSurvolable(titreEtape(etapeLue))}
+    </p>
+  )
+
   // LE GESTE PHYSIQUE (decide avec l'utilisateur le 7 septembre 2026) : un
-  // jeton qui tombe sur la carte visee (menace ou degats), un boost qui
-  // arrive dos visible et se retourne, la carte revelee qui se retourne sur
-  // place. Les animations sont dans board.css, coupees avec les autres
-  // (`body.plateau-sans-animations`). Les cles portent la cle de l'ETAPE :
-  // React remonte l'element a chaque etape, et l'animation rejoue.
-  const jeton = (() => {
-    if (etape.etat === 'annonce' || etape.etat === 'annule') return undefined
-    if (etape.montant === undefined || etape.montant <= 0) return undefined
-    if (etape.titre === 'menace' || etape.titre === 'manigance') {
-      return { classe: 'est-menace', texte: `+${etape.montant}` }
-    }
-    if (etape.titre === 'attaque') return { classe: 'est-degats', texte: String(etape.montant) }
-    return undefined
-  })()
-  // La menace du debut de phase n'a pas d'auteur : sa cible est alors la
-  // seule carte, rangee a gauche. Le jeton tombe sur elle quand meme.
-  const porteLeJeton = (carte: CarteDeScene) =>
-    carte.role === 'cible' || (carte.role === 'auteur' && etape.cibleId === etape.carteId)
+  // boost qui arrive dos visible et se retourne, la carte revelee qui se
+  // retourne sur place. Les animations sont dans board.css, coupees avec les
+  // autres (`body.plateau-sans-animations`). Les cles portent la cle de
+  // l'ETAPE : React remonte l'element a chaque etape, et l'animation rejoue.
+  //
+  // ⚠ LE JETON QUI TOMBAIT SUR LA CIBLE EST PARTI AVEC ELLE (15/09/2026). Il
+  // se posait sur la carte visee ; cette carte n'est plus dessinee, et un jeton
+  // n'a pas de sens pose sur rien. Ce qu'il disait n'est pas perdu : la phrase
+  // le porte deja (« Hunting Down Heroes gagne 2 menaces ») et le compteur a sa
+  // droite donne l'avant et l'apres (« 5 → 7 / 12 »).
 
   /**
    * La ligne des temps, portee dans la BARRE DU HAUT.
@@ -1614,20 +1679,6 @@ export function DeroulePhase({
         ) : (
           scan
         )}
-        {jeton && porteLeJeton(carte) ? (
-          <span
-            key={etape.cle}
-            className={`deroule-jeton ${jeton.classe}`}
-            // Le VRAI jeton (images de l'utilisateur), pas un rond dessine :
-            // le triangle de menace ou le rond de degats, le chiffre dessus.
-            style={{
-              backgroundImage: `url(${jeton.classe === 'est-menace' ? jetonMenaceImage : jetonDegatsImage})`,
-            }}
-            aria-hidden="true"
-          >
-            {jeton.texte}
-          </span>
-        ) : null}
         {apport !== undefined ? (
           <figcaption className="deroule-carte-legende">
             {t('Boost')} +{apport}
@@ -1647,23 +1698,53 @@ export function DeroulePhase({
   // L'apercu est monte dans <body> (portail) : `au-dessus-du-deroule` le
   // fait passer devant la scene (540), comme `au-dessus-du-bilan` pour le
   // recap. Le dos de la distribution n'a rien a montrer en grand.
+  //
+  // ⚠ IL SE REND A COTE DU TEXTE, PAS DANS LA RANGEE DE CARTES. Depuis que le
+  // survol d'un NOM l'ouvre, la rangee n'existe plus sur la plupart des etapes,
+  // et le mode « Sur la table » ne l'a jamais dessinee : le laisser dedans,
+  // c'etait un survol de nom qui n'ouvrait rien. Il est monte dans <body> de
+  // toute facon, sa place dans l'arbre ne change rien a l'ecran.
   const carteRegardee = carteDeSceneRegardee ? propsDe(carteDeSceneRegardee) : undefined
   const loupe =
     carteRegardee && !carteRegardee.facedown ? (
       <CarteApercu carte={carteRegardee} classe="au-dessus-du-deroule" />
     ) : null
+  // ⚠ L'AUTEUR ET SA CIBLE NE SE DESSINENT PLUS (15/09/2026). « Il n'y a pas
+  // besoin de montrer les cartes ; par contre, quand on hover sur le nom, on
+  // voit la carte en question. » Elles restent dans `scene.cartes`, car c'est
+  // la que le survol d'un nom va CHERCHER la carte a montrer : on cesse de les
+  // dessiner, on ne les oublie pas.
+  //
+  // ⚠ CEUX-LA RESTENT MONTRES, et la question posee ce jour-la le disait mot
+  // pour mot : parmi « toutes sans exception », « toutes sauf la carte
+  // revelee » et « seulement celles de l'etape », c'est la DERNIERE qui a ete
+  // choisie — « l'attaquant et sa cible partent, remplaces par leurs noms ».
+  //
+  //  - le BOOST : « elles restent montrees », decision du meme jour. Une carte
+  //    de boost est retournee sous les yeux du joueur et change le resultat de
+  //    l'attaque. C'est un moment du jeu, pas une information de plus.
+  //  - la carte REVELEE et le DOS de la distribution : une carte que le joueur
+  //    n'a jamais vue, « un nom seul ne dirait rien ».
+  const cartesDessinees = (liste: typeof gauche) =>
+    liste.filter((c) => c.role !== 'auteur' && c.role !== 'cible')
+  const gaucheDessinee = cartesDessinees(gauche)
+  const droiteDessinee = cartesDessinees(droite)
+  // ⚠ LA RANGEE NE PARAIT QUE S'IL RESTE QUELQUE CHOSE A DESSINER. Une etape
+  // qui n'a plus qu'un auteur et une cible (la plupart) ne laisse plus rien :
+  // un conteneur vide y aurait garde sa marge, et le cartouche un trou.
   const cartesScene =
-    scene.cartes.length > 0 ? (
+    gaucheDessinee.length + droiteDessinee.length > 0 ? (
       <div className="deroule-cartes" onMouseOver={survolerScene} onMouseLeave={quitterScene}>
-        {loupe}
-        {gauche.length > 0 ? <div className="deroule-groupe">{gauche.map(rendreCarte)}</div> : null}
-        {scene.fleche ? (
-          <span className="deroule-fleche" aria-hidden="true">
-            ➜
-          </span>
+        {gaucheDessinee.length > 0 ? (
+          <div className="deroule-groupe">{gaucheDessinee.map(rendreCarte)}</div>
         ) : null}
-        {droite.length > 0 ? (
-          <div className="deroule-groupe">{droite.map((carte) => rendreCarte(carte, gauche.length))}</div>
+        {/* ⚠ PLUS DE FLECHE : elle reliait les deux cartes de l'etape, qui ne
+            sont plus dessinees. « Non, la phrase suffit » (15/09/2026) : « Klaw
+            va attaquer Wolverine » dit deja qui attaque qui, dans l'ordre. */}
+        {droiteDessinee.length > 0 ? (
+          <div className="deroule-groupe">
+            {droiteDessinee.map((carte) => rendreCarte(carte, gaucheDessinee.length))}
+          </div>
         ) : null}
       </div>
     ) : null
@@ -1692,6 +1773,7 @@ export function DeroulePhase({
           {t('À toi de jouer')}
         </p>
         <div className="deroule-chrono">{chronologie}</div>
+        {loupe}
         {cartesMontrees}
         {/* L'intention reste dite au-dessus de la question : « Ultron va
             attaquer Shuri », et le joueur decide en voyant le coup. Sur toute
@@ -1699,7 +1781,7 @@ export function DeroulePhase({
             scene garde ses cartes et se tait : la question dit tout. */}
         {etapeEstAnnonce ? (
           <div className="deroule-entete">
-            <p className="deroule-titre">{titreEtape(etapeLue)}</p>
+            {titreSurvolable('deroule-titre')}
           </div>
         ) : null}
         {etapeEstAnnonce && resultat ? <p className="deroule-resultat">{resultat}</p> : null}
@@ -1736,6 +1818,7 @@ export function DeroulePhase({
           role="dialog"
           aria-label={t('Phase du méchant')}
         >
+          {loupe}
           <div className="deroule-chrono">{chronologie}</div>
           {/* L'INTENTION, et elle seule, reste dite pendant la question. C'est
               le second temps de la decision 7 : « Klaw va attaquer Colossus,
@@ -1749,7 +1832,7 @@ export function DeroulePhase({
               chercher une reponse qui n'existe pas. */}
           {etapeEstAnnonce ? (
             <>
-              <p className="deroule-titre">{titreEtape(etapeLue)}</p>
+              {titreSurvolable('deroule-titre')}
               {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
               <p className="deroule-fenetre" aria-live="polite">
                 {texteFenetreReponse()}
@@ -1817,6 +1900,7 @@ export function DeroulePhase({
         className="deroule-rond-place"
         style={styleCartouche}
       >
+        {loupe}
         {/* ⚠ CE QUI VIENT DE SE PASSER, EN UNE LIGNE. L'utilisateur, apres avoir
             vu le bouton seul : « est-ce que c'est possible de mettre ce qu'il
             s'est passe ? Je ne sais pas exactement si tu vois bien ce que je
@@ -1829,16 +1913,26 @@ export function DeroulePhase({
             passent par `contenuDuTrait`. Deux calculs auraient fini par se
             contredire, et le joueur verrait « 4 degats » sur le trait et
             « 1 degat » sous la phrase. */}
-        <span className={`deroule-recit est-${recit.ton}`}>
+        <span
+          className={`deroule-recit est-${recit.ton}`}
+          onMouseOver={survolerScene}
+          onMouseLeave={quitterScene}
+        >
           {/* ⚠ LES NOMS DE CARTES EN GRAS, le reste en texte normal. Choix de
               l'utilisateur parmi trois formes (14/09/2026) : « moitie-moitie,
               les noms en gras ». On repere qui fait quoi a qui d'un coup d'oeil
               sans que la phrase crie comme un titre. Le decoupage se fait sur
               les noms que l'ETAPE porte, jamais sur le texte redige : chercher
               un nom dans une phrase traduite casserait a la premiere langue. */}
-          {decouperPhrase(phraseEtape, [etapeLue.auteurNom, etapeLue.cibleNom]).map(
-            (m, i) => (m.gras ? <b key={i}>{m.texte}</b> : <span key={i}>{m.texte}</span>)
-          )}
+          {/* ⚠ LES NOMS SONT SURVOLABLES DEPUIS LE 15/09/2026, et c'est ce qui
+              remplace les cartes de l'etape. « Arrete de montrer les cartes ;
+              par contre, quand on hover sur le nom, on voit la carte en
+              question. » Le nom porte le meme `data-card-id` qu'une carte :
+              `useApercuSurvol` ne fait pas la difference.
+
+              Un nom dont la carte est inconnue reste un simple gras, sans
+              souligne ni curseur main : on ne promet que ce qu'on peut tenir. */}
+          {phraseSurvolable(phraseEtape)}
           {recit.texte ? <b className="deroule-recit-nombre">{recit.texte}</b> : null}
         </span>
         {/* ⚠ PAS DE BOUTON SUR L'ETAPE D'UN AUTRE JOUEUR : elle passe toute
@@ -1917,6 +2011,7 @@ export function DeroulePhase({
           ) : null}
         </div>
 
+        {loupe}
         {cartesMontrees}
 
         {/* Le titre dit le fait, et le compteur de la cible se lit a sa
@@ -1925,11 +2020,14 @@ export function DeroulePhase({
         <div className="deroule-entete">
           {/* Le bilan porte le meme titre que les autres etapes, en capitales :
               il annonce la fin de la phase, pas un coup de plus. */}
-          <p className={`deroule-titre${etape.temps === 'bilan' ? ' est-bilan' : ''}`}>
-            {titreEtape(etapeLue)}
-          </p>
+          {titreSurvolable(
+            `deroule-titre${etape.temps === 'bilan' ? ' est-bilan' : ''}`
+          )}
+          {/* Il s'ecrivait 450 ms apres le jeton qui tombait sur la cible
+              (`est-apres-jeton`). Le jeton est parti avec la carte : plus rien
+              a attendre, le compteur parait avec sa ligne. */}
           {compteur ? (
-            <span key={etape.cle} className={`deroule-compteur${jeton ? ' est-apres-jeton' : ''}`}>
+            <span key={etape.cle} className="deroule-compteur">
               {compteur}
             </span>
           ) : null}
