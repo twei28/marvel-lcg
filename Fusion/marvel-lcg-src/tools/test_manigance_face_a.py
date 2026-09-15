@@ -145,10 +145,38 @@ def cas_sans_drapeau_aucune_question(game_dir, port):
     return "sans la regle : aucune question, et la manigance est retournee"
 
 
+def cas_etape_suivante(game_dir, port):
+    """Une etape completee pose la meme question sur sa face A.
+
+    Scenario Klaw : l'etape 1 est 01116a/b, l'etape 2 est 01117a/b. On force le
+    passage plutot que de jouer la partie jusqu'au bout : c'est le meme appel
+    (`MainScheme.Advance`) que celui d'une etape reellement completee.
+    """
+    _, monde, journal = monter_le_moteur(
+        game_dir, port, ["confirm_main_scheme"], scenario="klaw")
+    from game.operate.worlds import Worlds
+    from game.effect.rule import GameRule
+
+    avant = len([noms for noms in journal if "Reveal_Main_Scheme" in noms])
+    assert avant == 1, f"mise en place : {avant} question(s)"
+
+    courante = Worlds.GetAllMainSchemes(monde)[0]
+    assert courante.paper.card_id == "01116b", courante.paper.card_id
+    courante.Advance(None, GameRule(courante))
+    time.sleep(3)
+
+    apres = len([noms for noms in journal if "Reveal_Main_Scheme" in noms])
+    assert apres == 2, f"changement d'etape : {apres} question(s) au total"
+    suivante = Worlds.GetAllMainSchemes(monde)[0]
+    assert suivante.paper.card_id == "01117b", suivante.paper.card_id
+    return "l'etape 2 pose la question elle aussi, et se retourne ensuite"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "question_posee": cas_question_posee,
     "sans_drapeau": cas_sans_drapeau_aucune_question,
+    "etape_suivante": cas_etape_suivante,
 }
 
 
