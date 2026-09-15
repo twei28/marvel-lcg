@@ -650,6 +650,20 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             # pose plus haut : tant que Contre valait -5, faire tomber
             # Enlistment de 20 a 0,5 ne changeait rien, il gagnait quand meme.
             # Les deux ont ete essayes SEPAREMENT avant d'etre gardes ensemble.
+            #
+            # TACHE 11 (15/09/2026) : c'est ICI, sans aucun cas special, que
+            # tombe `Reveal_Main_Scheme` (World.CONFIRM_MAIN_SCHEME_OPTION),
+            # la question posee au premier joueur avant de retourner la face A
+            # de la manigance principale quand la regle confirm_main_scheme
+            # est active -- son nom ne correspond a aucune branche ci-dessus.
+            # Elle est TOUJOURS seule sur la table (un seul ForChoiceAbility
+            # passe a ChooseAbilities dans World.ConfirmMainSchemeReveal),
+            # donc n'importe quel score positif suffit a la faire choisir des
+            # le premier ask. Mesure : partie rejouee avec la regle active
+            # (game_dir=.game-src-par7, hors port 2345), journal du round 0 ->
+            # `"actes": {"Reveal_Main_Scheme": 1, "Resolve Mulligans": 1}`,
+            # partie qui continue ensuite normalement jusqu'au round 5 sans
+            # jamais rendre "bloquee". Aucun code a changer.
             deja_prise = (ctx.get("actes_du_round") or {}).get(nom, 0)
             fixe = 20.0 / (1.0 + deja_prise)
 
