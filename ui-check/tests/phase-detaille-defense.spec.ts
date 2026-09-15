@@ -169,6 +169,58 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
       `le cartouche sort de l'écran par le BAS (${boite!.bas}px pour ${boite!.ecran}px)`
     ).toBeLessThanOrEqual(boite!.ecran);
 
+    // ⚠ ET IL NE DÉFILE PAS, DANS UNE PETITE FENÊTRE NON PLUS.
+    //
+    // Signalé le 15/09/2026, capture à l'appui, dans une fenêtre de 1009×663 :
+    // « on doit scroll putain, je t'ai dit que je voulais jamais scroll ». Le
+    // cartouche TENAIT dans l'écran (les deux mesures ci-dessus passaient) mais
+    // son CONTENU débordait et une barre de défilement apparaissait dedans :
+    // les cartes de l'étape étaient figées à 200 px de large, sans jamais
+    // regarder la hauteur disponible.
+    //
+    // On rétrécit donc la fenêtre ici même, à la taille exacte où il l'a vu,
+    // puis on la rend. Mesurer à 1920×1080 seulement ne prouvait rien.
+    const AVANT = page.viewportSize();
+    await page.setViewportSize({ width: 1009, height: 663 });
+    await page.waitForTimeout(300);
+    const defilement = await page.evaluate(() => {
+      const e = document.querySelector('.deroule-phase') as HTMLElement | null;
+      if (!e) return null;
+      // Le detail par enfant : quand ca defile, il faut savoir CE QUI prend la
+      // place, sinon on regle au hasard.
+      const h = (c: Element) => Math.round((c as HTMLElement).getBoundingClientRect().height);
+      const decrire = (c: Element): string => {
+        const nom = String(c.className || c.tagName).split(' ')[0];
+        // On ouvre le plus gros d'un cran : sans cela on sait QUE ca deborde,
+        // jamais CE QUI deborde.
+        const enfants = [...c.children];
+        const dedans = enfants.length && h(c) > 120
+          ? '(' + enfants.map((x) => {
+              const sous = [...x.children];
+              const detail2 = sous.length && h(x) > 120
+                ? '[' + sous.map((y) => `${String(y.className || y.tagName).split(' ')[0]}=${h(y)}`).join(' ') + ']'
+                : '';
+              return `${String(x.className || x.tagName).split(' ')[0]}=${h(x)}${detail2}`;
+            }).join(' ') + ')'
+          : '';
+        return `${nom}=${h(c)}${dedans}`;
+      };
+      const detail = [...e.children].map(decrire).join(' ');
+      return { contenu: e.scrollHeight, visible: e.clientHeight, largeur: window.innerWidth, hauteur: window.innerHeight, detail };
+    });
+    // La preuve a l'oeil, a la taille exacte du defaut, quand on la demande.
+    if (process.env.CAPTURE_PETITE) {
+      await page.screenshot({ path: `${process.env.CAPTURE_PETITE}/petite-${defensesVues}.png` });
+    }
+    if (AVANT) await page.setViewportSize(AVANT);
+    expect(defilement, 'aucun cartouche à mesurer en petite fenêtre').not.toBeNull();
+    expect(
+      defilement!.contenu,
+      `le cartouche DÉFILE en ${defilement!.largeur}×${defilement!.hauteur} : ` +
+        `${defilement!.contenu}px de contenu pour ${defilement!.visible}px visibles` +
+        ` — par enfant : ${defilement!.detail}`
+    ).toBeLessThanOrEqual(defilement!.visible + 1);
+
     // La preuve à l'œil, à la demande : un moteur au vert ne dit rien du rendu.
       if (process.env.CAPTURE_DEFENSE) {
         await page.screenshot({

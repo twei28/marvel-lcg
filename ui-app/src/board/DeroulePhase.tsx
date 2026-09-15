@@ -21,6 +21,7 @@ import { createPortal } from 'react-dom'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import jetonMenaceImage from '../components/jetons/menace.png'
 import jetonDegatsImage from '../components/jetons/degats.png'
+import { ajustementDuCartouche, placeDisponible } from './ajustement-cartouche'
 import {
   arreterSurDefaite,
   avecBilan,
@@ -1273,6 +1274,37 @@ export function DeroulePhase({
 
      ⚠ RIEN DE LA MECANIQUE N'EST TOUCHE ICI. Tout ce qui suit est du placement. */
   const [elCartouche, setElCartouche] = useState<HTMLElement | null>(null)
+
+  // ⚠ LE CARTOUCHE SE MET A L'ECHELLE PLUTOT QUE DE DEFILER (15/09/2026).
+  // Voir `ajustement-cartouche.ts` pour le pourquoi et la mesure. On lit la
+  // hauteur NATURELLE du contenu (`scrollHeight`, que plus aucun plafond ne
+  // borne) et le bord bas reel (`--bas`, resolu en pixels par le navigateur),
+  // puis on pose `--ajust`. Meme mecanique que l'echelle de la table.
+  useEffect(() => {
+    if (!elCartouche) return
+    const mesurer = () => {
+      // On mesure SANS l'ajustement en cours, sinon chaque passage le
+      // multiplierait par lui-meme et le cartouche fondrait a chaque rendu.
+      elCartouche.style.setProperty('--ajust', '1')
+      const naturel = elCartouche.scrollHeight
+      const bas = Number.parseFloat(getComputedStyle(elCartouche).bottom) || 0
+      const ajust = ajustementDuCartouche(naturel, placeDisponible(window.innerHeight, bas))
+      elCartouche.style.setProperty('--ajust', String(ajust))
+    }
+    mesurer()
+    // ⚠ `ResizeObserver` PEUT MANQUER : jsdom ne l'implemente pas, et le
+    // cartouche doit se rendre quand meme. Il n'est qu'un confort ici : la
+    // mesure se refait de toute facon a chaque rendu (cet effet n'a pas de
+    // liste de dependances) et au redimensionnement de la fenetre.
+    const observateur =
+      typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(mesurer)
+    observateur?.observe(elCartouche)
+    window.addEventListener('resize', mesurer)
+    return () => {
+      observateur?.disconnect()
+      window.removeEventListener('resize', mesurer)
+    }
+  })
   // ⚠ `etape`, PAS `etapeLue` : ce bloc doit vivre AVANT le premier `return`,
   // celui de la question posee avant toute etape (12/09/2026), qui rend lui
   // aussi un cartouche a placer. `etapeLue` n'est construite que plus bas.

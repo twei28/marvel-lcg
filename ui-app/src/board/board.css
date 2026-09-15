@@ -3041,13 +3041,33 @@
     --bas: 31vh;
     --decor: 36px;
     bottom: var(--bas);
-    transform: translateX(-50%);
     width: min(860px, calc(100vw - 48px));
     /* Sur un ecran bas, la scene defile en elle-meme plutot que de deborder,
        ou ses boutons deviendraient inatteignables. Les 16 px sont la marge
        laissee en haut de l'ecran. */
-    max-height: calc(100vh - var(--bas) - var(--decor) - 16px);
-    overflow-y: auto;
+    /* ⚠ ON NE COUPE PLUS, ON MET A L'ECHELLE (15/09/2026).
+       Le plafond ci-dessous existait pour que le cartouche ne sorte pas de
+       l'ecran ; avec `overflow-y: auto`, il le faisait DEFILER a la place.
+       Signale en partie, capture a l'appui, dans une fenetre de 1009x663 :
+       « on doit scroll putain, je t'ai dit que je voulais jamais scroll ».
+
+       Mesure de ce cas exact, par bloc : 809 px de contenu pour 416 px
+       visibles — `af-boutons` 289, cartes de l'etape 190, `dc-texte` 77,
+       `dc-capacites` 54, chronologie 36, entete 33, resultat 22. Retrecir
+       chaque bloc au maximum le faisait tenir a quelques pixels pres, donc la
+       premiere capacite au texte un peu long aurait redeborde.
+
+       La table, elle, resout ce probleme depuis toujours : elle SE MET A
+       L'ECHELLE de la fenetre (`--echelle`, Board.tsx). Le cartouche fait
+       desormais pareil : `--ajust` est mesure en JS (`useAjustementCartouche`),
+       vaut 1 quand tout tient, et retrecit juste ce qu'il faut sinon. Il n'y a
+       plus de plafond, donc plus rien a couper.
+
+       ⚠ `transform-origin: bottom center` : le cartouche est ancre par le BAS
+       (`bottom: var(--bas)`), il doit donc retrecir vers le haut et garder son
+       bord bas exactement la ou il est. */
+    transform: translateX(-50%) scale(var(--ajust, 1));
+    transform-origin: bottom center;
     z-index: 540;
     padding: 14px 22px 16px;
     color: #f8fafc;
@@ -3249,7 +3269,19 @@
   /* Les cartes de l'etape : une seule taille pour toutes, 2,5 fois une carte
      de la table. `--card-w` est la variable que ScanCard lit. */
   .deroule-cartes {
-    --card-w: 200px;
+    /* ⚠ LA TAILLE SUIT LA HAUTEUR DE LA FENETRE, ET C'EST TOUT LE SUJET.
+       Elle valait 200px, fixe, sans jamais regarder la hauteur disponible :
+       sur une fenetre de 1009x663 (mesuree chez l'utilisateur le 15/09/2026),
+       deux rangees de cartes plus le titre et les boutons ne rentraient pas,
+       et le cartouche DEFILAIT. Sa regle, dite plusieurs fois : « je ne veux
+       jamais scroller ».
+
+       19vh : une carte fait environ 1,45 fois sa largeur en hauteur, et la
+       scene en empile deux rangees. 2 x 1,45 x 19vh = 55vh, le reste (titre,
+       phrase, chronologie, boutons) tient dans ce qui demeure.
+
+       Le maximum reste 200px : sur un grand ecran, rien ne change. */
+    --card-w: clamp(90px, 19vh, 200px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3439,7 +3471,9 @@
   /* Ecran etroit : les cartes retrecissent avant de passer a la ligne. */
   @media (max-width: 900px) {
     .deroule-cartes {
-      --card-w: 150px;
+      /* Ecran etroit ET court : c'est la plus petite des deux contraintes qui
+         gagne, sinon on reglait la largeur en oubliant la hauteur. */
+      --card-w: min(150px, clamp(90px, 19vh, 200px));
       flex-wrap: wrap;
     }
   }
