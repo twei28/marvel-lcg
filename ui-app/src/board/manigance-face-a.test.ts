@@ -113,6 +113,7 @@ describe('ouvertureEncoreVoilee', () => {
     questionArrivee: false,
     dejaLevee: false,
     demandePresente: false,
+    partieFinie: false,
   }
 
   it('voile la table pendant que le moteur monte la partie', () => {
@@ -141,6 +142,7 @@ describe('ouvertureEncoreVoilee', () => {
       questionArrivee: false,
       dejaLevee: false,
       demandePresente: true,
+      partieFinie: false,
     }
     expect(ouvertureEncoreVoilee(apresRechargement)).toBe(false)
   })
@@ -162,6 +164,25 @@ describe('ouvertureEncoreVoilee', () => {
 
   it('ne voile pas une partie déjà commencée', () => {
     expect(ouvertureEncoreVoilee({ ...base, round: 3 })).toBe(false)
+  })
+
+  it('⚠ UNE PARTIE FINIE PENDANT LA MISE EN PLACE LEVE LE VOILE', () => {
+    // LE CAS QUI COMPTE, ET IL REND UNE PARTIE INJOUABLE.
+    // `confirm_main_scheme` est un drapeau de REGLE, vrai pour toute la
+    // partie, pas un « une confirmation est en attente ». Si le moteur termine
+    // la partie pendant la mise en place (`is_game_over` aux etapes 11, 12 ou
+    // 13 de world.py), `round_id` reste 0, aucune demande n'arrive, et le
+    // retour anticipe du voile passe AVANT l'ecran de fin de partie :
+    // l'affichage restait sur « Connexion a la partie… » pour toujours.
+    const finieALaMiseEnPlace = {
+      confirmAttendue: true,
+      round: 0,
+      questionArrivee: false,
+      dejaLevee: false,
+      demandePresente: false,
+      partieFinie: true,
+    }
+    expect(ouvertureEncoreVoilee(finieALaMiseEnPlace)).toBe(false)
   })
 })
 

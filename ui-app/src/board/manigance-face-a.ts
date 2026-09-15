@@ -144,6 +144,8 @@ export type EtatOuverture = {
   dejaLevee: boolean
   /** Le moteur pose une demande au joueur de ce siège, quelle qu'elle soit. */
   demandePresente: boolean
+  /** Le moteur déclare la partie finie (`monde.game_over`, voir fin-partie.ts). */
+  partieFinie: boolean
 }
 
 /**
@@ -156,6 +158,20 @@ export type EtatOuverture = {
  */
 export function ouvertureEncoreVoilee(etat: EtatOuverture): boolean {
   if (etat.dejaLevee) return false
+  // ⚠ UNE PARTIE FINIE LÈVE LE VOILE, TOUJOURS.
+  //
+  // Défaut trouvé en relecture le 15/09/2026, et il rend une partie
+  // injouable. `confirm_main_scheme` est un drapeau de RÈGLE, vrai pour toute
+  // la partie, pas un « une confirmation est en attente ». Si le moteur
+  // termine la partie pendant la mise en place (`is_game_over` aux étapes 11,
+  // 12 et 13 de `world.py`), `round_id` reste 0, aucune demande n'arrive, et
+  // le retour anticipé du voile passe AVANT l'écran de fin de partie :
+  // l'affichage restait sur « Connexion à la partie… » pour toujours.
+  //
+  // Ce n'est pas une minuterie de secours : c'est une porte sur un fait du
+  // monde, `monde.game_over`, la même source que l'écran de fin
+  // (`afficherFinDePartie`, fin-partie.ts).
+  if (etat.partieFinie) return false
   if (!etat.confirmAttendue) return false
   if (etat.round > 0) return false
   // ⚠ SI LE MOTEUR POSE UNE QUESTION AU JOUEUR, LE JOUEUR DOIT POUVOIR VOIR SA

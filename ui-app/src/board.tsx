@@ -2728,6 +2728,10 @@ function PagePartie({
         questionArrivee: questionDeLaManigance(etat.demande) !== undefined,
         dejaLevee: voileLeve.current,
         demandePresente: etat.demande !== undefined,
+        // Une partie finie leve le voile : sans cette porte, une partie
+        // terminee pendant la mise en place restait sur « Connexion a la
+        // partie… », le retour anticipe du voile passant AVANT l'ecran de fin.
+        partieFinie: partieFinieMoteur,
       })
     : false
   if (etat.monde && !voile) voileLeve.current = true
