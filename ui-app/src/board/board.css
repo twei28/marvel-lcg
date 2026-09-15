@@ -3369,6 +3369,125 @@
     text-decoration-style: solid;
   }
 
+  /* ⚠ LA FENETRE DE DEFENSE EST UN BANDEAU, PAS UN PAVE (15/09/2026).
+     ET C'EST LE PLUS GROS DEFAUT QU'IL AIT SIGNALE DE LA JOURNEE.
+
+     Sa capture, prise sur son telephone : « pourquoi est-ce qu'un truc aussi
+     con que dire le mechant attaque, pourquoi ca prend toute la page ? [...]
+     Les cartes sont minuscules et pourtant ca prend tout l'ecran. »
+
+     LA CAUSE, mesuree : le cadre a une LARGEUR FIXE de 860 px quoi qu'il
+     contienne (`.deroule-phase`, plus haut), et tout s'y empile en une seule
+     colonne centree. Pour « Spider-Man est attaque par Rhino » et deux boutons,
+     cela donnait 904 x 690 en 1920x1080 : 25 (« A toi de jouer ») + 36
+     (chronologie) + 171 (le boost) + 435 (la question, la vignette, les
+     boutons, le rappel de regle). Du vide a gauche et a droite, et une colonne
+     interminable.
+
+     SA DECISION, parmi trois formes montrees : « tout sur une ligne, en
+     bandeau ». Le boost, la phrase, sa carte et les boutons se rangent COTE A
+     COTE ; le cadre se serre sur son contenu au lieu de reserver 860 px.
+     La table reste visible derriere, ce qui est tout l'interet.
+
+     ⚠ ET LA BANDE DE BOUTONS CESSE D'ETRE COLLANTE ICI. Elle etait `sticky`
+     pour rester sous les yeux quand la colonne defilait ; un bandeau ne defile
+     pas, et son degrade de fond n'avait plus rien a masquer. */
+  /* ⚠ UNE GRILLE, ET PAS UN `flex-wrap`. Premier essai du 15/09/2026 : avec
+     `flex-wrap`, le boost et la question faisaient 918 px a eux deux pour
+     910 disponibles — huit pixels de trop, et la question repassait A LA LIGNE.
+     Le pave revenait. Une grille a deux colonnes ne peut pas se replier : les
+     deux blocs sont sur la meme ligne, ou rien ne va. */
+  .deroule-phase.est-question {
+    width: min(max-content, calc(100vw - 48px));
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    column-gap: 18px;
+    row-gap: 6px;
+  }
+
+  /* Les deux bandeaux d'en-tete gardent leur ligne : ils disent OU l'on en est,
+     et se lisent en travers, pas a cote d'une carte. */
+  .deroule-phase.est-question .deroule-a-toi,
+  .deroule-phase.est-question .deroule-chrono {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    /* Les 10 px sous la chronologie servaient a la detacher d'une colonne ;
+       au-dessus d'un bandeau de 130 px, ils comptent. */
+    margin-bottom: 0;
+  }
+
+  .deroule-phase.est-question .deroule-cartes {
+    margin: 0;
+  }
+
+  /* Plus de filet ni de marge au-dessus de la question : elle n'est plus SOUS
+     le reste, elle est A COTE. */
+  .deroule-phase.est-question .deroule-question-scene {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .deroule-phase.est-question .demande-centrale {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .deroule-phase.est-question .dc-boutons {
+    position: static;
+    margin: 0;
+    padding: 0;
+    background: none;
+    /* Les boutons s'alignaient par le BAS, parce qu'une option a vignette etait
+       plus haute qu'un « Passer ». Cote a cote, ils ont la meme hauteur : c'est
+       par le MILIEU qu'ils s'alignent, sinon « Passer » pend sous les autres
+       (constate a l'ecran le 15/09/2026). */
+    align-items: center;
+  }
+
+  /* ⚠ LA VIGNETTE PASSE A COTE DE SON BOUTON, pas au-dessus. Empilee, elle
+     donnait a elle seule 250 px de haut a la rangee : c'est elle qui faisait le
+     pave, pas la phrase. A cote, la rangee tient sur la hauteur d'une carte. */
+  .deroule-phase.est-question .af-action-wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Et les deux cartes du bandeau sont plus petites que dans le cartouche
+     ordinaire : on est ici pour DECIDER, pas pour lire une carte. Elle reste a
+     un survol de distance, en grand et en francais. */
+  .deroule-phase.est-question .deroule-cartes,
+  .deroule-phase.est-question .deroule-cartes .scan-card,
+  .deroule-phase.est-question .dc-vignette .scan-card {
+    --card-w: clamp(52px, 7vh, 82px);
+  }
+
+  /* ⚠ ET LA PHRASE NE PEUT PAS POUSSER LES BOUTONS HORS DE VUE. C'est la
+     garantie que la bande collante assurait avant le bandeau : les boutons sont
+     LA QUESTION POSEE, on ne doit jamais avoir a les chercher (« on doit scroll
+     et c'est pas clair du tout », 13/09/2026). Cote a cote, un texte demesure
+     etirerait la rangee et emporterait les boutons avec elle ; ce plafond le
+     lui interdit. En partie il ne sert jamais : la phrase mesure 77 px. */
+  .deroule-phase.est-question .dc-texte {
+    max-height: 34vh;
+    overflow-y: auto;
+  }
+
+  /* Le rappel de regle passe a la ligne, seul : c'est une phrase, elle n'a pas
+     a pousser les boutons sur le cote. */
+  .deroule-phase.est-question .dc-capacites {
+    flex-basis: 100%;
+    margin-top: 0;
+  }
+
   .deroule-phase.est-question {
     /* Remonte de 3vh : la question se lit plus haut que le recit. La hauteur
        maximale suit toute seule (voir `--bas`).

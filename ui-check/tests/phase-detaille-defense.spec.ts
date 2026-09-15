@@ -217,6 +217,8 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
         };
         const r = e.getBoundingClientRect();
         return {
+          largeurBoite: Math.round(r.width),
+          hauteurBoite: Math.round(r.height),
           contenu: e.scrollHeight,
           visible: e.clientHeight,
           haut: Math.round(r.top),
@@ -227,6 +229,12 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
         };
       });
       expect(mesure, `aucun cartouche à mesurer en ${taille.width}×${taille.height}`).not.toBeNull();
+      // La géométrie, imprimée à chaque passage : c'est elle qui a montré que
+      // le cartouche faisait 904×690 pour une phrase et deux boutons.
+      // Même usage que le « BOUTONS {…} » de deroule-boutons.spec.ts.
+      console.log(
+        `CARTOUCHE ${taille.width}x${taille.height} :: ${mesure!.largeurBoite}x${mesure!.hauteurBoite} :: ${mesure!.detail}`
+      );
       // La preuve à l'œil, à chaque taille, quand on la demande.
       if (process.env.CAPTURE_PETITE) {
         await page.screenshot({
