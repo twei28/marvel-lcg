@@ -2777,6 +2777,29 @@
     flex: 0 0 auto;
   }
 
+  /* ⚠ L'ETAT A GAUCHE, TOUS LES BOUTONS A DROITE (15/09/2026).
+     Demande de l'utilisateur : « je veux que tous les boutons soient a droite,
+     comme ca on a l'avance du jeu a gauche ». La barre les collait tous a
+     gauche, derriere le round, et l'oeil devait traverser la file entiere pour
+     trouver « Fin de tour ».
+
+     Deux regles, pas une de plus : la barre prend toute la largeur et range ses
+     enfants a droite, `.bh-etat` reprend la gauche avec une marge automatique.
+     Avant le premier round, quand l'etat n'existe pas encore, tout reste a
+     droite sans rien de special a prevoir.
+
+     ⚠ SCOPE SUR LA BARRE DU HAUT, ET C'EST INDISPENSABLE : le meme
+     `.board-actions` sert la feuille « … » du telephone, ou il est en COLONNE
+     (mobile/portrait.css). Une regle non scopee la casserait. */
+  .plateau-barre > .board-actions {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+  }
+
+  .plateau-barre > .board-actions > .bh-etat {
+    margin-right: auto;
+  }
+
   /* Separateur de groupe. La barre est rangee par intention — agir, consulter,
      regler, partir — et sans marque visible l'ordre ne se lit pas : on voit une
      file de boutons, pas quatre groupes. Un simple filet, assez discret pour ne
