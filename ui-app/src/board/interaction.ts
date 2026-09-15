@@ -31,6 +31,7 @@ import {
 import { toScanCard } from './card-model'
 import { useConfirmation } from './ConfirmationJeu'
 import type { Catalogue } from './catalogue'
+import { optionsDeLaSource } from './glisser/cibles'
 import { libellesCible } from './libelles-cible'
 import { t } from './langue'
 import type { ScanCardProps } from '../components/ScanCard'
@@ -138,7 +139,14 @@ export type Interaction = {
   /** Ouvre le menu d'actions d'une carte, meme si elle n'a aucune action. */
   focaliserCarte: (id: number) => void
   /** Ouvre le menu des actions qui peuvent viser cette cible. */
-  focaliserCible: (id: number) => void
+  /**
+   * Ouvre le menu des actions qui visent cette cible.
+   *
+   * `source` : la carte LÂCHÉE quand le menu vient d'un glisser-déposer. Le
+   * menu se restreint alors à SES actions. Sans elle (un clic sur la cible),
+   * il liste tout ce qui peut viser la carte.
+   */
+  focaliserCible: (id: number, source?: number) => void
   /** Par identifiant d'objet de carte. */
   cartes: Map<number, EtatInteractif>
   /**
@@ -305,6 +313,19 @@ export function useInteraction(
   const [ressources, setRessources] = useState<number[]>([])
   const [carteFocus, setCarteFocus] = useState<number | undefined>(undefined)
   const [cibleFocus, setCibleFocus] = useState<number | undefined>(undefined)
+  /**
+   * La carte LÂCHÉE qui a ouvert ce menu de cible, quand il vient d'un dépôt.
+   *
+   * ⚠ SANS ELLE, LE GESTE PERD SA SOURCE. Défaut signalé en jeu le 15/09/2026 :
+   * « quand je drag n drop mon perso sur le méchant, il me propose deux attack,
+   * l'une d'elle c'est l'attaque avec un allié ». Le dépôt calculait bien les
+   * actions de la carte lâchée, puis ouvrait ce menu-ci, qui les recalculait
+   * sans elle : toutes les actions visant la cible revenaient, celles des
+   * alliés comprises. `undefined` = la cible a été cliquée, pas reçue d'un
+   * dépôt, et le menu liste alors tout ce qui peut la viser, ce qui est bien
+   * son rôle.
+   */
+  const [sourceDepot, setSourceDepot] = useState<number | undefined>(undefined)
 
   const options = demande?.options ?? []
   const optionsGenerales = useMemo(() => options.filter((o) => o.bind_id === 0), [options])
@@ -321,6 +342,7 @@ export function useInteraction(
     setRessources([])
     setCarteFocus(undefined)
     setCibleFocus(undefined)
+    setSourceDepot(undefined)
   }, [empreinte])
 
   const option = options.find((o) => o.id === idOption)
@@ -453,6 +475,7 @@ export function useInteraction(
     setRessources([])
     setCarteFocus(undefined)
     setCibleFocus(undefined)
+    setSourceDepot(undefined)
   }, [])
 
   useEffect(() => {
@@ -465,6 +488,7 @@ export function useInteraction(
     setRessources([])
     setCarteFocus(undefined)
     setCibleFocus(undefined)
+    setSourceDepot(undefined)
   }, [idOption, options])
 
   // Cible unique et obligatoire (ex. une capacite qui ne peut viser que ton
@@ -497,14 +521,17 @@ export function useInteraction(
   const defocaliser = useCallback(() => {
     setCarteFocus(undefined)
     setCibleFocus(undefined)
+    setSourceDepot(undefined)
   }, [])
   const focaliserCarte = useCallback((id: number) => {
     setCarteFocus(id)
     setCibleFocus(undefined)
+    setSourceDepot(undefined)
   }, [])
-  const focaliserCible = useCallback((id: number) => {
+  const focaliserCible = useCallback((id: number, source?: number) => {
     setCibleFocus(id)
     setCarteFocus(undefined)
+    setSourceDepot(source)
   }, [])
 
   const basculerCible = useCallback(
@@ -907,13 +934,22 @@ export function useInteraction(
   // Une carte focalisee reduit le panneau a SES options. L'identite du joueur
   // sert aussi de hub pour les actions generales (bind_id 0). Une cible focalisee
   // montre seulement les actions disponibles qui peuvent la viser maintenant.
+  const idsDeLaSource =
+    sourceDepot !== undefined
+      ? new Set(optionsDeLaSource(options, sourceDepot, identiteJoueurId).map((o) => o.id))
+      : undefined
   const optionsAffichees =
     cibleFocus !== undefined
       ? options.filter(
           (o) =>
             !o.failure_reason &&
             o.target_num_range[1] > 0 &&
-            o.all_legal_targets.includes(cibleFocus)
+            o.all_legal_targets.includes(cibleFocus) &&
+            // Menu ouvert par un DÉPÔT : seules les actions de la carte lâchée.
+            // Une même définition de « les actions de cette source » que le
+            // glisser-déposer lui-même (`glisser/cibles.ts`), sinon les deux
+            // divergeraient et le menu rouvrirait la porte qu'on ferme ici.
+            (idsDeLaSource === undefined || idsDeLaSource.has(o.id))
         )
       : carteFocus !== undefined
         ? options.filter(

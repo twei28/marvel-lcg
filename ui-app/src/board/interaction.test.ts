@@ -173,3 +173,72 @@ describe('useInteraction, design essai : les types qui manquent', () => {
     expect(result.current.assistant.typesManquants).toEqual({ Y: 1 })
   })
 })
+
+// Le defaut signale en jeu le 15/09/2026 : « quand je drag n drop mon perso sur
+// le mechant, il me propose deux attack, l'une d'elle c'est l'attaque avec un
+// allie ». Le depot calculait bien les actions de la SOURCE, puis les jetait des
+// qu'il y en avait plusieurs pour ouvrir le menu de la CIBLE, qui liste tout ce
+// qui peut viser cette carte, allie compris. Le geste perdait sa source.
+const VILAIN = 900
+const ALLIE_ATTAQUANT = 201
+
+function attaqueDe(id: number, porteur: number): Option {
+  return {
+    id,
+    name: 'Attack',
+    bind_id: porteur,
+    bind_player_id: 0,
+    all_legal_targets: [VILAIN],
+    target_num_range: [1, 1],
+    target_payment: {},
+    select_rule: '',
+    target_must_include_traits: [],
+    failure_reason: '',
+    is_search: false,
+  }
+}
+
+function monterAvec(options: Option[]) {
+  const demande: Demande = {
+    options,
+    refus: [],
+    prompt_text: '',
+    event_name: 'test',
+    show_cancel: true,
+    ability_type: '',
+  }
+  const affiches = new Set([HEROS, RESSOURCE, VILAIN, ...CIBLES])
+  return renderHook(() =>
+    useInteraction(MONDE, demande, vi.fn(), affiches, 0, CATALOGUE, 'simple')
+  )
+}
+
+describe('useInteraction, une cible focalisee depuis un depot', () => {
+  it('ne montre que les actions de la carte lachee', () => {
+    const { result } = monterAvec([attaqueDe(1, HEROS), attaqueDe(2, ALLIE_ATTAQUANT)])
+
+    act(() => result.current.focaliserCible(VILAIN, HEROS))
+
+    expect(result.current.options.map((o) => o.id)).toEqual([1])
+  })
+
+  it('suit les actions generales quand la source est l identite', () => {
+    // `bind_id === 0` = action generale, rattachee a l'identite du joueur.
+    const generale = attaqueDe(3, 0)
+    const { result } = monterAvec([generale, attaqueDe(2, ALLIE_ATTAQUANT)])
+
+    act(() => result.current.focaliserCible(VILAIN, HEROS))
+
+    expect(result.current.options.map((o) => o.id)).toEqual([3])
+  })
+
+  it('garde toutes les actions quand la cible est cliquee, sans source', () => {
+    // Le clic direct sur une cible ne change pas : il liste bien tout ce qui
+    // peut la viser, c'est son role.
+    const { result } = monterAvec([attaqueDe(1, HEROS), attaqueDe(2, ALLIE_ATTAQUANT)])
+
+    act(() => result.current.focaliserCible(VILAIN))
+
+    expect(result.current.options.map((o) => o.id)).toEqual([1, 2])
+  })
+})

@@ -28,18 +28,43 @@ CETTE carte »). L'attaque de l'allié en fait partie.
 Dès que la source a DEUX actions contre la cible, le geste perd donc sa source.
 Avec une seule action, rien ne se voit : elle part directement.
 
-## Le correctif pressenti
+## Le correctif, écrit le 15/09/2026
 
-Ouvrir le menu sur la liste DÉJÀ calculée (`actions`) au lieu de déléguer à
-`focaliserCible`, qui la recalcule sans la source. À vérifier : le menu sait-il
-recevoir une liste d'options imposée, ou faut-il lui ajouter cette entrée ?
+`focaliserCible(id, source?)` retient désormais la carte LÂCHÉE, et le menu de
+cible se restreint à ses actions quand elle est connue. Sans source (un clic
+direct sur la cible), rien ne change : le menu liste tout ce qui peut la viser,
+c'est son rôle.
 
-⚠ Ne pas se contenter du vert : un cas sur `glisser-plateau.spec.ts` doit
-prouver que l'attaque d'un allié n'apparaît PAS quand c'est le héros qu'on
-lâche. Un cas qui vérifie seulement que l'attaque du héros est là resterait
-vert avec le défaut.
+La règle « les actions de cette source » n'est pas réécrite : le menu appelle
+`optionsDeLaSource` (`glisser/cibles.ts`), la MÊME fonction que le
+glisser-déposer. Deux définitions auraient divergé, et le menu aurait rouvert la
+porte qu'on ferme ici.
+
+Quitter le focus d'une cible oublie la source : les cinq remises à zéro de
+`cibleFocus` remettent aussi `sourceDepot` à `undefined`.
+
+### Ce qui le prouve
+
+Trois cas dans `ui-app/src/board/interaction.test.ts`, vus ROUGES d'abord
+(« expected [1, 2] to equal [1] ») :
+
+- lâcher le héros ne montre QUE l'action du héros, pas celle de l'allié ;
+- une action générale (`bind_id === 0`) suit bien le héros, puisqu'elle est
+  rattachée à son identité ;
+- un clic direct sur la cible montre toujours les deux : le comportement du
+  clic ne bouge pas.
+
+Batterie complète du plateau : 1567 cas verts, 137 fichiers. Typage propre.
+
+### ⚠ Ce qui n'est PAS prouvé
+
+Le câblage de `board.tsx` (le dépôt qui PASSE sa source au menu) n'est couvert
+que par le typage. Le cas de bout en bout existe (`ui-check/tests/glisser-plateau.spec.ts`,
+`npm run glisser`) mais il **crée une nouvelle partie sur le serveur de jeu et
+détruit celle en cours**, et il testerait le bundle déployé, c'est-à-dire
+l'ancien code. À lancer après le prochain déploiement, pas avant.
 
 ## Statut
 
-Cause identifiée le 15/09/2026, **correctif non écrit**. À faire après le
-chantier de l'ouverture silencieuse.
+Cause identifiée et **correctif écrit le 15/09/2026**, vérifié par trois cas
+unitaires vus rouges d'abord. Non déployé, et le bout-en-bout reste à jouer.

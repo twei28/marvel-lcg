@@ -2175,7 +2175,12 @@ function PagePartie({
             // Plusieurs actions visent cette carte : on ouvre le menu de
             // ciblage, celui-la meme qu'un clic sur la cible aurait ouvert. Il
             // s'ancre sur la carte lachee, donc a l'endroit du geste.
-            interaction.focaliserCible(cible.carteId)
+            //
+            // ⚠ AVEC SA SOURCE, sinon le menu recalcule les actions SANS elle
+            // et ramene tout ce qui vise la cible. Defaut signale en jeu le
+            // 15/09/2026 : lacher son heros sur le mechant proposait l'attaque
+            // de l'ALLIE.
+            interaction.focaliserCible(cible.carteId, sourceId)
             return undefined
           }
           return (
@@ -2196,7 +2201,9 @@ function PagePartie({
               return undefined
             }
             if (actions.length > 1) {
-              interaction.focaliserCible(parZone)
+              // Meme regle que ci-dessus : la zone vaut la cible, la source
+              // reste la carte lachee.
+              interaction.focaliserCible(parZone, sourceId)
               return undefined
             }
           }
