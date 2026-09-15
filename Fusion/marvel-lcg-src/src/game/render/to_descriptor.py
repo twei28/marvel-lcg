@@ -25,6 +25,7 @@ class ToDescriptor:
         player_descriptor.player_deck               = deck_to_descriptors(player.player_deck)
         player_descriptor.player_discard_pile       = deck_to_descriptors(player.discard_pile)
         player_descriptor.dealt_encounter_cards     = deck_to_descriptors(player.dealt_encounter_cards)
+        player_descriptor.area_processing           = deck_to_descriptors(player.area_processing)
         player_descriptor.hand_cards                = deck_to_descriptors(player.hand_cards)
         player_descriptor.reserve                   = deck_to_descriptors(player.reserve) # CORRECTIF (pack brawn)
         player_descriptor.engaged_enemies           = deck_to_descriptors(player.engaged_minions)

@@ -71,6 +71,13 @@ class WorldDescriptor:
         player_deck: List[CardDescriptor] = field(default_factory=lambda: [])
         player_discard_pile: List[CardDescriptor] = field(default_factory=lambda: [])
         dealt_encounter_cards: List[CardDescriptor] = field(default_factory=lambda: [])
+        # La zone de resolution DE CE JOUEUR (correctif du 15/09/2026). Elle
+        # existe depuis toujours cote moteur (`player.area_processing`), mais
+        # `to_descriptor` la fusionnait avec celle du monde dans le seul
+        # `WorldDescriptor.area_processing` : le client ne savait plus a qui la
+        # carte appartenait et la dessinait chez le mechant. La liste fusionnee
+        # reste publiee telle quelle, l'ancien client la lit.
+        area_processing: List[CardDescriptor] = field(default_factory=lambda: [])
         hand_cards: List[CardDescriptor] = field(default_factory=lambda: [])
         reserve: List[CardDescriptor] = field(default_factory=lambda: []) # CORRECTIF (pack brawn)
         engaged_enemies: List[CardDescriptor] = field(default_factory=lambda: [])

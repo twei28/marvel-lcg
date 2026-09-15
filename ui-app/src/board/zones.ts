@@ -601,6 +601,23 @@ export function construirePlateau(world: World, options: Options): Plateau {
   }
   const notreCollection = collectionDe(notre)
 
+  /**
+   * Ce que le SCENARIO resout, c'est-a-dire la liste du monde moins ce qui
+   * appartient deja a un joueur.
+   *
+   * ⚠ Le moteur publie encore la liste fusionnee dans `world.area_processing`
+   * (la sienne PLUS celle de chaque joueur) pour ne pas casser l'ancien
+   * client. Un moteur anterieur au 15/09/2026 ne publie pas du tout
+   * `player.area_processing` : l'ensemble est alors vide, rien n'est retire,
+   * et le plateau se comporte comme avant.
+   */
+  const idsEnResolutionChezUnJoueur = new Set(
+    joueurs.flatMap((joueur) => (joueur.area_processing ?? []).map((carte) => carte.id))
+  )
+  const resolutionDuScenario = (world.area_processing ?? []).filter(
+    (carte) => !idsEnResolutionChezUnJoueur.has(carte.id)
+  )
+
   // Deck special consultable SEULEMENT si la regle l'autorise, ce que le moteur
   // encode par la visibilite : on ne l'ouvre que si ses cartes nous sont visibles
   // (sinon on n'a pas le droit de regarder dedans, comme un deck ordinaire).
@@ -646,7 +663,14 @@ export function construirePlateau(world: World, options: Options): Plateau {
     emplacement('rencontre', t('Méchant'), [
       airesVilains(world, rendu),
       posees(world.area_revealing, rendu),
-      posees(world.area_processing, rendu),
+      // ⚠ SEULEMENT CE QUE LE SCENARIO RESOUT. Le moteur publie encore la
+      // liste FUSIONNEE (la sienne plus celle de chaque joueur) dans
+      // `world.area_processing`, pour ne pas casser l'ancien client qui la
+      // lit. Sans ce retrait, une carte jouee par un heros serait dessinee
+      // DEUX fois : aupres de lui, et ici. Defaut signale en jeu le
+      // 15/09/2026 : « les cartes que je joue se placent derriere le
+      // mechant ».
+      posees(resolutionDuScenario, rendu),
       posees(world.area_boost, rendu),
       posees(notre?.dealt_encounter_cards, rendu),
     ]),
@@ -740,6 +764,10 @@ export function construirePlateau(world: World, options: Options): Plateau {
         [posees(notre?.area_hero, rendu), options.playerId],
         [posees(notre?.supports, rendu), options.playerId],
         [posees(notre?.obligations_area, rendu), options.playerId],
+        // La carte en cours de resolution se pose aupres de SON heros, le
+        // temps que son texte s'applique : c'est ce qu'on fait sur une vraie
+        // table, et non chez le mechant.
+        [posees(notre?.area_processing, rendu), options.playerId],
         ...autres.flatMap((joueur, index): Array<[UniteAffichee[], number]> => {
           const idJoueur = joueurs.indexOf(joueur)
           return [
@@ -751,6 +779,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
             ],
             [posees(joueur.area_hero, rendu), idJoueur],
             [posees(joueur.supports, rendu), idJoueur],
+            [posees(joueur.area_processing, rendu), idJoueur],
           ]
         }),
       ]

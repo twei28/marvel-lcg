@@ -54,6 +54,18 @@ export type WorldPlayer = {
    * pour tout autre héros : toujours la lire avec `?? []`.
    */
   reserve?: WorldCard[]
+  /**
+   * Les cartes de CE joueur en cours de résolution : un événement joué, une
+   * traîtrise qu'il subit, le temps que son texte s'applique.
+   *
+   * ⚠ ABSENTE DES MOTEURS ANTÉRIEURS AU 15/09/2026, et c'est pour ça qu'elle
+   * est optionnelle. Avant cette date le moteur fusionnait la zone de
+   * résolution de chaque joueur avec celle du monde dans le seul
+   * `World.area_processing`, et le plateau, ne sachant plus à qui la carte
+   * était, la dessinait chez le méchant. Défaut signalé en jeu : « les cartes
+   * que je joue se placent derrière le méchant avant d'aller à la défausse ».
+   */
+  area_processing?: WorldCard[]
   engaged_enemies: WorldCard[]
   set_aside_nemesis_sets: WorldCard[]
   set_aside_deck: WorldCard[]
