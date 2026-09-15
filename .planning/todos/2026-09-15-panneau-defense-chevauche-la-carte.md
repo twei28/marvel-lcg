@@ -40,5 +40,26 @@ au moment de la capture (`05447098` le cartouche coupé en haut, `1ca86e05` et
 
 ## Statut
 
-Signalé le 15/09/2026, **non ouvert**. À traiter après le chantier de
-l'ouverture silencieuse en cours.
+⛔ **CLOS le 15/09/2026, ce n'était pas un défaut.**
+
+⚠ Personne ne s'en était plaint. L'utilisateur avait envoyé la capture pour
+demander si c'était dû au non-déploiement ; c'est MOI qui ai qualifié le
+recouvrement de défaut et ouvert cette fiche. Interrogé, il a répondu : « mais
+c'est pas un souci que ce soit devant, j'ai dit que c'était problématique ? ».
+
+Et le code dit la même chose, en toutes lettres (`DemandeCentrale.tsx`) : « le
+panneau NE BOUGE PAS... quand une carte agrandie le recouvre, c'est ELLE qui
+passe devant (z-index 400 contre 92) : le panneau est permanent,
+l'agrandissement non ». Le panneau avait DÉJÀ esquivé les cartes par le passé,
+et c'est ce comportement-là qui avait été jugé pire, parce qu'on devait chercher
+la décision du regard à chaque fois.
+
+Ce qui reste vrai et mérite d'être gardé, de l'analyse faite ce jour-là : la
+scène qui accueille la question n'existe QU'EN mode Détaillé
+(`sceneCentrale = modePhase === 'detaille'`, board.tsx). En mode « Sur la
+table », la question retombe donc dans le panneau flottant. Ce n'est pas un
+défaut tant que personne ne s'en plaint, mais c'est bon à savoir le jour où ce
+mode sera vraiment joué.
+
+**Leçon pour moi : ne pas transformer une question de l'utilisateur en défaut
+sans le lui demander.**
