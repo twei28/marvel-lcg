@@ -127,7 +127,29 @@ def cas_question_posee(game_dir, port):
     return "la question Reveal_Main_Scheme a atteint le client"
 
 
-CAS = {"drapeau_pose": cas_drapeau_pose, "question_posee": cas_question_posee}
+def cas_sans_drapeau_aucune_question(game_dir, port):
+    """Une partie SANS la regle ne pose pas la question.
+
+    C'est la garde qui protege les sauvegardes et les campagnes en cours : une
+    scene ecrite avant ce changement ne porte pas `confirm_main_scheme`, sa
+    liste d'operations rejouees ne doit donc pas bouger d'un cran.
+    """
+    _, monde, journal = monter_le_moteur(game_dir, port, [])
+    assert bool(monde.rule.confirm_main_scheme) is False
+    posees = [noms for noms in journal if "Reveal_Main_Scheme" in noms]
+    assert posees == [], f"question posee sans la regle : {posees}"
+    from game.operate.worlds import Worlds
+    schemes = Worlds.GetAllMainSchemes(monde)
+    assert schemes and schemes[0].paper.card_id == "01097b", \
+        f"la manigance devait etre retournee toute seule : {schemes}"
+    return "sans la regle : aucune question, et la manigance est retournee"
+
+
+CAS = {
+    "drapeau_pose": cas_drapeau_pose,
+    "question_posee": cas_question_posee,
+    "sans_drapeau": cas_sans_drapeau_aucune_question,
+}
 
 
 def main():
