@@ -1425,6 +1425,15 @@ export function DeroulePhase({
         ? { ...effet, carte: enFrancais(effet.carte_id, effet.carte) ?? effet.carte }
         : { ...effet, cible: enFrancais(effet.cible_id, effet.cible) ?? effet.cible }
     ),
+    // ⚠ LE BILAN AUSSI, ET IL A ETE OUBLIE JUSQU'AU 15/09/2026. Mesure en
+    // partie francaise : « The Break-In! a gagne 1 menace » sous un cartouche
+    // qui ecrivait « L'EFFRACTION ! » deux lignes plus haut. Le bilan est
+    // construit sur les etapes BRUTES (`avecBilan`), il ne passait donc par
+    // aucune traduction.
+    bilan: etape.bilan?.map((ligne) => ({
+      ...ligne,
+      cibleNom: enFrancais(ligne.cibleId, ligne.cibleNom) ?? ligne.cibleNom,
+    })),
   }
 
   // Position du temps COURANT dans la chronologie : elle seule dit qui est
@@ -2064,12 +2073,12 @@ export function DeroulePhase({
             deux lignes, au moment ou il decide de son tour. Une liste VIDE
             n'est pas une absence : elle dit que la phase n'a rien coute, et le
             cartouche le dit plutot que de rester muet. */}
-        {etape.bilan ? (
+        {etapeLue.bilan ? (
           <ul className="deroule-bilan">
-            {etape.bilan.length === 0 ? (
+            {etapeLue.bilan.length === 0 ? (
               <li className="deroule-bilan-rien">{texteBilanVide()}</li>
             ) : (
-              etape.bilan.map((ligne) => (
+              etapeLue.bilan.map((ligne) => (
                 <li key={ligne.cle}>
                   <span className="deroule-bilan-fait">{texteLigneBilan(ligne)}</span>
                   {compteurLigneBilan(ligne) ? (

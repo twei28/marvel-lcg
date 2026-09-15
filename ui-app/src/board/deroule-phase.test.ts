@@ -1244,7 +1244,19 @@ describe("l'annonce d'une activation, puis sa resolution", () => {
   it('ne compte le coup qu\'une fois quand la resolution a remplace son annonce', () => {
     const etapes = etapesDeroule([resolution()], [], 1, new Set([50]))
     expect(lignesBilan(etapes)).toEqual([
-      { cle: 'degats:Colossus', genre: 'degats', cibleNom: 'Colossus', total: 4, restant: 8, plafond: undefined },
+      // ⚠ `cibleId` depuis le 15/09/2026 : la ligne porte l'identifiant moteur
+      // de sa cible pour que son nom puisse etre traduit (le bilan disait
+      // « The Break-In! » sous un cartouche qui ecrivait « L'Effraction ! »).
+      // Le groupement, lui, reste sur le nom anglais : c'est la clef.
+      {
+        cle: 'degats:Colossus',
+        genre: 'degats',
+        cibleNom: 'Colossus',
+        cibleId: 12,
+        total: 4,
+        restant: 8,
+        plafond: undefined,
+      },
     ])
   })
 

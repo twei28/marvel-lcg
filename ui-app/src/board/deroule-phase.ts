@@ -172,7 +172,23 @@ export type LigneBilan = {
    * une ligne de deux.
    */
   statut?: string
+  /**
+   * Le nom de la cible, TEL QUE LE MOTEUR LE DIT : c'est lui qui groupe les
+   * lignes, et c'est lui qui sert de clef aux PV maximum (`pvMaxParNom`).
+   */
   cibleNom: string
+  /**
+   * L'identifiant moteur de la cible, quand l'etape le porte.
+   *
+   * ⚠ IL NE SERT QU'A TRADUIRE, ET IL MANQUAIT. Mesure du 15/09/2026, en
+   * partie francaise : le bilan de fin de phase disait « The Break-In! a gagne
+   * 1 menace » quand tout le reste du cartouche ecrivait « L'Effraction ! ».
+   * Le nom francais se cherche par identifiant (`nomFr`), et la ligne n'en
+   * portait aucun. Le groupement, lui, reste sur le nom ANGLAIS : deux noms
+   * francais identiques pour deux cartes differentes fondraient deux lignes en
+   * une.
+   */
+  cibleId?: number
   /** Le total de la phase pour cette cible, toutes sources confondues. */
   total: number
   /** Le compteur de la cible apres le DERNIER coup connu, s'il y en a un. */
@@ -908,6 +924,7 @@ export function lignesBilan(
       genre,
       statut: etape.statut,
       cibleNom: nom,
+      cibleId: etape.cibleId,
       total: etape.montant,
       restant: etape.restant,
       plafond: etape.plafond,
