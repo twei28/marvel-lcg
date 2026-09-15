@@ -1188,15 +1188,32 @@ export class Moteur {
     }
   }
 
-  /** Repond au moteur, puis relit. `null` annule. */
-  async repondre(reponse: Reponse | null, bindPlayerId = this.playerId): Promise<void> {
+  /**
+   * Repond au moteur, puis relit. `null` annule.
+   *
+   * Rend `true` quand la reponse EST PARTIE, `false` quand l'envoi a echoue.
+   *
+   * ⚠ CE RETOUR N'EST PAS DECORATIF. Defaut trouve en relecture le
+   * 15/09/2026 : un envoi qui echoue garde la demande et ne publie qu'une
+   * erreur. Tout bouton qui se ferme sur son propre clic (le panneau de la
+   * manigance, qui n'autorise qu'un seul envoi) restait alors ferme pour
+   * toujours, sans aucun moyen de renvoyer : partie figee. Un appelant qui se
+   * referme doit pouvoir rouvrir sur un FAIT, pas sur une minuterie.
+   *
+   * La relecture qui suit n'entre pas dans ce fait : `lire` attrape ses
+   * propres erreurs, et une relecture ratee ne rend pas la reponse non
+   * envoyee — la renvoyer repondrait a la question SUIVANTE.
+   */
+  async repondre(reponse: Reponse | null, bindPlayerId = this.playerId): Promise<boolean> {
     try {
       await envoyerReponse(bindPlayerId, reponse)
-      this.publier({ demande: undefined })
-      await this.lire()
     } catch (cause: unknown) {
       this.publier({ erreur: cause instanceof Error ? cause.message : String(cause) })
+      return false
     }
+    this.publier({ demande: undefined })
+    await this.lire()
+    return true
   }
 
   /** Retente la connexion tout de suite, sans attendre le compte a rebours. */

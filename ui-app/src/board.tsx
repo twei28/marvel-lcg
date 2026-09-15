@@ -886,9 +886,10 @@ function usePartieEnCours(playerId: number) {
   }, [moteur])
 
   const repondre = useCallback(
-    (reponse: Reponse | null, bindPlayerId: number) => {
-      void moteur.repondre(reponse, bindPlayerId)
-    },
+    // Rend `true` quand la reponse EST PARTIE (voir `Moteur.repondre`) : le
+    // panneau de la manigance rouvre son bouton sur ce fait quand l'envoi
+    // echoue. Les autres appelants ignorent ce retour, comme avant.
+    (reponse: Reponse | null, bindPlayerId: number) => moteur.repondre(reponse, bindPlayerId),
     [moteur]
   )
 

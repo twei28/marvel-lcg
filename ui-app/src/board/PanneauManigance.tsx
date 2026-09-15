@@ -32,7 +32,12 @@ export function PanneauManigance({
   onValider,
 }: {
   carte: WorldCard
-  onValider: () => void
+  /**
+   * Poste la reponse au moteur, et dit si elle EST PARTIE (voir
+   * `Moteur.repondre`). Un `false` rouvre le bouton : sans ce fait, un envoi
+   * rate laissait le panneau ferme pour toujours et la partie figee.
+   */
+  onValider: () => Promise<boolean>
 }) {
   // ⚠ UN SEUL ENVOI. Le moteur n'attend qu'une reponse ; une seconde partirait
   // dans le vide, ou pire, repondrait a la question suivante. `envoye` porte
@@ -41,13 +46,27 @@ export function PanneauManigance({
   // retarde.
   const [envoye, setEnvoye] = useState(false)
   const idMinuteur = useRef<number | undefined>(undefined)
+  const monte = useRef(true)
 
   useEffect(
     () => () => {
+      monte.current = false
       if (idMinuteur.current !== undefined) window.clearTimeout(idMinuteur.current)
     },
     []
   )
+
+  // ⚠ UN ENVOI QUI ECHOUE NE FERME PAS LA PORTE. Defaut trouve en relecture le
+  // 15/09/2026 : `moteur.repondre` attrape l'erreur reseau, garde la demande et
+  // ne publie qu'une erreur. Le bouton, lui, restait `disabled` : plus aucun
+  // moyen de renvoyer, partie figee sur la face A. `repondre` dit desormais si
+  // la reponse est partie, et le panneau rouvre sur ce FAIT — pas sur une
+  // minuterie. La carte revient alors sur sa face A, ce qui est la verite : le
+  // moteur attend toujours la meme reponse.
+  const envoyer = async () => {
+    const partie = await onValider()
+    if (!partie && monte.current) setEnvoye(false)
+  }
 
   return (
     <div
@@ -69,10 +88,10 @@ export function PanneauManigance({
           // un defaut pire que celui qu'on corrige. La gate est explicite.
           const mouvementReduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches
           if (mouvementReduit) {
-            onValider()
+            void envoyer()
             return
           }
-          idMinuteur.current = window.setTimeout(onValider, DUREE_RETOURNEMENT)
+          idMinuteur.current = window.setTimeout(() => void envoyer(), DUREE_RETOURNEMENT)
         }}
       >
         {t('Retourner la manigance')}
