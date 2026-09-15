@@ -330,6 +330,12 @@ export function DemandeCentrale({
   enScene = false,
 }: DemandeCentraleProps) {
   const reaction = estFenetreDeReaction(demande)
+  /**
+   * Les images de vignette deja posees dans CE rendu, pour n'en poser qu'une
+   * par carte. Volontairement recree a chaque rendu : c'est un compteur de
+   * boucle, pas un etat.
+   */
+  const vignettesPosees = new Set<string>()
   const [raisonVisible, setRaisonVisible] = useState<number | undefined>(undefined)
   // Carte regardee : l'agrandissement s'ouvre au survol du bouton, comme au
   // survol d'une carte de la table, et avec le meme panneau (texte francais
@@ -427,6 +433,19 @@ export function DemandeCentrale({
       </div>
 
       <div className="af-boutons dc-boutons" onMouseOver={survolerZone} onMouseLeave={quitterZone}>
+        {/*
+          ⚠ UNE SEULE VIGNETTE PAR IMAGE, ET PAS UNE PAR BOUTON.
+          Signale en jeu le 15/09/2026, capture a l'appui : « pourquoi il montre
+          l'image de mon perso deux fois ? ». Ironheart portait DEUX options de
+          la meme fenetre de reaction (Defense et Ask) et chaque bouton posait
+          SA vignette : deux fois la meme carte cote a cote, plus la vraie sur
+          la table. La deuxieme n'apprenait rien.
+
+          ⚠ ON REGROUPE SUR L'IMAGE, PAS SUR LE PORTEUR. Une recherche dans le
+          deck propose plusieurs cartes DIFFERENTES sous un meme `bind_id` (ou
+          sous `bind_id === 0`) : regrouper par porteur les fondrait en une
+          seule vignette et on ne saurait plus ce qu'on choisit.
+        */}
         {options.map((option) => {
           const nom = reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
           const source = nomSource(option, cartesParId, nomPorteur)
@@ -436,7 +455,10 @@ export function DemandeCentrale({
           // La vignette : la carte nommee, sinon, sur une fenetre de reaction,
           // la carte PORTEUSE (elle n'apparaissait qu'au survol). Reconnaitre
           // la carte est la moitie de la comprehension.
-          const carte = carteDeLOption?.(option) ?? (reaction ? carteAuSurvol?.(option) : undefined)
+          const carteBrute = carteDeLOption?.(option) ?? (reaction ? carteAuSurvol?.(option) : undefined)
+          const dejaMontree = carteBrute !== undefined && vignettesPosees.has(carteBrute.id)
+          if (carteBrute) vignettesPosees.add(carteBrute.id)
+          const carte = dejaMontree ? undefined : carteBrute
           return (
             <span
               className={`af-action-wrap${carte ? ' a-vignette' : ''}`}
@@ -464,7 +486,7 @@ export function DemandeCentrale({
                 }`}
                 aria-disabled={indisponible || undefined}
                 title={indisponible ? option.failure_reason : undefined}
-                onFocus={() => activerOption(option, carteAuSurvol?.(option) ?? carte)}
+                onFocus={() => activerOption(option, carteAuSurvol?.(option) ?? carteBrute)}
                 onBlur={() => desactiverOption(option)}
                 onClick={() => choisirOuInformer(option)}
               >

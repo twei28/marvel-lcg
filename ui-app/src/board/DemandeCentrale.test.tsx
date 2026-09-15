@@ -147,3 +147,53 @@ describe('DemandeCentrale — le nom de la carte porteuse', () => {
     expect(screen.getByText('Backflip')).toBeInTheDocument()
   })
 })
+
+// Defaut signale en jeu le 15/09/2026, capture a l'appui : « pourquoi il montre
+// l'image de mon perso deux fois ? ». Ironheart portait DEUX options de la meme
+// fenetre de reaction (DEFENSE et ASK), et chaque bouton posait SA vignette :
+// deux fois la meme carte cote a cote, plus la vraie sur la table.
+describe('DemandeCentrale — deux boutons portes par la meme carte', () => {
+  const ironheart = new Map<number, WorldCard>([
+    [12, { id: 12, name: 'Ironheart', card_type: 'Hero', card_id: 'ih001a' } as unknown as WorldCard],
+    [13, { id: 13, name: 'Laura Kinney', card_type: 'Ally', card_id: 'x23' } as unknown as WorldCard],
+  ])
+  const fenetre = (options: Option[]): Demande =>
+    ({
+      options,
+      prompt_text: 'Ironheart is being attacked by Crossbones',
+      event_name: 'WhenUnitWouldAttack',
+      show_cancel: true,
+      ability_type: 'Interrupt',
+    }) as unknown as Demande
+
+  it('ne pose qu UNE vignette pour les deux', () => {
+    const defense = { ...option(), id: 1, name: 'Defense', bind_id: 12 }
+    const ask = { ...option(), id: 2, name: 'Ask', bind_id: 12 }
+    rendre({
+      demande: fenetre([defense, ask]),
+      options: [defense, ask],
+      cartesParId: ironheart,
+      carteAuSurvol: () => ({ ...scan, name: 'Ironheart' }),
+    })
+
+    expect(document.querySelectorAll('.dc-vignette')).toHaveLength(1)
+    // Les deux boutons restent la : on enleve la redite, pas un choix.
+    // (Les libelles sont traduits : « Defense » -> « Défendre ».)
+    expect(screen.getByRole('button', { name: /Défendre/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Demander/ })).toBeInTheDocument()
+  })
+
+  it('en pose bien DEUX quand ce sont deux cartes differentes', () => {
+    // Le temoin : sans lui, supprimer toutes les vignettes passerait au vert.
+    const defense = { ...option(), id: 1, name: 'Defense', bind_id: 12 }
+    const allie = { ...option(), id: 2, name: 'Defense', bind_id: 13 }
+    rendre({
+      demande: fenetre([defense, allie]),
+      options: [defense, allie],
+      cartesParId: ironheart,
+      carteAuSurvol: (o: Option) => ({ ...scan, id: String(o.bind_id), name: `Carte ${o.bind_id}` }),
+    })
+
+    expect(document.querySelectorAll('.dc-vignette')).toHaveLength(2)
+  })
+})

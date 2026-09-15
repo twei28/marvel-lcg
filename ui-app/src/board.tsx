@@ -3306,23 +3306,17 @@ function PagePartie({
                 description et la capture. Ne s'affiche que si un site ecoute. */}
             <PanneauBug outils={rapport} />
 
-            {/* « Partie » (14/09/2026) : historique, log, journal du heros,
-                vue et retour au menu. Les REGLAGES n'y sont plus, ils ont leur
-                fenetre a onglets (bouton ⚙ juste apres). Sur telephone,
-                PopoverPartie rend ses lignes a plat dans la feuille « … ». */}
-            <PopoverPartie>
-            <HistoriquePartie
-              entrees={historique.entrees}
-              effacer={historique.effacer}
-              rapport={rapport}
-            />
-            {/* « Log » : le rapport complet en UN clic, sans ouvrir le panneau
-                ni choisir une profondeur. Les mêmes boutons existent au bas du
-                panneau Historique depuis le 12/8/2026, mais personne ne les y
-                trouvait — et c'est au moment où un bug vient de se produire
-                qu'on a le moins envie de chercher. Toute la partie, en texte
-                lisible, parce que c'est ce qu'on relit et ce qu'on transmet. */}
-            <MessageRapport message={rapport.message} />
+            {/* ⚠ LA VUE RESTE DANS LA BARRE, ET C'EST UNE DECISION ECRITE.
+                La fiche des onglets du 14/09/2026 le dit mot pour mot : « la
+                Vue reste dans la barre (elle change a chaque tour en
+                multijoueur) ». La refonte l'avait pourtant rangee DANS le
+                bouton « Partie », donc derriere deux clics, et l'utilisateur
+                l'a signale en partie a plusieurs le 15/09/2026 : « j'ai plus le
+                bouton dans le header pour choisir de voir tous les heros ou
+                que celui que je selectionne ». Elle est revenue ici.
+
+                Elle ne s'affiche qu'a PLUSIEURS : en solo il n'y a qu'une vue
+                possible, un bouton n'y proposerait rien. */}
             {(etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>
                 <span className="bh-vue-label">{t('Vue')}</span>
@@ -3351,6 +3345,23 @@ function PagePartie({
                 )}
               </span>
             ) : null}
+            {/* « Partie » (14/09/2026) : historique, log, journal du heros,
+                vue et retour au menu. Les REGLAGES n'y sont plus, ils ont leur
+                fenetre a onglets (bouton ⚙ juste apres). Sur telephone,
+                PopoverPartie rend ses lignes a plat dans la feuille « … ». */}
+            <PopoverPartie>
+            <HistoriquePartie
+              entrees={historique.entrees}
+              effacer={historique.effacer}
+              rapport={rapport}
+            />
+            {/* « Log » : le rapport complet en UN clic, sans ouvrir le panneau
+                ni choisir une profondeur. Les mêmes boutons existent au bas du
+                panneau Historique depuis le 12/8/2026, mais personne ne les y
+                trouvait — et c'est au moment où un bug vient de se produire
+                qu'on a le moins envie de chercher. Toute la partie, en texte
+                lisible, parce que c'est ce qu'on relit et ce qu'on transmet. */}
+            <MessageRapport message={rapport.message} />
 
 
               {/* Le journal du heros, en panneau : ce qui est arrive a CE
