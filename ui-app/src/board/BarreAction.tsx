@@ -107,6 +107,18 @@ export type BarreActionProps = {
   connecte: boolean
   /** Nom de la carte porteuse d'une option, pour situer l'action. */
   nomPorteur: (bindId: number) => string | undefined
+  /**
+   * La question en cours a son propre panneau et n'appartient qu'a lui : la
+   * face A de la manigance principale (voir `manigance-face-a.ts`).
+   *
+   * ⚠ DEFAUT TROUVE EN RELECTURE, 15/09/2026. Sans cette porte, la barre
+   * offrait « Reveal Main Scheme » EN MEME TEMPS que le panneau, avec ce
+   * libelle brut qui n'est meme pas dans `dico-en.ts`. Et pendant les 400 ms
+   * du retournement, le panneau passe en `pointer-events: none` : ce bouton-la
+   * restait cliquable, contournait la garde « un seul envoi » du panneau et
+   * pouvait repondre a la question SUIVANTE a la place du joueur.
+   */
+  questionPriseParLePanneau?: boolean
 }
 
 export function BarreAction({
@@ -115,6 +127,7 @@ export function BarreAction({
   aNous,
   connecte,
   nomPorteur,
+  questionPriseParLePanneau = false,
 }: BarreActionProps) {
   if (!connecte) {
     return (
@@ -127,7 +140,9 @@ export function BarreAction({
     )
   }
 
-  if (!demande || !aNous) {
+  // La barre n'a rien a proposer quand la question se joue ailleurs : le
+  // panneau de la manigance porte la carte en grand et son seul bouton.
+  if (!demande || !aNous || questionPriseParLePanneau) {
     return (
       <footer className="plateau-action plateau-action-attente" role="status">
         <strong>{t('En attente du jeu.')}</strong>

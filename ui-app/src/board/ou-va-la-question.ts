@@ -40,6 +40,27 @@ export type EtatDeLaQuestion = {
   sceneCentrale: boolean
   /** Le moteur est dans une des quatre phases du méchant. */
   phaseMechantEnCours: boolean
+  /**
+   * La question posée est celle de la face A de la manigance principale
+   * (`Reveal_Main_Scheme`, voir `manigance-face-a.ts`). Elle a son propre
+   * panneau : personne d'autre ne l'affiche.
+   */
+  questionDeLaManigance: boolean
+}
+
+/**
+ * LA QUESTION DE LA MANIGANCE N'APPARTIENT QU'À SON PANNEAU.
+ *
+ * ⚠ DÉFAUT TROUVÉ EN RELECTURE, 15/09/2026. Le chantier de la face A n'avait
+ * pas touché ce fichier : `DemandeCentrale` ET `BarreAction` affichaient donc
+ * la même question sous le voile, avec le libellé brut « Reveal Main Scheme »
+ * que `dico-en.ts` ne connaît pas. Et pendant les 400 ms du retournement, le
+ * panneau passe en `pointer-events: none` : ce bouton-là redevenait cliquable,
+ * contournait la garde du panneau (« un seul envoi ») et pouvait répondre à la
+ * question SUIVANTE à la place du joueur.
+ */
+function priseParLePanneauManigance(e: EtatDeLaQuestion): boolean {
+  return e.questionDeLaManigance
 }
 
 /**
@@ -51,6 +72,7 @@ export type EtatDeLaQuestion = {
  * chaque attaque qui suit un dégât.
  */
 export function questionDansLaScene(e: EtatDeLaQuestion): boolean {
+  if (priseParLePanneauManigance(e)) return false
   if (!e.sceneCentrale || !e.phaseMechantEnCours) return false
   if (!e.moteurAttendLeJoueur || !e.demandePresente) return false
   // Les deux seules autres façons de répondre à la MÊME question : le ciblage
@@ -66,6 +88,7 @@ export function questionDansLaScene(e: EtatDeLaQuestion): boolean {
  * joueur garde la barre du bas et le menu des cartes pour répondre.
  */
 export function questionDansLePanneau(e: EtatDeLaQuestion): boolean {
+  if (priseParLePanneauManigance(e)) return false
   if (!e.moteurAttendLeJoueur || !e.demandePresente) return false
   if (e.effetEnCours || e.ciblage || e.menuCarte) return false
   // La scène et le panneau ne s'affichent JAMAIS ensemble : c'est la même
@@ -86,6 +109,11 @@ export function narrationAuCentre(
   contexte: { connecte: boolean; evenementImportant: boolean }
 ): boolean {
   if (!contexte.connecte) return false
+  // Elle se tait aussi devant le panneau de la manigance. Sans cette ligne, la
+  // porte ci-dessus (la question n'est plus ni dans le panneau ni dans la
+  // scène) laisserait la narration se poser au centre, par-dessus la carte
+  // montrée en grand — exactement ce que le silence de l'ouverture refuse.
+  if (priseParLePanneauManigance(e)) return false
   if (!e.effetEnCours && !contexte.evenementImportant) return false
   if (e.ciblage || e.menuCarte) return false
   return !questionDansLePanneau(e) && !questionDansLaScene(e)

@@ -30,6 +30,7 @@ const defense = (sur: Partial<EtatDeLaQuestion> = {}): EtatDeLaQuestion => ({
   menuCarte: false,
   sceneCentrale: true,
   phaseMechantEnCours: true,
+  questionDeLaManigance: false,
   ...sur,
 })
 
@@ -113,5 +114,41 @@ describe('la narration centrale', () => {
         evenementImportant: true,
       })
     ).toBe(false)
+  })
+})
+
+// LA QUESTION DE LA MANIGANCE N'APPARTIENT QU'AU PANNEAU.
+//
+// Defaut trouve en relecture le 15/09/2026 : `ou-va-la-question.ts` n'avait
+// pas ete touche par le chantier de la face A. `DemandeCentrale` et
+// `BarreAction` affichaient donc la MEME question sous le voile, avec le
+// libelle brut « Reveal Main Scheme », absent de `dico-en.ts`. Pire : pendant
+// les 400 ms du retournement, le panneau passe en `pointer-events: none`, le
+// bouton ordinaire redevenait cliquable, contournait la garde du panneau et
+// pouvait repondre a la question SUIVANTE a la place du joueur.
+describe('la question de la manigance (Reveal_Main_Scheme)', () => {
+  it('⚠ NE S’AFFICHE NI DANS LE PANNEAU CENTRAL NI DANS LA SCENE : le panneau de la manigance la porte seul', () => {
+    const manigance = defense({ questionDeLaManigance: true })
+    expect(questionDansLePanneau(manigance)).toBe(false)
+    expect(questionDansLaScene(manigance)).toBe(false)
+  })
+
+  it('hors de la scene non plus : c’est la meme question, et elle a deja son panneau', () => {
+    const manigance = defense({ questionDeLaManigance: true, sceneCentrale: false })
+    expect(questionDansLePanneau(manigance)).toBe(false)
+    expect(questionDansLaScene(manigance)).toBe(false)
+  })
+
+  it('la narration ne vient pas se poser par-dessus la carte montree en grand', () => {
+    // La porte ci-dessus retire la question du panneau ET de la scene : sans
+    // garde, `narrationAuCentre` en profiterait pour s'afficher AU CENTRE,
+    // par-dessus le panneau de la manigance.
+    const manigance = defense({ questionDeLaManigance: true, effetEnCours: true })
+    expect(narrationAuCentre(manigance, { connecte: true, evenementImportant: true })).toBe(false)
+  })
+
+  it('n’enleve rien aux autres questions : sans elle, la regle ne bouge pas', () => {
+    expect(questionDansLaScene(defense())).toBe(true)
+    expect(questionDansLePanneau(defense({ sceneCentrale: false }))).toBe(true)
   })
 })

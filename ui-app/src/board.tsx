@@ -2842,6 +2842,9 @@ function PagePartie({
     menuCarte: carteMenu !== undefined,
     sceneCentrale,
     phaseMechantEnCours,
+    // La face A de la manigance a son propre panneau : ni le panneau central,
+    // ni la scene, ni la barre du bas ne la proposent en double.
+    questionDeLaManigance: questionManigance !== undefined,
   }
   // Le PANNEAU central cede la place a toutes les autres facons de repondre a
   // cette meme question : un ciblage sur la table, le menu d'une carte, une
@@ -3529,6 +3532,7 @@ function PagePartie({
               aNous={etat.aNous}
               connecte={etat.connecte}
               nomPorteur={nomPorteurFr}
+              questionPriseParLePanneau={questionManigance !== undefined}
             />
           ) : undefined
         }

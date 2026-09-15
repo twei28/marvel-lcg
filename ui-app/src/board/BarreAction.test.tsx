@@ -100,3 +100,58 @@ describe('BarreAction — issue de secours', () => {
     expect(screen.getByText(/cartes surlignées/)).toBeTruthy()
   })
 })
+
+// LA QUESTION DE LA MANIGANCE N'EST PAS OFFERTE ICI.
+//
+// Defaut trouve en relecture le 15/09/2026 : la barre affichait « Reveal Main
+// Scheme » en meme temps que le panneau de la face A, avec ce libelle brut que
+// `dico-en.ts` ne connait pas. Et pendant les 400 ms du retournement, le
+// panneau passe en `pointer-events: none` : ce bouton-la restait cliquable et
+// pouvait repondre a la question SUIVANTE a la place du joueur.
+describe('BarreAction — la question de la manigance appartient a son panneau', () => {
+  /** L'option telle que le moteur la publie pendant l'arret sur la face A. */
+  function optionManigance(): Option {
+    return { ...option(), id: 7, name: 'Reveal_Main_Scheme', bind_id: 3 }
+  }
+
+  /** Aucune option engagee : la barre en est au menu des propositions. */
+  function interactionAuRepos(options: Option[]): Interaction {
+    return {
+      ...interaction(vi.fn()),
+      option: undefined,
+      options,
+      coutAffiche: '',
+    } as unknown as Interaction
+  }
+
+  it('⚠ N’OFFRE PAS le bouton de la question de la manigance', () => {
+    render(
+      <BarreAction
+        demande={{ ...demande(), options: [optionManigance()] }}
+        interaction={interactionAuRepos([optionManigance()])}
+        aNous={true}
+        connecte={true}
+        nomPorteur={() => undefined}
+        questionPriseParLePanneau={true}
+      />
+    )
+
+    expect(screen.queryByRole('button', { name: /Reveal/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /manigance/i })).toBeNull()
+  })
+
+  it('offre les autres questions comme avant', () => {
+    render(
+      <BarreAction
+        demande={demande()}
+        interaction={interactionAuRepos([option()])}
+        aNous={true}
+        connecte={true}
+        nomPorteur={() => undefined}
+      />
+    )
+
+    // « Play » passe par traduireMoteur et s'affiche « Jouer ».
+    expect(screen.getByRole('button', { name: /Jouer/i })).toBeTruthy()
+  })
+})
