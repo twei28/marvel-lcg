@@ -67,6 +67,42 @@ export function maniganceAMontrer(
   return designee ?? zone[0]
 }
 
+/** Ce que le panneau de la manigance tient, quand il tient la question. */
+export type PriseDuPanneauManigance = {
+  /** La question du moteur, à qui il faut répondre. */
+  question: Option
+  /** La carte à montrer en grand, sur sa face A. */
+  carte: WorldCard
+}
+
+/**
+ * LE PANNEAU PREND-IL LA QUESTION ? UNE SEULE RÉPONSE, POUR TOUT LE MONDE.
+ *
+ * ⚠ DÉFAUT TROUVÉ EN RELECTURE, 15/09/2026, ET IL REND UNE PARTIE INJOUABLE.
+ * La REVENDICATION (« cette question est prise, que personne d'autre ne
+ * l'affiche ») et le MONTAGE du panneau étaient deux conditions différentes :
+ * la première ne regardait que la question, la seconde exigeait aussi la
+ * carte. Quand `area_schemes_main` est vide ou absente, `maniganceAMontrer`
+ * rend `undefined` : le panneau ne paraissait pas, mais la barre du bas, le
+ * panneau central et la scène se taisaient tous les trois. Il ne restait plus
+ * un seul bouton à l'écran, et le moteur attendait pour toujours.
+ *
+ * ⚠ UNE GATE, PAS UN REPLI. Le panneau ne revendique la question QUE s'il est
+ * capable de la montrer ; sinon il rend la main aux panneaux ordinaires, qui
+ * savent afficher n'importe quelle question. Et c'est la MÊME fonction des
+ * deux côtés : revendication et montage ne peuvent plus diverger.
+ */
+export function priseDuPanneauManigance(
+  demande: Demande | undefined,
+  monde: World | undefined
+): PriseDuPanneauManigance | undefined {
+  const question = questionDeLaManigance(demande)
+  if (!question) return undefined
+  const carte = maniganceAMontrer(monde, question.bind_id)
+  if (!carte) return undefined
+  return { question, carte }
+}
+
 /**
  * LA DEMANDE TELLE QUE LA TABLE DOIT LA LIRE : sans la question du panneau.
  *
@@ -83,13 +119,17 @@ export function maniganceAMontrer(
  * redevient cliquable : le clic contournait la garde « un seul envoi » du
  * panneau et pouvait répondre à la question SUIVANTE.
  *
- * ⚠ LA RÈGLE DE RECONNAISSANCE N'EST PAS DUPLIQUÉE : c'est
- * `questionDeLaManigance` ci-dessus, et elle seule. Quand la question n'est
+ * ⚠ LA RÈGLE N'EST PAS DUPLIQUÉE : c'est `priseDuPanneauManigance` ci-dessus,
+ * et elle seule — la table ne perd la question que si le panneau la prend
+ * VRAIMENT, carte comprise. Quand la question n'est
  * pas celle du panneau, la MÊME référence ressort — aucun objet neuf, donc
  * aucune dépendance de hook invalidée à chaque rendu.
  */
-export function demandeHorsPanneauManigance(demande: Demande | undefined): Demande | undefined {
-  return questionDeLaManigance(demande) ? undefined : demande
+export function demandeHorsPanneauManigance(
+  demande: Demande | undefined,
+  monde: World | undefined
+): Demande | undefined {
+  return priseDuPanneauManigance(demande, monde) ? undefined : demande
 }
 
 /** Ce qu'il faut savoir pour décider si l'ouverture reste voilée. */

@@ -343,7 +343,7 @@ export function useInteraction(
    * La référence est inchangée pour toute autre demande : aucune dépendance de
    * hook n'est invalidée par ce passage.
    */
-  const demande = demandeHorsPanneauManigance(demandeBrute)
+  const demande = demandeHorsPanneauManigance(demandeBrute, world)
 
   const options = demande?.options ?? []
   const optionsGenerales = useMemo(() => options.filter((o) => o.bind_id === 0), [options])

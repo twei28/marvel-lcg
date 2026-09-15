@@ -116,8 +116,8 @@ import { libellePhase, libelleQuiAgit, libelleRound } from './board/etat-partie'
 import { CLE_DESIGN_ESSAI, lireDesignEssai } from './board/design-essai'
 import {
   demandeHorsPanneauManigance,
-  maniganceAMontrer,
   ouvertureEncoreVoilee,
+  priseDuPanneauManigance,
   questionDeLaManigance,
 } from './board/manigance-face-a'
 import { PanneauManigance } from './board/PanneauManigance'
@@ -1625,7 +1625,7 @@ function PagePartie({
   // clic direct du mode Detaille se construisent tous sur CETTE demande-ci,
   // jamais sur `etat.demande`. La reference est la meme pour toute autre
   // question : rien d'autre ne change.
-  const demandeOrdinaire = demandeHorsPanneauManigance(etat.demande)
+  const demandeOrdinaire = demandeHorsPanneauManigance(etat.demande, etat.monde)
   const interaction = useInteraction(
     etat.monde,
     demandeOrdinaire,
@@ -2708,16 +2708,24 @@ function PagePartie({
   // toucher au verrou tant qu'on n'a pas encore de reponse du moteur ne change
   // rien a l'affichage de cette phase-la, et evite ce verrouillage premature.
   const voileLeve = useRef(false)
-  const questionManigance = questionDeLaManigance(etat.demande)
+  // ⚠ UNE SEULE CONDITION, DES DEUX COTES. `priseDuPanneauManigance` dit A LA
+  // FOIS que le panneau revendique la question et quelle carte il montre : la
+  // revendication et le montage ne peuvent plus diverger. Quand la carte est
+  // introuvable, le panneau rend la main aux panneaux ORDINAIRES au lieu de
+  // laisser le joueur devant une question sans un seul bouton.
+  //
   // La carte a montrer est celle que la QUESTION designe par son `bind_id`, pas
   // la premiere de la zone : le mode Bataille en met deux en jeu, et le moteur
   // pose une question par manigance (voir maniganceAMontrer).
-  const carteManigance = maniganceAMontrer(etat.monde, questionManigance?.bind_id)
+  const priseManigance = priseDuPanneauManigance(etat.demande, etat.monde)
   const voile = etat.monde
     ? ouvertureEncoreVoilee({
         confirmAttendue: etat.monde.confirm_main_scheme === true,
         round: etat.monde.round_id ?? 0,
-        questionArrivee: questionManigance !== undefined,
+        // Le VOILE se leve des que la question arrive, prise par le panneau ou
+        // non : si elle reste aux panneaux ordinaires, il faut d'autant plus
+        // voir la table pour y repondre.
+        questionArrivee: questionDeLaManigance(etat.demande) !== undefined,
         dejaLevee: voileLeve.current,
         demandePresente: etat.demande !== undefined,
       })
@@ -2861,7 +2869,7 @@ function PagePartie({
     phaseMechantEnCours,
     // La face A de la manigance a son propre panneau : ni le panneau central,
     // ni la scene, ni la barre du bas ne la proposent en double.
-    questionDeLaManigance: questionManigance !== undefined,
+    questionDeLaManigance: priseManigance !== undefined,
   }
   // Le PANNEAU central cede la place a toutes les autres facons de repondre a
   // cette meme question : un ciblage sur la table, le menu d'une carte, une
@@ -3554,7 +3562,7 @@ function PagePartie({
               aNous={etat.aNous}
               connecte={etat.connecte}
               nomPorteur={nomPorteurFr}
-              questionPriseParLePanneau={questionManigance !== undefined}
+              questionPriseParLePanneau={priseManigance !== undefined}
             />
           ) : undefined
         }
@@ -3676,13 +3684,13 @@ function PagePartie({
           principale, montree en grand pendant que le moteur attend la
           confirmation avant de la retourner (World.ConfirmMainSchemeReveal).
           Le voile ci-dessus garantit que la table est deja montee derriere. */}
-      {questionManigance && carteManigance ? (
+      {priseManigance ? (
         <PanneauManigance
-          carte={carteManigance}
+          carte={priseManigance.carte}
           onValider={() =>
             repondre(
-              { id: questionManigance.id, targets: [], resources: [] },
-              questionManigance.bind_player_id
+              { id: priseManigance.question.id, targets: [], resources: [] },
+              priseManigance.question.bind_player_id
             )
           }
         />

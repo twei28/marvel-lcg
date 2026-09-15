@@ -2,11 +2,13 @@ import { describe, expect, it } from 'vitest'
 import {
   NOM_OPTION_MANIGANCE,
   demandeHorsPanneauManigance,
+  priseDuPanneauManigance,
   maniganceAMontrer,
   ouvertureEncoreVoilee,
   questionDeLaManigance,
 } from './manigance-face-a'
 import type { Demande, Option } from './ask'
+import { questionDansLePanneau } from './ou-va-la-question'
 import type { World } from './world'
 
 function option(nom: string): Option {
@@ -164,12 +166,17 @@ describe('ouvertureEncoreVoilee', () => {
 })
 
 describe('demandeHorsPanneauManigance', () => {
+  /** Une table qui porte bien sa manigance principale : le panneau peut prendre. */
+  const TABLE = {
+    area_schemes_main: [{ id: 42, card_type: 'main_scheme', pic_id: '01097a' }],
+  } as unknown as World
+
   it('retire la question du panneau de ce que la table lit', () => {
     // Si cette porte sautait, le menu de la manigance principale rouvrirait :
     // halo sur la carte, option au libelle technique brut, et en mode Detaille
     // un clic qui REPOND a la place du panneau.
     const demande = { options: [option(NOM_OPTION_MANIGANCE)] } as unknown as Demande
-    expect(demandeHorsPanneauManigance(demande)).toBeUndefined()
+    expect(demandeHorsPanneauManigance(demande, TABLE)).toBeUndefined()
   })
 
   it('rend la MEME demande, a la reference pres, pour toute autre question', () => {
@@ -177,10 +184,75 @@ describe('demandeHorsPanneauManigance', () => {
     // dependances de hook de `useInteraction` et rejouerait la composition en
     // cours a chaque trame.
     const demande = { options: [option('Attack'), option('Thwart')] } as unknown as Demande
-    expect(demandeHorsPanneauManigance(demande)).toBe(demande)
+    expect(demandeHorsPanneauManigance(demande, TABLE)).toBe(demande)
   })
 
   it('laisse passer l absence de demande', () => {
-    expect(demandeHorsPanneauManigance(undefined)).toBeUndefined()
+    expect(demandeHorsPanneauManigance(undefined, TABLE)).toBeUndefined()
+  })
+})
+
+// LE PANNEAU NE REVENDIQUE LA QUESTION QUE S'IL PEUT LA MONTRER.
+//
+// Defaut trouve en relecture le 15/09/2026, et il rend une partie INJOUABLE.
+// La revendication (« cette question est prise, que personne d'autre ne
+// l'affiche ») et le montage du panneau etaient deux conditions differentes :
+// la premiere ne regardait que la question, la seconde exigeait AUSSI la
+// carte. Quand `area_schemes_main` est vide ou absente, `maniganceAMontrer`
+// rend `undefined` : le panneau ne paraissait pas, mais la barre du bas, le
+// panneau central et la scene se taisaient tous les trois. Il ne restait plus
+// rien pour repondre, et le moteur attendait pour toujours. Avant la vague, la
+// barre affichait encore l'option.
+describe('priseDuPanneauManigance', () => {
+  const MANIGANCE = 42
+  const AVEC_CARTE = {
+    area_schemes_main: [{ id: MANIGANCE, card_type: 'main_scheme', pic_id: '01097a' }],
+  } as unknown as World
+
+  it('prend la question quand il a la carte a montrer', () => {
+    const prise = priseDuPanneauManigance(demande([option(NOM_OPTION_MANIGANCE)]), AVEC_CARTE)
+    expect(prise?.question.id).toBe(7)
+    expect(prise?.carte.id).toBe(MANIGANCE)
+  })
+
+  it('⚠ NE PREND RIEN QUAND LA CARTE EST INTROUVABLE', () => {
+    // LE CAS QUI COMPTE. Sans cette gate, la question restait « prise » par un
+    // panneau qui ne paraissait jamais : plus un seul bouton a l'ecran.
+    const sansZone = {} as unknown as World
+    expect(priseDuPanneauManigance(demande([option(NOM_OPTION_MANIGANCE)]), sansZone)).toBeUndefined()
+    const zoneVide = { area_schemes_main: [] } as unknown as World
+    expect(priseDuPanneauManigance(demande([option(NOM_OPTION_MANIGANCE)]), zoneVide)).toBeUndefined()
+    expect(priseDuPanneauManigance(demande([option(NOM_OPTION_MANIGANCE)]), undefined)).toBeUndefined()
+  })
+
+  it('ne prend pas une question ordinaire, meme avec une manigance en jeu', () => {
+    expect(priseDuPanneauManigance(demande([option('Attack')]), AVEC_CARTE)).toBeUndefined()
+  })
+
+  it('rend la main aux panneaux ORDINAIRES quand il ne peut pas montrer la carte', () => {
+    // La preuve que la partie reste jouable : la meme condition alimente la
+    // demande que la table lit ET le drapeau de `ou-va-la-question.ts`. Si les
+    // deux divergeaient, le joueur se retrouverait devant une question sans
+    // aucun bouton.
+    const question = demande([option(NOM_OPTION_MANIGANCE)])
+    const sansZone = {} as unknown as World
+    expect(demandeHorsPanneauManigance(question, sansZone)).toBe(question)
+    expect(
+      questionDansLePanneau({
+        moteurAttendLeJoueur: true,
+        demandePresente: true,
+        effetEnCours: false,
+        ciblage: false,
+        menuCarte: false,
+        sceneCentrale: false,
+        phaseMechantEnCours: false,
+        questionDeLaManigance: priseDuPanneauManigance(question, sansZone) !== undefined,
+      })
+    ).toBe(true)
+  })
+
+  it('retire bien la question de la table quand le panneau LA PREND', () => {
+    const question = demande([option(NOM_OPTION_MANIGANCE)])
+    expect(demandeHorsPanneauManigance(question, AVEC_CARTE)).toBeUndefined()
   })
 })
