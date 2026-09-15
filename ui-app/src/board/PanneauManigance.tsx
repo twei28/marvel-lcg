@@ -5,12 +5,27 @@
 // Le moteur ATTEND vraiment cette reponse (World.ConfirmMainSchemeReveal) :
 // c'est le seul mouvement de toute l'ouverture, tout le reste a ete rendu
 // silencieux expres (voir manigance-face-a.ts).
+//
+// Correction du 15/09/2026 (relecture) : `repondre` demonte ce panneau des
+// que le moteur avance (board.tsx retire <PanneauManigance> quand la
+// question disparait). Poster la reponse AU CLIC coupait donc la transition
+// CSS en plein vol sur un aller-retour local de quelques dizaines de ms : le
+// joueur ne voyait qu'un eclair, jamais un retournement. On anime D'ABORD, on
+// repond ENSUITE : le moteur attend deja le joueur, il attendra bien
+// DUREE_RETOURNEMENT de plus.
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { scanUrl } from './card-model'
 import { t } from './langue'
 import { nomAffiche } from './noms-cartes-fr'
 import type { WorldCard } from './world'
+
+/**
+ * ⚠ DOIT VALOIR LA MEME CHOSE que la transition de `.panneau-manigance.est-
+ * retournee .panneau-manigance-carte` dans board.css. Valeur dupliquee et
+ * assumee : CSS et JS n'ont aucun moyen de partager une constante ici.
+ */
+export const DUREE_RETOURNEMENT = 400
 
 export function PanneauManigance({
   carte,
@@ -22,8 +37,17 @@ export function PanneauManigance({
   // ⚠ UN SEUL ENVOI. Le moteur n'attend qu'une reponse ; une seconde partirait
   // dans le vide, ou pire, repondrait a la question suivante. `envoye` porte
   // aussi bien la garde du double clic que le declenchement du retournement :
-  // les deux se decident au meme instant.
+  // les deux se decident au meme instant, seul l'appel a `onValider` est
+  // retarde.
   const [envoye, setEnvoye] = useState(false)
+  const idMinuteur = useRef<number | undefined>(undefined)
+
+  useEffect(
+    () => () => {
+      if (idMinuteur.current !== undefined) window.clearTimeout(idMinuteur.current)
+    },
+    []
+  )
 
   return (
     <div
@@ -39,7 +63,16 @@ export function PanneauManigance({
         onClick={() => {
           if (envoye) return
           setEnvoye(true)
-          onValider()
+          // ⚠ PAS DE onTransitionEnd. Sous prefers-reduced-motion la
+          // transition CSS n'existe pas (voir board.css) : l'evenement ne
+          // partirait jamais et la partie resterait bloquee pour toujours,
+          // un defaut pire que celui qu'on corrige. La gate est explicite.
+          const mouvementReduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          if (mouvementReduit) {
+            onValider()
+            return
+          }
+          idMinuteur.current = window.setTimeout(onValider, DUREE_RETOURNEMENT)
         }}
       >
         {t('Retourner la manigance')}
