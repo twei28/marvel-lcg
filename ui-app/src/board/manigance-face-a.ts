@@ -120,10 +120,10 @@ export function priseDuPanneauManigance(
  * panneau et pouvait répondre à la question SUIVANTE.
  *
  * ⚠ LA RÈGLE N'EST PAS DUPLIQUÉE : c'est `priseDuPanneauManigance` ci-dessus,
- * et elle seule — la table ne perd la question que si le panneau la prend
+ * et elle seule : la table ne perd la question que si le panneau la prend
  * VRAIMENT, carte comprise. Quand la question n'est
- * pas celle du panneau, la MÊME référence ressort — aucun objet neuf, donc
- * aucune dépendance de hook invalidée à chaque rendu.
+ * pas celle du panneau, la MÊME référence ressort, sans aucun objet neuf,
+ * donc sans aucune dépendance de hook invalidée à chaque rendu.
  */
 export function demandeHorsPanneauManigance(
   demande: Demande | undefined,

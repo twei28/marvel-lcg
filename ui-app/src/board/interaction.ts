@@ -337,7 +337,7 @@ export function useInteraction(
    * tient (voir `demandeHorsPanneauManigance`) : sans cette porte, la table
    * posait son halo sur la manigance principale, son menu offrait l'option
    * sous son libellé technique, et en mode Détaillé le clic sur la carte
-   * RÉPONDAIT — y compris pendant les 400 ms où l'overlay du panneau laisse
+   * RÉPONDAIT, y compris pendant les 400 ms où l'overlay du panneau laisse
    * passer les clics, donc à la question suivante.
    *
    * La référence est inchangée pour toute autre demande : aucune dépendance de
