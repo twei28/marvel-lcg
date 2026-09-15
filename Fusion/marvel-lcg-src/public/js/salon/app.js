@@ -344,6 +344,11 @@ async function demarrer() {
     // retraduit ici, comme le bandeau d'attente juste au-dessus.
     const galerie = document.querySelector(".salon-galerie");
     if (galerie) galerie.textContent = "🃏 " + t("Parcourir les cartes");
+    // ⚠ ET LE TITRE DE L'ONGLET AUSSI. Il etait le dernier texte francais en
+    // dur de cet ecran : tout le corps etait deja retraduit ici, le `<title>`
+    // ne l'etait pas. Un invite anglophone lisait « choisis ton heros » dans
+    // son onglet pendant que la page, elle, parlait anglais.
+    document.title = t("Marvel Champions — choisis ton héros");
     // La campagne d'abord : s'il y en a une, il n'y a aucun choix a reprendre
     // ni a proposer, et `reprendreChoixExistant` n'aurait rien a trouver.
     const campagne = await campagneEnCours();

@@ -676,6 +676,8 @@ export const DICO_EN_BASE = {
   'Fan-made': 'Fan-made',
   'Némésis': 'Nemesis',
   'Table du camp adverse': 'Opposing team\'s table',
+  // salon.html : le titre de l'onglet, dernier texte en dur de cet ecran
+  'Marvel Champions — choisis ton héros': 'Marvel Champions — choose your hero',
   // prepare/legacy-fiche.js
   'aucun jeton': 'no token',
   'déjà débloqué': 'already unlocked',
