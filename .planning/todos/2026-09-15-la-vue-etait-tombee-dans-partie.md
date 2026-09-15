@@ -41,5 +41,5 @@ header sur une partie à deux.**
 
 **Corrigé le 15/09/2026.** Non déployé, preuve visuelle à faire.
 
-⚠ **Déployé le 15/09/2026 à 13h02** (bundle `board-CpIPLEv8.js`). Un rechargement
+⚠ **Déployé le 15/09/2026 à 13h02** (bundle `board-DJhLSY-t.js, redeploye a 14h07 apres les correctifs de la relecture d'ensemble`). Un rechargement
 forcé du navigateur (Ctrl+F5) est nécessaire pour le voir.

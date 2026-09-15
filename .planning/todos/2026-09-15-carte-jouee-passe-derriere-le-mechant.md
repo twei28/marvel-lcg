@@ -65,7 +65,7 @@ Cause trouvée et **correctif écrit le 15/09/2026**, moteur et plateau. Non
 déployé, et pas encore vu en jeu.
 
 ⚠ **Déployé le 15/09/2026 à 13h02, MOITIÉ SEULEMENT.** Le plateau est à jour
-(bundle `board-CpIPLEv8.js`). La moitié MOTEUR, elle, ne prendra effet qu'au
+(bundle `board-DJhLSY-t.js, redeploye a 14h07 apres les correctifs de la relecture d'ensemble`). La moitié MOTEUR, elle, ne prendra effet qu'au
 prochain démarrage du serveur : `launcher_fast.py` compile `src/` vers `.game`
 AU LANCEMENT, un serveur déjà en marche garde son code en mémoire. Tant qu'il
 n'a pas redémarré, il publie encore la liste fusionnée sans
