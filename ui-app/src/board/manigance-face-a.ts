@@ -20,6 +20,23 @@ import type { World, WorldCard } from './world'
 export const NOM_OPTION_MANIGANCE = 'Reveal_Main_Scheme'
 
 /**
+ * Le même moment, pour une manigance ANNEXE que le SCÉNARIO met en jeu
+ * (`World.CONFIRM_SIDE_SCHEME_OPTION`, avenant du 15/09/2026).
+ *
+ * ⚠ ELLE NE SE RETOURNE PAS. Une annexe n'a qu'une face : le panneau la montre
+ * et attend le OK, il n'y a rien à retourner. C'est la seule différence de
+ * traitement entre les deux, et elle vit dans le panneau.
+ *
+ * ⚠ Le moteur ne pose cette question QUE pour ce que le scénario impose : une
+ * manigance-joueur jouée depuis la main n'en déclenche aucune, le joueur vient
+ * de la lire et de la choisir.
+ */
+export const NOM_OPTION_ANNEXE = 'Reveal_Side_Scheme'
+
+/** Les deux questions que ce panneau prend en charge. */
+const NOMS_PRIS = [NOM_OPTION_MANIGANCE, NOM_OPTION_ANNEXE]
+
+/**
  * La question de la manigance, ou `undefined` si ce n'est pas ce moment-là.
  *
  * ⚠ EXIGE QU'ELLE SOIT SEULE. Si le moteur propose autre chose en même temps,
@@ -29,7 +46,7 @@ export function questionDeLaManigance(demande: Demande | undefined): Option | un
   if (!demande) return undefined
   if (demande.options.length !== 1) return undefined
   const seule = demande.options[0]
-  return seule && seule.name === NOM_OPTION_MANIGANCE ? seule : undefined
+  return seule && NOMS_PRIS.includes(seule.name) ? seule : undefined
 }
 
 /**
@@ -61,8 +78,12 @@ export function maniganceAMontrer(
   monde: World | undefined,
   bindId: number | undefined
 ): WorldCard | undefined {
-  const zone = monde?.area_schemes_main
-  if (!Array.isArray(zone)) return undefined
+  const principales = Array.isArray(monde?.area_schemes_main) ? monde.area_schemes_main : []
+  // ⚠ LES DEUX ZONES, depuis l'avenant du 15/09/2026 : une manigance ANNEXE
+  // vit dans `area_schemes_side`, pas avec les principales.
+  const annexes = Array.isArray(monde?.area_schemes_side) ? monde.area_schemes_side : []
+  const zone = [...principales, ...annexes]
+  if (zone.length === 0) return undefined
   const designee = bindId !== undefined ? zone.find((carte) => carte.id === bindId) : undefined
   return designee ?? zone[0]
 }

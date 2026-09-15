@@ -256,7 +256,30 @@ panneau s'ajoute sans que la présentation existante se taise, on aura deux
 présentations de la même carte, l'une par-dessus l'autre. C'était le défaut n°2
 du 14/09/2026, il ne faut pas le refaire.
 
+### Ce que la trace a répondu, le 15/09/2026
+
+**La porte est unique, et c'est `SchemeSide2.OnPutIntoPlay`** : les deux types
+de manigance annexe en héritent. Chemin complet relevé sur une vraie partie de
+Klaw, dont la mise en place pose « Defense Network » (`01125`) :
+
+```
+01116a.py (face A de la manigance principale)
+  -> SetupCards.Reveal   -> face.Reveal   -> OnWhenCardRevealed
+  -> PutIntoPlay         -> SchemeSide2.OnPutIntoPlay
+```
+
+**Distinguer le scénario du joueur** : la classe concrète suffit.
+`EncounterSideScheme` est ce que le scénario impose, `PlayerSideScheme` est ce
+que le joueur joue depuis sa main. Le moteur ne pose la question que pour la
+première.
+
+⚠ **Le doublon avec `CoucheRevelation` était RÉEL** : la carte passe par
+`Reveal`, donc la couche des révélations la montrait aussi en grand, par-dessus
+le panneau. La couche se tait désormais tant que le panneau tient la question.
+
 ### Statut
 
-**Cadré le 15/09/2026, non commencé.** Les trois points ci-dessus passent avant
-la première ligne de code.
+**Fait le 15/09/2026.** Drapeau `confirm_side_scheme` (séparé de celui de la
+principale, pour qu'une sauvegarde écrite entre les deux se rejoue sans lui),
+crochet dans la porte unique, panneau partagé SANS retournement (une annexe n'a
+qu'une face), et sept cas verts au harnais moteur.

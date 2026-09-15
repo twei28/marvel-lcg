@@ -931,6 +931,50 @@ class World(WorldAction, WorldFind):
         )
         player.ChooseAbilities(GameRule(scheme), ability, forced=False)
 
+    # Le nom TECHNIQUE de l'option pour une manigance ANNEXE. Meme role que
+    # celui de la principale : le plateau le reconnait et pose son propre
+    # libelle traduit.
+    CONFIRM_SIDE_SCHEME_OPTION = "Reveal_Side_Scheme"
+
+    def ConfirmSideSchemeReveal(self, scheme: 'CardFace') -> None:
+        """Le premier joueur prend connaissance d'une manigance annexe qui arrive.
+
+        Demande de l'utilisateur, 15/09/2026 : « s'il y a une sidescheme qui
+        commence en partie je veux qu'on la voie aussi comme la principale, idem
+        quand une sidescheme arrive en jeu apres ».
+
+        ⚠ SEULEMENT CE QUE LE SCENARIO IMPOSE. Une manigance-joueur
+        (`PlayerSideScheme`) est jouee depuis la main : le joueur vient de la
+        lire et de la choisir, un panneau ne lui apprendrait rien et lui
+        couterait un clic. Decision du 15/09/2026.
+
+        ⚠ APRES l'entree en jeu, et non avant : le panneau MONTRE la carte, elle
+        doit donc etre sur la table quand la question part.
+
+        ⚠ `forced=False` pour la meme raison que la principale : une question a
+        une seule option avec `forced=True` n'atteint jamais le client, le
+        moteur y repond a la place du joueur (mesure du 15/09/2026).
+        """
+        from game.ability.factory import AbilityFactory
+        from game.effect.rule import GameRule
+        from game.card.face.card_type.scheme_side import EncounterSideScheme
+
+        if not self.rule.confirm_side_scheme:
+            return
+        if self.is_game_over:
+            return
+        if not EncounterSideScheme.IsType(scheme):
+            return
+        player = self.GetFirstPlayer()
+        if player is None or player.is_eliminated:
+            return
+
+        ability = AbilityFactory.ForChoiceAbility(
+            World.CONFIRM_SIDE_SCHEME_OPTION,
+            lambda targets: None,
+        )
+        player.ChooseAbilities(GameRule(scheme), ability, forced=False)
+
     def AdvanceMainScheme(self, prev_scheme: 'MainScheme', to_face: Literal["2A", "3A"]|CardFace|None, by_effect: 'Effect'):
         from game.message import Message
         from game.effect.rule import GameRule

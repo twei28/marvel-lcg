@@ -39,6 +39,11 @@ class WorldRule:
         # Seules les parties neuves lancees depuis l'ecran de preparation
         # l'allument (public/js/prepare/launcher.js, buildRules).
         self.confirm_main_scheme            = VariableBool(self, False, "confirm_main_scheme")
+        # Le meme temps d'arret, pour une manigance ANNEXE que le scenario met
+        # en jeu (spec du 15/09/2026, avenant). Drapeau SEPARE et non partage
+        # avec la principale : une sauvegarde ecrite entre les deux ne porte que
+        # le premier, et doit continuer de se rejouer sans le second.
+        self.confirm_side_scheme            = VariableBool(self, False, "confirm_side_scheme")
 
         self.v15_all                        = VariableBool(self, False, "v15_all")
 

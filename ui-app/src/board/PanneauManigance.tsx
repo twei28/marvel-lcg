@@ -30,8 +30,18 @@ export const DUREE_RETOURNEMENT = 400
 export function PanneauManigance({
   carte,
   onValider,
+  retournement = true,
 }: {
   carte: WorldCard
+  /**
+   * La carte se retourne-t-elle au OK ?
+   *
+   * ⚠ VRAI POUR LA PRINCIPALE, FAUX POUR UNE ANNEXE (avenant du 15/09/2026).
+   * Une manigance principale a deux faces imprimees et le moteur la RETOURNE ;
+   * une annexe n'en a qu'une, elle est simplement entree en jeu. Lui jouer une
+   * animation de retournement raconterait quelque chose qui n'arrive pas.
+   */
+  retournement?: boolean
   /**
    * Poste la reponse au moteur, et dit si elle EST PARTIE (voir
    * `Moteur.repondre`). Un `false` rouvre le bouton : sans ce fait, un envoi
@@ -70,7 +80,7 @@ export function PanneauManigance({
 
   return (
     <div
-      className={`panneau-manigance${envoye ? ' est-retournee' : ''}`}
+      className={`panneau-manigance${envoye && retournement ? ' est-retournee' : ''}`}
       role="dialog"
       aria-modal="true"
     >
@@ -95,7 +105,10 @@ export function PanneauManigance({
           // transition CSS n'existe pas (voir board.css) : l'evenement ne
           // partirait jamais et la partie resterait bloquee pour toujours,
           // un defaut pire que celui qu'on corrige. La gate est explicite.
-          const mouvementReduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          // Sans retournement, il n'y a aucune animation a laisser voir : la
+          // reponse part tout de suite, comme en mouvement reduit.
+          const mouvementReduit =
+            !retournement || window.matchMedia('(prefers-reduced-motion: reduce)').matches
           if (mouvementReduit) {
             void envoyer()
             return
@@ -103,7 +116,7 @@ export function PanneauManigance({
           idMinuteur.current = window.setTimeout(() => void envoyer(), DUREE_RETOURNEMENT)
         }}
       >
-        {t('Retourner la manigance')}
+        {retournement ? t('Retourner la manigance') : t('Continuer')}
       </button>
     </div>
   )

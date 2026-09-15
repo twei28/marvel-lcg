@@ -190,7 +190,39 @@ def cas_regle_publiee(game_dir, port):
     return "la trame publie confirm_main_scheme"
 
 
+
+def cas_annexe_posee(game_dir, port):
+    """Une manigance ANNEXE que le scenario met en jeu s'arrete aussi.
+
+    Scenario Klaw : sa face 1A pose « Defense Network » (01125) pendant la mise
+    en place. Trace du 15/09/2026 : `01116a.py` -> `SetupCards.Reveal` ->
+    `Reveal` -> `PutIntoPlay` -> `SchemeSide2.OnPutIntoPlay`, la porte unique.
+    """
+    _, monde, journal = monter_le_moteur(
+        game_dir, port, ["confirm_side_scheme"], scenario="klaw")
+    posees = [noms for noms in journal if "Reveal_Side_Scheme" in noms]
+    assert len(posees) >= 1, \
+        f"aucune question pour l'annexe de la mise en place, journal={journal[:20]}"
+    return f"l'annexe du scenario pose sa question ({len(posees)} fois)"
+
+
+def cas_annexe_sans_drapeau(game_dir, port):
+    """Sans le drapeau, l'annexe n'arrete rien.
+
+    ⚠ ET LE DRAPEAU DE LA PRINCIPALE NE SUFFIT PAS : ce sont deux regles
+    separees, pour qu'une sauvegarde ecrite entre les deux continue de se
+    rejouer sans la seconde.
+    """
+    _, monde, journal = monter_le_moteur(
+        game_dir, port, ["confirm_main_scheme"], scenario="klaw")
+    posees = [noms for noms in journal if "Reveal_Side_Scheme" in noms]
+    assert posees == [], f"question posee sans confirm_side_scheme : {posees}"
+    return "sans son drapeau, l'annexe ne pose aucune question"
+
+
 CAS = {
+    "annexe_posee": cas_annexe_posee,
+    "annexe_sans_drapeau": cas_annexe_sans_drapeau,
     "drapeau_pose": cas_drapeau_pose,
     "question_posee": cas_question_posee,
     "sans_drapeau": cas_sans_drapeau_aucune_question,

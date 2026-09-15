@@ -116,6 +116,7 @@ import { nomAffiche } from './board/noms-cartes-fr'
 import { libellePhase, libelleQuiAgit, libelleRound } from './board/etat-partie'
 import { CLE_DESIGN_ESSAI, lireDesignEssai } from './board/design-essai'
 import {
+  NOM_OPTION_MANIGANCE,
   demandeHorsPanneauManigance,
   ouvertureEncoreVoilee,
   priseDuPanneauManigance,
@@ -3683,7 +3684,13 @@ function PagePartie({
           par l'utilisateur : « il montre quand meme encore la derniere carte
           en grand, en dehors de la modale ». Hors de cette phase (une carte
           revelee par un effet pendant le tour du heros), elle garde son role. */}
-      {unCartouche && phaseMechantEnCours ? null : (
+      {/* ⚠ ET PAS PENDANT QUE LE PANNEAU TIENT LA QUESTION (15/09/2026). Une
+          manigance ANNEXE entre en jeu en passant par `Reveal` (trace :
+          `01116a.py` -> `SetupCards.Reveal` -> `Reveal` -> `PutIntoPlay`) :
+          cette couche la montrerait donc en grand au centre, en meme temps que
+          le panneau qui la montre deja. Deux presentations de la meme carte,
+          l'une par-dessus l'autre, exactement le defaut n°2 du 14/09. */}
+      {(unCartouche && phaseMechantEnCours) || priseManigance ? null : (
         <CoucheRevelation
           monde={etat.monde}
           duree={DUREES_REVELATION[revelation]}
@@ -3708,6 +3715,10 @@ function PagePartie({
       {priseManigance ? (
         <PanneauManigance
           carte={priseManigance.carte}
+          /* Seule la manigance PRINCIPALE se retourne : elle a deux faces
+             imprimees et le moteur la retourne. Une annexe n'en a qu'une, elle
+             vient simplement d'entrer en jeu. */
+          retournement={priseManigance.question.name === NOM_OPTION_MANIGANCE}
           onValider={() =>
             repondre(
               { id: priseManigance.question.id, targets: [], resources: [] },

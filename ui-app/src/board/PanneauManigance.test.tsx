@@ -177,3 +177,29 @@ describe('PanneauManigance — la reponse n’est pas partie', () => {
     expect(bouton.hasAttribute('disabled')).toBe(true)
   })
 })
+
+
+// Avenant du 15/09/2026 : une manigance ANNEXE n'a qu'une face. Le panneau la
+// montre et attend le OK, il n'y a rien a retourner.
+describe('PanneauManigance, sans retournement (manigance annexe)', () => {
+  it('ne joue aucun retournement et repond tout de suite', () => {
+    const onValider = vi.fn(async () => true)
+    render(<PanneauManigance carte={carte} onValider={onValider} retournement={false} />)
+
+    fireEvent.click(screen.getByRole('button'))
+
+    expect(document.querySelector('.panneau-manigance.est-retournee')).toBeNull()
+    expect(onValider).toHaveBeenCalledTimes(1)
+  })
+
+  it('⚠ la principale, elle, retourne toujours', () => {
+    // Le temoin : sans lui, poser `retournement` par defaut a faux passerait
+    // inapercu et la principale ne se retournerait plus.
+    const onValider = vi.fn(async () => true)
+    render(<PanneauManigance carte={carte} onValider={onValider} />)
+
+    fireEvent.click(screen.getByRole('button'))
+
+    expect(document.querySelector('.panneau-manigance.est-retournee')).not.toBeNull()
+  })
+})

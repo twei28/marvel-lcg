@@ -44,6 +44,10 @@ function buildRules(state) {
     // rechargée garde les règles inscrites dans sa scène, donc ne pose pas la
     // question et rejoue ses opérations sans décalage.
     rules.push("confirm_main_scheme");
+    // Le meme temps d'arret pour une manigance ANNEXE que le scenario met en
+    // jeu (avenant du 15/09/2026). Drapeau SEPARE : une sauvegarde ecrite entre
+    // les deux ne porte que le premier et doit se rejouer sans le second.
+    rules.push("confirm_side_scheme");
     return rules;
 }
 

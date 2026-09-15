@@ -5,7 +5,7 @@ import { REPLIQUES, choisirReplique, classeTaille } from "./repliques-heros.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=86cdbf04";
+import { launch } from "/public/js/prepare/launcher.js?v=3887a91f";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";

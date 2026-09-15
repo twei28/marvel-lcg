@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  NOM_OPTION_ANNEXE,
   NOM_OPTION_MANIGANCE,
   demandeHorsPanneauManigance,
   priseDuPanneauManigance,
@@ -275,5 +276,30 @@ describe('priseDuPanneauManigance', () => {
   it('retire bien la question de la table quand le panneau LA PREND', () => {
     const question = demande([option(NOM_OPTION_MANIGANCE)])
     expect(demandeHorsPanneauManigance(question, AVEC_CARTE)).toBeUndefined()
+  })
+})
+
+
+// Avenant du 15/09/2026 : le meme panneau sert les manigances ANNEXES que le
+// scenario met en jeu. Trace : Klaw pose « Defense Network » (01125) des sa
+// mise en place, par la porte unique `SchemeSide2.OnPutIntoPlay`.
+describe('la manigance ANNEXE', () => {
+  it('est reconnue elle aussi', () => {
+    const trouvee = questionDeLaManigance(demande([option(NOM_OPTION_ANNEXE)]))
+    expect(trouvee?.id).toBe(7)
+  })
+
+  it('se cherche dans la zone des ANNEXES, pas des principales', () => {
+    const monde = {
+      area_schemes_main: [{ id: 48, card_id: '01116b' }],
+      area_schemes_side: [{ id: 81, card_id: '01125' }],
+    } as unknown as World
+    expect(maniganceAMontrer(monde, 81)?.card_id).toBe('01125')
+  })
+
+  it('⚠ refuse toujours un nom qu on ne connait pas', () => {
+    // Le temoin : sans lui, elargir la reconnaissance a deux noms pourrait
+    // deraper en « n'importe quelle question a une option ».
+    expect(questionDeLaManigance(demande([option('Reveal_Something_Else')]))).toBeUndefined()
   })
 })
