@@ -148,6 +148,7 @@ import {
   ecrireDelaiPasAPas,
   ecrireModePhaseMechant,
   ecrireReponseAmbiance,
+  estSpectateur,
   libelleModePhase,
   lireAvanceAuto,
   lireDelaiPasAPas,
@@ -162,6 +163,7 @@ import {
   type ModeRevelation,
   type ReponseAmbiance,
 } from './board/moteur'
+import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
 import { essaisOuverts } from './board/essais'
 import { fondDe, identiteAffichee, palettes, type Couleur } from './board/halo-heros'
@@ -245,6 +247,8 @@ function parametres() {
   return {
     etat: url.get('etat'),
     playerId: Number.isInteger(joueur) && joueur >= 0 ? joueur : 0,
+    /** On REGARDE cette partie sans y jouer. Voir `estSpectateur` (moteur.ts). */
+    spectateur: url.has('spectateur'),
   }
 }
 
@@ -1491,6 +1495,10 @@ function PagePartie({
   changerModeActions: (mode: ModeActions) => void
 }) {
   const confirmer = useConfirmation()
+  // ⚠ ON REGARDE, ON NE JOUE PAS. Lu une fois : l'adresse ne change pas sous
+  // nos pieds, et la valeur sert a une dizaine d'endroits. Ce que ce drapeau
+  // fait, et ce qu'il ne fait pas, est dit dans `estSpectateur` (moteur.ts).
+  const spectateur = estSpectateur()
   const {
     etat,
     repondre,
@@ -2697,6 +2705,13 @@ function PagePartie({
     return () => document.body.classList.remove('plateau-sans-animations')
   }, [animations])
 
+  // Le plateau descend sous la barre du spectateur, et les feuilles de style
+  // ont besoin de le savoir : meme motif que ci-dessus.
+  useEffect(() => {
+    document.body.classList.toggle('est-spectateur', spectateur)
+    return () => document.body.classList.remove('est-spectateur')
+  }, [spectateur])
+
 
   // Le voile d'ouverture : on ne montre pas la table en train de se monter.
   // Levé une fois pour toutes dès que la question de la manigance arrive.
@@ -2933,6 +2948,24 @@ function PagePartie({
 
   return (
     <>
+      {/* ⚠ LA BARRE DU SPECTATEUR PASSE AVANT TOUT LE RESTE. Un plateau sans
+          boutons ressemble a un plateau CASSE : elle dit, en permanence, qu'on
+          regarde. Voir BarreSpectateur.tsx. */}
+      {spectateur ? (
+        <BarreSpectateur
+          siege={playerId}
+          sieges={etat.monde?.players?.length ?? 1}
+          terminee={partieFinieMoteur || (!etat.connecte && etat.monde !== undefined)}
+          raison={
+            partieFinieMoteur
+              ? etat.monde?.game_over_reason || undefined
+              : !etat.connecte
+                ? t('La table s’est éteinte')
+                : undefined
+          }
+        />
+      ) : null}
+
       {etat.erreur ? (
         <p className="plateau-message" role="alert">
           {etat.erreur}
@@ -2993,7 +3026,11 @@ function PagePartie({
         />
       ) : null}
 
-      {carteMenu && !interaction.option ? (
+      {/* ⚠ PAS DE MENU DE CARTE EN SPECTATEUR. Il ne propose que des actions,
+          toutes refusees par le moteur : l'ouvrir serait promettre ce qu'on ne
+          peut pas tenir. L'agrandissement au survol, lui, reste : c'est
+          precisement ce qu'on vient faire. */}
+      {carteMenu && !interaction.option && !spectateur ? (
         <MenuActionsCarte
           carte={carteMenu}
           carteMonde={cartesMondeParId.get(Number(carteMenu.id))}
@@ -3323,7 +3360,9 @@ function PagePartie({
               Musique et Langue restent HORS du panneau Options, deliberement :
               couper le son ou changer de langue doit se faire d'un geste (voir
               le commentaire du bouton musique). */
-          <div className={`board-actions${designEssai ? ' design-essai' : ''}`}>
+          <div
+            className={`board-actions${designEssai ? ' design-essai' : ''}${spectateur ? ' est-spectateur' : ''}`}
+          >
             {/* OÙ ON EN EST. La barre n'avait que des boutons : le round et
                 la phase n'étaient écrits nulle part une fois le cartouche
                 refermé. Deux lignes, à gauche, avant tout le reste. */}
@@ -3561,7 +3600,7 @@ function PagePartie({
             : undefined
         }
         bas={
-          modeActions === 'detailed' ? (
+          modeActions === 'detailed' && !spectateur ? (
             <BarreAction
               demande={etat.demande}
               interaction={interaction}
@@ -3574,7 +3613,7 @@ function PagePartie({
         }
       />
 
-      {afficherFinTourSimple && modePlateau !== 'mobile' ? (
+      {afficherFinTourSimple && modePlateau !== 'mobile' && !spectateur ? (
         <button
           type="button"
           className={`bouton-fin-tour${finDeTourSuggeree ? ' est-suggere' : ''}`}

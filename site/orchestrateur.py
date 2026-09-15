@@ -2862,6 +2862,12 @@ SUIVI_STYLE_BLOC = """<style>
   #suivi .contre { color:#c9d1d9; }
   #suivi .contre b { color:#e6edf3; }
   #suivi .bas { display:flex; gap:.9rem; flex-wrap:wrap; color:#9aa7b4; font-size:.85rem; margin-top:.25rem; }
+  /* Les boutons « Regarder », un par siege. Discrets : la liste sert d'abord a
+     LIRE ce qui se passe ; on ne clique que quand on veut voir de pres. */
+  #suivi .regards { display:flex; gap:.4rem; flex-wrap:wrap; margin-left:auto; }
+  #suivi a.regarder { color:#58a6ff; text-decoration:none; border:1px solid #30363d;
+                      border-radius:.4rem; padding:.1rem .5rem; font-size:.8rem; }
+  #suivi a.regarder:hover { border-color:#58a6ff; background:#1f6feb22; }
   #suivi .res { font-weight:700; }
   #suivi .res.v { color:#3fb950; } #suivi .res.d { color:#f85149; } #suivi .res.a { color:#d29922; }
   #suivi .pv { font-variant-numeric: tabular-nums; }
@@ -2909,7 +2915,22 @@ SUIVI_SCRIPT = """<script>
     var contre = '<div class="contre">contre <b>' + ECHAP(p.mechant) + '</b>' + (p.expert ? ' (expert)' : '')
                + (vil ? ' · PV ' + vil.pv + '/' + vil.pv_max + (vil.stage ? ' · stade ' + ECHAP(vil.stage) : '') : '')
                + (men ? ' · menace ' + men.menace : '') + '</div>';
-    var bas = '<div class="bas"><span>round <b>' + p.round + '</b></span></div>';
+    // ⚠ REGARDER LA PARTIE, UN BOUTON PAR SIEGE (15/09/2026). L'utilisateur
+    // voulait « le plateau, en vrai, comme si j'y etais », et pouvoir changer
+    // de siege. Un bouton par siege ouvert est la facon la plus directe : on
+    // arrive DIRECTEMENT par les yeux de celui qu'on a choisi.
+    //
+    // Le lien passe par /regarder, jamais par l'adresse du moteur : elle seule
+    // connait le mot de passe de la table, et elle est refusee a tout autre
+    // que l'administrateur.
+    var regarder = '';
+    for (var i = 0; i < Math.max(1, p.sieges || 1); i++) {
+      var nom = joueurs[i] && joueurs[i].heros ? joueurs[i].heros : ('Joueur ' + (i + 1));
+      regarder += '<a class="regarder" target="_blank" rel="noopener" href="/regarder?joueur='
+                + encodeURIComponent(p.joueur) + '&p=' + i + '">Regarder · ' + ECHAP(nom) + '</a>';
+    }
+    var bas = '<div class="bas"><span>round <b>' + p.round + '</b></span>'
+            + '<span class="regards">' + regarder + '</span></div>';
     return '<div class="carte live">' + titre + h + contre + bas + '</div>';
   }
   function ligneHeros(x) {
@@ -3246,6 +3267,16 @@ class Handler(BaseHTTPRequestHandler):
         respecter (`site/test_routes_chemin.py`).
         """
         return urllib.parse.urlparse(self.path).path
+
+    @property
+    def parametres(self) -> dict:
+        """La chaine de requete, decoupee. Pendant de `chemin`.
+
+        Rendue au format de `parse_qs` (une LISTE par cle) : une route qui
+        attend une seule valeur prend le premier element, et personne ne se fait
+        surprendre par un parametre repete.
+        """
+        return urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
 
     server_version = "NarwhalChampions"
 
@@ -3759,6 +3790,37 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
                 return
             self._repondre(200, PAGE_SUIVI.encode("utf-8"))
+        elif self.chemin == "/regarder":
+            # ⚠ REGARDER UNE PARTIE EN COURS, SANS Y TOUCHER (15/09/2026).
+            #
+            # Demande de l'utilisateur : « c'est possible d'ajouter un truc qui
+            # me permet de voir en live les parties que les gens jouent
+            # actuellement ? ». Reponses au cadrage : le plateau en vrai, toutes
+            # les mains visibles, LUI SEUL, et « regarder seulement, rien de
+            # cliquable ».
+            #
+            # Cette route ne rend rien elle-meme : elle FABRIQUE le lien que
+            # personne d'autre ne peut fabriquer, parce qu'elle seule connait le
+            # mot de passe de la table (`comptes.mdp_jeu`). Le moteur, de son
+            # cote, ouvre la lecture sans distribuer de siege (`/spectateur`).
+            if pseudo != ADMIN:
+                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                return
+            vise = (self.parametres.get("joueur") or [""])[0].strip().lower()
+            try:
+                siege = int((self.parametres.get("p") or ["0"])[0])
+            except ValueError:
+                siege = 0
+            partie = jeu_de(vise)
+            if partie is None or not partie.vivant():
+                # La table s'est eteinte entre l'affichage de la liste et le
+                # clic : on le DIT, plutot que d'envoyer sur une adresse morte.
+                self._rediriger("/suivi?disparue=" + urllib.parse.quote(vise))
+                return
+            if siege < 0 or siege > 3:
+                siege = 0
+            cle = urllib.parse.quote(partie.mot_de_passe)
+            self._rediriger(f"{partie.base_url()}/spectateur?p={siege}&key={cle}")
         elif self.chemin == "/api/suivi":
             if pseudo != ADMIN:
                 self._repondre(403, b'{"error":"admin"}', "application/json; charset=utf-8")

@@ -582,6 +582,12 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- board/JournalHeros.tsx ----
   'Journal': 'Log',
   'Journal du héros': 'Hero log',
+
+  // — La barre du spectateur (15/09/2026) —
+  'Tu regardes cette partie': 'You are watching this game',
+  'Cette partie est terminée': 'This game is over',
+  'Retour à la liste': 'Back to the list',
+  'La table s’est éteinte': 'The table has shut down',
   'Rien encore.': 'Nothing yet.',
 
   // ---- board/RecapPhaseMechant.tsx et mode rapide ----

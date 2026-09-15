@@ -62,6 +62,38 @@ class GameServerBase(WebServer):
         except Exception:
             return False
 
+    def est_spectateur(self, request: web.Request) -> bool:
+        """Ce client REGARDE, il ne joue pas. Cookie pose par `/spectateur`.
+
+        ⚠ C'EST ICI QUE TIENT LA GARANTIE, PAS DANS LE NAVIGATEUR. Desarmer le
+        plateau cote client est une politesse : un raccourci clavier, une
+        console ouverte ou un simple `curl` en feraient le tour. Le moteur,
+        lui, ne laisse pas passer une action sans siege — encore faut-il qu'il
+        n'en accorde AUCUN a un spectateur, ce qui n'allait pas de soi :
+        `allowed_seats` ouvre tout siege ORPHELIN a n'importe quel client
+        authentifie (« reprise d'un siege abandonne », plus bas). Un spectateur
+        arrive pendant qu'un joueur s'est deconnecte aurait donc herite de sa
+        place. Mesure du 15/09/2026.
+
+        Le cookie ne se falsifie pas utilement : le poser ne fait que RETIRER
+        des droits a celui qui le porte.
+        """
+        return request.cookies.get('spectateur') == '1'
+
+    def sieges_demandes(self, request: web.Request) -> 'List[int]':
+        """Les sieges que l'URL demande, SANS aucun filtre de droits.
+
+        Sert a la seule LECTURE : un spectateur doit pouvoir regarder la table
+        par les yeux du siege 2 sans jamais obtenir le droit d'y agir.
+        """
+        p = request.query.get('p', '0')
+        if not p:
+            return [0]
+        try:
+            return [int(id) for id in p.split(',')]
+        except ValueError:
+            return [0]
+
     def tient_le_siege(self, request: web.Request, seat: int) -> bool:
         """Ce client PROUVE-t-il qu'il tient ce siege, cookie en main ?
 
@@ -84,6 +116,12 @@ class GameServerBase(WebServer):
 
     def allowed_seats(self, request: web.Request) -> 'Set[int]|None':
         """Sieges que CE client a le droit d'occuper. None = protection coupee."""
+        # ⚠ LE SPECTATEUR N'EN A AUCUN, ET C'EST LA PREMIERE CHOSE QU'ON DIT.
+        # Avant la protection par mot de passe, avant la reprise des sieges
+        # orphelins : un `set()` vide fait echouer `handle_post` (403) quoi
+        # qu'il arrive, y compris sur une table sans mot de passe.
+        if self.est_spectateur(request):
+            return set()
         passwords = SEAT_PASSWORDS.value
         if not passwords or not any(passwords):
             return None
@@ -162,6 +200,14 @@ class GameServerBase(WebServer):
         return player_ids
 
     def get_first_controller(self, request: web.Request) -> 'Controller':
+        # Un spectateur n'a aucun siege autorise (voir `allowed_seats`) : sans
+        # cette ligne il lirait toujours la table par les yeux du siege 0, et
+        # « changer de siege » ne montrerait jamais la main du siege 2.
+        if self.est_spectateur(request):
+            demandes = self.sieges_demandes(request)
+            vise = demandes[0] if demandes else 0
+            controllers = self.device_manager.controllers
+            return controllers[vise if 0 <= vise < len(controllers) else 0]
         player_ids = self.get_player_ids(request)
         # Sieges filtres par la protection : la LECTURE du monde reste permise
         # (plateau public), seule l'ACTION est un privilege du siege.

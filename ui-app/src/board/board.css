@@ -3206,6 +3206,90 @@
     --card-w: clamp(94px, 13vh, 150px);
   }
 
+  /* ⚠ LA BARRE DU SPECTATEUR (15/09/2026). Elle dit en permanence qu'on
+     REGARDE : un plateau sans boutons ressemble sinon a un plateau casse.
+     En haut, par-dessus tout (le cartouche monte a 540) et pleine largeur :
+     c'est la premiere chose qu'on lit en arrivant. */
+  .barre-spectateur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #f8fafc;
+    background: linear-gradient(180deg, rgba(88, 166, 255, 0.92), rgba(31, 111, 235, 0.86));
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+  }
+
+  .barre-spectateur .bs-oeil {
+    font-size: 1.1rem;
+  }
+
+  .barre-spectateur .bs-mention {
+    text-transform: uppercase;
+  }
+
+  .barre-spectateur .bs-sieges {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
+
+  .barre-spectateur .bs-siege {
+    padding: 2px 10px;
+    color: #f8fafc;
+    font: inherit;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .barre-spectateur .bs-siege.est-courant {
+    color: #0b1220;
+    background: #f8fafc;
+    border-color: #f8fafc;
+  }
+
+  /* La partie s'est arretee : on le DIT, et on rend le chemin du retour. */
+  .barre-spectateur .bs-fin {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 10px;
+    background: rgba(166, 0, 0, 0.9);
+    border-radius: 999px;
+  }
+
+  .barre-spectateur .bs-retour {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  /* ⚠ LA BARRE DU JEU DISPARAIT POUR LE SPECTATEUR, ET CE N'EST PAS DU CONFORT.
+     Elle porte « Annuler » — qui appelle `/debug?/undo auto` et annulerait le
+     coup de celui qu'on regarde —, « Sauver », « Menu », « Fin du tour ». Le
+     moteur les refuse tous a un spectateur (refus par defaut, voir
+     `SpectateurPeutLire`) ; les laisser a l'ecran, ce serait proposer des
+     boutons morts. Ce qui reste utile, la VUE, est repris par le selecteur de
+     siege de la barre du spectateur. */
+  .board-actions.est-spectateur {
+    display: none;
+  }
+
+  /* La table descend sous la barre du spectateur : sans cela elle recouvrirait
+     la premiere rangee de cartes. */
+  body.est-spectateur .plateau-cadre {
+    margin-top: 32px;
+  }
+
   /* La bande oblique en haut de la case, sous la chronologie. */
   .deroule-phase::before {
     content: '';

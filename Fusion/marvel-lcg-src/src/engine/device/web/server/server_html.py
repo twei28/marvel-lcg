@@ -37,6 +37,103 @@ class GameServerHTML(GameServerBase):
         # a la main. La cle de siege portee par l'URL est le laissez-passer, et
         # elle est verifiee juste en dessous.
         self.AddAwaitGetSecurity('/claim_seat', self.handle_claim_seat, need_auth=False)
+        # ⚠ LA PORTE DU SPECTATEUR, ET ELLE NE DONNE AUCUN SIEGE (15/09/2026).
+        #
+        # Le proprietaire du site veut regarder une partie en cours sans y
+        # toucher. `claim_seat` ne convient pas : il pose un `seat_token_<n>`,
+        # c'est-a-dire le DROIT D'AGIR a la place de quelqu'un, et il entrerait
+        # en concurrence avec le joueur qui occupe deja ce siege.
+        #
+        # Cette route-ci ne pose QUE le laissez-passer de la table
+        # (`session_token`), celui qui ouvre la LECTURE. Le moteur autorise deja
+        # `get_world` sans siege (server_base : « seule l'ACTION est un
+        # privilege du siege ») : il ne manquait que la porte.
+        #
+        # `need_auth=False` pour la meme raison que `claim_seat` : c'est elle
+        # qui delivre le laissez-passer, la placer derriere lui n'aurait pas de
+        # sens. La cle portee par l'URL est verifiee dans le handler.
+        self.AddAwaitGetSecurity('/spectateur', self.handle_spectateur, need_auth=False)
+
+    def _marquer_spectateur(self, response, request):
+        """Le temoin qui RETIRE les droits.
+
+        ⚠ COOKIE DE SESSION, PAS D'UN AN, contrairement aux cles de siege.
+        Un temoin durable serait un piege a retardement : le proprietaire qui
+        regarde SA propre table s'interdirait d'y jouer pour un an, sans savoir
+        pourquoi. Il meurt donc avec l'onglet — et `claim_seat` l'efface de
+        toute facon (qui presente une cle de siege est un joueur, pas un
+        spectateur).
+        """
+        response.set_cookie(
+            'spectateur',
+            '1',
+            path='/',
+            httponly=True,
+            secure=self.CookieSecure(request),
+            samesite='Lax',
+        )
+
+    async def handle_spectateur(self, request):
+        """Ouvrir la table en LECTURE, sans prendre de siege.
+
+        ⚠ CE QU'ELLE NE FAIT PAS, ET C'EST L'ESSENTIEL : aucun `seat_token_<n>`
+        n'est pose, et elle marque le client d'un cookie `spectateur`.
+
+        Les deux comptent. Ne pas poser de cle de siege ne suffisait PAS :
+        `allowed_seats` ouvre tout siege ORPHELIN a n'importe quel client
+        authentifie (« reprise d'un siege abandonne »), si bien qu'un spectateur
+        arrive pendant qu'un joueur s'est deconnecte aurait herite de sa place.
+        Mesure du 15/09/2026. Le cookie `spectateur` ferme cette porte :
+        `allowed_seats` rend alors un ensemble VIDE, et `handle_post` repond 403
+        quoi qu'on lui envoie.
+
+        Le desarmement du plateau, cote navigateur, n'est qu'une politesse ;
+        c'est ICI que la garantie tient.
+
+        La cle attendue est le mot de passe de la table (`password`), le meme
+        que celui du cookie `session_token`. Seul le site le connait, et il ne
+        fabrique ce lien que pour son administrateur.
+        """
+        from aiohttp import web
+        key = request.query.get('key', '')
+        try:
+            seat = int(request.query.get('p', '0'))
+        except ValueError:
+            seat = 0
+        if seat < 0 or seat > 3:
+            return web.Response(status=400, text='Unknown seat')
+
+        # ⚠ `&multi` N'EST PAS DECORATIF. Sans lui, le plateau tourne en
+        # « hot-seat » et s'annonce sur le socket POUR TOUS LES SIEGES : un
+        # spectateur ferait alors croire au moteur qu'un joueur absent est
+        # connecte. Mesure du 15/09/2026, en partie a deux heros.
+        destination = f'/app/board.html?p={seat}&multi&spectateur=1'
+
+        if not getattr(self, 'hash_password', None):
+            # Table sans mot de passe (partie locale) : il n'y a pas de porte a
+            # ouvrir, et rien a verifier. Le temoin de spectateur, lui, se pose
+            # quand meme : c'est lui qui interdit d'agir, et il doit valoir
+            # aussi sur une table ouverte.
+            reponse = web.HTTPFound(destination)
+            self._marquer_spectateur(reponse, request)
+            return reponse
+
+        import hashlib
+        if hashlib.md5(key.encode()).hexdigest() != self.hash_password:
+            return web.Response(status=403, text='Wrong table password')
+
+        response = web.HTTPFound(destination)
+        self._marquer_spectateur(response, request)
+        response.set_cookie(
+            'session_token',
+            self.hash_password,
+            max_age=31536000,
+            path='/',
+            httponly=True,
+            secure=self.CookieSecure(request),
+            samesite='Lax',
+        )
+        return response
 
     async def handle_claim_seat(self, request):
         from aiohttp import web
@@ -66,6 +163,11 @@ class GameServerHTML(GameServerBase):
         if expected and key != expected:
             return web.Response(status=403, text='Wrong seat password')
         response = web.HTTPFound(destination)
+        # ⚠ QUI PRESENTE UNE CLE DE SIEGE VIENT JOUER : on efface le temoin de
+        # spectateur s'il en trainait un. Sans cette ligne, regarder sa propre
+        # table puis y revenir jouer laissait le moteur refuser toute action,
+        # sans rien dire de pourquoi.
+        response.del_cookie('spectateur', path='/')
         # `secure` et `samesite` manquaient aux deux cookies poses ici : sur une
         # premiere visite tapee en `http://`, la cle de siege comme le
         # laissez-passer du moteur partaient en clair avant meme que Caddy

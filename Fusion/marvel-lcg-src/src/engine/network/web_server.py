@@ -73,6 +73,8 @@ class WebServer:
     @final
     def AddAwaitGetSecurity(self, path: str, handle: HandleAsyncType, need_auth: bool=True, need_check_version: bool=True):
         async def new_handle(request: web.Request) -> web.StreamResponse:
+            if not self.SpectateurPeutLire(path, request):
+                return web.Response(status=403, text='Spectator: read-only')
             if need_auth and not self.IsAuthenticate(request):
                 return self.LoadHtmlAuthenticate()
             elif need_check_version and not self.IsVersionMatch(request):
@@ -80,6 +82,41 @@ class WebServer:
             else:
                 return await handle(request)
         self.web_app.router.add_get(path, new_handle)
+
+    @final
+    def SpectateurPeutLire(self, path: str, request: "web.Request") -> bool:
+        """Un spectateur ne passe QUE par les routes de lecture. Refus par defaut.
+
+        ⚠ POURQUOI UN REFUS PAR DEFAUT, ET PAS UNE LISTE D'INTERDITS.
+        Le 15/09/2026, en regardant l'ecran du spectateur, j'ai vu le bouton
+        « Annuler » : il n'envoie pas une reponse au moteur, il appelle
+        `/debug?/undo auto`. Fermer `/post` ne le couvrait pas. Et derriere lui
+        il y avait `/new`, `/load_replay`, `/save_replay_data`, `/new_puzzle`...
+        Une liste d'interdits aurait laisse passer la prochaine route ajoutee au
+        moteur, sans que personne ne s'en apercoive.
+
+        On inverse donc la charge : le spectateur ne voit que ce qui est
+        NOMMEMENT autorise. Une route ajoutee demain lui est fermee d'office ;
+        si elle doit s'ouvrir, on l'ecrit ici, en connaissance de cause.
+
+        La liste vient d'une MESURE, pas d'une intuition : on a releve tout ce
+        que le plateau du spectateur demande au moteur en vraie partie
+        (`ui-check/tests/spectateur-moteur.spec.ts`).
+        """
+        if request.cookies.get('spectateur') != '1':
+            return True
+        # ⚠ ON JUGE LE CHEMIN DEMANDE, PAS CELUI DECLARE. Une route statique est
+        # enregistree sous un motif (`/app/{fichier}`, `/{tail:.*}`) qui ne
+        # ressemble pas a l'adresse appelee : compare au motif, `/app/board.html`
+        # tombait en 403 et le plateau du spectateur restait blanc. Mesure du
+        # 15/09/2026, au curl.
+        demande = request.path
+        # Les lectures : l'etat du monde, le catalogue, les images, la page.
+        for prefixe in ('/get_', '/list_', '/app/', '/public/', '/vignette/',
+                        '/scan/', '/assets/', '/img/', '/pics'):
+            if demande.startswith(prefixe):
+                return True
+        return demande in ('/', '/spectateur', '/claim_seat', '/watch')
 
     @final
     def CookieSecure(self, request: "web.Request") -> bool:
@@ -123,6 +160,8 @@ class WebServer:
     @final
     def AddHtmlSecurity(self, path: str, html: str):
         async def handle(request: web.Request) -> web.StreamResponse:
+            if not self.SpectateurPeutLire(path, request):
+                return web.Response(status=403, text='Spectator: read-only')
             if not self.IsAuthenticate(request):
                 return self.LoadHtmlAuthenticate()
             elif not self.IsVersionMatch(request):

@@ -18,6 +18,15 @@ class GameServerSync(GameServerBase):
         return int(request.rel_url.query.get('g', 0))
 
     async def handle_debug_command(self, request: web.Request) -> web.Response:
+        # ⚠ LA CONSOLE EST UNE ACTION, ET LA PLUS BRUTALE DE TOUTES.
+        #
+        # Le bouton « Annuler » du plateau n'envoie pas une reponse au moteur :
+        # il appelle `/debug?/undo auto`. Un spectateur qui cliquerait dessus
+        # annulerait le coup de quelqu'un d'autre. Le refus de `/post` ne le
+        # couvrait pas : ce n'est pas la meme porte. Trouve le 15/09/2026 en
+        # regardant l'ecran du spectateur, pas en relisant le code.
+        if self.est_spectateur(request):
+            return web.Response(status=403, text='Spectator')
         controller = self.get_first_controller(request)
         controller_manager = controller.manager
         debug_cmd = Unquote(request.rel_url.query_string)

@@ -448,6 +448,16 @@ export const DELAI_FILET_ANTI_BLOCAGE_CLIC_MS = 90_000
 export const DELAI_FILET_RESYNC_MS = 4_000
 
 /**
+ * A quelle cadence un SPECTATEUR relit la table.
+ *
+ * Il n'a pas de socket (voir `demarrer`) : il interroge. 700 ms, parce que
+ * l'utilisateur a choisi « comme un joueur, au plus vite » ; c'est assez vif
+ * pour suivre une phase du mechant sans sauter d'etape, et cela n'ajoute
+ * jamais qu'un lecteur de plus sur la table de quelqu'un.
+ */
+export const DELAI_LECTURE_SPECTATEUR_MS = 700
+
+/**
  * Faut-il renvoyer l'accusé de la trame courante ? Décision PURE, exportée pour
  * être testable seule (même raison que `lireTrame`) : c'est le cœur du filet de
  * resync, et une faute ici ne se verrait qu'en partie, sur une table figée.
@@ -595,6 +605,22 @@ export function estMultijoueur(): boolean {
 }
 
 /**
+ * Ce plateau REGARDE une partie, il ne la joue pas.
+ *
+ * ⚠ CE DRAPEAU N'EST PAS LA GARANTIE, il n'en est que la politesse. Le moteur
+ * refuse toute action a un spectateur (cookie `spectateur`, pose par sa porte
+ * d'entree : `allowed_seats` rend alors un ensemble vide et `/post` repond
+ * 403). Ce que ce drapeau apporte, c'est un ecran qui ne PROMET rien qu'il ne
+ * peut tenir : pas de boutons morts, pas de carte qu'on croit pouvoir jouer.
+ *
+ * Demande de l'utilisateur, 15/09/2026 : « regarder seulement, rien de
+ * cliquable ».
+ */
+export function estSpectateur(): boolean {
+  return new URLSearchParams(window.location.search).has('spectateur')
+}
+
+/**
  * Adresse du socket, sur la meme origine que la page.
  *
  * HOT-SEAT : hors multijoueur, on s'annonce pour TOUS les joueurs de la partie
@@ -634,6 +660,10 @@ export async function chargerDemande(playerId: number): Promise<Demande | undefi
 /** Accuse reception d'une trame : pour TOUS les joueurs locaux en hot-seat,
  *  pour SON SEUL siege en multijoueur (meme raison que `adresseSocket`). */
 export async function accuserReception(playerId: number, trame: Trame): Promise<void> {
+  // Un spectateur n'accuse rien : l'accuse dit au moteur « ce siege a vu la
+  // trame », et le moteur attend les sieges qui n'ont pas accuse. En accusant,
+  // un spectateur repondrait a la place du joueur qu'il regarde.
+  if (estSpectateur()) return
   const siege = estMultijoueur() ? `p=${playerId}` : `hot_seat&p=${playerId}`
   await fetch(`/client_updated?${siege}&r=${trame.render_id}&g=${trame.game_id}`, {
     cache: 'no-store',
@@ -649,6 +679,11 @@ export async function accuserReception(playerId: number, trame: Trame): Promise<
  * x-www-form-urlencoded, comme lui.
  */
 export async function envoyerReponse(playerId: number, reponse: Reponse | null): Promise<void> {
+  // ⚠ LE SEUL CHEMIN QUI MODIFIE LA PARTIE, ET IL EST FERME AU SPECTATEUR.
+  // Tout ce que le plateau peut faire d'irreversible passe par ici. Le moteur
+  // refuserait de toute facon (403), mais laisser partir la requete ferait
+  // clignoter l'ecran sur un echec qu'on savait d'avance.
+  if (estSpectateur()) return
   const corps = reponse === null ? '{}' : JSON.stringify(reponse)
   await fetch(`/post?p=${playerId}`, {
     method: 'POST',
@@ -926,6 +961,8 @@ export class Moteur {
   private guetteurSieges: number | undefined
   /** Battement du filet de resynchronisation (voir DELAI_FILET_RESYNC_MS). */
   private battementResync: number | undefined
+  /** Le battement de LECTURE du spectateur, qui remplace son socket. */
+  private battementSpectateur: number | undefined
 
   /**
    * Le recapitulatif de fin doit porter sur LA partie qui vient de finir. Sans
@@ -963,6 +1000,27 @@ export class Moteur {
 
   demarrer() {
     this.vivant = true
+    // ⚠ LE SPECTATEUR N'OUVRE AUCUN SOCKET, ET C'EST DELIBERE.
+    //
+    // Mesure du 15/09/2026, en partie a deux heros : hors multijoueur, le
+    // plateau s'annonce sur `/ws` POUR TOUS LES SIEGES (hot-seat), et meme en
+    // multijoueur il s'annonce pour le sien. Un spectateur ferait alors croire
+    // au moteur qu'un joueur absent est connecte — donc influencerait une vraie
+    // partie, alors que l'utilisateur a demande a rester invisible.
+    //
+    // Il LIT donc, a intervalle regulier, par le meme chemin que le filet de
+    // resync. Rien ne s'annonce, rien ne se voit.
+    if (estSpectateur()) {
+      if (this.battementSpectateur === undefined) {
+        this.battementSpectateur = window.setInterval(
+          () => void this.lire(),
+          DELAI_LECTURE_SPECTATEUR_MS
+        )
+      }
+      this.publier({ connecte: true, erreur: undefined, tentatives: 0 })
+      void this.lire()
+      return
+    }
     this.ouvrirSocket()
     // Premiere lecture sans attendre la premiere trame : la page montre la
     // partie tout de suite, meme si le moteur ne rend rien dans l'immediat.
@@ -976,6 +1034,10 @@ export class Moteur {
 
   arreter() {
     this.vivant = false
+    if (this.battementSpectateur !== undefined) {
+      window.clearInterval(this.battementSpectateur)
+      this.battementSpectateur = undefined
+    }
     if (this.relance !== undefined) window.clearTimeout(this.relance)
     if (this.minuteurAutoContinue !== undefined) window.clearTimeout(this.minuteurAutoContinue)
     if (this.battementResync !== undefined) {
