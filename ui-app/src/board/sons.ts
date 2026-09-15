@@ -29,12 +29,32 @@ function jouer(nom: string) {
   void audio.play().catch(() => undefined)
 }
 
-export function useSons(monde: World | undefined, actif: boolean, joueurInterroge: boolean) {
+/**
+ * @param silence Le voile d'ouverture est EN PLACE : on ne joue rien.
+ *
+ * ⚠ LE SILENCE DE L'OUVERTURE VAUT AUSSI POUR LES SONS (spec du 15/09/2026,
+ * « aucun son pendant la mise en place »). Le plateau appelle ce hook avant
+ * son retour anticipe du voile — il le faut, les hooks ne se sautent pas — et
+ * chaque trame de mise en place portant un `sound_name` etait donc jouee
+ * derriere le voile. Parametre OPTIONNEL : les autres appelants ne changent
+ * pas.
+ *
+ * ⚠ La porte est posee APRES `dernierRenderJoue`, comme celle d'`actif` : une
+ * trame avalee sous le voile est avalee pour de bon, et ne repart pas en
+ * rafale au moment ou la table apparait.
+ */
+export function useSons(
+  monde: World | undefined,
+  actif: boolean,
+  joueurInterroge: boolean,
+  silence = false
+) {
   useEffect(() => {
     if (!monde || monde.render_id === dernierRenderJoue) return
     dernierRenderJoue = monde.render_id
 
     if (!actif) return
+    if (silence) return
     if (document.visibilityState !== 'visible') return
 
     const nom = monde.sound_name
@@ -43,5 +63,5 @@ export function useSons(monde: World | undefined, actif: boolean, joueurInterrog
     // rendu se repete tant que la question est ouverte), sauf le gong de phase.
     if (joueurInterroge && nom !== 'phase') return
     jouer(nom)
-  }, [monde, monde?.render_id, actif, joueurInterroge])
+  }, [monde, monde?.render_id, actif, joueurInterroge, silence])
 }

@@ -2689,7 +2689,40 @@ function PagePartie({
   }, [animations])
 
 
-  useSons(etat.monde, sons, etat.demande !== undefined)
+  // Le voile d'ouverture : on ne montre pas la table en train de se monter.
+  // Levé une fois pour toutes dès que la question de la manigance arrive.
+  //
+  // ⚠ TANT QUE `etat.monde` N'EST PAS ENCORE ARRIVE, ON NE DECIDE RIEN. Avant
+  // la premiere trame du moteur, `confirm_main_scheme` est forcement absent :
+  // le lire comme un « non » figerait le voile a leve des la toute premiere
+  // image (avant meme de savoir si une question est attendue), et il ne se
+  // relevrait plus jamais une fois le monde charge. Le garde-fou `!etat.monde`
+  // de la ligne suivante affiche deja le meme message de connexion : ne pas
+  // toucher au verrou tant qu'on n'a pas encore de reponse du moteur ne change
+  // rien a l'affichage de cette phase-la, et evite ce verrouillage premature.
+  const voileLeve = useRef(false)
+  const questionManigance = questionDeLaManigance(etat.demande)
+  // La carte a montrer est celle que la QUESTION designe par son `bind_id`, pas
+  // la premiere de la zone : le mode Bataille en met deux en jeu, et le moteur
+  // pose une question par manigance (voir maniganceAMontrer).
+  const carteManigance = maniganceAMontrer(etat.monde, questionManigance?.bind_id)
+  const voile = etat.monde
+    ? ouvertureEncoreVoilee({
+        confirmAttendue: etat.monde.confirm_main_scheme === true,
+        round: etat.monde.round_id ?? 0,
+        questionArrivee: questionManigance !== undefined,
+        dejaLevee: voileLeve.current,
+        demandePresente: etat.demande !== undefined,
+      })
+    : false
+  if (etat.monde && !voile) voileLeve.current = true
+
+  // ⚠ LE SILENCE DE L'OUVERTURE VAUT AUSSI POUR LES SONS. Ce hook est appele
+  // AVANT le retour anticipe du voile — les hooks ne se sautent pas — et
+  // chaque trame de mise en place portant un `sound_name` etait jouee derriere
+  // le voile. C'est la seule raison pour laquelle le bloc du voile est calcule
+  // ici, au-dessus, et pas juste avant le retour anticipe qui s'en sert.
+  useSons(etat.monde, sons, etat.demande !== undefined, voile)
   useMusique(etat.monde, musique)
 
   // Raccourcis clavier : E = fin du tour (quand le bouton simple est visible),
@@ -2771,34 +2804,6 @@ function PagePartie({
       ? `${nom} ${t('gagne')} ${valeur} ${t('menace')}`
       : `${nom} ${t('perd')} ${valeur} ${t('menace')}`
   }, [effets, cartesMondeParId])
-
-  // Le voile d'ouverture : on ne montre pas la table en train de se monter.
-  // Levé une fois pour toutes dès que la question de la manigance arrive.
-  //
-  // ⚠ TANT QUE `etat.monde` N'EST PAS ENCORE ARRIVE, ON NE DECIDE RIEN. Avant
-  // la premiere trame du moteur, `confirm_main_scheme` est forcement absent :
-  // le lire comme un « non » figerait le voile a leve des la toute premiere
-  // image (avant meme de savoir si une question est attendue), et il ne se
-  // relevrait plus jamais une fois le monde charge. Le garde-fou `!etat.monde`
-  // de la ligne suivante affiche deja le meme message de connexion : ne pas
-  // toucher au verrou tant qu'on n'a pas encore de reponse du moteur ne change
-  // rien a l'affichage de cette phase-la, et evite ce verrouillage premature.
-  const voileLeve = useRef(false)
-  const questionManigance = questionDeLaManigance(etat.demande)
-  // La carte a montrer est celle que la QUESTION designe par son `bind_id`, pas
-  // la premiere de la zone : le mode Bataille en met deux en jeu, et le moteur
-  // pose une question par manigance (voir maniganceAMontrer).
-  const carteManigance = maniganceAMontrer(etat.monde, questionManigance?.bind_id)
-  const voile = etat.monde
-    ? ouvertureEncoreVoilee({
-        confirmAttendue: etat.monde.confirm_main_scheme === true,
-        round: etat.monde.round_id ?? 0,
-        questionArrivee: questionManigance !== undefined,
-        dejaLevee: voileLeve.current,
-        demandePresente: etat.demande !== undefined,
-      })
-    : false
-  if (etat.monde && !voile) voileLeve.current = true
 
   if (!etat.monde || !plateau || voile) {
     return (
