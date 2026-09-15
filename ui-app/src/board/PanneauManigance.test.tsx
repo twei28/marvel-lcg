@@ -36,4 +36,12 @@ describe('PanneauManigance', () => {
     fireEvent.click(bouton)
     expect(onValider).toHaveBeenCalledTimes(1)
   })
+
+  it('se retourne au clic avant de disparaitre', () => {
+    render(<PanneauManigance carte={carte} onValider={() => {}} />)
+    const panneau = screen.getByRole('dialog')
+    expect(panneau.className).not.toContain('est-retournee')
+    fireEvent.click(screen.getByRole('button'))
+    expect(panneau.className).toContain('est-retournee')
+  })
 })

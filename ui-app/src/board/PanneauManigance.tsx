@@ -20,11 +20,17 @@ export function PanneauManigance({
   onValider: () => void
 }) {
   // ⚠ UN SEUL ENVOI. Le moteur n'attend qu'une reponse ; une seconde partirait
-  // dans le vide, ou pire, repondrait a la question suivante.
+  // dans le vide, ou pire, repondrait a la question suivante. `envoye` porte
+  // aussi bien la garde du double clic que le declenchement du retournement :
+  // les deux se decident au meme instant.
   const [envoye, setEnvoye] = useState(false)
 
   return (
-    <div className="panneau-manigance" role="dialog" aria-modal="true">
+    <div
+      className={`panneau-manigance${envoye ? ' est-retournee' : ''}`}
+      role="dialog"
+      aria-modal="true"
+    >
       <img className="panneau-manigance-carte" src={scanUrl(carte.pic_id)} alt={nomAffiche(carte)} />
       <button
         type="button"
