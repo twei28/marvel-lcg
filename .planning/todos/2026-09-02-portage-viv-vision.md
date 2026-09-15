@@ -467,8 +467,14 @@ commit séparé de celui du portage. La troisième reste ouverte.
   ✅ **CORRIGÉ** : le deck `doctor_doom` monte à nouveau
   (« identite dd001a, main 6, deck 34 »), et la passe complète passe de
   110/112 à **111/112**. Seul `sp_dr` reste rouge.
-- `ui-app/src/board/mots-cles.ts` n'a pas d'entrée `Requirement`, alors que la
-  clé existe dans `desc` : les ~30 cartes qui portent ce mot-clé, dont 5 de ce
-  pack, n'affichent aucune infobulle pour lui. `Breakthrough` y a été ajouté
-  (sans quoi le joueur lisait un mot inconnu) ; `Requirement` ne l'a pas été,
-  parce que cela change l'affichage de cartes officielles hors de ce portage.
+- ~~`ui-app/src/board/mots-cles.ts` n'a pas d'entrée `Requirement`~~ ✅ **FAIT
+  le 15/09/2026** (commit `6fd81c91`). Le mot-clé s'affiche désormais sous son
+  nom officiel FR, « Exigence », avec les couleurs exigées en toutes lettres
+  (« Exigence (énergie, mentale) ») et sa définition. Vérifié en jeu, capture
+  relue : partie Ironheart, survol de « Sortir le Grand Jeu ».
+  ⚠ Le compte annoncé ici était approximatif : ce sont **24** cartes, pas ~30
+  (relevé dans `data/cards.json`), dont 5 de ce pack.
+  ⚠ Et le piège n'était pas l'absence mais la VALEUR : `desc.Requirement` porte
+  des COULEURS et non un nombre, là où la boucle commune colle la valeur après
+  le nom (« Entrave 2 »). Poussé comme les autres, il aurait écrit
+  « Exigence YBR ».
