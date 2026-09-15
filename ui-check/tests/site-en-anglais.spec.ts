@@ -25,11 +25,12 @@ import { expect, test } from '@playwright/test';
  *  - `fixtures.html` et `releve-images.html` : outils de chantier et
  *    d'administration, en français comme le reste de l'atelier.
  *
- * ⚠ ET `achievements.html` N'Y EST PAS ENCORE : ses 51 hauts faits arrivent du
+ * ⚠ ET `achievements.html` N'Y EST PAS, PAR DÉCISION : ses 51 hauts faits arrivent du
  * MOTEUR déjà rédigés en français (`/get_achievements`), titres et
  * descriptions compris. 55 lignes françaises mesurées en anglais le
  * 15/09/2026. Les traduire demande de toucher au moteur, pas au dictionnaire
- * du site : c'est un chantier à part, pas une clé à ajouter.
+ * du site : c'est un chantier à part, pas une clé à ajouter — et l'utilisateur
+ * l'a SORTI DU BACKLOG le 15/09/2026. Ne pas le rouvrir sans qu'il le demande.
  */
 const ECRANS: Array<{ url: string; minimum: number }> = [
   { url: '/prepare.html?ui=new', minimum: 300 },

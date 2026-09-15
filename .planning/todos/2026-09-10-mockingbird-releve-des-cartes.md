@@ -146,3 +146,10 @@ leur fiche dans `docs/reference/mots-cles/`. Aucun mot-clé maison.
 2. **Les images en local.** Le connecteur Drive ne sait rendre que du texte ;
    les 17 PNG doivent être déposés sur le poste comme les autres packs, pour
    `assets/pics/` et pour la relecture visuelle des statistiques.
+
+## Clos le 15/09/2026
+
+Décision de l'utilisateur : **ce pack sort du backlog.** Le relevé reste ici
+pour le jour où l'on y reviendrait ; les deux questions bloquantes
+(l'obligation, le set némésis) ne sont pas tranchées et les images ne sont pas
+en local.

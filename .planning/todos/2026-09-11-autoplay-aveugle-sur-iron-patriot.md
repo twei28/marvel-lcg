@@ -190,3 +190,10 @@ remplit. C'est le point 2 ci-dessus, et il demande la même rigueur : trois deck
 témoins, avant et après.
 
 Garde : `tools/test_autoplay_plafond.py` (11 cas, sans monter le moteur).
+
+## Clos le 15/09/2026
+
+Décision de l'utilisateur : **ce qui reste sort du backlog.** Le spam
+d'« Enlistment » est corrigé et mesuré ; la cause suivante — le bot qui ne
+repasse jamais en forme héros — reste identifiée et chiffrée ci-dessus, sans
+travail prévu dessus.
