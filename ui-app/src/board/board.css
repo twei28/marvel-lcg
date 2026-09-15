@@ -4247,17 +4247,46 @@
     background: rgba(8, 9, 12, 0.72);
   }
 
-  .panneau-manigance-carte {
-    max-width: min(86vw, 620px);
-    max-height: 62vh;
+  /* ⚠ LE CADRE PORTE LE FORMAT, L'IMAGE TOURNE DEDANS.
+     Le serveur redresse tous ses scans en portrait, manigances comprises, alors
+     qu'elles sont imprimees en PAYSAGE : posee telle quelle, la carte
+     s'affichait debout, texte a la verticale (signale en jeu le 15/09/2026).
+     Meme quart de tour horaire et meme boite transposee que `.scan-a-tourner`
+     (ScanCard.css) et que `.revelation.est-paysage` : la largeur de l'image
+     devient la hauteur du cadre, et inversement. */
+  .panneau-manigance-cadre {
+    position: relative;
+    width: min(86vw, 620px);
+    aspect-ratio: 176 / 127;
+    overflow: hidden;
     border-radius: 12px;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
   }
 
+  .panneau-manigance-cadre img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(min(86vw, 620px) * 127 / 176);
+    height: min(86vw, 620px);
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  /* ⚠ LE BOUTON RESSEMBLE AUX AUTRES BOUTONS DU JEU, et ce n'etait pas le cas :
+     signale en jeu le 15/09/2026, « le bouton ne ressemble pas aux autres ». Il
+     porte maintenant `.bh-bouton` comme toute la barre, et la tonalite rouge du
+     bouton principal du deroule (`.deroule-suivant`) : c'est la meme intention,
+     avancer d'un temps. */
   .panneau-manigance-ok {
     min-height: 48px;
     padding: 0 28px;
     font-size: 1rem;
+    background: var(--rouge);
+    color: #fff;
+  }
+
+  .panneau-manigance-ok:hover:not(:disabled) {
+    background: var(--rouge-vif);
   }
 
   /* Le retournement : la carte pivote sur son axe vertical et s'efface.

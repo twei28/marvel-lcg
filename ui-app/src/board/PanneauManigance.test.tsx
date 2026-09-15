@@ -25,6 +25,19 @@ describe('PanneauManigance', () => {
     expect(image.getAttribute('src')).toContain('01097a')
   })
 
+  // Signale en jeu le 15/09/2026 : « le main scheme n'est pas en paysage ». Le
+  // serveur redresse TOUS ses scans en portrait, manigances comprises, alors
+  // qu'elles sont imprimees en paysage. Sans le cadre qui porte le format et
+  // fait tourner l'image dedans, la carte s'affiche debout, texte a la
+  // verticale. Meme montage que `CoucheRevelation`, qui avait paye ce defaut
+  // le 09/09.
+  it('pose la carte dans un cadre au format paysage', () => {
+    render(<PanneauManigance carte={carte} onValider={async () => true} />)
+    const cadre = document.querySelector('.panneau-manigance-cadre')
+    expect(cadre, 'le cadre qui porte le format paysage').not.toBeNull()
+    expect(cadre?.querySelector('img'), "l'image doit tourner DANS le cadre").not.toBeNull()
+  })
+
   describe('le retournement se joue avant la reponse au moteur', () => {
     beforeEach(() => {
       vi.useFakeTimers()

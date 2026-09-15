@@ -74,10 +74,19 @@ export function PanneauManigance({
       role="dialog"
       aria-modal="true"
     >
-      <img className="panneau-manigance-carte" src={scanUrl(carte.pic_id)} alt={nomAffiche(carte)} />
+      {/* ⚠ UN CADRE AU FORMAT PAYSAGE, ET L'IMAGE QUI TOURNE DEDANS.
+          Le serveur redresse TOUS ses scans en portrait
+          (`ImageCreator.TryRotateImage`), y compris les manigances, qui sont
+          imprimees en paysage. Une <img> posee telle quelle presentait donc la
+          carte DEBOUT, texte a la verticale : signale en jeu le 15/09/2026,
+          « le main scheme n'est pas en paysage ». Meme montage que
+          `CoucheRevelation`, qui avait deja paye ce defaut le 09/09. */}
+      <div className="panneau-manigance-cadre">
+        <img src={scanUrl(carte.pic_id)} alt={nomAffiche(carte)} />
+      </div>
       <button
         type="button"
-        className="panneau-manigance-ok"
+        className="bh-bouton panneau-manigance-ok"
         disabled={envoye}
         onClick={() => {
           if (envoye) return
