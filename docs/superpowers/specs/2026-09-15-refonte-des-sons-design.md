@@ -54,55 +54,52 @@ Le mélange (volume, sons simultanés) et les déclencheurs mal placés restent 
 traiter, mais ils ne dépendent d'aucun fichier : ils se travaillent tout de
 suite.
 
-## LA LISTE DE COURSES
+## LA LISTE DE COURSES : SEPT SONS, PAS VINGT ET UN
 
-Durées indicatives. ⚠ **La règle qui prime sur tout : court.** Ces sons partent
-en rafale, plusieurs `activate` peuvent s'enchaîner en une seconde. Au-delà
-d'une demi-seconde, ils se chevauchent et deviennent une bouillie.
+⚠ **Correction du 15/09/2026, et c'est l'utilisateur qui a raison.** J'avais
+présenté les 21 noms du moteur comme 21 sons à trouver. Ce sont 21
+DÉCLENCHEURS. Sa réaction : « c'est un jeu de cartes, on n'a pas besoin de 21
+sons, on en a besoin de 6-7 maximum ».
 
-### Les cinq qui donnent sa couleur au jeu
+**Rien n'oblige à un fichier différent par nom.** Le plateau joue `<nom>.wav` :
+il suffit de déposer le MÊME son sous plusieurs noms. Sept sons couvrent donc
+les vingt et un déclencheurs.
 
-| Fichier | Ce qu'il doit évoquer | Durée | Fréquence |
+### Les sept familles
+
+| Le son | Ce qu'il doit évoquer | Durée | Les noms à servir |
 |---|---|---|---|
-| `activate.wav` | Une capacité qui part. Discret, presque un clic habillé : c'est le son de fond de toute la partie, 14 points d'appel. Un son marquant ici devient vite insupportable. | 80 à 150 ms | à chaque capacité, des dizaines par partie |
-| `phase.wav` | Le gong qui annonce que la main change de camp. Le seul qui perce pendant une question : il a le droit d'être grave et de durer. | 400 à 800 ms | 4 fois par round |
-| `damage.wav` | L'impact. Sec, physique, sans queue de réverbération. | 100 à 200 ms | très fréquent |
-| `set.wav` | Une carte qu'on pose ou qu'on range. Le frottement du carton, rien de plus. Très présent en mise en place, 14 points d'appel. | 80 à 150 ms | très fréquent |
-| `target.wav` | La visée, juste avant les dégâts. Doit s'entendre COMME une annonce de ce qui suit, donc plus clair que `damage`, jamais plus fort. | 80 à 150 ms | à chaque attaque |
+| **Capacité** | Une capacité qui part. Discret, presque un clic habillé. ⚠ Il sonne des dizaines de fois par partie : c'est le seul qui reste SEUL dans sa famille, parce qu'un son marquant ici devient insupportable en dix minutes. | 80 à 150 ms | `activate` |
+| **Impact** | Le coup porté ou encaissé. Sec, physique, sans traîne. | 100 à 200 ms | `damage`, `target`, `directattack` |
+| **Carte qui bouge** | Le frottement du carton : piochée, posée, rangée, équipée, mélangée. | 80 à 200 ms | `draw`, `carddrop`, `set`, `equip`, `cardpick`, `shuffle` |
+| **Retournement** | Le claquement d'une carte qui bascule ou se révèle. | 150 à 300 ms | `flip`, `reveal` |
+| **Jeton** | Un pion qu'on pose ou qu'on retire. Léger, mat. | 60 à 120 ms | `token`, `addcounter`, `removecounter`, `gainlp` |
+| **Disparition** | Ce qui quitte la table : détruit, banni, annulé. Le seul de la liste qui a le droit d'être un peu marquant, parce qu'il est rare. | 300 à 500 ms | `destroyed`, `banished`, `negate` |
+| **Gong** | La main change de camp. Grave, il a le droit de durer : c'est le seul qui perce pendant qu'on pose une question au joueur. | 400 à 800 ms | `phase`, `nextturn` |
 
-### Ceux qui gagnent à être marquants, parce qu'ils sont rares
+⚠ **La brièveté prime sur tout le reste.** Ces sons partent en rafale, plusieurs
+`activate` peuvent s'enchaîner en une seconde. Au-delà d'une demi-seconde, ils
+se chevauchent et deviennent une bouillie. Seuls « gong » et « disparition »
+échappent à la règle, parce qu'ils sont rares.
 
-| Fichier | Ce qu'il doit évoquer | Durée | Fréquence |
-|---|---|---|---|
-| `destroyed.wav` | Une carte détruite. Un moment qu'on doit sentir. | 300 à 500 ms | quelques fois par partie |
-| `banished.wav` | Bannie, retirée de la partie, un complot vaincu. Plus définitif encore que `destroyed`. | 300 à 600 ms | rare |
-| `flip.wav` | Une carte se retourne : héros ↔ alter ego, changement de face du méchant. Le claquement du carton qui bascule. | 150 à 300 ms | quelques fois par partie |
-| `nextturn.wav` | Le jeton de premier joueur qui bouge. Une respiration, pas une alarme. | 300 à 600 ms | une fois par round |
+⚠ Deux noms ne servent à rien (`directattack`, `cardpick`) : déclarés par le
+moteur, jamais déclenchés dans cette version. Ils sont dans la liste par
+propreté, personne ne les entendra.
 
-### Le quotidien
+### Ce qui n'existe pas encore : l'interface
 
-| Fichier | Ce qu'il doit évoquer | Durée | Fréquence |
-|---|---|---|---|
-| `draw.wav` | Une ou plusieurs cartes piochées. Le glissement du papier. | 100 à 200 ms | fréquent |
-| `carddrop.wav` | Une carte jouée depuis la main, posée sur la table. | 100 à 200 ms | fréquent |
-| `equip.wav` | Une amélioration qui s'installe sur un personnage. Un cran, un clic mécanique. | 150 à 250 ms | moyen |
-| `shuffle.wav` | Un deck mélangé. Le seul qui peut durer un peu, il décrit un geste long. | 400 à 800 ms | rare |
-| `gainlp.wav` | Des points de vie regagnés. Montant, chaleureux, à l'opposé de `damage`. | 200 à 400 ms | moyen |
-| `token.wav` | Un jeton posé sur une carte (menace, dégâts, ressource). Léger, mat. | 60 à 120 ms | très fréquent |
-| `addcounter.wav` | Un compteur qui monte. Court, montant. | 60 à 120 ms | fréquent |
-| `removecounter.wav` | Un compteur qui descend. Le même, descendant : les deux doivent s'entendre comme une paire. | 60 à 120 ms | fréquent |
-| `reveal.wav` | Une carte face cachée retournée face visible. Une découverte. | 200 à 400 ms | fréquent |
-| `negate.wav` | Un effet annulé, contré. Doit se lire comme un refus : descendant, mat. | 150 à 300 ms | moyen |
+Demande de l'utilisateur, hors des 21 : **le survol d'un bouton, le survol d'un
+personnage dans les menus, la carte qui vole**. Le moteur ne connaît aucun de
+ces moments.
 
-### Les deux qu'on peut ignorer
+Ils vivront donc côté plateau, comme les sons de mouvement (décision plus haut).
+Compte **un ou deux fichiers de plus**, très courts (30 à 80 ms) : un survol qui
+dure s'entend comme un défaut dès qu'on balaie l'écran à la souris.
 
-`directattack.wav` et `cardpick.wav` : déclarés dans le moteur, **jamais
-déclenchés** dans cette version. Quoi qu'on y mette, personne ne les entendra.
+### Le compte final
 
-### Et la musique, à part
-
-`musique-plateau.mp3` n'est pas un effet : c'est le fond sonore du plateau, avec
-son propre réglage, et il ne fait pas partie de cette liste.
+**Sept fichiers pour le jeu, un ou deux pour l'interface.** Neuf au maximum, là
+où la première version de cette spec en demandait vingt et un.
 
 ## Ce qui reste à établir avant d'écrire du code
 
@@ -116,6 +113,7 @@ simultanés, ou les deux ? Le volume est aujourd'hui figé à 20 % sans réglage
 
 ## Statut
 
-**Cadré le 15/09/2026.** La liste de courses est prête. Rien ne commence côté
-fichiers tant que l'utilisateur ne les a pas ; le volume, les simultanés et les
-déclencheurs peuvent partir avant, dès qu'on saura lesquels le gênent.
+**Cadré le 15/09/2026.** La liste de courses tient en sept sons plus le survol.
+Rien ne commence côté fichiers tant que l'utilisateur ne les a pas ; le volume,
+les simultanés et les déclencheurs peuvent partir avant, dès qu'on saura
+lesquels le gênent.
