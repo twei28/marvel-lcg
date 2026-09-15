@@ -84,6 +84,26 @@ bouger ». Des cartes molles y ruineraient tout l'effet recherché.
 
 ## Statut
 
-Constaté et analysé le 14/09/2026, **non commencé**. Ordre conseillé : la
-durée (1), puis l'ombre (4), puis la courbe (2) ; la rotation (3) et les
-grands lots (5) ensuite.
+⚠ **L'en-tête de cette fiche disait « non commencé » alors que cinq causes sur
+six étaient corrigées.** Corrigé le 15/09/2026 en relisant le code, pas la
+fiche.
+
+Fait, et **derrière la garde d'essai** (`board/essais.ts`, réservée à un
+compte) pour les quatre premières :
+
+- (1) la durée suit la distance : `dureeDe()`, racine carrée, 130 à 400 ms ;
+- (2) le « clac » rendu au coup UNIQUE et refusé aux arrivées groupées ;
+- (3) l'inclinaison dans le sens du départ, bornée à 3 degrés ;
+- (4) l'ombre qui s'écarte au décollage et se resserre à l'approche,
+  plus le tressaillement de la pile qui reçoit ;
+- (6) la place de la défausse DÉDUITE quand elle est vide, donc une carte
+  défaussée ne vole plus vers la pioche. Hors garde d'essai, pour tout le
+  monde.
+
+Commits : `ebe3f172`, `4366749f`, `edfc211e`.
+
+Reste (5) : au-delà de `MAX_VOLS = 10`, rien ne s'anime au lieu d'animer
+autrement. Non commencé.
+
+⚠ La garde d'essai est du code TEMPORAIRE : le jour où l'utilisateur valide le
+poids et le geste à l'usage, le drapeau et ses deux branches disparaissent.
