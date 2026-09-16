@@ -176,6 +176,29 @@ DICO_EN: dict[str, str] = {
 
     # --- Le bouton FR / EN du site ------------------------------------------
     "Changer la langue du site": "Change the language of the site",
+
+    # --- L'appli sur le telephone -------------------------------------------
+    "Installer l'application sur ce telephone":
+        "Install the app on this phone",
+    "Sur iPhone : bouton Partager, puis « Sur l'ecran d'accueil ».":
+        "On iPhone: Share button, then “Add to Home Screen”.",
+    "C'est un raccourci vers le jeu, pas une version hors ligne : "
+    "il faut une connexion pour jouer.":
+        "This is a shortcut to the game, not an offline version: you need a "
+        "connection to play.",
+
+    # --- Quand le reseau manque ---------------------------------------------
+    "Pas de connexion": "No connection",
+    "NarwhalChampions a besoin du reseau pour tourner : la partie "
+    "se joue sur le serveur, pas sur ton telephone. Reconnecte-toi "
+    "et reessaie.":
+        "NarwhalChampions needs the network to run: the game is played on the "
+        "server, not on your phone. Get back online and try again.",
+
+    # --- Apres une reinitialisation de mot de passe -------------------------
+    "Mot de passe enregistre": "Password saved",
+    "Ton nouveau mot de passe est en place : connecte-toi.":
+        "Your new password is set: sign in.",
 }
 
 

@@ -2565,7 +2565,7 @@ def page_reprise(pseudo: str, attendue: dict) -> bytes:
                        "preparation.")))
     return PAGE.format(tete="", sous=lang.t("Tu etais en pleine partie."),
                        barre=_barre(pseudo), corps=corps,
-                       pied=_pied_de_page()).encode("utf-8")
+                       pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
 
 def etiquette_ticket(etat: str) -> str:
@@ -2604,7 +2604,7 @@ def page_signalements(pseudo: str) -> bytes:
                            "reponse.")))
         return PAGE.format(tete="", sous=lang.t("Rien a suivre pour l'instant."),
                            barre=_barre(pseudo), corps=corps,
-                           pied=_pied_de_page()).encode("utf-8")
+                           pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
     corps = ""
     for r in tickets:
@@ -2635,7 +2635,7 @@ def page_signalements(pseudo: str) -> bytes:
                      lang.t("Ajouter quelque chose"), lang.t("Envoyer")))
     return PAGE.format(tete="", sous=lang.t("Ce que tu as signale, et ma reponse."),
                        barre=_barre(pseudo), corps=corps,
-                       pied=_pied_de_page()).encode("utf-8")
+                       pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
 
 def page_attente(pseudo: str) -> bytes:
@@ -2666,7 +2666,7 @@ def page_attente(pseudo: str) -> bytes:
                     lang.t("Le premier allumage prend une minute ou deux. "
                            "Cette page bascule toute seule des que c'est pret.")))
     return PAGE.format(tete=tete, sous=sous, barre=_barre(pseudo), corps=corps,
-                       pied=_pied_de_page()).encode("utf-8")
+                       pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
 
 def page_arret(pseudo: str) -> bytes:
@@ -2680,7 +2680,7 @@ def page_arret(pseudo: str) -> bytes:
              '<form method="get" action="/entrer" style="margin-top:1rem">'
              '<button type="submit">Rallumer mon jeu</button></form></div>')
     return PAGE.format(tete="", sous="A tout de suite.", barre=_barre(pseudo),
-                       corps=corps, pied=_pied_de_page()).encode("utf-8")
+                       corps=corps, pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
 
 PAGE_FORMULAIRE = """<!doctype html>
@@ -3405,12 +3405,31 @@ PAGE_HORS_LIGNE = """<!doctype html>
            padding:.7rem 1.4rem; cursor:pointer; }
 </style>
 <main>
-  <h1>Pas de connexion</h1>
-  <p>NarwhalChampions a besoin du reseau pour tourner : la partie se joue sur
-  le serveur, pas sur ton telephone. Reconnecte-toi et reessaie.</p>
-  <button onclick="location.replace('/entrer')">Reessayer</button>
+  <h1>{titre}</h1>
+  <p>{corps}</p>
+  <button onclick="location.replace('/entrer')">{bouton}</button>
 </main>
-""".encode("utf-8")
+"""
+
+
+def page_hors_ligne() -> bytes:
+    """« Pas de connexion », dans la langue du visiteur.
+
+    ⚠ C'ETAIT UNE CONSTANTE DEJA ENCODEE, donc figee en francais. Elle est
+    servie par le serveur comme les autres : rien n'empeche de la traduire.
+    """
+    # ⚠ PAS DE `.format` ICI, ET C'EST MESURE : cette page porte sa feuille de
+    # style, donc des accolades que `.format` prendrait pour des champs (la
+    # route est tombee des le premier essai). On substitue nos trois champs a
+    # la main, le CSS n'a rien a subir.
+    return (PAGE_HORS_LIGNE
+            .replace("{titre}", lang.t("Pas de connexion"))
+            .replace("{corps}", lang.t(
+                "NarwhalChampions a besoin du reseau pour tourner : la partie "
+                "se joue sur le serveur, pas sur ton telephone. Reconnecte-toi "
+                "et reessaie."))
+            .replace("{bouton}", lang.t("Reessayer"))
+            ).encode("utf-8")
 
 SERVICE_WORKER = """// NarwhalChampions : un service worker qui ne fait RIEN, et c'est voulu.
 // Le navigateur en exige un pour proposer « Ajouter a l'ecran d'accueil ».
@@ -3463,19 +3482,26 @@ TETE_APPLI = ('<link rel="manifest" href="/manifest.webmanifest">'
 # affiche a la place le chemin a suivre, Partager puis « Sur l'ecran
 # d'accueil ». Une fois installee, l'appli tourne en plein ecran et le bouton
 # n'a plus lieu d'etre : on le tait.
-BOUTON_APPLI = (
+def _bouton_appli() -> str:
+    """Le bloc « Installer l'application », dans la langue du visiteur.
+
+    ⚠ C'ETAIT UNE CONSTANTE, donc figee a la langue du chargement du module,
+    c'est-a-dire au demarrage du serveur, quand aucun visiteur n'existe.
+    """
+    return (
     '<div id="appli-installer" hidden style="margin:1.2rem 0 0;padding:.8rem .9rem;'
     'border:1px solid #30363d;border-radius:.5rem;background:#161b22;font-size:.9rem">'
     '<button id="appli-bouton" type="button" style="width:100%;font:inherit;background:#238636;'
     'color:#fff;border:0;border-radius:.5rem;padding:.7rem;cursor:pointer">'
-    'Installer l\'application sur ce telephone</button>'
-    '<p id="appli-ios" hidden style="margin:.4rem 0 0;color:#9aa7b4">Sur iPhone : bouton Partager, '
-    'puis « Sur l\'ecran d\'accueil ».</p>'
+    + lang.t("Installer l'application sur ce telephone") + '</button>'
+    '<p id="appli-ios" hidden style="margin:.4rem 0 0;color:#9aa7b4">'
+    + lang.t("Sur iPhone : bouton Partager, puis « Sur l'ecran d'accueil ».") + '</p>'
     # ⚠ DIT AVANT L'INSTALLATION, pas apres. Une icone sur l'ecran d'accueil
     # laisse croire au hors ligne ; le jeu tourne sur le serveur, il n'y a
     # rien a jouer sans connexion.
-    '<p style="margin:.5rem 0 0;color:#9aa7b4;font-size:.85rem">C\'est un raccourci '
-    'vers le jeu, pas une version hors ligne : il faut une connexion pour jouer.</p>'
+    '<p style="margin:.5rem 0 0;color:#9aa7b4;font-size:.85rem">'
+    + lang.t("C'est un raccourci vers le jeu, pas une version hors ligne : "
+             "il faut une connexion pour jouer.") + '</p>'
     '</div>'
     '<script>(function(){'
     'var bloc=document.getElementById("appli-installer"),bouton=document.getElementById("appli-bouton"),'
@@ -3498,9 +3524,13 @@ BOUTON_APPLI = (
 # un `{}` que `.format` prendrait pour un champ positionnel (IndexError, vu au
 # premier essai). Doublees, elles redeviennent des accolades pour lui.
 _TETE_POUR_FORMAT = TETE_APPLI.replace("{", "{{").replace("}", "}}")
-_BOUTON_POUR_FORMAT = BOUTON_APPLI.replace("{", "{{").replace("}", "}}")
-PAGE = PAGE.replace("{tete_appli}", _TETE_POUR_FORMAT).replace("{bouton_appli}", _BOUTON_POUR_FORMAT)
-PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("{tete_appli}", _TETE_POUR_FORMAT).replace("{bouton_appli}", _BOUTON_POUR_FORMAT)
+# ⚠ LA TETE EST SUBSTITUEE UNE FOIS, LE BOUTON A CHAQUE RENDU (16/09/2026).
+# La tete ne porte aucun texte : elle peut rester figee. Le bouton, lui, parle
+# au visiteur, et une constante serait figee a la langue du DEMARRAGE DU
+# SERVEUR, quand aucun visiteur n'existe. `{bouton_appli}` reste donc un champ
+# que chaque `.format` remplit avec `_bouton_appli()`.
+PAGE = PAGE.replace("{tete_appli}", _TETE_POUR_FORMAT)
+PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("{tete_appli}", _TETE_POUR_FORMAT)
 
 # L'heure locale, ajoutee aux deux pages qui montrent des dates ABSOLUES.
 #
@@ -3714,6 +3744,7 @@ class Handler(BaseHTTPRequestHandler):
             auto="new-password" if inscription else "current-password",
             champs=champs,
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
+            bouton_appli=_bouton_appli(),
             pied=((lang.t("Tu es invite : ton compte sera actif tout de suite.")
                    if invitation_valide(jeton) else
                    lang.t("Ton compte devra etre valide a la main avant de servir."))
@@ -3737,6 +3768,7 @@ class Handler(BaseHTTPRequestHandler):
             action="/reinitialisation", bouton="Enregistrer", auto="new-password",
             champs='<input type="hidden" name="r" value="%s">' % html.escape(jeton),
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
+            bouton_appli=_bouton_appli(),
             pied="Huit caracteres au minimum. Tes sessions ouvertes seront fermees."
                  ' <a href="/connexion">Se connecter</a>.',
         ).encode("utf-8")
@@ -4197,7 +4229,7 @@ class Handler(BaseHTTPRequestHandler):
         elif self.chemin == "/manifest.webmanifest":
             self._repondre(200, MANIFESTE_APPLI, "application/manifest+json; charset=utf-8")
         elif self.chemin == "/hors-ligne.html":
-            self._repondre(200, PAGE_HORS_LIGNE, "text/html; charset=utf-8")
+            self._repondre(200, page_hors_ligne(), "text/html; charset=utf-8")
         elif self.chemin == "/sw.js":
             # ⚠ SANS CACHE HTTP non plus : un worker mis en cache par le
             # navigateur survivrait a sa propre mise a jour.
@@ -4321,11 +4353,14 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(400, self._formulaire_reinitialisation(champs.get("r", ""), str(erreur)))
                 return
             self._repondre(200, PAGE_FORMULAIRE.format(
-                titre="Mot de passe enregistre", action="/connexion", bouton="Entrer",
-                auto="current-password", erreur="",
-                champs='<label>Pseudo ou adresse e-mail<input name="pseudo" '
-                       'autocomplete="username" value="%s" required></label>' % html.escape(qui),
-                pied="Ton nouveau mot de passe est en place : connecte-toi.").encode("utf-8"))
+                titre=lang.t("Mot de passe enregistre"), action="/connexion",
+                bouton=lang.t("Entrer"), auto="current-password", erreur="",
+                champs='<label>%s<input name="pseudo" '
+                       'autocomplete="username" value="%s" required></label>'
+                       % (lang.t("Pseudo ou adresse e-mail"), html.escape(qui)),
+                bouton_appli=_bouton_appli(),
+                pied=lang.t("Ton nouveau mot de passe est en place : connecte-toi.")
+                ).encode("utf-8"))
 
         elif self.chemin == "/connexion":
             champs = self._champs()

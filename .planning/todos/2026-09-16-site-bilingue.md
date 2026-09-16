@@ -63,8 +63,18 @@ site doit donc s'appuyer sur autre chose :
   périmètre**, décidé le 16/09/2026. Ce sont les outils de l'utilisateur, qui
   est francophone, et ils représentent près de la moitié du travail pour zéro
   joueur concerné.
-- La page hors-ligne, le bouton « Installer l'application » et quelques
-  libellés de second plan.
+- ~~La page hors-ligne, le bouton « Installer l'application »~~ ✅ **faits le
+  16/09/2026**, ainsi que l'écran « Mot de passe enregistré ». **60 phrases**
+  au total.
+
+  ⚠ Les deux étaient des CONSTANTES, donc figées à la langue du démarrage du
+  serveur, quand aucun visiteur n'existe. C'est le même piège que le pied de
+  page et les états d'un ticket : ce qui parle au visiteur ne peut pas vivre
+  dans une constante de module.
+
+  ⚠ Et la page hors-ligne porte sa feuille de style : `.format` prenait ses
+  accolades pour des champs et la route tombait. Ses trois champs sont
+  substitués à la main.
 - ⚠ **Ce que la gate ne voit pas** : une phrase écrite en dur SANS passer par
   `t()` lui échappe. Elle garantit que ce qui est traduit l'est vraiment, pas
   que tout est traduit.
