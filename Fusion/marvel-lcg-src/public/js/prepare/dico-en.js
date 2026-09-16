@@ -103,6 +103,8 @@ export const DICO_EN_BASE = {
     "Pas encore débloquée": "Not unlocked yet",
     "Seules les cartes des boîtes déjà ouvertes s'ajoutent au deck.": "Only cards from boxes you have opened can go in the deck.",
     "Tout est débloqué. Bravo.": "Everything is unlocked. Well done.",
+    "Une carte sans scan dans la langue choisie reste affichée en anglais : sa traduction s'affiche alors dans l'infobulle, sous la carte.":
+        "A card with no scan in the chosen language stays in English: its translation then shows in the tooltip, under the card.",
     "Pour ouvrir la suite": "To open the next box",
     "héros de cette boîte n'ont pas encore gagné": "heroes from this box have not won yet",
     "jeton(s) à prendre": "token(s) to claim",

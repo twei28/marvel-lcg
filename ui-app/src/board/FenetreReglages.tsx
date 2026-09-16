@@ -271,7 +271,12 @@ export function ContenuOnglet({
           onChoisir={(vers) => {
             if (vers !== (langueActuelle() === 'fr' ? 'fr' : 'en')) void p.basculerLangue()
           }}
-          detail={t('Langue de l’interface et de la narration')}
+          // ⚠ CE QUE LA LANGUE NE PEUT PAS FAIRE, DIT AU MOMENT DU CHOIX
+          // (16/09/2026). Tous les scans n'existent pas dans les deux
+          // langues. Sans cette phrase, une carte restee en anglais au milieu
+          // d'une partie francaise ressemble a un defaut ; avec elle, c'est
+          // une regle connue d'avance, et l'infobulle prend le relais.
+          detail={t('Langue de l’interface et de la narration. Une carte sans scan dans cette langue reste en anglais : sa traduction s’affiche dans l’infobulle.')}
         />
       </>
     )

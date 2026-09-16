@@ -288,6 +288,19 @@ describe('le mode « Sur la table » est proposé aux essais', () => {
       .getAllByRole('button')
       .map((b) => b.textContent)
 
+  it('⚠ le réglage de langue prévient pour les cartes sans scan', () => {
+    // Demande du 16/09/2026. Tous les scans n'existent pas dans les deux
+    // langues : une carte restée en anglais au milieu d'une partie française
+    // ressemble à un défaut tant que personne ne l'a annoncé. La phrase est
+    // ici, au moment du choix, et elle nomme le relais : l'infobulle.
+    // ⚠ Le `detail` d'une ligne de réglage devient un attribut `title`, pas du
+    // texte : c'est l'infobulle du bouton lui-même. On cherche donc là.
+    render(<ContenuOnglet onglet="image" p={proprietes()} />)
+    const ligne = screen.getByTitle(/Langue de l’interface et de la narration/)
+    expect(ligne.getAttribute('title')).toMatch(/sans scan dans cette langue reste en anglais/)
+    expect(ligne.getAttribute('title')).toMatch(/infobulle/)
+  })
+
   it('avec les essais, il apparaît entre les deux autres', () => {
     // Il raconte la même chose que « Détaillé », au même rythme : sa place est
     // à côté de lui, pas à la fin de la liste.

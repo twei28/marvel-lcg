@@ -923,6 +923,8 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   'Langue': 'Language',
   'Langue de l’interface et de la narration': 'Language of the interface and narration',
+  'Langue de l’interface et de la narration. Une carte sans scan dans cette langue reste en anglais : sa traduction s’affiche dans l’infobulle.':
+    'Language of the interface and narration. A card with no scan in this language stays in English: its translation shows in the tooltip.',
   // --- Manquantes, ajoutees le 14/09/2026 -----------------------------
   // ⚠ SOIXANTE ET UNE CLES N'AVAIENT AUCUNE TRADUCTION, et `t()` rend alors
   // la cle telle quelle : le plateau anglais affichait « Partie » dans sa

@@ -1074,6 +1074,13 @@ function demanderLaLangue() {
                     carte("fr", "Français", t("Cartes, interface et récit de la partie en français.")),
                     carte("en", "English", t("Cards, interface and game log in English.")),
                 ),
+                // ⚠ CE QUE LA LANGUE NE PEUT PAS FAIRE, DIT AVANT LE CHOIX
+                // (16/09/2026). Tous les scans n'existent pas dans les deux
+                // langues : la carte reste alors en anglais, et c'est
+                // l'infobulle qui la traduit. Le decouvrir en pleine partie
+                // ressemble a un defaut ; le lire ici, a une regle.
+                el("div", { class: "vh-note" },
+                    t("Une carte sans scan dans la langue choisie reste affichée en anglais : sa traduction s'affiche alors dans l'infobulle, sous la carte.")),
                 el("div", { class: "vh-note" },
                     t("Tu peux changer à tout moment : le bouton FR / EN, en haut de l'écran.")),
             ),
