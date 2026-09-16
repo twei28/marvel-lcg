@@ -2,8 +2,11 @@
 rem NarwhalChampions : construit le plateau, deploie le depot sur le serveur et le redemarre.
 rem Equivalent de "clic droit > Executer avec PowerShell" sur deployer.ps1,
 rem pour qui ne peut que double-cliquer (poste pilote a distance).
-rem Tout ce qui s affiche est aussi ecrit dans dernier-deploiement.log,
-rem pour pouvoir relire un refus sans recopier l ecran.
+rem Le journal dernier-deploiement.log est tenu par deployer.ps1 lui-meme
+rem depuis le 16/09/2026 : il etait auparavant ecrit ICI, et personne
+rem n utilisant plus ce .bat, il datait de cinq jours tout en ayant l air a
+rem jour. La construction du plateau ci-dessous y ecrit toujours en premier,
+rem puis PowerShell prend le relais.
 cd /d "%~dp0"
 echo == Construction du plateau (ui-app/deployer.sh, dans WSL)
 rem Sans cette etape, deployer.ps1 envoie le plateau tel qu il a ete construit

@@ -24,6 +24,15 @@ param(
 )
 $ErrorActionPreference = "Stop"
 
+# ⚠ LE JOURNAL EST TENU ICI, PLUS PAR LE .BAT (16/09/2026). `DEPLOYER.bat`
+# ecrivait `dernier-deploiement.log`, mais personne ne l'utilise plus : le
+# deploiement se lance directement sur ce script. Resultat, le 16/09 au matin,
+# ce journal datait encore du 11/09 et racontait un deploiement vieux de cinq
+# jours — de quoi chercher une panne dans la mauvaise direction, ce qui est
+# arrive.
+$script:Journal = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Definition) "dernier-deploiement.log"
+try { Start-Transcript -Path $script:Journal -Force | Out-Null } catch { }
+
 $IP      = "178.105.177.39"
 $DOMAINE = "narwhalchampions.com"
 $DIST    = "/opt/narwhal"
@@ -486,3 +495,4 @@ systemctl is-active narwhal
 
 Write-Host ""
 Write-Host "Termine." -ForegroundColor Green
+try { Stop-Transcript | Out-Null } catch { }

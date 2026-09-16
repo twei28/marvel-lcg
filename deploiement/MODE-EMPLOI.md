@@ -62,6 +62,29 @@ livrets PDF** (ni les unes ni les autres ne sont dans le dépôt), installe les
 dépendances Python, redémarre le service, rapatrie la sauvegarde des comptes et
 vérifie que le site répond.
 
+L'étape **Scripts et configuration du serveur** (ajoutée le 16/09/2026) compare
+huit fichiers du dossier à ce qui est installé sur la machine, et les traite en
+**deux listes** :
+
+- **synchronisés**, parce qu'ils viennent entièrement du dépôt :
+  `sauvegarde.sh`, `purge.sh` et les quatre units de sauvegarde et de purge.
+  Chaque unit passe `systemd-analyze verify` avant d'être posée ;
+- **surveillés**, parce qu'ils portent des réglages propres au serveur :
+  `narwhal.service` (il contient `INSCRIPTION_LIBRE=0`, posé à la main) et le
+  `Caddyfile` (il importe deux AUTRES sites hébergés là, karaoké et
+  publicverse). Le déploiement **affiche l'écart et n'y touche jamais**.
+
+⚠ C'est cette distinction qui évite la casse. Une synchronisation aveugle
+aurait coupé les deux autres sites et rouvert l'inscription à n'importe qui.
+Quand le déploiement signale un écart sur ces deux fichiers, **c'est normal** :
+il te rappelle simplement que ta machine porte des réglages qui ne sont pas
+dans le dépôt.
+
+Avant ce jour, ces scripts n'étaient JAMAIS envoyés : seul
+`installer-serveur.ps1` les posait, une fois pour toutes à l'installation. La
+sauvegarde de nuit a ainsi tourné dix jours dans une version périmée, sans
+prendre la moindre donnée de joueur.
+
 L'étape **Documents PDF** tourne à chaque fois, `-Code` compris : ce ne sont pas
 des images, et le panneau « Documents » du site serait vide sans elles. Elle
 compare les tailles, n'envoie que ce qui manque — et **efface du serveur ce qui
@@ -100,6 +123,39 @@ Variantes :
 ```
 
 ---
+
+## La mémoire du serveur
+
+`memoire-serveur.sh` pose le filet qui manquait : **4 Go de fichier d'échange**
+sur le disque (28 Go y sont libres). Sans lui, une mémoire pleine ne ralentit
+pas la machine : le noyau tue un processus au hasard, et ce serait une partie
+en cours qui disparaît sans explication.
+
+    scp -i cle_narwhal memoire-serveur.sh root@178.105.177.39:/tmp/
+    ssh -i cle_narwhal root@178.105.177.39 'bash /tmp/memoire-serveur.sh'
+
+Relançable sans rien casser. `bash memoire-serveur.sh --etat` montre la
+situation sans rien toucher.
+
+⚠ **zram n'est pas disponible sur ce serveur.** Le module est absent du noyau
+(Ubuntu le range dans `linux-modules-extra`, qui n'est pas installé). Pour
+l'activer, il faut une commande de plus, puis relancer le script, qui posera
+zram et ajustera les réglages tout seul :
+
+    ssh -i cle_narwhal root@178.105.177.39 'apt install -y linux-modules-extra-$(uname -r)'
+
+⚠ Et c'est pour cela que `swappiness` est **calculé** et non écrit en dur : à
+100 il est juste avec zram, où « échanger » veut dire « comprimer en
+mémoire » ; sans zram, il ferait écrire agressivement sur le disque et
+ralentirait tout le monde. Le serveur est aujourd'hui à 60.
+
+## Combien de joueurs la machine peut-elle tenir ?
+
+Mesuré le 16/09/2026 : **une table coûte 221 Mo**, la machine a 3,8 Go, soit
+**une dizaine de tables allumées en même temps**. La limite de 20 places compte
+des COMPTES, pas des parties simultanées. Le détail, et ce qui a été écarté
+pour aller plus loin, sont dans
+`.planning/todos/2026-09-16-tenir-plus-de-joueurs.md`.
 
 ## Les gestes du quotidien
 
