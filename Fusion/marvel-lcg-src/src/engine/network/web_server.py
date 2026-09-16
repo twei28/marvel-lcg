@@ -16,6 +16,12 @@ SOUND_FOLDERS   = ConfigVariables.Folders('sound_folders', ["./assets/sounds/"])
 IMAGE_FOLDERS   = ConfigVariables.Folders('image_folders')
 TEXTURE_FOLDER  = ConfigVariables.Folder('texture_folder')
 CACHE_MAX_AGE   = ConfigVariables.Int('cache_max_age', 31536000)
+
+# Taille maximale de la ligne de requete HTTP (l'URL). Voir le commentaire dans
+# `__init__` : 128 Kio laissent passer une table a quatre joueurs avec les plus
+# gros decks du depot, et gardent une marge. Le CORPS des requetes, lui, reste
+# plafonne a 8 Mio par `client_max_size`.
+MAX_LIGNE_REQUETE = 128 * 1024
 """
 one hour:   3600
 one day:    86400
@@ -38,7 +44,22 @@ class WebServer:
         # et le site a son propre plafond : ce chiffre-ci est la marge, pas
         # une autorisation d'envoyer n'importe quoi.
         self.web_app = web.Application(client_max_size=8 * 1024 * 1024)
-        self.runner = web.AppRunner(self.web_app)
+        # ⚠ LA LIGNE DE REQUETE, ET C'EST UN BLOCAGE COMPLET QUAND ELLE MANQUE.
+        # Le lancement d'une partie passe par `GET /new?data=<descripteur>`,
+        # donc par l'URL : le descripteur porte le scenario ENTIER et le deck
+        # de chaque joueur. aiohttp refuse au-dela de 8190 octets par defaut
+        # (`LineTooLong`, HTTP 400) et le joueur ne voit rien du tout.
+        #
+        # Mesure du 16/09/2026, un joueur bloque net : le deck de depart le
+        # plus gros du depot pese 7861 octets UNE FOIS ENCODE, a lui seul. Un
+        # scenario en ajoute jusqu'a 2476, et une table a quatre joueurs
+        # approche 34 000 octets. La limite par defaut etait donc franchie par
+        # une partie ORDINAIRE a un seul joueur.
+        self.runner = web.AppRunner(
+            self.web_app,
+            max_line_size=MAX_LIGNE_REQUETE,
+            max_field_size=MAX_LIGNE_REQUETE,
+        )
 
         if PASSWORD.value:
             self.hash_password = hashlib.md5(PASSWORD.value.encode()).hexdigest()
