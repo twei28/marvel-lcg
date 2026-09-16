@@ -81,5 +81,10 @@ site doit donc s'appuyer sur autre chose :
 
 ## Statut
 
-**Commencé et bien avancé le 16/09/2026.** Les écrans que les joueurs
-traversent sont bilingues.
+**Fini le 16/09/2026 côté joueurs.** Les écrans qu'un joueur traverse sont
+bilingues de bout en bout : connexion, salon, choix de langue, page hors ligne,
+bouton « Installer l'application », mot de passe enregistré. **60 phrases,
+60/60 à la gate** (`site/test_langue.py`), `test_parcours.py` sans échec.
+
+Restent en français, **sur décision** : `/admin` et `/suivi`, qui ne sont vus
+que par l'administrateur.
