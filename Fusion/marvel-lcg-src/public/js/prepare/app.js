@@ -5,7 +5,7 @@ import { REPLIQUES, choisirReplique, classeTaille } from "./repliques-heros.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=3887a91f";
+import { launch } from "/public/js/prepare/launcher.js?v=38b91fc2";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
@@ -3415,7 +3415,6 @@ async function loadScnGrid() {
             el("span", { class: "tb-port-nom" }, sc.name),
             ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
             (sc.challenges && sc.challenges.length) ? el("span", { class: "st-exp" }, t("DÉFI")) : null,
-            sc.hasExpertVariant ? el("span", { class: "st-exp" }, "EXPERT") : null,
         );
     }));
 }

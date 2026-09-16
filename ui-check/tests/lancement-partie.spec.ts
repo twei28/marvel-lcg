@@ -235,9 +235,11 @@ test.describe("Lancement d'une partie", () => {
     await continuer(page);
 
     //   Etape 3 - Mechant ...... Rhino, premier scenario de la boite de base.
-    //   Le nom accessible du bouton est « Rhino Rhino EXPERT » : la vignette
-    //   repete le nom et affiche le badge de difficulte. Un `/^Rhino$/` ne
-    //   matchait donc plus rien. On ancre au debut, jamais sur l'egalite.
+    //   Le nom accessible du bouton est « Rhino Rhino » : la vignette repete le
+    //   nom (portrait + libelle). Un `/^Rhino$/` ne matche donc rien. On ancre
+    //   au debut, jamais sur l'egalite.
+    //   (Le badge EXPERT en faisait partie jusqu'au 16/09/2026 ; il a ete
+    //   retire de la vignette, la difficulte etant une option de creation.)
     await page.getByRole('button', { name: /^Rhino\b/ }).first().click();
     await continuer(page);
 
