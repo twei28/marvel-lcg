@@ -178,7 +178,8 @@ TENTATIVES_CONNEXION = int(os.environ.get("TENTATIVES_CONNEXION", "10"))
 FENETRE_CONNEXION = int(os.environ.get("FENETRE_CONNEXION", "900"))
 
 sys.path.insert(0, os.path.join(RACINE_JEU, "tools"))
-import config_serveur  # noqa: E402  (dependant de sys.path ci-dessus)
+import config_serveur
+import langue as lang  # noqa: E402  (dependant de sys.path ci-dessus)
 
 
 # --------------------------------------------------------------------------
@@ -2474,13 +2475,25 @@ PAGE = """<!doctype html>
   {barre}
   {corps}
   {bouton_appli}
-  <footer>Ton espace de jeu est a toi : tes decks, tes campagnes en cours et
-  tes hauts faits t'y attendent d'une fois sur l'autre. Eteindre le jeu
-  n'efface rien. Tes invites, eux, rejoignent ta partie par leur lien sans
-  avoir besoin d'un compte. Extinction automatique au bout de {heures} h
-  d'allumage.</footer>
+  <footer>{pied}</footer>
 </main>
 """
+
+def _pied_de_page() -> str:
+    """Le pied de page, dans la langue du visiteur.
+
+    ⚠ IL ETAIT ECRIT DANS LE GABARIT, donc intraduisible : un gabarit est une
+    chaine constante, evaluee une fois au chargement du module, quand aucune
+    requete n'existe encore et donc aucune langue. Il recoit maintenant son
+    texte a chaque rendu.
+    """
+    return lang.t(
+        "Ton espace de jeu est a toi : tes decks, tes campagnes en cours et tes "
+        "hauts faits t'y attendent d'une fois sur l'autre. Eteindre le jeu "
+        "n'efface rien. Tes invites, eux, rejoignent ta partie par leur lien "
+        "sans avoir besoin d'un compte. Extinction automatique au bout de "
+        "{heures} h d'allumage.").replace("{heures}", str(int(DUREE_MAX_HEURES)))
+
 
 def _barre(pseudo: str) -> str:
     admin = (' &middot; <a href="/admin">Administration</a>'
@@ -2531,7 +2544,7 @@ def page_reprise(pseudo: str, attendue: dict) -> bytes:
                 (", " + html.escape(motif)) if motif else ""))
     return PAGE.format(tete="", sous="Tu etais en pleine partie.",
                        barre=_barre(pseudo), corps=corps,
-                       heures=int(DUREE_MAX_HEURES)).encode("utf-8")
+                       pied=_pied_de_page()).encode("utf-8")
 
 
 ETIQUETTES_TICKET = {
@@ -2561,7 +2574,7 @@ def page_signalements(pseudo: str) -> bytes:
                  'journal de la partie. Tu retrouveras ici ma reponse.</p></div>')
         return PAGE.format(tete="", sous="Rien a suivre pour l\'instant.",
                            barre=_barre(pseudo), corps=corps,
-                           heures=int(DUREE_MAX_HEURES)).encode("utf-8")
+                           pied=_pied_de_page()).encode("utf-8")
 
     corps = ""
     for r in tickets:
@@ -2591,7 +2604,7 @@ def page_signalements(pseudo: str) -> bytes:
                      _horodate(r["quand"] or ""), fil, capture, r["id"]))
     return PAGE.format(tete="", sous="Ce que tu as signale, et ma reponse.",
                        barre=_barre(pseudo), corps=corps,
-                       heures=int(DUREE_MAX_HEURES)).encode("utf-8")
+                       pied=_pied_de_page()).encode("utf-8")
 
 
 def page_attente(pseudo: str) -> bytes:
@@ -2619,7 +2632,7 @@ def page_attente(pseudo: str) -> bytes:
                  '<p class="mdp">Le premier allumage prend une minute ou deux. '
                  'Cette page bascule toute seule des que c\'est pret.</p></div>')
     return PAGE.format(tete=tete, sous=sous, barre=_barre(pseudo), corps=corps,
-                       heures=int(DUREE_MAX_HEURES)).encode("utf-8")
+                       pied=_pied_de_page()).encode("utf-8")
 
 
 def page_arret(pseudo: str) -> bytes:
@@ -2633,7 +2646,7 @@ def page_arret(pseudo: str) -> bytes:
              '<form method="get" action="/entrer" style="margin-top:1rem">'
              '<button type="submit">Rallumer mon jeu</button></form></div>')
     return PAGE.format(tete="", sous="A tout de suite.", barre=_barre(pseudo),
-                       corps=corps, heures=int(DUREE_MAX_HEURES)).encode("utf-8")
+                       corps=corps, pied=_pied_de_page()).encode("utf-8")
 
 
 PAGE_FORMULAIRE = """<!doctype html>
@@ -3652,32 +3665,35 @@ class Handler(BaseHTTPRequestHandler):
     def _formulaire(self, quoi: str, erreur: str = "", jeton: str = "") -> bytes:
         inscription = quoi == "inscription"
         champs = ('<input type="hidden" name="i" value="%s">'
-                  '<label>Pseudo<input name="pseudo" autocomplete="username" required></label>'
-                  '<label>Adresse e-mail<input name="email" type="email" '
+                  '<label>%s<input name="pseudo" autocomplete="username" required></label>'
+                  '<label>%s<input name="email" type="email" '
                   'autocomplete="email" required></label>'
-                  % html.escape(jeton)) if inscription else (
-                  '<label>Pseudo ou adresse e-mail<input name="pseudo" '
-                  'autocomplete="username" required></label>')
+                  % (html.escape(jeton), lang.t("Pseudo"),
+                     lang.t("Adresse e-mail"))) if inscription else (
+                  '<label>%s<input name="pseudo" '
+                  'autocomplete="username" required></label>'
+                  % lang.t("Pseudo ou adresse e-mail"))
         return PAGE_FORMULAIRE.format(
-            titre="Creer un compte" if inscription else "Se connecter",
+            titre=lang.t("Creer un compte") if inscription else lang.t("Se connecter"),
             action="/inscription" if inscription else "/connexion",
-            bouton="Demander un compte" if inscription else "Entrer",
+            bouton=lang.t("Demander un compte") if inscription else lang.t("Entrer"),
             auto="new-password" if inscription else "current-password",
             champs=champs,
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
-            pied=(('Tu es invite : ton compte sera actif tout de suite.'
+            pied=((lang.t("Tu es invite : ton compte sera actif tout de suite.")
                    if invitation_valide(jeton) else
-                   'Ton compte devra etre valide a la main avant de servir.')
-                  + ' Deja un compte ? <a href="/connexion">Se connecter</a>.'
+                   lang.t("Ton compte devra etre valide a la main avant de servir."))
+                  + ' ' + lang.t('Deja un compte ? <a href="/connexion">Se connecter</a>.')
                   if inscription else
-                  'Pas encore de compte ? <a href="/inscription">En demander un</a>.'
-                  ' Mot de passe oublie ? Demande un lien de reinitialisation a l\'administrateur.'
+                  lang.t('Pas encore de compte ? <a href="/inscription">En demander un</a>.')
+                  + ' ' + lang.t("Mot de passe oublie ? Demande un lien de reinitialisation a l'administrateur.")
                   # ⚠ LA REGLE EST ANNONCEE, PAS SUBIE. Le site ne sait pas
                   # envoyer de courriel : personne ne peut etre prevenu de son
                   # expiration. La seule facon honnete de la faire accepter est
                   # de l'ecrire la ou tout le monde passe.
-                  ' Les places sont comptees : %d jours sans venir et la tienne'
-                  ' retourne au pot. Ecris-moi, je te la rends.' % EXPIRATION_JOURS),
+                  + ' ' + lang.t("Les places sont comptees : {jours} jours sans venir et la tienne"
+                                 " retourne au pot. Ecris-moi, je te la rends.").replace(
+                      "{jours}", str(EXPIRATION_JOURS))),
         ).encode("utf-8")
 
     def _formulaire_reinitialisation(self, jeton: str, erreur: str = "") -> bytes:
@@ -3971,6 +3987,7 @@ class Handler(BaseHTTPRequestHandler):
                    image, journal, fil, boutons))
 
     def do_GET(self):
+        self._poser_langue()
         pseudo = self._session()
         if self.chemin in ("/", "/index.html"):
             # ⚠ LE SITE N'EST QU'UNE PORTE. Qui est connecte n'a rien a faire
@@ -4180,7 +4197,18 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
 
+    def _poser_langue(self) -> None:
+        """La langue de CE visiteur, pour toute la duree de CETTE requete.
+
+        ⚠ Un fil par requete (`ThreadingHTTPServer`) : deux visiteurs peuvent
+        lire deux langues a la meme seconde. C'est pour cela que la langue vit
+        dans le fil et non dans une globale.
+        """
+        lang.poser(lang.detecter(self.headers.get("Cookie") or "",
+                                 self.headers.get("Accept-Language") or ""))
+
     def do_POST(self):
+        self._poser_langue()
         # ⚠ L'ORDRE DE CES TROIS LIGNES EST LE CORRECTIF. On plafonne le corps
         # AVANT de le lire, et on identifie qui parle AVANT de le lire aussi.
         # Le code precedent lisait `Content-Length` octets en premier, sans
