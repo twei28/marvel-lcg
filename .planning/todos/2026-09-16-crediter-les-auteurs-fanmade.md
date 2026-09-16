@@ -26,12 +26,34 @@ affiché dans le jeu avant que l'utilisateur ait confirmé, ligne par ligne.
 | **Mozilla** | Zeus | ☐ |
 | **ekAugust** | Venomized | ☐ |
 | **T-Wrecks** | Sentinel | ☐ |
+| **Juri Krasko** | Angela | ☐ |
+| **Neptune** | Iron Patriot | ☐ |
+
+### ⚠ Relevé du 16/09/2026 sur `tools/prefixes_fanmade.json`
+
+Ce fichier nomme les auteurs dans ses notes, pack par pack, et c'est une
+source PRIMAIRE (écrite au portage) là où la liste ci-dessus était
+reconstituée. Croisé avec `deck/starter/` pour ne compter que les personnages
+JOUABLES :
+
+- **62 personnages fan-made jouables** dans le jeu ;
+- **27 ont un auteur attesté** dans ce fichier, répartis sur **11 auteurs** ;
+- **35 n'en ont aucun** : ce sont les packs migrés en bloc le 12/08/2026, dont
+  la note ne dit rien de leur origine.
+
+Deux corrections apportées à la table ci-dessus :
+
+- **Juri Krasko** (Angela) n'y figurait pas du tout ;
+- **Iron Patriot a un auteur : Neptune**, contrairement à ce qui est écrit
+  juste en dessous.
+
+Les 35 personnages sans auteur sont le vrai travail restant, et il ne se fera
+pas depuis ce dépôt : il faut remonter aux zips et aux fils Discord d'origine.
 
 ### Les trous connus
 
-- **Iron Patriot** : auteur INTROUVABLE. Le zip est là
-  (`A créer/Iron Patriot-20260829T085900Z-1-001.zip`), aucune fiche ne le
-  nomme, l'archive non plus.
+- ~~**Iron Patriot** : auteur INTROUVABLE.~~ **Trouvé le 16/09/2026** :
+  `prefixes_fanmade.json` le donne à **Neptune**. Reste à confirmer.
 - **Beast** : la fiche parle d'un « message Discord pour l'auteur du pack »
   sans le nommer à cet endroit. À retrouver.
 - **Sentinel** : le nom T-Wrecks vient d'un MESSAGE DE COMMIT, pas d'une source
