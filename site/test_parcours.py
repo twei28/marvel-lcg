@@ -2221,6 +2221,81 @@ verifier("⚠ et anglais", "What you reported" in _page_en, _page_en[:120])
 verifier("sans laisser de francais derriere",
          "Se deconnecter" not in _page_en and "Mes signalements" not in _page_en)
 
+
+print()
+print("Toutes les pages du gabarit commun, dans les deux langues")
+
+# ⚠ CETTE SECTION EXISTE A CAUSE DE DEUX DEFAUTS TROUVES EN PRODUCTION LE
+# 16/09/2026, qu'AUCUNE gate ne voyait :
+#
+# 1. la page qui suit une demande d'inscription ne passait pas `bouton_appli`
+#    au gabarit : `.format()` levait un KeyError, donc une 500 en pleine
+#    inscription. Le typage ne voit rien, et aucun cas ne demandait cette page ;
+# 2. le libelle du champ mot de passe etait ECRIT EN DUR dans le gabarit HTML.
+#    `test_langue.py` ne lit que ce qui passe par `t()` : un texte en dur lui
+#    est invisible par construction. Un anglophone lisait « Sign in » au-dessus
+#    d'un champ « Mot de passe ».
+#
+# La seule gate qui attrape les deux est celle-ci : DEMANDER les pages, pour de
+# vrai, dans les deux langues, et lire ce qui en sort.
+
+_EN = {"Accept-Language": "en-US,en;q=0.9"}
+# Des mots qui n'existent qu'en francais et qui ne peuvent PAS etre un reste
+# d'anglais : leur presence dans une page anglaise est un texte oublie.
+_FRANCAIS = ("Mot de passe", "Se connecter", "Pseudo", "Entrer",
+             "Enregistrer", "Nouveau mot de passe", "compte")
+
+
+def _demander(nom, methode, chemin, corps=b"", entetes=None):
+    """Un appel qui ne peut pas emporter la batterie avec lui.
+
+    ⚠ Une page qui LEVE (un champ manquant dans `.format()`, par exemple) ne
+    repond pas : le serveur raccroche, et `appel` remonte un
+    RemoteDisconnected. Sans ce filet, le defaut du 16/09/2026 n'aurait pas
+    rougi un cas — il aurait arrete le fichier de test au milieu, avec une
+    trace de `http.client` qui ne nomme meme pas la page fautive.
+    """
+    try:
+        return appel(methode, chemin, corps, entetes)
+    except Exception as souci:                 # noqa: BLE001 — on juge, on relance pas
+        verifier(nom + " : la page repond", False, type(souci).__name__)
+        return 599, None, b""
+
+
+def _page_bilingue(nom, methode, chemin, corps=b"", entetes=None):
+    """Demande la page dans les deux langues et juge les deux reponses."""
+    tetes_fr = dict(entetes or {})
+    tetes_en = dict(tetes_fr, **_EN)
+    code_fr, _, corps_fr = _demander(nom + " (FR)", methode, chemin, corps, tetes_fr)
+    code_en, _, corps_en = _demander(nom + " (EN)", methode, chemin, corps, tetes_en)
+    texte_en = corps_en.decode("utf-8", "replace")
+    verifier(nom + " : la page se construit (FR)", code_fr < 500, "code %d" % code_fr)
+    verifier(nom + " : la page se construit (EN)", code_en < 500, "code %d" % code_en)
+    restes = [mot for mot in _FRANCAIS if mot in texte_en]
+    verifier(nom + " : rien de francais ne reste en anglais",
+             not restes, "trouve : " + ", ".join(restes))
+    return corps_fr, corps_en
+
+
+_page_bilingue("connexion", "GET", "/connexion")
+_page_bilingue("inscription", "GET", "/inscription")
+# Le lien de reinitialisation : le jeton est faux, ce qui suffit — on juge la
+# PAGE, et le formulaire est le meme gabarit.
+_page_bilingue("reinitialisation", "GET", "/reinitialisation?r=jetoninexistant")
+
+# La page qui suit une demande d'inscription : c'est celle qui levait le
+# KeyError, et elle n'est atteignable que par un POST.
+import uuid as _uuid  # noqa: E402
+
+_nouveau = "essai" + _uuid.uuid4().hex[:8]
+_corps = ("pseudo=" + _nouveau + "&email=" + _nouveau
+          + "%40exemple.fr&mdp=motdepasse123").encode()
+_code, _, _apres = _demander("demande d'inscription", "POST", "/inscription", _corps)
+verifier("la page qui suit une demande d'inscription ne plante pas",
+         _code < 500, "code %d" % _code)
+verifier("et elle dit que la demande est enregistree",
+         "enregistr" in _apres.decode("utf-8", "replace").lower())
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:

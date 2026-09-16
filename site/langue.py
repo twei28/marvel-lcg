@@ -199,6 +199,27 @@ DICO_EN: dict[str, str] = {
     "Mot de passe enregistre": "Password saved",
     "Ton nouveau mot de passe est en place : connecte-toi.":
         "Your new password is set: sign in.",
+
+    # --- Le formulaire commun : le libelle du champ mot de passe -----------
+    # Il etait ECRIT EN DUR dans le gabarit HTML, donc invisible pour la gate
+    # (qui ne lit que ce qui passe par `t()`) : un anglophone voyait « Sign in »
+    # au-dessus d'un champ « Mot de passe ». Vu en production le 16/09/2026.
+    "Mot de passe": "Password",
+
+    # --- Le nouveau mot de passe, depuis un lien de reinitialisation --------
+    "Nouveau mot de passe": "New password",
+    "Enregistrer": "Save",
+    "Huit caracteres au minimum. Tes sessions ouvertes seront fermees.":
+        "Eight characters minimum. Your open sessions will be closed.",
+    '<a href="/connexion">Se connecter</a>.':
+        '<a href="/connexion">Sign in</a>.',
+
+    # --- Apres une demande d'inscription ------------------------------------
+    "Demande enregistree": "Request received",
+    "Ton compte est actif : connecte-toi.": "Your account is active: sign in.",
+    "Ton compte attend une validation manuelle. Reviens une fois"
+    " qu'elle est faite.":
+        "Your account is waiting for manual approval. Come back once it is done.",
 }
 
 

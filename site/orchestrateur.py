@@ -2709,7 +2709,7 @@ PAGE_FORMULAIRE = """<!doctype html>
   {erreur}
   <form method="post" action="{action}">
     {champs}
-    <label>Mot de passe<input name="mdp" type="password" autocomplete="{auto}" required></label>
+    <label>{mdp}<input name="mdp" type="password" autocomplete="{auto}" required></label>
     <button type="submit">{bouton}</button>
   </form>
   <p>{pied}</p>
@@ -3742,6 +3742,7 @@ class Handler(BaseHTTPRequestHandler):
             action="/inscription" if inscription else "/connexion",
             bouton=lang.t("Demander un compte") if inscription else lang.t("Entrer"),
             auto="new-password" if inscription else "current-password",
+            mdp=lang.t("Mot de passe"),
             champs=champs,
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
             bouton_appli=_bouton_appli(),
@@ -3764,13 +3765,14 @@ class Handler(BaseHTTPRequestHandler):
     def _formulaire_reinitialisation(self, jeton: str, erreur: str = "") -> bytes:
         """Le formulaire du nouveau mot de passe, sur le gabarit commun."""
         return PAGE_FORMULAIRE.format(
-            titre="Nouveau mot de passe",
-            action="/reinitialisation", bouton="Enregistrer", auto="new-password",
+            titre=lang.t("Nouveau mot de passe"),
+            action="/reinitialisation", bouton=lang.t("Enregistrer"), auto="new-password",
+            mdp=lang.t("Mot de passe"),
             champs='<input type="hidden" name="r" value="%s">' % html.escape(jeton),
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
             bouton_appli=_bouton_appli(),
-            pied="Huit caracteres au minimum. Tes sessions ouvertes seront fermees."
-                 ' <a href="/connexion">Se connecter</a>.',
+            pied=lang.t("Huit caracteres au minimum. Tes sessions ouvertes seront fermees.")
+                 + ' ' + lang.t('<a href="/connexion">Se connecter</a>.'),
         ).encode("utf-8")
 
     def _servir_capture(self) -> None:
@@ -4337,13 +4339,16 @@ class Handler(BaseHTTPRequestHandler):
                     "inscription", str(erreur), champs.get("i", "")))
                 return
             self._repondre(200, PAGE_FORMULAIRE.format(
-                titre="Demande enregistree", action="/connexion", bouton="Entrer",
-                auto="current-password", erreur="",
-                champs='<label>Pseudo ou adresse e-mail<input name="pseudo" '
-                       'autocomplete="username" required></label>',
-                pied=("Ton compte est actif : connecte-toi." if invite else
-                      "Ton compte attend une validation manuelle. Reviens une fois "
-                      "qu'elle est faite.")).encode("utf-8"))
+                titre=lang.t("Demande enregistree"), action="/connexion",
+                bouton=lang.t("Entrer"), auto="current-password", erreur="",
+                mdp=lang.t("Mot de passe"),
+                bouton_appli=_bouton_appli(),
+                champs='<label>%s<input name="pseudo" '
+                       'autocomplete="username" required></label>'
+                       % lang.t("Pseudo ou adresse e-mail"),
+                pied=(lang.t("Ton compte est actif : connecte-toi.") if invite else
+                      lang.t("Ton compte attend une validation manuelle. Reviens une fois"
+                             " qu'elle est faite."))).encode("utf-8"))
 
         elif self.chemin == "/reinitialisation":
             champs = self._champs()
@@ -4355,6 +4360,7 @@ class Handler(BaseHTTPRequestHandler):
             self._repondre(200, PAGE_FORMULAIRE.format(
                 titre=lang.t("Mot de passe enregistre"), action="/connexion",
                 bouton=lang.t("Entrer"), auto="current-password", erreur="",
+                mdp=lang.t("Mot de passe"),
                 champs='<label>%s<input name="pseudo" '
                        'autocomplete="username" value="%s" required></label>'
                        % (lang.t("Pseudo ou adresse e-mail"), html.escape(qui)),
