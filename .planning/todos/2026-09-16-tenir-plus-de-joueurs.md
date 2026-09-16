@@ -66,10 +66,50 @@ faiblit quand les parties divergent), donc **un CX32 à 8 Go est juste, un CX42
 sondage adaptatif, 100 parties à deux joueurs produisent une quinzaine de
 requêtes par seconde, contre ~650 tenues par la machine.
 
-⚠ **Ce que le banc n'a PAS mesuré** : le trafic WebSocket des actions de jeu
-(seules les requêtes HTTP l'ont été), le cache d'images d'une partie où les
-joueurs consultent beaucoup de cartes, et la pointe de CPU que feraient cent
-démarrages simultanés. Ces trois-là s'ajoutent aux chiffres ci-dessus.
+### Le cache d'images, mesuré à son tour
+
+⚠ **`Cache.cache` (`src/engine/file/cache.py`) est un dictionnaire SANS BORNE** :
+chaque image chargée y reste pour la vie du processus de la table. C'est ce que
+le premier banc ne voyait pas, ses tables n'ayant jamais servi une carte.
+
+| Cartes vues par la table | RSS du moteur |
+|---|---|
+| 0 (cache vide) | 68 Mo |
+| 100 | 70 Mo |
+| 300 | 78 Mo |
+| 600 | 86 Mo |
+| 1200 | **102 Mo** |
+
+Soit **~29 Ko par carte vue**, linéaire, et jamais rendu. Conséquences :
+
+- une table fraîche avec une partie montée : **81 Mo** ;
+- une table où quatre joueurs enchaînent une soirée (héros et scénarios
+  variés, 1000 à 2000 cartes distinctes) : **110 à 140 Mo** ;
+- le pire cas théorique, toutes les cartes du jeu vues sur la même table :
+  5927 × 29 Ko ≈ 170 Mo de cache, soit ~240 Mo. **C'est très probablement ce
+  que mesurait le chiffre de 221 Mo** : non pas une table au repos, mais une
+  table qui avait beaucoup servi.
+
+⚠ **Première tentative de cette mesure, ratée et instructive** : les images
+étaient demandées par HTTP sans cookie de session, et le moteur répondait sa
+page de mot de passe (1,8 Ko). Neuf cents requêtes plus tard le RSS n'avait pas
+bougé d'un octet, ce qui se lisait comme « le cache ne coûte rien ». Il ne
+coûtait rien parce que rien n'avait été servi. La mesure a été refaite sur
+`Cache.LoadImage` directement.
+
+### Ce que cela donne en sièges
+
+Le plafond n'est pas la mémoire, c'est le LOGICIEL : `NB_EMPLACEMENTS` vaut 20,
+et le Caddyfile porte 20 routes `p1..p20` écrites à la main.
+
+| | Tables | Joueurs (4 par table) | Mémoire attendue |
+|---|---|---|---|
+| **Aujourd'hui, sans rien changer** | 20 | **80** | ~2,2 à 2,8 Go, tient sur la machine |
+| En levant le plafond logiciel | 40 | 160 | ~4,8 Go, **demande 8 Go** |
+
+⚠ **Ce que le banc n'a toujours PAS mesuré** : le trafic WebSocket des actions
+de jeu (seules les requêtes HTTP l'ont été) et la pointe de CPU que feraient
+cent démarrages simultanés.
 
 ## Le vrai goulot n'était pas la mémoire
 
