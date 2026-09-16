@@ -2045,19 +2045,24 @@ def changer_etat_rapport(numero: int, etat: str) -> None:
 
 
 def purger_rapports_traites(jours: int = JOURS_RAPPORTS_TRAITES) -> int:
-    """Efface les rapports classes « traite » depuis plus de `jours`.
+    """Allege les rapports classes « traite » depuis plus de `jours` : la
+    CAPTURE part, le rapport et son fil restent.
 
-    ⚠ LA CAPTURE ET LA LIGNE PARTENT ENSEMBLE. Effacer l'image seule
-    laisserait la base renvoyer vers un fichier absent ; effacer la ligne seule
-    laisserait l'image grossir le disque sans que rien n'y renvoie plus. C'est
-    la meme regle que `supprimer_rapport`, appliquee en gros.
+    ⚠ CHANGE LE 16/09/2026, AVEC LE SUIVI DES SIGNALEMENTS. La purge effacait
+    la ligne entiere. Un rapport est devenu un TICKET que son auteur consulte :
+    effacer la ligne viderait sa page « Mes signalements » un mois apres, avec
+    la reponse qu'on lui a faite. Or ce qui pesait n'a jamais ete le texte,
+    c'est l'image — jusqu'a 4 Mio par rapport, 12 rapports par heure et par
+    table, et trente archives de sauvegarde par-dessus.
 
-    ⚠ MAIS DANS CET ORDRE : LES LIGNES, LA VALIDATION, PUIS LE DISQUE. Effacer
-    un fichier au milieu d'une transaction, c'est promettre au disque ce que la
-    base peut encore annuler : la moindre erreur en fin de boucle rendait les
-    lignes et laissait les images parties.
+    On efface donc l'image et on met `capture` a NULL dans le meme geste : la
+    base ne renvoie jamais vers un fichier absent.
 
-    Rend le nombre de rapports effaces.
+    ⚠ ET DANS CET ORDRE : LA BASE, LA VALIDATION, PUIS LE DISQUE. Effacer un
+    fichier au milieu d'une transaction, c'est promettre au disque ce que la
+    base peut encore annuler.
+
+    Rend le nombre de rapports alleges.
     """
     from datetime import datetime, timedelta
     if jours < 0:
@@ -2079,19 +2084,24 @@ def purger_rapports_traites(jours: int = JOURS_RAPPORTS_TRAITES) -> int:
         # choisissant lui-meme les deux valeurs possibles ; mais l'invariant
         # « aucun % dans une chaine SQL » se verifie d'un coup d'oeil, et une
         # exception, meme sure, oblige a les relire toutes.
+        # ⚠ `capture IS NOT NULL` : ON N'ALLEGE QUE CE QUI PESE ENCORE. Depuis
+        # que la ligne reste, un rapport deja allege serait repris a chaque
+        # passage de la purge, qui annoncerait indefiniment le meme travail.
         if "traite_le" in colonnes:
             lignes = cx.execute(
                 "SELECT id, capture FROM rapports WHERE etat = 'traite'"
+                " AND capture IS NOT NULL"
                 " AND COALESCE(traite_le, quand) < ?", (limite,)).fetchall()
         else:
             lignes = cx.execute(
                 "SELECT id, capture FROM rapports WHERE etat = 'traite'"
-                " AND quand < ?", (limite,)).fetchall()
+                " AND capture IS NOT NULL AND quand < ?", (limite,)).fetchall()
         for r in lignes:
-            cx.execute("DELETE FROM rapports WHERE id = ?", (r["id"],))
+            cx.execute("UPDATE rapports SET capture = NULL WHERE id = ?", (r["id"],))
 
-    # La transaction est validee : ce qui suit ne peut plus etre annule, et le
-    # disque ne perdra donc rien que la base ait garde.
+    # La transaction est validee : la base ne renvoie plus vers ces images, on
+    # peut donc les effacer sans risquer de laisser un rapport pointer dans le
+    # vide si quelque chose echoue ici.
     for r in lignes:
         if not r["capture"]:
             continue
@@ -2253,7 +2263,7 @@ def messages_non_lus(moi: str) -> dict:
     """
     moi = (moi or "").strip().lower()
     if not moi:
-        return {"nouveaux": 0, "de": []}
+        return {"nouveaux": 0, "de": [], "tickets": 0}
     with _cx() as cx:
         ligne = cx.execute("SELECT dernier_message_vu FROM comptes WHERE pseudo=?",
                            (moi,)).fetchone()
@@ -2262,8 +2272,17 @@ def messages_non_lus(moi: str) -> dict:
             "SELECT pseudo, COUNT(*) AS combien FROM messages"
             " WHERE destinataire = ? AND id > ? GROUP BY pseudo",
             (moi, vu)).fetchall()
+    # ⚠ LES REPONSES DE TICKETS VOYAGENT PAR CETTE MEME ROUTE (16/09/2026), et
+    # c'est ce qui evite de toucher au moteur : `get_messages_prives` recopie
+    # ce que le site lui donne, sans rien connaitre du contenu. Aucun
+    # redemarrage de serveur pour cette partie du chantier.
+    #
+    # ⚠ ET LA RESERVE DE SIEGE TOMBE JUSTE. Le moteur ne relaie cette route
+    # qu'au siege 0 (« un invite n'a pas a savoir qu'il a recu un message ») :
+    # c'est exactement le seul siege qui puisse avoir un ticket.
     return {"nouveaux": sum(int(l["combien"]) for l in lignes),
-            "de": [l["pseudo"] for l in lignes]}
+            "de": [l["pseudo"] for l in lignes],
+            "tickets": reponses_non_lues(moi)}
 
 
 def marquer_messages_lus(moi: str) -> None:

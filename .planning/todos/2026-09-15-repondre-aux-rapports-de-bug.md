@@ -48,5 +48,37 @@ le même logiciel.
 
 ## Statut
 
-Notée le 15/09/2026, **à cadrer**. Aucune ligne de code, et les trois questions
-ci-dessus passent avant.
+✅ **LIVRÉ le 16/09/2026**, en « vrai suivi de tickets » (choix de l'utilisateur
+parmi les trois tailles proposées). Spec :
+`docs/superpowers/specs/2026-09-16-suivi-des-signalements-design.md`. Plan :
+`docs/superpowers/plans/2026-09-16-suivi-des-signalements.md`.
+
+**Les trois questions dites bloquantes ont été répondues par le CODE**, pas par
+l'utilisateur : le site vit dans ce dépôt (`site/orchestrateur.py`), un rapport
+ne porte l'identité de son auteur que pour le siège 0, et la réponse atteint le
+joueur sur une page dédiée.
+
+### Ce qui est en place
+
+- Quatre états : Reçu / En cours / Corrigé / Refusé.
+- Un fil dans les deux sens (`rapports_messages`), réservé au **siège 0** :
+  c'est la seule identité sûre, et un rapport d'invité reste un rapport, ce que
+  `/admin` dit noir sur blanc.
+- `/admin` : le fil, un champ de réponse, le quatrième bouton d'état.
+- `/signalements` : ses bugs, leur état, la capture, le fil, de quoi répondre.
+  Deux vérifications, pas une : la page ne montre que ses tickets, et le POST
+  cherche le numéro dans les tickets de celui qui parle.
+- La pastille en partie passe par `/api/prives`, **sans toucher au moteur** ;
+  une seconde pastille, d'une autre couleur, mène à `/signalements`.
+- La purge n'efface plus la ligne : à 30 jours la capture part, le fil reste.
+
+### Ce qui n'est PAS fait, et c'est voulu
+
+Aucune modale sur le plateau (le pire endroit pour relire un fil), aucun ticket
+ouvert sans bug, aucun courrier électronique, et le tchat retiré le 12/09 n'est
+pas réveillé : le fil a sa propre table.
+
+### Reste
+
+Le volume : si le suivi se remplit de tickets jamais fermés, la question de
+l'archivage se posera d'elle-même. Non tranchée.

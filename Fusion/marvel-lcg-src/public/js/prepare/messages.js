@@ -28,6 +28,9 @@
     un: EN ? 'A message for you' : 'Un message pour toi',
     plusieurs: EN ? 'messages for you' : 'messages pour toi',
     ouvrir: EN ? 'Open' : 'Ouvrir',
+    ticketUn: EN ? 'A reply to your bug report' : 'Une réponse à ton signalement',
+    ticketPlusieurs: EN ? 'replies to your bug reports' : 'réponses à tes signalements',
+    ticketOuvrir: EN ? 'Read' : 'Lire',
   };
 
   const style = document.createElement('style');
@@ -42,6 +45,22 @@
     }
     .msg-pastille:hover { filter: brightness(1.15); }
     .msg-pastille b { color: #fff; }
+    /* ⚠ DEUX PASTILLES DISTINCTES (16/09/2026), pas une qui compte les deux.
+       Quand un message ET une réponse de signalement attendent en même temps,
+       une pastille unique devrait choisir où elle mène, et l'autre destination
+       passerait à la trappe. Couleur différente, destination différente. */
+    .tkt-pastille {
+      position: fixed; right: 14px; bottom: 14px; z-index: 9000;
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 14px; border: 2px solid #1f6feb; border-radius: 10px;
+      background: linear-gradient(180deg, rgba(12,24,48,.98), rgba(8,14,30,.98));
+      box-shadow: 0 8px 30px rgba(0,0,0,.55);
+      font: 14px/1.3 system-ui, sans-serif; color: #b7d3f0; cursor: pointer;
+    }
+    .tkt-pastille:hover { filter: brightness(1.15); }
+    .tkt-pastille b { color: #fff; }
+    /* Quand les deux sont là, celle des signalements monte d'un cran. */
+    .msg-pastille + .tkt-pastille, .tkt-pastille.avec-message { bottom: 66px; }
   `;
   document.head.appendChild(style);
 
@@ -80,16 +99,57 @@
     pastille.append(texte, bouton);
   }
 
+  let pastilleTicket = null;
+
+  /** La pastille des réponses de signalement. Même règle que l'autre : rien ne
+   *  s'affiche tant que rien n'attend.
+   *
+   *  ⚠ ELLE N'APPELLE PAS `/post_messages_lus`. Ce sont deux compteurs
+   *  distincts : ouvrir /signalements marque les réponses lues, côté site, et
+   *  marquer les messages privés ici éteindrait la mauvaise pastille. */
+  function dessinerTicket(combien, avecMessage) {
+    if (!combien) {
+      if (pastilleTicket) { pastilleTicket.remove(); pastilleTicket = null; }
+      return;
+    }
+    if (!pastilleTicket) {
+      pastilleTicket = document.createElement('button');
+      pastilleTicket.type = 'button';
+      pastilleTicket.className = 'tkt-pastille';
+      // ⚠ UN NOUVEL ONGLET, comme pour les messages : ce module tourne aussi
+      // sur le PLATEAU, et remplacer la page sortirait quelqu'un de sa partie.
+      pastilleTicket.addEventListener('click', () => {
+        window.open('/signalements', '_blank', 'noopener');
+      });
+      document.body.appendChild(pastilleTicket);
+    }
+    pastilleTicket.classList.toggle('avec-message', !!avecMessage);
+    pastilleTicket.innerHTML = '';
+    const texte = document.createElement('span');
+    texte.innerHTML = combien > 1
+      ? '<b>' + combien + '</b> ' + T.ticketPlusieurs
+      : '<b>' + T.ticketUn + '</b>';
+    const bouton = document.createElement('span');
+    bouton.textContent = '→ ' + T.ticketOuvrir;
+    pastilleTicket.append(texte, bouton);
+  }
+
   async function demander() {
     try {
       const r = await fetch('/get_messages_prives', { cache: 'no-store' });
       if (!r.ok) throw new Error(r.status);
       const j = await r.json();
-      dessiner(Number((j && j.nouveaux) || 0), (j && j.de) || []);
+      const nouveaux = Number((j && j.nouveaux) || 0);
+      dessiner(nouveaux, (j && j.de) || []);
+      // `tickets` est absent des anciennes reponses du site : Number(undefined)
+      // vaudrait NaN, d'ou le `|| 0`. Une pastille ne doit jamais dependre
+      // d'un deploiement du site pour ne PAS s'afficher.
+      dessinerTicket(Number((j && j.tickets) || 0), nouveaux > 0);
     } catch (e) {
       // Partie locale sans site derrière, moteur muet, réseau coupé : on se
       // tait. Rien ici ne doit gêner la préparation d'une partie.
       dessiner(0, []);
+      dessinerTicket(0, false);
     }
   }
 

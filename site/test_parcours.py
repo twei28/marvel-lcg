@@ -1196,13 +1196,22 @@ with o._cx() as cx:
     cx.execute("UPDATE rapports SET traite_le=? WHERE id=?", (_il_y_a_40, _vieux))
 
 _efface = o.purger_rapports_traites(30)
-verifier("un seul rapport part", _efface == 1, str(_efface))
+verifier("un seul rapport est allege", _efface == 1, str(_efface))
 
+# ⚠ CHANGE LE 16/09/2026 : LA PURGE ALLEGE, ELLE N'EFFACE PLUS. Un rapport est
+# devenu un TICKET que son auteur consulte ; effacer la ligne viderait sa page
+# « Mes signalements » un mois apres, avec la reponse qu'on lui a faite. Ce qui
+# pesait n'a jamais ete le texte, c'est l'image.
 _restants = {r["id"] for r in o.liste_rapports()}
-verifier("le rapport traite depuis longtemps a disparu de la base",
-         _vieux not in _restants, str(_restants))
-verifier("sa capture aussi",
+verifier("⚠ le rapport traite depuis longtemps RESTE en base",
+         _vieux in _restants, str(_restants))
+verifier("mais sa capture a quitte le disque",
          not os.path.isfile(os.path.join(_bac_rapports, _fichiers[_vieux])))
+with o._cx() as cx:
+    _capture_apres = cx.execute("SELECT capture FROM rapports WHERE id=?",
+                                (_vieux,)).fetchone()["capture"]
+verifier("et la base ne renvoie plus vers une image absente",
+         _capture_apres is None, str(_capture_apres))
 
 # ⚠ LES DEUX CAS DE REFUS, ET CE SONT EUX QUI COMPTENT. Une purge qui emporte
 # ce qu'on n'a pas fini de lire est pire que pas de purge du tout.
@@ -1220,7 +1229,7 @@ with o._cx() as cx:
                ((datetime.now() - timedelta(days=200)).strftime("%Y-%m-%d %H:%M"),
                 _ouvert))
 o.changer_etat_rapport(_ouvert, "traite")
-verifier("un vieux rapport tout juste classe n'est pas emporte",
+verifier("un vieux rapport tout juste classe n'est pas allege",
          o.purger_rapports_traites(30) == 0)
 
 # ⚠ ET LE DISQUE N'EST TOUCHE QU'UNE FOIS LA TRANSACTION VALIDEE. Effacer un
@@ -1241,7 +1250,8 @@ def _remove_observe(chemin):
     # Une AUTRE connexion : elle ne voit que ce qui est valide.
     with o._cx() as _autre:
         _vu_pendant["reste"] = _autre.execute(
-            "SELECT COUNT(*) FROM rapports WHERE id=?", (_hors,)).fetchone()[0]
+            "SELECT COUNT(*) FROM rapports WHERE id=? AND capture IS NOT NULL",
+            (_hors,)).fetchone()[0]
     return _vrai_remove(chemin)
 
 
@@ -1250,7 +1260,7 @@ try:
     o.purger_rapports_traites(30)
 finally:
     os.remove = _vrai_remove
-verifier("la capture ne part qu'une fois la ligne vraiment validee",
+verifier("la capture ne part qu'une fois le detachement valide",
          _vu_pendant.get("reste") == 0, str(_vu_pendant))
 
 # ⚠ UNE CAPTURE QUI RESISTE N'EMPORTE PAS SA LIGNE AVEC ELLE. Les fichiers
@@ -1275,9 +1285,9 @@ import io as _flux                                          # noqa: E402
 _plainte = _flux.StringIO()
 with contextlib.redirect_stderr(_plainte):
     _efface = o.purger_rapports_traites(30)
-verifier("la ligne part meme quand sa capture resiste",
-         _efface == 1 and _coince not in {r["id"] for r in o.liste_rapports()},
-         "%d efface(s)" % _efface)
+verifier("le detachement se fait meme quand la capture resiste",
+         _efface == 1 and _coince in {r["id"] for r in o.liste_rapports()},
+         "%d allege(s)" % _efface)
 verifier("et l'echec de l'effacement est dit, pas avale",
          "capture" in _plainte.getvalue().lower(), repr(_plainte.getvalue()))
 os.rmdir(_chemin_coince)
@@ -2128,6 +2138,50 @@ verifier("et elle reste sobre quand rien n'attend",
          "Mes signalements" in o._barre("quelqu-un-d-autre")
          and "(" not in o._barre("quelqu-un-d-autre").split("Mes signalements")[1][:12],
          o._barre("quelqu-un-d-autre"))
+
+
+# La pastille en partie. Le joueur est sur p<N>.<domaine> : seul le moteur peut
+# parler au site, et il relaie deja `/api/prives`. On y ajoute le compte des
+# reponses de tickets, donc SANS toucher au moteur ni le redemarrer.
+_avant = o.messages_non_lus("yarro")
+verifier("le contrat existant est intact",
+         "nouveaux" in _avant and "de" in _avant, str(_avant))
+verifier("et il porte desormais les reponses de tickets",
+         _avant.get("tickets") == 1, str(_avant))
+o.marquer_ticket_lu(_r_hote, "joueur")
+verifier("qui retombent a zero une fois lues",
+         o.messages_non_lus("yarro").get("tickets") == 0)
+
+
+# La purge : l'image pesait, pas le texte. Depuis le 16/09/2026 un rapport
+# classe garde son fil, et ne perd que sa capture.
+import base64 as _b64
+_png = _b64.b64encode(bytes.fromhex(
+    "89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c489"
+    "0000000a49444154789c6360000002000100ffff030000060005573f6d0a"
+    "0000000049454e44ae426082")).decode()
+_r_purge = o.enregistrer_rapport("yarro", {
+    "nom": "yarro", "siege": 0, "description": "avec une capture",
+    "capture": "data:image/png;base64," + _png})
+o.ecrire_message(_r_purge, "admin", "Corrige.")
+_fichier = (o.ticket_de(_r_purge) or {}).get("capture")
+verifier("la capture est bien sur le disque",
+         bool(_fichier) and os.path.exists(os.path.join(o.DOSSIER_RAPPORTS, _fichier)),
+         str(_fichier))
+o.changer_etat_rapport(_r_purge, "traite")
+with o._cx() as _cx:
+    _cx.execute("UPDATE rapports SET traite_le = '2020-01-01 00:00' WHERE id = ?",
+                (_r_purge,))
+_efface = o.purger_rapports_traites(30)
+verifier("la purge a traite le rapport", _efface >= 1, str(_efface))
+verifier("la capture a quitte le disque",
+         not os.path.exists(os.path.join(o.DOSSIER_RAPPORTS, _fichier)))
+_apres = o.ticket_de(_r_purge)
+verifier("⚠ mais le ticket est toujours la", _apres is not None)
+verifier("sans renvoyer vers une image absente",
+         _apres is not None and not _apres["capture"], str(_apres and _apres["capture"]))
+verifier("et son fil se relit encore",
+         _apres is not None and len(_apres.get("messages") or []) == 1)
 
 print()
 print("ECHECS : %d" % len(echecs))
