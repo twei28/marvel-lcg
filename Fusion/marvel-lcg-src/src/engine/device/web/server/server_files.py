@@ -25,12 +25,34 @@ class GameServerFiles(GameServerBase):
         player = request.match_info.get('player')
         return web.Response(text=f"Please visiting /?p={player}", status=404)
 
+    @staticmethod
+    def TypeImage(octets: bytes) -> str:
+        """Le type reel d'une image, lu dans sa SIGNATURE, jamais dans son nom.
+
+        ⚠ TOUTES LES IMAGES ETAIENT ANNONCEES `image/jpeg`, quelle qu'elles
+        soient (16/09/2026). Les navigateurs devinent et affichent quand meme,
+        mais pas toujours : un PNG annonce en JPEG a fait echouer un controle
+        qui verifie que l'image du narval est bien DECODEE, et non seulement
+        recue. Le meme raisonnement que `_ecrire_capture` cote site : on ne
+        fait confiance ni au nom, ni a l'etiquette, seulement aux octets.
+        """
+        if octets[1:4] == b"PNG":
+            return "image/png"
+        if octets[:4] == b"RIFF" and octets[8:12] == b"WEBP":
+            return "image/webp"
+        if octets[:3] == b"GIF":
+            return "image/gif"
+        if octets[:5] == b"<?xml" or octets[:4] == b"<svg":
+            return "image/svg+xml"
+        # JPEG, et le repli : c'est le format de l'immense majorite des scans.
+        return "image/jpeg"
+
     def handle_sets_image(self, request: web.Request) -> web.StreamResponse:
         file_path = request.path
 
         image_bytes = Cache.LoadImage(file_path)
 
-        return web.Response(body=image_bytes, content_type='image/jpeg', headers=self.HeaderCache)
+        return web.Response(body=image_bytes, content_type=self.TypeImage(image_bytes), headers=self.HeaderCache)
 
     def handle_hd_request(self, request: web.Request) -> web.StreamResponse:
         # La scene de l'assistant : le scan haute definition, ou le scan
@@ -38,7 +60,7 @@ class GameServerFiles(GameServerBase):
         file_path = request.path.split("/")[-1]
         image_bytes = Cache.LoadImageHD(file_path)
         self.device_manager.AddSize("Image", len(image_bytes))
-        return web.Response(body=image_bytes, content_type='image/jpeg', headers=self.HeaderCache)
+        return web.Response(body=image_bytes, content_type=self.TypeImage(image_bytes), headers=self.HeaderCache)
 
     def handle_vignette_request(self, request: web.Request) -> web.StreamResponse:
         # Meme forme que handle_image_request : seul le DERNIER segment compte,
@@ -46,7 +68,7 @@ class GameServerFiles(GameServerBase):
         file_path = request.path.split("/")[-1]
         image_bytes = Cache.LoadVignette(file_path)
         self.device_manager.AddSize("Image", len(image_bytes))
-        return web.Response(body=image_bytes, content_type='image/jpeg', headers=self.HeaderCache)
+        return web.Response(body=image_bytes, content_type=self.TypeImage(image_bytes), headers=self.HeaderCache)
 
     def handle_image_request(self, request: web.Request) -> web.StreamResponse:
         # file_path = request.match_info['path']
@@ -58,7 +80,7 @@ class GameServerFiles(GameServerBase):
 
         self.device_manager.AddSize("Image", image_size)
 
-        return web.Response(body=image_bytes, content_type='image/jpeg', headers=self.HeaderCache)
+        return web.Response(body=image_bytes, content_type=self.TypeImage(image_bytes), headers=self.HeaderCache)
 
     @override
     def __init__(self) -> None:
