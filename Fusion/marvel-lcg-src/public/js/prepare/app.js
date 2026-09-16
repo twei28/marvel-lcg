@@ -26,6 +26,7 @@ import { jouerSon, SON } from "/public/js/prepare/sons.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
          langueDejaChoisie, retenirLangue } from "/public/js/prepare/langue.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
+import { sauverDeck, decksSauvegardesPourHeros } from "/public/js/prepare/decks-serveur.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
 import { GENRES, nouveautesTriees } from "/public/js/prepare/nouveautes.js";
@@ -2943,7 +2944,13 @@ async function doImport(i) {
         const p = state.players[i];
         p.hero = hero; p.deck = deck; p.deckSource = "imported"; p.deckAuto = false;
         if (window.confirm(`Deck \u00ab ${deck.name} \u00bb ${t("importé")} (${deck.player_deck.length} ${t("cartes")}).\n\n${t("Le sauvegarder pour plus tard ?")}`)) {
-            prefs.saveDeck(deck);
+            // ⚠ SUR LE SERVEUR, pas dans le cache du navigateur : un deck range
+            // dans le localStorage ne suit pas d'un appareil a l'autre et
+            // disparait avec le cache. Voir decks-serveur.js.
+            const surLeServeur = await sauverDeck(deck);
+            if (!surLeServeur && status) {
+                status.textContent = t("Deck gardé sur cet appareil seulement : le serveur n'a pas répondu.");
+            }
         }
         render();
     } catch (e) {
@@ -2959,7 +2966,7 @@ async function loadDecks(i) {
     const p = state.players[i];
     await cards.load();
     const catDecks = await catalog.decksForHero(p.hero);
-    const saved = prefs.savedDecksForHero(p.hero.heroCardId).map((d, idx) => ({
+    const saved = (await decksSauvegardesPourHeros(p.hero.heroCardId)).map((d, idx) => ({
         id: "saved-" + idx, name: d.name || t("Deck importé"), source: "saved", deck: d,
         aspects: [...new Set((d.player_deck || []).map((id) => cards.aspectOf(id)).filter((a) => a && a !== "basic"))],
     }));

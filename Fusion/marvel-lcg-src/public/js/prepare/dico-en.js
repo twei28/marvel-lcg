@@ -714,4 +714,7 @@ export const DICO_EN_BASE = {
   "Ta partie n'est plus en cours. Reviens à l'accueil pour en lancer une autre.":
     'Your game is no longer running. Go back to the home page to start another one.',
   "Revenir à l'accueil": 'Back to the home page',
+  // prepare/decks-serveur.js : le serveur n'a pas pris le deck importe
+  "Deck gardé sur cet appareil seulement : le serveur n'a pas répondu.":
+    'Deck kept on this device only: the server did not respond.',
 };
