@@ -422,6 +422,32 @@ async function appliquerChoixSalon() {
     }
 }
 
+// ⚠ LE SONDAGE DU SALON ETAIT LE PREMIER CONSOMMATEUR DU SERVEUR (16/09/2026).
+// Mesure sur les journaux de Caddy, 3,2 heures : `/get_choix_sieges` pesait
+// 5917 requetes, soit 61 % de TOUT le trafic vers les tables, et une toutes
+// les deux secondes par client — y compris en solo, y compris onglet cache,
+// y compris quand rien ne bouge. A cent joueurs, cela ferait cinquante
+// requetes par seconde, chacune reveillant un processus Python, pour apprendre
+// que rien n'a change.
+//
+// ⚠ ET CELA EMPECHAIT LES TABLES DE S'ETEINDRE. Le faucheur juge l'inactivite
+// sur la date du journal du moteur ; ces appels l'ecrivaient sans arret. Un
+// onglet oublie faisait vivre une table jusqu'au minuteur des huit heures.
+//
+// Trois regles, donc : rien quand personne ne regarde, vite quand on attend
+// quelqu'un, lentement le reste du temps.
+export const SONDAGE_ATTENTE_MS = 2000;
+export const SONDAGE_CALME_MS = 15000;
+
+/** Le delai avant le prochain sondage, ou 0 pour « ne sonde pas ».
+ *
+ *  Fonction PURE et exportee : c'est la seule decision de cette boucle qu'on
+ *  puisse eprouver sans faire tourner de minuteur. */
+export function cadenceSondage({ cache, enAttente }) {
+    if (cache) return 0;
+    return enAttente ? SONDAGE_ATTENTE_MS : SONDAGE_CALME_MS;
+}
+
 async function sonderSalon() {
     let brut;
     try {
@@ -3778,5 +3804,31 @@ function blocAvance() {
     // Le salon ne concerne que le multi, mais on sonde toujours : la reponse
     // dit elle-meme si on y est (multi:false en solo, et tout reste inerte).
     await sonderSalon();
-    setInterval(sonderSalon, 2000);
+    boucleSalon();
 })();
+
+/** La boucle de sondage, reglee par `cadenceSondage`.
+ *
+ *  ⚠ `setTimeout` ENCHAINE, jamais `setInterval` : la cadence change en cours
+ *  de route (on entre dans un salon, on masque l'onglet), et un intervalle fixe
+ *  ne se renegocie pas. */
+function boucleSalon() {
+    let minuteur = null;
+    const enAttente = () => !!(state.salon && state.salon.multi && !state.salon.prete);
+    const programmer = () => {
+        clearTimeout(minuteur);
+        const delai = cadenceSondage({ cache: document.hidden, enAttente: enAttente() });
+        if (!delai) return;                       // onglet cache : on se tait
+        minuteur = setTimeout(async () => {
+            await sonderSalon();
+            programmer();
+        }, delai);
+    };
+    // Revenir sur l'onglet doit rattraper tout de suite : quelqu'un a pu
+    // rejoindre pendant qu'on regardait ailleurs.
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) void sonderSalon().then(programmer);
+        else clearTimeout(minuteur);
+    });
+    programmer();
+}

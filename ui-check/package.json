@@ -52,7 +52,8 @@
     "langue": "playwright test tests/langue-premiere-fois.spec.ts --project=pc",
     "deroule-boutons": "playwright test tests/deroule-boutons.spec.ts --project=pc",
     "releve-images": "playwright test tests/releve-images.spec.ts --project=pc",
-    "bouton-langue": "playwright test tests/bouton-langue.spec.ts --project=pc"
+    "bouton-langue": "playwright test tests/bouton-langue.spec.ts --project=pc",
+    "sondage-salon": "playwright test tests/sondage-salon.spec.ts --project=pc"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0"

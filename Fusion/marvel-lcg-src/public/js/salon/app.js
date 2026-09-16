@@ -250,6 +250,13 @@ async function rendreHeros() {
 // C'est le signal le moins coûteux : aucune route à ajouter.
 function surveillerLeLancement() {
     setInterval(async () => {
+        // ⚠ RIEN QUAND PERSONNE NE REGARDE (16/09/2026). Cette boucle et celle
+        // de l'assistant pesaient 61 % du trafic vers les tables, et leurs
+        // appels empechaient le faucheur de fermer une table oubliee : il juge
+        // l'inactivite sur la date du journal du moteur, que chaque requete
+        // fait vivre. Ici on garde les deux secondes — on attend vraiment le
+        // lancement — mais seulement tant que l'onglet est visible.
+        if (document.hidden) return;
         try {
             const reponse = await fetch("get_play_scene_name?");
             const nom = (await reponse.text()).trim();
