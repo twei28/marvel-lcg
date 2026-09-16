@@ -1066,13 +1066,22 @@ function demanderLaLangue() {
         }, el("b", {}, titre), el("small", {}, sous));
         const overlay = el("div", { class: "deck-modal langue-modal" },
             el("div", { class: "deck-modal-panel vh-panel" },
+                // ⚠ LE SEUL ECRAN DU JEU QUI PARLE LES DEUX LANGUES A LA FOIS
+                // (16/09/2026). Partout ailleurs, `t()` traduit selon la langue
+                // choisie. Ici, personne n'a encore choisi : la langue vaut
+                // « fr » par defaut, et un anglophone lisait donc la question
+                // en francais, avec ses explications. On ne traduit pas, on
+                // ECRIT LES DEUX, comme un panneau d'aeroport.
                 el("div", { class: "dm-head" },
-                    el("b", { class: "mvl" }, t("Bienvenue")),
-                    el("span", { class: "dm-sub" }, t("Dans quelle langue veux-tu tes cartes ?")),
+                    el("b", { class: "mvl" }, "Bienvenue · Welcome"),
+                    el("span", { class: "dm-sub" },
+                        "Dans quelle langue veux-tu tes cartes ? · Which language do you want your cards in?"),
                 ),
                 el("div", { class: "lg-choix-grille" },
-                    carte("fr", "Français", t("Cartes, interface et récit de la partie en français.")),
-                    carte("en", "English", t("Cards, interface and game log in English.")),
+                    // Chaque carte decrit SA langue, dans SA langue : `t()` n'a
+                    // rien a faire ici non plus.
+                    carte("fr", "Français", "Cartes, interface et récit de la partie en français."),
+                    carte("en", "English", "Cards, interface and game log in English."),
                 ),
                 // ⚠ CE QUE LA LANGUE NE PEUT PAS FAIRE, DIT AVANT LE CHOIX
                 // (16/09/2026). Tous les scans n'existent pas dans les deux
@@ -1080,9 +1089,13 @@ function demanderLaLangue() {
                 // l'infobulle qui la traduit. Le decouvrir en pleine partie
                 // ressemble a un defaut ; le lire ici, a une regle.
                 el("div", { class: "vh-note" },
-                    t("Une carte sans scan dans la langue choisie reste affichée en anglais : sa traduction s'affiche alors dans l'infobulle, sous la carte.")),
+                    "Une carte sans scan dans la langue choisie reste affichée en anglais : sa traduction s'affiche alors dans l'infobulle, sous la carte."),
+                el("div", { class: "vh-note lg-en" },
+                    "A card with no scan in the chosen language stays in English: its translation then shows in the tooltip, under the card."),
                 el("div", { class: "vh-note" },
-                    t("Tu peux changer à tout moment : le bouton FR / EN, en haut de l'écran.")),
+                    "Tu peux changer à tout moment : le bouton FR / EN, en haut de l'écran."),
+                el("div", { class: "vh-note lg-en" },
+                    "You can switch at any time: the FR / EN button at the top of the screen."),
             ),
         );
         ouvrirModale(overlay);

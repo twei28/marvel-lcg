@@ -40,6 +40,27 @@ test('la question est posee a la premiere visite', async ({ page }) => {
   await page.screenshot({ path: 'C:/tmp/langue-modale.png' });
 });
 
+// ⚠ LE SEUL ECRAN QUI PARLE LES DEUX LANGUES A LA FOIS (16/09/2026). Partout
+// ailleurs `t()` traduit selon la langue choisie ; ici personne n'a choisi, et
+// la langue vaut « fr » par defaut. Un anglophone lisait donc la question ET
+// ses explications en francais. Signale par l'utilisateur.
+test('l ecran de langue parle francais ET anglais', async ({ page }) => {
+  await neuf(page);
+  const modale = page.locator('.langue-modal');
+  await expect(modale).toBeVisible({ timeout: 20000 });
+  const texte = (await modale.textContent()) || '';
+  console.log('MODALE DE LANGUE :', texte.slice(0, 200));
+  // La question, dans les deux langues.
+  expect(texte).toContain('Dans quelle langue');
+  expect(texte).toContain('Which language');
+  // Ce que la langue ne peut pas faire, dans les deux langues.
+  expect(texte).toContain('sans scan dans la langue choisie');
+  expect(texte).toContain('no scan in the chosen language');
+  // Et la porte de sortie, dans les deux langues.
+  expect(texte).toContain('FR / EN');
+  expect(texte).toContain('You can switch at any time');
+});
+
 // ⚠ UN JOUEUR QUI EXISTE DEJA la voit AUSSI, avec sa langue cochee : il n'a
 // jamais choisi, il a herite du francais par defaut.
 test('un joueur deja en francais la voit, avec le francais coche', async ({ page }) => {

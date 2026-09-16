@@ -1751,6 +1751,9 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
    pour celui qui s'etait fixe l'ancien objectif et voit sa vague s'ouvrir
    sans comprendre. */
 .legacy-bande .legacy-regle{flex-basis:100%;color:var(--dim);font-size:11px;font-style:italic;opacity:.75}
+/* La ligne anglaise de l'ecran de langue : la meme phrase, en retrait, pour
+   qu'on voie d'un coup d'oeil laquelle des deux on lit. */
+.langue-modal .lg-en{font-style:italic;opacity:.7;margin-top:-4px}
 /* La modale d'explication du mode (16/09/2026) : elle s'ouvre a chaque entree,
    sauf si on a coche « ne plus afficher ». Les regles en liste, la case et le
    OK sur la meme ligne, la case a GAUCHE pour qu'on la voie avant de valider. */

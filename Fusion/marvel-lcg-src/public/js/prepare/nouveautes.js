@@ -45,6 +45,78 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-09-16",
+        genre: "jeu",
+        fr: "Dans le mode Legacy, une boîte s'ouvre maintenant dès que tu as battu tous ses méchants. Les héros ne bloquent plus rien : ta première victoire avec un héros officiel te rapporte un jeton, deux si elle est prise en expert.",
+        en: "In Legacy mode, a box now opens as soon as you have beaten every villain in it. Heroes no longer block anything: your first win with an official hero earns a token, two if it was on expert.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "jeu",
+        fr: "Le mode Legacy s'ouvre désormais sur une page qui explique ses règles. Une case « Ne plus afficher » la range pour de bon.",
+        en: "Legacy mode now opens on a page explaining its rules. A “Don't show this again” box puts it away for good.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "jeu",
+        fr: "Quand tu signales un bug depuis ta propre table, tu retrouves ta demande dans « Mes signalements » : son état, ma réponse, et de quoi ajouter un mot.",
+        en: "When you report a bug from your own table, you now find it under “My reports”: its state, my answer, and room to add something.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "jeu",
+        fr: "L'écran du choix de la langue te prévient : une carte qui n'a pas encore de scan dans ta langue reste affichée en anglais, avec sa traduction dans l'infobulle.",
+        en: "The language screen now warns you: a card with no scan in your language yet stays in English, with its translation in the tooltip.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "correction",
+        fr: "Le mot EXPERT ne s'affiche plus sur le portrait des méchants : la difficulté se choisit à la préparation, pas sur l'image.",
+        en: "The word EXPERT no longer shows on villain portraits: difficulty is picked during setup, not on the picture.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "correction",
+        fr: "Le bouton FR / EN n'apparaît plus en double dans la barre du haut.",
+        en: "The FR / EN button no longer shows up twice in the top bar.",
+    },
+    {
+        date: "2026-09-15",
+        genre: "jeu",
+        fr: "Une partie ne commence plus en montrant toute la mise en place. La manigance principale s'affiche face visible, tu fais OK, elle se retourne et pose sa menace de départ.",
+        en: "A game no longer starts by showing the whole setup. The main scheme appears face up, you click OK, it flips over and places its starting threat.",
+    },
+    {
+        date: "2026-09-15",
+        genre: "correction",
+        fr: "Trois corrections du glisser-déposer : lâcher ton héros sur le méchant ne propose plus l'attaque d'un allié, une carte jouée se pose près de son héros et non chez le méchant, et une carte sans cible peut enfin se lâcher sur le terrain.",
+        en: "Three drag-and-drop fixes: dropping your hero on the villain no longer offers an ally's attack, a played card lands next to its hero instead of the villain's side, and a card with no target can finally be dropped on the table.",
+    },
+    {
+        date: "2026-09-15",
+        genre: "jeu",
+        fr: "La barre du haut est remise en ordre : l'avancée de la partie à gauche, les boutons à droite.",
+        en: "The top bar is tidied up: game progress on the left, buttons on the right.",
+    },
+    {
+        date: "2026-09-14",
+        genre: "jeu",
+        fr: "Les réglages deviennent une fenêtre à onglets, au lieu d'un menu caché dans un menu.",
+        en: "Settings are now a tabbed window instead of a menu hidden inside a menu.",
+    },
+    {
+        date: "2026-09-14",
+        genre: "jeu",
+        fr: "Les cartes du plateau grandissent avec la taille de ton écran.",
+        en: "Board cards now grow with your screen size.",
+    },
+    {
+        date: "2026-09-14",
+        genre: "correction",
+        fr: "Cinq cartes étaient injouables. Elles sont corrigées, et un contrôle empêche désormais qu'une carte parte dans cet état.",
+        en: "Five cards could not be played. They are fixed, and a check now prevents a card from shipping in that state.",
+    },
+    {
         date: "2026-09-13",
         genre: "jeu",
         fr: "Si ta table se ferme pendant que tu joues (mise à jour, inactivité), ta partie est sauvegardée et le site te propose de la reprendre là où tu l'avais laissée dès ta prochaine visite. Tu peux aussi commencer autre chose : la sauvegarde reste dans « Reprendre ».",
