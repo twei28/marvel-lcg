@@ -9,12 +9,67 @@ je pourrai avoir combien de joueurs en même temps ? », puis « comment passer 
 | Quoi | Valeur |
 |---|---|
 | Machine | CX23 : 2 vCPU, 3,8 Go, **aucun swap**, 28 Go libres sur le disque |
-| Une table au repos | **221 Mo** (moteur 195 Mo + ses processus) |
-| Tables simultanées tenables | **~14 au grand maximum**, 10 à 12 confortablement |
+| Une table au repos | ~~221 Mo~~ → **70 Mo** (corrigé le 16/09, voir le banc d'essai ci-dessous) |
+| Une partie montée et jouable | **81 Mo** |
+| Tables simultanées tenables | ~~~14~~ → **~40** sur la machine actuelle |
 | `PLACES_MAX` | 20, mais c'est un nombre de COMPTES, pas de parties simultanées |
 
-⚠ **La mesure des 221 Mo est prise SANS partie lancée.** C'est un plancher, pas
-une moyenne : le cache d'images d'une partie en cours n'est pas compté.
+⚠ **LA MESURE DE 221 Mo ÉTAIT FAUSSE, et elle a servi à décider.** Elle
+additionnait des RSS sans tenir compte des pages PARTAGÉES : dix processus
+Python qui chargent le même moteur ne paient le code qu'une fois. Refaite au
+banc d'essai le 16/09/2026, table par table, la vraie valeur est **70 Mo au
+repos et 81 Mo une fois la partie montée**. Le plafond de tables n'était donc
+pas ~14 mais **~40** sur cette machine.
+
+## Le banc d'essai du 16/09/2026
+
+Demande de l'utilisateur : « simule 100 parties en même temps et calcule la
+latence ». Cent parties demandent plus de mémoire que la machine n'en a : on a
+donc monté la charge pour de vrai jusqu'à la limite sûre, et extrapolé sur des
+mesures. Dix tables ouvertes sur les **places 11 à 20** (libres, aucun compte,
+aucun dossier de données), chaque processus d'essai portant
+`oom_score_adj = 1000` pour que le tueur de mémoire le vise lui, et jamais le
+site.
+
+**Le coût d'une partie, étape par étape** (dans un seul processus) :
+
+| Étape | RSS |
+|---|---|
+| Processus Python nu | 10 Mo |
+| Modules du moteur importés | 50 Mo |
+| Moteur initialisé (5590 cartes) | 68 Mo |
+| Scène créée | 68 Mo |
+| **Partie montée et jouable** | **81 Mo** |
+
+**La montée en charge, dix tables** : 697 Mo de RSS cumulé, mais seulement
+**499 Mo réellement pris** à la machine (3209 → 2710 Mo libres). L'écart, c'est
+le partage de pages — et c'est précisément ce que la mesure de 221 Mo avait
+manqué.
+
+**La latence sous charge**, clients tapant en continu sur les dix tables :
+
+| Clients | Requêtes/s | Tables (médiane) | p95 | Site (médiane) | Charge | Erreurs |
+|---|---|---|---|---|---|---|
+| 10 | 182 | 3,8 ms | 8,7 ms | 3,4 ms | 0,55 | 0 |
+| 20 | 362 | 3,4 ms | 11,3 ms | 3,1 ms | 1,09 | 0 |
+| 40 | 646 | 4,8 ms | 30,0 ms | 3,8 ms | 2,00 | 0 |
+| 80 | 748 | **32,9 ms** | 126,8 ms | 9,5 ms | 4,95 | 0 |
+
+⚠ **Le point de bascule est à 40 clients**, là où la charge atteint 2,00, soit
+exactement le nombre de vCPU. Au-delà, la latence médiane est multipliée par
+sept et le débit ne monte presque plus (+16 % pour deux fois plus de clients).
+**Zéro erreur partout** : la machine ralentit, elle ne casse pas.
+
+**Ce que cela donne pour 100 parties** : ~6 à 8 Go de mémoire (le partage
+faiblit quand les parties divergent), donc **un CX32 à 8 Go est juste, un CX42
+à 16 Go est confortable**. Côté CPU il n'y a aucun problème : depuis le
+sondage adaptatif, 100 parties à deux joueurs produisent une quinzaine de
+requêtes par seconde, contre ~650 tenues par la machine.
+
+⚠ **Ce que le banc n'a PAS mesuré** : le trafic WebSocket des actions de jeu
+(seules les requêtes HTTP l'ont été), le cache d'images d'une partie où les
+joueurs consultent beaucoup de cartes, et la pointe de CPU que feraient cent
+démarrages simultanés. Ces trois-là s'ajoutent aux chiffres ci-dessus.
 
 ## Le vrai goulot n'était pas la mémoire
 
