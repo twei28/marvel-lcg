@@ -55,12 +55,15 @@ Le chiffrage, pour mémoire :
 1. ✅ **Fait** : le sondage du salon, divisé par ~15.
 2. ✅ **Fait** : `.site` exclu du déploiement, pour que le faucheur cesse d'être
    aveugle après chaque mise à jour.
-3. **Du swap** (4 à 8 Go) : 28 Go libres sur le disque, et les pages d'une table
-   inactive sont froides. C'est surtout un filet contre le tueur de mémoire,
-   qui aujourd'hui frapperait au hasard.
-4. **zram** : comprimer la mémoire plutôt que de l'écrire. Les objets Python se
-   compriment bien.
-5. **Baisser `INACTIVITE_MINUTES`** de 45 à 15 ou 20.
+3. ✅ **Fait** : **4 Go de swap**, en place et vérifiés sur le serveur le
+   16/09/2026 (`free -m` : 4095 Mo, 0 utilisé). C'est surtout un filet contre le
+   tueur de mémoire, qui auparavant aurait frappé au hasard.
+4. **zram** : ⚠ **posé mais inactif** — le noyau du serveur n'embarque pas le
+   module (`lsblk` ne montre aucun zram). Il faut `apt install
+   linux-modules-extra-$(uname -r)`, décision en attente de l'utilisateur. Le
+   script calcule en conséquence : `swappiness` est à **60** (valeur sans
+   zram), et non à 100.
+5. ✅ **Fait** : `INACTIVITE_MINUTES` passé de 45 à **30** le 16/09/2026.
 6. **Fermer une table dont plus aucun client ne tient la WebSocket**, sans
    attendre le seuil d'inactivité.
 7. **Redimensionner à la demande** : Hetzner facture à l'heure et sait agrandir
@@ -69,5 +72,11 @@ Le chiffrage, pour mémoire :
 ## Statut
 
 **Cadré et mesuré le 16/09/2026.** La refonte multi-parties est ÉCARTÉE.
-Les points 1 et 2 sont faits. Les points 3 à 7 restent disponibles, aucun n'est
-engagé.
+
+Faits : **1, 2, 3 et 5**. En attente d'une décision : **4** (une commande
+`apt` à lancer). Restent disponibles, non engagés : **6** (fermer une table
+que plus aucun client ne tient) et **7** (redimensionner à l'heure).
+
+⚠ Correction du 16/09/2026 : cette fiche annonçait « les points 3 à 7 restent
+disponibles, aucun n'est engagé » alors que le swap et le seuil d'inactivité
+étaient déjà livrés. Relevé en relisant le serveur, pas la fiche.
