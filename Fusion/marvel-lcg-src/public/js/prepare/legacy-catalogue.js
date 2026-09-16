@@ -71,6 +71,19 @@ export async function paliers(t = (x) => x) {
             // sans rien ajouter, et une victoire normale ne la cocherait
             // jamais.
             if (String(s.id).endsWith("_expert")) continue;
+            // ⚠ NI LA TABLE COMPÉTITIVE, POUR LA MÊME RAISON (16/09/2026).
+            // `she_hulk_pvp_competitive` porte le même vilain (57001, 57002),
+            // les mêmes complots et les mêmes modulaires que `she_hulk_pvp` :
+            // seul le nom change, « She-Hulk (Competitive Table) ». Or
+            // l'historique ne garde que le NOM d'un scénario : les compter
+            // tous les deux obligerait à rejouer le même affrontement pour la
+            // seule raison qu'on l'a lancé depuis l'autre table.
+            //
+            // Ce qui reste dans la vague 10 : les six vrais adversaires, tous
+            // jouables en COOPÉRATIF contre un leader automatisé. Le moteur
+            // n'a pas d'autre mode pour eux (`IsCooperativeMode`), et c'est ce
+            // qui les rend accessibles à un joueur seul.
+            if (String(s.id).endsWith("_competitive")) continue;
             palier(vague).scenarios.push({ id: s.id, nom: s.name });
         }
     }

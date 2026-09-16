@@ -104,6 +104,10 @@ export const DICO_EN_BASE = {
     "Seules les cartes des boîtes déjà ouvertes s'ajoutent au deck.": "Only cards from boxes you have opened can go in the deck.",
     "Tout est débloqué. Bravo.": "Everything is unlocked. Well done.",
     "Pour ouvrir la suite": "To open the next box",
+    "héros de cette boîte n'ont pas encore gagné": "heroes from this box have not won yet",
+    "jeton(s) à prendre": "token(s) to claim",
+    "Seuls les méchants ouvrent la vague suivante. Les héros, eux, rapportent les jetons.":
+        "Only villains open the next wave. Heroes earn you tokens.",
     "Tes parties déjà jouées comptent-elles ?": "Do your past games count?",
     "Reprendre mes parties passées": "Count my past games",
     "Tout ce que tu as déjà gagné est acquis. Tu repars d'où tu en es.":

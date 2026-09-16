@@ -87,24 +87,35 @@ export function jetons(gagnees, herosOfficiels, depenses = []) {
              restants: Math.max(0, total - depenseUniques.size) };
 }
 
-/** Un palier est franchi quand TOUS ses vilains sont battus et TOUS ses héros
- *  ont gagné au moins une fois.
+/** Un palier est franchi quand TOUS ses vilains sont battus. Les héros n'y
+ *  font rien : ils rapportent les jetons.
+ *
+ *  ⚠ RÈGLE CHANGÉE LE 16/09/2026, ET VOICI POURQUOI. Il fallait auparavant
+ *  avoir gagné avec tous les héros de la vague EN PLUS d'avoir battu tous ses
+ *  vilains. Un joueur avait descendu les trois vilains du Set de base sans
+ *  rien voir s'ouvrir : il lui manquait deux héros sur cinq, et il a cru à un
+ *  défaut. Décision : « il faut simplement battre tous les méchants pour
+ *  débloquer la prochaine vague ». Les héros restent payés en jetons
+ *  (`jetons`), donc varier son équipe garde un intérêt, sans être exigé.
  *
  *  ⚠ LA MARCHE EST PROPORTIONNELLE À LA BOÎTE, jamais au catalogue entier :
- *  on ne demande que les héros et les scénarios DE CETTE VAGUE. Exiger tous
- *  les héros débloqués aurait fait grossir chaque marche avec la collection,
- *  et rendu la dernière infranchissable.
+ *  on ne demande que les scénarios DE CETTE VAGUE.
  *
- *  ⚠ UNE LISTE VIDE NE BLOQUE RIEN. La boîte du Bouffon Vert apporte deux
- *  scénarios et zéro héros ; d'autres apportent des héros sans scénario. Sans
- *  cette tolérance, une boîte entière fermait la route pour toujours.
+ *  ⚠ UNE LISTE VIDE NE BLOQUE RIEN, et cela vaut désormais dans les deux
+ *  sens : une vague sans vilain (Fear No Evil, deux héros et aucun scénario)
+ *  s'ouvre et se franchit d'un coup. C'est la règle appliquée sans exception,
+ *  pas un oubli.
+ *
+ *  ⚠ `herosRestants` EST TOUJOURS RENDU, et il sert encore : l'écran s'en
+ *  sert pour dire combien de jetons attendent dans cette boîte. Ce qu'il ne
+ *  fait plus, c'est fermer la route.
  */
 export function palierFranchi(palier, gagnees) {
     const vilainsRestants = (palier.scenarios || [])
         .filter((s) => !gagnees.scenarios.has(cleNom(s.nom)));
     const herosRestants = (palier.heros || [])
         .filter((h) => !gagnees.heros.has(h.id));
-    return { franchi: vilainsRestants.length === 0 && herosRestants.length === 0,
+    return { franchi: vilainsRestants.length === 0,
              vilainsRestants, herosRestants };
 }
 
@@ -155,18 +166,12 @@ export function parcours(paliers, historique, fiche = {}) {
 export function condition(etape, t = (x) => x) {
     if (!etape || etape.franchi) return "";
     const noms = (liste, champ) => liste.map((x) => x[champ] || x.id).filter(Boolean);
+    // ⚠ LES HÉROS NE SONT PLUS CITÉS ICI (16/09/2026). Ils ne ferment plus
+    // rien : les nommer dans la condition ferait croire à une exigence. Ce
+    // qu'ils rapportent se dit ailleurs, sur sa propre ligne (`aJetons`).
     const vilains = noms(etape.vilainsRestants || [], "nom");
-    const heros = noms(etape.herosRestants || [], "nom");
-    const morceaux = [];
-    if (vilains.length) {
-        morceaux.push(vilains.length <= 3
-            ? `${t("bats")} ${vilains.join(", ")}`
-            : `${t("bats")} ${vilains.length} ${t("méchants")}`);
-    }
-    if (heros.length) {
-        morceaux.push(heros.length <= 3
-            ? `${t("gagne avec")} ${heros.join(", ")}`
-            : `${t("gagne avec")} ${heros.length} ${t("héros")}`);
-    }
-    return morceaux.join(` ${t("et")} `);
+    if (!vilains.length) return "";
+    return vilains.length <= 3
+        ? `${t("bats")} ${vilains.join(", ")}`
+        : `${t("bats")} ${vilains.length} ${t("méchants")}`;
 }

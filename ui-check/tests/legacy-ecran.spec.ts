@@ -175,3 +175,43 @@ test('choisir un autre mode leve le verrou', async ({ page }) => {
   await expect(page.locator('#hero-grid .tb-port.est-verrou')).toHaveCount(0);
   await expect(page.locator('.legacy-bande')).toHaveCount(0);
 });
+
+// ⚠ CE QUI BLOQUE ET CE QUI RAPPORTE, SUR DEUX LIGNES (16/09/2026). Depuis
+// que seuls les mechants ouvrent la vague suivante, la phrase de condition ne
+// doit plus nommer un seul heros : l'y laisser ferait croire a une exigence.
+// Les heros gardent leur interet, et la bande est le seul endroit qui le dit.
+test('la bande separe la condition des jetons a prendre', async ({ page }) => {
+  await entrer(page);
+  const suite = page.locator('.legacy-suite');
+  await expect(suite).toHaveCount(1);
+  const phrase = (await suite.textContent()) || '';
+  console.log('CONDITION :', phrase);
+  // Au depart, rien n'est gagne : la condition nomme les vilains du Set de base.
+  expect(phrase).toMatch(/Rhino|Klaw|Ultron|bats/i);
+  expect(phrase, 'la condition ne doit plus exiger de heros').not.toMatch(/gagne avec|win with/i);
+
+  // Et la ligne des jetons annonce les heros qui n'ont pas encore gagne.
+  const bonus = page.locator('.legacy-bonus');
+  await expect(bonus).toHaveCount(1);
+  console.log('JETONS A PRENDRE :', await bonus.textContent());
+  await expect(bonus).toContainText('5');
+
+  // Le mot sur la regle, pour celui qui s'etait fixe l'ancien objectif.
+  await expect(page.locator('.legacy-regle')).toContainText(/méchants ouvrent/i);
+});
+
+// ⚠ L'ANGLAIS N'EST PAS FACULTATIF : une phrase oubliee dans dico-en.js
+// s'afficherait en francais au milieu d'un ecran traduit. Meme exigence que
+// l'aide des modes.
+test('les deux nouvelles lignes existent aussi en anglais', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('marvel-langue', 'en'));
+  await page.goto('/prepare.html');
+  await page.waitForSelector('.acc-mode', { timeout: 20000 });
+  await entrer(page);
+  for (const classe of ['.legacy-bonus', '.legacy-regle']) {
+    const texte = (await page.locator(classe).textContent()) || '';
+    console.log(`${classe} EN :`, texte);
+    expect(texte, `phrase restee en francais : ${texte}`)
+      .not.toMatch(/héros|méchants|boîte|jeton/i);
+  }
+});

@@ -1161,23 +1161,39 @@ function bandeLegacy() {
     const suite = v.prochaine
         ? `${t("Pour ouvrir la suite")} : ${conditionLegacy(v.prochaine)}`
         : t("Tout est débloqué. Bravo.");
+    // ⚠ CE QUI BLOQUE ET CE QUI RAPPORTE SE DISENT SUR DEUX LIGNES (16/09/2026).
+    // Depuis que seuls les mechants ouvrent la vague suivante, les heros n'ont
+    // plus rien a faire dans la phrase de condition : les y laisser ferait
+    // croire a une exigence. Ils gardent pourtant un interet, et c'est le seul
+    // endroit qui le dit.
+    const sansVictoire = (v.prochaine && v.prochaine.herosRestants) || [];
     return el("div", { class: "legacy-bande" },
         el("b", {}, "Legacy"),
         el("span", {}, `${t("Vague ouverte")} : ${v.prochaine ? v.prochaine.nom : v.vagueOuverte}`),
         el("span", { class: "legacy-jetons" }, `${v.jetons.restants} ${t("jeton(s)")}`),
         el("span", { class: "legacy-suite" }, suite),
+        sansVictoire.length
+            ? el("span", { class: "legacy-bonus" },
+                `${sansVictoire.length} ${t("héros de cette boîte n'ont pas encore gagné")} : `
+                + `${sansVictoire.length} ${t("jeton(s) à prendre")}`)
+            : null,
+        el("span", { class: "legacy-regle" },
+            t("Seuls les méchants ouvrent la vague suivante. Les héros, eux, rapportent les jetons.")),
     );
 }
 
 /** La phrase de condition d'une étape, dans la langue de l'écran. */
 function conditionLegacy(etape) {
+    // ⚠ CETTE FONCTION DOUBLE `legacy.condition()`, et c'est voulu : le module
+    // pur ne connait pas `t()`. Les deux doivent donc changer ENSEMBLE, sans
+    // quoi l'ecran continuerait d'exiger des heros que la regle a liberes
+    // (16/09/2026).
     const noms = (liste) => liste.map((x) => x.nom || x.id);
     const vilains = noms(etape.vilainsRestants || []);
-    const heros = noms(etape.herosRestants || []);
-    const morceaux = [];
-    if (vilains.length) morceaux.push(vilains.length <= 3 ? `${t("bats")} ${vilains.join(", ")}` : `${t("bats")} ${vilains.length} ${t("méchants")}`);
-    if (heros.length) morceaux.push(heros.length <= 3 ? `${t("gagne avec")} ${heros.join(", ")}` : `${t("gagne avec")} ${heros.length} ${t("héros")}`);
-    return morceaux.join(` ${t("et")} `);
+    if (!vilains.length) return "";
+    return vilains.length <= 3
+        ? `${t("bats")} ${vilains.join(", ")}`
+        : `${t("bats")} ${vilains.length} ${t("méchants")}`;
 }
 
 /** Un clic sur un héros fan-made grisé : l'acheter, si on a de quoi. */

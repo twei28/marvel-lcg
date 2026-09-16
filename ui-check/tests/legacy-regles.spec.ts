@@ -55,12 +55,28 @@ test('au depart, seul le Set de base est ouvert', async ({ page }) => {
   expect(p.jetons).toEqual({ gagnes: 0, depenses: 0, restants: 0 });
 });
 
-test('il faut TOUS les vilains ET TOUS les heros de la vague', async ({ page }) => {
-  // Les deux vilains battus, un seul heros vainqueur : la marche ne passe pas.
-  const presque = [victoire('Rhino', ['01001a']), victoire('Klaw', ['01001a'])];
-  const p = await regle(page, 'parcours', [PALIERS, presque]) as any;
-  expect(p.etapes[0].franchi).toBe(false);
+// ⚠ REGLE CHANGEE LE 16/09/2026 : SEULS LES VILAINS OUVRENT LA SUITE.
+// Avant, il fallait aussi avoir gagne avec TOUS les heros de la vague, et
+// c'est ce qui bloquait un joueur ayant pourtant battu les trois vilains du
+// Set de base. Les heros n'ouvrent plus rien ; ils rapportent les jetons.
+test('les vilains seuls ouvrent la suite, les heros n y font rien', async ({ page }) => {
+  // Les deux vilains battus, un seul heros vainqueur : la marche passe.
+  const deuxVilains = [victoire('Rhino', ['01001a']), victoire('Klaw', ['01001a'])];
+  const p = await regle(page, 'parcours', [PALIERS, deuxVilains]) as any;
+  expect(p.etapes[0].franchi).toBe(true);
+  expect(p.etapes[1].ouvert).toBe(true);
+  // ⚠ LES HEROS RESTANTS SONT TOUJOURS RENDUS : l'ecran s'en sert pour dire
+  // combien de jetons attendent encore dans cette boite.
   expect(p.etapes[0].herosRestants.map((h: any) => h.nom)).toEqual(['Captain Marvel']);
+});
+
+// ⚠ UN VILAIN QUI MANQUE FERME TOUJOURS LA ROUTE. Le contre-cas du precedent :
+// sans lui, « les vilains seuls ouvrent » passerait aussi si plus rien
+// n'ouvrait jamais.
+test('un seul vilain battu sur deux ne suffit pas', async ({ page }) => {
+  const p = await regle(page, 'parcours', [PALIERS, [victoire('Rhino', ['01001a', '01010a'])]]) as any;
+  expect(p.etapes[0].franchi).toBe(false);
+  expect(p.etapes[0].vilainsRestants.map((s: any) => s.nom)).toEqual(['Klaw']);
   expect(p.etapes[1].ouvert).toBe(false);
 });
 
@@ -72,6 +88,11 @@ test('une victoire en coop coche tous les heros de la table', async ({ page }) =
   expect(p.etapes[0].franchi).toBe(true);
   expect(p.etapes[1].ouvert).toBe(true);
   expect(p.vagueOuverte).toBe(1);
+  // ⚠ CE QUE CE CAS PROUVE DEPUIS LE 16/09/2026 : les deux heros de la table
+  // sont coches, donc payes. Le franchissement, lui, ne depend plus d'eux : il
+  // serait acquis par les deux vilains meme sans le second heros.
+  expect(p.etapes[0].herosRestants).toEqual([]);
+  expect(p.jetons.gagnes).toBe(2);
 });
 
 // ⚠ UNE LISTE VIDE NE BLOQUE RIEN. La boite du Bouffon Vert apporte deux
@@ -87,6 +108,21 @@ test('une vague sans heros s ouvre sur ses seuls vilains', async ({ page }) => {
   expect(p.etapes[2].ouvert).toBe(true);
   // Et la vague 2 n'a pas de scenario : seul Thor la ferme.
   expect(p.etapes[2].vilainsRestants).toEqual([]);
+  expect(p.etapes[2].herosRestants.map((h: any) => h.nom)).toEqual(['Thor']);
+});
+
+// ⚠ ET L'INVERSE, DEPUIS LE 16/09/2026 : UNE VAGUE SANS VILAIN NE DEMANDE
+// RIEN. Fear No Evil (vague 11) n'apporte que deux heros, aucun scenario :
+// elle s'ouvre et se franchit d'un coup. Avant, ses heros la fermaient.
+test('une vague sans vilain s ouvre toute seule', async ({ page }) => {
+  const jusquAuGobelin = [
+    victoire('Rhino', ['01001a']), victoire('Klaw', ['01001a']),
+    victoire('Green Goblin', ['01001a']),
+  ];
+  const p = await regle(page, 'parcours', [PALIERS, jusquAuGobelin]) as any;
+  expect(p.etapes[2].ouvert).toBe(true);
+  expect(p.etapes[2].franchi).toBe(true);
+  // Thor n'a pas gagne, et ne ferme plus rien : il ne reste qu'un jeton a prendre.
   expect(p.etapes[2].herosRestants.map((h: any) => h.nom)).toEqual(['Thor']);
 });
 
@@ -145,12 +181,15 @@ test('une defaite ne compte pas', async ({ page }) => {
 
 // ⚠ ON NOMME CE QUI MANQUE, ON NE COMPTE PAS. « Gagne avec Thor » se lit et
 // s'execute ; « il reste 3 heros » oblige a chercher lesquels.
-test('la condition nomme ce qui manque', async ({ page }) => {
+test('la condition nomme les vilains qui manquent, et EUX SEULS', async ({ page }) => {
   const p = await regle(page, 'parcours', [PALIERS, [victoire('Rhino', ['01001a'])]]) as any;
   const phrase = await page.evaluate(async (etape) => {
     const mod: any = await import('/js/prepare/legacy.js');
     return mod.condition(etape);
   }, p.etapes[0]);
   expect(phrase).toContain('Klaw');
-  expect(phrase).toContain('Captain Marvel');
+  // ⚠ PLUS UN MOT SUR LES HEROS (16/09/2026). Captain Marvel manque toujours a
+  // l'appel des jetons, mais elle ne ferme plus rien : l'annoncer dans la
+  // condition ferait croire a une exigence.
+  expect(phrase).not.toContain('Captain Marvel');
 });

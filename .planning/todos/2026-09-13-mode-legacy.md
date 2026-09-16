@@ -88,9 +88,28 @@ Douze paliers, relevés sur le vrai catalogue par `legacy-catalogue.js` :
 La marche la plus lourde est la vague 6, huit et huit. Aucune ne dépasse ça :
 la progression reste proportionnelle à la boîte, comme voulu.
 
-Set de base : il faut 3 vilains battus et 5 héros vainqueurs, soit **5 victoires
-bien réparties** pour ouvrir la vague 1. Et ces cinq victoires rapportent cinq
-jetons fan-made, dix si elles sont prises en expert.
+> ⚠ **RÈGLE CHANGÉE LE 16/09/2026.** Ce qui suit décrivait l'ancienne, gardée
+> ici parce que les chiffres de la grille restent justes.
+>
+> **Seuls les méchants ouvrent la vague suivante.** Les héros n'y font plus
+> rien : ils rapportent les jetons, un par héros officiel, deux si sa première
+> victoire est en expert.
+>
+> Déclencheur : un joueur avait battu les trois vilains du Set de base sans
+> rien voir s'ouvrir (il lui manquait She-Hulk et Iron Man) et a cru à un
+> défaut. Décision de l'utilisateur : « il faut simplement battre tous les
+> méchants pour débloquer la prochaine vague ».
+>
+> Deux conséquences mesurées le jour même :
+> - **Fear No Evil (vague 11) n'a aucun scénario** : elle s'ouvre et se
+>   franchit d'un coup, sans exception à la règle ;
+> - **les tables compétitives sortent des paliers**
+>   (`she_hulk_pvp_competitive` porte le même vilain que `she_hulk_pvp`, seul
+>   le nom change). La vague 10 garde donc six adversaires, tous jouables en
+>   coopératif contre un leader automatisé.
+
+Ancienne règle, pour mémoire : Set de base, il fallait 3 vilains battus et 5
+héros vainqueurs, soit **5 victoires bien réparties** pour ouvrir la vague 1.
 
 ## Les sets modulaires et les défis
 
@@ -143,5 +162,8 @@ elle répond. Tout le reste s'y branche, rien ne s'y mélange.
 ## Statut
 
 **Livré le 13/09/2026**, les cinq tranches, **déployé le 15/09/2026**.
-Plus aucune question ouverte. Il reste un chiffre à relever, le poids d'un
+
+⚠ **La règle de franchissement a changé le 16/09/2026** : seuls les méchants
+ouvrent la vague suivante (encart plus haut). `legacy.js`, `legacy-catalogue.js`
+et la bande de l'écran suivent, avec leurs cas. Il reste un chiffre à relever, le poids d'un
 enregistrement de partie, qui peut faire revoir la rétention.

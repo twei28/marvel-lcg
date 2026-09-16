@@ -113,3 +113,39 @@ test('les noms de l historique retrouvent bien un scenario du catalogue', async 
     `noms introuvables au catalogue : ${bilan.orphelins.join(', ')}`).toBeLessThanOrEqual(
       Math.floor(bilan.joues / 2));
 });
+
+// ⚠ LES TABLES COMPETITIVES SONT DES DOUBLONS, PAS DES ADVERSAIRES DE PLUS
+// (16/09/2026). `she_hulk_pvp` et `she_hulk_pvp_competitive` portent le MEME
+// vilain (57001, 57002), les memes complots et les memes modulaires : seul le
+// nom change, « She-Hulk » contre « She-Hulk (Competitive Table) ». Or
+// l'historique ne retient que le NOM : les compter tous les deux obligerait a
+// rejouer le meme affrontement pour la seule raison qu'on l'a lance depuis
+// l'autre table.
+//
+// Ce qui reste dans le palier : les six vrais adversaires de la vague 10, tous
+// jouables en COOPERATIF contre un leader automatise (`IsCooperativeMode`,
+// fiche Civil War §6). Les tables competitives, elles, sortent du parcours et
+// redeviennent libres, comme les defis.
+test('les tables competitives n entrent pas dans un palier', async ({ page }) => {
+  const p = await paliers(page) as any[];
+  const noms = p.flatMap((x) => x.scenarios.map((s: any) => String(s.nom)));
+  const ids = p.flatMap((x) => x.scenarios.map((s: any) => String(s.id)));
+  console.log('SCENARIOS COMPETITIFS RESTANTS :',
+              JSON.stringify(noms.filter((n) => /competitive table/i.test(n))));
+  expect(ids.filter((id) => id.endsWith('_competitive'))).toEqual([]);
+  expect(noms.filter((n) => /competitive table/i.test(n))).toEqual([]);
+});
+
+// La consequence chiffree, sur le vrai catalogue : Civil War garde ses quatre
+// heros-vilains plus She-Hulk et Vision, et Fear No Evil n'apporte aucun
+// scenario — elle s'ouvrira donc d'elle-meme (voir legacy-regles).
+test('la vague 10 garde ses six adversaires, la 11 n en a aucun', async ({ page }) => {
+  const p = await paliers(page) as any[];
+  const v10 = p.find((x) => x.vague === 10);
+  const v11 = p.find((x) => x.vague === 11);
+  console.log('VAGUE 10 :', JSON.stringify(v10?.scenarios.map((s: any) => s.nom)));
+  expect(v10, 'la vague 10 doit exister').toBeTruthy();
+  expect(v10.scenarios.length).toBe(6);
+  expect(v11, 'la vague 11 doit exister').toBeTruthy();
+  expect(v11.scenarios.length).toBe(0);
+});

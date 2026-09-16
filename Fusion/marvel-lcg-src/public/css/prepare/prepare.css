@@ -1744,6 +1744,13 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .legacy-bande b{color:var(--affiche-jaune);text-transform:uppercase;letter-spacing:.04em}
 .legacy-bande .legacy-jetons{margin-left:auto;font-weight:900}
 .legacy-bande .legacy-suite{flex-basis:100%;color:var(--dim);font-size:12px}
+/* Ce qui RAPPORTE, sous ce qui BLOQUE, et qui ne doit pas se lire comme une
+   exigence : meme taille que la condition, sans sa couleur d'alerte. */
+.legacy-bande .legacy-bonus{flex-basis:100%;color:var(--affiche-jaune);font-size:12px;opacity:.85}
+/* Le mot sur la regle changee le 16/09/2026 : la plus discrete des lignes,
+   pour celui qui s'etait fixe l'ancien objectif et voit sa vague s'ouvrir
+   sans comprendre. */
+.legacy-bande .legacy-regle{flex-basis:100%;color:var(--dim);font-size:11px;font-style:italic;opacity:.75}
 /* La question posee une fois, a l'activation. */
 .legacy-choix{display:grid;gap:10px;margin:14px 0}
 .legacy-choix button{
