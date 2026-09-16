@@ -135,6 +135,24 @@ if ($faireCode) {
     # apportee a l'une d'elles ne serait jamais partie. Ici on ne vise que les
     # campagnes de la partie solo locale, a la racine du moteur.
     "--exclude=Fusion/marvel-lcg-src/campagnes",
+    # ⚠ `.site` EST L'ETAT VIVANT DES TABLES, PAS DU CODE (16/09/2026).
+    # L'orchestrateur y ecrit la configuration de chaque place (launch-N.json)
+    # et le JOURNAL de chaque moteur (moteur-N.log), qu'il rouvre a chaque
+    # allumage. Mes fichiers locaux du meme nom partaient dans l'archive et les
+    # remplacaient.
+    #
+    # Deux degats, mesures le jour meme :
+    #   - le FAUCHEUR juge l'inactivite d'une table sur la date de son journal
+    #     (`secondes_sans_jouer`). Un journal ecrase porte la date du
+    #     deploiement : toutes les tables paraissent actives, et aucune n'est
+    #     fermee pendant les 45 minutes qui suivent ;
+    #   - les traces de diagnostic du serveur disparaissent sous les miennes.
+    #     Le journal du serveur affichait un « bad magic number » avec un chemin
+    #     C:\Users\... : c'etait MON essai en Python 3.12, lu sur la machine de
+    #     production.
+    # Les launch-N.json, eux, sont reecrits a chaque allumage par
+    # `_config_partie` : ceux-la se reparaient tout seuls.
+    "--exclude=.site",
     "--exclude=replays","--exclude=logs",
     "--exclude=comptes.json","--exclude=*.db","--exclude=*.sqlite3"
   )
