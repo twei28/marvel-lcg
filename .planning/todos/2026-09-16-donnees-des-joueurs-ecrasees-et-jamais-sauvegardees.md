@@ -93,10 +93,31 @@ hauts faits, 2 fiches Legacy, 10 comptes dans la base restaurée).
   `--exclude=campagnes` l'attrapait. Les 9 définitions du serveur sont figées
   au 07/09/2026. Identiques aujourd'hui, mais une correction future ne serait
   jamais partie. Motif ancré sur `Fusion/marvel-lcg-src/campagnes`.
-- **La question de fond, non tranchée** : faut-il que `deployer.ps1` envoie
-  aussi les scripts d'exploitation (`sauvegarde.sh`, `purge.sh`,
-  `redimensionner-images.sh`) ? Aujourd'hui ils dérivent en silence, et ce
-  défaut-ci est né de cette dérive.
+- ~~**La question de fond, non tranchée** : faut-il que `deployer.ps1` envoie
+  aussi les scripts d'exploitation ?~~ ✅ **Tranchée et faite le 16/09/2026.**
+
+  Une étape « Scripts et configuration du serveur » compare huit fichiers à
+  chaque déploiement, et la mesure du jour a justifié de les traiter en **deux
+  listes** :
+
+  - **synchronisés** (entièrement issus du dépôt) : `sauvegarde.sh`,
+    `purge.sh` et les quatre units de sauvegarde et de purge. Les units passent
+    `systemd-analyze verify` avant d'être posées, et `daemon-reload` ne part
+    que si l'une a changé.
+  - **surveillés** (ils portent des réglages du serveur) :
+    `/etc/systemd/system/narwhal.service` et `/etc/caddy/Caddyfile`. Le
+    déploiement affiche l'écart et **n'y touche pas**.
+
+  ⚠ **Et c'est cette distinction qui a évité la casse.** Trois fichiers avaient
+  dérivé, deux dans le bon sens :
+  - le Caddyfile du serveur importe deux AUTRES sites (`karaoke.caddy`,
+    `publicverse.caddy`) : l'écraser les aurait coupés ;
+  - `narwhal.service` porte `Environment=INSCRIPTION_LIBRE=0`, posé à la main :
+    l'écraser aurait rouvert l'inscription à n'importe qui ;
+  - `purge.sh`, lui, était en retard de dix jours sur le dépôt : la purge des
+    rapports de bug ne tournait pas. Il a été mis à jour, et la chaîne
+    `purge.sh` → `orchestrateur.py purger-rapports` est vérifiée sur le
+    serveur.
 
 ## Statut
 

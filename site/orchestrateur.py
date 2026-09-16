@@ -4494,6 +4494,11 @@ def purge_en_ligne_de_commande(arguments: list) -> int:
     d'administration qui renvoie vers des captures disparues. L'orchestrateur
     est le seul qui sache faire les deux d'un coup : le script l'appelle plutot
     que de recopier la regle.
+
+    ⚠ ET DEPUIS LE 16/09/2026 ELLE ALLEGE, ELLE N'EFFACE PLUS : un rapport est
+    devenu un ticket que son auteur consulte, seule la capture part. Le compte
+    rendu le dit, sans quoi le journal de la purge annoncerait des suppressions
+    qui n'ont pas lieu.
     """
     try:
         jours = int(arguments[0]) if arguments else JOURS_RAPPORTS_TRAITES
@@ -4503,8 +4508,9 @@ def purge_en_ligne_de_commande(arguments: list) -> int:
     if not os.path.isfile(BASE):
         print(f"  (base absente, rien a purger) {BASE}")
         return 0
-    efface = purger_rapports_traites(jours)
-    print(f"  rapports traites depuis plus de {jours} jours : {efface} efface(s)")
+    alleges = purger_rapports_traites(jours)
+    print(f"  rapports traites depuis plus de {jours} jours : "
+          f"{alleges} allege(s), capture retiree, fil conserve")
     return 0
 
 

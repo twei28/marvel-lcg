@@ -373,6 +373,83 @@ if (Test-Path $DOCS) {
   }
 }
 
+# --- Scripts et configuration du serveur --------------------------------------
+# ⚠ AJOUTE LE 16/09/2026, APRES UN TROU DE DIX JOURS. `installer-serveur.ps1`
+# pose les scripts d'exploitation UNE FOIS, a l'installation ; `deployer.ps1`
+# ne les envoyait jamais. Toute amelioration apportee a `sauvegarde.sh` ou
+# `purge.sh` restait donc sur le poste, indefiniment.
+#
+# Ce que ca a coute : la sauvegarde de nuit tournait dans sa version d'avant le
+# 06/09 et ne prenait AUCUNE donnee de joueur (11 fichiers, tous sous site/).
+# Personne ne pouvait le savoir : le timer ne lit pas le code de sortie, et
+# rien ne comparait l'installe au depot.
+#
+# ⚠ DEUX LISTES, ET LA DISTINCTION EST VITALE. Mesure du 16/09/2026 : trois
+# fichiers du serveur avaient derive, et DEUX l'avaient fait dans le bon sens.
+#   - `/etc/caddy/Caddyfile` importe deux AUTRES sites (karaoke, publicverse) ;
+#     l'ecraser avec la version du depot les aurait coupes ;
+#   - `/etc/systemd/system/narwhal.service` porte `INSCRIPTION_LIBRE=0`, pose a
+#     la main : l'ecraser aurait rouvert l'inscription a n'importe qui.
+# Ces deux-la sont donc SURVEILLES et jamais touches : le deploiement dit
+# qu'ils different, montre quoi, et passe son chemin.
+if ($faireCode) {
+  Write-Host "== Scripts et configuration du serveur" -ForegroundColor Cyan
+  $confs = @("sauvegarde.sh","purge.sh","narwhal.service","narwhal-sauvegarde.service",
+             "narwhal-purge.service","narwhal-sauvegarde.timer","narwhal-purge.timer","Caddyfile")
+  foreach ($c in $confs) {
+    if (-not (Test-Path (Join-Path $ICI $c))) { throw "Fichier de configuration absent : $c" }
+  }
+  $tgzC = Join-Path $env:TEMP "narwhal-conf.tgz"
+  & tar -czf $tgzC -C $ICI @confs
+  if ($LASTEXITCODE -ne 0) { throw "Creation de l'archive de configuration en echec." }
+  & scp -i $CLE $tgzC "root@${IP}:/tmp/narwhal-conf.tgz"
+  if ($LASTEXITCODE -ne 0) { throw "Envoi de la configuration en echec." }
+  Remove-Item $tgzC -Force
+
+  $conf = @"
+set -e
+rm -rf /tmp/narwhal-conf && mkdir -p /tmp/narwhal-conf
+tar -xzf /tmp/narwhal-conf.tgz -C /tmp/narwhal-conf && rm -f /tmp/narwhal-conf.tgz
+cd /tmp/narwhal-conf
+# Les memes substitutions que `install-serveur.sh`, sur les memes fichiers.
+sed -i "s|@RACINE@|$DIST|g; s|@UTILISATEUR@|narwhal|g; s|@DOMAINE@|$DOMAINE|g" \
+  sauvegarde.sh purge.sh narwhal.service narwhal-sauvegarde.service narwhal-purge.service
+recharger=0
+# --- Ce qui appartient ENTIEREMENT au depot : on synchronise ---
+poser() {     # `$1 source  `$2 cible  `$3 droits  `$4 "unit" si systemd
+  if cmp -s "`$1" "`$2" 2>/dev/null; then echo "   a jour   : `$2"; return 0; fi
+  if [ "`$4" = "unit" ] && ! systemd-analyze verify "`$1" >/dev/null 2>&1; then
+    echo "   REFUSE : `$2 ne passe pas systemd-analyze verify, rien n'est installe" >&2
+    return 0
+  fi
+  avant="(absent)"
+  [ -f "`$2" ] && avant="`$(date -r "`$2" +%d/%m)"
+  install -m "`$3" "`$1" "`$2"
+  echo "   MIS A JOUR : `$2 (l'ancien datait du `$avant)"
+  [ "`$4" = "unit" ] && recharger=1
+  return 0
+}
+poser sauvegarde.sh              /usr/local/bin/narwhal-sauvegarde        755
+poser purge.sh                   /usr/local/bin/narwhal-purge             755
+poser narwhal-sauvegarde.service /etc/systemd/system/narwhal-sauvegarde.service 644 unit
+poser narwhal-purge.service      /etc/systemd/system/narwhal-purge.service      644 unit
+poser narwhal-sauvegarde.timer   /etc/systemd/system/narwhal-sauvegarde.timer   644 unit
+poser narwhal-purge.timer        /etc/systemd/system/narwhal-purge.timer        644 unit
+if [ "`$recharger" = "1" ]; then systemctl daemon-reload; echo "   systemd rechargé"; fi
+# --- Ce qui porte des reglages du serveur : on REGARDE, on ne touche pas ---
+surveiller() {   # `$1 source  `$2 cible
+  if cmp -s "`$1" "`$2" 2>/dev/null; then echo "   identique: `$2"; return 0; fi
+  echo "   DIFFERENT (non touche) : `$2"
+  diff "`$1" "`$2" | head -12 | sed "s/^/       /"
+  return 0
+}
+surveiller narwhal.service /etc/systemd/system/narwhal.service
+surveiller Caddyfile       /etc/caddy/Caddyfile
+rm -rf /tmp/narwhal-conf
+"@
+  Ssh-Exec $conf
+}
+
 # --- Python, redemarrage, verification ---------------------------------------
 if ($faireCode) {
   Write-Host "== Environnement Python 3.10 et redemarrage" -ForegroundColor Cyan
