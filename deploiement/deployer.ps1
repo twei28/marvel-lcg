@@ -92,8 +92,39 @@ if ($faireCode) {
     # scans — ils ne changent presque jamais, et l'etape « Documents » plus
     # bas ne monte que ce qui manque.
     "--exclude=assets/docs",
-    "--exclude=sauvegardes","--exclude=saves","--exclude=decks",
-    "--exclude=campagnes","--exclude=statistiques","--exclude=achievements",
+    # ⚠ CORRECTIF DU 16/09/2026, ET LE DEFAUT AVAIT DEJA COUTE DES DONNEES.
+    # Les quatre motifs « decks », « campagnes », « statistiques » et
+    # « achievements » ne correspondaient A AUCUN nom reel : les dossiers et
+    # fichiers des joueurs s'appellent `deck/serveur-N/`,
+    # `campagnes-serveur-N/`, `statistics-serveur-N.json` (en anglais) et
+    # `achievements-serveur-N.json`. Aucune exclusion ne s'appliquait, et
+    # l'archive emportait donc les fichiers LOCAUX du meme nom, qui
+    # s'extrayaient par-dessus ceux du serveur.
+    #
+    # Mesure du 16/09/2026 sur le serveur : `games_history-serveur-4.json`,
+    # `achievements-serveur-4.json` et `campagnes-serveur-4/` portaient la date
+    # du deploiement de la veille (21:12 UTC) et le contenu de mes fichiers de
+    # test du 07/08. La place 4 est le compte `lightningmantis`.
+    #
+    # Les deux motifs ci-dessous visent la MARQUE DE PLACE, jamais un dossier
+    # commun : `deck/custom/` (les decks de l'hote, lus par tous) et les
+    # definitions de campagne doivent continuer de partir.
+    "--exclude=*-serveur-*",          # campagnes-, games_history-, achievements-,
+                                      # statistics-, legacy-, campaign-log-last-
+    "--exclude=*/serveur-*",          # deck/serveur-N/, replays/serveur-N/
+    # Les fichiers d'etat de MA partie solo locale. Ils n'ont pas d'equivalent
+    # sur le serveur (chaque compte a sa place, il n'y a pas de place 0) et
+    # emportaient jusque-la mon historique et mes statistiques personnelles.
+    "--exclude=games_history.json","--exclude=statistics.json",
+    "--exclude=achievements.json","--exclude=legacy.json",
+    "--exclude=sauvegardes","--exclude=saves",
+    # ⚠ CHEMIN ANCRE, ET C'EST LA MESURE DU 16/09/2026 : « campagnes » tout
+    # court attrapait AUSSI `data/campagnes`, le dossier des DEFINITIONS de
+    # campagne (`campagne_definitions_folder`, server_campagne.py). Les neuf
+    # definitions du serveur etaient donc figees au 07/09/2026 : une correction
+    # apportee a l'une d'elles ne serait jamais partie. Ici on ne vise que les
+    # campagnes de la partie solo locale, a la racine du moteur.
+    "--exclude=Fusion/marvel-lcg-src/campagnes",
     "--exclude=replays","--exclude=logs",
     "--exclude=comptes.json","--exclude=*.db","--exclude=*.sqlite3"
   )
