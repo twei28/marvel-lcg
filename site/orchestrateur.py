@@ -2407,6 +2407,21 @@ PAGE = """<!doctype html>
   .barre {{ display:flex; justify-content:space-between; align-items:center;
            gap:1rem; margin-bottom:1.5rem; color:#9aa7b4; font-size:.9rem; }}
   .barre a {{ color:#58a6ff; }}
+  .barre .pastille {{ background:#f85149; color:#0e1116; border-radius:1rem;
+                     padding:.05rem .45rem; font-size:.8rem; }}
+  /* Le FIL d'un signalement (16/09/2026) : ma reponse et la sienne, distinguees
+     par leur bord. Meme forme que dans /admin, pour que la meme conversation se
+     lise pareil des deux cotes. */
+  .fil {{ display:grid; gap:.4rem; margin:.4rem 0 .6rem; }}
+  .fil .msg {{ margin:0; padding:.45rem .6rem; border-radius:.4rem;
+              background:#0b0f14; border-left:3px solid #30363d; font-size:.9rem; }}
+  .fil .msg.de-lui {{ border-left-color:#1f6feb; }}
+  .fil .msg.de-moi {{ border-left-color:#f0b429; }}
+  .repondre {{ display:flex; gap:.4rem; align-items:flex-start; }}
+  .repondre textarea {{ flex:1; font:inherit; background:#0b0f14; color:inherit;
+                       border:1px solid #30363d; border-radius:.4rem;
+                       padding:.4rem .6rem; resize:vertical; }}
+  .repondre button {{ width:auto; }}
   .avert {{ border:1px solid #9e6a03; background:#1d1a0e; color:#e3b341;
            border-radius:.5rem; padding:.7rem .9rem; margin-bottom:1.5rem; font-size:.9rem; }}
   footer {{ margin-top:2.5rem; color:#6e7681; font-size:.85rem; }}
@@ -2428,9 +2443,15 @@ PAGE = """<!doctype html>
 def _barre(pseudo: str) -> str:
     admin = (' &middot; <a href="/admin">Administration</a>'
              ' &middot; <a href="/suivi">Suivi des parties</a>') if pseudo == ADMIN else ""
-    return ('<div class="barre"><span>Connecte : <strong>%s</strong>%s</span>'
+    # ⚠ L'ENTREE EST LA POUR TOUT LE MONDE, le compteur seulement quand une
+    # reponse attend. Une page « Mes signalements » qu'on ne trouve qu'une fois
+    # prevenu n'existe pas vraiment.
+    attente = reponses_non_lues(pseudo)
+    signalements = (' &middot; <a href="/signalements">Mes signalements</a>'
+                    + (' <span class="pastille">(%d)</span>' % attente if attente else ""))
+    return ('<div class="barre"><span>Connecte : <strong>%s</strong>%s%s</span>'
             '<a href="/deconnexion">Se deconnecter</a></div>'
-            % (html.escape(pseudo), admin))
+            % (html.escape(pseudo), signalements, admin))
 
 
 def page_reprise(pseudo: str, attendue: dict) -> bytes:
@@ -2467,6 +2488,66 @@ def page_reprise(pseudo: str, attendue: dict) -> bytes:
              % (html.escape(quoi), _horodate(attendue.get("quand") or ""),
                 (", " + html.escape(motif)) if motif else ""))
     return PAGE.format(tete="", sous="Tu etais en pleine partie.",
+                       barre=_barre(pseudo), corps=corps,
+                       heures=int(DUREE_MAX_HEURES)).encode("utf-8")
+
+
+ETIQUETTES_TICKET = {
+    "nouveau": "Recu",
+    "en cours": "En cours",
+    "traite": "Corrige",
+    "refuse": "Refuse",
+}
+
+
+def page_signalements(pseudo: str) -> bytes:
+    """« Mes signalements » : ses bugs, leur etat, et la conversation.
+
+    ⚠ IL NE VOIT QUE LES SIENS. `tickets_de` filtre sur le compte ET sur le
+    siege 0 : un rapport envoye depuis la table de quelqu'un d'autre ne lui
+    appartient pas, meme s'il l'a ecrit de sa main.
+
+    ⚠ TOUT CE QUI VIENT D'UN JOUEUR PASSE PAR `html.escape`, ici comme dans
+    /admin : la description, le nom et le fil sont ecrits a la main.
+    """
+    tickets = tickets_de(pseudo)
+    if not tickets:
+        corps = ('<div class="table"><div class="entete">'
+                 '<strong>Aucun signalement</strong></div>'
+                 '<p class="mdp">Quand un bug te gene en partie, le bouton '
+                 '« Signaler un bug » l\'envoie avec ta capture d\'ecran et le '
+                 'journal de la partie. Tu retrouveras ici ma reponse.</p></div>')
+        return PAGE.format(tete="", sous="Rien a suivre pour l\'instant.",
+                           barre=_barre(pseudo), corps=corps,
+                           heures=int(DUREE_MAX_HEURES)).encode("utf-8")
+
+    corps = ""
+    for r in tickets:
+        etat = r["etat"] or "nouveau"
+        fil = ""
+        for m in r.get("messages") or []:
+            fil += ('<p class="msg %s"><b>%s</b> <span class="mdp">%s</span><br>%s</p>'
+                    % ("de-lui" if m["auteur"] == "admin" else "de-moi",
+                       "Reponse" if m["auteur"] == "admin" else "Moi",
+                       _horodate(m["quand"] or ""),
+                       html.escape(m["texte"] or "").replace("\n", "<br>")))
+        if not fil:
+            fil = '<p class="mdp">Pas encore de reponse.</p>'
+        capture = ('<p><a href="/admin/capture?id=%d" target="_blank" rel="noopener">'
+                   'Voir la capture</a></p>' % r["id"]) if r["capture"] else ""
+        corps += ('<div class="table">'
+                  '<div class="entete"><strong>%s</strong>'
+                  '<span class="mdp">%s &middot; %s</span></div>'
+                  '<div class="fil">%s</div>%s'
+                  '<form method="post" action="/signalements" class="repondre">'
+                  '<input type="hidden" name="id" value="%d">'
+                  '<textarea name="texte" rows="2" placeholder="Ajouter quelque chose"></textarea>'
+                  '<button type="submit">Envoyer</button></form>'
+                  '</div>'
+                  % (html.escape((r["description"] or "")[:160]),
+                     ETIQUETTES_TICKET.get(etat, etat),
+                     _horodate(r["quand"] or ""), fil, capture, r["id"]))
+    return PAGE.format(tete="", sous="Ce que tu as signale, et ma reponse.",
                        barre=_barre(pseudo), corps=corps,
                        heures=int(DUREE_MAX_HEURES)).encode("utf-8")
 
@@ -2587,6 +2668,20 @@ PAGE_ADMIN = """<!doctype html>
   .etat.nouveau {{ color:#f0b429; border-color:#f0b429; }}
   .etat.encours {{ color:#58a6ff; border-color:#58a6ff; }}
   .etat.traite {{ color:#3fb950; border-color:#3fb950; }}
+  .etat.refuse {{ color:#9aa7b4; border-color:#9aa7b4; }}
+  /* Le FIL d'un ticket (16/09/2026) : ce que j'ai repondu, ce que le joueur a
+     repondu. Les deux camps se distinguent par leur bord, pas par un alignement
+     a droite : une conversation a deux voix, pas une messagerie. */
+  .fil {{ margin:.6rem 0; display:grid; gap:.4rem; }}
+  .fil .msg {{ margin:0; padding:.45rem .6rem; border-radius:.4rem;
+              background:#0b0f14; border-left:3px solid #30363d; font-size:.88rem; }}
+  .fil .msg.de-moi {{ border-left-color:#1f6feb; }}
+  .fil .msg.de-lui {{ border-left-color:#f0b429; }}
+  .fil .msg b {{ font-size:.8rem; }}
+  .repondre {{ display:flex; gap:.4rem; align-items:flex-start; margin-top:.2rem; }}
+  .repondre textarea {{ flex:1; font:inherit; background:#0b0f14; color:inherit;
+                       border:1px solid #30363d; border-radius:.4rem; padding:.4rem .6rem;
+                       resize:vertical; }}
   .pastille {{ font-size:.8rem; vertical-align:middle; background:#f85149;
               color:#0e1116; border-radius:1rem; padding:.05rem .5rem; }}
   /* Les sections repliees (12/09/2026, demande de l'utilisateur : « je dois
@@ -3767,9 +3862,11 @@ class Handler(BaseHTTPRequestHandler):
         html.escape : la description, le nom et le journal sont ecrits par
         n'importe qui, y compris par un invite qu'on ne connait pas."""
         etat = r["etat"] or "nouveau"
-        classe = {"nouveau": "nouveau", "en cours": "encours", "traite": "traite"}.get(etat, "nouveau")
+        classe = {"nouveau": "nouveau", "en cours": "encours", "traite": "traite",
+                  "refuse": "refuse"}.get(etat, "nouveau")
         boutons = ""
-        for cible, libelle in (("en cours", "Prendre"), ("traite", "Classer")):
+        for cible, libelle in (("en cours", "Prendre"), ("traite", "Classer"),
+                               ("refuse", "Refuser")):
             if etat != cible:
                 boutons += ('<form method="post" action="/admin">'
                             '<input type="hidden" name="action" value="rapport">'
@@ -3792,17 +3889,43 @@ class Handler(BaseHTTPRequestHandler):
         ou = r["ecran"] or "?"
         if r["siege"]:
             ou += " · siege %d" % r["siege"]
+
+        # ⚠ LE FIL N'EXISTE QUE POUR UN TICKET. Un rapport d'invite n'a pas de
+        # proprietaire connu (voir `_est_un_ticket`) : lui offrir un champ de
+        # reponse promettrait une reponse qui n'atteindrait personne. On le dit
+        # plutot que de faire semblant.
+        if _est_un_ticket(r):
+            ticket = ticket_de(r["id"]) or {}
+            fil = ""
+            for m in ticket.get("messages") or []:
+                fil += ('<p class="msg %s"><b>%s</b> <span class="sous">%s</span><br>%s</p>'
+                        % ("de-moi" if m["auteur"] == "admin" else "de-lui",
+                           "Moi" if m["auteur"] == "admin" else html.escape(r["nom"] or "Le joueur"),
+                           _horodate(m["quand"] or ""),
+                           html.escape(m["texte"] or "").replace("\n", "<br>")))
+            if not fil:
+                fil = '<p class="sous">Aucun echange pour l\'instant.</p>'
+            fil += ('<form method="post" action="/admin" class="repondre">'
+                    '<input type="hidden" name="action" value="rapport_repondre">'
+                    '<input type="hidden" name="id" value="%d">'
+                    '<textarea name="texte" rows="2" placeholder="Repondre a %s"></textarea>'
+                    '<button type="submit">Repondre</button></form>'
+                    % (r["id"], html.escape(r["hote"] or "")))
+        else:
+            fil = ('<p class="sous">Rapport envoye depuis un siege invite : on ne '
+                   'sait pas a quel compte il appartient, il n\'y a donc pas de fil.</p>')
+
         return ('<details class="rapport">'
                 '<summary><span class="etat %s">%s</span>'
                 '<span class="quoi">%s</span>'
                 '<span class="meta">%s &middot; %s &middot; %s</span></summary>'
-                '<div class="corps"><p>%s</p>%s%s<p>%s</p></div></details>'
+                '<div class="corps"><p>%s</p>%s%s<div class="fil">%s</div><p>%s</p></div></details>'
                 % (classe, html.escape(etat),
                    html.escape((r["description"] or "")[:110]),
                    html.escape(r["nom"] or "?"), html.escape(ou),
                    _horodate(r["quand"] or ""),
                    html.escape(r["description"] or "").replace("\n", "<br>"),
-                   image, journal, boutons))
+                   image, journal, fil, boutons))
 
     def do_GET(self):
         pseudo = self._session()
@@ -3856,6 +3979,17 @@ class Handler(BaseHTTPRequestHandler):
                 self._rediriger("/")
                 return
             self._repondre(200, page_arret(pseudo))
+        elif self.chemin == "/signalements":
+            # ⚠ SESSION OBLIGATOIRE : la page nomme des bugs et montre des
+            # captures d'ecran de partie. Un visiteur sans compte n'a rien a y
+            # voir, et `tickets_de("")` rendrait de toute facon une liste vide.
+            if not pseudo:
+                self._rediriger("/")
+                return
+            # Ouvrir la page vaut lecture : les reponses cessent d'attendre.
+            for _t in tickets_de(pseudo):
+                marquer_ticket_lu(_t["id"], "joueur")
+            self._repondre(200, page_signalements(pseudo))
         elif self.chemin.startswith("/inscription"):
             requete = urllib.parse.urlparse(self.path)
             jeton = urllib.parse.parse_qs(requete.query).get("i", [""])[0]
@@ -4016,6 +4150,24 @@ class Handler(BaseHTTPRequestHandler):
             return
         pseudo = self._session()
 
+        if self.chemin == "/signalements":
+            # ⚠ LE JOUEUR NE REPOND QUE SUR SES PROPRES TICKETS. On ne se fie
+            # pas au numero envoye : on le cherche dans SES tickets. Sans cette
+            # verification, n'importe quel compte connecte pourrait ecrire dans
+            # le fil d'un autre en changeant un champ cache.
+            if not pseudo:
+                self._rediriger("/")
+                return
+            champs = self._champs()
+            try:
+                numero = int(champs.get("id", "0"))
+            except ValueError:
+                numero = 0
+            if numero and any(x["id"] == numero for x in tickets_de(pseudo)):
+                ecrire_message(numero, "joueur", champs.get("texte", ""))
+            self._rediriger("/signalements")
+            return
+
         if self.chemin == "/inscription":
             champs = self._champs()
             try:
@@ -4128,7 +4280,7 @@ class Handler(BaseHTTPRequestHandler):
                     pass          # compte inconnu : rien a creer, la page se reaffiche
             elif action == "reinit_annuler":
                 supprimer_reinitialisation(champs.get("jeton", ""))
-            elif action in ("rapport", "rapport_supprimer"):
+            elif action in ("rapport", "rapport_supprimer", "rapport_repondre"):
                 try:
                     numero = int(champs.get("id", "0"))
                 except ValueError:
@@ -4136,6 +4288,13 @@ class Handler(BaseHTTPRequestHandler):
                 if numero:
                     if action == "rapport":
                         changer_etat_rapport(numero, champs.get("etat", ""))
+                    elif action == "rapport_repondre":
+                        # ⚠ REPONDRE VAUT LECTURE. L'administrateur qui ecrit a
+                        # forcement lu ce qui precede : sans ce marquage, sa
+                        # propre pastille resterait allumee sur un fil qu'il
+                        # vient de traiter.
+                        if ecrire_message(numero, "admin", champs.get("texte", "")):
+                            marquer_ticket_lu(numero, "admin")
                     else:
                         supprimer_rapport(numero)
             else:

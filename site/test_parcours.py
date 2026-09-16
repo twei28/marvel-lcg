@@ -2107,6 +2107,28 @@ o.changer_etat_rapport(_r_hote, "refuse")
 verifier("et il se pose sur un rapport",
          (o.ticket_de(_r_hote) or {}).get("etat") == "refuse")
 
+
+# La page du joueur : il ne voit QUE ses tickets, et la barre le lui dit.
+_page = o.page_signalements("yarro").decode("utf-8")
+verifier("la page montre son signalement",
+         "la carte disparait quand je la joue" in _page)
+verifier("et la reponse qu'on lui a faite",
+         "Corrige, merci du signalement." in _page)
+_page_autre = o.page_signalements("quelqu-un-d-autre").decode("utf-8")
+verifier("⚠ un autre compte n'y voit rien de lui",
+         "la carte disparait" not in _page_autre, _page_autre[:200])
+verifier("et sa page le dit plutot que de rester vide",
+         "signalement" in _page_autre.lower())
+
+o.ecrire_message(_r_hote, "admin", "Et voici une seconde reponse.")
+verifier("la barre annonce les reponses non lues",
+         "Mes signalements" in o._barre("yarro") and "(1)" in o._barre("yarro"),
+         o._barre("yarro"))
+verifier("et elle reste sobre quand rien n'attend",
+         "Mes signalements" in o._barre("quelqu-un-d-autre")
+         and "(" not in o._barre("quelqu-un-d-autre").split("Mes signalements")[1][:12],
+         o._barre("quelqu-un-d-autre"))
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:
