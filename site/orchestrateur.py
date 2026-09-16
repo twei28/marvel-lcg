@@ -80,8 +80,20 @@ DUREE_MAX_HEURES = float(os.environ.get("DUREE_MAX_HEURES", "8"))
 #
 # ⚠ ET LA PARTIE EST SAUVEGARDEE AVANT, jamais perdue : voir
 # `_sauvegarder_avant_extinction`. A huit heures on pouvait s'en passer, a
-# trois quarts d'heure non.
-INACTIVITE_MINUTES = float(os.environ.get("INACTIVITE_MINUTES", "45"))
+# trente minutes non.
+#
+# ⚠ 45 -> 30 MINUTES LE 16/09/2026, en cherchant a tenir plus de joueurs sur la
+# meme machine. Une table coute 221 Mo et la machine en a 3,8 Go : ce qui
+# limite, c'est le nombre de tables ALLUMEES EN MEME TEMPS, pas le nombre de
+# comptes. Trente minutes sans la moindre action, c'est quelqu'un parti manger
+# ou qui a ferme son onglet ; il retrouvera sa partie dans « Reprendre », et sa
+# table se rallume en quelques secondes.
+#
+# ⚠ CE REGLAGE N'AVAIT AUCUN EFFET APRES UN DEPLOIEMENT, et c'est corrige le
+# meme jour : mes journaux de moteur partaient dans l'archive et ecrasaient
+# ceux du serveur, donc `secondes_sans_jouer` lisait la date du deploiement.
+# Voir l'exclusion de `.site` dans `deploiement/deployer.ps1`.
+INACTIVITE_MINUTES = float(os.environ.get("INACTIVITE_MINUTES", "30"))
 DELAI_DEMARRAGE = 240                 # secondes d'attente avant d'abandonner
 
 # --- Comptes ---------------------------------------------------------------
