@@ -658,6 +658,17 @@ function progressBar() {
     const rangee = document.querySelector(".reprise-boutons");
     if (rangee) {
         rangee.classList.remove("est-flottante");
+        // ⚠ LE FR/EN EN DOUBLE (16/09/2026, signalé sur capture : deux boutons
+        // « EN » côte à côte). L'écran SANS en-tête pose son propre bouton de
+        // langue dans cette rangée, parce que la modale du premier passage
+        // promet « le bouton FR / EN, en haut de l'écran » et qu'il n'existait
+        // nulle part là-bas. Mais la rangée est un nœud VIVANT, déplacé d'un
+        // écran à l'autre : en revenant sur un écran AVEC en-tête, elle
+        // apportait ce bouton juste à côté de celui que l'en-tête venait de
+        // dessiner. On retire donc celui de la rangée ; l'écran sans en-tête
+        // le reposera de lui-même au prochain passage.
+        const langueEnTrop = rangee.querySelector(".btn-langue");
+        if (langueEnTrop) langueEnTrop.remove();
         entete.insertBefore(rangee, entete.querySelector(".steps"));
     }
     return entete;
