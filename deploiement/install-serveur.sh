@@ -20,8 +20,12 @@ echo "==> 1/8  Base système"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
 apt-get -y -qq upgrade
-# sqlite3 : CLI necessaire a sauvegarde.sh (".backup", instantane coherent
-# de narwhal.db malgre le mode WAL).
+# sqlite3 : le CLI, pour le diagnostic a la main. ⚠ sauvegarde.sh N'EN DEPEND
+# PLUS depuis le 16/09/2026 : il passe par `Connection.backup` de Python. La
+# raison est mesuree, pas theorique — le binaire etait ABSENT du serveur en
+# service (installe avant que cette ligne n'existe), et la sauvegarde mourait
+# sur « sqlite3: command not found ». Une dependance ajoutee a l'installateur
+# n'atteint jamais un serveur deja installe.
 apt-get -y -qq install \
   rsync ufw curl ca-certificates gnupg git unzip \
   imagemagick jq sqlite3 \

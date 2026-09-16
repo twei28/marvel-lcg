@@ -27,13 +27,20 @@
 # ⚠ AJOUTÉ LE 06/09/2026 : narwhal.db est en mode WAL (le moteur y écrit sans
 # arrêt). Une copie brute du fichier pendant une écriture peut manquer des
 # pages encore dans le journal WAL et produire une sauvegarde incohérente.
-# `sqlite3 <base> ".backup <fichier>"` prend un instantané cohérent, verrou
-# SQLite compris — c'est pour ça qu'on passe par une zone de montage
-# temporaire ($stage) plutôt que d'archiver les fichiers en place.
+# `Connection.backup` de Python prend un instantané cohérent, verrou SQLite
+# compris. C'est pour ça qu'on passe par une zone de montage temporaire
+# ($stage) plutôt que d'archiver les fichiers en place.
+# ⚠ 16/09/2026 : cette ligne appelait le CLI `sqlite3`, qui N'EST PAS installé
+# sur le serveur. La sauvegarde mourait sur « command not found » sans rien
+# produire, et personne ne le voyait : le timer ne lit pas le code de sortie.
 # ==============================================================================
 set -euo pipefail
 
 RACINE="${RACINE:-@RACINE@}"
+# Python du venv du jeu, celui que lance narwhal.service. Repli sur python3 du
+# systeme pour un poste de test ou le venv n'existe pas.
+PYTHON="${PYTHON:-$RACINE/venv310/bin/python}"
+[ -x "$PYTHON" ] || PYTHON="python3"
 DESTINATION="${DESTINATION:-/var/backups/narwhal}"
 CONSERVER="${CONSERVER:-30}"   # nombre d'archives quotidiennes gardées
 MOTEUR="$RACINE/Fusion/marvel-lcg-src"
@@ -58,10 +65,11 @@ if [ "${1:-}" = "--verifier" ]; then
   echo "  campagnes serveur            : $(compter '*/campagnes-serveur-*/*')"
   echo "  replays serveur              : $(compter '*/replays/serveur-*/*')"
   echo "  hauts faits (achievements)   : $(compter '*achievements-serveur-*.json')"
+  echo "  fiches du mode Legacy        : $(compter '*legacy-serveur-*.json')"
 
   base="$(find "$tmp" -name 'narwhal.db' -print -quit)"
   if [ -n "$base" ]; then
-    n="$(sqlite3 "$base" 'SELECT count(*) FROM comptes;' 2>/dev/null || echo '?')"
+    n="$("$PYTHON" -c "import sqlite3,sys;print(sqlite3.connect(sys.argv[1]).execute('SELECT count(*) FROM comptes').fetchone()[0])" "$base" 2>/dev/null || echo '?')"
     echo "  comptes dans narwhal.db restaurée : $n"
   else
     echo "  ⚠ narwhal.db absente de l'archive restaurée"
@@ -98,7 +106,20 @@ for f in "${fichiers_site[@]}"; do
   case "$f" in
     *.db|*.sqlite|*.sqlite3)
       # Instantané cohérent malgré le mode WAL : voir la note en tête de fichier.
-      sqlite3 "$f" ".backup $dest"
+      # ⚠ PAR PYTHON, PAS PAR LE CLI `sqlite3` (16/09/2026). Le binaire n'est
+      # PAS installé sur le serveur : `sqlite3: command not found`, et la
+      # sauvegarde s'arrêtait là, sans rien produire. `Connection.backup`
+      # (Python 3.7+) prend le même instantané, verrou compris, et Python est
+      # de toute façon obligatoire pour faire tourner le jeu.
+      "$PYTHON" - "$f" "$dest" <<'PYBACKUP'
+import sqlite3, sys
+source = sqlite3.connect(sys.argv[1])
+copie = sqlite3.connect(sys.argv[2])
+with copie:
+    source.backup(copie)
+copie.close()
+source.close()
+PYBACKUP
       ;;
     *)
       cp -p "$f" "$dest"
@@ -121,10 +142,17 @@ for dossier in \
     cp -a "$d/." "$stage/$rel/"
   done
 done
+# ⚠ `legacy-serveur-*.json` AJOUTE LE 16/09/2026. Le mode Legacy est arrive le
+# 13/09, cette liste datait du 06/09, et personne ne l'a reprise : ce que le
+# joueur a debloque (la vague atteinte, les jetons depenses, la date de depart)
+# n'avait donc aucun filet. Ce n'est PAS reconstructible depuis
+# `games_history-serveur-N.json` : l'historique dit les parties, pas les jetons
+# depenses ni le « repartir de zero ».
 for motif in \
   "$MOTEUR"/achievements-serveur-*.json \
   "$MOTEUR"/games_history-serveur-*.json \
-  "$MOTEUR"/statistics-serveur-*.json ; do
+  "$MOTEUR"/statistics-serveur-*.json \
+  "$MOTEUR"/legacy-serveur-*.json ; do
   for f in $motif; do
     rel="${f#"$RACINE"/}"
     mkdir -p "$(dirname "$stage/$rel")"
