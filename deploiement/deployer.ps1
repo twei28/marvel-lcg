@@ -38,6 +38,16 @@ $faireCode   = -not $Images
 $faireImages = -not $Code
 
 function Ssh-Exec([string]$cmd) {
+  # ⚠ LES FINS DE LIGNE WINDOWS NE PASSENT PAS LA FRONTIERE (16/09/2026).
+  # Ce qu'on envoie ici est du BASH, lu par un shell Linux. Une commande sur
+  # plusieurs lignes ecrite dans un .ps1 en CRLF arrive avec un « \r » au bout
+  # de chaque ligne, et bash s'arrete dessus :
+  #     bash: -c: line 4: syntax error near unexpected token $'do\r'
+  # Constate en pleine etape de redemarrage : le code etait deja extrait, le
+  # service jamais relance, et le site a continue de tourner sur l'ancien code
+  # charge en memoire. Le FORMAT DU FICHIER ne doit pas decider du sort d'un
+  # deploiement : on normalise ici, une fois pour toutes.
+  $cmd = $cmd -replace "`r`n", "`n" -replace "`r", "`n"
   & ssh -i $CLE -o StrictHostKeyChecking=accept-new "root@$IP" $cmd
   if ($LASTEXITCODE -ne 0) { throw "Commande distante en echec (code $LASTEXITCODE)" }
 }
