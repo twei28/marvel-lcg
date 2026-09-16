@@ -55,4 +55,22 @@ aujourd'hui.
 
 **Corrigé et déployé le 15/09/2026** (30 images, 14,9 Mo, `deployer.ps1 -Images`,
 sans redémarrage : le cache d'images vit dans le processus d'une table, une
-partie neuve relit les fichiers). Le gate reste à poser.
+partie neuve relit les fichiers).
+
+✅ **Le gate est posé le 16/09/2026** : `outils/verifier-sens-scans.py`. Il lit
+le type imprimé de chaque carte dans `cards.json` (`MainScheme`, `SideScheme`,
+`Status` — la même liste que `paysageSelonTypePapier` côté plateau), mesure son
+scan et refuse tout fichier en portrait.
+
+Relevé du jour : **706 cartes de type paysage ont un scan en local**, 13 n'en
+ont pas et sont ignorées, et **six sont en portrait**. Ces six-là sont inscrites
+comme exceptions, avec leur raison :
+
+- `57039a` « Choosing Sides » : carte SANS ART, rendue en texte par le moteur.
+  Son fichier n'est pas un scan de carte, la règle ne s'y applique pas.
+- `ab013`, `sg020`, `nt014`, `ip017`, `ip035` : cinq scans fan-made livrés en
+  portrait et corrects à l'écran.
+
+⚠ **Ne jamais les convertir à l'aveugle** : ils marchent aujourd'hui, et les
+retourner les mettrait à l'envers. Toute modification de cette liste demande la
+même vérification, carte par carte, dans le jeu.
