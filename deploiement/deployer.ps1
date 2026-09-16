@@ -238,12 +238,16 @@ if ($faireImages -and (Test-Path $PICS)) {
 
   # Ce qui manque ou differe.
   $prefixe = (Resolve-Path $PICS).Path.TrimEnd('\') + '\'
-  $ici = @{}
+  # ⚠ NE PAS LA RENOMMER `$ici` : PowerShell ignore la casse, et `$ICI` est
+  # DEJA le dossier de ce script (ligne 31). La collision a existe, et elle a
+  # casse le deploiement du 16/09/2026 : l'etape des scripts, qui vient apres,
+  # cherchait ses fichiers dans « System.Collections.Hashtable\sauvegarde.sh ».
+  $inventaireLocal = @{}
   $aEnvoyer = @()
   $poids = 0
   foreach ($f in Get-ChildItem -Path $PICS -Recurse -File) {
     $rel = $f.FullName.Substring($prefixe.Length).Replace('\','/')
-    $ici[$rel] = $true
+    $inventaireLocal[$rel] = $true
     if (-not $distant.ContainsKey($rel) -or $distant[$rel] -ne $f.Length) {
       $aEnvoyer += [pscustomobject]@{ Rel = $rel; Taille = $f.Length }
       $poids += $f.Length
@@ -255,7 +259,7 @@ if ($faireImages -and (Test-Path $PICS)) {
   # vecu sur ce projet, cf. renumerotations de prefixes) laisse une image
   # morte sur le serveur indefiniment : rien ne la reclame jamais
   # (audit E, point 2). On affiche toujours la liste avant de supprimer.
-  $aEffacerPics = @($distant.Keys | Where-Object { -not $ici.ContainsKey($_) })
+  $aEffacerPics = @($distant.Keys | Where-Object { -not $inventaireLocal.ContainsKey($_) })
   if ($aEffacerPics.Count -gt 0) {
     Write-Host "   a effacer : $($aEffacerPics.Count) image(s) disparue(s) en local"
     foreach ($rel in $aEffacerPics) { Write-Host "     - $rel" }
@@ -340,9 +344,13 @@ if (Test-Path $DOCS) {
   # Un scan en trop sur le serveur ne fait de mal a personne ; un LIVRET DE
   # REGLES perime, si. La v1.5 du guide de reference, remplacee par la 1.8 en
   # local, etait restee la-bas et le panneau la proposait toujours.
-  $ici = @{}
-  foreach ($f in Get-ChildItem -Path $DOCS -File -Filter *.pdf) { $ici[$f.Name] = $true }
-  $aEffacer = @($dejaLa.Keys | Where-Object { -not $ici.ContainsKey($_) })
+  # ⚠ NE PAS LA RENOMMER `$ici` : PowerShell ignore la casse, et `$ICI` est
+  # DEJA le dossier de ce script (ligne 31). La collision a existe, et elle a
+  # casse le deploiement du 16/09/2026 : l'etape des scripts, qui vient apres,
+  # cherchait ses fichiers dans « System.Collections.Hashtable\sauvegarde.sh ».
+  $inventaireLocal = @{}
+  foreach ($f in Get-ChildItem -Path $DOCS -File -Filter *.pdf) { $inventaireLocal[$f.Name] = $true }
+  $aEffacer = @($dejaLa.Keys | Where-Object { -not $inventaireLocal.ContainsKey($_) })
   if ($aEffacer.Count -gt 0) {
     Write-Host "   a effacer : $($aEffacer.Count) document(s) disparu(s) en local"
     foreach ($nom in $aEffacer) {
@@ -394,60 +402,26 @@ if (Test-Path $DOCS) {
 # qu'ils different, montre quoi, et passe son chemin.
 if ($faireCode) {
   Write-Host "== Scripts et configuration du serveur" -ForegroundColor Cyan
-  $confs = @("sauvegarde.sh","purge.sh","narwhal.service","narwhal-sauvegarde.service",
-             "narwhal-purge.service","narwhal-sauvegarde.timer","narwhal-purge.timer","Caddyfile")
+  # Le bash vit dans `synchroniser-conf.sh`, un fichier a part, versionne et
+  # relisable. ⚠ IL N'EST PAS ECRIT ICI, ET C'EST DELIBERE : passe en argument
+  # de `ssh.exe`, il perdait ses guillemets doubles en chemin, et le `sed` de
+  # substitution arrivait avec ses « | » transformes en pipes.
+  $confs = @("synchroniser-conf.sh","sauvegarde.sh","purge.sh","narwhal.service",
+             "narwhal-sauvegarde.service","narwhal-purge.service",
+             "narwhal-sauvegarde.timer","narwhal-purge.timer","Caddyfile")
   foreach ($c in $confs) {
-    if (-not (Test-Path (Join-Path $ICI $c))) { throw "Fichier de configuration absent : $c" }
+    if (-not (Test-Path (Join-Path $PSScriptRoot $c))) {
+      throw "Fichier de configuration absent : $c"
+    }
   }
   $tgzC = Join-Path $env:TEMP "narwhal-conf.tgz"
-  & tar -czf $tgzC -C $ICI @confs
+  & tar -czf $tgzC -C $PSScriptRoot @confs
   if ($LASTEXITCODE -ne 0) { throw "Creation de l'archive de configuration en echec." }
   & scp -i $CLE $tgzC "root@${IP}:/tmp/narwhal-conf.tgz"
   if ($LASTEXITCODE -ne 0) { throw "Envoi de la configuration en echec." }
   Remove-Item $tgzC -Force
-
-  $conf = @"
-set -e
-rm -rf /tmp/narwhal-conf && mkdir -p /tmp/narwhal-conf
-tar -xzf /tmp/narwhal-conf.tgz -C /tmp/narwhal-conf && rm -f /tmp/narwhal-conf.tgz
-cd /tmp/narwhal-conf
-# Les memes substitutions que `install-serveur.sh`, sur les memes fichiers.
-sed -i "s|@RACINE@|$DIST|g; s|@UTILISATEUR@|narwhal|g; s|@DOMAINE@|$DOMAINE|g" \
-  sauvegarde.sh purge.sh narwhal.service narwhal-sauvegarde.service narwhal-purge.service
-recharger=0
-# --- Ce qui appartient ENTIEREMENT au depot : on synchronise ---
-poser() {     # `$1 source  `$2 cible  `$3 droits  `$4 "unit" si systemd
-  if cmp -s "`$1" "`$2" 2>/dev/null; then echo "   a jour   : `$2"; return 0; fi
-  if [ "`$4" = "unit" ] && ! systemd-analyze verify "`$1" >/dev/null 2>&1; then
-    echo "   REFUSE : `$2 ne passe pas systemd-analyze verify, rien n'est installe" >&2
-    return 0
-  fi
-  avant="(absent)"
-  [ -f "`$2" ] && avant="`$(date -r "`$2" +%d/%m)"
-  install -m "`$3" "`$1" "`$2"
-  echo "   MIS A JOUR : `$2 (l'ancien datait du `$avant)"
-  [ "`$4" = "unit" ] && recharger=1
-  return 0
-}
-poser sauvegarde.sh              /usr/local/bin/narwhal-sauvegarde        755
-poser purge.sh                   /usr/local/bin/narwhal-purge             755
-poser narwhal-sauvegarde.service /etc/systemd/system/narwhal-sauvegarde.service 644 unit
-poser narwhal-purge.service      /etc/systemd/system/narwhal-purge.service      644 unit
-poser narwhal-sauvegarde.timer   /etc/systemd/system/narwhal-sauvegarde.timer   644 unit
-poser narwhal-purge.timer        /etc/systemd/system/narwhal-purge.timer        644 unit
-if [ "`$recharger" = "1" ]; then systemctl daemon-reload; echo "   systemd rechargé"; fi
-# --- Ce qui porte des reglages du serveur : on REGARDE, on ne touche pas ---
-surveiller() {   # `$1 source  `$2 cible
-  if cmp -s "`$1" "`$2" 2>/dev/null; then echo "   identique: `$2"; return 0; fi
-  echo "   DIFFERENT (non touche) : `$2"
-  diff "`$1" "`$2" | head -12 | sed "s/^/       /"
-  return 0
-}
-surveiller narwhal.service /etc/systemd/system/narwhal.service
-surveiller Caddyfile       /etc/caddy/Caddyfile
-rm -rf /tmp/narwhal-conf
-"@
-  Ssh-Exec $conf
+  # Une commande d'une seule ligne, sans guillemets a proteger.
+  Ssh-Exec "rm -rf /tmp/narwhal-conf && mkdir -p /tmp/narwhal-conf && tar -xzf /tmp/narwhal-conf.tgz -C /tmp/narwhal-conf && rm -f /tmp/narwhal-conf.tgz && bash /tmp/narwhal-conf/synchroniser-conf.sh $DIST narwhal $DOMAINE && rm -rf /tmp/narwhal-conf"
 }
 
 # --- Python, redemarrage, verification ---------------------------------------
