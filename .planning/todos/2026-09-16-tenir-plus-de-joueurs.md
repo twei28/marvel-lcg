@@ -97,6 +97,52 @@ bougé d'un octet, ce qui se lisait comme « le cache ne coûte rien ». Il ne
 coûtait rien parce que rien n'avait été servi. La mesure a été refaite sur
 `Cache.LoadImage` directement.
 
+## Le test de RUPTURE du 16/09/2026
+
+Demande de l'utilisateur : « fais un vrai pain test ». Donc sans garde-fou :
+ouvrir des tables jusqu'à ce que ça casse, chacune avec **800 cartes servies
+dans son cache** pour peser ce que pèse une vraie table de soirée.
+
+⚠ **Deux protections, et elles ne sont pas cosmétiques** : l'orchestrateur a
+reçu `oom_score_adj = -1000` (le tueur de mémoire ne doit jamais choisir le
+témoin) et chaque table d'essai `+1000` (c'est elle qu'on sacrifie). Remis à
+zéro à la fin.
+
+**Résultat : 70 tables ouvertes, AUCUNE RUPTURE.** Le test a atteint son propre
+plafond avant que la machine ne cède.
+
+| Tables | Libre | Swap | Latence du site | Démarrage | RSS cumulé |
+|---|---|---|---|---|---|
+| 5 | 2874 Mo | 25 Mo | 1,8 ms | 2 s | 488 Mo |
+| 20 | 1654 Mo | 25 Mo | 2,1 ms | 2 s | 1946 Mo |
+| 35 | 433 Mo | 25 Mo | 1,4 ms | 2 s | 3419 Mo |
+| 45 | 103 Mo | 424 Mo | 2,3 ms | 2 s | 3664 Mo |
+| 60 | 109 Mo | 1677 Mo | 2,5 ms | 2 s | 3903 Mo |
+| **70** | **94 Mo** | **2462 Mo** | **1,6 ms** | **3 s** | **4104 Mo** |
+
+Ce que ces chiffres disent :
+
+- **la latence du site n'a pas bougé d'un bout à l'autre** : 1,2 à 3,2 ms, y
+  compris à 70 tables et 2,4 Go de swap. Le démarrage d'une table non plus
+  (2-3 s à la soixante-dixième comme à la première) ;
+- **zéro erreur, zéro OOM** ;
+- le RSS cumulé (4104 Mo) **dépasse la RAM physique** (3815 Mo) : c'est le
+  partage de pages, encore lui, plus le swap ;
+- le système s'auto-régule : à partir de la 40ᵉ table, la mémoire libre se
+  stabilise vers 100 Mo et le swap prend le relais, ~88 Mo par table
+  supplémentaire. Il restait 1,6 Go de swap, soit **une rupture attendue vers
+  85-90 tables**.
+
+⚠ **ET VOICI LA LIMITE DE CE TEST, QUI COMPTE AUTANT QUE SON RÉSULTAT.** Ces 70
+tables sont **ouvertes, pas jouées** : aucun client ne s'y connecte, les pages
+swappées restent froides, et c'est précisément pourquoi le swap ne coûte rien.
+**70 tables où l'on JOUE vraiment, c'est une tout autre mesure** : les pages
+redeviendraient chaudes, et le swap passerait de filet à goulot. Le banc de
+charge (plus haut) situe déjà la bascule CPU à 40 clients tapant en continu.
+
+Ne pas conclure « la machine tient 280 joueurs ». Conclure : **la mémoire
+n'est pas le mur qu'on croyait**, et le mur réel est le CPU sous jeu réel.
+
 ### Ce que cela donne en sièges
 
 Le plafond n'est pas la mémoire, c'est le LOGICIEL : `NB_EMPLACEMENTS` vaut 20,
@@ -104,8 +150,8 @@ et le Caddyfile porte 20 routes `p1..p20` écrites à la main.
 
 | | Tables | Joueurs (4 par table) | Mémoire attendue |
 |---|---|---|---|
-| **Aujourd'hui, sans rien changer** | 20 | **80** | ~2,2 à 2,8 Go, tient sur la machine |
-| En levant le plafond logiciel | 40 | 160 | ~4,8 Go, **demande 8 Go** |
+| **Aujourd'hui, sans rien changer** | 20 | **80** | large : 70 tables ont tenu au test de rupture |
+| En levant le plafond logiciel | 40 à 70 | 160 à 280 | tient en mémoire, **non vérifié sous jeu réel** |
 
 ⚠ **Ce que le banc n'a toujours PAS mesuré** : le trafic WebSocket des actions
 de jeu (seules les requêtes HTTP l'ont été) et la pointe de CPU que feraient
