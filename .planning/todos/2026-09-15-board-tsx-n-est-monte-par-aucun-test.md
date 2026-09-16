@@ -41,7 +41,42 @@ lit le monde, la demande, le siège, le catalogue et les scans. Un faux à
 moitié juste donnerait des cas verts qui ne prouvent rien, ce qui est pire que
 l'absence de cas.
 
+## Ce qui a été fait, 16/09/2026 : la piste A
+
+La mesure d'abord, comme l'avertissement l'exigeait : **le faux moteur coûte
+100 lignes** (`ui-app/src/board/moteur-faux.ts`). Il ne remplace que le
+TRANSPORT — l'écran reçoit exactement les mêmes trames (`EtatMoteur`) qu'en
+partie réelle, et ses réponses sont enregistrées au lieu de partir. Aucune règle
+de jeu n'y est simulée : le cas pose l'état complet qu'il veut voir dessiné.
+
+Ce qui bloquait vraiment n'était pas le socket, c'était le module : `board.tsx`
+n'exportait RIEN et montait la page à l'import. Deux changements minimes :
+`PagePartie` est exporté, et le point d'entrée est passé sous
+`if (!import.meta.env.VITEST)`. Le `throw` sur `#plateau` absent est maintenu
+hors test, et la garde disparaît à la compilation (vérifié dans le bundle).
+
+`ui-app/src/board/PagePartie.test.tsx`, 8 cas :
+
+- le moteur est ouvert au montage et **fermé au démontage** ;
+- la table est dessinée à la première trame ;
+- **défaut n°1** : la barre offre « Vue » + Auto + un bouton par héros à
+  plusieurs, rien en solo, et pas de bouton pour un joueur éliminé ;
+- **défaut n°3** : le panneau de la manigance paraît sur la question du
+  retournement, pas sur une demande ordinaire, et son bouton **répond
+  vraiment** au moteur (une fois le retournement fini).
+
+Les cinq cas des deux défauts ont été vérifiés par mutation : condition de la
+Vue passée à `> 2`, montage du panneau forcé à `false` — trois rougissent, dont
+les trois qui devaient. Batterie complète : 148 fichiers, 1658 cas, verts.
+
+## Ce qui reste : le défaut n°2
+
+Le glisser-déposer n'est toujours prouvé que par le typage. `onDepot` est
+atteint par un geste de pointeur sur un plateau dimensionné (`ResizeObserver`,
+rectangles) : jsdom ne donne ni l'un ni l'autre, et un faux geste prouverait le
+faux geste, pas le dépôt. C'est le seul des trois qui reste ouvert.
+
 ## Statut
 
-Constaté le 15/09/2026, **non traité**. À cadrer : c'est un choix d'outillage,
-pas un correctif.
+**Traité le 16/09/2026** pour les défauts n°1 et n°3 : l'écran de jeu est monté,
+le trou est fermé. Le défaut n°2 reste à couvrir, voir ci-dessus.

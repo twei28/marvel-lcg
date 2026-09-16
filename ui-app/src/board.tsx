@@ -1485,7 +1485,12 @@ function EcranFinPartie({
  */
 const DELAI_SUIVI_VUE = 800
 
-function PagePartie({
+/**
+ * L'ecran de jeu. Exporte UNIQUEMENT pour que les tests puissent le monter
+ * (voir PagePartie.test.tsx) : rien d'autre ne l'importe, la page le rend
+ * elle-meme plus bas.
+ */
+export function PagePartie({
   playerId,
   catalogue,
   modeActions,
@@ -3846,8 +3851,14 @@ declare global {
   }
 }
 
-const cible = document.getElementById('plateau')
-if (!cible) throw new Error('Element #plateau not found in board.html')
-synchroniserLangueServeur()
-window.racinePlateau ??= createRoot(cible)
-window.racinePlateau.render(<Page />)
+// Sous vitest, ce module est importe pour ses COMPOSANTS, pas pour monter la
+// page : le point d'entree ne doit alors rien faire. En dehors, le `throw` est
+// maintenu — une page sans son noeud de montage est une page cassee, elle doit
+// le dire tout de suite.
+if (!import.meta.env.VITEST) {
+  const cible = document.getElementById('plateau')
+  if (!cible) throw new Error('Element #plateau not found in board.html')
+  synchroniserLangueServeur()
+  window.racinePlateau ??= createRoot(cible)
+  window.racinePlateau.render(<Page />)
+}
