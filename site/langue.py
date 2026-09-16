@@ -107,6 +107,75 @@ DICO_EN: dict[str, str] = {
     " retourne au pot. Ecris-moi, je te la rends.":
         "Seats are limited: {jours} days without visiting and yours goes back "
         "to the pool. Write to me and I will give it back.",
+
+    # --- La barre, en haut de chaque page -----------------------------------
+    "Connecte": "Signed in",
+    "Se deconnecter": "Sign out",
+    "Mes signalements": "My reports",
+
+    # --- Le suivi d'un signalement ------------------------------------------
+    "Ce que tu as signale, et ma reponse.": "What you reported, and my answer.",
+    "Rien a suivre pour l'instant.": "Nothing to follow yet.",
+    "Aucun signalement": "No reports",
+    "Quand un bug te gene en partie, le bouton « Signaler un bug » l'envoie "
+    "avec ta capture d'ecran et le journal de la partie. Tu retrouveras ici ma "
+    "reponse.":
+        "When a bug gets in your way during a game, the “Report a bug” button "
+        "sends it along with your screenshot and the game log. My answer will "
+        "be waiting for you here.",
+    "Pas encore de reponse.": "No answer yet.",
+    "Voir la capture": "View the screenshot",
+    "Ajouter quelque chose": "Add something",
+    "Envoyer": "Send",
+    "Reponse": "Answer",
+    "Moi": "Me",
+    # Les quatre etats d'un ticket, tels que le joueur les lit.
+    "Recu": "Received",
+    "En cours": "In progress",
+    "Corrige": "Fixed",
+    "Refuse": "Declined",
+
+    # --- « Ta partie t'attend » ---------------------------------------------
+    "Tu etais en pleine partie.": "You were in the middle of a game.",
+    "Ta partie t'attend": "Your game is waiting",
+    "Interrompue le {quand}{motif}. Elle a ete sauvegardee : "
+    "tu peux la reprendre la ou tu l'avais laissee.":
+        "Interrupted on {quand}{motif}. It was saved: you can pick it up right "
+        "where you left off.",
+    "Reprendre cette partie": "Resume this game",
+    "On recharge la sauvegarde et on te remet au plateau.":
+        "We load the save and put you back at the table.",
+    "Commencer autre chose": "Start something else",
+    "La sauvegarde reste dans « Reprendre », sur l'ecran de preparation.":
+        "The save stays under “Resume”, on the setup screen.",
+
+    # --- Le temps que la table s'allume -------------------------------------
+    "Un instant.": "One moment.",
+    "Ton jeu demarre": "Your game is starting",
+    "Le premier allumage prend une minute ou deux. "
+    "Cette page bascule toute seule des que c'est pret.":
+        "The first start takes a minute or two. This page will switch over on "
+        "its own as soon as it is ready.",
+    "Quelque chose a coince.": "Something went wrong.",
+    "Ton jeu n'a pas demarre": "Your game did not start",
+    "Reessayer": "Try again",
+
+    # --- Ce qui peut refuser une connexion ou une inscription ---------------
+    "Pseudo invalide : 3 a 24 caracteres, lettres, chiffres, - et _.":
+        "Invalid username: 3 to 24 characters, letters, digits, - and _.",
+    "Adresse e-mail invalide.": "Invalid email address.",
+    "Mot de passe trop court : 8 caracteres au minimum.":
+        "Password too short: 8 characters minimum.",
+    "Il faut un lien d'invitation pour creer un compte ici.":
+        "You need an invitation link to create an account here.",
+    "Ce pseudo est deja pris.": "That username is already taken.",
+    "Cette adresse est deja utilisee.": "That address is already in use.",
+    "Plus aucun espace de jeu disponible.": "No game space left.",
+    "Identifiant ou mot de passe incorrect.":
+        "Incorrect username or password.",
+
+    # --- Le bouton FR / EN du site ------------------------------------------
+    "Changer la langue du site": "Change the language of the site",
 }
 
 

@@ -1393,20 +1393,20 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
     pseudo = (pseudo or "").strip().lower()
     email = (email or "").strip().lower()
     if not (3 <= len(pseudo) <= 24) or not pseudo.replace("_", "").replace("-", "").isalnum():
-        raise ValueError("Pseudo invalide : 3 a 24 caracteres, lettres, chiffres, - et _.")
+        raise ValueError(lang.t("Pseudo invalide : 3 a 24 caracteres, lettres, chiffres, - et _."))
     # Controle volontairement minimal : on verifie qu'une adresse ressemble a
     # une adresse, pas qu'elle existe. Seule la validation manuelle fait foi.
     if "@" not in email or "." not in email.split("@")[-1] or len(email) < 6:
-        raise ValueError("Adresse e-mail invalide.")
+        raise ValueError(lang.t("Adresse e-mail invalide."))
     if len(mot_de_passe or "") < 8:
-        raise ValueError("Mot de passe trop court : 8 caracteres au minimum.")
+        raise ValueError(lang.t("Mot de passe trop court : 8 caracteres au minimum."))
     if not INSCRIPTION_LIBRE and not invitation_valide(jeton) and pseudo != ADMIN:
-        raise ValueError("Il faut un lien d'invitation pour creer un compte ici.")
+        raise ValueError(lang.t("Il faut un lien d'invitation pour creer un compte ici."))
     with VERROU_COMPTES, _cx() as cx:
         if cx.execute("SELECT 1 FROM comptes WHERE pseudo = ?", (pseudo,)).fetchone():
-            raise ValueError("Ce pseudo est deja pris.")
+            raise ValueError(lang.t("Ce pseudo est deja pris."))
         if cx.execute("SELECT 1 FROM comptes WHERE email = ?", (email,)).fetchone():
-            raise ValueError("Cette adresse est deja utilisee.")
+            raise ValueError(lang.t("Cette adresse est deja utilisee."))
         # ⚠ LE PLAFOND NE COMPTE QUE LES COMPTES VALIDES. Sinon une vague
         # d'inscriptions en attente suffirait a bloquer les vraies demandes.
         valides = cx.execute(
@@ -1431,7 +1431,7 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
         # de l'expiration. Voir `_prendre_un_emplacement`.
         libre = _prendre_un_emplacement(cx, pseudo)
         if libre < 0:
-            raise ValueError("Plus aucun espace de jeu disponible.")
+            raise ValueError(lang.t("Plus aucun espace de jeu disponible."))
         cx.execute(
             "INSERT INTO comptes"
             " (pseudo, email, sel, empreinte, statut, cree, emplacement)"
@@ -1523,11 +1523,11 @@ def delai_lisible(secondes: int) -> str:
 def verifier(identifiant: str, mot_de_passe: str) -> str:
     ligne = compte(identifiant)
     if ligne is None:
-        raise ValueError("Identifiant ou mot de passe incorrect.")
+        raise ValueError(lang.t("Identifiant ou mot de passe incorrect."))
     # `compare_digest` : comparaison a temps constant, pour ne pas laisser
     # fuir l'empreinte par le temps de reponse.
     if not secrets.compare_digest(_empreinte(mot_de_passe, ligne["sel"]), ligne["empreinte"]):
-        raise ValueError("Identifiant ou mot de passe incorrect.")
+        raise ValueError(lang.t("Identifiant ou mot de passe incorrect."))
     if ligne["statut"] == "expire":
         # ⚠ ON DIT POURQUOI, ET QUOI FAIRE. « Ton compte attend ma validation »
         # aurait envoye quelqu'un attendre indefiniment quelque chose qui ne
@@ -1732,7 +1732,7 @@ def reinitialiser_mot_de_passe(jeton: str, mot_de_passe: str) -> str:
     ouvertes du compte (un mot de passe change parce qu'on a un doute : les
     sessions d'avant ne doivent pas survivre). Rend le pseudo."""
     if len(mot_de_passe or "") < 8:
-        raise ValueError("Mot de passe trop court : 8 caracteres au minimum.")
+        raise ValueError(lang.t("Mot de passe trop court : 8 caracteres au minimum."))
     with _cx() as cx:
         l = cx.execute("SELECT pseudo, cree_le, utilise_le FROM reinitialisations WHERE jeton = ?",
                        (jeton or "",)).fetchone()
@@ -2495,6 +2495,19 @@ def _pied_de_page() -> str:
         "{heures} h d'allumage.").replace("{heures}", str(int(DUREE_MAX_HEURES)))
 
 
+def _bouton_langue() -> str:
+    """FR / EN, dans la barre du site.
+
+    ⚠ SANS LUI, LA DETECTION SERAIT UNE PRISON. Un navigateur regle en anglais
+    verrait un site anglais sans aucun moyen d'en sortir : le choix fait dans le
+    JEU vit dans le `localStorage`, que le serveur ne lit pas. Ce bouton pose le
+    cookie que `langue.detecter` regarde en premier.
+    """
+    vers = "fr" if lang.actuelle() == "en" else "en"
+    return (' &middot; <a href="/langue?vers=%s" title="%s">%s</a>'
+            % (vers, lang.t("Changer la langue du site"), vers.upper()))
+
+
 def _barre(pseudo: str) -> str:
     admin = (' &middot; <a href="/admin">Administration</a>'
              ' &middot; <a href="/suivi">Suivi des parties</a>') if pseudo == ADMIN else ""
@@ -2502,11 +2515,12 @@ def _barre(pseudo: str) -> str:
     # reponse attend. Une page « Mes signalements » qu'on ne trouve qu'une fois
     # prevenu n'existe pas vraiment.
     attente = reponses_non_lues(pseudo)
-    signalements = (' &middot; <a href="/signalements">Mes signalements</a>'
+    signalements = (' &middot; <a href="/signalements">%s</a>' % lang.t("Mes signalements")
                     + (' <span class="pastille">(%d)</span>' % attente if attente else ""))
-    return ('<div class="barre"><span>Connecte : <strong>%s</strong>%s%s</span>'
-            '<a href="/deconnexion">Se deconnecter</a></div>'
-            % (html.escape(pseudo), signalements, admin))
+    return ('<div class="barre"><span>%s : <strong>%s</strong>%s%s%s</span>'
+            '<a href="/deconnexion">%s</a></div>'
+            % (lang.t("Connecte"), html.escape(pseudo), signalements, admin,
+               _bouton_langue(), lang.t("Se deconnecter")))
 
 
 def page_reprise(pseudo: str, attendue: dict) -> bytes:
@@ -2526,33 +2540,46 @@ def page_reprise(pseudo: str, attendue: dict) -> bytes:
         quoi += (" · " if quoi else "") + "round %d" % tour
     motif = CAUSES_ABANDON.get(attendue.get("cause") or "", attendue.get("cause") or "")
     corps = ('<div class="table">'
-             '<div class="entete"><strong>Ta partie t\'attend</strong>'
+             '<div class="entete"><strong>%s</strong>'
              '<span class="mdp">%s</span></div>'
-             '<p class="mdp">Interrompue le %s%s. Elle a ete sauvegardee : '
-             'tu peux la reprendre la ou tu l\'avais laissee.</p>'
+             '<p class="mdp">%s</p>'
              '<div class="choix" style="margin-top:1rem">'
              '<form method="get" action="/reprendre">'
-             '<button type="submit"><b>Reprendre cette partie</b>'
-             '<em>On recharge la sauvegarde et on te remet au plateau.</em>'
+             '<button type="submit"><b>%s</b>'
+             '<em>%s</em>'
              '</button></form>'
              '<form method="get" action="/nouvelle-partie">'
-             '<button type="submit" class="calme"><b>Commencer autre chose</b>'
-             '<em>La sauvegarde reste dans « Reprendre », sur l\'ecran de '
-             'preparation.</em></button></form>'
+             '<button type="submit" class="calme"><b>%s</b>'
+             '<em>%s</em></button></form>'
              '</div></div>'
-             % (html.escape(quoi), _horodate(attendue.get("quand") or ""),
-                (", " + html.escape(motif)) if motif else ""))
-    return PAGE.format(tete="", sous="Tu etais en pleine partie.",
+             % (lang.t("Ta partie t'attend"),
+                html.escape(quoi),
+                lang.t("Interrompue le {quand}{motif}. Elle a ete sauvegardee : "
+                       "tu peux la reprendre la ou tu l'avais laissee.")
+                .replace("{quand}", _horodate(attendue.get("quand") or ""))
+                .replace("{motif}", (", " + html.escape(motif)) if motif else ""),
+                lang.t("Reprendre cette partie"),
+                lang.t("On recharge la sauvegarde et on te remet au plateau."),
+                lang.t("Commencer autre chose"),
+                lang.t("La sauvegarde reste dans « Reprendre », sur l'ecran de "
+                       "preparation.")))
+    return PAGE.format(tete="", sous=lang.t("Tu etais en pleine partie."),
                        barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page()).encode("utf-8")
 
 
-ETIQUETTES_TICKET = {
-    "nouveau": "Recu",
-    "en cours": "En cours",
-    "traite": "Corrige",
-    "refuse": "Refuse",
-}
+def etiquette_ticket(etat: str) -> str:
+    """L'etat d'un ticket, tel que le JOUEUR le lit, dans sa langue.
+
+    ⚠ UN DICTIONNAIRE CONSTANT NE POUVAIT PAS CONVENIR : il est evalue au
+    chargement du module, quand aucune requete n'existe et donc aucune langue.
+    """
+    return {
+        "nouveau": lang.t("Recu"),
+        "en cours": lang.t("En cours"),
+        "traite": lang.t("Corrige"),
+        "refuse": lang.t("Refuse"),
+    }.get(etat, etat)
 
 
 def page_signalements(pseudo: str) -> bytes:
@@ -2568,11 +2595,14 @@ def page_signalements(pseudo: str) -> bytes:
     tickets = tickets_de(pseudo)
     if not tickets:
         corps = ('<div class="table"><div class="entete">'
-                 '<strong>Aucun signalement</strong></div>'
-                 '<p class="mdp">Quand un bug te gene en partie, le bouton '
-                 '« Signaler un bug » l\'envoie avec ta capture d\'ecran et le '
-                 'journal de la partie. Tu retrouveras ici ma reponse.</p></div>')
-        return PAGE.format(tete="", sous="Rien a suivre pour l\'instant.",
+                 '<strong>%s</strong></div>'
+                 '<p class="mdp">%s</p></div>'
+                 % (lang.t("Aucun signalement"),
+                    lang.t("Quand un bug te gene en partie, le bouton "
+                           "« Signaler un bug » l'envoie avec ta capture d'ecran "
+                           "et le journal de la partie. Tu retrouveras ici ma "
+                           "reponse.")))
+        return PAGE.format(tete="", sous=lang.t("Rien a suivre pour l'instant."),
                            barre=_barre(pseudo), corps=corps,
                            pied=_pied_de_page()).encode("utf-8")
 
@@ -2583,26 +2613,27 @@ def page_signalements(pseudo: str) -> bytes:
         for m in r.get("messages") or []:
             fil += ('<p class="msg %s"><b>%s</b> <span class="mdp">%s</span><br>%s</p>'
                     % ("de-lui" if m["auteur"] == "admin" else "de-moi",
-                       "Reponse" if m["auteur"] == "admin" else "Moi",
+                       lang.t("Reponse") if m["auteur"] == "admin" else lang.t("Moi"),
                        _horodate(m["quand"] or ""),
                        html.escape(m["texte"] or "").replace("\n", "<br>")))
         if not fil:
-            fil = '<p class="mdp">Pas encore de reponse.</p>'
+            fil = '<p class="mdp">%s</p>' % lang.t("Pas encore de reponse.")
         capture = ('<p><a href="/admin/capture?id=%d" target="_blank" rel="noopener">'
-                   'Voir la capture</a></p>' % r["id"]) if r["capture"] else ""
+                   '%s</a></p>' % (r["id"], lang.t("Voir la capture"))) if r["capture"] else ""
         corps += ('<div class="table">'
                   '<div class="entete"><strong>%s</strong>'
                   '<span class="mdp">%s &middot; %s</span></div>'
                   '<div class="fil">%s</div>%s'
                   '<form method="post" action="/signalements" class="repondre">'
                   '<input type="hidden" name="id" value="%d">'
-                  '<textarea name="texte" rows="2" placeholder="Ajouter quelque chose"></textarea>'
-                  '<button type="submit">Envoyer</button></form>'
+                  '<textarea name="texte" rows="2" placeholder="%s"></textarea>'
+                  '<button type="submit">%s</button></form>'
                   '</div>'
                   % (html.escape((r["description"] or "")[:160]),
-                     ETIQUETTES_TICKET.get(etat, etat),
-                     _horodate(r["quand"] or ""), fil, capture, r["id"]))
-    return PAGE.format(tete="", sous="Ce que tu as signale, et ma reponse.",
+                     etiquette_ticket(etat),
+                     _horodate(r["quand"] or ""), fil, capture, r["id"],
+                     lang.t("Ajouter quelque chose"), lang.t("Envoyer")))
+    return PAGE.format(tete="", sous=lang.t("Ce que tu as signale, et ma reponse."),
                        barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page()).encode("utf-8")
 
@@ -2617,20 +2648,23 @@ def page_attente(pseudo: str) -> bytes:
     erreur = ERREURS_DEMARRAGE.get(pseudo, "")
     if erreur:
         tete = ""
-        sous = "Quelque chose a coince."
+        sous = lang.t("Quelque chose a coince.")
         corps = ('<div class="table">'
-                 '<div class="entete"><strong>Ton jeu n\'a pas demarre</strong></div>'
+                 '<div class="entete"><strong>%s</strong></div>'
                  '<p class="mdp">%s</p>'
                  '<form method="get" action="/entrer" style="margin-top:1rem">'
-                 '<button type="submit">Reessayer</button></form></div>'
-                 % html.escape(erreur))
+                 '<button type="submit">%s</button></form></div>'
+                 % (lang.t("Ton jeu n'a pas demarre"), html.escape(erreur),
+                    lang.t("Reessayer")))
     else:
         tete = '<meta http-equiv="refresh" content="3;url=/entrer">'
-        sous = "Un instant."
+        sous = lang.t("Un instant.")
         corps = ('<div class="table">'
-                 '<div class="entete"><strong>Ton jeu demarre</strong></div>'
-                 '<p class="mdp">Le premier allumage prend une minute ou deux. '
-                 'Cette page bascule toute seule des que c\'est pret.</p></div>')
+                 '<div class="entete"><strong>%s</strong></div>'
+                 '<p class="mdp">%s</p></div>'
+                 % (lang.t("Ton jeu demarre"),
+                    lang.t("Le premier allumage prend une minute ou deux. "
+                           "Cette page bascule toute seule des que c'est pret.")))
     return PAGE.format(tete=tete, sous=sous, barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page()).encode("utf-8")
 
@@ -4039,6 +4073,26 @@ class Handler(BaseHTTPRequestHandler):
                 self._rediriger("/")
                 return
             self._repondre(200, page_arret(pseudo))
+        elif self.chemin == "/langue":
+            # ⚠ LE COOKIE EST POSE SUR LE DOMAINE PARENT quand il y en a un :
+            # le site vit sur `<domaine>` et les tables sur `p<N>.<domaine>`.
+            # Pose sans domaine, le choix ne suivrait pas d'un ecran a l'autre.
+            vers = (self.parametres.get("vers") or ["fr"])[0]
+            vers = vers if vers in lang.LANGUES else "fr"
+            retour = self.headers.get("Referer") or "/"
+            # On ne renvoie QUE vers le site lui-meme : un Referer est ecrit par
+            # le navigateur, donc par n'importe qui.
+            if "://" in retour and DOMAINE and DOMAINE not in retour:
+                retour = "/"
+            self.send_response(303)
+            self.send_header("Location", retour)
+            cookie = ("%s=%s; Path=/; Max-Age=31536000; SameSite=Lax"
+                      % (lang.COOKIE_LANGUE, vers))
+            if DOMAINE:
+                cookie += "; Domain=.%s" % DOMAINE
+            self.send_header("Set-Cookie", cookie + self._secure())
+            self.send_header("Content-Length", "0")
+            self.end_headers()
         elif self.chemin == "/signalements":
             # ⚠ SESSION OBLIGATOIRE : la page nomme des bugs et montre des
             # captures d'ecran de partie. Un visiteur sans compte n'a rien a y

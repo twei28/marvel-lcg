@@ -2192,6 +2192,35 @@ verifier("chaque etat de rapport a son libelle",
          all(e in o.LIBELLES_ETAT_RAPPORT for e in o.ETATS_RAPPORT),
          str(sorted(set(o.ETATS_RAPPORT) - set(o.LIBELLES_ETAT_RAPPORT))))
 
+
+# ---------------------------------------------------------------------------
+# LE SITE EN DEUX LANGUES (16/09/2026)
+#
+# ⚠ LE SERVEUR NE VOIT PAS LE `localStorage` ou le jeu garde la langue : il lit
+# le cookie `nc_langue`, puis `Accept-Language`, puis retombe sur le francais.
+# ---------------------------------------------------------------------------
+print()
+print("Le site en deux langues")
+
+import langue as _lang  # noqa: E402
+
+verifier("le cookie decide", _lang.detecter("a=1; nc_langue=en", "fr-FR"), "en")
+verifier("sinon le navigateur", _lang.detecter("", "en-GB,en;q=0.9"), "en")
+verifier("une langue inconnue retombe sur le francais",
+         _lang.detecter("", "de-DE,de"), "fr")
+verifier("et un cookie fantaisiste aussi",
+         _lang.detecter("nc_langue=klingon", ""), "fr")
+
+_lang.poser("fr")
+_page_fr = o.page_signalements("yarro").decode("utf-8")
+_lang.poser("en")
+_page_en = o.page_signalements("yarro").decode("utf-8")
+_lang.poser("fr")
+verifier("la meme page parle francais", "Ce que tu as signale" in _page_fr)
+verifier("⚠ et anglais", "What you reported" in _page_en, _page_en[:120])
+verifier("sans laisser de francais derriere",
+         "Se deconnecter" not in _page_en and "Mes signalements" not in _page_en)
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:

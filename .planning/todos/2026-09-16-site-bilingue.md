@@ -39,7 +39,37 @@ site doit donc s'appuyer sur autre chose :
 2. à défaut, l'en-tête **`Accept-Language`** du navigateur ;
 3. à défaut, le français.
 
+## Ce qui est fait (16/09/2026)
+
+- **Le socle** : `site/langue.py`. Dictionnaire dont la clé est la phrase
+  française, détection en trois temps, langue portée par le fil de la requête
+  (un fil par requête : deux visiteurs peuvent lire deux langues à la seconde).
+- **La gate** : `site/test_langue.py` refuse toute phrase passée à `t()` sans
+  son anglais, et compte l'avancée.
+- **Un bouton FR / EN sur le site**, qui pose le cookie sur le **domaine
+  parent** : le choix suit entre le site et les tables `p<N>`. Sans lui, un
+  navigateur réglé en anglais n'aurait eu aucun moyen de revenir au français,
+  puisque le choix fait dans le jeu vit dans le `localStorage`.
+- **53 phrases traduites** : le squelette de toutes les pages, la connexion et
+  l'inscription, la barre, « Ta partie t'attend », l'attente du démarrage, la
+  page des signalements, et les huit messages qui refusent une connexion.
+- **Sept cas** de bout en bout dans `test_parcours.py`, dont la même page rendue
+  dans les deux langues, et la vérification qu'il ne reste pas de français
+  derrière.
+
+## Ce qui reste
+
+- **Les écrans d'administration** (`PAGE_ADMIN`, `PAGE_SUIVI`) : **hors
+  périmètre**, décidé le 16/09/2026. Ce sont les outils de l'utilisateur, qui
+  est francophone, et ils représentent près de la moitié du travail pour zéro
+  joueur concerné.
+- La page hors-ligne, le bouton « Installer l'application » et quelques
+  libellés de second plan.
+- ⚠ **Ce que la gate ne voit pas** : une phrase écrite en dur SANS passer par
+  `t()` lui échappe. Elle garantit que ce qui est traduit l'est vraiment, pas
+  que tout est traduit.
+
 ## Statut
 
-**Commencé le 16/09/2026**, dans la foulée de la demande. Voir les commits du
-jour. Ce qui est fait et ce qui reste est tenu à jour ici.
+**Commencé et bien avancé le 16/09/2026.** Les écrans que les joueurs
+traversent sont bilingues.
