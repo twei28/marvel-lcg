@@ -709,4 +709,9 @@ export const DICO_EN_BASE = {
   'déjà débloqué': 'already unlocked',
   'héros inconnu': 'unknown hero',
   'écriture refusée': 'write refused',
+  // prepare/table-fermee.js : l'onglet reste ouvert, la table n'existe plus
+  'Cette table a été fermée.': 'This table has been closed.',
+  "Ta partie n'est plus en cours. Reviens à l'accueil pour en lancer une autre.":
+    'Your game is no longer running. Go back to the home page to start another one.',
+  "Revenir à l'accueil": 'Back to the home page',
 };

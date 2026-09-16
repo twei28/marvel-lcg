@@ -25,6 +25,7 @@ import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-d
 import { jouerSon, SON } from "/public/js/prepare/sons.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
          langueDejaChoisie, retenirLangue } from "/public/js/prepare/langue.js";
+import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
 import { GENRES, nouveautesTriees } from "/public/js/prepare/nouveautes.js";
@@ -438,24 +439,70 @@ async function appliquerChoixSalon() {
 // quelqu'un, lentement le reste du temps.
 export const SONDAGE_ATTENTE_MS = 2000;
 export const SONDAGE_CALME_MS = 15000;
+// Table declaree fermee : on ne martele plus, mais on ne renonce pas non plus.
+// Un redemarrage du site rend la table joignable au bout de quelques secondes,
+// et le bandeau doit alors s'effacer tout seul — d'ou ce battement lent.
+export const SONDAGE_INJOIGNABLE_MS = 30000;
 
 /** Le delai avant le prochain sondage, ou 0 pour « ne sonde pas ».
  *
  *  Fonction PURE et exportee : c'est la seule decision de cette boucle qu'on
  *  puisse eprouver sans faire tourner de minuteur. */
-export function cadenceSondage({ cache, enAttente }) {
+export function cadenceSondage({ cache, enAttente, injoignable }) {
     if (cache) return 0;
+    if (injoignable) return SONDAGE_INJOIGNABLE_MS;
     return enAttente ? SONDAGE_ATTENTE_MS : SONDAGE_CALME_MS;
+}
+
+// Le temps qu'on laisse a une table avant de la declarer fermee. Un
+// redemarrage du site coupe les tables une dizaine de secondes : en dessous de
+// ce delai, on annoncerait une table morte qui revient, ce qui est pire que le
+// silence d'aujourd'hui.
+export const DELAI_TABLE_FERMEE_MS = 30000;
+
+/** La table est-elle a declarer fermee ?
+ *
+ *  PURE, comme `cadenceSondage`, et pour la meme raison : c'est la decision
+ *  qu'il faut pouvoir eprouver, pas le minuteur qui la porte. `premierEchec`
+ *  est l'instant du premier sondage rate depuis le dernier qui a reussi, ou
+ *  `null` quand tout va bien. */
+export function tableFermee({ premierEchec, maintenant, delai = DELAI_TABLE_FERMEE_MS }) {
+    if (!premierEchec) return false;
+    return maintenant - premierEchec >= delai;
+}
+
+/** L'instant du premier sondage rate depuis le dernier qui a reussi. */
+let premierEchecSondage = null;
+
+/** Note le sort du dernier sondage et met le bandeau a jour.
+ *
+ *  ⚠ UN 502 N'EST PAS UNE EXCEPTION. `fetch` le rend comme une reponse
+ *  normale ; c'est `res.json()` qui trebuchait ensuite sur la page d'erreur
+ *  HTML de Caddy, et le `catch` muet effacait tout. On juge donc `res.ok`. */
+function noterSondage(reussi) {
+    if (reussi) premierEchecSondage = null;
+    else if (premierEchecSondage === null) premierEchecSondage = Date.now();
+    const fermee = tableFermee({ premierEchec: premierEchecSondage, maintenant: Date.now() });
+    montrerTableFermee(fermee);
+    return fermee;
+}
+
+/** Vrai quand la table est declaree fermee : la boucle s'en sert pour ralentir. */
+function tableDeclareeFermee() {
+    return tableFermee({ premierEchec: premierEchecSondage, maintenant: Date.now() });
 }
 
 async function sonderSalon() {
     let brut;
     try {
         const res = await fetch("get_choix_sieges?");
+        if (!res.ok) throw new Error("HTTP " + res.status);
         brut = await res.json();
     } catch (e) {
-        return;  // serveur momentanement injoignable : on reessaiera
+        noterSondage(false);
+        return;
     }
+    noterSondage(true);
     // Hors multi, on remet l'etat NEUTRE et on s'arrete la. Sans ce garde-fou,
     // etatSalon conclurait « il manque le Joueur 2 » sur une partie hot-seat a
     // deux, et le bouton de lancement resterait grise en SOLO.
@@ -3817,7 +3864,11 @@ function boucleSalon() {
     const enAttente = () => !!(state.salon && state.salon.multi && !state.salon.prete);
     const programmer = () => {
         clearTimeout(minuteur);
-        const delai = cadenceSondage({ cache: document.hidden, enAttente: enAttente() });
+        const delai = cadenceSondage({
+            cache: document.hidden,
+            enAttente: enAttente(),
+            injoignable: tableDeclareeFermee(),
+        });
         if (!delai) return;                       // onglet cache : on se tait
         minuteur = setTimeout(async () => {
             await sonderSalon();
