@@ -18,6 +18,10 @@
     <!-- Preavis du site (mise a jour imminente, coupure) : module autonome,
          il se pose tout seul en haut de l'ecran. Voir annonce.js. -->
     <script src="/public/js/prepare/annonce.js?v=1" defer></script>
+    <!-- « Une mise a jour est arrivee » : un onglet laisse ouvert garde son
+         JavaScript apres un deploiement, et les empreintes anti-cache ne
+         servent qu'au PROCHAIN chargement. Module autonome, voir maj.js. -->
+    <script src="/public/js/prepare/maj.js?v=1" defer></script>
     <!-- Pastille « un message t'attend » : rien ne s'affiche tant que personne
          n'ecrit. Ne remet pas le tchat retire le 12/09. Voir messages.js. -->
     <script src="/public/js/prepare/messages.js?v=1" defer></script>

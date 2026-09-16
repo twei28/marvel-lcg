@@ -89,6 +89,8 @@ import {
 } from './board/attente-table'
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { BandeauAnnonce } from './board/BandeauAnnonce'
+import { BandeauMiseAJour } from './board/BandeauMiseAJour'
+import { useMiseAJour } from './board/maj'
 import { cheminEmplacement } from './board/sauvegardes'
 import { useAnnonce, usePassage } from './board/annonce'
 import { JournalHeros } from './board/JournalHeros'
@@ -1512,6 +1514,9 @@ function PagePartie({
   // qui relaie le site : en partie locale il n'y a personne derriere, et le
   // bandeau ne s'affiche jamais.
   const annonce = useAnnonce()
+  // Un onglet laisse ouvert garde son JavaScript apres un deploiement : c'est
+  // le seul moyen de le lui dire (voir board/maj.ts).
+  const majDisponible = useMiseAJour()
   // Il PASSE, il ne s'installe pas : deux secondes toutes les trente. Entre
   // deux passages l'ecran de jeu est entierement libre.
   const annonceVisible = usePassage(annonce !== null)
@@ -3087,6 +3092,10 @@ function PagePartie({
       {annonce && annonceVisible ? (
         <BandeauAnnonce texte={annonce.texte} secondes={annonce.secondes} />
       ) : null}
+      {/* ⚠ HORS de la condition ci-dessus, et ce n'est pas la meme chose :
+          l'annonce previent d'une coupure a venir, celle-ci constate qu'on
+          tourne sur du vieux code. Les deux peuvent se produire ensemble. */}
+      <BandeauMiseAJour visible={majDisponible} />
       {etat.joueurDemande !== undefined &&
       etat.siegesAbsents.includes(etat.joueurDemande) ? (
         <BandeauAbsent

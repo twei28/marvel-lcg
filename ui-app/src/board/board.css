@@ -6430,6 +6430,39 @@
      atteint la carte qui est dessous. Sans cette ligne, deux secondes sur
      trente seraient deux secondes ou le jeu ne repond plus, ce qui serait
      pire que de ne pas prevenir. */
+  /* ⚠ « Une mise a jour est arrivee » : il S'INSTALLE, contrairement au bandeau
+     d'annonce qui passe deux secondes toutes les trente. Les deux ne disent pas
+     la meme chose : l'annonce previent d'une coupure imminente, celui-ci
+     constate un etat qui dure. Il se pose donc en BAS, hors du chemin du jeu,
+     et il porte le bouton qui le fait disparaitre. */
+  .bandeau-maj {
+    position: fixed;
+    left: 50%;
+    bottom: 14px;
+    transform: translateX(-50%);
+    z-index: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    border: 2px solid var(--affiche-jaune, #f0b429);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(40, 32, 6, .97), rgba(24, 19, 4, .97));
+    color: #f6e3b4;
+    font: 14px/1.3 system-ui, sans-serif;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .55);
+  }
+  .bandeau-maj button {
+    font: inherit;
+    padding: 4px 12px;
+    border: 2px solid var(--affiche-jaune, #f0b429);
+    border-radius: 6px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+  }
+  .bandeau-maj button:hover { background: rgba(240, 180, 41, .18); }
+
   .bandeau-annonce {
     position: fixed;
     top: 0;

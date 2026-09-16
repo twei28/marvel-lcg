@@ -922,6 +922,8 @@ export const DICO_EN_BASE: Record<string, string> = {
 
 
   'Langue': 'Language',
+  'Une mise à jour du jeu est arrivée.': 'A game update has arrived.',
+  'Recharger': 'Reload',
   'Langue de l’interface et de la narration': 'Language of the interface and narration',
   'Langue de l’interface et de la narration. Une carte sans scan dans cette langue reste en anglais : sa traduction s’affiche dans l’infobulle.':
     'Language of the interface and narration. A card with no scan in this language stays in English: its translation shows in the tooltip.',
