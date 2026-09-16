@@ -1751,6 +1751,13 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
    pour celui qui s'etait fixe l'ancien objectif et voit sa vague s'ouvrir
    sans comprendre. */
 .legacy-bande .legacy-regle{flex-basis:100%;color:var(--dim);font-size:11px;font-style:italic;opacity:.75}
+/* La modale d'explication du mode (16/09/2026) : elle s'ouvre a chaque entree,
+   sauf si on a coche « ne plus afficher ». Les regles en liste, la case et le
+   OK sur la meme ligne, la case a GAUCHE pour qu'on la voie avant de valider. */
+.legacy-explique .lg-regles{margin:10px 0;padding-left:18px;display:grid;gap:6px;font-size:13px}
+.legacy-explique .lg-regles b{color:var(--affiche-jaune)}
+.legacy-explique .lg-actions{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.legacy-explique .lg-plus-jamais{display:flex;align-items:center;gap:6px;color:var(--dim);font-size:12px;cursor:pointer}
 /* La question posee une fois, a l'activation. */
 .legacy-choix{display:grid;gap:10px;margin:14px 0}
 .legacy-choix button{

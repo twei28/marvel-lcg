@@ -21,7 +21,15 @@ async function vider(page: Page) {
 /** Depuis l'accueil, entre dans Legacy en reprenant ses parties passees. */
 async function entrer(page: Page) {
   await page.getByRole('button', { name: /^Legacy/ }).first().click();
-  await page.getByRole('button', { name: /Reprendre mes parties/ }).click();
+  // ⚠ LA MODALE D'EXPLICATION PASSE AVANT TOUT (16/09/2026). Elle s'ouvre a
+  // chaque entree tant qu'on n'a pas coche « ne plus afficher », et elle ne se
+  // ferme que par OK : sans ce clic, le reste du parcours est hors d'atteinte.
+  const ok = page.locator('.legacy-explique').getByRole('button', { name: /^OK$/ });
+  if (await ok.count()) await ok.click();
+  // ⚠ LES DEUX LANGUES : en anglais le bouton s'appelle « Count my past games ».
+  // Un libelle francais en dur faisait echouer le cas de traduction, qui teste
+  // justement l'ecran en anglais.
+  await page.getByRole('button', { name: /Reprendre mes parties|Count my past games/ }).click();
   await page.waitForSelector('.legacy-bande', { timeout: 20000 });
   await page.waitForSelector('#hero-grid .tb-port', { timeout: 20000 });
 }
@@ -52,7 +60,12 @@ test('la sixieme tuile est la, avec son sous-titre et sa phrase', async ({ page 
 
 // ⚠ CE CHOIX NE SE REFAIT PAS, et la question doit le dire.
 test('la premiere entree pose la question, une fois', async ({ page }) => {
+  // ⚠ La modale d'explication (16/09/2026) passe avant : on la coche une fois
+  // pour de bon, sinon elle reviendrait a la seconde entree et le dernier cas
+  // du test la prendrait pour la question d'activation.
   await page.getByRole('button', { name: /^Legacy/ }).first().click();
+  await page.locator('.legacy-explique input[type="checkbox"]').check();
+  await page.locator('.legacy-explique').getByRole('button', { name: /^OK$/ }).click();
   const modale = page.locator('.deck-modal');
   await expect(modale).toContainText('parties déjà jouées');
   await expect(modale).toContainText('ne se refait pas');
@@ -214,4 +227,62 @@ test('les deux nouvelles lignes existent aussi en anglais', async ({ page }) => 
     expect(texte, `phrase restee en francais : ${texte}`)
       .not.toMatch(/héros|méchants|boîte|jeton/i);
   }
+});
+
+
+// ⚠ LA MODALE D'EXPLICATION (16/09/2026). « Une modale quand on commence le
+// mode legacy qui explique exactement ce que ca fait, qui s'ouvre a chaque
+// fois, sauf qu'il y a un truc qu'on peut cocher en disant ne plus afficher ».
+test('elle s ouvre a l entree, et dit les trois regles qui comptent', async ({ page }) => {
+  await page.evaluate(() => localStorage.removeItem('marvel-legacy-explique'));
+  await page.getByRole('button', { name: /^Legacy/ }).first().click();
+  const modale = page.locator('.legacy-explique');
+  await expect(modale).toHaveCount(1);
+  const texte = (await modale.textContent()) || '';
+  console.log('MODALE :', texte.slice(0, 160));
+  expect(texte).toMatch(/bats tous les méchants/i);
+  expect(texte).toMatch(/jetons/i);
+  expect(texte).toMatch(/hors de portée/i);
+});
+
+// ⚠ ELLE PASSE AVANT LA QUESTION DE L'ACTIVATION. « Reprendre mes parties
+// passees ou repartir de zero » ne se refait pas : le poser avant d'avoir
+// explique le mode, c'est le poser a l'aveugle.
+test('la question du depart n arrive qu apres le OK', async ({ page }) => {
+  await page.evaluate(() => localStorage.removeItem('marvel-legacy-explique'));
+  await page.getByRole('button', { name: /^Legacy/ }).first().click();
+  await expect(page.getByRole('button', { name: /Reprendre mes parties/ })).toHaveCount(0);
+  await page.locator('.legacy-explique').getByRole('button', { name: /^OK$/ }).click();
+  await expect(page.getByRole('button', { name: /Reprendre mes parties/ })).toHaveCount(1);
+});
+
+test('cochee, elle ne revient plus ; sinon elle revient', async ({ page }) => {
+  await page.evaluate(() => localStorage.removeItem('marvel-legacy-explique'));
+  // Premier passage : on NE coche pas, elle doit revenir.
+  await page.getByRole('button', { name: /^Legacy/ }).first().click();
+  await page.locator('.legacy-explique').getByRole('button', { name: /^OK$/ }).click();
+  await page.getByRole('button', { name: /Annuler/ }).click();
+  await page.getByRole('button', { name: /^Legacy/ }).first().click();
+  await expect(page.locator('.legacy-explique'),
+    'sans la case cochee, elle doit revenir a chaque entree').toHaveCount(1);
+  // Cette fois on coche : elle ne doit plus reparaitre.
+  await page.locator('.legacy-explique input[type="checkbox"]').check();
+  await page.locator('.legacy-explique').getByRole('button', { name: /^OK$/ }).click();
+  await page.getByRole('button', { name: /Annuler/ }).click();
+  await page.getByRole('button', { name: /^Legacy/ }).first().click();
+  await expect(page.locator('.legacy-explique')).toHaveCount(0);
+});
+
+test('et son texte existe aussi en anglais', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('marvel-langue', 'en');
+    localStorage.removeItem('marvel-legacy-explique');
+  });
+  await page.goto('/prepare.html');
+  await page.waitForSelector('.acc-mode', { timeout: 20000 });
+  await page.getByRole('button', { name: /^Legacy/ }).first().click();
+  const texte = (await page.locator('.legacy-explique').textContent()) || '';
+  console.log('MODALE EN :', texte.slice(0, 160));
+  expect(texte, `phrase restee en francais : ${texte}`)
+    .not.toMatch(/méchants|héros|boîte|jetons|Ne plus afficher/i);
 });

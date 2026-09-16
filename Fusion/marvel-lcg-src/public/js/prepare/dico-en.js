@@ -105,6 +105,26 @@ export const DICO_EN_BASE = {
     "Tout est débloqué. Bravo.": "Everything is unlocked. Well done.",
     "Une carte sans scan dans la langue choisie reste affichée en anglais : sa traduction s'affiche alors dans l'infobulle, sous la carte.":
         "A card with no scan in the chosen language stays in English: its translation then shows in the tooltip, under the card.",
+    "Le mode Legacy": "Legacy mode",
+    "Tu reprends le jeu depuis son origine. Au départ, seule la boîte de base est ouverte : tout le reste, héros, scénarios et cartes, attend derrière.":
+        "You play the collection from the beginning. Only the core set is open at first: everything else, heroes, scenarios and cards, waits behind it.",
+    "Pour ouvrir la boîte suivante :": "To open the next box:",
+    "bats tous les méchants de la boîte en cours. Une victoire par méchant suffit, en normal comme en expert.":
+        "beat every villain in the box you are on. One win per villain is enough, on standard or expert.",
+    "Les héros rapportent des jetons :": "Heroes earn tokens:",
+    "ta première victoire avec un héros officiel en donne un, deux si elle est prise en expert. Ils n'ouvrent aucune boîte.":
+        "your first win with an official hero gives one, two if it was on expert. They open no box.",
+    "Les jetons achètent les héros fan-made,": "Tokens buy fan-made heroes,",
+    "un jeton par héros, quand tu veux.": "one token each, whenever you like.",
+    "À plusieurs, tout le monde coche :": "In multiplayer, everyone ticks:",
+    "une victoire en équipe compte pour chaque héros de la table, et pour le méchant.":
+        "a team win counts for every hero at the table, and for the villain.",
+    "Une boîte fermée l'est vraiment :": "A closed box is really closed:",
+    "ses héros, ses scénarios et ses cartes restent hors de portée, éditeur de deck compris. La condition est écrite sous chaque vignette grisée.":
+        "its heroes, scenarios and cards stay out of reach, deck builder included. The condition is written under each greyed tile.",
+    "Le jeu libre n'est jamais verrouillé : reviens à l'accueil et tout est là.":
+        "Free play is never locked: go back to the home screen and it is all there.",
+    "Ne plus afficher ceci": "Don't show this again",
     "Pour ouvrir la suite": "To open the next box",
     "héros de cette boîte n'ont pas encore gagné": "heroes from this box have not won yet",
     "jeton(s) à prendre": "token(s) to claim",

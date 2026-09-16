@@ -1109,7 +1109,69 @@ async function rafraichirLegacy() {
 }
 
 /** La tuile Legacy : on pose la question une fois, puis on entre. */
+const CLE_LEGACY_EXPLIQUE = "marvel-legacy-explique";
+
+/** « Le mode Legacy », la modale d'explication.
+ *
+ *  Demandee le 16/09/2026 : « une modale quand on commence le mode legacy qui
+ *  explique exactement ce que ca fait, qui s'ouvre a chaque fois, sauf qu'il y
+ *  a un truc qu'on peut cocher en disant ne plus afficher ».
+ *
+ *  ⚠ ELLE PASSE AVANT LA QUESTION DE L'ACTIVATION. « Reprendre mes parties
+ *  passees ou repartir de zero » est un choix qui ne se refait pas : le poser
+ *  avant d'avoir explique le mode, c'est le poser a l'aveugle.
+ *
+ *  ⚠ ET ELLE NE SE FERME QUE PAR OK, comme la modale de langue : un clic
+ *  distrait a cote vaudrait « j'ai lu ».
+ *
+ *  La case cochee vit dans le localStorage, donc PAR NAVIGATEUR et non par
+ *  compte. C'est le meme choix que pour la langue et les preferences du
+ *  plateau : le site ne stocke pas de preferences d'affichage.
+ */
+function expliquerLegacy() {
+    return new Promise((resolve) => {
+        let vu = false;
+        try { vu = localStorage.getItem(CLE_LEGACY_EXPLIQUE) === "1"; }
+        catch (err) { vu = false; }
+        if (vu) { resolve(); return; }
+
+        const coche = el("input", { type: "checkbox", id: "lg-plus-jamais" });
+        const point = (fort, suite) => el("li", {}, el("b", {}, t(fort)), " " + t(suite));
+        const valider = () => {
+            if (coche.checked) {
+                try { localStorage.setItem(CLE_LEGACY_EXPLIQUE, "1"); }
+                catch (err) { /* sans stockage, elle reviendra : tant pis */ }
+            }
+            fermerModale(overlay);
+            resolve();
+        };
+        const overlay = el("div", { class: "deck-modal legacy-explique" },
+            el("div", { class: "deck-modal-panel vh-panel" },
+                el("div", { class: "dm-head" },
+                    el("b", { class: "mvl" }, t("Le mode Legacy")),
+                ),
+                el("p", {}, t("Tu reprends le jeu depuis son origine. Au départ, seule la boîte de base est ouverte : tout le reste, héros, scénarios et cartes, attend derrière.")),
+                el("ul", { class: "lg-regles" },
+                    point("Pour ouvrir la boîte suivante :", "bats tous les méchants de la boîte en cours. Une victoire par méchant suffit, en normal comme en expert."),
+                    point("Les héros rapportent des jetons :", "ta première victoire avec un héros officiel en donne un, deux si elle est prise en expert. Ils n'ouvrent aucune boîte."),
+                    point("Les jetons achètent les héros fan-made,", "un jeton par héros, quand tu veux."),
+                    point("À plusieurs, tout le monde coche :", "une victoire en équipe compte pour chaque héros de la table, et pour le méchant."),
+                    point("Une boîte fermée l'est vraiment :", "ses héros, ses scénarios et ses cartes restent hors de portée, éditeur de deck compris. La condition est écrite sous chaque vignette grisée."),
+                ),
+                el("p", { class: "vh-note" }, t("Le jeu libre n'est jamais verrouillé : reviens à l'accueil et tout est là.")),
+                el("div", { class: "vh-actions lg-actions" },
+                    el("label", { class: "lg-plus-jamais", for: "lg-plus-jamais" },
+                        coche, " " + t("Ne plus afficher ceci")),
+                    el("button", { class: "tampon", onclick: valider }, "OK"),
+                ),
+            ),
+        );
+        ouvrirModale(overlay);
+    });
+}
+
 async function entrerLegacy(nombre) {
+    await expliquerLegacy();
     const e = await etatLegacy(t);
     if (!e.fiche.actif) {
         const repartir = await demanderDepartLegacy();

@@ -57,7 +57,10 @@ test('un heros d une vague fermee dit sa boite et ce qu il faut d abord', async 
   expect(v.heros['Captain America'].ouvert).toBe(false);
   expect(v.heros['Captain America'].condition).toContain('Vague 1');
   expect(v.heros['Captain America'].condition).toContain('Rhino');
-  expect(v.heros['Captain America'].condition).toContain('Thor');
+  // ⚠ PLUS UN HEROS DANS LA CONDITION (16/09/2026). Elle citait « Thor » tant
+  // que les heros fermaient la route ; depuis que seuls les mechants ouvrent
+  // la vague suivante, l'y laisser ferait croire a une exigence.
+  expect(v.heros['Captain America'].condition).not.toContain('Thor');
   // Sur la vignette, seulement la boite : la phrase entiere couvrait les
   // portraits et se repetait soixante fois.
   expect(v.heros['Captain America'].etiquette).toBe('Vague 1');
