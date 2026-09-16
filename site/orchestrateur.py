@@ -3342,7 +3342,6 @@ class Handler(BaseHTTPRequestHandler):
     def _champs(self) -> dict:
         """Les champs du formulaire. Le corps est deja plafonne : `do_POST`
         refuse au-dela de `MAX_CORPS_OCTETS` avant d'arriver ici."""
-        import urllib.parse
         taille = max(0, self._taille_corps())
         brut = self.rfile.read(taille).decode("utf-8", "replace")
         return {k: v[0] for k, v in urllib.parse.parse_qs(brut).items()}
@@ -3443,7 +3442,6 @@ class Handler(BaseHTTPRequestHandler):
         Le nom du fichier vient de la base, jamais de l'adresse : c'est ce qui
         rend la traversee de dossier impossible ici.
         """
-        import urllib.parse
         requete = urllib.parse.urlparse(self.path).query
         try:
             numero = int(urllib.parse.parse_qs(requete).get("id", ["0"])[0])
@@ -3741,7 +3739,6 @@ class Handler(BaseHTTPRequestHandler):
                 return
             self._repondre(200, page_arret(pseudo))
         elif self.chemin.startswith("/inscription"):
-            import urllib.parse
             requete = urllib.parse.urlparse(self.path)
             jeton = urllib.parse.parse_qs(requete.query).get("i", [""])[0]
             if not INSCRIPTION_LIBRE and not invitation_valide(jeton):
@@ -3768,7 +3765,6 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", "0")
             self.end_headers()
         elif self.chemin.startswith("/reinitialisation"):
-            import urllib.parse
             jeton = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get("r", [""])[0]
             if reinitialisation_valide(jeton) is None:
                 self._repondre(410, self._formulaire_reinitialisation(
