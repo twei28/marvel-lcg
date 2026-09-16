@@ -139,6 +139,17 @@ RAPPORTS_PAR_HEURE = int(os.environ.get("RAPPORTS_PAR_HEURE", "12"))
 # « ce n'est pas un bug » comme « je ne le ferai pas », et oblige a ecrire
 # pourquoi : un ticket refuse sans un mot est pire qu'un ticket ignore.
 ETATS_RAPPORT = ("nouveau", "en cours", "traite", "refuse")
+# ⚠ UN ETAT SANS GROUPE EST UN RAPPORT INVISIBLE. L'ecran d'administration
+# classait les rapports par une liste ECRITE EN DUR ; en ajoutant « refuse »
+# le 16/09/2026 sans toucher a cette liste, un rapport refuse disparaissait de
+# la page — le bouton existait, on cliquait, et le rapport s'evanouissait.
+# Les libelles vivent donc ici, a cote des etats, et l'ecran les DERIVE.
+LIBELLES_ETAT_RAPPORT = {
+    "nouveau": "Nouveaux",
+    "en cours": "En cours",
+    "traite": "Traites",
+    "refuse": "Refuses",
+}
 # Au-dela de ce delai, un rapport CLASSE « traite » n'a plus rien a apprendre a
 # personne et sa capture ne fait que peser. Le plafond de debit est de 12
 # rapports par heure ET PAR TABLE, avec une capture jusqu'a 4 Mio : vingt
@@ -3769,7 +3780,8 @@ class Handler(BaseHTTPRequestHandler):
                           '« Mot de passe » d\'un compte en cree un.</td></tr>')
         tous_rapports = liste_rapports()
         rapports = ""
-        for etat_r, libelle_r in (("nouveau", "Nouveaux"), ("en cours", "En cours"), ("traite", "Traites")):
+        for etat_r in ETATS_RAPPORT:
+            libelle_r = LIBELLES_ETAT_RAPPORT.get(etat_r, etat_r.capitalize())
             groupe = [r for r in tous_rapports if (r["etat"] or "nouveau") == etat_r]
             if not groupe:
                 continue

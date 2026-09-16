@@ -2183,6 +2183,15 @@ verifier("sans renvoyer vers une image absente",
 verifier("et son fil se relit encore",
          _apres is not None and len(_apres.get("messages") or []) == 1)
 
+
+# ⚠ UN ETAT SANS GROUPE EST UN RAPPORT INVISIBLE. L'ecran d'administration
+# classait les rapports par une liste ECRITE EN DUR. En ajoutant « refuse » le
+# 16/09/2026 sans toucher a cette liste, un rapport refuse disparaissait de la
+# page : le bouton existait, on cliquait, et le rapport s'evanouissait.
+verifier("chaque etat de rapport a son libelle",
+         all(e in o.LIBELLES_ETAT_RAPPORT for e in o.ETATS_RAPPORT),
+         str(sorted(set(o.ETATS_RAPPORT) - set(o.LIBELLES_ETAT_RAPPORT))))
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:
