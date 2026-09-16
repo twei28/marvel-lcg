@@ -123,7 +123,10 @@ MAX_DESCRIPTION_CARACTERES = 4_000
 # Limite de debit, par compte hote. L'adresse est publique et n'importe quel
 # invite peut envoyer : sans plafond, une boucle remplirait le disque.
 RAPPORTS_PAR_HEURE = int(os.environ.get("RAPPORTS_PAR_HEURE", "12"))
-ETATS_RAPPORT = ("nouveau", "en cours", "traite")
+# ⚠ « refuse » AJOUTE LE 16/09/2026 avec le suivi des signalements. Il couvre
+# « ce n'est pas un bug » comme « je ne le ferai pas », et oblige a ecrire
+# pourquoi : un ticket refuse sans un mot est pire qu'un ticket ignore.
+ETATS_RAPPORT = ("nouveau", "en cours", "traite", "refuse")
 # Au-dela de ce delai, un rapport CLASSE « traite » n'a plus rien a apprendre a
 # personne et sa capture ne fait que peser. Le plafond de debit est de 12
 # rapports par heure ET PAR TABLE, avec une capture jusqu'a 4 Mio : vingt
@@ -954,6 +957,25 @@ CREATE TABLE IF NOT EXISTS rapports (
     traite_le   TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_rapports_etat ON rapports(etat);
+-- Le FIL d'un ticket (16/09/2026). Un rapport de bug envoye par le TITULAIRE
+-- d'un compte (siege 0) devient un ticket : on peut lui repondre, il peut
+-- repondre a son tour.
+--
+-- ⚠ `auteur` vaut « admin » ou « joueur », JAMAIS un pseudo. Le proprietaire
+-- du ticket est deja connu par `rapports.hote` ; stocker un pseudo ici
+-- ouvrirait deux sources de verite sur « a qui appartient ce fil ».
+--
+-- ⚠ `lu_le` est celui du DESTINATAIRE : un message d'admin est lu par le
+-- joueur, et reciproquement. C'est lui qui allume et eteint la pastille.
+CREATE TABLE IF NOT EXISTS rapports_messages (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    rapport_id INTEGER NOT NULL,
+    auteur     TEXT NOT NULL,
+    texte      TEXT NOT NULL,
+    quand      TEXT NOT NULL,
+    lu_le      TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_rapports_messages ON rapports_messages(rapport_id);
 -- ⚠ LES PARTIES QUITTEES EN COURS DE ROUTE N'EXISTENT NULLE PART AILLEURS.
 -- Le journal du moteur (`games_history-serveur-N.json`) n'est ecrit qu'a la
 -- FIN declaree par le moteur (victoire, defaite, elimination). Une partie
@@ -1900,6 +1922,102 @@ def _ecrire_capture(donnee: str) -> str | None:
     with open(os.path.join(DOSSIER_RAPPORTS, nom), "wb") as f:
         f.write(image)
     return nom
+
+
+# ---------------------------------------------------------------------------
+# LE SUIVI DES SIGNALEMENTS (16/09/2026)
+#
+# Demande : « quand je corrige ou que je reponds, j'aimerais qu'une petite
+# modale s'ouvre pour voir ma reponse, voire developper tout un truc de
+# tickets ». Cadre par la spec du meme jour.
+#
+# ⚠ LE TICKET EST RESERVE AU SIEGE 0, ET CE N'EST PAS UN CHOIX DE CONFORT.
+# Une table appartient a un compte ; les autres sieges sont des invites, meme
+# quand la personne a un compte ailleurs. `hote` dit de quelle TABLE vient le
+# rapport, PAS qui l'ecrit. Le siege 0 est le seul dont on sache le compte.
+# Un rapport d'invite reste donc un rapport : lu, traite, sans fil — et le
+# formulaire le dit honnetement a celui qui l'envoie.
+# ---------------------------------------------------------------------------
+def _est_un_ticket(r: dict) -> bool:
+    """Ce rapport a-t-il un proprietaire connu ?"""
+    return bool(r.get("hote")) and int(r.get("siege") or 0) == 0
+
+
+def ticket_de(numero: int) -> dict | None:
+    """Le rapport ET son fil, ou None si ce n'est pas un ticket."""
+    with _cx() as cx:
+        r = cx.execute("SELECT * FROM rapports WHERE id = ?", (numero,)).fetchone()
+        if r is None:
+            return None
+        rapport = dict(r)
+        if not _est_un_ticket(rapport):
+            return None
+        rapport["messages"] = [dict(m) for m in cx.execute(
+            "SELECT * FROM rapports_messages WHERE rapport_id = ? ORDER BY id",
+            (numero,))]
+        return rapport
+
+
+def ecrire_message(numero: int, auteur: str, texte: str) -> bool:
+    """Ajoute un message au fil. Rend False si le ticket n'existe pas.
+
+    Le texte est TRONQUE plutot que refuse, comme la description d'un rapport :
+    un message ampute vaut mieux qu'un message perdu.
+    """
+    qui = "admin" if auteur == "admin" else "joueur"
+    propre = str(texte or "").strip()[:MAX_DESCRIPTION_CARACTERES]
+    if not propre:
+        return False
+    with _cx() as cx:
+        r = cx.execute("SELECT hote, siege FROM rapports WHERE id = ?",
+                       (numero,)).fetchone()
+        if r is None or not _est_un_ticket(dict(r)):
+            return False
+        cx.execute("INSERT INTO rapports_messages (rapport_id, auteur, texte, quand)"
+                   " VALUES (?, ?, ?, ?)", (numero, qui, propre, _maintenant()))
+    return True
+
+
+def tickets_de(pseudo: str) -> list[dict]:
+    """Les tickets de CE compte, du plus recent au plus ancien, fils compris."""
+    if not pseudo:
+        return []
+    with _cx() as cx:
+        lignes = [dict(r) for r in cx.execute(
+            "SELECT * FROM rapports WHERE hote = ? AND siege = 0 ORDER BY id DESC",
+            (pseudo,))]
+        for rapport in lignes:
+            rapport["messages"] = [dict(m) for m in cx.execute(
+                "SELECT * FROM rapports_messages WHERE rapport_id = ? ORDER BY id",
+                (rapport["id"],))]
+    return lignes
+
+
+def marquer_ticket_lu(numero: int, par: str) -> None:
+    """Le destinataire a ouvert le fil : ses messages non lus ne le sont plus.
+
+    ⚠ ON MARQUE CEUX DE L'AUTRE. Le joueur qui ouvre son ticket lit les
+    messages de l'admin, jamais les siens : marquer les siens eteindrait la
+    pastille de l'admin sans qu'il ait rien vu.
+    """
+    ecrits_par = "joueur" if par == "admin" else "admin"
+    with _cx() as cx:
+        cx.execute("UPDATE rapports_messages SET lu_le = ?"
+                   " WHERE rapport_id = ? AND auteur = ? AND lu_le IS NULL",
+                   (_maintenant(), numero, ecrits_par))
+
+
+def reponses_non_lues(pseudo: str) -> int:
+    """Combien de reponses attendent ce compte, tous ses tickets confondus."""
+    if not pseudo:
+        return 0
+    with _cx() as cx:
+        r = cx.execute(
+            "SELECT COUNT(*) AS n FROM rapports_messages m"
+            " JOIN rapports r ON r.id = m.rapport_id"
+            " WHERE r.hote = ? AND r.siege = 0"
+            " AND m.auteur = 'admin' AND m.lu_le IS NULL", (pseudo,)).fetchone()
+        return int(r["n"] if r else 0)
 
 
 def liste_rapports(limite: int = 60) -> list[dict]:

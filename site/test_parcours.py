@@ -2047,6 +2047,66 @@ verifier("et il a bien demande le bon fichier, au dernier pas",
 verifier("et la partie n'est plus proposee, meme apres un echec",
          o.partie_interrompue("hote") is None)
 
+
+# ---------------------------------------------------------------------------
+# LE SUIVI DES SIGNALEMENTS (16/09/2026)
+#
+# Un rapport de bug envoye par le TITULAIRE d'un compte devient un ticket : un
+# fil dans les deux sens, quatre etats, une page cote joueur.
+#
+# ⚠ LE SIEGE 0 EST LA SEULE IDENTITE SURE. Une table appartient a un compte ;
+# les autres sieges sont des invites, meme quand la personne a un compte
+# ailleurs. `hote` dit de quelle TABLE vient le rapport, pas qui l'ecrit. Un
+# rapport de siege 1 ou plus reste donc un rapport, lu et traite, sans fil.
+# ---------------------------------------------------------------------------
+print()
+print("Le suivi des signalements")
+
+_r_hote = o.enregistrer_rapport("yarro", {
+    "nom": "yarro", "siege": 0, "ecran": "plateau",
+    "description": "la carte disparait quand je la joue"})
+_r_invite = o.enregistrer_rapport("yarro", {
+    "nom": "un ami", "siege": 2, "ecran": "plateau",
+    "description": "pareil chez moi"})
+
+verifier("un rapport du siege 0 ouvre un ticket",
+         o.ticket_de(_r_hote) is not None)
+verifier("un rapport d'un invite n'en ouvre pas",
+         o.ticket_de(_r_invite) is None)
+
+o.ecrire_message(_r_hote, "admin", "Corrige, merci du signalement.")
+_fil = (o.ticket_de(_r_hote) or {}).get("messages") or []
+verifier("la reponse se range dans le fil", len(_fil) == 1, str(_fil))
+verifier("et elle porte son auteur",
+         bool(_fil) and _fil[0]["auteur"] == "admin", str(_fil))
+
+o.ecrire_message(_r_hote, "joueur", "Je confirme, c'est bon.")
+verifier("le joueur repond dans le meme fil",
+         len((o.ticket_de(_r_hote) or {}).get("messages") or []) == 2)
+
+# ⚠ LE CAS QUI COMPTE LE PLUS : un ticket n'appartient qu'a son auteur.
+_miens = o.tickets_de("yarro")
+_autres = o.tickets_de("quelqu-un-d-autre")
+verifier("le compte voit son ticket", any(x["id"] == _r_hote for x in _miens))
+verifier("⚠ un autre compte ne le voit pas",
+         not any(x["id"] == _r_hote for x in _autres), str(_autres))
+verifier("et le rapport de l'invite n'est le ticket de personne",
+         not any(x["id"] == _r_invite for x in _miens + _autres))
+
+verifier("une reponse de l'admin est annoncee au joueur",
+         o.reponses_non_lues("yarro") == 1, str(o.reponses_non_lues("yarro")))
+verifier("mais pas a quelqu'un d'autre", o.reponses_non_lues("quelqu-un-d-autre") == 0)
+o.marquer_ticket_lu(_r_hote, "joueur")
+verifier("une fois le fil ouvert, la pastille s'eteint",
+         o.reponses_non_lues("yarro") == 0)
+
+# Les quatre etats, « refuse » compris : il couvre « ce n'est pas un bug »
+# comme « je ne le ferai pas », et oblige a ecrire pourquoi.
+verifier("l'etat refuse existe", "refuse" in o.ETATS_RAPPORT)
+o.changer_etat_rapport(_r_hote, "refuse")
+verifier("et il se pose sur un rapport",
+         (o.ticket_de(_r_hote) or {}).get("etat") == "refuse")
+
 print()
 print("ECHECS : %d" % len(echecs))
 for e in echecs:
