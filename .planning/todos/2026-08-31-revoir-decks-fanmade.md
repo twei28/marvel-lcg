@@ -124,6 +124,13 @@ Deux autres endroits, hors périmètre de ce TODO mais notés au passage :
   Twice the Determination ×3) et quatre `prebuilt_*.json` : fichiers importés
   ou personnels, à laisser à leur propriétaire.
 
+> ⚠ **Relevé le 16/09/2026 : ces 144 decks n'existent plus.** Ils ont été
+> supprimés les 05/09 et 12/09/2026 sur décision de l'utilisateur, et
+> `deck/custom/` n'en porte plus un seul. Le paragraphe ci-dessous ne vaut
+> que comme historique. Le reste de la fiche, lui, tient toujours :
+> « Commanding Leadership » est encore assemblé à la volée par
+> `public/js/prepare/catalog.js`.
+
 **Ce qui est SAIN :** les 144 decks d'aspect de
 `deck/custom/<héros>_<aspect>.json` (commit `0b41fc5`) — zéro infraction, la
 règle est vérifiée par leur validateur de construction.

@@ -1,5 +1,13 @@
 # TODO — Contradiction non résolue : quelle copie alimente vraiment le dev/tests
 
+> ⚠ **PÉRIMÉE, relevée le 16/09/2026.** La question posée ici a été tranchée
+> le 31/08/2026 : la copie WSL a été SUPPRIMÉE lors du grand rangement.
+> `ui-app/deployer.sh` ne déclare plus qu'une seule installation dans `JEUX`
+> (le dossier Windows), et son commentaire raconte le correctif ainsi que le
+> jour où le sens inversé du rsync avait effacé des biographies de héros.
+> Il reste à vérifier le point 3 de la fiche (le bandeau périmé en tête de
+> `serveur-dev.py`) ; le reste n'a plus d'objet.
+
 **Statut :** ⚠️ Ouvert, laissé volontairement en l'état sur demande explicite
 (29/08/2026, session de refonte de la doc de création de contenu).
 **Origine :** trouvé en corrigeant `docs/reference/GUIDE-CREATION-CONTENU.md`

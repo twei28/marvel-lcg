@@ -373,6 +373,13 @@ cartes à partir du livret, ce qui n'est pas du portage.
 
 ## 8. Mots-clés maison rencontrés, à ficher avant d'écrire une ligne
 
+> ⚠ **Tableau périmé, relevé le 16/09/2026.** Les six mots-clés notés
+> « absent des fiches » en ont un désormais dans `docs/reference/mots-cles/` :
+> `breakthrough.md`, `agile.md`, `seek.md`, `summon.md`, `track.md`,
+> `teamwork.md`. `acceleration-2099.md` existe aussi, l'homonyme de la
+> dernière ligne est donc traité. Aucun de ces fichiers n'a été relu à
+> cette occasion : seule leur existence est constatée.
+
 Vérifié dans `src/` et dans `docs/reference/mots-cles/` le 02/09/2026.
 
 | Mot-clé | Pack | État |
