@@ -3,6 +3,7 @@
 "use strict";
 import { catalog } from "/public/js/prepare/catalog.js";
 import { appliquerTutoriel } from "/public/js/prepare/tutoriel-etat.js";
+import { appliquerNiveau } from "/public/js/prepare/niveau-standard.js";
 
 const uniq = (arr) => [...new Set(arr)];
 
@@ -54,7 +55,11 @@ function buildRules(state) {
 export async function buildDescriptor(state) {
     const raw = await resolveScenarioRaw(state);
     const modular = state.difficulty.selectedModularSets || [];
-    const encounter_set_names = uniq([...(raw.encounter_sets || []), ...modular]);
+    // Le niveau du set Standard (I, II ou III) REMPLACE celui du scenario, et
+    // ne touche a rien d'autre : ni Expert, ni les modulaires, ni les sets
+    // propres au scenario. Voir niveau-standard.js.
+    const setsDuScenario = appliquerNiveau(raw.encounter_sets || [], state.difficulty.standard);
+    const encounter_set_names = uniq([...setsDuScenario, ...modular]);
     // Premier joueur : le moteur fait toujours commencer l'index 0, on fait
     // donc pivoter les joueurs retenus pour placer le premier joueur en tête.
     // (En multijoueur par sièges, le siège N correspond au joueur N : l'ordre
@@ -94,7 +99,7 @@ export async function buildDescriptor(state) {
         if (raw2) {
             descriptor.campaign_json_2 = JSON.stringify(raw2);
             descriptor.encounter_set_names_2 = uniq([
-                ...(raw2.encounter_sets || []),
+                ...appliquerNiveau(raw2.encounter_sets || [], state.difficulty.standard),
                 ...(raw2.modular_sets || []),
             ]);
             const total = hero_json.length;

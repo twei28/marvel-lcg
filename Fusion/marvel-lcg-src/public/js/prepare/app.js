@@ -27,6 +27,7 @@ import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
          langueDejaChoisie, retenirLangue } from "/public/js/prepare/langue.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { sauverDeck, decksSauvegardesPourHeros } from "/public/js/prepare/decks-serveur.js";
+import { NIVEAUX_STANDARD, libelleNiveau, niveauDuScenario } from "/public/js/prepare/niveau-standard.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
 import { GENRES, nouveautesTriees } from "/public/js/prepare/nouveautes.js";
@@ -263,6 +264,11 @@ const state = {
     extensionTab: null,
     difficulty: {
         base: "standard",
+        // Le NIVEAU du set Standard (I, II ou III). Axe SEPARE de `base`, qui
+        // choisit la variante Expert du scenario : dans le jeu, Expert
+        // s'AJOUTE au Standard, il ne le remplace pas (rhino_expert declare
+        // ["standard", "expert"]). Voir niveau-standard.js.
+        standard: "standard",
         skirmish: false,
         heroic: 0,
         modularConfig: "recommended",
@@ -552,6 +558,9 @@ async function preparerDecouverte() {
 function selectScenario(sc) {
     state.scenario = sc;
     state.difficulty.base = sc.expert ? "expert" : "standard";
+    // Web of Deceit joue Standard III : l'ecran doit le MONTRER, pas afficher
+    // « Standard I » sur une partie qui n'en est pas une.
+    state.difficulty.standard = niveauDuScenario(sc.rawJson);
     state.difficulty.modularConfig = "recommended";
     applyModularConfig();
     prefs.setLastScenario(sc.id);
@@ -3408,7 +3417,19 @@ function rendreMenace() {
     poser(zone,
         el("div", { class: "tb-menace-ligne" },
             el("span", { class: "tb-menace-k" }, t("Menace")),
-            regle("Standard", d.base === "standard", () => { d.base = "standard"; }),
+            // ⚠ TROIS NIVEAUX, PLUS UN SEUL BOUTON (16/09/2026). Les cartes de
+            // Standard II et III etaient scriptees depuis toujours et
+            // INCHOISISSABLES : celles de Standard II n'avaient jamais ete
+            // jouees. Cliquer un niveau repasse aussi en Standard, sinon le
+            // joueur en Expert changerait un reglage sans voir son bouton
+            // s'allumer.
+            ...NIVEAUX_STANDARD.map((niveau) => regle(
+                libelleNiveau(niveau),
+                d.base === "standard" && d.standard === niveau,
+                () => { d.base = "standard"; d.standard = niveau; },
+            )),
+            // Expert garde le niveau choisi : dans le jeu, il s'ajoute au
+            // Standard, il ne le remplace pas.
             sc.hasExpertVariant ? regle("Expert", d.base === "expert", () => { d.base = "expert"; }) : null,
             regle("Skirmish", d.skirmish, () => { d.skirmish = !d.skirmish; }),
             heroique,
@@ -3690,7 +3711,7 @@ function stepSummary() {
     const reglages = [];
     if (sc) {
         reglages.push(libelleMode(state.mode) + " · " + state.playerCount + (state.playerCount > 1 ? " héros" : " héros"));
-        reglages.push(d.base === "expert" ? "Expert" : "Standard");
+        reglages.push(d.base === "expert" ? "Expert" : libelleNiveau(d.standard));
         if (d.skirmish) reglages.push("Skirmish");
         if (d.heroic > 0) reglages.push(t("Héroïque") + " " + d.heroic);
         const sets = [...sc.mandatoryEncounterSets, ...d.selectedModularSets].map(titleize);
