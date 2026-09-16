@@ -70,3 +70,14 @@ ou ajouter l'entrée.
 
 1. Quel set némésis monte le deck de départ ?
 2. `psionic` réutilisé, ou `psionic web` ajouté à l'énum ?
+
+
+## ⛔ SORTI DU BACKLOG le 16/09/2026
+
+Décision de l'utilisateur : **le pack ne sera pas porté.** Le relevé reste ici
+pour le jour où l'on y reviendrait, avec ses deux questions jamais tranchées
+(quel set némésis monte le deck de départ, et `psionic` réutilisé ou
+`psionic web` ajouté à l'énum).
+
+C'était le dernier item de la **vague 4** du plan des héros fan-made : cette
+vague s'achève donc sans lui.

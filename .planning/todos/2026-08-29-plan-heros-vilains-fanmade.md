@@ -333,6 +333,10 @@ set 156), ~~Yondu~~ ✅ (03/09/2026, set 154), ~~Sunfire~~ ✅ (06/09/2026,
 set 163), ~~Ares~~ ✅ (07/09/2026, set 164). Quatre variantes de la brique 6, de
 la plus simple à la plus mobile. **Vague 3 terminée.**
 
+⛔ **SPIDER-WOMAN ET DOCTOR DOOM ALT ARTS SONT SORTIS DU BACKLOG le
+16/09/2026**, sur décision de l'utilisateur. La vague 4 s'achève donc sans son
+dernier item, et le plan n'a plus de reste « hors vague ».
+
 **Vague 4, les gros packs autonomes** : ~~Night Thrasher~~ ✅ (set 153),
 ~~Texas Twister~~ ✅ (set 157), ~~Armored Spidey~~ ✅ (set 152),
 ~~Blade~~ ✅ (07/09/2026, set 165), ~~Spider-Man 2099~~ ✅ (08/09/2026, set 166),
@@ -344,8 +348,9 @@ un mot-clé maison ou du volume.
 37 cartes, 39 cas verts), puis Iron Patriot (reste du plan d'origine) et Muse
 (à trancher avec l'utilisateur avant tout code).
 
-**Hors vague** : Doctor Doom Alt Arts, 2/5 et sans dépendance, à faire quand on
-veut. Skrull Menace et Galactic Storm restent bloqués, voir §7.
+**Hors vague** : ~~Doctor Doom Alt Arts~~ ⛔ **SORTI DU BACKLOG le 16/09/2026**,
+décision de l'utilisateur. C'était un jeu d'illustrations alternatives du même
+kit de cartes, pas un pack indépendant : rien à porter, rien à jouer de plus. Skrull Menace et Galactic Storm restent bloqués, voir §7.
 
 ## 7. ⚠ Les deux campagnes sont incomplètes dans le matériel fourni
 
