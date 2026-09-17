@@ -172,9 +172,15 @@ const isCampaignMode = () => state.mode && state.mode.id === "campaign";
 
 const playerLogKey = (field, i) => field.perPlayer ? ("Player " + (i + 1) + " " + field.key) : field.key;
 
-/** `url` : la fonction qui donne l'image (par défaut celle de la langue ; la
- *  scène du héros passe `cardImageUrlEn` pour éviter le filigrane FR). */
-function portrait(cardId, cls, url = cardImageUrl) {
+/** `url` : la fonction qui donne l'image.
+ *
+ *  ⚠ L'ANGLAIS PAR DÉFAUT, MÊME EN FRANÇAIS (17/09/2026, demande de
+ *  l'utilisateur). Le scan FR porte un filigrane qui salit l'illustration ;
+ *  l'anglais non. Ces portraits sont là pour RECONNAÎTRE un personnage, pas
+ *  pour lire son texte : c'est l'image qui compte, et les grandes scènes
+ *  étaient déjà en anglais pour cette raison. Le français restait aux seules
+ *  vignettes, d'où deux versions d'un même héros sur le même écran. */
+function portrait(cardId, cls, url = cardImageUrlEn) {
     return el("div", {
         class: "portrait " + (cls || ""),
         style: cardId ? { backgroundImage: `url(${url(cardId)})` } : {},
@@ -189,7 +195,7 @@ function portrait(cardId, cls, url = cardImageUrl) {
  *  commun (centre, 154 %) couperait chaque personnage en plein sur la diagonale.
  *  On tire donc le cadrage de chacun VERS SON TRIANGLE — d'où les deux classes
  *  `duo-a` / `duo-b`, dont les valeurs sont réglées dans prepare.css. */
-function portraitDuo(hero, cls, url = cardImageUrl) {
+function portraitDuo(hero, cls, url = cardImageUrlEn) {
     return el("div", { class: "portrait-duo " + (cls || "") },
         portrait(hero.heroCardId, "duo duo-a", url),
         portrait(hero.lie.heroCardId, "duo duo-b", url),
@@ -208,11 +214,11 @@ function mechantsDe(sc) {
 function portraitScenario(sc, cls) {
     const ids = mechantsDe(sc);
     if (ids.length < 2) {
-        return el("div", { class: "portrait " + (cls || ""), style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } });
+        return el("div", { class: "portrait " + (cls || ""), style: { backgroundImage: `url("${cardImageUrlEn(sc.tileImage)}")` } });
     }
     const n = Math.min(ids.length, 4);
     return el("div", { class: `portrait portrait-multi n${n} ` + (cls || "") },
-        ...ids.slice(0, 4).map((id) => el("i", { style: { backgroundImage: `url("${cardImageUrl(id)}")` } })));
+        ...ids.slice(0, 4).map((id) => el("i", { style: { backgroundImage: `url("${cardImageUrlEn(id)}")` } })));
 }
 
 /** Portrait d'un héros dans la grille : double si le deck porte une identité
@@ -2047,7 +2053,7 @@ function recruterVraiment(h, portraitEl) {
     if (scene) {
         const cri = replique(h);
         const eclair = el("div", { class: "tb-eclair" },
-            el("img", { src: cardImageUrl(picIdHeros(h.heroCardId)), alt: "" }),
+            el("img", { src: cardImageUrlEn(picIdHeros(h.heroCardId)), alt: "" }),
             // La taille suit la longueur : une courte claque, une longue se lit.
             el("span", { class: ("ono " + classeTaille(cri)).trim() }, cri),
         );
@@ -3513,12 +3519,14 @@ function rendreTable() {
                 // Sans le symbole d'unicite qui ouvre le nom de la carte (« ✦ Wrecker »).
                 const nom = ((carte && carte.name) || sc.name).replace(/^\W+\s*/, "");
                 return el("div", { class: "tb-siege plein petit eux", title: nom },
-                    el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrl(id)}")` } }),
+                    // Anglais, comme les portraits de heros juste a cote : ces
+                    // deux rangees se lisent ensemble.
+                    el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrlEn(id)}")` } }),
                     el("span", { class: "tb-siege-nom" }, nom));
             })
             : [sc
                 ? el("div", { class: "tb-siege plein petit eux", title: sc.name },
-                    el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrl(sc.tileImage)}")` } }),
+                    el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrlEn(sc.tileImage)}")` } }),
                     el("span", { class: "tb-siege-nom" }, sc.name))
                 : el("div", { class: "tb-siege petit eux" }, el("span", { class: "plus" }, "?"))]),
     );
@@ -3728,7 +3736,9 @@ function stepSummary() {
 
     const scene = (idImage, classe) => el("div", {
         class: "fo-scene " + (classe || ""),
-        style: { backgroundImage: `url("${cardImageUrl(idImage)}")` },
+        // Anglais comme les deux selecteurs : un meme heros ne doit pas changer
+        // d'aspect entre l'etape du choix et l'etape finale.
+        style: { backgroundImage: `url("${cardImageUrlEn(idImage)}")` },
         onmouseenter: auSurvol((e) => showCardHover(idImage, e.currentTarget)),
         onmouseleave: scheduleHide,
     });

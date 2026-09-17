@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-17",
         genre: "jeu",
+        fr: "En français, les portraits des héros et des méchants prennent désormais l'illustration anglaise, qui n'a pas de filigrane. Le texte des cartes, lui, reste en français partout où on le lit.",
+        en: "In French, hero and villain portraits now use the English artwork, which has no watermark. Card text stays in French everywhere it is read.",
+    },
+    {
+        date: "2026-09-17",
+        genre: "jeu",
         fr: "Le narval change de costume toutes les trois heures : Captain America, Magneto, Cyclope, Wolverine, Thor. Dans l'onglet comme sur les pages.",
         en: "The narwhal changes costume every three hours: Captain America, Magneto, Cyclops, Wolverine, Thor. In the tab as well as on the pages.",
     },
