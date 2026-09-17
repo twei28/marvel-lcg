@@ -88,6 +88,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'reconnexion...': 'reconnecting...',
   'essai': 'attempt',
   'Reconnecter maintenant': 'Reconnect now',
+  // Quand la reconnexion n'a plus de sens : la table a ete fermee.
+  'Cette table a été fermée.': 'This table has been closed.',
+  'Ta partie n’est plus en cours.': 'Your game is no longer running.',
+  'Revenir à l’accueil': 'Back to the home page',
   'Chargement...': 'Loading...',
   'Aucune partie derrière cette vue : rien à jouer. Retire « ?etat= » de l’adresse pour revenir à la partie.':
     'Nothing is being played behind this view. Remove « ?etat= » from the address to go back to the game.',

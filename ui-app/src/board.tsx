@@ -1174,8 +1174,24 @@ function BarreRevoir({ pasTotal }: { pasTotal: number }) {
 }
 
 /**
+ * Au-dela de ce nombre d'essais, on cesse de parler de « connexion perdue ».
+ *
+ * Les delais de reconnexion sont 2, 4, 8, 15 puis 30 secondes (`moteur.ts`) :
+ * cinq essais valent donc environ une minute. Passe ce cap, une coupure
+ * passagere serait revenue. Ce qui reste, c'est une table fermee — par un
+ * deploiement, par le faucheur d'inactivite, ou parce qu'on l'a eteinte.
+ */
+const ESSAIS_AVANT_TABLE_FERMEE = 5
+
+/**
  * Bandeau de reconnexion : visible des que le socket tombe pendant une partie,
  * avec compte a rebours de la prochaine tentative et bouton immediat.
+ *
+ * ⚠ ET IL FINIT PAR DIRE LA VERITE (17/09/2026). Il repetait « nouvel essai
+ * dans Xs » indefiniment : un joueur dont la table avait ete fermee voyait un
+ * decompte qui ne menait nulle part, sans jamais apprendre qu'il n'y avait
+ * plus rien a rejoindre. Constate en direct sur le plateau d'un joueur : 19
+ * tentatives de socket en dix minutes, toutes en 502.
  */
 function BandeauConnexion({ etat, reconnecter }: { etat: EtatMoteur; reconnecter: () => void }) {
   const [, forcer] = useState(0)
@@ -1189,21 +1205,40 @@ function BandeauConnexion({ etat, reconnecter }: { etat: EtatMoteur; reconnecter
   const restant = etat.prochaineTentative
     ? Math.max(0, Math.ceil((etat.prochaineTentative - Date.now()) / 1000))
     : undefined
+  const fermee = etat.tentatives >= ESSAIS_AVANT_TABLE_FERMEE
   return (
     <div className="bandeau-connexion" role="alert">
       <span aria-hidden="true">⚠</span>
-      <span>
-        {t('Connexion perdue')}
-        {restant !== undefined
-          ? ` — ${t('nouvel essai dans')} ${restant}s`
-          : ` — ${t('reconnexion...')}`}
-        {etat.tentatives > 1 ? ` (${t('essai')} ${etat.tentatives})` : ''}
-      </span>
+      {fermee ? (
+        <span>
+          {t('Cette table a été fermée.')} {t('Ta partie n’est plus en cours.')}
+        </span>
+      ) : (
+        <span>
+          {t('Connexion perdue')}
+          {restant !== undefined
+            ? ` — ${t('nouvel essai dans')} ${restant}s`
+            : ` — ${t('reconnexion...')}`}
+          {etat.tentatives > 1 ? ` (${t('essai')} ${etat.tentatives})` : ''}
+        </span>
+      )}
+      {fermee ? (
+        <button type="button" onClick={() => { window.location.href = lienAccueil() }}>
+          {t('Revenir à l’accueil')}
+        </button>
+      ) : null}
       <button type="button" onClick={reconnecter}>
         {t('Reconnecter maintenant')}
       </button>
     </div>
   )
+}
+
+/** Le SITE, pas la table : c'est le domaine parent qui sait rouvrir une place. */
+function lienAccueil(): string {
+  const morceaux = window.location.hostname.split('.')
+  const parent = morceaux.length > 2 ? morceaux.slice(1).join('.') : window.location.hostname
+  return `${window.location.protocol}//${parent}/`
 }
 
 function PageEtat({

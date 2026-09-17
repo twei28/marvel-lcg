@@ -165,6 +165,46 @@ describe('la barre du haut', () => {
   })
 })
 
+// ⚠ LA TABLE FERMEE, VUE DU PLATEAU (17/09/2026). Le bandeau repetait
+// « nouvel essai dans Xs » indefiniment : un joueur dont la table avait ete
+// fermee voyait un decompte qui ne menait nulle part. Constate en direct sur
+// le plateau d'un joueur, 19 tentatives de socket en dix minutes, toutes en
+// 502. Les delais etant 2, 4, 8, 15 puis 30 s, cinq essais valent une minute :
+// passe ce cap, une coupure passagere serait revenue.
+describe('le bandeau de connexion', () => {
+  const coupe = (tentatives: number) => ({
+    monde: table(heros('Spider-Man', 1)),
+    connecte: false,
+    tentatives,
+    prochaineTentative: Date.now() + 8000,
+  })
+
+  it('parle de reconnexion tant que la coupure peut etre passagere', async () => {
+    monter()
+    await emettre(coupe(2))
+    expect(screen.getByText(/Connexion perdue/)).toBeTruthy()
+    expect(screen.queryByText(/Cette table a été fermée/)).toBeNull()
+  })
+
+  it('finit par dire que la table est fermee, et offre la sortie', async () => {
+    monter()
+    await emettre(coupe(5))
+    expect(screen.getByText(/Cette table a été fermée/)).toBeTruthy()
+    expect(screen.getByRole('button', { name: /Revenir à l’accueil/ })).toBeTruthy()
+    // ⚠ ON NE RENONCE PAS POUR AUTANT : le bouton de reconnexion reste, une
+    // table peut rouvrir.
+    expect(screen.getByRole('button', { name: /Reconnecter maintenant/ })).toBeTruthy()
+    expect(screen.queryByText(/Connexion perdue/)).toBeNull()
+  })
+
+  it('ne dit rien du tout tant que le socket tient', async () => {
+    monter()
+    await emettre({ monde: table(heros('Spider-Man', 1)), connecte: true, tentatives: 0 })
+    expect(screen.queryByText(/Connexion perdue/)).toBeNull()
+    expect(screen.queryByText(/Cette table a été fermée/)).toBeNull()
+  })
+})
+
 // DEFAUT N°3 DU 15/09/2026. `plateau-de-test.ts` court-circuite `board.tsx` :
 // il ne sait meme pas qu'un panneau de manigance existe. Seul le montage de
 // l'ecran prouve que la condition est bien cablee — et que le bouton REPOND.

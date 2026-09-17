@@ -46,6 +46,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-17",
+        genre: "correction",
+        fr: "Sur le plateau, quand ta table a été fermée, le bandeau finit par le dire au lieu de répéter « nouvel essai » sans fin, et te propose de revenir à l'accueil.",
+        en: "On the board, when your table has been closed, the banner now says so instead of endlessly retrying, and offers to take you back to the home page.",
+    },
+    {
+        date: "2026-09-17",
         genre: "jeu",
         fr: "En français, les portraits des héros et des méchants prennent désormais l'illustration anglaise, qui n'a pas de filigrane. Le texte des cartes, lui, reste en français partout où on le lit.",
         en: "In French, hero and villain portraits now use the English artwork, which has no watermark. Card text stays in French everywhere it is read.",
