@@ -30685,6 +30685,43 @@ CAS = [
         "verifier": "amelioration_posee_depuis_la_main",
         "attendu": {"carte_posee": "61009"},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « hercules » : les Travaux cherchent leur cible dans TOUTES les zones
+    #
+    # ⚠ Signale en partie le 17/09/2026 par un joueur : « le travail de sbire
+    # d'Hercules trigger dans le vide ». Le journal de sa partie le montrait
+    # noir sur blanc : « Defeat the Hydra » se revelait, s'activait, puis se
+    # DEFAUSSAIT sans rien attacher.
+    #
+    # Cause : « Find » fouille toutes les zones ou la carte peut se trouver
+    # (Rules Reference p.19, entree FIND : « play area, set-aside area, player
+    # deck, discard pile, encounter deck, etc. »). Les deux Travaux chercheurs
+    # oubliaient `include_set_aside`, et c'est precisement la que vit leur
+    # cible : le set NEMESIS d'Hercules, mis de cote au setup.
+    #
+    # Le scenario `rhino` rend ce cas deterministe : son seul sbire est
+    # 01110 Hydra Bomber (2 PV), donc jamais eligible. La SEULE cible possible
+    # est celle du set nemesis.
+    #
+    # ⚠ 59003 Embody Pathos porte le MEME oubli et a recu le meme correctif,
+    # mais AUCUN CAS NE LE COUVRE ICI, et c'est volontaire : le cas ecrit pour
+    # lui passait avec ET sans le correctif, donc il ne prouvait rien. Un cas
+    # vert qui ne peut pas rougir est pire que pas de cas. Voir la fiche
+    # `.planning/todos/2026-09-17-travail-de-sbire-hercules-dans-le-vide.md`.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "59002 Defeat the Hydra — trouve le sbire nemesis MIS DE COTE",
+        "pourquoi": ("le Travail se revelait puis se defaussait sans rien faire : sa cible, "
+                     "59037 Lernean Hydra (6 PV, non-ELITE), vit dans le set nemesis mis de "
+                     "cote, zone que la recherche ne fouillait pas"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('59002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["59037", "59002"]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).

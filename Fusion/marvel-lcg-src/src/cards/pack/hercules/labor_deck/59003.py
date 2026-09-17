@@ -3,7 +3,10 @@ def GetAbilities() -> Sequence['Ability']:
     def when_revealed(effect: 'Effect', message: 'Message.WhenCardRevealed') -> None:
         this = effect.this.CastTo(Attachment)
         player = message.GetToPlayer()
-        scheme = Search.EncounterCard(effect, player, include_discard_pile=True, card_type=EncounterSideScheme)
+        # Meme oubli que 59002, et meme correctif : le set nemesis mis de cote
+        # porte 59038 Olympic Feud, un complot annexe de rencontre. Voir le
+        # commentaire de 59002 pour la regle « Find ».
+        scheme = Search.EncounterCard(effect, player, include_discard_pile=True, include_set_aside=True, card_type=EncounterSideScheme)
         if scheme:
             scheme.Reveal(player, effect)
             this.AttachTo2(scheme, effect)

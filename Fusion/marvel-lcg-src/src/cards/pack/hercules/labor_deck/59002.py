@@ -10,7 +10,16 @@ def GetAbilities() -> Sequence['Ability']:
                 return False
         minion = Worlds.FindCardOnField(effect, finder=CardFinder(non_trait='ELITE', card_type=Minion, check_effect_fn=has_6hp))
         if not minion:
-            minion = Search.EncounterCard(effect, player, include_discard_pile=True, finder=CardFinder(non_trait='ELITE', card_type=Minion, check_effect_fn=has_6hp))
+            # ⚠ include_set_aside : LA CIBLE DE CETTE CARTE Y VIT (17/09/2026).
+            # « Find » fouille TOUTES les zones ou la carte peut se trouver
+            # (Rules Reference p.19 : « play area, set-aside area, player deck,
+            # discard pile, encounter deck, etc. »). Le set NEMESIS d'Hercules
+            # est mis de cote, et il contient 59037 Lernean Hydra : minion,
+            # 6 PV, non-ELITE — c'est-a-dire la cible evidente d'une carte qui
+            # s'appelle « Defeat the Hydra ». Sans ce drapeau, le Travail se
+            # revelait et se defaussait sans rien faire. Signale en partie :
+            # « le travail de sbire d'Hercules trigger dans le vide ».
+            minion = Search.EncounterCard(effect, player, include_discard_pile=True, include_set_aside=True, finder=CardFinder(non_trait='ELITE', card_type=Minion, check_effect_fn=has_6hp))
             if minion:
                 minion.Reveal(player, effect)
         if minion:
