@@ -3353,7 +3353,10 @@ export function PagePartie({
         playerId={joueurActif}
       />
       <CoucheCurseurs
-        actif={curseurs && (etat.monde?.players?.length ?? 0) > 1}
+        // ⚠ ET POUR LE SPECTATEUR, MEME EN SOLO. Le seuil « plus d'un joueur »
+        // avait du sens entre joueurs ; il privait le spectateur de la seule
+        // chose qu'il vienne voir, sur les parties solo qui sont la majorite.
+        actif={curseurs && ((etat.monde?.players?.length ?? 0) > 1 || spectateur)}
         monJoueur={playerId}
         nomsJoueurs={(etat.monde?.players ?? []).map(
           (joueur, i) => joueur.area_hero?.[0]?.name?.replace(/^\W*/, '') ?? `J${i}`

@@ -5722,6 +5722,20 @@
     border-radius: 99px;
     white-space: nowrap;
   }
+
+  /* La carte que l'AUTRE survole (17/09/2026, pour le spectateur).
+     ⚠ Pose sur la carte elle-meme, pas dessine par-dessus : une boite
+     superposee serait calee sur la position d'un instant et glisserait des
+     que le plateau se redessine ou defile. */
+  .carte-survolee-par-un-autre {
+    outline: 2px solid var(--info, #96ebff);
+    outline-offset: 1px;
+    border-radius: 3px;
+    box-shadow: 0 0 14px rgba(150, 235, 255, 0.45);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .carte-survolee-par-un-autre { box-shadow: none; }
+  }
 }
 
 @layer utilitaires {

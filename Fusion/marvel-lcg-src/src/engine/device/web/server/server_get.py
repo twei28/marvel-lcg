@@ -440,14 +440,24 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'p, x, y required'}, status=400)
         if not hasattr(self, 'cursors'):
             self.cursors = {}
-        self.cursors[p] = {'x': x, 'y': y, 't': time.time()}
+        # `survol` : la carte sous le curseur (17/09/2026). Le spectateur voit
+        # ainsi ce que le joueur REGARDE, pas seulement ou il pointe. Borne a
+        # 40 caracteres : un card_id en fait moins de dix, et rien de ce qui
+        # vient du reseau ne doit pouvoir grossir sans limite.
+        self.cursors[p] = {
+            'x': x, 'y': y, 't': time.time(),
+            'survol': str(data.get('survol', ''))[:40],
+        }
         return web.json_response({'result': 'ok'})
 
     async def get_cursors(self, request: web.Request) -> web.Response:
         import time
         cursors = getattr(self, 'cursors', {})
         now = time.time()
-        frais = {p: {'x': c['x'], 'y': c['y']} for p, c in cursors.items() if now - c['t'] < 5.0}
+        frais = {
+            p: {'x': c['x'], 'y': c['y'], 'survol': c.get('survol', '')}
+            for p, c in cursors.items() if now - c['t'] < 5.0
+        }
         return web.json_response(frais)
 
     # --- Salon multijoueur : un choix de heros/deck par siege ---------------
