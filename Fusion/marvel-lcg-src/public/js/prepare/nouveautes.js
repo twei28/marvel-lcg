@@ -45,6 +45,66 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-09-17",
+        genre: "correction",
+        fr: "Hercule : « Defeat the Hydra » ne cherchait un sbire que dans le deck de rencontre et sa défausse, jamais dans les cartes mises de côté. Elle y trouve enfin l'Hydre de Lerne, au lieu de partir sans rien faire.",
+        en: "Hercules: “Defeat the Hydra” only looked for a minion in the encounter deck and its discard pile, never among the set-aside cards. It now finds the Lernean Hydra instead of doing nothing.",
+    },
+    {
+        date: "2026-09-17",
+        genre: "correction",
+        fr: "Hercule : « Ancient Rivalry » ne redressait que les héros. Elle redresse maintenant l'allié Thor, qui est pourtant ce qui te permet de jouer la carte.",
+        en: "Hercules: “Ancient Rivalry” only readied heroes. It now also readies the Thor ally, which is what lets you play the card in the first place.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "correction",
+        fr: "Lancer une partie pouvait échouer sans un mot quand ton deck était volumineux. Le bouton semblait mort, il ne l'est plus.",
+        en: "Starting a game could fail silently when your deck was large. The button looked dead; it no longer is.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "jeu",
+        fr: "Tu peux désormais choisir Standard I, II ou III au lieu d'un seul niveau. Les cartes de Standard II et III étaient dans le jeu depuis toujours sans que personne puisse les sélectionner.",
+        en: "You can now pick Standard I, II or III instead of a single level. The Standard II and III cards were always in the game, with no way to select them.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "jeu",
+        fr: "Les decks que tu importes depuis marvelcdb sont enregistrés sur le serveur. Ils te suivent d'un appareil à l'autre, et ne disparaissent plus avec le cache de ton navigateur.",
+        en: "Decks you import from marvelcdb are now saved on the server. They follow you from one device to another and no longer vanish with your browser cache.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "correction",
+        fr: "Quand ta table a été fermée, l'écran de préparation te le dit au lieu de tourner dans le vide.",
+        en: "When your table has been closed, the setup screen now says so instead of spinning for nothing.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "jeu",
+        fr: "Le site parle anglais de bout en bout : connexion, inscription, salon et choix de la langue.",
+        en: "The site now speaks English throughout: sign-in, sign-up, lobby and language choice.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "jeu",
+        fr: "Quand une mise à jour du jeu est arrivée, un bandeau te propose de recharger. Plus besoin d'y penser toi-même.",
+        en: "When a game update lands, a banner offers to reload. You no longer have to think about it yourself.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "coulisses",
+        fr: "L'écran de préparation interrogeait le serveur toutes les deux secondes, même quand rien ne bougeait. Il se tait quand ton onglet est caché, et le serveur respire.",
+        en: "The setup screen polled the server every two seconds, even when nothing was happening. It stays quiet when your tab is hidden, and the server breathes.",
+    },
+    {
+        date: "2026-09-16",
+        genre: "coulisses",
+        fr: "Une table sans personne se ferme au bout de trente minutes, pour laisser la place aux autres.",
+        en: "An empty table now closes after thirty minutes, to make room for others.",
+    },
+    {
         date: "2026-09-16",
         genre: "jeu",
         fr: "Dans le mode Legacy, une boîte s'ouvre maintenant dès que tu as battu tous ses méchants. Les héros ne bloquent plus rien : ta première victoire avec un héros officiel te rapporte un jeton, deux si elle est prise en expert.",

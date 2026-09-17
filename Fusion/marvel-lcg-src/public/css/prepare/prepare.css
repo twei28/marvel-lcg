@@ -1850,6 +1850,33 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .acc-nouv-genre.jeu{color:var(--affiche-jaune);border-color:var(--affiche-jaune)}
 .acc-nouv-genre.correction{color:#5bbf7a;border-color:#5bbf7a}
 .acc-nouv-texte{color:var(--dim);font-size:14px;line-height:1.45}
+/* La modale du journal (17/09/2026) : le bloc sous les tuiles est devenu une
+   tuile, parce qu'a 69 entrees il poussait les modes hors de l'ecran. */
+.nouveautes-modal .vh-panel{max-width:760px;width:min(760px,92vw)}
+.nouv-corps{
+  max-height:min(62vh,560px);overflow-y:auto;
+  display:flex;flex-direction:column;gap:22px;
+  padding-right:6px;
+}
+.nouv-famille-titre{
+  margin:0 0 10px;padding-bottom:6px;
+  border-bottom:1px solid var(--line);
+  color:var(--dim);font-size:11px;font-weight:900;
+  letter-spacing:.16em;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.nouv-famille-titre.heros{color:var(--agir)}
+.nouv-famille-titre.jeu{color:var(--affiche-jaune)}
+.nouv-famille-titre.correction{color:#5bbf7a}
+.nouv-compte{
+  margin-left:auto;padding:0 6px;
+  border:1px solid currentColor;border-radius:9px;
+  font-size:10px;font-variant-numeric:tabular-nums;
+}
+/* La tuile elle-meme : meme gabarit que les modes, sans les boutons de nombre
+   de heros. */
+.acc-nouv-tuile .acc-copy b{color:var(--affiche-jaune)}
+
 .acc-nouv-plus{margin-top:12px}
 .acc-nouv-plus>summary{
   display:inline-block;cursor:pointer;

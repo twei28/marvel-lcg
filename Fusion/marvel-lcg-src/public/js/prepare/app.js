@@ -5,7 +5,7 @@ import { REPLIQUES, choisirReplique, classeTaille } from "./repliques-heros.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=38b91fc2";
+import { launch } from "/public/js/prepare/launcher.js?v=88bbeb15";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
@@ -1486,6 +1486,26 @@ function accueilView() {
         ));
     }
 
+    // ⚠ LES NOUVEAUTES SONT UNE TUILE, PLUS UNE LISTE SOUS LA GRILLE
+    // (17/09/2026). Le journal a grossi au point de pousser les modes hors de
+    // l'ecran : « tout ne rentre pas sur une page a cause des mises a jour ».
+    // Une tuile de plus, au meme format que les modes, et tout le journal
+    // derriere, classe par famille.
+    grille.append(el("div", { class: "acc-tuile" },
+        el("button", {
+            class: "acc-mode cut acc-nouv-tuile",
+            onclick: () => ouvrirNouveautes(),
+            "aria-describedby": "acc-aide-nouveautes",
+        },
+            el("span", { class: "acc-copy" },
+                el("b", { class: "mvl" }, t("Mises à jour")),
+                el("small", {}, t("Ce qui a changé")),
+            ),
+        ),
+        el("span", { class: "acc-aide", id: "acc-aide-nouveautes", role: "tooltip" },
+           t("Tout ce qui a été ajouté ou corrigé, du plus récent au plus ancien.")),
+    ));
+
     return el("section", { class: "step accueil" },
         el("div", { class: "acc-titre" },
             el("div", { class: "recitatif" }, t("Préparation de mission")),
@@ -1493,21 +1513,17 @@ function accueilView() {
             el("p", {}, t("Comment veux-tu jouer ?")),
         ),
         grille,
-        blocNouveautes(),
     );
 }
 
-/* ---- Le bloc « Nouveautés » de l'accueil (8 septembre 2026) ---------------
-   Sous les tuiles de mode, les trois dernières lignes du journal, le reste
-   replié sous « Tout voir ». Le contenu vit dans `nouveautes.js`, écrit pour
-   les joueurs ; ici il n'y a que la mise en page.
+/* ---- Le journal des nouveautés (8 septembre 2026, refondu le 17/09) -------
+   ⚠ D'ABORD UNE LISTE SOUS LES TUILES, MAINTENANT UNE TUILE. Les trois
+   dernières lignes s'affichaient sur l'accueil, le reste sous « Tout voir » :
+   à 69 entrées, le bloc poussait les modes de jeu hors de l'écran. Signalé le
+   17/09 : « tout ne rentre pas sur une page à cause des mises à jour ».
 
-   ⚠ PAS D'ÉTAT NI DE RE-RENDU. Le dépliage passe par un `<details>` natif,
-   comme la biographie du roster : rien à retenir, rien à resynchroniser, et
-   le clavier l'ouvre tout seul. */
-
-/** Combien de lignes restent visibles sans rien déplier. */
-const NOUVEAUTES_EN_TETE = 3;
+   Le contenu vit dans `nouveautes.js`, écrit pour les joueurs ; ici il n'y a
+   que la mise en page. */
 
 /** « 8 sept. 2026 » / « 8 Sep 2026 », dans la langue de l'écran.
  *
@@ -1522,30 +1538,52 @@ function dateCourteNouveaute(iso) {
     return quand.toLocaleDateString(locale, { day: "numeric", month: "short", year: "numeric" });
 }
 
-function ligneNouveaute(entree) {
+/** Une ligne du journal.
+ *
+ *  `avecGenre` : l'etiquette de famille. Inutile dans la modale, ou chaque
+ *  section porte deja son titre — la repeter a chaque ligne ne dit rien de
+ *  plus et vole de la largeur au texte. */
+function ligneNouveaute(entree, avecGenre = true) {
     const anglais = langueActuelle() === "en";
     const genre = GENRES[entree.genre];
     return el("li", {},
         el("span", { class: "acc-nouv-date" }, dateCourteNouveaute(entree.date)),
-        el("span", { class: "acc-nouv-genre " + entree.genre },
-           anglais ? genre.en : genre.fr),
+        avecGenre ? el("span", { class: "acc-nouv-genre " + entree.genre },
+                       anglais ? genre.en : genre.fr) : null,
         el("span", { class: "acc-nouv-texte" }, anglais ? entree.en : entree.fr),
     );
 }
 
-function blocNouveautes() {
+/** Le journal complet, groupe par famille, dans une modale.
+ *
+ *  ⚠ L'ORDRE DES FAMILLES EST CELUI DE `GENRES`, pas celui des dates : le
+ *  joueur vient chercher « ce que je peux jouer » avant « ce qui a ete
+ *  repare ». Dans chaque famille, le plus recent d'abord. */
+function ouvrirNouveautes() {
     const toutes = nouveautesTriees();
-    if (!toutes.length) return null;
-    const enTete = toutes.slice(0, NOUVEAUTES_EN_TETE);
-    const reste = toutes.slice(NOUVEAUTES_EN_TETE);
-    return el("section", { class: "acc-nouv" },
-        el("h2", {}, t("Nouveautés")),
-        el("ul", { class: "acc-nouv-liste" }, enTete.map(ligneNouveaute)),
-        reste.length ? el("details", { class: "acc-nouv-plus" },
-            el("summary", {}, t("Tout voir")),
-            el("ul", { class: "acc-nouv-liste" }, reste.map(ligneNouveaute)),
-        ) : null,
+    const sections = [];
+    for (const [cle, genre] of Object.entries(GENRES)) {
+        const lot = toutes.filter((e) => e.genre === cle);
+        if (!lot.length) continue;
+        sections.push(el("section", { class: "nouv-famille" },
+            el("h3", { class: "nouv-famille-titre " + cle },
+               langueActuelle() === "en" ? genre.en : genre.fr,
+               el("span", { class: "nouv-compte" }, String(lot.length))),
+            el("ul", { class: "acc-nouv-liste" }, lot.map((e) => ligneNouveaute(e, false))),
+        ));
+    }
+    const overlay = el("div", { class: "deck-modal nouveautes-modal" },
+        el("div", { class: "deck-modal-panel vh-panel" },
+            el("div", { class: "dm-head" },
+                el("b", { class: "mvl" }, t("Mises à jour")),
+            ),
+            el("div", { class: "nouv-corps" }, ...sections),
+            el("div", { class: "vh-actions" },
+                el("button", { class: "tampon", onclick: () => fermerModale(overlay) }, t("Fermer")),
+            ),
+        ),
     );
+    ouvrirModale(overlay);
 }
 
 function playerCountRow() {
