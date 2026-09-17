@@ -30722,6 +30722,30 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["59037", "59002"]},
     },
+    {
+        "nom": "59026 Ancient Rivalry — redresse l'ALLIE Thor, pas seulement un heros",
+        "pourquoi": ("signale en jeu le 17/09/2026 : « ne redresse pas Thor quand il est sur "
+                     "le terrain avec Hercule ». Le script ne cherchait qu'un HEROS nomme "
+                     "Thor ; en solo il n'y en a pas, et l'allie 59020 restait incline — alors "
+                     "que c'est LUI qui rend la carte jouable (Team-Up : identite OU allie)"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        # ⚠ `under_control=True` : sans lui l'allie n'appartient pas au joueur,
+        # `GetOnFieldFriendlyCharacters` ne le voit pas, et le cas echoue pour
+        # une raison qui n'a rien a voir avec la carte. Modele : les cas
+        # al023 Little Rascals, meme famille Team-Up.
+        # ⚠ FORME HEROS : « Hero Action » n'existe pas en alter-ego, et la partie
+        # demarre en alter-ego. Sans cette bascule la carte n'est simplement pas
+        # jouable, et le cas « passe » sans avoir rien exerce.
+        "mise_en_place": ["Puzzle.ChangeToFace('59001b', '59001a')",
+                          "Puzzle.PutIntoPlay('59020', under_control=True)",
+                          "Puzzle.Exhaust('59020')"],
+        "main": ["01090"],
+        "declencher": [],
+        "jouer": ["59026"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["59020"], "defausse": ["59026"]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
