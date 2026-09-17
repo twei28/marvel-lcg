@@ -30723,6 +30723,21 @@ CAS = [
         "attendu": {"en_jeu": ["59037", "59002"]},
     },
     {
+        "nom": "62012 Iron Fist — en defense, il previent 2 degats (son ATK)",
+        "pourquoi": ("cas NOMINAL, pose le 17/09/2026 en corrigeant le budget de prevention : "
+                     "il protege ce qui marchait. ⚠ Le defaut signale, lui, n'est PAS couvert "
+                     "ici — voir la fiche : il demande une attaque a degats INDIRECTS, donc "
+                     "plusieurs paquets, que le harnais ne sait pas reproduire de facon "
+                     "deterministe (les boosts sont tires au hasard)"),
+        "scenario": "rhino",
+        "heros": "star_lord",
+        "mise_en_place": ["Puzzle.ChangeToFace('17001b', '17001a')",
+                          "Puzzle.PutIntoPlay('62012', under_control=True)"],
+        "declencher": ["Puzzle.Defend('62012', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
         "nom": "59026 Ancient Rivalry — redresse l'ALLIE Thor, pas seulement un heros",
         "pourquoi": ("signale en jeu le 17/09/2026 : « ne redresse pas Thor quand il est sur "
                      "le terrain avec Hercule ». Le script ne cherchait qu'un HEROS nomme "
