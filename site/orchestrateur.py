@@ -179,7 +179,8 @@ FENETRE_CONNEXION = int(os.environ.get("FENETRE_CONNEXION", "900"))
 
 sys.path.insert(0, os.path.join(RACINE_JEU, "tools"))
 import config_serveur
-import langue as lang  # noqa: E402  (dependant de sys.path ci-dessus)
+import langue as lang
+import narval as narval_du_moment  # noqa: E402  (dependant de sys.path ci-dessus)
 
 
 # --------------------------------------------------------------------------
@@ -2687,7 +2688,7 @@ def page_attente(pseudo: str) -> bytes:
         tete = ('<noscript><meta http-equiv="refresh" content="3;url=/entrer"></noscript>')
         sous = lang.t("Un instant.")
         corps = ('<div class="attente">'
-                 '<img class="attente-logo" src="/narwhal.png" alt="" width="512" height="512">'
+                 '<img class="attente-logo" src="/narwhal.png?h=%d" alt="" width="512" height="512">'
                  '<strong>%s</strong>'
                  '<p class="mdp">%s</p>'
                  '<div class="attente-barre"><i></i></div>'
@@ -2707,7 +2708,8 @@ def page_attente(pseudo: str) -> bytes:
                  ' setTimeout(voir, 1200);'
                  '})();'
                  '</script>'
-                 % (lang.t("Ton jeu demarre"),
+                 % (narval_du_moment.tranche(),
+                    lang.t("Ton jeu demarre"),
                     lang.t("Le premier allumage prend une minute ou deux. "
                            "Cette page bascule toute seule des que c'est pret."),
                     lang.t("Tu peux laisser cet onglet ouvert.")))
@@ -3514,6 +3516,11 @@ TETE_APPLI = ('<link rel="manifest" href="/manifest.webmanifest">'
               # L'onglet prend le narval DETOURE (fond transparent) ; l'icone
               # d'accueil, elle, est pleine, bord a bord, comme les stores le
               # demandent.
+              # ⚠ PAS DE CLE `?h=` ICI. Cette en-tete est substituee dans les
+              # gabarits AU DEMARRAGE : une tranche horaire calculee a cet
+              # endroit resterait celle du lancement du serveur (meme piege que
+              # les constantes de langue, 16/09). La fraicheur est donnee par
+              # l'en-tete HTTP de la route, qui fait revalider l'icone.
               '<link rel="icon" type="image/png" href="/favicon.png">'
               '<link rel="apple-touch-icon" href="/app-192.png">'
               '<meta name="apple-mobile-web-app-capable" content="yes">'
@@ -3605,17 +3612,31 @@ PAGE_ADMIN = _avec_heure_locale(PAGE_ADMIN, "PAGE_ADMIN")
 
 
 def _icone_appli(nom: str) -> bytes | None:
-    # ⚠ `narwhal.png` EST UNE QUATRIEME IMAGE, ET PAS UNE ICONE D'APPLI. Le
-    # narval detoure (fond transparent) sert la page d'attente ; les trois
-    # autres gardent leur fond opaque, qu'un ecran d'accueil de telephone
-    # attend (une icone PWA transparente s'affiche sur du blanc chez certains).
-    if nom not in ("app-192.png", "app-512.png", "favicon.png", "narwhal.png"):
+    # ⚠ DEUX FAMILLES D'IMAGES, ET ELLES NE SUIVENT PAS LA MEME REGLE.
+    #
+    # `favicon.png` et `narwhal.png` sont la MASCOTTE : elles changent toutes
+    # les trois heures (narval.py), dans l'onglet comme sur les pages.
+    #
+    # `app-192.png` et `app-512.png` sont les icones de l'APPLI installee : on
+    # n'y touche pas. Elles gardent leur fond opaque, qu'un ecran d'accueil de
+    # telephone attend, et une icone qui changerait toute seule sur le bureau
+    # de quelqu'un n'est pas une bonne surprise.
+    if nom in ("favicon.png", "narwhal.png"):
+        nom = narval_du_moment.fichier()
+    elif nom not in ("app-192.png", "app-512.png"):
         return None
     try:
         with open(os.path.join(RACINE_SITE, "static", nom), "rb") as f:
             return f.read()
     except OSError:
-        return None
+        # Une mascotte absente ne doit pas rendre le site sans icone : on
+        # retombe sur la premiere de la liste.
+        try:
+            secours = "narwhal-%s.png" % narval_du_moment.NARVALS[0]
+            with open(os.path.join(RACINE_SITE, "static", secours), "rb") as f:
+                return f.read()
+        except OSError:
+            return None
 
 
 def _icone_suivi(nom: str) -> bytes | None:
@@ -4310,7 +4331,19 @@ class Handler(BaseHTTPRequestHandler):
             if image is None:
                 self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
                 return
-            self._repondre(200, image, "image/png")
+            # ⚠ LA MASCOTTE CHANGE TOUTES LES TROIS HEURES, PAS L'ICONE DE
+            # L'APPLI. On donne donc un cache COURT aux deux images qui
+            # tournent : sans lui le navigateur garde l'ancien narval pendant
+            # des heures, et le changement ne se verrait jamais. Dix minutes de
+            # retard au pire, sur une rotation de trois heures.
+            tourne = self.chemin in ("/favicon.png", "/favicon.ico", "/narwhal.png")
+            self.send_response(200)
+            self.send_header("Content-Type", "image/png")
+            self.send_header("Cache-Control",
+                             "public, max-age=600" if tourne else "public, max-age=86400")
+            self.send_header("Content-Length", str(len(image)))
+            self.end_headers()
+            self.wfile.write(image)
         elif self.chemin == "/suivi.webmanifest":
             # Public : le manifeste ne contient que des libelles, et le
             # navigateur le demande SANS cookie.

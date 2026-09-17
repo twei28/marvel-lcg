@@ -28,6 +28,7 @@ import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { sauverDeck, decksSauvegardesPourHeros } from "/public/js/prepare/decks-serveur.js";
 import { NIVEAUX_STANDARD, libelleNiveau, niveauDuScenario } from "/public/js/prepare/niveau-standard.js";
+import { urlNarval } from "/public/js/prepare/narval.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
 import { GENRES, nouveautesTriees } from "/public/js/prepare/nouveautes.js";
@@ -719,7 +720,7 @@ function progressBar() {
                 // dossiers d'images puis assets/textures. « /narwhal.png »
                 // repondait 404 ; « /narwhal » trouve assets/textures/narwhal.png,
                 // exactement comme « /01001a » trouve un scan de carte.
-                el("img", { class: "brand-narwhal", src: "/narwhal", alt: "NarwhalChampions" }),
+                el("img", { class: "brand-narwhal", src: urlNarval(), alt: "NarwhalChampions" }),
                 el("img", { class: "brand-logo", src: "/mvc_logo.svg", alt: "Marvel Champions" }),
             ),
         ),
@@ -1511,7 +1512,7 @@ function accueilView() {
             // Le narval, mascotte du site. ⚠ SANS EXTENSION : le moteur sert
             // les images par leur NOM (server_files.py). Voir le meme usage
             // dans l'en-tete des etapes, plus haut.
-            el("img", { class: "acc-narwhal", src: "/narwhal", alt: "NarwhalChampions" }),
+            el("img", { class: "acc-narwhal", src: urlNarval(), alt: "NarwhalChampions" }),
             el("div", { class: "acc-titre" },
                 el("div", { class: "recitatif" }, t("Préparation de mission")),
                 el("h1", { class: "affiche" }, "Marvel", el("br"), "Champions"),

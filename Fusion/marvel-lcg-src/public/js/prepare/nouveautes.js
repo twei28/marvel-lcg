@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-09-17",
         genre: "jeu",
+        fr: "Le narval change de costume toutes les trois heures : Captain America, Magneto, Cyclope, Wolverine, Thor. Dans l'onglet comme sur les pages.",
+        en: "The narwhal changes costume every three hours: Captain America, Magneto, Cyclops, Wolverine, Thor. In the tab as well as on the pages.",
+    },
+    {
+        date: "2026-09-17",
+        genre: "jeu",
         fr: "L'accueil porte le narval, et le journal des mises à jour est passé dans sa propre tuile, classé par famille. La page d'attente pendant l'allumage ne clignote plus.",
         en: "The home screen now shows the narwhal, and the update log moved into its own tile, sorted by family. The waiting screen no longer flickers while your game starts.",
     },
