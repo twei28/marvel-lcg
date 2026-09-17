@@ -1666,7 +1666,22 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 /* Sans en-tête, la rangée d'outils flotte en haut à droite : même habillage que dans la barre. */
 .reprise-boutons.est-flottante{top:14px!important;right:16px!important;gap:8px}
 .accueil{width:min(1080px,100%)}
-.acc-titre{margin-bottom:28px}
+/* Le narval a gauche du titre (17/09/2026, demande de l'utilisateur) : la
+   place etait vide, et la mascotte du site n'apparaissait que dans l'en-tete
+   des etapes, jamais sur l'accueil. */
+.acc-entete{display:flex;align-items:center;gap:26px;margin-bottom:28px}
+.acc-narwhal{
+  flex:none;width:clamp(150px,18vw,280px);height:auto;
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,.55));
+}
+.acc-titre{margin-bottom:0}
+@media(max-width:820px){
+  /* Sous 820px le titre passe a la ligne : le narval irait pousser « Marvel
+     Champions » hors de l'ecran. On l'empile au-dessus, plus petit. */
+  .acc-entete{flex-direction:column;align-items:flex-start;gap:14px}
+  .acc-narwhal{width:120px}
+}
+.acc-titre-seul{margin-bottom:28px}
 .acc-titre .recitatif{margin-bottom:16px}
 .acc-titre h1.affiche{font-size:var(--titre-accueil,120px)}
 .acc-titre p{margin-top:12px;color:var(--dim);font-size:16px}

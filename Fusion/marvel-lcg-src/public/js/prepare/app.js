@@ -1507,10 +1507,16 @@ function accueilView() {
     ));
 
     return el("section", { class: "step accueil" },
-        el("div", { class: "acc-titre" },
-            el("div", { class: "recitatif" }, t("Préparation de mission")),
-            el("h1", { class: "affiche" }, "Marvel", el("br"), "Champions"),
-            el("p", {}, t("Comment veux-tu jouer ?")),
+        el("div", { class: "acc-entete" },
+            // Le narval, mascotte du site. ⚠ SANS EXTENSION : le moteur sert
+            // les images par leur NOM (server_files.py). Voir le meme usage
+            // dans l'en-tete des etapes, plus haut.
+            el("img", { class: "acc-narwhal", src: "/narwhal", alt: "NarwhalChampions" }),
+            el("div", { class: "acc-titre" },
+                el("div", { class: "recitatif" }, t("Préparation de mission")),
+                el("h1", { class: "affiche" }, "Marvel", el("br"), "Champions"),
+                el("p", {}, t("Comment veux-tu jouer ?")),
+            ),
         ),
         grille,
     );
