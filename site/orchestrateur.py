@@ -2447,6 +2447,27 @@ PAGE = """<!doctype html>
   .apres button:hover {{ background:#1c232c; color:#e6edf3; }}
   .apres button[disabled] {{ border-color:#1f6feb; color:#58a6ff; cursor:default; }}
   a.retour {{ color:#58a6ff; font-size:.9rem; }}
+  /* L'ATTENTE (17/09/2026). Elle etait une boite de texte grise que le
+     navigateur rechargeait toutes les trois secondes : « c'est vraiment
+     moche ». Le narval, une barre qui avance, et plus aucun clignotement. */
+  .attente {{ display:grid; justify-items:center; gap:.9rem; text-align:center;
+             padding:2.5rem 1rem 2rem; }}
+  .attente strong {{ font-size:1.25rem; }}
+  .attente .mdp {{ max-width:26rem; }}
+  .attente-logo {{ width:min(190px,45vw); height:auto;
+                  filter:drop-shadow(0 10px 26px rgba(0,0,0,.6));
+                  animation:respire 2.6s ease-in-out infinite; }}
+  @keyframes respire {{ 0%,100% {{ transform:scale(1); }} 50% {{ transform:scale(1.045); }} }}
+  .attente-barre {{ width:min(260px,70vw); height:3px; border-radius:3px;
+                   background:#21262d; overflow:hidden; }}
+  .attente-barre i {{ display:block; width:40%; height:100%; background:#1f6feb;
+                     animation:glisse 1.5s ease-in-out infinite; }}
+  @keyframes glisse {{ 0% {{ transform:translateX(-100%); }}
+                      100% {{ transform:translateX(250%); }} }}
+  .attente-note {{ font-size:.85rem; opacity:.75; }}
+  @media (prefers-reduced-motion:reduce) {{
+    .attente-logo, .attente-barre i {{ animation:none; }}
+  }}
   .barre {{ display:flex; justify-content:space-between; align-items:center;
            gap:1rem; margin-bottom:1.5rem; color:#9aa7b4; font-size:.9rem; }}
   .barre a {{ color:#58a6ff; }}
@@ -2657,14 +2678,39 @@ def page_attente(pseudo: str) -> bytes:
                  % (lang.t("Ton jeu n'a pas demarre"), html.escape(erreur),
                     lang.t("Reessayer")))
     else:
-        tete = '<meta http-equiv="refresh" content="3;url=/entrer">'
+        # ⚠ PLUS DE `meta refresh` COMME MOTEUR DE L'ATTENTE (17/09/2026).
+        # Il rechargeait la page ENTIERE toutes les trois secondes : l'ecran
+        # clignotait, et c'est ce que l'utilisateur a appele « vraiment moche ».
+        # On interroge `/pret`, qui ne fait que REGARDER (il ne relance rien),
+        # et on bascule quand le moteur repond. Le `noscript` garde l'ancien
+        # comportement pour un navigateur sans JavaScript.
+        tete = ('<noscript><meta http-equiv="refresh" content="3;url=/entrer"></noscript>')
         sous = lang.t("Un instant.")
-        corps = ('<div class="table">'
-                 '<div class="entete"><strong>%s</strong></div>'
-                 '<p class="mdp">%s</p></div>'
+        corps = ('<div class="attente">'
+                 '<img class="attente-logo" src="/narwhal.png" alt="" width="512" height="512">'
+                 '<strong>%s</strong>'
+                 '<p class="mdp">%s</p>'
+                 '<div class="attente-barre"><i></i></div>'
+                 '<p class="attente-note mdp">%s</p>'
+                 '</div>'
+                 '<script>'
+                 '(function(){'
+                 ' var essais=0;'
+                 ' function voir(){'
+                 '  essais++;'
+                 '  fetch("/pret",{cache:"no-store"}).then(function(r){return r.json()})'
+                 '   .then(function(e){ if(e&&e.pret){location.replace("/entrer");return;}'
+                 '     if(e&&e.erreur){location.replace("/entrer");return;}'
+                 '     setTimeout(voir, essais<10?1500:4000); })'
+                 '   .catch(function(){ setTimeout(voir, 4000); });'
+                 ' }'
+                 ' setTimeout(voir, 1200);'
+                 '})();'
+                 '</script>'
                  % (lang.t("Ton jeu demarre"),
                     lang.t("Le premier allumage prend une minute ou deux. "
-                           "Cette page bascule toute seule des que c'est pret.")))
+                           "Cette page bascule toute seule des que c'est pret."),
+                    lang.t("Tu peux laisser cet onglet ouvert.")))
     return PAGE.format(tete=tete, sous=sous, barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
@@ -3559,7 +3605,11 @@ PAGE_ADMIN = _avec_heure_locale(PAGE_ADMIN, "PAGE_ADMIN")
 
 
 def _icone_appli(nom: str) -> bytes | None:
-    if nom not in ("app-192.png", "app-512.png", "favicon.png"):
+    # ⚠ `narwhal.png` EST UNE QUATRIEME IMAGE, ET PAS UNE ICONE D'APPLI. Le
+    # narval detoure (fond transparent) sert la page d'attente ; les trois
+    # autres gardent leur fond opaque, qu'un ecran d'accueil de telephone
+    # attend (une icone PWA transparente s'affiche sur du blanc chez certains).
+    if nom not in ("app-192.png", "app-512.png", "favicon.png", "narwhal.png"):
         return None
     try:
         with open(os.path.join(RACINE_SITE, "static", nom), "rb") as f:
@@ -4102,6 +4152,22 @@ class Handler(BaseHTTPRequestHandler):
                 return
             demarrer_en_fond(pseudo)
             self._repondre(200, page_attente(pseudo))
+        elif self.chemin == "/pret":
+            # ⚠ CETTE ROUTE NE DEMARRE RIEN, et c'est tout son interet. La page
+            # d'attente l'interroge toutes les 1,5 s : si elle appelait
+            # `demarrer_en_fond`, elle relancerait un allumage a chaque tour et
+            # effacerait l'erreur du precedent (le defaut du 16/09). Elle se
+            # contente de dire ou en est le moteur.
+            if not pseudo:
+                self._repondre(200, b'{"pret":false,"erreur":"deconnecte"}',
+                               "application/json; charset=utf-8")
+                return
+            partie = jeu_de(pseudo)
+            pret = bool(partie and partie.vivant() and _moteur_repond(partie.port))
+            self._repondre(200, json.dumps({
+                "pret": pret,
+                "erreur": ERREURS_DEMARRAGE.get(pseudo, ""),
+            }).encode("utf-8"), "application/json; charset=utf-8")
         elif self.chemin == "/arret":
             if not pseudo:
                 self._rediriger("/")
@@ -4236,7 +4302,8 @@ class Handler(BaseHTTPRequestHandler):
             # ⚠ SANS CACHE HTTP non plus : un worker mis en cache par le
             # navigateur survivrait a sa propre mise a jour.
             self._repondre(200, SERVICE_WORKER, "application/javascript; charset=utf-8")
-        elif self.chemin in ("/app-192.png", "/app-512.png", "/favicon.png", "/favicon.ico"):
+        elif self.chemin in ("/app-192.png", "/app-512.png", "/favicon.png",
+                             "/favicon.ico", "/narwhal.png"):
             # /favicon.ico : les navigateurs le demandent d'office, on leur
             # rend le meme narval plutot qu'un 404 a chaque page.
             image = _icone_appli("favicon.png" if self.chemin == "/favicon.ico" else self.chemin[1:])

@@ -46,6 +46,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-17",
+        genre: "jeu",
+        fr: "L'accueil porte le narval, et le journal des mises à jour est passé dans sa propre tuile, classé par famille. La page d'attente pendant l'allumage ne clignote plus.",
+        en: "The home screen now shows the narwhal, and the update log moved into its own tile, sorted by family. The waiting screen no longer flickers while your game starts.",
+    },
+    {
+        date: "2026-09-17",
         genre: "correction",
         fr: "Hercule : « Defeat the Hydra » ne cherchait un sbire que dans le deck de rencontre et sa défausse, jamais dans les cartes mises de côté. Elle y trouve enfin l'Hydre de Lerne, au lieu de partir sans rien faire.",
         en: "Hercules: “Defeat the Hydra” only looked for a minion in the encounter deck and its discard pile, never among the set-aside cards. It now finds the Lernean Hydra instead of doing nothing.",

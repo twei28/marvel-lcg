@@ -206,6 +206,9 @@ DICO_EN: dict[str, str] = {
     # au-dessus d'un champ « Mot de passe ». Vu en production le 16/09/2026.
     "Mot de passe": "Password",
 
+    # --- L'ecran d'attente pendant que la table s'allume -------------------
+    "Tu peux laisser cet onglet ouvert.": "You can leave this tab open.",
+
     # --- Le nouveau mot de passe, depuis un lien de reinitialisation --------
     "Nouveau mot de passe": "New password",
     "Enregistrer": "Save",
