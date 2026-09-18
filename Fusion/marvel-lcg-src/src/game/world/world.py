@@ -785,7 +785,11 @@ class World(WorldAction, WorldFind):
             )
             if self.is_game_over:
                 break
+            # On note AVANT de vider : `DrainSandboxCommands` consomme la liste.
+            en_attente = list(device_manager.sandbox_commands)
             if device_manager.DrainSandboxCommands():
+                if not device_manager.sandbox_last_error:
+                    self.scene.manuel_commands += en_attente
                 # Un rendu FORCE : rien d'autre ne redessinera, puisque plus
                 # aucune question ne part et que le rendu normal suit les
                 # questions.

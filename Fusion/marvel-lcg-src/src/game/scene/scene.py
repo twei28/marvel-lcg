@@ -51,6 +51,15 @@ class Scene:
 
     puzzle: List[str] = field(default_factory=lambda: [])
 
+    # LES GESTES DU MODE MANUEL (spec du 18/09/2026), dans l'ordre ou le joueur
+    # les a faits. Rejoues a la mise en place, comme `puzzle` l'est pour une
+    # partie Puzzle.
+    #
+    # ⚠ CHAMP SEPARE de `puzzle`, et c'est deliberé : les deux usages ne
+    # doivent pas se melanger, et un champ a defaut vide laisse les
+    # sauvegardes existantes se recharger sans changer de sens.
+    manuel_commands: List[str] = field(default_factory=lambda: [])
+
     inputs: List[OperationDescriptor] = field(default_factory=lambda: [])
 
     def GetSaveFileName(self, use_comment: bool=True) -> str:

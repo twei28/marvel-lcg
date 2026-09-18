@@ -25,7 +25,8 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLAFOND_QUESTIONS = 120
 
 
-def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man"):
+def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man",
+                     sauvegarde=None):
     """Demarre une partie et rend (jeu, monde, journal_des_questions).
 
     ⚠ Contrairement au harnais de la manigance, celui-ci enchaine sur
@@ -110,11 +111,16 @@ def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man
     Engine.Initialize()
     from game.scene.loader import SceneLoader
 
-    with open(_chemin_json("Campaign", scenario)) as f:
-        campagne = f.read()
-    with open(_chemin_json("Hero", heros)) as f:
-        hero = f.read()
-    scene = SceneLoader.NewFromJson(campagne, None, [hero], 42, regles, {})
+    if sauvegarde:
+        # Une partie RECHARGEE : la scene porte deja ses regles et ses gestes.
+        scene = SceneLoader.Load(sauvegarde)
+        assert scene, f"sauvegarde illisible : {sauvegarde}"
+    else:
+        with open(_chemin_json("Campaign", scenario)) as f:
+            campagne = f.read()
+        with open(_chemin_json("Hero", heros)) as f:
+            hero = f.read()
+        scene = SceneLoader.NewFromJson(campagne, None, [hero], 42, regles, {})
 
     jeu = Engine.game
     jeu.session.SetScene(scene, "Load")
@@ -494,6 +500,66 @@ def cas_dessous_sans_ordre(game_dir, port):
     return "position='Bottom' sur une pile sans ordre depose quand meme la carte dedans"
 
 
+def cas_geste_enregistre(game_dir, port):
+    """Un geste accepte entre dans la scene, donc dans la sauvegarde."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    vilain = id_du_vilain(monde)
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
+    gestes = jeu.session.scene.manuel_commands
+    assert gestes == [f"Puzzle.Damage({vilain}, 3)"], \
+        f"la scene n'a pas retenu le geste : {gestes}"
+    return "le geste est enregistre dans la scene"
+
+
+def cas_aller_retour(game_dir, port):
+    """Geste, sauvegarde, rechargement : l'etat est identique.
+
+    C'est LE cas qui leve le dernier doute du cadrage, celui sur la
+    reproductibilite des identifiants d'objets : le rejeu vise la carte par son
+    identifiant, et doit retomber sur la meme.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    vilain = id_du_vilain(monde)
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
+
+    # Nom NU, pas un chemin absolu (ecart au brief, constate le 18/09/2026) :
+    # `SceneLoader.Load` resout par `FileManager.FindJsonPath('Replay', ...)`,
+    # qui formate mal un chemin absolu SANS lettre de lecteur (FormatPath lui
+    # colle un './' devant, ce qui sous WSL transforme '/mnt/c/...' en chemin
+    # RELATIF invalide - une carte de reference n'existe que sous Windows,
+    # ou `IsDrivePath` court-circuite ce meme code avant d'y arriver). On
+    # ecrit et on relit un nom nu depuis la racine du dossier de jeu, la ou
+    # `monter_le_moteur` a deja fait chdir dans les deux process (parent et
+    # fils) : aucun besoin d'un chemin absolu.
+    nom = "manuel-aller-retour.json"
+    ecrit = jeu.session.SaveScene(name=nom, delete_old=False)
+    assert ecrit, "la sauvegarde n'a pas ete ecrite"
+
+    env = dict(os.environ)
+    env["MC_SAUVEGARDE"] = nom
+    env["MC_VILAIN"] = str(vilain)
+    fils = subprocess.run(
+        [sys.executable, os.path.abspath(__file__), game_dir,
+         str(port + 1), "relire_sauvegarde", "--fils"],
+        cwd=RACINE, capture_output=True, text=True, timeout=300, env=env)
+    assert fils.returncode == 0, \
+        f"le rechargement a echoue :\n{fils.stdout[-3000:]}\n{fils.stderr[-3000:]}"
+    return "aller-retour de sauvegarde : l'etat est identique"
+
+
+def cas_relire_sauvegarde(game_dir, port):
+    """Le fils de `cas_aller_retour` : il recharge et verifie les degats."""
+    chemin = os.environ["MC_SAUVEGARDE"]
+    vilain = int(os.environ["MC_VILAIN"])
+    _, monde, _ = monter_le_moteur(game_dir, port, [], sauvegarde=chemin)
+    assert bool(monde.rule.mode_manuel) is True, \
+        "la sauvegarde a perdu la regle mode_manuel"
+    carte = monde.object_manager.card_dict[vilain]
+    assert carte.face.GetLostHealth() == 3, \
+        f"apres rechargement : degats={carte.face.GetLostHealth()}, attendu 3"
+    return "la partie rechargee porte bien le geste"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "moteur_muet": cas_moteur_muet,
@@ -507,6 +573,9 @@ CAS = {
     "melange": cas_melange,
     "ecart": cas_ecart,
     "dessous_sans_ordre": cas_dessous_sans_ordre,
+    "geste_enregistre": cas_geste_enregistre,
+    "aller_retour": cas_aller_retour,
+    "relire_sauvegarde": cas_relire_sauvegarde,
 }
 
 
@@ -514,7 +583,9 @@ def main():
     game_dir = sys.argv[1]
     port = int(sys.argv[2])
     voulu = sys.argv[3] if len(sys.argv) > 3 else None
-    noms = [voulu] if voulu else list(CAS)
+    # Les cas appeles par un AUTRE cas, jamais tout seuls.
+    SUR_DEMANDE = {"relire_sauvegarde"}
+    noms = [voulu] if voulu else [n for n in CAS if n not in SUR_DEMANDE]
     for rang, nom in enumerate(noms):
         fils = subprocess.run(
             [sys.executable, os.path.abspath(__file__), game_dir,

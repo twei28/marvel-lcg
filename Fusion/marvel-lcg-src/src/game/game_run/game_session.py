@@ -131,6 +131,16 @@ class GameSession:
         if self.world.scene.is_puzzle:
             from game.puzzle import PuzzleHelper
             PuzzleHelper.Exec(self.world.scene.puzzle, self.world)
+
+        if self.world.rule.mode_manuel:
+            # Le silence commence ICI, avant le rejeu : les gestes ont ete
+            # appliques porte fermee, ils doivent se rejouer porte fermee,
+            # sinon l'etat rechargé diverge de l'etat sauvegarde.
+            self.world.manuel_actif = True
+            if self.world.scene.manuel_commands:
+                from game.puzzle import PuzzleHelper
+                PuzzleHelper.Exec(self.world.scene.manuel_commands, self.world)
+
         return not self.world.is_game_over
 
     ################################################################################
