@@ -757,7 +757,7 @@ class World(WorldAction, WorldFind):
         filtrer.
 
         ⚠ L'attente passe par `notify.input`, la MEME condition que
-        `QueueSandboxCommands` reveille (engine/device/manager/base.py:53). Une
+        `QueueSandboxCommands` reveille (engine/device/manager/base.py:55). Une
         attente sur autre chose ne serait jamais reveillee par une commande.
         """
         device_manager = self.controller_manager.device_manager
@@ -765,6 +765,18 @@ class World(WorldAction, WorldFind):
         self.manuel_actif = True
 
         while not self.is_game_over:
+            # `should_exit_wait` est un signal PONCTUEL, pas un etat : une
+            # console de debug, un skip, un rejeu ou l'arret du moteur
+            # peuvent l'armer par `DeviceManager.ExitWait()` sans jamais
+            # passer par `world.game_over.SetExit()` (qui, lui, met
+            # `is_game_over` a vrai independamment). Sans ce
+            # `RefreshExitWait()`, une fois arme il resterait vrai pour
+            # toujours : rien ici ne le remet a faux comme le fait
+            # `AfterSync()` sur le chemin normal, et le predicat reveillerait
+            # la boucle en continu sans jamais rien traiter ni sortir.
+            # `DoGetInput` fait exactement ce meme appel en tete d'attente
+            # (engine/device/manager/base.py:123).
+            device_manager.notify.RefreshExitWait()
             device_manager.notify.input.Wait(
                 lambda: bool(device_manager.sandbox_commands)
                         or device_manager.notify.should_exit_wait

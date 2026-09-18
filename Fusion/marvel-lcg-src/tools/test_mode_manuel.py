@@ -231,6 +231,9 @@ def cas_commande_executee(game_dir, port):
     fil du jeu dort dans la boucle manuelle, pas dans une attente de reponse.
     """
     jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    assert monde.manuel_actif is True, "la boucle manuelle n'a pas demarre"
+    assert monde.round_id == 0, \
+        f"le moteur a demarre un tour tout seul : round_id={monde.round_id}"
     vilain = id_du_vilain(monde)
     deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
     carte = monde.object_manager.card_dict[vilain]
