@@ -116,6 +116,12 @@ class World(WorldAction, WorldFind):
         self.controller_manager = controllers[0].manager
         self.cheat = CheatCommand(self)
 
+        # Mode manuel : vrai UNIQUEMENT une fois la mise en place finie, quand
+        # la boucle manuelle a pris la main. Surtout pas `rule.mode_manuel` :
+        # la mise en place, elle, a besoin que tout fonctionne, questions et
+        # capacites comprises.
+        self.manuel_actif: bool = False
+
         from game.operate.campaign_logs import CampaignLog
         for name in scene.campaign.campaign_log:
             value = scene.campaign.campaign_log[name]
@@ -743,6 +749,36 @@ class World(WorldAction, WorldFind):
                 return
         return
 
+    def ManualLoop(self) -> None:
+        """Le moteur ne conduit plus : il attend, il execute, il redessine.
+
+        Trois choses en rond, et rien d'autre. Aucune question n'est posee,
+        donc `asking_players` reste vide et le plateau n'a rien a afficher ni a
+        filtrer.
+
+        ⚠ L'attente passe par `notify.input`, la MEME condition que
+        `QueueSandboxCommands` reveille (engine/device/manager/base.py:53). Une
+        attente sur autre chose ne serait jamais reveillee par une commande.
+        """
+        device_manager = self.controller_manager.device_manager
+
+        self.manuel_actif = True
+
+        while not self.is_game_over:
+            device_manager.notify.input.Wait(
+                lambda: bool(device_manager.sandbox_commands)
+                        or device_manager.notify.should_exit_wait
+                        or self.is_game_over,
+                None,
+            )
+            if self.is_game_over:
+                break
+            if device_manager.DrainSandboxCommands():
+                # Un rendu FORCE : rien d'autre ne redessinera, puisque plus
+                # aucune question ne part et que le rendu normal suit les
+                # questions.
+                self.render.PresentForceNoWait()
+
     def OnGameLoop(self) -> None:
         from game.message import Message
         from game.effect.rule import GameRule
@@ -866,6 +902,11 @@ class World(WorldAction, WorldFind):
 
             end_round()
 
+
+        # Mode manuel : on n'entre JAMAIS dans le deroule des tours. C'est le
+        # seul endroit qui conduit une partie, donc le seul a neutraliser.
+        if self.rule.mode_manuel:
+            return self.ManualLoop()
 
         while not self.is_game_over:
             game_round()

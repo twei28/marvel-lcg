@@ -185,8 +185,65 @@ def cas_drapeau_pose(game_dir, port):
     return "le drapeau mode_manuel est pose et publie"
 
 
+def cas_moteur_muet(game_dir, port):
+    """Apres la mise en place, plus rien ne bouge tout seul.
+
+    Le temoin qui compte est le REFUS d'avancer : on regarde que le journal des
+    questions ne grossit plus, et que le compteur de tours reste a zero. Un
+    moteur qui conduit encore ferait les deux.
+    """
+    _, monde, journal = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    assert monde.manuel_actif is True, "la boucle manuelle n'a pas demarre"
+    avant = len(journal)
+    time.sleep(8)
+    assert len(journal) == avant, \
+        f"le moteur a repose {len(journal) - avant} question(s) apres la mise en place"
+    assert monde.round_id == 0, \
+        f"le moteur a demarre un tour tout seul : round_id={monde.round_id}"
+    return "le moteur se tait apres la mise en place"
+
+
+def cas_automatique_avance(game_dir, port):
+    """Le controle : SANS la regle, le moteur conduit toujours.
+
+    Sans ce cas, `cas_moteur_muet` passerait aussi sur un moteur casse qui ne
+    demarre pas du tout.
+
+    ⚠ Pas de fenetre de croissance ici (constate le 18/09/2026) : au-dela de
+    `PLAFOND_QUESTIONS`, `pilote` cesse de repondre et le journal peut ne plus
+    grossir dans une partie parfaitement normale. Le temoin est plutot « le
+    moteur a conduit » : au moins un tour entame, et au moins une question
+    posee.
+    """
+    _, monde, journal = monter_le_moteur(game_dir, port, [])
+    assert getattr(monde, "manuel_actif", False) is False
+    assert monde.round_id >= 1, \
+        f"le moteur automatique n'a pas demarre de tour : round_id={monde.round_id}"
+    assert len(journal) > 0, \
+        "le moteur automatique n'a pose aucune question : le harnais est casse"
+    return "sans la regle, le moteur conduit toujours"
+
+
+def cas_commande_executee(game_dir, port):
+    """La boucle manuelle execute bien ce qu'on lui depose.
+
+    C'est la preuve que `PuzzleHelper.Exec` tourne hors de `DoGetInput` : le
+    fil du jeu dort dans la boucle manuelle, pas dans une attente de reponse.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    vilain = id_du_vilain(monde)
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
+    carte = monde.object_manager.card_dict[vilain]
+    assert carte.face.GetLostHealth() == 3, \
+        f"la commande n'a pas ete executee : degats={carte.face.GetLostHealth()}"
+    return "la boucle manuelle execute les commandes deposees"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
+    "moteur_muet": cas_moteur_muet,
+    "automatique_avance": cas_automatique_avance,
+    "commande_executee": cas_commande_executee,
 }
 
 
