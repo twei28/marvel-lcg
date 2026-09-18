@@ -139,7 +139,24 @@ class GameSession:
             self.world.manuel_actif = True
             if self.world.scene.manuel_commands:
                 from game.puzzle import PuzzleHelper
-                PuzzleHelper.Exec(self.world.scene.manuel_commands, self.world)
+                # CORRECTIF (revue finale du 18/09/2026, constat 4) : chaque
+                # geste est rejoue INDIVIDUELLEMENT, sous try/except. Le
+                # rejeu EN DIRECT (dans `World.ManualLoop`, via
+                # `DeviceManager.DrainSandboxCommands`) est deja protege ;
+                # celui-ci, a la mise en place, ne l'etait pas. Un geste qui
+                # levait au RECHARGEMENT (une carte corrigee entre-temps, par
+                # exemple) faisait remonter l'exception hors de `GameSetup` :
+                # la sauvegarde devenait inouvrable, et l'annulation - qui
+                # passe par ce meme chemin - inutilisable avec elle. Une
+                # table legerement fausse se corrige a la main ; une
+                # sauvegarde inouvrable ne se corrige pas du tout.
+                for geste in self.world.scene.manuel_commands:
+                    try:
+                        PuzzleHelper.Exec([geste], self.world)
+                    except Exception as exc:
+                        Log.Warn(CATEGORY_NAME,
+                                 f"rejeu du geste manuel echoue, ignore : {geste!r} "
+                                 f"({type(exc).__name__}: {exc})")
 
         return not self.world.is_game_over
 
@@ -244,7 +261,27 @@ class GameSession:
         if scene is None or not scene.manuel_commands:
             return False
         scene.manuel_commands.pop()
-        self.LoadScene(scene, None, "Load")
+        # CORRECTIF (revue finale du 18/09/2026, constat 1) : sans cet appel,
+        # `scene.inputs` reste tel quel (vide, sur une partie jamais
+        # sauvegardee) et `LoadScene` -> `GameSetup` rejoue la mise en place
+        # en REDEMANDANT chaque question au joueur au lieu de rejouer les
+        # reponses deja donnees. `Undo` (juste au-dessus) fait deja cet appel
+        # avant de recharger : meme geste ici.
+        self.game.ApplyHistoryInput()
+        # DEUXIEME MOITIE DU MEME CORRECTIF, constatee a l'execution : peupler
+        # `scene.inputs` NE SUFFIT PAS. `ControllerManager.InitializeSkip`
+        # (engine/controller/manager.py:70) n'active le rejeu SILENCIEUX des
+        # entrees, pour l'etat "Load", que si `skip.skip_to` est deja NEGATIF
+        # au moment de l'appel (il calcule alors
+        # `len(scene.inputs) + 1 + skip_to`) - c'est la MEME convention que
+        # `GameSession.Load` utilise deja pour un chemin de sauvegarde suffixe
+        # `:-1` (rejouer jusqu'au bout sans redemander). Sans elle,
+        # `skip.skip_to` restait a 0 (jamais negatif dans une partie live) et
+        # CHAQUE question de la mise en place repassait par `DoGetInput`, meme
+        # avec l'historique correctement repeuple : un temoin qui compte les
+        # questions posees (pas seulement l'etat final de la carte) le voit
+        # immediatement.
+        self.LoadScene(scene, -1, "Load")
         return True
 
     def Load(self, json_path: str, skip_to: int|None, state: Literal["Replay", "Load"]):
