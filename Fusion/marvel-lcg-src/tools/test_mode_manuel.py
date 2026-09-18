@@ -132,7 +132,7 @@ def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man
         # pendant qu'on joue et repose des qu'une scene est rechargee.
         import traceback
         premier = True
-        while premier or jeu.state.start_state:
+        while premier or jeu.state.start_state.state:
             premier = False
             try:
                 if jeu.GameSetup():
