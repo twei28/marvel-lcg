@@ -771,18 +771,25 @@ class RunPuzzle:
         Correctif ronde 1 (18/09/2026) sur `position='Bottom'` : si la pile
         visee n'est PAS un deck ordonne (`flags.is_deck`/`is_dealt_encounter`),
         le "dessous" n'a pas de sens, la carte est posee normalement par
-        `Faces.MoveAllTo` plutot que de rester immobile en silence. Si la pile
-        EST ordonnee et que `MoveToBottom` echoue quand meme, c'est un vrai
-        defaut du moteur : on leve bruyamment plutot que de le masquer.
+        `Faces.MoveAllTo` plutot que de rester immobile en silence.
+
+        Correctif ronde 2 (18/09/2026) : sur une pile ordonnee, on ne leve
+        plus sur la VALEUR DE RETOUR de `MoveToBottom` (elle rend `False`
+        aussi bien sur un vrai echec que sur une carte deja au fond, ce
+        dernier cas n'etant pas un echec). On leve sur le RESULTAT : si,
+        apres l'appel, la carte n'est pas dans la pile visee, c'est un vrai
+        defaut et on leve bruyamment ; sinon, silence, peu importe ce que la
+        methode a rendu.
         """
         from game.operate.faces import Faces
         face = self.FindOrCreateFace(card)
         pile = self._ZoneParNom(zone, player)
         if position == 'Bottom' and (pile.flags.is_deck or pile.flags.is_dealt_encounter):
-            if not face.card.MoveToBottom(pile, self.debug_rule):
+            face.card.MoveToBottom(pile, self.debug_rule)
+            if face.card.area is not pile:
                 raise RuntimeError(
-                    f"MoveTo({card!r}, {zone!r}, 'Bottom') a echoue sur un "
-                    "deck pourtant ordonne")
+                    f"MoveTo({card!r}, {zone!r}, 'Bottom') n'a pas depose la "
+                    "carte dans la pile visee")
         else:
             Faces.MoveAllTo([face], pile, self.debug_rule)
 
