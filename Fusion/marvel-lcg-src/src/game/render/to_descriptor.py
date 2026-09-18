@@ -54,6 +54,7 @@ class ToDescriptor:
         world_descriptor.max_card_object_id = len(world.object_manager.card_dict)
         world_descriptor.sound_name = sound_name
         world_descriptor.mode_sandbox = bool(world.rule.mode_sandbox)
+        world_descriptor.mode_manuel = bool(world.rule.mode_manuel)
         world_descriptor.confirm_main_scheme = bool(world.rule.confirm_main_scheme)
 
         world_descriptor.active_card_ids = world.render.last_active_card_ids

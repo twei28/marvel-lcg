@@ -69,6 +69,11 @@ class WorldRule:
         # conservee dans la sauvegarde — on saura toujours si une
         # victoire comptait.
         self.mode_sandbox                   = VariableBool(self, False, "mode_sandbox")
+        # Mode manuel : apres la mise en place, le moteur ne conduit plus et ne
+        # declenche plus rien, il tient l'etat (spec du 18/09/2026). Pose par
+        # la liste `rules` du descripteur, donc conserve dans la sauvegarde :
+        # on saura toujours qu'une partie n'a pas ete jouee par les regles.
+        self.mode_manuel                    = VariableBool(self, False, "mode_manuel")
         self.mode_heroic                    : int = 0
 
     def SetRule(self, rules: List[str], is_puzzle: bool, seed: int):

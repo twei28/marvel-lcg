@@ -17,6 +17,10 @@ class WorldDescriptor:
     # clic droit. Transmis a chaque rendu : il survit donc au
     # rechargement de page et au chargement d'une sauvegarde.
     mode_sandbox: bool = field(default=False)
+    # Le plateau masque tout ce qui parle au nom du moteur quand ce drapeau est
+    # vrai. Transmis a chaque rendu : il survit au rechargement de page et au
+    # chargement d'une sauvegarde.
+    mode_manuel: bool = field(default=False)
     # Le plateau tient son voile d'ouverture jusqu'a la question de la face A.
     # Il doit donc savoir s'il y a une question a attendre : une sauvegarde
     # ancienne ou un puzzle ne porte pas la regle, et n'en posera jamais.
