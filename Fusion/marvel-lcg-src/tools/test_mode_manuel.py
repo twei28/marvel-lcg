@@ -397,6 +397,44 @@ def cas_sbire_vaincu_en_automatique(game_dir, port):
     return "en automatique, la meme sequence fait quitter le sbire de la table"
 
 
+def cas_deplacement_libre(game_dir, port):
+    """N'importe quelle carte va dans n'importe quelle pile, regles ou pas.
+
+    On envoie une carte de la MAIN du heros dans le DECK RENCONTRE : aucune
+    regle du jeu ne permet ca. C'est precisement le sujet.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    joueur = monde.const_players[0]
+    main = list(joueur.hand_cards.GetAll())
+    assert main, "la main de depart est vide"
+    carte = main[0].card.object_id
+
+    from game.operate.worlds import Worlds
+    avant = len(Worlds.GetEncounterDeckCards(monde))
+
+    deposer(jeu, f"Puzzle.MoveTo({carte}, 'EncounterDeck')")
+
+    apres = len(Worlds.GetEncounterDeckCards(monde))
+    assert apres == avant + 1, \
+        f"le deck rencontre devait passer de {avant} a {avant + 1}, il vaut {apres}"
+    return "une carte de la main est allee dans le deck rencontre"
+
+
+def cas_melange(game_dir, port):
+    """Melanger une pile change son ordre, sans rien perdre."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    joueur = monde.const_players[0]
+    avant = [c.card.object_id for c in joueur.player_deck.GetAll()]
+    assert len(avant) > 10, f"deck trop court pour un melange : {len(avant)}"
+
+    deposer(jeu, "Puzzle.Shuffle('PlayerDeck')")
+
+    apres = [c.card.object_id for c in joueur.player_deck.GetAll()]
+    assert sorted(apres) == sorted(avant), "le melange a perdu ou ajoute des cartes"
+    assert apres != avant, "le melange n'a rien change a l'ordre"
+    return "le deck du joueur a ete melange sans rien perdre"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "moteur_muet": cas_moteur_muet,
@@ -406,6 +444,8 @@ CAS = {
     "declenchement_en_automatique": cas_declenchement_en_automatique,
     "sbire_reste_en_jeu": cas_sbire_reste_en_jeu,
     "sbire_vaincu_en_automatique": cas_sbire_vaincu_en_automatique,
+    "deplacement_libre": cas_deplacement_libre,
+    "melange": cas_melange,
 }
 
 

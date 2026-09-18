@@ -711,6 +711,89 @@ class RunPuzzle:
 
     ################################################################################
     #
+    # Les piles atteignables par `MoveTo`, nommees comme les membres de
+    # `DeckType` (game/deck/deck_type.py:193). Table EXPLICITE et non
+    # reflexive : le moteur n'expose aucun registre des piles, et deviner une
+    # pile ferait disparaitre des cartes dans une zone qu'on ne regarde jamais.
+    ZONES_JOUEUR = {
+        'PlayerDeck':           lambda j: j.player_deck,
+        'DiscardPile':          lambda j: j.discard_pile,
+        'HandsArea':            lambda j: j.hand_cards,
+        'AlliesArea':           lambda j: j.allies,
+        'SupportsArea':         lambda j: j.supports,
+        'HeroArea':             lambda j: j.area_hero,
+        'EngagedEnemiesArea':   lambda j: j.engaged_minions,
+        'ResourcesArea':        lambda j: j.area_resources,
+        'ReserveArea':          lambda j: j.reserve,
+        'AsideDeck':            lambda j: j.set_aside_deck,
+        'ObligationsArea':      lambda j: j.obligations_area,
+        'AdditionalDeck':       lambda j: j.additional_deck,
+    }
+
+    ZONES_MONDE = {
+        'EncounterDeck':        lambda w: w.GetScenario().encounter_deck,
+        'EncounterDiscardPile': lambda w: w.GetScenario().encounter_discard_pile,
+        'VillainArea':          lambda w: w.GetScenario().area_villain,
+        'MainSchemesArea':      lambda w: w.area_schemes_main,
+        'SideSchemesArea':      lambda w: w.area_schemes_side,
+        'EnvironmentArea':      lambda w: w.area_environment,
+        'ProcessingArea':       lambda w: w.area_processing,
+        'RemovedArea':          lambda w: w.area_removed,
+        'VictoryDisplay':       lambda w: w.victory_display,
+    }
+
+    def _ZoneParNom(self, zone: str, player: int) -> 'Deck':
+        """Rend la pile designee par son nom.
+
+        ⚠ Un nom inconnu doit ECHOUER bruyamment. Un repli silencieux sur une
+        pile par defaut ferait disparaitre la carte.
+        """
+        if zone in RunPuzzle.ZONES_MONDE:
+            return RunPuzzle.ZONES_MONDE[zone](self.world)
+        if zone in RunPuzzle.ZONES_JOUEUR:
+            return RunPuzzle.ZONES_JOUEUR[zone](self.world.const_players[player])
+        raise KeyError(f"zone inconnue : {zone}")
+
+    def MoveTo(self, card: CardName, zone: str, position: str='Top', player: int=0):
+        """Le deplacement LIBRE : n'importe quelle carte vers n'importe quelle
+        pile, sans aucune verification.
+
+        C'est l'echappatoire du mode manuel (spec du 18/09/2026) : sans elle,
+        une zone oubliee bloque la partie. Le deplacement reel se fait dans
+        `card.MoveToArea`, le message qui suit n'est qu'une notification, donc
+        la porte du silence ne casse rien ici.
+        """
+        from game.operate.faces import Faces
+        face = self.FindOrCreateFace(card)
+        pile = self._ZoneParNom(zone, player)
+        if position == 'Bottom':
+            face.card.MoveToBottom(pile, self.debug_rule)
+        else:
+            Faces.MoveAllTo([face], pile, self.debug_rule)
+
+    def Shuffle(self, zone: str, player: int=0):
+        """Melange une pile."""
+        self._ZoneParNom(zone, player).Shuffle(self.debug_rule)
+
+    def Attach(self, card: CardName, cible: CardName):
+        """Pose une amelioration ou un soutien SUR une carte precise."""
+        from game.operate.faces import Faces
+        face = self.FindOrCreateFace(card)
+        hote = self.FindOrCreateFace(cible)
+        Faces.MoveAllTo([face], hote.components.inventory.deck, self.debug_rule)
+
+    def Engage(self, card: CardName, player: int=0):
+        """Engage un sbire avec un joueur, ou l'en desengage s'il y est deja."""
+        from game.operate.faces import Faces
+        face = self.FindOrCreateFace(card)
+        joueur = self.world.const_players[player]
+        if face.card.area is joueur.engaged_minions:
+            Faces.MoveAllTo([face], self.world.area_processing, self.debug_rule)
+        else:
+            Faces.MoveAllTo([face], joueur.engaged_minions, self.debug_rule)
+
+    ################################################################################
+    #
     def PutIntoDeck(self, *cards: CardName):
         from game.operate.worlds import Worlds
         from game.operate.faces import Faces
