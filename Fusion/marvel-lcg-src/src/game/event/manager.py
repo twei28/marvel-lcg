@@ -637,6 +637,11 @@ class EventManager:
 
     def BroadcastStackMessage(self):
         if self.world.manuel_actif:
+            # En mode manuel, personne ne consommera jamais ces messages : les
+            # garder ne sert a rien, et les laisser s'accumuler pendant toute
+            # une session (une table manuelle se joue lentement, sur des
+            # heures) fait grossir la liste sans limite.
+            self.stack_message.clear()
             return
         if self.stack_message:
             # process_faces: List['CardFace'] = []
