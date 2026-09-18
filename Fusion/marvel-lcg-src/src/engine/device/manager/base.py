@@ -54,18 +54,43 @@ class DeviceManager:
         # Reveille le fil du jeu, qui dort dans DoGetInput.
         self.notify.input.NotifyAll()
 
-    def DrainSandboxCommands(self) -> bool:
-        """Execute les commandes en attente. A n'appeler QUE depuis le fil du jeu."""
+    def DrainSandboxCommands(self) -> List[str]:
+        """Execute les commandes en attente, UNE PAR UNE. A n'appeler QUE depuis
+        le fil du jeu.
+
+        CORRECTIF (revue finale du 18/09/2026, constats 2 et 3) : rend la
+        liste des commandes REELLEMENT appliquees au monde, dans l'ordre. Une
+        commande qui leve arrete le lot tout de suite ; celles deja
+        appliquees avant elle restent dans la liste rendue, les suivantes ne
+        sont jamais tentees. Avant ce correctif, un lot execute EN UN SEUL
+        APPEL a `sandbox_executor` pouvait laisser la premiere commande
+        appliquee au monde mais l'exception de la seconde faisait perdre les
+        DEUX a l'appelant (aucune trace pour la sauvegarde), et un instantane
+        de `sandbox_commands` pris avant l'appel pouvait aussi manquer une
+        commande deposee par le fil HTTP entre les deux. La liste rendue ici
+        est desormais la SEULE source de verite : plus d'instantane a cote.
+
+        ⚠ Une liste vide est fausse et une liste pleine est vraie en Python :
+        l'appelant historique (`DoGetInput`, plus bas) qui testait l'ancien
+        booleen garde le meme sens - "rien n'a ete traite" vs "quelque chose
+        a ete traite", meme quand ce "quelque chose" a echoue des la
+        premiere commande.
+        """
         if not self.sandbox_commands or self.sandbox_executor is None:
-            return False
+            return []
         commands, self.sandbox_commands = self.sandbox_commands, []
-        try:
-            self.sandbox_executor(commands)
-            self.sandbox_last_error = ""
-        except Exception as exc:
-            self.sandbox_last_error = f"{type(exc).__name__}: {exc}"
-            Log.Print(f"[sandbox] {self.sandbox_last_error}")
-        return True
+        appliquees: List[str] = []
+        erreur = ""
+        for commande in commands:
+            try:
+                self.sandbox_executor([commande])
+            except Exception as exc:
+                erreur = f"{type(exc).__name__}: {exc}"
+                Log.Print(f"[sandbox] {erreur}")
+                break
+            appliquees.append(commande)
+        self.sandbox_last_error = erreur
+        return appliquees
 
     ################################################################################
     #

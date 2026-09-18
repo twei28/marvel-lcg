@@ -42,6 +42,21 @@ class World(WorldAction, WorldFind):
 
         self.object_manager = ObjectManager()
         self.rule = WorldRule()
+
+        # Mode manuel : vrai UNIQUEMENT une fois la mise en place finie, quand
+        # la boucle manuelle a pris la main. Surtout pas `rule.mode_manuel` :
+        # la mise en place, elle, a besoin que tout fonctionne, questions et
+        # capacites comprises.
+        #
+        # CORRECTIF (revue finale du 18/09/2026, constat 8) : pose ICI, juste
+        # apres `self.rule`, et non plus loin dans le constructeur. Rien
+        # entre les deux ne diffuse de message aujourd'hui, mais
+        # `EventManager` (construit plus bas) LIT cet attribut a chaque
+        # diffusion (`BroadcastMessage`/`BroadcastStackMessage`) : le poser
+        # apres lui marchait par accident, pas par garantie. Le deplacer ici
+        # rend la dependance d'ordre impossible a rompre par megarde.
+        self.manuel_actif: bool = False
+
         self.render = WorldRender(self)
 
         self.scenario = Scenario("Scenario", self)
@@ -115,12 +130,6 @@ class World(WorldAction, WorldFind):
         self.limit_player_side_scheme = PlayerSideSchemeLimit(self)
         self.controller_manager = controllers[0].manager
         self.cheat = CheatCommand(self)
-
-        # Mode manuel : vrai UNIQUEMENT une fois la mise en place finie, quand
-        # la boucle manuelle a pris la main. Surtout pas `rule.mode_manuel` :
-        # la mise en place, elle, a besoin que tout fonctionne, questions et
-        # capacites comprises.
-        self.manuel_actif: bool = False
 
         from game.operate.campaign_logs import CampaignLog
         for name in scene.campaign.campaign_log:
@@ -764,6 +773,17 @@ class World(WorldAction, WorldFind):
 
         self.manuel_actif = True
 
+        # ⚠ DEPENDANCE D'ORDRE NON GARANTIE PAR LE TYPE, ecrite ici plutot que
+        # devinee (revue finale du 18/09/2026, constat 8) : cette boucle ne
+        # SORT que sur `is_game_over`. Un `ExitWait()` seul (skip, console,
+        # rejeu) ne fait que reveiller un tour de boucle sans rien traiter
+        # (`RefreshExitWait()` plus bas remet le signal a plat), on continue
+        # d'attendre ensuite. Pour que la boucle rende vraiment la main -
+        # notamment `GameSession.LoadScene`, dont depend `AnnulerDernierGeste`
+        # - l'appelant doit poser `world.game_over.SetExit()` AVANT
+        # `ExitWait()`. Vrai de tous les appelants actuels (`LoadScene` le
+        # fait dans cet ordre) ; un futur appelant qui n'appellerait
+        # qu'`ExitWait()` bloquerait cette boucle indefiniment.
         while not self.is_game_over:
             # `should_exit_wait` est un signal PONCTUEL, pas un etat : une
             # console de debug, un skip, un rejeu ou l'arret du moteur
@@ -785,14 +805,23 @@ class World(WorldAction, WorldFind):
             )
             if self.is_game_over:
                 break
-            # On note AVANT de vider : `DrainSandboxCommands` consomme la liste.
-            en_attente = list(device_manager.sandbox_commands)
-            if device_manager.DrainSandboxCommands():
-                if not device_manager.sandbox_last_error:
-                    self.scene.manuel_commands += en_attente
+            if device_manager.sandbox_commands:
+                # CORRECTIF (revue finale du 18/09/2026, constats 2 et 3) :
+                # `DrainSandboxCommands` execute maintenant une commande a la
+                # fois et REND la liste de celles reellement appliquees.
+                # C'est cette liste, et elle seule, qu'on enregistre : plus
+                # d'instantane pris a cote (`en_attente`) qui pouvait soit
+                # contenir une commande ayant leve (jamais appliquee, donc
+                # jamais dans la sauvegarde), soit manquer une commande
+                # deposee par le fil HTTP dans la fenetre entre l'instantane
+                # et le drainage.
+                appliquees = device_manager.DrainSandboxCommands()
+                self.scene.manuel_commands += appliquees
                 # Un rendu FORCE : rien d'autre ne redessinera, puisque plus
                 # aucune question ne part et que le rendu normal suit les
-                # questions.
+                # questions. Force meme si RIEN n'a ete retenu (premiere
+                # commande du lot invalide) : c'est le seul moyen pour le
+                # plateau de voir `sandbox_last_error` a jour.
                 self.render.PresentForceNoWait()
 
     def OnGameLoop(self) -> None:
