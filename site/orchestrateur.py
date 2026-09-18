@@ -56,7 +56,7 @@ DOMAINE = os.environ.get("DOMAINE", "")
 
 PORT_SITE = int(os.environ.get("PORT_SITE", "8080"))
 PORT_BASE = 2350                      # emplacement N -> port PORT_BASE + N
-NB_EMPLACEMENTS = int(os.environ.get("NB_EMPLACEMENTS", "20"))
+NB_EMPLACEMENTS = int(os.environ.get("NB_EMPLACEMENTS", "30"))
 
 # Une partie est fauchee quand son moteur est mort, ou passe cette duree.
 # ⚠ CE N'EST PAS UNE MESURE D'INACTIVITE : le moteur n'expose rien qui

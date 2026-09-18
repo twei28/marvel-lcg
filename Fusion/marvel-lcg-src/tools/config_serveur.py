@@ -23,7 +23,14 @@ PORT_BASE = 2350
 # et le dupliquer aurait garanti la divergence.
 # `launcher-serveur.sh` continue de se limiter a 4 tout seul, dans son propre
 # controle d'argument : ce relevement ne change donc rien a son comportement.
-PLACES_MAX = 20
+# 30 depuis le 18/09/2026 (etait 20). Le plafond REEL est la memoire : le banc
+# du 16/09 a tenu 70 tables ouvertes sans casser, mais une table JOUEE porte en
+# plus son cache d'images (~30 Ko par carte vue). Trente tables pleines pesent
+# environ 3,3 Go pour 3,2 Go disponibles : le swap couvre le depassement.
+# ⚠ TROIS ENDROITS DOIVENT S'ACCORDER : cette constante, `NB_EMPLACEMENTS`
+# (orchestrateur) et les routes `p1..pN` du Caddyfile. Une place sans route
+# Caddy donne une table qui tourne et que personne ne peut joindre.
+PLACES_MAX = 30
 
 
 def construire_config(base: dict, place: int) -> dict:

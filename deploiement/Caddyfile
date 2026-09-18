@@ -5,7 +5,7 @@
 # Deux blocs seulement :
 #   - l'apex, servi par l'orchestrateur (127.0.0.1:8080), certificat HTTP-01 ;
 #   - le wildcard *.domaine, certificat obtenu par challenge DNS Cloudflare,
-#     qui contient les 20 routes statiques p1..p20 vers les ports 2351..2370.
+#     qui contient les 30 routes statiques p1..p30 vers les ports 2351..2380.
 #
 # Les 20 routes ne bougent jamais : c'est l'orchestrateur qui alloue les tables.
 # Aucune reconfiguration de Caddy en vol.
@@ -25,7 +25,7 @@
 	# HSTS. Un navigateur qui a vu cet en-tête une fois ne retente plus jamais le
 	# http:// sur ce domaine : il part directement en https, sans la redirection
 	# pendant laquelle un intermédiaire pouvait lire le cookie de session au vol.
-	# `includeSubDomains` couvre du même coup les vingt tables p1..p20, dont les
+	# `includeSubDomains` couvre du même coup les trente tables p1..p30, dont les
 	# URL portent les clés de siège. Un an, la valeur d'usage.
 	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
@@ -153,6 +153,56 @@
 	@p20 host p20.{$DOMAINE}
 	handle @p20 {
 		reverse_proxy 127.0.0.1:2370
+	}
+
+	@p21 host p21.{$DOMAINE}
+	handle @p21 {
+		reverse_proxy 127.0.0.1:2371
+	}
+
+	@p22 host p22.{$DOMAINE}
+	handle @p22 {
+		reverse_proxy 127.0.0.1:2372
+	}
+
+	@p23 host p23.{$DOMAINE}
+	handle @p23 {
+		reverse_proxy 127.0.0.1:2373
+	}
+
+	@p24 host p24.{$DOMAINE}
+	handle @p24 {
+		reverse_proxy 127.0.0.1:2374
+	}
+
+	@p25 host p25.{$DOMAINE}
+	handle @p25 {
+		reverse_proxy 127.0.0.1:2375
+	}
+
+	@p26 host p26.{$DOMAINE}
+	handle @p26 {
+		reverse_proxy 127.0.0.1:2376
+	}
+
+	@p27 host p27.{$DOMAINE}
+	handle @p27 {
+		reverse_proxy 127.0.0.1:2377
+	}
+
+	@p28 host p28.{$DOMAINE}
+	handle @p28 {
+		reverse_proxy 127.0.0.1:2378
+	}
+
+	@p29 host p29.{$DOMAINE}
+	handle @p29 {
+		reverse_proxy 127.0.0.1:2379
+	}
+
+	@p30 host p30.{$DOMAINE}
+	handle @p30 {
+		reverse_proxy 127.0.0.1:2380
 	}
 
 	# Tout autre sous-domaine retombe sur l'accueil.
