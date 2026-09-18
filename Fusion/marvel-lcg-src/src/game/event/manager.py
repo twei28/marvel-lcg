@@ -636,6 +636,8 @@ class EventManager:
         self.stack_message.append(message)
 
     def BroadcastStackMessage(self):
+        if self.world.manuel_actif:
+            return
         if self.stack_message:
             # process_faces: List['CardFace'] = []
             messages = self.stack_message[:]
@@ -652,6 +654,22 @@ class EventManager:
         from game.message import Message
         # from game.message import Message, TriggerMessage, AttackerNoneMessage, TargetsMessage, DefenderNoneMessage
         from game.message.message_type import NoSendResolve
+
+        # LA PORTE DU MODE MANUEL (spec du 18/09/2026). Tout declencheur de
+        # toute carte, et tout effet de regle, passe par ici : c'est le seul
+        # endroit a fermer pour que le moteur se taise vraiment.
+        #
+        # ⚠ Le recit a l'ecran ne passe PAS par ici : les messages texte
+        # appellent `Present` dans leur CONSTRUCTEUR (sender_deck.py:13 et
+        # suivants). Le plateau continue donc d'annoncer « carte defaussee » et
+        # le journal de la noter, sans qu'aucune capacite ne parte.
+        #
+        # ⚠ Les effets de REGLE passent par la meme porte, et c'est voulu : un
+        # sbire a zero point de vie n'est plus defausse tout seul. Corollaire
+        # assume : les modificateurs de caracteristiques ne s'appliquent plus
+        # non plus, le plateau montre les valeurs imprimees.
+        if self.world.manuel_actif:
+            return
 
         if self.world.is_game_over:
             from game.message.sender.sender import CanBeInstead

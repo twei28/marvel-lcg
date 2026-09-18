@@ -242,11 +242,107 @@ def cas_commande_executee(game_dir, port):
     return "la boucle manuelle execute les commandes deposees"
 
 
+def cas_aucun_declenchement(game_dir, port):
+    """Une capacite de carte posee sur le vilain NE SE DECLENCHE PAS.
+
+    ⚠ Deux temoins essayes et rejetes AVANT celui-ci (18/09/2026), par
+    instrumentation directe du moteur (prints temporaires dans
+    `EventManager.BroadcastMessage`, `Unit2.OnBeDefeated` et
+    `Faces.DiscardAll`, retires ensuite) :
+
+    1. Le vilain (brief d'origine) : Rhino a DEUX cartes (01094 puis 01095,
+       cf. data/scenarios/rhino.json). Le vaincre fait PROGRESSER vers la
+       seconde sans finir la partie, ET `Villain.OnBeDefeated` appelle
+       `self.Advance(...)` en APPEL DIRECT, jamais via `Message.Send()`.
+    2. Un sbire pose par le puzzle (Shocker, 01103) : meme souci. Constate a
+       l'execution : `Unit2.OnBeDefeated` appelle `Faces.DiscardAll([self],
+       by_effect)` en APPEL DIRECT des qu'un unit a 0 PV, JAMAIS via
+       `Message.Send()`. La porte (qui ne ferme que `BroadcastMessage` et
+       `BroadcastStackMessage`, exactement comme demande) ne voit donc jamais
+       passer ce retrait : le sbire quitte la table MEME quand la porte est
+       fermee (`manuel_actif=True` au moment de l'appel, verifie par log).
+       Le corollaire du brief (« un sbire a zero point de vie n'est plus
+       defausse tout seul ») ne tient donc PAS avec cette seule porte -
+       signale au demandeur, pas bricole en douce.
+
+    Temoin retenu, qui EVITE cette chaine d'appels directs : « Armored Rhino
+    Suit » (01098, cf. src/cards/pack/core/rhino/01098.py). C'est une
+    authentique CAPACITE DE CARTE (`AbilityFactory.WhenUnitWouldTakeDamage`,
+    `ForcedInterrupt`) qui, quand elle est en jeu sur Rhino, PREVIENT les
+    degats infliges a Rhino et les reporte en compteurs sur elle-meme. Ce
+    genre de capacite est resolue par le chemin normal des effets locaux DANS
+    `BroadcastMessage` (`find_local_effects`, priorites de resolution) : pas
+    d'appel direct connu qui la contourne. Elle se pose SEULE (« AttachToFace
+    WhenPutIntoPlay ») des qu'on la met en jeu pres de Rhino, et son
+    declenchement n'attend aucune decision de joueur.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    vilain = id_du_vilain(monde)
+    carte = monde.object_manager.card_dict[vilain]
+    perdu_avant = carte.face.GetLostHealth()
+    deposer(jeu, "Puzzle.PutIntoPlay('01098')")
+    # L'entree en jeu (attache a Rhino) prend une vingtaine de secondes de
+    # traitement reel une fois la commande deposee (constate le 18/09/2026,
+    # meme delai que la progression du vilain) : sans cette attente, les
+    # degats ci-dessous arrivent AVANT que la capacite ne soit attachee, ce
+    # qui fausserait ce cas dans les DEUX sens.
+    time.sleep(20)
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
+    delta = carte.face.GetLostHealth() - perdu_avant
+    assert delta == 3, \
+        ("les degats sur Rhino ont ete detournes : la capacite d'Armored "
+         f"Rhino Suit a agi malgre le mode manuel (delta={delta})")
+    return ("aucun declenchement en manuel : les degats frappent Rhino tels "
+            "quels, la capacite de la suit d'armure ne part pas")
+
+
+def cas_declenchement_en_automatique(game_dir, port):
+    """Le controle : la MEME sequence, sans la regle, voit la capacite agir.
+
+    Sans ce cas, `cas_aucun_declenchement` passerait aussi sur une sequence de
+    commandes qui n'aurait jamais pose la suit d'armure, ou sur une capacite
+    qui n'existe pas / ne fait rien.
+
+    ⚠ `drainer_soi_meme=True` (correction du 18/09/2026, brief initial faux) :
+    en automatique, `pilote` REMPLACE `DoGetInput`, qui etait le seul endroit
+    a appeler `DrainSandboxCommands`. Sans ce drainage explicite, personne ne
+    depile jamais les commandes deposees et ce cas de controle resterait
+    bloque, pour la mauvaise raison.
+
+    ⚠ Temoin corrige (18/09/2026, cf. `cas_aucun_declenchement` pour le detail
+    des deux temoins rejetes) : le brief supposait que 999 degats sur le
+    VILAIN terminent la partie (`is_game_over`). Remplace par la capacite
+    d'« Armored Rhino Suit » (01098), qui evite la chaine d'appels directs de
+    la defaite (`Death` / `OnBeDefeated` / `Faces.DiscardAll` /
+    `Villain.Advance`), non couverte par cette porte.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
+    vilain = id_du_vilain(monde)
+    carte = monde.object_manager.card_dict[vilain]
+    # ⚠ Delta, pas valeur absolue (constate le 18/09/2026) : en automatique,
+    # le heros pilote continue de jouer PENDANT le cas (il attaque Rhino
+    # normalement). `GetLostHealth()` en fin de cas contient donc AUSSI les
+    # degats de ce combat ordinaire, sans rapport avec ce cas.
+    perdu_avant = carte.face.GetLostHealth()
+    deposer(jeu, "Puzzle.PutIntoPlay('01098')", drainer_soi_meme=True)
+    # Cf. cas_aucun_declenchement : meme delai reel d'attache a attendre ici.
+    time.sleep(20)
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)", drainer_soi_meme=True)
+    delta = carte.face.GetLostHealth() - perdu_avant
+    assert delta == 0, \
+        ("en automatique, Armored Rhino Suit aurait du absorber les degats "
+         f"deposes par ce cas (delta={delta})")
+    return ("en automatique, la meme sequence voit la capacite de la suit "
+            "d'armure absorber les degats de Rhino")
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "moteur_muet": cas_moteur_muet,
     "automatique_avance": cas_automatique_avance,
     "commande_executee": cas_commande_executee,
+    "aucun_declenchement": cas_aucun_declenchement,
+    "declenchement_en_automatique": cas_declenchement_en_automatique,
 }
 
 
