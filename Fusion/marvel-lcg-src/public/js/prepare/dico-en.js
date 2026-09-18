@@ -440,6 +440,9 @@ export const DICO_EN_BASE = {
     "En ligne, l'ordre des sièges suit ce choix": "Online, seat order follows this choice",
     "Règles v16": "v16 rules",
     "Activées (recommandé)": "Enabled (recommended)",
+    "Le moteur pose la table, puis ne joue plus": "The engine sets up the table, then stops playing",
+    "Partie manuelle": "Manual game",
+    "Tu appliques toutes les règles toi-même": "You apply every rule yourself",
 
     /* ---- validation.js ---- */
     "aucun héros sélectionné": "no hero selected",

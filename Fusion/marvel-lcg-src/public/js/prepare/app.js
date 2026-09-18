@@ -3885,6 +3885,16 @@ function blocAvance() {
         }),
         el("span", {}, t("Activées (recommandé)")));
 
+    // Partie manuelle : combinable avec Solo, Coop locale et Campagne, donc une
+    // CASE et non une tuile de mode. Le moteur pose la table puis se tait.
+    const manuel = el("label", { class: "cj-chk" },
+        el("input", {
+            type: "checkbox",
+            checked: state.modeManuel === true || undefined,
+            onchange: (e) => { state.modeManuel = e.target.checked; },
+        }),
+        el("span", {}, t("Le moteur pose la table, puis ne joue plus")));
+
     return el("details", { class: "camp-journal avance" },
         el("summary", {}, t("Avancé")),
         el("div", { class: "cj-body" },
@@ -3892,6 +3902,8 @@ function blocAvance() {
             ligne(t("Temps par décision (secondes)"), timeoutInput, t("0 = illimité")),
             lignePremierJoueur,
             ligne(t("Règles v16"), v16, null),
+            ligne(t("Partie manuelle"), manuel,
+                  t("Tu appliques toutes les règles toi-même")),
         ),
     );
 }

@@ -34,6 +34,10 @@ function buildRules(state) {
     // `rules`, donc il est inscrit dans la scene et survit au chargement
     // d'une sauvegarde — on saura toujours si une victoire comptait.
     if (state.mode && state.mode.id === "sandbox") rules.push("mode_sandbox");
+    // Partie manuelle : apres la mise en place, le moteur ne conduit plus et ne
+    // declenche plus rien. Comme les autres modes, le drapeau passe par `rules`
+    // et survit donc au chargement d'une sauvegarde.
+    if (state.modeManuel === true) rules.push("mode_manuel");
     // Bataille : le moteur ouvre une seconde zone de jeu, y pose le second
     // leader et enfile les phases camp par camp. Comme les autres modes, le
     // drapeau passe par `rules` et survit donc au chargement d'une sauvegarde.
