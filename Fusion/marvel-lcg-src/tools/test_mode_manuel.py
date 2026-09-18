@@ -435,6 +435,65 @@ def cas_melange(game_dir, port):
     return "le deck du joueur a ete melange sans rien perdre"
 
 
+def cas_ecart(game_dir, port):
+    """`AsideDeck` doit pointer sur la VRAIE pile des cartes ecartees.
+
+    Ronde de correction 1 (18/09/2026) : `player.set_aside_deck` est un faux
+    ami herite du moteur de base, il vaut `additional_discard_pile`
+    (`DeckType.AdditionalDiscardPile`), pas `DeckType.AsideDeck`. La vraie
+    pile typee `AsideDeck` est `player.set_aside_nemesis_sets`. Ce cas verifie
+    a la fois l'arrivee dans la bonne pile ET l'absence dans le faux ami :
+    une carte qui atterrit ailleurs sans erreur est exactement le defaut que
+    cette table doit empecher.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    joueur = monde.const_players[0]
+    main = list(joueur.hand_cards.GetAll())
+    assert main, "la main de depart est vide"
+    carte = main[0].card.object_id
+
+    avant_ecart = len(joueur.set_aside_nemesis_sets.GetAll())
+    avant_faux_ami = len(joueur.set_aside_deck.GetAll())
+
+    deposer(jeu, f"Puzzle.MoveTo({carte}, 'AsideDeck')")
+
+    apres_ecart = len(joueur.set_aside_nemesis_sets.GetAll())
+    apres_faux_ami = len(joueur.set_aside_deck.GetAll())
+    assert apres_ecart == avant_ecart + 1, \
+        (f"la pile des cartes ecartees devait passer de {avant_ecart} a "
+         f"{avant_ecart + 1}, elle vaut {apres_ecart}")
+    assert apres_faux_ami == avant_faux_ami, \
+        (f"la carte a atterri dans le faux ami additional_discard_pile : "
+         f"{avant_faux_ami} -> {apres_faux_ami}")
+    return "AsideDeck envoie bien vers la pile des cartes ecartees, pas vers le faux ami"
+
+
+def cas_dessous_sans_ordre(game_dir, port):
+    """`position='Bottom'` sur une pile SANS ordre depose quand meme la carte.
+
+    Ronde de correction 1 (18/09/2026) : `Card.MoveToBottom` ne fait rien et
+    rend `False` en silence des que la pile visee n'est pas un deck ordonne
+    (`DeckType.is_deck`/`is_dealt_encounter`). Sur `AlliesArea` (pas un deck
+    ordonne), demander le dessous ne doit PAS laisser la carte immobile : le
+    modificateur perd son sens, la carte doit quand meme arriver dans la
+    pile par le chemin normal.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    joueur = monde.const_players[0]
+    main = list(joueur.hand_cards.GetAll())
+    assert main, "la main de depart est vide"
+    carte = main[0].card.object_id
+
+    avant = len(joueur.allies.GetAll())
+
+    deposer(jeu, f"Puzzle.MoveTo({carte}, 'AlliesArea', 'Bottom')")
+
+    apres = len(joueur.allies.GetAll())
+    assert apres == avant + 1, \
+        f"la zone des allies devait passer de {avant} a {avant + 1}, elle vaut {apres}"
+    return "position='Bottom' sur une pile sans ordre depose quand meme la carte dedans"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "moteur_muet": cas_moteur_muet,
@@ -446,6 +505,8 @@ CAS = {
     "sbire_vaincu_en_automatique": cas_sbire_vaincu_en_automatique,
     "deplacement_libre": cas_deplacement_libre,
     "melange": cas_melange,
+    "ecart": cas_ecart,
+    "dessous_sans_ordre": cas_dessous_sans_ordre,
 }
 
 

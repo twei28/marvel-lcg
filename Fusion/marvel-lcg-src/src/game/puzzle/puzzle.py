@@ -725,7 +725,12 @@ class RunPuzzle:
         'EngagedEnemiesArea':   lambda j: j.engaged_minions,
         'ResourcesArea':        lambda j: j.area_resources,
         'ReserveArea':          lambda j: j.reserve,
-        'AsideDeck':            lambda j: j.set_aside_deck,
+        # Correctif ronde 1 (18/09/2026) : `j.set_aside_deck` est un faux ami
+        # herite du moteur de base (`player.py:100`), il vaut en realite
+        # `additional_discard_pile` (`DeckType.AdditionalDiscardPile`), pas
+        # `DeckType.AsideDeck`. La vraie pile typee `AsideDeck` est
+        # `set_aside_nemesis_sets` (`player.py:61`).
+        'AsideDeck':            lambda j: j.set_aside_nemesis_sets,
         'ObligationsArea':      lambda j: j.obligations_area,
         'AdditionalDeck':       lambda j: j.additional_deck,
     }
@@ -762,12 +767,22 @@ class RunPuzzle:
         une zone oubliee bloque la partie. Le deplacement reel se fait dans
         `card.MoveToArea`, le message qui suit n'est qu'une notification, donc
         la porte du silence ne casse rien ici.
+
+        Correctif ronde 1 (18/09/2026) sur `position='Bottom'` : si la pile
+        visee n'est PAS un deck ordonne (`flags.is_deck`/`is_dealt_encounter`),
+        le "dessous" n'a pas de sens, la carte est posee normalement par
+        `Faces.MoveAllTo` plutot que de rester immobile en silence. Si la pile
+        EST ordonnee et que `MoveToBottom` echoue quand meme, c'est un vrai
+        defaut du moteur : on leve bruyamment plutot que de le masquer.
         """
         from game.operate.faces import Faces
         face = self.FindOrCreateFace(card)
         pile = self._ZoneParNom(zone, player)
-        if position == 'Bottom':
-            face.card.MoveToBottom(pile, self.debug_rule)
+        if position == 'Bottom' and (pile.flags.is_deck or pile.flags.is_dealt_encounter):
+            if not face.card.MoveToBottom(pile, self.debug_rule):
+                raise RuntimeError(
+                    f"MoveTo({card!r}, {zone!r}, 'Bottom') a echoue sur un "
+                    "deck pourtant ordonne")
         else:
             Faces.MoveAllTo([face], pile, self.debug_rule)
 
