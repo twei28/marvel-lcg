@@ -112,6 +112,23 @@ class GameServerGet(GameServerBase):
 
         return web.json_response({'result': 'queued', 'count': len(commands)})
 
+    async def manuel_undo(self, request: web.Request) -> web.Response:
+        """Ctrl+Z du mode manuel : retire le dernier geste et rejoue sans lui.
+
+        Aucun corps de requete : il n'y a qu'un seul geste annulable, le
+        dernier. Le plateau n'a donc rien a envoyer, et rien a tenir a jour de
+        son cote.
+        """
+        world = self.game.world
+        if world is None or not world.rule.mode_manuel:
+            return web.json_response({'error': 'pas une partie manuelle'}, status=409)
+        if not self.game.session.AnnulerDernierGeste():
+            return web.json_response({'error': 'rien a annuler'}, status=409)
+        return web.json_response({
+            'result': 'annule',
+            'restants': len(self.game.scene.manuel_commands),
+        })
+
     async def list_starter_deck(self, request: web.Request) -> web.Response:
         return self.ListFile(STARTER_DECK_FOLDER.value)
 
@@ -1029,6 +1046,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/list_deck', self.list_deck)
         self.AddPostSecurity('/save_deck', self.save_deck)
         self.AddPostSecurity('/sandbox_command', self.sandbox_command)
+        self.AddPostSecurity('/manuel_undo', self.manuel_undo)
         self.AddAwaitGetSecurity('/list_starter_deck', self.list_starter_deck)
         self.AddAwaitGetSecurity('/list_replay_files', self.list_replay_files)
         self.AddAwaitGetSecurity('/list_puzzle_files', self.list_puzzle_files)

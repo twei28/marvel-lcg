@@ -230,6 +230,23 @@ class GameSession:
         self.start_time = Time.GetTime()
         # game.controller_manager.replay.SetIsSkipping()
 
+    def AnnulerDernierGeste(self) -> bool:
+        """Retire le dernier geste manuel et rejoue la partie sans lui.
+
+        ⚠ Rien a voir avec `Undo`, qui rejoue les ENTREES du joueur : en mode
+        manuel il n'y en a aucune. Ici on rejoue la mise en place, puis la
+        liste des gestes amputee de son dernier element.
+
+        Rend faux s'il n'y a rien a annuler, pour que l'appelant puisse le dire
+        au joueur au lieu de relancer une partie pour rien.
+        """
+        scene = self.scene
+        if scene is None or not scene.manuel_commands:
+            return False
+        scene.manuel_commands.pop()
+        self.LoadScene(scene, None, "Load")
+        return True
+
     def Load(self, json_path: str, skip_to: int|None, state: Literal["Replay", "Load"]):
 
         if json_path == "":

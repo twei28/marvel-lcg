@@ -126,12 +126,20 @@ def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man
     jeu.session.SetScene(scene, "Load")
 
     def run():
-        try:
-            if jeu.GameSetup():
-                jeu.GameLoop()
-        except BaseException:
-            import traceback
-            traceback.print_exc()
+        # Une partie peut REDEMARRER sur place : c'est ce que fait
+        # `LoadScene`, donc ce que fait l'annulation d'un geste. `GameSetup`
+        # appelle `state.ResetStartState()`, donc `start_state` est vide
+        # pendant qu'on joue et repose des qu'une scene est rechargee.
+        import traceback
+        premier = True
+        while premier or jeu.state.start_state:
+            premier = False
+            try:
+                if jeu.GameSetup():
+                    jeu.GameLoop()
+            except BaseException:
+                traceback.print_exc()
+                return
 
     threading.Thread(target=run, daemon=True).start()
     time.sleep(20)
@@ -560,6 +568,34 @@ def cas_relire_sauvegarde(game_dir, port):
     return "la partie rechargee porte bien le geste"
 
 
+def cas_annulation(game_dir, port):
+    """Ctrl+Z : le dernier geste part, les precedents restent.
+
+    Deux gestes, 3 puis 4 degats. Apres annulation il doit rester 3, et un seul
+    geste dans la scene. Le monde est RECONSTRUIT par le rechargement : on
+    relit `jeu.world`, jamais la reference d'avant.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    vilain = id_du_vilain(monde)
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
+    deposer(jeu, f"Puzzle.Damage({vilain}, 4)")
+    carte = monde.object_manager.card_dict[vilain]
+    assert carte.face.GetLostHealth() == 7, \
+        f"avant annulation : degats={carte.face.GetLostHealth()}, attendu 7"
+
+    assert jeu.session.AnnulerDernierGeste() is True
+    time.sleep(20)
+
+    scene = jeu.session.scene
+    assert len(scene.manuel_commands) == 1, \
+        f"il devait rester 1 geste, il en reste {len(scene.manuel_commands)}"
+    monde2 = jeu.world
+    carte2 = monde2.object_manager.card_dict[vilain]
+    assert carte2.face.GetLostHealth() == 3, \
+        f"apres annulation : degats={carte2.face.GetLostHealth()}, attendu 3"
+    return "l'annulation retire le dernier geste et garde les precedents"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "moteur_muet": cas_moteur_muet,
@@ -576,6 +612,7 @@ CAS = {
     "geste_enregistre": cas_geste_enregistre,
     "aller_retour": cas_aller_retour,
     "relire_sauvegarde": cas_relire_sauvegarde,
+    "annulation": cas_annulation,
 }
 
 
