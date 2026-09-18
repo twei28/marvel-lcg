@@ -174,6 +174,21 @@ def id_du_vilain(monde):
     return vilains[0].card.object_id
 
 
+def id_du_sbire(monde, code):
+    """Retrouve en jeu la carte de code imprime `code` (ex. "01103").
+
+    Ne passe pas par le nom affiche (localisation) : on relit
+    `paper.card_id` sur chaque face en jeu, comme le fait deja
+    `RunPuzzle.FindOrCreateFace` pour les cartes dont la face a change.
+    """
+    for object_id, objet in monde.object_manager.card_dict.items():
+        face = objet.face
+        if face is not None and face.IsInPlay() and \
+                getattr(getattr(face, "paper", None), "card_id", None) == code:
+            return object_id
+    raise AssertionError(f"sbire {code} introuvable en jeu")
+
+
 def cas_drapeau_pose(game_dir, port):
     """Le drapeau existe, la liste de regles l'allume, et la trame le publie."""
     _, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
@@ -336,6 +351,52 @@ def cas_declenchement_en_automatique(game_dir, port):
             "d'armure absorber les degats de Rhino")
 
 
+def cas_sbire_reste_en_jeu(game_dir, port):
+    """Un sbire (une UNITE, pas une capacite de carte) a zero PV reste en jeu.
+
+    Ronde de correction 1 (18/09/2026) : `cas_aucun_declenchement` prouve
+    qu'aucune CAPACITE DE CARTE ne part, mais pas que la defaite
+    automatique elle-meme est bloquee - `Death` -> `Defeated` ->
+    `WhenBeDefeated` -> `OnBeDefeated` -> `Faces.DiscardAll` s'enchainent en
+    appel Python direct, jamais via `Message.Send()` (cf. rapport de
+    tache 3). C'est le temoin explicitement demande par le donneur d'ordre
+    pour couvrir ce trou : Shocker (01103) pose par le puzzle, reduit a 999
+    degats, doit rester `IsInPlay()` en mode manuel.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    deposer(jeu, "Puzzle.PutIntoPlay('01103')")
+    sbire = id_du_sbire(monde, "01103")
+    carte = monde.object_manager.card_dict[sbire]
+    deposer(jeu, f"Puzzle.Damage({sbire}, 999)")
+    time.sleep(10)
+    assert monde.is_game_over is False, \
+        "le moteur a declare la partie finie : un effet de regle est parti"
+    assert carte.face.IsInPlay(), \
+        "le sbire a quitte la table tout seul : la defaite automatique n'est pas bloquee"
+    return "le sbire a zero PV reste en jeu en mode manuel : la defaite automatique ne part pas"
+
+
+def cas_sbire_vaincu_en_automatique(game_dir, port):
+    """Le controle : la MEME sequence, sans la regle, vainc bien le sbire.
+
+    Sans ce cas, `cas_sbire_reste_en_jeu` passerait aussi sur une sequence de
+    commandes qui n'aurait jamais pose ou jamais blesse le sbire.
+
+    `drainer_soi_meme=True` : meme raison que dans `cas_declenchement_en_automatique`
+    (en automatique, `pilote` remplace `DoGetInput`, seul appelant de
+    `DrainSandboxCommands`).
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
+    deposer(jeu, "Puzzle.PutIntoPlay('01103')", drainer_soi_meme=True)
+    sbire = id_du_sbire(monde, "01103")
+    carte = monde.object_manager.card_dict[sbire]
+    deposer(jeu, f"Puzzle.Damage({sbire}, 999)", drainer_soi_meme=True)
+    time.sleep(10)
+    assert carte.face.IsInPlay() is False, \
+        "en automatique, 999 degats auraient du faire quitter le sbire de la table"
+    return "en automatique, la meme sequence fait quitter le sbire de la table"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "moteur_muet": cas_moteur_muet,
@@ -343,6 +404,8 @@ CAS = {
     "commande_executee": cas_commande_executee,
     "aucun_declenchement": cas_aucun_declenchement,
     "declenchement_en_automatique": cas_declenchement_en_automatique,
+    "sbire_reste_en_jeu": cas_sbire_reste_en_jeu,
+    "sbire_vaincu_en_automatique": cas_sbire_vaincu_en_automatique,
 }
 
 

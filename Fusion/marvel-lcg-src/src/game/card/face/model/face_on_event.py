@@ -396,6 +396,30 @@ class ModelOnEvent(ModelBase):
 
     @final
     def Defeated(self, killer: 'CardFace|None', by_effect: 'Effect', atk_message: 'Message.WhenSchemeBeingThwart|Message.WhenUnitBeingAttack|None'=None, *, ignore_when_defeated: bool=False) -> bool:
+        # LA PORTE DU MODE MANUEL, deuxieme porte (spec du 18/09/2026, ronde
+        # de correction 1 de la tache 3). Point d'entree UNIQUE de toute
+        # defaite automatique, quelle que soit la carte : unites/sbires/
+        # vilains via `Death` (can_health.py), complots via leur propre
+        # verification de menace a zero (scheme.py), tous convergent ici. La
+        # porte posee dans `EventManager.BroadcastMessage`/
+        # `BroadcastStackMessage` ne suffit pas : `Death` -> `Defeated` ->
+        # `WhenBeDefeated` -> `OnBeDefeated` s'enchainent en APPEL PYTHON
+        # DIRECT, jamais via `Message.Send()`, et `Unit2.OnBeDefeated` /
+        # `Villain.OnBeDefeated` retirent ou font progresser la carte
+        # (`Faces.DiscardAll`, `Villain.Advance`) sans jamais repasser par le
+        # bus de messages. Constate le 18/09/2026 par instrumentation directe
+        # du moteur : un sbire a zero point de vie quittait quand meme la
+        # table en mode manuel malgre la premiere porte (cf. rapport de
+        # tache 3). En renvoyant faux ici, on n'entre JAMAIS dans
+        # `WhenBeDefeated`/`OnBeDefeated` : ni `Faces.DiscardAll` (l'appel de
+        # la defaite), ni `Villain.Advance` ne sont atteints.
+        #
+        # ⚠ Ne JAMAIS poser cette garde sur `Faces.DiscardAll` lui-meme : ce
+        # chemin sert aussi a la defausse VOLONTAIRE du joueur
+        # (`Puzzle.Discard`), le geste manuel le plus courant du mode. Le
+        # bloquer rendrait le mode inutilisable.
+        if self.card.world.manuel_actif:
+            return False
         would_defeat_message = self.CheckCanDefeated(killer, by_effect, atk_message)
         if would_defeat_message:
             self.WhenBeDefeated(would_defeat_message, ignore_when_defeated=ignore_when_defeated)
