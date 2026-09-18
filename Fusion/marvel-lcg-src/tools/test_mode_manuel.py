@@ -272,7 +272,7 @@ def cas_commande_executee(game_dir, port):
 
 
 def cas_aucun_declenchement(game_dir, port):
-    """Une capacite de carte posee sur le vilain NE SE DECLENCHE PAS.
+    """Une capacite de carte DEJA ATTACHEE au vilain NE SE DECLENCHE PAS.
 
     ⚠ Deux temoins essayes et rejetes AVANT celui-ci (18/09/2026), par
     instrumentation directe du moteur (prints temporaires dans
@@ -297,40 +297,72 @@ def cas_aucun_declenchement(game_dir, port):
     Temoin retenu, qui EVITE cette chaine d'appels directs : « Armored Rhino
     Suit » (01098, cf. src/cards/pack/core/rhino/01098.py). C'est une
     authentique CAPACITE DE CARTE (`AbilityFactory.WhenUnitWouldTakeDamage`,
-    `ForcedInterrupt`) qui, quand elle est en jeu sur Rhino, PREVIENT les
-    degats infliges a Rhino et les reporte en compteurs sur elle-meme. Ce
-    genre de capacite est resolue par le chemin normal des effets locaux DANS
-    `BroadcastMessage` (`find_local_effects`, priorites de resolution) : pas
-    d'appel direct connu qui la contourne. Elle se pose SEULE (« AttachToFace
-    WhenPutIntoPlay ») des qu'on la met en jeu pres de Rhino, et son
-    declenchement n'attend aucune decision de joueur.
+    `ForcedInterrupt`) qui, quand elle est en jeu ATTACHEE a Rhino, PREVIENT
+    les degats qui lui sont infliges et les reporte en compteurs sur
+    elle-meme. Ce genre de capacite est resolue par le chemin normal des
+    effets locaux DANS `BroadcastMessage` (`find_local_effects`, priorites
+    de resolution) : pas d'appel direct connu qui la contourne.
+
+    ⚠ CORRECTIF DE PREMISE (revue finale du 18/09/2026, constat 7) : la
+    version precedente de ce cas comptait sur la PROPRE capacite d'attache
+    de la carte (« AttachToFace WhenPutIntoPlay ») pour la poser sur Rhino
+    apres un simple `PutIntoPlay`. Mesure a l'execution : cette capacite
+    d'attache est ELLE AUSSI un declenchement, donc ELLE AUSSI bloquee par
+    la porte du silence - en mode manuel, `PutIntoPlay('01098')` seul ne
+    l'attache JAMAIS a Rhino. L'assertion finale etait donc vraie, mais pour
+    la mauvaise raison : elle prouvait que l'entree en jeu ne s'attache pas
+    toute seule (deja couvert par `cas_deplacement_libre` et consorts), pas
+    qu'une capacite DEJA EN PLACE reste muette - ce que ce cas pretend
+    demontrer. Corrige en creant la suit A PART (`Puzzle.CreateCard`, comme
+    `cas_attache`) puis en l'attachant A LA MAIN (`Puzzle.Attach`, tache 4),
+    sans jamais passer par sa propre capacite d'attache ; et en VERIFIANT
+    cette attache avant de mesurer quoi que ce soit : la premisse n'est plus
+    supposee, elle est constatee.
     """
     jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
     vilain = id_du_vilain(monde)
     carte = monde.object_manager.card_dict[vilain]
     perdu_avant = carte.face.GetLostHealth()
-    deposer(jeu, "Puzzle.PutIntoPlay('01098')")
-    # L'entree en jeu (attache a Rhino) prend une vingtaine de secondes de
-    # traitement reel une fois la commande deposee (constate le 18/09/2026,
-    # meme delai que la progression du vilain) : sans cette attente, les
-    # degats ci-dessous arrivent AVANT que la capacite ne soit attachee, ce
-    # qui fausserait ce cas dans les DEUX sens.
-    time.sleep(20)
+
+    deposer(jeu, "Puzzle.CreateCard('01098')")
+    suit = max(monde.object_manager.card_dict)
+    deposer(jeu, f"Puzzle.Attach({suit}, {vilain})")
+
+    # PREMISE VERIFIEE, PAS SUPPOSEE : sans ce controle, l'assertion finale
+    # serait vraie meme si l'attache manuelle avait elle-meme echoue en
+    # silence, ce qui ne prouverait plus rien sur une capacite deja en
+    # place.
+    suit_face = monde.object_manager.card_dict[suit].face
+    assert suit_face in carte.face.GetInventoryDeck().GetAll(), \
+        (f"la suit d'armure n'est pas dans l'inventaire de Rhino : ce cas ne "
+         f"peut rien prouver sur une capacite deja en place "
+         f"(IsFaceUp={suit_face.IsFaceUp()}, IsInPlay={suit_face.IsInPlay()})")
+
     deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
     delta = carte.face.GetLostHealth() - perdu_avant
     assert delta == 3, \
         ("les degats sur Rhino ont ete detournes : la capacite d'Armored "
-         f"Rhino Suit a agi malgre le mode manuel (delta={delta})")
-    return ("aucun declenchement en manuel : les degats frappent Rhino tels "
-            "quels, la capacite de la suit d'armure ne part pas")
+         f"Rhino Suit, pourtant deja attachee, a agi malgre le mode manuel "
+         f"(delta={delta})")
+    return ("aucun declenchement en manuel : une capacite deja attachee a "
+            "Rhino ne part pas, les degats le frappent tels quels")
 
 
 def cas_declenchement_en_automatique(game_dir, port):
-    """Le controle : la MEME sequence, sans la regle, voit la capacite agir.
+    """Le controle : sans la regle, la capacite agit des le seul PutIntoPlay.
 
     Sans ce cas, `cas_aucun_declenchement` passerait aussi sur une sequence de
     commandes qui n'aurait jamais pose la suit d'armure, ou sur une capacite
     qui n'existe pas / ne fait rien.
+
+    ⚠ Sequence volontairement PLUS COURTE que `cas_aucun_declenchement`
+    depuis le correctif du constat 7 (revue finale du 18/09/2026) : ici,
+    `PutIntoPlay` seul suffit a attacher la suit (sa propre capacite
+    d'attache tourne normalement, rien ne la bloque), donc pas besoin de
+    l'explicite `Puzzle.Attach` que le cas manuel doit s'imposer. Les deux
+    cas visent la meme chose - une capacite deja en place sur Rhino - par
+    deux chemins d'attache differents, chacun le seul qui fonctionne dans
+    son mode.
 
     ⚠ `drainer_soi_meme=True` (correction du 18/09/2026, brief initial faux) :
     en automatique, `pilote` REMPLACE `DoGetInput`, qui etait le seul endroit
@@ -596,6 +628,131 @@ def cas_annulation(game_dir, port):
     return "l'annulation retire le dernier geste et garde les precedents"
 
 
+def cas_annulation_ne_redemande_pas(game_dir, port):
+    """Temoin honnete du constat 1 (revue finale du 18/09/2026).
+
+    `cas_annulation`, juste au-dessus, ne peut PAS voir ce defaut : son
+    pilote repond aux memes questions, dans le meme ordre, avec la meme
+    graine - l'etat final de la carte est donc identique que la mise en
+    place soit REJOUEE EN SILENCE depuis l'historique (correctif :
+    `GameSession.AnnulerDernierGeste` appelle `Game.ApplyHistoryInput` avant
+    de recharger, comme le fait deja `GameSession.Undo`) ou REDEMANDEE au
+    pilote (bug : `scene.inputs` reste vide, `LoadScene` -> `GameSetup`
+    fait tout rejouer depuis le debut).
+
+    La difference se lit dans le JOURNAL DES QUESTIONS, pas dans les degats
+    sur la carte. Quand `scene.inputs` est repeuplee, la reprise saute les
+    etapes deja jouees en mode "skip" (`Controller.ChoiceOne`,
+    `engine/controller/controller.py:269-276`) sans jamais rappeler
+    `DeviceManager.DoGetInput` : le journal ne bouge plus pour la mise en
+    place. Sans le correctif, chaque question de la mise en place est
+    reposee a `pilote`, et le journal grossit d'autant.
+    """
+    jeu, monde, journal = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    avant_geste = len(journal)
+    assert avant_geste > 0, \
+        ("la mise en place n'a pose aucune question a `pilote` : ce temoin "
+         "ne peut rien prouver sans au moins un choix (mulligan) pendant la "
+         "mise en place")
+
+    vilain = id_du_vilain(monde)
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
+    avant_annulation = len(journal)
+
+    assert jeu.session.AnnulerDernierGeste() is True
+    time.sleep(20)
+
+    apres = len(journal)
+    assert apres == avant_annulation, \
+        (f"l'annulation a repose {apres - avant_annulation} question(s) a "
+         "pilote : la mise en place a ete REDEMANDEE au lieu d'etre rejouee "
+         "depuis l'historique (scene.inputs)")
+    return "l'annulation ne redemande pas la mise en place : l'historique est rejoue en silence"
+
+
+def cas_attache(game_dir, port):
+    """Attach pose bien l'amelioration SUR la carte visee.
+
+    `CreateCard` place la carte A PART (`aside_deck`), sans l'attacher a
+    rien : c'est `Attach`, seul, qui doit la faire arriver dans l'inventaire
+    de la cible. On vise le vilain, exactement la pile qu'« Armored Rhino
+    Suit » (01098) rejoint normalement via sa propre capacite
+    (`cas_aucun_declenchement`) - ici on l'y met a la main, sans passer par
+    aucune capacite.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    vilain = id_du_vilain(monde)
+    carte_vilain = monde.object_manager.card_dict[vilain]
+    avant = len(carte_vilain.face.GetInventoryDeck().GetAll())
+
+    deposer(jeu, "Puzzle.CreateCard('01098')")
+    # La carte creee est la DERNIERE entree du dictionnaire des objets :
+    # aucune autre commande n'a tourne depuis (meme principe que
+    # `cas_geste_enregistre`, qui vise deja les cartes par cet identifiant).
+    nouvelle = max(monde.object_manager.card_dict)
+
+    deposer(jeu, f"Puzzle.Attach({nouvelle}, {vilain})")
+
+    apres = len(carte_vilain.face.GetInventoryDeck().GetAll())
+    assert apres == avant + 1, \
+        f"l'inventaire du vilain devait passer de {avant} a {avant + 1}, il vaut {apres}"
+    return "Attach pose l'amelioration sur la carte visee"
+
+
+def cas_engagement(game_dir, port):
+    """Engage engage un sbire, puis le meme geste le desengage.
+
+    `Puzzle.PutIntoPlay` engage DEJA le sbire automatiquement
+    (`Minion.OnPutIntoPlay` -> `EngagePlayer`, un appel direct comme celui
+    documente dans `cas_aucun_declenchement`) : le point de depart est donc
+    ramene a la main en zone de traitement AVANT de tester `Engage`, pour
+    observer sans ambiguite les DEUX sens du geste demandes par la revue.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    deposer(jeu, "Puzzle.PutIntoPlay('01103')")
+    sbire = id_du_sbire(monde, "01103")
+    joueur = monde.const_players[0]
+    carte = monde.object_manager.card_dict[sbire]
+
+    deposer(jeu, f"Puzzle.MoveTo({sbire}, 'ProcessingArea')")
+    assert carte.face.card.area is not joueur.engaged_minions, \
+        "le sbire est reste engage : le point de depart n'est pas maitrise"
+
+    deposer(jeu, f"Puzzle.Engage({sbire})")
+    assert carte.face.card.area is joueur.engaged_minions, \
+        "Engage n'a pas engage le sbire"
+
+    deposer(jeu, f"Puzzle.Engage({sbire})")
+    assert carte.face.card.area is monde.area_processing, \
+        "un second Engage n'a pas desengage le sbire"
+    return "Engage engage le sbire puis le desengage"
+
+
+def cas_geste_refuse_non_enregistre(game_dir, port):
+    """Le seul temoin qui couvre les constats 2 et 3 (revue finale du
+    18/09/2026) : un geste REFUSE n'entre PAS dans `manuel_commands`, et le
+    geste valide qui le suit y entre bien.
+
+    Sans lui, un lot partiellement applique (constat 2) ou une course entre
+    l'instantane et le drainage (constat 3) pouvaient tous deux glisser une
+    commande jamais appliquee - ou en manquer une - dans la sauvegarde sans
+    qu'aucun cas ne le remarque.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    vilain = id_du_vilain(monde)
+
+    deposer(jeu, f"Puzzle.MoveTo({vilain}, 'ZoneInconnue')")
+    gestes = jeu.session.scene.manuel_commands
+    assert gestes == [], \
+        f"un geste refuse est entre dans la sauvegarde : {gestes}"
+
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
+    gestes = jeu.session.scene.manuel_commands
+    assert gestes == [f"Puzzle.Damage({vilain}, 3)"], \
+        f"le geste valide qui suit un refus n'est pas entre dans la sauvegarde : {gestes}"
+    return "un geste refuse n'entre pas dans la sauvegarde, le geste valide qui le suit y entre"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "moteur_muet": cas_moteur_muet,
@@ -613,6 +770,10 @@ CAS = {
     "aller_retour": cas_aller_retour,
     "relire_sauvegarde": cas_relire_sauvegarde,
     "annulation": cas_annulation,
+    "annulation_ne_redemande_pas": cas_annulation_ne_redemande_pas,
+    "attache": cas_attache,
+    "engagement": cas_engagement,
+    "geste_refuse_non_enregistre": cas_geste_refuse_non_enregistre,
 }
 
 
