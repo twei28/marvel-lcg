@@ -208,14 +208,28 @@ export function useTriche(
     [noter]
   )
 
-  // Résout la file au rendu suivant. `World.ManualLoop` redessine même quand
-  // un geste échoue (voir engine/game/world/world.py), donc ce rendu arrive
-  // toujours — pas besoin d'attente supplémentaire.
+  // Résout la file au rendu suivant. En manuel, `World.ManualLoop` redessine
+  // même quand un geste échoue (voir engine/game/world/world.py), donc ce
+  // rendu arrive toujours — pas besoin d'attente supplémentaire. En bac à
+  // sable, c'est la partie ELLE-MÊME qui continue de tourner et de redessiner
+  // normalement (questions, phases...) : le rendu arrive tout aussi sûrement,
+  // juste par un chemin différent.
+  //
+  // ⚠ RÉGRESSION CORRIGÉE (revue, ronde 2) : cet effet ne tournait qu'en
+  // mode manuel (`if (!manuel ...)`), hérité de l'ancien effet qui n'avait de
+  // sens qu'à ce mode-là. Mais `emettreGeste` est devenu l'UNIQUE chemin
+  // d'écriture au journal pour LES DEUX modes (le bac à sable partage le même
+  // menu et les mêmes actions de pile). Résultat : en bac à sable, chaque
+  // geste réussi partait dans la file et rien ne l'en sortait plus jamais —
+  // un mensonge (l'ancien défaut) échangé contre un silence total (pire).
+  // On dépend maintenant de `actif` (bac à sable OU manuel), pas de `manuel`
+  // seul : la file se vide dès que cette couche est utilisable, quel que soit
+  // le mode qui l'utilise.
   //
   // ⚠ ON DÉPEND DE `world`, PAS DE `world.render_id`/`world.manuel_refus` À
   // PART : ce sont deux champs du MÊME objet, qui change de référence à
   // chaque rendu du monde ; les lister en plus ne fait que répéter la même
-  // condition (retour de revue).
+  // condition (retour de revue, ronde 1).
   //
   // ⚠ LE MOTIF TECHNIQUE (« KeyError: 'zone inconnue : ...' ») N'EST JAMAIS
   // MONTRÉ TEL QUEL : il s'adresse à qui débogue, pas à qui joue, et il est
@@ -228,7 +242,7 @@ export function useTriche(
   // réussi. Mieux vaut une ligne honnête (« issue inconnue ») qu'une ligne
   // qui invente un succès ou un refus au hasard.
   useEffect(() => {
-    if (!manuel || !world) return
+    if (!actif || !world) return
     if (world.render_id === dernierRenduVu.current) return
     dernierRenduVu.current = world.render_id
 
@@ -242,11 +256,16 @@ export function useTriche(
     }
 
     const { libelle } = enAttente.shift() as GesteEnAttente
+    // `manuel_refus` est publié sans condition de mode côté moteur (tâche
+    // 4 ter) : le bac à sable en profite pareillement. S'il ne l'était un
+    // jour QUE pour le manuel, un champ absent/vide ici écrirait quand même
+    // la ligne SANS mention de refus plutôt que de ne rien écrire — c'est
+    // déjà ce que fait `!!world.manuel_refus` sur un champ `undefined`.
     const refuse = !!world.manuel_refus
     const ligne = refuse ? `${libelle} (${t('refusé')})` : libelle
     noter(ligne)
     if (refuse) afficherBrievement(ligne)
-  }, [manuel, world, noter, afficherBrievement])
+  }, [actif, world, noter, afficherBrievement])
 
   useEffect(
     () => () => {

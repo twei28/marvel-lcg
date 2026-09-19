@@ -248,3 +248,86 @@ describe('un geste manuel refusé se voit, sans jamais dire l’inverse (correct
     expect(ajouterAuJournal).toHaveBeenCalledTimes(1)
   })
 })
+
+// --- Le bac à sable garde son journal (correction du 19/09/2026, ronde 2) --
+//
+// RÉGRESSION CORRIGÉE : l'effet de résolution ne tournait qu'en mode manuel
+// (`if (!manuel ...)`), hérité de l'ancien effet qui n'avait de sens qu'à ce
+// mode-là. Mais `emettreGeste` (correction ronde 1, ci-dessus) est devenu
+// l'UNIQUE chemin d'écriture au journal pour LES DEUX modes — le bac à sable
+// partage le même menu (`MenuTriche`) et les mêmes actions de pile. Chaque
+// geste de bac à sable partait donc dans la file d'attente, et RIEN ne l'en
+// sortait plus jamais : le journal restait muet pour tout ce mode. Un
+// mensonge (le défaut d'origine) échangé contre un silence — pire, et le
+// seul résultat que la revue ne voulait pas.
+//
+// ⚠ C'EST L'ABSENCE DE CE CAS QUI A LAISSÉ PASSER LA RÉGRESSION (constat de
+// la revue) : tous les cas précédents qui utilisent le VRAI `useTriche` sont
+// construits en mode manuel ; les cas « bac à sable » restants (plus haut,
+// bandeau et pile) n'utilisent qu'une `couche` FACTICE dont `emettreGeste`
+// appelle directement le déposeur — ils ne regardent jamais si un journal
+// existe derrière. Celui-ci utilise le vrai `useTriche`, un vrai
+// `ajouterAuJournal`, et déclenche le geste par le clic droit (`MenuTriche`),
+// le seul chemin du bac à sable — la touche clavier, elle, reste réservée au
+// mode manuel (`if (!manuel) return`, plus haut dans `useTriche`).
+describe('le bac à sable garde son journal (correction du 19/09/2026, ronde 2)', () => {
+  function mondeSandbox(surcharge: Partial<World> = {}): World {
+    return tableAvec(siege(), {
+      mode_manuel: false,
+      mode_sandbox: true,
+      render_id: 1,
+      manuel_refus: '',
+      villains: [VILAIN],
+      ...surcharge,
+    } as never)
+  }
+
+  function ouvrirMenuSur(id: number): void {
+    const noeud = document.createElement('div')
+    noeud.setAttribute('data-card-id', String(id))
+    document.body.appendChild(noeud)
+    fireEvent.contextMenu(noeud)
+  }
+
+  it('n’écrit rien tant que l’issue n’est pas connue, puis écrit la ligne au rendu suivant', async () => {
+    const ajouterAuJournal = vi.fn()
+    const avant = mondeSandbox()
+    const { getByText, rerender } = render(<Harness world={avant} ajouterAuJournal={ajouterAuJournal} />)
+
+    ouvrirMenuSur(VILAIN.id)
+    fireEvent.click(getByText('Incliner'))
+    await attendreLeReseau()
+    // Le cœur de la régression : sans le correctif, cette assertion passe
+    // aussi (rien n'est jamais écrit), mais celle du bloc suivant échoue —
+    // c'est elle qui distingue « pas encore » de « jamais ».
+    expect(ajouterAuJournal).not.toHaveBeenCalled()
+
+    const suivant = { ...avant, render_id: 2, manuel_refus: '' } as World
+    await act(async () => {
+      rerender(<Harness world={suivant} ajouterAuJournal={ajouterAuJournal} />)
+    })
+    expect(ajouterAuJournal).toHaveBeenCalledTimes(1)
+    expect(ajouterAuJournal).toHaveBeenCalledWith('Incliner — Rhino')
+  })
+
+  it('marque la ligne quand le moteur refuse, exactement comme en mode manuel', async () => {
+    const ajouterAuJournal = vi.fn()
+    const avant = mondeSandbox()
+    const { getByText, rerender } = render(<Harness world={avant} ajouterAuJournal={ajouterAuJournal} />)
+
+    ouvrirMenuSur(VILAIN.id)
+    fireEvent.click(getByText('Incliner'))
+    await attendreLeReseau()
+
+    const suivant = {
+      ...avant,
+      render_id: 2,
+      manuel_refus: "KeyError: 'zone inconnue : X'",
+    } as World
+    await act(async () => {
+      rerender(<Harness world={suivant} ajouterAuJournal={ajouterAuJournal} />)
+    })
+    expect(ajouterAuJournal).toHaveBeenCalledTimes(1)
+    expect(ajouterAuJournal).toHaveBeenCalledWith('Incliner — Rhino (refusé)')
+  })
+})
