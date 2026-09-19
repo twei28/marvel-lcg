@@ -120,6 +120,80 @@ describe('le clavier du mode manuel parle au moteur', () => {
     }))
   })
 
+  it('un chiffre nu, sans modificateur, pose des degats (cas de base)', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    fireEvent.keyDown(document, { key: '3' })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Damage(7, 3)'] }),
+    }))
+  })
+
+  it('Q incline la carte survolee', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    fireEvent.keyDown(document, { key: 'q' })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Exhaust(7)'] }),
+    }))
+  })
+
+  it('R melange la pile survolee', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(20)
+    fireEvent.keyDown(document, { key: 'r' })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.Shuffle('PlayerDeck')"] }),
+    }))
+  })
+
+  // LE CRITIQUE (retour de revue, 19/09/2026) : Ctrl/Cmd/Alt sont les
+  // raccourcis du NAVIGATEUR (Ctrl+F cherche, Ctrl+R recharge, Ctrl+1..9
+  // change d'onglet). Sans garde, survoler une carte pendant Ctrl+F la
+  // retournait — irreversible sur une carte face cachee. Le temoin qui
+  // compte est le REFUS : ni geste, ni `preventDefault` (le retour de
+  // `fireEvent.keyDown` est `true` quand l'evenement n'a PAS ete annule).
+  it('Ctrl+chiffre ne pose rien, et laisse le raccourci du navigateur agir', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    const nonAnnule = fireEvent.keyDown(document, { key: '3', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+    expect(nonAnnule).toBe(true)
+  })
+
+  it('Ctrl+F ne retourne rien, et laisse la recherche du navigateur s’ouvrir', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    const nonAnnule = fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+    expect(nonAnnule).toBe(true)
+  })
+
+  it('Cmd+F (Mac) ne retourne rien non plus', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    const nonAnnule = fireEvent.keyDown(document, { key: 'f', metaKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+    expect(nonAnnule).toBe(true)
+  })
+
+  // Alt sert DEJA a l'apercu immediat (Board.tsx) : une raison de plus pour
+  // qu'il ne declenche aucun geste de jeu ici.
+  it('Alt+chiffre ne pose rien : Alt sert deja a l’apercu immediat', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    const nonAnnule = fireEvent.keyDown(document, { key: '3', altKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+    expect(nonAnnule).toBe(true)
+  })
+
   it('ne devine pas le jeton d’une carte qui n’en a pas', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(4)

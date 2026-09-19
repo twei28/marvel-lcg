@@ -27,7 +27,14 @@ import type { World, WorldCard } from './world'
 export type PileTriche = {
   titre: string
   cartes: WorldCard[]
-  /** Pile du joueur : la carte part en main. Sinon : elle entre en jeu. */
+  /**
+   * Pile du joueur : la carte part en main. Sinon, c'est une pile du MONDE
+   * (Rencontre...) : ce que devient la carte dépend du CHEMIN qui la prend —
+   * voir `agirSurCarte` (clic sur une carte choisie dans la pile ouverte :
+   * mise en jeu ou révélée) et `executerGeste`, cas `'piocher'` (chiffre au
+   * clavier sur le dessus de la pile, à l'aveugle : zone de résolution,
+   * `ProcessingArea`, jamais en jeu directement).
+   */
   duJoueur: boolean
   /** Le nom moteur de la pile (`DeckType`), pour pouvoir la mélanger. */
   zone: string
@@ -217,7 +224,13 @@ export function useTriche(
           // décide ensuite où les envoyer avec les gestes qu'il a déjà
           // (Déplacer vers, au clic droit). On ne devine pas la suite à sa
           // place.
-          let tout = true
+          // ⚠ PAS DE REPLI SILENCIEUX : si la pile visée n'existe plus (son
+          // identifiant a péri entre le survol et la frappe) ou est déjà
+          // vide, la boucle ne tourne pas et rien n'a bougé — ce n'est PAS un
+          // succès. Sans ce cas de départ, `tout` restait vrai par défaut et
+          // le journal affirmait avoir sorti des cartes qui n'ont jamais
+          // bougé.
+          let tout = cartes.length > 0
           for (const carte of cartes) {
             const reussi = pileVisee?.duJoueur
               ? await triche.envoyerEnMain(carte.id)
@@ -283,6 +296,17 @@ export function useTriche(
 
     const surTouche = (evenement: KeyboardEvent) => {
       etatTouches.enregistrer(evenement)
+      // Ctrl/Cmd/Alt : ce sont des raccourcis du NAVIGATEUR (Ctrl+F cherche,
+      // Ctrl+R recharge, Ctrl+1..9 change d'onglet), pas du jeu. Sans cette
+      // garde, survoler une carte pendant Ctrl+F la retournait — un dos de
+      // pile ou une carte face cachée révélée, et la remettre face cachée ne
+      // fait pas oublier ce qu'on a lu : irréversible au sens fort. On sort
+      // AVANT tout `preventDefault`, pour laisser le navigateur faire son
+      // travail. Alt a en plus son propre rôle : il agrandit tout de suite la
+      // carte survolée (`Board.tsx`), une raison de plus pour qu'il ne
+      // déclenche jamais un geste de jeu ici. Seul Maj reste porteur de
+      // sens : il inverse un chiffre (retirer au lieu d'ajouter).
+      if (evenement.ctrlKey || evenement.metaKey || evenement.altKey) return
       // Une saisie de texte en cours : le chiffre tapé est un chiffre, pas un
       // geste de jeu.
       if (estZoneDeSaisie(document.activeElement)) return
