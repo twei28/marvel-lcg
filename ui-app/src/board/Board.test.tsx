@@ -4,14 +4,16 @@
 // Les cartes des packs FAN-MADE sont le cas qui compte le plus : elles n'auront
 // jamais de scan francais ni de page marvelcdb, donc ce bloc est le seul
 // francais que le joueur verra dessus.
-import { act, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { ApercuMarvelcdb, Board } from './Board'
+import { catalogueVide } from './catalogue'
+import { carteSurTable, siege, tableAvec } from './plateau-de-test'
 import { CLE_SCANS_FR } from './scans-fr'
 import { CODES_SCAN_FR } from './scans-fr-liste'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
-import type { Plateau } from './zones'
+import { construirePlateau, type Plateau } from './zones'
 import type { World } from './world'
 
 const AVEC_SCAN = '01001a'
@@ -166,5 +168,65 @@ describe('useEchelle : le plafond vient de la source d image', () => {
     avecDpr(2, () => {
       expect(mesurerEchelle(1286, 630)).toBeCloseTo(0.67, 2)
     })
+  })
+})
+
+// ALT OUVRE L'APERCU TOUT DE SUITE (tache 4 du plan mode manuel), sans
+// attendre les ~200ms du survol normal. Convention Tabletop Simulator, et le
+// seul raccourci qui ne change pas l'etat de la partie : il vaut donc en
+// partie ordinaire aussi, pas seulement en mode manuel.
+describe('Alt agrandit sans attendre le delai du survol', () => {
+  beforeEach(() => {
+    ;(globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverBouchon
+  })
+
+  function monterAvecUneCarte() {
+    const monde = tableAvec(
+      siege({ area_hero: [carteSurTable(1, '01001a', 'Hero', 'Spider-Man')] }),
+      { phase: 'Player 1 Turn', round_id: 1, prompt: '' }
+    )
+    const plateau = construirePlateau(monde, { playerId: 0, catalogue: catalogueVide })
+    const { container } = render(<Board world={monde} playerId={0} plateau={plateau} />)
+    const carte = container.querySelector('[data-card-id="1"]') as HTMLElement
+    return { container, carte }
+  }
+
+  it('ouvre l’apercu au keydown Alt, sans attendre le survol', () => {
+    const { carte } = monterAvecUneCarte()
+    act(() => {
+      fireEvent.mouseOver(carte)
+      fireEvent.keyDown(document, { key: 'Alt' })
+    })
+    expect(document.querySelector('.carte-apercu')).not.toBeNull()
+  })
+
+  it('referme l’apercu au keyup Alt', () => {
+    const { carte } = monterAvecUneCarte()
+    act(() => {
+      fireEvent.mouseOver(carte)
+      fireEvent.keyDown(document, { key: 'Alt' })
+    })
+    expect(document.querySelector('.carte-apercu')).not.toBeNull()
+    act(() => {
+      fireEvent.keyUp(document, { key: 'Alt' })
+    })
+    expect(document.querySelector('.carte-apercu')).toBeNull()
+  })
+
+  it('ne s’ouvre pas sans rien survoler', () => {
+    monterAvecUneCarte()
+    act(() => {
+      fireEvent.keyDown(document, { key: 'Alt' })
+    })
+    expect(document.querySelector('.carte-apercu')).toBeNull()
+  })
+
+  it('ignore les autres touches', () => {
+    const { carte } = monterAvecUneCarte()
+    act(() => {
+      fireEvent.mouseOver(carte)
+      fireEvent.keyDown(document, { key: 'Shift' })
+    })
+    expect(document.querySelector('.carte-apercu')).toBeNull()
   })
 })

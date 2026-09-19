@@ -891,6 +891,25 @@ export function Board({
 
   useEffect(() => () => window.clearTimeout(minuteur.current), [])
 
+  // Alt : l'aperçu tout de suite, sans le délai du survol. Convention
+  // Tabletop Simulator, et le seul raccourci qui ne change pas l'état de la
+  // partie — il n'est donc pas réservé au mode manuel, contrairement au
+  // clavier d'action (voir `manuel/clavier.ts`, `CoucheTriche.tsx`).
+  useEffect(() => {
+    const surAlt = (evenement: KeyboardEvent) => {
+      if (evenement.key !== 'Alt') return
+      window.clearTimeout(minuteur.current)
+      if (evenement.type === 'keydown') setApercuId(pointee.current)
+      else setApercuId(null)
+    }
+    document.addEventListener('keydown', surAlt)
+    document.addEventListener('keyup', surAlt)
+    return () => {
+      document.removeEventListener('keydown', surAlt)
+      document.removeEventListener('keyup', surAlt)
+    }
+  }, [])
+
   /* ---- Le glisser-deposer (8 septembre 2026) ------------------------------
      Le plateau tient le GESTE et le DESSIN ; les regles restent a la page, qui
      seule connait les options du moteur. Sans la prop `glisser`, tout ce bloc

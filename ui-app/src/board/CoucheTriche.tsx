@@ -9,9 +9,15 @@
 // Ce regroupement est délibéré : le mode doit pouvoir être remanié ou retiré
 // sans laisser de traces éparpillées dans un plateau de 2000 lignes.
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { scanUrl } from './card-model'
 import { t } from './langue'
+import {
+  creerEtatTouches,
+  interpreterTouche,
+  type CibleClavier,
+  type GesteClavier,
+} from './manuel/clavier'
 import { estModeManuel } from './manuel/mode'
 import { MenuTriche, type CibleTriche } from './MenuTriche'
 import * as triche from './triche'
@@ -33,6 +39,29 @@ type MenuOuvert = { cible: CibleTriche; x: number; y: number }
 const MANIGANCES = new Set(['MainScheme', 'SideScheme', 'Scheme'])
 /** Ce qui ne s'incline pas et n'a pas d'état : inutile de proposer ces entrées. */
 const SANS_ETAT = new Set(['Event', 'Treachery', 'Obligation', 'Resource'])
+
+/**
+ * Le jeton qu'un chiffre pose « naturellement » sur cette carte, pour le
+ * clavier (voir `manuel/clavier.ts`). MÊMES ENSEMBLES que le menu au clic
+ * droit, juste au-dessus : une manigance se mesure en menace, une carte SANS
+ * ÉTAT n'a rien à recevoir — mieux vaut ne rien poser qu'un jeton faux qu'on
+ * ne relira pas.
+ */
+function jetonNaturelDe(carte: WorldCard): 'degats' | 'menace' | 'aucun' {
+  if (MANIGANCES.has(carte.card_type)) return 'menace'
+  if (SANS_ETAT.has(carte.card_type)) return 'aucun'
+  return 'degats'
+}
+
+/**
+ * Un champ de saisie a le focus : le clavier du mode manuel ne doit pas le
+ * mordre. Sans cette garde, taper « 3 » dans une case de recherche infligerait
+ * 3 dégâts à la carte survolée par le pointeur.
+ */
+function estZoneDeSaisie(cible: Element | null): boolean {
+  if (!(cible instanceof HTMLElement)) return false
+  return cible.tagName === 'INPUT' || cible.tagName === 'TEXTAREA' || cible.isContentEditable
+}
 
 /** Parcourt le monde et indexe chaque carte par son identifiant d'objet. */
 function indexer(world: World | undefined): Map<number, WorldCard> {
@@ -150,7 +179,130 @@ export function useTriche(
     return () => document.removeEventListener('contextmenu', surClicDroit)
   }, [actif, index, piles])
 
-  return { actif, manuel, interventions, couche: { menu, pile, setMenu, setPile, noter } }
+  // Traduit un geste du clavier en appel du canal `triche.ts`, et le raconte.
+  const executerGeste = useCallback(
+    async (geste: GesteClavier) => {
+      switch (geste.geste) {
+        case 'retourner': {
+          const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          const reussi = await triche.retourner(geste.id)
+          noter(`${t('Retourner')} — ${nom}${reussi ? '' : ` (${t('refusé')})`}`)
+          return
+        }
+        case 'incliner': {
+          const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          const reussi = await triche.incliner(geste.id)
+          noter(`${t('Incliner')} — ${nom}${reussi ? '' : ` (${t('refusé')})`}`)
+          return
+        }
+        case 'melanger': {
+          const pileVisee = [...piles.values()].find((candidate) => candidate.zone === geste.zone)
+          const reussi = await triche.melanger(geste.zone)
+          noter(`${t('Mélanger')} — ${pileVisee?.titre ?? geste.zone}${reussi ? '' : ` (${t('refusé')})`}`)
+          return
+        }
+        case 'piocher': {
+          const pileVisee = [...piles.values()].find((candidate) => candidate.zone === geste.zone)
+          // On prend les `nombre` cartes du DESSUS (fin du tableau, voir
+          // `pilesParDessus`), dans l'ordre où elles se présentent.
+          const cartes = pileVisee ? pileVisee.cartes.slice(-geste.nombre).reverse() : []
+          let tout = true
+          for (const carte of cartes) {
+            const reussi = pileVisee?.duJoueur
+              ? await triche.envoyerEnMain(carte.id)
+              : await triche.deplacerVers(carte.id, 'HandsArea')
+            if (!reussi) tout = false
+          }
+          noter(
+            `${t('Piocher')} ${geste.nombre} — ${pileVisee?.titre ?? geste.zone}` +
+              `${tout ? '' : ` (${t('refusé')})`}`
+          )
+          return
+        }
+        case 'jetons': {
+          const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          if (geste.nature === 'menace') {
+            const reussi = await triche.poserMenace(geste.id, geste.nombre)
+            const libelle = geste.nombre >= 0 ? t('Poser de la menace') : t('Retirer de la menace')
+            noter(`${libelle} ${Math.abs(geste.nombre)} — ${nom}${reussi ? '' : ` (${t('refusé')})`}`)
+            return
+          }
+          // Puzzle.Damage ne sait pas soigner avec une valeur négative : le
+          // « retirer » du clavier (Maj) passe par Puzzle.Heal, comme le menu.
+          const reussi =
+            geste.nombre >= 0
+              ? await triche.blesser(geste.id, geste.nombre)
+              : await triche.soigner(geste.id, -geste.nombre)
+          const libelle = geste.nombre >= 0 ? t('Infliger des dégâts') : t('Soigner')
+          noter(`${libelle} ${Math.abs(geste.nombre)} — ${nom}${reussi ? '' : ` (${t('refusé')})`}`)
+        }
+      }
+    },
+    [index, piles, noter]
+  )
+
+  // L'UNIQUE écoute clavier du mode manuel (voir `manuel/clavier.ts`) : ce
+  // qu'on fait cent fois par partie doit se faire d'une touche. Un
+  // `pointermove` au document retient ce qui est survolé ; `keydown` le
+  // traduit en geste via `interpreterTouche`, PURE, puis l'envoie. La tâche 5
+  // (glisser-déposer) lira `estToucheEnfoncee` plutôt que de poser sa propre
+  // écoute : deux écoutes concurrentes sur les mêmes événements sont une
+  // source de bugs d'ordonnancement.
+  const survole = useRef<number | undefined>(undefined)
+  const etatTouches = useRef(creerEtatTouches()).current
+
+  useEffect(() => {
+    if (!manuel) return
+
+    const surPointeur = (evenement: PointerEvent) => {
+      const cible = evenement.target as HTMLElement | null
+      const noeud = cible?.closest?.('[data-card-id]') as HTMLElement | null
+      const id = noeud ? Number(noeud.getAttribute('data-card-id')) : NaN
+      survole.current = Number.isFinite(id) ? id : undefined
+    }
+
+    const cibleClavier = (id: number): CibleClavier | undefined => {
+      const pileVisee = piles.get(id)
+      if (pileVisee) return { genre: 'pile', zone: pileVisee.zone }
+      const carte = index.get(id)
+      if (!carte) return undefined
+      return { genre: 'carte', id, jetonNaturel: jetonNaturelDe(carte) }
+    }
+
+    const surTouche = (evenement: KeyboardEvent) => {
+      etatTouches.enregistrer(evenement)
+      // Une saisie de texte en cours : le chiffre tapé est un chiffre, pas un
+      // geste de jeu.
+      if (estZoneDeSaisie(document.activeElement)) return
+      if (survole.current === undefined) return
+      const cible = cibleClavier(survole.current)
+      if (!cible) return
+      const geste = interpreterTouche({ cle: evenement.key, majuscule: evenement.shiftKey }, cible)
+      if (!geste) return
+      evenement.preventDefault()
+      void executerGeste(geste)
+    }
+
+    const surRelachement = (evenement: KeyboardEvent) => etatTouches.enregistrer(evenement)
+
+    document.addEventListener('pointermove', surPointeur)
+    document.addEventListener('keydown', surTouche)
+    document.addEventListener('keyup', surRelachement)
+    return () => {
+      document.removeEventListener('pointermove', surPointeur)
+      document.removeEventListener('keydown', surTouche)
+      document.removeEventListener('keyup', surRelachement)
+    }
+  }, [manuel, index, piles, executerGeste, etatTouches])
+
+  return {
+    actif,
+    manuel,
+    interventions,
+    couche: { menu, pile, setMenu, setPile, noter },
+    /** Pour la tâche 5 (glisser-déposer) : lire l'état sans poser d'écoute. */
+    estToucheEnfoncee: etatTouches.estEnfoncee,
+  }
 }
 
 export type CoucheTricheProps = {

@@ -594,6 +594,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Maintenir pour jouer': 'Hold to play',
   'Maintenir pour utiliser': 'Hold to use',
 
+  // ---- Mode manuel : les raccourcis clavier (Tabletop Simulator) ----
+  'Retourner': 'Flip',
+  'Piocher': 'Draw',
+
   // ---- board/BandeauAbsent.tsx ----
   'est déconnecté': 'is disconnected',
   'Sa reprise dure jusqu’à la fin de son tour.':
