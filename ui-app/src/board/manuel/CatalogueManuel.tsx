@@ -21,8 +21,13 @@ import type { Catalogue } from '../catalogue'
 export type CatalogueManuelProps = {
   catalogue: Catalogue
   onFermer: () => void
-  /** La carte choisie part en zone de résolution — voir `triche.creerCarte`. */
-  onPoser: (cardId: string) => void
+  /**
+   * La carte choisie part en zone de résolution — voir `triche.creerCarte`.
+   * Le NOM transite avec l'identifiant (ronde de correction 1, tâche 6) :
+   * sans lui, le journal de partie n'aurait que le card_id à écrire, illisible
+   * pour qui relit la partie plus tard.
+   */
+  onPoser: (cardId: string, nom: string) => void
 }
 
 export function CatalogueManuel({ catalogue, onFermer, onPoser }: CatalogueManuelProps) {
@@ -60,7 +65,7 @@ export function CatalogueManuel({ catalogue, onFermer, onPoser }: CatalogueManue
               type="button"
               key={resultat.card_id}
               className="pile-triche-carte catalogue-manuel-resultat"
-              onClick={() => onPoser(resultat.card_id)}
+              onClick={() => onPoser(resultat.card_id, resultat.name)}
             >
               <img src={scanUrl(resultat.pic_id ?? resultat.card_id)} alt={resultat.name} loading="lazy" />
               <span>{resultat.name}</span>

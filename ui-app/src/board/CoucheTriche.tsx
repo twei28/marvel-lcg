@@ -21,6 +21,7 @@ import {
   type GesteClavier,
 } from './manuel/clavier'
 import { estModeManuel } from './manuel/mode'
+import { MenuTable } from './manuel/MenuTable'
 import { MenuTriche, type CibleTriche } from './MenuTriche'
 import * as triche from './triche'
 import type { World, WorldCard } from './world'
@@ -145,6 +146,11 @@ export function useTriche(
   const actif = world?.mode_sandbox === true || manuel
   const [menu, setMenu] = useState<MenuOuvert | undefined>(undefined)
   const [pile, setPile] = useState<PileTriche | undefined>(undefined)
+  // Le menu de la TABLE (tâche 6, ronde de correction 1) : un clic droit hors
+  // de toute carte, en mode manuel — c'est une action de table (« Faire
+  // apparaître une carte »), pas une action liée à une carte précise. Voir
+  // `MenuTable.tsx`.
+  const [menuTable, setMenuTable] = useState<{ x: number; y: number } | undefined>(undefined)
   const [interventions, setInterventions] = useState<string[]>([])
 
   const index = useMemo(() => (actif ? indexer(world) : new Map()), [actif, world])
@@ -283,7 +289,21 @@ export function useTriche(
     const surClicDroit = (evenement: MouseEvent) => {
       const cible = evenement.target as HTMLElement | null
       const noeud = cible?.closest?.('[data-card-id]') as HTMLElement | null
-      if (!noeud) return
+      if (!noeud) {
+        // Clic droit dans le vide : c'est une action de TABLE (« Faire
+        // apparaître une carte »), pas une action liée à une carte précise
+        // (revue, ronde de correction 1 — le jour où l'on cherche une carte,
+        // c'est justement parce qu'il en manque une, on ne doit pas avoir à en
+        // viser une pour l'atteindre). Mode manuel uniquement : le bac à
+        // sable a un moteur pour distribuer des cartes normalement, il n'a
+        // pas besoin de cette échappatoire, et son clic droit dans le vide
+        // doit garder son comportement d'avant (rien, menu du navigateur).
+        if (manuel) {
+          evenement.preventDefault()
+          setMenuTable({ x: evenement.clientX, y: evenement.clientY })
+        }
+        return
+      }
       const id = Number(noeud.getAttribute('data-card-id'))
       if (!Number.isFinite(id)) return
 
@@ -310,7 +330,7 @@ export function useTriche(
     }
     document.addEventListener('contextmenu', surClicDroit)
     return () => document.removeEventListener('contextmenu', surClicDroit)
-  }, [actif, index, piles])
+  }, [actif, index, piles, manuel])
 
   // Traduit un geste du clavier en appel du canal `triche.ts`. La ligne
   // n'est pas écrite ici : `emettreGeste` la retarde jusqu'au rendu qui
@@ -409,6 +429,15 @@ export function useTriche(
   // coup sur coup se marcheraient dessus. `enVolRef` empêche tout départ
   // concurrent ; `annulationEnCours` (rendu) dit au joueur que quelque chose
   // se passe pendant l'attente.
+  //
+  // ⚠ ON IGNORE LA PRESSION SUIVANTE, ON NE LA MET PAS EN FILE — CHOIX
+  // DÉLIBÉRÉ (revue, ronde de correction 1) : une file laisserait le joueur
+  // empiler cinq Ctrl+Z et regarder sa partie se dérouler à l'envers sans
+  // savoir où elle s'arrêtera. Ignorer pendant qu'une annulation est en vol,
+  // avec un signe visible que quelque chose se passe (`annulationEnCours`),
+  // est le comportement juste : une fois l'annulation en cours terminée, le
+  // joueur VOIT le résultat et presse à nouveau s'il en veut une seconde, en
+  // connaissance de cause. NE PAS « améliorer » ceci en file d'attente.
   const enVolRef = useRef(false)
   const [annulationEnCours, setAnnulationEnCours] = useState(false)
 
@@ -509,7 +538,17 @@ export function useTriche(
     actif,
     manuel,
     interventions,
-    couche: { menu, pile, setMenu, setPile, emettreGeste, avisRefus, annulationEnCours },
+    couche: {
+      menu,
+      pile,
+      setMenu,
+      setPile,
+      emettreGeste,
+      avisRefus,
+      annulationEnCours,
+      menuTable,
+      setMenuTable,
+    },
     /** Pour la tâche 5 (glisser-déposer) : lire l'état sans poser d'écoute. */
     estToucheEnfoncee: etatTouches.estEnfoncee,
   }
@@ -529,14 +568,28 @@ export type CoucheTricheProps = {
 }
 
 export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide }: CoucheTricheProps) {
-  const { menu, pile, setMenu, setPile, emettreGeste, avisRefus, annulationEnCours } = couche
+  const {
+    menu,
+    pile,
+    setMenu,
+    setPile,
+    emettreGeste,
+    avisRefus,
+    annulationEnCours,
+    menuTable,
+    setMenuTable,
+  } = couche
   // Le catalogue (tâche 6) : une carte qui n'était pas dans la partie. Mode
-  // manuel uniquement, voir l'entrée du menu plus bas.
+  // manuel uniquement, ouvert depuis le menu de la TABLE (clic droit hors de
+  // toute carte — voir `MenuTable.tsx` et le menu plus bas).
   const [catalogueOuvert, setCatalogueOuvert] = useState(false)
   if (!actif) return null
 
-  const faireApparaitre = async (cardId: string) => {
-    await emettreGeste(`${t('Faire apparaître')} — ${cardId}`, () => triche.creerCarte(cardId))
+  // ⚠ LE NOM TRANSITE AVEC L'IDENTIFIANT (revue, ronde de correction 1) : le
+  // journal existe pour qu'on relise une partie des jours après, souvent
+  // quelqu'un d'autre — un card_id nu (« 45017 ») ne dit rien à personne.
+  const faireApparaitre = async (cardId: string, nom: string) => {
+    await emettreGeste(`${t('Faire apparaître')} — ${nom}`, () => triche.creerCarte(cardId))
     setCatalogueOuvert(false)
   }
 
@@ -602,7 +655,18 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           y={menu.y}
           onFermer={() => setMenu(undefined)}
           emettreGeste={emettreGeste}
-          manuel={manuel}
+        />
+      ) : null}
+
+      {/* Le menu de la TABLE (tâche 6, ronde de correction 1) : un clic droit
+          hors de toute carte, en mode manuel. « Faire apparaître une carte »
+          est une action de table, pas une action liée à une carte précise —
+          elle n'a donc plus sa place dans MenuTriche. */}
+      {manuel && menuTable ? (
+        <MenuTable
+          x={menuTable.x}
+          y={menuTable.y}
+          onFermer={() => setMenuTable(undefined)}
           onFaireApparaitre={() => setCatalogueOuvert(true)}
         />
       ) : null}
@@ -611,7 +675,7 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
         <CatalogueManuel
           catalogue={catalogue}
           onFermer={() => setCatalogueOuvert(false)}
-          onPoser={(cardId) => void faireApparaitre(cardId)}
+          onPoser={(cardId, nom) => void faireApparaitre(cardId, nom)}
         />
       ) : null}
 

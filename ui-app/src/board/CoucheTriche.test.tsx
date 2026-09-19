@@ -29,6 +29,8 @@ function coucheVide() {
     }),
     avisRefus: undefined as string | undefined,
     annulationEnCours: false,
+    menuTable: undefined as { x: number; y: number } | undefined,
+    setMenuTable: vi.fn(),
   }
 }
 
@@ -267,6 +269,10 @@ describe('un geste manuel refusé se voit, sans jamais dire l’inverse (correct
 })
 
 // --- Faire apparaître une carte du catalogue (tâche 6) ---------------------
+// « Faire apparaître une carte » est une action de TABLE (ronde de
+// correction 1) : elle s'atteint par un clic droit HORS de toute carte, pas
+// via le menu d'une carte précise — le jour où l'on cherche une carte, c'est
+// justement parce qu'il en manque une.
 describe('faire apparaître une carte, en mode manuel', () => {
   function ouvrirMenuSur(id: number): void {
     const noeud = document.createElement('div')
@@ -275,28 +281,47 @@ describe('faire apparaître une carte, en mode manuel', () => {
     fireEvent.contextMenu(noeud)
   }
 
+  /** Un clic droit dans le vide : aucun `data-card-id` sous le curseur. */
+  function clicDroitSurTable(): void {
+    const table = document.createElement('div')
+    document.body.appendChild(table)
+    fireEvent.contextMenu(table)
+  }
+
   const catalogueDeTest: Catalogue = {
     ...catalogueVide,
     chercherParNom: (fragment) =>
       fragment.length < 2 ? [] : [{ card_id: '01094', name: 'Rhino' }],
   }
 
-  it('le menu propose l’entrée, le clic ouvre le catalogue', async () => {
+  it('le clic droit sur une carte n’offre plus « Faire apparaître » : ce n’est pas une action de carte', async () => {
     render(<Harness world={mondeManuel()} catalogue={catalogueDeTest} />)
     ouvrirMenuSur(VILAIN.id)
+    expect(screen.getByText('Incliner')).toBeTruthy()
+    expect(screen.queryByText('Faire apparaître une carte')).toBeNull()
+  })
+
+  it('le clic droit dans le vide ouvre le menu de la table, le clic ouvre le catalogue', async () => {
+    render(<Harness world={mondeManuel()} catalogue={catalogueDeTest} />)
+    clicDroitSurTable()
     fireEvent.click(screen.getByText('Faire apparaître une carte'))
     expect(screen.getByRole('searchbox')).toBeTruthy()
-    // Le menu de la carte visée s'est bien fermé : c'est un dialogue à part,
-    // pas une entrée de plus dans le menu de Rhino.
-    expect(screen.queryByText('Retourner')).toBeNull()
+  })
+
+  it('ne s’ouvre pas hors du mode manuel : le bac à sable garde son clic droit dans le vide inerte', async () => {
+    const monde = { ...mondeManuel(), mode_manuel: false, mode_sandbox: true } as World
+    render(<Harness world={monde} catalogue={catalogueDeTest} />)
+    clicDroitSurTable()
+    expect(screen.queryByText('Faire apparaître une carte')).toBeNull()
   })
 
   it('poser une carte du catalogue l’envoie en zone de résolution, et ferme le catalogue', async () => {
     const ajouterAuJournal = vi.fn()
-    render(
-      <Harness world={mondeManuel()} ajouterAuJournal={ajouterAuJournal} catalogue={catalogueDeTest} />
+    const avant = mondeManuel()
+    const { rerender } = render(
+      <Harness world={avant} ajouterAuJournal={ajouterAuJournal} catalogue={catalogueDeTest} />
     )
-    ouvrirMenuSur(VILAIN.id)
+    clicDroitSurTable()
     fireEvent.click(screen.getByText('Faire apparaître une carte'))
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'rhi' } })
     fireEvent.click(screen.getByText('Rhino'))
@@ -306,6 +331,18 @@ describe('faire apparaître une carte, en mode manuel', () => {
       body: JSON.stringify({ commands: ["Puzzle.MoveTo('01094', 'ProcessingArea', 'Top')"] }),
     }))
     expect(screen.queryByRole('searchbox')).toBeNull()
+
+    // Le nom, pas seulement l'identifiant : le journal doit rester lisible
+    // pour qui relit la partie plus tard (ronde de correction 1). La ligne
+    // n'est écrite qu'au rendu suivant (voir la résolution différée d'un
+    // geste, plus haut).
+    const suivant = { ...avant, render_id: 2, manuel_refus: '' } as World
+    await act(async () => {
+      rerender(
+        <Harness world={suivant} ajouterAuJournal={ajouterAuJournal} catalogue={catalogueDeTest} />
+      )
+    })
+    expect(ajouterAuJournal).toHaveBeenCalledWith('Faire apparaître — Rhino')
   })
 })
 

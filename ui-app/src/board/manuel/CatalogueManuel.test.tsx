@@ -41,12 +41,12 @@ describe('la recherche dans le catalogue', () => {
     expect(screen.getByText('Rhino')).toBeTruthy()
   })
 
-  it('pose la carte choisie', () => {
+  it('pose la carte choisie, identifiant ET nom (le journal doit dire le nom)', () => {
     const poser = vi.fn()
     render(<CatalogueManuel catalogue={catalogue} onFermer={() => {}} onPoser={poser} />)
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'rhi' } })
     fireEvent.click(screen.getByText('Rhino'))
-    expect(poser).toHaveBeenCalledWith('01094')
+    expect(poser).toHaveBeenCalledWith('01094', 'Rhino')
   })
 
   it('ferme au clic sur Fermer', () => {

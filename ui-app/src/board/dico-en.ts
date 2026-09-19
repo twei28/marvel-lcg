@@ -611,6 +611,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Faire apparaître': 'Bring in',
   'Cherche un nom, à partir de deux lettres': 'Search a name, from two letters',
   'Nom de la carte…': 'Card name…',
+  // Le menu de la TABLE (ronde de correction 1) : titre du menu ouvert par un
+  // clic droit hors de toute carte.
+  'Table': 'Table',
 
   // ---- Mode manuel : le glisser-déposer libre (board/manuel/glisser-manuel.ts) ----
   'Lâche la carte sur une pile': 'Drop the card on a pile',
