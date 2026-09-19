@@ -80,6 +80,12 @@ export const prefs = {
     },
     lastScenario()   { return read().lastScenario || null; },
     setLastScenario(id) { const o = read(); o.lastScenario = id; write(o); },
+    /** Vilain choisi pour une manigance a vilain interchangeable (Fear No Evil) :
+     *  { manigance -> underling }. La tuile montre ce vilain, la modale le pre-coche. */
+    underlingsMemoire() { return read().underlings || {}; },
+    setUnderling(manigance, underlingId) {
+        const o = read(); o.underlings = o.underlings || {}; o.underlings[manigance] = underlingId; write(o);
+    },
 
     // Decks importés/sauvegardés localement (marvelcdb, etc.)
     savedDecks()     { return read().savedDecks || []; },

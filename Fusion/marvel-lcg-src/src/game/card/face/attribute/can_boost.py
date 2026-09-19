@@ -23,13 +23,25 @@ class CanBoost(CardFace):
         if num <= 0:
             return
 
+        # AJOUT (18/09/2026, Fear No Evil, 60163b Public Support HIGH) : la
+        # fenetre « would be given a facedown boost card », pour TOUTES les
+        # sources (activation, James Wesley, Bag of Tricks...). Avant, seule la
+        # carte de l'activation pouvait etre interceptee (WhenEnemyActivate).
+        would = Message.WhenEnemyWouldBeGivenBoostCards(self, num, by_effect, would_atk_message)
+        would.Send()
+        if would.is_be_instead or would.num <= 0:
+            return
+        num = would.num
+
         def process(face: 'CardFace'):
             self.GiveBoostCard(face, by_effect, would_atk_message)
 
         from game.operate.worlds import Worlds
         Worlds.PopEncounterCards(num, process, True, by_effect)
 
-        Message.AfterUnitGainFaceDownBoostCards_Text(self.card.CastTo(Minion|Villain), num, by_effect)
+        # (18/09/2026) plus de `CastTo(Minion|Villain)` : un allie villainous
+        # (Black Cat 60169 ralliee) ou un heros villainous (dd001a) y passe aussi.
+        Message.AfterUnitGainFaceDownBoostCards_Text(self, num, by_effect)
 
     def GiveBoostCard(self, face: 'CardFace', by_effect: 'Effect', would_atk_message: 'Message.WhenUnitWouldAttack|Message.WhenUnitWouldScheme|None'=None):
         from game.card.face.card_type import Minion

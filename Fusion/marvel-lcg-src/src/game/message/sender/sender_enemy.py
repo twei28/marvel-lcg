@@ -62,6 +62,21 @@ class SenderEnemy:
         def engaged_player(self) -> 'Player':
             return self.player
 
+    class WhenEnemyWouldBeGivenBoostCards(TriggerUnitMessage, CanBeInstead):
+        """AJOUT (18/09/2026, Fear No Evil, 60163b Public Support HIGH « When an
+        enemy would be given a facedown boost card ... instead ») : envoye par
+        `CanBoost.GiveFacedownBoostCardsInternal` AVANT de piocher, quelle que
+        soit la source (activation, James Wesley, Bag of Tricks). `num` est
+        modifiable ; `SetBeInstead` annule toute la remise."""
+        def __init__(self, unit: 'Unit2', num: int, by_effect: 'Effect', would_message: 'Message.WhenUnitWouldAttack|Message.WhenUnitWouldScheme|None') -> None:
+            self.num: int = num
+            self.by_effect: Final = by_effect
+            self.would_atk_message: Final = would_message
+            super().__init__(trigger=unit)
+
+        def SetNum(self, num: int) -> None:
+            self.num = max(0, num)
+
     class AfterEnemyGivenBoostCard(TriggerUnitMessage, AttackerNoneOldMessage):
         def __init__(self, unit: 'Minion|Villain', boost_card: 'CardFace', by_effect: 'Effect', would_message: 'Message.WhenUnitWouldAttack|Message.WhenUnitWouldScheme|None') -> None:
             from game.message import Message

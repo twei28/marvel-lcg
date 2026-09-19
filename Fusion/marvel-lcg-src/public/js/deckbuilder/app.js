@@ -16,6 +16,7 @@
 "use strict";
 import { api, cardImageUrl, fileName } from "/public/js/prepare/api.js";
 import { cards } from "/public/js/prepare/cards.js";
+import { nomAvecAuteur, auteurUnique } from "/public/js/prepare/auteur.js";
 import { catalog } from "/public/js/prepare/catalog.js";
 // LEGACY (13/09/2026) : en mode Legacy, on construit avec ce qu'on a. Les
 // cartes des boîtes pas encore ouvertes restent visibles, grisées, et ne
@@ -95,6 +96,32 @@ function libelleType(type) { return t(LIBELLES_TYPES[type] || type); }
 function classeCss(aspect) { return String(aspect).replace(/[^a-z]/gi, "").toLowerCase(); }
 /** Libelle affiche (« 'Pool » -> Pool). */
 function labelAspect(aspect) { return String(aspect).replace(/^'/, ""); }
+
+/** Createur d'un aspect FAN-MADE (Determination, Venomized) : la seule valeur
+ *  `custom` que portent toutes ses cartes. Vide pour les aspects officiels.
+ *  Bati une fois sur le pool, qui porte deja tout le catalogue joueur. */
+let _auteurParAspect = null;
+function auteurDeLAspect(aspect) {
+    if (!_auteurParAspect) {
+        const toutes = cards.all();
+        // Les filtres peuvent se dessiner avant le chargement : on ne fige pas
+        // un index vide, il se rebatira au rendu suivant.
+        if (!toutes.length) return "";
+        const parClasse = new Map();
+        for (const c of toutes) {
+            const cl = c && c.class;
+            if (!cl) continue;
+            if (!parClasse.has(cl)) parClasse.set(cl, []);
+            parClasse.get(cl).push(c.custom);
+        }
+        _auteurParAspect = new Map();
+        for (const [cl, customs] of parClasse) {
+            const a = auteurUnique(customs);
+            if (a) _auteurParAspect.set(cl, a);
+        }
+    }
+    return _auteurParAspect.get(aspect) || "";
+}
 const CLE_BROUILLONS = "mc-deckbuilder-drafts";
 
 const etat = {
@@ -265,7 +292,8 @@ function rendreFiltres() {
             [...(estStanLee(etat.hero) ? ["Hero"] : []), ...ASPECTS, ...CLASSES_NEUTRES].map((a) => el("button", {
                 class: `db-chip aspect-${classeCss(a)}${etat.filtres.aspects.has(a) ? " est-actif" : ""}`,
                 onclick: () => { basculer(etat.filtres.aspects, a); rendreFiltres(); rendreGrille(); },
-            }, a === "Hero" ? "Signature" : labelAspect(a)))),
+            }, a === "Hero" ? "Signature"
+                : nomAvecAuteur(labelAspect(a), auteurDeLAspect(a), true)))),
         el("div", { class: "db-chips" },
             ["Ally", "Event", "Support", "Upgrade", "Resource"].map((t) => el("button", {
                 class: `db-chip${etat.filtres.types.has(t) ? " est-actif" : ""}`,

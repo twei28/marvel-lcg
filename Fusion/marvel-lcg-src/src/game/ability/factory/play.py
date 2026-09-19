@@ -125,6 +125,29 @@ class AbilityFactoryPlay:
 
         selector.selector_filter.AddParameter(check_effect_fn=max_per_unit)
 
+        # CORRECTIF (18/09/2026, pack officiel Fear No Evil, Kingpin A1 « cannot
+        # have attachments or upgrades attached ») : le JEU d'une amelioration
+        # ne consultait pas `CanAttachTo` (seuls un attachement revele,
+        # attachment.py:88, et les finders canbe_attach_by/to, checker.py:282,
+        # le font) : Kingpin etait offert comme cible de Webbed Up, la carte
+        # payee puis defaussee a l'attache (journal xc2084). On passe par la
+        # regle complete : MaxPerUnit, `Message.CheckIfFaceCanAttachTo`
+        # (asset.py:69, envoye depuis le 18/09/2026) et la cible imprimee.
+        # ⚠ Une premiere pose de ce bloc etait tombee dans
+        # `CanPlayThisSupportCardSelect` (la fabrique des SOUTIENS, juste
+        # au-dessus) : evalue pour Helicarrier, jamais pour une amelioration.
+        # C'est ICI, dans la fabrique des AMELIORATIONS, qu'il agit.
+        # Pas de recursion : `Upgrade.CanAttachTo` (upgrade.py:84) relit ce
+        # selecteur par `CheckFinder(face, None)`, et sans effet les
+        # `check_effect_fns` ne sont pas evalues (selector_filter.py:131).
+        def peut_s_attacher(effect: 'Effect', target: 'CardFace') -> bool:
+            from game.card.face.base import Asset2
+            if not Asset2.IsType(effect.this):
+                return True
+            return effect.this.CastTo(Asset2).CanAttachTo(target)
+
+        selector.selector_filter.AddParameter(check_effect_fn=peut_s_attacher)
+
         # For "45017", `CanBeAttachedTo`
         # assert select in [Select.YourIdentity, Select.OnFieldPlayers, Select.OnFieldAllies, Select.OnFieldSideSchemes, Select.OnFieldMinions, Select.OnFieldEnemies, Select.OnFieldFriendlyCharacters, Select.OnFieldSchemes, Select.OnFieldCharacters, Select.YourAllies, Select.MainSchemes]
         return AbilityFactory.WhenInYourPlayTurn(

@@ -14,6 +14,18 @@
 "use strict";
 
 export const MECHANTS_INFO = {
+    // Fear No Evil (18/09/2026)
+    "60086": {
+        bio: "Joseph, dit Hammerhead, a gravi tous les échelons de la Maggia : simple homme de main, puis chef de famille. Après un accident qui aurait dû le tuer, un chirurgien lui greffe un crâne en adamantium, plat comme une enclume, qui fait de lui un bélier vivant. Nostalgique des gangsters d'autrefois, costume rayé et mitraillette, il règne sur son territoire à coups de tête et ne se salit les mains que pour les grandes occasions.",
+        bioEn: "Joseph, known as Hammerhead, climbed every rung of the Maggia: a mere button man, then head of the family. After an accident that should have killed him, a surgeon grafted an adamantium skull onto him, flat as an anvil, turning him into a living battering ram. Nostalgic for the gangsters of old, pinstripe suit and tommy gun, he rules his turf with head-butts and only gets his hands dirty on special occasions.",
+        civil: "Joseph",
+        equipes: "Maggia",
+        equipesEn: "Maggia",
+        ennemis: "Spider-Man, Daredevil, Luke Cage",
+        ennemisEn: "Spider-Man, Daredevil, Luke Cage",
+        apparition: "The Amazing Spider-Man #113 (1972)",
+    },
+
     "gb001": {
         bio: "Sur un monde aride où les prières restent sans réponse, Gorr perd sa famille et maudit des dieux qui n'ont jamais daigné écouter. Le jour où deux d'entre eux tombent du ciel, mourants, il s'empare de All-Black, la Nécro-épée, une lame vivante taillée dans l'ombre d'un dieu. Depuis, il traverse les âges pour tenir un seul serment : que plus aucun dieu ne survive. Il croise Thor à trois époques de sa vie, et c'est la première fois que le dieu du tonnerre se demande s'il mérite ses fidèles.",
         bioEn: "On a barren world where prayers go unanswered, Gorr loses his family and curses gods who never deigned to listen. The day two of them fall from the sky, dying, he seizes All-Black the Necrosword, a living blade cut from a god's shadow. Since then he has crossed the ages to keep a single vow: that no god shall survive. He crosses paths with Thor at three points in the thunder god's life, and for the first time Thor wonders whether he deserves his worshippers.",

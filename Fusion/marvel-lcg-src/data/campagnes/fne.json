@@ -1,0 +1,223 @@
+{
+    "version": "1.0",
+    "code": "fne",
+    "cle_extension": "60. Fear No Evil",
+    "nom": "Fear No Evil",
+    "nom_en": "Fear No Evil",
+    "resume": "Une vague de crime orchestrée par le Caïd. Cinq affaires à résoudre dans l'ordre de votre choix, chacune contre un sous-fifre différent ; avant chaque partie, deux affaires non résolues progressent au hasard et une affaire qui progresse trois fois est perdue. Quand les cinq sont résolues, gagnées ou perdues, Kingpin vous attend.",
+    "resume_en": "A crime wave orchestrated by the Kingpin. Five cases to solve in any order, each against a different underling villain; before each game, two unresolved cases progress at random, and a case that progresses three times is lost. Once all five are resolved, won or lost, Kingpin awaits.",
+    "ordre_libre": true,
+    "pages_regles": [
+        "00-campagne-regles-1.jpg",
+        "00-campagne-regles-2.jpg",
+        "00-campagne-regles-3.jpg"
+    ],
+    "pages_intro": [
+        "00-campagne-intro-1.jpg"
+    ],
+    "pages_vilains": [
+        "00-vilains-1.jpg",
+        "00-vilains-2.jpg"
+    ],
+    "expert": {
+        "pv_persistants": true,
+        "note": "Campagne experte : les PV restants sont reportés d'un scénario au suivant (livret p. 9), une défaite fait progresser le scénario perdu, et la victoire finale contre Kingpin exige de rejouer tant qu'il reste un environnement Completed à retourner."
+    },
+    "vilains": [
+        {
+            "id": "hammerhead",
+            "nom": "Hammerhead",
+            "ordre": 1
+        },
+        {
+            "id": "bullseye",
+            "nom": "Bullseye",
+            "ordre": 2
+        },
+        {
+            "id": "electro",
+            "nom": "Electro",
+            "ordre": 3
+        },
+        {
+            "id": "purple_man",
+            "nom": "Purple Man",
+            "ordre": 4
+        },
+        {
+            "id": "typhoid_mary",
+            "nom": "Typhoid Mary",
+            "ordre": 4
+        }
+    ],
+    "scenarios": [
+        {
+            "id": "art_museum_heist",
+            "manigance": true,
+            "numero": 1,
+            "nom": "Art Museum Heist",
+            "nom_fr": "Le casse du musée",
+            "resume": "L'alarme silencieuse du musée d'art vient de se déclencher ; les gardes ne répondent plus. Quelqu'un vole les œuvres au grand jour, comme s'il voulait être vu.",
+            "enjeu": "Complété : chaque identité commence la partie suivante avec une carte de statut robuste. Échoué : chaque joueur commence étourdi ou désorienté (les deux en expert).",
+            "pages": {
+                "intro": [
+                    "01-art_museum_heist-intro-1.jpg"
+                ],
+                "regles": [
+                    "01-art_museum_heist-regles-1.jpg"
+                ]
+            },
+            "environnement": "60205a,60205b",
+            "victoire": []
+        },
+        {
+            "id": "the_getaway",
+            "manigance": true,
+            "numero": 2,
+            "nom": "The Getaway",
+            "nom_fr": "La fuite",
+            "resume": "Un coupé jaune file vers le tunnel avec l'argent de la banque. Chaque fin de round où la menace n'est pas retombée à zéro, la poursuite accélère.",
+            "enjeu": "Complété : après les mulligans, chaque joueur peut chercher une amélioration dans son deck. Échoué : chaque joueur révèle un attachement du deck rencontre à la mise en place.",
+            "pages": {
+                "intro": [
+                    "02-the_getaway-intro-1.jpg"
+                ],
+                "regles": [
+                    "02-the_getaway-regles-1.jpg"
+                ]
+            },
+            "environnement": "60206a,60206b",
+            "victoire": []
+        },
+        {
+            "id": "protection_racket",
+            "manigance": true,
+            "numero": 3,
+            "nom": "Protection Racket",
+            "nom_fr": "Le racket",
+            "resume": "Des voyous cassent une boutique de quartier. Chaque héros protège son propre commerce : un complot principal par joueur, et l'ennemi ne pose sa menace que sur celui du joueur qu'il vise.",
+            "enjeu": "Complété : après les mulligans, chaque joueur peut chercher un soutien dans son deck. Échoué : chaque joueur défausse 1 carte de sa main (2 en expert).",
+            "pages": {
+                "intro": [
+                    "03-protection_racket-intro-1.jpg"
+                ],
+                "regles": [
+                    "03-protection_racket-regles-1.jpg"
+                ]
+            },
+            "environnement": "60207a,60207b",
+            "victoire": []
+        },
+        {
+            "id": "the_raft_breakout",
+            "manigance": true,
+            "numero": 4,
+            "nom": "The Raft Breakout",
+            "nom_fr": "L'évasion du Raft",
+            "resume": "Un intrus a la clé maîtresse du Raft et libère les prisonniers un à un. Chaque sbire vaincu retire de la menace au complot.",
+            "enjeu": "Complété : après les mulligans, chaque joueur peut chercher un allié dans son deck. Échoué : les prisonniers du Raft sont mêlés au deck rencontre.",
+            "pages": {
+                "intro": [
+                    "04-the_raft_breakout-intro-1.jpg"
+                ],
+                "regles": [
+                    "04-the_raft_breakout-regles-1.jpg"
+                ]
+            },
+            "environnement": "60208a,60208b",
+            "victoire": []
+        },
+        {
+            "id": "stop_the_presses",
+            "manigance": true,
+            "numero": 5,
+            "nom": "Stop the Presses!",
+            "nom_fr": "Arrêtez les rotatives !",
+            "resume": "Les bureaux du Daily Bugle sont saccagés, J. Jonah Jameson est ligoté dans son fauteuil. Chaque joueur protège un membre de la rédaction : s'il quitte le jeu, la partie est perdue.",
+            "enjeu": "Complété : chaque joueur commence avec un soutien Daily Bugle en jeu. Échoué : chaque joueur reçoit 1 carte rencontre face cachée à la mise en place (2 en expert).",
+            "pages": {
+                "intro": [
+                    "05-stop_the_presses-intro-1.jpg"
+                ],
+                "regles": [
+                    "05-stop_the_presses-regles-1.jpg"
+                ]
+            },
+            "environnement": "60209a,60209b",
+            "victoire": []
+        },
+        {
+            "id": "kingpin",
+            "catalogue": "kingpin_fne",
+            "numero": 6,
+            "final": true,
+            "nom": "Kingpin",
+            "nom_fr": "Le Caïd",
+            "resume": "La vague de crime avait un chef d'orchestre. Kingpin tire les ficelles depuis l'ombre : il faut d'abord regagner la confiance du public, sbire après sbire, avant de pouvoir l'affronter en face.",
+            "enjeu": "La victoire gagne la campagne. En expert, s'il reste un environnement Complété, il faut en retourner un côté Échoué et rejouer.",
+            "pages": {
+                "intro": [
+                    "06-kingpin-intro-1.jpg"
+                ],
+                "regles": [
+                    "06-kingpin-regles-1.jpg"
+                ],
+                "epilogue": [
+                    "06-kingpin-epilogue-1.jpg"
+                ]
+            },
+            "victoire": [
+                {
+                    "cle": "Remaining hit points",
+                    "parJoueur": true,
+                    "type": "auto",
+                    "format": "int",
+                    "detection": "pv_restants",
+                    "libelle": "Points de vie restants",
+                    "aide": "La campagne s'achève : ce chiffre n'est là que pour le récit."
+                }
+            ]
+        }
+    ],
+    "victoire_commune": [
+        {
+            "cle": "Completed Scenarios",
+            "type": "auto",
+            "format": "liste",
+            "libelle": "Affaires résolues",
+            "aide": "Relevé par le jeu : la manigance gagnée rejoint la liste des scénarios Complétés. Son environnement entrera en jeu côté Completed à chaque partie suivante."
+        },
+        {
+            "cle": "Trust Established?",
+            "type": "auto",
+            "format": "int",
+            "libelle": "Confiance établie (Typhoid Mary)",
+            "aide": "Relevé par le jeu : Disturbed Psyche en jeu avec au moins 2 jetons menace à la victoire. Avec « Mary vaincue » non cochée, l'alliée Typhoid Mary / Bloody Mary entre en jeu sous votre contrôle aux parties suivantes."
+        },
+        {
+            "cle": "Mary Defeated?",
+            "type": "auto",
+            "format": "int",
+            "libelle": "Mary vaincue",
+            "aide": "Relevé par le jeu : l'alliée Mary Walker dans la pile de victoire à la fin de la partie."
+        },
+        {
+            "cle": "Allies removed from the campaign",
+            "type": "auto",
+            "format": "liste",
+            "libelle": "Alliés et soutiens uniques retirés de la campagne",
+            "aide": "Relevé par le jeu : chaque allié ou soutien unique retiré du jeu pendant la partie (Bullseye, Unerring Desire...) est retiré de votre deck pour le reste de la campagne."
+        }
+    ],
+    "victoire_commune_expert": [
+        {
+            "cle": "Remaining hit points",
+            "parJoueur": true,
+            "type": "auto",
+            "format": "int",
+            "detection": "pv_restants",
+            "libelle": "Points de vie restants",
+            "aide": "Campagne experte : vos PV restants sont vos PV de départ au scénario suivant."
+        }
+    ]
+}

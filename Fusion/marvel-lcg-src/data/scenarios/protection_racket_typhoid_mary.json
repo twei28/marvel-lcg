@@ -1,0 +1,27 @@
+{
+    "version": "0.5.8",
+    "name": "Protection Racket (Typhoid Mary)",
+    "villain": [
+        "60110a,60110b"
+    ],
+    "expert": false,
+    "schemes": [
+        "60134a,60134b"
+    ],
+    "set_aside": [
+        "60135a,60135b",
+        "60136a,60136b",
+        "60137a,60137b",
+        "60138a,60138b"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "typhoid_mary",
+        "protection_racket",
+        "standard"
+    ],
+    "modular_sets": [
+        "disasters",
+        "tracksuit_mafia"
+    ]
+}

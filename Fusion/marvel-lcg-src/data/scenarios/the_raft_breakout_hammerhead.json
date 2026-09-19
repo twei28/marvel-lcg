@@ -1,0 +1,25 @@
+{
+    "version": "0.5.8",
+    "name": "The Raft Breakout (Hammerhead)",
+    "villain": [
+        "60086",
+        "60087"
+    ],
+    "expert": false,
+    "schemes": [
+        "60142a,60142b"
+    ],
+    "set_aside": [
+        "60143"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "hammerhead",
+        "the_raft_breakout",
+        "standard"
+    ],
+    "modular_sets": [
+        "the_owl",
+        "tombstone"
+    ]
+}

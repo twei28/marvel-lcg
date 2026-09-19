@@ -60,7 +60,10 @@ class Obligation(Asset2, CanHinder, HasHazard, HasAccelerationIcon, CanCrisis, H
 
     @override
     def CheckPrintedValue(self):
-        assert self.printed_give_to != None, self.paper.card_id
+        # CORRECTIF (18/09/2026, Fear No Evil) : une obligation de set
+        # MODULAIRE n'a pas de « Give to » (60184 Wanted, set Cops). Elle va au
+        # joueur qui la revele (branche `else` de OnPlayerRevealCard), et
+        # l'assert ci-dessous interdisait ce cas legitime.
         return super().CheckPrintedValue()
 
     @override
@@ -122,8 +125,11 @@ class Obligation(Asset2, CanHinder, HasHazard, HasAccelerationIcon, CanCrisis, H
         # assert False, f"{self=}"
 
     @property
-    def give_to(self) -> str:
-        assert self.printed_give_to != None
+    def give_to(self) -> str|None:
+        # CORRECTIF (18/09/2026, Fear No Evil) : None pour une obligation sans
+        # « Give to » (60184 Wanted). OnPlayerRevealCard teste deja `if
+        # self.give_to:` et sait la donner au joueur qui la revele ; l'assert
+        # rendait cette branche inatteignable.
         return self.printed_give_to
 
     @property

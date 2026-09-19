@@ -839,13 +839,61 @@
  },
  "60. Fear No Evil": {
   "name": "fne",
-  "scenarios": [],
+  "scenarios": [
+   "art_museum_heist_bullseye",
+   "art_museum_heist_electro",
+   "art_museum_heist_hammerhead",
+   "art_museum_heist_purple_man",
+   "art_museum_heist_typhoid_mary",
+   "kingpin_fne",
+   "protection_racket_bullseye",
+   "protection_racket_electro",
+   "protection_racket_hammerhead",
+   "protection_racket_purple_man",
+   "protection_racket_typhoid_mary",
+   "stop_the_presses_bullseye",
+   "stop_the_presses_electro",
+   "stop_the_presses_hammerhead",
+   "stop_the_presses_purple_man",
+   "stop_the_presses_typhoid_mary",
+   "the_getaway_bullseye",
+   "the_getaway_electro",
+   "the_getaway_hammerhead",
+   "the_getaway_purple_man",
+   "the_getaway_typhoid_mary",
+   "the_raft_breakout_bullseye",
+   "the_raft_breakout_electro",
+   "the_raft_breakout_hammerhead",
+   "the_raft_breakout_purple_man",
+   "the_raft_breakout_typhoid_mary"
+  ],
   "heroes": [
    "daredevil",
    "echo"
   ],
-  "encounters": [],
-  "max_id": "60064"
+  "encounters": [
+   "cops",
+   "disasters",
+   "drive",
+   "the_owl",
+   "tombstone",
+   "tracksuit_mafia"
+  ],
+  "max_id": "60210",
+  "underlings": [
+   "hammerhead",
+   "bullseye",
+   "electro",
+   "purple_man",
+   "typhoid_mary"
+  ],
+  "manigances": [
+   "art_museum_heist",
+   "the_getaway",
+   "protection_racket",
+   "the_raft_breakout",
+   "stop_the_presses"
+  ]
  },
  "61. Jessica Jones": {
   "name": "jj",
@@ -1538,5 +1586,5 @@
   "indisponible": true,
   "indisponible_note": "Set modulaire mis de cote le 13/09/2026, a la demande de l'utilisateur : il ne doit pas partir en production. Les fichiers restent en place (cartes, scripts, cas de test) pour que le harnais continue de tourner ; seul l'ecran de preparation cesse de le proposer. Pour le remettre : supprimer la cle `indisponible`."
  },
- "checksum": "34b4fcadd1f25f2d8a348df106a352bb3d7d56c4d3de40b3263d92cfdb62da47"
+ "checksum": "18a22240734af2365fedde18672bd2b40a9e06ec14343c4a4b81e0bb74bf90fd"
 }

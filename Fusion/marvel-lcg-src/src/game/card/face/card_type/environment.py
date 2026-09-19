@@ -6,7 +6,11 @@ from game.player import *
 from cards.paper import Paper
 
 @final
-class Environment(HasAccelerationIcon, HasAmplify, HasHazard, HasUses, CanHinder, HasThreatLevel, CanPlaceCounter, HasPermanent, HasSetup, EncounterNonVillainCard, FinalType):
+# CORRECTIF (18/09/2026, pack officiel Fear No Evil, set Disasters 60177-60179) :
+# un environnement peut porter une icone de crise (Mystic Incursion, Sinking
+# Ferry, Towering Inferno). Sans `CanCrisis`, `InitPrintedValue("Crisis")`
+# tombait sur KeyError des la creation du deck rencontre.
+class Environment(CanCrisis, HasAccelerationIcon, HasAmplify, HasHazard, HasUses, CanHinder, HasThreatLevel, CanPlaceCounter, HasPermanent, HasSetup, EncounterNonVillainCard, FinalType):
     @override
     def __init__(self, paper: 'Paper') -> None:
         super().__init__(paper)

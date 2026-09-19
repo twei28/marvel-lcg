@@ -1,0 +1,28 @@
+{
+    "version": "0.5.8",
+    "name": "Art Museum Heist (Electro)",
+    "villain": [
+        "60076",
+        "60077"
+    ],
+    "expert": false,
+    "schemes": [
+        "60121a,60121b"
+    ],
+    "set_aside": [
+        "60122",
+        "60123",
+        "60124",
+        "60125"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "electro_fne",
+        "art_museum_heist",
+        "standard"
+    ],
+    "modular_sets": [
+        "cops",
+        "the_owl"
+    ]
+}

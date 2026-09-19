@@ -154,6 +154,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "DUCK", "ELDER", "VAMPIRE",  # CORRECTIF : traits du pack custom howard_the_duck (RyCoRan)
         "YOUNG AVENGER", "KREE", "FAMILY", "WIZARD",  # CORRECTIF : traits du pack custom wiccan (CptScorp)
         "ANTI HERO", "ART",  # CORRECTIF : traits du pack custom speed (CptScorp)
+        "MAGGIA", "POLICE",  # CORRECTIF : traits du pack officiel Fear No Evil (Hammerhead, Cops), 18/09/2026
+        "INFLUENCED", "HAND", "NINJA",  # CORRECTIF : Fear No Evil bloc 2 (Purple Man, Lady Bullseye, Hand Lookout), 18/09/2026
+        "DECEIVED", "DISASTER", "DAILY BUGLE", "TRACKSUIT", "PRISONER", "BADOON", "MARTIAL ARTIST",  # CORRECTIF : Fear No Evil blocs 3-4 (Baron Zemo, Disasters, Stop the Presses!, Tracksuit Mafia, The Raft Breakout, Drang, Kingpin), 18/09/2026
+        "COMPLETED", "FAILED",  # CORRECTIF : Fear No Evil bloc 5, environnements de campagne (60205-60209), 18/09/2026
         "STARLING",  # CORRECTIF : trait du pack custom ms_america (jakxin)
         "NECROVERSE",  # CORRECTIF : trait du pack custom gorr (BLUEHG)
         "TEMPTATION",  # CORRECTIF : trait du pack custom lady_sif (Rainy)
@@ -172,6 +176,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'acceleration_token',
         'first_player_token',
         'threat',
+        'damage',  # CORRECTIF : Fear No Evil, jetons damage de Disturbed Psyche (60112), 18/09/2026
     ]
 
     COUNTER = Literal[
@@ -192,6 +197,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'psionic web',
         'steel', 'reflection', 'command', 'growth', 'poison', 'barrage', 'evasion',
         'fury', 'sand',
+        'drain',         # CORRECTIF : Fear No Evil, Drained of Power (60080), Uses (3 drain counters), 18/09/2026
+        'civilian', 'stamina', 'grip', 'spot', 'stilt', 'support',  # CORRECTIF : Fear No Evil blocs 3-4 (Disasters, Daily Bugle, Bear Hug, Spot, Stilt-Man, Public Support), 18/09/2026
         'threat',        # CORRECTIF : compteur du pack custom superior_spider_man
                          # (Rainy). Le mot-cle maison `track` DEPLACE de la menace
                          # d'une manigance vers un SBIRE ; la menace posee sur un

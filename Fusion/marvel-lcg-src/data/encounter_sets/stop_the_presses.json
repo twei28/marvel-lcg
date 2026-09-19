@@ -1,0 +1,9 @@
+{
+    "version": "0.5.8",
+    "name": "Stop the Presses!",
+    "encounters": [
+        "60157",
+        "60158",
+        "60158"
+    ]
+}

@@ -5,10 +5,12 @@ import { REPLIQUES, choisirReplique, classeTaille } from "./repliques-heros.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=88bbeb15";
+import { launch } from "/public/js/prepare/launcher.js?v=472bac1f";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
+import { regrouperUnderlings, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
+import { nomAvecAuteur, createursDe } from "/public/js/prepare/auteur.js";
 // LEGACY (13/09/2026) : la fiche du compte, et le verrou qui dit ce qui est
 // ouvert. Tout le calcul vit dans ces modules ; ici on ne fait que lire.
 import { etat as etatLegacy, activer as activerLegacy, acheter as acheterLegacy } from "/public/js/prepare/legacy-fiche.js";
@@ -231,8 +233,8 @@ function portraitHeros(hero, cls) {
  *  sinon le nom du héros. « Cloak » seul mentirait sur ce qu'on voit. */
 function nomAffiche(hero) {
     if (!hero) return "";
-    if (hero.lie) return cleanNomDeck(hero.deck && hero.deck.name) || hero.name;
-    return hero.name;
+    const nom = hero.lie ? (cleanNomDeck(hero.deck && hero.deck.name) || hero.name) : hero.name;
+    return nomAvecAuteur(nom, hero.auteur, hero.homebrew);
 }
 
 function cleanNomDeck(nom) {
@@ -1706,6 +1708,9 @@ function stepTeam() {
                 },
             }, "Fan-made"),
         ),
+        // Le merci aux créateurs : rempli par refreshHeroGrid, visible sur le
+        // seul filtre fan-made (demande du 18/09/2026).
+        el("div", { class: "tb-merci", id: "tb-merci", hidden: true }),
         el("div", { class: "hero-grid tb-roster", id: "hero-grid" }, el("div", { class: "loading" }, t("Chargement des héros..."))),
         el("div", { class: "tb-equipe", id: "tb-equipe" }),
     );
@@ -2120,6 +2125,35 @@ async function loadHeroes() {
     refreshHeroGrid(heroes);
 }
 
+/** Le champ de recherche annonce ce qu'il accepte. Le créateur ne vaut que
+ *  pour le fan-made : un héros officiel n'en a pas (18/09/2026). */
+function majPlaceholderRecherche(homebrew) {
+    const champ = document.querySelector(".tb-search");
+    if (!champ) return;
+    champ.placeholder = homebrew
+        ? t("Rechercher un héros, un trait ou un créateur")
+        : t("Rechercher un héros ou un trait");
+}
+
+/** Sur le filtre fan-made, une ligne remercie les créateurs des héros
+ *  affichés (demande du 18/09/2026). Ailleurs la ligne disparaît. */
+function majMerciCreateurs(list, homebrew) {
+    const merci = document.getElementById("tb-merci");
+    if (!merci) return;
+    const noms = homebrew ? createursDe(list) : [];
+    merci.hidden = noms.length === 0;
+    if (!noms.length) { merci.replaceChildren(); return; }
+    // Un seul créateur : la phrase passe au singulier, sinon elle parle de
+    // « leur travail » à une personne seule (visible des qu'on cherche « rainy »).
+    merci.replaceChildren(
+        t("Un grand merci à") + " ",
+        el("b", {}, noms.join(", ")),
+        " " + (noms.length === 1
+            ? t("pour son travail : ces héros sont les siens.")
+            : t("pour leur travail : ces héros sont les leurs.")),
+    );
+}
+
 async function refreshHeroGrid(pre) {
     if (!document.getElementById("hero-grid")) return;
     const heroes = pre || await catalog.heroes();
@@ -2139,6 +2173,8 @@ async function refreshHeroGrid(pre) {
         (!!h.homebrew === f.homebrew));
     const compte = document.getElementById("tb-compte");
     if (compte) compte.textContent = list.length + " " + t("héros");
+    majMerciCreateurs(list, f.homebrew);
+    majPlaceholderRecherche(f.homebrew);
     if (!list.length) {
         grid.replaceChildren(el("div", { class: "empty-state" }, t("Aucun héros trouvé")));
         return;
@@ -2483,6 +2519,42 @@ function sectionVariantes(titre, sous, options, actuel, surChoix) {
     });
     zone.append(choix);
     return zone;
+}
+
+/* ---- La modale du vilain interchangeable (Fear No Evil, 18/09/2026) ------
+   Une tuile par manigance ; au clic, les vilains « underling » portes pour
+   elle, en vignettes (carte du vilain). Le choix envoie le scenario concret
+   `<manigance>_<vilain>` et se memorise par manigance (prefs.setUnderling) :
+   la tuile montre ensuite ce vilain, et la modale le pre-coche. */
+function ouvrirModaleUnderling(tuile) {
+    if (!tuile || !tuile.underlings || tuile.underlings.length < 2) return;
+    const memoire = prefs.underlingsMemoire()[tuile.manigance];
+    const choix = { vilain: (tuile.underlings.find((u) => u.id === memoire) || tuile.courant).id };
+    const section = sectionVariantes(t("Vilain de ce scénario"), t("Choisis l'underling que la manigance affronte"),
+        tuile.underlings.map((u) => ({ code: u.id, nom: u.nom, apercu: u.villainCardId })),
+        choix.vilain, (code) => { choix.vilain = code; });
+    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
+        el("div", { class: "deck-modal-panel vh-panel", style: { "--sections": "1" } },
+            el("div", { class: "dm-head" },
+                el("b", { class: "mvl" }, tuile.name),
+                el("span", { class: "dm-sub" }, t("Vilain de ce scénario")),
+            ),
+            section,
+            el("div", { class: "vh-note" }, t("Mémorisé pour cette manigance sur cet appareil")),
+            el("div", { class: "vh-actions" },
+                el("button", { class: "tampon", onclick: () => { hideHover(); fermerModale(overlay); } }, t("Annuler")),
+                el("button", { class: "tampon jaune", onclick: () => {
+                    prefs.setUnderling(tuile.manigance, choix.vilain);
+                    hideHover();
+                    fermerModale(overlay);
+                    verrouillerCible(scenarioDuVilain(tuile, choix.vilain));
+                    // La tuile montre desormais le vilain choisi.
+                    loadScnGrid();
+                } }, t("Choisir")),
+            ),
+        ),
+    );
+    document.body.append(overlay);
 }
 
 function ouvrirModaleVariantes(i, h) {
@@ -3420,7 +3492,9 @@ function verrouillerCible(sc) {
     rendreMenace();
     rendreTable();
     document.querySelectorAll(".tb-port").forEach((b) => {
-        b.classList.toggle("chosen", b.dataset.scn === sc.id);
+        // Une tuile de manigance interchangeable porte plusieurs scenarios (data-scns).
+        const siens = String(b.dataset.scns || b.dataset.scn || "").split(",");
+        b.classList.toggle("chosen", b.dataset.scn === sc.id || siens.includes(sc.id));
     });
     const scene = document.getElementById("tb-scene");
     if (scene) {
@@ -3656,26 +3730,37 @@ async function loadScnGrid() {
     let grid = document.getElementById("scn-grid");
     if (!grid) return;
     grid.replaceChildren(el("div", { class: "loading" }, t("Chargement des scénarios...")));
-    const scs = await catalog.scenariosForExtension(state.extensionTab);
+    const bruts = await catalog.scenariosForExtension(state.extensionTab);
+    // Fear No Evil : une tuile par manigance a vilain interchangeable, le
+    // vilain se choisit dans une modale au clic (decision utilisateur du
+    // 18/09/2026). La tuile montre le dernier vilain choisi sur cet appareil.
+    const ext = (await catalog.extensions()).find((e) => e.key === state.extensionTab);
+    const scs = regrouperUnderlings(bruts, ext || {}, prefs.underlingsMemoire());
     grid = document.getElementById("scn-grid");
     if (!grid) return;
     const compte = document.getElementById("tb-compte");
     if (compte) compte.textContent = scs.length + " " + t("scénarios");
     grid.replaceChildren(...scs.map((sc) => {
-        const on = state.scenario && state.scenario.id === sc.id;
-        const verrou = state.legacy ? state.legacy.verrou.scenario(sc) : null;
+        const concret = sc.interchangeable ? sc.courant.scenario : sc;
+        const on = state.scenario && tuileContient(sc, state.scenario.id);
+        const verrou = state.legacy ? state.legacy.verrou.scenario(concret) : null;
         const ferme = !!verrou && !verrou.ouvert;
+        const plusieurs = sc.interchangeable && sc.underlings.length > 1;
         return el("button", {
             class: "tb-port" + (on ? " chosen" : "") + (ferme ? " est-verrou" : ""),
             "data-scn": sc.id,
+            "data-scns": (sc.scenarioIds || [sc.id]).join(","),
             "aria-disabled": ferme ? "true" : null,
-            title: ferme ? verrou.condition : sc.name,
-            onclick: () => { if (!ferme) verrouillerCible(sc); },
-            onmouseenter: () => rendreSceneMechant(sc),
+            title: ferme ? verrou.condition
+                : (plusieurs ? sc.name + " · " + sc.underlings.length + " " + t("vilains au choix")
+                             : nomAvecAuteur(sc.name, sc.auteur || concret.auteur, sc.homebrew || concret.homebrew)),
+            onclick: () => { if (ferme) return; if (plusieurs) ouvrirModaleUnderling(sc); else verrouillerCible(concret); },
+            onmouseenter: () => rendreSceneMechant(concret),
             onmouseleave: () => rendreSceneMechant(state.scenario),
         },
-            portraitScenario(sc),
-            el("span", { class: "tb-port-nom" }, sc.name),
+            portraitScenario(concret),
+            el("span", { class: "tb-port-nom" }, nomAvecAuteur(sc.name, sc.auteur || concret.auteur, sc.homebrew || concret.homebrew)),
+            plusieurs ? el("span", { class: "st-exp" }, sc.underlings.length + " " + t("vilains au choix")) : null,
             ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
             (sc.challenges && sc.challenges.length) ? el("span", { class: "st-exp" }, t("DÉFI")) : null,
         );
@@ -3690,6 +3775,14 @@ function detailRow(k, v) {
     );
 }
 
+/** Le nom d'un set modulaire, suivi de son createur s'il est fan-made. Les
+ *  pastilles « recommandes » et « aleatoire » n'ont que le nom de fichier :
+ *  le createur se retrouve par l'index du catalogue. */
+function nomDuSetModulaire(nomFichier) {
+    const auteur = catalog.auteurSetRencontre(nomFichier);
+    return nomAvecAuteur(titleize(nomFichier), auteur, true);
+}
+
 async function renderModular() {
     await Promise.resolve();
     const box = document.getElementById("modular-box");
@@ -3697,11 +3790,11 @@ async function renderModular() {
     const d = state.difficulty;
     if (d.modularConfig === "recommended") {
         box.replaceChildren(el("div", { class: "mod-chips" },
-            ...state.scenario.recommendedModularSets.map((s) => el("span", { class: "mod-chip on" }, titleize(s))),
+            ...state.scenario.recommendedModularSets.map((s) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(s))),
             state.scenario.recommendedModularSets.length === 0 ? el("span", { class: "muted" }, t("Aucun set modulaire recommandé.")) : null,
         ));
     } else if (d.modularConfig === "random") {
-        box.replaceChildren(el("div", { class: "mod-chips" }, ...d.selectedModularSets.map((s) => el("span", { class: "mod-chip on" }, titleize(s)))));
+        box.replaceChildren(el("div", { class: "mod-chips" }, ...d.selectedModularSets.map((s) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(s)))));
     } else {
         box.replaceChildren(el("div", { class: "loading" }, t("Chargement des sets modulaires...")));
         const all = (await catalog.encounterSets()).filter((s) => s.kind === "modular");
@@ -3714,7 +3807,7 @@ async function renderModular() {
                     d.selectedModularSets = [...sel];
                     e.target.classList.toggle("on");
                 },
-            }, s.displayName))));
+            }, nomAvecAuteur(s.displayName, s.auteur, true)))));
     }
 }
 

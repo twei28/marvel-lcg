@@ -1,0 +1,28 @@
+{
+    "version": "0.5.8",
+    "name": "Stop the Presses! (Typhoid Mary)",
+    "villain": [
+        "60110a,60110b"
+    ],
+    "expert": false,
+    "schemes": [
+        "60151a,60151b"
+    ],
+    "set_aside": [
+        "60152",
+        "60153",
+        "60154",
+        "60155",
+        "60156"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "typhoid_mary",
+        "stop_the_presses",
+        "standard"
+    ],
+    "modular_sets": [
+        "tombstone",
+        "tracksuit_mafia"
+    ]
+}

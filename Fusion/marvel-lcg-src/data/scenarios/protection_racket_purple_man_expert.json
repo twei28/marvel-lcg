@@ -1,0 +1,29 @@
+{
+    "version": "0.5.8",
+    "name": "Protection Racket (Purple Man)",
+    "villain": [
+        "60098",
+        "60099"
+    ],
+    "expert": true,
+    "schemes": [
+        "60134a,60134b"
+    ],
+    "set_aside": [
+        "60135a,60135b",
+        "60136a,60136b",
+        "60137a,60137b",
+        "60138a,60138b"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "purple_man",
+        "protection_racket",
+        "standard",
+        "expert"
+    ],
+    "modular_sets": [
+        "disasters",
+        "tracksuit_mafia"
+    ]
+}

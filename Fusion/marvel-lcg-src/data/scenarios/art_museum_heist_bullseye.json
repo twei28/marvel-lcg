@@ -1,0 +1,28 @@
+{
+    "version": "0.5.8",
+    "name": "Art Museum Heist (Bullseye)",
+    "villain": [
+        "60065",
+        "60066"
+    ],
+    "expert": false,
+    "schemes": [
+        "60121a,60121b"
+    ],
+    "set_aside": [
+        "60122",
+        "60123",
+        "60124",
+        "60125"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "bullseye",
+        "art_museum_heist",
+        "standard"
+    ],
+    "modular_sets": [
+        "cops",
+        "the_owl"
+    ]
+}

@@ -30,7 +30,17 @@ def TreatAsMinion(face: 'CardFace', as_card_name: str, engage_player: 'Player', 
         minion.printed_attack = face.printed_attack
         minion.printed_scheme = face.printed_thwart
 
+        # CORRECTIF (18/09/2026) : voir TreatAttachedCardAsMinion, meme sauvegarde
+        # des mots-cles donnes par d'autres faces a l'entree en jeu.
+        etrangers = {k: {f: v for f, v in d.items() if f is not minion and v}
+                     for k, d in minion.keywords.items()}
         minion.ResetKeywords() # Hack for 'villainous'
+        for k, d in etrangers.items():
+            for f, v in d.items():
+                minion.keywords.setdefault(k, {})
+                minion.keywords[k][f] = minion.keywords[k].get(f, 0) + v
+        if hasattr(minion, "SetGuardPatrolEffectedBy"):
+            minion.SetGuardPatrolEffectedBy(minion.IsGuard(), minion.IsPatrol())
 
         # if CanAttach.IsType(this):
         #     this.OnAttachTo(minion, False) # Fix "47027"
@@ -185,7 +195,23 @@ class AbilityFactoryTreat:
                 minion.effect.face = minion
                 CardFactory.FaceRegisterEffects(minion)
 
+                # CORRECTIF (18/09/2026, 60100 Converted / 60097 Purple Man) :
+                # `SwapCardFace` fait deja entrer le sbire en jeu et les effets
+                # en jeu lui donnent leurs mots-cles (Guard de Purple Man aux
+                # sbires INFLUENCED) ; `ResetKeywords` les effacait ensuite et
+                # l'effet donateur, deja « applique », ne les redonnait plus. On
+                # sauve les gains venus d'AUTRES faces et on les remet apres le
+                # reset (le reset doit rester apres l'echange : `ResetKeyword`
+                # exige une face deja portee par une carte).
+                etrangers = {k: {f: v for f, v in d.items() if f is not minion and v}
+                             for k, d in minion.keywords.items()}
                 minion.ResetKeywords() # Hack for 'villainous'
+                for k, d in etrangers.items():
+                    for f, v in d.items():
+                        minion.keywords.setdefault(k, {})
+                        minion.keywords[k][f] = minion.keywords[k].get(f, 0) + v
+                if hasattr(minion, "SetGuardPatrolEffectedBy"):
+                    minion.SetGuardPatrolEffectedBy(minion.IsGuard(), minion.IsPatrol())
 
                 if process:
                     process(minion, face, effect)

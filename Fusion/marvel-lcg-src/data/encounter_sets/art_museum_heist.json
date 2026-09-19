@@ -1,0 +1,10 @@
+{
+    "version": "0.5.8",
+    "name": "Art Museum Heist",
+    "encounters": [
+        "60126",
+        "60126",
+        "60127",
+        "60127"
+    ]
+}

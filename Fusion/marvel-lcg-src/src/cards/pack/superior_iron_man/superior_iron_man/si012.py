@@ -16,7 +16,14 @@ def GetAbilities() -> Sequence['Ability']:
     def check_friendly(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> bool:
         initiator = effect.GetInitiator()
         unit = message.trigger
-        return unit.GetControlByPlayer() == initiator
+        # CORRECTIF (18/09/2026) : un ENNEMI qui subit des degats (Rhino
+        # attaque par le heros) passe aussi par cette fenetre, et
+        # `GetControlByPlayer()` leve `assert isinstance(owner, Player)` sur
+        # lui : la partie plantait au premier coup porte avec cette carte en
+        # main (passe complete des decks du 18/09/2026, 135/136). On lit le
+        # controleur sans assert et on ne garde que les personnages AMIS.
+        controleur = unit.GetControlByOrOwner()
+        return Player.IsType(controleur) and controleur == initiator
 
     def spectacular_save(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> None:
         this = effect.this.CastTo(Event)

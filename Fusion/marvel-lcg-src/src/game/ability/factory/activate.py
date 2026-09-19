@@ -65,6 +65,31 @@ class AbilityFactoryActivate:
         )
 
     @staticmethod
+    def WhenEnemyWouldBeGivenBoostCards(ability_type: 'AbilityType',
+                                        which_enemy: CardType,
+                                        operation: OperationType[Message.WhenEnemyWouldBeGivenBoostCards],
+                                        *,
+                                        conditions: ConditionsType[Message.WhenEnemyWouldBeGivenBoostCards]=[],
+                                        ) -> 'Ability':
+        """AJOUT (18/09/2026, Fear No Evil, 60163b) : « When an enemy would be
+        given a facedown boost card ». L'operation peut `message.SetNum(n)`
+        (en retirer une) ou `message.SetBeInstead(effect)` (tout remplacer)."""
+
+        def check_which_enemy(effect: 'Effect', message: 'Message.WhenEnemyWouldBeGivenBoostCards') -> bool:
+            return Condition.CheckWhichCard(which_enemy, message.trigger, effect)
+
+        return Ability(
+            ability_type,
+            Message.WhenEnemyWouldBeGivenBoostCards,
+            [
+                check_which_enemy,
+                *conditions
+            ],
+            operation,
+            is_local=which_enemy == "This"
+        )
+
+    @staticmethod
     def AfterEnemyActivatesAgainstYou(ability_type: 'AbilityType',
                                     which_enemy: CardType,
                                     operation: OperationType[Message.AfterEnemyActivationEnd],

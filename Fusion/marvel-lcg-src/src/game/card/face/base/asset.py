@@ -70,5 +70,23 @@ class Asset2(CanAttach, CardFace):
         def check_max_per_unit():
             this = self.CastTo(HasMaxPer)
             return face.GetInventoryDeck().FindCardSize(CardFinder(name=this.name, card_type=type(this))) < this.max_per_unit
-        return check_max_per_unit()
+
+        # CORRECTIF (18/09/2026, pack officiel Fear No Evil, Kingpin A1
+        # « cannot have attachments or upgrades attached ») :
+        # `Message.CheckIfFaceCanAttachTo` etait DEFINI (sender.py) et ECOUTE
+        # (UnitCannotHaveUpgradeAttached, ThisCannotHaveCardsAttached, ar012
+        # Athena) mais JAMAIS ENVOYE par le moteur : seul le pack ares le posait
+        # a la main (PeutSAttacherA). Le selecteur de jeu d'une amelioration
+        # (checker.py:282-286) et celui d'un attachement revele passent tous
+        # par ICI : on pose donc la question ici, et une cible interdite n'est
+        # plus OFFERTE, payee puis defaussee (journal xc2084, Webbed Up sur
+        # Kingpin).
+        def check_cannot_attach():
+            from game.message import Message
+            from game.effect.rule import GameRule
+            message = Message.CheckIfFaceCanAttachTo(self, face, GameRule(self))
+            message.Send()
+            return message.can_attach_to
+
+        return check_max_per_unit() and check_cannot_attach()
 

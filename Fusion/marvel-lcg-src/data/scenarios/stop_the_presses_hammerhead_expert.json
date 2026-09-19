@@ -1,0 +1,30 @@
+{
+    "version": "0.5.8",
+    "name": "Stop the Presses! (Hammerhead)",
+    "villain": [
+        "60087",
+        "60088"
+    ],
+    "expert": true,
+    "schemes": [
+        "60151a,60151b"
+    ],
+    "set_aside": [
+        "60152",
+        "60153",
+        "60154",
+        "60155",
+        "60156"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "hammerhead",
+        "stop_the_presses",
+        "standard",
+        "expert"
+    ],
+    "modular_sets": [
+        "tombstone",
+        "tracksuit_mafia"
+    ]
+}

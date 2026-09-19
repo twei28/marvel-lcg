@@ -180,7 +180,7 @@ class AbilityFactoryAsset:
                     player = message.GetToPlayer()
                     if_cannot_operation(effect, player)
 
-        return Ability(
+        ability = Ability(
             AbilityType.NonKeyword,
             Message.WhenCardPutIntoPlay,
             [
@@ -192,6 +192,13 @@ class AbilityFactoryAsset:
             attach_to_card,
             is_local=True
         ).NoOutOfPlayLimit().SetFuncName("AttachToWhenEnterPlay")
+        # AJOUT (18/09/2026, Fear No Evil, 60197 Beetle « an attachment that
+        # can attach to a minion ») : la cible imprimee « Attach to ... » ne
+        # vivait que dans la fermeture ci-dessus. On l'expose pour qu'une carte
+        # puisse interroger la VRAIE regle d'accrochage d'un attachement encore
+        # dans le deck ou la defausse, au lieu de relire son texte.
+        ability.attach_selector = selector
+        return ability
 
     @staticmethod
     def WhenThisBoostAttachTo(which_card: 'CardFinder'|Literal["ActivatingEnemy", "Minion", "Villain", "YouIdentity"],

@@ -21,6 +21,9 @@ export const cards = {
         const id = String(cardId).split(",")[0];
         return _cs.const_card_dict[id] || null;
     },
+    /** Toutes les cartes chargees. Sert a batir des index (auteur par set) une
+     *  seule fois, plutot qu'a chercher carte par carte. */
+    all() { return Object.values(_cs.const_card_dict || {}); },
     /** sets_info (SetInfo par extension). */
     sets() { return _cs.sets_json; },
     /** Aspect lisible depuis une carte (champ `class`). */

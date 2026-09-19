@@ -4,6 +4,7 @@
 import { api, fileName } from "/public/js/prepare/api.js";
 import { regrouperVariantes, cleIdentite } from "/public/js/prepare/variantes.js";
 import { cards } from "/public/js/prepare/cards.js";
+import { auteurUnique } from "/public/js/prepare/auteur.js";
 
 const TEAMS = ["Avenger", "X-Men", "Guardian", "Champion", "Defender", "X-Force", "Inhuman", "S.H.I.E.L.D.", "Web-Warrior"];
 const num = (s) => { const m = String(s).match(/^\s*(\d+)/); return m ? +m[1] : 9999; };
@@ -272,6 +273,8 @@ function encounterKind(name) {
 }
 
 let _extensions = null, _heroes = null, _encounterSets = null;
+// Index `set_name` -> createur du contenu fan-made (18/09/2026), bati une fois.
+let _auteurParSet = null;
 // Sets de rencontre d'une extension marquee `indisponible` dans sets_info.json.
 // Rempli par extensions(), lu par encounterSets() : l'ecran de preparation ne
 // propose pas un set mis de cote. Meme principe que `_setsMasques` juste en
@@ -302,6 +305,9 @@ export const catalog = {
             .map(([key, v]) => ({
             key, code: v.name, scenarios: v.scenarios || [], heroes: v.heroes || [],
             encounters: v.encounters || [], maxId: v.max_id,
+            // Fear No Evil (18/09/2026) : manigances a vilain interchangeable,
+            // repliees en une tuile par manigance (underlings.js).
+            underlings: v.underlings || [], manigances: v.manigances || [],
         })).sort((a, b) => num(a.key) - num(b.key));
         // Onglet synthétique « Défis » : les défis mensuels de data/challenges
         // sont des scénarios complets (méchant fixe + carte Défi via
@@ -365,6 +371,7 @@ export const catalog = {
                     .filter((x, i) => x !== traitsDesDeuxFaces[i]));
             const extension = heroExt[id] || "";
             const nom = cleanName(c && c.name) || cleanName(d.name) || titleize(id);
+            const auteur = (c && c.custom) || "";
             return {
                 id, heroCardId, baseDeckId: id, deck: d,
                 name: nom,
@@ -384,11 +391,19 @@ export const catalog = {
                 // ponctuation : personne ne tape « S.H.I.E.L.D » avec ses
                 // points, et « webwarrior » doit trouver WEB-WARRIOR autant que
                 // « web-warrior ». Meme geste que teamFromTraits plus haut.
-                recherche: [nom, ...traitsCherchables].join(" ").toLowerCase(),
+                //
+                // Le CREATEUR y entre aussi (18/09/2026) : taper « nugget »
+                // rend Lockjaw, et « rainy » tout ce que Rainy a dessine. Il
+                // est range en entier, donc « bluehg » trouve aussi un pack
+                // signe « BlueHG + DesignHacker ».
+                recherche: [nom, ...traitsCherchables, auteur].join(" ").toLowerCase(),
                 team: teamFromTraits(c),
                 extension,
                 vague: vagueDeLExtension(extension),
                 homebrew: isHomebrew(extension),
+                // Créateur du pack fan-made (champ `custom` de la face héros,
+                // GUIDE §14) : affiché entre parenthèses derrière le nom.
+                auteur,
                 aspects: aspectsOfDeck(d),
                 // Identités alternatives : même deck, autres faces héros /
                 // alter-ego (ex. The Thing en Gardien de la Galaxie). Elles
@@ -513,6 +528,27 @@ export const catalog = {
         });
     },
 
+    /** Index `set_name` -> createur, bati une fois. Un nom de set porte par
+     *  DEUX auteurs (ou par une carte officielle et une fan-made) n'y entre
+     *  pas : mieux vaut ne rien attribuer que de se tromper de personne.
+     *  « Electro » est exactement ce cas, entre l'officiel et Web of Deceit. */
+    _auteurParSet() {
+        if (_auteurParSet) return _auteurParSet;
+        const parSet = new Map();
+        for (const c of cards.all()) {
+            const set = c && c.set_name;
+            if (!set) continue;
+            if (!parSet.has(set)) parSet.set(set, []);
+            parSet.get(set).push(c.custom);
+        }
+        _auteurParSet = new Map();
+        for (const [set, customs] of parSet) {
+            const a = auteurUnique(customs);
+            if (a) _auteurParSet.set(set, a);
+        }
+        return _auteurParSet;
+    },
+
     _buildScenario(id, raw, extKey, hasExpert) {
         const villains = raw.villain || [];
         const schemes = raw.schemes || [];
@@ -544,8 +580,13 @@ export const catalog = {
             const cdefi = cards.get(challenges[0]);
             if (cdefi && cdefi.name) name = cleanName(cdefi.name);
         }
+        // Createur, lu sur une carte du scenario lui-meme : le nom de set ne
+        // suffirait pas (« Electro » existe en officiel ET chez Ripper3).
+        const auteurDe = (cid) => { const c = cards.get(cid); return (c && c.custom) || ""; };
+        const auteur = auteurDe(villainCards[0]) || auteurDe(schemes[0]) || auteurDe(setAside[0]);
         return {
             id, name, challenges, version: raw.version, extension: extKey,
+            auteur, homebrew: isHomebrew(extKey),
             expert: !!raw.expert, hasExpertVariant: hasExpert,
             villains, schemes, setAside,
             villainCards,
@@ -596,9 +637,23 @@ export const catalog = {
         // tirage « Aleatoire » compris.
         await this.extensions();
         const names = (await api.listEncounterSets()).map(fileName);
+        const auteurs = this._auteurParSet();
         _encounterSets = names.filter((n) => !_setsRencontreMasques.has(n))
-            .map((n) => ({ name: n, displayName: titleize(n), kind: encounterKind(n) }));
+            .map((n) => {
+                const displayName = titleize(n);
+                return {
+                    name: n, displayName, kind: encounterKind(n),
+                    auteur: auteurs.get(displayName) || "",
+                };
+            });
         return _encounterSets;
+    },
+
+    /** Createur d'un set de rencontre fan-made, depuis son nom de fichier.
+     *  Vide pour un set officiel, ou quand deux auteurs portent le meme nom
+     *  de set. Appeler encounterSets() ou extensions() d'abord. */
+    auteurSetRencontre(name) {
+        return this._auteurParSet().get(titleize(name)) || "";
     },
 
     /** Image d'un set de rencontre (1re carte) — chargée à la demande. */

@@ -1,0 +1,25 @@
+{
+    "version": "0.5.8",
+    "name": "The Getaway (Bullseye)",
+    "villain": [
+        "60065",
+        "60066"
+    ],
+    "expert": false,
+    "schemes": [
+        "60128a,60128b"
+    ],
+    "set_aside": [
+        "60129a,60129b"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "bullseye",
+        "the_getaway",
+        "standard"
+    ],
+    "modular_sets": [
+        "cops",
+        "drive"
+    ]
+}

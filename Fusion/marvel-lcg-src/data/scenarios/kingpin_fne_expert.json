@@ -1,0 +1,24 @@
+{
+    "version": "0.5.8",
+    "name": "Kingpin",
+    "villain": [
+        "60160a,60160b"
+    ],
+    "expert": true,
+    "schemes": [
+        "60161a,60161b",
+        "60162a,60162b"
+    ],
+    "set_aside": [
+        "60163a,60163b"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "kingpin_fne",
+        "expert"
+    ],
+    "modular_sets": [
+        "tombstone",
+        "tracksuit_mafia"
+    ]
+}

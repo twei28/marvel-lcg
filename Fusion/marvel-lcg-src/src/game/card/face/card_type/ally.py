@@ -8,7 +8,10 @@ from game.player import *
 from cards.paper import Paper
 
 @final
-class Ally(HasThwart, CanThwart, HasAttack, CanAttack, Friend, CanDefense, HasAccelerationIcon, HasAmplify, HasHazard, HasSetup, HasVictory, ClassCard, CanPlaceCounter, CanAttach, FinalType):
+# AJOUT (18/09/2026, Fear No Evil, 60169 Black Cat ralliee, FAQ du livret p. 26 :
+# elle GARDE Villainous) : `HasVillainous` (donc CanBoost) comme `Hero` depuis
+# dd001a ; a 0 (le cas de tous les allies imprimes), CanBoost sort tot.
+class Ally(HasVillainous, HasThwart, CanThwart, HasAttack, CanAttack, Friend, CanDefense, HasAccelerationIcon, HasAmplify, HasHazard, HasSetup, HasVictory, ClassCard, CanPlaceCounter, CanAttach, FinalType):
     @override
     def __init__(self, paper: 'Paper') -> None:
         self.attack_consequential_damage = 0

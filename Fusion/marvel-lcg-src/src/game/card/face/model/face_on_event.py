@@ -404,7 +404,7 @@ class ModelOnEvent(ModelBase):
         # porte posee dans `EventManager.BroadcastMessage`/
         # `BroadcastStackMessage` ne suffit pas : `Death` -> `Defeated` ->
         # `WhenBeDefeated` -> `OnBeDefeated` s'enchainent en APPEL PYTHON
-        # DIRECT, jamais via `Message.Send()`, et `Unit2.OnBeDefeated` /
+        # DIRECT, jamais via le `.Send()` d'un message, et `Unit2.OnBeDefeated` /
         # `Villain.OnBeDefeated` retirent ou font progresser la carte
         # (`Faces.DiscardAll`, `Villain.Advance`) sans jamais repasser par le
         # bus de messages. Constate le 18/09/2026 par instrumentation directe
