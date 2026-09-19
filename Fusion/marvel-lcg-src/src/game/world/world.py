@@ -773,6 +773,37 @@ class World(WorldAction, WorldFind):
 
         self.manuel_actif = True
 
+        # ⚠ CORRECTIF (tache 8 bis, trouve en jouant une VRAIE partie et en
+        # annulant un geste - le harnais moteur ne pouvait pas le voir, voir
+        # plus bas). Un rejeu silencieux (Ctrl+Z -> AnnulerDernierGeste ->
+        # LoadScene, ou un chargement) laisse `controller_manager.skip`
+        # arme : `InitializeSkip` (engine/controller/manager.py) le pose vrai
+        # pour l'etat "Load", et RIEN ne l'eteint jamais en mode manuel -
+        # l'endroit qui l'eteint d'ordinaire (`Controller.DoGetInput`,
+        # engine/controller/controller.py : « replay_step_id >= skip_to ->
+        # SetIsSkipping(False) ») n'est appele que pour une VRAIE question, et
+        # `ManualLoop` n'en pose plus aucune une fois la mise en place finie.
+        # Sans cette ligne, `PresentForceNoWait` ci-dessous violerait son
+        # `assert skip == False` en plein rejeu.
+        #
+        # Inoffensif sur une partie FRAICHE (skip deja faux : ceci ne change
+        # rien) - c'est ce que verifient deja les 25 cas de
+        # tools/test_mode_manuel.py. Ce meme harnais ne peut PAS voir le cas
+        # du rejeu : il remplace `DeviceManager.DoGetInput` en entier
+        # (`pilote`), donc ne passe jamais par le code de `controller.py`
+        # cite plus haut, skip ou pas.
+        self.controller_manager.skip.SetIsSkipping(False)
+
+        # Un rendu FORCE, ICI, avant meme d'attendre un geste. Sans lui, le
+        # dernier rendu que le client a recu est celui de la fin de la mise
+        # en place, avec `manuel_actif` encore a faux : rien ne le
+        # rafraichirait avant le PROCHAIN rendu force plus bas (apres le
+        # PREMIER geste drainee) - le plateau resterait donc bloque a croire
+        # que le moteur parle encore, sans aucun geste pour le detromper. Ce
+        # rendu-ci publie l'etat qui vient de changer, exactement comme celui
+        # qui suit un drainage.
+        self.render.PresentForceNoWait()
+
         # ⚠ DEPENDANCE D'ORDRE NON GARANTIE PAR LE TYPE, ecrite ici plutot que
         # devinee (revue finale du 18/09/2026, constat 8) : cette boucle ne
         # SORT que sur `is_game_over`. Un `ExitWait()` seul (skip, console,

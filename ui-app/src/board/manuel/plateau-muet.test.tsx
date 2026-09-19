@@ -16,6 +16,7 @@ import { act, render } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { MoteurFaux, etatInitial } from '../moteur-faux'
 import type { EtatMoteur } from '../moteur'
+import type { Demande, Option } from '../ask'
 import { catalogueVide } from '../catalogue'
 import { mondeDeTest } from './fixture-monde'
 
@@ -60,13 +61,13 @@ beforeEach(() => {
 describe('le plateau manuel se tait', () => {
   it('ne montre pas le bandeau de phase', async () => {
     const { container } = monter()
-    await emettre({ monde: mondeDeTest({ mode_manuel: true }) })
+    await emettre({ monde: mondeDeTest({ mode_manuel: true, manuel_actif: true }) })
     expect(container.querySelector('.bandeau-phase')).toBeNull()
   })
 
   it('ne montre pas le deroule de phase', async () => {
     const { container } = monter()
-    await emettre({ monde: mondeDeTest({ mode_manuel: true }) })
+    await emettre({ monde: mondeDeTest({ mode_manuel: true, manuel_actif: true }) })
     expect(container.querySelector('.deroule-phase')).toBeNull()
   })
 
@@ -78,6 +79,73 @@ describe('le plateau manuel se tait', () => {
   })
 })
 
+// TACHE 8 BIS. Le moteur distingue la REGLE (`mode_manuel`, vraie des la
+// creation de la partie) de l'ETAT (`manuel_actif`, vrai seulement une fois
+// la boucle manuelle entree, apres la mise en place). Le plateau doit se
+// regler sur L'ETAT pour tout ce qui masque une couche du moteur : pendant
+// la mise en place d'une partie manuelle, le moteur pose encore ses
+// questions (mulligan compris), et la reponse doit rester ATTEIGNABLE.
+//
+// ⚠ LE DEFAUT QUE CE CAS REPRODUIT : avant ce correctif, le plateau se
+// reglait sur `mode_manuel` (donc sur `estModeManuel`) pour masquer
+// `DemandeCentrale`/`AssistantAction` — les DEUX panneaux qui portent le
+// mulligan (« Garder cette main » / « Annuler »). Une partie manuelle fraiche
+// masquait donc sa PROPRE question de mulligan des la mise en place, avant
+// meme que la boucle manuelle n'existe : le joueur se retrouvait devant sa
+// main sans rien a cliquer, et la partie ne demarrait jamais.
+function option(surcharge: Partial<Option> = {}): Option {
+  return {
+    id: 1,
+    name: 'Keep_hand',
+    bind_id: 0,
+    bind_player_id: 0,
+    all_legal_targets: [],
+    target_num_range: [0, 0],
+    target_payment: {},
+    select_rule: '',
+    target_must_include_traits: [],
+    failure_reason: '',
+    is_search: false,
+    ...surcharge,
+  } as unknown as Option
+}
+
+/** La question du mulligan : deux options, aucune annulation possible. */
+function demandeMulligan(): Demande {
+  return {
+    options: [option({ id: 1, name: 'Keep_hand' }), option({ id: 2, name: 'Mulligan' })],
+    refus: [],
+    prompt_text: '',
+    event_name: 'WhenPlayerResolveMulligans',
+    show_cancel: false,
+    ability_type: 'Normal',
+  } as unknown as Demande
+}
+
+describe('le plateau manuel reste normal PENDANT LA MISE EN PLACE', () => {
+  it('montre encore la demande centrale (le mulligan) : la regle est deja vraie, '
+    + 'la boucle manuelle n\'a pas encore pris la main',
+  async () => {
+    const { container } = monter()
+    await emettre({
+      monde: mondeDeTest({ mode_manuel: true, manuel_actif: false }),
+      demande: demandeMulligan(),
+      aNous: true,
+    })
+    expect(container.querySelector('.demande-centrale')).not.toBeNull()
+  })
+
+  it('la masque bien une fois la boucle manuelle entree (manuel_actif)', async () => {
+    const { container } = monter()
+    await emettre({
+      monde: mondeDeTest({ mode_manuel: true, manuel_actif: true }),
+      demande: demandeMulligan(),
+      aNous: true,
+    })
+    expect(container.querySelector('.demande-centrale')).toBeNull()
+  })
+})
+
 // LA MAIN DE CHAQUE HEROS (etape 5 du brief). Le plateau ne dessine
 // aujourd'hui QUE la main du joueur regarde (zones.ts, `notre?.hand_cards`) :
 // il n'y a pas plusieurs zones « main » a compter, une seule, cachee derriere
@@ -86,7 +154,7 @@ describe('le plateau manuel se tait', () => {
 describe('le plateau manuel montre la main sans avoir besoin d\'un survol', () => {
   it('force la main visible', async () => {
     const { container } = monter()
-    await emettre({ monde: mondeDeTest({ mode_manuel: true }) })
+    await emettre({ monde: mondeDeTest({ mode_manuel: true, manuel_actif: true }) })
     expect(container.querySelectorAll('[data-zone="main"]').length).toBeGreaterThan(0)
     expect(container.querySelector('.plateau.main-visible-forcee')).not.toBeNull()
   })
@@ -96,5 +164,24 @@ describe('le plateau manuel montre la main sans avoir besoin d\'un survol', () =
     await emettre({ monde: mondeDeTest({}) })
     expect(container.querySelectorAll('[data-zone="main"]').length).toBeGreaterThan(0)
     expect(container.querySelector('.plateau.main-visible-forcee')).toBeNull()
+  })
+})
+
+// LE BOUTON « Fin du tour » (signale par la tache 8 sans etre teste, corrige
+// ici : tache 8 bis). Il n'a plus aucun sens en mode manuel — il n'y a plus
+// de tour a finir, le moteur ne conduit plus rien — mais la barre generique
+// qui le porte reste affichee dans tous les modes (Menu/Annuler/Sauver/
+// Partie/Reglages/FR restent legitimes). Seul CE bouton doit disparaitre.
+describe('le bouton Fin du tour disparait en mode manuel', () => {
+  it('reste affiche en partie ordinaire', async () => {
+    const { container } = monter()
+    await emettre({ monde: mondeDeTest({}) })
+    expect(container.querySelector('.bh-fin-tour')).not.toBeNull()
+  })
+
+  it('disparait une fois la boucle manuelle entree (manuel_actif)', async () => {
+    const { container } = monter()
+    await emettre({ monde: mondeDeTest({ mode_manuel: true, manuel_actif: true }) })
+    expect(container.querySelector('.bh-fin-tour')).toBeNull()
   })
 })

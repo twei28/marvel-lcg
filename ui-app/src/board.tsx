@@ -25,7 +25,7 @@ import '../styles/tokens.css'
 import '../styles/palette.css'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
-import { estModeManuel } from './board/manuel/mode'
+import { leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
 import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
 import { BarreAction } from './board/BarreAction'
@@ -1297,7 +1297,12 @@ function PageEtat({
   const [bandeauFini, setBandeauFini] = useState(false)
   // Le mode manuel : tout ce qui parlait au nom du moteur disparait, meme sur
   // un etat enregistre (un capture de partie manuelle reste muette).
-  const manuel = estModeManuel(monde)
+  //
+  // ⚠ `leMoteurSeTait`, PAS `estModeManuel` (tache 8 bis) : ce masquage ne
+  // doit prendre effet qu'une fois la boucle manuelle entree, jamais pendant
+  // la mise en place — le moteur y raconte encore normalement (BandeauPhase
+  // et DeroulePhase compris).
+  const manuel = leMoteurSeTait(monde)
 
   if (!monde || !plateau) {
     return (
@@ -2047,7 +2052,14 @@ export function PagePartie({
 
   // Le mode manuel : tout ce qui parlait au nom du moteur disparait. Une garde
   // par endroit, greppable et retirable d'un bloc.
-  const manuel = estModeManuel(etat.monde)
+  //
+  // ⚠ `leMoteurSeTait`, PAS `estModeManuel` (tache 8 bis) : la REGLE est vraie
+  // des la creation de la partie (mise en place comprise), mais le moteur n'y
+  // est tu qu'une fois la boucle manuelle entree. Se regler sur la regle
+  // masquerait la demande centrale ET l'assistant d'action qui portent le
+  // mulligan PENDANT la mise en place — la partie resterait bloquee pour
+  // toujours, sans rien a cliquer sur la premiere main.
+  const manuel = leMoteurSeTait(etat.monde)
 
   const [sons, setSons] = useState(lireSons)
   const basculerSons = useCallback(() => {
@@ -3630,7 +3642,12 @@ export function PagePartie({
               {langueActuelle() === 'fr' ? 'FR' : 'EN'}
             </button>
 
-            {/* Fin du tour : le seul bouton colore, toujours a droite. */}
+            {/* Fin du tour : le seul bouton colore, toujours a droite.
+                MASQUE EN MODE MANUEL (tache 8 bis) : il n'y a plus de tour
+                a finir une fois la boucle manuelle entree, le moteur ne
+                conduit plus rien. Signale par la tache 8 sans etre teste ;
+                couvert par plateau-muet.test.tsx desormais. */}
+            {manuel ? null : (
             <button
                 type="button"
                 className={`bh-bouton bh-fin-tour${finDeTourSuggeree ? ' est-suggere' : ''}`}
@@ -3647,6 +3664,7 @@ export function PagePartie({
                 <span aria-hidden="true">▷</span> {t('Fin du tour')}
                 {finDeTourSuggeree ? ' ✓' : ''}
             </button>
+            )}
           </div>
         }
         interactifs={interactifsAvecPulse}

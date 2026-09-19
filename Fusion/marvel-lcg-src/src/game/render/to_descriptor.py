@@ -55,6 +55,10 @@ class ToDescriptor:
         world_descriptor.sound_name = sound_name
         world_descriptor.mode_sandbox = bool(world.rule.mode_sandbox)
         world_descriptor.mode_manuel = bool(world.rule.mode_manuel)
+        # Tache 8 bis : `manuel_actif` (l'ETAT, le moteur s'est tu) est lu sur
+        # `world.manuel_actif`, PAS sur `world.rule.mode_manuel` -- voir le
+        # commentaire de WorldDescriptor.manuel_actif pour la distinction.
+        world_descriptor.manuel_actif = bool(world.manuel_actif)
         world_descriptor.confirm_main_scheme = bool(world.rule.confirm_main_scheme)
         # Tache 4 ter : la trace d'un geste manuel refuse (DrainSandboxCommands
         # la pose, personne ne la lisait). Projetee telle quelle, sans mode a

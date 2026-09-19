@@ -6,23 +6,23 @@
 // qu'on croit : un moteur vert ne prouve rien sur le rendu (règle du projet,
 // docs/reference/PROCESSUS-CARTE.md, étape 8 bis).
 //
-// Calqué sur glisser-plateau.spec.ts pour la mécanique de geste, avec deux
-// différences dictées par le mode manuel lui-même :
+// ⚠ TÂCHE 8 BIS. La version précédente de ce test créait sa partie en appel
+// direct à `/new`, en CONTOURNANT l'écran de préparation — exactement le
+// chemin qu'AUCUN joueur n'emprunte. C'est précisément ce qui a laissé
+// passer le défaut le plus grave du chantier : une partie manuelle lancée
+// depuis l'écran de préparation restait bloquée POUR TOUJOURS au premier
+// mulligan (le panneau qui le pose était masqué par erreur sur la RÈGLE
+// `mode_manuel`, vraie dès la mise en place, au lieu de l'ÉTAT
+// `manuel_actif`, vrai seulement une fois la boucle manuelle entrée — voir
+// task-8bis-report.md). Ce test passe désormais par le MÊME chemin qu'un
+// joueur : l'assistant de préparation, la case « Partie manuelle », et un
+// vrai mulligan résolu au clic (« Garder cette main »), comme
+// `zz-gagner.spec.ts` le fait déjà pour une partie ordinaire.
 //
-//  1. Pas de mulligan à confirmer, et la règle `disable_resolve_mulligans`
-//     dans la charge. DÉCOUVERTE EN ÉCRIVANT CE TEST (voir task-8-report.md) :
-//     `estModeManuel(world)` vaut vrai dès la création de la partie, bien
-//     AVANT que `world.manuel_actif` ne coupe la boucle de jeu — donc
-//     `AssistantAction` et `DemandeCentrale`, qui portent le mulligan
-//     (« Garder cette main » / « Annuler »), sont déjà masqués pendant la
-//     MISE EN PLACE elle-même. Sans `disable_resolve_mulligans`, une partie
-//     manuelle reste bloquée à « Resolve Mulligans » pour toujours : aucun
-//     geste de mode manuel (glisser, clavier) ne prend effet tant que
-//     `World.Initialize` n'a pas rendu la main à `ManualLoop`. Ce n'est pas
-//     un artefact de ce test : c'est reproductible sur partie fraîche, et un
-//     joueur réel serait bloqué de la même façon. À signaler.
+// Calqué sur glisser-plateau.spec.ts pour la mécanique de geste, avec une
+// différence dictée par le mode manuel lui-même :
 //
-//  2. La preuve des dégâts passe par l'ÉCRAN (la pastille de vie,
+//  - La preuve des dégâts passe par l'ÉCRAN (la pastille de vie,
 //     `.jauge-texte`), jamais par `/get_world` : ce point de terminaison ne
 //     calcule `info.health` que pour les cartes visées par une action légale
 //     (`all_legal_targets`), qui n'existe pas en mode manuel. Un vilain
@@ -30,10 +30,10 @@
 //     porté ou non — un silence qui ne dit RIEN sur ce que le moteur a fait,
 //     à l'inverse du plateau réellement affiché au joueur.
 //
-// ⚠ Comme glisser-plateau.spec.ts : ce test lance une NOUVELLE partie sur le
-// serveur de jeu. Il se lance à la main, jamais dans les captures, et jamais
-// pendant que quelqu'un joue. Prévenir avant.
-import { test, expect, type Page, type APIRequestContext } from '@playwright/test'
+// ⚠ Comme glisser-plateau.spec.ts et lancement-partie.spec.ts : ce test lance
+// une NOUVELLE partie sur le serveur de jeu. Il se lance à la main, jamais
+// dans les captures, et jamais pendant que quelqu'un joue. Prévenir avant.
+import { test, expect, type Page } from '@playwright/test'
 
 const AVERTISSEMENT =
   'Attention : ce test lance une NOUVELLE partie MANUELLE. Si une partie est en cours, elle sera perdue.'
@@ -44,26 +44,58 @@ test.beforeAll(() => {
   console.log('')
 })
 
-/** Une partie manuelle solo Spider-Man contre Rhino, graine figée. */
-async function nouvellePartieManuelle(request: APIRequestContext) {
-  const scenario = await (await request.get('/get_scenario_json?rhino')).json()
-  const deck = await (await request.get('/get_hero_json?spider_man')).json()
-  const charge = {
-    campaign_json: JSON.stringify(scenario),
-    campaign_log: {},
-    challenges: scenario.challenges ?? [],
-    encounter_set_names: [
-      ...new Set([...(scenario.encounter_sets ?? []), ...(scenario.modular_sets ?? [])]),
-    ],
-    hero_json: [JSON.stringify(deck)],
-    // `disable_resolve_mulligans` : voir l'en-tête de ce fichier. Sans elle,
-    // la mise en place ne se termine jamais (mulligan invisible en manuel).
-    rules: ['mode_manuel', 'disable_resolve_mulligans'],
-    seed: 2026091801,
-    timeout: 0,
-  }
-  const reponse = await request.get('/new?data=' + encodeURIComponent(JSON.stringify(charge)))
-  expect(reponse.status(), 'le moteur a refusé la partie manuelle').toBe(200)
+/**
+ * Lance une partie manuelle solo Spider-Man contre Rhino, DEPUIS L'ÉCRAN DE
+ * PRÉPARATION — le même chemin qu'un joueur, case « Partie manuelle »
+ * comprise. Calqué sur le parcours de `lancement-partie.spec.ts` (accueil à
+ * tuiles, quatre étapes), avec un pas de plus : ouvrir le bloc « Avancé » de
+ * l'étape finale pour cocher la case.
+ *
+ * ⚠ NE CONTOURNE PLUS `/new` EN DIRECT. La version précédente le faisait,
+ * avec `disable_resolve_mulligans` en plus dans la charge : un chemin
+ * qu'aucun joueur n'emprunte (l'écran de préparation ne pose jamais cette
+ * règle, `public/js/prepare/launcher.js`, `buildRules`). C'est cette
+ * commodité qui laissait le défaut de la tâche 8 bis invisible.
+ */
+async function lancerPartieManuelleDepuisPrepare(page: Page) {
+  await page.goto('/prepare.html?ui=new', { waitUntil: 'load' })
+
+  //   Accueil ................ les tuiles de mode.
+  await page.getByRole('button', { name: /^Solo/ }).first().click()
+  //   Étape 1 - Équipe ....... Spider-Man (deux héros portent ce nom,
+  //                            d'où le `first()`).
+  await page.getByRole('button', { name: /^Spider-Man/ }).first().click()
+  // Sa modale d'options (art alternatif, ressources) s'ouvre d'elle-même au
+  // recrutement : sans ces lignes, « Continuer » reste sous la modale.
+  const options = page.locator('.deck-modal')
+  if (await options.count()) await options.getByRole('button', { name: /valider/i }).click()
+  await expect(options).toHaveCount(0)
+  await page.getByRole('button', { name: /continuer/i }).click()
+
+  //   Étape 2 - Decks ........ le deck de base est déjà retenu.
+  await page.getByRole('button', { name: /continuer/i }).click()
+
+  //   Étape 3 - Méchant ...... Rhino, premier scénario de la boîte de base.
+  //   Nom accessible « Rhino Rhino » (portrait + libellé) : on ancre au
+  //   début, jamais sur l'égalité.
+  await page.getByRole('button', { name: /^Rhino\b/ }).first().click()
+  await page.getByRole('button', { name: /continuer/i }).click()
+
+  //   Étape 4 - Final ........ la case « Partie manuelle » vit dans le bloc
+  //   « Avancé », replié par défaut (public/js/prepare/app.js, blocAvance).
+  await page.getByText('Avancé', { exact: true }).click()
+  const caseManuelle = page.getByRole('checkbox', {
+    name: /Le moteur pose la table, puis ne joue plus/i,
+  })
+  await caseManuelle.check()
+  await expect(caseManuelle).toBeChecked()
+
+  const lancer = page.getByRole('button', { name: /lancer la partie/i })
+  await expect(
+    lancer,
+    "Le bouton de lancement n'est pas utilisable : l'assistant considère la partie incomplète."
+  ).toBeEnabled()
+  await Promise.all([page.waitForURL(/board\.html/, { timeout: 30000 }), lancer.click()])
 }
 
 /** Le compteur de tour, lu chez le MOTEUR (le bandeau qui le montrait est masqué). */
@@ -79,13 +111,40 @@ async function vieVilainAffichee(page: Page): Promise<string | null> {
   return page.locator('.scan-card.kind-villain .jauge-texte').first().textContent()
 }
 
-test('la table manuelle : nue, silencieuse, manipulable, annulable', async ({ page, request }) => {
-  await nouvellePartieManuelle(request)
-  await page.goto('/app/board.html?p=0')
+test('la table manuelle : nue, silencieuse, manipulable, annulable', async ({ page }) => {
+  // Le parcours passe maintenant par l'assistant de préparation ET un vrai
+  // mulligan (tâche 8 bis) : plus long que le budget par défaut (30s), comme
+  // `zz-gagner.spec.ts` qui traverse le même assistant.
+  test.setTimeout(240000)
+  await lancerPartieManuelleDepuisPrepare(page)
   await page.waitForSelector('.scan-card[data-card-id]', { timeout: 30000 })
 
-  // Laisse la mise en place (mulligan compris) se terminer toute seule avant
-  // de commencer à mesurer quoi que ce soit : « automatique et intégrale »
+  // LE VOILE D'OUVERTURE (`confirm_main_scheme`, `public/js/prepare/
+  // launcher.js`) : SANS RAPPORT avec le mode manuel — toute partie NEUVE le
+  // pose, Rhino (manigance à deux faces) le déclenche. Un vrai joueur le
+  // franchit avant le mulligan ; ce test aussi.
+  const manigance = page.getByRole('button', { name: 'Retourner la manigance' })
+  try {
+    await manigance.first().waitFor({ state: 'visible', timeout: 5000 })
+    await manigance.first().click()
+    await expect(manigance).toHaveCount(0)
+  } catch {
+    // Rien à retourner sur cette configuration : la manigance est déjà côté B.
+  }
+
+  // 0. LE MULLIGAN EST ATTEIGNABLE — LA RAISON D'ÊTRE DE LA TÂCHE 8 BIS.
+  // Pendant la mise en place, la RÈGLE `mode_manuel` est déjà vraie, mais
+  // l'ÉTAT `manuel_actif` (le moteur s'est tu) ne l'est pas encore : le
+  // panneau qui pose le mulligan doit donc rester VISIBLE, exactement comme
+  // en partie ordinaire (voir `zz-gagner.spec.ts`). Avant le correctif, ce
+  // bouton n'existait jamais : la partie restait bloquée ici pour toujours,
+  // sans rien à cliquer.
+  const garder = page.getByRole('button', { name: /garder cette main/i })
+  await garder.first().waitFor({ state: 'visible', timeout: 40000 })
+  await garder.first().click()
+
+  // Laisse le reste de la mise en place se terminer tout seul avant de
+  // commencer à mesurer quoi que ce soit : « automatique et intégrale »
   // (docs/superpowers/specs/2026-09-18-mode-manuel-design.md).
   await page.waitForTimeout(3000)
 

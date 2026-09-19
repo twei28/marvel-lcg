@@ -31,6 +31,10 @@ function mondeManuel(): World {
     siege({ allies: [SANS_JETON], player_deck: [DESSUS_DECK_JOUEUR] }),
     {
       mode_manuel: true,
+      // La boucle manuelle a deja pris la main (tache 8 bis) : le clavier ne
+      // s'arme que sur `manuel_actif`, jamais sur la seule regle
+      // `mode_manuel` (vraie des la mise en place).
+      manuel_actif: true,
       villains: [VILAIN],
       area_schemes_main: [MANIGANCE],
       encounter_deck: [DESSUS_DECK_RENCONTRE],
@@ -210,7 +214,7 @@ describe('le clavier du mode manuel parle au moteur', () => {
   })
 
   it('ne mord pas hors du mode manuel', async () => {
-    const monde = { ...mondeManuel(), mode_manuel: false, mode_sandbox: true } as World
+    const monde = { ...mondeManuel(), mode_manuel: false, manuel_actif: false, mode_sandbox: true } as World
     render(<Harness world={monde} capture={{}} />)
     survoler(7)
     fireEvent.keyDown(document, { key: 'f' })
@@ -268,7 +272,7 @@ describe('Ctrl+Z annule le dernier geste', () => {
   })
 
   it('ne mord pas hors du mode manuel', async () => {
-    const monde = { ...mondeManuel(), mode_manuel: false, mode_sandbox: true } as World
+    const monde = { ...mondeManuel(), mode_manuel: false, manuel_actif: false, mode_sandbox: true } as World
     render(<Harness world={monde} capture={{}} />)
     fireEvent.keyDown(document, { key: 'z', ctrlKey: true })
     await act(async () => { await Promise.resolve() })

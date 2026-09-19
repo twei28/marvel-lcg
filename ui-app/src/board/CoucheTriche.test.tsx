@@ -106,6 +106,10 @@ const AUTRE = carteSurTable(8, '01002a', 'EncounterVillain', 'Klaw')
 function mondeManuel(surcharge: Partial<World> = {}): World {
   return tableAvec(siege(), {
     mode_manuel: true,
+    // La boucle manuelle a deja pris la main (tache 8 bis) : ces cas
+    // observent les GESTES manuels eux-memes, qui ne s'ouvrent que sur
+    // `manuel_actif`, jamais sur la seule regle `mode_manuel`.
+    manuel_actif: true,
     render_id: 1,
     manuel_refus: '',
     villains: [VILAIN, AUTRE],
@@ -309,7 +313,7 @@ describe('faire apparaître une carte, en mode manuel', () => {
   })
 
   it('ne s’ouvre pas hors du mode manuel : le bac à sable garde son clic droit dans le vide inerte', async () => {
-    const monde = { ...mondeManuel(), mode_manuel: false, mode_sandbox: true } as World
+    const monde = { ...mondeManuel(), mode_manuel: false, manuel_actif: false, mode_sandbox: true } as World
     render(<Harness world={monde} catalogue={catalogueDeTest} />)
     clicDroitSurTable()
     expect(screen.queryByText('Faire apparaître une carte')).toBeNull()

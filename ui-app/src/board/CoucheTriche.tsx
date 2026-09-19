@@ -21,7 +21,7 @@ import {
   type GesteClavier,
 } from './manuel/clavier'
 import { FinManuelle } from './manuel/FinManuelle'
-import { estModeManuel } from './manuel/mode'
+import { leMoteurSeTait } from './manuel/mode'
 import { MenuTable } from './manuel/MenuTable'
 import { MenuTriche, type CibleTriche } from './MenuTriche'
 import * as triche from './triche'
@@ -143,7 +143,13 @@ export function useTriche(
 ) {
   // Le menu s'ouvre dans les DEUX modes : bac à sable (on truque une partie
   // qui se joue aux règles) et manuel (il n'y a plus que lui pour jouer).
-  const manuel = estModeManuel(world)
+  //
+  // ⚠ `leMoteurSeTait`, PAS `estModeManuel` (tâche 8 bis) : ces gestes ne
+  // doivent s'ouvrir qu'une fois la boucle manuelle entrée, jamais pendant la
+  // mise en place — le moteur y attend encore de vraies réponses (le
+  // mulligan compris), et un menu manuel ouvert par erreur à ce moment-là
+  // n'aurait aucune commande légitime à recevoir.
+  const manuel = leMoteurSeTait(world)
   const actif = world?.mode_sandbox === true || manuel
   const [menu, setMenu] = useState<MenuOuvert | undefined>(undefined)
   const [pile, setPile] = useState<PileTriche | undefined>(undefined)

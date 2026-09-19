@@ -26,12 +26,19 @@ PLAFOND_QUESTIONS = 120
 
 
 def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man",
-                     sauvegarde=None):
+                     sauvegarde=None, avant_reponse=None):
     """Demarre une partie et rend (jeu, monde, journal_des_questions).
 
     ⚠ Contrairement au harnais de la manigance, celui-ci enchaine sur
     `GameLoop()` : tout le sujet du mode manuel est CE QUE FAIT LA BOUCLE, on
     ne peut pas s'arreter a la mise en place.
+
+    `avant_reponse` (tache 8 bis), s'il est fourni, est appele avec `jeu`
+    juste avant chaque reponse du pilote -- donc a chaque question posee,
+    mise en place comprise. C'est le seul point d'observation qui voit l'etat
+    du monde PENDANT la mise en place : `monter_le_moteur` ne rend la main
+    qu'apres `time.sleep(20)`, bien apres que la boucle manuelle a pris la
+    main.
     """
     game_dir = os.path.abspath(game_dir)
     os.chdir(game_dir)
@@ -59,6 +66,9 @@ def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man
             options = []
         noms = [o.get("name") for o in options if isinstance(o, dict)]
         journal.append(noms)
+
+        if avant_reponse is not None:
+            avant_reponse(jeu)
 
         # Anti-boucle : le Rhino porte "Enhanced Ivory Horn" (01100), une Hero
         # Action a cout (RRR) que ce pilote ne sait pas payer. L'option reste
@@ -236,6 +246,42 @@ def cas_drapeau_pose(game_dir, port):
     assert getattr(descripteur, "mode_manuel", None) is True, \
         "la trame ne publie pas mode_manuel"
     return "le drapeau mode_manuel est pose et publie"
+
+
+def cas_manuel_actif_pas_avant_la_boucle(game_dir, port):
+    """`manuel_actif` de la trame distingue la mise en place de la boucle.
+
+    La REGLE (`mode_manuel`) est vraie des la creation de la partie ; l'ETAT
+    (`manuel_actif`) ne doit devenir vrai qu'une fois la boucle manuelle
+    entree, apres la mise en place -- sinon le plateau, qui se regle sur cet
+    etat pour masquer les couches du moteur, masquerait deja le panneau qui
+    pose le mulligan PENDANT la mise en place (tache 8 bis).
+
+    Temoin : au moment de la toute PREMIERE question posee (donc pendant la
+    mise en place, avant `World.ManualLoop`), le descripteur doit porter
+    `manuel_actif` a FAUX. Une fois la partie retombee dans la boucle
+    manuelle (silence retabli, `monde` rendu par `monter_le_moteur`), il doit
+    porter `manuel_actif` a VRAI.
+    """
+    manuel_actif_vu = []
+
+    def observateur(jeu):
+        manuel_actif_vu.append(bool(jeu.world.render.descriptor.manuel_actif))
+
+    _, monde, journal = monter_le_moteur(
+        game_dir, port, ["mode_manuel"], avant_reponse=observateur)
+
+    assert journal, "aucune question posee : la mise en place n'a pas eu lieu"
+    assert manuel_actif_vu, "l'observateur n'a jamais ete appele"
+    assert manuel_actif_vu[0] is False, (
+        "le descripteur porte deja manuel_actif a vrai a la toute premiere "
+        "question (donc pendant la mise en place) : le panneau qui la pose "
+        "serait masque, et la partie resterait bloquee pour toujours"
+    )
+    descripteur = monde.render.descriptor
+    assert getattr(descripteur, "manuel_actif", None) is True, \
+        "la trame ne publie pas manuel_actif une fois la boucle manuelle entree"
+    return "manuel_actif distingue la mise en place (faux) de la boucle manuelle (vrai)"
 
 
 def cas_moteur_muet(game_dir, port):
@@ -955,6 +1001,7 @@ def cas_defausse_deck_special(game_dir, port):
 
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
+    "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
     "moteur_muet": cas_moteur_muet,
     "automatique_avance": cas_automatique_avance,
     "commande_executee": cas_commande_executee,

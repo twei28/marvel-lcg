@@ -17,10 +17,24 @@ class WorldDescriptor:
     # clic droit. Transmis a chaque rendu : il survit donc au
     # rechargement de page et au chargement d'une sauvegarde.
     mode_sandbox: bool = field(default=False)
-    # Le plateau masque tout ce qui parle au nom du moteur quand ce drapeau est
-    # vrai. Transmis a chaque rendu : il survit au rechargement de page et au
-    # chargement d'une sauvegarde.
+    # La REGLE : cette partie EST manuelle. Vraie des la creation de la
+    # partie, mise en place comprise -- NE DIT PAS si le moteur s'est deja
+    # tu. Reserve a ce qui decrit la NATURE de la partie et ne depend pas du
+    # moment (refus d'enregistrer un haut fait, mention au rapport de bug,
+    # journal de campagne). Transmis a chaque rendu : il survit au
+    # rechargement de page et au chargement d'une sauvegarde.
     mode_manuel: bool = field(default=False)
+    # L'ETAT : le moteur S'EST TU. Faux pendant toute la mise en place (la
+    # partie se comporte normalement, le joueur repond aux questions dont le
+    # mulligan), vrai seulement une fois la boucle manuelle entree
+    # (`World.ManualLoop`, apres la mise en place). Distinct de
+    # `mode_manuel` par construction (tache 8 bis) : le plateau doit se
+    # regler sur CE champ-ci pour masquer les couches du moteur et activer
+    # les gestes manuels -- se regler sur `mode_manuel` masquerait le
+    # panneau de mulligan pendant la mise en place et bloquerait la partie
+    # pour toujours, le moteur attendant une reponse qu'aucune couche ne
+    # permettrait plus de donner.
+    manuel_actif: bool = field(default=False)
     # Le plateau tient son voile d'ouverture jusqu'a la question de la face A.
     # Il doit donc savoir s'il y a une question a attendre : une sauvegarde
     # ancienne ou un puzzle ne porte pas la regle, et n'en posera jamais.

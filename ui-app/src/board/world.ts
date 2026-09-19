@@ -342,10 +342,25 @@ export type World = {
    */
   mode_sandbox?: boolean
   /**
-   * Mode manuel. Posé par la règle `mode_manuel` du descripteur. Le moteur ne
-   * conduit plus rien : le plateau masque tout ce qui parlait en son nom.
+   * La RÈGLE : cette partie EST manuelle. Vraie dès la création de la partie,
+   * mise en place comprise — NE DIT PAS si le moteur s'est déjà tu. Réservé à
+   * ce qui décrit la NATURE de la partie et ne dépend pas du moment (refus
+   * d'enregistrer un haut fait, mention au rapport de bug, journal de
+   * campagne). Voir `manuel_actif` pour ce qui se règle sur le SILENCE du
+   * moteur (tâche 8 bis) : masquage des couches du moteur, gestes manuels.
    */
   mode_manuel?: boolean
+  /**
+   * L'ÉTAT : le moteur S'EST TU. Faux pendant toute la mise en place (la
+   * partie se comporte normalement, le joueur répond aux questions dont le
+   * mulligan), vrai seulement une fois la boucle manuelle entrée
+   * (`World.ManualLoop`, côté moteur). Distinct de `mode_manuel` par
+   * construction (tâche 8 bis) : c'est CE champ que le plateau doit lire
+   * pour masquer les couches du moteur et activer les gestes manuels — se
+   * régler sur `mode_manuel` masquerait le panneau de mulligan pendant la
+   * mise en place et bloquerait la partie pour toujours.
+   */
+  manuel_actif?: boolean
   /**
    * Le moteur s'arrête-t-il sur la face A de la manigance ? Posé par les
    * parties neuves seulement : une sauvegarde antérieure au 15/09/2026 ne
