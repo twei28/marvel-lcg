@@ -509,6 +509,12 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Envoi...': 'Sending...',
   "Merci, c'est envoyé.": "Thanks, it's on its way.",
   "L'envoi a échoué :": 'Sending failed:',
+  "Ce signalement n'était pas parti, je te l'ai gardé.":
+    "This report never went through, so I kept it for you.",
+  'Je garde ton signalement, tu pourras le renvoyer.':
+    'Your report is kept, you can send it again.',
+  'Je garde ton texte, mais la capture était trop lourde.':
+    'Your text is kept, but the screenshot was too heavy.',
   'Il faut un nom et une description.': 'A name and a description are required.',
   'Image illisible': 'Unreadable image',
   'trop de rapports, reessaie plus tard': 'too many reports, try again later',

@@ -954,6 +954,20 @@ class GameServerGet(GameServerBase):
             'siege': str(data.get('siege', '') or ''),
             'capture': str(data.get('capture', '') or ''),
         }
+        # ⚠ ON TRACE CHAQUE TENTATIVE, ET C'EST LE FRUIT D'UNE ENQUETE RATEE
+        # (19/09/2026). Un joueur a signale un bug le 18/09 ; il n'en restait
+        # AUCUNE trace nulle part : ni en base, ni cote site, ni ici. Impossible
+        # de dire si l'envoi etait parti, avait ete refuse, ou n'avait jamais eu
+        # lieu. Une ligne par tentative, et la question se tranche en une minute.
+        #
+        # ⚠ AUCUN CONTENU PERSONNEL DANS CETTE LIGNE : ni la description, ni le
+        # nom, ni la capture. Un journal se lit a plusieurs et se garde
+        # longtemps ; il dit ce qui s'est passe, pas ce que le joueur a ecrit.
+        from engine.log import Log
+        poids = len(champs['capture'])
+        Log.Print(f"[rapport-bug] envoi vers le site, siege={champs['siege'] or '?'}"
+                  f" capture={poids} octets")
+
         # Vingt secondes, et non cinq : la capture pese mille fois un message
         # de tchat, et le site l'ecrit sur disque avant de repondre.
         statut, donnees = await self._appeler_site('/api/bug', champs, secondes=20,
@@ -964,11 +978,15 @@ class GameServerGet(GameServerBase):
         # gros, en boucle. On le dit pour ce qu'il est : c'est la capture qui
         # pese trop.
         if statut == 413:
+            Log.Print("[rapport-bug] REFUSE : capture trop lourde (413)")
             return web.json_response({'error': 'rapport trop volumineux'}, status=413)
         if donnees is None:
+            Log.Print(f"[rapport-bug] PERDU : site injoignable (statut={statut})")
             return web.json_response({'error': 'site injoignable'}, status=503)
         if donnees.get('error'):
+            Log.Print(f"[rapport-bug] REFUSE par le site : {donnees['error']}")
             return web.json_response({'error': donnees['error']}, status=429)
+        Log.Print(f"[rapport-bug] accepte, numero {donnees.get('numero')}")
         return web.json_response({'ok': True, 'numero': donnees.get('numero')})
 
     async def set_language(self, request: web.Request) -> web.Response:

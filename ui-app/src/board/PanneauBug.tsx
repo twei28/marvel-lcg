@@ -16,6 +16,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from './langue'
 import type { OutilsRapport } from './RapportBug'
 import './PanneauBug.css'
+import { garder, lire, oublier } from './rapport-en-attente'
 
 /* Réduction de la capture AVANT l'envoi. Une capture brute pèse volontiers 2 à
    4 Mo ; réduite à 1600 px en JPEG, elle tombe sous le demi-mégaoctet sans
@@ -45,6 +46,22 @@ export function PanneauBug({ outils }: { outils: OutilsRapport }) {
   const [envoi, setEnvoi] = useState(false)
   const [mot, setMot] = useState<{ genre: 'ok' | 'non' | 'info'; texte: string } | null>(null)
   const fichierRef = useRef<HTMLInputElement | null>(null)
+
+  // ⚠ CE QU'ON A ECRIT UNE FOIS NE SE REECRIT PAS. Quand un envoi echoue, le
+  // texte est mis de cote (`rapport-en-attente`) ; on le rend ici, a la
+  // reouverture du panneau. Sans ca, le joueur qui ferme l'onglet perd son
+  // signalement, et personne n'en saura jamais rien (constate le 19/09/2026).
+  useEffect(() => {
+    if (!ouvert) return
+    const garde = lire()
+    if (!garde) return
+    // On n'ecrase JAMAIS une saisie en cours : si quelque chose est deja tape,
+    // c'est plus recent que ce qu'on avait garde.
+    setDescription((actuelle) => actuelle || garde.description)
+    setNom((actuel) => actuel || garde.nom)
+    setCapture((actuelle) => actuelle || garde.capture)
+    setMot({ genre: 'info', texte: t("Ce signalement n'était pas parti, je te l'ai gardé.") })
+  }, [ouvert])
 
   useEffect(() => {
     let vivant = true
@@ -101,11 +118,19 @@ export function PanneauBug({ outils }: { outils: OutilsRapport }) {
     const r = await outils.envoyer({ nom: nom.trim(), description: description.trim(), capture })
     setEnvoi(false)
     if (r.ok) {
+      oublier()
       setMot({ genre: 'ok', texte: t("Merci, c'est envoyé.") })
       setDescription('')
       setCapture('')
     } else {
-      setMot({ genre: 'non', texte: t("L'envoi a échoué :") + ' ' + t(r.erreur ?? '') })
+      const garde = garder({ nom: nom.trim(), description: description.trim(), capture })
+      const suite =
+        garde === 'tout'
+          ? ' ' + t('Je garde ton signalement, tu pourras le renvoyer.')
+          : garde === 'sans-capture'
+            ? ' ' + t('Je garde ton texte, mais la capture était trop lourde.')
+            : ''
+      setMot({ genre: 'non', texte: t("L'envoi a échoué :") + ' ' + t(r.erreur ?? '') + suite })
     }
   }, [nom, description, capture, outils])
 
