@@ -2018,6 +2018,32 @@ def tickets_de(pseudo: str) -> list[dict]:
     return lignes
 
 
+def rapports_de_ses_tables(pseudo: str) -> list[dict]:
+    """TOUS les signalements venus de ses tables, quel que soit le siege.
+
+    ⚠ A NE JAMAIS CONFONDRE AVEC `tickets_de`, ET LA DIFFERENCE EST UNE
+    AUTORISATION. `tickets_de` dit ce a quoi ce compte a le droit de REPONDRE,
+    et reste donc au siege 0 : le fil ne distingue que « joueur » et « admin »,
+    si l'hote ecrivait dans le fil d'un invite on ne saurait plus qui a parle.
+    Celle-ci dit seulement ce qu'il a le droit de VOIR, et c'est plus large :
+    tout ce qui vient d'une table dont il est l'hote.
+
+    Pourquoi elle existe (signale par un joueur le 19/09/2026) : quelqu'un qui
+    joue sur SA table depuis deux appareils occupe deux sieges. Son signalement
+    envoye du second n'apparaissait nulle part, et il l'a cru perdu.
+    """
+    if not pseudo:
+        return []
+    with _cx() as cx:
+        lignes = [dict(r) for r in cx.execute(
+            "SELECT * FROM rapports WHERE hote = ? ORDER BY id DESC", (pseudo,))]
+        for rapport in lignes:
+            rapport["messages"] = [dict(m) for m in cx.execute(
+                "SELECT * FROM rapports_messages WHERE rapport_id = ? ORDER BY id",
+                (rapport["id"],))]
+    return lignes
+
+
 def marquer_ticket_lu(numero: int, par: str) -> None:
     """Le destinataire a ouvert le fil : ses messages non lus ne le sont plus.
 
@@ -2615,14 +2641,16 @@ def etiquette_ticket(etat: str) -> str:
 def page_signalements(pseudo: str) -> bytes:
     """« Mes signalements » : ses bugs, leur etat, et la conversation.
 
-    ⚠ IL NE VOIT QUE LES SIENS. `tickets_de` filtre sur le compte ET sur le
-    siege 0 : un rapport envoye depuis la table de quelqu'un d'autre ne lui
-    appartient pas, meme s'il l'a ecrit de sa main.
+    ⚠ IL VOIT TOUT CE QUI VIENT DE SES TABLES, mais ne REPOND que sur ses
+    propres signalements. `rapports_de_ses_tables` cadre l'affichage,
+    `tickets_de` cadre l'autorisation d'ecrire, et les deux ne doivent jamais
+    etre confondues. Un rapport envoye depuis la table de quelqu'un d'autre ne
+    lui appartient pas, meme s'il l'a ecrit de sa main.
 
     ⚠ TOUT CE QUI VIENT D'UN JOUEUR PASSE PAR `html.escape`, ici comme dans
     /admin : la description, le nom et le fil sont ecrits a la main.
     """
-    tickets = tickets_de(pseudo)
+    tickets = rapports_de_ses_tables(pseudo)
     if not tickets:
         corps = ('<div class="table"><div class="entete">'
                  '<strong>%s</strong></div>'
@@ -2650,19 +2678,32 @@ def page_signalements(pseudo: str) -> bytes:
             fil = '<p class="mdp">%s</p>' % lang.t("Pas encore de reponse.")
         capture = ('<p><a href="/admin/capture?id=%d" target="_blank" rel="noopener">'
                    '%s</a></p>' % (r["id"], lang.t("Voir la capture"))) if r["capture"] else ""
+        # Le siege n'est montre QUE s'il n'est pas le sien : « siege 0 », c'est
+        # lui, et le rappeler a chaque ligne n'apprendrait rien a personne.
+        siege = int(r["siege"] or 0)
+        if siege:
+            provenance = (' &middot; %s %d (%s)'
+                          % (lang.t("siege"), siege, html.escape(r["nom"] or "")))
+            # Pas de formulaire : voir `rapports_de_ses_tables`. Repondre ici
+            # ferait passer l'hote pour l'auteur du signalement.
+            repondre = ('<p class="mdp">%s</p>'
+                        % lang.t("Envoye depuis un autre siege de ta table : "
+                                 "la reponse part a la personne qui l'a ecrit."))
+        else:
+            provenance = ""
+            repondre = ('<form method="post" action="/signalements" class="repondre">'
+                        '<input type="hidden" name="id" value="%d">'
+                        '<textarea name="texte" rows="2" placeholder="%s"></textarea>'
+                        '<button type="submit">%s</button></form>'
+                        % (r["id"], lang.t("Ajouter quelque chose"), lang.t("Envoyer")))
         corps += ('<div class="table">'
                   '<div class="entete"><strong>%s</strong>'
-                  '<span class="mdp">%s &middot; %s</span></div>'
-                  '<div class="fil">%s</div>%s'
-                  '<form method="post" action="/signalements" class="repondre">'
-                  '<input type="hidden" name="id" value="%d">'
-                  '<textarea name="texte" rows="2" placeholder="%s"></textarea>'
-                  '<button type="submit">%s</button></form>'
+                  '<span class="mdp">%s &middot; %s%s</span></div>'
+                  '<div class="fil">%s</div>%s%s'
                   '</div>'
                   % (html.escape((r["description"] or "")[:160]),
                      etiquette_ticket(etat),
-                     _horodate(r["quand"] or ""), fil, capture, r["id"],
-                     lang.t("Ajouter quelque chose"), lang.t("Envoyer")))
+                     _horodate(r["quand"] or ""), provenance, fil, capture, repondre))
     return PAGE.format(tete="", sous=lang.t("Ce que tu as signale, et ma reponse."),
                        barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")

@@ -2151,6 +2151,27 @@ verifier("et le retour est la aussi pour l'administrateur",
          'href="/"' in o._barre(o.ADMIN),
          o._barre(o.ADMIN))
 
+# ⚠ SIGNALE PAR UN JOUEUR LE 19/09/2026. Il joue sur SA table depuis deux
+# appareils : le PC tient le siege 0, la tablette un autre siege. Son
+# signalement envoye depuis la tablette n'apparaissait NULLE PART, la page ne
+# montrant que le siege 0. Elle montre desormais tout ce qui vient de ses
+# tables. La conversation, elle, reste au siege 0 : c'est le seul endroit ou
+# l'on sait a qui l'on parle, un invite n'ayant qu'un nom tape.
+_tous = [r["id"] for r in o.rapports_de_ses_tables("yarro")]
+verifier("la page montre aussi les signalements des autres sieges",
+         _r_hote in _tous and _r_invite in _tous, str(_tous))
+_ids_tickets = [r["id"] for r in o.tickets_de("yarro")]
+verifier("mais l'autorisation de repondre reste au siege 0",
+         _r_hote in _ids_tickets and _r_invite not in _ids_tickets,
+         str(_ids_tickets))
+_page_yarro = o.page_signalements("yarro").decode("utf-8")
+verifier("la page nomme qui a envoye un signalement d'un autre siege",
+         "un ami" in _page_yarro)
+verifier("et n'offre pas d'y repondre",
+         ('name="id" value="%d"' % _r_invite) not in _page_yarro)
+verifier("alors qu'elle l'offre sur celui du siege 0",
+         ('name="id" value="%d"' % _r_hote) in _page_yarro)
+
 
 # La pastille en partie. Le joueur est sur p<N>.<domaine> : seul le moteur peut
 # parler au site, et il relaie deja `/api/prives`. On y ajoute le compte des

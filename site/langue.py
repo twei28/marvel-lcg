@@ -113,6 +113,8 @@ DICO_EN: dict[str, str] = {
     "Se deconnecter": "Sign out",
     "Mes signalements": "My reports",
     "Accueil": "Home",
+    "siege": "seat",
+    "Envoye depuis un autre siege de ta table : la reponse part a la personne qui l'a ecrit.": "Sent from another seat at your table: the reply goes to whoever wrote it.",
 
     # --- Le suivi d'un signalement ------------------------------------------
     "Ce que tu as signale, et ma reponse.": "What you reported, and my answer.",
