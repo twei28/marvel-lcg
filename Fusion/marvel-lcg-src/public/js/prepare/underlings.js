@@ -40,9 +40,18 @@ export function nomDuVilain(nom, underlingId) {
  * Renvoie une NOUVELLE liste, dans l'ordre du catalogue : la tuile prend la
  * place du premier scénario de sa manigance et porte `underlings`
  * (ordre de `ext.underlings`), `scenarioIds`, et `courant` (le scénario que
- * la tuile montre : celui de la mémoire, sinon le premier). Une manigance
- * qui n'a qu'un seul vilain porté a quand même sa tuile : aucune modale ne
- * s'ouvrira pour elle (jamais de modale à un seul choix).
+ * la tuile montre : celui de la mémoire, sinon celui du TOUR DE RÔLE). Une
+ * manigance qui n'a qu'un seul vilain porté a quand même sa tuile : aucune
+ * modale ne s'ouvrira pour elle (jamais de modale à un seul choix).
+ *
+ * ⚠ SANS MÉMOIRE, CHAQUE AFFAIRE MONTRE UN VILAIN DIFFÉRENT (19/09/2026).
+ * Prendre le premier de la liste donnait cinq fois le même portrait sur la
+ * rangée — cinq Hammerhead — et l'utilisateur l'a signalé : « je n'aime pas
+ * qu'on voie toujours le même méchant sur chaque scénario (même si on peut
+ * choisir) ». On décale donc d'une place par manigance : la rangée montre les
+ * cinq vilains, et le choix reste entier au clic. Le décalage est calculé sur
+ * le RANG DE LA MANIGANCE, donc stable d'un affichage à l'autre : la tuile ne
+ * change pas de portrait sous les yeux du joueur.
  */
 export function regrouperUnderlings(scenarios, ext, memoire) {
     const manigances = (ext && ext.manigances) || [];
@@ -50,7 +59,7 @@ export function regrouperUnderlings(scenarios, ext, memoire) {
     if (!manigances.length || !underlings.length) return scenarios.slice();
     const parId = new Map(scenarios.map((sc) => [sc.id, sc]));
     const tuiles = new Map();
-    for (const manigance of manigances) {
+    for (const [rang, manigance] of manigances.entries()) {
         const choix = [];
         for (const u of underlings) {
             const sc = parId.get(`${manigance}_${u}`);
@@ -59,7 +68,7 @@ export function regrouperUnderlings(scenarios, ext, memoire) {
         }
         if (!choix.length) continue;
         const voulu = memoire && memoire[manigance];
-        const courant = choix.find((c) => c.id === voulu) || choix[0];
+        const courant = choix.find((c) => c.id === voulu) || choix[rang % choix.length];
         tuiles.set(manigance, {
             ...courant.scenario,
             id: manigance,

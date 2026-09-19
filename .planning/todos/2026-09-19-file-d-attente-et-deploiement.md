@@ -45,10 +45,10 @@ Aucune régression du déploiement.
    campagne en ordre libre, les planches du livret et les 95 images. La boucle
    de campagne des dix boîtes est mesurée par-dessus
    (`.planning/todos/2026-09-19-boucle-de-campagne-dix-boites.md`).
-2. **L'éditeur de palettes de héros** — cadré, fiche
-   `2026-09-19-editeur-palettes-heros.md`. Le point dur est de faire savoir au
-   plateau que le visiteur est l'auteur : l'identité vit dans le site, le
-   plateau est servi par le moteur.
+2. ~~**L'éditeur de palettes de héros**~~ — **FAIT le 19/09/2026**, fiche
+   `2026-09-18-editeur-palettes-heros.md`. Le point dur n'en était pas un : le
+   moteur sait déjà reconnaître l'auteur (`_est_administrateur`), comme pour le
+   relevé des illustrations.
 3. **Le mode manuel, moitié plateau** — 7 tâches sur 8 restantes, plan
    `docs/superpowers/plans/2026-09-18-mode-manuel-plateau.md`. La moitié moteur
    est finie, revue et fusionnable (16 commits, 19 cas verts).
@@ -59,9 +59,13 @@ Aucune régression du déploiement.
   et le joueur ne se souvient pas s'il avait vu la confirmation ou une erreur.
   Le correctif `84ae2ed0` ne le répare pas : il rend le prochain cas
   diagnosticable. À rouvrir seulement si ça se reproduit.
-- **« Mes signalements » reste inaccessible depuis le menu du jeu.** Le correctif
-  touche l'en-tête de l'écran de préparation, là où travaille l'autre session.
-  À faire dès qu'elle a fini.
+- ~~**« Mes signalements » reste inaccessible depuis le menu du jeu.**~~ **FAIT
+  le 19/09/2026** : un bouton sur l'écran de préparation, pour tout le monde
+  (`lien-signalements.js`). Au passage, la pastille de réponse ouvrait un
+  onglet vide — elle visait `/signalements` en relatif, donc le MOTEUR, qui
+  sert une image pour tout chemin inconnu. Les deux passent maintenant par
+  l'adresse publique du site (`/get_site_url`, renseignée par l'orchestrateur
+  pour toutes les tables).
 - **Un signalement ne porte pas le compte de son auteur**, seulement le jeton de
   la table et le nom tapé. Conséquence : un signalement envoyé depuis un second
   appareil est désormais visible, mais reste sans conversation possible. Le

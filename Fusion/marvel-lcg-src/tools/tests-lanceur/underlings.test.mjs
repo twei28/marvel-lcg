@@ -30,7 +30,33 @@ test("une tuile par manigance, dans l'ordre du catalogue, Kingpin garde la sienn
     assert.equal(tuiles[1].interchangeable, undefined);
 });
 
-test("la memoire choisit le vilain montre par la tuile ; une memoire perimee retombe sur le premier", () => {
+test("sans memoire, chaque affaire montre un vilain DIFFERENT", () => {
+    // Signale le 19/09/2026 : cinq affaires, cinq fois le meme portrait. La
+    // tuile de rang N prend le vilain de rang N, donc la rangee les montre
+    // tous. Ici les deux manigances portent les trois memes vilains.
+    const complet = {
+        manigances: ["art_museum_heist", "the_getaway", "protection_racket"],
+        underlings: ["hammerhead", "bullseye", "electro"],
+    };
+    const cartes = [];
+    for (const m of complet.manigances) {
+        for (const u of complet.underlings) {
+            cartes.push(sc(`${m}_${u}`, `Affaire (${u})`, `${m}-${u}`));
+        }
+    }
+    const tuiles = regrouperUnderlings(cartes, complet, {});
+    assert.deepEqual(tuiles.map((t) => t.courant.id), ["hammerhead", "bullseye", "electro"]);
+    // Et le tour de role repart au debut quand il y a plus d'affaires que de
+    // vilains : jamais d'index hors liste.
+    const quatre = { ...complet, manigances: [...complet.manigances, "stop_the_presses"] };
+    for (const u of complet.underlings) {
+        cartes.push(sc(`stop_the_presses_${u}`, `Affaire (${u})`, `stp-${u}`));
+    }
+    const tuiles4 = regrouperUnderlings(cartes, quatre, {});
+    assert.equal(tuiles4[3].courant.id, "hammerhead");
+});
+
+test("la memoire choisit le vilain montre par la tuile ; une memoire perimee retombe sur le tour de role", () => {
     const [amh] = regrouperUnderlings(catalogue, ext, { art_museum_heist: "bullseye" });
     assert.equal(amh.courant.id, "bullseye");
     assert.equal(amh.villainCards[0], "60065");

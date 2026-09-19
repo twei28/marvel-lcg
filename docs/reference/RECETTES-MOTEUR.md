@@ -968,6 +968,46 @@ Pieges payes en l'ecrivant, tous reutilisables :
   levee dans le verificateur, hors `try`, laissait le fils pendu sans jamais
   rapporter : l'appel est desormais garde.
 
+
+### 7quindecies. Corriger a la main une donnee GENEREE (19/09/2026)
+
+L'editeur de palettes de heros (`/palettes-heros.html`) a posé un patron
+reutilisable : comment laisser corriger a la main une donnee qu'un outil
+regenere.
+
+- **Deux fichiers, jamais un.** `data/palettes-heros.json` est reecrit en
+  entier par `outils/palettes-heros.py` ; les corrections vivent dans
+  `data/palettes-heros-corrections.json` et se POSENT PAR-DESSUS a la lecture
+  (`PalettesHeros.Toutes()`). Une correction ecrite dans le fichier genere
+  serait effacee a la passe suivante.
+- **Le moteur sait deja qui est l'auteur.** `_est_administrateur`
+  (server_get.py) : l'orchestrateur ne renseigne `site_admin_url` que pour la
+  table de l'administrateur, et le siege 0 est celui du titulaire du compte.
+  Pas besoin de relier le site au plateau pour un ecran reserve.
+- **Ecriture : une entite a la fois, fichier relu a chaque fois, remplacement
+  atomique, puis cache vide.** Deux onglets ne peuvent alors se marcher dessus
+  que sur la meme entite, et la correction arrive au plateau sans redemarrage.
+- **Le deploiement doit laisser passer le fichier corrige.** `deployer.ps1`
+  l'EXCLUT de l'archive de code (sinon le poste ecraserait le travail fait en
+  ligne) et le RAPATRIE apres l'envoi. Le serveur est l'endroit ou l'on
+  corrige, le depot celui ou l'on garde.
+- **Un apercu doit montrer le VRAI rendu.** La formule du fond de plateau vit
+  en TypeScript (plateau) et en JavaScript nu (page de l'assistant) : les deux
+  copies sont tenues d'accord par `ui-app/src/board/halo-heros-accord.test.ts`,
+  qui compare leurs sorties.
+
+### 7sexdecies. Une page du SITE ouverte depuis le JEU (19/09/2026)
+
+La page de table est servie depuis `pN.<domaine>`, le site depuis `<domaine>`.
+Un `window.open('/signalements')` depuis le jeu tombe donc sur le MOTEUR, qui
+sert une IMAGE pour tout chemin inconnu (`handle_image_request`, la route
+fourre-tout) : l'onglet s'ouvre sur rien, sans la moindre erreur. C'est ce qui
+rendait « Mes signalements » introuvable depuis le 16/09/2026.
+
+Le moteur expose desormais `/get_site_url` (lecture ouverte : c'est l'adresse
+d'accueil, pas l'administration), renseignee par l'orchestrateur pour TOUTES
+les tables. Tout lien du jeu vers une page du site doit passer par la.
+
 ## 9. Le chemin outillé, de bout en bout
 
 | Étape | Commande | Durée vue |

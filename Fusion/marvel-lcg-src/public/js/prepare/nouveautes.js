@@ -46,6 +46,30 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-09-19",
+        genre: "correction",
+        fr: "« Mes signalements » a enfin un bouton sur l'écran de préparation, et la pastille de réponse ouvre la bonne page au lieu d'un onglet vide.",
+        en: "\u201cMy reports\u201d finally has a button on the preparation screen, and the reply badge opens the right page instead of a blank tab.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "jeu",
+        fr: "Chaque boîte de campagne montre la couverture de son livret dans le choix des scénarios, à la place de la photo du produit.",
+        en: "Every campaign box now shows its rulebook cover in the scenario picker, instead of the product photo.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "jeu",
+        fr: "Le livret de règles et le carnet de campagne de Fear No Evil rejoignent le panneau Documents.",
+        en: "Fear No Evil's rulebook and campaign log join the Documents panel.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "jeu",
+        fr: "Les cinq affaires de Fear No Evil sont dans l'ordre du livret, Kingpin en dernier, et chaque tuile montre un sous-fifre différent au lieu de cinq fois le même.",
+        en: "Fear No Evil's five cases now follow the rulebook order, Kingpin last, and each tile shows a different underling instead of the same one five times.",
+    },
+    {
+        date: "2026-09-19",
         genre: "jeu",
         fr: "Fear No Evil arrive en entier : les cinq affaires et Kingpin, chaque affaire contre le sous-fifre de ton choix. En campagne, tu les joues dans l'ordre que tu veux.",
         en: "Fear No Evil lands in full: the five cases plus Kingpin, each case against the underling you pick. In campaign mode you play them in any order you like.",
