@@ -787,6 +787,72 @@ def cas_geste_refuse_non_enregistre(game_dir, port):
     return "un geste refuse n'entre pas dans la sauvegarde, le geste valide qui le suit y entre"
 
 
+def cas_ecart_modular(game_dir, port):
+    """`AsideModular` doit remplir `world.aside_modular`, pas une autre pile.
+
+    Jumeau de `cas_ecart_scenario` pour la seconde entree ajoutee par la
+    tache 4 bis (`'AsideModular'`, `ZONES_MONDE`). Cette table a deja mordu
+    trois fois sur ce chantier (`set_aside_deck`, `AsideDeck`/`AsideScenario`
+    ronde 1 et tache 4 bis) : chaque entree merite son propre temoin. Verifie
+    l'arrivee dans `world.aside_modular` ET l'absence dans les DEUX piles
+    voisines - `world.aside_deck` (la ligne juste au-dessus dans la table) et
+    le set nemesis du heros - une entree copiee-collee sur la mauvaise ligne
+    n'y leve jamais d'erreur, elle y range juste la carte en silence.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    joueur = monde.const_players[0]
+    main = list(joueur.hand_cards.GetAll())
+    assert main, "la main de depart est vide"
+    carte = main[0].card.object_id
+
+    avant_modular = len(monde.aside_modular.GetAll())
+    avant_scenario = len(monde.aside_deck.GetAll())
+    avant_nemesis = len(joueur.set_aside_nemesis_sets.GetAll())
+
+    deposer(jeu, f"Puzzle.MoveTo({carte}, 'AsideModular')")
+
+    apres_modular = len(monde.aside_modular.GetAll())
+    apres_scenario = len(monde.aside_deck.GetAll())
+    apres_nemesis = len(joueur.set_aside_nemesis_sets.GetAll())
+    assert apres_modular == avant_modular + 1, \
+        (f"les mises de cote modulaires devaient passer de {avant_modular} "
+         f"a {avant_modular + 1}, elles valent {apres_modular}")
+    assert apres_scenario == avant_scenario, \
+        (f"la carte a atterri dans les mises de cote du scenario au lieu du "
+         f"modulaire : {avant_scenario} -> {apres_scenario}")
+    assert apres_nemesis == avant_nemesis, \
+        (f"la carte a atterri dans le set nemesis du heros au lieu du "
+         f"modulaire : {avant_nemesis} -> {apres_nemesis}")
+    return "AsideModular envoie vers world.aside_modular, pas vers une autre pile"
+
+
+def cas_refus_publie_puis_reparti(game_dir, port):
+    """Le descripteur publie le motif d'un geste refuse, puis reparti a vide.
+
+    Tache 4 ter. `sandbox_last_error` existait deja cote moteur
+    (`DrainSandboxCommands`, engine/device/manager/base.py) mais
+    `ToDescriptor.World` ne le lisait pas : la trace du refus etait orpheline.
+    Ce cas prouve deux choses : le motif atteint bien
+    `WorldDescriptor.manuel_refus`, et le geste VALIDE qui suit le vide -
+    sans quoi le plateau afficherait pour toujours la meme erreur (mise en
+    garde du brief).
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    vilain = id_du_vilain(monde)
+
+    deposer(jeu, f"Puzzle.MoveTo({vilain}, 'ZoneInconnue')")
+    refus = monde.render.descriptor.manuel_refus
+    assert refus, "le refus n'a pas ete publie dans le descripteur"
+    assert "ZoneInconnue" in refus, \
+        f"le motif publie ne parle pas de la zone refusee : {refus!r}"
+
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
+    refus_apres = monde.render.descriptor.manuel_refus
+    assert refus_apres == "", \
+        f"le refus est reste colle apres un geste valide : {refus_apres!r}"
+    return "le refus est publie dans le descripteur, puis reparti a vide au geste valide suivant"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "moteur_muet": cas_moteur_muet,
@@ -809,6 +875,8 @@ CAS = {
     "attache": cas_attache,
     "engagement": cas_engagement,
     "geste_refuse_non_enregistre": cas_geste_refuse_non_enregistre,
+    "ecart_modular": cas_ecart_modular,
+    "refus_publie_puis_reparti": cas_refus_publie_puis_reparti,
 }
 
 

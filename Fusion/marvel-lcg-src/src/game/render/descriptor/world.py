@@ -25,6 +25,16 @@ class WorldDescriptor:
     # Il doit donc savoir s'il y a une question a attendre : une sauvegarde
     # ancienne ou un puzzle ne porte pas la regle, et n'en posera jamais.
     confirm_main_scheme: bool = field(default=False)
+    # Le motif du DERNIER geste manuel refuse, vide quand tout va bien.
+    #
+    # Lu depuis `device_manager.sandbox_last_error` (pose par
+    # `DrainSandboxCommands`, engine/device/manager/base.py) : la trace du
+    # refus existait deja cote moteur mais n'etait consommee nulle part.
+    # Transmis a chaque rendu, comme `mode_manuel` : une fois publie et vu, il
+    # ne repart a vide qu'au PROCHAIN geste qui reussit (le moteur ne le
+    # remet pas a vide tout seul entre deux). Voir le rapport de la tache
+    # 4 ter pour ce que ca implique cote plateau.
+    manuel_refus: str = field(default='')
     # play
     area_schemes_main: List[CardDescriptor] = field(default_factory=lambda: [])
     main_schemes_deck: List[CardDescriptor] = field(default_factory=lambda: [])

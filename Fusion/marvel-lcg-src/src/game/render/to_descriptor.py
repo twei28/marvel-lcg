@@ -56,6 +56,10 @@ class ToDescriptor:
         world_descriptor.mode_sandbox = bool(world.rule.mode_sandbox)
         world_descriptor.mode_manuel = bool(world.rule.mode_manuel)
         world_descriptor.confirm_main_scheme = bool(world.rule.confirm_main_scheme)
+        # Tache 4 ter : la trace d'un geste manuel refuse (DrainSandboxCommands
+        # la pose, personne ne la lisait). Projetee telle quelle, sans mode a
+        # verifier : le champ est vide hors refus, peu importe le mode.
+        world_descriptor.manuel_refus = world.controller_manager.device_manager.sandbox_last_error
 
         world_descriptor.active_card_ids = world.render.last_active_card_ids
         # Journal des activations ennemies du round (voir WorldStat). Copie, et
