@@ -568,6 +568,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Retirer de la partie': 'Remove from game',
   'Appliquer': 'Apply',
   'refusé': 'refused',
+  // Tâche 4 ter : un geste manuel refusé se voit (journal + avis bref).
+  'Geste refusé par la table': 'Move refused by the table',
   'En main': 'To hand',
   'Mettre en jeu': 'Put into play',
   'Révéler': 'Reveal',

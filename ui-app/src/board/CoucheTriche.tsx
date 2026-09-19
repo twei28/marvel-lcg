@@ -42,6 +42,15 @@ export type PileTriche = {
 
 type MenuOuvert = { cible: CibleTriche; x: number; y: number }
 
+/**
+ * Combien de temps l'avis de refus reste affiché à l'écran (tâche 4 ter).
+ *
+ * Discret et bref, comme le reste des interventions du mode manuel : ce
+ * n'est pas une erreur de l'application, c'est une réponse à un geste — pas
+ * de quoi retenir l'écran plus que le temps de le lire.
+ */
+const DUREE_AVIS_REFUS = 3500
+
 /** Les types de cartes qui se mesurent en menace plutôt qu'en points de vie. */
 const MANIGANCES = new Set(['MainScheme', 'SideScheme', 'Scheme'])
 /** Ce qui ne s'incline pas et n'a pas d'état : inutile de proposer ces entrées. */
@@ -148,6 +157,47 @@ export function useTriche(
       ajouterAuJournal?.(libelle)
     },
     [ajouterAuJournal]
+  )
+
+  // Un geste manuel refusé (tâche 4 ter) : `World.ManualLoop` redessine même
+  // quand un geste échoue, donc `world.manuel_refus` porte le motif du DERNIER
+  // refus dès le rendu suivant — voir `WorldDescriptor.manuel_refus`,
+  // engine/render/descriptor/world.py.
+  //
+  // ⚠ ON REGARDE `render_id`, PAS SEULEMENT LE CHAMP. Le moteur ne vide
+  // `manuel_refus` qu'au PROCHAIN geste qui réussit : tant que rien ne s'est
+  // reproduit, le champ reste posé. Sans ce verrou sur le rendu déjà vu, ce
+  // même refus serait rejoué au journal et à l'écran à chaque nouveau rendu
+  // du monde (une carte qui bouge chez un autre joueur, une horloge...), et
+  // pas seulement quand le refus est arrivé.
+  //
+  // ⚠ LE MOTIF TECHNIQUE (« KeyError: 'zone inconnue : ...' ») N'EST PAS
+  // MONTRÉ TEL QUEL : il s'adresse à qui débogue, pas à qui joue, et il est
+  // déjà dans le journal serveur (`Log.Print`, `DrainSandboxCommands`). Le
+  // joueur lit un message compréhensible ; le motif reste consultable côté
+  // serveur pour qui doit diagnostiquer.
+  const dernierRenduVu = useRef<number | undefined>(undefined)
+  const [avisRefus, setAvisRefus] = useState<string | undefined>(undefined)
+  const minuteurRefus = useRef<number | undefined>(undefined)
+
+  useEffect(() => {
+    if (!manuel || !world) return
+    if (world.render_id === dernierRenduVu.current) return
+    dernierRenduVu.current = world.render_id
+    if (!world.manuel_refus) return
+
+    const libelle = t('Geste refusé par la table')
+    noter(libelle)
+    setAvisRefus(libelle)
+    if (minuteurRefus.current !== undefined) window.clearTimeout(minuteurRefus.current)
+    minuteurRefus.current = window.setTimeout(() => setAvisRefus(undefined), DUREE_AVIS_REFUS)
+  }, [manuel, world, world?.render_id, world?.manuel_refus, noter])
+
+  useEffect(
+    () => () => {
+      if (minuteurRefus.current !== undefined) window.clearTimeout(minuteurRefus.current)
+    },
+    []
   )
 
   // L'écoute vit au niveau du document : les cartes portent déjà
@@ -335,7 +385,7 @@ export function useTriche(
     actif,
     manuel,
     interventions,
-    couche: { menu, pile, setMenu, setPile, noter },
+    couche: { menu, pile, setMenu, setPile, noter, avisRefus },
     /** Pour la tâche 5 (glisser-déposer) : lire l'état sans poser d'écoute. */
     estToucheEnfoncee: etatTouches.estEnfoncee,
   }
@@ -349,7 +399,7 @@ export type CoucheTricheProps = {
 }
 
 export function CoucheTriche({ actif, manuel, couche }: CoucheTricheProps) {
-  const { menu, pile, setMenu, setPile, noter } = couche
+  const { menu, pile, setMenu, setPile, noter, avisRefus } = couche
   if (!actif) return null
 
   const agirSurCarte = async (carte: WorldCard, mode: 'defaut' | 'reveler') => {
@@ -388,6 +438,15 @@ export function CoucheTriche({ actif, manuel, couche }: CoucheTricheProps) {
           </span>
         </div>
       )}
+
+      {/* Tâche 4 ter : un geste manuel refusé se voit, brièvement et sans
+          alarmer — ce n'est pas une erreur de l'application, c'est une
+          réponse à un geste. Discret comme le bandeau lui-même. */}
+      {manuel && avisRefus ? (
+        <div className="avis-refus-manuel" role="status">
+          {avisRefus}
+        </div>
+      ) : null}
 
       {menu ? (
         <MenuTriche

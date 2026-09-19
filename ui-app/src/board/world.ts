@@ -352,6 +352,21 @@ export type World = {
    * porte pas la règle, et le voile d'ouverture ne doit pas l'attendre.
    */
   confirm_main_scheme?: boolean
+  /**
+   * Motif du dernier geste manuel refusé, vide quand tout va bien. Posé par
+   * `WorldDescriptor.manuel_refus` (tâche 4 ter), lui-même lu depuis
+   * `device_manager.sandbox_last_error` (`DrainSandboxCommands`,
+   * engine/device/manager/base.py) : la trace existait déjà côté moteur,
+   * mais rien ne la consommait avant cette tâche.
+   *
+   * ⚠ NE REPART À VIDE QU'AU PROCHAIN GESTE QUI RÉUSSIT, pas tout seul entre
+   * deux : un lecteur doit se caler sur `render_id` pour ne réagir qu'une
+   * fois par refus, voir `CoucheTriche.tsx`.
+   *
+   * ⚠ C'est un MOTIF TECHNIQUE (`"KeyError: 'zone inconnue : ...'"`), pas un
+   * texte pour le joueur : ne jamais l'afficher tel quel à l'écran.
+   */
+  manuel_refus?: string
   event_name: string
   /**
    * Les activations ennemies du round en cours, telles que le MOTEUR les a

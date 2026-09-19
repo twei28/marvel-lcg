@@ -6574,6 +6574,26 @@
 
   .bandeau-triche-aide { color: rgba(255, 255, 255, 0.6); }
 
+  /* Tache 4 ter : l'avis de refus d'un geste manuel. Meme famille visuelle
+     que le bandeau bac a sable (discret, arrondi, sombre) mais TRANSITOIRE -
+     ce n'est pas un etat permanent de la partie, juste une reponse a un
+     geste. */
+  .avis-refus-manuel {
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 900;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: rgba(24, 18, 4, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.85);
+    pointer-events: none;
+    font-size: 12px;
+  }
+
   /* Le menu contextuel, pose au curseur. */
   .menu-triche {
     position: fixed;
