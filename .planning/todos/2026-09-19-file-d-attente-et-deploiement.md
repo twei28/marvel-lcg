@@ -58,6 +58,14 @@ Aucune régression du déploiement.
 - Personne d'autre n'était en ligne : une seule table ouverte, celle de
   l'administrateur (reconnue à `site_admin_url` dans son `launch-1.json`).
 
+## ✅ TROISIÈME DÉPLOIEMENT du 19/09/2026, 14:50
+
+`04fcf37e` : la loupe et la pipette de l'éditeur de palettes. La carte
+s'agrandit, le clic prélève la couleur moyenne d'un carré de 5 sur 5, la
+pipette de Chrome reste à côté pour prélever ailleurs à l'écran.
+
+Envoi `-Code` seulement : ni image ni document n'avait bougé.
+
 ## L'ordre décidé avec l'utilisateur
 
 1. ~~**Fear No Evil**~~ — **FAIT ET DÉPLOYÉ le 19/09/2026.** Le pack, la
