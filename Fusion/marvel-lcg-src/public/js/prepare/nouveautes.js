@@ -45,6 +45,60 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-09-19",
+        genre: "jeu",
+        fr: "Fear No Evil arrive en entier : les cinq affaires et Kingpin, chaque affaire contre le sous-fifre de ton choix. En campagne, tu les joues dans l'ordre que tu veux.",
+        en: "Fear No Evil lands in full: the five cases plus Kingpin, each case against the underling you pick. In campaign mode you play them in any order you like.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "correction",
+        fr: "Les récompenses de campagne arrivent vraiment au scénario suivant. Neuf oublis corrigés, dans six boîtes : artefacts rapportés, Pierre du Pouvoir, matériel S.H.I.E.L.D. amélioré, Maraudeurs vaincus, serrures de la cellule.",
+        en: "Campaign rewards now really carry into the next scenario. Nine misses fixed across six boxes: recovered artifacts, the Power Stone, upgraded S.H.I.E.L.D. tech, defeated Marauders, the holding cell locks.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "jeu",
+        fr: "Chaque campagne montre la couverture de son livret dans l'écran de sélection.",
+        en: "Every campaign now shows its rulebook cover in the selection screen.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "jeu",
+        fr: "Sur le plateau, ton deck et ta défausse sont à la hauteur de ton héros, au lieu d'être relégués en bas.",
+        en: "On the board, your deck and discard pile now sit at your hero's height instead of being pushed to the bottom.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "correction",
+        fr: "À l'aperçu, les héros maison montrent enfin leurs deux faces, héros et alter-ego. Soixante-trois d'entre eux n'en montraient qu'une.",
+        en: "In the preview, custom heroes finally show both sides, hero and alter-ego. Sixty-three of them only showed one.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "correction",
+        fr: "En Costume cherche bien un allié ET une amélioration qui peut s'attacher à lui. Il laissait prendre deux améliorations, puis se défaussait sans rien donner.",
+        en: "Suit Up now really looks for an ally AND an upgrade that can be attached to it. It used to let you take two upgrades, then discard itself for nothing.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "jeu",
+        fr: "Un lien Accueil dans la barre du site : installé en application, le jeu n'a pas de bouton Précédent.",
+        en: "A Home link in the site bar: installed as an app, the game has no Back button.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "correction",
+        fr: "« Mes signalements » montre tout ce qui vient de tes tables, quel que soit le siège, en nommant l'auteur.",
+        en: "\u201cMy reports\u201d now shows everything from your tables, whatever the seat, naming who wrote it.",
+    },
+    {
+        date: "2026-09-19",
+        genre: "correction",
+        fr: "Un signalement dont l'envoi échoue n'est plus perdu : il t'est rendu à la réouverture du panneau.",
+        en: "A report that fails to send is no longer lost: you get it back when you reopen the panel.",
+    },
+    {
         date: "2026-09-17",
         genre: "correction",
         fr: "Sur le plateau, quand ta table a été fermée, le bandeau finit par le dire au lieu de répéter « nouvel essai » sans fin, et te propose de revenir à l'accueil.",

@@ -31,6 +31,32 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PDFS = os.path.abspath(os.path.join(RACINE, "..", "..", ".."))
 LARGEUR = 975
 
+# Les livrets officiels, la ou ils se telechargent. Verifies le 19/09/2026
+# (HTTP 200, application/pdf). Le nom de fichier attendu par CARTES est le
+# dernier segment de l'URL.
+#
+# `www.fantasyflightgames.com` rend 403 derriere Cloudflare : c'est le CDN
+# `images-cdn.fantasyflightgames.com` qui sert les fichiers, et la liste des
+# liens se lit sur un instantane Wayback de la page produit.
+LIVRETS = {
+    "trors":     "https://images-cdn.fantasyflightgames.com/filer_public/92/1d/921ddef8-c28c-4096-a9e9-63142230a602/mc10_the_rise_of_red_skull_rules_web.pdf",
+    "gmw":       "https://images-cdn.fantasyflightgames.com/filer_public/dd/86/dd86a2b4-4501-4435-8504-c4ac9df25a99/mc16_galaxys_most_wanted_rules_website-compressed.pdf",
+    "mts":       "https://images-cdn.fantasyflightgames.com/filer_public/a7/e4/a7e4f10e-286f-4a8a-b90d-feb052a286a2/mc21_the_mad_titans_shadow_rulebook-compressed.pdf",
+    "sm":        "https://images-cdn.fantasyflightgames.com/filer_public/77/cc/77cc5a70-52d8-4542-8588-aba3d6aa07bd/mc27_sinister_motives_rules_v5-compressed.pdf",
+    "mut_gen":   "https://images-cdn.fantasyflightgames.com/filer_public/2c/52/2c52bcb0-4e21-4bf8-8052-b2ef41266737/mc32_mutant_genesis_rulebook_v5-compressed.pdf",
+    "next_evol": "https://images-cdn.fantasyflightgames.com/filer_public/73/e2/73e23a2b-3f2a-4173-8fee-cf0073ab11c8/mc40_next_evolution_rulebook-web.pdf",
+    "aoa":       "https://images-cdn.fantasyflightgames.com/filer_public/a2/bd/a2bd6f15-688b-4485-affa-f5a14d750d3a/mc45_age_of_apocalypse_rulebook.pdf",
+    "aos":       "https://images-cdn.fantasyflightgames.com/filer_public/79/12/7912adc3-2461-4ea2-8606-4715880b8d1d/mc50_rulebook-web.pdf",
+    # fne : pas de PDF public trouve, le livret vient du scan de la boite.
+    # web_of_deceit : campagne maison, sans livret ; sa couverture est
+    # recadree depuis `assets/textures/sets/120. Custom (Web of Deceit).webp`.
+}
+
+# La page 1 de tout livret officiel est sa COUVERTURE. Elle sert de vignette a
+# la campagne dans l'ecran de selection (19/09/2026) : meme largeur que les
+# planches, meme dossier, un nom reserve.
+COUVERTURE = "00-couverture.jpg"
+
 CARTES = {
     "next_evol": {
         "pdf": "mc40_next_evolution_rulebook-web.pdf",
@@ -152,6 +178,8 @@ def main():
     # page du PDF -> nom de fichier, pour ne rendre chaque page qu'UNE fois
     a_rendre = {}
     pages_par_scenario = {}
+
+    a_rendre[1] = COUVERTURE
 
     for rang, page in enumerate(carte["regles_campagne"], 1):
         a_rendre[page] = nom_fichier(0, None, "regles", rang)

@@ -1,4 +1,5 @@
 from . import *
+import re
 def InPool(name: str):
     def check(effect: 'Effect', message: 'Message.WhenCampaignSetup') -> bool:
         return (CampaignLog.GetStrInternal(f'Campaign Pool: {name}', effect) != '')
@@ -113,7 +114,15 @@ def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':
                     hero_face = None
                 if hero_face:
                     out[f'Player {(player.player_id + 1)} Identity'] = hero_face.paper.name.lstrip('* ')
-        updates = collect_fn(effect)
+        # ⚠ LE RESULTAT DE LA PARTIE N'EST PAS ENCORE POSE SUR LE MONDE.
+        # `GameOver.SetGameOver` envoie ce message PUIS affecte
+        # `self.players_won` (game_over.py:85-90) : un collecteur qui lisait
+        # `world.game_over` pendant le message voyait donc TOUJOURS « perdue ».
+        # Fear No Evil, qui ne coche l'affaire qu'a la victoire, n'inscrivait
+        # jamais rien — trouve le 19/09/2026 par `tools/test_campagnes.py`, la
+        # premiere gate a jouer la FIN d'une partie. Le collecteur recoit donc
+        # le message, seul porteur de la verite a cet instant.
+        updates = collect_fn(effect, message)
         for key, value in updates.items():
             if (value == None):
                 out.pop(key, None)
@@ -133,7 +142,10 @@ def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':
         if schemes:
             set_name = schemes[0].paper.set_name
             if set_name:
-                scenario_id = set_name.lower().replace(' ', '_')
+                # CORRECTIF (18/09/2026, Fear No Evil) : « Stop the Presses! »
+                # donnait « stop_the_presses! », qui ne correspond a aucun id
+                # de scenario. On ne garde que [a-z0-9_].
+                scenario_id = re.sub(r'[^a-z0-9_]', '', set_name.lower().replace(' ', '_'))
         try:
             from engine.config import ConfigVariables
             chemin = ConfigVariables.File('campaign_log_last_file', './campaign_log_last.json').value
@@ -210,5 +222,5 @@ def CampaignSetup(level: int) -> List['Ability']:
     if (level >= 2):
         abilities.append(AbilityFactoryCampaign.ExpertCampaignSetPlayersHPToTheirRemainingHP())
         abilities.append(ExpertMayPlaceAccelerationToHeal())
-    abilities.append(WriteCampaignLogAtGameOver(lambda effect: CollectMTS(level, effect)))
+    abilities.append(WriteCampaignLogAtGameOver(lambda effect, message: CollectMTS(level, effect)))
     return abilities

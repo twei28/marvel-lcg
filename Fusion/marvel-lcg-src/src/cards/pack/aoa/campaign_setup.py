@@ -145,7 +145,7 @@ def CampaignSetup(level: int) -> List['Ability']:
     if (level >= 2):
         abilities.append(AbilityFactoryCampaign.ExpertCampaignSetPlayersHPToTheirRemainingHP())
         abilities.append(ExpertMayPlaceThreatToHeal())
-    abilities.append(WriteCampaignLogAtGameOver(lambda effect: CollectAoA(level, effect)))
+    abilities.append(WriteCampaignLogAtGameOver(lambda effect, message: CollectAoA(level, effect)))
     return abilities
 def CollectAoA(level: int, effect: 'Effect') -> dict:
     updates = {'Current Mission': None, 'Current Overseer': None, 'Mission Result': None}

@@ -68,8 +68,25 @@ def RemoveMaraudersDefeatedBeforeSetup() -> 'Ability':
         if not names:
             return
         wanted = {str(x).strip().lstrip('* ').lower() for x in names}
-        villain_deck = Worlds.GetScenario(effect).villain_deck
-        to_remove = [f for f in villain_deck.GetAll() if (f.paper.name.lstrip('* ').lower() in wanted) or (f.paper.card_id in wanted)]
+        # CORRECTIF DU 19/09/2026, trouve par les epreuves de campagne. Le
+        # livret (p.11) dit « remove each villain card recorded in the campaign
+        # log under "Marauders Defeated" from the game », sans dire d'ou : au
+        # scenario 2, les sept Maraudeurs ne sont PAS dans le deck vilain, ils
+        # attendent dans la reserve de cote (data/scenarios/on_the_run.json les
+        # declare en `set_aside`, le deck vilain est vide). On ne cherchait que
+        # dans le deck vilain : aucun Maraudeur n'etait jamais retire, et la
+        # seule recompense du premier scenario ne servait a rien.
+        #
+        # « (Minion cards with the same title remain in the encounter deck.) » :
+        # d'ou le filtre sur le type Villain, qui laisse les sbires homonymes.
+        piles = [Worlds.GetScenario(effect).villain_deck, effect.world.aside_deck]
+        to_remove = []
+        for pile in piles:
+            for f in pile.GetAll():
+                if not Villain.IsType(f):
+                    continue
+                if (f.paper.name.lstrip('* ').lower() in wanted) or (f.paper.card_id in wanted):
+                    to_remove.append(f)
         if to_remove:
             Faces.RemoveAllFromGame(to_remove, effect)
     def check_before(effect: 'Effect', message: 'Message.WhenCardSetup') -> bool:
@@ -250,5 +267,5 @@ def CampaignSetup(level: int) -> List['Ability']:
             abilities.append(AbilityFactoryCampaign.ExpertCampaignEachPlayerMayDealFacedownEncounterCardYpHealHP(1))
         else:
             abilities.append(ExpertMayPlaceAccelerationToHeal())
-    abilities.append(WriteCampaignLogAtGameOver(lambda effect: CollectNeXt(level, effect)))
+    abilities.append(WriteCampaignLogAtGameOver(lambda effect, message: CollectNeXt(level, effect)))
     return abilities

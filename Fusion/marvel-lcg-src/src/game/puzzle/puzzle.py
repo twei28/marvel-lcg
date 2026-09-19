@@ -53,6 +53,28 @@ class RunPuzzle:
                 if face is not None and face.IsInPlay() and face.IsName(card):
                     return face
 
+            # ⚠ APRES la recherche « en jeu », pas avant (corrige le
+            # 18/09/2026 au soir) : une carte peut exister EN DEUX EXEMPLAIRES,
+            # l'un en jeu et l'autre encore mis de cote (60068a
+            # Adamantium-Laced Spine). Fouillee d'abord, la mise de cote
+            # gagnait, et `Puzzle.Counter('60068a')` posait ses compteurs sur
+            # la copie hors jeu, en silence.
+            # CORRECTIF (18/09/2026, Protection Racket) : les cartes MISES DE
+            # COTE par le scenario (complots de rechange, Out Front, Master
+            # Key, soutiens Daily Bugle...) n'etaient pas fouillees : une
+            # commande les visant FABRIQUAIT un doublon sur une seule face, et
+            # `Puzzle.Reveal('60136a')` tombait sur
+            # `assert prev_scheme.card.back_faces` a la progression.
+            # (18/09/2026, bloc Kingpin) : la RESERVE NEMESIS aussi, sans quoi
+            # quatre `Puzzle.Remove` sur un set nemesis « creaient » quatre
+            # cartes au lieu de vider la reserve (journal xc2145).
+            de_cote = list(self.world.aside_deck.Get(True)) \
+                + [x for p in self.world.const_players for x in p.set_aside_deck.Get(True)] \
+                + [x for p in self.world.const_players for x in p.set_aside_nemesis_sets.Get(True)]
+            for face in de_cote:
+                if face is not None and face.IsName(card):
+                    return face
+
             # CORRECTIF (09/09/2026, pack iron_patriot) : une carte dont la FACE
             # A ETE ECHANGEE en cours de partie ne repond plus a son propre
             # identifiant. `Faces.TreatAsAlly` remplace la face du sbire par
@@ -459,11 +481,18 @@ class RunPuzzle:
             villain.DoActivate(player, self.debug_rule)
         return face
 
-    def Deal(self, card: CardName) -> 'CardFace':
+    def Deal(self, card: CardName, joueur: int|None=None) -> 'CardFace':
+        """`joueur` : l'INDICE du joueur servi (0 = le premier). Ajoute le
+        19/09/2026 : sans lui, une carte ne pouvait etre distribuee qu'au
+        joueur courant, et aucun cas ne pouvait mesurer « apres qu'UN JOUEUR
+        recoit une carte » pour un AUTRE joueur (60156 Robbie Robertson)."""
         face = self.FindOrCreateFace(card)
         card = face.card
 
-        player = self.world.GetCurrentPlayer()
+        if joueur is not None:
+            player = self.world.const_players[joueur]
+        else:
+            player = self.world.GetCurrentPlayer()
         effect = DebugRule(player.GetIdentity())
         player.DealEncounterCard(face, effect)
         return face
@@ -830,8 +859,52 @@ class RunPuzzle:
                 if villain:
                     Faces.MoveAllTo([face], villain.encounter_deck, self.debug_rule)
 
+    def AdvanceMainScheme(self, fois: int=1, to: str|None=None):
+        """Fait AVANCER le complot principal, par le chemin du moteur.
+
+        AJOUTE LE 19/09/2026 pour les EPREUVES DE CAMPAGNE : plusieurs
+        recompenses ne dependent pas d'une carte posee, mais de l'ETAPE que le
+        complot principal a atteinte avant la fin de la partie (« Security
+        Breach » et « The Infinity Stones 1B completed » de L'Ombre du Titan
+        Fou lisent l'etape active). Sans cette commande, poser cet etat
+        demandait de deplacer une carte a la main dans la zone des complots
+        principaux, ce qui contourne justement le moteur qu'on veut mesurer.
+
+        Un appel = un pas, exactement comme en partie : depuis une face A, le
+        pas retourne la carte sur sa face B ; depuis une face B, il prend
+        l'etape suivante dans le deck des complots principaux. Aller de
+        l'etape 1A a l'etape 2A demande donc `fois=2`.
+        """
+        for _ in range(max(1, fois)):
+            schemes = self.world.area_schemes_main.Get()
+            if not schemes:
+                raise RuntimeError("aucun complot principal en jeu : rien a faire avancer")
+            schemes[-1].Advance(to, self.debug_rule)
+
     ################################################################################
     #
+    def Win(self):
+        """Termine la partie par une VICTOIRE des joueurs.
+
+        AJOUTE LE 19/09/2026, et il manquait vraiment : rien ne permettait de
+        finir une partie a la demande. La consequence etait qu'aucun test ne
+        pouvait aller jusqu'a la FIN d'un scenario — donc ni le carnet sortant
+        d'une campagne (`WhenGameOver`), ni le panneau de recompenses, ni la
+        partie SUIVANTE montee avec ce que la precedente a laisse. Tout ce qui
+        se passe apres la derniere carte jouee etait hors de portee.
+
+        Passe par `Worlds.SetGameOver`, le meme chemin qu'une vraie victoire
+        (`32130` Save the School l'emprunte) : les capacites `WhenGameOver`
+        partent, le carnet s'ecrit, la sauvegarde se ferme comme d'habitude.
+        """
+        from game.operate.worlds import Worlds
+        Worlds.SetGameOver(True, self.debug_rule)
+
+    def Lose(self):
+        """Termine la partie par une DEFAITE des joueurs (voir `Win`)."""
+        from game.operate.worlds import Worlds
+        Worlds.SetGameOver(False, self.debug_rule)
+
     def End(self, message: str=""):
         from engine import Engine
         game = Engine.game

@@ -400,6 +400,28 @@ def Eliminate(player_id: int):
     effect = DebugRule(player.GetIdentity())
     player.Eliminate(effect)
 
+def Gagner():
+    """Termine la partie sur une VICTOIRE des joueurs.
+
+    Ajoutee le 19/09/2026 pour pouvoir eprouver ce qui vient APRES la partie :
+    le carnet de campagne, le panneau de recompenses, et la partie suivante
+    montee avec ce que celle-ci a laisse. Passe par le meme chemin qu'une
+    vraie victoire (`Worlds.SetGameOver`).
+    """
+    puzzle.Win()
+
+def Perdre():
+    """Termine la partie sur une DEFAITE des joueurs (voir `Gagner`)."""
+    puzzle.Lose()
+
+def Win():
+    """Alias anglais de `Gagner`, pour la console."""
+    puzzle.Win()
+
+def Lose():
+    """Alias anglais de `Perdre`, pour la console."""
+    puzzle.Lose()
+
 def Sets(card_id: str):
     set_name = CardsDB.papers[card_id].set_name
     if set_name in CardsDB.sets_cards:

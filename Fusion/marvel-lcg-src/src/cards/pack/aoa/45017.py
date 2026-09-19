@@ -1,21 +1,48 @@
 from . import *
 
 # Suit Up
+#
+# « Alter-Ego Action: Search your deck and discard pile for an ally and an
+#   upgrade that can be attached to that ally. Add them to your hand.
+#   (Shuffle.) »
+#
+# DEUX RECHERCHES DE SUITE, PAS UN CHOIX DE DEUX CARTES (18/09/2026)
+#
+# La carte demande un allie PUIS une amelioration attachable A CET ALLIE. La
+# version precedente posait UNE seule question a deux cibles
+# (`SetTarget(range=(2, 2), select_rule="DifferentType")`) avec un
+# `check_again_fn` qui verifiait le couple apres coup. Trois defauts, signales
+# en jeu par l'utilisateur (partie Laura Kinney contre Crossbones) :
+#
+#  1. `select_rule="DifferentType"` n'est applique NULLE PART (ni par le
+#     moteur, `selector_rule.py:AfterSelectTargets`, ni par le plateau, qui
+#     lit `select_rule` sans s'en servir) : on pouvait prendre DEUX
+#     ameliorations ;
+#  2. le couple illegal n'etait refuse qu'au dernier moment, par
+#     `check_again_fn` : l'action echouait, et Suit Up partait A LA DEFAUSSE
+#     sans rien faire ;
+#  3. les ameliorations proposees etaient celles attachables a N'IMPORTE QUEL
+#     allie du deck, pas a l'allie retenu.
+#
+# Le moteur sait poser la vraie question : `CardFinder(canbe_attach_to=<allie>)`
+# appelle `Upgrade.CanAttachTo` (card_type/upgrade.py:83), qui relit le
+# selecteur de la capacite « Play » de l'amelioration examinee. C'est le patron
+# du pack `patriot` (`pt002` Hawkingbird, `AmeliorationAttachableA`), et c'est
+# aussi ce que faisait le brouillon `45017_.py` reste dans le pack en amont.
+# Une amelioration qui se pose sur l'identite (Danger Room Training) ou sur un
+# allie particulier (`45015` Sidekick, « attach to an identity-specific ally »)
+# est donc ecartee, sans que le joueur ait a le deviner.
+#
+# ⚠ LES ALLIES SANS AUCUNE AMELIORATION ATTACHABLE SONT ECARTES AUSSI : sinon
+# le joueur choisit un allie, la seconde recherche ne propose rien, et la carte
+# est perdue pour rien. « for an ally AND an upgrade » : les deux ou aucun.
+#
+# ⚠ « Search your deck AND discard pile » : les deux zones. Le remelange est
+# fait par la SECONDE recherche (`not_move=True` sur la premiere, sinon le deck
+# serait melange deux fois pour un seul « (Shuffle.) »).
+
 
 def GetAbilities() -> Sequence['Ability']:
-
-    # def can_be_attached_to(upgrade: 'Upgrade', ally: 'Ally') -> bool:
-    #     play_effect = upgrade.FindEffect(sub_type="Play")
-    #     if play_effect:
-    #         # TODO: Fix
-    #         # if play_effect.ability.select_fn not in [Select.OnFieldAllies, Select.OnFieldFriendlyCharacters, Select.OnFieldCharacters, Select.YourAllies]:
-    #         #     return False
-
-    #         filter_fn_list = play_effect.ability.filter_fn_list[:]
-    #         select_target = Filter(lambda effect: [ally], filter_fn_list)
-    #         return ally in select_target.GetFilteredTargets(GameRule(upgrade))
-    #     return False
-    #     return True
 
     def suit_up(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         this = effect.this.CastTo(Event)
@@ -23,61 +50,34 @@ def GetAbilities() -> Sequence['Ability']:
 
         initiator = effect.GetInitiator()
 
-        faces = initiator.player_deck.Get() + initiator.discard_pile.Get()
-        all_allies = Filter.ByType(faces, Ally)
-        all_upgrades = Filter.ByType(faces, Upgrade)
-        faces = all_allies + all_upgrades
+        zones = list(initiator.player_deck.Get()) + list(initiator.discard_pile.Get())
+        ameliorations = Filter.ByType(zones, Upgrade)
 
-        Faces.LookAt(faces, initiator, effect)
+        def allie_equipable(eff: 'Effect', face: 'CardFace') -> bool:
+            return any(u.CanAttachTo(face) for u in ameliorations)
 
-        def can_attach_to_ally(effect: 'Effect', upgrade: 'CardFace') -> bool:
-            if Upgrade.IsType(upgrade):
-                for ally in all_allies:
-                    if upgrade.CanAttachTo(ally):
-                        return True
-                return False
-            else:
-                assert Ally.IsType(upgrade)
-                return True
-
-        initiator.ChooseAbilities(
+        allie = Search.PlayerCard(
             effect,
-            AbilityFactory.ForChoiceAbility(
-                "",
-                lambda targets:
-                    initiator.GainCard(targets, effect)
-            ).SetTarget(faces,
-                finder=CardFinder(
-                    card_type=Upgrade|Ally,
-                    check_effect_fn=can_attach_to_ally
-                ),
-                select_rule="DifferentType",
-                range=(2, 2), by_search=True,
-                check_again_fn=has_one_ally_and_one_attachable_upgrade
-            ),
+            initiator,
+            include_player_deck=True,
+            include_discard_pile=True,
+            not_move=True,
+            finder=CardFinder(card_type=Ally, check_effect_fn=allie_equipable),
         )
+        if not allie:
+            return
 
-    # def check_has_ally_and_upgrade(effect: 'Effect') -> Sequence['Ally']:
-    #     initiator = effect.GetInitiator()
-    #     deck_cards = initiator.player_deck.Get(True) + initiator.discard_pile.Get(True)
-    #     upgrades = [x for x in deck_cards if Upgrade.IsType(x)]
-    #     if upgrades == []:
-    #         return []
-    #     def has_upgrade(ally: Ally):
-    #         for upgrade in upgrades:
-    #             if can_be_attached_to(upgrade, ally):
-    #                 return True
-    #         return False
-    #     return [x for x in deck_cards if Ally.IsType(x) and has_upgrade(x)]
+        amelioration = Search.PlayerCard(
+            effect,
+            initiator,
+            include_player_deck=True,
+            include_discard_pile=True,
+            finder=CardFinder(card_type=Upgrade, canbe_attach_to=allie),
+        )
+        if not amelioration:
+            return
 
-    def has_one_ally_and_one_attachable_upgrade(effect: 'Effect', targets: Sequence['CardFace']) -> bool:
-        allies = Filter.ByType(targets, Ally)
-        upgrades = Filter.ByType(targets, Upgrade)
-        if allies and upgrades:
-            ally = allies[0]
-            upgrade = upgrades[0]
-            return upgrade.CanAttachTo(ally)
-        return False
+        initiator.GainCard([allie, amelioration], effect)
 
     return [
         AbilityFactory.WhenInYourPlayTurn(
@@ -85,4 +85,3 @@ def GetAbilities() -> Sequence['Ability']:
             suit_up,
         ).SetPlay().SetLabel()
     ]
-

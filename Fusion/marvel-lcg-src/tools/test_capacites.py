@@ -30761,6 +30761,10903 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"pret": ["59020"], "defausse": ["59026"]},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack officiel « fne » — bloc 3A : The Getaway, The Raft Breakout, Stop the Presses!
+    # (18/09/2026). Filtre : "[fne3a]". Genere par scratchpad/b3/gen_cas_fne_a.py.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "60128a The Getaway 1A [fne3a] — Setup : 1 compteur speed sur le complot, Out Front attachee au vilain",
+        "pourquoi": "WhenCardSetup du complot 1A (60121a) + Find.FindAndAttachTo depuis la mise de cote du scenario (60066)",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60128b",
+                    "speed",
+                    1
+                ]
+            ],
+            "hotes": [
+                [
+                    "60129a",
+                    "60086"
+                ]
+            ],
+            "en_jeu": [
+                "60129a"
+            ],
+            "menace": [
+                [
+                    "60128b",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60128a The Getaway 1A [fne3a] (expert) — Setup : 2 compteurs speed",
+        "pourquoi": "Worlds.IsExpert -> 2 compteurs ; le vilain expert est Hammerhead II (60087)",
+        "scenario": "the_getaway_hammerhead_expert",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60128b",
+                    "speed",
+                    2
+                ]
+            ],
+            "hotes": [
+                [
+                    "60129a",
+                    "60087"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60128b The Getaway 1B [fne3a] — fin de round avec de la menace, Out Front en jeu : +1 speed puis +1 de plus (1 -> 3)",
+        "pourquoi": "WhenRoundEnd ForcedInterrupt ; le verificateur envoie WhenRoundEnd (brawn_hulk_out_fin_de_round) ; Alongside absente -> 2e compteur",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne3a_fin_de_round",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60128b",
+                    "speed",
+                    3
+                ]
+            ],
+            "en_jeu": [
+                "60129a"
+            ]
+        }
+    },
+    {
+        "nom": "60128b The Getaway 1B [fne3a] — fin de round, Alongside en jeu : +1 speed et Alongside se retourne en Out Front (1 -> 2)",
+        "pourquoi": "2 degats au vilain -> Out Front retire 2 menaces (2 -> 0) et se retourne en Alongside ; menace remise a 3 ; RetournerLAttachement au round end",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Damage('60086', 2)",
+            "Puzzle.SetThreat('60128b', 3)"
+        ],
+        "declencher": [],
+        "verifier": "fne3a_fin_de_round",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60128b",
+                    "speed",
+                    2
+                ]
+            ],
+            "en_jeu": [
+                "60129a"
+            ],
+            "hors_jeu": [
+                "60129b"
+            ],
+            "hotes": [
+                [
+                    "60129a",
+                    "60086"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60128b The Getaway 1B [fne3a] — contre-cas : sans menace sur le complot, rien ne se passe (speed reste 1)",
+        "pourquoi": "« if there is threat here » lu avant toute action ; SetThreat 0 retourne Out Front en Alongside au passage",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.SetThreat('60128b', 0)"
+        ],
+        "declencher": [],
+        "verifier": "fne3a_fin_de_round",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60128b",
+                    "speed",
+                    1
+                ]
+            ],
+            "en_jeu": [
+                "60129b"
+            ]
+        }
+    },
+    {
+        "nom": "60129a Out Front [fne3a] — attachee au vilain : ses attaques gagnent ranged, la riposte de Black Panther ne le touche pas",
+        "pourquoi": "UnitAttackGainKeyword('AttachedEnemy', ranged) ; sans module la riposte (1) toucherait Hammerhead",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "black_panther",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01040b')",
+            "Puzzle.Exhaust('01040a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ],
+            "menace": [
+                [
+                    "60128b",
+                    2
+                ]
+            ],
+            "hotes": [
+                [
+                    "60129a",
+                    "60086"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60129a Out Front [fne3a] — Forced Interrupt : 3 degats au vilain deviennent 3 menaces retirees du complot (5 -> 2), le vilain n'a rien",
+        "pourquoi": "WhenUnitWouldTakeDamage(Villain) + PreventDamage('All') + RemoveThreatFromSchemes('MainScheme', total)",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.SetThreat('60128b', 5)"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60086', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ],
+            "menace": [
+                [
+                    "60128b",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60129a Out Front [fne3a] — le retrait ignore la crise (Crowd Control 01108 en jeu) : 5 -> 2",
+        "pourquoi": "ignore_crisis=True (si007) ; Crowd Control porte l'icone crise",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.SetThreat('60128b', 5)",
+            "Puzzle.PutIntoPlay('01108')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60086', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ],
+            "menace": [
+                [
+                    "60128b",
+                    2
+                ]
+            ],
+            "icones": [
+                [
+                    "Crisis",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60129a Out Front [fne3a] — plus de menace sur le complot : la carte se retourne (Alongside) et reste attachee au vilain",
+        "pourquoi": "AfterSchemeRemoveThreat('MainScheme') + RetournerLAttachement (card.Flip nu detache, RECETTES §7quater) ; 2 degats -> 2 menaces -> 0",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Damage('60086', 2)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60129b"
+            ],
+            "hors_jeu": [
+                "60129a"
+            ],
+            "hotes": [
+                [
+                    "60129b",
+                    "60086"
+                ]
+            ],
+            "menace": [
+                [
+                    "60128b",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60129a Out Front [fne3a] — un contre du heros ramene la menace a 0 : la carte se retourne aussi",
+        "pourquoi": "meme message AfterSchemeRemoveThreat, par un contre cette fois (1 menace, THW 1)",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.SetThreat('60128b', 1)"
+        ],
+        "declencher": [
+            "Puzzle.Thwart('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "cibles": [
+            "60128b"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60129b"
+            ],
+            "hors_jeu": [
+                "60129a"
+            ],
+            "hotes": [
+                [
+                    "60129b",
+                    "60086"
+                ]
+            ],
+            "menace": [
+                [
+                    "60128b",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60129b Alongside [fne3a] — When Revealed au retournement : chaque joueur prend 1 degat indirect, le vilain 2[per_hero] degats",
+        "pourquoi": "RetournerLAttachement(call_reveal=True) -> WhenThisRevealed ; Out Front n'est plus la pour convertir les 2 degats",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Damage('60086', 2)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 1,
+            "degats": [
+                [
+                    "60086",
+                    2
+                ]
+            ],
+            "en_jeu": [
+                "60129b"
+            ]
+        }
+    },
+    {
+        "nom": "60130 Escort Vehicle [fne3a] — guard, patrol (bases) ; 1 compteur speed : ni toughness, ni quickstrike, ni surge",
+        "pourquoi": "ThisGainKeyword(seuil, change_on_event=OnEvent.Counter(MainScheme, speed)) ; le Setup a pose 1 compteur",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60130')"
+        ],
+        "verifier": "fne3a_mots_cles",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "60130",
+            "guard": True,
+            "patrol": True,
+            "toughness": False,
+            "quickstrike": False,
+            "surge": False,
+            "statuts_absents": [
+                [
+                    "60130",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60130 Escort Vehicle [fne3a] — 3 compteurs speed : gagne toughness et entre en jeu robuste",
+        "pourquoi": "seuil(3) ; Toughness pose le statut a l'entree en jeu (has_toughness.py)",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Counter('60128b', 'speed', 2)"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60130')"
+        ],
+        "verifier": "fne3a_mots_cles",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "60130",
+            "toughness": True,
+            "quickstrike": False,
+            "surge": False,
+            "statuts": [
+                [
+                    "60130",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60130 Escort Vehicle [fne3a] — 6 compteurs speed : aussi quickstrike, il attaque en entrant (2 degats)",
+        "pourquoi": "seuil(6) ; Minion.OnEngagePlayer -> ResolveQuickstrike (heros incline : pas de defense)",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Counter('60128b', 'speed', 5)",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60130')"
+        ],
+        "verifier": "fne3a_mots_cles",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "60130",
+            "toughness": True,
+            "quickstrike": True,
+            "surge": False,
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60130 Escort Vehicle [fne3a] — 9 compteurs speed : aussi surge, le temoin du dessus du deck est revele",
+        "pourquoi": "seuil(9) ; en alter-ego, quickstrike n'attaque pas ; temoin Hydra Mercenary",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')",
+            "Puzzle.Counter('60128b', 'speed', 8)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60130')"
+        ],
+        "verifier": "fne3a_mots_cles",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "60130",
+            "toughness": True,
+            "quickstrike": True,
+            "surge": True,
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60130 Escort Vehicle [fne3a] — contre-cas : deja en jeu quand le 3e compteur arrive, il gagne toughness SANS carte de statut (regle : a l'entree en jeu seulement)",
+        "pourquoi": "GainToughness ne touche que le compteur de mot-cle ; le statut Tough n'est pose que par OnWhenCardEnterPlay (has_toughness.py)",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60130')"
+        ],
+        "declencher": [
+            "Puzzle.Counter('60128b', 'speed', 2)"
+        ],
+        "verifier": "fne3a_mots_cles",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "60130",
+            "toughness": True,
+            "statuts_absents": [
+                [
+                    "60130",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60131 Jackknifed Tanker Truck [fne3a] — Hinder 1[per_hero] : 3 menaces, crise ; le vilain ne peut pas subir de degats (Out Front retiree)",
+        "pourquoi": "UnitCannotTakeDamage(Villain) ; Hinder/Crisis = bases desc ; Out Front retiree pour que rien ne convertisse les degats",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60129a')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60131')",
+            "Puzzle.Damage('60086', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60131",
+                    3
+                ]
+            ],
+            "icones": [
+                [
+                    "Crisis",
+                    1
+                ]
+            ],
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60131 Jackknifed Tanker Truck [fne3a] — avec Out Front en jeu : aucun degat ET aucune menace retiree (« cannot » prime sur « would »)",
+        "pourquoi": "les degats ne sont pas infliges, donc l'interruption d'Out Front n'a rien a convertir",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.SetThreat('60128b', 5)"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60131')",
+            "Puzzle.Damage('60086', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ],
+            "menace": [
+                [
+                    "60128b",
+                    5
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60132 Burning Rubber [fne3a] — 1 compteur : premiere branche, 1 ressource depensee (Energy), pas de menace",
+        "pourquoi": "ForChoiceAbilityWithCost(Cost('1'), conditions=[PeutCouvrirLeCout]) ; main = Energy (YY)",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60132')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "payer_avec": [
+            "01088"
+        ],
+        "attendu": {
+            "taille_main": 0,
+            "menace": [
+                [
+                    "60128b",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60132 Burning Rubber [fne3a] — 3 compteurs, une seule carte en main : 1 paiement, puis la branche payante n'est plus offerte : 2 menaces (2 -> 4)",
+        "pourquoi": "PourChaqueCompteurDeVitesse : un ChooseAbilities par compteur ; sans carte la condition cache la branche payante",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Counter('60128b', 'speed', 2)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60132')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "payer_avec": [
+            "01088"
+        ],
+        "attendu": {
+            "taille_main": 0,
+            "menace": [
+                [
+                    "60128b",
+                    4
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60132 Burning Rubber [fne3a] — 2 compteurs, seconde branche choisie : 2 menaces (2 -> 4), la main est intacte",
+        "pourquoi": "preferer_option sur le libelle de la seconde branche",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Counter('60128b', 'speed', 1)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60132')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "preferer_option": "Place 1 threat",
+        "attendu": {
+            "taille_main": 1,
+            "menace": [
+                [
+                    "60128b",
+                    4
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60133 Pedestrians [fne3a] — 1 compteur : premiere branche, le heros est incline, 0 degat",
+        "pourquoi": "ForChoiceAbility(incliner, conditions=[un_pret_existe]) ; un seul personnage pret -> pas de question",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60133')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "exhausted": [
+                "01001a"
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60133 Pedestrians [fne3a] — 2 compteurs, un seul personnage : incline au premier, plus rien de pret au second -> 1 degat indirect",
+        "pourquoi": "la branche « incliner » n'est plus offerte quand aucun personnage n'est pret",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Counter('60128b', 'speed', 1)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60133')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "exhausted": [
+                "01001a"
+            ],
+            "degats_identite": 1
+        }
+    },
+    {
+        "nom": "60133 Pedestrians [fne3a] — 2 compteurs, seconde branche choisie : 2 degats indirects, le heros reste pret",
+        "pourquoi": "preferer_option 'Take 1 indirect damage'",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Counter('60128b', 'speed', 1)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60133')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "preferer_option": "Take 1 indirect damage",
+        "attendu": {
+            "pret": [
+                "01001a"
+            ],
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60142a The Raft Breakout 1A [fne3a] — Setup : Master Key attachee au vilain, un sbire PRISONER defausse depuis le deck et revele",
+        "pourquoi": "WhenCardSetup + Find.FindAndAttachTo (mise de cote) + DiscardEncounterCardsUntil(trait=PRISONER) + Reveal",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hotes": [
+                [
+                    "60143",
+                    "60086"
+                ]
+            ],
+            "en_jeu_trait": [
+                [
+                    "PRISONER",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60142b The Raft Breakout 1B [fne3a] — un sbire non-ELITE vaincu retire 1 menace du complot (5 -> 4)",
+        "pourquoi": "GiveAbilityToInPlayWhenApplyThis(Minion, abilities=[WhenUnitBeDefeated]) ; Hydra Mercenary 3 PV",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.SetThreat('60142b', 5)"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('01101')",
+            "Puzzle.Damage('01101', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60142b",
+                    4
+                ]
+            ],
+            "hors_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60142b The Raft Breakout 1B [fne3a] — un sbire ELITE vaincu retire 2 menaces (5 -> 3)",
+        "pourquoi": "HasTrait('ELITE') -> 2 ; Drang 6 PV",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.SetThreat('60142b', 5)"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60146')",
+            "Puzzle.Damage('60146', 6)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60142b",
+                    3
+                ]
+            ],
+            "hors_jeu": [
+                "60146"
+            ]
+        }
+    },
+    {
+        "nom": "60143 Master Key [fne3a] — le vilain manigance avec un sbire en boost : ce sbire est distribue au joueur face cachee apres l'activation",
+        "pourquoi": "WhenCardBecomeBoost(vilain_seulement, attaque=False) + AfterThisActivation + DealEncounterCard ; deck : Hydra Mercenary au dessus",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01101')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60086')"
+        ],
+        "verifier": "fne_carte_distribuee",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "01101",
+            "joueur": 0
+        }
+    },
+    {
+        "nom": "60143 Master Key [fne3a] — contre-cas : le vilain ATTAQUE avec un sbire en boost, rien n'est distribue",
+        "pourquoi": "attaque=False : seule la manigance compte",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01101')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "fne_carte_distribuee",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "01101",
+            "joueur": 0,
+            "absente": True
+        }
+    },
+    {
+        "nom": "60143 Master Key [fne3a] — contre-cas : manigance avec une traitrise en boost, rien n'est distribue",
+        "pourquoi": "type_carte=Minion : Advance (traitrise) reste en defausse",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60086')"
+        ],
+        "verifier": "fne_carte_distribuee",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "01186",
+            "joueur": 0,
+            "absente": True
+        }
+    },
+    {
+        "nom": "60144 Absorbing Man [fne3a] — attaque : la carte du dessus de mon deck (Energy) est glissee sous lui, +1 ATK (1 + 1 = 2)",
+        "pourquoi": "WhenUnitAttackYou ForcedInterrupt + TuckCardUnderHere + GetPrintedResourcesTypes + GainATKForThisAttack ; Villainous : Advance (0 icone)",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60144')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60144')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 2,
+            "pose_sous": [
+                [
+                    "60144",
+                    "01088"
+                ]
+            ],
+            "taille_pose_sous": [
+                [
+                    "60144",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60144 Absorbing Man [fne3a] — deux attaques, Energy puis Genius : 2 types differents, +1 puis +2 (2 + 3 = 5)",
+        "pourquoi": "chaque type de ressource DIFFERENT compte une fois ; deck joueur : Genius sous Energy",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60144')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.CreatePlayerDeck('01089', '01088')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60144')",
+            "Puzzle.Attack('60144')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 5,
+            "taille_pose_sous": [
+                [
+                    "60144",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60144 Absorbing Man [fne3a] — contre-cas : deux Energy glissees = un seul type, +1 puis +1 (2 + 2 = 4)",
+        "pourquoi": "« each different resource type » : deux [energy] ne valent qu'un",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60144')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.CreatePlayerDeck('01088', '01088')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60144')",
+            "Puzzle.Attack('60144')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 4,
+            "taille_pose_sous": [
+                [
+                    "60144",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60145 Baron Zemo [fne3a] — When Revealed : 1 menace sur Hellcat, qui devient un sbire DECEIVED engage, SCH = son THW (2), texte vide",
+        "pourquoi": "Faces.PlaceTokensOn(threat) -> AfterCardPlacedToken(Ally, threat) -> ConvertirEnDeceived (gabarit deceived_minion, SwapCardFace) ; PV de l'allie conserves (3)",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60145')"
+        ],
+        "verifier": "fne3a_converti",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "pic": "01020",
+            "sch": 2,
+            "joueur": 0,
+            "trait": "DECEIVED",
+            "jetons_menace": 1,
+            "pv": 3
+        }
+    },
+    {
+        "nom": "60145 Baron Zemo [fne3a] — Zemo quitte le jeu : Hellcat redevient un allie sous mon controle, la menace reste sur elle (FAQ)",
+        "pourquoi": "WhenCardLeavePlay('This') -> RendreLAllie (SwapBackToPrintedCard + PutIntoPlay under_control) ; les jetons restent",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60145')",
+            "Puzzle.Damage('60145', 6)"
+        ],
+        "verifier": "fne3a_converti",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "pic": "01020",
+            "absente": True,
+            "allie": "01020",
+            "joueur": 0,
+            "jetons_menace": 1,
+            "hors_jeu": [
+                "60145"
+            ]
+        }
+    },
+    {
+        "nom": "60145 Baron Zemo [fne3a] — la menace retiree de l'allie converti : il redevient un allie (Zemo toujours en jeu)",
+        "pourquoi": "AfterCardRemovedToken(DECEIVED, threat, 0 restant) -> RendreLAllie ; le verificateur retire le jeton du SBIRE converti (Puzzle.Token('01020') ne le trouve pas)",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60145')"
+        ],
+        "verifier": "fne3a_zemo_retrait",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "pic": "01020",
+            "absente": True,
+            "allie": "01020",
+            "joueur": 0,
+            "jetons_menace": 0,
+            "en_jeu": [
+                "60145"
+            ]
+        }
+    },
+    {
+        "nom": "60145 Baron Zemo [fne3a] — le sbire DECEIVED est vaincu : la carte redevient Hellcat et va dans MA defausse, plus aucun sbire converti",
+        "pourquoi": "Card.CheckIfCanDiscard remet la face imprimee avant la defausse (natif) ; le verificateur inflige 3 degats au sbire converti",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60145')"
+        ],
+        "verifier": "fne3a_zemo_vaincu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "pic": "01020",
+            "absente": True,
+            "defausse": [
+                "01020"
+            ],
+            "en_jeu": [
+                "60145"
+            ]
+        }
+    },
+    {
+        "nom": "60145 Baron Zemo [fne3a] — contre-cas : aucun allie en jeu, la revelation ne fait rien et ne plante pas",
+        "pourquoi": "liste vide -> return",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60145')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60145"
+            ],
+            "menace": [
+                [
+                    "60142b",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60146 Drang [fne3a] — apres son attaque : 1 compteur barrage, puis 1 degat indirect par compteur (1 + 0 + 1 = 2)",
+        "pourquoi": "AfterUnitAttackEnd ForcedResponse + PlaceCountersOn(barrage) + TakeIndirectDamage(n) ; Villainous : Advance (0 icone)",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60146')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60146')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 2,
+            "compteurs": [
+                [
+                    "60146",
+                    "barrage",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60146 Drang [fne3a] — deuxieme attaque : 2 compteurs, 2 indirects ((1 + 1) + (1 + 2) = 5)",
+        "pourquoi": "le barrage s'accumule",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60146')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60146')",
+            "Puzzle.Attack('60146')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 5,
+            "compteurs": [
+                [
+                    "60146",
+                    "barrage",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60147 Mysterio [fne3a] — apres son attaque, la traitrise en boost est distribuee au joueur face cachee",
+        "pourquoi": "WhenCardBecomeBoost(attaque=True, ennemi = this) + AfterThisActivation + DealEncounterCard ; boost = Advance",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101', '01186')",
+            "Puzzle.PutIntoPlay('60147')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60147')"
+        ],
+        "verifier": "fne_carte_distribuee",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "01186",
+            "joueur": 0
+        }
+    },
+    {
+        "nom": "60147 Mysterio [fne3a] — contre-cas : un sbire en boost n'est pas distribue",
+        "pourquoi": "type_carte=Treachery",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01101')",
+            "Puzzle.PutIntoPlay('60147')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60147')"
+        ],
+        "verifier": "fne_carte_distribuee",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "01101",
+            "joueur": 0,
+            "absente": True
+        }
+    },
+    {
+        "nom": "60147 Mysterio [fne3a] — contre-cas : il MANIGANCE avec une traitrise en boost, rien n'est distribue",
+        "pourquoi": "attaque=True : seule l'attaque compte",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101', '01186')",
+            "Puzzle.PutIntoPlay('60147')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60147')"
+        ],
+        "verifier": "fne_carte_distribuee",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "carte": "01186",
+            "joueur": 0,
+            "absente": True
+        }
+    },
+    {
+        "nom": "60148 Proxima Midnight [fne3a] — attaque, premiere branche : 1 menace sur le complot principal (2 -> 3), ATK 2",
+        "pourquoi": "WhenUnitAttackYou ForcedInterrupt + ChooseAbilities ; le pilote prend la premiere branche",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60148')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60148')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 2,
+            "menace": [
+                [
+                    "60142b",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60148 Proxima Midnight [fne3a] — seconde branche : +2 ATK pour cette attaque (2 + 2 = 4), pas de menace",
+        "pourquoi": "preferer_option '+2 ATK' + GainATKForThisAttack(2)",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60148')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60148')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "preferer_option": "+2 ATK",
+        "attendu": {
+            "degats_identite": 4,
+            "menace": [
+                [
+                    "60142b",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60149 Rhino [fne3a] — robuste a l'entree (Toughness) ; ses attaques gagnent overkill : Spider-Woman (2 PV) defend, 1 degat passe",
+        "pourquoi": "UnitAttackGainKeyword('This', overkill) ; Toughness = base desc",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60149')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01011', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60149', '01011')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 1,
+            "hors_jeu": [
+                "01011"
+            ],
+            "statuts": [
+                [
+                    "60149",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60149 Rhino [fne3a] — Boost : l'ennemi qui s'active (Hammerhead) devient robuste",
+        "pourquoi": "WhenCardBecomeBoost + GiveStatus(activating_enemy, Tough)",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60149')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "statuts": [
+                [
+                    "60086",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60150 Imprisoned [fne3a] — obligation revelee : je ne peux pas attaquer (0 degat au vilain)",
+        "pourquoi": "PlayersCannotAttackWhile('You') ; l'obligation de rencontre va au joueur qui la revele (obligation.py)",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60150')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "cibles": [
+            "60086"
+        ],
+        "attendu": {
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ],
+            "en_jeu": [
+                "60150"
+            ]
+        }
+    },
+    {
+        "nom": "60150 Imprisoned [fne3a] — je ne peux pas contrer (la menace reste a 5)",
+        "pourquoi": "PlayersCannotThwartWhile('You')",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60150')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60142b', 5)",
+            "Puzzle.Thwart('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "cibles": [
+            "60142b"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60142b",
+                    5
+                ]
+            ],
+            "en_jeu": [
+                "60150"
+            ]
+        }
+    },
+    {
+        "nom": "60150 Imprisoned [fne3a] — je ne peux pas passer en alter-ego",
+        "pourquoi": "PlayersCannotChangeForms(to_form=AlterEgo)",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60150')"
+        ],
+        "declencher": [
+            "Puzzle.ChangeForm('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "forme": "Hero",
+            "en_jeu": [
+                "60150"
+            ]
+        }
+    },
+    {
+        "nom": "60150 Imprisoned [fne3a] — Hero Action : 3 ressources quelconques (Energy YY + Genius BB) -> defaussee",
+        "pourquoi": "WhenInYourPlayTurn(HeroAction).SetCost(Cost('3'))",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60150')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60150', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088",
+            "01089"
+        ],
+        "payer_avec": [
+            "01088",
+            "01089"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60150"
+            ],
+            "taille_main": 0
+        }
+    },
+    {
+        "nom": "60150 Imprisoned [fne3a] — Hero Action : incliner le heros (THW 1) et Hellcat (THW 2) = 3 -> defaussee",
+        "pourquoi": "seconde capacite, CostFunc.Custom(incliner_pour_trois_thw)",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)",
+            "Puzzle.Reveal('60150')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60150', 'HeroAction', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60150"
+            ],
+            "exhausted": [
+                "01001a",
+                "01020"
+            ]
+        }
+    },
+    {
+        "nom": "60150 Imprisoned [fne3a] — contre-cas : THW total 1 (heros seul), la seconde capacite ne part pas, l'obligation reste",
+        "pourquoi": "Custom rend False, aucun personnage incline",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60150')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60150', 'HeroAction', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60150"
+            ],
+            "pret": [
+                "01001a"
+            ]
+        }
+    },
+    {
+        "nom": "60150 Imprisoned [fne3a] — Boost : la carte est revelee (elle entre en jeu chez le joueur)",
+        "pourquoi": "WhenCardBecomeBoost + Reveal(GetToPlayer)",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60150')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60150"
+            ]
+        }
+    },
+    {
+        "nom": "60151a Stop the Presses! 1A [fne3a] — Setup : Daily Bugle en jeu, UN soutien DAILY BUGLE au hasard sous mon controle (3 stamina), les 3 autres retires du jeu",
+        "pourquoi": "WhenCardSetup + GetSetAsideAreaCards + Rand.RandomChoice + PutIntoPlay(under_control) + RemoveAllFromGame ; Uses (3 stamina) = base",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60152"
+            ],
+            "n_soutiens": 1,
+            "soutien": {
+                "stamina": 3,
+                "exhausted": False,
+                "joueur": 0
+            },
+            "n_retires": 3
+        }
+    },
+    {
+        "nom": "60151b Stop the Presses! 1B [fne3a] — attaque non defendue du vilain, premiere branche : 2 menaces ici (1 -> 3)",
+        "pourquoi": "AfterUnitAttackUnit(Enemy, Identity, is_undefended_attack=True) ForcedResponse + ChooseAbilities (60121b)",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60151b",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60151b Stop the Presses! 1B [fne3a] (expert) — 3 menaces au lieu de 2 (1 -> 4)",
+        "pourquoi": "Worlds.IsExpert -> 3 ; vilain expert = Hammerhead II",
+        "scenario": "stop_the_presses_hammerhead_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60087')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60151b",
+                    4
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60151b Stop the Presses! 1B [fne3a] — seconde branche : 1 stamina retiree du soutien DAILY BUGLE que je controle (3 -> 2), pas de menace",
+        "pourquoi": "preferer_option 'Remove 1 stamina' + RetirerUneEndurance",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "preferer_option": "Remove 1 stamina",
+        "attendu": {
+            "soutien": {
+                "stamina": 2
+            },
+            "menace": [
+                [
+                    "60151b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60151b Stop the Presses! 1B [fne3a] — contre-cas : attaque DEFENDUE par le heros, rien (menace 1)",
+        "pourquoi": "is_undefended_attack=True exclut l'attaque defendue",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086', '01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60151b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60151b Stop the Presses! 1B [fne3a] — un soutien DAILY BUGLE quitte le jeu (dernier stamina retire) : les joueurs perdent",
+        "pourquoi": "WhenCardLeavePlay(DAILY BUGLE Support) ForcedInterrupt + SetGameOver(False) ; le verificateur retire les 3 pions (Uses fait sortir la carte)",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne3a_bugle_perte",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {}
+    },
+    {
+        "nom": "60152 Daily Bugle [fne3a] — Alter-Ego Action : incliner mon soutien DAILY BUGLE -> +1 stamina dessus (3 -> 4)",
+        "pourquoi": "WhenInYourPlayTurn(AlterEgoAction) + CostFunc.Exhaust(finder) + return_exhausted_cards",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Action('60152', 'AlterEgoAction', 0)"
+        ],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "soutien": {
+                "stamina": 4,
+                "exhausted": True
+            }
+        }
+    },
+    {
+        "nom": "60153 Ben Urich [fne3a] — Action : incliner + 1 stamina -> regarde les 2 cartes du dessus du deck rencontre, en defausse 1",
+        "pourquoi": "LookAtDeck('EncounterDeck', 2) + AskChooseFace(may=True) + DiscardAll ; deck : Hydra Mercenary, Advance, Under Fire",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01186', '01101')",
+            "Puzzle.PutIntoPlay('60153', under_control=True)",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60153', 'Action', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60153",
+                    "stamina",
+                    2
+                ]
+            ],
+            "exhausted": [
+                "60153"
+            ],
+            "defausse_rencontre": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60154 Betty Brant [fne3a] — Interrupt : la carte boost retournee (Under Fire, 3 icones) est annulee, une autre (Advance, 0) la remplace : 1 + 0 = 1",
+        "pourquoi": "WhenBoostCardWouldTurnedFaceUp + SetBeInstead + DiscardAll + GiveFacedownBoostCardsInternal(1) ; sans module : 1 + 3 = 4",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01186', '01193')",
+            "Puzzle.PutIntoPlay('60154', under_control=True)",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 1,
+            "compteurs": [
+                [
+                    "60154",
+                    "stamina",
+                    2
+                ]
+            ],
+            "exhausted": [
+                "60154"
+            ],
+            "defausse_rencontre": [
+                "01193"
+            ]
+        }
+    },
+    {
+        "nom": "60154 Betty Brant [fne3a] — contre-cas : Betty deja inclinee, l'interruption n'est pas offerte (1 + 3 = 4)",
+        "pourquoi": "le cout Exhaust('This') n'est pas payable",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01186', '01193')",
+            "Puzzle.PutIntoPlay('60154', under_control=True)",
+            "Puzzle.Exhaust('60154')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 4,
+            "compteurs": [
+                [
+                    "60154",
+                    "stamina",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60155 J. Jonah Jameson [fne3a] — Action : incliner + 1 stamina + 1 carte rencontre face cachee -> pioche 2 (main 1 -> 3)",
+        "pourquoi": "trois couts dont CostFunc.DealPlayerEncounterCard(1, 'Initiator') ; DrawUp(2)",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186')",
+            "Puzzle.PutIntoPlay('60155', under_control=True)",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60155', 'Action', 0)"
+        ],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "distribuees_min": 1,
+            "taille_main": 3,
+            "compteurs": [
+                [
+                    "60155",
+                    "stamina",
+                    2
+                ]
+            ],
+            "exhausted": [
+                "60155"
+            ]
+        }
+    },
+    {
+        "nom": "60156 Robbie Robertson [fne3a] — Response : la carte distribuee (Hydra Mercenary) est regardee, defaussee, et une autre (Advance) est distribuee a la place",
+        "pourquoi": "AfterPlayerDealEncounterCard + AskChooseFace(forced=False) + DiscardAll + DealEncounterCards(1) ; Puzzle.Deal distribue la carte du dessus ; Under Fire au fond pour que le deck ne remelange pas sa defausse",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01186', '01101')",
+            "Puzzle.PutIntoPlay('60156', under_control=True)",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Deal('01101')"
+        ],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "distribuees": [
+                "01186"
+            ],
+            "defausse_rencontre": [
+                "01101"
+            ],
+            "compteurs": [
+                [
+                    "60156",
+                    "stamina",
+                    2
+                ]
+            ],
+            "exhausted": [
+                "60156"
+            ]
+        }
+    },
+    {
+        "nom": "60156 Robbie Robertson [fne3a] (2 joueurs) — « after A PLAYER is dealt » : la carte distribuee a l'AUTRE joueur est regardee, defaussee, et une autre lui est distribuee",
+        "pourquoi": "le texte dit « a player », pas « you » : la Response doit partir aussi pour le second joueur. Puzzle.Deal(card, joueur) sert la carte au joueur d'indice 1 (parametre ajoute le 19/09/2026)",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01186', '01101')",
+            "Puzzle.PutIntoPlay('60156', under_control=True)",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Deal('01101', 1)"
+        ],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "heros2": "black_panther",
+        "attendu": {
+            "distribuees_de": [
+                1,
+                [
+                    "01186"
+                ]
+            ],
+            "defausse_rencontre": [
+                "01101"
+            ],
+            "compteurs": [
+                [
+                    "60156",
+                    "stamina",
+                    2
+                ]
+            ],
+            "exhausted": [
+                "60156"
+            ]
+        }
+    },
+    {
+        "nom": "60157 Exclusive Interview [fne3a] — When Revealed : chaque soutien DAILY BUGLE est incline ; 6 menaces",
+        "pourquoi": "Faces.ExhaustAll(SoutiensDailyBugle) ; Ben Urich ajoute au soutien du Setup",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60153', under_control=True)",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60157')"
+        ],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "soutiens_tous_inclines": True,
+            "exhausted": [
+                "60153"
+            ],
+            "menace": [
+                [
+                    "60157",
+                    6
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60157 Exclusive Interview [fne3a] — les soutiens DAILY BUGLE ne peuvent pas se redresser",
+        "pourquoi": "CardCannotReady(finder) ; Puzzle.Ready sur Ben Urich incline",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.EmptyPlayerDeck()",
+            "Puzzle.PutIntoPlay('60153', under_control=True)",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60157')"
+        ],
+        "declencher": [
+            "Puzzle.Ready('60153')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "exhausted": [
+                "60153"
+            ],
+            "en_jeu": [
+                "60157"
+            ]
+        }
+    },
+    {
+        "nom": "60157 Exclusive Interview [fne3a] — contre-cas : sans elle, Ben Urich se redresse",
+        "pourquoi": "temoin du harnais : Puzzle.Ready redresse bien un soutien",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.EmptyPlayerDeck()",
+            "Puzzle.PutIntoPlay('60153', under_control=True)",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('60153')"
+        ],
+        "declencher": [
+            "Puzzle.Ready('60153')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "pret": [
+                "60153"
+            ]
+        }
+    },
+    {
+        "nom": "60158 Breaking News [fne3a] — When Revealed, premiere branche : mon soutien DAILY BUGLE est incline et perd 1 stamina (3 -> 2)",
+        "pourquoi": "ChooseAbilities + ExhaustAll + RetirerUneEndurance ; un seul soutien : pas de question",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60158')"
+        ],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "soutien": {
+                "stamina": 2,
+                "exhausted": True
+            },
+            "menace": [
+                [
+                    "60151b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60158 Breaking News [fne3a] — seconde branche : 2 menaces sur le complot principal (1 -> 3), le soutien intact",
+        "pourquoi": "preferer_option 'Place 2 threat'",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60158')"
+        ],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "preferer_option": "Place 2 threat",
+        "attendu": {
+            "soutien": {
+                "stamina": 3,
+                "exhausted": False
+            },
+            "menace": [
+                [
+                    "60151b",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60158 Breaking News [fne3a] — Boost : mon soutien DAILY BUGLE est incline (stamina intacte)",
+        "pourquoi": "WhenCardBecomeBoost + ExhaustAll",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60158')"
+        ],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "soutien": {
+                "stamina": 3,
+                "exhausted": True
+            }
+        }
+    },
+    # ---- fin du bloc 3A fne ----
+    # ------------------------------------------------------------------------
+    # Pack officiel « fne » — bloc 3P : Protection Racket (coordinateur, 18/09/2026). Filtre : "[fne3p]". Genere par scratchpad/b3/gen_cas_fne_p.py.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "60134a Protection Racket 1A [fne3p] — mise en place : le joueur choisit son complot (premiere option : Battle in the Bodega), les quatre autres restent de cote",
+        "pourquoi": "WhenCardSetup('This') : candidats = cette carte + les 4 mises de cote ; AskChooseFace, le pilote prend la premiere ; proprietaire_racket pose sur la carte",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "nb": 1,
+            "en_jeu": [
+                "60134b"
+            ],
+            "de_cote": 4,
+            "proprietaire": 0
+        }
+    },
+    {
+        "nom": "60134a Protection Racket 1A [fne3p] (expert) — mise en place au hasard : un seul complot en jeu, quatre de cote",
+        "pourquoi": "Rand.RandomChoice en expert",
+        "scenario": "protection_racket_hammerhead_expert",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "nb": 1,
+            "de_cote": 4,
+            "proprietaire": 0
+        }
+    },
+    {
+        "nom": "60134b Protection Racket [fne3p] — le vilain manigance contre le joueur : la menace tombe sur SON complot (0 + 2)",
+        "pourquoi": "GettingMainScheme -> complot de world.current_player (article FFG : l'ennemi ne pose que sur le complot du joueur vise)",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60086')"
+        ],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace_joueur": 2
+        }
+    },
+    {
+        "nom": "60134b Battle in the Bodega [fne3p] — le vilain attaque le heros : 1 degat au vilain et 1 menace ; limite une fois par phase (seconde attaque : rien de plus)",
+        "pourquoi": "AfterUnitAttackUnit(Enemy, personnage de cette aire) + LimitOncePerPhase hors expert",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')",
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60134b",
+                    1
+                ]
+            ],
+            "degats": [
+                [
+                    "60086",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60136b Hung Out to Dry [fne3p] — un personnage entre en jeu dans cette aire : 1 degat et 1 menace",
+        "pourquoi": "Puzzle.Reveal('60136a') met un second complot en jeu pour le joueur (WhenThisRevealed pose le proprietaire) ; AfterCardEnterPlay(Unit2 de cette aire)",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60136a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('01020', under_control=True)"
+        ],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60136b"
+            ],
+            "degats": [
+                [
+                    "01020",
+                    1
+                ]
+            ],
+            "menace": [
+                [
+                    "60136b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60135b Bull in a China Shop [fne3p] — degats excedentaires sur un allie de cette aire : autant de menace (5 sur 3 PV = 2)",
+        "pourquoi": "AfterUnitTookDamage.excess_damage",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60135a')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('01020', 5)"
+        ],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60135b"
+            ],
+            "menace": [
+                [
+                    "60135b",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60137b Pawn Shop Showdown [fne3p] — une amelioration entre en jeu dans cette aire : 1 menace",
+        "pourquoi": "AfterCardEnterPlay(Upgrade du proprietaire) ; la reduction de cout du premier upgrade du round n'est pas mesuree (jeu depuis la main)",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60137a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('01008', under_control=True)"
+        ],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60137b"
+            ],
+            "menace": [
+                [
+                    "60137b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60138b A Slice of the Pizza Dough [fne3p] — le heros vainc un sbire : il soigne 1 degat et 1 menace ici",
+        "pourquoi": "AfterUnitDefeatedUnit(tueur de cette aire) + HealAll(1) ; Beetle (5 PV, sans quickstrike) blesse a 4 ; identite : 2 - 1 (soin) = 1",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60138a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60197')",
+            "Puzzle.Damage('60197', 4)",
+            "Puzzle.Damage('01001a', 2)",
+            "Puzzle.Attack('01001a', '60197')"
+        ],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60138b"
+            ],
+            "hors_jeu": [
+                "60197"
+            ],
+            "degats_identite": 1,
+            "menace": [
+                [
+                    "60138b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60139 Shop Proprietor [fne3p] — revele : entre en jeu sous ton controle et surge ; quand il quitte le jeu : 4 menaces sur ton complot",
+        "pourquoi": "WhenRevealed PutIntoPlay(under_control) + ThisCardGainSurge ; WhenCardLeavePlay(This) -> ComplotDuJoueur ; 5 = 4 + 1 de Battle in the Bodega (le surge revele Assault : le vilain attaque un personnage de cette aire)",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01187')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60139')",
+            "Puzzle.Discard('60139')"
+        ],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60139"
+            ],
+            "menace_joueur": 5,
+            "carte_du_surge": "01187"
+        }
+    },
+    {
+        "nom": "60140 Man-Bull [fne3p] — Hellcat (3 PV) vaincue par son attaque a 4 : 1 degat en exces = 1 menace sur le complot",
+        "pourquoi": "WhenUnitBeDefeated.excess_damage (l'exces n'existe qu'a la defaite), filtre by_attack + attacker='This'. ⚠ JOUE HORS DE PROTECTION RACKET (Art Museum Heist) et complot remis a 0 : dans son propre scenario, la menace mesuree venait du COMPLOT (Battle in the Bodega en pose 1 apres l'attaque d'un ennemi) et le cas restait vert sans le module (subst 0/2, 18/09/2026)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.SetThreat('60121b', 0)",
+            "Puzzle.PutIntoPlay('60140')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60140', '01020')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "01020"
+            ],
+            "menace": [
+                [
+                    "60121b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60140 Man-Bull [fne3p] (expert) — carte BOOST de l'attaque de Hammerhead II (ATK 2) sur Hellcat a 1 PV : 1 degat en exces = 1 menace",
+        "pourquoi": "WhenCardBecomeBoost -> RegisterTemp(WhenUnitBeDefeated Temp0 sur l'ennemi qui s'active, unregister_after_exec=True) ; meme scenario neutre que le cas nominal",
+        "scenario": "art_museum_heist_hammerhead_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.SetThreat('60121b', 0)",
+            "Puzzle.PutIntoPlay('01020', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60140')",
+            "Puzzle.Damage('01020', 2)",
+            "Puzzle.Attack('60087', '01020')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "01020"
+            ],
+            "menace": [
+                [
+                    "60121b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60141 Change of Venue [fne3p] — le complot du joueur (4 menaces) est echange contre un complot mis de cote au hasard, qui recoit les 4 menaces ; surge",
+        "pourquoi": "EchangerLeComplot : SetAside de l'ancien, Reveal du nouveau (proprietaire pose), menace reposee",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01187')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60134b', 4)",
+            "Puzzle.Reveal('60141')"
+        ],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "nb": 1,
+            "hors_jeu": [
+                "60134b"
+            ],
+            "menace_joueur": 4,
+            "de_cote": 4,
+            "carte_du_surge": "01187"
+        }
+    },
+    {
+        "nom": "60135b Bull in a China Shop [fne3p] — contre-cas : le VILAIN vaincu (stade I) n'est dans l'aire de personne : pas de menace, pas de plantage, stade II en jeu",
+        "pourquoi": "DansCetteAire : Enemy -> False (GetControlByPlayer posait un assert sur le vilain, autoplay 18/09/2026)",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60135a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60086', 20)"
+        ],
+        "verifier": "fne3p_racket",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60087"
+            ],
+            "menace_joueur": 0
+        }
+    },
+    # ---- fin du bloc 3P fne ----
+    # ------------------------------------------------------------------------
+    # Pack officiel « fne » — bloc 3B : Drive, Disasters, Tombstone, Tracksuit Mafia
+    # (18/09/2026). Filtre : "[fne3b]". Genere par scratchpad/b3/gen_cas_fne_b.py.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "60186 Sports Car [fne3b] — s'attache a l'ennemi a l'ATK le plus haut (Enforcers 2 > Hammerhead 1) : +1 ATK",
+        "pourquoi": "AttachToFaceWhenPutIntoPlay(CardFinder(Enemy, not_with_attach=VEHICLE), highest_atk) ; cle desc ATK+",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60092')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60186')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60186",
+                    "60092"
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60092",
+                    "attack",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60186 Sports Car [fne3b] — l'ennemi a l'ATK le plus haut porte deja un VEHICLE (Utility Van) : la voiture passe a Hammerhead",
+        "pourquoi": "not_with_attach=CardFinder(trait=VEHICLE) exclut les Enforcers",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60092')",
+            "Puzzle.PutIntoPlay('60188')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60186')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60188",
+                    "60092"
+                ],
+                [
+                    "60186",
+                    "60086"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60186 Sports Car [fne3b] — aucun ennemi sans VEHICLE : surge",
+        "pourquoi": "if_cannot_gain_surge ; le van est deja sur Hammerhead, seul ennemi ; temoin = sbire du dessus",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60188')",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60186')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "01101"
+            ],
+            "hors_jeu": [
+                "60186"
+            ]
+        }
+    },
+    {
+        "nom": "60186 Sports Car [fne3b] — 3 degats a Hammerhead : places sur la voiture a la place",
+        "pourquoi": "WhenUnitWouldTakeDamage(Enemy, conditions=[le_porteur]) + PreventDamage('All') + compteurs 'damage' (60117)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60186')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60086', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60186",
+                    "60086"
+                ]
+            ],
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60186",
+                    "damage",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60186 Sports Car [fne3b] — 3 + 1 = 4 degats accumules : la voiture est defaussee, Hammerhead intact",
+        "pourquoi": "seuil 4 lu apres la pose",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60186')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60086', 3)",
+            "Puzzle.Damage('60086', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "60186"
+            ],
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60186 Sports Car [fne3b] — 6 degats d'un coup : tout est place ici, rien ne deborde sur Hammerhead, la voiture part",
+        "pourquoi": "« any amount » : PreventDamage('All'), pas seulement jusqu'au seuil",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60186')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60086', 6)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "60186"
+            ],
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60187 Motorcycle [fne3b] — s'attache a l'ennemi au SCH le plus haut (Hammerhead 2 > Underboss 1) : +1 SCH",
+        "pourquoi": "highest_sch ; oeuvres retirees (Pottery donne +1 SCH au vilain)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60093')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60187')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60187",
+                    "60086"
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60086",
+                    "scheme",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60187 Motorcycle [fne3b] — l'attaque de base du heros (2) est placee sur la moto, Hammerhead intact",
+        "pourquoi": "le chemin reel d'une attaque passe aussi par WhenUnitWouldTakeDamage",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60187')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60086"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60187",
+                    "damage",
+                    2
+                ]
+            ],
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60187 Motorcycle [fne3b] — 2 + 1 = 3 degats accumules : la moto est defaussee",
+        "pourquoi": "seuil 3",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60187')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60086', 2)",
+            "Puzzle.Damage('60086', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "60187"
+            ],
+            "degats": [
+                [
+                    "60086",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60188 Utility Van [fne3b] — s'attache a l'ennemi avec le moins de PV restants (Mercenary 3 < Hammerhead 14)",
+        "pourquoi": "fewest_remaining_hp",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60188')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60188",
+                    "01101"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60188 Utility Van [fne3b] — PV RESTANTS, pas imprimes : Hammerhead blesse a 2 PV passe devant le Mercenary (3)",
+        "pourquoi": "fewest_remaining_hp lit la sante courante",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01101')",
+            "Puzzle.Damage('60086', 12)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60188')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60188",
+                    "60086"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60188 Utility Van [fne3b] — 5 degats sur le sbire porteur (3 PV) : poses sur le van, le sbire est intact",
+        "pourquoi": "PreventDamage('All') : un sbire a 3 PV survit a 5 degats",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01101')",
+            "Puzzle.Reveal('60188')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('01101', 5)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "01101",
+                    0
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60188",
+                    "damage",
+                    5
+                ]
+            ],
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60188 Utility Van [fne3b] — 5 + 1 = 6 degats accumules : le van est defausse, le sbire toujours intact",
+        "pourquoi": "seuil 6",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01101')",
+            "Puzzle.Reveal('60188')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('01101', 5)",
+            "Puzzle.Damage('01101', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "60188"
+            ],
+            "degats": [
+                [
+                    "01101",
+                    0
+                ]
+            ],
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60189 Traffic Jam [fne3b] — revele : 2 + Hinder 2[per_hero] = 4 menaces, icone crise",
+        "pourquoi": "StartingThreat 2, Hinder 2*, Crisis = bases desc",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60189')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "menace": [
+                [
+                    "60189",
+                    4
+                ]
+            ],
+            "icones": [
+                [
+                    "Crisis",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60189 Traffic Jam [fne3b] — Hammerhead a moto manigance (2 + 1) : la menace va sur Traffic Jam, pas sur le complot principal",
+        "pourquoi": "WhenSchemeWouldPlaceThreat ForcedInterrupt : PreventThreat('All') + PlaceThreatOnSchemes([this]) ; auteur = sch_message.trigger",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60187')",
+            "Puzzle.Reveal('60189')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "menace": [
+                [
+                    "60189",
+                    7
+                ],
+                [
+                    "60121b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60189 Traffic Jam [fne3b] — contre-cas : Hammerhead sans vehicule manigance, la menace va sur le complot principal",
+        "pourquoi": "la condition AUnVehicule",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.Reveal('60189')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "menace": [
+                [
+                    "60189",
+                    4
+                ],
+                [
+                    "60121b",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60189 Traffic Jam [fne3b] — le heros a bord d'un vehicule contre Consolidate Power : la menace est retiree de Traffic Jam a la place",
+        "pourquoi": "WhenSchemeWouldRemoveThreat ForcedInterrupt : SetCannotBeRemoved + RemoveThreatFromSchemes([this]) ; by_face = l'identite, qui porte la Sports Car",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60094')",
+            "Puzzle.SetThreat('60094', 6)",
+            "Puzzle.Reveal('60189')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Attach('60186', '01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Thwart('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60094"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60094",
+                    6
+                ],
+                [
+                    "60189",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60189 Traffic Jam [fne3b] — contre-cas : le heros sans vehicule contre Consolidate Power normalement",
+        "pourquoi": "la condition AUnVehicule sur by_face",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60094')",
+            "Puzzle.SetThreat('60094', 6)",
+            "Puzzle.Reveal('60189')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Thwart('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60094"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60094",
+                    5
+                ],
+                [
+                    "60189",
+                    4
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60190 Carjacking [fne3b] — sans 3 ressources identiques : la Sports Car defaussee du deck est revelee et s'attache a Hammerhead",
+        "pourquoi": "DiscardEncounterCardsUntil(trait=VEHICLE, Attachment) puis Otherwise -> face.Reveal ; main = Energy (YY) : PeutCouvrirLeCout refuse « 3 same type »",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '60186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60190')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hotes": [
+                [
+                    "60186",
+                    "60086"
+                ]
+            ],
+            "defausse_rencontre": [
+                "01186"
+            ]
+        }
+    },
+    {
+        "nom": "60190 Carjacking [fne3b] — 3 [physical] payes : la Sports Car s'attache a l'identite a la place",
+        "pourquoi": "ForChoiceAbilityWithCost(Cost('3', same_type=True)) ; main = Strength (RR) + Backflip (R)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '60186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60190')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01090",
+            "01003"
+        ],
+        "payer_avec": [
+            "01090",
+            "01003"
+        ],
+        "choisir_option": "Spend 3 resources",
+        "attendu": {
+            "hotes": [
+                [
+                    "60186",
+                    "01001a"
+                ]
+            ],
+            "defausse_rencontre": [
+                "01186"
+            ]
+        }
+    },
+    {
+        "nom": "60190 Carjacking [fne3b] — contre-cas : l'identite porte deja un VEHICLE, pas de choix, la moto trouvee va a Hammerhead",
+        "pourquoi": "AUnVehicule(identite) -> Reveal direct, la branche payante n'est pas offerte",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '60187', '01186')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Attach('60186', '01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60190')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01090",
+            "01003"
+        ],
+        "payer_avec": [
+            "01090",
+            "01003"
+        ],
+        "attendu": {
+            "hotes": [
+                [
+                    "60187",
+                    "60086"
+                ],
+                [
+                    "60186",
+                    "01001a"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60190 Carjacking [fne3b] — aucun VEHICLE dans le deck : tout est defausse (le deck vide se remelange), rien ne s'attache",
+        "pourquoi": "DiscardUntil parcourt le deck entier puis s'arrete (borne) ; face None -> return ; le deck epuise remelange sa defausse (regle moteur, deck.py:483) : Advance et Under Fire y reviennent",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60190')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60190"
+            ],
+            "dans_deck_rencontre": [
+                "01186",
+                "01193"
+            ],
+            "en_jeu_trait": [
+                [
+                    "VEHICLE",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60177 Mystic Incursion [fne3b] — revelee : Uses (2 civils), icone crise ; Hero Action [mental][mental] : 1 civil retire",
+        "pourquoi": "Uses = base desc ; WhenInYourPlayTurn(HeroAction).SetCost(Cost('BB')) ; main = Genius (BB)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60177')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60177', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01089"
+        ],
+        "payer_avec": [
+            "01089"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60177",
+                    "civilian",
+                    1
+                ]
+            ],
+            "icones": [
+                [
+                    "Crisis",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60177 Mystic Incursion [fne3b] — Hero Action incliner le heros (non MYSTIC) : 1 civil retire",
+        "pourquoi": "seconde capacite, CostFunc.Exhaust('Hero|Ally') ; return_exhausted_cards sans MYSTIC -> 1",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60177')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60177', 'HeroAction', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "01001a"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60177",
+                    "civilian",
+                    1
+                ]
+            ],
+            "exhausted": [
+                "01001a"
+            ]
+        }
+    },
+    {
+        "nom": "60177 Mystic Incursion [fne3b] — incliner Wong (MYSTIC) : 2 civils retires, la carte quitte le jeu (Uses)",
+        "pourquoi": "double(f) = HasTrait(MYSTIC) ; la sortie au dernier pion est native (has_uses.py), non recodee",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60177')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('09002', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Action('60177', 'HeroAction', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "09002"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60177"
+            ],
+            "exhausted": [
+                "09002"
+            ],
+            "pret": [
+                "01001a"
+            ]
+        }
+    },
+    {
+        "nom": "60178 Sinking Ferry [fne3b] — Hero Action [energy][energy] : 1 civil retire",
+        "pourquoi": "CapacitesDeCatastrophe('YY') ; main = Energy (YY)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60178')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60178', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "payer_avec": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60178",
+                    "civilian",
+                    1
+                ]
+            ],
+            "icones": [
+                [
+                    "Crisis",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60178 Sinking Ferry [fne3b] — incliner Wasp (AERIAL) : 2 civils retires, la carte quitte le jeu",
+        "pourquoi": "double(f) = HasTrait(AERIAL)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60178')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('12002', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Action('60178', 'HeroAction', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "12002"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60178"
+            ],
+            "exhausted": [
+                "12002"
+            ]
+        }
+    },
+    {
+        "nom": "60178 Sinking Ferry [fne3b] — contre-cas : incliner Wong (MYSTIC, pas AERIAL) : 1 seul civil",
+        "pourquoi": "le trait double est propre a chaque catastrophe",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60178')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('09002', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Action('60178', 'HeroAction', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "09002"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60178",
+                    "civilian",
+                    1
+                ]
+            ],
+            "exhausted": [
+                "09002"
+            ]
+        }
+    },
+    {
+        "nom": "60179 Towering Inferno [fne3b] — Hero Action [physical][physical] : 1 civil retire",
+        "pourquoi": "CapacitesDeCatastrophe('RR') ; main = Strength (RR)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60179')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60179', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01090"
+        ],
+        "payer_avec": [
+            "01090"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60179",
+                    "civilian",
+                    1
+                ]
+            ],
+            "icones": [
+                [
+                    "Crisis",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60179 Towering Inferno [fne3b] — incliner le heros robuste : 2 civils retires, la carte quitte le jeu, la robustesse reste",
+        "pourquoi": "double(f) = IsTough() lu apres l'inclinaison (incliner ne consomme pas le statut)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60179')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Tough('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60179', 'HeroAction', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "01001a"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60179"
+            ],
+            "exhausted": [
+                "01001a"
+            ],
+            "statuts": [
+                [
+                    "01001a",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60179 Towering Inferno [fne3b] — contre-cas : incliner Wong (MYSTIC, pas robuste) : 1 seul civil",
+        "pourquoi": "le critere est le statut robuste, pas un trait",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60179')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('09002', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Action('60179', 'HeroAction', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "09002"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60179",
+                    "civilian",
+                    1
+                ]
+            ],
+            "exhausted": [
+                "09002"
+            ]
+        }
+    },
+    {
+        "nom": "60180 Collapsing Bridge [fne3b] — revele : 1 + Hinder 2[per_hero] = 3 menaces, icone alea",
+        "pourquoi": "StartingThreat 1, Hinder 2*, Hazard = bases desc",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60180')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "menace": [
+                [
+                    "60180",
+                    3
+                ]
+            ],
+            "icones": [
+                [
+                    "Hazard",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60180 Collapsing Bridge [fne3b] — Hellcat contre 2 : 5 - 2 + 1 = 4 menaces",
+        "pourquoi": "AfterSchemeRemoveThreat('This') ForcedResponse + PlaceThreatOnSchemes([this], 1)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60180')",
+            "Puzzle.SetThreat('60180', 5)",
+            "Puzzle.PutIntoPlay('01020', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Thwart('01020')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60180"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60180",
+                    4
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60180 Collapsing Bridge [fne3b] — contre-cas : la menace retiree du complot principal ne fait pas rechuter le pont",
+        "pourquoi": "which_scheme='This'",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60180')",
+            "Puzzle.SetThreat('60121b', 5)",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Thwart('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60121b"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60121b",
+                    4
+                ],
+                [
+                    "60180",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60180 Collapsing Bridge [fne3b] — Hellcat contre 2 (3 -> 1 -> 2), puis Spider-Woman contre 2 (2 -> 0) : le pont est vaincu, rien ne revient",
+        "pourquoi": "condition encore_de_la_menace : a 0 le complot est vaincu (RRG), la reponse ne resout pas ; sans elle le moteur (scheme.py:145) reposait 1 avant le controle de defaite et le pont etait invincible. ⚠ Puzzle.SetThreat(2) depuis 3 est un RETRAIT qui declenche la reponse : on descend par des contres",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60180')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)",
+            "Puzzle.PutIntoPlay('01011', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Thwart('01020')",
+            "Puzzle.Thwart('01011')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60180"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60180"
+            ]
+        }
+    },
+    {
+        "nom": "60181 Bystanders in Peril [fne3b] — une catastrophe en jeu : +1 civil (2 -> 3)",
+        "pourquoi": "PoserUnCivil : FindCardsOnField(trait=DISASTER, Environment) + PlaceCountersOn ; Peril = base desc",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60177')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60181')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "60177",
+                    "civilian",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60181 Bystanders in Peril [fne3b] — aucune catastrophe en jeu : Sinking Ferry est cherchee dans le deck et revelee (2 civils)",
+        "pourquoi": "Search.SearchForCard(include_encounter_deck) + Reveal",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '60178', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60181')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60178"
+            ],
+            "compteurs": [
+                [
+                    "60178",
+                    "civilian",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60181 Bystanders in Peril [fne3b] — la catastrophe est dans la defausse : trouvee aussi",
+        "pourquoi": "include_encounter_discard_pile",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDiscardPile('60179')",
+            "Puzzle.CreateEncounterDeck('01193')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60181')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60179"
+            ]
+        }
+    },
+    {
+        "nom": "60181 Bystanders in Peril [fne3b] — Boost : +1 civil sur la catastrophe en jeu (attaque 1 + 1 icone = 2)",
+        "pourquoi": "WhenCardBecomeBoost('This') + PoserUnCivil",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60177')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60181')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "60177",
+                    "civilian",
+                    3
+                ]
+            ],
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60195 Cold as Ice [fne3b] — s'attache au sbire aux PV imprimes les plus hauts (Underboss 4 > Enforcers 3), qui devient robuste : +2 SCH",
+        "pourquoi": "AttacheAuSbireLePlusSolide : highest_printed_hp + when_attach_operation(GiveStatus Tough) ; cle desc SCH+",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60092')",
+            "Puzzle.PutIntoPlay('60093')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60195')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60195",
+                    "60093"
+                ]
+            ],
+            "statuts": [
+                [
+                    "60093",
+                    "Tough"
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60093",
+                    "scheme",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60195 Cold as Ice [fne3b] — aucun sbire : surge",
+        "pourquoi": "if_cannot_gain_surge ; temoin = sbire du dessus",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60195')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "01101"
+            ],
+            "hors_jeu": [
+                "60195"
+            ]
+        }
+    },
+    {
+        "nom": "60195 Cold as Ice [fne3b] — le sbire attache manigance (0 + 2) : l'identite du premier joueur est desorientee, la carte est defaussee",
+        "pourquoi": "AfterUnitSchemeEnd(ForcedResponse, 'AttachedEnemy') + GiveStatus Confused + DiscardAll ; menace 1 + 2 = 3",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01101')",
+            "Puzzle.Reveal('60195')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('01101')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "01001b",
+                    "Confused"
+                ]
+            ],
+            "hors_jeu": [
+                "60195"
+            ],
+            "menace": [
+                [
+                    "60121b",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60196 Hard as Marble [fne3b] — s'attache au sbire aux PV imprimes les plus hauts, qui devient robuste : +2 ATK",
+        "pourquoi": "meme tronc, cle desc ATK+",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60092')",
+            "Puzzle.PutIntoPlay('60093')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60196')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60196",
+                    "60093"
+                ]
+            ],
+            "statuts": [
+                [
+                    "60093",
+                    "Tough"
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60093",
+                    "attack",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60196 Hard as Marble [fne3b] — le sbire attache attaque le heros (1 + 2 = 3) : le heros est etourdi, la carte defaussee",
+        "pourquoi": "AfterUnitAttackEnd(ForcedResponse, 'AttachedEnemy') ; attacked_targets = l'identite",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01101')",
+            "Puzzle.Reveal('60196')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01101')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 3,
+            "statuts": [
+                [
+                    "01001a",
+                    "Stunned"
+                ]
+            ],
+            "hors_jeu": [
+                "60196"
+            ]
+        }
+    },
+    {
+        "nom": "60196 Hard as Marble [fne3b] — l'attaque est defendue par Brawn (5 PV) : c'est Brawn qui est etourdi (3 degats)",
+        "pourquoi": "« the attacked character » = le defenseur, pas le joueur ; Brawn n'a aucune reponse en defense (Groot, essaye d'abord, se soignait de 2)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01101')",
+            "Puzzle.Reveal('60196')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('10011', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01101', '10011')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "10011",
+                    "Stunned"
+                ]
+            ],
+            "degats": [
+                [
+                    "10011",
+                    3
+                ]
+            ],
+            "degats_identite": 0,
+            "hors_jeu": [
+                "60196"
+            ]
+        }
+    },
+    {
+        "nom": "60196 Hard as Marble [fne3b] — le defenseur (Spider-Woman 2 PV) est vaincu : personne a etourdir, la carte est quand meme defaussee",
+        "pourquoi": "cibles filtrees IsInPlay et not IsDefeated ; DiscardAll hors condition",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01101')",
+            "Puzzle.Reveal('60196')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01011', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01101', '01011')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "01011",
+                "60196"
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60197 Beetle [fne3b] — When Revealed : Hard as Marble (deck) est attachee a Beetle ; Gatling Gun (deck) et Hardheaded (defausse), reservees au vilain, restent",
+        "pourquoi": "candidats = attachements du deck + defausse qui PEUVENT s'accrocher a un sbire ; Search.SearchForCard(faces=...) + AttachTo2 ; Villainous = base",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDiscardPile('60090')",
+            "Puzzle.CreateEncounterDeck('01193', '60089', '60196')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60197')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60196",
+                    "60197"
+                ]
+            ],
+            "dans_deck_rencontre": [
+                "60089"
+            ],
+            "defausse_rencontre": [
+                "60090"
+            ],
+            "en_jeu": [
+                "60197"
+            ]
+        }
+    },
+    {
+        "nom": "60197 Beetle [fne3b] — contre-cas : seul un attachement reserve au vilain est disponible : rien n'est attache",
+        "pourquoi": "« that can attach to a minion » : Gatling Gun dit « Attach to the villain »",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '60089')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60197')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60197"
+            ],
+            "dans_deck_rencontre": [
+                "60089"
+            ],
+            "hors_jeu": [
+                "60089"
+            ]
+        }
+    },
+    {
+        "nom": "60198 Tombstone [fne3b] — Boost : Hammerhead devient robuste (attaque 1 + 0 icone)",
+        "pourquoi": "WhenCardBecomeBoost('This') + GiveStatus Tough sur Worlds.FindVillain ; boost 0 icone",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60198')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "60086",
+                    "Tough"
+                ]
+            ],
+            "degats_identite": 1
+        }
+    },
+    {
+        "nom": "60198 Tombstone [fne3b] — Quickstrike (base desc) : entre en jeu engage en forme heros et attaque (2)",
+        "pourquoi": "aucun script pour le mot-cle ; le heros incline ne defend pas",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60198')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60199 Hit List [fne3b] — revele (3 menaces) ; la phase du mechant commence : 3 degats indirects au premier joueur, aucun allie vaincu : la menace reste",
+        "pourquoi": "AfterPhaseBegin(ForcedResponse, 'Villain') + TakeIndirectDamage(3, operation=compter)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60199')"
+        ],
+        "declencher": [
+            "Puzzle.BeginVillainPhase()"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 3,
+            "menace": [
+                [
+                    "60199",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60199 Hit List [fne3b] — Spider-Woman (2 PV) prend 2 et meurt, l'identite 1 : 1[per_hero] menace retiree (3 -> 2)",
+        "pourquoi": "le compteur d'allies vaincus dans l'operation d'AfterUnitTookDamage",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60199')",
+            "Puzzle.PutIntoPlay('01011', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.BeginVillainPhase()"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "01011",
+            "01011",
+            "01001b"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "01011"
+            ],
+            "menace": [
+                [
+                    "60199",
+                    2
+                ]
+            ],
+            "degats_identite": 1
+        }
+    },
+    {
+        "nom": "60200 Ivan Banionis [fne3b] — When Revealed : 1 jeton acceleration sur lui",
+        "pourquoi": "PlaceAccelerationToken(1) (50081) ; Teamwork = base desc",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60200')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "jetons": [
+                [
+                    "60200",
+                    "acceleration_token",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60200 Ivan Banionis [fne3b] — apres sa manigance (SCH 0) : un second jeton acceleration",
+        "pourquoi": "AfterUnitSchemeEnd(ForcedResponse, 'This')",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('60200')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60200')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "jetons": [
+                [
+                    "60200",
+                    "acceleration_token",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60200 Ivan Banionis [fne3b] — Teamwork (TRACKSUIT), base desc : entre en jeu avec Tracksuit Bro deja la : les deux s'activent (2 + 2)",
+        "pourquoi": "regle par defaut du moteur (v16_teamwork False) : TOUS les sbires au Teamwork correspondant s'activent ; heros incline, pas de defense",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60203')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60200')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 4
+        }
+    },
+    {
+        "nom": "60201 The Clown [fne3b] — apres sa manigance (Villainous : Advance, 0 icone) : une carte boost face cachee lui reste (Under Fire)",
+        "pourquoi": "AfterUnitSchemeEnd(ForcedResponse, 'This') + Faces.GiveFacedownBoostCards ; deck = Under Fire, Under Fire, Advance (dessus)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01186')",
+            "Puzzle.PutIntoPlay('60201')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60201')"
+        ],
+        "verifier": "fne_boost_du_vilain",
+        "attendu": {
+            "boost_du_vilain": "01193",
+            "vilain": "60201"
+        }
+    },
+    {
+        "nom": "60201 The Clown [fne3b] — puis il attaque : la carte gardee s'ajoute a celle de Villainous (1 + 3 + 3 = 7)",
+        "pourquoi": "la carte face cachee reste dans sa pile jusqu'a la prochaine activation",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01186')",
+            "Puzzle.PutIntoPlay('60201')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60201')",
+            "Puzzle.Attack('60201')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 7
+        }
+    },
+    {
+        "nom": "60202 Tracksuit Mafioso [fne3b] — vaincu avec Tracksuit Mafia en jeu : glisse sous le complot",
+        "pourquoi": "WhenUnitBeDefeated(WhenDefeated) + TrouverTracksuitMafia + TuckCardUnderHere ; Retaliate 2 / Vulnerable = bases",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60204')",
+            "Puzzle.PutIntoPlay('60202')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60202', 7)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "pose_sous": [
+                [
+                    "60204",
+                    "60202"
+                ]
+            ],
+            "hors_jeu": [
+                "60202"
+            ]
+        }
+    },
+    {
+        "nom": "60202 Tracksuit Mafioso [fne3b] — sans le complot : le heros qui l'acheve (5 + 2) est etourdi ET desoriente",
+        "pourquoi": "Otherwise -> message.killer ; Retaliate ne mord pas, le defenseur etant vaincu par l'attaque (can_retaliate)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60202')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Damage('60202', 5)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60202"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "statuts": [
+                [
+                    "01001a",
+                    "Stunned"
+                ],
+                [
+                    "01001a",
+                    "Confused"
+                ]
+            ],
+            "hors_jeu": [
+                "60202"
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60202 Tracksuit Mafioso [fne3b] — limite : vaincu sans personnage (Puzzle.Damage) et sans complot : rien a etourdir, pas d'erreur",
+        "pourquoi": "tueur None",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60202')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60202', 7)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "60202"
+            ],
+            "statuts_absents": [
+                [
+                    "01001b",
+                    "Stunned"
+                ],
+                [
+                    "01001b",
+                    "Confused"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60203 Tracksuit Bro [fne3b] — vaincu avec Tracksuit Mafia en jeu : glisse sous le complot",
+        "pourquoi": "meme tronc que 60202",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60204')",
+            "Puzzle.PutIntoPlay('60203')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60203', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "pose_sous": [
+                [
+                    "60204",
+                    "60203"
+                ]
+            ],
+            "hors_jeu": [
+                "60203"
+            ]
+        }
+    },
+    {
+        "nom": "60203 Tracksuit Bro [fne3b] — sans le complot : melange dans le deck rencontre",
+        "pourquoi": "Faces.ShuffleAllTo([this], 'EncounterDeck')",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193')",
+            "Puzzle.PutIntoPlay('60203')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60203', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "dans_deck_rencontre": [
+                "60203"
+            ],
+            "hors_jeu": [
+                "60203"
+            ]
+        }
+    },
+    {
+        "nom": "60204 Tracksuit Mafia [fne3b] — When Revealed (3[per_hero]) : defausse jusqu'a un sbire TRACKSUIT (Advance defaussee) et le glisse dessous",
+        "pourquoi": "DiscardEncounterCardsUntil(trait=TRACKSUIT, Minion) + TuckCardUnderHere",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '60203', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60204')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "pose_sous": [
+                [
+                    "60204",
+                    "60203"
+                ]
+            ],
+            "menace": [
+                [
+                    "60204",
+                    3
+                ]
+            ],
+            "defausse_rencontre": [
+                "01186"
+            ]
+        }
+    },
+    {
+        "nom": "60204 Tracksuit Mafia [fne3b] — un TRACKSUIT (Mafioso) revele depuis le deck : le joueur revele le Bro glisse dessous",
+        "pourquoi": "WhenCardRevealed(ForcedResponse, CardFinder(TRACKSUIT, Minion)) + Reveal du sbire pose ; garde de recursion",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '60203', '01186')",
+            "Puzzle.Reveal('60204')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60202')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60202",
+                "60203"
+            ],
+            "taille_pose_sous": [
+                [
+                    "60204",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60204 Tracksuit Mafia [fne3b] — contre-cas : aucun TRACKSUIT dans le deck a la revelation : tout est defausse, rien dessous",
+        "pourquoi": "face None",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60204')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "taille_pose_sous": [
+                [
+                    "60204",
+                    0
+                ]
+            ],
+            "menace": [
+                [
+                    "60204",
+                    3
+                ]
+            ],
+            "en_jeu": [
+                "60204"
+            ]
+        }
+    },
+    {
+        "nom": "60204 Tracksuit Mafia [fne3b] — contre-cas : un sbire non-TRACKSUIT revele : rien ne sort de dessous",
+        "pourquoi": "le CardFinder(trait=TRACKSUIT)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '60203', '01186')",
+            "Puzzle.Reveal('60204')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('01101')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "taille_pose_sous": [
+                [
+                    "60204",
+                    1
+                ]
+            ],
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    # ---- fin du bloc 3B fne ----
+    # ------------------------------------------------------------------------
+    # Pack officiel « fne » — bloc 4 : Kingpin (scenario final)
+    # (18/09/2026). Filtre : "[fne4]". Genere par scratchpad/b3/gen_cas_fne_c.py.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "60161a The King's Gambit 1A [fne4] — Setup : le sbire nemesis (Vulture) est revele ; 1B et Public Support LOW sont en jeu",
+        "pourquoi": "WhenCardSetup('This') : chaque joueur revele son nemesis mis de cote (01167) ; 1B When Revealed -> SetupCards.PutIntoPlay(Public Support) face LOW ; Kingpin A1",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60159a",
+                "60161b",
+                "60163a",
+                "01167"
+            ],
+            "hors_jeu": [
+                "60163b",
+                "60159b"
+            ]
+        }
+    },
+    {
+        "nom": "60161a The King's Gambit 1A [fne4] — Setup avec Echo : son nemesis Kingpin partage un titre avec le vilain, il est retire du jeu et un UNDERLING revele a la place",
+        "pourquoi": "« shares a title with a character in play » : le sbire 60061 Kingpin (nemesis de Maya Lopez) -> RemoveAllFromGame + TrouverEtRevelerUnderling",
+        "scenario": "kingpin_fne",
+        "heros": "echo",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne4_sbires_en_jeu",
+        "attendu": {
+            "retirees": [
+                "60061"
+            ],
+            "underlings_min": 1,
+            "hors_jeu": [
+                "60061"
+            ]
+        }
+    },
+    {
+        "nom": "60159a Kingpin A1 [fne4] — ne peut pas subir de degats : 10 degats -> 0",
+        "pourquoi": "*UnitCannotTakeDamage(CardFinder(name=Kingpin, Villain)) (sd022) : PreventDamage('All')",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Damage('60159a', 10)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "60159a",
+                    0
+                ]
+            ],
+            "en_jeu": [
+                "60159a"
+            ]
+        }
+    },
+    {
+        "nom": "60159a Kingpin A1 [fne4] — Webbed Up ne peut pas s'attacher a lui : aucune cible legale, la carte reste en main",
+        "pourquoi": "*UnitCannotHaveUpgradeAttached (46003) : CheckIfFaceCanAttachTo, envoye par Asset2.CanAttachTo depuis le 18/09/2026 (D1) : Kingpin n'est plus offert comme cible",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Remove('01167')"
+        ],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01009",
+            "01088",
+            "01088",
+            "01089"
+        ],
+        "jouer": [
+            "01009"
+        ],
+        "cibles": [
+            "60159a"
+        ],
+        "attendu": {
+            "en_main": [
+                "01009"
+            ],
+            "hors_jeu": [
+                "01009"
+            ]
+        }
+    },
+    {
+        "nom": "60159b Kingpin A2 [fne4] — contre-cas : Webbed Up s'attache a la face 2",
+        "pourquoi": "la face 2 n'a pas l'interdiction : hotes [01009 -> 60159b]",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Remove('01167')"
+        ],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01009",
+            "01088",
+            "01088",
+            "01089"
+        ],
+        "jouer": [
+            "01009"
+        ],
+        "cibles": [
+            "60159b"
+        ],
+        "attendu": {
+            "hotes": [
+                [
+                    "01009",
+                    "60159b"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60159a Kingpin A1 [fne4] — quand il attaquerait, il manigance a la place (0 degat, 2 menaces)",
+        "pourquoi": "WhenUnitWouldAttack ForcedInterrupt + message.DoSchemeInstead (51019) ; SCH 2 + Advance (0 icone)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 0)",
+            "Puzzle.Attack('60159a')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 0,
+            "menace": [
+                [
+                    "60161b",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60159b Kingpin A2 [fne4] — attaque sans sbire engage : 1 carte boost de plus (2 + 3 + 3 = 8)",
+        "pourquoi": "CapacitesDeKingpin2 : WhenUnitWouldAttack + GiveAdditionalBoostCardForThisActivation, condition engaged_minions vide ; deck = Under Fire x3",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60159b')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 8
+        }
+    },
+    {
+        "nom": "60159b Kingpin A2 [fne4] — contre-cas : Vulture engage, une seule carte boost (2 + 3 = 5)",
+        "pourquoi": "la condition « not engaged with a minion » echoue",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60159b')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 5
+        }
+    },
+    {
+        "nom": "60159b Kingpin A2 [fne4] — manigance sans sbire engage : 1 carte boost de plus (2 + 3 + 3 = 8 menaces)",
+        "pourquoi": "WhenUnitWouldScheme, meme condition ; partie en alter-ego",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 0)",
+            "Puzzle.Scheme('60159b')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60161b",
+                    8
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60159b Kingpin A2 [fne4] — Steady (base desc) : une seule carte stun ne l'empeche pas d'attaquer (2 degats)",
+        "pourquoi": "Steady = deux cartes de statut necessaires ; temoin du desc",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Stun('60159b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60159b')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60160a Kingpin B1 [fne4] (expert) — pas de degats, et il manigance au lieu d'attaquer (SCH 3)",
+        "pourquoi": "CapacitesDeKingpin1 sur la face expert",
+        "scenario": "kingpin_fne_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 0)",
+            "Puzzle.Damage('60160a', 10)",
+            "Puzzle.Attack('60160a')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats": [
+                [
+                    "60160a",
+                    0
+                ]
+            ],
+            "degats_identite": 0,
+            "menace": [
+                [
+                    "60161b",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60160b Kingpin B2 [fne4] (expert) — attaque sans sbire : carte de plus ET overkill (3 + 3 + 3 = 9 sur Spider-Woman 2 PV : 7 passent)",
+        "pourquoi": "CapacitesDeKingpin2(overkill=True) : GainOverKill sur le message d'attaque ; Spider-Woman 01011 defend",
+        "scenario": "kingpin_fne_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60160a')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01011', under_control=True)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60160b', '01011')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 7,
+            "hors_jeu": [
+                "01011"
+            ]
+        }
+    },
+    {
+        "nom": "60159b Kingpin A2 [fne4] — contre-cas overkill : en standard, l'exces sur Spider-Woman est perdu (0 sur l'identite)",
+        "pourquoi": "CapacitesDeKingpin2(overkill=False)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01011', under_control=True)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60159b', '01011')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 0,
+            "hors_jeu": [
+                "01011"
+            ]
+        }
+    },
+    {
+        "nom": "60161b The King's Gambit 1B [fne4] — Hero Action : 5 menaces retirees, la defausse remelangee, un sbire defausse et revele",
+        "pourquoi": "CostFunc.Custom(RemoveThreatFromSchemes 5) + ShuffleAllTo(EncounterDeck) + DiscardEncounterCardsUntil(Minion) + Reveal ; defausse = Hydra Mercenary, deck = Advance x2",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186')",
+            "Puzzle.CreateEncounterDiscardPile('01101')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 6)",
+            "Puzzle.Action('60161b', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60161b",
+                    1
+                ]
+            ],
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60161b The King's Gambit 1B [fne4] — contre-cas : 4 menaces seulement, l'action n'est pas offerte",
+        "pourquoi": "condition assez_de_menace (5 en standard) ; declencher_tolerant",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186')",
+            "Puzzle.CreateEncounterDiscardPile('01101')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 4)"
+        ],
+        "verifier": "etat_attendu",
+        "declencher_tolerant": [
+            "Puzzle.Action('60161b', 'HeroAction', 0)"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60161b",
+                    4
+                ]
+            ],
+            "hors_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60161b The King's Gambit 1B [fne4] (expert) — 4 menaces suffisent (4 -> 0)",
+        "pourquoi": "seuil 4 en expert (Worlds.IsExpert)",
+        "scenario": "kingpin_fne_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186')",
+            "Puzzle.CreateEncounterDiscardPile('01101')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 4)",
+            "Puzzle.Action('60161b', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60161b",
+                    0
+                ]
+            ],
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60163a Public Support LOW [fne4] — apres la defaite d'un sbire : 1 compteur support",
+        "pourquoi": "AfterUnitBeDefeated(ForcedResponse, Minion) + PlaceCountersOn 'support' ; Diamondback 6 PV",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60170')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60170', 6)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "60163a",
+                    "support",
+                    1
+                ]
+            ],
+            "hors_jeu": [
+                "60170"
+            ]
+        }
+    },
+    {
+        "nom": "60163a Public Support LOW [fne4] — 4 compteurs (2x1+2) au debut de la phase du mechant : Kingpin retourne (A2), complot au stade 2 (Endgame 2B), carte retournee (HIGH)",
+        "pourquoi": "WhenVillainPhaseBegin ForcedInterrupt + card.Flip(Kingpin) + MainScheme.Advance('2A') + card.Flip(this) ; Puzzle.BeginVillainPhase envoie WhenPhaseBegin",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Counter('60163a', 'support', 4)"
+        ],
+        "declencher": [
+            "Puzzle.BeginVillainPhase()"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60159b",
+                "60162b",
+                "60163b"
+            ],
+            "hors_jeu": [
+                "60159a",
+                "60161b",
+                "60163a"
+            ],
+            "compteurs": [
+                [
+                    "60163b",
+                    "support",
+                    4
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60163a Public Support LOW [fne4] — contre-cas : 3 compteurs, rien ne bouge",
+        "pourquoi": "la condition du seuil (2[per_hero]+2)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Counter('60163a', 'support', 3)"
+        ],
+        "declencher": [
+            "Puzzle.BeginVillainPhase()"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60159a",
+                "60161b",
+                "60163a"
+            ],
+            "hors_jeu": [
+                "60159b",
+                "60162b",
+                "60163b"
+            ]
+        }
+    },
+    {
+        "nom": "60162a Endgame 2A [fne4] — When Revealed : Vulture deja en jeu n'entre pas en jeu « this way », un UNDERLING est trouve et revele",
+        "pourquoi": "Find.FindAndReveal(nemesis, if_no_entered_play) -> TrouverEtRevelerUnderling ; Vulture reste en jeu",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Counter('60163a', 'support', 4)"
+        ],
+        "declencher": [
+            "Puzzle.BeginVillainPhase()"
+        ],
+        "verifier": "fne4_sbires_en_jeu",
+        "attendu": {
+            "en_jeu": [
+                "01167",
+                "60162b"
+            ],
+            "underlings_min": 1
+        }
+    },
+    {
+        "nom": "60162a Endgame 2A [fne4] — When Revealed : Vulture en defausse est trouve et revele (aucun UNDERLING)",
+        "pourquoi": "Find fouille la defausse rencontre ; le nemesis entre en jeu, pas d'UNDERLING",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Discard('01167')",
+            "Puzzle.Counter('60163a', 'support', 4)"
+        ],
+        "declencher": [
+            "Puzzle.BeginVillainPhase()"
+        ],
+        "verifier": "fne4_sbires_en_jeu",
+        "attendu": {
+            "en_jeu": [
+                "01167",
+                "60162b"
+            ],
+            "underlings": 0
+        }
+    },
+    {
+        "nom": "60162a Endgame 2A [fne4] — When Revealed : Vulture retire du jeu, un UNDERLING est revele a la place",
+        "pourquoi": "Find exclut la zone retiree -> TrouverEtRevelerUnderling",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('01167')",
+            "Puzzle.Counter('60163a', 'support', 4)"
+        ],
+        "declencher": [
+            "Puzzle.BeginVillainPhase()"
+        ],
+        "verifier": "fne4_sbires_en_jeu",
+        "attendu": {
+            "en_jeu": [
+                "60162b"
+            ],
+            "hors_jeu": [
+                "01167"
+            ],
+            "underlings_min": 1
+        }
+    },
+    {
+        "nom": "60162a Endgame 2A [fne4] (expert) — le premier joueur trouve et revele Organized Crime",
+        "pourquoi": "Worlds.IsExpert -> Find.FindAndReveal(name=Organized Crime)",
+        "scenario": "kingpin_fne_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Counter('60163a', 'support', 4)"
+        ],
+        "declencher": [
+            "Puzzle.BeginVillainPhase()"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60174",
+                "60162b",
+                "60160b"
+            ],
+            "hors_jeu": [
+                "60160a"
+            ]
+        }
+    },
+    {
+        "nom": "60162b Endgame 2B [fne4] — chaque sbire gagne guard (Vulture)",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis(Minion, guard=1)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Counter('60163a', 'support', 4)"
+        ],
+        "declencher": [
+            "Puzzle.BeginVillainPhase()"
+        ],
+        "verifier": "fne_mots_cles",
+        "attendu": {
+            "carte": "01167",
+            "guard": True
+        }
+    },
+    {
+        "nom": "60162b Endgame 2B [fne4] — contre-cas : au stade 1, Vulture n'a pas guard",
+        "pourquoi": "le complot 2B n'est pas en jeu",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne_mots_cles",
+        "attendu": {
+            "carte": "01167",
+            "guard": False
+        }
+    },
+    {
+        "nom": "60163b Public Support HIGH [fne4] — Interrupt : 1 compteur retire a la place de la carte boost de Kingpin (2 + 0 = 2)",
+        "pourquoi": "WhenEnemyWouldBeGivenBoostCards(Interrupt) : SetNum(num - 1) + RemoveCountersOn ; deck = Under Fire x3 (sans l'interruption : 5)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60163a')",
+            "Puzzle.Counter('60163b', 'support', 1)",
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60159b')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2,
+            "compteurs": [
+                [
+                    "60163b",
+                    "support",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60163b Public Support HIGH [fne4] — contre-cas sans compteur : la carte boost est donnee (2 + 3 = 5)",
+        "pourquoi": "condition remplacable : au moins 1[per_hero] compteur",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60163a')",
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60159b')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 5,
+            "compteurs": [
+                [
+                    "60163b",
+                    "support",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60163b Public Support HIGH [fne4] — Interrupt sur la carte boost donnee par James Wesley (hors activation) : compteur retire, pile de boost vide",
+        "pourquoi": "la fenetre WhenEnemyWouldBeGivenBoostCards vaut pour toutes les sources (D2) ; Wesley revele -> aucune carte dans la pile de Kingpin, 1 -> 0 support",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60163a')",
+            "Puzzle.Counter('60163b', 'support', 1)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60165')"
+        ],
+        "verifier": "fne4_pile_boost_vide",
+        "attendu": {
+            "vilain": "60159a",
+            "compteurs": [
+                [
+                    "60163b",
+                    "support",
+                    0
+                ]
+            ],
+            "hotes": [
+                [
+                    "60165",
+                    "60159a"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60163b Public Support HIGH [fne4] — Forced Response : sbire vaincu, +1 compteur",
+        "pourquoi": "ReponseForceeSoutien sur la face HIGH",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60163a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60170')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60170', 6)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "60163b",
+                    "support",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60164 Bear Hug [fne4] — Kingpin A1 (pas MARTIAL ARTIST) : surge, la carte ne s'attache pas",
+        "pourquoi": "selecteur YourHero + check_effect_fn KingpinArtMartial ; if_cannot_operation -> ThisCardGainSurge ; temoin = sbire du dessus",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60164')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "01101"
+            ],
+            "hors_jeu": [
+                "60164"
+            ]
+        }
+    },
+    {
+        "nom": "60164 Bear Hug [fne4] — Kingpin A2 : attachee au heros avec 3 grip ; une attaque du heros retire 1 grip a la place (Vulture indemne)",
+        "pourquoi": "AttachToFaceWhenPutIntoPlayInternal(YourHero) ; Uses (3 grip) = base desc ; WhenUnitWouldAttack('You') SetBeInstead + RemoveCountersOn",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60164')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "01167"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hotes": [
+                [
+                    "60164",
+                    "01001a"
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60164",
+                    "grip",
+                    2
+                ]
+            ],
+            "degats": [
+                [
+                    "01167",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60164 Bear Hug [fne4] — un contre du heros retire 1 grip a la place (menace intacte)",
+        "pourquoi": "WhenUnitWouldThwart('You') SetBeInstead + RemoveCountersOn",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.Reveal('60164')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 5)",
+            "Puzzle.Thwart('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60161b"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60164",
+                    "grip",
+                    2
+                ]
+            ],
+            "menace": [
+                [
+                    "60161b",
+                    5
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60164 Bear Hug [fne4] — le dernier grip retire : la carte quitte le jeu (Uses)",
+        "pourquoi": "3 attaques/contres : 3 -> 0, sortie native (has_uses.py)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60164')",
+            "Puzzle.EmptyPlayerDeck()"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')",
+            "Puzzle.Ready('01001a')",
+            "Puzzle.Attack('01001a')",
+            "Puzzle.Ready('01001a')",
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "01167"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60164"
+            ],
+            "degats": [
+                [
+                    "01167",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60164 Bear Hug [fne4] — impossible de passer en alter-ego",
+        "pourquoi": "PlayersCannotChangeForms(You, to_form=AlterEgo) ; declencher_tolerant",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60164')"
+        ],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "declencher_tolerant": [
+            "Puzzle.ChangeForm('01001a')"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "forme": "Hero",
+            "hotes": [
+                [
+                    "60164",
+                    "01001a"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60165 James Wesley [fne4] — revele : attache a Kingpin (+1 SCH) et une carte boost face cachee lui est donnee",
+        "pourquoi": "AttacheAKingpin + WhenThisRevealed -> GiveFacedownBoostCardsInternal(1) ; deck = Advance",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60165')"
+        ],
+        "verifier": "fne4_wesley_revele",
+        "attendu": {
+            "boost_du_vilain": "01186",
+            "vilain": "60159a",
+            "hotes": [
+                [
+                    "60165",
+                    "60159a"
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60159a",
+                    "scheme",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60165 James Wesley [fne4] — Hero Action : Emergency (THWART) defaussee -> Wesley defausse, Kingpin manigance (2 menaces)",
+        "pourquoi": "CostFunc.Discard('YourHandCards', trait=THWART, Event) + DoSchemes ; SCH 2 sans le +1, Advance 0 icone",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.Reveal('60165')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 0)",
+            "Puzzle.Action('60165', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01085",
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60165"
+            ],
+            "defausse": [
+                "01085"
+            ],
+            "menace": [
+                [
+                    "60161b",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60165 James Wesley [fne4] — contre-cas : sans evenement THWART en main, l'action n'est pas offerte",
+        "pourquoi": "le cout n'a pas de cible ; declencher_tolerant",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.Reveal('60165')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "declencher_tolerant": [
+            "Puzzle.Action('60165', 'HeroAction', 0)"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60165"
+            ],
+            "menace": [
+                [
+                    "60161b",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60165 James Wesley [fne4] — Boost : apres l'activation, attache a Kingpin",
+        "pourquoi": "WhenThisBoostAttachTo(CardFinder(name=Kingpin, Villain)) (21170)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60165')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60165",
+                    "60159a"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60166 Kingpin's Cane [fne4] — revele : attache a Kingpin (+1 ATK), tu es etourdi",
+        "pourquoi": "AttacheAKingpin + WhenThisRevealed GiveStatus Stunned",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60166')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60166",
+                    "60159a"
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60159a",
+                    "attack",
+                    1
+                ]
+            ],
+            "statuts": [
+                [
+                    "01001a",
+                    "Stunned"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60166 Kingpin's Cane [fne4] — Kingpin A2 attaque et blesse le heros (2 + 1 = 3) : heros etourdi, canne defaussee",
+        "pourquoi": "AfterUnitAttackAndDamageUnit(Kingpin, Hero) + GiveStatus > 0 -> DiscardAll ; Puzzle.Stun retire le stun de la revelation",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60166')",
+            "Puzzle.Stun('01001a')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60159b')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 3,
+            "statuts": [
+                [
+                    "01001a",
+                    "Stunned"
+                ]
+            ],
+            "hors_jeu": [
+                "60166"
+            ]
+        }
+    },
+    {
+        "nom": "60166 Kingpin's Cane [fne4] — contre-cas : heros robuste, 0 degat, pas d'etourdissement, la canne reste",
+        "pourquoi": "« attacks AND damages » : Tough absorbe, la reponse ne part pas",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60166')",
+            "Puzzle.Stun('01001a')",
+            "Puzzle.Tough('01001a')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60159b')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 0,
+            "statuts_absents": [
+                [
+                    "01001a",
+                    "Stunned"
+                ]
+            ],
+            "en_jeu": [
+                "60166"
+            ]
+        }
+    },
+    {
+        "nom": "60166 Kingpin's Cane [fne4] — Boost : tu es etourdi (2 + 1 icone = 3 degats)",
+        "pourquoi": "WhenCardBecomeBoost : GiveStatus Stunned, pas deja etourdi -> pas de degat en plus",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60166')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "01001a",
+                    "Stunned"
+                ]
+            ],
+            "degats_identite": 3
+        }
+    },
+    {
+        "nom": "60166 Kingpin's Cane [fne4] — Boost, deja etourdi : 1 degat de plus (3 + 1 = 4)",
+        "pourquoi": "« If you were already stunned » lu avant GiveStatus",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Stun('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60166')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 4
+        }
+    },
+    {
+        "nom": "60167 Mountain of Muscle [fne4] — Kingpin A1 : surge, pas d'attache",
+        "pourquoi": "AttachToFaceWhenPutIntoPlay(CardFinder(Kingpin, trait MARTIAL ARTIST), if_cannot_gain_surge)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60167')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "01101"
+            ],
+            "hors_jeu": [
+                "60167"
+            ]
+        }
+    },
+    {
+        "nom": "60167 Mountain of Muscle [fne4] — Kingpin A2 : attachee, 3 degats poses dessus a la place, retaliate 1 sur l'attaque du heros",
+        "pourquoi": "WhenUnitWouldTakeDamage(Villain, porteur) PreventDamage('All') + compteurs 'damage' ; GiveKeywordToAttached(retaliate=1) ; attaque ATK 2 -> 3 + 2 = 5 compteurs, 1 degat de riposte",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.Reveal('60167')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60159b', 3)",
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60159b"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hotes": [
+                [
+                    "60167",
+                    "60159b"
+                ]
+            ],
+            "degats": [
+                [
+                    "60159b",
+                    0
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60167",
+                    "damage",
+                    5
+                ]
+            ],
+            "degats_identite": 1
+        }
+    },
+    {
+        "nom": "60167 Mountain of Muscle [fne4] — 8 degats accumules : defaussee, Kingpin indemne",
+        "pourquoi": "seuil 8 (5 + 3)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.Reveal('60167')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60159b', 5)",
+            "Puzzle.Damage('60159b', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "60167"
+            ],
+            "degats": [
+                [
+                    "60159b",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60168 Vanessa Fisk [fne4] — revele : attache a Kingpin (+1 SCH), tu es desoriente",
+        "pourquoi": "CapacitesDUnePersona + GiveStatus Confused",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60168')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60168",
+                    "60159a"
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60159a",
+                    "scheme",
+                    1
+                ]
+            ],
+            "statuts": [
+                [
+                    "01001a",
+                    "Confused"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60168 Vanessa Fisk [fne4] — Hero Action : Swinging Web Kick (ATTACK) defausse -> Vanessa defaussee, Kingpin A2 attaque (2 degats)",
+        "pourquoi": "CostFunc.Discard('YourHandCards', trait=ATTACK, Event) + DoAttackYou ; heros incline, Advance 0 icone",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60168')",
+            "Puzzle.Confuse('01001a')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60168', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01005",
+            "01088"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60168"
+            ],
+            "defausse": [
+                "01005"
+            ],
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60168 Vanessa Fisk [fne4] — Boost : tu es desoriente (pas de menace en plus)",
+        "pourquoi": "WhenCardBecomeBoost : GiveStatus Confused ; menace du complot inchangee (attaque)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 0)",
+            "Puzzle.Boost('60168')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "statuts": [
+                [
+                    "01001a",
+                    "Confused"
+                ]
+            ],
+            "menace": [
+                [
+                    "60161b",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60168 Vanessa Fisk [fne4] — Boost, deja desoriente : 1 menace sur le complot principal",
+        "pourquoi": "« If you were already confused » -> PlaceThreatOnSchemes('MainScheme', 1)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Confuse('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60161b', 0)",
+            "Puzzle.Boost('60168')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60161b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60169 Black Cat [fne4] — Hero Action [mental] : 4e menace, elle passe sous ton controle comme alliee (1/1, 2 degats consecutifs)",
+        "pourquoi": "PlaceTokensOn 'threat' puis Faces.TreatAsAlly(karma_controlled_ally) ; Genius (BB) paye",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60169')",
+            "Puzzle.Token('60169', 'threat', 3)"
+        ],
+        "declencher": [
+            "Puzzle.Action('60169', 'HeroAction', 0)"
+        ],
+        "verifier": "fne4_black_cat_alliee",
+        "main_exclusive": [
+            "01089"
+        ],
+        "payer_avec": [
+            "01089"
+        ],
+        "attendu": {
+            "joueur": 0,
+            "atk": 1,
+            "thw": 1,
+            "consecutifs": 2
+        }
+    },
+    {
+        "nom": "60169 Black Cat [fne4] — alliee, elle garde Villainous : son attaque recoit 1 carte boost (1 + 3 = 4 sur Diamondback)",
+        "pourquoi": "gabarit fne_black_cat_ally (Villainous 1), Ally herite de HasVillainous (D3) ; deck = Under Fire x3 ; Puzzle.Attack trouve la face echangee par son ancien id",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
+            "Puzzle.PutIntoPlay('60169')",
+            "Puzzle.PutIntoPlay('60170')",
+            "Puzzle.Token('60169', 'threat', 3)"
+        ],
+        "declencher": [
+            "Puzzle.Action('60169', 'HeroAction', 0)",
+            "Puzzle.Attack('60169')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01089"
+        ],
+        "payer_avec": [
+            "01089"
+        ],
+        "cibles": [
+            "60170"
+        ],
+        "attendu": {
+            "degats": [
+                [
+                    "60170",
+                    4
+                ]
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60169 Black Cat [fne4] — contre-cas : 3e menace seulement, elle reste un sbire",
+        "pourquoi": "seuil 4",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60169')",
+            "Puzzle.Token('60169', 'threat', 2)"
+        ],
+        "declencher": [
+            "Puzzle.Action('60169', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01089"
+        ],
+        "payer_avec": [
+            "01089"
+        ],
+        "attendu": {
+            "jetons": [
+                [
+                    "60169",
+                    "threat",
+                    3
+                ]
+            ],
+            "en_jeu": [
+                "60169"
+            ]
+        }
+    },
+    {
+        "nom": "60170 Diamondback [fne4] — quand il t'attaque : 1 degat, puis l'attaque (1 + 1 + 0 = 2)",
+        "pourquoi": "WhenUnitWouldAttack('This') ForcedInterrupt + identity.TakeDamage(1) ; Villainous (base) : Advance 0 icone",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60170')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60170')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60170 Diamondback [fne4] — Boost : 1 degat (2 + 2 icones + 1 = 5)",
+        "pourquoi": "WhenCardBecomeBoost : GetToPlayer().GetIdentity().TakeDamage(1)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60170')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 5
+        }
+    },
+    {
+        "nom": "60171 Spot [fne4] — entre avec 1 spot ; attaque du heros : le pion est retire et les 2 degats renvoyes a l'attaquant",
+        "pourquoi": "ThisEnterPlayWithCounters(1) ; WhenUnitWouldTakeDamage('This', is_from_attack) PreventDamage('All') + DealDamage(attacker)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60171')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60171"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats": [
+                [
+                    "60171",
+                    0
+                ]
+            ],
+            "degats_identite": 2,
+            "compteurs": [
+                [
+                    "60171",
+                    "spot",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60171 Spot [fne4] — sans pion : il subit les 2 degats et gagne 1 spot",
+        "pourquoi": "branche Otherwise : PlaceCountersOn 1",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60171')",
+            "Puzzle.Counter('60171', 'spot', -1)",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60171"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats": [
+                [
+                    "60171",
+                    2
+                ]
+            ],
+            "degats_identite": 0,
+            "compteurs": [
+                [
+                    "60171",
+                    "spot",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60171 Spot [fne4] — contre-cas : des degats hors attaque ne sont pas renvoyes",
+        "pourquoi": "is_from_attack=True : Puzzle.Damage passe",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60171')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60171', 2)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "60171",
+                    2
+                ]
+            ],
+            "degats_identite": 0,
+            "compteurs": [
+                [
+                    "60171",
+                    "spot",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60172 Stilt-Man [fne4] — entre avec 2 stilt : +2 SCH et +2 ATK",
+        "pourquoi": "ThisEnterPlayWithCounters(2) + ThisGainKeyword(pions, attack=1, scheme=1, OnEvent.Counter)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60172')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "60172",
+                    "stilt",
+                    2
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60172",
+                    "attack",
+                    2
+                ],
+                [
+                    "60172",
+                    "scheme",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60172 Stilt-Man [fne4] — 3 degats : 1 stilt retire a la place, +1/+1 seulement",
+        "pourquoi": "WhenUnitWouldTakeDamage('This') PreventDamage('All') + RemoveCountersOn 1 ; rafraichi par OnEvent.Counter",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60172')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60172', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "60172",
+                    0
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60172",
+                    "stilt",
+                    1
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60172",
+                    "attack",
+                    1
+                ],
+                [
+                    "60172",
+                    "scheme",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60172 Stilt-Man [fne4] — sans stilt : les 3 degats passent",
+        "pourquoi": "condition a_un_pion",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60172')",
+            "Puzzle.Counter('60172', 'stilt', -2)"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60172', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "60172",
+                    3
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60172",
+                    "attack",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60173 Kingpin's Influence [fne4] — vaincue : Highway Robbery (nemesis) hors jeu -> trouvee et revelee (3 menaces)",
+        "pourquoi": "WhenSchemeBeDefeated + GetDefeatingPlayer + Find.FindAndReveal(CardFinder(SideScheme, is_nemesis)) ; Hazard = base desc",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60173')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('60173', 1)",
+            "Puzzle.Thwart('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60173"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "01166"
+            ],
+            "menace": [
+                [
+                    "01166",
+                    3
+                ]
+            ],
+            "hors_jeu": [
+                "60173"
+            ],
+            "icones": [
+                [
+                    "Hazard",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60173 Kingpin's Influence [fne4] — vaincue, Highway Robbery deja en jeu : 3 menaces de plus (3 -> 6)",
+        "pourquoi": "PlaceThreatOnSchemes([nemesis], 3)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Remove('01167')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Reveal('01166')",
+            "Puzzle.PutIntoPlay('60173')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('01166', 3)",
+            "Puzzle.SetThreat('60173', 1)",
+            "Puzzle.Thwart('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60173"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "01166",
+                    6
+                ]
+            ],
+            "hors_jeu": [
+                "60173"
+            ]
+        }
+    },
+    {
+        "nom": "60173 Kingpin's Influence [fne4] — en jeu : 2[per_hero] menaces et 1 icone Hazard",
+        "pourquoi": "StartingThreat 2* et Hazard 1 (base desc)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60173')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "menace": [
+                [
+                    "60173",
+                    2
+                ]
+            ],
+            "icones": [
+                [
+                    "Hazard",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60174 Organized Crime [fne4] — chaque sbire a +2 PV (Diamondback 8, Vulture 6)",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis(Minion, health=2)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60174')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60170')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "pv_max": [
+                [
+                    "60170",
+                    8
+                ],
+                [
+                    "01167",
+                    6
+                ]
+            ],
+            "menace": [
+                [
+                    "60174",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60175 Bag of Tricks [fne4] — revelee : une carte au hasard du set nemesis mis de cote est revelee (4 -> 3, Sweeping Swoop en defausse)",
+        "pourquoi": "CartesNemesisMisesDeCote + Rand.RandomChoice + Reveal ; apres la mise en place il reste 01166, 01168 x2, 01169 ; sous graine 42 c'est 01168 (elle porte Surge elle-meme : pas de temoin de non-surge possible)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60175')"
+        ],
+        "verifier": "fne4_reserve_nemesis",
+        "attendu": {
+            "taille": 3,
+            "defausse_rencontre": [
+                "01168"
+            ]
+        }
+    },
+    {
+        "nom": "60175 Bag of Tricks [fne4] — set nemesis vide : surge",
+        "pourquoi": "ThisCardGainSurge ; les 4 cartes de la reserve retirees par Puzzle.Remove (fouille set_aside_nemesis_sets depuis le 18/09/2026, D4) ; temoin = sbire du dessus",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Remove('01166')",
+            "Puzzle.Remove('01168')",
+            "Puzzle.Remove('01168')",
+            "Puzzle.Remove('01169')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60175')"
+        ],
+        "verifier": "fne4_reserve_nemesis",
+        "attendu": {
+            "taille": 0,
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60175 Bag of Tricks [fne4] — Boost : une carte du set nemesis donnee en boost supplementaire (4 -> 3, au moins 2 degats)",
+        "pourquoi": "CanBoost.GiveBoostCard(carte) pendant ResolveBoostCards ; Bag 0 icone, la carte tiree en ajoute 0 a 3",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60175')"
+        ],
+        "verifier": "fne4_reserve_nemesis",
+        "attendu": {
+            "taille": 3,
+            "degats_identite_min": 2
+        }
+    },
+    {
+        "nom": "60176 Unrelenting Hate [fne4] — revelee : Vulture (en jeu) s'active contre toi (3 degats)",
+        "pourquoi": "SbireNemesisEnJeu + DoActivate ; heros incline",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60176')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 3
+        }
+    },
+    {
+        "nom": "60176 Unrelenting Hate [fne4] — Vulture en defausse : trouve et revele",
+        "pourquoi": "Find.FindAndReveal(CardFinder(Minion, is_nemesis))",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.MoveTo('01167', 'EncounterDiscardPile')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60176')"
+        ],
+        "verifier": "fne4_sbires_en_jeu",
+        "attendu": {
+            "en_jeu": [
+                "01167"
+            ],
+            "underlings": 0
+        }
+    },
+    {
+        "nom": "60176 Unrelenting Hate [fne4] — Vulture retire du jeu : un UNDERLING est trouve et revele",
+        "pourquoi": "Find exclut la zone retiree -> TrouverEtRevelerUnderling",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('01167')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60176')"
+        ],
+        "verifier": "fne4_sbires_en_jeu",
+        "attendu": {
+            "hors_jeu": [
+                "01167"
+            ],
+            "underlings_min": 1
+        }
+    },
+    {
+        "nom": "60176 Unrelenting Hate [fne4] — Boost : l'attaque gagne overkill (2 + 1 = 3 sur Spider-Woman 2 PV : 1 passe)",
+        "pourquoi": "would_atk_message.GainOverKill ; Unrelenting Hate semee au sommet du deck = la carte boost de l'attaque ; Spider-Woman defend (Puzzle.Attack(defender))",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60159a')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01011', under_control=True)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('60176')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60159b', '01011')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 1,
+            "hors_jeu": [
+                "01011"
+            ]
+        }
+    },
+    # ---- fin du bloc 4 fne ----
+    # ------------------------------------------------------------------------
+    # Pack officiel « fne » — bloc 5 : campagne (coordinateur, 18/09/2026). Filtre : "[fne5]". Genere par scratchpad/b3/gen_cas_fne_5.py.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "60205a Art Museum Heist (Completed) [fne5] — carnet : affaire completee -> l'environnement entre en jeu, chaque identite est robuste",
+        "pourquoi": "MettreLesEnvironnements (WhenCampaignSetup) + AfterGameSetup : GiveStatus Tough",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Completed Scenarios": "art_museum_heist"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60205a"
+            ],
+            "statuts": [
+                [
+                    "01001b",
+                    "Tough"
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "60205b Art Museum Heist (Failed) [fne5] — carnet : affaire echouee -> face Failed, le joueur choisit etourdi (premiere option)",
+        "pourquoi": "MettreLesEnvironnements face b + ChooseAbilities",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Failed Scenarios": "art_museum_heist"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60205b"
+            ],
+            "hors_jeu": [
+                "60205a"
+            ],
+            "statuts": [
+                [
+                    "01001b",
+                    "Stunned"
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "60205b Art Museum Heist (Failed) [fne5] (expert) — etourdi ET desoriente",
+        "pourquoi": "Worlds.IsExpert -> les deux statuts",
+        "scenario": "art_museum_heist_hammerhead_expert",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Failed Scenarios": "art_museum_heist"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60205b"
+            ],
+            "statuts": [
+                [
+                    "01001b",
+                    "Stunned"
+                ],
+                [
+                    "01001b",
+                    "Confused"
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Marques de progression [fne5] — 2 marques sur Art Museum Heist : +2 menaces sur le complot a la mise en place (1 + 2)",
+        "pourquoi": "MarquesDeLAffaire : 1 menace par marque (2 en expert)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Progress: art_museum_heist": "2"
+        },
+        "attendu": {
+            "menace": [
+                [
+                    "60121b",
+                    3
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Marques de progression [fne5] (expert) — 2 marques : +4 (1 + 4)",
+        "pourquoi": "2 menaces par marque en expert",
+        "scenario": "art_museum_heist_hammerhead_expert",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Progress: art_museum_heist": "2"
+        },
+        "attendu": {
+            "menace": [
+                [
+                    "60121b",
+                    5
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "60210a Typhoid Mary (alliee) [fne5] — carnet : Trust Established sans Mary Defeated -> l'alliee entre en jeu sous ton controle",
+        "pourquoi": "MaryWalker (WhenCampaignSetup) : GenerateCard('60210a,60210b') + PutIntoPlay(under_control)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Trust Established?": "1"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60210a"
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "60210a Typhoid Mary (alliee) [fne5] — contre-cas : Mary Defeated coche -> pas d'alliee",
+        "pourquoi": "condition du livret, etape 13",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Trust Established?": "1",
+            "Mary Defeated?": "1"
+        },
+        "attendu": {
+            "hors_jeu": [
+                "60210a"
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "60210a Typhoid Mary (alliee) [fne5] — apres que tu reveles un sbire : soignee et retournee (Bloody Mary)",
+        "pourquoi": "WhenCardRevealed(Minion) par son controleur + HealHealth('All') + card.Flip",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Damage('60210a', 2)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60182')"
+        ],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Trust Established?": "1"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60210b"
+            ],
+            "hors_jeu": [
+                "60210a"
+            ],
+            "degats": [
+                [
+                    "60210b",
+                    0
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Cartes retirees de la campagne [fne5] — carnet : Black Cat retiree -> hors du deck de Spider-Man (retiree du jeu)",
+        "pourquoi": "RetirerLesCartesRetirees : titre du carnet -> Faces.RemoveAllFromGame",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne_retirees",
+        "carnet": {
+            "Allies removed from the campaign": "Black Cat"
+        },
+        "attendu": {
+            "retirees": [
+                "01002"
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "60206a The Getaway (Completed) [fne5] — en jeu ; apres les mulligans, chercher une amelioration (may) : la main compte 7 cartes",
+        "pourquoi": "ChercherEnMain(Upgrade) : SearchForCard(may) + AddToHand",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Completed Scenarios": "the_getaway"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60206a"
+            ],
+            "taille_main": 7,
+            "en_main": [
+                "01008"
+            ]
+        },
+        "cibles": [
+            "01008"
+        ]
+    },
+    {
+        "nom": "60207b Protection Racket (Failed) [fne5] — en jeu ; chaque joueur defausse 1 carte de sa main (6 -> 5)",
+        "pourquoi": "DefausserDeLaMain(1)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Failed Scenarios": "protection_racket"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60207b"
+            ],
+            "taille_main": 5
+        }
+    },
+    {
+        "nom": "60209b Stop the Presses! (Failed) [fne5] — en jeu ; 1 carte rencontre distribuee face cachee",
+        "pourquoi": "DealEncounterCards(1)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "ares_cartes_rencontre_distribuees",
+        "carnet": {
+            "Failed Scenarios": "stop_the_presses"
+        },
+        "attendu": {
+            "distribuees": 1,
+            "en_jeu": [
+                "60209b"
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "60209a Stop the Presses! (Completed) [fne5] — en jeu ; chaque joueur met un soutien DAILY BUGLE en jeu sous son controle",
+        "pourquoi": "GenerateCard des 4 soutiens moins les retires, choix, PutIntoPlay(under_control)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Completed Scenarios": "stop_the_presses"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60209a"
+            ],
+            "en_jeu_trait": [
+                [
+                    "DAILY BUGLE",
+                    1
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "60208b The Raft Breakout (Failed) [fne5] — en jeu ; les six prisonniers du Raft sont meles au deck rencontre",
+        "pourquoi": "GenerateCard + ShuffleAllTo('EncounterDeck')",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Failed Scenarios": "the_raft_breakout"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60208b"
+            ],
+            "dans_deck_rencontre": [
+                "60144",
+                "60149"
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Environnements multiples [fne5] — deux affaires completees et une echouee : trois environnements en jeu sur la bonne face",
+        "pourquoi": "MettreLesEnvironnements boucle sur le carnet",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Completed Scenarios": "the_getaway;the_raft_breakout",
+            "Failed Scenarios": "protection_racket"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60206a",
+                "60208a",
+                "60207b"
+            ],
+            "hors_jeu": [
+                "60206b",
+                "60208b",
+                "60207a",
+                "60205a",
+                "60209a"
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "The Getaway (campagne) [fne5] — carnet : Art Museum Heist completee -> 60205a entre en jeu sur The Getaway aussi",
+        "pourquoi": "CapacitesDeCampagne('the_getaway') sur 60128a : MettreLesEnvironnements",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Completed Scenarios": "art_museum_heist"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60205a"
+            ],
+            "statuts": [
+                [
+                    "01001b",
+                    "Tough"
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "The Getaway (campagne) [fne5] — 2 marques : Jackknifed Tanker Truck est revele avec 1 menace de plus (2 + Hinder 1 + 1 marque = 4)",
+        "pourquoi": "MarquesDeLAffaire('the_getaway') : FindAndReveal + PlaceThreat",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Progress: the_getaway": "2"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60131"
+            ],
+            "menace": [
+                [
+                    "60131",
+                    4
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "The Raft Breakout (campagne) [fne5] — 2 marques : chaque prisonnier revele au Setup est robuste et recoit 1 carte boost",
+        "pourquoi": "MarquesDeLAffaire('the_raft_breakout') : GiveStatus Tough + GiveFacedownBoostCards",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne5_trait",
+        "carnet": {
+            "Progress: the_raft_breakout": "2"
+        },
+        "attendu": {
+            "trait": "PRISONER",
+            "type": "Minion",
+            "statut": "Tough",
+            "boost": 1
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Stop the Presses! (campagne) [fne5] — 1 marque : le soutien DAILY BUGLE du joueur perd 1 compteur stamina (3 -> 2)",
+        "pourquoi": "MarquesDeLAffaire('stop_the_presses') : RemoveCountersOn stamina",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne5_trait",
+        "carnet": {
+            "Progress: stop_the_presses": "1"
+        },
+        "attendu": {
+            "trait": "DAILY BUGLE",
+            "type": "Support",
+            "compteur": [
+                "stamina",
+                2
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Protection Racket (campagne, 2 joueurs) [fne5] — deux complots 1A, mais UN SEUL environnement 60205a entre en jeu",
+        "pourquoi": "garde _premier_complot sur CapacitesDeCampagne('protection_racket')",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne5_trait",
+        "carnet": {
+            "Completed Scenarios": "art_museum_heist"
+        },
+        "attendu": {
+            "exemplaires": [
+                "60205a",
+                1
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ],
+        "heros2": "black_panther"
+    },
+    {
+        "nom": "Protection Racket (campagne) [fne5] — 1 marque : 1 menace de plus sur le complot du joueur",
+        "pourquoi": "MarquesDeLAffaire('protection_racket') : PlaceThreatOnSchemes sur chaque complot",
+        "scenario": "protection_racket_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne3p_racket",
+        "carnet": {
+            "Progress: protection_racket": "1"
+        },
+        "attendu": {
+            "menace_joueur": 1
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Kingpin (campagne) [fne5] — 3 affaires completees : les trois environnements en jeu, chaque sbire en jeu robuste",
+        "pourquoi": "CapacitesDeCampagneKingpin sur 60161a : MettreLesEnvironnements + MarquesKingpin(3)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne5_trait",
+        "carnet": {
+            "Completed Scenarios": "art_museum_heist;the_getaway;protection_racket"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60205a",
+                "60206a",
+                "60207a"
+            ],
+            "trait": "",
+            "type": "Minion",
+            "statut": "Tough"
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Kingpin (campagne) [fne5] — 4 affaires completees : James Wesley est trouve et revele (attache a Kingpin)",
+        "pourquoi": "MarquesKingpin(4) : Find.FindAndReveal(James Wesley)",
+        "scenario": "kingpin_fne",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Completed Scenarios": "art_museum_heist;the_getaway;protection_racket;the_raft_breakout"
+        },
+        "attendu": {
+            "hotes": [
+                [
+                    "60165",
+                    "60159a"
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "60206b The Getaway (Failed) [fne5] — en jeu ; chaque joueur revele un attachement du deck rencontre a la mise en place (1 oeuvre au Setup + 1 revelee + 1 par l'Art Thief qu'elle appelle = 3 attachements)",
+        "pourquoi": "Find.FindAndReveal(Attachment) par joueur",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne5_trait",
+        "carnet": {
+            "Failed Scenarios": "the_getaway"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60206b"
+            ],
+            "trait": "",
+            "type": "Attachment",
+            "nombre": 3
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "60207a Protection Racket (Completed) [fne5] — en jeu ; apres les mulligans, chercher un soutien (may) : Aunt May arrive en main",
+        "pourquoi": "ChercherEnMain(Support)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Completed Scenarios": "protection_racket"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60207a"
+            ],
+            "taille_main": 7,
+            "en_main": [
+                "01006"
+            ]
+        },
+        "cibles": [
+            "01006"
+        ]
+    },
+    {
+        "nom": "60208a The Raft Breakout (Completed) [fne5] — en jeu ; apres les mulligans, chercher un allie (may) : Black Cat arrive en main",
+        "pourquoi": "ChercherEnMain(Ally)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "carnet": {
+            "Completed Scenarios": "the_raft_breakout"
+        },
+        "attendu": {
+            "en_jeu": [
+                "60208a"
+            ],
+            "taille_main": 7,
+            "en_main": [
+                "01002"
+            ]
+        },
+        "cibles": [
+            "01002"
+        ]
+    },
+    {
+        "nom": "Carnet sortant [fne5] — victoire avec Disturbed Psyche a 2 jetons et Black Cat retiree du jeu : Completed + Trust Established? + Allies removed",
+        "pourquoi": "CollectFNE : Completed Scenarios, Trust Established?, Allies removed from the campaign",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Token('60112', 'threat', 2)",
+            "Puzzle.Remove('01002')"
+        ],
+        "verifier": "fne5_collect",
+        "carnet": {},
+        "attendu": {
+            "collect": "art_museum_heist",
+            "cles": {
+                "Completed Scenarios": "art_museum_heist",
+                "Trust Established?": "1",
+                "Allies removed from the campaign": "Black Cat"
+            }
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    # ---- fin du bloc 5 fne ----
+    # ------------------------------------------------------------------------
+    # 45017 Suit Up (pack aoa) — reecrite le 18/09/2026. Genere par scratchpad/b3/gen_cas_45017.py.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "45017 Suit Up [aoa] — un allie ET une amelioration attachable a CET allie arrivent en main ; l'amelioration d'identite est ecartee",
+        "pourquoi": "deux recherches successives (Search.PlayerCard, la seconde avec CardFinder(canbe_attach_to=<allie>)) : 01074 Inspired s'attache a un allie, 01065 Heroic Intuition s'attache a l'identite et ne doit jamais etre proposee",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.CreatePlayerDeck('01067', '01074', '01065')"
+        ],
+        "main_exclusive": [
+            "45017",
+            "01088"
+        ],
+        "jouer": [
+            "45017"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_main": [
+                "01067",
+                "01074"
+            ],
+            "taille_main": 2
+        }
+    },
+    {
+        "nom": "45017 Suit Up [aoa] — contre-cas : aucune amelioration attachable a un allie, rien n'entre en main",
+        "pourquoi": "« for an ally AND an upgrade » : les deux ou aucun. Les allies sans amelioration attachable ne sont meme pas proposes, sinon le joueur choisit un allie et perd sa carte pour rien",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.CreatePlayerDeck('01067', '01065', '01065')"
+        ],
+        "main_exclusive": [
+            "45017",
+            "01088"
+        ],
+        "jouer": [
+            "45017"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "taille_main": 0
+        }
+    },
+    {
+        "nom": "45017 Suit Up [aoa] — Sidekick (45015, « identity-specific ally ») n'est prise qu'avec l'allie signature : Black Cat, pas Maria Hill",
+        "pourquoi": "le filtre est la VRAIE regle d'attache (Upgrade.CanAttachTo relit le selecteur de la capacite Play) : 45015 ne s'attache qu'a un allie de classe Hero, donc Black Cat (01002) et jamais Maria Hill (01067)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.CreatePlayerDeck('01002', '01067', '45015')"
+        ],
+        "main_exclusive": [
+            "45017",
+            "01088"
+        ],
+        "jouer": [
+            "45017"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_main": [
+                "01002",
+                "45015"
+            ],
+            "taille_main": 2
+        }
+    },
+    # ---- fin des cas 45017 ----
+    # ------------------------------------------------------------------------
+    # Fin de scenario de campagne (fne) — 19/09/2026. Filtre : "[fnefin]".
+    # Genere par .planning/todos/generateurs-fne/gen_cas_fin_partie.py.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "Fin de scenario [fnefin] — victoire sur Art Museum Heist : le carnet sortant coche l'affaire et estampille le scenario",
+        "campagne": True,
+        "pourquoi": "Puzzle.Win -> Worlds.SetGameOver -> WhenGameOver -> CollectFNE : « Completed Scenarios » + estampille lue par l'ecran de campagne",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Win()"
+        ],
+        "verifier": "fnefin_carnet_sortant",
+        "attendu": {
+            "gagnee": True,
+            "scenario": "art_museum_heist",
+            "cles": {
+                "Completed Scenarios": "art_museum_heist"
+            },
+            "cles_presentes": [
+                "Player 1 Remaining hit points",
+                "Player 1 Identity"
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Fin de scenario [fnefin] — DEFAITE sur Art Museum Heist : rien n'est coche, mais l'estampille et les PV restent",
+        "campagne": True,
+        "pourquoi": "Puzzle.Lose : le livret ne reporte rien sur une defaite, l'ecran doit pouvoir le distinguer",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Lose()"
+        ],
+        "verifier": "fnefin_carnet_sortant",
+        "attendu": {
+            "gagnee": False,
+            "scenario": "art_museum_heist",
+            "cles_absentes": [
+                "Completed Scenarios"
+            ],
+            "cles_presentes": [
+                "Player 1 Remaining hit points"
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Fin de scenario [fnefin] — victoire sur Stop the Presses! : l'estampille est nettoyee (« stop_the_presses », pas « stop_the_presses! »)",
+        "campagne": True,
+        "pourquoi": "correctif du 18/09/2026 : le point d'exclamation du set_name ne correspondait a aucun id de scenario",
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Win()"
+        ],
+        "verifier": "fnefin_carnet_sortant",
+        "attendu": {
+            "gagnee": True,
+            "scenario": "stop_the_presses",
+            "cles": {
+                "Completed Scenarios": "stop_the_presses"
+            }
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "Fin de scenario [fnefin] — victoire alors qu'une affaire est deja completee : les deux figurent au carnet",
+        "campagne": True,
+        "pourquoi": "CollectFNE ajoute a la liste existante au lieu de l'ecraser",
+        "scenario": "the_getaway_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Win()"
+        ],
+        "verifier": "fnefin_carnet_sortant",
+        "attendu": {
+            "gagnee": True,
+            "scenario": "the_getaway",
+            "cles": {
+                "Completed Scenarios": "protection_racket;the_getaway"
+            }
+        },
+        "main_exclusive": [
+            "01088"
+        ],
+        "carnet": {
+            "Completed Scenarios": "protection_racket"
+        }
+    },
+    {
+        "nom": "Fin de scenario [fnefin] — victoire avec Black Cat retiree du jeu : elle rejoint « Allies removed from the campaign »",
+        "campagne": True,
+        "pourquoi": "CollectFNE relit area_removed et le drapeau paper.is_unique (l'etoile n'existe plus a l'execution)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('01002', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Remove('01002')",
+            "Puzzle.Win()"
+        ],
+        "verifier": "fnefin_carnet_sortant",
+        "attendu": {
+            "gagnee": True,
+            "cles": {
+                "Allies removed from the campaign": "Black Cat"
+            }
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    # ---- fin des cas fnefin ----
+    # ------------------------------------------------------------------------
+    # Pack officiel « fne » — bloc 2 : Bullseye, Electro, Purple Man, Typhoid Mary
+    # (18/09/2026). Filtre : "[fne2]". Genere par scratchpad/b2/gen_cas_fne_b2.py.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "60065 Bullseye I [fne2] — When Revealed : la colonne d'adamantium est mise de cote a la mise en place",
+        "pourquoi": "SetupCards.SetAsideCards(name=...) depuis le deck ; le stade II la « Find »",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne_mis_de_cote_scenario",
+        "attendu": {
+            "carte": "60068a"
+        }
+    },
+    {
+        "nom": "60065 Bullseye I [fne2] — chaque carte boost gagne une icone : 1 ATK + (0+1) = 2",
+        "pourquoi": "IncreaseBoostIconsOnEncounterCard borne a la pile de boost de Bullseye (15024) ; deck = Advance x3 (0 icone)",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60065')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60065 Bullseye I [fne2] — son attaque gagne ranged : la riposte de Black Panther ne le touche pas",
+        "pourquoi": "WhenUnitWouldAttack ForcedInterrupt + GainRanged",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "black_panther",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01040b')",
+            "Puzzle.Exhaust('01040a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60065')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "60065",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60070 Deadly Sai [fne2] — Bullseye perd ranged (la riposte le touche) et gagne piercing (+2 ATK)",
+        "pourquoi": "DeadlySaiAttache lu par la capacite etoilee ; UnitAttackGainKeyword(piercing) ; Retaliate 1 de Black Panther ; 1+2+1 = 4 degats",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "black_panther",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60070')",
+            "Puzzle.ChangeForm('01040b')",
+            "Puzzle.Tough('01040a')",
+            "Puzzle.Exhaust('01040a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60065')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "60065",
+                    1
+                ]
+            ],
+            "degats_identite": 4,
+            "statuts_absents": [
+                [
+                    "01040a",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60066 Bullseye II [fne2] (expert) — When Revealed : la colonne est trouvee et attachee a la mise en place",
+        "pourquoi": "Find.FindAndAttachTo (find.py:74) fouille le deck",
+        "scenario": "art_museum_heist_bullseye_expert",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60068a",
+                    "60066"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60067 Bullseye III [fne2] (expert) — When Revealed : Deranged Bloodlust est trouvee et revelee",
+        "pourquoi": "Find.FindAndReveal ; la colonne (attachee par le stade II) est retiree, puis le stade II (16 PV) est abattu d'un coup",
+        "scenario": "art_museum_heist_bullseye_expert",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Remove('60068a')",
+            "Puzzle.Damage('60066', 40)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60067",
+                "60073"
+            ]
+        }
+    },
+    {
+        "nom": "60068a Adamantium-Laced Spine [fne2] — 5 degats : 3 passent, 2 sont poses sur la colonne",
+        "pourquoi": "WhenUnitWouldTakeDamage(Bullseye) : PreventDamage(total-3) + compteurs 'damage'",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60068a,60068b')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60065', 5)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "60065",
+                    3
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60068a",
+                    "damage",
+                    2
+                ]
+            ],
+            "hotes": [
+                [
+                    "60068a",
+                    "60065"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60068a Adamantium-Laced Spine [fne2] — a 6 degats poses, la carte se retourne (Damaged Spine) et reste attachee",
+        "pourquoi": "RetournerLaColonne quand le compteur atteint 6 (5 poses + 1 evite) ; PutIntoPlay('60068a,60068b') : la copie mise de cote n'est pas trouvee par le harnais, qui CREE la carte, et une carte creee sur un seul id n'a pas de face arriere",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60068a,60068b')",
+            "Puzzle.Counter('60068a', 'damage', 5)"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60065', 4)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60068b"
+            ],
+            "hors_jeu": [
+                "60068a"
+            ],
+            "hotes": [
+                [
+                    "60068b",
+                    "60065"
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60068b",
+                    "damage",
+                    6
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60068b Damaged Spine [fne2] — apres une manigance de Bullseye, 3 degats sont retires (6 -> 3)",
+        "pourquoi": "AfterUnitSchemeEnd(Bullseye) + RemoveCountersOn ; la face B est obtenue par le chemin du jeu (6 degats)",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60068a,60068b')",
+            "Puzzle.Counter('60068a', 'damage', 5)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60065', 4)",
+            "Puzzle.Scheme('60065')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "60068b",
+                    "damage",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60068b Damaged Spine [fne2] — plus aucun degat : la carte se retourne (Adamantium-Laced Spine)",
+        "pourquoi": "6 -> 3 -> 0 puis card.Flip, et la face A se raccroche",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60068a,60068b')",
+            "Puzzle.Counter('60068a', 'damage', 5)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60065', 4)",
+            "Puzzle.Scheme('60065')",
+            "Puzzle.Scheme('60065')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60068a"
+            ],
+            "hors_jeu": [
+                "60068b"
+            ],
+            "hotes": [
+                [
+                    "60068a",
+                    "60065"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60069 Raise the Stakes [fne2] — 1 carte boost de plus ; personne n'est vaincu : la carte retourne dans le deck",
+        "pourquoi": "GiveAdditionalBoostCardForThisActivation + RunAt.AfterEnemyActivationEnd + ShuffleAllTo ; deck = Under Fire x3 : 2 x (3+1) + 1 = 9",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
+            "Puzzle.PutIntoPlay('60069')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60065')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 9,
+            "hors_jeu": [
+                "60069"
+            ],
+            "dans_deck_rencontre": [
+                "60069"
+            ]
+        }
+    },
+    {
+        "nom": "60069 Raise the Stakes [fne2] — l'attaque vainc un allie defenseur : l'allie ET la carte sont retires du jeu",
+        "pourquoi": "temp WhenUnitBeDefeated borne a l'attaque (24023) puis RemoveAllFromGame",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
+            "Puzzle.PutIntoPlay('60069')",
+            "Puzzle.PutIntoPlay('01011', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60065', '01011')"
+        ],
+        "verifier": "fne_retirees",
+        "attendu": {
+            "retirees": [
+                "01011",
+                "60069"
+            ]
+        }
+    },
+    {
+        "nom": "60070 Deadly Sai [fne2] — Hero Response apres une defense du heros : 2 ressources differentes -> defaussee",
+        "pourquoi": "AfterUnitDefendAgainstAttack('You', attacker=Bullseye) + Cost('2', different_type=True) (05002) ; main = Energy (YY) + Genius (BB), payee : main = 1 (les deux cartes payees, + 1 piochee par Spider-Sense a l'attaque ; sans module la carte n'entre jamais en jeu et la main reste a 3)",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('60070')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60065', '01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088",
+            "01089"
+        ],
+        "payer_avec": [
+            "01088",
+            "01089"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60070"
+            ],
+            "taille_main": 1
+        }
+    },
+    {
+        "nom": "60071 Incessant Pursuit [fne2] — s'attache a un allie ; le vilain attaque cet allie a la place du joueur",
+        "pourquoi": "AttachToFaceWhenPutIntoPlay(Ally sans Incessant Pursuit) + WhenUnitWouldAttack(Villain) SetBeInstead + BasicAttack([allie], overkill) ; 1 + 1 = 2 degats sur Hellcat (3 PV)",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('01020', under_control=True)",
+            "Puzzle.Reveal('60071')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60065')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60071",
+                    "01020"
+                ]
+            ],
+            "degats": [
+                [
+                    "01020",
+                    2
+                ]
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60071 Incessant Pursuit [fne2] — l'allie attache est vaincu : il est retire du jeu",
+        "pourquoi": "if_this_defeat_unit -> RemoveAllFromGame ; Spider-Woman 2 PV",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('01011', under_control=True)",
+            "Puzzle.Reveal('60071')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60065')"
+        ],
+        "verifier": "fne_retirees",
+        "attendu": {
+            "retirees": [
+                "01011"
+            ]
+        }
+    },
+    {
+        "nom": "60072 Lady Bullseye [fne2] — attaque non defendue : Villainous + 1 carte de plus (1 + 3 + 3 = 7)",
+        "pourquoi": "WhenUnitBeingAttack(has_defender=False) -> GiveAdditionalBoostCardForThisActivation ; deck = Under Fire x4",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193', '01193')",
+            "Puzzle.PutIntoPlay('60072')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60072')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 7
+        }
+    },
+    {
+        "nom": "60072 Lady Bullseye [fne2] — contre-cas defendue par le heros : une seule carte boost (1 + 3 - DEF 3 = 1)",
+        "pourquoi": "la condition has_defender=False exclut l'attaque defendue",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193', '01193')",
+            "Puzzle.PutIntoPlay('60072')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60072', '01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 1
+        }
+    },
+    {
+        "nom": "60073 Deranged Bloodlust [fne2] — When Revealed : 4 + stade de Bullseye (1) = 5 menaces",
+        "pourquoi": "PlaceThreatOnSchemes([this], printed_stage) ; aléa = base desc",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Reveal('60073')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "menace": [
+                [
+                    "60073",
+                    5
+                ]
+            ],
+            "icones": [
+                [
+                    "Hazard",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60073 Deranged Bloodlust [fne2] — Boost : apres l'activation, la carte est revelee",
+        "pourquoi": "WhenCardBecomeBoost + message.AfterThisActivation + Reveal (07009)",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60073')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60073"
+            ]
+        }
+    },
+    {
+        "nom": "60074 Everything is a Weapon [fne2] (Alter-Ego) — 2 degats indirects",
+        "pourquoi": "TakeIndirectDamage(2) ; la partie commence en alter-ego",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Reveal('60074')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60074 Everything is a Weapon [fne2] (Hero) — premiere branche : Bullseye s'active contre toi (1 + 1 = 2)",
+        "pourquoi": "ChooseAbilities, le pilote prend la premiere branche : DoActivate",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60074')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60074 Everything is a Weapon [fne2] (Hero) — seconde branche : un allie que tu controles est retire du jeu",
+        "pourquoi": "preferer_option sur le libelle de la branche ; Hellcat retiree",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60074')"
+        ],
+        "verifier": "fne_retirees",
+        "preferer_option": "Remove an ally",
+        "attendu": {
+            "retirees": [
+                "01020"
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60074 Everything is a Weapon [fne2] — Boost pendant l'attaque de Bullseye : 1 carte de plus et piercing (1 + 2 + 1 = 4, robustesse sautee)",
+        "pourquoi": "GiveBoostCardForThisActivation(Enemy, 1) (11041) + would_atk_message.GainPiercing ; icones : 60074 (1+1), Advance (0+1)",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Tough('01001a')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60074')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 4,
+            "statuts_absents": [
+                [
+                    "01001a",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60075 Unerring Desire [fne2] — premiere branche : donnee au vilain comme carte boost face cachee",
+        "pourquoi": "villain.GiveBoostCard(this) (56091)",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Reveal('60075')"
+        ],
+        "verifier": "fne_boost_du_vilain",
+        "attendu": {
+            "boost_du_vilain": "60075",
+            "vilain": "60065"
+        }
+    },
+    {
+        "nom": "60075 Unerring Desire [fne2] — seconde branche : un soutien PERSONA que tu controles est retire du jeu",
+        "pourquoi": "SetTarget(CardFinder(Support, PERSONA), from_where=YouControlCards) ; Aunt May",
+        "scenario": "art_museum_heist_bullseye",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('01006', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60075')"
+        ],
+        "verifier": "fne_retirees",
+        "preferer_option": "Remove a Persona",
+        "attendu": {
+            "retirees": [
+                "01006"
+            ]
+        }
+    },
+    {
+        "nom": "60076 Electro I [fne2] — When Revealed : Electric Charge attachee avec 2[per_hero] charges a la mise en place",
+        "pourquoi": "Find.FindAndAttachTo + PlaceCountersOn('2*')",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60079",
+                    "60076"
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60076 Electro I [fne2] — apres une manigance : +1 charge (2 -> 3)",
+        "pourquoi": "AfterUnitSchemeEnd ForcedResponse ; oeuvres retirees (Impossible Object desoriente le vilain)",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60076')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60078 Electro III [fne2] (expert) — a la revelation +3[per_hero] charges, puis +2 par manigance (2 + 3 + 2 = 7)",
+        "pourquoi": "stade II (17 PV) abattu d'un coup ; CapacitesDElectro(2, '3*')",
+        "scenario": "art_museum_heist_electro_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60077', 40)",
+            "Puzzle.Confuse('60078')",
+            "Puzzle.Scheme('60078')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    7
+                ]
+            ],
+            "icones": [
+                [
+                    "Hazard",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60079 Electric Charge [fne2] — quand Electro attaque : 1 charge depensee, 1 carte boost de plus et overkill (1 + 3 + 3 = 7)",
+        "pourquoi": "WhenUnitWouldAttack(Electro) + CostFunc.Counter('This', 1, 'charge') ; deck = Under Fire x3",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60076')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 7,
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60079 Electric Charge [fne2] — contre-cas sans charge : une seule carte boost (1 + 3 = 4)",
+        "pourquoi": "le cout n'est pas payable, l'interruption ne part pas",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Counter('60079', 'charge', -2)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60076')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 4,
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60079 Electric Charge [fne2] — Hero Action [energy] : retire 1 charge",
+        "pourquoi": "WhenInYourPlayTurn(HeroAction).SetCost(Cost('Y'))",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60079', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "payer_avec": [
+            "01088"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60079 Electric Charge [fne2] — Hero Action 2 ressources quelconques : retire 1 charge",
+        "pourquoi": "seconde capacite, Cost('2') ; main = Backflip (R) + Enhanced Spider-Sense (B)",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60079', 'HeroAction', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01003",
+            "01004"
+        ],
+        "payer_avec": [
+            "01003",
+            "01004"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60080 Drained of Power [fne2] — When Revealed : attachee a l'identite, les ameliorations sont inclinees",
+        "pourquoi": "AttachToFaceWhenPutIntoPlay('YourIdentity') + ExhaustAll ; Web-Shooter",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01008', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60080')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60080",
+                    "01001a"
+                ]
+            ],
+            "exhausted": [
+                "01008"
+            ],
+            "compteurs": [
+                [
+                    "60080",
+                    "drain",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60080 Drained of Power [fne2] — une amelioration se redresse en payant [energy] : 1 drain de moins",
+        "pourquoi": "WhenCardWouldReady(Upgrade, control_by='You') + branche payante",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyPlayerDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01008', under_control=True)",
+            "Puzzle.Reveal('60080')"
+        ],
+        "declencher": [
+            "Puzzle.Ready('01008')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "payer_avec": [
+            "01088"
+        ],
+        "attendu": {
+            "pret": [
+                "01008"
+            ],
+            "compteurs": [
+                [
+                    "60080",
+                    "drain",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60080 Drained of Power [fne2] — sans ressource : l'amelioration ne se redresse pas",
+        "pourquoi": "Otherwise -> SetBeInstead ; main = Backflip (R) seule",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyPlayerDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01008', under_control=True)",
+            "Puzzle.Reveal('60080')"
+        ],
+        "declencher": [
+            "Puzzle.Ready('01008')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01003"
+        ],
+        "choisir_option": "Otherwise",
+        "attendu": {
+            "exhausted": [
+                "01008"
+            ],
+            "compteurs": [
+                [
+                    "60080",
+                    "drain",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60081 Whiplash [fne2] — attaque : 1 charge depensee, la carte du dessus est defaussee, 1 degat par icone (3)",
+        "pourquoi": "WhenUnitWouldBeAttacked + CostFunc.Counter(Electric Charge) + DiscardEncounterTopCard + CountTotalBoostIcons ; deck top = Under Fire (3)",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01193')",
+            "Puzzle.PutIntoPlay('60081')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60081"
+        ],
+        "attendu": {
+            "degats_identite": 3,
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    1
+                ]
+            ],
+            "defausse_rencontre": [
+                "01193"
+            ]
+        }
+    },
+    {
+        "nom": "60082 Charging Up [fne2] — vaincue : +3 charges (2 -> 5)",
+        "pourquoi": "WhenSchemeBeDefeated + PoserCharges ; contre du heros sur 1 menace",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('60082')",
+            "Puzzle.SetThreat('60082', 1)"
+        ],
+        "declencher": [
+            "Puzzle.Thwart('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60082"
+        ],
+        "attendu": {
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    5
+                ]
+            ],
+            "hors_jeu": [
+                "60082"
+            ]
+        }
+    },
+    {
+        "nom": "60083 Chain Lightning [fne2] — premiere branche : le personnage est incline",
+        "pourquoi": "ChooseAbilities par personnage ; le pilote prend la premiere branche",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60083')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "exhausted": [
+                "01001a"
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60083 Chain Lightning [fne2] — seconde branche : 3 degats (charges presentes) et 1 charge de moins",
+        "pourquoi": "preferer_option 'Deal damage' ; 3 au lieu de 1 tant qu'il y a des charges",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60083')"
+        ],
+        "verifier": "etat_attendu",
+        "preferer_option": "Deal damage",
+        "attendu": {
+            "degats_identite": 3,
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60084 Energy Overload [fne2] — une carte [energy] en main : defaussee (premiere branche)",
+        "pourquoi": "HasColorPrinted('Y') sur la main ; Energy (YY)",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60084')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "defausse": [
+                "01088"
+            ]
+        }
+    },
+    {
+        "nom": "60084 Energy Overload [fne2] — aucune carte [energy] en main : surge",
+        "pourquoi": "ThisCardGainSurge ; temoin = sbire du dessus",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60084')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01003"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60085 Shocking Revelation [fne2] — 1 carte du deck par carte controlee ; Energy defaussee -> 1 degat indirect",
+        "pourquoi": "DiscardDeckTopCards(n) puis choix par carte [energy] ; deck joueur : Energy au dessus",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60085')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 1,
+            "defausse": [
+                "01088"
+            ]
+        }
+    },
+    {
+        "nom": "60085 Shocking Revelation [fne2] — seconde branche : +1 charge (2 -> 3)",
+        "pourquoi": "preferer_option 'charge'",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60085')"
+        ],
+        "verifier": "etat_attendu",
+        "preferer_option": "charge counter",
+        "attendu": {
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    3
+                ]
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60097 Purple Man I [fne2] — chaque sbire INFLUENCED gagne guard (pas patrol ni villainous)",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis(INFLUENCED, guard=1)",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60101')"
+        ],
+        "verifier": "fne_mots_cles",
+        "attendu": {
+            "carte": "60101",
+            "guard": True,
+            "patrol": False,
+            "villainous": False
+        }
+    },
+    {
+        "nom": "60098 Purple Man II [fne2] (expert) — guard ET villainous, pas patrol",
+        "pourquoi": "CapacitesDePurpleMan(guard, villainous)",
+        "scenario": "art_museum_heist_purple_man_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60101')"
+        ],
+        "verifier": "fne_mots_cles",
+        "attendu": {
+            "carte": "60101",
+            "guard": True,
+            "patrol": False,
+            "villainous": True
+        }
+    },
+    {
+        "nom": "60097 Purple Man I [fne2] — une carte boost du set Purple Man est distribuee au joueur apres l'activation",
+        "pourquoi": "WhenCardBecomeBoost(None, conditions=[set_name == Purple Man]) + AfterThisActivation + DealEncounterCard (27093) ; Judge en boost",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60102')"
+        ],
+        "verifier": "fne_carte_distribuee",
+        "attendu": {
+            "carte": "60102",
+            "joueur": 0
+        }
+    },
+    {
+        "nom": "60097 Purple Man I [fne2] — contre-cas : une carte boost d'un autre set n'est pas distribuee",
+        "pourquoi": "le filtre set_name",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('01186')"
+        ],
+        "verifier": "fne_carte_distribuee",
+        "attendu": {
+            "carte": "01186",
+            "joueur": 0,
+            "absente": True
+        }
+    },
+    {
+        "nom": "60100 Converted [fne2] — s'attache a l'allie le plus cher, qui devient un sbire INFLUENCED engage, SCH = son THW, guard",
+        "pourquoi": "TreatAttachedCardAsMinion(Ally, 'Influenced Minion', engager) (21178) ; Hellcat cout 3 / THW 2",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60100')"
+        ],
+        "verifier": "fne_converti",
+        "attendu": {
+            "pic": "01020",
+            "sch": 2,
+            "joueur": 0,
+            "guard": True
+        }
+    },
+    {
+        "nom": "60100 Converted [fne2] — aucun allie : surge",
+        "pourquoi": "if_cannot -> ThisCardGainSurge",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60100')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60101 Firefighter [fne2] — vaincu : le soutien ou l'amelioration le plus cher est defausse",
+        "pourquoi": "Filter.One(highest_cost) sur Support|Upgrade ; Aunt May",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01006', under_control=True)",
+            "Puzzle.PutIntoPlay('60101')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60101', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "01006",
+                "60101"
+            ]
+        }
+    },
+    {
+        "nom": "60101 Firefighter [fne2] — ses attaques sont perforantes",
+        "pourquoi": "UnitAttackGainKeyword(piercing)",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60101')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Tough('01001a')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60101')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts_absents": [
+                [
+                    "01001a",
+                    "Tough"
+                ]
+            ],
+            "degats_identite": 1
+        }
+    },
+    {
+        "nom": "60102 Judge [fne2] — vaincu : 3 menaces sur le complot principal",
+        "pourquoi": "PlaceThreatOnSchemes('MainScheme', 3)",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60102')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60102', 2)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "menace": [
+                [
+                    "60121b",
+                    4
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60103 Security Guard [fne2] — vaincu : l'allie a l'ATK le plus haut est defausse",
+        "pourquoi": "Filter.One(highest_atk) sur les allies",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01020', under_control=True)",
+            "Puzzle.PutIntoPlay('60103')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60103', 4)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "01020"
+            ]
+        }
+    },
+    {
+        "nom": "60104 Skater Punk [fne2] — vaincu par le heros : 3 degats a son identite",
+        "pourquoi": "GetDefeatingPlayer().GetIdentity() ; ATK 2 du heros sur 2 PV",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60104')",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60104"
+        ],
+        "attendu": {
+            "degats_identite": 3
+        }
+    },
+    {
+        "nom": "60105 \"Fight.\" [fne2] — obligation revelee avec 3 pions ; Forced Action : incliner + 1 pion -> 2 degats a un heros ou allie",
+        "pourquoi": "obligation sans Give to (correctif obligation.py) ; WhenInYourPlayTurn(ForcedAction) + Exhaust + CostFunc.Counter (ls016)",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60105')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60105', 'ForcedAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "01001a"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "degats_identite": 2,
+            "compteurs": [
+                [
+                    "60105",
+                    "command",
+                    2
+                ]
+            ],
+            "exhausted": [
+                "60105"
+            ]
+        }
+    },
+    {
+        "nom": "60106 \"Protect.\" [fne2] — Forced Action : le vilain devient robuste",
+        "pourquoi": "GiveStatus Tough sur Worlds.FindVillain",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60106')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60106', 'ForcedAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "statuts": [
+                [
+                    "60097",
+                    "Tough"
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60106",
+                    "command",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60107 \"Serve.\" [fne2] — Forced Action : 2 menaces sur le complot principal",
+        "pourquoi": "PlaceThreatOnSchemes('MainScheme', 2)",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60107')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60107', 'ForcedAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60121b",
+                    3
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60107",
+                    "command",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60108 Power of Suggestion [fne2] — chaque sbire gagne INFLUENCED (donc guard) ; Hinder 3 : 5 menaces",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis(Minion, trait) ; Hydra Mercenary ; Hinder 3* + 2",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01101')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60108')"
+        ],
+        "verifier": "fne_mots_cles",
+        "attendu": {
+            "carte": "01101",
+            "guard": True,
+            "trait": "INFLUENCED",
+            "menace_60108": 5
+        }
+    },
+    {
+        "nom": "60109 Sway the Masses [fne2] — un sbire INFLUENCED de la defausse est revele",
+        "pourquoi": "Search.SearchForCard(include_encounter_discard_pile) ; Judge en defausse",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDiscardPile('60102')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60109')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60102"
+            ]
+        }
+    },
+    {
+        "nom": "60109 Sway the Masses [fne2] — defausse vide : surge",
+        "pourquoi": "ThisCardGainSurge ; temoin = sbire du dessus",
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60109')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60112 Disturbed Psyche [fne2] — mise en place : la vilaine, l'environnement (Setup) et Establish Trust (Setup) sont en jeu",
+        "pourquoi": "desc.Setup pour 60112 et 60113a ; le scenario declare 60110a, la face visible est 60110b : le Setup a joue",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60110b",
+                "60112",
+                "60113a"
+            ]
+        }
+    },
+    {
+        "nom": "60112 Disturbed Psyche [fne2] — Setup : la vilaine est mise sur une face au hasard (ici : retournee)",
+        "pourquoi": "AfterGameSetup + Rand.RandomChoice + card.Flip ; le scenario lie les deux faces (60110a,60110b), sinon Flip retournait la vilaine face cachee",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne_setup_psyche",
+        "attendu": {
+            "face": "60110b"
+        }
+    },
+    {
+        "nom": "60112 Disturbed Psyche [fne2] — a la fin de la phase du mechant, la vilaine se retourne (Bloody -> Typhoid)",
+        "pourquoi": "WhenPhaseEnd('Villain') ForcedInterrupt + card.Flip ; le verificateur envoie WhenPhaseEnd",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne_fin_phase_vilain",
+        "attendu": {
+            "face": "60110a"
+        }
+    },
+    {
+        "nom": "60110a Typhoid Mary (A) [fne2] — « vaincue » : 1 jeton damage sur Disturbed Psyche et PV remis a 10",
+        "pourquoi": "WhenUnitWouldBeDefeated SetBeInstead + ResetHealth('10*') + PlaceTokensOn (MaGog 39001a)",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60110b')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60110a', 40)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60110a"
+            ],
+            "degats": [
+                [
+                    "60110a",
+                    0
+                ]
+            ],
+            "jetons": [
+                [
+                    "60112",
+                    "damage",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60110b Bloody Mary (A) [fne2] — meme reponse sur la face B",
+        "pourquoi": "CapacitesDeMary sur les deux faces",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Damage('60110b', 40)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60110b"
+            ],
+            "degats": [
+                [
+                    "60110b",
+                    0
+                ]
+            ],
+            "jetons": [
+                [
+                    "60112",
+                    "damage",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60112 Disturbed Psyche [fne2] — 3 jetons : les joueurs gagnent",
+        "pourquoi": "VerifierVictoire -> Worlds.SetGameOver(True) (32130) ; 2 jetons threat poses + 1 defaite",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Token('60112', 'threat', 2)"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60110b', 40)"
+        ],
+        "verifier": "fne_partie_gagnee",
+        "attendu": {}
+    },
+    {
+        "nom": "60113a Establish Trust [fne2] — vaincue : 1 jeton threat, la carte se retourne en Mary Walker attachee a la vilaine",
+        "pourquoi": "WhenSchemeBeDefeated + PlaceTokensOn + card.Flip + AttachTo2",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.SetThreat('60113a', 1)"
+        ],
+        "declencher": [
+            "Puzzle.Thwart('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60113a"
+        ],
+        "attendu": {
+            "jetons": [
+                [
+                    "60112",
+                    "threat",
+                    1
+                ]
+            ],
+            "hotes": [
+                [
+                    "60113b",
+                    "60110b"
+                ]
+            ],
+            "hors_jeu": [
+                "60113a"
+            ]
+        }
+    },
+    {
+        "nom": "60113b Mary Walker [fne2] — la vilaine attachee ne peut pas s'activer",
+        "pourquoi": "EnemyCannotActivate('AttachedEnemy')",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.SetThreat('60113a', 1)",
+            "Puzzle.Thwart('01001a')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60110b')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60113a"
+        ],
+        "attendu": {
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60113b Mary Walker [fne2] — la vilaine subit des degats : chaque joueur recoit 1 carte rencontre et Establish Trust revient",
+        "pourquoi": "AfterUnitTookDamage(Villain) + DealEncounterCards + FlipMaryWalkerVersEstablishTrust",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.SetThreat('60113a', 1)",
+            "Puzzle.Thwart('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60110b', 1)"
+        ],
+        "verifier": "fne_carte_distribuee",
+        "cibles": [
+            "60113a"
+        ],
+        "attendu": {
+            "joueur": 0,
+            "en_jeu": "60113a"
+        }
+    },
+    {
+        "nom": "60113b Mary Walker [fne2] — fin de round : meme rechute",
+        "pourquoi": "WhenRoundEnd ForcedResponse ; le verificateur envoie WhenRoundEnd",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.SetThreat('60113a', 1)",
+            "Puzzle.Thwart('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [],
+        "verifier": "fne_fin_de_round",
+        "cibles": [
+            "60113a"
+        ],
+        "attendu": {
+            "en_jeu": "60113a",
+            "joueur": 0
+        }
+    },
+    {
+        "nom": "60114 Telekinesis [fne2] — attachee a la vilaine : +2 SCH ; Hero Action [mental][mental] : defaussee",
+        "pourquoi": "SCH+ ; PlayerActionToDiscardThis + Cost('BB')",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60114')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60114', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01089"
+        ],
+        "payer_avec": [
+            "01089"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60114"
+            ]
+        }
+    },
+    {
+        "nom": "60114 Telekinesis [fne2] — revelee : +2 SCH sur la vilaine",
+        "pourquoi": "cle desc SCH+ ; oeuvres retirees (SCH+ de Pottery)",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60114')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60114",
+                    "60110b"
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60110b",
+                    "scheme",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60114 Telekinesis [fne2] — Boost, Typhoid Mary active : 3 degats indirects en plus (1 + 1 + 3 = 5)",
+        "pourquoi": "MaryActive('Typhoid Mary') apres TYPHOID (Puzzle.Flip) ; TakeIndirectDamage(3)",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60110b')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60114')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 5
+        }
+    },
+    {
+        "nom": "60114 Telekinesis [fne2] — contre-cas Bloody Mary active : pas de degats indirects (2 + 1 = 3)",
+        "pourquoi": "la condition sur la face visible",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60114')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 3
+        }
+    },
+    {
+        "nom": "60115 Psionic Slash [fne2] — Mary Walker en jeu : elle se retourne en Establish Trust revelee, puis la vilaine manigance",
+        "pourquoi": "FlipMaryWalkerVersEstablishTrust + DoSchemes (Bloody Mary SCH 1, Advance sans icone : 1 menace) ; Puzzle.Confuse retire le Confused herite d'Impossible Object",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.Confuse('60110b')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.SetThreat('60113a', 1)",
+            "Puzzle.Thwart('01001a')",
+            "Puzzle.SetThreat('60121b', 0)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60115')"
+        ],
+        "verifier": "etat_attendu",
+        "cibles": [
+            "60113a"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "en_jeu": [
+                "60113a"
+            ],
+            "hors_jeu": [
+                "60113b"
+            ],
+            "menace_min": [
+                [
+                    "60121b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60115 Psionic Slash [fne2] — Boost, Typhoid Mary active : 3 degats a un allie que tu controles (Hellcat vaincue)",
+        "pourquoi": "ChooseAbilities + SetTarget('YourAlly')",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60110b')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60115')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "01020"
+            ]
+        }
+    },
+    {
+        "nom": "60116 Psi Nova [fne2] — revelee : 1 degat a chaque personnage, identite etourdie",
+        "pourquoi": "DealDamage(GetControlCharacters) + GiveStatus Stunned",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60116')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 1,
+            "statuts": [
+                [
+                    "01001a",
+                    "Stunned"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60116 Psi Nova [fne2] — Boost, Typhoid Mary active : identite etourdie",
+        "pourquoi": "MaryActive + GiveStatus",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60110b')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60116')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "01001a",
+                    "Stunned"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60117 Assembled Armor [fne2] — 3 degats a la vilaine : places sur l'armure a la place",
+        "pourquoi": "WhenUnitWouldTakeDamage(Villain) + PreventDamage('All') + compteurs 'damage'",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Reveal('60117')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60110b', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60117",
+                    "60110b"
+                ]
+            ],
+            "degats": [
+                [
+                    "60110b",
+                    0
+                ]
+            ],
+            "compteurs": [
+                [
+                    "60117",
+                    "damage",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60117 Assembled Armor [fne2] — 5 degats accumules : l'armure est defaussee",
+        "pourquoi": "seuil 5 en standard",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Reveal('60117')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60110b', 3)",
+            "Puzzle.Damage('60110b', 2)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "60117"
+            ],
+            "degats": [
+                [
+                    "60110b",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60117 Assembled Armor [fne2] (expert) — 5 degats ne suffisent pas, 8 oui",
+        "pourquoi": "seuil 8 en expert (Worlds.IsExpert) ; en expert aussi, le Setup retourne la vilaine (60111b), robuste : 1 degat absorbe d'abord",
+        "scenario": "art_museum_heist_typhoid_mary_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Reveal('60117')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60111b', 1)",
+            "Puzzle.Damage('60111b', 5)",
+            "Puzzle.Damage('60111b', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "60117"
+            ],
+            "degats": [
+                [
+                    "60111b",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60117 Assembled Armor [fne2] — Boost, Bloody Mary active : identite desorientee",
+        "pourquoi": "MaryActive('Bloody Mary') + GiveStatus Confused",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60117')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "01001a",
+                    "Confused"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60118 Hail of Blades [fne2] — revelee en alter-ego : la vilaine attaque quand meme (Bloody Mary ATK 2)",
+        "pourquoi": "DoAttackYou en forme alter-ego",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60118')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60118 Hail of Blades [fne2] — Boost, Bloody Mary active : 2 degats en plus (2 + 0 + 2 = 4)",
+        "pourquoi": "DealDamage(identite, 2)",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60118')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 4
+        }
+    },
+    {
+        "nom": "60119 Scavenged Bulwark [fne2] — revelee : la vilaine devient robuste, et surge",
+        "pourquoi": "GiveStatus Tough + Surge (desc) ; temoin = sbire du dessus",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60119')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "60110b",
+                    "Tough"
+                ]
+            ],
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60119 Scavenged Bulwark [fne2] — Boost, Bloody Mary active : elle devient robuste",
+        "pourquoi": "GiveStatus Tough sur message.activating_enemy",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60119')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "60110b",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60120 Hand Lookout [fne2] — Boost : une carte boost de plus pour l'ennemi actif (2 + 1 + 3 = 6)",
+        "pourquoi": "GiveBoostCardForThisActivation(Enemy, 1) (11041) ; deck = Under Fire sous Hand Lookout",
+        "scenario": "art_museum_heist_typhoid_mary",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60120')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 6
+        }
+    },
+    {
+        "nom": "60077 Electro II [fne2] — stade II revele : +2[per_hero] charges (Find deja attachee), puis +1 par manigance (2 + 2 + 1 = 5)",
+        "pourquoi": "CapacitesDElectro(1, None) : le When Revealed du stade II repose 2[per_hero] charges sans re-chercher la carte, et la manigance en ajoute 1 ; oeuvres retirees (pas de Confused en mode normal a ce stade)",
+        "scenario": "art_museum_heist_electro",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60076', 40)",
+            "Puzzle.Scheme('60077')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "60079",
+                    "charge",
+                    5
+                ]
+            ],
+            "en_jeu": [
+                "60077"
+            ]
+        }
+    },
+    {
+        "nom": "60099 Purple Man III [fne2] (expert) — guard, villainous ET patrol",
+        "pourquoi": "CapacitesDePurpleMan(guard, villainous, patrol) ; stade III atteint apres 1 (Toughness) + 40 degats sur le stade II",
+        "scenario": "art_museum_heist_purple_man_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60098', 1)",
+            "Puzzle.Damage('60098', 40)",
+            "Puzzle.PutIntoPlay('60101')"
+        ],
+        "verifier": "fne_mots_cles",
+        "attendu": {
+            "carte": "60101",
+            "guard": True,
+            "patrol": True,
+            "villainous": True
+        }
+    },
+    {
+        "nom": "60111a Typhoid Mary (B) [fne2] (expert) — robuste : le premier degat est absorbe",
+        "pourquoi": "Toughness = base desc (statut pose a l'entree en jeu, porte par la carte a travers le retournement)",
+        "scenario": "art_museum_heist_typhoid_mary_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60111b')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60111a', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60111a"
+            ],
+            "degats": [
+                [
+                    "60111a",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60111b Bloody Mary (B) [fne2] (expert) — When Revealed au retournement : 1 degat a chaque identite",
+        "pourquoi": "WhenThisRevealed + DealDamage sur les identites ; Puzzle.Flip (FlipAllTo) revele la face qui apparait ; 2 = 1 deja inflige par le Setup (qui a retourne vers Bloody Mary a la mise en place) + 1",
+        "scenario": "art_museum_heist_typhoid_mary_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Flip('60111b')"
+        ],
+        "declencher": [
+            "Puzzle.Flip('60111a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60111b"
+            ],
+            "degats_identite": 2
+        }
+    },
+    # ---- fin du bloc 2 fne ----
+    # ------------------------------------------------------------------------
+    # Pack officiel « fne » — Fear No Evil, bloc 1 : Hammerhead, Art Museum Heist,
+    # Cops, The Owl (18/09/2026). Filtre : "[fne]". Genere par
+    # scratchpad/gen_cas_fne_b1.py.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "60086 Hammerhead I [fne] — attaque non defendue : l'identite est etourdie",
+        "pourquoi": "AfterUnitAttackAndDamageUnit('This','Character') -> GiveStatus Stunned (modele 01118)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "01001a",
+                    "Stunned"
+                ]
+            ],
+            "degats_identite": 1
+        }
+    },
+    {
+        "nom": "60086 Hammerhead I [fne] — identite deja etourdie : 1 degat de plus",
+        "pourquoi": "la branche « already stunned » lit le statut AVANT de le poser",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Stun('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60087 Hammerhead II [fne] (expert) — deja etourdie : 2 ATK + 1 degat",
+        "pourquoi": "meme reponse forcee sur le stade II, ATK 2",
+        "scenario": "art_museum_heist_hammerhead_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Stun('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60087')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 3
+        }
+    },
+    {
+        "nom": "60088 Hammerhead III [fne] (expert) — deja etourdie : 3 ATK + 2 degats",
+        "pourquoi": "le stade III inflige 2 degats ; on l'atteint en abattant le stade II (1 degat pour sa robustesse, puis 40)",
+        "scenario": "art_museum_heist_hammerhead_expert",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.Damage('60087', 1)",
+            "Puzzle.Damage('60087', 40)",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Stun('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60088')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 5
+        }
+    },
+    {
+        "nom": "60089 Energy Gatling Gun [fne] — le survivant est re-attaque, la carte est defaussee en cout",
+        "pourquoi": "AfterUnitAttackEnd + CostFunc.Discard('This') ; 2 (ATK 1+1) + stun, puis 1 + 1 (deja etourdi) = 4",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60089')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 4,
+            "hors_jeu": [
+                "60089"
+            ]
+        }
+    },
+    {
+        "nom": "60089 Energy Gatling Gun [fne] — contre-cas : le defenseur est vaincu, pas de seconde attaque",
+        "pourquoi": "Spider-Woman (2 PV) bloque 2 degats et meurt : la condition « not defeated » est fausse, la carte reste",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.PutIntoPlay('60089')",
+            "Puzzle.PutIntoPlay('01011', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086', '01011')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60089"
+            ],
+            "hors_jeu": [
+                "01011"
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60090 Hardheaded [fne] — Hammerhead gagne stalwart et +1 SCH",
+        "pourquoi": "GiveKeywordToAttached stalwart (16064) + cle desc SCH+ ; Puzzle.Stun est refuse par stalwart ; les oeuvres (SCH+ et stalwart de Pottery) sont retirees d'abord",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60090')",
+            "Puzzle.Stun('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60090",
+                    "60086"
+                ]
+            ],
+            "statuts_absents": [
+                [
+                    "60086",
+                    "Stunned"
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60086",
+                    "scheme",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60090 Hardheaded [fne] — Hero Action [energy][mental][physical] : defaussee",
+        "pourquoi": "PlayerActionToDiscardThis + Cost('YBR') (01118) ; main = Aunt May (Y), Enhanced Spider-Sense (B), Backflip (R)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('60090')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60090', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01006",
+            "01004",
+            "01003"
+        ],
+        "payer_avec": [
+            "01006",
+            "01004",
+            "01003"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60090"
+            ]
+        }
+    },
+    {
+        "nom": "60090 Hardheaded [fne] — Boost : l'ennemi qui s'active devient robuste",
+        "pourquoi": "WhenCardBecomeBoost -> GiveStatus Tough sur message.activating_enemy (52037)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60090')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "60086",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60091 Chameleon [fne] — +X SCH, X = THW le plus haut (heros THW 1)",
+        "pourquoi": "ThisGainKeyword(fn, scheme=1) ; Spider-Man THW 1",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60091')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "attributs_carte": [
+                [
+                    "60091",
+                    "scheme",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60091 Chameleon [fne] — +X SCH suit l'allie au THW 2",
+        "pourquoi": "la valeur se recalcule a l'entree d'un personnage ami (OnEvent.Form ecoute EnterPlay) ; Hellcat THW 2",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('60091')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('01020', under_control=True)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "attributs_carte": [
+                [
+                    "60091",
+                    "scheme",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60091 Chameleon [fne] — contre-cas alter-ego : X = 0 (aucun THW en jeu)",
+        "pourquoi": "Peter Parker n'a pas de THW : le bonus retombe a 0",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60091')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "attributs_carte": [
+                [
+                    "60091",
+                    "scheme",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60091 Chameleon [fne] — When Revealed : il manigance (1 + 1)",
+        "pourquoi": "DoSchemes a la revelation : SCH 1 + THW 1 du heros = 2 menaces ; main reduite a une ressource (01088) : une liste vide n'est pas appliquee par le harnais, et le pilote jouait Great Responsibility (01061) qui encaisse la menace en degats",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.SetThreat('60121b', 0)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60091')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "menace": [
+                [
+                    "60121b",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60092 Maggia Enforcers [fne] — SCH = ennemis MAGGIA en jeu (Hammerhead + lui)",
+        "pourquoi": "ThisGainKeywordForEachFaceInPlay(CardFinder(trait=MAGGIA, Enemy), scheme=1)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60092')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "attributs_carte": [
+                [
+                    "60092",
+                    "scheme",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60092 Maggia Enforcers [fne] — un troisieme MAGGIA entre : SCH 3",
+        "pourquoi": "rafraichi par OnEvent.CardInPlay du filtre",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60092')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60093')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "attributs_carte": [
+                [
+                    "60092",
+                    "scheme",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60093 Maggia Underboss [fne] — joueur etourdi : une carte boost de plus (1 + 3 + 3 = 7)",
+        "pourquoi": "WhenUnitWouldAttack ForcedInterrupt + GiveAdditionalBoostCardForThisActivation (02020) ; deck = Under Fire x3 (boost 3)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
+            "Puzzle.PutIntoPlay('60093')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Stun('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60093')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 7
+        }
+    },
+    {
+        "nom": "60093 Maggia Underboss [fne] — contre-cas : joueur non etourdi, seul le boost Villainous (1 + 3 = 4)",
+        "pourquoi": "la condition vit dans `conditions` ; sans stun, une seule carte boost",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
+            "Puzzle.PutIntoPlay('60093')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60093')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 4
+        }
+    },
+    {
+        "nom": "60094 Consolidate Power [fne] — sbire vaincu : il devient boost face cachee du vilain",
+        "pourquoi": "AfterUnitBeDefeated(Minion) -> villain.GiveBoostCard (56091) ; deck vide d'abord, sinon Puzzle.Damage frappe la copie du deck",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60094')",
+            "Puzzle.PutIntoPlay('60092')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60092', 5)"
+        ],
+        "verifier": "fne_boost_du_vilain",
+        "attendu": {
+            "boost_du_vilain": "60092"
+        }
+    },
+    {
+        "nom": "60095 Power Struggle [fne] — vainc le sbire le plus faible, defausse jusqu'a un sbire et le revele",
+        "pourquoi": "Filter.One fewest_remaining_hp + DefeatUnits, DiscardEncounterCardsUntil(Minion) + Reveal ; deck = Hydra Mercenary 01101 sous 01186",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60092')",
+            "Puzzle.PutIntoPlay('60093')",
+            "Puzzle.CreateEncounterDeck('01193', '01101', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60095')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "60092"
+            ],
+            "en_jeu": [
+                "60093",
+                "01101"
+            ],
+            "defausse_rencontre": [
+                "01186"
+            ]
+        }
+    },
+    {
+        "nom": "60096 Head First! [fne] (Hero) — etourdi : +2 ATK (1+2) puis +1 deja etourdi = 4",
+        "pourquoi": "DoAttackYou avec AttackProperty(additional_value=2, overkill=True) (04086)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Stun('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60096')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 4
+        }
+    },
+    {
+        "nom": "60096 Head First! [fne] (Hero) — contre-cas non etourdi : ATK 1, puis etourdi par la reponse forcee",
+        "pourquoi": "sans stun, propriete vide",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60096')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 1,
+            "statuts": [
+                [
+                    "01001a",
+                    "Stunned"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60096 Head First! [fne] (Alter-Ego) — surge : le sbire temoin du dessus du deck entre en jeu",
+        "pourquoi": "WhenThisRevealed('Alter-Ego', ThisCardGainSurge) (01106) ; la partie commence en alter-ego",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60096')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "01101"
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "60121a Art Museum Heist [fne] — mise en place : 1 oeuvre au hasard sur le vilain, 3 dans le deck",
+        "pourquoi": "WhenCardSetup : SetupCards.AttachTo(choose=Random, include_in_play=False) + ShuffleAllTo EncounterDeck (55004a)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne_oeuvres",
+        "attendu": {
+            "oeuvres": {
+                "vilain": 1,
+                "deck": 3,
+                "identite": 0
+            }
+        }
+    },
+    {
+        "nom": "60121b Art Museum Heist [fne] — escalade = joueurs x (1 + oeuvres sur le vilain) : 4 oeuvres -> 5",
+        "pourquoi": "WhenCalcThisSchemeEscalation (16091b) : le verificateur envoie CalcMainSchemeEscalation comme le fait l'etape 1 de la phase du mechant",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Attach('60122', '60086')",
+            "Puzzle.Attach('60123', '60086')",
+            "Puzzle.Attach('60124', '60086')",
+            "Puzzle.Attach('60125', '60086')"
+        ],
+        "verifier": "fne_escalade",
+        "attendu": {
+            "escalade": 5
+        }
+    },
+    {
+        "nom": "60121b Art Museum Heist [fne] — contre-cas escalade : aucune oeuvre sur le vilain -> 1",
+        "pourquoi": "X = 1 + 0",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')"
+        ],
+        "verifier": "fne_escalade",
+        "attendu": {
+            "escalade": 1
+        }
+    },
+    {
+        "nom": "60121b Art Museum Heist [fne] — attaque non defendue contre une identite : son oeuvre passe au vilain",
+        "pourquoi": "AfterUnitAttackUnit(Enemy, Identity, is_undefended_attack=True) (04080)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Attach('60122', '01001a')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086')"
+        ],
+        "verifier": "fne_oeuvres",
+        "attendu": {
+            "oeuvres": {
+                "identite": 0
+            },
+            "oeuvre_sur_vilain": "60122"
+        }
+    },
+    {
+        "nom": "60121b Art Museum Heist [fne] — contre-cas : attaque defendue par un allie, l'oeuvre reste",
+        "pourquoi": "is_undefended_attack=True exclut une attaque defendue",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Attach('60122', '01001a')",
+            "Puzzle.PutIntoPlay('01020', under_control=True)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60086', '01020')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60122",
+                    "01001a"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60122 Impossible Object [fne] — revelee : s'attache au vilain, le desoriente, surge",
+        "pourquoi": "AttachToFaceWhenPutIntoPlay(Villain) + AfterCardAttachTo ForcedResponse + desc.Surge ; les oeuvres de la mise en place sont retirees (Pottery donnerait stalwart)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60122')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60122",
+                    "60086"
+                ]
+            ],
+            "statuts": [
+                [
+                    "60086",
+                    "Confused"
+                ]
+            ],
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60122 Impossible Object [fne] — Hero Action [mental] : passe sur le heros, qui est desoriente",
+        "pourquoi": "WhenInYourPlayTurn(HeroAction).SetCost(Cost('B')) + AttachTo2 -> AfterCardAttachTo sur le heros",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Attach('60122', '60086')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60122', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01089"
+        ],
+        "payer_avec": [
+            "01089"
+        ],
+        "attendu": {
+            "hotes": [
+                [
+                    "60122",
+                    "01001a"
+                ]
+            ],
+            "statuts": [
+                [
+                    "01001a",
+                    "Confused"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60122 Impossible Object [fne] — Hero Action incliner le heros : passe sur le heros sans ressource",
+        "pourquoi": "seconde capacite, CostFunc.Exhaust('YourIdentity') ; main vide, seule celle-ci est offerte",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Attach('60122', '60086')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60122', 'HeroAction', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hotes": [
+                [
+                    "60122",
+                    "01001a"
+                ]
+            ],
+            "exhausted": [
+                "01001a"
+            ]
+        }
+    },
+    {
+        "nom": "60123 Inspiring Pottery [fne] — revelee : le vilain gagne stalwart (le stun est refuse)",
+        "pourquoi": "GiveKeywordToAttached('Character', stalwart=1)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60123')",
+            "Puzzle.Stun('60086')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60123",
+                    "60086"
+                ]
+            ],
+            "statuts_absents": [
+                [
+                    "60086",
+                    "Stunned"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60123 Inspiring Pottery [fne] — sur le heros : stalwart, le stun est refuse ; +1 THW",
+        "pourquoi": "le porteur change, le mot-cle suit ; cle desc THW+",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Attach('60123', '60086')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60123', 'HeroAction', 1)",
+            "Puzzle.Stun('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "hotes": [
+                [
+                    "60123",
+                    "01001a"
+                ]
+            ],
+            "statuts_absents": [
+                [
+                    "01001a",
+                    "Stunned"
+                ]
+            ],
+            "attributs": {
+                "thwart": 1
+            }
+        }
+    },
+    {
+        "nom": "60124 Replica Shield [fne] — revelee : le vilain devient robuste",
+        "pourquoi": "AfterCardAttachTo -> GiveStatus Tough",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60124')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60124",
+                    "60086"
+                ]
+            ],
+            "statuts": [
+                [
+                    "60086",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60125 Stunning Landscape [fne] — revelee : le vilain est etourdi",
+        "pourquoi": "AfterCardAttachTo -> GiveStatus Stunned",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60125')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60125",
+                    "60086"
+                ]
+            ],
+            "statuts": [
+                [
+                    "60086",
+                    "Stunned"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60126 Art Thief [fne] — When Revealed : trouve une oeuvre dans le deck et l'attache au vilain (2 au total)",
+        "pourquoi": "Search.EncounterCard(include_discard_pile=True, trait=ART) + PutIntoPlay (l'oeuvre s'accroche seule, sans surge)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Reveal('60126')"
+        ],
+        "verifier": "fne_oeuvres",
+        "attendu": {
+            "oeuvres": {
+                "vilain": 2,
+                "deck": 2
+            }
+        }
+    },
+    {
+        "nom": "60126 Art Thief [fne] — sans oeuvre trouvable : en prend une a l'identite",
+        "pourquoi": "branche « If you cannot » : DeplacerUneOeuvreVersLeVilain",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Attach('60122', '01001a')",
+            "Puzzle.Attach('60123', '01001a')",
+            "Puzzle.Attach('60124', '01001a')",
+            "Puzzle.Attach('60125', '01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60126')"
+        ],
+        "verifier": "fne_oeuvres",
+        "attendu": {
+            "oeuvres": {
+                "vilain": 1,
+                "identite": 3,
+                "deck": 0
+            }
+        }
+    },
+    {
+        "nom": "60126 Art Thief [fne] — Boost : une oeuvre passe de l'identite au vilain (2 avec celle que vole l'attaque non defendue)",
+        "pourquoi": "WhenCardBecomeBoost -> DeplacerUneOeuvreVersLeVilain ; l'attaque de Hammerhead est non defendue, donc 60121b en vole une seconde : sans le boost on n'en aurait qu'une",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.Attach('60122', '01001a')",
+            "Puzzle.Attach('60123', '01001a')",
+            "Puzzle.Attach('60124', '01001a')",
+            "Puzzle.Attach('60125', '01001a')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60126')"
+        ],
+        "verifier": "fne_oeuvres",
+        "attendu": {
+            "oeuvres": {
+                "vilain": 2,
+                "identite": 2
+            }
+        }
+    },
+    {
+        "nom": "60127 Tug of War [fne] — [physical] x3 payes : une oeuvre revient du vilain a l'identite",
+        "pourquoi": "ForChoiceAbilityWithCost(Cost('RRR')) (50134) ; main = Strength (RR) + Backflip (R)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60127')"
+        ],
+        "verifier": "fne_oeuvres",
+        "main_exclusive": [
+            "01090",
+            "01003"
+        ],
+        "payer_avec": [
+            "01090",
+            "01003"
+        ],
+        "attendu": {
+            "oeuvres": {
+                "vilain": 0,
+                "identite": 1
+            }
+        }
+    },
+    {
+        "nom": "60127 Tug of War [fne] — sinon : une oeuvre de l'identite va au vilain et surge",
+        "pourquoi": "Otherwise + ThisCardGainSurge ; main vide, aucune branche payante ; temoin de surge = sbire du dessus",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01101')",
+            "Puzzle.Attach('60122', '01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60127')"
+        ],
+        "verifier": "fne_oeuvres",
+        "main_exclusive": [
+            "01088"
+        ],
+        "choisir_option": "Otherwise",
+        "attendu": {
+            "oeuvres": {
+                "identite": 0
+            },
+            "en_jeu": "01101"
+        }
+    },
+    {
+        "nom": "60182 Cop [fne] — sa manigance est remplacee par une attaque contre le vilain",
+        "pourquoi": "WhenUnitWouldScheme ForcedInterrupt + SetBeInstead + BasicAttack([vilain])",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60182')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('60182')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "60086",
+                    2
+                ]
+            ],
+            "menace": [
+                [
+                    "60121b",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60182 Cop [fne] — When Defeated : 2 menaces sur le complot principal",
+        "pourquoi": "WhenUnitBeDefeated -> PlaceThreatOnSchemes('MainScheme', 2) ; deck vide d'abord (copie du deck sinon)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('60182')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('60182', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "60182"
+            ],
+            "menace": [
+                [
+                    "60121b",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60183 Crooked Cop [fne] — vaincu par le heros : ce joueur recoit 1 carte rencontre face cachee",
+        "pourquoi": "WhenUnitBeDefeated -> GetDefeatingPlayer().DealEncounterCards(1) ; 2 degats poses puis l'attaque de base (ATK 2) acheve",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186')",
+            "Puzzle.PutIntoPlay('60183')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Damage('60183', 2)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "fne_cartes_distribuees",
+        "cibles": [
+            "60183"
+        ],
+        "attendu": {
+            "joueur": 0
+        }
+    },
+    {
+        "nom": "60183 Crooked Cop [fne] — Boost : 2 degats indirects (1 ATK + 2)",
+        "pourquoi": "WhenCardBecomeBoost -> TakeIndirectDamage(2) (27080)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60183')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 3
+        }
+    },
+    {
+        "nom": "60184 Wanted [fne] — Hero Action : un sbire POLICE sort du deck engage avec moi, l'obligation part",
+        "pourquoi": "DiscardEncounterCardsUntil(trait=POLICE) + PutIntoPlay (11025) + DiscardAll(this) ; deck = 01186 / Cop / Under Fire au fond (sinon la defausse est remelangee dans le deck vide)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60184')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '60182', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60184', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60182"
+            ],
+            "hors_jeu": [
+                "60184"
+            ],
+            "defausse_rencontre": [
+                "60184",
+                "01186"
+            ]
+        }
+    },
+    {
+        "nom": "60185 Police Cordon [fne] — les sbires POLICE gagnent garde et patrouille ; Hinder 1 : 4 menaces",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis(CardFinder(trait=POLICE, Minion), guard=1, patrol=1) ; desc.Hinder 1*",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60182')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('60185')"
+        ],
+        "verifier": "fne_garde_patrouille",
+        "attendu": {
+            "carte": "60182",
+            "menace_cordon": 4
+        }
+    },
+    {
+        "nom": "60185 Police Cordon [fne] — When Revealed : revele un sbire POLICE du deck",
+        "pourquoi": "Search.EncounterCard(trait=POLICE, Minion) + Reveal (01095)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('60183', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60185')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "60183",
+                "60185"
+            ]
+        }
+    },
+    {
+        "nom": "60191 Flight Serum [fne] — s'attache a un ennemi non-AERIAL, qui gagne AERIAL, +1 ATK et +1 SCH",
+        "pourquoi": "AttachToFaceWhenPutIntoPlay(CardFinder(non_trait=AERIAL, Enemy)) + GiveKeywordToAttached(trait) + desc ATK+/SCH+ ; oeuvres retirees (SCH+ de Pottery)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60191')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hotes": [
+                [
+                    "60191",
+                    "60086"
+                ]
+            ],
+            "traits_de": [
+                [
+                    "60086",
+                    "AERIAL"
+                ]
+            ],
+            "attributs_carte": [
+                [
+                    "60086",
+                    "attack",
+                    1
+                ],
+                [
+                    "60086",
+                    "scheme",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60191 Flight Serum [fne] — aucun ennemi non-AERIAL : surge",
+        "pourquoi": "if_cannot_gain_surge=True ; Hammerhead porte deja un serum, la 2e copie du deck est revelee ; temoin de surge = sbire du dessus",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60191')",
+            "Puzzle.CreateEncounterDeck('01101')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60191')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "01101"
+            ]
+        }
+    },
+    {
+        "nom": "60191 Flight Serum [fne] — Hero Action : defausser un evenement ATTACK de la main la defausse",
+        "pourquoi": "PlayerActionToDiscardThis + CostFunc.Discard('YourHandCards', trait=ATTACK, Event) (18027)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('60191')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60191', 'HeroAction', 0)"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01005"
+        ],
+        "attendu": {
+            "hors_jeu": [
+                "60191"
+            ],
+            "defausse": [
+                "01005"
+            ]
+        }
+    },
+    {
+        "nom": "60192 Mister Fish [fne] — engage le joueur dont l'identite a le moins de PV (partie a deux)",
+        "pourquoi": "WhenThisRevealed + min(health) + EngagePlayer ; revele par Black Panther (11 PV), engage Spider-Man (10 PV)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "black_panther",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.Reveal('60192')"
+        ],
+        "verifier": "fne_engage_joueur",
+        "attendu": {
+            "carte": "60192",
+            "joueur": 1
+        },
+        "heros2": "spider_man"
+    },
+    {
+        "nom": "60192 Mister Fish [fne] — piercing : la robustesse saute et 2 degats passent",
+        "pourquoi": "UnitAttackGainKeyword(piercing=True) (04027)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('60192')",
+            "Puzzle.Tough('01001a')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60192')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts_absents": [
+                [
+                    "01001a",
+                    "Tough"
+                ]
+            ],
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60192 Mister Fish [fne] — ranged : la riposte de Black Panther ne le touche pas",
+        "pourquoi": "UnitAttackGainKeyword(ranged=True) ; Retaliate 1 ignore",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "black_panther",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60192')",
+            "Puzzle.ChangeForm('01040b')",
+            "Puzzle.Exhaust('01040a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60192')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "60192",
+                    0
+                ]
+            ],
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60193 The Owl [fne] — contre-cas ranged : la riposte de Black Panther touche The Owl",
+        "pourquoi": "The Owl a piercing mais PAS ranged : Retaliate 1 s'applique ; pose en alter-ego (pas de Quickstrike)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "black_panther",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60193')",
+            "Puzzle.ChangeForm('01040b')",
+            "Puzzle.Exhaust('01040a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60193')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "60193",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "60193 The Owl [fne] — piercing : la robustesse saute et 2 degats passent",
+        "pourquoi": "UnitAttackGainKeyword(piercing=True) ; pose en alter-ego (pas de Quickstrike), puis heros incline",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60193')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Tough('01001a')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('60193')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts_absents": [
+                [
+                    "01001a",
+                    "Tough"
+                ]
+            ],
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "60193 The Owl [fne] — Boost pendant une attaque : l'attaque de Hammerhead devient perforante",
+        "pourquoi": "WhenCardBecomeBoost(during_attack=True) -> would_atk_message.GainPiercing",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Tough('01001a')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('60193')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts_absents": [
+                [
+                    "01001a",
+                    "Tough"
+                ]
+            ],
+            "degats_identite": 1
+        }
+    },
+    {
+        "nom": "60194 Swoop Down [fne] (Hero) — vilain puis sbires engages attaquent, +2 ATK pour les AERIAL : 1 + 4 = 5",
+        "pourquoi": "DoAttackYou par ennemi avec AttackProperty(additional_value=2 si AERIAL) ; The Owl engage en alter-ego",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60193')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60194')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 5
+        }
+    },
+    {
+        "nom": "60194 Swoop Down [fne] (Alter-Ego) — vilain puis sbires engages manigancent, +2 SCH pour les AERIAL : 2 + 5 = 7",
+        "pourquoi": "DoSchemes par ennemi avec SchemeProperty(additional_value=2 si AERIAL) ; la partie commence en alter-ego",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.Remove('60122')",
+            "Puzzle.Remove('60123')",
+            "Puzzle.Remove('60124')",
+            "Puzzle.Remove('60125')",
+            "Puzzle.PutIntoPlay('60193')",
+            "Puzzle.SetThreat('60121b', 0)",
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60194')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "menace": [
+                [
+                    "60121b",
+                    7
+                ]
+            ]
+        }
+    },
+
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -32143,6 +43040,755 @@ CLES_ETAT_ATTENDU = {
     'pv_max', 'carte_du_surge', 'accroche_a', 'hotes', 'traits_de',
 }
 
+# ---------------------------------------------------------------- pack fne (bloc 1)
+def _fne_oeuvres_sur(face):
+    return [a for a in face.GetAttachedAttachments() if a.HasTrait("ART")]
+
+def fne_oeuvres(monde, aides):
+    """Compte les attachements ART : sur le vilain, sur l'identite du joueur 1,
+    dans le deck de rencontre. `attendu.oeuvres` = {vilain, identite, deck}
+    (chaque cle facultative) ; `oeuvre_sur_vilain` = un card_id precis attendu
+    sur le vilain ; `carte_du_surge` comme dans etat_attendu."""
+    from game.operate.worlds import Worlds
+    attendu = aides["cas"].get("attendu") or {}
+    voulu = attendu.get("oeuvres") or {}
+    vilain = aides["par_id"](monde, "60086") or aides["par_id"](monde, "60087") or aides["par_id"](monde, "60088")
+    identite = aides["identite"](monde)
+    soucis = []
+    if vilain is None:
+        return False, "Hammerhead introuvable"
+    sur_vilain = [getattr(a.paper, "card_id", "?") for a in _fne_oeuvres_sur(vilain)]
+    sur_identite = [getattr(a.paper, "card_id", "?") for a in _fne_oeuvres_sur(identite)]
+    dans_deck = [getattr(f.paper, "card_id", "?") for f in Worlds.GetEncounterDeckCards(monde)
+                 if f.HasTrait("ART")]
+    if "vilain" in voulu and len(sur_vilain) != voulu["vilain"]:
+        soucis.append(f"oeuvres sur le vilain = {sur_vilain} (attendu {voulu['vilain']})")
+    if "identite" in voulu and len(sur_identite) != voulu["identite"]:
+        soucis.append(f"oeuvres sur l'identite = {sur_identite} (attendu {voulu['identite']})")
+    if "deck" in voulu and len(dans_deck) != voulu["deck"]:
+        soucis.append(f"oeuvres dans le deck = {dans_deck} (attendu {voulu['deck']})")
+    if attendu.get("oeuvre_sur_vilain") and attendu["oeuvre_sur_vilain"] not in sur_vilain:
+        soucis.append(f"{attendu['oeuvre_sur_vilain']} n'est pas sur le vilain (vilain = {sur_vilain})")
+    if attendu.get("carte_du_surge"):
+        deck = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)]
+        if attendu["carte_du_surge"] in deck:
+            soucis.append(f"{attendu['carte_du_surge']} est encore dans le deck : pas de surge")
+    if attendu.get("en_jeu") and aides["par_id"](monde, attendu["en_jeu"]) is None:
+        soucis.append(f"{attendu['en_jeu']} n'est pas en jeu (temoin de surge)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"vilain={sur_vilain} identite={sur_identite} deck={dans_deck}"
+
+def fne_escalade(monde, aides):
+    """`attendu.escalade` : la menace que l'etape 1 de la phase du mechant
+    poserait, obtenue en envoyant `CalcMainSchemeEscalation` comme le fait
+    `scheme_main.py` (base imprimee 0 + WhenCalcThisSchemeEscalation)."""
+    from game.message import Message
+    voulu = (aides["cas"].get("attendu") or {}).get("escalade")
+    complot = aides["par_id"](monde, "60121b")
+    if complot is None:
+        return False, "60121b introuvable en jeu"
+    message = Message.CalcMainSchemeEscalation(complot, complot.escalation_threat, [], [])
+    message.Send()
+    if message.escalation_threat != voulu:
+        return False, f"escalade calculee = {message.escalation_threat} (attendu {voulu})"
+    return True, f"escalade = {message.escalation_threat}"
+
+def fne_boost_du_vilain(monde, aides):
+    """`attendu.boost_du_vilain` : ce card_id est dans la pile de boost du vilain."""
+    voulu = (aides["cas"].get("attendu") or {}).get("boost_du_vilain")
+    vilain = aides["par_id"](monde, (aides["cas"].get("attendu") or {}).get("vilain", "60086"))
+    if vilain is None:
+        return False, "Hammerhead introuvable"
+    pile = [getattr(f.paper, "card_id", "?") for f in vilain.components.boostable.GetDeck().Get(True)]
+    if voulu not in pile:
+        return False, f"{voulu} absent de la pile de boost du vilain (pile = {pile})"
+    if aides["par_id"](monde, voulu) is not None:
+        return False, f"{voulu} est encore en jeu"
+    return True, f"pile de boost = {pile}"
+
+def fne_cartes_distribuees(monde, aides):
+    """`attendu.joueur` : ce joueur a au moins 1 carte rencontre face cachee."""
+    idx = (aides["cas"].get("attendu") or {}).get("joueur", 0)
+    joueur = monde.players[idx]
+    cartes = joueur.dealt_encounter_cards.Get(True)
+    if not cartes:
+        return False, f"aucune carte de rencontre distribuee au joueur {idx}"
+    if aides["par_id"](monde, "60183") is not None:
+        return False, "Crooked Cop est encore en jeu : pas vaincu"
+    return True, f"{len(cartes)} carte(s) distribuee(s) au joueur {idx}"
+
+def fne_garde_patrouille(monde, aides):
+    """`attendu.carte` porte Guard ET Patrol ; `menace_cordon` = menace sur 60185."""
+    attendu = aides["cas"].get("attendu") or {}
+    face = aides["par_id"](monde, attendu["carte"])
+    if face is None:
+        return False, f"{attendu['carte']} introuvable en jeu"
+    soucis = []
+    if not face.IsGuard():
+        soucis.append(f"{attendu['carte']} n'a pas Guard")
+    if not face.IsPatrol():
+        soucis.append(f"{attendu['carte']} n'a pas Patrol")
+    cordon = aides["par_id"](monde, "60185")
+    if cordon is None:
+        soucis.append("Police Cordon introuvable")
+    elif "menace_cordon" in attendu and cordon.threat != attendu["menace_cordon"]:
+        soucis.append(f"menace sur Police Cordon = {cordon.threat} (attendu {attendu['menace_cordon']})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "Guard + Patrol, Hinder applique"
+
+def fne_engage_joueur(monde, aides):
+    """`attendu.carte` (sbire) est engage avec `attendu.joueur` (index)."""
+    attendu = aides["cas"].get("attendu") or {}
+    face = aides["par_id"](monde, attendu["carte"])
+    if face is None:
+        return False, f"{attendu['carte']} introuvable en jeu"
+    voulu = monde.players[attendu["joueur"]]
+    if face.engaged_player is not voulu:
+        nom = getattr(face.engaged_player, "name", face.engaged_player)
+        return False, f"{attendu['carte']} est engage avec {nom}, attendu le joueur {attendu['joueur']}"
+    return True, f"engage avec le joueur {attendu['joueur']}"
+
+
+# ---------------------------------------------------------------- pack fne (bloc 3A)
+def fne3a_fin_de_round(monde, aides):
+    """Envoie WhenRoundEnd (modele brawn_hulk_out_fin_de_round) puis delegue
+    a etat_attendu : The Getaway 1B (60128b)."""
+    from game.message import Message
+    Message.WhenRoundEnd(monde).Send()
+    return etat_attendu(monde, aides)
+
+def fne3a_mots_cles(monde, aides):
+    """`attendu.carte` porte (ou non) guard / patrol / toughness / quickstrike /
+    surge / villainous, puis le reste des cles est delegue a etat_attendu."""
+    attendu = aides["cas"].get("attendu") or {}
+    face = aides["par_id"](monde, attendu["carte"])
+    if face is None:
+        return False, f"{attendu['carte']} introuvable en jeu"
+    soucis = []
+    for mot, fn in (("guard", "IsGuard"), ("patrol", "IsPatrol"), ("villainous", "IsVillainous"),
+                    ("toughness", "IsToughness"), ("quickstrike", "IsQuickstrike")):
+        if mot in attendu and bool(getattr(face, fn)()) != attendu[mot]:
+            soucis.append(f"{attendu['carte']}.{mot} = {getattr(face, fn)()} (attendu {attendu[mot]})")
+    if "surge" in attendu and bool(getattr(face, "surge", 0)) != attendu["surge"]:
+        soucis.append(f"{attendu['carte']}.surge = {getattr(face, 'surge', None)} (attendu {attendu['surge']})")
+    reste = {k: v for k, v in attendu.items() if k in CLES_ETAT_ATTENDU}
+    if reste:
+        copie = dict(aides); copie["cas"] = dict(aides["cas"]); copie["cas"]["attendu"] = reste
+        ok, msg = etat_attendu(monde, copie)
+        if not ok:
+            soucis.append(msg)
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "mots-cles conformes"
+
+def fne3a_converti(monde, aides):
+    """Baron Zemo : la face de sbire (pic = l'allie) est en jeu (ou `absente`),
+    engagee avec `joueur`, SCH attendu, trait attendu ; `allie` : l'allie
+    imprime est de retour en jeu sous le controle de `joueur` ; `jetons_menace` :
+    menace portee par la carte (sbire ou allie) ; le reste -> etat_attendu."""
+    from game.card.face.card_type import Minion, Ally
+    attendu = aides["cas"].get("attendu") or {}
+    trouve = None
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is None or not face.IsInPlay() or not Minion.IsType(face):
+            continue
+        if getattr(face, "pic_id", None) == attendu["pic"]:
+            trouve = face
+    soucis = []
+    joueur = monde.players[attendu.get("joueur", 0)]
+    porteur = None
+    if attendu.get("absente"):
+        if trouve is not None:
+            soucis.append(f"un sbire converti a l'image de {attendu['pic']} est encore en jeu")
+    else:
+        if trouve is None:
+            return False, f"aucun sbire converti a l'image de {attendu['pic']} en jeu"
+        porteur = trouve
+        if trouve.engaged_player is not joueur:
+            soucis.append("pas engage avec le joueur attendu")
+        if "sch" in attendu and trouve.scheme != attendu["sch"]:
+            soucis.append(f"SCH = {trouve.scheme} (attendu {attendu['sch']})")
+        if attendu.get("trait") and not trouve.HasTrait(attendu["trait"]):
+            soucis.append(f"trait {attendu['trait']} absent")
+    if attendu.get("allie"):
+        allie = aides["par_id"](monde, attendu["allie"])
+        if allie is None or not Ally.IsType(allie):
+            soucis.append(f"{attendu['allie']} n'est pas de retour en jeu comme allie")
+        else:
+            porteur = allie
+            if allie.GetControlByPlayer() is not joueur:
+                soucis.append(f"{attendu['allie']} n'est pas sous le controle du joueur attendu")
+    if "pv" in attendu and porteur is not None and getattr(porteur, "max_health", None) != attendu["pv"]:
+        soucis.append(f"PV max de {attendu['pic']} = {getattr(porteur, 'max_health', None)} (attendu {attendu['pv']})")
+    if "jetons_menace" in attendu and porteur is not None:
+        n = porteur.GetTokens('threat')
+        if n != attendu["jetons_menace"]:
+            soucis.append(f"menace sur {attendu['pic']} = {n} (attendu {attendu['jetons_menace']})")
+    reste = {k: v for k, v in attendu.items() if k in CLES_ETAT_ATTENDU}
+    if reste:
+        copie = dict(aides); copie["cas"] = dict(aides["cas"]); copie["cas"]["attendu"] = reste
+        ok, msg = etat_attendu(monde, copie)
+        if not ok:
+            soucis.append(msg)
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "conversion conforme"
+
+def fne3a_zemo_retrait(monde, aides):
+    """Retire 1 jeton threat du sbire converti (pic = attendu.pic), comme un
+    contre le ferait, puis delegue a fne3a_converti."""
+    from game.card.face.card_type import Minion
+    from game.operate.faces import Faces
+    from game.effect.rule import DebugRule
+    attendu = aides["cas"].get("attendu") or {}
+    sbire = None
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and face.IsInPlay() and Minion.IsType(face) and getattr(face, "pic_id", None) == attendu["pic"]:
+            sbire = face
+    if sbire is None:
+        return False, f"aucun sbire converti a l'image de {attendu['pic']} avant le retrait du jeton"
+    Faces.RemoveTokensOn([sbire], 1, 'threat', DebugRule(sbire))
+    return fne3a_converti(monde, aides)
+
+def fne3a_zemo_vaincu(monde, aides):
+    """Inflige 3 degats au sbire converti (pic = attendu.pic) depuis Zemo, puis
+    delegue a fne3a_converti (absente + defausse du joueur)."""
+    from game.card.face.card_type import Minion
+    from game.effect.rule import DebugRule
+    attendu = aides["cas"].get("attendu") or {}
+    sbire = None
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and face.IsInPlay() and Minion.IsType(face) and getattr(face, "pic_id", None) == attendu["pic"]:
+            sbire = face
+    if sbire is None:
+        return False, f"aucun sbire converti a l'image de {attendu['pic']} avant les degats"
+    # Meme chemin que Puzzle.Damage : TakeDamage(source, n, DebugRule) ;
+    # `DealDamage` exige un vrai Effect (`.ability`), pas une DebugRule.
+    sbire.TakeDamage(sbire, 3, DebugRule(sbire))
+    return fne3a_converti(monde, aides)
+
+def _fne3a_soutiens_bugle(monde):
+    from game.card.face.card_type import Support
+    from game.operate.worlds import Worlds
+    return [f for f in Worlds.GetOnFieldCards(monde.players[0].GetIdentity().card.game_area)
+            if Support.IsType(f) and f.HasTrait("DAILY BUGLE")]
+
+def fne3a_bugle(monde, aides):
+    """Stop the Presses! (independant de la graine) : `n_soutiens` = nombre de
+    soutiens DAILY BUGLE en jeu ; `soutien` = {stamina, exhausted, joueur} lu
+    sur l'UNIQUE soutien en jeu ; `soutiens_tous_inclines` ; `n_retires` =
+    soutiens DAILY BUGLE retires du jeu ; `distribuees` / `distribuees_min` =
+    cartes rencontre face cachee du joueur 0 ; le reste -> etat_attendu."""
+    from game.card.face.card_type import Support
+    attendu = aides["cas"].get("attendu") or {}
+    soutiens = _fne3a_soutiens_bugle(monde)
+    ids = [getattr(f.paper, "card_id", "?") for f in soutiens]
+    soucis = []
+    if "n_soutiens" in attendu and len(soutiens) != attendu["n_soutiens"]:
+        soucis.append(f"soutiens DAILY BUGLE en jeu = {ids} (attendu {attendu['n_soutiens']})")
+    if attendu.get("soutien"):
+        if len(soutiens) != 1:
+            soucis.append(f"il faut exactement UN soutien DAILY BUGLE en jeu pour lire `soutien` (en jeu : {ids})")
+        else:
+            s0 = soutiens[0]; v = attendu["soutien"]
+            if "stamina" in v and s0.GetCounters('stamina') != v["stamina"]:
+                soucis.append(f"{ids[0]} stamina = {s0.GetCounters('stamina')} (attendu {v['stamina']})")
+            if "exhausted" in v and bool(s0.IsExhaust()) != v["exhausted"]:
+                soucis.append(f"{ids[0]} exhausted = {s0.IsExhaust()} (attendu {v['exhausted']})")
+            if "joueur" in v and s0.GetControlByPlayer() is not monde.players[v["joueur"]]:
+                soucis.append(f"{ids[0]} n'est pas controle par le joueur {v['joueur']}")
+    if attendu.get("soutiens_tous_inclines") and any(not f.IsExhaust() for f in soutiens):
+        soucis.append(f"un soutien DAILY BUGLE est encore pret ({ids})")
+    if "n_retires" in attendu:
+        retires = [f for f in monde.area_removed.Get(True) if Support.IsType(f) and f.HasTrait("DAILY BUGLE")]
+        if len(retires) != attendu["n_retires"]:
+            soucis.append(f"soutiens DAILY BUGLE retires du jeu = {len(retires)} (attendu {attendu['n_retires']})")
+    if "distribuees_de" in attendu:
+        indice, voulu = attendu["distribuees_de"]
+        recues = [getattr(f.paper, "card_id", None) for f in monde.players[indice].dealt_encounter_cards.Get(True)]
+        if sorted(recues) != sorted(voulu):
+            soucis.append(f"cartes distribuees au joueur {indice} = {recues} (attendu {voulu})")
+    distribuees = [getattr(f.paper, "card_id", None) for f in monde.players[0].dealt_encounter_cards.Get(True)]
+    if "distribuees" in attendu and sorted(distribuees) != sorted(attendu["distribuees"]):
+        soucis.append(f"cartes distribuees = {distribuees} (attendu {attendu['distribuees']})")
+    if "distribuees_min" in attendu and len(distribuees) < attendu["distribuees_min"]:
+        soucis.append(f"cartes distribuees = {distribuees} (au moins {attendu['distribuees_min']} attendue)")
+    reste = {k: v for k, v in attendu.items() if k in CLES_ETAT_ATTENDU}
+    if reste:
+        copie = dict(aides); copie["cas"] = dict(aides["cas"]); copie["cas"]["attendu"] = reste
+        ok, msg = etat_attendu(monde, copie)
+        if not ok:
+            soucis.append(msg)
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"soutiens = {ids}, distribuees = {distribuees}"
+
+def fne3a_bugle_perte(monde, aides):
+    """Retire les 3 stamina de l'unique soutien DAILY BUGLE (Uses le fait
+    sortir du jeu), puis verifie que la partie est finie ET perdue."""
+    from game.operate.faces import Faces
+    from game.effect.rule import DebugRule
+    soutiens = _fne3a_soutiens_bugle(monde)
+    if len(soutiens) != 1:
+        return False, f"il faut exactement UN soutien DAILY BUGLE en jeu ({len(soutiens)})"
+    s0 = soutiens[0]
+    Faces.RemoveCountersOn([s0], 3, 'stamina', DebugRule(s0))
+    if s0.IsInPlay():
+        return False, "le soutien est encore en jeu apres le retrait des 3 pions (Uses)"
+    if not getattr(monde, "is_game_over", False):
+        return False, "le soutien a quitte le jeu mais la partie continue"
+    gagnee = getattr(monde, "is_players_win", None)
+    if gagnee is None:
+        gagnee = getattr(monde, "players_win", None)
+    if gagnee:
+        return False, "partie terminee mais GAGNEE"
+    return True, "le soutien a quitte le jeu, partie perdue"
+
+# ---- fin des verificateurs bloc 3A ----
+
+# ---------------------------------------------------------------- pack fne (bloc 2)
+def fne_retirees(monde, aides):
+    """`attendu.retirees` : ces card_id sont dans la zone RETIREE DU JEU."""
+    attendu = aides["cas"].get("attendu") or {}
+    ids = [getattr(f.paper, "card_id", None) for f in monde.area_removed.Get(True)]
+    manquent = [c for c in attendu.get("retirees") or [] if c not in ids]
+    if manquent:
+        return False, f"{manquent} pas retiree(s) du jeu (retirees = {ids})"
+    if "degats_identite" in attendu:
+        identite = aides["identite"](monde)
+        subis = identite.max_health - identite.health
+        if subis != attendu["degats_identite"]:
+            return False, f"degats identite = {subis} (attendu {attendu['degats_identite']})"
+    return True, f"retirees = {ids}"
+
+def fne_mots_cles(monde, aides):
+    """`attendu.carte` porte (ou non) guard / patrol / villainous, un trait,
+    et la menace de Power of Suggestion."""
+    attendu = aides["cas"].get("attendu") or {}
+    face = aides["par_id"](monde, attendu["carte"])
+    if face is None:
+        return False, f"{attendu['carte']} introuvable en jeu"
+    soucis = []
+    for mot, fn in (("guard", "IsGuard"), ("patrol", "IsPatrol"), ("villainous", "IsVillainous")):
+        if mot in attendu and bool(getattr(face, fn)()) != attendu[mot]:
+            soucis.append(f"{attendu['carte']}.{mot} = {getattr(face, fn)()} (attendu {attendu[mot]})")
+    if attendu.get("trait") and not face.HasTrait(attendu["trait"]):
+        soucis.append(f"trait {attendu['trait']} absent")
+    if "menace_60108" in attendu:
+        pos = aides["par_id"](monde, "60108")
+        if pos is None or pos.threat != attendu["menace_60108"]:
+            soucis.append(f"menace sur 60108 = {getattr(pos, 'threat', None)} (attendu {attendu['menace_60108']})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "mots-cles conformes"
+
+def fne_converti(monde, aides):
+    """Converted : la face de sbire (pic = l'allie) est en jeu, engagee avec le
+    joueur, avec le SCH attendu, le trait INFLUENCED et guard."""
+    from game.card.face.card_type import Minion
+    attendu = aides["cas"].get("attendu") or {}
+    trouve = None
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is None or not face.IsInPlay() or not Minion.IsType(face):
+            continue
+        if getattr(face, "pic_id", None) == attendu["pic"]:
+            trouve = face
+    if trouve is None:
+        return False, f"aucun sbire converti a l'image de {attendu['pic']} en jeu"
+    soucis = []
+    if trouve.engaged_player is not monde.players[attendu.get("joueur", 0)]:
+        soucis.append("pas engage avec le joueur attendu")
+    if trouve.scheme != attendu["sch"]:
+        soucis.append(f"SCH = {trouve.scheme} (attendu {attendu['sch']})")
+    if not trouve.HasTrait("INFLUENCED"):
+        soucis.append("trait INFLUENCED absent")
+    if attendu.get("guard") and not trouve.IsGuard():
+        soucis.append(f"guard absent (guard={getattr(trouve, 'guard', None)}, printed={getattr(trouve, 'printed_guard', None)}, traits={[t for t in ('INFLUENCED',) if trouve.HasTrait(t)]})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"sbire converti : SCH {trouve.scheme}, engage, INFLUENCED, guard"
+
+def fne_carte_distribuee(monde, aides):
+    """`attendu.carte` (facultatif) est parmi les cartes rencontre distribuees
+    face cachee au joueur ; `absente: True` inverse ; `en_jeu` : une carte
+    qui doit etre en jeu."""
+    attendu = aides["cas"].get("attendu") or {}
+    joueur = monde.players[attendu.get("joueur", 0)]
+    ids = [getattr(f.paper, "card_id", None) for f in joueur.dealt_encounter_cards.Get(True)]
+    if attendu.get("carte"):
+        present = attendu["carte"] in ids
+        if attendu.get("absente") and present:
+            return False, f"{attendu['carte']} a ete distribuee alors qu'elle ne devait pas (distribuees = {ids})"
+        if not attendu.get("absente") and not present:
+            return False, f"{attendu['carte']} pas distribuee (distribuees = {ids})"
+    elif not ids:
+        return False, "aucune carte de rencontre distribuee"
+    if attendu.get("en_jeu") and aides["par_id"](monde, attendu["en_jeu"]) is None:
+        return False, f"{attendu['en_jeu']} n'est pas en jeu"
+    return True, f"distribuees = {ids}"
+
+def fne_mis_de_cote_scenario(monde, aides):
+    """`attendu.carte` est dans la zone de mise de cote du SCENARIO (aside_deck)."""
+    attendu = aides["cas"].get("attendu") or {}
+    ids = [getattr(f.paper, "card_id", None) for f in monde.aside_deck.Get(True)]
+    if attendu["carte"] not in ids:
+        return False, f"{attendu['carte']} pas mise de cote (aside = {ids})"
+    return True, f"mise de cote : {ids}"
+
+def _fne_face_vilaine(monde):
+    for cid in ("60110a", "60110b", "60111a", "60111b"):
+        if aides_par_id_global(monde, cid) is not None:
+            return cid
+    return None
+
+def aides_par_id_global(monde, card_id):
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and face.IsInPlay() and getattr(face.paper, "card_id", None) == card_id:
+            return face
+    return None
+
+def fne_fin_phase_vilain(monde, aides):
+    """Envoie WhenPhaseEnd('Villain') comme le moteur, puis lit la face visible."""
+    from game.message import Message
+    attendu = aides["cas"].get("attendu") or {}
+    avant = _fne_face_vilaine(monde)
+    Message.WhenPhaseEnd(getattr(monde, "phase_id", 1), "Villain", monde).Send()
+    apres = _fne_face_vilaine(monde)
+    if apres != attendu["face"]:
+        return False, f"face {avant} -> {apres} (attendu {attendu['face']})"
+    # Sans le module, le Setup ne retourne pas la vilaine : elle est deja sur
+    # la face attendue et rien ne bouge. Le retournement doit etre CONSTATE.
+    if avant == apres:
+        return False, f"face inchangee ({avant}) : aucun retournement"
+    return True, f"face {avant} -> {apres}"
+
+def fne_setup_psyche(monde, aides):
+    """Le Setup de Disturbed Psyche (AfterGameSetup) a deja joue sous le harnais
+    (« Resolve Character Setup Abilities ») : on lit la face visible de la
+    vilaine et on la compare a celle que le scenario declare (60110a)."""
+    attendu = aides["cas"].get("attendu") or {}
+    face = _fne_face_vilaine(monde)
+    if face != attendu["face"]:
+        return False, f"face visible {face} (attendu {attendu['face']})"
+    return True, f"face visible {face}, le scenario declare 60110a : le Setup a retourne la vilaine"
+
+def fne_fin_de_round(monde, aides):
+    """Envoie WhenRoundEnd (modele brawn_hulk_out_fin_de_round) puis verifie
+    `en_jeu` et une carte distribuee au joueur."""
+    from game.message import Message
+    Message.WhenRoundEnd(monde).Send()
+    return fne_carte_distribuee(monde, aides)
+
+def fne_partie_gagnee(monde, aides):
+    """La partie est finie ET gagnee par les joueurs."""
+    if not getattr(monde, "is_game_over", False):
+        return False, "la partie n'est pas terminee"
+    gagnee = getattr(monde, "is_players_win", None)
+    if gagnee is None:
+        gagnee = getattr(monde, "players_win", None)
+    if gagnee is False:
+        return False, "partie terminee mais PERDUE"
+    return True, f"partie terminee, gagnee = {gagnee}"
+
+
+# ---------------------------------------------------------------- pack fne (bloc 3P)
+def fne3p_racket(monde, aides):
+    """Protection Racket : `nb` complots Protection Racket en jeu, `de_cote`
+    mis de cote, `menace_joueur` sur le complot du joueur 0, `proprietaire`
+    du complot en jeu ; le reste passe a etat_attendu."""
+    from game.operate.worlds import Worlds
+    from game.card.face.card_type import MainScheme
+    effet = type("EffetFactice", (), {"world": monde})()
+    attendu = dict(aides["cas"].get("attendu") or {})
+    soucis = []
+    en_jeu = [s for s in Worlds.GetAllMainSchemes(monde) if s.paper.set_name == "Protection Racket"]
+    if "nb" in attendu and len(en_jeu) != attendu.pop("nb"):
+        soucis.append(f"{len(en_jeu)} complot(s) Protection Racket en jeu : {[s.paper.card_id for s in en_jeu]}")
+    if "de_cote" in attendu:
+        de_cote = [f for f in Worlds.GetSetAsideAreaCards(effet) if MainScheme.IsType(f) and f.paper.set_name == "Protection Racket"]
+        voulu = attendu.pop("de_cote")
+        if len(de_cote) != voulu:
+            soucis.append(f"{len(de_cote)} complot(s) mis de cote (attendu {voulu}) : {[f.paper.card_id for f in de_cote]}")
+    joueur0 = monde.players[0]
+    du_joueur = [s for s in en_jeu if getattr(s.card, "proprietaire_racket", None) == joueur0.player_id]
+    if "proprietaire" in attendu:
+        attendu.pop("proprietaire")
+        if not du_joueur:
+            soucis.append(f"aucun complot n'appartient au joueur 0 (proprietaires = {[getattr(s.card, 'proprietaire_racket', None) for s in en_jeu]})")
+    if "menace_joueur" in attendu:
+        voulu = attendu.pop("menace_joueur")
+        if not du_joueur:
+            soucis.append("menace_joueur : aucun complot du joueur 0")
+        elif du_joueur[0].threat != voulu:
+            soucis.append(f"menace sur le complot du joueur = {du_joueur[0].threat} (attendu {voulu}) [{du_joueur[0].paper.card_id}]")
+    if attendu:
+        aides2 = dict(aides); aides2["cas"] = dict(aides["cas"], attendu=attendu)
+        if attendu.get("carte_du_surge"):
+            ok, msg = surge_carte(monde, aides2) if "surge_carte" in globals() else (True, "")
+            if not ok: soucis.append(msg)
+            attendu.pop("carte_du_surge"); aides2["cas"] = dict(aides["cas"], attendu=attendu)
+        if attendu:
+            ok, msg = etat_attendu(monde, aides2)
+            if not ok: soucis.append(msg)
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"racket ok : en jeu {[s.paper.card_id for s in en_jeu]}, joueur 0 -> {[s.paper.card_id for s in du_joueur]}"
+
+# ---- fin des verificateurs du bloc 3P ----
+
+
+
+
+
+# ---------------------------------------------------------------- pack fne (bloc 5)
+def fne5_trait(monde, aides):
+    """Campagne : toutes les cartes EN JEU d'un `trait` (ou toutes, trait vide)
+    et d'un `type` portent le `statut`, ont `boost` carte(s) boost, ont le
+    `compteur` [nom, n] ; `exemplaires` [id, n] compte les copies en jeu."""
+    attendu = dict(aides["cas"].get("attendu") or {})
+    soucis = []
+    if "exemplaires" in attendu:
+        cid, n = attendu.pop("exemplaires")
+        copies = [c for c in monde.object_manager.card_dict.values()
+                  if c.face is not None and c.face.IsInPlay() and c.face.paper.card_id == cid]
+        if len(copies) != n:
+            soucis.append(f"{len(copies)} exemplaire(s) de {cid} en jeu (attendu {n})")
+    if "trait" in attendu:
+        trait = attendu.pop("trait"); typ = attendu.pop("type")
+        cibles = [c.face for c in monde.object_manager.card_dict.values()
+                  if c.face is not None and c.face.IsInPlay() and type(c.face).__name__ == typ
+                  and (not trait or c.face.HasTrait(trait))]
+        if not cibles:
+            soucis.append(f"aucune carte {typ} {trait!r} en jeu")
+        if "nombre" in attendu and len(cibles) != attendu["nombre"]:
+            soucis.append(f"{len(cibles)} carte(s) {typ} {trait!r} en jeu (attendu {attendu['nombre']}) : {[f.paper.card_id for f in cibles]}")
+        attendu.pop("nombre", None)
+        for f in cibles:
+            if "statut" in attendu and not f.HasStatus(attendu["statut"]):
+                soucis.append(f"{f.paper.card_id} sans statut {attendu['statut']}")
+            if "boost" in attendu:
+                nb = f.card.components.boostable.GetDeck().GetSize() if getattr(f.card.components, "boostable", None) else 0
+                if nb != attendu["boost"]:
+                    soucis.append(f"{f.paper.card_id} : {nb} carte(s) boost (attendu {attendu['boost']})")
+            if "compteur" in attendu:
+                nom, n = attendu["compteur"]
+                if f.GetCounters(nom) != n:
+                    soucis.append(f"{f.paper.card_id} : {nom}={f.GetCounters(nom)} (attendu {n})")
+        for k in ("statut", "boost", "compteur"):
+            attendu.pop(k, None)
+    if attendu:
+        aides2 = dict(aides); aides2["cas"] = dict(aides["cas"], attendu=attendu)
+        ok, msg = etat_attendu(monde, aides2)
+        if not ok: soucis.append(msg)
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "campagne ok"
+
+
+def fne5_collect(monde, aides):
+    """Le carnet SORTANT (CollectFNE) sur une partie gagnee : on simule la fin
+    de partie gagnee (world.game_over) et on lit les cles rendues."""
+    import types
+    from cards.pack.fne.campaign import CollectFNE
+    from game.effect.rule import DebugRule
+    attendu = dict(aides["cas"].get("attendu") or {})
+    manigance = attendu.pop("collect")
+    voulu = attendu.pop("cles")
+    # `CollectFNE(manigance, effect, message)` depuis le 19/09/2026 : le
+    # resultat de la partie n'est PAS encore pose sur le monde pendant
+    # `WhenGameOver`, il n'existe que dans le message. On simule donc le
+    # message, pas le monde.
+    monde.game_over = types.SimpleNamespace(is_players_won=True)
+    effet = DebugRule(monde.object_manager.card_dict[0].face)
+    message = types.SimpleNamespace(players_won=True)
+    rendu = CollectFNE(manigance, effet, message)
+    soucis = [f"{k} = {rendu.get(k)!r} (attendu {v!r})" for k, v in voulu.items() if rendu.get(k) != v]
+    if soucis:
+        retirees = [(f.paper.card_id, f.paper.name, type(f).__name__, type(f.GetOwner()).__name__) for f in monde.area_removed.Get(True)]
+        return False, " ; ".join(soucis) + f" ; rendu = {rendu} ; area_removed = {retirees}"
+    return True, f"carnet sortant ok : {rendu}"
+
+# ---- fin des verificateurs du bloc 5 ----
+
+
+# ---------------------------------------------------------------- pack fne (bloc 3B)
+# (aucun verificateur dedie a ce jour : les cas du bloc 3B passent par
+# etat_attendu et fne_boost_du_vilain)
+
+# ---- fin des verificateurs du bloc 3B ----
+
+# ---------------------------------------------------------------- pack fne (bloc 4)
+def _fne4_delegue(monde, aides, cles_propres):
+    """Delegue a etat_attendu les cles generiques, en cachant les cles propres
+    (le garde-fou des cles inconnues ne joue que si le cas appelle etat_attendu
+    directement ; on ne laisse passer ici QUE des cles qu'il lit vraiment)."""
+    attendu = aides["cas"].get("attendu") or {}
+    reste = {k: v for k, v in attendu.items() if k not in cles_propres}
+    inconnues = sorted(set(reste) - CLES_ETAT_ATTENDU)
+    if inconnues:
+        return False, f"cle(s) inconnue(s) : {inconnues}"
+    if not reste:
+        return True, ""
+    sauve = aides["cas"]["attendu"]
+    aides["cas"]["attendu"] = reste
+    try:
+        return etat_attendu(monde, aides)
+    finally:
+        aides["cas"]["attendu"] = sauve
+
+def _fne4_sbires(monde):
+    from game.card.face.card_type import Minion
+    out = []
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and face.IsInPlay() and Minion.IsType(face):
+            out.append(face)
+    return out
+
+def fne4_sbires_en_jeu(monde, aides):
+    """`underlings` (exact) / `underlings_min` : sbires UNDERLING en jeu ;
+    `retirees` : card_id dans la zone retiree ; le reste va a etat_attendu."""
+    attendu = aides["cas"].get("attendu") or {}
+    sbires = _fne4_sbires(monde)
+    n = sum(1 for f in sbires if f.HasTrait("UNDERLING"))
+    ids = [getattr(f.paper, "card_id", "?") for f in sbires]
+    if "underlings" in attendu and n != attendu["underlings"]:
+        return False, f"{n} UNDERLING en jeu (attendu {attendu['underlings']}) ; sbires = {ids}"
+    if "underlings_min" in attendu and n < attendu["underlings_min"]:
+        return False, f"{n} UNDERLING en jeu (attendu au moins {attendu['underlings_min']}) ; sbires = {ids}"
+    retirees = [getattr(f.paper, "card_id", None) for f in monde.area_removed.Get(True)]
+    manquent = [c for c in attendu.get("retirees") or [] if c not in retirees]
+    if manquent:
+        return False, f"{manquent} pas retiree(s) du jeu (retirees = {retirees})"
+    ok, msg = _fne4_delegue(monde, aides, {"underlings", "underlings_min", "retirees"})
+    return ok, f"sbires = {ids}, UNDERLING = {n} ; {msg}"
+
+def fne4_reserve_nemesis(monde, aides):
+    """`taille` : nombre de cartes restant dans la reserve nemesis du joueur 0."""
+    attendu = aides["cas"].get("attendu") or {}
+    joueur = monde.players[0]
+    cartes = [getattr(f.paper, "card_id", "?") for f in joueur.set_aside_nemesis_sets.Get()]
+    if len(cartes) != attendu["taille"]:
+        return False, f"reserve nemesis = {cartes} ({len(cartes)}, attendu {attendu['taille']})"
+    ok, msg = _fne4_delegue(monde, aides, {"taille"})
+    return ok, f"reserve nemesis = {cartes} ; {msg}"
+
+def fne4_bag_sans_reserve(monde, aides):
+    """Vide la reserve nemesis du joueur 0 (RemoveAllFromGame, le harnais ne
+    fouille pas set_aside_nemesis_sets) PUIS revele Bag of Tricks ; `taille`
+    et le temoin de surge vont aux verifications habituelles."""
+    from game.puzzle.puzzle import PuzzleHelper
+    from game.operate.faces import Faces
+    from game.effect.rule import DebugRule
+    joueur = monde.players[0]
+    reserve = list(joueur.set_aside_nemesis_sets.Get())
+    if reserve:
+        Faces.RemoveAllFromGame(reserve, DebugRule(joueur.GetIdentity()))
+    PuzzleHelper.Exec(["Puzzle.Reveal('60175')"], monde)
+    return fne4_reserve_nemesis(monde, aides)
+
+def fne4_pile_boost_vide(monde, aides):
+    """`vilain` : sa pile de boost est VIDE (la carte a ete remplacee) ; le
+    reste (compteurs, hotes) va a etat_attendu."""
+    attendu = aides["cas"].get("attendu") or {}
+    vilain = aides["par_id"](monde, attendu["vilain"])
+    if vilain is None:
+        return False, f"{attendu['vilain']} introuvable en jeu"
+    pile = [getattr(f.paper, "card_id", "?") for f in vilain.components.boostable.GetDeck().Get(True)]
+    if pile:
+        return False, f"pile de boost non vide : {pile}"
+    ok, msg = _fne4_delegue(monde, aides, {"vilain"})
+    return ok, f"pile de boost vide ; {msg}"
+
+def fne4_black_cat_alliee(monde, aides):
+    """Black Cat convertie : un ALLIE a son image (pic_id 60169) controle par le
+    joueur, ATK/THW recopies, 2 degats consecutifs, et plus aucun sbire 60169."""
+    from game.card.face.card_type import Ally
+    attendu = aides["cas"].get("attendu") or {}
+    joueur = monde.players[attendu.get("joueur", 0)]
+    trouve = None
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and face.IsInPlay() and Ally.IsType(face) and getattr(face, "pic_id", None) == "60169":
+            trouve = face
+    if trouve is None:
+        return False, "aucun allie a l'image de Black Cat en jeu"
+    soucis = []
+    if trouve.GetControlBy() is not joueur:
+        soucis.append("pas sous le controle du joueur")
+    if trouve.attack != attendu["atk"]:
+        soucis.append(f"ATK = {trouve.attack} (attendu {attendu['atk']})")
+    if trouve.thwart != attendu["thw"]:
+        soucis.append(f"THW = {trouve.thwart} (attendu {attendu['thw']})")
+    ca = getattr(trouve, "attack_consequential_damage", None)
+    ct = getattr(trouve, "thwart_consequential_damage", None)
+    if ca != attendu["consecutifs"] or ct != attendu["consecutifs"]:
+        soucis.append(f"degats consecutifs ATK/THW = {ca}/{ct} (attendu {attendu['consecutifs']})")
+    if trouve.card.face is not trouve:
+        soucis.append("la face active de la carte n'est pas l'alliee")
+    from game.card.face.card_type import Minion
+    if Minion.IsType(trouve.card.face):
+        soucis.append("la face active est encore un sbire")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"Black Cat alliee : {trouve.name} ATK {trouve.attack} THW {trouve.thwart}, consecutifs {ca}/{ct}"
+
+def fne4_wesley_revele(monde, aides):
+    """James Wesley revele : la pile de boost de Kingpin contient la carte
+    (fne_boost_du_vilain), et le reste (hotes, attributs_carte) va a etat_attendu."""
+    ok, msg = fne_boost_du_vilain(monde, aides)
+    if not ok:
+        return ok, msg
+    ok2, msg2 = _fne4_delegue(monde, aides, {"boost_du_vilain", "vilain"})
+    return ok2, f"{msg} ; {msg2}"
+
+# ---- fin des verificateurs du bloc 4 ----
+
+# ---------------------------------------------------------------- fin de scenario (fne)
+def fnefin_carnet_sortant(monde, aides):
+    """Le carnet SORTANT, celui que l'ecran de campagne relit apres la partie.
+
+    `WriteCampaignLogAtGameOver` l'ecrit dans le fichier pointe par
+    `campaign_log_last_file` au moment ou la partie se termine. On le relit
+    ici : `gagnee`, `scenario` (l'estampille), `cles` (valeurs exactes),
+    `cles_presentes` et `cles_absentes`.
+    """
+    import json, os
+    from engine.config import ConfigVariables
+    attendu = aides["cas"].get("attendu") or {}
+    chemin = ConfigVariables.File('campaign_log_last_file', './campaign_log_last.json').value
+    if not os.path.exists(chemin):
+        return False, f"aucun carnet sortant ecrit ({chemin})"
+    with open(chemin, encoding="utf-8") as f:
+        carnet = json.load(f)
+    suggestions = carnet.get("suggestions") or {}
+    soucis = []
+    if "gagnee" in attendu and bool(carnet.get("players_won")) != attendu["gagnee"]:
+        soucis.append(f"players_won = {carnet.get('players_won')} (attendu {attendu['gagnee']})")
+    if "scenario" in attendu and carnet.get("scenario") != attendu["scenario"]:
+        soucis.append(f"estampille = {carnet.get('scenario')!r} (attendu {attendu['scenario']!r})")
+    for cle, valeur in (attendu.get("cles") or {}).items():
+        if suggestions.get(cle) != valeur:
+            soucis.append(f"{cle} = {suggestions.get(cle)!r} (attendu {valeur!r})")
+    for cle in attendu.get("cles_presentes") or []:
+        if cle not in suggestions:
+            soucis.append(f"{cle} manque au carnet sortant")
+    for cle in attendu.get("cles_absentes") or []:
+        if cle in suggestions:
+            soucis.append(f"{cle} = {suggestions[cle]!r} alors qu'il ne devrait pas y etre")
+    if soucis:
+        return False, " ; ".join(soucis) + f" ; carnet = {suggestions}"
+    return True, f"carnet sortant ok : scenario={carnet.get('scenario')} gagnee={carnet.get('players_won')}"
+
+# ---- fin des verificateurs fnefin ----
+
 def etat_attendu(monde, aides):
     attendu = aides["cas"].get("attendu") or {}
     identite = aides["identite"](monde)
@@ -32450,6 +44096,12 @@ def etat_attendu(monde, aides):
         # scenario la sienne (villain.py:144, scenario.py:19). `Worlds` expose
         # bien un raccourci, mais il exige un `Effect`, que la verification
         # n'a pas.
+        # CORRECTIF 18/09/2026 (pack fne) : `monde.villains` n'existe pas, et
+        # la pile du scenario n'est pas celle ou le vilain defausse (Power
+        # Struggle a defausse 2 cartes « vers EncounterDiscardPile<3> » et la
+        # cle lisait une pile vide). On passe par `Worlds`, comme
+        # `Puzzle.FindOrCreateFace`, qui accepte un World.
+        from game.operate.worlds import Worlds
         piles = [monde.GetScenario().encounter_discard_pile]
         for villain in getattr(monde, "villains", []) or []:
             pile = getattr(villain, "encounter_discard_pile", None)
@@ -32457,6 +44109,8 @@ def etat_attendu(monde, aides):
                 piles.append(pile)
         cartes = [getattr(f.paper, "card_id", None)
                   for pile in piles for f in pile.GetAll()]
+        cartes += [getattr(f.paper, "card_id", None)
+                   for f in Worlds.GetEncounterDiscardPileCards(monde)]
         if card_id not in cartes:
             soucis.append(f"{card_id} n'est pas dans la defausse de rencontre "
                           f"(defausse = {cartes})")
@@ -37508,6 +49162,32 @@ def executer_un_cas(game_dir, port, index):
     if cas.get("heros2"):
         noms_heros.append(cas["heros2"])
     scene = SceneLoader.NewScene(cas["scenario"], None, noms_heros, 42)
+    # ⚠ LE HARNAIS NE JOUE PAS LES MEMES REGLES QU'UNE VRAIE PARTIE.
+    # `launcher.js` pousse `v16_all` des que « regles v1.6 » est coche (c'est
+    # le cas par defaut), et `SetRule` bascule alors TOUS les `v16_*` :
+    # Teamwork n'active que le sbire qui entre, un personnage sonne peut quand
+    # meme tenter d'attaquer, etc. Ici, rules est vide : les cas mesurent donc
+    # les regles d'AVANT 1.6 (constate le 18/09/2026 sur Teamwork, pack fne).
+    # `REGLES_V16=1` permet de rejouer un cas, ou une famille, dans les regles
+    # reellement jouees ; le defaut reste inchange tant qu'on n'a pas mesure
+    # carte par carte ce que la bascule deplace.
+    if os.environ.get("REGLES_V16") and "v16_all" not in scene.rules:
+        scene.rules.append("v16_all")
+    # `carnet` : un cas de CAMPAGNE. Le carnet est celui que le lanceur passe
+    # en `campaignLog` ; la regle `mode_campaign` rend `Worlds.IsCampaign`
+    # vrai, sans quoi aucune capacite `WhenCampaignSetup` ne part
+    # (game/ability/factory/campaign.py). Ajoute le 18/09/2026 pour Fear No
+    # Evil (environnements Completed / Failed, marques de progression).
+    # `campagne: True` sans carnet : une partie de campagne qui DEMARRE avec un
+    # carnet vierge. Ajoute le 19/09/2026 — les cas de fin de scenario
+    # attendaient un carnet SORTANT sans rien avoir a mettre dans le carnet
+    # entrant, donc sans `carnet`, donc hors mode campagne : la capacite
+    # `WriteCampaignLogAtGameOver` ne partait pas et le fichier n'existait
+    # jamais. Le mode ne doit pas dependre du contenu du carnet.
+    if cas.get("carnet") or cas.get("campagne"):
+        scene.campaign.campaign_log |= {str(k): str(v) for k, v in (cas.get("carnet") or {}).items()}
+        if "mode_campaign" not in scene.rules:
+            scene.rules.append("mode_campaign")
     remplir_les_decks_vides(scene)
     jeu = Engine.game
     jeu.session.SetScene(scene, "Load")
@@ -37544,7 +49224,29 @@ def executer_un_cas(game_dir, port, index):
 # (`tools/decks-de-test.json`, cle = face heros). Des ressources seules
 # changeaient encore les choix du pilote (ho009, hd012 rouges) ; l'ancien deck
 # rend exactement les conditions d'origine. Le fichier ne sert qu'ici.
-DECKS_DE_TEST_FICHIER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "decks-de-test.json")
+# ⚠ CHERCHE A PLUSIEURS ENDROITS, ET C'EST INDISPENSABLE (18/09/2026).
+# Le fichier etait resolu A COTE DU SCRIPT, et la batterie complete se lance
+# depuis une COPIE GELEE (`/tmp/test_capacites_frozen.py`, pour que les
+# regenerations de cas ne changent pas une passe en cours). Depuis /tmp le
+# fichier n'existe pas, `_decks_de_test` rendait {} en silence, les decks
+# restaient vides et 57 cas tombaient au rouge — les memes a chaque passe,
+# tous VERTS des qu'on les rejouait depuis `tools/`. Deux batteries ont ete
+# lues de travers avant qu'on ne compare les deux chemins.
+# Les enfants font `os.chdir(game_dir)` : `../tools/` depuis un repertoire de
+# jeu (`.game-src*`) retombe donc sur le vrai fichier.
+def _chemin_decks_de_test() -> str:
+    candidats = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "decks-de-test.json"),
+        os.path.join(os.getcwd(), "tools", "decks-de-test.json"),
+        os.path.join(os.getcwd(), "..", "tools", "decks-de-test.json"),
+    ]
+    for chemin in candidats:
+        if os.path.exists(chemin):
+            return chemin
+    return candidats[0]
+
+
+DECKS_DE_TEST_FICHIER = _chemin_decks_de_test()
 
 
 def _decks_de_test():

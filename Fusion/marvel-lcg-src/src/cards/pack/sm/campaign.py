@@ -5,6 +5,21 @@ def ChooseCommunityService():
         ["27176", "27177", "27178", "27179", "27180"],
     )
 
+def DeuxFacesDuMateriel(card_id: str) -> str:
+    """Le materiel S.H.I.E.L.D. avec SES DEUX FACES.
+
+    CORRECTIF DU 19/09/2026, trouve par les epreuves de campagne. Le carnet ne
+    retient que la face de base (« 27182a »), et la carte etait fabriquee avec
+    cette seule face. A 13 noeuds de reputation, le moteur la retourne sur sa
+    version amelioree (`FlipTo(trait="ENHANCED")`) : sans face arriere, ce
+    retournement ne pouvait rien faire, et la recompense du palier 13
+    n'existait pas. On fabrique donc la carte complete.
+    """
+    if (',' in card_id) or not card_id.endswith('a'):
+        return card_id
+    return f'{card_id},{card_id[:-1]}b'
+
+
 def FollowSetupInstructionOfReputationTrack() -> 'Ability':
     def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
         this = effect.this
@@ -14,7 +29,7 @@ def FollowSetupInstructionOfReputationTrack() -> 'Ability':
                 player_id = player.player_id
                 card_id = CampaignLog.GetStrByPlayer("S.H.I.E.L.D. Tech: Reputation Track Reward", player_id, effect)
                 if card_id:
-                    card = CardFactory.GenerateCard(card_id, player.discard_pile, effect.world)
+                    card = CardFactory.GenerateCard(DeuxFacesDuMateriel(card_id), player.discard_pile, effect.world)
                     # Faces.ShuffleAllTo([card.face], player.player_deck, effect)
                     card.face.PutIntoPlay(player, effect)
                     if value >= 13:

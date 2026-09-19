@@ -168,7 +168,7 @@ def CampaignSetup(level: int) -> List['Ability']:
     if (level >= 2):
         abilities.append(AbilityFactoryCampaign.ExpertCampaignSetPlayersHPToTheirRemainingHP())
         abilities.append(ExpertMayPlaceAccelerationToHeal())
-    abilities.append(WriteCampaignLogAtGameOver(lambda effect: CollectMG(level, effect)))
+    abilities.append(WriteCampaignLogAtGameOver(lambda effect, message: CollectMG(level, effect)))
     return abilities
 def CollectMG(level: int, effect: 'Effect') -> dict:
     updates = {}

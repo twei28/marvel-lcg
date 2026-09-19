@@ -205,8 +205,19 @@ def VerrousDeLaCellule() -> 'Ability':
     """
     def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
         from cards.pack.aos.modok import GetHoldingCellDeck
-        deck = GetHoldingCellDeck(effect)
-        face = deck.GetTopCard() if deck else None
+        # CORRECTIF DU 19/09/2026, trouve par les epreuves de campagne. « The
+        # top card of the Holding Cell deck » EST la carte en jeu : le livret
+        # p.13 le dit mot pour mot deux paragraphes plus bas — « Place this
+        # deck near the main scheme with its Holding Cell side faceup. The top
+        # card of this deck is in play. » Or la mise en place du scenario
+        # (etape 12) a deja sorti cette carte du paquet pour la poser sur la
+        # table, donc `deck.GetTopCard()` rendait la SUIVANTE, encore hors jeu :
+        # les trois serrures de campagne se posaient sur une carte que personne
+        # ne voyait, et les captifs liberes au scenario 2 n'ouvraient rien.
+        face = Worlds.FindCardOnField(effect, name='Holding Cell', card_type=Environment)
+        if face is None:
+            deck = GetHoldingCellDeck(effect)
+            face = deck.GetTopCard() if deck else None
         if face is None:
             return
         solde = 3 - _entier(effect, 'Rescued Captives')
@@ -418,7 +429,7 @@ def CampaignSetup(level: int) -> 'List[Ability]':
         # instructions dans cet ordre, et l'inverse soignerait une identite dont
         # les PV seraient ecrases juste apres.
         abilities.append(SoinExpertDuConseil())
-    abilities.append(WriteCampaignLogAtGameOver(lambda effect: CollectAOS(level, effect)))
+    abilities.append(WriteCampaignLogAtGameOver(lambda effect, message: CollectAOS(level, effect)))
     return abilities
 
 

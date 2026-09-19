@@ -17,8 +17,41 @@ import { lireBrouillon, ecrireBrouillon, effacerBrouillon } from "/public/js/cam
 import { catalog } from "/public/js/prepare/catalog.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { cardImageUrl, extensionImageUrl } from "/public/js/prepare/api.js";
+
+/* La COUVERTURE DU LIVRET d'une campagne, ajoutee le 19/09/2026.
+ *
+ * `public/stories/<code>/00-couverture.jpg` est la premiere page du livret
+ * officiel, rasterisee a 975x975 comme les autres planches. On la met en
+ * PREMIERE couche de `background-image` et l'illustration d'extension en
+ * seconde : si la couverture manque (une boite portee sans livret), le
+ * navigateur n'affiche que la couche du dessous, sans case vide ni requete
+ * cassee visible a l'oeil. */
+function couvertureCampagne(code, cleExtension) {
+    const couches = [];
+    const tailles = [];
+    if (code) {
+        couches.push(`url("${pageLivretUrl(code, "00-couverture.jpg")}")`);
+        // `contain` et non `cover` : la couverture est CARREE et les deux
+        // encadres ne le sont pas. Recadree en `cover`, elle perd son titre
+        // (mesure faite sur The Rise of Red Skull, dont le titre est en bas).
+        // Entiere sur fond sombre, la boite se reconnait du premier coup.
+        tailles.push("contain");
+    }
+    if (cleExtension) {
+        couches.push(`url("${extensionImageUrl(cleExtension)}")`);
+        tailles.push("cover");
+    }
+    if (!couches.length) return {};
+    return {
+        backgroundImage: couches.join(", "),
+        backgroundSize: tailles.join(", "),
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+    };
+}
 import { t, langueActuelle, synchroniserLangueServeur, boutonLangue } from "/public/js/prepare/langue.js";
 import { launch } from "/public/js/prepare/launcher.js";
+import * as OL from "/public/js/campagne/ordre-libre.js";
 
 const root = document.getElementById("app");
 
@@ -63,7 +96,9 @@ function indexCourant(campagne, definition) {
     return i === -1 ? definition.scenarios.length : i;
 }
 
-const estTerminee = (campagne, definition) => indexCourant(campagne, definition) >= definition.scenarios.length;
+const estTerminee = (campagne, definition) => definition.ordre_libre
+    ? (campagne.termines || []).includes((OL.scenarioFinal(definition) || {}).id)
+    : indexCourant(campagne, definition) >= definition.scenarios.length;
 
 /** Portrait d'un heros de l'equipe (carte identite face heros). */
 function portraitHeros(membre) {
@@ -139,8 +174,7 @@ function vueListe() {
             },
                 el("div", {
                     class: "cmp-carte-illus",
-                    style: def && def.cle_extension
-                        ? { backgroundImage: `url("${extensionImageUrl(def.cle_extension)}")` } : {},
+                    style: couvertureCampagne(c.code, def && def.cle_extension),
                 }),
                 el("div", { class: "cmp-carte-corps" },
                     el("h2", { class: "cmp-carte-nom mvl" }, c.nom || c.code),
@@ -203,7 +237,7 @@ function vueCreation() {
         class: "cmp-boite cut" + (b.code === c.code ? " sel" : ""),
         onclick: () => { c.code = b.code; c.nom = nomBoite(b); rendre(); },
     },
-        el("div", { class: "cmp-boite-illus", style: b.cle_extension ? { backgroundImage: `url("${extensionImageUrl(b.cle_extension)}")` } : {} }),
+        el("div", { class: "cmp-boite-illus", style: couvertureCampagne(b.code, b.cle_extension) }),
         el("div", { class: "cmp-boite-nom mvl" }, nomBoite(b)),
         el("div", { class: "cmp-boite-nb" }, b.nb_scenarios + " " + t("scénarios")),
     )));
@@ -570,6 +604,7 @@ function vueEnquete(campagne, definition) {
 /* ---------------------------------------------------------- vue « campagne » -- */
 
 function vueCampagne() {
+    if (etat.definition.ordre_libre) return vueCampagneLibre();
     const campagne = etat.campagne;
     const definition = etat.definition;
     const index = indexCourant(campagne, definition);
@@ -811,6 +846,313 @@ function vueConclusion(campagne, definition, perdue) {
     );
 }
 
+/* ------------------------------------------- vue « campagne en ordre libre » -- */
+//
+// Fear No Evil (livret mc60 p. 8-9) ne se joue pas dans l'ordre : cinq affaires
+// au choix, chacune contre un vilain UNDERLING, et Kingpin quand tout est
+// resolu. Avant CHAQUE partie, deux affaires non resolues progressent au
+// hasard ; a trois marques une affaire est perdue. Le livret fait tenir ce
+// carnet a la main ; ici le tirage est fait par l'ecran, une fois par partie,
+// et garde dans `campagne.tirage` tant que la partie n'est pas lancee, pour
+// qu'un rechargement de page ne retire pas une seconde fois.
+//
+// Les regles pures (tirage, vilains, defaite) sont dans ordre-libre.js, et
+// eprouvees par tools/tests-lanceur/ordre-libre.test.mjs.
+//
+// Une defaite n'ouvre pas le panneau du plateau (rien a reporter en standard) :
+// c'est le joueur qui la declare ici, comme il cocherait le carnet papier. En
+// campagne experte elle fait progresser l'affaire perdue ; contre Kingpin elle
+// retourne un environnement Completed cote Failed, ou perd la campagne.
+
+const nomAffaire = (a) => (langueActuelle() === "en" ? a.nom : (a.nom_fr || a.nom));
+const nomVilain = (definition, id) => ((definition.vilains || []).find((v) => v.id === id) || { nom: id }).nom;
+
+function vueCampagneLibre() {
+    const campagne = etat.campagne;
+    const definition = etat.definition;
+    const carnet = campagne.carnet || {};
+    const final = OL.scenarioFinal(definition);
+    const perdue = Boolean(campagne.perdue);
+    const finie = perdue || (campagne.termines || []).includes(final.id);
+    const resolues = OL.affaires(definition).length - OL.affairesOuvertes(definition, carnet).length;
+
+    const barre = el("div", { class: "cmp-barre" },
+        el("button", { class: "btn ghost", onclick: () => proteger(async () => {
+            etat.campagne = null; etat.vue = "liste";
+            etat.campagnes = await apiCampagne.liste();
+        }) }, t("Toutes les campagnes")),
+        el("div", { class: "cmp-barre-id" },
+            el("strong", { class: "cmp-barre-nom mvl" }, campagne.nom),
+            el("span", { class: "cmp-barre-boite" }, nomBoite(definition),
+                campagne.difficulte === "expert" ? " · " + t("Campagne experte") : ""),
+        ),
+        el("div", { class: "cmp-barre-equipe" }, (campagne.equipe || []).map(portraitHeros)),
+        el("div", { class: "cmp-barre-etape" },
+            el("span", { class: "cmp-jauge" },
+                el("span", { class: "cmp-jauge-plein", style: { width: (100 * (resolues + (finie && !perdue ? 1 : 0)) / definition.scenarios.length) + "%" } })),
+            el("span", {}, perdue ? t("Campagne perdue")
+                : finie ? t("Campagne terminée")
+                : (t("Affaires résolues") + " " + resolues + " / " + OL.affaires(definition).length)),
+        ),
+    );
+
+    if (finie) return el("div", { class: "cmp-page-campagne" }, entete(t("Campagne")), barre,
+        el("main", { class: "cmp-corps" }, bandeauErreur(), vueConclusion(campagne, definition, perdue)));
+
+    const enCours = campagne.partieEnCours || null;
+    const tirage = campagne.tirage || null;
+    const expert = campagne.difficulte === "expert";
+
+    // Le tableau du carnet : une ligne par affaire, ses trois cases, son vilain.
+    const tableau = el("section", { class: "cmp-recit" },
+        el("div", { class: "cmp-chapo" },
+            el("span", { class: "cmp-chapo-k" }, t("Carnet de campagne")),
+            el("h1", { class: "cmp-chapo-nom mvl" }, t("Les affaires")),
+        ),
+        el("p", { class: "cmp-resume" }, definition.resume),
+        el("div", { class: "cmp-affaires" }, OL.affaires(definition).map((a) => ligneAffaire(definition, carnet, a, tirage))),
+        el("div", { class: "cmp-affaire" + (OL.kingpinDisponible(definition, carnet) ? " ouverte" : " fermee") },
+            el("span", { class: "cmp-affaire-nom" }, nomAffaire(final)),
+            el("span", { class: "cmp-affaire-etat" }, OL.kingpinDisponible(definition, carnet)
+                ? t("Disponible : toutes les affaires sont résolues")
+                : t("Quand les cinq affaires seront résolues")),
+        ),
+    );
+
+    // Les planches de l'affaire en cours de choix (ou de la partie lancee) :
+    // la BD du livret puis sa page de regles, comme la vue lineaire les montre.
+    const affaireMontree = enCours
+        ? definition.scenarios.find((x) => x.id === enCours.scenario)
+        : (OL.kingpinDisponible(definition, carnet) && tirage ? final
+            : definition.scenarios.find((x) => x.id === etat.affaireChoisie));
+    // La planche d'ouverture du livret (Daredevil entend des sirenes partout).
+    // Elle vaut pour la campagne, pas pour une affaire : elle vit donc sur la
+    // DEFINITION, sous une cle propre a l'ordre libre (la vue lineaire n'a pas
+    // d'endroit ou la mettre).
+    //
+    // ⚠ APRES le tableau des affaires, jamais avant : posee en tete, elle
+    // poussait le carnet — la seule chose qu'on vient lire sur cet ecran —
+    // sous la ligne de flottaison (vu a la capture, 19/09/2026).
+    tableau.append(
+        ...(definition.pages_intro || []).map((f) => pageLivret(definition.code, f, "cmp-page-bd")),
+    );
+
+    if (affaireMontree) {
+        const pages = affaireMontree.pages || {};
+        tableau.append(
+            el("div", { class: "cmp-chapo" },
+                el("span", { class: "cmp-chapo-k" }, t("Le livret")),
+                el("h1", { class: "cmp-chapo-nom mvl" }, nomAffaire(affaireMontree)),
+            ),
+            ...(pages.intro || []).map((f) => pageLivret(definition.code, f, "cmp-page-bd")),
+            ...(pages.regles || []).map((f) => pageLivret(definition.code, f, "cmp-page-regles")),
+        );
+    }
+
+    let action;
+    if (enCours) action = blocPartieEnCours(campagne, definition, enCours, expert);
+    else if (tirage) action = blocChoixDuScenario(campagne, definition, carnet, tirage);
+    else action = blocAvantLaPartie(campagne, definition, carnet);
+
+    const colonneMission = el("aside", { class: "cmp-mission" },
+        action,
+        el("div", { class: "cmp-bloc" },
+            el("h2", { class: "cmp-bloc-t" }, t("Mise en place")),
+            el("p", { class: "cmp-bloc-aide" }, t("Imposée par le livret : le jeu la met en place pour toi, y compris ce que la campagne a déjà ajouté.")),
+            el("p", { class: "cmp-bloc-aide" }, (definition.expert || {}).note && expert ? definition.expert.note : ""),
+        ),
+        (definition.pages_regles || []).length ? el("div", { class: "cmp-bloc" },
+            el("h2", { class: "cmp-bloc-t" }, t("Règles de la campagne")),
+            el("p", { class: "cmp-bloc-aide" },
+                t("Les pages du livret qui valent pour toute la campagne, mode expert compris.")),
+            ...definition.pages_regles.map((f) => pageLivret(definition.code, f, "cmp-page-regles")),
+        ) : null,
+        enCours ? null : el("div", { class: "cmp-lancer" },
+            el("button", {
+                class: "btn ghost",
+                onclick: () => {
+                    ecrireBrouillon({
+                        modifie: etat.campagne.id,
+                        code: definition.code,
+                        nom: etat.campagne.nom,
+                        difficulte: etat.campagne.difficulte,
+                        nbJoueurs: (etat.campagne.equipe || []).length || 1,
+                        identites: (etat.campagne.equipe || []).map((m) => m.nomHeros || m.heros),
+                        equipeActuelle: etat.campagne.equipe || [],
+                    });
+                    window.location.href = "/prepare.html?campagne";
+                },
+            }, t("Modifier les decks")),
+        ),
+    );
+
+    return el("div", { class: "cmp-page-campagne" },
+        entete(t("Campagne")),
+        barre,
+        el("main", { class: "cmp-corps cmp-corps-scenario" },
+            bandeauErreur(),
+            el("div", { class: "cmp-duo" }, tableau, colonneMission),
+        ),
+    );
+}
+
+function ligneAffaire(definition, carnet, affaire, tirage) {
+    const etatA = OL.etatAffaire(carnet, affaire.id);
+    const n = OL.marques(carnet, affaire.id);
+    const vilain = OL.vilainDe(carnet, affaire.id);
+    const tiree = tirage && (tirage.tirees || []).includes(affaire.id);
+    const cases = el("span", { class: "cmp-affaire-cases" },
+        [0, 1, 2].map((i) => el("span", { class: "cmp-affaire-case" + (i < n ? " cochee" : "") }, i < n ? "✕" : "")));
+    return el("div", { class: "cmp-affaire " + etatA + (tiree ? " tiree" : "") },
+        el("span", { class: "cmp-affaire-nom" }, nomAffaire(affaire)),
+        cases,
+        el("span", { class: "cmp-affaire-etat" },
+            etatA === "completed" ? t("Complétée")
+                : etatA === "failed" ? t("Échouée")
+                : tiree ? t("Vient de progresser") : t("En cours")),
+        el("span", { class: "cmp-affaire-vilain" }, vilain ? nomVilain(definition, vilain) : ""),
+    );
+}
+
+/** Étapes 1 à 3 : le tirage, une fois par partie. */
+function blocAvantLaPartie(campagne, definition, carnet) {
+    const ouvertes = OL.affairesOuvertes(definition, carnet);
+    return el("div", { class: "cmp-bloc" },
+        el("h2", { class: "cmp-bloc-t" }, t("Avant la partie")),
+        el("p", { class: "cmp-bloc-aide" }, ouvertes.length
+            ? t("Deux affaires non résolues sont tirées au hasard et progressent d'une marque (s'il n'en reste qu'une, elle en prend deux). À trois marques, l'affaire est perdue.")
+            : t("Toutes les affaires sont résolues : il ne reste que Kingpin.")),
+        el("div", { class: "cmp-lancer" },
+            el("button", { class: "btn launch", onclick: () => proteger(async () => {
+                const resultat = OL.tirerLaProgression(definition, campagne.carnet || {});
+                campagne.carnet = resultat.carnet;
+                campagne.tirage = { tirees: resultat.tirees, echouees: resultat.echouees, depuis: new Date().toISOString() };
+                etat.campagne = await apiCampagne.enregistrer(campagne);
+            }) }, ouvertes.length ? t("Tirer la progression") : t("Préparer la partie finale")),
+        ),
+    );
+}
+
+/** Étapes 4 et 5 : le choix de l'affaire puis du vilain, et le lancement. */
+function blocChoixDuScenario(campagne, definition, carnet, tirage) {
+    const ouvertes = OL.affairesOuvertes(definition, carnet);
+    const final = OL.scenarioFinal(definition);
+    const kingpin = OL.kingpinDisponible(definition, carnet);
+    const compteRendu = el("p", { class: "cmp-bloc-aide" },
+        (tirage.tirees || []).length
+            ? t("Tirage :") + " " + tirage.tirees.map((id) => nomAffaire(definition.scenarios.find((s) => s.id === id))).join(", ")
+                + ((tirage.echouees || []).length ? " · " + t("Échouée à trois marques :") + " "
+                    + tirage.echouees.map((id) => nomAffaire(definition.scenarios.find((s) => s.id === id))).join(", ") : "")
+            : t("Rien à tirer."));
+
+    if (kingpin) {
+        const tentatives = (campagne.tentatives || {})[final.id] || 0;
+        return el("div", { class: "cmp-bloc" },
+            el("h2", { class: "cmp-bloc-t" }, nomAffaire(final)),
+            compteRendu,
+            el("p", { class: "cmp-enjeu" }, final.enjeu || ""),
+            el("div", { class: "cmp-lancer" },
+                tentatives ? el("p", { class: "cmp-tentatives" }, tentatives + " " + t("tentatives déjà jouées sur ce scénario.")) : null,
+                el("button", { class: "btn launch", onclick: () => proteger(async () => {
+                    campagne.tirage = null;
+                    await lancerScenario(final, { catalogue: OL.scenarioDuCatalogue(final, null) });
+                }) }, t("Lancer le scénario")),
+            ),
+        );
+    }
+
+    const choisie = ouvertes.find((a) => a.id === etat.affaireChoisie) || null;
+    if (!choisie) {
+        return el("div", { class: "cmp-bloc" },
+            el("h2", { class: "cmp-bloc-t" }, t("Choisir une affaire")),
+            compteRendu,
+            el("div", { class: "cmp-lancer" }, ouvertes.map((a) => el("button", {
+                class: "btn ghost",
+                onclick: () => { etat.affaireChoisie = a.id; etat.vilainChoisi = null; rendre(); },
+            }, nomAffaire(a) + (OL.marques(carnet, a.id) ? " (" + OL.marques(carnet, a.id) + " / 3)" : "")))),
+        );
+    }
+
+    const vilains = OL.vilainsPossibles(definition, carnet, choisie.id);
+    const vilain = vilains.impose || (vilains.choix.includes(etat.vilainChoisi) ? etat.vilainChoisi : vilains.suggere);
+    const tentatives = (campagne.tentatives || {})[choisie.id] || 0;
+    return el("div", { class: "cmp-bloc" },
+        el("h2", { class: "cmp-bloc-t" }, nomAffaire(choisie)),
+        el("p", { class: "cmp-enjeu" }, choisie.enjeu || ""),
+        el("p", { class: "cmp-bloc-aide" }, vilains.impose
+            ? t("Le vilain de cette affaire est déjà inscrit au carnet :") + " " + nomVilain(definition, vilains.impose)
+            : t("Le vilain : l'ordre recommandé du livret propose le premier qui n'est pas encore inscrit au carnet.")),
+        vilains.impose ? null : el("div", { class: "cmp-lancer" }, vilains.choix.map((id) => el("button", {
+            class: "btn " + (id === vilain ? "launch" : "ghost"),
+            onclick: () => { etat.vilainChoisi = id; rendre(); },
+        }, nomVilain(definition, id) + (id === vilains.suggere ? " · " + t("recommandé") : "")))),
+        // Les portraits du livret (p. 6-7) : ce qu'il faut savoir de chaque
+        // sous-fifre avant de le choisir. Repliees par defaut : la colonne est
+        // etroite, et on ne les relit pas a chaque partie.
+        vilains.impose ? null : el("details", { class: "cmp-vilains" },
+            el("summary", {}, t("Qui sont les sous-fifres ?")),
+            ...(definition.pages_vilains || []).map((f) => pageLivret(definition.code, f, "cmp-page-regles")),
+        ),
+        el("div", { class: "cmp-lancer" },
+            tentatives ? el("p", { class: "cmp-tentatives" },
+                tentatives === 1 ? t("Une tentative déjà jouée sur ce scénario.")
+                    : (tentatives + " " + t("tentatives déjà jouées sur ce scénario."))) : null,
+            el("button", { class: "btn launch", onclick: () => proteger(async () => {
+                campagne.carnet = OL.inscrireLeVilain(campagne.carnet || {}, choisie.id, vilain);
+                campagne.tirage = null;
+                etat.affaireChoisie = null;
+                await lancerScenario(choisie, { catalogue: OL.scenarioDuCatalogue(choisie, vilain), vilain });
+            }) }, t("Lancer le scénario") + " · " + nomVilain(definition, vilain)),
+            el("button", { class: "btn ghost", onclick: () => { etat.affaireChoisie = null; rendre(); } }, t("Changer d'affaire")),
+        ),
+    );
+}
+
+/** Une partie lancée : reprendre, abandonner, ou déclarer la défaite. */
+function blocPartieEnCours(campagne, definition, enCours, expert) {
+    const scenario = definition.scenarios.find((s) => s.id === enCours.scenario) || { nom: enCours.scenario };
+    const aChoisir = etat.retournement || [];
+    return el("div", { class: "cmp-bloc" },
+        el("h2", { class: "cmp-bloc-t" }, nomAffaire(scenario) + (enCours.vilain ? " · " + nomVilain(definition, enCours.vilain) : "")),
+        el("div", { class: "cmp-lancer" },
+            el("a", { class: "btn launch", href: "/app/board.html" }, t("Reprendre le scénario en cours")),
+            aChoisir.length
+                ? el("div", { class: "cmp-lancer" },
+                    el("p", { class: "cmp-bloc-aide" }, t("Campagne experte : choisis l'environnement Complété à retourner côté Échoué, puis rejoue Kingpin.")),
+                    aChoisir.map((id) => el("button", { class: "btn ghost", onclick: () => proteger(() => enregistrerLaDefaite(campagne, definition, enCours.scenario, expert, id)) },
+                        nomAffaire(definition.scenarios.find((s) => s.id === id)))))
+                : el("button", {
+                    class: "btn ghost",
+                    onclick: () => {
+                        if (!window.confirm(t("Déclarer la partie perdue ? Le livret l'inscrit au carnet : en campagne experte, l'affaire progresse d'une marque."))) return;
+                        proteger(() => enregistrerLaDefaite(campagne, definition, enCours.scenario, expert, null));
+                    },
+                }, t("La partie est perdue")),
+            el("button", {
+                class: "btn ghost",
+                onclick: () => {
+                    if (!window.confirm(t("Abandonner la partie en cours et refaire ce scénario depuis le début ?"))) return;
+                    proteger(async () => {
+                        etat.retournement = null;
+                        etat.campagne.partieEnCours = null;
+                        etat.campagne = await apiCampagne.enregistrer(etat.campagne);
+                    });
+                },
+            }, t("Abandonner et recommencer")),
+        ),
+    );
+}
+
+async function enregistrerLaDefaite(campagne, definition, scenarioId, expert, retournee) {
+    const resultat = OL.appliquerLaDefaite(definition, campagne.carnet || {}, scenarioId, expert, retournee);
+    if (resultat.aChoisir.length) { etat.retournement = resultat.aChoisir; rendre(); return; }
+    etat.retournement = null;
+    campagne.carnet = resultat.carnet;
+    campagne.partieEnCours = null;
+    if (resultat.perdue) campagne.perdue = true;
+    etat.campagne = await apiCampagne.enregistrer(campagne);
+}
+
 function ligneBilan(k, v) {
     return el("div", { class: "cmp-bilan-l" },
         el("span", { class: "cmp-bilan-k" }, k),
@@ -843,10 +1185,15 @@ async function ouvrirCampagne(id) {
  * exister qu'UNE facon de demarrer une partie. Les sets modulaires viennent du
  * fichier de scenario, jamais d'un choix : c'est tout l'interet du mode.
  */
-async function lancerScenario(scenario) {
+async function lancerScenario(scenario, options = {}) {
     const campagne = etat.campagne;
-    const duCatalogue = etat.scenarios.find((s) => s.id === scenario.id);
-    if (!duCatalogue) throw new Error(t("Scénario introuvable dans le catalogue :") + " " + scenario.id);
+    // En ordre libre, le fichier du catalogue depend du vilain choisi
+    // (`<affaire>_<vilain>`) ou d'un id de catalogue propre au final : l'id de
+    // la definition reste celui que le plateau et l'estampille du moteur
+    // connaissent, seul le fichier lance change.
+    const idCatalogue = options.catalogue || scenario.catalogue || scenario.id;
+    const duCatalogue = etat.scenarios.find((s) => s.id === idCatalogue);
+    if (!duCatalogue) throw new Error(t("Scénario introuvable dans le catalogue :") + " " + idCatalogue);
 
     const joueurs = (campagne.equipe || []).map((m) => ({
         deck: m.deck,
@@ -856,7 +1203,7 @@ async function lancerScenario(scenario) {
 
     // La partie est rattachee a la campagne AVANT de partir : si le joueur
     // ferme l'onglet en plein scenario, on saura le lui proposer en reprise.
-    campagne.partieEnCours = { scenario: scenario.id, depuis: new Date().toISOString() };
+    campagne.partieEnCours = { scenario: scenario.id, depuis: new Date().toISOString(), ...(options.vilain ? { vilain: options.vilain } : {}) };
     campagne.tentatives = campagne.tentatives || {};
     campagne.tentatives[scenario.id] = (campagne.tentatives[scenario.id] || 0) + 1;
     etat.campagne = await apiCampagne.enregistrer(campagne);
