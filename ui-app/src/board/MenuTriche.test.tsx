@@ -60,13 +60,15 @@ describe('le sous-menu « Déplacer vers »', () => {
   })
 
   it('n’offre « Sous la pile » que sur les six decks ordonnés', () => {
-    // Onze des dix-sept piles sont des zones EN JEU (alliés, sbires engagés,
-    // set némésis, réserve, manigance principale...) : leur "dessous"
-    // n'existe pas côté moteur (`MoveTo`, `pile.flags.is_deck`/
-    // `is_dealt_encounter`), le bouton y ferait deux fois le même geste. Un
-    // seul « Sous la pile » par pile ordonnée donne 6, pas 17 (ronde de
-    // correction 1 de la tâche 5, 19/09/2026 : `AdditionalDeck` et
-    // `AdditionalDiscardPile` ont rejoint les quatre decks déjà ordonnés).
+    // Treize des dix-neuf piles ne sont pas des decks ORDONNÉS (alliés,
+    // sbires engagés, set némésis, réserve, manigance principale, mises de
+    // côté...) : leur "dessous" n'existe pas côté moteur (`MoveTo`,
+    // `pile.flags.is_deck`/`is_dealt_encounter`), le bouton y ferait deux
+    // fois le même geste. Un seul « Sous la pile » par pile ordonnée donne
+    // 6, pas 19 (ronde de correction 1 de la tâche 5, 19/09/2026 :
+    // `AdditionalDeck` et `AdditionalDiscardPile` ont rejoint les quatre
+    // decks déjà ordonnés ; I2, revue finale du 20/09/2026 : `AsideScenario`
+    // et `AsideModular` ont rejoint le menu, ni l'un ni l'autre ordonné).
     const { getByText, getAllByText } = render(
       <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
     )
@@ -76,6 +78,39 @@ describe('le sous-menu « Déplacer vers »', () => {
     // seul le libellé de la pile est cliquable sur sa ligne.
     const ligneAllies = getByText('Alliés').closest('li')
     expect(ligneAllies?.querySelectorAll('button')).toHaveLength(1)
+  })
+
+  // ⚠ I2 (revue finale, 20/09/2026). `AsideScenario` et `AsideModular`
+  // (`RunPuzzle.ZONES_MONDE`, `puzzle.py`) n'étaient atteignables par AUCUN
+  // geste : leurs cartes sont fondues à l'affichage (`zones.ts`,
+  // `pileFondue`, zone `annexes`), donc le glisser ne peut pas les viser
+  // (`glisser-manuel.ts` les laisse volontairement hors de `PILE_PAR_ZONE`).
+  // Le menu, qui vise par NOM et non par carte dessinée, n'a pas ce
+  // problème : ce test prouve que les deux zones y sont bien arrivées.
+  it('atteint les mises de côté du scénario et les mises de côté modulaires (I2)', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const { getByText } = render(
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGeste} />
+    )
+    fireEvent.click(getByText('Déplacer vers'))
+    fireEvent.click(getByText('Mises de côté du scénario'))
+    await attendreLeReseau()
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(42, 'AsideScenario', 'Top')"] }),
+    }))
+  })
+
+  it('atteint les mises de côté modulaires (I2)', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const { getByText } = render(
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGeste} />
+    )
+    fireEvent.click(getByText('Déplacer vers'))
+    fireEvent.click(getByText('Mises de côté modulaires'))
+    await attendreLeReseau()
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(42, 'AsideModular', 'Top')"] }),
+    }))
   })
 
   it('précise que la pile écartée du menu est celle du héros, pas une pile du monde', () => {

@@ -56,6 +56,15 @@ export const ZONES_MANUELLES: readonly string[] = [
   // La défausse du deck spécial : le moteur ne l'exposait à AUCUNE des deux
   // voies avant cette même ronde (`RunPuzzle.ZONES_JOUEUR`, `puzzle.py`).
   'AdditionalDiscardPile',
+  // I2 (revue finale) : ces deux piles du MONDE (`RunPuzzle.ZONES_MONDE`,
+  // `puzzle.py`) n'étaient atteignables par AUCUN geste. Le glisser ne peut
+  // pas les viser : leurs cartes sont fondues à l'affichage dans « Cartes
+  // visibles » (`zones.ts`, `pileFondue`, zone `annexes`), qui ne pose pas
+  // de `data-pile` pour rester ambiguë entre victoire/retirées/mises de
+  // côté. Le menu, lui, n'a pas ce problème : il vise la pile par NOM, pas
+  // par carte dessinée.
+  'AsideScenario',
+  'AsideModular',
 ]
 
 /**
@@ -104,6 +113,11 @@ export function libellePile(zone: string): string {
     case 'AdditionalDiscardPile': return t('Défausse du deck spécial')
     case 'ReserveArea': return t('Ta réserve')
     case 'MainSchemesArea': return t('Manigance principale')
+    // I2 (revue finale) : MÊME CLÉ que `zones.ts` pour « Mises de côté du
+    // scénario » (`t('Mises de côté du scénario')`, groupe de la pile
+    // fondue « Cartes visibles ») — c'est la même pile, `world.aside_deck`.
+    case 'AsideScenario': return t('Mises de côté du scénario')
+    case 'AsideModular': return t('Mises de côté modulaires')
     default: return zone
   }
 }
