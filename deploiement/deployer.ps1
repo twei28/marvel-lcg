@@ -163,7 +163,13 @@ if ($faireCode) {
     # `_config_partie` : ceux-la se reparaient tout seuls.
     "--exclude=.site",
     "--exclude=replays","--exclude=logs",
-    "--exclude=comptes.json","--exclude=*.db","--exclude=*.sqlite3"
+    "--exclude=comptes.json","--exclude=*.db","--exclude=*.sqlite3",
+    # ⚠ LES PALETTES CORRIGEES A LA MAIN NE VOYAGENT QUE DANS L'AUTRE SENS
+    # (19/09/2026). L'editeur (/palettes-heros.html) ecrit ce fichier SUR LE
+    # SERVEUR, puisque c'est la qu'on joue et qu'on voit les couleurs. L'envoyer
+    # depuis le poste ecraserait le travail fait en ligne ; il est donc exclu
+    # ici, et rapatrie apres le deploiement, plus bas.
+    "--exclude=data/palettes-heros-corrections.json"
   )
   & tar -czf $tgz -C $PROJET @exclus "Fusion/marvel-lcg-src" "site"
   if ($LASTEXITCODE -ne 0) { throw "Creation de l'archive en echec." }
@@ -482,6 +488,18 @@ systemctl is-active narwhal
   $dest = Join-Path $dossier ("comptes-" + (Get-Date -Format "yyyy-MM-dd") + ".tar.gz")
   & scp -i $CLE "root@${IP}:/var/backups/narwhal/comptes-dernier.tar.gz" $dest 2>$null
   if (Test-Path $dest) { Write-Host "   $dest" } else { Write-Host "   (pas encore de sauvegarde sur le serveur)" }
+
+  Write-Host "== Palettes corrigees rapatriees" -ForegroundColor Cyan
+  # Le fichier vit sur le serveur (c'est la qu'on corrige, ecran sous les yeux)
+  # et le depot est l'endroit ou l'on garde. Sans ce rapatriement, une
+  # reinstallation du serveur perdrait tout le travail a la main.
+  $palettes = Join-Path $PROJET "Fusion\marvel-lcg-src\data\palettes-heros-corrections.json"
+  & scp -i $CLE "root@${IP}:$DIST/Fusion/marvel-lcg-src/data/palettes-heros-corrections.json" $palettes 2>$null
+  if (Test-Path $palettes) {
+    Write-Host "   data/palettes-heros-corrections.json"
+  } else {
+    Write-Host "   (aucune palette corrigee sur le serveur)"
+  }
 
   Write-Host "== Verification" -ForegroundColor Cyan
   try {

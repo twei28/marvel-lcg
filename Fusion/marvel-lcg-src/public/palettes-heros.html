@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palettes des héros · Marvel Champions</title>
+    <link rel="stylesheet" href="/public/css/palettes-heros.css?v=1">
+</head>
+<body>
+    <header class="p-entete">
+        <a class="p-retour" href="/prepare.html">←</a>
+        <h1>Palettes des héros</h1>
+        <span class="p-avancement" id="avancement"></span>
+        <label class="p-filtre">
+            <input type="checkbox" id="seulement-corriges">
+            <span>Seulement les corrigés</span>
+        </label>
+        <input type="search" id="recherche" placeholder="Chercher un héros…"
+               autocomplete="off" spellcheck="false">
+    </header>
+
+    <p class="p-message" id="message">Chargement…</p>
+
+    <main class="p-liste" id="liste" hidden></main>
+
+    <template id="modele-ligne">
+        <section class="p-ligne">
+            <img class="p-scan" alt="" decoding="async" loading="lazy">
+            <div class="p-identite">
+                <h2 class="p-nom"></h2>
+                <p class="p-cartes"></p>
+                <p class="p-etat"></p>
+            </div>
+            <div class="p-champs">
+                <label class="p-champ">
+                    <span>Principale</span>
+                    <input type="color" class="p-pastille" data-rang="0">
+                    <input type="text" class="p-hex" data-rang="0" maxlength="7"
+                           spellcheck="false" placeholder="#000000">
+                </label>
+                <label class="p-champ">
+                    <span>Secondaire</span>
+                    <input type="color" class="p-pastille" data-rang="1">
+                    <input type="text" class="p-hex" data-rang="1" maxlength="7"
+                           spellcheck="false" placeholder="#000000">
+                </label>
+                <label class="p-champ">
+                    <span>Tertiaire</span>
+                    <input type="color" class="p-pastille" data-rang="2">
+                    <input type="text" class="p-hex" data-rang="2" maxlength="7"
+                           spellcheck="false" placeholder="#000000">
+                </label>
+            </div>
+            <div class="p-apercu" title="Le vrai fond du plateau, coin bas droit">
+                <span class="p-apercu-legende">fond du plateau</span>
+            </div>
+            <div class="p-actions">
+                <button type="button" class="p-enregistrer">Enregistrer</button>
+                <button type="button" class="p-annuler" hidden>Couleur mesurée</button>
+                <span class="p-retour-serveur" role="status"></span>
+            </div>
+        </section>
+    </template>
+
+    <script type="module" src="/public/js/palettes/app.js?v=1"></script>
+</body>
+</html>

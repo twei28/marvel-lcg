@@ -1,7 +1,8 @@
 // lien-admin.js — ajoute les boutons d'administration sur l'écran de
 // préparation, quand la partie a été lancée par le site ET que c'est le compte
-// administrateur qui joue : « ⚙ Administration » (le site) et « 🖼 Relevé des
-// illustrations » (la page qui dit qui est dessiné sur chaque carte).
+// administrateur qui joue : « ⚙ Administration » (le site), « 🖼 Relevé des
+// illustrations » (la page qui dit qui est dessiné sur chaque carte) et
+// « 🎨 Palettes des héros » (la couleur du fond de plateau, corrigée à la main).
 //
 // Même pattern que lien-galerie.js : script CLASSIQUE (defer + IIFE), donc pas
 // d'import de js/prepare/langue.js ; on duplique la lecture de
@@ -25,6 +26,8 @@
     'Comptes et invitations du site': 'Site accounts and invitations',
     'Relevé des illustrations': 'Artwork survey',
     'Dire qui est dessiné sur chaque carte': 'Record who is drawn on each card',
+    'Palettes des héros': 'Hero palettes',
+    'Corriger la couleur du fond de plateau': 'Fix the board background colour',
   };
   function t(fr) {
     return LANGUE === 'en' && Object.prototype.hasOwnProperty.call(DICO_EN_LOCAL, fr)
@@ -79,6 +82,18 @@
       window.open('/releve-images.html', '_blank', 'noopener');
     });
     rangee.append(releve);
+
+    // Les palettes de héros. Même condition d'affichage, même remarque :
+    // /save_palette_heros refuse l'écriture (403) à qui n'est pas
+    // l'administrateur, quoi que montre ce bouton.
+    var palettes = document.createElement('button');
+    palettes.type = 'button';
+    palettes.textContent = '🎨 ' + t('Palettes des héros');
+    palettes.title = t('Corriger la couleur du fond de plateau');
+    palettes.addEventListener('click', function () {
+      window.open('/palettes-heros.html', '_blank', 'noopener');
+    });
+    rangee.append(palettes);
   }).catch(function () {
     // Moteur lancé à la main, route absente : pas de bouton, pas d'erreur.
   });

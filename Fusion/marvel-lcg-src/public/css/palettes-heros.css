@@ -1,0 +1,110 @@
+/* palettes-heros.css — l'éditeur de palettes (réservé au compte auteur).
+   Même dépouillement que releve-images.css, mais en LISTE : l'utilisateur a
+   choisi de voir tous les personnages d'un coup et de corriger à la chaîne,
+   plutôt qu'une fiche à la fois.
+
+   ⚠ L'APERÇU EST SOMBRE, comme le plateau. Une bande diagonale posée sur un
+   fond clair ne ressemblerait à rien de ce qu'on voit en jouant, et juger une
+   couleur sur autre chose que son vrai rendu est exactement ce qui a produit
+   les couleurs fausses. */
+
+:root{
+  --ink:#07080c; --steel:#181c26; --steel2:#202635; --steel3:#2b3346;
+  --line:#384154; --txt:#f4f6fb; --dim:#a8afbd; --mute:#727b8c;
+  --red:#e62429; --blue:#2e8cff; --gold:#f2c94c; --green:#31b56a;
+  /* Le fond du plateau, celui que la bande vient teinter. */
+  --plateau:#101218;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  min-height:100vh; color:var(--txt);
+  font-family:"Segoe UI",system-ui,sans-serif;
+  background:linear-gradient(180deg,#151821 0,#08090e 52%,#050608 100%);
+  padding:0 clamp(12px,3vw,32px) 32px;
+}
+
+.p-entete{
+  position:sticky; top:0; z-index:5;
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  padding:14px 0 12px; border-bottom:1px solid var(--line); margin-bottom:14px;
+  background:linear-gradient(180deg,#151821 70%,rgba(21,24,33,.86) 100%);
+}
+.p-retour{
+  color:var(--dim); text-decoration:none; font-size:22px; line-height:1;
+  padding:4px 10px; border:1px solid var(--line); border-radius:8px;
+}
+.p-retour:hover{color:var(--txt); background:var(--steel2)}
+.p-entete h1{font-size:20px; font-weight:700; letter-spacing:.2px}
+.p-avancement{color:var(--dim); font-size:13px}
+.p-filtre{display:flex; align-items:center; gap:6px; color:var(--dim); font-size:13px}
+.p-entete input[type="search"]{
+  margin-left:auto; min-width:min(260px,52vw);
+  padding:7px 11px; border-radius:8px; border:1px solid var(--line);
+  background:var(--steel); color:var(--txt); font-size:14px;
+}
+
+.p-message{padding:18px 2px; color:var(--dim)}
+.p-message.p-alerte{color:var(--gold)}
+.p-message.p-echec{color:var(--red)}
+
+.p-liste{display:flex; flex-direction:column; gap:10px}
+
+.p-ligne{
+  display:grid; align-items:center; gap:14px;
+  grid-template-columns:52px minmax(150px,1fr) auto 220px auto;
+  padding:10px 12px; border:1px solid var(--line); border-radius:10px;
+  background:var(--steel);
+}
+.p-ligne.p-modifiee{border-color:var(--blue)}
+.p-ligne.p-corrigee .p-nom::after{
+  content:"corrigée"; margin-left:8px; font-size:11px; font-weight:600;
+  color:var(--gold); border:1px solid var(--gold); border-radius:999px;
+  padding:1px 7px; vertical-align:middle;
+}
+
+.p-scan{width:52px; height:75px; object-fit:cover; border-radius:5px; background:var(--steel3)}
+.p-nom{font-size:16px; font-weight:700}
+.p-cartes{font-size:11px; color:var(--mute); font-family:ui-monospace,monospace}
+.p-etat{font-size:11px; color:var(--dim)}
+
+.p-champs{display:flex; gap:10px; flex-wrap:wrap}
+.p-champ{display:flex; flex-direction:column; gap:3px; font-size:11px; color:var(--dim)}
+.p-champ input[type="color"]{
+  width:100%; height:22px; padding:0; border:1px solid var(--line);
+  border-radius:5px; background:var(--steel2); cursor:pointer;
+}
+.p-champ input[type="text"]{
+  width:96px; padding:5px 7px; border-radius:6px; border:1px solid var(--line);
+  background:var(--steel2); color:var(--txt);
+  font-family:ui-monospace,monospace; font-size:12px; text-transform:lowercase;
+}
+.p-champ input[type="text"].p-faute{border-color:var(--red)}
+
+.p-apercu{
+  position:relative; height:86px; border-radius:8px; border:1px solid var(--line);
+  background:var(--plateau);
+}
+.p-apercu-legende{
+  position:absolute; left:8px; top:7px; font-size:10px; color:var(--mute);
+  letter-spacing:.3px; text-transform:uppercase;
+}
+
+.p-actions{display:flex; flex-direction:column; gap:6px; align-items:stretch}
+.p-actions button{
+  padding:7px 13px; border-radius:8px; border:1px solid var(--line);
+  background:var(--steel2); color:var(--txt); font-weight:700; font-size:13px;
+  cursor:pointer;
+}
+.p-actions button:hover{background:var(--steel3)}
+.p-actions .p-enregistrer{border-color:var(--blue)}
+.p-actions button[disabled]{opacity:.45; cursor:default}
+.p-retour-serveur{font-size:11px; color:var(--dim); min-height:14px; text-align:center}
+.p-retour-serveur.p-ok{color:var(--green)}
+.p-retour-serveur.p-echec{color:var(--red)}
+
+@media (max-width:980px){
+  .p-ligne{grid-template-columns:52px 1fr; grid-auto-rows:auto}
+  .p-champs,.p-apercu,.p-actions{grid-column:1 / -1}
+  .p-apercu{height:64px}
+}
