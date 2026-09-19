@@ -272,6 +272,89 @@ describe('un geste manuel refusé se voit, sans jamais dire l’inverse (correct
   })
 })
 
+// --- I3 (revue finale, 20/09/2026) : un chiffre sur une pile, N cartes, N
+// lignes de journal --------------------------------------------------------
+//
+// Un chiffre sur une pile dépose une commande PAR CARTE (`executerGeste`,
+// cas `'piocher'`), mais la version du 19/09/2026 n'écrivait qu'UNE ligne
+// agrégée pour tout le lot : un seul Ctrl+Z défaisait alors les N
+// déplacements réels, alors que la spec promet « Ctrl+Z, geste par geste ».
+// Ce bloc prouve que chaque carte a désormais sa propre ligne.
+describe('un chiffre sur une pile écrit une ligne PAR CARTE (I3)', () => {
+  const CARTE_A = carteSurTable(30, '02001a', 'EncounterVillain', 'Carte A')
+  const CARTE_B = carteSurTable(31, '02002a', 'EncounterVillain', 'Carte B')
+
+  function mondeAvecDeckRencontre(surcharge: Partial<World> = {}): World {
+    return tableAvec(siege(), {
+      mode_manuel: true,
+      manuel_actif: true,
+      render_id: 1,
+      manuel_refus: '',
+      // Le DESSUS du deck (dernier élément, voir `pilesParDessus`) en
+      // devient le REPRÉSENTANT survolable.
+      encounter_deck: [CARTE_A, CARTE_B],
+      ...surcharge,
+    } as never)
+  }
+
+  it('deux cartes piochées sur une pile du monde écrivent deux lignes, chacune nommée par sa carte', async () => {
+    const ajouterAuJournal = vi.fn()
+    const avant = mondeAvecDeckRencontre()
+    const { rerender } = render(<Harness world={avant} ajouterAuJournal={ajouterAuJournal} />)
+    // Le dessus du deck (`pilesParDessus`) porte l'id de CARTE_B (dernier
+    // élément du tableau) : c'est lui qu'on survole pour viser la pile.
+    survoler(31)
+    fireEvent.keyDown(document, { key: '2' })
+    await attendreLeReseau()
+    // Les DEUX commandes sont déposées tout de suite ; aucune ligne avant
+    // que le rendu suivant ne connaisse l'issue réelle (même discipline que
+    // pour un geste simple).
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(31, 'ProcessingArea', 'Top')"] }),
+    }))
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(30, 'ProcessingArea', 'Top')"] }),
+    }))
+    expect(ajouterAuJournal).not.toHaveBeenCalled()
+
+    const suivant = { ...avant, render_id: 2, manuel_refus: '' } as World
+    await act(async () => {
+      rerender(<Harness world={suivant} ajouterAuJournal={ajouterAuJournal} />)
+    })
+
+    // ⚠ LE CAS QUI COMPTE : deux lignes, pas une, chacune nommant SA carte —
+    // un Ctrl+Z défera l'une, un second Ctrl+Z l'autre.
+    expect(ajouterAuJournal).toHaveBeenCalledTimes(2)
+    expect(ajouterAuJournal).toHaveBeenCalledWith('Sortir en résolution — Carte B')
+    expect(ajouterAuJournal).toHaveBeenCalledWith('Sortir en résolution — Carte A')
+  })
+
+  it('un refus moteur marque les DEUX lignes du même geste, pas une ambiguïté', async () => {
+    const ajouterAuJournal = vi.fn()
+    const avant = mondeAvecDeckRencontre()
+    const { rerender } = render(<Harness world={avant} ajouterAuJournal={ajouterAuJournal} />)
+    survoler(31)
+    fireEvent.keyDown(document, { key: '2' })
+    await attendreLeReseau()
+
+    const suivant = {
+      ...avant,
+      render_id: 2,
+      manuel_refus: "KeyError: 'zone inconnue : X'",
+    } as World
+    await act(async () => {
+      rerender(<Harness world={suivant} ajouterAuJournal={ajouterAuJournal} />)
+    })
+
+    // Un seul drainage moteur exécute les deux commandes d'UN MÊME geste :
+    // on CONNAÎT l'issue (contrairement à deux gestes indépendants en vol),
+    // elle s'applique aux deux lignes.
+    expect(ajouterAuJournal).toHaveBeenCalledTimes(2)
+    expect(ajouterAuJournal).toHaveBeenCalledWith('Sortir en résolution — Carte B (refusé)')
+    expect(ajouterAuJournal).toHaveBeenCalledWith('Sortir en résolution — Carte A (refusé)')
+  })
+})
+
 // --- Faire apparaître une carte du catalogue (tâche 6) ---------------------
 // « Faire apparaître une carte » est une action de TABLE (ronde de
 // correction 1) : elle s'atteint par un clic droit HORS de toute carte, pas

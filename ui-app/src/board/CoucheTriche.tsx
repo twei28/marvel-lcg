@@ -193,7 +193,14 @@ export function useTriche(
   // PROCHAIN rendu, quand `world.manuel_refus` dit enfin ce qui s'est
   // réellement passé. Un dépôt qui échoue, lui, reste définitif tout de
   // suite : aucun rendu futur ne le concernera jamais.
-  type GesteEnAttente = { libelle: string }
+  // ⚠ I3 (revue finale, 20/09/2026) : `libelles` AU PLURIEL, PAS `libelle`.
+  // Un geste composé (le chiffre sur une pile du monde, qui dépose une
+  // commande PAR CARTE) doit écrire AUTANT de lignes que de déplacements
+  // réels — sinon un seul Ctrl+Z en défait N, et le journal ment sur ce
+  // qu'il a fait. Un geste simple porte un tableau à UN élément : c'est le
+  // même mécanisme de résolution différée pour les deux, la seule
+  // différence est combien de lignes il écrit une fois l'issue connue.
+  type GesteEnAttente = { libelles: string[] }
   const enAttenteRef = useRef<GesteEnAttente[]>([])
 
   const dernierRenduVu = useRef<number | undefined>(undefined)
@@ -218,7 +225,7 @@ export function useTriche(
         noter(`${libelle} (${t('refusé')})`)
         return
       }
-      enAttenteRef.current.push({ libelle })
+      enAttenteRef.current.push({ libelles: [libelle] })
     },
     [noter]
   )
@@ -266,20 +273,31 @@ export function useTriche(
 
     if (enAttente.length > 1) {
       const enCours = enAttente.splice(0, enAttente.length)
-      for (const { libelle } of enCours) noter(`${libelle} (${t('issue inconnue')})`)
+      for (const { libelles } of enCours) {
+        for (const libelle of libelles) noter(`${libelle} (${t('issue inconnue')})`)
+      }
       return
     }
 
-    const { libelle } = enAttente.shift() as GesteEnAttente
+    const { libelles } = enAttente.shift() as GesteEnAttente
     // `manuel_refus` est publié sans condition de mode côté moteur (tâche
     // 4 ter) : le bac à sable en profite pareillement. S'il ne l'était un
     // jour QUE pour le manuel, un champ absent/vide ici écrirait quand même
     // la ligne SANS mention de refus plutôt que de ne rien écrire — c'est
     // déjà ce que fait `!!world.manuel_refus` sur un champ `undefined`.
+    //
+    // ⚠ I3 : LES N LIGNES D'UN MÊME GESTE PARTAGENT LA MÊME ISSUE. Un seul
+    // drainage moteur (`DrainSandboxCommands`) exécute les N commandes d'UN
+    // SEUL geste ensemble et rend UNE seule erreur pour tout le lot — ce
+    // n'est pas l'ambiguïté « deux gestes en vol » ci-dessus (des gestes
+    // INDÉPENDANTS, dont on ignore lequel a réussi), donc pas la même
+    // réponse : on connaît l'issue, elle s'applique à chaque ligne.
     const refuse = !!world.manuel_refus
-    const ligne = refuse ? `${libelle} (${t('refusé')})` : libelle
-    noter(ligne)
-    if (refuse) afficherBrievement(ligne)
+    for (const libelle of libelles) {
+      const ligne = refuse ? `${libelle} (${t('refusé')})` : libelle
+      noter(ligne)
+    }
+    if (refuse) afficherBrievement(`${libelles[0]}${libelles.length > 1 ? ` (+${libelles.length - 1})` : ''} (${t('refusé')})`)
   }, [actif, world, noter, afficherBrievement])
 
   useEffect(
@@ -385,25 +403,46 @@ export function useTriche(
           // défaut et le journal affirmait avoir sorti des cartes qui n'ont
           // jamais bougé.
           //
-          // ⚠ GESTE COMPOSÉ, TRAITÉ COMME UN SEUL EN ATTENTE (correction du
-          // 19/09/2026) : plusieurs cartes veulent dire plusieurs commandes
-          // déposées, mais une seule ligne au journal, comme avant. Ici
-          // aussi, seul un échec du DÉPÔT lui-même est définitif tout de
-          // suite ; un dépôt réussi attend le rendu suivant.
-          let toutDepose = cartes.length > 0
+          const libelle = pileVisee?.duJoueur ? t('Piocher') : t('Sortir en résolution')
+          // Rien à faire : la pile visée a disparu ou est déjà vide. Ce n'est
+          // PAS un succès qui écrirait une ligne mentant sur un déplacement
+          // qui n'a jamais eu lieu.
+          if (cartes.length === 0) {
+            noter(`${libelle} ${geste.nombre} — ${pileVisee?.titre ?? geste.zone} (${t('refusé')})`)
+            return
+          }
+          // ⚠ I3 (revue finale, 20/09/2026) : GESTE COMPOSÉ, N LIGNES DE
+          // JOURNAL — UNE PAR CARTE. La version du 19/09/2026 déposait bien
+          // une commande par carte, mais n'écrivait qu'une ligne agrégée
+          // (« Piocher 3 — Deck Rencontre ») : un seul Ctrl+Z défaisait alors
+          // les TROIS déplacements réels, alors que la spec promet
+          // « Ctrl+Z, geste par geste ». Chaque carte a désormais sa propre
+          // ligne, nommée par SON nom — un journal plus bavard sur un geste
+          // rare est le prix accepté.
+          //
+          // Un dépôt HTTP qui échoue (réseau) reste immédiat pour SA carte
+          // seule ; les autres cartes de ce même chiffre continuent leur
+          // chemin normalement — voir `emettreGeste` pour ce même principe
+          // sur un geste simple.
+          const libelles: string[] = []
           for (const carte of cartes) {
+            const nom = carte.name || `${t('Carte')} ${carte.id}`
+            const description = `${libelle} — ${nom}`
             const depose = pileVisee?.duJoueur
               ? await triche.envoyerEnMain(carte.id)
               : await triche.deplacerVers(carte.id, 'ProcessingArea')
-            if (!depose) toutDepose = false
+            if (depose) {
+              libelles.push(description)
+            } else {
+              noter(`${description} (${t('refusé')})`)
+            }
           }
-          const libelle = pileVisee?.duJoueur ? t('Piocher') : t('Sortir en résolution')
-          const description = `${libelle} ${geste.nombre} — ${pileVisee?.titre ?? geste.zone}`
-          if (toutDepose) {
-            enAttenteRef.current.push({ libelle: description })
-          } else {
-            noter(`${description} (${t('refusé')})`)
-          }
+          // Les cartes réellement déposées partagent UN SEUL bloc en attente
+          // (voir plus haut, résolution différée) : un seul drainage moteur
+          // les exécute ensemble, elles connaîtront donc la MÊME issue —
+          // jamais l'ambiguïté « deux gestes en vol », qui vise des gestes
+          // INDÉPENDANTS dont on ignore lequel a réussi.
+          if (libelles.length > 0) enAttenteRef.current.push({ libelles })
           return
         }
         case 'jetons': {
