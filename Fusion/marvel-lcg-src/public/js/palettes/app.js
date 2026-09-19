@@ -24,6 +24,7 @@
 
 import {
     hexVersRgb, rgbVersHex, fondDe, grouperParIdentite, couleursDepuisChamps, memePalette,
+    coordonneesDansCanvas, moyenneAutour,
 } from "/public/js/palettes/couleurs.js";
 
 const PLATEAU_SOMBRE = "#101218";
@@ -33,10 +34,27 @@ const AVANCEMENT = document.getElementById("avancement");
 const RECHERCHE = document.getElementById("recherche");
 const SEULEMENT_CORRIGES = document.getElementById("seulement-corriges");
 const MODELE = document.getElementById("modele-ligne");
+const LOUPE = document.getElementById("loupe");
+const LOUPE_FOND = document.getElementById("loupe-fond");
+const LOUPE_NOM = document.getElementById("loupe-nom");
+const LOUPE_FACES = document.getElementById("loupe-faces");
+const LOUPE_CIBLES = document.getElementById("loupe-cibles");
+const LOUPE_CANVAS = document.getElementById("loupe-canvas");
+const LOUPE_APERCU = document.getElementById("loupe-apercu");
+const SOUS_CURSEUR = document.getElementById("loupe-sous-curseur");
+const SOUS_PASTILLE = document.getElementById("loupe-pastille");
+const SOUS_HEX = document.getElementById("loupe-hex");
+const LIBELLES_RANG = ["Principale", "Secondaire", "Tertiaire"];
+
+/** La pipette de Chrome, quand le navigateur l'a. Firefox et Safari ne
+ *  l'implémentent pas : le bouton reste alors caché, et la pipette sur la
+ *  carte agrandie suffit. */
+const PIPETTE_ECRAN = typeof window !== "undefined" && "EyeDropper" in window;
 
 /** État de la page. `generees` sert à proposer le retour à la couleur mesurée. */
 const etat = {
     administrateur: false,
+    loupe: null,             // { ligne, carte, rang, pixels, largeur, hauteur }
     generees: new Map(),     // identité -> couleurs mesurées
     corrections: new Set(),  // identités corrigées à la main
     lignes: [],              // { identite, cartes, nom, noeud, champs, ... }
@@ -189,6 +207,146 @@ function filtrer() {
     }
 }
 
+/* ------------------------------------------------------------- la loupe --
+ *
+ * Demande du 19/09/2026 : « fais en sorte qu'on puisse agrandir la carte, et
+ * je joue sur Chrome, donc il y a la pipette de Chrome à part ».
+ *
+ * ⚠ LA VIGNETTE NE SUFFIT PAS. Elle fait 52 px de large : on n'y vise pas un
+ * détail d'illustration. La pipette travaille donc sur la carte AGRANDIE,
+ * dessinée dans un canvas à sa taille réelle.
+ *
+ * ⚠ LE CANVAS PEUT LIRE SES PIXELS PARCE QUE LE MOTEUR SERT LE SCAN LUI-MÊME.
+ * Une image venue d'un autre domaine « salit » le canvas et `getImageData`
+ * lève. Ici `/<card_id>` est servi par le moteur, sur la même origine que la
+ * page : rien à négocier. Si cela changeait un jour, la pipette de Chrome
+ * resterait, elle ne lit pas l'image mais l'écran.
+ */
+
+/** Pose une couleur dans un champ de la ligne, et rafraîchit tout ce qui suit. */
+function poserChamp(ligne, rang, couleur) {
+    ligne.champs[rang].value = rgbVersHex(couleur);
+    ligne.pastilles[rang].value = rgbVersHex(couleur);
+    rafraichirApercu(ligne);
+    if (etat.loupe && etat.loupe.ligne === ligne) rafraichirLoupe();
+}
+
+/** Les trois boutons « quelle couleur je remplis », avec leur pastille. */
+function dessinerCibles() {
+    const loupe = etat.loupe;
+    LOUPE_CIBLES.replaceChildren(...LIBELLES_RANG.map((libelle, rang) => {
+        const bouton = document.createElement("button");
+        bouton.type = "button";
+        bouton.className = rang === loupe.rang ? "on" : "";
+        const puce = document.createElement("span");
+        puce.className = "p-puce";
+        const valeur = hexVersRgb(loupe.ligne.champs[rang].value);
+        if (valeur) puce.style.background = rgbVersHex(valeur);
+        bouton.append(puce, document.createTextNode(`${rang + 1}. ${libelle}`));
+        bouton.addEventListener("click", () => { loupe.rang = rang; dessinerCibles(); });
+        return bouton;
+    }));
+}
+
+function rafraichirLoupe() {
+    if (!etat.loupe) return;
+    const lu = lectureDe(etat.loupe.ligne);
+    LOUPE_APERCU.style.background = fondDe(
+        lu.erreur ? etat.loupe.ligne.couleurs : lu.couleurs, PLATEAU_SOMBRE);
+    dessinerCibles();
+}
+
+/** Charge une face dans le canvas et retient ses pixels. */
+function dessinerCarte(carte) {
+    const image = new Image();
+    image.decoding = "async";
+    image.addEventListener("load", () => {
+        if (!etat.loupe) return;
+        LOUPE_CANVAS.width = image.naturalWidth;
+        LOUPE_CANVAS.height = image.naturalHeight;
+        const ctx = LOUPE_CANVAS.getContext("2d", { willReadFrequently: true });
+        ctx.drawImage(image, 0, 0);
+        try {
+            const donnees = ctx.getImageData(0, 0, LOUPE_CANVAS.width, LOUPE_CANVAS.height);
+            etat.loupe.pixels = donnees.data;
+            etat.loupe.largeur = donnees.width;
+            etat.loupe.hauteur = donnees.height;
+        } catch (erreur) {
+            // Canvas « sali » : ne devrait pas arriver, le scan vient du moteur.
+            // On le DIT plutôt que de laisser une pipette qui ne répond pas.
+            etat.loupe.pixels = null;
+            SOUS_HEX.textContent = "pipette impossible sur cette image";
+        }
+    });
+    image.addEventListener("error", () => { if (etat.loupe) etat.loupe.pixels = null; });
+    image.src = "/" + carte;
+    etat.loupe.carte = carte;
+    LOUPE_FACES.replaceChildren(...etat.loupe.ligne.cartes.map((id) => {
+        const bouton = document.createElement("button");
+        bouton.type = "button";
+        bouton.textContent = id;
+        bouton.className = id === carte ? "on" : "";
+        bouton.addEventListener("click", () => dessinerCarte(id));
+        return bouton;
+    }));
+}
+
+function ouvrirLoupe(ligne) {
+    etat.loupe = { ligne, carte: ligne.cartes[0], rang: 0, pixels: null, largeur: 0, hauteur: 0 };
+    LOUPE_NOM.textContent = ligne.nom;
+    LOUPE.hidden = false;
+    dessinerCarte(ligne.cartes[0]);
+    rafraichirLoupe();
+}
+
+function fermerLoupe() {
+    etat.loupe = null;
+    LOUPE.hidden = true;
+    SOUS_CURSEUR.hidden = true;
+}
+
+/** La couleur sous le curseur, moyennée sur un petit carré. */
+function couleurSousLeCurseur(evenement) {
+    const loupe = etat.loupe;
+    if (!loupe || !loupe.pixels) return null;
+    const point = coordonneesDansCanvas(
+        LOUPE_CANVAS.getBoundingClientRect(), loupe.largeur, loupe.hauteur,
+        evenement.clientX, evenement.clientY);
+    if (!point) return null;
+    return moyenneAutour(loupe.pixels, loupe.largeur, loupe.hauteur, point.x, point.y, 2);
+}
+
+LOUPE_CANVAS.addEventListener("mousemove", (evenement) => {
+    const couleur = couleurSousLeCurseur(evenement);
+    if (!couleur) { SOUS_CURSEUR.hidden = true; return; }
+    SOUS_CURSEUR.hidden = false;
+    SOUS_CURSEUR.style.left = (evenement.clientX + 16) + "px";
+    SOUS_CURSEUR.style.top = (evenement.clientY + 16) + "px";
+    SOUS_PASTILLE.style.background = rgbVersHex(couleur);
+    SOUS_HEX.textContent = rgbVersHex(couleur);
+});
+LOUPE_CANVAS.addEventListener("mouseleave", () => { SOUS_CURSEUR.hidden = true; });
+LOUPE_CANVAS.addEventListener("click", (evenement) => {
+    const loupe = etat.loupe;
+    const couleur = couleurSousLeCurseur(evenement);
+    if (!loupe || !couleur) return;
+    poserChamp(loupe.ligne, loupe.rang, couleur);
+    // ⚠ ON AVANCE TOUT SEUL. Trois clics remplissent les trois couleurs : c'est
+    // la façon dont on relève une carte, du plus dense au plus diffus. Arrivé
+    // au bout, on reste sur la troisième plutôt que de repartir au début et
+    // d'écraser la principale sans prévenir.
+    loupe.rang = Math.min(loupe.rang + 1, LIBELLES_RANG.length - 1);
+    dessinerCibles();
+});
+document.getElementById("loupe-fermer").addEventListener("click", fermerLoupe);
+LOUPE_FOND.addEventListener("click", fermerLoupe);
+document.addEventListener("keydown", (evenement) => {
+    if (!etat.loupe) return;
+    if (evenement.key === "Escape") { fermerLoupe(); return; }
+    const rang = ["1", "2", "3"].indexOf(evenement.key);
+    if (rang >= 0) { etat.loupe.rang = rang; dessinerCibles(); }
+});
+
 function construireLigne(groupe, nom) {
     const noeud = MODELE.content.firstElementChild.cloneNode(true);
     const ligne = {
@@ -210,6 +368,24 @@ function construireLigne(groupe, nom) {
     const scan = noeud.querySelector(".p-scan");
     scan.src = "/" + groupe.cartes[0];
     scan.alt = nom;
+    noeud.querySelector(".p-scan-bouton").addEventListener("click", () => ouvrirLoupe(ligne));
+
+    // La pipette de Chrome : elle prélève n'importe où à l'écran, donc aussi
+    // sur une image ouverte à côté. Cachée ailleurs (Firefox, Safari).
+    for (const bouton of noeud.querySelectorAll(".p-pipette-ecran")) {
+        if (!PIPETTE_ECRAN) continue;
+        bouton.hidden = false;
+        const rang = Number(bouton.dataset.rang);
+        bouton.addEventListener("click", async () => {
+            try {
+                const choix = await new window.EyeDropper().open();
+                const rgb = hexVersRgb(choix && choix.sRGBHex);
+                if (rgb) poserChamp(ligne, rang, rgb);
+            } catch (erreur) {
+                // Échap pendant le prélèvement : ce n'est pas une panne.
+            }
+        });
+    }
 
     ligne.champs.forEach((champ, rang) => {
         champ.addEventListener("input", () => {

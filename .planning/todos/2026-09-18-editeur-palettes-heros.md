@@ -70,6 +70,29 @@ Les deux points à ne pas perdre de vue ont été tenus :
    sur le fond sombre du plateau, et une gate compare les deux formules pour
    qu'elles ne dérivent pas.
 
+## La pipette (19/09/2026, même jour)
+
+Demande : « cliquer sur la couleur principale puis sur un endroit de la carte,
+et qu'elle prenne la couleur de l'endroit cliqué », plus « je joue sur Chrome,
+donc il y a la pipette de Chrome à part ».
+
+- La vignette de 52 px ouvre la carte AGRANDIE : on ne vise rien dans une
+  vignette. Trois boutons disent quelle couleur on remplit, le clic la remplit
+  et passe à la suivante, `1` `2` `3` visent directement, `Échap` ferme.
+- **Jamais un pixel isolé** : la couleur est la moyenne d'un carré de 5 sur 5.
+  Un scan est un JPEG, deux clics voisins sur un pixel unique donnent deux
+  couleurs différentes. Le générateur moyenne déjà le contour des cartes.
+- Le canvas peut lire ses pixels parce que le moteur sert le scan lui-même :
+  une image d'un autre domaine « salit » le canvas et interdit la lecture.
+- La pipette de Chrome (`EyeDropper`) est à côté de chaque champ, et prélève
+  n'importe où à l'écran. Cachée là où elle n'existe pas (Firefox, Safari).
+- ⚠ Piège payé, trouvé par le contrôle Playwright : `display:flex` bat
+  l'attribut `hidden`. La loupe restait invisible mais couvrait la page et
+  avalait TOUS les clics. `.p-loupe[hidden]{display:none}`.
+
+Preuves : 15 cas node (dont la moyenne, les bords et les pixels transparents),
+3 contrôles d'écran (`npm run palettes-heros` dans ui-check).
+
 ## Statut
 
 **Fait le 19/09/2026.** Reste à faire côté joueur : ouvrir la page depuis sa table et

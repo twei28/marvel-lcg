@@ -25,7 +25,10 @@
 
     <template id="modele-ligne">
         <section class="p-ligne">
-            <img class="p-scan" alt="" decoding="async" loading="lazy">
+            <button type="button" class="p-scan-bouton" title="Agrandir la carte et prélever une couleur">
+                <img class="p-scan" alt="" decoding="async" loading="lazy">
+                <span class="p-scan-loupe">🔍</span>
+            </button>
             <div class="p-identite">
                 <h2 class="p-nom"></h2>
                 <p class="p-cartes"></p>
@@ -37,18 +40,24 @@
                     <input type="color" class="p-pastille" data-rang="0">
                     <input type="text" class="p-hex" data-rang="0" maxlength="7"
                            spellcheck="false" placeholder="#000000">
+                    <button type="button" class="p-pipette-ecran" data-rang="0" hidden
+                            title="Pipette de Chrome : prélever n'importe où à l'écran">💧</button>
                 </label>
                 <label class="p-champ">
                     <span>Secondaire</span>
                     <input type="color" class="p-pastille" data-rang="1">
                     <input type="text" class="p-hex" data-rang="1" maxlength="7"
                            spellcheck="false" placeholder="#000000">
+                    <button type="button" class="p-pipette-ecran" data-rang="1" hidden
+                            title="Pipette de Chrome : prélever n'importe où à l'écran">💧</button>
                 </label>
                 <label class="p-champ">
                     <span>Tertiaire</span>
                     <input type="color" class="p-pastille" data-rang="2">
                     <input type="text" class="p-hex" data-rang="2" maxlength="7"
                            spellcheck="false" placeholder="#000000">
+                    <button type="button" class="p-pipette-ecran" data-rang="2" hidden
+                            title="Pipette de Chrome : prélever n'importe où à l'écran">💧</button>
                 </label>
             </div>
             <div class="p-apercu" title="Le vrai fond du plateau, coin bas droit">
@@ -61,6 +70,33 @@
             </div>
         </section>
     </template>
+
+    <div class="p-loupe" id="loupe" hidden>
+        <div class="p-loupe-fond" id="loupe-fond"></div>
+        <div class="p-loupe-boite" role="dialog" aria-modal="true" aria-label="Prélever une couleur">
+            <header class="p-loupe-entete">
+                <h2 id="loupe-nom"></h2>
+                <div class="p-loupe-faces" id="loupe-faces"></div>
+                <button type="button" class="p-loupe-fermer" id="loupe-fermer" title="Fermer (Échap)">✕</button>
+            </header>
+            <p class="p-loupe-aide">
+                Choisis la couleur à remplir, puis clique sur la carte. Chaque clic
+                passe à la suivante. <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> visent
+                directement, <kbd>Échap</kbd> ferme.
+            </p>
+            <div class="p-loupe-cibles" id="loupe-cibles"></div>
+            <div class="p-loupe-scene">
+                <canvas id="loupe-canvas"></canvas>
+                <div class="p-loupe-sous-curseur" id="loupe-sous-curseur" hidden>
+                    <span class="p-loupe-pastille" id="loupe-pastille"></span>
+                    <span id="loupe-hex"></span>
+                </div>
+            </div>
+            <div class="p-loupe-apercu" id="loupe-apercu" title="Le fond du plateau avec ces couleurs">
+                <span class="p-apercu-legende">fond du plateau</span>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="/public/js/palettes/app.js?v=1"></script>
 </body>

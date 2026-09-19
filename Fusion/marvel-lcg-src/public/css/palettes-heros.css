@@ -108,3 +108,92 @@ body{
   .p-champs,.p-apercu,.p-actions{grid-column:1 / -1}
   .p-apercu{height:64px}
 }
+
+/* ---------------------------------------------------------------- la loupe --
+   Demande du 19/09/2026 : « fais en sorte qu'on puisse agrandir la carte, et
+   je joue sur Chrome, donc il y a la pipette de Chrome à part ». La vignette
+   de 52 px ne permet de viser rien du tout : la pipette travaille sur la carte
+   AGRANDIE, et la pipette native de Chrome reste à côté, pour prélever
+   n'importe où à l'écran. */
+
+.p-scan-bouton{
+  position:relative; width:52px; height:75px; padding:0; cursor:zoom-in;
+  border:1px solid var(--line); border-radius:6px; background:var(--steel3);
+  overflow:hidden;
+}
+.p-scan-bouton:hover{border-color:var(--blue)}
+.p-scan-bouton .p-scan{width:100%; height:100%; display:block; border-radius:0}
+.p-scan-loupe{
+  position:absolute; right:2px; bottom:2px; font-size:11px; line-height:1;
+  background:rgba(8,9,14,.72); border-radius:4px; padding:2px 3px;
+}
+.p-pipette-ecran{
+  align-self:flex-start; margin-top:3px; padding:2px 7px; font-size:12px;
+  border-radius:6px; border:1px solid var(--line); background:var(--steel2);
+  color:var(--txt); cursor:pointer;
+}
+.p-pipette-ecran:hover{background:var(--steel3); border-color:var(--blue)}
+
+.p-loupe{position:fixed; inset:0; z-index:50; display:flex;
+  align-items:center; justify-content:center; padding:18px}
+/* ⚠ `display:flex` BAT l'attribut `hidden`, qui n'est qu'un `display:none` de
+   la feuille du navigateur. Sans cette ligne, la loupe reste invisible mais
+   couvre toute la page et avale les clics : plus rien ne repond, et rien ne
+   l'explique a l'ecran. Vu le 19/09/2026 par le controle Playwright, qui a
+   signale « #loupe-fond intercepts pointer events ». */
+.p-loupe[hidden]{display:none}
+.p-loupe-fond{position:absolute; inset:0; background:rgba(4,5,8,.82)}
+.p-loupe-boite{
+  position:relative; display:flex; flex-direction:column; gap:10px;
+  max-height:94vh; padding:14px 16px 16px;
+  border:1px solid var(--line); border-radius:12px; background:var(--steel);
+  box-shadow:0 18px 50px rgba(0,0,0,.6);
+}
+.p-loupe-entete{display:flex; align-items:center; gap:14px}
+.p-loupe-entete h2{font-size:18px; font-weight:700}
+.p-loupe-faces{display:flex; gap:6px}
+.p-loupe-faces button{
+  padding:4px 9px; font-size:12px; border-radius:6px; border:1px solid var(--line);
+  background:var(--steel2); color:var(--dim); cursor:pointer;
+  font-family:ui-monospace,monospace;
+}
+.p-loupe-faces button.on{border-color:var(--blue); color:var(--txt)}
+.p-loupe-fermer{
+  margin-left:auto; width:30px; height:30px; border-radius:8px; cursor:pointer;
+  border:1px solid var(--line); background:var(--steel2); color:var(--dim);
+  font-size:15px;
+}
+.p-loupe-fermer:hover{color:var(--txt); background:var(--steel3)}
+.p-loupe-aide{font-size:12px; color:var(--mute)}
+.p-loupe-aide kbd{
+  border:1px solid var(--line); border-radius:4px; padding:0 4px;
+  background:var(--steel2); font-family:ui-monospace,monospace; font-size:11px;
+}
+.p-loupe-cibles{display:flex; gap:8px; flex-wrap:wrap}
+.p-loupe-cibles button{
+  display:flex; align-items:center; gap:7px;
+  padding:6px 11px; border-radius:8px; border:1px solid var(--line);
+  background:var(--steel2); color:var(--dim); font-size:13px; cursor:pointer;
+}
+.p-loupe-cibles button.on{border-color:var(--blue); color:var(--txt); font-weight:700}
+.p-loupe-cibles .p-puce{
+  width:14px; height:14px; border-radius:4px; border:1px solid var(--line);
+  background:var(--steel3);
+}
+
+.p-loupe-scene{position:relative; overflow:auto; display:flex; justify-content:center}
+#loupe-canvas{
+  max-height:66vh; max-width:100%; height:auto; border-radius:8px;
+  border:1px solid var(--line); cursor:crosshair; background:var(--steel3);
+}
+.p-loupe-sous-curseur{
+  position:fixed; z-index:60; display:flex; align-items:center; gap:7px;
+  padding:4px 8px; border-radius:8px; border:1px solid var(--line);
+  background:rgba(8,9,14,.92); font-family:ui-monospace,monospace; font-size:12px;
+  pointer-events:none;
+}
+.p-loupe-pastille{width:16px; height:16px; border-radius:4px; border:1px solid var(--line)}
+.p-loupe-apercu{
+  position:relative; height:66px; border-radius:8px; border:1px solid var(--line);
+  background:var(--plateau);
+}

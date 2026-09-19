@@ -110,6 +110,47 @@ export function couleursDepuisChamps(champs) {
     return { erreur: "", couleurs };
 }
 
+/** Où le clic est tombé DANS l'image, en pixels de l'image.
+ *
+ *  Le canvas est dessiné à la taille réelle du scan, mais affiché à la taille
+ *  que la page lui laisse : sans ce rapport, la pipette prélèverait à côté dès
+ *  que la fenêtre n'a pas exactement la largeur du scan. Rend null hors cadre.
+ */
+export function coordonneesDansCanvas(rect, largeurCanvas, hauteurCanvas, clientX, clientY) {
+    if (!rect || !rect.width || !rect.height) return null;
+    const x = Math.floor((clientX - rect.left) * (largeurCanvas / rect.width));
+    const y = Math.floor((clientY - rect.top) * (hauteurCanvas / rect.height));
+    if (x < 0 || y < 0 || x >= largeurCanvas || y >= hauteurCanvas) return null;
+    return { x, y };
+}
+
+/** La couleur MOYENNE d'un petit carré autour d'un point.
+ *
+ *  ⚠ JAMAIS UN SEUL PIXEL. Les scans sont des JPEG : un pixel isolé porte le
+ *  bruit de compression, et deux clics voisins donnent deux couleurs
+ *  différentes. Le générateur moyenne déjà le contour des cartes ; la pipette
+ *  fait la même chose, en plus petit. `rayon = 2` donne un carré de 5 sur 5.
+ *
+ *  `pixels` est le tableau RVBA d'un `getImageData`. Les pixels transparents
+ *  ne comptent pas : sur un scan à coins arrondis, ils tireraient la moyenne
+ *  vers du noir qui n'est pas sur la carte.
+ */
+export function moyenneAutour(pixels, largeur, hauteur, x, y, rayon = 2) {
+    let r = 0, v = 0, b = 0, n = 0;
+    for (let dy = -rayon; dy <= rayon; dy += 1) {
+        for (let dx = -rayon; dx <= rayon; dx += 1) {
+            const px = x + dx;
+            const py = y + dy;
+            if (px < 0 || py < 0 || px >= largeur || py >= hauteur) continue;
+            const i = (py * largeur + px) * 4;
+            if (pixels[i + 3] === 0) continue;
+            r += pixels[i]; v += pixels[i + 1]; b += pixels[i + 2]; n += 1;
+        }
+    }
+    if (n === 0) return null;
+    return [Math.round(r / n), Math.round(v / n), Math.round(b / n)];
+}
+
 /** Deux palettes sont-elles identiques ? Sert à ne PAS écrire une correction
  *  qui ne corrige rien : le fichier ne doit porter que les écarts. */
 export function memePalette(a, b) {

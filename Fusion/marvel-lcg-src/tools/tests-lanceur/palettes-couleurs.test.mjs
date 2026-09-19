@@ -5,8 +5,22 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
     hexVersRgb, rgbVersHex, fondDe, identiteDe, grouperParIdentite,
-    couleursDepuisChamps, memePalette,
+    couleursDepuisChamps, memePalette, coordonneesDansCanvas, moyenneAutour,
 } from "../../public/js/palettes/couleurs.js";
+
+/** Une image de test : `couleurs` est une grille de [r,v,b,a] par pixel. */
+function pixels(largeur, hauteur, donne) {
+    const data = new Uint8ClampedArray(largeur * hauteur * 4);
+    for (let y = 0; y < hauteur; y += 1) {
+        for (let x = 0; x < largeur; x += 1) {
+            const c = donne(x, y);
+            const i = (y * largeur + x) * 4;
+            data[i] = c[0]; data[i + 1] = c[1]; data[i + 2] = c[2];
+            data[i + 3] = c.length > 3 ? c[3] : 255;
+        }
+    }
+    return data;
+}
 
 test("un hex se lit avec ou sans dièse, en majuscules comme en minuscules", () => {
     assert.deepEqual(hexVersRgb("#1a2b3c"), [26, 43, 60]);
@@ -86,4 +100,39 @@ test("une correction identique à la palette générée n'en est pas une", () =>
     assert.equal(memePalette([[1, 2, 3]], [[1, 2, 3]]), true);
     assert.equal(memePalette([[1, 2, 3]], [[1, 2, 4]]), false);
     assert.equal(memePalette([[1, 2, 3]], [[1, 2, 3], [4, 5, 6]]), false);
+});
+
+test("le clic est ramene aux pixels de l'image, quelle que soit la taille affichee", () => {
+    // Canvas de 600x900 affiche dans une boite de 300x450 : un clic au milieu
+    // de la boite doit tomber au milieu de l'image.
+    const rect = { left: 10, top: 20, width: 300, height: 450 };
+    assert.deepEqual(coordonneesDansCanvas(rect, 600, 900, 160, 245), { x: 300, y: 450 });
+    assert.deepEqual(coordonneesDansCanvas(rect, 600, 900, 10, 20), { x: 0, y: 0 });
+    // Hors cadre : rien, plutot qu'un pixel invente au bord.
+    assert.equal(coordonneesDansCanvas(rect, 600, 900, 5, 245), null);
+    assert.equal(coordonneesDansCanvas(rect, 600, 900, 160, 500), null);
+    assert.equal(coordonneesDansCanvas(null, 600, 900, 160, 245), null);
+});
+
+test("la pipette MOYENNE un carre, elle ne lit pas un pixel isole", () => {
+    // Un damier noir et blanc : la moyenne doit tomber au gris, alors qu'un
+    // pixel seul rendrait 0 ou 255 selon le pixel touche.
+    const data = pixels(9, 9, (x, y) => ((x + y) % 2 ? [255, 255, 255] : [0, 0, 0]));
+    const moyenne = moyenneAutour(data, 9, 9, 4, 4, 2);
+    assert.ok(Math.abs(moyenne[0] - 128) <= 12, `moyenne = ${moyenne}`);
+});
+
+test("la pipette reste dans l'image quand on clique au bord", () => {
+    const data = pixels(4, 4, () => [10, 20, 30]);
+    assert.deepEqual(moyenneAutour(data, 4, 4, 0, 0, 2), [10, 20, 30]);
+    assert.deepEqual(moyenneAutour(data, 4, 4, 3, 3, 2), [10, 20, 30]);
+});
+
+test("les pixels transparents ne tirent pas la moyenne vers le noir", () => {
+    // Coin arrondi d'un scan : moitie transparente, moitie rouge.
+    const data = pixels(5, 5, (x) => (x < 2 ? [0, 0, 0, 0] : [200, 40, 30]));
+    assert.deepEqual(moyenneAutour(data, 5, 5, 3, 2, 2), [200, 40, 30]);
+    // Tout transparent : rien a prelever, on le DIT.
+    const vide = pixels(5, 5, () => [0, 0, 0, 0]);
+    assert.equal(moyenneAutour(vide, 5, 5, 2, 2, 2), null);
 });
