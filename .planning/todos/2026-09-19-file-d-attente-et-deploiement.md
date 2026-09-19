@@ -42,7 +42,10 @@ Relire son bilan et corriger si elle sort autre chose.
 
 ## L'ordre décidé avec l'utilisateur
 
-1. **Fear No Evil** (autre session) — en cours, on attend qu'elle finisse.
+1. ~~**Fear No Evil**~~ — **FAIT ET DÉPLOYÉ le 19/09/2026.** Le pack, la
+   campagne en ordre libre, les planches du livret et les 95 images. La boucle
+   de campagne des dix boîtes est mesurée par-dessus
+   (`.planning/todos/2026-09-19-boucle-de-campagne-dix-boites.md`).
 2. **L'éditeur de palettes de héros** — cadré, fiche
    `2026-09-19-editeur-palettes-heros.md`. Le point dur est de faire savoir au
    plateau que le visiteur est l'auteur : l'identité vit dans le site, le
