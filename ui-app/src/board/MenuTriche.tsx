@@ -108,8 +108,14 @@ export type MenuTricheProps = {
   x: number
   y: number
   onFermer: () => void
-  /** Raconte l'intervention à l'historique de partie. */
-  onIntervention: (libelle: string) => void
+  /**
+   * Dépose un geste sans écrire sa ligne tout de suite : l'issue réelle
+   * (accepté ou refusé par le moteur) n'est connue qu'au rendu suivant.
+   * Correction du 19/09/2026 (revue de la tâche 4 ter) : ce menu écrivait
+   * directement une ligne « faite » sur le seul succès du DÉPÔT HTTP, qui ne
+   * dit rien de l'exécution réelle côté moteur — voir `useTriche` (`CoucheTriche.tsx`).
+   */
+  emettreGeste: (libelle: string, deposer: () => Promise<boolean>) => Promise<void>
 }
 
 /** Une entrée du menu. `valeur` ouvre une saisie de nombre avant d'agir. */
@@ -120,7 +126,7 @@ type Entree = {
   danger?: boolean
 }
 
-export function MenuTriche({ cible, x, y, onFermer, onIntervention }: MenuTricheProps) {
+export function MenuTriche({ cible, x, y, onFermer, emettreGeste }: MenuTricheProps) {
   const [saisie, setSaisie] = useState<Entree | undefined>(undefined)
   const [nombre, setNombre] = useState(1)
   // Le sous-menu « Déplacer vers » : une liste de piles plutôt qu'une saisie
@@ -181,20 +187,16 @@ export function MenuTriche({ cible, x, y, onFermer, onIntervention }: MenuTriche
   )
 
   const executer = async (entree: Entree, valeur: number) => {
-    const reussi = await entree.agir(valeur)
     const chiffre = entree.valeur !== undefined ? ` ${valeur}` : ''
-    onIntervention(
-      `${entree.libelle}${chiffre} — ${cible.nom}${reussi ? '' : ` (${t('refusé')})`}`
-    )
+    await emettreGeste(`${entree.libelle}${chiffre} — ${cible.nom}`, () => entree.agir(valeur))
     onFermer()
   }
 
   const executerDeplacement = async (zone: string, position: 'Top' | 'Bottom') => {
-    const reussi = await triche.deplacerVers(cible.id, zone, position)
     const suite = position === 'Bottom' ? ` (${t('Sous la pile')})` : ''
-    onIntervention(
-      `${t('Déplacer vers')} ${libellePile(zone)}${suite} — ${cible.nom}` +
-        `${reussi ? '' : ` (${t('refusé')})`}`
+    await emettreGeste(
+      `${t('Déplacer vers')} ${libellePile(zone)}${suite} — ${cible.nom}`,
+      () => triche.deplacerVers(cible.id, zone, position)
     )
     onFermer()
   }

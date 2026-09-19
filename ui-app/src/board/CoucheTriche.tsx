@@ -159,39 +159,94 @@ export function useTriche(
     [ajouterAuJournal]
   )
 
-  // Un geste manuel refusé (tâche 4 ter) : `World.ManualLoop` redessine même
-  // quand un geste échoue, donc `world.manuel_refus` porte le motif du DERNIER
-  // refus dès le rendu suivant — voir `WorldDescriptor.manuel_refus`,
-  // engine/render/descriptor/world.py.
+  // --- Un geste refusé doit se voir, SANS jamais dire l'inverse -------------
   //
-  // ⚠ ON REGARDE `render_id`, PAS SEULEMENT LE CHAMP. Le moteur ne vide
-  // `manuel_refus` qu'au PROCHAIN geste qui réussit : tant que rien ne s'est
-  // reproduit, le champ reste posé. Sans ce verrou sur le rendu déjà vu, ce
-  // même refus serait rejoué au journal et à l'écran à chaque nouveau rendu
-  // du monde (une carte qui bouge chez un autre joueur, une horloge...), et
-  // pas seulement quand le refus est arrivé.
+  // ÉCART CORRIGÉ (revue, 19/09/2026, ronde 1 de la tâche 4 ter) : la
+  // première version écrivait la ligne du geste tout de suite, sur le succès
+  // du DÉPÔT HTTP (`reponse.ok`), et une ligne générique séparée
+  // (« Geste refusé par la table ») quand le moteur refusait plus tard. Deux
+  // lignes qui se contredisaient (l'une dit « fait », l'autre dit « refusé »,
+  // sans dire LEQUEL des gestes elle vise), et la route répond « déposé »
+  // avant toute exécution : presque aucun refus de RÈGLE ne fait plus échouer
+  // le dépôt, donc le marqueur `(refusé)` d'origine ne se déclenchait plus
+  // que sur une panne réseau. La marque promise par le brief (« comme les
+  // gestes refusés le font déjà ») n'était donc plus fiable pour un vrai
+  // refus moteur.
   //
-  // ⚠ LE MOTIF TECHNIQUE (« KeyError: 'zone inconnue : ...' ») N'EST PAS
-  // MONTRÉ TEL QUEL : il s'adresse à qui débogue, pas à qui joue, et il est
-  // déjà dans le journal serveur (`Log.Print`, `DrainSandboxCommands`). Le
-  // joueur lit un message compréhensible ; le motif reste consultable côté
-  // serveur pour qui doit diagnostiquer.
+  // Le correctif : ne plus juger sur le dépôt. Un geste déposé avec succès
+  // part dans une file d'attente (`enAttenteRef`) et n'écrit sa ligne qu'au
+  // PROCHAIN rendu, quand `world.manuel_refus` dit enfin ce qui s'est
+  // réellement passé. Un dépôt qui échoue, lui, reste définitif tout de
+  // suite : aucun rendu futur ne le concernera jamais.
+  type GesteEnAttente = { libelle: string }
+  const enAttenteRef = useRef<GesteEnAttente[]>([])
+
   const dernierRenduVu = useRef<number | undefined>(undefined)
   const [avisRefus, setAvisRefus] = useState<string | undefined>(undefined)
   const minuteurRefus = useRef<number | undefined>(undefined)
 
+  const afficherBrievement = useCallback((ligne: string) => {
+    setAvisRefus(ligne)
+    if (minuteurRefus.current !== undefined) window.clearTimeout(minuteurRefus.current)
+    minuteurRefus.current = window.setTimeout(() => setAvisRefus(undefined), DUREE_AVIS_REFUS)
+  }, [])
+
+  /**
+   * Dépose un geste sans écrire sa ligne : voir le commentaire ci-dessus.
+   * Utilisé par `executerGeste` (clavier) ci-dessous, et exposé via `couche`
+   * pour `MenuTriche` (clic droit) et les actions sur une pile ouverte.
+   */
+  const emettreGeste = useCallback(
+    async (libelle: string, deposer: () => Promise<boolean>) => {
+      const depose = await deposer()
+      if (!depose) {
+        noter(`${libelle} (${t('refusé')})`)
+        return
+      }
+      enAttenteRef.current.push({ libelle })
+    },
+    [noter]
+  )
+
+  // Résout la file au rendu suivant. `World.ManualLoop` redessine même quand
+  // un geste échoue (voir engine/game/world/world.py), donc ce rendu arrive
+  // toujours — pas besoin d'attente supplémentaire.
+  //
+  // ⚠ ON DÉPEND DE `world`, PAS DE `world.render_id`/`world.manuel_refus` À
+  // PART : ce sont deux champs du MÊME objet, qui change de référence à
+  // chaque rendu du monde ; les lister en plus ne fait que répéter la même
+  // condition (retour de revue).
+  //
+  // ⚠ LE MOTIF TECHNIQUE (« KeyError: 'zone inconnue : ...' ») N'EST JAMAIS
+  // MONTRÉ TEL QUEL : il s'adresse à qui débogue, pas à qui joue, et il est
+  // déjà dans le journal serveur (`Log.Print`, `DrainSandboxCommands`).
+  //
+  // ⚠ PLUS D'UN GESTE EN ATTENTE AU MÊME RENDU : ON NE DEVINE PAS. Un seul
+  // drainage peut regrouper plusieurs commandes
+  // (`DrainSandboxCommands`, engine/device/manager/base.py) : un seul rendu
+  // peut donc clore plusieurs de nos gestes à la fois, sans dire lesquels ont
+  // réussi. Mieux vaut une ligne honnête (« issue inconnue ») qu'une ligne
+  // qui invente un succès ou un refus au hasard.
   useEffect(() => {
     if (!manuel || !world) return
     if (world.render_id === dernierRenduVu.current) return
     dernierRenduVu.current = world.render_id
-    if (!world.manuel_refus) return
 
-    const libelle = t('Geste refusé par la table')
-    noter(libelle)
-    setAvisRefus(libelle)
-    if (minuteurRefus.current !== undefined) window.clearTimeout(minuteurRefus.current)
-    minuteurRefus.current = window.setTimeout(() => setAvisRefus(undefined), DUREE_AVIS_REFUS)
-  }, [manuel, world, world?.render_id, world?.manuel_refus, noter])
+    const enAttente = enAttenteRef.current
+    if (enAttente.length === 0) return
+
+    if (enAttente.length > 1) {
+      const enCours = enAttente.splice(0, enAttente.length)
+      for (const { libelle } of enCours) noter(`${libelle} (${t('issue inconnue')})`)
+      return
+    }
+
+    const { libelle } = enAttente.shift() as GesteEnAttente
+    const refuse = !!world.manuel_refus
+    const ligne = refuse ? `${libelle} (${t('refusé')})` : libelle
+    noter(ligne)
+    if (refuse) afficherBrievement(ligne)
+  }, [manuel, world, noter, afficherBrievement])
 
   useEffect(
     () => () => {
@@ -236,26 +291,27 @@ export function useTriche(
     return () => document.removeEventListener('contextmenu', surClicDroit)
   }, [actif, index, piles])
 
-  // Traduit un geste du clavier en appel du canal `triche.ts`, et le raconte.
+  // Traduit un geste du clavier en appel du canal `triche.ts`. La ligne
+  // n'est pas écrite ici : `emettreGeste` la retarde jusqu'au rendu qui
+  // connaît l'issue réelle (voir plus haut).
   const executerGeste = useCallback(
     async (geste: GesteClavier) => {
       switch (geste.geste) {
         case 'retourner': {
           const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
-          const reussi = await triche.retourner(geste.id)
-          noter(`${t('Retourner')} — ${nom}${reussi ? '' : ` (${t('refusé')})`}`)
+          await emettreGeste(`${t('Retourner')} — ${nom}`, () => triche.retourner(geste.id))
           return
         }
         case 'incliner': {
           const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
-          const reussi = await triche.incliner(geste.id)
-          noter(`${t('Incliner')} — ${nom}${reussi ? '' : ` (${t('refusé')})`}`)
+          await emettreGeste(`${t('Incliner')} — ${nom}`, () => triche.incliner(geste.id))
           return
         }
         case 'melanger': {
           const pileVisee = [...piles.values()].find((candidate) => candidate.zone === geste.zone)
-          const reussi = await triche.melanger(geste.zone)
-          noter(`${t('Mélanger')} — ${pileVisee?.titre ?? geste.zone}${reussi ? '' : ` (${t('refusé')})`}`)
+          await emettreGeste(`${t('Mélanger')} — ${pileVisee?.titre ?? geste.zone}`, () =>
+            triche.melanger(geste.zone)
+          )
           return
         }
         case 'piocher': {
@@ -277,43 +333,52 @@ export function useTriche(
           // ⚠ PAS DE REPLI SILENCIEUX : si la pile visée n'existe plus (son
           // identifiant a péri entre le survol et la frappe) ou est déjà
           // vide, la boucle ne tourne pas et rien n'a bougé — ce n'est PAS un
-          // succès. Sans ce cas de départ, `tout` restait vrai par défaut et
-          // le journal affirmait avoir sorti des cartes qui n'ont jamais
-          // bougé.
-          let tout = cartes.length > 0
+          // succès. Sans ce cas de départ, `toutDepose` restait vrai par
+          // défaut et le journal affirmait avoir sorti des cartes qui n'ont
+          // jamais bougé.
+          //
+          // ⚠ GESTE COMPOSÉ, TRAITÉ COMME UN SEUL EN ATTENTE (correction du
+          // 19/09/2026) : plusieurs cartes veulent dire plusieurs commandes
+          // déposées, mais une seule ligne au journal, comme avant. Ici
+          // aussi, seul un échec du DÉPÔT lui-même est définitif tout de
+          // suite ; un dépôt réussi attend le rendu suivant.
+          let toutDepose = cartes.length > 0
           for (const carte of cartes) {
-            const reussi = pileVisee?.duJoueur
+            const depose = pileVisee?.duJoueur
               ? await triche.envoyerEnMain(carte.id)
               : await triche.deplacerVers(carte.id, 'ProcessingArea')
-            if (!reussi) tout = false
+            if (!depose) toutDepose = false
           }
           const libelle = pileVisee?.duJoueur ? t('Piocher') : t('Sortir en résolution')
-          noter(
-            `${libelle} ${geste.nombre} — ${pileVisee?.titre ?? geste.zone}` +
-              `${tout ? '' : ` (${t('refusé')})`}`
-          )
+          const description = `${libelle} ${geste.nombre} — ${pileVisee?.titre ?? geste.zone}`
+          if (toutDepose) {
+            enAttenteRef.current.push({ libelle: description })
+          } else {
+            noter(`${description} (${t('refusé')})`)
+          }
           return
         }
         case 'jetons': {
           const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
           if (geste.nature === 'menace') {
-            const reussi = await triche.poserMenace(geste.id, geste.nombre)
             const libelle = geste.nombre >= 0 ? t('Poser de la menace') : t('Retirer de la menace')
-            noter(`${libelle} ${Math.abs(geste.nombre)} — ${nom}${reussi ? '' : ` (${t('refusé')})`}`)
+            await emettreGeste(`${libelle} ${Math.abs(geste.nombre)} — ${nom}`, () =>
+              triche.poserMenace(geste.id, geste.nombre)
+            )
             return
           }
           // Puzzle.Damage ne sait pas soigner avec une valeur négative : le
           // « retirer » du clavier (Maj) passe par Puzzle.Heal, comme le menu.
-          const reussi =
-            geste.nombre >= 0
-              ? await triche.blesser(geste.id, geste.nombre)
-              : await triche.soigner(geste.id, -geste.nombre)
           const libelle = geste.nombre >= 0 ? t('Infliger des dégâts') : t('Soigner')
-          noter(`${libelle} ${Math.abs(geste.nombre)} — ${nom}${reussi ? '' : ` (${t('refusé')})`}`)
+          await emettreGeste(`${libelle} ${Math.abs(geste.nombre)} — ${nom}`, () =>
+            geste.nombre >= 0
+              ? triche.blesser(geste.id, geste.nombre)
+              : triche.soigner(geste.id, -geste.nombre)
+          )
         }
       }
     },
-    [index, piles, noter]
+    [index, piles, emettreGeste, noter]
   )
 
   // L'UNIQUE écoute clavier du mode manuel (voir `manuel/clavier.ts`) : ce
@@ -385,7 +450,7 @@ export function useTriche(
     actif,
     manuel,
     interventions,
-    couche: { menu, pile, setMenu, setPile, noter, avisRefus },
+    couche: { menu, pile, setMenu, setPile, emettreGeste, avisRefus },
     /** Pour la tâche 5 (glisser-déposer) : lire l'état sans poser d'écoute. */
     estToucheEnfoncee: etatTouches.estEnfoncee,
   }
@@ -399,29 +464,29 @@ export type CoucheTricheProps = {
 }
 
 export function CoucheTriche({ actif, manuel, couche }: CoucheTricheProps) {
-  const { menu, pile, setMenu, setPile, noter, avisRefus } = couche
+  const { menu, pile, setMenu, setPile, emettreGeste, avisRefus } = couche
   if (!actif) return null
 
   const agirSurCarte = async (carte: WorldCard, mode: 'defaut' | 'reveler') => {
     if (!pile) return
-    const reussi = pile.duJoueur
-      ? await triche.envoyerEnMain(carte.id)
-      : mode === 'reveler'
-        ? await triche.reveler(carte.id)
-        : await triche.mettreEnJeu(carte.id)
     const quoi = pile.duJoueur
       ? t('Ajoutée à la main')
       : mode === 'reveler'
         ? t('Révélée')
         : t('Mise en jeu')
-    noter(`${quoi} — ${carte.name}${reussi ? '' : ` (${t('refusé')})`}`)
+    await emettreGeste(`${quoi} — ${carte.name}`, () =>
+      pile.duJoueur
+        ? triche.envoyerEnMain(carte.id)
+        : mode === 'reveler'
+          ? triche.reveler(carte.id)
+          : triche.mettreEnJeu(carte.id)
+    )
     setPile(undefined)
   }
 
   const melangerPile = async () => {
     if (!pile) return
-    const reussi = await triche.melanger(pile.zone)
-    noter(`${t('Mélanger')} — ${pile.titre}${reussi ? '' : ` (${t('refusé')})`}`)
+    await emettreGeste(`${t('Mélanger')} — ${pile.titre}`, () => triche.melanger(pile.zone))
     setPile(undefined)
   }
 
@@ -454,7 +519,7 @@ export function CoucheTriche({ actif, manuel, couche }: CoucheTricheProps) {
           x={menu.x}
           y={menu.y}
           onFermer={() => setMenu(undefined)}
-          onIntervention={noter}
+          emettreGeste={emettreGeste}
         />
       ) : null}
 

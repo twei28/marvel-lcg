@@ -13,11 +13,22 @@ beforeEach(() => {
 /** Laisse les promesses de `triche.ts` (fetch, puis `envoyer`) se résoudre. */
 const attendreLeReseau = () => new Promise((resolve) => setTimeout(resolve, 0))
 
+/**
+ * Un `emettreGeste` de test qui appelle vraiment le déposeur (comme le fait
+ * `useTriche`) : sans ça, `triche.deplacerVers` ne serait jamais invoqué et
+ * `fetch` ne verrait jamais passer la commande.
+ */
+function emettreGesteDeTest() {
+  return vi.fn(async (_libelle: string, deposer: () => Promise<boolean>) => {
+    await deposer()
+  })
+}
+
 describe('le sous-menu « Déplacer vers »', () => {
   it('deplace la carte vers la pile choisie, dessus', async () => {
-    const onIntervention = vi.fn()
+    const emettreGeste = emettreGesteDeTest()
     const { getByText } = render(
-      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} onIntervention={onIntervention} />
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGeste} />
     )
     fireEvent.click(getByText('Déplacer vers'))
     fireEvent.click(getByText('Deck Rencontre'))
@@ -25,14 +36,20 @@ describe('le sous-menu « Déplacer vers »', () => {
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
       body: JSON.stringify({ commands: ["Puzzle.MoveTo(42, 'EncounterDeck', 'Top')"] }),
     }))
-    expect(onIntervention).toHaveBeenCalled()
+    // Le menu DÉPOSE le geste (`emettreGeste`), il n'écrit plus lui-même la
+    // ligne de journal : c'est `useTriche` qui la résout au rendu suivant
+    // (correction du 19/09/2026, tâche 4 ter).
+    expect(emettreGeste).toHaveBeenCalledWith(
+      expect.stringContaining('Carte test'),
+      expect.any(Function)
+    )
   })
 
   it('depose sous la pile quand on le demande explicitement', async () => {
     // « Deck du héros » (PlayerDeck) est un deck ORDONNÉ : le dessous a un
     // sens, contrairement aux zones en jeu (voir `ZONES_ORDONNEES`).
     const { getByText, getAllByText } = render(
-      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} onIntervention={vi.fn()} />
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
     )
     fireEvent.click(getByText('Déplacer vers'))
     fireEvent.click(getAllByText('Sous la pile')[0])
@@ -49,7 +66,7 @@ describe('le sous-menu « Déplacer vers »', () => {
     // fois le même geste. Un seul « Sous la pile » par pile ordonnée donne
     // 4, pas 13.
     const { getByText, getAllByText } = render(
-      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} onIntervention={vi.fn()} />
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
     )
     fireEvent.click(getByText('Déplacer vers'))
     expect(getAllByText('Sous la pile')).toHaveLength(4)
@@ -61,7 +78,7 @@ describe('le sous-menu « Déplacer vers »', () => {
 
   it('précise que la pile écartée du menu est celle du héros, pas une pile du monde', () => {
     const { getByText } = render(
-      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} onIntervention={vi.fn()} />
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
     )
     fireEvent.click(getByText('Déplacer vers'))
     // Plusieurs piles moteur portent le type `AsideDeck` ; celle du menu est
