@@ -10,6 +10,16 @@
 // ORDINAIRE attend (ses règles sont bâties sur `emplacement.cle`, jamais sur
 // une pile fine — `board.tsx`, `zoneDeLaCarte`). Ce fichier remplace ce
 // raisonnement par une garantie.
+//
+// Ronde de correction 2 (revue finale, constat C1) : le cas du SECTEUR ci-
+// dessous encodait le défaut comme voulu — « le secteur compte MÊME hors
+// carte » était vrai, mais il écrasait alors `zone`, la seule chose que le
+// mode ORDINAIRE lit. Un lâcher sans carte au milieu du secteur « ennemis
+// engagés » (`terrain-combat-engages`, dessiné dans TOUTES les parties)
+// rendait donc `zone: 'terrain-combat-engages'` au lieu de `zone:
+// 'terrain-combat'`, une zone que le mode ordinaire ne connaît pas : la
+// carte s'y voyait refusée à tort. Le secteur vit maintenant dans son PROPRE
+// champ (`secteur`), que `zone` ne porte plus jamais.
 import { describe, expect, it } from 'vitest'
 import { cibleSousLePoint } from './useGlisser'
 
@@ -95,33 +105,60 @@ describe('cibleSousLePoint', () => {
     expect(cibleSousLePoint(0, 0)).toEqual({ carteId: undefined, zone: 'piles-joueur' })
   })
 
-  // Le secteur (posé sur le GROUPE entier, ex. « ennemis engagés ») est une
-  // autre famille : le mode manuel a besoin qu'il compte même hors carte,
-  // pour engager un sbire lâché dans l'espace vide du secteur.
-  it('lâchée dans l’espace vide d’un secteur (hors de toute carte) : le secteur', () => {
+  // ⚠ LE CAS C1. Le secteur (posé sur le GROUPE entier, ex. « ennemis
+  // engagés ») compte même hors carte — le mode manuel en a besoin pour
+  // engager un sbire lâché dans l'espace vide du secteur — mais il vit dans
+  // SON PROPRE champ : `zone` reste l'emplacement LARGE, celui que le mode
+  // ordinaire comprend, quoi qu'il arrive.
+  it('lâchée dans l’espace vide d’un secteur (hors de toute carte) : la zone large, et le secteur à part', () => {
     const { margeGroupe } = poserPlateau({
       zoneEmplacement: 'terrain-combat',
       pileGroupe: 'terrain-combat-engages',
       margeDansLeGroupe: true,
     })
     document.elementFromPoint = () => margeGroupe!
-    expect(cibleSousLePoint(0, 0)).toEqual({ carteId: undefined, zone: 'terrain-combat-engages' })
+    expect(cibleSousLePoint(0, 0)).toEqual({
+      carteId: undefined,
+      zone: 'terrain-combat',
+      secteur: 'terrain-combat-engages',
+    })
   })
 
-  it('lâchée sur une carte qui vit dans un secteur : le secteur, et la carte', () => {
+  // Le pendant du cas ci-dessus : c'est justement parce que `zone` reste
+  // l'emplacement large que le mode ORDINAIRE, qui ne lit jamais `secteur`,
+  // continue de reconnaître ce lâcher comme un lâcher « sur le terrain » et
+  // joue toujours la carte — au lieu du refus que C1 signalait.
+  it('mode ordinaire : ce même lâcher garde une zone qu’il reconnaît', () => {
+    const { margeGroupe } = poserPlateau({
+      zoneEmplacement: 'terrain-combat',
+      pileGroupe: 'terrain-combat-engages',
+      margeDansLeGroupe: true,
+    })
+    document.elementFromPoint = () => margeGroupe!
+    const { zone } = cibleSousLePoint(0, 0)
+    // `ZONES_DU_TERRAIN` (glisser/cibles.ts) est ce que le mode ordinaire
+    // sait accueillir sans cible : la zone rendue doit en faire partie.
+    expect(zone).toBe('terrain-combat')
+  })
+
+  it('lâchée sur une carte qui vit dans un secteur : la zone large, le secteur, et la carte', () => {
     const { scanCard } = poserPlateau({
       zoneEmplacement: 'terrain-combat',
       pileGroupe: 'terrain-combat-engages',
       carteId: 7,
     })
     document.elementFromPoint = () => scanCard!
-    expect(cibleSousLePoint(0, 0)).toEqual({ carteId: 7, zone: 'terrain-combat-engages' })
+    expect(cibleSousLePoint(0, 0)).toEqual({
+      carteId: 7,
+      zone: 'terrain-combat',
+      secteur: 'terrain-combat-engages',
+    })
   })
 
   it('lâchée sur une carte ordinaire, sans pile ni secteur : la zone large, et la carte', () => {
     const { scanCard } = poserPlateau({ zoneEmplacement: 'terrain-combat', carteId: 9 })
     document.elementFromPoint = () => scanCard!
-    expect(cibleSousLePoint(0, 0)).toEqual({ carteId: 9, zone: 'terrain-combat' })
+    expect(cibleSousLePoint(0, 0)).toEqual({ carteId: 9, zone: 'terrain-combat', secteur: undefined })
   })
 
   it('lâchée dans le vide (rien à cette position) : rien du tout', () => {

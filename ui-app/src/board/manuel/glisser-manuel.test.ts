@@ -126,7 +126,7 @@ describe('le glisser du mode manuel', () => {
   it('lâcher une carte sur une autre carte attache', async () => {
     const emettreGeste = emettreGesteDeTest()
     const reglages = reglagesGlisserManuel(emettreGeste)
-    expect(reglages.onDepot(42, { carteId: 99 })).toBeUndefined()
+    expect(reglages.onDepot(42, { zone: 'terrain-combat', carteId: 99 })).toBeUndefined()
     const [, deposer] = emettreGeste.mock.calls[0] as [string, () => Promise<boolean>]
     await deposer()
     expect(fetch).toHaveBeenCalledWith(
@@ -135,6 +135,33 @@ describe('le glisser du mode manuel', () => {
         body: JSON.stringify({ commands: ["Puzzle.Attach(42, 99)"] }),
       })
     )
+  })
+
+  // ⚠ I1, LE CAS QUI COMPTE (correction finale). Une pile fondue (« Cartes
+  // visibles », « Cartes cachées » — voir `zones.ts`, `pileFondue`) montre un
+  // REPRÉSENTANT : une vraie carte, mais que le plateau ne dessine nulle
+  // part comme un objet attachable. Avant la gate, l'attache s'y rabattait
+  // par défaut et la carte lâchée disparaissait purement et simplement de la
+  // table. `zone: 'annexes'` est précisément la zone de ces piles fondues,
+  // absente de `PILE_PAR_ZONE` (voir plus haut) : elle doit rester absente
+  // aussi des zones attachables.
+  it('refuse poliment l’attache sur le représentant d’une pile fondue, sans faire disparaître la carte', () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste)
+    expect(reglages.onDepot(42, { zone: 'annexes', carteId: 501 })).toBe(
+      t('Lâche la carte sur une pile')
+    )
+    expect(emettreGeste).not.toHaveBeenCalled()
+  })
+
+  // Même gate, cette fois parce qu'aucune zone n'est connue du tout (lâcher
+  // hors de tout `data-zone`, en théorie impossible en vraie table mais pas
+  // à exclure d'un DOM inattendu) : refus, jamais un repli au hasard.
+  it('refuse poliment l’attache quand la zone de la carte visée est inconnue', () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste)
+    expect(reglages.onDepot(42, { carteId: 501 })).toBe(t('Lâche la carte sur une pile'))
+    expect(emettreGeste).not.toHaveBeenCalled()
   })
 
   // ⚠ LE CAS QUI COMPTE : une pile se dessine avec une carte (son dessus, ou
@@ -162,10 +189,30 @@ describe('le glisser du mode manuel', () => {
     expect(emettreGeste).not.toHaveBeenCalled()
   })
 
-  it('lâcher un sbire sur la zone des ennemis engagés l’engage', async () => {
+  it('lâcher un sbire sur le secteur des ennemis engagés l’engage', async () => {
     const emettreGeste = emettreGesteDeTest()
     const reglages = reglagesGlisserManuel(emettreGeste)
-    expect(reglages.onDepot(42, { zone: CLE_PILE_ENGAGES })).toBeUndefined()
+    // Ronde de correction 2 (constat C1) : l'engagement se lit désormais sur
+    // `secteur`, distinct de `zone` (que le mode ordinaire lit seul).
+    expect(reglages.onDepot(42, { secteur: CLE_PILE_ENGAGES })).toBeUndefined()
+    const [, deposer] = emettreGeste.mock.calls[0] as [string, () => Promise<boolean>]
+    await deposer()
+    expect(fetch).toHaveBeenCalledWith(
+      '/sandbox_command',
+      expect.objectContaining({
+        body: JSON.stringify({ commands: ['Puzzle.Engage(42)'] }),
+      })
+    )
+  })
+
+  // Le secteur l'emporte même quand une carte engagée est touchée en même
+  // temps (le même geste qu'avant la séparation C1 zone/secteur).
+  it('l’engagement l’emporte même en touchant une carte engagée', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste)
+    expect(
+      reglages.onDepot(42, { secteur: CLE_PILE_ENGAGES, zone: 'terrain-combat', carteId: 7 })
+    ).toBeUndefined()
     const [, deposer] = emettreGeste.mock.calls[0] as [string, () => Promise<boolean>]
     await deposer()
     expect(fetch).toHaveBeenCalledWith(

@@ -1003,13 +1003,18 @@ export function Board({
 
   const cibleSurvoleeId = glisse?.cible.carteId
   const zoneSurvolee = glisse?.cible.zone
+  // Le secteur fin (C1) : distinct de `zone`, il ne sert qu'au mode manuel
+  // (l'engagement d'un sbire lâché dans l'espace vide des ennemis engagés).
+  // Le mode ordinaire ne pose jamais de secteur dans `zonesLegales`, donc ce
+  // second essai ne change rien pour lui.
+  const secteurSurvole = glisse?.cible.secteur
   const depotRefuse =
     glisse !== null &&
     !(
       (cibleSurvoleeId !== undefined && (ciblesDuGlisser?.has(cibleSurvoleeId) ?? false)) ||
       (cibleSurvoleeId === undefined &&
-        zoneSurvolee !== undefined &&
-        (zonesDuGlisser?.has(zoneSurvolee) ?? false))
+        ((zoneSurvolee !== undefined && (zonesDuGlisser?.has(zoneSurvolee) ?? false)) ||
+          (secteurSurvole !== undefined && (zonesDuGlisser?.has(secteurSurvole) ?? false))))
     )
   const libelleGlisser = glisse && glisser ? glisser.libelle(glisse.sourceId, glisse.cible) : undefined
 

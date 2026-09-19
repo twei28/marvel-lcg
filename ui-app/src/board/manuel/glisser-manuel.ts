@@ -17,7 +17,7 @@ import type { CibleSurvolee } from '../glisser/useGlisser'
 import { t } from '../langue'
 import { libellePile } from '../MenuTriche'
 import { attacher, deplacerVers, engager } from '../triche'
-import { CLE_PILE_ENGAGES } from '../zones'
+import { CLE_PILE_ENGAGES, type CleEmplacement } from '../zones'
 
 /**
  * La pile dessinée par le plateau (`zones.ts`, `unite.pile`), et son nom côté
@@ -41,6 +41,29 @@ import { CLE_PILE_ENGAGES } from '../zones'
  *    (`'annexes'`), lui aussi absent d'ici : refus poli, jamais un geste au
  *    hasard parmi les trois.
  */
+/**
+ * Les zones où une carte lâchée est vraiment DESSINÉE — jamais un
+ * représentant de pile ou de pile fondue (`zones.ts`, `piles`/`pileFondue`),
+ * dont l'attache serait invisible : elle rejoindrait un objet que le
+ * plateau ne dessine nulle part. C'est une liste POSITIVE, choisie plutôt
+ * que son exclusion (I1, correction finale) : une zone de pile ajoutée plus
+ * tard sans y figurer est refusée par défaut, jamais acceptée par accident.
+ *
+ * Concrètement, chaque emplacement de `zones.ts` bâti sur `posees()`
+ * (des cartes individuelles) plutôt que sur `piles()`/`pileFondue()` (un dos
+ * de carte pour plusieurs origines).
+ */
+const zonesAttachablesListe: CleEmplacement[] = [
+  'terrain-combat',
+  'terrain-soutien',
+  'rencontre',
+  'complot-principal',
+  'complots-secondaires',
+  'reserve',
+  'main',
+]
+const ZONES_ATTACHABLES: ReadonlySet<string> = new Set(zonesAttachablesListe)
+
 export const PILE_PAR_ZONE: Record<string, string> = {
   // Un emplacement qui n'a qu'UN SEUL contenu : pas de pile fine à poser,
   // `data-zone` (le nom de l'emplacement) suffit à désigner la pile.
@@ -83,18 +106,23 @@ export function reglagesGlisserManuel(
     ciblesLegales: () => new Set<number>(),
     zonesLegales: () => new Set([...Object.keys(PILE_PAR_ZONE), CLE_PILE_ENGAGES]),
     libelle: (_sourceId: number, cible: CibleSurvolee) => {
-      if (cible.zone === CLE_PILE_ENGAGES) return t('Engager')
+      // Le secteur (C1) l'emporte : engager un sbire lâché dans les ennemis
+      // engagés, carte touchée ou pas, avant tout autre calcul.
+      if (cible.secteur === CLE_PILE_ENGAGES) return t('Engager')
       const pile = cible.zone ? PILE_PAR_ZONE[cible.zone] : undefined
       if (pile) return `${t('Déplacer vers')} ${libellePile(pile)}`
-      if (cible.carteId !== undefined) return t('Attacher')
+      if (cible.carteId !== undefined && cible.zone !== undefined && ZONES_ATTACHABLES.has(cible.zone)) {
+        return t('Attacher')
+      }
       return undefined
     },
     onDepot: (sourceId: number, cible: CibleSurvolee) => {
       // Un sbire lâché sur les ennemis engagés du joueur s'engage
       // (`Puzzle.Engage`), pas un déplacement de pile ordinaire : c'est lui
       // qui fait le va-et-vient engagé/désengagé, et l'aire n'est pas une
-      // pile qu'on pourrait viser par `MoveTo`.
-      if (cible.zone === CLE_PILE_ENGAGES) {
+      // pile qu'on pourrait viser par `MoveTo`. Le secteur (C1) l'emporte
+      // sur tout le reste, carte touchée ou pas.
+      if (cible.secteur === CLE_PILE_ENGAGES) {
         void emettreGeste(t('Engager'), () => engager(sourceId))
         return undefined
       }
@@ -108,8 +136,18 @@ export function reglagesGlisserManuel(
         )
         return undefined
       }
-      // Lâchée sur une autre carte (ni une pile, ni elle-même) : on attache.
-      if (cible.carteId !== undefined && cible.carteId !== sourceId) {
+      // Lâchée sur une autre carte (ni une pile, ni elle-même) : on attache,
+      // mais UNIQUEMENT sur une zone EN JEU connue (I1, correction finale).
+      // Sans cette gate, une carte lâchée sur une pile fondue (« Cartes
+      // visibles », « Cartes cachées ») s'attachait à son représentant — une
+      // carte que le plateau ne dessine nulle part — et disparaissait de la
+      // table. C'est un refus poli, jamais un repli au hasard.
+      if (
+        cible.carteId !== undefined &&
+        cible.carteId !== sourceId &&
+        cible.zone !== undefined &&
+        ZONES_ATTACHABLES.has(cible.zone)
+      ) {
         const cibleId = cible.carteId
         void emettreGeste(t('Attacher'), () => attacher(sourceId, cibleId))
         return undefined

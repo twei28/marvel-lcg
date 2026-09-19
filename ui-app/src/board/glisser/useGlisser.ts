@@ -20,7 +20,7 @@ import type { PointerEvent as ReactPointerEvent } from 'react'
 export const SEUIL_GLISSER = 6
 
 /** Ce qui se trouve sous le pointeur : une carte, une zone du plateau, rien. */
-export type CibleSurvolee = { carteId?: number; zone?: string }
+export type CibleSurvolee = { carteId?: number; zone?: string; secteur?: string }
 
 export type EtatGlisser = {
   sourceId: number
@@ -168,24 +168,31 @@ export function cibleSousLePoint(x: number, y: number): CibleSurvolee {
   const carte = sous.closest<HTMLElement>('.scan-card')
   const id = Number(carte?.dataset.cardId)
   const carteId = carte && Number.isFinite(id) ? id : undefined
-  // ⚠ DEUX FAMILLES DE `data-pile` (tache 5, mode manuel — corrige la ronde
-  // de correction 1) :
+  // ⚠ DEUX FAMILLES DE `data-pile`, DEUX CHAMPS DISTINCTS (tache 5, mode
+  // manuel — corrige la ronde de correction 2, constat C1) :
   //  - une PILE, posee sur SA PROPRE unite (`.plateau-unite`, un deck, une
-  //    defausse...) : elle ne compte QUE si on touche vraiment SA carte.
-  //    Sinon la marge de son unite retomberait sur cette pile precise, la ou
-  //    le mode ORDINAIRE (qui ignore les piles fines, `board.tsx` batit ses
-  //    zones sur `emplacement.cle`) attend la zone LARGE pour reconnaitre un
-  //    lacher « sans cible ». `carte?.closest` et non `sous.closest` :
+  //    defausse...) : elle ne compte QUE si on touche vraiment SA carte, et
+  //    rejoint `zone` comme avant. Sinon la marge de son unite retomberait
+  //    sur cette pile precise. `carte?.closest` et non `sous.closest` :
   //    l'unite qui compte est celle de la CARTE trouvee, pas celle, plus
   //    proche du point, d'une unite VOISINE sans rapport.
   //  - un SECTEUR, pose sur le GROUPE entier (`.plateau-groupe`, ex.
-  //    « ennemis engages ») : il compte MEME hors carte, le mode manuel en a
-  //    besoin pour engager un sbire lache dans l'espace vide du secteur.
+  //    « ennemis engages ») : il compte MEME hors carte (le mode manuel en a
+  //    besoin pour engager un sbire lache dans l'espace vide du secteur),
+  //    mais NE DOIT JAMAIS ecraser `zone`. `terrain-combat-engages` se
+  //    dessine dans TOUTES les parties, y compris ordinaires ; le mode
+  //    ORDINAIRE ne connait que l'emplacement LARGE (`board.tsx` batit ses
+  //    zones sur `emplacement.cle`, jamais sur une pile ou un secteur fins),
+  //    et un lacher sans carte au milieu du secteur (les quelques pixels
+  //    entre deux sbires engages) rendait `terrain-combat-engages` au lieu
+  //    de `terrain-combat` : la carte s'y voyait refusee a tort. Le secteur
+  //    vit donc dans son PROPRE champ, que seul le mode manuel lit.
   const pile = carte?.closest<HTMLElement>('.plateau-unite')?.dataset.pile
   const secteur = sous.closest<HTMLElement>('.plateau-groupe')?.dataset.pile
-  const zone = pile || secteur || sous.closest<HTMLElement>('[data-zone]')?.dataset.zone
+  const zone = pile || sous.closest<HTMLElement>('[data-zone]')?.dataset.zone
   return {
     carteId,
     zone: zone || undefined,
+    secteur: secteur || undefined,
   }
 }
