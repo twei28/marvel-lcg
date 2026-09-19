@@ -111,6 +111,7 @@ export type ContexteBug = {
   phase: string
   render_id: number
   sandbox: boolean
+  manuel: boolean
   decouverte: boolean
   campagne?: { id: string; scenario: string }
   fin?: string
@@ -302,6 +303,7 @@ export function construireRapport(
       phase: monde.phase,
       render_id: monde.render_id,
       sandbox: monde.mode_sandbox === true,
+      manuel: monde.mode_manuel === true,
       decouverte: contexte.decouverte === true,
       campagne: contexte.campagne,
       fin: monde.game_over ? (monde.game_over_reason ?? 'partie terminée') : undefined,
@@ -400,6 +402,7 @@ export function rapportEnTexte(rapport: RapportBug): string {
     `${c.sieges} siège(s)`,
     c.siege !== undefined ? `rapport pris depuis P${c.siege + 1}` : undefined,
     c.sandbox ? 'bac à sable' : undefined,
+    c.manuel ? 'mode manuel' : undefined,
     c.decouverte ? 'mode Découverte' : undefined,
     c.campagne ? `campagne ${c.campagne.id}, scénario ${c.campagne.scenario}` : undefined,
     c.fin ? `PARTIE TERMINÉE : ${c.fin}` : undefined,

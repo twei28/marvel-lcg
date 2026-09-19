@@ -984,6 +984,9 @@ export class Moteur {
     // tous les autres. Le filtre est ici, au plus pres de la source : le
     // moteur continue de les annoncer, on refuse simplement de les retenir.
     if (this.etat.monde?.mode_sandbox === true) return
+    // Ni en bac a sable, ni en manuel : un haut fait obtenu sur une table ou
+    // le moteur ne verifie rien ne vaut pas davantage qu'un haut fait truque.
+    if (this.etat.monde?.mode_manuel === true) return
 
     const nouveaux: string[] = []
     for (const notification of notifications) {

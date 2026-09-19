@@ -25,6 +25,7 @@ import '../styles/tokens.css'
 import '../styles/palette.css'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
+import { estModeManuel } from './board/manuel/mode'
 import { BarreAction } from './board/BarreAction'
 import { Board, CarteApercu, type ReglagesGlisser } from './board/Board'
 import {
@@ -1292,6 +1293,9 @@ function PageEtat({
   }, [monde])
   const modePhaseEnregistre = lireModePhaseMechant()
   const [bandeauFini, setBandeauFini] = useState(false)
+  // Le mode manuel : tout ce qui parlait au nom du moteur disparait, meme sur
+  // un etat enregistre (un capture de partie manuelle reste muette).
+  const manuel = estModeManuel(monde)
 
   if (!monde || !plateau) {
     return (
@@ -1308,14 +1312,14 @@ function PageEtat({
         commence » ne s'observe nulle part hors d'une vraie partie - et c'est
         exactement le manque qui avait laisse passer un cartouche invisible le
         14/09/2026. */}
-    {modePhaseEnregistre !== 'instantane' && etapesEnregistrees.length > 0 ? (
+    {manuel ? null : modePhaseEnregistre !== 'instantane' && etapesEnregistrees.length > 0 ? (
       <BandeauPhase
         round={monde.round_id ?? 1}
         actif
         onFini={() => setBandeauFini(true)}
       />
     ) : null}
-    {modePhaseEnregistre !== 'instantane' && etapesEnregistrees.length > 0 ? (
+    {manuel ? null : modePhaseEnregistre !== 'instantane' && etapesEnregistrees.length > 0 ? (
       <DeroulePhase
         attendreBandeau={!bandeauFini}
         presentation={modePhaseEnregistre === 'detaille' ? 'scene' : 'table'}
@@ -2038,6 +2042,10 @@ export function PagePartie({
   // aucune trace. Déclaré APRÈS l'historique, dont il consomme la porte
   // d'entrée pour y inscrire chaque intervention.
   const triche = useTriche(etat.monde, joueurActif, historique.ajouterTriche)
+
+  // Le mode manuel : tout ce qui parlait au nom du moteur disparait. Une garde
+  // par endroit, greppable et retirable d'un bloc.
+  const manuel = estModeManuel(etat.monde)
 
   const [sons, setSons] = useState(lireSons)
   const basculerSons = useCallback(() => {
@@ -3040,7 +3048,7 @@ export function PagePartie({
         />
       ) : null}
 
-      {afficherDemandeCentrale && etat.demande && !questionEnScene ? (
+      {manuel ? null : afficherDemandeCentrale && etat.demande && !questionEnScene ? (
         <DemandeCentrale
           demande={etat.demande}
           options={interaction.options}
@@ -3099,16 +3107,18 @@ export function PagePartie({
         />
       ) : null}
 
-      <AssistantAction
-        demande={etat.demande}
-        interaction={interaction}
-        aNous={etat.aNous}
-        connecte={etat.connecte}
-        cartesParId={cartesMondeParId}
-        affichage={modeActions}
-        designEssai={designEssai}
-        nomPorteur={nomPorteurFr}
-      />
+      {manuel ? null : (
+        <AssistantAction
+          demande={etat.demande}
+          interaction={interaction}
+          aNous={etat.aNous}
+          connecte={etat.connecte}
+          cartesParId={cartesMondeParId}
+          affichage={modeActions}
+          designEssai={designEssai}
+          nomPorteur={nomPorteurFr}
+        />
+      )}
 
       <CoucheMeteo world={etat.monde} active={meteo} apercu={apercuMeteo} />
       {/* Explique l'ambiance qui s'allume, au lieu de la subir sans un mot.
@@ -3175,7 +3185,7 @@ export function PagePartie({
       {!unCartouche && attendUnAutreJoueur && phaseMechantEnCours ? (
         <AttenteTable nom={autreJoueurInterroge?.nom} />
       ) : null}
-      {unCartouche ? (
+      {manuel ? null : unCartouche ? (
         <>
           <BandeauPhase
             round={etat.monde?.round_id ?? 1}
@@ -3327,31 +3337,33 @@ export function PagePartie({
           />
         </>
       ) : null}
-      <RecapPhaseMechant
-        entrees={historique.entrees}
-        monde={etat.monde}
-        // EN INSTANTANE SEULEMENT. En detaille, le cartouche du deroule
-        // (DeroulePhase, juste au-dessus) raconte la phase etape par etape et
-        // la termine par son propre bilan, valide au clic : le recap disait
-        // ensuite la meme chose une seconde plus tard, calculee par un autre
-        // chemin. Deux bilans qui se suivent, et qui pouvaient diverger
-        // (constat M7 de l'audit du 06/09/2026).
-        //
-        // Il avait ete remis en detaille « par securite » (c27bb07) a un moment
-        // ou le cartouche ne tenait pas le rythme et s'effaçait avant la fin de
-        // la phase. Ce n'est plus le cas : la cause racine est corrigee
-        // (86d8bd34) et le bilan du cartouche s'affiche vraiment (09e4bfa1).
-        actif={!unCartouche}
-        // La MEME definition de « la phase du mechant » que le cartouche, et la
-        // meme valeur deja calculee : le recap avait son propre detecteur de
-        // transition, sur sa propre photo de `monde.phase` (constat F6).
-        phaseMechantEnCours={phaseMechantEnCours}
-        // De quoi montrer la carte au survol d'une ligne : le même index et le
-        // même catalogue que la table, donc le même agrandissement qu'elle.
-        cartesMonde={cartesMondeParId}
-        catalogue={catalogue}
-        playerId={joueurActif}
-      />
+      {manuel ? null : (
+        <RecapPhaseMechant
+          entrees={historique.entrees}
+          monde={etat.monde}
+          // EN INSTANTANE SEULEMENT. En detaille, le cartouche du deroule
+          // (DeroulePhase, juste au-dessus) raconte la phase etape par etape et
+          // la termine par son propre bilan, valide au clic : le recap disait
+          // ensuite la meme chose une seconde plus tard, calculee par un autre
+          // chemin. Deux bilans qui se suivent, et qui pouvaient diverger
+          // (constat M7 de l'audit du 06/09/2026).
+          //
+          // Il avait ete remis en detaille « par securite » (c27bb07) a un moment
+          // ou le cartouche ne tenait pas le rythme et s'effaçait avant la fin de
+          // la phase. Ce n'est plus le cas : la cause racine est corrigee
+          // (86d8bd34) et le bilan du cartouche s'affiche vraiment (09e4bfa1).
+          actif={!unCartouche}
+          // La MEME definition de « la phase du mechant » que le cartouche, et la
+          // meme valeur deja calculee : le recap avait son propre detecteur de
+          // transition, sur sa propre photo de `monde.phase` (constat F6).
+          phaseMechantEnCours={phaseMechantEnCours}
+          // De quoi montrer la carte au survol d'une ligne : le même index et le
+          // même catalogue que la table, donc le même agrandissement qu'elle.
+          cartesMonde={cartesMondeParId}
+          catalogue={catalogue}
+          playerId={joueurActif}
+        />
+      )}
       <CoucheCurseurs
         // ⚠ ET POUR LE SPECTATEUR, MEME EN SOLO. Le seuil « plus d'un joueur »
         // avait du sens entre joueurs ; il privait le spectateur de la seule
@@ -3609,8 +3621,11 @@ export function PagePartie({
         glisser={reglagesGlisser}
         bloquerActionsPassives={interaction.option !== undefined}
         mainVisibleForcee={
-          interaction.option !== undefined &&
-          (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'payment')
+          // Manuel : un seul operateur pour tous les heros, la main ne doit
+          // plus se cacher derriere un survol qui suppose un joueur par siege.
+          manuel ||
+          (interaction.option !== undefined &&
+            (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'payment'))
         }
         delave={effetsAffiches(etat.monde, meteo, apercuMeteo).some((e) => EFFETS_DELAVANTS.includes(e))}
         onCardClick={
@@ -3652,7 +3667,7 @@ export function PagePartie({
             : undefined
         }
         bas={
-          modeActions === 'detailed' && !spectateur ? (
+          !manuel && modeActions === 'detailed' && !spectateur ? (
             <BarreAction
               demande={etat.demande}
               interaction={interaction}
