@@ -3,24 +3,42 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
-## ⚠ Prêt, commité, PAS déployé
+## ✅ DÉPLOYÉ le 19/09/2026 à 12:30
 
-Trois correctifs sur la branche `mode-manuel`, tous testés :
+Le serveur tourne sur ce code. Ce qui est parti, en six commits :
 
 | Commit | Quoi |
 |---|---|
-| `9ec8f6b9` | Un lien **Accueil** dans la barre du site. Sans lui, les pages du site sont un cul-de-sac : le site s'installe en application (`display: standalone`), donc sans bouton Précédent. Signalé par un joueur. |
-| `bd9ff080` | « Mes signalements » montre **tout ce qui vient de ses tables**, quel que soit le siège, en nommant le siège et l'auteur. L'autorisation de RÉPONDRE, elle, reste au siège 0. |
-| `84ae2ed0` | Un signalement dont l'envoi échoue est **gardé** et rendu à la réouverture du panneau ; et le moteur trace chaque tentative de relais dans le journal. |
+| `9ec8f6b9` | Un lien **Accueil** dans la barre du site. |
+| `bd9ff080` | « Mes signalements » montre tout ce qui vient de ses tables. |
+| `84ae2ed0` | Un signalement dont l'envoi échoue est gardé et rendu. |
+| `c9ba70af` | Plateau : deck et défausse à la hauteur du héros, les deux faces des héros maison, sélection de cibles qui respecte « DifferentCards ». |
+| `6947446f` | **Fear No Evil** : 146 cartes, cinq affaires interchangeables, Kingpin, campagne en ordre libre. |
+| `da85b1ea` | **La boucle de campagne mesurée** (115 épreuves, dix boîtes), neuf récompenses oubliées réparées, couvertures de livret dans l'écran des campagnes. |
 
-**Deux choses à ne pas oublier au déploiement :**
+Détails du déploiement :
 
-1. **Reconstruire le plateau** (`bash ui-app/deployer.sh`) avant de déployer :
-   le correctif du panneau de signalement vit dans `ui-app`, et `deployer.ps1`
-   ne reconstruit pas le bundle. Vérifier le hash du bundle après.
-2. **Le déploiement envoie le DOSSIER DE TRAVAIL**, pas la branche : commité ou
-   non ne change rien. Tant que le chantier Fear No Evil est en cours sur le
-   disque, déployer l'emporte aussi. D'où l'attente.
+- bundle du plateau reconstruit avant l'envoi (`board-CSUE6ZwU` → `board-CdTJ1KkH`),
+  vérifié sur le serveur ;
+- 171 scans de Fear No Evil uniformisés (615 px de petit côté), sauvegardés
+  d'abord dans `sauvegardes-serveur/scans-originaux`, puis envoyés ; vignettes
+  et scans HD régénérés sur place ;
+- **les planches de livret ne sont PAS dans le dépôt** (`public/stories` est
+  dans le `.gitignore`) : elles vivent sur ce disque et sur le serveur. Les
+  regénérer demande les PDF officiels, dont les URL sont en tête de
+  `tools/pages_livret.py` ;
+- une copie mal enracinée (`Fusion/marvel-lcg-src/LCG/Fusion/...`, 20 fichiers
+  d'une version du 18/09 à 18:44, tous dépassés) a été écartée du dossier
+  déployé avant l'envoi ; elle est dans le scratchpad de la session si besoin ;
+- personne n'était en train de jouer : une seule table ouverte, celle de
+  l'administrateur (la seule que le faucheur n'arrête jamais), sans aucune
+  connexion établie sur son moteur. Pas d'annonce préalable, donc.
+
+⚠ **La batterie complète des capacités tournait encore au moment du
+déploiement** (fichiers moteur partagés touchés). La passe précédente donnait
+2332/2341, avec les neuf rouges tous expliqués : cinq venaient du harnais et
+ont été corrigés depuis, quatre sont Squirrel Girl, rouges avant cette journée.
+Relire son bilan et corriger si elle sort autre chose.
 
 ## L'ordre décidé avec l'utilisateur
 
