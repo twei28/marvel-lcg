@@ -36,8 +36,10 @@ export function SelecteurHeros({
   onRegarder: (id: number) => void
 }): ReactElement | null {
   // À un seul héros, un sélecteur n'apprend rien et prend de la place sur un
-  // plateau qu'on veut nu (garde redondante avec board.tsx, qui ne le monte
-  // déjà que si `joueurs.length > 1` : même précaution que OngletsJoueurs).
+  // plateau qu'on veut nu. C'EST LA SEULE GARDE : `board.tsx` ne filtre que
+  // sur le mode manuel, pas sur le nombre de héros — même partage des
+  // responsabilités qu'`OngletsJoueurs` (mobile/OngletsJoueurs.tsx), dont
+  // l'appelant (PlateauPortrait) ne vérifie pas non plus la longueur.
   if (joueurs.length < 2) return null
   return (
     <span className="bh-vue" role="tablist" title={t('Quel héros est affiché (plateau et main)')}>

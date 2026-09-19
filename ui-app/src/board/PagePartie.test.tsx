@@ -163,6 +163,20 @@ describe('la barre du haut', () => {
     await emettre({ monde: table(heros('Spider-Man', 1), elimine) })
     expect(screen.queryByRole('button', { name: 'Captain' })).toBeNull()
   })
+
+  // TACHE 7 BIS (19/09/2026). Ce bandeau a ete reconditionne sur `!manuel`
+  // (board.tsx) pour laisser la place a `SelecteurHeros` en mode manuel, qui
+  // n'a pas de bouton Auto (le moteur n'y demande plus rien). Rien ne
+  // surveillait cette condition avant ce cas : un `!manuel` mal pose (ou
+  // inverse) aurait pu faire disparaitre Auto en partie ORDINAIRE sans
+  // qu'aucun test ne rougisse.
+  it('mode ordinaire : Auto reste la a plusieurs, meme avec le mode manuel dans le paysage', async () => {
+    monter()
+    const monde = table(heros('Spider-Man', 1), heros('Captain Marvel', 2))
+    ;(monde as { mode_manuel?: boolean }).mode_manuel = false
+    await emettre({ monde })
+    expect(screen.getByRole('button', { name: 'Auto' })).toBeTruthy()
+  })
 })
 
 // ⚠ LA TABLE FERMEE, VUE DU PLATEAU (17/09/2026). Le bandeau repetait
