@@ -130,16 +130,40 @@ def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man
         # `LoadScene`, donc ce que fait l'annulation d'un geste. `GameSetup`
         # appelle `state.ResetStartState()`, donc `start_state` est vide
         # pendant qu'on joue et repose des qu'une scene est rechargee.
+        #
+        # ⚠ CORRECTION (tache 7, ronde de correction 2, 19/09/2026) : la
+        # version precedente arretait ce fil des que `GameLoop()` rendait la
+        # main SANS que `start_state.state` soit deja repose - exactement ce
+        # qui arrive quand la partie se termine NATURELLEMENT (`Puzzle.Win`/
+        # `Lose`, ni annulation ni sortie), puisque personne n'a encore
+        # appele `LoadScene`. Constate en ecrivant `cas_annulation_fin_declaree`
+        # ci-dessous : le fil mourait avant meme que l'annulation n'arrive,
+        # et `jeu.world` restait pour toujours l'ancien monde, fini. Aucun
+        # cas existant ne pouvait le voir : aucun ne declare de VRAIE fin de
+        # partie avant d'annuler.
+        #
+        # Le correctif copie l'idiome de la PRODUCTION (`Game.GameRun`,
+        # `game/game.py`) au lieu d'en inventer un autre : apres un
+        # `GameLoop()`, une reprise DEJA demandee (`start_state.state` pose,
+        # ex. par une annulation en vol) relance tout de suite : sinon, le
+        # fil attend sur `state.WaitUntilGameStart()` - LA MEME primitive
+        # que le serveur reel, reveillee par le `condition.NotifyAll()` de
+        # `SetStartState` (`game_state.py`) quand une annulation FUTURE
+        # arrive. `threading.Condition.wait_for` verifie son predicat AVANT
+        # de bloquer : un reveil deja arrive avant l'entree dans l'attente
+        # n'est donc jamais perdu.
         import traceback
-        premier = True
-        while premier or jeu.state.start_state.state:
-            premier = False
+        while True:
             try:
                 if jeu.GameSetup():
                     jeu.GameLoop()
             except BaseException:
                 traceback.print_exc()
                 return
+            if jeu.state.start_state.state:
+                continue
+            jeu.state.SetRunningState(False)
+            jeu.state.WaitUntilGameStart()
 
     threading.Thread(target=run, daemon=True).start()
     time.sleep(20)
@@ -704,6 +728,42 @@ def cas_annulation_ne_redemande_pas(game_dir, port):
     return "l'annulation ne redemande pas la mise en place : l'historique est rejoue en silence"
 
 
+def cas_annulation_fin_declaree(game_dir, port):
+    """Ctrl+Z defait aussi une fin de partie declaree (tache 7, ronde de
+    correction 2, cote plateau).
+
+    Le harnais React (`ui-app/src/board/CoucheTriche.test.tsx`) simule le
+    reseau et repond toujours "d'accord" : il prouve seulement qu'aucune
+    garde COTE CLIENT n'empeche le Ctrl+Z apres `Puzzle.Win()`/`Lose()` -
+    utile, mais ca laisserait passer un refus qu'on ajouterait un jour cote
+    MOTEUR (un 409 sur partie finie, par exemple) sans que rien ne bouge
+    dans ce harnais-la puisque le simulacre repond toujours oui. La vraie
+    promesse ("ta partie revient", ecrite dans `FinManuelle.tsx`) ne se
+    prouve que la ou la partie revient reellement : ici.
+
+    Meme gabarit que `cas_annulation`, juste au-dessus : le monde est
+    RECONSTRUIT par l'annulation, on relit `jeu.world`, jamais la reference
+    d'avant.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    assert monde.is_game_over is False, \
+        "la partie est donnee pour finie avant meme d'avoir declare Win()"
+
+    deposer(jeu, "Puzzle.Win()")
+    assert monde.is_game_over is True, \
+        "Puzzle.Win() n'a pas termine la partie : rien a annuler"
+
+    assert jeu.session.AnnulerDernierGeste() is True
+    time.sleep(20)
+
+    monde2 = jeu.world
+    assert monde2.is_game_over is False, \
+        "apres annulation, la partie est toujours donnee pour finie"
+    assert monde2.manuel_actif is True, \
+        "apres annulation, la boucle manuelle n'a pas repris : la partie ne revient pas"
+    return "le Ctrl+Z defait une fin de partie declaree : la partie n'est plus finie et reprend"
+
+
 def cas_attache(game_dir, port):
     """Attach pose bien l'amelioration SUR la carte visee.
 
@@ -912,6 +972,7 @@ CAS = {
     "relire_sauvegarde": cas_relire_sauvegarde,
     "annulation": cas_annulation,
     "annulation_ne_redemande_pas": cas_annulation_ne_redemande_pas,
+    "annulation_fin_declaree": cas_annulation_fin_declaree,
     "attache": cas_attache,
     "engagement": cas_engagement,
     "geste_refuse_non_enregistre": cas_geste_refuse_non_enregistre,
