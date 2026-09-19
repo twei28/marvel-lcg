@@ -33,6 +33,16 @@
 // ⚠ Comme glisser-plateau.spec.ts et lancement-partie.spec.ts : ce test lance
 // une NOUVELLE partie sur le serveur de jeu. Il se lance à la main, jamais
 // dans les captures, et jamais pendant que quelqu'un joue. Prévenir avant.
+//
+// ⚠ I5 (revue finale, 20/09/2026). ÉTAPES 7-8 AJOUTÉES À LA SUITE, PAS DANS
+// UN SECOND FICHIER : le montage local (serveur isolé, cache séparé,
+// Playwright sous Windows — voir task-8-report.md) coûte cher à répéter.
+// Elles prouvent que « Tu pourras revenir en arrière avec Ctrl+Z », la
+// promesse de l'écran de fin (`FinManuelle.tsx`), tient de bout en bout sur
+// le VRAI écran (`EcranFinPartie`, board.tsx) — pas seulement au moteur
+// (`test_mode_manuel.py`, `cas_annulation_fin_declaree`) et pas seulement
+// dans un harnais plateau isolé qui ne monte jamais cet écran-là
+// (`CoucheTriche.test.tsx`).
 import { test, expect, type Page } from '@playwright/test'
 
 const AVERTISSEMENT =
@@ -109,6 +119,14 @@ async function tourCourant(page: Page): Promise<number> {
 /** Le texte de la pastille de vie du vilain, tel qu'affiché à l'écran. */
 async function vieVilainAffichee(page: Page): Promise<string | null> {
   return page.locator('.scan-card.kind-villain .jauge-texte').first().textContent()
+}
+
+/** La partie est-elle finie, lu chez le MOTEUR (I5) — pas seulement à l'écran. */
+async function partieFinieMoteur(page: Page): Promise<boolean> {
+  return page.evaluate(async () => {
+    const monde = await (await fetch('/get_world?p=0')).json()
+    return Boolean(monde.game_over)
+  })
 }
 
 test('la table manuelle : nue, silencieuse, manipulable, annulable', async ({ page }) => {
@@ -263,4 +281,60 @@ test('la table manuelle : nue, silencieuse, manipulable, annulable', async ({ pa
   await page.waitForTimeout(2500)
   const vieRestauree = await vieVilainAffichee(page)
   expect(vieRestauree, "Ctrl+Z n'a pas rendu les points de vie d'avant").toBe(vieAvant)
+
+  // 7-8. LA PROMESSE DE L'ÉCRAN DE FIN, DE BOUT EN BOUT (I5, revue finale
+  // du 20/09/2026). L'écran de fin promet « Tu pourras revenir en arrière
+  // avec Ctrl+Z ». Un test moteur (`test_mode_manuel.py`,
+  // `cas_annulation_fin_declaree`) prouve que le moteur revient ; un test
+  // plateau isolé (`CoucheTriche.test.tsx`) prouve qu'aucune garde CÔTÉ
+  // CLIENT ne bloque le Ctrl+Z après `Puzzle.Win()`/`Lose()` — mais ce
+  // second test simule le réseau et répond toujours « d'accord » : il ne
+  // monte jamais le VRAI écran de fin (`EcranFinPartie`, board.tsx),
+  // par-dessus le VRAI plateau. C'est justement là que la chaîne peut
+  // casser sans qu'aucun des deux tests ne le voie : un écran de fin qui
+  // démonterait la couche du mode manuel, un champ qui prendrait le focus.
+  // Ajouté à la SUITE du scénario existant plutôt qu'un second fichier : le
+  // montage local (serveur isolé, cache séparé, Playwright sous Windows —
+  // voir task-8-report.md) coûte cher à répéter.
+
+  // 7. DÉCLARER LA VICTOIRE DEPUIS LE MENU DE TABLE, COMME UN VRAI JOUEUR.
+  // (600, 450) : le même point du grand vide déjà utilisé à l'étape 4, donc
+  // déjà prouvé libre de toute carte et de toute pile à cet instant du
+  // scénario.
+  await page.mouse.click(600, 450, { button: 'right' })
+  await page.getByRole('button', { name: 'Terminer la partie' }).click()
+  await page.getByRole('button', { name: 'Victoire', exact: true }).click()
+  // La promesse elle-même, lue à l'écran AVANT de confirmer — c'est son
+  // texte exact qui motive ce test.
+  await expect(
+    page.getByText('Tu pourras revenir en arrière avec Ctrl+Z si tu te trompes.')
+  ).toBeVisible()
+  await page.getByRole('button', { name: 'Confirmer' }).click()
+
+  // Le VRAI écran de fin, par-dessus le VRAI plateau — pas un harnais qui
+  // s'arrête avant de le monter.
+  const ecranFin = page.locator('.fin-partie')
+  await ecranFin.waitFor({ state: 'visible', timeout: 15000 })
+  await expect(ecranFin).toContainText('Victoire')
+  expect(
+    await partieFinieMoteur(page),
+    "le moteur ne se croit pas fini alors que l'écran de fin est affiché"
+  ).toBe(true)
+
+  // 8. CTRL+Z, MÊME AVEC L'ÉCRAN DE FIN AU-DESSUS : LA CHAÎNE TIENT ENTIÈRE.
+  await page.keyboard.press('Control+z')
+  await ecranFin.waitFor({ state: 'hidden', timeout: 15000 })
+  expect(
+    await partieFinieMoteur(page),
+    "le moteur croit toujours la partie finie après Ctrl+Z : l'annulation n'a pas défait Puzzle.Win()"
+  ).toBe(false)
+
+  // La table redevient réellement manipulable derrière l'écran disparu — pas
+  // seulement débarrassée du voile : la même pastille de vie qu'avant la
+  // déclaration, celle que l'étape 6 avait déjà restaurée.
+  const vieApresAnnulationFin = await vieVilainAffichee(page)
+  expect(
+    vieApresAnnulationFin,
+    'le plateau ne reprend pas la main sur la table après le Ctrl+Z'
+  ).toBe(vieRestauree)
 })
