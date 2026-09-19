@@ -26,6 +26,7 @@ import '../styles/palette.css'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
 import { estModeManuel } from './board/manuel/mode'
+import { SelecteurHeros } from './board/manuel/SelecteurHeros'
 import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
 import { BarreAction } from './board/BarreAction'
 import { Board, CarteApercu, type ReglagesGlisser } from './board/Board'
@@ -3496,8 +3497,17 @@ export function PagePartie({
                 que celui que je selectionne ». Elle est revenue ici.
 
                 Elle ne s'affiche qu'a PLUSIEURS : en solo il n'y a qu'une vue
-                possible, un bouton n'y proposerait rien. */}
-            {(etat.monde?.players?.length ?? 0) > 1 ? (
+                possible, un bouton n'y proposerait rien.
+
+                MANUEL (tache 7 bis, 19/09/2026) : ce bandeau-ci suppose un
+                moteur qui interroge quelqu'un (« Auto » = suivre celui qui
+                doit agir). En manuel le moteur ne demande plus rien, « Auto »
+                n'y elirait donc jamais personne — deux selecteurs affichant
+                des choses differentes sur le meme ecran serait la pire des
+                confusions. `SelecteurHeros`, plus bas, le remplace : meme
+                etat (`vueForcee`), sans le concept d'Auto qui n'a pas de sens
+                ici. */}
+            {!manuel && (etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>
                 <span className="bh-vue-label">{t('Vue')}</span>
                 <button
@@ -3524,6 +3534,16 @@ export function PagePartie({
                   )
                 )}
               </span>
+            ) : null}
+            {/* Le sélecteur de héros du mode manuel (tâche 7 bis) : une main
+                à l'écran, ce bouton pour passer de l'une à l'autre. Branché
+                sur `vueForcee`, le même état que la vue automatique utilise
+                déjà pour calculer `joueurActif` — pas de second chemin de
+                vue. `SelecteurHeros` se tait déjà tout seul à un seul héros ;
+                `joueursAffichables` (mémoisé plus haut) est la même liste que
+                l'ancien bandeau utilisait, éliminés exclus. */}
+            {manuel ? (
+              <SelecteurHeros joueurs={joueursAffichables} regarde={joueurActif} onRegarder={setVueForcee} />
             ) : null}
             {/* « Partie » (14/09/2026) : historique, log, journal du heros,
                 vue et retour au menu. Les REGLAGES n'y sont plus, ils ont leur
