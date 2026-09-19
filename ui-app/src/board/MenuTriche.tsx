@@ -65,6 +65,18 @@ export const ZONES_MANUELLES: readonly string[] = [
   // par carte dessinée.
   'AsideScenario',
   'AsideModular',
+  // Suite de la revue finale (20/09/2026) : la même famille de trou que
+  // AsideScenario/AsideModular juste au-dessus, trouvée en vérifiant à la
+  // main le reste de `RunPuzzle.ZONES_JOUEUR`/`ZONES_MONDE` (`puzzle.py`).
+  // Aucune des cinq n'est visée par le glisser (aucune entrée dans
+  // `PILE_PAR_ZONE`, `glisser-manuel.ts`) : le menu est le SEUL geste qui
+  // les atteigne, comme pour les deux précédentes. Voir le test de
+  // propriété étendu, `MenuTriche.test.tsx`.
+  'HeroArea',
+  'ResourcesArea',
+  'ObligationsArea',
+  'EnvironmentArea',
+  'ProcessingArea',
 ]
 
 /**
@@ -118,6 +130,14 @@ export function libellePile(zone: string): string {
     // fondue « Cartes visibles ») — c'est la même pile, `world.aside_deck`.
     case 'AsideScenario': return t('Mises de côté du scénario')
     case 'AsideModular': return t('Mises de côté modulaires')
+    // Suite de la revue finale (20/09/2026) : mêmes clés que celles déjà
+    // posées ailleurs sur le plateau pour le même objet (`zones.ts`,
+    // `t('Héros')`/`t('Environnement')`), jamais un second nom.
+    case 'HeroArea': return t('Héros')
+    case 'ResourcesArea': return t('Ressources')
+    case 'ObligationsArea': return t('Obligations')
+    case 'EnvironmentArea': return t('Environnement')
+    case 'ProcessingArea': return t('En cours de résolution')
     default: return zone
   }
 }

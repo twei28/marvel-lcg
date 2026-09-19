@@ -1026,6 +1026,12 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Match nul': 'Draw',
   'Mises de côté du scénario': 'Scenario set aside',
   'Mises de côté modulaires': 'Modular set aside',
+  // Suite de la revue finale (20/09/2026) : cinq zones du menu de clic
+  // droit (`MenuTriche.tsx`, `ZONES_MANUELLES`), même famille que les deux
+  // ci-dessus.
+  'Ressources': 'Resources',
+  'Obligations': 'Obligations',
+  'En cours de résolution': 'Being resolved',
   'Mode manuel : le moteur ne surveille plus la table, les cases « relevé par le jeu » restent à remplir à la main.':
     'Manual mode: the engine no longer watches the table, fields marked "recorded by the game" are left for you to fill in by hand.',
   'Musique de fond (nécessite un fichier dans assets/sounds)': 'Background music (requires a file in assets/sounds)',
