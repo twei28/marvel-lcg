@@ -17,17 +17,25 @@ import type { World } from '../world'
 const VILAIN = carteSurTable(7, '01001a', 'EncounterVillain', 'Rhino')
 const MANIGANCE = carteSurTable(9, '01002a', 'MainScheme', 'Crisis')
 const SANS_JETON = carteSurTable(4, '01003a', 'Event', 'Coup de circonstance')
+// Dessus des deux piles du cas « piocher » (voir plus bas) : une du joueur,
+// une du monde. Chacune devient la REPRÉSENTANTE de sa pile (`pilesParDessus`).
+const DESSUS_DECK_JOUEUR = carteSurTable(20, '01004a', 'PlayerSideScheme', 'Dessus du deck joueur')
+const DESSUS_DECK_RENCONTRE = carteSurTable(21, '01005a', 'EncounterVillain', 'Dessus du deck Rencontre')
 
 function mondeManuel(): World {
   // ⚠ `SANS_JETON` va dans `allies`, PAS dans une pile (deck/défausse) : le
   // dessus d'une pile en devient le REPRÉSENTANT (voir `pilesParDessus`), donc
   // y placer la seule carte de la pile en ferait aussi une cible de pile, ce
   // qui n'est pas ce que ce cas veut prouver.
-  return tableAvec(siege({ allies: [SANS_JETON] }), {
-    mode_manuel: true,
-    villains: [VILAIN],
-    area_schemes_main: [MANIGANCE],
-  } as never)
+  return tableAvec(
+    siege({ allies: [SANS_JETON], player_deck: [DESSUS_DECK_JOUEUR] }),
+    {
+      mode_manuel: true,
+      villains: [VILAIN],
+      area_schemes_main: [MANIGANCE],
+      encounter_deck: [DESSUS_DECK_RENCONTRE],
+    } as never
+  )
 }
 
 type Capture = { estToucheEnfoncee?: (cle: string) => boolean }
@@ -79,6 +87,36 @@ describe('le clavier du mode manuel parle au moteur', () => {
     await act(async () => { await Promise.resolve() })
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
       body: JSON.stringify({ commands: ['Puzzle.Heal(7, 3)'] }),
+    }))
+  })
+
+  it('sur une pile du JOUEUR, un chiffre pioche en main', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(20)
+    fireEvent.keyDown(document, { key: '1' })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Gain(20)'] }),
+    }))
+  })
+
+  // LE CAS QUI COMPTE LE PLUS (retour de revue, 19/09/2026) : une carte
+  // Rencontre ne va JAMAIS en main, elle se révèle et se résout. Sur une pile
+  // du MONDE, le même chiffre doit sortir la carte vers la zone de
+  // résolution — visible sur la table — et surtout PAS l'envoyer en main.
+  it('sur une pile du MONDE (Rencontre), un chiffre sort en resolution — jamais en main', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(21)
+    fireEvent.keyDown(document, { key: '1' })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(21, 'ProcessingArea', 'Top')"] }),
+    }))
+    expect(fetch).not.toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Gain(21)'] }),
+    }))
+    expect(fetch).not.toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(21, 'HandsArea', 'Top')"] }),
     }))
   })
 

@@ -206,15 +206,27 @@ export function useTriche(
           // On prend les `nombre` cartes du DESSUS (fin du tableau, voir
           // `pilesParDessus`), dans l'ordre où elles se présentent.
           const cartes = pileVisee ? pileVisee.cartes.slice(-geste.nombre).reverse() : []
+          // ⚠ UNE CARTE RENCONTRE NE VA JAMAIS EN MAIN : elle se révèle et se
+          // résout, elle ne se garde pas. Sur une pile du JOUEUR (son deck, sa
+          // défausse), un chiffre pioche — la carte part en main
+          // (`Puzzle.Gain`), c'est le geste normal. Sur une pile du MONDE
+          // (deck Rencontre, défausse Rencontre...), la même touche sort les
+          // cartes vers la zone de RÉSOLUTION (`ProcessingArea`), où le
+          // plateau montre déjà la carte en cours de résolution : elles
+          // atterrissent visibles, sur la table, et c'est le joueur qui
+          // décide ensuite où les envoyer avec les gestes qu'il a déjà
+          // (Déplacer vers, au clic droit). On ne devine pas la suite à sa
+          // place.
           let tout = true
           for (const carte of cartes) {
             const reussi = pileVisee?.duJoueur
               ? await triche.envoyerEnMain(carte.id)
-              : await triche.deplacerVers(carte.id, 'HandsArea')
+              : await triche.deplacerVers(carte.id, 'ProcessingArea')
             if (!reussi) tout = false
           }
+          const libelle = pileVisee?.duJoueur ? t('Piocher') : t('Sortir en résolution')
           noter(
-            `${t('Piocher')} ${geste.nombre} — ${pileVisee?.titre ?? geste.zone}` +
+            `${libelle} ${geste.nombre} — ${pileVisee?.titre ?? geste.zone}` +
               `${tout ? '' : ` (${t('refusé')})`}`
           )
           return

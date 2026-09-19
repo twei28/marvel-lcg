@@ -597,6 +597,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- Mode manuel : les raccourcis clavier (Tabletop Simulator) ----
   'Retourner': 'Flip',
   'Piocher': 'Draw',
+  'Sortir en résolution': 'Move to resolution',
 
   // ---- board/BandeauAbsent.tsx ----
   'est déconnecté': 'is disconnected',
