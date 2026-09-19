@@ -34,11 +34,10 @@ Détails du déploiement :
   l'administrateur (la seule que le faucheur n'arrête jamais), sans aucune
   connexion établie sur son moteur. Pas d'annonce préalable, donc.
 
-⚠ **La batterie complète des capacités tournait encore au moment du
-déploiement** (fichiers moteur partagés touchés). La passe précédente donnait
-2332/2341, avec les neuf rouges tous expliqués : cinq venaient du harnais et
-ont été corrigés depuis, quatre sont Squirrel Girl, rouges avant cette journée.
-Relire son bilan et corriger si elle sort autre chose.
+La batterie complète des capacités, relancée après ces correctifs et finie à
+13:15 : **2337/2341**. Les quatre rouges restants sont Squirrel Girl (sg006,
+sg007, sg009, sg013), rouges AVANT cette journée et mise de côté par décision.
+Aucune régression du déploiement.
 
 ## L'ordre décidé avec l'utilisateur
 
