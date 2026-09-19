@@ -80,6 +80,11 @@ export function libellePile(zone: string): string {
     // portent aussi le type `AsideDeck` (côté monde) : celles-là ne sont pas
     // dans ce menu, donc pas de collision ici.
     case 'AsideDeck': return t('Set némésis')
+    // Tache 5 (glisser-depose) : le deck SPECIAL du heros (Invocation,
+    // Reserve...) devient une cible atteignable par glisser, la ou ce menu
+    // ne l'offrait pas encore. Meme repli que `nomDeckSpecial` (zones.ts)
+    // quand aucun nom plus precis n'est connu ici.
+    case 'AdditionalDeck': return t('Deck spécial')
     default: return zone
   }
 }

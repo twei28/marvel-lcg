@@ -287,7 +287,18 @@ export function Unite({
     // L'unite garde la largeur de son PORTEUR : les upgrades sont glissees
     // DERRIERE lui et debordent en bas-droite (en absolu), sans pousser les
     // cartes voisines. --i donne le cran de decalage de chaque upgrade.
-    <div className="plateau-unite" style={{ '--nb': upgrades.length } as CSSProperties}>
+    <div
+      className="plateau-unite"
+      style={{ '--nb': upgrades.length } as CSSProperties}
+      // ⚠ `data-pile` NE VISE QUE LES VRAIES PILES (tache 5, glisser-depose du
+      // mode manuel) : `unite.pile` n'est pose par zones.ts QUE sur un deck,
+      // une defausse... jamais sur une carte posee (allie, heros, sbire) ni
+      // sur une pile FONDUE de plusieurs origines. Une carte ordinaire n'a
+      // donc jamais cet attribut sur SA PROPRE unite, ce qui permet au
+      // glisser de distinguer « je lache sur cette pile » de « je lache sur
+      // cette carte, j'attache » (`useGlisser.ts`, `cibleSousLePoint`).
+      data-pile={unite.pile}
+    >
       {/* Phases A VENIR (vilain/complot) : un petit tas DERRIERE la carte, plus
           un bouton loupe qui ouvre la vue de toutes les phases. Purement visuel :
           le clic/survol passe a la carte dessous. */}
@@ -390,7 +401,17 @@ function Emplacement({
       <h2 className="plateau-emplacement-titre">{emplacement.titre}</h2>
       <div className="plateau-cartes">
         {emplacement.groupes.map((groupe, index) => (
-          <div className="plateau-groupe" key={groupe[0]?.cle ?? index}>
+          <div
+            className="plateau-groupe"
+            key={groupe[0]?.cle ?? index}
+            // Le SECTEUR de ce groupe (tache 5, glisser-depose) : un
+            // emplacement qui melange plusieurs secteurs (`terrain-combat` :
+            // allies, ennemis engages, environnement) a besoin de distinguer
+            // le groupe vise, pas seulement l'emplacement entier. Absent pour
+            // tous les autres emplacements (`groupesPiles` n'est fourni que
+            // par `terrain-combat`, zones.ts).
+            data-pile={emplacement.groupesPiles?.[index]}
+          >
             {groupe.map((unite) => (
               <Unite
                 unite={unite}

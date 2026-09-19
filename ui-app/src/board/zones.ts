@@ -53,6 +53,14 @@ export function pastilleRedondante(titreZone: string, carte: ScanCardProps): boo
 /** Un groupe dans une pile ouverte : d'où viennent ces cartes. */
 export type GroupeDePile = { cle: string; titre: string; cartes: ScanCardProps[] }
 
+/**
+ * Le secteur « ennemis engagés » du joueur regardé, dans `terrain-combat`
+ * (voir `EmplacementAffiche.groupesPiles`). Lâcher un sbire dessus, en mode
+ * manuel, engage ce sbire (`Puzzle.Engage`) plutôt que de le déplacer vers une
+ * pile ordinaire — voir `board/manuel/glisser-manuel.ts`.
+ */
+export const CLE_PILE_ENGAGES = 'terrain-combat-engages'
+
 export type UniteAffichee = {
   cle: string
   carte: ScanCardProps
@@ -79,6 +87,17 @@ export type UniteAffichee = {
   stagesTout?: ScanCardProps[]
   /** Titre de la vue des phases (« Villain stages »...). */
   stagesTitre?: string
+  /**
+   * Tâche 5 (glisser-déposer, mode manuel) : présent SEULEMENT quand cette
+   * unité est une pile désignable sans ambiguïté (un deck, une défausse...),
+   * jamais sur une carte posée (allié, héros, sbire...) ni sur une pile
+   * FONDUE de plusieurs origines (« Cartes visibles », « Cartes cachées » :
+   * voir `pileFondue`) — celles-là mélangent plusieurs piles moteur
+   * derrière un seul dos de carte, et il n'y a pas de pile unique à nommer.
+   * Vaut toujours `cle` : deux fonctions qui recalculeraient la même chaîne
+   * finiraient par diverger.
+   */
+  pile?: string
 }
 
 /**
@@ -112,6 +131,17 @@ export type EmplacementAffiche = {
    * s'en sert pour ne deplier qu'un joueur a la fois.
    */
   proprietaires?: number[]
+  /**
+   * Tâche 5 (glisser-déposer, mode manuel) : le SECTEUR de chaque groupe,
+   * même longueur que `groupes`, pour les emplacements qui mélangent
+   * plusieurs secteurs différents dans un même emplacement (`terrain-combat`
+   * pose côte à côte alliés, ennemis engagés et environnement). `data-zone`
+   * ne descend qu'au niveau de l'emplacement entier ; un secteur nommé ici
+   * permet de viser LE BON groupe au lâcher, sans confondre par exemple un
+   * allié et un ennemi engagé — voir `CLE_PILE_ENGAGES`. Absent = aucun
+   * secteur de cet emplacement n'a besoin d'être distingué.
+   */
+  groupesPiles?: (string | undefined)[]
 }
 
 export type Plateau = {
@@ -310,7 +340,15 @@ function piles(
     if (pile.deckSpecial) carte.deckSpecial = true
     if (pile.discard) carte.discard = true
     if (pile.labelType) carte.labelType = pile.labelType
-    const unite: UniteAffichee = { cle: `${cle}-${pile.cle}`, carte, attachees: [] }
+    const cleUnite = `${cle}-${pile.cle}`
+    // `pile` = `cle`, TOUJOURS : c'est ce qui rend chaque pile de cette
+    // fonction désignable sans ambiguïté pour le glisser du mode manuel
+    // (`board/manuel/glisser-manuel.ts`, `PILE_PAR_ZONE`) — le deck du héros
+    // (`joueur-deck`) et le deck spécial (`soutien-deck`) partagent le même
+    // `pile.cle` (« deck ») mais pas le même GROUPE (`cle`), donc pas la même
+    // pile moteur. Un attribut qui aurait pris `pile.cle` seul les aurait
+    // confondus et déplacé une carte dans la mauvaise pile en silence.
+    const unite: UniteAffichee = { cle: cleUnite, carte, attachees: [], pile: cleUnite }
     if (pile.regardable && contenu.length > 0) {
       // Du dessus vers le fond : la derniere posee (dessus) en premier.
       unite.pileContenu = [...contenu].reverse().map((c) => toScanCard(c, rendu.ctx))
@@ -532,12 +570,20 @@ function emplacement(
   // Proprietaire de chaque groupe, meme longueur et meme ordre que `groupes`.
   // Seul terrain-soutien le fournit (voir plus bas) : c'est ce que lit le mode
   // mobile pour recoudre les groupes par joueur (mobile/joueurs.ts).
-  proprietaires?: number[]
+  proprietaires?: number[],
+  // Secteur de chaque groupe (tache 5, glisser-depose) : meme longueur et
+  // meme ordre que `groupes`. Seul terrain-combat le fournit pour l'instant
+  // (voir EmplacementAffiche.groupesPiles).
+  groupesPiles?: (string | undefined)[]
 ): EmplacementAffiche | undefined {
-  // Les groupes vides sont retires ; on filtre les proprietaires du meme geste,
-  // pour que les deux tableaux restent alignes apres coup.
+  // Les groupes vides sont retires ; on filtre proprietaires et secteurs du
+  // meme geste, pour que les trois tableaux restent alignes apres coup.
   const gardes = groupes
-    .map((groupe, index) => ({ groupe, proprietaire: proprietaires?.[index] }))
+    .map((groupe, index) => ({
+      groupe,
+      proprietaire: proprietaires?.[index],
+      pile: groupesPiles?.[index],
+    }))
     .filter((garde) => garde.groupe.length > 0)
   if (gardes.length === 0) return undefined
   // On ne compte que les UNITES posees sur la rangee. Les upgrades ne prennent
@@ -550,6 +596,7 @@ function emplacement(
     groupes: gardes.map((garde) => garde.groupe),
     nombreSurLaLigne,
     ...(proprietaires ? { proprietaires: gardes.map((garde) => garde.proprietaire as number) } : {}),
+    ...(groupesPiles ? { groupesPiles: gardes.map((garde) => garde.pile) } : {}),
   }
 }
 
@@ -695,17 +742,29 @@ export function construirePlateau(world: World, options: Options): Plateau {
 
     // Rangee HAUTE de l'aire joueur : la ligne de combat (adjacente a la menace).
     // Allies, sbires engages ET environnement : tout ce qui "vit" sur le terrain.
-    emplacement('terrain-combat', t('Alliés, sbires et environnement'), [
-      posees(notre?.allies, rendu, { proprietaire: nomHero(notre) }),
-      posees(notre?.engaged_enemies, rendu, { proprietaire: nomHero(notre) }),
-      posees(world.area_environment, rendu),
-      posees(notre?.environment_area, rendu),
-      // En multijoueur, les autres joueurs partagent l'aire : leur ligne de combat.
-      ...autres.flatMap((joueur) => [
-        posees(joueur.allies, rendu, { proprietaire: nomHero(joueur) }),
-        posees(joueur.engaged_enemies, rendu, { proprietaire: nomHero(joueur) }),
-      ]),
-    ]),
+    emplacement(
+      'terrain-combat',
+      t('Alliés, sbires et environnement'),
+      [
+        posees(notre?.allies, rendu, { proprietaire: nomHero(notre) }),
+        posees(notre?.engaged_enemies, rendu, { proprietaire: nomHero(notre) }),
+        posees(world.area_environment, rendu),
+        posees(notre?.environment_area, rendu),
+        // En multijoueur, les autres joueurs partagent l'aire : leur ligne de combat.
+        ...autres.flatMap((joueur) => [
+          posees(joueur.allies, rendu, { proprietaire: nomHero(joueur) }),
+          posees(joueur.engaged_enemies, rendu, { proprietaire: nomHero(joueur) }),
+        ]),
+      ],
+      undefined,
+      // Tache 5 (glisser-depose) : seuls LES ENNEMIS ENGAGES DE NOTRE joueur
+      // portent un secteur (`CLE_PILE_ENGAGES`) : lacher un sbire dessus
+      // l'engage (`Puzzle.Engage`, sans parametre de joueur -> toujours le
+      // joueur COURANT). Marquer aussi le groupe d'un AUTRE joueur engagerait
+      // silencieusement le sbire chez le mauvais joueur ; on prefere ne rien
+      // marquer et laisser ce lacher refuse plutot que de deviner.
+      [undefined, CLE_PILE_ENGAGES, undefined, undefined, ...autres.flatMap(() => [undefined, undefined])]
+    ),
 
     // Rangee CENTRALE de l'aire joueur : d'abord le DECK SPECIAL du heros s'il en
     // a un (Invocation de Strange, Daredevil...), pose a GAUCHE du heros ; puis le

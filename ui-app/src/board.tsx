@@ -26,6 +26,7 @@ import '../styles/palette.css'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
 import { estModeManuel } from './board/manuel/mode'
+import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
 import { BarreAction } from './board/BarreAction'
 import { Board, CarteApercu, type ReglagesGlisser } from './board/Board'
 import {
@@ -2189,6 +2190,15 @@ export function PagePartie({
   const idIdentiteGlisser = etat.monde?.players?.[joueurActif]?.area_hero?.[0]?.id
   const optionsCourantes = useMemo(() => etat.demande?.options ?? [], [etat.demande])
   const reglagesGlisser = useMemo<ReglagesGlisser | undefined>(() => {
+    // Mode manuel (tâche 5) : plus de moteur pour conduire la partie, donc
+    // plus d'options ni de tour à soi — les gardes ci-dessous (`aNous`,
+    // `connecte`, `interaction.option`) n'ont plus de sens et resteraient
+    // parfois vraies par accident. Le glisser manuel ne dépend que du
+    // plateau, comme le clic droit et le clavier du même mode.
+    if (manuel) {
+      if (!plateau) return undefined
+      return reglagesGlisserManuel(triche.couche.emettreGeste, () => triche.estToucheEnfoncee('Shift'))
+    }
     if (!etat.aNous || !etat.connecte || interaction.option !== undefined || !plateau) {
       return undefined
     }
@@ -2323,6 +2333,9 @@ export function PagePartie({
       },
     }
   }, [
+    manuel,
+    triche.couche.emettreGeste,
+    triche.estToucheEnfoncee,
     etat.aNous,
     etat.connecte,
     interaction,

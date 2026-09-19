@@ -167,7 +167,15 @@ export function cibleSousLePoint(x: number, y: number): CibleSurvolee {
   if (!(sous instanceof HTMLElement)) return {}
   const carte = sous.closest<HTMLElement>('.scan-card')
   const id = Number(carte?.dataset.cardId)
-  const zone = sous.closest<HTMLElement>('[data-zone]')?.dataset.zone
+  // ⚠ LA PILE (OU LE SECTEUR) AVANT L'EMPLACEMENT (tache 5, mode manuel) :
+  // `data-zone` ne distingue pas un deck de sa defausse, qui partagent le
+  // meme emplacement (voir `board/zones.ts`, `PILE_PAR_ZONE` du mode
+  // manuel). `data-pile` est pose plus PRES de la carte que `data-zone`
+  // (sur sa propre unite pour une pile, sur son groupe pour un secteur comme
+  // « ennemis engages ») : `closest` remonte donc d'abord jusqu'a lui, et ne
+  // retombe sur le nom, plus large, de l'emplacement que s'il n'y en a pas.
+  const pile = sous.closest<HTMLElement>('[data-pile]')?.dataset.pile
+  const zone = pile || sous.closest<HTMLElement>('[data-zone]')?.dataset.zone
   return {
     carteId: carte && Number.isFinite(id) ? id : undefined,
     zone: zone || undefined,
