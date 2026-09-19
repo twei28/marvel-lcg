@@ -113,6 +113,31 @@ describe('le sous-menu « Déplacer vers »', () => {
     }))
   })
 
+  // I4 (revue finale, 20/09/2026) : ce même menu s'ouvre en bac à sable ET en
+  // mode manuel. « Triche » n'a de sens que dans le premier.
+  it('marque « Triche » par défaut (bac à sable)', () => {
+    const { getByText, queryByText } = render(
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
+    )
+    expect(getByText('Triche')).not.toBeNull()
+    expect(queryByText('Geste manuel')).toBeNull()
+  })
+
+  it('marque « Geste manuel », jamais « Triche », en mode manuel', () => {
+    const { getByText, queryByText } = render(
+      <MenuTriche
+        cible={CIBLE}
+        x={0}
+        y={0}
+        onFermer={vi.fn()}
+        emettreGeste={emettreGesteDeTest()}
+        manuel
+      />
+    )
+    expect(getByText('Geste manuel')).not.toBeNull()
+    expect(queryByText('Triche')).toBeNull()
+  })
+
   it('précise que la pile écartée du menu est celle du héros, pas une pile du monde', () => {
     const { getByText } = render(
       <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />

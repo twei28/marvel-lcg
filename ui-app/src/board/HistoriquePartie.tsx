@@ -14,8 +14,17 @@ import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { World, WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
 import { libellePhase } from './etat-partie'
+import { estModeManuel } from './manuel/mode'
 
-type TypeHistorique = 'phase' | 'text' | 'card' | 'damage' | 'heal' | 'threat' | 'triche'
+// I4 (revue finale, 20/09/2026) : `'manuel'` EST DISTINCT DE `'triche'`. Les
+// deux marquent une intervention du joueur plutôt qu'une conséquence du
+// moteur, mais « Triche » n'a de sens qu'en bac à sable — une partie qui se
+// joue encore aux règles, truquée sciemment. En mode manuel, rien n'est
+// truqué : c'est le SEUL moyen de jouer, et « Triche » dans un rapport de bug
+// qui porte déjà la mention « mode manuel » raconte deux histoires
+// contradictoires à qui le lit. L'avenant de spec demande des gestes
+// « marqués comme manuels », pas un déguisement du même marqueur.
+type TypeHistorique = 'phase' | 'text' | 'card' | 'damage' | 'heal' | 'threat' | 'triche' | 'manuel'
 
 export type EntreeHistorique = {
   cle: string
@@ -469,12 +478,20 @@ export function useHistoriquePartie(
     persisterHistorique([], partieNotee.current)
   }, [])
   /**
-   * Inscrit une intervention du mode Bac à sable dans le journal.
+   * Inscrit une intervention du mode Bac à sable OU du mode manuel dans le
+   * journal (les deux partagent le même menu et les mêmes gestes, voir
+   * `CoucheTriche.tsx`).
    *
    * Elle se mêle aux événements du jeu, dans l'ordre où tout s'est produit,
    * mais garde son type propre : en relisant une situation étrange, on
    * distingue immédiatement ce qui vient d'une carte de ce qui vient du joueur.
    * C'est exactement ce qui manquait pour diagnostiquer Kamala's Room.
+   *
+   * ⚠ I4 : LE TYPE DÉPEND DU MODE, PAS UNE CONSTANTE. `estModeManuel` lit la
+   * RÈGLE posée à la mise en place (`world.mode_manuel`, conservée dans la
+   * sauvegarde) sur le monde qui accompagnait CE geste précis (`precedent`) :
+   * le même geste ne change jamais d'étiquette selon quand on relit le
+   * journal.
    *
    * La clé porte un compteur : deux soins identiques au même rendu sont deux
    * faits distincts, et sans lui React n'en afficherait qu'un.
@@ -486,7 +503,7 @@ export function useHistoriquePartie(
       const monde = precedent.current
       const entree: EntreeHistorique = {
         cle: `triche:${compteurTriche.current}`,
-        type: 'triche',
+        type: estModeManuel(monde) ? 'manuel' : 'triche',
         renderId: monde?.render_id ?? 0,
         round: monde?.round_id ?? 0,
         phase: monde?.phase ?? '',
@@ -510,6 +527,10 @@ function libelleType(type: TypeHistorique): string {
   if (type === 'heal') return t('Soin')
   if (type === 'threat') return t('Menace')
   if (type === 'triche') return t('Triche')
+  // I4 : PAS « Triche » — rien n'est truqué en mode manuel, c'est le seul
+  // moyen de jouer. Un lecteur du rapport de bug, qui porte déjà la mention
+  // « mode manuel », ne doit pas y lire deux histoires contradictoires.
+  if (type === 'manuel') return t('Geste manuel')
   if (type === 'phase') return 'Phase'
   return t('Événement')
 }

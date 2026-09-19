@@ -717,6 +717,7 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           y={menu.y}
           onFermer={() => setMenu(undefined)}
           emettreGeste={emettreGeste}
+          manuel={manuel}
         />
       ) : null}
 

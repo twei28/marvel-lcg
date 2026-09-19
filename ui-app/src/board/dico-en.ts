@@ -552,6 +552,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- Mode Bac a sable ----
   'Bac à sable': 'Sandbox',
   'Triche': 'Cheat',
+  // I4 (revue finale, 20/09/2026) : distinct de « Triche », qui n'a de sens
+  // qu'en bac à sable. Rien n'est truqué en mode manuel.
+  'Geste manuel': 'Manual action',
   'Clic droit sur une carte ou une pile': 'Right-click a card or a pile',
   'Soigner': 'Heal',
   'Infliger des dégâts': 'Deal damage',

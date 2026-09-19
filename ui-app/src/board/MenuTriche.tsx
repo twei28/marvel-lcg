@@ -163,6 +163,15 @@ export type MenuTricheProps = {
    * dit rien de l'exécution réelle côté moteur — voir `useTriche` (`CoucheTriche.tsx`).
    */
   emettreGeste: (libelle: string, deposer: () => Promise<boolean>) => Promise<void>
+  /**
+   * I4 (revue finale, 20/09/2026) : ce même menu s'ouvre en bac à sable ET en
+   * mode manuel (`CoucheTriche.tsx`, `leMoteurSeTait`). La marque « Triche »
+   * n'a de sens que dans le premier — une partie qui se joue encore aux
+   * règles, truquée sciemment ; en manuel, c'est le SEUL moyen de jouer, rien
+   * n'est truqué. Absent = bac à sable, pour ne rien changer aux appelants
+   * existants (les tests de ce fichier compris).
+   */
+  manuel?: boolean
 }
 
 /** Une entrée du menu. `valeur` ouvre une saisie de nombre avant d'agir. */
@@ -173,7 +182,7 @@ type Entree = {
   danger?: boolean
 }
 
-export function MenuTriche({ cible, x, y, onFermer, emettreGeste }: MenuTricheProps) {
+export function MenuTriche({ cible, x, y, onFermer, emettreGeste, manuel = false }: MenuTricheProps) {
   const [saisie, setSaisie] = useState<Entree | undefined>(undefined)
   const [nombre, setNombre] = useState(1)
   // Le sous-menu « Déplacer vers » : une liste de piles plutôt qu'une saisie
@@ -259,7 +268,7 @@ export function MenuTriche({ cible, x, y, onFermer, emettreGeste }: MenuTrichePr
     <div className="menu-triche" style={style} ref={boite} role="menu">
       <header className="menu-triche-titre">
         <span>{cible.nom}</span>
-        <span className="menu-triche-marque">{t('Triche')}</span>
+        <span className="menu-triche-marque">{manuel ? t('Geste manuel') : t('Triche')}</span>
       </header>
 
       {saisie ? (
