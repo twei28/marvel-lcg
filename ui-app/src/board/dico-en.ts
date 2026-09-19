@@ -1022,6 +1022,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Le scénario est gagné, mais la campagne s’arrête ici.': 'The scenario is won, but the campaign ends here.',
   'Match nul': 'Draw',
   'Mises de côté du scénario': 'Scenario set aside',
+  'Mode manuel : le moteur ne surveille plus la table, les cases « relevé par le jeu » restent à remplir à la main.':
+    'Manual mode: the engine no longer watches the table, fields marked "recorded by the game" are left for you to fill in by hand.',
   'Musique de fond (nécessite un fichier dans assets/sounds)': 'Background music (requires a file in assets/sounds)',
   'Niveau de détail de l’assistant d’action': 'Level of detail of the action helper',
   'Partie': 'Game',

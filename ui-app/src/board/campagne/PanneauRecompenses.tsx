@@ -46,6 +46,7 @@ import {
 import { assainirCarnet, preRemplir } from './preremplissage'
 import { verdictDeCampagne, type Verdict } from './defaite-campagne'
 import { repriseDeCampagne, type Reprise } from './reprise-campagne'
+import { estModeManuel } from '../manuel/mode'
 
 type Etat =
   | { phase: 'chargement' }
@@ -436,6 +437,21 @@ export function PanneauRecompenses({
             />
           ))}
         </div>
+      ) : null}
+
+      {/* Tâche 7 : en mode manuel, le moteur ne surveille plus la table — les
+          cases marquées « relevé par le jeu » (voir `ChampRecompense`
+          ci-dessous) ne se rempliront donc plus toutes seules. Elles restent
+          déjà CORRIGEABLES dans tous les modes (décision antérieure : un
+          détecteur peut se tromper, voir l'en-tête du fichier) ; ce qui
+          manquait, c'est de le DIRE — sans cette ligne, un joueur qui trouve
+          ces cases vides croirait à un bug plutôt qu'au mode qu'il a choisi. */}
+      {gagne && estModeManuel(monde) && visibles.some((c) => c.type === 'auto') ? (
+        <p className="camp-recomp-aide-manuel">
+          {t(
+            'Mode manuel : le moteur ne surveille plus la table, les cases « relevé par le jeu » restent à remplir à la main.'
+          )}
+        </p>
       ) : null}
 
       {visibles.length && gagne ? (

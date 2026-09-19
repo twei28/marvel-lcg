@@ -7027,6 +7027,20 @@
     text-align: center;
   }
 
+  /* Mode manuel (tache 7) : un constat, pas un avertissement — le bleu de
+     "relevé par le jeu" (var(--info)) plutot que l'ambre ou le rouge des
+     bandeaux voisins, qui eux signalent une consequence sur la campagne. */
+  .camp-recomp-aide-manuel {
+    margin: 0;
+    padding: 8px 12px;
+    border: 1px solid rgba(127, 227, 255, 0.35);
+    border-left: 3px solid var(--info);
+    background: rgba(127, 227, 255, 0.08);
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
   /* Fin de campagne perdue : le ton du livret, pas celui d'une erreur. Un
      rouge d'echec ferait croire a un bug du jeu. */
   .camp-recomp-defaite {
