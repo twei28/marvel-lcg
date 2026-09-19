@@ -584,9 +584,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Soutiens': 'Supports',
   'Ennemis engagés': 'Engaged enemies',
   'Zone du vilain': 'Villain area',
-  // Précisé : plusieurs piles moteur portent le type `AsideDeck`, celle-ci
-  // est `set_aside_nemesis_sets`, le set némésis du héros (voir triche.ts).
-  'Set némésis du héros': "Hero's nemesis set",
+  // « Set némésis » (AsideDeck) réutilise la traduction déjà déclarée pour
+  // `zones.ts` plus bas dans ce fichier : ne pas la redéclarer ici.
   'Choisis une carte pour l’ajouter à ta main': 'Pick a card to add it to your hand',
   'Choisis une carte pour la mettre en jeu': 'Pick a card to put it into play',
   'Couper la musique': 'Mute the music',

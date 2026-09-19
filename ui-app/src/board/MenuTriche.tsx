@@ -73,10 +73,34 @@ export function libellePile(zone: string): string {
     case 'VillainArea': return t('Zone du vilain')
     case 'RemovedArea': return t('Retirées de la partie')
     case 'VictoryDisplay': return t('Pile de victoire')
-    case 'AsideDeck': return t('Set némésis du héros')
+    // MÊME CLÉ QUE `zones.ts` (`t('Set némésis')`), PAS UNE NOUVELLE. C'est le
+    // même objet — `set_aside_nemesis_sets` — déjà nommé ainsi ailleurs sur le
+    // plateau. Deux libellés pour une seule pile serait une hésitation que le
+    // joueur paierait, sans lever l'ambiguïté avec les AUTRES piles moteur qui
+    // portent aussi le type `AsideDeck` (côté monde) : celles-là ne sont pas
+    // dans ce menu, donc pas de collision ici.
+    case 'AsideDeck': return t('Set némésis')
     default: return zone
   }
 }
+
+/**
+ * Les piles où « sous la pile » a un sens : un deck ORDONNÉ, où le dessous
+ * diffère du dessus. Côté moteur (`puzzle.py`, `MoveTo`), `position='Bottom'`
+ * n'est traité différemment que si `pile.flags.is_deck` ou
+ * `is_dealt_encounter` est vrai (`game/deck/deck_type.py`) : c'est le cas de
+ * ces quatre-là, et d'aucune autre zone de `ZONES_MANUELLES`. Sur les neuf
+ * autres (des zones EN JEU, face visible, sans dessus/dessous), `MoveTo`
+ * pose la carte normalement quelle que soit la position demandée : le bouton
+ * y ferait exactement la même chose que le bouton principal, deux fois le
+ * même geste. NE PAS L'AJOUTER AILLEURS sans vérifier ce drapeau côté moteur.
+ */
+const ZONES_ORDONNEES: ReadonlySet<string> = new Set([
+  'PlayerDeck',
+  'DiscardPile',
+  'EncounterDeck',
+  'EncounterDiscardPile',
+])
 
 export type MenuTricheProps = {
   cible: CibleTriche
@@ -218,13 +242,15 @@ export function MenuTriche({ cible, x, y, onFermer, onIntervention }: MenuTriche
                 <button type="button" onClick={() => void executerDeplacement(zone, 'Top')}>
                   {libellePile(zone)}
                 </button>
-                <button
-                  type="button"
-                  className="menu-triche-sous"
-                  onClick={() => void executerDeplacement(zone, 'Bottom')}
-                >
-                  {t('Sous la pile')}
-                </button>
+                {ZONES_ORDONNEES.has(zone) ? (
+                  <button
+                    type="button"
+                    className="menu-triche-sous"
+                    onClick={() => void executerDeplacement(zone, 'Bottom')}
+                  >
+                    {t('Sous la pile')}
+                  </button>
+                ) : null}
               </li>
             ))}
           </ul>
