@@ -283,8 +283,13 @@ def _config_partie(emplacement: int, partie: Partie) -> str:
     # Le bouton « Administration » du jeu n'existe que si cette cle est
     # renseignee, et elle ne l'est que pour l'administrateur : le moteur ne
     # sait rien des comptes du site, c'est ici qu'on le lui dit.
+    racine = f"https://{DOMAINE}" if DOMAINE else f"http://127.0.0.1:{PORT_SITE}"
+    # L'adresse PUBLIQUE du site, pour tout le monde (19/09/2026) : le jeu est
+    # servi depuis `pN.<domaine>`, donc un lien relatif vers une page du site
+    # tombe sur le moteur. Le bouton « Mes signalements » de l'ecran de
+    # preparation en a besoin, et il n'a rien d'un privilege.
+    cfg["site_url"] = racine
     if partie.code == ADMIN:
-        racine = f"https://{DOMAINE}" if DOMAINE else f"http://127.0.0.1:{PORT_SITE}"
         cfg["site_admin_url"] = racine + "/admin"
     # Liste des joueurs et tchat : le MOTEUR interroge le site en local, et le
     # navigateur ne parle qu'a son propre domaine. Sans ce detour il faudrait

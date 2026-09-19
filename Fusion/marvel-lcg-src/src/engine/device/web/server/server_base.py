@@ -21,6 +21,17 @@ SITE_ADMIN_URL = ConfigVariables.Str('site_admin_url', '')
 # lui, et le panneau des joueurs ne s'affiche alors nulle part.
 # ⚠ Le jeton ne doit JAMAIS partir vers le navigateur : c'est le moteur qui
 # appelle le site, pas le client.
+# Adresse PUBLIQUE du site qui a lance cette partie, celle que le NAVIGATEUR
+# sait ouvrir. AJOUTEE LE 19/09/2026 pour « Mes signalements ».
+#
+# ⚠ ELLE NE REMPLACE NI `site_admin_url` NI `site_interne`, et les trois ne
+# disent pas la meme chose : `site_admin_url` n'existe que pour
+# l'administrateur, `site_interne` est un 127.0.0.1 que le navigateur ne peut
+# pas joindre, et celle-ci est l'adresse ordinaire du site, la meme pour tout
+# le monde. Une page de table est servie depuis `pN.<domaine>` : un lien
+# relatif vers `/signalements` y tomberait sur le MOTEUR, qui sert une image
+# pour tout chemin inconnu. Il faut donc une adresse absolue.
+SITE_URL = ConfigVariables.Str('site_url', '')
 SITE_INTERNE = ConfigVariables.Str('site_interne', '')
 SITE_JETON = ConfigVariables.Str('site_jeton', '')
 

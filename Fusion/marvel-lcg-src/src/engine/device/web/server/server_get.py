@@ -562,6 +562,22 @@ class GameServerGet(GameServerBase):
             return web.json_response({'url': ''})
         return web.json_response({'url': url})
 
+    async def get_site_url(self, request: web.Request) -> web.Response:
+        """L'adresse publique du site, pour TOUS les joueurs de la table.
+
+        AJOUT du 19/09/2026. « Mes signalements » vit sur le site, et la page
+        de jeu est servie depuis `pN.<domaine>` : un lien relatif y tombe sur
+        le moteur, qui rend une image pour tout chemin inconnu. Le bouton a
+        donc besoin de l'adresse absolue.
+
+        ⚠ LECTURE OUVERTE, ET C'EST SANS DANGER. Ce n'est pas l'administration
+        (`get_site_admin`, reservee au siege 0) : c'est l'adresse d'accueil,
+        que tout le monde connait deja puisque c'est par la qu'on est entre.
+        Elle ne porte ni jeton ni compte.
+        """
+        from engine.device.web.server.server_base import SITE_URL
+        return web.json_response({'url': SITE_URL.value or ''})
+
     def _est_administrateur(self, request: web.Request) -> bool:
         """Ce client est-il l'administrateur du site, sur son propre siege ?
 
@@ -629,7 +645,93 @@ class GameServerGet(GameServerBase):
         releve vide : un plateau SANS teinte, jamais une erreur.
         """
         from cards.palettes_heros import PalettesHeros
-        return web.json_response({'palettes': PalettesHeros.Toutes()})
+        return web.json_response({
+            'palettes': PalettesHeros.Toutes(),
+            # L'editeur a besoin de distinguer ce qui a ete MESURE de ce qui a
+            # ete CORRIGE a la main : sans cela, il ne pourrait ni signaler une
+            # correction, ni proposer de revenir a la couleur d'origine.
+            'corrections': PalettesHeros.Corrections(),
+        })
+
+    async def save_palette_heros(self, request: web.Request) -> web.Response:
+        """Corrige la palette d'UNE identite. Reserve a l'administrateur.
+
+        AJOUT du 19/09/2026, demande du 18/09 : « un mode disponible que pour
+        moi, ou je peux mettre le hex principal, secondaire et tertiaire de
+        chaque personnage ». Les couleurs generees sont tirees du CONTOUR des
+        cartes ; quelques-unes tombent a cote, et rien ne permettait de les
+        reprendre.
+
+        ⚠ LES CORRECTIONS VIVENT DANS UN FICHIER A PART. Ecrire dans
+        `palettes-heros.json` serait perdre le travail a la premiere passe du
+        generateur, qui reecrit ce fichier en entier.
+
+        ⚠ UNE IDENTITE A LA FOIS, LE FICHIER RELU A CHAQUE FOIS. Meme raison
+        que `save_images_cartes` : deux onglets ouverts ne peuvent se marcher
+        dessus que sur la meme identite, jamais sur tout le releve.
+
+        ⚠ ECRITURE ATOMIQUE, puis cache vide : la couleur doit arriver au
+        plateau sans redemarrer le serveur.
+        """
+        import json as json_lib
+        import os
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        data = await request.json()
+        cartes = data.get('cartes')
+        if not isinstance(cartes, list) or not cartes:
+            return web.json_response({'error': 'cartes manquantes'}, status=400)
+        cartes = [str(x).strip() for x in cartes if str(x or '').strip()]
+        if not cartes:
+            return web.json_response({'error': 'cartes manquantes'}, status=400)
+
+        oublier = bool(data.get('oublier'))
+        couleurs: List[List[int]] = []
+        if not oublier:
+            brut = data.get('couleurs')
+            if not isinstance(brut, list) or not brut:
+                return web.json_response({'error': 'couleurs manquantes'}, status=400)
+            for couleur in brut:
+                if not isinstance(couleur, list) or len(couleur) != 3:
+                    return web.json_response({'error': 'couleur mal formee'}, status=400)
+                try:
+                    valeurs = [int(c) for c in couleur]
+                except (TypeError, ValueError):
+                    return web.json_response({'error': 'couleur mal formee'}, status=400)
+                if any(v < 0 or v > 255 for v in valeurs):
+                    return web.json_response({'error': 'couleur hors bornes'}, status=400)
+                couleurs.append(valeurs)
+
+        from cards.palettes_heros import PALETTES_CORRECTIONS_FILE, PalettesHeros
+        chemin = PALETTES_CORRECTIONS_FILE.value
+        donnees = {
+            '_lisez_moi': ("Corrections a la main des palettes de heros, posees PAR-DESSUS "
+                           "data/palettes-heros.json. Ecrites par l'editeur du jeu "
+                           "(/palettes-heros.html), jamais par outils/palettes-heros.py."),
+            'version': 1,
+            'palettes': {},
+        }
+        try:
+            with open(chemin, encoding='utf-8') as f:
+                lu = json_lib.load(f)
+            if isinstance(lu, dict) and isinstance(lu.get('palettes'), dict):
+                donnees['palettes'] = lu['palettes']
+        except Exception:
+            pass
+        for carte in cartes:
+            if oublier:
+                donnees['palettes'].pop(carte, None)
+            else:
+                donnees['palettes'][carte] = couleurs
+        dossier = os.path.dirname(chemin)
+        if dossier:
+            os.makedirs(dossier, exist_ok=True)
+        provisoire = chemin + '.tmp'
+        with open(provisoire, 'w', encoding='utf-8') as f:
+            json_lib.dump(donnees, f, ensure_ascii=False, indent=1, sort_keys=True)
+        os.replace(provisoire, chemin)
+        PalettesHeros.Recharger()
+        return web.json_response({'ok': True, 'corrigees': len(donnees['palettes'])})
 
     async def save_images_cartes(self, request: web.Request) -> web.Response:
         """Ecrit le releve d'UNE carte. Reserve a l'administrateur.
@@ -1113,7 +1215,9 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/post_messages_lus', self.post_messages_lus)
         self.AddAwaitGetSecurity('/get_images_cartes', self.get_images_cartes)
         self.AddAwaitGetSecurity('/get_identites', self.get_identites)
+        self.AddAwaitGetSecurity('/get_site_url', self.get_site_url)
         self.AddAwaitGetSecurity('/get_palettes_heros', self.get_palettes_heros)
+        self.AddPostSecurity('/save_palette_heros', self.save_palette_heros)
         self.AddPostSecurity('/save_images_cartes', self.save_images_cartes)
         self.AddAwaitGetSecurity('/get_legacy', self.get_legacy)
         self.AddPostSecurity('/save_legacy', self.save_legacy)

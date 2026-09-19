@@ -33,6 +33,19 @@
     ticketOuvrir: EN ? 'Read' : 'Lire',
   };
 
+  // ⚠ L'ADRESSE DU SITE, ABSOLUE. La page est servie depuis `pN.<domaine>` et
+  // le site depuis `<domaine>` : un `window.open('/signalements')` tombait sur
+  // le MOTEUR, qui sert une image pour tout chemin inconnu — un onglet ouvert
+  // sur rien (corrige le 19/09/2026, avec le bouton « Mes signalements » de
+  // l'ecran de preparation). On demande l'adresse une fois, et on retombe sur
+  // le chemin relatif quand il n'y a pas de site devant : en local, c'est la
+  // meme machine.
+  let adresseSignalements = '/signalements';
+  fetch('/get_site_url').then((r) => (r.ok ? r.json() : { url: '' })).then((data) => {
+    const url = data && data.url;
+    if (url) adresseSignalements = url.replace(/\/+$/, '') + '/signalements';
+  }).catch(() => {});
+
   const style = document.createElement('style');
   style.textContent = `
     .msg-pastille {
@@ -119,7 +132,7 @@
       // ⚠ UN NOUVEL ONGLET, comme pour les messages : ce module tourne aussi
       // sur le PLATEAU, et remplacer la page sortirait quelqu'un de sa partie.
       pastilleTicket.addEventListener('click', () => {
-        window.open('/signalements', '_blank', 'noopener');
+        window.open(adresseSignalements, '_blank', 'noopener');
       });
       document.body.appendChild(pastilleTicket);
     }
