@@ -2123,3 +2123,100 @@ Le siège N tient `equipe[N]`. C'est **déjà** ce que fait le moteur, qui reço
   campagne de tests à soi seule.
 - **Ce que voyait un invité au salon avant ce chantier** est déduit du code, pas
   mesuré.
+
+## 12. Fear No Evil : la première campagne en ORDRE LIBRE (18/09/2026)
+
+Le livret mc60 (p. 8-9) ne donne pas d'ordre : cinq affaires interchangeables,
+chacune contre un vilain UNDERLING au choix, puis Kingpin quand les cinq sont
+Completed ou Failed. Avant CHAQUE partie, deux affaires non résolues sont
+tirées au hasard et progressent d'une marque (deux marques s'il n'en reste
+qu'une) ; à trois marques l'affaire est Failed. Rien de cela n'existait dans le
+lanceur, qui joue les campagnes dans l'ordre du fichier (`indexCourant`).
+
+Ce qui a été ajouté, et où :
+
+| Pièce | Fichier | Preuve |
+|---|---|---|
+| Définition | `data/campagnes/fne.json` : `"ordre_libre": true`, `vilains` (avec `ordre` recommandé), 5 affaires `manigance: true`, Kingpin `final: true` + `catalogue: "kingpin_fne"` | `tools/verifier_campagnes.py` |
+| Règles pures | `public/js/campagne/ordre-libre.js` : `tirerLaProgression`, `etatAffaire`, `kingpinDisponible`, `vilainsPossibles`, `inscrireLeVilain`, `scenarioDuCatalogue`, `appliquerLaDefaite` | `node --test tools/tests-lanceur/ordre-libre.test.mjs` (12) |
+| Écran | `public/js/campagne/app.js` : `vueCampagneLibre()` (tableau du carnet, tirage, choix de l'affaire et du vilain, partie en cours, défaite déclarée), `lancerScenario(scenario, {catalogue, vilain})`, `estTerminee` | `ui-check/tests/campagne-ordre-libre.spec.ts` (4, `npm run campagne-ordre-libre` avec `UI_CHECK_BASE`) |
+| Moteur | `src/cards/pack/fne/campaign.py` (clés du carnet, environnements, marques, Mary, cartes retirées, `CollectFNE`) branché sur la face 1A des six manigances | 27 cas `[fne5]` du harnais |
+
+Les clés du carnet sont partagées entre l'écran et le moteur : « Completed
+Scenarios », « Failed Scenarios » (listes `;`), « Progress: <affaire> » (0..3),
+« Villain: <affaire> », « Trust Established? », « Mary Defeated? », « Allies
+removed from the campaign », et les PV restants par joueur (clé moteur, campagne
+experte). L'estampille du carnet sortant est nettoyée (`[^a-z0-9_]`) : « Stop
+the Presses! » donnait `stop_the_presses!`, qui ne correspondait à rien.
+
+Deux partis pris, faute de mieux côté plateau :
+- le **tirage** est fait par l'écran, une fois par partie, et gardé dans
+  `campagne.tirage` tant que la partie n'est pas lancée (un rechargement ne
+  retire pas deux fois) ;
+- une **défaite** ne fait rien remonter du plateau en standard (le panneau de
+  récompenses ne s'ouvre pas) : le joueur la déclare sur l'écran, comme il
+  cocherait le carnet papier. En campagne experte l'affaire progresse ; contre
+  Kingpin en expert, il choisit l'environnement Completed à retourner, ou la
+  campagne est perdue s'il n'en reste aucun.
+
+Piège payé : `WhenCampaignSetup` part APRÈS la mise en place des complots, donc
+après leur retournement côté 1B ; avec un complot par joueur (Protection
+Racket), la garde « seul le premier complot parle » compare les CARTES, pas les
+faces. Et `paper.name` n'a plus l'étoile à l'exécution : `CollectFNE` relit
+`paper.is_unique` pour les alliés retirés.
+
+## 13. La BOUCLE de campagne est enfin mesurée, les dix boîtes (19/09/2026)
+
+Tout ce qui précède mesurait une partie. Rien ne mesurait le PASSAGE d'une
+partie à la suivante : gagner, écrire le carnet, cocher une récompense, et
+retrouver cette récompense à la mise en place du scénario d'après. C'est
+pourtant là que vit le mode campagne, et c'est là que huit défauts dormaient.
+
+### L'outil
+
+`tools/test_campagnes.py` est générique et ne connaît aucune boîte. Il monte la
+partie 1 en mode campagne avec un carnet entrant, laisse un pilote minimal
+jouer jusqu'au tour du joueur, force la fin par `Puzzle.Win()` ou
+`Puzzle.Lose()` (ajoutés le 19/09/2026 : rien ne permettait de terminer une
+partie à la demande), relit le carnet SORTANT, y fusionne ce que le joueur
+cocherait au panneau, monte la partie 2 et mesure son état de départ.
+
+`tools/epreuves_campagnes.py` est la connaissance des boîtes : une liste
+d'épreuves, chacune disant le scénario joué, l'état à poser avant la fin, le
+carnet attendu, les cases cochées, le scénario suivant et l'état attendu à sa
+mise en place. Le vocabulaire de mesure couvre les zones (en jeu, main, deck,
+défausse, retirées, victoire, de côté, rencontres reçues) et leurs négations,
+`parmi` / `un_parmi` / `aucune_parmi`, les tailles de pile, les compteurs, les
+jetons, les statuts, la menace (exacte, minimale, maximale), le deck rencontre,
+les dégâts, et `perdue` pour une mise en place qui perd la partie.
+
+    RELEASE=1 PARALLELES=4 CAS_PREFIX=cz \
+      ~/marvel-work/python/bin/python3.10 tools/test_campagnes.py \
+      "$PWD/.game-src-a" 48000 /tmp/rapport-campagnes.json ["filtre"]
+
+**115 épreuves, 115 vertes, 327 s.** Réparties : fne 6, trors 6, mts 12, gmw 15,
+sm 13, mut_gen 13, next_evol 16, aoa 11, aos 19, web_of_deceit 4.
+
+### Les huit défauts trouvés, et ce qu'ils coûtaient
+
+| Boîte | Défaut | Conséquence en partie |
+|---|---|---|
+| toutes | `CollectFNE` et consorts lisaient `world.game_over` pendant `WhenGameOver`, qui n'est posé qu'APRÈS le message | une victoire Fear No Evil ne cochait jamais l'affaire |
+| gmw | le relevé des artefacts filtrait sur un trait « GALACTIC ARTIFACT » qui n'existe sur aucune carte | la case du carnet restait vide, aucun artefact ne revenait chez Nebula, la prime d'unités ne tombait pas |
+| gmw | les manigances d'artefact n'étaient pas remélangées au deck rencontre | la punition principale du scénario 4 manquait |
+| gmw | « Power Stone Control » cherchait la carte 16110 (Fanaticism) au lieu de 16149, et parmi les améliorations au lieu des attachements | « Vous êtes accusé ! » n'arrivait jamais au scénario 5 |
+| gmw | le nom du porteur était relevé sur la face active (« Steve Rogers » en alter-ego) et relu à la mise en place, où tout le monde est en alter-ego | la comparaison ne retombait jamais juste |
+| gmw | les unités additionnaient `face.victory`, un BOOLÉEN | deux manigances « Victory 0 » rapportaient 2 unités, un sbire « Victory 2 » n'en rapportait qu'une |
+| sm | le matériel S.H.I.E.L.D. était fabriqué sans sa face arrière | la récompense du palier 13 (version améliorée) n'existait pas |
+| next_evol | les Maraudeurs vaincus étaient cherchés dans le deck vilain, alors qu'ils attendent dans la réserve de côté | la seule récompense du scénario 1 ne servait à rien |
+| aos | les serrures de campagne étaient posées sur la carte suivante du paquet de la cellule, alors que le livret dit « the top card of this deck is in play » | les captifs libérés au scénario 2 n'ouvraient rien au 3 |
+
+Chaque correctif est daté dans le code, avec la citation du livret qui tranche.
+
+### Ce que l'outil ne mesure pas
+
+Le pilote joue le minimum : il répond à la première option jouable et force la
+fin dès le tour du joueur. Une épreuve mesure donc une MISE EN PLACE, pas une
+partie complète. Les trois boîtes sans `WriteCampaignLogAtGameOver` (trors, sm,
+web_of_deceit) n'ont pas de carnet sortant : leurs épreuves ne mesurent que ce
+que le carnet CHANGE, la détection restant au panneau du plateau.

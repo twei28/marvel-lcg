@@ -356,13 +356,26 @@ export function paysageSelonTypePapier(type: string | undefined): boolean | unde
  * verso heritait du cadre paysage et du quart de tour, et se lisait couche.
  * Signale en jeu. L'orientation vient desormais du type de CHAQUE face.
  */
+/**
+ * Une face d'une carte recto-verso : une base qui finit par un CHIFFRE, puis
+ * une lettre de face. Vaut pour les ids officiels (`12001b`) comme pour les
+ * ids des packs custom (`bk001a` Blink, `aa001b` Agatha Harkness...).
+ *
+ * ⚠ 18/09/2026 : le motif exigeait une base purement numerique (`^\d+`), et
+ * les 63 heros custom (identifiants lettres) n'avaient donc JAMAIS leur autre
+ * face dans l'apercu, alors que Captain America l'avait. Signale en jeu par
+ * l'utilisateur sur Blink puis Agatha Harkness. Un dos generique (« player »,
+ * « encounter ») ne finit pas par chiffre + lettre et reste exclu.
+ */
+const MOTIF_FACE = /^(.*\d)([a-z])$/
+
 export function autresFacesDe(card: WorldCard, catalogue: Catalogue): AutreFace[] {
   if (!card.is_face_up) return []
-  const face = card.card_id?.match(/^(\d+)([a-z])$/)
+  const face = card.card_id?.match(MOTIF_FACE)
   if (!face) return []
   const faces: AutreFace[] = []
   for (const dos of card.down_card_ids ?? []) {
-    const autre = dos.match(/^(\d+)([a-z])$/)
+    const autre = dos.match(MOTIF_FACE)
     if (autre && autre[1] === face[1] && autre[2] !== face[2]) {
       faces.push({ url: scanUrl(dos), isLandscape: paysageSelonTypePapier(catalogue.type(dos)) })
     }

@@ -610,10 +610,17 @@ MTS 16, Mutant Genesis 29, NeXt Evolution 12, AoA 2, Civil War 16. Reste :
   None), Choosing Sides/Now It's Personal (mode compétitif) non jouables, Teenage Superheroes simplifié
   (surge si pas de minion), boost abilities étoilées non implémentées, Spellcasting défausse sans annuler.
   Tests : 3754 ok / 0 échec, GEN 88/88, DECKS 72/72, PLAYERS: 1 ×2.
-- **Scénarios Fear No Evil** (Kingpin, Electro, Mysterio) : toujours PAS sur MarvelCDB, même avec
+- **Scénarios Fear No Evil** : toujours PAS sur MarvelCDB, même avec
   `?encounter=1` (fne.json?encounter=1 → 66 cartes, seulement les 10 rencontre némésis déjà intégrées).
   Recheck périodique. Images déjà partiellement sur Hall of Heroes (kingpin-a1/a2, electro-1, mysterio,
   rhino, the-raft-breakout…) et scans cerebro à tester (60065+).
+  ⚠ **MAJ 18/09/2026** : MarvelCDB toujours bloqué à 66/276 cartes, MAIS Hall of Heroes
+  (`hallofheroeslcg.com/fear-no-evil/`) publie désormais le pack COMPLET : 208 scans nommés
+  `60001.jpg` … `60210a.jpg` sous `wp-content/uploads/2026/08/` (testés, HTTP 200, ~300 Ko chacun).
+  Les vilains sont Kingpin, Electro, Bullseye, Hammerhead, Purple Man, Typhoid Mary — **pas de
+  Mysterio**, la liste ci-dessus était fausse. 11 sets rencontre : Art Museum Heist, The Getaway,
+  Protection Racket, The Raft Breakout, Stop The Presses, Disasters, Cops, Drive, The Owl, Tombstone,
+  Tracksuit Mafia. Le jeu s'arrête à 60064 : **146 codes manquants (60065 → 60210)**.
 - Faux manque à ignorer : 10098 Shang-Chi (= 04098 dans le jeu, renuméroté par MarvelCDB).
 - Méthode d'audit : télécharger `api/public/cards/` + `api/public/packs/`, comparer les codes aux
   card_id du jeu (tester code et code+'a'), PUIS vérifier les « manquants » par NOM (renumérotations

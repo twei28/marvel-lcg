@@ -150,7 +150,7 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 |---|---|---|---|
 | You get +N hit points / +ATK / trait | `GiveKeywordToAttached("You", health=N, attack=N, trait="AERIAL")` | an008, 05023, ho008, ho011 | pour un SOUTIEN ou un ALLIÉ non attaché : `GiveKeywordToInPlayWhenApplyThis(<cible>, control_by="You", ...)` (an002, ho005) |
 | **« NOM gets +X »** vs **« YOU get +X »** | `GiveKeywordToInPlayWhenApplyThis(**Hero**, …)` vs `(**Identity**, …)` | an002 Sera → `Hero` ; 06007 Asgard → `Identity` | ⚠ **LIRE LE MOT, pas le modèle.** « You » désigne l'identité, donc les DEUX faces. Un NOM PROPRE n'en désigne qu'UNE : « **Angela** gets +1 hand size » ne vaut qu'en forme héros, puisque l'alter-ego s'appelle Aldrif Odinsdottir. Copier `Identity` depuis Asgard donnait le bonus aussi en alter-ego. **Trouvé en partie réelle par le joueur le 1/9/2026**, jamais par les tests : le seul cas existant se plaçait en forme héros, où les deux écritures donnent le même résultat. → **Tout bonus continu d'identité exige un contre-cas dans l'AUTRE forme.** |
-| perd stalwart / steady | `GiveKeywordToAttached("Character", stalwart=-1, steady=-1)` | 50144, ho012 | un retrait sur mot-clé absent est neutre |
+| perd stalwart / steady | `*GiveKeywordToAttached("Character", stalwart=-1, steady=-1)` (rend une LISTE, voir §7septies) | 50144, ho012 | un retrait sur mot-clé absent est neutre |
 | gets +1 X for each <face> in play | `ThisGainKeywordForEachFaceInPlay(CardFinder(card_type=SchemeSide2), attack=1, scheme=1)` | 04125 Red Skull, 01059, ho015 | la classe des complots annexes est `SchemeSide2` — `SideScheme` N'EXISTE PAS dans cards.pack |
 | gets +1 X par compteur/état dynamique | `ThisGainKeyword(fn, recover=1, change_on_event=OnEvent...)` | an001b, dt133 | — |
 | attacks gain overkill/piercing/ranged | `UnitAttackGainKeyword("This"\|CardFinder(...), overkill=True, piercing=True)` | 27078, ho016 | `attacker="This"` pour ne pas toucher les homonymes |
@@ -172,6 +172,13 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
   `CountBoostIconsInternal` court-circuite tout et rend `printed_boost` : les
   effets qui modifient les icônes ne s'appliquent pas là.
 
+| Obligation de set MODULAIRE, sans « Give to » | rien de spécial : `desc` sans `GiveTo`, elle va au joueur qui la révèle | 60184 Wanted (Cops, Fear No Evil) | ⚠ Jusqu'au 18/09/2026 le moteur l'INTERDISAIT : `obligation.py` posait `assert printed_give_to != None` dans `give_to` et `CheckPrintedValue`, alors que `OnPlayerRevealCard` savait déjà faire (`else: message.GetToPlayer()`). Corrigé (`# CORRECTIF`) |
+| Attachement de rencontre à Hero Action « Spend a [x] resource OR exhaust your hero → ... » | deux `WhenInYourPlayTurn(HeroAction, op)`, l'une `.SetCost(Cost("B"))`, l'autre `.SetCostFunc(CostFunc.Exhaust("YourIdentity"))` | 60122-60125 (œuvres d'Art Museum Heist, `CapacitesDUneOeuvre`) | dans le harnais, `Puzzle.Action(id, 'HeroAction', 0)` FORCE la première sans la payer : viser l'index 1 pour prouver la branche « incliner » |
+| « After this card attaches to a character, <statut> » | `AfterCardAttachTo(ForcedResponse, "This", Unit2, op)` ; `message.to_face` = le porteur | 60122/60124/60125 | part aussi pour l'attache initiale faite par `AttachToFaceWhenPutIntoPlay` (log « s'équipe de ») ; un porteur STALWART refuse stun/confuse en silence : retirer les autres œuvres avant de mesurer |
+| « X is 1 more than the number of ... » (escalade dynamique d'un complot) | `EscalationThreat "0"` + `WhenCalcThisSchemeEscalation(fn)` avec `Worlds.GetPlayerNumIcon(effect) * (1 + n)` | 60121b, 16091b | `Puzzle.BeginVillainPhase()` ne POSE PAS la menace : le vérificateur envoie `Message.CalcMainSchemeEscalation(complot, 0, [], [])` et lit `escalation_threat` (`fne_escalade`) |
+| « You may spend RRR to A. Otherwise, B » | `ChooseAbilities(ForChoiceAbilityWithCost(Cost("RRR"), nom, op, conditions=[payable]), Otherwise(op2))` | 60127 Tug of War, 50134 | ⚠⚠ **Otherwise n'est offerte que si AUCUNE autre option n'existe**, et la branche payante est offerte MÊME IMPAYABLE (mesure : « couvert = 2 » sur RRR) : le joueur la prend, le paiement échoue, la carte ne fait rien. La condition doit donc tester le paiement : `PeutCouvrirLeCout(joueur, effect, cout)` (`cards/pack/fne/__init__.py`, icônes imprimées de la main + réserve). Et le JOUEUR vient de la clôture du `WhenCardRevealed` : `message.GetToPlayer()` n'existe pas sur `WhenPlayerChooseAbility` (exception avalée = condition fausse = branche jamais offerte) |
+| Un sbire qui ATTAQUE LE VILAIN (« it attacks the villain instead ») | `WhenUnitWouldScheme(ForcedInterrupt, "This", op)` : `message.SetBeInstead(effect)` puis `this.BasicAttack([Worlds.FindVillain(effect)], effect)` | 60182 Cop | `BasicAttack` accepte un ennemi comme cible d'un ennemi (2 dégâts mesurés sur Hammerhead) |
+| Bonus dynamique « +X où X = le plus haut THW en jeu » | `ThisGainKeyword(fn, scheme=1, change_on_event=OnEvent.Form(Friend))` | 60091 Chameleon | ⚠ `OnEvent.Form` refuse une UNION de types (`'UnionType' object has no attribute 'IsType'`, avalé en partie) : passer la classe mère (`Friend`), pas `Identity|Ally` |
 | Un héros qui « gains villainous » EN CONTINU (amélioration) | `*GiveKeywordToAttached(CardFinder(name=…), villainous=1)` | hc010 Outer Demons | Paramètre `villainous` ajouté à la fabrique le 11/09/2026 (`Gain` l'acceptait déjà, dd001a le posait via `GainUntilRoundEnd`). Le héros reçoit alors une carte boost à chaque **attaque** de base (`can_attack.py:264`) ; **pas au contre** (can_thwart.py n'a pas l'équivalent) : écart assumé sur les deux packs |
 | Bonus dynamique « +X where X is… » sur une AUTRE carte | `*GiveKeywordToInPlayWhenApplyThis(finder, attack=1, get_new_value=fn)` | hc014 Battle for a Soul | ⚠ Rend une **LISTE** : déballage `*` obligatoire, sinon « 'list' object has no attribute 'paper' » au setup. `get_new_value(effect, face)` **remplace** la valeur (environment_helper.py:184) et est relu à chaque application |
 | Obligation : « If not, discard this card » | `Faces.DiscardAll([this], effect)` explicite | hc013 Mental Episode | ⚠ Une obligation révélée **entre en jeu** et y reste : rien ne la défausse par défaut (vu au harnais, « hc013 est encore en jeu »). Coder les deux branches, `RemoveAllFromGame` ET `DiscardAll` |
@@ -606,6 +613,287 @@ deck**.
   avec un deck qui contient la carte (`autoplay --deck <chemin vers un deck
   jetable>`).
 
+### 7ter. Pièges du harnais payés par le pack `fne` (bloc 1, 18/09/2026)
+
+- **La partie commence en ALTER-EGO.** `Puzzle.Exhaust('01001a')`, `Tough`,
+  `Stun` sur la face héros, ou une `Hero Action`, échouent tant qu'on n'a pas
+  basculé : `Puzzle.ChangeForm('01001b')` (= « vers l'autre face ») en tête de
+  `mise_en_place`. Sans cela `FindOrCreateFace('01001a')` FABRIQUE une seconde
+  identité sans joueur et le rendu tombe sur `assert isinstance(owner, Player)`
+  (24 cas rouges d'un coup, message vide).
+- **`FindOrCreateFace` fouille le DECK RENCONTRE avant le terrain.** Pour une
+  carte présente en plusieurs exemplaires dans le deck (sbires d'un set en
+  cours), `Puzzle.Damage('60182', 3)` blesse la copie du deck et le sbire en
+  jeu ne bronche pas. `Puzzle.EmptyEncounterDeck()` d'abord, puis
+  `PutIntoPlay` crée un exemplaire neuf.
+- **`main_exclusive: []` n'est PAS appliqué** (`if cas.get(...)` : liste vide =
+  clé absente). Pour une main vide, donner une ressource injouable
+  (`["01088"]`). Sinon le pilote joue ce qu'il a : Great Responsibility (01061)
+  a encaissé en dégâts la menace que Chameleon devait poser.
+- **Une carte posée à la mise en place par le SCÉNARIO** (œuvre au hasard
+  d'Art Museum Heist, graine 42 = Inspiring Pottery) fausse les mesures sur le
+  vilain : +1 SCH et stalwart. `Puzzle.Remove` des quatre œuvres (`ARTS_OFF`)
+  avant de mesurer une stat ou un statut du vilain.
+- **`Puzzle.Damage` sur un vilain Toughness** : le premier coup est absorbé ;
+  `Damage(id, 1)` puis `Damage(id, 40)` pour le vaincre et faire entrer le
+  stade suivant.
+- **`defausse_rencontre` ne voyait pas la pile du vilain** (« defausse = [] »
+  alors que le journal disait « vers EncounterDiscardPile<3> ») : la clé lit
+  désormais aussi `Worlds.GetEncounterDiscardPileCards(monde)`. Et un deck
+  VIDE remélange sa défausse : garder une carte au fond (`01193`) quand on
+  mesure ce qui a été défaussé.
+- **Le pilote DÉFEND une attaque Quickstrike avec le héros** (qui s'incline) :
+  poser le sbire en alter-ego, basculer ensuite.
+- **`Puzzle.Boost` = une activation du vilain contre le joueur** : son attaque
+  non défendue déclenche les Réponses Forcées de la table (60121b vole une
+  seconde œuvre). Compter l'effet de bord dans l'attendu.
+
+### 7quater. Pièges payés par le pack `fne` (bloc 2, 18/09/2026)
+
+- **Un vilain recto-verso se déclare avec ses DEUX faces dans le scénario**
+  (`"villain": ["60110a,60110b"]`, virgule = faces d'une même carte, comme
+  `"schemes": ["60121a,60121b"]`). Déclaré `["60110a"]`, `card.Flip` n'a pas
+  de face arrière : il retourne la vilaine FACE CACHÉE, elle « n'est plus en
+  jeu » et tout le set tombe (Typhoid Mary, 21 cas rouges). MaGog (`39001a`)
+  n'est pas un modèle : il ne se retourne jamais, il `ResetHealth`.
+- **`card.Flip` sur un attachement le DÉTACHE** (`CanAttach.OnBeforeFlip` →
+  `DetachFrom2` → `MarkAsRemoved`) et ne le raccroche (`OnAfterFlip`) que si
+  sa zone est encore la zone d'améliorations, ce qui n'est plus le cas : la
+  face B reste dans les limbes (« Bullseye perd l'amélioration », puis plus
+  rien). Mémoriser le porteur avant, `AttachTo2` la nouvelle face après
+  (`RetournerLaColonne`, bullseye/__init__.py). Le Casque de Juggernaut
+  (`40122a`) fait le `Flip` nu : aucun cas ne le mesure.
+- **`GiveAdditionalBoostCardForThisActivation` sur le message d'ATTAQUE**
+  (`WhenUnitWouldAttack`, sender_damage.py:276) enregistre une capacité Temp
+  pour la PROCHAINE activation : appelé pendant la résolution des boosts
+  (`WhenBoostCardWouldTurnedFaceUp`), il ne donne rien. Poser la carte face
+  cachée tout de suite : `this.CastTo(CanBoost).GiveFacedownBoostCardsInternal(1,
+  effect, would_atk_message)`, la boucle de `ResolveBoostCards` la retourne
+  (60072 Lady Bullseye : 4 → 7 dégâts).
+- **`Puzzle.Ready` / `Puzzle.Exhaust` fouillent le DECK DU JOUEUR avant le
+  terrain** (`FindOrCreateFace`, puzzle.py:31) : `Puzzle.Ready('01008')`
+  redressait une copie de Web-Shooter restée dans le deck, l'amélioration
+  posée ne bougeait pas et l'interruption n'était jamais sollicitée.
+  `Puzzle.EmptyPlayerDeck()` en tête de `mise_en_place`.
+- **Un statut survit à `Puzzle.Remove` de sa source** : Impossible Object
+  retirée (`ARTS_OFF`), le vilain reste Confus et sa manigance suivante est
+  remplacée. `Puzzle.Confuse(id)` BASCULE le statut (retire s'il est là) avant
+  de mesurer une manigance.
+- **`TreatAttachedCardAsMinion` effaçait les mots-clés donnés à l'entrée en
+  jeu** : `SwapCardFace` fait entrer le sbire (Purple Man lui donne Guard),
+  puis `ResetKeywords()` effaçait tout et l'effet donateur, déjà appliqué, ne
+  revenait pas. CORRECTIF moteur (treat.py, deux sites) : les gains venus
+  d'autres faces sont sauvés avant le reset et remis après (le reset ne peut
+  pas passer avant l'échange : `ResetKeyword(self)` exige une face déjà
+  portée par une carte, sinon `'Minion' object has no attribute 'card'`).
+  Sans témoin, `Beguiled`/`Enthralled Minion` (21178) portait le même défaut.
+- **Un complot annexe Permanent n'était JAMAIS « vaincu »** :
+  `EncounterSideScheme.OnBeDefeated` faisait `pass` (scheme_side.py:16), donc
+  aucun `WhenSchemeBeDefeated` et un « When Defeated » muet (60113a Establish
+  Trust : ni jeton, ni retournement ; « est en train d'être vaincu », puis
+  plus rien). CORRECTIF : les messages partent, seule la défausse est sautée.
+- **`Resources.CanPayThisCost` ne teste que la COULEUR** (rbyg.py:110) : un
+  coût « 2 » y passe avec une seule carte, et la branche « Spend 2 resources »
+  était offerte puis échouait (« WhenPlayerChooseAbility failed »), sans
+  `Otherwise`. `PeutCouvrirLeCout` exige aussi `total.val >= cout.rbyga.total`.
+- **Le Setup d'un environnement (mot-clé `Setup`) passe par `AfterGameSetup`**
+  (« Resolve Character Setup Abilities »), pas `WhenCardSetup` (jamais envoyé
+  à une carte posée par le mot-clé). Sous graine 42, `Rand.RandomChoice`
+  retourne Typhoid Mary : la partie commence sur Bloody Mary (`60110b`), les
+  cas qui veulent Typhoid font `Puzzle.Flip('60110b')`.
+
+### 7quinquies. Pièges payés par le pack `fne` (bloc 3A : The Getaway, The Raft Breakout, Stop the Presses!, 18/09/2026)
+
+- **`OnEvent.Counter` / `AfterSchemeRemoveThreat` prennent un TYPE, pas une chaîne.** `"MainScheme"` (chaîne, donc `Sequence`) lève `assert not isinstance(check_rule, Sequence)` dans `CheckWhichCard` (card_type.py:247), AVALÉ : pour `OnEvent.Counter` c'est 15 tracebacks par partie dès qu'un compteur bouge (60130, vu par l'agent B en autoplay, invisible à mes cas qui posaient les compteurs AVANT l'entrée en jeu → un cas « compteur posé pendant que la carte est en jeu » est obligatoire pour tout `change_on_event`). Seuls `PlaceThreatOnSchemes` / `RemoveThreatFromSchemes` acceptent le littéral `"MainScheme"`.
+- **`AfterSchemeRemoveThreat` prend un TYPE, pas une chaîne.** `"MainScheme"` (chaîne, donc `Sequence`) lève `assert not isinstance(check_rule, Sequence)` dans `CheckWhichCard`, AVALÉ (`<F>` au journal seulement) : la carte est inerte. Écrire `MainScheme` (la classe), et `last_threat=True` existe pour « when the last threat is removed ». Payé sur 60129a Out Front.
+- **`ForChoiceAbility` n'a PAS de `conditions=`.** Seule `ForChoiceAbilityWithCost` en a ; `ForChoiceAbility(name, op, condition=<bool>)` évalue un booléen à la CONSTRUCTION. Construire les branches au moment du choix (fonction rappelée à chaque itération) pour que la condition soit fraîche. `TypeError` avalé sinon. Payé sur 60133, 60151b, 60158.
+- **`GiveAbilityToInPlayWhenApplyThis(…, abilities=[…])` ne donne la capacité que sur un événement `Faceup`** (`environment_helper2.py:213`, « Fix for 50070 ») : jamais à l'application initiale ni à l'entrée en jeu. Un sbire posé par `PutIntoPlay`, ou un allié converti, ne la reçoit pas. Pour « Each minion gains: When Defeated… », écouter `WhenUnitBeDefeated(…, Minion, op)` depuis la carte donatrice (`message.trigger` = le sbire). Payé sur 60142b.
+- **Le cadre `GiveKeywordToInPlayWhenApplyThis(apply=…)` ne sait pas DÉFAIRE une conversion sbire ⇄ allié sur un événement de jeton** : après `SwapCardFace`, la face alliée est écartée par `is_setting_as`/le finder, et `OnEvent.Token(Ally)` ne voit plus qu'un sbire. `TreatAsMinion` pose en outre sur la carte donatrice des temporaires inaccessibles. Convertir inline (branche `diff == 1` de `TreatAttachedCardAsMinion`) et écouter soi-même `AfterCardPlacedToken` / `AfterCardRemovedToken` / `WhenCardLeavePlay("This")` avec des `Ability(...)` bruts (la fabrique `AfterCardPlacedToken` porte `Condition2.ThisIsTrigger`, elle ne sert qu'à « This »). PV, dégâts, jetons sont des composants de la CARTE : ils suivent la face. `Card.CheckIfCanDiscard` remet la face imprimée avant la défausse : un sbire converti vaincu retourne de lui-même dans la défausse du joueur. Payé sur 60145 Baron Zemo.
+- **`AfterUnitAttackEnd` : le joueur attaqué est `GetAgainstPlayer()`** (pas d'attribut `attacked_you`). Payé sur 60146.
+- **`AskChooseFace` : « you may » = `forced=False`**, pas `may=True` (`TypeError` avalé). Payé sur 60153, 60156.
+- **`AfterPlayerDealEncounterCard` est un `TriggerPlayerMessage` : le joueur est `GetToPlayer()`, la carte `would_message.face`** (pas de `trigger`). Payé sur 60156.
+- **`GainToughness` ne pose PAS de carte de statut** : le statut vient de `OnWhenCardEnterPlay` seulement. Un « gains toughness » en cours de partie rend `IsToughness()` vrai sans statut, ce qui est la règle. Mesuré sur 60130 (contre-cas dédié).
+- **Harnais : Great Responsibility (01061) absorbe TOUTE menace posée, y compris `Puzzle.SetThreat`**, dès qu'elle est en main ; `main_exclusive` ne vide la main qu'APRÈS `mise_en_place` : mettre `main_exclusive: ["01088"]` PAR DÉFAUT sur tous les cas d'un bloc, et poser la menace dans `declencher` quand elle doit survivre à la main. Payé sur 60148, 60150, 60151b (menace « 2 » alors que 5 étaient posées).
+- **Harnais : un deck de rencontre vidé par le cas remélange sa défausse** (déjà en §7ter) : pour mesurer une carte défaussée par Ben Urich / Robbie, laisser une carte au fond (`01193`).
+- **`WhenCardSetup` prend deux arguments** `("This", op)` : à un seul argument, le complot 1A ne fait rien (précision du coordinateur, trois scripts corrigés).
+- **Pendant qu'un autre agent édite `src/game`**, une passe peut mourir en `NameError`/`AttributeError` d'import ou de `Puzzle` (« processus mort », « 'World' object has no attribute 'world' ») : attendre un marqueur (la ligne fautive disparaît) et rejouer, ne pas conclure sur ses propres scripts.
+
+### 7sexies. Pièges payés par le pack `fne` (bloc 3B : Drive, Disasters, Tombstone, Tracksuit Mafia, 18/09/2026)
+
+- **`Puzzle.SetThreat(id, n)` vers le BAS est un RETRAIT** : il envoie `WhenSchemeWouldRemoveThreat` / `AfterSchemeRemoveThreat`. Sur Collapsing Bridge, `SetThreat(2)` depuis 3 déclenchait la Réponse Forcée (3 → 2 → 3) et le cas « dernière menace » ne partait jamais de 2. Descendre par des contres (`Puzzle.Thwart` d'un allié à THW 2, puis d'un second).
+- **`operation=` de `TakeIndirectDamage` / `TakeDamage` n'est PAS rappelée pour une unité VAINCUE** (`can_health.py:288`, `if unit.IsInPlay()` après `Death`) : un compteur « for each ally defeated this way » y reste à zéro. Comparer la liste des alliés en jeu avant et après (60199).
+- **`AfterSchemeRemoveThreat` part AVANT le contrôle de défaite d'un complot annexe** (`scheme.py:145-150`) : une Réponse Forcée qui repose de la menace rend le complot invincible sans garde `this.threat > 0` (60180).
+- **`Asset2.CanAttachTo` ne teste que MaxPerUnit (et `CheckIfFaceCanAttachTo`)**, jamais la cible imprimée « Attach to … ». Celle-ci vit dans le sélecteur de `AttachToFaceWhenPutIntoPlayInternal`, exposé depuis le 18/09/2026 en `ability.attach_selector` sur l'ability `func_name="AttachToWhenEnterPlay"`. Pour « an attachment that can attach to a minion » : `attach_selector.selector_filter.CheckFinder(sbire, GameRule(face))` (modèle `PeutSAccrocherAUnSbire`, tombstone/__init__.py). ⚠ Pas `GetAllLegalTargets`, qui applique le tri `highest_*` et dépend des autres sbires en jeu. ⚠ `GameRule` n'est pas ré-exporté par `cards.pack` : import local, sinon `NameError` avalée et « aucun candidat » sans un mot au verdict.
+- **Un deck rencontre épuisé par `DiscardEncounterCardsUntil` se remélange avec sa défausse** (`deck.py:483`) : `defausse_rencontre` est vide après une fouille infructueuse ; mesurer `dans_deck_rencontre`. La boucle est bornée (un seul passage).
+- **Groot (`16047`) se soigne de 2 après avoir défendu** : comme Moxie, un allié à réponse fausse la mesure. Défenseur neutre à 5 PV : Brawn (`10011`).
+- **Retaliate ne mord pas si le défenseur est vaincu par l'attaque** (« X ignore Retaliate sur Y » au journal, `can_retaliate`) : un cas qui veut mesurer la riposte doit laisser le sbire vivant.
+- **Teamwork, règle par défaut du moteur (`v16_teamwork = False`) : TOUS les sbires au trait s'activent**, pas seulement l'entrant (Bro déjà là + Ivan = 2 + 2). Un cas Teamwork doit compter les deux.
+- **`Puzzle.Attach(carte, hote)` pose BRUT dans l'inventaire** (sans `AttachTo2`) : suffisant pour « porte un attachement VEHICLE », pas pour un bonus `ATK+`.
+- **Un port de la plage peut être occupé par un autre processus** (42050, deux passes de suite) : le cas rend « aucun resultat (processus mort) » et le journal dit `AssertionError: ip='127.0.0.1', port=42050`. Rejouer sur une autre base (42100, 42200) avant de conclure.
+- `Puzzle.Reveal(id)` pose la carte sur le DESSUS du deck rencontre avant de la révéler : un `CreateEncounterDeck('01193', '60203', '01186')` laisse donc l'ordre [fond … 01186, carte révélée] et « discard until » défausse 01186 d'abord.
+
+### 7septies. Pièges payés par le pack `fne` (bloc 4 : Kingpin, 18/09/2026)
+
+- **`Puzzle.SetThreat` en `mise_en_place` est absorbé par Great Responsibility (01061)** quand elle est dans la main de départ : « WhenSchemeWouldPlaceThreat est remplacé par Great Responsibility », la menace posée manque de 1 à 3 et le héros prend les dégâts (7 cas rouges d'un coup : 60159a, 60160a, 60161b ×3, 60164, 60168). `main_exclusive` ne vide la main qu'APRÈS `mise_en_place` (§7bis) : tout `SetThreat`/`PlaceThreat` d'un cas à `main_exclusive` va dans `declencher`, en tête.
+- **`Puzzle.Discard` d'une carte NEMESIS la RETIRE du jeu** (« Vulture retirée(s) », journal 2148 première passe) : sa pile de défausse « propriétaire » est la réserve nemesis. Pour la mettre en défausse de rencontre : `Puzzle.MoveTo('01167', 'EncounterDiscardPile')`.
+- **`Puzzle.FindOrCreateFace` ne fouille PAS `set_aside_nemesis_sets`** (puzzle.py:21 : deck joueur, défausse, deck/défausse rencontre, `aside_deck`, `set_aside_deck`, puis le terrain) : `Puzzle.Remove('01166')` a FABRIQUÉ un doublon et la réserve est restée pleine (journal 2145 première passe). Repli : un vérificateur qui vide la réserve lui-même (`Faces.RemoveAllFromGame` + `PuzzleHelper.Exec`), `fne4_bag_sans_reserve`. Demande D4.
+- **`Puzzle.EmptyEncounterDeck()` emporte les sbires UNDERLING** : « find an UNDERLING minion » ne trouve plus rien (journal 2149 première passe : « 0 UNDERLING en jeu »). Ne pas vider le deck quand la carte testée FOUILLE le deck.
+- **Une carte boost donnée à la révélation (James Wesley) vient du deck À CET INSTANT** : seme le deck AVANT `Puzzle.Reveal`, sinon c'est Stilt-Man (3 icônes) qui sort et la manigance vaut 5 au lieu de 2 (journal 2115 première passe).
+- **Une carte nemesis révélée peut porter Surge elle-même** (Sweeping Swoop 01168) : le témoin « pas de surge » d'un cas nominal ne prouve rien. Prouver la révélation par `defausse_rencontre` de la carte tirée.
+- **Face échangée par `TreatAsAlly` : `par_id` trouve ENCORE l'ancienne face « en jeu »** (même carte, `IsInPlay()` vrai) : « le sbire 60169 est encore en jeu » alors que la conversion avait marché. Tester `trouve.card.face is trouve` / `Minion.IsType(card.face)`.
+- **`GiveKeywordToAttached` rend une LISTE** (comme `GiveKeywordToInPlayWhenApplyThis`) : sans `*`, `'list' object has no attribute 'paper'` à la CONSTRUCTION du deck de rencontre, et c'est tout le scénario qui ne monte plus (70 cas rouges d'un coup, message « la partie a planté »). Le §3 de RECETTES ne le dit que pour `hc010`.
+- **`UnitCannotHaveUpgradeAttached` ne cache PAS la cible** : `Message.CheckIfFaceCanAttachTo` (sender.py:205) n'est ENVOYÉ NULLE PART dans `src/game` ; seule la moitié `WhenCardWouldAttachTo` joue, l'amélioration est payée puis défaussée à l'attache (journal 2084). Vaut pour 46003, 48027, sabretooth. Demande D1.
+- **Le moteur n'a aucun message « would be given a facedown boost card »** (`GiveFacedownBoostCardsInternal`, can_boost.py:9, enchaîne `PopEncounterCards` sans fenêtre) : une interruption sur ce texte se pose sur `WhenEnemyActivateAgainstYou` et retranche 1 à `property.additional_boost_card` (attaque) / `give_additional_boost` (manigance), lus à can_attack.py:265 / can_scheme.py:114 ; un compte négatif est absorbé par le `if num <= 0: return`. Demande D2.
+- **Sous graine 42, Vulture (nemesis de Spider-Man) est EN JEU dès la mise en place** du scénario Kingpin (Setup de 1A) et engagé : `Puzzle.Remove('01167')` avant toute mesure « non engagé avec un sbire » ; et son ATK 3 (Quickstrike) mange le héros dès qu'on le laisse là en forme héros.
+
+### 7octies. Pièges payés par le coordinateur (Protection Racket, campagne, fusion des blocs, 18/09/2026)
+
+- **Plusieurs complots principaux en jeu (Protection Racket, un par joueur)** :
+  le moteur les supporte (précédent Tower Defense, `GettingMainScheme`,
+  `world.current_player`) à condition que CHAQUE complot réponde à
+  `GetMainScheme` seulement pour SON joueur (`ComplotDuJoueur(effect, joueur)
+  is this`), que l'élimination d'un joueur passe par `SetGameOver(False)` et
+  que les jetons d'accélération soient reflétés sur tous. La manigance de base
+  du vilain va sur le complot du joueur visé (article FFG).
+- **`WhenCampaignSetup` part APRÈS la mise en place des complots** : le complot
+  est déjà retourné côté 1B, `effect.this` est la face 1A. Une garde « seul le
+  premier complot parle » doit comparer les CARTES (`complots[0].card is
+  effect.this.card`), pas les faces (`is` sur la face est toujours faux).
+  Payé sur la garde `_premier_complot` de 60134a (Mary Walker serait entrée
+  N fois, les marques posées N fois).
+- **Un complot annexe révélé par `Find.FindAndReveal` applique son Hinder** :
+  Jackknifed Tanker Truck (2 menaces, Hinder 1) vaut 3 avant la marque de
+  campagne, 4 après. Attendre 4, pas 3.
+- **La partie commence en alter-ego** (§7ter) vaut aussi pour les statuts :
+  « each identity gets a tough status card » se mesure sur `01001b`, pas
+  `01001a`.
+- **Batterie complète lancée PENDANT que d'autres agents éditent `src/`** :
+  12 rouges transitoires (Venom, Webbed Up, Agent 13...) tous verts rejoués
+  un par un ensuite. Un rouge de batterie n'est une régression que s'il
+  se reproduit SEUL, une fois l'arbre stable ; la batterie de fin de portage
+  se lance quand plus personne n'écrit.
+- **Moteur, ajouts du 18/09/2026** (demandes des agents, prouvées par leurs
+  cas) : `Asset2.CanAttachTo` envoie `Message.CheckIfFaceCanAttachTo` (il
+  n'était envoyé nulle part) et `CanPlayThisUpgradeCard` filtre ses cibles
+  par `CanAttachTo` ; `Message.WhenEnemyWouldBeGivenBoostCards` (+ fabrique
+  `AbilityFactory.WhenEnemyWouldBeGivenBoostCards`, `SetNum` /
+  `SetBeInstead`) envoyé par `CanBoost.GiveFacedownBoostCardsInternal` pour
+  TOUTES les sources ; `Ally` hérite de `HasVillainous` (Black Cat ralliée,
+  gabarit `fne_black_cat_ally`, Villainous 1) ; `ability.attach_selector`
+  exposé sur « AttachToWhenEnterPlay » (Beetle) ; `Puzzle.FindOrCreateFace`
+  fouille aussi `set_aside_nemesis_sets`.
+- **`CanPlayThisUpgradeCard` sert AUSSI aux soutiens** (Helicarrier, « under
+  a player's control ») : tout filtre ajouté à son sélecteur doit d'abord
+  tester `Asset2.IsType(effect.this)`, sinon `AttributeError` avalé et le
+  soutien devient injouable.
+
+### 7nonies. `select_rule` n'est applique NULLE PART (18/09/2026, 45017 Suit Up)
+
+- **`SelectorRule.AfterSelectTargets` (`src/game/selector/selector_rule.py`)
+  ne verifie ni `DifferentType` ni `DifferentCards`** : il ne regarde que le
+  NOMBRE de cibles, les couts combines et la regle `VillainAndMinions...`.
+  `EffectChecker` ne s'en sert que pour compter combien de types EXISTENT
+  parmi les cibles legales, jamais pour contraindre la selection. Le plateau
+  lit `select_rule` (`ui-app/src/board/ask.ts`) et ne s'en sert nulle part.
+  Consequence mesuree : `45017` Suit Up laissait prendre DEUX ameliorations
+  la ou la carte veut un allie et une amelioration. Deux cartes concernees
+  dans tout le depot : `45017` (reecrite en deux recherches successives) et
+  `01042` Ancestral Knowledge (`DifferentCards`, encore ouverte).
+- **Un `check_again_fn` qui refuse le choix APRES coup fait perdre la carte** :
+  l'effet echoue et l'evenement part a la defausse sans rien faire. Une regle
+  de selection doit ecarter la cible AVANT le choix (filtre du selecteur), pas
+  juger le resultat.
+- **« une amelioration attachable a CET allie » se demande au moteur** :
+  `CardFinder(canbe_attach_to=<face>)` appelle `Upgrade.CanAttachTo`, qui
+  relit le selecteur de la capacite « Play » de l'amelioration examinee. Deux
+  `Search.PlayerCard` de suite (allie, puis amelioration filtree) rendent la
+  phrase exactement ; patron `pt002` (pack patriot).
+- **Harnais : une Alter-Ego Action ne demande AUCUN changement de forme.** La
+  partie commence en alter-ego (§7ter) et `Puzzle.ChangeForm('01001b')`
+  RETOURNE la face en jeu, donc passe en forme heros : trois cas rouges ou la
+  carte restait en main.
+
+### 7decies. La batterie complete lue de travers : 57 faux rouges (18/09/2026)
+
+- **La copie gelee du harnais ne trouvait pas `tools/decks-de-test.json`.**
+  La batterie complete se lance depuis `/tmp/test_capacites_frozen.py` (pour
+  qu'une regeneration de cas ne change pas une passe en cours). Or le fichier
+  des « anciennes moities d'aspect » etait resolu A COTE DU SCRIPT :
+  `_decks_de_test()` rendait `{}` en silence, les decks des heros restaient
+  vides, et **57 cas tombaient au rouge** sur des packs sans aucun rapport
+  entre eux (spider_man_noir 13, night_thrasher 12, ms_america 6, venom 4...).
+  Symptomes typiques : « X n'est pas en main », « degats sur l'identite = 0 »,
+  « 1 carte(s) posee(s) sous ... (attendu 0) ».
+- **Le signe qui ne trompe pas** : rejoues SEULS (ou par pack, avec un filtre),
+  ces memes cas sont VERTS. Un rouge de batterie qui redevient vert a
+  l'unite n'est pas une regression : c'est la batterie qu'il faut regarder.
+  Deux passes completes ont ete lues de travers avant qu'on ne compare le
+  chemin du script.
+- **Correctif** : `_chemin_decks_de_test()` cherche a cote du script, puis
+  `./tools/`, puis `../tools/` (les enfants font `os.chdir(game_dir)`, donc
+  `../tools` depuis `.game-src*` retombe sur le vrai fichier).
+- **Regle generale** : tout fichier annexe resolu par `__file__` dans un outil
+  qu'on COPIE ailleurs doit avoir un repli, sinon il disparait sans un mot.
+
+### 7undecies. Le harnais ne joue pas les regles d'une vraie partie (18/09/2026)
+
+- **Une vraie partie tourne en regles v1.6** : `launcher.js` pousse `v16_all`
+  des que « regles v1.6 » est coche, ce qui est le defaut, et `SetRule`
+  bascule alors TOUS les `v16_*` (`world_rule.py`) : Teamwork n'active que le
+  sbire qui ENTRE, un personnage sonne peut tenter d'attaquer, elimination,
+  revelation, capacites referentielles...
+- **Le harnais, lui, monte la scene avec `rules` VIDE** : les cas mesurent donc
+  les regles d'AVANT 1.6. Constate sur Teamwork (pack `fne`, bloc 3B) : le
+  harnais voit s'activer TOUS les sbires du trait (2 + 2 degats), un joueur
+  n'en verrait qu'un.
+- **Option ajoutee** : `REGLES_V16=1` devant `test_capacites.py` monte la scene
+  avec `v16_all`. Le defaut reste inchange : basculer tout le harnais demande
+  de mesurer carte par carte ce que la regle deplace. Premieres mesures :
+  pack `spider_man_noir` 40/40 dans les deux regimes.
+
+### 7duodecies. « L'exces » ne vit qu'a la defaite, et une carte inerte peut passer au vert (18/09/2026)
+
+- **`AfterUnitAttackEnd` n'a PAS `excess_damage`** (sender_damage.py:558 : il
+  porte `total_dealt_damage`, `damaged_targets`, `atk_messages`). Un
+  `getattr(message, "excess_damage", 0)` y rend donc TOUJOURS 0, en silence :
+  `60140` Man-Bull n'a jamais pose la moindre menace. L'exces n'existe qu'a la
+  DEFAITE : `WhenUnitBeDefeated.excess_damage` (= `-health`, sender_unit.py:70),
+  et la fabrique sait filtrer : `by_attack=True`, `attacker="This"`,
+  `took_excess_damage=True`.
+- **Une carte inerte peut avoir DEUX cas verts** : ceux de Man-Bull mesuraient
+  1 menace sur le complot du joueur... que Battle in the Bodega (60134b) posait
+  de son cote sur la meme attaque. Seule la preuve par SUBSTITUTION l'a vu
+  (« rouges 0/2 »). Quand une carte partage la table avec une autre qui produit
+  LA MEME grandeur, le cas doit se jouer ailleurs : les deux cas ont ete
+  refaits sur un scenario NEUTRE (Art Museum Heist), complot remis a zero.
+- **Lire un verdict de substitution** : un cas vert sans son module est
+  acceptable dans trois cas seulement (contre-cas d'absence d'effet, valeur
+  native lue dans `desc`, cas dont le sujet est un AUTRE fichier comme un
+  helper de set). Sinon c'est un cas qui ne teste pas ce qu'il croit.
+  `generateurs-fne/qui_reste_vert.py` (copie dans `.planning/todos/`) rejoue
+  module par module et NOMME les cas restes verts, ce que
+  `substituer_pack.py` ne fait pas.
+
+### 7terdecies. Trois regles tranchees par le Rules Reference v1.8 (19/09/2026)
+
+Le guide officiel est dans le depot : `assets/docs/mc01_rules_reference_v18.pdf`
+(extractible avec `pypdf`, il n'y a pas de `pdftotext` ici). Trois entrees ont
+servi, et elles resservent :
+
+- **DEFEAT** : « si un complot annexe n'a plus de menace, il est vaincu », et
+  **IN PLAY AND OUT OF PLAY** : « les capacites d'une carte ne peuvent etre
+  declenchees ou affecter la partie que TANT QU'ELLE EST EN JEU ». D'ou :
+  un complot ramene a zero est vaincu, defausse, et sa Reponse Forcee
+  « posez 1 menace ici » ne peut plus rien poser (60180 Collapsing Bridge).
+- **PREVENT** distingue les degats **infliges** des degats **subis** : un
+  effet qui previent reduit ce que la cible SUBIT, pas ce qui lui est
+  INFLIGE. D'ou : « ne peut pas SUBIR de degats » laisse jouer une
+  interruption « quand X subirait des degats » (patron Armored Rhino Suit),
+  alors que « ne peut pas se voir INFLIGER de degats » supprime la fenetre
+  elle-meme, et l'interruption ne part pas (60131 + 60129a).
+- **CANNOT** : absolu, prime sur toute autre capacite, sauf si une carte le
+  contredit explicitement (Golden Rules).
+
 ## 8. Données (`data/cards.json`) — conventions
 
 - Pack en QUEUE de fichier, `"custom": "Arnaud"`, `set_name` = nom du
@@ -639,6 +927,47 @@ deck**.
 - Un trait inconnu de l'énum `TRAITS` (card_face.py) s'y AJOUTE (EARTH-6160,
   EXTREMIS...).
 
+
+### 7quaterdecies. Mesurer la BOUCLE d'une campagne (19/09/2026)
+
+Le harnais des capacites mesure une partie. Pour mesurer ce qui se passe ENTRE
+deux parties d'une campagne — le carnet ecrit a la victoire, les cases cochees
+au panneau, et la mise en place du scenario suivant — il y a
+`tools/test_campagnes.py`, generique, et `tools/epreuves_campagnes.py`, qui
+porte la connaissance de chaque boite.
+
+Pieges payes en l'ecrivant, tous reutilisables :
+
+- **Le resultat de la partie n'est pas encore pose pendant `WhenGameOver`.**
+  `GameOver.SetGameOver` envoie le message PUIS affecte `players_won` : un
+  collecteur qui lit `world.game_over` voit toujours « perdue ». Le collecteur
+  doit recevoir le MESSAGE (`collect_fn(effect, message)`).
+- **La mise en place de campagne precede la pioche.** Annexe II du guide de
+  reference : etape 13 la campagne, etape 14 la main de depart. Une carte
+  melangee au deck par une recompense peut donc arriver en main, et une
+  recompense « cherchez une carte et mettez-la en main » n'AJOUTE rien a la
+  main : elle laisse en choisir une partie.
+- **Une carte cherchee par `Puzzle.PutIntoPlay('id')` deux fois est la MEME
+  carte.** `FindOrCreateFace` retrouve l'existante. Pour deux exemplaires :
+  `Puzzle.PutIntoPlay(Puzzle.CreateCard('id'))`.
+- **Un JETON n'est pas un COMPTEUR.** `PlaceTokensOn` / `GetTokens` d'un cote,
+  `PlaceCountersOn` / `GetCounters` de l'autre. Chercher une menace de jeton
+  dans les compteurs rend zero a tous les coups.
+- **`face.victory` est un BOOLEEN** (« cette carte a-t-elle une valeur de
+  victoire »), la valeur imprimee est `printed_victory`. Les additionner
+  compte les cartes, pas les points.
+- **Le nom d'une identite change avec sa forme.** Relever `identity.paper.name`
+  a la victoire donne « Steve Rogers » si la partie finit en alter-ego, et la
+  mise en place suivante commence toujours en alter-ego. On ecrit et on relit
+  `identity.GetHeroFace().paper.name`.
+- **`Puzzle.AdvanceMainScheme(fois)`** (ajoute ce jour) fait avancer le complot
+  principal par le chemin du moteur : un pas retourne la face A sur la face B,
+  le pas suivant prend l'etape suivante. Plusieurs recompenses ne dependent que
+  de l'etape atteinte.
+- **Un defaut dans l'epreuve elle-meme doit echouer bruyamment.** Une exception
+  levee dans le verificateur, hors `try`, laissait le fils pendu sans jamais
+  rapporter : l'appel est desormais garde.
+
 ## 9. Le chemin outillé, de bout en bout
 
 | Étape | Commande | Durée vue |
@@ -651,3 +980,4 @@ deck**.
 | Statique | `test_cards.py`, `verifier_api_cartes.py`, `audit_cartes.py` | ~2 min chacun |
 | Autoplay ciblé | `autoplay.py --deck <pack> --parties 8` + témoin | ~3 min |
 | Batterie complète (fichier partagé touché) | `test_capacites.py` sans filtre | ~2 h, en fond |
+| Boucle des campagnes (carnet ou mise en place touchés) | `test_campagnes.py` | ~5 min |

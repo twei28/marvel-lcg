@@ -169,13 +169,20 @@
        - rangee 4 = la main. Piles joueur a gauche, identite a droite. */
     /* ⚠ LA RANGEE « nemesis » A DISPARU le 14/09/2026 : le set nemesis a
        rejoint « Mises de côté / autres piles », dont il relève par les règles
-       (voir zones.ts). La colonne de gauche se lit désormais deck rencontre,
-       deck du héros, puis les autres piles sur DEUX rangées — elles en ont
-       besoin, elles portent une pile de plus. */
+       (voir zones.ts).
+       ⚠ COLONNE DE GAUCHE REDISTRIBUÉE le 18/09/2026, demande de l'utilisateur
+       capture à l'appui : « il faudrait que le deck et la défausse du héros
+       soient à la même hauteur que le héros ». Le deck du héros descend donc
+       sur la rangée « Héros et soutiens » (3), les autres piles passent sur la
+       rangée de la main (4), et la rangée 2 reste vide à gauche. Répartition
+       dictée par l'utilisateur : « le deck du méchant sur la première, le deck
+       du héros sur la troisième, et la pile avec le reste c'est la 4e ligne ».
+       Les autres piles n'ont plus qu'UNE rangée : au-delà de deux piles elles
+       passent à la ligne et grandissent vers le haut (align-self: end). */
     grid-template-areas:
       "piles-rencontre rencontre       complot-principal"
-      "piles-joueur    terrain-combat  complots-secondaires"
-      "annexes         terrain-soutien complots-secondaires"
+      ".               terrain-combat  complots-secondaires"
+      "piles-joueur    terrain-soutien complots-secondaires"
       "annexes         main            complots-secondaires";
     /* Zones rapprochees : moins d'espace perdu entre elles. */
     gap: 7px;
@@ -2439,8 +2446,8 @@
   }
 
   /* « Your piles » (deck + defausse) et « Other zones » ont chacune leur propre
-     rangee dans la colonne de gauche : Other zones EST SOUS Your piles, en taille
-     normale. La main occupe le centre-droite de la derniere rangee. */
+     rangee dans la colonne de gauche : Your piles sur la rangee du heros (3),
+     Other zones SOUS elle, sur la rangee de la main (4), en taille normale. */
   .zone-piles-joueur {
     grid-area: piles-joueur;
     --mc-zoom-origine: center bottom;
@@ -2494,15 +2501,13 @@
     left: 4px;
   }
 
-  /* ⚠ « Mises de côté / autres piles » COUVRE DEUX RANGÉES depuis le
-     14/09/2026 (la rangée libérée par le set némésis), et ses cartes se posent
-     sur la ligne basse comme celles de la main, à côté. Sans `align-self: end`
-     la zone occupait les deux rangées en entier : son étiquette, qui flotte en
-     haut de la zone, se retrouvait à 200 px au-dessus de ses propres cartes.
-     Mesuré à l'écran. La zone se réduit donc à sa hauteur utile, calée en bas.
-
-     L'autre répartition essayée (la rangée au deck du héros) était pire : les
-     étiquettes « Deck du héros » et « Mises de côté » se chevauchaient. */
+  /* ⚠ « Mises de côté / autres piles » a couvert DEUX RANGÉES du 14/09 au
+     18/09/2026 ; depuis, elle n'a que la rangée de la main (voir la grille).
+     `align-self: end` reste : la zone se réduit à sa hauteur utile, calée en
+     bas, et si elle a plus de deux piles elle grandit vers le HAUT, dans la
+     rangée du deck du héros. Sans ce calage l'étiquette, qui flotte en haut de
+     la zone, se retrouvait à 200 px au-dessus de ses propres cartes (mesuré à
+     l'écran, 14/09/2026). */
   .zone-annexes {
     align-self: end;
   }

@@ -53,6 +53,16 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] uses.md (base native lue dans `desc.Uses`, aucun script : le moteur
       pose les pions à l'entrée en jeu ET fait sortir la carte au dernier pion
       retiré — ne PAS recoder la sortie)
+- [x] setup.md (base native lue dans `desc.Setup` : la carte entre en jeu à
+      la mise en place ; son texte « Setup: ... » se code par
+      `AfterGameSetup`, jamais `WhenCardSetup`)
+- [x] forced-action.md (type de capacité, pas un mot-clé : l'action que le
+      joueur ne peut pas ignorer, `WhenInYourPlayTurn(ForcedAction)`)
+- [x] victory.md (base native lue dans `desc.Victory` : la carte vaincue va
+      dans la pile de victoire quel que soit le signe ; « Victory -1 » sur
+      l'alliée Typhoid Mary de Fear No Evil, relu par le carnet de campagne)
+- [x] requirement.md (« Requirement ([mental]) » : le paiement doit COMPORTER
+      les ressources listees, elles ne s'ajoutent pas au cout)
 
 ⚠ **`Elite` n'est PAS un mot-clé** et n'a donc pas de fiche : c'est un TRAIT.
 Il se déclare dans le tableau `traits` de la carte (`"traits": ["ELITE"]`),
@@ -79,6 +89,10 @@ la plus fréquente sur un pack vilain.
 - [x] traitor.md (pack `agent_anti_venom`)
 - [x] companion.md (pack `lockjaw`)
 - [x] squirrel.md (pack `squirrel_girl`)
+- [x] destroy.md (pack `sentinel` : detruire un Component = 2 degats
+      imblocables + retournement Intact -> Detruit)
+- [x] exposed.md (pack `sentinel` : carte d'etat maison, EMPILABLE, sans
+      plafond, contrairement a Coriace)
 - [x] investigate-x.md (pack `jessica_jones`)
 - [x] setlist.md (pack `dazzler`)
 - [x] registered.md (pack `iron_patriot` : un SECOND DECK de 20 sbires qu'on

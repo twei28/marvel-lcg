@@ -693,6 +693,21 @@ cd "$W" && $PY tools/autoplay.py "$W/.game-src" --deck <nom> \
 #    10/09/2026, elle repondait « OK » avec une phrase retiree, parce que ni
 #    spider_man ni captain_marvel ne produisent ce motif-la.
 cd "$W" && $PY tools/verifier_raisons_refus.py "$W/.game-src" 47000
+
+# 10. La BOUCLE d'une campagne (ajoutee au guide le 19/09/2026)
+#    Tout ce qui precede mesure UNE partie. Le mode campagne vit entre deux
+#    parties : le carnet ecrit a la victoire, les cases cochees au panneau, et
+#    ce que la mise en place SUIVANTE en fait. `test_campagnes.py` joue cette
+#    chaine entiere ; `tools/epreuves_campagnes.py` porte les epreuves, boite
+#    par boite (115 le 19/09/2026, dix boites).
+#
+#    ⚠ OBLIGATOIRE des qu'on touche a un `campaign.py`, a une cle de carnet,
+#    a `data/campagnes/*.json` ou a une mise en place de scenario. Huit
+#    defauts silencieux y ont ete trouves le jour de son ecriture : des
+#    recompenses ECRITES au carnet et RELUES par personne.
+cd "$W" && RELEASE=1 PARALLELES=4 CAS_PREFIX=cz $PY \
+    tools/test_campagnes.py "$W/.game-src" 48000 /tmp/rapport-campagnes.json
+#    Une seule boite : ajouter le filtre, par exemple "aos —".
 ```
 
 ⚠️ **Passer un chemin ABSOLU au dossier de jeu.** Ces outils font `os.chdir(GAME_DIR)`
@@ -1397,6 +1412,55 @@ Chaque carte d'un pack fan-made porte donc une clé de PREMIER NIVEAU dans
 - Le deck-builder affiche alors une pastille **CUSTOM** sur la vignette et
   dans la liste du deck (`badgeCustom()` dans `public/js/deckbuilder/app.js`,
   style `.db-badge-custom` dans `public/deck-builder.html`).
+- L'écran de préparation (filtre **Fan-made** de la grille des héros)
+  affiche le créateur **entre parenthèses derrière le nom du héros**
+  (« Lockjaw (Nugget) ») et une ligne de remerciement qui liste tous les
+  créateurs des héros affichés. La valeur lue est le `custom` de la **face
+  héros** ; module pur `public/js/prepare/auteur.js`, testé par
+  `node --test tools/tests-lanceur/auteur.test.mjs` (18/09/2026). Un héros
+  sans `custom` s'affiche donc sans créateur : le champ est à remplir sur
+  TOUTES les cartes du pack, faces d'identité comprises.
+- **Une campagne en ORDRE LIBRE** (Fear No Evil) se déclare par
+  `"ordre_libre": true` dans `data/campagnes/<code>.json`, avec une liste
+  `vilains` et des scénarios `manigance: true` (plus un `final: true`). Les
+  règles de progression vivent dans le module PUR
+  `public/js/campagne/ordre-libre.js` (tirage de deux affaires, marques,
+  vilain recommandé, défaite), éprouvé par
+  `node --test tools/tests-lanceur/ordre-libre.test.mjs`, et l'écran les
+  applique dans `vueCampagneLibre()` (`public/js/campagne/app.js`).
+  Le scénario réellement lancé est `<manigance>_<vilain>`, ou l'identifiant
+  `catalogue` du scénario final. Test d'écran :
+  `ui-check/tests/campagne-ordre-libre.spec.ts` (`npm run campagne-ordre-libre`,
+  moteur requis).
+- **Les planches du livret** d'une boîte vivent dans
+  `public/stories/<code>/`, au format **975 × 975** (les livrets officiels sont
+  des PDF à pages carrées de 540 points : facteur 1,806). Nommage
+  `<NN>-<scenario_id>-<intro|regles|epilogue>-<n>.jpg`, et `00-campagne-*`
+  pour ce qui vaut pour toute la boîte. Pas de `pdftotext` ni de `pdftoppm`
+  sur cette machine : rasteriser avec **PyMuPDF** (`fitz`), lire le texte avec
+  **pypdf**. Dans un livret, la page PAIRE porte la bande dessinée et la page
+  IMPAIRE d'en face les règles du même scénario.
+- Deux clés ne servent qu'aux campagnes en ordre libre, la vue linéaire n'ayant
+  pas d'endroit où les mettre : `pages_intro` (planche d'ouverture de la
+  campagne) et `pages_vilains` (portraits, repliés sous le choix du vilain).
+- ⚠ Une planche posée en TÊTE de la colonne de récit pousse le carnet hors de
+  l'écran. Le test d'écran ne le voit pas : il vérifie la présence, pas la
+  place. Prendre une capture et la REGARDER (défaut du 19/09/2026).
+- La **recherche** de cet écran accepte aussi le créateur : taper « nugget »
+  rend Lockjaw, « rainy » tout ce que Rainy a dessiné. Le créateur entre dans
+  la botte de foin `recherche` de `catalog.heroes()`, en entier, donc
+  « bluehg » trouve aussi un pack signé « BlueHG + DesignHacker ». Le libellé
+  du champ le dit sur le seul filtre fan-made. Couvert par
+  `ui-check/tests/fanmade-createurs.spec.ts` (3 cas, règle d'or vérifiée en
+  retirant le créateur de la botte de foin).
+- Le créateur suit aussi le **vilain**, le **set modulaire** et l'**aspect**
+  maison (18/09/2026) : « Gorr the God Butcher (BlueHG) », « Necroverse
+  (BlueHG) », « Determination (DesignHacker) ». Trois chemins de lecture :
+  un scénario lit le `custom` de SA carte de vilain (pas par nom de set, car
+  « Electro » existe en officiel ET chez Ripper3) ; un set modulaire et un
+  aspect passent par `auteurUnique()` du module `auteur.js`, qui n'attribue
+  QUE si toutes les cartes portent le même créateur. Index bâtis une fois
+  dans `catalog._auteurParSet()` et `deckbuilder/app.js:auteurDeLAspect()`.
 
 À ne pas confondre avec le filtre **fan-made de la galerie**, qui reste basé
 sur la clé de `sets_info.json` (`/custom/i`, voir §12 bis) : les deux

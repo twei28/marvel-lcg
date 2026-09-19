@@ -1,0 +1,21 @@
+--- 60134b : 1 cas VERT(S) sans le module
+    60134b Protection Racket [fne3p] — le vilain manigance contre le joueur : la menace tombe sur SON complot (0 + 2)
+--- 60172 : 1 cas VERT(S) sans le module
+    60172 Stilt-Man [fne4] — sans stilt : les 3 degats passent
+--- 60173 : 1 cas VERT(S) sans le module
+    60173 Kingpin's Influence [fne4] — en jeu : 2[per_hero] menaces et 1 icone Hazard
+--- 60180 : 3 cas VERT(S) sans le module
+    60180 Collapsing Bridge [fne3b] — Hellcat contre 2 (3 -> 1 -> 2), puis Spider-Woman contre 2 (2 -> 0) : le pont est vaincu, rien ne revient
+    60180 Collapsing Bridge [fne3b] — contre-cas : la menace retiree du complot principal ne fait pas rechuter le pont
+    60180 Collapsing Bridge [fne3b] — revele : 1 + Hinder 2[per_hero] = 3 menaces, icone alea
+--- 60189 : 3 cas VERT(S) sans le module
+    60189 Traffic Jam [fne3b] — contre-cas : Hammerhead sans vehicule manigance, la menace va sur le complot principal
+    60189 Traffic Jam [fne3b] — contre-cas : le heros sans vehicule contre Consolidate Power normalement
+    60189 Traffic Jam [fne3b] — revele : 2 + Hinder 2[per_hero] = 4 menaces, icone crise
+--- 60205a : 1 cas VERT(S) sans le module
+    Protection Racket (campagne, 2 joueurs) [fne5] — deux complots 1A, mais UN SEUL environnement 60205a entre en jeu
+--- 60202 : 1 cas VERT(S) sans le module
+    60202 Tracksuit Mafioso [fne3b] — limite : vaincu sans personnage (Puzzle.Damage) et sans complot : rien a etourdir, pas d'erreur
+--- 60210a : 2 cas VERT(S) sans le module
+    60210a Typhoid Mary (alliee) [fne5] — carnet : Trust Established sans Mary Defeated -> l'alliee entre en jeu sous ton controle
+    60210a Typhoid Mary (alliee) [fne5] — contre-cas : Mary Defeated coche -> pas d'alliee

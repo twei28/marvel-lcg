@@ -28,6 +28,9 @@ affiché dans le jeu avant que l'utilisateur ait confirmé, ligne par ligne.
 | **T-Wrecks** | Sentinel | ☐ |
 | **Juri Krasko** | Angela | ☐ |
 | **Neptune** | Iron Patriot | ☐ |
+| **RyCoRan** | Howard the Duck | ☐ |
+| **Lord Havok** | Dazzler | ☐ |
+| **Nugget** | Lockjaw | ☐ |
 
 ### ⚠ Relevé du 16/09/2026 sur `tools/prefixes_fanmade.json`
 
@@ -58,6 +61,24 @@ pas depuis ce dépôt : il faut remonter aux zips et aux fils Discord d'origine.
   sans le nommer à cet endroit. À retrouver.
 - **Sentinel** : le nom T-Wrecks vient d'un MESSAGE DE COMMIT, pas d'une source
   du pack. Le plus faible des treize.
+
+### Trois auteurs ajoutés le 18/09/2026
+
+Trouvés en relisant les sources primaires, ils ne figuraient pas dans la table :
+
+- **RyCoRan**, Howard the Duck. Source : la note de `tools/prefixes_fanmade.json`
+  (« Pack fan-made RyCoRan, zip "Howard the Duck (05-23 Final)" »).
+- **Lord Havok**, Dazzler. Même source (« Pack custom de Lord Havok »).
+- **Nugget**, Lockjaw. Source : le commentaire en tête de
+  `cards/pack/lockjaw/lockjaw/__init__.py`. La note de `prefixes_fanmade.json`
+  est vide pour ce pack, c'est donc le code qui porte l'information.
+
+Au passage, deux attributions déjà présentes se voient confirmées par une
+seconde source : **Rainy** pour Blade, et **BlueHG** pour le re-skin
+Wolverine X-23.
+
+⚠ Ces trois-là restent à confirmer comme les autres. Ils sont mieux étayés que
+Sentinel, qui ne tient que sur un message de commit.
 
 ## Ce qui reste à décider, une fois la liste confirmée
 

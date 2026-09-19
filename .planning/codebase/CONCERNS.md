@@ -402,7 +402,7 @@ No explicit performance constraints; large deck + repeated pops may accumulate o
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Fear No Evil scenarios (Kingpin, Electro, Mysterio) | NOT IN MARVELCDB | Recheck periodically; only 10 nemesis cards found |
+| Fear No Evil scenarios (Kingpin, Electro, Bullseye, Hammerhead, Purple Man, Typhoid Mary) | STILL NOT IN MARVELCDB (recheck 18/09/2026: 66/276 cards) | But Hall of Heroes now hosts the FULL pack: 208 scans 60001-60210, villains + 11 encounter sets. 146 codes (60065-60210) absent from the game. Note: no Mysterio in the pack, that was a wrong guess |
 | Deck Future Past (MG) | ✅ IMPLEMENTED 28/07 | 5 special cards; log-driven deck assembly |
 | Mission area (true engine support) | NOT IMPLEMENTED | Workaround via counters in 45164 |
 | Cross-table multiplayer (2+ tables PVP) | NOT IMPLEMENTED | Synthezoid competitive ~= 1 table only |

@@ -38,6 +38,19 @@ describe('les autres faces', () => {
     expect(faces[0]?.isLandscape).toBe(true)
   })
 
+  it('un heros custom (identifiant lettre) a bien son alter ego en autre face', () => {
+    // Blink bk001a / bk001b : le motif purement numerique les ignorait (18/09/2026).
+    const faces = autresFacesDe(carte('bk001a', ['bk001b']), catalogue({ bk001b: 'AlterEgo' }))
+    expect(faces).toHaveLength(1)
+    expect(faces[0]?.url).toContain('bk001b')
+    expect(faces[0]?.isLandscape).toBe(false)
+  })
+
+  it('un dos generique n est pas une autre face, meme pour un heros custom', () => {
+    expect(autresFacesDe(carte('bk001a', ['player']), catalogueVide)).toHaveLength(0)
+    expect(autresFacesDe(carte('12001a', ['encounter']), catalogueVide)).toHaveLength(0)
+  })
+
   it('sans type connu, l orientation reste indecise : l apercu garde celle de la face visible', () => {
     const faces = autresFacesDe(carte('32065a', ['32065b']), catalogueVide)
     expect(faces[0]?.isLandscape).toBeUndefined()

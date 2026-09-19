@@ -69,3 +69,35 @@ la moins risquée et la moins utile tant que le moteur continue de conduire.
 
 Notée le 14/09/2026, **non commencée**. À cadrer avec l'utilisateur quand les
 chantiers en cours seront finis.
+
+---
+
+## Correction et cadrage du 18/09/2026
+
+**Une promesse de cette fiche est fausse.** « Jouer les extensions non
+portées » ne dépend PAS du mode manuel. Leurs cartes ne sont ni dans
+`data/cards.json` (140 sets, tous portés) ni dans `assets/`. Sans import de
+données, le mode manuel n'aurait rien à afficher. C'est un chantier
+distinct, encore à cadrer.
+
+**Le conseil « ne pas commencer par le glisser-déposer » est levé**, sur
+décision de l'utilisateur : le mode visé est un calque de Tabletop
+Simulator, et la manipulation directe en est le cœur, pas la décoration.
+
+**Le coût est plus faible qu'annoncé, et les trois risques sont mesurés :**
+
+1. Exécuter les commandes hors de `DoGetInput` marche déjà :
+   `PuzzleHelper.Exec` est appelé dans `GameSetup`
+   (`game/game_run/game_session.py:133`), sur le fil du jeu.
+2. Les identifiants d'objets sont un simple compteur de création
+   (`game/object/manager.py:59`), sans lien avec le tirage. Tout le corpus
+   de cas Puzzle vise déjà les cartes par `c1`, `c2` d'une exécution à
+   l'autre. Reste à prouver par un test aller-retour.
+3. Faire taire les capacités tient en une porte, dans
+   `EventManager.BroadcastMessage` (`game/event/manager.py:650`). Le récit
+   à l'écran n'y passe pas (les messages appellent `Present` dans leur
+   constructeur), donc l'affichage et le journal survivent. En revanche les
+   modificateurs de caractéristiques disparaissent aussi : le plateau
+   montrera les valeurs imprimées.
+
+**Statut** : cadrée avec l'utilisateur le 18/09/2026. Spec à écrire.

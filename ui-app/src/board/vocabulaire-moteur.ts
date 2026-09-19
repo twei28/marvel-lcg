@@ -251,6 +251,7 @@ const MOTEUR_FR: Record<string, string> = {
   'Enemy Given Boost Card': 'Carte de boost donnée à l’ennemi',
   'Enemy Scheme And Place Threat': 'L’ennemi manigance et pose de la menace',
   'Enemy Would Activate': 'Un ennemi va s’activer',
+  'Enemy Would Be Given Boost Cards': 'Un ennemi va recevoir des cartes de boost',
   'Face Deal Damage': 'Dégâts infligés',
   'Face Would Deal Damage': 'Des dégâts vont être infligés',
   'Game Area Add Card': 'Carte ajoutée à la zone de jeu',

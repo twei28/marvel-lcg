@@ -32,6 +32,7 @@ import { toScanCard } from './card-model'
 import { useConfirmation } from './ConfirmationJeu'
 import type { Catalogue } from './catalogue'
 import { optionsDeLaSource } from './glisser/cibles'
+import { cibleRefuseeParLaRegle } from './regles-selection'
 import { libellesCible } from './libelles-cible'
 import { demandeHorsPanneauManigance } from './manigance-face-a'
 import { t } from './langue'
@@ -593,6 +594,26 @@ export function useInteraction(
     [paiement]
   )
 
+  /**
+   * La regle de selection de l'option (`select_rule`) appliquee A LA
+   * DESIGNATION : une cible qui la casserait n'est pas cliquable. Voir
+   * `regles-selection.ts` : refuser au moment de valider ferait perdre la
+   * carte, c'est le defaut corrige le 18/09/2026.
+   */
+  const refuseeParLaRegle = useCallback(
+    (cible: number) => {
+      if (!option || !option.select_rule) return false
+      const candidate = index.get(cible)
+      if (!candidate) return false
+      const choisies = cibles
+        .filter((id) => id !== cible)
+        .map((id) => index.get(id))
+        .filter((carte): carte is WorldCard => carte !== undefined)
+      return cibleRefuseeParLaRegle(option.select_rule, choisies, candidate)
+    },
+    [option, cibles, index]
+  )
+
   const cartes = useMemo(() => {
     const etats = new Map<number, EtatInteractif>()
     if (!demande) return etats
@@ -667,7 +688,7 @@ export function useInteraction(
       // suivantes non cliquables : le joueur voyait « 1/3 » sans plus pouvoir
       // completer. Une cible deja prise reste toujours cliquable, pour la
       // retirer.
-      const peutViser = cibles.length < max
+      const peutViser = cibles.length < max && !refuseeParLaRegle(cible)
       if (!peutViser && fois === 0) continue
       etats.set(cible, {
         role: 'cible',
@@ -788,6 +809,7 @@ export function useInteraction(
     focaliserCible,
     basculerCible,
     basculerRessource,
+    refuseeParLaRegle,
   ])
 
   const ciblesHorsTable = useMemo<CibleHorsTable[]>(() => {
@@ -800,6 +822,9 @@ export function useInteraction(
       const carte = index.get(cible)
       if (!carte) continue
       const fois = nombreDeFois(cibles, cible)
+      // Une cible que la regle de selection refuse n'est pas proposee (sauf
+      // si elle est deja choisie, pour pouvoir la retirer).
+      if (fois === 0 && refuseeParLaRegle(cible)) continue
       liste.push({
         // Une carte proposee au choix est forcement visible pour nous : le
         // moteur ne demanderait pas de choisir a l'aveugle. On la montre donc
@@ -815,7 +840,7 @@ export function useInteraction(
     }
 
     return liste
-  }, [option, etape, index, idsAffiches, cibles, playerId, catalogue, basculerCible])
+  }, [option, etape, index, idsAffiches, cibles, playerId, catalogue, basculerCible, refuseeParLaRegle])
 
   const controle = option
     ? reponsePrete(option, cibles, ressources)
