@@ -494,7 +494,13 @@ systemctl is-active narwhal
   # et le depot est l'endroit ou l'on garde. Sans ce rapatriement, une
   # reinstallation du serveur perdrait tout le travail a la main.
   $palettes = Join-Path $PROJET "Fusion\marvel-lcg-src\data\palettes-heros-corrections.json"
-  & scp -i $CLE "root@${IP}:$DIST/Fusion/marvel-lcg-src/data/palettes-heros-corrections.json" $palettes 2>$null
+  # ⚠ ABSENT N'EST PAS UNE PANNE. Tant que personne n'a corrige une couleur, le
+  # fichier n'existe pas sur le serveur, et `scp` rend alors une erreur qui,
+  # avec $ErrorActionPreference = "Stop", arretait tout le deploiement juste
+  # avant la verification finale (vu le 19/09/2026, au premier essai).
+  try {
+    & scp -i $CLE "root@${IP}:$DIST/Fusion/marvel-lcg-src/data/palettes-heros-corrections.json" $palettes 2>$null
+  } catch { }
   if (Test-Path $palettes) {
     Write-Host "   data/palettes-heros-corrections.json"
   } else {

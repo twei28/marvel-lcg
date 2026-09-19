@@ -39,6 +39,25 @@ La batterie complète des capacités, relancée après ces correctifs et finie �
 sg007, sg009, sg013), rouges AVANT cette journée et mise de côté par décision.
 Aucune régression du déploiement.
 
+## ✅ SECOND DÉPLOIEMENT du 19/09/2026, 14:30
+
+| Commit | Quoi |
+|---|---|
+| `e30b2b8a` | L'**éditeur de palettes** (`/palettes-heros.html`), réservé au compte auteur. |
+| `8a7b384a` | **« Mes signalements »** trouvable depuis le jeu ; la pastille ouvrait un onglet vide. |
+| `49cc5e41` | Couverture du livret sur les neuf boîtes de campagne, documents de Fear No Evil, affaires dans l'ordre du livret, un sous-fifre différent par tuile. |
+
+- Le livret et le carnet de Fear No Evil sont sur le serveur (`assets/docs`,
+  41 Mo à eux deux) : ils ne sont pas dans le dépôt, `assets/docs` est ignoré.
+- Les vignettes de boîte d'avant sont dans
+  `sauvegardes-serveur/textures-boites-avant-couvertures`.
+- ⚠ Piège payé : la nouvelle étape « Palettes corrigées rapatriées » arrêtait
+  le déploiement tant que le fichier n'existait pas sur le serveur
+  (`$ErrorActionPreference = "Stop"` + `scp` sur un fichier absent). Elle est
+  désormais dans un `try`.
+- Personne d'autre n'était en ligne : une seule table ouverte, celle de
+  l'administrateur (reconnue à `site_admin_url` dans son `launch-1.json`).
+
 ## L'ordre décidé avec l'utilisateur
 
 1. ~~**Fear No Evil**~~ — **FAIT ET DÉPLOYÉ le 19/09/2026.** Le pack, la
