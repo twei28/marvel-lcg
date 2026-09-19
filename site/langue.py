@@ -112,6 +112,7 @@ DICO_EN: dict[str, str] = {
     "Connecte": "Signed in",
     "Se deconnecter": "Sign out",
     "Mes signalements": "My reports",
+    "Accueil": "Home",
 
     # --- Le suivi d'un signalement ------------------------------------------
     "Ce que tu as signale, et ma reponse.": "What you reported, and my answer.",

@@ -2539,9 +2539,17 @@ def _barre(pseudo: str) -> str:
     attente = reponses_non_lues(pseudo)
     signalements = (' &middot; <a href="/signalements">%s</a>' % lang.t("Mes signalements")
                     + (' <span class="pastille">(%d)</span>' % attente if attente else ""))
-    return ('<div class="barre"><span>%s : <strong>%s</strong>%s%s%s</span>'
+    # ⚠ LE RETOUR N'EST PAS UN CONFORT, C'EST LA SEULE SORTIE. Le site
+    # s'installe en application (`MANIFESTE_APPLI`, `display: standalone`), donc
+    # dans une fenetre SANS bouton Precedent. Signale par un joueur le
+    # 19/09/2026 : arrive sur « Mes signalements », il ne pouvait en repartir
+    # qu'en fermant la fenetre et en en rouvrant une. La barre est la seule
+    # chose presente sur toutes les pages : c'est donc ici, et nulle part
+    # ailleurs, que le retour doit vivre.
+    accueil = ' &middot; <a href="/">%s</a>' % lang.t("Accueil")
+    return ('<div class="barre"><span>%s : <strong>%s</strong>%s%s%s%s</span>'
             '<a href="/deconnexion">%s</a></div>'
-            % (lang.t("Connecte"), html.escape(pseudo), signalements, admin,
+            % (lang.t("Connecte"), html.escape(pseudo), accueil, signalements, admin,
                _bouton_langue(), lang.t("Se deconnecter")))
 
 

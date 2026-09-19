@@ -2139,6 +2139,18 @@ verifier("et elle reste sobre quand rien n'attend",
          and "(" not in o._barre("quelqu-un-d-autre").split("Mes signalements")[1][:12],
          o._barre("quelqu-un-d-autre"))
 
+# ⚠ SANS LIEN DE RETOUR, LES PAGES DU SITE SONT UN CUL-DE-SAC. Le site
+# s'installe en application (`display: standalone`, MANIFESTE_APPLI), donc dans
+# une fenetre SANS bouton Precedent. Signale par un joueur le 19/09/2026 : il
+# ne pouvait quitter « Mes signalements » qu'en fermant la fenetre et en en
+# rouvrant une. La barre est la seule chose presente sur toutes les pages.
+verifier("la barre ramene a l'accueil",
+         'href="/"' in o._barre("yarro"),
+         o._barre("yarro"))
+verifier("et le retour est la aussi pour l'administrateur",
+         'href="/"' in o._barre(o.ADMIN),
+         o._barre(o.ADMIN))
+
 
 # La pastille en partie. Le joueur est sur p<N>.<domaine> : seul le moteur peut
 # parler au site, et il relaie deja `/api/prives`. On y ajoute le compte des
