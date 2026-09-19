@@ -346,6 +346,65 @@ describe('faire apparaître une carte, en mode manuel', () => {
   })
 })
 
+describe('déclarer la fin d’une partie manuelle (tâche 7)', () => {
+  function ouvrirFinManuelle(): void {
+    const table = document.createElement('div')
+    document.body.appendChild(table)
+    fireEvent.contextMenu(table)
+    fireEvent.click(screen.getByText('Terminer la partie'))
+  }
+
+  it('envoie Puzzle.Win() après confirmation d’une victoire', async () => {
+    render(<Harness world={mondeManuel()} />)
+    ouvrirFinManuelle()
+    fireEvent.click(screen.getByText('Victoire'))
+    fireEvent.click(screen.getByText('Confirmer'))
+    await attendreLeReseau()
+
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Win()'] }),
+    }))
+  })
+
+  it('envoie Puzzle.Lose() après confirmation d’une défaite, et ferme le panneau', async () => {
+    render(<Harness world={mondeManuel()} />)
+    ouvrirFinManuelle()
+    fireEvent.click(screen.getByText('Défaite'))
+    fireEvent.click(screen.getByText('Confirmer'))
+    await attendreLeReseau()
+
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Lose()'] }),
+    }))
+    expect(screen.queryByText('Confirmer')).toBeNull()
+  })
+
+  it('n’envoie rien tant que la confirmation n’a pas eu lieu', async () => {
+    render(<Harness world={mondeManuel()} />)
+    ouvrirFinManuelle()
+    fireEvent.click(screen.getByText('Victoire'))
+    await attendreLeReseau()
+    expect(fetch).not.toHaveBeenCalledWith('/sandbox_command', expect.anything())
+  })
+
+  it('écrit la ligne du journal au rendu suivant, comme tout autre geste', async () => {
+    const ajouterAuJournal = vi.fn()
+    const avant = mondeManuel()
+    const { rerender } = render(<Harness world={avant} ajouterAuJournal={ajouterAuJournal} />)
+    ouvrirFinManuelle()
+    fireEvent.click(screen.getByText('Victoire'))
+    fireEvent.click(screen.getByText('Confirmer'))
+    await attendreLeReseau()
+    expect(ajouterAuJournal).not.toHaveBeenCalled()
+
+    const suivant = { ...avant, render_id: 2, manuel_refus: '', game_over: true, players_won: true } as World
+    await act(async () => {
+      rerender(<Harness world={suivant} ajouterAuJournal={ajouterAuJournal} />)
+    })
+    expect(ajouterAuJournal).toHaveBeenCalledWith('Fin de partie — Victoire')
+  })
+})
+
 // --- Le bac à sable garde son journal (correction du 19/09/2026, ronde 2) --
 //
 // RÉGRESSION CORRIGÉE : l'effet de résolution ne tournait qu'en mode manuel

@@ -125,6 +125,27 @@ export const creerCarte = (cardId: string) =>
   envoyer([`Puzzle.MoveTo(${texte(cardId)}, ${texte('ProcessingArea')}, ${texte('Top')})`])
 
 /**
+ * Déclare la fin d'une partie manuelle : le moteur ne surveille plus rien, il
+ * ne peut donc constater ni un vilain vaincu ni un complot débordé — c'est au
+ * joueur de le faire à sa place (tâche 7 du plan).
+ *
+ * `Puzzle.Win()` / `Puzzle.Lose()`, PAS `Puzzle.End(message)` — le brief de
+ * cette tâche proposait ce dernier, mais il ne fait que publier une ligne
+ * dans le journal du moteur (`Notify.Game`, `game/puzzle/puzzle.py`) : il ne
+ * touche jamais `world.game_over`. `Win`/`Lose` (ajoutés le 19/09/2026, même
+ * fichier) passent par `Worlds.SetGameOver`, LE MÊME chemin qu'une vraie
+ * victoire de scénario : `game_over`, `players_won` s'écrivent, le carnet de
+ * campagne s'ouvre comme d'habitude, et surtout `World.ManualLoop`
+ * (`while not self.is_game_over`, `game/world/world.py`) rend enfin la main —
+ * rien d'autre ne fait sortir cette boucle.
+ *
+ * Aucune confirmation ici : elle est déjà passée, côté `FinManuelle`, avant
+ * l'appel. Ce geste n'a pas de rattrapage — le Ctrl+Z annule un geste sur la
+ * table, pas la fin d'une partie.
+ */
+export const declarerFin = (gagne: boolean) => envoyer([`Puzzle.${gagne ? 'Win' : 'Lose'}()`])
+
+/**
  * Ctrl+Z : retire le dernier geste et rejoue la partie sans lui.
  *
  * Route distincte de `/sandbox_command` : ce n'est pas une commande

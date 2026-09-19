@@ -6773,6 +6773,42 @@
     font-size: 12px;
   }
   .catalogue-manuel-resultat:hover img { outline: 2px solid rgba(255, 196, 60, 0.6) }
+
+  /* Fin de partie manuelle (tache 7) : meme voile/dialogue que la pile ouverte
+     et le catalogue (.pile-triche*, juste au-dessus), le contenu seul change.
+     Deux temps geres par FinManuelle.tsx : le choix, puis une confirmation
+     distincte - le seul geste du mode qui ne se rattrape pas. */
+  .fin-manuelle-choix,
+  .fin-manuelle-confirmation {
+    display: grid;
+    gap: 14px;
+    padding: 20px 24px;
+    text-align: center;
+  }
+  .fin-manuelle-aide { margin: 0; font-size: 13px; opacity: 0.65 }
+  .fin-manuelle-avertissement {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #ff9b9d;
+  }
+  .fin-manuelle-boutons { display: flex; justify-content: center; gap: 12px }
+  .fin-manuelle-boutons button {
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.06);
+    color: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .fin-manuelle-victoire { border-color: rgba(120, 220, 150, 0.5) !important }
+  .fin-manuelle-victoire:hover { background: rgba(120, 220, 150, 0.18) }
+  .fin-manuelle-defaite { border-color: rgba(255, 155, 157, 0.5) !important }
+  .fin-manuelle-defaite:hover { background: rgba(255, 155, 157, 0.18) }
+  .fin-manuelle-confirmer { border-color: rgba(255, 196, 60, 0.5) !important }
+  .fin-manuelle-confirmer:hover { background: rgba(255, 196, 60, 0.2) }
 }
 
 /* --- Récompenses de campagne (écran de fin de partie) --------------------

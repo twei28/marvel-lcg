@@ -19,9 +19,21 @@ export type MenuTableProps = {
   onFermer: () => void
   /** Ouvre le catalogue (`CatalogueManuel`). */
   onFaireApparaitre: () => void
+  /**
+   * Ouvre `FinManuelle` (tâche 7) : une action de TABLE, comme « Faire
+   * apparaître une carte » juste au-dessus — elle ne vise aucune carte
+   * précise, elle a donc sa place ici plutôt que dans `MenuTriche`.
+   */
+  onTerminerPartie: () => void
 }
 
-export function MenuTable({ x, y, onFermer, onFaireApparaitre }: MenuTableProps) {
+export function MenuTable({
+  x,
+  y,
+  onFermer,
+  onFaireApparaitre,
+  onTerminerPartie,
+}: MenuTableProps) {
   const boite = useRef<HTMLDivElement | null>(null)
 
   // Même fermeture que MenuTriche : au clic extérieur et à Échap, sinon un
@@ -63,6 +75,18 @@ export function MenuTable({ x, y, onFermer, onFaireApparaitre }: MenuTableProps)
             }}
           >
             {t('Faire apparaître une carte')}
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            className="est-danger"
+            onClick={() => {
+              onTerminerPartie()
+              onFermer()
+            }}
+          >
+            {t('Terminer la partie')}
           </button>
         </li>
       </ul>

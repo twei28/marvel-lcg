@@ -615,6 +615,17 @@ export const DICO_EN_BASE: Record<string, string> = {
   // clic droit hors de toute carte.
   'Table': 'Table',
 
+  // ---- Mode manuel : déclarer la fin de la partie (tâche 7) ----
+  'Terminer la partie': 'End the game',
+  'Le moteur ne surveille plus la table : c’est à toi de déclarer la fin.':
+    'The engine no longer watches the table: it’s up to you to declare the end.',
+  'Déclarer la victoire ?': 'Declare victory?',
+  'Déclarer la défaite ?': 'Declare defeat?',
+  'Cette décision ne se reprend pas : le Ctrl+Z ne la rattrape pas.':
+    'This decision cannot be undone: Ctrl+Z will not catch it.',
+  'Fin de partie — Victoire': 'Game over — Victory',
+  'Fin de partie — Défaite': 'Game over — Defeat',
+
   // ---- Mode manuel : le glisser-déposer libre (board/manuel/glisser-manuel.ts) ----
   'Lâche la carte sur une pile': 'Drop the card on a pile',
   'Défausse du deck spécial': 'Special deck discard pile',

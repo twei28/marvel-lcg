@@ -20,6 +20,7 @@ import {
   type CibleClavier,
   type GesteClavier,
 } from './manuel/clavier'
+import { FinManuelle } from './manuel/FinManuelle'
 import { estModeManuel } from './manuel/mode'
 import { MenuTable } from './manuel/MenuTable'
 import { MenuTriche, type CibleTriche } from './MenuTriche'
@@ -583,7 +584,23 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
   // manuel uniquement, ouvert depuis le menu de la TABLE (clic droit hors de
   // toute carte — voir `MenuTable.tsx` et le menu plus bas).
   const [catalogueOuvert, setCatalogueOuvert] = useState(false)
+  // Déclarer la fin (tâche 7) : même origine que le catalogue, le menu de la
+  // TABLE. `FinManuelle` tient déjà sa propre confirmation ; `onDeclarer`
+  // n'est donc appelé qu'une fois la décision prise, jamais au premier clic.
+  const [finOuverte, setFinOuverte] = useState(false)
   if (!actif) return null
+
+  // Passe par `emettreGeste`, comme tout autre geste (revue de la tâche) : un
+  // refus doit se voir exactement de la même façon, jamais un succès muet ni
+  // inventé. La fermeture du panneau, elle, n'attend pas ce rendu — la partie
+  // finie s'affiche par-dessus de toute façon (`EcranFinPartie`, `board.tsx`),
+  // il n'y a plus rien à re-choisir derrière.
+  const declarerFin = async (gagne: boolean) => {
+    setFinOuverte(false)
+    await emettreGeste(gagne ? t('Fin de partie — Victoire') : t('Fin de partie — Défaite'), () =>
+      triche.declarerFin(gagne)
+    )
+  }
 
   // ⚠ LE NOM TRANSITE AVEC L'IDENTIFIANT (revue, ronde de correction 1) : le
   // journal existe pour qu'on relise une partie des jours après, souvent
@@ -668,6 +685,7 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           y={menuTable.y}
           onFermer={() => setMenuTable(undefined)}
           onFaireApparaitre={() => setCatalogueOuvert(true)}
+          onTerminerPartie={() => setFinOuverte(true)}
         />
       ) : null}
 
@@ -677,6 +695,26 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           onFermer={() => setCatalogueOuvert(false)}
           onPoser={(cardId, nom) => void faireApparaitre(cardId, nom)}
         />
+      ) : null}
+
+      {/* Tâche 7 : même présentation que le catalogue juste au-dessus (voile
+          plein écran, boîte de dialogue) — la fin de partie mérite la même
+          attention qu'y faire apparaître une carte, pas moins. */}
+      {manuel && finOuverte ? (
+        <div className="pile-triche-voile" onPointerDown={() => setFinOuverte(false)}>
+          <section
+            className="pile-triche fin-manuelle"
+            role="dialog"
+            aria-label={t('Terminer la partie')}
+            onPointerDown={(evenement) => evenement.stopPropagation()}
+          >
+            <header className="pile-triche-entete">
+              <h2>{t('Terminer la partie')}</h2>
+              <button type="button" onClick={() => setFinOuverte(false)}>{t('Fermer')}</button>
+            </header>
+            <FinManuelle onDeclarer={(gagne) => void declarerFin(gagne)} />
+          </section>
+        </div>
       ) : null}
 
       {pile ? (
