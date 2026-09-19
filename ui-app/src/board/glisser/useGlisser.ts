@@ -167,17 +167,25 @@ export function cibleSousLePoint(x: number, y: number): CibleSurvolee {
   if (!(sous instanceof HTMLElement)) return {}
   const carte = sous.closest<HTMLElement>('.scan-card')
   const id = Number(carte?.dataset.cardId)
-  // ⚠ LA PILE (OU LE SECTEUR) AVANT L'EMPLACEMENT (tache 5, mode manuel) :
-  // `data-zone` ne distingue pas un deck de sa defausse, qui partagent le
-  // meme emplacement (voir `board/zones.ts`, `PILE_PAR_ZONE` du mode
-  // manuel). `data-pile` est pose plus PRES de la carte que `data-zone`
-  // (sur sa propre unite pour une pile, sur son groupe pour un secteur comme
-  // « ennemis engages ») : `closest` remonte donc d'abord jusqu'a lui, et ne
-  // retombe sur le nom, plus large, de l'emplacement que s'il n'y en a pas.
-  const pile = sous.closest<HTMLElement>('[data-pile]')?.dataset.pile
-  const zone = pile || sous.closest<HTMLElement>('[data-zone]')?.dataset.zone
+  const carteId = carte && Number.isFinite(id) ? id : undefined
+  // ⚠ DEUX FAMILLES DE `data-pile` (tache 5, mode manuel — corrige la ronde
+  // de correction 1) :
+  //  - une PILE, posee sur SA PROPRE unite (`.plateau-unite`, un deck, une
+  //    defausse...) : elle ne compte QUE si on touche vraiment SA carte.
+  //    Sinon la marge de son unite retomberait sur cette pile precise, la ou
+  //    le mode ORDINAIRE (qui ignore les piles fines, `board.tsx` batit ses
+  //    zones sur `emplacement.cle`) attend la zone LARGE pour reconnaitre un
+  //    lacher « sans cible ». `carte?.closest` et non `sous.closest` :
+  //    l'unite qui compte est celle de la CARTE trouvee, pas celle, plus
+  //    proche du point, d'une unite VOISINE sans rapport.
+  //  - un SECTEUR, pose sur le GROUPE entier (`.plateau-groupe`, ex.
+  //    « ennemis engages ») : il compte MEME hors carte, le mode manuel en a
+  //    besoin pour engager un sbire lache dans l'espace vide du secteur.
+  const pile = carte?.closest<HTMLElement>('.plateau-unite')?.dataset.pile
+  const secteur = sous.closest<HTMLElement>('.plateau-groupe')?.dataset.pile
+  const zone = pile || secteur || sous.closest<HTMLElement>('[data-zone]')?.dataset.zone
   return {
-    carteId: carte && Number.isFinite(id) ? id : undefined,
+    carteId,
     zone: zone || undefined,
   }
 }

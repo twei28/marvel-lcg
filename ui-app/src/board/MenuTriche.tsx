@@ -42,6 +42,20 @@ export const ZONES_MANUELLES: readonly string[] = [
   'RemovedArea',
   'VictoryDisplay',
   'AsideDeck',
+  // Tâche 5, ronde de correction 1 (19/09/2026) : ces trois piles étaient
+  // atteignables par GLISSER (`glisser-manuel.ts`, `PILE_PAR_ZONE`) mais
+  // absentes d'ici. `ReserveArea` et `MainSchemesArea` disparaissent du
+  // plateau dès que leur emplacement est vide (`zones.ts`, `emplacement()`
+  // ne dessine pas un groupe vide) : sans une entrée ici, une pile alors
+  // invisible au plateau devenait DÉFINITIVEMENT inatteignable (ni glisser,
+  // ni clic droit). Voir le test qui généralise ce contrôle,
+  // `board/manuel/glisser-manuel.test.ts`.
+  'ReserveArea',
+  'MainSchemesArea',
+  'AdditionalDeck',
+  // La défausse du deck spécial : le moteur ne l'exposait à AUCUNE des deux
+  // voies avant cette même ronde (`RunPuzzle.ZONES_JOUEUR`, `puzzle.py`).
+  'AdditionalDiscardPile',
 ]
 
 /**
@@ -85,6 +99,11 @@ export function libellePile(zone: string): string {
     // ne l'offrait pas encore. Meme repli que `nomDeckSpecial` (zones.ts)
     // quand aucun nom plus precis n'est connu ici.
     case 'AdditionalDeck': return t('Deck spécial')
+    // Ronde de correction 1 (19/09/2026) : ces trois manquaient au menu alors
+    // que le glisser les atteignait déjà. Voir `ZONES_MANUELLES`.
+    case 'AdditionalDiscardPile': return t('Défausse du deck spécial')
+    case 'ReserveArea': return t('Ta réserve')
+    case 'MainSchemesArea': return t('Manigance principale')
     default: return zone
   }
 }
@@ -93,9 +112,9 @@ export function libellePile(zone: string): string {
  * Les piles où « sous la pile » a un sens : un deck ORDONNÉ, où le dessous
  * diffère du dessus. Côté moteur (`puzzle.py`, `MoveTo`), `position='Bottom'`
  * n'est traité différemment que si `pile.flags.is_deck` ou
- * `is_dealt_encounter` est vrai (`game/deck/deck_type.py`) : c'est le cas de
- * ces quatre-là, et d'aucune autre zone de `ZONES_MANUELLES`. Sur les neuf
- * autres (des zones EN JEU, face visible, sans dessus/dessous), `MoveTo`
+ * `is_dealt_encounter` est vrai (`game/deck/deck_type.py`) : c'est le cas des
+ * six zones ci-dessous, et d'aucune autre zone de `ZONES_MANUELLES`. Sur les
+ * onze autres (des zones EN JEU, face visible, sans dessus/dessous), `MoveTo`
  * pose la carte normalement quelle que soit la position demandée : le bouton
  * y ferait exactement la même chose que le bouton principal, deux fois le
  * même geste. NE PAS L'AJOUTER AILLEURS sans vérifier ce drapeau côté moteur.
@@ -105,6 +124,15 @@ const ZONES_ORDONNEES: ReadonlySet<string> = new Set([
   'DiscardPile',
   'EncounterDeck',
   'EncounterDiscardPile',
+  // Ronde de correction 1 (19/09/2026) : `AdditionalDeck` et
+  // `AdditionalDiscardPile` portent bien `is_deck = True`
+  // (`game/deck/deck_type.py`, `DeckTypeFlags.AdditionalDeck`/
+  // `AdditionalDiscardPile`) — deux decks ORDONNÉS au même titre que les
+  // quatre premiers, oubliés ici quand ils manquaient encore à
+  // `ZONES_MANUELLES`. `ReserveArea` et `MainSchemesArea`, eux,
+  // `is_deck = False` : volontairement absents.
+  'AdditionalDeck',
+  'AdditionalDiscardPile',
 ])
 
 export type MenuTricheProps = {

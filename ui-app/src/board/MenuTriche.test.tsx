@@ -59,17 +59,19 @@ describe('le sous-menu « Déplacer vers »', () => {
     }))
   })
 
-  it('n’offre « Sous la pile » que sur les quatre decks ordonnés', () => {
-    // Neuf des treize piles sont des zones EN JEU (alliés, sbires engagés,
-    // set némésis...) : leur "dessous" n'existe pas côté moteur (`MoveTo`,
-    // `pile.flags.is_deck`/`is_dealt_encounter`), le bouton y ferait deux
-    // fois le même geste. Un seul « Sous la pile » par pile ordonnée donne
-    // 4, pas 13.
+  it('n’offre « Sous la pile » que sur les six decks ordonnés', () => {
+    // Onze des dix-sept piles sont des zones EN JEU (alliés, sbires engagés,
+    // set némésis, réserve, manigance principale...) : leur "dessous"
+    // n'existe pas côté moteur (`MoveTo`, `pile.flags.is_deck`/
+    // `is_dealt_encounter`), le bouton y ferait deux fois le même geste. Un
+    // seul « Sous la pile » par pile ordonnée donne 6, pas 17 (ronde de
+    // correction 1 de la tâche 5, 19/09/2026 : `AdditionalDeck` et
+    // `AdditionalDiscardPile` ont rejoint les quatre decks déjà ordonnés).
     const { getByText, getAllByText } = render(
       <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
     )
     fireEvent.click(getByText('Déplacer vers'))
-    expect(getAllByText('Sous la pile')).toHaveLength(4)
+    expect(getAllByText('Sous la pile')).toHaveLength(6)
     // « Alliés » (AlliesArea, une zone en jeu) n'a pas de second bouton :
     // seul le libellé de la pile est cliquable sur sa ligne.
     const ligneAllies = getByText('Alliés').closest('li')

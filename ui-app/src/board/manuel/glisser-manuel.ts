@@ -33,10 +33,6 @@ import { CLE_PILE_ENGAGES } from '../zones'
  * du joueur).
  *
  * Volontairement ABSENTES, plutôt que devinées :
- *  - `'soutien-defausse'` (défausse du deck spécial) : le moteur n'expose
- *    aucune pile `MoveTo` pour `additional_discard_pile`
- *    (`RunPuzzle.ZONES_JOUEUR`, `puzzle.py`) ; y lâcher une carte est refusé
- *    plutôt que d'atterrir dans la mauvaise défausse. Signalé au rapport.
  *  - `'annexes-visibles'` / `'annexes-cachees'` : ces piles sont FONDUES à
  *    l'affichage (`zones.ts`, `pileFondue`) — victoire, retirées, mises de
  *    côté du scénario, etc. partagent un seul dos de carte. Aucune n'est
@@ -60,6 +56,10 @@ export const PILE_PAR_ZONE: Record<string, string> = {
   'joueur-deck': 'PlayerDeck',
   'joueur-defausse': 'DiscardPile',
   'soutien-deck': 'AdditionalDeck',
+  // Ronde de correction 1 (19/09/2026) : `AdditionalDiscardPile` a rejoint
+  // `RunPuzzle.ZONES_JOUEUR` (`puzzle.py`) — cette entrée était refusée
+  // jusque-là, faute de pile moteur à viser.
+  'soutien-defausse': 'AdditionalDiscardPile',
   'annexes-nemesis': 'AsideDeck',
 }
 

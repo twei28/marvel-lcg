@@ -15,6 +15,7 @@
 //     retarde la ligne jusqu'au rendu qui connaît l'issue réelle.
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { t } from '../langue'
+import { ZONES_MANUELLES } from '../MenuTriche'
 import { CLE_PILE_ENGAGES } from '../zones'
 import { PILE_PAR_ZONE, reglagesGlisserManuel } from './glisser-manuel'
 
@@ -55,10 +56,16 @@ describe('le glisser du mode manuel', () => {
   // ce sont deux piles moteur DIFFÉRENTES (`PlayerDeck` vs `AdditionalDeck`).
   // Une table qui les confondrait déplacerait une carte lâchée sur le deck
   // spécial dans le deck du héros, en silence.
-  it('distingue le deck du héros du deck spécial', () => {
+  it('distingue le deck du héros du deck spécial, et leurs défausses', () => {
     expect(PILE_PAR_ZONE['joueur-deck']).toBe('PlayerDeck')
     expect(PILE_PAR_ZONE['soutien-deck']).toBe('AdditionalDeck')
     expect(PILE_PAR_ZONE['joueur-deck']).not.toBe(PILE_PAR_ZONE['soutien-deck'])
+    // Ronde de correction 1 : `soutien-defausse` (la défausse du deck
+    // spécial) doit rester distincte de `joueur-defausse` (celle du héros),
+    // maintenant que le moteur expose les deux (`AdditionalDiscardPile`,
+    // `puzzle.py`).
+    expect(PILE_PAR_ZONE['soutien-defausse']).toBe('AdditionalDiscardPile')
+    expect(PILE_PAR_ZONE['soutien-defausse']).not.toBe(PILE_PAR_ZONE['joueur-defausse'])
   })
 
   // ⚠ MÊME FAMILLE DE DÉFAUT : le set némésis du joueur (`annexes-nemesis`)
@@ -167,5 +174,33 @@ describe('le glisser du mode manuel', () => {
         body: JSON.stringify({ commands: ['Puzzle.Engage(42)'] }),
       })
     )
+  })
+})
+
+// Ronde de correction 1 (19/09/2026) : trois piles (`ReserveArea`,
+// `MainSchemesArea`, `AdditionalDeck`) étaient atteignables au glisser mais
+// absentes du menu de triche (`ZONES_MANUELLES`). Or `zones.ts` ne dessine
+// PAS un emplacement vide (`emplacement()`) : une pile qui en disparaît sans
+// être dans le menu devient DÉFINITIVEMENT inatteignable — ni glisser (rien à
+// viser sur l'écran), ni clic droit (absente de la liste). C'est exactement
+// l'impasse que « toute carte va dans toute pile » doit empêcher.
+//
+// ⚠ UNE PROPRIÉTÉ, PAS UN EXEMPLE : un test qui nomme les trois piles
+// manquantes ne protège que celles-là. Celui-ci compare les deux tables
+// entière et attrapera tout seul la prochaine pile ajoutée à l'une sans
+// l'autre, sans attendre qu'un relecteur la remarque.
+describe('toute pile atteignable au glisser reste atteignable au clic droit', () => {
+  it('chaque pile moteur de PILE_PAR_ZONE figure dans ZONES_MANUELLES', () => {
+    // + `CLE_PILE_ENGAGES`, qui n'est pas une entrée de `PILE_PAR_ZONE`
+    // (Engage n'est pas un `MoveTo`) mais vise la même pile moteur que le
+    // menu propose déjà sous 'EngagedEnemiesArea'.
+    const piles = new Set([...Object.values(PILE_PAR_ZONE), 'EngagedEnemiesArea'])
+    const manquantes = [...piles].filter((pile) => !ZONES_MANUELLES.includes(pile))
+    expect(manquantes, `pile(s) atteignable(s) au glisser mais pas au clic droit : ${manquantes.join(', ')}`).toEqual([])
+  })
+
+  it('le témoin n’est pas vide : la propriété teste vraiment quelque chose', () => {
+    expect(Object.keys(PILE_PAR_ZONE).length).toBeGreaterThan(0)
+    expect(ZONES_MANUELLES.length).toBeGreaterThan(0)
   })
 })

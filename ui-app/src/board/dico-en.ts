@@ -605,6 +605,7 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   // ---- Mode manuel : le glisser-déposer libre (board/manuel/glisser-manuel.ts) ----
   'Lâche la carte sur une pile': 'Drop the card on a pile',
+  'Défausse du deck spécial': 'Special deck discard pile',
   // Toggle cote moteur (Puzzle.Engage engage OU desengage selon l'etat
   // courant) : meme convention que « Rendre desoriente »/« Rendre sonne »
   // (MenuTriche.tsx), qui nomment aussi un seul sens d'un geste bascule.

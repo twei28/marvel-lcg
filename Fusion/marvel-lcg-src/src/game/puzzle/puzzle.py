@@ -762,6 +762,13 @@ class RunPuzzle:
         'AsideDeck':            lambda j: j.set_aside_nemesis_sets,
         'ObligationsArea':      lambda j: j.obligations_area,
         'AdditionalDeck':       lambda j: j.additional_deck,
+        # Ronde de correction 1 (tache 5, 19/09/2026) : derniere pile visible
+        # sur le plateau et pourtant inatteignable par `MoveTo` - la defausse
+        # du deck ANNEXE (Invocation, Reserve...), a ne pas confondre avec le
+        # faux ami `j.set_aside_deck` du commentaire ci-dessus (qui POINTE deja
+        # sur `additional_discard_pile`, mais sous un nom qui pretend etre
+        # autre chose). Ici on nomme l'attribut reel directement.
+        'AdditionalDiscardPile': lambda j: j.additional_discard_pile,
     }
 
     ZONES_MONDE = {

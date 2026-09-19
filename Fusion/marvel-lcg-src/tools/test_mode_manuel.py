@@ -853,6 +853,46 @@ def cas_refus_publie_puis_reparti(game_dir, port):
     return "le refus est publie dans le descripteur, puis reparti a vide au geste valide suivant"
 
 
+def cas_defausse_deck_special(game_dir, port):
+    """`AdditionalDiscardPile` doit remplir la defausse du deck ANNEXE du
+    heros, ni sa defausse ORDINAIRE, ni le deck annexe lui-meme.
+
+    Ronde de correction 1 (tache 5, 19/09/2026) : cette pile est VISIBLE sur
+    le plateau (a cote du deck special, quand le heros en a un) mais
+    `RunPuzzle.ZONES_JOUEUR` n'avait aucune entree pour
+    `player.additional_discard_pile` - `Puzzle.MoveTo` levait `KeyError` sur
+    n'importe quelle tentative. Ce cas verifie l'arrivee dans la bonne pile
+    ET l'absence dans les deux piles voisines qu'un nom mal choisi aurait pu
+    confondre : la defausse ORDINAIRE (meme role, mauvais deck) et le deck
+    annexe lui-meme (meme deck, mauvais role).
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    joueur = monde.const_players[0]
+    main = list(joueur.hand_cards.GetAll())
+    assert main, "la main de depart est vide"
+    carte = main[0].card.object_id
+
+    avant_defausse_speciale = len(joueur.additional_discard_pile.GetAll())
+    avant_defausse_ordinaire = len(joueur.discard_pile.GetAll())
+    avant_deck_special = len(joueur.additional_deck.GetAll())
+
+    deposer(jeu, f"Puzzle.MoveTo({carte}, 'AdditionalDiscardPile')")
+
+    apres_defausse_speciale = len(joueur.additional_discard_pile.GetAll())
+    apres_defausse_ordinaire = len(joueur.discard_pile.GetAll())
+    apres_deck_special = len(joueur.additional_deck.GetAll())
+    assert apres_defausse_speciale == avant_defausse_speciale + 1, \
+        (f"la defausse du deck special devait passer de {avant_defausse_speciale} "
+         f"a {avant_defausse_speciale + 1}, elle vaut {apres_defausse_speciale}")
+    assert apres_defausse_ordinaire == avant_defausse_ordinaire, \
+        (f"la carte a atterri dans la defausse ORDINAIRE du heros : "
+         f"{avant_defausse_ordinaire} -> {apres_defausse_ordinaire}")
+    assert apres_deck_special == avant_deck_special, \
+        (f"la carte a atterri dans le DECK special au lieu de sa defausse : "
+         f"{avant_deck_special} -> {apres_deck_special}")
+    return "AdditionalDiscardPile envoie vers la defausse du deck special, pas vers une pile voisine"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "moteur_muet": cas_moteur_muet,
@@ -877,6 +917,7 @@ CAS = {
     "geste_refuse_non_enregistre": cas_geste_refuse_non_enregistre,
     "ecart_modular": cas_ecart_modular,
     "refus_publie_puis_reparti": cas_refus_publie_puis_reparti,
+    "defausse_deck_special": cas_defausse_deck_special,
 }
 
 
