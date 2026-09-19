@@ -23,6 +23,61 @@ export type CibleTriche = {
   estPersonnage?: boolean
 }
 
+/**
+ * Les piles atteignables depuis « Déplacer vers », nommées comme côté moteur
+ * (`DeckType`, `RunPuzzle.ZONES_JOUEUR`/`ZONES_MONDE`). PURE DONNÉE : elle ne
+ * change pas avec la langue, contrairement à son libellé (`libellePile`).
+ */
+export const ZONES_MANUELLES: readonly string[] = [
+  'HandsArea',
+  'PlayerDeck',
+  'DiscardPile',
+  'AlliesArea',
+  'SupportsArea',
+  'EngagedEnemiesArea',
+  'EncounterDeck',
+  'EncounterDiscardPile',
+  'SideSchemesArea',
+  'VillainArea',
+  'RemovedArea',
+  'VictoryDisplay',
+  'AsideDeck',
+]
+
+/**
+ * Le libellé affiché d'une pile atteignable.
+ *
+ * ⚠ UNE FONCTION, JAMAIS UNE CONSTANTE DE MODULE : la langue est choisie au
+ * chargement de l'appli, une table bâtie avec `t()` au niveau du module la
+ * figerait avant qu'elle ne soit connue. `t()` ne doit s'exécuter qu'à
+ * l'affichage, donc dans le composant.
+ *
+ * ⚠ `AsideDeck` EST PRÉCISÉ. Plusieurs piles moteur portent le type
+ * `AsideDeck` (côté joueur, côté monde) ; celle visée par ce menu est
+ * `set_aside_nemesis_sets` (voir `triche.ts`, `RunPuzzle.ZONES_JOUEUR` côté
+ * moteur) — le set némésis du héros, déjà nommé ainsi dans `zones.ts`. Un
+ * libellé « Cartes écartées » sans plus de précision ferait déplacer des
+ * cartes dans une pile qu'on ne regarde jamais.
+ */
+export function libellePile(zone: string): string {
+  switch (zone) {
+    case 'HandsArea': return t('Main')
+    case 'PlayerDeck': return t('Deck du héros')
+    case 'DiscardPile': return t('Pile de défausse')
+    case 'AlliesArea': return t('Alliés')
+    case 'SupportsArea': return t('Soutiens')
+    case 'EngagedEnemiesArea': return t('Ennemis engagés')
+    case 'EncounterDeck': return t('Deck Rencontre')
+    case 'EncounterDiscardPile': return t('Défausse Rencontre')
+    case 'SideSchemesArea': return t('Manigances annexes')
+    case 'VillainArea': return t('Zone du vilain')
+    case 'RemovedArea': return t('Retirées de la partie')
+    case 'VictoryDisplay': return t('Pile de victoire')
+    case 'AsideDeck': return t('Set némésis du héros')
+    default: return zone
+  }
+}
+
 export type MenuTricheProps = {
   cible: CibleTriche
   /** Position du clic, en pixels écran. */
@@ -44,6 +99,9 @@ type Entree = {
 export function MenuTriche({ cible, x, y, onFermer, onIntervention }: MenuTricheProps) {
   const [saisie, setSaisie] = useState<Entree | undefined>(undefined)
   const [nombre, setNombre] = useState(1)
+  // Le sous-menu « Déplacer vers » : une liste de piles plutôt qu'une saisie
+  // de nombre, donc un état à part de `saisie`.
+  const [deplacer, setDeplacer] = useState(false)
   const boite = useRef<HTMLDivElement | null>(null)
 
   // Fermeture au clic extérieur et à Échap : sans ça, un menu oublié reste
@@ -107,6 +165,16 @@ export function MenuTriche({ cible, x, y, onFermer, onIntervention }: MenuTriche
     onFermer()
   }
 
+  const executerDeplacement = async (zone: string, position: 'Top' | 'Bottom') => {
+    const reussi = await triche.deplacerVers(cible.id, zone, position)
+    const suite = position === 'Bottom' ? ` (${t('Sous la pile')})` : ''
+    onIntervention(
+      `${t('Déplacer vers')} ${libellePile(zone)}${suite} — ${cible.nom}` +
+        `${reussi ? '' : ` (${t('refusé')})`}`
+    )
+    onFermer()
+  }
+
   // Le menu est placé au curseur, mais ramené dans l'écran s'il déborde : un
   // clic droit près du bord bas ouvrait sinon un menu partiellement invisible.
   const style = {
@@ -142,8 +210,36 @@ export function MenuTriche({ cible, x, y, onFermer, onIntervention }: MenuTriche
             </button>
           </div>
         </div>
+      ) : deplacer ? (
+        <div className="menu-triche-deplacer">
+          <ul className="menu-triche-liste">
+            {ZONES_MANUELLES.map((zone) => (
+              <li key={zone} className="menu-triche-deplacer-ligne">
+                <button type="button" onClick={() => void executerDeplacement(zone, 'Top')}>
+                  {libellePile(zone)}
+                </button>
+                <button
+                  type="button"
+                  className="menu-triche-sous"
+                  onClick={() => void executerDeplacement(zone, 'Bottom')}
+                >
+                  {t('Sous la pile')}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="menu-triche-boutons">
+            <button type="button" onClick={() => setDeplacer(false)}>{t('Retour')}</button>
+          </div>
+        </div>
       ) : (
         <ul className="menu-triche-liste">
+          <li>
+            <button type="button" onClick={() => setDeplacer(true)}>
+              {t('Déplacer vers')}
+              <span className="menu-triche-suite">…</span>
+            </button>
+          </li>
           {entrees.map((entree) => (
             <li key={entree.libelle}>
               <button

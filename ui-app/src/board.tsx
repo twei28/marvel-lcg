@@ -3783,7 +3783,7 @@ export function PagePartie({
         })}
         essais={essais}
       />
-      <CoucheTriche actif={triche.actif} couche={triche.couche} />
+      <CoucheTriche actif={triche.actif} manuel={triche.manuel} couche={triche.couche} />
       {/* En Detaille, pendant la phase du mechant, la scene montre deja la
           carte revelee face visible, avec ce qu'elle a fait : la couche a
           duree la remontrait en grand par-dessus, une seconde fois. Constate

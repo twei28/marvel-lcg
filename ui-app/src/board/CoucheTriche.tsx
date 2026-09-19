@@ -12,6 +12,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { scanUrl } from './card-model'
 import { t } from './langue'
+import { estModeManuel } from './manuel/mode'
 import { MenuTriche, type CibleTriche } from './MenuTriche'
 import * as triche from './triche'
 import type { World, WorldCard } from './world'
@@ -22,6 +23,8 @@ export type PileTriche = {
   cartes: WorldCard[]
   /** Pile du joueur : la carte part en main. Sinon : elle entre en jeu. */
   duJoueur: boolean
+  /** Le nom moteur de la pile (`DeckType`), pour pouvoir la mélanger. */
+  zone: string
 }
 
 type MenuOuvert = { cible: CibleTriche; x: number; y: number }
@@ -65,16 +68,21 @@ function pilesParDessus(
   if (!world) return piles
   const joueur = world.players?.[joueurId]
 
-  const ajouter = (cartes: WorldCard[] | undefined, titre: string, duJoueur: boolean) => {
+  const ajouter = (
+    cartes: WorldCard[] | undefined,
+    titre: string,
+    duJoueur: boolean,
+    zone: string
+  ) => {
     if (!cartes || cartes.length === 0) return
     const dessus = cartes.at(-1)
-    if (dessus) piles.set(dessus.id, { titre, cartes, duJoueur })
+    if (dessus) piles.set(dessus.id, { titre, cartes, duJoueur, zone })
   }
 
-  ajouter(joueur?.player_deck, t('Deck du héros'), true)
-  ajouter(joueur?.player_discard_pile, t('Pile de défausse'), true)
-  ajouter(world.encounter_deck, t('Deck Rencontre'), false)
-  ajouter(world.encounter_discard_pile, t('Défausse Rencontre'), false)
+  ajouter(joueur?.player_deck, t('Deck du héros'), true, 'PlayerDeck')
+  ajouter(joueur?.player_discard_pile, t('Pile de défausse'), true, 'DiscardPile')
+  ajouter(world.encounter_deck, t('Deck Rencontre'), false, 'EncounterDeck')
+  ajouter(world.encounter_discard_pile, t('Défausse Rencontre'), false, 'EncounterDiscardPile')
   return piles
 }
 
@@ -84,7 +92,10 @@ export function useTriche(
   /** Verse l'intervention dans le journal de partie. */
   ajouterAuJournal?: (libelle: string) => void
 ) {
-  const actif = world?.mode_sandbox === true
+  // Le menu s'ouvre dans les DEUX modes : bac à sable (on truque une partie
+  // qui se joue aux règles) et manuel (il n'y a plus que lui pour jouer).
+  const manuel = estModeManuel(world)
+  const actif = world?.mode_sandbox === true || manuel
   const [menu, setMenu] = useState<MenuOuvert | undefined>(undefined)
   const [pile, setPile] = useState<PileTriche | undefined>(undefined)
   const [interventions, setInterventions] = useState<string[]>([])
@@ -139,15 +150,17 @@ export function useTriche(
     return () => document.removeEventListener('contextmenu', surClicDroit)
   }, [actif, index, piles])
 
-  return { actif, interventions, couche: { menu, pile, setMenu, setPile, noter } }
+  return { actif, manuel, interventions, couche: { menu, pile, setMenu, setPile, noter } }
 }
 
 export type CoucheTricheProps = {
   actif: boolean
+  /** Bac à sable ou manuel ? Décide seulement de l'affichage du bandeau. */
+  manuel: boolean
   couche: ReturnType<typeof useTriche>['couche']
 }
 
-export function CoucheTriche({ actif, couche }: CoucheTricheProps) {
+export function CoucheTriche({ actif, manuel, couche }: CoucheTricheProps) {
   const { menu, pile, setMenu, setPile, noter } = couche
   if (!actif) return null
 
@@ -167,15 +180,26 @@ export function CoucheTriche({ actif, couche }: CoucheTricheProps) {
     setPile(undefined)
   }
 
+  const melangerPile = async () => {
+    if (!pile) return
+    const reussi = await triche.melanger(pile.zone)
+    noter(`${t('Mélanger')} — ${pile.titre}${reussi ? '' : ` (${t('refusé')})`}`)
+    setPile(undefined)
+  }
+
   return (
     <>
-      {/* Le bandeau : on ne doit JAMAIS se demander si une partie était truquée. */}
-      <div className="bandeau-triche" role="status">
-        <span className="bandeau-triche-marque">{t('Bac à sable')}</span>
-        <span className="bandeau-triche-aide">
-          {t('Clic droit sur une carte ou une pile')}
-        </span>
-      </div>
+      {/* Le bandeau ne s'affiche qu'en bac à sable : il dit qu'une partie
+          normale a été truquée. En manuel, il n'y a rien à dénoncer, et la
+          spec demande un plateau nu. */}
+      {manuel ? null : (
+        <div className="bandeau-triche" role="status">
+          <span className="bandeau-triche-marque">{t('Bac à sable')}</span>
+          <span className="bandeau-triche-aide">
+            {t('Clic droit sur une carte ou une pile')}
+          </span>
+        </div>
+      )}
 
       {menu ? (
         <MenuTriche
@@ -204,6 +228,7 @@ export function CoucheTriche({ actif, couche }: CoucheTricheProps) {
                   ? t('Choisis une carte pour l’ajouter à ta main')
                   : t('Choisis une carte pour la mettre en jeu')}
               </span>
+              <button type="button" onClick={() => void melangerPile()}>{t('Mélanger')}</button>
               <button type="button" onClick={() => setPile(undefined)}>{t('Fermer')}</button>
             </header>
 

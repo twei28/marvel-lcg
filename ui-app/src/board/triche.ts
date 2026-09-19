@@ -82,3 +82,28 @@ export const reveler = (id: number) => envoyer([`Puzzle.Reveal(${id})`])
 
 /** Remet une carte sur le dessus du deck du joueur. */
 export const remettreDansLeDeck = (id: number) => envoyer([`Puzzle.PutIntoDeck(${id})`])
+
+// --- Les gestes du mode manuel ---------------------------------------------
+//
+// Le mode manuel n'a plus de moteur pour conduire la partie : ces gestes sont
+// l'échappatoire qui couvre tout ce que les gestes ci-dessus, pensés pour le
+// bac à sable, ne visaient pas — n'importe quelle carte vers n'importe quelle
+// pile, sans aucune vérification de règle. Les noms de pile sont ceux de
+// `DeckType` côté moteur (`Puzzle.MoveTo`, `Puzzle.Shuffle`).
+
+/** Envoie une carte dans n'importe quelle pile, sans aucune vérification. */
+export const deplacerVers = (
+  id: number,
+  zone: string,
+  position: 'Top' | 'Bottom' = 'Top'
+) => envoyer([`Puzzle.MoveTo(${id}, ${texte(zone)}, ${texte(position)})`])
+
+/** Mélange une pile. */
+export const melanger = (zone: string) => envoyer([`Puzzle.Shuffle(${texte(zone)})`])
+
+/** Pose une amélioration ou un soutien sur une carte précise. */
+export const attacher = (id: number, cible: number) =>
+  envoyer([`Puzzle.Attach(${id}, ${cible})`])
+
+/** Engage un sbire avec le joueur, ou l'en désengage s'il y est déjà. */
+export const engager = (id: number) => envoyer([`Puzzle.Engage(${id})`])

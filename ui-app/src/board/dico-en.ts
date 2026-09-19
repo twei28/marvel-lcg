@@ -575,6 +575,18 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Mise en jeu': 'Put into play',
   // « Révélée » est déjà traduit plus bas : ne pas le redéclarer ici.
   'Cette pile est vide': 'This pile is empty',
+  'Mélanger': 'Shuffle',
+
+  // ---- Mode manuel : le menu de triche devient le menu normal ----
+  'Déplacer vers': 'Move to',
+  'Sous la pile': 'Bottom of pile',
+  'Alliés': 'Allies',
+  'Soutiens': 'Supports',
+  'Ennemis engagés': 'Engaged enemies',
+  'Zone du vilain': 'Villain area',
+  // Précisé : plusieurs piles moteur portent le type `AsideDeck`, celle-ci
+  // est `set_aside_nemesis_sets`, le set némésis du héros (voir triche.ts).
+  'Set némésis du héros': "Hero's nemesis set",
   'Choisis une carte pour l’ajouter à ta main': 'Pick a card to add it to your hand',
   'Choisis une carte pour la mettre en jeu': 'Pick a card to put it into play',
   'Couper la musique': 'Mute the music',

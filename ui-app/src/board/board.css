@@ -6650,6 +6650,22 @@
     background: rgba(255, 196, 60, 0.16);
   }
 
+  /* Le sous-menu « Déplacer vers » : treize piles, deux boutons chacune (le
+     dessus, ou son dessous) — trop pour tenir sans défiler. */
+  .menu-triche-deplacer .menu-triche-liste {
+    max-height: 260px;
+    overflow-y: auto;
+  }
+  .menu-triche-deplacer-ligne { display: flex; align-items: center; gap: 4px }
+  .menu-triche-deplacer-ligne button:first-child { flex: 1 }
+  .menu-triche-sous {
+    flex: none;
+    width: auto;
+    font-size: 11px;
+    opacity: 0.6;
+    white-space: nowrap;
+  }
+
   /* La consultation d'une pile. */
   .pile-triche-voile {
     position: fixed;
