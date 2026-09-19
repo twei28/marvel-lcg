@@ -140,8 +140,16 @@ export const creerCarte = (cardId: string) =>
  * rien d'autre ne fait sortir cette boucle.
  *
  * Aucune confirmation ici : elle est déjà passée, côté `FinManuelle`, avant
- * l'appel. Ce geste n'a pas de rattrapage — le Ctrl+Z annule un geste sur la
- * table, pas la fin d'une partie.
+ * l'appel.
+ *
+ * ⚠ CE GESTE SE RATTRAPE (correction ronde 1, contrairement à ce qu'un
+ * commentaire précédent affirmait ici même) : le Ctrl+Z du mode rejoue la
+ * partie moins son dernier geste, fin de partie déclarée comprise — voir
+ * `annulerDernierGeste` ci-dessous et le test qui le prouve dans
+ * `CoucheTriche.test.tsx`. La confirmation de `FinManuelle` ne protège donc
+ * pas d'un geste irréversible ; elle évite seulement de déclencher par
+ * mégarde le rejeu complet (une à deux secondes) qui permettrait d'y
+ * revenir.
  */
 export const declarerFin = (gagne: boolean) => envoyer([`Puzzle.${gagne ? 'Win' : 'Lose'}()`])
 

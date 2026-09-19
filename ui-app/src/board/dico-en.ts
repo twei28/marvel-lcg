@@ -621,8 +621,8 @@ export const DICO_EN_BASE: Record<string, string> = {
     'The engine no longer watches the table: it’s up to you to declare the end.',
   'Déclarer la victoire ?': 'Declare victory?',
   'Déclarer la défaite ?': 'Declare defeat?',
-  'Cette décision ne se reprend pas : le Ctrl+Z ne la rattrape pas.':
-    'This decision cannot be undone: Ctrl+Z will not catch it.',
+  'Tu pourras revenir en arrière avec Ctrl+Z si tu te trompes.':
+    'You’ll be able to go back with Ctrl+Z if you get it wrong.',
   'Fin de partie — Victoire': 'Game over — Victory',
   'Fin de partie — Défaite': 'Game over — Defeat',
 

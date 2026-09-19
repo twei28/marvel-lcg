@@ -6809,6 +6809,10 @@
   .fin-manuelle-defaite:hover { background: rgba(255, 155, 157, 0.18) }
   .fin-manuelle-confirmer { border-color: rgba(255, 196, 60, 0.5) !important }
   .fin-manuelle-confirmer:hover { background: rgba(255, 196, 60, 0.2) }
+  /* Neutre, volontairement : « Annuler » revient au choix, il ne déclare
+     rien — ni le vert/rouge de victoire/défaite, ni l'ambre de confirmer. */
+  .fin-manuelle-annuler { border-color: rgba(255, 255, 255, 0.35) !important }
+  .fin-manuelle-annuler:hover { background: rgba(255, 255, 255, 0.12) }
 }
 
 /* --- Récompenses de campagne (écran de fin de partie) --------------------

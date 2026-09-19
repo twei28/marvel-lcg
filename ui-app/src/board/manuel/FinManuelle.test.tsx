@@ -2,10 +2,14 @@
 //
 // Le moteur ne surveille plus rien en mode manuel : personne d'autre que le
 // joueur ne peut constater qu'un vilain est vaincu ou qu'un complot a
-// débordé. Deux boutons qu'un clic malheureux déclencherait seraient une
-// faute, parce que ce geste est le seul de tout le mode qui ne se rattrape
-// pas (le Ctrl+Z annule un geste sur la table, pas une fin de partie) : il
-// exige donc une confirmation, jamais un déclenchement au premier clic.
+// débordé.
+//
+// ⚠ CORRECTION (ronde 1) : ce geste SE RATTRAPE (le Ctrl+Z rejoue la partie
+// moins la fin déclarée — voir `CoucheTriche.test.tsx`, describe « le
+// Ctrl+Z défait aussi une fin de partie déclarée »). La confirmation ne
+// protège donc pas d'un geste irréversible ; elle évite seulement de
+// déclencher par mégarde le rejeu complet (une à deux secondes) qui permet
+// d'y revenir.
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { FinManuelle } from './FinManuelle'
@@ -46,9 +50,9 @@ describe('declarer la fin d une partie manuelle', () => {
     expect(screen.queryByText('Confirmer')).toBeNull()
   })
 
-  it('un rappel dit que la decision est definitive, pendant la confirmation', () => {
+  it('un rappel dit, pendant la confirmation, qu’on peut revenir en arrière avec Ctrl+Z', () => {
     render(<FinManuelle onDeclarer={() => {}} />)
     fireEvent.click(screen.getByText('Défaite'))
-    expect(screen.getByText(/ne se reprend pas/)).toBeTruthy()
+    expect(screen.getByText(/Ctrl\+Z/)).toBeTruthy()
   })
 })

@@ -6,11 +6,22 @@
 // débordé. Personne d'autre que le joueur ne déclarera la fin de la partie —
 // décision prise avec l'utilisateur : en manuel, c'est lui qui déclare tout.
 //
-// C'est le SEUL geste de tout le mode qui ne se rattrape pas : le Ctrl+Z du
-// mode (`triche.annulerDernierGeste`) annule un geste sur la table, pas une
-// fin de partie déjà déclarée au moteur. D'où les deux temps de cet écran :
-// un choix, puis une confirmation distincte — jamais un déclenchement au
-// premier clic.
+// ⚠ CORRECTION (ronde 1) : la version précédente affirmait que ce geste ne
+// se rattrape pas. C'ÉTAIT FAUX, et le relecteur a tracé le chemin complet
+// pour le prouver : le Ctrl+Z du mode (`triche.annulerDernierGeste`) rejoue
+// la partie moins son dernier geste, fin de partie déclarée comprise — un
+// nouveau monde se construit, les gestes se rejouent amputés de la fin, et
+// la partie manuelle reprend. Le serveur ne refuse rien, l'état obtenu est
+// sain. Décider l'inverse (rendre CE geste-là irréversible) demanderait un
+// cas particulier dans le moteur, pour retirer au joueur une porte de
+// sortie qui lui rend service — une fin déclarée par erreur qu'on peut
+// défaire est un filet, pas un défaut.
+//
+// Les DEUX temps de cet écran (choix, puis confirmation) restent donc,
+// mais pour une raison différente : pas pour protéger d'un geste
+// irréversible, mais pour ne pas déclencher par mégarde un rejeu complet
+// de la partie — une reconstruction moteur d'une à deux secondes
+// (mise en place puis rejeu de tous les gestes), pas rien.
 import { useState } from 'react'
 import { t } from '../langue'
 
@@ -40,13 +51,17 @@ export function FinManuelle({ onDeclarer }: FinManuelleProps) {
     )
   }
 
+  // Cette confirmation ne protège PLUS d'un geste irréversible (voir la
+  // correction en tête de fichier) : elle évite de déclencher par mégarde
+  // le rejeu complet que fait le Ctrl+Z pour revenir en arrière — une
+  // reconstruction moteur d'une à deux secondes, pas un clic anodin.
   return (
     <div className="fin-manuelle-confirmation">
       <p className="fin-manuelle-avertissement">
         {choix
           ? t('Déclarer la victoire ?')
           : t('Déclarer la défaite ?')}{' '}
-        {t('Cette décision ne se reprend pas : le Ctrl+Z ne la rattrape pas.')}
+        {t('Tu pourras revenir en arrière avec Ctrl+Z si tu te trompes.')}
       </p>
       <div className="fin-manuelle-boutons">
         <button type="button" className="fin-manuelle-confirmer" onClick={() => onDeclarer(choix)}>

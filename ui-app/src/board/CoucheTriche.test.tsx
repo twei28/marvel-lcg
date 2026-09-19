@@ -403,6 +403,41 @@ describe('déclarer la fin d’une partie manuelle (tâche 7)', () => {
     })
     expect(ajouterAuJournal).toHaveBeenCalledWith('Fin de partie — Victoire')
   })
+
+  // ⚠ CORRECTION (ronde 1) : le texte de `FinManuelle` affirmait que cette
+  // décision ne se rattrape pas. Le relecteur a tracé le chemin complet côté
+  // moteur et a montré que c'était faux : le Ctrl+Z du mode rejoue la partie
+  // moins son dernier geste, fin de partie déclarée comprise, et l'état
+  // obtenu est sain. Le texte a été corrigé pour dire l'inverse (« tu
+  // pourras revenir en arrière ») ; ce test verrouille la partie de cette
+  // promesse qu'on PEUT tenir depuis le client : que déclarer la fin ne
+  // désarme pas le Ctrl+Z d'aucune façon (pas de garde oubliée, pas de
+  // couche démontée sous l'écran de fin) — sans ça, la prochaine
+  // modification pourrait le casser en silence et rendre le texte faux à
+  // nouveau.
+  it('le Ctrl+Z défait aussi une fin de partie déclarée : ce n’est pas irréversible', async () => {
+    const ajouterAuJournal = vi.fn()
+    const avant = mondeManuel()
+    const { rerender } = render(<Harness world={avant} ajouterAuJournal={ajouterAuJournal} />)
+    ouvrirFinManuelle()
+    fireEvent.click(screen.getByText('Victoire'))
+    fireEvent.click(screen.getByText('Confirmer'))
+    await attendreLeReseau()
+
+    const finDeclaree = { ...avant, render_id: 2, manuel_refus: '', game_over: true, players_won: true } as World
+    await act(async () => {
+      rerender(<Harness world={finDeclaree} ajouterAuJournal={ajouterAuJournal} />)
+    })
+    expect(ajouterAuJournal).toHaveBeenCalledWith('Fin de partie — Victoire')
+
+    // La fin déclarée n'a rien désarmé : le MÊME Ctrl+Z, sur la MÊME route
+    // (`/manuel_undo`), fonctionne exactement comme pour n'importe quel
+    // autre geste — voir `manuel/clavier-wiring.test.tsx`.
+    fireEvent.keyDown(document, { key: 'z', ctrlKey: true })
+    await attendreLeReseau()
+    expect(fetch).toHaveBeenCalledWith('/manuel_undo', { method: 'POST' })
+    expect(ajouterAuJournal).toHaveBeenCalledWith('Dernier geste annulé')
+  })
 })
 
 // --- Le bac à sable garde son journal (correction du 19/09/2026, ronde 2) --
