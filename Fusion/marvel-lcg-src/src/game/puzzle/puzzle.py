@@ -774,6 +774,13 @@ class RunPuzzle:
         'ProcessingArea':       lambda w: w.area_processing,
         'RemovedArea':          lambda w: w.area_removed,
         'VictoryDisplay':       lambda w: w.victory_display,
+        # Tache 4 bis (19/09/2026) : `'AsideDeck'` (ZONES_JOUEUR) designe deja
+        # le set nemesis du heros. Les deux zones ci-dessous sont les mises de
+        # cote du SCENARIO, visuellement distinctes sur le plateau mais qui
+        # partagent le meme `DeckType.AsideDeck` cote moteur (`world.py`).
+        # Ne PAS renommer 'AsideDeck' : on ajoute, on ne deplace pas.
+        'AsideScenario':        lambda w: w.aside_deck,
+        'AsideModular':         lambda w: w.aside_modular,
     }
 
     def _ZoneParNom(self, zone: str, player: int) -> 'Deck':

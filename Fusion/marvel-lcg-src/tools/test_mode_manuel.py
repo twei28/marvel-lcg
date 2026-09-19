@@ -514,6 +514,40 @@ def cas_ecart(game_dir, port):
     return "AsideDeck envoie bien vers la pile des cartes ecartees, pas vers le faux ami"
 
 
+def cas_ecart_scenario(game_dir, port):
+    """`AsideScenario` doit remplir `world.aside_deck`, pas le set nemesis du heros.
+
+    Tache 4 bis (19/09/2026) : `ZONES_MONDE` (`game/puzzle/puzzle.py`) n'avait
+    aucune entree pour les mises de cote du SCENARIO. `_ZoneParNom` retombait
+    donc sur `ZONES_JOUEUR['AsideDeck']`, c'est-a-dire `set_aside_nemesis_sets`
+    du heros : une carte envoyee vers "les mises de cote du scenario" partait
+    silencieusement dans le tas nemesis du heros. Ce cas verifie a la fois
+    l'arrivee dans `world.aside_deck` ET l'absence dans le set nemesis : le
+    second controle est le plus important, c'est lui qui prouve qu'on ne
+    retombe plus sur la pile du joueur.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    joueur = monde.const_players[0]
+    main = list(joueur.hand_cards.GetAll())
+    assert main, "la main de depart est vide"
+    carte = main[0].card.object_id
+
+    avant_scenario = len(monde.aside_deck.GetAll())
+    avant_nemesis = len(joueur.set_aside_nemesis_sets.GetAll())
+
+    deposer(jeu, f"Puzzle.MoveTo({carte}, 'AsideScenario')")
+
+    apres_scenario = len(monde.aside_deck.GetAll())
+    apres_nemesis = len(joueur.set_aside_nemesis_sets.GetAll())
+    assert apres_scenario == avant_scenario + 1, \
+        (f"les mises de cote du scenario devaient passer de {avant_scenario} "
+         f"a {avant_scenario + 1}, elles valent {apres_scenario}")
+    assert apres_nemesis == avant_nemesis, \
+        (f"la carte a atterri dans le set nemesis du heros au lieu des mises "
+         f"de cote du scenario : {avant_nemesis} -> {apres_nemesis}")
+    return "AsideScenario envoie vers world.aside_deck, pas vers le set nemesis du heros"
+
+
 def cas_dessous_sans_ordre(game_dir, port):
     """`position='Bottom'` sur une pile SANS ordre depose quand meme la carte.
 
@@ -765,6 +799,7 @@ CAS = {
     "deplacement_libre": cas_deplacement_libre,
     "melange": cas_melange,
     "ecart": cas_ecart,
+    "ecart_scenario": cas_ecart_scenario,
     "dessous_sans_ordre": cas_dessous_sans_ordre,
     "geste_enregistre": cas_geste_enregistre,
     "aller_retour": cas_aller_retour,
