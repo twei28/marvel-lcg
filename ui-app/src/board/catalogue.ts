@@ -20,6 +20,14 @@ type CartePapier = {
   name?: string
   desc?: Partial<Record<string, string>>
   text?: string
+  /**
+   * Une carte qui EMPRUNTE le scan d'une autre (reimpression, verso...) le
+   * dit ici ; sinon son propre `card_id` sert de nom de fichier (voir
+   * `Fusion/marvel-lcg-src/src/cards/images_cartes.py`, `IdImage`). Sert au
+   * mode manuel : `chercherParNom` le rapporte pour que le catalogue affiche
+   * le bon scan, pas un scan absent.
+   */
+  pic_id?: string
 }
 
 /**
@@ -105,6 +113,15 @@ export type Catalogue = {
    * survoler la carte. Ajoute le 12/09/2026.
    */
   texte(cardId: string): string | undefined
+  /**
+   * Les cartes dont le nom contient ce fragment, au plus `limite` (40 par
+   * defaut). Sert au mode manuel, SEUL endroit ou l'on cherche une carte qui
+   * n'est PAS dans la partie — le joueur ne connait aucun card_id, seulement
+   * un nom. Ne renvoie rien en dessous de deux caracteres saisis : le
+   * catalogue depasse les 6000 cartes, tout rendre a la premiere lettre
+   * serait illisible et couteux.
+   */
+  chercherParNom(fragment: string, limite?: number): Array<{ card_id: string; name: string; pic_id?: string }>
 }
 
 /** Catalogue absent : le plateau s'affiche quand meme, sans les PV maximum. */
@@ -116,6 +133,7 @@ export const catalogueVide: Catalogue = {
   aspect: () => undefined,
   type: () => undefined,
   texte: () => undefined,
+  chercherParNom: () => [],
 }
 
 /**
@@ -147,6 +165,8 @@ export function construire(donnees: unknown): Catalogue {
   const aspects = new Map<string, Aspect>()
   const types = new Map<string, string>()
   const textes = new Map<string, string>()
+  /** Nom (et pic_id eventuel) de CHAQUE carte, pour `chercherParNom`. */
+  const nomsParCarte = new Map<string, { name: string; pic_id?: string }>()
 
   // cards.json = { "<nom de paquet>": [cartes...], "checksum": "<hexa>" }.
   for (const paquet of Object.values(donnees as Record<string, unknown>)) {
@@ -180,6 +200,12 @@ export function construire(donnees: unknown): Catalogue {
       const aspect = aspectDeClasse(carte.desc?.Class)
       if (aspect) aspects.set(id, aspect)
       if (typeof carte.type === 'string') types.set(id, carte.type)
+      if (typeof carte.name === 'string' && carte.name.trim()) {
+        nomsParCarte.set(id, {
+          name: carte.name,
+          pic_id: typeof carte.pic_id === 'string' && carte.pic_id ? carte.pic_id : undefined,
+        })
+      }
     }
   }
 
@@ -191,6 +217,17 @@ export function construire(donnees: unknown): Catalogue {
     aspect: (cardId) => aspects.get(cardId),
     type: (cardId) => types.get(cardId),
     texte: (cardId) => textes.get(cardId),
+    chercherParNom: (fragment, limite = 40) => {
+      const cherche = fragment.trim().toLowerCase()
+      if (cherche.length < 2) return []
+      const trouves: Array<{ card_id: string; name: string; pic_id?: string }> = []
+      for (const [card_id, { name, pic_id }] of nomsParCarte) {
+        if (!name.toLowerCase().includes(cherche)) continue
+        trouves.push(pic_id ? { card_id, name, pic_id } : { card_id, name })
+        if (trouves.length >= limite) break
+      }
+      return trouves
+    },
   }
 }
 

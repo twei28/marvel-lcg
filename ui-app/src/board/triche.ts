@@ -107,3 +107,37 @@ export const attacher = (id: number, cible: number) =>
 
 /** Engage un sbire avec le joueur, ou l'en désengage s'il y est déjà. */
 export const engager = (id: number) => envoyer([`Puzzle.Engage(${id})`])
+
+/**
+ * Fait apparaître sur la table une carte du catalogue qui n'était pas dans
+ * la partie (tâche 6 du plan).
+ *
+ * MÊME COMMANDE que `deplacerVers(id, 'ProcessingArea')`, le geste qui sort
+ * une carte d'une pile du MONDE (voir `CoucheTriche.tsx`, cas `'piocher'`) :
+ * `Puzzle.MoveTo` fabrique la carte elle-même (`FindOrCreateFace`) quand le
+ * nom ne désigne encore rien, donc un seul appel crée ET pose. Elle arrive en
+ * zone de RÉSOLUTION, jamais « en jeu » directement — le brief proposait
+ * `Puzzle.PutIntoPlay`, qui laisse le MOTEUR choisir la destination selon le
+ * type de carte ; contraire à tout ce mode, où le moteur ne décide rien.
+ * C'est au joueur de la déplacer ensuite avec les gestes qu'il a déjà.
+ */
+export const creerCarte = (cardId: string) =>
+  envoyer([`Puzzle.MoveTo(${texte(cardId)}, ${texte('ProcessingArea')}, ${texte('Top')})`])
+
+/**
+ * Ctrl+Z : retire le dernier geste et rejoue la partie sans lui.
+ *
+ * Route distincte de `/sandbox_command` : ce n'est pas une commande
+ * `Puzzle.*`, mais une reconstruction complète (mise en place puis rejeu de
+ * tous les gestes moins le dernier), qui prend une à deux secondes. Rend 409
+ * hors partie manuelle ou quand il n'y a rien à annuler — un refus, pas une
+ * panne, mais le canal ne distingue de toute façon que « accepté » ou pas.
+ */
+export async function annulerDernierGeste(): Promise<boolean> {
+  try {
+    const reponse = await fetch('/manuel_undo', { method: 'POST' })
+    return reponse.ok
+  } catch {
+    return false
+  }
+}

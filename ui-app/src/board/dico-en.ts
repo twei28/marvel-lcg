@@ -602,6 +602,15 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Retourner': 'Flip',
   'Piocher': 'Draw',
   'Sortir en résolution': 'Move to resolution',
+  'Dernier geste annulé': 'Last move undone',
+  'Rien à annuler': 'Nothing to undo',
+  'Annulation en cours…': 'Undoing…',
+
+  // ---- Mode manuel : faire apparaître une carte du catalogue (tâche 6) ----
+  'Faire apparaître une carte': 'Bring in a card',
+  'Faire apparaître': 'Bring in',
+  'Cherche un nom, à partir de deux lettres': 'Search a name, from two letters',
+  'Nom de la carte…': 'Card name…',
 
   // ---- Mode manuel : le glisser-déposer libre (board/manuel/glisser-manuel.ts) ----
   'Lâche la carte sur une pile': 'Drop the card on a pile',

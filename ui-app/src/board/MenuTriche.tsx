@@ -149,6 +149,15 @@ export type MenuTricheProps = {
    * dit rien de l'exécution réelle côté moteur — voir `useTriche` (`CoucheTriche.tsx`).
    */
   emettreGeste: (libelle: string, deposer: () => Promise<boolean>) => Promise<void>
+  /**
+   * Mode manuel uniquement (tâche 6) : le bac à sable a un moteur pour
+   * distribuer des cartes normalement, il n'a pas besoin de cette
+   * échappatoire.
+   */
+  manuel?: boolean
+  /** Ouvre le catalogue (`CatalogueManuel`), pour poser une carte qui
+   *  n'était pas dans la partie. */
+  onFaireApparaitre?: () => void
 }
 
 /** Une entrée du menu. `valeur` ouvre une saisie de nombre avant d'agir. */
@@ -159,7 +168,15 @@ type Entree = {
   danger?: boolean
 }
 
-export function MenuTriche({ cible, x, y, onFermer, emettreGeste }: MenuTricheProps) {
+export function MenuTriche({
+  cible,
+  x,
+  y,
+  onFermer,
+  emettreGeste,
+  manuel,
+  onFaireApparaitre,
+}: MenuTricheProps) {
   const [saisie, setSaisie] = useState<Entree | undefined>(undefined)
   const [nombre, setNombre] = useState(1)
   // Le sous-menu « Déplacer vers » : une liste de piles plutôt qu'une saisie
@@ -301,6 +318,19 @@ export function MenuTriche({ cible, x, y, onFermer, emettreGeste }: MenuTrichePr
               <span className="menu-triche-suite">…</span>
             </button>
           </li>
+          {manuel && onFaireApparaitre ? (
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  onFaireApparaitre()
+                  onFermer()
+                }}
+              >
+                {t('Faire apparaître une carte')}
+              </button>
+            </li>
+          ) : null}
           {entrees.map((entree) => (
             <li key={entree.libelle}>
               <button

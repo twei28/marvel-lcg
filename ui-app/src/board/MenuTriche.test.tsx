@@ -89,3 +89,41 @@ describe('le sous-menu « Déplacer vers »', () => {
     expect(getByText('Set némésis')).not.toBeNull()
   })
 })
+
+// « Faire apparaître une carte » (tâche 6) : le seul moyen d'ouvrir le
+// catalogue en mode manuel. Absent du bac à sable, qui a un moteur pour
+// distribuer des cartes normalement.
+describe('« Faire apparaître une carte » (mode manuel)', () => {
+  it('n’apparaît pas hors mode manuel', () => {
+    const { queryByText } = render(
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
+    )
+    expect(queryByText('Faire apparaître une carte')).toBeNull()
+  })
+
+  it('n’apparaît pas en mode manuel sans callback fourni', () => {
+    const { queryByText } = render(
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} manuel />
+    )
+    expect(queryByText('Faire apparaître une carte')).toBeNull()
+  })
+
+  it('ouvre le catalogue et ferme le menu, en mode manuel', () => {
+    const onFermer = vi.fn()
+    const onFaireApparaitre = vi.fn()
+    const { getByText } = render(
+      <MenuTriche
+        cible={CIBLE}
+        x={0}
+        y={0}
+        onFermer={onFermer}
+        emettreGeste={emettreGesteDeTest()}
+        manuel
+        onFaireApparaitre={onFaireApparaitre}
+      />
+    )
+    fireEvent.click(getByText('Faire apparaître une carte'))
+    expect(onFaireApparaitre).toHaveBeenCalled()
+    expect(onFermer).toHaveBeenCalled()
+  })
+})

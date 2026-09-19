@@ -10,8 +10,10 @@
 // sans laisser de traces éparpillées dans un plateau de 2000 lignes.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { catalogueVide, type Catalogue } from './catalogue'
 import { scanUrl } from './card-model'
 import { t } from './langue'
+import { CatalogueManuel } from './manuel/CatalogueManuel'
 import {
   creerEtatTouches,
   interpreterTouche,
@@ -400,6 +402,27 @@ export function useTriche(
     [index, piles, emettreGeste, noter]
   )
 
+  // --- Ctrl+Z : annule le dernier geste (tâche 6) ---------------------------
+  //
+  // La reconstruction moteur (mise en place puis rejeu de tous les gestes
+  // moins le dernier) prend une à deux secondes : deux annulations lancées
+  // coup sur coup se marcheraient dessus. `enVolRef` empêche tout départ
+  // concurrent ; `annulationEnCours` (rendu) dit au joueur que quelque chose
+  // se passe pendant l'attente.
+  const enVolRef = useRef(false)
+  const [annulationEnCours, setAnnulationEnCours] = useState(false)
+
+  const lancerAnnulation = useCallback(() => {
+    if (enVolRef.current) return
+    enVolRef.current = true
+    setAnnulationEnCours(true)
+    void triche.annulerDernierGeste().then((reussi) => {
+      enVolRef.current = false
+      setAnnulationEnCours(false)
+      noter(reussi ? t('Dernier geste annulé') : t('Rien à annuler'))
+    })
+  }, [noter])
+
   // L'UNIQUE écoute clavier du mode manuel (voir `manuel/clavier.ts`) : ce
   // qu'on fait cent fois par partie doit se faire d'une touche. Un
   // `pointermove` au document retient ce qui est survolé ; `keydown` le
@@ -430,6 +453,23 @@ export function useTriche(
 
     const surTouche = (evenement: KeyboardEvent) => {
       etatTouches.enregistrer(evenement)
+      // Ctrl+Z : AVANT la garde des modificateurs juste en dessous, sinon
+      // elle l'avale comme n'importe quel autre Ctrl+lettre — et ON
+      // `preventDefault` ici : on remplace volontairement l'annulation du
+      // navigateur, qui n'a aucun sens sur un plateau de jeu. La garde du
+      // FOCUS reste prioritaire : dans un champ de texte, Ctrl+Z est
+      // l'annulation de SA saisie, pas la nôtre.
+      if (
+        evenement.ctrlKey &&
+        !evenement.metaKey &&
+        !evenement.altKey &&
+        evenement.key.toLowerCase() === 'z' &&
+        !estZoneDeSaisie(document.activeElement)
+      ) {
+        evenement.preventDefault()
+        lancerAnnulation()
+        return
+      }
       // Ctrl/Cmd/Alt : ce sont des raccourcis du NAVIGATEUR (Ctrl+F cherche,
       // Ctrl+R recharge, Ctrl+1..9 change d'onglet), pas du jeu. Sans cette
       // garde, survoler une carte pendant Ctrl+F la retournait — un dos de
@@ -463,13 +503,13 @@ export function useTriche(
       document.removeEventListener('keydown', surTouche)
       document.removeEventListener('keyup', surRelachement)
     }
-  }, [manuel, index, piles, executerGeste, etatTouches])
+  }, [manuel, index, piles, executerGeste, etatTouches, lancerAnnulation])
 
   return {
     actif,
     manuel,
     interventions,
-    couche: { menu, pile, setMenu, setPile, emettreGeste, avisRefus },
+    couche: { menu, pile, setMenu, setPile, emettreGeste, avisRefus, annulationEnCours },
     /** Pour la tâche 5 (glisser-déposer) : lire l'état sans poser d'écoute. */
     estToucheEnfoncee: etatTouches.estEnfoncee,
   }
@@ -480,11 +520,25 @@ export type CoucheTricheProps = {
   /** Bac à sable ou manuel ? Décide seulement de l'affichage du bandeau. */
   manuel: boolean
   couche: ReturnType<typeof useTriche>['couche']
+  /**
+   * Optionnel : les appelants existants (tests) ne le fournissent pas
+   * toujours. Sans lui, la recherche du catalogue (tâche 6) ne trouve
+   * simplement jamais rien — rien ne casse.
+   */
+  catalogue?: Catalogue
 }
 
-export function CoucheTriche({ actif, manuel, couche }: CoucheTricheProps) {
-  const { menu, pile, setMenu, setPile, emettreGeste, avisRefus } = couche
+export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide }: CoucheTricheProps) {
+  const { menu, pile, setMenu, setPile, emettreGeste, avisRefus, annulationEnCours } = couche
+  // Le catalogue (tâche 6) : une carte qui n'était pas dans la partie. Mode
+  // manuel uniquement, voir l'entrée du menu plus bas.
+  const [catalogueOuvert, setCatalogueOuvert] = useState(false)
   if (!actif) return null
+
+  const faireApparaitre = async (cardId: string) => {
+    await emettreGeste(`${t('Faire apparaître')} — ${cardId}`, () => triche.creerCarte(cardId))
+    setCatalogueOuvert(false)
+  }
 
   const agirSurCarte = async (carte: WorldCard, mode: 'defaut' | 'reveler') => {
     if (!pile) return
@@ -532,6 +586,15 @@ export function CoucheTriche({ actif, manuel, couche }: CoucheTricheProps) {
         </div>
       ) : null}
 
+      {/* Tâche 6 : la reconstruction moteur d'une annulation prend une à deux
+          secondes — le joueur doit voir que quelque chose se passe. Même
+          famille visuelle que l'avis de refus, transitoire elle aussi. */}
+      {manuel && annulationEnCours ? (
+        <div className="avis-refus-manuel" role="status">
+          {t('Annulation en cours…')}
+        </div>
+      ) : null}
+
       {menu ? (
         <MenuTriche
           cible={menu.cible}
@@ -539,6 +602,16 @@ export function CoucheTriche({ actif, manuel, couche }: CoucheTricheProps) {
           y={menu.y}
           onFermer={() => setMenu(undefined)}
           emettreGeste={emettreGeste}
+          manuel={manuel}
+          onFaireApparaitre={() => setCatalogueOuvert(true)}
+        />
+      ) : null}
+
+      {manuel && catalogueOuvert ? (
+        <CatalogueManuel
+          catalogue={catalogue}
+          onFermer={() => setCatalogueOuvert(false)}
+          onPoser={(cardId) => void faireApparaitre(cardId)}
         />
       ) : null}
 

@@ -7,9 +7,10 @@
 // toute façon : `{ menu, pile, setMenu, setPile, emettreGeste, avisRefus }`.
 // Les tests de résolution (plus bas) ont besoin du VRAI `useTriche`, sur le
 // modèle de `board/manuel/clavier-wiring.test.tsx`.
-import { act, fireEvent, render } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { CoucheTriche, useTriche } from './CoucheTriche'
+import { catalogueVide, type Catalogue } from './catalogue'
 import { carteSurTable, siege, tableAvec } from './plateau-de-test'
 import type { World, WorldCard } from './world'
 
@@ -27,6 +28,7 @@ function coucheVide() {
       await deposer()
     }),
     avisRefus: undefined as string | undefined,
+    annulationEnCours: false,
   }
 }
 
@@ -109,9 +111,24 @@ function mondeManuel(surcharge: Partial<World> = {}): World {
   } as never)
 }
 
-function Harness({ world, ajouterAuJournal }: { world: World; ajouterAuJournal?: (l: string) => void }) {
+function Harness({
+  world,
+  ajouterAuJournal,
+  catalogue,
+}: {
+  world: World
+  ajouterAuJournal?: (l: string) => void
+  catalogue?: Catalogue
+}) {
   const triche = useTriche(world, 0, ajouterAuJournal)
-  return <CoucheTriche actif={triche.actif} manuel={triche.manuel} couche={triche.couche} />
+  return (
+    <CoucheTriche
+      actif={triche.actif}
+      manuel={triche.manuel}
+      couche={triche.couche}
+      catalogue={catalogue}
+    />
+  )
 }
 
 function survoler(id: number): void {
@@ -246,6 +263,49 @@ describe('un geste manuel refusé se voit, sans jamais dire l’inverse (correct
       rerender(<Harness world={{ ...suivant }} ajouterAuJournal={ajouterAuJournal} />)
     })
     expect(ajouterAuJournal).toHaveBeenCalledTimes(1)
+  })
+})
+
+// --- Faire apparaître une carte du catalogue (tâche 6) ---------------------
+describe('faire apparaître une carte, en mode manuel', () => {
+  function ouvrirMenuSur(id: number): void {
+    const noeud = document.createElement('div')
+    noeud.setAttribute('data-card-id', String(id))
+    document.body.appendChild(noeud)
+    fireEvent.contextMenu(noeud)
+  }
+
+  const catalogueDeTest: Catalogue = {
+    ...catalogueVide,
+    chercherParNom: (fragment) =>
+      fragment.length < 2 ? [] : [{ card_id: '01094', name: 'Rhino' }],
+  }
+
+  it('le menu propose l’entrée, le clic ouvre le catalogue', async () => {
+    render(<Harness world={mondeManuel()} catalogue={catalogueDeTest} />)
+    ouvrirMenuSur(VILAIN.id)
+    fireEvent.click(screen.getByText('Faire apparaître une carte'))
+    expect(screen.getByRole('searchbox')).toBeTruthy()
+    // Le menu de la carte visée s'est bien fermé : c'est un dialogue à part,
+    // pas une entrée de plus dans le menu de Rhino.
+    expect(screen.queryByText('Retourner')).toBeNull()
+  })
+
+  it('poser une carte du catalogue l’envoie en zone de résolution, et ferme le catalogue', async () => {
+    const ajouterAuJournal = vi.fn()
+    render(
+      <Harness world={mondeManuel()} ajouterAuJournal={ajouterAuJournal} catalogue={catalogueDeTest} />
+    )
+    ouvrirMenuSur(VILAIN.id)
+    fireEvent.click(screen.getByText('Faire apparaître une carte'))
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'rhi' } })
+    fireEvent.click(screen.getByText('Rhino'))
+    await attendreLeReseau()
+
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo('01094', 'ProcessingArea', 'Top')"] }),
+    }))
+    expect(screen.queryByRole('searchbox')).toBeNull()
   })
 })
 

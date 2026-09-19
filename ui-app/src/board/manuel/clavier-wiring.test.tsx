@@ -234,6 +234,78 @@ describe('le clavier du mode manuel parle au moteur', () => {
   })
 })
 
+// --- Ctrl+Z : annule le dernier geste (tache 6) ----------------------------
+//
+// Un cas particulier de la garde des modificateurs testee juste au-dessus :
+// Ctrl+Z DOIT etre traite explicitement AVANT elle (sinon elle l'avale, comme
+// tout Ctrl+lettre), mais la garde du FOCUS reste prioritaire sur Ctrl+Z
+// (dans un champ de texte, c'est l'annulation de saisie du joueur, pas la
+// notre).
+describe('Ctrl+Z annule le dernier geste', () => {
+  it('poste sur /manuel_undo et empeche le navigateur d’annuler', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    const nonAnnule = fireEvent.keyDown(document, { key: 'z', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/manuel_undo', { method: 'POST' })
+    // `preventDefault` a bien ete appele : on remplace VOLONTAIREMENT
+    // l'annulation du navigateur, qui n'a aucun sens sur un plateau de jeu.
+    expect(nonAnnule).toBe(false)
+  })
+
+  it('ne mord pas pendant une saisie de texte : c’est l’annulation du champ, pas la notre', async () => {
+    const { container } = render(
+      <>
+        <Harness world={mondeManuel()} capture={{}} />
+        <input aria-label="champ" />
+      </>
+    )
+    const champ = container.querySelector('input') as HTMLInputElement
+    champ.focus()
+    const nonAnnule = fireEvent.keyDown(champ, { key: 'z', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+    expect(nonAnnule).toBe(true)
+  })
+
+  it('ne mord pas hors du mode manuel', async () => {
+    const monde = { ...mondeManuel(), mode_manuel: false, mode_sandbox: true } as World
+    render(<Harness world={monde} capture={{}} />)
+    fireEvent.keyDown(document, { key: 'z', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('empeche deux annulations en vol en meme temps', async () => {
+    let resoudre: (reponse: Response) => void = () => {}
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => new Promise<Response>((resolve) => { resoudre = resolve }))
+    )
+    render(<Harness world={mondeManuel()} capture={{}} />)
+
+    fireEvent.keyDown(document, { key: 'z', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledTimes(1)
+
+    // La premiere annulation est encore en vol : une seconde pression ne doit
+    // pas partir en meme temps qu'elle.
+    fireEvent.keyDown(document, { key: 'z', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledTimes(1)
+
+    await act(async () => {
+      resoudre({ ok: true } as Response)
+      await Promise.resolve()
+      await Promise.resolve()
+    })
+
+    // Une fois la premiere terminee, une nouvelle pression repart normalement.
+    fireEvent.keyDown(document, { key: 'z', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledTimes(2)
+  })
+})
+
 describe("l'etat des touches est expose pour la tache 5", () => {
   it('sait que Maj est enfoncee pendant qu’elle l’est, et plus apres', () => {
     const capture: Capture = {}
