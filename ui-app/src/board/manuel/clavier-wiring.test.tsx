@@ -222,6 +222,22 @@ describe('le clavier du mode manuel parle au moteur', () => {
     expect(fetch).not.toHaveBeenCalled()
   })
 
+  // RONDE DE CORRECTION 1 (tache 8 bis). Lacune de filet signalee par la
+  // revue : aucun cas ne couvrait « partie manuelle, mise en place en
+  // cours » (mode_manuel VRAI, manuel_actif FAUX) - exactement l'etat dans
+  // lequel le mode etait bloque avant le correctif. Temoin de REFUS : MEME
+  // geste, MEME carte survolee que le cas vert juste au-dessus
+  // (`mondeManuel()`), seul `manuel_actif` change - la preuve que c'est
+  // bien cette variable, et pas `mode_manuel`, qui arme le clavier.
+  it('ne mord pas PENDANT LA MISE EN PLACE (mode_manuel vrai, manuel_actif encore faux)', async () => {
+    const monde = { ...mondeManuel(), manuel_actif: false } as World
+    render(<Harness world={monde} capture={{}} />)
+    survoler(7)
+    fireEvent.keyDown(document, { key: 'f' })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
   it('ne mord pas pendant une saisie de texte', async () => {
     const { container } = render(
       <>

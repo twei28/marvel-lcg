@@ -319,6 +319,24 @@ describe('faire apparaître une carte, en mode manuel', () => {
     expect(screen.queryByText('Faire apparaître une carte')).toBeNull()
   })
 
+  // RONDE DE CORRECTION 1 (tache 8 bis). Lacune de filet signalee par la
+  // revue : aucun cas ne couvrait « partie manuelle, mise en place en
+  // cours » (mode_manuel VRAI, manuel_actif FAUX) - exactement l'etat dans
+  // lequel le mode etait bloque avant le correctif. Temoin de REFUS : MEME
+  // geste, MEME carte (VILAIN) que le premier cas de ce bloc (qui, lui,
+  // ouvre bien le menu « Incliner » en manuel ACTIF) - seul `manuel_actif`
+  // change, preuve que c'est cette variable, et pas `mode_manuel`, qui
+  // arme le clic droit.
+  it('pendant la mise en place (mode_manuel vrai, manuel_actif encore faux) : le clic droit n’ouvre aucun menu manuel', async () => {
+    const monde = { ...mondeManuel(), manuel_actif: false } as World
+    render(<Harness world={monde} catalogue={catalogueDeTest} />)
+    ouvrirMenuSur(VILAIN.id)
+    expect(screen.queryByText('Incliner')).toBeNull()
+    expect(screen.queryByText('Faire apparaître une carte')).toBeNull()
+    clicDroitSurTable()
+    expect(screen.queryByText('Faire apparaître une carte')).toBeNull()
+  })
+
   it('poser une carte du catalogue l’envoie en zone de résolution, et ferme le catalogue', async () => {
     const ajouterAuJournal = vi.fn()
     const avant = mondeManuel()
