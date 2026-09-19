@@ -633,6 +633,22 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
   // TABLE. `FinManuelle` tient déjà sa propre confirmation ; `onDeclarer`
   // n'est donc appelé qu'une fois la décision prise, jamais au premier clic.
   const [finOuverte, setFinOuverte] = useState(false)
+
+  // Échap ferme le catalogue et la fenêtre de fin de partie, comme les deux
+  // menus le font déjà (`MenuTriche.tsx`, `MenuTable.tsx`) — défaut relevé
+  // en revue finale (20/09/2026) : ces deux fenêtres ne se fermaient
+  // qu'au clic sur « Fermer » ou en dehors du voile.
+  useEffect(() => {
+    if (!catalogueOuvert && !finOuverte) return
+    const surEchap = (evenement: KeyboardEvent) => {
+      if (evenement.key !== 'Escape') return
+      setCatalogueOuvert(false)
+      setFinOuverte(false)
+    }
+    document.addEventListener('keydown', surEchap)
+    return () => document.removeEventListener('keydown', surEchap)
+  }, [catalogueOuvert, finOuverte])
+
   if (!actif) return null
 
   // Passe par `emettreGeste`, comme tout autre geste (revue de la tâche) : un

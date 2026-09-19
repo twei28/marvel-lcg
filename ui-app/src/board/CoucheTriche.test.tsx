@@ -449,6 +449,19 @@ describe('faire apparaître une carte, en mode manuel', () => {
     })
     expect(ajouterAuJournal).toHaveBeenCalledWith('Faire apparaître — Rhino')
   })
+
+  // Défaut relevé en revue finale (20/09/2026) : le catalogue ne se fermait
+  // qu'au clic sur « Fermer » ou en dehors du voile, alors que les deux
+  // menus (MenuTriche, MenuTable) se ferment déjà à Échap.
+  it('Échap ferme le catalogue', async () => {
+    render(<Harness world={mondeManuel()} catalogue={catalogueDeTest} />)
+    clicDroitSurTable()
+    fireEvent.click(screen.getByText('Faire apparaître une carte'))
+    expect(screen.getByRole('searchbox')).toBeTruthy()
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByRole('searchbox')).toBeNull()
+  })
 })
 
 describe('déclarer la fin d’une partie manuelle (tâche 7)', () => {
@@ -482,6 +495,19 @@ describe('déclarer la fin d’une partie manuelle (tâche 7)', () => {
       body: JSON.stringify({ commands: ['Puzzle.Lose()'] }),
     }))
     expect(screen.queryByText('Confirmer')).toBeNull()
+  })
+
+  // Défaut relevé en revue finale (20/09/2026) : cette fenêtre ne se
+  // fermait qu'au clic sur « Fermer » ou en dehors du voile, alors que les
+  // deux menus (MenuTriche, MenuTable) se ferment déjà à Échap.
+  it('Échap ferme la fenêtre de fin de partie, sans rien envoyer', async () => {
+    render(<Harness world={mondeManuel()} />)
+    ouvrirFinManuelle()
+    expect(screen.getByText('Victoire')).toBeTruthy()
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByText('Victoire')).toBeNull()
+    expect(fetch).not.toHaveBeenCalledWith('/sandbox_command', expect.anything())
   })
 
   it('n’envoie rien tant que la confirmation n’a pas eu lieu', async () => {
