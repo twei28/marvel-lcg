@@ -3217,6 +3217,11 @@ export function PagePartie({
         }}
         onReprendre={() => { void basculerPause(false) }}
         onPasser={passerLaQuestion}
+        /* I2 : le spectateur VOIT la pause (sinon la table s'arrête sous ses
+           yeux sans un mot) mais n'en sort pas -- et surtout ne « passe » pas
+           la question à la place d'un joueur assis. Ce bandeau est monté HORS
+           de `.board-actions`, la seule chose que la CSS spectateur masque. */
+        lectureSeule={spectateur}
       />
 
       {/* CouchePasAPas (barre « où on en est » + Tout passer) : DEBRANCHEE a

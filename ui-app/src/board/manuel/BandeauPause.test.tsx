@@ -135,3 +135,78 @@ describe('le bandeau de pause', () => {
     expect(screen.queryByText(/n’attend aucune réponse/)).toBeNull()
   })
 })
+
+describe('le spectateur REGARDE la pause, il n’en sort pas (I2)', () => {
+  // ⚠ CE N'EST PAS LA GARANTIE, C'EST LA POLITESSE : le moteur refuse déjà
+  // les deux routes à un spectateur (`SpectateurPeutEcrire`, `web_server.py`,
+  // et la garde de siège des routes `manuel_*`). Mais `BandeauPause` est
+  // monté HORS de `.board-actions`, la seule chose que la CSS spectateur
+  // masque : sans cette garde il voyait deux boutons vivants, dont « Passer
+  // la question », qui répond à la place d'un joueur assis. C'est mot pour
+  // mot le défaut du 15/09/2026 (« j'ai vu le bouton Annuler sur l'écran du
+  // spectateur »).
+  it('ne montre AUCUN bouton au spectateur, mais lui dit toujours pourquoi la table est arrêtée', () => {
+    render(
+      <BandeauPause
+        enPause={{ actif: true, par: 'Nick Fury', depuis: '2026-09-20 14-30' }}
+        onReprendre={() => {}}
+        onPasser={async () => ({ ok: true })}
+        lectureSeule
+      />
+    )
+    expect(screen.queryByText('Reprendre')).toBeNull()
+    expect(screen.queryByText('Passer la question')).toBeNull()
+    // Le bandeau reste : un plateau arrêté et muet passe pour cassé.
+    expect(screen.getByText(/Nick Fury/)).toBeTruthy()
+  })
+
+  it('garde les deux boutons pour un joueur assis (témoin de contrôle)', () => {
+    render(
+      <BandeauPause
+        enPause={{ actif: true, par: 'Nick Fury', depuis: '' }}
+        onReprendre={() => {}}
+        onPasser={async () => ({ ok: true })}
+      />
+    )
+    expect(screen.getByText('Reprendre')).toBeTruthy()
+    expect(screen.getByText('Passer la question')).toBeTruthy()
+  })
+})
+
+describe('le motif de refus ne survit pas à la pause qui l’a produit', () => {
+  // Le bandeau reste MONTÉ hors pause (il rend `null`), donc son état de
+  // refus survivait : une phrase affichée lors d'une pause réapparaissait
+  // telle quelle à la pause suivante, des heures plus tard, sur une question
+  // qui n'avait rien à voir.
+  it('efface le motif quand la partie reprend', async () => {
+    const passer = vi.fn(async () => ({ ok: false as const, code: 'question_forcee' }))
+    const { rerender } = render(
+      <BandeauPause
+        enPause={{ actif: true, par: '', depuis: '' }}
+        onReprendre={() => {}}
+        onPasser={passer}
+      />
+    )
+    fireEvent.click(screen.getByText('Passer la question'))
+    expect(await screen.findByText(/exige une réponse/)).toBeTruthy()
+
+    // La reprise, puis une NOUVELLE pause : le bandeau revient vierge.
+    const reprise = (
+      <BandeauPause
+        enPause={{ actif: false, par: '', depuis: '' }}
+        onReprendre={() => {}}
+        onPasser={passer}
+      />
+    )
+    rerender(reprise)
+    rerender(
+      <BandeauPause
+        enPause={{ actif: true, par: '', depuis: '' }}
+        onReprendre={() => {}}
+        onPasser={passer}
+      />
+    )
+    await waitFor(() => expect(screen.queryByText(/exige une réponse/)).toBeNull())
+  })
+})
+

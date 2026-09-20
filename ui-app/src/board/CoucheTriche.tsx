@@ -22,6 +22,7 @@ import {
 } from './manuel/clavier'
 import { FinManuelle } from './manuel/FinManuelle'
 import { leMoteurSeTait } from './manuel/mode'
+import { estSpectateur } from './moteur'
 import { MenuTable } from './manuel/MenuTable'
 import { MenuTriche, type CibleTriche } from './MenuTriche'
 import * as triche from './triche'
@@ -149,8 +150,22 @@ export function useTriche(
   // mise en place — le moteur y attend encore de vraies réponses (le
   // mulligan compris), et un menu manuel ouvert par erreur à ce moment-là
   // n'aurait aucune commande légitime à recevoir.
-  const manuel = leMoteurSeTait(world)
-  const actif = world?.mode_sandbox === true || manuel
+  // ⚠ I2 (revue finale, 20/09/2026) : LE SPECTATEUR N'ARME RIEN. La couche
+  // s'armait sur le seul `leMoteurSeTait`, sans aucune garde de siège : dès
+  // qu'une table ORDINAIRE passait en pause, celui qui la REGARDE récupérait
+  // le clic droit, le clavier et le glisser libre sur la partie des autres,
+  // et `/sandbox_command` acceptait ses gestes. `BandeauPause` mis à part
+  // (voir sa prop `lectureSeule`), rien ne le couvrait : la CSS du spectateur
+  // ne masque que `.board-actions`.
+  //
+  // ⚠ CE N'EST QUE LA POLITESSE, PAS LA GARANTIE — un raccourci clavier, une
+  // console ouverte ou un `curl` en feraient le tour. La garantie est dans le
+  // moteur : `SpectateurPeutEcrire` (`web_server.py`) ferme toute route POST
+  // à un spectateur, `/manuel_pause` et `/manuel_passer` exigent en plus un
+  // siège. Même partage des rôles que `CoucheCurseurs` et `estSpectateur`.
+  const regarde = estSpectateur()
+  const manuel = !regarde && leMoteurSeTait(world)
+  const actif = !regarde && (world?.mode_sandbox === true || manuel)
   const [menu, setMenu] = useState<MenuOuvert | undefined>(undefined)
   const [pile, setPile] = useState<PileTriche | undefined>(undefined)
   // Le menu de la TABLE (tâche 6, ronde de correction 1) : un clic droit hors

@@ -17,7 +17,7 @@
 // croient à une panne. C'est le cœur de la tâche — voir `enPause.par` /
 // `enPause.depuis`, posés côté moteur par `World.BasculerPauseManuelle`
 // (`Scene.pause_par` / `Scene.pause_a`, effacés à la reprise).
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { t } from '../langue'
 import type { ResultatPasser } from '../triche'
 
@@ -66,12 +66,42 @@ export type BandeauPauseProps = {
    * jamais tel quel : c'est un identifiant stable, pas une phrase.
    */
   onPasser: () => Promise<ResultatPasser>
+  /**
+   * Ce plateau REGARDE la table sans y être assis (I2, revue finale du
+   * 20/09/2026) : le bandeau s'affiche toujours — sinon la partie s'arrête
+   * sous les yeux du spectateur sans un mot, et passe pour cassée — mais
+   * SANS aucun de ses deux boutons.
+   *
+   * ⚠ CE N'EST PAS LA GARANTIE, ce n'en est que la politesse : le moteur
+   * refuse les routes `POST /manuel_pause` et `/manuel_passer` à un
+   * spectateur (`SpectateurPeutEcrire`, `web_server.py`, plus la garde de
+   * siège de chaque route). Ce que la garde d'écran apporte, c'est de ne
+   * plus PROMETTRE ce qu'elle ne peut pas tenir — et surtout de ne plus
+   * proposer « Passer la question », qui répondrait à la place d'un joueur
+   * assis. Ce bandeau est monté HORS de `.board-actions`, la seule chose
+   * que la CSS du spectateur masque : il n'était couvert par rien.
+   */
+  lectureSeule?: boolean
 }
 
-export function BandeauPause({ enPause, onReprendre, onPasser }: BandeauPauseProps) {
+export function BandeauPause({
+  enPause,
+  onReprendre,
+  onPasser,
+  lectureSeule = false,
+}: BandeauPauseProps) {
   // ⚠ AVANT le retour anticipé ci-dessous : les Hooks ne peuvent jamais être
   // conditionnels (règle de React), même quand le bandeau ne s'affiche pas.
   const [motifRefus, setMotifRefus] = useState<string | undefined>(undefined)
+
+  // Le motif meurt avec la pause qui l'a produit (revue finale, 20/09/2026).
+  // Ce composant reste MONTÉ hors pause (il ne fait que rendre `null`), donc
+  // son état survivait à la reprise : un refus affiché lors d'une pause
+  // réapparaissait tel quel à la pause suivante, longtemps après, sur une
+  // question qui n'avait rien à voir avec lui.
+  useEffect(() => {
+    if (!enPause.actif) setMotifRefus(undefined)
+  }, [enPause.actif])
 
   if (!enPause.actif) return null
 
@@ -92,14 +122,17 @@ export function BandeauPause({ enPause, onReprendre, onPasser }: BandeauPausePro
         {qui} {t('a mis la partie en pause')}
         {enPause.depuis ? ` ${t('depuis')} ${enPause.depuis}` : ''}
       </span>
-      <span className="bandeau-pause-boutons">
-        <button type="button" className="bandeau-pause-passer" onClick={() => { void passer() }}>
-          {t('Passer la question')}
-        </button>
-        <button type="button" className="bandeau-pause-reprendre" onClick={onReprendre}>
-          {t('Reprendre')}
-        </button>
-      </span>
+      {/* Aucun bouton pour qui ne fait que regarder : voir `lectureSeule`. */}
+      {lectureSeule ? null : (
+        <span className="bandeau-pause-boutons">
+          <button type="button" className="bandeau-pause-passer" onClick={() => { void passer() }}>
+            {t('Passer la question')}
+          </button>
+          <button type="button" className="bandeau-pause-reprendre" onClick={onReprendre}>
+            {t('Reprendre')}
+          </button>
+        </span>
+      )}
       {/* Le refus DOIT se voir : sans lui, un joueur qui clique « Passer »
           sur une question forcée croirait le bouton cassé, alors que c'est
           le moteur qui exige une vraie réponse (voir motifDuRefus). */}
