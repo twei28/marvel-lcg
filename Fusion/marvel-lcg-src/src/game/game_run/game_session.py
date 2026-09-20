@@ -38,6 +38,20 @@ class GameSession:
         self.game = game
         # self.condition = Condition("State")
 
+        # LE REJEU DES GESTES MANUELS, en cours de montage (ronde de
+        # correction 1 du 20/09/2026). Instantane pris a CHAQUE `GameSetup`,
+        # consomme au fur et a mesure que le rejeu des ENTREES avance.
+        #
+        # ⚠ UN INSTANTANE, PAS UN CURSEUR SUR `scene.manuel_commands`. La
+        # scene continue de grossir PENDANT la partie (chaque nouveau geste y
+        # entre) : un simple index rejouerait les gestes tout frais comme
+        # s'ils etaient a rejouer, et les appliquerait donc deux fois.
+        self.gestes_a_rejouer: List[Tuple[int|None, str]] = []
+        # La mise en place est-elle finie ? Le SILENCE ne se repose qu'apres
+        # (`cas_manuel_actif_pas_avant_la_boucle`), meme quand les gestes,
+        # eux, se rejouent deja a leur rang.
+        self.mise_en_place_finie = False
+
     def Restart(self, seed: int|None) -> None:
         assert self.scene
         self.SetScene(self.scene, 'New')
@@ -119,6 +133,15 @@ class GameSession:
         self.world = World(scene, controller_manager.controllers)
         self.world.rule.SetRule(scene.rules, scene.is_puzzle, scene.seed)
 
+        # LE REJEU DES GESTES S'ARME ICI, avant `world.Initialize()` -- donc
+        # avant la premiere question de la mise en place, qui est deja une
+        # entree rejouable. Poser l'instantane plus tard laisserait le rejeu
+        # des questions de mise en place passer devant un geste qui, lui,
+        # avait ete fait pendant cette mise en place.
+        self.gestes_a_rejouer = scene.GestesARejouer()
+        # Le SILENCE, lui, attend la fin de la mise en place : voir plus bas.
+        self.mise_en_place_finie = False
+
         state.SetRunningState(True)
 
         if not Test.IsInTesting():
@@ -132,38 +155,62 @@ class GameSession:
             from game.puzzle import PuzzleHelper
             PuzzleHelper.Exec(self.world.scene.puzzle, self.world)
 
-        # LE SILENCE (l'ETAT « le moteur s'est tu »), pose AVANT le rejeu.
-        #
-        # ⚠ DEUX CAUSES, ET LA SECONDE EST LE CORRECTIF (constat C1 de la
-        # revue finale, 20/09/2026). La REGLE `mode_manuel` (« cette partie
-        # EST manuelle », vraie des sa creation) n'est pas la seule : une
-        # partie ORDINAIRE mise en pause par un joueur porte, elle, une pause
-        # EN COURS dans sa scene (`Scene.pause_en_cours`, pose et efface par
-        # `World.BasculerPauseManuelle`). Sans cette seconde cause, tout
-        # remontage d'une partie ordinaire en pause -- le bouton « Annuler »
-        # (`GameSession.Undo`), un chargement de sauvegarde -- la faisait
-        # REPRENDRE en silence, bandeau compris : le joueur revenait
-        # exactement dans le bug qu'il venait de contourner, apres un clic
-        # qui n'avait rien a voir.
-        if self.world.rule.mode_manuel or self.world.scene.pause_en_cours:
-            self.world.manuel_actif = True
+        # LA MISE EN PLACE EST FINIE : le silence peut desormais se reposer.
+        # Pas avant -- la mise en place a besoin que tout fonctionne,
+        # questions et capacites comprises
+        # (`cas_manuel_actif_pas_avant_la_boucle`).
+        self.mise_en_place_finie = True
 
-        # LE REJEU DES GESTES, desormais garde par LA PRESENCE DE GESTES et
-        # non plus par la REGLE `mode_manuel` (meme constat C1). Une partie
-        # ordinaire ne porte jamais cette regle : ses corrections etaient
-        # bien ecrites dans la sauvegarde mais plus jamais relues, et une
-        # sauvegarde n'etant PAS un instantane de la table (`Scene` porte la
-        # graine, les regles, les joueurs, les entrees -- et ce montage
-        # REJOUE), elles disparaissaient sans un mot.
-        if self.world.scene.manuel_commands:
-            from game.puzzle import PuzzleHelper
-            # PORTE FERMEE PENDANT LE REJEU, MEME QUAND LA PARTIE N'EST PLUS
-            # EN PAUSE -- c'est tout l'objet de ces trois lignes autour de la
-            # boucle. Les gestes ont ete appliques porte fermee ; un joueur
-            # qui a corrige PUIS REPRIS remonte une partie bavarde, mais
-            # rejouer ses gestes porte ouverte ferait partir des
-            # declencheurs qui n'etaient jamais partis, et l'etat recharge
-            # divergerait de l'etat sauvegarde.
+        # RIEN A REJOUER APRES LA MISE EN PLACE : on finit tout de suite.
+        # C'est le cas d'une partie FRAICHE, et celui d'une sauvegarde dont
+        # toutes les entrees ont deja ete rejouees pendant `Initialize`
+        # (c'est-a-dire toute partie manuelle DECLAREE, qui n'a plus aucune
+        # entree une fois sa mise en place finie).
+        #
+        # ⚠ SINON ON NE FERME RIEN ICI, ET C'EST LE CORRECTIF C1 de la ronde
+        # de correction 1. `manuel_actif` ferme `BroadcastMessage` et
+        # `BroadcastStackMessage` : aucun declencheur, aucun effet de regle,
+        # aucun sbire vaincu. Fermer la porte MAINTENANT sur une partie
+        # ordinaire sauvegardee en pause au round 4 lui faisait rejouer ses
+        # quatre rounds porte fermee : les questions ne naissaient meme pas,
+        # les entrees n'etaient jamais consommees, `skip` n'atteignait jamais
+        # sa cible, et le joueur retrouvait une table VIERGE a la place de la
+        # sienne. Le rejeu se fait desormais porte OUVERTE, et c'est
+        # `Controller.ChoiceOne` qui referme a la fin, par
+        # `SuivreLeRejeuDesGestes`.
+        if not controller_manager.skip.is_skipping:
+            self.FinirLeRejeuDesGestes()
+
+        return not self.world.is_game_over
+
+    ################################################################################
+    # LE REJEU DES GESTES MANUELS (ronde de correction 1 du 20/09/2026)
+    #
+    def RejouerGestesManuelsJusqua(self, rang: int|None) -> None:
+        """Rejoue les gestes manuels dont le rang est ATTEINT, dans l'ordre.
+
+        `rang` est le nombre d'entrees joueur deja rejouees
+        (`InputModule.current_step_id`) ; `None` veut dire « tout le reste,
+        le rejeu est fini ». On s'arrete au PREMIER geste pas encore du :
+        l'ordre des gestes entre eux est aussi important que leur rang, et un
+        rang inconnu (sauvegarde d'avant ce champ) vaut l'infini, donc retient
+        ceux qui le suivent jusqu'a la fin du rejeu.
+        """
+        if not self.gestes_a_rejouer or self.world is None:
+            return
+        from game.puzzle import PuzzleHelper
+
+        while self.gestes_a_rejouer:
+            rang_du_geste, geste = self.gestes_a_rejouer[0]
+            if rang is not None and (rang_du_geste is None or rang_du_geste > rang):
+                return
+            self.gestes_a_rejouer.pop(0)
+
+            # PORTE FERMEE LE TEMPS DU GESTE, ET DE LUI SEUL. Le geste a ete
+            # applique porte fermee (le joueur avait mis la table en pause) :
+            # le rejouer porte ouverte ferait partir des declencheurs qui
+            # n'etaient jamais partis. Mais la porte se rouvre aussitot, pour
+            # que les entrees qui suivent se rejouent, elles, normalement.
             silence_avant = self.world.manuel_actif
             self.world.manuel_actif = True
             try:
@@ -171,24 +218,63 @@ class GameSession:
                 # geste est rejoue INDIVIDUELLEMENT, sous try/except. Le
                 # rejeu EN DIRECT (dans `World.ManualLoop`, via
                 # `DeviceManager.DrainSandboxCommands`) est deja protege ;
-                # celui-ci, a la mise en place, ne l'etait pas. Un geste qui
-                # levait au RECHARGEMENT (une carte corrigee entre-temps, par
-                # exemple) faisait remonter l'exception hors de `GameSetup` :
-                # la sauvegarde devenait inouvrable, et l'annulation - qui
-                # passe par ce meme chemin - inutilisable avec elle. Une
-                # table legerement fausse se corrige a la main ; une
-                # sauvegarde inouvrable ne se corrige pas du tout.
-                for geste in self.world.scene.manuel_commands:
-                    try:
-                        PuzzleHelper.Exec([geste], self.world)
-                    except Exception as exc:
-                        Log.Warn(CATEGORY_NAME,
-                                 f"rejeu du geste manuel echoue, ignore : {geste!r} "
-                                 f"({type(exc).__name__}: {exc})")
+                # celui-ci, au montage, ne l'etait pas. Un geste qui levait au
+                # RECHARGEMENT (une carte corrigee entre-temps, par exemple)
+                # faisait remonter l'exception hors de `GameSetup` : la
+                # sauvegarde devenait inouvrable, et l'annulation - qui passe
+                # par ce meme chemin - inutilisable avec elle. Une table
+                # legerement fausse se corrige a la main ; une sauvegarde
+                # inouvrable ne se corrige pas du tout.
+                PuzzleHelper.Exec([geste], self.world)
+            except Exception as exc:
+                Log.Warn(CATEGORY_NAME,
+                         f"rejeu du geste manuel echoue, ignore : {geste!r} "
+                         f"(rang {rang_du_geste}, {type(exc).__name__}: {exc})")
             finally:
                 self.world.manuel_actif = silence_avant
 
-        return not self.world.is_game_over
+    def FinirLeRejeuDesGestes(self) -> None:
+        """Le rejeu des entrees est fini : les gestes restants s'appliquent,
+        et le silence se repose s'il y a lieu.
+
+        ⚠ LE SILENCE SE REPOSE ICI, ET NULLE PART AVANT. `manuel_actif` est
+        l'ETAT (« le moteur s'est tu EN CE MOMENT »), il vit sur le `World`
+        que tout remontage reconstruit -- « Annuler » (`GameSession.Undo`),
+        un chargement de sauvegarde. Sa memoire durable, c'est la scene :
+        la REGLE `mode_manuel` pour une partie manuelle DECLAREE,
+        `Scene.pause_en_cours` pour une partie ORDINAIRE mise en pause par un
+        joueur. Sans cette seconde cause, le remontage faisait REPRENDRE la
+        partie en silence, bandeau compris : le joueur revenait exactement
+        dans le bug qu'il venait de contourner, apres un clic qui n'avait
+        rien a voir.
+
+        Idempotente, et appelee a chaque question : c'est voulu. Elle ne sait
+        pas quand le rejeu finit, elle sait seulement qu'il est fini.
+        """
+        if self.world is None or not self.mise_en_place_finie:
+            return
+        self.RejouerGestesManuelsJusqua(None)
+        if self.world.rule.mode_manuel or self.world.scene.pause_en_cours:
+            self.world.manuel_actif = True
+
+    def SuivreLeRejeuDesGestes(self, rang: int, rejeu_en_cours: bool) -> None:
+        """Appelee par `Controller.ChoiceOne` a chaque question, une fois le
+        drapeau de saut a jour.
+
+        Tant que le rejeu des entrees avance, on n'applique que les gestes
+        dont le rang est atteint -- c'est ce qui les remet a LEUR place dans
+        l'histoire de la partie, au lieu de les entasser a l'instant 0.
+        Quand il est fini, on finit avec lui.
+        """
+        if not self.mise_en_place_finie:
+            # Pendant la mise en place, seuls les gestes A LEUR RANG
+            # s'appliquent : le silence, lui, attend `GameSetup`.
+            self.RejouerGestesManuelsJusqua(rang)
+            return
+        if rejeu_en_cours:
+            self.RejouerGestesManuelsJusqua(rang)
+        else:
+            self.FinirLeRejeuDesGestes()
 
     ################################################################################
     #
@@ -288,9 +374,8 @@ class GameSession:
         au joueur au lieu de relancer une partie pour rien.
         """
         scene = self.scene
-        if scene is None or not scene.manuel_commands:
+        if scene is None or not scene.RetirerDernierGesteManuel():
             return False
-        scene.manuel_commands.pop()
         # CORRECTIF (revue finale du 18/09/2026, constat 1) : sans cet appel,
         # `scene.inputs` reste tel quel (vide, sur une partie jamais
         # sauvegardee) et `LoadScene` -> `GameSetup` rejoue la mise en place

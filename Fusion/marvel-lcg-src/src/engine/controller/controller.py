@@ -272,6 +272,26 @@ class Controller:
                         if self.world:
                             self.world.render.PresentForceNoWait()
 
+                # LE REJEU DES GESTES MANUELS SUIT CELUI DES ENTREES (ronde
+                # de correction 1 du 20/09/2026, constats C1 et C2). ICI et
+                # pas dans `GameSetup`, parce qu'ICI seulement on sait ou en
+                # est le rejeu : les deux lignes au-dessus viennent de mettre
+                # `skip.is_skipping` a jour.
+                #
+                # Deux choses, et la session decide laquelle :
+                # - tant que le rejeu avance, elle n'applique que les gestes
+                #   dont le RANG est atteint -- un `Shuffle` ou un
+                #   `PutIntoPlay` rejoue trop tot decale la graine ou vole
+                #   des identifiants, et fausse tout ce qui suit SANS lever ;
+                # - quand il est fini, elle applique le reste et REFERME la
+                #   porte du silence. La refermer plus tot faisait rejouer la
+                #   partie entiere sans declencheurs ni effets de regle : le
+                #   joueur retrouvait une table vierge a la place de la
+                #   sienne.
+                self.game.session.SuivreLeRejeuDesGestes(
+                    controller_manager.replay.current_step_id,
+                    controller_manager.skip.is_skipping and replay_input is not None)
+
                 if (controller_manager.skip.is_skipping or controller_manager.replay.replay_step_id < controller_manager.skip.skip_to) and replay_input:
                     user_input = convert_fallthrough_input
                     Log.DebugSilent("FAST_UNDO", f'{controller_manager.replay.current_step_id}, {user_input}, {len(effect_list)}')
@@ -375,9 +395,16 @@ class Controller:
                     # (`Puzzle.Win()`), donc la possibilite de l'annuler.
                     # Un rendu perdu se rattrape au rendu suivant ; un geste
                     # perdu ne se rattrape pas.
+                    #
+                    # LE RANG EST PRIS ICI, ET C'EST LE BON (ronde de
+                    # correction 1, constat C2) : `current_step_id` compte
+                    # les entrees DEJA jouees, et l'entree de cette
+                    # question-ci n'est pas encore empilee -- le geste a donc
+                    # bien eu lieu « apres N entrees ». Le rejeu le remettra
+                    # exactement la.
                     gestes = controller_manager.device_manager.ConsommerGestesAppliques()
-                    if gestes:
-                        message.world.scene.manuel_commands += gestes
+                    message.world.scene.EnregistrerGestesManuels(
+                        gestes, controller_manager.replay.current_step_id)
 
                     # TACHE 8 : le rendu qui manquait. `GetInput` vient de
                     # rendre la main SANS entree ; l'appelant (ChooseEffects,

@@ -876,6 +876,17 @@ class World(WorldAction, WorldFind):
         # cite plus haut, skip ou pas.
         self.controller_manager.skip.SetIsSkipping(False)
 
+        # LE REJEU DES GESTES FINIT ICI, ET NULLE PART AILLEURS, pour une
+        # partie manuelle DECLAREE (ronde de correction 1 du 20/09/2026).
+        # `Controller.ChoiceOne` finit le rejeu pour tout le monde -- mais
+        # cette boucle-ci ne pose plus AUCUNE question, donc `ChoiceOne` n'y
+        # sera plus jamais appele. Sans cet appel, une partie manuelle
+        # rechargee avec un rejeu d'entrees en cours (c'est le cas de
+        # `AnnulerDernierGeste`, qui passe par `LoadScene`) perdrait ses
+        # gestes : `GameSetup` les avait laisses a ce rejeu, et plus personne
+        # ne les reclamait.
+        self.controller_manager.game.session.FinirLeRejeuDesGestes()
+
         # Un rendu FORCE, ICI, avant meme d'attendre un geste. Sans lui, le
         # dernier rendu que le client a recu est celui de la fin de la mise
         # en place, avec `manuel_actif` encore a faux : rien ne le
@@ -940,7 +951,15 @@ class World(WorldAction, WorldFind):
                 # `message.world` comme on tient `self.scene` ici. Ne pas
                 # fondre les deux dans `DrainSandboxCommands` : elle est
                 # appelee depuis les deux fils, et n'a acces a aucune scene.
-                self.scene.manuel_commands += appliquees
+                #
+                # Le rang (ronde de correction 1, constat C2) vaut ici le
+                # nombre d'entrees de la mise en place, et ne bouge plus :
+                # cette boucle ne pose aucune question, donc n'empile aucune
+                # entree. Tous les gestes d'une partie manuelle DECLAREE
+                # portent donc le MEME rang, celui de la fin de la mise en
+                # place -- exactement la ou ils etaient deja rejoues.
+                self.scene.EnregistrerGestesManuels(
+                    appliquees, self.controller_manager.replay.current_step_id)
                 # Un rendu FORCE : rien d'autre ne redessinera, puisque plus
                 # aucune question ne part et que le rendu normal suit les
                 # questions. Force meme si RIEN n'a ete retenu (premiere

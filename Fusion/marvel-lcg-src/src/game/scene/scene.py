@@ -60,6 +60,31 @@ class Scene:
     # sauvegardes existantes se recharger sans changer de sens.
     manuel_commands: List[str] = field(default_factory=lambda: [])
 
+    # LE RANG DE CHAQUE GESTE (constat C1 de la ronde de correction 1 du
+    # 20/09/2026) : le nombre d'entrees joueur deja jouees quand le geste a
+    # ete fait (`InputModule.current_step_id`). MEME INDEX que
+    # `manuel_commands` ci-dessus -- deux listes paralleles, tenues
+    # ensemble par `EnregistrerGestesManuels` / `RetirerDernierGesteManuel`
+    # plus bas, qui sont les SEULES a avoir le droit d'y toucher.
+    #
+    # ⚠ A QUOI CA SERT, ET POURQUOI CE N'EST PAS UN LUXE. Une sauvegarde
+    # n'est pas un instantane : `GameSetup` REJOUE les entrees. Rejouer tous
+    # les gestes a l'instant 0, comme on le faisait, ne perd pas seulement
+    # une correction, ca fausse la table entiere -- un `Shuffle`, un `Draw`,
+    # un `Reveal` ou un `Boost` consomme trop tot DECALE tout le flux
+    # aleatoire (la rencontre du round 2 n'est plus la meme), un
+    # `CreateCard`/`PutIntoPlay` fait naitre des objets qui volent les
+    # identifiants que le rejeu attribuera ensuite a d'autres cartes (un
+    # geste suivant vise alors la mauvaise carte, SANS erreur), et un
+    # `Puzzle.Win()` rejoue a l'instant 0 rend la sauvegarde inouvrable.
+    # Le rang remet chaque geste a SA place dans le rejeu.
+    #
+    # ⚠ CHAMP A DEFAUT VIDE, et une liste plus COURTE que `manuel_commands`
+    # est un cas NORMAL, pas une incoherence : c'est ce que porte toute
+    # sauvegarde ecrite avant ce champ. Un rang inconnu vaut « a la fin du
+    # rejeu », qui est exactement ou ces gestes-la etaient rejoues.
+    manuel_commands_step: List[int] = field(default_factory=lambda: [])
+
     # LA MARQUE « corrigee a la main » (tache 2 du chantier pause manuelle,
     # 20/09/2026). Posee par `World.BasculerPauseManuelle` a la PREMIERE
     # pause d'une partie ORDINAIRE, et JAMAIS remise a faux -- CE N'EST PAS
@@ -137,6 +162,47 @@ class Scene:
         alors « quelqu'un »).
         """
         return bool(self.pause_a)
+
+    def EnregistrerGestesManuels(self, gestes: List[str], rang: int) -> None:
+        """Ajoute des gestes manuels APPLIQUES, avec le rang ou ils l'ont ete.
+
+        LE SEUL endroit qui ajoute a `manuel_commands`, avec
+        `RetirerDernierGesteManuel` juste en dessous pour l'autre sens : deux
+        listes paralleles ne tiennent que si un seul endroit les fait bouger
+        ensemble. Les deux chemins de drainage du moteur passent par ici --
+        `World.ManualLoop` (partie manuelle DECLAREE) et
+        `Controller.ChoiceOne` (pause de partie ORDINAIRE).
+
+        `rang` : `InputModule.current_step_id` au moment de l'application,
+        c'est-a-dire le nombre d'entrees joueur deja jouees. Voir
+        `manuel_commands_step` pour ce que le rejeu en fait.
+        """
+        if not gestes:
+            return
+        self.manuel_commands += gestes
+        self.manuel_commands_step += [rang] * len(gestes)
+
+    def RetirerDernierGesteManuel(self) -> bool:
+        """Retire le dernier geste manuel ET son rang. Rend faux s'il n'y a
+        rien a retirer, pour que l'appelant puisse le dire au joueur."""
+        if not self.manuel_commands:
+            return False
+        self.manuel_commands.pop()
+        # Liste plus COURTE = sauvegarde d'avant ce champ, cas normal.
+        if len(self.manuel_commands_step) > len(self.manuel_commands):
+            self.manuel_commands_step.pop()
+        return True
+
+    def GestesARejouer(self) -> List[Tuple[int|None, str]]:
+        """Les gestes a rejouer au montage, dans l'ordre, chacun avec son rang.
+
+        Rang `None` = inconnu, donc « a la fin du rejeu » : c'est ce que
+        portent les sauvegardes ecrites avant `manuel_commands_step`, et
+        c'est exactement l'endroit ou elles etaient rejouees.
+        """
+        rangs = self.manuel_commands_step
+        return [(rangs[i] if i < len(rangs) else None, geste)
+                for i, geste in enumerate(self.manuel_commands)]
 
     def GetSaveFileName(self, use_comment: bool=True) -> str:
         return f"[{Ver.version}]-{self.GetName(use_comment)}"
