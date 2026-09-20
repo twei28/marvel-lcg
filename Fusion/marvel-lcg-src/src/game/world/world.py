@@ -792,6 +792,15 @@ class World(WorldAction, WorldFind):
         titre qu'une commande en attente (`DeviceManager.pause_a_publier`).
         """
         self.manuel_actif = bool(actif)
+
+        # LA MARQUE (tache 2) : posee a CETTE pause, jamais remise a faux --
+        # a l'inverse de `manuel_actif` juste au-dessus, qui lui repasse a
+        # faux a la reprise. Voir le commentaire de `Scene.corrigee_a_la_main`
+        # pour la distinction ETAT/TRACE. Rien a faire quand `actif` est faux
+        # (la reprise) : la marque, une fois posee, reste posee d'elle-meme.
+        if actif:
+            self.scene.corrigee_a_la_main = True
+
         self.controller_manager.device_manager.SignalerPauseAPublier()
         return self.manuel_actif
 

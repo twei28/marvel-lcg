@@ -64,6 +64,10 @@ class ToDescriptor:
         # la pose, personne ne la lisait). Projetee telle quelle, sans mode a
         # verifier : le champ est vide hors refus, peu importe le mode.
         world_descriptor.manuel_refus = world.controller_manager.device_manager.sandbox_last_error
+        # Tache 2 : la marque « corrigee a la main » est lue sur la SCENE
+        # (`world.scene.corrigee_a_la_main`), pas sur le monde -- c'est elle,
+        # et non `world`, qui survit a la sauvegarde.
+        world_descriptor.corrigee_a_la_main = bool(world.scene.corrigee_a_la_main)
 
         world_descriptor.active_card_ids = world.render.last_active_card_ids
         # Journal des activations ennemies du round (voir WorldStat). Copie, et

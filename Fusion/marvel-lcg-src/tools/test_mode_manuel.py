@@ -1106,6 +1106,72 @@ def cas_reprise_rouvre_la_porte(game_dir, port):
             "porte du silence se rouvre")
 
 
+def cas_marque_survit_reprise(game_dir, port):
+    """La marque `corrigee_a_la_main` : une TRACE, pas un ETAT (tache 2).
+
+    A l'inverse de `manuel_actif` (`cas_reprise_rouvre_la_porte` juste
+    au-dessus), qui repasse a faux a la reprise, `corrigee_a_la_main` ne doit
+    JAMAIS s'eteindre : une partie qu'on a corrigee a la main l'a ete, meme
+    apres la reprise. Temoin dans les DEUX sens attendus : fausse par defaut
+    sur une partie ORDINAIRE (aucune regle `mode_manuel`) jamais mise en
+    pause, vraie des la premiere pause, ENCORE vraie apres la reprise.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
+
+    assert monde.scene.corrigee_a_la_main is False, \
+        "une partie ordinaire jamais mise en pause porte deja la marque"
+
+    basculer_pause(jeu, True)
+    assert monde.scene.corrigee_a_la_main is True, \
+        "la pause n'a pas pose la marque corrigee_a_la_main"
+
+    resultat = basculer_pause(jeu, False)
+    assert resultat is False, "la reprise n'a pas rendu manuel_actif a faux"
+    assert monde.scene.corrigee_a_la_main is True, \
+        ("la reprise a eteint la marque corrigee_a_la_main : c'est une "
+         "trace, pas un etat")
+
+    return ("la marque corrigee_a_la_main : fausse par defaut, vraie apres "
+            "la pause, ENCORE vraie apres la reprise")
+
+
+def cas_marque_survit_sauvegarde(game_dir, port):
+    """La marque `corrigee_a_la_main` survit a un aller-retour de sauvegarde.
+
+    Meme gabarit que `cas_aller_retour`/`cas_relire_sauvegarde` : le fils
+    relit la sauvegarde dans SON PROPRE processus et verifie la marque --
+    seule facon de prouver qu'elle est bien ECRITE dans le fichier, pas
+    seulement tenue en memoire par cet objet `Scene`.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
+    basculer_pause(jeu, True)
+    assert monde.scene.corrigee_a_la_main is True, \
+        "premisse fausse : la marque n'a pas ete posee avant la sauvegarde"
+
+    nom = "manuel-marque-aller-retour.json"
+    ecrit = jeu.session.SaveScene(name=nom, delete_old=False)
+    assert ecrit, "la sauvegarde n'a pas ete ecrite"
+
+    env = dict(os.environ)
+    env["MC_SAUVEGARDE"] = nom
+    fils = subprocess.run(
+        [sys.executable, os.path.abspath(__file__), game_dir,
+         str(port + 1), "relire_marque_survit", "--fils"],
+        cwd=RACINE, capture_output=True, text=True, timeout=300, env=env)
+    assert fils.returncode == 0, \
+        f"le rechargement a echoue :\n{fils.stdout[-3000:]}\n{fils.stderr[-3000:]}"
+    return "la marque corrigee_a_la_main survit a un aller-retour de sauvegarde"
+
+
+def cas_relire_marque_survit(game_dir, port):
+    """Le fils de `cas_marque_survit_sauvegarde` : il recharge et verifie."""
+    chemin = os.environ["MC_SAUVEGARDE"]
+    _, monde, _ = monter_le_moteur(game_dir, port, [], sauvegarde=chemin)
+    assert monde.scene.corrigee_a_la_main is True, \
+        "la sauvegarde a perdu la marque corrigee_a_la_main"
+    return "la partie rechargee porte encore la marque corrigee_a_la_main"
+
+
 def cas_pause_publiee(game_dir, port):
     """La trame publie manuel_actif SANS AUCUN AUTRE GESTE.
 
@@ -1277,6 +1343,9 @@ CAS = {
     "defausse_deck_special": cas_defausse_deck_special,
     "pause_ferme_la_porte": cas_pause_ferme_la_porte,
     "reprise_rouvre_la_porte": cas_reprise_rouvre_la_porte,
+    "marque_survit_reprise": cas_marque_survit_reprise,
+    "marque_survit_sauvegarde": cas_marque_survit_sauvegarde,
+    "relire_marque_survit": cas_relire_marque_survit,
     "pause_publiee": cas_pause_publiee,
     "reveil_dogetinput": cas_reveil_dogetinput,
 }
@@ -1287,7 +1356,7 @@ def main():
     port = int(sys.argv[2])
     voulu = sys.argv[3] if len(sys.argv) > 3 else None
     # Les cas appeles par un AUTRE cas, jamais tout seuls.
-    SUR_DEMANDE = {"relire_sauvegarde"}
+    SUR_DEMANDE = {"relire_sauvegarde", "relire_marque_survit"}
     noms = [voulu] if voulu else [n for n in CAS if n not in SUR_DEMANDE]
     for rang, nom in enumerate(noms):
         fils = subprocess.run(

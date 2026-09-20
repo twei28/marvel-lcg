@@ -49,6 +49,12 @@ class WorldDescriptor:
     # remet pas a vide tout seul entre deux). Voir le rapport de la tache
     # 4 ter pour ce que ca implique cote plateau.
     manuel_refus: str = field(default='')
+    # LA MARQUE « corrigee a la main » (tache 2, pose Scene.corrigee_a_la_main
+    # ci-dessous). Contrairement a `manuel_actif`, elle ne redevient jamais
+    # fausse une fois publiee a vrai -- c'est une TRACE de la partie, pas un
+    # etat du moteur. Transmise a chaque rendu, comme `mode_manuel` : elle
+    # survit au rechargement de page et au chargement d'une sauvegarde.
+    corrigee_a_la_main: bool = field(default=False)
     # play
     area_schemes_main: List[CardDescriptor] = field(default_factory=lambda: [])
     main_schemes_deck: List[CardDescriptor] = field(default_factory=lambda: [])

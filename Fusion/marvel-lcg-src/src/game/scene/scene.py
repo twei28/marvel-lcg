@@ -60,6 +60,20 @@ class Scene:
     # sauvegardes existantes se recharger sans changer de sens.
     manuel_commands: List[str] = field(default_factory=lambda: [])
 
+    # LA MARQUE « corrigee a la main » (tache 2 du chantier pause manuelle,
+    # 20/09/2026). Posee par `World.BasculerPauseManuelle` a la PREMIERE
+    # pause d'une partie ORDINAIRE, et JAMAIS remise a faux -- CE N'EST PAS
+    # UN ETAT (comme `manuel_actif`, qui repasse a faux a la reprise) MAIS
+    # UNE TRACE : une partie qu'on a arretee pour corriger la table a la main
+    # l'a ete, meme si on a repris ensuite, meme apres un aller-retour de
+    # sauvegarde. Sert a ne jamais laisser planer le doute sur la regularite
+    # d'une victoire, et a le signaler dans un rapport de bug.
+    #
+    # ⚠ CHAMP A DEFAUT FAUX, meme precaution que `manuel_commands` juste
+    # au-dessus : les sauvegardes existantes se rechargent sans changer de
+    # sens.
+    corrigee_a_la_main: bool = field(default=False)
+
     inputs: List[OperationDescriptor] = field(default_factory=lambda: [])
 
     def GetSaveFileName(self, use_comment: bool=True) -> str:
