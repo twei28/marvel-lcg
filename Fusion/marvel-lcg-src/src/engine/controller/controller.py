@@ -356,6 +356,43 @@ class Controller:
                 )
 
                 if user_input == None:
+                    # TACHE 8 : le rendu qui manquait. `GetInput` vient de
+                    # rendre la main SANS entree ; l'appelant (ChooseEffects,
+                    # EventManager) va reposer LA MEME question, et sur ce
+                    # chemin-la le seul rendu possible est
+                    # `SenderPlayer.PlayerOnEvent_Text`, qui n'appelle
+                    # `Present` que pour un `Message.WhenPlayerInTurn`. Une
+                    # pause posee pendant le mulligan ou une fenetre
+                    # d'interruption ne publiait donc JAMAIS `manuel_actif` :
+                    # la trame ne bougeait pas d'un numero et `/get_world`
+                    # servait l'ancienne, le plateau croyant que le moteur
+                    # parle encore. Mesure du 20/09/2026 : mulligan
+                    # (30, False) -> (30, False), Spider-Sense
+                    # (82, False) -> (82, False), tour de heros
+                    # (35, False) -> (36, True).
+                    #
+                    # ⚠ PAS A CHAQUE `None`, et c'est tout l'objet de
+                    # `ConsommerRenduAForcer` : `DoGetInput` rend aussi
+                    # `None` sur une entree arrivee pour un AUTRE joueur ou
+                    # sur une sortie d'attente demandee (console, rejeu,
+                    # arret du moteur), et rend "{}" sur expiration de
+                    # minuterie. Forcer un rendu dans ces cas changerait le
+                    # rythme de rendu de chemins etrangers a la pause. Seules
+                    # les deux causes qui ont MUTE le monde sans le publier
+                    # arment le marqueur : une bascule de pause
+                    # (`SignalerPauseAPublier`) et un geste manuel draine
+                    # (branche `DrainSandboxCommands` de `DoGetInput`).
+                    #
+                    # ⚠ LE `SetIsSkipping(False)` N'EST PAS UN ORNEMENT :
+                    # `PresentForceNoWait` porte un `assert skip == False`, et
+                    # un rejeu silencieux (Ctrl+Z -> AnnulerDernierGeste ->
+                    # LoadScene) laisse `skip` arme. Meme precaution, dans le
+                    # meme ordre, que `World.ManualLoop` (world.py) juste
+                    # avant SON rendu force, et que le debut de cette
+                    # methode.
+                    if controller_manager.device_manager.ConsommerRenduAForcer():
+                        controller_manager.skip.SetIsSkipping(False)
+                        message.world.render.PresentForceNoWait()
                     return None, True
 
                 if not Build.release:

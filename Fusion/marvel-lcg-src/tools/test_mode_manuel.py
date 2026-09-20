@@ -1719,6 +1719,221 @@ def cas_passer_hors_pause(game_dir, port):
             "une annulation -- ce n'est pas un raccourci de jeu ordinaire")
 
 
+def cas_pause_publiee_pendant_question_ouverte(game_dir, port):
+    """La pause posee PENDANT une question deja ouverte doit se PUBLIER --
+    c'est le cas d'usage central du chantier (« je suis coince sur une
+    question, je mets en pause pour corriger a la main »).
+
+    ⚠ CE CAS A ETE ECRIT ROUGE, IL EST LA GARDE DU CORRECTIF (diagnostic
+    du 20/09/2026, apres la mesure de bout en bout de la tache 7 : « poser
+    la pause pendant le mulligan ou une fenetre d'interruption ne publie
+    jamais `manuel_actif` cote /get_world, immobile jusqu'a 60 s »).
+    Constate rouge -- trame (30, False) -> (30, False) -- puis passe au vert
+    par la tache 8 : `Controller.ChoiceOne` force desormais un rendu quand
+    il rend la main sans entree pour une cause qui a mute le monde. Ce cas
+    redevient rouge des que ce rendu force disparait : c'est sa seule
+    raison d'etre.
+
+    ⚠ POURQUOI IL N'UTILISE PAS `monter_le_moteur`. Le `pilote` de ce
+    harnais REPOND toujours : il ne peut pas jouer le seul scenario qui
+    compte ici, celui ou `DoGetInput` RE-POSE la meme question sans reponse.
+    Ce cas monte donc la partie lui-meme, avec son propre pilote -- meme
+    scenario (rhino/spider_man, graine 42) et meme boucle `run()` que
+    `monter_le_moteur`, a la seule difference du pilote.
+
+    ⚠ CE QUE LE PILOTE IMITE, ET AVEC QUELLE FIDELITE. Au moment choisi, il
+    fait DANS L'ORDRE ce que font les deux vrais fils :
+      1. `World.BasculerPauseManuelle(True)` -- exactement ce que fait le
+         fil HTTP (route POST /manuel_pause), a l'identique ;
+      2. consommer `pause_a_publier` puis rendre `None` -- exactement la
+         branche du VRAI `DoGetInput` (base.py, « Meme protocole que
+         ci-dessus, pour la pause »), dont `cas_reveil_dogetinput` prouve
+         deja qu'elle est bien atteinte sur le vrai fil parque.
+    Tout le reste (le retour `None` remonte dans `Controller.ChoiceOne`, la
+    boucle qui RE-POSE la question, et le rendu qui a lieu ou non entre les
+    deux) est le VRAI code du moteur, pas une imitation.
+
+    DEUX TEMOINS, et le second est ce qui rend le premier credible :
+    - TEMOIN 1 (le defaut) : pause posee sur la question du MULLIGAN. A la
+      question suivante -- la MEME, re-posee -- la trame doit porter
+      `manuel_actif` vrai. C'etait ce temoin, et lui seul, qui rougissait :
+      la trame ne bougeait pas d'un numero et publiait toujours faux, alors
+      que `world.manuel_actif` etait deja vrai.
+    - TEMOIN 2 (contraste) : la meme sequence sur une question de TOUR DE
+      HEROS (`WhenPlayerInTurn`) publiait, elle, deja tout de suite -- le
+      seul chemin ou `SenderPlayer.PlayerOnEvent_Text` appelait `Present`.
+      Sans ce temoin, un montage casse rougirait pareil ; avec lui, on sait
+      que le montage sait voir une publication quand elle a lieu. Il doit
+      rester vert : c'est lui qui prouve qu'on a corrige le defaut au lieu
+      de rendre le cas insensible.
+    """
+    game_dir = os.path.abspath(game_dir)
+    os.chdir(game_dir)
+    sys.path.insert(0, game_dir)
+
+    cfg = json.load(open("launch.json"))
+    cfg["server_addresses"] = [f"127.0.0.1:{port}"]
+    cfg["check_for_new_version_on_startup"] = False
+    json.dump(cfg, open("launch.json", "w"), indent=2)
+
+    from engine.network.web_server import WebServer
+    WebServer.IsAuthenticate = lambda self, request=None: True
+    WebServer.IsVersionMatch = lambda self, request=None: True
+
+    from engine.device.manager.base import DeviceManager
+
+    # `etape` mene la sequence ; les deux temoins sont des couples
+    # (numero de trame, manuel_actif publie) releves a la question SUIVANTE.
+    etat = {"etape": "attend_mulligan", "compte": 0,
+            "defaut": None, "contraste": None,
+            "avant_defaut": None, "avant_contraste": None, "fini": False}
+
+    def poser_la_pause(gestionnaire, actif):
+        """Les deux vrais fils, dans l'ordre (voir l'en-tete)."""
+        jeu.world.BasculerPauseManuelle(actif, "Diagnostic")
+        assert gestionnaire.pause_a_publier, (
+            "premisse cassee : BasculerPauseManuelle n'a pas pose le "
+            "marqueur que DoGetInput consomme"
+        )
+        gestionnaire.pause_a_publier = False
+
+    def pilote(self, data, player_id=None, check=None):
+        try:
+            options = json.loads(data.options_json or "[]")
+        except Exception:
+            options = []
+        etat["compte"] += 1
+        if etat["compte"] > PLAFOND_QUESTIONS:
+            while True:
+                time.sleep(0.5)
+
+        rendu = jeu.world.render
+        trame = (rendu.last_render_id,
+                 getattr(rendu.descriptor, "manuel_actif", None))
+        evenement = data.event_name
+
+        if etat["etape"] == "attend_mulligan":
+            if evenement == "WhenPlayerChooseAbility":
+                assert trame[1] is False, (
+                    f"premisse cassee : la trame publie deja "
+                    f"manuel_actif={trame[1]!r} avant toute pause"
+                )
+                etat["avant_defaut"] = trame
+                etat["question_visee"] = evenement
+                poser_la_pause(self, True)
+                etat["etape"] = "releve_defaut"
+                return None
+
+        elif etat["etape"] == "releve_defaut":
+            assert evenement == etat["question_visee"], (
+                f"premisse cassee : le moteur n'a pas re-pose la MEME "
+                f"question ({evenement} au lieu de {etat['question_visee']})"
+            )
+            etat["defaut"] = trame
+            # On reprend, sinon la porte des declencheurs reste fermee
+            # (cf. cas_pause_ferme_la_porte) et le tour du heros ne poserait
+            # plus aucune question -- le temoin 2 n'aurait plus de support.
+            poser_la_pause(self, False)
+            etat["etape"] = "attend_tour"
+            return None
+
+        elif etat["etape"] == "attend_tour":
+            if evenement == "WhenPlayerInTurn":
+                etat["avant_contraste"] = trame
+                etat["question_visee"] = evenement
+                poser_la_pause(self, True)
+                etat["etape"] = "releve_contraste"
+                return None
+
+        elif etat["etape"] == "releve_contraste":
+            etat["contraste"] = trame
+            poser_la_pause(self, False)
+            etat["etape"] = "fini"
+            etat["fini"] = True
+            return None
+
+        # Reponse ordinaire : la premiere option jouable.
+        legales = [o for o in options
+                   if isinstance(o, dict) and not o.get("failure_reason")]
+        if not legales:
+            return None
+        o = legales[0]
+        cibles = [str(x) for x in (o.get("all_legal_targets") or [])]
+        mini = (o.get("target_num_range") or [0, 0])[0]
+        return json.dumps({"id": str(o.get("id", 0)),
+                           "targets": cibles[:mini], "resources": []})
+
+    DeviceManager.DoGetInput = pilote
+    DeviceManager.DoWaitConnect = lambda self, *a, **k: None
+    DeviceManager.DoWaitSync = lambda self, *a, **k: None
+
+    from engine import Engine
+    Engine.Initialize()
+    from game.scene.loader import SceneLoader
+
+    with open(_chemin_json("Campaign", "rhino")) as f:
+        campagne = f.read()
+    with open(_chemin_json("Hero", "spider_man")) as f:
+        hero = f.read()
+    scene = SceneLoader.NewFromJson(campagne, None, [hero], 42, [], {})
+
+    jeu = Engine.game
+    jeu.session.SetScene(scene, "Load")
+
+    def run():
+        import traceback
+        while True:
+            try:
+                if jeu.GameSetup():
+                    jeu.GameLoop()
+            except BaseException:
+                traceback.print_exc()
+                return
+            if jeu.state.start_state.state:
+                continue
+            jeu.state.SetRunningState(False)
+            jeu.state.WaitUntilGameStart()
+
+    threading.Thread(target=run, daemon=True).start()
+
+    limite = time.time() + 90
+    while not etat["fini"] and time.time() < limite:
+        time.sleep(0.5)
+
+    assert etat["defaut"] is not None, (
+        "la sequence n'a jamais atteint le premier releve : rien n'est prouve"
+    )
+    assert etat["contraste"] is not None, (
+        "la sequence n'a jamais atteint le releve de contraste : rien n'est "
+        "prouve"
+    )
+
+    # TEMOIN 2 d'abord : il valide le montage.
+    assert etat["contraste"][1] is True, (
+        f"MONTAGE SUSPECT : meme sur une question de tour de heros, la "
+        f"pause n'a pas ete publiee (trame {etat['avant_contraste']} -> "
+        f"{etat['contraste']}). Ce cas ne peut rien prouver dans cet etat."
+    )
+
+    # TEMOIN 1 : le defaut.
+    assert etat["defaut"][1] is True, (
+        f"LE PLATEAU NE DEVIENT PAS MUET : pause posee pendant une question "
+        f"deja ouverte (mulligan), la question est re-posee a l'identique "
+        f"mais AUCUN rendu n'a lieu entre les deux -- trame "
+        f"{etat['avant_defaut']} -> {etat['defaut']} (numero de trame "
+        f"inchange, manuel_actif publie toujours faux), alors que "
+        f"world.manuel_actif={jeu.world.manuel_actif}. Le meme geste sur une "
+        f"question de tour de heros publie bien "
+        f"({etat['avant_contraste']} -> {etat['contraste']}). Regarder "
+        f"d'abord le rendu force de Controller.ChoiceOne sur "
+        f"`if user_input == None` (tache 8) : sans lui, le seul rendu de ce "
+        f"chemin est SenderPlayer.PlayerOnEvent_Text, qui n'appelle Present "
+        f"que si le message est un WhenPlayerInTurn."
+    )
+    return ("la pause posee pendant une question deja ouverte est publiee "
+            "sur la trame suivante, mulligan compris")
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
@@ -1759,6 +1974,7 @@ CAS = {
     "passer_refuse_question_forcee": cas_passer_refuse_question_forcee,
     "passer_aucune_question": cas_passer_aucune_question,
     "passer_hors_pause": cas_passer_hors_pause,
+    "pause_publiee_pendant_question_ouverte": cas_pause_publiee_pendant_question_ouverte,
 }
 
 

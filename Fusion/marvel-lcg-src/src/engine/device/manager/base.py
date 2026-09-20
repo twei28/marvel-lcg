@@ -58,6 +58,39 @@ class DeviceManager:
         # CE marqueur au meme titre que `sandbox_commands`.
         self.pause_a_publier: bool = False
 
+        # Tache 8 : la RAISON du `None` que `DoGetInput` rend, pas le fait
+        # qu'il en rende un. `DoGetInput` rend `None` pour QUATRE raisons
+        # tres differentes -- une bascule de pause, un geste manuel draine,
+        # une entree arrivee pour un AUTRE joueur, une sortie d'attente
+        # demandee (console, rejeu, arret) -- et seules les DEUX PREMIERES
+        # ont change l'etat du monde sans qu'aucun rendu ne le publie. Ce
+        # marqueur les distingue, pour que `Controller.ChoiceOne` ne force un
+        # rendu QUE dans ces deux cas-la : forcer a chaque `None` changerait
+        # le rythme de rendu de chemins etrangers a la pause (une expiration
+        # de minuterie, un rejeu), ce que ce chantier n'a pas a faire.
+        #
+        # ⚠ SEPARE DE `pause_a_publier` A DESSEIN, et ce n'est pas un
+        # doublon : les deux marqueurs ont des consommateurs differents.
+        # `pause_a_publier` est consomme par `DoGetInput` lui-meme (« un
+        # reveil et un seul »), celui-ci par `ChoiceOne` UNE FOIS REMONTE de
+        # `DoGetInput` (« un rendu force et un seul »). Les fondre ferait que
+        # le premier a consommer aveuglerait le second.
+        self.rendu_a_forcer: bool = False
+
+    def ConsommerRenduAForcer(self) -> bool:
+        """Rend vrai UNE SEULE FOIS par cause, et remet le marqueur a plat.
+
+        Appele par `Controller.ChoiceOne` quand `GetInput` a rendu `None`,
+        pour savoir s'il doit forcer un rendu avant de laisser l'appelant
+        reposer sa question. Consommer ICI (et pas seulement lire) garantit
+        qu'une bascule ou un drainage produit AU PLUS un rendu force, jamais
+        un rendu a chaque tour de la boucle de re-pose.
+        """
+        if not self.rendu_a_forcer:
+            return False
+        self.rendu_a_forcer = False
+        return True
+
     def QueueSandboxCommands(self, commands: List[str]) -> None:
         """Depose des commandes Puzzle.* ; appele depuis le fil du serveur web."""
         self.sandbox_commands += commands
@@ -73,8 +106,19 @@ class DeviceManager:
         juste un rendu a produire au prochain reveil de `DoGetInput`, qui
         rendra la main sans entree et laissera l'appelant reposer sa
         question -- ce qui produit ce rendu.
+
+        ⚠ CORRECTIF (tache 8) : « ce qui produit ce rendu » etait FAUX pour
+        toutes les questions sauf celles du tour de heros. La re-pose ne
+        passe que par `SenderPlayer.PlayerOnEvent_Text`, qui n'appelle
+        `Present` que pour un `Message.WhenPlayerInTurn` : sur le mulligan ou
+        une fenetre d'interruption, la question etait bien re-posee mais
+        AUCUN rendu n'avait lieu entre les deux, et `/get_world` continuait
+        de servir la trame precedente avec `manuel_actif` a faux. D'ou
+        `rendu_a_forcer` : c'est desormais `Controller.ChoiceOne` qui force
+        le rendu, au lieu de compter sur un rendu qui n'existait pas.
         """
         self.pause_a_publier = True
+        self.rendu_a_forcer = True
         self.notify.input.NotifyAll()
 
     def PasserQuestionCourante(self) -> str:
@@ -271,6 +315,15 @@ class DeviceManager:
         # de la condition) mais bien sur le fil du jeu. Puis on rend la main :
         # aucune entree joueur n'est arrivee, l'appelant redemandera.
         if self.DrainSandboxCommands():
+            # Tache 8, meme famille que la pause ci-dessous : un geste manuel
+            # applique au monde PENDANT une question ouverte n'est publie par
+            # personne sur ce chemin (la re-pose de la question ne rend que
+            # pour un `WhenPlayerInTurn`). `ManualLoop`, elle, force deja son
+            # rendu apres chaque drainage -- c'est pourquoi le marqueur est
+            # pose ICI, dans la branche qui REND LA MAIN a `ChoiceOne`, et
+            # non dans `DrainSandboxCommands` que `ManualLoop` appelle aussi
+            # (elle l'armerait sans que personne ne vienne le consommer).
+            self.rendu_a_forcer = True
             self.timer.start_time = None
             self.notify.has_client_input = False
             if player_id in self.asking_players:
