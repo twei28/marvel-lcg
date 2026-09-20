@@ -55,6 +55,15 @@ class WorldDescriptor:
     # etat du moteur. Transmise a chaque rendu, comme `mode_manuel` : elle
     # survit au rechargement de page et au chargement d'une sauvegarde.
     corrigee_a_la_main: bool = field(default=False)
+    # LA PAUSE EN COURS (tache 3). Qui l'a posee (vide = aucun pseudo n'a
+    # voyage, `BandeauPause` dit « quelqu'un ») et depuis quand
+    # (`Time.Format()`, une chaine a afficher telle quelle). Lus sur la SCENE
+    # (`Scene.pause_par` / `Scene.pause_a`), pas sur `world` : c'est elle qui
+    # survit a la sauvegarde. ⚠ EFFACES A LA REPRISE, contrairement a
+    # `corrigee_a_la_main` juste au-dessus : ces deux champs decrivent la
+    # pause EN COURS, pas la partie entiere.
+    pause_par: str = field(default="")
+    pause_a: str = field(default="")
     # play
     area_schemes_main: List[CardDescriptor] = field(default_factory=lambda: [])
     main_schemes_deck: List[CardDescriptor] = field(default_factory=lambda: [])

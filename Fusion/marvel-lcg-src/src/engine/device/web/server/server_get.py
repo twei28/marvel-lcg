@@ -115,21 +115,29 @@ class GameServerGet(GameServerBase):
     async def manuel_pause(self, request: web.Request) -> web.Response:
         """Bascule la pause manuelle EN COURS DE PARTIE (tache 1).
 
-        Corps : {"actif": true|false}. Ne fait qu'un seul appel a
-        `World.BasculerPauseManuelle` -- ce fil (HTTP) ne doit toucher a RIEN
-        d'autre du monde, cf. le commentaire en tete de
-        `engine/device/manager/base.py` et celui de `BasculerPauseManuelle`.
+        Corps : {"actif": true|false, "qui": "<pseudo>"}. `qui` est
+        OPTIONNEL (tache 3) : absent ou vide, accepte -- le moteur ne connait
+        aucun pseudo, il ne fait que relayer ce que le plateau lui donne
+        pour que `BandeauPause` dise qui a pose la pause (« quelqu'un » a
+        defaut). Ne fait qu'un seul appel a `World.BasculerPauseManuelle` --
+        ce fil (HTTP) ne doit toucher a RIEN d'autre du monde, cf. le
+        commentaire en tete de `engine/device/manager/base.py` et celui de
+        `BasculerPauseManuelle`.
         """
         data = await request.json()
         actif = data.get('actif', None)
         if not isinstance(actif, bool):
             return web.json_response({'error': 'actif must be a boolean'}, status=400)
 
+        qui = data.get('qui', '')
+        if not isinstance(qui, str):
+            return web.json_response({'error': 'qui must be a string'}, status=400)
+
         world = self.game.world
         if world is None:
             return web.json_response({'error': 'no game in progress'}, status=409)
 
-        en_pause = world.BasculerPauseManuelle(actif)
+        en_pause = world.BasculerPauseManuelle(actif, qui)
         return web.json_response({'result': 'en pause' if en_pause else 'repris'})
 
     async def manuel_undo(self, request: web.Request) -> web.Response:

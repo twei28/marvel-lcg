@@ -215,7 +215,7 @@ def deposer(jeu, *commandes, drainer_soi_meme=False):
     time.sleep(3)
 
 
-def basculer_pause(jeu, actif):
+def basculer_pause(jeu, actif, qui=""):
     """Bascule la pause manuelle comme le ferait POST /manuel_pause.
 
     Appelle directement `World.BasculerPauseManuelle`, EXACTEMENT ce que fait
@@ -224,8 +224,11 @@ def basculer_pause(jeu, actif):
     Le court sommeil laisse au fil du jeu, reveille par l'appel, le temps
     d'en tirer les consequences avant l'assertion suivante -- meme idiome que
     `deposer` ci-dessus.
+
+    `qui` (tache 3, optionnel) : le pseudo transmis par la route, relaye tel
+    quel a `BasculerPauseManuelle`.
     """
-    resultat = jeu.world.BasculerPauseManuelle(actif)
+    resultat = jeu.world.BasculerPauseManuelle(actif, qui)
     time.sleep(2)
     return resultat
 
@@ -1172,6 +1175,82 @@ def cas_relire_marque_survit(game_dir, port):
     return "la partie rechargee porte encore la marque corrigee_a_la_main"
 
 
+def cas_qui_et_depuis_publies(game_dir, port):
+    """La pause EN COURS (tache 3) : `pause_par` / `pause_a`, poses puis
+    EFFACES a la reprise -- a l'inverse de `corrigee_a_la_main`
+    (`cas_marque_survit_reprise` juste au-dessus), qui elle ne s'eteint
+    jamais. Sans cette distinction, un joueur d'une table EN LIGNE ne peut
+    pas savoir qui a arrete sa partie ni depuis quand.
+
+    ⚠ MEME PIEGE QUE `cas_pause_publiee`, et le meme remede : la trame
+    (`monde.render.descriptor`) n'est rafraichie qu'au PROCHAIN rendu, et
+    rien ne le force sans une question posee entre-temps. Une premiere
+    version de ce cas lisait le descripteur juste apres `basculer_pause`
+    (comme les cas voisins le font pour `monde.scene.*`, jamais pour le
+    descripteur) : ROUGE, non pas faute d'implementation mais parce
+    qu'aucun rendu n'avait eu lieu entre la bascule et la lecture -- constate
+    a l'execution : la partie automatique avait deja largement depasse
+    PLAFOND_QUESTIONS a ce moment-la, `pilote` ne repondait plus, donc plus
+    aucun rendu naturel n'avait lieu. Meme sequence que `cas_pause_publiee` :
+    tout observe DEPUIS `avant_reponse`, sur la partie AUTOMATIQUE qui
+    continue derriere, aucun `Puzzle.*` deppose.
+    """
+    etat = {
+        "compte": 0, "pause_posee": False, "vu_qui": False,
+        "reprise_posee": False, "vu_vide_apres_reprise": False,
+    }
+
+    def observateur(jeu):
+        etat["compte"] += 1
+        descripteur = jeu.world.render.descriptor
+        pause_par_publie = getattr(descripteur, "pause_par", None)
+
+        if etat["compte"] == 1:
+            # PREMISE, verifiee sur la toute premiere trame : une partie
+            # ordinaire jamais mise en pause ne porte pas deja ces champs.
+            assert pause_par_publie == "", \
+                f"une partie jamais mise en pause publie deja pause_par={pause_par_publie!r}"
+            assert getattr(descripteur, "pause_a", None) == "", \
+                "une partie jamais mise en pause publie deja pause_a"
+
+        if not etat["pause_posee"] and etat["compte"] >= 5:
+            etat["pause_posee"] = True
+            jeu.world.BasculerPauseManuelle(True, "Nick Fury")
+            assert jeu.world.scene.pause_par == "Nick Fury", \
+                "pause_par n'a pas pris le pseudo transmis sur la scene"
+            assert jeu.world.scene.pause_a != "", \
+                "pause_a est reste vide sur la scene alors que la pause est posee"
+            return
+
+        if etat["pause_posee"] and not etat["vu_qui"]:
+            if pause_par_publie == "Nick Fury":
+                etat["vu_qui"] = True
+                assert getattr(descripteur, "pause_a", None) not in (None, ""), \
+                    "pause_par est publie mais pause_a reste vide"
+                jeu.world.BasculerPauseManuelle(False)
+                etat["reprise_posee"] = True
+            return
+
+        if etat["reprise_posee"] and not etat["vu_vide_apres_reprise"]:
+            if pause_par_publie == "":
+                etat["vu_vide_apres_reprise"] = True
+                assert getattr(descripteur, "pause_a", None) == "", \
+                    "pause_a reste publie apres la reprise"
+
+    monter_le_moteur(game_dir, port, [], avant_reponse=observateur)
+
+    assert etat["pause_posee"], \
+        "la pause n'a jamais ete posee : ce cas n'a rien pu prouver"
+    assert etat["vu_qui"], (
+        "la trame n'a jamais publie pause_par='Nick Fury' apres la bascule"
+    )
+    assert etat["vu_vide_apres_reprise"], (
+        "la trame n'a jamais republie pause_par vide apres la reprise"
+    )
+    return ("pause_par/pause_a : vides par defaut, poses (qui, depuis) a la "
+            "pause, RE-VIDES apres la reprise -- sur la scene et sur la trame")
+
+
 def cas_pause_publiee(game_dir, port):
     """La trame publie manuel_actif SANS AUCUN AUTRE GESTE.
 
@@ -1346,6 +1425,7 @@ CAS = {
     "marque_survit_reprise": cas_marque_survit_reprise,
     "marque_survit_sauvegarde": cas_marque_survit_sauvegarde,
     "relire_marque_survit": cas_relire_marque_survit,
+    "qui_et_depuis_publies": cas_qui_et_depuis_publies,
     "pause_publiee": cas_pause_publiee,
     "reveil_dogetinput": cas_reveil_dogetinput,
 }

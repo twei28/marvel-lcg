@@ -74,6 +74,26 @@ class Scene:
     # sens.
     corrigee_a_la_main: bool = field(default=False)
 
+    # LA PAUSE EN COURS (tache 3 du chantier pause manuelle, 20/09/2026).
+    # Qui l'a posee (pseudo, ou vide -- le moteur ne connait aucun pseudo, il
+    # ne fait que relayer ce que `POST /manuel_pause` a fourni) et depuis
+    # quand (`Time.Format()`, meme format que `metadata['time']` plus haut).
+    #
+    # ⚠ DISTINCTS de `corrigee_a_la_main` juste au-dessus, et c'est
+    # deliberé : ces deux champs decrivent la pause EN COURS, pas la partie
+    # entiere -- `World.BasculerPauseManuelle` les EFFACE a la reprise
+    # (repassent a la chaine vide), alors que `corrigee_a_la_main` ne
+    # s'eteint jamais. Sans cette info, un joueur d'une table EN LIGNE voit
+    # sa partie s'arreter sans savoir qui l'a arretee ni depuis quand, et
+    # croit a une panne -- exactement le defaut que le bandeau de pause
+    # existe pour eviter.
+    #
+    # ⚠ CHAMPS A DEFAUT CHAINE VIDE, meme precaution que les champs
+    # ci-dessus : les sauvegardes existantes se rechargent sans changer de
+    # sens (jamais en pause au chargement).
+    pause_par: str = field(default="")
+    pause_a: str = field(default="")
+
     inputs: List[OperationDescriptor] = field(default_factory=lambda: [])
 
     def GetSaveFileName(self, use_comment: bool=True) -> str:

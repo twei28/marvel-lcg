@@ -1,5 +1,6 @@
 from typing import Final, TypeAlias
 from core import *
+from core.lib import Time
 
 from game.card.face import *
 from game.ability import *
@@ -758,7 +759,7 @@ class World(WorldAction, WorldFind):
                 return
         return
 
-    def BasculerPauseManuelle(self, actif: bool) -> bool:
+    def BasculerPauseManuelle(self, actif: bool, qui: str = "") -> bool:
         """Bascule `manuel_actif` EN COURS DE PARTIE (tache 1, pause manuelle).
 
         Rend `manuel_actif` (donc l'ETAT « le moteur s'est tu ») bascule dans
@@ -790,6 +791,11 @@ class World(WorldAction, WorldFind):
         connaissait) : le fil se rendormait aussitot. `SignalerPauseAPublier`
         pose EN PLUS le marqueur que `DoGetInput` teste desormais au meme
         titre qu'une commande en attente (`DeviceManager.pause_a_publier`).
+
+        `qui` (tache 3, optionnel) : le pseudo de qui pose la pause, fourni
+        par l'appelant de la route -- le moteur ne connait aucun pseudo, il
+        ne fait que le relayer. Vide (defaut) accepte comme un cas NORMAL,
+        pas un repli d'erreur : `BandeauPause` dira alors « quelqu'un ».
         """
         self.manuel_actif = bool(actif)
 
@@ -800,6 +806,17 @@ class World(WorldAction, WorldFind):
         # (la reprise) : la marque, une fois posee, reste posee d'elle-meme.
         if actif:
             self.scene.corrigee_a_la_main = True
+
+        # LA PAUSE EN COURS (tache 3) : qui, et depuis quand -- DISTINCTS de
+        # la marque juste au-dessus, ceux-ci decrivent la pause EN COURS, pas
+        # la partie entiere, et s'EFFACENT donc a la reprise (`else`
+        # ci-dessous), contrairement a `corrigee_a_la_main`.
+        if actif:
+            self.scene.pause_par = qui
+            self.scene.pause_a = Time.Format()
+        else:
+            self.scene.pause_par = ""
+            self.scene.pause_a = ""
 
         self.controller_manager.device_manager.SignalerPauseAPublier()
         return self.manuel_actif

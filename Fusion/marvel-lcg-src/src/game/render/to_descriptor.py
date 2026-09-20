@@ -68,6 +68,13 @@ class ToDescriptor:
         # (`world.scene.corrigee_a_la_main`), pas sur le monde -- c'est elle,
         # et non `world`, qui survit a la sauvegarde.
         world_descriptor.corrigee_a_la_main = bool(world.scene.corrigee_a_la_main)
+        # Tache 3 : la pause EN COURS (qui, depuis quand), lue sur la SCENE
+        # comme la marque juste au-dessus -- effacee a la reprise, elle,
+        # contrairement a `corrigee_a_la_main`. Meme acces direct que la
+        # ligne juste au-dessus : les champs absents d'une vieille sauvegarde
+        # retombent deja sur leur defaut (`engine/lib/json.py`).
+        world_descriptor.pause_par = str(world.scene.pause_par)
+        world_descriptor.pause_a = str(world.scene.pause_a)
 
         world_descriptor.active_card_ids = world.render.last_active_card_ids
         # Journal des activations ennemies du round (voir WorldStat). Copie, et
