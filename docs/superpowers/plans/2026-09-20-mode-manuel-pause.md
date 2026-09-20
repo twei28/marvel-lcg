@@ -295,3 +295,57 @@ C'est le seul test qui prouve la chaîne entière, et c'est celui qui dira si
 l'idée tient vraiment.
 
 - [ ] **Étape 1 : écrire, lancer, obtenir le vert, commiter**
+
+---
+
+### Tâche 8 : que la pause se voie aussi pendant une question
+
+**Ajoutée le 20/09/2026, après le diagnostic qui a suivi la tâche 7.**
+
+**Fichiers :**
+- Modifier : `Fusion/marvel-lcg-src/src/engine/controller/controller.py`
+- Modifier : `Fusion/marvel-lcg-src/tools/test_mode_manuel.py` (le cas rouge
+  `pause_publiee_pendant_question_ouverte` existe déjà, il doit passer au vert)
+- Modifier : `ui-check/tests/mode-manuel.spec.ts`
+
+**Le défaut, établi et reproduit.** Mettre la table en pause pendant une
+question déjà ouverte ne rend pas le plateau muet, sauf si cette question est
+une question de tour de héros. Mesuré : sur le mulligan, la trame reste à
+`(30, manuel_actif=False)` alors que `world.manuel_actif` est déjà vrai ; sur
+une fenêtre d'interruption, `(82, False)` ne bouge pas non plus ; le témoin de
+contraste, une question de tour de héros, passe bien de `(35, False)` à
+`(36, True)`.
+
+**La cause.** `DoGetInput` rend bien `None` (la tâche 1 est correcte) et
+`ChoiceOne` re-pose la même question. Mais le seul rendu de ce chemin est
+`SenderPlayer.PlayerOnEvent_Text` (`src/game/message/sender/sender_player.py`),
+qui n'appelle `Present` que pour un message `WhenPlayerInTurn`. Sans `Present`,
+pas de `ToDescriptor.World`, et `/get_world` continue de servir la trame
+précédente.
+
+**Pourquoi les cas verts ne l'ont pas vu.** `cas_reveil_dogetinput` ne ment
+pas, il prouve moins : il monte un `DeviceManager` nu, sans monde ni rendu, et
+s'arrête exactement là où le défaut commence. `cas_pause_publiee` s'appuie, son
+docstring le dit, sur la partie automatique qui continue et rend d'elle-même.
+
+- [ ] **Étape 1 : le cas rouge est déjà écrit**, et déjà constaté rouge.
+- [ ] **Étape 2 : forcer le rendu**, dans `Controller.ChoiceOne`, sur le
+  `if user_input == None`. Le mode manuel déclaré fait déjà exactement ça :
+  `World.ManualLoop` force `self.render.PresentForceNoWait()` juste après avoir
+  posé `manuel_actif = True`. La tâche 1 a repris le réveil et oublié ce rendu.
+
+  ⚠ Deux gardes : distinguer la CAUSE du `None` (une bascule ou un geste
+  drainé, jamais une expiration de minuterie), et se garder du
+  `assert skip == False` de `PresentForceNoWait`.
+
+  ⚠ **Ne pas corriger dans `PlayerOnEvent_Text`** : cela changerait le rendu de
+  toutes les questions du moteur.
+- [ ] **Étape 3 : la batterie entière**, au premier plan, sur un dossier
+  jetable. Le témoin de contraste doit rester vert : c'est lui qui prouve qu'on
+  n'a pas simplement rendu le cas insensible.
+- [ ] **Étape 4 : déplacer la pause du scénario de bout en bout** au moment où
+  un joueur la déclencherait vraiment, c'est-à-dire pendant une question qui le
+  bloque, et non dans le calme du début de tour. Corriger au passage le
+  commentaire qui se contredit (« aucune question n'attend » puis « une vraie
+  question reste ouverte »).
+- [ ] **Étape 5 : commiter.**
