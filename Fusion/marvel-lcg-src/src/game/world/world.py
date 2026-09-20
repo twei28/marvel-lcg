@@ -811,6 +811,16 @@ class World(WorldAction, WorldFind):
         # la marque juste au-dessus, ceux-ci decrivent la pause EN COURS, pas
         # la partie entiere, et s'EFFACENT donc a la reprise (`else`
         # ci-dessous), contrairement a `corrigee_a_la_main`.
+        #
+        # ⚠ ET C'EST DESORMAIS LA SEULE MEMOIRE DE LA PAUSE QUI SURVIT A UN
+        # REMONTAGE (constat C1 de la revue finale, 20/09/2026).
+        # `manuel_actif` vit sur le `World`, que « Annuler »
+        # (`GameSession.Undo`) et tout chargement RECONSTRUISENT : il
+        # retombait donc a faux et la partie reprenait en silence. C'est
+        # `Scene.pause_en_cours` -- derive de `pause_a` ci-dessous -- que
+        # `GameSession.GameSetup` relit pour reposer l'etat. Vider ces champs
+        # a la reprise n'est donc plus seulement cosmetique : c'est ce qui
+        # dit au montage suivant que la partie n'est plus en pause.
         if actif:
             self.scene.pause_par = qui
             self.scene.pause_a = Time.Format()
@@ -910,6 +920,17 @@ class World(WorldAction, WorldFind):
                 # deposee par le fil HTTP dans la fenetre entre l'instantane
                 # et le drainage.
                 appliquees = device_manager.DrainSandboxCommands()
+                # ⚠ DEUX CHEMINS DE DRAINAGE, DEUX ENREGISTREMENTS, ET C'EST
+                # VOULU (constat C1 de la revue finale, 20/09/2026). Celui-ci
+                # sert la partie manuelle DECLAREE, dont le fil de jeu vit
+                # ICI. Une pause de partie ORDINAIRE n'entre JAMAIS dans
+                # cette boucle (`OnGameLoop` n'y va que sous
+                # `rule.mode_manuel`) : son fil est gare dans une QUESTION,
+                # c'est `DeviceManager.DoGetInput` qui draine, et c'est
+                # `Controller.ChoiceOne` qui enregistre -- il tient
+                # `message.world` comme on tient `self.scene` ici. Ne pas
+                # fondre les deux dans `DrainSandboxCommands` : elle est
+                # appelee depuis les deux fils, et n'a acces a aucune scene.
                 self.scene.manuel_commands += appliquees
                 # Un rendu FORCE : rien d'autre ne redessinera, puisque plus
                 # aucune question ne part et que le rendu normal suit les

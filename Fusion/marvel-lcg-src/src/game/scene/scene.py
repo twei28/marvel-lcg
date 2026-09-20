@@ -89,12 +89,39 @@ class Scene:
     # existe pour eviter.
     #
     # ⚠ CHAMPS A DEFAUT CHAINE VIDE, meme precaution que les champs
-    # ci-dessus : les sauvegardes existantes se rechargent sans changer de
-    # sens (jamais en pause au chargement).
+    # ci-dessus : une sauvegarde ANTERIEURE a ces champs se recharge sans
+    # changer de sens, c'est-a-dire jamais en pause.
+    #
+    # ⚠ MIS A JOUR LE 20/09/2026 (constat C1 de la revue finale) : ces deux
+    # champs ne servent plus seulement au bandeau. `GameSession.GameSetup`
+    # lit `pause_en_cours` (juste en dessous) pour reposer `manuel_actif` au
+    # montage : une partie SAUVEGARDEE EN PAUSE se recharge donc desormais EN
+    # PAUSE, et un « Annuler » ne la fait plus reprendre en silence. La
+    # phrase precedente disait « jamais en pause au chargement » : elle
+    # n'etait vraie que des sauvegardes d'avant ces champs, et elle decrivait
+    # le defaut, pas la regle.
     pause_par: str = field(default="")
     pause_a: str = field(default="")
 
     inputs: List[OperationDescriptor] = field(default_factory=lambda: [])
+
+    @property
+    def pause_en_cours(self) -> bool:
+        """Une pause manuelle est EN COURS sur cette partie.
+
+        ⚠ L'ETAT, PAS LA TRACE. `corrigee_a_la_main` (plus haut) dit
+        « quelqu'un est intervenu au moins une fois » et ne s'eteint jamais ;
+        ceci dit « le moteur s'est tu EN CE MOMENT » et s'eteint a la
+        reprise. Les confondre a deja rendu ce mode inutilisable une fois.
+
+        DERIVE, SANS CHAMP SUPPLEMENTAIRE : `World.BasculerPauseManuelle` est
+        le seul endroit qui ecrit ces deux champs, et elle pose `pause_a` a
+        la pause puis le vide a la reprise -- l'invariant tient donc en un
+        seul endroit. `pause_par` ne ferait pas l'affaire : il est
+        legitimement VIDE quand le siege n'est pas identifie (le bandeau dit
+        alors « quelqu'un »).
+        """
+        return bool(self.pause_a)
 
     def GetSaveFileName(self, use_comment: bool=True) -> str:
         return f"[{Ver.version}]-{self.GetName(use_comment)}"

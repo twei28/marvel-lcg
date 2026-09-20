@@ -356,6 +356,29 @@ class Controller:
                 )
 
                 if user_input == None:
+                    # LES GESTES D'ABORD, LE RENDU ENSUITE (correctif du
+                    # constat C1 de la revue finale, 20/09/2026). `DoGetInput`
+                    # vient peut-etre de DRAINER un geste manuel : il l'a
+                    # applique au monde, mais il ne sait pas l'ecrire dans la
+                    # scene -- il est du moteur et ne connait ni `World` ni
+                    # `Scene`. Cette methode, elle, tient deja `message.world`
+                    # (elle s'en sert quatre lignes plus bas) : c'est donc ici
+                    # que le geste entre dans la sauvegarde, exactement comme
+                    # `World.ManualLoop` le fait pour l'autre chemin de
+                    # drainage (world.py : `self.scene.manuel_commands +=
+                    # appliquees`).
+                    #
+                    # ⚠ AVANT TOUTE GARDE, ET C'EST DELIBERE. Le bloc qui suit
+                    # renonce au rendu sur une partie finie ou un moteur qui
+                    # s'arrete : renoncer de meme a l'ENREGISTREMENT perdrait
+                    # pour toujours le geste qui vient de terminer la partie
+                    # (`Puzzle.Win()`), donc la possibilite de l'annuler.
+                    # Un rendu perdu se rattrape au rendu suivant ; un geste
+                    # perdu ne se rattrape pas.
+                    gestes = controller_manager.device_manager.ConsommerGestesAppliques()
+                    if gestes:
+                        message.world.scene.manuel_commands += gestes
+
                     # TACHE 8 : le rendu qui manquait. `GetInput` vient de
                     # rendre la main SANS entree ; l'appelant (ChooseEffects,
                     # EventManager) va reposer LA MEME question, et sur ce

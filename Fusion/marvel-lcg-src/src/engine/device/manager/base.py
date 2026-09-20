@@ -77,6 +77,40 @@ class DeviceManager:
         # le premier a consommer aveuglerait le second.
         self.rendu_a_forcer: bool = False
 
+        # LES GESTES DRAINES QUI RESTENT A ENREGISTRER dans la scene
+        # (correctif du constat C1 de la revue finale, 20/09/2026).
+        #
+        # ⚠ POURQUOI UN RELAIS PLUTOT QU'UNE ECRITURE DIRECTE. `ManualLoop`
+        # (game/world/world.py) enregistre ses propres gestes d'une ligne,
+        # `self.scene.manuel_commands += appliquees`, parce qu'elle TIENT la
+        # scene. Ce gestionnaire-ci est du MOTEUR : il ne connait ni `World`
+        # ni `Scene`, et le seul objet de jeu qu'il manipule est un
+        # executeur anonyme (`sandbox_executor`) que la route lui pose.
+        # Il depose donc ici ce qu'il vient d'appliquer, et
+        # `Controller.ChoiceOne` -- qui, lui, tient deja `message.world` --
+        # le verse dans la scene des que `DoGetInput` lui rend la main.
+        #
+        # ⚠ ALIMENTE PAR `DoGetInput` SEUL, JAMAIS PAR `DrainSandboxCommands`
+        # (qu'appelle AUSSI `ManualLoop`) : l'armer la-bas le laisserait plein
+        # sans que personne ne vienne le consommer, et le geste serait
+        # enregistre deux fois au prochain passage par une question. Meme
+        # raison, et meme endroit, que pour `rendu_a_forcer` juste au-dessus.
+        self.gestes_a_enregistrer: List[str] = []
+
+    def ConsommerGestesAppliques(self) -> List[str]:
+        """Rend les gestes manuels draines depuis le dernier appel, et vide
+        la liste. Appele par `Controller.ChoiceOne` quand `GetInput` a rendu
+        la main sans entree -- voir `gestes_a_enregistrer` ci-dessus.
+
+        Consommer ICI (et pas seulement lire) garantit qu'un geste n'entre
+        qu'UNE FOIS dans `scene.manuel_commands`, meme si l'appelant repose
+        sa question plusieurs fois de suite.
+        """
+        if not self.gestes_a_enregistrer:
+            return []
+        gestes, self.gestes_a_enregistrer = self.gestes_a_enregistrer, []
+        return gestes
+
     def ConsommerRenduAForcer(self) -> bool:
         """Rend vrai UNE SEULE FOIS par cause, et remet le marqueur a plat.
 
@@ -250,11 +284,15 @@ class DeviceManager:
         partie est exactement ce qui revient hanter quelqu'un six mois plus
         tard.
 
-        TROIS CHAMPS, pour la meme raison de singleton :
+        QUATRE CHAMPS, pour la meme raison de singleton :
         - `pause_a_publier` et `rendu_a_forcer` : les deux reveils armes ;
         - `sandbox_last_error` : il est PUBLIE tel quel dans `manuel_refus`
           (`to_descriptor.py`), donc un refus de la partie d'avant restait
-          affichable au debut de la suivante.
+          affichable au debut de la suivante ;
+        - `gestes_a_enregistrer` : un geste draine mais jamais consomme
+          (l'appelant a rendu la main sur une fin de partie, par exemple)
+          entrerait sinon dans la scene de la partie SUIVANTE, c'est-a-dire
+          dans une sauvegarde ou il n'a rien a faire.
 
         ⚠ PAS DANS `ExitWait`, ET C'EST DELIBERE. `ExitWait` est appele EN
         PLEINE PARTIE (console, `GameSession.Undo`, `LoadScene`,
@@ -273,6 +311,7 @@ class DeviceManager:
         self.pause_a_publier = False
         self.rendu_a_forcer = False
         self.sandbox_last_error = ""
+        self.gestes_a_enregistrer = []
 
     def OnNewGame(self):
         Log.DebugSilent(CATEGORY_NAME, "DeviceManager new game")
@@ -389,6 +428,18 @@ class DeviceManager:
         # rattrape celui du lot entierement refuse : il faut les DEUX.
         un_drainage = bool(self.sandbox_commands) and self.sandbox_executor is not None
         applique = self.DrainSandboxCommands()
+        # CORRECTIF (constat C1 de la revue finale, 20/09/2026) : ce retour
+        # etait JETE. Il ne servait que de booleen (« un drainage a eu
+        # lieu ») alors qu'il porte la seule trace durable du geste. Resultat
+        # : les corrections d'une partie manuelle DECLAREE survivaient (c'est
+        # `World.ManualLoop` qui draine la-bas, et elle enregistre), celles
+        # d'une pause de partie ORDINAIRE -- qui passent ICI, le fil du jeu
+        # etant gare dans une question -- disparaissaient sans un mot a la
+        # premiere sauvegarde, au premier rechargement et au premier
+        # « Annuler ». On depose, `Controller.ChoiceOne` versera dans la
+        # scene (voir `gestes_a_enregistrer`, en tete de ce fichier).
+        if applique:
+            self.gestes_a_enregistrer += applique
         if un_drainage or applique:
             # Tache 8, meme famille que la pause ci-dessous : un geste manuel
             # applique au monde PENDANT une question ouverte n'est publie par

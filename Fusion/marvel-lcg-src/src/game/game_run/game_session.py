@@ -132,13 +132,41 @@ class GameSession:
             from game.puzzle import PuzzleHelper
             PuzzleHelper.Exec(self.world.scene.puzzle, self.world)
 
-        if self.world.rule.mode_manuel:
-            # Le silence commence ICI, avant le rejeu : les gestes ont ete
-            # appliques porte fermee, ils doivent se rejouer porte fermee,
-            # sinon l'etat rechargé diverge de l'etat sauvegarde.
+        # LE SILENCE (l'ETAT « le moteur s'est tu »), pose AVANT le rejeu.
+        #
+        # ⚠ DEUX CAUSES, ET LA SECONDE EST LE CORRECTIF (constat C1 de la
+        # revue finale, 20/09/2026). La REGLE `mode_manuel` (« cette partie
+        # EST manuelle », vraie des sa creation) n'est pas la seule : une
+        # partie ORDINAIRE mise en pause par un joueur porte, elle, une pause
+        # EN COURS dans sa scene (`Scene.pause_en_cours`, pose et efface par
+        # `World.BasculerPauseManuelle`). Sans cette seconde cause, tout
+        # remontage d'une partie ordinaire en pause -- le bouton « Annuler »
+        # (`GameSession.Undo`), un chargement de sauvegarde -- la faisait
+        # REPRENDRE en silence, bandeau compris : le joueur revenait
+        # exactement dans le bug qu'il venait de contourner, apres un clic
+        # qui n'avait rien a voir.
+        if self.world.rule.mode_manuel or self.world.scene.pause_en_cours:
             self.world.manuel_actif = True
-            if self.world.scene.manuel_commands:
-                from game.puzzle import PuzzleHelper
+
+        # LE REJEU DES GESTES, desormais garde par LA PRESENCE DE GESTES et
+        # non plus par la REGLE `mode_manuel` (meme constat C1). Une partie
+        # ordinaire ne porte jamais cette regle : ses corrections etaient
+        # bien ecrites dans la sauvegarde mais plus jamais relues, et une
+        # sauvegarde n'etant PAS un instantane de la table (`Scene` porte la
+        # graine, les regles, les joueurs, les entrees -- et ce montage
+        # REJOUE), elles disparaissaient sans un mot.
+        if self.world.scene.manuel_commands:
+            from game.puzzle import PuzzleHelper
+            # PORTE FERMEE PENDANT LE REJEU, MEME QUAND LA PARTIE N'EST PLUS
+            # EN PAUSE -- c'est tout l'objet de ces trois lignes autour de la
+            # boucle. Les gestes ont ete appliques porte fermee ; un joueur
+            # qui a corrige PUIS REPRIS remonte une partie bavarde, mais
+            # rejouer ses gestes porte ouverte ferait partir des
+            # declencheurs qui n'etaient jamais partis, et l'etat recharge
+            # divergerait de l'etat sauvegarde.
+            silence_avant = self.world.manuel_actif
+            self.world.manuel_actif = True
+            try:
                 # CORRECTIF (revue finale du 18/09/2026, constat 4) : chaque
                 # geste est rejoue INDIVIDUELLEMENT, sous try/except. Le
                 # rejeu EN DIRECT (dans `World.ManualLoop`, via
@@ -157,6 +185,8 @@ class GameSession:
                         Log.Warn(CATEGORY_NAME,
                                  f"rejeu du geste manuel echoue, ignore : {geste!r} "
                                  f"({type(exc).__name__}: {exc})")
+            finally:
+                self.world.manuel_actif = silence_avant
 
         return not self.world.is_game_over
 
