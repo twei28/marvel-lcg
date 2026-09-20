@@ -78,6 +78,14 @@ class CostFunc:
         def PayCost(self, effect: 'Effect', player: 'User') -> bool:
             from game.player import Player
 
+            # ⚠ A CHAQUE APPEL, MEME CELUI QUI VA ECHOUER (20/09/2026). L'objet
+            # CostFunc appartient a l'ABILITY, que `CardsDB.FindAbilities` sert
+            # TELLE QUELLE a toutes les copies d'un meme `card_id` et a tous les
+            # joueurs. Ce qu'il retient d'un paiement survivrait donc au suivant,
+            # et `SpendResource` rendrait un cout que ce paiement-ci n'a jamais
+            # paye. On repart de zero avant de rien engager.
+            self.ResetCostSnapshot()
+
             can_be_zero = False
             num_range = None
             if effect.ability.flags.is_check_pay:
@@ -115,7 +123,23 @@ class CostFunc:
                 return self.call_fn(targets, effect, player if isinstance(player, Player) else None)
             return True
 
-        def RollbackCost(self, effect: 'Effect') -> bool:
+        def ResetCostSnapshot(self) -> None:
+            """Oublie le paiement precedent. Voir `PayCost`, qui l'appelle."""
+            pass
+
+        def SnapshotCost(self, effect: 'Effect') -> Any:
+            """CE QUE CE PAIEMENT-CI VIENT D'ENGAGER, releve tout de suite.
+
+            `SpendResource` appelle ce releve juste apres chaque payeur, et le
+            rend tel quel a `RollbackCost` si le paiement est abandonne. On ne
+            relit JAMAIS l'etat de l'objet CostFunc au moment du rendu : il est
+            partage entre toutes les copies de la carte, et deux copies qui
+            paient le meme cout se l'ecrasent l'une l'autre -- la premiere
+            resterait inclinee pour toujours, en silence.
+            """
+            return None
+
+        def RollbackCost(self, effect: 'Effect', releve: Any) -> bool:
             """REND ce que `PayCost` a engage, quand le paiement est ABANDONNE.
 
             Appelee par `Player.SpendResource` (player_action.py) et par elle
@@ -238,12 +262,6 @@ class CostFunc:
                     return True
 
             def on_call(targets: Sequence['CardFace'], effect: 'Effect', player: 'Player|None') -> bool:
-                # ⚠ VIDER D'ABORD : l'objet CostFunc est porte par l'ABILITY,
-                # donc PARTAGE par tous ses effets et par tous les paiements
-                # successifs. Sans ce vidage, `return_exhausted_cards` garde la
-                # selection du paiement PRECEDENT, et `RollbackCost` redresserait
-                # des cartes que le paiement abandonne n'a jamais inclinees.
-                self.return_exhausted_cards = []
                 if self.not_need_to_exhaust:
                     return True
                 if Faces.ExhaustAll(targets, effect) == targets:
@@ -271,17 +289,25 @@ class CostFunc:
             selector.selector_filter.AddParameter(canbe_exhaust=True)
             super().__init__(selector, on_call, on_check)
 
-        def RollbackCost(self, effect: 'Effect') -> bool:
-            """REDRESSE les cartes que ce cout vient d'incliner.
+        def ResetCostSnapshot(self) -> None:
+            self.return_exhausted_cards = []
 
-            Le seul rendu EXACT possible : `return_exhausted_cards` est la
-            liste precise des cartes inclinees par le dernier `PayCost`, et
-            une carte inclinee pour payer se rend en la redressant.
+        def SnapshotCost(self, effect: 'Effect') -> Any:
+            # Une COPIE : la liste de l'objet CostFunc sera reecrite par le
+            # prochain payeur, y compris une autre copie de la meme carte dans
+            # ce meme paiement.
+            return list(self.return_exhausted_cards)
+
+        def RollbackCost(self, effect: 'Effect', releve: Any) -> bool:
+            """REDRESSE les cartes que ce paiement-ci vient d'incliner.
+
+            Le seul rendu EXACT possible : le releve est la liste precise des
+            cartes inclinees par ce payeur, et une carte inclinee pour payer se
+            rend en la redressant.
             """
             from game.operate.faces import Faces
-            if self.return_exhausted_cards:
-                Faces.ReadyAll(self.return_exhausted_cards, effect)
-                self.return_exhausted_cards = []
+            if releve:
+                Faces.ReadyAll(releve, effect)
             return True
 
     # class Choose2(Base):

@@ -41720,6 +41720,32 @@ CAS = [
         "attendu": {"en_jeu": ["31007"],
                     "exhausted": ["31002b"]},
     },
+    {
+        "nom": "50044 Fury's Watch — paiement INCOMPLET : la montre est REDRESSEE, la carte revient en main",
+        "pourquoi": ("LE TEMOIN QUI MANQUAIT (ronde de relecture du 20/09/2026). Fury's "
+                     "Watch porte son `CostFunc.Exhaust` sur `CanGenerateResources`, pas "
+                     "sur `DoGenerateResources` comme Sync Ratio : c'est le cas de 106 "
+                     "cartes sur 107. Le premier rendu ne regardait que `paying_effect."
+                     "cost_func` et ne voyait donc QUE Sync Ratio -- la montre serait "
+                     "restee inclinee, sans meme une ligne au journal. Avec 2 jetons de "
+                     "menace elle ANNONCE 2 mentales ; au paiement, `RemoveTokens(..., "
+                     "(1, 2))` passe par `DeclareNumber`, auquel le pilote repond toujours "
+                     "le MINIMUM : 1 retire, 1 ressource, le cout de 2 n'est pas couvert. "
+                     "⚠ Le jeton retire, lui, n'est PAS rendu : `RemoveTokens` ne sait pas "
+                     "se defaire, le moteur l'ecrit au journal (limite connue)"),
+        "scenario": "rhino",
+        "heros": "nick_fury",
+        "mise_en_place": ["Puzzle.ChangeForm('50034b')",
+                          "Puzzle.PutIntoPlay('50044')",
+                          "Puzzle.Token('50035a', 'threat', 2)"],
+        "main_exclusive": ["50042"],
+        "declencher": [],
+        "jouer": ["50042"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["50042"],
+                    "hors_jeu": ["50042"],
+                    "pret": ["50044"]},
+    },
 
 ]
 # ------------------------------------------------- verifications outillees --

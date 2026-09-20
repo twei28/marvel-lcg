@@ -144,12 +144,10 @@ class ClassCard(HasResourceIcon, HasCost, HasMaxPer, PlayerCard):
             # une mise en jeu qui echoue n'a pas eu lieu, la carte retourne
             # d'ou elle vient au lieu d'etre defaussee. Ici c'est le cout
             # PROPRE de la carte qui n'a pas pu etre paye, les ressources
-            # l'ayant deja ete.
-            origine = by_effect.context.play_from_area
-            if origine != None:
-                Faces.MoveAllTo([self], origine, by_effect)
-            else:
-                Faces.DiscardAll([self], by_effect)
+            # l'ayant deja ete. `from_area` est le PARAMETRE de cette methode,
+            # toujours renseigne -- pas `context.play_from_area`, qui est vide
+            # sur les mises en jeu gratuites et forcerait une branche de repli.
+            Faces.MoveAllTo([self], from_area, by_effect)
             return False
 
         would_play_message = Message.WhenPlayerWouldPlayCard(player, by_effect, resource, from_area, is_like_from_hand)

@@ -1128,7 +1128,10 @@ class PlayerAction:
         player = self.GetPlayer()
 
         paid_faces: List['CardFace'] = []
-        effets_payes: List['Effect'] = []
+        # Ce que chaque payeur a engage, releve JUSTE APRES qu'il ait paye :
+        # (effet payeur, cout, releve). Voir `CostFunc.SnapshotCost` pour
+        # pourquoi on ne relit pas l'objet cout au moment du rendu.
+        releves: List[Tuple['Effect', Any, Any]] = []
         # La zone d'ou vient chaque payeur, relevee AVANT qu'il paie : c'est
         # la seule facon de renvoyer une carte de main depensee comme
         # ressource (elle transite par `area_resources`) la ou elle etait.
@@ -1142,10 +1145,16 @@ class PlayerAction:
                     expected_res = Resources.FromText(pay_info[paying_effect])
                     paying_effect.context.initiator = player
                     cost_check_effect = payment.cost_check[paying_effect]
-                    zones_avant[paying_effect.this] = paying_effect.this.card.area
+                    # ⚠ LA PREMIERE ORIGINE GAGNE. Une meme carte peut porter
+                    # DEUX effets payeurs d'un meme paiement ; au second tour
+                    # elle est deja en zone de ressources, et enregistrer CETTE
+                    # zone comme origine l'y laisserait bloquee.
+                    if paying_effect.this not in zones_avant:
+                        zones_avant[paying_effect.this] = paying_effect.this.card.area
                     message = Message.WhenPlayerPayingResources(player, paying_effect, for_effect, for_effect.targets, expected_res, cost_check_effect)
                     message.Send()
-                    effets_payes.append(paying_effect)
+                    for cost_func in self._CoutsDuPayeur(paying_effect, cost_check_effect):
+                        releves.append((paying_effect, cost_func, cost_func.SnapshotCost(paying_effect)))
                     paid_faces.append(paying_effect.this)
                     break
             if not paid:
@@ -1160,7 +1169,7 @@ class PlayerAction:
         # defaire (`CostFunc.RollbackCost`). C'est le dernier endroit ou rendre
         # ce qui a ete engage, et c'est donc ici que la reparation vit.
         if need_cost != None and not player.res_pool.Get().IsMatchCost(need_cost):
-            self._RendreLePaiement(for_effect, effets_payes, zones_avant)
+            self._RendreLePaiement(for_effect, releves, zones_avant)
             player.res_pool.Reset()
             return Resources("0")
 
@@ -1174,7 +1183,36 @@ class PlayerAction:
 
         return resource
 
-    def _RendreLePaiement(self, for_effect: 'Effect', effets_payes: Sequence['Effect'],
+    @staticmethod
+    def _CoutsDuPayeur(paying_effect: 'Effect', cost_check_effect: 'Effect|None') -> List[Any]:
+        """LES DEUX PORTEURS DE COUT d'un moyen de paiement, dedoublonnes.
+
+        ⚠ Un moyen de paiement porte son `CostFunc` a l'un OU a l'autre de ses
+        deux effets, et les deux sont payes :
+        - sur `DoGenerateResources`, paye par `Effect.ProcessSelfCost` ;
+        - sur `CanGenerateResources`, paye par `generate_resource` lui-meme,
+          via `message.cost_check_effect.cost_func` (factory/resources.py).
+
+        Ne regarder que le premier ne couvrait qu'UNE carte du jeu, `31001a`
+        Sync Ratio -- celle sur laquelle ce correctif a ete mis au point.
+        L'inclinaison est portee par `CanGenerateResources` sur 106 autres,
+        dont `50044` Fury's Watch, la carte officielle donnee en preuve de
+        generalite : le rendu ne l'aurait jamais redressee, ni meme signalee.
+        """
+        couts: List[Any] = []
+        vus = set()
+        for effect in (paying_effect, cost_check_effect):
+            if effect == None:
+                continue
+            for cost_func in effect.cost_func.GetAll():
+                if id(cost_func) in vus:
+                    continue
+                vus.add(id(cost_func))
+                couts.append(cost_func)
+        return couts
+
+    def _RendreLePaiement(self, for_effect: 'Effect',
+                          releves: Sequence[Tuple['Effect', Any, Any]],
                           zones_avant: Dict['CardFace', 'Deck']) -> None:
         """Rend au joueur tout ce qu'un paiement abandonne avait engage."""
         from game.operate.faces import Faces
@@ -1192,14 +1230,14 @@ class PlayerAction:
                 Faces.MoveAllTo([face], origine, for_effect)
 
         # 2. Les couts payes par les moyens de paiement (inclinaison...) se
-        #    defont. Un cout qui ne sait pas se defaire est JOURNALISE : on ne
-        #    fait pas croire a un rendu complet.
-        for paying_effect in effets_payes:
-            for cost_func in paying_effect.cost_func.GetAll():
-                if not cost_func.RollbackCost(paying_effect):
-                    Log.Assert(CATEGORY_NAME,
-                               f"paiement abandonne : {cost_func} de {paying_effect} "
-                               f"ne sait pas se defaire, son cout reste paye")
+        #    defont, a partir du RELEVE pris au moment ou ils ont paye. Un
+        #    cout qui ne sait pas se defaire est JOURNALISE : on ne fait pas
+        #    croire a un rendu complet.
+        for paying_effect, cost_func, releve in releves:
+            if not cost_func.RollbackCost(paying_effect, releve):
+                Log.Assert(CATEGORY_NAME,
+                           f"paiement abandonne : {cost_func} de {paying_effect} "
+                           f"ne sait pas se defaire, son cout reste paye")
 
     def AskSpendResources(self, cost: 'Cost', by_effect: 'Effect') -> bool:
         paid_res = self.AskSpendResourcesInternal(cost, by_effect)

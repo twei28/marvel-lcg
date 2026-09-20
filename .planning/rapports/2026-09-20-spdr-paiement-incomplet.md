@@ -73,12 +73,34 @@ puis `DiscardResourcesArea`). S'il est court, il rend tout :
 - toute carte qui a **changé de zone** pour payer retourne d'où elle vient
   (comparaison avec la zone relevée avant le paiement : ça couvre la carte de
   main en transit dans `area_resources`, y compris celle d'un joueur qui aide
-  à payer) ;
+  à payer ; c'est la **première** origine relevée qui fait foi, sinon une carte
+  portant deux effets payeurs verrait `area_resources` enregistrée comme son
+  « origine » et y resterait bloquée) ;
 - les coûts des payeurs se défont, via un nouveau `CostFunc.Base.RollbackCost`.
-  `CostFunc.Exhaust` le redéfinit : il redresse exactement les cartes de
-  `return_exhausted_cards`. Le cas par défaut rend « rien à rendre » quand le
-  coût n'a pas de `call_fn` ; tout autre coût rend `False` et **est
-  journalisé** — on ne fait pas croire à un rendu complet.
+  `CostFunc.Exhaust` le redéfinit : il redresse exactement les cartes inclinées.
+  Le cas par défaut rend « rien à rendre » quand le coût n'a pas de `call_fn` ;
+  tout autre coût rend `False` et **est journalisé** — on ne fait pas croire à
+  un rendu complet.
+
+Deux pièges relevés en relecture, tous les deux corrigés :
+
+- **Les deux porteurs de coût.** Un moyen de paiement porte son `CostFunc` sur
+  `DoGenerateResources` (payé par `Effect.ProcessSelfCost`) **ou** sur
+  `CanGenerateResources` (payé par `generate_resource` lui-même, via
+  `message.cost_check_effect.cost_func`). Ne regarder que le premier ne couvrait
+  **qu'une carte du jeu sur 107** : `31001a` Sync Ratio, celle sur laquelle le
+  correctif a été mis au point. `50044` Fury's Watch — la carte officielle
+  donnée en preuve de généricité — porte son `Exhaust` sur l'autre : elle
+  serait restée inclinée, sans même une ligne au journal. `SpendResource`
+  balaie désormais l'**union** des deux, dédoublonnée par identité d'objet
+  (`_CoutsDuPayeur`).
+- **L'état partagé entre copies.** `CardsDB.FindAbilities` sert le même objet
+  `Ability` à toutes les copies d'un `card_id` et à tous les joueurs :
+  `return_exhausted_cards` est donc commune. Deux copies dans le même paiement
+  abandonné, et la première resterait inclinée pour toujours. Le rendu ne relit
+  plus cet état : `SpendResource` prend un **relevé** (`CostFunc.SnapshotCost`)
+  juste après chaque payeur, et `PayCost` remet le compteur à zéro à chaque
+  appel, même celui qui échoue.
 
 **La carte revient d'où elle vient.** `ResolveEffect` la déplace vers
 `effect.context.play_from_area` au lieu de la défausser. Même correction sur
@@ -135,25 +157,48 @@ rien vu. Les trois témoins ajoutés :
 
 | témoin | ce qu'il prouve |
 | --- | --- |
-| Sync Ratio — paiement INCOMPLET | la carte revient en main, les deux interfaces restent prêtes |
-| Sync Ratio — paiement INCOMPLET en MIXTE | la carte de main dépensée comme ressource revient aussi |
-| Sync Ratio — paiement COMPLET | contre-cas : une interface s'incline et la carte est bien jouée |
+| `31001a` Sync Ratio — paiement INCOMPLET | la carte revient en main, les deux interfaces restent prêtes |
+| `31001a` Sync Ratio — paiement INCOMPLET en MIXTE | la carte de main dépensée comme ressource revient aussi |
+| `31001a` Sync Ratio — paiement COMPLET | contre-cas : une interface s'incline et la carte est bien jouée |
+| `50044` Fury's Watch — paiement INCOMPLET | le coût porté par `CanGenerateResources` est rendu lui aussi (106 cartes sur 107) |
 
-Rouge constaté d'abord : le correctif moteur retiré (`git apply -R`), les deux
-premiers témoins échouent avec « 31002b est incliné alors qu'il devrait être
-prêt ; 31022 n'est pas en main » et « 31010 / 31004 ne sont pas en main ». Le
-troisième reste vert dans les deux états : c'est son rôle, il interdit un
-correctif qui refuserait tous les paiements.
+Rouge constaté d'abord, à chaque fois :
 
-## Ce qui reste
+- correctif moteur retiré (`git apply -R`), les deux premiers témoins échouent
+  avec « 31002b est incliné alors qu'il devrait être prêt ; 31022 n'est pas en
+  main » et « 31010 / 31004 ne sont pas en main » ;
+- `_CoutsDuPayeur` ramené au seul `paying_effect`, le témoin Fury's Watch
+  échoue avec « 50044 est incliné alors qu'il devrait être prêt » ;
+- le témoin COMPLET reste vert dans tous les états : c'est son rôle, il
+  interdit un correctif qui refuserait tous les paiements.
 
-- **Les coûts non réversibles.** `RollbackCost` ne sait défaire exactement que
-  l'inclinaison. `CostFunc.RemoveTokens` (Fury's Watch), `CostFunc.Counter` et
-  les `CostFunc.Custom` arbitraires ne se défont pas : la carte revient bien en
-  main, mais le jeton ou le compteur reste dépensé, et le moteur l'écrit au
-  journal (`paiement abandonné : ... ne sait pas se défaire`). Aucun témoin ne
-  couvre ces coûts-là, faute d'avoir su monter une position Nick Fury (AoS)
-  dans le temps imparti.
+Le journal du témoin Fury's Watch montre les deux moitiés du résultat :
+`paiement abandonné : RemoveTokens ... ne sait pas se défaire, son coût reste
+payé`, puis `APRES 50042 | en main = True`.
+
+## Ce que le rendu ne rend PAS
+
+Le point de non-retour est plus tôt que la frontière du rendu, et il faut le
+dire précisément — sinon la prochaine correction partira d'une fausse base.
+Quand `SpendResource` constate le manque, **chaque `WhenPlayerPayingResources`
+a déjà été envoyé**. Ce qui en découle n'est pas défait :
+
+1. **L'`ex_operation` du payeur**, qui a agi pendant le paiement. `kb013`
+   Kate's Quiver a posé son compteur de flèche, `iw001b` a redressé Sue, et
+   une dizaine d'autres cartes sont dans ce cas (`33003`, `ho013`, `mf001b`,
+   `50170`, `50179`, `45030a`, `gp008`, `il020`, `39064`…).
+2. **La fenêtre `WhenCardBeSpendAsResource`**, ouverte à chaque ressource
+   générée : 44 fichiers de `src/cards/` y réagissent.
+3. **Les coûts non réversibles** : `CostFunc.RemoveTokens` (Fury's Watch),
+   `CostFunc.Counter`, les `CostFunc.Custom` arbitraires. Ceux-là, au moins,
+   sont **journalisés** (`paiement abandonné : ... ne sait pas se défaire`) ;
+   les deux premiers points ne le sont pas.
+
+Un rendu partiel vaut mieux qu'une perte sèche — le joueur récupère sa carte,
+qui est le matériel rare, et son inclinaison. Mais ce n'est pas une annulation.
+
+## Ce qui reste, en plus
+
 - **L'écran ne prévient toujours pas.** Le plateau laisse choisir « 1
   interface » pour un coût de 2 sans rien dire ; le paiement est simplement
   refusé proprement au lieu de coûter deux cartes. Dire au joueur combien il
@@ -165,21 +210,36 @@ correctif qui refuserait tous les paiements.
 jetable (`.game-src-yarro`, supprimé après la passe ; ni `.game` ni
 `.game-src` n'ont été touchés) :
 
-**2339 / 2344 cas passés.**
-
-Les cinq rouges, un par un :
+**2342 / 2349 cas passés.** Sept rouges, aucun imputable à ce correctif :
 
 | cas | verdict |
 | --- | --- |
-| `sg009`, `sg013`, `sg007`, `sg006` (Squirrel Girl) | **antérieurs**. Rejoués un à un avec le correctif RETIRÉ : rouges, avec le même message. Sans rapport avec le paiement. |
-| `ma015` Break Through | **artefact de la passe parallèle** (« aucun résultat, processus mort »). Rejoué seul : vert, avec ET sans le correctif. |
+| `sg009`, `sg013`, `sg007`, `sg006` (Squirrel Girl) | **antérieurs**. Rejoués un à un avec le correctif RETIRÉ : rouges, avec le même message. |
+| `ma015` Break Through | **artefact de la passe parallèle** (« aucun résultat, processus mort »). Rejoué seul : vert, trois fois, avec et sans le correctif. |
+| `ze014` The Mother of Night (×2) | **une autre session, en cours**. Rejoués avec le moteur du commit `71433704`, c'est-à-dire AVANT les deux commits de ce correctif : rouges à l'identique. La cause est le « sas de recherche » (`search_transit`) en train d'être posé dans `selector_end.py` / `effect_invoke.py` pour le signalement Aghenatak ; `ze014` appelle `Search.PlayerCard` **deux fois** de suite. Signalé à cette session. |
 
-Passe de référence avant correctif : 2336 / 2344, avec huit rouges — les cinq
-ci-dessus plus `sd011`, `ar010`, `bl002`, dont les attendus gravaient le
-défaut et ont été corrigés.
+⚠ Deux réserves de méthode, à lire ensemble :
 
-⚠ Réserve de méthode : la passe est parallèle. Le harnais rappelle qu'une
-validation de portage exige de la comparer **cas par cas** à une passe
-séquentielle. Ce n'a pas été fait ici (≈ 1 h 20 en parallèle, plusieurs heures
-en séquentiel) ; les cinq rouges, eux, ont bien été rejoués un à un en
-séquentiel.
+1. **La passe est parallèle.** Le harnais rappelle qu'une validation de
+   portage exige de la comparer **cas par cas** à une passe séquentielle. Ce
+   n'a pas été fait (≈ 1 h 20 en parallèle, plusieurs heures en séquentiel) ;
+   les sept rouges, eux, ont bien été rejoués un à un en séquentiel.
+2. **L'arbre est partagé et vivant.** Cette passe a tourné pendant qu'une
+   autre session modifiait `selector_end.py`, `effect_invoke.py`,
+   `effect_context.py` et ajoutait ses propres cas. Le nombre brut ne mesure
+   donc pas ce correctif seul. Ce qui le mesure, lui, ce sont les quatre
+   témoins : verts avec, rouges sans, chacun vérifié dans les deux états.
+
+### L'historique des passes, sans arrondi
+
+Il n'y a **jamais eu** de passe complète du moteur d'origine : la première
+passe complète a tourné le correctif déjà posé.
+
+| passe | état | verdict |
+| --- | --- | --- |
+| 1 | correctif posé, les 3 attendus périmés pas encore corrigés | 2336 / 2344 (8 rouges) |
+| 2 | attendus corrigés + jumeau `CardPlayer.Play` | 2339 / 2344 (5 rouges) |
+| 3 | ronde de relecture : union des deux porteurs de coût, relevé par paiement, témoin `50044` | 2342 / 2349 (7 rouges) |
+
+Le passage de 2344 à 2349 tient à un témoin ajouté par moi (`50044`) et à
+quatre ajoutés par l'autre session.
