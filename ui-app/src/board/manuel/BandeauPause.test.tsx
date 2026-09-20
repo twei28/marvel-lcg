@@ -118,4 +118,20 @@ describe('le bandeau de pause', () => {
     expect(motif).toBeTruthy()
     expect(screen.queryByText(/exige une réponse/)).toBeNull()
   })
+
+  it('un échec réseau (code "reseau") affiche son propre motif, distinct des deux refus du moteur', async () => {
+    const passer = vi.fn(async () => ({ ok: false as const, code: 'reseau' }))
+    render(
+      <BandeauPause
+        enPause={{ actif: true, par: '', depuis: '' }}
+        onReprendre={() => {}}
+        onPasser={passer}
+      />
+    )
+    fireEvent.click(screen.getByText('Passer la question'))
+    const motif = await screen.findByText(/vérifie ta connexion/)
+    expect(motif).toBeTruthy()
+    expect(screen.queryByText(/exige une réponse/)).toBeNull()
+    expect(screen.queryByText(/n’attend aucune réponse/)).toBeNull()
+  })
 })
