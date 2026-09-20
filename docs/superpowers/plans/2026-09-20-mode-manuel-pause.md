@@ -389,7 +389,7 @@ bug qu'il venait de contourner.
 
 ### Tâche 10 : les trois mensonges par omission (I1, I2, I3 de la revue finale)
 
-- [ ] **I1, une ligne, et c'est le plus rentable du chantier.**
+- [x] **I1, une ligne, et c'est le plus rentable du chantier.**
   `ui-app/src/board/HistoriquePartie.tsx:506` fait
   `type: estModeManuel(monde) ? 'manuel' : 'triche'` : la RÈGLE lue là où
   l'ÉTAT était voulu. En pause de partie ordinaire, chaque geste entre au
@@ -401,7 +401,7 @@ bug qu'il venait de contourner.
   du moteur ». Correctif : `leMoteurSeTait(monde) || estModeManuel(monde)`.
   Un cas doit lier le producteur au consommateur, sinon rien ne le garde.
 
-- [ ] **I2, autorisation.** `AddPostSecurity` ne vérifie que `IsAuthenticate` :
+- [x] **I2, autorisation.** `AddPostSecurity` ne vérifie que `IsAuthenticate` :
   ni `SpectateurPeutLire`, ni `get_player_ids` que `/post` applique. Et
   `BandeauPause` est monté HORS de `.board-actions`, la seule chose que la CSS
   spectateur masque. Un spectateur peut donc cliquer « Reprendre » et « Passer
@@ -410,12 +410,12 @@ bug qu'il venait de contourner.
   plateau. Même chose pour `CoucheTriche`, qui s'arme sur `leMoteurSeTait` sans
   garde spectateur et donne le clic droit et le clavier au spectateur.
 
-- [ ] **I3, dire la vérité.** Le journal est local au navigateur : le rapport
+- [x] **I3, dire la vérité.** Le journal est local au navigateur : le rapport
   ne contient aucun geste des autres joueurs, tout en annonçant « pour audit
   rapide ». N'AGRÈGE PAS entre clients, c'est une autre affaire. Dis-le dans le
   document, comme `gestesManuelsIncomplets` le fait déjà pour le tampon.
 
-- [ ] **Les mineurs**, si le temps le permet : `motifRefus` jamais remis à plat
+- [x] **Les mineurs**, si le temps le permet : `motifRefus` jamais remis à plat
   entre deux pauses ; `pause_a` affiché en heure serveur au format
   `2026-09-20 17-12`, illisible comme durée ; `/manuel_pause` sans la garde
   symétrique de `/manuel_passer` (un `actif: false` sur une partie DÉCLARÉE la
