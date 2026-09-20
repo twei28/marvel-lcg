@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { fondDe } from './halo-heros'
-// @ts-expect-error — module JavaScript nu de l'assistant, sans types.
+// Module JavaScript nu de l'assistant, sans types. Il portait un
+// `@ts-expect-error` devenu INUTILE : TypeScript résout désormais ce module
+// seul, et une directive qui n'attrape plus rien est elle-même une erreur
+// (TS2578). Elle cassait `npm run typecheck`, donc la construction du
+// plateau, donc tout déploiement, depuis le 19/09/2026.
 import { fondDe as fondEditeur } from '../../../Fusion/marvel-lcg-src/public/js/palettes/couleurs.js'
 
 // L'ÉDITEUR DE PALETTES DOIT MONTRER LE VRAI FOND DU PLATEAU.
