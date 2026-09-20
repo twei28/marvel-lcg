@@ -165,6 +165,19 @@ describe('le plateau manuel montre la main sans avoir besoin d\'un survol', () =
     expect(container.querySelectorAll('[data-zone="main"]').length).toBeGreaterThan(0)
     expect(container.querySelector('.plateau.main-visible-forcee')).toBeNull()
   })
+
+  // TACHE 3 (correctif). `mainVisibleForcee` se reglait sur `leMoteurSeTait`
+  // seul (`manuel`), qui vaut aussi vrai pendant une PAUSE d'une partie
+  // ORDINAIRE (route `/manuel_pause`) -- pas seulement en mode manuel
+  // DECLARE. Une table EN LIGNE mise en pause aurait alors montre les mains
+  // de TOUS les joueurs a TOUS les ecrans, exactement la fuite d'information
+  // que l'arbitrage du plan interdit. `board.tsx` doit se regler sur
+  // `estModeManuel` pour ce seul champ.
+  it('ne force PAS la main pendant une pause d\'une partie ORDINAIRE (correctif tache 3)', async () => {
+    const { container } = monter()
+    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: true }) })
+    expect(container.querySelector('.plateau.main-visible-forcee')).toBeNull()
+  })
 })
 
 // LE BOUTON « Fin du tour » (signale par la tache 8 sans etre teste, corrige

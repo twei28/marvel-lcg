@@ -25,9 +25,14 @@ import '../styles/tokens.css'
 import '../styles/palette.css'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
-import { leMoteurSeTait } from './board/manuel/mode'
+import { estEnPause, estModeManuel, leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
+import { BandeauPause } from './board/manuel/BandeauPause'
 import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
+// ⚠ IMPORT NOMME, PAS `import * as triche` : `PagePartie` a deja un
+// identifiant local `triche` (`useTriche(...)`, le bac a sable) -- un import
+// namespace du meme nom serait ombrage silencieusement par lui a l'usage.
+import { basculerPause } from './board/triche'
 import { BarreAction } from './board/BarreAction'
 import { Board, CarteApercu, type ReglagesGlisser } from './board/Board'
 import {
@@ -2061,6 +2066,16 @@ export function PagePartie({
   // toujours, sans rien a cliquer sur la premiere main.
   const manuel = leMoteurSeTait(etat.monde)
 
+  // ⚠ `estModeManuel`, PAS `manuel` (tâche 3, arbitrage du plan). Deux
+  // exceptions au partage règle/état ci-dessus, et pour une raison sérieuse :
+  // `mainVisibleForcee` et `SelecteurHeros` restent réservés au mode manuel
+  // DÉCLARÉ, jamais à une simple PAUSE d'une partie ordinaire. En pause sur
+  // une table EN LIGNE, chaque joueur a son propre écran ; ouvrir les mains
+  // (ou proposer de regarder celle d'un autre) montrerait le jeu de tout le
+  // monde à tout le monde. Une pause sert à corriger un bug, pas à dévoiler
+  // les mains -- voir `manuel/mode.ts`, `estEnPause`.
+  const modeManuelDeclare = estModeManuel(etat.monde)
+
   const [sons, setSons] = useState(lireSons)
   const basculerSons = useCallback(() => {
     setSons((s) => {
@@ -3183,6 +3198,28 @@ export function PagePartie({
         />
       ) : null}
 
+      {/* Le bandeau de pause EN COURS DE PARTIE (tâche 3). ⚠ EXEMPTÉ du
+          masquage manuel (`{manuel ? null : ...}` plus bas, et partout
+          ailleurs dans ce rendu) : c'est le SEUL moyen de reprendre une
+          partie ORDINAIRE mise en pause -- le masquer avec le reste des
+          couches du moteur la rendrait définitive. `estEnPause` (et non
+          `manuel` tout seul) exclut le mode manuel DÉCLARÉ, qui n'a rien à
+          « reprendre » : voir `manuel/mode.ts`. */}
+      <BandeauPause
+        enPause={{
+          actif: estEnPause(etat.monde),
+          par: etat.monde?.pause_par ?? '',
+          depuis: etat.monde?.pause_a ?? '',
+        }}
+        onReprendre={() => { void basculerPause(false) }}
+        onPasser={() => {
+          // Tâche 5 du plan (« passer la question fautive ») : la route
+          // dédiée et la lecture du drapeau d'annulation de la question
+          // arrivent à cette tâche, qui modifie ce fichier. Rien à faire ici
+          // pour l'instant -- aucun comportement inventé au-delà du bouton.
+        }}
+      />
+
       {/* CouchePasAPas (barre « où on en est » + Tout passer) : DEBRANCHEE a
           la demande de l'utilisateur - double emploi avec le cartouche du
           deroule juste en dessous, qui porte deja MENACE / ACTIVATIONS /
@@ -3494,6 +3531,33 @@ export function PagePartie({
                   « Annuler » -> « Cancel » pour l'assistant d'action). */}
               <span aria-hidden="true">↶</span> {langueActuelle() === 'fr' ? 'Annuler' : 'Undo'}
             </button>
+            {/* Mettre en pause (tâche 3) : DANS LA BARRE, à côté d'Annuler,
+                pas dans « Partie » ni dans les Réglages. Même raisonnement
+                que le bouton ⌂ Menu ci-dessus (14/09/2026) : « Partie » ne
+                sert qu'à CONSULTER en jouant (historique, log, journal), les
+                Réglages ne sont que des préférences -- la pause, elle,
+                arrête la partie pour tout le monde, exactement ce qu'on
+                cherche directement quand le jeu vient de faire quelque chose
+                d'absurde. Elle n'a pas sa place non plus dans le menu de
+                TABLE du mode manuel (`MenuTable.tsx`) : ce menu n'existe
+                QU'EN mode manuel, alors que ce bouton-ci est réservé au mode
+                ORDINAIRE (`!modeManuelDeclare`) -- une partie déclarée
+                manuelle n'a rien à « pauser », `ManualLoop` la tient déjà
+                muette en permanence.
+
+                Masqué PENDANT la pause (`!manuel`) : `BandeauPause`, plus
+                haut dans ce rendu, devient alors le SEUL moyen de reprendre
+                -- un second bouton ferait double emploi. */}
+            {!modeManuelDeclare && !manuel ? (
+              <button
+                type="button"
+                className="bh-bouton bh-pause"
+                onClick={() => { void basculerPause(true) }}
+                title={t('Arrêter la partie pour tout le monde, le temps de corriger un bug à la main')}
+              >
+                <span aria-hidden="true">⏸</span> {t('Mettre en pause')}
+              </button>
+            ) : null}
             <PopoverSauvegardes />
             {/* Signaler un bug : le journal de toute la partie part avec la
                 description et la capture. Ne s'affiche que si un site ecoute. */}
@@ -3554,7 +3618,7 @@ export function PagePartie({
                 vue. `SelecteurHeros` se tait déjà tout seul à un seul héros ;
                 `joueursAffichables` (mémoisé plus haut) est la même liste que
                 l'ancien bandeau utilisait, éliminés exclus. */}
-            {manuel ? (
+            {modeManuelDeclare ? (
               <SelecteurHeros joueurs={joueursAffichables} regarde={joueurActif} onRegarder={setVueForcee} />
             ) : null}
             {/* « Partie » (14/09/2026) : historique, log, journal du heros,
@@ -3672,9 +3736,12 @@ export function PagePartie({
         glisser={reglagesGlisser}
         bloquerActionsPassives={interaction.option !== undefined}
         mainVisibleForcee={
-          // Manuel : un seul operateur pour tous les heros, la main ne doit
-          // plus se cacher derriere un survol qui suppose un joueur par siege.
-          manuel ||
+          // Manuel DÉCLARÉ seulement (tâche 3, `modeManuelDeclare`, pas
+          // `manuel`) : un seul opérateur pour tous les héros, la main ne
+          // doit plus se cacher derrière un survol qui suppose un joueur par
+          // siège. Une PAUSE ne doit PAS forcer cet affichage : voir le
+          // commentaire de `modeManuelDeclare` plus haut.
+          modeManuelDeclare ||
           (interaction.option !== undefined &&
             (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'payment'))
         }

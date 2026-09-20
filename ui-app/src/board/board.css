@@ -6539,6 +6539,78 @@
   }
 }
 
+/* --- La pause manuelle EN COURS DE PARTIE (tache 3) -------------------------
+   Persistant, comme le bandeau de mise a jour (bandeau-maj) -- pas une passe
+   de deux secondes comme bandeau-annonce : la pause dure jusqu'a ce qu'on la
+   leve. EXEMPTE DU MASQUAGE du mode manuel (voir BandeauPause.tsx) : c'est le
+   SEUL moyen de reprendre, il reste donc toujours visible, boutons compris. */
+@layer composants {
+  .bandeau-pause {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 950;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    border-bottom: 2px solid #f0b429;
+    background: linear-gradient(180deg, rgba(58, 42, 6, 0.97), rgba(24, 17, 4, 0.97));
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    color: #f6e3b4;
+  }
+
+  .bandeau-pause-titre {
+    flex: none;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+  }
+
+  .bandeau-pause-texte {
+    font-size: 0.92rem;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .bandeau-pause-boutons {
+    display: flex;
+    gap: 8px;
+    flex: none;
+  }
+
+  .bandeau-pause-boutons button {
+    font: inherit;
+    padding: 5px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .bandeau-pause-passer {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: transparent;
+    color: #f6e3b4;
+  }
+  .bandeau-pause-passer:hover { background: rgba(255, 255, 255, 0.12); }
+
+  .bandeau-pause-reprendre {
+    border: none;
+    background: #f0b429;
+    color: #241a04;
+    font-weight: 700;
+  }
+  .bandeau-pause-reprendre:hover { filter: brightness(1.08); }
+
+  /* Telephone : trois blocs empiles plutot que rognes. */
+  @media (max-width: 700px) {
+    .bandeau-pause { flex-direction: column; gap: 8px; padding: 8px 14px; }
+  }
+}
+
 /* --- Mode Bac a sable ------------------------------------------------------
    Le bandeau reste visible en permanence : on ne doit jamais se demander,
    apres coup, si une partie etait truquee. Il est volontairement discret mais

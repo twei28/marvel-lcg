@@ -629,6 +629,18 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Fin de partie — Victoire': 'Game over — Victory',
   'Fin de partie — Défaite': 'Game over — Defeat',
 
+  // ---- Le bandeau de pause EN COURS DE PARTIE (tâche 3) ----
+  'Partie en pause': 'Game paused',
+  'Quelqu’un': 'Someone',
+  'a mis la partie en pause': 'paused the game',
+  'depuis': 'since',
+  'Passer la question': 'Skip the question',
+  // 'Reprendre' est déjà traduit plus bas (bouton « Partie » des sauvegardes).
+  // 'Mettre en pause' : voir board.tsx, bouton bh-pause de la barre du haut.
+  'Mettre en pause': 'Pause the game',
+  'Arrêter la partie pour tout le monde, le temps de corriger un bug à la main':
+    'Stop the game for everyone, while you fix a bug by hand',
+
   // ---- Mode manuel : le glisser-déposer libre (board/manuel/glisser-manuel.ts) ----
   'Lâche la carte sur une pile': 'Drop the card on a pile',
   'Défausse du deck spécial': 'Special deck discard pile',

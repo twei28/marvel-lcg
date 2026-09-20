@@ -3,7 +3,7 @@
 // Voir `moteur-faux.ts` pour le pourquoi : ce fichier est le premier a rendre
 // `board.tsx`. Il ne rejoue pas de regles — il pose une table, emet la trame,
 // et affirme sur ce que le joueur voit.
-import { act, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { MoteurFaux, etatInitial } from './moteur-faux'
 import type { EtatMoteur } from './moteur'
@@ -96,6 +96,9 @@ async function emettre(trame: Partial<EtatMoteur>) {
   })
 }
 
+/** Laisse la chaîne fetch/basculerPause se résoudre (même idiome que CoucheTriche.test.tsx). */
+const attendreLeReseau = () => act(() => new Promise((resolve) => setTimeout(resolve, 0)))
+
 function monter() {
   return render(
     <PagePartie
@@ -176,6 +179,83 @@ describe('la barre du haut', () => {
     ;(monde as { mode_manuel?: boolean }).mode_manuel = false
     await emettre({ monde })
     expect(screen.getByRole('button', { name: 'Auto' })).toBeTruthy()
+  })
+})
+
+// TACHE 3 (correctif, arbitrage du plan du 20/09/2026). `SelecteurHeros` se
+// reglait sur `leMoteurSeTait` seul (`manuel`, la variable interne de
+// board.tsx) : ce champ vaut aussi vrai pendant une simple PAUSE d'une partie
+// ORDINAIRE (route `/manuel_pause`), pas seulement en mode manuel DECLARE.
+// Une table EN LIGNE mise en pause aurait alors propose de regarder la main
+// de N'IMPORTE QUEL joueur -- exactement la fuite d'information ("chaque
+// joueur a son propre ecran") que l'arbitrage interdit. Il doit se regler sur
+// `estModeManuel` (la REGLE), pas `leMoteurSeTait` (l'ETAT).
+describe('le selecteur de heros manuel (tache 3, correctif de gating)', () => {
+  function monde2Heros() {
+    return table(heros('Spider-Man', 1), heros('Captain Marvel', 2))
+  }
+
+  it('ne s\'active PAS pendant une pause d\'une partie ORDINAIRE, meme a plusieurs heros', async () => {
+    monter()
+    const monde = monde2Heros() as { mode_manuel?: boolean; manuel_actif?: boolean }
+    monde.mode_manuel = false
+    monde.manuel_actif = true
+    await emettre({ monde: monde as never })
+    expect(screen.queryByRole('tablist')).toBeNull()
+  })
+
+  it('s\'active bien en mode manuel DECLARE (boucle manuelle entree)', async () => {
+    monter()
+    const monde = monde2Heros() as { mode_manuel?: boolean; manuel_actif?: boolean }
+    monde.mode_manuel = true
+    monde.manuel_actif = true
+    await emettre({ monde: monde as never })
+    expect(screen.queryByRole('tablist')).not.toBeNull()
+  })
+})
+
+// TACHE 3. Le bouton qui met une partie ORDINAIRE en pause : dans la barre du
+// haut, a cote d'Annuler -- ni un reglage cache (FenetreReglages), ni un
+// bouton qu'on presse par accident (voir board.tsx pour la justification
+// complete). Masque des que la pause est posee : `BandeauPause` devient alors
+// le seul moyen de reprendre.
+describe('le bouton de pause (tache 3)', () => {
+  it('existe en partie ORDINAIRE, hors pause', async () => {
+    monter()
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    expect(screen.getByRole('button', { name: /Mettre en pause/ })).toBeTruthy()
+  })
+
+  it('pose la pause au clic (POST /manuel_pause, actif: true)', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
+    monter()
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    fireEvent.click(screen.getByRole('button', { name: /Mettre en pause/ }))
+    await attendreLeReseau()
+    expect(fetch).toHaveBeenCalledWith('/manuel_pause', expect.objectContaining({
+      method: 'POST',
+      body: JSON.stringify({ actif: true, qui: '' }),
+    }))
+    vi.unstubAllGlobals()
+  })
+
+  it('disparait pendant la pause : le bandeau devient le seul moyen de reprendre', async () => {
+    monter()
+    const monde = table(heros('Spider-Man', 1)) as { mode_manuel?: boolean; manuel_actif?: boolean }
+    monde.mode_manuel = false
+    monde.manuel_actif = true
+    await emettre({ monde: monde as never })
+    expect(screen.queryByRole('button', { name: /Mettre en pause/ })).toBeNull()
+    expect(screen.getByText('Reprendre')).toBeTruthy()
+  })
+
+  it('n\'existe pas en mode manuel DECLARE : rien a « pauser », ManualLoop tient deja la table muette', async () => {
+    monter()
+    const monde = table(heros('Spider-Man', 1)) as { mode_manuel?: boolean; manuel_actif?: boolean }
+    monde.mode_manuel = true
+    monde.manuel_actif = true
+    await emettre({ monde: monde as never })
+    expect(screen.queryByRole('button', { name: /Mettre en pause/ })).toBeNull()
   })
 })
 
