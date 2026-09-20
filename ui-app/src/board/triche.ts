@@ -170,3 +170,37 @@ export async function annulerDernierGeste(): Promise<boolean> {
     return false
   }
 }
+
+// --- La pause manuelle EN COURS DE PARTIE (tâche 3) -------------------------
+
+/**
+ * Bascule la pause manuelle EN COURS DE PARTIE, route `POST /manuel_pause`.
+ *
+ * Route DISTINCTE de `/sandbox_command` : on n'appelle donc pas `envoyer()`,
+ * qui n'accepte que des `Puzzle.<methode>` — mais on reprend le même moule
+ * (fetch, try/catch, retour booléen) pour ne pas ouvrir un second style
+ * d'appel réseau dans ce fichier.
+ *
+ * ⚠ « QUI » VOYAGE VIDE, ET C'EST DÉLIBÉRÉ. Le moteur accepte un champ `qui`
+ * optionnel pour que `BandeauPause` nomme qui a posé la pause (sinon il dit
+ * « quelqu'un ») — mais le SEUL endroit qui connaît le pseudo du joueur
+ * courant côté plateau, `salon.ts` (`lireSalon().pseudo`), n'a plus aucun
+ * consommateur depuis que le tchat a quitté la table (commit bb0c8051,
+ * 12/09/2026, demande explicite de l'utilisateur : « tu peux enlever le
+ * tchat du jeu »). Le rebrancher pour ce seul champ ressusciterait, par la
+ * bande, une fonctionnalité retirée à dessein. Le moteur accepte déjà un
+ * `qui` vide comme un cas NORMAL (pas un repli d'erreur) : c'est celui-ci qui
+ * s'applique ici.
+ */
+export async function basculerPause(actif: boolean): Promise<boolean> {
+  try {
+    const reponse = await fetch('/manuel_pause', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ actif, qui: '' }),
+    })
+    return reponse.ok
+  } catch {
+    return false
+  }
+}
