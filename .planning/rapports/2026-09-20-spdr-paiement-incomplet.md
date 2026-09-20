@@ -162,6 +162,14 @@ rien vu. Les trois témoins ajoutés :
 | `31001a` Sync Ratio — paiement COMPLET | contre-cas : une interface s'incline et la carte est bien jouée |
 | `50044` Fury's Watch — paiement INCOMPLET | le coût porté par `CanGenerateResources` est rendu lui aussi (106 cartes sur 107) |
 
+Le témoin `50044` est **auto-gardé**, et par la limite même du correctif : il
+exige qu'il reste **1** jeton de menace sur `50035a` là où il y en avait 2.
+Sans cette ligne, son `attendu` ne décrirait qu'un état « rien ne s'est
+passé » (carte en main, améliorations prêtes) et resterait vert le jour où le
+paiement ne serait même plus tenté. Le jeton que `RemoveTokens` ne sait pas
+rendre est la preuve que le paiement a bien eu lieu. Vérifié en exigeant 2 :
+le cas échoue sur `50035a.threat=1 jeton(s) (attendu 2)`.
+
 Rouge constaté d'abord, à chaque fois :
 
 - correctif moteur retiré (`git apply -R`), les deux premiers témoins échouent
@@ -188,7 +196,11 @@ a déjà été envoyé**. Ce qui en découle n'est pas défait :
    une dizaine d'autres cartes sont dans ce cas (`33003`, `ho013`, `mf001b`,
    `50170`, `50179`, `45030a`, `gp008`, `il020`, `39064`…).
 2. **La fenêtre `WhenCardBeSpendAsResource`**, ouverte à chaque ressource
-   générée : 44 fichiers de `src/cards/` y réagissent.
+   générée : **18** fichiers de `src/cards/` y réagissent (22 dans tout
+   `src/`). ⚠ Ne pas la confondre avec `AfterCardsBeSpendAsResource`, qui est
+   envoyée **après** le point d'abandon et n'est donc jamais franchie sur un
+   paiement rendu. Chercher `SpendAsResource` ramasse les deux et donne 44 :
+   c'est le chiffre faux qu'une première version de ce rapport annonçait.
 3. **Les coûts non réversibles** : `CostFunc.RemoveTokens` (Fury's Watch),
    `CostFunc.Counter`, les `CostFunc.Custom` arbitraires. Ceux-là, au moins,
    sont **journalisés** (`paiement abandonné : ... ne sait pas se défaire`) ;
@@ -204,6 +216,20 @@ qui est le matériel rare, et son inclinaison. Mais ce n'est pas une annulation.
   refusé proprement au lieu de coûter deux cartes. Dire au joueur combien il
   lui manque reste à faire, côté client.
 
+- **DETTE : deux registres pour un même motif.** Le 21/09/2026, une autre
+  session a posé le « sas de recherche » pour le signalement Aghenatak :
+  `effect.context.search_transit` note d'où sort chaque carte, et
+  `EffectInvoker.CloseSearchTransit` referme à la fin de la résolution. C'est
+  la même idée que le `zones_avant` de `SpendResource` — noter l'origine,
+  refermer au bon moment — écrite deux fois, à deux endroits.
+
+  **La bonne base est la leur** : un registre porté par `effect.context` et
+  fermé par l'invocateur. `zones_avant` devrait devenir une *politique de
+  fermeture* de ce registre, pas un second registre. **À ne pas faire
+  maintenant** : tant que leur chantier n'a pas atterri, fusionner les deux
+  reviendrait à refactorer sous quelqu'un. À reprendre à froid, une fois leur
+  correctif posé.
+
 ## Verdict de la batterie
 
 `tools/test_capacites.py` EN ENTIER, `PARALLELES=8`, sur un dossier de jeu
@@ -216,7 +242,7 @@ jetable (`.game-src-yarro`, supprimé après la passe ; ni `.game` ni
 | --- | --- |
 | `sg009`, `sg013`, `sg007`, `sg006` (Squirrel Girl) | **antérieurs**. Rejoués un à un avec le correctif RETIRÉ : rouges, avec le même message. |
 | `ma015` Break Through | **artefact de la passe parallèle** (« aucun résultat, processus mort »). Rejoué seul : vert, trois fois, avec et sans le correctif. |
-| `ze014` The Mother of Night (×2) | **une autre session, en cours**. Rejoués avec le moteur du commit `71433704`, c'est-à-dire AVANT les deux commits de ce correctif : rouges à l'identique. La cause est le « sas de recherche » (`search_transit`) en train d'être posé dans `selector_end.py` / `effect_invoke.py` pour le signalement Aghenatak ; `ze014` appelle `Search.PlayerCard` **deux fois** de suite. Signalé à cette session. |
+| `ze014` The Mother of Night (×2) | **pas ce correctif.** MESURÉ : rejoués avec le moteur du commit `71433704`, c'est-à-dire AVANT les deux commits de ce correctif, ils sont rouges à l'identique. SUPPOSÉ, et seulement supposé : la cause serait le « sas de recherche » (`search_transit`) en cours de pose dans `selector_end.py` / `effect_invoke.py` pour le signalement Aghenatak — `ze014` appelle `Search.PlayerCard` **deux fois** de suite et n'en récupère plus qu'une. À cette session de trancher ; signalé. |
 
 ⚠ Deux réserves de méthode, à lire ensemble :
 

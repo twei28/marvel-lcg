@@ -41732,7 +41732,10 @@ CAS = [
                      "(1, 2))` passe par `DeclareNumber`, auquel le pilote repond toujours "
                      "le MINIMUM : 1 retire, 1 ressource, le cout de 2 n'est pas couvert. "
                      "⚠ Le jeton retire, lui, n'est PAS rendu : `RemoveTokens` ne sait pas "
-                     "se defaire, le moteur l'ecrit au journal (limite connue)"),
+                     "se defaire, le moteur l'ecrit au journal (limite connue). C'est ce "
+                     "jeton manquant qui AUTO-GARDE le cas : sans lui, l'attendu ne "
+                     "decrirait que « rien ne s'est passe » et resterait vert le jour ou "
+                     "le paiement ne serait meme plus TENTE"),
         "scenario": "rhino",
         "heros": "nick_fury",
         "mise_en_place": ["Puzzle.ChangeForm('50034b')",
@@ -41744,6 +41747,7 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_main": ["50042"],
                     "hors_jeu": ["50042"],
+                    "jetons": [["50035a", "threat", 1]],
                     "pret": ["50044"]},
     },
 
