@@ -311,6 +311,21 @@ class DeviceManager:
         self.pause_a_publier = False
         self.rendu_a_forcer = False
         self.sandbox_last_error = ""
+        # ⚠ ON LE DIT AVANT DE L'EFFACER (constat I4 de la ronde de
+        # correction 1) : un relais NON VIDE ici veut dire qu'un geste a ete
+        # applique au monde de la partie precedente sans que personne ne
+        # l'ait verse dans sa scene. Ca ne doit pas arriver -- le seul
+        # consommateur, `Controller.ChoiceOne`, s'execute sur le meme fil,
+        # sans rien entre les deux. Le taire ferait disparaitre la seule
+        # trace du jour ou ca arrivera quand meme. Un avertissement, pas une
+        # assertion : personne ne doit perdre une partie parce qu'un geste
+        # est resté en route.
+        if self.gestes_a_enregistrer:
+            Log.Warn(CATEGORY_NAME,
+                     f"{len(self.gestes_a_enregistrer)} geste(s) manuel(s) "
+                     f"appliques au monde mais jamais enregistres dans la "
+                     f"scene, perdus a la frontiere de partie : "
+                     f"{self.gestes_a_enregistrer!r}")
         self.gestes_a_enregistrer = []
 
     def OnNewGame(self):

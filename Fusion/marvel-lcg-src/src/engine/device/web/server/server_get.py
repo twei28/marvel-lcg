@@ -224,9 +224,21 @@ class GameServerGet(GameServerBase):
         Aucun corps de requete : il n'y a qu'un seul geste annulable, le
         dernier. Le plateau n'a donc rien a envoyer, et rien a tenir a jour de
         son cote.
+
+        ⚠ L'ETAT, PAS LA REGLE -- et c'est un correctif (constat I3 de la
+        ronde de correction 1 du 20/09/2026). Cette garde testait
+        `rule.mode_manuel`, donc n'ouvrait qu'aux parties manuelles
+        DECLAREES. Tant que les gestes d'une pause ORDINAIRE disparaissaient
+        au rechargement, un `Puzzle.Damage(49, 300)` tape de travers finissait
+        par s'effacer tout seul ; maintenant qu'ils SURVIVENT, il serait
+        permanent et reapplique a chaque montage, sans aucune echappatoire.
+        On ouvre donc la meme porte que `/manuel_passer` quatre methodes plus
+        haut : `world.manuel_actif`, qui est vrai dans les DEUX cas (une
+        partie declaree l'a pose une fois pour toutes apres sa mise en place)
+        et faux hors pause -- ou annuler un geste n'aurait aucun sens.
         """
         world = self.game.world
-        if world is None or not world.rule.mode_manuel:
+        if world is None or not world.manuel_actif:
             return web.json_response({'error': 'pas une partie manuelle'}, status=409)
         if not self.game.session.AnnulerDernierGeste():
             return web.json_response({'error': 'rien a annuler'}, status=409)
