@@ -269,6 +269,32 @@ describe('les gestes manuels regroupes en fin de rapport (tâche 6)', () => {
   })
 })
 
+describe("l'incomplétude propre a la section des gestes manuels (correction 1)", () => {
+  it("avertit quand le tampon est plein, MEME en portee courte et SANS aucun geste manuel", () => {
+    // Aucune entree de type 'manuel' ici : le risque est justement que le
+    // tampon plein ait deja evince un vieux geste avant ce releve. La
+    // section doit donc le dire meme quand gestesManuels est vide.
+    const plein = Array.from({ length: MAX_ENTREES }, (_, i) => entree(3, `e${i}`, { type: 'card' }))
+    const rapport = construireRapport(monde(), undefined, plein, 'recent', CONTEXTE)
+    expect(rapport.gestesManuelsIncomplets).toBe(true)
+    expect(rapport.gestesManuels).toHaveLength(0)
+
+    const texte = rapportEnTexte(rapport)
+    expect(texte).toContain('GESTES MANUELS')
+    expect(texte).toMatch(/incompl[eè]t/i)
+    // Ne doit pas se confondre avec l'avertissement du JOURNAL, qui parle du
+    // debut de partie perdu, pas des gestes manuels.
+    expect(texte).not.toContain('TRONQUÉ')
+  })
+
+  it("ne pretend pas etre incomplete quand le tampon n'est pas plein", () => {
+    const court = [entree(3, 'Klaw joue une carte', { type: 'card' })]
+    const rapport = construireRapport(monde(), undefined, court, 'partie', CONTEXTE)
+    expect(rapport.gestesManuelsIncomplets).toBe(false)
+    expect(rapportEnTexte(rapport)).not.toMatch(/incompl[eè]t/i)
+  })
+})
+
 describe('la version texte', () => {
   const base = () => construireRapport(monde(), undefined, [], 'recent', CONTEXTE)
 

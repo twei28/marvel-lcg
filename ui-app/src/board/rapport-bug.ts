@@ -152,15 +152,38 @@ export type RapportBug = {
    * Reprend les mêmes entrées que le journal, sous leur forme chronologique
    * habituelle — on ne les déplace pas, on les DUPLIQUE ici.
    *
-   * ⚠ COUVRE TOUJOURS LA PARTIE ENTIÈRE, quelle que soit la `portee`
-   * demandée pour le journal ci-dessus. Une portée « recent » ou « tour »
-   * existe pour ne pas noyer le lecteur dans un long journal, mais un geste
-   * manuel posé plus tôt dans la partie reste une intervention à auditer :
-   * le taire parce qu'il est hors-fenêtre irait à l'encontre même du but de
-   * cette section (voir tâche 6, décision documentée dans le rapport de
-   * tâche).
+   * ⚠ VISE TOUJOURS LA PARTIE ENTIÈRE, quelle que soit la `portee` demandée
+   * pour le journal ci-dessus : on ne filtre PAS sur `retenues`. Une portée
+   * « recent » ou « tour » existe pour ne pas noyer le lecteur dans un long
+   * journal, mais un geste manuel posé plus tôt dans la partie reste une
+   * intervention à auditer (voir tâche 6, décision documentée dans le
+   * rapport de tâche).
+   *
+   * Cette visée n'est PAS une garantie d'exhaustivité : le tampon source
+   * (`entrees`) est lui-même plafonné à `MAX_ENTREES`, en amont de ce
+   * module. Un geste manuel plus ancien que le tampon a déjà disparu avant
+   * que cette fonction ne le voie. Voir `gestesManuelsIncomplets`, qui dit
+   * quand ce risque est réel.
    */
   gestesManuels: EntreeBug[]
+  /**
+   * Correction 1 (revue) : le tampon source de `gestesManuels` est-il plein,
+   * au point qu'on ne peut plus AFFIRMER couvrir toute la partie ?
+   *
+   * DISTINCT de `tronque` juste en dessous : `tronque` ne s'allume que pour
+   * `portee === 'partie'`, parce que le journal affiché à une portée courte
+   * ne prétend décrire que sa fenêtre — rien à y signaler. `gestesManuels`,
+   * lui, prétend TOUJOURS couvrir toute la partie, quelle que soit la
+   * `portee` choisie : ce champ doit donc s'allumer sur le même critère
+   * (tampon plein), INDÉPENDAMMENT de `portee`.
+   *
+   * ⚠ Le cas dangereux n'est pas un cas de bord : un rapport pris à chaud,
+   * en portée courte, sur une partie longue dont le tampon a déjà évincé un
+   * vieux geste, affiche sinon une section propre et silencieuse sur sa
+   * propre incomplétude — ce qui fait précisément conclure à tort à
+   * l'absence d'intervention manuelle.
+   */
+  gestesManuelsIncomplets: boolean
   /** Vrai quand le journal a pu perdre son début. */
   tronque: boolean
 }
@@ -364,6 +387,11 @@ export function construireRapport(
     // Toujours filtré sur TOUTES les entrées, jamais sur `retenues` : voir le
     // commentaire du champ `gestesManuels` (tâche 6).
     gestesManuels: entrees.filter((e) => e.type === 'manuel').map(decrireEntree),
+    // Correction 1 : même critère que `tronque` (tampon plein), mais SANS la
+    // condition `portee === 'partie'` — `gestesManuels` vise toute la partie
+    // quelle que soit la portée demandée, donc le risque d'incomplétude
+    // existe quelle que soit cette portée.
+    gestesManuelsIncomplets: entrees.length >= MAX_ENTREES,
     // Le tampon plein signifie que des entrées ont été jetées par le bas. La
     // question ne se pose que sur « toute la partie » : une portée courte ne
     // prétend rien couvrir d'autre qu'elle-même.
@@ -509,9 +537,23 @@ export function rapportEnTexte(rapport: RapportBug): string {
   // (tâche 6). Toujours la partie entière, jamais limitée à la portée
   // choisie pour le journal ci-dessus — voir le commentaire du champ
   // `gestesManuels`.
-  if (rapport.gestesManuels.length > 0) {
+  //
+  // Correction 1 : la section s'affiche AUSSI quand la liste est vide mais
+  // que `gestesManuelsIncomplets` est vrai — c'est le cas dangereux qu'une
+  // liste vide « propre » masquerait : on ne peut plus dire s'il n'y a
+  // vraiment eu aucun geste manuel, ou si le tampon en a évincé un.
+  if (rapport.gestesManuels.length > 0 || rapport.gestesManuelsIncomplets) {
     lignes.push('')
-    lignes.push(`--- GESTES MANUELS (${rapport.gestesManuels.length}, pour audit rapide) ---`)
+    const compte = rapport.gestesManuels.length > 0 ? ` (${rapport.gestesManuels.length})` : ''
+    lignes.push(`--- GESTES MANUELS${compte}, pour audit rapide ---`)
+    if (rapport.gestesManuelsIncomplets) {
+      // Symbole ⚠ et formulation volontairement différents de l'avertissement
+      // du JOURNAL (« /!\ Journal TRONQUÉ ») juste au-dessus : les deux
+      // signalent des incomplétudes différentes, il ne faut pas les confondre.
+      lignes.push(
+        `⚠ Liste peut-être incomplète : le tampon de journal (${MAX_ENTREES} entrées) est plein, un geste manuel plus ancien a pu en être évincé avant ce relevé.`
+      )
+    }
     for (const geste of rapport.gestesManuels) {
       const cible = geste.cible ? ` {${geste.cible}}` : ''
       const detail = geste.detail ? ` / ${geste.detail}` : ''
