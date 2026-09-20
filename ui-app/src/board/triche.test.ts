@@ -13,13 +13,13 @@ afterEach(() => {
 })
 
 describe('basculerPause (POST /manuel_pause)', () => {
-  it('pose la pause : envoie actif=true, qui vide (aucun pseudo atteignable)', async () => {
+  it('pose la pause : envoie actif=true, aucun champ qui (resolu cote serveur)', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
     const reussi = await basculerPause(true)
     expect(reussi).toBe(true)
     expect(fetch).toHaveBeenCalledWith('/manuel_pause', expect.objectContaining({
       method: 'POST',
-      body: JSON.stringify({ actif: true, qui: '' }),
+      body: JSON.stringify({ actif: true }),
     }))
   })
 
@@ -27,7 +27,7 @@ describe('basculerPause (POST /manuel_pause)', () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
     await basculerPause(false)
     expect(fetch).toHaveBeenCalledWith('/manuel_pause', expect.objectContaining({
-      body: JSON.stringify({ actif: false, qui: '' }),
+      body: JSON.stringify({ actif: false }),
     }))
   })
 

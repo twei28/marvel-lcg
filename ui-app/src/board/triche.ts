@@ -181,23 +181,24 @@ export async function annulerDernierGeste(): Promise<boolean> {
  * (fetch, try/catch, retour booléen) pour ne pas ouvrir un second style
  * d'appel réseau dans ce fichier.
  *
- * ⚠ « QUI » VOYAGE VIDE, ET C'EST DÉLIBÉRÉ. Le moteur accepte un champ `qui`
- * optionnel pour que `BandeauPause` nomme qui a posé la pause (sinon il dit
- * « quelqu'un ») — mais le SEUL endroit qui connaît le pseudo du joueur
- * courant côté plateau, `salon.ts` (`lireSalon().pseudo`), n'a plus aucun
- * consommateur depuis que le tchat a quitté la table (commit bb0c8051,
- * 12/09/2026, demande explicite de l'utilisateur : « tu peux enlever le
- * tchat du jeu »). Le rebrancher pour ce seul champ ressusciterait, par la
- * bande, une fonctionnalité retirée à dessein. Le moteur accepte déjà un
- * `qui` vide comme un cas NORMAL (pas un repli d'erreur) : c'est celui-ci qui
- * s'applique ici.
+ * ⚠ AUCUN CHAMP « QUI » (ronde de correction 1, tâche 3). Une version
+ * précédente envoyait `qui: ''` : le SEUL endroit qui connaît le pseudo du
+ * joueur courant côté plateau, `salon.ts` (`lireSalon().pseudo`), n'a plus
+ * aucun consommateur depuis que le tchat a quitté la table (commit
+ * bb0c8051, 12/09/2026, demande explicite de l'utilisateur), et un champ
+ * que l'appelant enverrait TOUJOURS vide est un chemin mort : le bandeau ne
+ * dirait alors jamais que « quelqu'un ». Le SERVEUR détermine désormais
+ * lui-même qui a parlé, à partir du siège que la requête prouve tenir
+ * (`nom_du_heros_qui_parle`, `server_base.py`), et pose le nom du héros de
+ * ce siège — il dit plus aux autres joueurs qu'un pseudo de toute façon
+ * hors d'atteinte ici.
  */
 export async function basculerPause(actif: boolean): Promise<boolean> {
   try {
     const reponse = await fetch('/manuel_pause', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ actif, qui: '' }),
+      body: JSON.stringify({ actif }),
     })
     return reponse.ok
   } catch {
