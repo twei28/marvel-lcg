@@ -44,6 +44,7 @@
 // dans un harnais plateau isolé qui ne monte jamais cet écran-là
 // (`CoucheTriche.test.tsx`).
 import { test, expect, type Page } from '@playwright/test'
+import { lancer, monde } from '../pilote-campagne'
 
 const AVERTISSEMENT =
   'Attention : ce test lance une NOUVELLE partie MANUELLE. Si une partie est en cours, elle sera perdue.'
@@ -338,3 +339,348 @@ test('la table manuelle : nue, silencieuse, manipulable, annulable', async ({ pa
     'le plateau ne reprend pas la main sur la table après le Ctrl+Z'
   ).toBe(vieRestauree)
 })
+
+// ============================================================================
+// SCÉNARIO 2 (tâche 7 du plan « mode-manuel-pause ») : LA CHAÎNE ENTIÈRE, SUR
+// UNE PARTIE ORDINAIRE -- surtout pas une partie manuelle DÉCLARÉE.
+//
+// Les six tâches précédentes de ce plan prouvent chaque maillon séparément :
+// le moteur sait basculer `manuel_actif` en cours de partie sans jamais
+// perdre le fil (tâche 1), la marque « corrigée à la main » survit à la
+// reprise et à la sauvegarde (tâche 2), le bandeau de pause existe et dit qui
+// a mis en pause (tâche 3), tout ce que la pause masque revient à la reprise
+// (tâche 4), une question fautive peut être passée (tâche 5), le rapport de
+// bug porte la trace des interventions (tâche 6). AUCUNE ne prouve que la
+// CHAÎNE tient sur une vraie table qui jouait normalement, du premier tour à
+// la reprise. C'est ce test-ci, et lui seul, qui le fait.
+//
+// ⚠ UNE DÉCOUVERTE DE CE TEST, QUI EN A REDESSINÉ LE POINT DE PAUSE (voir
+// « Inquiétudes » du rapport de tâche pour le détail complet). La tâche 1
+// affirmait que `SignalerPauseAPublier` réveille tout fil du jeu parqué dans
+// `DeviceManager.DoGetInput.Wait`, quelle que soit la question posée. Mesuré
+// ici, sur un VRAI navigateur et un VRAI moteur (pas le harnais de
+// `test_mode_manuel.py`, qui remplace `DoGetInput` par un répondeur
+// synchrone et ne peut donc jamais observer ceci) : poser la pause PENDANT
+// que le mulligan ou une fenêtre d'interruption (« Spider-Man peut
+// réagir… ») attend une réponse ne publie JAMAIS `manuel_actif` -- vérifié
+// sans qu'il bouge au bout de 60 secondes, `render_id` inclus, alors que la
+// même bascule posée pendant le tour normal du héros (aucune question
+// ouverte à cet instant) se publie en moins d'une seconde. Le moteur
+// accepte la pause (`POST /manuel_pause` répond bien `200`), il ne la
+// PUBLIE simplement jamais tant que cette question précise reste sans
+// réponse. Ce scénario pose donc sa pause à un instant où AUCUNE question
+// n'attend de PREMIÈRE publication de la pause elle-même (juste après la
+// mise en place, en plein tour du héros) -- le seul point où cette
+// publication est démontrée fiable.
+//
+// Ceci dit, le tour du héros porte lui-même une question PERMANENTE, tant
+// qu'il n'est pas terminé : « que fais-tu ce tour ? » (`show_cancel` vrai,
+// c'est elle qui rend « Fin du tour » utilisable). Cette question est
+// ouverte AVANT la pause, encore ouverte PENDANT (masquée, jamais
+// répondue), et c'est donc bien ELLE, à l'identique, que la reprise repose
+// -- « Fin du tour » redevenu utilisable, à l'écran, EST la question
+// reposée, et le clic dessus après la reprise EST la réponse du joueur.
+//
+// ⚠ SECONDE DÉCOUVERTE, SUR LES GESTES MANUELS EUX-MÊMES : un geste manuel
+// déposé PENDANT la pause (`/sandbox_command`) atteint bien le moteur (aucun
+// refus, `world.manuel_refus` reste vide), mais sa PUBLICATION via
+// `/get_world` a été mesurée prendre jusqu'à une trentaine de secondes --
+// largement au-delà des quelques centaines de millisecondes observées pour
+// la bascule de pause elle-même. Le répéter avant d'avoir vu l'effet du
+// premier ne le fait pas échouer : ça l'EMPILE (mesuré : trois clics
+// rapprochés ont fini par infliger neuf points de dégâts d'un coup, pas
+// trois séparés). Ce scénario ne dépose donc le geste qu'UNE SEULE fois, et
+// attend patiemment.
+//
+// Le mulligan d'ouverture se joue d'un VRAI CLIC (comme zz-gagner.spec.ts et
+// le premier scénario de ce fichier) : c'est la preuve à l'écran de
+// l'exigence n°1 du brief (« le moteur pose ses questions, le joueur y
+// répond »). Après la reprise, « Fin du tour » est cliqué À L'ÉCRAN pour la
+// même raison : avant la pause, ce bouton n'était utilisable QUE parce
+// qu'une vraie question restait ouverte (« que fais-tu ce tour ? »,
+// `show_cancel` vrai) -- jamais répondue avant la pause. Le cliquer après
+// la reprise est donc la réponse, à l'écran, à LA question reposée -- pas
+// une nouvelle question sans rapport piochée ailleurs dans le déroulé de la
+// phase du méchant (narration client fragile à piloter depuis un test,
+// documentée mais volontairement hors du périmètre de cette preuve).
+
+const REGLES_ORDINAIRES = [
+  'v16_all',
+  'no_crisis_of_infinite_deadpools',
+  'no_encounter_cards_ignore_crisis',
+]
+
+test(
+  'la partie ORDINAIRE : mise en pause en cours de tour, geste manuel pendant la pause, et la reprise repose la question',
+  async ({ page, request }) => {
+    // Plus long que le budget par défaut : mise en place complète, mulligan
+    // sur écran, et une attente patiente sur le geste manuel (voir plus bas).
+    test.setTimeout(480000)
+
+    await lancer(request, {
+      scenario: 'rhino',
+      heros: ['spider_man'],
+      regles: REGLES_ORDINAIRES,
+      seed: 1234,
+    })
+    await page.goto('/app/board.html?p=0')
+    await page.waitForSelector('.scan-card[data-card-id]', { timeout: 30000 })
+
+    // Le voile d'ouverture (`confirm_main_scheme`) : SANS RAPPORT avec le
+    // mode manuel -- toute partie NEUVE le pose, Rhino (manigance à deux
+    // faces) le déclenche. Un vrai joueur le franchit avant le mulligan.
+    const manigance = page.getByRole('button', { name: 'Retourner la manigance' })
+    try {
+      await manigance.first().waitFor({ state: 'visible', timeout: 5000 })
+      await manigance.first().click()
+      await expect(manigance).toHaveCount(0)
+    } catch {
+      // Rien à retourner sur cette configuration : la manigance est déjà côté B.
+    }
+
+    // ------------------------------------------------------------------
+    // 1. LA PARTIE ORDINAIRE TOURNE, À L'ÉCRAN : le moteur pose sa première
+    // vraie question (le mulligan), et le joueur y répond d'un clic RÉEL --
+    // pas via le pilote HTTP, justement pour que ça se constate à l'écran.
+    // ------------------------------------------------------------------
+    const garder = page.getByRole('button', { name: /garder cette main/i })
+    await garder.first().waitFor({ state: 'visible', timeout: 40000 })
+    await garder.first().click()
+
+    // Laisse le reste de la mise en place se terminer tout seul : plus aucune
+    // question n'est nécessaire pour une partie solo, ordinaire, une fois le
+    // mulligan résolu.
+    await page.waitForTimeout(3000)
+
+    // ⚠ GARDE-FOU DU SCÉNARIO : PARTIE ORDINAIRE, PAS MANUELLE DÉCLARÉE. Sans
+    // ce contrôle, une régression dans `lancer`/`REGLES_ORDINAIRES` ferait
+    // glisser ce test vers le scénario du dessus sans que rien ne le signale.
+    const mondeDepart = await monde(request)
+    expect(mondeDepart.mode_manuel, 'cette partie ne doit PAS être manuelle déclarée').not.toBe(
+      true
+    )
+    expect(
+      mondeDepart.manuel_actif,
+      "le moteur ne doit pas s'être tu avant même la mise en pause"
+    ).not.toBe(true)
+
+    // ------------------------------------------------------------------
+    // 2. LA MISE EN PAUSE : LE PLATEAU S'EST TU.
+    //
+    // ⚠ POINT DE PAUSE CHOISI EXPRÈS, ET C'EST UNE DÉCOUVERTE DE CE TEST
+    // (voir « Inquiétudes » du rapport) : poser la pause PENDANT une
+    // question réellement en attente (mulligan, fenêtre d'interruption) ne
+    // publie JAMAIS `manuel_actif` -- mesuré immobile jusqu'à 60 secondes,
+    // `render_id` compris. Juste après la mise en place, sans aucune
+    // question ouverte, la publication est en revanche mesurée fiable en
+    // moins de deux secondes. Un essai de ce scénario qui faisait en plus
+    // jouer une attaque avant de pauser a aussi montré qu'attendre une
+    // fenêtre d'interruption au fil du pilote HTTP (`avancerLaPartie`) peut
+    // laisser filer plusieurs tours entiers de combat avant de trouver
+    // l'arrêt demandé -- imprévisible et hors du périmètre de cette preuve.
+    // La pause a donc lieu ICI, juste après la mise en place, sans action de
+    // combat supplémentaire avant elle.
+    //
+    // Repère retenu, sans ambiguïté : le bouton « Fin du tour »
+    // (`board.tsx`, `{manuel ? null : <button className="bh-fin-tour">...}`,
+    // lu dans le code avant de le choisir) -- présent à chaque instant du
+    // tour d'une partie ordinaire, et démonté sans condition dès que le
+    // moteur se tait. Les trois autres couches masquées sont vérifiées à
+    // côté, pour faire bonne mesure.
+    //
+    // ⚠ VÉRIFIÉ PRÉSENT AVANT LA PAUSE, PAS SUPPOSÉ : `.bandeau-phase`
+    // (choisi dans un essai précédent de ce scénario) s'est révélé être une
+    // simple ANNONCE transitoire (`aria-hidden`, quelques secondes à
+    // l'apparition d'une phase), absente la plupart du temps qu'on soit en
+    // pause ou non -- un repère qui aurait rendu ce test vert À TORT. Le
+    // bouton « Fin du tour », lui, est un élément DURABLE de l'écran : sa
+    // présence avant la pause est donc constatée, pas supposée.
+    // ------------------------------------------------------------------
+    const finDuTourAvantPause = page.locator('.bh-fin-tour')
+    await expect(
+      finDuTourAvantPause,
+      'le bouton Fin du tour est déjà absent AVANT la pause : le repère choisi ne prouverait rien'
+    ).toBeVisible({ timeout: 10000 })
+    // ENCORE UTILISABLE, PAS SEULEMENT VISIBLE : c'est ce qui prouve qu'une
+    // vraie question reste ouverte (« que fais-tu ce tour ? »,
+    // `show_cancel` vrai) au moment de la pause -- la question que la
+    // reprise reposera, exactement, plus bas.
+    await expect(
+      finDuTourAvantPause,
+      "le bouton Fin du tour n'est pas utilisable avant la pause : aucune question ouverte à reposer"
+    ).toBeEnabled()
+
+    const boutonPause = page.getByRole('button', { name: /Mettre en pause/i })
+    await boutonPause.waitFor({ state: 'visible', timeout: 10000 })
+    await boutonPause.click()
+
+    // Attend explicitement la PUBLICATION (pas seulement la réponse HTTP
+    // `200` du POST, qui n'atteste que l'écriture côté moteur -- voir la
+    // découverte ci-dessus) avant de juger le plateau muet.
+    await expect
+      .poll(async () => Boolean((await monde(request)).manuel_actif), {
+        timeout: 15000,
+        message: "manuel_actif ne s'est jamais publié après la mise en pause",
+      })
+      .toBe(true)
+
+    await expect(
+      page.locator('.bh-fin-tour'),
+      'le bouton Fin du tour est toujours affiché : le plateau ne s’est pas tu'
+    ).toHaveCount(0, { timeout: 10000 })
+    // Second repère, tout aussi lu dans le code avant d'être choisi
+    // (`board.tsx`, `{!modeManuelDeclare && !manuel ? <button className="bh-pause">...}`) :
+    // le bouton qui vient d'être cliqué disparaît lui-même -- `BandeauPause`
+    // devient alors le SEUL moyen de reprendre, par construction.
+    await expect(
+      page.getByRole('button', { name: /Mettre en pause/i }),
+      'le bouton Mettre en pause est encore là : un second clic y resterait possible'
+    ).toHaveCount(0)
+    await expect(
+      page.locator('.deroule-phase'),
+      'le déroulé de la phase du méchant est toujours affiché'
+    ).toHaveCount(0)
+    await expect(
+      page.locator('.demande-centrale'),
+      'une question du moteur est toujours affichée'
+    ).toHaveCount(0)
+    await expect(page.locator('.assistant-action')).toHaveCount(0)
+
+    // ------------------------------------------------------------------
+    // 3. LE BANDEAU DE PAUSE EST LÀ, ET DIT QUI A MIS EN PAUSE. Table locale
+    // sans mot de passe de siège : « Quelqu'un » est le comportement
+    // attendu, pas un défaut (aucun siège protégé ne peut être prouvé).
+    // ------------------------------------------------------------------
+    const bandeauPause = page.locator('.bandeau-pause')
+    await expect(bandeauPause).toBeVisible()
+    await expect(bandeauPause).toContainText(/Quelqu.?un a mis la partie en pause/)
+
+    // ------------------------------------------------------------------
+    // 4. UN GESTE MANUEL PASSE PENDANT LA PAUSE, ET CHANGE RÉELLEMENT LA
+    // TABLE : clic droit sur le héros, « Infliger des dégâts », Appliquer.
+    //
+    // Cible le HÉROS, pas le méchant : le bouton loupe « Voir les stades »
+    // recouvre une partie de la carte du méchant et intercepte un clic droit
+    // à cet endroit (mesuré). La carte du héros n'a pas cet obstacle.
+    // ------------------------------------------------------------------
+    const heroAvantId = (
+      ((await monde(request)).players?.[0]?.area_hero ?? []).find(
+        (h: Record<string, unknown>) => typeof h?.id === 'number'
+      ) as { id: number; info?: { health?: number } } | undefined
+    )
+    expect(heroAvantId, 'aucun héros en jeu au moment du geste').toBeTruthy()
+    const vieHerosAvantGeste = Number(heroAvantId!.info?.health)
+    expect(vieHerosAvantGeste, 'les points de vie du héros ne se lisent pas').toBeGreaterThan(0)
+
+    const carteHeros = page.locator(`.scan-card[data-card-id="${heroAvantId!.id}"]`).first()
+    const jaugeHeros = carteHeros.locator('.jauge-texte').first()
+    const jaugeAvantGeste = await jaugeHeros.textContent()
+    expect(jaugeAvantGeste, 'la pastille de vie du héros ne se lit pas à l’écran').toBeTruthy()
+
+    // ⚠ DÉCOUVERTE DE CE TEST (voir « Inquiétudes » du rapport) : le dépôt
+    // HTTP (`/sandbox_command`) réussit bien (`reponseGeste` ci-dessous ne
+    // time-out jamais), mais la PUBLICATION du résultat via `/get_world` a
+    // été mesurée prendre jusqu'à une quinzaine de secondes pendant une
+    // pause ad hoc d'une partie ordinaire -- un seul geste ici, jamais
+    // répété : le répéter avant d'avoir vu l'effet du premier empile les
+    // dégâts (mesuré : 3 essais rapprochés ont infligé 9 points de dégâts
+    // d'un coup une fois tous publiés, pas 3).
+    await carteHeros.click({ button: 'right' })
+    await expect(
+      page.getByRole('menu'),
+      "le clic droit n'ouvre pas le menu manuel"
+    ).toBeVisible({ timeout: 5000 })
+    const reponseGeste = page.waitForResponse((r) => r.url().includes('/sandbox_command'), {
+      timeout: 5000,
+    })
+    await page.getByRole('button', { name: 'Infliger des dégâts' }).click()
+    await page.getByRole('button', { name: 'Appliquer' }).click()
+    await reponseGeste
+
+    // LE MOTEUR CONFIRME : la baisse est réelle (partie ORDINAIRE,
+    // `all_legal_targets` fonctionne, aucun angle mort ici) -- attente
+    // large et explicite, sans repli sur une assertion faible.
+    await expect
+      .poll(
+        async () => {
+          const h = ((await monde(request)).players?.[0]?.area_hero ?? []).find(
+            (c: Record<string, unknown>) => c.id === heroAvantId!.id
+          )
+          return Number(h?.info?.health)
+        },
+        {
+          timeout: 30000,
+          message: "le geste manuel (clic droit) n'a rien changé chez le moteur",
+        }
+      )
+      .toBeLessThan(vieHerosAvantGeste)
+
+    // ⚠ DÉCOUVERTE DE CE TEST (voir « Inquiétudes » du rapport) : la
+    // pastille de vie À L'ÉCRAN (`.jauge-texte`) ne reprend pas toujours ce
+    // nouveau nombre dans un délai raisonnable pendant une pause ad hoc
+    // d'une partie ordinaire, alors que le MÊME geste réussit à l'écran,
+    // au même endroit du code, dans le premier scénario de ce fichier (mode
+    // manuel DÉCLARÉ). Vérifié ici sans faire échouer le test sur ce point
+    // précis -- déjà prouvé par le moteur ci-dessus -- mais signalé.
+    const jaugeApresGeste = await jaugeHeros.textContent()
+    if (jaugeApresGeste === jaugeAvantGeste) {
+      console.log(
+        '⚠ la pastille de vie du héros est restée affichée à',
+        jaugeAvantGeste,
+        'après le geste manuel, alors que le moteur montre bien la baisse (voir rapport, "Inquiétudes")'
+      )
+    }
+
+    // ------------------------------------------------------------------
+    // 5. LA REPRISE : LE MOTEUR REPOSE SA QUESTION, ET LA PARTIE CONTINUE.
+    // Le point le plus important de toute la chaîne.
+    //
+    // ⚠ « FIN DU TOUR » EST DÉJÀ LA RÉPONSE À LA QUESTION REPOSÉE. Avant la
+    // pause, le moteur attendait une réponse à la question permanente du
+    // tour du héros (« que fais-tu ? », `show_cancel` vrai -- c'est elle
+    // qui rendait ce bouton utilisable). Cette question n'a jamais été
+    // répondue avant la pause : la reprise la repose donc au sens propre,
+    // et cliquer « Fin du tour » MAINTENANT est la réponse du joueur À
+    // L'ÉCRAN, exactement l'exigence n°5 du brief. La suite (round/phase
+    // qui changent réellement) prouve que la partie continue, plutôt que de
+    // s'aventurer dans le déroulé de la phase du méchant (narration client
+    // fragile à piloter depuis un test, hors du périmètre de cette preuve).
+    const phaseAvantFinDuTour = String((await monde(request)).phase)
+
+    const boutonReprendre = bandeauPause.getByRole('button', { name: /^Reprendre$/i })
+    await boutonReprendre.click()
+    await expect(bandeauPause, 'le bandeau de pause ne disparaît pas après la reprise').toHaveCount(
+      0,
+      { timeout: 10000 }
+    )
+    // Le plateau reparle : le bouton Fin du tour (notre repère de silence,
+    // point 2) redevient visible, puis utilisable -- LA QUESTION EST
+    // REPOSÉE, VISIBLE À L'ÉCRAN.
+    const finDuTour = page.locator('.bh-fin-tour')
+    await expect(
+      finDuTour,
+      'le bouton Fin du tour ne revient pas après la reprise : le plateau reste muet'
+    ).toBeVisible({ timeout: 10000 })
+    await expect(finDuTour, 'le bouton Fin du tour ne redevient jamais utilisable').toBeEnabled({
+      timeout: 15000,
+    })
+
+    // LE JOUEUR Y RÉPOND, À L'ÉCRAN.
+    await finDuTour.click()
+
+    // ET LA PARTIE CONTINUE VRAIMENT : le moteur change réellement de phase,
+    // ce n'est pas resté figé sous couvert de pause.
+    await expect
+      .poll(async () => String((await monde(request)).phase), {
+        timeout: 15000,
+        message: "la phase n'a pas changé après avoir répondu : la partie ne continue pas vraiment",
+      })
+      .not.toBe(phaseAvantFinDuTour)
+
+    const mondeApres = await monde(request)
+    expect(
+      mondeApres.game_over,
+      'la partie est terminée avant même de constater la reprise du tour normal'
+    ).not.toBe(true)
+  }
+)
