@@ -115,28 +115,34 @@ class GameServerGet(GameServerBase):
     async def manuel_pause(self, request: web.Request) -> web.Response:
         """Bascule la pause manuelle EN COURS DE PARTIE (tache 1).
 
-        Corps : {"actif": true|false, "qui": "<pseudo>"}. `qui` est
-        OPTIONNEL (tache 3) : absent ou vide, accepte -- le moteur ne connait
-        aucun pseudo, il ne fait que relayer ce que le plateau lui donne
-        pour que `BandeauPause` dise qui a pose la pause (« quelqu'un » a
-        defaut). Ne fait qu'un seul appel a `World.BasculerPauseManuelle` --
-        ce fil (HTTP) ne doit toucher a RIEN d'autre du monde, cf. le
-        commentaire en tete de `engine/device/manager/base.py` et celui de
-        `BasculerPauseManuelle`.
+        Corps : {"actif": true|false}. AUCUN champ `qui` (ronde de
+        correction 1, tache 3) : un champ que le plateau ne peut de toute
+        facon pas renseigner honnetement (aucun pseudo atteignable, voir
+        `triche.basculerPause`) est un chemin mort, et le bandeau ne dirait
+        jamais que « quelqu'un » -- l'inverse du but de la tache. Le SERVEUR
+        determine lui-meme qui a parle, a partir du siege que la requete
+        PROUVE tenir (`nom_du_heros_qui_parle`, `server_base.py`), et pose le
+        NOM DU HEROS de ce siege -- il dit plus aux autres joueurs qu'un
+        pseudo. Siege indetermine (table locale sans sieges proteges,
+        typiquement) : chaine vide, le bandeau dit « quelqu'un » comme avant.
+
+        Ne fait qu'un seul appel a `World.BasculerPauseManuelle` -- ce fil
+        (HTTP) ne doit toucher a RIEN d'autre du monde, cf. le commentaire en
+        tete de `engine/device/manager/base.py` et celui de
+        `BasculerPauseManuelle`. La resolution du nom ci-dessus est une
+        LECTURE (descripteur deja rendu), pas une ecriture : elle ne viole
+        pas cette regle.
         """
         data = await request.json()
         actif = data.get('actif', None)
         if not isinstance(actif, bool):
             return web.json_response({'error': 'actif must be a boolean'}, status=400)
 
-        qui = data.get('qui', '')
-        if not isinstance(qui, str):
-            return web.json_response({'error': 'qui must be a string'}, status=400)
-
         world = self.game.world
         if world is None:
             return web.json_response({'error': 'no game in progress'}, status=409)
 
+        qui = self.nom_du_heros_qui_parle(request) if actif else ''
         en_pause = world.BasculerPauseManuelle(actif, qui)
         return web.json_response({'result': 'en pause' if en_pause else 'repris'})
 

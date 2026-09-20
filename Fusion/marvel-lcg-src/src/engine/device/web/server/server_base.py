@@ -157,6 +157,38 @@ class GameServerBase(WebServer):
             return None
         return tenus
 
+    def nom_du_heros_qui_parle(self, request: web.Request) -> str:
+        """Le nom du heros du siege qui PROUVE avoir envoye cette requete
+        (tache 3, ronde de correction 1 : « qui a mis en pause »).
+
+        Chaine vide si indeterminable -- ce n'est pas un repli generique,
+        c'est le cas HONNETE d'une table locale sans sieges proteges (aucun
+        mot de passe pose, donc aucun cookie ne distingue un client d'un
+        autre) ou d'un client qui ne prouve aucun siege protege.
+
+        ⚠ NE COMPTE QUE LES SIEGES PROTEGES (mot de passe non vide) :
+        `tient_le_siege` rend vrai SANS PREUVE pour un siege volontairement
+        laisse sans mot de passe (« tout le monde le tient »), donc les
+        compter ferait retomber toute table locale sur le siege 0 par
+        coincidence de boucle plutot que par une vraie preuve. Un seul siege
+        protege prouve, sans ambiguite : c'est notre demandeur. Zero ou
+        plusieurs (l'appelant ne peut alors pas etre distingue des autres
+        occupants proteges) : indetermine.
+        """
+        passwords = SEAT_PASSWORDS.value
+        prouves = [s for s, mdp in enumerate(passwords) if mdp and self.tient_le_siege(request, s)]
+        if len(prouves) != 1:
+            return ''
+        siege = prouves[0]
+        try:
+            joueurs = self.game.world.render.descriptor.players
+            if siege >= len(joueurs):
+                return ''
+            heros = joueurs[siege].area_hero
+            return str(heros[0].name) if heros else ''
+        except Exception:
+            return ''
+
     def allowed_seats(self, request: web.Request) -> 'Set[int]|None':
         """Sieges que CE client a le droit d'occuper. None = protection coupee."""
         # ⚠ LE SPECTATEUR N'EN A AUCUN, ET C'EST LA PREMIERE CHOSE QU'ON DIT.

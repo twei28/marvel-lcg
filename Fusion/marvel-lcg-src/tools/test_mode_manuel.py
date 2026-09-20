@@ -1251,6 +1251,104 @@ def cas_qui_et_depuis_publies(game_dir, port):
             "pause, RE-VIDES apres la reprise -- sur la scene et sur la trame")
 
 
+class _RequeteFactice:
+    """Un `web.Request` minimal : juste ce que lisent `tient_le_siege` et
+    `nom_du_heros_qui_parle` (`server_base.py`) -- des cookies, et un corps
+    JSON. Pas de vrai socket : meme esprit que `cas_reveil_dogetinput`, qui
+    construit un `DeviceManager` nu plutot que de monter un serveur complet.
+    """
+    def __init__(self, cookies, corps):
+        self.cookies = cookies
+        self._corps = corps
+
+    async def json(self):
+        return self._corps
+
+
+def cas_pause_par_nom_du_heros(game_dir, port):
+    """`pause_par` porte le NOM DU HEROS du siege qui PROUVE avoir demande la
+    pause (ronde de correction 1, tache 3) -- plus un pseudo envoye par le
+    plateau (retire : chemin mort, aucun pseudo n'y etait jamais atteignable
+    de toute facon), et pas un siege choisi par defaut.
+
+    Exerce le VRAI `GameServerGet.manuel_pause` (la route HTTP elle-meme),
+    pas seulement `World.BasculerPauseManuelle` comme les autres cas de ce
+    fichier : c'est justement la RESOLUTION DU SIEGE, faite dans le
+    gestionnaire de route, qui est sous test ici. Instance construite via
+    `__new__` (comme `_RequeteFactice` ci-dessus evite un vrai socket) :
+    seul `self.game` est lu par ce chemin de code.
+
+    Deux temoins : le siege PROTEGE (mot de passe pose) dont la requete
+    prouve tenir le cookie recoit le nom du heros de CE siege ; une requete
+    qui n'en prouve AUCUN (table sans siege protege, ou cookie absent/faux)
+    recoit une chaine vide -- le cas honnete d'un siege indetermine, pas une
+    panne.
+    """
+    import asyncio
+    import hashlib
+
+    # ⚠ APRES `monter_le_moteur`, PAS AVANT : c'est elle qui fait
+    # `sys.path.insert(0, game_dir)` -- `engine` n'existe encore nulle part
+    # avant cet appel (meme piege que cas_reveil_dogetinput, qui l'evite en
+    # n'appelant jamais monter_le_moteur et en inserant son propre chemin).
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
+
+    from engine.device.web.server.server_get import GameServerGet
+    from engine.device.web.server.server_base import SEAT_PASSWORDS
+
+    # `GameServerBase.game` est une PROPRIETE en lecture seule, deduite de
+    # `self.device_manager.controllers[0].game` -- on branche donc le VRAI
+    # gestionnaire de la partie, pas `.game` directement (non affectable).
+    serveur = GameServerGet.__new__(GameServerGet)
+    serveur.device_manager = jeu.world.controller_manager.device_manager
+
+    ancien_mdp = list(SEAT_PASSWORDS.value)
+    try:
+        mot_de_passe = "secret-siege-0"
+        SEAT_PASSWORDS.value = [mot_de_passe, "", "", ""]
+        jeton = hashlib.md5(mot_de_passe.encode()).hexdigest()
+
+        nom_attendu = monde.render.descriptor.players[0].area_hero[0].name
+        assert nom_attendu, \
+            "premisse cassee : le siege 0 ne porte encore aucun heros"
+
+        # TEMOIN 1 : cookie qui PROUVE le siege 0 -- pause_par prend le nom
+        # de SON heros.
+        requete_prouvee = _RequeteFactice({"seat_token_0": jeton}, {"actif": True})
+        reponse = asyncio.run(serveur.manuel_pause(requete_prouvee))
+        assert reponse.status == 200, f"la route a refuse la requete prouvee : {reponse.status}"
+        assert monde.scene.pause_par == nom_attendu, (
+            f"pause_par ne porte pas le nom du heros du siege prouve : "
+            f"{monde.scene.pause_par!r} != {nom_attendu!r}"
+        )
+
+        # Reprise, sinon le second temoin ne pose rien (deja en pause).
+        asyncio.run(serveur.manuel_pause(_RequeteFactice({}, {"actif": False})))
+        assert monde.scene.pause_par == "", \
+            "pause_par n'a pas ete efface a la reprise (chemin HTTP)"
+
+        # TEMOIN 2 : aucun cookie ne prouve quoi que ce soit -- siege
+        # indetermine, pause_par reste vide (« quelqu'un » cote plateau).
+        requete_anonyme = _RequeteFactice({}, {"actif": True})
+        reponse = asyncio.run(serveur.manuel_pause(requete_anonyme))
+        assert reponse.status == 200, f"la route a refuse la requete anonyme : {reponse.status}"
+        assert monde.scene.pause_par == "", (
+            f"une requete qui ne prouve aucun siege a quand meme pose "
+            f"pause_par={monde.scene.pause_par!r} : ce n'est pas un siege "
+            f"determine, c'est vide qu'il fallait"
+        )
+    finally:
+        SEAT_PASSWORDS.value = ancien_mdp
+        # Reprise finale : ne pas laisser la partie en pause pour la suite
+        # du processus (harmless ici, chaque cas est son propre processus,
+        # mais garde la meme discipline que le reste du fichier).
+        jeu.world.BasculerPauseManuelle(False)
+
+    return ("pause_par porte le nom du heros du siege PROUVE par la requete "
+            "HTTP reelle (route manuel_pause), vide si aucun siege n'est "
+            "prouve")
+
+
 def cas_pause_publiee(game_dir, port):
     """La trame publie manuel_actif SANS AUCUN AUTRE GESTE.
 
@@ -1426,6 +1524,7 @@ CAS = {
     "marque_survit_sauvegarde": cas_marque_survit_sauvegarde,
     "relire_marque_survit": cas_relire_marque_survit,
     "qui_et_depuis_publies": cas_qui_et_depuis_publies,
+    "pause_par_nom_du_heros": cas_pause_par_nom_du_heros,
     "pause_publiee": cas_pause_publiee,
     "reveil_dogetinput": cas_reveil_dogetinput,
 }
