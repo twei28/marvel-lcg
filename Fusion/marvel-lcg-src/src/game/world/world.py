@@ -776,15 +776,23 @@ class World(WorldAction, WorldFind):
         shutdown »), exactement comme l'explique le commentaire en tete de
         `engine/device/manager/base.py` a propos de `QueueSandboxCommands`.
 
-        ⚠ NE CREE AUCUNE BOUCLE : reveille `notify.input`, la MEME condition
-        que `QueueSandboxCommands` (et qu'attend deja `ManualLoop` ci-dessous
-        ou `DeviceManager.DoGetInput`) -- jamais une nouvelle attente. Le fil
-        du jeu, deja gare la, se reveille, ne trouve aucune entree, rend la
-        main, et l'appelant repose sa question : c'est CE prochain rendu, pas
-        celui-ci, qui portera le nouvel etat.
+        ⚠ NE CREE AUCUNE BOUCLE : `SignalerPauseAPublier` reveille
+        `notify.input`, la MEME condition que `QueueSandboxCommands` --
+        jamais une nouvelle attente. Le fil du jeu, deja gare dans
+        `DeviceManager.DoGetInput`, se reveille, ne trouve aucune entree,
+        rend la main, et l'appelant repose sa question : c'est CE prochain
+        rendu, pas celui-ci, qui porte le nouvel etat.
+
+        ⚠ CORRECTIF (ronde de correction 1) : reveiller `notify.input` SEUL,
+        sans rien poser d'autre, ne produisait RIEN -- le predicat de
+        `DoGetInput.Wait` ne testait ni une vraie entree, ni une sortie
+        demandee, ni des commandes en attente (les 3 seules raisons qu'il
+        connaissait) : le fil se rendormait aussitot. `SignalerPauseAPublier`
+        pose EN PLUS le marqueur que `DoGetInput` teste desormais au meme
+        titre qu'une commande en attente (`DeviceManager.pause_a_publier`).
         """
         self.manuel_actif = bool(actif)
-        self.controller_manager.device_manager.notify.input.NotifyAll()
+        self.controller_manager.device_manager.SignalerPauseAPublier()
         return self.manuel_actif
 
     def ManualLoop(self) -> None:

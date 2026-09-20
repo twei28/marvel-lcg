@@ -1107,31 +1107,69 @@ def cas_reprise_rouvre_la_porte(game_dir, port):
 
 
 def cas_pause_publiee(game_dir, port):
-    """La trame publie manuel_actif a vrai pendant la pause, a faux apres reprise.
+    """La trame publie manuel_actif SANS AUCUN AUTRE GESTE.
 
-    Meme esprit que `cas_drapeau_pose`/`cas_manuel_actif_pas_avant_la_boucle`
-    pour le mode declare, mais ici sur une partie ORDINAIRE et avec un VRAI
-    aller-retour : rien n'avait jamais verifie que la trame reflete la
-    reprise, puisque `manuel_actif` n'avait jamais ete remis a faux avant ce
-    chantier.
+    ⚠ CORRECTIF DE PREMISE (ronde de correction 1, signale par le donneur
+    d'ordre) : la version precedente deposait un geste (`Puzzle.Damage`,
+    draine) entre la bascule et la lecture du descripteur. Ca prouvait
+    qu'un geste manuel force un rendu -- deja vrai AVANT ce chantier, sans
+    rapport avec ce qu'on ajoute ici -- pas que la bascule SEULE (sans rien
+    deposer derriere) suffit a publier le nouvel etat. Corrige : aucun
+    `deposer()` n'a lieu dans ce cas.
+
+    Sans geste manuel a soi seul pour forcer un rendu, ce cas s'appuie sur
+    la poursuite naturelle de la partie AUTOMATIQUE : constate a l'execution
+    (18/09-20/09/2026) que la pause ne fige PAS la structure des tours (elle
+    ferme seulement la porte des declencheurs, cf. `cas_pause_ferme_la_porte`)
+    -- `pilote` continue donc d'etre sollicite, et chaque nouvelle question
+    est precedee d'un rendu qui lit `world.manuel_actif` a l'instant meme.
+    La bascule est donc posee TOT (via `avant_reponse`, a la 5e question),
+    largement avant `PLAFOND_QUESTIONS` : au-dela, `pilote` ne repond plus
+    jamais et plus aucun rendu naturel n'a lieu (cf. son commentaire).
+
+    Sequence, entierement observee depuis `avant_reponse` (donc PENDANT
+    `monter_le_moteur`, jamais apres) : bascule a vrai a la 5e question ->
+    on attend de VOIR `manuel_actif` publie a vrai sur une question
+    suivante -> bascule a faux des qu'on l'a vu -> on attend de le revoir
+    publie a faux. Aucun `Puzzle.*` nulle part dans ce cas.
     """
-    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
-    vilain = id_du_vilain(monde)
+    etat = {"compte": 0, "pause_posee": False, "vu_vrai": False,
+            "reprise_posee": False, "vu_faux_apres_reprise": False}
 
-    basculer_pause(jeu, True)
-    # Un geste, pour forcer un rendu : rien d'autre ne redessine une partie
-    # figee (meme comportement que cas_moteur_muet, hors regle declaree).
-    deposer(jeu, f"Puzzle.Damage({vilain}, 1)", drainer_soi_meme=True)
-    descripteur = monde.render.descriptor
-    assert getattr(descripteur, "manuel_actif", None) is True, \
-        "la trame ne publie pas manuel_actif=vrai pendant la pause"
+    def observateur(jeu):
+        etat["compte"] += 1
+        manuel_actif_publie = getattr(jeu.world.render.descriptor, "manuel_actif", None)
 
-    basculer_pause(jeu, False)
-    deposer(jeu, f"Puzzle.Damage({vilain}, 1)", drainer_soi_meme=True)
-    descripteur = monde.render.descriptor
-    assert getattr(descripteur, "manuel_actif", None) is False, \
-        "la trame ne publie pas manuel_actif=faux apres la reprise"
-    return "la trame publie manuel_actif a vrai pendant la pause, a faux apres la reprise"
+        if not etat["pause_posee"] and etat["compte"] >= 5:
+            etat["pause_posee"] = True
+            jeu.world.BasculerPauseManuelle(True)
+            return
+
+        if etat["pause_posee"] and not etat["vu_vrai"]:
+            if manuel_actif_publie is True:
+                etat["vu_vrai"] = True
+                jeu.world.BasculerPauseManuelle(False)
+                etat["reprise_posee"] = True
+            return
+
+        if etat["reprise_posee"] and not etat["vu_faux_apres_reprise"]:
+            if manuel_actif_publie is False:
+                etat["vu_faux_apres_reprise"] = True
+
+    monter_le_moteur(game_dir, port, [], avant_reponse=observateur)
+
+    assert etat["pause_posee"], \
+        "la pause n'a jamais ete posee : ce cas n'a rien pu prouver"
+    assert etat["vu_vrai"], (
+        "la trame n'a jamais publie manuel_actif=vrai apres la bascule, sans "
+        "qu'aucun geste (Puzzle) n'ait ete depose entre-temps"
+    )
+    assert etat["vu_faux_apres_reprise"], (
+        "la trame n'a jamais republie manuel_actif=faux apres la reprise, "
+        "sans qu'aucun geste (Puzzle) n'ait ete depose entre-temps"
+    )
+    return ("la trame publie manuel_actif (vrai puis faux) sans qu'aucun "
+            "geste manuel n'ait ete depose entre les deux bascules")
 
 
 CAS = {

@@ -48,10 +48,33 @@ class DeviceManager:
         self.sandbox_executor: 'Callable[[List[str]], None]|None' = None
         self.sandbox_last_error: str = ""
 
+        # Pause manuelle (tache 1, ronde de correction 1) : une bascule de
+        # `World.BasculerPauseManuelle` reste a PUBLIER (un rendu doit sortir
+        # avec le nouvel etat) une fois posee. Sans ce marqueur, reveiller
+        # `notify.input` seul ne suffit pas : le predicat de `DoGetInput.Wait`
+        # (plus bas) ne teste ni une vraie entree, ni une sortie demandee, ni
+        # des commandes en attente -- rien de ce qu'une bascule pose -- et le
+        # fil se rendort aussitot, predicat toujours faux. `check_fn` teste
+        # CE marqueur au meme titre que `sandbox_commands`.
+        self.pause_a_publier: bool = False
+
     def QueueSandboxCommands(self, commands: List[str]) -> None:
         """Depose des commandes Puzzle.* ; appele depuis le fil du serveur web."""
         self.sandbox_commands += commands
         # Reveille le fil du jeu, qui dort dans DoGetInput.
+        self.notify.input.NotifyAll()
+
+    def SignalerPauseAPublier(self) -> None:
+        """Marque qu'une bascule de pause reste a publier, et reveille le fil
+        du jeu -- MEME reveil que `QueueSandboxCommands` (`notify.input`),
+        appele depuis le MEME fil HTTP par `World.BasculerPauseManuelle`.
+
+        Rien a executer ici (a la difference d'une commande bac a sable) :
+        juste un rendu a produire au prochain reveil de `DoGetInput`, qui
+        rendra la main sans entree et laissera l'appelant reposer sa
+        question -- ce qui produit ce rendu.
+        """
+        self.pause_a_publier = True
         self.notify.input.NotifyAll()
 
     def DrainSandboxCommands(self) -> List[str]:
@@ -166,6 +189,13 @@ class DeviceManager:
             # Bac a sable : une commande en attente reveille aussi le fil du jeu.
             if self.sandbox_commands:
                 return True
+            # Pause manuelle (tache 1, ronde de correction 1) : une bascule en
+            # attente de publication reveille aussi le fil du jeu, au meme
+            # titre qu'une commande en attente -- sans cette ligne, le reveil
+            # que pose `SignalerPauseAPublier` ne produit RIEN : le predicat
+            # reste faux et le fil se rendort aussitot.
+            if self.pause_a_publier:
+                return True
 
             return check()
 
@@ -177,6 +207,19 @@ class DeviceManager:
         # de la condition) mais bien sur le fil du jeu. Puis on rend la main :
         # aucune entree joueur n'est arrivee, l'appelant redemandera.
         if self.DrainSandboxCommands():
+            self.timer.start_time = None
+            self.notify.has_client_input = False
+            if player_id in self.asking_players:
+                self.asking_players.remove(player_id)
+            return None
+
+        # Meme protocole que ci-dessus, pour la pause : rien a executer (le
+        # booleen est deja pose par `World.BasculerPauseManuelle`), juste la
+        # main a rendre SANS entree pour que l'appelant reposant sa question
+        # produise le rendu qui publie le nouvel etat. Consommee ICI (une
+        # bascule = au plus un reveil force), jamais un reveil permanent.
+        if self.pause_a_publier:
+            self.pause_a_publier = False
             self.timer.start_time = None
             self.notify.has_client_input = False
             if player_id in self.asking_players:
