@@ -2058,6 +2058,432 @@ def cas_pause_publiee_pendant_question_ouverte(game_dir, port):
             "sur la trame suivante, mulligan compris")
 
 
+def monter_avec_geste_par_le_vrai_dogetinput(game_dir, port, commande_pour):
+    """Monte une partie ORDINAIRE, la met en pause, et y fait passer UN geste
+    manuel par le VRAI `DeviceManager.DoGetInput` -- la branche de drainage
+    qu'emprunte une pause de partie ORDINAIRE, et qu'aucun autre cas de ce
+    fichier ne traverse.
+
+    ⚠ POURQUOI PAS `monter_le_moteur`. Celui-ci REMPLACE `DoGetInput` par son
+    `pilote` pour toute la duree du processus (cf. son en-tete) : les cas qui
+    passent par lui observent le drainage de `World.ManualLoop`, jamais celui
+    de `DoGetInput`. Or c'est exactement l'inverse qu'il faut ici. Une partie
+    ORDINAIRE n'entre JAMAIS dans `ManualLoop` (`World.OnGameLoop` n'y va que
+    sous `rule.mode_manuel`) : son fil de jeu est gare dans une QUESTION, et
+    c'est `DoGetInput`, et lui seul, qui draine les gestes. Ce montage garde
+    donc le VRAI `DoGetInput` et s'en sert comme d'un DELEGUE : le pilote
+    local repond a sa place pour les questions ordinaires, et lui rend la
+    main aux deux moments qui comptent.
+
+    Meme scenario, meme graine et meme boucle `run()` que `monter_le_moteur`,
+    a la seule difference du pilote -- meme parti pris que
+    `cas_pause_publiee_pendant_question_ouverte`.
+
+    `commande_pour(jeu)` rend la commande `Puzzle.*` a deposer ; il n'est
+    appele qu'une fois la table montee, seul moment ou l'identifiant du
+    vilain est lisible.
+
+    Rend `(jeu, commande, etat)`. A la sortie, la table est EN PAUSE, le
+    geste est applique, et le pilote est GARE sur une question ouverte : plus
+    rien ne bouge tant que personne n'agit. C'est l'image exacte d'une vraie
+    table en pause, et la seule facon d'avoir un etat STABLE a sauvegarder ou
+    a annuler -- un pilote qui continuerait a jouer ferait varier les points
+    de vie du vilain entre la mesure et la sauvegarde.
+    """
+    game_dir = os.path.abspath(game_dir)
+    os.chdir(game_dir)
+    sys.path.insert(0, game_dir)
+
+    cfg = json.load(open("launch.json"))
+    cfg["server_addresses"] = [f"127.0.0.1:{port}"]
+    cfg["check_for_new_version_on_startup"] = False
+    json.dump(cfg, open("launch.json", "w"), indent=2)
+
+    from engine.network.web_server import WebServer
+    WebServer.IsAuthenticate = lambda self, request=None: True
+    WebServer.IsVersionMatch = lambda self, request=None: True
+
+    from engine.device.manager.base import DeviceManager
+
+    # LE VRAI, capture AVANT tout remplacement : c'est lui, et lui seul, qui
+    # porte la branche de drainage que ce montage existe pour traverser.
+    vrai_dogetinput = DeviceManager.DoGetInput
+
+    etat = {"etape": "attend_tour", "compte": 0, "commande": None, "gares": 0}
+
+    def deposer_depuis_le_fil_http():
+        """Ce que fait la route POST /sandbox_command, depuis un AUTRE fil.
+
+        Le court sommeil laisse au fil du jeu le temps d'entrer reellement
+        dans le `Wait` du vrai `DoGetInput` : sans lui, on deposerait avant
+        l'attente et on ne prouverait rien du reveil.
+        """
+        from game.puzzle import PuzzleHelper
+        time.sleep(1.0)
+        gestionnaire = jeu.controller_manager.device_manager
+        gestionnaire.sandbox_executor = lambda cmds: PuzzleHelper.Exec(cmds, jeu.world)
+        gestionnaire.QueueSandboxCommands([etat["commande"]])
+
+    def se_garer():
+        """Le pilote cesse de repondre : la table est figee sur une question.
+
+        ⚠ RESPONSABLE D'UNE SORTIE, a la difference du parking de
+        `monter_le_moteur` : `GameSession.Undo` (le bouton « Annuler ») pose
+        `is_game_over` puis reveille le fil du jeu, et un parking qui dort
+        pour toujours ne lui rendrait JAMAIS la main -- l'annulation ne se
+        produirait pas et le cas mesurerait du vide. On rend donc `None` des
+        que la partie est donnee pour finie : `ChoiceOne` le remonte, et
+        `PlayerAction` (player_action.py, juste apres `ChoiceOne`) sort sur
+        `if message.world.is_game_over`.
+        """
+        etat["gares"] += 1
+        while True:
+            monde = jeu.world
+            if monde is None or monde.is_game_over:
+                return None
+            time.sleep(0.2)
+
+    def pilote(self, data, player_id=None, check=None):
+        etat["compte"] += 1
+        if etat["compte"] > PLAFOND_QUESTIONS:
+            return se_garer()
+
+        if etat["etape"] == "attend_tour":
+            if data.event_name == "WhenPlayerInTurn":
+                # Le moment ou un vrai joueur cliquerait « Mettre en pause » :
+                # une question l'attend, et c'est elle qui le bloque.
+                etat["commande"] = commande_pour(jeu)
+                jeu.world.BasculerPauseManuelle(True, "Diagnostic")
+                etat["etape"] = "purge_pause"
+                return None
+
+        elif etat["etape"] == "purge_pause":
+            # La bascule a arme `pause_a_publier` : le vrai `DoGetInput` le
+            # consomme et rend la main SANS attendre. On le laisse faire --
+            # sinon il ne s'endormirait jamais pour attendre le geste.
+            etat["etape"] = "depose"
+            return vrai_dogetinput(self, data, player_id, check)
+
+        elif etat["etape"] == "depose":
+            threading.Thread(target=deposer_depuis_le_fil_http, daemon=True).start()
+            etat["etape"] = "draine"
+            # LE CHEMIN MESURE : le fil du jeu se gare dans le vrai
+            # `DoGetInput`, un autre fil depose la commande, `DoGetInput` se
+            # reveille, draine, et rend la main sans entree. L'enregistrement
+            # du geste, lui, a lieu APRES ce retour (dans `ChoiceOne`) : on
+            # ne le lit donc jamais d'ici.
+            retour = vrai_dogetinput(self, data, player_id, check)
+            etat["etape"] = "fini"
+            return retour
+
+        elif etat["etape"] in ("draine", "fini", "regare"):
+            return se_garer()
+
+        elif etat["etape"] == "attend_regare":
+            # Un remontage vient d'avoir lieu (« Annuler ») : ce harnais voit
+            # alors la mise en place REDEMANDEE question par question (cf.
+            # `cas_annulation_ne_redemande_pas` : le rejeu silencieux des
+            # entrees demande un `skip_to` deja negatif, ce que ce montage ne
+            # pose pas). On y repond comme au premier passage, puis on se gare
+            # de nouveau des que le round 1 a commence : les gestes sont alors
+            # rejoues (`GameSession.GameSetup` le fait avant la boucle) et la
+            # table est de nouveau mesurable.
+            #
+            # ⚠ PAS « au prochain WhenPlayerInTurn », ESSAYE ET FAUX : une
+            # table qui revient EN PAUSE n'en pose plus aucun. La porte des
+            # declencheurs etant fermee, le message du tour de heros ne
+            # produit aucun effet et le tour se termine sans rien demander
+            # (constate le 20/09/2026 : « Tour de Spider-Man (1) » suivi
+            # immediatement de « Fin du tour »). Attendre ce signal-la,
+            # c'etait attendre la preuve que la pause a ETE PERDUE.
+            monde = jeu.world
+            if monde is not None and monde.round_id >= 1:
+                etat["etape"] = "regare"
+                return se_garer()
+
+        legales = [o for o in (json.loads(data.options_json or "[]") or [])
+                   if isinstance(o, dict) and not o.get("failure_reason")]
+        if not legales:
+            return None
+        o = legales[0]
+        cibles = [str(x) for x in (o.get("all_legal_targets") or [])]
+        mini = (o.get("target_num_range") or [0, 0])[0]
+        return json.dumps({"id": str(o.get("id", 0)),
+                           "targets": cibles[:mini], "resources": []})
+
+    DeviceManager.DoGetInput = pilote
+    DeviceManager.DoWaitConnect = lambda self, *a, **k: None
+    DeviceManager.DoWaitSync = lambda self, *a, **k: None
+
+    from engine import Engine
+    Engine.Initialize()
+    from game.scene.loader import SceneLoader
+
+    with open(_chemin_json("Campaign", "rhino")) as f:
+        campagne = f.read()
+    with open(_chemin_json("Hero", "spider_man")) as f:
+        hero = f.read()
+    # AUCUNE regle : une partie ORDINAIRE, celle du joueur qui tombe sur un
+    # bug en pleine partie -- pas la partie manuelle DECLAREE.
+    scene = SceneLoader.NewFromJson(campagne, None, [hero], 42, [], {})
+
+    jeu = Engine.game
+    jeu.session.SetScene(scene, "Load")
+
+    def run():
+        import traceback
+        while True:
+            try:
+                if jeu.GameSetup():
+                    jeu.GameLoop()
+            except BaseException:
+                traceback.print_exc()
+                return
+            if jeu.state.start_state.state:
+                continue
+            jeu.state.SetRunningState(False)
+            jeu.state.WaitUntilGameStart()
+
+    threading.Thread(target=run, daemon=True).start()
+
+    limite = time.time() + 120
+    while not etat["gares"] and time.time() < limite:
+        time.sleep(0.5)
+    assert etat["gares"], (
+        f"la sequence n'est jamais arrivee a la table figee (etape="
+        f"{etat['etape']!r}, {etat['compte']} question(s) posees) : rien "
+        "n'est prouve"
+    )
+    time.sleep(2)
+    assert jeu.world.manuel_actif is True, \
+        "premisse cassee : la table n'est pas en pause apres la bascule"
+    return jeu, etat["commande"], etat
+
+
+def cas_geste_ordinaire_entre_dans_la_scene(game_dir, port):
+    """Un geste fait pendant la pause d'une partie ORDINAIRE entre dans la
+    scene -- donc dans la sauvegarde. Constat C1 de la revue finale.
+
+    ⚠ CE CAS A ETE ECRIT ROUGE (mesure du 20/09/2026). La branche de drainage
+    de `DoGetInput` appelait bien `DrainSandboxCommands` mais JETAIT son
+    retour : elle ne s'en servait que comme d'un booleen (« un drainage a eu
+    lieu »). `World.ManualLoop`, elle, fait `scene.manuel_commands +=
+    appliquees` depuis toujours (world.py). Les gestes d'une partie manuelle
+    DECLAREE survivaient donc, ceux d'une pause de partie ORDINAIRE non.
+
+    C'est le pendant exact de `cas_geste_enregistre` (qui couvre, lui, la
+    partie DECLAREE), sur l'autre chemin de drainage.
+    """
+    jeu, commande, _ = monter_avec_geste_par_le_vrai_dogetinput(
+        game_dir, port,
+        lambda jeu: f"Puzzle.Damage({id_du_vilain(jeu.world)}, 3)")
+
+    vilain = id_du_vilain(jeu.world)
+    carte = jeu.world.object_manager.card_dict[vilain]
+    assert carte.face.GetLostHealth() == 3, (
+        f"premisse cassee : le geste n'a meme pas ete applique au monde "
+        f"(degats={carte.face.GetLostHealth()}, attendu 3) -- ce n'est pas "
+        "l'enregistrement qui manque, c'est le drainage"
+    )
+
+    gestes = jeu.session.scene.manuel_commands
+    assert gestes == [commande], (
+        f"la correction faite pendant la pause d'une partie ORDINAIRE n'est "
+        f"pas entree dans la scene : {gestes} (attendu [{commande!r}]). Elle "
+        "disparaitra donc a la premiere sauvegarde, au premier rechargement "
+        "et au premier « Annuler ». Regarder la branche de drainage de "
+        "`DeviceManager.DoGetInput` : elle jette le retour de "
+        "`DrainSandboxCommands`, la ou `World.ManualLoop` l'enregistre."
+    )
+    return ("un geste fait pendant la pause d'une partie ordinaire entre "
+            "dans la scene, comme en partie manuelle declaree")
+
+
+def cas_geste_ordinaire_survit_sauvegarde(game_dir, port):
+    """« Sauver » puis recharger ne perd ni la correction ni la pause.
+
+    ⚠ CE CAS A ETE ECRIT ROUGE (constat C1 de la revue finale). Une
+    sauvegarde n'est PAS un instantane de la table : `Scene` ne porte que la
+    graine, les regles, les joueurs, les entrees -- et `GameSetup` REJOUE.
+    Deux choses manquaient sur le chemin d'une partie ordinaire : le geste
+    n'entrait pas dans `scene.manuel_commands` (cf.
+    `cas_geste_ordinaire_entre_dans_la_scene`), et le rejeu au montage etait
+    garde par `if self.world.rule.mode_manuel` -- la REGLE, jamais vraie sur
+    une partie ordinaire -- au lieu de la presence de gestes a rejouer.
+
+    Meme gabarit que `cas_aller_retour`/`cas_relire_sauvegarde` : le fils
+    relit la sauvegarde dans SON PROPRE processus, seule facon de prouver que
+    le geste est ECRIT dans le fichier et REJOUE au montage, et pas seulement
+    tenu en memoire par cet objet `Scene`.
+    """
+    jeu, commande, _ = monter_avec_geste_par_le_vrai_dogetinput(
+        game_dir, port,
+        lambda jeu: f"Puzzle.Damage({id_du_vilain(jeu.world)}, 3)")
+
+    vilain = id_du_vilain(jeu.world)
+    carte = jeu.world.object_manager.card_dict[vilain]
+    assert carte.face.GetLostHealth() == 3, \
+        f"premisse cassee : degats={carte.face.GetLostHealth()}, attendu 3"
+
+    # Nom NU, pas un chemin absolu : meme raison que `cas_aller_retour`, dont
+    # le commentaire detaille le piege de `FileManager.FindJsonPath` sous WSL.
+    nom = "manuel-ordinaire-aller-retour.json"
+    ecrit = jeu.session.SaveScene(name=nom, delete_old=False)
+    assert ecrit, "la sauvegarde n'a pas ete ecrite"
+
+    env = dict(os.environ)
+    env["MC_SAUVEGARDE"] = nom
+    env["MC_VILAIN"] = str(vilain)
+    env["MC_COMMANDE"] = commande
+    fils = subprocess.run(
+        [sys.executable, os.path.abspath(__file__), game_dir,
+         str(port + 1), "relire_geste_ordinaire", "--fils"],
+        cwd=RACINE, capture_output=True, text=True, timeout=300, env=env)
+    assert fils.returncode == 0, \
+        f"le rechargement a echoue :\n{fils.stdout[-3000:]}\n{fils.stderr[-3000:]}"
+    return ("la correction faite pendant la pause d'une partie ordinaire "
+            "survit a une sauvegarde puis un rechargement")
+
+
+def cas_relire_geste_ordinaire(game_dir, port):
+    """Le fils de `cas_geste_ordinaire_survit_sauvegarde`.
+
+    ⚠ OU SE PREND LA MESURE, ET POURQUOI PAS A LA FIN. `cas_relire_sauvegarde`
+    peut lire les degats 20 s apres le montage parce que sa partie est
+    DECLAREE manuelle : `ManualLoop` fige tout, plus rien ne bouge. Une partie
+    ORDINAIRE, elle, continue de derouler ses tours meme en pause (la pause ne
+    ferme que la porte des declencheurs, cf. `cas_pause_ferme_la_porte`) : le
+    pilote joue, le heros frappe, et les degats du vilain ne valent plus 3
+    depuis longtemps. On releve donc a la PREMIERE question posee apres le
+    debut du round 1 -- le rejeu des gestes a lieu dans `GameSetup`, donc
+    avant, et le heros n'a encore rien fait, donc les 3 degats ne peuvent
+    venir que du geste rejoue.
+    """
+    chemin = os.environ["MC_SAUVEGARDE"]
+    vilain = int(os.environ["MC_VILAIN"])
+    commande = os.environ["MC_COMMANDE"]
+
+    releve = {}
+
+    def au_premier_tour(jeu):
+        if "pv" in releve:
+            return
+        monde = jeu.world
+        if monde is None or monde.round_id < 1:
+            return
+        carte = monde.object_manager.card_dict.get(vilain)
+        releve["pv"] = carte.face.GetLostHealth() if carte is not None else None
+        releve["muet"] = bool(monde.manuel_actif)
+
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [], sauvegarde=chemin,
+                                     avant_reponse=au_premier_tour)
+
+    assert bool(monde.rule.mode_manuel) is False, \
+        "premisse cassee : la sauvegarde relue est une partie manuelle DECLAREE"
+
+    gestes = jeu.session.scene.manuel_commands
+    assert gestes == [commande], \
+        f"la sauvegarde ne porte pas le geste : {gestes} (attendu [{commande!r}])"
+
+    assert "pv" in releve, (
+        "la partie rechargee n'a pose aucune question apres le debut du "
+        "round 1 : rien n'a pu etre mesure"
+    )
+    assert releve["pv"] == 3, (
+        f"la correction n'a pas ete rejouee au montage : degats="
+        f"{releve['pv']!r}, attendu 3. Le rejeu de `GameSetup` est garde par "
+        "la REGLE `mode_manuel`, jamais vraie sur une partie ordinaire, au "
+        "lieu de la presence de gestes a rejouer."
+    )
+    assert releve["muet"] is True, (
+        "la partie rechargee a repris toute seule : elle etait EN PAUSE au "
+        "moment de la sauvegarde, elle revient bavarde -- le joueur retombe "
+        "dans le bug qu'il venait de contourner"
+    )
+    return ("la partie ordinaire rechargee porte la correction et revient "
+            "encore en pause")
+
+
+def cas_annulation_ordinaire_garde_tout(game_dir, port):
+    """« Annuler » ne fait disparaitre ni les corrections ni la pause.
+
+    ⚠ CE CAS A ETE ECRIT ROUGE, et c'est le pire des trois chemins du constat
+    C1. Le bouton « Annuler » du plateau appelle `/debug?/undo auto`, donc
+    `Cheat.do_undo`, donc `GameSession.Undo`, qui rejoue les ENTREES du
+    joueur : toutes les corrections s'evaporaient d'un coup, pas seulement la
+    derniere. Et comme il RECONSTRUIT le `World`, `manuel_actif` retombait a
+    faux par defaut : le clic reprenait AUSSI la partie en silence, bandeau
+    compris. Le joueur revenait exactement dans le bug qu'il venait de
+    contourner, apres avoir clique sur un bouton qui n'avait rien a voir.
+
+    ⚠ `GameSession.Undo` ET PAS `AnnulerDernierGeste` (cf. `cas_annulation`) :
+    ce sont deux boutons differents. `AnnulerDernierGeste` est le Ctrl+Z du
+    mode manuel DECLARE (`/manuel_undo`), qui retire le dernier geste ; celui
+    d'ici est l'« Annuler » ordinaire de la barre du haut, qui ne connait que
+    les entrees et n'a jamais rien su des gestes.
+
+    ⚠ CE QUE CE HARNAIS NE REPRODUIT PAS, dit ici plutot que devine plus
+    tard : apres l'annulation, la mise en place est REDEMANDEE question par
+    question au lieu d'etre rejouee en silence depuis `scene.inputs` -- meme
+    limite, et meme cause, que celle que decrit `cas_annulation_ne_redemande_pas`
+    (le rejeu silencieux exige un `skip_to` deja negatif, que ce montage ne
+    pose pas). Cela ne change rien a ce qui est mesure ici (les gestes, la
+    pause, les degats au premier tour de heros), mais cela explique pourquoi
+    le pilote doit rejouer la mise en place avant de se garer une seconde fois.
+    """
+    jeu, commande, etat = monter_avec_geste_par_le_vrai_dogetinput(
+        game_dir, port,
+        lambda jeu: f"Puzzle.Damage({id_du_vilain(jeu.world)}, 3)")
+
+    vilain = id_du_vilain(jeu.world)
+    monde_avant = jeu.world
+    assert monde_avant.object_manager.card_dict[vilain].face.GetLostHealth() == 3, \
+        "premisse cassee : le geste n'a pas ete applique avant l'annulation"
+
+    # Le dernier maillon de `Cheat.do_undo`, celui que le bouton atteint.
+    # Le pilote, gare sur sa question, rend la main des que l'annulation pose
+    # `is_game_over`, rejoue la mise en place redemandee, puis se gare de
+    # nouveau au premier tour de heros -- la table est alors figee une
+    # seconde fois, donc de nouveau mesurable.
+    etat["etape"] = "attend_regare"
+    jeu.session.Undo(1)
+
+    limite = time.time() + 180
+    while etat["gares"] < 2 and time.time() < limite:
+        time.sleep(0.5)
+    assert etat["gares"] >= 2, (
+        f"la partie n'est jamais revenue a une table figee apres "
+        f"l'annulation (etape={etat['etape']!r}, {etat['compte']} question(s) "
+        "posees) : rien n'est prouve"
+    )
+    time.sleep(2)
+
+    monde_apres = jeu.world
+    assert monde_apres is not monde_avant, (
+        "premisse cassee : l'annulation n'a PAS reconstruit le monde, ce cas "
+        "ne mesure donc rien du defaut qu'il vise"
+    )
+
+    gestes = jeu.session.scene.manuel_commands
+    assert gestes == [commande], (
+        f"« Annuler » a efface les corrections : {gestes} (attendu "
+        f"[{commande!r}])"
+    )
+
+    carte = monde_apres.object_manager.card_dict[vilain]
+    assert carte.face.GetLostHealth() >= 3, (
+        f"« Annuler » a perdu la correction sur la table : degats="
+        f"{carte.face.GetLostHealth()}, au moins 3 attendus"
+    )
+
+    assert monde_apres.manuel_actif is True, (
+        "« Annuler » a REPRIS la partie en silence : personne ne l'a demande, "
+        "le bandeau de pause disparait, et le joueur retombe dans le bug "
+        "qu'il venait de contourner"
+    )
+    return ("« Annuler » garde les corrections ET la pause : la partie ne "
+            "reprend pas toute seule")
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
@@ -2100,6 +2526,10 @@ CAS = {
     "passer_aucune_question": cas_passer_aucune_question,
     "passer_hors_pause": cas_passer_hors_pause,
     "pause_publiee_pendant_question_ouverte": cas_pause_publiee_pendant_question_ouverte,
+    "geste_ordinaire_entre_dans_la_scene": cas_geste_ordinaire_entre_dans_la_scene,
+    "geste_ordinaire_survit_sauvegarde": cas_geste_ordinaire_survit_sauvegarde,
+    "relire_geste_ordinaire": cas_relire_geste_ordinaire,
+    "annulation_ordinaire_garde_tout": cas_annulation_ordinaire_garde_tout,
 }
 
 
@@ -2108,7 +2538,8 @@ def main():
     port = int(sys.argv[2])
     voulu = sys.argv[3] if len(sys.argv) > 3 else None
     # Les cas appeles par un AUTRE cas, jamais tout seuls.
-    SUR_DEMANDE = {"relire_sauvegarde", "relire_marque_survit"}
+    SUR_DEMANDE = {"relire_sauvegarde", "relire_marque_survit",
+                   "relire_geste_ordinaire"}
     noms = [voulu] if voulu else [n for n in CAS if n not in SUR_DEMANDE]
     for rang, nom in enumerate(noms):
         fils = subprocess.run(
