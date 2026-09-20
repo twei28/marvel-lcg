@@ -786,4 +786,10 @@ export const DICO_EN_BASE = {
   "Mitigé": "Mixed",
   "Apprécié": "Well liked",
   "Adoré": "Beloved",
+  "Classé au niveau": "Ranked tier",
+  "Les plus forts": "Strongest",
+  "Les meilleurs dans leur domaine": "Best at what they do",
+  "Imparfaits": "Imperfect",
+  "Corrects": "Adequate",
+  "Les plus faibles": "Weakest",
 };

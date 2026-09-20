@@ -33,7 +33,7 @@ import { NIVEAUX_STANDARD, libelleNiveau, niveauDuScenario } from "/public/js/pr
 import { urlNarval } from "/public/js/prepare/narval.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
-import { HEROS_AVIS, ECHELLES, AVIS_DATE, AVIS_DATE_EN, AVIS_CADRE, AVIS_CADRE_EN } from "/public/js/prepare/heros-avis.js";
+import { HEROS_AVIS, ECHELLES, TIERS, AVIS_DATE, AVIS_DATE_EN, AVIS_CADRE, AVIS_CADRE_EN } from "/public/js/prepare/heros-avis.js";
 import { GENRES, nouveautesTriees } from "/public/js/prepare/nouveautes.js";
 import { MECHANTS_INFO } from "/public/js/prepare/mechants-info.js";
 import { etatSalon } from "/public/js/prepare/salon-etat.js";
@@ -1770,7 +1770,15 @@ function avisDuHeros(h) {
         note("complexite", t("Complexité")),
         note("puissance", t("Puissance")),
         note("plaisir", t("Plaisir")),
-        el("p", { class: "hh-bio" }, champ(avis.avis, avis.avisEn)),
+        // La phrase rédigée quand on en a une ; sinon le niveau seul, dit en
+        // clair. Jamais de paragraphe vide, et jamais de phrase inventée pour
+        // remplir : voir l'en-tête de `heros-avis.js`.
+        avis.avis
+            ? el("p", { class: "hh-bio" }, champ(avis.avis, avis.avisEn))
+            : (avis.tier
+                ? el("p", { class: "hh-bio" },
+                    t("Classé au niveau") + " " + avis.tier + " — " + t(TIERS[avis.tier]) + ".")
+                : null),
         el("p", { class: "hh-avis-source" },
             t("Avis de la communauté") + ", " + champ(AVIS_DATE, AVIS_DATE_EN)
             + " \u2014 " + champ(AVIS_CADRE, AVIS_CADRE_EN) + "."),
