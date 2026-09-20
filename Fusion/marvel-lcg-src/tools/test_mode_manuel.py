@@ -24,9 +24,20 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # (voir plus bas) : c'est ce qui garde une execution a l'ordre de la minute.
 PLAFOND_QUESTIONS = 120
 
+# Le montage qui joue une VRAIE histoire (trois rounds, des cartes
+# jouees) en pose bien plus : ce plafond-la lui est propre. Mesure du
+# 20/09/2026 : atteindre le round 3 en demande un peu plus de 200.
+PLAFOND_QUESTIONS_HISTOIRE = 600
+
+# Combien de questions par round le pilote de ce montage consacre a JOUER
+# avant de chercher a finir son tour. Assez pour que l'historique porte
+# de vraies cartes jouees, assez peu pour que trois rounds tiennent dans
+# le budget de temps d'un cas.
+QUESTIONS_JOUEES_PAR_ROUND = 8
+
 
 def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man",
-                     sauvegarde=None, avant_reponse=None):
+                     sauvegarde=None, avant_reponse=None, rejouer_les_entrees=False):
     """Demarre une partie et rend (jeu, monde, journal_des_questions).
 
     ⚠ Contrairement au harnais de la manigance, celui-ci enchaine sur
@@ -134,6 +145,22 @@ def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man
 
     jeu = Engine.game
     jeu.session.SetScene(scene, "Load")
+
+    if rejouer_les_entrees:
+        # LE REJEU SILENCIEUX DES ENTREES, celui d'une VRAIE ouverture de
+        # sauvegarde (ronde de correction 1 du 20/09/2026).
+        #
+        # Sans cette ligne, `InitializeSkip` (engine/controller/manager.py)
+        # laisse `skip_to` a 0 pour l'etat "Load" et le moteur REDEMANDE
+        # chaque question au lieu de rejouer les reponses deja donnees --
+        # c'est la meme convention, et le meme piege, que decrit
+        # `GameSession.AnnulerDernierGeste`. La production, elle, passe par
+        # `GameSession.Load` avec un chemin suffixe `:-1`, qui pose
+        # exactement ce `-1` : on le pose ici a la main, faute de passer par
+        # cette route. Indispensable des qu'un cas veut mesurer ce que le
+        # REJEU fait de la table, et pas seulement ce qu'une partie rejouee
+        # de zero produirait.
+        jeu.controller_manager.skip.SetSkipTo(-1)
 
     def run():
         # Une partie peut REDEMARRER sur place : c'est ce que fait
@@ -253,6 +280,75 @@ def id_du_sbire(monde, code):
                 getattr(getattr(face, "paper", None), "card_id", None) == code:
             return object_id
     raise AssertionError(f"sbire {code} introuvable en jeu")
+
+
+def signature_de_table(monde):
+    """Une empreinte COMPARABLE de la table, pour mettre deux montages en
+    regard (ronde de correction 1 du 20/09/2026).
+
+    Ni exhaustive ni canonique : juste assez pour qu'une table VIERGE ne
+    puisse pas passer pour celle du joueur. Trois familles, choisies parce
+    que chacune casse sur un mecanisme different :
+
+    - `round` : un rejeu qui n'a pas consomme ses entrees reste au round 1 ;
+    - `cartes_en_jeu`, avec l'IDENTIFIANT D'OBJET de chaque carte : un geste
+      rejoue trop tot fait naitre des objets qui volent les identifiants que
+      le rejeu attribuera ensuite a d'autres cartes -- le decalage se lit
+      ici, et nulle part ailleurs ;
+    - les tailles de main, de deck et de defausse : un flux aleatoire decale
+      (un `Shuffle`, un `Draw`, un `Reveal` rejoue au mauvais rang) les fait
+      diverger meme quand la table a l'air juste.
+    """
+    def valeur(face):
+        """Le compteur qui a un sens pour CETTE carte, ou None.
+
+        Toutes les faces en jeu ne portent pas de points de vie : une
+        machination n'a que de la menace (`face.threat`), et lui demander
+        `GetLostHealth` leve un `AttributeError` -- constate le 20/09/2026,
+        le premier jet de cette empreinte cassait sur la machination
+        principale des la premiere mesure.
+        """
+        perte = getattr(face, "GetLostHealth", None)
+        if callable(perte):
+            return int(perte())
+        menace = getattr(face, "threat", None)
+        if isinstance(menace, int):
+            return int(menace)
+        return None
+
+    cartes = []
+    for object_id, objet in sorted(monde.object_manager.card_dict.items()):
+        face = objet.face
+        if face is None or not face.IsInPlay():
+            continue
+        cartes.append([int(object_id),
+                       getattr(getattr(face, "paper", None), "card_id", ""),
+                       valeur(face)])
+    joueur = monde.players[0]
+    return {
+        "round": int(monde.round_id),
+        "cartes_en_jeu": cartes,
+        "main": joueur.hand_cards.GetSize(),
+        "deck": joueur.player_deck.GetSize(),
+        "defausse": joueur.discard_pile.GetSize(),
+    }
+
+
+def comparer_les_tables(attendue, obtenue):
+    """Rend la liste des ecarts, en clair. Vide = tables identiques."""
+    ecarts = []
+    for cle in ("round", "main", "deck", "defausse"):
+        if attendue.get(cle) != obtenue.get(cle):
+            ecarts.append(f"{cle} : {attendue.get(cle)!r} attendu, "
+                          f"{obtenue.get(cle)!r} obtenu")
+    a = {tuple(c[:2]): c[2] for c in attendue.get("cartes_en_jeu", [])}
+    b = {tuple(c[:2]): c[2] for c in obtenue.get("cartes_en_jeu", [])}
+    for cle in sorted(set(a) | set(b), key=lambda k: (k[0], str(k[1]))):
+        if a.get(cle) != b.get(cle):
+            ecarts.append(f"carte c{cle[0]} ({cle[1]}) : compteur "
+                          f"{a.get(cle, 'absente')!r} attendu, "
+                          f"{b.get(cle, 'absente')!r} obtenu")
+    return ecarts
 
 
 def cas_drapeau_pose(game_dir, port):
@@ -2301,7 +2397,9 @@ def cas_pause_publiee_pendant_question_ouverte(game_dir, port):
             "sur la trame suivante, mulligan compris")
 
 
-def monter_avec_geste_par_le_vrai_dogetinput(game_dir, port, commande_pour):
+def monter_avec_geste_par_le_vrai_dogetinput(game_dir, port, commande_pour, *,
+                                             round_du_geste=1,
+                                             round_de_la_pause=None):
     """Monte une partie ORDINAIRE, la met en pause, et y fait passer UN geste
     manuel par le VRAI `DeviceManager.DoGetInput` -- la branche de drainage
     qu'emprunte une pause de partie ORDINAIRE, et qu'aucun autre cas de ce
@@ -2325,6 +2423,17 @@ def monter_avec_geste_par_le_vrai_dogetinput(game_dir, port, commande_pour):
     `commande_pour(jeu)` rend la commande `Puzzle.*` a deposer ; il n'est
     appele qu'une fois la table montee, seul moment ou l'identifiant du
     vilain est lisible.
+
+    `round_du_geste` (defaut 1) : le pilote JOUE d'abord, normalement,
+    jusqu'a ce round -- c'est ce qui donne a la sauvegarde une VRAIE
+    histoire a rejouer. A 1, il met en pause au premier tour de heros venu,
+    comme les trois premiers temoins de la tache 9.
+
+    `round_de_la_pause` (defaut None) : quand il est fourni, la partie
+    REPREND apres le geste et se joue encore jusqu'a ce round, avant la pause
+    finale. Sans ca, le geste n'est suivi d'AUCUNE entree, et son rang dans
+    l'histoire ne se mesure pas : rejoue a l'instant 0 ou a sa place, la
+    table finale serait la meme.
 
     Rend `(jeu, commande, etat)`. A la sortie, la table est EN PAUSE, le
     geste est applique, et le pilote est GARE sur une question ouverte : plus
@@ -2352,7 +2461,9 @@ def monter_avec_geste_par_le_vrai_dogetinput(game_dir, port, commande_pour):
     # porte la branche de drainage que ce montage existe pour traverser.
     vrai_dogetinput = DeviceManager.DoGetInput
 
-    etat = {"etape": "attend_tour", "compte": 0, "commande": None, "gares": 0}
+    etat = {"etape": "attend_tour", "compte": 0, "commande": None, "gares": 0,
+            "signature": None, "derniere_question": None, "repetitions": 0,
+            "round_observe": -1, "questions_du_round": 0}
 
     def deposer_depuis_le_fil_http():
         """Ce que fait la route POST /sandbox_command, depuis un AUTRE fil.
@@ -2388,11 +2499,14 @@ def monter_avec_geste_par_le_vrai_dogetinput(game_dir, port, commande_pour):
 
     def pilote(self, data, player_id=None, check=None):
         etat["compte"] += 1
-        if etat["compte"] > PLAFOND_QUESTIONS:
+        if etat["compte"] > PLAFOND_QUESTIONS_HISTOIRE:
             return se_garer()
 
+        monde = jeu.world
+
         if etat["etape"] == "attend_tour":
-            if data.event_name == "WhenPlayerInTurn":
+            if data.event_name == "WhenPlayerInTurn" and \
+                    monde is not None and monde.round_id >= round_du_geste:
                 # Le moment ou un vrai joueur cliquerait « Mettre en pause » :
                 # une question l'attend, et c'est elle qui le bloque.
                 etat["commande"] = commande_pour(jeu)
@@ -2416,8 +2530,29 @@ def monter_avec_geste_par_le_vrai_dogetinput(game_dir, port, commande_pour):
             # du geste, lui, a lieu APRES ce retour (dans `ChoiceOne`) : on
             # ne le lit donc jamais d'ici.
             retour = vrai_dogetinput(self, data, player_id, check)
-            etat["etape"] = "fini"
+            if round_de_la_pause is None:
+                etat["etape"] = "fini"
+            else:
+                # ON REPREND, ET C'EST TOUT L'INTERET (ronde de correction 1,
+                # constat C2). Un geste suivi d'AUCUNE entree ne prouve rien
+                # sur son rang : rejoue a l'instant 0 ou a sa place, le
+                # resultat serait le meme. Il faut que la partie CONTINUE
+                # apres lui, pour que les entrees suivantes soient jouees sur
+                # la table qu'il a laissee.
+                jeu.world.BasculerPauseManuelle(False)
+                etat["etape"] = "rejoue_apres_le_geste"
             return retour
+
+        elif etat["etape"] == "rejoue_apres_le_geste":
+            if monde is not None and monde.round_id >= round_de_la_pause:
+                # La pause finale : celle qui sera dans la sauvegarde.
+                jeu.world.BasculerPauseManuelle(True, "Diagnostic")
+                etat["etape"] = "purge_pause_finale"
+                return None
+
+        elif etat["etape"] == "purge_pause_finale":
+            etat["etape"] = "fini"
+            return vrai_dogetinput(self, data, player_id, check)
 
         elif etat["etape"] in ("draine", "fini", "regare"):
             return se_garer()
@@ -2444,11 +2579,65 @@ def monter_avec_geste_par_le_vrai_dogetinput(game_dir, port, commande_pour):
                 etat["etape"] = "regare"
                 return se_garer()
 
-        legales = [o for o in (json.loads(data.options_json or "[]") or [])
+        try:
+            options = json.loads(data.options_json or "[]") or []
+        except Exception:
+            options = []
+
+        # ANTI-BOUCLE, repris mot pour mot de `monter_le_moteur` : le Rhino
+        # porte « Enhanced Ivory Horn » (01100), une Hero Action a cout que ce
+        # pilote ne sait pas payer. L'option reste legale, echoue a chaque
+        # fois, et le moteur represente la MEME liste a l'identique. Sans
+        # cette parade, ce montage ne depasse jamais le premier tour -- donc
+        # ne produit jamais la VRAIE histoire qui est tout son objet ici.
+        signature = tuple(o.get("name") for o in options if isinstance(o, dict))
+        if signature == etat["derniere_question"]:
+            etat["repetitions"] += 1
+        else:
+            etat["derniere_question"] = signature
+            etat["repetitions"] = 1
+
+        legales = [o for o in options
                    if isinstance(o, dict) and not o.get("failure_reason")]
         if not legales:
             return None
-        o = legales[0]
+
+        # JOUER UN PEU, PUIS FINIR SON TOUR -- sans quoi on ne sort jamais du
+        # round 1. Mesure du 20/09/2026 : le pilote greedy de
+        # `monter_le_moteur` (toujours `legales[0]`) a pose plus de 600
+        # questions sans depasser le round 1, en rejouant sans fin des
+        # options de tour qui echouent (Enhanced Ivory Horn, Helicarrier...)
+        # et que `PlayerAction` DEPILE aussitot (`replay.Pop()`), si bien que
+        # le compteur d'entrees restait a 3.
+        #
+        # On garde donc le geste du joueur pressé : les premieres questions
+        # du round servent a jouer des cartes (`legales[0]`, ce qui remplit
+        # l'historique), les suivantes prennent la DERNIERE option, qui est
+        # en pratique celle qui termine le tour -- meme parade, et meme
+        # constat, que l'anti-boucle de `monter_le_moteur`.
+        monde_du_tour = jeu.world
+        round_courant = monde_du_tour.round_id if monde_du_tour else -1
+        if round_courant != etat["round_observe"]:
+            etat["round_observe"] = round_courant
+            etat["questions_du_round"] = 0
+        etat["questions_du_round"] += 1
+
+        presse = (etat["questions_du_round"] > QUESTIONS_JOUEES_PAR_ROUND
+                  or etat["repetitions"] > 3)
+        if presse and data.show_cancel:
+            # PASSER, C'EST FINIR SON TOUR. Il n'existe AUCUNE option
+            # « fin de tour » dans la liste (mesure du 20/09/2026 : les
+            # options d'un tour de heros s'appellent toutes « Play ») : ce
+            # que le plateau montre comme « Terminer le tour », c'est la
+            # reponse VIDE, celle que `ChoiceOne` lit comme `id == 0` et que
+            # `show_cancel` autorise. C'est le meme chemin, exactement, que
+            # `DeviceManager.PasserQuestionCourante`.
+            #
+            # Sans ca, ce montage ne sort jamais du round 1 : le pilote
+            # rejoue indefiniment des options qui echouent (Enhanced Ivory
+            # Horn, Helicarrier) et que `PlayerAction` depile aussitot.
+            return "{}"
+        o = legales[-1] if presse else legales[0]
         cibles = [str(x) for x in (o.get("all_legal_targets") or [])]
         mini = (o.get("target_num_range") or [0, 0])[0]
         return json.dumps({"id": str(o.get("id", 0)),
@@ -2489,7 +2678,7 @@ def monter_avec_geste_par_le_vrai_dogetinput(game_dir, port, commande_pour):
 
     threading.Thread(target=run, daemon=True).start()
 
-    limite = time.time() + 120
+    limite = time.time() + 180
     while not etat["gares"] and time.time() < limite:
         time.sleep(0.5)
     assert etat["gares"], (
@@ -2498,6 +2687,7 @@ def monter_avec_geste_par_le_vrai_dogetinput(game_dir, port, commande_pour):
         "n'est prouve"
     )
     time.sleep(2)
+    etat["signature"] = signature_de_table(jeu.world)
     assert jeu.world.manuel_actif is True, \
         "premisse cassee : la table n'est pas en pause apres la bascule"
     return jeu, etat["commande"], etat
@@ -2727,6 +2917,224 @@ def cas_annulation_ordinaire_garde_tout(game_dir, port):
     return ("« Annuler » garde les corrections ET la pause : la partie ne "
             "reprend pas toute seule")
 
+def cas_histoire_rejouee_apres_pause(game_dir, port):
+    """Une sauvegarde qui porte une VRAIE histoire se rouvre sur LA MEME
+    table -- pas sur une table vierge. Constat C1 de la ronde de correction 1.
+
+    ⚠ CE CAS A ETE ECRIT ROUGE, et il attrape un defaut que les trois
+    premiers temoins de la tache 9 ne pouvaient pas voir : ils posaient la
+    pause au tout PREMIER tour de heros, donc leur sauvegarde ne portait
+    presque aucune entree a rejouer. Celui-ci joue trois rounds d'abord.
+
+    Le defaut : `GameSetup` refermait la porte du silence (`manuel_actif`)
+    AVANT que le rejeu des entrees n'ait lieu. Or cette porte est celle de
+    `BroadcastMessage`/`BroadcastStackMessage` : aucun declencheur, aucun
+    effet de regle, aucun sbire vaincu. Les entrees ne pouvaient donc plus
+    etre consommees -- les questions ne naissaient meme pas -- et le joueur
+    retrouvait une table VIERGE a la place de la sienne. La porte ne se
+    referme desormais qu'une fois le rejeu epuise
+    (`GameSession.SuivreLeRejeuDesGestes`, appele par `Controller.ChoiceOne`).
+
+    ⚠ LE FILS OUVRE LA SAUVEGARDE COMME LA PRODUCTION, avec
+    `rejouer_les_entrees=True` : sans ca le moteur REDEMANDE toute la partie
+    au lieu de la rejouer, et ce cas ne mesurerait rien du rejeu.
+    """
+    jeu, commande, etat = monter_avec_geste_par_le_vrai_dogetinput(
+        game_dir, port,
+        lambda jeu: f"Puzzle.Damage({id_du_vilain(jeu.world)}, 3)",
+        round_du_geste=3)
+
+    attendue = etat["signature"]
+    assert attendue["round"] >= 3, (
+        f"premisse cassee : la sauvegarde ne porte pas d'histoire "
+        f"(round {attendue['round']})"
+    )
+    entrees = len(jeu.controller_manager.replay.history_inputs)
+    assert entrees >= 3, (
+        f"premisse cassee : seulement {entrees} entree(s) a rejouer, c'est "
+        "trop peu pour que ce cas prouve quoi que ce soit"
+    )
+
+    nom = "manuel-histoire-aller-retour.json"
+    ecrit = jeu.session.SaveScene(name=nom, delete_old=False)
+    assert ecrit, "la sauvegarde n'a pas ete ecrite"
+
+    env = dict(os.environ)
+    env["MC_SAUVEGARDE"] = nom
+    env["MC_COMMANDE"] = commande
+    env["MC_SIGNATURE"] = json.dumps(attendue)
+    env["MC_ENTREES"] = str(entrees)
+    fils = subprocess.run(
+        [sys.executable, os.path.abspath(__file__), game_dir,
+         str(port + 1), "relire_histoire", "--fils"],
+        cwd=RACINE, capture_output=True, text=True, timeout=300, env=env)
+    assert fils.returncode == 0, \
+        f"le rechargement a echoue :\n{fils.stdout[-4000:]}\n{fils.stderr[-3000:]}"
+    return (f"une sauvegarde de {entrees} entrees, faite en pause au round "
+            f"{attendue['round']}, se rouvre sur la meme table")
+
+
+def cas_relire_histoire(game_dir, port):
+    """Le fils de `cas_histoire_rejouee_apres_pause`."""
+    chemin = os.environ["MC_SAUVEGARDE"]
+    commande = os.environ["MC_COMMANDE"]
+    attendue = json.loads(os.environ["MC_SIGNATURE"])
+    entrees = int(os.environ["MC_ENTREES"])
+
+    releve = {}
+
+    def au_premier_reveil(jeu):
+        # LE PREMIER APPEL EST LE BON MOMENT, ET C'EST LE SEUL. Le rejeu des
+        # entrees ne passe PAS par `DoGetInput` (`ChoiceOne` se sert de
+        # `fallthrough_input` tant qu'il saute) : la premiere question posee
+        # au pilote est donc exactement celle sur laquelle le joueur s'etait
+        # arrete. Une mesure prise plus tard verrait le pilote avoir deja
+        # rejoue par-dessus.
+        if "table" in releve:
+            return
+        releve["table"] = signature_de_table(jeu.world)
+        releve["muet"] = bool(jeu.world.manuel_actif)
+
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [], sauvegarde=chemin,
+                                     avant_reponse=au_premier_reveil,
+                                     rejouer_les_entrees=True)
+
+    assert jeu.session.scene.manuel_commands == [commande], \
+        f"la sauvegarde ne porte pas le geste : {jeu.session.scene.manuel_commands}"
+    assert "table" in releve, (
+        "la partie rechargee n'a pose AUCUNE question : le rejeu des entrees "
+        "s'est arrete en route -- exactement ce que produisait la porte du "
+        "silence refermee trop tot"
+    )
+
+    obtenue = releve["table"]
+    ecarts = comparer_les_tables(attendue, obtenue)
+    assert not ecarts, (
+        f"la table rechargee n'est pas celle du joueur, apres un rejeu de "
+        f"{entrees} entrees. Ecarts :\n  - " + "\n  - ".join(ecarts[:12]) +
+        (f"\n  (+{len(ecarts) - 12} autres)" if len(ecarts) > 12 else "") +
+        "\nRegarder d'abord QUAND la porte du silence se referme : fermee "
+        "avant le rejeu, elle ferme BroadcastMessage, donc les entrees ne "
+        "sont jamais consommees et la table reste vierge."
+    )
+    assert releve["muet"] is True, (
+        "la partie rechargee a repris toute seule : elle etait EN PAUSE au "
+        "moment de la sauvegarde"
+    )
+    return (f"la table rechargee est identique apres un rejeu de {entrees} "
+            "entrees, et elle revient en pause")
+
+
+def cas_geste_au_bon_rang(game_dir, port):
+    """Un geste AUTRE que `Damage`, fait au milieu de la partie, se rejoue a
+    SON rang -- pas a l'instant 0. Constat C2 de la ronde de correction 1.
+
+    ⚠ CE CAS A ETE ECRIT ROUGE. Le rejeu entassait tous les gestes a
+    l'instant 0, avant la premiere entree. `Puzzle.Damage` y survit -- c'est
+    le seul geste que la tache 9 avait mesure -- mais `/sandbox_command`
+    accepte TOUT `Puzzle.<methode>`, et trois mecanismes faussent la table
+    sans jamais lever :
+
+    - la GRAINE : `Shuffle`, `Draw`, `Reveal`, `Boost`, `Deal` consommes a
+      l'instant 0 decalent tout le flux aleatoire, et la rencontre du round
+      suivant n'est plus la meme ;
+    - les IDENTIFIANTS : `CreateCard`, `Reveal`, `PutIntoPlay` font naitre
+      des objets qui prennent les identifiants que le rejeu attribuera
+      ensuite a d'autres cartes -- un geste suivant qui vise `c49` ne vise
+      plus la meme carte, et aucun `try/except` n'attrape ca : il n'y a pas
+      d'erreur, seulement une cible fausse ;
+    - la FIN DE PARTIE : `Puzzle.Win()`/`Lose()` rejoues a l'instant 0 posent
+      `is_game_over` avant meme que `GameSetup` ne rende la main, et la
+      sauvegarde ne s'ouvre plus.
+
+    Le geste choisi ici est `Puzzle.Draw(2)` : il ne fait de mal a personne,
+    mais il deplace des cartes entre le deck et la main et change donc ce que
+    TOUTES les entrees suivantes ont sous les yeux.
+
+    ⚠ ET LE GESTE EST SUIVI D'ENTREES, C'EST TOUT L'INTERET : on REPREND la
+    partie apres lui et on joue encore un round avant de sauver. Un geste que
+    plus rien ne suit ne prouve rien sur son rang -- rejoue a l'instant 0 ou
+    a sa place, la table finale serait la meme.
+    """
+    jeu, commande, etat = monter_avec_geste_par_le_vrai_dogetinput(
+        game_dir, port,
+        lambda jeu: "Puzzle.Draw(2)",
+        round_du_geste=2, round_de_la_pause=3)
+
+    attendue = etat["signature"]
+    rangs = jeu.session.scene.manuel_commands_step
+    entrees = len(jeu.controller_manager.replay.history_inputs)
+    assert jeu.session.scene.manuel_commands == [commande], \
+        f"premisse cassee : le geste n'est pas dans la scene ({jeu.session.scene.manuel_commands})"
+    assert rangs and 0 < rangs[0] < entrees, (
+        f"premisse cassee : le geste doit etre fait AU MILIEU de l'histoire "
+        f"pour que son rang compte -- rang {rangs!r}, {entrees} entrees au "
+        "total"
+    )
+
+    nom = "manuel-rang-aller-retour.json"
+    ecrit = jeu.session.SaveScene(name=nom, delete_old=False)
+    assert ecrit, "la sauvegarde n'a pas ete ecrite"
+
+    env = dict(os.environ)
+    env["MC_SAUVEGARDE"] = nom
+    env["MC_COMMANDE"] = commande
+    env["MC_SIGNATURE"] = json.dumps(attendue)
+    env["MC_RANG"] = str(rangs[0])
+    env["MC_ENTREES"] = str(entrees)
+    fils = subprocess.run(
+        [sys.executable, os.path.abspath(__file__), game_dir,
+         str(port + 1), "relire_geste_au_bon_rang", "--fils"],
+        cwd=RACINE, capture_output=True, text=True, timeout=300, env=env)
+    assert fils.returncode == 0, \
+        f"le rechargement a echoue :\n{fils.stdout[-4000:]}\n{fils.stderr[-3000:]}"
+    return (f"un Puzzle.Draw(2) fait au rang {rangs[0]} sur {entrees} entrees "
+            "se rejoue a son rang, et la table rechargee est identique")
+
+
+def cas_relire_geste_au_bon_rang(game_dir, port):
+    """Le fils de `cas_geste_au_bon_rang`."""
+    chemin = os.environ["MC_SAUVEGARDE"]
+    commande = os.environ["MC_COMMANDE"]
+    attendue = json.loads(os.environ["MC_SIGNATURE"])
+    rang = int(os.environ["MC_RANG"])
+    entrees = int(os.environ["MC_ENTREES"])
+
+    releve = {}
+
+    def au_premier_reveil(jeu):
+        if "table" in releve:
+            return
+        releve["table"] = signature_de_table(jeu.world)
+
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [], sauvegarde=chemin,
+                                     avant_reponse=au_premier_reveil,
+                                     rejouer_les_entrees=True)
+
+    scene = jeu.session.scene
+    assert scene.manuel_commands == [commande], \
+        f"la sauvegarde ne porte pas le geste : {scene.manuel_commands}"
+    assert scene.manuel_commands_step == [rang], (
+        f"la sauvegarde ne porte pas le RANG du geste : "
+        f"{scene.manuel_commands_step!r} (attendu [{rang}]) -- sans lui, le "
+        "rejeu ne peut que l'entasser a l'instant 0"
+    )
+    assert "table" in releve, \
+        "la partie rechargee n'a pose aucune question : rien n'a pu etre mesure"
+
+    ecarts = comparer_les_tables(attendue, releve["table"])
+    assert not ecarts, (
+        f"la table rechargee differe apres un rejeu de {entrees} entrees avec "
+        f"un Puzzle.Draw(2) au rang {rang}. Ecarts :\n  - " +
+        "\n  - ".join(ecarts[:12]) +
+        (f"\n  (+{len(ecarts) - 12} autres)" if len(ecarts) > 12 else "") +
+        "\nUn geste rejoue au mauvais rang ne leve pas : il decale la graine "
+        "et les identifiants d'objet, et tout ce qui suit est joue sur une "
+        "table qui n'est plus la bonne."
+    )
+    return (f"le geste est rejoue a son rang ({rang}/{entrees}) : la table "
+            "rechargee est identique")
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
@@ -2776,6 +3184,10 @@ CAS = {
     "geste_ordinaire_survit_sauvegarde": cas_geste_ordinaire_survit_sauvegarde,
     "relire_geste_ordinaire": cas_relire_geste_ordinaire,
     "annulation_ordinaire_garde_tout": cas_annulation_ordinaire_garde_tout,
+    "histoire_rejouee_apres_pause": cas_histoire_rejouee_apres_pause,
+    "relire_histoire": cas_relire_histoire,
+    "geste_au_bon_rang": cas_geste_au_bon_rang,
+    "relire_geste_au_bon_rang": cas_relire_geste_au_bon_rang,
 }
 
 
@@ -2785,7 +3197,8 @@ def main():
     voulu = sys.argv[3] if len(sys.argv) > 3 else None
     # Les cas appeles par un AUTRE cas, jamais tout seuls.
     SUR_DEMANDE = {"relire_sauvegarde", "relire_marque_survit",
-                   "relire_geste_ordinaire"}
+                   "relire_geste_ordinaire", "relire_histoire",
+                   "relire_geste_au_bon_rang"}
     noms = [voulu] if voulu else [n for n in CAS if n not in SUR_DEMANDE]
     for rang, nom in enumerate(noms):
         fils = subprocess.run(
