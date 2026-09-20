@@ -102,6 +102,21 @@ class Scene:
     # le defaut, pas la regle.
     pause_par: str = field(default="")
     pause_a: str = field(default="")
+    # DEPUIS QUAND, EN SECONDES DEPUIS L'EPOQUE (revue finale, 20/09/2026).
+    #
+    # ⚠ DOUBLON ASSUME AVEC `pause_a` JUSTE AU-DESSUS, et la raison est le
+    # LECTEUR. `pause_a` est un `Time.Format()` : une heure MURALE, celle du
+    # serveur (« 2026-09-20 17-12 »), affichee sous le mot « depuis ». Un
+    # joueur a l'autre bout du pays y lisait une heure qui n'est pas la
+    # sienne, et le format se lit mal comme une duree. Une valeur d'epoque,
+    # elle, ne depend d'aucun fuseau : le plateau en tire « depuis 12 min »
+    # avec sa PROPRE horloge (`BandeauPause`, `dureeDepuis`).
+    #
+    # `pause_a` reste, et n'est pas remplace : c'est lui que `pause_en_cours`
+    # interroge (donc la memoire de la pause a travers une sauvegarde et un
+    # « Annuler »), et les sauvegardes anterieures a ce champ-ci n'en portent
+    # aucun. Zero = aucune pause en cours, comme la chaine vide a cote.
+    pause_epoch: float = field(default=0.0)
 
     inputs: List[OperationDescriptor] = field(default_factory=lambda: [])
 

@@ -634,6 +634,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Quelqu’un': 'Someone',
   'a mis la partie en pause': 'paused the game',
   'depuis': 'since',
+  // La DURÉE de la pause (revue finale, 20/09/2026) : « depuis 12 min ».
+  // 'min' (portée d'une cible) et 'moins d’une minute' (préavis du site) sont
+  // déjà traduits plus haut : une seule entrée par clé, TypeScript refuse le
+  // doublon.
+  h: 'h',
   'Passer la question': 'Skip the question',
   'Le moteur n’attend aucune réponse en ce moment': 'The engine isn’t waiting on an answer right now',
   'Cette question exige une réponse : le jeu n’offre aucune sortie':

@@ -64,6 +64,10 @@ class WorldDescriptor:
     # pause EN COURS, pas la partie entiere.
     pause_par: str = field(default="")
     pause_a: str = field(default="")
+    # En secondes depuis l'epoque, 0 hors pause : le plateau en tire une
+    # DUREE avec sa propre horloge, la ou `pause_a` ne lui donne qu'une heure
+    # murale du serveur. Voir `Scene.pause_epoch`.
+    pause_epoch: float = field(default=0.0)
     # play
     area_schemes_main: List[CardDescriptor] = field(default_factory=lambda: [])
     main_schemes_deck: List[CardDescriptor] = field(default_factory=lambda: [])

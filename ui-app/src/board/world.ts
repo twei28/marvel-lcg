@@ -415,9 +415,23 @@ export type World = {
    * le reste de la sauvegarde) : une chaîne à afficher telle quelle, jamais à
    * recalculer côté client (le serveur tourne en UTC, voir `salon.ts`).
    *
+   * ⚠ N'EST PLUS CE QU'ON AFFICHE (revue finale, 20/09/2026) : c'est une
+   * heure MURALE, celle du serveur, qu'un joueur distant lisait comme la
+   * sienne — et qui se lit mal comme une durée sous le mot « depuis ». Le
+   * bandeau préfère `pause_epoch` juste en dessous, et ne retombe sur cette
+   * chaîne que face à un moteur plus ancien qui ne la publie pas.
+   *
    * ⚠ EFFACÉ À LA REPRISE, même précaution que `pause_par`.
    */
   pause_a?: string
+  /**
+   * Le même instant, en SECONDES DEPUIS L'ÉPOQUE (`Scene.pause_epoch`), zéro
+   * hors pause. Sans fuseau : le plateau en tire une DURÉE avec sa propre
+   * horloge (« depuis 12 min »), ce qu'aucune heure murale ne permet.
+   *
+   * ⚠ EFFACÉ À LA REPRISE, même précaution que `pause_par`.
+   */
+  pause_epoch?: number
   event_name: string
   /**
    * Les activations ennemies du round en cours, telles que le MOTEUR les a

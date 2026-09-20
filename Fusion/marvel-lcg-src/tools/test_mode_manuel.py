@@ -1198,6 +1198,7 @@ def cas_qui_et_depuis_publies(game_dir, port):
     etat = {
         "compte": 0, "pause_posee": False, "vu_qui": False,
         "reprise_posee": False, "vu_vide_apres_reprise": False,
+        "epoch_pose": 0.0,
     }
 
     def observateur(jeu):
@@ -1212,6 +1213,8 @@ def cas_qui_et_depuis_publies(game_dir, port):
                 f"une partie jamais mise en pause publie deja pause_par={pause_par_publie!r}"
             assert getattr(descripteur, "pause_a", None) == "", \
                 "une partie jamais mise en pause publie deja pause_a"
+            assert not getattr(descripteur, "pause_epoch", 0.0), \
+                "une partie jamais mise en pause publie deja pause_epoch"
 
         if not etat["pause_posee"] and etat["compte"] >= 5:
             etat["pause_posee"] = True
@@ -1220,6 +1223,12 @@ def cas_qui_et_depuis_publies(game_dir, port):
                 "pause_par n'a pas pris le pseudo transmis sur la scene"
             assert jeu.world.scene.pause_a != "", \
                 "pause_a est reste vide sur la scene alors que la pause est posee"
+            # L'instant, sans fuseau : c'est de LUI que le plateau tire
+            # « depuis 12 min », l'heure murale du serveur ne voulant rien
+            # dire pour un joueur distant (revue finale, 20/09/2026).
+            assert jeu.world.scene.pause_epoch > 0, \
+                "pause_epoch est reste a zero sur la scene alors que la pause est posee"
+            etat["epoch_pose"] = jeu.world.scene.pause_epoch
             return
 
         if etat["pause_posee"] and not etat["vu_qui"]:
@@ -1227,6 +1236,10 @@ def cas_qui_et_depuis_publies(game_dir, port):
                 etat["vu_qui"] = True
                 assert getattr(descripteur, "pause_a", None) not in (None, ""), \
                     "pause_par est publie mais pause_a reste vide"
+                assert getattr(descripteur, "pause_epoch", 0.0) == etat["epoch_pose"], (
+                    "la trame ne publie pas pause_epoch : le bandeau ne peut "
+                    "pas dire « depuis » autrement qu'en heure du serveur"
+                )
                 jeu.world.BasculerPauseManuelle(False)
                 etat["reprise_posee"] = True
             return
@@ -1236,6 +1249,8 @@ def cas_qui_et_depuis_publies(game_dir, port):
                 etat["vu_vide_apres_reprise"] = True
                 assert getattr(descripteur, "pause_a", None) == "", \
                     "pause_a reste publie apres la reprise"
+                assert not getattr(descripteur, "pause_epoch", 0.0), \
+                    "pause_epoch reste publie apres la reprise"
 
     monter_le_moteur(game_dir, port, [], avant_reponse=observateur)
 
@@ -1247,8 +1262,9 @@ def cas_qui_et_depuis_publies(game_dir, port):
     assert etat["vu_vide_apres_reprise"], (
         "la trame n'a jamais republie pause_par vide apres la reprise"
     )
-    return ("pause_par/pause_a : vides par defaut, poses (qui, depuis) a la "
-            "pause, RE-VIDES apres la reprise -- sur la scene et sur la trame")
+    return ("pause_par/pause_a/pause_epoch : vides par defaut, poses (qui, "
+            "depuis) a la pause, RE-VIDES apres la reprise -- sur la scene et "
+            "sur la trame")
 
 
 class _RequeteFactice:

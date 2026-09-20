@@ -75,6 +75,7 @@ class ToDescriptor:
         # retombent deja sur leur defaut (`engine/lib/json.py`).
         world_descriptor.pause_par = str(world.scene.pause_par)
         world_descriptor.pause_a = str(world.scene.pause_a)
+        world_descriptor.pause_epoch = float(getattr(world.scene, 'pause_epoch', 0.0) or 0.0)
 
         world_descriptor.active_card_ids = world.render.last_active_card_ids
         # Journal des activations ennemies du round (voir WorldStat). Copie, et

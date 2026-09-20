@@ -9,7 +9,7 @@
 //   7. (tâche 5) deux codes de refus distincts donnent deux phrases distinctes
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { BandeauPause } from './BandeauPause'
+import { BandeauPause, dureeDepuis } from './BandeauPause'
 
 describe('le bandeau de pause', () => {
   it('ne s\'affiche pas hors pause', () => {
@@ -207,6 +207,59 @@ describe('le motif de refus ne survit pas à la pause qui l’a produit', () => 
       />
     )
     await waitFor(() => expect(screen.queryByText(/exige une réponse/)).toBeNull())
+  })
+})
+
+describe('« depuis » est une DURÉE, pas l’heure murale du serveur', () => {
+  // `pause_a` est un `Time.Format()` du SERVEUR (« 2026-09-20 17-12 ») :
+  // affiché sous « depuis », un joueur distant y lisait une heure qui n'est
+  // pas la sienne, et le format se lit mal comme une durée. Le moteur publie
+  // désormais `pause_epoch` (secondes depuis l'époque, sans fuseau) et le
+  // plateau en tire la durée avec SA propre horloge.
+  const MAINTENANT = Date.UTC(2026, 8, 20, 17, 30, 0)
+
+  it('rend « moins d’une minute » tout de suite après la pause', () => {
+    expect(dureeDepuis(MAINTENANT / 1000 - 20, MAINTENANT)).toMatch(/moins d/)
+  })
+
+  it('rend des minutes, puis des heures', () => {
+    expect(dureeDepuis(MAINTENANT / 1000 - 12 * 60, MAINTENANT)).toBe('12 min')
+    expect(dureeDepuis(MAINTENANT / 1000 - (2 * 3600 + 5 * 60), MAINTENANT)).toBe('2 h 5 min')
+  })
+
+  it('ne rend jamais une durée négative quand l’horloge du serveur est en avance', () => {
+    expect(dureeDepuis(MAINTENANT / 1000 + 300, MAINTENANT)).toMatch(/moins d/)
+  })
+
+  it('affiche la durée, et PAS l’horodatage du serveur, quand l’instant est connu', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(MAINTENANT)
+    render(
+      <BandeauPause
+        enPause={{
+          actif: true,
+          par: 'Nick Fury',
+          depuis: '2026-09-20 17-12',
+          depuisEpoch: MAINTENANT / 1000 - 18 * 60,
+        }}
+        onReprendre={() => {}}
+        onPasser={async () => ({ ok: true })}
+      />
+    )
+    expect(screen.getByText(/18 min/)).toBeTruthy()
+    expect(screen.queryByText(/17-12/)).toBeNull()
+    vi.useRealTimers()
+  })
+
+  it('retombe sur l’horodatage du moteur quand il ne publie aucun instant', () => {
+    render(
+      <BandeauPause
+        enPause={{ actif: true, par: 'Nick Fury', depuis: '2026-09-20 17-12' }}
+        onReprendre={() => {}}
+        onPasser={async () => ({ ok: true })}
+      />
+    )
+    expect(screen.getByText(/17-12/)).toBeTruthy()
   })
 })
 

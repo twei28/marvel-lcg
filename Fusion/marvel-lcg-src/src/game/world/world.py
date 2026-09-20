@@ -770,12 +770,16 @@ class World(WorldAction, WorldFind):
         `ModelOnEvent.Defeated`), publiee par la meme trame
         (`ToDescriptor.World`).
 
-        ⚠ APPELEE DEPUIS LE FIL HTTP (route POST /manuel_pause). Poser CE
-        SEUL booleen y est sans danger, mais rien d'autre ne doit toucher au
-        monde depuis ce fil : le gestionnaire de taches du moteur n'accepte
-        plus de travail a ce moment-la (« cannot schedule new futures after
+        ⚠ APPELEE DEPUIS LE FIL HTTP (route POST /manuel_pause). Elle ecrit
+        CINQ champs, tous de simples affectations : `manuel_actif` ici, puis
+        `scene.corrigee_a_la_main`, `scene.pause_par`, `scene.pause_a` et
+        `scene.pause_epoch` plus bas. Poser des champs y est sans danger ; ce qui ne doit JAMAIS partir
+        de ce fil, c'est du TRAVAIL -- le gestionnaire de taches du moteur
+        n'en accepte plus a ce moment-la (« cannot schedule new futures after
         shutdown »), exactement comme l'explique le commentaire en tete de
         `engine/device/manager/base.py` a propos de `QueueSandboxCommands`.
+        (La docstring disait « CE SEUL booleen » : c'etait vrai de la tache 1,
+        plus des taches 2 et 3 qui ont ajoute la marque et la pause en cours.)
 
         ⚠ NE CREE AUCUNE BOUCLE : `SignalerPauseAPublier` reveille
         `notify.input`, la MEME condition que `QueueSandboxCommands` --
@@ -824,9 +828,14 @@ class World(WorldAction, WorldFind):
         if actif:
             self.scene.pause_par = qui
             self.scene.pause_a = Time.Format()
+            # L'heure MURALE ci-dessus est celle du serveur ; celle-ci est
+            # un instant, sans fuseau, dont le plateau tire une DUREE avec sa
+            # propre horloge. Voir `Scene.pause_epoch`.
+            self.scene.pause_epoch = Time.GetTime()
         else:
             self.scene.pause_par = ""
             self.scene.pause_a = ""
+            self.scene.pause_epoch = 0.0
 
         self.controller_manager.device_manager.SignalerPauseAPublier()
         return self.manuel_actif

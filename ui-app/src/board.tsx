@@ -3214,6 +3214,10 @@ export function PagePartie({
           actif: enPause,
           par: etat.monde?.pause_par ?? '',
           depuis: etat.monde?.pause_a ?? '',
+          // L'INSTANT, dont le bandeau tire une durée avec l'horloge de CE
+          // navigateur : `pause_a` est l'heure murale du SERVEUR, fausse pour
+          // un joueur distant et illisible comme durée (revue finale).
+          depuisEpoch: etat.monde?.pause_epoch,
         }}
         onReprendre={() => { void basculerPause(false) }}
         onPasser={passerLaQuestion}
