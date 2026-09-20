@@ -14,7 +14,7 @@ import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { World, WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
 import { libellePhase } from './etat-partie'
-import { estModeManuel } from './manuel/mode'
+import { estModeManuel, leMoteurSeTait } from './manuel/mode'
 
 // I4 (revue finale, 20/09/2026) : `'manuel'` EST DISTINCT DE `'triche'`. Les
 // deux marquent une intervention du joueur plutôt qu'une conséquence du
@@ -487,11 +487,25 @@ export function useHistoriquePartie(
    * distingue immédiatement ce qui vient d'une carte de ce qui vient du joueur.
    * C'est exactement ce qui manquait pour diagnostiquer Kamala's Room.
    *
-   * ⚠ I4 : LE TYPE DÉPEND DU MODE, PAS UNE CONSTANTE. `estModeManuel` lit la
-   * RÈGLE posée à la mise en place (`world.mode_manuel`, conservée dans la
-   * sauvegarde) sur le monde qui accompagnait CE geste précis (`precedent`) :
-   * le même geste ne change jamais d'étiquette selon quand on relit le
-   * journal.
+   * ⚠ I4 : LE TYPE DÉPEND DU MODE, PAS UNE CONSTANTE. Il est lu sur le monde
+   * qui accompagnait CE geste précis (`precedent`) : le même geste ne change
+   * jamais d'étiquette selon quand on relit le journal.
+   *
+   * ⚠ I1 (revue finale, 20/09/2026) : `leMoteurSeTait` D'ABORD, l'ÉTAT, et
+   * `estModeManuel` seulement en second. La première version ne lisait que
+   * la RÈGLE (`world.mode_manuel`) : sur une partie ORDINAIRE mise en PAUSE
+   * — la seule configuration que le chantier de la pause livre — elle est
+   * FAUSSE, chaque geste entrait donc en `'triche'`, et `rapport-bug.ts`,
+   * qui ne retient que `'manuel'`, n'imprimait JAMAIS la section « GESTES
+   * MANUELS ». Le rapport affichait alors `[triche]` sous un en-tête qui
+   * venait de crier « PARTIE CORRIGÉE À LA MAIN », et l'auteur du jeu, en
+   * lisant « triche », concluait « ce n'est pas un défaut du moteur » (fiche
+   * Echo du 20/09/2026). Gardé par `journal-vers-rapport-pause.test.tsx`,
+   * qui chaîne CE producteur au rapport qui le consomme.
+   *
+   * La règle reste dans le OU : une partie DÉCLARÉE manuelle porte des
+   * gestes manuels PENDANT sa mise en place, avant que la boucle manuelle
+   * n'ait posé `manuel_actif`.
    *
    * La clé porte un compteur : deux soins identiques au même rendu sont deux
    * faits distincts, et sans lui React n'en afficherait qu'un.
@@ -503,7 +517,7 @@ export function useHistoriquePartie(
       const monde = precedent.current
       const entree: EntreeHistorique = {
         cle: `triche:${compteurTriche.current}`,
-        type: estModeManuel(monde) ? 'manuel' : 'triche',
+        type: leMoteurSeTait(monde) || estModeManuel(monde) ? 'manuel' : 'triche',
         renderId: monde?.render_id ?? 0,
         round: monde?.round_id ?? 0,
         phase: monde?.phase ?? '',
