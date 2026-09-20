@@ -569,7 +569,18 @@ test(
     const carteHeros = page.locator(`.scan-card[data-card-id="${heroAvantId!.id}"]`).first()
     const jaugeHeros = carteHeros.locator('.jauge-texte').first()
     const jaugeAvantGeste = await jaugeHeros.textContent()
-    expect(jaugeAvantGeste, 'la pastille de vie du héros ne se lit pas à l’écran').toBeTruthy()
+    // ⚠ LA VALEUR ATTENDUE, PAS « PAS LA MÊME » (ronde de correction 1) :
+    // un simple `.not.toBe(avant)` accepterait n'importe quel changement, y
+    // compris un passage à `null` si la carte se démontait. La pastille est
+    // écrite `courants / max` (`card-model.ts`), et la quantité de dégâts est
+    // LUE dans le champ du menu juste avant d'appliquer (voir plus bas)
+    // plutôt que devinée : la deviner à 1 a rendu ce test rouge au premier
+    // essai, `MenuTriche.tsx` proposant 3.
+    const pv = /^\s*(\d+)\s*\/\s*(\d+)\s*$/.exec(jaugeAvantGeste ?? '')
+    expect(
+      pv,
+      `la pastille de vie du héros ne se lit pas à l’écran (lu : ${JSON.stringify(jaugeAvantGeste)})`
+    ).toBeTruthy()
 
     // UN SEUL DÉPÔT, JAMAIS RÉPÉTÉ : `/sandbox_command` réussit toujours,
     // c'est la publication qui se faisait attendre (jusqu'à une trentaine
@@ -583,22 +594,32 @@ test(
       page.getByRole('menu'),
       "le clic droit n'ouvre pas le menu manuel"
     ).toBeVisible({ timeout: 5000 })
+    await page.getByRole('button', { name: 'Infliger des dégâts' }).click()
+
+    // La quantité proposée par le menu EST celle qui sera appliquée : on la
+    // lit à l'écran plutôt que de la recopier depuis le code, pour que ce
+    // test n'ait pas à être retouché le jour où elle change.
+    const champDegats = page.locator('.menu-triche-saisie input[type="number"]')
+    const degats = Number(await champDegats.inputValue())
+    expect(degats, 'la quantité de dégâts proposée par le menu ne se lit pas').toBeGreaterThan(0)
+    const jaugeAttendue = `${Number(pv![1]) - degats} / ${pv![2]}`
+
     const reponseGeste = page.waitForResponse((r) => r.url().includes('/sandbox_command'), {
       timeout: 5000,
     })
-    await page.getByRole('button', { name: 'Infliger des dégâts' }).click()
     await page.getByRole('button', { name: 'Appliquer' }).click()
     await reponseGeste
 
-    // LE PLATEAU LE MONTRE : la pastille de vie du héros change vraiment.
-    // Attente large et explicite, sans repli sur une assertion faible.
+    // LE PLATEAU LE MONTRE : la pastille de vie du héros affiche exactement
+    // le point de vie en moins. Attente large et explicite, sans repli sur
+    // une assertion faible.
     await expect
       .poll(async () => jaugeHeros.textContent(), {
         timeout: 30000,
         message:
-          "la pastille de vie du héros n'a jamais bougé à l'écran : le geste manuel n'a pas été publié pendant la pause",
+          "la pastille de vie du héros n'affiche pas le dégât infligé : le geste manuel n'a pas été publié pendant la pause",
       })
-      .not.toBe(jaugeAvantGeste)
+      .toBe(jaugeAttendue)
 
     // ------------------------------------------------------------------
     // 5. LA REPRISE : LE MOTEUR REPOSE SA QUESTION, ET LA PARTIE CONTINUE.
