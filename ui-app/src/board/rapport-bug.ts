@@ -159,11 +159,19 @@ export type RapportBug = {
    * intervention à auditer (voir tâche 6, décision documentée dans le
    * rapport de tâche).
    *
-   * Cette visée n'est PAS une garantie d'exhaustivité : le tampon source
-   * (`entrees`) est lui-même plafonné à `MAX_ENTREES`, en amont de ce
-   * module. Un geste manuel plus ancien que le tampon a déjà disparu avant
-   * que cette fonction ne le voie. Voir `gestesManuelsIncomplets`, qui dit
-   * quand ce risque est réel.
+   * Cette visée n'est PAS une garantie d'exhaustivité, pour DEUX raisons
+   * distinctes :
+   *
+   * — le tampon source (`entrees`) est lui-même plafonné à `MAX_ENTREES`, en
+   *   amont de ce module. Un geste manuel plus ancien que le tampon a déjà
+   *   disparu avant que cette fonction ne le voie. Voir
+   *   `gestesManuelsIncomplets`, qui dit quand ce risque est réel ;
+   *
+   * — I3 (revue finale, 20/09/2026) : le journal est LOCAL AU NAVIGATEUR qui
+   *   prend le rapport. Sur une table EN LIGNE, les gestes posés depuis les
+   *   autres sièges n'y sont jamais entrés, et rien ici ne les agrège (c'est
+   *   un autre chantier). La version texte le DIT en tête de section, sous
+   *   le titre — une limite tue ferait conclure à l'absence d'intervention.
    */
   gestesManuels: EntreeBug[]
   /**
@@ -546,6 +554,18 @@ export function rapportEnTexte(rapport: RapportBug): string {
     lignes.push('')
     const compte = rapport.gestesManuels.length > 0 ? ` (${rapport.gestesManuels.length})` : ''
     lignes.push(`--- GESTES MANUELS${compte}, pour audit rapide ---`)
+    // I3 (revue finale, 20/09/2026) : LA PORTEE REELLE, DITE PLUTOT QUE TUE.
+    // Le journal source vit dans le NAVIGATEUR qui prend le rapport, et nulle
+    // part ailleurs : sur une table EN LIGNE, un geste manuel posé depuis un
+    // autre siège n'y a jamais figuré. Rien ici n'agrège les journaux des
+    // autres clients — c'est un autre chantier — mais une section qui promet
+    // « pour audit rapide » sans le dire fait conclure à l'absence
+    // d'intervention, exactement comme une liste vide sur un tampon plein
+    // (voir `gestesManuelsIncomplets` juste en dessous). Une limite dite est
+    // acceptable ; une limite muette ne l'est pas.
+    lignes.push(
+      'Portée : les gestes de CE navigateur seulement. Le journal est local au siège qui prend le rapport — un geste posé depuis un autre siège n’y figure pas.'
+    )
     if (rapport.gestesManuelsIncomplets) {
       // Symbole ⚠ et formulation volontairement différents de l'avertissement
       // du JOURNAL (« /!\ Journal TRONQUÉ ») juste au-dessus : les deux

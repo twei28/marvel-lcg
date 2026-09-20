@@ -295,6 +295,34 @@ describe("l'incomplétude propre a la section des gestes manuels (correction 1)"
   })
 })
 
+describe('la portee reelle de la section, dite et non tue (I3)', () => {
+  // Le journal vit dans le NAVIGATEUR qui prend le rapport : un geste pose
+  // depuis un autre siege d'une table en ligne n'y a jamais figure. La
+  // section promet « pour audit rapide » : sans cette phrase, un lecteur qui
+  // n'y voit rien en conclut qu'il n'y a rien eu, exactement comme pour le
+  // tampon plein. On n'agrege RIEN entre clients ici -- c'est un autre
+  // chantier -- on le DIT.
+  it('dit que la liste ne couvre que ce navigateur', () => {
+    const journal = [entree(2, 'PV de Klaw fixes a la main', { type: 'manuel' })]
+    const texte = rapportEnTexte(construireRapport(monde(), undefined, journal, 'partie', CONTEXTE))
+    const section = texte.split('--- GESTES MANUELS')[1] ?? ''
+    expect(section).toMatch(/navigateur/i)
+    expect(section).toMatch(/autre si[eè]ge/i)
+  })
+
+  it('le dit AUSSI quand la seule raison d’afficher la section est le tampon plein', () => {
+    const plein = Array.from({ length: MAX_ENTREES }, (_, i) => entree(3, `e${i}`, { type: 'card' }))
+    const texte = rapportEnTexte(construireRapport(monde(), undefined, plein, 'recent', CONTEXTE))
+    expect(texte.split('--- GESTES MANUELS')[1] ?? '').toMatch(/navigateur/i)
+  })
+
+  it('ne dit rien du tout quand la section ne s’affiche pas', () => {
+    const journal = [entree(3, 'Klaw joue une carte', { type: 'card' })]
+    const texte = rapportEnTexte(construireRapport(monde(), undefined, journal, 'partie', CONTEXTE))
+    expect(texte).not.toMatch(/navigateur/i)
+  })
+})
+
 describe('la version texte', () => {
   const base = () => construireRapport(monde(), undefined, [], 'recent', CONTEXTE)
 
