@@ -256,6 +256,30 @@ class GameServerBase(WebServer):
 
         return allowed
 
+    def prouve_un_siege(self, request: web.Request) -> bool:
+        """Ce client a-t-il AU MOINS un siege ou agir a cette table ?
+
+        La garde des routes POST qui AGISSENT sur la partie sans viser de
+        siege precis (`/manuel_pause`, `/manuel_passer` : il n'y a qu'une
+        partie en cours et qu'une question ouverte). `/post`, lui, vise un
+        siege nomme et se garde par `get_player_ids` ; ces routes-la ne
+        peuvent pas s'en servir, le plateau ne leur envoie aucun `?p=` -- et
+        le lui faire envoyer refuserait le joueur du siege 1, dont la requete
+        retombe sur le `p=0` par defaut.
+
+        `allowed_seats` rend `None` quand aucune protection n'est configuree
+        (table locale : tout le monde peut agir), l'ensemble VIDE pour un
+        spectateur, et les sieges tenus sinon. On ne demande donc pas LEQUEL,
+        seulement qu'il y en ait un.
+
+        ⚠ DEUXIEME VERROU, PAS LE PREMIER : `SpectateurPeutEcrire`
+        (`web_server.py`) ferme deja toute route POST a un spectateur. Celui-ci
+        vaut pour un client qui connait le mot de passe de la table sans tenir
+        aucun siege -- et il dirait encore non si l'autre venait a sauter.
+        """
+        sieges = self.allowed_seats(request)
+        return sieges is None or bool(sieges)
+
     def get_player_ids(self, request: web.Request) -> List[int]:
         is_hot_seat = 'hot_seat' in request.rel_url.query
         if is_hot_seat:

@@ -196,8 +196,52 @@ class WebServer:
         self.web_app.router.add_post(path, handle)
 
     @final
+    def SpectateurPeutEcrire(self, path: str, request: "web.Request") -> bool:
+        """Un spectateur n'ECRIT rien. Refus par defaut, comme en lecture.
+
+        ⚠ LE PENDANT MANQUANT DE `SpectateurPeutLire`, ET IL MANQUAIT DEPUIS
+        LE DEBUT. Celle-la n'est appelee que par les routes GET
+        (`AddAwaitGetSecurity`, `AddHtmlSecurity`) ; `AddPostSecurity`, lui,
+        ne verifiait QUE le mot de passe de la table -- que le spectateur
+        possede, sa porte d'entree le lui pose (`handle_spectateur`). Seul
+        `/post` se defendait, et par un autre chemin : il applique
+        `get_player_ids`, qui ne rend aucun siege a un spectateur. Toutes les
+        AUTRES routes POST lui etaient donc ouvertes.
+
+        Ce n'est pas theorique : la pause manuelle (20/09/2026) ajoute
+        `/manuel_pause` et `/manuel_passer`. La seconde REPOND A LA PLACE
+        d'un joueur assis. C'est mot pour mot le defaut pour lequel
+        `SpectateurPeutLire` a ete ecrite le 15/09/2026 (« j'ai vu le bouton
+        Annuler sur l'ecran du spectateur »), rejoue sur le verbe POST.
+
+        ⚠ REFUS PAR DEFAUT, PAS UNE LISTE D'INTERDITS -- meme raisonnement
+        que `SpectateurPeutLire` : une liste d'interdits laisserait passer la
+        prochaine route POST ajoutee au moteur, sans que personne ne s'en
+        apercoive. Une ecriture qui doit s'ouvrir au spectateur s'ecrit ICI,
+        nommement, en connaissance de cause.
+
+        La liste est VIDE, et c'est une mesure, pas une intuition : le
+        plateau du spectateur n'emet aucun POST (il n'ouvre meme pas de
+        socket, `ui-check/tests/spectateur-moteur.spec.ts`), et son seul
+        envoi possible, le curseur, est deja coupe cote ecran
+        (`CoucheCurseurs.tsx` : « le spectateur regarde, il n'emet pas »).
+        """
+        if request.cookies.get('spectateur') != '1':
+            return True
+        # Les ECRITURES nommement ouvertes au spectateur. Aucune a ce jour.
+        # ⚠ ON JUGE LE CHEMIN DEMANDE, PAS CELUI DECLARE (meme piege que
+        # `SpectateurPeutLire` : une route enregistree sous un motif ne
+        # ressemble pas a l'adresse appelee).
+        return request.path in ()
+
+    @final
     def AddPostSecurity(self, path: str, handle: HandleAsyncType):
         async def new_handle(request: web.Request) -> web.StreamResponse:
+            # Avant l'authentification, comme pour les routes de lecture : le
+            # spectateur EST authentifie (sa porte lui pose le mot de passe de
+            # la table), c'est le siege qui lui manque, pas la cle.
+            if not self.SpectateurPeutEcrire(path, request):
+                return web.Response(status=403, text='Spectator: read-only')
             if not self.IsAuthenticate(request):
                 return web.Response(status=401)
             else:

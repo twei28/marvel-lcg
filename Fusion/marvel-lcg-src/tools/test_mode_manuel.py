@@ -1252,13 +1252,15 @@ def cas_qui_et_depuis_publies(game_dir, port):
 
 
 class _RequeteFactice:
-    """Un `web.Request` minimal : juste ce que lisent `tient_le_siege` et
-    `nom_du_heros_qui_parle` (`server_base.py`) -- des cookies, et un corps
-    JSON. Pas de vrai socket : meme esprit que `cas_reveil_dogetinput`, qui
-    construit un `DeviceManager` nu plutot que de monter un serveur complet.
+    """Un `web.Request` minimal : juste ce que lisent `tient_le_siege`,
+    `nom_du_heros_qui_parle` (`server_base.py`) et `SpectateurPeutEcrire`
+    (`web_server.py`) -- des cookies, un chemin, et un corps JSON. Pas de vrai
+    socket : meme esprit que `cas_reveil_dogetinput`, qui construit un
+    `DeviceManager` nu plutot que de monter un serveur complet.
     """
-    def __init__(self, cookies, corps):
+    def __init__(self, cookies, corps, chemin="/manuel_pause"):
         self.cookies = cookies
+        self.path = chemin
         self._corps = corps
 
     async def json(self):
@@ -1347,6 +1349,231 @@ def cas_pause_par_nom_du_heros(game_dir, port):
     return ("pause_par porte le nom du heros du siege PROUVE par la requete "
             "HTTP reelle (route manuel_pause), vide si aucun siege n'est "
             "prouve")
+
+
+def cas_post_ferme_au_spectateur(game_dir, port):
+    """AUCUNE route POST ne s'ouvre a un spectateur (I2 de la revue finale).
+
+    ⚠ C'EST LE CAS QUI COMPTE, et il vise l'ENROBAGE, pas une route :
+    `AddPostSecurity` ne verifiait que `IsAuthenticate` -- le mot de passe de
+    la TABLE, que le spectateur possede (sa porte d'entree le lui pose). Seul
+    `/post` se defendait, par un autre chemin (`get_player_ids`). Toutes les
+    autres routes POST lui etaient ouvertes, `/manuel_passer` comprise, qui
+    REPOND A LA PLACE du joueur interroge.
+
+    On mesure donc la VRAIE `WebServer.AddPostSecurity` : on lui fait
+    enregistrer une route, on recupere l'enrobage qu'elle pose dans le
+    routeur, et on le frappe comme le ferait un `curl`.
+
+    Trois temoins :
+      1. le spectateur est refuse (403) ET le gestionnaire n'est JAMAIS
+         atteint -- un 403 rendu par la route elle-meme ne prouverait rien de
+         l'enrobage ;
+      2. le meme appel SANS le temoin de spectateur passe (temoin de
+         controle : sans lui, le 403 pourrait venir de n'importe quoi) ;
+      3. une route ajoutee DEMAIN, dont personne n'a jamais entendu parler
+         ici, est fermee elle aussi -- c'est tout l'interet du refus par
+         defaut, et une liste d'interdits echouerait ce temoin-la.
+
+    Aucun moteur monte : comme `cas_reveil_dogetinput`, ce cas n'a besoin que
+    d'une classe, pas d'une partie.
+    """
+    import asyncio
+    import sys
+    racine_src = os.path.join(RACINE, "src")
+    if racine_src not in sys.path:
+        sys.path.insert(0, racine_src)
+    from engine.network.web_server import WebServer
+
+    enregistrees = {}
+
+    class _Routeur:
+        def add_post(self, chemin, handle):
+            enregistrees[chemin] = handle
+
+    class _AppFactice:
+        def __init__(self):
+            self.router = _Routeur()
+
+    serveur = WebServer.__new__(WebServer)
+    serveur.web_app = _AppFactice()
+    # Table SANS mot de passe : `IsAuthenticate` rend vrai pour tout le monde.
+    # C'est le pire cas pour nous, et le cas reel d'une partie locale ouverte.
+    serveur.hash_password = ""
+
+    atteints = []
+
+    async def gestionnaire(request):
+        from aiohttp import web
+        atteints.append(getattr(request, "path", "?"))
+        return web.Response(status=200)
+
+    serveur.AddPostSecurity("/manuel_passer", gestionnaire)
+    serveur.AddPostSecurity("/route_ajoutee_demain", gestionnaire)
+    assert set(enregistrees) == {"/manuel_passer", "/route_ajoutee_demain"}, \
+        "AddPostSecurity n'a pas enregistre les routes attendues"
+
+    spectateur = _RequeteFactice({"spectateur": "1"}, {}, "/manuel_passer")
+    reponse = asyncio.run(enregistrees["/manuel_passer"](spectateur))
+    assert reponse.status == 403, (
+        f"le moteur laisse un spectateur appeler POST /manuel_passer "
+        f"(HTTP {reponse.status}) : il repond a la place d'un joueur assis"
+    )
+    assert atteints == [], \
+        f"le gestionnaire a ete atteint malgre le refus : {atteints}"
+
+    # TEMOIN DE CONTROLE : exactement la meme requete, sans le temoin.
+    ordinaire = _RequeteFactice({}, {}, "/manuel_passer")
+    reponse = asyncio.run(enregistrees["/manuel_passer"](ordinaire))
+    assert reponse.status == 200, (
+        f"un client ordinaire est refuse lui aussi (HTTP {reponse.status}) : "
+        f"le 403 du spectateur ne prouve rien"
+    )
+    assert atteints == ["/manuel_passer"], \
+        f"le gestionnaire n'a pas ete atteint par le client ordinaire : {atteints}"
+
+    # La route que personne n'a prevue : fermee d'office.
+    demain = _RequeteFactice({"spectateur": "1"}, {}, "/route_ajoutee_demain")
+    reponse = asyncio.run(enregistrees["/route_ajoutee_demain"](demain))
+    assert reponse.status == 403, (
+        f"une route POST ajoutee apres coup s'ouvre au spectateur "
+        f"(HTTP {reponse.status}) : le refus n'est pas par defaut"
+    )
+
+    return ("AddPostSecurity ferme TOUTE route POST a un spectateur, y compris "
+            "une route ajoutee apres coup, et laisse passer le client ordinaire")
+
+
+def cas_pause_refusee_au_spectateur(game_dir, port):
+    """Les routes de la pause exigent un SIEGE (I2), second verrou.
+
+    `AddPostSecurity` arrete deja le spectateur en amont (cas ci-dessus).
+    Celui-ci mesure la garde des ROUTES elles-memes, sur une vraie partie :
+    elle tiendrait encore si l'enrobage venait a sauter, et elle vaut aussi
+    pour un client qui connait le mot de passe de la table sans tenir aucun
+    siege.
+
+    ⚠ LE TEMOIN N'EST PAS SEULEMENT LE CODE HTTP : on verifie que la partie
+    n'a RIEN garde du passage -- ni `manuel_actif`, ni la marque
+    « corrigee a la main », qui ne s'efface jamais une fois posee et salirait
+    pour toujours une partie a laquelle le spectateur n'a pas touche.
+    """
+    import asyncio
+
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
+
+    from engine.device.web.server.server_get import GameServerGet
+    from engine.device.web.server.server_base import SEAT_PASSWORDS
+
+    serveur = GameServerGet.__new__(GameServerGet)
+    serveur.device_manager = jeu.world.controller_manager.device_manager
+
+    ancien_mdp = list(SEAT_PASSWORDS.value)
+    try:
+        # Une table PROTEGEE : c'est la seule ou un siege veut dire quelque
+        # chose. `allowed_seats` rend l'ensemble vide au spectateur.
+        SEAT_PASSWORDS.value = ["secret-siege-0", "secret-siege-1", "", ""]
+
+        spectateur = {"spectateur": "1"}
+        reponse = asyncio.run(
+            serveur.manuel_pause(_RequeteFactice(spectateur, {"actif": True})))
+        assert reponse.status == 403, (
+            f"la route a accepte une pause venue d'un spectateur "
+            f"(HTTP {reponse.status}) : il arrete la partie des autres"
+        )
+        assert monde.manuel_actif is False, \
+            "le spectateur a quand meme mis la partie en pause"
+        assert monde.scene.corrigee_a_la_main is False, (
+            "la partie porte la marque « corrigee a la main » apres un refus : "
+            "elle ne s'efface jamais, et le spectateur n'a rien corrige"
+        )
+
+        reponse = asyncio.run(serveur.manuel_passer(_RequeteFactice(spectateur, {})))
+        assert reponse.status == 403, (
+            f"la route a accepte un « passer la question » venu d'un "
+            f"spectateur (HTTP {reponse.status}) : il repond a la place du "
+            f"joueur interroge"
+        )
+
+        # TEMOIN DE CONTROLE : le meme appel depuis un client qui PROUVE le
+        # siege 0. Sans lui, le 403 ci-dessus pourrait venir d'autre chose.
+        import hashlib
+        jeton = hashlib.md5("secret-siege-0".encode()).hexdigest()
+        assis = _RequeteFactice({"seat_token_0": jeton}, {"actif": True})
+        reponse = asyncio.run(serveur.manuel_pause(assis))
+        assert reponse.status == 200, (
+            f"un joueur assis est refuse lui aussi (HTTP {reponse.status}) : "
+            f"le 403 du spectateur ne prouve rien"
+        )
+        assert monde.manuel_actif is True, \
+            "le joueur assis n'a pas reussi a mettre la partie en pause"
+
+        # Et « passer la question » depuis ce meme siege : refuse, mais pour
+        # une AUTRE raison (aucune question en attente ici), jamais 403.
+        reponse = asyncio.run(
+            serveur.manuel_passer(_RequeteFactice({"seat_token_0": jeton}, {})))
+        assert reponse.status != 403, (
+            "un joueur assis recoit 403 sur /manuel_passer : la garde de "
+            "siege refuse ceux qui en tiennent un"
+        )
+    finally:
+        SEAT_PASSWORDS.value = ancien_mdp
+        jeu.world.BasculerPauseManuelle(False)
+
+    return ("/manuel_pause et /manuel_passer rendent 403 a qui ne tient aucun "
+            "siege, sans rien laisser sur la partie, et acceptent le siege prouve")
+
+
+def cas_pause_refusee_sur_partie_declaree(game_dir, port):
+    """`/manuel_pause` ne touche pas a une partie DECLAREE manuelle.
+
+    La garde symetrique de `/manuel_passer` (revue finale, 20/09/2026).
+    `World.ManualLoop` pose `manuel_actif` une fois pour toutes sur une
+    partie declaree manuelle et ne le REPOSE JAMAIS : un `{"actif": false}`
+    l'eteindrait pour de bon, le plateau redeviendrait bavard sur une partie
+    que le moteur ne conduit plus, et aucun bouton ne permettrait d'y revenir.
+
+    Injoignable au clic (le bouton « Mettre en pause » est masque sur une
+    partie declaree, et `BandeauPause` ne s'y affiche pas), fermee quand meme :
+    la route est publique.
+    """
+    import asyncio
+
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    assert monde.manuel_actif is True, \
+        "premisse cassee : la boucle manuelle n'a pas demarre"
+
+    from engine.device.web.server.server_get import GameServerGet
+
+    serveur = GameServerGet.__new__(GameServerGet)
+    serveur.device_manager = jeu.world.controller_manager.device_manager
+
+    reponse = asyncio.run(
+        serveur.manuel_pause(_RequeteFactice({}, {"actif": False})))
+    assert reponse.status == 409, (
+        f"la route a accepte de reprendre une partie DECLAREE manuelle "
+        f"(HTTP {reponse.status}) : ManualLoop ne repose jamais manuel_actif, "
+        f"la partie deviendrait bavarde sans moyen de revenir"
+    )
+    assert monde.manuel_actif is True, \
+        "manuel_actif est retombe a faux sur une partie declaree manuelle"
+
+    # L'autre sens est ferme aussi : il n'y a rien a « mettre en pause » sur
+    # une table que le moteur tient deja muette.
+    reponse = asyncio.run(
+        serveur.manuel_pause(_RequeteFactice({}, {"actif": True})))
+    assert reponse.status == 409, (
+        f"la route accepte une pause sur une partie deja declaree manuelle "
+        f"(HTTP {reponse.status})"
+    )
+    assert monde.scene.corrigee_a_la_main is False, (
+        "une partie DECLAREE manuelle a recu la marque « corrigee a la main » "
+        "par la route de pause : rien n'y a ete corrige a la main, c'est la "
+        "nature de la partie"
+    )
+
+    return ("/manuel_pause rend 409 sur une partie DECLAREE manuelle, dans les "
+            "deux sens, et n'y pose aucune marque")
 
 
 def cas_pause_publiee(game_dir, port):
@@ -1702,7 +1929,7 @@ def cas_passer_annule_le_moteur(game_dir, port):
 
     import asyncio
     serveur = _construire_route_passer(device_manager, manuel_actif=True)
-    reponse = asyncio.run(serveur.manuel_passer(None))
+    reponse = asyncio.run(serveur.manuel_passer(_RequeteFactice({}, {})))
     assert reponse.status == 200, \
         f"la route a refuse une question qui offrait pourtant une annulation : {reponse.status} {reponse.text}"
 
@@ -1766,7 +1993,7 @@ def cas_passer_refuse_question_forcee(game_dir, port):
     import asyncio
     import json as json_lib
     serveur = _construire_route_passer(device_manager, manuel_actif=True)
-    reponse = asyncio.run(serveur.manuel_passer(None))
+    reponse = asyncio.run(serveur.manuel_passer(_RequeteFactice({}, {})))
     assert reponse.status == 409, \
         f"la route aurait du refuser une question forcee : {reponse.status}"
     corps = json_lib.loads(reponse.text)
@@ -1801,7 +2028,7 @@ def cas_passer_aucune_question(game_dir, port):
     import json as json_lib
     device_manager = DeviceManager()
     serveur = _construire_route_passer(device_manager, manuel_actif=True)
-    reponse = asyncio.run(serveur.manuel_passer(None))
+    reponse = asyncio.run(serveur.manuel_passer(_RequeteFactice({}, {})))
     assert reponse.status == 409
     corps = json_lib.loads(reponse.text)
     assert corps.get("error") == "aucune_question", corps
@@ -1833,7 +2060,7 @@ def cas_passer_hors_pause(game_dir, port):
     device_manager.asking_players.append(player_id)
 
     serveur = _construire_route_passer(device_manager, manuel_actif=False)
-    reponse = asyncio.run(serveur.manuel_passer(None))
+    reponse = asyncio.run(serveur.manuel_passer(_RequeteFactice({}, {})))
     assert reponse.status == 409, \
         f"la route aurait du refuser hors pause : {reponse.status}"
     assert player_id in device_manager.asking_players, (
@@ -2518,6 +2745,9 @@ CAS = {
     "relire_marque_survit": cas_relire_marque_survit,
     "qui_et_depuis_publies": cas_qui_et_depuis_publies,
     "pause_par_nom_du_heros": cas_pause_par_nom_du_heros,
+    "post_ferme_au_spectateur": cas_post_ferme_au_spectateur,
+    "pause_refusee_au_spectateur": cas_pause_refusee_au_spectateur,
+    "pause_refusee_sur_partie_declaree": cas_pause_refusee_sur_partie_declaree,
     "pause_publiee": cas_pause_publiee,
     "reveil_dogetinput": cas_reveil_dogetinput,
     "geste_refuse_arme_le_rendu": cas_geste_refuse_arme_le_rendu,

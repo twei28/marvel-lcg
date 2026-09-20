@@ -115,6 +115,10 @@ class GameServerGet(GameServerBase):
     async def manuel_pause(self, request: web.Request) -> web.Response:
         """Bascule la pause manuelle EN COURS DE PARTIE (tache 1).
 
+        Refus : 403 a qui ne tient aucun siege (spectateur compris, arrete
+        des `AddPostSecurity`), 409 sur une partie DECLAREE manuelle -- voir
+        les deux gardes en tete du corps.
+
         Corps : {"actif": true|false}. AUCUN champ `qui` (ronde de
         correction 1, tache 3) : un champ que le plateau ne peut de toute
         facon pas renseigner honnetement (aucun pseudo atteignable, voir
@@ -133,6 +137,15 @@ class GameServerGet(GameServerBase):
         LECTURE (descripteur deja rendu), pas une ecriture : elle ne viole
         pas cette regle.
         """
+        # ⚠ AGIR EXIGE UN SIEGE (I2 de la revue finale, 20/09/2026). Cette
+        # route ARRETE OU REPREND LA PARTIE DE TOUTE LA TABLE : un client qui
+        # ne tient aucun siege n'a pas a le faire. Meme refus que `/post`
+        # (403), obtenu du meme `allowed_seats`. Le spectateur est deja arrete
+        # en amont par `SpectateurPeutEcrire` (`web_server.py`) : ceci est le
+        # second verrou, pas le premier.
+        if not self.prouve_un_siege(request):
+            return web.json_response({'error': 'aucun siege'}, status=403)
+
         data = await request.json()
         actif = data.get('actif', None)
         if not isinstance(actif, bool):
@@ -141,6 +154,20 @@ class GameServerGet(GameServerBase):
         world = self.game.world
         if world is None:
             return web.json_response({'error': 'no game in progress'}, status=409)
+
+        # ⚠ LA GARDE SYMETRIQUE DE `/manuel_passer` (revue finale, 20/09/2026).
+        # Cette route ne concerne QUE les parties ORDINAIRES : une partie
+        # DECLAREE manuelle est tenue muette par `World.ManualLoop`, qui pose
+        # `manuel_actif` une fois pour toutes et ne le REPOSE JAMAIS. Un
+        # `{"actif": false}` sur une telle partie eteindrait donc l'etat pour
+        # de bon : le plateau redeviendrait bavard (demande centrale, bandeau
+        # de phase, assistant) sur une partie que le moteur ne conduit plus,
+        # et aucun bouton ne permettrait d'y revenir -- `BandeauPause` ne
+        # s'affiche pas sur une partie declaree (`estEnPause`, `mode.ts`), et
+        # « Mettre en pause » y est masque (`board.tsx`, `!modeManuelDeclare`).
+        # Injoignable au clic, ferme quand meme : la route est publique.
+        if world.rule.mode_manuel:
+            return web.json_response({'error': 'partie declaree manuelle'}, status=409)
 
         qui = self.nom_du_heros_qui_parle(request) if actif else ''
         en_pause = world.BasculerPauseManuelle(actif, qui)
@@ -155,9 +182,10 @@ class GameServerGet(GameServerBase):
         Aucun corps de requete, sur le modele de `/manuel_undo` : il n'y a
         qu'une seule question EN COURS, celle que le moteur attend.
 
-        Reserve a une partie EN PAUSE (`world.manuel_actif`) -- exactement le
-        moment ou `BandeauPause` (le seul endroit qui appelle cette route)
-        est visible. Hors pause, une question a `show_cancel` vrai est une
+        Reserve a qui TIENT UN SIEGE (403 sinon : elle repond a la place du
+        joueur interroge, c'est la plus grave des deux routes de pause) et a
+        une partie EN PAUSE (`world.manuel_actif`) -- exactement le moment ou
+        `BandeauPause` (le seul endroit qui appelle cette route) est visible. Hors pause, une question a `show_cancel` vrai est une
         DECISION DE JEU ORDINAIRE (« joue cette carte ou passe ») ; cette
         route n'est pas un raccourci pour la sauter a la place du joueur.
 
@@ -173,6 +201,12 @@ class GameServerGet(GameServerBase):
         voir `Controller.NormaliserLeMotif`) -- le moteur ne parle pas la
         langue du joueur.
         """
+        # ⚠ AGIR EXIGE UN SIEGE (I2, 20/09/2026) : celle-ci REPOND A LA PLACE
+        # du joueur que le moteur interroge -- c'est la plus grave des deux.
+        # Voir `manuel_pause` juste au-dessus pour le detail des deux verrous.
+        if not self.prouve_un_siege(request):
+            return web.json_response({'error': 'aucun siege'}, status=403)
+
         world = self.game.world
         if world is None:
             return web.json_response({'error': 'no game in progress'}, status=409)
