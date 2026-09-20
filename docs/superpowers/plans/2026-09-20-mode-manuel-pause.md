@@ -61,11 +61,25 @@ basculable, et traite ce que cette bascule implique.
   système.
 - **Jamais `.game` ni `.game-src`** : le harnais tourne sur un dossier jetable,
   créé puis supprimé. Une exécution au premier plan, `timeout` de 600000 ms.
-- **Rien en tâche de fond, et voici pourquoi.** Tu ES l'agent de fond : si tu
-  lances la batterie détachée puis attends sa notification de fin, tu attends
-  quelqu'un qui n'existe pas et la tâche se fige jusqu'à ce qu'un humain la
-  débloque. C'est arrivé trois fois sur ce chantier. Lance au premier plan,
-  attends le verdict, lis-le. Si un processus traîne d'un essai précédent,
+- **Comment attendre la batterie, qui dure plus longtemps que l'outil.**
+  Elle prend une quinzaine de minutes, et l'outil d'exécution coupe à dix :
+  au-delà, le harnais bascule tout seul la commande en tâche de fond. Si tu
+  attends alors sa notification de fin, tu attends quelqu'un qui n'existe pas
+  et ta tâche se fige jusqu'à ce qu'un humain la débloque. C'est arrivé cinq
+  fois sur ce chantier, et j'ai longtemps cru à de la désobéissance : c'est
+  l'outillage. La bonne manière est d'attendre par tranches bornées, au
+  premier plan :
+
+  ```bash
+  # lancer en écrivant dans un journal, puis relever le PID
+  nohup ~/marvel-work/python/bin/python3.10 tools/test_mode_manuel.py \
+      .game-src-<le tien> <port> > /tmp/batterie.log 2>&1 &
+  echo $!
+  # puis, autant de fois qu'il faut, chacune rendant la main avant le plafond
+  timeout 560 tail --pid=<PID> -f /dev/null
+  ```
+
+  Ensuite tu lis le journal. Si un processus traîne d'un essai précédent,
   tue-le par son PID.
 - **TypeScript strict, zéro `any`.** Aucun texte en dur : tout par `t()` avec sa
   contrepartie dans `ui-app/src/board/dico-en.ts`, jamais de `t()` au niveau
