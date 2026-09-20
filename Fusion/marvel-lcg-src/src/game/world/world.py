@@ -758,6 +758,35 @@ class World(WorldAction, WorldFind):
                 return
         return
 
+    def BasculerPauseManuelle(self, actif: bool) -> bool:
+        """Bascule `manuel_actif` EN COURS DE PARTIE (tache 1, pause manuelle).
+
+        Rend `manuel_actif` (donc l'ETAT « le moteur s'est tu ») bascule dans
+        les deux sens -- jusqu'ici, seul le mode declare le posait, et
+        JAMAIS a faux (le mode declare le pose et ne l'enleve plus). Reprend
+        cet ETAT existant tel quel : ferme ou rouvre la meme porte que lui
+        (`EventManager.BroadcastMessage`/`BroadcastStackMessage` et
+        `ModelOnEvent.Defeated`), publiee par la meme trame
+        (`ToDescriptor.World`).
+
+        ⚠ APPELEE DEPUIS LE FIL HTTP (route POST /manuel_pause). Poser CE
+        SEUL booleen y est sans danger, mais rien d'autre ne doit toucher au
+        monde depuis ce fil : le gestionnaire de taches du moteur n'accepte
+        plus de travail a ce moment-la (« cannot schedule new futures after
+        shutdown »), exactement comme l'explique le commentaire en tete de
+        `engine/device/manager/base.py` a propos de `QueueSandboxCommands`.
+
+        ⚠ NE CREE AUCUNE BOUCLE : reveille `notify.input`, la MEME condition
+        que `QueueSandboxCommands` (et qu'attend deja `ManualLoop` ci-dessous
+        ou `DeviceManager.DoGetInput`) -- jamais une nouvelle attente. Le fil
+        du jeu, deja gare la, se reveille, ne trouve aucune entree, rend la
+        main, et l'appelant repose sa question : c'est CE prochain rendu, pas
+        celui-ci, qui portera le nouvel etat.
+        """
+        self.manuel_actif = bool(actif)
+        self.controller_manager.device_manager.notify.input.NotifyAll()
+        return self.manuel_actif
+
     def ManualLoop(self) -> None:
         """Le moteur ne conduit plus : il attend, il execute, il redessine.
 

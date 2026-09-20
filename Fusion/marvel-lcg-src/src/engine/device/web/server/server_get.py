@@ -112,6 +112,26 @@ class GameServerGet(GameServerBase):
 
         return web.json_response({'result': 'queued', 'count': len(commands)})
 
+    async def manuel_pause(self, request: web.Request) -> web.Response:
+        """Bascule la pause manuelle EN COURS DE PARTIE (tache 1).
+
+        Corps : {"actif": true|false}. Ne fait qu'un seul appel a
+        `World.BasculerPauseManuelle` -- ce fil (HTTP) ne doit toucher a RIEN
+        d'autre du monde, cf. le commentaire en tete de
+        `engine/device/manager/base.py` et celui de `BasculerPauseManuelle`.
+        """
+        data = await request.json()
+        actif = data.get('actif', None)
+        if not isinstance(actif, bool):
+            return web.json_response({'error': 'actif must be a boolean'}, status=400)
+
+        world = self.game.world
+        if world is None:
+            return web.json_response({'error': 'no game in progress'}, status=409)
+
+        en_pause = world.BasculerPauseManuelle(actif)
+        return web.json_response({'result': 'en pause' if en_pause else 'repris'})
+
     async def manuel_undo(self, request: web.Request) -> web.Response:
         """Ctrl+Z du mode manuel : retire le dernier geste et rejoue sans lui.
 
@@ -1167,6 +1187,7 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/save_deck', self.save_deck)
         self.AddPostSecurity('/sandbox_command', self.sandbox_command)
         self.AddPostSecurity('/manuel_undo', self.manuel_undo)
+        self.AddPostSecurity('/manuel_pause', self.manuel_pause)
         self.AddAwaitGetSecurity('/list_starter_deck', self.list_starter_deck)
         self.AddAwaitGetSecurity('/list_replay_files', self.list_replay_files)
         self.AddAwaitGetSecurity('/list_puzzle_files', self.list_puzzle_files)

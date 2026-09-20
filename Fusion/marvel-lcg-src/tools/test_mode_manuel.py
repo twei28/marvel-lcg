@@ -215,6 +215,21 @@ def deposer(jeu, *commandes, drainer_soi_meme=False):
     time.sleep(3)
 
 
+def basculer_pause(jeu, actif):
+    """Bascule la pause manuelle comme le ferait POST /manuel_pause.
+
+    Appelle directement `World.BasculerPauseManuelle`, EXACTEMENT ce que fait
+    la route : ne touche rien d'autre au monde depuis cet appel, tache 1
+    oblige (cf. le commentaire en tete de `engine/device/manager/base.py`).
+    Le court sommeil laisse au fil du jeu, reveille par l'appel, le temps
+    d'en tirer les consequences avant l'assertion suivante -- meme idiome que
+    `deposer` ci-dessus.
+    """
+    resultat = jeu.world.BasculerPauseManuelle(actif)
+    time.sleep(2)
+    return resultat
+
+
 def id_du_vilain(monde):
     from game.operate.worlds import Worlds
     vilains = Worlds.GetAllVillains(monde)
@@ -999,6 +1014,126 @@ def cas_defausse_deck_special(game_dir, port):
     return "AdditionalDiscardPile envoie vers la defausse du deck special, pas vers une pile voisine"
 
 
+def cas_pause_ferme_la_porte(game_dir, port):
+    """Sur une partie ORDINAIRE (sans la regle), la pause ferme la meme porte
+    que le mode declare.
+
+    Meme temoin que `cas_aucun_declenchement` (voir son commentaire pour le
+    detail des deux temoins rejetes avant lui, et pourquoi Armored Rhino
+    Suit/01098 est le bon) : mais ici c'est `BasculerPauseManuelle(True)`
+    depose EN COURS DE PARTIE qui doit fermer la porte, pas une regle posee a
+    la creation.
+
+    `drainer_soi_meme=True` partout : en partie ORDINAIRE, `pilote` remplace
+    `DoGetInput`, seul appelant reel de `DrainSandboxCommands` -- comme dans
+    `cas_declenchement_en_automatique`.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
+    vilain = id_du_vilain(monde)
+    carte = monde.object_manager.card_dict[vilain]
+    perdu_avant = carte.face.GetLostHealth()
+
+    basculer_pause(jeu, True)
+    assert monde.manuel_actif is True, "la pause n'a pas pose manuel_actif"
+
+    deposer(jeu, "Puzzle.CreateCard('01098')", drainer_soi_meme=True)
+    suit = max(monde.object_manager.card_dict)
+    deposer(jeu, f"Puzzle.Attach({suit}, {vilain})", drainer_soi_meme=True)
+
+    # PREMISE VERIFIEE, PAS SUPPOSEE (meme garde que cas_aucun_declenchement) :
+    # sans ce controle, l'assertion finale serait vraie meme si l'attache
+    # manuelle avait elle-meme echoue en silence.
+    suit_face = monde.object_manager.card_dict[suit].face
+    assert suit_face in carte.face.GetInventoryDeck().GetAll(), \
+        (f"la suit d'armure n'est pas dans l'inventaire de Rhino : ce cas ne "
+         f"peut rien prouver sur une capacite deja en place "
+         f"(IsFaceUp={suit_face.IsFaceUp()}, IsInPlay={suit_face.IsInPlay()})")
+
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)", drainer_soi_meme=True)
+    delta = carte.face.GetLostHealth() - perdu_avant
+    assert delta == 3, \
+        ("les degats sur Rhino ont ete detournes pendant la pause : la "
+         f"capacite d'Armored Rhino Suit a agi malgre la pause (delta={delta})")
+    return ("la pause ferme la meme porte que le mode declare, sur une "
+            "partie ordinaire : une capacite deja attachee reste muette")
+
+
+def cas_reprise_rouvre_la_porte(game_dir, port):
+    """LE cas du plan : apres la reprise, le meme geste declenche de nouveau.
+
+    `manuel_actif` n'avait jusqu'ici JAMAIS ete remis a faux : le mode
+    declare le pose et ne l'enleve plus, donc rien n'avait jamais verifie que
+    la porte du silence se ROUVRE. Meme mise en place que
+    `cas_pause_ferme_la_porte` (armure deja attachee pendant la pause, porte
+    fermee, degats non detournes -- reverifie ici comme premisse) puis
+    `BasculerPauseManuelle(False)` : le MEME geste (Puzzle.Damage) doit cette
+    fois etre detourne par la capacite, la porte s'etant rouverte.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
+    vilain = id_du_vilain(monde)
+    carte = monde.object_manager.card_dict[vilain]
+
+    basculer_pause(jeu, True)
+    deposer(jeu, "Puzzle.CreateCard('01098')", drainer_soi_meme=True)
+    suit = max(monde.object_manager.card_dict)
+    deposer(jeu, f"Puzzle.Attach({suit}, {vilain})", drainer_soi_meme=True)
+    suit_face = monde.object_manager.card_dict[suit].face
+    assert suit_face in carte.face.GetInventoryDeck().GetAll(), \
+        "la suit d'armure n'est pas dans l'inventaire de Rhino avant la reprise"
+
+    # PREMISE : la porte est bien fermee avant la reprise (memes chiffres que
+    # cas_pause_ferme_la_porte). Sans ce controle, un delta nul mesure plus
+    # bas apres la reprise ne prouverait rien : il faut savoir d'ou on part.
+    perdu_avant_pause = carte.face.GetLostHealth()
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)", drainer_soi_meme=True)
+    delta_pendant_pause = carte.face.GetLostHealth() - perdu_avant_pause
+    assert delta_pendant_pause == 3, \
+        (f"premisse fausse : la porte n'etait pas fermee avant la reprise "
+         f"(delta={delta_pendant_pause})")
+
+    resultat = basculer_pause(jeu, False)
+    assert resultat is False, "la reprise n'a pas rendu manuel_actif a faux"
+    assert monde.manuel_actif is False, "manuel_actif reste a vrai apres la reprise"
+
+    perdu_avant_reprise = carte.face.GetLostHealth()
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)", drainer_soi_meme=True)
+    delta_apres_reprise = carte.face.GetLostHealth() - perdu_avant_reprise
+    assert delta_apres_reprise == 0, \
+        ("apres la reprise, Armored Rhino Suit aurait du de nouveau absorber "
+         f"les degats (delta={delta_apres_reprise}) : la porte ne s'est pas "
+         "rouverte")
+    return ("apres la reprise, le meme geste declenche de nouveau : la "
+            "porte du silence se rouvre")
+
+
+def cas_pause_publiee(game_dir, port):
+    """La trame publie manuel_actif a vrai pendant la pause, a faux apres reprise.
+
+    Meme esprit que `cas_drapeau_pose`/`cas_manuel_actif_pas_avant_la_boucle`
+    pour le mode declare, mais ici sur une partie ORDINAIRE et avec un VRAI
+    aller-retour : rien n'avait jamais verifie que la trame reflete la
+    reprise, puisque `manuel_actif` n'avait jamais ete remis a faux avant ce
+    chantier.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
+    vilain = id_du_vilain(monde)
+
+    basculer_pause(jeu, True)
+    # Un geste, pour forcer un rendu : rien d'autre ne redessine une partie
+    # figee (meme comportement que cas_moteur_muet, hors regle declaree).
+    deposer(jeu, f"Puzzle.Damage({vilain}, 1)", drainer_soi_meme=True)
+    descripteur = monde.render.descriptor
+    assert getattr(descripteur, "manuel_actif", None) is True, \
+        "la trame ne publie pas manuel_actif=vrai pendant la pause"
+
+    basculer_pause(jeu, False)
+    deposer(jeu, f"Puzzle.Damage({vilain}, 1)", drainer_soi_meme=True)
+    descripteur = monde.render.descriptor
+    assert getattr(descripteur, "manuel_actif", None) is False, \
+        "la trame ne publie pas manuel_actif=faux apres la reprise"
+    return "la trame publie manuel_actif a vrai pendant la pause, a faux apres la reprise"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
@@ -1026,6 +1161,9 @@ CAS = {
     "ecart_modular": cas_ecart_modular,
     "refus_publie_puis_reparti": cas_refus_publie_puis_reparti,
     "defausse_deck_special": cas_defausse_deck_special,
+    "pause_ferme_la_porte": cas_pause_ferme_la_porte,
+    "reprise_rouvre_la_porte": cas_reprise_rouvre_la_porte,
+    "pause_publiee": cas_pause_publiee,
 }
 
 
