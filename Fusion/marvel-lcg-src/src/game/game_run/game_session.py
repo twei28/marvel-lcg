@@ -177,7 +177,9 @@ class GameSession:
         # sa cible, et le joueur retrouvait une table VIERGE a la place de la
         # sienne. Le rejeu se fait desormais porte OUVERTE, et c'est
         # `Controller.ChoiceOne` qui referme a la fin, par
-        # `SuivreLeRejeuDesGestes`.
+        # `FinirLeRejeuDesGestes`. Les gestes, eux, s'appliquent a leur rang
+        # des le debut de chaque question (`RejouerGestesManuelsJusqua`,
+        # appelee en tete de `ChoiceOne`, AVANT le calcul du CRC).
         if not controller_manager.skip.is_skipping:
             self.FinirLeRejeuDesGestes()
 
@@ -256,25 +258,6 @@ class GameSession:
         self.RejouerGestesManuelsJusqua(None)
         if self.world.rule.mode_manuel or self.world.scene.pause_en_cours:
             self.world.manuel_actif = True
-
-    def SuivreLeRejeuDesGestes(self, rang: int, rejeu_en_cours: bool) -> None:
-        """Appelee par `Controller.ChoiceOne` a chaque question, une fois le
-        drapeau de saut a jour.
-
-        Tant que le rejeu des entrees avance, on n'applique que les gestes
-        dont le rang est atteint -- c'est ce qui les remet a LEUR place dans
-        l'histoire de la partie, au lieu de les entasser a l'instant 0.
-        Quand il est fini, on finit avec lui.
-        """
-        if not self.mise_en_place_finie:
-            # Pendant la mise en place, seuls les gestes A LEUR RANG
-            # s'appliquent : le silence, lui, attend `GameSetup`.
-            self.RejouerGestesManuelsJusqua(rang)
-            return
-        if rejeu_en_cours:
-            self.RejouerGestesManuelsJusqua(rang)
-        else:
-            self.FinirLeRejeuDesGestes()
 
     ################################################################################
     #

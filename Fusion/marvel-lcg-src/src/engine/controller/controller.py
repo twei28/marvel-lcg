@@ -163,6 +163,32 @@ class Controller:
         if not self.game.state.is_running:
             return None, False
 
+        # LES GESTES MANUELS DUS S'APPLIQUENT AVANT LE CRC, ET C'EST TOUT
+        # L'OBJET DE CES DEUX LIGNES ICI (ronde de correction 2 du
+        # 20/09/2026).
+        #
+        # Le moteur grave dans chaque entree un CRC de la table, et le
+        # compare au rechargement, deux lignes plus bas. A l'enregistrement,
+        # le geste est applique PUIS la question est re-posee : le CRC grave
+        # dans l'entree du rang porte donc la table AVEC le geste. Rejouer ce
+        # geste apres ce calcul -- ne serait-ce que d'une question, ce que
+        # faisait la ronde 1 en n'appliquant qu'au moment du suivi de `skip`
+        # -- comparait une table SANS lui : un `Log.Assert` de niveau Error a
+        # chaque ouverture de la sauvegarde, et un `read_ok` qui ne restait
+        # vrai que par accident (`all(...)` sur un generateur vide vaut
+        # `True`, `crc_ignore_ids` etant vide par defaut). Le jour ou ce
+        # `read_ok` devient faux -- c'est deja le cas en mode test --, le
+        # bloc `if not read_ok` juste en dessous COUPE le rejeu en plein
+        # milieu : la panne de la famille C1, revenue par la fenetre.
+        #
+        # ⚠ SEULEMENT LA MOITIE QUI N'A BESOIN DE RIEN. On applique ici les
+        # gestes dont le rang est atteint ; la FERMETURE de la porte du
+        # silence, elle, reste plus bas, apres le bloc qui met
+        # `skip.is_skipping` a jour -- c'est le seul endroit qui sait si le
+        # rejeu est fini.
+        self.game.session.RejouerGestesManuelsJusqua(
+            controller_manager.replay.current_step_id)
+
         # if DeviceManager.is_skipping:
         #     play_json = Render.ToPlayJson()
         #     DeviceManager.play_json_crc = CRC(str(play_json))
@@ -272,25 +298,25 @@ class Controller:
                         if self.world:
                             self.world.render.PresentForceNoWait()
 
-                # LE REJEU DES GESTES MANUELS SUIT CELUI DES ENTREES (ronde
-                # de correction 1 du 20/09/2026, constats C1 et C2). ICI et
-                # pas dans `GameSetup`, parce qu'ICI seulement on sait ou en
-                # est le rejeu : les deux lignes au-dessus viennent de mettre
-                # `skip.is_skipping` a jour.
+                # LA PORTE DU SILENCE SE REFERME QUAND LE REJEU EST FINI, ET
+                # ICI SEULEMENT (ronde de correction 1 du 20/09/2026,
+                # constat C1). Pas dans `GameSetup`, parce qu'ICI seulement
+                # on sait ou en est le rejeu : les deux lignes au-dessus
+                # viennent de mettre `skip.is_skipping` a jour. La refermer
+                # plus tot faisait rejouer la partie entiere sans
+                # declencheurs ni effets de regle -- `manuel_actif` ferme
+                # `BroadcastMessage` -- et le joueur retrouvait une table
+                # vierge a la place de la sienne.
                 #
-                # Deux choses, et la session decide laquelle :
-                # - tant que le rejeu avance, elle n'applique que les gestes
-                #   dont le RANG est atteint -- un `Shuffle` ou un
-                #   `PutIntoPlay` rejoue trop tot decale la graine ou vole
-                #   des identifiants, et fausse tout ce qui suit SANS lever ;
-                # - quand il est fini, elle applique le reste et REFERME la
-                #   porte du silence. La refermer plus tot faisait rejouer la
-                #   partie entiere sans declencheurs ni effets de regle : le
-                #   joueur retrouvait une table vierge a la place de la
-                #   sienne.
-                self.game.session.SuivreLeRejeuDesGestes(
-                    controller_manager.replay.current_step_id,
-                    controller_manager.skip.is_skipping and replay_input is not None)
+                # ⚠ L'AUTRE MOITIE EST PARTIE PLUS HAUT (ronde 2) : les
+                # gestes dus s'appliquent AVANT `calculated_crc`, en tete de
+                # cette methode, sans quoi le CRC de l'entree du rang est
+                # compare a une table qui n'a pas encore recu le geste.
+                # Celle-ci n'a besoin que de `skip`, celle-la que du rang :
+                # les separer, c'est mettre chacune la ou son information
+                # existe.
+                if not (controller_manager.skip.is_skipping and replay_input is not None):
+                    self.game.session.FinirLeRejeuDesGestes()
 
                 if (controller_manager.skip.is_skipping or controller_manager.replay.replay_step_id < controller_manager.skip.skip_to) and replay_input:
                     user_input = convert_fallthrough_input
