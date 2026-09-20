@@ -3098,7 +3098,7 @@ def cas_histoire_rejouee_apres_pause(game_dir, port):
     etre consommees -- les questions ne naissaient meme pas -- et le joueur
     retrouvait une table VIERGE a la place de la sienne. La porte ne se
     referme desormais qu'une fois le rejeu epuise
-    (`GameSession.SuivreLeRejeuDesGestes`, appele par `Controller.ChoiceOne`).
+    (`GameSession.FinirLeRejeuDesGestes`, appele par `Controller.ChoiceOne`).
 
     ⚠ LE FILS OUVRE LA SAUVEGARDE COMME LA PRODUCTION, avec
     `rejouer_les_entrees=True` : sans ca le moteur REDEMANDE toute la partie
@@ -3258,12 +3258,49 @@ def cas_geste_au_bon_rang(game_dir, port):
 
 
 def cas_relire_geste_au_bon_rang(game_dir, port):
-    """Le fils de `cas_geste_au_bon_rang`."""
+    """Le fils de `cas_geste_au_bon_rang`.
+
+    ⚠ CE CAS REGARDE AUSSI LE JOURNAL DU MOTEUR, pas seulement la table
+    (ronde de correction 2 du 20/09/2026). La table peut etre PARFAITE et le
+    rejeu quand meme faux : le moteur grave dans chaque entree un CRC de la
+    table au moment ou il l'a enregistree, et le compare au rechargement. Si
+    le geste est rejoue APRES ce calcul -- ne serait-ce que d'une question --
+    le CRC de l'entree du rang ne correspond plus, `InputModule` ecrit un
+    `Log.Assert` de niveau Error a chaque ouverture de la sauvegarde, et rend
+    un `read_ok` qui ne reste vrai que par accident : `all(...)` sur un
+    generateur vide vaut `True`, et `crc_ignore_ids` est vide par defaut. Le
+    jour ou ce `read_ok` devient faux, `Controller.ChoiceOne` COUPE le rejeu
+    en plein milieu -- c'est-a-dire la panne de la famille C1, revenue par la
+    fenetre.
+    """
     chemin = os.environ["MC_SAUVEGARDE"]
     commande = os.environ["MC_COMMANDE"]
     attendue = json.loads(os.environ["MC_SIGNATURE"])
     rang = int(os.environ["MC_RANG"])
     entrees = int(os.environ["MC_ENTREES"])
+
+    # L'ESPION, POSE AVANT LE MONTAGE : le rejeu des entrees ne passe pas par
+    # `DoGetInput` (`ChoiceOne` se sert de `fallthrough_input` tant qu'il
+    # saute), donc `avant_reponse` ne serait appele qu'APRES, bien trop tard.
+    # On fait ici le chdir et le sys.path que `monter_le_moteur` refera
+    # ensuite a l'identique, juste pour pouvoir importer `Log`.
+    game_dir = os.path.abspath(game_dir)
+    os.chdir(game_dir)
+    sys.path.insert(0, game_dir)
+    from engine.log import Log
+
+    crc_fautifs = []
+    _vrai_assert = Log.Assert
+
+    def _assert_espion(categorie, *info):
+        # `Log.Assert` sert a tout le moteur (un effet qui echoue pendant un
+        # tour de heros en ecrit un a chaque fois) : on ne retient que la
+        # categorie du rejeu des entrees, la seule qui parle de CRC.
+        if categorie == "REPLAY":
+            crc_fautifs.append(" ".join(str(x) for x in info))
+        return _vrai_assert(categorie, *info)
+
+    Log.Assert = _assert_espion
 
     releve = {}
 
@@ -3286,6 +3323,16 @@ def cas_relire_geste_au_bon_rang(game_dir, port):
     )
     assert "table" in releve, \
         "la partie rechargee n'a pose aucune question : rien n'a pu etre mesure"
+
+    assert not crc_fautifs, (
+        f"le moteur a signale {len(crc_fautifs)} desaccord(s) de CRC en "
+        f"rejouant la sauvegarde. La table peut etre juste : le rejeu, lui, "
+        f"ne l'est pas. Le geste du rang {rang} est applique APRES le calcul "
+        f"de `calculated_crc` (controller.py, en tete de `ChoiceOne`), donc "
+        f"la table comparee a l'entree {rang} est celle d'AVANT le geste, "
+        f"alors que le CRC grave dedans, lui, a ete calcule APRES. Premier "
+        f"desaccord :\n{crc_fautifs[0][:800]}"
+    )
 
     ecarts = comparer_les_tables(attendue, releve["table"])
     assert not ecarts, (
