@@ -1491,6 +1491,130 @@ def cas_reveil_dogetinput(game_dir, port):
             "bascule de pause est signalee depuis un autre fil")
 
 
+def cas_geste_refuse_arme_le_rendu(game_dir, port):
+    """Un geste manuel qui ECHOUE arme quand meme le rendu force -- sinon le
+    joueur voit son geste refuse... sans jamais voir qu'il l'a ete.
+
+    ⚠ CE CAS EST NE D'UNE REVUE (ronde de correction 1 de la tache 8), et
+    c'est la MEME famille de defaut que celui que la tache 8 corrige.
+    `DrainSandboxCommands` rend une liste VIDE quand la PREMIERE commande du
+    lot leve, tout en posant `sandbox_last_error` : un `if
+    self.DrainSandboxCommands():` est donc FAUX dans ce cas precis, rien
+    n'etait arme, aucun rendu n'etait force, et `manuel_refus` restait
+    invisible jusqu'a la reprise. Le bon predicat n'est pas « quelque chose
+    a ete applique » mais « un drainage a eu lieu » -- ce que `ManualLoop`
+    dit deja mot pour mot (world.py : « Force meme si RIEN n'a ete retenu
+    [...] c'est le seul moyen pour le plateau de voir `sandbox_last_error` a
+    jour »).
+
+    ⚠ MEME MONTAGE QUE `cas_reveil_dogetinput`, ET POUR LA MEME RAISON : un
+    `DeviceManager` NU, jamais `monter_le_moteur`, parce que ce dernier
+    remplace `DoGetInput` par `pilote` pour toute la duree du processus --
+    la branche testee ici ne serait alors JAMAIS executee. Rien n'est
+    imite : c'est le VRAI `DoGetInput`, reellement parque dans son `Wait`,
+    reveille depuis un AUTRE fil comme le fait la route HTTP
+    `/sandbox_command`.
+
+    DEUX TEMOINS :
+    - TEMOIN 1 (le defaut) : l'executeur LEVE des la premiere commande.
+      `DoGetInput` doit rendre la main sans entree ET laisser
+      `rendu_a_forcer` arme, alors qu'AUCUNE commande n'a ete appliquee.
+    - TEMOIN 2 (contraste) : un reveil ORDINAIRE, sans le moindre geste
+      depose, ne doit RIEN armer. Sans lui, un predicat devenu « toujours
+      vrai » passerait le temoin 1 sans rien prouver.
+    """
+    racine_src = os.path.join(RACINE, "src")
+    if racine_src not in sys.path:
+        sys.path.insert(0, racine_src)
+    from engine.device.manager.base import DeviceManager, AskOptionPayload
+
+    def parquer(device_manager, check):
+        """Gare le VRAI DoGetInput dans son Wait, sur un autre fil."""
+        player_id = 0
+        device_manager.ask_options[player_id] = AskOptionPayload(
+            options_json="[]", ability_type="", event_name="", prompt_text="",
+            show_cancel=False, replay_input="")
+        device_manager.asking_players.append(player_id)
+        resultat = {"retour": "PAS_ENCORE", "eleve": None}
+
+        def fil_du_jeu():
+            try:
+                resultat["retour"] = device_manager.DoGetInput(
+                    device_manager.ask_options[player_id], player_id, check)
+            except BaseException as exc:
+                resultat["eleve"] = exc
+
+        fil = threading.Thread(target=fil_du_jeu, daemon=True)
+        fil.start()
+        time.sleep(0.3)  # laisse DoGetInput entrer dans son Wait
+        assert fil.is_alive(), \
+            "premisse cassee : le fil n'est meme pas entre dans l'attente"
+        return fil, resultat
+
+    # ------------------------------------------------------------------
+    # TEMOIN 1 : le geste qui ECHOUE.
+    # ------------------------------------------------------------------
+    device_manager = DeviceManager()
+
+    def executeur_qui_leve(commandes):
+        raise RuntimeError("Puzzle.Damage: cible introuvable")
+
+    device_manager.sandbox_executor = executeur_qui_leve
+
+    fil, resultat = parquer(device_manager, lambda: False)
+    # Le depot, depuis un AUTRE fil -- exactement ce que fait la route
+    # POST /sandbox_command depuis le fil HTTP.
+    device_manager.QueueSandboxCommands(["Puzzle.Damage(9999, 1)"])
+
+    fil.join(timeout=2.0)
+    assert not fil.is_alive(), \
+        "DoGetInput ne s'est jamais reveille sur un geste depose"
+    if resultat["eleve"] is not None:
+        raise resultat["eleve"]
+    assert resultat["retour"] is None, (
+        f"DoGetInput aurait du rendre la main sans entree (None) apres un "
+        f"drainage : {resultat['retour']!r}"
+    )
+    assert device_manager.sandbox_last_error, (
+        "premisse cassee : l'executeur n'a pas leve, ce cas ne teste rien"
+    )
+    assert device_manager.rendu_a_forcer is True, (
+        "LE REFUS NE SERA JAMAIS PUBLIE : un geste manuel a ete draine et a "
+        f"ECHOUE (sandbox_last_error={device_manager.sandbox_last_error!r}), "
+        "mais aucun rendu force n'a ete arme -- le plateau ne verra pas "
+        "manuel_refus avant la reprise. Le predicat de DoGetInput teste le "
+        "RETOUR de DrainSandboxCommands (vide quand la premiere commande "
+        "leve) au lieu de tester qu'un drainage a eu lieu."
+    )
+    assert device_manager.ConsommerRenduAForcer() is True, \
+        "ConsommerRenduAForcer n'a pas vu le marqueur arme"
+    assert device_manager.ConsommerRenduAForcer() is False, (
+        "ConsommerRenduAForcer ne consomme pas : un seul armement doit "
+        "produire un seul rendu force, jamais un a chaque re-pose"
+    )
+
+    # ------------------------------------------------------------------
+    # TEMOIN 2 (contraste) : un reveil ORDINAIRE n'arme rien.
+    # ------------------------------------------------------------------
+    autre = DeviceManager()
+    pret = {"ok": False}
+    fil2, _ = parquer(autre, lambda: pret["ok"])
+    pret["ok"] = True
+    autre.notify.input.NotifyAll()
+
+    fil2.join(timeout=2.0)
+    assert not fil2.is_alive(), \
+        "premisse cassee : le reveil ordinaire n'a pas reveille DoGetInput"
+    assert autre.rendu_a_forcer is False, (
+        "MONTAGE SUSPECT : un reveil SANS le moindre geste depose arme quand "
+        "meme le rendu force. Le predicat ne distingue plus rien, et le "
+        "temoin 1 ne prouve donc rien."
+    )
+
+    return ("un geste manuel qui ECHOUE arme le rendu force au meme titre "
+            "qu'un geste applique ; un reveil sans geste n'arme rien")
+
+
 class _MondeFactice:
     """Juste ce que lit `GameServerGet.manuel_passer` : `manuel_actif`."""
     def __init__(self, manuel_actif):
@@ -1970,6 +2094,7 @@ CAS = {
     "pause_par_nom_du_heros": cas_pause_par_nom_du_heros,
     "pause_publiee": cas_pause_publiee,
     "reveil_dogetinput": cas_reveil_dogetinput,
+    "geste_refuse_arme_le_rendu": cas_geste_refuse_arme_le_rendu,
     "passer_annule_le_moteur": cas_passer_annule_le_moteur,
     "passer_refuse_question_forcee": cas_passer_refuse_question_forcee,
     "passer_aucune_question": cas_passer_aucune_question,

@@ -390,7 +390,17 @@ class Controller:
                     # meme ordre, que `World.ManualLoop` (world.py) juste
                     # avant SON rendu force, et que le debut de cette
                     # methode.
-                    if controller_manager.device_manager.ConsommerRenduAForcer():
+                    #
+                    # ⚠ LES GARDES DE FIN D'ABORD (ronde de correction 1) :
+                    # `ManualLoop` teste `is_game_over` AVANT son rendu
+                    # force, on s'aligne. Une partie finie ou un moteur qui
+                    # s'arrete n'a plus d'etat a publier, et les quatre
+                    # lignes qui suivent ce bloc rendent justement
+                    # `None, False` dans ces cas-la. Le marqueur est
+                    # CONSOMME dans tous les cas, jamais laisse arme
+                    # derriere une garde.
+                    forcer = controller_manager.device_manager.ConsommerRenduAForcer()
+                    if forcer and not message.world.is_game_over and self.game.state.is_running:
                         controller_manager.skip.SetIsSkipping(False)
                         message.world.render.PresentForceNoWait()
                     return None, True

@@ -233,18 +233,47 @@ class DeviceManager:
 
     ################################################################################
     #
+    def OublierLesReveilsEnAttente(self) -> None:
+        """Desarme les deux marqueurs de reveil A LA FRONTIERE D'UNE PARTIE
+        (ronde de correction 1 de la tache 8).
+
+        `DeviceManager` est un SINGLETON : sans ceci, un marqueur arme et
+        jamais consomme survivait a la fin de la partie ET a la suivante. Le
+        cas existe, il n'est pas theorique : `SignalerPauseAPublier` arme
+        depuis le fil HTTP sans savoir ou est le fil du jeu ; si celui-ci est
+        dans `World.ManualLoop`, son predicat d'attente ne teste PAS
+        `pause_a_publier` (il ne connait que `sandbox_commands`,
+        `should_exit_wait` et `is_game_over`), le fil se rendort, et
+        l'armement traine. Le cout est borne a un rendu parasite au debut de
+        la partie suivante -- mais un etat qui franchit la frontiere d'une
+        partie est exactement ce qui revient hanter quelqu'un six mois plus
+        tard.
+
+        ⚠ PAS DANS `ExitWait`, ET C'EST DELIBERE. `ExitWait` est appele EN
+        PLEINE PARTIE (console, `GameSession.Undo`, `LoadScene`,
+        `server_sync.handle_debug`) : y desarmer les marqueurs ferait perdre
+        une bascule de pause deposee juste avant une annulation. Ici, au
+        contraire, la partie d'avant n'existe plus : il n'y a plus rien a
+        publier d'elle.
+        """
+        self.pause_a_publier = False
+        self.rendu_a_forcer = False
+
     def OnNewGame(self):
         Log.DebugSilent(CATEGORY_NAME, "DeviceManager new game")
         self.ExitWait()
+        self.OublierLesReveilsEnAttente()
         self.notify.RefreshExitWait()
 
     def OnRestart(self):
         Log.DebugSilent(CATEGORY_NAME, "DeviceManager restart")
         self.ExitWait()
+        self.OublierLesReveilsEnAttente()
 
     def OnShutdown(self):
         Log.DebugSilent(CATEGORY_NAME, "DeviceManager Shutdown")
         self.ExitWait()
+        self.OublierLesReveilsEnAttente()
 
     ################################################################################
     #
@@ -314,7 +343,22 @@ class DeviceManager:
         # On execute ICI, hors du predicat d'attente (donc sans tenir le verrou
         # de la condition) mais bien sur le fil du jeu. Puis on rend la main :
         # aucune entree joueur n'est arrivee, l'appelant redemandera.
-        if self.DrainSandboxCommands():
+        # ⚠ LE PREDICAT EST « UN DRAINAGE A EU LIEU », PAS « QUELQUE CHOSE A
+        # ETE APPLIQUE » (ronde de correction 1 de la tache 8, et c'est la
+        # MEME famille de defaut que celui que la tache 8 corrige).
+        # `DrainSandboxCommands` rend une liste VIDE quand la PREMIERE
+        # commande du lot leve -- tout en posant `sandbox_last_error`. Tester
+        # son seul retour laissait donc le geste REFUSE sans aucun rendu : le
+        # joueur voyait son geste refuse... sans jamais voir qu'il l'avait
+        # ete, `manuel_refus` restant invisible jusqu'a la reprise.
+        # `ManualLoop` fait l'inverse et dit mot pour mot pourquoi
+        # (world.py : « Force meme si RIEN n'a ete retenu [...] c'est le seul
+        # moyen pour le plateau de voir `sandbox_last_error` a jour ») : on
+        # reprend SA REGLE, pas seulement son precedent. L'instantane est
+        # pris AVANT l'appel, `DrainSandboxCommands` vidant la file.
+        un_drainage = bool(self.sandbox_commands) and self.sandbox_executor is not None
+        self.DrainSandboxCommands()
+        if un_drainage:
             # Tache 8, meme famille que la pause ci-dessous : un geste manuel
             # applique au monde PENDANT une question ouverte n'est publie par
             # personne sur ce chemin (la re-pose de la question ne rend que
