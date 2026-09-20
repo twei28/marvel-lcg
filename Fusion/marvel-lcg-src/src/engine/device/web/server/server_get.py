@@ -146,6 +146,44 @@ class GameServerGet(GameServerBase):
         en_pause = world.BasculerPauseManuelle(actif, qui)
         return web.json_response({'result': 'en pause' if en_pause else 'repris'})
 
+    async def manuel_passer(self, request: web.Request) -> web.Response:
+        """Passe la question fautive EN COURS DE PARTIE (tache 5) : l'echappatoire
+        de dernier recours quand ce n'est pas la table qui bloque mais la
+        QUESTION elle-meme -- la pause seule n'en libere pas puisqu'elle
+        repose la meme question, a l'identique, a la reprise.
+
+        Aucun corps de requete, sur le modele de `/manuel_undo` : il n'y a
+        qu'une seule question EN COURS, celle que le moteur attend.
+
+        Reserve a une partie EN PAUSE (`world.manuel_actif`) -- exactement le
+        moment ou `BandeauPause` (le seul endroit qui appelle cette route)
+        est visible. Hors pause, une question a `show_cancel` vrai est une
+        DECISION DE JEU ORDINAIRE (« joue cette carte ou passe ») ; cette
+        route n'est pas un raccourci pour la sauter a la place du joueur.
+
+        ⚠ N'INVENTE JAMAIS UNE REPONSE. Voir `DeviceManager.PasserQuestionCourante`
+        (engine/device/manager/base.py) : cette route ne fait que lire l'etat
+        du `DeviceManager` et lui deleguer la decision -- elle ne touche
+        JAMAIS a `self.game.world` au-dela de la LECTURE de `manuel_actif`,
+        comme `manuel_pause` juste au-dessus.
+
+        Le code de refus (`aucune_question`, `question_forcee`) est un CODE
+        STABLE, jamais une phrase : c'est le PLATEAU qui l'ecrit en francais
+        ou en anglais (meme convention que `failure_reason`/`raisons-refus.ts`,
+        voir `Controller.NormaliserLeMotif`) -- le moteur ne parle pas la
+        langue du joueur.
+        """
+        world = self.game.world
+        if world is None:
+            return web.json_response({'error': 'no game in progress'}, status=409)
+        if not world.manuel_actif:
+            return web.json_response({'error': 'pas en pause'}, status=409)
+
+        code = self.device_manager.PasserQuestionCourante()
+        if code != 'ok':
+            return web.json_response({'error': code}, status=409)
+        return web.json_response({'result': 'passe'})
+
     async def manuel_undo(self, request: web.Request) -> web.Response:
         """Ctrl+Z du mode manuel : retire le dernier geste et rejoue sans lui.
 
@@ -1202,6 +1240,7 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/sandbox_command', self.sandbox_command)
         self.AddPostSecurity('/manuel_undo', self.manuel_undo)
         self.AddPostSecurity('/manuel_pause', self.manuel_pause)
+        self.AddPostSecurity('/manuel_passer', self.manuel_passer)
         self.AddAwaitGetSecurity('/list_starter_deck', self.list_starter_deck)
         self.AddAwaitGetSecurity('/list_replay_files', self.list_replay_files)
         self.AddAwaitGetSecurity('/list_puzzle_files', self.list_puzzle_files)

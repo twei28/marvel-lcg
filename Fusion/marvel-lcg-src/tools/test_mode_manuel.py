@@ -1491,6 +1491,234 @@ def cas_reveil_dogetinput(game_dir, port):
             "bascule de pause est signalee depuis un autre fil")
 
 
+class _MondeFactice:
+    """Juste ce que lit `GameServerGet.manuel_passer` : `manuel_actif`."""
+    def __init__(self, manuel_actif):
+        self.manuel_actif = manuel_actif
+
+
+class _JeuFactice:
+    def __init__(self, monde):
+        self.world = monde
+
+
+class _ControleurFactice:
+    """Juste ce que lit `GameServerBase.game` : `controller.game`."""
+    def __init__(self, monde):
+        self.game = _JeuFactice(monde)
+
+
+def _construire_route_passer(device_manager, manuel_actif):
+    """Une VRAIE `GameServerGet.manuel_passer`, brancheee sur un
+    `DeviceManager` nu -- meme esprit que `cas_pause_par_nom_du_heros`
+    (`GameServerGet.__new__`, un seul attribut lu par ce chemin de code).
+    """
+    import sys
+    racine_src = os.path.join(RACINE, "src")
+    if racine_src not in sys.path:
+        sys.path.insert(0, racine_src)
+    from engine.device.web.server.server_get import GameServerGet
+
+    device_manager.controllers.append(_ControleurFactice(_MondeFactice(manuel_actif)))
+    serveur = GameServerGet.__new__(GameServerGet)
+    serveur.device_manager = device_manager
+    return serveur
+
+
+def cas_passer_annule_le_moteur(game_dir, port):
+    """« Passer la question fautive » (tache 5) : une question qui OFFRE une
+    annulation (`show_cancel` vrai) est vraiment passee -- le VRAI
+    `DoGetInput`, pare dans son `Wait`, se reveille et rend la main, EXACTEMENT
+    comme le ferait un clic normal sur le bouton « Passer » du joueur.
+
+    Meme technique que `cas_reveil_dogetinput` (le seul cas de ce fichier a
+    exercer une VRAIE attente sans monter de moteur) : un `DeviceManager` nu,
+    un fil separe pare dans `DoGetInput`, et le geste depuis CE fil-ci (celui
+    du test, qui joue le role du fil HTTP) -- pas de moteur, pas de partie.
+
+    ⚠ DISCRIMINANT (constate ROUGE avant l'ecriture de
+    `DeviceManager.PasserQuestionCourante`/la route : `AttributeError`, la
+    methode n'existe pas encore). Discriminant aussi contre un refus
+    SYSTEMATIQUE (bug oppose a `cas_passer_refuse_question_forcee` juste en
+    dessous) : si la route refusait tout, le fil resterait bloque et ce cas
+    rougirait sur l'assertion `not fil.is_alive()`.
+    """
+    racine_src = os.path.join(RACINE, "src")
+    if racine_src not in sys.path:
+        sys.path.insert(0, racine_src)
+    from engine.device.manager.base import DeviceManager, AskOptionPayload
+
+    device_manager = DeviceManager()
+    player_id = 0
+    # ⚠ NE PAS pre-remplir `asking_players` ICI : `DoGetInput` (plus bas,
+    # sur le fil du jeu) le fait deja lui-meme des son entree. Une seconde
+    # entree ici dupliquerait le joueur dans la liste, et `WhenInput` (qui ne
+    # retire qu'UNE occurrence) laisserait l'autre trainer -- le predicat
+    # `self.asking_players == []` de `DoGetInput.Wait` resterait donc FAUX
+    # et ce cas resterait ROUGE meme sur une route parfaitement correcte
+    # (constate en ecrivant ce cas : diagnostique avant d'ecrire le rapport).
+    device_manager.ask_options[player_id] = AskOptionPayload(
+        options_json="[]", ability_type="", event_name="", prompt_text="",
+        show_cancel=True, replay_input="")
+
+    resultat = {"retour": "PAS_ENCORE", "eleve": None}
+
+    def fil_du_jeu():
+        try:
+            resultat["retour"] = device_manager.DoGetInput(
+                device_manager.ask_options[player_id], player_id, lambda: False)
+        except BaseException as exc:
+            resultat["eleve"] = exc
+
+    fil = threading.Thread(target=fil_du_jeu, daemon=True)
+    fil.start()
+    time.sleep(0.3)  # laisse DoGetInput entrer dans son Wait
+    assert fil.is_alive(), \
+        "premisse cassee : le fil n'est meme pas entre dans l'attente"
+
+    import asyncio
+    serveur = _construire_route_passer(device_manager, manuel_actif=True)
+    reponse = asyncio.run(serveur.manuel_passer(None))
+    assert reponse.status == 200, \
+        f"la route a refuse une question qui offrait pourtant une annulation : {reponse.status} {reponse.text}"
+
+    fil.join(timeout=2.0)
+    assert not fil.is_alive(), (
+        "DoGetInput ne s'est jamais reveille : la route n'a rien pose que "
+        "check_fn sache reconnaitre"
+    )
+    if resultat["eleve"] is not None:
+        raise resultat["eleve"]
+    assert resultat["retour"] == "{}", (
+        f"DoGetInput aurait du rendre la main avec le meme corps qu'un "
+        f"clic Annuler/Passer reel (\"{{}}\") : {resultat['retour']!r}"
+    )
+    return ("une question qui offre une annulation est vraiment passee : le "
+            "VRAI DoGetInput se reveille et rend le meme corps qu'un clic "
+            "Annuler/Passer reel")
+
+
+def cas_passer_refuse_question_forcee(game_dir, port):
+    """« Passer la question fautive » (tache 5) : une question qui N'OFFRE
+    PAS d'annulation (`show_cancel` faux, question FORCEE) est REFUSEE, avec
+    un motif lisible -- jamais une reponse fabriquee a sa place.
+
+    ⚠ DISCRIMINANT contre le defaut le plus dangereux de cette tache :
+    fabriquer une reponse a une question forcee. Si la route acceptait quand
+    meme, le fil se reveillerait (comme dans `cas_passer_annule_le_moteur`)
+    et l'assertion `fil.is_alive()` rougirait ici. Complementaire du cas
+    ci-dessus : aucun des deux ne serait vert sur une route qui accepte ou
+    refuse TOUJOURS, quel que soit `show_cancel`.
+    """
+    racine_src = os.path.join(RACINE, "src")
+    if racine_src not in sys.path:
+        sys.path.insert(0, racine_src)
+    from engine.device.manager.base import DeviceManager, AskOptionPayload
+
+    device_manager = DeviceManager()
+    player_id = 0
+    device_manager.ask_options[player_id] = AskOptionPayload(
+        options_json="[]", ability_type="", event_name="", prompt_text="",
+        show_cancel=False, replay_input="")
+    # Meme remarque que `cas_passer_annule_le_moteur` : `DoGetInput`
+    # remplit `asking_players` lui-meme, pas besoin (et pas question) de
+    # le faire ici.
+
+    resultat = {"retour": "PAS_ENCORE", "eleve": None}
+
+    def fil_du_jeu():
+        try:
+            resultat["retour"] = device_manager.DoGetInput(
+                device_manager.ask_options[player_id], player_id, lambda: False)
+        except BaseException as exc:
+            resultat["eleve"] = exc
+
+    fil = threading.Thread(target=fil_du_jeu, daemon=True)
+    fil.start()
+    time.sleep(0.3)
+    assert fil.is_alive(), \
+        "premisse cassee : le fil n'est meme pas entre dans l'attente"
+
+    import asyncio
+    import json as json_lib
+    serveur = _construire_route_passer(device_manager, manuel_actif=True)
+    reponse = asyncio.run(serveur.manuel_passer(None))
+    assert reponse.status == 409, \
+        f"la route aurait du refuser une question forcee : {reponse.status}"
+    corps = json_lib.loads(reponse.text)
+    assert corps.get("error") == "question_forcee", (
+        f"le motif de refus n'est pas le code stable attendu : {corps!r} -- "
+        f"pas un code d'erreur nu, un motif que le plateau sait traduire"
+    )
+
+    fil.join(timeout=1.0)
+    assert fil.is_alive(), (
+        "le fil s'est reveille alors que la question etait FORCEE : une "
+        "reponse a ete fabriquee a la place du joueur"
+    )
+    assert player_id in device_manager.asking_players, (
+        "la question forcee a ete retiree de asking_players malgre le refus"
+    )
+    return ("une question forcee (sans annulation) est refusee avec un "
+            "motif lisible ('question_forcee'), et le moteur reste "
+            "vraiment pare dessus -- rien n'est fabrique a sa place")
+
+
+def cas_passer_aucune_question(game_dir, port):
+    """« Passer la question fautive » (tache 5) : aucune question en
+    attente -- refus avec son propre motif, distinct de « question_forcee ».
+    """
+    racine_src = os.path.join(RACINE, "src")
+    if racine_src not in sys.path:
+        sys.path.insert(0, racine_src)
+    from engine.device.manager.base import DeviceManager
+
+    import asyncio
+    import json as json_lib
+    device_manager = DeviceManager()
+    serveur = _construire_route_passer(device_manager, manuel_actif=True)
+    reponse = asyncio.run(serveur.manuel_passer(None))
+    assert reponse.status == 409
+    corps = json_lib.loads(reponse.text)
+    assert corps.get("error") == "aucune_question", corps
+    return ("aucune question en attente -> refus avec le motif "
+            "'aucune_question', distinct de 'question_forcee'")
+
+
+def cas_passer_hors_pause(game_dir, port):
+    """« Passer la question fautive » (tache 5) : la route est REFUSEE hors
+    pause, meme quand une question EN COURS offre une annulation.
+
+    ⚠ DISCRIMINANT contre l'oubli de la garde `world.manuel_actif` : sans
+    elle, cette route deviendrait un raccourci pour sauter n'importe quelle
+    decision de jeu ORDINAIRE (« joue cette carte ou passe ») a la place du
+    joueur, hors de toute pause -- pas l'echappatoire de dernier recours que
+    demande le brief.
+    """
+    racine_src = os.path.join(RACINE, "src")
+    if racine_src not in sys.path:
+        sys.path.insert(0, racine_src)
+    from engine.device.manager.base import DeviceManager, AskOptionPayload
+
+    import asyncio
+    device_manager = DeviceManager()
+    player_id = 0
+    device_manager.ask_options[player_id] = AskOptionPayload(
+        options_json="[]", ability_type="", event_name="", prompt_text="",
+        show_cancel=True, replay_input="")
+    device_manager.asking_players.append(player_id)
+
+    serveur = _construire_route_passer(device_manager, manuel_actif=False)
+    reponse = asyncio.run(serveur.manuel_passer(None))
+    assert reponse.status == 409, \
+        f"la route aurait du refuser hors pause : {reponse.status}"
+    assert player_id in device_manager.asking_players, (
+        "la question a ete touchee alors que la partie n'etait pas en pause"
+    )
+    return ("hors pause, la route refuse meme une question qui offrirait "
+            "une annulation -- ce n'est pas un raccourci de jeu ordinaire")
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
@@ -1527,6 +1755,10 @@ CAS = {
     "pause_par_nom_du_heros": cas_pause_par_nom_du_heros,
     "pause_publiee": cas_pause_publiee,
     "reveil_dogetinput": cas_reveil_dogetinput,
+    "passer_annule_le_moteur": cas_passer_annule_le_moteur,
+    "passer_refuse_question_forcee": cas_passer_refuse_question_forcee,
+    "passer_aucune_question": cas_passer_aucune_question,
+    "passer_hors_pause": cas_passer_hors_pause,
 }
 
 

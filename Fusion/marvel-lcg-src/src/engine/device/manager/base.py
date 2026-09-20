@@ -77,6 +77,51 @@ class DeviceManager:
         self.pause_a_publier = True
         self.notify.input.NotifyAll()
 
+    def PasserQuestionCourante(self) -> str:
+        """Passe la question EN COURS pour le joueur interroge (tache 5,
+        dernier recours de la pause manuelle : la QUESTION est fautive, pas
+        la table -- la pause seule n'en libere pas, puisque le fil du jeu la
+        reposerait a l'identique a la reprise).
+
+        APPELEE DEPUIS LE FIL HTTP (route POST /manuel_passer), au meme
+        titre que `QueueSandboxCommands`/`SignalerPauseAPublier` ci-dessus --
+        et ce N'EST PAS un troisieme mecanisme. C'est EXACTEMENT le chemin
+        qu'un clic normal sur le bouton « Passer »/« Annuler » emprunte deja
+        (`interaction.ts::annuler` -> `envoyerReponse(id, null)` -> corps
+        `"{}"` -> `POST /post` -> `GameServerSync.handle_post` ->
+        `WhenInput`, DEJA appele depuis ce meme fil HTTP aujourd'hui). Cette
+        methode ne fait qu'emprunter ce chemin a la place du joueur, jamais
+        un chemin nouveau : `WhenInput` ne touche a rien du MONDE, seulement
+        a la comptabilite du `DeviceManager` lui-meme (`ask_options`,
+        `asking_players`) plus un reveil de `notify` -- rien de ce que l'en-
+        tete de `__init__` interdit au fil HTTP.
+
+        ⚠ N'INVENTE JAMAIS UNE REPONSE QUE LE MOTEUR N'A PAS OFFERTE. Une
+        question FORCEE (`AskOptionPayload.show_cancel` faux, pose par
+        `is_forced == False` en `controller.py:353`) n'offre AUCUNE sortie :
+        le moteur EXIGE une reponse. Lui envoyer quand meme "{}" romprait la
+        partie bien plus surement que le bug que le joueur essayait de
+        contourner (voir `controller.py:388-390` : sur une question a
+        plusieurs options FORCEE, un id absent viole l'assertion qui
+        n'accepte id=0 que pour une question a UNE SEULE option). Le refus
+        dit pourquoi, il ne fabrique rien.
+
+        Rend un CODE STABLE, jamais une phrase -- meme convention que
+        `Controller.NormaliserLeMotif`/`raisons-refus.ts` cote plateau, qui
+        ecrivent la phrase dans la langue du joueur :
+        - "ok"              : la question a ete passee (WhenInput appele).
+        - "aucune_question" : personne n'est interroge en ce moment.
+        - "question_forcee" : une question EST en attente mais n'offre pas
+          d'annulation -- au joueur d'y repondre, pas de la contourner.
+        """
+        if not self.asking_players:
+            return "aucune_question"
+        player_id = self.asking_players[0]
+        if not self.ask_options[player_id].show_cancel:
+            return "question_forcee"
+        self.WhenInput("{}", player_id)
+        return "ok"
+
     def DrainSandboxCommands(self) -> List[str]:
         """Execute les commandes en attente, UNE PAR UNE. A n'appeler QUE depuis
         le fil du jeu.
