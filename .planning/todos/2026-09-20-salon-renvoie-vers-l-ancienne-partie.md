@@ -53,3 +53,43 @@ mauvaise partie ». Trois situations, un seul message.
 Éteindre la table avant de relancer. Fait à la main le 20/09 à 19 h 30, sur
 demande : le groupe de processus du moteur reçoit un SIGTERM, l'orchestrateur
 constate la mort dans la minute et libère l'emplacement.
+
+---
+
+## Conception, écrite le 21/09/2026
+
+`Game.NewGame` (`src/game/game.py:128`) est le point d'entrée UNIQUE d'une
+nouvelle partie lancée depuis l'assistant. Un compteur incrémenté là donne un
+repère qui change à chaque partie, exposé par une petite route à part (ne pas
+étendre `get_play_scene_name` : `public/js/sandbox/app.js` lit son corps en
+texte brut et testerait vrai sur n'importe quoi).
+
+Le salon compare alors au repère qu'il a relevé **en arrivant**. Tant que le
+repère n'a pas changé, la partie affichée est l'ANCIENNE, et l'invité reste
+sur son choix de héros.
+
+### Le cas qui coince, et il faut le trancher
+
+Un invité qui **recharge sa page** après le lancement relèverait le nouveau
+repère comme étant le sien, ne verrait plus aucun changement, et resterait
+bloqué sur le salon pendant que sa partie tourne. On aurait échangé un
+symptôme contre un autre.
+
+Trois réponses possibles, par ordre de robustesse :
+
+1. **Le siège et son héros.** Une route qui dit quels sièges portent un héros
+   dans la partie en cours, et lequel. L'invité bascule quand le héros de SON
+   siège est celui qu'il vient de choisir. Insensible au rechargement,
+   insensible à l'ancienne partie, insensible à un scénario homonyme. C'est la
+   réponse juste, et la plus longue : il faut que le salon sache ce que
+   l'invité a choisi, ce qu'il sait déjà, et une route de plus.
+2. **Le repère, gardé dans `sessionStorage`.** Le rechargement conserve le
+   repère d'arrivée, donc le cas coincé disparaît pour un rechargement. Il
+   reste pour un onglet fermé puis rouvert. Court à écrire, couvre
+   l'essentiel, ment dans un cas rare.
+3. **Le repère seul.** Le plus court. Règle le problème d'aujourd'hui et crée
+   celui du rechargement. À écarter.
+
+Recommandation : la 1, parce que c'est la seule qui répond à la vraie question
+(« la partie qui a commencé est-elle la MIENNE ? ») au lieu de la contourner.
+La 2 si on veut un correctif ce soir.
