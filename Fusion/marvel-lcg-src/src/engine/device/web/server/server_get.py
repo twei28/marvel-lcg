@@ -73,6 +73,21 @@ class GameServerGet(GameServerBase):
         # de code arbitraire.
         from game.puzzle.puzzle import PuzzleHelper
 
+        # ⚠ AGIR EXIGE UN SIEGE (ronde de correction 1 de la tache 10,
+        # 20/09/2026). Cette route ECRIT SUR LA PARTIE EN COURS, et elle
+        # n'avait aucune garde : tout client qui detient le mot de passe de la
+        # TABLE, sans tenir le moindre siege, pouvait y deposer des `Puzzle.*`.
+        #
+        # ⚠ POURQUOI C'EST DE CE CHANTIER. Avant la pause, cette surface ne
+        # s'ouvrait qu'en bac a sable ou en mode manuel DECLARE -- deux
+        # parties qu'on choisit. La pause la rend vivante sur N'IMPORTE QUELLE
+        # table ordinaire : c'est nous qui l'ouvrons, c'est a nous de la
+        # refermer. Meme garde, meme refus (403) que `/manuel_pause` et
+        # `/manuel_passer` plus bas ; le spectateur, lui, est deja arrete en
+        # amont par `SpectateurPeutEcrire` (`web_server.py`).
+        if not self.prouve_un_siege(request):
+            return web.json_response({'error': 'aucun siege'}, status=403)
+
         data = await request.json()
         commands = data.get('commands', None)
         if isinstance(commands, str):
@@ -225,6 +240,9 @@ class GameServerGet(GameServerBase):
         dernier. Le plateau n'a donc rien a envoyer, et rien a tenir a jour de
         son cote.
 
+        Refus : 403 a qui ne tient aucun siege (spectateur compris, arrete
+        des `AddPostSecurity`), 409 hors pause ou sans rien a annuler.
+
         ⚠ L'ETAT, PAS LA REGLE -- et c'est un correctif (constat I3 de la
         ronde de correction 1 du 20/09/2026). Cette garde testait
         `rule.mode_manuel`, donc n'ouvrait qu'aux parties manuelles
@@ -237,6 +255,12 @@ class GameServerGet(GameServerBase):
         partie declaree l'a pose une fois pour toutes apres sa mise en place)
         et faux hors pause -- ou annuler un geste n'aurait aucun sens.
         """
+        # Meme garde de siege que `/sandbox_command` et les deux routes de
+        # pause (ronde de correction 1, tache 10) : « Ctrl+Z » defait le
+        # dernier geste DE LA TABLE, pas celui de qui le demande.
+        if not self.prouve_un_siege(request):
+            return web.json_response({'error': 'aucun siege'}, status=403)
+
         world = self.game.world
         if world is None or not world.manuel_actif:
             return web.json_response({'error': 'pas une partie manuelle'}, status=409)

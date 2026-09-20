@@ -1569,6 +1569,15 @@ def cas_pause_refusee_au_spectateur(game_dir, port):
     n'a RIEN garde du passage -- ni `manuel_actif`, ni la marque
     « corrigee a la main », qui ne s'efface jamais une fois posee et salirait
     pour toujours une partie a laquelle le spectateur n'a pas touche.
+
+    ⚠ LES QUATRE SIEGES SONT PROTEGES ET TENUS (ronde de correction 1).
+    Sinon le temoin de controle ne discrimine rien : `allowed_seats` accorde
+    tout siege non protege A TOUT LE MONDE, et tout siege ORPHELIN a tout
+    client authentifie (« reprise d'un siege abandonne »). L'appel de
+    controle serait donc passe sans son cookie. La tenue des sieges est
+    simulee sur NOTRE instance de serveur (`seat_orphelin`) : aucun socket
+    n'existe dans ce harnais, et le moteur n'est pas touche. Voir
+    `cas_gestes_refuses_sans_siege`, qui mesure les deux branches.
     """
     import asyncio
 
@@ -1582,9 +1591,20 @@ def cas_pause_refusee_au_spectateur(game_dir, port):
 
     ancien_mdp = list(SEAT_PASSWORDS.value)
     try:
-        # Une table PROTEGEE : c'est la seule ou un siege veut dire quelque
-        # chose. `allowed_seats` rend l'ensemble vide au spectateur.
-        SEAT_PASSWORDS.value = ["secret-siege-0", "secret-siege-1", "", ""]
+        # Une table PROTEGEE, LES QUATRE SIEGES (ronde de correction 1).
+        #
+        # ⚠ NE PAS LAISSER UN SIEGE SANS MOT DE PASSE ICI. `allowed_seats`
+        # accorde tout siege volontairement non protege a n'importe quel
+        # client : avec ["secret-0", "secret-1", "", ""], le temoin de
+        # controle plus bas passait par les sieges 2 et 3, donc MEME SANS le
+        # cookie `seat_token_0`. Il prouvait encore « un non-spectateur
+        # passe » (ce qui suffit a valider le 403), mais plus « le siege
+        # PROUVE passe » -- c'est-a-dire la moitie qui nous interesse.
+        SEAT_PASSWORDS.value = ["secret-siege-0", "secret-siege-1",
+                                "secret-siege-2", "secret-siege-3"]
+        # ... ET TENUS : sans cela, les quatre sieges orphelins de ce harnais
+        # seraient accordes a n'importe quel client authentifie.
+        serveur.seat_orphelin = lambda siege: False
 
         spectateur = {"spectateur": "1"}
         reponse = asyncio.run(
@@ -1607,8 +1627,22 @@ def cas_pause_refusee_au_spectateur(game_dir, port):
             f"joueur interroge"
         )
 
+        # ET LE CLIENT SANS SIEGE, qui n'est PAS un spectateur : il connait
+        # le mot de passe de la table, rien de plus. C'est lui que la garde de
+        # siege ajoute a ce que `SpectateurPeutEcrire` fermait deja.
+        reponse = asyncio.run(
+            serveur.manuel_pause(_RequeteFactice({}, {"actif": True})))
+        assert reponse.status == 403, (
+            f"un client sans siege arrete la partie de toute la table "
+            f"(HTTP {reponse.status})"
+        )
+        assert monde.manuel_actif is False, \
+            "un client sans siege a quand meme mis la partie en pause"
+
         # TEMOIN DE CONTROLE : le meme appel depuis un client qui PROUVE le
-        # siege 0. Sans lui, le 403 ci-dessus pourrait venir d'autre chose.
+        # siege 0. Sans lui, le 403 ci-dessus pourrait venir d'autre chose --
+        # et avec les quatre sieges tenus, il ne peut plus passer par un
+        # siege laisse ouvert.
         import hashlib
         jeton = hashlib.md5("secret-siege-0".encode()).hexdigest()
         assis = _RequeteFactice({"seat_token_0": jeton}, {"actif": True})
@@ -1634,6 +1668,137 @@ def cas_pause_refusee_au_spectateur(game_dir, port):
 
     return ("/manuel_pause et /manuel_passer rendent 403 a qui ne tient aucun "
             "siege, sans rien laisser sur la partie, et acceptent le siege prouve")
+
+
+def cas_gestes_refuses_sans_siege(game_dir, port):
+    """`/sandbox_command` et `/manuel_undo` exigent un siege eux aussi.
+
+    ⚠ C'EST LA PAUSE QUI REND CETTE SURFACE VIVANTE, et c'est pour cela
+    qu'elle est de ce chantier. `/sandbox_command` depose des `Puzzle.*` sur
+    la partie EN COURS et n'avait aucune garde : avant la pause, il fallait
+    une partie en bac a sable ou declaree manuelle pour que le plateau l'arme.
+    Depuis la pause, N'IMPORTE QUELLE table ordinaire peut se trouver dans cet
+    etat -- un client sans siege pouvait y ecrire.
+
+    ⚠ CE QUE LA GARDE FAIT, ET CE QU'ELLE NE FAIT PAS. `prouve_un_siege` juge
+    par `allowed_seats`, exactement comme `/post` : elle rend l'ensemble VIDE
+    a un spectateur (refus, toujours), et elle ouvre les sieges ORPHELINS a
+    tout client authentifie (« reprise d'un siege abandonne ») -- sans quoi un
+    joueur deconnecte bloquerait la table entiere. Un client sans cookie de
+    siege est donc refuse quand les sieges sont TENUS, et accepte quand ils ne
+    le sont pas. Ce cas mesure LES DEUX, pour que personne ne « corrige » plus
+    tard l'un en croyant l'autre casse.
+
+    ⚠ LES SIEGES SONT TENUS PAR SIMULATION. Aucun socket n'est ouvert dans ce
+    harnais (`pilote` remplace `DoGetInput`), donc les quatre sieges sont
+    orphelins pour de bon. On substitue `seat_orphelin` SUR NOTRE INSTANCE de
+    serveur -- la chaine jugee (`allowed_seats` -> `prouve_un_siege` -> route)
+    reste la vraie, et le moteur n'est pas touche.
+    """
+    import asyncio
+    import hashlib
+
+    jeu, monde, _ = monter_le_moteur(game_dir, port, [])
+
+    from engine.device.web.server.server_get import GameServerGet
+    from engine.device.web.server.server_base import SEAT_PASSWORDS
+
+    serveur = GameServerGet.__new__(GameServerGet)
+    serveur.device_manager = jeu.world.controller_manager.device_manager
+    gestionnaire = serveur.device_manager
+
+    ancien_mdp = list(SEAT_PASSWORDS.value)
+    try:
+        # LES QUATRE sieges proteges : un seul siege laisse ouvert suffirait a
+        # accorder `allowed_seats` a tout le monde, et les temoins ne
+        # prouveraient plus rien (meme piege que
+        # `cas_pause_refusee_au_spectateur`).
+        SEAT_PASSWORDS.value = ["secret-siege-0", "secret-siege-1",
+                                "secret-siege-2", "secret-siege-3"]
+        commande = {"commands": ["Puzzle.Damage(1, 1)"]}
+        jeton = hashlib.md5("secret-siege-0".encode()).hexdigest()
+
+        # --- Les quatre sieges TENUS ---------------------------------------
+        serveur.seat_orphelin = lambda siege: False
+
+        gestionnaire.sandbox_commands = []
+        sans_siege = _RequeteFactice({}, commande, "/sandbox_command")
+        reponse = asyncio.run(serveur.sandbox_command(sans_siege))
+        assert reponse.status == 403, (
+            f"un client sans siege depose des Puzzle.* sur une table dont "
+            f"tous les sieges sont tenus (HTTP {reponse.status}) : depuis la "
+            f"pause, toute partie ordinaire peut se trouver dans cet etat"
+        )
+        assert gestionnaire.sandbox_commands == [], (
+            f"la commande a quand meme ete deposee : "
+            f"{gestionnaire.sandbox_commands}"
+        )
+
+        reponse = asyncio.run(
+            serveur.manuel_undo(_RequeteFactice({}, {}, "/manuel_undo")))
+        assert reponse.status == 403, (
+            f"un client sans siege annule le dernier geste de la table "
+            f"(HTTP {reponse.status})"
+        )
+
+        # TEMOIN DE CONTROLE : le siege 0, prouve par son cookie. Sans lui, le
+        # 403 ci-dessus pourrait venir de n'importe quoi.
+        assis = _RequeteFactice({"seat_token_0": jeton}, commande, "/sandbox_command")
+        reponse = asyncio.run(serveur.sandbox_command(assis))
+        assert reponse.status == 200, (
+            f"un joueur assis est refuse lui aussi (HTTP {reponse.status}) : "
+            f"le 403 ci-dessus ne prouve rien"
+        )
+        assert gestionnaire.sandbox_commands == ["Puzzle.Damage(1, 1)"], (
+            f"le depot du joueur assis n'est pas arrive dans la file : "
+            f"{gestionnaire.sandbox_commands}"
+        )
+        gestionnaire.sandbox_commands = []
+
+        reponse = asyncio.run(
+            serveur.manuel_undo(_RequeteFactice({"seat_token_0": jeton}, {}, "/manuel_undo")))
+        assert reponse.status != 403, (
+            "un joueur assis recoit 403 sur /manuel_undo : la garde de siege "
+            "refuse ceux qui en tiennent un"
+        )
+
+        # --- Les sieges ORPHELINS (personne n'est connecte) -----------------
+        # Le comportement VOULU, le meme que `/post` : un joueur deconnecte ne
+        # doit pas bloquer la table. Le spectateur, lui, reste refuse -- c'est
+        # le correctif du 15/09/2026, et il passe AVANT la reprise.
+        del serveur.seat_orphelin
+
+        gestionnaire.sandbox_commands = []
+        reponse = asyncio.run(serveur.sandbox_command(
+            _RequeteFactice({}, commande, "/sandbox_command")))
+        assert reponse.status == 200, (
+            f"un client authentifie est refuse alors que TOUS les sieges sont "
+            f"abandonnes (HTTP {reponse.status}) : plus personne ne peut "
+            f"reprendre une table dont les joueurs se sont deconnectes"
+        )
+        gestionnaire.sandbox_commands = []
+
+        spectateur = _RequeteFactice({"spectateur": "1"}, commande, "/sandbox_command")
+        reponse = asyncio.run(serveur.sandbox_command(spectateur))
+        assert reponse.status == 403, (
+            f"un spectateur depose des Puzzle.* sur une table aux sieges "
+            f"abandonnes (HTTP {reponse.status}) : il herite de la place d'un "
+            f"joueur deconnecte, defaut mesure le 15/09/2026"
+        )
+        assert gestionnaire.sandbox_commands == [], \
+            "un spectateur a depose une commande malgre le refus"
+
+        reponse = asyncio.run(serveur.manuel_undo(
+            _RequeteFactice({"spectateur": "1"}, {}, "/manuel_undo")))
+        assert reponse.status == 403, \
+            f"un spectateur annule le dernier geste de la table (HTTP {reponse.status})"
+    finally:
+        SEAT_PASSWORDS.value = ancien_mdp
+        gestionnaire.sandbox_commands = []
+
+    return ("/sandbox_command et /manuel_undo : 403 a qui ne tient aucun siege "
+            "quand ils sont tenus, 403 a un spectateur TOUJOURS, et le siege "
+            "prouve passe")
 
 
 def cas_pause_refusee_sur_partie_declaree(game_dir, port):
@@ -3172,6 +3337,7 @@ CAS = {
     "post_ferme_au_spectateur": cas_post_ferme_au_spectateur,
     "pause_refusee_au_spectateur": cas_pause_refusee_au_spectateur,
     "pause_refusee_sur_partie_declaree": cas_pause_refusee_sur_partie_declaree,
+    "gestes_refuses_sans_siege": cas_gestes_refuses_sans_siege,
     "pause_publiee": cas_pause_publiee,
     "reveil_dogetinput": cas_reveil_dogetinput,
     "geste_refuse_arme_le_rendu": cas_geste_refuse_arme_le_rendu,
