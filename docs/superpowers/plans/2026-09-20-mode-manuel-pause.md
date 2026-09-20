@@ -349,3 +349,76 @@ docstring le dit, sur la partie automatique qui continue et rend d'elle-même.
   commentaire qui se contredit (« aucune question n'attend » puis « une vraie
   question reste ouverte »).
 - [ ] **Étape 5 : commiter.**
+
+---
+
+### Tâche 9 : que les corrections survivent (constat C1 de la revue finale)
+
+**Le défaut, et il dément la promesse du chantier.** Les corrections faites
+pendant une pause de partie ORDINAIRE disparaissent sans un mot par trois
+chemins d'un seul clic : « Annuler », « Sauver », un rechargement.
+
+La sauvegarde n'est pas un instantané de la table : `Scene` porte `seed`,
+`rules`, `players`, `inputs`, et `GameSetup` REJOUE. Les gestes d'une partie
+DÉCLARÉE survivent parce que `ManualLoop` les enregistre
+(`self.scene.manuel_commands += appliquees`, `world.py:913`) et que `GameSetup`
+les rejoue — mais **seulement sous `if self.world.rule.mode_manuel`**
+(`game_run/game_session.py:135-160`). La branche de drainage de `DoGetInput`,
+celle qu'emprunte une pause de partie ordinaire, jette son retour.
+
+⚠ **« Annuler » est le pire des trois** : `GameSession.Undo` rejoue les ENTRÉES,
+donc TOUTES les corrections s'évaporent, pas seulement la dernière. Et comme il
+reconstruit le `World`, `manuel_actif` retombe à faux : le clic **reprend aussi
+la partie en silence**, bandeau compris. Le joueur revient exactement dans le
+bug qu'il venait de contourner.
+
+- [ ] **Étape 1 : les cas rouges.** Un geste fait pendant une pause de partie
+  ordinaire survit à une sauvegarde puis un rechargement ; et « Annuler » ne
+  fait pas disparaître les corrections ni reprendre la partie.
+- [ ] **Étape 2 : le correctif.** Enregistrer les gestes drainés dans
+  `scene.manuel_commands` sur le chemin `DoGetInput`, comme `ManualLoop` le
+  fait déjà, et faire que le rejeu au montage ne dépende plus de la RÈGLE
+  `mode_manuel` mais de la présence de gestes à rejouer.
+- [ ] **Étape 3 : le plancher, si et seulement si l'étape 2 se révèle trop
+  risquée.** Griser « Annuler » et « Sauver » dès que `corrigee_a_la_main` est
+  vrai, ou les faire passer par une confirmation qui NOMME la perte. Une limite
+  dite vaut mieux qu'une limite muette. Si tu prends ce chemin, dis pourquoi.
+- [ ] **Étape 4 : batterie entière + commit.**
+
+---
+
+### Tâche 10 : les trois mensonges par omission (I1, I2, I3 de la revue finale)
+
+- [ ] **I1, une ligne, et c'est le plus rentable du chantier.**
+  `ui-app/src/board/HistoriquePartie.tsx:506` fait
+  `type: estModeManuel(monde) ? 'manuel' : 'triche'` : la RÈGLE lue là où
+  l'ÉTAT était voulu. En pause de partie ordinaire, chaque geste entre au
+  journal en `'triche'`, or `rapport-bug.ts:389` filtre sur `'manuel'` : la
+  section « GESTES MANUELS » **n'apparaît jamais**, ce qui vide la tâche 6 de
+  son objet. Et le rapport affiche `[triche]` sous un en-tête qui crie
+  « PARTIE CORRIGÉE À LA MAIN ». Ce n'est pas théorique : la fiche Echo du
+  20/09 montre l'auteur lisant `[triche] Discard` et concluant « pas un défaut
+  du moteur ». Correctif : `leMoteurSeTait(monde) || estModeManuel(monde)`.
+  Un cas doit lier le producteur au consommateur, sinon rien ne le garde.
+
+- [ ] **I2, autorisation.** `AddPostSecurity` ne vérifie que `IsAuthenticate` :
+  ni `SpectateurPeutLire`, ni `get_player_ids` que `/post` applique. Et
+  `BandeauPause` est monté HORS de `.board-actions`, la seule chose que la CSS
+  spectateur masque. Un spectateur peut donc cliquer « Reprendre » et « Passer
+  la question » à la place d'un joueur assis. C'est le défaut pour lequel
+  `SpectateurPeutLire` a été inversé le 15/09. Ferme les deux routes ET le
+  plateau. Même chose pour `CoucheTriche`, qui s'arme sur `leMoteurSeTait` sans
+  garde spectateur et donne le clic droit et le clavier au spectateur.
+
+- [ ] **I3, dire la vérité.** Le journal est local au navigateur : le rapport
+  ne contient aucun geste des autres joueurs, tout en annonçant « pour audit
+  rapide ». N'AGRÈGE PAS entre clients, c'est une autre affaire. Dis-le dans le
+  document, comme `gestesManuelsIncomplets` le fait déjà pour le tampon.
+
+- [ ] **Les mineurs**, si le temps le permet : `motifRefus` jamais remis à plat
+  entre deux pauses ; `pause_a` affiché en heure serveur au format
+  `2026-09-20 17-12`, illisible comme durée ; `/manuel_pause` sans la garde
+  symétrique de `/manuel_passer` (un `actif: false` sur une partie DÉCLARÉE la
+  rendrait bavarde sans moyen de revenir) ; la docstring de
+  `BasculerPauseManuelle` qui dit encore « CE SEUL booléen » alors qu'elle en
+  écrit quatre.
