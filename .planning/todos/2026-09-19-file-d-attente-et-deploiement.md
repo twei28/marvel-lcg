@@ -128,3 +128,20 @@ fichier. Une ligne à retirer, dans le fichier d'une autre session.
   ajoutés le 18/09, et 35 personnages jouables sans aucun auteur attesté. Fiche
   `2026-09-16-crediter-les-auteurs-fanmade.md`. Rien ne doit s'afficher dans le
   jeu avant validation ligne par ligne.
+
+## Le Ctrl+Z n'annule pas un geste fait pendant une pause (20/09/2026)
+
+Trouvé par la revue de la tâche 8 du plan de la pause manuelle, ANTÉRIEUR à ce
+chantier, non corrigé volontairement.
+
+`DoGetInput` jette le retour de `DrainSandboxCommands`, là où `World.ManualLoop`
+l'enregistre dans `scene.manuel_commands`. Conséquence en deux temps :
+
+1. Les gestes manuels faits pendant une question ouverte **n'entrent pas dans
+   la sauvegarde**.
+2. `AnnulerDernierGeste` s'appuyant sur cette même liste, **le Ctrl+Z ne peut
+   pas annuler un geste fait pendant une pause de partie ordinaire**.
+
+C'est visible par le joueur : il corrige sa table, se trompe, fait Ctrl+Z, et
+rien ne se passe. À traiter à part, parce que la correction touche le même
+chemin que la tâche 8 et mérite ses propres cas.
