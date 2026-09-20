@@ -324,10 +324,30 @@ class GameSession:
         if self.game.state.is_running and self.world:
             self.world.game_over.SetExit()
 
+        # ⚠ UNE FRONTIERE DE PARTIE QUE `OnNewGame` NE VOIT PAS (ronde de
+        # correction 2 de la tache 8). Charger une sauvegarde passe par ici
+        # (route `server_new_game.py`, etat "Load"), jamais par
+        # `DeviceManager.OnNewGame` : sans la ligne plus bas, un reveil arme
+        # et jamais consomme, ou un refus de geste manuel
+        # (`sandbox_last_error`, publie dans `manuel_refus`), franchissait la
+        # frontiere et s'affichait sur la partie chargee.
+        #
+        # ⚠ SEULEMENT SI LA SCENE CHANGE VRAIMENT, et c'est le coeur de
+        # l'affaire : `AnnulerDernierGeste` (plus haut) recharge LA MEME
+        # scene, toujours avec l'etat "Load". Se regler sur l'etat effacerait
+        # donc aussi une bascule de pause deposee juste avant un Ctrl+Z --
+        # exactement ce qu'on refuse de faire dans `ExitWait`, pour la meme
+        # raison. L'identite de l'objet `Scene` distingue les deux sans
+        # ambiguite : un chargement en construit une nouvelle, une annulation
+        # repasse `self.scene`. Mesure prise AVANT `SetScene`, qui l'ecrase.
+        autre_partie = scene is not self.scene
+
         self.SetScene(scene, state)
         # Load scene will not update timeout
         # game.scene.timeout = 0
         self.ExitWait()
+        if autre_partie:
+            self.game.controller_manager.device_manager.OublierLaPartiePrecedente()
 
         if skip_to:
             self.game.controller_manager.skip.SetSkipTo(skip_to)

@@ -233,9 +233,10 @@ class DeviceManager:
 
     ################################################################################
     #
-    def OublierLesReveilsEnAttente(self) -> None:
-        """Desarme les deux marqueurs de reveil A LA FRONTIERE D'UNE PARTIE
-        (ronde de correction 1 de la tache 8).
+    def OublierLaPartiePrecedente(self) -> None:
+        """Efface ce que la partie d'avant a laisse dans CE singleton, A LA
+        FRONTIERE D'UNE PARTIE (ronde de correction 1 de la tache 8, elargi
+        en ronde 2).
 
         `DeviceManager` est un SINGLETON : sans ceci, un marqueur arme et
         jamais consomme survivait a la fin de la partie ET a la suivante. Le
@@ -249,31 +250,51 @@ class DeviceManager:
         partie est exactement ce qui revient hanter quelqu'un six mois plus
         tard.
 
+        TROIS CHAMPS, pour la meme raison de singleton :
+        - `pause_a_publier` et `rendu_a_forcer` : les deux reveils armes ;
+        - `sandbox_last_error` : il est PUBLIE tel quel dans `manuel_refus`
+          (`to_descriptor.py`), donc un refus de la partie d'avant restait
+          affichable au debut de la suivante.
+
         ⚠ PAS DANS `ExitWait`, ET C'EST DELIBERE. `ExitWait` est appele EN
         PLEINE PARTIE (console, `GameSession.Undo`, `LoadScene`,
         `server_sync.handle_debug`) : y desarmer les marqueurs ferait perdre
         une bascule de pause deposee juste avant une annulation. Ici, au
         contraire, la partie d'avant n'existe plus : il n'y a plus rien a
         publier d'elle.
+
+        ⚠ LES CROCHETS DE CYCLE DE VIE NE SUFFISENT PAS A EUX SEULS (ronde
+        de correction 2) : `GameSession.LoadScene` charge une AUTRE partie
+        (route de chargement de sauvegarde, `server_new_game.py`) sans
+        jamais passer par `OnNewGame`. C'est pourquoi `LoadScene` appelle
+        AUSSI cette methode, mais seulement quand la scene change vraiment
+        -- voir le commentaire ecrit la-bas.
         """
         self.pause_a_publier = False
         self.rendu_a_forcer = False
+        self.sandbox_last_error = ""
 
     def OnNewGame(self):
         Log.DebugSilent(CATEGORY_NAME, "DeviceManager new game")
         self.ExitWait()
-        self.OublierLesReveilsEnAttente()
+        self.OublierLaPartiePrecedente()
         self.notify.RefreshExitWait()
 
     def OnRestart(self):
         Log.DebugSilent(CATEGORY_NAME, "DeviceManager restart")
         self.ExitWait()
-        self.OublierLesReveilsEnAttente()
+        self.OublierLaPartiePrecedente()
 
     def OnShutdown(self):
+        # ⚠ CE CROCHET-CI N'EST PAS CELUI QUI TOURNE EN JEU WEB.
+        # `WebDeviceManager.OnShutdown` (device/manager/web/manager.py) est
+        # `@override` et n'appelle PAS `super()` -- constat de la ronde de
+        # correction 2. L'appel ci-dessous est donc INERTE pour le
+        # gestionnaire que le jeu utilise reellement ; il est repete la-bas,
+        # explicitement, plutot que de laisser croire qu'il suffit ici.
         Log.DebugSilent(CATEGORY_NAME, "DeviceManager Shutdown")
         self.ExitWait()
-        self.OublierLesReveilsEnAttente()
+        self.OublierLaPartiePrecedente()
 
     ################################################################################
     #
@@ -354,11 +375,21 @@ class DeviceManager:
         # `ManualLoop` fait l'inverse et dit mot pour mot pourquoi
         # (world.py : « Force meme si RIEN n'a ete retenu [...] c'est le seul
         # moyen pour le plateau de voir `sandbox_last_error` a jour ») : on
-        # reprend SA REGLE, pas seulement son precedent. L'instantane est
-        # pris AVANT l'appel, `DrainSandboxCommands` vidant la file.
+        # reprend SA REGLE, pas seulement son precedent.
+        #
+        # ⚠ LES DEUX, ET JAMAIS L'INSTANTANE SEUL (ronde de correction 2).
+        # La docstring de `DrainSandboxCommands` condamne explicitement
+        # l'instantane pris A COTE : « un instantane de `sandbox_commands`
+        # pris avant l'appel pouvait aussi manquer une commande deposee par
+        # le fil HTTP entre les deux. La liste rendue ici est desormais la
+        # SEULE source de verite ». S'y fier SEUL rouvrait ce piege : le fil
+        # HTTP qui depose entre les deux lignes ci-dessous ferait appliquer
+        # la commande sans que rien ne soit arme -- exactement le defaut
+        # qu'on corrige. La liste rendue rattrape ce cas, l'instantane
+        # rattrape celui du lot entierement refuse : il faut les DEUX.
         un_drainage = bool(self.sandbox_commands) and self.sandbox_executor is not None
-        self.DrainSandboxCommands()
-        if un_drainage:
+        applique = self.DrainSandboxCommands()
+        if un_drainage or applique:
             # Tache 8, meme famille que la pause ci-dessous : un geste manuel
             # applique au monde PENDANT une question ouverte n'est publie par
             # personne sur ce chemin (la re-pose de la question ne rend que

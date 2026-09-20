@@ -62,6 +62,15 @@ class WebDeviceManager(DeviceManager):
 
     @override
     def OnShutdown(self):
+        # ⚠ CET `@override` N'APPELLE PAS `super()`, ET ON NE LE CHANGE PAS
+        # ICI : ajouter `super().OnShutdown()` ajouterait un `ExitWait()` a
+        # l'arret du moteur web, un changement de comportement etranger a la
+        # tache 8. On repete donc EXPLICITEMENT la seule ligne dont on a
+        # besoin, plutot que de laisser le crochet de la classe de base
+        # passer pour actif alors qu'il est inerte ici (constat de la ronde
+        # de correction 2 : un crochet qui ne fait rien la ou il compte est
+        # un piege pour le prochain lecteur).
+        self.OublierLaPartiePrecedente()
         for httpd in self.httpds:
             httpd.Shutdown()
 
