@@ -32,7 +32,7 @@ import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
 // ⚠ IMPORT NOMME, PAS `import * as triche` : `PagePartie` a deja un
 // identifiant local `triche` (`useTriche(...)`, le bac a sable) -- un import
 // namespace du meme nom serait ombrage silencieusement par lui a l'usage.
-import { basculerPause } from './board/triche'
+import { basculerPause, passerLaQuestion } from './board/triche'
 import { BarreAction } from './board/BarreAction'
 import { Board, CarteApercu, type ReglagesGlisser } from './board/Board'
 import {
@@ -3216,12 +3216,7 @@ export function PagePartie({
           depuis: etat.monde?.pause_a ?? '',
         }}
         onReprendre={() => { void basculerPause(false) }}
-        onPasser={() => {
-          // Tâche 5 du plan (« passer la question fautive ») : la route
-          // dédiée et la lecture du drapeau d'annulation de la question
-          // arrivent à cette tâche, qui modifie ce fichier. Rien à faire ici
-          // pour l'instant -- aucun comportement inventé au-delà du bouton.
-        }}
+        onPasser={passerLaQuestion}
       />
 
       {/* CouchePasAPas (barre « où on en est » + Tout passer) : DEBRANCHEE a

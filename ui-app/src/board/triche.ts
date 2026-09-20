@@ -205,3 +205,39 @@ export async function basculerPause(actif: boolean): Promise<boolean> {
     return false
   }
 }
+
+// --- Passer la question fautive EN COURS DE PARTIE (tâche 5) ---------------
+
+/**
+ * Résultat de `passerLaQuestion` : soit la question a été passée, soit le
+ * moteur l'a refusé avec un CODE STABLE (jamais une phrase -- même
+ * convention que `failure_reason`/`NormaliserLeMotif`, controller.py : le
+ * moteur ne parle pas la langue du joueur, `BandeauPause.tsx` écrit la
+ * phrase). `'reseau'` distingue un ECHEC DE LA REQUÊTE ELLE-MÊME (offline...)
+ * d'un refus DÉLIBÉRÉ du moteur -- les deux s'affichent, mais rien ne doit
+ * les confondre dans un rapport de bug.
+ */
+export type ResultatPasser = { ok: true } | { ok: false; code: string }
+
+/**
+ * Passe la question EN COURS que le moteur reposerait à l'identique après
+ * une pause, route `POST /manuel_passer` (échappatoire de dernier recours,
+ * tâche 5) -- sur le modèle exact de `basculerPause` ci-dessus (aucun corps,
+ * comme `/manuel_undo`).
+ *
+ * ⚠ N'INVENTE RIEN ICI NON PLUS : cette fonction ne fait que relayer le
+ * verdict du serveur (`DeviceManager.PasserQuestionCourante`,
+ * engine/device/manager/base.py), qui lui-même n'accepte que ce que le
+ * moteur offrait déjà (`show_cancel`). Un échec réseau rend `'reseau'`,
+ * jamais un succès silencieux.
+ */
+export async function passerLaQuestion(): Promise<ResultatPasser> {
+  try {
+    const reponse = await fetch('/manuel_passer', { method: 'POST' })
+    if (reponse.ok) return { ok: true }
+    const corps = (await reponse.json().catch(() => ({}))) as { error?: string }
+    return { ok: false, code: corps.error ?? 'inconnu' }
+  } catch {
+    return { ok: false, code: 'reseau' }
+  }
+}

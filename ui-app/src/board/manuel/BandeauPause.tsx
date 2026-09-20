@@ -17,7 +17,9 @@
 // croient à une panne. C'est le cœur de la tâche — voir `enPause.par` /
 // `enPause.depuis`, posés côté moteur par `World.BasculerPauseManuelle`
 // (`Scene.pause_par` / `Scene.pause_a`, effacés à la reprise).
+import { useState } from 'react'
 import { t } from '../langue'
+import type { ResultatPasser } from '../triche'
 
 /** L'état de la pause EN COURS, tel que la trame le publie. */
 export type InfoPause = {
@@ -29,24 +31,57 @@ export type InfoPause = {
   depuis: string
 }
 
+/**
+ * La phrase à montrer pour un refus de `POST /manuel_passer`, par CODE
+ * STABLE (jamais une phrase venue du serveur -- même convention que
+ * `raisons-refus.ts`/`failure_reason`, `Controller.NormaliserLeMotif` côté
+ * moteur : le moteur ne parle pas la langue du joueur, c'est le plateau qui
+ * écrit la phrase et `t()` qui la rend en anglais).
+ *
+ * ⚠ Fonction, pas une table figée au niveau du module : `t()` ne doit
+ * s'évaluer qu'à l'usage (au clic), jamais au chargement du fichier.
+ */
+function motifDuRefus(code: string): string {
+  if (code === 'aucune_question') {
+    return t('Le moteur n’attend aucune réponse en ce moment')
+  }
+  if (code === 'question_forcee') {
+    return t('Cette question exige une réponse : le jeu n’offre aucune sortie')
+  }
+  if (code === 'reseau') {
+    return t('La requête n’est pas partie : vérifie ta connexion')
+  }
+  return t('Le moteur a refusé de passer cette question')
+}
+
 export type BandeauPauseProps = {
   enPause: InfoPause
   /** Reprend la partie (`POST /manuel_pause` avec `actif: false`). */
   onReprendre: () => void
   /**
-   * Passe la question fautive du moteur (tâche 5 du plan) : le bouton et son
-   * branchement existent ici, mais le geste réel — route dédiée, lecture du
-   * drapeau d'annulation que porte la question courante — arrive à la tâche
-   * 5, qui modifie ce fichier. Aucun comportement n'est inventé ici au-delà
-   * de « appeler ce qu'on m'a donné ».
+   * Tente de passer la question fautive du moteur (tâche 5, échappatoire de
+   * dernier recours) : `POST /manuel_passer`. Rend `{ ok: true }` quand le
+   * moteur a vraiment passé la question courante, ou `{ ok: false, code }`
+   * quand il a refusé -- `code` est affiché via `motifDuRefus` ci-dessus,
+   * jamais tel quel : c'est un identifiant stable, pas une phrase.
    */
-  onPasser: () => void
+  onPasser: () => Promise<ResultatPasser>
 }
 
 export function BandeauPause({ enPause, onReprendre, onPasser }: BandeauPauseProps) {
+  // ⚠ AVANT le retour anticipé ci-dessous : les Hooks ne peuvent jamais être
+  // conditionnels (règle de React), même quand le bandeau ne s'affiche pas.
+  const [motifRefus, setMotifRefus] = useState<string | undefined>(undefined)
+
   if (!enPause.actif) return null
 
   const qui = enPause.par || t('Quelqu’un')
+
+  async function passer(): Promise<void> {
+    setMotifRefus(undefined)
+    const resultat = await onPasser()
+    if (!resultat.ok) setMotifRefus(motifDuRefus(resultat.code))
+  }
 
   return (
     <div className="bandeau-pause" role="alert">
@@ -58,13 +93,17 @@ export function BandeauPause({ enPause, onReprendre, onPasser }: BandeauPausePro
         {enPause.depuis ? ` ${t('depuis')} ${enPause.depuis}` : ''}
       </span>
       <span className="bandeau-pause-boutons">
-        <button type="button" className="bandeau-pause-passer" onClick={onPasser}>
+        <button type="button" className="bandeau-pause-passer" onClick={() => { void passer() }}>
           {t('Passer la question')}
         </button>
         <button type="button" className="bandeau-pause-reprendre" onClick={onReprendre}>
           {t('Reprendre')}
         </button>
       </span>
+      {/* Le refus DOIT se voir : sans lui, un joueur qui clique « Passer »
+          sur une question forcée croirait le bouton cassé, alors que c'est
+          le moteur qui exige une vraie réponse (voir motifDuRefus). */}
+      {motifRefus ? <span className="bandeau-pause-refus">{motifRefus}</span> : null}
     </div>
   )
 }

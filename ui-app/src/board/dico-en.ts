@@ -635,6 +635,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   'a mis la partie en pause': 'paused the game',
   'depuis': 'since',
   'Passer la question': 'Skip the question',
+  'Le moteur n’attend aucune réponse en ce moment': 'The engine isn’t waiting on an answer right now',
+  'Cette question exige une réponse : le jeu n’offre aucune sortie':
+    'This question requires an answer: the game offers no way out',
+  'La requête n’est pas partie : vérifie ta connexion': 'The request didn’t go through: check your connection',
+  'Le moteur a refusé de passer cette question': 'The engine refused to skip this question',
   // 'Reprendre' est déjà traduit plus bas (bouton « Partie » des sauvegardes).
   // 'Mettre en pause' : voir board.tsx, bouton bh-pause de la barre du haut.
   'Mettre en pause': 'Pause the game',
