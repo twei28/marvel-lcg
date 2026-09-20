@@ -763,4 +763,27 @@ export const DICO_EN_BASE = {
   // prepare/decks-serveur.js : le serveur n'a pas pris le deck importe
   "Deck gardé sur cet appareil seulement : le serveur n'a pas répondu.":
     'Deck kept on this device only: the server did not respond.',
+
+  // prepare/heros-avis.js : l'avis de la communaute sur un heros officiel
+  "Pour débuter": "For newcomers",
+  "Complexité": "Complexity",
+  "Puissance": "Power",
+  "Plaisir": "Enjoyment",
+  "Avis de la communauté": "Community consensus",
+  "Avis très partagés sur ce héros.": "Opinions are sharply divided on this hero.",
+  "Très simple": "Very simple",
+  "Simple": "Simple",
+  "Demande un peu d'habitude": "Takes some practice",
+  "Exigeant": "Demanding",
+  "Très exigeant": "Very demanding",
+  "Faible": "Weak",
+  "Modeste": "Modest",
+  "Correct": "Decent",
+  "Fort": "Strong",
+  "Très fort": "Very strong",
+  "Rejeté": "Disliked",
+  "Peu apprécié": "Not well liked",
+  "Mitigé": "Mixed",
+  "Apprécié": "Well liked",
+  "Adoré": "Beloved",
 };

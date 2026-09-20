@@ -2534,3 +2534,29 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .fiche-heros .dm-head { flex-wrap: wrap; margin-bottom: 8px; }
 .fiche-heros .tb-bio { margin-top: 0; }
 .fiche-heros .vh-actions .tampon { min-height: 48px; flex: 1 1 0; }
+
+/* --- « Pour débuter » : l'avis de la communauté sur un héros officiel ------
+   Reprend la boîte de la biographie (`.tb-bio`) pour rester la même chose à
+   l'œil, avec trois nuances propres : le piège en tête, la mention
+   « clivant », et la source en pied. */
+.tb-avis summary{color:var(--affiche-jaune)}
+.tb-avis[open] summary{color:#fff}
+/* Le piège d'abord, et en rouge : un héros de la boîte de base qui n'est pas
+   un héros de départ, ça se lit AVANT les notes, pas après. */
+.hh-avis-piege{
+  margin:10px 12px 2px;padding:7px 10px;
+  background:rgba(230,36,41,.18);border:1px solid var(--red);
+  font-size:12px;line-height:1.35;
+}
+/* Les avis partagés se disent, ils ne se moyennent pas. */
+.hh-avis-clivant{
+  margin:10px 12px 2px;padding:6px 10px;
+  background:rgba(255,255,255,.06);border-left:3px solid var(--affiche-jaune);
+  font-size:12px;font-style:italic;color:var(--dim);
+}
+/* La source et sa date : un classement de héros vieillit, il faut pouvoir
+   juger de quand il date sans aller chercher ailleurs. */
+.hh-avis-source{
+  margin:2px 12px 10px;padding-top:6px;border-top:1px solid var(--soft);
+  font-size:11px;color:var(--mute);
+}
