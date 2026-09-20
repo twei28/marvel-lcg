@@ -1172,6 +1172,82 @@ def cas_pause_publiee(game_dir, port):
             "geste manuel n'ait ete depose entre les deux bascules")
 
 
+def cas_reveil_dogetinput(game_dir, port):
+    """Le VRAI `DoGetInput` se reveille quand une bascule de pause est
+    signalee -- pas le `pilote` qui le remplace dans TOUS les autres cas de
+    ce fichier.
+
+    ⚠ ANGLE MORT DU RESTE DE CE HARNAIS (signale par le donneur d'ordre,
+    ronde de correction 2 -- deja coute plusieurs defauts sur ce chantier,
+    dont un plantage du moteur) : `monter_le_moteur` remplace
+    `DeviceManager.DoGetInput` par `pilote` (repondeur SYNCHRONE, jamais de
+    vraie attente sur `notify.input`) pour toute la duree du PROCESSUS. Un
+    cas qui appelle `monter_le_moteur` ne peut donc JAMAIS observer un fil
+    reellement parque dans `DoGetInput.Wait` -- `cas_pause_publiee` ne
+    prouve que « l'etat finit par etre publie », ce qui etait deja vrai
+    AVANT le correctif de la ronde 1. Ce cas-ci EVITE le piege en n'appelant
+    JAMAIS `monter_le_moteur` : chaque cas de ce fichier tourne dans SON
+    PROPRE PROCESSUS (cf. `main()`), donc `DeviceManager.DoGetInput` reste
+    la VRAIE methode ici, intacte.
+
+    Ni partie, ni scenario : `DoGetInput` ne touche que ses propres
+    attributs (`asking_players`, `ask_options`, `notify`...). Import direct
+    depuis `src/` (comme le moteur complet le fait depuis une copie jetable,
+    mais un `DeviceManager` nu n'a besoin d'aucune copie).
+
+    VERIFIE (rapport de tache, ronde 2) : ce cas est ROUGE si on retire la
+    condition `if self.pause_a_publier: return True` de `check_fn` (ou la
+    branche qui la consomme) dans `DoGetInput` -- le fil reste bloque, le
+    `join` expire sans jamais avoir vu de retour. Il redevient VERT des
+    qu'on la remet. C'est le seul cas de ce fichier qui rougirait sur le
+    code d'hier (reveil nu, `notify.input.NotifyAll()` seul) et verdit sur
+    celui d'aujourd'hui.
+    """
+    racine_src = os.path.join(RACINE, "src")
+    if racine_src not in sys.path:
+        sys.path.insert(0, racine_src)
+    from engine.device.manager.base import DeviceManager, AskOptionPayload
+
+    device_manager = DeviceManager()
+    player_id = 0
+    device_manager.ask_options[player_id] = AskOptionPayload(
+        options_json="[]", ability_type="", event_name="", prompt_text="",
+        show_cancel=False, replay_input="")
+    device_manager.asking_players.append(player_id)
+
+    resultat = {"retour": "PAS_ENCORE", "eleve": None}
+
+    def fil_du_jeu():
+        try:
+            resultat["retour"] = device_manager.DoGetInput(
+                device_manager.ask_options[player_id], player_id, lambda: False)
+        except BaseException as exc:
+            resultat["eleve"] = exc
+
+    fil = threading.Thread(target=fil_du_jeu, daemon=True)
+    fil.start()
+    time.sleep(0.3)  # laisse DoGetInput entrer dans son Wait
+    assert fil.is_alive(), \
+        "premisse cassee : le fil n'est meme pas entre dans l'attente"
+
+    # Le geste, depuis un AUTRE fil -- exactement ce que fait /manuel_pause
+    # depuis le fil HTTP (World.BasculerPauseManuelle appelle la meme methode).
+    device_manager.SignalerPauseAPublier()
+
+    fil.join(timeout=2.0)
+    assert not fil.is_alive(), (
+        "DoGetInput ne s'est jamais reveille : SignalerPauseAPublier n'a "
+        "rien pose que check_fn sache reconnaitre -- exactement le bug "
+        "signale en ronde de correction 2 (un reveil qui ne produit rien)"
+    )
+    if resultat["eleve"] is not None:
+        raise resultat["eleve"]
+    assert resultat["retour"] is None, \
+        f"DoGetInput aurait du rendre la main sans entree (None) : {resultat['retour']!r}"
+    return ("le VRAI DoGetInput se reveille et rend la main quand une "
+            "bascule de pause est signalee depuis un autre fil")
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
@@ -1202,6 +1278,7 @@ CAS = {
     "pause_ferme_la_porte": cas_pause_ferme_la_porte,
     "reprise_rouvre_la_porte": cas_reprise_rouvre_la_porte,
     "pause_publiee": cas_pause_publiee,
+    "reveil_dogetinput": cas_reveil_dogetinput,
 }
 
 
