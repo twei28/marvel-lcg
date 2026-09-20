@@ -3404,33 +3404,44 @@ export function PagePartie({
           />
         </>
       ) : null}
-      {manuel ? null : (
-        <RecapPhaseMechant
-          entrees={historique.entrees}
-          monde={etat.monde}
-          // EN INSTANTANE SEULEMENT. En detaille, le cartouche du deroule
-          // (DeroulePhase, juste au-dessus) raconte la phase etape par etape et
-          // la termine par son propre bilan, valide au clic : le recap disait
-          // ensuite la meme chose une seconde plus tard, calculee par un autre
-          // chemin. Deux bilans qui se suivent, et qui pouvaient diverger
-          // (constat M7 de l'audit du 06/09/2026).
-          //
-          // Il avait ete remis en detaille « par securite » (c27bb07) a un moment
-          // ou le cartouche ne tenait pas le rythme et s'effaçait avant la fin de
-          // la phase. Ce n'est plus le cas : la cause racine est corrigee
-          // (86d8bd34) et le bilan du cartouche s'affiche vraiment (09e4bfa1).
-          actif={!unCartouche}
-          // La MEME definition de « la phase du mechant » que le cartouche, et la
-          // meme valeur deja calculee : le recap avait son propre detecteur de
-          // transition, sur sa propre photo de `monde.phase` (constat F6).
-          phaseMechantEnCours={phaseMechantEnCours}
-          // De quoi montrer la carte au survol d'une ligne : le même index et le
-          // même catalogue que la table, donc le même agrandissement qu'elle.
-          cartesMonde={cartesMondeParId}
-          catalogue={catalogue}
-          playerId={joueurActif}
-        />
-      )}
+      {/* ⚠ JAMAIS `{manuel ? null : (...)}` ICI (correctif tache 4, plan de
+          pause) -- CONTRAIREMENT A TOUTES LES AUTRES COUCHES DU MOTEUR
+          ci-dessus. `RecapPhaseMechant` construit son bilan sur la DUREE (un
+          `useState` qui ne se remplit qu'a la SORTIE de la phase, voir le
+          composant) : le demonter pendant la pause detruit ce bilan, et le
+          remonter a la reprise repart d'un etat vierge qui ne recalcule RIEN
+          tant qu'aucune NOUVELLE transition de phase ne se reproduit -- le
+          recap ne revenait donc jamais, meme quand il avait deja quelque
+          chose a montrer avant la pause (constate en ecrivant le test de la
+          tache 4). Le composant reste donc TOUJOURS monte ; c'est la prop
+          `actif`, qu'il sait deja lire pour se taire (`if (!bilan || !actif)
+          return null`), qui porte desormais aussi le silence du mode manuel. */}
+      <RecapPhaseMechant
+        entrees={historique.entrees}
+        monde={etat.monde}
+        // EN INSTANTANE SEULEMENT, ET JAMAIS PENDANT QUE LE MOTEUR SE TAIT.
+        // En detaille, le cartouche du deroule (DeroulePhase, juste au-dessus)
+        // raconte la phase etape par etape et la termine par son propre
+        // bilan, valide au clic : le recap disait ensuite la meme chose une
+        // seconde plus tard, calculee par un autre chemin. Deux bilans qui se
+        // suivent, et qui pouvaient diverger (constat M7 de l'audit du
+        // 06/09/2026).
+        //
+        // Il avait ete remis en detaille « par securite » (c27bb07) a un moment
+        // ou le cartouche ne tenait pas le rythme et s'effaçait avant la fin de
+        // la phase. Ce n'est plus le cas : la cause racine est corrigee
+        // (86d8bd34) et le bilan du cartouche s'affiche vraiment (09e4bfa1).
+        actif={!manuel && !unCartouche}
+        // La MEME definition de « la phase du mechant » que le cartouche, et la
+        // meme valeur deja calculee : le recap avait son propre detecteur de
+        // transition, sur sa propre photo de `monde.phase` (constat F6).
+        phaseMechantEnCours={phaseMechantEnCours}
+        // De quoi montrer la carte au survol d'une ligne : le même index et le
+        // même catalogue que la table, donc le même agrandissement qu'elle.
+        cartesMonde={cartesMondeParId}
+        catalogue={catalogue}
+        playerId={joueurActif}
+      />
       <CoucheCurseurs
         // ⚠ ET POUR LE SPECTATEUR, MEME EN SOLO. Le seuil « plus d'un joueur »
         // avait du sens entre joueurs ; il privait le spectateur de la seule

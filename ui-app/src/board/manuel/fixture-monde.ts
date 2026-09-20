@@ -49,3 +49,17 @@ export function mondeDeTest(fragment: Partial<World> = {}): World {
     ...fragment,
   } as never)
 }
+
+/**
+ * Meme monde que `mondeDeTest`, mais a DEUX sieges (tache 4 du plan de
+ * pause) : le selecteur de vue « Auto » (`board.tsx`, gardé par
+ * `!modeManuelDeclare && joueurs.length > 1`) ne s'affiche qu'a plusieurs
+ * joueurs -- `tableAvec` ne pose qu'un seul siege, il faut donc l'etendre via
+ * `fragment.players` plutot que passer par le premier argument.
+ */
+export function mondeDeuxJoueurs(fragment: Partial<World> = {}): World {
+  return mondeDeTest({
+    players: [heros('Spider-Man', 1), heros('Captain Marvel', 2)],
+    ...fragment,
+  } as never)
+}
