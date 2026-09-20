@@ -139,7 +139,17 @@ class ClassCard(HasResourceIcon, HasCost, HasMaxPer, PlayerCard):
         assert by_effect.GetInitiator() == player, f"{self.card.face} {player=}"
 
         if not by_effect.ProcessSelfCost():
-            Faces.DiscardAll([self], by_effect)
+            # ⚠ LE JUMEAU DE `PlayerAction.ResolveEffect` (correctif du
+            # 20/09/2026, signalement Yarro n°18). Meme situation, meme regle :
+            # une mise en jeu qui echoue n'a pas eu lieu, la carte retourne
+            # d'ou elle vient au lieu d'etre defaussee. Ici c'est le cout
+            # PROPRE de la carte qui n'a pas pu etre paye, les ressources
+            # l'ayant deja ete.
+            origine = by_effect.context.play_from_area
+            if origine != None:
+                Faces.MoveAllTo([self], origine, by_effect)
+            else:
+                Faces.DiscardAll([self], by_effect)
             return False
 
         would_play_message = Message.WhenPlayerWouldPlayCard(player, by_effect, resource, from_area, is_like_from_hand)

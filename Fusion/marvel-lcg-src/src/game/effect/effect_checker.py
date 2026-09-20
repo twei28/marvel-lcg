@@ -242,7 +242,12 @@ class EffectChecker:
 
                 effect.context.paid_this_cost = need_cost
                 payment = self.cost_for_different_target.GetPayment(target)
-                effect.context.paid_this_resources = player.SpendResource(effect, paid_effects, payment)
+                # `need_cost` transmis depuis le 20/09/2026 (signalement Yarro
+                # n°18) : c'est lui qui rend le paiement ATOMIQUE. Sans ce
+                # parametre, `SpendResource` depensait tout puis laissait la
+                # ligne suivante constater le manque -- trop tard, les
+                # ressources etaient parties.
+                effect.context.paid_this_resources = player.SpendResource(effect, paid_effects, payment, need_cost)
                 player.res_pool.Reset()
                 return effect.context.paid_this_resources.IsMatchCost(need_cost)
             else:

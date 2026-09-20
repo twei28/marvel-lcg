@@ -115,6 +115,20 @@ class CostFunc:
                 return self.call_fn(targets, effect, player if isinstance(player, Player) else None)
             return True
 
+        def RollbackCost(self, effect: 'Effect') -> bool:
+            """REND ce que `PayCost` a engage, quand le paiement est ABANDONNE.
+
+            Appelee par `Player.SpendResource` (player_action.py) et par elle
+            seule : un paiement qui ne couvre pas le cout ne doit rien couter
+            au joueur. Rend True quand il n'y a plus rien a rendre, False
+            quand ce cout-la ne sait pas se defaire -- l'appelant le journalise
+            alors, il ne l'ignore pas en silence.
+
+            Le cas par defaut : un cout SANS `call_fn` n'a fait que CHOISIR des
+            cibles, il n'a rien preleve, il n'y a donc rien a rendre.
+            """
+            return self.call_fn == None
+
         @final
         def AfterCheck(self, effect: 'Effect'):
             self.OnEffectEnd(self.cost_legal_targets, effect)
@@ -224,6 +238,12 @@ class CostFunc:
                     return True
 
             def on_call(targets: Sequence['CardFace'], effect: 'Effect', player: 'Player|None') -> bool:
+                # ⚠ VIDER D'ABORD : l'objet CostFunc est porte par l'ABILITY,
+                # donc PARTAGE par tous ses effets et par tous les paiements
+                # successifs. Sans ce vidage, `return_exhausted_cards` garde la
+                # selection du paiement PRECEDENT, et `RollbackCost` redresserait
+                # des cartes que le paiement abandonne n'a jamais inclinees.
+                self.return_exhausted_cards = []
                 if self.not_need_to_exhaust:
                     return True
                 if Faces.ExhaustAll(targets, effect) == targets:
@@ -250,6 +270,19 @@ class CostFunc:
                 )
             selector.selector_filter.AddParameter(canbe_exhaust=True)
             super().__init__(selector, on_call, on_check)
+
+        def RollbackCost(self, effect: 'Effect') -> bool:
+            """REDRESSE les cartes que ce cout vient d'incliner.
+
+            Le seul rendu EXACT possible : `return_exhausted_cards` est la
+            liste precise des cartes inclinees par le dernier `PayCost`, et
+            une carte inclinee pour payer se rend en la redressant.
+            """
+            from game.operate.faces import Faces
+            if self.return_exhausted_cards:
+                Faces.ReadyAll(self.return_exhausted_cards, effect)
+                self.return_exhausted_cards = []
+            return True
 
     # class Choose2(Base):
     #     def __init__(self, traits: List["CardFace.TRAITS"],

@@ -8704,10 +8704,15 @@ CAS = [
         "main_exclusive": ["sd015", "sd011"],
         "jouer": ["sd015"],
         "verifier": "etat_attendu",
-        # Une carte dont le cout ne peut pas etre paye n'est PAS rendue a la
-        # main : `CardPlayer.Play` la defausse (card_player.py:134-136). Les
-        # deux cles ensemble disent bien « elle n'est jamais entree en jeu ».
-        "attendu": {"hors_jeu": ["sd015"], "defausse": ["sd015"]},
+        # ⚠ ATTENDU CORRIGE LE 20/09/2026 (signalement Yarro n°18). Il disait
+        # « hors_jeu + defausse », avec ce commentaire : « une carte dont le
+        # cout ne peut pas etre paye n'est PAS rendue a la main ». C'etait la
+        # description d'un DEFAUT, pas d'une regle : le joueur perdait la
+        # carte sans l'avoir jouee. `PlayerAction.ResolveEffect` la rend
+        # desormais a sa zone d'origine. Ce cas-ci a d'ailleurs servi de
+        # temoin independant : il prouve que le defaut ne tenait pas a
+        # SP//dr, il frappait n'importe quelle carte trop chere.
+        "attendu": {"hors_jeu": ["sd015"], "en_main": ["sd015"]},
     },
     {
         "nom": "sd011 Top Speed — la carte qu'on paie part QUAND MEME, mais plus aucune autre ensuite",
@@ -23426,7 +23431,10 @@ CAS = [
                      "(« Feint reste dans le deck ») restait VERT sans le module, parce "
                      "que le deck naturel d'Ares contient trois Feint : To Battle! jouee "
                      "en sortait une, il en restait deux. On lit donc la MAIN : jouee, "
-                     "Genius est defausse et Feint arrive ; refusee, Genius reste"),
+                     "Genius est defausse et Feint arrive ; refusee, Genius reste. "
+                     "⚠ ATTENDU CORRIGE LE 20/09/2026 (signalement Yarro n°18) : la "
+                     "carte refusee reste en MAIN au lieu de partir en defausse, la "
+                     "main compte donc 2 cartes et non 1"),
         "scenario": "rhino",
         "heros": "ares",
         "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')", "Puzzle.Reveal('ar010')",
@@ -23436,7 +23444,7 @@ CAS = [
         "jouer": ["ar003"],
         "cibles": ["ar006"],
         "verifier": "etat_attendu",
-        "attendu": {"en_main": ["01089"], "taille_main": 1, "defausse": ["ar003"],
+        "attendu": {"en_main": ["01089", "ar003"], "taille_main": 2,
                     "en_jeu": ["ar010"]},
     },
     {
@@ -23757,7 +23765,10 @@ CAS = [
     },
     {
         "nom": "bl002 Gear Up — CONTRE-CAS en forme heros, seule en main : injouable (cout 1, rien pour payer)",
-        "pourquoi": "ligne de base du cas precedent : la reduction ne vaut qu'en civil",
+        "pourquoi": ("ligne de base du cas precedent : la reduction ne vaut qu'en civil. "
+                     "⚠ ATTENDU CORRIGE LE 20/09/2026 (signalement Yarro n°18) : une carte "
+                     "qu'on ne peut pas payer RESTE EN MAIN. L'attendu disait « main vide, "
+                     "bl002 en defausse » -- il gravait le defaut que Yarro a signale"),
         "scenario": "rhino",
         "heros": "blade",
         "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')",
@@ -23768,7 +23779,7 @@ CAS = [
         "cibles": ["bl007"],
         "accepter_choix": True,
         "verifier": "etat_attendu",
-        "attendu": {"taille_main": 0, "defausse": ["bl002"]},
+        "attendu": {"taille_main": 1, "en_main": ["bl002"]},
     },
     {
         "nom": "bl003 Go for the Heart — 4 degats PERCANTS : le Tenace de Whirlwind ne bloque rien",
@@ -41656,6 +41667,58 @@ CAS = [
                 ]
             ]
         }
+    },
+    {
+        "nom": "31001a Sync Ratio — paiement INCOMPLET : la carte revient en main, les interfaces restent pretes",
+        "pourquoi": ("signalement Yarro n18 du 20/09/2026 : avec 2 interfaces, Sync Ratio "
+                     "ANNONCE 2 ressources mais n'en GENERE qu'une si le joueur n'incline "
+                     "qu'une interface. Le paiement reste incomplet : le moteur defaussait "
+                     "la carte jouee tout en gardant l'interface inclinee (perte seche)"),
+        "scenario": "rhino",
+        "heros": "sp_dr",
+        "mise_en_place": ["Puzzle.ChangeForm('31002a')",
+                          "Puzzle.PutIntoPlay('31012')"],
+        "main_exclusive": ["31022"],
+        "declencher": [],
+        "jouer": ["31022"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["31022"],
+                    "hors_jeu": ["31022"],
+                    "pret": ["31002b", "31012"]},
+    },
+    {
+        "nom": "31001a Sync Ratio — paiement INCOMPLET en MIXTE : la carte de main depensee revient aussi",
+        "pourquoi": ("l'autre moitie du signalement Yarro n18, le « mix » : 31010 coute 3, "
+                     "Sync Ratio en ANNONCE 2 (deux interfaces) et 31004 la troisieme. Le "
+                     "joueur n'incline qu'une interface -> 1 + 1 = 2 < 3. La carte de main "
+                     "depensee comme ressource transite par `area_resources` : elle doit "
+                     "revenir en main, pas finir en defausse"),
+        "scenario": "rhino",
+        "heros": "sp_dr",
+        "mise_en_place": ["Puzzle.ChangeForm('31002a')",
+                          "Puzzle.PutIntoPlay('31012')"],
+        "main_exclusive": ["31010", "31004"],
+        "declencher": [],
+        "jouer": ["31010"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["31010", "31004"],
+                    "hors_jeu": ["31010"],
+                    "pret": ["31002b", "31012"]},
+    },
+    {
+        "nom": "31001a Sync Ratio — paiement COMPLET : l'interface s'incline et la carte est jouee",
+        "pourquoi": ("contre-cas OBLIGATOIRE du paiement atomique : une seule interface, un "
+                     "cout de 1, l'inclinaison couvre tout. Sans lui, un correctif qui "
+                     "refuserait TOUS les paiements resterait vert sur les deux cas d'echec"),
+        "scenario": "rhino",
+        "heros": "sp_dr",
+        "mise_en_place": ["Puzzle.ChangeForm('31002a')"],
+        "main_exclusive": ["31007"],
+        "declencher": [],
+        "jouer": ["31007"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["31007"],
+                    "exhausted": ["31002b"]},
     },
 
 ]

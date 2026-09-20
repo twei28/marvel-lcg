@@ -596,7 +596,24 @@ class PlayerAction:
             return True
         else:
             if effect.ability.is_play:
-                Faces.DiscardAll([this], effect)
+                # ⚠ LA CARTE NE PART PAS A LA DEFAUSSE (correctif du 20/09/2026,
+                # signalement Yarro n°18). Une carte dont la mise en jeu ECHOUE
+                # n'a jamais ete jouee : elle retourne d'ou elle vient. Il y
+                # avait ici `Faces.DiscardAll([this], effect)`, qui jetait a la
+                # defausse une carte encore en main deux instants plus tot --
+                # le joueur la perdait sans l'avoir jouee, et sans un mot.
+                # `play_from_area` est releve juste avant
+                # `MoveAllToProcessingArea`, au debut de cette meme methode.
+                origine = effect.context.play_from_area
+                if origine != None:
+                    Faces.MoveAllTo([this], origine, effect)
+                else:
+                    # Aucune zone d'origine relevee : la carte ne vient pas
+                    # d'une mise en jeu ordinaire. On ne la laisse pas en zone
+                    # de traitement, mais on dit pourquoi on la defausse.
+                    Log.Assert(CATEGORY_NAME,
+                               f"{effect} echoue sans zone d'origine, {this} est defaussee")
+                    Faces.DiscardAll([this], effect)
 
         # Fix "45017"
         if effect.ability.selectors and \
@@ -1083,12 +1100,39 @@ class PlayerAction:
     #                     effects += effect.ToAvailableArray(message)
     #     return effects
 
-    def SpendResource(self, for_effect: 'Effect', paid_effects: Sequence['Effect'], payment: 'TargetCost.Payment') -> 'Resources':
+    def SpendResource(self, for_effect: 'Effect', paid_effects: Sequence['Effect'], payment: 'TargetCost.Payment',
+                      need_cost: 'Cost|None'=None) -> 'Resources':
+        """Fait payer au joueur les moyens de paiement QU'IL A CHOISIS.
+
+        ⚠ LE PAIEMENT EST ATOMIQUE (correctif du 20/09/2026, signalement Yarro
+        n°18). `need_cost` est le cout a couvrir : si les moyens choisis
+        rendent MOINS que lui, rien n'est depense du tout.
+
+        POURQUOI. Un moyen de paiement peut ANNONCER plus qu'il ne GENERE. Sync
+        Ratio (`31001a` SP//dr Suit) annonce, a la verification, la ressource
+        imprimee de TOUTES les interfaces inclinables ; au paiement, son cout
+        `CostFunc.Exhaust(range=(1, "All"))` laisse le joueur n'en incliner
+        qu'une. Le joueur voyait donc « 2 » annonce pour un cout de 2, et le
+        moteur n'en recevait qu'une. Meme forme exactement sur `50044` Fury's
+        Watch (`CostFunc.RemoveTokens(..., (1, 2), 'threat')`) : le defaut est
+        GENERIQUE, pas propre a SP//dr.
+
+        Avant ce correctif, le manque etait constate APRES coup, par
+        `EffectChecker.check_pay` : l'interface restait inclinee, la carte de
+        main depensee restait defaussee, et `PlayerAction.ResolveEffect`
+        defaussait par-dessus la carte qu'on voulait jouer. Perte seche des
+        deux cotes, en un clic, sans message.
+        """
         from game.message import Message
 
         player = self.GetPlayer()
 
         paid_faces: List['CardFace'] = []
+        effets_payes: List['Effect'] = []
+        # La zone d'ou vient chaque payeur, relevee AVANT qu'il paie : c'est
+        # la seule facon de renvoyer une carte de main depensee comme
+        # ressource (elle transite par `area_resources`) la ou elle etait.
+        zones_avant: Dict['CardFace', 'Deck'] = {}
 
         for paying_effect in paid_effects:
             paid = False
@@ -1098,8 +1142,10 @@ class PlayerAction:
                     expected_res = Resources.FromText(pay_info[paying_effect])
                     paying_effect.context.initiator = player
                     cost_check_effect = payment.cost_check[paying_effect]
+                    zones_avant[paying_effect.this] = paying_effect.this.card.area
                     message = Message.WhenPlayerPayingResources(player, paying_effect, for_effect, for_effect.targets, expected_res, cost_check_effect)
                     message.Send()
+                    effets_payes.append(paying_effect)
                     paid_faces.append(paying_effect.this)
                     break
             if not paid:
@@ -1107,6 +1153,16 @@ class PlayerAction:
 
         # for paying_effect in paying_effects:
         #     paying_effect.UnRegisterSelf()
+
+        # LE POINT D'ABANDON. Tout ce qui precede est encore REVERSIBLE : les
+        # cartes depensees attendent dans `area_resources` (rien n'est defausse
+        # avant `DiscardResourcesArea`), et les couts des payeurs savent se
+        # defaire (`CostFunc.RollbackCost`). C'est le dernier endroit ou rendre
+        # ce qui a ete engage, et c'est donc ici que la reparation vit.
+        if need_cost != None and not player.res_pool.Get().IsMatchCost(need_cost):
+            self._RendreLePaiement(for_effect, effets_payes, zones_avant)
+            player.res_pool.Reset()
+            return Resources("0")
 
         spent_message = Message.AfterCardsBeSpendAsResource(paid_faces, for_effect, player)
         spent_message.Send()
@@ -1117,6 +1173,33 @@ class PlayerAction:
         player.res_pool.Reset()
 
         return resource
+
+    def _RendreLePaiement(self, for_effect: 'Effect', effets_payes: Sequence['Effect'],
+                          zones_avant: Dict['CardFace', 'Deck']) -> None:
+        """Rend au joueur tout ce qu'un paiement abandonne avait engage."""
+        from game.operate.faces import Faces
+
+        # 1. Toute carte qui a CHANGE DE ZONE pour payer retourne d'ou elle
+        #    vient. C'est la carte de main depensee comme ressource : elle
+        #    attend dans `area_resources` (celle de SON joueur -- un autre
+        #    joueur peut aider a payer, « The Power of Leadership »), et sans
+        #    ce retour elle y resterait bloquee, `DiscardResourcesArea`
+        #    n'etant plus appelee sur un paiement abandonne. Comparer la zone
+        #    a celle relevee avant le paiement, plutot que de balayer une
+        #    zone de ressources precise, couvre les deux cas d'un coup.
+        for face, origine in zones_avant.items():
+            if face.card.area != origine:
+                Faces.MoveAllTo([face], origine, for_effect)
+
+        # 2. Les couts payes par les moyens de paiement (inclinaison...) se
+        #    defont. Un cout qui ne sait pas se defaire est JOURNALISE : on ne
+        #    fait pas croire a un rendu complet.
+        for paying_effect in effets_payes:
+            for cost_func in paying_effect.cost_func.GetAll():
+                if not cost_func.RollbackCost(paying_effect):
+                    Log.Assert(CATEGORY_NAME,
+                               f"paiement abandonne : {cost_func} de {paying_effect} "
+                               f"ne sait pas se defaire, son cout reste paye")
 
     def AskSpendResources(self, cost: 'Cost', by_effect: 'Effect') -> bool:
         paid_res = self.AskSpendResourcesInternal(cost, by_effect)
