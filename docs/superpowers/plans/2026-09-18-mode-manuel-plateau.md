@@ -37,6 +37,9 @@ vert. Ce plan consomme `WorldDescriptor.mode_manuel`, `Puzzle.MoveTo`,
   l'utilisateur, et de lui seul.
 - **Si quelqu'un joue, prévenir avant tout redémarrage.**
 - **Le mode manuel n'enregistre aucun haut fait**, comme le bac à sable.
+  ⚠ Sans portée visible : la bannière des hauts faits est débranchée à la
+  demande de l'utilisateur, plus rien ne les montre. Le filtre est gardé
+  pour le jour où elle serait rallumée.
 
 ---
 
@@ -1266,3 +1269,242 @@ cd "/mnt/c/Users/arnau/Desktop/Marvel LCG"
 git add ui-check/tests/mode-manuel.spec.ts ui-check/mode-manuel.png
 git commit -m "test(manuel): la preuve a l'ecran, du glisser au Ctrl+Z"
 ```
+
+---
+
+### Tâche 7 bis : le sélecteur de héros
+
+**Ajoutée le 19/09/2026**, après une découverte de la tâche 2 : le plateau ne
+construit qu'UNE zone « main », celle du joueur regardé (`zones.ts`, un seul
+`emplacement('main', ...)` bâti sur `notre?.hand_cards`). La spec promettait
+« toutes les mains visibles, puisqu'il n'y a qu'un opérateur » : c'est
+structurellement impossible sans refondre le rendu.
+
+**Décision de l'utilisateur** : une main à l'écran, et un sélecteur pour passer
+d'un héros à l'autre.
+
+**Fichiers :**
+- Créer : `ui-app/src/board/manuel/SelecteurHeros.tsx` et son test
+- Modifier : `ui-app/src/board.tsx` (poser `vueForcee` depuis le sélecteur)
+
+**Interfaces :**
+- Consomme : `estModeManuel` (tâche 1), `vueForcee` (`board.tsx:1629`), qui
+  entre déjà dans le calcul du joueur regardé.
+- Produit : `<SelecteurHeros joueurs={...} regarde={n} onRegarder={(n) => ...} />`
+
+⚠ **Le mécanisme existe déjà, il lui manque un bouton.** En mode automatique,
+la vue suit le joueur à qui le moteur pose une question (`etat.joueurDemande`).
+En manuel il ne demande plus rien : la vue resterait figée sur le siège du
+client. Ne pas inventer un second chemin de vue, poser `vueForcee`.
+
+- [ ] **Étape 1 : écrire le test rouge**
+
+Un composant qui liste les héros de la partie, marque celui qu'on regarde, et
+appelle `onRegarder` avec le bon index au clic. Trois cas : la liste montre un
+bouton par héros ; celui qu'on regarde est marqué ; un clic sur un autre appelle
+`onRegarder` avec son index.
+
+- [ ] **Étape 2 : le voir rouge, écrire le composant, le voir vert**
+
+- [ ] **Étape 3 : le brancher**
+
+Dans `board.tsx`, ne le rendre qu'en mode manuel et seulement s'il y a plus d'un
+héros : à un seul héros, un sélecteur à une entrée n'apprend rien et prend de la
+place.
+
+- [ ] **Étape 4 : vérifier et commiter**
+
+```bash
+cd "/mnt/c/Users/arnau/Desktop/Marvel LCG/ui-app"
+npm test && npm run typecheck
+```
+
+---
+
+### Tâche 4 bis : les piles écartées du SCÉNARIO, atteignables
+
+**Ajoutée le 19/09/2026**, sur un constat de la revue de la tâche 3, qui a lu le
+dossier de la tâche 5 en vérifiant autre chose.
+
+**Le défaut.** La table `PILE_PAR_ZONE` du dossier de la tâche 5 fait pointer
+DEUX zones visuellement distinctes du plateau vers le même nom moteur
+`'AsideDeck'` : « nemesis » (le set némésis du héros) et « set-aside-scenario »
+(les cartes mises de côté par le scénario). Or côté moteur, `ZONES_MONDE`
+(`game/puzzle/puzzle.py`) n'a AUCUNE entrée `AsideDeck` : `_ZoneParNom` retombe
+donc sur `ZONES_JOUEUR['AsideDeck']`, c'est-à-dire le set némésis du héros.
+Lâcher une carte sur « Mises de côté du scénario » l'enverrait silencieusement
+dans le tas du héros. Pas d'erreur, pas de trace, une carte ailleurs.
+
+C'est exactement ce que la table des piles devait empêcher, et c'est le
+troisième cas de la même famille sur ce chantier.
+
+**Le fond du problème.** `world.aside_deck` et `world.aside_modular`
+(`game/world/world.py:84-85`) existent, portent bien `DeckType.AsideDeck`, et ne
+sont atteignables par aucun geste manuel. Ce sont des zones que le mode manuel
+promet de savoir remplir, puisqu'il promet que toute carte va dans toute pile.
+
+**Fichiers :**
+- Modifier : `Fusion/marvel-lcg-src/src/game/puzzle/puzzle.py` (`ZONES_MONDE`)
+- Modifier : `Fusion/marvel-lcg-src/src/game/puzzle/puzzle_.py` (rien à changer,
+  la signature de `MoveTo` ne bouge pas ; vérifier seulement)
+- Modifier : `Fusion/marvel-lcg-src/tools/test_mode_manuel.py` (un cas)
+
+**Interfaces :**
+- Produit : deux noms de zone nouveaux, `'AsideScenario'` (→ `w.aside_deck`) et
+  `'AsideModular'` (→ `w.aside_modular`), consommés par la tâche 5.
+
+⚠ **Ne renomme PAS `'AsideDeck'`**, qui désigne déjà la pile du joueur et qui
+est utilisée. On ajoute, on ne déplace pas.
+
+⚠ Le dossier de jeu jetable `.game-src-par8` a été supprimé à la fin du plan
+moteur. Le recréer avant de lancer le harnais (voir la tâche 0 du plan
+`2026-09-18-mode-manuel-moteur.md`), et le supprimer après.
+
+- [ ] **Étape 1 : écrire le cas rouge**
+
+Dans `tools/test_mode_manuel.py`, un cas qui envoie une carte vers
+`'AsideScenario'` et vérifie qu'elle arrive dans `world.aside_deck`, ET
+**qu'elle n'est PAS** dans le set némésis du héros. Le second contrôle est le
+plus important : c'est lui qui prouve qu'on ne retombe pas sur la pile du
+joueur, et c'est précisément le défaut qu'on répare.
+
+- [ ] **Étape 2 : le voir rouge**
+
+Attendu : la carte atterrit dans le set némésis du héros, ou `KeyError` sur une
+zone inconnue.
+
+- [ ] **Étape 3 : ajouter les deux entrées, le voir vert**
+
+- [ ] **Étape 4 : relancer la batterie du harnais, puis commiter**
+
+---
+
+### Tâche 4 ter : un geste refusé doit se voir
+
+**Ajoutée le 19/09/2026**, sur un signalement de la tâche 4 bis, et déjà
+pressentie par la revue finale du plan moteur.
+
+**Le défaut.** Quand un geste manuel échoue, rien ne le dit au joueur. La route
+`/sandbox_command` répond « déposé » tout de suite, l'exécution a lieu plus tard
+sur le fil du jeu, et l'erreur atterrit dans `device_manager.sandbox_last_error`
+où personne ne va la chercher. Le joueur voit une table qui ne réagit pas, sans
+savoir si son geste est parti, s'il a été refusé, ou si l'application est
+figée.
+
+Ça n'était pas critique tant que le mode manuel se prouvait au harnais. Ça le
+devient maintenant : **le plateau est le seul moyen de jouer**, et la tâche 5
+va multiplier les gestes refusables (lâcher une carte dans le vide, sur une
+zone sans correspondance, sur une carte qui n'accepte pas d'attache).
+
+C'est aussi une règle du projet : pas de repli silencieux.
+
+**Fichiers :**
+- Modifier : `Fusion/marvel-lcg-src/src/game/render/descriptor/world.py`
+- Modifier : `Fusion/marvel-lcg-src/src/game/render/to_descriptor.py`
+- Modifier : `Fusion/marvel-lcg-src/src/game/world/world.py` (`ManualLoop`)
+- Modifier : `ui-app/src/board/world.ts`, `ui-app/src/board/CoucheTriche.tsx`
+- Modifier : `Fusion/marvel-lcg-src/tools/test_mode_manuel.py`
+
+**Interfaces :**
+- Produit : `WorldDescriptor.manuel_refus: str`, vide quand tout va bien, et
+  portant le motif du dernier geste refusé sinon.
+- Produit, côté plateau : le refus s'affiche et entre au journal avec sa marque.
+
+⚠ **Le piège est dans la boucle manuelle.** Elle ne redessine aujourd'hui que
+lorsqu'un geste a été appliqué. Un geste REFUSÉ ne déclenche donc aucun rendu,
+et le motif ne partirait jamais vers le plateau. Il faut redessiner aussi quand
+le drain rend une liste vide mais qu'une erreur a été posée. C'est LE point de
+cette tâche, le reste est du câblage.
+
+⚠ **Le motif ne doit pas rester collé.** Une fois le refus publié et vu, le
+champ doit repartir à vide, sinon le plateau affichera éternellement la même
+erreur. Le moteur remet déjà `sandbox_last_error` à vide au drain suivant qui
+réussit : vérifier que ça suffit, et le dire dans le rapport.
+
+- [ ] **Étape 1 : le cas rouge, côté moteur**
+
+Dans `tools/test_mode_manuel.py` : déposer un geste invalide (une zone inconnue),
+et vérifier que le descripteur publié porte le motif du refus. Puis qu'un geste
+valide qui suit le fait repartir à vide.
+
+- [ ] **Étape 2 : le voir rouge, poser le champ et le rendu, le voir vert**
+
+- [ ] **Étape 3 : côté plateau, le montrer**
+
+Le refus entre au journal des interventions avec sa marque, comme les gestes
+refusés le font déjà, et s'affiche brièvement à l'écran. Discret : ce n'est pas
+une erreur de l'application, c'est une réponse à un geste.
+
+- [ ] **Étape 4 : relancer les deux batteries, puis commiter**
+
+---
+
+### Tâche 8 bis : le silence commence avec la BOUCLE, pas avec la règle
+
+**Ajoutée le 19/09/2026**, sur la découverte de la tâche 8, la seule qui ait
+regardé l'écran.
+
+**Le défaut, et il rend le mode inutilisable.** Une partie manuelle créée depuis
+l'écran de préparation reste bloquée POUR TOUJOURS au premier mulligan. Le
+moteur pose bien la question, comme décidé (mise en place intégrale, mulligan
+compris), mais le plateau masque le panneau qui la pose. Le joueur est devant sa
+première main sans rien à cliquer, et la partie ne démarrera jamais.
+
+**La cause.** Le plateau masque les couches du moteur sur `estModeManuel`,
+c'est-à-dire sur la RÈGLE. Or la règle est vraie dès la création de la partie,
+mise en place comprise. Le moteur, lui, distingue deux choses :
+
+- `rule.mode_manuel` : cette partie EST manuelle ;
+- `world.manuel_actif` : le moteur S'EST TU, posé seulement à l'entrée de la
+  boucle manuelle, après la mise en place.
+
+Le plan moteur insistait sur cette distinction, et la trame ne publie pourtant
+que la règle. Le plan plateau a donc masqué trop tôt.
+
+**Fichiers :**
+- Modifier : `Fusion/marvel-lcg-src/src/game/render/descriptor/world.py`
+- Modifier : `Fusion/marvel-lcg-src/src/game/render/to_descriptor.py`
+- Modifier : `ui-app/src/board/world.ts`, `ui-app/src/board/manuel/mode.ts`
+- Modifier : les appelants qui masquent ou activent (board.tsx, CoucheTriche)
+- Modifier : `Fusion/marvel-lcg-src/tools/test_mode_manuel.py`
+
+**Interfaces :**
+- Produit : `WorldDescriptor.manuel_actif: bool`, faux pendant la mise en place,
+  vrai dès que la boucle manuelle a pris la main.
+- Produit : `leMoteurSeTait(world)` côté plateau, distinct de `estModeManuel`.
+
+**Ce qui se règle sur quoi**, et c'est le cœur de la tâche :
+
+- **Sur l'ÉTAT (`manuel_actif`)** : le masquage des couches du moteur, et les
+  gestes manuels eux-mêmes (menu, clavier, glisser). Pendant la mise en place,
+  la partie se comporte normalement : le joueur répond aux questions, il ne
+  manipule pas encore la table.
+- **Sur la RÈGLE (`mode_manuel`)** : ce qui décrit la NATURE de la partie et ne
+  dépend pas du moment — le refus d'enregistrer un haut fait, la mention au
+  rapport de bug, la saisie du journal de campagne.
+
+⚠ **Le bouton « Fin du tour » reste affiché** en mode manuel, signalé par la
+tâche 8 sans être testé. Même famille : à masquer avec le reste, et à couvrir.
+
+- [ ] **Étape 1 : le cas rouge, côté moteur**
+
+Le descripteur publié pendant la mise en place porte `manuel_actif` à faux, et
+à vrai une fois la boucle manuelle entrée.
+
+- [ ] **Étape 2 : publier le champ, le voir vert**
+
+- [ ] **Étape 3 : le cas rouge, côté plateau**
+
+Pendant la mise en place d'une partie manuelle, la demande centrale est VISIBLE.
+Une fois le moteur tu, elle ne l'est plus. C'est le témoin qui prouve que le
+mulligan est atteignable.
+
+- [ ] **Étape 4 : basculer les appelants, le voir vert**
+
+- [ ] **Étape 5 : le test de bout en bout doit le prouver aussi**
+
+`ui-check/tests/mode-manuel.spec.ts` crée sa partie en contournant l'écran de
+préparation. Il doit désormais passer par le même chemin qu'un joueur, mulligan
+compris, sinon il continuera de ne pas voir ce défaut.
+
+- [ ] **Étape 6 : relancer les deux batteries, puis commiter**

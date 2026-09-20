@@ -52,9 +52,15 @@ brutes, et tout raccourci qui ferait exécuter une règle par le moteur.
 Une règle booléenne `mode_manuel`, sur le modèle exact de `mode_sandbox`
 (`game/world/world_rule.py:71`) : posée par la liste `rules` du descripteur,
 donc **conservée dans la sauvegarde**. On saura toujours qu'une partie était
-manuelle. Les hauts faits ne sont pas enregistrés, au même endroit et pour la
-même raison que le bac à sable (`ui-app/src/board/moteur.ts:986`), et le
-rapport de bug porte la mention.
+manuelle. Le rapport de bug porte la mention.
+
+⚠ **Ce n'est PAS une garantie du produit, contrairement à ce que cette spec a
+dit jusqu'au 19/09/2026.** La bannière des hauts faits est DÉBRANCHÉE depuis
+une demande de l'utilisateur (commentaire dans `ui-app/src/board.tsx`, à
+l'endroit où elle s'affichait) : plus rien ne les montre au joueur. Le filtre
+du mode manuel, comme celui du bac à sable, porte donc sur une liste que
+personne ne regarde. Il est conservé et testé pour le jour où la bannière
+serait rallumée, pas pour protéger quoi que ce soit aujourd'hui.
 
 ### 2. La boucle manuelle
 
@@ -264,7 +270,7 @@ d'une question à jour.
 | Pendant la pause | La porte du silence se ferme : aucune capacité ne part |
 | Reprise | Le moteur repose sa question, options recalculées |
 | Traces | Les gestes s'insèrent au journal à leur place chronologique, marqués comme manuels, ET le rapport de bug reprend la liste seule en fin de document |
-| Hauts faits | Ils continuent de compter. La partie porte une marque « corrigée à la main », visible au journal et au rapport |
+| Hauts faits | Sans objet : la bannière est débranchée, plus rien ne les affiche. La partie porte une marque « corrigée à la main », visible au journal et au rapport |
 
 ## Ce que ça change à l'architecture décrite plus haut
 

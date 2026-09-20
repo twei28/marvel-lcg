@@ -80,7 +80,23 @@ Envoi `-Code` seulement : ni image ni document n'avait bougé.
    `docs/superpowers/plans/2026-09-18-mode-manuel-plateau.md`. La moitié moteur
    est finie, revue et fusionnable (16 commits, 19 cas verts).
 
+## ⚠ Le déploiement est BLOQUÉ par un fichier d'une autre session
+
+`ui-app/src/board/halo-heros-accord.test.ts` porte une directive
+`@ts-expect-error` devenue inutile, livrée le 19/09 avec l'éditeur de palettes.
+Elle casse `npm run typecheck`, **et le typecheck casse la construction du
+plateau** : `ui-app/deployer.sh` ne peut plus construire. Constaté le 20/09 en
+montant un serveur local, qui a dû contourner la ligne puis restaurer le
+fichier. Une ligne à retirer, dans le fichier d'une autre session.
+
 ## Ce qui reste ouvert, sans être planifié
+
+- **Echo, Photographic Reflexes** : signalement n°17 d'un joueur, diagnostiqué
+  le 20/09. Ce n'est pas un défaut du moteur, la mécanique marche et le joueur
+  s'en est servi sans le savoir ; c'est l'interface qui ne dit pas comment la
+  carte se joue. Fiche
+  `2026-09-20-echo-photographic-reflexes-ergonomie.md`. **Le joueur attend une
+  réponse depuis le 19/09 au soir.**
 
 - **Le signalement perdu du 18/09 reste inexpliqué.** Aucune trace nulle part,
   et le joueur ne se souvient pas s'il avait vu la confirmation ou une erreur.
