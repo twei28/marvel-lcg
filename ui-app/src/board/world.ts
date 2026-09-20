@@ -382,6 +382,25 @@ export type World = {
    * texte pour le joueur : ne jamais l'afficher tel quel à l'écran.
    */
   manuel_refus?: string
+  /**
+   * Qui a posé la pause EN COURS (tâche 3), vide hors pause. Le moteur ne
+   * connaît aucun pseudo : ce champ n'est renseigné que si l'appelant de
+   * `POST /manuel_pause` a fourni un `qui` non vide. Absent ou vide →
+   * `BandeauPause` dit « quelqu'un ».
+   *
+   * ⚠ EFFACÉ À LA REPRISE, contrairement à `corrigee_a_la_main` juste
+   * dessous : ce champ décrit la pause EN COURS, pas la partie entière.
+   */
+  pause_par?: string
+  /**
+   * Depuis quand la pause EN COURS dure (tâche 3), vide hors pause. Horodatage
+   * tel que le moteur l'a formaté (`Scene.pause_a`, même `Time.Format()` que
+   * le reste de la sauvegarde) : une chaîne à afficher telle quelle, jamais à
+   * recalculer côté client (le serveur tourne en UTC, voir `salon.ts`).
+   *
+   * ⚠ EFFACÉ À LA REPRISE, même précaution que `pause_par`.
+   */
+  pause_a?: string
   event_name: string
   /**
    * Les activations ennemies du round en cours, telles que le MOTEUR les a

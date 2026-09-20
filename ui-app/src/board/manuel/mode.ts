@@ -27,3 +27,25 @@ export function estModeManuel(world: World | undefined): boolean {
 export function leMoteurSeTait(world: World | undefined): boolean {
   return world?.manuel_actif === true
 }
+
+/**
+ * Une partie ORDINAIRE est-elle en pause manuelle EN COURS DE PARTIE (tâche 3) ?
+ *
+ * DISTINCT de `leMoteurSeTait` tout seul : une partie DÉCLARÉE manuelle porte
+ * elle aussi `manuel_actif` à vrai en permanence une fois la mise en place
+ * terminée (`World.ManualLoop`, côté moteur, n'est entrée QUE si
+ * `rule.mode_manuel` est vraie, `game/world/world.py:1030`) — ce n'est pas
+ * une PAUSE, c'est la NATURE de la partie, et il n'y a rien à « reprendre ».
+ * Une pause ad hoc (route `POST /manuel_pause`), elle, ne peut survenir QUE
+ * sur une partie qui n'a jamais déclaré `mode_manuel` — sans quoi
+ * `World.ManualLoop` aurait déjà pris la main pour de bon.
+ *
+ * C'est CETTE fonction qui doit armer le bandeau de pause (`BandeauPause`) et
+ * le bouton qui le déclenche dans la barre du haut : se régler sur
+ * `leMoteurSeTait` seul afficherait « Partie en pause / Reprendre » sur une
+ * table manuelle déclarée qui n'a jamais été mise en pause et n'a rien à
+ * reprendre.
+ */
+export function estEnPause(world: World | undefined): boolean {
+  return leMoteurSeTait(world) && !estModeManuel(world)
+}
