@@ -214,6 +214,42 @@ describe('le selecteur de heros manuel (tache 3, correctif de gating)', () => {
   })
 })
 
+// TACHE 3 (ronde de correction 1). La contrainte la plus lourde de ce plan
+// est que le mode ORDINAIRE ne perde RIEN -- et une pause reste un moment de
+// mode ordinaire. Le selecteur de vue « Auto » (juste au-dessus, gate
+// `!manuel && ... > 1`) se reglait sur l'ETAT (`leMoteurSeTait`) au lieu de
+// la REGLE (`estModeManuel`) : une table a plusieurs heros mise en pause
+// perdait donc TOUT selecteur de vue, puisque `SelecteurHeros` ne prend pas
+// le relais en pause (arbitrage n°2, delibere). Corrige sur
+// `!modeManuelDeclare`.
+describe('le selecteur de vue Auto (tache 3, correctif de gating)', () => {
+  it('survit a une pause d\'une partie ORDINAIRE, a plusieurs heros', async () => {
+    monter()
+    const monde = table(heros('Spider-Man', 1), heros('Captain Marvel', 2)) as {
+      mode_manuel?: boolean
+      manuel_actif?: boolean
+    }
+    monde.mode_manuel = false
+    monde.manuel_actif = true
+    await emettre({ monde: monde as never })
+    expect(screen.getByText('Vue')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Auto' })).toBeTruthy()
+  })
+
+  it('reste absent en mode manuel DECLARE (SelecteurHeros prend le relais)', async () => {
+    monter()
+    const monde = table(heros('Spider-Man', 1), heros('Captain Marvel', 2)) as {
+      mode_manuel?: boolean
+      manuel_actif?: boolean
+    }
+    monde.mode_manuel = true
+    monde.manuel_actif = true
+    await emettre({ monde: monde as never })
+    expect(screen.queryByText('Vue')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Auto' })).toBeNull()
+  })
+})
+
 // TACHE 3. Le bouton qui met une partie ORDINAIRE en pause : dans la barre du
 // haut, a cote d'Annuler -- ni un reglage cache (FenetreReglages), ni un
 // bouton qu'on presse par accident (voir board.tsx pour la justification
@@ -226,7 +262,7 @@ describe('le bouton de pause (tache 3)', () => {
     expect(screen.getByRole('button', { name: /Mettre en pause/ })).toBeTruthy()
   })
 
-  it('pose la pause au clic (POST /manuel_pause, actif: true)', async () => {
+  it('pose la pause au clic (POST /manuel_pause, actif: true, aucun champ qui)', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
     monter()
     await emettre({ monde: table(heros('Spider-Man', 1)) })
@@ -234,7 +270,7 @@ describe('le bouton de pause (tache 3)', () => {
     await attendreLeReseau()
     expect(fetch).toHaveBeenCalledWith('/manuel_pause', expect.objectContaining({
       method: 'POST',
-      body: JSON.stringify({ actif: true, qui: '' }),
+      body: JSON.stringify({ actif: true }),
     }))
     vi.unstubAllGlobals()
   })

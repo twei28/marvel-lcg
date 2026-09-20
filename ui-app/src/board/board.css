@@ -6547,7 +6547,13 @@
 @layer composants {
   .bandeau-pause {
     position: fixed;
-    top: 0;
+    /* SOUS la barre du haut, pas dessus (ronde de correction 1). Meme piege
+       que .bandeau-triche (deplace de 6px a 50px le 12/09/2026 : « il
+       recouvrait Options et Fin du tour ») et deja evite par .bandeau-absent
+       / .attente-table, tous deux a 58px : cette valeur est la plus
+       frequente des deux precedents deja corriges pour ce meme defaut, prise
+       ici sans capture d'ecran (verifiable seulement en le deployant). */
+    top: 58px;
     left: 0;
     right: 0;
     z-index: 950;

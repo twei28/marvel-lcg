@@ -2076,6 +2076,10 @@ export function PagePartie({
   // les mains -- voir `manuel/mode.ts`, `estEnPause`.
   const modeManuelDeclare = estModeManuel(etat.monde)
 
+  // Tache 3 (ronde de correction 1) : nommee comme ses deux voisines
+  // ci-dessus, au lieu d'un appel en ligne au point d'usage.
+  const enPause = estEnPause(etat.monde)
+
   const [sons, setSons] = useState(lireSons)
   const basculerSons = useCallback(() => {
     setSons((s) => {
@@ -3207,7 +3211,7 @@ export function PagePartie({
           « reprendre » : voir `manuel/mode.ts`. */}
       <BandeauPause
         enPause={{
-          actif: estEnPause(etat.monde),
+          actif: enPause,
           par: etat.monde?.pause_par ?? '',
           depuis: etat.monde?.pause_a ?? '',
         }}
@@ -3575,15 +3579,26 @@ export function PagePartie({
                 Elle ne s'affiche qu'a PLUSIEURS : en solo il n'y a qu'une vue
                 possible, un bouton n'y proposerait rien.
 
-                MANUEL (tache 7 bis, 19/09/2026) : ce bandeau-ci suppose un
-                moteur qui interroge quelqu'un (« Auto » = suivre celui qui
-                doit agir). En manuel le moteur ne demande plus rien, « Auto »
-                n'y elirait donc jamais personne — deux selecteurs affichant
-                des choses differentes sur le meme ecran serait la pire des
-                confusions. `SelecteurHeros`, plus bas, le remplace : meme
-                etat (`vueForcee`), sans le concept d'Auto qui n'a pas de sens
-                ici. */}
-            {!manuel && (etat.monde?.players?.length ?? 0) > 1 ? (
+                MANUEL DECLARE (tache 7 bis, 19/09/2026 ; `modeManuelDeclare`,
+                PAS `manuel`, depuis la ronde de correction 1 de la tache 3) :
+                ce bandeau-ci suppose un moteur qui interroge quelqu'un
+                (« Auto » = suivre celui qui doit agir). En manuel DECLARE le
+                moteur ne demande plus jamais rien, « Auto » n'y elirait donc
+                jamais personne — deux selecteurs affichant des choses
+                differentes sur le meme ecran serait la pire des confusions.
+                `SelecteurHeros`, plus bas, le remplace : meme etat
+                (`vueForcee`), sans le concept d'Auto qui n'a pas de sens ici.
+
+                ⚠ NE PAS SE REGLER SUR `manuel` (l'ETAT, `leMoteurSeTait`) :
+                il vaut aussi vrai pendant une simple PAUSE d'une partie
+                ORDINAIRE (tache 3), qui doit au contraire GARDER ce
+                selecteur — la contrainte la plus lourde de ce plan est que
+                le mode ordinaire ne perde rien, et une pause en est un
+                moment. `SelecteurHeros` ne prend pas le relais en pause
+                (arbitrage n°2, delibere : voir mode.ts), donc sans ce
+                correctif une table a plusieurs heros mise en pause perdait
+                TOUT selecteur de vue. */}
+            {!modeManuelDeclare && (etat.monde?.players?.length ?? 0) > 1 ? (
               <span className="bh-vue" title={t('Quel héros est affiché (plateau et main)')}>
                 <span className="bh-vue-label">{t('Vue')}</span>
                 <button
