@@ -1,0 +1,283 @@
+# Plan d'exécution : la pause manuelle en pleine partie
+
+> **Pour un agent d'exécution :** SOUS-SKILL REQUISE : utiliser
+> `superpowers:subagent-driven-development` (recommandé) ou
+> `superpowers:executing-plans` pour dérouler ce plan tâche par tâche. Les
+> étapes sont en cases à cocher (`- [ ]`).
+
+**But :** pouvoir arrêter le moteur en pleine partie ORDINAIRE, corriger la
+table à la main, et reprendre là où on en était. C'est ce qui permet à un
+joueur de contourner un bug du moteur et de finir sa partie, au lieu de la
+perdre.
+
+**Architecture :** aucune boucle nouvelle. Le moteur est déjà garé dans
+`DoGetInput` quand il attend une réponse, et c'est déjà là que les commandes
+manuelles s'exécutent. La pause ne fait donc que poser `world.manuel_actif` à
+vrai, réveiller l'attente, et laisser l'appelant reposer sa question. La reprise
+fait l'inverse.
+
+**Pile technique :** moteur Python 3.10 (`Fusion/marvel-lcg-src/src`), plateau
+React + TypeScript + Vitest (`ui-app`), bout en bout Playwright (`ui-check`).
+
+**Spec :** `docs/superpowers/specs/2026-09-18-mode-manuel-design.md`, avenant du
+18/09/2026, plus la décision du 20/09 sur le multijoueur.
+
+## Ce qui est déjà livré, et sur quoi ce plan s'appuie
+
+Le **mode manuel déclaré** est fini, revu et fusionnable (63 commits sur la
+branche `mode-manuel`). Il fournit tout le vocabulaire :
+
+- `world.manuel_actif` : l'ÉTAT « le moteur s'est tu ». Il ferme la porte des
+  déclenchements (`EventManager.BroadcastMessage`) et celle de la défaite
+  (`ModelOnEvent.Defeated`). Il est publié dans la trame.
+- `world.rule.mode_manuel` : la RÈGLE « cette partie est manuelle ». Elle ne
+  sert qu'à ce qui décrit la nature de la partie.
+- Côté plateau, `leMoteurSeTait(world)` masque les couches du moteur et arme les
+  gestes manuels. `estModeManuel(world)` ne sert qu'aux trois usages de nature.
+- Tous les gestes de l'API `Puzzle`, le menu au clic droit, le clavier, le
+  glisser libre, la recherche catalogue, l'annulation, et la file du journal qui
+  n'annonce jamais un succès sur un geste refusé.
+
+**Ce plan ne construit donc presque rien de neuf.** Il rend `manuel_actif`
+basculable, et traite ce que cette bascule implique.
+
+## Décisions déjà prises
+
+| Question | Décision |
+|---|---|
+| Forme | Pause sur place : le moteur reste garé sur sa question |
+| Si la question elle-même est fautive | Un bouton « passer cette question » |
+| Pendant la pause | La porte du silence se ferme, comme en mode déclaré |
+| Reprise | Le moteur repose sa question, options recalculées |
+| Qui peut mettre en pause en ligne | N'importe qui à la table, et tout le monde le voit |
+| Traces | Gestes au journal à leur place chronologique, marqués ; et la liste reprise à part dans le rapport de bug |
+| Hauts faits | Sans objet, leur bannière est débranchée |
+| La partie | Continue de compter, marquée « corrigée à la main » |
+
+## Contraintes globales
+
+- **Une seule copie vivante du moteur** : `Fusion/marvel-lcg-src/`.
+- **Interpréteur** : `~/marvel-work/python/bin/python3.10`. Jamais celui du
+  système.
+- **Jamais `.game` ni `.game-src`** : le harnais tourne sur un dossier jetable,
+  créé puis supprimé. Une exécution au premier plan, `timeout` de 600000 ms.
+- **Rien en tâche de fond, et voici pourquoi.** Tu ES l'agent de fond : si tu
+  lances la batterie détachée puis attends sa notification de fin, tu attends
+  quelqu'un qui n'existe pas et la tâche se fige jusqu'à ce qu'un humain la
+  débloque. C'est arrivé trois fois sur ce chantier. Lance au premier plan,
+  attends le verdict, lis-le. Si un processus traîne d'un essai précédent,
+  tue-le par son PID.
+- **TypeScript strict, zéro `any`.** Aucun texte en dur : tout par `t()` avec sa
+  contrepartie dans `ui-app/src/board/dico-en.ts`, jamais de `t()` au niveau
+  d'un module.
+- **Le mode ordinaire ne doit RIEN perdre.** C'est l'exigence la plus lourde :
+  cette fois, le mode ordinaire est le mode dans lequel la pause vit.
+- **N'utilise JAMAIS `git stash`** : le dépôt est partagé avec des sessions
+  vivantes.
+- **Aucun déploiement.** Le test de bout en bout se lance en LOCAL.
+- Un échec de `npm run typecheck` préexiste sur la branche
+  (`src/board/halo-heros-accord.test.ts`), étranger à ce chantier, et il
+  **bloque la construction du plateau** : le contourner temporairement pour
+  construire, puis restaurer le fichier, comme documenté dans
+  `.superpowers/sdd/2026-09-18-mode-manuel-plateau/task-8-report.md`.
+
+## Le piège principal, nommé d'avance
+
+`manuel_actif` n'a **jamais été remis à faux** jusqu'ici. Le mode déclaré le
+pose et ne l'enlève pas, puisqu'une partie manuelle ne redevient jamais
+automatique. Tout ce que le plateau masque n'a donc jamais eu à réapparaître.
+
+Le jour où quelque chose l'éteint, tout revient d'un coup : bandeau de phase,
+déroulé, assistant, demande centrale, barre d'actions, sélecteur de héros, et
+les gestes manuels doivent se désarmer au même instant. **C'est le cœur de ce
+plan, et le premier cas de test doit le prouver**, pas le supposer.
+
+---
+
+### Tâche 1 : la pause s'allume et s'éteint, côté moteur
+
+**Fichiers :**
+- Modifier : `Fusion/marvel-lcg-src/src/game/world/world.py`
+- Modifier : `Fusion/marvel-lcg-src/src/engine/device/web/server/server_get.py`
+- Modifier : `Fusion/marvel-lcg-src/tools/test_mode_manuel.py`
+
+**Interfaces :**
+- Produit : `World.BasculerPauseManuelle(actif: bool) -> bool`, qui pose
+  `manuel_actif` et réveille l'attente d'entrée.
+- Produit : la route `POST /manuel_pause`, corps `{"actif": true|false}`,
+  qui rend `{"result": "en pause"}` ou `{"result": "repris"}`.
+
+⚠ **Ne crée aucune boucle.** Le moteur est déjà garé dans `DoGetInput` : il
+suffit de réveiller `notify.input`, comme le fait `QueueSandboxCommands`. Le fil
+du jeu se réveille, ne trouve aucune entrée, rend la main, et l'appelant repose
+sa question, ce qui produit un rendu portant le nouvel état.
+
+⚠ **La bascule vient du fil HTTP.** Poser un booléen y est sans danger, mais
+**ne touche à rien d'autre du monde depuis ce fil** : c'est explicitement
+interdit par le commentaire de `engine/device/manager/base.py`.
+
+- [ ] **Étape 1 : écrire les cas rouges**
+
+Dans `tools/test_mode_manuel.py`, sur une partie ORDINAIRE (sans la règle) :
+
+1. `cas_pause_ferme_la_porte` : le moteur tourne normalement, on met en pause,
+   et un geste qui déclencherait une capacité ne déclenche plus rien. Réutilise
+   le témoin déjà écrit pour le mode déclaré.
+2. `cas_reprise_rouvre_la_porte` : après reprise, le même geste déclenche de
+   nouveau. **C'est LE cas du plan** : il prouve que la porte se rouvre, ce que
+   rien n'a jamais vérifié.
+3. `cas_pause_publiee` : la trame publie `manuel_actif` à vrai pendant la pause,
+   à faux après la reprise.
+
+- [ ] **Étape 2 : les voir rouges, écrire le code, les voir verts**
+
+- [ ] **Étape 3 : relancer la batterie complète du harnais, puis commiter**
+
+---
+
+### Tâche 2 : la marque « corrigée à la main », qui survit
+
+**Fichiers :**
+- Modifier : `Fusion/marvel-lcg-src/src/game/scene/scene.py`
+- Modifier : `Fusion/marvel-lcg-src/src/game/world/world.py`
+- Modifier : `Fusion/marvel-lcg-src/src/game/render/descriptor/world.py`
+- Modifier : `Fusion/marvel-lcg-src/src/game/render/to_descriptor.py`
+- Modifier : `Fusion/marvel-lcg-src/tools/test_mode_manuel.py`
+
+**Interfaces :**
+- Produit : `Scene.corrigee_a_la_main: bool`, à défaut faux, posé à la première
+  pause et **jamais remis à faux**.
+- Produit : le champ correspondant dans la trame.
+
+⚠ **Un champ à défaut faux** : les sauvegardes existantes se rechargent sans
+changer de sens. C'est la même précaution que pour `manuel_commands`.
+
+⚠ **Il ne s'éteint pas à la reprise.** Une partie qu'on a corrigée à la main
+l'a été, même si on a repris ensuite. C'est une marque, pas un état.
+
+- [ ] **Étape 1 : le cas rouge** — une partie ordinaire porte la marque à faux ;
+  après une pause elle la porte à vrai ; après la reprise elle la porte encore.
+- [ ] **Étape 2 : poser le champ, le voir vert**
+- [ ] **Étape 3 : commiter**
+
+---
+
+### Tâche 3 : le bandeau de pause, et la reprise
+
+**Fichiers :**
+- Créer : `ui-app/src/board/manuel/BandeauPause.tsx` et son test
+- Modifier : `ui-app/src/board/triche.ts` (la bascule)
+- Modifier : `ui-app/src/board.tsx`
+
+**Interfaces :**
+- Produit : `triche.basculerPause(actif: boolean)`.
+- Produit : `<BandeauPause enPause={...} onReprendre={...} onPasser={...} />`.
+
+**Ce que le bandeau doit dire**, et c'est le cœur de la tâche : qui a mis en
+pause, et depuis quand. Sur une table en ligne, les autres joueurs voient leur
+partie s'arrêter : sans cette phrase, ils croient à une panne.
+
+⚠ **Le bouton qui met en pause doit exister quelque part en mode ORDINAIRE.**
+Le plateau ordinaire n'a pas de menu de table : trouve l'endroit juste, et
+dis-le dans ton rapport. Ce n'est pas un réglage caché, c'est ce qu'on cherche
+quand le jeu vient de faire quelque chose d'absurde.
+
+- [ ] **Étape 1 : le cas rouge** — le bandeau ne s'affiche pas hors pause,
+  s'affiche en pause, nomme qui a mis en pause, et appelle `onReprendre`.
+- [ ] **Étape 2 : écrire, voir vert, commiter**
+
+---
+
+### Tâche 4 : tout revient à la reprise
+
+**Fichiers :**
+- Modifier : `ui-app/src/board/manuel/plateau-muet.test.tsx` ou un fichier voisin
+- Modifier : les appelants si un manque apparaît
+
+**C'est la tâche la plus importante du plan, et elle est presque entièrement
+faite de tests.**
+
+Le mode déclaré n'a jamais eu à faire réapparaître quoi que ce soit. Il faut
+donc prouver, couche par couche, que tout ce qui a été masqué revient.
+
+- [ ] **Étape 1 : le cas rouge**
+
+Un seul cas, mais qui les couvre toutes : en partie ordinaire, avec
+`manuel_actif` à vrai puis à faux, vérifier que **chacune** des couches du
+moteur est absente puis présente : bandeau de phase, déroulé, assistant
+d'action, demande centrale, récapitulatif, barre des actions, et le sélecteur
+de héros.
+
+Et le pendant sur les gestes : le clic droit et le clavier répondent pendant la
+pause, et ne répondent plus après la reprise.
+
+- [ ] **Étape 2 : corriger ce qui ne revient pas**
+
+Il y aura des surprises : un composant qui garde un état interne, un minuteur
+qui ne repart pas, une animation qui reste figée. Traite-les, et **décris
+chacune dans ton rapport** : ce sont elles qui diront si la pause est fiable.
+
+- [ ] **Étape 3 : commiter**
+
+---
+
+### Tâche 5 : passer la question fautive
+
+**Fichiers :**
+- Modifier : `Fusion/marvel-lcg-src/src/engine/device/web/server/server_get.py`
+- Modifier : `Fusion/marvel-lcg-src/src/engine/device/manager/base.py`
+- Modifier : `ui-app/src/board/manuel/BandeauPause.tsx`
+- Modifier : `Fusion/marvel-lcg-src/tools/test_mode_manuel.py`
+
+C'est l'échappatoire : quand c'est la QUESTION du moteur qui est fautive, la
+pause seule n'en libère pas, puisqu'il la reposera à la reprise.
+
+⚠ **N'invente jamais une réponse que le moteur n'a pas offerte.** Regarde ce que
+la question propose (elle porte un drapeau d'annulation) et n'utilise que ça. Si
+la question courante n'offre aucune sortie, **dis-le au joueur** plutôt que de
+fabriquer une entrée : une réponse inventée corromprait la partie bien plus
+sûrement que le bug qu'il essayait de contourner.
+
+- [ ] **Étape 1 : le cas rouge** — une question qui offre une annulation est
+  passée ; une question qui n'en offre pas est refusée, avec un motif lisible.
+- [ ] **Étape 2 : écrire, voir vert, commiter**
+
+---
+
+### Tâche 6 : les traces, et le rapport de bug
+
+**Fichiers :**
+- Modifier : `ui-app/src/board/rapport-bug.ts` et son test
+- Modifier : `ui-app/src/board/HistoriquePartie.tsx` si besoin
+
+Les gestes manuels entrent déjà au journal à leur place chronologique, marqués
+« Geste manuel ». Il manque deux choses :
+
+1. Le rapport de bug reprend **la liste seule** des gestes manuels, en fin de
+   document, pour qu'on l'audite d'un coup d'œil sans relire toute la partie.
+2. Il porte la marque « corrigée à la main » de la tâche 2.
+
+C'est ce qui permet de trancher, en lisant un rapport, entre un défaut du moteur
+et une erreur de jeu.
+
+- [ ] **Étape 1 : le cas rouge, écrire, voir vert, commiter**
+
+---
+
+### Tâche 7 : la preuve à l'écran
+
+**Fichiers :**
+- Modifier : `ui-check/tests/mode-manuel.spec.ts`
+
+⚠ En LOCAL, jamais sur la production, jamais sur `.game`. Le montage est décrit
+dans `.superpowers/sdd/2026-09-18-mode-manuel-plateau/task-8-report.md`.
+
+Ajoute un second scénario au fichier existant, sur une partie **ORDINAIRE** :
+jouer un tour normalement, mettre en pause, constater que le plateau s'est tu,
+faire un geste à la main, reprendre, et constater que le moteur repose sa
+question et que la partie continue.
+
+C'est le seul test qui prouve la chaîne entière, et c'est celui qui dira si
+l'idée tient vraiment.
+
+- [ ] **Étape 1 : écrire, lancer, obtenir le vert, commiter**
