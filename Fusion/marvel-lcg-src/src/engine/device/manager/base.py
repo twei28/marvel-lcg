@@ -116,6 +116,25 @@ class DeviceManager:
         """
         if not self.asking_players:
             return "aucune_question"
+        # ⚠ PORTE, PAS UN REPLI (ronde de correction 1) : au plus UNE entree
+        # dans `asking_players` est un INVARIANT du moteur, pas une
+        # supposition de confort. Preuve etablie par le relecteur en lisant
+        # le code HORS de ce diff : le seul appel a `GetInput`/`DoGetInput`
+        # de tout le moteur est `Controller.ChoiceOne` (controller.py:346),
+        # synchrone et bloquant sur l'UNIQUE fil de jeu, et le seul `.append`
+        # sur `asking_players` est celui que `DoGetInput` fait lui-meme
+        # (plus bas dans ce fichier) -- deux questions reelles simultanees
+        # sont donc impossibles aujourd'hui. Si cet invariant se rompait un
+        # jour, prendre `asking_players[0]` en silence passerait la question
+        # d'UN AUTRE joueur a sa place : un defaut bien pire, et bien plus
+        # dur a detecter, qu'un plantage net ici.
+        assert len(self.asking_players) == 1, (
+            f"invariant rompu : {len(self.asking_players)} joueurs "
+            f"interroges a la fois ({self.asking_players!r}) -- "
+            "PasserQuestionCourante ne sait viser qu'UNE question, et "
+            "refuse de deviner laquelle plutot que de risquer de passer "
+            "celle d'un autre joueur"
+        )
         player_id = self.asking_players[0]
         if not self.ask_options[player_id].show_cancel:
             return "question_forcee"
