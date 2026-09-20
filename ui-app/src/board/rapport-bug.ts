@@ -117,6 +117,17 @@ export type ContexteBug = {
   fin?: string
   erreurs: string[]
   url?: string
+  /**
+   * La TRACE (tâche 2) : au moins une intervention manuelle a eu lieu au
+   * cours de cette partie, posée une fois pour toutes et jamais éteinte.
+   *
+   * DISTINCTE de `manuel` juste au-dessus, qui lit `mode_manuel` (la RÈGLE :
+   * cette partie EST manuelle dès sa création). Une partie ordinaire, jamais
+   * déclarée manuelle, peut très bien porter cette marque si elle a subi une
+   * pause corrective un soir de bug — c'est justement le cas que ce champ
+   * doit signaler à l'auteur du jeu, avant même qu'il ne lise le reste.
+   */
+  corrigeeALaMain: boolean
 }
 
 export type TableBug = {
@@ -134,6 +145,22 @@ export type RapportBug = {
   demande: DemandeBug | null
   table: TableBug
   journal: EntreeBug[]
+  /**
+   * Les gestes manuels, et EUX SEULS, regroupés en fin de rapport pour qu'on
+   * les audite d'un coup d'œil (tâche 6).
+   *
+   * Reprend les mêmes entrées que le journal, sous leur forme chronologique
+   * habituelle — on ne les déplace pas, on les DUPLIQUE ici.
+   *
+   * ⚠ COUVRE TOUJOURS LA PARTIE ENTIÈRE, quelle que soit la `portee`
+   * demandée pour le journal ci-dessus. Une portée « recent » ou « tour »
+   * existe pour ne pas noyer le lecteur dans un long journal, mais un geste
+   * manuel posé plus tôt dans la partie reste une intervention à auditer :
+   * le taire parce qu'il est hors-fenêtre irait à l'encontre même du but de
+   * cette section (voir tâche 6, décision documentée dans le rapport de
+   * tâche).
+   */
+  gestesManuels: EntreeBug[]
   /** Vrai quand le journal a pu perdre son début. */
   tronque: boolean
 }
@@ -219,6 +246,18 @@ export function entreesDeLaPortee(
   if (portee === 'partie') return [...entrees]
   if (portee === 'tour') return entrees.filter((e) => e.round === roundCourant)
   return entrees.slice(0, ENTREES_RECENTES)
+}
+
+/** Une entrée d'historique, sous la forme qu'attend le rapport (journal ou gestes manuels). */
+function decrireEntree(e: EntreeHistorique): EntreeBug {
+  return {
+    round: e.round,
+    phase: e.phase,
+    type: e.type,
+    texte: e.brut && e.brut.length > 0 ? e.brut : e.titre,
+    detail: e.detail,
+    cible: e.cibleId !== undefined ? objet(e.cibleId) : undefined,
+  }
 }
 
 function decrireOption(option: Option): OptionBug {
@@ -309,6 +348,7 @@ export function construireRapport(
       fin: monde.game_over ? (monde.game_over_reason ?? 'partie terminée') : undefined,
       erreurs: contexte.erreurs ?? [],
       url: contexte.url,
+      corrigeeALaMain: monde.corrigee_a_la_main === true,
     },
     demande: demande
       ? {
@@ -320,14 +360,10 @@ export function construireRapport(
         }
       : null,
     table: decrireTable(monde),
-    journal: retenues.map((e) => ({
-      round: e.round,
-      phase: e.phase,
-      type: e.type,
-      texte: e.brut && e.brut.length > 0 ? e.brut : e.titre,
-      detail: e.detail,
-      cible: e.cibleId !== undefined ? objet(e.cibleId) : undefined,
-    })),
+    journal: retenues.map(decrireEntree),
+    // Toujours filtré sur TOUTES les entrées, jamais sur `retenues` : voir le
+    // commentaire du champ `gestesManuels` (tâche 6).
+    gestesManuels: entrees.filter((e) => e.type === 'manuel').map(decrireEntree),
     // Le tampon plein signifie que des entrées ont été jetées par le bas. La
     // question ne se pose que sur « toute la partie » : une portée courte ne
     // prétend rien couvrir d'autre qu'elle-même.
@@ -390,6 +426,13 @@ export function rapportEnTexte(rapport: RapportBug): string {
   const lignes: string[] = []
 
   lignes.push('=== RAPPORT DE BUG / Marvel Champions ===')
+  // La marque passe AVANT le reste, y compris « Pris le » : c'est ce qui doit
+  // sauter aux yeux avant même de lire le corps du rapport (tâche 6). Le
+  // détail (mode manuel ou non, campagne...) reste dans la ligne « Mode » du
+  // contexte, plus bas ; ceci n'est qu'un signal d'alerte immédiat.
+  if (c.corrigeeALaMain) {
+    lignes.push('/!\\ PARTIE CORRIGÉE À LA MAIN : au moins une intervention manuelle a eu lieu.')
+  }
   lignes.push(`Pris le ${c.horodatage}`)
   lignes.push('')
   lignes.push('--- CONTEXTE ---')
@@ -460,6 +503,21 @@ export function rapportEnTexte(rapport: RapportBug): string {
   lignes.push(
     'Ce rapport contient les mains de tous les sièges : il décrit la table entière, pas seulement ce que ce siège joue.'
   )
+
+  // En fin de document, et SEULEMENT s'il y a quelque chose à montrer : une
+  // section vide laisserait croire à une intervention qui n'a pas eu lieu
+  // (tâche 6). Toujours la partie entière, jamais limitée à la portée
+  // choisie pour le journal ci-dessus — voir le commentaire du champ
+  // `gestesManuels`.
+  if (rapport.gestesManuels.length > 0) {
+    lignes.push('')
+    lignes.push(`--- GESTES MANUELS (${rapport.gestesManuels.length}, pour audit rapide) ---`)
+    for (const geste of rapport.gestesManuels) {
+      const cible = geste.cible ? ` {${geste.cible}}` : ''
+      const detail = geste.detail ? ` / ${geste.detail}` : ''
+      lignes.push(`R${geste.round}${cible} ${geste.texte}${detail}`)
+    }
+  }
 
   return lignes.join('\n')
 }

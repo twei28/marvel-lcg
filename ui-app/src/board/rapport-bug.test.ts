@@ -206,6 +206,69 @@ describe('le rapport', () => {
   })
 })
 
+describe('la marque « corrigée à la main » (tâche 6)', () => {
+  it("n'apparaît pas sur une partie ordinaire, jamais corrigée", () => {
+    const rapport = construireRapport(monde(), undefined, [], 'recent', CONTEXTE)
+    expect(rapport.contexte.corrigeeALaMain).toBe(false)
+    expect(rapportEnTexte(rapport)).not.toContain('CORRIGÉE')
+  })
+
+  it("apparaît, avant même le corps du rapport, quand la partie a ete corrigee", () => {
+    const rapport = construireRapport(monde({ corrigee_a_la_main: true }), undefined, [], 'recent', CONTEXTE)
+    expect(rapport.contexte.corrigeeALaMain).toBe(true)
+    const texte = rapportEnTexte(rapport)
+    expect(texte).toContain('CORRIGÉE À LA MAIN')
+    // « avant meme de lire » : la marque doit preceder le corps du rapport.
+    expect(texte.indexOf('CORRIGÉE À LA MAIN')).toBeLessThan(texte.indexOf('--- CONTEXTE ---'))
+  })
+})
+
+describe('les gestes manuels regroupes en fin de rapport (tâche 6)', () => {
+  it("n'ajoute aucune section quand aucun geste manuel n'a eu lieu", () => {
+    const journal = [entree(3, 'Klaw joue une carte', { type: 'card' })]
+    const rapport = construireRapport(monde(), undefined, journal, 'partie', CONTEXTE)
+    expect(rapport.gestesManuels).toHaveLength(0)
+    expect(rapportEnTexte(rapport)).not.toContain('GESTES MANUELS')
+  })
+
+  it('reprend UNIQUEMENT les gestes manuels, pas tout le journal', () => {
+    const journal = [
+      entree(2, 'Klaw joue une carte', { type: 'card' }),
+      entree(2, 'PV de Klaw fixes a la main', { type: 'manuel' }),
+      entree(3, 'Menace ajustee a la main', { type: 'manuel' }),
+      entree(3, 'She-Hulk attaque', { type: 'damage' }),
+    ]
+    const rapport = construireRapport(monde(), undefined, journal, 'partie', CONTEXTE)
+    expect(rapport.gestesManuels).toHaveLength(2)
+    expect(rapport.gestesManuels.map((g) => g.texte)).toEqual([
+      'PV de Klaw fixes a la main',
+      'Menace ajustee a la main',
+    ])
+
+    const texte = rapportEnTexte(rapport)
+    const section = texte.split('--- GESTES MANUELS')[1]
+    expect(section).toBeDefined()
+    expect(section).toContain('PV de Klaw fixes a la main')
+    expect(section).toContain('Menace ajustee a la main')
+    expect(section).not.toContain('Klaw joue une carte')
+    expect(section).not.toContain('She-Hulk attaque')
+  })
+
+  it('couvre TOUTE LA PARTIE, meme quand la portee choisie est plus courte', () => {
+    // roundCourant vaut 3 (voir monde()) : la portee « tour » ne retient que
+    // le round 3 dans le journal, mais le geste manuel du round 1 doit rester
+    // visible dans la section d'audit.
+    const journal = [
+      entree(1, 'Main redistribuee a la main', { type: 'manuel' }),
+      entree(3, 'Klaw joue une carte', { type: 'card' }),
+    ]
+    const rapport = construireRapport(monde(), undefined, journal, 'tour', CONTEXTE)
+    expect(rapport.journal).toHaveLength(1)
+    expect(rapport.gestesManuels).toHaveLength(1)
+    expect(rapport.gestesManuels[0]?.texte).toBe('Main redistribuee a la main')
+  })
+})
+
 describe('la version texte', () => {
   const base = () => construireRapport(monde(), undefined, [], 'recent', CONTEXTE)
 

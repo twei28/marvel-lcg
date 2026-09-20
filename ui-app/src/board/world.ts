@@ -383,6 +383,23 @@ export type World = {
    */
   manuel_refus?: string
   /**
+   * La TRACE : quelqu'un est intervenu à la main au moins une fois dans
+   * cette partie. Posée par `Scene.corrigee_a_la_main` côté moteur, dès la
+   * première pause manuelle (`world.py`), et JAMAIS éteinte ensuite — y
+   * compris après une reprise, contrairement à `pause_par` / `pause_a`
+   * juste dessous, qui décrivent la pause EN COURS et s'effacent à la
+   * reprise. Optionnel : une sauvegarde antérieure à la tâche 2 n'a jamais
+   * connu ce champ et doit rester lisible (absent = jamais corrigée).
+   *
+   * ⚠ NE PAS CONFONDRE avec `mode_manuel` (la RÈGLE : cette partie EST
+   * manuelle dès sa création) ni `manuel_actif` (l'ÉTAT : le moteur se tait
+   * en ce moment). Cette marque-ci dit qu'une intervention a eu lieu, sur
+   * une partie qui n'a pas forcément été déclarée manuelle : c'est elle,
+   * et elle seule, qui doit apparaître dans un rapport de bug pour que
+   * l'auteur du jeu distingue une partie ordinaire d'une partie retouchée.
+   */
+  corrigee_a_la_main?: boolean
+  /**
    * Qui a posé la pause EN COURS (tâche 3), vide hors pause. Le moteur ne
    * connaît aucun pseudo : ce champ n'est renseigné que si l'appelant de
    * `POST /manuel_pause` a fourni un `qui` non vide. Absent ou vide →
