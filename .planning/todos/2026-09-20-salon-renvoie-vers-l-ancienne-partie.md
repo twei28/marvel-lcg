@@ -198,17 +198,64 @@ Trois décisions prises au passage, pour qu'on ne les redécouvre pas :
 
 ### ⚠ Ce qui reste ouvert
 
-1. **La CAMPAGNE garde l'ancien signal, et le défaut avec.** En campagne
-   l'invité ne choisit rien : il n'a aucun choix à reconnaître, la règle ne
-   s'applique pas telle quelle, et `surveillerLeLancementCampagne` bascule
-   toujours dès qu'une partie tourne. Un invité de campagne arrivant sur une
-   table portant encore la manche précédente sera encore expédié dedans. Piste :
-   le salon peut traduire `membre.heros` (id de catalogue) en `heroCardId` par
-   `catalog.heroes()`, sans rien publier de plus.
-2. **Le corollaire des trois messages** (« Connexion à la partie… ») : entier.
-3. **La rotation « premier joueur »** (`launcher.js`) décale le siège du salon
-   par rapport au joueur du moteur quand l'hôte ne prend pas le siège 0 comme
-   premier joueur. Défaut préexistant, qui vaut déjà pour `board.html?p=N`.
-   Désormais il se voit : l'invité lit le message « ton siège n'y tient pas ton
-   héros » au lieu de partir silencieusement sur le mauvais siège.
+1. **Le corollaire des trois messages** (« Connexion à la partie… ») : entier.
+2. **Rien n'est déployé.**
+
+---
+
+## Ronde de correction 1, le 21/09/2026 : le héros seul ne suffisait pas
+
+⚠ **Cette section prévaut sur celle du dessus partout où elles se
+contredisent.** Rapport complet au §7 de
+`.planning/rapports/2026-09-21-salon-attend-sa-partie.md`.
+
+**Le trou : rejouer une manche AVEC LE MÊME HÉROS**, ce que fait la majorité des
+joueurs. Entre deux manches, le moteur porte encore le monde de la précédente
+avec le héros de l'invité à son siège ; `/new` ayant vidé `choix_sieges`,
+l'invité re-choisit le même héros et son siège « tient son héros » dans
+l'ANCIENNE partie. Il y repartait. Le 20/09 à l'identique, sur le chemin même que
+le correctif visait. Aucune mémoire n'était en cause : le choix est refait en
+direct.
+
+⚠ **Et la note du dessus qui dit que la mémoire locale distingue « moi » de
+« celui qui était assis là avant moi » est FAUSSE.** Elle distingue un héros
+d'un autre héros, rien de plus. L'arbitrage (écarter l'archivage serveur) reste
+bon : il aurait eu le même angle mort.
+
+**Le remède : DEUX signaux, dont aucun ne tient seul.** Le héros (« ce siège est
+à moi ») et la fraîcheur (« cette partie a commencé après que je me suis posé »).
+Le repère de fraîcheur est `debut = game_uid:game_id`, la clé que le plateau
+emploie déjà pour la même question (`clePartie`) — donc aucune convention neuve.
+Il est relevé **au moment du choix** et retenu **avec lui**, ce qui le fait
+survivre au rechargement.
+
+**La CAMPAGNE est fermée aussi, et la piste notée plus haut était fausse.**
+Traduire `membre.heros` en `heroCardId` ne laisserait pas le défaut ouvert, ça le
+**garantirait** : l'équipe est fixe d'une manche à l'autre, donc le siège N tient
+toujours le même héros. (Et `server_campagne.py` ne publie jamais `identite`,
+donc une équipe à variante ne correspondrait jamais.) En campagne, seule la
+fraîcheur peut servir de signal — et elle y suffit seule.
+
+**Deux gardes réparées** : `/set_choix_siege` était resté sur `allowed_seats` (un
+invité du siège 1 écrivait le choix du siège 2, rouge constaté), et le spectateur
+n'était pas mesuré sur `/get_heros_du_siege`.
+
+**Chaque message a maintenant sa sortie** : « Rejoindre avec *X* » quand le siège
+joue un autre héros, « Rejoindre cette partie » quand elle est indatable. Un
+message honnête sans issue n'était un progrès qu'à moitié.
+
+Commits : `4436f3de`, `1cfc1782`, `741bdacb`, `aaf0acbc`.
+Verdicts : 25/25 (`npm run bascule-salon`), 16/16 (`test_heros_du_siege.py`),
+19/19 + 3/3 (`test_authentification.py`), **48/48 VERT** (`test_mode_manuel.py`).
+
+### Ce qui reste après la ronde
+
+1. **⚠ Rien n'a été vu à l'écran**, et c'est la zone qui contenait les deux
+   défauts d'assemblage ci-dessus. Les règles, la route et les gardes sont
+   prouvées ; l'assemblage ne l'est pas.
+2. **Le repère change aussi quand l'hôte ANNULE un geste** (`LoadScene` passe par
+   `SetScene`). Si l'hôte annule dans la manche précédente pendant qu'un invité
+   attend **et** que son siège y tient son héros, l'invité basculerait à tort.
+   Cas très étroit, non mesuré.
+3. **Le corollaire des trois messages** : entier.
 4. **Rien n'est déployé.**

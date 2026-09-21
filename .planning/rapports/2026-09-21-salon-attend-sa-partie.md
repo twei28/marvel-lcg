@@ -6,13 +6,20 @@ première moitié (« Quitter la partie » éteint vraiment la table) ne couvrai
 le cas rare. Le chemin fréquent — jouer, écran de fin, « Retour au menu »,
 relancer — est celui qui est fermé ici.
 
-**Statut : fait, prouvé, non déployé.**
+**Statut : fait, prouvé, non déployé.** ⚠ **Une ronde de correction a suivi la
+première livraison, et elle a trouvé un trou critique : voir le §7, qui prévaut
+sur ce qui le précède quand les deux se contredisent.**
 
 | Commit | Ce qu'il porte |
 |---|---|
 | `2ba88d97` | La règle pure `bascule.js` et ses 14 cas (`ui-check`) |
 | `e61614db` | La route moteur `/get_heros_du_siege` et ses 13 témoins |
 | `c7ff6590` | Le salon branché dessus (`public/js/salon/app.js`) |
+| `b017ffd2` | Ce rapport, et la fiche de backlog |
+| `4436f3de` | Ronde 1 — le repère de fraîcheur, et 25 cas |
+| `1cfc1782` | Ronde 1 — `debut`, `set_choix_siege` durci, spectateur |
+| `741bdacb` | Ronde 1 — la campagne dans la règle, chaque message avec sa sortie |
+| `aaf0acbc` | Ronde 1 — l'identité du siège, la gate de la rotation |
 
 ---
 
@@ -240,3 +247,174 @@ l'occasion et **supprimé ensuite** — jamais `.game` ni `.game-src`. Ports
    deux soirées. Si un choix oublié devait quand même mordre, il faudrait le
    même siège ET le même héros ET la partie de la veille encore chargée — très
    loin du défaut d'origine, mais pas zéro.
+
+---
+
+# 7. Ronde de correction 1 — le héros seul ne suffisait pas
+
+⚠ **Cette section prévaut sur les §1 à §5 partout où elles se contredisent.**
+La première livraison avait un trou critique, et le raisonnement du §1 était
+faux sur son point central.
+
+## 7.1 CRITIQUE — le septième cas : rejouer une manche avec LE MÊME héros
+
+Le chemin même que ce correctif visait était intégralement rouvert.
+
+Déroulé : on joue la manche 1, écran de fin, « Retour au menu » (qui ne ferme
+rien), l'hôte relance. Entre les deux, le moteur porte encore le monde de la
+manche 1, **avec le héros de l'invité à son siège**. `/new` ayant vidé
+`choix_sieges`, l'invité re-choisit dans le salon — et il reprend **le même
+héros**, ce que fait la majorité des joueurs. `monChoix` est posé, le sondage
+tombe dans les deux secondes, la règle voit `heros === monChoix` sur l'ANCIEN
+monde et renvoie `basculer`. Le 20/09 à l'identique.
+
+**Aucune mémoire locale n'est en cause** : le choix est refait en direct.
+
+### Ce que cela corrige dans mon raisonnement du §1
+
+J'y écrivais que la mémoire locale « distingue *moi* de *celui qui était assis
+là avant moi* ». **C'est faux.** Elle distingue un héros d'un autre héros. Dès
+que le héros coïncide d'une manche à l'autre, elle est aveugle. L'arbitrage
+(écarter l'archivage serveur) reste bon — cet archivage aurait eu exactement le
+même angle mort — mais la raison donnée ne tenait pas.
+
+Mon test le plus proche ne pouvait pas l'attraper : « deux parties du même
+scénario » choisissait la seule variante où le héros **change** entre les
+manches. Le trou était dans le choix du cas, pas dans la mécanique de test.
+
+### Le remède : deux signaux, dont aucun ne tient seul
+
+- **Le héros** dit « ce siège est à moi » — aveugle quand il ne change pas.
+- **La fraîcheur** dit « cette partie a commencé après que je me suis posé » —
+  aveugle au rechargement si on la relève à l'arrivée, ce qui avait fait écarter
+  le compteur de génération.
+
+Ensemble ils tiennent, parce que **le repère est relevé AU MOMENT DU CHOIX et
+retenu AVEC lui** : il voyage donc dans la mémoire du navigateur et survit au
+rechargement.
+
+La règle devient : `heros === monChoix` **ET** `debut !== debutAuChoix`.
+
+### Le repère n'a rien coûté au moteur
+
+`GameSession` tient déjà `game_uid` et `game_id`, et `ui-app/src/board/moteur.ts`
+les combine déjà en `clePartie()` pour répondre à **la même question** (« mon
+journal appartient-il encore à la partie affichée ? »). La route rend donc
+`debut = "<game_uid>:<game_id>"` : aucune convention nouvelle, aucun compteur
+ajouté dans `Game.NewGame`.
+
+**Bénéfice collatéral** : le cas 6 cesse d'être une devinette à 45 s. Si le
+repère a changé et que mon siège n'a pas mon héros, on peut l'**affirmer** tout
+de suite — lancé sans moi, ou héros changé.
+
+## 7.2 CRITIQUE — la campagne, et pourquoi ma piste était fausse
+
+J'avais laissé la campagne sur l'ancien signal en proposant, pour plus tard, de
+traduire `membre.heros` en `heroCardId` par le catalogue. **Cette piste ne peut
+pas aboutir, pour deux raisons indépendantes** :
+
+1. **En campagne, l'équipe est fixe d'une manche à l'autre** — c'est la
+   définition du mode. Le siège N tient donc toujours le même héros. Comparer
+   les héros ne laisserait pas le défaut ouvert : il le **garantirait**, avec
+   bascule immédiate sur la manche précédente à chaque chargement du salon.
+2. `server_campagne.py` ne publie jamais `identite`. Sur une équipe portant une
+   variante, la traduction rendrait la carte de base et ne correspondrait
+   jamais.
+
+**En campagne, le héros ne peut pas servir de signal. Seule la fraîcheur le
+peut, et elle y suffit seule** : l'invité n'a rien choisi, la seule question est
+« une partie a-t-elle démarré depuis que je suis arrivé ? ». Un seul mécanisme
+ferme donc les deux chemins. `surveillerLeLancementCampagne` a été supprimée :
+la campagne passe par la même boucle, avec `sansChoix: true`, et relève son
+repère à la première réponse de la table (qu'elle mémorise, pour survivre au
+rechargement comme un invité ordinaire).
+
+## 7.3 IMPORTANT — `/set_choix_siege` était resté sur `allowed_seats`
+
+Même piège que celui que mon témoin avait rattrapé **en lecture**, laissé en
+place **en écriture** : un invité du siège 1 pouvait poser le choix du siège 2.
+Et mon correctif l'aggravait — avant, la victime partait avec le deck du voisin ;
+après, son `monChoix` ne correspondait plus jamais à ce que le moteur avait reçu
+et elle restait bloquée dans le salon.
+
+Passée sur `tient_le_siege`. **Rouge constaté avant correction** :
+
+```
+ECHEC invite : le choix d'un AUTRE siege lui est refuse   [code=200]
+```
+
+## 7.4 IMPORTANT — l'état `expliquer` était un cul-de-sac
+
+Il remplaçait le statut, masquait le bandeau et disait « préviens-le », sans
+aucune sortie. L'ancien code envoyait l'invité au mauvais endroit ; le mien ne
+l'envoyait nulle part. Désormais **chaque avertissement porte sa sortie quand il
+y en a une** :
+
+| Situation | Ce que l'invité lit | Ce qu'il peut faire |
+|---|---|---|
+| Lancée, mon siège joue un AUTRE héros | « ton siège n'y joue pas le héros que tu avais choisi. Il joue *X*. » | bouton **Rejoindre avec *X*** |
+| Lancée sans ce siège | « L'hôte a lancé la partie sans ce siège. Préviens-le. » | rien à rejoindre ; la grille reste ouverte |
+| Aucun repère, partie indatable | « Impossible de savoir d'ici si c'est la tienne » | bouton **Rejoindre cette partie** |
+
+Et `statutAvantExplication` a disparu : le statut ordinaire est **recalculé**
+(`statutNormal()`) au lieu d'être mis de côté, sans quoi un texte périmé revenait
+quand l'invité changeait d'avis entre-temps.
+
+## 7.5 Les témoins ajoutés
+
+- **Spectateur** sur `/get_heros_du_siege` : `SpectateurPeutLire` ouvre par
+  préfixe `/get_`, donc **seul `tient_le_siege` l'arrête** — c'est la classe
+  exacte de la fuite du 15/09, et elle est maintenant mesurée (deux cas).
+- **Écriture d'un siège voisin** sur `/set_choix_siege` (le rouge ci-dessus).
+- **`debut` change d'une manche à l'autre alors que le héros ne change pas** :
+  le cas 7 prouvé côté MOTEUR, en rejouant la même équipe dans une seconde
+  scène.
+- **`debut` vaut `""` quand aucune partie ne tourne**, et **`p=-1` → 400**.
+
+⚠ À savoir, et c'est une limite du dispositif : `test_heros_du_siege.py` tourne
+avec `seat_passwords: []`, donc **il ne mesure jamais la garde**. Toute la
+protection de siège repose sur les quatre assertions de
+`test_authentification.py`.
+
+## 7.6 Les mineurs traités
+
+- **`appliquerChoixSalon` remet `joueur.identity` à `null`.** `launcher.js`
+  préfère l'identité alternative au héros du deck ; laissée en place, celle d'un
+  héros précédent partait au moteur sans que personne ne l'ait choisie — et,
+  avec la nouvelle règle, l'invité ne s'y reconnaissait plus et restait dehors.
+- **`buildDescriptor` a sa propre garde** sur la rotation « premier joueur » :
+  en multi par sièges, aucune rotation. L'écran grisait déjà le sélecteur, mais
+  c'est une politesse d'interface ; la garde vit maintenant là où le descripteur
+  se fabrique. Le solo est strictement inchangé (`state.salon.multi` faux).
+- **`p < 0` reçoit le même 400 que `p=abc`.**
+
+## 7.7 Verdicts après la ronde
+
+| Batterie | Résultat |
+|---|---|
+| `ui-check` `bascule-salon` | **25 / 25** (dont le cas 7, constaté **rouge** d'abord) |
+| `tools/test_heros_du_siege.py` | **16 / 16 — TOUT PASSE** |
+| `tools/test_authentification.py` (protégée) | **19 / 19 — TOUT PASSE** |
+| `tools/test_authentification.py ouvert` | **3 / 3 — TOUT PASSE** |
+| `tools/test_mode_manuel.py` **EN ENTIER** | **48 / 48 VERT** |
+| `compileall -q src` | aucune erreur |
+
+Dossier jetable `.game-src-par11`, supprimé ensuite. Ports 45300-45347 et
+46900-47100, tous sous 49152.
+
+## 7.8 Ce qui reste, après la ronde
+
+1. **⚠ Toujours rien vu à l'écran, et c'est la zone qui contenait les deux
+   défauts d'assemblage ci-dessus.** Le jugement « sérieux » porté sur cette
+   inquiétude est confirmé par les faits : `set_choix_siege` et l'impasse de
+   l'avertissement sont exactement le genre de choses qu'une partie à deux aurait
+   montrées en trente secondes. Les règles, la route et les gardes sont prouvées ;
+   **l'assemblage ne l'est pas.**
+2. **Le repère change aussi quand l'hôte ANNULE un geste** (`LoadScene` passe par
+   `SetScene`, qui réattribue `game_uid` et incrémente `game_id`). Si l'hôte
+   annule un geste dans la manche précédente pendant qu'un invité attend au
+   salon **et** que son siège y tient son héros, l'invité basculerait à tort.
+   Cas très étroit — l'hôte devrait être dans l'assistant, pas dans l'ancienne
+   partie — mais réel, et non mesuré.
+3. **Le corollaire des trois messages** (« Connexion à la partie… ») : entier.
+4. **Rien n'est déployé.**
