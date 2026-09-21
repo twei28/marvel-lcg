@@ -42054,6 +42054,60 @@ CAS = [
                     "defausse_avec": ["18020"]},
     },
     {
+        "nom": "60040a Photographic Reflexes — la reduction de 2 NE COUVRE PAS l'exigence de couleur",
+        "pourquoi": ("LE SEUL temoin qui distingue une REDUCTION DE COUT de la generation "
+                     "de deux ressources wild qu'Echo faisait avant. 28013 No Quarter coute 2 "
+                     "et exige `Requirement R` (physique). Apres reduction il ne reste que "
+                     "l'exigence — qu'une reduction NE paie pas, et que deux wild payaient. "
+                     "La main ne garde que du mental : le moteur doit REFUSER. Sur Haymaker "
+                     "(cout 2 nu), les deux implementations donnent le meme resultat, et les "
+                     "deux autres temoins de la reduction passeraient donc a l'identique."),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["28013", "01090", "01089", "60040a"],
+        "cibles": ["01094"],
+        "payer_avec": ["01090"],
+        "ne_pas_depenser": ["60040a", "01089"],
+        "declencher": [],
+        "jouer": ["28013"],
+        "jouer_glissee_tolerant": ["28013"],
+        "verifier": "echo_etat",
+        # 4 degats = CEUX DU PREMIER JEU, et eux seuls : le rejeu n'a pas eu lieu.
+        # Avec l'ancienne generation de wild, No Quarter repartait et Rhino en
+        # prenait 8.
+        "attendu": {"degats": [["01094", 4]]},
+    },
+    {
+        "nom": "60037a Echo — la carte glissee devient offerte quand une Photographic Reflexes ARRIVE en main",
+        "pourquoi": ("temoin du rafraichissement `AfterCardEnterHand`, que la substitution "
+                     "en bloc des trois crochets ne distinguait pas. Deux lectures encadrant "
+                     "l'arrivee, sans quoi le cache n'a jamais valu True et le cas passe sans "
+                     "le correctif"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033"],
+        "declencher": [],
+        "jouer": ["12033"],
+        "verifier": "echo_pr_arrive",
+    },
+    {
+        "nom": "60037a Echo — la carte glissee cesse d'etre offerte quand la Photographic Reflexes QUITTE la main",
+        "pourquoi": ("l'autre moitie de la cause, et le temoin du rafraichissement "
+                     "`WhenCardWouldMoveToArea`. Sans lui, avec deux cartes glissees, jouer "
+                     "la premiere consomme Photographic Reflexes et la seconde resterait "
+                     "jouable POUR RIEN"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033", "60040a"],
+        "ne_pas_depenser": ["60040a"],
+        "declencher": [],
+        "jouer": ["12033"],
+        "verifier": "echo_pr_part",
+    },
+    {
         "nom": "60040a Photographic Reflexes — aucune carte glissee : la carte n'offre AUCUNE action",
         "pourquoi": "la defausser pour rien recreerait, sous une autre forme, le defaut signale (une carte qui a l'air morte en main)",
         "scenario": "rhino",
@@ -48969,6 +49023,85 @@ def echo_aller_retour(monde, aides):
     return True, f"{cid} : offerte / refusee / offerte sur l'aller-retour de forme ({lu})"
 
 
+def _echo_lire(monde, aides, card_id=None):
+    """(offerte, carte) pour UNE carte glissee, par le vrai chemin."""
+    joueur = monde.players[0]
+    zone = _echo_zone_glissee(monde)
+    posees = [f for f in (zone.Get(True) if zone is not None else []) if f is not None]
+    if card_id:
+        posees = [f for f in posees if getattr(f.paper, "card_id", None) == card_id]
+    if len(posees) != 1:
+        return None, None
+    return bool(_echo_effets_de_jeu(joueur, posees[0], monde)), posees[0]
+
+
+def echo_pr_arrive(monde, aides):
+    """La carte glissee devient offerte quand une Photographic Reflexes ARRIVE.
+
+    ⚠ CE CAS EXISTE PARCE QUE LE PRECEDENT NE SUFFISAIT PAS. « sans
+    Photographic Reflexes en main, la carte glissee n'est PAS offerte » part
+    d'une main qui n'en a JAMAIS eu : le cache `is_like_in_hand` n'a jamais valu
+    True, il passerait donc au vert sans le moindre rafraichissement. Ce qu'il
+    faut, ce sont DEUX LECTURES encadrant le changement — exactement le piege
+    deja documente pour `echo_aller_retour`.
+
+    Celui-ci mord sur `AfterCardEnterHand`.
+    """
+    from game.puzzle.puzzle import PuzzleHelper
+
+    joueur = monde.players[0]
+    avant, glissee = _echo_lire(monde, aides)
+    if glissee is None:
+        return False, "il faut exactement une carte glissee sous Echo"
+    cid = getattr(glissee.paper, "card_id", "?")
+    if avant:
+        return False, (f"{cid} est deja offerte alors qu'aucune Photographic Reflexes "
+                       f"n'est en main : la mesure ne prouverait rien")
+    PuzzleHelper.Exec(["Puzzle.Gain('60040a')"], monde)
+    if joueur.hand_cards.FindCard(name='Photographic Reflexes') is None:
+        return False, "Photographic Reflexes n'est pas arrivee en main"
+    apres, _ = _echo_lire(monde, aides)
+    if not apres:
+        return False, (f"{cid} n'est TOUJOURS PAS offerte apres l'arrivee d'une "
+                       f"Photographic Reflexes en main : la reponse « non » est figee "
+                       f"(cache `is_like_in_hand`, rafraichissement AfterCardEnterHand)")
+    return True, f"{cid} : refusee sans Photographic Reflexes, offerte des qu'elle arrive"
+
+
+def echo_pr_part(monde, aides):
+    """La carte glissee cesse d'etre offerte quand la Photographic Reflexes PART.
+
+    L'autre moitie de la cause. Celui-ci mord sur `WhenCardWouldMoveToArea`.
+
+    ⚠ La consequence du defaut, si ce rafraichissement manque, n'est pas
+    theorique : avec DEUX cartes glissees, jouer la premiere consomme la
+    Photographic Reflexes, et la seconde resterait jouable POUR RIEN.
+    """
+    from game.effect.rule import DebugRule
+    from game.operate.faces import Faces
+
+    joueur = monde.players[0]
+    avant, glissee = _echo_lire(monde, aides)
+    if glissee is None:
+        return False, "il faut exactement une carte glissee sous Echo"
+    cid = getattr(glissee.paper, "card_id", "?")
+    if not avant:
+        return False, (f"{cid} n'est pas offerte au depart : la mesure ne prouverait "
+                       f"rien (forme heros={joueur.IsInHeroForm()})")
+    prs = [f for f in joueur.hand_cards.Get() if f.IsName('Photographic Reflexes')]
+    if not prs:
+        return False, "aucune Photographic Reflexes en main"
+    Faces.DiscardAll([prs[0]], DebugRule(monde.object_manager.card_dict[0].face))
+    if joueur.hand_cards.FindCard(name='Photographic Reflexes') is not None:
+        return False, "il reste une Photographic Reflexes en main : la mesure est faussee"
+    apres, _ = _echo_lire(monde, aides)
+    if apres:
+        return False, (f"{cid} reste offerte alors que la derniere Photographic Reflexes "
+                       f"a quitte la main : la reponse « oui » est figee (cache "
+                       f"`is_like_in_hand`, rafraichissement WhenCardWouldMoveToArea)")
+    return True, f"{cid} : offerte avec Photographic Reflexes, refusee des qu'elle part"
+
+
 def echo_etat(monde, aides):
     """Etat du plateau d'Echo : ce qui est glisse, ce qui est offert, ce qui reste.
 
@@ -49491,6 +49624,17 @@ def executer_un_cas(game_dir, port, index):
             # Photographic Reflexes » n'est pas montable.
             for card_id in cas.get("jouer_glissee") or []:
                 jouer_carte_glissee(card_id)
+            # `jouer_glissee_tolerant` : le REFUS est le resultat attendu.
+            # Meme raison d'etre que `declencher_tolerant` : sans elle, le seul
+            # temoin qui distingue une REDUCTION DE COUT d'une generation de
+            # ressources n'est pas montable, puisqu'il repose precisement sur un
+            # jeu que le moteur doit refuser.
+            for card_id in cas.get("jouer_glissee_tolerant") or []:
+                try:
+                    jouer_carte_glissee(card_id)
+                except Exception as exc:
+                    print(f"TOLERE: jouer_glissee {card_id} -> "
+                          f"{type(exc).__name__}: {exc}", flush=True)
             for card_id in cas.get("action_en_main") or []:
                 declencher_action_en_main(card_id)
         except Exception as exc:
