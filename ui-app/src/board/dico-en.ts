@@ -944,6 +944,23 @@ export const DICO_EN_BASE: Record<string, string> = {
   'La partie en cours sera perdue si tu ne l’as pas sauvegardée.':
     'The current game will be lost if you have not saved it.',
 
+  // ---- board : quitter FERME la table (21/09/2026) ----
+  // L'hote qui quitte rend son emplacement : le moteur s'eteint et les
+  // invites sont deconnectes. La confirmation doit le dire, dans les deux
+  // langues — un invite anglophone mis dehors sans preavis, c'est le defaut
+  // qu'on corrige, pas un detail de traduction.
+  'Fermer la table ?': 'Close the table?',
+  'La table va disparaître : la partie en cours est perdue si tu ne l’as pas sauvegardée, les autres joueurs sont déconnectés, et il faudra rouvrir une table depuis le site pour rejouer.':
+    'The table will be gone: the current game is lost if you have not saved it, '
+    + 'the other players are disconnected, and you will have to open a new table '
+    + 'from the website to play again.',
+  'La table n’a pas pu être fermée.': 'The table could not be closed.',
+  'Le site n’a pas répondu. Rien n’a été détruit : la table et les autres joueurs sont toujours là.':
+    'The website did not answer. Nothing was destroyed: the table and the other '
+    + 'players are still there.',
+  'Revenir au menu quand même': 'Back to the menu anyway',
+  'Rester sur la partie': 'Stay in the game',
+
   // ---- board/mobile : vue d'etat degradee et marquage des cibles ----
   // ('cartes' et 'Actif' sont deja definis plus haut)
   'cibles ici': 'targets here',

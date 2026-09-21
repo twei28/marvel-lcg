@@ -18,6 +18,18 @@ vi.mock('./moteur', async (original) => ({
   Moteur: MoteurFaux,
 }))
 
+// ⚠ ON NE REMPLACE QUE L'ATTERRISSAGE. `laTableVaSeFermer` et `fermerLaTable`
+// restent les vraies : c'est le cablage du bouton qu'on mesure, pas un decor.
+// jsdom, lui, ne sait pas naviguer — et on veut de toute facon AFFIRMER sur la
+// destination, pas la subir.
+const atterrissages: string[] = []
+vi.mock('./quitter-la-table', async (original) => ({
+  ...(await original<typeof import('./quitter-la-table')>()),
+  atterrir: (url: string) => {
+    atterrissages.push(url)
+  },
+}))
+
 const { PagePartie } = await import('../board')
 
 /** La manigance principale de la table : le panneau la montre par `bind_id`. */
@@ -99,10 +111,10 @@ async function emettre(trame: Partial<EtatMoteur>) {
 /** Laisse la chaîne fetch/basculerPause se résoudre (même idiome que CoucheTriche.test.tsx). */
 const attendreLeReseau = () => act(() => new Promise((resolve) => setTimeout(resolve, 0)))
 
-function monter() {
+function monter(playerId = 0) {
   return render(
     <PagePartie
-      playerId={0}
+      playerId={playerId}
       catalogue={catalogueVide}
       modeActions="simple"
       changerModeActions={() => {}}
@@ -383,5 +395,115 @@ describe('le panneau de la manigance', () => {
     } finally {
       vi.useRealTimers()
     }
+  })
+})
+
+// ==========================================================================
+// « Quitter la partie » ferme la table (21/09/2026)
+// ==========================================================================
+// ⚠ C'EST LE CABLAGE QUI CASSE, PAS LE MODULE. `quitter-la-table.test.ts`
+// prouve que les décisions sont justes ; il ne dit rien du bouton. Or c'est
+// précisément le bouton qui, pendant des mois, n'a fait que naviguer vers
+// `/prepare.html` en laissant la table debout — et les invités bloqués sur
+// l'ancienne partie.
+//
+// Le même bouton sert sur MOBILE : `BandeauPortrait` rend le `.board-actions`
+// du plateau tel quel (`menu={props.actionsPartie}`), donc le même
+// `onClick`. Un seul câblage, un seul cas.
+describe('le bouton « Menu » du plateau', () => {
+  /** Répond à chaque route du départ. `siteUrl` vide = aucun site derrière. */
+  function reseau(siteUrl: string, fermeture: unknown) {
+    return vi.fn(async (cible: string) => {
+      if (cible === '/get_site_url') return { ok: true, json: async () => ({ url: siteUrl }) }
+      if (cible === '/quitter_la_table') return { ok: true, json: async () => fermeture }
+      return { ok: true, json: async () => ({}) }
+    } ) as unknown as typeof fetch
+  }
+
+  const questions: string[] = []
+
+  beforeEach(() => {
+    atterrissages.length = 0
+    questions.length = 0
+    // Hors `FournisseurConfirmation`, `useConfirmation` retombe sur
+    // `window.confirm` : c'est par là qu'on lit ce que le joueur a sous les
+    // yeux avant de décider.
+    vi.stubGlobal('confirm', vi.fn((texte: string) => {
+      questions.push(texte)
+      return true
+    }))
+  })
+
+  it('⚠ ferme vraiment la table de l’hôte, et le dépose sur le site', async () => {
+    vi.stubGlobal('fetch', reseau('https://exemple.test',
+      { eteinte: true, url: 'https://exemple.test/arret' }))
+    monter()
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    await attendreLeReseau()
+    await attendreLeReseau()
+    expect(fetch).toHaveBeenCalledWith('/quitter_la_table', expect.objectContaining({
+      method: 'POST',
+    }))
+    // ⚠ JAMAIS UNE PAGE DU MOTEUR. Il est mort une seconde après la réponse :
+    // `/prepare.html` le serait avec lui.
+    expect(atterrissages).toEqual(['https://exemple.test/arret'])
+    vi.unstubAllGlobals()
+  })
+
+  it('⚠ annonce la fermeture, pas seulement la partie perdue', async () => {
+    vi.stubGlobal('fetch', reseau('https://exemple.test',
+      { eteinte: true, url: 'https://exemple.test/arret' }))
+    monter()
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    await attendreLeReseau()
+    // « La partie en cours sera perdue » ne suffit plus : ce qui disparaît,
+    // c'est la TABLE, et les autres joueurs sont mis dehors avec elle.
+    const question = questions.join('\n')
+    expect(question).toMatch(/table/i)
+    expect(question).toMatch(/déconnect|dehors/i)
+    expect(question).toMatch(/site/i)
+    vi.unstubAllGlobals()
+  })
+
+  it('renoncer ne ferme rien du tout', async () => {
+    vi.stubGlobal('confirm', vi.fn(() => false))
+    vi.stubGlobal('fetch', reseau('https://exemple.test',
+      { eteinte: true, url: 'https://exemple.test/arret' }))
+    monter()
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    await attendreLeReseau()
+    expect(fetch).not.toHaveBeenCalledWith('/quitter_la_table', expect.anything())
+    expect(atterrissages).toEqual([])
+    vi.unstubAllGlobals()
+  })
+
+  it('⚠ un INVITÉ part sans rien fermer, et on ne lui promet rien', async () => {
+    vi.stubGlobal('fetch', reseau('https://exemple.test', { eteinte: false, url: '' }))
+    monter(1)
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    await attendreLeReseau()
+    await attendreLeReseau()
+    expect(fetch).not.toHaveBeenCalledWith('/quitter_la_table', expect.anything())
+    expect(questions.join('\n')).not.toMatch(/déconnect/i)
+    expect(atterrissages).toEqual(['/prepare.html'])
+    vi.unstubAllGlobals()
+  })
+
+  it('sans site derrière, on retourne simplement à l’écran des héros', async () => {
+    // Partie locale : rien à rendre, et `/prepare.html` reste vivant puisque
+    // le moteur ne s'éteint pas.
+    vi.stubGlobal('fetch', reseau('', { eteinte: false, url: '' }))
+    monter()
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    await attendreLeReseau()
+    await attendreLeReseau()
+    expect(fetch).not.toHaveBeenCalledWith('/quitter_la_table', expect.anything())
+    expect(atterrissages).toEqual(['/prepare.html'])
+    vi.unstubAllGlobals()
   })
 })

@@ -56,6 +56,12 @@ import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
 import { extraireCapacite } from './board/texte-capacite'
 import { quitterPleinEcran } from './board/mobile/plein-ecran'
+import {
+  atterrir,
+  fermerLaTable,
+  laTableVaSeFermer,
+  urlDuSite,
+} from './board/quitter-la-table'
 import { estFenetreDeReaction } from './board/DemandeCentrale'
 import {
   narrationAuCentre,
@@ -2909,18 +2915,56 @@ export function PagePartie({
     window.location.href = '/prepare.html'
   }, [])
 
+  // ⌂ QUITTER, C'EST FERMER LA TABLE (21/09/2026), et non plus seulement
+  // changer d'écran. Le pourquoi — le salon qui expédiait les invités sur
+  // l'ANCIENNE partie tant que la table en portait une — est écrit en tête de
+  // `board/quitter-la-table.ts`. Ce même bouton sert sur mobile :
+  // `BandeauPortrait` rend le `.board-actions` du plateau tel quel, donc ce
+  // `onClick`-ci.
   const retourMenuPrincipal = useCallback(async () => {
+    const urlSite = await urlDuSite()
+    const fermeLaTable = laTableVaSeFermer({ siege: playerId, spectateur, urlSite })
+    // ⚠ ON ANNONCE CE QUI VA VRAIMENT SE PASSER. « La partie en cours sera
+    // perdue » ne dit rien d'une table qui disparaît avec ses invités dedans.
     const accepte = await confirmer({
-      titre: t('Revenir au menu principal ?'),
-      texte: t('La partie en cours sera perdue si tu ne l’as pas sauvegardée.'),
+      titre: fermeLaTable ? t('Fermer la table ?') : t('Revenir au menu principal ?'),
+      texte: fermeLaTable
+        ? t(
+            'La table va disparaître : la partie en cours est perdue si tu ne l’as pas sauvegardée, les autres joueurs sont déconnectés, et il faudra rouvrir une table depuis le site pour rejouer.'
+          )
+        : t('La partie en cours sera perdue si tu ne l’as pas sauvegardée.'),
       confirmer: t('Quitter'),
       ton: 'danger',
     })
-    if (accepte) {
+    if (!accepte) return
+    if (!fermeLaTable) {
       quitterPleinEcran()
-      window.location.href = '/prepare.html'
+      atterrir('/prepare.html')
+      return
     }
-  }, [confirmer])
+    const depart = await fermerLaTable()
+    if (!depart.eteinte) {
+      // ⚠ PAS DE REPLI SILENCIEUX. On vient d'annoncer la disparition de la
+      // table, et elle est toujours là : partir sans rien dire laisserait
+      // croire le contraire, et l'emplacement resterait pris.
+      const quandMeme = await confirmer({
+        titre: t('La table n’a pas pu être fermée.'),
+        texte: t(
+          'Le site n’a pas répondu. Rien n’a été détruit : la table et les autres joueurs sont toujours là.'
+        ),
+        confirmer: t('Revenir au menu quand même'),
+        annuler: t('Rester sur la partie'),
+      })
+      if (!quandMeme) return
+      quitterPleinEcran()
+      atterrir('/prepare.html')
+      return
+    }
+    // Sortir du plein écran AVANT de naviguer (spec mobile §6.3), et surtout
+    // vers le SITE : le moteur qui servait cette page n'existe déjà plus.
+    quitterPleinEcran()
+    atterrir(depart.url)
+  }, [confirmer, playerId, spectateur])
 
   const effetCentrale = useMemo(() => {
     const premier = effets.entries().next().value as [number, CardEffectDelta] | undefined
