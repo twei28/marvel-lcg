@@ -1035,6 +1035,48 @@ class GameServerGet(GameServerBase):
         await self._appeler_site('/api/prives_lus', {}, secondes=3)
         return web.json_response({'ok': True})
 
+    async def post_quitter_la_table(self, request: web.Request) -> web.Response:
+        """L'HOTE a fini : la table doit cesser d'exister.
+
+        AJOUT du 21/09/2026, et ce n'est pas un confort. « Quitter la partie »
+        ne faisait que naviguer vers `/prepare.html` : le moteur gardait son
+        monde charge et l'emplacement restait pris. Or le salon des invites
+        bascule vers le plateau des que la table porte UNE partie, quelle
+        qu'elle soit (`public/js/salon/app.js`) : la partie precedente etant
+        toujours la, les invites etaient expedies sur l'ANCIENNE avant meme
+        d'avoir choisi un heros, et y restaient bloques. Deux soirees perdues
+        les 19 et 20/09. La table fermee, l'hypothese du salon redevient vraie.
+
+        ⚠ RESERVE AU SIEGE 0, ET C'EST ICI QUE CA SE JOUE. Cote site,
+        `/api/eteindre` s'authentifie par le jeton de la PARTIE : il dit de
+        quelle table vient l'appel, jamais qui a clique. Un invite qui
+        arriverait jusque-la fermerait la table de son hote. La seule preuve
+        d'etre l'hote est le cookie de siege, et il n'existe que de ce cote-ci.
+        `tient_le_siege` et non `allowed_seats`, pour la meme raison que
+        `get_liens_sieges` : cette derniere ouvre les sieges orphelins.
+
+        ⚠ L'ADRESSE D'ATTERRISSAGE VIENT DU SITE, et on ne la fabrique pas.
+        Une seconde apres cette reponse, ce moteur est mort : toute page qu'il
+        pourrait proposer (`/prepare.html`, `/`) sera morte avec lui. Le site
+        est de toute facon le seul a connaitre le domaine public place devant
+        nous. Pas d'adresse rendue, pas de fermeture annoncee : sans lieu ou
+        renvoyer le joueur, mieux vaut le laisser sur sa partie.
+
+        Sans site derriere (partie locale lancee par JOUER-SOLO.bat), il n'y a
+        aucune table a rendre a personne : on ne promet rien, et le plateau
+        retourne simplement a l'ecran des heros.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
+        statut, donnees = await self._appeler_site('/api/eteindre', {}, secondes=10,
+                                                   avec_statut=True)
+        url = str((donnees or {}).get('url') or '')
+        if statut != 200 or not url:
+            return web.json_response({'eteinte': False, 'url': ''})
+        return web.json_response({'eteinte': True, 'url': url})
+
     async def get_dossier_sauvegardes(self, request: web.Request) -> web.Response:
         """Le dossier ou CETTE table range ses trois emplacements de sauvegarde.
 
@@ -1357,6 +1399,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_dossier_sauvegardes', self.get_dossier_sauvegardes)
         self.AddAwaitGetSecurity('/get_messages_prives', self.get_messages_prives)
         self.AddPostSecurity('/post_messages_lus', self.post_messages_lus)
+        self.AddPostSecurity('/quitter_la_table', self.post_quitter_la_table)
         self.AddAwaitGetSecurity('/get_images_cartes', self.get_images_cartes)
         self.AddAwaitGetSecurity('/get_identites', self.get_identites)
         self.AddAwaitGetSecurity('/get_site_url', self.get_site_url)
