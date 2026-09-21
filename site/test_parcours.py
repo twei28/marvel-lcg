@@ -460,18 +460,28 @@ o.JETONS_SITE[_jeton_extinction] = "hote"
 _corps_extinction = ("jeton=" + _jeton_extinction).encode("utf-8")
 
 _eteints = []
+_ordre = []                   # ce qui s'est passe, dans l'ordre ou c'est arrive
 _vrai_eteindre_2 = o.eteindre_jeu
+_vrai_repondre = o.Handler._repondre
 
 
 def _eteindre_lent(code, cause="extinction"):
     # ⚠ ON FAIT EXPRES DE TRAINER. `eteindre_jeu` tient la main jusqu'a vingt
     # secondes en vrai (sauvegarde, SIGTERM, attente du groupe) : c'est
     # precisement ce qui interdit de repondre APRES lui.
+    _ordre.append("eteint")
     _time_extinction.sleep(1.5)
     _eteints.append((code, cause))
 
 
+def _repondre_observe(self, *args, **kwargs):
+    if self.chemin == "/api/eteindre":
+        _ordre.append("repondu")
+    return _vrai_repondre(self, *args, **kwargs)
+
+
 o.eteindre_jeu = _eteindre_lent
+o.Handler._repondre = _repondre_observe
 try:
     _avant = o.mot_de_passe_jeu("hote")
     _depart = _time_extinction.monotonic()
@@ -502,6 +512,12 @@ try:
     while not _eteints and _time_extinction.monotonic() < _fin:
         _time_extinction.sleep(0.05)
     verifier("la table finit bien par etre eteinte", bool(_eteints), str(_eteints))
+    # ⚠ ET L'ORDRE, PAS SEULEMENT LE DELAI. Le cas du chrono ci-dessus passe
+    # encore si le fil demarre une ligne AVANT `_repondre` : il tuerait alors
+    # le moteur pendant que le site lui ecrit sa reponse, une fois sur mille.
+    # Celui-ci refuse cette course-la.
+    verifier("et le fil qui tue ne demarre qu'APRES la reponse",
+             _ordre[:2] == ["repondu", "eteint"], str(_ordre))
 
     # Le jeton est le seul laissez-passer : sans lui, on n'eteint pas la table
     # d'un autre.
@@ -513,6 +529,7 @@ try:
              "%s %s" % (_code, _eteints))
 finally:
     o.eteindre_jeu = _vrai_eteindre_2
+    o.Handler._repondre = _vrai_repondre
 
 # --- S3 : le corps d'une requete est plafonne AVANT d'etre lu ---------------
 # ⚠ LE CAS NE VAUT QUE PARCE QU'IL MENT. On annonce plus que le plafond, on

@@ -787,36 +787,44 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
 
 
 def eteindre_volontairement(code: str, cause: str = "extinction",
-                            rendre_la_main: bool = False) -> None:
+                            differer: bool = False):
     """La table est fermee PARCE QU'ON L'A DEMANDE : acces coupes, puis moteur.
 
     ⚠ ON COUPE LES ACCES D'ABORD, ON ETEINT ENSUITE, ET L'ORDRE EST TOUT.
-    C'est le seul geste du site qui soit VOLONTAIRE : la personne dit qu'elle
-    a fini. On perime donc le laissez-passer du moteur, sans quoi les invites
-    de la soiree gardent un cookie valable un an. Ni le faucheur ni un
-    plantage ne passent par ici : une table qui redemarre toute seule ne doit
-    pas laisser son proprietaire dehors.
+    Les DEUX gestes qui passent par ici sont VOLONTAIRES : le bouton
+    « Terminer » du site (`/eteindre`) et « Quitter la partie » du plateau
+    (`/api/eteindre`). Dans les deux cas la personne dit qu'elle a fini, et
+    l'on perime donc le laissez-passer du moteur, sans quoi les invites de la
+    soiree gardent un cookie valable un an. Ni le faucheur ni un plantage ne
+    passent par ici, et c'est voulu : une table qui redemarre toute seule ne
+    doit pas laisser son proprietaire dehors (docstring de
+    `revoquer_mot_de_passe_jeu`, qui l'interdit nommement).
 
     Et si l'on revoquait APRES, `eteindre_jeu` tenant la main jusqu'a quinze
     secondes, le `meta refresh` de la page d'attente aurait tout le temps de
     rappeler `/entrer` : un moteur repartait avec l'ANCIEN mot de passe et la
     revocation le manquait.
 
-    `rendre_la_main` reporte la seule EXTINCTION dans un fil ; la revocation,
-    elle, reste faite ici, tout de suite, et l'ordre tient donc toujours.
+    `differer` coupe les acces MAINTENANT et rend la fonction qui eteindra —
+    a appeler une fois qu'on a repondu.
     ⚠ C'est indispensable a l'appelant qui doit encore REPONDRE au moteur
-    qu'on est en train de tuer (`/api/eteindre`, appelee par le bouton
-    « Quitter » du plateau) : eteindre avant de repondre, c'est tuer le
-    messager, et le plateau reste sur une page morte sans savoir ou aller.
+    qu'on est en train de tuer (`/api/eteindre`) : eteindre avant de repondre,
+    c'est tuer le messager, et le plateau reste sur une page morte sans savoir
+    ou aller. Meme demarrer le fil une ligne trop tot laisse la course
+    ouverte, et il n'y a aucune raison de la laisser ouverte.
     """
     revoquer_mot_de_passe_jeu(code)
-    if rendre_la_main:
+    if not differer:
+        eteindre_jeu(code, cause)
+        return None
+
+    def plus_tard():
         # ⚠ La globale `eteindre_jeu` est resolue A L'APPEL, dans le fil : un
         # test qui l'observe en la remplacant voit donc bien passer l'appel.
         threading.Thread(target=lambda: eteindre_jeu(code, cause),
                          daemon=True).start()
-    else:
-        eteindre_jeu(code, cause)
+
+    return plus_tard
 
 
 # Un compte qui expire a deja quatre semaines de retard : le verifier toutes
@@ -4702,19 +4710,23 @@ class Handler(BaseHTTPRequestHandler):
                 # `/quitter_la_table` (server_get.py) qui exige le siege 0,
                 # cookie en main. Un invite n'arrive donc jamais jusqu'ici.
                 #
-                # ⚠ ET ON REPOND AVANT D'ETEINDRE (`rendre_la_main`) : celui
-                # qui attend cette reponse est le moteur qu'on tue.
+                # ⚠ ET ON REPOND AVANT D'ETEINDRE, DANS CET ORDRE EXACT :
+                # acces coupes, reponse partie, PUIS le fil qui tue. Celui qui
+                # attend cette reponse est le moteur qu'on tue : demarrer le
+                # fil ne serait-ce qu'une ligne plus tot laisse une course ou
+                # le messager meurt avant d'avoir parle.
                 #
                 # L'adresse d'atterrissage part d'ICI parce que le site est le
                 # seul a connaitre son domaine public : le plateau, lui, est
                 # servi par un moteur qui n'aura plus de page a lui offrir.
-                eteindre_volontairement(qui, "quitte depuis le plateau",
-                                        rendre_la_main=True)
+                eteindre = eteindre_volontairement(qui, "quitte depuis le plateau",
+                                                   differer=True)
                 racine = (f"https://{DOMAINE}" if DOMAINE
                           else f"http://127.0.0.1:{PORT_SITE}")
                 self._repondre(200, json.dumps({"ok": True,
                                                 "url": racine + "/arret"}).encode("utf-8"),
                                "application/json; charset=utf-8")
+                eteindre()
                 return
             if self.chemin == "/api/prives":
                 # ⚠ PAS DE `toucher_presence` ICI. C'est une horloge qui
