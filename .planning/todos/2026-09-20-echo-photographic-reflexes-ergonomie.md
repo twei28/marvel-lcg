@@ -111,11 +111,58 @@ Yarro décrivait donc l'inverse de la mécanique réelle, et **son expérience e
 exacte** : il tenait une carte qu'il ne pouvait ni jouer ni défausser. Le
 défaut est d'ergonomie, pas de moteur, et il est réel.
 
-### Une observation à instruire, hors de ce sujet
+### L'observation est CONCLUE le 21/09/2026 : c'était un VRAI DÉFAUT
 
-En forme **CIVILE**, la carte glissée est rapportée `jouable = True`, alors que
-`check_tucked_playable` (`60037a.py`) exige `initiator.IsInHeroForm()`. Deux
-lectures possibles : `CanPlayBy` est un contrôle superficiel qui ne déroule pas
-les conditions, ou la condition de forme ne s'applique pas. **Ne pas conclure
-sans mesurer** : jouer réellement la carte depuis la forme civile et voir si le
-moteur l'accepte. Si elle passe, c'est un vrai défaut de règle.
+L'observation disait : « en forme **CIVILE**, la carte glissée est rapportée
+`jouable = True` ». Les deux lectures proposées étaient toutes les deux
+justes, et la mesure a tranché les deux.
+
+#### 1. La mesure du 20/09 était fausse — et il faut savoir pourquoi
+
+`face.CanPlayBy(joueur)` **ne peut pas** répondre à cette question.
+`HasCost.CanPlayBy` (`src/game/card/face/attribute/has_cost.py`) pose
+`self.card.can_state.is_like_in_hand = True` **avant** de filtrer les effets,
+puis le remet à `None`. Il court-circuite donc exactement l'endroit où vit la
+condition de forme : `check_tucked_playable`, branché sur le message
+`CheckIfFaceIsLikeInHand`.
+
+Mesuré, sur la position montée : `CanPlayBy` rend `True` dans les **trois**
+états (forme héros, forme civile, retour en forme héros). Il aurait rendu
+`True` même sur une carte qu'aucune règle n'autorise. **Ne jamais mesurer une
+jouabilité avec `CanPlayBy`.** Le vrai chemin est `face.IsLikeInHand()`, qui
+envoie le message, puis `EventManager.FilterAvailableEffects`.
+
+#### 2. Mais le moteur laissait bel et bien jouer la carte en forme civile
+
+Mesure par le vrai chemin, une carte glissée, Photographic Reflexes en main :
+
+| état | `IsLikeInHand()` | effets de jeu offerts | attendu |
+| --- | --- | --- | --- |
+| forme HÉROS | `True` | 1 | ✅ |
+| bascule en forme CIVILE | `True` | **1** | ❌ devrait être 0 |
+| retour en forme HÉROS | `False` | **0** | ❌ devrait être 1 |
+
+En vidant le cache à la main avant chaque lecture, on obtenait
+`True / False / True`, c'est-à-dire la bonne réponse.
+
+**Cause.** `card.can_state.is_like_in_hand` est un cache qui n'est remis à
+zéro qu'au **déplacement** d'une carte (`card.py`, `MoveToArea`). Or la
+réponse de `check_tucked_playable` dépend de deux choses qui bougent sans que
+la carte glissée ne bouge : la **forme** du joueur et la présence de
+**Photographic Reflexes** dans sa main. La toute première réponse restait donc
+figée pour toute la vie de la carte sous Echo.
+
+C'est un piège connu du moteur : Magik (`aoa/magik/45030a.py`) le contourne
+déjà à la main, et le correctif « pack brawn » en tête de `Card.IsLikeInHand`
+porte sur la même famille. Echo, elle, ne le contournait pas.
+
+**Et c'est bien ce que le joueur a vécu.** La seconde moitié du tableau
+(`retour en forme HÉROS → 0 effet`) dit mot pour mot son « en prod tu ne peux
+rien faire » : un aller-retour en forme civile suffisait à éteindre
+définitivement toutes les cartes glissées. Sa réserve du 20/09 est donc levée
+dans l'autre sens : il n'y avait pas qu'un défaut d'ergonomie.
+
+**Corrigé** le 21/09/2026 : `rafraichir_les_glissees` dans `60037a.py`, avec
+ses trois témoins (`forme CIVILE`, `retour en forme HÉROS`, et le positif) dans
+`tools/test_capacites.py`. Rapport complet :
+`.planning/rapports/2026-09-21-echo-conclusion.md`.
