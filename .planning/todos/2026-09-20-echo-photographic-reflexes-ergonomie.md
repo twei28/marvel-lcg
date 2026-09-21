@@ -63,3 +63,59 @@ yeux. Dans celle-ci, tout marchait.
 **Diagnostiqué le 20/09/2026, non commencé.** Le joueur attend une réponse
 depuis le 19/09 au soir : lui expliquer le geste est plus urgent que le
 correctif d'ergonomie.
+
+
+---
+
+## REPRODUIT EN LABORATOIRE le 21/09/2026
+
+Le doute de la section précédente (« son "en prod tu ne peux rien faire" porte
+peut-être sur une partie ordinaire qu'on n'a pas sous les yeux ») est levé :
+la position a été montée sur le vrai moteur, et le résultat est mesuré.
+
+### La recette, pour qui voudra refaire
+
+Harnais `tools/test_capacites.py`, scénario `rhino`, héros `echo`, sur un
+dossier de jeu jetable copié de `.game-src`.
+
+- `Puzzle.ChangeToFace('60037b', '60037a')` pour passer en forme héros.
+  ⚠ On désigne la face **actuellement visible**, pas celle qu'on veut obtenir.
+  Viser `60037a` fait lever une assertion du moteur : la face héros dort dans
+  `world.aside_deck`, dont `GetOwner()` rend le VILAIN, et
+  `GetControlByPlayer()` exige un joueur. Ce n'est pas un défaut d'Echo :
+  vérifié à l'identique sur Venom (`20001a`, propriétaire Rhino). C'est
+  l'idiome qui est piégeux.
+- Main forcée : un événement d'aspect ou basique bon marché (`12033` Assess
+  the Situation, coût 0), `60040a` Photographic Reflexes, et deux ressources.
+- Jouer l'événement : « Watch and Learn » le glisse sous Echo.
+
+### Ce que le moteur répond
+
+**Forme HÉROS**, une carte glissée, Photographic Reflexes en main :
+
+```
+glissées sous Echo = ['12033']   12033 jouable = True
+main = ['60040a', ...]           60040a jouable = False
+```
+
+**Forme CIVILE**, même position : `60040a jouable = False` également.
+
+### Conclusion, et elle confirme le diagnostic du 20/09
+
+**Photographic Reflexes n'est jouable dans aucune des deux formes, et ne se
+défausse pas.** C'est le comportement voulu : la carte n'est pas une action du
+joueur, elle se consomme toute seule quand on joue la carte glissée sous Echo,
+laquelle est bien offerte (`jouable = True`).
+
+Yarro décrivait donc l'inverse de la mécanique réelle, et **son expérience est
+exacte** : il tenait une carte qu'il ne pouvait ni jouer ni défausser. Le
+défaut est d'ergonomie, pas de moteur, et il est réel.
+
+### Une observation à instruire, hors de ce sujet
+
+En forme **CIVILE**, la carte glissée est rapportée `jouable = True`, alors que
+`check_tucked_playable` (`60037a.py`) exige `initiator.IsInHeroForm()`. Deux
+lectures possibles : `CanPlayBy` est un contrôle superficiel qui ne déroule pas
+les conditions, ou la condition de forme ne s'applique pas. **Ne pas conclure
+sans mesurer** : jouer réellement la carte depuis la forme civile et voir si le
+moteur l'accepte. Si elle passe, c'est un vrai défaut de règle.
