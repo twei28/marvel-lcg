@@ -248,14 +248,48 @@ Commits : `4436f3de`, `1cfc1782`, `741bdacb`, `aaf0acbc`.
 Verdicts : 25/25 (`npm run bascule-salon`), 16/16 (`test_heros_du_siege.py`),
 19/19 + 3/3 (`test_authentification.py`), **48/48 VERT** (`test_mode_manuel.py`).
 
-### Ce qui reste après la ronde
+### Ce qui reste après la ronde 1
 
-1. **⚠ Rien n'a été vu à l'écran**, et c'est la zone qui contenait les deux
-   défauts d'assemblage ci-dessus. Les règles, la route et les gardes sont
-   prouvées ; l'assemblage ne l'est pas.
-2. **Le repère change aussi quand l'hôte ANNULE un geste** (`LoadScene` passe par
-   `SetScene`). Si l'hôte annule dans la manche précédente pendant qu'un invité
-   attend **et** que son siège y tient son héros, l'invité basculerait à tort.
-   Cas très étroit, non mesuré.
-3. **Le corollaire des trois messages** : entier.
-4. **Rien n'est déployé.**
+1. **Le corollaire des trois messages** : entier.
+2. **Rien n'est déployé.**
+
+---
+
+## Ronde de correction 2, le 21/09/2026 : la règle rouvrait ce qu'elle fermait
+
+⚠ **Prévaut sur tout ce qui précède.** Le relecteur a **exécuté** le module au
+lieu de le lire. §8 du rapport.
+
+1. **La clause de réserve rouvrait le cas 7 sous forme de bouton.** Passé 45 s
+   sans que le repère ait bougé, la règle proposait « Rejoindre cette partie » —
+   c'est-à-dire, dans le scénario du cas 7, l'ANCIENNE partie. En campagne,
+   `sansChoix` satisfaisait seul la condition : **chaque invité, chaque soirée**.
+   Supprimée. `debut === debutAuChoix` est la preuve positive que la partie
+   précède le choix, pas un doute.
+   ⚠ **Aucun de mes cas ne faisait passer le temps** : `attenteDepuis: null`
+   n'est la valeur d'aucune session réelle, et un cas figeait même le défaut
+   comme voulu.
+2. **Le repère de campagne était écrit et jamais relu** : `relireRepere` vivait
+   dans `reprendreChoixExistant`, où la branche campagne ne passe jamais.
+3. **Le trou d'annulation était plus large que je ne l'avais dit** :
+   `/annuler_dernier_geste` est ouverte à **tout tenant de siège**, pas au seul
+   hôte. Fermé dans `SetScene`, qui ne retire `game_uid` que si la scène change
+   vraiment (la distinction que `LoadScene` faisait déjà). La route publie
+   `game_uid` seul ; `clePartie` du plateau est inchangée.
+4. **Le repère se relève avant l'envoi du choix**, et n'est effacé que si le
+   salon a **reconnu** la partie (sinon un invité qui acceptait une proposition
+   à tort ne basculait plus jamais tout seul de la soirée).
+5. **L'affichage ne se repeint plus à chaque sondage** : il effaçait les
+   messages transitoires toutes les deux secondes et reconstruisait le bouton
+   sous le doigt.
+
+Commits : `4965073e`, `ac275332`, `80176f3e`.
+Verdicts : 26/26, 17/17, 19/19 + 3/3, **48/48 VERT**.
+
+### Ce qui reste après la ronde 2
+
+1. **⚠ Toujours rien vu à l'écran.** Deux rondes, six défauts, et **tous les
+   six** étaient dans l'assemblage ou dans le choix des cas — jamais dans une
+   règle isolée.
+2. **Le corollaire des trois messages** : entier.
+3. **Rien n'est déployé.**

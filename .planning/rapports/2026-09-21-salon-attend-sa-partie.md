@@ -418,3 +418,135 @@ Dossier jetable `.game-src-par11`, supprimé ensuite. Ports 45300-45347 et
    partie — mais réel, et non mesuré.
 3. **Le corollaire des trois messages** (« Connexion à la partie… ») : entier.
 4. **Rien n'est déployé.**
+
+---
+
+# 8. Ronde de correction 2 — la règle rouvrait ce qu'elle fermait
+
+⚠ **Cette section prévaut sur les §1 à §7.** Le relecteur a **exécuté** le
+module sous node au lieu de le lire, et a trouvé ce qu'aucun de mes cas ne
+pouvait voir : **aucun ne faisait passer le temps.**
+
+| Commit | Ce qu'il porte |
+|---|---|
+| `4965073e` | La clause de réserve supprimée, et deux cas qui font passer le temps |
+| `ac275332` | Le repère ne bouge que si la scène change vraiment |
+| `80176f3e` | Le repère de campagne relu, relevé avant l'envoi, affichage stable |
+
+## 8.1 CRITIQUE — la clause de réserve rouvrait le cas 7 sous forme de bouton
+
+```js
+if (debut === debutAuChoix) {
+    if (delaiEcoule && (sansChoix || (heros && heros === monChoix))) return "proposer";
+```
+
+`attenteDepuis` est posé au chargement de la page et jamais remis à zéro. Donc
+45 s après l'ouverture du salon, **dans le scénario exact du cas 7**, la règle
+affichait « Rejoindre cette partie » vers l'ANCIENNE partie. Reproduit avant
+correction :
+
+```
+cas 7 + 44 s   => attendre
+cas 7 + 60 s   => proposer      ⟵ le cas 7, en un clic
+campagne + 60 s => proposer     ⟵ chaque invité, chaque soirée
+```
+
+**En campagne c'était pire** : `sansChoix` satisfaisait seul la condition, sans
+aucun contrôle de héros. Tout invité arrivé pendant que la manche précédente est
+chargée se voyait offrir la manche d'hier, dès que l'hôte tardait de 45 s.
+
+**Ma justification était fausse**, et le relecteur l'a démontée proprement : si
+le repère avait été perdu, `debutAuChoix` serait `null` et on serait dans
+l'autre branche. `debut === debutAuChoix` est au contraire **la preuve positive**
+que la partie qui tourne précède le choix. La clause a disparu :
+`if (debut === debutAuChoix) return "attendre";`
+
+Le seul cas réel qu'elle couvrait — une course de moins d'une seconde entre
+l'envoi du choix et la lecture qui suit — est fermé **en amont** : le salon
+relève son repère **avant** d'envoyer son choix. Relevé avant, la pire erreur
+possible est de retenir un repère d'un instant trop vieux, ce qui fait
+*basculer* : le bon sens de l'erreur.
+
+### La leçon de test, et elle est sévère
+
+Mon cas « même héros à la manche suivante » n'était vert que parce qu'il laissait
+`attenteDepuis: null` — **une valeur qu'aucune session réelle ne présente**. Et
+`bascule-salon.spec.ts:253` **fixait explicitement le défaut comme voulu**.
+Une règle qui prend le temps en paramètre doit être éprouvée *dans le temps* :
+les deux nouveaux cas balaient 44 s, 60 s et 600 s sur les entrées du cas 7 et
+sur celles de la campagne. **Constatés rouges d'abord, tous les deux.**
+
+## 8.2 CRITIQUE — le repère de campagne était écrit, jamais relu
+
+`memoriserRepere` était appelé dans la boucle de sondage, mais `relireRepere` ne
+vivait que dans `reprendreChoixExistant` — **où la branche campagne ne passe
+jamais**, puisqu'elle retourne avant. Mon commentaire promettait qu'il
+« survit au rechargement exactement comme celui d'un invité ordinaire » : c'était
+faux. Un invité de campagne qui rechargeait après le lancement attendait, puis
+devait cliquer. La relecture remonte au début de `demarrer`, avant la campagne.
+
+## 8.3 CRITIQUE — le trou d'annulation était plus large que je ne l'avais dit
+
+Je l'avais réduit à « l'hôte annule un geste ». **`/annuler_dernier_geste` est
+ouverte à tout tenant de siège**, et `load_replay_data` comme `Restart` font
+pareil. En campagne, où aucun héros ne vient retenir la bascule, n'importe quel
+joueur de la manche précédente pouvait donc expédier les invités du salon dans sa
+partie.
+
+Le remède était déjà dans le code : `LoadScene` calcule
+`autre_partie = scene is not self.scene`. `SetScene` reprend exactement cette
+distinction et ne retire `game_uid` que si la scène change vraiment ; la route
+publie `game_uid` **seul**, plus `game_uid:game_id` (c'est `game_id`, qui
+s'incrémente à chaque `SetScene`, qui portait le trou). `clePartie` reste
+inchangée pour le plateau, puisqu'elle contient toujours `game_id`.
+
+**Témoin, constaté rouge sans la condition** :
+
+```
+ECHEC meme scene reposee (annulation) : le repere NE bouge PAS
+      [avant = 1a0c2c4ba06 / apres = 1a0c2c5a4c4]
+```
+
+## 8.4 Le polissage qui abîmait l'usage
+
+`montrerAvertissement(null)` repeignait **à chaque sondage**, donc toutes les
+deux secondes. Trois dégâts, tous à l'usage :
+
+- les messages transitoires étaient effacés en moins de deux secondes
+  (« Import en cours… », « Import impossible. », « Choix refusé par le
+  serveur. », « Serveur injoignable. », « Ce siège n'est pas le tien. ») ;
+- `bandeauAttente(!sansChoix && …)` éteignait le bandeau que `rendreCampagne`
+  venait d'allumer, et « Aucun héros n'est prévu pour ce siège » était remplacé
+  deux secondes plus tard par le texte générique de la campagne ;
+- `replaceChildren` reconstruisait le bouton sous le doigt : **un clic à cheval
+  sur un sondage ne déclenchait rien**.
+
+On ne touche plus au DOM que si l'avertissement affiché change.
+
+Et `allerAuPlateau()` efface désormais le repère **seulement si le salon a
+reconnu la partie**. Il l'effaçait aussi quand le clic venait d'une simple
+proposition : un invité qui acceptait à tort revenait au salon sans repère et ne
+basculait plus jamais tout seul de la soirée.
+
+## 8.5 Verdicts après la ronde 2
+
+| Batterie | Résultat |
+|---|---|
+| `ui-check` `bascule-salon` | **26 / 26** (les 2 nouveaux constatés **rouges** d'abord) |
+| `tools/test_heros_du_siege.py` | **17 / 17 — TOUT PASSE** (témoin d'annulation constaté rouge sans la condition) |
+| `tools/test_authentification.py` (protégée) | **19 / 19 — TOUT PASSE** |
+| `tools/test_authentification.py ouvert` | **3 / 3 — TOUT PASSE** |
+| `tools/test_mode_manuel.py` **EN ENTIER** | **48 / 48 VERT**, cas d'annulation compris |
+| `compileall -q src` | aucune erreur |
+
+Dossier jetable `.game-src-par12`, supprimé. Ports 45500-45547 et 47300-47700.
+Une seule batterie à la fois, cette fois : le faux rouge de la ronde 1 venait de
+deux batteries lancées en parallèle sur la même base de ports.
+
+## 8.6 Ce qui reste
+
+1. **⚠ Toujours rien vu à l'écran.** Deux rondes, six défauts, et **tous les
+   six** étaient dans l'assemblage ou dans le choix des cas — jamais dans une
+   règle isolée. C'est le constat qui compte plus que la liste.
+2. **Le corollaire des trois messages** (« Connexion à la partie… ») : entier.
+3. **Rien n'est déployé.**
