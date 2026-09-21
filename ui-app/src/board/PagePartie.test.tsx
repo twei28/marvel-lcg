@@ -471,7 +471,7 @@ describe('le panneau de la manigance', () => {
 
 
 // ==========================================================================
-// « Quitter la partie » ferme la table (21/09/2026)
+// Le menu simple et la fermeture complète sont deux choix distincts.
 // ==========================================================================
 // ⚠ C'EST LE CABLAGE QUI CASSE, PAS LE MODULE. `quitter-la-table.test.ts`
 // prouve que les décisions sont justes ; il ne dit rien du bouton. Or c'est
@@ -503,17 +503,21 @@ describe('le bouton « Menu » du plateau', () => {
 
   const questions: string[] = []
 
-  /** Monte, laisse l'adresse du site se lire, pose la table, clique « Menu ». */
-  async function cliquerMenu(playerId = 0) {
+  /** Monte, laisse l'adresse du site se lire, pose la table, clique la sortie demandée. */
+  async function cliquerSortie(nom: string | RegExp, playerId = 0) {
     monter(playerId)
     // ⚠ L'ADRESSE EST LUE AU MONTAGE, plus au clic : sans ce tour de boucle,
     // le plateau croirait encore ne rien savoir du site.
     await attendreLeReseau()
     await emettre({ monde: table(heros('Spider-Man', 1)) })
-    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    fireEvent.click(screen.getByRole('button', { name: nom }))
     await attendreLeReseau()
     await attendreLeReseau()
   }
+
+  const cliquerMenu = (playerId = 0) => cliquerSortie('Menu', playerId)
+  const cliquerDeconnexion = (playerId = 0) =>
+    cliquerSortie(/Déconnexion complète/, playerId)
 
   beforeEach(() => {
     atterrissages.length = 0
@@ -527,10 +531,19 @@ describe('le bouton « Menu » du plateau', () => {
     }))
   })
 
-  it('⚠ ferme vraiment la table de l’hôte, et le dépose sur le site', async () => {
+  it('le menu revient au choix du héros sans fermer la table', async () => {
     vi.stubGlobal('fetch', reseau('https://exemple.test',
       { issue: 'fermee', url: 'https://exemple.test/arret' }))
     await cliquerMenu()
+    expect(fetch).not.toHaveBeenCalledWith('/quitter_la_table', expect.anything())
+    expect(atterrissages).toEqual(['/prepare.html'])
+    vi.unstubAllGlobals()
+  })
+
+  it('⚠ la déconnexion complète ferme vraiment la table de l’hôte, et le dépose sur le site', async () => {
+    vi.stubGlobal('fetch', reseau('https://exemple.test',
+      { issue: 'fermee', url: 'https://exemple.test/arret' }))
+    await cliquerDeconnexion()
     expect(fetch).toHaveBeenCalledWith('/quitter_la_table', expect.objectContaining({
       method: 'POST',
     }))
@@ -543,7 +556,7 @@ describe('le bouton « Menu » du plateau', () => {
   it('⚠ annonce la fermeture, pas seulement la partie perdue', async () => {
     vi.stubGlobal('fetch', reseau('https://exemple.test',
       { issue: 'fermee', url: 'https://exemple.test/arret' }))
-    await cliquerMenu()
+    await cliquerDeconnexion()
     // « La partie en cours sera perdue » ne suffit plus : ce qui disparaît,
     // c'est la TABLE, et les autres joueurs sont mis dehors avec elle.
     const question = questions.join('\n')
@@ -562,7 +575,7 @@ describe('le bouton « Menu » du plateau', () => {
     vi.stubGlobal('confirm', vi.fn(() => false))
     vi.stubGlobal('fetch', reseau('https://exemple.test',
       { issue: 'fermee', url: 'https://exemple.test/arret' }))
-    await cliquerMenu()
+    await cliquerDeconnexion()
     expect(fetch).not.toHaveBeenCalledWith('/quitter_la_table', expect.anything())
     expect(atterrissages).toEqual([])
     vi.unstubAllGlobals()
@@ -570,7 +583,7 @@ describe('le bouton « Menu » du plateau', () => {
 
   it('⚠ un INVITÉ part sans rien fermer, et on ne lui promet rien', async () => {
     vi.stubGlobal('fetch', reseau('https://exemple.test', { issue: 'sans-site', url: '' }))
-    await cliquerMenu(1)
+    await cliquerDeconnexion(1)
     expect(fetch).not.toHaveBeenCalledWith('/quitter_la_table', expect.anything())
     expect(questions.join('\n')).not.toMatch(/déconnect/i)
     expect(atterrissages).toEqual(['/prepare.html'])
@@ -581,7 +594,7 @@ describe('le bouton « Menu » du plateau', () => {
     // Partie locale : rien à rendre, et `/prepare.html` reste vivant puisque
     // le moteur ne s'éteint pas.
     vi.stubGlobal('fetch', reseau('', { issue: 'sans-site', url: '' }))
-    await cliquerMenu()
+    await cliquerDeconnexion()
     expect(fetch).not.toHaveBeenCalledWith('/quitter_la_table', expect.anything())
     expect(atterrissages).toEqual(['/prepare.html'])
     vi.unstubAllGlobals()
@@ -594,7 +607,7 @@ describe('le bouton « Menu » du plateau', () => {
     // qu'on corrige, remis en place par une panne de réseau.
     vi.stubGlobal('fetch', reseau('panne',
       { issue: 'fermee', url: 'https://exemple.test/arret' }))
-    await cliquerMenu()
+    await cliquerDeconnexion()
     expect(fetch).toHaveBeenCalledWith('/quitter_la_table', expect.anything())
     expect(questions.join('\n')).toMatch(/n’a pas pu le vérifier/)
     expect(atterrissages).toEqual(['https://exemple.test/arret'])
@@ -609,7 +622,7 @@ describe('le bouton « Menu » du plateau', () => {
     // moteur condamné.
     vi.stubGlobal('fetch', reseau('https://exemple.test',
       { issue: 'inconnue', url: 'https://exemple.test' }))
-    await cliquerMenu()
+    await cliquerDeconnexion()
     const question = questions.join('\n')
     expect(question).toMatch(/peut-être en train de se fermer/)
     expect(question).not.toMatch(/Rien n’a été détruit/)
@@ -632,7 +645,7 @@ describe('le bouton « Menu » du plateau', () => {
 
   it('un 403 du moteur, lui, peut affirmer que rien n’a bougé', async () => {
     vi.stubGlobal('fetch', reseauAvecStatut(403))
-    await cliquerMenu()
+    await cliquerDeconnexion()
     expect(questions.join('\n')).toMatch(/Rien n’a été touché/)
     expect(atterrissages).toEqual(['/prepare.html'])
     vi.unstubAllGlobals()
@@ -644,7 +657,7 @@ describe('le bouton « Menu » du plateau', () => {
     // il reclique Menu, Caddy rend 502 — et il lisait « Rien n'a été touché »
     // avec « Rester sur la partie », sur une table déjà disparue.
     vi.stubGlobal('fetch', reseauAvecStatut(502))
-    await cliquerMenu()
+    await cliquerDeconnexion()
     const question = questions.join('\n')
     expect(question).toMatch(/peut-être en train de se fermer/)
     expect(question).not.toMatch(/Rien n’a été touché/)

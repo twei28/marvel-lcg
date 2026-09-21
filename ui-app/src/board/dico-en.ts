@@ -100,6 +100,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Les héros l’emportent !': 'The heroes win!',
   'Les héros sont vaincus': 'The heroes are defeated',
   'Retour au menu': 'Back to the menu',
+  'Retour au choix du héros': 'Back to hero selection',
+  'Fermer et déconnecter la table (surtout pour le multijoueur en ligne)':
+    'Close and disconnect the table (mainly for online multiplayer)',
+  'Déconnexion complète (surtout multijoueur en ligne)':
+    'Full disconnection (mainly online multiplayer)',
   'Annuler la dernière action': 'Undo the last action',
   'Animations activées — cliquer pour couper': 'Animations on — click to turn them off',
   'Animations coupées — cliquer pour activer': 'Animations off — click to turn them on',

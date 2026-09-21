@@ -1495,6 +1495,7 @@ function EcranFinPartie({
   monde,
   siege,
   onMenu,
+  onDeconnexion,
 }: {
   gagne: boolean
   raison?: string
@@ -1512,6 +1513,7 @@ function EcranFinPartie({
    */
   siege: number
   onMenu: () => void
+  onDeconnexion: () => void
 }) {
   const heros = (monde?.players ?? [])
     .map((joueur) => joueur.area_hero?.[0]?.name?.replace(/^\W*/, ''))
@@ -1577,9 +1579,14 @@ function EcranFinPartie({
             else onMenu()
           }}
         />
-        <button type="button" className="fin-partie-menu" onClick={onMenu}>
-          {t('Retour au menu')}
-        </button>
+        <div className="fin-partie-choix-sortie">
+          <button type="button" className="fin-partie-menu" onClick={onMenu}>
+            {t('Retour au choix du héros')}
+          </button>
+          <button type="button" className="fin-partie-menu fin-partie-deconnexion" onClick={onDeconnexion}>
+            {t('Fermer et déconnecter la table (surtout pour le multijoueur en ligne)')}
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -2978,7 +2985,7 @@ export function PagePartie({
   // l'assistant s'ouvre encore en plein ecran, sans barre d'adresse.
   const retourMenu = useCallback(() => {
     quitterPleinEcran()
-    window.location.href = '/prepare.html'
+    atterrir('/prepare.html')
   }, [])
 
   // ⌂ QUITTER, C'EST FERMER LA TABLE (21/09/2026), et non plus seulement
@@ -3689,10 +3696,19 @@ export function PagePartie({
             <button
               type="button"
               className="bh-bouton bh-menu"
-              onClick={retourMenuPrincipal}
+              onClick={retourMenu}
               title={t('Revenir au menu principal')}
             >
               <span aria-hidden="true">⌂</span> {t('Menu')}
+            </button>
+            <button
+              type="button"
+              className="bh-bouton bh-fermer-table"
+              onClick={retourMenuPrincipal}
+              title={t('Fermer et déconnecter la table (surtout pour le multijoueur en ligne)')}
+            >
+              <span aria-hidden="true">⏻</span>{' '}
+              {t('Déconnexion complète (surtout multijoueur en ligne)')}
             </button>
             <button
               type="button"
@@ -4156,6 +4172,7 @@ export function PagePartie({
           monde={etat.monde}
           siege={playerId}
           onMenu={retourMenu}
+          onDeconnexion={retourMenuPrincipal}
         />
       ) : null}
     </>
