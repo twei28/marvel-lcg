@@ -1,6 +1,6 @@
 # « Quitter la partie » ferme la table
 
-21/09/2026, branche `mode-manuel`. Six commits, en deux rondes.
+21/09/2026, branche `mode-manuel`. Huit commits, en trois rondes.
 
 | Hachage | Portée |
 |---|---|
@@ -10,11 +10,16 @@
 | `d7f2b189` | site : le fil qui tue ne démarre qu'APRÈS la réponse |
 | `2f31f1ef` | moteur : trois issues à la fermeture, jamais deux |
 | `b2c91d78` | plateau : ne rien affirmer quand on ne sait pas |
+| `1c4807b4` | site : le fil d'extinction part même si la réponse ne part pas |
+| `fb351e0e` | plateau : 502 n'est pas 403, et le bandeau se tait quand il ne sait pas |
 
-La ronde de correction a porté sur un seul sujet, décliné à trois étages :
-**réduire à deux ce qui en fait trois**. « C'est fermé / ce n'est pas fermé »
-était faux, et faisait dire au plateau le contraire de la vérité au pire
-moment. Le détail est au chapitre « Le piège d'enchaînement ».
+Les deux rondes de correction ont porté sur un seul sujet, décliné à tous les
+étages : **réduire à deux ce qui en fait trois**. « C'est fermé / ce n'est pas
+fermé » était faux, et faisait dire au plateau le contraire de la vérité au
+pire moment. La ronde 2 a trouvé que le mensonge avait reculé d'un cran sans
+disparaître (`!reponse.ok` traité comme un 403), et une **régression que la
+ronde 1 avait introduite** (le fil d'extinction perdu si l'écriture de la
+réponse lève). Le détail est au chapitre « Le piège d'enchaînement ».
 
 ---
 
@@ -179,13 +184,60 @@ fermé la table » et **offre la sortie** dès cet instant. Le seuil d'affirmati
 reste à cinq essais : une vraie coupure met le même temps à revenir, et déclarer
 la fermeture à six secondes serait faux une fois sur deux.
 
-**6. Les invités ne restent pas sur un écran gelé.** Vérifié, et c'était déjà
+**6. ⚠ `!reponse.ok` n'est pas « 403 », et la fenêtre « inconnue » fabriquait
+elle-même le chemin qui y menait.** Le plateau parle au moteur **à travers
+Caddy** : un moteur mort ou en train de s'éteindre rend **502**, un cookie de
+session périmé rend **401**. Les trois tombaient sur `refusee`, donc sur
+« Cette table n'est pas la tienne à fermer. Rien n'a été touché » et « Rester
+sur la partie » — affiché à l'hôte, sur une table qui venait de disparaître. Et
+le scénario n'avait rien de théorique : issue inconnue → « Rester ici » → la
+table finit de s'éteindre → il reclique Menu → 502 → on lui propose de rester
+sur un moteur mort, puis `/prepare.html`, mort aussi. Seul un **403** affirme
+désormais que rien n'a bougé ; tout le reste est `inconnue`. Les témoins
+stubbaient `{ ok: false }` sans statut : ils en portent un, 403 d'un côté, 502
+de l'autre.
+
+Corollaire : un 502 ne porte aucun corps, donc aucune adresse. La destination
+de l'issue inconnue est maintenant, dans l'ordre, *ce que le moteur vient de
+dire*, *ce qu'il avait dit au montage*, et à défaut `lienAccueil()`.
+
+**7. ⚠ Régression de la ronde 1 : le fil d'extinction pouvait être perdu.**
+`_repondre` écrit sur la socket, et le client d'en face est le moteur, dont
+`_appeler_site` coupe à dix secondes. Si la révocation traîne sur un verrou
+sqlite au-delà de ce plafond, aiohttp ferme, l'écriture lève — et `eteindre()`
+n'était jamais appelé. Le pire des deux mondes : mot de passe révoqué, moteur
+vivant, emplacement pris jusqu'au faucheur, une demi-heure. Avant
+`differer=True`, le fil partait quoi qu'il arrive. C'est désormais un
+`try / finally` : à ce stade les accès sont déjà coupés, il n'y a plus aucune
+raison de ne pas aller au bout. Témoin : `_repondre` remplacé par une fonction
+qui lève `BrokenPipeError`, et la table doit fermer quand même.
+
+**8. La phrase à 6 s, la sortie à 29 s — et elles ne bougent plus ensemble.**
+La ronde 1 avait déplacé les deux. Or à six secondes la partie est presque
+sûrement récupérable : offrir « Revenir à l'accueil » à cet instant faisait
+quitter sa partie à un invité impatient pendant un hoquet de wifi — lequel est
+arrivé par un lien de siège dont la clé est dans l'adresse, si bien que
+l'accueil ne l'y ramène pas. La phrase (qui ne déclare rien) reste au 3e essai ;
+la porte revient à `ESSAIS_AVANT_TABLE_FERMEE`.
+
+**9. ⚠ Et le bandeau nommait une cause qu'il ne pouvait pas connaître.**
+`BandeauConnexion` ne reçoit qu'un état de socket : ni siège, ni spectateur, ni
+« cette table vient du site ». L'**hôte lui-même** lisait donc « l'hôte a
+peut-être fermé la table » pendant une coupure ordinaire, et une partie
+**locale** (`JOUER-SOLO.bat`, `127.0.0.1:2345`) l'affichait alors qu'il n'y a ni
+hôte ni table. `laTablePeutAvoirEteFermee` le lui dit, et il se tait quand la
+phrase n'a pas de sens. Effet de bord heureux : la lecture de `lireLeSite()` au
+montage, qui ne servait qu'au siège 0, sert maintenant à tous.
+
+**10. Les invités ne restent pas sur un écran gelé.** Vérifié, et c'était déjà
 en place : `BandeauConnexion` finit par afficher « Cette table a été fermée. Ta
 partie n'est plus en cours. » avec « Revenir à l'accueil » — et `lienAccueil()`
 retire le sous-domaine `pN.`, donc mène au SITE, pas au moteur mort. Cette
-fonction a déménagé dans `quitter-la-table.ts` : c'est la même question (« où
-aller quand le moteur n'est plus là ? »), et le départ volontaire s'en sert
-comme dernier recours quand personne n'a su donner d'adresse.
+fonction a déménagé dans `quitter-la-table.ts` (même question : où aller quand
+le moteur n'est plus là), et elle était **cassée en local** : `127.0.0.1` a
+trois points et donnait `http://0.0.1/`, `localhost` perdait son port. Défaut
+préexistant, mais il ne se voyait qu'après une demi-minute de coupure et il sert
+désormais de dernier recours au départ volontaire. Corrigé, avec ses cas.
 
 ---
 
@@ -205,13 +257,13 @@ personne ne le dédouble plus tard.
 
 | Batterie | Verdict |
 |---|---|
-| `site/test_parcours.py` | **0 échec** (7 cas neufs sur `/api/eteindre`) |
+| `site/test_parcours.py` | **0 échec** (8 cas neufs sur `/api/eteindre`) |
 | `site/test_{narval,langue,places,routes_chemin,heure_locale,imports_locaux}.py` | tout vert |
 | `tools/test_quitter_la_table.py` (neuf) | **TOUT PASSE** : 11 cas + 3 `sans_site` + 3 `site_muet` |
-| `tools/test_mode_manuel.py` (48 cas) | **48 VERT, 0 ROUGE** (relancée après la ronde de correction) |
-| `ui-app` : `quitter-la-table.test.ts` (neuf) | 18 cas verts |
-| `ui-app` : `PagePartie.test.tsx` | 30 cas verts, dont 10 neufs |
-| `ui-app` : la batterie entière | **1936 cas, 175 fichiers, 0 échec** |
+| `tools/test_mode_manuel.py` (48 cas) | **48 VERT, 0 ROUGE** (relancée après la ronde 1 ; la ronde 2 ne touche pas au moteur) |
+| `ui-app` : `quitter-la-table.test.ts` (neuf) | 29 cas verts |
+| `ui-app` : `PagePartie.test.tsx` | 33 cas verts, dont 13 neufs |
+| `ui-app` : la batterie entière | **1950 cas, 175 fichiers, 0 échec** |
 | `npx tsc --noEmit` | silencieux |
 
 Rouges constatés avant d'écrire le code, à chaque étage et à chaque ronde :
@@ -219,22 +271,28 @@ Rouges constatés avant d'écrire le code, à chaque étage et à chaque ronde :
 - site : 5 cas rouges (`404 Introuvable` sur `/api/eteindre`) ;
 - site, ordre du fil : l'appel remis **avant** `_repondre` le temps d'une
   exécution → `['eteint', 'repondu']`, rouge, puis remis en place ;
+- site, filet du `finally` : `_repondre` remplacé par une fonction qui lève
+  → la table ne fermait pas, rouge ;
 - moteur : 7 cas rouges (`405` : la route n'existait pas), puis 4 de plus à la
-  ronde de correction (`issue` absente : `sans-site`, `inconnue`, l'adresse du
-  site) ;
-- plateau, module : 18 cas rouges (les fonctions n'existaient pas sous cette
-  forme) ;
+  ronde 1 (`issue` absente : `sans-site`, `inconnue`, l'adresse du site) ;
+- plateau, module : 18 cas rouges à la ronde 1, **9 de plus à la ronde 2**
+  (502, 401, la phrase du bandeau, `lienAccueil` en local) ;
 - plateau, **câblage** : l'ancien `board.tsx` remis en place le temps d'une
-  exécution, **4 des 5 cas d'alors rouges** ;
+  exécution, **4 des 5 cas d'alors rouges** ; 4 de plus à la ronde 2 ;
 - plateau, **bandeau** : `ESSAIS_AVANT_DOUTE` remis à 5 (l'ancien
-  comportement) → le cas du 3e essai rouge, celui du 2e vert. Le palier mesure
-  bien ce qu'il prétend.
+  comportement) → le cas du 3e essai rouge, celui du 2e vert.
 
 Deux témoins passent des deux côtés, et c'est assumé : « renoncer ne ferme
 rien » et le refus du **spectateur** (`SpectateurPeutEcrire` refusait déjà par
 défaut). Ce sont des garde-fous contre une régression future, pas des mesures
 d'un changement. Le témoin du spectateur combine exprès le cookie `spectateur`
 **et** la clé de l'hôte : c'est le double verrou qu'il garde.
+
+⚠ **Un témoin est plus faible qu'il n'en a l'air**, et c'est à savoir :
+`['repondu', 'eteint']` mord aujourd'hui, mais par **ordonnancement**. Le fil
+d'extinction est lancé par `eteindre()` ; si un jour il démarrait plus tôt et
+que l'ordonnanceur lui donnait la main assez tard, le cas passerait au vert
+alors que la course serait rouverte. Il garde l'intention, pas la garantie.
 
 La batterie moteur a tourné sur `.game-src-par9`, dossier jetable créé pour
 l'occasion et **supprimé ensuite** — jamais `.game` ni `.game-src`. Ports
@@ -269,31 +327,33 @@ l'occasion et **supprimé ensuite** — jamais `.game` ni `.game-src`. Ports
    désormais deux boutons nommés « Menu », à deux écrans d'écart. L'un détruit
    la table, l'autre non, et rien ne le dit.**
 
-3. **Les invités attendent six secondes pour un soupçon, vingt-neuf pour la
-   certitude.** Le palier ajouté (« l'hôte a peut-être fermé la table », plus
-   la sortie offerte) tombe au 3e essai. C'est mieux que la demi-minute
-   précédente, mais ce n'est toujours pas une notification : personne ne
-   PRÉVIENT les invités. Le seul moyen honnête de faire mieux serait que l'hôte
-   annonce son départ avant de partir, ce qui demande un canal que ce chantier
+3. **Personne ne PRÉVIENT les invités.** Le palier de six secondes nomme une
+   possibilité, et la sortie reste à vingt-neuf. C'est mieux qu'une demi-minute
+   de silence, mais ce n'est pas une notification : l'hôte part sans rien dire
+   à personne. Le seul moyen honnête de faire mieux serait que son plateau
+   annonce le départ avant de fermer, ce qui demande un canal que ce chantier
    n'ouvre pas.
 
-4. **La sauvegarde avant extinction repose sur un moteur encore vivant.**
+4. **La fenêtre PROMET « Reprendre », et la sauvegarde est au mieux-effort.**
    `_sauvegarder_avant_extinction` interroge le moteur, dans le fil différé,
-   juste avant de le tuer. L'ordre est bon (on sauve, puis on tue) et c'est le
-   code existant, inchangé — mais la fenêtre de confirmation en fait désormais
-   une **promesse** (« le site te la proposera sous Reprendre »), alors que la
-   fonction est au mieux-effort : elle n'écrit rien si le moteur ne répond pas
-   dans les dix secondes, et ne lève jamais. La promesse est celle du mécanisme,
-   pas une garantie. Si une partie manquait à l'appel après une fermeture,
-   c'est là qu'il faudrait regarder.
+   juste avant de le tuer : elle n'écrit rien si le moteur ne répond pas dans
+   les dix secondes, et ne lève jamais. La promesse est celle du mécanisme, pas
+   une garantie. Si une partie manquait à l'appel après une fermeture, c'est là
+   qu'il faudrait regarder.
 
 5. **`racine` est calculée à trois endroits dans `orchestrateur.py`** (lignes
    286, ~3980, et la nouvelle route). Je n'ai pas dédupliqué : ce n'était pas
    demandé, et un helper introduit ailleurs aurait mélangé un nettoyage à une
    fonctionnalité. À faire un jour, seul.
 
-6. **`lienAccueil` a déménagé** de `board.tsx` vers `quitter-la-table.ts`. Le
-   bandeau de reconnexion l'importe désormais. C'est cohérent (même question :
-   où aller quand le moteur n'est plus là) mais c'est un déplacement que
-   personne n'a demandé ; il rend simplement le dernier recours disponible au
-   départ volontaire.
+6. **`lienAccueil` a déménagé** de `board.tsx` vers `quitter-la-table.ts`, et
+   il a été réparé au passage (IP découpée, port perdu). Le déplacement n'a été
+   demandé par personne ; il rend le dernier recours disponible au départ
+   volontaire, et la réparation ne se voyait qu'en local.
+
+7. **La destination de l'issue inconnue peut encore être approximative.** Un
+   502 ne porte pas de corps : on retombe sur l'adresse lue au montage, et à
+   défaut sur `lienAccueil()`. Si le site vit sur un domaine sans rapport avec
+   celui des tables, cette dernière déduction est fausse — elle ne l'est pas
+   sur ce déploiement (`pN.narwhalchampions.com` / `narwhalchampions.com`),
+   mais rien ne le garantit ailleurs.
