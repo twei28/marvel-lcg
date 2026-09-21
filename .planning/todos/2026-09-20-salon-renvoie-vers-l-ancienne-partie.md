@@ -161,3 +161,54 @@ qui vient de finir. L'utilisateur a tranché le 21/09 : on fait **la piste 1**.
   mort. Pas une régression (c'était `http://0.0.1/` avant), et aucune
   destination correcte n'existe sans site. Le geste juste serait de masquer ce
   bouton quand l'origine est connue et vide.
+
+---
+
+## Fait le 21/09/2026 : la piste 1, le siège et son héros
+
+**Le défaut est fermé sur le salon ordinaire.** Le salon n'interroge plus
+`/get_play_scene_name` mais une route neuve, `/get_heros_du_siege?p=N`, et ne
+bascule que quand le héros de SON siège, dans la partie en cours, est celui que
+l'invité vient de choisir. Insensible à l'ancienne partie encore chargée, au
+rechargement, à l'onglet rouvert et à deux parties du même scénario.
+
+Commits : `2ba88d97` (la règle pure et ses 14 cas), `e61614db` (la route moteur
+et ses 13 témoins), `c7ff6590` (le salon branché dessus). Rapport :
+`.planning/rapports/2026-09-21-salon-attend-sa-partie.md`.
+
+Verdicts : 14/14 (`npm run bascule-salon`), 11/11 (`tools/test_heros_du_siege.py`),
+15/15 + 3/3 (`tools/test_authentification.py`), **48/48 VERT**
+(`tools/test_mode_manuel.py` en entier).
+
+Trois décisions prises au passage, pour qu'on ne les redécouvre pas :
+
+1. **Le choix de l'invité est retenu dans SON navigateur** (`localStorage`, par
+   siège, périmé à six heures, effacé dès qu'il a servi). `/new` vide
+   `choix_sieges` côté serveur — et c'est voulu — donc un invité qui recharge
+   après le lancement n'a plus que cette trace. Un archivage côté serveur des
+   choix « déjà joués » a été écarté : il collerait à l'ancienne partie encore
+   chargée et rouvrirait le défaut.
+2. **La route est gardée par `tient_le_siege`, pas `allowed_seats`.** La
+   première version prenait `allowed_seats` et le témoin d'authentification l'a
+   prise en faute : un invité du siège 1 lisait le siège 2, parce que
+   `allowed_seats` ouvre les sièges orphelins et qu'avant le lancement ils le
+   sont tous.
+3. **On ne publie qu'un siège et un identifiant de carte héros.** Pas de deck,
+   pas de main, pas les autres sièges.
+
+### ⚠ Ce qui reste ouvert
+
+1. **La CAMPAGNE garde l'ancien signal, et le défaut avec.** En campagne
+   l'invité ne choisit rien : il n'a aucun choix à reconnaître, la règle ne
+   s'applique pas telle quelle, et `surveillerLeLancementCampagne` bascule
+   toujours dès qu'une partie tourne. Un invité de campagne arrivant sur une
+   table portant encore la manche précédente sera encore expédié dedans. Piste :
+   le salon peut traduire `membre.heros` (id de catalogue) en `heroCardId` par
+   `catalog.heroes()`, sans rien publier de plus.
+2. **Le corollaire des trois messages** (« Connexion à la partie… ») : entier.
+3. **La rotation « premier joueur »** (`launcher.js`) décale le siège du salon
+   par rapport au joueur du moteur quand l'hôte ne prend pas le siège 0 comme
+   premier joueur. Défaut préexistant, qui vaut déjà pour `board.html?p=N`.
+   Désormais il se voit : l'invité lit le message « ton siège n'y tient pas ton
+   héros » au lieu de partir silencieusement sur le mauvais siège.
+4. **Rien n'est déployé.**
