@@ -93,3 +93,35 @@ Trois réponses possibles, par ordre de robustesse :
 Recommandation : la 1, parce que c'est la seule qui répond à la vraie question
 (« la partie qui a commencé est-elle la MIENNE ? ») au lieu de la contourner.
 La 2 si on veut un correctif ce soir.
+
+---
+
+## Ce qui est fait au 21/09/2026 : la piste 2, par le bouton « Quitter »
+
+La piste 2 ci-dessus (« vider la table à la création d'une nouvelle partie »)
+demandait de trancher **qui doit éteindre, et quand**. C'est tranché, et pas
+par le moteur : c'est **l'hôte**, quand il quitte.
+
+« Quitter la partie » (bouton ⌂ Menu du plateau, PC et mobile) ferme désormais
+la table pour de bon : moteur éteint, emplacement rendu, mot de passe révoqué,
+invités déconnectés. Décision de l'auteur, qui accepte de rouvrir une table
+depuis le site pour rejouer. Le chemin : `/quitter_la_table` (moteur) →
+`/api/eteindre` (site, en 127.0.0.1, jeton de partie). Rapport :
+`.planning/rapports/2026-09-21-quitter-eteint-la-table.md`.
+
+**L'hypothèse du commentaire du salon est donc vraie sur CE chemin** : l'hôte
+qui a quitté n'a plus de table du tout, et celle qu'il rouvrira sera vide.
+
+### Ce qui reste ouvert, et c'est volontaire
+
+1. **L'hôte qui ne quitte pas.** Rien n'oblige à passer par ce bouton :
+   l'écran de fin de partie propose « Menu » (`EcranFinPartie`, `onMenu`), qui
+   navigue vers `/prepare.html` **sans rien fermer**, et sans confirmation.
+   Un hôte qui finit une partie, revient au menu et relance retombe donc
+   exactement sur le défaut d'origine.
+2. **L'invité qui recharge sa page** (le cas qui coince, plus haut) : entier.
+3. **Le corollaire des trois messages** (« Connexion à la partie… ») : entier.
+
+Autrement dit : le contournement du jour est devenu un geste à portée de clic,
+et le défaut ne peut plus bloquer une soirée tant que l'hôte quitte proprement.
+Le signal juste (piste 1, le siège et son héros) reste à écrire.
