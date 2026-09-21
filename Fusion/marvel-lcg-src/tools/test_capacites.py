@@ -41872,6 +41872,224 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"aucune_en_resolution": True},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « fne » : Echo (Maya Lopez) 60037a/b + Photographic Reflexes
+    # 60040a/b/c. Le set n'avait AUCUN cas de comportement avant le
+    # 21/09/2026 : c'est ce trou qui a laisse vivre le defaut de cache decrit
+    # dans `rafraichir_les_glissees` (60037a.py) et le signalement n°17.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "60037a Echo — Watch and Learn : l'evenement basique joue est glisse sous Echo",
+        "pourquoi": "« tuck that event under here from that player's discard pile » : la carte ne doit ni rester en defausse ni disparaitre",
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033", "60040a"],
+        "declencher": [],
+        "jouer": ["12033"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": ["12033"], "defausse_sans": ["12033"]},
+    },
+    {
+        "nom": "60037a Echo — forme HEROS et Photographic Reflexes en main : la carte glissee est offerte",
+        "pourquoi": "les trois conditions de `check_tucked_playable` reunies, le moteur doit offrir la carte glissee ; la defausse, elle, ne doit pas l'etre",
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033", "60040a"],
+        "declencher": [],
+        "jouer": ["12033"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": ["12033"], "glissee_jouable": True},
+    },
+    {
+        "nom": "60037a Echo — forme CIVILE : la carte glissee n'est PAS offerte",
+        "pourquoi": ("temoin du defaut mesure le 21/09/2026 : le cache `is_like_in_hand` "
+                     "ne s'effacant qu'au deplacement d'une carte, la reponse « jouable » "
+                     "prise en forme heros restait vraie apres bascule en forme civile"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033", "60040a"],
+        "declencher": [],
+        "jouer": ["12033"],
+        "declencher_apres": ["Puzzle.ChangeForm('60037a')"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": ["12033"], "glissee_jouable": False},
+    },
+    {
+        "nom": "60037a Echo — retour en forme HEROS : la carte glissee redevient offerte",
+        "pourquoi": ("l'autre moitie du meme defaut, et celle que le joueur a vue : le "
+                     "« non » fige en forme civile survivait au retour en forme heros, "
+                     "donc plus rien n'etait jouable"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033", "60040a"],
+        "declencher": [],
+        "jouer": ["12033"],
+        "verifier": "echo_aller_retour",
+    },
+    {
+        "nom": "60037a Echo — sans Photographic Reflexes en main, la carte glissee n'est PAS offerte",
+        "pourquoi": "« you can discard Photographic Reflexes from your hand to play » : sans la carte, aucune permission",
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033"],
+        "declencher": [],
+        "jouer": ["12033"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": ["12033"], "glissee_jouable": False},
+    },
+    {
+        "nom": "60037a Echo — Watch and Learn : une 4e carte glissee, on defausse jusqu'a 3",
+        "pourquoi": "« if there are more than 3 tucked cards here, discard all but 3 of those cards »",
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033", "12033", "12033", "12033", "60040a"],
+        "declencher": [],
+        "jouer": ["12033", "12033", "12033", "12033"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees_nb": 3},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — chemin B : la carte glissee coute 2 de moins et defausse Photographic Reflexes",
+        "pourquoi": ("« Reduce the cost to play that event by 2 » : Haymaker coute 2, il doit "
+                     "donc partir sans la moindre ressource, alors que la main est VIDE apres "
+                     "le premier Haymaker ; et Photographic Reflexes part toute seule"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["01087", "01088", "60040a"],
+        "cibles": ["01094"],
+        # ⚠ Photographic Reflexes porte une icone de ressource : sans cette
+        # cle le pilote la defausse pour payer Haymaker, et le rejeu n'a plus
+        # de quoi se faire. Le cas rougissait alors pour la mauvaise raison.
+        "ne_pas_depenser": ["60040a"],
+        "declencher": [],
+        "jouer": ["01087"],
+        "jouer_glissee": ["01087"],
+        "verifier": "echo_etat",
+        "attendu": {"degats": [["01094", 6]], "main_sans": ["60040a"],
+                    "defausse_avec": ["60040a", "01087"], "glissees": []},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — chemin A : on clique la carte EN MAIN, elle joue l'evenement glisse",
+        "pourquoi": ("« you can discard Photographic Reflexes from your hand to play an event "
+                     "tucked under Echo » : le texte part de la carte en main, et c'est le geste "
+                     "que le joueur du signalement n°17 cherchait en vain"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["01087", "01088", "60040a"],
+        "cibles": ["01094"],
+        # ⚠ Photographic Reflexes porte une icone de ressource : sans cette
+        # cle le pilote la defausse pour payer Haymaker, et le rejeu n'a plus
+        # de quoi se faire. Le cas rougissait alors pour la mauvaise raison.
+        "ne_pas_depenser": ["60040a"],
+        "declencher": [],
+        "jouer": ["01087"],
+        "action_en_main": ["60040a"],
+        "verifier": "echo_etat",
+        "attendu": {"degats": [["01094", 6]], "main_sans": ["60040a"],
+                    "defausse_avec": ["60040a", "01087"], "glissees": []},
+    },
+    {
+        "nom": "60037a Echo — Watch and Learn ne re-glisse PAS l'evenement joue depuis sous Echo",
+        "pourquoi": "« You cannot trigger Echo's Watch and Learn ability for that event » : apres le rejeu, la carte finit en defausse, pas sous Echo",
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["01087", "01088", "60040a"],
+        "cibles": ["01094"],
+        # ⚠ Photographic Reflexes porte une icone de ressource : sans cette
+        # cle le pilote la defausse pour payer Haymaker, et le rejeu n'a plus
+        # de quoi se faire. Le cas rougissait alors pour la mauvaise raison.
+        "ne_pas_depenser": ["60040a"],
+        "declencher": [],
+        "jouer": ["01087"],
+        "action_en_main": ["60040a"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": [], "defausse_avec": ["01087"]},
+    },
+    {
+        "nom": "60040b Photographic Reflexes — trois variantes en main : c'est CELLE qu'on clique qui part",
+        "pourquoi": "les trois variantes ne different que par l'icone de ressource ; le joueur doit garder celles qu'il n'a pas jouees",
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033", "60040a", "60040b", "60040c"],
+        "ne_pas_depenser": ["60040a", "60040b", "60040c"],
+        "declencher": [],
+        "jouer": ["12033"],
+        "action_en_main": ["60040b"],
+        "verifier": "echo_etat",
+        "attendu": {"main_avec": ["60040a", "60040c"], "main_sans": ["60040b"],
+                    "defausse_avec": ["60040b"], "glissees": []},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — la carte glissee payee AVEC une Photographic Reflexes de la main",
+        "pourquoi": ("les trois variantes portent une icone de ressource : un joueur a court "
+                     "peut tres bien en defausser une pour payer. Ce cas met le "
+                     "rafraichissement du cache EN PLEIN VOL, pendant le paiement, et exige "
+                     "que la carte parte quand meme. 18020 Hit and Run coute 3, soit 1 apres "
+                     "la reduction — et il ne reste que des Photographic Reflexes en main"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["18020", "01088", "01090"],
+        "cibles": ["01094"],
+        "declencher": [],
+        "jouer": ["18020"],
+        # Les deux Photographic Reflexes n'arrivent qu'APRES la mise sous Echo :
+        # la main ne contient alors plus qu'elles, le rejeu ne peut donc se
+        # payer qu'avec l'une des deux.
+        "declencher_apres": ["Puzzle.Gain('60040a')", "Puzzle.Gain('60040b')"],
+        "jouer_glissee": ["18020"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": [], "degats": [["01094", 4]],
+                    "defausse_avec": ["18020"]},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — aucune carte glissee : la carte n'offre AUCUNE action",
+        "pourquoi": "la defausser pour rien recreerait, sous une autre forme, le defaut signale (une carte qui a l'air morte en main)",
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["60040a"],
+        "declencher": [],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": [], "action_offerte": [["60040a", False]]},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — forme CIVILE : la carte n'offre AUCUNE action, meme avec un evenement glisse",
+        "pourquoi": "« If you are in hero form » vaut pour le chemin A comme pour le chemin B",
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033", "60040a"],
+        "declencher": [],
+        "jouer": ["12033"],
+        "declencher_apres": ["Puzzle.ChangeForm('60037a')"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": ["12033"], "action_offerte": [["60040a", False]],
+                    "glissee_jouable": False},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — forme HEROS avec un evenement glisse : l'action EST offerte",
+        "pourquoi": "le bout positif du cas precedent : sans lui, un module inerte passerait les deux contre-cas",
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["12033", "60040a"],
+        "declencher": [],
+        "jouer": ["12033"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": ["12033"], "action_offerte": [["60040a", True]]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -48660,6 +48878,209 @@ def su012_carte_posee_jouable_comme_en_main(monde, aides):
                   f"main ; la defausse, elle, ne l'est pas")
 
 
+def _echo_zone_glissee(monde):
+    identite = monde.players[0].GetIdentity()
+    if identite is None:
+        return None
+    return identite.GetPlacedCardArea()
+
+
+def _echo_effets_de_jeu(joueur, face, monde):
+    """Les effets « Play » que le moteur offre VRAIMENT sur cette carte.
+
+    ⚠ NE PAS MESURER AVEC `face.CanPlayBy(joueur)`. Piege coute deux journees
+    (observation du 20/09, tranchee le 21/09/2026) : `HasCost.CanPlayBy`
+    (has_cost.py) pose `card.can_state.is_like_in_hand = True` AVANT de filtrer
+    les effets. Il repond donc « jouable » pour toute carte glissee sous Echo,
+    en forme civile comme en forme heros, et court-circuite exactement la
+    question ou vit la condition de forme. Mesure faite : `CanPlayBy` = True
+    dans les trois etats, alors que le moteur, lui, n'offrait la carte que dans
+    un seul. Le vrai chemin est celui-ci : `IsLikeInHand()` (qui envoie
+    `CheckIfFaceIsLikeInHand`) PUIS le filtre du gestionnaire d'evenements.
+    """
+    from game.message import Message
+    from game.effect.rule import GameRule
+    from game.event.manager import EventManager
+    if not face.IsLikeInHand():
+        return []
+    effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+    message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+    message.Send()
+    return EventManager.FilterAvailableEffects(message, effets, joueur, monde, None)
+
+
+def _echo_actions_en_main(joueur, face, monde):
+    """Les actions (hors « Play ») que le moteur offre sur une carte EN MAIN."""
+    from game.message import Message
+    from game.effect.rule import GameRule
+    from game.event.manager import EventManager
+    candidats = [x for x in face.effect.Find(when=Message.WhenPlayerInTurn)
+                 if not x.ability.is_play]
+    if not candidats:
+        return []
+    message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+    message.Send()
+    return EventManager.FilterAvailableEffects(message, candidats, joueur, monde, None)
+
+
+def echo_aller_retour(monde, aides):
+    """L'aller-retour de forme, DANS le verificateur, et c'est necessaire.
+
+    ⚠ Ce cas ne peut PAS s'ecrire avec deux `Puzzle.ChangeForm` enchaines. Le
+    defaut du 21/09/2026 est un cache qui fige la PREMIERE reponse : il ne mord
+    que si quelqu'un a pose la question pendant la forme civile. Deux bascules
+    a la suite, sans lecture entre les deux, laissent le cache sur sa valeur de
+    forme heros et le cas passe au vert meme sans le correctif. En partie
+    reelle, c'est le plateau qui pose la question a chaque rafraichissement —
+    d'ou le « en prod tu ne peux rien faire » du signalement n°17.
+
+    On mesure donc les trois etats en LISANT a chaque fois :
+      forme heros -> offerte ; forme civile -> refusee ; retour heros -> offerte.
+    """
+    from game.puzzle.puzzle import PuzzleHelper
+
+    joueur = monde.players[0]
+    zone = _echo_zone_glissee(monde)
+    posees = [f for f in (zone.Get(True) if zone is not None else []) if f is not None]
+    if len(posees) != 1:
+        return False, f"{len(posees)} carte(s) glissee(s), il en faut exactement 1"
+    glissee = posees[0]
+    cid = getattr(glissee.paper, "card_id", "?")
+
+    lu = []
+
+    def offerte():
+        valeur = bool(_echo_effets_de_jeu(joueur, glissee, monde))
+        lu.append(valeur)
+        return valeur
+
+    if not offerte():
+        return False, (f"{cid} n'est pas offerte alors qu'on est en forme heros avec "
+                       f"Photographic Reflexes en main")
+    PuzzleHelper.Exec(["Puzzle.ChangeForm('60037a')"], monde)
+    if offerte():
+        return False, (f"{cid} reste offerte en forme CIVILE : la reponse « jouable » est "
+                       f"figee (cache `is_like_in_hand`)")
+    PuzzleHelper.Exec(["Puzzle.ChangeForm('60037b')"], monde)
+    if not offerte():
+        return False, (f"{cid} n'est PLUS offerte au RETOUR en forme heros : le « non » de "
+                       f"la forme civile est reste fige — c'est le « en prod tu ne peux rien "
+                       f"faire » du signalement n°17")
+    return True, f"{cid} : offerte / refusee / offerte sur l'aller-retour de forme ({lu})"
+
+
+def echo_etat(monde, aides):
+    """Etat du plateau d'Echo : ce qui est glisse, ce qui est offert, ce qui reste.
+
+    Cles de `attendu` :
+      `glissees`         liste EXACTE des card_id glisses sous l'identite ;
+      `glissees_nb`      leur nombre (pour la limite de 3) ;
+      `glissee_jouable`  True/False : le moteur offre-t-il de jouer les cartes
+                         glissees ? Mesure HONNETE (voir `_echo_effets_de_jeu`).
+                         A True, le cas exige AUSSI le contre-bout : une carte
+                         de la defausse ne doit PAS etre « comme en main », sans
+                         quoi la mesure ne discrimine rien ;
+      `action_offerte`   [[card_id, True/False]] : la carte EN MAIN offre-t-elle
+                         une action (chemin A de Photographic Reflexes) ;
+      `main_avec` / `main_sans` / `defausse_avec` / `defausse_sans` : card_id ;
+      `degats`           [[card_id, n]] sur une carte en jeu.
+    """
+    attendu = aides["cas"].get("attendu") or {}
+    joueur = monde.players[0]
+    soucis = []
+    dits = []
+
+    zone = _echo_zone_glissee(monde)
+    posees = [f for f in (zone.Get(True) if zone is not None else []) if f is not None]
+    ids = [getattr(f.paper, "card_id", "?") for f in posees]
+    dits.append(f"glissees={ids}")
+
+    if "glissees" in attendu and sorted(ids) != sorted(attendu["glissees"]):
+        soucis.append(f"cartes glissees {ids}, attendu {attendu['glissees']}")
+    if "glissees_nb" in attendu and len(ids) != attendu["glissees_nb"]:
+        soucis.append(f"{len(ids)} carte(s) glissee(s), attendu {attendu['glissees_nb']}")
+
+    if "glissee_jouable" in attendu:
+        voulu = bool(attendu["glissee_jouable"])
+        if not posees:
+            soucis.append("aucune carte glissee : `glissee_jouable` ne mesure rien")
+        for f in posees:
+            cid = getattr(f.paper, "card_id", "?")
+            offerte = bool(_echo_effets_de_jeu(joueur, f, monde))
+            dits.append(f"{cid} offerte={offerte}")
+            if offerte != voulu:
+                soucis.append(
+                    f"{cid} glissee sous Echo : le moteur "
+                    f"{'OFFRE' if offerte else 'N OFFRE PAS'} de la jouer, attendu "
+                    f"{'offerte' if voulu else 'refusee'} "
+                    f"(forme heros={joueur.IsInHeroForm()}, "
+                    f"Photographic Reflexes en main="
+                    f"{joueur.hand_cards.FindCard(name='Photographic Reflexes') != None})")
+        if voulu:
+            # Contre-bout : sans lui, une implementation qui repondrait « oui »
+            # a tout passerait aussi (modele su012).
+            temoin = None
+            for f in joueur.discard_pile.Get():
+                if f is not None:
+                    temoin = f
+                    break
+            if temoin is None:
+                soucis.append("defausse vide : le contre-bout ne peut pas etre mesure")
+            elif _echo_effets_de_jeu(joueur, temoin, monde):
+                soucis.append(
+                    f"{getattr(temoin.paper, 'card_id', '?')}, dans la DEFAUSSE, est offerte "
+                    f"elle aussi : la mesure ne discrimine rien")
+
+    for card_id, voulu in attendu.get("action_offerte") or []:
+        face = None
+        for f in joueur.hand_cards.GetAll():
+            if getattr(f.paper, "card_id", None) == card_id:
+                face = f
+                break
+        if face is None:
+            soucis.append(f"{card_id} n'est pas en main (action_offerte)")
+            continue
+        offerte = bool(_echo_actions_en_main(joueur, face, monde))
+        dits.append(f"{card_id} action={offerte}")
+        if offerte != bool(voulu):
+            soucis.append(
+                f"{card_id} en main : action "
+                f"{'OFFERTE' if offerte else 'ABSENTE'}, attendu "
+                f"{'offerte' if voulu else 'absente'} "
+                f"(forme heros={joueur.IsInHeroForm()}, glissees={ids})")
+
+    en_main_ids = [getattr(f.paper, "card_id", None) for f in joueur.hand_cards.GetAll()]
+    for card_id in attendu.get("main_avec") or []:
+        if card_id not in en_main_ids:
+            soucis.append(f"{card_id} n'est plus en main (main={en_main_ids})")
+    for card_id in attendu.get("main_sans") or []:
+        if card_id in en_main_ids:
+            soucis.append(f"{card_id} est encore en main (main={en_main_ids})")
+
+    defausse_ids = [getattr(f.paper, "card_id", None)
+                    for f in joueur.discard_pile.Get() if f is not None]
+    for card_id in attendu.get("defausse_avec") or []:
+        if card_id not in defausse_ids:
+            soucis.append(f"{card_id} n'est pas dans la defausse (defausse={defausse_ids})")
+    for card_id in attendu.get("defausse_sans") or []:
+        if card_id in defausse_ids:
+            soucis.append(f"{card_id} est dans la defausse (defausse={defausse_ids})")
+
+    for card_id, valeur in attendu.get("degats") or []:
+        face = aides["par_id"](monde, card_id)
+        if face is None:
+            soucis.append(f"{card_id} introuvable en jeu (degats)")
+        elif face.max_health - face.health != valeur:
+            soucis.append(f"degats sur {card_id} = {face.max_health - face.health} "
+                          f"(attendu {valeur})")
+        else:
+            dits.append(f"{card_id} a {valeur} degats")
+
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, " | ".join(dits) or "etat conforme"
+
+
 def su008_fouille_du_deck_rencontre(monde, aides):
     """su008 : « look at the top 3 cards of the encounter deck. DISCARD 1 OF
     THEM ».
@@ -48900,6 +49321,81 @@ def executer_un_cas(game_dir, port, index):
             effet = DebugRule(monde.object_manager.card_dict[0].face)
             joueur.PlayCardsLikeInTurn([face], effet)
 
+        def jouer_carte_glissee(card_id):
+            """Joue une carte GLISSEE sous l'identite, par le vrai chemin.
+
+            Cle de cas `jouer_glissee` (pack fne, Echo). Ajoutee le 21/09/2026.
+
+            ⚠ NI `jouer_carte` NI `Puzzle.*` NE SAVENT FAIRE CA, et c'est
+            justement la mecanique centrale d'Echo : `jouer_carte` ne regarde
+            que la main, et `PlayCardsLikeInTurn` FORCE
+            `can_state.is_like_in_hand = True` — donc il court-circuite la
+            question meme qu'on veut mesurer (« le moteur offre-t-il cette
+            carte ? »). On refait donc ici ce que fait le moteur quand le
+            joueur clique la carte : on demande les effets « Play » de la
+            carte, on les passe au filtre du gestionnaire d'evenements, et on
+            resout. Si le filtre les ecarte, le cas ECHOUE — c'est le but.
+
+            `forced=False` : c'est dans la question posee au joueur que se fait
+            le paiement en ressources (meme raison que `Puzzle.Action`).
+            """
+            from game.message import Message
+            from game.effect.rule import GameRule
+            from game.event.manager import EventManager
+            joueur = monde.players[0]
+            identite = joueur.GetIdentity()
+            zone = identite.GetPlacedCardArea() if identite is not None else None
+            face = None
+            for f in (zone.Get(True) if zone is not None else []):
+                if f is not None and getattr(f.paper, "card_id", None) == card_id:
+                    face = f
+                    break
+            if face is None:
+                raise RuntimeError(f"{card_id} n'est pas glissee sous l'identite")
+            effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+            message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+            message.Send()
+            disponibles = EventManager.FilterAvailableEffects(
+                message, effets, joueur, monde, None)
+            if not disponibles:
+                raise RuntimeError(
+                    f"le moteur n'offre PAS de jouer {card_id} depuis la zone glissee")
+            joueur.ChooseEffects([disponibles[0]], message, forced=False)
+
+        def declencher_action_en_main(card_id):
+            """Declenche une action portee par une carte EN MAIN.
+
+            Cle de cas `action_en_main` (pack fne, Photographic Reflexes).
+            Ajoutee le 21/09/2026.
+
+            ⚠ `Puzzle.Action` ne sait pas viser une carte en main :
+            `FindOrCreateFace` cherche par NOM dans le deck puis la defausse,
+            jamais dans la main. Sur Photographic Reflexes, dont le deck heros
+            contient six exemplaires, il attrapait la copie du DECK — hors jeu,
+            donc sans action disponible, donc une assertion qui n'avait rien a
+            voir avec la carte testee. Ici on designe par CARD_ID et on ne
+            regarde QUE la main.
+            """
+            from game.message import Message
+            from game.effect.rule import GameRule
+            from game.event.manager import EventManager
+            joueur = monde.players[0]
+            face = en_main(card_id)
+            if face is None:
+                raise RuntimeError(f"{card_id} n'est pas en main")
+            candidats = [x for x in face.effect.Find(when=Message.WhenPlayerInTurn)
+                         if not x.ability.is_play]
+            if not candidats:
+                raise RuntimeError(f"{card_id} n'offre aucune action depuis la main")
+            message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+            message.Send()
+            disponibles = EventManager.FilterAvailableEffects(
+                message, candidats, joueur, monde, None)
+            if not disponibles:
+                raise RuntimeError(
+                    f"le moteur n'offre AUCUNE action disponible sur {card_id} en main")
+            joueur.ChooseEffects([disponibles[0]], message, forced=False)
+
         def jouer_carte(card_id):
             """Joue une carte de la main en PAYANT vraiment son cout.
 
@@ -48986,6 +49482,17 @@ def executer_un_cas(game_dir, port, index):
                 except Exception as exc:
                     print(f"TOLERE: {commande} -> {type(exc).__name__}: {exc}",
                           flush=True)
+            # `jouer_glissee` / `action_en_main` : les deux chemins d'Echo.
+            # Cles ADDITIVES (21/09/2026), aucun cas existant ne les definit.
+            # ⚠ VOLONTAIREMENT EN DERNIER, apres `declencher_apres` : c'est le
+            # seul moyen de changer la MAIN entre la mise sous Echo et le
+            # rejeu (`Puzzle.Gain` d'une Photographic Reflexes une fois la
+            # carte glissee), et sans ca le temoin « payee avec une
+            # Photographic Reflexes » n'est pas montable.
+            for card_id in cas.get("jouer_glissee") or []:
+                jouer_carte_glissee(card_id)
+            for card_id in cas.get("action_en_main") or []:
+                declencher_action_en_main(card_id)
         except Exception as exc:
             import traceback
             traceback.print_exc()
