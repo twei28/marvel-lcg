@@ -38,6 +38,15 @@ class EffectContext:
         # besoin : une carte jouee depuis la main ne se finance que par la main.
         self.play_from_area: 'Deck|None' = None
 
+        # CORRECTIF (21/09/2026, signalement Aghenatak) : le SAS de recherche.
+        # Chaque paire dit « cette carte est sortie de ce deck vers la zone de
+        # traitement pendant cet effet ». `SelectorEnd.DoMove` remplit la liste,
+        # `EffectInvoker.CloseSearchTransit` la vide a la fin de la resolution
+        # et renvoie chez elle toute carte que personne n'a reclamee. Sans cela
+        # une carte cherchee mais non consommee restait posee sur la table pour
+        # toujours, ni en jeu ni en defausse (61008, 61019, 62022).
+        self.search_transit: List[Tuple['CardFace', 'Deck']] = []
+
         # Spell effect
         self.initiator: User = self.effect.this.GetControlByOrOwner()
 

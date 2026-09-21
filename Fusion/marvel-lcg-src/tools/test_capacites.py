@@ -28849,7 +28849,15 @@ CAS = [
         "pourquoi": ("« search their deck and discard pile for 2 cards with printed [energy] "
                      "icons and place them facedown under here. Place 1 additional threat "
                      "here for each » Deck : Thunderbolt (Y), Hephaestus (B), Wrath (Y) ; "
-                     "defausse vide. Deux cartes dessous, 1 + 2 = 3 menaces"),
+                     "defausse vide. Deux cartes dessous, 1 + 2 = 3 menaces.\n"
+                     "⚠ C'EST AUSSI LE GARDE-FOU DU SAS DE RECHERCHE (21/09/2026). Cette "
+                     "carte est la seule du depot qui enchaine DEUX `Search.PlayerCard` "
+                     "avant de consommer quoi que ce soit. Une premiere version du sas "
+                     "(`EffectInvoker.CloseSearchTransit`) le refermait a la fin de "
+                     "l'effet JETABLE fabrique par `AskChooseSelect` pour poser la "
+                     "question : la premiere carte rentrait au deck entre les deux "
+                     "recherches, la seconde retombait dessus, et une seule carte "
+                     "finissait posee (« 1 carte(s) posee(s) sous ze014 »)"),
         "scenario": "rhino",
         "heros": "zeus",
         "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
@@ -41751,12 +41759,95 @@ CAS = [
                     "pret": ["50044"]},
     },
 
+    # ------------------------------------------------------------------------
+    # Pack officiel « jj » (Jessica Jones, 61xxx) — signalement Aghenatak du
+    # 20/09/2026 : « Squirrel Girl a ete jouee comme un support, impossible de
+    # l'activer ni de la defausser » / « Piecing all together a ete joue comme
+    # un support, impossible de le contrer ». Deux symptomes, UN defaut : une
+    # carte sortie du deck par une RECHERCHE reste dans la zone de traitement
+    # quand le choix cense la consommer est refuse. Elle n'est alors ni en jeu
+    # ni en defausse : le plateau la montre posee, et plus rien ne la touche.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "61008 Calling in Favors — recherche REFUSEE : l'allie retourne au deck",
+        "pourquoi": ("signalement Aghenatak du 20/09/2026. La recherche sort l'allie du "
+                     "deck vers la zone de traitement ; si le joueur refuse ensuite de le "
+                     "jouer, RIEN ne le ramene. Il reste pose sur la table, hors jeu et "
+                     "hors defausse — c'est la « Squirrel Girl jouee comme un support »"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61008', under_control=True)",
+                          "Puzzle.Counter('61002', 'evidence', 3)"],
+        "declencher": ["Puzzle.Action('61008')"],
+        "verifier": "etat_attendu",
+        "attendu": {"aucune_en_resolution": True,
+                    "hors_jeu": ["61003"],
+                    "dans_deck_joueur": ["61003"]},
+    },
+    {
+        "nom": "61008 Calling in Favors — recherche ACCEPTEE : l'allie entre bien en jeu",
+        "pourquoi": ("contre-cas OBLIGATOIRE : sans lui, un correctif qui renverrait TOUTE "
+                     "carte cherchee au deck resterait vert sur le cas d'echec tout en "
+                     "cassant la carte"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61008', under_control=True)",
+                          "Puzzle.Counter('61002', 'evidence', 3)"],
+        "declencher": ["Puzzle.Action('61008')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"aucune_en_resolution": True,
+                    "en_jeu": ["61003"]},
+    },
+    {
+        "nom": "61019 Strategy Session — recherche REFUSEE : la manigance retourne au deck",
+        "pourquoi": ("l'autre moitie du meme signalement : « Piecing all together joue "
+                     "comme un support ». Meme mecanique de recherche, autre type de "
+                     "carte (PlayerSideScheme) — la preuve que le trou est moteur"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": [],
+        "main_exclusive": ["61019", "01088"],
+        "declencher": [],
+        "jouer": ["61019"],
+        "verifier": "etat_attendu",
+        "attendu": {"aucune_en_resolution": True,
+                    "hors_jeu": ["61020"],
+                    "dans_deck_joueur": ["61020"]},
+    },
+    {
+        "nom": "61019 Strategy Session — recherche ACCEPTEE : la manigance part en main",
+        "pourquoi": "contre-cas du precedent, meme raison",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": [],
+        "main_exclusive": ["61019", "01088"],
+        "declencher": [],
+        "jouer": ["61019"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"aucune_en_resolution": True,
+                    "en_main": ["61020"]},
+    },
+    {
+        "nom": "62022 Dynamic Duo — la carte cherchee qui n'est pas un Team-Up retourne au deck",
+        "pourquoi": ("troisieme carte prise au meme piege, dans un pack SANS rapport avec "
+                     "Jessica Jones : la recherche n'a aucun filtre, elle sort du deck une "
+                     "carte quelconque, et seules les Team-Up sont ensuite consommees"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": [],
+        "main_exclusive": ["62022", "01088", "01088"],
+        "declencher": [],
+        "jouer": ["62022"],
+        "verifier": "etat_attendu",
+        "attendu": {"aucune_en_resolution": True},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
 VERIFICATIONS = r'''
 
-# --- pack sentinel ----------------------------------------------------------
 def sentinel_pieces_detruites(monde, aides):
     """Combien de COMPONENT montrent VRAIMENT leur face DESTROYED.
 
@@ -43131,6 +43222,9 @@ CLES_ETAT_ATTENDU = {
     'taille_pose_sous', 'taille_reserve', 'traits', 'traits_absents',
     # absorbees le 11/09/2026
     'pv_max', 'carte_du_surge', 'accroche_a', 'hotes', 'traits_de',
+    # ajoutee le 21/09/2026 (signalement Aghenatak, cartes coincees en
+    # zone de traitement)
+    'aucune_en_resolution',
 }
 
 # ---------------------------------------------------------------- pack fne (bloc 1)
@@ -43970,6 +44064,23 @@ def etat_attendu(monde, aides):
     for card_id in attendu.get("hors_jeu") or []:
         if aides["par_id"](monde, card_id) is not None:
             soucis.append(f"{card_id} est encore en jeu")
+
+    # `aucune_en_resolution` : AUCUNE carte ne doit rester dans une zone de
+    # traitement a la fin du cas. AJOUTEE le 21/09/2026 (signalement Aghenatak).
+    # La zone de traitement est un SAS : une carte y transite le temps qu'un
+    # effet se resolve. Une carte qui y reste n'est ni en jeu ni en defausse,
+    # donc plus rien ne la touche — et le plateau, lui, la montre posee sur la
+    # table, ce qui la fait passer pour un soutien. Aucune cle existante ne
+    # savait le voir : `hors_jeu` est VRAI pour une carte coincee, et
+    # `dans_deck_joueur` ne regarde que le deck.
+    if attendu.get("aucune_en_resolution"):
+        coincees = []
+        zones = [monde.area_processing] + [j.area_processing for j in monde.players]
+        for zone in zones:
+            for face in zone.GetAll():
+                coincees.append(getattr(face.paper, "card_id", "?"))
+        if coincees:
+            soucis.append(f"carte(s) restee(s) en zone de traitement : {coincees}")
 
     # Cle `compteurs_identite` (AJOUT 10/09/2026, pack spider_woman_kajislav) :
     # les compteurs portes par L'IDENTITE, quelle que soit sa FACE. `compteurs`

@@ -252,5 +252,75 @@ class EffectInvoker:
             effect.cost_func.Reset()
             effect.context.ResetAfterOperation()
 
+        # ⚠ HORS du `if can_action`, ET C'EST VOULU : une recherche peut avoir
+        # lieu pendant le CHOIX DES CIBLES, donc avant que le cout soit paye.
+        # Un effet abandonne faute de paiement doit rendre lui aussi ce qu'il
+        # a sorti du deck.
+        EffectInvoker.CloseSearchTransit(effect)
+
         return can_action
+
+    @staticmethod
+    def CloseSearchTransit(effect: 'Effect') -> None:
+        """Referme le SAS de recherche : ce que personne n'a reclame rentre.
+
+        CORRECTIF DU 21/09/2026. Signalement Aghenatak du 20/09/2026 : « Squirrel
+        Girl jouee comme un support » et « Piecing all together joue comme un
+        support », deux symptomes d'un seul defaut.
+
+        Une RECHERCHE (`Search.SearchForCards`) sort du deck la carte trouvee et
+        la pose dans la zone de traitement, pour la montrer au joueur. C'est
+        ensuite a l'operation appelante d'en faire quelque chose : l'ajouter a
+        la main, la jouer, la defausser. Quand elle ne le fait pas (le joueur
+        refuse le choix qui suit, `range=(0, 1)` de 61008 Calling in Favors et
+        de 61019 Strategy Session ; ou la carte tiree ne convient pas au filtre
+        applique APRES coup, 62022 Dynamic Duo), RIEN ne ramenait la carte.
+        Elle restait dans le sas pour le reste de la partie : ni en jeu, ni en
+        defausse, ni dans le deck. Le plateau la dessine posee sur la table, le
+        joueur la prend pour un soutien, et aucune action ne la touche.
+
+        On rend donc chaque carte au deck d'ou elle sort, puis on remelange ce
+        deck : elle est repartie a sa place, et sa position n'est pas connue.
+        Le sas est vide dans les deux cas, pour ne jamais rendre deux fois.
+
+        ⚠ LE SAS EST PORTE PAR L'EFFET DE LA CARTE QUI CHERCHE (le `by_effect`
+        de `SearchInternal.SearchForCardsInternal`), JAMAIS par l'effet jetable
+        que `AskChooseSelect` fabrique pour poser la question : ce dernier se
+        termine des que le joueur a repondu, donc AVANT que l'operation
+        appelante ait pu consommer la carte. Une premiere version notait le sas
+        dans `SelectorEnd.DoMove`, qui recoit justement cet effet jetable : elle
+        cassait `ze014` The Mother of Night, qui enchaine DEUX
+        `Search.PlayerCard`. La premiere carte etait rendue au deck entre les
+        deux, la seconde recherche retombait dessus, et une seule carte
+        finissait posee sous la manigance au lieu de deux (mesure du
+        21/09/2026, signalee par la session voisine).
+        """
+        from game.operate.faces import Faces
+
+        transit = effect.context.search_transit
+        if not transit:
+            return
+        effect.context.search_transit = []
+
+        decks: List['Deck'] = []
+        for face, deck in transit:
+            # Reclamee entre-temps (jouee, mise en main, defaussee) : rien a faire.
+            if not face.card.area.flags.is_processing:
+                continue
+            # ⚠ LA ZONE DE REVELATION EST ELLE AUSSI `is_processing`
+            # (deck_type.py, `RevealingArea`). Une carte que l'appelant a
+            # envoyee a la revelation A BIEN ETE reclamee : on ne la reprend
+            # pas. Sans cette garde, toute recherche suivie d'un `Reveal`
+            # verrait sa carte arrachee en pleine resolution.
+            if face.card.area.flags.is_revealing:
+                continue
+            Log.Debug(CATEGORY_NAME,
+                      f"recherche non consommee : {face} rendue a {deck}")
+            Faces.MoveAllTo([face], deck, effect)
+            if deck not in decks:
+                decks.append(deck)
+        for deck in decks:
+            # Un deck vide ne se melange pas (meme garde que SelectorEnd.DoShuffle).
+            if deck.GetSize() > 0:
+                deck.Shuffle(effect)
 

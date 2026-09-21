@@ -46,6 +46,15 @@ class SelectorEnd:
 
         if need_move:
             if moved_faces:
+                # ⚠ C'EST ICI QU'UNE RECHERCHE SORT LA CARTE DU DECK, et le
+                # SAS de recherche part de la (correctif du 21/09/2026,
+                # signalement Aghenatak). Ce n'est PAS ici qu'on le NOTE :
+                # `SelectorEnd` est appele avec l'effet jetable que
+                # `AskChooseSelect` fabrique pour poser la question, pas avec
+                # l'effet de la CARTE qui a lance la recherche. C'est
+                # `SearchInternal.SearchForCardsInternal` qui note, sur
+                # `by_effect`, et `EffectInvoker.CloseSearchTransit` qui
+                # referme. Voir le commentaire de cette methode.
                 Faces.MoveAllToProcessingArea(moved_faces, effect)
         else:
             # if moved_faces:

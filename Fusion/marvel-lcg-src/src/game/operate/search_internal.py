@@ -57,6 +57,13 @@ class SearchInternal:
             assert not isinstance(x, str)
             range = (0, x)
 
+        # ⚠ LE SAS DE RECHERCHE COMMENCE ICI (correctif du 21/09/2026,
+        # signalement Aghenatak). On releve la zone de CHAQUE candidate AVANT
+        # la selection : la selection va sortir la carte choisie de son deck
+        # pour la poser dans la zone de traitement, et plus rien ne dira
+        # ensuite d'ou elle venait. Voir `EffectInvoker.CloseSearchTransit`.
+        zones_avant = {id(face): face.card.area for face in all_faces}
+
         # We use this to do shuffle
         selector = Select.From(faces=select_face,
                                 finder=finder,
@@ -75,6 +82,22 @@ class SearchInternal:
                 faces = []
         else:
             faces = player.AskChooseSelect(selector, by_effect)
+
+        # ⚠ ON NOTE LE SAS SUR `by_effect`, L'EFFET DE LA CARTE QUI CHERCHE, et
+        # SURTOUT PAS sur l'effet que `AskChooseSelect` vient de fabriquer pour
+        # poser la question : celui-la est deja fini, et refermer le sas a SA
+        # fin reprendrait la carte AVANT que l'operation appelante ait pu la
+        # consommer. Mesure du 21/09/2026 sur `ze014` The Mother of Night, qui
+        # enchaine DEUX `Search.PlayerCard` : la premiere carte etait rendue au
+        # deck entre les deux, la seconde recherche la retrouvait, et une seule
+        # carte finissait posee sous la manigance au lieu de deux.
+        for face in faces:
+            zone = face.card.area
+            if not zone.flags.is_processing or zone.flags.is_revealing:
+                continue
+            origine = zones_avant.get(id(face))
+            if origine is not None and origine.flags.is_deck:
+                by_effect.context.search_transit.append((face, origine))
 
         def process(targets: Sequence['CardFace']) -> None:
             for face in targets:
