@@ -41844,10 +41844,12 @@ CAS = [
                      "JEU, jamais dans le sas ni remelangee au deck rencontre.\n"
                      "⚠ CE TEMOIN TIENT LE CHEMIN, PAS LA GARDE. Mesure du 21/09/2026 : "
                      "il reste VERT avec la garde `is_revealing` neutralisee, parce que "
-                     "la revelation se termine A L'INTERIEUR de l'operation et que la "
-                     "manigance est deja en jeu quand le sas se referme. La garde est "
-                     "donc defensive ; ce cas garde la sequence « chercher puis reveler » "
-                     "dans son ensemble"),
+                     "la revelation se termine A L'INTERIEUR de l'operation, que la "
+                     "manigance est deja en jeu quand le sas se referme, et que c'est donc "
+                     "la PREMIERE garde (`not is_processing`) qui l'ecarte : `is_revealing` "
+                     "n'est jamais atteinte. Ce cas garde la sequence « chercher puis "
+                     "reveler » dans son ensemble, pas la ligne `is_revealing`, qui reste "
+                     "sans temoin (voir le commentaire de `CloseSearchTransit`)"),
         "scenario": "rhino",
         "heros": "spider_man",
         "mise_en_place": [],
@@ -49627,12 +49629,67 @@ def _verifier_aucun_autre_harnais_en_cours(dossiers):
                  "un dossier `-par*` derive du meme dossier).")
 
 
+def _verifier_plage_de_ports(port: int, nombre_de_cas: int) -> None:
+    """Refuse de demarrer si la plage `port .. port + nombre_de_cas - 1` est
+    mauvaise. DEUX gardes, payees chacune par une batterie perdue.
+
+    ⚠ APPELEE SUR LES DEUX CHEMINS DE `main()`, passe complete ET `CAS_INDEX`.
+    Le second est le plus important : c'est la commande « rejouer un cas seul »
+    qui sert a trancher entre un faux rouge et une regression. Lancee sur un
+    port condamne, elle meurt exactement comme le cas qu'on enquete et
+    CONFIRME un rouge qui n'existe pas.
+    """
+    port_max = port + max(0, nombre_de_cas - 1)
+
+    # ⚠ GARDE 1 (01/09/2026) : le port d'un cas vaut `port + rang`. Au-dela de
+    # 65535 le serveur web du moteur ne se lie a RIEN, `manager_web.httpds`
+    # reste vide, et CHAQUE cas meurt sur `IndexError: list index out of range`
+    # dans `web_device.py:53`. Le rapport annonce alors « 0/908 » : un verdict
+    # qui ressemble a une regression massive alors que rien n'a ete teste. Une
+    # batterie complete lancee sur le port 67000 a brule 25 minutes pour rien.
+    if port < 1024 or port_max > 65535:
+        sys.exit(f"PORT INVALIDE : les {nombre_de_cas} cas utiliseraient "
+                 f"{port}..{port_max}, hors de la plage TCP 1024-65535. "
+                 f"Choisir une base <= {65535 - nombre_de_cas + 1} "
+                 f"(la valeur usuelle est 40000).")
+
+    # ⚠ GARDE 2 (21/09/2026) : NE JAMAIS MORDRE SUR 49152 ET AU-DELA. C'est la
+    # plage dynamique de WINDOWS, et WSL2 partage la pile reseau de l'hote :
+    # une bonne partie de ces ports est deja reservee, sans que rien ne le
+    # dise. Le moteur tombe alors sur `AssertionError: ip='127.0.0.1',
+    # port=<n>` (manager/web/manager.py:44) AVANT d'avoir demarre la partie,
+    # le fils meurt, et le rapport ecrit « aucun resultat (processus mort) ».
+    #
+    # Ce n'est pas theorique : une batterie complete lancee sur la base 49000
+    # a rendu 2282/2351, avec SOIXANTE-CINQ faux rouges de ce type, tous sur
+    # des cas dont le port depassait 49152. La meme batterie relancee sur la
+    # base 36000 : zero. Une heure et demie brulee, et un verdict qui
+    # ressemblait a s'y meprendre a une regression massive.
+    #
+    # La plage ephemere de LINUX (/proc/sys/net/ipv4/ip_local_port_range,
+    # souvent 44620-48715) est un second nid a collisions : viser plus bas
+    # qu'elle est le plus sur.
+    if port_max >= 49152:
+        sys.exit(f"PORT TROP HAUT : les {nombre_de_cas} cas utiliseraient "
+                 f"{port}..{port_max}, qui mord sur la plage dynamique de "
+                 f"Windows (49152+), partagee par WSL2. Les cas concernes "
+                 f"meurent en « AssertionError: ip/port » AVANT de jouer, et "
+                 f"le rapport les compte comme des echecs. Choisir une base "
+                 f"<= {49152 - nombre_de_cas} (la valeur usuelle est 40000).")
+
+
 def main():
     game_dir = os.path.expanduser(sys.argv[1])
     port = int(sys.argv[2])
     rapport = sys.argv[3] if len(sys.argv) > 3 else f"/tmp/test_capacites_{os.environ.get('CAS_PREFIX', '')}.json"
 
     if os.environ.get("CAS_INDEX"):
+        # ⚠ MEME GARDE QUE LA PASSE COMPLETE, ET C'EST ICI QU'ELLE COMPTE LE
+        # PLUS : `CAS_INDEX=<n>` est la commande qui sert a rejouer un cas seul
+        # pour trancher entre faux rouge et regression. Sans ce controle, elle
+        # meurt sur un port condamne exactement comme le cas qu'on enquete, et
+        # confirme un rouge qui n'existe pas. Un seul cas, donc un seul port.
+        _verifier_plage_de_ports(port, 1)
         executer_un_cas(game_dir, port, int(os.environ["CAS_INDEX"]))
         return
 
@@ -49647,6 +49704,10 @@ def main():
     if filtre:
         print(f"FILTRE « {filtre} » : {len(selection)}/{len(CAS)} cas retenus")
 
+    # ⚠ AVANT `preparer_dossiers_paralleles`, QUI CREE N DOSSIERS DE JEU : une
+    # passe qu'on va refuser n'a pas a semer des dossiers derriere elle.
+    _verifier_plage_de_ports(port, len(selection))
+
     # PARALLELES=<n> : jouer n cas a la fois. Par defaut 1, donc STRICTEMENT le
     # comportement historique tant qu'on ne demande rien.
     paralleles = max(1, int(os.environ.get("PARALLELES", "1")))
@@ -49659,46 +49720,6 @@ def main():
     # AUTRE harnais tourne deja sur un des dossiers vises, plutot que de
     # produire un faux rouge par collision de `launch.json`.
     _verifier_aucun_autre_harnais_en_cours(dossiers)
-
-    # ⚠ GARDE-FOU (01/09/2026) : le port d'un cas vaut `port + rang`, donc
-    # jusqu'a `port + len(selection) - 1`. Au-dela de 65535 le serveur web du
-    # moteur ne se lie a RIEN, `manager_web.httpds` reste vide, et CHAQUE cas
-    # meurt sur `IndexError: list index out of range` dans `web_device.py:53`.
-    # Le rapport annonce alors « 0/908 » : un verdict qui ressemble a une
-    # regression massive du contenu alors que rien n'a ete teste. Une batterie
-    # complete lancee sur le port 67000 a ainsi brule 25 minutes pour rien.
-    # Echouer tout de suite, avec la raison.
-    port_max = port + max(0, len(selection) - 1)
-    if port < 1024 or port_max > 65535:
-        sys.exit(f"PORT INVALIDE : les {len(selection)} cas utiliseraient "
-                 f"{port}..{port_max}, hors de la plage TCP 1024-65535. "
-                 f"Choisir une base <= {65535 - len(selection) + 1} "
-                 f"(la valeur usuelle est 40000).")
-
-    # ⚠ SECOND GARDE-FOU (21/09/2026) : NE JAMAIS MORDRE SUR 49152 ET AU-DELA.
-    # C'est la plage dynamique de WINDOWS, et WSL2 partage la pile reseau de
-    # l'hote : une bonne partie de ces ports est deja reservee, sans que rien
-    # ne le dise. Le moteur tombe alors sur
-    # `AssertionError: ip='127.0.0.1', port=<n>` (manager/web/manager.py:44)
-    # AVANT d'avoir demarre la partie, le fils meurt, et le rapport ecrit
-    # « aucun resultat (processus mort) ».
-    #
-    # Ce n'est pas theorique : une batterie complete lancee sur la base 49000
-    # a rendu 2282/2351, avec SOIXANTE-CINQ faux rouges de ce type, tous sur
-    # des cas dont le port depassait 49152. La meme batterie relancee sur la
-    # base 36000 : zero. Une heure et demie brulee, et un verdict qui
-    # ressemblait a s'y meprendre a une regression massive.
-    #
-    # On refuse plutot que de laisser lire un rapport faux. La plage ephemere
-    # de LINUX (/proc/sys/net/ipv4/ip_local_port_range, souvent 44620-48715)
-    # est un second nid a collisions : viser plus bas qu'elle est le plus sur.
-    if port_max >= 49152:
-        sys.exit(f"PORT TROP HAUT : les {len(selection)} cas utiliseraient "
-                 f"{port}..{port_max}, qui mord sur la plage dynamique de "
-                 f"Windows (49152+), partagee par WSL2. Les cas concernes "
-                 f"meurent en « AssertionError: ip/port » AVANT de jouer, et "
-                 f"le rapport les compte comme des echecs. Choisir une base "
-                 f"<= {49152 - len(selection)} (la valeur usuelle est 40000).")
 
     prefixe = os.environ.get("CAS_PREFIX", "")
 

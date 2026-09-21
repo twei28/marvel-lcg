@@ -126,10 +126,19 @@ class EffectInvoker:
         `WhenEffectWouldResolve` est remplace (`resolve_message.is_be_instead`),
         il sort sans rien faire d'autre. Une recherche menee pendant
         `ProcessSelfCost` ou pendant le choix des cibles, suivie d'un effet
-        remplace, laissait donc la carte coincee dans le sas — c'est-a-dire le
-        defaut d'origine, sur une branche que ce correctif pretend couvrir. Le
-        `finally` ferme aussi le sas quand l'operation leve : une carte sortie
-        du deck n'a pas a payer le plantage d'un script.
+        remplace, laissait donc la carte coincee dans le sas, c'est-a-dire le
+        defaut d'origine, sur une branche que ce correctif pretend couvrir.
+        C'est LA raison d'etre du `finally`.
+
+        ⚠ IL NE RATTRAPE PAS « le plantage d'un script » : celui-la est deja
+        attrape sur place, dans `InvokeOperation`. Le gain sur les exceptions
+        est reel mais ETROIT — il ne couvre que ce qui leve HORS de ce try :
+        `SpecialDefense`, `after_message.Send()`, `cost_func.AfterCheck`,
+        `ResetAfterOperation`, `console.TryBreak`.
+
+        ⚠ IL EST SUR LE try EXTERIEUR, ET C'EST VOULU : pose sur le `try`
+        interne de `_ResolveSelfInternal`, il refermerait le sas AVANT
+        `cost_func.AfterCheck` et `ResetAfterOperation`.
         """
         try:
             return EffectInvoker._ResolveSelfInternal(
@@ -327,21 +336,37 @@ class EffectInvoker:
             # Reclamee entre-temps (jouee, mise en main, defaussee) : rien a faire.
             if not face.card.area.flags.is_processing:
                 continue
-            # ⚠ LA ZONE DE REVELATION EST ELLE AUSSI `is_processing`
-            # (deck_type.py, `RevealingArea`). Une carte que l'appelant a
-            # envoyee a la revelation A BIEN ETE reclamee : on ne la reprend
-            # pas.
+            # ⚠ GARDE MORTE DANS LES DEUX SENS AUJOURD'HUI, ET IL FAUT DIRE
+            # EXACTEMENT CE QU'ELLE FAIT (ronde de relecture du 21/09/2026).
             #
-            # GARDE DEFENSIVE, ET MESURE COMME TELLE (21/09/2026). Sur le seul
-            # chemin connu (01095 Rhino (II) : `Search.EncounterCard` puis
-            # `face.Reveal`), la revelation se termine A L'INTERIEUR de
-            # l'operation : quand le sas se referme, la carte est deja en jeu
-            # et la garde ne sert a rien. Le temoin « 01095 Rhino (II) —
-            # recherche puis REVELE » reste VERT avec la garde neutralisee.
-            # On la garde parce qu'elle ne coute rien et qu'elle protege la
-            # seule facon dont ce correctif pourrait mordre trop fort : une
-            # revelation qui ne se terminerait pas dans l'operation. Ne pas la
-            # retirer sans un cas qui prouve qu'elle est inatteignable.
+            # CE QU'ELLE TESTE REELLEMENT : `is_revealing` est un drapeau de
+            # ZONE (deck_type.py, `RevealingArea`), VRAI EN PERMANENCE pour
+            # cette zone. Ce n'est PAS « une revelation est en cours ».
+            # `RevealingArea` porte aussi `is_processing`, d'ou la ligne : sans
+            # elle, une carte posee en zone de revelation serait traitee comme
+            # une carte oubliee dans le sas.
+            #
+            # ELLE NE SERT A RIEN SUR LE SEUL CHEMIN CONNU. `01095` Rhino (II)
+            # (`Search.EncounterCard` puis `face.Reveal`) termine sa revelation
+            # A L'INTERIEUR de l'operation : quand le sas se referme, la
+            # manigance est deja en jeu, c'est la PREMIERE garde
+            # (`not ... is_processing`) qui l'ecarte, et celle-ci n'est jamais
+            # atteinte. Le temoin « 01095 Rhino (II) — recherche puis REVELE »
+            # reste VERT avec cette ligne neutralisee : mesure faite.
+            #
+            # ET SON MODE DE DEFAILLANCE PROPRE VA DANS L'AUTRE SENS.
+            # `CardFaceOnEvent.Reveal` (face_on_event.py) a DEUX sorties
+            # anticipees APRES avoir gare la carte dans `world.area_revealing`
+            # (`OnPlayerRevealCard` faux, puis `reveal_message.is_be_instead`).
+            # Sur un tel chemin la carte reste GAREE dans cette zone, et cette
+            # ligne n'y protege rien : elle EMPECHE le filet de l'attraper et
+            # reproduit le defaut d'origine. Aucun cas atteignable n'a ete
+            # trouve, ni dans un sens ni dans l'autre.
+            #
+            # On garde la ligne parce qu'elle ne coute rien et que le sens
+            # « ne pas arracher une carte en cours de revelation » est le plus
+            # defendable des deux. Le prochain arbitrage se fera sur ce
+            # commentaire : ne pas y toucher sans un cas qui tranche.
             if face.card.area.flags.is_revealing:
                 continue
             Log.Debug(CATEGORY_NAME,

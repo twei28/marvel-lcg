@@ -199,28 +199,73 @@ Trois points de conception valent d'être dits :
   visibilité est **collante** : la recherche l'a posée (`LookAt_Text`) et rien
   d'autre ne l'efface. Sans le remélange, la carte rendue **resterait visible
   au joueur à l'intérieur de son propre deck** pour le reste de la partie.
-  Le remélange ferme donc aussi une fuite d'information ; le passage par
-  `Faces.ShuffleAllTo`, la recette du dépôt, l'annonce en plus au journal.
-  Il n'a lieu que s'il y a eu un retour : le chemin normal, où la carte est
-  consommée, ne déclenche aucun mélange supplémentaire et ne déplace donc
-  aucun tirage.
+  Le remélange ferme donc aussi une fuite d'information. Il n'a lieu que s'il
+  y a eu un retour : le chemin normal, où la carte est consommée, ne déclenche
+  aucun mélange supplémentaire et ne déplace donc aucun tirage.
+
+- **Le passage par `Faces.ShuffleAllTo` n'annonce rien de nouveau à la
+  table, et j'ai vérifié.** On m'a demandé de trancher : la ligne
+  `CardsShuffleToDeck_Text` (« {faces} are being shuffled into {deck} ») nomme
+  la carte pour tout le monde, donc en multijoueur une carte *refusée* serait
+  nommée publiquement. **Le point tombe, pour deux raisons mesurées.**
+  1. L'ancien chemin n'était **pas muet** : `Faces.MoveAllTo` envoie
+     `AfterCardsMoved`, dont la branche par défaut émet
+     `AfterCardsMoved_Text` (« {faces} were moved to {deck} »), tout aussi
+     publique. Ma propre trace de la v1 le montre :
+     `[[(58,ze006) Wrath of Olympus]] déplacée(s) vers Zeus's PlayerDeck<3>`.
+     Et `AfterCardsMoved` se tait justement quand `by_shuffle=True` (« We had
+     handled it elsewhere ») : il y a donc **exactement une ligne publique
+     dans les deux cas**, jamais deux.
+  2. Surtout, **la carte est déjà publique avant** : la zone de traitement est
+     `is_face_up = True`, et la recherche a déjà émis
+     `AfterCardsPlaceOnTable_Text` (« {cards} were placed on table ») en la
+     nommant. C'est correct au regard des règles : la carte cherchée est posée
+     face visible sur la table.
+
+  Je corrige donc ce que j'écrivais : l'annonce n'est pas un gain de
+  **confidentialité**, c'est un gain de **traçabilité** (le journal dit que la
+  carte retourne au deck au lieu de la voir disparaître). Sur la
+  confidentialité, le nouveau chemin est neutre.
 - **La zone de RÉVÉLATION est explicitement exclue.** `RevealingArea` porte
   elle aussi `is_processing` (`deck/deck_type.py`) : une carte que l'appelant a
   envoyée à la révélation **a bien été réclamée**, et sans cette garde toute
   recherche suivie d'un `Reveal` aurait vu sa carte arrachée en pleine
-  résolution. **Elle est défensive, et mesurée comme telle** : le témoin
-  `01095` reste vert avec la garde neutralisée, parce que sur le seul chemin
-  connu la révélation se termine à l'intérieur de l'opération et que la carte
-  est déjà en jeu quand le sas se referme. Elle est gardée parce qu'elle ne
-  coûte rien et qu'elle protège la seule façon dont ce correctif pourrait
-  mordre trop fort.
+  résolution.
+
+  ⚠ **Ce que j'écrivais d'elle était faux, et le voici juste.**
+  `is_revealing` est un drapeau de **ZONE**, vrai en permanence pour
+  `RevealingArea`, pas « une révélation en cours ». Et elle est **morte dans
+  les deux sens** aujourd'hui :
+  - elle ne sert à rien sur le seul chemin connu : sur `01095`, la révélation
+    se termine à l'intérieur de l'opération, la manigance est déjà en jeu
+    quand le sas se referme, et c'est la **première** garde (`not
+    is_processing`) qui l'écarte. Le témoin reste vert avec cette ligne
+    neutralisée, mesure faite ;
+  - et elle a **son propre mode de défaillance, qui va dans l'autre sens** :
+    `Reveal` a deux sorties anticipées *après* avoir garé la carte dans
+    `world.area_revealing` (`OnPlayerRevealCard` faux, puis
+    `reveal_message.is_be_instead`). Sur un tel chemin la carte reste garée
+    là, et la ligne n'y protège rien : elle **empêche le filet de l'attraper**
+    et reproduit le défaut d'origine.
+
+  Aucun cas atteignable n'a été trouvé dans un sens ni dans l'autre. Je garde
+  la ligne parce qu'elle est gratuite et que « ne pas arracher une carte en
+  cours de révélation » est le plus défendable des deux sens, mais c'est le
+  commentaire qui décidera du prochain arbitrage, et il dit maintenant les
+  deux.
 - **La fermeture est dans un `finally`.** `ResolveSelfInternal` a un retour
   anticipé, quand `WhenEffectWouldResolve` est remplacé
   (`resolve_message.is_be_instead`) : une recherche menée pendant le paiement
   ou le choix des cibles, suivie d'un effet remplacé, sortait sans refermer le
   sas. C'est exactement le défaut d'origine, sur une branche que le correctif
-  prétend couvrir. Le `finally` couvre aussi l'exception : une carte sortie du
-  deck n'a pas à payer le plantage d'un script.
+  prétend couvrir, et c'est **la** raison d'être du `finally`. Il couvre aussi
+  les exceptions, mais **beaucoup plus étroitement que je ne l'écrivais** : le
+  plantage d'un script de carte est déjà attrapé sur place, dans
+  `InvokeOperation`. Le gain ne porte que sur ce qui lève hors de ce `try`
+  (`SpecialDefense`, `after_message.Send()`, `cost_func.AfterCheck`,
+  `ResetAfterOperation`, `console.TryBreak`). Le `finally` est posé sur le
+  `try` **extérieur** : sur le `try` interne, il aurait refermé le sas avant
+  `cost_func.AfterCheck` et `ResetAfterOperation`.
 - **Le retour est journalisé** (`Log.Debug`, « recherche non consommée : X
   rendue à Y ») : on ne fait pas disparaître le symptôme en silence.
 
@@ -383,11 +428,21 @@ rouges ont été rejoués en séquentiel un par un, pas les 2346 verts.
   `jessica_jones_custom`, un pack fan-made homonyme). Le reste du pack n'est
   toujours pas testé.
 
-- **La garde `is_revealing` n'a aucun cas qui la fasse mordre.** Le témoin
-  `01095` reste vert avec la garde neutralisée : sur le seul chemin connu, la
-  révélation se termine dans l'opération. Je la garde parce qu'elle ne coûte
-  rien, mais je ne peux pas prouver qu'elle sert, ni qu'elle est inatteignable.
-  Le témoin tient la séquence « chercher puis révéler », pas la garde.
+- **Deux branches de mon correctif sont sans témoin, et c'est le même
+  reproche pour les deux.**
+  - La garde `is_revealing` : le témoin `01095` reste vert avec la garde
+    neutralisée, parce que c'est la première garde qui écarte la carte. Je ne
+    peux prouver ni qu'elle sert, ni qu'elle est inatteignable, et elle a son
+    propre mode de défaillance (voir plus haut).
+  - **La branche `is_be_instead`**, celle que le `finally` vient précisément
+    d'ouvrir : aucun cas ne la couvre non plus. Il faudrait une carte qui
+    cherche pendant `ProcessSelfCost` ou pendant le choix des cibles, ET dont
+    la résolution soit ensuite remplacée par une autre carte. Je n'en ai pas
+    trouvé, et je ne l'ai pas cherchée jusqu'au bout. Le `finally` est donc
+    posé sur un raisonnement, pas sur une mesure.
+
+  Dans les deux cas la ligne est gratuite et le raisonnement tient ; dans les
+  deux cas je le dis plutôt que de laisser croire que la batterie les couvre.
 
 - **L'écran ne dit rien.** Le joueur qui refuse voit la carte disparaître de
   la table sans un mot. Une ligne « la carte cherchée retourne dans votre
