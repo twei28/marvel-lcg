@@ -166,3 +166,47 @@ dans l'autre sens : il n'y avait pas qu'un défaut d'ergonomie.
 ses trois témoins (`forme CIVILE`, `retour en forme HÉROS`, et le positif) dans
 `tools/test_capacites.py`. Rapport complet :
 `.planning/rapports/2026-09-21-echo-conclusion.md`.
+
+---
+
+## Ce qui reste ouvert sur cette carte, après le correctif du 21/09/2026
+
+### Un défaut ANTÉRIEUR, non corrigé : la Photographic Reflexes dépensée comme ressource
+
+Avec **une seule** Photographic Reflexes en main, le joueur peut la dépenser
+comme **ressource** pour payer la carte glissée qu'elle vient d'autoriser. La
+permission (`check_tucked_playable`) est lue **avant** le paiement ; au moment
+où Echo veut défausser la carte (`discard_photographic_reflexes`), il n'y a plus
+rien à défausser, et la règle sort sans rien faire. Le joueur obtient donc
+l'événement **et** le bénéfice de la ressource, sans rien perdre d'autre.
+
+Ce n'est **pas** une régression du 21/09 : le montage « permission d'un côté,
+défausse de l'autre » était déjà là. Et le témoin ajouté ce jour-là
+(`la carte glissee payee AVEC une Photographic Reflexes de la main`) met
+délibérément **deux** copies en main, donc il passe à côté.
+
+Non corrigé, et inscrit dans la file d'attente.
+
+### Les deux chemins divergent quand le rejeu n'aboutit pas
+
+Sur le **chemin A**, `CostFunc.Discard("This")` défausse Photographic Reflexes
+**avant** `PlayOneCardLikeInTurn` : si le joueur renonce ensuite, ou s'il ne peut
+pas payer l'événement glissé, la carte cliquée est perdue et rien n'est joué.
+Sur le **chemin B**, elle ne part qu'une fois le jeu effectif.
+
+**Arbitrage retenu, et assumé** : on garde ce comportement. « You can **discard**
+Photographic Reflexes from your hand **to play** an event » fait de la défausse
+un coût, et un coût payé ne se reprend pas ; c'est aussi le comportement
+ordinaire du moteur pour `SetCostFunc`. **Aucun ruling ne le confirme** —
+recherche du 21/09/2026, la page MarvelCDB de la carte ne porte aucune review.
+Écrit dans le module (`fne/echo/__init__.py`) et dans le rapport.
+
+### Deux manques de méthode, nommés
+
+- **Étape 8 bis (ce que la carte DESSINE) : pas faite pour le chemin A.** Une
+  action portée par une carte **de la main** est une forme que `ui-app` n'a
+  jamais eu à rendre pour Echo. Le moteur l'offre, c'est mesuré ; rien ne dit
+  que le bouton apparaisse. **C'est le point à vérifier avant de répondre au
+  joueur.**
+- **Étape 8 (autoplay ciblé) : pas faite.**
+

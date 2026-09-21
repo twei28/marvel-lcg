@@ -91,12 +91,40 @@ fichier. Une ligne à retirer, dans le fichier d'une autre session.
 
 ## Ce qui reste ouvert, sans être planifié
 
-- **Echo, Photographic Reflexes** : signalement n°17 d'un joueur, diagnostiqué
-  le 20/09. Ce n'est pas un défaut du moteur, la mécanique marche et le joueur
-  s'en est servi sans le savoir ; c'est l'interface qui ne dit pas comment la
-  carte se joue. Fiche
-  `2026-09-20-echo-photographic-reflexes-ergonomie.md`. **Le joueur attend une
-  réponse depuis le 19/09 au soir.**
+- ~~**Echo, Photographic Reflexes** : ce n'est pas un défaut du moteur.~~
+  **FAUX, corrigé le 21/09/2026.** C'en était un, et un deuxième avec : le cache
+  `is_like_in_hand` figeait la jouabilité des cartes glissées (un aller-retour
+  en forme civile les éteignait définitivement — le « en prod tu ne peux rien
+  faire » du joueur), et « Reduce the cost by 2 » était rendu par deux
+  ressources **wild**, qui couvrent une exigence de couleur qu'une réduction
+  laisse à payer. Photographic Reflexes est devenue **cliquable en main**, sans
+  casser l'autre chemin. Fiche
+  `2026-09-20-echo-photographic-reflexes-ergonomie.md`, rapport
+  `.planning/rapports/2026-09-21-echo-conclusion.md`, gabarits
+  `2026-09-21-echo-gabarits-processus-carte.md`.
+  **Reste dû au joueur : une réponse.** Et il reste deux manques nommés —
+  l'étape 8 bis (rien ne prouve que le nouveau bouton soit VISIBLE) et
+  l'autoplay ciblé.
+
+- **`fne/daredevil/60001a.py` (Sense the Top) porte probablement le MÊME défaut
+  de cache**, et c'est cerné : un grep sur `CheckIfFaceIsLikeInHand` ne rend que
+  **trois** cartes posant une condition variable — Magik (`aoa/magik/45030a.py`,
+  qui vide le cache à la main depuis longtemps), Echo (corrigée le 21/09) et
+  Daredevil. Sa condition est
+  `message.which_face == initiator.additional_deck.GetTop()` : quand la carte du
+  dessus part, **la suivante devient le dessus sans bouger**, donc avec la
+  réponse `False` figée par le cache — elle ne serait jamais jouable. Même
+  famille, même remède (rafraîchir les cartes de la pile concernée). **Non
+  mesuré**, hors du chantier d'Echo.
+
+- **Une seule Photographic Reflexes en main peut être dépensée comme
+  RESSOURCE** pour payer la carte glissée qu'elle vient d'autoriser : la
+  permission est lue avant le paiement, et au moment où Echo veut la défausser
+  il n'y a plus rien. Le joueur obtient l'événement **et** le bénéfice de la
+  ressource, sans rien perdre d'autre. **Défaut ANTÉRIEUR**, non corrigé : il ne
+  vient pas du chantier du 21/09, mais le témoin ajouté ce jour-là
+  (`la carte glissee payee AVEC une Photographic Reflexes de la main`) met
+  délibérément **deux** copies en main et passe donc à côté.
 
 - **Le signalement perdu du 18/09 reste inexpliqué.** Aucune trace nulle part,
   et le joueur ne se souvient pas s'il avait vu la confirmation ou une erreur.
