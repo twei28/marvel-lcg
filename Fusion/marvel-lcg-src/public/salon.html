@@ -123,6 +123,22 @@
         }
         .salon-mcdb-bouton:disabled { opacity: 0.5; cursor: default; }
         .salon-mcdb small { display: block; margin-top: 7px; color: var(--sourdine); font-size: 0.75rem; }
+        /* L'avertissement : une partie tourne et ce n'est pas la mienne, ou
+           bien on ne sait pas la dater. Toujours AVEC une sortie quand il y en
+           a une — un message sans issue n'est qu'une impasse polie. */
+        #salon-avertissement { display: none; }
+        #salon-avertissement.est-visible {
+            display: block; margin: 12px 0 0; padding: 12px 14px;
+            background-color: rgba(226, 55, 68, 0.10);
+            border: 1px solid var(--rouge); border-radius: 10px;
+        }
+        #salon-avertissement p { margin: 0 0 10px; font-size: 0.9rem; }
+        .salon-avertissement-bouton {
+            font: inherit; font-size: 0.85rem; font-weight: 700; color: var(--or);
+            background: rgba(255, 212, 90, 0.12);
+            border: 1px solid rgba(255, 212, 90, 0.45);
+            border-radius: 6px; padding: 7px 14px; cursor: pointer;
+        }
         .salon-galerie {
             color: var(--sourdine); font-size: 0.8rem; text-decoration: none;
             border-bottom: 1px dotted var(--bord);

@@ -16,23 +16,29 @@ import { cards } from "/public/js/prepare/cards.js";
 import { versDeckMoteur } from "/public/js/marvelcdb/conversion.js";
 import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
 import {
-    decisionSalon, memoriserChoix, relireChoix, oublierChoix,
+    decisionSalon, memoriserRepere, relireRepere, oublierRepere,
 } from "/public/js/salon/bascule.js";
 
 const siege = Number(new URLSearchParams(location.search).get("p") ?? "-1");
 
 const etat = { hero: null, deckChoisi: null };
 
-// LE CHOIX DE CET INVITE, sous la seule forme qui serve a se reconnaitre dans
-// la partie qui demarre : l'identifiant de sa carte heros. Voir bascule.js.
+// ⚠ LES DEUX SIGNAUX QUI DISENT « CETTE PARTIE EST LA MIENNE », et aucun des
+// deux ne tient seul (voir bascule.js) :
+//   - `monChoix` : l'identifiant de la carte heros que cet invite a choisi.
+//     Aveugle quand on rejoue une manche avec LE MEME heros.
+//   - `debutAuChoix` : le repere de la partie qui tournait au moment du choix.
+//     Aveugle au rechargement s'il etait releve a l'arrivee — d'ou le fait
+//     qu'il soit releve AU MOMENT DU CHOIX et retenu AVEC lui.
 let monChoix = "";
-// Depuis quand la partie en cours dit-elle autre chose que mon choix ? null
-// tant qu'elle n'a rien dit de tel. Sert a ne pas parler trop vite : voir
-// DELAI_EXPLICATION.
-let desaccordDepuis = null;
-// Le statut affiche avant l'explication, pour le rendre si le desaccord se
-// dissipe (l'hote a relance, cette fois avec ce siege).
-let statutAvantExplication = null;
+let debutAuChoix = null;
+// CAMPAGNE : il n'y a rien a choisir, l'equipe est fixee par le livret. Le
+// heros ne peut alors PAS servir de signal (il est le meme a toutes les
+// manches) ; la fraicheur decide seule.
+let sansChoix = false;
+// Depuis quand ce salon attend-il ? Sert au seul cas qu'aucun signal ne
+// tranche : un invite sans repere, arrive apres le lancement.
+let attenteDepuis = Date.now();
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -100,12 +106,22 @@ async function envoyerChoix(deck) {
         return;
     }
     etat.deckChoisi = deck;
-    // ⚠ ON RETIENT LE CHOIX DANS CE NAVIGATEUR, et c'est ce qui permet a
-    // l'invite de se reconnaitre apres un rechargement : `/new` vide
-    // `choix_sieges` cote serveur, donc le serveur ne pourra plus le lui
-    // rappeler une fois la partie lancee. Voir bascule.js.
     monChoix = etat.hero.heroCardId;
-    memoriserChoix(window.localStorage, siege, monChoix, Date.now());
+    // ⚠ LE REPERE EST RELEVE ICI, AU MOMENT DU CHOIX, et retenu AVEC lui dans
+    // ce navigateur. C'est le seul instant qui a un sens : « la partie qui
+    // tournait quand je me suis pose ». Releve a l'arrivee, il ne survivrait
+    // pas a un rechargement ; releve plus tard, il aurait deja change.
+    //
+    // ⚠ ET SI LA TABLE NE REPOND PAS, ON NE RETIENT RIEN. Un repere invente
+    // (une chaine vide, par exemple) differerait de celui de l'ancienne partie
+    // et provoquerait une bascule immediate dessus — exactement le defaut
+    // qu'on ferme. Sans repere, la regle attend et finit par PROPOSER, ce qui
+    // laisse le dernier mot a l'invite.
+    const table = await lireLaTable();
+    if (table) {
+        debutAuChoix = table.debut;
+        memoriserRepere(window.localStorage, siege, monChoix, debutAuChoix, Date.now());
+    }
     statut(`${t("Choix envoyé")} : ${etat.hero.name} — ${deck.name}. ${t("Tu peux encore changer d’avis.")}`);
     bandeauAttente(true);
     rendreDecks();
@@ -276,37 +292,124 @@ async function rendreHeros() {
 // bloqués sur « Connexion à la partie… ».
 //
 // La question juste n'est pas « une partie tourne-t-elle ? » mais « la partie
-// qui tourne est-elle la MIENNE ? ». Elle se tranche sur un seul fait : le
-// héros que MON siège tient dans cette partie est-il celui que je viens de
-// choisir ? Les règles sont dans bascule.js, éprouvées à part.
+// qui tourne est-elle la MIENNE ? ». Elle se tranche sur DEUX faits, et aucun
+// des deux ne suffit seul — le héros de mon siège, et la fraîcheur de la
+// partie. Les règles sont dans bascule.js, éprouvées à part.
 
-/** Le témoin de désaccord : depuis quand la partie en cours dit-elle autre
- *  chose que mon choix ? Remis à zéro dès qu'elle cesse de le dire. */
-function suivreLeDesaccord(enJeu, heros) {
-    if (enJeu && monChoix && heros !== monChoix) {
-        if (desaccordDepuis == null) desaccordDepuis = Date.now();
-    } else {
-        desaccordDepuis = null;
+/** Interroge la table. Rend `{enJeu, heros, debut}`, ou null si elle n'a pas
+ *  répondu — auquel cas on ne conclut RIEN. */
+async function lireLaTable() {
+    try {
+        const reponse = await fetch(`get_heros_du_siege?p=${siege}`, { cache: "no-store" });
+        if (!reponse.ok) return null;
+        const brut = await reponse.json();
+        return {
+            enJeu: !!brut.en_jeu,
+            heros: String(brut.heros || ""),
+            debut: String(brut.debut || ""),
+        };
+    } catch (e) {
+        /* serveur momentanément injoignable : on réessaiera au tour suivant */
+        return null;
     }
 }
 
-/** Dire à l'invité ce qui se passe, ou effacer ce qu'on lui avait dit.
- *  On ne TRANCHE pas : « mon siège ne tient pas mon héros » se lit aussi bien
- *  « l'hôte n'a pas encore lancé » que « il a lancé sans moi », et le salon n'a
- *  aucun moyen de départager. Il le dit donc tel quel, ce qui vaut toujours
- *  mieux que de laisser attendre devant un écran muet. */
-function montrerExplication(afficher) {
-    if (afficher) {
-        if (statutAvantExplication != null) return;
-        statutAvantExplication = $("#salon-statut").textContent;
-        statut(t("Une partie est en cours sur cette table, mais ton siège n’y tient pas ton héros. "
-            + "Soit l’hôte n’a pas encore lancé la tienne, soit il a lancé sans toi : préviens-le."), true);
-        bandeauAttente(false);
-    } else if (statutAvantExplication != null) {
-        statut(statutAvantExplication);
-        statutAvantExplication = null;
-        bandeauAttente(!!(etat.hero && etat.deckChoisi));
+/** Le statut ordinaire, RECALCULÉ et non mémorisé : un texte mis de côté avant
+ *  un avertissement serait périmé dès que l'invité change d'avis entre-temps. */
+function statutNormal() {
+    if (sansChoix) return t("L’équipe est fixée par la campagne : il n’y a rien à choisir.");
+    if (etat.hero && etat.deckChoisi) {
+        return `${t("Ton choix actuel")} : ${etat.hero.name} — ${etat.deckChoisi.name}. `
+            + t("Tu peux encore changer d’avis.");
     }
+    return t("Choisis ton héros, puis ton deck. L’hôte lancera quand tout le monde aura choisi.");
+}
+
+/** Le nom lisible d'un héros, à partir de l'identifiant de sa carte. */
+async function nomDuHeros(heroCardId) {
+    try {
+        const heroes = await catalog.heroes();
+        const trouve = heroes.find((h) => h.heroCardId === heroCardId);
+        return trouve ? trouve.name : "";
+    } catch (e) {
+        return "";
+    }
+}
+
+function zoneAvertissement() {
+    let zone = $("#salon-avertissement");
+    if (!zone) {
+        zone = el("div", { id: "salon-avertissement", class: "salon-avertissement" });
+        $("#salon-statut").after(zone);
+    }
+    return zone;
+}
+
+/** Dire ce qui se passe, ET offrir une sortie.
+ *
+ *  ⚠ UN MESSAGE SANS SORTIE EST UNE IMPASSE. L'ancien code envoyait l'invité
+ *  au mauvais endroit ; un message honnête qui ne l'envoie nulle part n'est un
+ *  progrès qu'à moitié. Chaque avertissement porte donc, quand il y a quelque
+ *  part où aller, le bouton qui y mène — et la grille des héros reste
+ *  disponible en dessous dans tous les cas.
+ */
+function montrerAvertissement(texte, bouton) {
+    const zone = zoneAvertissement();
+    if (!texte) {
+        zone.replaceChildren();
+        zone.classList.remove("est-visible");
+        statut(statutNormal());
+        bandeauAttente(!sansChoix && !!(etat.hero && etat.deckChoisi));
+        return;
+    }
+    zone.classList.add("est-visible");
+    zone.replaceChildren(
+        el("p", {}, texte),
+        bouton ? el("button", { class: "salon-avertissement-bouton", onclick: bouton.action },
+            bouton.libelle) : null,
+    );
+    bandeauAttente(false);
+}
+
+/** Partir vers le plateau. Le repère a servi : on l'efface pour qu'il ne traîne
+ *  pas jusqu'à la soirée suivante, où il ferait prendre la partie de la veille
+ *  pour une partie neuve. */
+function allerAuPlateau() {
+    oublierRepere(window.localStorage, siege);
+    // `multi=1` : partie REPARTIE, un client par siege. Le plateau s'en sert
+    // pour NE PAS s'annoncer en hot-seat, sinon l'hote reserverait tous les
+    // sieges et verrait les mains de tout le monde.
+    location.href = `/app/board.html?p=${siege}&multi=1`;
+}
+
+async function direLancementSansMoi(heros) {
+    if (!heros) {
+        // Personne à ce siège dans la partie qui vient de commencer : il n'y a
+        // nulle part où aller, et c'est l'hôte qui doit agir.
+        montrerAvertissement(
+            t("L’hôte a lancé la partie sans ce siège. Préviens-le : il peut la relancer en t’attendant."),
+            null);
+        return;
+    }
+    // Ce siège tient quelqu'un d'autre : l'hôte a changé le héros. L'invité n'a
+    // pas à rester dehors pour autant.
+    const nom = await nomDuHeros(heros);
+    montrerAvertissement(
+        `${t("La partie a commencé, et ton siège n’y joue pas le héros que tu avais choisi.")}`
+        + (nom ? ` ${t("Il joue")} ${nom}.` : ""),
+        { libelle: nom ? `${t("Rejoindre avec")} ${nom}` : t("Rejoindre quand même"),
+          action: allerAuPlateau });
+}
+
+function proposerDeRejoindre() {
+    // ⚠ LE SEUL CAS QU'AUCUN SIGNAL NE TRANCHE : ce navigateur n'a pas de
+    // repère (données effacées, autre appareil), donc on ne sait pas si la
+    // partie qui tourne a commencé avant ou après. On ne force rien et on ne
+    // laisse pas non plus devant un écran muet : c'est l'invité qui décide.
+    montrerAvertissement(
+        t("Une partie est en cours sur cette table. Impossible de savoir d’ici si c’est la tienne : "
+            + "si l’hôte vient de lancer, rejoins-la ; sinon, attends encore un peu."),
+        { libelle: t("Rejoindre cette partie"), action: allerAuPlateau });
 }
 
 async function sonderLeLancement() {
@@ -317,32 +420,27 @@ async function sonderLeLancement() {
     // fait vivre. Ici on garde les deux secondes — on attend vraiment le
     // lancement — mais seulement tant que l'onglet est visible.
     if (document.hidden) return;
-    let table;
-    try {
-        const reponse = await fetch(`get_heros_du_siege?p=${siege}`, { cache: "no-store" });
-        if (!reponse.ok) return;
-        table = await reponse.json();
-    } catch (e) {
-        /* serveur momentanément injoignable : on réessaiera au tour suivant */
-        return;
-    }
-    const enJeu = !!table.en_jeu;
-    const heros = String(table.heros || "");
-    suivreLeDesaccord(enJeu, heros);
+    const table = await lireLaTable();
+    if (!table) return;
 
-    const quoi = decisionSalon({ monChoix, enJeu, heros, desaccordDepuis, maintenant: Date.now() });
-    if (quoi === "basculer") {
-        // Le choix a servi : on l'efface pour qu'il ne traîne pas jusqu'à la
-        // soirée suivante, où il pourrait faire reconnaître à tort une partie
-        // de la veille encore chargée.
-        oublierChoix(window.localStorage, siege);
-        // `multi=1` : partie REPARTIE, un client par siege. Le plateau s'en
-        // sert pour NE PAS s'annoncer en hot-seat, sinon l'hote reserverait
-        // tous les sieges et verrait les mains de tout le monde.
-        location.href = `/app/board.html?p=${siege}&multi=1`;
-        return;
+    // CAMPAGNE : le repère n'a pas pu être relevé « au moment du choix »,
+    // puisqu'il n'y a pas de choix. On le relève donc à la première réponse de
+    // la table et on le retient, pour qu'il survive au rechargement exactement
+    // comme celui d'un invité ordinaire.
+    if (sansChoix && debutAuChoix == null) {
+        debutAuChoix = table.debut;
+        memoriserRepere(window.localStorage, siege, "", debutAuChoix, Date.now());
     }
-    montrerExplication(quoi === "expliquer");
+
+    const quoi = decisionSalon({
+        monChoix, sansChoix, debutAuChoix,
+        enJeu: table.enJeu, heros: table.heros, debut: table.debut,
+        attenteDepuis, maintenant: Date.now(),
+    });
+    if (quoi === "basculer") { allerAuPlateau(); return; }
+    if (quoi === "sans-toi") { await direLancementSansMoi(table.heros); return; }
+    if (quoi === "proposer") { proposerDeRejoindre(); return; }
+    montrerAvertissement(null);
 }
 
 function surveillerLeLancement() {
@@ -350,25 +448,6 @@ function surveillerLeLancement() {
     // lancement doit repartir vers sa partie sans attendre un battement.
     sonderLeLancement();
     setInterval(sonderLeLancement, 2000);
-}
-
-// ⚠ LA CAMPAGNE GARDE L'ANCIEN SIGNAL, ET C'EST DÉLIBÉRÉ. En campagne l'invité
-// ne choisit RIEN : l'équipe est fixée par le livret, il n'a donc aucun choix à
-// reconnaître dans la partie qui démarre, et la règle ci-dessus ne s'applique
-// pas. Le défaut de l'ancienne partie encore chargée reste donc entier sur ce
-// chemin-là ; il est noté comme tel dans
-// .planning/todos/2026-09-20-salon-renvoie-vers-l-ancienne-partie.md.
-function surveillerLeLancementCampagne() {
-    setInterval(async () => {
-        if (document.hidden) return;
-        try {
-            const reponse = await fetch("get_play_scene_name?");
-            const nom = (await reponse.text()).trim();
-            if (nom) location.href = `/app/board.html?p=${siege}&multi=1`;
-        } catch (e) {
-            /* serveur momentanément injoignable : on réessaiera au tour suivant */
-        }
-    }, 2000);
 }
 
 /* ---------------- Campagne : l'équipe est déjà composée ---------------- */
@@ -425,13 +504,18 @@ async function reprendreChoixExistant() {
     // la précédente. Un invité qui recharge sa page APRÈS le lancement ne peut
     // donc plus rien apprendre du serveur, et c'est d'ici qu'il se reconnaîtra
     // dans la partie qui tourne. Voir bascule.js.
-    monChoix = relireChoix(window.localStorage, siege, Date.now());
+    const memoire = relireRepere(window.localStorage, siege, Date.now());
+    if (memoire) {
+        monChoix = memoire.heros;
+        debutAuChoix = memoire.debut;
+    }
     try {
         const reponse = await fetch("get_choix_sieges?");
         const brut = await reponse.json();
         const dejaChoisi = (brut.sieges || {})[String(siege)];
-        // Le serveur a encore le choix : c'est lui qui fait foi, la mémoire
-        // locale n'était qu'un secours.
+        // Le serveur a encore le choix : c'est lui qui fait foi sur le HÉROS.
+        // ⚠ MAIS PAS SUR LE REPÈRE, qu'il ne connaît pas : celui de la mémoire
+        // reste le bon, puisqu'il date du moment où ce choix a été fait.
         if (dejaChoisi) monChoix = String(dejaChoisi.hero_card_id || "");
         if (!dejaChoisi) return;
         const heroes = await catalog.heroes();
@@ -471,8 +555,17 @@ async function demarrer() {
     // ni a proposer, et `reprendreChoixExistant` n'aurait rien a trouver.
     const campagne = await campagneEnCours();
     if (campagne) {
+        // ⚠ LA CAMPAGNE PASSE PAR LA MEME REGLE, et c'est la correction du
+        // 21/09. Elle gardait l'ancien signal — « une partie tourne, j'y vais »
+        // — donc le defaut du 20/09 entier. Et le heros ne pouvait pas l'en
+        // sortir : l'equipe est fixee par le livret, le siege N tient TOUJOURS
+        // le meme heros, donc comparer les heros aurait GARANTI la bascule
+        // immediate sur la manche precedente. Seule la fraicheur tranche ici,
+        // et elle y suffit : la question est « une partie a-t-elle demarre
+        // depuis que je suis arrive ? ».
+        sansChoix = true;
         rendreCampagne(campagne);
-        surveillerLeLancementCampagne();
+        surveillerLeLancement();
         return;
     }
 
