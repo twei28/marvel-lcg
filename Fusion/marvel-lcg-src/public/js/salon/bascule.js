@@ -93,14 +93,24 @@ export function decisionSalon({
     // ⚠ LE SIGNAL QUI FERME LE CAS DE LA MANCHE REJOUÉE. Le repère n'a pas
     // bougé : ce qui tourne est LA PARTIE QUI TOURNAIT DÉJÀ quand je me suis
     // posé. Quel que soit le héros qu'elle porte à mon siège, ce n'est pas la
-    // mienne.
-    if (debut === debutAuChoix) {
-        // Une seule réserve : si ce siège y tient bien mon héros, il se peut
-        // que ce SOIT ma partie et que j'aie perdu mon repère entre-temps
-        // (données effacées, autre appareil). On ne tranche pas, on propose.
-        if (delaiEcoule && (sansChoix || (heros && heros === monChoix))) return "proposer";
-        return "attendre";
-    }
+    // mienne, et LE TEMPS N'Y CHANGE RIEN.
+    //
+    // ⚠⚠ IL Y AVAIT ICI UNE « CLAUSE DE RÉSERVE », ET ELLE ROUVRAIT LE CAS 7
+    // SOUS FORME DE BOUTON (ronde 2 du 21/09/2026). Passé 45 s, elle proposait
+    // de rejoindre — c'est-à-dire, dans le scénario exact du cas 7, d'aller sur
+    // la manche PRÉCÉDENTE, à chaque soirée où l'hôte tarde un peu. En campagne
+    // c'était pire : `sansChoix` la satisfaisait seul, sans aucun contrôle de
+    // héros, donc TOUT invité s'y voyait offrir la manche d'hier.
+    //
+    // Son motif (« j'ai peut-être perdu mon repère ») ne tenait pas : un repère
+    // perdu laisse `debutAuChoix` à null, et c'est la branche du dessus.
+    // `debut === debutAuChoix` est au contraire la PREUVE POSITIVE que la
+    // partie qui tourne précède mon choix.
+    //
+    // Le seul cas réel qu'elle couvrait était une course de moins d'une seconde
+    // entre l'envoi du choix et la lecture qui suivait. Il est fermé ailleurs,
+    // et mieux : le salon relève son repère AVANT d'envoyer son choix.
+    if (debut === debutAuChoix) return "attendre";
 
     // Une partie a commencé DEPUIS que je me suis posé.
     // En campagne, cela suffit : l'équipe est fixée par le livret, il n'y a

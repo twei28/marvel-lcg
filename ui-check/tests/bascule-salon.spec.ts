@@ -247,16 +247,43 @@ test('aucun repere : passe le delai, on propose', async ({ page }) => {
   })).toBe('proposer');
 });
 
-// Le repere existe, la partie n'a pas bouge, MAIS mon siege y tient mon heros :
-// il se peut que ce soit ma partie et que j'aie perdu mon repere entre-temps.
-// On ne tranche pas — on propose, apres le delai.
-test('repere inchange mais mon heros a mon siege : on propose, on ne bascule pas', async ({ page }) => {
-  const debut = 1_000_000;
-  expect(await decision(page, {
-    monChoix: SHE_HULK, enJeu: true, heros: SHE_HULK,
-    debut: MANCHE_1, debutAuChoix: MANCHE_1,
-    attenteDepuis: debut, maintenant: debut + 60_000,
-  })).toBe('proposer');
+// ⚠⚠ ET LE TEMPS NE DOIT RIEN Y CHANGER (ronde 2 du 21/09/2026). La premiere
+// version gardait ici une « clause de reserve » : passe 45 s, elle PROPOSAIT de
+// rejoindre, au motif qu'on avait peut-etre perdu son repere. Elle rouvrait le
+// cas 7 sous forme de bouton — « Rejoindre cette partie » vers la manche
+// PRECEDENTE, a chaque soiree ou l'hote met plus de 45 s a lancer.
+//
+// Le raisonnement etait faux : si le repere avait ete perdu, `debutAuChoix`
+// serait `null`. `debut === debutAuChoix` est au contraire la preuve POSITIVE
+// que la partie qui tourne precede mon choix.
+//
+// ⚠ AUCUN CAS PLUS HAUT NE FAIT PASSER LE TEMPS, et c'est ainsi que le defaut
+// avait pu passer : `attenteDepuis: null` n'est la valeur d'aucune session
+// reelle.
+test('cas 7, une minute plus tard : toujours rien a proposer', async ({ page }) => {
+  const t0 = 1_000_000;
+  for (const ecart of [44_000, 60_000, 600_000]) {
+    expect(await decision(page, {
+      monChoix: SHE_HULK, enJeu: true, heros: SHE_HULK,
+      debut: MANCHE_1, debutAuChoix: MANCHE_1,
+      attenteDepuis: t0, maintenant: t0 + ecart,
+    })).toBe('attendre');
+  }
+});
+
+// ⚠ MEME CHOSE EN CAMPAGNE, et c'etait pire : `sansChoix` satisfaisait seul la
+// clause, sans aucun controle de heros. TOUT invite de campagne arrive pendant
+// que la manche precedente est chargee se voyait offrir « Rejoindre cette
+// partie » vers la manche d'hier, des que l'hote tardait de 45 s.
+test('campagne, une minute plus tard : toujours rien a proposer', async ({ page }) => {
+  const t0 = 1_000_000;
+  for (const ecart of [44_000, 60_000, 600_000]) {
+    expect(await decision(page, {
+      sansChoix: true, enJeu: true, heros: SPIDER_MAN,
+      debut: MANCHE_1, debutAuChoix: MANCHE_1,
+      attenteDepuis: t0, maintenant: t0 + ecart,
+    })).toBe('attendre');
+  }
 });
 
 // ... mais si le siege tient QUELQU'UN D'AUTRE, il n'y a aucune ambiguite :
