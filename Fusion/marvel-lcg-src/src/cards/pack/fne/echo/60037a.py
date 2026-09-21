@@ -12,9 +12,15 @@ from . import *
 #     Reduce the cost to play that event by 2. You cannot trigger Echo's
 #     "Watch and Learn" ability for that event. »
 #
-# En jeu : on clique la carte glissee sous Echo, qui est rendue « comme en
-# main » par `YouMayPlayCardLikeInHand` ci-dessous, et Photographic Reflexes se
-# defausse toute seule en consequence.
+# DEUX CHEMINS mènent au même état de jeu, et les deux sont voulus :
+#  - chemin A : on clique sur Photographic Reflexes EN MAIN, le moteur demande
+#    quel evenement glisse rejouer. C'est la lecture litterale du texte, et
+#    c'est le module 60040a/b/c qui le porte (voir `__init__.py`).
+#  - chemin B : on clique directement sur la carte glissee, qui est rendue
+#    « comme en main » par `YouMayPlayCardLikeInHand` ci-dessous, et
+#    Photographic Reflexes se defausse toute seule en consequence.
+# La reduction de 2 vit a UN SEUL endroit (`reduire_le_cout_des_glissees`),
+# pour que les deux chemins paient exactement la meme chose.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -92,8 +98,15 @@ def GetAbilities() -> Sequence['Ability']:
         return message.from_area.flags.is_in_hand
 
     def discard_photographic_reflexes(effect: 'Effect', message: 'Message.WhenPlayerPlayCard') -> None:
+        """Chemin B : la carte glissee est cliquee, Photographic Reflexes part seule.
+
+        ⚠ Rien a faire sur le chemin A : la carte y a deja ete defaussee comme
+        COUT, et Echo en defausserait une SECONDE (voir `REFLEXES_DEJA_PAYEES`).
+        """
         this = effect.this
         player = this.GetControlByPlayer()
+        if player.flag.Get(REFLEXES_DEJA_PAYEES):
+            return
         prs = [x for x in player.hand_cards.Get() if x.IsName('Photographic Reflexes')]
         if not prs:
             return
@@ -125,8 +138,10 @@ def GetAbilities() -> Sequence['Ability']:
 
         La condition est « la carte payee est dans la zone glissee », sans
         regarder la main : jouer une carte de cette zone n'est possible QUE par
-        Photographic Reflexes, dont la presence en main est deja exigee par
-        `check_tucked_playable`.
+        Photographic Reflexes (chemin A, ou PR est deja defaussee au moment du
+        paiement ; chemin B, ou elle est encore en main). Une condition « PR en
+        main » ferait donc sauter la reduction sur le chemin A, et la
+        DOUBLERAIT sur le chemin A si le joueur tenait une seconde copie.
         """
         if not message.is_play:
             return False
