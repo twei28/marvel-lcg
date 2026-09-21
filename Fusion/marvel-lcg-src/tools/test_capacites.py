@@ -28872,7 +28872,11 @@ CAS = [
         "nom": "ze014 The Mother of Night — dejouee, les cartes reviennent dans la defausse de leur proprietaire",
         "pourquoi": ("« When Defeated: Return each facedown card here to its owner's discard "
                      "pile. » Revelee avec deux cartes dessous, menace ramenee a 1, puis "
-                     "contree par Zeus (CTR 2) : dejouee, defausse = 2"),
+                     "contree par Zeus (CTR 2) : dejouee, defausse = 2.\n"
+                     "⚠ GARDE-FOU DU SAS DE RECHERCHE, COMME LE CAS PRECEDENT (21/09/2026). "
+                     "Il compte les cartes RENDUES a la defausse, donc il tombe aussi si "
+                     "une seule des deux recherches a survecu : la premiere version du sas "
+                     "le rendait rouge avec « defausse du joueur = 1 carte(s) (attendu 2) »"),
         "scenario": "rhino",
         "heros": "zeus",
         "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.EmptyPlayerDeck()",
@@ -41830,6 +41834,29 @@ CAS = [
                     "en_main": ["61020"]},
     },
     {
+        "nom": "01095 Rhino (II) — recherche puis REVELE : la manigance trouvee n'est PAS reprise",
+        "pourquoi": ("CONTRE-CAS DE LA GARDE `is_revealing` du sas de recherche (ronde de "
+                     "relecture du 21/09/2026). `RevealingArea` porte `is_processing` "
+                     "COMME la zone de traitement (deck/deck_type.py) : une carte que "
+                     "l'appelant a envoyee a la REVELATION a bien ete reclamee, et le sas "
+                     "ne doit pas la reprendre. Rhino (II) cherche « Breakin' & Takin' » "
+                     "(01107) dans le deck rencontre puis la revele : elle doit finir EN "
+                     "JEU, jamais dans le sas ni remelangee au deck rencontre.\n"
+                     "⚠ CE TEMOIN TIENT LE CHEMIN, PAS LA GARDE. Mesure du 21/09/2026 : "
+                     "il reste VERT avec la garde `is_revealing` neutralisee, parce que "
+                     "la revelation se termine A L'INTERIEUR de l'operation et que la "
+                     "manigance est deja en jeu quand le sas se referme. La garde est "
+                     "donc defensive ; ce cas garde la sequence « chercher puis reveler » "
+                     "dans son ensemble"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('01095')"],
+        "verifier": "etat_attendu",
+        "attendu": {"aucune_en_resolution": True,
+                    "en_jeu": ["01107"]},
+    },
+    {
         "nom": "62022 Dynamic Duo — la carte cherchee qui n'est pas un Team-Up retourne au deck",
         "pourquoi": ("troisieme carte prise au meme piege, dans un pack SANS rapport avec "
                      "Jessica Jones : la recherche n'a aucun filtre, elle sort du deck une "
@@ -49647,6 +49674,31 @@ def main():
                  f"{port}..{port_max}, hors de la plage TCP 1024-65535. "
                  f"Choisir une base <= {65535 - len(selection) + 1} "
                  f"(la valeur usuelle est 40000).")
+
+    # ⚠ SECOND GARDE-FOU (21/09/2026) : NE JAMAIS MORDRE SUR 49152 ET AU-DELA.
+    # C'est la plage dynamique de WINDOWS, et WSL2 partage la pile reseau de
+    # l'hote : une bonne partie de ces ports est deja reservee, sans que rien
+    # ne le dise. Le moteur tombe alors sur
+    # `AssertionError: ip='127.0.0.1', port=<n>` (manager/web/manager.py:44)
+    # AVANT d'avoir demarre la partie, le fils meurt, et le rapport ecrit
+    # « aucun resultat (processus mort) ».
+    #
+    # Ce n'est pas theorique : une batterie complete lancee sur la base 49000
+    # a rendu 2282/2351, avec SOIXANTE-CINQ faux rouges de ce type, tous sur
+    # des cas dont le port depassait 49152. La meme batterie relancee sur la
+    # base 36000 : zero. Une heure et demie brulee, et un verdict qui
+    # ressemblait a s'y meprendre a une regression massive.
+    #
+    # On refuse plutot que de laisser lire un rapport faux. La plage ephemere
+    # de LINUX (/proc/sys/net/ipv4/ip_local_port_range, souvent 44620-48715)
+    # est un second nid a collisions : viser plus bas qu'elle est le plus sur.
+    if port_max >= 49152:
+        sys.exit(f"PORT TROP HAUT : les {len(selection)} cas utiliseraient "
+                 f"{port}..{port_max}, qui mord sur la plage dynamique de "
+                 f"Windows (49152+), partagee par WSL2. Les cas concernes "
+                 f"meurent en « AssertionError: ip/port » AVANT de jouer, et "
+                 f"le rapport les compte comme des echecs. Choisir une base "
+                 f"<= {49152 - len(selection)} (la valeur usuelle est 40000).")
 
     prefixe = os.environ.get("CAS_PREFIX", "")
 

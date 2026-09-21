@@ -40,11 +40,21 @@ class EffectContext:
 
         # CORRECTIF (21/09/2026, signalement Aghenatak) : le SAS de recherche.
         # Chaque paire dit « cette carte est sortie de ce deck vers la zone de
-        # traitement pendant cet effet ». `SelectorEnd.DoMove` remplit la liste,
-        # `EffectInvoker.CloseSearchTransit` la vide a la fin de la resolution
-        # et renvoie chez elle toute carte que personne n'a reclamee. Sans cela
-        # une carte cherchee mais non consommee restait posee sur la table pour
-        # toujours, ni en jeu ni en defausse (61008, 61019, 62022).
+        # traitement pendant cet effet ». `SearchInternal.SearchForCardsInternal`
+        # REMPLIT la liste, `EffectInvoker.CloseSearchTransit` la vide a la fin
+        # de la resolution et renvoie chez elle toute carte que personne n'a
+        # reclamee. Sans cela une carte cherchee mais non consommee restait
+        # posee sur la table pour toujours, ni en jeu ni en defausse
+        # (61008, 61019, 62022).
+        #
+        # ⚠ LE REMPLISSEUR N'EST PAS `SelectorEnd.DoMove`, MEME SI C'EST LUI
+        # QUI DEPLACE LA CARTE. `SelectorEnd` est appele avec l'effet JETABLE
+        # que `AskChooseSelect` fabrique pour poser la question, lequel se
+        # resout — et donc se refermerait — des que le joueur a repondu, avant
+        # que l'operation appelante ait pu consommer la carte. C'est
+        # exactement le geste qui a casse `ze014` The Mother of Night le
+        # 21/09/2026. Le sas se note sur le `by_effect` de la CARTE qui
+        # cherche, et nulle part ailleurs.
         self.search_transit: List[Tuple['CardFace', 'Deck']] = []
 
         # Spell effect

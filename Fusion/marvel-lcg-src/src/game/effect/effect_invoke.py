@@ -119,6 +119,30 @@ class EffectInvoker:
 
     @staticmethod
     def ResolveSelfInternal(effect: 'Effect', message: 'Message2|None', to_player: 'Player|None', by_effect: 'Effect', ref_message: 'Message2|None'=None, *, skip_cost: bool=False) -> bool:
+        """Resout l'effet, PUIS referme son sas de recherche quoi qu'il arrive.
+
+        ⚠ LE `try/finally` N'EST PAS DECORATIF (21/09/2026, ronde de relecture
+        du correctif Aghenatak). Le corps a un RETOUR ANTICIPE : quand
+        `WhenEffectWouldResolve` est remplace (`resolve_message.is_be_instead`),
+        il sort sans rien faire d'autre. Une recherche menee pendant
+        `ProcessSelfCost` ou pendant le choix des cibles, suivie d'un effet
+        remplace, laissait donc la carte coincee dans le sas — c'est-a-dire le
+        defaut d'origine, sur une branche que ce correctif pretend couvrir. Le
+        `finally` ferme aussi le sas quand l'operation leve : une carte sortie
+        du deck n'a pas a payer le plantage d'un script.
+        """
+        try:
+            return EffectInvoker._ResolveSelfInternal(
+                effect, message, to_player, by_effect, ref_message, skip_cost=skip_cost)
+        finally:
+            # ⚠ HORS de tout `if can_action`, ET C'EST VOULU : une recherche
+            # peut avoir lieu pendant le CHOIX DES CIBLES, donc avant que le
+            # cout soit paye. Un effet abandonne faute de paiement doit rendre
+            # lui aussi ce qu'il a sorti du deck.
+            EffectInvoker.CloseSearchTransit(effect)
+
+    @staticmethod
+    def _ResolveSelfInternal(effect: 'Effect', message: 'Message2|None', to_player: 'Player|None', by_effect: 'Effect', ref_message: 'Message2|None'=None, *, skip_cost: bool=False) -> bool:
         from game.player import Player
         from game.card.face.attribute.can_defense import CanDefense
 
@@ -252,12 +276,8 @@ class EffectInvoker:
             effect.cost_func.Reset()
             effect.context.ResetAfterOperation()
 
-        # ⚠ HORS du `if can_action`, ET C'EST VOULU : une recherche peut avoir
-        # lieu pendant le CHOIX DES CIBLES, donc avant que le cout soit paye.
-        # Un effet abandonne faute de paiement doit rendre lui aussi ce qu'il
-        # a sorti du deck.
-        EffectInvoker.CloseSearchTransit(effect)
-
+        # Le sas de recherche est referme par `ResolveSelfInternal`, dans son
+        # `finally` : il y a un retour anticipe plus haut dans cette methode.
         return can_action
 
     @staticmethod
@@ -302,7 +322,7 @@ class EffectInvoker:
             return
         effect.context.search_transit = []
 
-        decks: List['Deck'] = []
+        a_rendre: Dict['Deck', List['CardFace']] = {}
         for face, deck in transit:
             # Reclamee entre-temps (jouee, mise en main, defaussee) : rien a faire.
             if not face.card.area.flags.is_processing:
@@ -310,17 +330,28 @@ class EffectInvoker:
             # ⚠ LA ZONE DE REVELATION EST ELLE AUSSI `is_processing`
             # (deck_type.py, `RevealingArea`). Une carte que l'appelant a
             # envoyee a la revelation A BIEN ETE reclamee : on ne la reprend
-            # pas. Sans cette garde, toute recherche suivie d'un `Reveal`
-            # verrait sa carte arrachee en pleine resolution.
+            # pas.
+            #
+            # GARDE DEFENSIVE, ET MESURE COMME TELLE (21/09/2026). Sur le seul
+            # chemin connu (01095 Rhino (II) : `Search.EncounterCard` puis
+            # `face.Reveal`), la revelation se termine A L'INTERIEUR de
+            # l'operation : quand le sas se referme, la carte est deja en jeu
+            # et la garde ne sert a rien. Le temoin « 01095 Rhino (II) —
+            # recherche puis REVELE » reste VERT avec la garde neutralisee.
+            # On la garde parce qu'elle ne coute rien et qu'elle protege la
+            # seule facon dont ce correctif pourrait mordre trop fort : une
+            # revelation qui ne se terminerait pas dans l'operation. Ne pas la
+            # retirer sans un cas qui prouve qu'elle est inatteignable.
             if face.card.area.flags.is_revealing:
                 continue
             Log.Debug(CATEGORY_NAME,
                       f"recherche non consommee : {face} rendue a {deck}")
-            Faces.MoveAllTo([face], deck, effect)
-            if deck not in decks:
-                decks.append(deck)
-        for deck in decks:
-            # Un deck vide ne se melange pas (meme garde que SelectorEnd.DoShuffle).
-            if deck.GetSize() > 0:
-                deck.Shuffle(effect)
+            a_rendre.setdefault(deck, []).append(face)
+
+        # `Faces.ShuffleAllTo` est LA recette du depot pour « remettre dans le
+        # deck et melanger » : elle annonce le retour au journal
+        # (`CardsShuffleToDeck_Text`) et marque le deplacement `by_shuffle=True`,
+        # ce qu'un `MoveAllTo` suivi d'un `Shuffle` ecrit a la main ne fait pas.
+        for deck, faces in a_rendre.items():
+            Faces.ShuffleAllTo(faces, deck, effect)
 
