@@ -129,6 +129,10 @@ try:
     verifier("inconnu : les cles de siege ne sortent pas",
              not corps.lstrip().startswith("{"), corps[:60])
 
+    code, corps, _ = demander("/get_heros_du_siege?p=0")
+    verifier("inconnu : le heros d'un siege ne sort pas",
+             not corps.lstrip().startswith("{"), corps[:60])
+
     # --- 2. Le lien de siege ouvre la porte ---------------------------------
     code, _, cookies = demander(f"/claim_seat?p=0&key={CLES[0]}&to=prepare", suivre=False)
     poses = noms_de_cookies(cookies)
@@ -155,6 +159,18 @@ try:
     cookie_invite = f"session_token={jeton}; seat_token_1={hashlib.md5(CLES[1].encode()).hexdigest()}"
     code, corps, _ = demander("/get_liens_sieges", cookie=cookie_invite)
     verifier("invite : les cles lui restent refusees", code == 403, f"code={code}")
+
+    # ⚠ LA ROUTE QUI DIT QUI TIENT UN SIEGE (21/09/2026). Le salon s'en sert
+    # pour savoir si la partie qui demarre est la SIENNE, au lieu de basculer
+    # des qu'une partie tourne — ce qui expediait les invites dans la partie
+    # precedente (defaut du 20/09). Elle est gardee comme `set_choix_siege` :
+    # qui a le droit d'ecrire ce siege a le droit de savoir ce qu'il tient, et
+    # personne ne lit le siege d'un autre.
+    code, corps, _ = demander("/get_heros_du_siege?p=1", cookie=cookie_invite)
+    verifier("invite : il peut interroger SON siege",
+             code == 200 and corps.lstrip().startswith("{"), f"code={code} {corps[:60]}")
+    code, corps, _ = demander("/get_heros_du_siege?p=2", cookie=cookie_invite)
+    verifier("invite : le siege d'un AUTRE lui est refuse", code == 403, f"code={code}")
 
     # --- 4. Une mauvaise cle n'ouvre rien -----------------------------------
     code, _, cookies = demander("/claim_seat?p=1&key=NIMPORTEQUOI&to=salon", suivre=False)

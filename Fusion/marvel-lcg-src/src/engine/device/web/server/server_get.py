@@ -664,6 +664,70 @@ class GameServerGet(GameServerBase):
             'sieges': {str(p): c for p, c in choix.items()},
         })
 
+    async def get_heros_du_siege(self, request: web.Request) -> web.Response:
+        """Le heros que tient UN siege dans la partie EN COURS. Rien d'autre.
+
+        ⚠ A QUOI CA SERT, ET POURQUOI `get_play_scene_name` NE SUFFISAIT PAS.
+        Le salon doit distinguer « une partie tourne » de « MA partie a
+        commence ». `get_play_scene_name` ne repond qu'a la premiere : il rend
+        le nom de scene des qu'un monde existe, donc encore celui de la manche
+        precedente, et il en existe un jusqu'au redemarrage. Le 20/09/2026,
+        deux fois dans la meme soiree, des invites ont ete expedies dans la
+        partie precedente avant d'avoir choisi leur heros, et y sont restes
+        bloques. La seule question qui vaut est « le heros de MON siege est-il
+        celui que je viens de choisir ? », et c'est cette route qui y repond.
+
+        ⚠ ON NE PUBLIE QUE CE QU'IL FAUT POUR SE RECONNAITRE. Le siege DEMANDE,
+        et de lui le seul identifiant de sa carte heros. Pas son deck, pas sa
+        main, pas le nom de son joueur, et pas les autres sieges : le salon n'en
+        a aucun besoin pour repondre a sa question, et une route de confort qui
+        en dirait plus rouvrirait la fuite d'information entre joueurs corrigee
+        le 15/09. Meme esprit que `get_campagne_en_cours` juste a cote, qui ne
+        laisse voyager que de quoi se situer.
+
+        ⚠ ET LE SIEGE EST PROUVE PAR `tient_le_siege`, PAS PAR `allowed_seats`.
+        La premiere version utilisait `allowed_seats`, par symetrie avec
+        `set_choix_siege` — et le temoin d'authentification l'a prise en faute :
+        un invite du siege 1 lisait le siege 2. `allowed_seats` ouvre en effet
+        tout siege qu'aucun client ne tient (« reprise d'un siege abandonne »),
+        et AVANT le debut d'une partie ils sont TOUS orphelins. C'est le piege
+        que `get_liens_sieges` documente juste en dessous ; on prend la meme
+        garde stricte qu'elle.
+
+        Une table sans protection de siege est une table locale : elle repond,
+        comme tout le reste du moteur y repond.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        try:
+            p = int(request.rel_url.query.get('p', ''))
+        except Exception:
+            return web.json_response({'error': 'p required'}, status=400)
+
+        passwords = SEAT_PASSWORDS.value
+        protegee = bool(passwords) and any(passwords)
+        if protegee and not self.tient_le_siege(request, p):
+            return web.json_response({'error': 'not your seat'}, status=403)
+
+        controller = self.get_first_controller(request)
+        world = controller.world if controller else None
+        if not world:
+            # Table neuve, ou eteinte : aucune partie ne tourne.
+            return web.json_response({'en_jeu': False, 'p': p, 'heros': ''})
+
+        joueurs = world.scene.players or []
+        heros = ''
+        if 0 <= p < len(joueurs):
+            identites = joueurs[p].hero or []
+            # `hero[0]` est l'identite HEROS ("01001a"), parfois suivie de ses
+            # variantes separees par une virgule. Meme decoupage que le
+            # catalogue du salon (`d.hero[0].split(",")[0]`), sinon la
+            # comparaison echouerait sur une carte a variantes.
+            heros = str(identites[0]).split(',')[0] if identites else ''
+        # `heros` vide alors qu'une partie tourne = ce siege n'a PAS de heros
+        # dedans : l'hote a lance a deux alors que trois liens etaient envoyes.
+        # Le salon en fait une explication, pas une attente muette.
+        return web.json_response({'en_jeu': True, 'p': p, 'heros': heros})
+
     async def get_liens_sieges(self, request: web.Request) -> web.Response:
         """Les cles de siege, pour que l'HOTE fabrique ses liens d'invitation.
 
@@ -1404,6 +1468,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_cursors', self.get_cursors)
         self.AddPostSecurity('/set_choix_siege', self.set_choix_siege)
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)
+        self.AddAwaitGetSecurity('/get_heros_du_siege', self.get_heros_du_siege)
         self.AddAwaitGetSecurity('/get_liens_sieges', self.get_liens_sieges)
         self.AddAwaitGetSecurity('/get_site_admin', self.get_site_admin)
         self.AddAwaitGetSecurity('/get_salon_joueurs', self.get_salon_joueurs)
