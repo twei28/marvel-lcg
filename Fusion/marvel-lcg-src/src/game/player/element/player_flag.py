@@ -6,6 +6,7 @@ class PlayerFlag:
         self.Reset()
 
     FLAG = Literal[
+        "ECHO_REFLEXES_DEJA_PAYEES",
         "MAGIK_ONCE_PER_PHASE",
         "YOU_TAKE_THE_FIRST_TURN_DURING_THE_PLAYER_PHASE",
     ]

@@ -142,6 +142,12 @@ def GetAbilities() -> Sequence['Ability']:
         paiement ; chemin B, ou elle est encore en main). Une condition « PR en
         main » ferait donc sauter la reduction sur le chemin A, et la
         DOUBLERAIT sur le chemin A si le joueur tenait une seconde copie.
+
+        ⚠ LE CONTROLE DU PAYEUR EST RESTE, et c'est volontaire. L'ancienne
+        `check_pay_for_tucked` verifiait `message.GetToPlayer()` ; le perdre
+        aurait offert la reduction a un AUTRE joueur qui aide a payer (les
+        cartes `Alliance`, « the players can pay this card's costs as a
+        group »). La zone seule ne suffit donc pas.
         """
         if not message.is_play:
             return False
@@ -149,13 +155,21 @@ def GetAbilities() -> Sequence['Ability']:
             return False
         zone = effect.this.GetPlacedCardArea()
         paying_face = message.check_effect.this
-        return zone is not None and paying_face is not None and paying_face.card.area == zone
+        if zone is None or paying_face is None or paying_face.card.area != zone:
+            return False
+        return message.GetToPlayer() == effect.this.GetControlByPlayer()
 
     return [AbilityFactory.AfterPlayerPlayedCard(AbilityType.Response, 'AnyPlayer', None, watch_and_learn, conditions=[check_aspect_event]).SetName('Watch and Learn'),
             *AbilityFactory.YouMayPlayCardLikeInHand(AbilityType.NonKeyword, None, conditions=[check_tucked_playable]),
             AbilityFactory.WhenPlayerPlayCard(AbilityType.Rule, 'You', None, discard_photographic_reflexes, conditions=[check_played_from_tuck]),
             AbilityFactory.WhenCalculateEffectCost(AbilityType.NonKeyword, reduire_le_cout_des_glissees, conditions=[check_cout_d_une_glissee]).NoOutOfPlayLimit(),
             # Les trois rafraichissements du cache (voir `rafraichir_les_glissees`).
+            # ⚠ `AbilityType.Rule` N'EST PAS DECORATIF ICI : c'est lui qui pose
+            # `is_ignore_game_area` (ability_type.py), donc `is_ignore_out_of_play`.
+            # Sans lui, une aptitude `NonKeyword` portee par la face HEROS cesserait
+            # d'ecouter des que cette face part dans `aside_deck` — c'est-a-dire
+            # PILE au moment de la bascule vers la forme civile. Le rafraichissement
+            # ne marcherait que dans un sens, en silence.
             AbilityFactory.AfterUnitChangeForm(AbilityType.Rule, 'You', rafraichir_les_glissees),
             AbilityFactory.AfterCardEnterHand(AbilityType.Rule, CardFinder(name='Photographic Reflexes'), rafraichir_les_glissees),
             AbilityFactory.WhenCardWouldMoveToArea(AbilityType.Rule, CardFinder(name='Photographic Reflexes'), rafraichir_les_glissees, conditions=[check_reflexes_quitte_la_main])]

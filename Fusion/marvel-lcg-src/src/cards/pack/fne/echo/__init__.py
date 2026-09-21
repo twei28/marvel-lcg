@@ -99,6 +99,23 @@ def AbilitesPhotographicReflexes() -> Sequence['Ability']:
             return
         # `PlayOneCardLikeInTurn` DEMANDE laquelle quand il y en a plusieurs,
         # puis la joue comme si elle etait en main, cout reellement paye.
+        #
+        # ⚠ ARBITRAGE ASSUME : LE COUT EST PAYE D'ABORD, ET IL N'EST PAS RENDU.
+        # `CostFunc.Discard("This")` defausse Photographic Reflexes AVANT cet
+        # appel. Si le joueur renonce ensuite, ou s'il ne peut pas payer
+        # l'evenement glisse, la carte cliquee est perdue et rien n'est joue.
+        # Le chemin B, lui, ne consomme Photographic Reflexes qu'une fois le jeu
+        # effectif : LES DEUX CHEMINS DIVERGENT DONC SUR CE SEUL POINT.
+        # C'est la lecture litterale du texte imprime — « you can DISCARD
+        # Photographic Reflexes from your hand TO play an event » fait de la
+        # defausse un COUT, et un cout paye ne se reprend pas — et c'est le
+        # comportement ordinaire du moteur pour `SetCostFunc`. Arbitrage non
+        # confirme par un ruling : aucun n'existe (recherche du 21/09/2026).
+        #
+        # ⚠ Le drapeau couvre toute la resolution, pas seulement la carte
+        # choisie. Sans effet observable : `discard_photographic_reflexes` ne
+        # part que sur une carte jouee DEPUIS la zone glissee, et le chemin A
+        # n'en joue qu'une.
         joueur.flag.Update(REFLEXES_DEJA_PAYEES, +1)
         try:
             joueur.PlayOneCardLikeInTurn(faces, effect)
