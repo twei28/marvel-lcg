@@ -4719,14 +4719,24 @@ class Handler(BaseHTTPRequestHandler):
                 # L'adresse d'atterrissage part d'ICI parce que le site est le
                 # seul a connaitre son domaine public : le plateau, lui, est
                 # servi par un moteur qui n'aura plus de page a lui offrir.
+                # ⚠ ET `finally`, PAS UNE LIGNE APRES. `_repondre` ecrit sur la
+                # socket, et le client d'en face est le moteur : son
+                # `_appeler_site` coupe a dix secondes. Une revocation qui
+                # traine sur un verrou sqlite au-dela de ce plafond fait lever
+                # l'ecriture, et sans ce filet le fil ne partait jamais — mot
+                # de passe revoque, moteur vivant, emplacement pris jusqu'au
+                # faucheur. Les acces sont deja coupes a ce stade : il n'y a
+                # plus aucune raison de ne pas aller au bout.
                 eteindre = eteindre_volontairement(qui, "quitte depuis le plateau",
                                                    differer=True)
                 racine = (f"https://{DOMAINE}" if DOMAINE
                           else f"http://127.0.0.1:{PORT_SITE}")
-                self._repondre(200, json.dumps({"ok": True,
-                                                "url": racine + "/arret"}).encode("utf-8"),
-                               "application/json; charset=utf-8")
-                eteindre()
+                try:
+                    self._repondre(200, json.dumps({"ok": True,
+                                                    "url": racine + "/arret"}).encode("utf-8"),
+                                   "application/json; charset=utf-8")
+                finally:
+                    eteindre()
                 return
             if self.chemin == "/api/prives":
                 # ⚠ PAS DE `toucher_presence` ICI. C'est une horloge qui

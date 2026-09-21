@@ -519,6 +519,34 @@ try:
     verifier("et le fil qui tue ne demarre qu'APRES la reponse",
              _ordre[:2] == ["repondu", "eteint"], str(_ordre))
 
+    # ⚠ ET LE FIL PART MEME SI LA REPONSE NE PART PAS. Le client de cette
+    # requete est le MOTEUR, et son `_appeler_site` coupe a dix secondes : une
+    # revocation qui traine sur un verrou sqlite au-dela de ce plafond fait
+    # fermer la connexion d'en face, donc lever `_repondre`. Sans filet, on
+    # aurait alors le pire des deux mondes — mot de passe revoque, moteur
+    # vivant, emplacement pris jusqu'au faucheur, une demi-heure.
+    _eteints.clear()
+    _ordre.clear()
+
+    def _repondre_casse(self, *args, **kwargs):
+        if self.chemin == "/api/eteindre":
+            raise BrokenPipeError("le moteur a raccroche")
+        return _vrai_repondre(self, *args, **kwargs)
+
+    o.Handler._repondre = _repondre_casse
+    try:
+        try:
+            appel("POST", "/api/eteindre", corps=_corps_extinction)
+        except OSError:
+            pass          # la connexion est cassee : c'est tout le sujet
+        _fin = _time_extinction.monotonic() + 5
+        while not _eteints and _time_extinction.monotonic() < _fin:
+            _time_extinction.sleep(0.05)
+        verifier("une reponse qui ne part pas n'empeche pas la table de fermer",
+                 bool(_eteints), str(_eteints))
+    finally:
+        o.Handler._repondre = _repondre_observe
+
     # Le jeton est le seul laissez-passer : sans lui, on n'eteint pas la table
     # d'un autre.
     _eteints.clear()
