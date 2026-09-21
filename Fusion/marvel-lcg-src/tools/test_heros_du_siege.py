@@ -18,7 +18,11 @@ Ce que ce fichier prouve, et qu'aucune lecture de code ne prouve :
   3. Chaque siege rend le SIEN, pas celui du voisin.
   4. Un siege que la partie n'a pas -> `en_jeu` vrai et `heros` vide : c'est
      ainsi que le salon distingue « l'hote a lance sans moi » d'une attente.
-  5. Un `p` absent ou illisible -> 400, pas une reponse au hasard.
+  5. Un `p` absent, illisible ou negatif -> 400, pas une reponse au hasard.
+  6. ⚠ `debut` CHANGE d'une partie a l'autre MEME QUAND LE HEROS NE CHANGE PAS.
+     C'est le coeur de la ronde de correction du 21/09 : rejouer une manche
+     avec le meme heros rouvrait le defaut en grand, et seul ce repere de
+     fraicheur le ferme. Il vaut "" quand aucune partie ne tourne.
 
 Usage: python3.10 tools/test_heros_du_siege.py <game_dir> <port>
 Viser un dossier de jeu JETABLE, jamais `.game` ni `.game-src` : ce test
@@ -124,6 +128,8 @@ try:
              bool(corps) and corps.get("en_jeu") is False, str(corps))
     verifier("table neuve : aucun heros a annoncer",
              bool(corps) and corps.get("heros") == "", str(corps))
+    verifier("table neuve : aucun repere de partie",
+             bool(corps) and corps.get("debut") == "", str(corps))
 
     # --- 2. Une vraie partie, deux heros ------------------------------------
     from engine.file import FileManager
@@ -169,6 +175,9 @@ try:
     code, corps = demander("/get_heros_du_siege?p=1")
     verifier("partie en cours : le siege 1 rend le SIEN, pas celui du voisin",
              bool(corps) and corps.get("heros") == ATTENDU[1], str(corps))
+    repere_manche_1 = corps.get("debut") if corps else ""
+    verifier("partie en cours : un repere de partie est annonce",
+             bool(repere_manche_1) and ":" in str(repere_manche_1), str(corps))
 
     # --- 3. Un siege que la partie n'a pas ----------------------------------
     # ⚠ LE CAS QUI EVITE UNE ATTENTE MUETTE : l'hote a envoye trois liens et
@@ -180,11 +189,32 @@ try:
     verifier("siege absent de la partie : aucun heros",
              bool(corps) and corps.get("heros") == "", str(corps))
 
-    # --- 4. Une demande mal formee n'invente rien ---------------------------
+    # --- 4. ⚠ LA MANCHE REJOUEE AVEC LE MEME HEROS -------------------------
+    # LE cas de la ronde de correction du 21/09. On rejoue la MEME equipe : le
+    # heros du siege 0 ne bouge pas d'un caractere, et une regle qui ne
+    # regarderait que lui prendrait la manche precedente pour la nouvelle (et
+    # reciproquement). Seul `debut` distingue les deux.
+    scene_2 = SceneLoader.NewFromJson(
+        lire("Campaign", SCENARIO), None, [lire("Hero", h) for h in HEROS], 43, [], {})
+    jeu.session.SetScene(scene_2, "Load")
+    limite = time.time() + 60
+    while (jeu.world is None or jeu.world.scene is not scene_2) and time.time() < limite:
+        time.sleep(0.5)
+
+    code, corps = demander("/get_heros_du_siege?p=0")
+    verifier("manche 2 : le heros du siege est le MEME qu'a la manche 1",
+             bool(corps) and corps.get("heros") == ATTENDU[0], str(corps))
+    verifier("manche 2 : le repere, lui, a CHANGE",
+             bool(corps) and corps.get("debut") and corps.get("debut") != repere_manche_1,
+             f"manche 1 = {repere_manche_1} / manche 2 = {corps.get('debut') if corps else None}")
+
+    # --- 5. Une demande mal formee n'invente rien ---------------------------
     code, _ = demander("/get_heros_du_siege")
     verifier("siege non precise : refuse", code == 400, f"code={code}")
     code, _ = demander("/get_heros_du_siege?p=abc")
     verifier("siege illisible : refuse", code == 400, f"code={code}")
+    code, _ = demander("/get_heros_du_siege?p=-1")
+    verifier("siege negatif : refuse", code == 400, f"code={code}")
 
 except Exception as exc:
     import traceback

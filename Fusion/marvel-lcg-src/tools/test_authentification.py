@@ -85,6 +85,24 @@ def demander(chemin, cookie=None, suivre=True):
         return 0, str(exc), []
 
 
+def poster(chemin, charge, cookie=None):
+    """Rend le code HTTP d'un POST JSON."""
+    import json as json_lib
+    entetes = {"Content-Type": "application/json"}
+    if cookie:
+        entetes["Cookie"] = cookie
+    requete = urllib.request.Request(
+        BASE + chemin, data=json_lib.dumps(charge).encode("utf-8"),
+        headers=entetes, method="POST")
+    try:
+        with urllib.request.urlopen(requete, timeout=5) as reponse:
+            return reponse.status
+    except urllib.error.HTTPError as erreur:
+        return erreur.code
+    except Exception:
+        return 0
+
+
 def noms_de_cookies(entetes):
     noms = []
     for brut in entetes:
@@ -171,6 +189,30 @@ try:
              code == 200 and corps.lstrip().startswith("{"), f"code={code} {corps[:60]}")
     code, corps, _ = demander("/get_heros_du_siege?p=2", cookie=cookie_invite)
     verifier("invite : le siege d'un AUTRE lui est refuse", code == 403, f"code={code}")
+
+    # ⚠ ET IL N'ECRIT PAS NON PLUS LE SIEGE D'UN AUTRE. `set_choix_siege`
+    # gardait encore `allowed_seats` : un invite du siege 1 posait le heros du
+    # siege 2, qui partait alors avec le deck d'un autre — et, depuis que le
+    # salon compare, restait bloque sans jamais se reconnaitre.
+    code = poster("/set_choix_siege",
+                  {"p": 1, "hero_card_id": "01001a", "deck_id": "spider_man"},
+                  cookie=cookie_invite)
+    verifier("invite : il pose SON choix", code == 200, f"code={code}")
+    code = poster("/set_choix_siege",
+                  {"p": 2, "hero_card_id": "01001a", "deck_id": "spider_man"},
+                  cookie=cookie_invite)
+    verifier("invite : le choix d'un AUTRE siege lui est refuse", code == 403, f"code={code}")
+
+    # ⚠ LE SPECTATEUR, ET C'EST LA CLASSE EXACTE DE LA FUITE DU 15/09.
+    # `SpectateurPeutLire` ouvre les routes par PREFIXE `/get_` : rien
+    # n'arrete un spectateur sur `/get_heros_du_siege` sinon la garde de siege
+    # elle-meme. Il n'a aucun `seat_token`, donc `tient_le_siege` le refuse —
+    # mais c'est `tient_le_siege` qui le fait, et pas autre chose.
+    cookie_spectateur = f"session_token={jeton}; spectateur=1"
+    code, _, _ = demander("/get_heros_du_siege?p=0", cookie=cookie_spectateur)
+    verifier("spectateur : le heros d'un siege lui est refuse", code == 403, f"code={code}")
+    code, _, _ = demander("/get_heros_du_siege?p=2", cookie=cookie_spectateur)
+    verifier("spectateur : aucun siege ne s'ouvre a lui", code == 403, f"code={code}")
 
     # --- 4. Une mauvaise cle n'ouvre rien -----------------------------------
     code, _, cookies = demander("/claim_seat?p=1&key=NIMPORTEQUOI&to=salon", suivre=False)

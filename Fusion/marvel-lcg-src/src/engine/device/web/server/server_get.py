@@ -636,8 +636,18 @@ class GameServerGet(GameServerBase):
         except Exception:
             return web.json_response({'error': 'p required'}, status=400)
 
-        autorises = self.allowed_seats(request)
-        if autorises is not None and p not in autorises:
+        # ⚠ `tient_le_siege` ET NON `allowed_seats` (21/09/2026). `allowed_seats`
+        # ouvre tout siege qu'aucun client ne tient (« reprise d'un siege
+        # abandonne »), et AVANT le debut d'une partie ils le sont TOUS : un
+        # invite du siege 1 pouvait donc ECRIRE le choix du siege 2. La victime
+        # partait avec le deck d'un autre — et depuis que le salon compare le
+        # heros de son siege a ce qu'il a choisi, elle reste bloquee dans le
+        # salon sans jamais se reconnaitre. Meme garde stricte que
+        # `get_liens_sieges` et `get_heros_du_siege`.
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords_sieges = SEAT_PASSWORDS.value
+        if bool(passwords_sieges) and any(passwords_sieges) \
+                and not self.tient_le_siege(request, p):
             return web.json_response({'error': 'not your seat'}, status=403)
 
         hero_card_id = str(data.get('hero_card_id', ''))
@@ -677,6 +687,16 @@ class GameServerGet(GameServerBase):
         bloques. La seule question qui vaut est « le heros de MON siege est-il
         celui que je viens de choisir ? », et c'est cette route qui y repond.
 
+        ⚠⚠ ET LE HEROS SEUL NE SUFFIT PAS, d'ou `debut` (ronde de correction du
+        21/09/2026). Rejouer une manche AVEC LE MEME HEROS — ce que fait la
+        majorite des joueurs — remettait le defaut en grand : entre deux
+        manches, le monde precedent porte encore le heros de l'invite a son
+        siege, et l'invite qui re-choisit le meme heros s'y reconnaissait. Il
+        faut donc un second signal, de FRAICHEUR, que le salon releve au moment
+        du choix et compare ensuite. C'est aussi le SEUL signal utilisable en
+        CAMPAGNE, ou l'equipe est fixee par le livret et ou le heros d'un siege
+        est donc le meme a toutes les manches.
+
         ⚠ ON NE PUBLIE QUE CE QU'IL FAUT POUR SE RECONNAITRE. Le siege DEMANDE,
         et de lui le seul identifiant de sa carte heros. Pas son deck, pas sa
         main, pas le nom de son joueur, et pas les autres sieges : le salon n'en
@@ -702,17 +722,28 @@ class GameServerGet(GameServerBase):
             p = int(request.rel_url.query.get('p', ''))
         except Exception:
             return web.json_response({'error': 'p required'}, status=400)
+        # Un siege negatif n'existe pas : meme refus que pour un `p` illisible,
+        # plutot qu'une reponse vide qui aurait l'air d'un fait.
+        if p < 0:
+            return web.json_response({'error': 'p required'}, status=400)
 
         passwords = SEAT_PASSWORDS.value
         protegee = bool(passwords) and any(passwords)
         if protegee and not self.tient_le_siege(request, p):
             return web.json_response({'error': 'not your seat'}, status=403)
 
+        # LE REPERE DE LA PARTIE EN COURS, sous la forme que le plateau emploie
+        # DEJA pour la meme question (`clePartie`, ui-app/src/board/moteur.ts) :
+        # `game_uid` distingue deux moteurs successifs, `game_id` deux parties
+        # dans un meme moteur. On ne reinvente donc aucune convention.
+        session = self.game.session
+        debut = f"{getattr(session, 'game_uid', '')}:{getattr(session, 'game_id', 0)}"
+
         controller = self.get_first_controller(request)
         world = controller.world if controller else None
         if not world:
             # Table neuve, ou eteinte : aucune partie ne tourne.
-            return web.json_response({'en_jeu': False, 'p': p, 'heros': ''})
+            return web.json_response({'en_jeu': False, 'p': p, 'heros': '', 'debut': ''})
 
         joueurs = world.scene.players or []
         heros = ''
@@ -726,7 +757,7 @@ class GameServerGet(GameServerBase):
         # `heros` vide alors qu'une partie tourne = ce siege n'a PAS de heros
         # dedans : l'hote a lance a deux alors que trois liens etaient envoyes.
         # Le salon en fait une explication, pas une attente muette.
-        return web.json_response({'en_jeu': True, 'p': p, 'heros': heros})
+        return web.json_response({'en_jeu': True, 'p': p, 'heros': heros, 'debut': debut})
 
     async def get_liens_sieges(self, request: web.Request) -> web.Response:
         """Les cles de siege, pour que l'HOTE fabrique ses liens d'invitation.
