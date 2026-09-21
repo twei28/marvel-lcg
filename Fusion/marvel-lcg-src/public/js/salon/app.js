@@ -39,6 +39,9 @@ let sansChoix = false;
 // Depuis quand ce salon attend-il ? Sert au seul cas qu'aucun signal ne
 // tranche : un invite sans repere, arrive apres le lancement.
 let attenteDepuis = Date.now();
+// Ce qui est affiche dans la zone d'avertissement, pour ne PAS la repeindre a
+// chaque sondage (voir montrerAvertissement).
+let avertissementAffiche = null;
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -82,6 +85,15 @@ function bandeauAttente(pret) {
 /* ---------------- Envoi du choix ---------------- */
 
 async function envoyerChoix(deck) {
+    // ⚠ LE REPÈRE SE RELÈVE AVANT L'ENVOI, ET C'EST TOUT LE SUJET (ronde 2 du
+    // 21/09/2026). Relevé APRÈS, il y avait une course : si l'hôte lançait
+    // entre l'envoi et la lecture, on retenait le repère de la partie NEUVE et
+    // l'invité ne basculait jamais dedans. La première version couvrait cette
+    // course par une clause de réserve qui rouvrait le cas 7 en grand ; ici la
+    // course n'existe plus, donc la clause non plus. Relevé avant, le pire est
+    // de retenir un repère d'un instant trop vieux — ce qui fait basculer,
+    // c'est-à-dire exactement le bon sens de l'erreur.
+    const table = await lireLaTable();
     try {
         const reponse = await fetch("/set_choix_siege", {
             method: "POST",
@@ -107,17 +119,14 @@ async function envoyerChoix(deck) {
     }
     etat.deckChoisi = deck;
     monChoix = etat.hero.heroCardId;
-    // ⚠ LE REPERE EST RELEVE ICI, AU MOMENT DU CHOIX, et retenu AVEC lui dans
-    // ce navigateur. C'est le seul instant qui a un sens : « la partie qui
-    // tournait quand je me suis pose ». Releve a l'arrivee, il ne survivrait
-    // pas a un rechargement ; releve plus tard, il aurait deja change.
+    // Le repère relevé plus haut est retenu AVEC le choix : c'est ce qui le
+    // fait survivre au rechargement, là où `/new` aura vidé `choix_sieges`.
     //
-    // ⚠ ET SI LA TABLE NE REPOND PAS, ON NE RETIENT RIEN. Un repere invente
-    // (une chaine vide, par exemple) differerait de celui de l'ancienne partie
-    // et provoquerait une bascule immediate dessus — exactement le defaut
-    // qu'on ferme. Sans repere, la regle attend et finit par PROPOSER, ce qui
-    // laisse le dernier mot a l'invite.
-    const table = await lireLaTable();
+    // ⚠ ET SI LA TABLE N'A PAS RÉPONDU, ON NE RETIENT RIEN. Un repère inventé
+    // (une chaîne vide, par exemple) différerait de celui de l'ancienne partie
+    // et provoquerait une bascule immédiate dessus — exactement le défaut qu'on
+    // ferme. Sans repère, la règle attend et finit par PROPOSER, ce qui laisse
+    // le dernier mot à l'invité.
     if (table) {
         debutAuChoix = table.debut;
         memoriserRepere(window.localStorage, siege, monChoix, debutAuChoix, Date.now());
@@ -354,12 +363,28 @@ function zoneAvertissement() {
  *  disponible en dessous dans tous les cas.
  */
 function montrerAvertissement(texte, bouton) {
+    // ⚠ ON NE TOUCHE AU DOM QUE SI QUELQUE CHOSE A CHANGE (ronde 2 du
+    // 21/09/2026). La première version repeignait à CHAQUE sondage, donc
+    // toutes les deux secondes. Trois dégâts, tous visibles à l'usage :
+    //   - `statut(statutNormal())` effaçait en moins de deux secondes tous les
+    //     messages transitoires — « Import en cours… », « Import impossible. »,
+    //     « Ce siège n'est pas le tien. », « Serveur injoignable. » ;
+    //   - `bandeauAttente(...)` éteignait le bandeau que `rendreCampagne`
+    //     venait d'allumer, et remplaçait « Aucun héros n'est prévu pour ce
+    //     siège » par le texte générique de la campagne ;
+    //   - `replaceChildren` reconstruisait le bouton sous le doigt : un clic à
+    //     cheval sur un sondage ne déclenchait rien.
+    const cle = texte ? `${texte}|${bouton ? bouton.libelle : ""}` : null;
+    if (cle === avertissementAffiche) return;
     const zone = zoneAvertissement();
     if (!texte) {
         zone.replaceChildren();
         zone.classList.remove("est-visible");
+        // On ne rend le statut ordinaire QUE si on l'avait remplacé : sinon on
+        // écraserait ce que le reste de la page vient d'écrire.
         statut(statutNormal());
         bandeauAttente(!sansChoix && !!(etat.hero && etat.deckChoisi));
+        avertissementAffiche = null;
         return;
     }
     zone.classList.add("est-visible");
@@ -369,13 +394,17 @@ function montrerAvertissement(texte, bouton) {
             bouton.libelle) : null,
     );
     bandeauAttente(false);
+    avertissementAffiche = cle;
 }
 
-/** Partir vers le plateau. Le repère a servi : on l'efface pour qu'il ne traîne
- *  pas jusqu'à la soirée suivante, où il ferait prendre la partie de la veille
- *  pour une partie neuve. */
-function allerAuPlateau() {
-    oublierRepere(window.localStorage, siege);
+/** Partir vers le plateau.
+ *
+ *  ⚠ LE REPÈRE N'EST EFFACÉ QUE SI LE SALON A RECONNU LA PARTIE (ronde 2 du
+ *  21/09/2026). La première version l'effaçait aussi quand le clic venait d'une
+ *  simple PROPOSITION : un invité qui acceptait à tort revenait au salon sans
+ *  repère et ne basculait plus jamais tout seul de la soirée. */
+function allerAuPlateau(reconnue) {
+    if (reconnue) oublierRepere(window.localStorage, siege);
     // `multi=1` : partie REPARTIE, un client par siege. Le plateau s'en sert
     // pour NE PAS s'annoncer en hot-seat, sinon l'hote reserverait tous les
     // sieges et verrait les mains de tout le monde.
@@ -398,7 +427,8 @@ async function direLancementSansMoi(heros) {
         `${t("La partie a commencé, et ton siège n’y joue pas le héros que tu avais choisi.")}`
         + (nom ? ` ${t("Il joue")} ${nom}.` : ""),
         { libelle: nom ? `${t("Rejoindre avec")} ${nom}` : t("Rejoindre quand même"),
-          action: allerAuPlateau });
+          // La partie est bien la nouvelle : le repère a servi.
+          action: () => allerAuPlateau(true) });
 }
 
 function proposerDeRejoindre() {
@@ -409,7 +439,9 @@ function proposerDeRejoindre() {
     montrerAvertissement(
         t("Une partie est en cours sur cette table. Impossible de savoir d’ici si c’est la tienne : "
             + "si l’hôte vient de lancer, rejoins-la ; sinon, attends encore un peu."),
-        { libelle: t("Rejoindre cette partie"), action: allerAuPlateau });
+        // On ne sait PAS si c'est la sienne : on garde son repère, pour qu'un
+        // retour au salon le laisse basculer tout seul plus tard.
+        { libelle: t("Rejoindre cette partie"), action: () => allerAuPlateau(false) });
 }
 
 async function sonderLeLancement() {
@@ -437,7 +469,7 @@ async function sonderLeLancement() {
         enJeu: table.enJeu, heros: table.heros, debut: table.debut,
         attenteDepuis, maintenant: Date.now(),
     });
-    if (quoi === "basculer") { allerAuPlateau(); return; }
+    if (quoi === "basculer") { allerAuPlateau(true); return; }
     if (quoi === "sans-toi") { await direLancementSansMoi(table.heros); return; }
     if (quoi === "proposer") { proposerDeRejoindre(); return; }
     montrerAvertissement(null);
@@ -498,17 +530,11 @@ function rendreCampagne(campagne) {
 /* ---------------- Démarrage ---------------- */
 
 async function reprendreChoixExistant() {
-    // ⚠ D'ABORD LA MÉMOIRE DE CE NAVIGATEUR, parce qu'elle est la SEULE trace
-    // qui survive au lancement : `/new` vide `choix_sieges` côté serveur — et
-    // c'est voulu, sans quoi la partie suivante repartirait avec les choix de
-    // la précédente. Un invité qui recharge sa page APRÈS le lancement ne peut
-    // donc plus rien apprendre du serveur, et c'est d'ici qu'il se reconnaîtra
-    // dans la partie qui tourne. Voir bascule.js.
-    const memoire = relireRepere(window.localStorage, siege, Date.now());
-    if (memoire) {
-        monChoix = memoire.heros;
-        debutAuChoix = memoire.debut;
-    }
+    // ⚠ LA MÉMOIRE DE CE NAVIGATEUR A DÉJÀ ÉTÉ RELUE par `demarrer`, et elle
+    // est la SEULE trace qui survive au lancement : `/new` vide `choix_sieges`
+    // côté serveur — et c'est voulu, sans quoi la partie suivante repartirait
+    // avec les choix de la précédente. Ici on ne fait que compléter ce que le
+    // serveur sait encore. Voir bascule.js.
     try {
         const reponse = await fetch("get_choix_sieges?");
         const brut = await reponse.json();
@@ -551,7 +577,19 @@ async function demarrer() {
     // ne l'etait pas. Un invite anglophone lisait « choisis ton heros » dans
     // son onglet pendant que la page, elle, parlait anglais.
     document.title = t("Marvel Champions — choisis ton héros");
-    // La campagne d'abord : s'il y en a une, il n'y a aucun choix a reprendre
+
+    // ⚠ LE REPÈRE SE RELIT ICI, AVANT TOUT LE RESTE, CAMPAGNE COMPRISE
+    // (ronde 2 du 21/09/2026). Il était relu dans `reprendreChoixExistant`, où
+    // la branche campagne ne passe jamais : le repère de campagne était donc
+    // écrit et jamais relu, et un invité de campagne qui rechargeait sa page
+    // après le lancement ne basculait pas — il attendait, puis devait cliquer.
+    const memoire = relireRepere(window.localStorage, siege, Date.now());
+    if (memoire) {
+        monChoix = memoire.heros;
+        debutAuChoix = memoire.debut;
+    }
+
+    // La campagne ensuite : s'il y en a une, il n'y a aucun choix a reprendre
     // ni a proposer, et `reprendreChoixExistant` n'aurait rien a trouver.
     const campagne = await campagneEnCours();
     if (campagne) {
