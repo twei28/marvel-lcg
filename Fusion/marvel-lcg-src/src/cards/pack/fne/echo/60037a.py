@@ -1,4 +1,22 @@
 from . import *
+
+# * Echo (Maya Lopez), face heros.
+#
+# Watch and Learn — Response: After a player plays an aspect or basic event,
+#   tuck that event under here from that player's discard pile. Then, if there
+#   are more than 3 tucked cards here, discard all but 3 of those cards.
+#
+# Le reste du texte d'Echo est porte par Photographic Reflexes (60040a/b/c) :
+#   « If you are in hero form, you can discard Photographic Reflexes from your
+#     hand to play an event tucked under Echo as if it were in your hand.
+#     Reduce the cost to play that event by 2. You cannot trigger Echo's
+#     "Watch and Learn" ability for that event. »
+#
+# En jeu : on clique la carte glissee sous Echo, qui est rendue « comme en
+# main » par `YouMayPlayCardLikeInHand` ci-dessous, et Photographic Reflexes se
+# defausse toute seule en consequence.
+
+
 def GetAbilities() -> Sequence['Ability']:
     def watch_and_learn(effect: 'Effect', message: 'Message.AfterPlayerPlayedCard') -> None:
         this = effect.this.CastTo(Hero)
@@ -13,11 +31,17 @@ def GetAbilities() -> Sequence['Ability']:
             def action(targets: Sequence['CardFace']):
                 Faces.DiscardAll(list(targets), effect)
             controller.ChooseAbilities(effect, AbilityFactory.ForChoiceAbility('Discard tucked cards down to 3', action).SetTarget(list(placed), range=(excess, excess), not_move=True))
+
     def check_aspect_event(effect: 'Effect', message: 'Message.AfterPlayerPlayedCard') -> bool:
         face = message.played_face
         if not IsAspectOrBasicEvent(face):
             return False
+        # « You cannot trigger Echo's Watch and Learn ability for THAT event » :
+        # l'evenement joue DEPUIS la zone glissee ne s'y remet pas. C'est la
+        # seule facon de jouer une carte de cette zone, donc la clause de
+        # Photographic Reflexes est tenue ici, pour les deux chemins.
         return (message.from_area != effect.this.GetPlacedCardArea())
+
     def check_tucked_playable(effect: 'Effect', message: 'Message.CheckIfFaceIsLikeInHand') -> bool:
         this = effect.this
         face = message.which_face
@@ -31,6 +55,42 @@ def GetAbilities() -> Sequence['Ability']:
         if not initiator.IsInHeroForm():
             return False
         return (initiator.hand_cards.FindCard(name='Photographic Reflexes') != None)
+
+    def rafraichir_les_glissees(effect: 'Effect', message: 'Message2') -> None:
+        """Vide le cache « cette carte est comme en main » des cartes glissees.
+
+        ⚠ DEFAUT MESURE LE 21/09/2026, signalement n°17 (Yarro). La reponse de
+        `check_tucked_playable` depend de DEUX choses qui bougent sans que la
+        carte glissee ne bouge : la FORME du joueur, et la presence de
+        Photographic Reflexes dans sa main. Or `card.can_state.is_like_in_hand`
+        n'est remis a zero qu'au DEPLACEMENT de la carte (`card.py`, MoveToArea)
+        : la toute premiere reponse etait donc figee pour toute la vie de la
+        carte sous Echo.
+
+        Mesure, sur une carte glissee en forme heros (harnais test_capacites) :
+          forme heros   -> IsLikeInHand() = True   (juste)
+          forme CIVILE  -> IsLikeInHand() = True   (FAUX : la carte reste offerte)
+          retour heros  -> IsLikeInHand() = False  (FAUX : elle ne l'est plus)
+        Le cache vide a la main rendait bien True / False / True.
+
+        Meme piege, meme remede que Magik (`aoa/magik/45030a.py`, qui remet
+        `is_like_in_hand` a None sur les cartes du dessus de son deck).
+
+        On ne rafraichit que les cartes ENCORE dans la zone glissee : celle
+        qu'on est en train de jouer l'a deja quittee pour la zone de
+        resolution, et son drapeau force par `PlayCardsLikeInTurn` ne doit pas
+        etre efface en plein vol.
+        """
+        zone = effect.this.GetPlacedCardArea()
+        if zone is None:
+            return
+        for face in zone.Get(True):
+            if face is not None:
+                face.card.can_state.is_like_in_hand = None
+
+    def check_reflexes_quitte_la_main(effect: 'Effect', message: 'Message.WhenCardWouldMoveToArea') -> bool:
+        return message.from_area.flags.is_in_hand
+
     def discard_photographic_reflexes(effect: 'Effect', message: 'Message.WhenPlayerPlayCard') -> None:
         this = effect.this
         player = this.GetControlByPlayer()
@@ -43,18 +103,44 @@ def GetAbilities() -> Sequence['Ability']:
         def action(targets: Sequence['CardFace']):
             Faces.DiscardAll(list(targets), effect)
         player.ChooseAbilities(effect, AbilityFactory.ForChoiceAbility('Discard a Photographic Reflexes', action).SetTarget(prs, range=(1, 1), not_move=True))
+
     def check_played_from_tuck(effect: 'Effect', message: 'Message.WhenPlayerPlayCard') -> bool:
         return (message.from_area == effect.this.GetPlacedCardArea())
-    def check_pay_for_tucked(effect: 'Effect', message: 'Message.CheckPlayerCanPayCost') -> bool:
-        this = effect.this
-        paying_face = message.paying_for_effect.this
-        if (paying_face.card.area != this.GetPlacedCardArea()):
+
+    def reduire_le_cout_des_glissees(effect: 'Effect', message: 'Message.WhenCalculateEffectCost') -> None:
+        message.UpdateCost(-2, effect)
+
+    def check_cout_d_une_glissee(effect: 'Effect', message: 'Message.WhenCalculateEffectCost') -> bool:
+        """« Reduce the cost to play that event by 2 ».
+
+        ⚠ CORRIGE LE 21/09/2026. C'etait `CanGenerateResources(Resources('GG'))`
+        : Echo offrait DEUX RESSOURCES WILD au lieu de reduire le cout. Le
+        montant paye par la main est le meme dans le cas ordinaire, mais ce
+        n'est pas la meme regle — deux wild couvrent une exigence de couleur
+        (`Requirement`) qu'une reduction de cout laisse a payer, et elles
+        comptent comme des ressources DEPENSEES pour toute carte qui lit le
+        paiement. L'idiome du depot pour cette tournure exacte est
+        `WhenCalculateEffectCost` + `UpdateCost` (dz014 Lightbringr, aa002
+        Scarlet Witch, meme phrase imprimee).
+
+        La condition est « la carte payee est dans la zone glissee », sans
+        regarder la main : jouer une carte de cette zone n'est possible QUE par
+        Photographic Reflexes, dont la presence en main est deja exigee par
+        `check_tucked_playable`.
+        """
+        if not message.is_play:
             return False
-        player = message.GetToPlayer()
-        if (player != this.GetControlByPlayer()):
+        if message.check_effect is None:
             return False
-        return (player.hand_cards.FindCard(name='Photographic Reflexes') != None)
+        zone = effect.this.GetPlacedCardArea()
+        paying_face = message.check_effect.this
+        return zone is not None and paying_face is not None and paying_face.card.area == zone
+
     return [AbilityFactory.AfterPlayerPlayedCard(AbilityType.Response, 'AnyPlayer', None, watch_and_learn, conditions=[check_aspect_event]).SetName('Watch and Learn'),
             *AbilityFactory.YouMayPlayCardLikeInHand(AbilityType.NonKeyword, None, conditions=[check_tucked_playable]),
             AbilityFactory.WhenPlayerPlayCard(AbilityType.Rule, 'You', None, discard_photographic_reflexes, conditions=[check_played_from_tuck]),
-            AbilityFactory.CanGenerateResources(AbilityType.Resource, Resources('GG'), is_play_card=True, conditions=[check_pay_for_tucked])]
+            AbilityFactory.WhenCalculateEffectCost(AbilityType.NonKeyword, reduire_le_cout_des_glissees, conditions=[check_cout_d_une_glissee]).NoOutOfPlayLimit(),
+            # Les trois rafraichissements du cache (voir `rafraichir_les_glissees`).
+            AbilityFactory.AfterUnitChangeForm(AbilityType.Rule, 'You', rafraichir_les_glissees),
+            AbilityFactory.AfterCardEnterHand(AbilityType.Rule, CardFinder(name='Photographic Reflexes'), rafraichir_les_glissees),
+            AbilityFactory.WhenCardWouldMoveToArea(AbilityType.Rule, CardFinder(name='Photographic Reflexes'), rafraichir_les_glissees, conditions=[check_reflexes_quitte_la_main])]
