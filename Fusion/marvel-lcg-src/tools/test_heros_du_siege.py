@@ -23,6 +23,9 @@ Ce que ce fichier prouve, et qu'aucune lecture de code ne prouve :
      C'est le coeur de la ronde de correction du 21/09 : rejouer une manche
      avec le meme heros rouvrait le defaut en grand, et seul ce repere de
      fraicheur le ferme. Il vaut "" quand aucune partie ne tourne.
+  7. ⚠ ... ET IL NE BOUGE PAS quand la MEME scene est reposee (une annulation
+     de geste, un rejeu sur place). Sans quoi tout tenant de siege — et pas
+     seulement l'hote — ferait basculer les invites du salon a volonte.
 
 Usage: python3.10 tools/test_heros_du_siege.py <game_dir> <port>
 Viser un dossier de jeu JETABLE, jamais `.game` ni `.game-src` : ce test
@@ -177,7 +180,7 @@ try:
              bool(corps) and corps.get("heros") == ATTENDU[1], str(corps))
     repere_manche_1 = corps.get("debut") if corps else ""
     verifier("partie en cours : un repere de partie est annonce",
-             bool(repere_manche_1) and ":" in str(repere_manche_1), str(corps))
+             bool(repere_manche_1), str(corps))
 
     # --- 3. Un siege que la partie n'a pas ----------------------------------
     # ⚠ LE CAS QUI EVITE UNE ATTENTE MUETTE : l'hote a envoye trois liens et
@@ -208,7 +211,23 @@ try:
              bool(corps) and corps.get("debut") and corps.get("debut") != repere_manche_1,
              f"manche 1 = {repere_manche_1} / manche 2 = {corps.get('debut') if corps else None}")
 
-    # --- 5. Une demande mal formee n'invente rien ---------------------------
+    repere_manche_2 = corps.get("debut") if corps else ""
+
+    # --- 5. ⚠ MAIS UNE ANNULATION N'EST PAS UNE NOUVELLE PARTIE ------------
+    # `AnnulerDernierGeste` repasse LA MEME scene a `SetScene`, comme le fait
+    # `load_replay_data` d'un rejeu sur place. Et `/annuler_dernier_geste` est
+    # ouverte a TOUT tenant de siege, pas au seul hote : si le repere bougeait
+    # la, n'importe quel joueur de la manche precedente expedierait les invites
+    # du salon dans sa partie — immediatement en campagne, ou aucun heros ne
+    # vient les retenir.
+    jeu.session.SetScene(scene_2, "Load")
+    time.sleep(1)
+    code, corps = demander("/get_heros_du_siege?p=0")
+    verifier("meme scene reposee (annulation) : le repere NE bouge PAS",
+             bool(corps) and corps.get("debut") == repere_manche_2,
+             f"avant = {repere_manche_2} / apres = {corps.get('debut') if corps else None}")
+
+    # --- 6. Une demande mal formee n'invente rien ---------------------------
     code, _ = demander("/get_heros_du_siege")
     verifier("siege non precise : refuse", code == 400, f"code={code}")
     code, _ = demander("/get_heros_du_siege?p=abc")

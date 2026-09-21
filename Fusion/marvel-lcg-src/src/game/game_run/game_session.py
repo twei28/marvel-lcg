@@ -75,13 +75,33 @@ class GameSession:
         # self.scene.campaign.custom_script = new_game.custom_script
 
     def SetScene(self, scene: 'Scene', state: 'GameState.START_STATE'):
+        # ⚠ UNE NOUVELLE PARTIE, OU LA MEME SCENE REPOSEE ? La distinction est
+        # exactement celle que `LoadScene` fait deja quelques methodes plus bas
+        # (`autre_partie = scene is not self.scene`) : un chargement construit
+        # une Scene neuve, une ANNULATION repasse `self.scene`. Mesuree ici
+        # AVANT l'affectation, qui l'effacerait.
+        #
+        # ⚠ POURQUOI CA COMPTE MAINTENANT (21/09/2026, ronde 2). `game_uid` est
+        # devenu le repere que le SALON compare pour savoir si la partie qui
+        # tourne a commence apres l'arrivee de l'invite (`/get_heros_du_siege`).
+        # Le retirer a chaque `SetScene` le faisait changer sur une simple
+        # annulation de geste -- et `/annuler_dernier_geste` est ouverte a TOUT
+        # tenant de siege, pas au seul hote. N'importe quel joueur de la manche
+        # precedente pouvait donc expedier les invites du salon dans sa partie,
+        # immediatement en campagne ou aucun heros ne vient les retenir.
+        #
+        # `game_id`, lui, continue de s'incrementer a chaque fois : la cle du
+        # plateau (`clePartie` = game_uid:game_id) change donc toujours, et rien
+        # de ce qui s'en sert ne bouge.
+        nouvelle_partie = scene is not self.scene
         self.scene = scene
         self.version = Ver(scene.version)
         self.game_id += 1
         self.start_time = Time.GetTime()
         # Pris ICI et nulle part ailleurs : `start_time` ne ferait pas l'affaire,
         # GetPlayTime et Undo le reecrivent en cours de partie.
-        self.game_uid = "%x" % int(self.start_time * 1000)
+        if nouvelle_partie:
+            self.game_uid = "%x" % int(self.start_time * 1000)
         self.game.state.SetStartState(state)
 
     ################################################################################

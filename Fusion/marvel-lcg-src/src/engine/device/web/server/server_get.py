@@ -732,12 +732,20 @@ class GameServerGet(GameServerBase):
         if protegee and not self.tient_le_siege(request, p):
             return web.json_response({'error': 'not your seat'}, status=403)
 
-        # LE REPERE DE LA PARTIE EN COURS, sous la forme que le plateau emploie
-        # DEJA pour la meme question (`clePartie`, ui-app/src/board/moteur.ts) :
-        # `game_uid` distingue deux moteurs successifs, `game_id` deux parties
-        # dans un meme moteur. On ne reinvente donc aucune convention.
+        # LE REPERE DE LA PARTIE EN COURS : `game_uid`, que `GameSession`
+        # tenait deja et que le plateau emploie DEJA pour la meme question
+        # (`clePartie`, ui-app/src/board/moteur.ts). On ne reinvente aucune
+        # convention, et on n'ajoute aucun compteur.
+        #
+        # ⚠ `game_uid` SEUL, ET SURTOUT PAS `game_id` AVEC (ronde 2 du
+        # 21/09/2026). `game_id` s'incremente a CHAQUE `SetScene`, donc sur une
+        # simple annulation de geste — et `/annuler_dernier_geste` est ouverte a
+        # tout tenant de siege. Un joueur de la manche precedente aurait ainsi
+        # expedie les invites du salon dans sa partie. `game_uid`, lui, ne se
+        # retire plus que quand la scene change VRAIMENT (voir
+        # `GameSession.SetScene`).
         session = self.game.session
-        debut = f"{getattr(session, 'game_uid', '')}:{getattr(session, 'game_id', 0)}"
+        debut = str(getattr(session, 'game_uid', '') or '')
 
         controller = self.get_first_controller(request)
         world = controller.world if controller else None
