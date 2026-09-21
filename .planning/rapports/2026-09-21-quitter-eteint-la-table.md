@@ -1,12 +1,20 @@
 # « Quitter la partie » ferme la table
 
-21/09/2026, branche `mode-manuel`. Trois commits :
+21/09/2026, branche `mode-manuel`. Six commits, en deux rondes.
 
 | Hachage | Portée |
 |---|---|
 | `9a4adfa6` | site : `/api/eteindre`, et `eteindre_volontairement` partagée |
 | `f2493533` | moteur : `POST /quitter_la_table` |
 | `974f76fb` | plateau : le bouton ⌂ Menu ferme la table, et le dit |
+| `d7f2b189` | site : le fil qui tue ne démarre qu'APRÈS la réponse |
+| `2f31f1ef` | moteur : trois issues à la fermeture, jamais deux |
+| `b2c91d78` | plateau : ne rien affirmer quand on ne sait pas |
+
+La ronde de correction a porté sur un seul sujet, décliné à trois étages :
+**réduire à deux ce qui en fait trois**. « C'est fermé / ce n'est pas fermé »
+était faux, et faisait dire au plateau le contraire de la vérité au pire
+moment. Le détail est au chapitre « Le piège d'enchaînement ».
 
 ---
 
@@ -16,11 +24,15 @@ L'hôte clique ⌂ Menu. La fenêtre de confirmation ne dit plus « La partie en
 cours sera perdue si tu ne l'as pas sauvegardée » mais :
 
 > **Fermer la table ?**
-> La table va disparaître : la partie en cours est perdue si tu ne l'as pas
-> sauvegardée, les autres joueurs sont déconnectés, et il faudra rouvrir une
-> table depuis le site pour rejouer.
+> La table va disparaître : les autres joueurs sont déconnectés, et il faudra
+> en rouvrir une depuis le site pour rejouer. La partie en cours est mise de
+> côté — le site te la proposera sous « Reprendre ».
 >
 > [ Annuler ] [ **Quitter** ]
+
+(Le texte ne dit plus « perdue si tu ne l'as pas sauvegardée » : c'était faux.
+`_sauvegarder_avant_extinction` écrit la partie avant de tuer le moteur et la
+range dans « Reprendre ». Effrayer sur un geste déjà lourd, pour rien.)
 
 Il confirme. Le moteur s'éteint, l'emplacement est rendu, le mot de passe de
 jeu est révoqué (les cookies des invités d'hier ne rouvrent plus rien), et
@@ -32,6 +44,11 @@ bouton fait ce qu'il a toujours fait, avec l'ancien texte, et il part sans rien
 détruire. Une **partie locale** (JOUER-SOLO.bat) non plus : il n'y a aucune
 table à rendre à personne, et `/prepare.html` reste vivant puisque le moteur ne
 s'éteint pas.
+
+Et quand le plateau **ne sait pas** s'il y a un site derrière (la lecture de
+l'adresse a échoué), il le dit au lieu de faire comme si de rien n'était :
+« Si cette table vient du site, elle va se fermer […] Le plateau n'a pas pu le
+vérifier. » Puis il demande quand même au moteur, qui, lui, sait.
 
 ## Pourquoi ça comptait
 
@@ -101,36 +118,74 @@ La question posée en ouverture — « et si le joueur restait sur une page mort
 du moteur qu'on vient de tuer ? » — était juste, et elle a façonné deux
 décisions.
 
-**1. Le site répond AVANT d'éteindre.** Celui qui attend la réponse de
-`/api/eteindre` est le moteur qu'on est en train de tuer. Éteindre d'abord,
-c'est tuer le messager : le plateau n'obtient jamais de réponse et ne sait pas
-où aller. `eteindre_volontairement(..., rendre_la_main=True)` révoque le mot de
-passe tout de suite (l'ordre tient donc toujours) et reporte la seule extinction
-dans un fil. Un cas mesure ce délai : la réponse doit partir en moins d'une
-seconde là où l'extinction en prend une et demie.
+**1. Le site répond AVANT d'éteindre, et le fil qui tue ne démarre qu'ensuite.**
+Celui qui attend la réponse de `/api/eteindre` est le moteur qu'on est en train
+de tuer. Éteindre d'abord, c'est tuer le messager : le plateau n'obtient jamais
+de réponse et ne sait pas où aller. `eteindre_volontairement(..., differer=True)`
+révoque le mot de passe tout de suite — l'ordre documenté tient donc toujours —
+et **rend** la fonction qui éteindra, appelée après `_repondre`. Deux témoins :
+un chronomètre (la réponse part en moins d'une seconde là où l'extinction en
+prend une et demie) et un **ordre** (`['repondu', 'eteint']`), parce que le
+chronomètre seul passe encore si le fil démarre une ligne trop tôt.
 
 **2. On n'atterrit jamais sur une page du moteur.** L'adresse de destination
 vient du **site**, seul à connaître le domaine public placé devant les tables,
 et elle ressort telle quelle jusqu'au plateau. Pas d'adresse rendue, pas de
-fermeture annoncée : `fermerLaTable()` (plateau) refuse de déclarer la table
-éteinte sans destination, et le joueur reste sur sa partie. C'est une gate, pas
-un repli.
+fermeture annoncée : le plateau requalifie alors l'issue en « inconnue ». C'est
+une gate, pas un repli.
 
-**3. Si la fermeture échoue, on le dit.** Le joueur vient de s'entendre annoncer
-la disparition de sa table ; partir en silence vers `/prepare.html` lui
-laisserait croire qu'elle a eu lieu. Il voit donc :
+**3. ⚠ Trois issues, jamais deux — et c'est la correction la plus importante de
+cette ronde.** La première version écrasait tout échec en « rien n'a été
+détruit : la table et les autres joueurs sont toujours là ». C'était **faux**,
+et dangereusement : `/api/eteindre` révoque et lance l'extinction **avant** de
+répondre, et il n'existe aucun chemin d'abandon de son côté. Passé le plafond
+de dix secondes du moteur, la table disparaît quand même — on affichait donc
+« rien n'a été détruit » pendant qu'elle s'en allait, et on proposait « Rester
+sur la partie » sur un moteur condamné. Exactement ce que l'utilisateur venait
+de redouter en cliquant.
 
-> **La table n'a pas pu être fermée.**
-> Le site n'a pas répondu. Rien n'a été détruit : la table et les autres
-> joueurs sont toujours là.
->
-> [ Rester sur la partie ] [ Revenir au menu quand même ]
+Le moteur distingue désormais, et le plateau avec lui :
 
-**4. Les invités ne restent pas sur un écran gelé.** Vérifié, et c'était déjà
-en place : après cinq tentatives de reconnexion, `BandeauConnexion` affiche
-« Cette table a été fermée. Ta partie n'est plus en cours. » avec un bouton
-« Revenir à l'accueil » — et `lienAccueil()` retire le sous-domaine `pN.`, donc
-mène au SITE, pas au moteur mort. La chaîne tient de bout en bout.
+| Issue | Quand | Ce qu'on dit |
+|---|---|---|
+| `sans-site` | aucun site configuré : personne n'a été appelé | rien, on retourne à l'écran des héros |
+| `fermee` | le site a confirmé et donné l'adresse | la table est fermée, on y va |
+| `refusee` | 403 du moteur, avant tout appel | « Rien n'a été touché » — **la seule issue où l'on peut l'affirmer** |
+| `inconnue` | le site a été sollicité et n'a pas confirmé | « La table est peut-être en train de se fermer […] le site, lui, le sait » + **Ouvrir le site** |
+
+Le moteur ne pouvait pas distinguer `sans-site` d'`inconnue` avec
+`_appeler_site` seule (statut 0 dans les deux cas) : il lit donc `site_interne`
+et `site_jeton` **avant** d'appeler.
+
+**4. L'adresse du site est lue au montage, plus au clic.** `urlDuSite()` était
+un `fetch` sans plafond dans le chemin du bouton. Deux conséquences, et la
+seconde était la mauvaise : un moteur qui traîne laissait la fenêtre ne jamais
+s'ouvrir (au moment précis où ça rame, c'est-à-dire quand on cherche à partir),
+et un `fetch` en échec faisait passer l'hôte pour un **joueur local** — ancienne
+fenêtre, départ, table laissée debout avec l'ancienne partie dedans. **Le défaut
+d'origine, rétabli en silence par un hoquet réseau.** La lecture se fait
+maintenant une fois au montage, plafonnée à 2 s par un `AbortController`, et
+l'échec donne un état `inconnu` qui n'est **jamais** confondu avec « aucun
+site ».
+
+**5. Les invités attendaient vingt-neuf secondes, pas une.** Correction d'un
+chiffre faux du premier rapport : `DELAIS_RECONNEXION = [2, 4, 8, 15, 30]` et
+`ESSAIS_AVANT_TABLE_FERMEE = 5`, donc 2+4+8+15 ≈ **29 s** de « Connexion
+perdue » avant que le bandeau ne dise la vérité. Acceptable quand seul un
+déploiement pouvait fermer une table ; plus du tout maintenant que l'hôte le
+fait d'un bouton, en cours de soirée. Un palier intermédiaire a été ajouté
+(`ESSAIS_AVANT_DOUTE = 3`, ≈ 6 s) : le bandeau ajoute « — l'hôte a peut-être
+fermé la table » et **offre la sortie** dès cet instant. Le seuil d'affirmation
+reste à cinq essais : une vraie coupure met le même temps à revenir, et déclarer
+la fermeture à six secondes serait faux une fois sur deux.
+
+**6. Les invités ne restent pas sur un écran gelé.** Vérifié, et c'était déjà
+en place : `BandeauConnexion` finit par afficher « Cette table a été fermée. Ta
+partie n'est plus en cours. » avec « Revenir à l'accueil » — et `lienAccueil()`
+retire le sous-domaine `pN.`, donc mène au SITE, pas au moteur mort. Cette
+fonction a déménagé dans `quitter-la-table.ts` : c'est la même question (« où
+aller quand le moteur n'est plus là ? »), et le départ volontaire s'en sert
+comme dernier recours quand personne n'a su donner d'adresse.
 
 ---
 
@@ -150,28 +205,40 @@ personne ne le dédouble plus tard.
 
 | Batterie | Verdict |
 |---|---|
-| `site/test_parcours.py` | **0 échec** (6 cas neufs sur `/api/eteindre`) |
+| `site/test_parcours.py` | **0 échec** (7 cas neufs sur `/api/eteindre`) |
 | `site/test_{narval,langue,places,routes_chemin,heure_locale,imports_locaux}.py` | tout vert |
-| `tools/test_quitter_la_table.py` (neuf) | **TOUT PASSE**, 9 cas + 3 en mode `sans_site` |
-| `tools/test_mode_manuel.py` (48 cas) | **48 VERT, 0 ROUGE** |
-| `ui-app` : `quitter-la-table.test.ts` (neuf) | 11 cas verts |
-| `ui-app` : `PagePartie.test.tsx` (5 cas neufs) | 25 cas verts |
-| `ui-app` : la batterie entière | **1924 cas, 175 fichiers, 0 échec** |
+| `tools/test_quitter_la_table.py` (neuf) | **TOUT PASSE** : 11 cas + 3 `sans_site` + 3 `site_muet` |
+| `tools/test_mode_manuel.py` (48 cas) | **48 VERT, 0 ROUGE** (relancée après la ronde de correction) |
+| `ui-app` : `quitter-la-table.test.ts` (neuf) | 18 cas verts |
+| `ui-app` : `PagePartie.test.tsx` | 30 cas verts, dont 10 neufs |
+| `ui-app` : la batterie entière | **1936 cas, 175 fichiers, 0 échec** |
 | `npx tsc --noEmit` | silencieux |
 
-Rouges constatés avant d'écrire le code, à chaque étage :
+Rouges constatés avant d'écrire le code, à chaque étage et à chaque ronde :
 
 - site : 5 cas rouges (`404 Introuvable` sur `/api/eteindre`) ;
-- moteur : 7 cas rouges (`405` : la route n'existait pas) ;
-- plateau, module : le fichier ne se résolvait pas ;
+- site, ordre du fil : l'appel remis **avant** `_repondre` le temps d'une
+  exécution → `['eteint', 'repondu']`, rouge, puis remis en place ;
+- moteur : 7 cas rouges (`405` : la route n'existait pas), puis 4 de plus à la
+  ronde de correction (`issue` absente : `sans-site`, `inconnue`, l'adresse du
+  site) ;
+- plateau, module : 18 cas rouges (les fonctions n'existaient pas sous cette
+  forme) ;
 - plateau, **câblage** : l'ancien `board.tsx` remis en place le temps d'une
-  exécution, **4 des 5 cas neufs rouges** — dont « ferme vraiment la table de
-  l'hôte » et « annonce la fermeture ». Le cinquième (« renoncer ne ferme
-  rien ») passe des deux côtés : c'est un garde-fou, pas une mesure.
+  exécution, **4 des 5 cas d'alors rouges** ;
+- plateau, **bandeau** : `ESSAIS_AVANT_DOUTE` remis à 5 (l'ancien
+  comportement) → le cas du 3e essai rouge, celui du 2e vert. Le palier mesure
+  bien ce qu'il prétend.
+
+Deux témoins passent des deux côtés, et c'est assumé : « renoncer ne ferme
+rien » et le refus du **spectateur** (`SpectateurPeutEcrire` refusait déjà par
+défaut). Ce sont des garde-fous contre une régression future, pas des mesures
+d'un changement. Le témoin du spectateur combine exprès le cookie `spectateur`
+**et** la clé de l'hôte : c'est le double verrou qu'il garde.
 
 La batterie moteur a tourné sur `.game-src-par9`, dossier jetable créé pour
-l'occasion et **supprimé ensuite** — jamais `.game` ni `.game-src`. Ports 45800+
-pour ne pas croiser l'autre session (36xxx).
+l'occasion et **supprimé ensuite** — jamais `.game` ni `.game-src`. Ports
+45700-45900 pour ne pas croiser l'autre session (36xxx).
 
 ---
 
@@ -183,36 +250,50 @@ pour ne pas croiser l'autre session (36xxx).
    comporte comme avant, en production. Aucun déploiement n'a été lancé, comme
    demandé.
 
-2. **L'écran de fin de partie garde l'ancien chemin, et c'est le trou qui
-   reste.** `EcranFinPartie` propose « Menu » (`onMenu={retourMenu}`), qui
-   navigue vers `/prepare.html` **sans confirmation et sans rien fermer**. Un
-   hôte qui termine une partie, revient au menu et relance retombe donc
-   exactement sur le défaut d'origine. C'est hors de la demande (« quitter la
-   partie »), et cela demande un arbitrage : à la fin d'une partie, vouloir en
-   relancer une est le cas NORMAL, et fermer la table obligerait à repasser par
-   le site à chaque fois. Le vrai correctif de ce cas-là est la piste 1 de la
-   fiche (le salon attend le héros de SON siège), pas une fermeture de plus.
+2. **⚠ L'écran de fin de partie garde l'ancien chemin, et c'est le chemin le
+   PLUS fréquent — pas le moins.** Rectification de ce que disait la première
+   version de ce rapport. `EcranFinPartie` propose « Menu »
+   (`onMenu={retourMenu}`), qui navigue vers `/prepare.html` **sans
+   confirmation et sans rien fermer**. Or le déroulement normal d'une soirée
+   est : on joue, la partie se termine, l'hôte revient au menu et relance.
+   **Ce chemin-là mène toujours au défaut.** Quitter au milieu d'une partie,
+   ce que ce chantier corrige, est le cas rare.
 
-3. **Une seconde de flottement chez les invités.** Entre l'extinction et le
-   bandeau « Cette table a été fermée », il s'écoule cinq tentatives de
-   reconnexion. Ce n'est pas nouveau et le message final est juste, mais un
-   invité qui regarde son écran à cet instant voit « Connexion perdue » et peut
-   croire que c'est son réseau. Rien ne lui dit que l'hôte vient de partir.
+   Ne pas y toucher reste le bon choix de portée — fermer la table à chaque
+   fin de manche obligerait à repasser par le site entre deux parties —, mais
+   il ne faut pas le lire comme « le défaut ne peut plus bloquer une soirée ».
+   Le vrai correctif de ce cas-là est la piste 1 de la fiche (le salon attend
+   le héros de SON siège).
+
+   Corollaire à trancher, et c'est une question d'interface : **il y a
+   désormais deux boutons nommés « Menu », à deux écrans d'écart. L'un détruit
+   la table, l'autre non, et rien ne le dit.**
+
+3. **Les invités attendent six secondes pour un soupçon, vingt-neuf pour la
+   certitude.** Le palier ajouté (« l'hôte a peut-être fermé la table », plus
+   la sortie offerte) tombe au 3e essai. C'est mieux que la demi-minute
+   précédente, mais ce n'est toujours pas une notification : personne ne
+   PRÉVIENT les invités. Le seul moyen honnête de faire mieux serait que l'hôte
+   annonce son départ avant de partir, ce qui demande un canal que ce chantier
+   n'ouvre pas.
 
 4. **La sauvegarde avant extinction repose sur un moteur encore vivant.**
    `_sauvegarder_avant_extinction` interroge le moteur, dans le fil différé,
    juste avant de le tuer. L'ordre est bon (on sauve, puis on tue) et c'est le
-   code existant, inchangé — mais l'hôte a désormais une façon très rapide de
-   déclencher ça, alors qu'avant il passait par le site. Si une partie était
-   perdue à la fermeture, c'est ici qu'il faudrait regarder.
+   code existant, inchangé — mais la fenêtre de confirmation en fait désormais
+   une **promesse** (« le site te la proposera sous Reprendre »), alors que la
+   fonction est au mieux-effort : elle n'écrit rien si le moteur ne répond pas
+   dans les dix secondes, et ne lève jamais. La promesse est celle du mécanisme,
+   pas une garantie. Si une partie manquait à l'appel après une fermeture,
+   c'est là qu'il faudrait regarder.
 
-5. **La prédiction côté plateau coûte un aller-retour.** Pour savoir quel texte
-   afficher, le plateau lit `/get_site_url` au clic, avant la confirmation. Si
-   le moteur traîne, la fenêtre met un instant à s'ouvrir. Mesuré nulle part en
-   conditions réelles : c'est une requête minuscule, mais elle est dans le
-   chemin d'un clic.
-
-6. **`racine` est calculée à trois endroits dans `orchestrateur.py`** (lignes
-   286, 3959, et la nouvelle route). Je n'ai pas dédupliqué : ce n'était pas
+5. **`racine` est calculée à trois endroits dans `orchestrateur.py`** (lignes
+   286, ~3980, et la nouvelle route). Je n'ai pas dédupliqué : ce n'était pas
    demandé, et un helper introduit ailleurs aurait mélangé un nettoyage à une
    fonctionnalité. À faire un jour, seul.
+
+6. **`lienAccueil` a déménagé** de `board.tsx` vers `quitter-la-table.ts`. Le
+   bandeau de reconnexion l'importe désormais. C'est cohérent (même question :
+   où aller quand le moteur n'est plus là) mais c'est un déplacement que
+   personne n'a demandé ; il rend simplement le dernier recours disponible au
+   départ volontaire.

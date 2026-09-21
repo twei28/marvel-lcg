@@ -112,16 +112,27 @@ depuis le site pour rejouer. Le chemin : `/quitter_la_table` (moteur) →
 **L'hypothèse du commentaire du salon est donc vraie sur CE chemin** : l'hôte
 qui a quitté n'a plus de table du tout, et celle qu'il rouvrira sera vide.
 
-### Ce qui reste ouvert, et c'est volontaire
+### ⚠ Ce qui reste ouvert est le chemin le PLUS fréquent, pas le moins
 
-1. **L'hôte qui ne quitte pas.** Rien n'oblige à passer par ce bouton :
-   l'écran de fin de partie propose « Menu » (`EcranFinPartie`, `onMenu`), qui
-   navigue vers `/prepare.html` **sans rien fermer**, et sans confirmation.
-   Un hôte qui finit une partie, revient au menu et relance retombe donc
-   exactement sur le défaut d'origine.
+1. **L'écran de fin de partie, et c'est le trou principal.** `EcranFinPartie`
+   propose « Menu » (`onMenu`), qui navigue vers `/prepare.html` **sans rien
+   fermer et sans confirmation**. Or c'est le déroulement NORMAL d'une
+   soirée : on joue, la partie se termine, l'hôte revient au menu et relance.
+   **Ce chemin-là mène toujours au défaut, et c'est le plus emprunté.** Ce qui
+   est corrigé — quitter au milieu d'une partie — est le cas rare.
+
+   Corollaire à trancher : il y a désormais **deux boutons nommés « Menu »**,
+   à deux écrans d'écart. Celui du plateau détruit la table ; celui de la fin
+   de partie non. Rien à l'écran ne distingue les deux.
+
 2. **L'invité qui recharge sa page** (le cas qui coince, plus haut) : entier.
 3. **Le corollaire des trois messages** (« Connexion à la partie… ») : entier.
+   Adouci seulement : l'invité dont la table vient d'être fermée lit « l'hôte
+   a peut-être fermé la table » au 3e essai de reconnexion (≈ 6 s) au lieu
+   d'attendre 29 s, et la sortie lui est offerte au même moment.
 
 Autrement dit : le contournement du jour est devenu un geste à portée de clic,
-et le défaut ne peut plus bloquer une soirée tant que l'hôte quitte proprement.
-Le signal juste (piste 1, le siège et son héros) reste à écrire.
+mais il ne couvre que la sortie en cours de partie. **Le signal juste (piste 1,
+le siège et son héros) reste la vraie réponse**, et c'est la seule qui ferme le
+chemin de la fin de partie sans obliger l'hôte à repasser par le site à chaque
+manche.
