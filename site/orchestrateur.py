@@ -786,6 +786,39 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     return True
 
 
+def eteindre_volontairement(code: str, cause: str = "extinction",
+                            rendre_la_main: bool = False) -> None:
+    """La table est fermee PARCE QU'ON L'A DEMANDE : acces coupes, puis moteur.
+
+    ⚠ ON COUPE LES ACCES D'ABORD, ON ETEINT ENSUITE, ET L'ORDRE EST TOUT.
+    C'est le seul geste du site qui soit VOLONTAIRE : la personne dit qu'elle
+    a fini. On perime donc le laissez-passer du moteur, sans quoi les invites
+    de la soiree gardent un cookie valable un an. Ni le faucheur ni un
+    plantage ne passent par ici : une table qui redemarre toute seule ne doit
+    pas laisser son proprietaire dehors.
+
+    Et si l'on revoquait APRES, `eteindre_jeu` tenant la main jusqu'a quinze
+    secondes, le `meta refresh` de la page d'attente aurait tout le temps de
+    rappeler `/entrer` : un moteur repartait avec l'ANCIEN mot de passe et la
+    revocation le manquait.
+
+    `rendre_la_main` reporte la seule EXTINCTION dans un fil ; la revocation,
+    elle, reste faite ici, tout de suite, et l'ordre tient donc toujours.
+    ⚠ C'est indispensable a l'appelant qui doit encore REPONDRE au moteur
+    qu'on est en train de tuer (`/api/eteindre`, appelee par le bouton
+    « Quitter » du plateau) : eteindre avant de repondre, c'est tuer le
+    messager, et le plateau reste sur une page morte sans savoir ou aller.
+    """
+    revoquer_mot_de_passe_jeu(code)
+    if rendre_la_main:
+        # ⚠ La globale `eteindre_jeu` est resolue A L'APPEL, dans le fil : un
+        # test qui l'observe en la remplacant voit donc bien passer l'appel.
+        threading.Thread(target=lambda: eteindre_jeu(code, cause),
+                         daemon=True).start()
+    else:
+        eteindre_jeu(code, cause)
+
+
 # Un compte qui expire a deja quatre semaines de retard : le verifier toutes
 # les heures est bien assez, et evite de relire toute la table chaque minute.
 PERIODE_EXPIRATION_S = 3600
@@ -4623,7 +4656,7 @@ class Handler(BaseHTTPRequestHandler):
             self._rediriger("/admin")
 
         elif self.chemin in ("/api/vue", "/api/dire", "/api/bug", "/api/annonce",
-                           "/api/prives", "/api/prives_lus"):
+                           "/api/prives", "/api/prives_lus", "/api/eteindre"):
             # ⚠ CES ROUTES NE SONT PAS POUR LE NAVIGATEUR. Elles sont appelees
             # par le MOTEUR, en 127.0.0.1, et s'authentifient par le jeton de
             # partie plutot que par le cookie de session : le navigateur est sur
@@ -4656,6 +4689,31 @@ class Handler(BaseHTTPRequestHandler):
                     return
                 numero = enregistrer_rapport(qui, champs)
                 self._repondre(200, json.dumps({"ok": True, "numero": numero}).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/eteindre":
+                # « Quitter la partie » depuis le PLATEAU : c'est le pendant
+                # interne du bouton « Terminer » du site. L'hote ferme sa
+                # table, elle cesse d'exister, l'emplacement est rendu et les
+                # invites sont mis dehors.
+                #
+                # ⚠ QUI A LE DROIT EST DECIDE PAR LE MOTEUR, PAS ICI. Le jeton
+                # dit de quelle TABLE vient l'appel, pas qui l'a clique : c'est
+                # `/quitter_la_table` (server_get.py) qui exige le siege 0,
+                # cookie en main. Un invite n'arrive donc jamais jusqu'ici.
+                #
+                # ⚠ ET ON REPOND AVANT D'ETEINDRE (`rendre_la_main`) : celui
+                # qui attend cette reponse est le moteur qu'on tue.
+                #
+                # L'adresse d'atterrissage part d'ICI parce que le site est le
+                # seul a connaitre son domaine public : le plateau, lui, est
+                # servi par un moteur qui n'aura plus de page a lui offrir.
+                eteindre_volontairement(qui, "quitte depuis le plateau",
+                                        rendre_la_main=True)
+                racine = (f"https://{DOMAINE}" if DOMAINE
+                          else f"http://127.0.0.1:{PORT_SITE}")
+                self._repondre(200, json.dumps({"ok": True,
+                                                "url": racine + "/arret"}).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return
             if self.chemin == "/api/prives":
@@ -4719,21 +4777,10 @@ class Handler(BaseHTTPRequestHandler):
                 self._rediriger("/")
                 return
             self._raccrocher()
-            # ⚠ ON COUPE LES ACCES D'ABORD, ON ETEINT ENSUITE, ET L'ORDRE EST
-            # TOUT. C'est le seul geste du site qui soit VOLONTAIRE : la
-            # personne dit qu'elle a fini. On perime donc le laissez-passer du
-            # moteur, sans quoi les invites de la soiree gardent un cookie
-            # valable un an. Ni le faucheur ni un plantage ne passent par ici :
-            # une table qui redemarre toute seule ne doit pas laisser son
-            # proprietaire dehors.
-            #
-            # Et si l'on revoquait APRES, `eteindre_jeu` tenant la main jusqu'a
-            # quinze secondes, le `meta refresh` de la page d'attente aurait
-            # tout le temps de rappeler `/entrer` : un moteur repartait avec
-            # l'ANCIEN mot de passe et la revocation le manquait.
-            revoquer_mot_de_passe_jeu(pseudo)
+            # Acces coupes d'abord, moteur ensuite : l'ordre et le piege qu'il
+            # evite sont ecrits une seule fois, dans `eteindre_volontairement`.
             # On n'eteint QUE son propre jeu : le code est le pseudo.
-            eteindre_jeu(pseudo)
+            eteindre_volontairement(pseudo)
             # Vers /arret et surtout PAS vers / : cette derniere rallumerait
             # aussitot ce qu'on vient d'eteindre.
             self._rediriger("/arret")

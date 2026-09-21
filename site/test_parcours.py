@@ -421,10 +421,13 @@ _vu = {}
 _vrai_eteindre = o.eteindre_jeu
 
 
-def _eteindre_observe(code):
+def _eteindre_observe(code, cause="extinction"):
+    # ⚠ MEME SIGNATURE QUE LA VRAIE. Un double plus etroit tombe en
+    # TypeError le jour ou l'appelant passe la cause, et le cas echoue sur un
+    # detail du harnais plutot que sur ce qu'il mesure.
     # Ce que verrait un `/entrer` arrive au beau milieu de l'extinction.
     _vu["mdp"] = o.mot_de_passe_jeu(code)
-    return _vrai_eteindre(code)
+    return _vrai_eteindre(code, cause)
 
 
 o.eteindre_jeu = _eteindre_observe
@@ -442,6 +445,74 @@ _code, _tetes, _ = appel("POST", "/eteindre")
 verifier("un anonyme ne peut rien eteindre",
          _code == 303 and _tetes.get("Location") == "/" and
          o.mot_de_passe_jeu("hote") == _avant, str(_code))
+
+# --- S2 : « Quitter la partie » depuis le PLATEAU ferme la table -----------
+# ⚠ LE GESTE VIENT DU MOTEUR, PAS DU NAVIGATEUR. Le bouton vit sur
+# `p<N>.<domaine>`, le site sur `<domaine>` : le moteur relaie l'appel en
+# 127.0.0.1 avec le jeton de sa partie, comme il le fait deja pour le tchat et
+# les rapports de bug. `/api/eteindre` est donc le pendant interne du bouton
+# « Terminer » du site, et doit couper les acces de la meme facon.
+import json as _json_extinction                             # noqa: E402
+import time as _time_extinction                             # noqa: E402
+
+_jeton_extinction = "jeton-extinction-de-test"
+o.JETONS_SITE[_jeton_extinction] = "hote"
+_corps_extinction = ("jeton=" + _jeton_extinction).encode("utf-8")
+
+_eteints = []
+_vrai_eteindre_2 = o.eteindre_jeu
+
+
+def _eteindre_lent(code, cause="extinction"):
+    # ⚠ ON FAIT EXPRES DE TRAINER. `eteindre_jeu` tient la main jusqu'a vingt
+    # secondes en vrai (sauvegarde, SIGTERM, attente du groupe) : c'est
+    # precisement ce qui interdit de repondre APRES lui.
+    _time_extinction.sleep(1.5)
+    _eteints.append((code, cause))
+
+
+o.eteindre_jeu = _eteindre_lent
+try:
+    _avant = o.mot_de_passe_jeu("hote")
+    _depart = _time_extinction.monotonic()
+    _code, _, _rep = appel("POST", "/api/eteindre", corps=_corps_extinction)
+    _duree = _time_extinction.monotonic() - _depart
+    try:
+        _vu = _json_extinction.loads(_rep or b"{}")
+    except ValueError:
+        _vu = {}          # route absente ou reponse en texte : les cas le diront
+    verifier("le plateau obtient un accuse de fermeture",
+             _code == 200 and _vu.get("ok") is True, "%s %s" % (_code, _rep))
+    # ⚠ LE CAS QUI COMPTE, ET C'EST TOUT LE PIEGE DE CETTE ROUTE. Le site
+    # repond au MOTEUR qu'il est en train de tuer. Eteindre avant de repondre,
+    # c'est tuer le messager : la reponse ne revient jamais, et le plateau
+    # reste sur une page morte sans savoir ou aller.
+    verifier("la reponse part AVANT que le moteur soit tue", _duree < 1.0,
+             "%.2f s : le site a attendu la fin de l'extinction" % _duree)
+    # L'adresse d'atterrissage vient du SITE, seul a connaitre son domaine
+    # public. Sans elle, le plateau n'aurait que des pages du moteur eteint.
+    verifier("le site dit ou atterrir, chez lui",
+             str(_vu.get("url", "")).endswith("/arret") and "://" in str(_vu.get("url", "")),
+             str(_vu.get("url")))
+    # Meme geste volontaire que le bouton « Terminer », donc meme consequence :
+    # le cookie d'un invite d'hier ne rouvre plus la table.
+    verifier("et le laissez-passer du moteur est perime",
+             o.mot_de_passe_jeu("hote") != _avant)
+    _fin = _time_extinction.monotonic() + 5
+    while not _eteints and _time_extinction.monotonic() < _fin:
+        _time_extinction.sleep(0.05)
+    verifier("la table finit bien par etre eteinte", bool(_eteints), str(_eteints))
+
+    # Le jeton est le seul laissez-passer : sans lui, on n'eteint pas la table
+    # d'un autre.
+    _eteints.clear()
+    _avant = o.mot_de_passe_jeu("hote")
+    _code, _, _ = appel("POST", "/api/eteindre", corps=b"jeton=invente")
+    verifier("un jeton inconnu n'eteint rien",
+             _code == 403 and not _eteints and o.mot_de_passe_jeu("hote") == _avant,
+             "%s %s" % (_code, _eteints))
+finally:
+    o.eteindre_jeu = _vrai_eteindre_2
 
 # --- S3 : le corps d'une requete est plafonne AVANT d'etre lu ---------------
 # ⚠ LE CAS NE VAUT QUE PARCE QU'IL MENT. On annonce plus que le plafond, on
