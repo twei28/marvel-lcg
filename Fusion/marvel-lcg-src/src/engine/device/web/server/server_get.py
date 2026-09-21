@@ -1059,23 +1059,39 @@ class GameServerGet(GameServerBase):
         Une seconde apres cette reponse, ce moteur est mort : toute page qu'il
         pourrait proposer (`/prepare.html`, `/`) sera morte avec lui. Le site
         est de toute facon le seul a connaitre le domaine public place devant
-        nous. Pas d'adresse rendue, pas de fermeture annoncee : sans lieu ou
-        renvoyer le joueur, mieux vaut le laisser sur sa partie.
+        nous.
 
-        Sans site derriere (partie locale lancee par JOUER-SOLO.bat), il n'y a
-        aucune table a rendre a personne : on ne promet rien, et le plateau
-        retourne simplement a l'ecran des heros.
+        ⚠ ET IL Y A TROIS ISSUES, PAS DEUX. Les confondre ferait dire au
+        plateau quelque chose de FAUX :
+
+          — `sans-site` : partie locale (JOUER-SOLO.bat), aucune table a rendre
+            a personne. On n'a appele personne, rien n'a bouge ;
+          — `fermee` : le site a confirme, et a dit ou aller ;
+          — `inconnue` : le site a ete SOLLICITE et n'a pas confirme (trop
+            lent, 502 d'un deploiement...). Il n'existe aucun chemin d'abandon
+            de son cote : `/api/eteindre` revoque le mot de passe et lance
+            l'extinction AVANT de repondre. Passe le plafond ci-dessous, la
+            table disparait donc quand meme. Annoncer « rien n'a ete detruit »
+            serait un mensonge, et proposer de rester sur la partie, une
+            impasse. On n'affirme rien, et on rend l'adresse publique du site
+            pour que le joueur aille voir.
         """
-        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        from engine.device.web.server.server_base import (
+            SEAT_PASSWORDS, SITE_INTERNE, SITE_JETON, SITE_URL)
         passwords = SEAT_PASSWORDS.value
         if passwords and any(passwords) and not self.tient_le_siege(request, 0):
             return web.json_response({'error': 'not the host'}, status=403)
+        # ⚠ AVANT D'APPELER, PAS APRES. `_appeler_site` rend le meme statut 0
+        # pour « aucun site configure » et pour « site injoignable » : c'est
+        # ici, et seulement ici, qu'on peut encore distinguer les deux.
+        if not (SITE_INTERNE.value or '') or not (SITE_JETON.value or ''):
+            return web.json_response({'issue': 'sans-site', 'url': ''})
         statut, donnees = await self._appeler_site('/api/eteindre', {}, secondes=10,
                                                    avec_statut=True)
         url = str((donnees or {}).get('url') or '')
-        if statut != 200 or not url:
-            return web.json_response({'eteinte': False, 'url': ''})
-        return web.json_response({'eteinte': True, 'url': url})
+        if statut == 200 and url:
+            return web.json_response({'issue': 'fermee', 'url': url})
+        return web.json_response({'issue': 'inconnue', 'url': SITE_URL.value or ''})
 
     async def get_dossier_sauvegardes(self, request: web.Request) -> web.Response:
         """Le dossier ou CETTE table range ses trois emplacements de sauvegarde.
