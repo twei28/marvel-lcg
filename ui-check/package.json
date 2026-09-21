@@ -58,6 +58,7 @@
     "releve-images": "playwright test tests/releve-images.spec.ts --project=pc",
     "bouton-langue": "playwright test tests/bouton-langue.spec.ts --project=pc",
     "sondage-salon": "playwright test tests/sondage-salon.spec.ts --project=pc",
+    "bascule-salon": "playwright test tests/bascule-salon.spec.ts --project=pc",
     "decks-serveur": "playwright test tests/decks-sur-le-serveur.spec.ts --project=pc",
     "niveau-standard": "playwright test tests/niveau-standard.spec.ts --project=pc"
   },
