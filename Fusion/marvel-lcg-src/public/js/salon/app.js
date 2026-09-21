@@ -15,10 +15,24 @@ import { t, boutonLangue } from "/public/js/prepare/langue.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { versDeckMoteur } from "/public/js/marvelcdb/conversion.js";
 import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
+import {
+    decisionSalon, memoriserChoix, relireChoix, oublierChoix,
+} from "/public/js/salon/bascule.js";
 
 const siege = Number(new URLSearchParams(location.search).get("p") ?? "-1");
 
 const etat = { hero: null, deckChoisi: null };
+
+// LE CHOIX DE CET INVITE, sous la seule forme qui serve a se reconnaitre dans
+// la partie qui demarre : l'identifiant de sa carte heros. Voir bascule.js.
+let monChoix = "";
+// Depuis quand la partie en cours dit-elle autre chose que mon choix ? null
+// tant qu'elle n'a rien dit de tel. Sert a ne pas parler trop vite : voir
+// DELAI_EXPLICATION.
+let desaccordDepuis = null;
+// Le statut affiche avant l'explication, pour le rendre si le desaccord se
+// dissipe (l'hote a relance, cette fois avec ce siege).
+let statutAvantExplication = null;
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -86,6 +100,12 @@ async function envoyerChoix(deck) {
         return;
     }
     etat.deckChoisi = deck;
+    // ⚠ ON RETIENT LE CHOIX DANS CE NAVIGATEUR, et c'est ce qui permet a
+    // l'invite de se reconnaitre apres un rechargement : `/new` vide
+    // `choix_sieges` cote serveur, donc le serveur ne pourra plus le lui
+    // rappeler une fois la partie lancee. Voir bascule.js.
+    monChoix = etat.hero.heroCardId;
+    memoriserChoix(window.localStorage, siege, monChoix, Date.now());
     statut(`${t("Choix envoyé")} : ${etat.hero.name} — ${deck.name}. ${t("Tu peux encore changer d’avis.")}`);
     bandeauAttente(true);
     rendreDecks();
@@ -246,23 +266,104 @@ async function rendreHeros() {
 
 /* ---------------- Bascule vers le plateau ---------------- */
 
-// Quand l'hôte lance, /get_play_scene_name cesse de rendre une chaîne vide.
-// C'est le signal le moins coûteux : aucune route à ajouter.
+// ⚠ CE QUE CETTE BOUCLE REGARDAIT, ET POURQUOI C'ÉTAIT FAUX. Elle basculait dès
+// que `/get_play_scene_name` rendait autre chose qu'une chaîne vide, sur
+// l'hypothèse — écrite noir sur blanc dans son commentaire — que la table est
+// VIDE avant que l'hôte lance. Elle ne l'est pas : le moteur rend le nom de
+// scène dès qu'un monde existe, et il en existe un jusqu'au redémarrage. Le
+// 20/09/2026, deux fois dans la même soirée, des invités ont été expédiés dans
+// la partie PRÉCÉDENTE avant d'avoir choisi leur héros, et y sont restés
+// bloqués sur « Connexion à la partie… ».
+//
+// La question juste n'est pas « une partie tourne-t-elle ? » mais « la partie
+// qui tourne est-elle la MIENNE ? ». Elle se tranche sur un seul fait : le
+// héros que MON siège tient dans cette partie est-il celui que je viens de
+// choisir ? Les règles sont dans bascule.js, éprouvées à part.
+
+/** Le témoin de désaccord : depuis quand la partie en cours dit-elle autre
+ *  chose que mon choix ? Remis à zéro dès qu'elle cesse de le dire. */
+function suivreLeDesaccord(enJeu, heros) {
+    if (enJeu && monChoix && heros !== monChoix) {
+        if (desaccordDepuis == null) desaccordDepuis = Date.now();
+    } else {
+        desaccordDepuis = null;
+    }
+}
+
+/** Dire à l'invité ce qui se passe, ou effacer ce qu'on lui avait dit.
+ *  On ne TRANCHE pas : « mon siège ne tient pas mon héros » se lit aussi bien
+ *  « l'hôte n'a pas encore lancé » que « il a lancé sans moi », et le salon n'a
+ *  aucun moyen de départager. Il le dit donc tel quel, ce qui vaut toujours
+ *  mieux que de laisser attendre devant un écran muet. */
+function montrerExplication(afficher) {
+    if (afficher) {
+        if (statutAvantExplication != null) return;
+        statutAvantExplication = $("#salon-statut").textContent;
+        statut(t("Une partie est en cours sur cette table, mais ton siège n’y tient pas ton héros. "
+            + "Soit l’hôte n’a pas encore lancé la tienne, soit il a lancé sans toi : préviens-le."), true);
+        bandeauAttente(false);
+    } else if (statutAvantExplication != null) {
+        statut(statutAvantExplication);
+        statutAvantExplication = null;
+        bandeauAttente(!!(etat.hero && etat.deckChoisi));
+    }
+}
+
+async function sonderLeLancement() {
+    // ⚠ RIEN QUAND PERSONNE NE REGARDE (16/09/2026). Cette boucle et celle
+    // de l'assistant pesaient 61 % du trafic vers les tables, et leurs
+    // appels empechaient le faucheur de fermer une table oubliee : il juge
+    // l'inactivite sur la date du journal du moteur, que chaque requete
+    // fait vivre. Ici on garde les deux secondes — on attend vraiment le
+    // lancement — mais seulement tant que l'onglet est visible.
+    if (document.hidden) return;
+    let table;
+    try {
+        const reponse = await fetch(`get_heros_du_siege?p=${siege}`, { cache: "no-store" });
+        if (!reponse.ok) return;
+        table = await reponse.json();
+    } catch (e) {
+        /* serveur momentanément injoignable : on réessaiera au tour suivant */
+        return;
+    }
+    const enJeu = !!table.en_jeu;
+    const heros = String(table.heros || "");
+    suivreLeDesaccord(enJeu, heros);
+
+    const quoi = decisionSalon({ monChoix, enJeu, heros, desaccordDepuis, maintenant: Date.now() });
+    if (quoi === "basculer") {
+        // Le choix a servi : on l'efface pour qu'il ne traîne pas jusqu'à la
+        // soirée suivante, où il pourrait faire reconnaître à tort une partie
+        // de la veille encore chargée.
+        oublierChoix(window.localStorage, siege);
+        // `multi=1` : partie REPARTIE, un client par siege. Le plateau s'en
+        // sert pour NE PAS s'annoncer en hot-seat, sinon l'hote reserverait
+        // tous les sieges et verrait les mains de tout le monde.
+        location.href = `/app/board.html?p=${siege}&multi=1`;
+        return;
+    }
+    montrerExplication(quoi === "expliquer");
+}
+
 function surveillerLeLancement() {
+    // Un premier sondage TOUT DE SUITE : l'invité qui recharge sa page après le
+    // lancement doit repartir vers sa partie sans attendre un battement.
+    sonderLeLancement();
+    setInterval(sonderLeLancement, 2000);
+}
+
+// ⚠ LA CAMPAGNE GARDE L'ANCIEN SIGNAL, ET C'EST DÉLIBÉRÉ. En campagne l'invité
+// ne choisit RIEN : l'équipe est fixée par le livret, il n'a donc aucun choix à
+// reconnaître dans la partie qui démarre, et la règle ci-dessus ne s'applique
+// pas. Le défaut de l'ancienne partie encore chargée reste donc entier sur ce
+// chemin-là ; il est noté comme tel dans
+// .planning/todos/2026-09-20-salon-renvoie-vers-l-ancienne-partie.md.
+function surveillerLeLancementCampagne() {
     setInterval(async () => {
-        // ⚠ RIEN QUAND PERSONNE NE REGARDE (16/09/2026). Cette boucle et celle
-        // de l'assistant pesaient 61 % du trafic vers les tables, et leurs
-        // appels empechaient le faucheur de fermer une table oubliee : il juge
-        // l'inactivite sur la date du journal du moteur, que chaque requete
-        // fait vivre. Ici on garde les deux secondes — on attend vraiment le
-        // lancement — mais seulement tant que l'onglet est visible.
         if (document.hidden) return;
         try {
             const reponse = await fetch("get_play_scene_name?");
             const nom = (await reponse.text()).trim();
-            // `multi=1` : partie REPARTIE, un client par siege. Le plateau s'en
-            // sert pour NE PAS s'annoncer en hot-seat, sinon l'hote reserverait
-            // tous les sieges et verrait les mains de tout le monde.
             if (nom) location.href = `/app/board.html?p=${siege}&multi=1`;
         } catch (e) {
             /* serveur momentanément injoignable : on réessaiera au tour suivant */
@@ -318,10 +419,20 @@ function rendreCampagne(campagne) {
 /* ---------------- Démarrage ---------------- */
 
 async function reprendreChoixExistant() {
+    // ⚠ D'ABORD LA MÉMOIRE DE CE NAVIGATEUR, parce qu'elle est la SEULE trace
+    // qui survive au lancement : `/new` vide `choix_sieges` côté serveur — et
+    // c'est voulu, sans quoi la partie suivante repartirait avec les choix de
+    // la précédente. Un invité qui recharge sa page APRÈS le lancement ne peut
+    // donc plus rien apprendre du serveur, et c'est d'ici qu'il se reconnaîtra
+    // dans la partie qui tourne. Voir bascule.js.
+    monChoix = relireChoix(window.localStorage, siege, Date.now());
     try {
         const reponse = await fetch("get_choix_sieges?");
         const brut = await reponse.json();
         const dejaChoisi = (brut.sieges || {})[String(siege)];
+        // Le serveur a encore le choix : c'est lui qui fait foi, la mémoire
+        // locale n'était qu'un secours.
+        if (dejaChoisi) monChoix = String(dejaChoisi.hero_card_id || "");
         if (!dejaChoisi) return;
         const heroes = await catalog.heroes();
         const hero = heroes.find((h) => h.heroCardId === dejaChoisi.hero_card_id);
@@ -361,7 +472,7 @@ async function demarrer() {
     const campagne = await campagneEnCours();
     if (campagne) {
         rendreCampagne(campagne);
-        surveillerLeLancement();
+        surveillerLeLancementCampagne();
         return;
     }
 
