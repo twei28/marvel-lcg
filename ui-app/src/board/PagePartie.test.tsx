@@ -328,6 +328,30 @@ describe('le bandeau de connexion', () => {
     expect(screen.queryByText(/Cette table a été fermée/)).toBeNull()
   })
 
+  // ⚠ VINGT-NEUF SECONDES DE SILENCE, ET C'ETAIT TROP (21/09/2026). Les
+  // delais sont 2, 4, 8, 15 puis 30 s : l'invite dont l'hote vient de fermer
+  // la table lisait « Connexion perdue » pendant une demi-minute avant
+  // d'apprendre qu'il n'y avait plus rien a rejoindre. C'etait supportable
+  // quand seul un deploiement fermait une table ; fermer est devenu un clic.
+  it('nomme la cause probable des le 3e essai, sans rien declarer', async () => {
+    monter()
+    await emettre(coupe(3))
+    expect(screen.getByText(/l’hôte a peut-être fermé la table/)).toBeTruthy()
+    // ⚠ UNE POSSIBILITE, PAS UNE DECLARATION : une vraie coupure met le meme
+    // temps a revenir, et l'affirmation reste au 5e essai.
+    expect(screen.queryByText(/Cette table a été fermée/)).toBeNull()
+    // Et la porte s'ouvre en meme temps : attendre n'est plus le seul geste
+    // possible.
+    expect(screen.getByRole('button', { name: /Revenir à l’accueil/ })).toBeTruthy()
+  })
+
+  it('mais se tait au 2e : un hoquet de reseau n’est pas une table fermee', async () => {
+    monter()
+    await emettre(coupe(2))
+    expect(screen.queryByText(/peut-être fermé la table/)).toBeNull()
+    expect(screen.queryByRole('button', { name: /Revenir à l’accueil/ })).toBeNull()
+  })
+
   it('finit par dire que la table est fermee, et offre la sortie', async () => {
     monter()
     await emettre(coupe(5))
@@ -398,6 +422,7 @@ describe('le panneau de la manigance', () => {
   })
 })
 
+
 // ==========================================================================
 // « Quitter la partie » ferme la table (21/09/2026)
 // ==========================================================================
@@ -411,16 +436,37 @@ describe('le panneau de la manigance', () => {
 // du plateau tel quel (`menu={props.actionsPartie}`), donc le même
 // `onClick`. Un seul câblage, un seul cas.
 describe('le bouton « Menu » du plateau', () => {
-  /** Répond à chaque route du départ. `siteUrl` vide = aucun site derrière. */
-  function reseau(siteUrl: string, fermeture: unknown) {
+  /**
+   * Répond aux deux routes du départ.
+   *
+   * `site` : `{url}` que rend `/get_site_url`, ou `'panne'` pour un échec —
+   * et la nuance est tout le sujet : « pas de site » et « je n'ai pas pu
+   * savoir » ne doivent pas mener au même écran.
+   */
+  function reseau(site: string | 'panne', fermeture: unknown) {
     return vi.fn(async (cible: string) => {
-      if (cible === '/get_site_url') return { ok: true, json: async () => ({ url: siteUrl }) }
+      if (cible === '/get_site_url') {
+        if (site === 'panne') throw new Error('coupé')
+        return { ok: true, json: async () => ({ url: site }) }
+      }
       if (cible === '/quitter_la_table') return { ok: true, json: async () => fermeture }
       return { ok: true, json: async () => ({}) }
-    } ) as unknown as typeof fetch
+    }) as unknown as typeof fetch
   }
 
   const questions: string[] = []
+
+  /** Monte, laisse l'adresse du site se lire, pose la table, clique « Menu ». */
+  async function cliquerMenu(playerId = 0) {
+    monter(playerId)
+    // ⚠ L'ADRESSE EST LUE AU MONTAGE, plus au clic : sans ce tour de boucle,
+    // le plateau croirait encore ne rien savoir du site.
+    await attendreLeReseau()
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    await attendreLeReseau()
+    await attendreLeReseau()
+  }
 
   beforeEach(() => {
     atterrissages.length = 0
@@ -436,12 +482,8 @@ describe('le bouton « Menu » du plateau', () => {
 
   it('⚠ ferme vraiment la table de l’hôte, et le dépose sur le site', async () => {
     vi.stubGlobal('fetch', reseau('https://exemple.test',
-      { eteinte: true, url: 'https://exemple.test/arret' }))
-    monter()
-    await emettre({ monde: table(heros('Spider-Man', 1)) })
-    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
-    await attendreLeReseau()
-    await attendreLeReseau()
+      { issue: 'fermee', url: 'https://exemple.test/arret' }))
+    await cliquerMenu()
     expect(fetch).toHaveBeenCalledWith('/quitter_la_table', expect.objectContaining({
       method: 'POST',
     }))
@@ -453,40 +495,35 @@ describe('le bouton « Menu » du plateau', () => {
 
   it('⚠ annonce la fermeture, pas seulement la partie perdue', async () => {
     vi.stubGlobal('fetch', reseau('https://exemple.test',
-      { eteinte: true, url: 'https://exemple.test/arret' }))
-    monter()
-    await emettre({ monde: table(heros('Spider-Man', 1)) })
-    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
-    await attendreLeReseau()
+      { issue: 'fermee', url: 'https://exemple.test/arret' }))
+    await cliquerMenu()
     // « La partie en cours sera perdue » ne suffit plus : ce qui disparaît,
     // c'est la TABLE, et les autres joueurs sont mis dehors avec elle.
     const question = questions.join('\n')
     expect(question).toMatch(/table/i)
     expect(question).toMatch(/déconnect|dehors/i)
     expect(question).toMatch(/site/i)
+    // ⚠ ET ON N'EFFRAIE PAS POUR RIEN : le site sauve la partie avant de
+    // tuer le moteur et la range dans « Reprendre ». Dire « perdue » serait
+    // faux sur un geste déjà lourd.
+    expect(question).toMatch(/Reprendre/)
+    expect(question).not.toMatch(/perdue/i)
     vi.unstubAllGlobals()
   })
 
   it('renoncer ne ferme rien du tout', async () => {
     vi.stubGlobal('confirm', vi.fn(() => false))
     vi.stubGlobal('fetch', reseau('https://exemple.test',
-      { eteinte: true, url: 'https://exemple.test/arret' }))
-    monter()
-    await emettre({ monde: table(heros('Spider-Man', 1)) })
-    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
-    await attendreLeReseau()
+      { issue: 'fermee', url: 'https://exemple.test/arret' }))
+    await cliquerMenu()
     expect(fetch).not.toHaveBeenCalledWith('/quitter_la_table', expect.anything())
     expect(atterrissages).toEqual([])
     vi.unstubAllGlobals()
   })
 
   it('⚠ un INVITÉ part sans rien fermer, et on ne lui promet rien', async () => {
-    vi.stubGlobal('fetch', reseau('https://exemple.test', { eteinte: false, url: '' }))
-    monter(1)
-    await emettre({ monde: table(heros('Spider-Man', 1)) })
-    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
-    await attendreLeReseau()
-    await attendreLeReseau()
+    vi.stubGlobal('fetch', reseau('https://exemple.test', { issue: 'sans-site', url: '' }))
+    await cliquerMenu(1)
     expect(fetch).not.toHaveBeenCalledWith('/quitter_la_table', expect.anything())
     expect(questions.join('\n')).not.toMatch(/déconnect/i)
     expect(atterrissages).toEqual(['/prepare.html'])
@@ -496,13 +533,53 @@ describe('le bouton « Menu » du plateau', () => {
   it('sans site derrière, on retourne simplement à l’écran des héros', async () => {
     // Partie locale : rien à rendre, et `/prepare.html` reste vivant puisque
     // le moteur ne s'éteint pas.
-    vi.stubGlobal('fetch', reseau('', { eteinte: false, url: '' }))
-    monter()
-    await emettre({ monde: table(heros('Spider-Man', 1)) })
-    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
-    await attendreLeReseau()
-    await attendreLeReseau()
+    vi.stubGlobal('fetch', reseau('', { issue: 'sans-site', url: '' }))
+    await cliquerMenu()
     expect(fetch).not.toHaveBeenCalledWith('/quitter_la_table', expect.anything())
+    expect(atterrissages).toEqual(['/prepare.html'])
+    vi.unstubAllGlobals()
+  })
+
+  it('⚠ adresse du site INCONNUE : on demande quand même, et on le dit', async () => {
+    // LE DÉFAUT RÉTABLI EN SILENCE. Un hoquet sur `/get_site_url` faisait
+    // passer l'hôte pour un joueur local : ancienne fenêtre, départ, table
+    // laissée debout avec l'ancienne partie dedans. Exactement le défaut
+    // qu'on corrige, remis en place par une panne de réseau.
+    vi.stubGlobal('fetch', reseau('panne',
+      { issue: 'fermee', url: 'https://exemple.test/arret' }))
+    await cliquerMenu()
+    expect(fetch).toHaveBeenCalledWith('/quitter_la_table', expect.anything())
+    expect(questions.join('\n')).toMatch(/n’a pas pu le vérifier/)
+    expect(atterrissages).toEqual(['https://exemple.test/arret'])
+    vi.unstubAllGlobals()
+  })
+
+  it('⚠ issue INCONNUE : on n’affirme rien, on ouvre le site', async () => {
+    // LE SEUL ENDROIT OÙ CE TRAVAIL POUVAIT AFFIRMER LE FAUX. `/api/eteindre`
+    // révoque et lance l'extinction AVANT de répondre : au-delà du plafond de
+    // dix secondes du moteur, la table disparaît quand même. Dire « rien n'a
+    // été détruit » et proposer de rester sur la partie, c'était promettre un
+    // moteur condamné.
+    vi.stubGlobal('fetch', reseau('https://exemple.test',
+      { issue: 'inconnue', url: 'https://exemple.test' }))
+    await cliquerMenu()
+    const question = questions.join('\n')
+    expect(question).toMatch(/peut-être en train de se fermer/)
+    expect(question).not.toMatch(/Rien n’a été détruit/)
+    expect(atterrissages).toEqual(['https://exemple.test'])
+    vi.unstubAllGlobals()
+  })
+
+  it('un refus du moteur, lui, peut affirmer que rien n’a bougé', async () => {
+    vi.stubGlobal('fetch', vi.fn(async (cible: string) => {
+      if (cible === '/get_site_url') {
+        return { ok: true, json: async () => ({ url: 'https://exemple.test' }) }
+      }
+      if (cible === '/quitter_la_table') return { ok: false, json: async () => ({}) }
+      return { ok: true, json: async () => ({}) }
+    }) as unknown as typeof fetch)
+    await cliquerMenu()
+    expect(questions.join('\n')).toMatch(/Rien n’a été touché/)
     expect(atterrissages).toEqual(['/prepare.html'])
     vi.unstubAllGlobals()
   })

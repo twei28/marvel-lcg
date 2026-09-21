@@ -950,16 +950,27 @@ export const DICO_EN_BASE: Record<string, string> = {
   // langues — un invite anglophone mis dehors sans preavis, c'est le defaut
   // qu'on corrige, pas un detail de traduction.
   'Fermer la table ?': 'Close the table?',
-  'La table va disparaître : la partie en cours est perdue si tu ne l’as pas sauvegardée, les autres joueurs sont déconnectés, et il faudra rouvrir une table depuis le site pour rejouer.':
-    'The table will be gone: the current game is lost if you have not saved it, '
-    + 'the other players are disconnected, and you will have to open a new table '
-    + 'from the website to play again.',
-  'La table n’a pas pu être fermée.': 'The table could not be closed.',
-  'Le site n’a pas répondu. Rien n’a été détruit : la table et les autres joueurs sont toujours là.':
-    'The website did not answer. Nothing was destroyed: the table and the other '
-    + 'players are still there.',
+  'Quitter la partie ?': 'Leave the game?',
+  'La table va disparaître : les autres joueurs sont déconnectés, et il faudra en rouvrir une depuis le site pour rejouer. La partie en cours est mise de côté — le site te la proposera sous « Reprendre ».':
+    'The table will be gone: the other players are disconnected, and you will have '
+    + 'to open a new one from the website to play again. The current game is set '
+    + 'aside — the website will offer it back under “Resume”.',
+  'Si cette table vient du site, elle va se fermer : les autres joueurs seront déconnectés et il faudra en rouvrir une pour rejouer. Le plateau n’a pas pu le vérifier.':
+    'If this table comes from the website, it will close: the other players will be '
+    + 'disconnected and you will have to open a new one to play again. The board '
+    + 'could not check.',
+  'Cette table n’est pas la tienne à fermer.': 'This table is not yours to close.',
+  'Seul l’hôte peut la fermer. Rien n’a été touché.':
+    'Only the host can close it. Nothing was touched.',
+  'La table est peut-être en train de se fermer.': 'The table may be closing.',
+  'Le site n’a pas répondu à temps. Impossible de dire d’ici si la table est fermée ou non : le site, lui, le sait.':
+    'The website did not answer in time. There is no way to tell from here whether '
+    + 'the table is closed: the website knows.',
+  'Ouvrir le site': 'Open the website',
+  'Rester ici': 'Stay here',
   'Revenir au menu quand même': 'Back to the menu anyway',
   'Rester sur la partie': 'Stay in the game',
+  'l’hôte a peut-être fermé la table': 'the host may have closed the table',
 
   // ---- board/mobile : vue d'etat degradee et marquage des cibles ----
   // ('cartes' et 'Actif' sont deja definis plus haut)

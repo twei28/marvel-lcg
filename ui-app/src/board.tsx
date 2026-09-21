@@ -59,8 +59,10 @@ import { quitterPleinEcran } from './board/mobile/plein-ecran'
 import {
   atterrir,
   fermerLaTable,
-  laTableVaSeFermer,
-  urlDuSite,
+  lienAccueil,
+  lireLeSite,
+  natureDuDepart,
+  type Site,
 } from './board/quitter-la-table'
 import { estFenetreDeReaction } from './board/DemandeCentrale'
 import {
@@ -1198,6 +1200,24 @@ function BarreRevoir({ pasTotal }: { pasTotal: number }) {
 const ESSAIS_AVANT_TABLE_FERMEE = 5
 
 /**
+ * À partir de ce nombre d'essais, on nomme la cause la plus probable.
+ *
+ * ⚠ AJOUTÉ LE 21/09/2026, PARCE QUE FERMER UNE TABLE EST DEVENU UN CLIC. Les
+ * délais sont 2, 4, 8, 15 puis 30 s : l'invité dont l'hôte vient de quitter
+ * voyait donc « Connexion perdue » pendant VINGT-NEUF secondes avant
+ * d'apprendre que sa table n'existait plus. C'était déjà long quand seul un
+ * déploiement pouvait fermer une table ; ça ne l'est plus quand l'hôte le
+ * fait d'un bouton, en cours de soirée.
+ *
+ * Trois essais valent environ six secondes : assez pour qu'un hoquet de
+ * réseau soit déjà revenu, assez peu pour ne pas laisser quelqu'un attendre
+ * une demi-minute devant une table morte. On ne DÉCLARE rien pour autant —
+ * l'affirmation reste à cinq essais : on nomme une possibilité, et on ouvre
+ * la porte.
+ */
+const ESSAIS_AVANT_DOUTE = 3
+
+/**
  * Bandeau de reconnexion : visible des que le socket tombe pendant une partie,
  * avec compte a rebours de la prochaine tentative et bouton immediat.
  *
@@ -1220,6 +1240,7 @@ function BandeauConnexion({ etat, reconnecter }: { etat: EtatMoteur; reconnecter
     ? Math.max(0, Math.ceil((etat.prochaineTentative - Date.now()) / 1000))
     : undefined
   const fermee = etat.tentatives >= ESSAIS_AVANT_TABLE_FERMEE
+  const doute = etat.tentatives >= ESSAIS_AVANT_DOUTE
   return (
     <div className="bandeau-connexion" role="alert">
       <span aria-hidden="true">⚠</span>
@@ -1234,9 +1255,14 @@ function BandeauConnexion({ etat, reconnecter }: { etat: EtatMoteur; reconnecter
             ? ` — ${t('nouvel essai dans')} ${restant}s`
             : ` — ${t('reconnexion...')}`}
           {etat.tentatives > 1 ? ` (${t('essai')} ${etat.tentatives})` : ''}
+          {/* ⚠ UNE POSSIBILITÉ, PAS UNE DÉCLARATION. Affirmer la fermeture
+              ici serait faux une fois sur deux (une vraie coupure met le même
+              temps à revenir) ; se taire jusqu'à la trentième seconde, c'était
+              laisser quelqu'un attendre devant une table morte. */}
+          {doute ? ` — ${t('l’hôte a peut-être fermé la table')}` : ''}
         </span>
       )}
-      {fermee ? (
+      {doute ? (
         <button type="button" onClick={() => { window.location.href = lienAccueil() }}>
           {t('Revenir à l’accueil')}
         </button>
@@ -1249,11 +1275,9 @@ function BandeauConnexion({ etat, reconnecter }: { etat: EtatMoteur; reconnecter
 }
 
 /** Le SITE, pas la table : c'est le domaine parent qui sait rouvrir une place. */
-function lienAccueil(): string {
-  const morceaux = window.location.hostname.split('.')
-  const parent = morceaux.length > 2 ? morceaux.slice(1).join('.') : window.location.hostname
-  return `${window.location.protocol}//${parent}/`
-}
+// `lienAccueil` vit desormais dans `board/quitter-la-table.ts` : c'est la
+// meme question (« ou aller quand le moteur n'est plus la ? »), et le depart
+// volontaire en a besoin comme dernier recours.
 
 function PageEtat({
   fichier,
@@ -1563,6 +1587,22 @@ export function PagePartie({
   // nos pieds, et la valeur sert a une dizaine d'endroits. Ce que ce drapeau
   // fait, et ce qu'il ne fait pas, est dit dans `estSpectateur` (moteur.ts).
   const spectateur = estSpectateur()
+  // ⚠ LUE UNE FOIS, AU MONTAGE, ET JAMAIS AU CLIC. L'adresse du site ne change
+  // pas de la vie d'une page, et la lire au moment où l'on quitte la mettait
+  // dans le chemin d'un clic : fenêtre qui ne s'ouvre pas si le moteur traîne,
+  // et — bien pire — hôte pris pour un joueur local si la lecture échoue, donc
+  // table laissée debout sans que personne ne le sache. `connu` reste faux
+  // tant qu'on n'a pas de réponse : ce n'est PAS « aucun site ».
+  const [site, setSite] = useState<Site>({ connu: false, url: '' })
+  useEffect(() => {
+    let vivant = true
+    lireLeSite().then((lu) => {
+      if (vivant) setSite(lu)
+    })
+    return () => {
+      vivant = false
+    }
+  }, [])
   const {
     etat,
     repondre,
@@ -2922,36 +2962,62 @@ export function PagePartie({
   // `BandeauPortrait` rend le `.board-actions` du plateau tel quel, donc ce
   // `onClick`-ci.
   const retourMenuPrincipal = useCallback(async () => {
-    const urlSite = await urlDuSite()
-    const fermeLaTable = laTableVaSeFermer({ siege: playerId, spectateur, urlSite })
+    // ⚠ L'ADRESSE EST DÉJÀ LÀ, LUE AU MONTAGE. La lire ICI la mettait dans le
+    // chemin du clic : un moteur qui traîne laissait la fenêtre ne jamais
+    // s'ouvrir, et un `fetch` en échec faisait passer l'hôte pour un joueur
+    // local — donc repartir sans rien fermer, défaut d'origine rétabli en
+    // silence.
+    const nature = natureDuDepart({ siege: playerId, spectateur, site })
     // ⚠ ON ANNONCE CE QUI VA VRAIMENT SE PASSER. « La partie en cours sera
     // perdue » ne dit rien d'une table qui disparaît avec ses invités dedans.
+    // Et quand on ne SAIT pas, on le dit aussi : c'est la troisième réponse.
     const accepte = await confirmer({
-      titre: fermeLaTable ? t('Fermer la table ?') : t('Revenir au menu principal ?'),
-      texte: fermeLaTable
-        ? t(
-            'La table va disparaître : la partie en cours est perdue si tu ne l’as pas sauvegardée, les autres joueurs sont déconnectés, et il faudra rouvrir une table depuis le site pour rejouer.'
-          )
-        : t('La partie en cours sera perdue si tu ne l’as pas sauvegardée.'),
+      titre:
+        nature === 'fermeture'
+          ? t('Fermer la table ?')
+          : nature === 'incertain'
+            ? t('Quitter la partie ?')
+            : t('Revenir au menu principal ?'),
+      texte:
+        nature === 'fermeture'
+          ? t(
+              'La table va disparaître : les autres joueurs sont déconnectés, et il faudra en rouvrir une depuis le site pour rejouer. La partie en cours est mise de côté — le site te la proposera sous « Reprendre ».'
+            )
+          : nature === 'incertain'
+            ? t(
+                'Si cette table vient du site, elle va se fermer : les autres joueurs seront déconnectés et il faudra en rouvrir une pour rejouer. Le plateau n’a pas pu le vérifier.'
+              )
+            : t('La partie en cours sera perdue si tu ne l’as pas sauvegardée.'),
       confirmer: t('Quitter'),
       ton: 'danger',
     })
     if (!accepte) return
-    if (!fermeLaTable) {
+    if (nature === 'simple') {
       quitterPleinEcran()
       atterrir('/prepare.html')
       return
     }
     const depart = await fermerLaTable()
-    if (!depart.eteinte) {
-      // ⚠ PAS DE REPLI SILENCIEUX. On vient d'annoncer la disparition de la
-      // table, et elle est toujours là : partir sans rien dire laisserait
-      // croire le contraire, et l'emplacement resterait pris.
+    if (depart.issue === 'fermee') {
+      // Sortir du plein écran AVANT de naviguer (spec mobile §6.3), et surtout
+      // vers le SITE : le moteur qui servait cette page n'existe déjà plus.
+      quitterPleinEcran()
+      atterrir(depart.url)
+      return
+    }
+    if (depart.issue === 'sans-site') {
+      // Il n'y avait rien à fermer : le moteur est toujours là, et son écran
+      // des héros avec lui.
+      quitterPleinEcran()
+      atterrir('/prepare.html')
+      return
+    }
+    if (depart.issue === 'refusee') {
+      // ⚠ LA SEULE ISSUE OÙ L'ON PEUT AFFIRMER QUE RIEN N'A BOUGÉ : le moteur
+      // a refusé avant d'appeler qui que ce soit.
       const quandMeme = await confirmer({
-        titre: t('La table n’a pas pu être fermée.'),
-        texte: t(
-          'Le site n’a pas répondu. Rien n’a été détruit : la table et les autres joueurs sont toujours là.'
-        ),
+        titre: t('Cette table n’est pas la tienne à fermer.'),
+        texte: t('Seul l’hôte peut la fermer. Rien n’a été touché.'),
         confirmer: t('Revenir au menu quand même'),
         annuler: t('Rester sur la partie'),
       })
@@ -2960,11 +3026,24 @@ export function PagePartie({
       atterrir('/prepare.html')
       return
     }
-    // Sortir du plein écran AVANT de naviguer (spec mobile §6.3), et surtout
-    // vers le SITE : le moteur qui servait cette page n'existe déjà plus.
+    // ⚠ ISSUE INCONNUE, ET ON N'AFFIRME RIEN. Le site révoque le mot de passe
+    // et lance l'extinction AVANT de répondre : son silence ne veut pas dire
+    // qu'il n'a rien fait, c'est même le contraire qui est probable. Dire
+    // « rien n'a été détruit » serait un mensonge, et proposer de rester sur
+    // la partie, une impasse sur un moteur condamné. On donne l'adresse du
+    // site, seul endroit où la réponse existe.
+    const allerVoir = await confirmer({
+      titre: t('La table est peut-être en train de se fermer.'),
+      texte: t(
+        'Le site n’a pas répondu à temps. Impossible de dire d’ici si la table est fermée ou non : le site, lui, le sait.'
+      ),
+      confirmer: t('Ouvrir le site'),
+      annuler: t('Rester ici'),
+    })
+    if (!allerVoir) return
     quitterPleinEcran()
-    atterrir(depart.url)
-  }, [confirmer, playerId, spectateur])
+    atterrir(depart.url || lienAccueil())
+  }, [confirmer, playerId, site, spectateur])
 
   const effetCentrale = useMemo(() => {
     const premier = effets.entries().next().value as [number, CardEffectDelta] | undefined
