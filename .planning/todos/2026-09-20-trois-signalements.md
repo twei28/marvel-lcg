@@ -178,8 +178,41 @@ fin de la résolution rentre dans son deck, qui est remélangé.
    sans un mot. Une ligne « la carte cherchée retourne dans votre deck » reste
    à faire côté plateau.
 
+---
+
+## D. À ÉCRIRE : une carte cherchée mais impayable finit à la DÉFAUSSE
+
+Trouvé en corrigeant A, **pas traité**, et le relecteur suit l'analyse.
+
+Quand une recherche sort une carte du deck et que le joueur **accepte** de la
+jouer mais n'arrive pas à en payer le coût, `PlayCardsLikeInTurn`
+(`src/game/player/action/player_action.py`, `if not played and
+if_not_play_discard_it`) la **défausse**. Le chemin jumeau
+`PlayOneCardLikeInTurn` fait pareil.
+
+Le sas de recherche ne voit rien : la carte n'est plus dans la zone de
+traitement, elle est dans la défausse. Le filet du 21/09 ne mord donc pas.
+
+**Pourquoi c'est un défaut.** Aucune lecture des règles ne soutient qu'une
+carte sortie d'un DECK par une recherche, et qu'on n'a pas réussi à jouer,
+parte à la défausse. Elle doit retourner au deck, qui est remélangé. C'est la
+même famille que le signalement B de Yarro (« un paiement incomplet ne doit
+rien coûter »), un cran plus loin.
+
+**Ce qu'il faut.** Un témoin dans `tools/test_capacites.py` : `61008` Calling
+in Favors, recherche ACCEPTÉE sur un allié trop cher pour la main du moment
+(la réduction de 2 ne suffisant pas), attendu `dans_deck_joueur: [<allié>]` et
+`aucune_en_resolution: True`. Rouge aujourd'hui, l'allié finissant en défausse.
+Aucun témoin ne couvre ce cas.
+
+⚠ Ne pas le traiter en même temps que A : c'est le chemin « jouer », pas le
+chemin « chercher », et il touche deux méthodes partagées par tout le moteur.
+
+---
+
 ## Reste ouvert
 
+- **D** ci-dessus, avec son témoin à écrire.
 - Répondre aux deux joueurs (Aghenatak pour A, Yarro pour B, et Yarro attend
   toujours sur Echo depuis le 19/09 au soir).
-- **Rien n'est déployé** : les deux correctifs sont commités, pas mis en prod.
+- **Rien n'est déployé** : les correctifs sont commités, pas mis en prod.

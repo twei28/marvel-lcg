@@ -630,6 +630,16 @@ cd "$W" && $PY \
 #    « processus mort » + AssertionError IsPortAvailable : ce ne sont PAS des
 #    régressions. Espacer les plages de base d'au moins 200 et relancer le cas
 #    isolé (`CAS_INDEX=<n>`) avant de conclure.
+#
+#    ⚠ ET SURTOUT : NE JAMAIS LAISSER LA PLAGE ATTEINDRE 49152 (21/09/2026).
+#    C'est la plage dynamique de Windows, et WSL2 partage la pile réseau de
+#    l'hôte : une bonne partie de ces ports est déjà réservée sans que rien ne
+#    le dise. Une batterie complète lancée sur la base 49000 a rendu
+#    2282/2351 avec SOIXANTE-CINQ faux « processus mort », tous sur des cas
+#    dont le port dépassait 49152 ; relancée sur 36000, zéro. Un garde-fou de
+#    code refuse désormais de démarrer (`main()` de test_capacites.py). La
+#    plage éphémère de Linux (`/proc/sys/net/ipv4/ip_local_port_range`,
+#    souvent 44620-48715) est un second nid : viser plus bas qu'elle.
 cd "$W" && $PY \
     tools/test_capacites.py "$W/.game-src" 25600 /tmp/rapport-capacites.json
 

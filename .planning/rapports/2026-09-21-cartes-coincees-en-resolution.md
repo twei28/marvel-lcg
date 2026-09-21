@@ -102,7 +102,21 @@ Trois arguments, dont le troisième est mesuré.
 
    Trois cartes, deux packs, deux familles de textes différentes. Et
    **223 fichiers de cartes appellent `Search.*`** (dont 54 `SearchForCards`) :
-   chacun qui ne consomme sa trouvaille que sur une branche est exposé.
+   chacun qui ne consomme sa trouvaille que sur une branche est exposé. Tout
+   `Search.*` passe par un unique goulot, `SearchForCardsInternal`, appelé
+   d'un seul endroit (`search.py:358`) : c'est ce qui rend le filet possible
+   en un point.
+
+⚠ **MAIS LE FILET, LUI, N'EST PAS AUSSI GÉNÉRIQUE QUE LE TROU, ET IL FAUT LE
+DIRE.** `SelectorEnd` sert **tous** les sélecteurs, pas seulement les
+recherches, et `not_move` vaut `False` par défaut : n'importe quel sélecteur
+qui vise une carte face cachée dans un deck la déplace vers le sas. Seul le
+chemin `Search.*` est couvert ici, parce que c'est le seul qui passe par
+`SearchForCardsInternal` et donc le seul où l'on connaisse l'effet propriétaire.
+L'exposition réelle paraît quasi nulle (les `from_where` qui visent un deck
+sont presque tous des `...DeckTop`, qui forcent `not_move=True`), mais elle
+n'est pas nulle par construction : c'est une zone non gardée, pas une zone
+prouvée vide.
 
 ## Le correctif : le sas de recherche se referme tout seul
 
@@ -178,15 +192,35 @@ Trois points de conception valent d'être dits :
 - **La fermeture est HORS du `if can_action`.** Une recherche peut avoir lieu
   pendant le choix des cibles, donc avant que le coût soit payé : un effet
   abandonné faute de paiement doit rendre lui aussi ce qu'il a sorti du deck.
-- **On remélange.** La carte est repartie à sa place et sa position n'est pas
-  connue, comme l'exige le « (Shuffle.) » imprimé. Le remélange n'a lieu que
-  s'il y a eu un retour : le chemin normal, où la carte est consommée, ne
-  déclenche aucun mélange supplémentaire et ne déplace donc aucun tirage.
+- **On remélange, et ça fait plus que respecter le « (Shuffle.) » imprimé.**
+  La carte repart à sa place et sa position n'est pas connue, c'est l'évident.
+  Le moins évident, relevé à la relecture : `Deck.Shuffle` appelle
+  `CleanAllCardsStatuesInternal`, qui vide `visible_players`. Or cette
+  visibilité est **collante** : la recherche l'a posée (`LookAt_Text`) et rien
+  d'autre ne l'efface. Sans le remélange, la carte rendue **resterait visible
+  au joueur à l'intérieur de son propre deck** pour le reste de la partie.
+  Le remélange ferme donc aussi une fuite d'information ; le passage par
+  `Faces.ShuffleAllTo`, la recette du dépôt, l'annonce en plus au journal.
+  Il n'a lieu que s'il y a eu un retour : le chemin normal, où la carte est
+  consommée, ne déclenche aucun mélange supplémentaire et ne déplace donc
+  aucun tirage.
 - **La zone de RÉVÉLATION est explicitement exclue.** `RevealingArea` porte
   elle aussi `is_processing` (`deck/deck_type.py`) : une carte que l'appelant a
   envoyée à la révélation **a bien été réclamée**, et sans cette garde toute
   recherche suivie d'un `Reveal` aurait vu sa carte arrachée en pleine
-  résolution.
+  résolution. **Elle est défensive, et mesurée comme telle** : le témoin
+  `01095` reste vert avec la garde neutralisée, parce que sur le seul chemin
+  connu la révélation se termine à l'intérieur de l'opération et que la carte
+  est déjà en jeu quand le sas se referme. Elle est gardée parce qu'elle ne
+  coûte rien et qu'elle protège la seule façon dont ce correctif pourrait
+  mordre trop fort.
+- **La fermeture est dans un `finally`.** `ResolveSelfInternal` a un retour
+  anticipé, quand `WhenEffectWouldResolve` est remplacé
+  (`resolve_message.is_be_instead`) : une recherche menée pendant le paiement
+  ou le choix des cibles, suivie d'un effet remplacé, sortait sans refermer le
+  sas. C'est exactement le défaut d'origine, sur une branche que le correctif
+  prétend couvrir. Le `finally` couvre aussi l'exception : une carte sortie du
+  deck n'a pas à payer le plantage d'un script.
 - **Le retour est journalisé** (`Log.Debug`, « recherche non consommée : X
   rendue à Y ») : on ne fait pas disparaître le symptôme en silence.
 
@@ -254,51 +288,69 @@ ne savait voir le défaut : `hors_jeu` est *vrai* pour une carte coincée, et
 | `62022` Dynamic Duo, carte tirée qui n'est pas Team-Up | ROUGE : `['62017']` | vert |
 | `61008`, recherche **acceptée** (contre-cas) | vert | vert |
 | `61019`, recherche **acceptée** (contre-cas) | vert | vert |
+| `01095` Rhino (II), recherche puis **révélation** (contre-cas) | vert | vert |
 | `ze014` The Mother of Night ×2 (garde-fou du **double** appel) | vert | vert (rouge sur la 1re version du sas) |
 
-Les deux contre-cas sont obligatoires : sans eux, un correctif qui renverrait
-au deck **toute** carte cherchée resterait vert sur les trois cas d'échec tout
-en cassant les deux cartes. Ils vérifient que l'allié entre bien en jeu
-(`en_jeu: ["61003"]`) et que la manigance arrive bien en main
-(`en_main: ["61020"]`).
+Les contre-cas sont obligatoires : sans eux, un correctif qui renverrait au
+deck **toute** carte cherchée resterait vert sur les trois cas d'échec tout en
+cassant les cartes. Ils vérifient que l'allié entre bien en jeu
+(`en_jeu: ["61003"]`), que la manigance arrive bien en main
+(`en_main: ["61020"]`), et que la carte cherchée **puis révélée** finit bien en
+jeu (`01095`, `en_jeu: ["01107"]`).
 
 Les trois cas de recherche qui existaient déjà (`si008` Stark Island, `ar003`
-To Battle!, `st001b`) sont restés verts avant comme après.
+To Battle!, `st001b`) sont restés verts avant comme après. Passe des huit cas
+« recherche » après la ronde de relecture : **8/8**.
 
 ## Verdict de la batterie
 
 `tools/test_capacites.py` EN ENTIER, `PARALLELES=6`, sur un dossier de jeu
-jetable (`.game-src-jjb`, supprimé après la passe ; ni `.game` ni `.game-src`
-n'ont été touchés) :
+jetable (`.game-src-jjc`, supprimé après la passe ; ni `.game` ni `.game-src`
+n'ont été touchés), après la ronde de relecture :
 
-**2345 / 2350 cas passés.**
+**2346 / 2351 cas passés.**
 
-Les cinq rouges, **rejoués un par un** :
+Les cinq rouges, **rejoués un par un en séquentiel** :
 
-| cas | avec mon correctif, rejoué seul | sans mon correctif (`.game-src-ref`) | verdict |
+| cas | rejoué seul | sans mon correctif (`.game-src-ref`) | verdict |
 | --- | --- | --- | --- |
-| `ah012a` "The Trunk" | **vert** (« face active = ah001c ») | — | **artefact de passe parallèle** : la passe disait « aucun résultat, processus mort » |
+| `vr009` Lethal Protector | **vert** | — | **artefact de passe parallèle** (« aucun résultat, processus mort ») |
 | `sg009` Squirrel Girl's Costume | rouge | **rouge, message identique** | antérieur |
 | `sg013` Call the Squirrels | rouge | **rouge, message identique** | antérieur |
 | `sg007` The Gatherer | rouge | **rouge, message identique** | antérieur |
 | `sg006` The Forager | rouge | **rouge, message identique** | antérieur |
 
-Ce sont exactement les cinq rouges que le rapport du 20/09 relevait déjà
-(2339/2344 à l'époque), et les quatre `sg0xx` sont cette fois établis comme
-antérieurs **par mesure**, sur le moteur de référence, et non repris sur
-parole.
+Ce sont, **nommément**, les cinq mêmes cas que le rapport du 20/09 relevait
+déjà : `sg009`, `sg013`, `sg007`, `sg006` et un artefact de passe parallèle
+(`ma015` chez lui, `vr009` ici, l'artefact ne tombant pas sur le même cas d'une
+passe à l'autre). Les **totaux**, eux, ne se comparent pas : 2344 le 20/09,
+2349 pour la session voisine, 2351 ici, sur un arbre partagé où plusieurs
+sessions ajoutent des cas. Ce sont les noms qui font foi.
 
-Les sept cas qui touchent au sas sont verts dans la passe complète : `ze014`
-×2 (1809, 1810) et les cinq témoins (2345 à 2349).
+Les quatre `sg0xx` sont établis comme antérieurs **par mesure**, sur le moteur
+de référence, et non repris sur parole.
 
-**Référence.** Les deux passes ne sont pas prises dans les mêmes conditions de
-charge (la première moitié de la nuit, une autre session tournait en
-`PARALLELES=8` sur la même machine à 12 cœurs) ; c'est pourquoi les cinq rouges
-ont été rejoués **en séquentiel, un par un**, et les quatre rouges persistants
-comparés au moteur de référence. Une comparaison cas par cas d'une passe
-parallèle à une passe séquentielle complète n'a pas été faite : elle coûte
-plusieurs heures et le harnais rappelle lui-même que c'est la seule preuve
-totale.
+Les huit cas qui touchent au sas sont verts dans la passe complète : `ze014`
+×2 (1809, 1810) et les six témoins (2345 à 2350).
+
+### Une passe entière perdue sur un piège de ports, et ce qu'il en reste
+
+La première passe de la ronde 2 a rendu **2282/2351**, avec **soixante-cinq**
+faux rouges « aucun résultat (processus mort) ». Aucun n'était une régression :
+tous mouraient sur `AssertionError: ip='127.0.0.1', port=<n>` **avant d'avoir
+démarré la partie**. La base de ports choisie était 49000, donc une plage
+49000-51350, et **49152 est le début de la plage dynamique de Windows** ; WSL2
+partage la pile réseau de l'hôte, une bonne partie de ces ports est réservée
+sans que rien ne le dise. Relancée sur la base 36000 : zéro.
+
+Le motif « rouges en masse = artefact avant régression » a donc payé une
+seconde fois. Il est maintenant **un garde-fou de code et plus seulement de
+prose** : `main()` de `tools/test_capacites.py` refuse de démarrer si la plage
+atteint 49152, avec la raison ; et le §8 de `GUIDE-CREATION-CONTENU.md` le dit
+aussi, à côté de l'avertissement sur les plages qui se recouvrent.
+
+**Réserve de méthode.** La passe retenue reste une passe parallèle : les cinq
+rouges ont été rejoués en séquentiel un par un, pas les 2346 verts.
 
 ## Ce qui reste, et mes inquiétudes
 
@@ -309,7 +361,9 @@ totale.
   rien : la carte n'est plus dans le sas. C'est un second défaut, plus petit,
   de la même famille que le correctif de paiement du 20/09, et il n'est pas
   traité ici : une carte cherchée qu'on n'arrive pas à jouer devrait retourner
-  au deck, pas à la défausse. Aucun témoin ne le couvre.
+  au deck, pas à la défausse. Aucun témoin ne le couvre. **Inscrit au backlog
+  en point D** de `.planning/todos/2026-09-20-trois-signalements.md`, avec le
+  témoin à écrire.
 
 - **Le sas n'est refermé qu'à la fin de la résolution d'un effet.** Une carte
   sortie d'un deck par un chemin qui ne passe pas par
@@ -323,11 +377,17 @@ totale.
   fermé la fenêtre » ; le résultat est le même et les trois mènent au même
   état, mais je n'ai pas relu le client pour dire lequel des trois il a fait.
 
-- **Le paquet `jj` reste sans couverture par ailleurs.** Ces quatre témoins
-  sont les quatre premiers cas du pack officiel Jessica Jones dans
-  `test_capacites.py` (les cas `jj0xx` existants portent sur
+- **Le paquet `jj` reste sans couverture par ailleurs.** Les quatre témoins
+  `61008` / `61019` sont les quatre premiers cas du pack officiel Jessica Jones
+  dans `test_capacites.py` (les cas `jj0xx` existants portent sur
   `jessica_jones_custom`, un pack fan-made homonyme). Le reste du pack n'est
   toujours pas testé.
+
+- **La garde `is_revealing` n'a aucun cas qui la fasse mordre.** Le témoin
+  `01095` reste vert avec la garde neutralisée : sur le seul chemin connu, la
+  révélation se termine dans l'opération. Je la garde parce qu'elle ne coûte
+  rien, mais je ne peux pas prouver qu'elle sert, ni qu'elle est inatteignable.
+  Le témoin tient la séquence « chercher puis révéler », pas la garde.
 
 - **L'écran ne dit rien.** Le joueur qui refuse voit la carte disparaître de
   la table sans un mot. Une ligne « la carte cherchée retourne dans votre
@@ -341,6 +401,7 @@ totale.
   pouvoir le savoir. Il n'y a pas de parade tant que les sessions partagent
   l'arbre : seule une copie gelée de `src/` par passe l'éviterait.
 
-- **Réserve de méthode.** La passe retenue (2345/2350) a tourné après la
-  sienne, machine plus calme, mais `PARALLELES=6` reste une passe parallèle :
-  les cinq rouges ont été rejoués en séquentiel un par un, pas les 2345 verts.
+- **Une heure et demie de machine brûlée sur un piège de ports.** Voir le
+  verdict de batterie : base 49000, plage mordant sur 49152, soixante-cinq faux
+  « processus mort ». Le garde-fou est posé, mais c'est la deuxième fois que
+  ce motif coûte une passe complète à ce dépôt.
