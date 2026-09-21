@@ -69,7 +69,16 @@ export async function buildDescriptor(state) {
     // (En multijoueur par sièges, le siège N correspond au joueur N : l'ordre
     // des sièges suit donc ce choix.)
     const retenus = state.players.slice(0, state.playerCount);
-    const pj = (state.premierJoueur > 0 && state.premierJoueur < retenus.length) ? state.premierJoueur : 0;
+    // ⚠ EN MULTI PAR SIEGES, AUCUNE ROTATION (21/09/2026). Le siege N est une
+    // PERSONNE : la faire tourner donnerait a chacun le deck de son voisin, et
+    // le salon — qui verifie desormais que son siege tient bien SON heros — ne
+    // reconnaitrait plus rien, laissant l'invite dehors. L'ecran grise deja le
+    // selecteur dans ce cas, mais c'est une politesse d'interface : la garde
+    // doit vivre ICI, ou le descripteur se fabrique, et pas dans le formulaire
+    // qui le remplit.
+    const siegesAuxPersonnes = !!(state.salon && state.salon.multi) && state.coopEnLigne !== false;
+    const pj = (!siegesAuxPersonnes && state.premierJoueur > 0
+        && state.premierJoueur < retenus.length) ? state.premierJoueur : 0;
     const ordre = retenus.slice(pj).concat(retenus.slice(0, pj));
     const hero_json = ordre
         .filter((p) => p && p.deck)

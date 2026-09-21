@@ -437,6 +437,15 @@ async function appliquerChoixSalon() {
         joueur.deckSource = dk.source;
         joueur.deckAuto = false;
         joueur.duSalon = true;
+        // ⚠ ET L'IDENTITE REPART A ZERO (21/09/2026). `identity` est l'identite
+        // ALTERNATIVE choisie a l'etape des decks ; `launcher.js` la prefere au
+        // heros du deck (`hero: (p.identity && p.identity.hero) || p.deck.hero`).
+        // Laissee en place, celle d'un heros precedent partait au moteur sans
+        // que personne ne l'ait choisie — et depuis que le salon verifie que son
+        // siege tient bien SON heros, l'invite ne s'y reconnaitrait plus et
+        // resterait dehors. Un choix venu du salon n'a jamais d'identite
+        // alternative : le salon n'en propose pas.
+        joueur.identity = null;
     }
 }
 
