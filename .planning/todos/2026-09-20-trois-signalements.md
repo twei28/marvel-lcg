@@ -142,7 +142,44 @@ attendu décrivait un état « rien ne s'est passé ». Il exige désormais que 
 jeton retiré soit tombé à 1 — c'est-à-dire que la LIMITE connue du correctif
 garde le témoin du correctif. Vérifié dans les deux sens.
 
+## A : CORRIGÉ le 21/09/2026
+
+Commit `54462b83`. Rapport complet dans
+`.planning/rapports/2026-09-21-cartes-coincees-en-resolution.md`.
+
+**La piste `PlayAnAlly` / `PlayACard` n'était pas la bonne, et le défaut est
+plus large qu'elle.** Ce n'est pas la mise en jeu qui échoue : c'est la
+**recherche** qui ne se referme jamais. `Search.SearchForCards` SORT la carte
+trouvée du deck et la pose dans la zone de traitement pour la montrer au
+joueur ; à charge ensuite de l'opération appelante de la consommer. Quand elle
+ne le fait pas, rien ne ramenait la carte.
+
+Les deux cartes du signalement sont les deux proies de ce trou dans le paquet
+Jessica Jones : `61008` Calling in Favors sort un ALLIÉ du deck (d'où Squirrel
+Girl) puis demande « veux-tu le jouer ? » ; `61019` Strategy Session sort une
+MANIGANCE ANNEXE (d'où Piecing It All Together) puis demande « veux-tu la
+prendre ? ». Les deux laissent le droit de refuser, et refuser laissait la
+carte posée sur la table pour le reste de la partie.
+
+**Générique**, et une troisième carte le prouve dans un pack sans rapport :
+`62022` Dynamic Duo (Luke Cage) cherche sans filtre puis ne garde que les
+Team-Up ; toute autre carte tirée restait coincée. 223 fichiers de cartes
+appellent `Search.*`.
+
+**Le correctif** referme le sas tout seul : ce que personne n'a réclamé à la
+fin de la résolution rentre dans son deck, qui est remélangé.
+
+⚠ **Deux limites, dites et non cachées :**
+1. Une carte cherchée, CHOISIE, mais qu'on n'arrive pas à payer est toujours
+   **défaussée** au lieu de retourner au deck (`PlayCardsLikeInTurn`). C'est un
+   second défaut, plus petit, de la même famille que celui de Yarro ; il n'est
+   pas traité et aucun témoin ne le couvre.
+2. L'écran ne dit rien au joueur qui refuse : la carte disparaît de la table
+   sans un mot. Une ligne « la carte cherchée retourne dans votre deck » reste
+   à faire côté plateau.
+
 ## Reste ouvert
 
-- **A**, les cartes de Jessica Jones coincées « en résolution » : en cours.
-- Répondre aux deux joueurs.
+- Répondre aux deux joueurs (Aghenatak pour A, Yarro pour B, et Yarro attend
+  toujours sur Echo depuis le 19/09 au soir).
+- **Rien n'est déployé** : les deux correctifs sont commités, pas mis en prod.
