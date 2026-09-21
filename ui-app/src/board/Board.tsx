@@ -253,6 +253,18 @@ export function Unite({
    *  répéterait. */
   titreZone?: string
 }) {
+  if (unite.pileVide) {
+    return (
+      <div
+        className="plateau-unite pile-vide"
+        data-pile={unite.pile}
+        aria-label={unite.carte.name}
+      >
+        <span>{unite.carte.name}</span>
+      </div>
+    )
+  }
+
   // Les statuts (Stunned/Confused/Tough) ne sont PAS des ameliorations : dans le
   // vrai jeu ce sont de petits marqueurs. On les sort de la cascade d'upgrades
   // pour les poser en petit, en bas du personnage.

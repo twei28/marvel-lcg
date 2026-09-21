@@ -17,6 +17,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { t } from '../langue'
 import { ZONES_MANUELLES } from '../MenuTriche'
 import { CLE_PILE_ENGAGES } from '../zones'
+import { construirePlateau } from '../zones'
+import { catalogueVide } from '../catalogue'
+import { mondeDeTest } from './fixture-monde'
 import { PILE_PAR_ZONE, reglagesGlisserManuel } from './glisser-manuel'
 
 /** Simule `emettreGeste` : invoque tout de suite le dépôt, comme le fait la
@@ -49,6 +52,15 @@ describe('le glisser du mode manuel', () => {
     expect(reglages.zonesLegales(1).has('joueur-deck')).toBe(true)
     expect(reglages.zonesLegales(1).has('rencontre-encounter-deck')).toBe(true)
     expect(reglages.zonesLegales(1).has(CLE_PILE_ENGAGES)).toBe(true)
+  })
+
+  it('conserve une cible pour les défausses vides', () => {
+    const plateau = construirePlateau(mondeDeTest(), { playerId: 0, catalogue: catalogueVide })
+    const pilesJoueur = plateau.emplacements.find((zone) => zone.cle === 'piles-joueur')
+    const defausse = pilesJoueur?.groupes.flat().find((unite) => unite.pile === 'joueur-defausse')
+
+    expect(defausse?.pileVide).toBe(true)
+    expect(defausse?.pile).toBe('joueur-defausse')
   })
 
   // ⚠ LE CAS QUI COMPTE : le deck du héros et le deck spécial (Invocation,

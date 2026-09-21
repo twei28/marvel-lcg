@@ -98,6 +98,9 @@ export type UniteAffichee = {
    * finiraient par diverger.
    */
   pile?: string
+  /** Emplacement matériel d'une pile actuellement vide. Il reste dessiné et
+   *  ciblable en mode manuel afin d'y déposer sa première carte. */
+  pileVide?: boolean
 }
 
 /**
@@ -315,7 +318,21 @@ function piles(
   return listes.flatMap((pile) => {
     const contenu = cartes(pile.cartes, rendu)
     const carte = toPileCard(contenu, rendu.ctx, pile.representant)
-    if (!carte) return []
+    const cleUnite = `${cle}-${pile.cle}`
+    if (!carte) {
+      return [{
+        cle: cleUnite,
+        carte: {
+          id: `pile-vide-${cleUnite}`,
+          name: pile.titre ?? pile.labelType ?? pile.cle,
+          kind: 'unknown',
+          imageUrl: '',
+        },
+        attachees: [],
+        pile: cleUnite,
+        pileVide: true,
+      }]
+    }
     const representantId = Number(carte.id)
     for (const contenue of contenu) {
       rendu.representantsDePile.set(contenue.id, representantId)
@@ -340,7 +357,6 @@ function piles(
     if (pile.deckSpecial) carte.deckSpecial = true
     if (pile.discard) carte.discard = true
     if (pile.labelType) carte.labelType = pile.labelType
-    const cleUnite = `${cle}-${pile.cle}`
     // `pile` = `cle`, TOUJOURS : c'est ce qui rend chaque pile de cette
     // fonction désignable sans ambiguïté pour le glisser du mode manuel
     // (`board/manuel/glisser-manuel.ts`, `PILE_PAR_ZONE`) — le deck du héros
