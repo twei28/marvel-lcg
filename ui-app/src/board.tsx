@@ -59,6 +59,7 @@ import { quitterPleinEcran } from './board/mobile/plein-ecran'
 import {
   atterrir,
   fermerLaTable,
+  laTablePeutAvoirEteFermee,
   lienAccueil,
   lireLeSite,
   natureDuDepart,
@@ -1200,7 +1201,7 @@ function BarreRevoir({ pasTotal }: { pasTotal: number }) {
 const ESSAIS_AVANT_TABLE_FERMEE = 5
 
 /**
- * À partir de ce nombre d'essais, on nomme la cause la plus probable.
+ * À partir de ce nombre d'essais, on NOMME la cause la plus probable.
  *
  * ⚠ AJOUTÉ LE 21/09/2026, PARCE QUE FERMER UNE TABLE EST DEVENU UN CLIC. Les
  * délais sont 2, 4, 8, 15 puis 30 s : l'invité dont l'hôte vient de quitter
@@ -1210,10 +1211,15 @@ const ESSAIS_AVANT_TABLE_FERMEE = 5
  * fait d'un bouton, en cours de soirée.
  *
  * Trois essais valent environ six secondes : assez pour qu'un hoquet de
- * réseau soit déjà revenu, assez peu pour ne pas laisser quelqu'un attendre
- * une demi-minute devant une table morte. On ne DÉCLARE rien pour autant —
- * l'affirmation reste à cinq essais : on nomme une possibilité, et on ouvre
- * la porte.
+ * réseau soit déjà revenu, assez peu pour laisser quelqu'un attendre devant
+ * une table morte.
+ *
+ * ⚠ ET CE SEUIL NE DÉPLACE QUE LA PHRASE, JAMAIS LA SORTIE. « Revenir à
+ * l'accueil » reste à `ESSAIS_AVANT_TABLE_FERMEE` : à six secondes la partie
+ * est presque sûrement récupérable, et offrir la porte à cet instant ferait
+ * quitter sa partie à un invité impatient pendant un hoquet de wifi — lequel
+ * est arrivé par un lien de siège dont la clé est dans l'adresse, si bien que
+ * l'accueil ne l'y ramène pas. Dire, oui ; pousser dehors, non.
  */
 const ESSAIS_AVANT_DOUTE = 3
 
@@ -1227,7 +1233,24 @@ const ESSAIS_AVANT_DOUTE = 3
  * plus rien a rejoindre. Constate en direct sur le plateau d'un joueur : 19
  * tentatives de socket en dix minutes, toutes en 502.
  */
-function BandeauConnexion({ etat, reconnecter }: { etat: EtatMoteur; reconnecter: () => void }) {
+function BandeauConnexion({
+  etat,
+  reconnecter,
+  peutAvoirEteFermee,
+}: {
+  etat: EtatMoteur
+  reconnecter: () => void
+  /**
+   * ⚠ CE BANDEAU NE SAIT RIEN DE QUI LE REGARDE, et il nommait pourtant une
+   * cause. Il ne reçoit qu'un état de socket : ni siège, ni spectateur, ni
+   * « cette table vient du site ». Résultat, l'HÔTE lui-même lisait « l'hôte
+   * a peut-être fermé la table » pendant une simple coupure, et une partie
+   * LOCALE l'affichait alors qu'il n'y a ni hôte ni table. On le lui dit donc
+   * (`laTablePeutAvoirEteFermee`), et il se tait quand la phrase n'a pas de
+   * sens.
+   */
+  peutAvoirEteFermee: boolean
+}) {
   const [, forcer] = useState(0)
   useEffect(() => {
     if (etat.connecte) return
@@ -1259,11 +1282,14 @@ function BandeauConnexion({ etat, reconnecter }: { etat: EtatMoteur; reconnecter
               ici serait faux une fois sur deux (une vraie coupure met le même
               temps à revenir) ; se taire jusqu'à la trentième seconde, c'était
               laisser quelqu'un attendre devant une table morte. */}
-          {doute ? ` — ${t('l’hôte a peut-être fermé la table')}` : ''}
+          {doute && peutAvoirEteFermee ? ` — ${t('l’hôte a peut-être fermé la table')}` : ''}
         </span>
       )}
-      {doute ? (
-        <button type="button" onClick={() => { window.location.href = lienAccueil() }}>
+      {/* ⚠ LA SORTIE RESTE A `ESSAIS_AVANT_TABLE_FERMEE`, pas au palier du
+          doute : voir la docstring d'`ESSAIS_AVANT_DOUTE`. Nommer une cause
+          et pousser quelqu'un dehors ne se décident pas au même moment. */}
+      {fermee ? (
+        <button type="button" onClick={() => atterrir(lienAccueil())}>
           {t('Revenir à l’accueil')}
         </button>
       ) : null}
@@ -3042,7 +3068,12 @@ export function PagePartie({
     })
     if (!allerVoir) return
     quitterPleinEcran()
-    atterrir(depart.url || lienAccueil())
+    // Trois sources, de la mieux informée à la dernière chance : ce que le
+    // moteur vient de dire, ce qu'il avait dit au montage, et à défaut
+    // l'adresse déduite de la nôtre. ⚠ Un 502 ne porte aucun corps : c'est
+    // précisément le cas où `depart.url` est vide alors qu'on connaît le site
+    // depuis le début.
+    atterrir(depart.url || site.url || lienAccueil())
   }, [confirmer, playerId, site, spectateur])
 
   const effetCentrale = useMemo(() => {
@@ -4039,7 +4070,11 @@ export function PagePartie({
         reglageMode={reglageMode}
         cyclerReglageMode={cyclerReglageMode}
       />
-      <BandeauConnexion etat={etat} reconnecter={reconnecter} />
+      <BandeauConnexion
+        etat={etat}
+        reconnecter={reconnecter}
+        peutAvoirEteFermee={laTablePeutAvoirEteFermee({ siege: playerId, spectateur, site })}
+      />
       {modeRevoir ? <BarreRevoir pasTotal={modeRevoir.pas} /> : null}
       {/* ⚠ LA TABLE SE TAIT PENDANT QUE LA SCENE RACONTE (15/09/2026).
           Voir `animations-en-scene.ts` : en mode Detaille, la fenetre montrait

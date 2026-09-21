@@ -64,9 +64,19 @@ export function atterrir(url: string): void {
  * dire où aller — et le seul qui marche encore quand le moteur est mort.
  */
 export function lienAccueil(): string {
-  const morceaux = window.location.hostname.split('.')
-  const parent = morceaux.length > 2 ? morceaux.slice(1).join('.') : window.location.hostname
-  return `${window.location.protocol}//${parent}/`
+  const hote = window.location.hostname
+  // ⚠ ON NE DÉCOUPE PAS UNE ADRESSE IP. `127.0.0.1` a trois points et donnait
+  // `http://0.0.1/`, une adresse qui n'existe pas. Le défaut est ancien, mais
+  // il ne se voyait qu'après une demi-minute de coupure ; il sert désormais de
+  // dernier recours au départ volontaire, donc il compte.
+  const estAdresseIP = /^[\d.]+$/.test(hote) || hote.includes(':')
+  const morceaux = hote.split('.')
+  const parent = !estAdresseIP && morceaux.length > 2 ? morceaux.slice(1).join('.') : hote
+  // ⚠ ET ON GARDE LE PORT. En local le jeu ne vit pas sur 80 : le perdre
+  // rendait une adresse morte là où l'on cherchait justement une porte de
+  // sortie. En production il n'y en a pas, et la chaîne reste vide.
+  const port = window.location.port ? `:${window.location.port}` : ''
+  return `${window.location.protocol}//${parent}${port}/`
 }
 
 /**
@@ -136,6 +146,32 @@ export function natureDuDepart({
   return site.url === '' ? 'simple' : 'fermeture'
 }
 
+/**
+ * Cette table peut-elle avoir été fermée par quelqu'un d'autre ?
+ *
+ * Sert au bandeau de reconnexion, qui ne reçoit qu'un état de socket et ne
+ * peut donc pas deviner à qui il parle.
+ *
+ * ⚠ LA PHRASE N'A PAS TOUJOURS UN SENS, et la dire quand elle n'en a pas est
+ * pire que se taire. L'HÔTE saurait très bien qu'il a fermé sa table : lui
+ * suggérer que « l'hôte a peut-être fermé la table » pendant une coupure
+ * ordinaire ne fait que l'égarer. Et en partie LOCALE (JOUER-SOLO.bat), la
+ * phrase parle de gens qui n'existent pas : il n'y a ni hôte, ni table, ni
+ * emplacement.
+ */
+export function laTablePeutAvoirEteFermee({
+  siege,
+  spectateur,
+  site,
+}: {
+  siege: number
+  spectateur: boolean
+  site: Site
+}): boolean {
+  if (!site.connu || site.url === '') return false
+  return spectateur || siege !== 0
+}
+
 /** Ce qu'il est advenu de la table. */
 export type Depart = {
   issue:
@@ -171,8 +207,20 @@ export async function fermerLaTable(): Promise<Depart> {
       headers: { 'Content-Type': 'application/json' },
       body: '{}',
     })
-    // 403 : le seul cas où le moteur nous dit lui-même que rien n'a bougé.
-    if (!reponse.ok) return { issue: 'refusee', url: '' }
+    // ⚠ LE STATUT, PAS `ok`. Ce sont deux histoires différentes, et l'une
+    // d'elles s'affichait à la place de l'autre :
+    //
+    //   — 403 : le MOTEUR a répondu. Il est vivant, il a examiné la demande et
+    //     l'a rejetée avant d'appeler personne. C'est le seul cas où l'on peut
+    //     affirmer que rien n'a bougé ;
+    //   — 502 : Caddy n'a trouvé personne derrière. Le moteur est mort, ou en
+    //     train de s'éteindre — donc probablement parce qu'on vient de le lui
+    //     demander. Dire « rien n'a été touché » et proposer de rester sur la
+    //     partie, c'est promettre un moteur condamné ;
+    //   — 401 : un cookie de session périmé. Il ne dit rien du tout de la
+    //     table.
+    if (reponse.status === 403) return { issue: 'refusee', url: '' }
+    if (!reponse.ok) return { issue: 'inconnue', url: '' }
     const lu = (await reponse.json()) as { issue?: unknown; url?: unknown }
     const url = typeof lu?.url === 'string' ? lu.url : ''
     if (lu?.issue === 'sans-site') return { issue: 'sans-site', url: '' }

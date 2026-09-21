@@ -333,26 +333,73 @@ describe('le bandeau de connexion', () => {
   // la table lisait « Connexion perdue » pendant une demi-minute avant
   // d'apprendre qu'il n'y avait plus rien a rejoindre. C'etait supportable
   // quand seul un deploiement fermait une table ; fermer est devenu un clic.
+
+  /** Monte un INVITE (siege 1) sur une table qui vient du site. */
+  async function invitePrivéDeSocket(tentatives: number) {
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({ url: 'https://exemple.test' }),
+    })) as unknown as typeof fetch)
+    monter(1)
+    await attendreLeReseau()
+    await emettre(coupe(tentatives))
+  }
+
   it('nomme la cause probable des le 3e essai, sans rien declarer', async () => {
-    monter()
-    await emettre(coupe(3))
+    await invitePrivéDeSocket(3)
     expect(screen.getByText(/l’hôte a peut-être fermé la table/)).toBeTruthy()
     // ⚠ UNE POSSIBILITE, PAS UNE DECLARATION : une vraie coupure met le meme
     // temps a revenir, et l'affirmation reste au 5e essai.
     expect(screen.queryByText(/Cette table a été fermée/)).toBeNull()
-    // Et la porte s'ouvre en meme temps : attendre n'est plus le seul geste
-    // possible.
-    expect(screen.getByRole('button', { name: /Revenir à l’accueil/ })).toBeTruthy()
+    // ⚠ ET LA SORTIE NE BOUGE PAS AVEC ELLE. A six secondes, la partie est
+    // presque surement recuperable : offrir « Revenir a l'accueil » ferait
+    // quitter sa partie a un invite impatient pendant un hoquet de wifi — et
+    // il est arrive par un lien de siege dont la cle est dans l'adresse,
+    // donc l'accueil ne l'y ramene pas. Dire, oui ; pousser dehors, non.
+    expect(screen.queryByRole('button', { name: /Revenir à l’accueil/ })).toBeNull()
+    vi.unstubAllGlobals()
   })
 
   it('mais se tait au 2e : un hoquet de reseau n’est pas une table fermee', async () => {
-    monter()
-    await emettre(coupe(2))
+    await invitePrivéDeSocket(2)
     expect(screen.queryByText(/peut-être fermé la table/)).toBeNull()
     expect(screen.queryByRole('button', { name: /Revenir à l’accueil/ })).toBeNull()
+    vi.unstubAllGlobals()
   })
 
-  it('finit par dire que la table est fermee, et offre la sortie', async () => {
+  it('⚠ et se tait pour l’HOTE, qui saurait tres bien s’il avait ferme', async () => {
+    // Le bandeau ne recoit qu'un etat de socket : sans qu'on le lui dise, il
+    // suggerait a l'hote lui-meme que « l'hote a peut-etre ferme la table »,
+    // pendant une simple coupure.
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({ url: 'https://exemple.test' }),
+    })) as unknown as typeof fetch)
+    monter(0)
+    await attendreLeReseau()
+    await emettre(coupe(4))
+    expect(screen.queryByText(/peut-être fermé la table/)).toBeNull()
+    expect(screen.getByText(/Connexion perdue/)).toBeTruthy()
+    vi.unstubAllGlobals()
+  })
+
+  it('⚠ et se tait en partie LOCALE : il n’y a ni hote ni table', async () => {
+    // JOUER-SOLO.bat, sur 127.0.0.1 : le moteur repond « aucun site ».
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({ url: '' }),
+    })) as unknown as typeof fetch)
+    monter(1)
+    await attendreLeReseau()
+    await emettre(coupe(4))
+    expect(screen.queryByText(/peut-être fermé la table/)).toBeNull()
+    vi.unstubAllGlobals()
+  })
+
+  it('finit par dire que la table est fermee, et offre ALORS la sortie', async () => {
     monter()
     await emettre(coupe(5))
     expect(screen.getByText(/Cette table a été fermée/)).toBeTruthy()
@@ -570,17 +617,41 @@ describe('le bouton « Menu » du plateau', () => {
     vi.unstubAllGlobals()
   })
 
-  it('un refus du moteur, lui, peut affirmer que rien n’a bougé', async () => {
-    vi.stubGlobal('fetch', vi.fn(async (cible: string) => {
+  /** Le départ, avec un statut HTTP choisi sur `/quitter_la_table`. */
+  function reseauAvecStatut(statut: number) {
+    return vi.fn(async (cible: string) => {
       if (cible === '/get_site_url') {
-        return { ok: true, json: async () => ({ url: 'https://exemple.test' }) }
+        return { ok: true, status: 200, json: async () => ({ url: 'https://exemple.test' }) }
       }
-      if (cible === '/quitter_la_table') return { ok: false, json: async () => ({}) }
-      return { ok: true, json: async () => ({}) }
-    }) as unknown as typeof fetch)
+      if (cible === '/quitter_la_table') {
+        return { ok: false, status: statut, json: async () => ({}) }
+      }
+      return { ok: true, status: 200, json: async () => ({}) }
+    }) as unknown as typeof fetch
+  }
+
+  it('un 403 du moteur, lui, peut affirmer que rien n’a bougé', async () => {
+    vi.stubGlobal('fetch', reseauAvecStatut(403))
     await cliquerMenu()
     expect(questions.join('\n')).toMatch(/Rien n’a été touché/)
     expect(atterrissages).toEqual(['/prepare.html'])
+    vi.unstubAllGlobals()
+  })
+
+  it('⚠ un 502 ne peut rien affirmer : c’est un moteur qui n’est plus là', async () => {
+    // LE CHEMIN QUE LA FENÊTRE « inconnue » FABRIQUAIT ELLE-MÊME : issue
+    // inconnue, l'hôte choisit « Rester ici », la table finit de s'éteindre,
+    // il reclique Menu, Caddy rend 502 — et il lisait « Rien n'a été touché »
+    // avec « Rester sur la partie », sur une table déjà disparue.
+    vi.stubGlobal('fetch', reseauAvecStatut(502))
+    await cliquerMenu()
+    const question = questions.join('\n')
+    expect(question).toMatch(/peut-être en train de se fermer/)
+    expect(question).not.toMatch(/Rien n’a été touché/)
+    // Et on l'envoie là où la réponse existe, pas sur une page du moteur.
+    // ⚠ Un 502 ne porte aucun corps : l'adresse vient de la lecture du
+    // montage, pas de la réponse — d'où l'intérêt de l'avoir déjà.
+    expect(atterrissages).toEqual(['https://exemple.test'])
     vi.unstubAllGlobals()
   })
 })
