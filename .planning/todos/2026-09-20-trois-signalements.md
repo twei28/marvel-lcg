@@ -95,3 +95,54 @@ bien l'alternance `gains resource` / `exhausted` pendant un paiement.
    ressource et ne défausse rien.
 3. Répondre aux deux joueurs. Yarro attend depuis le 19/09 au soir sur un
    autre sujet (Echo), et depuis le 20/09 à 13 h 34 sur celui-ci.
+
+---
+
+## B : CORRIGÉ le 21/09/2026
+
+Commits `ab0b6e7e`, `d4d1fc43`, `7a26226b`. Rapport complet dans
+`.planning/rapports/2026-09-20-spdr-paiement-incomplet.md`.
+
+**Le défaut n'était pas dans SP//dr, il était dans le moteur.**
+`EffectChecker.check_pay` dépensait tout PUIS constatait le manque, et
+`PlayerAction.ResolveEffect` défaussait la carte. Toute carte qui laisse
+choisir combien on paie tombait dedans.
+
+**Ce qui le prouve, et c'est le plus parlant :** trois témoins d'extensions
+sans rapport entre elles gravaient ce défaut comme si c'était la règle, et sont
+passés au ROUGE dès la réparation. `sd011` (Speed), `ar010` (Ares), `bl002`
+(Blade), ce dernier attendant « main vide alors que la seule carte de la main
+n'a pas pu être jouée », ce qui n'est défendable sous aucune lecture des
+règles. La revue a vérifié les trois un par un : aucun n'a été affaibli, deux
+documentaient explicitement le défaut dans leur commentaire.
+
+**Le correctif** rend le paiement atomique : le réservoir est testé avant le
+point de non-retour, et ce qui a été engagé est rendu.
+
+⚠ **Deux limites, dites et non cachées :**
+1. Le rendu sait défaire une carte inclinée et un déplacement de zone. Il ne
+   sait PAS défaire un jeton retiré, un compteur posé, ni les effets déjà
+   déclenchés par la fenêtre `WhenCardBeSpendAsResource` (18 fichiers) ou par
+   l'`ex_operation` du payeur (11 cartes recensées). Ceux-là sont journalisés
+   quand c'est un coût, muets quand c'est un effet. Un rendu partiel reste
+   préférable à la perte sèche : le joueur récupère sa carte, qui est le
+   matériel rare.
+2. L'écran laisse toujours choisir « une interface » pour un coût de deux sans
+   rien dire. Le paiement est maintenant refusé proprement au lieu de coûter la
+   carte, mais **prévenir le joueur reste à faire côté plateau**.
+
+**Première ronde de revue : le correctif ne couvrait qu'une carte sur 107.**
+Il ne balayait que `paying_effect.cost_func`, alors que 106 cartes portent leur
+coût d'inclinaison sur `cost_check_effect.cost_func` — dont `50044` Fury's
+Watch, la carte officielle que le rapport donnait en preuve de généricité.
+Élargi à l'union des deux, avec un témoin `50044` qui mord.
+
+**Seconde ronde : ce témoin pouvait passer au vert sans rien mesurer.** Son
+attendu décrivait un état « rien ne s'est passé ». Il exige désormais que le
+jeton retiré soit tombé à 1 — c'est-à-dire que la LIMITE connue du correctif
+garde le témoin du correctif. Vérifié dans les deux sens.
+
+## Reste ouvert
+
+- **A**, les cartes de Jessica Jones coincées « en résolution » : en cours.
+- Répondre aux deux joueurs.
