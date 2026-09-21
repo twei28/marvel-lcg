@@ -136,3 +136,28 @@ mais il ne couvre que la sortie en cours de partie. **Le signal juste (piste 1,
 le siège et son héros) reste la vraie réponse**, et c'est la seule qui ferme le
 chemin de la fin de partie sans obliger l'hôte à repasser par le site à chaque
 manche.
+
+---
+
+## État au 21/09/2026
+
+**Moitié faite.** « Quitter la partie » éteint désormais vraiment la table
+(commits `9a4adfa6`, `f2493533`, `974f76fb`, puis deux rondes de correction).
+L'hypothèse du salon redevient vraie **quand l'hôte quitte en cours de partie**.
+
+⚠ **Mais c'est le cas RARE.** Le chemin le plus emprunté reste ouvert : on
+joue, l'écran de fin s'affiche, l'hôte clique « Retour au menu » et relance.
+C'est le déroulement normal d'une soirée, et le moteur porte encore la partie
+qui vient de finir. L'utilisateur a tranché le 21/09 : on fait **la piste 1**.
+
+### Deux résidus de polissage, nommés comme tels par la revue
+
+- La sortie du bandeau de reconnexion utilise `lienAccueil()` seul alors que la
+  cascade à trois rangs existe juste à côté. `site.url || lienAccueil()` serait
+  strictement meilleur. Sans effet sur ce déploiement.
+- En partie LOCALE, l'affirmation forte « Cette table a été fermée » n'est pas
+  gardée alors que la phrase faible l'est, et son bouton mène à la racine du
+  moteur, qui n'a aucune route `/` : 404 s'il vit, connexion refusée s'il est
+  mort. Pas une régression (c'était `http://0.0.1/` avant), et aucune
+  destination correcte n'existe sans site. Le geste juste serait de masquer ce
+  bouton quand l'origine est connue et vide.
