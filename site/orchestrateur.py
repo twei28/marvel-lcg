@@ -2604,7 +2604,11 @@ def _bouton_langue() -> str:
 
 def _barre(pseudo: str) -> str:
     admin = (' &middot; <a href="/admin">Administration</a>'
-             ' &middot; <a href="/suivi">Suivi des parties</a>') if pseudo == ADMIN else ""
+             ' &middot; <a href="/suivi">Suivi des parties</a>'
+             # Portage separe (Hogwarts Battle), visible seulement pour
+             # l'administrateur : ce n'est pas un lien pour les joueurs de
+             # Marvel Champions, seulement un raccourci prive.
+             ' &middot; <a href="https://hogwarts.narwhalchampions.com" target="_blank" rel="noopener">Hogwarts Battle</a>') if pseudo == ADMIN else ""
     # ⚠ L'ENTREE EST LA POUR TOUT LE MONDE, le compteur seulement quand une
     # reponse attend. Une page « Mes signalements » qu'on ne trouve qu'une fois
     # prevenu n'existe pas vraiment.
