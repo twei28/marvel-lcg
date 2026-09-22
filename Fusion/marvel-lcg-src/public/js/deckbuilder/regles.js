@@ -223,6 +223,25 @@ export function exemptDeLaLimiteAspect(hero, carte) {
         const txt = String(carte.text || "").replace(/<[^>]*>/g, " ");
         return /\b(?:your\s+(?:hero|identity|alter-ego)|you)\b[^.]{0,60}?[+−-]\d+\s*(?:ATK|THW|DEF|REC)\b/i.test(txt);
     }
+    /* Cable (Nathan Summers, 40001b) : « You may include player side schemes
+     * from any aspect in your deck. » Ses manigances annexes ne comptent donc
+     * pas dans le décompte des aspects.
+     * Signalé en jeu le 22/09/2026 : un deck marvelcdb de Cable bâti autour des
+     * manigances annexes était refusé au collage (« Trop d'aspects (Justice,
+     * Leadership, Aggression, Protection) »), alors que c'est exactement ce que
+     * sa carte autorise.
+     * ⚠ ANCRÉ SUR `hero.id` (le nom du fichier `deck/starter/<id>.json`), et
+     * non sur le nom comme les trois règles du dessus : c'est la convention que
+     * `reglesAspect` a adoptée le 11/09/2026 après qu'un homonyme fan-made a
+     * hérité d'une règle qui n'était pas la sienne. Un second « Cable » ne
+     * prendra donc pas celle-ci au passage.
+     * ⚠ Le TYPE seul suffit, sans filtre de trait ni de texte : la carte ne
+     * pose aucune condition. Les deux orthographes du type sont celles de
+     * `TYPES_JOUEUR` (le catalogue porte « PlayerSideScheme », marvelcdb
+     * « Player_Side_Scheme »). */
+    if (((hero && hero.id) || "") === "cable") {
+        return String(carte.type).replace(/[ _]/g, "") === "PlayerSideScheme";
+    }
     return false;
 }
 
