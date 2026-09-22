@@ -63,6 +63,25 @@ describe('le glisser du mode manuel', () => {
     expect(defausse?.pile).toBe('joueur-defausse')
   })
 
+  // ⚠ LE CAS QUI MANQUAIT AU CORRECTIF DU 21/09/2026, signalé en jeu le
+  // 22/09/2026 sur Angel ET Cable : « SPECIAL DECK » (un encadré fantôme,
+  // vide) apparaissait pour TOUS les héros, y compris ceux qui n'ont AUCUN
+  // deck spécial. Cause : `notre.additional_deck` vaut `[]` aussi bien pour
+  // « ce héros n'a pas ce mécanisme » que pour « son deck spécial est
+  // temporairement épuisé » (le moteur ne pose ce champ que si le héros le
+  // crée lui-même en cours de partie) — rien ne les distingue depuis le
+  // client. La zone « deck-special » ne doit donc JAMAIS afficher de pile
+  // vide : seul le deck et la défausse PERSONNELS du joueur (témoin
+  // ci-dessus) le peuvent, eux qui existent vraiment pour tout le monde.
+  it('⚠ le deck spécial (Invocation, Reserve…) ne fantôme pas quand le héros n’en a pas', () => {
+    const plateau = construirePlateau(mondeDeTest(), { playerId: 0, catalogue: catalogueVide })
+    const zoneSpeciale = plateau.emplacements.find((zone) => zone.cle === 'deck-special')
+
+    // La zone entière a disparu, comme avant le correctif du 21/09 : aucune
+    // unité (vide ou non) ne doit y rester.
+    expect(zoneSpeciale).toBeUndefined()
+  })
+
   // ⚠ LE CAS QUI COMPTE : le deck du héros et le deck spécial (Invocation,
   // Reserve...) partagent le même `pile.cle` (« deck ») côté zones.ts, mais
   // ce sont deux piles moteur DIFFÉRENTES (`PlayerDeck` vs `AdditionalDeck`).

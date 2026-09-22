@@ -312,6 +312,21 @@ function piles(
     discard?: boolean
     /** Remplace l'etiquette de type par ce texte (nom du deck special...). */
     labelType?: string
+    /** Cette pile reste un encadre CIBLABLE meme sans carte dedans (mode
+     *  manuel, 21/09/2026 puis correctif du 22/09/2026).
+     *
+     *  ⚠ PAR DEFAUT `false`, ET C'EST VOULU. La toute premiere version
+     *  affichait un encadre vide pour TOUTE pile a 0 carte, sans distinction.
+     *  Signale en jeu : un heros SANS deck special (Angel) affichait un
+     *  encadre « Special deck » fantome, parce que `notre.additional_deck`
+     *  vaut `[]` aussi bien pour « ce heros n'a pas ce mecanisme » que pour
+     *  « son deck special est temporairement epuise » — le moteur ne
+     *  distingue PAS les deux (le deck special n'est cree que par le script
+     *  du heros lui-meme, `AbilityFactory.BeginGameWithSetAside`, jamais par
+     *  un champ fixe). Impossible de deviner juste depuis le nombre de
+     *  cartes : seules les DEUX piles que CHAQUE heros possede vraiment
+     *  (son deck et sa defausse personnels) sont marquees `videAffichable`. */
+    videAffichable?: boolean
   }>,
   rendu: Rendu
 ): UniteAffichee[] {
@@ -320,6 +335,7 @@ function piles(
     const carte = toPileCard(contenu, rendu.ctx, pile.representant)
     const cleUnite = `${cle}-${pile.cle}`
     if (!carte) {
+      if (!pile.videAffichable) return []
       return [{
         cle: cleUnite,
         carte: {
@@ -871,12 +887,13 @@ export function construirePlateau(world: World, options: Options): Plateau {
       piles(
         'joueur',
         [
-          { cle: 'deck', cartes: notre?.player_deck },
+          { cle: 'deck', cartes: notre?.player_deck, videAffichable: true },
           {
             cle: 'defausse',
             cartes: notre?.player_discard_pile,
             regardable: true,
             titre: t('Pile de défausse'),
+            videAffichable: true,
           },
         ],
         rendu
