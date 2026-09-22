@@ -583,6 +583,25 @@ export const DICO_EN_BASE = {
     "en attente de son choix": "waiting for their pick",
     "En attente du lancement de la partie par l’hôte.":
         "Waiting for the host to start the game.",
+    // ---- Le salon attend SA partie (21/09/2026) ----
+    // ⚠ La dernière clé de ce bloc est passée sous le nez de la gate : elle
+    // est écrite `t("…" + "…")` dans salon/app.js, et l'extracteur de
+    // `site-langue.test.ts` ne lit qu'un littéral d'un seul tenant. Les six
+    // autres, elles, ont bien rougi.
+    "L’hôte a lancé la partie sans ce siège. Préviens-le : il peut la relancer en t’attendant.":
+        "The host started the game without this seat. Let them know: they can start it again and wait for you.",
+    "La partie a commencé, et ton siège n’y joue pas le héros que tu avais choisi.":
+        "The game has started, and your seat is not playing the hero you had picked.",
+    "Il joue": "It plays",
+    "Rejoindre avec": "Join as",
+    "Rejoindre quand même": "Join anyway",
+    "Rejoindre cette partie": "Join this game",
+    // ⚠ La clé est écrite d'un seul tenant : une clé d'objet ne peut pas être
+    // une concaténation, alors que l'appel dans salon/app.js, lui, en est une.
+    // C'est ce décalage qui la rend invisible à la gate.
+    "Une partie est en cours sur cette table. Impossible de savoir d’ici si c’est la tienne : si l’hôte vient de lancer, rejoins-la ; sinon, attends encore un peu.":
+        "A game is running on this table. There is no way to tell from here whether it is yours: "
+        + "if the host has just started, join it; otherwise, wait a little longer.",
 
     "Rechercher un nom ou un texte de carte…": "Search a card name or text…",
     "CUSTOM": "CUSTOM",
