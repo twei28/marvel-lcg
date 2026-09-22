@@ -235,3 +235,6 @@
 		}
 	}
 }
+
+# --- Hogwarts Battle (portage separe, ajoute le 22/09/2026) -------------------
+import /etc/caddy/sites/hogwarts.caddy

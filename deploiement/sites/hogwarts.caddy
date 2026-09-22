@@ -1,0 +1,37 @@
+# Hogwarts Battle — bloc Caddy, importé depuis /etc/caddy/Caddyfile.
+# Site statique : l'application est entièrement dans le navigateur, aucun serveur.
+# Le domaine vient de /etc/caddy/cloudflare.env, comme le reste de la configuration.
+# Ce bloc est plus spécifique que *.{$DOMAINE} : Caddy lui donne la priorité.
+# Rien d'autre n'est modifié dans la configuration NarwhalChampions.
+
+hogwarts.{$DOMAINE} {
+	tls {
+		dns cloudflare {$CF_API_TOKEN}
+		resolvers 1.1.1.1 1.0.0.1
+	}
+
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy no-referrer
+		-Server
+	}
+
+	handle {
+		root * /opt/hogwarts
+		file_server
+		header /images/* Cache-Control "public, max-age=31536000, immutable"
+		header /images-fr/* Cache-Control "public, max-age=31536000, immutable"
+		header /polices/* Cache-Control "public, max-age=31536000, immutable"
+		header /index.html Cache-Control "no-cache"
+	}
+
+	log {
+		output file /var/log/caddy/hogwarts.log {
+			roll_size 20MiB
+			roll_keep 5
+		}
+	}
+}
