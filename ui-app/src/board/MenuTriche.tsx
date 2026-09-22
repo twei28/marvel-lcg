@@ -10,7 +10,7 @@
 // masque le plateau, or on veut justement VOIR l'effet de ce qu'on vient de
 // faire.
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { t } from './langue'
 import * as triche from './triche'
 
@@ -210,6 +210,26 @@ export function MenuTriche({ cible, x, y, onFermer, emettreGeste, manuel = false
   const [deplacer, setDeplacer] = useState(false)
   const boite = useRef<HTMLDivElement | null>(null)
 
+  // Le menu est placé au curseur, mais ramené dans l'écran s'il déborde : un
+  // clic droit près du bord bas ouvrait sinon un menu PARTIELLEMENT INVISIBLE,
+  // sans scroll ni moyen d'atteindre le bas (signalé en jeu le 22/09/2026, sur
+  // le menu d'un PERSONNAGE — bien plus long qu'une carte ordinaire ; l'ancien
+  // calcul devinait une hauteur fixe de 340px, qui ne suffisait qu'aux petits
+  // menus). On mesure la VRAIE hauteur RENDUE au lieu de la deviner, et on
+  // recalcule à chaque changement de contenu : le sous-menu « Déplacer vers »
+  // n'a pas la même hauteur que le menu principal.
+  const [position, setPosition] = useState({ left: x, top: y })
+  useLayoutEffect(() => {
+    const el = boite.current
+    if (!el) return
+    const { width, height } = el.getBoundingClientRect()
+    const marge = 8
+    setPosition({
+      left: Math.max(marge, Math.min(x, window.innerWidth - width - marge)),
+      top: Math.max(marge, Math.min(y, window.innerHeight - height - marge)),
+    })
+  }, [x, y, deplacer, saisie])
+
   // Fermeture au clic extérieur et à Échap : sans ça, un menu oublié reste
   // par-dessus le plateau et intercepte les clics de jeu.
   useEffect(() => {
@@ -277,15 +297,8 @@ export function MenuTriche({ cible, x, y, onFermer, emettreGeste, manuel = false
     onFermer()
   }
 
-  // Le menu est placé au curseur, mais ramené dans l'écran s'il déborde : un
-  // clic droit près du bord bas ouvrait sinon un menu partiellement invisible.
-  const style = {
-    left: Math.min(x, window.innerWidth - 240),
-    top: Math.min(y, window.innerHeight - 340),
-  }
-
   return (
-    <div className="menu-triche" style={style} ref={boite} role="menu">
+    <div className="menu-triche" style={position} ref={boite} role="menu">
       <header className="menu-triche-titre">
         <span>{cible.nom}</span>
         <span className="menu-triche-marque">{manuel ? t('Geste manuel') : t('Triche')}</span>

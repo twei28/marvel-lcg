@@ -220,3 +220,83 @@ describe('toute zone que le moteur expose figure au menu', () => {
     expect(ZONES_MANUELLES.length).toBeGreaterThan(0)
   })
 })
+
+// ==========================================================================
+// Le menu reste ENTIÈREMENT dans l'écran (22/09/2026)
+// ==========================================================================
+// ⚠ SIGNALÉ EN JEU : un clic droit sur un PERSONNAGE (bien plus d'entrées
+// qu'une carte ordinaire — soigner, dégâts, épuiser, statuts, compteurs…)
+// ouvrait un menu dont le bas dépassait l'écran, SANS AUCUN MOYEN de
+// l'atteindre (ni défilement, ni repositionnement). L'ancien calcul devinait
+// une hauteur fixe de 340px, qui ne suffisait qu'aux petits menus (une carte
+// ordinaire n'a que « Défausser » / « Retirer de la partie »).
+//
+// jsdom ne fait AUCUNE mise en page réelle : `getBoundingClientRect` y rend
+// toujours des zéros. On le remplace donc, comme `geste.test.tsx` le fait
+// pour `elementFromPoint` — c'est la seule chose simulée, tout le reste (le
+// calcul de position, l'effet) est le vrai code.
+describe('le menu contextuel reste dans l’écran', () => {
+  const tailleEcran = (largeur: number, hauteur: number) => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: largeur })
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: hauteur })
+  }
+
+  it('⚠ LE CAS SIGNALÉ : un menu de PERSONNAGE, plus haut que l’écran, reste défilable plutôt qu’invisible', () => {
+    tailleEcran(1600, 400)
+    // Un menu de personnage, mesuré nettement plus haut que l'écran (comme
+    // celui du signalement, ouvert tout en bas d'un écran de 400px de haut).
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 224, height: 520, top: 0, left: 0, right: 224, bottom: 520, x: 0, y: 0,
+      toJSON: () => ({}),
+    })
+    const cible = { id: 7, nom: 'Nathan Summers', estPersonnage: true }
+    const { container } = render(
+      <MenuTriche cible={cible} x={800} y={388} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
+    )
+    const boite = container.querySelector('.menu-triche') as HTMLElement
+    // ⚠ LE CHIFFRE QUI DISCRIMINE. Avec une hauteur mesurée (520) plus grande
+    // que l'écran (400), le menu ne peut matériellement PAS tenir entier :
+    // le mieux qu'une position puisse faire est de le coller tout en haut
+    // (top = la marge, 8px), pour laisser le PLUS de hauteur possible au
+    // filet CSS (`max-height` + `overflow-y: auto`) qui rend le reste
+    // atteignable en défilant. L'ancien calcul (deviner 340px de haut fixe)
+    // rendait `top = 60` ici — une valeur qui semble raisonnable mais qui,
+    // combinée à une hauteur RÉELLE de 520, laisse le bas du menu à 580,
+    // à 180px sous un écran de 400 : invisible, et rien à l'époque pour le
+    // faire défiler.
+    expect(parseFloat(boite.style.top)).toBe(8)
+    vi.restoreAllMocks()
+  })
+
+  it('un menu ordinaire, qui tient déjà dans l’écran, ne bouge pas du curseur', () => {
+    tailleEcran(1600, 1000)
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 224, height: 90, top: 0, left: 0, right: 224, bottom: 90, x: 0, y: 0,
+      toJSON: () => ({}),
+    })
+    const { container } = render(
+      <MenuTriche cible={CIBLE} x={300} y={300} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
+    )
+    const boite = container.querySelector('.menu-triche') as HTMLElement
+    expect(parseFloat(boite.style.left)).toBe(300)
+    expect(parseFloat(boite.style.top)).toBe(300)
+    vi.restoreAllMocks()
+  })
+
+  it('un clic tout en bas à droite ramène le menu par la gauche ET par le haut', () => {
+    tailleEcran(1000, 800)
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 240, height: 300, top: 0, left: 0, right: 240, bottom: 300, x: 0, y: 0,
+      toJSON: () => ({}),
+    })
+    const { container } = render(
+      <MenuTriche cible={CIBLE} x={990} y={790} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
+    )
+    const boite = container.querySelector('.menu-triche') as HTMLElement
+    // 990 + 240 (largeur) déborderait de 230px : ramené à 1000 - 240 - 8.
+    expect(parseFloat(boite.style.left)).toBe(1000 - 240 - 8)
+    // 790 + 300 (hauteur) déborderait de 490px : ramené à 800 - 300 - 8.
+    expect(parseFloat(boite.style.top)).toBe(800 - 300 - 8)
+    vi.restoreAllMocks()
+  })
+})

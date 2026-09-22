@@ -6725,6 +6725,13 @@
     border: 1px solid rgba(255, 196, 60, 0.45);
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
     color: #e8e8ea;
+    /* Filet de securite (22/09/2026) : le calcul de MenuTriche.tsx mesure la
+       vraie hauteur et replace le menu dans l'ecran, mais un ecran plus bas
+       que le menu lui-meme (personnage + toutes ses options) n'aurait sinon
+       AUCUN moyen d'atteindre le reste. Le defilement interne garantit que
+       chaque entree reste accessible, quelle que soit la taille de l'ecran. */
+    max-height: calc(100vh - 16px);
+    overflow-y: auto;
   }
 
   .menu-triche-titre {
