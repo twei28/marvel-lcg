@@ -50,8 +50,8 @@ test("le fond reproduit la bande diagonale du plateau", () => {
     const fond = fondDe([[140, 41, 31], [32, 43, 114], [219, 220, 222]], "#111");
     assert.equal(
         fond,
-        "linear-gradient(315deg, rgba(140,41,31,0.46) 0%, rgba(32,43,114,0.34) 16%, " +
-        "rgba(219,220,222,0.2) 30%, rgba(219,220,222,0) 50%), #111");
+        "linear-gradient(315deg, rgba(140,41,31,0.6) 0%, rgba(32,43,114,0.44) 16%, " +
+        "rgba(219,220,222,0.26) 30%, rgba(219,220,222,0) 50%), #111");
 });
 
 test("un héros d'une seule couleur garde la longueur de la bande", () => {
@@ -60,8 +60,8 @@ test("un héros d'une seule couleur garde la longueur de la bande", () => {
     const fond = fondDe([[18, 18, 17]], "#111");
     assert.equal(
         fond,
-        "linear-gradient(315deg, rgba(18,18,17,0.46) 0%, rgba(18,18,17,0.34) 16%, " +
-        "rgba(18,18,17,0.2) 30%, rgba(18,18,17,0) 50%), #111");
+        "linear-gradient(315deg, rgba(18,18,17,0.6) 0%, rgba(18,18,17,0.44) 16%, " +
+        "rgba(18,18,17,0.26) 30%, rgba(18,18,17,0) 50%), #111");
 });
 
 test("sans couleur, le fond reste celui du plateau", () => {

@@ -33,12 +33,13 @@ export function rgbVersHex(couleur) {
 }
 
 /** Les arrêts de la bande diagonale, position en % et force de la couleur.
- *  Mêmes valeurs que le plateau, montées le 14/09/2026 à la demande de
- *  l'utilisateur (0,32 / 0,24 / 0,14 → 0,46 / 0,34 / 0,20). */
+ *  Mêmes valeurs que le plateau, montées deux fois à la demande de
+ *  l'utilisateur : 14/09/2026 (0,32 / 0,24 / 0,14 → 0,46 / 0,34 / 0,20), puis
+ *  22/09/2026 (→ 0,60 / 0,44 / 0,26). */
 export const ARRETS = [
-    { a: 0, force: 0.46 },
-    { a: 16, force: 0.34 },
-    { a: 30, force: 0.2 },
+    { a: 0, force: 0.6 },
+    { a: 16, force: 0.44 },
+    { a: 30, force: 0.26 },
 ];
 
 /** Le fond du plateau pour ces couleurs : une bande diagonale au coin bas
