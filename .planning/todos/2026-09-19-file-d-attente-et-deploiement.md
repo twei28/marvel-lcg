@@ -3,6 +3,85 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ SECOND DÉPLOIEMENT du 22/09/2026
+
+Envoi `-Code` : un seul commit, `1c7add23`.
+
+**`fix(manuel): le menu de clic droit reste entier dans l'écran`** — signalé
+en jeu juste après le premier déploiement du jour : le menu contextuel d'un
+PERSONNAGE (bien plus d'entrées qu'une carte ordinaire) ouvrait avec son bas
+hors écran, sans aucun moyen de l'atteindre. L'ancien calcul devinait une
+hauteur fixe de 340px, qui ne suffisait qu'aux petits menus.
+
+- `MenuTriche.tsx` mesure désormais la VRAIE hauteur rendue
+  (`getBoundingClientRect` via `useLayoutEffect`) au lieu de la deviner.
+- `board.css` pose un filet de sécurité (`max-height` + `overflow-y: auto`
+  sur `.menu-triche`) : même un écran plus bas que le menu entier laisse
+  chaque entrée atteignable en défilant.
+- 3 témoins ajoutés, 2 rouges constatés sans le correctif.
+
+Cette fois, **annonce posée aux joueurs** (2 minutes, message de préavis par
+défaut) avant le redémarrage — à la demande explicite de l'utilisateur,
+contrairement au premier déploiement du jour où l'unique connexion (Yarro)
+avait déjà été vérifiée déconnectée. Posée directement en base
+(`narwhal.db`, table `annonces`) via SSH, faute d'accès à `/admin` : même
+DELETE+INSERT que `poser_annonce()` côté orchestrateur, mêmes formats de
+champs.
+
+175/175 fichiers (1957 tests), typecheck propre. Vérification finale :
+`https://narwhalchampions.com/` → 200.
+
+## ✅ DÉPLOYÉ le 22/09/2026
+
+Envoi `-Code` : 101 commits partis d'un coup (`04fcf37e..7de85377`), le plus
+gros déploiement depuis Fear No Evil. Personne d'autre en ligne (Yarro
+déconnecté, vérifié par l'utilisateur avant le feu vert). Vérification finale :
+`https://narwhalchampions.com/` → 200.
+
+Par chantier, pas par commit (la liste complète est dans `git log`) :
+
+- **Le mode manuel, les DEUX moitiés, enfin complet et fusionné.** Pause en
+  cours de partie (bandeau, qui/depuis quand, Passer la question), glisser-
+  déposer libre vers n'importe quelle pile, raccourcis clavier calqués sur
+  Tabletop Simulator, catalogue de recherche, annulation (Ctrl+Z) qui rejoue
+  au bon rang, sélecteur de héros, fin de partie déclarée, refus visibles côté
+  moteur ET plateau, spectateur fermé aux routes POST et aux gestes de pause,
+  section « gestes manuels » du rapport de bug avec sa propre alerte
+  d'incomplétude.
+- **SP//dr, paiement incomplet (`ab0b6e7e`)** : le défaut était dans le moteur
+  (`EffectChecker.check_pay`), pas la carte — 107 cartes concernées, corrigé
+  pour toutes.
+- **Jessica Jones, cartes coincées en résolution (`54462b83`)** : une carte
+  cherchée puis refusée retourne enfin dans son deck.
+- **Le salon attend SA partie, pas « une » partie** : repère de fraîcheur
+  (`game_uid`), rejoindre avec le bon héros, la campagne dans la règle.
+- **Quitter la partie ferme la table (`f2493533`, `974f76fb`)**, pour de bon,
+  avec un bouton « Déconnexion complète » séparé du simple retour au menu
+  (`d97454ed`).
+- **Fixé aujourd'hui, trouvé en revue de tout ce qui précède** :
+  - `5c8aa59d` Cable peut enfin construire un deck autour de ses manigances
+    annexes (elles ne comptaient pas dans la limite d'aspect).
+  - `dad5232b` six messages du salon manquaient à l'anglais.
+  - `4bcba8a8` la bande de couleur du héros ressort plus (demande directe).
+  - `6ad07257` le lâcher réel sur une pile VIDE ne visait pas sa pile — le
+    correctif `ca02560f` de la veille ne marchait qu'à l'essai, pas au vrai
+    glisser (aucun `.scan-card` sous le point).
+  - `7de85377` le deck spécial (Invocation, Réserve…) fantomait pour TOUS les
+    héros, y compris ceux qui n'ont pas ce mécanisme — signalé en jeu par
+    l'utilisateur sur Angel puis Cable, corrigé dans la foulée.
+
+Batteries avant envoi : mode manuel **48/48 VERT**, plateau **1954/1954**
+tests (175 fichiers), typecheck propre, `test_capacites.py` filtré sur
+« paiement » (13/13) et « recherche » (8/8).
+
+⚠ **Mis de côté, PAS déployé** : un chantier inachevé sur `server_get.py` /
+`test_heros_du_siege.py` (une course entre `debut` et le monde au moment où
+une partie est annoncée mais pas encore montée). Marqué « CONSTAT ROUGE
+TEMPORAIRE » par son auteur, 7 échecs mesurés sur la nouvelle batterie — un
+rouge délibéré de TDD, pas une régression. Laissé dans le dossier de travail,
+volontairement écarté de l'archive envoyée (`git stash` le temps de l'envoi).
+À reprendre et à finir dans une prochaine session.
+
 ## ✅ DÉPLOYÉ le 19/09/2026 à 12:30
 
 Le serveur tourne sur ce code. Ce qui est parti, en six commits :
@@ -76,18 +155,16 @@ Envoi `-Code` seulement : ni image ni document n'avait bougé.
    `2026-09-18-editeur-palettes-heros.md`. Le point dur n'en était pas un : le
    moteur sait déjà reconnaître l'auteur (`_est_administrateur`), comme pour le
    relevé des illustrations.
-3. **Le mode manuel, moitié plateau** — 7 tâches sur 8 restantes, plan
-   `docs/superpowers/plans/2026-09-18-mode-manuel-plateau.md`. La moitié moteur
-   est finie, revue et fusionnable (16 commits, 19 cas verts).
+3. ~~**Le mode manuel, moitié plateau**~~ — **FAIT ET DÉPLOYÉ le 22/09/2026**,
+   les deux moitiés (moteur + plateau) complètes. Voir la section de
+   déploiement du 22/09 en tête de fiche.
 
-## ⚠ Le déploiement est BLOQUÉ par un fichier d'une autre session
+## ⚠ Le blocage typecheck du 19/09 est résolu depuis
 
-`ui-app/src/board/halo-heros-accord.test.ts` porte une directive
-`@ts-expect-error` devenue inutile, livrée le 19/09 avec l'éditeur de palettes.
-Elle casse `npm run typecheck`, **et le typecheck casse la construction du
-plateau** : `ui-app/deployer.sh` ne peut plus construire. Constaté le 20/09 en
-montant un serveur local, qui a dû contourner la ligne puis restaurer le
-fichier. Une ligne à retirer, dans le fichier d'une autre session.
+`ui-app/src/board/halo-heros-accord.test.ts` portait une directive
+`@ts-expect-error` devenue inutile, qui cassait `npm run typecheck` et donc
+`ui-app/deployer.sh`. Corrigée avant le déploiement du 22/09 (typecheck propre
+constaté). Section gardée pour mémoire du piège, plus d'action requise.
 
 ## Ce qui reste ouvert, sans être planifié
 
@@ -141,11 +218,10 @@ fichier. Une ligne à retirer, dans le fichier d'une autre session.
   la table et le nom tapé. Conséquence : un signalement envoyé depuis un second
   appareil est désormais visible, mais reste sans conversation possible. Le
   réparer vraiment demande de toucher le client du jeu et le relais.
-- **La bascule manuelle en cours de partie** (pause sur place, échappatoire,
-  traces au journal) : cadrée en avenant à
-  `docs/superpowers/specs/2026-09-18-mode-manuel-design.md`, pas planifiée.
-  Reste à trancher : qui peut la déclencher en multijoueur, et ce que voient les
-  autres pendant ce temps.
+- ~~**La bascule manuelle en cours de partie**~~ — **FAIT ET DÉPLOYÉ le
+  22/09/2026** : bandeau de pause, qui/depuis quand publiés, mains et
+  sélecteur de héros gardés fermés en multijoueur en ligne (armés par la
+  RÈGLE, pas l'état). Voir la section de déploiement du 22/09.
 - **Les extensions non portées** demandent un import de données (cartes et
   scans) : le mode manuel seul ne les ouvre pas. Non cadré.
 - **`FileManager.FormatPath` se trompe sur un chemin POSIX absolu** sans lettre
@@ -157,19 +233,11 @@ fichier. Une ligne à retirer, dans le fichier d'une autre session.
   `2026-09-16-crediter-les-auteurs-fanmade.md`. Rien ne doit s'afficher dans le
   jeu avant validation ligne par ligne.
 
-## Le Ctrl+Z n'annule pas un geste fait pendant une pause (20/09/2026)
+## Le Ctrl+Z n'annulait pas un geste fait pendant une pause (20/09/2026)
 
-Trouvé par la revue de la tâche 8 du plan de la pause manuelle, ANTÉRIEUR à ce
-chantier, non corrigé volontairement.
-
-`DoGetInput` jette le retour de `DrainSandboxCommands`, là où `World.ManualLoop`
-l'enregistre dans `scene.manuel_commands`. Conséquence en deux temps :
-
-1. Les gestes manuels faits pendant une question ouverte **n'entrent pas dans
-   la sauvegarde**.
-2. `AnnulerDernierGeste` s'appuyant sur cette même liste, **le Ctrl+Z ne peut
-   pas annuler un geste fait pendant une pause de partie ordinaire**.
-
-C'est visible par le joueur : il corrige sa table, se trompe, fait Ctrl+Z, et
-rien ne se passe. À traiter à part, parce que la correction touche le même
-chemin que la tâche 8 et mérite ses propres cas.
+**FAIT ET DÉPLOYÉ le 22/09/2026** (`71433704`, tâche 9 du plan de la pause).
+Trouvé par la revue de la tâche 8, corrigé en deux moitiés : le rejeu des
+gestes (`RejouerGestesManuelsJusqua`) monte en tête de `ChoiceOne`, la
+fermeture de la porte reste après la mise à jour de `skip.is_skipping` — plus
+besoin de les tenir ensemble. Mesuré avant correction : un désaccord de CRC
+exactement à l'entrée du rang du geste manquant.
