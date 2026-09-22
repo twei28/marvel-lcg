@@ -38,7 +38,10 @@ function poserPlateau(options: {
   /** Un élément DANS le groupe mais hors de toute unité (l'espace vide
    *  d'un secteur, entre deux cartes). */
   margeDansLeGroupe?: boolean
-}): { scanCard?: HTMLElement; margeUnite?: HTMLElement; margeGroupe?: HTMLElement } {
+  /** Pile vide (22/09/2026) : `.plateau-unite.pile-vide`, SANS `.scan-card`
+   *  dedans — le rendu exact de `Board.tsx` pour une pile sans carte. */
+  pileVide?: boolean
+}): { scanCard?: HTMLElement; margeUnite?: HTMLElement; margeGroupe?: HTMLElement; pileVide?: HTMLElement } {
   document.body.innerHTML = ''
   const section = document.createElement('section')
   section.dataset.zone = options.zoneEmplacement
@@ -47,8 +50,14 @@ function poserPlateau(options: {
   if (options.pileGroupe !== undefined) groupe.dataset.pile = options.pileGroupe
 
   const unite = document.createElement('div')
-  unite.className = 'plateau-unite'
+  unite.className = options.pileVide ? 'plateau-unite pile-vide' : 'plateau-unite'
   if (options.pileUnite !== undefined) unite.dataset.pile = options.pileUnite
+
+  let pileVideSpan: HTMLElement | undefined
+  if (options.pileVide) {
+    pileVideSpan = document.createElement('span')
+    unite.appendChild(pileVideSpan)
+  }
 
   let scanCard: HTMLElement | undefined
   if (options.carteId !== undefined) {
@@ -76,7 +85,7 @@ function poserPlateau(options: {
 
   section.appendChild(groupe)
   document.body.appendChild(section)
-  return { scanCard, margeUnite, margeGroupe }
+  return { scanCard, margeUnite, margeGroupe, pileVide: pileVideSpan }
 }
 
 describe('cibleSousLePoint', () => {
@@ -103,6 +112,27 @@ describe('cibleSousLePoint', () => {
     })
     document.elementFromPoint = () => margeUnite!
     expect(cibleSousLePoint(0, 0)).toEqual({ carteId: undefined, zone: 'piles-joueur' })
+  })
+
+  // ⚠ LE CAS QUI MANQUAIT AU CORRECTIF DU 21/09/2026 (« les piles vides
+  // acceptent la première carte », ca02560f). Il n'existait qu'un test de la
+  // COUCHE DE DONNÉES (`glisser-manuel.test.ts`, `construirePlateau` rend
+  // bien `pileVide: true`) : rien n'exerçait le VRAI hit-test DOM. Or
+  // `Board.tsx` dessine une pile vide SANS `.scan-card` dedans (l'encadré en
+  // pointillés) — et le cas du dessus prouve précisément que sans carte, un
+  // lâcher retombe sur la zone LARGE, jamais sur la pile fine. Sans le
+  // correctif de `cibleSousLePoint`, ce cas rendrait `zone: 'piles-joueur'`
+  // au lieu de `'joueur-defausse'` : la pile vide resterait viséE, mais le
+  // dépôt manuel la refuserait quand même (`PILE_PAR_ZONE['piles-joueur']`
+  // n'existe pas), l'exact inverse de ce que le correctif promet.
+  it('lâchée sur une pile VIDE (aucune carte dedans) : la pile fine quand même', () => {
+    const { pileVide } = poserPlateau({
+      zoneEmplacement: 'piles-joueur',
+      pileUnite: 'joueur-defausse',
+      pileVide: true,
+    })
+    document.elementFromPoint = () => pileVide!
+    expect(cibleSousLePoint(0, 0)).toEqual({ carteId: undefined, zone: 'joueur-defausse' })
   })
 
   // ⚠ LE CAS C1. Le secteur (posé sur le GROUPE entier, ex. « ennemis

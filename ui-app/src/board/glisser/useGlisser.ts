@@ -187,7 +187,17 @@ export function cibleSousLePoint(x: number, y: number): CibleSurvolee {
   //    entre deux sbires engages) rendait `terrain-combat-engages` au lieu
   //    de `terrain-combat` : la carte s'y voyait refusee a tort. Le secteur
   //    vit donc dans son PROPRE champ, que seul le mode manuel lit.
-  const pile = carte?.closest<HTMLElement>('.plateau-unite')?.dataset.pile
+  // ⚠ UNE PILE VIDE N'A PAS DE CARTE (22/09/2026, correctif du geste manuel
+  // sur les piles vides). `Board.tsx` la dessine comme un `.plateau-unite`
+  // SANS `.scan-card` dedans (un simple encadré en pointillés) : `carte`
+  // vaut alors `undefined`, et la ligne du dessus ne trouverait donc jamais
+  // sa pile — un lâcher dessus retombait sur `[data-zone]`, la zone LARGE
+  // (« piles-joueur »), absente de `PILE_PAR_ZONE`, et le dépôt était
+  // refusé (« Lâche la carte sur une pile », sur la pile elle-même). Sans
+  // carte, l'ambiguïté de marge que `carte?.closest` évite plus haut ne se
+  // pose pas : l'encadré EST la pile, ses bords en sont la frontière.
+  const uniteVide = !carte ? sous.closest<HTMLElement>('.plateau-unite.pile-vide') : null
+  const pile = carte?.closest<HTMLElement>('.plateau-unite')?.dataset.pile || uniteVide?.dataset.pile
   const secteur = sous.closest<HTMLElement>('.plateau-groupe')?.dataset.pile
   const zone = pile || sous.closest<HTMLElement>('[data-zone]')?.dataset.zone
   return {
