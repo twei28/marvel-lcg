@@ -546,7 +546,24 @@ button{cursor:pointer}
    et un peu plus zoome : au cadrage commun (centre, 154 %) chaque personnage
    tombait a cheval sur la coupe. */
 .portrait-duo{position:absolute;inset:0}
-.hero-card .portrait-duo .portrait.duo{position:absolute;inset:0;background-size:210%}
+/* CORRECTIF (25/09/2026, signale en jeu) : ces trois regles etaient reservees
+   a `.hero-card`, et c'est ce qui cassait le portrait dans les DEUX autres
+   endroits qui posent la meme classe `.portrait-duo` (`.tb-art`, le grand
+   panneau de la fiche heros, et `.tb-port`, la vignette de la grille). Sans
+   `position:absolute;inset:0`, chaque moitie retombait sur le `.portrait`
+   nu (48x48 px, flux normal) au lieu de remplir son cadre ; sans le
+   `clip-path`, les deux moities se superposaient plein cadre l'une sur
+   l'autre au lieu de se partager la diagonale. Le trait de separation
+   (`.portrait-duo::after` plus bas) n'a jamais ete concerne : il est deja
+   hors contexte, d'ou son affichage correct meme quand les portraits, eux,
+   restaient invisibles ou fondus en un seul.
+
+   Regles structurelles et purement GEOMETRIQUES (la coupe est la meme
+   diagonale partout) : partagees par les trois contextes. Seul le zoom
+   (`background-size`) reste ajustable par contexte plus bas dans ce
+   fichier (`.tb-art` prend `cover`, `.tb-port` garde 210 % en double —
+   redondant mais inoffensif). */
+.portrait-duo .portrait.duo{position:absolute;inset:0;background-size:210%}
 /* Valeurs CALCULEES sur les visuels reels, puis verifiees sur un montage a
    l'echelle exacte de la tuile (152x218) : le visage de Cloak est a 57 % de la
    largeur de sa carte et 29 % de sa hauteur, celui de Dagger a 44 % et 29,5 %.
@@ -557,11 +574,11 @@ button{cursor:pointer}
    Contre-intuitif mais exact : un pourcentage de position ELEVE pousse l'image
    vers la GAUCHE. D'ou le 86 % de Cloak, dont le visage est a droite sur sa
    carte, et le 15 % de Dagger, dont le visage est a gauche. */
-.hero-card .portrait-duo .duo-a{
+.portrait-duo .duo-a{
   background-position:86% 30%;
   clip-path:polygon(0 0,100% 0,0 100%);
 }
-.hero-card .portrait-duo .duo-b{
+.portrait-duo .duo-b{
   background-position:15% 24%;
   clip-path:polygon(100% 0,100% 100%,0 100%);
 }
