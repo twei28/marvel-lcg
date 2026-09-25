@@ -65,6 +65,7 @@ class AbilityFactoryResources:
                             *,
                             spend_this_only_in_hero_form: bool|None=None,
                             spend_this_only_in_alter_ego_form: bool|None=None,
+                            conditions: ConditionsType[Message.CheckPlayerCanPayCost]=[],
                             ) -> 'Ability':
         from game.card.face.card_type import Event
 
@@ -114,7 +115,7 @@ class AbilityFactoryResources:
             spend_this_only_in_hero_form=spend_this_only_in_hero_form,
             spend_this_only_in_alter_ego_form=spend_this_only_in_alter_ego_form,
             bind_ability=lambda face: face.effect.Find(func_name="DiscardPay")[0],
-            conditions=[check_can_pay]
+            conditions=[check_can_pay, *conditions]
         ).SetFuncName("CheckThisCanDropPay")
 
     @staticmethod

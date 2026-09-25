@@ -86,6 +86,41 @@ def EvenementsGlissesSousEcho(effect: 'Effect') -> List['CardFace']:
 
 
 def AbilitesPhotographicReflexes() -> Sequence['Ability']:
+    def check_pas_payer_sa_propre_glissee(effect: 'Effect', message: 'Message.CheckPlayerCanPayCost') -> bool:
+        """CORRECTIF (25/09/2026, signale en jeu). Sur le CHEMIN B, la
+        permission de jouer la carte glissee (`check_tucked_playable`) est
+        accordee DES que Photographic Reflexes est en main, et sa vraie
+        defausse n'arrive qu'APRES coup (`discard_photographic_reflexes`,
+        WhenPlayerPlayCard). Entre les deux, rien n'empechait de la depenser
+        comme RESSOURCE GENERIQUE (regle de base, n'importe quelle carte en
+        main) pour payer le cout — deja reduit de 2 — de la carte glissee
+        qu'elle vient elle-meme d'autoriser. Le joueur gagnait alors la
+        reduction ET la valeur de ressource sur la MEME carte, alors que
+        `discard_photographic_reflexes` ne trouvait plus rien a defausser
+        ensuite (elle avait deja quitte la main via la zone de ressources).
+
+        Avec UNE SEULE copie en main, la depense comme ressource est donc
+        refusee : il faut qu'une carte de la main paie normalement, et
+        Photographic Reflexes partira comme prevu apres coup. Avec une
+        SECONDE copie disponible pour porter ce vrai cout, rien ne l'empeche
+        : ce n'est plus la meme carte qui financerait les deux avantages.
+        """
+        joueur = message.GetToPlayer()
+        if joueur is None:
+            return True
+        identite = joueur.GetIdentity()
+        if identite is None or not identite.IsName('Echo'):
+            return True
+        zone = identite.GetPlacedCardArea()
+        if zone is None:
+            return True
+        paying_for = message.paying_for_effect.this
+        if paying_for.card.area != zone:
+            return True
+        autres = [x for x in joueur.hand_cards.Get()
+                  if x.IsName('Photographic Reflexes') and x != effect.this]
+        return bool(autres)
+
     def il_y_a_un_evenement_glisse(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> bool:
         # Sans evenement sous Echo, la carte ne doit pas etre cliquable du
         # tout : la defausser pour rien recreerait le defaut d'origine sous
@@ -129,4 +164,10 @@ def AbilitesPhotographicReflexes() -> Sequence['Ability']:
             conditions=[il_y_a_un_evenement_glisse],
         ).SetCostFunc(CostFunc.Discard("This"))
         .CanWorkOnlyInHand(),
+        # Remplace la depense-comme-ressource par defaut de ClassCard (une
+        # seule declaration : `ClassCard.GetAbilities` ne pose plus la sienne
+        # des qu'elle en trouve une portant ce nom). Meme montant que le
+        # comportement d'origine (`effect.this.printed_resource`), une garde
+        # de plus.
+        AbilityFactory.CheckThisCanDropPay(conditions=[check_pas_payer_sa_propre_glissee]),
     ]
