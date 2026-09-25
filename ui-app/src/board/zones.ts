@@ -190,6 +190,19 @@ type Options = {
   /** Rafraichi quand le joueur change de collection d'arts (cosmetique). */
   artsVersion?: number
   /**
+   * Le siege qui REGARDE l'ecran, s'il differe de `playerId`.
+   *
+   * ⚠ AJOUTE LE 25/09/2026, demande de l'utilisateur : « nous toujours a
+   * gauche, et les autres a la suite ». `playerId` reste le point de vue du
+   * RENDU (visibilite des cartes, badges « autres joueurs » du multijoueur) :
+   * en vue Auto, il suit le joueur dont c'est le tour (`joueurActif` dans
+   * board.tsx), pas forcement le viewer local. Sans ce champ separe, la zone
+   * « Heros et soutiens » du viewer se decalait a droite des qu'on suivait
+   * quelqu'un d'autre. Absent (replay, etat enregistre...), on retombe sur
+   * `playerId` : comportement inchange.
+   */
+  viewerId?: number
+  /**
    * La vue est BRAQUEE sur `playerId` : on ne pose que SA table. Les aires des
    * autres joueurs (heros, allies, soutiens, ennemis engages, piles) sortent du
    * plateau ; la table commune — mechant, complots, environnement, deck
@@ -874,11 +887,21 @@ export function construirePlateau(world: World, options: Options): Plateau {
           ]
         }),
       ]
+      // Le viewer local TOUJOURS EN TETE (25/09/2026), meme quand la vue Auto
+      // suit un autre joueur (`options.playerId` devient alors son siege, et
+      // ses groupes passeraient sinon devant ceux du viewer). Simple
+      // partition stable : ordre inchange dans chaque moitie, donc AUCUN
+      // effet quand le viewer suit son propre tour (cas le plus courant).
+      const idViewer = options.viewerId ?? options.playerId
+      const ordonnes = [
+        ...groupesEtProprietaires.filter(([, idJoueur]) => idJoueur === idViewer),
+        ...groupesEtProprietaires.filter(([, idJoueur]) => idJoueur !== idViewer),
+      ]
       return emplacement(
         'terrain-soutien',
         t('Héros et soutiens'),
-        groupesEtProprietaires.map(([groupe]) => groupe),
-        groupesEtProprietaires.map(([, idJoueur]) => idJoueur)
+        ordonnes.map(([groupe]) => groupe),
+        ordonnes.map(([, idJoueur]) => idJoueur)
       )
     })(),
 

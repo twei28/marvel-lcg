@@ -1753,6 +1753,11 @@ export function PagePartie({
       etat.monde
         ? construirePlateau(etat.monde, {
             playerId: joueurActif,
+            // Le siege qui regarde l'ecran, distinct de `playerId` des que la
+            // vue Auto suit un AUTRE joueur (`joueurActif` ci-dessus) : sans
+            // lui, la zone « Heros et soutiens » du viewer local partait a
+            // droite le temps que ce suivi dure. Voir zones.ts, `Options.viewerId`.
+            viewerId: playerId,
             catalogue,
             // Vue braquee sur un joueur PAR UN CLIC : on ne pose que sa table.
             // En « Auto » (vueForcee === null), la vue suit celui qui doit agir

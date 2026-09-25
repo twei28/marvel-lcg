@@ -2613,6 +2613,15 @@
     min-width: 0;
   }
 
+  /* Le heros COLLE au deck special, pas centre dans l'espace elastique
+     laisse par `.zone-terrain-soutien` (25/09/2026, demande de l'utilisateur).
+     `.plateau-cartes` centre son contenu par defaut (regle generique plus
+     haut dans ce fichier) : avec peu ou pas de soutiens, cette zone plus
+     large que son contenu affichait le heros a distance du deck special. */
+  .zone-terrain-soutien .plateau-cartes {
+    justify-content: flex-start;
+  }
+
   /* Zone du deck special : accent violet, comme ses cartes. */
   .zone-deck-special {
     --mc-zoom-origine: center bottom;
