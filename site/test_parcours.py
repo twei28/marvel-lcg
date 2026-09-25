@@ -15,6 +15,16 @@ os.environ.setdefault("BASE", os.path.join(tempfile.gettempdir(), "nc-parcours.d
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import orchestrateur as o  # noqa: E402
 
+# ⚠ AVANT TOUT AUTRE APPEL (25/09/2026, trouve en verifiant un correctif sans
+# rapport). `page_attente` (plus bas) lit deja la base (`_barre` ->
+# `reponses_non_lues` -> table `rapports_messages`) alors que
+# `o.initialiser_base()` n'etait appele qu'a la ligne ~114 : sur une base
+# fraiche (`BASE` neuf ou vide), le tout premier test faisait tomber le
+# script entier avec `sqlite3.OperationalError: no such table`.
+# `initialiser_base()` est idempotent (`CREATE TABLE IF NOT EXISTS`) : la
+# garder plus bas aussi ne coute rien.
+o.initialiser_base()
+
 echecs = []
 
 
@@ -2180,10 +2190,16 @@ verifier("et la partie n'est plus proposee, meme apres un echec",
 # Un rapport de bug envoye par le TITULAIRE d'un compte devient un ticket : un
 # fil dans les deux sens, quatre etats, une page cote joueur.
 #
-# ⚠ LE SIEGE 0 EST LA SEULE IDENTITE SURE. Une table appartient a un compte ;
-# les autres sieges sont des invites, meme quand la personne a un compte
-# ailleurs. `hote` dit de quelle TABLE vient le rapport, pas qui l'ecrit. Un
-# rapport de siege 1 ou plus reste donc un rapport, lu et traite, sans fil.
+# ⚠ LE SIEGE 0 EST LA SEULE IDENTITE SURE PAR DEFAUT. Une table appartient a
+# un compte ; les autres sieges sont des invites. `hote` dit de quelle TABLE
+# vient le rapport, pas qui l'ecrit : un rapport de siege 1 ou plus reste
+# donc un rapport, lu et traite, sans fil.
+#
+# ⚠ EXCEPTION AJOUTEE LE 25/09/2026 : un invite connecte a son PROPRE compte
+# (le cookie `nc_session` du site, releve par le moteur sur la requete du
+# navigateur et relaye dans le CORPS de `/api/bug` -- jamais un en-tete
+# Cookie, qui ne franchirait pas la frontiere serveur-a-serveur) devient le
+# proprietaire reel du ticket, quelle que soit la table. Voir plus bas.
 # ---------------------------------------------------------------------------
 print()
 print("Le suivi des signalements")
@@ -2199,6 +2215,66 @@ verifier("un rapport du siege 0 ouvre un ticket",
          o.ticket_de(_r_hote) is not None)
 verifier("un rapport d'un invite n'en ouvre pas",
          o.ticket_de(_r_invite) is None)
+
+# ⚠ TRAJET REEL, PAR /api/bug, PAS PAR enregistrer_rapport(). Un invite
+# connecte a SON PROPRE compte, sur la table d'un AUTRE compte ("hote") :
+# le rapport doit lui appartenir a LUI (signalement d'origine, 19/09/2026 :
+# « un signalement envoye depuis un second appareil reste sans conversation
+# possible »).
+_jeton_table_hote = o.secrets.token_urlsafe(24)
+o.JETONS_SITE[_jeton_table_hote] = "hote"
+# `pseudo_de_session` exige un compte REEL, `statut_de(...) == "valide"` :
+# "yarro" n'avait jusque-la servi que de pseudo nu (enregistrer_rapport ne le
+# verifie pas). Sans inscription, la session s'ouvrait mais ne resolvait
+# jamais rien -- mesure faite, temoin muet a tort.
+o.inscrire("yarro", "yarro@exemple.fr", "motdepasse123")
+o.changer_statut("yarro", "valide")
+_session_invite_connecte = o.ouvrir_session("yarro")
+_code_ic, _, _corps_ic = appel("POST", "/api/bug", corps=o.urllib.parse.urlencode({
+    "jeton": _jeton_table_hote,
+    "nom": "Yarro",
+    "siege": "2",
+    "ecran": "plateau",
+    "description": "signale depuis un second appareil, connecte a mon compte",
+    "nc_session": _session_invite_connecte,
+}).encode("utf-8"))
+verifier("un invite connecte sur son propre compte : l'envoi reussit",
+         _code_ic == 200, str(_code_ic))
+_num_ic = json.loads(_corps_ic).get("numero") if _code_ic == 200 else None
+verifier("son rapport devient SON ticket, pas celui de l'hote de la table",
+         _num_ic is not None
+         and any(x["id"] == _num_ic for x in o.tickets_de("yarro"))
+         and not any(x["id"] == _num_ic for x in o.tickets_de("hote")),
+         "num=%s tickets_yarro=%s tickets_hote=%s"
+         % (_num_ic, o.tickets_de("yarro"), o.tickets_de("hote")))
+verifier("⚠ et l'hote le voit quand meme sur SA table (hote inchange)",
+         _num_ic is not None
+         and any(x["id"] == _num_ic for x in o.rapports_de_ses_tables("hote")),
+         "num=%s rapports_hote=%s" % (_num_ic, o.rapports_de_ses_tables("hote")))
+
+# Contre-cas OBLIGATOIRE : sans session valable (l'invite anonyme ordinaire,
+# qui n'a jamais eu de compte), rien ne change par rapport a AVANT le
+# 25/09/2026 — et avant, ce n'etait DEJA PAS un ticket au siege 3 (seul le
+# siege 0 en ouvrait un). Le rapport reste `hote`-de-la-table pour la vue
+# d'ensemble (`rapports_de_ses_tables`), mais n'appartient a AUCUN ticket.
+_jeton_table_hote_2 = o.secrets.token_urlsafe(24)
+o.JETONS_SITE[_jeton_table_hote_2] = "hote"
+_code_anon, _, _corps_anon = appel("POST", "/api/bug", corps=o.urllib.parse.urlencode({
+    "jeton": _jeton_table_hote_2,
+    "nom": "Un inconnu",
+    "siege": "3",
+    "ecran": "plateau",
+    "description": "un vrai invite, jamais connecte",
+}).encode("utf-8"))
+_num_anon = json.loads(_corps_anon).get("numero") if _code_anon == 200 else None
+verifier("un invite SANS compte reste visible sur la table de l'hote",
+         _num_anon is not None
+         and any(x["id"] == _num_anon for x in o.rapports_de_ses_tables("hote")),
+         "num=%s rapports_hote=%s" % (_num_anon, o.rapports_de_ses_tables("hote")))
+verifier("⚠ mais n'ouvre de ticket pour personne (comportement inchange)",
+         not any(x["id"] == _num_anon for x in o.tickets_de("hote")),
+         "num=%s tickets_hote=%s" % (_num_anon, o.tickets_de("hote")))
+
 
 o.ecrire_message(_r_hote, "admin", "Corrige, merci du signalement.")
 _fil = (o.ticket_de(_r_hote) or {}).get("messages") or []

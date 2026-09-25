@@ -1006,10 +1006,18 @@ CREATE TABLE IF NOT EXISTS reinitialisations (
     cree_le    TEXT NOT NULL,
     utilise_le TEXT
 );
--- Rapports de bug. `hote` est le compte proprietaire de la table (celui que
--- designe le jeton de partie) ; `nom` est ce que la personne a tape, et c'est
--- le seul identifiant d'un invite arrive par un lien de siege. Les deux sont
--- gardes : l'un dit ou le bug s'est produit, l'autre a qui repondre.
+-- Rapports de bug. `hote` est le compte PROPRIETAIRE DE LA TABLE (celui que
+-- designe le jeton de partie), et ne change jamais de sens : c'est lui que
+-- lit `rapports_de_ses_tables`, pour que l'hote voie TOUT ce qui vient de
+-- chez lui, qui que ce soit qui ecrive. `nom` est ce que la personne a tape.
+--
+-- `compte_verifie` (AJOUT du 25/09/2026) est une question DIFFERENTE : le
+-- compte de l'AUTEUR REEL, seulement quand on le connait avec certitude —
+-- le titulaire ecrivant depuis son propre siege 0, OU N'IMPORTE QUEL siege
+-- s'il porte un cookie de session verifie. C'est LUI qui ouvre un ticket
+-- (`_est_un_ticket`, `tickets_de`), jamais `hote` seul : un invite connecte
+-- a SON PROPRE compte sur la table d'un autre a un `hote` qui n'est pas lui,
+-- et un ticket qui doit pourtant lui appartenir a lui.
 CREATE TABLE IF NOT EXISTS rapports (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     quand       TEXT NOT NULL,
@@ -1025,7 +1033,8 @@ CREATE TABLE IF NOT EXISTS rapports (
     -- compte a partir de la, sans quoi un rapport vieux de six mois qu'on
     -- vient tout juste de traiter partirait le lendemain, capture comprise,
     -- avant meme qu'on ait pu s'en reservir.
-    traite_le   TEXT
+    traite_le   TEXT,
+    compte_verifie TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_rapports_etat ON rapports(etat);
 -- Le FIL d'un ticket (16/09/2026). Un rapport de bug envoye par le TITULAIRE
@@ -1162,6 +1171,17 @@ def initialiser_base() -> None:
         colonnes_rap = {r["name"] for r in cx.execute("PRAGMA table_info(rapports)")}
         if "traite_le" not in colonnes_rap:
             cx.execute("ALTER TABLE rapports ADD COLUMN traite_le TEXT")
+        # Meme precaution pour les bases creees avant le compte verifie
+        # (25/09/2026). ⚠ RATTRAPAGE OBLIGATOIRE : sans lui, chaque ticket
+        # DEJA OUVERT (siege 0, l'ancienne seule condition) disparaitrait de
+        # `tickets_de` au premier redemarrage, remplace par le silence — pas
+        # une erreur, juste plus rien. Un compte qui attendait une reponse ne
+        # la verrait plus jamais. Ceux d'avant etaient TOUS au siege 0 : leur
+        # auteur verifie, c'etait `hote` lui-meme.
+        if "compte_verifie" not in colonnes_rap:
+            cx.execute("ALTER TABLE rapports ADD COLUMN compte_verifie TEXT")
+            cx.execute("UPDATE rapports SET compte_verifie = hote"
+                       " WHERE siege = 0 AND hote IS NOT NULL AND hote != ''")
     _migrer_depuis_json()
     _attribuer_emplacements_manquants()
 
@@ -1933,12 +1953,19 @@ def debit_rapport_ok(hote: str) -> bool:
     return True
 
 
-def enregistrer_rapport(hote: str, champs: dict) -> int:
+def enregistrer_rapport(hote: str, champs: dict, compte_verifie: str | None = None) -> int:
     """Range un rapport et rend son numero. La capture part sur disque.
 
     Rien n'est refuse pour cause de champ trop long : on TRONQUE. Un rapport
     ampute vaut mieux qu'un rapport perdu, et la personne qui l'envoie n'a
     aucun moyen de savoir ce qui passe.
+
+    `compte_verifie` (25/09/2026) : le compte REEL de l'auteur, quand on le
+    connait avec certitude (voir le commentaire de la colonne dans `SCHEMA`).
+    ⚠ PAR DEFAUT (`None`), ON RETOMBE SUR LA REGLE HISTORIQUE : le titulaire
+    ecrivant depuis son propre siege 0 EST son propre auteur verifie ; tout
+    autre siege n'a personne de certain. Aucun appelant existant ne passe ce
+    parametre, et leur comportement ne change donc pas.
     """
     nom = " ".join(str(champs.get("nom") or "").split())[:80] or "anonyme"
     description = str(champs.get("description") or "").strip()[:MAX_DESCRIPTION_CARACTERES]
@@ -1948,6 +1975,8 @@ def enregistrer_rapport(hote: str, champs: dict) -> int:
         siege = int(champs.get("siege") or 0)
     except (TypeError, ValueError):
         siege = 0
+    if compte_verifie is None:
+        compte_verifie = hote if siege == 0 else None
 
     capture = None
     brut = champs.get("capture") or ""
@@ -1957,8 +1986,10 @@ def enregistrer_rapport(hote: str, champs: dict) -> int:
     with _cx() as cx:
         cur = cx.execute(
             "INSERT INTO rapports (quand, hote, nom, siege, ecran, description,"
-            " journal, capture, etat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'nouveau')",
-            (_maintenant(), hote, nom, siege, ecran, description, journal, capture))
+            " journal, capture, etat, compte_verifie)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'nouveau', ?)",
+            (_maintenant(), hote, nom, siege, ecran, description, journal, capture,
+             compte_verifie))
         return int(cur.lastrowid or 0)
 
 
@@ -2010,8 +2041,13 @@ def _ecrire_capture(donnee: str) -> str | None:
 # formulaire le dit honnetement a celui qui l'envoie.
 # ---------------------------------------------------------------------------
 def _est_un_ticket(r: dict) -> bool:
-    """Ce rapport a-t-il un proprietaire connu ?"""
-    return bool(r.get("hote")) and int(r.get("siege") or 0) == 0
+    """Ce rapport a-t-il un AUTEUR certain ?
+
+    ⚠ `compte_verifie` REMPLACE `siege == 0` (25/09/2026), et n'est PAS
+    `hote` : `hote` reste « la table », `compte_verifie` dit « qui, avec
+    certitude ». Voir le commentaire de la colonne dans `SCHEMA`.
+    """
+    return bool(r.get("compte_verifie"))
 
 
 def ticket_de(numero: int) -> dict | None:
@@ -2040,7 +2076,7 @@ def ecrire_message(numero: int, auteur: str, texte: str) -> bool:
     if not propre:
         return False
     with _cx() as cx:
-        r = cx.execute("SELECT hote, siege FROM rapports WHERE id = ?",
+        r = cx.execute("SELECT compte_verifie FROM rapports WHERE id = ?",
                        (numero,)).fetchone()
         if r is None or not _est_un_ticket(dict(r)):
             return False
@@ -2055,7 +2091,7 @@ def tickets_de(pseudo: str) -> list[dict]:
         return []
     with _cx() as cx:
         lignes = [dict(r) for r in cx.execute(
-            "SELECT * FROM rapports WHERE hote = ? AND siege = 0 ORDER BY id DESC",
+            "SELECT * FROM rapports WHERE compte_verifie = ? ORDER BY id DESC",
             (pseudo,))]
         for rapport in lignes:
             rapport["messages"] = [dict(m) for m in cx.execute(
@@ -4342,11 +4378,12 @@ class Handler(BaseHTTPRequestHandler):
                     fermer_session(valeur)
             self.send_response(303)
             self.send_header("Location", "/")
-            # Les memes attributs qu'a la pose : un cookie efface doit
-            # ressembler a celui qu'il remplace, sans quoi certains navigateurs
-            # gardent l'ancien a cote.
+            # Les memes attributs qu'a la pose (Domain compris, 25/09/2026) :
+            # un cookie efface doit ressembler a celui qu'il remplace, sans
+            # quoi certains navigateurs gardent l'ancien a cote.
+            domaine = ("; Domain=.%s" % DOMAINE) if DOMAINE else ""
             self.send_header("Set-Cookie",
-                             "nc_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0"
+                             f"nc_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0{domaine}"
                              + self._secure())
             self.send_header("Content-Length", "0")
             self.end_headers()
@@ -4601,9 +4638,19 @@ class Handler(BaseHTTPRequestHandler):
             # Secure : il ne part pas en clair. Sans lui, une premiere visite
             # tapee en `http://` envoyait le cookie sur le reseau avant meme que
             # Caddy n'ait eu le temps de rediriger vers HTTPS.
+            # Domain=.DOMAINE (25/09/2026, meme raison que le cookie de langue
+            # ci-dessous) : le site vit sur `<domaine>`, les tables sur
+            # `p<N>.<domaine>`. Sans le domaine parent, un invite connecte sur
+            # son PROPRE compte (depuis un second appareil ou un autre onglet)
+            # arrive sur une table sans que celle-ci sache qui il est reellement
+            # — son signalement de bug est alors attribue a l'hote de la table,
+            # jamais a lui. Voir `post_rapport_bug` (moteur) et `/api/bug`
+            # ci-dessous, qui relaient desormais ce cookie pour resoudre le vrai
+            # compte.
+            domaine = ("; Domain=.%s" % DOMAINE) if DOMAINE else ""
             self.send_header("Set-Cookie",
                              f"nc_session={jeton}; HttpOnly; SameSite=Lax; Path=/;"
-                             f" Max-Age={DUREE_SESSION_JOURS * 86400}"
+                             f" Max-Age={DUREE_SESSION_JOURS * 86400}{domaine}"
                              + self._secure())
             self.send_header("Content-Length", "0")
             self.end_headers()
@@ -4699,7 +4746,23 @@ class Handler(BaseHTTPRequestHandler):
                     self._repondre(400, b'{"error":"description vide"}',
                                    "application/json; charset=utf-8")
                     return
-                numero = enregistrer_rapport(qui, champs)
+                # ⚠ CORRECTIF (25/09/2026). `qui` ne dit que de quelle TABLE le
+                # rapport vient (le titulaire du jeton de partie), et le reste
+                # tel quel : `rapports_de_ses_tables` en depend pour que l'hote
+                # voie TOUT ce qui se passe chez lui. Ce qui manquait, c'est
+                # l'AUTEUR REEL quand ce n'est pas lui : un invite connecte a
+                # son PROPRE compte sur un autre onglet ou un autre appareil
+                # n'ouvrait aucune conversation possible (fiche
+                # `2026-09-19-file-d-attente-et-deploiement.md`). Le moteur
+                # relaie maintenant le cookie de session du NAVIGATEUR
+                # (`post_rapport_bug`, possible depuis que ce cookie porte
+                # `Domain=.<domaine>`) ; on le verifie ICI, cote site, seul a
+                # savoir resoudre une session. Une session invalide ou absente
+                # (invite jamais connecte) laisse `compte_verifie` a son
+                # defaut (`enregistrer_rapport` retombe sur la regle du siege
+                # 0), comportement inchange.
+                auteur_reel = pseudo_de_session(str(champs.get("nc_session") or ""))
+                numero = enregistrer_rapport(qui, champs, compte_verifie=auteur_reel or None)
                 self._repondre(200, json.dumps({"ok": True, "numero": numero}).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return

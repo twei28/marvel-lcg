@@ -1358,6 +1358,15 @@ class GameServerGet(GameServerBase):
             'ecran': str(data.get('ecran', '') or ''),
             'siege': str(data.get('siege', '') or ''),
             'capture': str(data.get('capture', '') or ''),
+            # CORRECTIF (25/09/2026) : le cookie de session du SITE, s'il est
+            # present sur CETTE requete du navigateur. Depuis que ce cookie
+            # porte `Domain=.<domaine>` (orchestrateur.py), un joueur connecte
+            # a son PROPRE compte l'envoie meme depuis une table qui n'est pas
+            # la sienne. Relaye tel quel : c'est le site, seul a savoir lire
+            # une session, qui decide s'il correspond a un compte reel. Une
+            # requete sans ce cookie (invite jamais connecte) passe une chaine
+            # vide, comme avant.
+            'nc_session': request.cookies.get('nc_session', ''),
         }
         # ⚠ ON TRACE CHAQUE TENTATIVE, ET C'EST LE FRUIT D'UNE ENQUETE RATEE
         # (19/09/2026). Un joueur a signale un bug le 18/09 ; il n'en restait
