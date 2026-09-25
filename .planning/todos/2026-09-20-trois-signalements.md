@@ -208,11 +208,36 @@ Aucun témoin ne couvre ce cas.
 ⚠ Ne pas le traiter en même temps que A : c'est le chemin « jouer », pas le
 chemin « chercher », et il touche deux méthodes partagées par tout le moteur.
 
+## D : CORRIGÉ le 25/09/2026
+
+`PlayCardsLikeInTurn` (`player_action.py`) consulte désormais le MÊME sas de
+recherche que `CloseSearchTransit` (`by_effect.context.search_transit`) au
+moment précis où il défausserait la carte impayable. Si cette carte y a une
+entrée (elle vient d'une recherche encore ouverte sur ce `by_effect`), elle
+retourne à son deck d'origine et est remélangée au lieu d'être défaussée ;
+sinon (main ordinaire, chemin A/B d'Echo…) le comportement historique — la
+défausser — ne change pas.
+
+Témoin ajouté, exactement comme prévu ci-dessus : `61008` Calling in Favors,
+Luke Cage (61003, coût 3, réduit à 1) recherché et accepté, main sans aucune
+ressource ET identité alter-ego épuisée (sinon le coût réduit à 1 se payait
+quand même avec la ressource gratuite du tour). `main_exclusive: []` ne vide
+RIEN — `if cas.get("main_exclusive")` est un test de vérité Python, une
+liste vide y est fausse — piège trouvé en écrivant ce cas, noté dans le
+commentaire du cas pour ne pas le refaire.
+
+Preuve par substitution faite (rouge sans le correctif : Luke Cage disparaît,
+ni en jeu ni dans le deck — perdu en défausse ; vert avec). Non-régression :
+les 9 autres cas de recherche existants (61008/61019/01095), les 18 cas Echo,
+le cas Daredevil du 25/09, et Dynamic Duo (62022) — tous verts. Construction
+des 5778 cartes du jeu : 0 erreur (fonction moteur partagée). Autoplay :
+8 parties Jessica Jones contre Rhino, 0 traceback, 2/8 bloquées (mieux que le
+témoin `spider_man`, 3/8, mesuré la même session).
+
 ---
 
 ## Reste ouvert
 
-- **D** ci-dessus, avec son témoin à écrire.
-- Répondre aux deux joueurs (Aghenatak pour A, Yarro pour B, et Yarro attend
-  toujours sur Echo depuis le 19/09 au soir).
-- **Rien n'est déployé** : les correctifs sont commités, pas mis en prod.
+- ~~Répondre aux deux joueurs~~ réglé par l'utilisateur (25/09/2026).
+- **Rien n'est déployé** : les correctifs (A, B, D, Echo, Daredevil) sont sur
+  le disque, pas mis en prod.

@@ -183,25 +183,26 @@ constaté). Section gardée pour mémoire du piège, plus d'action requise.
   l'étape 8 bis (rien ne prouve que le nouveau bouton soit VISIBLE) et
   l'autoplay ciblé.
 
-- **`fne/daredevil/60001a.py` (Sense the Top) porte probablement le MÊME défaut
-  de cache**, et c'est cerné : un grep sur `CheckIfFaceIsLikeInHand` ne rend que
-  **trois** cartes posant une condition variable — Magik (`aoa/magik/45030a.py`,
-  qui vide le cache à la main depuis longtemps), Echo (corrigée le 21/09) et
-  Daredevil. Sa condition est
-  `message.which_face == initiator.additional_deck.GetTop()` : quand la carte du
-  dessus part, **la suivante devient le dessus sans bouger**, donc avec la
-  réponse `False` figée par le cache — elle ne serait jamais jouable. Même
-  famille, même remède (rafraîchir les cartes de la pile concernée). **Non
-  mesuré**, hors du chantier d'Echo.
+- **`fne/daredevil/60001a.py` (Sense the Top) : MESURÉ ET CORRIGÉ le
+  25/09/2026.** Même défaut de cache qu'Echo, confirmé par mesure directe
+  (pas seulement par ressemblance de code) : cas
+  `tools/test_capacites.py` « Sense the Top », preuve par substitution faite
+  (rouge sans le correctif — `60002` reste refusée alors qu'elle est devenue
+  le vrai dessus ; vert avec). Remède : `RafraichirDessusDeckAnnexe`
+  (`fne/daredevil/__init__.py`), câblé sur 60001a.py via
+  `WhenCardWouldMoveToArea` + `CardFinder(card_ids=SENSE_DECK_IDS)`,
+  `AbilityType.Rule` comme sur Echo. Autoplay : 8 parties Daredevil contre
+  Rhino, 0 traceback, taux de blocage identique au témoin (3/8, même mesure
+  que le témoin `spider_man` ce jour-là) — bruit du pilote.
 
-- **Une seule Photographic Reflexes en main peut être dépensée comme
-  RESSOURCE** pour payer la carte glissée qu'elle vient d'autoriser : la
-  permission est lue avant le paiement, et au moment où Echo veut la défausser
-  il n'y a plus rien. Le joueur obtient l'événement **et** le bénéfice de la
-  ressource, sans rien perdre d'autre. **Défaut ANTÉRIEUR**, non corrigé : il ne
-  vient pas du chantier du 21/09, mais le témoin ajouté ce jour-là
-  (`la carte glissee payee AVEC une Photographic Reflexes de la main`) met
-  délibérément **deux** copies en main et passe donc à côté.
+- **Photographic Reflexes dépensée comme RESSOURCE pour payer sa propre
+  carte glissée : CORRIGÉ le 25/09/2026.** Voir
+  `2026-09-20-echo-photographic-reflexes-ergonomie.md` pour le détail complet
+  (moteur : `AbilityFactory.CheckThisCanDropPay` accepte désormais des
+  `conditions` ; Echo pose sa propre garde
+  `check_pas_payer_sa_propre_glissee`, qui autorise toujours une copie « de
+  secours »). Témoin ajouté, preuve par substitution faite, 9+9 cas Echo
+  existants toujours verts, autoplay 0 traceback.
 
 - **Le signalement perdu du 18/09 reste inexpliqué.** Aucune trace nulle part,
   et le joueur ne se souvient pas s'il avait vu la confirmation ou une erreur.
@@ -214,24 +215,44 @@ constaté). Section gardée pour mémoire du piège, plus d'action requise.
   sert une image pour tout chemin inconnu. Les deux passent maintenant par
   l'adresse publique du site (`/get_site_url`, renseignée par l'orchestrateur
   pour toutes les tables).
-- **Un signalement ne porte pas le compte de son auteur**, seulement le jeton de
-  la table et le nom tapé. Conséquence : un signalement envoyé depuis un second
-  appareil est désormais visible, mais reste sans conversation possible. Le
-  réparer vraiment demande de toucher le client du jeu et le relais.
+- ~~**Un signalement ne porte pas le compte de son auteur**~~ **CORRIGÉ le
+  25/09/2026.** Le cookie de session du site (`nc_session`) porte désormais
+  `Domain=.<domaine>` (comme le cookie de langue) : un invité connecté à son
+  PROPRE compte l'envoie même depuis la table de quelqu'un d'autre. Le moteur
+  le relaie (`post_rapport_bug`, dans le corps de `/api/bug`, jamais un
+  en-tête — l'appel site est serveur-à-serveur) ; le site le vérifie et pose
+  un nouveau champ `compte_verifie`, distinct de `hote` (qui reste « la table
+  », pour que `rapports_de_ses_tables` continue de tout montrer à l'hôte).
+  `_est_un_ticket`/`tickets_de` s'appuient désormais sur `compte_verifie`
+  plutôt que sur `siege == 0`. Migration écrite (bases existantes : les
+  tickets déjà ouverts au siège 0 sont rattrapés, sinon ils disparaissaient
+  au redémarrage). Un invité jamais connecté n'est toujours attribué à
+  personne (comportement inchangé). Témoins ajoutés dans
+  `site/test_parcours.py`, suite complète repassée au vert (à l'exception de
+  4 échecs préexistants, sans rapport, déjà présents avant ce correctif :
+  blocs `/admin` et pastille de la barre). Au passage : `initialiser_base()`
+  n'était appelé qu'à mi-fichier dans `test_parcours.py`, faisant planter le
+  tout premier cas sur une base neuve — déplacé en tête.
 - ~~**La bascule manuelle en cours de partie**~~ — **FAIT ET DÉPLOYÉ le
   22/09/2026** : bandeau de pause, qui/depuis quand publiés, mains et
   sélecteur de héros gardés fermés en multijoueur en ligne (armés par la
   RÈGLE, pas l'état). Voir la section de déploiement du 22/09.
 - **Les extensions non portées** demandent un import de données (cartes et
   scans) : le mode manuel seul ne les ouvre pas. Non cadré.
-- **`FileManager.FormatPath` se trompe sur un chemin POSIX absolu** sans lettre
-  de lecteur (trouvé le 18/09 en écrivant le harnais du mode manuel). Invisible
-  sous Windows, donc sans effet en production. Contourné côté harnais, moteur
-  non touché.
-- **Les auteurs fan-made ne sont pas confirmés** : 18 noms attribués, dont 3
-  ajoutés le 18/09, et 35 personnages jouables sans aucun auteur attesté. Fiche
-  `2026-09-16-crediter-les-auteurs-fanmade.md`. Rien ne doit s'afficher dans le
-  jeu avant validation ligne par ligne.
+- ~~**`FileManager.FormatPath` se trompe sur un chemin POSIX absolu**~~
+  **CORRIGÉ le 25/09/2026** (trouvé le 18/09 en écrivant le harnais du mode
+  manuel). `os.path.isabs()` remplace la vérification à la main
+  (`normalized_path[1] == ":"`, qui ne reconnaissait qu'une lettre de lecteur
+  Windows) : reconnaît les deux formes selon l'OS qui l'exécute, et règle au
+  passage un `IndexError` latent sur un chemin d'un seul caractère. Testé
+  directement (POSIX absolu, relatif, `/` seul) ; le cas Windows n'a pu être
+  vérifié que par le raisonnement, pas en conditions réelles.
+- ~~**Les auteurs fan-made ne sont pas confirmés**~~ **FERMÉ (décision de
+  l'utilisateur, 25/09/2026)** : 18 noms attribués, dont 3 ajoutés le 18/09,
+  35 personnages jouables sans aucun auteur attesté. Ne sera pas creusé
+  proactivement — on attend un éventuel signalement d'un joueur ou d'un
+  auteur avant de rouvrir. Fiche `2026-09-16-crediter-les-auteurs-fanmade.md`
+  laissée telle quelle pour référence.
 
 ## Le Ctrl+Z n'annulait pas un geste fait pendant une pause (20/09/2026)
 

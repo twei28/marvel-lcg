@@ -185,7 +185,29 @@ défausse de l'autre » était déjà là. Et le témoin ajouté ce jour-là
 (`la carte glissee payee AVEC une Photographic Reflexes de la main`) met
 délibérément **deux** copies en main, donc il passe à côté.
 
-Non corrigé, et inscrit dans la file d'attente.
+**CORRIGÉ le 25/09/2026.** `AbilityFactory.CheckThisCanDropPay` (moteur,
+`resources.py`) accepte désormais un paramètre `conditions` optionnel, thésé
+dans la liste existante (`[check_can_pay, *conditions]`) — changement neutre
+pour son unique autre appelant (`DoubleResourcesThisGenerates`, liste vide par
+défaut). Photographic Reflexes pose sa PROPRE `CheckThisCanDropPay` (au lieu
+du défaut de `ClassCard`) avec la garde `check_pas_payer_sa_propre_glissee` :
+elle refuse de payer une carte de la zone glissée d'Echo SAUF s'il reste une
+AUTRE copie en main pour porter le vrai coût de l'aptitude ensuite. Une copie
+« de secours » reste utilisable normalement.
+
+Témoin ajouté : `tools/test_capacites.py`, cas
+« 60040a Photographic Reflexes — SEULE en main, elle ne peut PAS payer la
+carte qu'elle vient d'autoriser ». Preuve par substitution faite (rouge sans
+le module : la carte se joue quand même, les deux cartes finissent en
+défausse ; vert avec). Les 9 cas `60040` et les 9 cas `60037` repassent au
+vert. Autoplay : 8 parties Echo contre Rhino, 0 traceback, taux de blocage
+identique au témoin `spider_man` (3/8 les deux) — bruit du pilote, pas une
+régression (voir GUIDE-CREATION-CONTENU.md §8). Étape 8 bis : sans objet, la
+carte ne change rien à ce que le plateau dessine.
+
+Étape 8 bis pour le CHEMIN A (bouton sur une carte en main), notée plus bas
+comme manquante depuis le 21/09, reste un point ouvert séparé — pas touché
+par ce correctif.
 
 ### Les deux chemins divergent quand le rejeu n'aboutit pas
 
