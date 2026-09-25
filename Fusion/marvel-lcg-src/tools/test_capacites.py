@@ -7237,6 +7237,22 @@ CAS = [
         "attendu": {"compteurs": [["kb012", "arrow", 2]], "defausse": ["kb015"], "en_main": ["35013"]},
     },
     {
+        "nom": "statistiques — les degats infliges sont separes par siege, pas melanges entre les joueurs",
+        "pourquoi": ("signale par l'utilisateur (25/09/2026) : sur une table a plusieurs, les "
+                     "degats d'un invite se fondaient dans les statistiques personnelles du "
+                     "titulaire du compte (siege 0), sans distinction possible. Partie a DEUX "
+                     "joueurs, chacun attaque une fois avec son heros (ATK 2 les deux, meme "
+                     "valeur imprimee) : `par_siege` doit isoler les deux a 2 chacun, jamais "
+                     "4 d'un cote et 0 de l'autre."),
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.ChangeForm('kb001b')", "Puzzle.ChangeForm('04001b')"],
+        "declencher": ["Puzzle.Attack('kb001a')", "Puzzle.Attack('04001a')"],
+        "verifier": "stats_par_siege_isolees",
+        "attendu": {"par_siege": [[0, "total_damage_dealt", 2], [1, "total_damage_dealt", 2]]},
+    },
+    {
         "nom": "kb016 Finding the Perfect LMD — tant qu'elle est en jeu, Madame Masque ne peut pas prendre de degats",
         "pourquoi": "UnitCannotTakeDamageWhile cible Madame Masque par son nom : verifie qu'elle encaisse vraiment 0",
         "scenario": "rhino",
@@ -49359,6 +49375,30 @@ def daredevil_dessus_deck_annexe(monde, aides):
         return False, (f"{suivant_id} est maintenant au sommet du deck annexe mais reste "
                        f"REFUSEE (cache fige a {avant} avant le retrait du dessus precedent)")
     return True, f"{suivant_id} devient offerte des qu'elle passe au sommet (cache correctement rafraichi)"
+
+
+def stats_par_siege_isolees(monde, aides):
+    """Les degats infliges par CHAQUE siege sont comptes a part, dans
+    `Engine.statistics.content.par_siege` (25/09/2026, signale par
+    l'utilisateur : sur une table a plusieurs, les degats d'un invite se
+    fondaient dans les statistiques personnelles du titulaire du compte,
+    sans distinction possible).
+
+    Cle `attendu["par_siege"]` : liste de `[siege, cle, valeur]`.
+    """
+    from engine import Engine
+    attendu = aides["cas"].get("attendu") or {}
+    par_siege = Engine.statistics.content.par_siege
+    soucis = []
+    dits = []
+    for siege, cle, valeur in attendu.get("par_siege") or []:
+        reel = (par_siege.get(str(siege)) or {}).get(cle, 0)
+        dits.append(f"siege {siege} {cle}={reel}")
+        if reel != valeur:
+            soucis.append(f"siege {siege} {cle} = {reel}, attendu {valeur} (par_siege={par_siege})")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, " | ".join(dits) or "conforme"
 
 
 def su008_fouille_du_deck_rencontre(monde, aides):

@@ -241,6 +241,22 @@
     zone.textContent = '';
 
     const s = stats || {};
+    // ⚠ SIEGE 0 SEULEMENT pour tout ce qui a un auteur (25/09/2026, signale
+    // par l'utilisateur). Les compteurs plats (s.total_damage_dealt...)
+    // melangeaient les degats/soins/cartes/K.O. de TOUS les sieges de la
+    // table -- un invite en plus de l'hote gonflait les stats du titulaire
+    // du compte sans distinction possible. `par_siege["0"]` (nouveau,
+    // game/statistics/statistics.py) isole le siege 0, celui du titulaire :
+    // cet ecran n'est vu QUE par lui, les invites n'ont pas leur propre
+    // wizard en ligne (meme raison que pour le tableau Heros/Scenario plus
+    // bas). Les parties DEJA jouees avant ce correctif n'ont personne a qui
+    // attribuer retroactivement : elles retombent a 0 sur ces tuiles,
+    // seules les prochaines parties comptent.
+    //
+    // Victoires/defaites, elles, restent le total de la TABLE : une partie
+    // cooperative se gagne ou se perd ENSEMBLE, la separer par siege n'aurait
+    // aucun sens.
+    const moi = s.par_siege && s.par_siege['0'] || {};
     const jouees = (s.games_won || 0) + (s.games_lost || 0);
     const winrate = jouees ? Math.round((100 * (s.games_won || 0)) / jouees) : 0;
     const tuile = (valeur, libelle) =>
@@ -249,21 +265,22 @@
       tuile(jouees, t('parties terminees')),
       tuile(`${s.games_won || 0} / ${s.games_lost || 0}`, t('victoires / defaites')),
       tuile(`${winrate}%`, t('taux de victoire')),
-      tuile(s.total_damage_dealt || 0, t('degats infliges')),
-      tuile(s.total_damage_taken || 0, t('degats subis')),
-      tuile(s.total_damage_healed || 0, t('degats soignes')),
-      tuile(s.total_cards_drawn || 0, t('cartes piochees')),
-      tuile(s.total_threats_removed || 0, t('menace retiree')),
-      tuile(s.max_single_damage_dealt || 0, t('plus gros coup'))));
+      tuile(moi.total_damage_dealt || 0, t('degats infliges')),
+      tuile(moi.total_damage_taken || 0, t('degats subis')),
+      tuile(moi.total_damage_healed || 0, t('degats soignes')),
+      tuile(moi.total_cards_drawn || 0, t('cartes piochees')),
+      tuile(moi.total_threats_removed || 0, t('menace retiree')),
+      tuile(moi.max_single_damage_dealt || 0, t('plus gros coup'))));
 
     // Succes cumules (game/rule/achievement.py) : montres seulement si au
-    // moins un a ete debloque, pour ne pas surcharger l'ecran.
+    // moins un a ete debloque, pour ne pas surcharger l'ecran. Par siege
+    // aussi : un K.O. est le fait d'UN heros, pas de la table.
     const succes = [
-      [s.achievement_first_blood || 0, t('premier sang')],
-      [s.achievement_double_kill || 0, t('double K.O.')],
-      [s.achievement_triple_kill || 0, t('triple K.O.')],
-      [s.achievement_ultra_kill || 0, t('quadruple K.O.')],
-      [s.achievement_rampage || 0, t('dechainement')],
+      [moi.achievement_first_blood || 0, t('premier sang')],
+      [moi.achievement_double_kill || 0, t('double K.O.')],
+      [moi.achievement_triple_kill || 0, t('triple K.O.')],
+      [moi.achievement_ultra_kill || 0, t('quadruple K.O.')],
+      [moi.achievement_rampage || 0, t('dechainement')],
     ].filter(([n]) => n > 0);
     if (succes.length) {
       zone.append(el('h3', { class: 'reprise-sous-titre' }, '\u{1F3C6} ' + t('Succes debloques')));
@@ -279,12 +296,22 @@
     }
 
     // Winrate par heros et par scenario.
+    //
+    // ⚠ SEULEMENT LE SIEGE 0 POUR LES HEROS (25/09/2026, signale par
+    // l'utilisateur). `partie.heroes` liste UN HEROS PAR SIEGE
+    // (game/rule/statistics.py, statistics_gameover : une entree par joueur
+    // de `const_players`, dans l'ordre). Cet ecran n'est vu QUE par le
+    // titulaire du compte (en ligne, les invites n'ont pas leur propre
+    // wizard : « le siege 0 est celui de l'hote, il choisit dans SON
+    // wizard » -- app.js). Compter TOUS les heros de la partie melangeait
+    // donc le heros d'un invite dans les statistiques du titulaire. Le
+    // scenario, lui, est commun a la table : pas concerne.
     const agreger = (cle) => {
       const table = new Map();
       for (const partie of parties) {
         const cles = cle === 'scenario'
           ? [partie.scenario || '?']
-          : (partie.heroes || []).map((h) => h.name || '?');
+          : [(partie.heroes || [])[0]?.name || '?'];
         for (const nom of cles) {
           const ligne = table.get(nom) || { jouees: 0, gagnees: 0 };
           ligne.jouees += 1;

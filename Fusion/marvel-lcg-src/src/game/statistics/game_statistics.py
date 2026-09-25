@@ -137,8 +137,51 @@ class GameStatistics:
             return
 
         setattr(self.content, name, getattr(self.content, name) + 1)
+        self._RecordForSeat(player, name, 1)
         text = f"Achievement: {name.lstrip('achievement_').upper()}"
         Notify.Statistics(text)
+
+    def _SeatOf(self, player: 'Player') -> str|None:
+        """L'index de siege d'un joueur, en chaine ("0".."3"), ou None si
+        indeterminable (bac a sable sans const_players, joueur retire...).
+        Ne leve jamais : un echec ici ne doit pas casser l'enregistrement
+        du total de la table, qui continue meme sans repartition par siege.
+        """
+        try:
+            return str(player.world.const_players.index(player))
+        except Exception:
+            return None
+
+    def RecordForSeat(self, player: 'Player', name: str, value: int) -> None:
+        """Ajoute `value` au compteur `name` du SIEGE de `player`, en plus
+        du total plat existant (voir `RecordValue`, qui reste table par
+        table). Meme cle que les champs de `Statistics` (`total_damage_dealt`,
+        `total_cards_drawn`...), mais ce n'est PAS un champ de la dataclass :
+        juste une entree dans `content.par_siege[siege]`.
+        """
+        self._RecordForSeat(player, name, value)
+
+    def RecordMaximumForSeat(self, player: 'Player', name: str, value: int) -> None:
+        """Le RECORD (pas la somme) de `name` pour le SIEGE de `player` :
+        « le plus gros coup QUE TOI tu as inflige », pas celui de la table.
+        """
+        if self.IsPause():
+            return
+        siege = self._SeatOf(player)
+        if siege is None:
+            return
+        par_siege = self.content.par_siege.setdefault(siege, {})
+        if par_siege.get(name, 0) < value:
+            par_siege[name] = value
+
+    def _RecordForSeat(self, player: 'Player', name: str, value: int) -> None:
+        if self.IsPause():
+            return
+        siege = self._SeatOf(player)
+        if siege is None:
+            return
+        par_siege = self.content.par_siege.setdefault(siege, {})
+        par_siege[name] = par_siege.get(name, 0) + value
 
     def RecordValue(self, name: Literal[
         "operation",

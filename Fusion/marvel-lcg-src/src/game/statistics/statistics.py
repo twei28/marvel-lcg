@@ -66,6 +66,17 @@ class Statistics:
 
     data: Dict[str, Tuple[int, int, int]] = field(default_factory=lambda: {})
 
+    # AJOUT (25/09/2026, signale par l'utilisateur). Repartition PAR SIEGE
+    # des compteurs qui ont un auteur naturel (qui a inflige/subi/soigne,
+    # pioche, retire une menace, obtenu un K.O....). Cle = INDEX de siege
+    # ("0".."3", meme ordre que `world.const_players`), jamais le pseudo :
+    # un siege garde son sens d'une partie a l'autre sur cette table, un
+    # invite non. Les compteurs plats ci-dessus restent le TOTAL DE LA
+    # TABLE, inchanges : `game/achievements.py` s'appuie dessus pour ses
+    # hauts faits, qui restent table par table, pas joueur par joueur.
+    # `par_siege` est purement ADDITIF, l'ancien code ne le lit jamais.
+    par_siege: Dict[str, Dict[str, int]] = field(default_factory=lambda: {})
+
     def UpdateVersion(self):
         attributes = [
             ('game_won', 'games_won'),

@@ -116,24 +116,53 @@ def GetStatisticsRule() -> List['Ability']:
     def remove_threats(message: 'Message.AfterSchemeRemoveThreat'):
         Engine.game.session.statistics.Add(message.by_effect.this, message.value, 'thwarted_threat')
         Engine.statistics.RecordValue("total_threats_removed", message.value)
+        joueur = message.by_effect.GetInitiator()
+        if joueur is not None:
+            Engine.statistics.RecordForSeat(joueur, "total_threats_removed", message.value)
 
     def heal_damage(message: 'Message.AfterUnitHealHealth'):
         Engine.statistics.RecordValue("total_damage_healed", message.value)
         Engine.statistics.RecordMaximum("max_single_damage_healed", message.value)
+        # ⚠ ATTRIBUE AU RECEVEUR, PAS AU SOIGNEUR (symetrique de "degats
+        # subis" ci-dessous : les deux tuiles racontent ce qui est arrive
+        # A TON heros, pas ce que tu as fait toi-meme). La condition de
+        # l'aptitude garantit deja que le controleur est un joueur.
+        Engine.statistics.RecordForSeat(message.trigger.GetControlByPlayer(), "total_damage_healed", message.value)
 
     def player_drawn(message: 'Message.AfterPlayerDrewCards'):
         Engine.statistics.RecordValue("total_cards_drawn", message.size)
         Engine.statistics.RecordMaximum("max_single_cards_drawn", message.size)
+        Engine.statistics.RecordForSeat(message.GetToPlayer(), "total_cards_drawn", message.size)
+
+    def _joueur_du_degat(message: 'Message.AfterFaceDealDamage') -> 'Player|None':
+        """Qui a INFLIGE ce degat : l'attaquant s'il en existe un et qu'il
+        appartient a un joueur, sinon la carte payeuse (evenement a degat
+        direct, sans « unite » attaquante) si elle-meme appartient a un
+        joueur. Reprend exactement la condition de l'aptitude qui declenche
+        `deal_damage`, pour ne jamais attribuer un degat que le total plat
+        n'aurait pas compte non plus."""
+        if message.attacker is not None and Player.IsType(message.attacker.GetControlBy()):
+            return message.attacker.GetControlByPlayer()
+        if PlayerCard.IsType(message.by_effect.this) and Player.IsType(message.by_effect.this.GetControlBy()):
+            return message.by_effect.this.GetControlByPlayer()
+        return None
 
     def deal_damage(message: 'Message.AfterFaceDealDamage'):
         Engine.game.session.statistics.Add(message.by_effect.this, message.dealt_damage, 'damage_dealt')
         Engine.statistics.RecordValue("total_damage_dealt", message.dealt_damage)
         Engine.statistics.RecordMaximum("max_single_damage_dealt", message.dealt_damage)
+        joueur = _joueur_du_degat(message)
+        if joueur is not None:
+            Engine.statistics.RecordForSeat(joueur, "total_damage_dealt", message.dealt_damage)
+            Engine.statistics.RecordMaximumForSeat(joueur, "max_single_damage_dealt", message.dealt_damage)
 
     def take_damage(message: 'Message.AfterFaceDealDamage'):
         Engine.game.session.statistics.Add(message.target, message.dealt_damage, 'damage_taken')
         Engine.statistics.RecordValue("total_damage_taken", message.dealt_damage)
         Engine.statistics.RecordMaximum("max_single_damage_taken", message.dealt_damage)
+        # ⚠ ATTRIBUE A LA CIBLE : c'est TON heros qui a pris le coup, meme
+        # si c'est un allie d'un autre joueur qui l'a inflige.
+        Engine.statistics.RecordForSeat(message.target.GetControlByPlayer(), "total_damage_taken", message.dealt_damage)
 
     def statistics_record(face: 'CardFace', method: Literal["Resolve", "Play", "Resource", "Reveal", "PutIntoPlay", "Hero", "Attached", "Defeated", "Discard", "Cancel"]):
         if method == "PutIntoPlay":

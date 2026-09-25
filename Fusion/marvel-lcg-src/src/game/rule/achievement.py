@@ -12,6 +12,7 @@ def GetPlayAchievement() -> List['Ability']:
         Effects.UnRegister(effect)
         assert message.killer != None
         player = message.killer.GetControlByPlayer()
+        # RecordAchievement fait deja les deux (total plat + par siege).
         Engine.statistics.RecordAchievement(player, 'achievement_first_blood')
 
     def achievement_kill_count(effect: 'Effect', message: 'Message.AfterUnitBeDefeated'):
