@@ -537,11 +537,32 @@ def charger_partie_interrompue(partie: "Partie", pseudo: str) -> bool:
     if not attendue:
         return False
     try:
+        # ⚠ `/debug` EXIGE DEUX COOKIES, PAS SEULEMENT LE MOT DE PASSE
+        # (25/09/2026, signale en jeu : « Reprendre cette partie » retombait
+        # toujours sur l'ecran de preparation). `session_token` ET
+        # `app_version` (IsAuthenticate/IsVersionMatch, web_server.py) : sans
+        # eux, le moteur repond un simple 200 + page d'authentification —
+        # PAS une erreur — et la commande /load n'est jamais executee.
+        # `urllib.request.urlopen` nu, sans cookie, laissait donc cet echec
+        # totalement silencieux.
+        #
+        # `session_token` = md5(mot de passe) est deterministe (meme formule
+        # que `IsAuthenticate`, cote moteur). `app_version`, lui, ne l'est
+        # PAS depuis ce processus : c'est le moteur qui le calcule
+        # (`Ver.ui_version_str`, buildvers a build), donc on le lui demande
+        # d'abord via `/get_version`, route deliberement SANS authentification
+        # (c'est le bootstrap qui pose ce cookie chez un vrai navigateur).
+        jeton_session = hashlib.md5(partie.mot_de_passe.encode()).hexdigest()
+        lien_version = "http://127.0.0.1:%d/get_version" % partie.port
+        with urllib.request.urlopen(lien_version, timeout=10) as reponse:
+            app_version = reponse.read().decode("utf-8", "replace").strip()
+        cookies = f"session_token={jeton_session}; app_version={app_version}"
         # `:-1` = reprendre au DERNIER pas enregistre, comme le bouton
         # « Reprendre » de l'assistant.
         lien = "http://127.0.0.1:%d/debug?/load %s:-1" % (
             partie.port, urllib.parse.quote(attendue["fichier"]))
-        with urllib.request.urlopen(lien, timeout=30) as reponse:
+        requete = urllib.request.Request(lien, headers={"Cookie": cookies})
+        with urllib.request.urlopen(requete, timeout=30) as reponse:
             reponse.read()
         return True
     except (urllib.error.URLError, OSError, ValueError) as exc:

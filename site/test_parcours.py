@@ -2161,11 +2161,32 @@ verifier("« reprendre » note le chargement a faire",
 # ecrite par une version anterieure peut etre refusee : la table doit rester
 # ouverte sur l'ecran des heros, et la partie ne plus etre proposee — la
 # reproposer indefiniment serait pire que de ne rien proposer.
+#
+# ⚠ DEUX APPELS DESORMAIS, PAS UN SEUL (25/09/2026, correctif du bouton
+# « Reprendre » qui retombait toujours sur l'ecran de preparation) :
+# `/get_version` d'abord (recupere le cookie `app_version` que le moteur
+# attend), PUIS `/debug?/load ...` avec les deux cookies. Le mock doit
+# repondre au premier pour que le second, celui qu'on veut voir echouer,
+# soit bien tente.
 _appels_reprise = []
 
 
-def _ouverture_qui_echoue(lien, timeout=None):
+class _ReponseFausseVersion:
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_exc):
+        return False
+
+    def read(self):
+        return b"0.5.9.200r"
+
+
+def _ouverture_qui_echoue(requete, timeout=None):
+    lien = requete if isinstance(requete, str) else requete.full_url
     _appels_reprise.append(lien)
+    if "/get_version" in lien:
+        return _ReponseFausseVersion()
     raise o.urllib.error.URLError("moteur qui refuse")
 
 
@@ -2173,15 +2194,58 @@ _avant = o.urllib.request.urlopen
 o.urllib.request.urlopen = _ouverture_qui_echoue
 try:
     _table = o.Partie(4, "hote", "Jeu de hote")
+    _table.mot_de_passe = "peu importe"
     _ok = o.charger_partie_interrompue(_table, "hote")
 finally:
     o.urllib.request.urlopen = _avant
 verifier("un chargement refuse ne leve pas", _ok is False)
 verifier("et il a bien demande le bon fichier, au dernier pas",
-         _appels_reprise and "partie.json" in _appels_reprise[0]
-         and _appels_reprise[0].endswith(":-1"), str(_appels_reprise))
+         len(_appels_reprise) == 2 and "partie.json" in _appels_reprise[1]
+         and _appels_reprise[1].endswith(":-1"), str(_appels_reprise))
 verifier("et la partie n'est plus proposee, meme apres un echec",
          o.partie_interrompue("hote") is None)
+
+# --- Reprendre, cette fois avec des cookies CORRECTS (25/09/2026) ----------
+# Le bug lui-meme : `/debug` exige `session_token` (md5 du mot de passe) ET
+# `app_version`, que l'ancien code ne posait jamais. Un mock qui repond
+# toujours succes, sans regarder les cookies envoyes, laisserait ce meme
+# defaut repasser inapercu. Celui-ci VERIFIE les cookies recus par `/debug`,
+# pas seulement que la reponse finale est `True`.
+#
+# ⚠ PSEUDO DEDIE, PAS « hote ». `charger_partie_interrompue` s'appelle ici
+# directement (sans passer par la route `/reprendre`) : nul besoin d'un
+# compte reel. Un pseudo jamais implique dans un thread de fond ailleurs
+# dans ce fichier evite toute course avec ce dernier.
+_table_isolee = o.Partie(4, "cookie-test-25-09", "Jeu isole pour ce test")
+_table_isolee.mot_de_passe = "un mot de passe bien a elle"
+o.retenir_partie_interrompue("cookie-test-25-09", "../replays/serveur-4/partie.json",
+                             "arret du site", {"scenario": "Rhino", "round": 7})
+_cookies_recus = {}
+
+
+def _ouverture_avec_bons_cookies(requete, timeout=None):
+    if isinstance(requete, str):
+        return _ReponseFausseVersion()
+    lien = requete.full_url
+    if "/debug" in lien:
+        _cookies_recus["cookie"] = requete.get_header("Cookie") or requete.headers.get("Cookie")
+    return _ReponseFausseVersion()
+
+
+_avant = o.urllib.request.urlopen
+o.urllib.request.urlopen = _ouverture_avec_bons_cookies
+try:
+    _ok = o.charger_partie_interrompue(_table_isolee, "cookie-test-25-09")
+finally:
+    o.urllib.request.urlopen = _avant
+verifier("un chargement correctement authentifie reussit", _ok is True)
+_jeton_attendu = o.hashlib.md5(_table_isolee.mot_de_passe.encode()).hexdigest()
+verifier("le cookie session_token est le bon (md5 du mot de passe de LA TABLE)",
+         _cookies_recus.get("cookie", "").find(f"session_token={_jeton_attendu}") != -1,
+         str(_cookies_recus))
+verifier("le cookie app_version est celui rendu par /get_version",
+         "app_version=0.5.9.200r" in _cookies_recus.get("cookie", ""),
+         str(_cookies_recus))
 
 
 # ---------------------------------------------------------------------------
