@@ -559,12 +559,45 @@ def charger_partie_interrompue(partie: "Partie", pseudo: str) -> bool:
         cookies = f"session_token={jeton_session}; app_version={app_version}"
         # `:-1` = reprendre au DERNIER pas enregistre, comme le bouton
         # « Reprendre » de l'assistant.
-        lien = "http://127.0.0.1:%d/debug?/load %s:-1" % (
-            partie.port, urllib.parse.quote(attendue["fichier"]))
+        #
+        # ⚠ TOUTE LA COMMANDE PASSE PAR `quote()`, PAS SEULEMENT LE FICHIER
+        # (25/09/2026, trouve APRES le correctif des cookies ci-dessus : le
+        # bouton retombait toujours sur l'ecran de preparation). L'espace
+        # entre « /load » et le chemin restait litteral dans l'URL — Python
+        # 3.10 le refuse net : `http.client.InvalidURL: URL can't contain
+        # control characters ... (found at least ' ')`. Cette exception
+        # N'EST PAS un `URLError`/`OSError`/`ValueError` : le `except`
+        # ci-dessous ne l'attrapait jamais, elle remontait crue jusqu'au
+        # thread de fond (`demarrer_en_fond`), qui l'avalait dans
+        # `ERREURS_DEMARRAGE` sans que rien ne le dise au joueur. Verifie en
+        # direct contre le moteur reel : 200 + corps = la commande telle
+        # quelle une fois `quote()` sur l'ensemble, plus d'exception.
+        commande = f"/load {attendue['fichier']}:-1"
+        lien = "http://127.0.0.1:%d/debug?%s" % (partie.port, urllib.parse.quote(commande, safe="/:"))
         requete = urllib.request.Request(lien, headers={"Cookie": cookies})
         with urllib.request.urlopen(requete, timeout=30) as reponse:
             reponse.read()
-        return True
+        # ⚠ `/debug` NE FAIT QUE POSER LA COMMANDE EN FILE
+        # (`console.SetCommand`), IL NE L'EXECUTE PAS AVANT DE REPONDRE
+        # (`handle_debug_command`, server_sync.py) : verifie en direct
+        # contre le moteur reel, la reponse HTTP revient en ~5 ms et
+        # `/get_partie_en_cours` dit encore `en_cours: false` juste apres.
+        # Sans cette attente, `charger_partie_interrompue` rend `True` avant
+        # que la partie ne soit reellement chargee -- exactement « LA COURSE
+        # DU 24/09/2026 » documentee plus haut dans ce fichier
+        # (`REPRISE_EN_COURS`), mais un cran plus loin : cette fois la
+        # course n'est plus entre deux REQUETES separees, mais entre CETTE
+        # requete et le fil de jeu interne du moteur qui la traite.
+        lien_etat = "http://127.0.0.1:%d/get_partie_en_cours?jeton=%s" % (
+            partie.port, urllib.parse.quote(partie.jeton_site or ""))
+        for _ in range(30):
+            with urllib.request.urlopen(lien_etat, timeout=5) as reponse:
+                etat = json.loads(reponse.read())
+            if etat.get("en_cours"):
+                return True
+            time.sleep(0.3)
+        sys.stderr.write("reprise impossible pour %s : chargement jamais confirme\n" % pseudo)
+        return False
     except (urllib.error.URLError, OSError, ValueError) as exc:
         sys.stderr.write("reprise impossible pour %s : %r\n" % (pseudo, exc))
         return False

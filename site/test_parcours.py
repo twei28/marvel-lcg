@@ -2223,11 +2223,25 @@ o.retenir_partie_interrompue("cookie-test-25-09", "../replays/serveur-4/partie.j
 _cookies_recus = {}
 
 
+class _ReponseJson:
+    def __init__(self, donnees):
+        self._corps = o.json.dumps(donnees).encode("utf-8")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_exc):
+        return False
+
+    def read(self):
+        return self._corps
+
+
 def _ouverture_avec_bons_cookies(requete, timeout=None):
-    if isinstance(requete, str):
-        return _ReponseFausseVersion()
-    lien = requete.full_url
-    if "/debug" in lien:
+    lien = requete if isinstance(requete, str) else requete.full_url
+    if "/get_partie_en_cours" in lien:
+        return _ReponseJson({"en_cours": True})
+    if not isinstance(requete, str) and "/debug" in lien:
         _cookies_recus["cookie"] = requete.get_header("Cookie") or requete.headers.get("Cookie")
     return _ReponseFausseVersion()
 
@@ -2246,6 +2260,38 @@ verifier("le cookie session_token est le bon (md5 du mot de passe de LA TABLE)",
 verifier("le cookie app_version est celui rendu par /get_version",
          "app_version=0.5.9.200r" in _cookies_recus.get("cookie", ""),
          str(_cookies_recus))
+
+# ⚠ `/debug` NE FAIT QUE POSER LA COMMANDE EN FILE, IL NE L'EXECUTE PAS
+# AVANT DE REPONDRE (25/09/2026, deuxieme moitie du meme bug : trouve APRES
+# le correctif des cookies ci-dessus, en testant contre le moteur reel).
+# Sans l'attente sur `/get_partie_en_cours`, `charger_partie_interrompue`
+# rendait `True` des que la commande etait EN FILE, pas quand elle avait
+# reellement charge la partie — la course « LA COURSE DU 24/09 » plus bas
+# dans ce fichier, un cran plus loin.
+_table_isolee_2 = o.Partie(4, "cookie-test-25-09-course", "Jeu isole pour ce test")
+_table_isolee_2.mot_de_passe = "un autre mot de passe"
+o.retenir_partie_interrompue("cookie-test-25-09-course", "../replays/serveur-4/partie.json",
+                             "arret du site", {"scenario": "Rhino", "round": 7})
+
+
+def _ouverture_jamais_prete(requete, timeout=None):
+    lien = requete if isinstance(requete, str) else requete.full_url
+    if "/get_partie_en_cours" in lien:
+        return _ReponseJson({"en_cours": False})
+    return _ReponseFausseVersion()
+
+
+_avant = o.urllib.request.urlopen
+_avant_sommeil = o.time.sleep
+o.urllib.request.urlopen = _ouverture_jamais_prete
+o.time.sleep = lambda _s: None  # sinon ce test dure reellement 9 secondes
+try:
+    _ok = o.charger_partie_interrompue(_table_isolee_2, "cookie-test-25-09-course")
+finally:
+    o.urllib.request.urlopen = _avant
+    o.time.sleep = _avant_sommeil
+verifier("un chargement jamais confirme par le moteur n'est pas pris pour un succes",
+         _ok is False)
 
 
 # ---------------------------------------------------------------------------
