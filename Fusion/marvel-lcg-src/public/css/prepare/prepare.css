@@ -1372,7 +1372,16 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   background:#1e1e1e;
 }
 .tb-art{position:absolute;inset:0;background:#1e1e1e center var(--affiche-cadrage,18%)/cover no-repeat;animation:entre-en-scene .35s ease}
-.tb-art .portrait-duo .portrait.duo{background-size:cover}
+/* PAS de background-size:cover ici (25/09/2026, signale par l'utilisateur,
+   qui compare aux vignettes ".tu peux mettre la meme chose sur la grande ?
+   on voit bien les persos sur les deux petites") : ce panneau est bien plus
+   grand et d'un ratio tres different des vignettes (152x218), et `cover`
+   y ecrasait le zoom/cadrage calcule pour chaque visage (`.portrait-duo
+   .portrait.duo-a/.duo-b`, 210 %, plus haut dans ce fichier) par un zoom
+   generique tres different, au point qu'un seul des deux heros restait
+   reconnaissable a l'oeil. En laissant tomber cette regle, `.tb-art` herite
+   du meme 210 % que les vignettes : MEME cadrage partout, plus qu'UNE seule
+   source de verite pour ce reglage. */
 .tb-art.vide{background:radial-gradient(ellipse at 40% 45%,#1d2430,#1e1e1e 70%)}
 @keyframes entre-en-scene{from{opacity:0;transform:translateX(-30px) scale(1.03)}to{opacity:1;transform:none}}
 /* Le voile et la trame : l'art fond vers le noir à droite et en bas, avec les
