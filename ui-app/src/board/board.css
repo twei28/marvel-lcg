@@ -2585,6 +2585,38 @@
        deux. Il ne portait aucune information que le liseré ne porte déjà. */
   }
 
+  /* Alliés / sbires plus faciles à distinguer d'un coup d'œil (25/09/2026,
+     demande de l'utilisateur). Deux ajouts, tous deux SCOPÉS à cette zone
+     pour ne rien changer ailleurs sur le plateau :
+
+     1) Le halo de camp (ScanCard.css, --camp-ring/--camp-glow, deja vert
+        joueur / rouge rencontre) existait deja mais restait discret. Anneau
+        plus epais et pleinement opaque ici seulement — c'est justement la
+        zone qui melange les deux camps, les autres n'en ont pas besoin. */
+  .zone-terrain-combat .scan-card {
+    --camp-epaisseur: 6px;
+  }
+  .zone-terrain-combat .scan-card.camp-player {
+    --camp-ring: rgba(140, 155, 60, 1);
+    --camp-glow: rgba(140, 155, 60, 0.6);
+  }
+  .zone-terrain-combat .scan-card.camp-encounter {
+    --camp-ring: rgba(166, 0, 0, 1);
+    --camp-glow: rgba(166, 0, 0, 0.65);
+  }
+
+  /* 2) Un trait fin entre deux groupes qui ont chacun au moins une carte
+        (alliés | sbires engagés | [autres joueurs] | environnement,
+        zones.ts). `:not(:empty) ~ :not(:empty)` saute proprement les
+        groupes vides SANS les cacher : le groupe des sbires engagés doit
+        rester présent et ciblable même à 0 sbire, c'est la ou l'on lâche un
+        sbire glissé pour l'engager (`CLE_PILE_ENGAGES`) — un `display:none`
+        aurait cassé ce dépôt. */
+  .zone-terrain-combat .plateau-groupe:not(:empty) ~ .plateau-groupe:not(:empty) {
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+    padding-left: 12px;
+  }
+
   /* Aire joueur, rangee basse : soutiens, permanents, ameliorations. */
   .zone-terrain-soutien {
     grid-area: terrain-soutien;

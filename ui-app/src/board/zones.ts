@@ -793,13 +793,18 @@ export function construirePlateau(world: World, options: Options): Plateau {
       [
         posees(notre?.allies, rendu, { proprietaire: nomHero(notre) }),
         posees(notre?.engaged_enemies, rendu, { proprietaire: nomHero(notre) }),
-        posees(world.area_environment, rendu),
-        posees(notre?.environment_area, rendu),
         // En multijoueur, les autres joueurs partagent l'aire : leur ligne de combat.
         ...autres.flatMap((joueur) => [
           posees(joueur.allies, rendu, { proprietaire: nomHero(joueur) }),
           posees(joueur.engaged_enemies, rendu, { proprietaire: nomHero(joueur) }),
         ]),
+        // ⚠ TOUJOURS EN DERNIER (25/09/2026, demande de l'utilisateur :
+        // l'environnement, ni allie ni sbire, doit rester du cote DROIT de
+        // la zone, apres tout le monde — pas seulement apres NOTRE ligne de
+        // combat, sinon un autre joueur s'intercalerait entre les deux en
+        // multijoueur.
+        posees(world.area_environment, rendu),
+        posees(notre?.environment_area, rendu),
       ],
       undefined,
       // Tache 5 (glisser-depose) : seuls LES ENNEMIS ENGAGES DE NOTRE joueur
@@ -808,7 +813,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
       // joueur COURANT). Marquer aussi le groupe d'un AUTRE joueur engagerait
       // silencieusement le sbire chez le mauvais joueur ; on prefere ne rien
       // marquer et laisser ce lacher refuse plutot que de deviner.
-      [undefined, CLE_PILE_ENGAGES, undefined, undefined, ...autres.flatMap(() => [undefined, undefined])]
+      [undefined, CLE_PILE_ENGAGES, ...autres.flatMap(() => [undefined, undefined]), undefined, undefined]
     ),
 
     // Rangee CENTRALE de l'aire joueur : d'abord le DECK SPECIAL du heros s'il en
