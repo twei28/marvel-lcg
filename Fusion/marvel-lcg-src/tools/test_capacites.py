@@ -41804,6 +41804,40 @@ CAS = [
                     "en_jeu": ["61003"]},
     },
     {
+        "nom": "61008 Calling in Favors — recherche ACCEPTEE mais IMPAYABLE : l'allie retourne au deck, pas en defausse",
+        "pourquoi": ("signalement D de Yarro (20/09/2026), trouve EN CORRIGEANT le sas de "
+                     "recherche du 21/09/2026 mais laisse de cote : « une carte cherchee, "
+                     "CHOISIE, mais qu'on n'arrive pas a payer est toujours DEFAUSSEE au lieu "
+                     "de retourner au deck ». Luke Cage (61003) coute 3, reduit a 1 par la "
+                     "capacite ; main VIDE, impossible de payer meme ce reste. Le sas de "
+                     "recherche (`CloseSearchTransit`) ne l'attrape pas : quand il se referme, "
+                     "la carte a DEJA quitte la zone de traitement (elle etait en defausse), "
+                     "donc `is_processing` est deja faux et son entree est lue comme "
+                     "« reclamee », a tort. Avant ce correctif, `PlayCardsLikeInTurn` la "
+                     "defaussait pour de bon — perte seche d'un allie qui n'a jamais quitte le "
+                     "deck que pour etre montre au joueur."),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61008', under_control=True)",
+                          "Puzzle.Counter('61002', 'evidence', 3)",
+                          # Sans ceci, le coup reduit a 1 se paie quand meme avec la
+                          # ressource GRATUITE de l'identite (alter-ego), main vide ou pas.
+                          "Puzzle.Exhaust('61001b')"],
+        # ⚠ `main_exclusive: []` NE VIDE RIEN : `if cas.get("main_exclusive")`
+        # est un test de VERITE Python, une liste vide y est FAUSSE et saute
+        # tout le bloc (main de depart intacte). Une carte SANS icone de
+        # ressource imprimee (09032, RES absent -> `printed_resource` = 0)
+        # vide quand meme la main puis la remplit d'une carte qui ne peut
+        # RIEN payer.
+        "main_exclusive": ["09032"],
+        "declencher": ["Puzzle.Action('61008')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"aucune_en_resolution": True,
+                    "hors_jeu": ["61003"],
+                    "dans_deck_joueur": ["61003"]},
+    },
+    {
         "nom": "61019 Strategy Session — recherche REFUSEE : la manigance retourne au deck",
         "pourquoi": ("l'autre moitie du meme signalement : « Piecing all together joue "
                      "comme un support ». Meme mecanique de recherche, autre type de "
@@ -42054,6 +42088,33 @@ CAS = [
                     "defausse_avec": ["18020"]},
     },
     {
+        "nom": "60040a Photographic Reflexes — SEULE en main, elle ne peut PAS payer la carte qu'elle vient d'autoriser",
+        "pourquoi": ("CORRECTIF du 25/09/2026, signale en jeu. Avec une SEULE copie, la "
+                     "depenser comme ressource pour payer la carte glissee qu'elle "
+                     "autorise donnerait la reduction de 2 ET la valeur de ressource "
+                     "sur la MEME carte, sans qu'elle ne soit jamais reellement "
+                     "defaussee par le vrai chemin de l'aptitude "
+                     "(`discard_photographic_reflexes` ne trouve plus rien a "
+                     "defausser une fois la seule copie partie payer). 18020 Hit and "
+                     "Run coute 3, soit 1 apres reduction — et il ne reste QUE cette "
+                     "Photographic Reflexes en main pour le payer : le moteur doit "
+                     "refuser le rejeu."),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["18020", "01088", "01090"],
+        "cibles": ["01094"],
+        "declencher": [],
+        "jouer": ["18020"],
+        # Une SEULE Photographic Reflexes, a la difference du cas precedent (deux) :
+        # c'est precisement la position ou le defaut se produisait.
+        "declencher_apres": ["Puzzle.Gain('60040a')"],
+        "jouer_glissee_tolerant": ["18020"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": ["18020"], "main_avec": ["60040a"],
+                    "defausse_sans": ["18020", "60040a"]},
+    },
+    {
         "nom": "60040a Photographic Reflexes — la reduction de 2 NE COUVRE PAS l'exigence de couleur",
         "pourquoi": ("LE SEUL temoin qui distingue une REDUCTION DE COUT de la generation "
                      "de deux ressources wild qu'Echo faisait avant. 28013 No Quarter coute 2 "
@@ -42143,6 +42204,25 @@ CAS = [
         "jouer": ["12033"],
         "verifier": "echo_etat",
         "attendu": {"glissees": ["12033"], "action_offerte": [["60040a", True]]},
+    },
+    {
+        "nom": "60001a Daredevil — Sense the Top : la carte SUIVANTE devient offerte quand le dessus est retire",
+        "pourquoi": ("MEME defaut de cache que le signalement n°17 sur Echo (21/09/2026) : "
+                     "`check_sense_top` (60001a.py) lit `additional_deck.GetTop()`, mais "
+                     "`card.can_state.is_like_in_hand` ne se remet a zero qu'au DEPLACEMENT "
+                     "de la carte elle-meme. Quand le dessus est retire, la carte suivante "
+                     "devient le vrai dessus SANS AVOIR BOUGE : si sa jouabilite a deja ete "
+                     "lue une fois (False, puisqu'elle n'etait pas au sommet), elle reste "
+                     "figee refusee. Jamais mesure avant ce cas (todo "
+                     "2026-09-20-echo-photographic-reflexes-ergonomie.md)."),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')",
+                          "Puzzle.PutOnAdditionalDeckTop('60002')",
+                          "Puzzle.PutOnAdditionalDeckTop('60003')"],
+        "declencher": [],
+        "verifier": "daredevil_dessus_deck_annexe",
+        "attendu": {"dessus_suivant": "60002"},
     },
 ]
 # ------------------------------------------------- verifications outillees --
@@ -49212,6 +49292,73 @@ def echo_etat(monde, aides):
     if soucis:
         return False, " ; ".join(soucis)
     return True, " | ".join(dits) or "etat conforme"
+
+
+def daredevil_dessus_deck_annexe(monde, aides):
+    """Le cache `IsLikeInHand` du DESSUS du deck Sense (Daredevil, 60001a) ne
+    se remet a zero qu'au DEPLACEMENT de la carte elle-meme (`card.py`,
+    `MoveToArea`). Or la reponse de `check_sense_top` (60001a.py) depend de
+    QUELLE carte est actuellement au sommet du deck annexe -- une donnee qui
+    change des qu'on RETIRE le dessus, sans que la carte SUIVANTE, elle, ne
+    bouge. Meme piege qu'Echo, signalement n°17 (21/09/2026) : suspecte,
+    jamais mesuree avant ce cas (25/09/2026).
+
+    Cle `attendu["dessus_suivant"]` : card_id de la DEUXIEME carte du deck
+    (celle qui doit devenir jouable des que la premiere est retiree).
+    """
+    from game.message import Message
+    from game.operate.faces import Faces
+    from game.effect.rule import DebugRule
+
+    attendu = aides["cas"].get("attendu") or {}
+    suivant_id = attendu.get("dessus_suivant")
+    if not suivant_id:
+        return False, "le cas doit declarer `dessus_suivant`"
+
+    joueur = monde.players[0]
+    deck = joueur.additional_deck
+
+    premiere = deck.GetTop()
+    if premiere is None:
+        return False, "deck annexe vide : rien a mesurer"
+
+    faces_restantes = [f for f in deck.Get() if f is not None]
+    if len(faces_restantes) < 2:
+        return False, (f"il faut au moins DEUX cartes dans le deck annexe, "
+                       f"{len(faces_restantes)} presente(s)")
+    suivante = faces_restantes[-2]
+    suivante_id = getattr(suivante.paper, "card_id", "?")
+    if suivante_id != suivant_id:
+        return False, (f"la DEUXIEME carte du deck est {suivante_id}, attendu {suivant_id} "
+                       f"(mise_en_place a mal ordonne le deck)")
+
+    # 1. On LIT le cache de la DEUXIEME carte AVANT tout changement : elle
+    #    n'est pas au sommet, la reponse honnete est False, et c'est CETTE
+    #    lecture qui pose le cache.
+    message_avant = Message.CheckIfFaceIsLikeInHand(suivante)
+    message_avant.Send()
+    avant = message_avant.is_like_in_hand
+    if avant:
+        return False, (f"{suivante_id} est deja offerte alors qu'elle N'EST PAS au sommet "
+                       f"(dessus reel={getattr(premiere.paper, 'card_id', '?')}) : "
+                       f"la mesure ne part pas juste")
+
+    # 2. Le DESSUS QUITTE le deck annexe (simule le fait qu'il a ete joue) :
+    #    LUI bouge, son propre cache n'a aucune importance ici.
+    Faces.RemoveAllFromGame([premiere], DebugRule(premiere))
+
+    # 3. La DEUXIEME carte est maintenant le vrai dessus, SANS AVOIR BOUGE
+    #    elle-meme : c'est exactement le defaut mesure sur Echo.
+    nouveau_dessus = deck.GetTop()
+    nouveau_dessus_id = getattr(nouveau_dessus.paper, "card_id", "?") if nouveau_dessus else None
+    if nouveau_dessus_id != suivant_id:
+        return False, f"apres retrait, le dessus est {nouveau_dessus_id}, attendu {suivant_id}"
+
+    apres = suivante.IsLikeInHand()
+    if not apres:
+        return False, (f"{suivant_id} est maintenant au sommet du deck annexe mais reste "
+                       f"REFUSEE (cache fige a {avant} avant le retrait du dessus precedent)")
+    return True, f"{suivant_id} devient offerte des qu'elle passe au sommet (cache correctement rafraichi)"
 
 
 def su008_fouille_du_deck_rencontre(monde, aides):
