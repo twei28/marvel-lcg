@@ -45,6 +45,24 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-09-25",
+        genre: "correction",
+        fr: "Sur l'écran « Statistiques », tes dégâts, soins, cartes piochées et succès sont enfin les tiens : ils ne se mélangeaient plus avec ceux d'un invité sur ta table.",
+        en: "On the “Statistics” screen, your damage, healing, cards drawn and feats are finally your own: they no longer mixed with a guest's on your table.",
+    },
+    {
+        date: "2026-09-25",
+        genre: "correction",
+        fr: "Le portrait de Cloak & Dagger (DesignHacker) s'affiche enfin correctement, dans la grille comme en grand : les deux héros bien visibles côte à côte, et leur nom complet au survol.",
+        en: "Cloak & Dagger's (DesignHacker) portrait finally displays correctly, in the grid and full-size: both heroes clearly visible side by side, with their full name on hover.",
+    },
+    {
+        date: "2026-09-25",
+        genre: "jeu",
+        fr: "Sur le plateau, ton héros reste collé à son deck spécial au lieu de flotter au centre de sa zone. En partie à plusieurs, ta propre zone reste toujours à gauche, même quand la vue suit le tour d'un autre joueur.",
+        en: "On the board, your hero now stays right next to its special deck instead of floating in the middle of its zone. In multiplayer games, your own zone always stays on the left, even when the view follows another player's turn.",
+    },
+    {
         date: "2026-09-19",
         genre: "correction",
         fr: "« Mes signalements » a enfin un bouton sur l'écran de préparation, et la pastille de réponse ouvre la bonne page au lieu d'un onglet vide.",
