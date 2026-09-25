@@ -3329,37 +3329,41 @@ def etat_suivi() -> dict:
 # et personne n'a a y penser.
 
 SUIVI_STYLE_BLOC = """<style>
-  #suivi h2 { font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:#9aa7b4; margin:1.2rem 0 .5rem; }
-  #suivi .carte { border:1px solid #30363d; border-radius:.7rem; padding:.7rem .85rem; margin-bottom:.55rem; background:#161b22; }
-  #suivi .carte.live { border-color:#238636; box-shadow: inset 3px 0 0 #238636; }
-  #suivi .carte.abandon { box-shadow: inset 3px 0 0 #9e6a03; }
-  #suivi .carte.attente { border-color:#30363d; opacity:.75; }
+  /* REFONTE (25/09/2026) : palette bleu-gris GitHub-dark remplacee par les
+     variables communes (voir le `:root` de PAGE_SUIVI). Les couleurs
+     D'ASPECT (Aggression/Justice/Leadership/Protection/Pool/Determination)
+     ne sont PAS touchees : elles codent le jeu, pas le theme du site. */
+  #suivi h2 { font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:1.2rem 0 .5rem; }
+  #suivi .carte { border:1px solid var(--border); border-radius:.7rem; padding:.7rem .85rem; margin-bottom:.55rem; background:var(--panel); }
+  #suivi .carte.live { border-color:var(--ok); box-shadow: inset 3px 0 0 var(--ok); }
+  #suivi .carte.abandon { box-shadow: inset 3px 0 0 var(--warn); }
+  #suivi .carte.attente { border-color:var(--border); opacity:.75; }
   #suivi .ligne { display:flex; justify-content:space-between; gap:.6rem; align-items:baseline; }
   #suivi .qui { font-weight:600; }
-  #suivi .quand { color:#9aa7b4; font-size:.8rem; white-space:nowrap; }
+  #suivi .quand { color:var(--muted); font-size:.8rem; white-space:nowrap; }
   #suivi .heros { font-size:1.05rem; margin:.15rem 0; }
-  #suivi .heros .aspect { font-size:.75rem; padding:.05rem .4rem; border-radius:.3rem; margin-left:.3rem; vertical-align:middle; background:#30363d; }
+  #suivi .heros .aspect { font-size:.75rem; padding:.05rem .4rem; border-radius:.3rem; margin-left:.3rem; vertical-align:middle; background:var(--border); }
   /* Le nom du deck : discret, il accompagne le heros sans lui voler la ligne. */
-  #suivi .heros .deck { color:#8b949e; font-size:.78rem; margin-left:.4rem; }
+  #suivi .heros .deck { color:var(--muted); font-size:.78rem; margin-left:.4rem; }
   #suivi .aspect.Aggression { background:#8b1e1e; } #suivi .aspect.Justice { background:#8a6d00; color:#fff; }
   #suivi .aspect.Leadership { background:#1f4e8c; } #suivi .aspect.Protection { background:#1e6b3a; }
   #suivi .aspect.Pool { background:#6b1e8c; } #suivi .aspect.Determination { background:#5a2d8c; }
-  #suivi .contre { color:#c9d1d9; }
-  #suivi .contre b { color:#e6edf3; }
-  #suivi .bas { display:flex; gap:.9rem; flex-wrap:wrap; color:#9aa7b4; font-size:.85rem; margin-top:.25rem; }
+  #suivi .contre { color:var(--text); }
+  #suivi .contre b { color:var(--text); }
+  #suivi .bas { display:flex; gap:.9rem; flex-wrap:wrap; color:var(--muted); font-size:.85rem; margin-top:.25rem; }
   /* Les boutons « Regarder », un par siege. Discrets : la liste sert d'abord a
      LIRE ce qui se passe ; on ne clique que quand on veut voir de pres. */
   #suivi .regards { display:flex; gap:.4rem; flex-wrap:wrap; margin-left:auto; }
-  #suivi a.regarder { color:#58a6ff; text-decoration:none; border:1px solid #30363d;
+  #suivi a.regarder { color:var(--accent); text-decoration:none; border:1px solid var(--border);
                       border-radius:.4rem; padding:.1rem .5rem; font-size:.8rem; }
-  #suivi a.regarder:hover { border-color:#58a6ff; background:#1f6feb22; }
+  #suivi a.regarder:hover { border-color:var(--accent); background:var(--accent-soft); }
   #suivi .res { font-weight:700; }
-  #suivi .res.v { color:#3fb950; } #suivi .res.d { color:#f85149; } #suivi .res.a { color:#d29922; }
+  #suivi .res.v { color:var(--ok); } #suivi .res.d { color:var(--danger); } #suivi .res.a { color:var(--warn); }
   #suivi .pv { font-variant-numeric: tabular-nums; }
-  #suivi .vide { color:#9aa7b4; font-style:italic; }
+  #suivi .vide { color:var(--muted); font-style:italic; }
   #suivi details.groupe { margin:.4rem 0; }
-  #suivi details.groupe > summary { cursor:pointer; color:#c9d1d9; font-size:.9rem; padding:.35rem 0; }
-  #suivi .erreur { border:1px solid #f85149; background:#1d1113; color:#ff7b72; padding:.6rem .8rem; border-radius:.5rem; }
+  #suivi details.groupe > summary { cursor:pointer; color:var(--text); font-size:.9rem; padding:.35rem 0; }
+  #suivi .erreur { border:1px solid var(--danger); background:#1d1113; color:var(--danger); padding:.6rem .8rem; border-radius:.5rem; }
 </style>"""
 
 # Le balisage, sans titre : chaque page pose le sien, avec le `#maj` que le
@@ -3486,7 +3490,7 @@ SUIVI_SCRIPT = """<script>
 PAGE_SUIVI = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0e1116">
+<meta name="theme-color" content="#07080c">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -3495,14 +3499,28 @@ PAGE_SUIVI = """<!doctype html>
 <link rel="apple-touch-icon" href="/suivi-192.png">
 <title>Suivi des parties</title>
 <style>
-  :root { color-scheme: dark; }
+  /* ===== REFONTE (25/09/2026), a la suite de celle du 23/09/2026 =============
+     `/suivi` etait restee hors perimetre (page admin secondaire, deja
+     presentable en cartes) et gardait donc l'ancienne palette bleu-gris
+     (GitHub dark : #0e1116, liens #58a6ff...). Memes variables que PAGE /
+     PAGE_FORMULAIRE / PAGE_ADMIN -- dupliquees ici, meme raison qu'elles :
+     aucun mecanisme d'inclusion partagee dans ce depot. Pas de trame a
+     points ni de degrade de fond : cette page est une liste dense a lire
+     vite, pas un ecran d'accueil. */
+  :root {
+    color-scheme: dark;
+    --bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;
+    --text:#eef1f5; --muted:#8b95a3;
+    --accent:#e62429; --accent-hover:#ff3b40; --accent-soft:rgba(230,36,41,.14); --accent-ink:#fff;
+    --ok:#3fb950; --danger:#f85149; --warn:#e8a53d;
+  }
   * { box-sizing: border-box; }
-  body { margin:0; font:15px/1.4 system-ui,sans-serif; background:#0e1116; color:#e6edf3;
+  body { margin:0; font:15px/1.4 system-ui,sans-serif; background:var(--bg); color:var(--text);
          padding: max(.8rem, env(safe-area-inset-top)) .8rem 2rem; }
   h1 { font-size:1.15rem; margin:.2rem 0 .8rem; display:flex; justify-content:space-between; align-items:baseline; }
-  h1 small { color:#9aa7b4; font-weight:normal; font-size:.8rem; }
-  .pied { color:#6e7681; font-size:.75rem; margin-top:1.5rem; text-align:center; }
-  .pied a { color:#9aa7b4; }
+  h1 small { color:var(--muted); font-weight:normal; font-size:.8rem; }
+  .pied { color:var(--muted); font-size:.75rem; margin-top:1.5rem; text-align:center; }
+  .pied a { color:var(--muted); }
 </style>
 """ + SUIVI_STYLE_BLOC + """
 <h1>Parties <small id="maj">chargement…</small></h1>
@@ -3517,8 +3535,8 @@ MANIFESTE_SUIVI = json.dumps({
     "start_url": "/suivi",
     "scope": "/",
     "display": "standalone",
-    "background_color": "#0e1116",
-    "theme_color": "#0e1116",
+    "background_color": "#07080c",
+    "theme_color": "#07080c",
     "icons": [
         {"src": "/suivi-192.png", "sizes": "192x192", "type": "image/png"},
         {"src": "/suivi-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
