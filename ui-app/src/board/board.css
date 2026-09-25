@@ -50,6 +50,8 @@
     color: #f8fafc;
     background: rgba(30, 30, 30, 0.9);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    /* Ancre pour le centrage de `.bh-etat` ci-dessous. */
+    position: relative;
   }
 
   .plateau-etat {
@@ -2832,8 +2834,22 @@
     justify-content: flex-end;
   }
 
+  /* ⚠ CENTRE, PAS A GAUCHE (25/09/2026, demande de l'utilisateur : « le
+     truc des rounds, j'aimerais qu'il soit centré, par contre le reste
+     peut rester a droite »). L'ancien `margin-right:auto` le collait a
+     gauche pour l'ecarter du groupe de boutons, qui lui reste a droite
+     (regle au-dessus, inchangee). Centrage ABSOLU sur toute la largeur de
+     `.plateau-barre`, et non un centrage flex dans l'espace restant : ce
+     dernier aurait ete pousse vers la droite par le groupe de boutons,
+     jamais au vrai centre de l'ecran.
+
+     Desactive en fenetre etroite (media query plus bas) : `.plateau-barre`
+     y repasse en flux normal, un positionnement absolu ignorerait le
+     retour a la ligne. */
   .plateau-barre > .board-actions > .bh-etat {
-    margin-right: auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   /* Separateur de groupe. La barre est rangee par intention — agir, consulter,
@@ -5548,6 +5564,15 @@
     .board-actions {
       flex-wrap: wrap;
       row-gap: 6px;
+    }
+
+    /* Retour au flux normal : `.plateau-barre` peut passer a la ligne ici,
+       un centrage absolu ne le saurait pas et se figerait au milieu de la
+       largeur d'origine. */
+    .plateau-barre > .board-actions > .bh-etat {
+      position: static;
+      transform: none;
+      margin-right: auto;
     }
 
     .bh-bouton {
