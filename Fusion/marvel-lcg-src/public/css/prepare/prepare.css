@@ -573,12 +573,23 @@ button{cursor:pointer}
 
    Contre-intuitif mais exact : un pourcentage de position ELEVE pousse l'image
    vers la GAUCHE. D'ou le 86 % de Cloak, dont le visage est a droite sur sa
-   carte, et le 15 % de Dagger, dont le visage est a gauche. */
-.portrait-duo .duo-a{
+   carte, et le 15 % de Dagger, dont le visage est a gauche.
+
+   `.portrait.duo-a`/`.duo-b` et NON `.duo-a`/`.duo-b` seul (25/09/2026) :
+   ce `background-position` doit battre en specificite N'IMPORTE QUEL
+   `<conteneur> .portrait` generique pose APRES ce bloc dans ce fichier
+   (`.tb-port .portrait`, `.tb-siege .portrait`...), sinon c'est leur
+   `center 25%`/`center 14%` qui gagne a egalite de specificite (2 classes
+   partout) simplement parce qu'ils sont plus bas dans le fichier — chaque
+   moitie retombe alors sur un cadrage generique au lieu du visage calcule,
+   constate en jeu sur la grille et « Ton equipe » (visage absent, moitie
+   illisible). Meme piste que le `width/height` du commit precedent : une
+   regle de conteneur qui ignore l'existence de `.duo-a`/`.duo-b`. */
+.portrait-duo .portrait.duo-a{
   background-position:86% 30%;
   clip-path:polygon(0 0,100% 0,0 100%);
 }
-.portrait-duo .duo-b{
+.portrait-duo .portrait.duo-b{
   background-position:15% 24%;
   clip-path:polygon(100% 0,100% 100%,0 100%);
 }

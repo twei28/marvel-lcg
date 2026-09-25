@@ -2035,7 +2035,7 @@ function rendreEquipe() {
         sieges.push(el("button", {
             class: "tb-siege" + (state.activeSlot === i ? " actif" : "") + (pl.hero ? " plein" : "") + (pilotable ? "" : " salon-invite"),
             disabled: pilotable ? undefined : "",
-            title: pilotable ? (pl.hero ? pl.hero.name : t("Joueur") + " " + (i + 1)) : t("Ce joueur choisit depuis son propre écran"),
+            title: pilotable ? (pl.hero ? nomAffiche(pl.hero) : t("Joueur") + " " + (i + 1)) : t("Ce joueur choisit depuis son propre écran"),
             onclick: () => {
                 if (!pilotable) return;
                 state.activeSlot = i;
@@ -2049,7 +2049,7 @@ function rendreEquipe() {
             pl.hero ? portraitHeros(pl.hero) : el("span", { class: "plus" }, "+"),
             el("span", { class: "tb-siege-nom" }, state.step === 1 && pl.deck
                 ? cleanNomDeck(pl.deck.name)
-                : (pl.hero ? pl.hero.name : t("Joueur") + " " + (i + 1))),
+                : (pl.hero ? nomAffiche(pl.hero) : t("Joueur") + " " + (i + 1))),
         ));
     }
     poser(zone,
@@ -3643,8 +3643,8 @@ function rendreTable() {
     if (!zone) return;
     const membres = activePlayers().filter((p) => p.hero).map((p) => el("div", {
         class: "tb-siege plein petit",
-        title: p.hero.name,
-    }, portraitHeros(p.hero), el("span", { class: "tb-siege-nom" }, p.hero.name)));
+        title: nomAffiche(p.hero),
+    }, portraitHeros(p.hero), el("span", { class: "tb-siege-nom" }, nomAffiche(p.hero))));
     const sc = state.scenario;
     poser(zone,
         el("span", { class: "tb-equipe-k" }, t("Face à face")),
