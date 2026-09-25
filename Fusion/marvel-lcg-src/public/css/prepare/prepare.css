@@ -563,7 +563,7 @@ button{cursor:pointer}
    (`background-size`) reste ajustable par contexte plus bas dans ce
    fichier (`.tb-art` prend `cover`, `.tb-port` garde 210 % en double —
    redondant mais inoffensif). */
-.portrait-duo .portrait.duo{position:absolute;inset:0;background-size:210%}
+.portrait-duo .portrait.duo{position:absolute;inset:0;width:100%;height:100%;background-size:210%}
 /* Valeurs CALCULEES sur les visuels reels, puis verifiees sur un montage a
    l'echelle exacte de la tuile (152x218) : le visage de Cloak est a 57 % de la
    largeur de sa carte et 29 % de sa hauteur, celui de Dagger a 44 % et 29,5 %.
