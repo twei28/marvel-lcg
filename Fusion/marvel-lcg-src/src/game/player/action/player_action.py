@@ -1005,7 +1005,34 @@ class PlayerAction:
 
             if not played and if_not_play_discard_it:
                 if face.IsInProcessingArea():
-                    Faces.DiscardAll([face], by_effect)
+                    # CORRECTIF (25/09/2026, signalement D de Yarro). Une carte
+                    # sortie d'un DECK par une recherche (`Search.SearchForCards`),
+                    # ACCEPTEE puis impayable, ne doit pas partir en defausse :
+                    # aucune lecture des regles ne le soutient, elle doit
+                    # retourner au deck qui l'a fournie, remelange. C'est la
+                    # meme famille que le sas de recherche corrige le
+                    # 21/09/2026 (`effect_invoke.py`, `CloseSearchTransit`),
+                    # mais CE filet-la ne mord pas ici : quand il se referme,
+                    # cette carte a DEJA quitte la zone de traitement (elle est
+                    # en defausse), donc `is_processing` est deja faux et son
+                    # entree du sas est lue comme « reclamee », a tort.
+                    #
+                    # On consulte donc la MEME liste (`search_transit`) ICI,
+                    # AVANT la defausse : si cette carte precise en vient, elle
+                    # retourne a son origine au lieu d'etre perdue. Une carte
+                    # qui ne vient pas d'une recherche (chemin A/B d'Echo, une
+                    # carte de main ordinaire...) n'a aucune entree, et le
+                    # comportement historique — defausser — ne change pas.
+                    origine = None
+                    for entree in by_effect.context.search_transit:
+                        if entree[0] is face:
+                            origine = entree[1]
+                            by_effect.context.search_transit.remove(entree)
+                            break
+                    if origine is not None:
+                        Faces.ShuffleAllTo([face], origine, by_effect)
+                    else:
+                        Faces.DiscardAll([face], by_effect)
 
             return played
 
