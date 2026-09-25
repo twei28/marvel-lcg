@@ -164,7 +164,16 @@ class FileManager:
     @staticmethod
     def FormatPath(path: str) -> str:
         normalized_path = os.path.normpath(path)
-        if normalized_path[1] == ":":
+        # CORRECTIF (25/09/2026, trouve le 18/09 en ecrivant le harnais du
+        # mode manuel). L'ancienne verification (`normalized_path[1] == ":"`)
+        # ne reconnaissait qu'une lettre de lecteur Windows ("C:\..."), pas un
+        # chemin POSIX absolu ("/mnt/c/..."), qui n'a pas de ":" du tout :
+        # un tel chemin se retrouvait prefixe de "./" n'importe comment,
+        # invalide. Invisible sous Windows (tout chemin y porte une lettre de
+        # lecteur), donc sans effet en production ; mordait sous WSL/Linux
+        # (harnais de test). `os.path.isabs` reconnait les deux formes,
+        # correctement selon l'OS qui l'execute.
+        if os.path.isabs(normalized_path):
             pass
         elif not normalized_path.startswith('.'):
             # Ensure the path starts with './'
