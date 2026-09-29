@@ -226,6 +226,21 @@ DICO_EN: dict[str, str] = {
     "Ton compte attend une validation manuelle. Reviens une fois"
     " qu'elle est faite.":
         "Your account is waiting for manual approval. Come back once it is done.",
+
+    # --- L'activite Discord (salon vocal) -----------------------------------
+    "Un instant": "One moment",
+    "La table de {hote} n'est pas encore prete. Cette page reessaie toute seule.":
+        "{hote}'s table isn't ready yet. This page will retry on its own.",
+    "Table complete": "Table full",
+    "La table de {hote} n'a plus de siege libre.":
+        "{hote}'s table has no seat left.",
+    "Rejoindre la table de {hote}": "Join {hote}'s table",
+    "Tu peux jouer avec ton compte (tu retrouveras ce qui t'appartient), "
+    "ou simplement en invite.":
+        "You can play with your own account (you'll get back what's yours), "
+        "or just join as a guest.",
+    "J’ai un compte": "I have an account",
+    "Je suis invite": "I'm a guest",
 }
 
 

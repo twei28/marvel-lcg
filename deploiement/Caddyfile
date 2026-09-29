@@ -29,6 +29,13 @@
 	# URL portent les clés de siège. Un an, la valeur d'usage.
 	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
+	# Active Discord (ajoute le 28/09/2026, feature "activite Discord") : sans
+	# ceci, un navigateur bloque l'affichage du site dans l'iframe que Discord
+	# pose autour de l'activite. Domaines d'apres la doc du SDK Discord au
+	# moment d'ecrire, NON VERIFIES en conditions reelles (aucun client
+	# Discord disponible pour le confirmer) -- voir docs/reference/DISCORD.md.
+	header Content-Security-Policy "frame-ancestors https://discord.com https://*.discordsays.com"
+
 	log {
 		output file /var/log/caddy/accueil.log {
 			roll_size 20MiB
@@ -205,6 +212,83 @@
 		reverse_proxy 127.0.0.1:2380
 	}
 
+	# --- L'activite Discord (29/09/2026) -----------------------------------------
+	# Le « Root Mapping » du portail Discord vise CET hote. Discord ne charge
+	# qu'une origine dans son cadre : toutes les tables y passent, aiguillees par
+	# le cookie `nc_table` que pose l'orchestrateur en y asseyant quelqu'un. Sans
+	# ce cookie, ou pour le parcours d'entree (lancement `frame_id`, connexion,
+	# attente), tout va a l'orchestrateur. Voir docs/reference/DISCORD.md.
+	@discord host discord.{$DOMAINE}
+	handle @discord {
+		@d_lancement query frame_id=*
+		@d_site path /activite_discord /connexion /pret /entrer /narwhal.png /discord-sdk.js
+		@d_t1 header_regexp Cookie (^|;\s*)nc_table=1(;|$)
+		@d_t2 header_regexp Cookie (^|;\s*)nc_table=2(;|$)
+		@d_t3 header_regexp Cookie (^|;\s*)nc_table=3(;|$)
+		@d_t4 header_regexp Cookie (^|;\s*)nc_table=4(;|$)
+		@d_t5 header_regexp Cookie (^|;\s*)nc_table=5(;|$)
+		@d_t6 header_regexp Cookie (^|;\s*)nc_table=6(;|$)
+		@d_t7 header_regexp Cookie (^|;\s*)nc_table=7(;|$)
+		@d_t8 header_regexp Cookie (^|;\s*)nc_table=8(;|$)
+		@d_t9 header_regexp Cookie (^|;\s*)nc_table=9(;|$)
+		@d_t10 header_regexp Cookie (^|;\s*)nc_table=10(;|$)
+		@d_t11 header_regexp Cookie (^|;\s*)nc_table=11(;|$)
+		@d_t12 header_regexp Cookie (^|;\s*)nc_table=12(;|$)
+		@d_t13 header_regexp Cookie (^|;\s*)nc_table=13(;|$)
+		@d_t14 header_regexp Cookie (^|;\s*)nc_table=14(;|$)
+		@d_t15 header_regexp Cookie (^|;\s*)nc_table=15(;|$)
+		@d_t16 header_regexp Cookie (^|;\s*)nc_table=16(;|$)
+		@d_t17 header_regexp Cookie (^|;\s*)nc_table=17(;|$)
+		@d_t18 header_regexp Cookie (^|;\s*)nc_table=18(;|$)
+		@d_t19 header_regexp Cookie (^|;\s*)nc_table=19(;|$)
+		@d_t20 header_regexp Cookie (^|;\s*)nc_table=20(;|$)
+		@d_t21 header_regexp Cookie (^|;\s*)nc_table=21(;|$)
+		@d_t22 header_regexp Cookie (^|;\s*)nc_table=22(;|$)
+		@d_t23 header_regexp Cookie (^|;\s*)nc_table=23(;|$)
+		@d_t24 header_regexp Cookie (^|;\s*)nc_table=24(;|$)
+		@d_t25 header_regexp Cookie (^|;\s*)nc_table=25(;|$)
+		@d_t26 header_regexp Cookie (^|;\s*)nc_table=26(;|$)
+		@d_t27 header_regexp Cookie (^|;\s*)nc_table=27(;|$)
+		@d_t28 header_regexp Cookie (^|;\s*)nc_table=28(;|$)
+		@d_t29 header_regexp Cookie (^|;\s*)nc_table=29(;|$)
+		@d_t30 header_regexp Cookie (^|;\s*)nc_table=30(;|$)
+		route {
+			reverse_proxy @d_lancement 127.0.0.1:8080
+			reverse_proxy @d_site 127.0.0.1:8080
+			reverse_proxy @d_t1 127.0.0.1:2351
+			reverse_proxy @d_t2 127.0.0.1:2352
+			reverse_proxy @d_t3 127.0.0.1:2353
+			reverse_proxy @d_t4 127.0.0.1:2354
+			reverse_proxy @d_t5 127.0.0.1:2355
+			reverse_proxy @d_t6 127.0.0.1:2356
+			reverse_proxy @d_t7 127.0.0.1:2357
+			reverse_proxy @d_t8 127.0.0.1:2358
+			reverse_proxy @d_t9 127.0.0.1:2359
+			reverse_proxy @d_t10 127.0.0.1:2360
+			reverse_proxy @d_t11 127.0.0.1:2361
+			reverse_proxy @d_t12 127.0.0.1:2362
+			reverse_proxy @d_t13 127.0.0.1:2363
+			reverse_proxy @d_t14 127.0.0.1:2364
+			reverse_proxy @d_t15 127.0.0.1:2365
+			reverse_proxy @d_t16 127.0.0.1:2366
+			reverse_proxy @d_t17 127.0.0.1:2367
+			reverse_proxy @d_t18 127.0.0.1:2368
+			reverse_proxy @d_t19 127.0.0.1:2369
+			reverse_proxy @d_t20 127.0.0.1:2370
+			reverse_proxy @d_t21 127.0.0.1:2371
+			reverse_proxy @d_t22 127.0.0.1:2372
+			reverse_proxy @d_t23 127.0.0.1:2373
+			reverse_proxy @d_t24 127.0.0.1:2374
+			reverse_proxy @d_t25 127.0.0.1:2375
+			reverse_proxy @d_t26 127.0.0.1:2376
+			reverse_proxy @d_t27 127.0.0.1:2377
+			reverse_proxy @d_t28 127.0.0.1:2378
+			reverse_proxy @d_t29 127.0.0.1:2379
+			reverse_proxy @d_t30 127.0.0.1:2380
+			reverse_proxy 127.0.0.1:8080
+		}
+	}
+
 	# Tout autre sous-domaine retombe sur l'accueil.
 	handle {
 		redir https://{$DOMAINE}{uri} permanent
@@ -217,6 +301,10 @@
 	# vu l'apex en HTTPS. Un lien d'invitation arrive souvent AVANT : on le pose
 	# donc aussi ici, sur les vingt tables.
 	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	# Meme raison que sur l'apex : une table peut etre atteinte depuis
+	# l'activite Discord (deuxieme URL Mapping cote Discord, une fois l'hote
+	# redirige vers p<N>.{$DOMAINE}).
+	header Content-Security-Policy "frame-ancestors https://discord.com https://*.discordsays.com"
 
 	log {
 		output file /var/log/caddy/tables.log {

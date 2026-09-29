@@ -45,6 +45,54 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-09-29",
+        genre: "jeu",
+        fr: "Le jeu se lance depuis un salon vocal du serveur Discord : le premier qui ouvre l'activité tient la table avec son compte, les autres s'assoient en un clic, avec leur compte ou en invité.",
+        en: "The game now launches from a voice channel on the Discord server: whoever opens the activity first hosts the table with their account, everyone else takes a seat in one click, with their account or as a guest.",
+    },
+    {
+        date: "2026-09-28",
+        genre: "jeu",
+        fr: "Répartir des dégâts ou un soin sur plusieurs cibles ne se fait plus clic par clic : un bouton « +N » sur chaque carte lui assigne d'un coup tout ce qu'elle peut encore recevoir.",
+        en: "Splitting damage or healing across several targets no longer takes one click per point: a “+N” button on each card assigns it everything it can still take, in one click.",
+    },
+    {
+        date: "2026-09-28",
+        genre: "jeu",
+        fr: "La fenêtre de décision peut se faire glisser par son bandeau : pratique quand deux décisions s'empilent et que celle du dessus cache ce qu'il y a dessous.",
+        en: "The decision window can now be dragged by its title bar: handy when two decisions stack up and the top one hides what's underneath.",
+    },
+    {
+        date: "2026-09-28",
+        genre: "jeu",
+        fr: "Une sélection où l'ordre de clic compte (remettre des cartes sur le dessus du deck, choisir quel sbire s'active en premier…) numérote maintenant chaque carte choisie, avec deux boutons pour échanger deux cartes sans tout recommencer.",
+        en: "A selection where click order matters (putting cards back on top of the deck, choosing which minion activates first…) now numbers each chosen card, with two buttons to swap two of them without starting over.",
+    },
+    {
+        date: "2026-09-28",
+        genre: "jeu",
+        fr: "Quand une carte Renfort enchaîne une deuxième révélation, un bandeau « Renfort : … » le dit clairement, au lieu de laisser passer les deux cartes d'un coup sans prévenir.",
+        en: "When a Surge card triggers a second reveal, a “Surge: …” banner now says so clearly, instead of both cards flashing by unannounced.",
+    },
+    {
+        date: "2026-09-28",
+        genre: "correction",
+        fr: "Annuler revient exactement sur ta dernière action, plus jamais plusieurs coups en arrière. Les cartes qui n'ont rien à voir avec ce coup ne rejouent plus leur animation d'arrivée à chaque annulation.",
+        en: "Undo now steps back exactly one action, never several at once. Cards unrelated to that action no longer replay their entrance animation every time you undo.",
+    },
+    {
+        date: "2026-09-28",
+        genre: "correction",
+        fr: "Une capacité qui annule la révélation d'une carte cachée (Spider-Tingle, Scarlet Spider, Protection Mystique…) ne nomme plus la carte avant qu'elle soit révélée : le suspense reste entier.",
+        en: "An ability that cancels a face-down card's reveal (Spider-Tingle, Scarlet Spider, Mystical Protection…) no longer names the card before it's actually revealed: the suspense stays intact.",
+    },
+    {
+        date: "2026-09-28",
+        genre: "correction",
+        fr: "SP//dr : payer un coût en mélangeant une interface et une ressource de carte en main ne perd plus le paiement déjà posé, quel que soit l'ordre dans lequel tu cliques.",
+        en: "SP//dr: paying a cost by mixing an interface and a hand card's resource no longer loses the payment you already made, whatever order you click in.",
+    },
+    {
         date: "2026-09-25",
         genre: "correction",
         fr: "Sur l'écran « Statistiques », tes dégâts, soins, cartes piochées et succès sont enfin les tiens : ils ne se mélangeaient plus avec ceux d'un invité sur ta table.",
@@ -61,6 +109,78 @@ export const NOUVEAUTES = [
         genre: "jeu",
         fr: "Sur le plateau, ton héros reste collé à son deck spécial au lieu de flotter au centre de sa zone. En partie à plusieurs, ta propre zone reste toujours à gauche, même quand la vue suit le tour d'un autre joueur.",
         en: "On the board, your hero now stays right next to its special deck instead of floating in the middle of its zone. In multiplayer games, your own zone always stays on the left, even when the view follows another player's turn.",
+    },
+    {
+        date: "2026-09-24",
+        genre: "jeu",
+        fr: "La liste « Reprendre une partie » se trie par date, se filtre par recherche, et chaque sauvegarde a son propre bouton supprimer. Les vieilles sauvegardes de plus de deux semaines s'effacent maintenant toutes seules.",
+        en: "The “Resume a game” list now sorts by date, can be searched, and each save has its own delete button. Saves older than two weeks now clear themselves out automatically.",
+    },
+    {
+        date: "2026-09-24",
+        genre: "correction",
+        fr: "Wave et Red Sonja ont enfin leur halo de couleur autour du plateau : il manquait depuis leur arrivée dans le roster.",
+        en: "Wave and Red Sonja finally have their board color halo: it was missing since they joined the roster.",
+    },
+    {
+        date: "2026-09-24",
+        genre: "jeu",
+        fr: "La barre du haut en partie est plus légère : Menu regroupe le retour au menu et la déconnexion, et un bouton ⚙️ range la pause, l'historique, les réglages et la langue.",
+        en: "The in-game top bar is lighter: Menu now groups going back to the menu and disconnecting, and a ⚙️ button holds pause, history, settings and language.",
+    },
+    {
+        date: "2026-09-24",
+        genre: "jeu",
+        fr: "En partie à plusieurs héros, une confirmation apparaît si tu t'apprêtes à agir pour un héros différent de celui affiché à l'écran.",
+        en: "In multi-hero games, a confirmation now appears if you're about to act for a hero other than the one shown on screen.",
+    },
+    {
+        date: "2026-09-24",
+        genre: "jeu",
+        fr: "Dans le sélecteur de vue, l'onglet d'un héros qui a fini son tour s'affiche grisé.",
+        en: "In the view selector, a hero's tab now dims once they've finished their turn.",
+    },
+    {
+        date: "2026-09-24",
+        genre: "jeu",
+        fr: "La mise en place d'une partie est plus calme : seule la manigance principale s'affiche en grand, le reste ne vole plus dans tous les sens à l'écran.",
+        en: "Game setup is calmer now: only the main scheme gets the big reveal, everything else stops flying across the screen.",
+    },
+    {
+        date: "2026-09-24",
+        genre: "jeu",
+        fr: "Nouveaux réglages (⚙️ Réglages) : finir son tour automatiquement quand il ne reste plus rien à jouer, payer automatiquement quand une seule ressource peut couvrir un coût, et la touche Espace pour terminer son tour sans cliquer. Le jeu demande ton accord la première fois pour les deux premiers.",
+        en: "New settings (⚙️ Settings): auto-ending your turn when nothing's left to play, auto-paying when only one resource can cover a cost, and the Space key to end your turn without clicking. The game asks for your OK the first time for the first two.",
+    },
+    {
+        date: "2026-09-24",
+        genre: "jeu",
+        fr: "Une sauvegarde automatique se fait maintenant à chaque changement de phase, en plus des trois emplacements manuels.",
+        en: "An automatic save now happens at every phase change, in addition to the three manual save slots.",
+    },
+    {
+        date: "2026-09-23",
+        genre: "heros",
+        fr: "Wave (Pearl Pangan) rejoint le roster fan-made : sa zone Rising Tide retourne des cartes face visible ou cachée pour alimenter ses pouvoirs, avec un set némésis de cinq cartes (Alontech).",
+        en: "Wave (Pearl Pangan) joins the fan-made roster: her Rising Tide area flips cards face up or down to fuel her powers, with a five-card nemesis set (Alontech).",
+    },
+    {
+        date: "2026-09-23",
+        genre: "heros",
+        fr: "Red Sonja rejoint le roster fan-made : son action She-Devil incline une arme pour jouer un événement à moindre coût, avec Conan en allié signature et un set némésis glacial (Ice Queen).",
+        en: "Red Sonja joins the fan-made roster: her She-Devil action exhausts a weapon to play an event at reduced cost, with Conan as a signature ally and an icy nemesis set (Ice Queen).",
+    },
+    {
+        date: "2026-09-23",
+        genre: "jeu",
+        fr: "La bande de couleur du héros, en bas à droite du plateau, ressort davantage : la teinte principale est maintenant pleine plutôt que dégradée.",
+        en: "The hero's color band, at the bottom right of the board, stands out more: the primary tint is now solid instead of faded.",
+    },
+    {
+        date: "2026-09-23",
+        genre: "correction",
+        fr: "La zone « Mises de côté / autres piles » n'empiète plus sur le deck du héros quand elle contient plusieurs piles (set némésis, cartes mises de côté…) : elle défile dans son propre espace au lieu de chevaucher la pile voisine.",
+        en: "The “Set-aside / other piles” area no longer overlaps the hero's deck when it holds several piles (nemesis set, set-aside cards…): it now scrolls within its own space instead of spilling onto the neighboring pile.",
     },
     {
         date: "2026-09-19",

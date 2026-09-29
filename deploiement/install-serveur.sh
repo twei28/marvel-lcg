@@ -15,6 +15,9 @@ CF_API_TOKEN="${CF_API_TOKEN:?CF_API_TOKEN manquant (jeton Cloudflare, droit Zon
 EMAIL_ACME="${EMAIL_ACME:?EMAIL_ACME manquant (adresse pour Lets Encrypt)}"
 UTILISATEUR="${UTILISATEUR:-narwhal}"
 RACINE="${RACINE:-/opt/narwhal}"
+# Facultatif : l'ID public de l'application Discord (voir DISCORD.md). Vide
+# tant que personne ne l'a cree, ce qui desactive juste /activite (404).
+DISCORD_CLIENT_ID="${DISCORD_CLIENT_ID:-}"
 
 echo "==> 1/8  Base système"
 export DEBIAN_FRONTEND=noninteractive
@@ -104,7 +107,7 @@ install -m 644 narwhal-purge.service      /etc/systemd/system/narwhal-purge.serv
 install -m 644 narwhal-purge.timer        /etc/systemd/system/narwhal-purge.timer
 install -m 755 sauvegarde.sh /usr/local/bin/narwhal-sauvegarde
 install -m 755 purge.sh      /usr/local/bin/narwhal-purge
-sed -i "s|@RACINE@|$RACINE|g; s|@UTILISATEUR@|$UTILISATEUR|g; s|@DOMAINE@|$DOMAINE|g" \
+sed -i "s|@RACINE@|$RACINE|g; s|@UTILISATEUR@|$UTILISATEUR|g; s|@DOMAINE@|$DOMAINE|g; s|@DISCORD_CLIENT_ID@|$DISCORD_CLIENT_ID|g" \
   /etc/systemd/system/narwhal.service \
   /etc/systemd/system/narwhal-sauvegarde.service \
   /etc/systemd/system/narwhal-purge.service \

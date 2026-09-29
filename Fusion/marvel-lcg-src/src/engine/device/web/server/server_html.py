@@ -64,14 +64,7 @@ class GameServerHTML(GameServerBase):
         toute facon (qui presente une cle de siege est un joueur, pas un
         spectateur).
         """
-        response.set_cookie(
-            'spectateur',
-            '1',
-            path='/',
-            httponly=True,
-            secure=self.CookieSecure(request),
-            samesite='Lax',
-        )
+        self.PoserCookie(response, request, 'spectateur', '1')
 
     async def handle_spectateur(self, request):
         """Ouvrir la table en LECTURE, sans prendre de siege.
@@ -124,15 +117,8 @@ class GameServerHTML(GameServerBase):
 
         response = web.HTTPFound(destination)
         self._marquer_spectateur(response, request)
-        response.set_cookie(
-            'session_token',
-            self.hash_password,
-            max_age=31536000,
-            path='/',
-            httponly=True,
-            secure=self.CookieSecure(request),
-            samesite='Lax',
-        )
+        self.PoserCookie(response, request, 'session_token', self.hash_password,
+                         max_age=31536000)
         return response
 
     async def handle_claim_seat(self, request):
@@ -167,23 +153,17 @@ class GameServerHTML(GameServerBase):
         # spectateur s'il en trainait un. Sans cette ligne, regarder sa propre
         # table puis y revenir jouer laissait le moteur refuser toute action,
         # sans rien dire de pourquoi.
-        response.del_cookie('spectateur', path='/')
+        # `del_cookie` ne sait pas viser un cookie `Partitioned` (Discord) :
+        # un effacement non partitionne laisserait le temoin en place.
+        self.PoserCookie(response, request, 'spectateur', '', max_age=0)
         # `secure` et `samesite` manquaient aux deux cookies poses ici : sur une
         # premiere visite tapee en `http://`, la cle de siege comme le
         # laissez-passer du moteur partaient en clair avant meme que Caddy
         # n'ait redirige. `CookieSecure` deduit le schema de la requete, ce qui
         # laisse l'usage en local (127.0.0.1, sans proxy) intact.
-        sur = self.CookieSecure(request)
         if expected:
-            response.set_cookie(
-                f'seat_token_{seat}',
-                self.seat_hash(expected),
-                max_age=31536000,
-                path='/',
-                httponly=True,
-                secure=sur,
-                samesite='Lax',
-            )
+            self.PoserCookie(response, request, f'seat_token_{seat}',
+                             self.seat_hash(expected), max_age=31536000)
             # LE LIEN VAUT LE MOT DE PASSE.
             #
             # Le moteur protege l'application entiere par un mot de passe
@@ -197,14 +177,7 @@ class GameServerHTML(GameServerBase):
             # arrete par la page de mot de passe, ce qui est tout l'objet de la
             # manoeuvre.
             if getattr(self, 'hash_password', None):
-                response.set_cookie(
-                    'session_token',
-                    self.hash_password,
-                    max_age=31536000,
-                    path='/',
-                    httponly=True,
-                    secure=sur,
-                    samesite='Lax',
-                )
+                self.PoserCookie(response, request, 'session_token', self.hash_password,
+                                 max_age=31536000)
         return response
 

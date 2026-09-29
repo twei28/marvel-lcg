@@ -751,15 +751,22 @@ o._TENTATIVES.clear()
 # `tools/test_authentification.py` ; ici on garde la porte fermee sur la
 # regression exacte, qui est de les voir repasser en commentaire.
 _moteur = os.path.join(o.RACINE_JEU, "src", "engine")
-for _fichier, _combien in (
-        (os.path.join(_moteur, "network", "web_server.py"), 1),
-        (os.path.join(_moteur, "device", "web", "server", "server_html.py"), 2)):
-    if not os.path.isfile(_fichier):
-        continue
-    _src = open(_fichier, encoding="utf-8").read()
-    verifier("les cookies de %s ne partent plus en clair" % os.path.basename(_fichier),
-             _src.count("secure=") >= _combien and "# secure=True" not in _src,
-             "%d secure= trouves" % _src.count("secure="))
+# Depuis le 29/09/2026 (activite Discord), les cookies de la table passent tous
+# par `PoserCookie` (web_server.py), qui choisit `Lax` ou `None; Partitioned`
+# selon le cadre. La porte se ferme donc sur deux points : `PoserCookie` pose
+# `Secure` dans les deux branches, et `server_html.py` ne contourne jamais ce
+# passage par un `set_cookie` direct.
+_web = os.path.join(_moteur, "network", "web_server.py")
+_html = os.path.join(_moteur, "device", "web", "server", "server_html.py")
+if os.path.isfile(_web) and os.path.isfile(_html):
+    _src_web = open(_web, encoding="utf-8").read()
+    _src_html = open(_html, encoding="utf-8").read()
+    verifier("les cookies de web_server.py ne partent plus en clair",
+             "'secure': self.CookieSecure(request)" in _src_web
+             and "'Secure'" in _src_web and "# secure=True" not in _src_web)
+    verifier("les cookies de server_html.py ne partent plus en clair",
+             "set_cookie(" not in _src_html and _src_html.count("self.PoserCookie(") >= 4,
+             "%d PoserCookie trouves" % _src_html.count("self.PoserCookie("))
 
 # --- Deux invariants qui se lisent dans la source ---------------------------
 _source_site = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -2292,6 +2299,65 @@ finally:
     o.time.sleep = _avant_sommeil
 verifier("un chargement jamais confirme par le moteur n'est pas pris pour un succes",
          _ok is False)
+
+# ⚠⚠ LA COURSE DU 24/09/2026, MOITIE CORRIGEE LE 23/09 SEULEMENT. `/pret`
+# ne verifiait que REPRISE_EN_COURS, pose par `demarrer_en_fond` seulement
+# APRES que `lancer_jeu` soit revenu -- donc APRES que le moteur reponde deja.
+# Entre les deux, `/pret` voyait le moteur repondre et rendait `pret: true`
+# avant meme que le rechargement de la sauvegarde n'ait ete demande. Constate
+# en partie (compte arnaud, 24/09/2026 18:52 UTC) : Crossbones/Shuri jamais
+# rechargee, ecran de choix du heros a la place. `A_REPRENDRE`, lui, est pose
+# de facon SYNCHRONE par la route `/reprendre` : le verifier ICI AUSSI ferme
+# la fenetre entiere.
+o.PARTIES["hote"] = allumer("hote", 4)
+_avant_repond = o._moteur_repond
+o._moteur_repond = lambda port: True
+try:
+    o.A_REPRENDRE.discard("hote")
+    o.REPRISE_EN_COURS.discard("hote")
+    _code, _, _corps = appel("GET", "/pret", entetes=cookie_de("hote"))
+    verifier("sans reprise en attente, /pret peut dire oui",
+             _code == 200 and o.json.loads(_corps)["pret"] is True, _corps)
+
+    o.A_REPRENDRE.add("hote")
+    _code, _, _corps = appel("GET", "/pret", entetes=cookie_de("hote"))
+    verifier("⚠ une reprise A_REPRENDRE non encore prise en charge bloque /pret",
+             _code == 200 and o.json.loads(_corps)["pret"] is False, _corps)
+    o.A_REPRENDRE.discard("hote")
+
+    o.REPRISE_EN_COURS.add("hote")
+    _code, _, _corps = appel("GET", "/pret", entetes=cookie_de("hote"))
+    verifier("et une reprise deja en cours de chargement bloque toujours /pret",
+             _code == 200 and o.json.loads(_corps)["pret"] is False, _corps)
+    o.REPRISE_EN_COURS.discard("hote")
+finally:
+    o._moteur_repond = _avant_repond
+    o.PARTIES.pop("hote", None)
+
+# ⚠ ET LA FUITE JUMELLE : si `lancer_jeu` echoue (moteur mort, port deja
+# pris...), `A_REPRENDRE` devait avant rester peuple pour de bon -- le retrait
+# vivait dans le `if` qui suit un `lancer_jeu` reussi. `/pret` restait alors
+# bloque a `false` pour ce compte sur TOUT lancement suivant, meme sans
+# rapport avec une reprise, jusqu'au redemarrage du site.
+o.A_REPRENDRE.add("hote")
+o.DEMARRAGES.discard("hote")
+_avant_lancer = o.lancer_jeu
+o.lancer_jeu = lambda pseudo, joueurs=1: (_ for _ in ()).throw(RuntimeError("moteur mort"))
+try:
+    o.demarrer_en_fond("hote")
+    _tour = 0
+    while "hote" in o.DEMARRAGES and _tour < 50:
+        o.time.sleep(0.1)
+        _tour += 1
+finally:
+    o.lancer_jeu = _avant_lancer
+    # ⚠ NE PAS LAISSER TRAINER : "hote" est le pseudo de la QUASI-TOTALITE des
+    # cas plus bas dans ce fichier (admin, signalements...). Un ancien echec
+    # de demarrage encore note ici leur ferait tous porter une erreur qui n'a
+    # rien a voir avec ce qu'ils testent.
+    o.ERREURS_DEMARRAGE.pop("hote", None)
+verifier("un lancement qui echoue libere quand meme A_REPRENDRE",
+         "hote" not in o.A_REPRENDRE, str(o.A_REPRENDRE))
 
 
 # ---------------------------------------------------------------------------

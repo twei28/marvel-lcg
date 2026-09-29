@@ -12,6 +12,7 @@
 ## Je veux jouer ou faire tourner le jeu
 
 - Lancer une partie en ligne à plusieurs : `reference/MULTIJOUEUR.md`
+- Jouer depuis un salon vocal Discord : `reference/DISCORD.md`
 - Administrer le serveur, lire les rapports de bug reçus, ajouter un livret
   de règles au panneau « Documents » : `../deploiement/MODE-EMPLOI.md`
 - Le cadre de décision tour par tour (aussi la spec du bot autoplay) :

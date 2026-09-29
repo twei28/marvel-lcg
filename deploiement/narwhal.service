@@ -10,11 +10,14 @@ User=@UTILISATEUR@
 Group=@UTILISATEUR@
 WorkingDirectory=@RACINE@/site
 
-# Les trois variables attendues par l'orchestrateur.
 Environment=RACINE_JEU=@RACINE@/Fusion/marvel-lcg-src
 Environment=PYTHON=@RACINE@/venv310/bin/python
 Environment=DOMAINE=@DOMAINE@
 Environment=PYTHONUNBUFFERED=1
+# ID public de l'application Discord (pas un secret). Vide tant qu'aucune
+# application n'a ete creee : /activite repond alors 404, le reste du site
+# est inchange. Voir docs/reference/DISCORD.md.
+Environment=DISCORD_CLIENT_ID=@DISCORD_CLIENT_ID@
 
 ExecStart=@RACINE@/venv310/bin/python @RACINE@/site/orchestrateur.py
 

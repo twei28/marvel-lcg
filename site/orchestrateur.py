@@ -54,6 +54,13 @@ PYTHON = os.environ.get("PYTHON", os.path.expanduser("~/marvel-work/python/bin/p
 # laisse vide : les liens pointent alors sur 127.0.0.1:<port>.
 DOMAINE = os.environ.get("DOMAINE", "")
 
+# L'ID CLIENT de l'application Discord (panneau developpeur -> OAuth2), pour
+# `/activite` (voir DISCORD.md). Public par nature (il part dans le HTML
+# servi au navigateur) : PAS un secret, contrairement a un jeton d'API. Vide =
+# l'activite Discord est desactivee (`/activite` repond 404), le reste du
+# site est INCHANGE.
+DISCORD_CLIENT_ID = os.environ.get("DISCORD_CLIENT_ID", "")
+
 PORT_SITE = int(os.environ.get("PORT_SITE", "8080"))
 PORT_BASE = 2350                      # emplacement N -> port PORT_BASE + N
 NB_EMPLACEMENTS = int(os.environ.get("NB_EMPLACEMENTS", "30"))
@@ -263,6 +270,81 @@ PARTIES: dict[str, Partie] = {}          # code -> Partie
 EMPLACEMENTS: dict[int, str] = {}        # emplacement -> code
 JETONS_SITE: dict[str, str] = {}         # jeton -> pseudo (voir Partie.jeton_site)
 VERROU = threading.Lock()
+
+# --------------------------------------------------------------------------
+# Activite Discord : une table par salon vocal (demande de l'utilisateur,
+# 28/09/2026 -- « jouer depuis Discord »).
+# --------------------------------------------------------------------------
+# instance_id (fourni par le SDK Discord embarque, un par lancement d'une
+# activite dans un salon vocal) -> pseudo de l'hote qui a ouvert cette
+# activite EN PREMIER. Purement en memoire, comme `PARTIES` : une activite ne
+# survit pas un redemarrage du site, et c'est le bon repli -- elle redemande
+# simplement qui en est l'hote a la prochaine ouverture.
+INSTANCES_DISCORD: dict[str, str] = {}
+
+
+def role_activite_discord(instance_id: str, pseudo: str | None) -> tuple[str, str | None]:
+    """Decide qui est CE visiteur pour CETTE activite Discord.
+
+    Rend (role, hote) ou role vaut :
+      - "connexion_requise" : personne n'a encore ouvert cette activite, et ce
+        visiteur n'est pas connecte -- il doit se connecter AVANT de pouvoir
+        devenir l'hote (jamais d'inscription proposee dans ce parcours,
+        recapitulatif valide avec l'utilisateur).
+      - "hote" : il vient de le devenir (premiere ouverture, deja connecte),
+        ou il l'etait deja (reouverture de SA propre activite). `hote` porte
+        alors son propre pseudo.
+      - "participant" : quelqu'un d'autre est deja hote de cette activite.
+        `hote` porte le pseudo de cette autre personne.
+
+    Atomique : deux visiteurs qui ouvrent la MEME activite au meme instant ne
+    peuvent jamais devenir hote tous les deux (verifier-puis-creer sous
+    `VERROU`, meme discipline que `lancer_jeu`).
+    """
+    deja = INSTANCES_DISCORD.get(instance_id)
+    if deja is None:
+        if not pseudo:
+            return "connexion_requise", None
+        with VERROU:
+            deja = INSTANCES_DISCORD.get(instance_id)
+            if deja is None:
+                INSTANCES_DISCORD[instance_id] = pseudo
+                # Nouvel hote, nouvelle table : les sieges repartent de zero.
+                SIEGES_DISCORD.pop(instance_id, None)
+                deja = pseudo
+    return ("hote" if deja == pseudo else "participant"), deja
+
+
+# Par activite Discord : numero de siege -> qui l'occupe (pseudo, ou jeton
+# d'invite anonyme). En memoire, comme `INSTANCES_DISCORD`.
+SIEGES_DISCORD: dict[str, dict[int, str]] = {}
+
+
+def siege_activite_discord(instance_id: str, identite: str, sieges: list[dict]) -> dict | None:
+    """Le siege de CE participant a CETTE activite.
+
+    Le sien s'il en a deja un (il revient apres une deconnexion ou un
+    rechargement), sinon le premier libre, sinon None (table complete).
+    `sieges` : les liens de siege invites de la table (`Partie.liens()` sans
+    le siege 0). Sous `VERROU` : deux participants qui arrivent ensemble ne
+    recoivent jamais le meme siege.
+
+    ⚠ AVANT (28/09/2026), TOUT LE MONDE RECEVAIT LE SIEGE 1 : le second
+    invite aurait pris la place du premier. Le moteur ne sait pas qui tient un
+    siege avant le debut de la partie, c'est donc ici que l'on tient le compte.
+    """
+    with VERROU:
+        pris = SIEGES_DISCORD.setdefault(instance_id, {})
+        for numero, qui in pris.items():
+            if qui == identite:
+                for s in sieges:
+                    if s["siege"] == numero:
+                        return s
+        for s in sieges:
+            if s["siege"] not in pris:
+                pris[s["siege"]] = identite
+                return s
+    return None
 
 
 # --------------------------------------------------------------------------
@@ -603,13 +685,17 @@ def charger_partie_interrompue(partie: "Partie", pseudo: str) -> bool:
         return False
 
 
-def demarrer_en_fond(pseudo: str) -> None:
+def demarrer_en_fond(pseudo: str, joueurs: int = 1) -> None:
     """Allume le moteur SANS retenir la requete HTTP.
 
     ⚠ NE PAS APPELER `lancer_jeu` DEPUIS UNE ROUTE. Le premier allumage peut
     prendre plusieurs minutes : le navigateur abandonnerait bien avant, en ne
     montrant qu'une page blanche. On demarre donc a cote, et la page d'attente
     se rafraichit jusqu'a ce que le moteur reponde.
+
+    `joueurs` : nombre de sieges a ouvrir des l'allumage (voir `lancer_jeu`).
+    Sert a l'hote d'une activite Discord, qui doit pouvoir inviter d'autres
+    personnes du salon vocal des le depart, sans passer par `/reprendre`.
     """
     with VERROU_DEMARRAGE:
         if pseudo in DEMARRAGES:
@@ -2906,6 +2992,166 @@ def page_attente(pseudo: str) -> bytes:
                        pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
 
+# ⚠ GABARIT A PART, PAS `PAGE_FORMULAIRE` (qui impose un champ mot de passe en
+# dur) NI `PAGE` (qui impose `_barre(pseudo)`, donc un compte reel -- cet
+# ecran peut s'afficher a quelqu'un qui n'en a AUCUN). Meme palette que les
+# deux pour rester coherent visuellement, structure propre en dessous.
+PAGE_ACTIVITE_DISCORD = """<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{titre} — NarwhalChampions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
+<style>
+  :root {{
+    color-scheme: dark;
+    --bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;
+    --text:#eef1f5; --muted:#8b95a3;
+    --accent:#e62429; --accent-hover:#ff3b40; --accent-ink:#fff;
+    --affiche: "Anton", "Arial Narrow", sans-serif;
+  }}
+  * {{ box-sizing:border-box; }}
+  body {{ margin:0; font:16px/1.5 system-ui,sans-serif; background:var(--bg); color:var(--text);
+         min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2.5rem 1.1rem; }}
+  main {{ width:100%; max-width:23rem; }}
+  .marque {{ display:flex; align-items:center; gap:.7rem; margin:0 0 1.6rem; }}
+  .marque img {{ width:2.5rem; height:2.5rem; border-radius:50%; box-shadow:0 0 0 2px var(--border); }}
+  h1 {{ font:clamp(1.5rem,6vw,1.85rem)/1 var(--affiche); margin:0; font-weight:400;
+       letter-spacing:.01em; text-transform:uppercase; }}
+  .carte {{ background:var(--panel); border:1px solid var(--border); border-radius:.9rem;
+           padding:1.5rem 1.4rem; box-shadow:0 12px 28px -18px rgba(0,0,0,.7); }}
+  .carte p {{ color:var(--muted); font-size:.9rem; margin:0 0 1.2rem; }}
+  .choix {{ display:grid; gap:.7rem; }}
+  a.bouton {{ display:block; text-align:center; text-decoration:none; font-weight:700;
+             background:var(--panel-2); color:var(--text); border:1px solid var(--border);
+             border-radius:.5rem; padding:.8rem; }}
+  a.bouton.principal {{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }}
+  a.bouton:hover {{ filter:brightness(1.12); }}
+</style>
+<main>
+  <div class="marque"><img src="/narwhal.png" alt="" width="512" height="512"><h1>{titre}</h1></div>
+  <div class="carte">
+    <p>{texte}</p>
+    {corps}
+  </div>
+</main>
+"""
+
+
+def page_activite_discord_participant(hote: str, instance_id: str, prete: bool) -> bytes:
+    """L'ecran d'un PARTICIPANT ANONYME (pas l'hote, pas connecte) qui ouvre
+    l'activite Discord. Qui est connecte ne voit jamais cet ecran : il est
+    assis directement (`_repondre_participant`).
+
+    Deux issues, jamais d'inscription proposee ici (recapitulatif valide avec
+    l'utilisateur, 28/09/2026) :
+      - « J'ai un compte » -> `/connexion?da=...` (meme mecanisme que pour
+        l'hote), puis assis directement sur SON siege, en tant que SOI-MEME.
+      - « Je suis invite » -> `/activite_discord?...&invite=1` : un siege lui
+        est attribue et il y est envoye, sans rien demander.
+
+    `prete` faux : le moteur de l'hote n'a pas encore repondu (juste apres
+    qu'il soit devenu hote). On repropose alors la page un peu plus tard,
+    comme `page_attente` le fait pour lui.
+    """
+    if not prete:
+        titre = lang.t("Un instant")
+        texte = lang.t("La table de {hote} n'est pas encore prete. Cette page "
+                       "reessaie toute seule.").replace("{hote}", html.escape(hote))
+        corps = '<script>setTimeout(function(){location.reload();},3000);</script>'
+        return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps=corps).encode("utf-8")
+
+    # `da` en query, pas un cookie pose en JS : meme raison que cote hote
+    # (`_activite_discord`) -- ce qui survit fiablement au POST /connexion
+    # qui suit, dans le cadre Discord, c'est le champ cache du formulaire,
+    # pas un cookie.
+    lien_connexion = "/connexion?da=" + urllib.parse.quote(instance_id)
+    lien_invite = "/activite_discord?instance_id=%s&invite=1" % urllib.parse.quote(instance_id)
+
+    titre = lang.t("Rejoindre la table de {hote}").replace("{hote}", html.escape(hote))
+    texte = lang.t("Tu peux jouer avec ton compte (tu retrouveras ce qui t'appartient), "
+                   "ou simplement en invite.")
+    corps = ('<div class="choix">'
+             '<a class="bouton principal" href="%s">%s</a>'
+             '<a class="bouton" href="%s">%s</a>'
+             '</div>'
+             % (html.escape(lien_connexion), lang.t("J’ai un compte"),
+                html.escape(lien_invite), lang.t("Je suis invite")))
+    return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps=corps).encode("utf-8")
+
+
+def page_activite_discord_complete(hote: str) -> bytes:
+    titre = lang.t("Table complete")
+    texte = lang.t("La table de {hote} n'a plus de siege libre.").replace(
+        "{hote}", html.escape(hote))
+    return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps="").encode("utf-8")
+
+
+# ⚠ LE SDK EST UNE COPIE LOCALE (`site/discord-sdk.mjs`, servie en
+# `/discord-sdk.js`), PAS UN IMPORT DEPUIS UN CDN. Le site n'a pas de chaine
+# de build JS ; le SDK est publie en ESM, d'ou un import direct. Il venait
+# d'esm.sh jusqu'au 29/09/2026, mais la CSP du proxy Discord n'autorise que
+# `'self'` : l'import y etait bloque sur toutes les pages suivant celle-ci, et
+# Discord fermait l'activite. Pour monter de version : retelecharger le
+# bundle esm.sh (`.../es2022/embedded-app-sdk.bundle.mjs`) et changer `?v=`.
+# ⚠ CETTE PAGE NE SE RECHARGE JAMAIS, ET C'EST TOUT L'OBJET. Discord n'envoie
+# `READY` qu'UNE fois par cadre : apres un rechargement du document,
+# `sdk.ready()` ne revient plus jamais et Discord ferme l'activite quelques
+# secondes plus tard (github.com/discord/embedded-app-sdk/issues/41, constate
+# en prod le 29/09/2026 a chaque etape du parcours). Or le site et le jeu
+# sont faits de pages pleines (connexion, attente, preparation, plateau...).
+# La coquille garde donc le SDK vivant et affiche le jeu dans un cadre
+# interne (meme origine, memes cookies partitionnes), qui peut changer de
+# page autant qu'il veut sans que Discord ne le voie.
+PAGE_ACTIVITE_DISCORD_AMORCE = """<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NarwhalChampions</title>
+<style>
+  html, body {{ margin:0; height:100%; background:#07080c; color:#eef1f5;
+                font:16px system-ui,sans-serif; overflow:hidden; }}
+  #etat {{ position:absolute; inset:0; display:flex; align-items:center;
+           justify-content:center; opacity:.75; }}
+  #jeu {{ position:absolute; inset:0; width:100%; height:100%; border:0; display:none; }}
+</style>
+<p id="etat">Connexion a Discord…</p>
+<iframe id="jeu" title="NarwhalChampions" allow="autoplay; fullscreen"></iframe>
+<script type="module">
+  const etat = document.getElementById('etat');
+  const jeu = document.getElementById('jeu');
+  try {{
+    const {{ DiscordSDK }} = await import('/discord-sdk.js?v=2.5.0');
+    // Garde sur `window` : le SDK doit vivre aussi longtemps que la page.
+    const sdk = window.discordSdk = new DiscordSDK({client_id!r});
+    await sdk.ready();
+    if (!sdk.instanceId) throw new Error('instanceId absent apres ready()');
+    jeu.addEventListener('load', () => {{ etat.style.display = 'none'; jeu.style.display = 'block'; }}, {{ once: true }});
+    jeu.src = '/activite_discord?instance_id=' + encodeURIComponent(sdk.instanceId);
+  }} catch (erreur) {{
+    console.error('Activite Discord : ', erreur);
+    etat.textContent = "Impossible de demarrer l'activite (" + (erreur && erreur.message || erreur) + "). "
+        + "Voir DISCORD.md.";
+  }}
+</script>
+"""
+
+
+def page_activite_discord_amorce() -> bytes:
+    return PAGE_ACTIVITE_DISCORD_AMORCE.format(client_id=DISCORD_CLIENT_ID).encode("utf-8")
+
+
+SDK_DISCORD = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "discord-sdk.mjs"), "rb").read()
+
+
+def page_enchainer(vers: str) -> bytes:
+    """Une page 200 qui mene aussitot a VERS : la redirection du mode Discord
+    (voir `_rediriger`)."""
+    return ('<!doctype html><meta charset="utf-8">'
+            '<meta http-equiv="refresh" content="0;url=%s">'
+            '<title>NarwhalChampions</title>' % html.escape(vers, quote=True)).encode("utf-8")
+
+
 def page_arret(pseudo: str) -> bytes:
     corps = ('<div class="table">'
              '<div class="entete"><strong>Ton jeu est eteint</strong></div>'
@@ -3893,18 +4139,172 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):  # journal plus sobre
         sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
 
-    def _repondre(self, code: int, corps: bytes, type_mime="text/html; charset=utf-8"):
+    def _repondre(self, code: int, corps: bytes, type_mime="text/html; charset=utf-8",
+                  entetes: list[tuple[str, str]] | None = None):
         self.send_response(code)
         self.send_header("Content-Type", type_mime)
         self.send_header("Content-Length", str(len(corps)))
+        for nom, valeur in (entetes or []):
+            self.send_header(nom, valeur)
         self.end_headers()
         self.wfile.write(corps)
 
-    def _rediriger(self, vers="/"):
+    def _rediriger(self, vers="/", entetes: list[tuple[str, str]] | None = None):
+        """303 vers VERS, avec ENTETES (des `Set-Cookie`, en general).
+
+        ⚠ DANS DISCORD, JAMAIS DE VRAIE REDIRECTION. Le proxy de Discord
+        (`<id>.discordsays.com`) SUIT lui-meme les 3xx et rend la page finale
+        en 200 : les `Set-Cookie` de la reponse de redirection sont perdus, et
+        l'adresse du cadre ne change pas. Mesure au `curl` le 29/09/2026 :
+        l'hote se connectait, puis tombait sur « Introuvable » faute de
+        `nc_table`. On rend donc une page 200 qui porte les cookies et enchaine
+        d'elle-meme (`meta refresh`, qui passe la CSP du proxy).
+        """
+        if self._cadre_discord():
+            self._repondre(200, page_enchainer(vers), entetes=entetes)
+            return
         self.send_response(303)
         self.send_header("Location", vers)
+        for nom, valeur in (entetes or []):
+            self.send_header(nom, valeur)
         self.send_header("Content-Length", "0")
         self.end_headers()
+
+    def _entrer_dans_partie(self, pseudo: str, proposer_reprise: bool = True,
+                             joueurs: int = 1,
+                             entetes_supplementaires: list[tuple[str, str]] | None = None
+                             ) -> None:
+        """Demarre/rejoint le moteur de PSEUDO, et repond en consequence.
+
+        Coeur de `/entrer`, extrait pour etre reutilise par l'hote d'une
+        activite Discord (`_activite_discord`) : une fois identifie, il suit
+        EXACTEMENT le meme chemin que quelqu'un qui clique sur « Entrer »
+        depuis le site. `proposer_reprise=False` saute la question « reprendre
+        ta derniere partie ? » -- l'activite Discord n'a pas de bandeau pour la
+        poser, elle entre directement (comme `/reprendre` le fait deja).
+
+        `joueurs` : voir `lancer_jeu`. Applique aussi a une table DEJA
+        allumee (jamais retreci) : l'hote peut ouvrir l'activite Discord sur
+        une table qu'il avait deja lancee seul depuis le site.
+
+        `entetes_supplementaires` : pour poser le cookie de session dans LA
+        MEME reponse que celle qui entre dans la partie (POST /connexion,
+        flux Discord). Le detour normal, une redirection puis une nouvelle
+        requete qui relit le cookie, echoue dans le cadre Discord (le
+        navigateur ne renvoie pas fiablement un cookie pose depuis ce
+        contexte -- constate en prod le 29/09/2026).
+        """
+        toucher_presence(pseudo)
+        partie = jeu_de(pseudo)
+        # ⚠ LA QUESTION NE SE POSE QUE TABLE ETEINTE. Une partie interrompue
+        # n'existe que parce que la table a ete tuee ; si le moteur tourne
+        # deja, il n'y a rien a reprendre et rien a demander.
+        if proposer_reprise and (partie is None or not partie.vivant()):
+            attendue = partie_interrompue(pseudo)
+            if attendue:
+                self._repondre(200, page_reprise(pseudo, attendue),
+                                entetes=entetes_supplementaires)
+                return
+        if partie is not None and partie.vivant() and _moteur_repond(partie.port):
+            partie.joueurs = max(partie.joueurs, joueurs)
+            # Redirection vers un AUTRE hote (p<N>.domaine) : c'est voulu, le
+            # client du jeu utilise des chemins absolus et ne supporte pas
+            # d'etre servi sous un prefixe (voir l'en-tete du fichier).
+            entetes = list(entetes_supplementaires or [])
+            if self._cadre_discord():
+                entetes += self._cookie_table(partie)
+            self._rediriger(self._lien_dans_cadre(partie.lien_hote()), entetes)
+            return
+        demarrer_en_fond(pseudo, joueurs)
+        self._repondre(200, page_attente(pseudo), entetes=entetes_supplementaires)
+
+    def _activite_discord(self, pseudo: str | None) -> None:
+        """`/activite_discord?instance_id=...` : point d'entree du salon vocal.
+
+        Voir `role_activite_discord` pour la decision. Ici, seulement la mise
+        en forme HTTP de chacun de ses trois cas.
+        """
+        instance_id = (self.parametres.get("instance_id") or [""])[0]
+        if not instance_id:
+            self._repondre(400, b"instance_id manquant.", "text/plain; charset=utf-8")
+            return
+        role, hote = role_activite_discord(instance_id, pseudo)
+        if role == "connexion_requise":
+            # Retenu le temps de la connexion (courte duree, un seul aller-
+            # retour) : `/connexion` (POST) le relit pour revenir ICI au lieu
+            # de `/entrer`, sans quoi l'hote se retrouverait sur l'ecran du
+            # SITE au lieu de celui de SON activite Discord.
+            #
+            # ⚠ `da` EN QUERY, PAS SEULEMENT LE COOKIE. Constate en prod le
+            # 29/09/2026 : le cadre Discord ne renvoie pas fiablement le
+            # cookie pose ici jusqu'au POST /connexion qui suit. Le cookie
+            # reste pose en secours (navigateur normal, hors Discord), mais
+            # `/connexion` place aussi `da` dans un champ cache du formulaire,
+            # qui lui survit toujours au POST.
+            self._rediriger(
+                "/connexion?da=" + urllib.parse.quote(instance_id),
+                [("Set-Cookie",
+                  f"nc_discord_attente={urllib.parse.quote(instance_id)}; HttpOnly;"
+                  f" Path=/; Max-Age=600" + self._attributs_cookie())])
+            return
+        if role == "hote":
+            # 4 sieges d'emblee : le salon vocal peut compter jusqu'a 4
+            # personnes, et `.liens()` (vu par les participants juste en
+            # dessous) n'expose que les sieges couverts par `joueurs`.
+            self._entrer_dans_partie(hote, proposer_reprise=False, joueurs=4)
+            return
+        # role == "participant" : rejoint la table de HOTE. Connecte -> assis
+        # directement ; anonyme -> "j'ai un compte" ou "je suis invite",
+        # jamais d'inscription (recapitulatif valide avec l'utilisateur).
+        self._repondre_participant(hote or "", instance_id, identite=pseudo)
+
+    def _repondre_participant(self, hote: str, instance_id: str,
+                              entetes: list[tuple[str, str]] | None = None,
+                              identite: str | None = None) -> None:
+        """Assoit un participant a la table de HOTE, ou lui demande qui il est.
+
+        `identite` : son pseudo s'il est connecte. Sinon, un invite qui a
+        clique « Je suis invite » (`?invite=1`) recoit un jeton anonyme en
+        cookie (`nc_discord_invite`), pour retrouver LE MEME siege s'il
+        revient. Sans l'un ni l'autre : l'ecran a deux boutons.
+
+        Le lien de siege et le cookie `nc_table` sont adaptes au cadre Discord
+        (voir `_lien_dans_cadre`).
+        """
+        partie = jeu_de(hote) if hote else None
+        entetes = list(entetes or [])
+        if partie is None or not partie.vivant():
+            self._repondre(200, page_activite_discord_participant(hote, instance_id, prete=False),
+                           entetes=entetes)
+            return
+        if identite is None and (self.parametres.get("invite") or [""])[0]:
+            identite = self._cookie("nc_discord_invite")
+            if not identite:
+                identite = "invite:" + secrets.token_urlsafe(12)
+                entetes.append(("Set-Cookie", "nc_discord_invite=%s; HttpOnly; Path=/; Max-Age=86400%s"
+                                % (identite, self._attributs_cookie())))
+        if identite is None:
+            self._repondre(200, page_activite_discord_participant(hote, instance_id, prete=True),
+                           entetes=entetes)
+            return
+        siege = siege_activite_discord(
+            instance_id, identite, [l for l in partie.liens() if l["siege"] != 0])
+        if siege is None:
+            self._repondre(200, page_activite_discord_complete(hote), entetes=entetes)
+            return
+        if self._cadre_discord():
+            entetes += self._cookie_table(partie)
+        self._rediriger(self._lien_dans_cadre(siege["url"]), entetes)
+
+    def _cookie(self, nom: str) -> str | None:
+        """La valeur d'UN cookie nomme, ou None. Pendant de `_session`, pour
+        les cookies qui ne portent pas une session (ex. `nc_discord_attente`)."""
+        brut = self.headers.get("Cookie") or ""
+        for morceau in brut.split(";"):
+            cle, _, valeur = morceau.strip().partition("=")
+            if cle == nom:
+                return urllib.parse.unquote(valeur)
+        return None
 
     def _session(self):
         """Le pseudo connecte, ou None.
@@ -4004,7 +4404,52 @@ class Handler(BaseHTTPRequestHandler):
             return "; Secure"
         return ""
 
-    def _formulaire(self, quoi: str, erreur: str = "", jeton: str = "") -> bytes:
+    def _cadre_discord(self) -> bool:
+        """Vrai si la requete vient de l'activite Discord.
+
+        Le « Root Mapping » Discord vise `discord.<domaine>`, et Caddy n'y
+        envoie que ce cas. Voir `docs/reference/DISCORD.md`.
+        """
+        return (self.headers.get("Host") or "").split(":")[0].startswith("discord.")
+
+    def _attributs_cookie(self, domaine_parent: bool = False) -> str:
+        """La queue d'un `Set-Cookie` (apres `Path=/...`).
+
+        ⚠ DANS DISCORD, `Lax` ET `Domain=` SONT TOUS DEUX REFUSES. La page y
+        vit dans un iframe tiers servi depuis `<id>.discordsays.com` : le
+        navigateur n'envoie jamais un cookie `Lax` dans ce cadre, et rejette
+        un `Domain=.<domaine>` qui ne correspond pas a l'hote qu'il voit.
+        Discord exige `SameSite=None; Partitioned`, sans domaine (doc
+        « Networking » des activites). C'est ce qui renvoyait l'hote sur le
+        formulaire de connexion a chaque etape (29/09/2026).
+        """
+        if self._cadre_discord():
+            return "; SameSite=None; Secure; Partitioned"
+        domaine = ("; Domain=.%s" % DOMAINE) if (domaine_parent and DOMAINE) else ""
+        return "; SameSite=Lax" + domaine + self._secure()
+
+    def _cookie_table(self, partie) -> list[tuple[str, str]]:
+        """Le cookie qui dit a Caddy vers QUELLE table envoyer ce navigateur.
+
+        Sur `discord.<domaine>`, un seul hote porte toutes les tables (Discord
+        ne sait charger qu'une origine). Caddy lit `nc_table` et aiguille vers
+        le port de la table ; sans lui, tout va a l'orchestrateur.
+        """
+        return [("Set-Cookie", "nc_table=%d; HttpOnly; Path=/; Max-Age=%d%s"
+                 % (partie.emplacement, DUREE_SESSION_JOURS * 86400,
+                    self._attributs_cookie()))]
+
+    def _lien_dans_cadre(self, url: str) -> str:
+        """En mode Discord, `https://pN.<domaine>/x?y` devient `/x?y` : la
+        table est servie sur l'hote courant, via le cookie `nc_table`."""
+        if not self._cadre_discord():
+            return url
+        morceaux = urllib.parse.urlsplit(url)
+        return morceaux.path + ("?" + morceaux.query if morceaux.query else "")
+
+    def _formulaire(
+        self, quoi: str, erreur: str = "", jeton: str = "", instance_discord: str = ""
+    ) -> bytes:
         inscription = quoi == "inscription"
         champs = ('<input type="hidden" name="i" value="%s">'
                   '<label>%s<input name="pseudo" autocomplete="username" required></label>'
@@ -4015,6 +4460,15 @@ class Handler(BaseHTTPRequestHandler):
                   '<label>%s<input name="pseudo" '
                   'autocomplete="username" required></label>'
                   % lang.t("Pseudo ou adresse e-mail"))
+        # ⚠ SURVIT AU POST LA OU LE COOKIE NE SURVIT PAS TOUJOURS. Le cadre
+        # Discord (iframe + proxy `.proxy/`) ne renvoie pas toujours le cookie
+        # `nc_discord_attente` pose par la redirection precedente -- constate
+        # en prod le 29/09/2026 (POST /connexion reussi, mais le cookie relu
+        # etait vide, et la personne retombait sur `/entrer` au lieu de sa
+        # table Discord). Un champ cache voyage dans le CORPS du POST, jamais
+        # sujet aux regles de cookies cross-site.
+        if instance_discord:
+            champs += '<input type="hidden" name="da" value="%s">' % html.escape(instance_discord)
         return PAGE_FORMULAIRE.format(
             titre=lang.t("Creer un compte") if inscription else lang.t("Se connecter"),
             action="/inscription" if inscription else "/connexion",
@@ -4336,6 +4790,26 @@ class Handler(BaseHTTPRequestHandler):
         self._poser_langue()
         pseudo = self._session()
         if self.chemin in ("/", "/index.html"):
+            # ⚠ C'EST ICI, ET PAS SUR `/activite`, QUE DISCORD CHARGE SON
+            # CADRE. Le « Root Mapping » du panneau developpeur pointe
+            # TOUJOURS vers la racine du domaine cible, jamais vers un autre
+            # chemin -- on ne peut pas le faire viser `/activite`. Trouve le
+            # 29/09/2026 : l'activite se fermait toute seule au bout de
+            # quelques secondes, le temps que Discord abandonne un cadre qui
+            # ne repondait jamais a sa poignee de main, parce que cette route
+            # servait la page d'accueil ordinaire au lieu de l'amorce du SDK.
+            # `frame_id` est un parametre que Discord seul pose ; sa presence
+            # suffit a distinguer ce cas, sans toucher a la route `/activite`
+            # elle-meme (gardee pour un lien direct, ou un futur mapping qui
+            # la viserait explicitement).
+            if DISCORD_CLIENT_ID and self.parametres.get("frame_id"):
+                # Chaque lancement repart de zero : un `nc_table` reste d'une
+                # activite precedente enverrait sinon ce navigateur sur une
+                # table qui n'est peut-etre plus la sienne.
+                self._repondre(200, page_activite_discord_amorce(), entetes=[
+                    ("Set-Cookie", "nc_table=; HttpOnly; Path=/; Max-Age=0"
+                     + self._attributs_cookie())])
+                return
             # ⚠ LE SITE N'EST QU'UNE PORTE. Qui est connecte n'a rien a faire
             # ici : il veut son jeu, pas une page d'accueil. Qui ne l'est pas
             # voit le formulaire tout de suite, sans page intermediaire.
@@ -4359,27 +4833,37 @@ class Handler(BaseHTTPRequestHandler):
             # secondes, on ne bloque pas la reponse pour autant.
             if self.chemin == "/reprendre":
                 A_REPRENDRE.add(pseudo)
-            toucher_presence(pseudo)
-            partie = jeu_de(pseudo)
-            # ⚠ LA QUESTION NE SE POSE QUE TABLE ETEINTE. Une partie
-            # interrompue n'existe que parce que la table a ete tuee ; si le
-            # moteur tourne deja, il n'y a rien a reprendre et rien a demander.
-            if self.chemin == "/entrer" and (partie is None or not partie.vivant()):
-                attendue = partie_interrompue(pseudo)
-                if attendue:
-                    self._repondre(200, page_reprise(pseudo, attendue))
-                    return
-            if partie is not None and partie.vivant() and _moteur_repond(partie.port):
-                # Redirection vers un AUTRE hote (p<N>.domaine) : c'est voulu,
-                # le client du jeu utilise des chemins absolus et ne supporte
-                # pas d'etre servi sous un prefixe (voir l'en-tete du fichier).
-                self.send_response(303)
-                self.send_header("Location", partie.lien_hote())
-                self.send_header("Content-Length", "0")
-                self.end_headers()
+            self._entrer_dans_partie(pseudo, proposer_reprise=self.chemin == "/entrer")
+        elif self.chemin == "/activite_discord":
+            self._activite_discord(pseudo)
+        elif self.chemin == "/discord-sdk.js":
+            # ⚠ SERVI D'ICI, PAS D'UN CDN. La CSP du proxy Discord n'autorise
+            # que `'self'` : un `import('https://esm.sh/...')` y est bloque
+            # (constate le 29/09/2026).
+            # Versionne par `?v=` cote appelant (Cloudflare, devant le proxy
+            # Discord, garde les `.js` par adresse complete) : cache long sans risque.
+            if not DISCORD_CLIENT_ID:
+                self._repondre(404, b"", "text/javascript; charset=utf-8")
                 return
-            demarrer_en_fond(pseudo)
-            self._repondre(200, page_attente(pseudo))
+            self.send_response(200)
+            self.send_header("Content-Type", "text/javascript; charset=utf-8")
+            self.send_header("Cache-Control", "public, max-age=31536000, immutable")
+            self.send_header("Content-Length", str(len(SDK_DISCORD)))
+            self.end_headers()
+            self.wfile.write(SDK_DISCORD)
+        elif self.chemin == "/activite":
+            # ⚠ C'EST CETTE ADRESSE QUE LE PANNEAU DEVELOPPEUR DISCORD DOIT
+            # VISER (« Root Mapping »), PAS `/activite_discord`. Discord la
+            # charge dans son propre cadre, SANS `instance_id` dans l'adresse
+            # -- le SDK embarque (cote navigateur) l'obtient par sa propre
+            # poignee de main, puis redirige lui-meme vers
+            # `/activite_discord?instance_id=...`. Voir DISCORD.md.
+            if not DISCORD_CLIENT_ID:
+                self._repondre(404, b"Activite Discord non configuree "
+                                    b"(DISCORD_CLIENT_ID absent).",
+                               "text/plain; charset=utf-8")
+                return
+            self._repondre(200, page_activite_discord_amorce())
         elif self.chemin == "/pret":
             # ⚠ CETTE ROUTE NE DEMARRE RIEN, et c'est tout son interet. La page
             # d'attente l'interroge toutes les 1,5 s : si elle appelait
@@ -4441,7 +4925,12 @@ class Handler(BaseHTTPRequestHandler):
                 return
             self._repondre(200, self._formulaire("inscription", jeton=jeton))
         elif self.chemin == "/connexion":
-            self._repondre(200, self._formulaire("connexion"))
+            # `da` (query) prend le pas sur le cookie : c'est lui que porte
+            # desormais le lien Discord (voir `_formulaire`), le cookie n'etant
+            # garde qu'en secours pour un navigateur hors contexte Discord.
+            instance_discord = (self.parametres.get("da") or [""])[0] or (
+                self._cookie("nc_discord_attente") or "")
+            self._repondre(200, self._formulaire("connexion", instance_discord=instance_discord))
         elif self.chemin == "/deconnexion":
             brut = self.headers.get("Cookie") or ""
             for morceau in brut.split(";"):
@@ -4673,11 +5162,16 @@ class Handler(BaseHTTPRequestHandler):
                        'autocomplete="username" value="%s" required></label>'
                        % (lang.t("Pseudo ou adresse e-mail"), html.escape(qui)),
                 bouton_appli=_bouton_appli(),
-                pied=lang.t("Ton nouveau mot de passe est en place : connecte-toi.")
-                ).encode("utf-8"))
+                pied=lang.t("Ton nouveau mot de passe est en place : connecte-toi.")).encode("utf-8"))
 
         elif self.chemin == "/connexion":
             champs = self._champs()
+            # Le champ cache `da` (voir `_formulaire`) prend le pas sur le
+            # cookie : c'est lui qui survit fiablement au POST dans le cadre
+            # Discord. Repasse sur chaque reaffichage du formulaire (erreurs
+            # ci-dessous) pour ne pas perdre le fil en cas de faute de frappe.
+            instance_en_attente = champs.get("da", "") or (
+                self._cookie("nc_discord_attente") or "")
             cle = cle_frein(self._adresse_client())
             # ⚠ ON LIT LE COMPTEUR AVANT DE L'INCREMENTER. Compter au fil de la
             # lecture ferait qu'une adresse deja bloquee continuerait de charger
@@ -4686,13 +5180,15 @@ class Handler(BaseHTTPRequestHandler):
             if reste:
                 self._repondre(429, self._formulaire(
                     "connexion", "Trop de tentatives. Reessaie dans %s."
-                                 % delai_lisible(reste)))
+                                 % delai_lisible(reste),
+                    instance_discord=instance_en_attente))
                 return
             compter_tentative(cle)
             try:
                 qui = verifier(champs.get("pseudo", ""), champs.get("mdp", ""))
             except ValueError as erreur:
-                self._repondre(400, self._formulaire("connexion", str(erreur)))
+                self._repondre(400, self._formulaire(
+                    "connexion", str(erreur), instance_discord=instance_en_attente))
                 return
             # Reussite : on relache le frein, pour que ses propres fautes de
             # frappe ne poursuivent pas quelqu'un qui a fini par entrer.
@@ -4703,8 +5199,6 @@ class Handler(BaseHTTPRequestHandler):
             # pendant qu'une partie tourne. On la touche des l'entree sur le
             # site, ce qui couvre le moment ou le moteur demarre encore.
             toucher_presence(qui)
-            self.send_response(303)
-            self.send_header("Location", "/entrer")
             # HttpOnly : le cookie n'est pas lisible en JavaScript.
             # SameSite=Lax : il ne part pas sur une requete venue d'un autre site.
             # Secure : il ne part pas en clair. Sans lui, une premiere visite
@@ -4719,13 +5213,39 @@ class Handler(BaseHTTPRequestHandler):
             # jamais a lui. Voir `post_rapport_bug` (moteur) et `/api/bug`
             # ci-dessous, qui relaient desormais ce cookie pour resoudre le vrai
             # compte.
-            domaine = ("; Domain=.%s" % DOMAINE) if DOMAINE else ""
-            self.send_header("Set-Cookie",
-                             f"nc_session={jeton}; HttpOnly; SameSite=Lax; Path=/;"
-                             f" Max-Age={DUREE_SESSION_JOURS * 86400}{domaine}"
-                             + self._secure())
-            self.send_header("Content-Length", "0")
-            self.end_headers()
+            # Dans Discord, `_attributs_cookie` remplace tout cela par
+            # `SameSite=None; Partitioned`, sans domaine (voir sa doc).
+            cookie_session = (
+                f"nc_session={jeton}; HttpOnly; Path=/;"
+                f" Max-Age={DUREE_SESSION_JOURS * 86400}"
+                + self._attributs_cookie(domaine_parent=True))
+
+            if instance_en_attente:
+                # ⚠ RESOLU ICI, PAS PAR UNE REDIRECTION VERS `/activite_discord`.
+                # Constate en prod le 29/09/2026 : dans le cadre Discord, le
+                # cookie qu'on vient de poser (`nc_session` juste au-dessus)
+                # n'est pas renvoye de facon fiable sur la requete SUIVANTE --
+                # `role_activite_discord` relu depuis `/activite_discord` ne
+                # voyait donc jamais ce `qui` et redemandait la connexion en
+                # boucle. `qui` est deja connu ICI, dans CETTE reponse : le
+                # role se tranche tout de suite, sans nouvel aller-retour qui
+                # dependrait d'un cookie.
+                role, hote = role_activite_discord(instance_en_attente, qui)
+                effacer_attente = (
+                    "nc_discord_attente=; HttpOnly; Path=/; Max-Age=0"
+                    + self._attributs_cookie())
+                entetes = [("Set-Cookie", cookie_session),
+                           ("Set-Cookie", effacer_attente)]
+                if role == "hote":
+                    self._entrer_dans_partie(
+                        qui, proposer_reprise=False, joueurs=4,
+                        entetes_supplementaires=entetes)
+                else:
+                    self._repondre_participant(hote or "", instance_en_attente, entetes,
+                                               identite=qui)
+                return
+
+            self._rediriger("/entrer", [("Set-Cookie", cookie_session)])
 
         elif self.chemin == "/admin":
             # Le controle passe AVANT la lecture du corps : un inconnu n'a pas

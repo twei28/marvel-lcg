@@ -9,6 +9,7 @@ from engine.lib import MimeType, Json, Ver
 from engine.log import Log
 from engine.file import FileManager
 import hashlib
+import html
 
 CATEGORY_NAME = "WEB"
 
@@ -32,6 +33,36 @@ one year:   31536000
 PASSWORD            = ConfigVariables.Str('password', "")
 DETECTED_VERSION    = ConfigVariables.Bool('detected_version', True)
 
+@web.middleware
+async def _cadre_discord(request: "web.Request", handler):
+    """Adapte les reponses servies a l'activite Discord (hote `discord.<domaine>`),
+    et a elle seule. Voir docs/reference/DISCORD.md.
+    """
+    discord = request.host.split(':')[0].startswith('discord.')
+    try:
+        reponse = await handler(request)
+    except web.HTTPRedirection as redirection:
+        if not discord:
+            raise
+        reponse = redirection
+    # ⚠ DANS DISCORD, JAMAIS DE VRAIE REDIRECTION. Le proxy de Discord suit
+    # lui-meme les 3xx et rend la page finale en 200 : les `Set-Cookie` de la
+    # redirection sont perdus (`claim_seat` perdait ainsi les cles de siege).
+    # On rend une page 200 qui porte les cookies et enchaine d'elle-meme.
+    if discord and isinstance(reponse, web.HTTPRedirection) and reponse.location:
+        vers = html.escape(str(reponse.location), quote=True)
+        page = web.Response(
+            text=f'<!doctype html><meta charset="utf-8">'
+                 f'<meta http-equiv="refresh" content="0;url={vers}">',
+            content_type='text/html')
+        for cookie in reponse.headers.getall('Set-Cookie', []):
+            page.headers.add('Set-Cookie', cookie)
+        for morsel in reponse.cookies.values():
+            page.headers.add('Set-Cookie', morsel.OutputString())
+        return page
+    return reponse
+
+
 class WebServer:
 
     HandleAsyncType: TypeAlias = Callable[["web.Request"], Awaitable["web.StreamResponse"]]
@@ -43,7 +74,8 @@ class WebServer:
         # est deja reduite par le navigateur avant l'envoi (panneau-bug.js)
         # et le site a son propre plafond : ce chiffre-ci est la marge, pas
         # une autorisation d'envoyer n'importe quoi.
-        self.web_app = web.Application(client_max_size=8 * 1024 * 1024)
+        self.web_app = web.Application(client_max_size=8 * 1024 * 1024,
+                                       middlewares=[_cadre_discord])
         # ⚠ LA LIGNE DE REQUETE, ET C'EST UN BLOCAGE COMPLET QUAND ELLE MANQUE.
         # Le lancement d'une partie passe par `GET /new?data=<descripteur>`,
         # donc par l'URL : le descripteur porte le scenario ENTIER et le deck
@@ -157,6 +189,46 @@ class WebServer:
         if entete.split(',')[0].strip().lower() == 'https':
             return True
         return request.url.scheme == 'https'
+
+    @final
+    def EstCadreDiscord(self, request: "web.Request") -> bool:
+        """Vrai si la table est servie dans l'activite Discord.
+
+        Caddy n'envoie ici `discord.<domaine>` que pour ce cas (voir
+        `deploiement/Caddyfile` et `docs/reference/DISCORD.md`).
+        """
+        return request.host.split(':')[0].startswith('discord.')
+
+    @final
+    def PoserCookie(self, response, request: "web.Request", nom: str, valeur: str,
+                    max_age: "int | None" = None, httponly: bool = True) -> None:
+        """Pose un cookie de la table, `Lax` d'ordinaire, et adapte a Discord.
+
+        ⚠ DANS DISCORD, `Lax` NE MARCHE PAS. La table y tourne dans un iframe
+        tiers (`discordsays.com` dans `discord.com`) : le navigateur n'envoie
+        jamais un cookie `Lax` dans ce cadre, et le joueur perdait son siege a
+        chaque requete. Discord exige `SameSite=None; Partitioned` (doc
+        « Networking » des activites, verifie le 29/09/2026).
+
+        ⚠ EN-TETE ECRIT A LA MAIN, PAS `set_cookie(partitioned=True)`. aiohttp
+        accepte le parametre, mais `http.cookies` ne connait `Partitioned`
+        qu'a partir de Python 3.14 : sur le 3.10 du serveur, `claim_seat`
+        tombait en 500 (`CookieError: Invalid attribute 'partitioned'`).
+        """
+        if self.EstCadreDiscord(request):
+            morceaux = [f'{nom}={valeur}', 'Path=/']
+            if max_age is not None:
+                morceaux.append(f'Max-Age={max_age}')
+            if httponly:
+                morceaux.append('HttpOnly')
+            morceaux += ['Secure', 'SameSite=None', 'Partitioned']
+            response.headers.add('Set-Cookie', '; '.join(morceaux))
+            return
+        options = {'path': '/', 'httponly': httponly,
+                   'secure': self.CookieSecure(request), 'samesite': 'Lax'}
+        if max_age is not None:
+            options['max_age'] = max_age
+        response.set_cookie(nom, valeur, **options)
 
     @final
     def IsAuthenticate(self, request: web.Request) -> bool:
@@ -333,33 +405,28 @@ class WebServer:
             session_token = hashlib.md5(password_attempt.encode()).hexdigest()
 
             response = web.Response()
-            response.set_cookie(
-                'session_token',
-                session_token,
-                max_age=31536000, # 1 year
-                path='/',
-                httponly=True, # VERY IMPORTANT: Prevents JavaScript access to the cookie
-                # Les deux lignes suivantes etaient en commentaire depuis
-                # l'amont. `secure` n'est plus pose a l'aveugle mais deduit de
-                # la requete (voir `CookieSecure`) : en HTTPS il y est, en local
-                # il n'y est pas, et le cookie ne part plus en clair sur une
-                # premiere visite tapee en `http://`.
-                secure=self.CookieSecure(request),
-                samesite='Lax',
-            )
+            # `httponly` : le cookie reste illisible en JavaScript. `secure` est
+            # deduit de la requete (voir `CookieSecure`), `samesite` depend du
+            # cadre (voir `PoserCookie`).
+            self.PoserCookie(response, request, 'session_token', session_token,
+                             max_age=31536000)
             return response
 
         async def handle_get_version(request: web.Request) -> web.Response:
             # response = web.Response(text=Ver.ui_version_str)
             # Hack, make browser treat it as images and store in cache
             response = web.Response(body=Ver.ui_version_str, content_type='image/jpeg', headers=self.HeaderCache)
-            response.set_cookie(
-                'app_version',
-                Ver.ui_version_str,
-                max_age=365 * 24 * 60 * 60, # 1 year
-                path='/',
-                httponly=False
-            )
+            if self.EstCadreDiscord(request):
+                self.PoserCookie(response, request, 'app_version', Ver.ui_version_str,
+                                 max_age=365 * 24 * 60 * 60, httponly=False)
+            else:
+                response.set_cookie(
+                    'app_version',
+                    Ver.ui_version_str,
+                    max_age=365 * 24 * 60 * 60, # 1 year
+                    path='/',
+                    httponly=False
+                )
             return response
 
         async def handle_html(request: web.Request):

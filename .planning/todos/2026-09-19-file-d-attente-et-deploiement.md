@@ -840,3 +840,33 @@ Chaque chantier redéployé séparément (`deployer.ps1 -Code`, plus
 `bash ui-app/deployer.sh` pour le 6, qui touche le plateau React) sur
 confirmation explicite, un déploiement bloqué une fois par le garde-fou
 automatique puis relancé sur « vas-y ».
+
+## 29/09/2026 : activité Discord, déployée et vérifiée en vrai, PAS commitée
+
+Le jeu tourne dans un salon vocal Discord (activité intégrée). Six
+déploiements `-Code` dans la matinée (chacun sur « oui »/« go »), plus le
+Caddyfile de prod modifié à la main trois fois (bloc `@discord`, sauvegardes
+`Caddyfile.avant-hote-discord-29092026` et `Caddyfile.avant-discord-28092026`).
+Ce qui bloquait, dans l'ordre où ça a été trouvé : cookie `Lax` jamais
+renvoyé dans l'iframe tiers ; `Domain=` rejeté ; le proxy Discord qui suit
+les 3xx lui-même et perd les `Set-Cookie` ; sa CSP `'self'` qui bloque
+esm.sh ; et surtout `READY` envoyé une seule fois par cadre, donc une seule
+page jamais rechargée (coquille + iframe interne). Détail :
+`docs/reference/DISCORD.md`.
+
+Non commité : `site/orchestrateur.py`, `site/discord-sdk.mjs`,
+`site/test_activite_discord.py`, `site/test_parcours.py` (test cookies moteur
+adapté), `docs/reference/DISCORD.md`, `deploiement/Caddyfile`,
+`src/engine/network/web_server.py`, `src/engine/device/web/server/server_html.py`.
+Les 4 rouges `/admin` de `test_parcours` sont ceux, préexistants, de la
+refonte `/admin` non finie. Parcours PARTICIPANT jamais essayé en vrai.
+
+Suite, 07:36 UTC : déployé (`-Code`, sur « si il n'y a que moi oui ») le
+parcours participant : connecté = assis directement ; « Je suis invité » =
+siège attribué (`siege_activite_discord`, un par personne, cookie
+`nc_discord_invite` pour retrouver le sien) ; « Table complète » au 4e.
+Vérifié au `curl` à travers le proxy Discord : hôte prêt, invité A siège 1,
+invité B siège 2, A revient sur le 1, A arrive au salon avec `seat_token_1`.
+⚠ Premier passage raté : « port 2351 déjà pris » pendant plus de 3 min après
+le redémarrage (la table de l'hôte était en pleine partie Black Widow/Klaw).
+Toujours le même transitoire d'après déploiement, pas corrigé.
