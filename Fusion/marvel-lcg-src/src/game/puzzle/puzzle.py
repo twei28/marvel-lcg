@@ -449,7 +449,7 @@ class RunPuzzle:
         return face
 
     def PutIntoPlay(self, card: CardName, under_control: bool=False,
-                    exhaust: bool=False) -> 'CardFace':
+                    exhaust: bool=False, player: int|None=None) -> 'CardFace':
             """Pose une carte en jeu.
 
             `under_control` la place SOUS LE CONTROLE du joueur courant. Sans
@@ -462,10 +462,32 @@ class RunPuzzle:
             ainsi en partie reelle.
             """
             face = self.FindOrCreateFace(card)
-            player = self.world.GetCurrentPlayer()
-            face.PutIntoPlay(player, self.debug_rule,
+            # `player` (29/09/2026) : le siege qui recoit la carte, pour les
+            # rulings multijoueur (« la copie de l'AUTRE joueur », 04028).
+            joueur = (self.world.GetCurrentPlayer() if player is None
+                      else self.world.const_players[player])
+            face.PutIntoPlay(joueur, self.debug_rule,
                              under_control=under_control, exhaust=exhaust)
             return face
+
+    def PlaceUnder(self, card: CardName, host: CardName) -> 'CardFace':
+        """Glisse CARD face cachee sous HOST (en jeu), sans passer par une
+        capacite : sert a monter un plafond « Max N cards tucked here »."""
+        face = self.FindOrCreateFace(card)
+        hote = self.FindFaceInPlay(host)
+        hote.PlaceCardHere([face], False, self.debug_rule)
+        return face
+
+    def TurnEncounterTopFaceUp(self) -> 'CardFace|None':
+        """Rend VISIBLE la carte du dessus du deck rencontre, sans la reveler
+        ni la deplacer (ruling Redwing 53002 : « if the top card is visible »)."""
+        player = self.world.GetCurrentPlayer()
+        villain = Worlds.FindVillainByGameArea(player.GetIdentity().card.game_area)
+        assert villain is not None
+        top = villain.encounter_deck.GetTop()
+        if top is not None:
+            top.card.state.is_face_up = True
+        return top
 
     def Boost(self, card: CardName) -> 'CardFace':
         from game.operate.worlds import Worlds
@@ -754,6 +776,7 @@ class RunPuzzle:
         'EngagedEnemiesArea':   lambda j: j.engaged_minions,
         'ResourcesArea':        lambda j: j.area_resources,
         'ReserveArea':          lambda j: j.reserve,
+        'RisingTideArea':       lambda j: j.rising_tide, # AJOUT (pack wave)
         # Correctif ronde 1 (18/09/2026) : `j.set_aside_deck` est un faux ami
         # herite du moteur de base (`player.py:100`), il vaut en realite
         # `additional_discard_pile` (`DeckType.AdditionalDiscardPile`), pas

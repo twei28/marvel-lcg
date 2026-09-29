@@ -12,7 +12,12 @@ def GetAbilities() -> Sequence['Ability']:
 
         initiator = effect.GetInitiator()
         faces = Worlds.GetOnFieldEnemies(effect)
-        faces = [x for x in faces if x not in effect.targets]
+        # FAQ (MC4DB, 29/09/2026) : la 2e phrase est une cible d'ATTAQUE comme
+        # la 1re. Le vilain n'y est ciblable que si le sbire guard est tombe a
+        # la 1re phrase (`Villain.CanBeAttackBy` : guard engage -> refus) ; un
+        # ennemi deja vaincu n'est plus propose non plus.
+        faces = [x for x in faces
+                 if x not in effect.targets and x.IsInPlay() and x.CanBeAttackBy(effect)]
         unit = initiator.AskChooseFace(faces, effect)
         if unit:
             this.DealDamage([unit], 3, effect)

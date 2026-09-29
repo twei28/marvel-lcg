@@ -80,11 +80,16 @@ def LaTahlei(effect: 'Effect', joueur: 'Player|None'=None) -> 'CardFace|None':
 
 
 def Convoquer(effect: 'Effect', nom: str, card_type: Any=Upgrade) -> 'CardFace|None':
-    """MOT-CLE MAISON `summon` : fouiller le DECK **ET** la DEFAUSSE.
+    """MOT-CLE MAISON `summon` : fouiller PARTOUT hors jeu (deck, defausse,
+    main, mise de cote, retire de la partie).
 
-    ⚠ DEFINITION ARBITREE PAR L'UTILISATEUR (03/09/2026), l'auteur ne la
-    donne nulle part et aucune carte officielle n'imprime ce mot. Fiche
-    complete : `docs/reference/mots-cles/summon.md`.
+    ⚠ ALIGNE SUR LE GLOSSAIRE MC4DB LE 29/09/2026 (« Search the deck, discard
+    pile, or anywhere in or out of play for a specific card, then shuffle the
+    deck if it was searched in this way ») ; l'auteur ne definit le mot nulle
+    part, et l'arbitrage du 03/09/2026 (deck + defausse) en etait un
+    sous-ensemble. Le terrain n'est PAS fouille : chaque carte du pack qui
+    convoque une carte pouvant deja etre en jeu le dit elle-meme (« if ... is
+    not in play »). Fiche complete : `docs/reference/mots-cles/summon.md`.
 
     ⚠ LA DEFAUSSE EST LA MOITIE QUI COMPTE. `yd013` Banished DEFAUSSE
     explicitement la Yaka Arrow : sans elle, la fleche serait perdue pour la
@@ -98,16 +103,22 @@ def Convoquer(effect: 'Effect', nom: str, card_type: Any=Upgrade) -> 'CardFace|N
     joueur = JoueurDeCetteCarte(effect)
     if joueur is None:
         return None
-    face = Search.PlayerCard(
+    faces = Search.SearchForCards(
         effect, joueur,
         include_player_deck=True,
-        include_discard_pile=True,
+        include_player_discard_pile=True,
+        include_player_hand_cards=True,
+        include_set_aside=True,
+        include_removed_area=True,
         name=nom,
         card_type=card_type,
     )
-    if face is None:
+    if not faces:
         return None
-    joueur.GainCard(face, effect)
+    face = faces[0]
+    # Deja en main : « add it to your hand » n'a plus rien a faire.
+    if face not in joueur.hand_cards.Get():
+        joueur.GainCard(face, effect)
     return face
 
 

@@ -11,8 +11,10 @@ def GetAbilities() -> Sequence['Ability']:
             "You",
             health=4,
         ),
+        # Errata RRG 1.5 : « Valkyrie » -> « You » pour le trait aussi (MC4DB,
+        # 29/09/2026) : Brunnhilde (alter-ego) gagne AERIAL comme Valkyrie.
         *AbilityFactory.GiveKeywordToAttached(
-            CardFinder(name="Valkyrie"),
+            "You",
             trait="AERIAL",
         )
     ]

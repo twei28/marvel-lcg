@@ -355,6 +355,26 @@ export function validerDeck({ hero, choisies, carte, t = brut }) {
         for (const classe of sortis) parAspect.delete(classe);
     }
     const aspects = new Set(parAspect.keys());
+    // Multiverse (glossaire MC4DB, 29/09/2026) : une carte Multiverse REMPLACE
+    // la carte de meme numero de set, elle ne s'y ajoute pas. Les deux versions
+    // ne cohabitent donc jamais dans un deck, signatures du heros comprises
+    // (`multiverse_of` dans cards.json designe l'originale).
+    const presentes = new Map();
+    for (const id of ((hero.deck && hero.deck.hero_deck) || [])) {
+        const cle = String(id).split(",")[0];
+        const c0 = carte(cle);
+        if (c0) presentes.set(cle, c0);
+    }
+    for (const [id] of choisies) {
+        const c0 = carte(id);
+        if (c0) presentes.set(String(id), c0);
+    }
+    for (const c0 of presentes.values()) {
+        const originale = c0.multiverse_of && presentes.get(String(c0.multiverse_of));
+        if (originale) {
+            problemes.push(`${t("Multiverse :")} « ${c0.name} » ${t("remplace")} « ${originale.name} », ${t("pas les deux")}`);
+        }
+    }
     if (horsDeckJoueur.length) {
         problemes.push(`${t("Cartes qui n’appartiennent pas à un deck de joueur :")} ${[...new Set(horsDeckJoueur)].join(", ")}`);
     }

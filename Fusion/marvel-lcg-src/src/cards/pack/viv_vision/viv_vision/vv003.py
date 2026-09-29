@@ -52,12 +52,14 @@ from . import *
 # ---------------------------------------------------------------------------
 #
 # ⚠ Le mot-cle maison `breakthrough` : voir docs/reference/mots-cles/
-# breakthrough.md, qui porte la definition complete et les quatre pieges.
-# En deux lignes : l'exces de menee se reporte sur une AUTRE manigance choisie
-# par le joueur, exactement comme `overkill` reporte des degats. L'exces se
-# lit sur `Message.AfterUnitThwartScheme`, envoye DANS la boucle de
-# `ThwartInternal` juste apres `RemoveThreatInternal` — donc pendant que les
-# bonus de menee sont encore actifs, ce qui n'est plus vrai a
+# breakthrough.md, qui porte la definition complete et les pieges.
+# En deux lignes (glossaire MC4DB, aligne le 29/09/2026 : « Excess threat
+# removed from this side scheme is removed from the main scheme ») : l'exces
+# de menee part sur la MANIGANCE PRINCIPALE, sans choix du joueur -- jusque-la
+# le script proposait une manigance au choix, lecture d'une liste communautaire
+# jamais recoupee. L'exces se lit sur `Message.AfterUnitThwartScheme`, envoye
+# DANS la boucle de `ThwartInternal` juste apres `RemoveThreatInternal`, donc
+# pendant que les bonus de menee sont encore actifs, ce qui n'est plus vrai a
 # `AfterUnitThwartEnd`.
 #
 # ⚠ Mots-pieges (PROCESSUS-CARTE etape 5) :
@@ -74,9 +76,9 @@ from . import *
 #  - Le report de `breakthrough` passe par le MEME effet, donc il ignore lui
 #    aussi crisis. C'est voulu : le texte dit « for that thwart », et le
 #    report fait partie de cette menee.
-#  - « ANOTHER eligible target » (definition du mot-cle) : la manigance visee
-#    est exclue du choix (`exclude=`), et seules celles qui portent encore de
-#    la menace sont proposees (`has_threat=True`).
+#  - « removed from the MAIN scheme » (definition MC4DB) : la cible du report
+#    est imposee. Si la menee visait la principale elle-meme, l'exces est
+#    simplement perdu (rien d'autre n'est nomme).
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -106,17 +108,11 @@ def GetAbilities() -> Sequence['Ability']:
             if exces <= 0:
                 return
 
-            joueur.ChooseAbilities(
-                effect,
-                AbilityFactory.ForChoiceAbility(
-                    "Breakthrough",
-                    lambda cibles: this.RemoveThreatFromSchemes(cibles, exces, effect),
-                ).SetTarget(
-                    Scheme2,
-                    exclude=[thw_message.scheme],
-                    has_threat=True,
-                ),
-            )
+            principales = [s for s in Worlds.GetMainSchemes(effect)
+                           if s is not thw_message.scheme]
+            if not principales:
+                return
+            this.RemoveThreatFromSchemes([principales[0]], exces, effect)
 
         # L'abonnement se pose AVANT la menee et meurt avec la resolution de
         # cet effet : la carte ne laisse rien derriere elle.

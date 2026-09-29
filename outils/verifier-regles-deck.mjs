@@ -43,5 +43,22 @@ ko += dire('cout 21 -> 2 cartes', q({ vz011: 7 })[0].nombre, 2)
 ko += dire('cout 40 -> 2 cartes', q({ vz011: 13, vz024: 1 })[0].nombre, 2)
 ko += dire('au-dela de 40, derniere tranche', q({ vz011: 15 })[0].nombre, 2)
 ko += dire('le set impose est nomme', q({ vz011: 7 })[0].set, 'Venomized Weakness')
+// Multiverse : une carte Multiverse remplace celle de meme numero (MC4DB,
+// 29/09/2026). `validerDeck` doit refuser les deux ensemble, signatures du
+// heros comprises, et se taire quand une seule est presente.
+const cartesMv = {
+  ra002: { class: 'Hero', type: 'Ally', name: 'Odinson', set_name: 'Thor (Jane Foster)', multiverse_of: 'ra003', desc: {} },
+  ra003: { class: 'Hero', type: 'Ally', name: 'Roz Solomon', set_name: 'Thor (Jane Foster)', desc: {} },
+  '01088': { class: 'Basic', type: 'Event', name: 'Haymaker', desc: {} },
+}
+const cMv = (id) => cartesMv[id]
+const problemesMv = (heroDeck, choisies) => m.validerDeck({
+  hero: { name: 'Jane Foster', deck: { hero_deck: heroDeck } },
+  choisies: new Map(Object.entries(choisies)), carte: cMv,
+}).problemes.filter((x) => x.startsWith('Multiverse'))
+ko += dire('les deux versions dans les signatures -> refuse', problemesMv(['ra002', 'ra003'], {}).length, 1)
+ko += dire('la Multiverse choisie, l originale en signature -> refuse', problemesMv(['ra003'], { ra002: 1 }).length, 1)
+ko += dire('une seule version -> rien a redire', problemesMv(['ra003'], { '01088': 3 }).length, 0)
+ko += dire('la Multiverse seule -> rien a redire', problemesMv(['ra002'], {}).length, 0)
 console.log(ko ? `ECHECS : ${ko}` : 'ECHECS : 0')
 process.exit(ko ? 1 : 0)

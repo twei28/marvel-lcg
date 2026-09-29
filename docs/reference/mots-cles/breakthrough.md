@@ -5,35 +5,28 @@ Mot-clé MAISON, imprimé dans le pack `viv_vision` (Rainy) sur `vv003` Just a
 Phase et **sur aucune autre carte du pack** : le zip ne contient aucun insert
 de règles.
 
-**Définition** (Marvel Champions Home Brew Master List, la liste communautaire
-de mots-clés maison ; transmise par l'utilisateur le 02/09/2026) :
+**Définition** (glossaire fan-made de MC4DB, adoptée le 29/09/2026) :
 
-> « When this attack defeats an enemy or this thwart clears a scheme, excess
->   damage or threat removal is dealt/removed from another eligible target. »
+> « Excess threat removed from this side scheme is removed from **the main
+> scheme**. »
 
-Autrement dit `overkill`, mais rendu polyvalent : il s'applique **aux dégâts
-comme à la menée**. Les auteurs le retouchent parfois pour un héros précis ;
-c'est la définition de référence.
-
-⚠ **Ce qui a été vérifié et ce qui ne l'a pas été.** Le 02/09/2026, une
-recherche complète n'a rien trouvé de public : absent de la liste de mots-clés
-de Hall of Heroes et des règles MarvelCDB, thread BGG du pack muet, page Steam
-de Rainy renvoyant à une masterlist hébergée sur le Discord Homebrew, et la
-feuille Google publique « Marvel Champions Home Brew Master List » ne porte
-aucun glossaire. La définition ci-dessus vient donc de l'utilisateur et **n'a
-pas pu être recoupée depuis le dépôt**. Elle coïncide exactement avec
-l'arbitrage rendu avant de la connaître (question posée le 02/09/2026 avant
-d'écrire la première ligne de `vv003`), ce qui la conforte sans la prouver.
+⚠ **Ce qui a changé le 29/09/2026.** La fiche suivait jusque-là la « Marvel
+Champions Home Brew Master List » transmise par l'utilisateur le 02/09/2026
+(« another eligible target », au choix du joueur), jamais recoupée depuis le
+dépôt. MC4DB, seul glossaire public consulté qui définit le mot, impose la
+manigance PRINCIPALE. Le script `vv003` ne propose donc plus de choix : l'excès
+part sur `Worlds.GetMainSchemes(effect)[0]`. Si la menée visait la principale
+elle-même, l'excès est perdu (rien d'autre n'est nommé). La lecture « l'excès
+va toujours sur la principale », écartée le 02/09, est donc celle qui vaut.
 
 Exemple : Viv (THW 1) joue Just a Phase, monte à 4 THW et vise une manigance
 annexe qui ne porte que 2 menaces. Les 2 menaces partent, la manigance tombe,
-et les **2 restantes** se reportent sur une manigance de son choix.
+et les **2 restantes** partent sur la manigance principale, même si une autre
+annexe est en jeu (cas « avec DEUX annexes », rouge avec l'ancien script).
 
-Deux lectures concurrentes avaient été proposées puis écartées : « la menée
-touche toutes les manigances » et « l'excès va toujours sur la manigance
-principale ». La définition communautaire les écarte toutes les deux : elle dit
-**another eligible target**, au singulier et sans nommer laquelle — donc un
-choix du joueur, jamais toutes les manigances ni une cible imposée.
+⚠ MC4DB ne parle que de MENACE : le volet « dégâts » de l'ancienne définition
+(« this attack gains breakthrough ») n'a de source que la masterlist. Aucune
+carte du dépôt ne l'imprime ; s'il en arrive une, la question se repose.
 
 **Mécanisme moteur — volet ATTAQUE** : c'est `overkill`, tel quel. Le moteur
 sait déjà le faire, et sa fiche `overkill.md` donne les deux chemins
@@ -68,7 +61,7 @@ d'effet de suite (`AfterUnitThwartAndRemoveLastThreat` + condition
 
 - **Seule une vraie MENÉE reporte.** Comme `overkill` ne reporte que des dégâts
   d'attaque, le volet menée de `breakthrough` ne reporte que ce qui a été
-  retiré PAR une menée. Un « remove N threat » qui n'est pas une menée (le Hero
+  retiré PAR une menée (« removed from this side scheme »). Un « remove N threat » qui n'est pas une menée (le Hero
   Action de `vv005` Solar Beam, par exemple) ne reporte jamais rien, même si la
   manigance tombe.
 - **Lire l'excès sur `AfterUnitThwartScheme`, pas sur `AfterUnitThwartEnd`.**
@@ -84,6 +77,9 @@ d'effet de suite (`AfterUnitThwartAndRemoveLastThreat` + condition
 - **Une manigance vaincue disparaît.** Si la menée abat la manigance visée,
   l'excès existe toujours : ne pas conditionner le report à la survie de la
   cible.
+- **Pas de choix à proposer.** La cible du report est la principale, imposée :
+  un `ChooseAbilities` (ancien montage) ouvrait une question que le glossaire
+  ne pose pas.
 
 **Variantes maison** : aucune autre dans le dépôt pour l'instant. La définition
 communautaire prévient elle-même que certains auteurs la retouchent pour un

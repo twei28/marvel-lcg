@@ -33,10 +33,28 @@ def HasExactlyTen(effect: 'Effect', message: Any=None) -> bool:
 
 
 def Drain(source: 'CardFace', targets: Sequence['CardFace'], value: int, effect: 'Effect') -> None:
-    """X degats a l'ennemi, puis X soins sur Agent Anti-Venom."""
+    """X degats a l'ennemi, puis X soins sur Agent Anti-Venom SI l'ennemi les a subis.
+
+    ⚠ ALIGNE SUR LE GLOSSAIRE MC4DB LE 29/09/2026 (ce pack n'imprime aucune
+    definition) : « deal X damage to that character's target. Then, IF THE
+    TARGET TOOK THAT DAMAGE, heal X damage from the character who triggered
+    drain ». Un ennemi Tough absorbe les degats : aucun soin. Le pack
+    `venompool`, lui, imprime sa propre definition (soin inconditionnel) et la
+    garde, fiche `docs/reference/mots-cles/drain-x.md`.
+    ⚠ « A SUBI » SE LIT SUR LES POINTS DE VIE, PAS SUR LE RETOUR DE
+    `DealDamage` : celui-ci compte les degats INFLIGES (`deal_damage`,
+    avant prevention), et rendait 1 face a un vilain Tough (cas
+    « av009 ... vilain TOUGH », rouge le 29/09/2026). Un ennemi vaincu par
+    ces degats les a subis, meme si sa carte a quitte le terrain.
+    """
     if not targets:
         return
+    avant = {cible: cible.health for cible in targets if hasattr(cible, "health")}
     source.DealDamage(targets, value, effect)
+    subis = any(cible.health < sante or cible.IsDefeated() or not cible.IsInPlay()
+                for cible, sante in avant.items())
+    if not subis:
+        return
     identity = GetAgentAntiVenom(effect)
     if identity is not None:
         source.HealthUnits([identity], value, effect)

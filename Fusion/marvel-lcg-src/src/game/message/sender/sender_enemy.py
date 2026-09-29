@@ -24,7 +24,10 @@ class SenderEnemy:
             text = TransText("{unit} advanced", unit=unit)
             self.Present(text, "set", unit)
 
-    class WhenMinionWouldEngagePlayer(TriggerUnitMessage, HasEndEventMessage):
+    # `CanBeInstead` AJOUTE le 29/09/2026 (FAQ Target Spotter 51038) : une
+    # interruption peut remplacer l'engagement par un autre ; `Minion.OnEngagePlayer`
+    # arrete alors la suite (engages, Quickstrike, after engages).
+    class WhenMinionWouldEngagePlayer(TriggerUnitMessage, HasEndEventMessage, CanBeInstead):
         def __init__(self, unit: 'Minion', player: 'Player', by_effect: 'Effect') -> None:
             from game.message import Message
             self.player: Final = player

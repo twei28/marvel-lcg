@@ -114,6 +114,13 @@ class Minion(Enemy, CanQuickstrike, CanTeamwork, HasGuard, HasPatrol, HasVillain
         player = self.GetEngagedPlayer()
         would_message = Message.WhenMinionWouldEngagePlayer(self, player, by_effect)
         would_message.Send()
+        # Une interruption a remplace cet engagement par un autre (Target
+        # Spotter 51038, FAQ) : le sbire est deja engage ailleurs et CET
+        # engagement-ci ne se resout pas (ni « engages », ni Quickstrike, ni
+        # « after engages », ni guard/patrol pour ce joueur). Ajoute le
+        # 29/09/2026.
+        if would_message.is_be_instead:
+            return
 
         engaged_message = Message.WhenMinionEngagePlayer(would_message)
         engaged_message.Send()

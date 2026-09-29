@@ -3,12 +3,15 @@ from . import *
 # * Tony Stark A.I.
 #
 # Guard/Patrol lus nativement depuis desc (fiches guard.md/patrol.md).
-# "Armored 2" : mot-cle MAISON non defini (absent de tout le jeu et du
-# materiel fourni), decision utilisateur (29/08/2026, voir
-# docs/reference/mots-cles/armored.md) : previent 2 degats a CHAQUE instance,
-# pas seulement au combat -- Forced Interrupt sur `WhenUnitWouldTakeDamage`,
-# modele Armored Rhino Suit (core/rhino/01098.py). Degats au joueur : voir
-# si015.py (meme simplification assumee "the Tony Stark player" -> "you").
+# "Armored 2" : mot-cle MAISON non defini sur la carte. Glossaire MC4DB
+# (aligne le 29/09/2026, voir docs/reference/mots-cles/armored.md) : « When a
+# character with this keyword would take any amount of damage FROM AN ATTACK,
+# prevent X of that damage » : a CHAQUE attaque, jamais hors attaque (une
+# trahison qui blesserait ce sbire passe en entier). Forced Interrupt sur
+# `WhenUnitWouldTakeDamage(..., is_from_attack=True)`, modele Armored Rhino
+# Suit (core/rhino/01098.py). Jusque-la (arbitrage du 29/08/2026) il prevenait
+# 2 degats de TOUTE instance. Degats au joueur : voir si015.py (meme
+# simplification assumee "the Tony Stark player" -> "you").
 
 def GetAbilities() -> Sequence['Ability']:
 
@@ -38,5 +41,6 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.ForcedInterrupt,
             "This",
             armored_2,
+            is_from_attack=True,
         ),
     ]

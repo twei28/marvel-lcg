@@ -44,6 +44,29 @@ def Reckless() -> 'Ability':
     )
 
 
+def Fleeting() -> 'Ability':
+    """« Fleeting. (This card must be discarded from play at the end of the phase.) »
+
+    Aucun crochet natif, et le moteur ne lit AUCUN mot-cle dans le texte : sans
+    cette aptitude, dt087 restait attachee jusqu'a la defaite de l'ennemi
+    (constate le 29/09/2026). Modele : 44032 The Merc with the Mouth
+    (`WhenPlayerPhaseEnd` + `DiscardThisCard`). Ici `phase_name=None` : la
+    PREMIERE fin de phase qui suit l'entree en jeu, quelle que soit la phase
+    (dt087 arrive en phase du mechant, apres des degats subis). La defausse
+    passe par `Faces.DiscardAll`, donc par la fenetre `WhenCardWouldDiscard`
+    que la carte ecoute pour son Interrupt de depart.
+    """
+    def en_jeu(effect: 'Effect', message: 'Message.WhenPhaseEnd') -> bool:
+        return effect.this.IsInPlay()
+
+    return AbilityFactory.WhenPhaseEnd(
+        AbilityType.ForcedResponse,
+        None,
+        DiscardThisCard,
+        conditions=[en_jeu],
+    )
+
+
 def PeutRevenirEnMain(this: 'CardFace', initiator: 'Player', effect: 'Effect') -> None:
     """« If this is the first card you have played this round, you may take 1
     damage to return this card to your hand. »
@@ -145,8 +168,12 @@ def Alias() -> 'Sequence[Ability]':
             Faces.DiscardAll(homonymes[:1], effect)
 
     return [
+        # ⚠ `.val`, PAS L'OBJET `Cost` : `printed_cost` est un `Cost`, et la
+        # fabrique multiplie (`base_val * fn(effect)`). Sans `.val`, TypeError
+        # avalee par le moteur : la reduction ne s'appliquait jamais, meme avec
+        # les sous-titres renseignes (trouve au harnais le 29/09/2026).
         AbilityFactory.ReduceCostToPlayThis(
-            lambda effect: effect.this.printed_cost,
+            lambda effect: effect.this.printed_cost.val,
             conditions=[controle_un_homonyme]
         ),
         AbilityFactory.AfterCardEnterPlay(

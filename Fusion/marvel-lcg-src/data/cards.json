@@ -6879,7 +6879,7 @@
    "desc": {},
    "traits": [],
    "set_name": "Red Skull",
-   "text": "<b>When Revealed:</b> Exhaust a character you control for each side scheme in play.\r\n<hr />\r\n[star] <b>Boost</b>: Exhaust a character you control."
+   "text": "<b>When Revealed:</b> For each side scheme in play, choose and exhaust a character you control.\r\n<hr />\r\n[star] <b>Boost</b>: Exhaust a character you control."
   },
   {
    "card_id": "04137",
@@ -9199,7 +9199,7 @@
     "TECH"
    ],
    "set_name": "Black Widow",
-   "text": "Black Widow gets +1 DEF.\n<b>Hero Response</b>: After you trigger the ability of a [[Preparation]] card you control, exhaust Synth-Suit → ready Black Widow."
+   "text": "Black Widow gets +1 DEF.\n<b>Hero Response</b>: After you resolve the ability of a [[Preparation]] card you control, exhaust Synth-Suit → ready Black Widow."
   },
   {
    "card_id": "08010",
@@ -23691,7 +23691,7 @@
     "CREATURE"
    ],
    "set_name": "Valkyrie",
-   "text": "Valkyrie gets +4 hit points and gains the [[aerial]] trait."
+   "text": "You get +4 hit points and gain the [[aerial]] trait."
   },
   {
    "card_id": "25008",
@@ -36265,6 +36265,48 @@
    "traits": [],
    "set_name": "Exodus",
    "text": "<b>When Revealed</b>: Each [[ACOLYTE]] minion engaged with you activates against you. If you are not engaged with an [[ACOLYTE]] minion, this card gains surge.\n<hr />\n[star] <b>Boost</b>: You are stunned and confused."
+  },
+  {
+   "card_id": "37036",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Gambit",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "37037",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Gambit",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "37038",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Gambit",
+   "text": "Max 1 per deck."
   }
  ],
  "rogue": [
@@ -42690,6 +42732,48 @@
    ],
    "set_name": "",
    "text": "Play only if your identity has the [[X-FORCE]] trait.\nAttach to a friendly character. Max 1 per character.\nAttached character gets +1 hit point and gains the [[X-FORCE]] trait."
+  },
+  {
+   "card_id": "42033",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Angel",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "42034",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Angel",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "42035",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Angel",
+   "text": "Max 1 per deck."
   }
  ],
  "x23": [
@@ -48729,6 +48813,48 @@
     "REGRESSED"
    ],
    "set_name": ""
+  },
+  {
+   "card_id": "47035",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Jubilee",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "47036",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Jubilee",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "47037",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Jubilee",
+   "text": "Max 1 per deck."
   }
  ],
  "ncrawler": [
@@ -49747,7 +49873,7 @@
     "PSIONIC"
    ],
    "set_name": "Magneto Nemesis",
-   "text": "Steady. Toughness. Villainous.\n[star] <b>Forced Response</b>: After Exodus attacks you, discard cards from the top of your deck equal to his total ATK.\n<i>(Magneto's nemesis minion.)</i>"
+   "text": "Steady. Toughness. Villainous.\n[star] <b>Forced Response</b>: After Exodus attacks you, discard cards from the top of your deck equal to his total ATK for that attack.\n<i>(Magneto's nemesis minion.)</i>"
   },
   {
    "card_id": "49029",
@@ -49987,6 +50113,48 @@
    "traits": [],
    "set_name": "Hellfire",
    "text": "<b>When Revealed</b>: Give the villain a tough status card. Give this card to that villain as a facedown boost card.\n<hr />\n[star] <b>Boost</b>: After this activation, the activating enemy activates against you again. Do not give it a boost card for that activation."
+  },
+  {
+   "card_id": "49043",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Magneto",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "49044",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Magneto",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "49045",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Magneto",
+   "text": "Max 1 per deck."
   }
  ],
  "ron": [
@@ -61237,7 +61405,7 @@
     "ELITE"
    ],
    "set_name": "Moon Knight",
-   "text": "Retaliate 2. Toughness.\n<b>When Revealed</b>: Resolve the \"<b>When Revealed</b>\" ability of the topmost treachery in the encounter discard pile."
+   "text": "Retaliate 2. Toughness.\n<b>When Revealed</b>: Resolve the \"<b>When Revealed</b>\" ability of the topmost treachery in the encounter discard pile. <i>(Limit once per phase.)</i>"
   },
   {
    "card_id": "57066",
@@ -61477,7 +61645,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Wonder Man",
-   "text": "Permanent. Max 3 cards tucked here.\n<b>Response</b>: After you play an event with a printed [energy] resource, tuck that event from your discard pile under this card → heal 1 damage from your identity."
+   "text": "Permanent. Max 3 cards tucked here.\n<b>Response</b>: After you play an event with a printed [energy] resource, tuck that event from your discard pile under this card. Then, heal 1 damage from your identity."
   },
   {
    "card_id": "58003",
@@ -66385,6 +66553,7 @@
   },
   {
    "card_id": "ra002",
+   "multiverse_of": "ra003",
    "type": "Ally",
    "name": "* Odinson",
    "subtitle": "",
@@ -67536,6 +67705,48 @@
    "set_name": "Human Torch Nemesis",
    "text": "Surge.\n<b>When Revealed</b>: If Hydro-Man is in play, each player must choose to either exhaust their identity or take 3 indirect damage.",
    "custom": "DesignHacker"
+  },
+  {
+   "card_id": "ht015",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Human Torch",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "ht016",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Human Torch",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "ht017",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Human Torch",
+   "text": "Max 1 per deck."
   }
  ],
  "mister_fantastic": [
@@ -68530,6 +68741,48 @@
    "set_name": "The Thing Nemesis",
    "text": "<b>When Revealed</b>: You take X damage, where X is the ATK of the friendly character with the highest ATK. If your identity is the only friendly character in play, this card gains surge.",
    "custom": "DesignHacker"
+  },
+  {
+   "card_id": "th016",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "The Thing",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "th017",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "The Thing",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "th018",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "The Thing",
+   "text": "Max 1 per deck."
   }
  ],
  "totally_awesome_hulk": [
@@ -72598,6 +72851,7 @@
   },
   {
    "card_id": "bw003",
+   "multiverse_of": "bw002",
    "type": "Ally",
    "name": "* Ironheart",
    "subtitle": "Riri Williams",
@@ -75114,7 +75368,7 @@
    "card_id": "dt100",
    "type": "Ally",
    "name": "* Archangel",
-   "subtitle": "",
+   "subtitle": "Warren Worthington III",
    "desc": {
     "Cost": "3",
     "HP": "2",
@@ -75209,7 +75463,7 @@
    "card_id": "dt105",
    "type": "Ally",
    "name": "* Venompool",
-   "subtitle": "",
+   "subtitle": "Wade Wilson",
    "desc": {
     "Cost": "3",
     "HP": "4",
@@ -75230,7 +75484,7 @@
    "card_id": "dt106",
    "type": "Ally",
    "name": "* Captain Universe",
-   "subtitle": "",
+   "subtitle": "Wade Wilson",
    "desc": {
     "Cost": "4",
     "HP": "4",
@@ -75251,7 +75505,7 @@
    "card_id": "dt107",
    "type": "Ally",
    "name": "* Zenpool",
-   "subtitle": "",
+   "subtitle": "Wade Wilson",
    "desc": {
     "Cost": "2",
     "HP": "2",
@@ -88092,6 +88346,48 @@
    "text": "<i>\"Beast is kidnapping mutants and performing dangerous tests on them.\"</i>\n<b>When Revealed</b>: Place 1 test counter on this side scheme for every ally in your discard pile. If there are 0 allies in your discard pile, place 2[per_hero] test counters instead.\n<b>Forced Response</b>: Whenever you draw an ally into your hand → remove 1 test counter and discard the ally and find the Lizard-Fied Minion in the encounter or discard pile and put it into play.",
    "set_name": "Beast Nemesis",
    "custom": "D0natello"
+  },
+  {
+   "card_id": "bt024",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Beast",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "bt025",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Beast",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "bt026",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Beast",
+   "text": "Max 1 per deck."
   }
  ],
  "doctor_doom": [
@@ -92857,6 +93153,7 @@
   },
   {
    "card_id": "bc003",
+   "multiverse_of": "bc002",
    "type": "Ally",
    "name": "* Spider-Man",
    "subtitle": "Peter Parker",
@@ -97803,5 +98100,1021 @@
    "custom": "Rainy"
   }
  ],
- "checksum": "4dca653e0d1422a6d8f82a567b226141ea0ccb047fc3196a6dd24b3020d1201d"
+ "wave": [
+  {
+   "card_id": "65001a",
+   "type": "Hero",
+   "name": "* Wave",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "ATLAS",
+    "TRIUMPH DIVISION"
+   ],
+   "set_name": "Wave",
+   "text": "<b>Storm Surge</b> — <b>Response</b>: After you discard cards from your hand to pay for a cost, place 1 of those cards in your Rising Tide area."
+  },
+  {
+   "card_id": "65001b",
+   "type": "AlterEgo",
+   "name": "* Pearl Pangan",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "ATHLETE",
+    "CIVILIAN"
+   ],
+   "set_name": "Wave",
+   "text": "<b>Setup</b>: You begin the game with a Rising Tide area (see insert).\n<b>Champion Swimmer</b> — <b>Action</b>: Place the top card of your deck faceup in the Rising Tide area. <i>(Limit once per phase.)</i>"
+  },
+  {
+   "card_id": "65002",
+   "type": "Ally",
+   "name": "* Sea Hunter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "THW": "1",
+    "ATK": "1",
+    "HP": "3",
+    "MaxPerDeck": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATLAS",
+    "SIRENA"
+   ],
+   "set_name": "Wave",
+   "text": "<b>Response</b>: After Sea Hunter attacks or thwarts, flip a faceup card in your Rising Tide area and pay the printed cost of an event in your discard pile → play that event as though it were in your hand."
+  },
+  {
+   "card_id": "65003",
+   "type": "Event",
+   "name": "Crashing Wave",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerDeck": "3",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SUPERPOWER"
+   ],
+   "set_name": "Wave",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 1 damage to an enemy. Flip up to 3 faceup cards in your Rising Tide area facedown → deal 2 additional damage for each card flipped facedown this way."
+  },
+  {
+   "card_id": "65004",
+   "type": "Event",
+   "name": "Marine Patrol",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART",
+    "SUPERPOWER"
+   ],
+   "set_name": "Wave",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Flip up to 2 cards in your Rising Tide area facedown. For each card flipped this way, choose (max 1 each):\n• remove 2 threat from a scheme.\n• draw 1."
+  },
+  {
+   "card_id": "65005",
+   "type": "Event",
+   "name": "Instinctive Flow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "G",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Wave",
+   "text": "<b>Hero Action</b>: Flip up to 3 faceup cards in your Rising Tide area facedown. For each card flipped facedown this way, choose (max 1 each):\n• deal 2 damage to an enemy.\n• remove 2 threat from a scheme.\n• stun an enemy."
+  },
+  {
+   "card_id": "65006",
+   "type": "Event",
+   "name": "Ocean's Fury",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Wave",
+   "text": "Max 1 per round.\n<b>Hero Action</b>: Until the end of the round, after Wave defeats an enemy or removes the last threat from a scheme, draw 1 card and flip a facedown card in your Rising Tide area faceup."
+  },
+  {
+   "card_id": "65007",
+   "type": "Event",
+   "name": "Tide Wall",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SUPERPOWER"
+   ],
+   "set_name": "Wave",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any damage, prevent up to 3 of that damage. For each point of damage prevented this way, place the top card of your deck faceup in the Rising Tide area."
+  },
+  {
+   "card_id": "65008",
+   "type": "Support",
+   "name": "* Pearl's Lolo",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "PERSONA"
+   ],
+   "set_name": "Wave",
+   "text": "<b>Alter-Ego Action</b>: Flip a faceup card in your Rising Tide area facedown → heal 3 damage."
+  },
+  {
+   "card_id": "65009",
+   "type": "Upgrade",
+   "name": "* Wave's Swords",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Restricted": "1",
+    "MaxPerDeck": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Wave",
+   "text": "Restricted.\n<b>Hero Action</b>: Exhaust Wave's Swords and flip a faceup card in your Rising Tide area facedown → ready Wave."
+  },
+  {
+   "card_id": "65010",
+   "type": "Upgrade",
+   "name": "* Wave's Crown",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "MaxPerDeck": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH"
+   ],
+   "set_name": "Wave",
+   "text": "Wave gains +1 THW.\nYou may play cards tucked under here as if they were in your hand.\n<b>Action</b>: Exhaust Wave's Crown → tuck 1 faceup card in your Rising Tide area under here (max 2)."
+  },
+  {
+   "card_id": "65011",
+   "type": "SideScheme",
+   "name": "Alontech's Greatest Achievement",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "Wave Nemesis",
+   "text": "Increase the cost of the first event each player plays each turn by 1."
+  },
+  {
+   "card_id": "65012",
+   "type": "Minion",
+   "name": "* The Reyna Sirena",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "5",
+    "Boost": "0"
+   },
+   "traits": [
+    "ALONTECH",
+    "ELITE",
+    "SIRENA"
+   ],
+   "set_name": "Wave Nemesis",
+   "text": "As an additional cost for the engaged player to play an event, that player must take 1 damage.\n<i>(Wave's nemesis minion)</i>\n[star] <b>Boost</b>: You are stunned."
+  },
+  {
+   "card_id": "65013",
+   "type": "Minion",
+   "name": "Alontech Hybrid",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "2",
+    "HP": "4",
+    "Boost": "0"
+   },
+   "traits": [
+    "ALONTECH"
+   ],
+   "set_name": "Wave Nemesis",
+   "text": "SIRENA minions and villains cannot be attacked by the player Alontech Hybrid is engaged with."
+  },
+  {
+   "card_id": "65014",
+   "type": "Attachment",
+   "name": "Alontech Seawolf",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [
+    "VEHICLE"
+   ],
+   "set_name": "Wave Nemesis",
+   "text": "Attach to the main scheme.\n<b>Forced Interrupt</b>: When the player phase begins, deal 1 damage to each player.\n<b>Hero Action</b>: Place 1 threat on the main scheme and discard an identity-specific card from your hand → discard this card."
+  },
+  {
+   "card_id": "65015",
+   "type": "Obligation",
+   "name": "Triumph Probation",
+   "subtitle": "",
+   "desc": {
+    "GiveTo": "Pearl Pangan"
+   },
+   "traits": [],
+   "set_name": "Wave Nemesis",
+   "text": "Give to the Pearl Pangan player. Search your hand, deck, discard and play area for Wave's Swords and Wave's Crown and place them facedown under this card. Wave loses the TRIUMPH DIVISION trait.\n<b>Alter Ego Action</b>: Exhaust Pearl Pangan → add Wave's Swords and Wave's Crown to your hand and remove Triumph Probation from the game."
+  },
+  {
+   "card_id": "65017",
+   "type": "Resource",
+   "name": "Energy",
+   "subtitle": "",
+   "desc": {
+    "RES": "YY",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Wave",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "65018",
+   "type": "Resource",
+   "name": "Genius",
+   "subtitle": "",
+   "desc": {
+    "RES": "BB",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Wave",
+   "text": "Max 1 per deck."
+  },
+  {
+   "card_id": "65019",
+   "type": "Resource",
+   "name": "Strength",
+   "subtitle": "",
+   "desc": {
+    "RES": "RR",
+    "MaxPerDeck": "1",
+    "Class": "Basic"
+   },
+   "traits": [],
+   "set_name": "Wave",
+   "text": "Max 1 per deck."
+  }
+ ],
+ "checksum": "52473bf3e8d3697c0f579781d00ab561ef52959496ae8265d9a47df4b0b60bfb",
+ "red_sonja": [
+  {
+   "card_id": "rs001a",
+   "type": "Hero",
+   "name": "* Red Sonja",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "ADVENTURER"
+   ],
+   "set_name": "Red Sonja",
+   "text": "<b>She-Devil</b> — <b>Action</b>: Exhaust a <b>WEAPON</b> upgrade you control → play an event from your hand, reducing its resource cost by 1."
+  },
+  {
+   "card_id": "rs001b",
+   "type": "AlterEgo",
+   "name": "* Sonja of Hyrkania",
+   "subtitle": "",
+   "desc": {
+    "HP": "10",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "ADVENTURER"
+   ],
+   "set_name": "Red Sonja",
+   "text": "During deck-building you may include up to 6 events from aspects other than your chosen aspect.\n<b>Day of the Sword</b> — <b>Action</b>: Search your deck for the Hyrkanium Blade upgrade and add it to your hand."
+  },
+  {
+   "card_id": "rs002",
+   "type": "Ally",
+   "name": "* Conan",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "THW": "1",
+    "ATK": "1",
+    "HP": "3",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ADVENTURER"
+   ],
+   "set_name": "Red Sonja",
+   "text": "<b>Interrupt</b>: When you use one of Conan's basic powers, exhaust a <b>WEAPON</b> upgrade you control → Conan gets +X to that power for this use, where X is equal to that card's printed cost."
+  },
+  {
+   "card_id": "rs003",
+   "type": "Event",
+   "name": "Savage Steel",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Red Sonja",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 6 damage to an enemy. For each point of excess damage dealt by this attack, reduce the cost of the next event you play this phase by 1."
+  },
+  {
+   "card_id": "rs004",
+   "type": "Event",
+   "name": "Scarlet Huntress",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "B",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Red Sonja",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 6 threat from a scheme. For each point of excess threat removed by this thwart, reduce the cost of the next event you play this phase by 1."
+  },
+  {
+   "card_id": "rs005",
+   "type": "Event",
+   "name": "Devil's Defiance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "Red Sonja",
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When an enemy attacks, prevent all damage from that attack. After this attack, give Red Sonja a tough status card."
+  },
+  {
+   "card_id": "rs006",
+   "type": "Event",
+   "name": "Hyrkanian Fury",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "MaxPerDeck": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Red Sonja",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. If you used your \"She-Devil\" ability to reduce the cost of this card, stun that enemy."
+  },
+  {
+   "card_id": "rs007",
+   "type": "Event",
+   "name": "Red Reckoning",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "G",
+    "MaxPerDeck": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Red Sonja",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 4 threat from a scheme. If you used your \"She-Devil\" ability to reduce the cost of this card, confuse an enemy."
+  },
+  {
+   "card_id": "rs008",
+   "type": "Event",
+   "name": "Savage She-Devil",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "Y",
+    "MaxPerDeck": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Red Sonja",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 5 damage to an enemy. Remove 5 threat from a scheme. If you used your \"She-Devil\" ability to reduce the cost of this card, this action ignores the guard and patrol keywords and any crisis icons in play."
+  },
+  {
+   "card_id": "rs009",
+   "type": "PlayerSideScheme",
+   "name": "* Queen of Sogaria",
+   "subtitle": "",
+   "desc": {
+    "Cost": "7",
+    "RES": "B",
+    "StartingThreat": "5",
+    "Class": "Hero",
+    "Victory": "0"
+   },
+   "traits": [],
+   "set_name": "Red Sonja",
+   "text": "Victory 0.\nOnly Red Sonja can remove threat from this scheme. She may use her basic ATK, DEF or THW to do so.\nWhile Queen of Sogaria is in the victory display, Red Sonja gains: \"<b>Response</b>: After you exhaust Hyrkanium Blade, draw 1 card. <i>(Limit once per round.)</i>\""
+  },
+  {
+   "card_id": "rs010",
+   "type": "Resource",
+   "name": "She Devil with a Sword",
+   "subtitle": "",
+   "desc": {
+    "RES": "GY",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Red Sonja",
+   "text": "<b>Hero Response</b>: After you spend this card, ready a weapon upgrade you control."
+  },
+  {
+   "card_id": "rs011",
+   "type": "Upgrade",
+   "name": "Crimson Shadow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero",
+    "Uses": "2,stealth"
+   },
+   "traits": [
+    "PREPARATION",
+    "SKILL"
+   ],
+   "set_name": "Red Sonja",
+   "text": "Red Sonja gets +1 THW.\nUses (2 stealth counters).\n<b>Hero Response</b>: After a minion enters play, remove 1 stealth counter from here → cancel that minion's \"When Revealed\" effect."
+  },
+  {
+   "card_id": "rs012",
+   "type": "Upgrade",
+   "name": "* Bloodmoon Battleaxe",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Red Sonja",
+   "text": "Restricted.\n<b>Response</b>: After you play an event, exhaust Bloodmoon Battleaxe → deal 2 damage to an enemy."
+  },
+  {
+   "card_id": "rs013",
+   "type": "Upgrade",
+   "name": "* Hyrkanium Blade",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Red Sonja",
+   "text": "Red Sonja's basic attacks gain piercing.\n<b>Response</b>: After you defeat a side scheme or minion, ready Hyrkanium Blade. <i>(Limit once per round.)</i>"
+  },
+  {
+   "card_id": "rs014",
+   "type": "Obligation",
+   "name": "A Warrior's Burden",
+   "subtitle": "",
+   "desc": {
+    "GiveTo": "Sonja of Hyrkania"
+   },
+   "traits": [],
+   "set_name": "Red Sonja Nemesis",
+   "text": "Give to the Sonja of Hyrkania player. Choose:\n• Exhaust your identity and discard Hyrkanium Blade → remove A Warrior's Burden from the game.\n• Search the encounter deck and discard pile for 2 minions and reveal them → discard this card."
+  },
+  {
+   "card_id": "rs015",
+   "type": "SideScheme",
+   "name": "Queen of the Frozen Wastes",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "Red Sonja Nemesis",
+   "text": "Players cannot ready <b>WEAPON</b> upgrades."
+  },
+  {
+   "card_id": "rs016",
+   "type": "Minion",
+   "name": "* Ice Queen",
+   "subtitle": "",
+   "desc": {
+    "SCH": "2",
+    "ATK": "2",
+    "HP": "5",
+    "Boost": "0"
+   },
+   "traits": [
+    "ELITE",
+    "MYSTIC"
+   ],
+   "set_name": "Red Sonja Nemesis",
+   "text": "<b>When Defeated</b>: The defeating player discards cards from the top of the encounter deck and reveals the first minion discarded this way.\n<i>(Red Sonja's nemesis minion.)</i>\n[star] <b>Boost</b>: Put this minion into play engaged with you."
+  },
+  {
+   "card_id": "rs017",
+   "type": "Minion",
+   "name": "Yeti Warrior",
+   "subtitle": "",
+   "desc": {
+    "SCH": "0",
+    "ATK": "3*",
+    "HP": "6",
+    "Boost": "0",
+    "Guard": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "CREATURE"
+   ],
+   "set_name": "Red Sonja Nemesis",
+   "text": "Guard. Toughness.\n[star] Yeti Warrior's attacks gain overkill."
+  },
+  {
+   "card_id": "rs018",
+   "type": "Attachment",
+   "name": "She-Devil Shackled!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0",
+    "Uses": "3,fetter"
+   },
+   "traits": [],
+   "set_name": "Red Sonja Nemesis",
+   "text": "Uses (3 fetter counters).\n<b>When Revealed</b>: Attach to your identity and exhaust each <b>WEAPON</b> upgrade you control.\n<b>Forced Interrupt</b>: When a <b>WEAPON</b> upgrade you control would ready, spend 1 resource of any type. If you do, remove 1 fetter counter from here <i>(and ready that upgrade)</i>. Otherwise, that upgrade does not ready."
+  },
+  {
+   "card_id": "rs019",
+   "type": "Treachery",
+   "name": "Frozen Fury",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Red Sonja Nemesis",
+   "text": "<b>When Revealed</b>: For each upgrade you control (to a maximum of 3), choose:\n• Take 1 indirect damage.\n• Place 1 threat on the main scheme."
+  }
+ ],
+ "conan": [
+  {
+   "card_id": "cn001a",
+   "type": "Hero",
+   "name": "* Conan the Thief",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "ADVENTURER",
+    "THIEF"
+   ],
+   "set_name": "Conan",
+   "text": "<i>Rogue's Intuition</i> — <b>Response</b>: After you remove 4 or more threat from a scheme in a phase, place 1 Crom counter on The Cimmerian."
+  },
+  {
+   "card_id": "cn001b",
+   "type": "AlterEgo",
+   "name": "* Conan",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "CIMMERIA",
+    "THIEF"
+   ],
+   "set_name": "Conan",
+   "text": "<i>Savage Vitality</i> — <b>Setup</b>: Set King Conan aside. Put The Cimmerian upgrade into play, [[TITLE]] side faceup.\n<b>Action</b>: Spend 1 resource of any type → place 1 Crom counter on The Cimmerian. <i>(Limit once per round.)</i>"
+  },
+  {
+   "card_id": "cn001c",
+   "type": "Hero",
+   "name": "* Conan the Barbarian",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "2",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "ADVENTURER",
+    "BARBARIAN"
+   ],
+   "set_name": "Conan",
+   "text": "<i>Born of Battle</i> — <b>Response</b>: After you deal 5 or more damage to an enemy in a phase, place 1 Crom counter on The Cimmerian."
+  },
+  {
+   "card_id": "cn001d",
+   "type": "Hero",
+   "name": "* King Conan",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "3",
+    "HS": "5"
+   },
+   "traits": [
+    "ADVENTURER",
+    "KING"
+   ],
+   "set_name": "Conan",
+   "text": "<i>Crown of Aquilonia</i> — <b>Response</b>: After you use a basic power, place 2 Crom counters on The Cimmerian."
+  },
+  {
+   "card_id": "cn001e",
+   "type": "AlterEgo",
+   "name": "* Conan",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "KING"
+   ],
+   "set_name": "Conan",
+   "text": "<i>Battle-Forged</i> — <b>Response</b>: After you change to this form, choose:\n• Give King Conan a tough status card.\n• Remove all crom counters from The Cimmerian → heal 1 damage from King Conan for each crom counter removed this way."
+  },
+  {
+   "card_id": "cn002",
+   "type": "Ally",
+   "name": "* Bêlit",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "G",
+    "THW": "1*",
+    "ATK": "1*",
+    "HP": "3",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ADVENTURER",
+    "PIRATE"
+   ],
+   "set_name": "Conan",
+   "text": "While you have the [[THIEF]] or [[KING]] trait, Bêlit gets +1 THW.\nWhile you have the [[BARBARIAN]] or [[KING]] trait, Bêlit gets +1 ATK.\n<b>Response</b>: After Bêlit enters play, if you have the [[KING]] trait, ready your identity."
+  },
+  {
+   "card_id": "cn003",
+   "type": "Event",
+   "name": "Crush Your Enemies",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "R",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Conan",
+   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy (4 damage instead if you are King Conan)."
+  },
+  {
+   "card_id": "cn004",
+   "type": "Event",
+   "name": "Reaper's Cleave",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "B",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "set_name": "Conan",
+   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme (3 threat instead if you are King Conan)."
+  },
+  {
+   "card_id": "cn005",
+   "type": "Event",
+   "name": "Destroyer's Defiance",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "Y",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE"
+   ],
+   "set_name": "Conan",
+   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Interrupt</b> <i>(defense)</i>: When you would take any amount of damage, prevent all of that damage. Place 1 Crom counter on The Cimmerian (2 counters instead if you are King Conan)."
+  },
+  {
+   "card_id": "cn006",
+   "type": "Event",
+   "name": "Hyborian Havoc",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "R",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Conan",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Deal 5 damage to an enemy or remove 4 threat from a scheme. If you are:\n• Conan the Thief, confuse an enemy.\n• Conan the Barbarian, stun an enemy.\n• King Conan, all of the above."
+  },
+  {
+   "card_id": "cn007",
+   "type": "Event",
+   "name": "Cimmerian Counter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1*",
+    "RES": "Y",
+    "MaxPerDeck": "2",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Conan",
+   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(attack/thwart)</i>: After you defend against an enemy attack, deal damage to an enemy equal to your ATK or remove threat from a scheme equal to your THW."
+  },
+  {
+   "card_id": "cn008",
+   "type": "Event",
+   "name": "Savage Sword",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Conan",
+   "text": "[star] Discount 1 ([[KING]]).\n<b>Hero Action</b> <i>(attack/thwart)</i>: Exhaust your hero → deal damage to an enemy or remove threat from a scheme equal to the total of your hero's THW, ATK and DEF values."
+  },
+  {
+   "card_id": "cn009",
+   "type": "PlayerSideScheme",
+   "name": "* The Scarlet Citadel",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "R",
+    "StartingThreat": "5",
+    "Class": "Hero",
+    "Victory": "0"
+   },
+   "traits": [],
+   "set_name": "Conan",
+   "text": "Victory 0.\nWhile The Scarlet Citadel is in the victory display, if you have the:\n• [[THIEF]] trait, you get +1 THW and ignore the patrol keyword.\n• [[BARBARIAN]] trait you get +1 ATK and ignore the guard keyword.\n• [[KING]] trait, all of the above."
+  },
+  {
+   "card_id": "cn010",
+   "type": "Resource",
+   "name": "Savage Tales",
+   "subtitle": "",
+   "desc": {
+    "RES": "RY",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Conan",
+   "text": "<b>Hero Response</b>: After you spend this card, place 1 Crom counter on The Cimmerian (2 instead if you are King Conan)."
+  },
+  {
+   "card_id": "cn011",
+   "type": "Upgrade",
+   "name": "* Atlantean Sword",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero",
+    "Restricted": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Conan",
+   "text": "Restricted.\n<b>Hero Response</b> <i>(attack/thwart)</i>: After you play an event, exhaust Atlantean Sword → deal damage to an enemy or remove threat from a scheme equal to that event's printed cost."
+  },
+  {
+   "card_id": "cn012a",
+   "type": "Upgrade",
+   "name": "* The Cimmerian",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "Class": "Hero",
+    "Permanent": "1"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Conan",
+   "text": "Permanent.\n<b>Response</b>: After there are at least 8 Crom counters here, ready your identity and swap him with King Conan. Remove your other identities from the game. Flip this card."
+  },
+  {
+   "card_id": "cn012b",
+   "type": "Upgrade",
+   "name": "* The Cimmerian",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "Class": "Hero",
+    "Permanent": "1"
+   },
+   "traits": [
+    "KING"
+   ],
+   "set_name": "Conan",
+   "text": "Permanent.\n<b>Hero Interrupt</b>: When you use one of King Conan's basic powers, remove X Crom counters from here and exhaust The Cimmerian → King Conan gets +X to that power for this use."
+  },
+  {
+   "card_id": "cn013",
+   "type": "Obligation",
+   "name": "The Coils of Doom",
+   "subtitle": "",
+   "desc": {
+    "GiveTo": "Conan",
+    "Uses": "3,serpent",
+    "Victory": "0",
+    "Hazard": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Conan Nemesis",
+   "text": "Give to the Conan player.\nUses (3 serpent counters). Victory 0.\n<b>Hero Action</b>: Spend 1 resource of any type or remove 1 Crom counter from The Cimmerian → remove 1 serpent counter from here."
+  },
+  {
+   "card_id": "cn014",
+   "type": "SideScheme",
+   "name": "Frozen Ambush",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4",
+    "Amplify": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Conan Nemesis",
+   "text": "<b>Forced Response</b>: After an identity changes form place 2 threat here."
+  },
+  {
+   "card_id": "cn015",
+   "type": "Minion",
+   "name": "* Hrothgar",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "3",
+    "HP": "5",
+    "Boost": "0",
+    "Toughness": "1",
+    "Nemesis": "Conan"
+   },
+   "traits": [
+    "GIANT"
+   ],
+   "set_name": "Conan Nemesis",
+   "text": "Toughness.\n<b>Response</b>: After you make a basic attack against Hrothgar, deal 1 damage to Hymdul.\n<i>(Conan's nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: You are stunned."
+  },
+  {
+   "card_id": "cn016",
+   "type": "Minion",
+   "name": "* Hymdul",
+   "subtitle": "",
+   "desc": {
+    "SCH": "1",
+    "ATK": "3",
+    "HP": "5",
+    "Boost": "0",
+    "Toughness": "1",
+    "Nemesis": "Conan"
+   },
+   "traits": [
+    "GIANT"
+   ],
+   "set_name": "Conan Nemesis",
+   "text": "Toughness.\n<b>Response</b>: After you make a basic attack against Hymdul, deal 1 damage to Hrothgar.\n<i>(Conan's nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: You are confused."
+  },
+  {
+   "card_id": "cn017",
+   "type": "Treachery",
+   "name": "Grapple on the Glacier",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Conan Nemesis",
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for a [[GIANT]] minion and put it into play engaged with you. Otherwise, take 4 damage."
+  }
+ ]
 }

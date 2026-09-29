@@ -182,6 +182,37 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 | Un héros qui « gains villainous » EN CONTINU (amélioration) | `*GiveKeywordToAttached(CardFinder(name=…), villainous=1)` | hc010 Outer Demons | Paramètre `villainous` ajouté à la fabrique le 11/09/2026 (`Gain` l'acceptait déjà, dd001a le posait via `GainUntilRoundEnd`). Le héros reçoit alors une carte boost à chaque **attaque** de base (`can_attack.py:264`) ; **pas au contre** (can_thwart.py n'a pas l'équivalent) : écart assumé sur les deux packs |
 | Bonus dynamique « +X where X is… » sur une AUTRE carte | `*GiveKeywordToInPlayWhenApplyThis(finder, attack=1, get_new_value=fn)` | hc014 Battle for a Soul | ⚠ Rend une **LISTE** : déballage `*` obligatoire, sinon « 'list' object has no attribute 'paper' » au setup. `get_new_value(effect, face)` **remplace** la valeur (environment_helper.py:184) et est relu à chaque application |
 | Obligation : « If not, discard this card » | `Faces.DiscardAll([this], effect)` explicite | hc013 Mental Episode | ⚠ Une obligation révélée **entre en jeu** et y reste : rien ne la défausse par défaut (vu au harnais, « hc013 est encore en jeu »). Coder les deux branches, `RemoveAllFromGame` ET `DiscardAll` |
+| Fleeting / « discarded from play at the end of the phase » (mot-clé maison) | `WhenPhaseEnd(ForcedResponse, None, DiscardThisCard, conditions=[IsInPlay])` | 44032 The Merc with the Mouth, dt087 (`Fleeting()` de `determination/__init__.py`) | `phase_name=None` = la première fin de phase après l'entrée en jeu, pas `AfterRoundEnd` ; le harnais n'avance aucune phase : envoyer `Message.WhenPhaseEnd(phase_id, "Player", monde)` dans le vérificateur (kb_bow_fin_de_phase) |
+
+## 3bis. « While X is in the victory display, Y gains <capacité> »
+
+`works_in_the_victory_display` (`environment_helper.py:71-85`) existe, mais
+**uniquement** via `GiveKeywordToInPlayWhenApplyThis` — un scan continu qui
+n'accorde que des **mots-clés/statistiques** (§3 ci-dessus), jamais une
+capacité arbitraire (`Ability(...)` posée à la main dans `GetAbilities()`).
+
+⚠⚠ **Une capacité posée sur LA CARTE ELLE-MÊME (la manigance/le soutien qui
+va en vitrine) ne se déclenchera JAMAIS une fois dans la vitrine, quelle que
+soit la condition écrite à l'intérieur.** `DeckType.VictoryDisplay`
+(`deck_type.py:206-210`) porte `is_out_of_play=True`, et `CardFace.IsInPlay()`
+teste `self.card.IsOnField()` → `area.flags.is_in_play` (`card.py:260-261`,
+`card_face.py:1021-1033`) : une carte hors jeu n'enregistre **aucune** de ses
+propres capacités auprès du bus de messages, le handler n'est simplement
+jamais appelé — pas une condition qui échoue, une INSCRIPTION qui n'a jamais
+lieu.
+
+**La bonne cible : un objet qui reste TOUJOURS en jeu** (l'identité du héros,
+un allié permanent…), avec la vitrine relue comme simple condition externe
+(`Worlds.VictoryDisplay(effect).GetAll()`, filtrée par `card_id`). Si la
+cible a plusieurs FACES (héros à deux faces), poser la capacité sur **les
+deux** : `CardFace.GetAbilities()` est par face, jamais partagé entre elles.
+
+Trouvé le 23/09/2026 sur `rs009` Queen of Sogaria (pack `red_sonja`) : une
+Response « draw 1 card » posée sur la manigance elle-même, jamais déclenchée
+une seule fois en vitrine — le cas de test la mesurait à zéro piochée,
+identique avec et sans la carte en vitrine. Déplacée sur l'identité
+(`rs001a.py`/`rs001b.py`), fonction partagée `CapaciteQueenDeSogariaEnVitrine`
+(`red_sonja/__init__.py`).
 
 ## 4. Ressources
 
@@ -225,6 +256,40 @@ l'ajoute ici (une ligne suffit), comme les fiches de `mots-cles/`.
 
 Constaté le 04/09/2026 sur `bk009` Portal (pack blink). Avant ce jour, la
 boucle était déclenchée par un `card_id` écrit en dur dans le moteur.
+
+## 4quater. `PlayCardsLikeInTurn(update_resources_cost=N)` : N est NÉGATIF pour réduire
+
+> ⚠ Piège de signe, même symptôme muet que 4ter : `WhenPlayerInTurn failed`
+> dans le journal, carte posée sur la table puis jamais résolue, **sans
+> exception Python** (le moteur avale l'échec de `CheckBeforeActive`).
+
+Pour « Action : ... → jouez une carte de votre main en réduisant son coût
+de N », le bon appel est `joueur.PlayCardsLikeInTurn([face], effect,
+update_resources_cost=-N, forced=True)` (`player_action.py:937`) —
+**`-N`, pas `N`**. Le nom du paramètre suggère un delta positif pour
+« réduire de N », c'est l'inverse : en interne il vaut `message.UpdateCost
+(value, effect)` où `self.cost += value` (`sender_player.py:246`), donc une
+valeur positive **augmente** le coût. Vérifié le 23/09/2026 en relisant
+TOUS les appels existants du dépôt à ce paramètre (`ant/12024.py`,
+`magneto/49017.py`, `sm/27054.py`, `vision/26036.py`,
+`bp/black_panther_shuri/51001b.py`, `jj/jessica_jones/61008.py`,
+`tt/enchantress/55012.py`) : tous passent une valeur négative, sans
+exception. `ignore_resources_cost=True` (l'autre paramètre de la même
+fabrique, modèle `ar001a` Bring the War) n'a pas ce piège : c'est un
+booléen.
+
+Pour choisir la carte à jouer : passer par le ciblage STANDARD
+(`AbilityFactory.ForChoiceAbility(...).SetTarget(Event, canbe_play=True,
+from_where=["YourHandCards"])` dans un `joueur.ChooseAbilities(...)`,
+modèle `ar001a`), jamais un `AskChooseFace` brut hors de ce mécanisme —
+`CheckBeforeActive` (`effect_checker.py:222`) relit l'état posé par le
+ciblage standard ; un choix fait autrement laisse la vérification de coût
+échouer en silence au moment de la résolution réelle, même quand le
+paiement affiché est correctement couvert.
+
+Constaté le 23/09/2026 sur `rs001a` She-Devil (pack `red_sonja`) : `TRACE_OPTIONS=1`
+a montré le coût affiché passer de 2 à 3 (au lieu de 2 à 1) avant que le
+signe ne soit corrigé.
 
 ## 4bis. Libellés de capacité (`SetLabel`)
 
@@ -285,6 +350,26 @@ boucle était déclenchée par un `card_id` écrit en dur dans le moteur.
   `Play`, le `card_id` DOIT figurer dans la liste blanche de
   `src/game/card/factory.py`, sinon **le deck ne monte plus aucune partie**
   (leçon `ls005`, modèles `an003`, `vv005`, `br004`).
+- **`CostFunc.Discard(name=...)` SANS `from_where` cherche la carte EN JEU,
+  jamais en main.** `Select.From(..., from_where=["Default"])` (valeur par
+  défaut) résout via `get_InPlay` (`selector_where.py:197`) : « Default »
+  n'est pas un synonyme de « la main », c'est littéralement la table. Un coût
+  « discard X » où X est une carte normalement tenue en main (pas encore
+  jouée) est donc **toujours impayable**, sans le moindre message d'erreur —
+  la branche de choix qui le porte est juste écartée en silence, jamais
+  offerte. Toujours préciser `from_where=["YourHandCards"]` explicitement
+  quand la carte nommée vient de la main. Trouvé le 23/09/2026 sur `rs014`
+  A Warrior's Burden (pack `red_sonja`) : « discard Hyrkanium Blade » ne
+  déclenchait jamais, le joueur retombait systématiquement sur l'autre
+  branche du choix.
+
+⚠ `printed_cost` est un objet `Cost`, pas un entier (29/09/2026, Alias du
+pack `determination`) : `ReduceCostToPlayThis(lambda effect:
+effect.this.printed_cost)` lève `TypeError: unsupported operand type(s) for
+*: 'int' and 'Cost'` dans la fabrique, AVALÉE par le moteur (la carte reste
+simplement injouable). Écrire `effect.this.printed_cost.val` (modèles `50081`,
+`50082`). Devant une réduction de coût qui « ne part jamais », lire
+`/tmp/capacites_*.log`.
 
 ## 6. Ciblage
 
@@ -893,6 +978,89 @@ servi, et elles resservent :
   elle-meme, et l'interruption ne part pas (60131 + 60129a).
 - **CANNOT** : absolu, prime sur toute autre capacite, sauf si une carte le
   contredit explicitement (Golden Rules).
+
+### 7sexdecies bis. `ne_pas_depenser` interdisait aussi l'id de l'OBJET carte, qui peut coincider avec l'id de l'EFFET d'une autre (23/09/2026)
+
+- **Le bug, trouve sur `rs004`/`rs007` (pack red_sonja)** : le filtre
+  `ne_pas_depenser` ajoutait a `interdits` DEUX choses — les vrais ids
+  d'effets payants (`effet.object_id`, corrects) ET l'id de l'OBJET CARTE
+  lui-meme (`objet_id`, cense etre inoffensif : « les cles de `payment` ne
+  sont jamais des ids d'objet carte », deja documente juste au-dessus dans ce
+  meme fichier au sujet de `bind_id`). Objets carte et effets vivent dans
+  DEUX espaces de numeros distincts, mais RIEN ne garantit leur DISJONCTION :
+  ici, l'objet carte de `rs007` portait l'id `16`, qui coincidait EXACTEMENT
+  avec l'id de l'effet payant d'une carte totalement differente (`01089`
+  Genius, « BB ») pour cette mise en place precise. Le filtre excluait donc
+  Genius EN PLUS de rs007, sans le moindre rapport, et la carte testee
+  tombait injouable faute de paiement complet (`<E> ... failed`) — un rouge
+  qui ressemblait a un bug de CARTE, reproductible a l'identique (memes ids a
+  chaque relance), et qui a fait perdre du temps a chercher du cote de
+  `rs004.py`/`Worlds.UpdateNextCardPlayCost` avant qu'une trace `TRACE_OPTIONS`
+  couplee a un print temporaire de `objet.GetEffects()` ne montre le vrai
+  coupable.
+- **Correctif** : retirer l'ajout de `interdits.add(str(objet_id))` — il
+  etait deja etabli comme inoperant pour son role annonce (filtrer par id
+  d'objet carte ne matche jamais les cles de `payment`), et purement
+  dangereux par coincidence numerique. Seuls les ids d'effets payants
+  (`effet.object_id`, via `objet.GetEffects()` + `is_paying`) doivent
+  alimenter `interdits`.
+- **Piege associe, meme scenario** : une manigance a target invalide passe
+  aussi le harnais sans message clair. « Remove threat from a scheme »
+  n'offre jamais le complot PRINCIPAL comme cible legale a round 1, phase
+  Joueur, AVANT toute phase Vilain — il n'a encore RECU AUCUNE menace
+  (`StartingThreat` d'un complot annexe s'applique a LUI, pas au principal).
+  Un cas qui vise le complot principal a ce moment-la voit son option de
+  jeu disparaitre (`jouable = False`) sans qu'aucun message ne le dise :
+  toujours viser un complot ANNEXE (avec un `StartingThreat` non nul, ou
+  `Puzzle.PutIntoPlay` suffit) pour prouver un « remove threat » en debut de
+  partie.
+- **Le signe qui doit alerter** : un `ne_pas_depenser`/`interdits` dont on
+  suspecte l'efficacite se verifie en ajoutant temporairement un `print` des
+  candidats/interdits sous `TRACE_OPTIONS` (jamais en le laissant en place :
+  c'est un ajout ponctuel, a retirer avant de committer) — un cas qui « passe
+  au vert » alors que sa carte cible ne devrait meme pas etre affordable est
+  souvent un signe que le paiement a ete couvert par un AUTRE moyen que celui
+  prevu par le cas (voir aussi §7duodecies, meme famille de faux-positifs).
+
+### 7septdecies. Pièges payés par le pack `conan` (25/09/2026)
+
+- **Faces d'identité mises de côté : drapeau `hors_pile_identite`.** Une
+  identité à 5 faces dont 2 n'existent qu'après un événement (King Conan)
+  ne doit pas les offrir au changement de forme. On pose l'attribut sur la
+  face (`MarquerHorsPile`, pack conan) ; le moteur l'ignore alors dans
+  `player_setup.py` (conditions de `register_change_to`),
+  `GetAllIdentityFace` et `identity.py` (`ChangeToOtherHeroForm`,
+  `ChangeToOtherForm`). Crochet additif : sans le drapeau, rien ne change.
+  Avec 5 faces, `Puzzle.ChangeForm` devient ambigu : utiliser
+  `Puzzle.ChangeToFace('<depart>', '<arrivee>')` en mise en place.
+- **Clé `attendu.face_identite`** (harnais) : vérifie l'id de la face
+  d'identité visible à la fin du cas. Indispensable dès qu'une carte
+  retourne l'identité sans changement de forme (couronnement).
+- **« Discount N (TRAIT) » : réutiliser `DiscountAbility`** du pack `fne`
+  (`from cards.pack.fne import DiscountAbility`, modèle 60023). Toujours
+  ajouter un témoin « sans le trait et sans ressource, la carte n'est PAS
+  gratuite ».
+- **`verifier_appels_modules.py` ne voit que les appels typés** (`Faces.x`,
+  variables issues de `CastTo`). Un `effect.this.Inexistant()` lui échappe.
+  Chemin du dossier de jeu en ABSOLU. Pour le calibrer, injecter
+  `Faces.MethodeQuiNExistePas()`, jamais un appel sur `effect.this`.
+- **Aucune modification de `src/` pendant un harnais ou un autoplay.** Les
+  dossiers `.game-src-parN` pointent sur `src/` par lien : une injection de
+  calibrage dans cn010.py, faite pendant un autoplay, a produit 6
+  tracebacks dans une partie qui n'avait rien à voir. Attendre la fin, ou
+  travailler sur une copie dans le scratchpad.
+- **« 0 ligne conan » dans un rapport statique ne prouve pas la
+  couverture.** `test_cards.py`, `verifier_api_cartes.py` et
+  `audit_cartes.py` ne listent que les défauts. Pour prouver qu'un pack est
+  parcouru, instrumenter une COPIE de l'outil (un `print` par module du
+  pack) et compter les lignes.
+- **Autoplay : un « Play » impayable est déclinable** même à cible
+  obligatoire. Le moteur offre toute carte en main, payable ou non
+  (`CanPlayBy` vrai, `target_payment.payment` vide). Le pilote gardait
+  pourtant l'option « par prudence » quand sa plage était [1, 1], et la
+  partie finissait « bloquée » (graine 2, main réduite à cn003). Corrigé
+  dans `tools/autoplay.py` : devant un blocage de ce genre, lire les
+  options avec une copie instrumentée du pilote avant d'accuser la carte.
 
 ## 8. Données (`data/cards.json`) — conventions
 

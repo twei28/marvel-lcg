@@ -3485,6 +3485,20 @@ CAS = [
         "attendu": {"degats": [["01094", 1]], "degats_identite": 2, "exhausted": ["av009"]},
     },
     {
+        "nom": "av009 Bear Arms — drain 1 sur un vilain TOUGH : la carte de statut absorbe, AUCUN soin",
+        "pourquoi": ("glossaire MC4DB (29/09/2026) : « if the target took that damage, heal X ». "
+                     "Rhino Tough : 0 degat subi, l'identite reste blessee de 3. Rouge avec "
+                     "l'ancien helper, qui soignait sans condition (identite a 2)"),
+        "scenario": "rhino",
+        "heros": "agent_anti_venom",
+        "mise_en_place": ["Puzzle.ChangeForm('av001b')", "Puzzle.PutIntoPlay('av009')",
+                          "Puzzle.Damage('av001a', 3)", "Puzzle.Tough('01094')"],
+        "declencher": ["Puzzle.Action('av009', 'HeroAction', 1)"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "degats_identite": 3, "exhausted": ["av009"]},
+    },
+    {
         "nom": "av011 One Man Army — Interrupt : sans allie, l'attaque de base pioche et soigne",
         "pourquoi": "declencheur sur pouvoir de base, atteint par Puzzle.Attack sur le heros",
         "scenario": "rhino",
@@ -6899,13 +6913,32 @@ CAS = [
         "verifier": "si015_boost_en_jeu",
     },
     {
-        "nom": "si016 Tony Stark A.I. — Armored 2 : previent 2 degats a CHAQUE instance",
-        "pourquoi": "mot-cle maison, Forced Interrupt sans limite (contrairement a Toughness)",
+        "nom": "si016 Tony Stark A.I. — Armored 2 : une ATTAQUE de base du heros (ATQ 1) ne le blesse pas",
+        "pourquoi": ("mot-cle maison, aligne le 29/09/2026 sur le glossaire MC4DB : « damage "
+                     "FROM AN ATTACK ». Forced Interrupt `is_from_attack=True`, sans limite "
+                     "(contrairement a Toughness). ATQ 1 - 2 prevenus = 0 subi ; sans le "
+                     "module, 1"),
+        "scenario": "rhino",
+        "heros": "superior_iron_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('si001b', 'si001a')",
+                          "Puzzle.PutIntoPlay('si016', under_control=True)"],
+        "declencher": ["Puzzle.Attack('si001a')"],
+        "cibles": ["si016"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["si016", 0]]},
+    },
+    {
+        "nom": "si016 Tony Stark A.I. — Armored 2 : des degats HORS attaque passent en entier",
+        "pourquoi": ("contre-cas de l'alignement MC4DB : jusqu'au 29/09/2026 le script "
+                     "prevenait 2 degats de TOUTE instance (rouge avec lui : 1 subi). "
+                     "3 degats directs -> 3 subis. Reste vert sous substitution, c'est "
+                     "un temoin d'ABSENCE d'effet"),
         "scenario": "rhino",
         "heros": "superior_iron_man",
         "mise_en_place": ["Puzzle.PutIntoPlay('si016', under_control=True)"],
-        "declencher": ["Puzzle.Damage('si016', 3)", "Puzzle.Damage('si016', 3)"],
-        "verifier": "si016_armored_repete",
+        "declencher": ["Puzzle.Damage('si016', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["si016", 3]]},
     },
     {
         "nom": "si016 Tony Stark A.I. — Une fois revelee + Boost : 1 degat au joueur chacun",
@@ -13734,6 +13767,28 @@ CAS = [
         "verifier": "gorr_deux_cartes_defaussees",
     },
     {
+        "nom": "gb012 Mind-Hewn Blade — Hero Action avec 1 carte au deck : le cout de 2 est paye, la lame part",
+        "pourquoi": "regle du deck epuise (25/09/2026, arbitrage utilisateur apres les signalements de Yarro) : CostFunc.DiscardDeckTopCards declarait le cout impaye des que le deck avait moins de cartes que demande ; la carte partait quand meme et l'effet ne se resolvait jamais",
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ['Puzzle.EmptyPlayerDeck()', "Puzzle.CreatePlayerDeck('01090')", "Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('gb012')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('gb012')"],
+        "verifier": "etat_attendu",
+        "attendu": {'hors_jeu': ['gb012'], 'attributs_carte': [['gb001', 'attack', 0]]},
+    },
+    {
+        "nom": "gb012 Mind-Hewn Blade — Hero Action avec 5 cartes au deck : 2 defaussees, la lame part",
+        "pourquoi": 'cas nominal du meme cout',
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ['Puzzle.EmptyPlayerDeck()', "Puzzle.CreatePlayerDeck('01090', '01090', '01090', '01090', '01090')", "Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('gb012')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('gb012')"],
+        "verifier": "etat_attendu",
+        "attendu": {'hors_jeu': ['gb012'], 'taille_deck_joueur': 3},
+    },
+    {
         "nom": "gb013 Umbral Wings — les degats subis par Gorr sont reduits de 1",
         "pourquoi": ("`WhenUnitWouldTakeDamage(ForcedInterrupt, CardFinder(name=...))` + "
                      "`message.ReduceDamage(1, effect)`. Modele 26015"),
@@ -14553,13 +14608,13 @@ CAS = [
         "attendu": {"statuts": [["01094", "Confused"]], "menace": [["01097b", 0]]},
     },
     {
-        "nom": "vv003 Just a Phase — breakthrough : la menee en exces passe sur une autre manigance",
-        "pourquoi": ("mot-cle MAISON, arbitre le 02/09/2026 puis confirme par la liste "
-                     "communautaire : miroir d'`overkill` pour la menace. L'exces se lit "
-                     "sur `AfterUnitThwartScheme` (voulu - remove_threat) et se reporte "
-                     "par `ChooseAbilities` + `SetTarget(Scheme2, exclude=[...])`. "
-                     "CTR 1 + 3 = 4 sur une annexe a 2 menaces : elle tombe, et les 2 "
-                     "restantes partent sur la principale (5 -> 3)"),
+        "nom": "vv003 Just a Phase — breakthrough : la menee en exces passe sur la manigance PRINCIPALE",
+        "pourquoi": ("mot-cle MAISON, aligne le 29/09/2026 sur le glossaire MC4DB : « Excess "
+                     "threat removed from this side scheme is removed from the main scheme ». "
+                     "L'exces se lit sur `AfterUnitThwartScheme` (voulu - remove_threat) et "
+                     "part sur `Worlds.GetMainSchemes(effect)[0]`, sans choix. CTR 1 + 3 = 4 "
+                     "sur une annexe a 2 menaces : elle tombe, et les 2 restantes partent "
+                     "sur la principale (5 -> 3)"),
         "scenario": "rhino",
         "heros": "viv_vision",
         "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
@@ -14569,9 +14624,33 @@ CAS = [
         "main_exclusive": ["vv003", "01089"],
         "declencher": [],
         "jouer": ["vv003"],
-        "cibles": ["01107", "01097b"],
+        "cibles": ["01107"],
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["01107"], "menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "vv003 Just a Phase — breakthrough : avec DEUX annexes, l'exces va a la principale, pas a l'autre annexe",
+        "pourquoi": ("le cas qui distingue la lecture MC4DB (principale imposee) de "
+                     "l'ancienne (« another eligible target », au choix) : 01109 Bomb "
+                     "Scare a 3 menaces reste a 3, la principale passe de 5 a 3. La "
+                     "seconde entree de `cibles` (01109) ne sert qu'a l'ANCIEN script, "
+                     "qui proposait un choix : il y envoyait l'exces (01109 a 1, "
+                     "principale a 5) et rendait ce cas rouge. Le nouveau n'ouvre aucun "
+                     "choix et l'ignore"),
+        "scenario": "rhino",
+        "heros": "viv_vision",
+        "mise_en_place": ["Puzzle.ChangeToFace('vv001b', 'vv001a')",
+                          "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 2)",
+                          "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01109', 3)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["vv003", "01089"],
+        "declencher": [],
+        "jouer": ["vv003"],
+        "cibles": ["01107", "01109"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01107"], "menace": [["01097b", 3], ["01109", 3]]},
     },
     {
         "nom": "vv003 Just a Phase — l'icone de CRISE est ignoree pour cette menee",
@@ -17555,6 +17634,19 @@ CAS = [
         "attendu": {"en_main": ["yd011"]},
     },
     {
+        "nom": "yd001b Crew Cut — la Tahlei convoquee depuis la zone RETIREE DE LA PARTIE (summon MC4DB : partout hors jeu)",
+        "pourquoi": ("glossaire MC4DB (29/09/2026) : « anywhere in or out of play ». "
+                     "`Search.SearchForCards(include_removed_area=True, "
+                     "include_set_aside=True, include_player_hand_cards=True)`. Rouge "
+                     "avec l'ancien `Search.PlayerCard` (deck + defausse seulement)"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.MoveTo('yd011', 'RemovedArea')"],
+        "declencher": ["Puzzle.Action('yd001b', 'Action', 0)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["yd011"]},
+    },
+    {
         "nom": "yd001b Crew Cut — TEMOIN D'EPUISEMENT : la seconde Action du round ne convoque plus",
         "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. « (Limit once per ROUND) » sur "
                      "Crew Cut, distincte de Whistlin' qui n'a AUCUNE limite. Le deck "
@@ -18104,6 +18196,19 @@ CAS = [
         "scenario": "rhino",
         "heros": "yondu",
         "mise_en_place": ["Puzzle.CreateEncounterDeck('yd015', 'yd016')"],
+        "declencher": ["Puzzle.Reveal('yd017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["yd015", "yd016"]},
+    },
+    {
+        "nom": "yd017 Hard to Kill — Sav'rkk RETIRE DE LA PARTIE : summon le ramene quand meme (MC4DB : partout hors jeu)",
+        "pourquoi": ("volet rencontre de l'alignement MC4DB du 29/09/2026 : "
+                     "`ConvoquerRencontre` fouille aussi `include_set_aside` et "
+                     "`include_removed_area`. Rouge avant : deck et defausse seulement"),
+        "scenario": "rhino",
+        "heros": "yondu",
+        "mise_en_place": ["Puzzle.MoveTo('yd015', 'RemovedArea')",
+                          "Puzzle.CreateEncounterDeck('yd016')"],
         "declencher": ["Puzzle.Reveal('yd017')"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["yd015", "yd016"]},
@@ -32233,7 +32338,7 @@ CAS = [
             "Puzzle.Reveal('60150')"
         ],
         "declencher": [
-            "Puzzle.ChangeForm('01001a')"
+            "Puzzle.ChangeForm('01001b')"
         ],
         "verifier": "etat_attendu",
         "main_exclusive": [
@@ -36091,7 +36196,7 @@ CAS = [
         "declencher": [],
         "verifier": "etat_attendu",
         "declencher_tolerant": [
-            "Puzzle.ChangeForm('01001a')"
+            "Puzzle.ChangeForm('01001b')"
         ],
         "main_exclusive": [
             "01088"
@@ -41749,6 +41854,73 @@ CAS = [
                     "exhausted": ["31002b"]},
     },
     {
+        "nom": "31007 Aunt May & Uncle Ben — alter-ego, deck de 2 cartes : l'Action reste offerte, la carte SP//dr va en main",
+        "pourquoi": "signalements 21/22 de Yarro (25/09/2026) : cout de 3 exige a l'identique, Action jamais offerte avec 2 cartes. Arbitrage utilisateur : utilisable, on defausse ce qui reste",
+        "scenario": "rhino",
+        "heros": "sp_dr",
+        "mise_en_place": ["Puzzle.PutIntoPlay('31007', under_control=True)", 'Puzzle.EmptyPlayerDeck()', "Puzzle.CreatePlayerDeck('31004', '01090')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('31007')"],
+        "verifier": "etat_attendu",
+        "attendu": {'exhausted': ['31007'], 'en_main': ['31004']},
+    },
+    {
+        "nom": "31007 Aunt May & Uncle Ben — heros, deck de 2 cartes : l'Action est offerte, la carte SP//dr va en main",
+        "pourquoi": 'cas limite : exactement le nombre exige en forme heros',
+        "scenario": "rhino",
+        "heros": "sp_dr",
+        "mise_en_place": ["Puzzle.PutIntoPlay('31007', under_control=True)", "Puzzle.ChangeForm('31002a')", 'Puzzle.EmptyPlayerDeck()', "Puzzle.CreatePlayerDeck('31004', '01090')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('31007')"],
+        "verifier": "etat_attendu",
+        "attendu": {'exhausted': ['31007'], 'en_main': ['31004']},
+    },
+    {
+        "nom": "31007 Aunt May & Uncle Ben — alter-ego, deck de 5 cartes : 3 cartes defaussees, il en reste 2",
+        "pourquoi": 'cas nominal : le plafond a la taille du deck ne doit pas reduire le compte quand le deck suffit',
+        "scenario": "rhino",
+        "heros": "sp_dr",
+        "mise_en_place": ["Puzzle.PutIntoPlay('31007', under_control=True)", 'Puzzle.EmptyPlayerDeck()', "Puzzle.CreatePlayerDeck('01090', '01090', '01090', '01090', '01090')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('31007')"],
+        "verifier": "etat_attendu",
+        "attendu": {'exhausted': ['31007'], 'taille_deck_joueur': 2},
+    },
+    {
+        "nom": "31007 Aunt May & Uncle Ben — heros, deck de 5 cartes : 2 cartes defaussees, il en reste 3",
+        "pourquoi": 'cas nominal forme heros',
+        "scenario": "rhino",
+        "heros": "sp_dr",
+        "mise_en_place": ["Puzzle.PutIntoPlay('31007', under_control=True)", "Puzzle.ChangeForm('31002a')", 'Puzzle.EmptyPlayerDeck()', "Puzzle.CreatePlayerDeck('01090', '01090', '01090', '01090', '01090')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('31007')"],
+        "verifier": "etat_attendu",
+        "attendu": {'exhausted': ['31007'], 'taille_deck_joueur': 3},
+    },
+    {
+        "nom": "31020 Spider-Tingle — annule bien le When Revealed de la traitrise revelee",
+        "pourquoi": ("signalements Yarro n26/n27 du 27/09/2026 : \"je n'ai pas l'impression que "
+                     "l'effet fonctionne (cela n'a pas annule le when revealed sur la "
+                     "traitrise)\". Rejoue en partie reelle (journal de production) : Spider-"
+                     "Tingle a bien annule le When Revealed d'une premiere traitrise (log : "
+                     "\"... WhenReveal effect was canceled by Spider-Tingle\") puis s'est "
+                     "defaussee -- carte a USAGE UNIQUE. Yarro l'avait suivie sur une SECONDE "
+                     "traitrise, revelee juste apres par une chaine de Surge, alors que Spider-"
+                     "Tingle etait deja hors jeu : cette seconde traitrise s'est resolue "
+                     "normalement, ce qui est le comportement ATTENDU, pas un defaut. Ce temoin "
+                     "verifie le cas simple (une seule traitrise) : le cout (1 degat sur SP//dr "
+                     "Suit, WEB-WARRIOR) est bien paye, et les degats du When Revealed de "
+                     "Concussive Blast (1 degat a chaque personnage ami) sont bien annules -- "
+                     "sinon SP//dr Suit perdrait 2 PV au lieu d'1."),
+        "scenario": "rhino",
+        "heros": "sp_dr",
+        "mise_en_place": ["Puzzle.ChangeForm('31002a')", "Puzzle.PutIntoPlay('31020', under_control=True)"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.CreateEncounterDeck('01154')", "Puzzle.Reveal('01154')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["31020"], "degats": [["31001a", 1]]},
+    },
+    {
         "nom": "50044 Fury's Watch — paiement INCOMPLET : la montre est REDRESSEE, la carte revient en main",
         "pourquoi": ("LE TEMOIN QUI MANQUAIT (ronde de relecture du 20/09/2026). Fury's "
                      "Watch porte son `CostFunc.Exhaust` sur `CanGenerateResources`, pas "
@@ -42239,6 +42411,1773 @@ CAS = [
         "declencher": [],
         "verifier": "daredevil_dessus_deck_annexe",
         "attendu": {"dessus_suivant": "60002"},
+    },
+    {
+        "nom": "65001b Champion Swimmer — pose le dessus du deck FACE VISIBLE en Rising Tide area",
+        "pourquoi": ("premiere preuve d'ecriture dans la zone : Champion Swimmer l'alimente depuis le "
+                     "dessus du deck, imprimee face visible. PAS de ChangeForm : Wave, comme les autres "
+                     "heros du depot, COMMENCE la partie en forme alter-ego (Pearl Pangan, 65001b) -- "
+                     "mesure directement le 22/9/2026, un premier essai `ChangeForm('65001b')` avait "
+                     "silencieusement FLIPPE VERS 65001a (Hero) en croyant partir de la forme heros, et "
+                     "fabriquait au passage une carte orpheline (`Puzzle.FindOrCreateFace`, qui ne "
+                     "retrouve pas une face INACTIVE d'une identite a deux faces par son id -- limite du "
+                     "harnais, non specifique a Wave, confirmee identique sur kate_bishop/human_torch)."),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Action('65001b', 'Action')"],
+        "verifier": "wave_champion_swimmer_pose_face_visible",
+    },
+    {
+        "nom": "wave Rising Tide area — purge en fin de phase joueur, AVANT la pioche jusqu'a la main",
+        "pourquoi": ("regle universelle de la zone (insert du pack), cablee dans PlayerPhase.EndPhase() "
+                     "et non sur une carte -- non atteignable par l'API Puzzle (aucune commande ne fait "
+                     "avancer les phases), meme principe que kb_bow_fin_de_phase : on appelle "
+                     "directement player.phase.EndPhase()"),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.Action('65001b', 'Action')"],
+        "declencher": [],
+        "verifier": "wave_rising_tide_purge_fin_de_phase",
+    },
+    {
+        "nom": "65008 Pearl's Lolo — retourne une carte face visible de Rising Tide, soigne 3",
+        "pourquoi": ("preuve du cout partage `CoutRetournerUneCarteRisingTide` (CostFunc.Custom), "
+                     "reutilise par 65009/65010 : verifie a la fois que le cout est PAYABLE (une carte "
+                     "face visible existe), qu'il retourne bien la carte SANS la retirer de la zone "
+                     "(« flip », pas « discard »), et que l'effet de soin part"),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.Action('65001b', 'Action')",
+                          "Puzzle.PutIntoPlay('65008', under_control=True)",
+                          "Puzzle.Damage('65001b', 3)"],
+        "declencher": ["Puzzle.Action('65008', 'AlterEgoAction')"],
+        "verifier": "wave_pearls_lolo_retourne_et_soigne",
+    },
+    {
+        "nom": "65001a Storm Surge — une carte defaussee pour payer un cout part en Rising Tide area",
+        "pourquoi": ("preuve du crochet de redirection de defausse (WhenCardWouldDiscard + SetToArea), "
+                     "calque sur RecyclerVersLaReserve (pack brawn) -- la carte doit arriver FACE "
+                     "VISIBLE en Rising Tide area au lieu de partir en defausse ordinaire"),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')"],
+        "main_exclusive": ["65003", "01088"],
+        "declencher": [],
+        "jouer": ["65003"],
+        "payer_avec": ["01088"],
+        "cibles": ["01094"],
+        "choisir_option": "Place_in_your_Rising_Tide_area",
+        "verifier": "wave_storm_surge_carte_en_rising_tide",
+    },
+    {
+        "nom": "65009 Wave's Swords — incline l'amelioration et retourne une carte -> redresse Wave",
+        "pourquoi": ("preuve du DOUBLE cout empile sur une seule capacite (`.SetCostFunc(A)."
+                     ".SetCostFunc(B)`) : incliner l'amelioration ET retourner une carte de "
+                     "Rising Tide area, tous deux payes avant que Wave ne soit redressee"),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.Action('65001b', 'Action')",
+                          "Puzzle.ChangeForm('65001b')",
+                          "Puzzle.PutIntoPlay('65009', under_control=True)",
+                          "Puzzle.Exhaust('65001a')"],
+        "declencher": ["Puzzle.Action('65009', 'HeroAction')"],
+        "verifier": "wave_waves_swords_redresse_et_retourne",
+    },
+    {
+        "nom": "65010 Wave's Crown — +1 THW passif, incline pour glisser une carte sous elle",
+        "pourquoi": ("preuve des trois mecanismes empruntes a black_cat : `GiveKeywordToAttached` "
+                     "(+1 THW), `TuckCardUnderHere` (la carte QUITTE la Rising Tide area pour la "
+                     "pile glissee), et `YouMayPlayCardLikeInHand` (non mesure ici, mais la pile "
+                     "glissee doit au moins exister et contenir la carte)"),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.Action('65001b', 'Action')",
+                          "Puzzle.ChangeForm('65001b')",
+                          "Puzzle.PutIntoPlay('65010', under_control=True)"],
+        "declencher": ["Puzzle.Action('65010', 'Action')"],
+        "verifier": "wave_waves_crown_plus1_thw_et_glisse",
+    },
+    {
+        "nom": "65003 Crashing Wave — 1 degat de base + 2 par carte retournee (jusqu'a 3)",
+        "pourquoi": "preuve de l'echelle de degats : 3 cartes retournees doivent porter le total a 7, pas 1",
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')",
+                          "Puzzle.MoveTo('01088', 'RisingTideArea')",
+                          "Puzzle.MoveTo('01089', 'RisingTideArea')",
+                          "Puzzle.MoveTo('01090', 'RisingTideArea')"],
+        "main_exclusive": ["65003", "01091"],
+        "declencher": [],
+        "jouer": ["65003"],
+        "payer_avec": ["01091"],
+        "cibles": ["01094"],
+        "choisir_option": ["Flip_up_to_3_faceup_cards_in_your_Rising_Tide_area_facedown", "Cancel"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 7]], "taille_rising_tide": 3},
+    },
+    {
+        "nom": "65004 Marine Patrol — 2 menace de base, retourne 2 cartes -> 1 menace/1 pioche en plus",
+        "pourquoi": ("preuve du choix repete SANS REEMPLOI (« max 1 each ») : deux cartes "
+                     "retournees doivent faire consommer les DEUX branches, jamais deux fois "
+                     "la meme"),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.MoveTo('01088', 'RisingTideArea')",
+                          "Puzzle.MoveTo('01089', 'RisingTideArea')"],
+        "main_exclusive": ["65004", "01091"],
+        "declencher": [],
+        "jouer": ["65004"],
+        "payer_avec": ["01091"],
+        "cibles": ["01097b"],
+        "choisir_option": ["Flip_up_to_2_cards_in_your_Rising_Tide_area_facedown", "Cancel"],
+        "accepter_choix": True,
+        "verifier": "wave_marine_patrol_deux_branches",
+    },
+    {
+        "nom": "65005 Instinctive Flow — retourne 3 cartes -> les TROIS branches consommees",
+        "pourquoi": ("meme discipline que Marine Patrol, avec TROIS branches (degats/menace/"
+                     "etourdissement) et trois retournements : preuve qu'aucune n'est sautee "
+                     "ni redoublee"),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.MoveTo('01088', 'RisingTideArea')",
+                          "Puzzle.MoveTo('01089', 'RisingTideArea')",
+                          "Puzzle.MoveTo('01090', 'RisingTideArea')"],
+        "main_exclusive": ["65005", "01091"],
+        "declencher": [],
+        "jouer": ["65005"],
+        "payer_avec": ["01091"],
+        "cibles": ["01094", "01097b", "01094"],
+        "choisir_option": ["Flip_up_to_3_faceup_cards_in_your_Rising_Tide_area_facedown", "Cancel"],
+        "accepter_choix": True,
+        "verifier": "wave_instinctive_flow_trois_branches",
+    },
+    {
+        "nom": "65007 Tide Wall — previent jusqu'a 3 degats, pose le dessus du deck par point prevenu",
+        "pourquoi": "preuve du ratio 1 carte posee PAR POINT REELLEMENT prevenu, pas un forfait",
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')", "Puzzle.Exhaust('65001a')"],
+        "main_exclusive": ["65007"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "wave_tide_wall_previent_et_pose",
+    },
+    {
+        "nom": "65006 Ocean's Fury — declencheur differe apres la derniere menace, + temoin Max 1 per round",
+        "pourquoi": ("preuve du declencheur ENREGISTRE EN TEMP sur la face heros "
+                     "(`AfterSchemeRemoveThreat(..., last_threat=True, by_who='\''This'\'')`), "
+                     "hors de portee de l'API Puzzle -- et temoin d'epuisement de « Max 1 per "
+                     "round » : une seconde copie ne doit PLUS etre jouable dans le meme round"),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')",
+                          "Puzzle.MoveTo('01088', 'RisingTideArea')",
+                          "Puzzle.Flip('01088')",
+                          "Puzzle.SetThreat('01097b', 1)"],
+        "main_exclusive": ["65006", "65006", "01091"],
+        "declencher": [],
+        "jouer": ["65006"],
+        "payer_avec": ["01091"],
+        "choisir_option": ["Cancel"],
+        "verifier": "wave_oceans_fury_declencheur_differe",
+    },
+    {
+        "nom": "65002 Sea Hunter — retourne une carte, rejoue un evenement de la defausse",
+        "pourquoi": ("la capacite la plus complexe du pack : cout DOUBLE et dynamique (choisir "
+                     "l'evenement AVANT tout engagement, PUIS retourner la carte de Rising Tide, "
+                     "PUIS payer le cout imprime), sans precedent exact dans le depot"),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')",
+                          "Puzzle.PutIntoPlay('65002', under_control=True)",
+                          "Puzzle.CreatePlayerDiscardPile('65003')",
+                          "Puzzle.MoveTo('01088', 'RisingTideArea')"],
+        "main_exclusive": ["01091"],
+        "declencher": ["Puzzle.Attack('65002')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "wave_sea_hunter_rejoue_evenement",
+    },
+    {
+        "nom": "65011 Alontech's Greatest Achievement — hausse le cout du premier evenement du tour",
+        "pourquoi": ("preuve par REFUS : avec exactement 1 icone disponible (juste assez pour le "
+                     "cout imprime 1, PAS assez pour 1+1), Crashing Wave doit rester injouable "
+                     "tant que la manigance est en jeu. Couvre la moitie « la hausse mord » ; la "
+                     "moitie « seulement le PREMIER evenement du tour » n'est pas isolee ici (le "
+                     "meme drapeau empecherait un second essai de reussir avec 1 seule icone, "
+                     "faute de pouvoir faire reussir un premier essai sans en preter davantage)"),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')", "Puzzle.Reveal('65011')"],
+        "main_exclusive": ["65003", "01091"],
+        "declencher": [],
+        "jouer": ["65003"],
+        "payer_avec": ["01091"],
+        "cibles": ["01094"],
+        "verifier": "wave_alontech_hausse_le_premier_cout",
+    },
+    {
+        "nom": "65012 The Reyna Sirena — cout additionnel : 1 degat pour jouer un evenement",
+        "pourquoi": "preuve du cout impose PAR UNE AUTRE carte sur le jeu du joueur, hors de tout CostFunc imprime sur la carte jouee elle-meme",
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')",
+                          "Puzzle.PutIntoPlay('65012', under_control=True)"],
+        "main_exclusive": ["65003", "01088"],
+        "declencher": [],
+        "jouer": ["65003"],
+        "payer_avec": ["01088"],
+        "cibles": ["01094"],
+        "verifier": "wave_reyna_sirena_cout_additionnel",
+    },
+    {
+        "nom": "65012 The Reyna Sirena — Boost : le joueur est etourdi",
+        "pourquoi": ("reserve fermee (23/09/2026) : `Puzzle.Boost` place la carte en tete du "
+                     "deck de rencontre du vilain PUIS active ce vilain (`puzzle.py:470`), "
+                     "exactement comme pour n'importe quel autre `WhenCardBecomeBoost` du depot "
+                     "(precedent confirme : `ho015` Kingpin, `Puzzle.Boost('ho015')`, teste plus "
+                     "haut dans ce fichier) -- aucune limite de harnais reelle, contrairement a "
+                     "ce que le journal de portage supposait."),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')"],
+        "declencher": ["Puzzle.Boost('65012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["65001a", "Stunned"]]},
+    },
+    {
+        "nom": "65013 Alontech Hybrid — le vilain ne peut pas etre attaque par le joueur engage",
+        "pourquoi": ("preuve de la restriction d'attaquant scopee sur LE JOUEUR ENGAGE avec CE "
+                     "sbire precis, via `UnitCannotBeAttacked` + un `conditions=` maison "
+                     "(`message.attacker.GetControlByPlayer() == engaged_player`) -- le "
+                     "vilain couvre la branche « villains », la branche « SIRENA minions » "
+                     "n'est pas isolee separement ici. ⚠ FAUX POSITIF CORRIGE (etape 7, "
+                     "substitution formelle, 22/9/2026) : `Puzzle.Attack('01094')` fait "
+                     "ATTAQUER RHINO (`puzzle.py:525`, branche Enemy : « un ennemi frappe le "
+                     "joueur courant »), PAS le joueur attaquer Rhino -- le cas passait au "
+                     "vert meme le module de 65013 entierement retire (0/2 rouges), parce que "
+                     "la commande n'exercait jamais la restriction testee. Corrige en "
+                     "`Puzzle.Attack('65001a')` (branche Friend : le heros fait son attaque de "
+                     "base) + `cibles: [\"01094\"]` pour choisir Rhino comme cible : le cas "
+                     "tombe maintenant reellement au rouge sans le module (2 degats passent), "
+                     "vert avec (0 degat)."),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')",
+                          "Puzzle.PutIntoPlay('65013', under_control=True)"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Attack('65001a')"],
+        "cibles": ["01094"],
+        "verifier": "wave_alontech_hybrid_protege_le_vilain",
+    },
+    {
+        "nom": "65014 Alontech Seawolf — attachement, interrupt forcee de phase, et defausse de soi",
+        "pourquoi": "les TROIS capacites de la carte, l'une apres l'autre : l'attachement a la manigance principale, l'interrupt forcee de debut de phase joueur, et l'action heros a double cout qui se defausse elle-meme",
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')",
+                          "Puzzle.PutIntoPlay('65014')"],
+        "main_exclusive": ["65008"],
+        "declencher": [],
+        "verifier": "wave_seawolf_trois_capacites",
+    },
+    {
+        "nom": "65015 Triumph Probation — cherche et glisse les deux ameliorations, retire le trait, puis les rend",
+        "pourquoi": "la seule obligation du pack : recherche multi-zones, perte de trait CONDITIONNEE a la forme heros, et recuperation complete en Alter-Ego Action",
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.Gain('65009')", "Puzzle.Gain('65010')", "Puzzle.Reveal('65015')"],
+        "declencher": [],
+        "accepter_choix": True,
+        "verifier": "wave_triumph_probation_cycle_complet",
+    },
+    {
+        "nom": "65001b Champion Swimmer — TEMOIN D'EPUISEMENT : la seconde Action du round ne pose rien de plus",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE, reserve laissee ouverte lors du premier "
+                     "passage (22/9/2026). « (Limit once per phase.) » : deux activations dans "
+                     "la meme phase, mesure directement sur `player.rising_tide.GetAll(False)` "
+                     "-- si la limite mord, la zone reste a 1 carte apres les deux tentatives ; "
+                     "si elle est inerte, la seconde ajoute une deuxieme carte du dessus du deck. "
+                     "Meme discipline que `im001b_temoin_epuisement` (piloter directement les deux "
+                     "activations via `EventManager.FilterAvailableEffects`, la DSL declencher ne "
+                     "sachant pas laisser echouer un second declenchement sans faire planter le cas)."),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "wave_champion_swimmer_temoin_epuisement",
+    },
+    {
+        "nom": "65010 Wave's Crown — TEMOIN D'EPUISEMENT : l'Action de glissement refusee au-dela de « (max 2) »",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE, reserve laissee ouverte lors du premier "
+                     "passage (22/9/2026). Deux glissements REELS sont montes en mise en place "
+                     "(chacun avec un seul candidat face visible en Rising Tide area, pour eviter "
+                     "un choix a plusieurs options non deterministe -- deja prouve par le cas "
+                     "nominal). Le verificateur redresse ensuite Wave's Crown lui-meme (pour "
+                     "isoler la cause du refus : le PLAFOND, pas le cout d'inclinaison) et verifie "
+                     "qu'aucun effet n'est plus offert -- contrairement au pack black_cat, dont le "
+                     "plafond de 3 est un menage APRES coup, jamais un refus."),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.Action('65001b', 'Action')",
+                          "Puzzle.ChangeForm('65001b')",
+                          "Puzzle.PutIntoPlay('65010', under_control=True)",
+                          "Puzzle.Action('65010', 'Action')",
+                          "Puzzle.Ready('65010')",
+                          "Puzzle.MoveTo('01089', 'RisingTideArea')",
+                          "Puzzle.Flip('01089')",
+                          "Puzzle.Action('65010', 'Action')"],
+        "declencher": [],
+        "verifier": "wave_waves_crown_temoin_epuisement",
+    },
+    {
+        "nom": "65013 Alontech Hybrid — branche SIRENA isolee : un sbire du trait, pas le vilain",
+        "pourquoi": ("reserve laissee ouverte lors du premier passage (22/9/2026) : le cas nominal "
+                     "ne couvrait que la branche « villains » (Rhino). The Reyna Sirena (65012, "
+                     "trait SIRENA imprime) sert ici de cible pour la branche « SIRENA minions » : "
+                     "deux capacites DISTINCTES sur la carte (`CardFinder(trait=\"SIRENA\", "
+                     "card_type=Minion)` vs `Villain`), donc deux preuves necessaires pour couvrir "
+                     "le texte imprime en entier. Meme correctif que le cas nominal ci-dessus "
+                     "(`Puzzle.Attack('65001a')` + `cibles`, pas `Puzzle.Attack('65012')` qui "
+                     "aurait fait ATTAQUER The Reyna Sirena au lieu d'etre attaquee)."),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')",
+                          "Puzzle.PutIntoPlay('65013', under_control=True)",
+                          "Puzzle.PutIntoPlay('65012')"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Attack('65001a')"],
+        "cibles": ["65012"],
+        "verifier": "wave_alontech_hybrid_protege_sirena",
+    },
+    {
+        "nom": "65011 Alontech's Greatest Achievement — TEMOIN D'ISOLATION : seul le premier evenement du tour est touche",
+        "pourquoi": ("reserve laissee ouverte lors du premier passage (22/9/2026) : le cas nominal "
+                     "prouvait seulement que la hausse MORD sur le premier evenement, pas qu'elle "
+                     "EPARGNE le second. Ici Crashing Wave (65003, cout imprime 1) est joue en "
+                     "PREMIER avec 2 ressources disponibles (couvre le cout hausse a 2), PUIS "
+                     "Marine Patrol (65004, cout imprime 1) est joue en second avec UNE SEULE "
+                     "ressource restante : s'il entre en jeu quand meme, la hausse ne s'est PAS "
+                     "reappliquee sur ce second evenement. `ne_pas_depenser: [\"65004\"]` : sans "
+                     "cette interdiction, le pilote de paiement par defaut defausse 65004 "
+                     "lui-meme pour financer le premier achat (rien ne le distingue d'une simple "
+                     "ressource), ce qui invalide la mise en place avant meme le second essai."),
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": ["Puzzle.ChangeForm('65001b')", "Puzzle.Reveal('65011')", "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["65003", "65004", "01088", "01089", "01090"],
+        "declencher": [],
+        "cibles": ["01094", "01097b"],
+        "ne_pas_depenser": ["65004"],
+        "verifier": "wave_alontech_second_evenement_pas_augmente",
+    },
+    {
+        "nom": "rs001b Day of the Sword — Action : cherche Hyrkanium Blade dans le deck, l'ajoute en main",
+        "pourquoi": ("⚠ Carte sans AUCUN cas dedie (trouve par la preuve par substitution, « AUCUN "
+                     "CAS ») : rs001a en avait deux (She-Devil), rs001b aucun. `Puzzle.PutIntoDeck` "
+                     "garantit qu'Hyrkanium Blade est bien dans le deck (pas deja en main par le "
+                     "tirage de depart) avant l'Action."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.PutIntoDeck('rs013')"],
+        "declencher": ["Puzzle.Action('rs001b', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["rs013"]},
+    },
+    {
+        "nom": "rs001a She-Devil — joue rs006 Hyrkanian Fury a cout reduit, etourdissement applique",
+        "pourquoi": ("preuve du marqueur maison `rs_reduit_par_she_devil` "
+                     "(cards/pack/red_sonja/red_sonja/__init__.py) : She-Devil incline une arme "
+                     "pour jouer un evenement de la main a cout -1, et l'evenement joue doit "
+                     "SAVOIR qu'il a ete joue ainsi pour appliquer son effet conditionnel "
+                     "(« if you used your She-Devil ability »). Point le plus original et le "
+                     "moins couvert par un precedent du depot dans ce portage."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)"],
+        "main_exclusive": ["rs006", "01090"],
+        "declencher": ["Puzzle.Action('rs001a', 'Action')"],
+        "accepter_choix": True,
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "statuts": [["01094", "Stunned"]],
+                    "exhausted": ["rs013"]},
+    },
+    {
+        "nom": "rs006 Hyrkanian Fury joue normalement (sans She-Devil) — TEMOIN, pas d'etourdissement",
+        "pourquoi": ("temoin d'absence : le meme evenement joue SANS passer par l'Action "
+                     "She-Devil ne doit jamais etourdir, sans quoi la condition serait en "
+                     "realite inconditionnelle."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')"],
+        "main_exclusive": ["rs006", "01090"],
+        "declencher": [],
+        "jouer": ["rs006"],
+        "payer_avec": ["01090"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "statuts_absents": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "rs002 Conan — Interrupt : exhaust une arme, +X (cout imprime de l'arme) sur son ATK de base",
+        "pourquoi": "Conan ATK 1 + printed_cost de rs012 (2) = 3 sur Rhino",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.PutIntoPlay('rs002', under_control=True)",
+                          "Puzzle.PutIntoPlay('rs012', under_control=True)"],
+        "declencher": ["Puzzle.Attack('rs002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "exhausted": ["rs012"]},
+    },
+    {
+        "nom": "rs003 Savage Steel — degats excedentaires sur un sbire vaincu reduisent le cout du PROCHAIN evenement de la phase",
+        "pourquoi": ("01101 Hydra Mercenary (3 PV) vaincu par 6 degats -> 3 d'exces. "
+                     "rs006 (cout 2) est joue APRES, sans aucune ressource restante -- s'il "
+                     "entre quand meme en jeu, c'est que son cout est tombe a 0. rs003 "
+                     "lui-meme (cout 3) est paye normalement par 01090+01085 (RR+Y = 3)."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')", "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["rs003", "01090", "01085", "rs006"],
+        "declencher": [],
+        "jouer": ["rs003", "rs006"],
+        "payer_avec": ["01090", "01085"],
+        "ne_pas_depenser": ["rs006"],
+        "cibles": ["01101", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["rs006"], "degats": [["01094", 4]]},
+    },
+    {
+        "nom": "rs004 Scarlet Huntress — menace excedentaire sur une manigance videe reduit le cout du PROCHAIN evenement de la phase",
+        "pourquoi": ("01107 Breakin' & Takin' (menace forcee a 2) videe par un contre de 6 -> "
+                     "4 d'exces. rs007 (cout 2) est joue APRES sans ressource restante, la "
+                     "meme preuve que rs003 cote menace. rs004 (cout 3) paye normalement par "
+                     "01089+01086 (BB+B = 3). "
+                     "⚠ DEUX BUGS REELS CORRIGES le 23/09/2026, trouves en fermant cette reserve : "
+                     "1) `ne_pas_depenser` ajoutait, EN PLUS des vrais ids d'effets payants, "
+                     "l'id de l'OBJET CARTE lui-meme a la liste des interdits "
+                     "(`tools/test_capacites.py`, meme mecanisme deja construit ; l'id objet de "
+                     "rs007 coincidait EXACTEMENT, dans cette mise en place precise, avec l'id de "
+                     "l'effet payant d'01089 Genius -- interdisant Genius EN PLUS de rs007, sans "
+                     "aucun rapport avec lui. rs004 tombait alors injouable faute de paiement "
+                     "complet. Corrige : seuls les ids d'EFFETS PAYANTS (`effet.object_id`) "
+                     "filtrent desormais, l'ajout de l'id objet (deja documente comme inoperant "
+                     "par le commentaire d'origine) est retire. 2) La cible originale de rs007 "
+                     "(`01097b`, le complot PRINCIPAL) n'est PAS une cible legale a ce point de la "
+                     "partie : round 1, phase Joueur, AVANT toute phase Vilain -- le complot "
+                     "principal n'a encore RECU AUCUNE menace (menace = 0), et une capacite "
+                     "« remove threat » n'offre jamais une cible qui n'a rien a retirer. La "
+                     "premiere resolution de rs004 (`all_legal_targets` a l'ASK) le confirmait "
+                     "deja : SEUL 01107 y figurait, jamais le complot principal. Corrige en posant "
+                     "une SECONDE manigance annexe (`01108` Crowd Control, menace forcee a 3, "
+                     "meme set Rhino, sans script propre) comme cible reelle de rs007."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')", "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 2)", "Puzzle.PutIntoPlay('01108')",
+                          "Puzzle.SetThreat('01108', 3)"],
+        "main_exclusive": ["rs004", "01089", "01086", "rs007"],
+        "declencher": [],
+        "jouer": ["rs004", "rs007"],
+        "payer_avec": ["01089", "01086"],
+        "ne_pas_depenser": ["rs007"],
+        "cibles": ["01107", "01108"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["rs007"], "hors_jeu": ["01107", "01108"]},
+    },
+    {
+        "nom": "rs005 Devil's Defiance — previent tous les degats d'une attaque, donne Tenace",
+        "pourquoi": ("modele 01003 Backflip : prevention totale + statut Tough sur l'identite. "
+                     "« Hero Interrupt » exige la forme heros -- ChangeForm indispensable, "
+                     "l'alter-ego est la forme de DEPART de tout heros."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')"],
+        "main_exclusive": ["rs005", "01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "payer_avec": ["01090"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "statuts": [["rs001a", "Tough"]]},
+    },
+    {
+        "nom": "rs007 Red Reckoning joue normalement (sans She-Devil) — contre reel + TEMOIN, pas de confusion",
+        "pourquoi": ("⚠ La preuve par substitution a montre que ce cas, seul restant pour rs007 "
+                     "(la branche She-Devil/confuse est une reserve, voir plus haut), ne prouvait "
+                     "RIEN de positif : `statuts_absents` reste vrai avec OU sans le module (rien "
+                     "a annuler si la capacite entiere a disparu). Ajout de `menace` (valeur exacte "
+                     "apres -4) et `defausse` : les deux tombent sans le module. ⚠ Cible = 01107 "
+                     "(manigance ANNEXE), pas la manigance PRINCIPALE (01097b) : forcer son seuil "
+                     "de menace a 10 l'ACCOMPLIT immediatement (seuil natif bien plus bas), la "
+                     "retire du jeu, et rs007 ne trouve alors plus aucune cible legale."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')", "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 10)"],
+        "main_exclusive": ["rs007", "01090"],
+        "declencher": [],
+        "jouer": ["rs007"],
+        "payer_avec": ["01090"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01094", "Confused"]], "menace": [["01107", 6]],
+                    "defausse": ["rs007"]},
+    },
+    {
+        "nom": "rs007 Red Reckoning — via She-Devil, branche « confuse an enemy »",
+        "pourquoi": ("⚠ RESERVE FERMEE le 23/09/2026. L'ancien diagnostic (« le "
+                     "ChooseAbilities imbrique de la branche confuse empeche "
+                     "SYSTEMATIQUEMENT rs007 d'etre joue par le montage She-Devil ») "
+                     "ne resistait pas a l'epreuve : le montage `accepter_choix` + "
+                     "`cibles` gere deja plusieurs ASK imbriques (voir rs001a/rs006, "
+                     "meme mecanisme) -- le VRAI probleme etait la CIBLE DU CONTRE : "
+                     "l'ancien essai (non conserve) visait sans doute le complot "
+                     "PRINCIPAL, illegal a round 1 (menace 0, voir la reserve rs004 "
+                     "fermee juste au-dessus pour le meme piege). Corrige avec une "
+                     "manigance ANNEXE a menace non nulle (01107, StartingThreat=2 "
+                     "natif, suffisant : rs007 en retire 4, la vide et la defait) "
+                     "comme cible du "
+                     "contre, et un SBIRE (01101, pas Rhino -- Stalwart bloque "
+                     "`canbe_confused`, voir §Reprise du 23/09/2026 apres-midi plus "
+                     "haut) comme cible de la confusion. `cibles` porte les DEUX "
+                     "identifiants : chaque ASK ne retient que celui qui lui est "
+                     "legal (choisir_cibles filtre par `all_legal_targets`), donc "
+                     "aucune ambiguite entre le ciblage du contre et celui, "
+                     "conditionnel, de la confusion."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)",
+                          "Puzzle.PutIntoPlay('01107')", "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["rs007", "01086"],
+        "declencher": ["Puzzle.Action('rs001a', 'Action')"],
+        "accepter_choix": True,
+        "payer_avec": ["01086"],
+        "cibles": ["01107", "01101"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01107"], "statuts": [["01101", "Confused"]],
+                    "exhausted": ["rs013"]},
+    },
+    {
+        "nom": "rs008 Savage She-Devil — combo attaque+contre en une seule carte",
+        "pourquoi": ("partie inconditionnelle de la carte : 5 degats + 5 menace retiree en un "
+                     "seul montage (modele 18020 Hit and Run, targets/targets2). La branche "
+                     "conditionnelle « ignores guard/patrol/crisis si She-Devil » a son propre "
+                     "cas dedie, voir juste en dessous."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')", "Puzzle.PutIntoPlay('01107')",
+                          "Puzzle.SetThreat('01107', 5)"],
+        "main_exclusive": ["rs008", "01089", "01090"],
+        "declencher": [],
+        "jouer": ["rs008"],
+        "payer_avec": ["01089", "01090"],
+        "cibles": ["01094", "01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "hors_jeu": ["01107"]},
+    },
+    {
+        "nom": "rs008 Savage She-Devil — via She-Devil, ignore Guard (Rhino attaquable malgre un sbire Guard engage)",
+        "pourquoi": ("⚠ RESERVE FERMEE le 23/09/2026. Le mot-cle Guard (01101 Hydra "
+                     "Mercenary, `desc.Guard='1'`, engage automatiquement a sa mise en "
+                     "jeu -- confirme par le journal moteur du cas rs007/She-Devil "
+                     "juste au-dessus) empeche normalement d'attaquer LE VILLAIN tant "
+                     "qu'un sbire Guard est engage (`Minion.SetGuardPatrolEffectedBy`, "
+                     "card_type/minion.py). SANS She-Devil, Rhino (01094) ne serait "
+                     "donc PAS une cible legale pour l'attaque de rs008 tant que 01101 "
+                     "reste engage ; AVEC She-Devil, `SetIgnoreKeyword('Guard','Patrol',"
+                     "'Crisis', condition=she_devil_active)` doit le rendre a nouveau "
+                     "legal. Le cas verifie directement que les DEGATS tombent bien sur "
+                     "Rhino (01094) -- si l'ignorance de Guard echouait, Rhino ne "
+                     "serait pas dans `all_legal_targets` et le montage forced choisirait "
+                     "forcement 01101 a la place (seule autre cible Enemy legale), ce "
+                     "que l'assertion sur `degats` aurait detecte."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.PutIntoPlay('01107')"],
+        "main_exclusive": ["rs008", "01089", "01086"],
+        "declencher": ["Puzzle.Action('rs001a', 'Action')"],
+        "accepter_choix": True,
+        "payer_avec": ["01089", "01086"],
+        "cibles": ["01094", "01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "hors_jeu": ["01107"], "exhausted": ["rs013"]},
+    },
+    {
+        "nom": "rs009 Queen of Sogaria — dans la vitrine de victoire, exhaust Hyrkanium Blade -> pioche 1",
+        "pourquoi": ("« While ... is in the victory display, Red Sonja gains: Response... » -- "
+                     "postee sur l'identite (rs001a/rs001b), voir QueenDeSogariaEstEnVitrine "
+                     "(__init__.py) : une carte dans la vitrine est hors jeu, ses propres "
+                     "capacites ne s'enregistrent jamais. Main de depart 6 (alter-ego) + 1 piochee = 7."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.MoveTo('rs009', 'VictoryDisplay')",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)"],
+        "declencher": ["Puzzle.Exhaust('rs013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 7},
+    },
+    {
+        "nom": "rs009 Queen of Sogaria — TEMOIN D'EPUISEMENT : Limit once per round, la 2e exhaustion ne pioche pas de 2e carte",
+        "pourquoi": "etape 7 bis de PROCESSUS-CARTE : la limite doit vraiment mordre (reste a 7, pas 8)",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.MoveTo('rs009', 'VictoryDisplay')",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)"],
+        "declencher": ["Puzzle.Exhaust('rs013')", "Puzzle.Ready('rs013')", "Puzzle.Exhaust('rs013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 7},
+    },
+    {
+        "nom": "rs009 Queen of Sogaria — Only Red Sonja peut retirer la menace de cette manigance",
+        "pourquoi": ("⚠ La preuve par substitution a montre que les deux cas ci-dessus (deplaces "
+                     "sur l'identite depuis le 23/09/2026, voir le bug de la vitrine de victoire) "
+                     "ne prouvent plus RIEN du contenu restant sur rs009.py lui-meme "
+                     "(ThreatCannotBeRemovedFromWhile). Conan (allie, pas Red Sonja) tente de "
+                     "contrer rs009 avec son THW de base : la menace ne doit pas bouger."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')",
+                          "Puzzle.PutIntoPlay('rs009', under_control=True)",
+                          "Puzzle.SetThreat('rs009', 5)",
+                          "Puzzle.PutIntoPlay('rs002', under_control=True)"],
+        "declencher": ["Puzzle.Thwart('rs002')"],
+        "cibles": ["rs009"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["rs009", 5]]},
+    },
+    {
+        "nom": "rs010 She Devil with a Sword — depensee comme ressource, redresse une arme controlee",
+        "pourquoi": ("AfterYouSpendThisCard, cible Upgrade/WEAPON/canbe_ready -- pas de montage a la "
+                     "main necessaire. rs013 (pas rs012) comme arme cible : rs012 porterait sa PROPRE "
+                     "Response (« after you play an event, exhaust -> 2 degats ») qui se declencherait "
+                     "aussi sur rs006 et fausserait le chiffre mesure."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)", "Puzzle.Exhaust('rs013')"],
+        "main_exclusive": ["rs010", "rs006"],
+        "declencher": [],
+        "jouer": ["rs006"],
+        "payer_avec": ["rs010"],
+        "cibles": ["01094", "rs013"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["rs013"], "degats": [["01094", 4]]},
+    },
+    {
+        "nom": "rs011 Crimson Shadow — annule le When Revealed d'un sbire deux fois, puis s'epuise (2 compteurs stealth)",
+        "pourquoi": ("01103 Shocker inflige normalement 1 degat au heros a sa revelation -- "
+                     "annule deux fois de suite (2 compteurs), puis Crimson Shadow doit quitter "
+                     "le jeu tout seul (moteur generique HasUses, compteurs a 0). « Hero Interrupt » "
+                     "exige la forme heros (et `GetOnFieldHeroes` de 01103 ne rend rien en "
+                     "alter-ego, donc rien a annuler non plus) -- ChangeForm indispensable. "
+                     "⚠ Deux copies de 01103 (deck de rencontre force) : un sbire SANS aucun "
+                     "WhenRevealed propre (01101) n'offre jamais l'Interrupt du tout -- rien a "
+                     "annuler, donc aucun message envoye, donc aucun compteur depense non plus."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')", "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01103', '01103')",
+                          "Puzzle.PutIntoPlay('rs011', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('01103')"],
+        "declencher_apres": ["Puzzle.Reveal('01103')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "hors_jeu": ["rs011"]},
+    },
+    {
+        "nom": "rs012 Bloodmoon Battleaxe — Response : apres avoir joue un evenement, exhaust -> 2 degats de plus",
+        "pourquoi": "AfterPlayerPlayedCard(Event) + CostFunc.Exhaust('This')",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')", "Puzzle.PutIntoPlay('rs012', under_control=True)"],
+        "main_exclusive": ["rs006", "01090"],
+        "declencher": [],
+        "jouer": ["rs006"],
+        "payer_avec": ["01090"],
+        "cibles": ["01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]], "exhausted": ["rs012"]},
+    },
+    {
+        "nom": "rs013 Hyrkanium Blade — Response : apres avoir vaincu un sbire, se redresse",
+        "pourquoi": ("AfterUnitDefeatedUnit(You, Minion) -> ReadyAll([this]). ⚠ `Puzzle.Damage` sans "
+                     "`source` attribue le coup au SBIRE LUI-MEME (puzzle.py:307-308, `source = face`) : "
+                     "`who_killer=\"You\"` ne mord jamais sur un simple Damage -- deux VRAIES attaques "
+                     "du heros (2+2=4 sur les 3 PV d'01101) pour que `message.killer` soit le joueur."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)", "Puzzle.Exhaust('rs013')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "declencher": ["Puzzle.Attack('rs001a')", "Puzzle.Ready('rs001a')", "Puzzle.Attack('rs001a')"],
+        "cibles": ["01101"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["rs013"]},
+    },
+    {
+        "nom": "rs013 Hyrkanium Blade — TEMOIN D'EPUISEMENT : Limit once per round, la 2e defaite ne redresse pas une 2e fois",
+        "pourquoi": ("etape 7 bis de PROCESSUS-CARTE. Deux sbires a 3 PV (01101, 01103), chacun vaincu "
+                     "par deux VRAIES attaques (2+2=4), memes raisons que le cas nominal."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101')", "Puzzle.PutIntoPlay('01103')"],
+        "declencher": ["Puzzle.Attack('rs001a')", "Puzzle.Ready('rs001a')", "Puzzle.Attack('rs001a')",
+                       "Puzzle.Exhaust('rs013')", "Puzzle.Ready('rs001a')",
+                       "Puzzle.Attack('rs001a')", "Puzzle.Ready('rs001a')", "Puzzle.Attack('rs001a')"],
+        "cibles": ["01101", "01103"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["rs013"]},
+    },
+    {
+        "nom": "rs014 A Warrior's Burden — option 1 : exhaust l'identite + discard Hyrkanium Blade, retire l'obligation de la partie",
+        "pourquoi": "modele si014 Alone (montage « Give to X » a deux branches)",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": [],
+        "main": ["rs013"],
+        "declencher": ["Puzzle.Reveal('rs014')"],
+        "preferer_option": "Exhaust your identity",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["rs014"], "exhausted": ["rs001b"], "defausse": ["rs013"]},
+    },
+    {
+        "nom": "rs014 A Warrior's Burden — option 2 : cherche 2 sbires dans la pioche/defausse de rencontre, discard cette carte",
+        "pourquoi": "Search.EncounterCards(include_discard_pile=True, card_type=Minion, total=2)",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('rs014')"],
+        "preferer_option": "Search the encounter deck",
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_rencontre": ["rs014"]},
+    },
+    {
+        "nom": "rs015 Queen of the Frozen Wastes — les armes ne peuvent plus se redresser",
+        "pourquoi": "modele deadpool 44032, WhenCardWouldReady + SetBeInstead",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.PutIntoPlay('rs015')", "Puzzle.PutIntoPlay('rs012', under_control=True)",
+                          "Puzzle.Exhaust('rs012')"],
+        "declencher": ["Puzzle.Ready('rs012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["rs012"]},
+    },
+    {
+        "nom": "rs016 Ice Queen — When Defeated : fouille la pioche de rencontre jusqu'a un sbire, le revele et le defausse",
+        "pourquoi": ("DiscardEncounterCardsUntil(card_type=Minion), deck controle (2 traitrises puis "
+                     "1 sbire). ⚠ Defaite par une VRAIE attaque du heros, pas `Puzzle.Damage` sans "
+                     "source (qui attribue la defaite au sbire/vilain lui-meme -- `message."
+                     "GetKillerPlayer()` rend alors None, la fouille n'a pas lieu, cf. rs016.py)."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.ChangeForm('rs001b')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01105', '01105', '01101')",
+                          "Puzzle.PutIntoPlay('rs016')"],
+        "declencher": ["Puzzle.Attack('rs001a')", "Puzzle.Ready('rs001a')", "Puzzle.Attack('rs001a')",
+                       "Puzzle.Ready('rs001a')", "Puzzle.Attack('rs001a')"],
+        "cibles": ["rs016"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_rencontre": ["01101"]},
+    },
+    {
+        "nom": "rs016 Ice Queen — [star] Boost : entre en jeu directement",
+        "pourquoi": "WhenCardBecomeBoost(PutThisIntoPlay), modele 56109",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Boost('rs016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["rs016"]},
+    },
+    {
+        "nom": "rs017 Yeti Warrior — [star] : les attaques gagnent overkill, l'exces passe a l'identite",
+        "pourquoi": "modele pt020 : defenseur a 1 PV, ATK 3 - 1 = 2 d'exces sur l'identite",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.PutIntoPlay('rs017')", "Puzzle.PutIntoPlay('rs002', under_control=True)",
+                          "Puzzle.Damage('rs002', 2)"],
+        "declencher": ["Puzzle.Attack('rs017', defender='rs002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "rs018 She-Devil Shackled! — When Revealed : s'attache a l'identite, exhaust toutes les armes controlees",
+        "pourquoi": "AttachToFaceWhenPutIntoPlay(YourIdentity) + WhenThisRevealed(ExhaustAll)",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.PutIntoPlay('rs012', under_control=True)",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('rs018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["rs012", "rs013"], "accroche_a": [["rs018", "rs001b"]]},
+    },
+    {
+        "nom": "rs018 She-Devil Shackled! — Forced Interrupt : payer 1 ressource redresse l'arme et retire 1 compteur fetter",
+        "pourquoi": "AskSpendResourcesInternal reussi -> RemoveCountersInternal(1,'fetter') + redressement",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.PutIntoPlay('rs018')", "Puzzle.PutIntoPlay('rs012', under_control=True)",
+                          "Puzzle.Exhaust('rs012')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Ready('rs012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["rs012"], "compteurs": [["rs018", "fetter", 2]]},
+    },
+    {
+        "nom": "rs018 She-Devil Shackled! — TEMOIN : sans ressource a depenser, l'arme NE se redresse PAS",
+        "pourquoi": ("AskSpendResourcesInternal echoue -> message.SetBeInstead(effect). "
+                     "⚠ `main_exclusive: []` est une liste VIDE, donc FAUSSE en Python : "
+                     "`if cas.get(\"main_exclusive\"):` ne videait alors PAS la main de depart, "
+                     "qui contenait de vraies ressources -- rs014 (l'obligation, sans icone RES) "
+                     "vide vraiment la main tout en restant impayable."),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.PutIntoPlay('rs018')", "Puzzle.PutIntoPlay('rs012', under_control=True)",
+                          "Puzzle.Exhaust('rs012')"],
+        "main_exclusive": ["rs014"],
+        "declencher": ["Puzzle.Ready('rs012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["rs012"], "compteurs": [["rs018", "fetter", 3]]},
+    },
+    {
+        "nom": "rs019 Frozen Fury — When Revealed : un choix par amelioration controlee (ici 2), pris cote degats indirects",
+        "pourquoi": "boucle for _ in range(n) de ForChoiceAbility repetee, n = min(ameliorations, 3)",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.PutIntoPlay('rs012', under_control=True)",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('rs019')"],
+        "preferer_option": "Take 1 indirect damage",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "rs019 Frozen Fury — TEMOIN DU PLAFOND : 4 ameliorations controlees, seulement 3 choix (« to a maximum of 3 »)",
+        "pourquoi": "min(n_ameliorations, 3) doit vraiment plafonner, pas juste par hasard sur ce cas-ci",
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01082', under_control=True)",
+                          "Puzzle.PutIntoPlay('rs011', under_control=True)",
+                          "Puzzle.PutIntoPlay('rs012', under_control=True)",
+                          "Puzzle.PutIntoPlay('rs013', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('rs019')"],
+        "preferer_option": "Take 1 indirect damage",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    # ---------------------------------------------------------------- conan --
+    # Pack custom conan (RyCoRan), 25/09/2026. Journal :
+    # .planning/todos/2026-09-25-portage-conan.md. L'identite demarre sur
+    # l'alter-ego cn001b ; The Cimmerian (cn012a) est mise en jeu au Setup.
+    # Puzzle.ChangeToFace('<face en jeu>', '<face voulue>') vise une face PRECISE
+    # (cinq faces : ChangeForm ne sait aller que vers « l'autre »).
+    {
+        "nom": "cn001b Savage Vitality — Setup : The Cimmerian en jeu cote TITLE, King Conan mis de cote",
+        "pourquoi": ("SetupPutIntoPlay (modele 26001b Vision) + drapeau hors_pile_identite sur cn001d/e. "
+                     "La tentative de passer directement sur King Conan doit ECHOUER (aucune face "
+                     "cible : DefaultChangeToForm leve), d'ou declencher_tolerant, et l'identite reste "
+                     "sur cn001b. Sans le marquage du Setup, la bascule reussirait (forme cn001d)."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": [],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.ChangeToFace('cn001b', 'cn001d')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["cn012a"], "face_identite": "cn001b"},
+    },
+    {
+        "nom": "cn001b Savage Vitality — Action : depenser 1 ressource pose 1 compteur Crom",
+        "pourquoi": "SetCost(Cost('1')) + PoserCrom(1) sur The Cimmerian",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": [],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('cn001b', 'Action')"],
+        "payer_avec": ["01090"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["cn012a", "crom", 1]]},
+    },
+    {
+        "nom": "cn001b Savage Vitality — TEMOIN D'EPUISEMENT : Limit once per round, la 2e Action ne pose rien",
+        "pourquoi": ("etape 7 bis. Deux Actions dans le meme round, deux ressources en main : la "
+                     "seconde est refusee, un seul compteur, et la seconde ressource reste en main."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": [],
+        "main_exclusive": ["01090", "01089"],
+        "declencher": ["Puzzle.Action('cn001b', 'Action')"],
+        "declencher_tolerant": ["Puzzle.Action('cn001b', 'Action')"],
+        "payer_avec": ["01090", "01089"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["cn012a", "crom", 1]], "en_main": ["01089"]},
+    },
+    {
+        "nom": "cn001c Born of Battle — 2+2+2 degats sur Rhino dans la phase : cumul >= 5, 1 compteur Crom",
+        "pourquoi": ("seuil CUMULE par cible sur la phase (arbitrage du 25/09/2026). Trois attaques "
+                     "de base du Barbare (ATK 2) sur le vilain : 2, 4 puis 6. Le seuil tombe a la "
+                     "troisieme, une seule fois."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "declencher": ["Puzzle.Attack('cn001c')", "Puzzle.Ready('cn001c')",
+                       "Puzzle.Attack('cn001c')", "Puzzle.Ready('cn001c')",
+                       "Puzzle.Attack('cn001c')"],
+        "cibles": ["01094", "01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 6]], "compteurs": [["cn012a", "crom", 1]]},
+    },
+    {
+        "nom": "cn001c Born of Battle — TEMOIN : 10 degats sur le MEME ennemi dans la phase ne donnent qu'1 compteur",
+        "pourquoi": ("insert : « 10+ damage to an enemy ... 2 crom counters? No. It is 1 enemy. » "
+                     "Cinq attaques de 2 sur Rhino : un seul compteur, pas deux."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "declencher": ["Puzzle.Attack('cn001c')", "Puzzle.Ready('cn001c')",
+                       "Puzzle.Attack('cn001c')", "Puzzle.Ready('cn001c')",
+                       "Puzzle.Attack('cn001c')", "Puzzle.Ready('cn001c')",
+                       "Puzzle.Attack('cn001c')", "Puzzle.Ready('cn001c')",
+                       "Puzzle.Attack('cn001c')"],
+        "cibles": ["01094", "01094", "01094", "01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 10]], "compteurs": [["cn012a", "crom", 1]]},
+    },
+    {
+        "nom": "cn001a Rogue's Intuition — 2+2 menaces retirees de la meme manigance : cumul >= 4, 1 compteur Crom",
+        "pourquoi": "seuil cumule par manigance ; Thief THW 2, deux contres de base sur 01107 porte a 6",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001a')",
+                          "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 6)"],
+        "declencher": ["Puzzle.Thwart('cn001a')", "Puzzle.Ready('cn001a')", "Puzzle.Thwart('cn001a')"],
+        "cibles": ["01107", "01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 2]], "compteurs": [["cn012a", "crom", 1]]},
+    },
+    {
+        "nom": "cn012a The Cimmerian — 8 compteurs Crom en alter-ego : Conan roi alter-ego, carte retournee cote KING",
+        "pourquoi": ("AfterCounterPlacedOn(at_least=8) -> Couronner. Arbitrage du 25/09/2026 : "
+                     "l'echange garde le COTE (alter-ego -> cn001e). Les compteurs restent (insert)."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Counter('cn012a', 'crom', 8)"],
+        "verifier": "etat_attendu",
+        "attendu": {"face_identite": "cn001e", "en_jeu": ["cn012b"], "compteurs": [["cn012b", "crom", 8]]},
+    },
+    {
+        "nom": "cn012a The Cimmerian — 8 compteurs Crom en heros incline : King Conan, redresse",
+        "pourquoi": "« ready your identity and swap him with King Conan » ; heros -> cn001d",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Exhaust('cn001c')"],
+        "declencher": ["Puzzle.Counter('cn012a', 'crom', 8)"],
+        "verifier": "etat_attendu",
+        "attendu": {"face_identite": "cn001d", "pret": ["cn001d"], "compteurs": [["cn012b", "crom", 8]]},
+    },
+    {
+        "nom": "cn012a The Cimmerian — apres le couronnement, les anciennes formes sont hors de la partie",
+        "pourquoi": ("« Remove your other identities from the game » : drapeau hors_pile_identite "
+                     "sur cn001a/b/c. Revenir sur Conan the Thief doit echouer."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "declencher": ["Puzzle.Counter('cn012a', 'crom', 8)"],
+        "declencher_tolerant": ["Puzzle.ChangeToFace('cn001d', 'cn001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"face_identite": "cn001d"},
+    },
+    {
+        "nom": "cn012a The Cimmerian — apres le couronnement, le verso KING reste attache a King Conan",
+        "pourquoi": ("etape 8 bis : le journal du 1er passage ecrit « King Conan perd l'amelioration "
+                     "The Cimmerian » pendant le retournement. Une amelioration detachee ne se "
+                     "dessinerait plus sur l'identite : on mesure l'attache apres coup."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "declencher": ["Puzzle.Counter('cn012a', 'crom', 8)"],
+        "verifier": "etat_attendu",
+        "attendu": {"face_identite": "cn001d", "accroche_a": [["cn012b", "cn001d"]]},
+    },
+    {
+        "nom": "cn001d Crown of Aquilonia — une attaque de base de King Conan pose 2 compteurs Crom",
+        "pourquoi": ("AfterUnitUseBasicPower(powers='Hero'). The Cimmerian (verso) est inclinee "
+                     "d'avance pour que son Interruption (qui retire des compteurs) ne parte pas."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')",
+                          "Puzzle.Counter('cn012a', 'crom', 8)", "Puzzle.Exhaust('cn012b')"],
+        "declencher": ["Puzzle.Attack('cn001d')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "compteurs": [["cn012b", "crom", 10]]},
+    },
+    {
+        "nom": "cn012b The Cimmerian (KING) — Hero Interrupt : retirer 3 Crom et s'incliner donne +3 a l'attaque",
+        "pourquoi": ("modele rs002 : WhenUnitUseBasicPower + GainValue(X). X declare par le joueur "
+                     "(choisir_option '3'). Degats 2+3=5 ; compteurs 8-3, puis +2 de Crown of "
+                     "Aquilonia apres l'attaque = 7."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Counter('cn012a', 'crom', 8)"],
+        "declencher": ["Puzzle.Attack('cn001d')"],
+        "cibles": ["01094"],
+        "choisir_option": "3",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "exhausted": ["cn012b"], "compteurs": [["cn012b", "crom", 7]]},
+    },
+    {
+        "nom": "cn001e Battle-Forged — passer en alter-ego roi, option soin : retire tous les Crom, soigne autant",
+        "pourquoi": ("AfterUnitChangeForm(to_this_form). Couronne cote heros, 3 degats sur "
+                     "l'identite, puis changement vers cn001e : 8 compteurs retires, 3 soignes."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')",
+                          "Puzzle.Counter('cn012a', 'crom', 8)", "Puzzle.Damage('cn001d', 3)"],
+        "declencher": ["Puzzle.ChangeToFace('cn001d', 'cn001e')"],
+        "preferer_option": "Remove all Crom",
+        "verifier": "etat_attendu",
+        "attendu": {"face_identite": "cn001e", "degats_identite": 0, "compteurs": [["cn012b", "crom", 0]]},
+    },
+    {
+        "nom": "cn001e Battle-Forged — option Tenace : King Conan recoit un statut Tough",
+        "pourquoi": "premiere branche du choix",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Counter('cn012a', 'crom', 8)"],
+        "declencher": ["Puzzle.ChangeToFace('cn001d', 'cn001e')"],
+        "preferer_option": "Give King Conan",
+        "verifier": "etat_attendu",
+        "attendu": {"face_identite": "cn001e", "statuts": [["cn001e", "Tough"]], "compteurs": [["cn012b", "crom", 8]]},
+    },
+    {
+        "nom": "cn002 Belit — sous Conan the Thief : +1 THW, pas d'ATK en plus",
+        "pourquoi": "ThisGainKeyword selon le trait de l'identite ; contre-cas de l'autre forme dans le cas suivant",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001a')", "Puzzle.PutIntoPlay('cn002', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["cn002", "thwart", 1], ["cn002", "attack", 0]]},
+    },
+    {
+        "nom": "cn002 Belit — sous Conan the Barbarian : +1 ATK, pas de THW en plus",
+        "pourquoi": "contre-cas de forme (recette §3)",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.PutIntoPlay('cn002', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["cn002", "thwart", 0], ["cn002", "attack", 1]]},
+    },
+    {
+        "nom": "cn002 Belit — sous King Conan : +1 THW et +1 ATK, et son entree en jeu redresse l'identite",
+        "pourquoi": "trait KING : les deux bonus, plus la Response « ready your identity »",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Counter('cn012a', 'crom', 8)",
+                          "Puzzle.Exhaust('cn001d')"],
+        "declencher": ["Puzzle.PutIntoPlay('cn002', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["cn002", "thwart", 1], ["cn002", "attack", 1]], "pret": ["cn001d"]},
+    },
+    {
+        "nom": "cn003 Crush Your Enemies — Conan the Barbarian : 3 degats",
+        "pourquoi": "cas nominal, pas King",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "main_exclusive": ["cn003", "01090"],
+        "declencher": [],
+        "jouer": ["cn003"],
+        "payer_avec": ["01090"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]]},
+    },
+    {
+        "nom": "cn003 Crush Your Enemies — King Conan : 4 degats, et gratuite (Discount 1 KING)",
+        "pourquoi": "« 4 damage instead if you are King Conan » + Discount : aucune ressource en main",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Counter('cn012a', 'crom', 8)",
+                          "Puzzle.Exhaust('cn012b')"],
+        "main_exclusive": ["cn003"],
+        "declencher": [],
+        "jouer": ["cn003"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]]},
+    },
+    {
+        "nom": "cn003 Crush Your Enemies — TEMOIN Discount : sans KING et sans ressource, la carte n'est PAS gratuite",
+        "pourquoi": ("autoplay du 25/09/2026, graine 2 : partie BLOQUEE, le moteur offrait Crush Your "
+                     "Enemies au pilote sans ressource en main, puis la refusait, en boucle. La "
+                     "Reduction ne doit mordre qu'avec une carte KING REELLEMENT en jeu."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "main_exclusive": ["cn003"],
+        "declencher": [],
+        "jouer": ["cn003"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "en_main": ["cn003"]},
+    },
+    {
+        "nom": "cn003 Crush Your Enemies — sans KING ni ressource, Citadel et epee en jeu : la carte reste en main",
+        "pourquoi": "cas limite : etat de l'autoplay graine 2 (25/09/2026) ; le moteur refuse bien le jeu, le blocage venait du pilote (Play impayable non decline)",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('cn011', under_control=True)",
+                          "Puzzle.PutIntoPlay('cn009', under_control=True)",
+                          "Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Exhaust('cn001c')"],
+        "main_exclusive": ["cn003"],
+        "declencher": [],
+        "jouer": ["cn003"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "en_main": ["cn003"]},
+    },
+    {
+        "nom": "cn004 Reaper's Cleave — Conan the Thief : 2 menaces retirees",
+        "pourquoi": "cas nominal",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001a')",
+                          "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 6)"],
+        "main_exclusive": ["cn004", "01090"],
+        "declencher": [],
+        "jouer": ["cn004"],
+        "payer_avec": ["01090"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 4]]},
+    },
+    {
+        "nom": "cn004 Reaper's Cleave — King Conan : 3 menaces retirees, gratuite",
+        "pourquoi": "branche King + Discount",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Counter('cn012a', 'crom', 8)",
+                          "Puzzle.Exhaust('cn012b')",
+                          "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 6)"],
+        "main_exclusive": ["cn004"],
+        "declencher": [],
+        "jouer": ["cn004"],
+        "cibles": ["01107"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 3]]},
+    },
+    {
+        "nom": "cn005 Destroyer's Defiance — Rhino attaque : aucun degat, 1 compteur Crom",
+        "pourquoi": "modele rs005 : PreventDamage('All') + PoserCrom(1)",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Exhaust('cn001c')"],
+        "main_exclusive": ["cn005", "01090"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "payer_avec": ["01090"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "compteurs": [["cn012a", "crom", 1]]},
+    },
+    {
+        "nom": "cn005 Destroyer's Defiance — King Conan : aucun degat, 2 compteurs Crom",
+        "pourquoi": ("branche King (8 + 2). King Conan est incline d'avance : sinon il defend de BASE, "
+                     "Crown of Aquilonia pose 2 compteurs de plus (12 mesures au 1er passage)."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Counter('cn012a', 'crom', 8)",
+                          "Puzzle.Exhaust('cn012b')", "Puzzle.Exhaust('cn001d')"],
+        "main_exclusive": ["cn005"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "compteurs": [["cn012b", "crom", 10]]},
+    },
+    {
+        "nom": "cn006 Hyborian Havoc — Conan the Thief : 5 degats et un ennemi desoriente",
+        "pourquoi": "branche degats + Thief -> confuse (Rhino accepte le statut, mesure au 1er passage)",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001a')"],
+        "main_exclusive": ["cn006", "01090", "01089"],
+        "declencher": [],
+        "jouer": ["cn006"],
+        "payer_avec": ["01090", "01089"],
+        "preferer_option": "Deal 5",
+        "cibles": ["01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "statuts": [["01094", "Confused"]],
+                    "statuts_absents": [["01094", "Stunned"]]},
+    },
+    {
+        "nom": "cn006 Hyborian Havoc — Conan the Barbarian : 4 menaces retirees et un ennemi sonne",
+        "pourquoi": "branche menace + Barbarian -> stun",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.PutIntoPlay('01103')",
+                          "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 6)"],
+        "main_exclusive": ["cn006", "01090", "01089"],
+        "declencher": [],
+        "jouer": ["cn006"],
+        "payer_avec": ["01090", "01089"],
+        "preferer_option": "Remove 4",
+        "cibles": ["01107", "01103"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01107", 2]], "statuts": [["01103", "Stunned"]],
+                    "statuts_absents": [["01103", "Confused"]]},
+    },
+    {
+        "nom": "cn006 Hyborian Havoc — King Conan : desoriente ET sonne",
+        "pourquoi": "« King Conan, all of the above »",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Counter('cn012a', 'crom', 8)",
+                          "Puzzle.Exhaust('cn012b')"],
+        "main_exclusive": ["cn006", "01090", "01089"],
+        "declencher": [],
+        "jouer": ["cn006"],
+        "payer_avec": ["01090", "01089"],
+        "preferer_option": "Deal 5",
+        "cibles": ["01094", "01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "statuts": [["01094", "Confused"], ["01094", "Stunned"]]},
+    },
+    {
+        "nom": "cn007 Cimmerian Counter — Hero Response apres une defense de base : degats egaux a l'ATK",
+        "pourquoi": ("arbitrage du 25/09/2026 : Response apres avoir defendu. Le Barbare (ATK 2) "
+                     "defend contre Rhino, puis joue la carte : 2 degats a Rhino."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "main_exclusive": ["cn007", "01090"],
+        "declencher": ["Puzzle.Defend('cn001c', '01094')"],
+        "payer_avec": ["01090"],
+        "preferer_option": "Deal 2",
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "cn007 Cimmerian Counter — apres une defense par CARTE (Destroyer's Defiance) : se declenche aussi",
+        "pourquoi": ("precision de l'utilisateur, conforme au Rules Reference v1.8 (Defend, Defense) : "
+                     "une capacite (defense) jouee pendant l'attaque fait de l'identite le defenseur. Heros "
+                     "incline d'avance : AUCUNE defense de base possible, seule la carte defend."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Exhaust('cn001c')"],
+        "ne_pas_depenser": ["cn007"],
+        "main_exclusive": ["cn005", "cn007", "01090", "01089"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "payer_avec": ["01090", "01089"],
+        "preferer_option": "Deal 2",
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "degats": [["01094", 2]]},
+    },
+    {
+        "nom": "cn008 Savage Sword — Conan the Barbarian incline : THW+ATK+DEF = 5 degats",
+        "pourquoi": "cout « Exhaust your hero » + total des trois valeurs (1+2+2)",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "main_exclusive": ["cn008", "01090", "01089"],
+        "declencher": [],
+        "jouer": ["cn008"],
+        "payer_avec": ["01090", "01089"],
+        "preferer_option": "Deal 5",
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "exhausted": ["cn001c"]},
+    },
+    {
+        "nom": "cn009 The Scarlet Citadel — en vitrine, Conan the Thief a +1 THW (et pas d'ATK en plus)",
+        "pourquoi": "recette §3bis : bonus porte par la face heros, lu dans la vitrine",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001a')", "Puzzle.MoveTo('cn009', 'VictoryDisplay')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1, "attack": 0}},
+    },
+    {
+        "nom": "cn009 The Scarlet Citadel — en vitrine, Conan the Barbarian a +1 ATK (et pas de THW en plus)",
+        "pourquoi": "contre-cas de forme",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.MoveTo('cn009', 'VictoryDisplay')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 0, "attack": 1}},
+    },
+    {
+        "nom": "cn009 The Scarlet Citadel — TEMOIN : hors vitrine, aucun bonus",
+        "pourquoi": "la condition lit bien la vitrine",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 0, "attack": 0}},
+    },
+    {
+        "nom": "cn009 The Scarlet Citadel — en vitrine, le Barbare attaque Rhino malgre un sbire Garde",
+        "pourquoi": "« ignore the guard keyword » (UnitIgnoreKeywordIcons, guard=True)",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.MoveTo('cn009', 'VictoryDisplay')",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "declencher": ["Puzzle.Attack('cn001c')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]]},
+    },
+    {
+        "nom": "cn010 Savage Tales — depensee pour payer : 1 compteur Crom",
+        "pourquoi": "modele rs010 (AfterYouSpendThisCard)",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "main_exclusive": ["cn003", "cn010"],
+        "declencher": [],
+        "jouer": ["cn003"],
+        "payer_avec": ["cn010"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "compteurs": [["cn012a", "crom", 1]]},
+    },
+    {
+        "nom": "cn010 Savage Tales — King Conan : 2 compteurs Crom",
+        "pourquoi": "branche King. Hyborian Havoc (cout 3, sans Discount) pour que la ressource soit necessaire",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Counter('cn012a', 'crom', 8)",
+                          "Puzzle.Exhaust('cn012b')"],
+        "main_exclusive": ["cn006", "cn010", "01090"],
+        "declencher": [],
+        "jouer": ["cn006"],
+        "payer_avec": ["cn010", "01090"],
+        "preferer_option": "Deal 5",
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["cn012b", "crom", 10]]},
+    },
+    {
+        "nom": "cn011 Atlantean Sword — apres Crush Your Enemies (cout imprime 1) : 1 degat de plus, epee inclinee",
+        "pourquoi": "modele rs012 + 42001c (cout IMPRIME) ; Crush 3 + epee 1 = 4",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.PutIntoPlay('cn011', under_control=True)"],
+        "main_exclusive": ["cn003", "01090"],
+        "declencher": [],
+        "jouer": ["cn003"],
+        "payer_avec": ["01090"],
+        "preferer_option": "Deal 1",
+        "cibles": ["01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]], "exhausted": ["cn011"]},
+    },
+    {
+        "nom": "cn013 The Coils of Doom — revelee : reste en jeu avec 3 compteurs serpent",
+        "pourquoi": "Uses (3 serpent counters), modele 53029 Harlem's Protector",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('cn013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["cn013"], "compteurs": [["cn013", "serpent", 3]]},
+    },
+    {
+        "nom": "cn013 The Coils of Doom — Hero Action, depenser 1 ressource : retire 1 compteur serpent",
+        "pourquoi": "premiere des deux capacites (SetCost(Cost('1')))",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Reveal('cn013')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('cn013', 'HeroAction', 0)"],
+        "payer_avec": ["01090"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["cn013", "serpent", 2]]},
+    },
+    {
+        "nom": "cn013 The Coils of Doom — Hero Action, retirer 1 Crom de The Cimmerian : retire 1 compteur serpent",
+        "pourquoi": "seconde capacite (CostFunc.Counter sur The Cimmerian)",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')", "Puzzle.Counter('cn012a', 'crom', 2)",
+                          "Puzzle.Reveal('cn013')"],
+        "declencher": ["Puzzle.Action('cn013', 'HeroAction', 1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["cn013", "serpent", 2], ["cn012a", "crom", 1]]},
+    },
+    {
+        "nom": "cn014 Frozen Ambush — Forced Response : un changement de forme pose 2 menaces",
+        "pourquoi": "AfterUnitChangeForm(ForcedResponse, Identity) ; 4 de depart + 2",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('cn014')", "Puzzle.SetThreat('cn014', 4)"],
+        "declencher": ["Puzzle.ChangeToFace('cn001b', 'cn001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["cn014", 6]]},
+    },
+    {
+        "nom": "cn014 Frozen Ambush — TEMOIN : le couronnement (The Cimmerian) n'est pas un changement de forme",
+        "pourquoi": "arbitrage du 25/09/2026 : l'echange ne pose aucune menace",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.PutIntoPlay('cn014')", "Puzzle.SetThreat('cn014', 4)"],
+        "declencher": ["Puzzle.Counter('cn012a', 'crom', 8)"],
+        "verifier": "etat_attendu",
+        "attendu": {"face_identite": "cn001e", "menace": [["cn014", 4]]},
+    },
+    {
+        "nom": "cn015 Hrothgar — attaque de base contre Hrothgar : 1 degat a Hymdul (sa Toughness l'absorbe)",
+        "pourquoi": ("modele 32147 Magneto's Helmet. Hymdul porte Toughness : le degat retire le "
+                     "statut au lieu de marquer des PV."),
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')",
+                          "Puzzle.PutIntoPlay('cn015')", "Puzzle.PutIntoPlay('cn016')"],
+        "declencher": ["Puzzle.Attack('cn001c')"],
+        "cibles": ["cn015"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["cn016", "Tough"]]},
+    },
+    {
+        "nom": "cn016 Hymdul — attaque de base contre Hymdul : 1 degat a Hrothgar (sa Toughness l'absorbe)",
+        "pourquoi": "symetrique",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')",
+                          "Puzzle.PutIntoPlay('cn015')", "Puzzle.PutIntoPlay('cn016')"],
+        "declencher": ["Puzzle.Attack('cn001c')"],
+        "cibles": ["cn016"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["cn015", "Tough"]]},
+    },
+    {
+        "nom": "cn015 Hrothgar — [star] Boost : tu es sonne",
+        "pourquoi": "modele 11030 Ancient Warrior",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Boost('cn015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["cn001c", "Stunned"]]},
+    },
+    {
+        "nom": "cn016 Hymdul — [star] Boost : tu es desoriente",
+        "pourquoi": "modele 11030 Ancient Warrior",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Boost('cn016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["cn001c", "Confused"]]},
+    },
+    {
+        "nom": "cn017 Grapple on the Glacier — un geant dans la defausse de rencontre : il entre en jeu engage",
+        "pourquoi": "fouille pioche + defausse (modele 01114 Klaw), trait GIANT",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')",
+                          "Puzzle.MoveTo('cn016', 'EncounterDiscardPile')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('cn017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["cn016"], "degats_identite": 0},
+    },
+    {
+        "nom": "cn017 Grapple on the Glacier — aucun geant : 4 degats",
+        "pourquoi": "branche Otherwise",
+        "scenario": "rhino",
+        "heros": "conan",
+        "mise_en_place": ["Puzzle.ChangeToFace('cn001b', 'cn001c')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('cn017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4},
+    },
+    # ------------------------------------------------------------------------
+    # Pack « determination » (aspect fan-made, decks supprimes le 05/09/2026,
+    # cartes toujours dans cards.json) : mots-cles Fleeting et Alias.
+    # Ajoutes le 29/09/2026 (audit des regles fan-made contre MC4DB) : jusque
+    # la, AUCUN cas ne couvrait ce pack.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "dt087 Get 'Em, Boom-Boom! [dt] — Fleeting : defaussee a la fin de la phase, et son Interrupt inflige 1 degat a chaque ennemi en partant",
+        "pourquoi": ("Fleeting n'etait implemente NULLE PART (29/09/2026) : le commentaire de dt087.py "
+                     "pretendait que le moteur le lisait dans le texte. La fin de phase est hors de "
+                     "portee de l'API Puzzle : le verificateur envoie `Message.WhenPhaseEnd` lui-meme, "
+                     "comme kb_bow_fin_de_phase"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01101')", "Puzzle.Attach('dt087', '01094')"],
+        "declencher": [],
+        "verifier": "dt087_fleeting_fin_de_phase",
+    },
+    {
+        "nom": "dt087 Get 'Em, Boom-Boom! [dt] — temoin : reste attachee a Rhino tant que la phase n'est pas finie, sans degat",
+        "pourquoi": "contre-cas de Fleeting : la defausse n'a lieu qu'a la fin de la phase, pas avant (reste vert sous substitution, assume)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01101')", "Puzzle.Attach('dt087', '01094')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dt087"], "accroche_a": [["dt087", "01094"]],
+                    "degats": [["01094", 0], ["01101", 0]]},
+    },
+    {
+        "nom": "dt105 Venompool [dt] — Alias : gratuit quand Deadpool (Wade Wilson) est controle, et Deadpool est defausse a l'entree en jeu",
+        "pourquoi": ("les quatre porteurs d'Alias avaient un `subtitle` VIDE dans cards.json (29/09/2026) : "
+                     "le mot-cle etait inerte. Main vide sauf la carte : elle ne peut entrer en jeu "
+                     "qu'a cout zero"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dt016', under_control=True)"],
+        "main_exclusive": ["dt105"],
+        "declencher": [],
+        "jouer": ["dt105"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dt105"], "hors_jeu": ["dt016"], "defausse": ["dt016"]},
+    },
+    {
+        "nom": "dt105 Venompool [dt] — temoin : sans homonyme controle, pas de gratuite, la carte reste en main",
+        "pourquoi": "contre-cas d'Alias : la reduction est conditionnelle (reste vert sous substitution, assume)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "main_exclusive": ["dt105"],
+        "declencher": [],
+        "jouer": ["dt105"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["dt105"], "hors_jeu": ["dt105"]},
+    },
+    {
+        "nom": "dt100 Archangel [dt] — Alias : gratuit quand Angel (Warren Worthington III) est controle, et Angel est defausse",
+        "pourquoi": "meme mot-cle, autre sous-titre (33019 Angel, pack cyclops)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('33019', under_control=True)"],
+        "main_exclusive": ["dt100"],
+        "declencher": [],
+        "jouer": ["dt100"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dt100"], "hors_jeu": ["33019"], "defausse": ["33019"]},
+    },
+    {
+        "nom": "dt106 Captain Universe [dt] — Alias : gratuit quand Deadpool (Wade Wilson) est controle, et Deadpool est defausse",
+        "pourquoi": "le scan imprime bien WADE WILSON sous Captain Universe (version Deadpool)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dt016', under_control=True)"],
+        "main_exclusive": ["dt106"],
+        "declencher": [],
+        "jouer": ["dt106"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dt106"], "hors_jeu": ["dt016"], "defausse": ["dt016"]},
+    },
+    {
+        "nom": "dt107 Zenpool [dt] — Alias : gratuit quand le Deadpool officiel (40024, Wade Wilson) est controle, et il est defausse",
+        "pourquoi": "l'homonyme peut venir d'un pack officiel : le sous-titre suffit",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('40024', under_control=True)"],
+        "main_exclusive": ["dt107"],
+        "declencher": [],
+        "jouer": ["dt107"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["dt107"], "hors_jeu": ["40024"], "defausse": ["40024"]},
+    },
+
+    # ------------------------------------------------------------------------
+    # Errata et rulings FAQ releves sur MC4DB (29/09/2026), 11 cartes officielles.
+    # Chaque cas a ete vu ROUGE avant le correctif du script (journal :
+    # .planning/todos/2026-09-29-errata-faq-mc4db-gabarits-processus-carte.md).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "[mc4db] 57065 Moon Knight — When Revealed : resout la traitrise du dessus de la defausse",
+        "pourquoi": "cas nominal, preuve par substitution : Concussive Blast (1 degat) est bien resolue",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDiscardPile('01154')"],
+        "declencher": ["Puzzle.Reveal('57065')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "[mc4db] 57065 Moon Knight — temoin d'epuisement : « Limit once per phase » (errata RRG 1.8)",
+        "pourquoi": "errata : la limite manquait, deux revelations dans la meme phase resolvaient deux fois la traitrise",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDiscardPile('01154')"],
+        "declencher": ["Puzzle.Reveal('57065')", "Puzzle.Reveal('57065')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "[mc4db] 04136 Bitter Rival — When Revealed : UN personnage epuise PAR manigance annexe, obligatoire (errata RRG 1.5)",
+        "pourquoi": "range=('Zero', n) laissait n'en epuiser aucun ; deux manigances annexes, deux personnages : les deux s'inclinent",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('01107')", "Puzzle.PutIntoPlay('01108')",
+                          "Puzzle.PutIntoPlay('01083', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('04136')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["01001a", "01083"]},
+    },
+    {
+        "nom": "[mc4db] 08009 Synth-Suit — Hero Response : apres qu'une carte Preparation a RESOLU sa capacite, Black Widow se redresse",
+        "pourquoi": "errata RRG 1.8 « trigger » -> « resolve » : aligne sur 08001a (AfterPlayerResolveAbility) ; regression + substitution",
+        "scenario": "rhino",
+        "heros": "black_widow",
+        "mise_en_place": ["Puzzle.ChangeForm('08001b')", "Puzzle.PutIntoPlay('08009', under_control=True)",
+                          "Puzzle.Attach('08009', '08001a')", "Puzzle.PutIntoPlay('08010', under_control=True)",
+                          "Puzzle.Exhaust('08001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('01101')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["08001a"], "exhausted": ["08009"], "hors_jeu": ["08010"]},
+    },
+    {
+        "nom": "[mc4db] 25007 Aragorn — « You » gagne AERIAL, aussi en alter-ego (errata RRG 1.5 : Valkyrie -> You)",
+        "pourquoi": "le trait AERIAL restait sur CardFinder(name='Valkyrie') : Brunnhilde ne l'avait pas",
+        "scenario": "rhino",
+        "heros": "valkyrie",
+        "mise_en_place": ["Puzzle.PutIntoPlay('25007', under_control=True)", "Puzzle.Attach('25007', '25001b')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["AERIAL"], "attributs": {"health": 4}, "forme": "AlterEgo"},
+    },
+    {
+        "nom": "[mc4db] 49028 Exodus — Forced Response : defausse egale a son ATK TOTALE pour cette attaque, boost compris (errata)",
+        "pourquoi": "« for that attack » : ATK 2 + boost 2 (Explosion) = 4 cartes defaussees du deck du joueur",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01106', '01106', '01106', '01111')",
+                          "Puzzle.PutIntoPlay('49028')"],
+        "declencher": ["Puzzle.Attack('49028')"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_joueur": 4},
+    },
+    {
+        "nom": "[mc4db] 58002 Ionic Physiology — Response : 3 cartes deja glissees, l'evenement energie soigne QUAND MEME 1 (errata RRG 1.8 « Then, »)",
+        "pourquoi": "la fleche faisait du tuck un cout : plafond atteint, plus de soin. « Then, » : le soin ne depend plus du tuck",
+        "scenario": "rhino",
+        "heros": "wonder_man",
+        "mise_en_place": ["Puzzle.ChangeForm('58001b')", "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.Damage('58001a', 3)",
+                          "Puzzle.PlaceUnder('58004', '58002')", "Puzzle.PlaceUnder('58005', '58002')",
+                          "Puzzle.PlaceUnder('58017', '58002')"],
+        "main_exclusive": ["58003"],
+        "declencher": [],
+        "jouer": ["58003"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "taille_pose_sous": [["58002", 3]]},
+    },
+    {
+        "nom": "[mc4db] 51038 Target Spotter — Interrupt : le sbire n'engage JAMAIS l'autre joueur (FAQ)",
+        "pourquoi": ("le script laissait l'engagement d'origine se faire puis re-engageait apres coup : Badoon Grunt "
+                     "(« after this engages you ») distribuait une carte rencontre au MAUVAIS joueur"),
+        "scenario": "rhino",
+        "heros": "black_panther_shuri",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('51038', under_control=True)"],
+        "declencher": ["Puzzle.Engage('16118', player=1)"],
+        "accepter_choix": True,
+        "verifier": "mc4db_target_spotter",
+    },
+    {
+        "nom": "[mc4db] 04028 Marked for Death — When Revealed : la Mockingbird du joueur Clint, pas celle d'un autre joueur (FAQ)",
+        "pourquoi": "FindCardsOnField sans controleur prenait la copie de l'autre joueur (01083 basique, en jeu chez Spider-Man)",
+        "scenario": "rhino",
+        "heros": "hawkeye",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.CreateHandCards('04004')", "Puzzle.PutIntoPlay('01083', under_control=True, player=1)"],
+        "declencher": ["Puzzle.Reveal('04028')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["04028", "04004"]], "en_jeu": ["01083"]},
+    },
+    {
+        "nom": "[mc4db] 05030 Melee — 2e cible : le vilain reste protege si le sbire guard SURVIT a la 1re (FAQ)",
+        "pourquoi": "la 2e cible etait choisie parmi tous les ennemis sans regle guard : Hydra Soldier (4 PV) survit, Rhino ne doit pas prendre 3",
+        "scenario": "rhino",
+        "heros": "ms_marvel",
+        "mise_en_place": ["Puzzle.ChangeForm('05001b')", "Puzzle.PutIntoPlay('01182')"],
+        "main_exclusive": ["05030", "01055", "01055", "01055"],
+        "declencher": [],
+        "jouer": ["05030"],
+        "cibles": ["01182", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01182", 3], ["01094", 0]]},
+    },
+    {
+        "nom": "[mc4db] 05030 Melee — 2e cible : le vilain devient ciblable si la 1re VAINC le sbire guard (FAQ)",
+        "pourquoi": "cas nominal du ruling : Hydra Mercenary (3 PV) tombe a la 1re phrase, Rhino prend les 3 de la 2e",
+        "scenario": "rhino",
+        "heros": "ms_marvel",
+        "mise_en_place": ["Puzzle.ChangeForm('05001b')", "Puzzle.PutIntoPlay('01101')"],
+        "main_exclusive": ["05030", "01055", "01055", "01055"],
+        "declencher": [],
+        "jouer": ["05030"],
+        "cibles": ["01101", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "hors_jeu": ["01101"]},
+    },
+    {
+        "nom": "[mc4db] 16034 Battery Pack — Action : le compteur deplace prend le TYPE de la carte d'arrivee (FAQ)",
+        "pourquoi": "le script posait toujours un compteur 'charge' : sur Bambino (Uses ammo), il devient un ammo",
+        "scenario": "rhino",
+        "heros": "rocket_raccoon",
+        "mise_en_place": ["Puzzle.ChangeForm('16029b')", "Puzzle.PutIntoPlay('16034', under_control=True)",
+                          "Puzzle.PutIntoPlay('54018', under_control=True)", "Puzzle.Attach('54018', '16029a')"],
+        "declencher": ["Puzzle.Action('16034')"],
+        "cibles": ["54018"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["54018", "ammo", 4], ["54018", "charge", 0], ["16034", "charge", 1]]},
+    },
+    {
+        "nom": "[mc4db] 53002 Redwing — Hero Action : X = icones de la carte defaussee, cas nominal (Explosion, 2 icones -> 2 degats a Rhino)",
+        "pourquoi": "cas nominal, preuve par substitution",
+        "scenario": "rhino",
+        "heros": "falcon",
+        "mise_en_place": ["Puzzle.ChangeForm('53001b')", "Puzzle.PutIntoPlay('53002', under_control=True)",
+                          "Puzzle.CreateEncounterDeck('01106', '01111')"],
+        "declencher": ["Puzzle.Action('53002')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]], "hors_jeu": ["53002"]},
+    },
+    {
+        "nom": "[mc4db] 53002 Redwing — Hero Action INJOUABLE si le dessus du deck rencontre est VISIBLE sans icone (FAQ)",
+        "pourquoi": "le joueur sait que la capacite n'affectera pas sa cible : elle ne peut pas etre declenchee. Hard to Keep Down (traitrise sans icone) visible sur le dessus",
+        "scenario": "rhino",
+        "heros": "falcon",
+        "mise_en_place": ["Puzzle.ChangeForm('53001b')", "Puzzle.PutIntoPlay('53002', under_control=True)",
+                          "Puzzle.CreateEncounterDeck('01106', '01104')", "Puzzle.TurnEncounterTopFaceUp()"],
+        "declencher": [],
+        # 'HeroAction' : sans le type, `Puzzle.Action` retombe sur l'ATTAQUE DE
+        # BASE de l'allie quand la Hero Action est refusee (1 degat a Rhino, vu
+        # le 29/09/2026), ce qui masquait le refus qu'on veut mesurer.
+        "declencher_tolerant": ["Puzzle.Action('53002', 'HeroAction')"],
+        "cibles": ["01094"],
+        "verifier": "mc4db_redwing_dessus_visible",
     },
 ]
 # ------------------------------------------------- verifications outillees --
@@ -43622,6 +45561,11 @@ CLES_ETAT_ATTENDU = {
     # ajoutee le 21/09/2026 (signalement Aghenatak, cartes coincees en
     # zone de traitement)
     'aucune_en_resolution',
+    # ajoutees le 22/09/2026 (pack wave) : la Rising Tide area, meme famille
+    # que 'en_reserve'/'taille_reserve' ci-dessus.
+    'en_rising_tide', 'taille_rising_tide', 'rising_tide_face_visible',
+    # ajoutee le 25/09/2026 (pack conan, identite a cinq faces)
+    'face_identite',
 }
 
 # ---------------------------------------------------------------- pack fne (bloc 1)
@@ -44636,6 +46580,14 @@ def etat_attendu(monde, aides):
         if courante != attendu["forme"]:
             soucis.append(f"forme {courante} (attendu {attendu['forme']})")
 
+    # `face_identite` : card_id EXACT de la face d'identite en jeu. AJOUT du
+    # 25/09/2026 (pack conan, identite a cinq faces) : `forme` ne distingue que
+    # Hero/AlterEgo, donc Conan the Thief et King Conan passaient pour pareils.
+    if "face_identite" in attendu:
+        reelle = getattr(getattr(identite, "paper", None), "card_id", None)
+        if reelle != attendu["face_identite"]:
+            soucis.append(f"face d'identite {reelle} (attendue {attendu['face_identite']})")
+
     for trait, mini in attendu.get("en_jeu_trait") or []:
         n = 0
         for objet in monde.object_manager.card_dict.values():
@@ -44795,6 +46747,37 @@ def etat_attendu(monde, aides):
         n = len(list(monde.players[0].reserve.Get()))
         if n != attendu["taille_reserve"]:
             soucis.append(f"reserve = {n} carte(s) (attendu {attendu['taille_reserve']})")
+
+    # La RISING TIDE AREA du pack wave (AJOUT 22/09/2026) : meme famille que
+    # la Reserve ci-dessus, zone hors-jeu propre au joueur. `en_rising_tide`
+    # verifie juste la PRESENCE (independamment de l'etat face visible/
+    # cachee) ; `rising_tide_face_visible` verifie en plus l'etat de face
+    # d'un id donne -- necessaire pour prouver que Champion Swimmer/Storm
+    # Surge/Tide Wall posent bien FACE VISIBLE (l'insert l'exige), et que les
+    # cartes retournees par les evenements signature repassent bien face
+    # CACHEE.
+    for card_id in attendu.get("en_rising_tide") or []:
+        cartes = [getattr(f.paper, "card_id", None)
+                  for f in monde.players[0].rising_tide.GetAll(False)]
+        if card_id not in cartes:
+            soucis.append(f"{card_id} n'est pas dans la Rising Tide area (zone = {cartes})")
+
+    if "taille_rising_tide" in attendu:
+        n = len(list(monde.players[0].rising_tide.GetAll(False)))
+        if n != attendu["taille_rising_tide"]:
+            soucis.append(f"rising_tide = {n} carte(s) (attendu {attendu['taille_rising_tide']})")
+
+    for card_id, face_visible_attendu in (attendu.get("rising_tide_face_visible") or []):
+        trouvee = None
+        for f in monde.players[0].rising_tide.GetAll(False):
+            if getattr(f.paper, "card_id", None) == card_id:
+                trouvee = f
+                break
+        if trouvee is None:
+            soucis.append(f"{card_id} n'est pas dans la Rising Tide area (face visible non verifiable)")
+        elif trouvee.IsFaceUp() != face_visible_attendu:
+            soucis.append(f"{card_id} en Rising Tide area : face visible = "
+                          f"{trouvee.IsFaceUp()} (attendu {face_visible_attendu})")
 
     # Cles `pose_sous` et `taille_pose_sous` (AJOUT 01/09/2026, web_of_deceit) :
     # la zone des cartes POSEES sous une autre (`GetPlacedCardArea`). Sans
@@ -46255,16 +48238,6 @@ def si015_boost_en_jeu(monde, aides):
         return False, "si015 n'est pas en jeu apres le Boost"
     return True, "Massive Attack mise en jeu par son Boost"
 
-def si016_armored_repete(monde, aides):
-    """si016 : 2 instances de 3 degats, Armored 2 previent 2 a chaque fois -> 2 subis au total."""
-    minion = aides["par_id"](monde, "si016")
-    if minion is None:
-        return False, "si016 n'est pas en jeu (peut-etre defait, verifier les degats)"
-    subis = minion.max_health - minion.health
-    if subis != 2:
-        return False, f"degats subis par si016 = {subis} (attendu 2 : (3-2) x 2 instances)"
-    return True, "2 degats subis sur 6 infliges (2 x 2 previens) : Armored 2 se recharge a chaque instance"
-
 def si016_revealed_et_boost(monde, aides):
     """si016 : When Revealed + [star] Boost doivent chacun infliger 1 degat au joueur (2 au total)."""
     identite = aides["identite"](monde)
@@ -46325,6 +48298,687 @@ def kb_hawkeye_ally_consequential(monde, aides):
     if not dans_deck:
         return False, "Hawkeye (kb002) n'est ni en jeu, ni en defausse, ni dans le deck : il a disparu"
     return True, "Hawkeye remelange au deck (pas defausse) et 1 compteur fleche pose sur Kate's Bow"
+
+def wave_champion_swimmer_pose_face_visible(monde, aides):
+    """65001b Champion Swimmer : place le dessus du deck FACE VISIBLE en
+    Rising Tide area. Preuve directe de `PlacerFaceVisibleDansRisingTide`
+    (`cards/pack/wave/wave/__init__.py`), premiere ecriture reelle dans la
+    zone testee en jeu (le montage moteur n'avait ete verifie que
+    statiquement -- chargement de `CardsDB.FindAbilities` -- avant ce cas).
+    """
+    joueur = monde.players[0]
+    cartes = joueur.rising_tide.GetAll(False)
+    if len(cartes) != 1:
+        return False, f"Rising Tide area contient {len(cartes)} carte(s), attendu 1"
+    if not cartes[0].IsFaceUp():
+        return False, f"{getattr(cartes[0].paper, 'card_id', None)} est en Rising Tide area mais FACE CACHEE (attendu face visible)"
+    return True, f"{getattr(cartes[0].paper, 'card_id', None)} pose face visible en Rising Tide area"
+
+def wave_rising_tide_purge_fin_de_phase(monde, aides):
+    """Rising Tide area : « At the end of the player phase, before players
+    draw up to their hand size, place all cards in the Rising Tide area in
+    their owner's discard pile. » Regle UNIVERSELLE de la zone, cablee dans
+    `PlayerPhase.EndPhase()` (`game/player/element/player_phase.py`) --
+    PAS une capacite de carte, donc pas de message `WhenPlayerEndPhase` a
+    envoyer (contrairement a `kb_bow_fin_de_phase` juste en dessous, dont le
+    declencheur EST une capacite qui ecoute un message). On appelle
+    directement `player.phase.EndPhase()`, le meme chemin que la boucle de
+    jeu emprunte a chaque phase joueur.
+    """
+    joueur = monde.players[0]
+
+    avant = joueur.rising_tide.GetAll(False)
+    if len(avant) != 1:
+        return False, f"mise en place ratee : Rising Tide area contient {len(avant)} carte(s) avant la fin de phase, attendu 1"
+    card_id_pose = getattr(avant[0].paper, "card_id", None)
+    taille_defausse_avant = len(joueur.discard_pile.GetAll(False))
+
+    joueur.phase.EndPhase()
+
+    apres = joueur.rising_tide.GetAll(False)
+    if len(apres) != 0:
+        return False, f"Rising Tide area contient encore {len(apres)} carte(s) apres EndPhase() (attendu 0)"
+
+    defausse = joueur.discard_pile.GetAll(False)
+    if len(defausse) != taille_defausse_avant + 1:
+        return False, (f"defausse = {len(defausse)} carte(s) apres EndPhase() "
+                       f"(attendu {taille_defausse_avant + 1} : {taille_defausse_avant} avant + 1 purgee)")
+    if not any(getattr(f.paper, "card_id", None) == card_id_pose for f in defausse):
+        return False, f"{card_id_pose} n'est pas dans la defausse apres la purge de fin de phase"
+
+    return True, f"Rising Tide area purgee en fin de phase : {card_id_pose} envoye en defausse"
+
+def wave_pearls_lolo_retourne_et_soigne(monde, aides):
+    """65008 Pearl's Lolo : « Flip a faceup card in your Rising Tide area
+    facedown -> heal 3 damage. » Preuve de `CoutRetournerUneCarteRisingTide`
+    (`cards/pack/wave/wave/__init__.py`) : la carte posee par Champion
+    Swimmer (mise en place) doit RESTER dans la zone (un FLIP, pas une
+    defausse) mais passer face CACHEE, et l'identite doit etre soignee de 3.
+    """
+    joueur = monde.players[0]
+    identite = joueur.GetIdentity()
+
+    cartes = joueur.rising_tide.GetAll(False)
+    if len(cartes) != 1:
+        return False, f"Rising Tide area contient {len(cartes)} carte(s) apres paiement (attendu 1 : la carte retournee reste dans la zone)"
+    if cartes[0].IsFaceUp():
+        return False, f"{getattr(cartes[0].paper, 'card_id', None)} est encore face visible en Rising Tide area (attendu face cachee, le cout devait la retourner)"
+
+    subis = identite.max_health - identite.health
+    if subis != 0:
+        return False, f"degats sur l'identite = {subis} (attendu 0 : soignee de 3 apres en avoir subi 3)"
+
+    return True, f"{getattr(cartes[0].paper, 'card_id', None)} retournee face cachee en Rising Tide area, identite soignee de 3"
+
+def wave_storm_surge_carte_en_rising_tide(monde, aides):
+    """65001a Storm Surge : « After you discard cards from your hand to pay
+    for a cost, place 1 of those cards in your Rising Tide area. » 01088 est
+    defausse par `payer_avec` pour financer 65003 ; il doit finir FACE
+    VISIBLE en Rising Tide area, pas en defausse ordinaire.
+    """
+    joueur = monde.players[0]
+
+    en_defausse = any(getattr(f.paper, "card_id", None) == "01088" for f in joueur.discard_pile.GetAll(False))
+    if en_defausse:
+        return False, "01088 est en defausse ordinaire : Storm Surge n'a pas redirige la carte"
+
+    cartes = joueur.rising_tide.GetAll(False)
+    trouvee = None
+    for f in cartes:
+        if getattr(f.paper, "card_id", None) == "01088":
+            trouvee = f
+            break
+    if trouvee is None:
+        return False, f"01088 n'est pas dans la Rising Tide area (zone = {[getattr(f.paper, 'card_id', None) for f in cartes]})"
+    if not trouvee.IsFaceUp():
+        return False, "01088 est en Rising Tide area mais FACE CACHEE (attendu face visible)"
+
+    return True, "01088 (depensee pour payer 65003) redirigee face visible en Rising Tide area"
+
+def wave_waves_swords_redresse_et_retourne(monde, aides):
+    """65009 Wave's Swords : « Exhaust Wave's Swords and flip a faceup card
+    in your Rising Tide area facedown -> ready Wave. » Verifie le cout
+    DOUBLE (amelioration inclinee + carte retournee) ET l'effet (Wave
+    redressee).
+    """
+    joueur = monde.players[0]
+    epee = aides["par_id"](monde, "65009")
+    wave = aides["par_id"](monde, "65001a")
+
+    if epee is None:
+        return False, "Wave's Swords n'est pas en jeu"
+    if not epee.card.IsExhaust():
+        return False, "Wave's Swords n'est PAS inclinee (attendu : c'est le cout)"
+
+    if wave is None:
+        return False, "Wave (65001a) n'est pas l'identite active"
+    if not wave.card.IsReady():
+        return False, "Wave n'est pas redressee (l'effet n'est pas parti)"
+
+    cartes = joueur.rising_tide.GetAll(False)
+    if len(cartes) != 1:
+        return False, f"Rising Tide area contient {len(cartes)} carte(s) (attendu 1 : la carte retournee y reste)"
+    if cartes[0].IsFaceUp():
+        return False, f"{getattr(cartes[0].paper, 'card_id', None)} est encore face visible (attendu face cachee, cout paye)"
+
+    return True, "Wave's Swords inclinee, carte retournee face cachee, Wave redressee"
+
+def wave_waves_crown_plus1_thw_et_glisse(monde, aides):
+    """65010 Wave's Crown : « Wave gains +1 THW. [...] Action: Exhaust
+    Wave's Crown -> tuck 1 faceup card in your Rising Tide area under here
+    (max 2). » Verifie le bonus passif ET que la carte QUITTE la Rising Tide
+    area pour la pile glissee sous Wave's Crown (`GetPlacedCardArea`).
+    """
+    joueur = monde.players[0]
+    couronne = aides["par_id"](monde, "65010")
+    wave = aides["par_id"](monde, "65001a")
+
+    if couronne is None:
+        return False, "Wave's Crown n'est pas en jeu"
+    if not couronne.card.IsExhaust():
+        return False, "Wave's Crown n'est PAS inclinee (attendu : c'est le cout de l'action)"
+
+    if wave is None:
+        return False, "Wave (65001a) n'est pas l'identite active"
+    if wave.thwart != wave.printed_thwart + 1:
+        return False, f"THW de Wave = {wave.thwart} (imprime {wave.printed_thwart}, attendu +1)"
+
+    cartes_rising_tide = joueur.rising_tide.GetAll(False)
+    if len(cartes_rising_tide) != 0:
+        return False, f"Rising Tide area contient encore {len(cartes_rising_tide)} carte(s) (attendu 0 : la carte a du la quitter)"
+
+    glissees = list(couronne.GetPlacedCardArea().Get(True))
+    if len(glissees) != 1:
+        return False, f"{len(glissees)} carte(s) glissee(s) sous Wave's Crown (attendu 1)"
+
+    return True, (f"+1 THW confirme ({wave.printed_thwart} -> {wave.thwart}), "
+                  f"{getattr(glissees[0].paper, 'card_id', None)} glissee sous Wave's Crown")
+
+def _rising_tide_faces(monde):
+    return monde.players[0].rising_tide.GetAll(False)
+
+def wave_marine_patrol_deux_branches(monde, aides):
+    """65004 Marine Patrol : base « remove 2 threat », puis pour CHACUNE des 2
+    cartes retournees, choisir (max 1 chacune) entre « remove 2 threat » et
+    « draw 1 » -- preuve que les DEUX branches sont consommees (jamais deux
+    fois la meme).
+    """
+    scheme = aides["par_id"](monde, "01097b")
+    if scheme is None:
+        return False, "01097b (manigance principale) n'est pas en jeu"
+    menace = scheme.threat
+    if menace != 1:
+        return False, f"menace sur 01097b = {menace} (attendu 1 = 5 - 2 de base - 2 de la branche menace)"
+
+    cartes = _rising_tide_faces(monde)
+    if len(cartes) != 2:
+        return False, f"Rising Tide area contient {len(cartes)} carte(s) (attendu 2 : retournees, pas retirees)"
+    if any(f.IsFaceUp() for f in cartes):
+        return False, "au moins une carte retournee est encore face visible"
+
+    return True, f"menace = {menace} (4 retirees au total), 2 cartes retournees face cachee"
+
+def wave_instinctive_flow_trois_branches(monde, aides):
+    """65005 Instinctive Flow : 3 cartes retournees -> les TROIS branches
+    (degats/menace/etourdissement) doivent toutes partir, une seule fois
+    chacune.
+    """
+    rhino = aides["par_id"](monde, "01094")
+    scheme = aides["par_id"](monde, "01097b")
+    if rhino is None or scheme is None:
+        return False, "Rhino ou 01097b n'est pas en jeu"
+
+    degats = rhino.max_health - rhino.health
+    if degats != 2:
+        return False, f"degats sur Rhino = {degats} (attendu 2 : la branche degats)"
+
+    menace = scheme.threat
+    if menace != 3:
+        return False, f"menace sur 01097b = {menace} (attendu 3 = 5 - 2 : la branche menace)"
+
+    if not rhino.IsStunned():
+        return False, "Rhino n'est PAS Sonne (attendu : la branche etourdissement)"
+
+    cartes = _rising_tide_faces(monde)
+    if len(cartes) != 3:
+        return False, f"Rising Tide area contient {len(cartes)} carte(s) (attendu 3 : retournees, pas retirees)"
+    if any(f.IsFaceUp() for f in cartes):
+        return False, "au moins une carte retournee est encore face visible"
+
+    return True, f"les trois branches sont parties : {degats} degats, menace={menace}, Rhino Sonne"
+
+def wave_tide_wall_previent_et_pose(monde, aides):
+    """65007 Tide Wall : « prevent up to 3 of that damage. For each point of
+    damage prevented this way, place the top card of your deck faceup in
+    the Rising Tide area. » Wave heros EPUISE (ne peut pas defendre) : l'ATK
+    de Rhino frappe directement l'identite, sans reduction de DEF -- Tide
+    Wall en previent jusqu'a 3.
+
+    ⚠ L'ATK REELLEMENT SUBI N'EST PAS DETERMINISTE : Rhino peut recevoir une
+    carte de boost (mesure le 22/9/2026 : Shocker, +2 ATK, 2 -> 4). Le seul
+    invariant verifiable est donc le PLAFOND, pas un nombre fixe : au plus 3
+    cartes posees, et si moins de 3 ont ete posees, TOUS les degats etaient
+    forcement prevenus (aucune carte a poser au-dela du reellement inflige).
+    """
+    joueur = monde.players[0]
+    identite = joueur.GetIdentity()
+    subis = identite.max_health - identite.health
+
+    cartes = _rising_tide_faces(monde)
+    if len(cartes) > 3:
+        return False, f"Rising Tide area contient {len(cartes)} carte(s) (attendu au plus 3, c'est le plafond imprime)"
+    if len(cartes) == 0:
+        return False, "Rising Tide area est vide : Tide Wall n'a rien prevenu"
+    if not all(f.IsFaceUp() for f in cartes):
+        return False, "au moins une carte posee par Tide Wall n'est pas face visible"
+    if len(cartes) < 3 and subis != 0:
+        return False, (f"{len(cartes)} carte(s) posee(s) (< 3, donc tout le degat aurait du etre "
+                       f"prevenu) mais l'identite a quand meme subi {subis} degat(s)")
+
+    return True, f"{len(cartes)} carte(s) posee(s) face visible en Rising Tide area, {subis} degat(s) net residuel(s)"
+
+def wave_oceans_fury_declencheur_differe(monde, aides):
+    """65006 Ocean's Fury : « Until the end of the round, after Wave defeats
+    an enemy or removes the last threat from a scheme, draw 1 card and flip
+    a facedown card in your Rising Tide area faceup. » Le declencheur
+    (`AfterSchemeRemoveThreat`, enregistre en Temp sur la face heros) n'est
+    pas atteignable par l'API Puzzle -- on retire donc la DERNIERE menace de
+    01097b directement ici, comme `kb_bow_fin_de_phase` le fait pour son
+    propre declencheur hors de portee.
+
+    Deuxieme moitie : « Max 1 per round » imprime sur la carte -- une
+    SECONDE copie, encore en main, ne doit plus pouvoir etre jouee ce
+    round-ci. Sans ce temoin, une limite qui ne mord jamais resterait
+    invisible (PROCESSUS-CARTE etape 7 bis).
+    """
+    from game.puzzle.puzzle import PuzzleHelper
+    from game.effect.rule import DebugRule
+
+    joueur = monde.players[0]
+    avant_main = len(list(joueur.hand_cards.GetAll()))
+
+    PuzzleHelper.Exec(["Puzzle.Thwart('65001a')"], monde)
+
+    apres_main = len(list(joueur.hand_cards.GetAll()))
+    if apres_main != avant_main + 1:
+        return False, (f"main = {apres_main} carte(s) apres avoir retire la derniere menace "
+                       f"(attendu {avant_main + 1} : 1 carte piochee)")
+
+    cartes = _rising_tide_faces(monde)
+    carte_01088 = next((f for f in cartes if getattr(f.paper, "card_id", None) == "01088"), None)
+    if carte_01088 is None:
+        return False, "01088 n'est plus dans la Rising Tide area"
+    if not carte_01088.IsFaceUp():
+        return False, "01088 n'a pas ete retournee face visible (attendu : le declencheur la retourne)"
+
+    # Temoin d'epuisement : une deuxieme copie de 65006, encore en main,
+    # tentee directement (PlayCardsLikeInTurn), doit rester SANS EFFET.
+    deuxieme = None
+    for f in joueur.hand_cards.GetAll():
+        if getattr(f.paper, "card_id", None) == "65006":
+            deuxieme = f
+            break
+    if deuxieme is None:
+        return False, "la deuxieme copie de 65006 n'est plus en main : mise en place invalide"
+
+    effet = DebugRule(monde.object_manager.card_dict[0].face)
+    joueur.PlayCardsLikeInTurn([deuxieme], effet)
+
+    encore_en_main = any(
+        getattr(f.paper, "card_id", None) == "65006" and f is deuxieme
+        for f in joueur.hand_cards.GetAll()
+    )
+    if not encore_en_main:
+        return False, "la deuxieme copie de 65006 a ete jouee : « Max 1 per round » ne mord pas"
+
+    return True, (f"declencheur differe confirme (pioche + retournement), et la limite "
+                  f"« Max 1 per round » refuse bien la deuxieme copie")
+
+def wave_sea_hunter_rejoue_evenement(monde, aides):
+    """65002 Sea Hunter : « After Sea Hunter attacks or thwarts, flip a
+    faceup card in your Rising Tide area and pay the printed cost of an
+    event in your discard pile -> play that event as though it were in
+    your hand. » Verifie que Crashing Wave (65003) QUITTE la defausse et est
+    reellement RESOLU, et que la carte de Rising Tide part bien face cachee.
+
+    ⚠ LE TOTAL DE DEGATS N'EST PAS 1+1 : payer le cout de Crashing Wave
+    (`01091` en `payer_avec`) declenche AUSSI Storm Surge (Wave est en forme
+    heros), qui repose une carte face visible en Rising Tide area -- que
+    Crashing Wave lui-meme peut alors retourner pour ses 2 degats
+    supplementaires (`accepter_choix` prend cette branche partout). Mesure
+    le 22/9/2026 : 1 (Sea Hunter) + 1 (base Crashing Wave) + 2 (1 carte
+    retournee par son propre effet) = 4. C'est une PREUVE SUPPLEMENTAIRE,
+    pas un defaut : Storm Surge et le bonus de Crashing Wave s'enchainent
+    correctement au travers du rejeu de Sea Hunter.
+    """
+    joueur = monde.players[0]
+    rhino = aides["par_id"](monde, "01094")
+    if rhino is None:
+        return False, "Rhino n'est pas en jeu"
+
+    degats = rhino.max_health - rhino.health
+    if degats != 4:
+        return False, (f"degats sur Rhino = {degats} (attendu 4 : 1 Sea Hunter + 1 base Crashing "
+                       f"Wave + 2 de sa propre branche de retournement, alimentee par Storm Surge)")
+
+    # ⚠ PAS de controle "n'est plus en defausse" : un evenement REJOUE
+    # RETOURNE en defausse une fois resolu (cycle de vie normal d'un
+    # Event), indiscernable par simple presence d'un exemplaire jamais
+    # joue. La preuve que Sea Hunter l'a vraiment rejoue est deja dans
+    # `degats == 4`, qui exige que Crashing Wave se soit REELLEMENT
+    # RESOLU (base + sa propre branche de retournement).
+    cartes = _rising_tide_faces(monde)
+    carte_01088 = next((f for f in cartes if getattr(f.paper, "card_id", None) == "01088"), None)
+    if carte_01088 is None:
+        return False, "01088 n'est plus dans la Rising Tide area"
+    if carte_01088.IsFaceUp():
+        return False, "01088 est encore face visible (attendu face cachee : c'est le cout)"
+
+    return True, f"{degats} degats sur Rhino, Crashing Wave rejoue depuis la defausse, 01088 retournee"
+
+def wave_alontech_hausse_le_premier_cout(monde, aides):
+    """65011 Alontech's Greatest Achievement : « Increase the cost of the
+    first event each player plays each turn by 1. » Crashing Wave (cout
+    imprime 1) est offert avec UNE SEULE icone de ressource en main : si la
+    hausse mord, le cout reel (2) est impayable et la carte reste en main.
+    """
+    joueur = monde.players[0]
+    scheme = aides["par_id"](monde, "65011")
+    if scheme is None:
+        return False, "Alontech's Greatest Achievement n'est pas en jeu"
+
+    encore_en_main = any(getattr(f.paper, "card_id", None) == "65003"
+                         for f in joueur.hand_cards.GetAll())
+    if not encore_en_main:
+        return False, ("Crashing Wave a ete joue avec une seule icone : la hausse de cout "
+                       "n'a pas mordu")
+
+    return True, "Crashing Wave reste injouable a 1 icone : le cout est bien passe a 2"
+
+def wave_reyna_sirena_cout_additionnel(monde, aides):
+    """65012 The Reyna Sirena : « As an additional cost for the engaged
+    player to play an event, that player must take 1 damage. » Wave
+    engagee avec Reyna Sirena, joue un evenement sans rien attaquer :
+    l'unique degat mesurable est celui du cout additionnel.
+    """
+    joueur = monde.players[0]
+    identite = joueur.GetIdentity()
+    subis = identite.max_health - identite.health
+    if subis != 1:
+        return False, f"degats sur l'identite = {subis} (attendu 1 : le cout additionnel de Reyna Sirena)"
+
+    return True, "1 degat de cout additionnel confirme, pour avoir joue un evenement engagee avec Reyna Sirena"
+
+def wave_alontech_hybrid_protege_le_vilain(monde, aides):
+    """65013 Alontech Hybrid : « SIRENA minions and villains cannot be
+    attacked by the player Alontech Hybrid is engaged with. » Rhino (le
+    vilain), attaque par Wave (le joueur avec lequel Alontech Hybrid est
+    engagee par defaut a la pose), doit rester intact.
+    """
+    rhino = aides["par_id"](monde, "01094")
+    if rhino is None:
+        return False, "Rhino n'est pas en jeu"
+
+    degats = rhino.max_health - rhino.health
+    if degats != 0:
+        return False, f"degats sur Rhino = {degats} (attendu 0 : l'attaque aurait du etre refusee)"
+
+    return True, "Rhino reste intact : l'attaque du joueur engage a bien ete refusee"
+
+def wave_seawolf_trois_capacites(monde, aides):
+    """65014 Alontech Seawolf : les trois capacites imprimees, l'une apres
+    l'autre.
+      1. « Attach to the main scheme » : verifie via `GetBindFace()`.
+      2. « Forced Interrupt: When the player phase begins, deal 1 damage to
+         each player » : declencheur hors de portee de l'API Puzzle, message
+         envoye directement (`Message.WhenPhaseBegin`), meme principe que
+         `kb_bow_fin_de_phase`.
+      3. « Hero Action: Place 1 threat on the main scheme and discard an
+         identity-specific card from your hand -> discard this card » :
+         cout double, declenche via `Puzzle.Action`.
+    """
+    from game.message import Message
+    from game.puzzle.puzzle import PuzzleHelper
+
+    joueur = monde.players[0]
+
+    seawolf = None
+    for objet in monde.object_manager.card_dict.values():
+        f = objet.face
+        if f is not None and getattr(f.paper, "card_id", None) == "65014":
+            seawolf = f
+            break
+    if seawolf is None:
+        return False, "Alontech Seawolf n'est pas en jeu"
+
+    attache_a = seawolf.GetBindFace()
+    if attache_a is None or getattr(attache_a.paper, "card_id", None) not in ("01097a", "01097b"):
+        return False, f"Alontech Seawolf n'est pas attachee a la manigance principale (attache a {attache_a})"
+
+    identite = joueur.GetIdentity()
+    avant = identite.max_health - identite.health
+    Message.WhenPhaseBegin("Player", monde).Send()
+    apres = identite.max_health - identite.health
+    if apres != avant + 1:
+        return False, (f"degats sur l'identite = {apres} apres WhenPhaseBegin "
+                       f"(attendu {avant + 1} : {avant} avant + 1 de l'interrupt forcee)")
+
+    scheme = attache_a
+    menace_avant = scheme.threat
+    en_main_avant = any(getattr(f.paper, "card_id", None) == "65008" for f in joueur.hand_cards.GetAll())
+    if not en_main_avant:
+        return False, "65008 Pearl's Lolo n'est pas en main : mise en place invalide"
+
+    PuzzleHelper.Exec(["Puzzle.Action('65014', 'HeroAction')"], monde)
+
+    menace_apres = scheme.threat
+    if menace_apres != menace_avant + 1:
+        return False, f"menace sur la manigance principale = {menace_apres} (attendu {menace_avant + 1})"
+
+    encore_en_main = any(getattr(f.paper, "card_id", None) == "65008" for f in joueur.hand_cards.GetAll())
+    if encore_en_main:
+        return False, "65008 Pearl's Lolo est encore en main (attendu : defausse pour payer le cout)"
+
+    encore_en_jeu = any(
+        getattr(objet.face.paper, "card_id", None) == "65014" and objet.face.IsInPlay()
+        for objet in monde.object_manager.card_dict.values() if objet.face is not None
+    )
+    if encore_en_jeu:
+        return False, "Alontech Seawolf est encore en jeu (attendu : defaussee par sa propre action)"
+
+    return True, ("attachee a la manigance principale, 1 degat inflige en debut de phase, "
+                  "1 menace posee + Pearl's Lolo defaussee + Seawolf defaussee par sa propre action")
+
+def wave_triumph_probation_cycle_complet(monde, aides):
+    """65015 Triumph Probation : cycle complet.
+      1. « Search your hand, deck, discard and play area for Wave's Swords
+         and Wave's Crown and place them facedown under this card. » --
+         via `Puzzle.Deal` (WhenObligationGiveToPlayer).
+      2. « Wave loses the TRIUMPH DIVISION trait » -- seulement en forme
+         HEROS (c'est elle qui porte le trait imprime).
+      3. « Alter Ego Action: Exhaust Pearl Pangan -> add [...] to your hand
+         and remove Triumph Probation from the game. »
+    """
+    from game.puzzle.puzzle import PuzzleHelper
+
+    joueur = monde.players[0]
+
+    obligation = None
+    for objet in monde.object_manager.card_dict.values():
+        f = objet.face
+        if f is not None and getattr(f.paper, "card_id", None) == "65015":
+            obligation = f
+            break
+    if obligation is None:
+        return False, "Triumph Probation n'est pas en jeu"
+
+    glissees = {getattr(f.paper, "card_id", None) for f in obligation.GetPlacedCardArea().Get(True)}
+    if not {"65009", "65010"} <= glissees:
+        return False, f"cartes glissees sous Triumph Probation = {glissees} (attendu 65009 et 65010)"
+
+    en_main = {getattr(f.paper, "card_id", None) for f in joueur.hand_cards.GetAll()}
+    if "65009" in en_main or "65010" in en_main:
+        return False, f"65009/65010 sont encore en main ({en_main}) : la recherche ne les a pas retirees"
+
+    # Verifie le trait DIRECTEMENT sur la face HEROS via `GetHeroFace()`,
+    # SANS y basculer : la face heros porte le trait imprime qu'elle soit
+    # active ou non, et un `ChangeForm` intercale ici a fait echouer une
+    # premiere version de ce cas (mesure le 22/9/2026 -- non elucide plus
+    # avant, mais evitable, la face se lit tres bien sans y etre active).
+    hero_face = joueur.GetIdentity().GetHeroFace()
+    if hero_face.HasTrait("TRIUMPH DIVISION"):
+        return False, "Wave porte encore le trait TRIUMPH DIVISION (attendu : retire par Triumph Probation)"
+
+    # L'action est imprimee sur la face Alter-Ego, deja active par defaut.
+    PuzzleHelper.Exec(["Puzzle.Action('65015', 'AlterEgoAction')"], monde)
+
+    apres_main = {getattr(f.paper, "card_id", None) for f in joueur.hand_cards.GetAll()}
+    if not {"65009", "65010"} <= apres_main:
+        return False, f"65009/65010 ne sont pas revenues en main apres l'action ({apres_main})"
+
+    encore_en_jeu = any(
+        getattr(objet.face.paper, "card_id", None) == "65015" and objet.face.IsInPlay()
+        for objet in monde.object_manager.card_dict.values() if objet.face is not None
+    )
+    if encore_en_jeu:
+        return False, "Triumph Probation est encore EN JEU (attendu : retiree de la partie)"
+
+    pearl_pangan = joueur.GetIdentity()
+    if getattr(pearl_pangan.paper, "card_id", None) != "65001b" or not pearl_pangan.card.IsExhaust():
+        return False, "Pearl Pangan n'est pas inclinee (attendu : c'est le cout de l'action)"
+
+    return True, ("recherche+glissement confirmes, trait TRIUMPH DIVISION retire en forme heros, "
+                  "et cycle de recuperation complet (main, retrait du jeu, inclinaison)")
+
+def wave_champion_swimmer_temoin_epuisement(monde, aides):
+    """65001b Champion Swimmer : TEMOIN D'EPUISEMENT (etape 7 bis) de
+    « Limit once per phase » sur l'Action.
+
+    Meme discipline que `im001b_temoin_epuisement` : la DSL declencher/jouer
+    ne sait pas laisser une SECONDE activation echouer sans faire planter le
+    cas (`Puzzle.Action` fait un `assert effects`). On pilote donc les deux
+    tentatives directement via `EventManager.FilterAvailableEffects`, en se
+    restreignant a LA MEME ability des la seconde tentative -- Pearl Pangan
+    porte aussi Change Form parmi ses `WhenPlayerInTurn`, et une tentative
+    non restreinte pourrait le trouver a la place et croire la limite
+    percee.
+    """
+    from game.event.manager import EventManager
+    from game.message import Message
+    from game.effect.rule import GameRule
+
+    joueur = monde.players[0]
+    pangan = aides["par_id"](monde, "65001b")
+    if pangan is None:
+        return False, "65001b n'est pas en jeu"
+
+    def activer(ability_visee=None):
+        candidats = [x for x in pangan.effect.Find(when=Message.WhenPlayerInTurn)
+                    if not x.ability.is_play]
+        if ability_visee is not None:
+            candidats = [x for x in candidats if x.ability is ability_visee]
+        message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+        message.Send()
+        effects = EventManager.FilterAvailableEffects(
+            message, candidats, joueur, monde, None)
+        if not effects:
+            return False, None
+        ability = effects[0].ability
+        joueur.ChooseEffects([effects[0]], message, forced=True)
+        return True, ability
+
+    premiere_offerte, ability_cs = activer()
+    if not premiere_offerte:
+        return False, "la premiere activation de Champion Swimmer n'a meme pas ete offerte"
+
+    taille_1 = len(joueur.rising_tide.GetAll(False))
+    if taille_1 != 1:
+        return False, f"Rising Tide area contient {taille_1} carte(s) apres la premiere activation (attendu 1)"
+
+    seconde_offerte, _ = activer(ability_visee=ability_cs)
+    taille_2 = len(joueur.rising_tide.GetAll(False))
+
+    if seconde_offerte and taille_2 == 2:
+        return False, ("LIMITE CASSEE : la seconde activation a ete offerte dans la meme phase, "
+                       "et une deuxieme carte est arrivee en Rising Tide area")
+    if seconde_offerte and taille_2 != 2:
+        return False, ("la seconde activation a ete offerte mais Rising Tide area n'a pas grandi "
+                       "en consequence : verifier le montage du cas")
+    if taille_2 != 1:
+        return False, f"Rising Tide area contient {taille_2} carte(s) apres la seconde tentative (attendu toujours 1)"
+    return True, "seconde activation refusee dans la meme phase ; Rising Tide area reste a 1 carte"
+
+def wave_waves_crown_temoin_epuisement(monde, aides):
+    """65010 Wave's Crown : TEMOIN D'EPUISEMENT (etape 7 bis) du plafond
+    « (max 2) » sur l'Action de glissement.
+
+    Deux glissements REELS sont deja montes en `mise_en_place`. On redresse
+    Wave's Crown ICI (avant de mesurer) pour isoler la cause du refus : sans
+    cela, la carte etant encore inclinee par le second glissement, un refus
+    observe pourrait venir du COUT (CostFunc.Exhaust) plutot que du plafond
+    (`conditions=[moins_de_deux_glissees]`) -- les deux produiraient le meme
+    symptome (aucun effet offert) pour des raisons differentes.
+    """
+    from game.event.manager import EventManager
+    from game.message import Message
+    from game.effect.rule import GameRule, DebugRule
+    from game.operate.faces import Faces
+
+    joueur = monde.players[0]
+    couronne = aides["par_id"](monde, "65010")
+    if couronne is None:
+        return False, "Wave's Crown n'est pas en jeu"
+
+    glissees = list(couronne.GetPlacedCardArea().Get(True))
+    if len(glissees) != 2:
+        return False, f"mise en place ratee : {len(glissees)} carte(s) glissee(s) sous Wave's Crown avant le temoin (attendu 2)"
+
+    Faces.ReadyAll([couronne], DebugRule(couronne))
+    if couronne.card.IsExhaust():
+        return False, "Wave's Crown est restee inclinee apres redressement : le temoin ne peut rien isoler"
+
+    candidats = [x for x in couronne.effect.Find(when=Message.WhenPlayerInTurn)
+                if not x.ability.is_play]
+    message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+    message.Send()
+    effects = EventManager.FilterAvailableEffects(
+        message, candidats, joueur, monde, None)
+
+    if effects:
+        return False, ("PLAFOND CASSE : l'Action de glissement est encore offerte, Wave's Crown "
+                       "redressee, alors que 2 cartes sont deja glissees dessous (« max 2 »)")
+    return True, ("Action de glissement refusee, Wave's Crown redressee : 2 cartes deja glissees "
+                  "dessous, le plafond « max 2 » est bien la seule cause du refus")
+
+def wave_alontech_hybrid_protege_sirena(monde, aides):
+    """65013 Alontech Hybrid, branche « SIRENA minions » : The Reyna Sirena
+    (65012, trait SIRENA imprime) doit rester intacte, exactement comme
+    Rhino (le vilain) dans le cas nominal -- capacite DISTINCTE sur la
+    carte (`CardFinder(trait="SIRENA", card_type=Minion)`, separee de
+    `Villain`), donc preuve separee necessaire.
+    """
+    reyna = aides["par_id"](monde, "65012")
+    if reyna is None:
+        return False, "The Reyna Sirena (65012) n'est pas en jeu"
+
+    degats = reyna.max_health - reyna.health
+    if degats != 0:
+        return False, f"degats sur The Reyna Sirena = {degats} (attendu 0 : l'attaque aurait du etre refusee)"
+
+    return True, "The Reyna Sirena reste intacte : l'attaque du joueur engage avec Alontech Hybrid a bien ete refusee (branche SIRENA)"
+
+def wave_alontech_second_evenement_pas_augmente(monde, aides):
+    """65011 Alontech's Greatest Achievement : TEMOIN D'ISOLATION temporelle
+    -- « the FIRST event each player plays EACH TURN », pas tous. Crashing
+    Wave (premier evenement, hausse a 2) est joue avec 2 ressources ;
+    Marine Patrol (second evenement, cout redevenu normal a 1) est joue
+    ensuite avec UNE SEULE ressource restante. Si le second entre en jeu
+    quand meme, la hausse ne s'est pas reappliquee.
+
+    `PlayCardsLikeInTurn` LAISSE la carte en main quand le paiement echoue
+    (chemin « jouer depuis la main », different de la defausse silencieuse
+    observee en jouant depuis la RESERVE -- voir la garde commune
+    `_brawn_carte_bien_jouee_depuis_reserve` un peu plus haut) : « n'est
+    plus en main » est donc un signal valide ici, deja exploite par le cas
+    nominal `wave_alontech_hausse_le_premier_cout`.
+    """
+    from game.effect.rule import DebugRule
+
+    joueur = monde.players[0]
+    scheme = aides["par_id"](monde, "65011")
+    if scheme is None:
+        return False, "Alontech's Greatest Achievement n'est pas en jeu"
+
+    def en_main(card_id):
+        for f in joueur.hand_cards.GetAll():
+            if getattr(f.paper, "card_id", None) == card_id:
+                return f
+        return None
+
+    effet = DebugRule(joueur.GetIdentity())
+
+    premiere = en_main("65003")
+    if premiere is None:
+        return False, "65003 Crashing Wave n'est pas en main : mise en place invalide"
+    joueur.PlayCardsLikeInTurn([premiere], effet)
+    if en_main("65003") is not None:
+        return False, ("65003 est reste en main avec 2 ressources disponibles : le PREMIER "
+                       "evenement du tour n'a pas pu etre paye, la mise en place est invalide "
+                       "(le cas ne prouve rien)")
+
+    seconde = en_main("65004")
+    if seconde is None:
+        return False, "65004 Marine Patrol n'est pas en main : mise en place invalide"
+    joueur.PlayCardsLikeInTurn([seconde], effet)
+    if en_main("65004") is not None:
+        return False, ("REGRESSION D'ISOLATION : Marine Patrol (cout imprime 1) est reste en main "
+                       "avec 1 seule ressource restante -- la hausse s'est appliquee a un SECOND "
+                       "evenement du meme tour, alors que la carte dit « the first ... each turn »")
+
+    return True, ("Crashing Wave (premier evenement, hausse a 2, payee avec 2 ressources) puis "
+                  "Marine Patrol (second evenement, cout redevenu normal 1, payee avec 1 seule "
+                  "ressource) sont tous les deux entres en jeu : la hausse ne mord bien que le "
+                  "premier evenement du tour")
 
 def kb_bow_fin_de_phase(monde, aides):
     """kb012 : Interrupt imprime -> 1 compteur fleche a la fin de la phase joueur.
@@ -49471,6 +52125,88 @@ def su018_surge_faute_de_cible(monde, aides):
     return True, (f"le second Goblin Glider n'avait plus de cible : il a pris surge et "
                   f"{semee} a ete revelee a son tour")
 
+
+def dt087_fleeting_fin_de_phase(monde, aides):
+    """dt087 : Fleeting -> a la fin de la phase, la carte est defaussee, et son
+    Interrupt « when this card would be discarded from attached enemy » inflige
+    1 degat a chaque ennemi en jeu (Rhino + Hydra Mercenary)."""
+    from game.message import Message
+
+    carte = aides["par_id"](monde, "dt087")
+    if carte is None:
+        return False, "dt087 n'est pas en jeu apres Puzzle.Attach"
+    rhino = aides["par_id"](monde, "01094")
+    merc = aides["par_id"](monde, "01101")
+    if rhino is None or merc is None:
+        return False, "Rhino (01094) ou Hydra Mercenary (01101) introuvable en jeu"
+    if getattr(carte, "bind_face", None) is not rhino:
+        return False, f"dt087 n'est pas attachee a Rhino (bind_face = {getattr(carte, 'bind_face', None)})"
+    avant = (rhino.max_health - rhino.health, merc.max_health - merc.health)
+
+    Message.WhenPhaseEnd(monde.phase_id, "Player", monde).Send()
+
+    if aides["par_id"](monde, "dt087") is not None:
+        return False, ("dt087 est encore en jeu apres WhenPhaseEnd : Fleeting n'a pas "
+                       "defausse la carte")
+    cartes = [getattr(f.paper, "card_id", None) for f in monde.players[0].discard_pile.Get()]
+    if "dt087" not in cartes:
+        return False, f"dt087 n'est pas dans la defausse du joueur (defausse = {cartes})"
+    apres = (rhino.max_health - rhino.health, merc.max_health - merc.health)
+    if apres != (avant[0] + 1, avant[1] + 1):
+        return False, (f"degats Rhino/Mercenary : {avant} -> {apres} (attendu +1 chacun) : "
+                       f"l'Interrupt de depart n'a pas frappe chaque ennemi")
+    return True, f"dt087 defaussee en fin de phase, degats {avant} -> {apres}"
+
+
+def mc4db_target_spotter(monde, aides):
+    """51038 Target Spotter (FAQ) : le sbire intercepte n'engage JAMAIS l'autre
+    joueur. Badoon Grunt (16118) distribue une carte rencontre au joueur qu'il
+    engage quand il est son seul sbire : le joueur 1 ne doit rien recevoir, le
+    sbire doit finir engage avec le joueur 0 (celui de Target Spotter)."""
+    grunt = aides["par_id"](monde, "16118")
+    if grunt is None:
+        return False, "16118 Badoon Grunt introuvable en jeu"
+    j0, j1 = monde.players[0], monde.players[1]
+    recues_j1 = j1.dealt_encounter_cards.GetSize()
+    recues_j0 = j0.dealt_encounter_cards.GetSize()
+    soucis = []
+    if grunt.engaged_player is not j0:
+        soucis.append("Badoon Grunt n'est pas engage avec le joueur 0 (Target Spotter)")
+    if recues_j1 != 0:
+        soucis.append(f"le joueur 1 a recu {recues_j1} carte(s) rencontre : le sbire l'a engage")
+    if recues_j0 != 1:
+        soucis.append(f"le joueur 0 a recu {recues_j0} carte(s) rencontre (attendu 1 : Grunt s'est declenche pour lui seul)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, "sbire engage avec le joueur 0 seulement, 1 carte rencontre au joueur 0, 0 au joueur 1"
+
+
+def mc4db_redwing_dessus_visible(monde, aides):
+    """53002 Redwing (FAQ) : dessus du deck rencontre VISIBLE et sans icone ->
+    la capacite ne se declenche pas. On relit d'abord ce que le montage a
+    vraiment pose (carte du dessus, visibilite, icones), pour que le message
+    dise POURQUOI en cas d'ecart."""
+    from game.operate.worlds import Worlds
+    from game.operate.faces_counter import FacesCounter
+    villain = Worlds.GetAllVillains(monde)[0]
+    dessus = villain.encounter_deck.GetTop()
+    haut = (getattr(dessus.paper, "card_id", None), dessus.card.state.is_face_up,
+            FacesCounter.CountTotalBoostStarAndBoost([dessus])) if dessus else None
+    redwing = aides["par_id"](monde, "53002")
+    rhino = aides["par_id"](monde, "01094")
+    degats = rhino.max_health - rhino.health if rhino else None
+    soucis = []
+    if haut is None or haut[0] != "01104" or not haut[1] or haut[2] != 0:
+        soucis.append(f"montage : dessus = {haut} (attendu ('01104', True, 0))")
+    if redwing is None:
+        soucis.append("53002 a quitte le jeu : la capacite est partie")
+    elif redwing.IsExhaust():
+        soucis.append("53002 est incline : la capacite est partie")
+    if degats:
+        soucis.append(f"Rhino a pris {degats} degat(s)")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"dessus {haut} : action refusee, Redwing pret et en jeu, Rhino intact"
 '''
 
 
@@ -49921,16 +52657,34 @@ def executer_un_cas(game_dir, port, index):
             #
             # Les cles de `payment` sont les identifiants des EFFETS PAYANTS,
             # pas ceux des objets carte : une carte offerte en ressource y
-            # apparait sous l'id de son effet, jamais sous le sien. Interdire
-            # l'id de l'objet ne filtrait donc rien. On remonte aux effets par
-            # `is_paying`, exactement comme le descripteur de carte remplit son
-            # champ `resources` (game/card/card.py).
+            # apparait sous l'id de son effet, jamais sous le sien. On remonte
+            # aux effets par `is_paying`, exactement comme le descripteur de
+            # carte remplit son champ `resources` (game/card/card.py).
+            #
+            # ⚠⚠ NE JAMAIS AUSSI AJOUTER `objet_id` (RETIRE le 23/09/2026,
+            # meme piege que le `bind_id` deux paragraphes plus haut, sur un
+            # AUTRE mecanisme cette fois). Objets carte et effets vivent dans
+            # DEUX espaces de numeros distincts, mais RIEN n'empeche un id
+            # de l'un de coincider numeriquement avec un id de l'autre : sur
+            # le portage red_sonja (`rs004`/`rs007`), l'objet carte de rs007
+            # portait l'id 16, qui coincidait EXACTEMENT avec l'id de
+            # l'effet payant d'une carte totalement differente (01089
+            # Genius, « BB ») pour cette resolution precise -- interdire
+            # `objet_id` (16) excluait donc Genius EN PLUS de rs007, sans
+            # aucun rapport avec lui, et la carte testee (rs004, cout 3)
+            # tombait injouable (`<E> ... failed`, capacite jamais resolue)
+            # au lieu d'etre correctement payee. Reproductible a l'identique
+            # (meme mise en place -> memes ids), donc invisible en relancant
+            # le cas plusieurs fois. Seuls les VRAIS ids d'effets payants
+            # (`effet.object_id` ci-dessous) filtrent correctement ; l'ancien
+            # ajout de `objet_id` etait deja inutile par construction (les
+            # cles de `payment` ne sont jamais des ids d'objet carte, voir
+            # ci-dessus) et purement dangereux par coincidence.
             for card_id in cas.get("ne_pas_depenser") or []:
                 for objet_id, objet in monde_courant().object_manager.card_dict.items():
                     face = objet.face
                     if face is None or getattr(face.paper, "card_id", None) != card_id:
                         continue
-                    interdits.add(str(objet_id))
                     for effet in objet.GetEffects():
                         if getattr(effet.ability, "is_paying", False):
                             interdits.add(str(effet.object_id))
@@ -50035,7 +52789,8 @@ def executer_un_cas(game_dir, port, index):
                 couvert += poids.get(objet_id, 1)
             if os.environ.get("TRACE_OPTIONS"):
                 print("PAIEMENT", option.get("name"), "| cout =", cout, "| payment =",
-                      infos.get("payment"), "| priorite =", priorite, "| choisies =",
+                      infos.get("payment"), "| interdits =", interdits, "| candidates =",
+                      candidates, "| priorite =", priorite, "| choisies =",
                       choisies, "| couvert =", couvert, flush=True)
             return choisies if couvert >= besoin else []
 
@@ -50606,3 +53361,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

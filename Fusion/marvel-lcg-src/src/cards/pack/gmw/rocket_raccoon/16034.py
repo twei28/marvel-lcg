@@ -9,7 +9,10 @@ def GetAbilities() -> Sequence['Ability']:
         Unused(this)
 
         upgrade = effect.targets[0].CastTo(Upgrade)
-        Faces.PlaceCountersOn([upgrade], 1, 'charge', effect)
+        # FAQ (MC4DB, 29/09/2026) : « the card that an all-purpose counter is
+        # on defines the type of that counter » -- sur Bambino (Uses ammo) le
+        # compteur deplace devient un ammo, pas un charge orphelin.
+        Faces.PlaceCountersOn([upgrade], 1, 'all-purpose', effect)
 
 
     return [

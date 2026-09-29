@@ -13,11 +13,10 @@ def GetAbilities() -> Sequence['Ability']:
             need_shuffle = False
             cards: List[Ally] = []
             if cards == []:
-                cards += Worlds.FindCardsOnField(
-                    effect,
-                    name=name,
-                    card_type=Ally
-                )
+                # FAQ (MC4DB, 29/09/2026) : c'est la copie du joueur Clint qui
+                # est glissee, meme si un AUTRE joueur controle une Mockingbird.
+                cards += [x for x in Worlds.FindCardsOnField(effect, name=name, card_type=Ally)
+                          if x.GetControlByPlayer() is player]
             if cards == []:
                 cards += player.hand_cards.FindCards(name=name, card_type=Ally)
             if cards == []:

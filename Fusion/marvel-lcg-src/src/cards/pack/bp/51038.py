@@ -17,10 +17,18 @@ def GetAbilities() -> Sequence['Ability']:
             until_phase_end=True
         )
 
+        # FAQ (MC4DB, 29/09/2026) : « Target Spotter interrupts the engagement
+        # of that minion and causes it to engage the player using Target
+        # Spotter instead » -- le sbire n'engage JAMAIS l'autre joueur. Avant,
+        # l'engagement d'origine allait au bout (Quickstrike, « after this
+        # engages you »...) puis le sbire etait re-engage APRES l'evenement.
+        # `SetBeInstead` arrete la suite de l'engagement d'origine
+        # (`Minion.OnEngagePlayer`) ; le nouvel engagement se fait tout de
+        # suite, et lui seul se resout.
         initiator = effect.GetInitiator()
-        def action():
+        if message.would_engaged_player is not initiator:
+            message.SetBeInstead(effect)
             message.minion.EngagePlayer(initiator, effect)
-        RunAt.AfterEventEnd(effect, message, action)
 
 
     return [

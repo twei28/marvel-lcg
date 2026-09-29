@@ -15,6 +15,28 @@
 > de cette fiche avant tout nouvel appel à `Drain()`, **n'a plus lieu d'être**
 > tant qu'une carte reprend le mot-clé sans le modifier.
 
+> ## ⚠ DEUX DÉFINITIONS COEXISTENT DEPUIS LE 29/09/2026
+>
+> Le glossaire fan-made de MC4DB dit :
+>
+> > « When this keyword is triggered by a character, deal X damage to that
+> > character's target. Then, **if the target took that damage**, heal X
+> > damage from the character who triggered drain. »
+>
+> Règle de priorité fixée par l'utilisateur : texte imprimé > MC4DB > fiche.
+> - `venompool` **imprime** sa définition (insert ci-dessus, soin
+>   inconditionnel sur l'identité) : il la garde. Divergence assumée avec
+>   MC4DB, notée ici, pas dans le script.
+> - `agent_anti_venom` n'imprime rien : son helper suit MC4DB, le soin n'a
+>   lieu que si l'ennemi a **subi** les dégâts (un Tough les absorbe : pas de
+>   soin). Cas « av009 ... vilain TOUGH », rouge avec l'ancien helper.
+> - « the character who triggered drain » : sur les quatre cartes du dépôt,
+>   c'est toujours l'identité (aucun allié ne déclenche un drain). Sans
+>   effet aujourd'hui, à relire si un allié imprime le mot.
+> - « a subi » se lit sur les **points de vie** (ou la défaite) de la cible,
+>   pas sur le retour de `DealDamage`, qui compte les dégâts INFLIGÉS avant
+>   prévention et rendait 1 face à un Tough.
+
 **Texte imprimé / définition** : mot-clé maison, apparu dans le pack
 `agent_anti_venom` — Unlikely Allies (« Drain 2 from an enemy ») et Bear
 Arms (« drain 1 from the villain ») — où il n'était **défini nulle part**
@@ -29,10 +51,14 @@ distinct du héros).
 
 ```python
 def Drain(source: 'CardFace', targets: Sequence['CardFace'], value: int, effect: 'Effect') -> None:
-    """X degats a l'ennemi, puis X soins sur Agent Anti-Venom."""
     if not targets:
         return
+    avant = {cible: cible.health for cible in targets if hasattr(cible, "health")}
     source.DealDamage(targets, value, effect)
+    subis = any(cible.health < sante or cible.IsDefeated() or not cible.IsInPlay()
+                for cible, sante in avant.items())
+    if not subis:
+        return
     identity = GetAgentAntiVenom(effect)
     if identity is not None:
         source.HealthUnits([identity], value, effect)
@@ -68,11 +94,12 @@ def _drain(initiator: 'Player', source: 'CardFace', effect: 'Effect') -> 'Abilit
     ).SetTarget(Enemy)
 ```
 
-**Pièges connus** : chaque pack garde son **propre** helper `Drain()`, au
-corps volontairement identique — `venompool` ne réutilise pas celui
-d'`agent_anti_venom`. Deux raisons : l'identité soignée n'est pas la même,
-et un pack custom ne doit pas dépendre d'un autre pack custom (un joueur
-peut très bien avoir installé l'un sans l'autre). Autre piège
+**Pièges connus** : chaque pack garde son **propre** helper `Drain()`, et
+depuis le 29/09/2026 les deux corps DIFFÈRENT (soin conditionnel côté
+`agent_anti_venom`, inconditionnel côté `venompool`, voir l'encadré). Deux
+raisons de ne pas les fusionner : l'identité soignée n'est pas la même, et un
+pack custom ne doit pas dépendre d'un autre pack custom (un joueur peut très
+bien avoir installé l'un sans l'autre). Autre piège
 local, propre à Bear Arms : le « next attack gains ranged » de sa première
 capacité n'a pas de mécanisme « prochaine attaque » dans le moteur ; il est
 simulé par une capacité temporaire `UnitAttackGainKeyword` posée sur

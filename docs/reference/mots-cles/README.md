@@ -122,6 +122,14 @@ la plus fréquente sur un pack vilain.
       définition DONNÉE par l'auteur entre parenthèses, aucun arbitrage — mais
       aucune primitive moteur, et un contre-cas « attaque sans carte de boost »
       obligatoire, sans quoi les deux montages possibles passent au vert)
+- [x] reckless.md (aspect `determination` : 1 menace sur chaque manigance à
+      l'entrée en jeu, `Reckless()` dans le `__init__.py` du pack)
+- [x] alias.md (aspect `determination` : gratuit si un homonyme de
+      SOUS-TITRE est contrôlé, qui est défaussé. ⚠ Inerte aujourd'hui : les
+      quatre porteurs ont un `subtitle` vide dans `cards.json`)
+- [x] fleeting.md (aspect `determination`, `dt087` : défaussée en fin de
+      phase. ⚠ NON IMPLÉMENTÉ, malgré le commentaire du `.py` qui prétend
+      le contraire ; crochet `WhenPhaseEnd` disponible)
 
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 

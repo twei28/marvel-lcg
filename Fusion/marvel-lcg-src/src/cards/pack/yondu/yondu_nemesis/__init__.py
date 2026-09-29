@@ -20,11 +20,10 @@ def Hote(face: 'CardFace|None') -> 'CardFace|None':
 def ConvoquerRencontre(effect: 'Effect', nom: str, card_type: Any=None) -> 'CardFace|None':
     """MOT-CLE MAISON `summon`, cote RENCONTRE.
 
-    ⚠ Meme mot, meme arbitrage que cote heros (fiche
-    `docs/reference/mots-cles/summon.md`, decision de l'utilisateur du
-    03/09/2026) : on fouille le deck de rencontre ET sa defausse. Cote joueur
-    c'est `Search.PlayerCard` ; ici c'est `Search.SearchForCards`, qui expose
-    les memes deux zones.
+    ⚠ Meme mot, meme definition que cote heros (fiche
+    `docs/reference/mots-cles/summon.md`, glossaire MC4DB, aligne le
+    29/09/2026) : deck de rencontre, sa defausse, la mise de cote et la zone
+    « retire de la partie ». Jusqu'au 29/09, seules les deux premieres.
 
     Trois cartes du set nemesis en vivent : `yd015` Sav'rkk convoque son
     Sword-Gun-Arm, `yd017` Hard to Kill et `yd018` Savage Destruction
@@ -37,6 +36,8 @@ def ConvoquerRencontre(effect: 'Effect', nom: str, card_type: Any=None) -> 'Card
         effect, joueur,
         include_encounter_deck=True,
         include_encounter_discard_pile=True,
+        include_set_aside=True,
+        include_removed_area=True,
         name=nom,
         card_type=card_type,
     )

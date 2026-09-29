@@ -7,7 +7,8 @@ def GetAbilities() -> Sequence['Ability']:
     # Cette carte n'a PAS de mise en jeu ordinaire : sa seule facon d'arriver
     # est la Response, qui l'attache a un ennemi. Lui donner en plus un
     # `CanPlayThisUpgradeCard` faisait DEUX capacites Play, et la generation
-    # tombait (factory.py). « Fleeting » est lu par le moteur dans le texte.
+    # tombait (factory.py). « Fleeting » est une aptitude du pack (`Fleeting()`
+    # dans __init__.py) : le moteur ne lit aucun mot-cle dans le texte.
     def attacher_a_un_ennemi(effect: 'Effect', message: 'Message.AfterUnitTookDamage') -> None:
         this = effect.this.CastTo(Upgrade)
         for cible in effect.targets:
@@ -26,6 +27,7 @@ def GetAbilities() -> Sequence['Ability']:
         return initiator is not None and message.trigger == initiator.GetIdentity()
 
     return [
+        Fleeting(),
         AbilityFactory.AfterUnitTookDamage(
             AbilityType.HeroResponse,
             None,

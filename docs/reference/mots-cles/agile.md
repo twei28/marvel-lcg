@@ -6,6 +6,16 @@ moins de la part d'une attaque **accompagnée d'au moins une carte de boost**.
 La parenthèse est imprimée sur la carte elle-même : la définition vient de
 l'auteur, elle n'a rien été arbitrée.
 
+⚠ **Divergence assumée avec le glossaire MC4DB (29/09/2026).** MC4DB définit
+Agile X ainsi : « Reduce damage taken from **undefended** villain and
+**villainous** minion attacks by X (default is 1) ». La carte, elle, imprime
+sa propre parenthèse (« attacks with boost cards »), et la règle de priorité
+fixée par l'utilisateur est : texte imprimé > MC4DB > fiche. On garde donc le
+texte de DESIGNHACKER. Différences concrètes : MC4DB ne réduirait pas une
+attaque DÉFENDUE, et ne réduirait que les attaques du vilain et des sbires
+Villainous ; la carte réduit toute attaque à cartes de boost, défendue ou non.
+Un futur pack qui imprimerait « agile » NU (sans parenthèse) suivrait MC4DB.
+
 **Origine** : `nt003a` Battle Board, face `VEHICLE` (pack maison
 `night_thrasher`, set 153, auteur DESIGNHACKER). Premier et seul porteur
 connu au 03/09/2026.
