@@ -162,12 +162,11 @@ const BORNES_VAGUES = [
  * regle que les bornes ci-dessus, lue dans l'autre sens, donc les deux tables
  * se completent ligne a ligne et une nouvelle vague s'ajoute aux deux endroits.
  *
- * Titres EN, ET EN FRANCAIS AUSSI : ils ne passent pas par le dictionnaire.
- * C'est le titre imprime sur la boite, celui que porte la cle d'extension dans
- * sets_info.json et celui qu'affiche l'ecran des campagnes (`nom_en` des
- * definitions) — donc le seul sous lequel on retrouve la boite, en rayon comme
- * dans le reste de l'appli. A revoir le jour ou on voudra les titres FR : ce
- * sera cette table, et rien d'autre.
+ * Titres EN : ceux que portent les cles d'extension dans sets_info.json et le
+ * `nom_en` des campagnes. Ils ne passent pas par le dictionnaire. Les titres
+ * FRANCAIS (imprimes sur les boites vendues en France) vivent depuis le
+ * 29/09/2026 dans `titres-extensions.js` (`TITRES_FR`, par numero), appliques
+ * par l'ecran de preparation (`nomExtension`, `titreDeBoite`).
  *
  * La vague 1 n'est pas ici : sans grande boite, elle n'a pas de titre a copier.
  * Son libelle est du texte a nous, donc traduit comme le reste (voir

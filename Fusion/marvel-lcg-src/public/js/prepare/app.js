@@ -4,8 +4,9 @@ import { cardImageUrl, cardImageUrlEn, cardImageUrlHd, extensionImageUrl, oublie
 import { REPLIQUES, choisirReplique, classeTaille } from "./repliques-heros.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
+import { nomExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=472bac1f";
+import { launch } from "/public/js/prepare/launcher.js?v=dfa2d51b";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { regrouperUnderlings, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
@@ -1872,7 +1873,7 @@ function rendreScene(h) {
             : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(picIdHeros(h.heroCardId))}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" },
-            el("small", {}, traits || (h.extension || "").replace(/^\d+\.\s*/, "")),
+            el("small", {}, traits || nomExtension(h.extension, langueActuelle())),
             nomAffiche(h)),
         el("div", { class: "tb-tampons" },
             pvAffiches(h) ? el("span", { class: "tampon jaune" }, t("PV") + " " + pvAffiches(h)) : null,
@@ -2152,10 +2153,11 @@ function recruterVraiment(h, portraitEl) {
  *  qui leve l'ambiguite. Une vague sans titre connu garde son numero seul. */
 function nomDeVague(vague) {
     if (vague === 0) return t("Set de base");
-    // Le titre de la boite ne passe PAS par t() : il reste en anglais dans les
-    // deux langues, comme partout ailleurs dans l'appli (voir NOMS_VAGUES).
+    // Le titre de la boite ne passe PAS par t() : c'est le titre imprime sur
+    // la boite, en anglais (NOMS_VAGUES) ou en francais depuis le 29/09/2026
+    // (`titreDeBoite`, table `TITRES_FR` de titres-extensions.js).
     // La vague 1 n'a pas de boite : son libelle est de nous, donc traduit.
-    const titre = vague === 1 ? t("Les premiers paquets") : titreDeVague(vague);
+    const titre = vague === 1 ? t("Les premiers paquets") : titreDeBoite(titreDeVague(vague), langueActuelle());
     return t("Vague") + " " + vague + (titre ? " · " + titre : "");
 }
 
@@ -2389,7 +2391,7 @@ function showExtHover(ext, tabEl) {
     }
     box.replaceChildren(
         el("img", { class: "hh-card", src: extensionImageUrl(ext.key), alt: ext.key }),
-        el("div", { class: "hh-name mvl" }, ext.key.replace(/^\d+\.\s*/, "")),
+        el("div", { class: "hh-name mvl" }, nomExtension(ext.key, langueActuelle())),
         detailRow(t("Scénarios"), String(ext.scenarios.length)),
         detailRow(t("Héros"), String(ext.heroes.length)),
         detailRow(t("Sets de rencontre"), String(ext.encounters.length)),
@@ -2457,6 +2459,19 @@ const COLLECTIONS_RESSOURCES = [
     { code: "dh_vision", nom: "Vision", apercu: "01089_dh_vision" },
     { code: "dh_warmachine", nom: "War Machine", apercu: "01089_dh_warmachine" },
     { code: "wa", nom: "Wasp", apercu: "01089_wa" },
+    // Re-skins livrés PAR un pack custom fan-made du dépôt (mêmes règles,
+    // illustration propre au héros) : chaque pack a ses PROPRES card_id
+    // (pas de full_link vers 01088/89/90), ce qui ne change rien pour ce
+    // sélecteur, purement cosmétique. Ajoutés le 22/09/2026, images
+    // fournies par l'autrice RyCoRan (zip « Resource Cards »).
+    { code: "angel", nom: "Angel", apercu: "42034" },
+    { code: "beast", nom: "Beast", apercu: "bt025" },
+    { code: "gambit", nom: "Gambit", apercu: "37037" },
+    { code: "human_torch", nom: "Human Torch", apercu: "ht016" },
+    { code: "jubilee", nom: "Jubilee", apercu: "47036" },
+    { code: "magneto", nom: "Magneto", apercu: "49044" },
+    { code: "the_thing", nom: "The Thing", apercu: "th017" },
+    { code: "wave", nom: "Wave", apercu: "65018" },
 ];
 
 /* ---- Arts alternatifs des CARTES DE HEROS ------------------------------
@@ -2483,13 +2498,19 @@ function picIdHeros(heroCardId) {
     return arts.some((a) => a.code === choix) ? `${base}_${choix}` : base;
 }
 
-/** Les trois ressources d'une collection, déduites de son aperçu (Genius). */
+/** Les trois ressources d'une collection, déduites de son aperçu (Genius).
+ *  Préfixe alpha optionnel (« gp016 », « bt025 ») en plus du cas numérique pur
+ *  (« 01089 ») : sans lui, les collections à identifiant préfixé (Gwenpool,
+ *  Howard the Duck, Ms. America, et les packs custom ajoutés le 22/09/2026 —
+ *  Beast, Human Torch, The Thing) tombaient dans le repli à 1 seule carte,
+ *  silencieusement, alors que leurs trois images existent bel et bien. */
 function tripletRessources(apercu) {
-    const m = String(apercu || "").match(/^(\d{5})(_.+)?$/);
+    const m = String(apercu || "").match(/^([a-z]*)(\d+)(_.+)?$/);
     if (!m) return apercu ? [apercu] : [];
-    const n = parseInt(m[1], 10), suffixe = m[2] || "";
-    const pad = (v) => String(v).padStart(5, "0");
-    return [pad(n - 1) + suffixe, pad(n) + suffixe, pad(n + 1) + suffixe];
+    const prefixe = m[1] || "", chiffres = m[2], suffixe = m[3] || "";
+    const largeur = chiffres.length, n = parseInt(chiffres, 10);
+    const pad = (v) => String(v).padStart(largeur, "0");
+    return [prefixe + pad(n - 1) + suffixe, prefixe + pad(n) + suffixe, prefixe + pad(n + 1) + suffixe];
 }
 
 /** Agrandissement d'une collection : les TROIS cartes côte à côte. */
@@ -3474,7 +3495,7 @@ function rendreSceneMechant(sc) {
         el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(sc.tileImage)}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" },
-            el("small", {}, (sc.extension || "").replace(/^\d+\.\s*/, "")),
+            el("small", {}, nomExtension(sc.extension, langueActuelle())),
             sc.name),
         el("div", { class: "tb-tampons" },
             pv ? el("span", { class: "tampon rouge" }, t("PV") + " " + pv + (parJoueur ? " / " + t("joueur") : "")) : null,
@@ -3717,7 +3738,7 @@ async function remplirSecondeTable() {
     });
     sel.append(el("option", { value: "" }, t("Choisir le leader d'en face")));
     for (const sc of liste) {
-        const opt = el("option", { value: sc.id }, sc.name + " · " + (sc.extension || ""));
+        const opt = el("option", { value: sc.id }, sc.name + " · " + nomExtension(sc.extension, langueActuelle()));
         if (state.scenario2 && state.scenario2.id === sc.id) opt.selected = true;
         sel.append(opt);
     }
@@ -3787,7 +3808,7 @@ async function loadExtTabs() {
         e.key === "defis"
             ? el("div", { class: "box box-defis" }, picto("fa-trophy"))
             : el("div", { class: "box", style: { backgroundImage: `url("${extensionImageUrl(e.key)}")` } }),
-        el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : e.key.replace(/^\d+\.\s*/, "")),
+        el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : nomExtension(e.key, langueActuelle())),
     )));
     loadScnGrid();
 }
