@@ -1,0 +1,206 @@
+/* Préparation mobile V2. Aucun sélecteur ne doit sortir de la racine
+   `html[data-ui-version="v2"]` : la V1 reste le produit par défaut. */
+
+@media (max-width: 600px) {
+  html[data-ui-version="v2"] {
+    --v2-barre-haute: 56px;
+    --v2-barre-basse: 76px;
+  }
+
+  html[data-ui-version="v2"] body {
+    background-color: #080a0f;
+    background-image:
+      linear-gradient(180deg, rgba(13, 17, 26, 0.72), rgba(5, 7, 11, 0.96)),
+      radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 100% 100%, 16px 16px;
+  }
+
+  /* Accueil : le choix de jeu arrive immédiatement, les outils restent
+     accessibles mais ne prennent plus deux rangées avant le contenu. */
+  html[data-ui-version="v2"] .accueil-stage {
+    align-items: flex-start;
+    min-height: 100dvh;
+    padding: calc(64px + env(safe-area-inset-top, 0px)) 16px 28px;
+  }
+
+  html[data-ui-version="v2"] .reprise-boutons.est-flottante {
+    position: fixed !important;
+    inset: env(safe-area-inset-top, 0px) 0 auto 0 !important;
+    z-index: 80;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    min-height: 52px;
+    padding: 6px 10px;
+    overflow-x: auto;
+    background: rgba(7, 9, 14, 0.97);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    scrollbar-width: none;
+  }
+
+  html[data-ui-version="v2"] .reprise-boutons.est-flottante::-webkit-scrollbar {
+    display: none;
+  }
+
+  html[data-ui-version="v2"] .reprise-boutons.est-flottante button,
+  html[data-ui-version="v2"] .reprise-boutons.est-flottante a {
+    flex: 0 0 auto;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  html[data-ui-version="v2"] .acc-entete,
+  html[data-ui-version="v2"] .acc-titre-seul {
+    margin-bottom: 18px;
+  }
+
+  html[data-ui-version="v2"] .acc-narwhal {
+    display: none;
+  }
+
+  html[data-ui-version="v2"] .acc-titre .recitatif {
+    margin-bottom: 8px;
+  }
+
+  html[data-ui-version="v2"] .acc-titre h1.affiche {
+    font-size: clamp(46px, 15vw, 66px);
+    line-height: 0.86;
+  }
+
+  html[data-ui-version="v2"] .acc-titre p {
+    margin-top: 10px;
+    font-size: 0.95rem;
+  }
+
+  html[data-ui-version="v2"] .acc-modes {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  html[data-ui-version="v2"] .acc-mode {
+    min-height: 76px;
+    padding: 12px 14px;
+    border-width: 1px;
+    box-shadow: 4px 4px 0 #1e1e1e;
+    clip-path: none;
+  }
+
+  html[data-ui-version="v2"] .acc-copy b {
+    font-size: 1.65rem;
+    white-space: normal;
+  }
+
+  html[data-ui-version="v2"] .acc-nombre {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Étapes : vraie barre d'application compacte. Les outils secondaires
+     défilent horizontalement au lieu de compresser le titre et les étapes. */
+  html[data-ui-version="v2"] .progress {
+    min-height: var(--v2-barre-haute);
+    padding: 6px 8px;
+    gap: 6px;
+    background: rgba(7, 9, 14, 0.98);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
+  }
+
+  html[data-ui-version="v2"] .brand-back,
+  html[data-ui-version="v2"] .progress .btn-langue,
+  html[data-ui-version="v2"] .progress .reprise-boutons button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  html[data-ui-version="v2"] .progress .reprise-boutons {
+    max-width: 132px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  html[data-ui-version="v2"] .progress .reprise-boutons::-webkit-scrollbar {
+    display: none;
+  }
+
+  html[data-ui-version="v2"] .progress .reprise-boutons button:first-child {
+    font-size: 0;
+  }
+
+  html[data-ui-version="v2"] .progress .reprise-boutons button:first-child i {
+    font-size: 0.95rem;
+  }
+
+  html[data-ui-version="v2"] .progress .steps {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+    overflow: hidden;
+    background: #0d111a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  html[data-ui-version="v2"] .progress .pstep {
+    justify-content: center;
+    min-width: 0;
+    min-height: 36px;
+    padding: 4px 2px;
+    border-bottom: 3px solid transparent;
+  }
+
+  html[data-ui-version="v2"] .progress .pstep.active {
+    border-bottom-color: var(--agir);
+    background: rgba(230, 36, 41, 0.1);
+  }
+
+  html[data-ui-version="v2"] .progress .pstep .plabel {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    color: var(--dim);
+    font: 800 0.62rem/1.1 "Segoe UI", system-ui, sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  html[data-ui-version="v2"] .progress .pstep.active .plabel {
+    color: #fff;
+  }
+
+  html[data-ui-version="v2"] .progress .pnum {
+    display: none;
+  }
+
+  html[data-ui-version="v2"] .stage-affiche {
+    padding-top: 44px;
+  }
+
+  /* Barre basse : hauteur stable, zones sûres iOS et espace réellement
+     réservé dans le contenu. */
+  html[data-ui-version="v2"] .nav {
+    min-height: var(--v2-barre-basse);
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: rgba(7, 9, 14, 0.98);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.36);
+  }
+
+  html[data-ui-version="v2"] .nav .btn {
+    min-height: 48px;
+  }
+
+  html[data-ui-version="v2"] .tb-droite,
+  html[data-ui-version="v2"] .stage {
+    padding-bottom: calc(var(--v2-barre-basse) + 16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  html[data-ui-version="v2"] button:focus-visible,
+  html[data-ui-version="v2"] a:focus-visible,
+  html[data-ui-version="v2"] input:focus-visible,
+  html[data-ui-version="v2"] select:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+  }
+}
