@@ -54,6 +54,7 @@
     "legacy-deckbuilder": "playwright test tests/legacy-deckbuilder.spec.ts --project=pc",
     "preparation-telephone": "playwright test tests/preparation-telephone.spec.ts --project=pc",
     "preparation-v2": "playwright test tests/preparation-v2.spec.ts --project=pc",
+    "legacy-v2-mobile": "playwright test tests/legacy-v2-mobile.spec.ts --project=pc",
     "langue": "playwright test tests/langue-premiere-fois.spec.ts --project=pc",
     "deroule-boutons": "playwright test tests/deroule-boutons.spec.ts --project=pc",
     "releve-images": "playwright test tests/releve-images.spec.ts --project=pc",

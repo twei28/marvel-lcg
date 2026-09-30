@@ -12,5 +12,18 @@
     var v2 = document.cookie.split(";").some(function (morceau) {
         return morceau.trim() === "ui_version=v2";
     });
-    if (v2) document.documentElement.dataset.uiVersion = "v2";
+    if (!v2) return;
+
+    document.documentElement.dataset.uiVersion = "v2";
+
+    // Les trois écrans historiques n'ont volontairement jamais eu de viewport
+    // mobile. L'ajouter dans leur HTML changerait aussi la V1. En V2 seulement,
+    // on le crée avant les feuilles de style : le navigateur calcule donc
+    // directement la bonne largeur, sans mise en page PC intermédiaire.
+    if (!document.querySelector('meta[name="viewport"]')) {
+        var viewport = document.createElement("meta");
+        viewport.name = "viewport";
+        viewport.content = "width=device-width, initial-scale=1, viewport-fit=cover";
+        document.head.appendChild(viewport);
+    }
 })();
