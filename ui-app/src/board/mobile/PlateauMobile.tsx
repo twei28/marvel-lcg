@@ -14,6 +14,7 @@ import { PlateauPortrait } from './PlateauPortrait'
 import { demanderPleinEcran } from './plein-ecran'
 import { useRetourAndroid } from './retour-android'
 import './menus-mobile.css'
+import './v2-mobile.css'
 
 export function PlateauMobile(props: BoardProps) {
   useEffect(() => {
