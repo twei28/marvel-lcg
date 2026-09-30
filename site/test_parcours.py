@@ -57,6 +57,16 @@ verifier("le lien reclame le siege 0", "p=0" in lien, lien)
 verifier("le lien porte la cle du siege 0", "key=cle0" in lien, lien)
 verifier("le lien mene a l'ecran des heros", "to=prepare" in lien, lien)
 
+# La V2 mobile reste reservee au navigateur hote du compte Arnaud pendant sa
+# construction. Le compte est normalise : la casse du pseudo ne change rien.
+partie_arnaud = o.Partie(3, "ArNaUd", "Jeu d'Arnaud")
+partie_arnaud.cles_sieges = ["cle-arnaud"]
+lien_arnaud = partie_arnaud.lien_hote()
+verifier("Arnaud entre automatiquement par la porte V2",
+         "to=prepare-v2" in lien_arnaud, lien_arnaud)
+verifier("un autre compte reste sur la V1",
+         "to=prepare-v2" not in lien and "to=prepare" in lien, lien)
+
 # Sans cle, `claim_seat` ne poserait aucun cookie et le moteur refuserait les
 # liens d'invitation a l'hote lui-meme : le cas merite son garde-fou.
 partie.cles_sieges = []

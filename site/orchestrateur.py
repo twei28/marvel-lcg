@@ -257,7 +257,13 @@ class Partie:
         d'invitation.
         """
         cle = self.cles_sieges[0] if self.cles_sieges else ""
-        return f"{self.base_url()}/claim_seat?p=0&key={cle}&to=prepare"
+        # La V2 mobile reste privee pendant sa construction. Le site est le
+        # seul endroit qui connait le compte ; le moteur, lui, ne connait que
+        # la cle du siege. On lui transmet donc une destination distincte
+        # uniquement pour le compte d'essai. La route `/claim_seat` verifiera
+        # ensuite la cle du siege 0 avant de poser le temoin V2.
+        destination = "prepare-v2" if self.code.strip().lower() == "arnaud" else "prepare"
+        return f"{self.base_url()}/claim_seat?p=0&key={cle}&to={destination}"
 
     def solo(self) -> bool:
         return self.joueurs <= 1

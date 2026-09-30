@@ -104,12 +104,12 @@ def poster(chemin, charge, cookie=None):
 
 
 def noms_de_cookies(entetes):
-    noms = []
+    cookies = {}
     for brut in entetes:
         morceau = http.cookies.SimpleCookie()
         morceau.load(brut)
-        noms.extend(morceau.keys())
-    return noms
+        cookies.update({nom: valeur.value for nom, valeur in morceau.items()})
+    return cookies
 
 
 try:
@@ -160,6 +160,15 @@ try:
              "session_token" in poses, str(poses))
     verifier("hote : son lien pose aussi le jeton de son siege",
              "seat_token_0" in poses, str(poses))
+    verifier("hote V1 : son lien n'active pas la V2",
+             "ui_version" not in poses or poses.get("ui_version") == "", str(poses))
+
+    code, _, cookies = demander(
+        f"/claim_seat?p=0&key={CLES[0]}&to=prepare-v2", suivre=False)
+    poses = noms_de_cookies(cookies)
+    verifier("hote V2 : sa cle valide active la V2",
+             code == 302 and poses.get("ui_version") == "v2",
+             f"code={code}, cookies={poses}")
 
     jeton = hashlib.md5(MOT_DE_PASSE.encode()).hexdigest()
     cookie_hote = f"session_token={jeton}; seat_token_0={hashlib.md5(CLES[0].encode()).hexdigest()}"
@@ -173,6 +182,14 @@ try:
     verifier("invite : son lien mene au salon", code == 302, f"code={code}")
     verifier("invite : son lien lui ouvre aussi la porte",
              "session_token" in poses, str(poses))
+    verifier("invite : son lien n'active pas la V2",
+             "ui_version" not in poses or poses.get("ui_version") == "", str(poses))
+
+    code, _, cookies = demander(
+        f"/claim_seat?p=1&key={CLES[1]}&to=prepare-v2", suivre=False)
+    verifier("invite : demander prepare-v2 ne lui active pas la V2",
+             code == 302 and noms_de_cookies(cookies).get("ui_version") != "v2",
+             f"code={code}, cookies={noms_de_cookies(cookies)}")
 
     cookie_invite = f"session_token={jeton}; seat_token_1={hashlib.md5(CLES[1].encode()).hexdigest()}"
     code, corps, _ = demander("/get_liens_sieges", cookie=cookie_invite)
@@ -219,6 +236,11 @@ try:
     verifier("mauvaise cle : refusee", code == 403, f"code={code}")
     verifier("mauvaise cle : aucun jeton pose",
              "session_token" not in noms_de_cookies(cookies), str(noms_de_cookies(cookies)))
+    code, _, cookies = demander(
+        "/claim_seat?p=0&key=NIMPORTEQUOI&to=prepare-v2", suivre=False)
+    verifier("mauvaise cle : impossible d'activer la V2",
+             code == 403 and "ui_version" not in noms_de_cookies(cookies),
+             f"code={code}, cookies={noms_de_cookies(cookies)}")
 
 except SystemExit:
     pass

@@ -130,10 +130,14 @@ class GameServerHTML(GameServerBase):
             return web.Response(status=400, text='Missing or invalid seat number (p=0..3)')
         key = request.query.get('key', '')
         # L'hote reclame son siege PUIS va creer la partie : &to=prepare.
+        # `prepare-v2` sert au compte d'essai pendant la construction de la V2.
+        # Il ne suffit pas de l'ecrire dans l'URL : le cookie n'est pose
+        # qu'APRES verification de la cle du siege 0, plus bas.
         # Les invites passent par le SALON choisir heros et deck : &to=salon.
         # Sans `to`, on garde l'ancien comportement (direct au plateau).
         vers = request.query.get('to')
-        if vers == 'prepare':
+        demande_v2 = vers == 'prepare-v2' and seat == 0
+        if vers == 'prepare' or demande_v2:
             destination = '/prepare.html'
         elif vers == 'salon':
             destination = f'/salon.html?p={seat}'
@@ -142,6 +146,8 @@ class GameServerHTML(GameServerBase):
         passwords = SEAT_PASSWORDS.value
         if not passwords or not any(passwords):
             # Pas de protection configuree : le lien mene simplement au jeu.
+            # La V2 privee, elle, exige la preuve du siege hote et n'est donc
+            # jamais activee sur une table sans cles configurees.
             return web.HTTPFound(destination)
         if seat < 0 or seat >= len(passwords):
             return web.Response(status=400, text='Unknown seat')
@@ -149,6 +155,14 @@ class GameServerHTML(GameServerBase):
         if expected and key != expected:
             return web.Response(status=403, text='Wrong seat password')
         response = web.HTTPFound(destination)
+        # Cookie de SESSION et lisible par le frontend : ce n'est pas une
+        # autorisation, seulement le selecteur d'interface. Une entree V1
+        # l'efface explicitement pour qu'un essai precedent ne survive pas a
+        # une nouvelle ouverture de la meme table dans ce navigateur.
+        self.PoserCookie(response, request, 'ui_version',
+                         'v2' if demande_v2 else '',
+                         max_age=None if demande_v2 else 0,
+                         httponly=False)
         # ⚠ QUI PRESENTE UNE CLE DE SIEGE VIENT JOUER : on efface le temoin de
         # spectateur s'il en trainait un. Sans cette ligne, regarder sa propre
         # table puis y revenir jouer laissait le moteur refuser toute action,
@@ -180,4 +194,3 @@ class GameServerHTML(GameServerBase):
                 self.PoserCookie(response, request, 'session_token', self.hash_password,
                                  max_age=31536000)
         return response
-
