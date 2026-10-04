@@ -48,7 +48,7 @@ describe('deltas de statuts', () => {
   })
 
   it('la pose l emporte sur le retrait dans le meme rendu', () => {
-    // Un Robuste consomme et remplace d'un coup : on lit « Robuste », pas « retire ».
+    // Un Tenace consomme et remplace d'un coup : on lit « Tenace », pas « retire ».
     const avant = monde(heros, carte(200, 'StatusCard', 'tough', 1))
     const apres = monde(heros, carte(201, 'StatusCard', 'tough', 1), carte(202, 'StatusCard', 'stunned', 1))
     expect(deltasStatuts(avant, apres)).toEqual([[1, { kind: 'status', statut: 'stunned', value: 1 }]])
@@ -65,7 +65,7 @@ describe('libelle du badge', () => {
   it('parle la langue du plateau', () => {
     expect(libelleStatut('stunned', 1, 'fr')).toBe('Sonné')
     expect(libelleStatut('stunned', 1, 'en')).toBe('Stunned')
-    expect(libelleStatut('tough', -1, 'fr')).toBe('Robuste retiré')
+    expect(libelleStatut('tough', -1, 'fr')).toBe('Tenace retiré')
     expect(libelleStatut('confused', -1, 'en')).toBe('Confused removed')
   })
 })

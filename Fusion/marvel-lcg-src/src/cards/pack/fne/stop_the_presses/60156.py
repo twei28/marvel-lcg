@@ -15,7 +15,10 @@ def GetAbilities() -> Sequence['Ability']:
         controleur = effect.this.GetControlByPlayer() or joueur_vise
         if carte is None or controleur is None:
             return
-        choix = controleur.AskChooseFace([carte], effect, forced=False)  # « You may » = forced=False
+        # ⚠ L'INTITULE EST OBLIGATOIRE (meme defaut que Ben Urich 60153,
+        # signalement Yarro n43). Sans `prompt`, le choix reprenait le NOM DE LA
+        # CAPACITE : rien ne disait qu'on defausse la carte pour en recevoir une autre.
+        choix = controleur.AskChooseFace([carte], effect, forced=False, prompt="Discard it and deal another")  # « You may » = forced=False
         if choix is not None:
             Faces.DiscardAll([carte], effect)
             joueur_vise.DealEncounterCards(1, effect)

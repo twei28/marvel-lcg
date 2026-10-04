@@ -32,6 +32,7 @@
  "{cards} readied ({by_effect})": "{cards} redressée(s) ({by_effect})",
  "{cards} removed": "{cards} retirée(s)",
  "{cards} were discarded": "{cards} défaussée(s)",
+ "{cards} were paid in this order, the last one is on top of the discard pile": "Payé avec {cards} dans cet ordre, la dernière est au-dessus de la défausse",
  "{cards} were flipped": "{cards} retournée(s)",
  "{cards} were placed on table": "{cards} placée(s) sur la table",
  "{cards} were returned to hand ({by_effect})": "{cards} rendue(s) à la main ({by_effect})",

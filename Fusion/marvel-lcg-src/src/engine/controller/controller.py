@@ -70,6 +70,18 @@ class Controller:
                 refus.append(descriptor)
         except Exception:
             pass
+        # 01/10/2026 : « ca devrait jamais etre affiche sur les cartes de heros
+        # et d'alter ego ». `Effect.Render(by_effect)` rend le `bind_id` de
+        # `by_effect` quand il existe : pendant « Resolve Mulligans » ou le Setup
+        # d'un heros, le refus d'une carte de la main (ou d'une capacite de
+        # l'autre forme) se retrouvait donc colle sur l'IDENTITE. On filtre sur
+        # la carte a laquelle le refus serait ATTACHE, pas sur `effect.this`.
+        try:
+            ids_identites = {j.GetIdentity().card.object_id
+                             for j in self.world.players if j.GetIdentity() is not None}
+            refus = [r for r in refus if r.bind_id not in ids_identites]
+        except Exception:
+            pass
         return refus
 
     @staticmethod
@@ -153,7 +165,7 @@ class Controller:
                 refus.append(descriptor)
         return refus
 
-    def ChoiceOne(self, effect_list: Sequence['Effect'], by_effect: 'Effect|None', message: 'Message2', priority: 'TimingPriority', is_forced: bool|Literal["Forced_Action"]) -> Tuple['Effect|None', bool]:
+    def ChoiceOne(self, effect_list: Sequence['Effect'], by_effect: 'Effect|None', message: 'Message2', priority: 'TimingPriority', is_forced: bool|Literal["Forced_Action"], masquer_passer: bool=False) -> Tuple['Effect|None', bool]:
         from game.scene.replay.operation import CardEffectInt
 
         controller_manager = self.manager
@@ -396,7 +408,7 @@ class Controller:
                         ability_type=priority.name,
                         event_name=message_name,
                         prompt_text=prompt_text,
-                        show_cancel=is_forced == False,
+                        show_cancel=is_forced == False and not masquer_passer,
                         replay_input=fallthrough_input,
                     )
                 )

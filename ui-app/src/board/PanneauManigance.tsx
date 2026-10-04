@@ -19,6 +19,7 @@ import { scanUrl } from './card-model'
 import { t } from './langue'
 import { nomAffiche } from './noms-cartes-fr'
 import type { WorldCard } from './world'
+import { mouvementReduit } from './affichage'
 
 /**
  * ⚠ DOIT VALOIR LA MEME CHOSE que la transition de `.panneau-manigance.est-
@@ -107,9 +108,8 @@ export function PanneauManigance({
           // un defaut pire que celui qu'on corrige. La gate est explicite.
           // Sans retournement, il n'y a aucune animation a laisser voir : la
           // reponse part tout de suite, comme en mouvement reduit.
-          const mouvementReduit =
-            !retournement || window.matchMedia('(prefers-reduced-motion: reduce)').matches
-          if (mouvementReduit) {
+          const sansAttente = !retournement || mouvementReduit()
+          if (sansAttente) {
             void envoyer()
             return
           }

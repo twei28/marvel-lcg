@@ -17,7 +17,7 @@ def GetAbilities() -> Sequence['Ability']:
         *AbilityFactory.GiveKeywordToAttached(
             CardFinder2("PSIONIC", Hero),
             trait="AERIAL",
-            ex_change_on_event=OnEvent.Form("You"),
+            ex_change_on_event=OnEvent.Form("AttachedIdentity"),
         ),
         AbilityFactory.UnitAttackGainKeyword(
             "You",

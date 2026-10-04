@@ -5,10 +5,10 @@ def GetAbilities() -> Sequence['Ability']:
 
     def blank_this(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         this = effect.this.CastTo(EncounterSideScheme)
-        this.TemporaryGain(effect, message, treat_as_blank=True)
+        this.TemporaryGain(effect, None, Message.WhenPlayerTurnEnd, treat_as_blank=True)
 
     return [
-        AbilityFactory.PlayersCannotChangeForms(AbilityType.NonKeyword, "EachPlayer"),
+        AbilityFactory.PlayersCannotChangeForms(AbilityType.NonKeyword, "AnyPlayer"),
         AbilityFactory.WhenInYourPlayTurn(
             AbilityType.Action,
             blank_this,

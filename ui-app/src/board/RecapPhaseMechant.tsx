@@ -20,6 +20,7 @@
 //    sous le repli de chaque étape — mais il ne s'impose plus.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import { CarteApercu } from './Board'
 import { toScanCard, type ContexteCarte } from './card-model'
 import type { Catalogue } from './catalogue'
@@ -128,6 +129,8 @@ const PHASE_PAR_GENRE: Record<FaitMechant['genre'], PhaseDuMechant> = {
   statut: 'Enemy Activation',
   // Un sbire entre en jeu en pleine phase : aux points 1 et 2 seulement.
   entree: 'Enemy Activation',
+  // Un changement de stade : sa phase reelle (que le fait porte) le range.
+  stade: 'Enemy Activation',
 }
 
 function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitMechant[] {
@@ -459,6 +462,16 @@ function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
       }
     }
 
+    // Un changement de stade (04/10/2026) : une ligne de carte, la nouvelle.
+    if (fait.genre === 'stade') {
+      return {
+        cle: `moteur:${index}:stade:${fait.carte_id}`,
+        genre: 'carte',
+        titre: `${t(fait.quoi === 'mechant' ? 'Le méchant passe au stade suivant' : 'La manigance passe au stade suivant')} : ${noms.carte(fait.carte_id) ?? fait.carte}`,
+        cibleId: fait.carte_id,
+      }
+    }
+
     // Reste les activations. Une intention n'arrive jamais jusqu'ici
     // (`faitsDeLEtape` ne garde que les résolutions), mais le type ne le sait
     // pas : le repli garde la forme d'une ligne juste plutôt que de mentir.
@@ -771,6 +784,12 @@ export function RecapPhaseMechant({
     return toScanCard(carte, contexte)
   }, [survolId, cartesMonde, contexte])
 
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »). Les hooks se declarent AVANT
+  // le retour anticipe ci-dessous.
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(bilan ? `round-${bilan.round}` : 'aucun-bilan')
+
   // `actif` autant que le bilan : un recap CONSTITUE en Instantane survivait
   // au passage en Detaille (le bilan reste en etat, et `actif` n'etait lu que
   // par le detecteur de transition qui le fabrique). Le joueur voyait alors
@@ -848,8 +867,14 @@ export function RecapPhaseMechant({
         if (!(evenement.target as HTMLElement).closest('.est-survolable')) setSurvolId(undefined)
       }}
     >
-      <div className="recap-mechant-carte">
-        <header>
+      <div className="recap-mechant-carte" style={transformDecalage(decalage)}>
+        <header
+          className="poignee-glisser"
+          onPointerDown={gestesGlisser.onPointerDown}
+          onPointerMove={gestesGlisser.onPointerMove}
+          onPointerUp={gestesGlisser.onPointerUp}
+          onPointerCancel={gestesGlisser.onPointerCancel}
+        >
           <span className="plateau-eyebrow">{t('Phase du méchant')}</span>
           <strong>
             {t('Round')} {bilan.round}

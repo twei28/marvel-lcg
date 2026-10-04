@@ -216,6 +216,7 @@ class Scenario(User):
 
             after_message = Message.AfterVillainAdvanced(new_villain, by_effect, message)
             after_message.Send()
+            self.world.stat.RecordStade(self.world, 'mechant', prev_villain, new_villain)
         pass
 
         if to_villain:

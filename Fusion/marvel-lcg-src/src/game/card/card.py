@@ -822,6 +822,30 @@ class Card(Object):
         face_down_card_id: List[str] = []
         if self.back_faces:
             face_down_card_id = [x.paper.card_id for x in  self.back_faces]
+            # ⚠⚠ FILET A LA SOURCE (24/09/2026). Un `card_id` vide observe en
+            # production, en boucle, des l'entree en jeu de Wave (Pearl
+            # Pangan) -- fait planter `Cache.LoadImage` (repli deja pose cote
+            # serveur) et construisait une URL cassee cote client (`??` vs
+            # `||` sur une chaine vide, corrige dans card-model.ts). Ni l'un
+            # ni l'autre repli n'explique la CAUSE : `self.back_faces` n'est
+            # non vide QUE pour une carte vraiment a deux faces imprimees
+            # (une identite Hero/AlterEgo, un complot...), jamais pour une
+            # carte joueur ordinaire deposee dans une zone (Reserve, Rising
+            # Tide) -- celles-ci ont `back_faces == []` et tombent dans le
+            # repli generique plus bas. Si UNE face de `self.back_faces` rend
+            # un `card_id` vide malgre tout, mieux vaut un repli lisible
+            # qu'une chaine muette : et le journal dit enfin QUELLE carte,
+            # pour la premiere fois depuis que ce symptome a ete vu.
+            if any(cid == "" for cid in face_down_card_id):
+                from engine.log import Log
+                Log.Warn(
+                    "CARD",
+                    f"back_face card_id vide : carte={self.face.paper.card_id!r} "
+                    f"type={self.face.type_name!r} zone={self.area.__class__.__name__!r} "
+                    f"proprietaire={self.GetOwner()!r} "
+                    f"back_faces={[x.paper.card_id for x in self.back_faces]!r}",
+                )
+                face_down_card_id = [cid or "player" for cid in face_down_card_id]
         else:
             if Evidence.IsType(self.face):
                 face_down_card_id = {
@@ -886,6 +910,7 @@ class Card(Object):
             cost                = self.face.printed_cost.val if HasCost.IsType(self.face) else 0,
             crc                 = self.GetCRC(),
             is_new              = Engine.statistics.IsNew(self.face.paper.card_id),
-            is_action           = any(x for x in self.face.effects if x.ability.flags.is_action) #  or x.ability.type.is_resource
+            is_action           = any(x for x in self.face.effects if x.ability.flags.is_action), #  or x.ability.type.is_resource
+            bonus               = self.face.BonusParSource(),
         )
 

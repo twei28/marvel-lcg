@@ -3,6 +3,651 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## PRÊT, PAS DÉPLOYÉ (04/10/2026) : frise de la phase du méchant, table personnalisable, boutons BD
+
+### Frise d'onglets (A4, spec du 03/10 ci-dessous, décisions postérieures appliquées)
+- 6 onglets officiels numérotés + Bilan (`frise-phase.ts`), rouges passés et en
+  cours, gris à venir, une seule ligne ; résultat court sous chaque onglet passé
+  (« 4 dégâts », « +1 menace », « aucun ») ; un onglet vide n'est plus barré.
+- Temps vides dits par une étape courte avec Suivant (« Aucun sbire engagé »,
+  « Rien à révéler »…), jamais avant le premier temps connu ; insérés sans
+  retrier (le rythme des accusés en dépend).
+- Plus de « tout dérouler » (Échap ne fait plus rien).
+- Relecture d'un onglet passé en lecture seule (liste des coups, détail au
+  clic, « Revenir à l'étape en cours », Entrée y ramène), rien n'est acquitté.
+- Renfort : surtitre « Renfort de X », « → Renfort : une autre carte est révélée »
+  sur la précédente, chaîne maillon par maillon.
+- Carte découverte en grand au-dessus du texte (17vh, 11vh sur téléphone).
+- ⚠ MOTEUR TOUCHÉ (faits publiés, aucune règle changée) : `annule_par` sur une
+  activation remplacée (`SetBeInstead` retient l'effet), `annulee_par` sur une
+  carte révélée annulée (`WhenEffectBeCancel`), fait `stade` (manigance ou
+  méchant qui change de stade EN pleine phase, `WorldStat.RecordStade`),
+  `etoile` sur un boost à capacité (★). Plateau : « → Annulée par Sonné »,
+  étape « La manigance passe au stade suivant : X » (carte en grand), ligne
+  « ★ X : son effet de boost s'applique ».
+- Hors phase : une activation datée du tour d'un joueur sort de la phase du
+  méchant (elle s'y glissait au même round) et ouvre `CoupHorsPhase` pour ce
+  seul coup (« Continuer »). Moteur : cas `A4 hors phase` (publié, « Player 1
+  Turn »). ⚠ NON VU À L'ÉCRAN : `Puzzle.Boost` par la sandbox en plein tour
+  bloque le moteur (« En attente de Spider-Man »), artefact du chemin de test.
+- Téléphone : pastilles numérotées, seul l'onglet en cours garde son nom.
+- « Revoir la phase du méchant » dans le journal du volet (`RevuePhase`, phase
+  du round précédent, noms en français).
+- Tests : plateau 2238/2238 + tsc ; cas moteur `A4 annulee par` 2/2, `A4 stade`
+  1/1 (rouge par substitution), `A4 boost etoile` 2/2, `A4 hors phase` 1/1,
+  A2 16/16, A3 7/7 ; autoplay Spider-Man vs Rhino et Ultron, 16 parties, 0
+  bloquée, 0 erreur ; batterie complète (PARALLELES=4) 2635/2641 : les 6 rouges
+  sont sg006, sg007, sg009, sg013, statistiques (déjà rouges avant ce chantier)
+  et 60152, vert rejoué seul (artefact du parallèle). Vu à l'écran : frise PC et téléphone, relecture, bilan,
+  revue, boutons. Vu au passage (antérieur) : sur téléphone, la fiche
+  d'événement du bas couvre le titre de l'étape.
+
+### Table personnalisable (B)
+- `disposition.ts` : les 9 zones en données (origine = bande-manigances.css, un
+  test compare les deux), grille d'édition 12 x 8 aimantée, minimums par zone,
+  déplacer / redimensionner refusés s'ils chevauchent ou sortent, taille des
+  cartes 60-160 % (`--taille-zone`, `zoom`).
+- `EditeurTable.tsx` : Réglages → « Modifier la table » (PC seulement) ; zones
+  encadrées, on les glisse ; poignée bas-droit = leur place (emprise), poignée
+  haut-droit = taille des cartes (aussi au clavier) ; fantôme vert / rouge ;
+  « Terminer », « Disposition d'origine », « Annuler » (Échap).
+  Choix d'interprétation à confirmer : « la place » = l'emprise de la zone, le
+  déplacement se fait en glissant la zone elle-même.
+- `table-perso.ts` : une disposition par nombre de joueurs (`table-1`…`table-4`),
+  navigateur + compte (le compte fait foi). ⚠ SERVEUR TOUCHÉ :
+  `_table_valide` (12x8, 9 zones, bornes, sans chevauchement),
+  `test_preferences_serveur.py` 17/17. Garde-fou : une table illisible revient
+  à l'origine.
+- Vu à l'écran : origine, éditeur (glisser, refus rouge), taille 120 %,
+  enregistrement, 1920 / 1600 / 1366 / 1280, garde-fou, 2 joueurs (la table solo
+  ne s'y applique pas), 3 et 4 joueurs, « Disposition d'origine ».
+
+### Boutons de la question de défense (décidé le 04/10/2026, questions une à une)
+- « Défendre avec X (DÉF 2 + 1 Bouclier) » et « Ne pas défendre (ATQ 2 + 3 Charge
+  + 1 carte boost) » sur une ligne chacun, au même niveau ; la petite ligne sous
+  le refus est retirée. Chaque bonus est nommé avec sa carte, deux au plus ;
+  au-delà, « + N autres » en points, détail complet en infobulle ; les boosts
+  toujours dits, jamais de total.
+- ⚠ MOTEUR TOUCHÉ : le descripteur d'une carte publie `bonus` (ATK/DEF par carte
+  source, `CardFace.BonusParSource`). Cas `A5 bonus publies` (Charge +3 réel),
+  rouge par substitution. Plateau : `ligne-attaque.ts`, DemandeCentrale.
+- Vu à l'écran (moteur d'essai, Charge sur Rhino) : « Défendre avec Spider-Man
+  (DÉF 3) », « Ne pas défendre (ATQ 2 + 3 Charge + 1 carte boost) ».
+- Plateau 2243/2243, tsc propre. Il faut relancer le moteur local pour voir les
+  bonus (sans lui, le bouton montre l'ATQ actuelle seule).
+
+### Barre du haut et Réglages (décidé le 04/10/2026, questions une à une)
+- Plus de fenêtre « Plus d'options » : ⚙️ ouvre directement les Réglages, ⏸
+  Mettre en pause a son bouton (visible quand la pause est possible), FR/EN a
+  le sien ; le journal reste sur sa languette. Téléphone inchangé (« … »).
+- Réglages agrandis (1000 x 760 au plus, hauteur fixe, texte 16 px), aide
+  visible sous chaque intitulé. Onglets Apparence / Son / Jeu / Avancé ;
+  intitulés : Style d'affichage (Normal / Sobre, gardé), Couleur de la table,
+  Placement des zones, Animations, Météo et décor, Langue, Cartes en français,
+  Texte des cartes en français, Annonce des exploits ; Bruitages, Musique de
+  fond ; Phase du méchant (Étape par étape / D'un coup), Carte révélée en
+  grand, groupe « Le jeu agit pour moi quand il n'y a qu'un choix » (Choisir
+  la seule cible possible, Valider sans demander, Payer avec la seule carte
+  possible, Finir mon tour quand je ne peux plus rien jouer), Sauvegarde à
+  chaque phase ; Nouveau plateau, Aide quand je joue une carte (Courte /
+  Détaillée), Pointeurs des autres joueurs, Table complète comme sur PC.
+- Tests plateau 2245/2245, tsc propre. Vu à l'écran (moteur d'essai) : barre,
+  les 4 onglets, hauteur 762 px partout.
+
+### Signalements du 04/10/2026 (soir)
+- **Limitless Strength (hk012) « Injouable · Une carte ne peut pas payer son
+  propre coût »** alors qu'elle se joue. Cause : la passe INTERNE du coût
+  (`CheckPlayerCanPayCost`) écrasait `world.render.derniers_refus`, et le refus
+  juste de sa propre ressource partait au plateau comme raison. ⚠ MOTEUR
+  TOUCHÉ (`game/event/manager.py`, le canal n'est plus écrasé par cette passe).
+  Cas « hk012 … AUCUN refus … » (main exacte du signalement) rouge avant, vert
+  après ; pack hk0 22/22, cas « refus » 13/13. Non vu à l'écran (moteur d'essai
+  compilé avant le correctif).
+- **Aperçu agrandi passé à gauche** : la borne « à gauche de la manigance
+  principale » datait de la colonne de droite ; avec la bande des manigances
+  (zone en haut à gauche) elle rejetait l'aperçu à gauche. Borne limitée au
+  plateau sans bande (`Board.tsx`). Vu à l'écran : aperçu à droite (x 1544 et
+  1244 sur 1900).
+- **Écran de fin en onomatopée BD** (`fin-partie-bd.css`) : éclat à pointes
+  derrière « DÉFAITE ! » (rouge) / « VICTOIRE ! » (bleu et jaune), petit choc
+  à l'arrivée (coupé en sobre, sans animations, mouvement réduit), cartouche et
+  boutons à coins coupés. Vu à l'écran (Puzzle.Lose / Puzzle.Win) : en
+  victoire de campagne, l'éclat recouvrait le haut du panneau des récompenses ;
+  éclat réduit et carte bornée dans ce cas (`:has(.camp-recomp)`).
+- **« → 0 dégât annoncé »** (Klaw I, ATQ 0 + 2 boosts) : faisait croire à un
+  coup sans effet. Plus aucun chiffre sur une attaque annoncée (le bouton
+  « Ne pas défendre (ATQ …) » le dit déjà) ; la menace annoncée reste.
+- **Réponse de héros pendant l'attaque d'un sbire** (capture Hulk / Klaw) : le
+  ciblage se jouait dans la scène du cartouche ET l'assistant d'action reposait
+  la même question hors de la scène, à moitié dessous. Prop
+  `choixDansLaScene` : l'assistant se tait au ciblage et à la confirmation,
+  reste pour payer un coût. (Provisoire : la refonte ci-dessous l'absorbe.)
+- **Défenseurs l'un sous l'autre** (Hulk, Black Widow, refus) : la rangée était
+  bornée à 640 px et passait à la ligne. `flex-wrap: nowrap`, les choix se
+  partagent la largeur, le texte d'un bouton passe sur deux lignes ; à
+  plusieurs défenseurs le titre passe au-dessus. Verrous sur la feuille
+  (`deroule-question-rangee.test.ts`). Vu à l'écran à 1024 et 1600 (quatre
+  choix sur une ligne, dans le cadre).
+- Plateau 2253/2253, tsc propre, reconstruit (`deployer.sh`). Pas déployé.
+
+### EN COURS : refonte du cartouche de la phase du méchant (décidé le 04/10/2026, 40 questions une à une)
+- Décisions et gabarit unique : `.planning/todos/2026-10-04-refonte-phase-mechant-decisions.md`.
+  Cartouche collé en bas (hauteur de la main, déplaçable), frise en pastilles +
+  titre court sur une ligne, une rangée unique (acteur, boosts, total, cibles,
+  refus), sous-cadre pour interruptions / réponses / ciblage / paiement, carte
+  révélée en grand à gauche, bilan en trois colonnes, glissement entre les
+  temps, clavier 1-9 / Espace / Échap. Mode « Étape par étape » seulement ;
+  « Sur la table » sera le chantier suivant ; téléphone inchangé.
+- Validation exigée : planche de 15 captures sur le moteur d'essai, regardée
+  par l'utilisateur avant tout déploiement.
+- **Halo rouge autour de la main : retiré** (demandé le même soir). Une seule
+  règle en cause, `.deroule-question .plateau-scene .zone-main` (board.css) :
+  ombre et fond rgba(166, 0, 0, …) posés sur toute la boîte de la main dès
+  qu'une question est logée dans la scène, invisibles sur le noir d'origine,
+  nappe pourpre sur une table teintée. Les deux déclarations sont retirées, le
+  `z-index` qui sort la main du voile reste. Verrou `halo-main.test.ts`
+  (rouge avant, vert après). Plateau 2262/2262, tsc propre, reconstruit.
+- Reste en attente derrière : les exemples au survol dans les Réglages
+  (images `public/img/reglages/` à refaire : phase-etape, phase-coup,
+  aide-courte, aide-detaillee).
+
+### Boutons des questions en style BD (C)
+- `boutons-bd.css` (question centrale, assistant, cartouche ; pas les menus de
+  carte) : coins coupés, Bangers, plus d'arrondi ni de liseré blanc ; refus
+  gris ; `.tonalite-ability` en ambre. Vu à l'écran (défense, Sens d'Araignée).
+
+## FAIT le 04/10/2026, spec d'origine (voir « PRÊT, PAS DÉPLOYÉ (04/10/2026) » plus haut) (décidé le 03/10/2026, questions une à une) : phase du méchant, frise d'onglets
+
+Inspirée de quincarter (frise) et de marvelsimulator.com (une phrase par étape,
+carte en grand, étapes vides dites). Vaut en console comme au centre.
+- Frise de 6 onglets : Menace, Méchant, Sbires, Distribution, Révélation,
+  Bilan (le bilan devient un onglet). Chacun : nom + résultat court (total par
+  effet : « 3 dégâts · +1 menace », « aucun »), vert fini, coloré en cours.
+- Clic sur un onglet passé : relecture en lecture seule, bouton « Revenir à
+  l'étape en cours » ; plusieurs coups listés, clic sur une ligne = détail.
+  Pas de récapitulatif numéroté en plus. Téléphone : pastilles numérotées,
+  seul l'onglet en cours détaillé. Après la phase : « Revoir la phase du
+  méchant » en haut de la console (lecture seule).
+- Pas à pas strict, AUCUN bouton « tout dérouler ».
+- Temps vides annoncés par une étape courte avec Suivant : aucune menace posée,
+  le méchant ne s'active pas (raison si connue), pas de sbire engagé, rien à
+  révéler.
+- Carte découverte en pleine largeur au-dessus du texte (boosts côte à côte,
+  carte révélée) ; méchant et héros restent en surbrillance sur la table.
+- Carte révélée qui fait attaquer / manigancer : sous la carte ; si décision,
+  question actuelle (Défendre / Passer) inchangée. Effet ★ d'un boost : ligne
+  sous l'attaque. Carte annulée : son étape reste, « → Annulée par X ».
+- Renfort : nouvelle étape « Renfort de X » en surtitre, la précédente finit par
+  « → Renfort : une autre carte est révélée » ; chaîne maillon par maillon.
+- Changement de stade (manigance ou méchant) en pleine phase : étape à part,
+  nouvelle carte en grand.
+- Hors phase du méchant (pendant le tour du joueur) : une attaque / manigance
+  du méchant ouvre le cartouche pour ce seul coup (faits moteur à publier hors
+  phase, à vérifier).
+
+## FAIT le 04/10/2026, spec d'origine (voir « PRÊT, PAS DÉPLOYÉ (04/10/2026) » plus haut) (décidé le 04/10/2026) : boutons des questions en style BD
+
+- Tous les panneaux de question (cartouche du méchant + questions du tour),
+  pas les menus de carte : coins coupés, police Bangers, plus d'arrondi ni de
+  gros liseré blanc.
+- Couleur par type d'action conservée ; capacités : mauve -> AMBRE (comme
+  « jouer une carte », choix assumé) ; refus (Passer / Ne pas …) gris discret.
+- Codé le 04/10/2026.
+
+## FAIT le 04/10/2026, spec d'origine (voir « PRÊT, PAS DÉPLOYÉ (04/10/2026) » plus haut) (décidé le 04/10/2026, questions une à une) : table personnalisable
+
+- Réglages → « Modifier la table » : zones encadrées avec poignées, « Terminer »
+  enregistre, « Disposition d'origine » remet tout.
+- Grille AIMANTÉE, aucun chevauchement ; TOUTES les zones déplaçables, main
+  comprise.
+- Deux poignées par zone : la place, et la taille des cartes.
+- Une disposition par nombre de joueurs (solo, 2, 3, 4), suit le compte
+  (nouvelle préférence serveur bornée). Téléphone inchangé (onglets).
+- Ordre proposé : (1) étape 2 de la teinte (préparation + pages du site),
+  (2) zones décrites par des données sans changement visible, (3) éditeur +
+  enregistrement, (4) vérification écran tailles / nombres de joueurs.
+- Corrigés le 04/10 : `--fond` rattaché aux panneaux (texte du bouton actif
+  illisible sur table claire), « Pile de défausse » foncée sur table claire.
+  REVUS À L'ÉCRAN le 04/10 (moteur d'essai, gris clair 200,6,60 et sable
+  clair 40,14,52) : texte du bouton actif rgb(58,62,65) sur ambre, environ
+  6:1 ; « Pile de défausse » lisible.
+
+## PRÊT, PAS DÉPLOYÉ (03/10/2026) : console, phase du méchant revue, rapports Yarro n°43 à 47
+
+- **Onglets de la phase du méchant** : intitulés officiels numérotés FR/EN
+  (1, 2a, 2b, 3, 4), rouges passés et en cours (en cours souligné), gris à venir,
+  bande oblique retirée (`deroule-onglets.css`). Compteur « 1 → 3 / 7 » en Anton
+  (Bangers dessinait le 7 comme un 1). Rappel de règle retiré du cartouche.
+  Question de défense : plus de bandeau « À toi de jouer » (la frise sert de
+  poignée), « Défendre avec X », carte au-dessus du bouton, plus de « → Rhino »
+  ni de texte de capacité ; l'onglet suit la phase réelle (`tempsDeLaQuestion` :
+  2a méchant, 2b sbire).
+- **Question à un seul choix, sans « Passer »** (« Fin de phase pour Domino ») :
+  le titre recopiait le bouton, il est retiré et le bandeau devient une fine
+  barre de prise (`est-poignee-seule`, DemandeCentrale). Les réactions gardent
+  leur titre.
+- **Mulligan lisible comme facultatif** (AssistantAction, tous les modes) :
+  titre « Mulligan », consigne « Sélectionne les cartes que tu veux changer
+  (facultatif) » puis « N cartes sélectionnées », bouton unique « Garder ma
+  main » / « Défausser N cartes », plus d'« Annuler ».
+- **MOTEUR, Hercules et decks mélangés** (fiche
+  `2026-10-04-hercules-travaux-et-sbire-nemesis.md`) : Travaux/Dons mélangés
+  (59001b) ; sbire némésis seul (IsNemesis, Face the Past, Shadow of the Past,
+  37 héros officiels concernés) + mention Nemesis sur bl013/rs016/65012 ; decks
+  Show (Spiral), Experimental Weapons, Gemmes mélangés ; fouille facultative
+  refusée remélange le deck. Batterie 2627/2633, les 6 rouges hors chantier.
+  À répondre au joueur après déploiement.
+- **Couleur du fond (étape 1 : plateau + fenêtre d'accueil)** : roue de teintes
+  ternes (saturation 0-18 %) + luminosité 6-62 %, fond + bandeaux + panneaux,
+  halo du héros par-dessus en Normal. `board/teinte.ts` (jumeau
+  `public/js/prepare/teinte-choix.js`), `styles/teinte.css`, `RoueTeinte.tsx`
+  dans Réglages (direct, « Couleur d'origine », compte prévenu au repos 600 ms),
+  roue + aperçu + « Valider » dans la fenêtre d'accueil. ⚠ SERVEUR TOUCHÉ :
+  préférence `teinte` (« h,s,l » bornés, `test_preferences_serveur.py` 14/14).
+  Vu à l'écran : 5 teintes x Normal/Sobre, Réglages, accueil.
+  ÉTAPE 2 FAITE (04/10) : `public/js/teinte-page.js` + `css/teinte-pages.css`
+  sur 12 pages ; la préparation l'applique en direct après « Valider » et après
+  la synchro du compte (`appliquerTeintePage`, app.js). Ajouts après capture :
+  variables `--fond/--panneau/--carte/--bord` (deck-builder, salon, rejoindre),
+  `--w-*` (scene), `--hf-panneau` et bandeaux `.hf-barre`/`.w-topbar` teintés,
+  dégradé sans répétition (bandes vues sur salon et replay). Vu à l'écran :
+  12 pages x 2 teintes + préparation après « Valider » (capture
+  `ui-check/scripts/capture-teinte-pages.spec.ts`, 25/25). Tests lanceur
+  teinte + affichage 18/18. Les vignettes noires des cartes de deck.html
+  restent noires (cadres de carte, pas un fond).
+- **Fenêtre « Choisis ton affichage »** à la préparation (app.js
+  `demanderLAffichage`, `doitProposerLeChoix`) : une fois, pour tout joueur qui
+  n'a jamais choisi ; deux aperçus réels (`public/img/affichage/*.jpg`, pris sur
+  une question de la phase du méchant). Vue à l'écran (PC et téléphone). Nouveau
+  dossier `public/img` : aucune exclusion dans `deployer.ps1`, il part avec
+  l'archive (servi en `.jpg`, le moteur ne sert pas les `.webp` par chemin).
+- **Boutons d'un même choix sur la même ligne** (question dans le cartouche
+  de phase, `deroule-onglets.css`) : alignés par le bas, la carte reste
+  au-dessus de son bouton. Vu à l'écran (Spider-Sense / Ne pas utiliser).
+- **Nom français des capacités nommées** (`nomDeCapacite`, `estNomDeCapacite`) :
+  « Sens d'Araignée » et « Ne pas utiliser Sens d'Araignée » au lieu de
+  « Spider-Sense » / « Spider-Man ». Un nom technique (`Generate_Mental`) ou un
+  type (`Interrupt`, `Defense`) garde le nom de la carte.
+- **Table calée sur le récit de la phase du méchant** (`table-calee.ts`,
+  `onEtapeAffichee` de DeroulePhase) : la table dessine le monde de l'étape
+  affichée, plus le plus récent. Cause : le cartouche relâche les trames sans
+  nouvelle étape, dont le retournement du boost / de la carte rencontre. Une
+  question au joueur rend le monde réel. Non vu à l'écran.
+- **« Passer » renommé** (DemandeCentrale `libelleRefus`) : « Ne pas défendre »
+  + ligne « ATQ 3 + 1 carte boost » (ce qui est connu avant de défendre, jamais
+  un total : RR v1.8, boost face cachée avant la déclaration ; `ligne-attaque.ts`),
+  « Ne pas jouer X » (carte en main), « Ne pas utiliser X » (capacité en jeu),
+  « Ne rien jouer » (plusieurs), « Passer » ailleurs.
+- **Fin de tour lisible** (même panneau que le mulligan) : titre « Fin de
+  tour », « Sélectionne les cartes que tu veux défausser (facultatif). Tu
+  repioches jusqu'à N », ou « Défausse au moins 1 carte : ta main est limitée
+  à N », bouton unique, plus d'« Annuler ». ⚠ MOTEUR TOUCHÉ :
+  `to_descriptor.py` publie `hand_size` par joueur (0 pendant la mise en
+  place, l'identité y est un `Insert`). Cas 62034 rejoués : 2/2.
+- **Texte français sous les arts alternatifs** (scans anglais) : l'aperçu
+  agrandi affiche le texte FR (`artAlternatif` dans card-model, ApercuMarvelcdb
+  charge textes-fr-complets à la demande).
+- **Essais ouverts en local** (`essais.ts`, `estHoteLocal`) : sur `localhost` ou
+  `127.0.0.1`, le plateau montre ce que voit l'administrateur en ligne (halo du
+  héros, animations). Aucun effet en production.
+- **Console : ABANDONNÉE le 03/10/2026 au soir** (choix de l'utilisateur :
+  « remettre les phases et les questions au milieu comme avant, on peut
+  quand même les bouger »). Retirés : `ConsolePartie`, `fenetres.ts`, le réglage
+  « Fenêtres » et la clé de préférence `fenetres`. GARDÉS : la **bande des
+  manigances** (`bande-manigances.css`, prop `bandeManigances` de Board : méchant
+  collé au deck rencontre, principale puis annexes sur toute la largeur du haut,
+  centrées sur le méchant, alignées malgré le badge « Crise », chevauchement
+  au-delà de la place, plus de colonne à droite) ; le **journal compact**
+  (`JournalConsole.tsx`, `journal-compact.ts`) dans le volet à languette ;
+  pas de voile sur la table pendant la phase.
+- **Phase du méchant** (rapport n°46 + choix de l'utilisateur) : pas à pas
+  toujours (réglage « Avance toute seule » retiré) ; conséquences d'une carte
+  révélée rangées sous elle (`rangerLesConsequences`, corrige aussi l'ordre :
+  la manigance déclenchée s'affichait AVANT la révélation) ; cartes concernées
+  allumées sur la table sans mouvement (`surbrillance-etape.ts`).
+- **Choix d'art (préparation)** : flèches hors de l'image (une paire par carte ;
+  en « même série », une seule paire à l'extérieur des deux cartes, l'alter ego
+  fait défiler la face héros), boules retirées, alter ego plus assombri.
+  Téléphone : deux flèches par face. Vu à l'écran (PC et téléphone).
+- **Aperçu en jeu** : l'autre face (alter ego) prend l'art choisi
+  (`autresFacesDe`, `card-model.ts`), test vu rouge sans le correctif.
+- **n°43 Ben Urich** : choix de défausse sans intitulé (60153 `prompt`), « Cancel »
+  et « Discard one » traduits. Même défaut sur Robbie Robertson 60156 : CORRIGÉ
+  le 04/10 (`prompt="Discard it and deal another"`, traduit « La défausser et
+  en distribuer une autre »), gabarit ci-dessous. Nouvelle clé du harnais
+  `options_attendues` (le `prompt` d'un `AskChooseFace` devient le NOM de
+  l'option, pas `prompt_text` : `prompts_attendus` ne pouvait pas le voir).
+- **n°44 Typhoid Mary** : jetons de dégâts d'une carte sans PV (Disturbed Psyche)
+  désormais affichés (`card-model.ts`).
+- **n°45 Ivan Banionis** : jetons d'accélération affichés (`card-model.ts`).
+- **n°47 Hugin & Munin** (53017) : la réponse n'était proposée que s'il y avait un
+  personnage incliné ; la fouille est le coût, corrigé sur le modèle 53012.
+- Tests : plateau 2085/2085, préférences 12/12, cas test_capacites des cartes
+  60153, 60110a, 60200, 53017 verts avec substitution, autoplays ciblés 0 erreur.
+- Vu à l'écran : console PC (1600 et 1366), annexes 0 à 7, phase du méchant.
+  Non vérifié : téléphone, multijoueur. Après déploiement : marquer n°43 à 47
+  « traités » dans /admin.
+
+  ### 53017 : Hugin & Munin (signalement Yarro n°47, 03/10/2026)
+  
+  - [x] Étape 2 : carte de référence : 53012 Talon Line (« for each icon → ready a character you control », un `ChooseAbilities` + `ForChoiceAbility(...).SetTarget("YouControlUnit", canbe_ready=True)` par icône, APRÈS le calcul). Fouille-coût : inchangée (`CostFunc.SearchForCard(Minion, "PutIntoPlayEngagedYou", encounter_deck_top=10)`, modèle 56007 / ar001a).
+  - [x] Étape 5 : texte-contre-code : « → » (coût / effet), « for each icon ([star] and [boost]) » (`CountTotalBoostStarAndBoost` compte étoile ET icônes), « you control », « ready ». Cause : la cible `canbe_ready, range=(1,"All")` posée AU DÉCLENCHEMENT empêchait la réponse quand aucun personnage n'était incliné (cas du signalement : Echo, Vivian, Hugin redressés).
+  - [x] Étape 6 : nombres : top 10, coût 2, 2 PV, ATK/THW 1 : identiques desc / script.
+  - [x] Étape 7 : 3 cas « 53017 » : tous redressés (la fouille a lieu), 1 icône (Hydra Bomber redresse Peter Parker incliné), témoin 0 icône (Goblin : Peter reste incliné). Nouveau script 3/3 ; ancien script 2/3 (le cas du signalement ROUGE : « 01110 n'est pas en jeu ») ; module vide 0/3 ; restauré 3/3.
+  - [x] Étape 7 bis : limite imprimée : NON.
+  - [x] Étape 8 : autoplay 8 parties falcon vs Rhino + témoin spider_man 8 parties : 8/8 et 8/8 terminées, 0 bloquée, grep erreurs 0 partout. Journal lu : fouille, sbire engagé, icônes comptées, Sam Wilson redressé (parties 5, 7) ; sans personnage incliné la partie continue (partie 8).
+  - [x] Étape 8 bis : NON (un sbire entre en jeu par une voie déjà dessinée).
+  
+  Carte terminée : OUI.
+
+  ### 60156 : Robbie Robertson (même défaut que Ben Urich n°43, 04/10/2026)
+
+  - [x] Étape 2 : carte de référence : 60153 Ben Urich (même pack, même `AskChooseFace(..., forced=False, prompt=...)`), 45036 Magik (« Discard one »).
+  - [x] Étape 5 : texte-contre-code : « look at that encounter card. You may discard it and deal that player another facedown encounter card » : `AskChooseFace([carte], forced=False)` puis `DiscardAll` + `DealEncounterCards(1)` au joueur visé (« that player »), inchangés. Seul ajout : l'intitulé du choix. Résultat : conforme.
+  - [x] Étape 6 : nombres : Uses 3 stamina, retire 1, 1 carte distribuée : inchangés (cas existants : stamina 2 après usage).
+  - [x] Étape 7 : cas « 60156 … le choix s'intitule « Discard it and deal another » » (`options_attendues`) : ROUGE sans le `prompt` (options vues : « Robbie Robertson: look at that encounter card, you may discard it », « Cancel »), VERT avec ; 3/3 cas 60156. Plateau : test `vocabulaire-moteur.test.ts` vu rouge puis vert.
+  - [x] Étape 7 bis : limite imprimée : NON (Uses, déjà couvert).
+  - [x] Étape 8 : autoplay 8 parties Spider-Man vs `stop_the_presses_hammerhead` + témoin Black Panther 8 parties : 8/8 et 8/8 terminées, 0 bloquée, grep erreurs 0 partout. Journal lu (partie 5) : Robbie incliné, -1 stamina, option « Discard_it_and_deal_another » choisie, Eviction Notice défaussée, Caught Off Guard distribuée puis révélée.
+  - [x] Étape 8 bis : NON (un intitulé, rien de nouveau dessiné).
+
+  Carte terminée : OUI.
+
+## PRÊT, PAS DÉPLOYÉ (03/10/2026) : affichage sobre + volet du journal (retour Aghenatak « mal aux yeux »)
+
+- Réglage « Affichage : Normal / Sobre » : bouton à côté du FR/EN dans la
+  préparation (`affichage.js`, `affichage-choix.js`), ligne « Affichage » dans
+  Réglages > Image et son du plateau (`board/affichage.ts`). Clé
+  `mc_affichage_v1`, + compte via routes neuves `/get_preferences` et
+  `/save_preferences` (`server_get.py`, fichier `preferences-serveur-N.json`
+  dérivé de celui des arts, aucune config à changer ; ajouté à
+  `deploiement/sauvegarde.sh`, donc scripts serveur à redéployer).
+- Sobre = `styles/affichage-sobre.css` (hors couche, tout préfixé
+  `html[data-affichage='sobre']`) : palette ternie, fond gris uni, contours
+  sans lueur, cartouche du méchant gris, pulsations et transitions coupées,
+  réglage Animations forcé à non, halo du héros retiré ; `mouvementReduit()`
+  remplace les six tests `prefers-reduced-motion` en JS.
+  Revu sur captures (choix de l'utilisateur) : bouton principal des questions
+  (`.assistant-confirmer`, `.dc-continue`) gris clair à texte foncé, survol
+  compris (il était jaune vif, `#ffe488` en dur) ; bandeau « Phase du méchant »
+  gris, sans halo ni éclair. Vu à l'écran en vraie partie.
+- Languette « Journal » en bas à droite : volet par-dessus les manigances
+  (`board/VoletJournal.tsx` + `.css`), plein écran sur téléphone. Remplace la
+  fenêtre « Partie » (`ModalePartie` supprimée) ; le bouton « Partie » du
+  menu ⚙ ouvre le volet.
+  Revu le 03/10/2026 : le volet ne contenait que les TROIS BOUTONS de
+  l'ancienne fenêtre (Historique ouvrait encore un panneau flottant). Désormais
+  onglets Historique / Journal du héros affichés DANS le volet
+  (`ContenuHistorique` remplace le panneau flottant `HistoriquePartie`, panneau
+  `.panneau-journal` retiré de board.tsx), « Log de la partie » en tête.
+  Vu à l'écran en vraie partie (PC et téléphone, normal et sobre). CSS
+  `.historique-panneau` / `.panneau-journal` désormais sans usage (board.css,
+  menus-mobile.css), laissé en place.
+- ⚠ `ui-check/tests/menus-mobile.spec.ts` (s24) échoue dès sa mise en place
+  (`.portrait-menu .bh-options` introuvable) : périmé depuis la refonte de
+  l'en-tête du 24/09 (Réglages dans « Plus d'options »), pas par le volet.
+- Tests : vitest 2113/2113 (plateau 2070/2070 après la reprise du volet), tsc propre, lanceur 100/100,
+  `tools/test_preferences_serveur.py` 11/11. Captures avant/après prises en
+  vraie partie (moteur de dev 2346, arrêté).
+- Non vérifié : la mémoire sur un vrai compte (aucun compte en local), le
+  multijoueur, et les écrans legacy/campagne en sobre.
+
+## PRÊT, PAS DÉPLOYÉ (03/10/2026) : audit des règles de construction, tous les héros
+
+Crible du texte imprimé de toutes les identités (20 avec une règle de
+construction), puis batterie : 95 decks de départ (aucun nouveau refus) et 4180
+decks publiés sur marvelcdb (refus 375 → 153, chaque refus restant examiné :
+decks réellement illégaux, marvelcdb ne vérifie ni l'unicité, ni l'égalité de
+Spider-Woman, ni les cartes Permanent hors des 40). Tests lanceur 100/100, dont
+14 vus rouges sur l'ancien `regles.js`.
+- Règles ajoutées : Cyclops (alliés X-MEN), Kate Bishop (SKILL), Wonder Man
+  (événements énergie), Harry Osborn (3 titres TECH), Night Thrasher (4 SKILL),
+  Red Sonja (6 événements), Iron Patriot (aucun allié d'aspect, clé neuve
+  `types_interdits_aspect`), Adam Warlock (1 exemplaire, 4 aspects égaux),
+  Spider-Woman (aspects égaux), Moon Knight (coût ≤ 2, 4 cartes par aspect).
+- Rules Reference : copie = titre ET sous-titre (Madame Web refusée à tort),
+  unicité vérifiée (une carte unique, pas de correspondance, identité comprise).
+- Bug : les signatures « Hero;Aggression » de Spider-Woman faisaient refuser
+  TOUS ses decks marvelcdb (`classeDeConstruction`, `conversion.js`).
+- Carte `62034` Size Advantage : classe Justice → Aggression (scan + marvelcdb).
+- Deck de départ Jubilee : 2 « Unlikely Duo » (Max 1 per deck) → 1, et X-Gene 2 → 3,
+  ce qui redonne exactement les quantités du pack (le 2e Unlikely Duo sert à Wolverine).
+- Non traité : Cloak & Dagger (deux mini-decks, « 2 aspects » laissé tel quel).
+- Commentaire mort corrigé dans `regles.js` (`outils/verifier-marvelcdb.mjs`
+  n'existe pas).
+
+### 62034 : Size Advantage (modification de la classe seulement)
+
+- [x] Étape 2 : sans objet, le script `luke_cage/62034.py` n'est pas modifié.
+- [x] Étape 5 : texte-contre-code : texte imprimé identique à `text` ; mots-pièges
+      « instead » (6 au lieu de 3, codé), « remaining hit points » (`health`).
+      Résultat : conforme.
+- [x] Étape 6 : nombres : coût 2, RES énergie (icône du scan), 3 / 6 dégâts : identiques
+      dans `desc` et le script. Classe imprimée AGGRESSION, `desc.Class` valait Justice :
+      corrigé. Résultat : conforme.
+- [x] Étape 7 : deux cas ajoutés (la carte n'en avait aucun) : « 62034 Size Advantage
+      — sans GIANT et avec moins de PV que l'ennemi : 3 degats » et « — plus de PV
+      restants que l'ennemi : 6 degats ». Substitution (effet retiré) : 0/2, dégâts
+      0 et 5 au lieu de 3 et 11 ; module restauré (identique à HEAD) : 2/2.
+- [x] Étape 7 bis : limite imprimée : NON.
+- [x] Étape 8 : autoplay 8 parties contre Rhino, deck Hulk + 3 Size Advantage, témoin
+      Hulk d'origine 8 parties : 8/8 et 8/8 terminées, 0 bloquée, grep erreurs : 0 et 0.
+      Journal lu (3 parties tracées) : la carte est jouée, cible Rhino, inflige 6
+      (Hulk 18 PV > Rhino 14), puis va à la défausse.
+- [x] Étape 8 bis : la carte ne change pas ce qu'on voit : NON.
+
+Carte terminée : OUI.
+
+## PRÊT, PAS DÉPLOYÉ (03/10/2026) : import refusé du deck Maria Hill marvelcdb 64390 (Aghenatak)
+
+Cause : sa face alter ego (50001b) autorise « the maximum number of copies of 3
+S.H.I.E.L.D. supports » d'autres aspects, règle absente. Correctif : clé neuve
+`hors_aspect.compte: "titres"` dans `regles.js` (le quota compte des titres, le
+point final du trait « S.H.I.E.L.D » est ignoré), déclarée dans
+`deck/starter/maria_hill.json`. Tests lanceur 78/78 ; vrai deck 64390 + vrai
+catalogue : légal chez Maria Hill, refusé chez un autre héros.
+
+## ✅ DÉPLOYÉ le 03/10/2026 (service actif, site 200) : signalement Yarro n°42, cartouche du méchant qui réapparaît après un Undo
+
+Cause : l'Undo rejoue la partie, le monde n'a plus aucun fait, mais (1) le repli
+de `etapesDeroule` relisait le journal local du même round et (2) la mémoire de
+`DeroulePhase` gardait la phase annulée. Correctif : `entreesPourRepli`
+(`deroule-phase.ts`, appelé par `board.tsx`) ne passe le journal que pendant la
+phase du méchant, et `DeroulePhase.tsx` vide sa mémoire quand le round recule ou
+que le même round n'a plus rien à raconter hors phase. Batterie plateau 2055/2055,
+typecheck propre. Non reproduit en vraie partie. Après déploiement : marquer
+#37 à #42 « traités » dans /admin.
+
+## ✅ DÉPLOYÉ le 03/10/2026 (service actif, site 200) : carrousel d'arts de héros par face, mémorisé sur le compte
+
+Non vérifié en prod : la mémoire sur le compte (aucun compte testable en local) et le plateau en partie. Le premier passage `.bat` a échoué (tar : avertissement transformé en erreur par `2>&1`), relancé en direct avec `deployer.ps1` : cause à corriger dans `DEPLOYER.bat`. ⚠ Corrigé le 03/10/2026 (PRÊT, PAS ESSAYÉ) : plus de `2>&1 | Tee-Object`, `-File .\deployer.ps1`, construction du plateau journalisée dans `construction-plateau.log`. À valider au prochain déploiement par le `.bat`.
+
+- Wizard : carrousel par face (héros, alter ego) dans la modale du héros,
+  case « même série pour les deux faces », moitié d'écran sur ordinateur,
+  plein écran sur téléphone. Fichiers : `app.js` (`?v=20261003c`),
+  `arts-heros-choix.js` (nouveau), `prefs.js`, `dico-en.js`, `prepare.css`
+  (`?v=20261003c`), `prepare.html`.
+- Serveur : `server_get.py` (`/get_arts_heros`, `/save_arts_heros`),
+  `tools/config_serveur.py` (`arts_heros_file`), `deploiement/sauvegarde.sh`.
+  Le moteur de chaque place doit être relancé et sa config `launch-N.json`
+  régénérée pour que le compte soit reconnu.
+- Plateau : `variantes.ts` lit `<héros>b` pour l'alter ego, bundle reconstruit.
+- Tests passés : `arts-heros-choix` 9/9 (74/74 du dossier), `test_arts_heros_serveur`
+  12/12, `test_config_serveur` 59/59, `arts-heros.test.ts` 8/8.
+
+## ✅ DÉPLOYÉ le 03/10/2026 (md5 de app.js, nouveautes.js, prepare.html, palettes-heros.json, bundle du plateau et 3 images identiques en prod, 172 images `_cb/_rog` présentes, site HTTP 200) : arts alternatifs de héros, Conan dans les nouveautés et la palette
+
+- 170 arts (`assets/pics/<id>_{cb,rog,rog2}.jpg`, + 2 copies du scan de
+  Rogue héros sous rog/rog2) et leurs vignettes. Tables `ARTS_HEROS` dans
+  `ui-app/src/board/variantes.ts` (par face, + `HEROS_DE_LA_CARTE`) et
+  `public/js/prepare/app.js` (69 héros). Plateau reconstruit
+  (`bash ui-app/deployer.sh`), `prepare.html` passé à `app.js?v=20261002a`.
+- Écartés pour texte différent : War Machine AE `cb`, Wolverine AE `cb`,
+  Rogue héros `rog`. Elektra et Iron Fist du zip : héros absents du jeu.
+  Album Flickr : 25 photos sur 28 récupérées (les 3 dernières ne s'affichent
+  pas sans compte).
+- PREVIEWS.zip : rien de nouveau (93 images déjà en jeu).
+- Conan : entrée de nouveautés + palette `cn001a-e` (seul ajout gardé de la
+  régénération, qui aurait aussi modifié Jessica Jones).
+- Tests : `arts-heros.test.ts` 5/5, `resources-art-packs-custom` 25/25,
+  `tsc` propre, `test_palettes_heros.py` vert. Wizard et plateau NON
+  vérifiés à l'écran.
+
+## ✅ DÉPLOYÉ le 02/10/2026 (md5 de 59002, 59003, 62022, lj002, iw004 et cards.json identiques en prod, site HTTP 200) : 7 plantages préexistants relevés par l'autoplay, Dynamic Duo, 59003 et 59002
+
+Chaque correctif a un cas rouge avant, vert après dans `tools/test_capacites.py`.
+- lj002 Black Bolt : `Deck2.DiscardTopCards` n'existe pas, remplacé par `Worlds.DiscardEncounterCards`.
+- iw004 : `AddGainedATK` inexistant, remplacé par `GainUntilTurnEnd(thwart=1 / attack=1)`.
+- iw016 / iw017 : `IsScheme` / `IsAttack` inexistants, remplacés par `sch_message` / `atk_message` ; iw016 : `TakeIndirectDamage` s'appelle sur l'identité, pas sur le joueur.
+- iw005 Flying Disk : `OnEvent.Form("You")` non reconnu (AssertionError dans `card_type.py:247` à chaque changement de forme) devenu `"AttachedIdentity"`. Aucun cas du harnais ne peut rougir (l'erreur est avalée) : preuve par l'autoplay Invisible Woman, 11 AssertionError avant, 0 après.
+- iw015 Emotional Masterplan : deux défauts. `"EachPlayer"` n'est pas une règle de `PlayersCannotChangeForms` (le blocage de forme ne s'appliquait jamais) devenu `"AnyPlayer"` ; l'Action « Resist Manipulation » plantait (`TemporaryGain` avec le message courant) et dure maintenant jusqu'à la fin du tour (`WhenPlayerTurnEnd`).
+- lj001a Lockjaw « Fetch! » : `Select.From(faces=...)` ne restreint rien sur des cartes hors jeu, la capacité récupérait la MANIGANCE PRINCIPALE (partie sans manigance, donc IndexError dans `game_over.py:104`). Remplacé par `AskChooseFace`. Le cas Fetch! vérifie désormais que la manigance reste là.
+- `game_over.py` lui-même n'est PAS modifié : la gate est le cas Fetch!, pas un repli.
+- Batteries : `iw` 31/31, `lj` 52/52. Autoplay (étape 8) : Invisible Woman 16 parties, Lockjaw 8 parties (Rhino, Klaw, normal), 0 Traceback, 0 AssertionError, 0 IndexError.
+- À surveiller : `Select.From(faces=...)` dans une capacité de choix sur des cartes hors jeu, même piège possible ailleurs (déjà noté dans sg002).
+- 62022 Dynamic Duo (signalement joueur « va chercher la carte en équipe mais pas l'allié »). Cause : `Search.SearchForCards` sans filtre ne renvoie PAS la liste des candidats, mais la carte CHOISIE (une seule, n'importe laquelle) ; le script filtrait ensuite ce résultat sur « Team-Up », donc la Team-Up était rarement trouvée, et l'allié ne suivait que si elle l'était. La lecture du mot-clé dans le texte ratait aussi les Team-Up dont le texte est en italique (`<i>(...)</i>`, 61027 et 62023 du pack Luke Cage) et celles à noms entre parenthèses (kb015). Réécrit : une recherche filtrée (`check_effect_fn`) de la Team-Up, puis une recherche filtrée de l'allié nommé (nom ou sous-titre, attribut `TeamUp` en priorité, repli sur le texte), les deux dans le deck et la défausse, puis mélange. 3 cas ajoutés (14018 + Quicksilver, 61027 + Jessica Jones, jj022 + Jessica Jones), rouges avant, verts après. Batterie `620` 15/15 ; autoplay Luke Cage 8 parties, 0 erreur.
+- 59003 Embody Pathos et 59002 Defeat the Hydra (signalements Aghenatak du 02/10 : « les alliés peuvent participer aux travaux d'Hercules » et « le troisième travail (buter un sbire) : pas moyen de le valider »). Log de la table 10 lu en production (`replays/serveur-10`, partie de 14:52 à 15:23) : les Travaux 59004 et 59003 se valident bien en vrai (Don après chacun), le 59002 est révélé à la fin et le log s'arrête avant toute attaque sur la Hydre. Deux causes trouvées en local. (1) 59003 : `check_not_hercules` cherchait l'identité de l'INITIATEUR du retrait ; avec un allié, l'initiateur est quand même le joueur d'Hercules, donc l'allié passait pour Hercules. Corrigé en lisant `message.by_face` (la carte qui retire la menace). (2) 59002 : `after_leave` lisait `GetControlByOrOwner()`, qui rend le VILAIN pour un Travail attaché à un sbire (`GetOwner()` aussi) ; `Player.IsType` était faux, donc l'Atonement n'était JAMAIS appelé quand la Hydre mourait : Travail défaussé, pas de Don. Corrigé en retrouvant le joueur par son identité (Hercules). Le « allié blesse le sbire » n'est PAS reproduit (cas vert avec l'ancien script aussi) : à ne pas annoncer comme corrigé. 7 cas dans `tools/test_capacites.py` (590 : 7/7 deux fois ; le cas de validation de 59002 est rouge avant, vert après ; il attend le Don 59007, celui du dessus dans ce harnais, donc à revoir si l'ordre de la pile de Dons change). Autoplay Hercules : 6 parties, 0 erreur. Non vérifié : la partie réelle d'Aghenatak après le pas 80.
+- À noter, non corrigé : 8 Team-Up n'ont pas d'attribut `TeamUp` dans `cards.json` (seulement le texte) : 60031, jj022, bw024, bw025, il023, wc017, tt019, hc022 ; le moteur ne peut donc pas imposer « ne se joue que si les deux personnages sont en jeu » pour elles. À vérifier carte par carte.
+
+## ✅ DÉPLOYÉ le 02/10/2026 (md5 de cards.json, nouveautes.js et 61007.py identiques en prod, site HTTP 200) : audit des alliés (dégât consécutif) et signalement #42 (61007 compte dans la limite de manigances)
+
+- Audit : 312 alliés MarvelCDB sur 317 corrects (source `attack_cost` / `thwart_cost`). 5 Luke Cage corrigés : 62002 ATK `2*`, 62012 `2*/1*`, 62014 `2*/1*`, 62020 ATK `2**`, 62021 `2**/2**`.
+- 14 alliés fan-made corrigés (astérisque posé sur ATK et THW d'après les scans) : lj002, lj018, lj019, lj020, lj021, lj022, lj025, il002, ok002, ok003, ok017, ok018, 65002, rs002. `lj026` Ms. Marvel NE reçoit PAS d'astérisque : son script donne déjà 1 dégât consécutif (la première version le doublait, vu en test et retiré).
+- 46 cas ajoutés à `tools/test_capacites.py` (filtre `consecutif(s)`), rouge avant, vert après.
+- #42 : 61007 Piecing It All Together comptait dans la limite. Cause : drapeau `not_count_player_side_scheme_limit` posé sur `WhenCardSetup` (mise en place seulement), donc jamais posé quand la carte est jouée. Corrigé sur `WhenCardEnterPlay` (PAS `AfterCardEnterPlay` : la limite est contrôlée avant). 2 cas ajoutés (exemption + témoin 61039 qui, lui, compte), rouge puis vert.
+- Relecture visuelle des 175 autres alliés hors MarvelCDB (4 lecteurs, scan par scan) : 5 écarts corrigés, rouge avant et vert après : 60139 Shop Proprietor `1*/1*` devenu `1**/1**`, vp002 Black Cat THW `1*` devenu `1` (étoile de texte, pas de consécutif), sw002 Madame Web ATK `0**` devenu `0*`, si003 Teen Abomination THW `0` devenu `0*`, mf002 Invisible Woman THW `1` devenu `1*`. 170 conformes.
+- Non vérifiables faute de scan (cartes générées par le moteur, un personnage transformé en allié) : fne_black_cat_ally, registered_ally, phoenix_controlled_ally, karma_controlled_ally, redemption_redeemed_ally, tah_hellbender_ally. Leurs scripts n'ont pas été relus.
+- Batterie `consecutif(s)` : 55/55. Batterie `610` : 34/34. Autoplay étape 8 (Luke Cage, Lockjaw, Okoye, Iron Lad, Red Sonja, Madame Web, Invisible Woman, Black Cat ; Rhino et Klaw, 4 parties chacun) : sans lien avec ce lot mais plantages relevés, scripts NON modifiés par ce lot, donc déjà en prod : lj002 Lockjaw (`deck.DiscardTopCards` n'existe pas), iw004 (`AddGainedATK` sur `AfterUnitChangeForm`), iw016 et iw017 (`IsScheme`/`IsAttack` sur `AfterUnitAttackEnd`), `AssertionError` dans une condition de carte (Invisible Woman), `IndexError` dans `game_over.py` à l'élimination d'un héros. À traiter à part.
+- Déployé sur ordre explicite « deploie maintenant » après que le serveur ne s'est jamais vidé (17 à 55 connexions HTTPS, table 2360 active) : la partie en cours a été coupée.
+- À marquer « traité » par l'utilisateur dans /admin : #37 à #42.
+
+## ✅ DÉPLOYÉ le 02/10/2026 (10:05 UTC, md5 de cards.json, nouveautes.js et 61012.py identiques en prod, site HTTP 200) : pack Jessica Jones revérifié (signalement #41, Squirrel Girl sans dégât consécutif)
+
+Cause du #41 : astérisques de dégât consécutif absents de `cards.json` (`desc.ATK` / `desc.THW`). Même défaut sur les 6 alliés : 61017 `1*/1*`, 61003 `2**/2**`, 61015 ATQ `3**` CTR `2*`, 61016 `2**/2**`, 61025 `2*/2*`, 61038 `1*/1*`.
+Audit carte par carte du pack (sources MC4DB / MarvelCDB), tout corrigé avec cas rouge avant, vert après dans `tools/test_capacites.py` (filtre `610` : 32/32) :
+- 61019 Strategy Session : ressource `Y` devenue `B` (mentale).
+- Menace de départ : 61020 `4*`, 61021 / 61028 / 61039 `3*` (par héros), 61029 `3*` devenu `3`, 61032 `2*` devenu `2`.
+- Scripts : 61012 Ticked Off réécrit (réponse forcée en fin d'activation du vilain, repasse en forme héros, 5 dégâts au vilain et aux sbires engagés), 61013 (`HeroInterrupt`), 61024 (déclencheur « contre un complot du vilain » au lieu de `None`).
+- Autoplay (étape 8) : 16 parties JJ + 16 parties témoin Spider-Man (Rhino, Klaw, normal), 0 incident, 0 traceback sur les 32 journaux. Aucune victoire des deux côtés (pilote simple). JJ tient moins longtemps (3,4 et 4,8 rounds contre 4,9 et 6,9), non comparé à l'état d'avant correctif.
+- Doutes non traités : 61016 Spider-Woman (`SetPlay()` en Action), 61027 Unbreakable Bond (répartition du soin), astérisques inoffensifs de 61001a.
+- Images : les 43 scans sont présents en local et en prod. Les cartes grises du joueur viennent de faux « sans image » générés puis gardés dans `assets/cache` de la prod (20/09 et 02/10 07:21) et/ou en mémoire d'une table déjà lancée. Fait au déploiement : `61*.jpg` supprimés de `assets/cache` en prod (21 fichiers restent, aucun JJ), tables redémarrées. Scans non testés en HTTP (aucune table lancée juste après le redémarrage), 43 scans JJ présents dans `assets/pics`. Déployé malgré deux autres adresses connectées (une table 2351 active), sur accord explicite de l'utilisateur.
+- `nouveautes.js` : 5 entrées parties (JJ, Storm météo, bandeau « Voir la table », « Injouable », pièces rejouées).
+À marquer « traité » par l'utilisateur dans /admin : #37 à #41.
+
+## ✅ DÉPLOYÉ le 02/10/2026 (md5 board.html et board-DuKAfvXJ.js identiques en prod) : languettes PILES et MAIN déplaçables (signalement #40 de Yarro)
+
+Sur téléphone, la languette PILES cachait le badge REC du héros. Décision avec
+l'utilisateur : appui long (450 ms) sur la languette, puis glisser en
+hauteur ; les deux languettes, chacune retient sa place dans `localStorage`
+(`marvel-encoche-gauche` / `-droite`). Sans place retenue, rien ne change.
+Tap et swipe vers l'intérieur ouvrent toujours. Fichiers : `Encoche.tsx`,
+`portrait.css`, `v2-mobile.css` (`touch-action: none` sur la V2), test
+`Encoche.test.tsx` (7 cas). Vérifié dans Chromium : appui long + glissé de
+250 px, place gardée après rechargement. Pas essayé avec un vrai doigt.
+Déployé malgré une table active (autre joueur sur le 2351), sur accord explicite
+de l'utilisateur. Reste #40 à marquer « traité » dans /admin par l'utilisateur.
+
+## ✅ DÉPLOYÉ le 01/10/2026 (nuit) : météo de Storm, cartes non utilisées SOUS la carte en jeu
+
+Demande : « les cartes climat non utilisées doivent aller sous celle qui est en cours d'utilisation ». `zones.ts` : les cartes du deck Weather deviennent les `attachees` de la météo en jeu (empilées derrière, comme des améliorations, chacune se survole), le deck n'a plus de pile propre tant qu'une météo est en jeu (sans météo en jeu, il reste une pile). L'éventail au survol (`.pile-eventail`) est retiré. Test : `board/deck-weather-storm.test.ts` (6 cas). Vu au navigateur sur fixture temporaire (supprimée). Déployé après le « déploie » (md5 de board.html identique, HTTP 200).
+
+## ✅ DÉPLOYÉ le 01/10/2026 (soir) : header et météo de Storm (la météo a été refaite ensuite, voir plus bas)
+
+- Header : le bandeau « ROUND / Tour de… / À toi de jouer » était centré en absolu sur la barre et passait SOUS le groupe de boutons (~880 px) sur une fenêtre moyenne (capture de l'utilisateur, 1620 px). `board.css` : marges auto (au milieu de la place libre à gauche des boutons) par défaut, centrage absolu seulement à partir de 2200 px. Vérifié par la CSS seule, pas mesuré au navigateur (la fixture `?etat=` n'a pas de header).
+- Météo de Storm : la carte Weather EN JEU (trait `t_WEATHER`) sort des soutiens et se pose dans la case Weather, à côté de son deck ; au survol de la case, un éventail montre toutes les cartes Weather (en jeu + deck). `zones.ts` (`meteoEnJeu`, `eventail`), `Board.tsx` (`.pile-eventail`), `board.css`, test `board/deck-weather-storm.test.ts`. Mesuré au navigateur sur une fixture temporaire (supprimée) : 4 cartes dans l'éventail. Limité au trait Weather, les autres decks spéciaux (Invocation...) gardent leur disposition.
+- Déployé après le « déploie » (build local + `deployer.ps1 -Code`, HTTP 200).
+
+## ✅ DÉPLOYÉ le 01/10/2026 (après le « déploie ») : encart « Injouable » retiré des cartes d'identité (attend le « déploie »)
+
+Capture d'Ororo Munroe (alter ego de Storm) avec « Injouable : Jouable seulement sous forme de héros ». Cause : `Effect.Render(by_effect)` rend le `bind_id` de `by_effect`, donc pendant « Resolve Mulligans » ou le Setup, le refus d'une carte de la main se collait sur l'identité. Correctif : `Controller.RendreLesRefus` écarte tout refus dont le `bind_id` est une identité (`src/engine/controller/controller.py`). Gate : `tools/verifier_raisons_refus.py` échoue maintenant si un refus tombe sur une identité (vue rouge sur storm/spider_man/captain_marvel, puis verte). Moteur seul, aucun changement de plateau.
+
+Aussi déployé : la pile du deck spécial (Blizzard du deck Weather) est calée au même niveau que le héros voisin (`board.css`, `.zone-deck-special .plateau-cartes` : `align-items: flex-start; padding-top: 6px`, titre à `top: -9px`). Mesuré dans le navigateur : 445 px des deux côtés (écart avant : 13 px), titre visible. `.zone-reserve` et `.zone-rising-tide` gardent leur ancien calage (non demandé). Embarqué avec le prochain « déploie » (reconstruire d'abord : `bash ui-app/deployer.sh`).
+
+## ✅ DÉPLOYÉ le 01/10/2026 (md5 world.py, board.html et board-ByT9plY4.js identiques en prod ; batterie complète test_capacites encore en cours au moment du déploiement, à relire) : suite des retours sur « Voir la table »
+
+Retours de l'utilisateur après essai en prod : bouton à mettre en haut à côté de « ⌂ Menu », et fenêtre des étapes du méchant impossible à bouger.
+- `BoutonVoirLaTable` est dans l'en-tête `.board-actions`, juste après « ⌂ Menu » (grisé tant qu'aucune fenêtre n'est ouverte).
+- `DeroulePhase` : le bandeau rouge (`.deroule-chrono`) est une poignée `poignee-glisser`, repliée comme dépliée.
+- Cause réelle du « je ne peux pas la bouger » : `useGlisserPanneau` ne posait la capture qu'après 6 px, dans le `onPointerMove` de la poignée ; une poignée mince est quittée avant, la fenêtre ne bougeait pas. Le suivi se fait maintenant par écouteurs `window` posés au `pointerdown`. Mesuré à la vraie souris : -150/-200 px, position conservée après « Suivant ».
+- Garde durable : `cd ui-check && npm run glisser-fenetre-etapes` (nécessite un serveur sur le baseURL, vraie souris, aucune partie lancée).
+- Vérifié : tsc propre, vitest 2070 verts, `npm run build` fait.
+- Pour déployer : vérifier qu'il n'y a personne en ligne, `bash ui-app/deployer.sh`, `deploiement/deployer.ps1 -Code`, comparer les md5 de `board.html`, `board-*.js`, `board-*.css`.
+- Signalement #37 : à marquer « Traité » par l'utilisateur dans /admin.
+- Signalements #38/#39 (Yarro, 30/09) : #38 avait raison, le moteur avait tort. Rules Reference p.18, « End of Player Phase » etape 3 : « Ready each exhausted encounter card ». `PlayersEndPhase` ne relevait que `GetControlCards()` : une obligation ou un attachement de rencontre epuise (ex. « Serve. » de Purple Man, Hypnotic Suggestion de Lady Sif) restait epuise pour toujours, donc sa Forced Action ne servait qu'une fois. Corrige dans `world.py` (`ReadyEncounterCardsAtEndOfPlayerPhase`, appelee apres la pioche et le relever des joueurs, toutes cartes de rencontre, decision de l'utilisateur). Cas `60107 "Serve." ... fin de phase joueur` dans `tools/test_capacites.py` (rouge sans le correctif, vert avec). Batterie complete lancee le 01/10 (`/tmp/cap-batterie-38.log`), PAS deployee. #39 n'est pas un second bug : meme etat de partie, 23 s apres, autre image ; le formulaire n'accepte qu'une image.
+
+## ✅ DÉPLOYÉ LE 01/10/2026 : fenêtre principale déplaçable + « Voir la table »
+
+Sur « déploie » conditionnel de l'utilisateur (« s'il n'y a personne en ligne
+à part moi »). Aucune connexion sur les ports 2345..2400. `bash ui-app/deployer.sh`
+(bundle `board-Da6pgeQM.js`) puis `deployer.ps1 -Code` : même bundle en prod,
+service `narwhal` actif, site en 200. ⚠ Depuis WSL, `ssh` refuse la clé
+(permissions 0444 sur /mnt/c) : utiliser `ssh.exe -i 'C:\...\cle_narwhal'`.
+Règles de permission SSH/deployer ajoutées dans `.claude/settings.local.json`.
+Le bouton n'a toujours pas été vu dans une vraie partie : à regarder.
+
+Détail du chantier (écrit avant le déploiement) :
+
+Signalement Yarro du 30/09 (« je peux bouger la fenêtre du fond mais pas la
+fenêtre principale »). Cause : le cartouche de question de `DeroulePhase.tsx`
+(bandeau rouge « À toi de jouer ») avait été oublié par le chantier « toutes les
+fenêtres » du 28/09. Correctif : poignée sur le bandeau (`translate`, qui
+compose avec le `translateX(-50%)` existant). Ajout demandé : bouton « Voir la
+table » (`BoutonVoirLaTable.tsx`), bascule globale, fenêtres à 15 % et table
+cliquable à travers, en haut à gauche (le coin droit est au journal).
+Mesuré : 2069 tests unitaires verts, typecheck propre, `npm run voir-la-table`
+(2 cas, vrai CSS, `elementFromPoint`) vert sur `ui-app/dist`. Pas vu dans une
+vraie partie : à regarder au déploiement (emplacement du bouton). Rien commité.
+
+## ✅ DÉPLOIEMENT du 30/09/2026 (soir) : tout l'arbre de travail, « à jour à 100 % »
+
+Sur « déploie » de l'utilisateur, aucune connexion sur les tables 2351..2380.
+`bash ui-app/deployer.sh` (bundle `board-DXiVGHed.js`, inchangé) puis
+`deployer.ps1 -Code` sans stash : tout l'état brut du disque est parti (dont
+`controller.py` et `player_action.py` restaurés, 31007 SP//dr, `orchestrateur.py`,
+packs non commités). md5 local = prod pour ces 6 fichiers, service actif,
+site en 200. Le Caddyfile de prod n'est pas réécrit par le script (corrigé à la
+main, voir plus bas) ; ses autres écarts avec le dépôt subsistent.
+
+## ✅ DÉPLOIEMENT du 30/09/2026 (après-midi) : signalements 30 à 35, Wiccan, points à placer
+
+Sur « déploie » de l'utilisateur, personne en partie (aucune connexion établie
+sur la table 2364). `bash ui-app/deployer.sh` puis `deployer.ps1 -Code` : bundle
+`board-DXiVGHed.js` et `15011.py` (Wiccan) identiques à la prod (md5), service
+actif, site en 200. Contenu : Passer, encart Injouable, bulles, vocabulaire,
+n°30 et n°32, Wiccan obligatoire (une cible libre par icône, « (1/3) »), compteur
+« reste N à placer » et avertissement à la validation d'une sélection répartie.
+✅ **Caddyfile de prod corrigé à la main le 30/09 (soir)** : `'self'` ajouté aux deux
+`frame-ancestors` (lignes 37 et 307), sauvegarde `/etc/caddy/Caddyfile.bak-30-09`,
+`caddy validate` OK, rechargé, service actif. Voile blanc de la météo levé.
+À noter : d'autres écarts existaient déjà entre ce Caddyfile et `deploiement/Caddyfile`
+(ex. routes p1..p20 en prod contre p1..p30 dans le dépôt), non touchés. ✅ **Wiccan clôturé** (30/09, soir) : les 3 parties en
+minuteur (Rhino 5 et 6, Klaw 6) venaient du pilote `tools/autoplay.py`, pas du
+moteur : pour le jeu gratuit de Chaos Magic (15003), la demande affiche un coût
+« * » (déjà annulé) et `executable()` le lisait comme impayable, donc répondait
+« passer » à une demande obligatoire (assert `controller.py:515` en boucle). Le
+pilote traite maintenant « * » comme gratuit ; les 3 parties se terminent, cas
+Wiccan du harnais 9/9. Signalement n°36 (Venom) : pas un bug, règle du scénario
+Grand Collection (Symbiote Enragé vaincu = 5e carte de La Collection = défaite) ;
+réponse courte donnée à l'utilisateur pour Phocéa, rapport NON marqué traité.
+⚠ Le 30/09, un test A/B a écrasé par erreur `controller.py` et `player_action.py`
+(copies jetables faites de liens vers `src`) : restaurés depuis la prod, diff vs
+HEAD identique. **Ne jamais écrire dans une copie `.game-src-*` sans vérifier
+qu'elle ne contient pas de liens vers `src`.**
+
+## ✅ DÉPLOIEMENT du 29/09/2026 (midi) : règles MC4DB, Multiverse, titres FR
+
+Envoi `-Code`, trois commits : `c2b7d4f3` (10 cartes officielles, Multiverse,
+Fleeting/Alias, mots-clés maison alignés sur MC4DB), `3bec5a15` (titres français
+des boîtes et campagnes), `bdac9eba` (outillage Stan Lee et import d'images).
+31 fichiers vérifiés par md5 contre `/opt/narwhal` après coup, service actif,
+site en 200. La table Discord active (port 2351) a été coupée par le
+redémarrage (aucune autre table). Pas de batterie complète de cartes avant
+l'envoi (demande de l'utilisateur, la consommation) : les cas `[mc4db]` et
+`[dt]` étaient verts, et `CanBeInstead` de `WhenMinionWouldEngagePlayer` est
+la retouche moteur partagée à surveiller. `cards.json` est committé en entier
+(embarque wave, conan, red_sonja déjà en prod). Reste hors dépôt : ui-app,
+`site/orchestrateur.py` (hors Discord) et des fichiers moteur d'autres sessions,
+déjà en prod mais jamais committés.
+
 ## ✅ SECOND DÉPLOIEMENT du 22/09/2026
 
 Envoi `-Code` : un seul commit, `1c7add23`.
@@ -167,6 +812,17 @@ Envoi `-Code` seulement : ni image ni document n'avait bougé.
 constaté). Section gardée pour mémoire du piège, plus d'action requise.
 
 ## Ce qui reste ouvert, sans être planifié
+
+- **Finir le mode manuel** (demande de l'utilisateur, 01/10/2026, « pour plus
+  tard »). La fiche dit les deux moitiés déployées le 22/09, mais l'utilisateur
+  le tient pour inachevé : le reste à finir n'est pas encore détaillé, à lui
+  faire préciser avant de cadrer.
+- **Disposition de la table modifiable par le joueur** (demande de
+  l'utilisateur, 01/10/2026, idée seulement, rien de cadré). Un système « Lego »
+  de blocs déplaçables : par exemple mettre le paquet du méchant à un autre
+  endroit. À étudier pour le mode manuel ET le mode automatique (question
+  ouverte : les deux, ou seulement le manuel). Lien avec le glisser des
+  panneaux déjà posé (`useGlisserPanneau`), qui ne déplace que des fenêtres.
 
 - ~~**Echo, Photographic Reflexes** : ce n'est pas un défaut du moteur.~~
   **FAUX, corrigé le 21/09/2026.** C'en était un, et un deuxième avec : le cache
@@ -841,7 +1497,7 @@ Chaque chantier redéployé séparément (`deployer.ps1 -Code`, plus
 confirmation explicite, un déploiement bloqué une fois par le garde-fou
 automatique puis relancé sur « vas-y ».
 
-## 29/09/2026 : activité Discord, déployée et vérifiée en vrai, PAS commitée
+## 29/09/2026 : activité Discord, déployée, vérifiée en vrai, commitée (`cc953882`)
 
 Le jeu tourne dans un salon vocal Discord (activité intégrée). Six
 déploiements `-Code` dans la matinée (chacun sur « oui »/« go »), plus le
@@ -870,3 +1526,5 @@ invité B siège 2, A revient sur le 1, A arrive au salon avec `seat_token_1`.
 ⚠ Premier passage raté : « port 2351 déjà pris » pendant plus de 3 min après
 le redémarrage (la table de l'hôte était en pleine partie Black Widow/Klaw).
 Toujours le même transitoire d'après déploiement, pas corrigé.
+
+Entrée du 29/09 dans `nouveautes.js` (activité Discord) déployée à 07:58 UTC.

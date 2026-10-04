@@ -34,7 +34,7 @@
 	# pose autour de l'activite. Domaines d'apres la doc du SDK Discord au
 	# moment d'ecrire, NON VERIFIES en conditions reelles (aucun client
 	# Discord disponible pour le confirmer) -- voir docs/reference/DISCORD.md.
-	header Content-Security-Policy "frame-ancestors https://discord.com https://*.discordsays.com"
+	header Content-Security-Policy "frame-ancestors 'self' https://discord.com https://*.discordsays.com"
 
 	log {
 		output file /var/log/caddy/accueil.log {
@@ -304,7 +304,7 @@
 	# Meme raison que sur l'apex : une table peut etre atteinte depuis
 	# l'activite Discord (deuxieme URL Mapping cote Discord, une fois l'hote
 	# redirige vers p<N>.{$DOMAINE}).
-	header Content-Security-Policy "frame-ancestors https://discord.com https://*.discordsays.com"
+	header Content-Security-Policy "frame-ancestors 'self' https://discord.com https://*.discordsays.com"
 
 	log {
 		output file /var/log/caddy/tables.log {

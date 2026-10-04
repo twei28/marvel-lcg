@@ -90,7 +90,7 @@ def ActiveMainSchemeStartswith(effect: 'Effect', prefix: str) -> bool:
 CLES_SECRETES = ('A.I.M. Envelope', 'A.I.M. Envelope Gained')
 
 
-def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':
+def WriteCampaignLogAtGameOver(collect_fn, scenario_id: 'str|None'=None) -> 'Ability':
     def action(effect: 'Effect', message: 'Message.WhenGameOver'):
         import json
         world = effect.world
@@ -137,15 +137,22 @@ def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':
         # scenario » dans ce fichier (voir ActiveMainSchemeStartswith
         # ci-dessus) : 'Ebony Maw' -> 'ebony_maw', ce qui correspond
         # exactement a l'id de scenario dans data/campagnes/mts.json.
+        # ⚠ `scenario_id` PASSE PAR LA BOITE QUAND LE set_name NE SUFFIT PAS
+        # (signalement n°50, 04/10/2026). Le set_name de la manigance principale
+        # n'est l'id du scenario que pour les boites ou ils coincident ;
+        # `gmw` ecrit « collector_1 » et « collector_2 » pour les scenarios
+        # `infiltrate_the_museum` et `escape_the_museum`. Le panneau de
+        # recompenses ignore alors tout le releve du moteur (estampille
+        # differente) et les unites gagnees ne parviennent jamais au Marche.
+        stamp = scenario_id
         schemes = Worlds.GetAllMainSchemes(effect.world)
-        scenario_id = None
-        if schemes:
+        if stamp is None and schemes:
             set_name = schemes[0].paper.set_name
             if set_name:
                 # CORRECTIF (18/09/2026, Fear No Evil) : « Stop the Presses! »
                 # donnait « stop_the_presses! », qui ne correspond a aucun id
                 # de scenario. On ne garde que [a-z0-9_].
-                scenario_id = re.sub(r'[^a-z0-9_]', '', set_name.lower().replace(' ', '_'))
+                stamp = re.sub(r'[^a-z0-9_]', '', set_name.lower().replace(' ', '_'))
         try:
             from engine.config import ConfigVariables
             chemin = ConfigVariables.File('campaign_log_last_file', './campaign_log_last.json').value
@@ -155,7 +162,7 @@ def WriteCampaignLogAtGameOver(collect_fn) -> 'Ability':
             # secours, la recompense etait perdue sans un mot.
             from engine.ecriture_atomique import ecrire_json
             ecrire_json(chemin, {'players_won': message.players_won,
-                                 'scenario': scenario_id, 'suggestions': out})
+                                 'scenario': stamp, 'suggestions': out})
         except OSError:
             pass
         Message.TextRender('\n--- Campaign Log (suggestions) ---', world)

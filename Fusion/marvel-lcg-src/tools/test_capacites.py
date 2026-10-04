@@ -123,6 +123,56 @@ CAS = [
     },
 
     # ------------------------------------------------------------------------
+    # Pack « drs » : Doctor Strange, sorts du deck Invocation
+    # ------------------------------------------------------------------------
+    {
+        "nom": "09032 Crimson Bands of Cyttorak — la cible est OBLIGATOIRE : Sonne et 7 degats",
+        "pourquoi": ("signalement n°51 (Phocea, 04/10/2026) : la carte imprimee dit « Stun an "
+                     "enemy and deal 7 damage to it », mais le script declarait "
+                     "`range=(0, 1)` : l'ecran de choix s'ouvrait avec « 0/1 selectionnee(s), "
+                     "nombre au choix » et son bouton de confirmation actif. Valider sans "
+                     "cliquer l'ennemi resolvait le sort a vide et le defaussait"),
+        "scenario": "rhino",
+        "heros": "doctor_strange",
+        "mise_en_place": ["Puzzle.ChangeForm('09001b')",
+                          "Puzzle.PutOnAdditionalDeckTop('09032')"],
+        "declencher": ["Puzzle.Action('09001a', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 7]], "statuts": [["01094", "Stunned"]]},
+    },
+
+    {
+        "nom": "09035 Vapors of Valtorr — un statut est en jeu : la cible est OBLIGATOIRE, le statut est remplace",
+        "pourquoi": ("meme piege que 09032 (signalement n°51) : `range=(0, 1)` laissait valider a 0 "
+                     "cible un sort dont le texte dit « Choose a status card in play ». Le pilote "
+                     "du harnais prend le minimum : a (0, 1) il ne choisit RIEN et Rhino reste Sonne"),
+        "scenario": "rhino",
+        "heros": "doctor_strange",
+        "mise_en_place": ["Puzzle.ChangeForm('09001b')",
+                          "Puzzle.Stun('01094')",
+                          "Puzzle.PutOnAdditionalDeckTop('09035')"],
+        "declencher": ["Puzzle.Action('09001a', 'Action')"],
+        "verifier": "etat_attendu",
+        # Rhino ne peut pas etre Sonne deux fois : le seul remplacement offert est
+        # Confus (ou Tenace) ; on verifie qu'il n'est plus Sonne ET qu'il a change.
+        "attendu": {"statuts": [["01094", "Confused"]], "exhausted": ["09001a"]},
+    },
+    {
+        "nom": "09035 Vapors of Valtorr — AUCUN statut en jeu : le sort reste lancable a vide",
+        "pourquoi": ("regle retenue (Images of Ikonn, ruling FFG repris dans 09033) : une capacite "
+                     "se resout tant qu'une de ses parties peut changer l'etat du jeu, ici la carte "
+                     "qui part a la defausse de l'Invocation. Rendre la cible obligatoire ne doit "
+                     "donc pas griser Spell Mastery quand aucun statut n'existe"),
+        "scenario": "rhino",
+        "heros": "doctor_strange",
+        "mise_en_place": ["Puzzle.ChangeForm('09001b')",
+                          "Puzzle.PutOnAdditionalDeckTop('09035')"],
+        "declencher": ["Puzzle.Action('09001a', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["09001a"]},
+    },
+
+    # ------------------------------------------------------------------------
     # Pack « rainy » : Thor (Jane Foster) ra001a-ra031
     # ------------------------------------------------------------------------
     {
@@ -1554,8 +1604,11 @@ CAS = [
         "payer_avec": ["vr006", "vr002", "vr011"],
         "cibles": ["01094"],
         "verifier": "etat_attendu",
-        # 3 degats poses + 1 de Represailles (Rhino, Retaliate 1) = 4
-        "attendu": {"degats": [["01094", 5]], "degats_identite": 4},
+        # 3 degats poses, rien de plus : les trois cartes de la main paient.
+        # (Avant le 30/09/2026 le harnais ignorait `payer_avec` ici et payait
+        # avec la ressource de l'identite, qui coute 1 vie : c'etait ce 4e
+        # degat, pas une riposte.)
+        "attendu": {"degats": [["01094", 5]], "degats_identite": 3},
     },
     {
         "nom": "vr003 Just A Snack — 2 degats si paye avec une ressource [physical]",
@@ -2264,6 +2317,23 @@ CAS = [
         "attendu": {"hors_jeu": ["lj015"], "dans_deck_rencontre": ["lj015"]},
     },
     {
+        "nom": "lj002 Black Bolt — attaque : defausse X=ATK cartes du deck joueur ET du deck Rencontre",
+        "pourquoi": ("Forced Interrupt « discard X cards from each player's deck and the "
+                     "encounter deck ». Le script appelait `Deck.DiscardTopCards`, qui n'existe "
+                     "pas : le deck joueur etait defausse (avant le crash) mais jamais le "
+                     "Rencontre, et le test ne regardait que la moitie qui marche"),
+        "scenario": "rhino",
+        "heros": "lockjaw",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01106', '01107', '01108', '01109', '01110', '01111')",
+                          "Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01087', '01088', '01089', '01090', '01091', '01092')",
+                          "Puzzle.PutIntoPlay('lj002')"],
+        "declencher": ["Puzzle.Attack('lj002')"],
+        "verifier": "lj002_x_cartes_defaussees",
+        "attendu": {"x": 4, "defausse_joueur": 4, "taille_deck_joueur": 2},
+    },
+    {
         "nom": "lj017 Provoked — l'identite ne peut plus repasser en alter-ego",
         "pourquoi": "PlayersCannotChangeForms(to_form=AlterEgo) porte par une piece jointe",
         "scenario": "rhino",
@@ -2646,6 +2716,55 @@ CAS = [
         "attendu": {"attributs": {"recover": 1}},
     },
     {
+        "nom": "iw005 Flying Disk — forme PSIONIC : l'identite gagne le trait AERIAL",
+        "pourquoi": ("`OnEvent.Form(\"You\")` : « You » n'est pas une regle connue de "
+                     "`CheckWhichCard` (c'est une chaine, donc une Sequence) : AssertionError a "
+                     "chaque changement de forme et chaque entree en jeu tant que la carte est "
+                     "la, et le trait n'etait jamais recalcule"),
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.ChangeForm('iw001b')", "Puzzle.PutIntoPlay('iw005')"],
+        "declencher": ["Puzzle.ChangeForm('iw001a', 'Hero')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["iw001c", "iw005"], "traits": ["AERIAL"]},
+    },
+    {
+        "nom": "iw005 Flying Disk — retour en forme INVISIBLE : le trait AERIAL est retire",
+        "pourquoi": "pendant negatif : sans recalcul au changement de forme, AERIAL restait colle a l'identite",
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.ChangeForm('iw001b')", "Puzzle.ChangeForm('iw001a', 'Hero')",
+                          "Puzzle.PutIntoPlay('iw005')"],
+        "declencher": ["Puzzle.ChangeForm('iw001c', 'Hero')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["iw001a", "iw005"], "traits_absents": ["AERIAL"]},
+    },
+    {
+        "nom": "iw004 Unstable Uniform — apres passage en forme INVISIBLE : +1 THW (et pas +1 ATK)",
+        "pourquoi": ("Hero Response, `to_form=INVISIBLE`. Le script passait le message de "
+                     "changement de forme a `TemporaryGain`, qui y cherche `AddGainedTHW` : "
+                     "AttributeError avale par le moteur, aucun bonus. Le cas passif (+1 DEF) "
+                     "etait vert et ne voyait pas les deux Hero Response"),
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.PutIntoPlay('iw004')"],
+        "declencher": ["Puzzle.ChangeForm('iw001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["iw001a", "iw004"], "attributs": {"thwart": 1, "attack": 0}},
+    },
+    {
+        "nom": "iw004 Unstable Uniform — apres passage en forme PSIONIC : +1 ATK (et pas +1 THW)",
+        "pourquoi": "second Hero Response de la carte, `to_form=PSIONIC`, meme defaut",
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.ChangeForm('iw001b')", "Puzzle.PutIntoPlay('iw004')"],
+        "declencher": ["Puzzle.ChangeForm('iw001a', 'Hero')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["iw001c", "iw004"], "attributs": {"attack": 1, "thwart": 0}},
+    },
+    {
         "nom": "iw016 Microversal Maneuvers — s'attache a Psycho-Man et lui donne +2 SCH",
         "pourquoi": "attachement nemesis, cle desc `SCH+`",
         "scenario": "rhino",
@@ -2654,6 +2773,53 @@ CAS = [
         "declencher": ["Puzzle.Reveal('iw016')"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["iw016"], "attributs_carte": [["iw014", "scheme", 2]]},
+    },
+    {
+        "nom": "iw016 Microversal Maneuvers — apres que Psycho-Man manigance contre vous : 1 degat indirect",
+        "pourquoi": ("Forced Response. La condition appelait `message.active_message.IsScheme()`, "
+                     "absent de `AfterUnitSchemeEnd` : AttributeError avale, la Forced Response ne "
+                     "partait jamais. Le cas d'attachement etait vert et ne voyait pas cette moitie"),
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.PutIntoPlay('iw014')", "Puzzle.Reveal('iw016')"],
+        "declencher": ["Puzzle.Scheme('iw014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["iw016"], "degats_identite": 1},
+    },
+    {
+        "nom": "iw016 Microversal Maneuvers — Psycho-Man ATTAQUE : pas de degat indirect",
+        "pourquoi": "contre-cas de la condition « schemes » : une attaque (ATK 0) ne doit rien declencher",
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.PutIntoPlay('iw014')", "Puzzle.Reveal('iw016')"],
+        "declencher": ["Puzzle.Attack('iw014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["iw016"], "degats_identite": 0},
+    },
+    {
+        "nom": "iw017 Titanic Terror — apres que Psycho-Man attaque : 1 menace sur la manigance principale",
+        "pourquoi": ("Forced Response. La condition appelait `message.active_message.IsAttack()`, "
+                     "absent de `AfterUnitAttackEnd` : AttributeError avale, la Forced Response ne "
+                     "partait jamais"),
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.PutIntoPlay('iw014')", "Puzzle.Reveal('iw017')",
+                          "Puzzle.SetThreat('01097b', 3)"],
+        "declencher": ["Puzzle.Attack('iw014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["iw017"], "menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "iw017 Titanic Terror — Psycho-Man MANIGANCE : pas de menace en plus sur la principale",
+        "pourquoi": ("contre-cas de la condition « attacks » : sa manigance (SCH 0) ne doit pas "
+                     "declencher la Forced Response ; la menace reste a 3"),
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.PutIntoPlay('iw014')", "Puzzle.Reveal('iw017')",
+                          "Puzzle.SetThreat('01097b', 3)"],
+        "declencher": ["Puzzle.Scheme('iw014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["iw017"], "menace": [["01097b", 3]]},
     },
     {
         "nom": "iw017 Titanic Terror — s'attache a Psycho-Man et lui donne +2 ATK",
@@ -2674,6 +2840,29 @@ CAS = [
         "declencher": ["Puzzle.Reveal('iw015')"],
         "verifier": "etat_attendu",
         "attendu": {"menace": [["iw015", 2]]},
+    },
+    {
+        "nom": "iw015 Emotional Masterplan — Resist Manipulation : le texte vierge libere le changement de forme",
+        "pourquoi": ("L'Action passait le message courant a `TemporaryGain`, qui ne connait que "
+                     "les messages d'attaque, de manigance, de pouvoir, etc. : AssertionError "
+                     "a chaque activation. Le texte vierge doit durer jusqu'a la fin du tour"),
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.ChangeForm('iw001b')", "Puzzle.Reveal('iw015')"],
+        "main_exclusive": ["iw004", "iw005"],
+        "declencher": ["Puzzle.Action('iw015', 'Action')", "Puzzle.ChangeForm('iw001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "AlterEgo", "en_jeu": ["iw015"]},
+    },
+    {
+        "nom": "iw015 Emotional Masterplan — sans l'Action, le changement de forme reste bloque",
+        "pourquoi": "pendant negatif : `PlayersCannotChangeForms(EachPlayer)` tient tant que le texte n'est pas vierge",
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.ChangeForm('iw001b')", "Puzzle.Reveal('iw015')"],
+        "declencher": ["Puzzle.ChangeForm('iw001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"forme": "Hero", "en_jeu": ["iw015"]},
     },
     {
         "nom": "iw002 * Mister Fantastic — son arrivee declenche une de ses deux options",
@@ -4496,7 +4685,7 @@ CAS = [
         "declencher": ["Puzzle.Discard('lj027')",
                        "Puzzle.Action('lj001a', 'Action')"],
         "verifier": "etat_attendu",
-        "attendu": {"taille_main": 3, "exhausted": ["lj001a"]},
+        "attendu": {"taille_main": 3, "exhausted": ["lj001a"], "menace": [["01097b", 0]]},
     },
     {
         "nom": "sr001b Peter Parker — Action : defausser 1 carte pour en chercher une",
@@ -7010,6 +7199,76 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["kb012"]},
     },
+    # ------------------------------------------------------------------------
+    # UN DECK FOUILLE SE REMELANGE, MEME SI LA CARTE VIENT D'AILLEURS
+    # (04/10/2026). Rules Reference v1.8, Search : « If any portion of a deck
+    # is searched, upon completion of that game step, game function, or card
+    # ability, shuffle that entire deck ». Le moteur ne melangeait que le deck
+    # d'ou une carte SORTAIT (`SelectorEnd.DoShuffle`, liste `places`).
+    # ------------------------------------------------------------------------
+    {
+        "nom": "kb001b Kate Bishop — fouille deck ET defausse, arc pris en DEFAUSSE : le deck n'est PAS remelange",
+        "pourquoi": ("choix de l'utilisateur, 04/10/2026 (lecture « Find » du Rules Reference : "
+                     "« Players should not unnecessarily search game areas if they know where "
+                     "the card … can be found ») : la defausse est publique, l'arc y est, le "
+                     "deck n'a pas ete fouille. ⚠ CONTRE-CAS D'ABSENCE : il reste vert sous "
+                     "substitution, c'est assume"),
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        # Le deck de depart de Kate Bishop CONTIENT deja son arc : sans
+        # `EmptyPlayerDeck`, la fouille prenait la copie du deck (vu par sonde).
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01088', '01089', '01090')",
+                          "Puzzle.CreatePlayerDiscardPile('kb012')"],
+        "declencher": [],
+        "verifier": "deck_joueur_remelange",
+        "attendu": {"en_jeu": ["kb012"], "fouille": ["Puzzle.Action('kb001b', 'Action')"],
+                    "remelange": False},
+    },
+    {
+        "nom": "kb001b Kate Bishop — fouille deck ET defausse, AUCUN arc nulle part : le deck est remelange",
+        "pourquoi": ("rien trouve : il a fallu regarder TOUT le deck, il a donc ete fouille. Rules "
+                     "Reference, Search : « If any portion of a deck is searched … shuffle that "
+                     "entire deck »"),
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01088', '01089', '01090')"],
+        "declencher": [],
+        "verifier": "deck_joueur_remelange",
+        "attendu": {"fouille": ["Puzzle.Action('kb001b', 'Action')"]},
+    },
+    {
+        "nom": "kb001b Kate Bishop — fouille deck ET defausse, arc pris dans le DECK : le deck est remelange (temoin)",
+        "pourquoi": "le chemin qui marchait deja : la carte sort du deck, le deck est melange",
+        "scenario": "rhino",
+        "heros": "kate_bishop",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01088', '01089', '01090', 'kb012')"],
+        "declencher": [],
+        "verifier": "deck_joueur_remelange",
+        "attendu": {"en_jeu": ["kb012"], "fouille": ["Puzzle.Action('kb001b', 'Action')"]},
+    },
+    {
+        "nom": "60037b Echo — fouille FACULTATIVE refusee (rien pris) : le deck est quand meme remelange",
+        "pourquoi": ("choix de l'utilisateur, 04/10/2026 : « tu as vu le deck », il a donc ete "
+                     "fouille et doit etre melange, sinon le joueur connait l'ordre de ses "
+                     "prochaines pioches. Practice Makes Perfect (« you may search your deck "
+                     "for an event ») au passage en forme heros ; le pilote repond le minimum "
+                     "de cibles, donc 0 : il refuse. Le moteur ne melangeait que le deck d'ou "
+                     "une carte SORTAIT (`SelectorEnd.DoShuffle`)"),
+        "scenario": "rhino",
+        "heros": "echo",
+        # Echo commence en forme CIVILE : `ChangeForm('60037b')` la fait passer en
+        # forme heros (meme montage que les cas 60037a), ce qui declenche
+        # l'Interruption. Le passage se fait DANS le verificateur, apres la
+        # remise a zero du repere de melange.
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('01085', '01086', '01087')"],
+        "declencher": [],
+        "verifier": "deck_joueur_remelange",
+        "attendu": {"fouille": ["Puzzle.ChangeForm('60037b')"]},
+    },
     {
         "nom": "kb002 Hawkeye (Clint Barton) — Interrupt : defait par degat consequent, se remelange au deck + 1 fleche sur Kate's Bow",
         "pourquoi": ("CORRECTIF DE DONNEES (data/cards.json) : ATK/THW etaient imprimes sans "
@@ -8778,6 +9037,21 @@ CAS = [
         "payer_avec": ["sd011"],
         "jouer": ["sd014"],
         "verifier": "sd011_restriction_du_tour",
+    },
+    {
+        "nom": "sd011 Top Speed — « Passer » sur « you may generate » REFUSE le supplement (aucune restriction du tour)",
+        "pourquoi": ("constat du 30/09/2026 : `ForChoiceAbility` pose `SetDefault()`, donc l'option "
+                     "unique d'un choix « you may » servait de repli, et « Passer » la PRENAIT. Top "
+                     "Speed n'etait pas refusable. Pendant du cas precedent (supplement pris)"),
+        "scenario": "rhino",
+        "heros": "speed",
+        "mise_en_place": ["Puzzle.ChangeToFace('Thomas Shepherd', 'sd001a')"],
+        "declencher": [],
+        "main_exclusive": ["sd014", "sd013", "sd011", "01088"],
+        "payer_avec": ["sd011"],
+        "jouer": ["sd014"],
+        "passer_sur_option": "Generate_",
+        "verifier": "sd011_refus_par_passer",
     },
     {
         "nom": "sd013 Mother's Protection — Interrupt : 3 degats prevenus, la carte retourne dans le deck",
@@ -11990,6 +12264,56 @@ CAS = [
         "attendu": {"degats": [["01094", 2]]},
     },
     {
+        "nom": "15011 Wiccan + 15001a Chaos Control — 3 icones comptees = 3 degats a l'ennemi, aucun sur Wiccan (signalement 35)",
+        "pourquoi": ("Phocéa (30/09/2026) : Wiccan contre, le dessus (Assault, 0 icone) est "
+                     "remplace par Chaos Control par Slipping Sanity (3 icones). Le journal "
+                     "montrait 1 degat sur Drang puis 1 degat sur WICCAN LUI-MEME (vaincu), "
+                     "au lieu de 3 sur l'ennemi"),
+        "scenario": "rhino",
+        "heros": "scarlet_witch",
+        "mise_en_place": ["Puzzle.PutIntoPlay('15011', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.CreateEncounterDeck('01187', '15023')"],
+        "declencher": ["Puzzle.Thwart('15011')"],
+        "cibles": ["01094", "01094", "01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "en_jeu": ["15011"]},
+    },
+    {
+        "nom": "15011 Wiccan — 3 icones comptees, le pilote ne force aucune cible : les 3 degats sont imposes et non refusables (signalement 35)",
+        "pourquoi": ("meme scene que le cas precedent sans `cibles` forcees : le pilote prend "
+                     "le minimum autorise. Avec `range=(1, max_num)` le joueur n'assignait "
+                     "qu'1 degat sur 3 ; le minimum doit valoir min(icones, copies legales)"),
+        "scenario": "rhino",
+        "heros": "scarlet_witch",
+        "mise_en_place": ["Puzzle.PutIntoPlay('15011', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.CreateEncounterDeck('01187', '15023')"],
+        "declencher": ["Puzzle.Thwart('15011')"],
+        "passer_interdit": "Deal 1 damage to an enemy",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "en_jeu": ["15011"]},
+    },
+    {
+        "nom": "15011 Wiccan — deux ennemis en jeu : la barre annonce (1/3), (2/3), (3/3) et aucun Passer (signalement 35)",
+        "pourquoi": ("avec un seul ennemi le moteur repond tout seul et rien n'est affiche. Avec deux, "
+                     "chaque icone pose une vraie question, numerotee par `repeat` (controller.py, "
+                     "prompt_text). L'utilisateur (30/09/2026) veut voir combien de degats il reste "
+                     "a placer, et ne pas pouvoir en laisser"),
+        "scenario": "rhino",
+        "heros": "scarlet_witch",
+        "mise_en_place": ["Puzzle.PutIntoPlay('15011', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101', under_control=False)",
+                          "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.CreateEncounterDeck('01187', '15023')"],
+        "declencher": ["Puzzle.Thwart('15011')"],
+        "cibles": ["01094", "01094", "01094"],
+        "passer_interdit": "Deal 1 damage to an enemy",
+        "prompts_attendus": ["(1/3)", "(2/3)", "(3/3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "en_jeu": ["15011"]},
+    },
+    {
         "nom": "aa020 Pixie — jouee de la main, un allie X-MEN remonte de la defausse",
         "pourquoi": ("`AfterPlayerPlayedCard('This', from_hand=True)` (31022) + "
                      "selecteur `YourDiscardPile`. Colossus (32048, X-MEN) remonte"),
@@ -14151,6 +14475,90 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["01167"]},
     },
+    # ------------------------------------------------------------------------
+    # LE SBIRE NEMESIS, ET LUI SEUL (04/10/2026). Signale en jeu sur Hercules :
+    # « si je joue Faire face au passé, j'ai Arès et l'Hydre en jeu ». Le
+    # correctif du 02/09 (marqueur `nemesis_of_player`) rendait True pour TOUTE
+    # carte du set nemesis, avant meme de regarder la mention « Nemesis » du
+    # sbire : le second sbire du set (Lernean Hydra, Hydra Mercenary...) passait
+    # pour le sbire nemesis. Regle choisie par l'utilisateur : si le set du
+    # joueur contient un sbire MARQUE, seul celui-la compte ; sinon (Zzzax
+    # emprunte par Viv Vision) le sbire du set compte.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "49022 Face the Past — Hercules : SEUL Ares (sbire nemesis), pas la Lernean Hydra",
+        "pourquoi": ("« Search ... for your nemesis minion and reveal it » : UN sbire, celui qui "
+                     "porte la mention Nemesis. 59037 Lernean Hydra est dans le set nemesis "
+                     "d'Hercules mais n'est pas son sbire nemesis"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": ["Puzzle.ChangeToFace('59001b', '59001a')"],
+        "main": ["49022"],
+        "declencher": [],
+        "jouer": ["49022"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["59036"], "hors_jeu": ["59037"]},
+    },
+    {
+        "nom": "01190 Shadow of the Past — Hercules : Ares entre en jeu, PAS la Lernean Hydra",
+        "pourquoi": ("meme defaut sur la traitrise du set STANDARD, presente a chaque partie : "
+                     "« Reveal your set-aside nemesis minion » ; le reste du set part dans le "
+                     "deck rencontre"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('01190')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["59036"], "hors_jeu": ["59037"]},
+    },
+    {
+        "nom": "01190 Shadow of the Past — Black Widow (officiel) : Taskmaster seul, pas le Hydra Mercenary",
+        "pourquoi": ("le defaut touchait 37 heros officiels dont le set nemesis a un second sbire : "
+                     "Taskmaster porte la mention, Hydra Mercenary non"),
+        "scenario": "rhino",
+        "heros": "black_widow",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('01190')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["08026"], "hors_jeu": ["08028"]},
+    },
+    {
+        "nom": "49022 Face the Past — Blade : SEUL Dracula (bl013 marque), pas un Vampire du deck rencontre",
+        "pourquoi": ("Slayer (bl001b) melange le set nemesis SAUF Dracula dans le deck rencontre "
+                     "des la mise en place : Shadow of the Past, qui ne lit que la pile mise de "
+                     "cote, ne pouvait pas rougir. Face the Past fouille AUSSI le deck rencontre "
+                     "et sa defausse : sans la mention Nemesis de bl013, il sortait un Vampire "
+                     "(bl014) avec Dracula"),
+        "scenario": "rhino",
+        "heros": "blade",
+        "mise_en_place": ["Puzzle.ChangeToFace('bl001b', 'bl001a')"],
+        "main": ["49022"],
+        "declencher": [],
+        "jouer": ["49022"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["bl013"], "hors_jeu": ["bl014"]},
+    },
+    {
+        "nom": "01190 Shadow of the Past — Red Sonja : Ice Queen seule (rs016 marquee), pas le Yeti Warrior",
+        "pourquoi": ("set maison a DEUX sbires et aucune mention : rs016 recoit « Nemesis » dans "
+                     "les donnees, d'apres son texte « (Red Sonja's nemesis minion.) »"),
+        "scenario": "rhino",
+        "heros": "red_sonja",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('01190')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["rs016"], "hors_jeu": ["rs017"]},
+    },
+    {
+        "nom": "01190 Shadow of the Past — Wave : The Reyna Sirena seule (65012 marquee), pas l'Alontech Hybrid",
+        "pourquoi": "meme cas que Red Sonja : texte « (Wave's nemesis minion) », mention ajoutee",
+        "scenario": "rhino",
+        "heros": "wave",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('01190')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["65012"], "hors_jeu": ["65013"]},
+    },
     {
         "nom": "21191 Fandral — sa menee de BASE ignore l'icone de crise",
         "pourquoi": ("carte OFFICIELLE restee SANS AUCUN CAS jusqu'au 02/09/2026. "
@@ -14452,6 +14860,17 @@ CAS = [
         "declencher": [],
         "verifier": "etat_attendu",
         "attendu": {"attributs": {"health": 3, "recover": 1}, "en_jeu": ["hk011"]},
+    },
+    {
+        "nom": "hk012 Limitless Strength — jouable : AUCUN refus « ne peut pas payer son propre cout » transmis (signalement du 04/10/2026)",
+        "pourquoi": ("Main exacte du signalement, Bruce Banner en alter ego. L'etiquette INJOUABLE venait de "
+                     "la passe interne du cout, qui ecrasait le canal des refus lu par le plateau"),
+        "scenario": "rhino",
+        "heros": "hulk_rainy",
+        "mise_en_place": [],
+        "main_exclusive": ["hk009", "hk007", "hk002", "hk010", "hk008", "hk012"],
+        "declencher": [],
+        "verifier": "refus_sans_passe_de_cout",
     },
     {
         "nom": "hk012 Limitless Strength — +1 ATQ a Hulk",
@@ -23037,6 +23456,75 @@ CAS = [
         "verifier": "a3_activation_annulee",
     },
     {
+        "nom": "A4 annulee par — un vilain SONNE ne frappe pas : le fait nomme la carte Sonne",
+        "pourquoi": ("Frise de la phase du mechant (03/10/2026) : « Carte annulée : son étape reste, "
+                     "→ Annulée par X ». Le moteur savait clore l'activation, pas dire QUI l'a remplacee"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Stun('01094')"],
+        "declencher": [],
+        "verifier": "a4_activation_annulee_par",
+    },
+    {
+        "nom": "A4 annulee par — une carte revelee dont l'effet est annule nomme qui l'a annulee",
+        "pourquoi": ("Meme decision : la revelation garde son etape et dit « → Annulée par X ». "
+                     "Temoin : la meme carte (Advance 01186) revelee sans annulation ne porte rien"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a4_revelation_annulee_par",
+    },
+    {
+        "nom": "A4 stade — manigance puis mechant qui changent de stade en pleine phase inscrivent un fait `stade`",
+        "pourquoi": ("Frise de la phase du mechant (03/10/2026) : un changement de stade en pleine phase "
+                     "est une etape a part, la nouvelle carte en grand. Temoin : rien pendant le tour du joueur"),
+        "scenario": "ultron",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a4_fait_stade",
+    },
+    {
+        "nom": "A4 boost etoile — un boost a capacite (56177 Venom Blast) est publie avec `etoile`",
+        "pourquoi": "Frise de la phase du mechant (03/10/2026) : l'effet ★ d'un boost a sa ligne sous l'attaque",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Boost('56177')"],
+        "verifier": "a4_boost_etoile",
+    },
+    {
+        "nom": "A4 boost etoile — temoin : un boost sans capacite (01101) n'a pas `etoile`",
+        "pourquoi": "contre-cas d'absence : reste vert sous substitution, assume",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Boost('01101')"],
+        "verifier": "a4_boost_sans_etoile",
+    },
+    {
+        "nom": "A4 hors phase — une attaque du vilain pendant le tour du joueur est publiee, phase du tour du joueur",
+        "pourquoi": ("Frise (03/10/2026) : hors phase, une attaque ou une manigance du mechant ouvre le "
+                     "cartouche pour ce seul coup. Fixe ce que le moteur publie deja (aucune garde de phase "
+                     "sur les activations), dont le plateau depend"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a4_activation_hors_phase",
+    },
+    {
+        "nom": "A5 bonus publies — le descripteur nomme chaque bonus d'ATQ et de DEF avec sa carte",
+        "pourquoi": ("Boutons de defense (04/10/2026) : « Ne pas défendre (ATQ 2 + 1 Charge + 1 carte "
+                     "boost) », « Défendre avec X (DÉF 2 + 1 Bouclier) ». Temoin : aucun bonus, liste vide"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a5_bonus_publies",
+    },
+    {
         "nom": "A3 annonce — deux activations du meme auteur dans le round ont deux identifiants",
         "pourquoi": ("l'identifiant est un compteur par round, pas une identite de "
                      "carte : sans cela la seconde activation du vilain REMPLACERAIT la "
@@ -30770,6 +31258,74 @@ CAS = [
         "attendu": {"degats": [["01094", 6]], "defausse": ["st020"]},
     },
     {
+        "nom": "62034 Size Advantage — sans GIANT et avec moins de PV que l'ennemi : 3 degats",
+        "pourquoi": ("« Deal 3 damage to an enemy (6 instead if you have the GIANT trait "
+                     "or more remaining hit points than that enemy) ». Spider-Man (10 PV) "
+                     "contre Rhino intact (14) : aucune condition, la branche de base. "
+                     "Ajoute le 03/10/2026 quand la classe a ete corrigee (Justice -> "
+                     "Aggression) : la carte n'avait aucun cas"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('01001b', '01001a')"],
+        "main_exclusive": ["62034", "01088"],
+        "declencher": [], "jouer": ["62034"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]], "defausse": ["62034"]},
+    },
+    {
+        "nom": "62034 Size Advantage — plus de PV restants que l'ennemi : 6 degats",
+        "pourquoi": ("« more remaining hit points than that enemy » : Rhino blesse de 5 "
+                     "n'a plus que 9 PV, Spider-Man en a 10. Les PV RESTANTS, pas les "
+                     "imprimes : 5 + 6 = 11 degats sur Rhino"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeToFace('01001b', '01001a')",
+                          "Puzzle.Damage('01094', 5)"],
+        "main_exclusive": ["62034", "01088"],
+        "declencher": [], "jouer": ["62034"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 11]], "defausse": ["62034"]},
+    },
+    # ------------------------------------------------------- 53017 HUGIN & MUNIN --
+    # Signalement Yarro n°47 (03/10/2026) : « la capacite de Hugin n'a pas
+    # fonctionne ». Echo, Vivian et Hugin etaient tous redresses : la reponse
+    # exigeait une cible a redresser AU DECLENCHEMENT et n'etait jamais proposee.
+    {
+        "nom": "53017 Hugin & Munin — tous redresses : la fouille (le cout) a quand meme lieu",
+        "pourquoi": ("« search the top 10 cards of the encounter deck for a minion and put "
+                     "it into play engaged with you → ready 1 character ... » : la fouille "
+                     "est le COUT, elle ne depend pas d'un personnage incline. Cas du "
+                     "signalement : aucun personnage a redresser"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01110')"],
+        "main_exclusive": ["53017", "01088"],
+        "declencher": [], "jouer": ["53017"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["53017", "01110"]},
+    },
+    {
+        "nom": "53017 Hugin & Munin — une icone de boost redresse l'identite inclinee",
+        "pourquoi": ("Hydra Bomber porte 1 icone de boost : « ready 1 character you control "
+                     "for each icon ». Peter Parker est incline avant l'entree en jeu"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01110')", "Puzzle.Exhaust('01001b')"],
+        "main_exclusive": ["53017", "01088"],
+        "declencher": [], "jouer": ["53017"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01110"], "pret": ["01001b"]},
+    },
+    {
+        "nom": "53017 Hugin & Munin — temoin : sbire sans icone, rien ne se redresse",
+        "pourquoi": ("Goblin n'a AUCUNE icone de boost, ni etoile : « for each icon » vaut 0, "
+                     "Peter Parker reste incline. Prouve que le nombre de redressements suit "
+                     "les icones. ⚠ PAS Whirlwind : sa capacite « [star] Boost » compte, la "
+                     "carte dit « each icon ([star] and [boost]) »"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('39043')", "Puzzle.Exhaust('01001b')"],
+        "main_exclusive": ["53017", "01088"],
+        "declencher": [], "jouer": ["53017"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["39043"], "exhausted": ["01001b"]},
+    },
+    {
         "nom": "st021 Reboot — redresse un personnage ANDROID et lui soigne 1 degat",
         "pourquoi": ("carte EXTRA hors set, BASIC. « **Action** » nue, pas « Hero "
                      "Action ». PAS de filtre `canbe_ready` : la carte fait DEUX choses, "
@@ -30865,6 +31421,126 @@ CAS = [
         "declencher": ["Puzzle.Reveal('59002')"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["59037", "59002"]},
+    },
+    {
+        "nom": "59001b Hercules — mise en place : les decks Travaux et Dons sont MELANGES",
+        "pourquoi": ("signalement du 04/10/2026 : « je tire toujours les travaux et les dons dans "
+                     "le meme ordre ». Encart officiel du pack : « shuffle the three gift cards "
+                     "together to form the gift deck and the three labor cards to form the "
+                     "labor deck ». Le script posait les six cartes sans melanger"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "hercules_travaux_et_dons_melanges",
+        "attendu": {},
+    },
+    # ------------------------------------------------------------------------
+    # DECKS DE SCENARIO MELANGES A LEUR FORMATION (04/10/2026). Audit demande
+    # par l'utilisateur apres Hercules : « en général les deck doivent être
+    # random ». `SetAsideDeck.PushCards` (deck_aside.py) ne melange pas : un
+    # deck forme par lui garde l'ordre ou on l'a rempli.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "39015a Across the Mojoverse — le deck Show est MELANGE (Cornered! n'est plus toujours dessus)",
+        "pourquoi": ("« Shuffle each other SHOW environment together with the Cornered! treachery "
+                     "to create the show deck ». Cornered! etait ajoutee en DERNIER puis "
+                     "`PushCards` sans melange : le premier Show revele etait toujours elle"),
+        "scenario": "spiral",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "deck_de_scenario_melange",
+        "attendu": {"deck_de_scenario": "ShowDeck"},
+    },
+    {
+        "nom": "04061a Attack on Mount Athena — le deck Experimental Weapons est MELANGE",
+        "pourquoi": ("« take all four cards… shuffle them together, and set them facedown ». "
+                     "Juste jusqu'ici par effet de bord seulement (cartes tirees du deck "
+                     "rencontre deja melange), `PushCards` ne melangeant pas"),
+        "scenario": "crossbones",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "deck_de_scenario_melange",
+        "attendu": {"deck_de_scenario": "ExperimentalWeapons"},
+    },
+    {
+        "nom": "21129 Infinity Gauntlet — le deck des Gemmes est MELANGE",
+        "pourquoi": ("« shuffle the six Infinity Stone environment cards together and set them "
+                     "aside, facedown ». Meme effet de bord que Crossbones"),
+        "scenario": "thanos",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "deck_de_scenario_melange",
+        "attendu": {"deck_de_scenario": "InfinityStone"},
+    },
+    {
+        "nom": "59003 Embody Pathos — le contre d'un ALLIE ne retire aucune menace",
+        "pourquoi": ("signalement Aghenatak du 02/10/2026 : « les allies peuvent participer aux travaux d'Hercules ». Le script prenait l'identite de l'INITIATEUR (le joueur, donc toujours Hercules) au lieu de la carte qui contre : Thor (THW 3) retirait la menace"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": ["Puzzle.ChangeToFace('59001b', '59001a')", "Puzzle.PutIntoPlay('59020', under_control=True)", "Puzzle.Reveal('59003')", "Puzzle.SetThreat('59038', 10)"],
+        "declencher": ["Puzzle.Thwart('59020')"],
+        "cibles": ["59038"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["59038", 10]]},
+    },
+    {
+        "nom": "59003 Embody Pathos — le contre d'Hercules retire bien sa menace (temoin)",
+        "pourquoi": ("temoin du cas precedent : sans lui, un Travail qui bloque tout serait vert. Hercules retire 3 ici : THW 1 + 3 (59021 en jeu) - 1 (Olympic Feud)"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": ["Puzzle.ChangeToFace('59001b', '59001a')", "Puzzle.PutIntoPlay('59020', under_control=True)", "Puzzle.Reveal('59003')", "Puzzle.SetThreat('59038', 10)"],
+        "declencher": ["Puzzle.Thwart('59001a')"],
+        "cibles": ["59038"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["59038", 7]]},
+    },
+    {
+        "nom": "59002 Defeat the Hydra — l'attaque d'un ALLIE ne blesse pas le sbire",
+        "pourquoi": ("meme signalement : seul Hercules doit pouvoir blesser le sbire marque. Thor (ATK 3) attaque la Lernean Hydra"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": ["Puzzle.ChangeToFace('59001b', '59001a')", "Puzzle.PutIntoPlay('59020', under_control=True)", "Puzzle.Reveal('59002')"],
+        "declencher": ["Puzzle.Attack('59020')"],
+        "cibles": ["59037"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["59037", 0]]},
+    },
+    {
+        "nom": "59002 Defeat the Hydra — l'attaque d'Hercules blesse le sbire (temoin)",
+        "pourquoi": ("temoin du cas precedent : Hercules inflige ses degats (ATK 3 + 3 de 59021 en jeu)"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": ["Puzzle.ChangeToFace('59001b', '59001a')", "Puzzle.PutIntoPlay('59020', under_control=True)", "Puzzle.Reveal('59002')"],
+        "declencher": ["Puzzle.Attack('59001a')"],
+        "cibles": ["59037"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["59037", 6]]},
+    },
+    {
+        "nom": "59002 Defeat the Hydra — le sbire marque vaincu par Hercules valide le Travail",
+        "pourquoi": ("signalement Aghenatak du 02/10/2026 : « le troisieme travail d'Hercules "
+                     "(celui ou il faut buter un sbire) : pas moyen de le valider ». "
+                     "La Hydre marquee a 12 PV, Hercules l'attaque deux fois (6 + 6) :"
+                     "elle meurt, le Travail doit partir et l'Atonement poser un Don "
+                     "(59007, pose sur le dessus du deck annexe : depuis le 04/10/2026 "
+                     "les Dons sont MELANGES a la mise en place, l'ordre fixe d'avant "
+                     "n'existe plus ; rouge avant le correctif car GetControlByOrOwner "
+                     "rendait le vilain, donc aucun Atonement)"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('59007')",
+                          "Puzzle.ChangeToFace('59001b', '59001a')",
+                          "Puzzle.PutIntoPlay('59020', under_control=True)",
+                          "Puzzle.Reveal('59002')"],
+        "declencher": ["Puzzle.Attack('59001a')", "Puzzle.Ready('59001a')", "Puzzle.Attack('59001a')",
+                       "Puzzle.Ready('59001a')", "Puzzle.Attack('59001a')"],
+        "cibles": ["59037", "59037", "59037"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["59037", "59002"], "en_jeu": ["59007"]},
     },
     {
         "nom": "62012 Iron Fist — en defense, il previent 2 degats (son ATK)",
@@ -32263,6 +32939,41 @@ CAS = [
         }
     },
     {
+        "nom": "60153 Ben Urich — incline, -1 endurance, regarde 2 cartes et en defausse une",
+        "pourquoi": ("Signalement Yarro n43 (03/10/2026) : « je n'arrive pas a jouer la capa ». "
+                     "Le moteur la jouait ; le choix « You may discard 1 of those cards » "
+                     "reprenait le NOM de la capacite au lieu de dire « defausser ». "
+                     "Deux cartes connues sur le deck rencontre ; `accepter_choix` prend "
+                     "le choix : une des deux part en defausse rencontre, l'autre reste"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('24050')",
+                          "Puzzle.PutIntoDeck('24050')",
+                          "Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')",
+                          "Puzzle.PutIntoPlay('60153', under_control=True)"],
+        "declencher": ["Puzzle.Action('60153', 'Action')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["60153"], "compteurs": [["60153", "stamina", 2]],
+                    "defausse_rencontre": ["01190"], "dans_deck_rencontre": ["24050"]},
+    },
+    {
+        "nom": "60153 Ben Urich — « You may » : refuser le choix laisse les deux cartes sur le deck",
+        "pourquoi": ("Le choix est FACULTATIF (forced=False) : decline (sans "
+                     "`accepter_choix`), aucune carte ne part en defausse. Le cout, lui, "
+                     "est paye : Ben Urich incline et perd 1 endurance"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('24050')",
+                          "Puzzle.PutIntoDeck('24050')",
+                          "Puzzle.CreateEncounterDeck('01190')",
+                          "Puzzle.PutIntoDeck('01190')",
+                          "Puzzle.PutIntoPlay('60153', under_control=True)"],
+        "declencher": ["Puzzle.Action('60153', 'Action')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["60153"], "compteurs": [["60153", "stamina", 2]],
+                    "dans_deck_rencontre": ["01190", "24050"]},
+    },
+    {
         "nom": "60150 Imprisoned [fne3a] — obligation revelee : je ne peux pas attaquer (0 degat au vilain)",
         "pourquoi": "PlayersCannotAttackWhile('You') ; l'obligation de rencontre va au joueur qui la revele (obligation.py)",
         "scenario": "the_raft_breakout_hammerhead",
@@ -32329,7 +33040,10 @@ CAS = [
     },
     {
         "nom": "60150 Imprisoned [fne3a] — je ne peux pas passer en alter-ego",
-        "pourquoi": "PlayersCannotChangeForms(to_form=AlterEgo)",
+        "pourquoi": ("PlayersCannotChangeForms(to_form=AlterEgo). `ChangeForm` prend la face "
+                     "ACTUELLEMENT en jeu : apres la mise en place le heros est sous sa face "
+                     "01001a, pas 01001b (l'ancien '01001b' fabriquait une face orpheline "
+                     "dans la reserve et plantait avant tout test)"),
         "scenario": "the_raft_breakout_hammerhead",
         "heros": "spider_man",
         "mise_en_place": [
@@ -32338,7 +33052,7 @@ CAS = [
             "Puzzle.Reveal('60150')"
         ],
         "declencher": [
-            "Puzzle.ChangeForm('01001b')"
+            "Puzzle.ChangeForm('01001a')"
         ],
         "verifier": "etat_attendu",
         "main_exclusive": [
@@ -32349,6 +33063,26 @@ CAS = [
             "en_jeu": [
                 "60150"
             ]
+        }
+    },
+    {
+        "nom": "60150 Imprisoned [fne3a] — temoin : sans Imprisoned, le changement vers l'alter-ego a bien lieu",
+        "pourquoi": "sans ce temoin, le cas precedent resterait vert meme si le changement de forme ne marchait jamais",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.ChangeForm('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {
+            "forme": "AlterEgo"
         }
     },
     {
@@ -32820,6 +33554,46 @@ CAS = [
                 [
                     "01186"
                 ]
+            ],
+            "defausse_rencontre": [
+                "01101"
+            ],
+            "compteurs": [
+                [
+                    "60156",
+                    "stamina",
+                    2
+                ]
+            ],
+            "exhausted": [
+                "60156"
+            ]
+        }
+    },
+    {
+        "nom": "60156 Robbie Robertson [fne3a] — le choix s'intitule « Discard it and deal another », pas du nom de la capacite",
+        "pourquoi": ("Meme defaut que Ben Urich 60153 (signalement Yarro n43, 03/10/2026) : sans `prompt`, "
+                     "le choix facultatif reprenait le NOM DE LA CAPACITE, et le joueur ne voyait jamais "
+                     "qu'il s'agissait de defausser la carte et d'en recevoir une autre"),
+        "scenario": "stop_the_presses_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01186', '01101')",
+            "Puzzle.PutIntoPlay('60156', under_control=True)",
+            "Puzzle.ChangeForm('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Deal('01101')"
+        ],
+        "verifier": "fne3a_bugle",
+        "main_exclusive": [
+            "01088"
+        ],
+        "options_attendues": ["Discard it and deal another"],
+        "attendu": {
+            "distribuees": [
+                "01186"
             ],
             "defausse_rencontre": [
                 "01101"
@@ -38518,6 +39292,7 @@ CAS = [
             "01088",
             "01089"
         ],
+        "payer_tout": True,
         "payer_avec": [
             "01088",
             "01089"
@@ -39599,6 +40374,27 @@ CAS = [
                 ]
             ]
         }
+    },
+    {
+        "nom": "60107 \"Serve.\" [fne2] — fin de phase joueur : l'obligation epuisee se releve (signalement #38)",
+        "pourquoi": ("Rules Reference « End of Player Phase » etape 3 : « Ready each exhausted "
+                     "encounter card ». Le moteur ne relevait que `GetControlCards()` : "
+                     "l'obligation epuisee par sa propre Forced Action restait epuisee "
+                     "pour toujours et ne servait qu'une fois (rapport #38 de Yarro)"),
+        "scenario": "art_museum_heist_purple_man",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Reveal('60107')"
+        ],
+        "declencher": [
+            "Puzzle.Action('60107', 'ForcedAction', 0)"
+        ],
+        "verifier": "carte_de_rencontre_releve_en_fin_de_phase",
+        "main_exclusive": [
+            "01088"
+        ],
+        "attendu": {}
     },
     {
         "nom": "60108 Power of Suggestion [fne2] — chaque sbire gagne INFLUENCED (donc guard) ; Hinder 3 : 5 menaces",
@@ -42025,6 +42821,796 @@ CAS = [
                     "hors_jeu": ["61003"],
                     "dans_deck_joueur": ["61003"]},
     },
+    # Scripts du pack Jessica Jones relus contre le texte (02/10/2026).
+    {
+        "nom": "61012 Now I'm Ticked Off! — le vilain ATTAQUE (activation) : forme heros, 5 degats au vilain, carte defaussee",
+        "pourquoi": "« After the villain activates » : une attaque est une activation ; le script n'ecoutait que la manigance",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61012', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "forme": "Hero", "hors_jeu": ["61012"]},
+    },
+    {
+        "nom": "61012 Now I'm Ticked Off! — le vilain MANIGANCE : la carte part aussi",
+        "pourquoi": "contre-cas : la manigance reste une activation",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61012', under_control=True)"],
+        "declencher": ["Puzzle.Scheme('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]], "hors_jeu": ["61012"]},
+    },
+    {
+        "nom": "61012 Now I'm Ticked Off! — un SBIRE manigance : rien ne part",
+        "pourquoi": "temoin : le texte dit « the villain », un sbire ne declenche pas",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61012', under_control=True)", "Puzzle.PutIntoPlay('01103')"],
+        "declencher": ["Puzzle.Scheme('01103')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "en_jeu": ["61012"]},
+    },
+    {
+        "nom": "61024 Entrapment — le vilain manigance : forme heros, carte defaussee, degats au vilain",
+        "pourquoi": "« After the villain schemes » : chemin nominal",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61024', under_control=True)"],
+        "declencher": ["Puzzle.Scheme('01094')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_min": [["01094", 1]], "forme": "Hero", "hors_jeu": ["61024"]},
+    },
+    {
+        "nom": "61024 Entrapment — un SBIRE manigance : la carte reste en jeu",
+        "pourquoi": "temoin : seul le vilain declenche, pas un sbire",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61024', under_control=True)", "Puzzle.PutIntoPlay('01103')"],
+        "declencher": ["Puzzle.Scheme('01103')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]], "en_jeu": ["61024"], "forme": "AlterEgo"},
+    },
+    {
+        "nom": "61013 Reluctant Flier — en forme heros : 3 degats d'attaque annules, 1 encaisse",
+        "pourquoi": "Hero Interrupt, chemin nominal (Sandman ATK 3, heros incline pour ne pas defendre a DEF 1)",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.ChangeForm('61001b')", "Puzzle.Exhaust('61001a')", "Puzzle.PutIntoPlay('61013', under_control=True)", "Puzzle.PutIntoPlay('01102')"],
+        "declencher": ["Puzzle.Attack('01102')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "hors_jeu": ["61013"]},
+    },
+    {
+        "nom": "61013 Reluctant Flier — en ALTER-EGO : interruption impossible, les 3 degats passent",
+        "pourquoi": "« Hero Interrupt » : le sous-type interdit la forme alter-ego",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61013', under_control=True)", "Puzzle.PutIntoPlay('01102')"],
+        "declencher": ["Puzzle.Attack('01102')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "en_jeu": ["61013"]},
+    },
+    # Menace de depart du pack Jessica Jones, montee A DEUX heros (02/10/2026,
+    # MC4DB `base_threat_fixed`). L'etoile de 61029/61032 renvoie au Hinder,
+    # elle ne veut pas dire « par heros ».
+    {
+        "nom": "61020 Run Them to Ground — menace de depart 4 par heros : 8 a deux heros",
+        "pourquoi": "scan et MC4DB ; en solo l'ecart est invisible, d'ou la partie a deux",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61020', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["61020", 8]]},
+    },
+    {
+        "nom": "61021 Lay the Trap — menace de depart 3 par heros : 6 a deux heros",
+        "pourquoi": "scan et MC4DB ; en solo l'ecart est invisible, d'ou la partie a deux",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61021', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["61021", 6]]},
+    },
+    {
+        "nom": "61028 Second Chance — menace de depart 3 par heros : 6 a deux heros",
+        "pourquoi": "scan et MC4DB ; en solo l'ecart est invisible, d'ou la partie a deux",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61028', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["61028", 6]]},
+    },
+    {
+        "nom": "61039 Lay Low — menace de depart 3 par heros : 6 a deux heros",
+        "pourquoi": "scan et MC4DB ; en solo l'ecart est invisible, d'ou la partie a deux",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61039', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["61039", 6]]},
+    },
+    {
+        "nom": "61029 Defend Our City — menace de depart 3 FIXE + Hinder 1 par heros : 5 a deux heros",
+        "pourquoi": "scan et MC4DB ; en solo l'ecart est invisible, d'ou la partie a deux",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61029', under_control=True)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["61029", 5]]},
+    },
+    {
+        "nom": "61032 Indomitable Will — menace de depart 2 FIXE + Hinder 3 par heros : 8 a deux heros",
+        "pourquoi": "scan et MC4DB ; en solo l'ecart est invisible, d'ou la partie a deux",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61032')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["61032", 8]]},
+    },
+    {
+        "nom": "61019 Strategy Session — ressource imprimee MENTALE (scan, MC4DB)",
+        "pourquoi": "la donnee disait energie, comme MarvelCDB ; le scan et MC4DB impriment mental",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": [],
+        "main_exclusive": ["61019"],
+        "declencher": [],
+        "verifier": "jj_strategy_session_mentale",
+    },
+    # Degat CONSECUTIF des allies du pack Jessica Jones (signalement #41,
+    # 02/10/2026) : les icones sous THW/ATK etaient absentes de `desc`.
+    {
+        "nom": "61017 Squirrel Girl — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 icone(s) sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61017', under_control=True)"],
+        "declencher": ["Puzzle.Attack('61017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61017", 1]]},
+    },
+    {
+        "nom": "61017 Squirrel Girl — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 icone(s) sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61017', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('61017')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61017", 1]]},
+    },
+    {
+        "nom": "61003 Luke Cage — attaque : son degat consecutif (2) emporte son statut Tough",
+        "pourquoi": ("scan : 2 icone(s) sous ATK. Toughness absorbe tout le degat "
+                     "consecutif : la preuve est la perte du statut, PV intacts"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61003', under_control=True)"],
+        "declencher": ["Puzzle.Attack('61003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61003", 0]], "statuts_absents": [["61003", "Tough"]]},
+    },
+    {
+        "nom": "61003 Luke Cage — contre : son degat consecutif (2) emporte son statut Tough",
+        "pourquoi": ("scan : 2 icone(s) sous THW. Toughness absorbe tout le degat "
+                     "consecutif : la preuve est la perte du statut, PV intacts"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61003', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('61003')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61003", 0]], "statuts_absents": [["61003", "Tough"]]},
+    },
+    {
+        "nom": "61015 Captain Marvel — attaque : subit 2 degat(s) consecutif(s)",
+        "pourquoi": "scan : 2 icone(s) sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61015', under_control=True)"],
+        "declencher": ["Puzzle.Attack('61015')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61015", 2]]},
+    },
+    {
+        "nom": "61015 Captain Marvel — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 icone(s) sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61015', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('61015')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61015", 1]]},
+    },
+    {
+        "nom": "61016 Spider-Woman — attaque : subit 2 degat(s) consecutif(s)",
+        "pourquoi": "scan : 2 icone(s) sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61016', under_control=True)"],
+        "declencher": ["Puzzle.Attack('61016')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61016", 2]]},
+    },
+    {
+        "nom": "61016 Spider-Woman — contre : subit 2 degat(s) consecutif(s)",
+        "pourquoi": "scan : 2 icone(s) sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61016', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('61016')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61016", 2]]},
+    },
+    {
+        "nom": "61025 Hellcat — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 icone(s) sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61025', under_control=True)"],
+        "declencher": ["Puzzle.Attack('61025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61025", 1]]},
+    },
+    {
+        "nom": "61025 Hellcat — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 icone(s) sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61025', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('61025')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61025", 1]]},
+    },
+    {
+        "nom": "61038 Echo — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 icone(s) sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61038', under_control=True)"],
+        "declencher": ["Puzzle.Attack('61038')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61038", 1]]},
+    },
+    {
+        "nom": "61038 Echo — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 icone(s) sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61038', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('61038')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["61038", 1]]},
+    },
+    # Degat CONSECUTIF des allies du pack Luke Cage : audit du 02/10/2026 contre
+    # `attack_cost` / `thwart_cost` de MarvelCDB (= nombre d'icones sous ATK/THW).
+    {
+        "nom": "62002 Jessica Jones — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "MarvelCDB : attack_cost 1 ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('62002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('62002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["62002", 1]]},
+    },
+    {
+        "nom": "62002 Jessica Jones — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "MarvelCDB : thwart_cost 1 ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('62002', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('62002')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["62002", 1]]},
+    },
+    {
+        "nom": "62012 Iron Fist — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "MarvelCDB : attack_cost 1 ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('62012', under_control=True)"],
+        "declencher": ["Puzzle.Attack('62012')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["62012", 1]]},
+    },
+    {
+        "nom": "62012 Iron Fist — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "MarvelCDB : thwart_cost 1 ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('62012', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('62012')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["62012", 1]]},
+    },
+    {
+        "nom": "62014 Valkyrie — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "MarvelCDB : attack_cost 1 ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('62014', under_control=True)"],
+        "declencher": ["Puzzle.Attack('62014')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["62014", 0]], "statuts_absents": [["62014", "Tough"]]},
+    },
+    {
+        "nom": "62014 Valkyrie — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "MarvelCDB : thwart_cost 1 ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('62014', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('62014')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["62014", 0]], "statuts_absents": [["62014", "Tough"]]},
+    },
+    {
+        "nom": "62020 Hulk — attaque : subit 2 degat(s) consecutif(s)",
+        "pourquoi": "MarvelCDB : attack_cost 2 ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('62020', under_control=True)"],
+        "declencher": ["Puzzle.Attack('62020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["62020", 2]]},
+    },
+    {
+        "nom": "62021 She-Hulk — attaque : subit 2 degat(s) consecutif(s)",
+        "pourquoi": "MarvelCDB : attack_cost 2 ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('62021', under_control=True)"],
+        "declencher": ["Puzzle.Attack('62021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["62021", 0]], "statuts_absents": [["62021", "Tough"]]},
+    },
+    {
+        "nom": "62021 She-Hulk — contre : subit 2 degat(s) consecutif(s)",
+        "pourquoi": "MarvelCDB : thwart_cost 2 ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('62021', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('62021')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["62021", 0]], "statuts_absents": [["62021", "Tough"]]},
+    },
+    # Degat CONSECUTIF des allies de heros fan-made (audit du 02/10/2026) : le scan
+    # montre une etoile sous THW et sous ATK, `desc` n'avait aucun asterisque.
+    {
+        "nom": "lj002 Black Bolt — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('lj002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj002", 1]]},
+    },
+    {
+        "nom": "lj002 Black Bolt — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj002', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('lj002')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj002", 1]]},
+    },
+    {
+        "nom": "lj018 Zabu — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj018', under_control=True)"],
+        "declencher": ["Puzzle.Attack('lj018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj018", 1]]},
+    },
+    {
+        "nom": "lj018 Zabu — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj018', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('lj018')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj018", 1]]},
+    },
+    {
+        "nom": "lj019 Throg — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj019', under_control=True)"],
+        "declencher": ["Puzzle.Attack('lj019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj019", 1]]},
+    },
+    {
+        "nom": "lj019 Throg — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj019', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('lj019')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj019", 1]]},
+    },
+    {
+        "nom": "lj020 Redwing — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj020', under_control=True)"],
+        "declencher": ["Puzzle.Attack('lj020')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj020", 1]]},
+    },
+    {
+        "nom": "lj020 Redwing — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj020', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('lj020')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj020", 1]]},
+    },
+    {
+        "nom": "lj021 Hairball — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj021', under_control=True)"],
+        "declencher": ["Puzzle.Attack('lj021')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj021", 1]]},
+    },
+    {
+        "nom": "lj021 Hairball — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj021', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('lj021')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj021", 1]]},
+    },
+    {
+        "nom": "lj022 Lockheed — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj022', under_control=True)"],
+        "declencher": ["Puzzle.Attack('lj022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj022", 1]]},
+    },
+    {
+        "nom": "lj022 Lockheed — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj022', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('lj022')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj022", 1]]},
+    },
+    {
+        "nom": "lj025 Ms. Lion — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj025', under_control=True)"],
+        "declencher": ["Puzzle.Attack('lj025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj025", 1]]},
+    },
+    {
+        "nom": "lj025 Ms. Lion — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj025', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('lj025')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj025", 1]]},
+    },
+    {
+        "nom": "lj026 Ms. Marvel — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "son SCRIPT donne deja 1 degat consecutif (`attack_consequential_damage=1`) : PAS d'asterisque dans `desc`, sinon 2 (double compte vu au 02/10/2026)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj026', under_control=True)"],
+        "declencher": ["Puzzle.Attack('lj026')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj026", 1]]},
+    },
+    {
+        "nom": "lj026 Ms. Marvel — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "son SCRIPT donne deja 1 degat consecutif (`thwart_consequential_damage=1`) : PAS d'asterisque dans `desc`, sinon 2 (double compte vu au 02/10/2026)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('lj026', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('lj026')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["lj026", 1]]},
+    },
+    {
+        "nom": "il002 Stature — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('il002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('il002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["il002", 1]]},
+    },
+    {
+        "nom": "il002 Stature — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('il002', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('il002')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["il002", 1]]},
+    },
+    {
+        "nom": "ok002 Aneka — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('ok002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["ok002", 1]]},
+    },
+    {
+        "nom": "ok002 Aneka — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok002', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('ok002')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["ok002", 1]]},
+    },
+    {
+        "nom": "ok003 Ayo — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok003', under_control=True)"],
+        "declencher": ["Puzzle.Attack('ok003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["ok003", 1]]},
+    },
+    {
+        "nom": "ok003 Ayo — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok003', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('ok003')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["ok003", 1]]},
+    },
+    {
+        "nom": "ok017 Dora Milaje — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok017', under_control=True)"],
+        "declencher": ["Puzzle.Attack('ok017')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["ok017", 1]]},
+    },
+    {
+        "nom": "ok017 Dora Milaje — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok017', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('ok017')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["ok017", 1]]},
+    },
+    {
+        "nom": "ok018 Midnight Angel — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok018', under_control=True)"],
+        "declencher": ["Puzzle.Attack('ok018')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["ok018", 1]]},
+    },
+    {
+        "nom": "ok018 Midnight Angel — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('ok018', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('ok018')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["ok018", 1]]},
+    },
+    {
+        "nom": "65002 Sea Hunter — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('65002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('65002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["65002", 1]]},
+    },
+    {
+        "nom": "65002 Sea Hunter — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('65002', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('65002')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["65002", 1]]},
+    },
+    {
+        "nom": "rs002 Conan — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous ATK ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('rs002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('rs002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["rs002", 1]]},
+    },
+    {
+        "nom": "rs002 Conan — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW ; sans asterisque dans `desc`, aucun degat",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('rs002', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('rs002')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["rs002", 1]]},
+    },
+    {
+        "nom": "60139 Shop Proprietor — attaque : subit 2 degat(s) consecutif(s)",
+        "pourquoi": "scan : 2 etoiles sous ATK (relecture des scans du 02/10/2026)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('60139', under_control=True)"],
+        "declencher": ["Puzzle.Attack('60139')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["60139", 2]]},
+    },
+    {
+        "nom": "60139 Shop Proprietor — contre : subit 2 degat(s) consecutif(s)",
+        "pourquoi": "scan : 2 etoiles sous THW",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('60139', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('60139')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["60139", 2]]},
+    },
+    {
+        "nom": "vp002 Black Cat — contre : subit 0 degat(s) consecutif(s)",
+        "pourquoi": "scan : AUCUNE etoile sous THW, la etoile collee au 1 est une etoile de texte : 0 degat consecutif",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('vp002', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('vp002')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["vp002", 0]]},
+    },
+    {
+        "nom": "sw002 Madame Web — attaque : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 seule etoile sous ATK (le script disait 0**)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sw002', under_control=True)"],
+        "declencher": ["Puzzle.Attack('sw002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["sw002", 1]]},
+    },
+    {
+        "nom": "si003 Teen Abomination — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous CTR",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('si003', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('si003')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["si003", 1]]},
+    },
+    {
+        "nom": "mf002 Invisible Woman — contre : subit 1 degat(s) consecutif(s)",
+        "pourquoi": "scan : 1 etoile sous THW",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('mf002', under_control=True)",
+                          "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('mf002')"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mf002", 1]]},
+    },
     {
         "nom": "61019 Strategy Session — recherche REFUSEE : la manigance retourne au deck",
         "pourquoi": ("l'autre moitie du meme signalement : « Piecing all together joue "
@@ -42040,6 +43626,37 @@ CAS = [
         "attendu": {"aucune_en_resolution": True,
                     "hors_jeu": ["61020"],
                     "dans_deck_joueur": ["61020"]},
+    },
+    {
+        "nom": "61007 Piecing It All Together — JOUEE, ne compte pas dans la limite de manigances de joueur",
+        "pourquoi": ("signalement du 02/10/2026 : « la manigance annexe de Jessica compte dans la "
+                     "limite ». Une seule place (partie a 1 joueur) est deja prise par `61021`; "
+                     "`61007` imprime « does not count against the player side scheme limit » : "
+                     "les DEUX doivent rester en jeu. Le drapeau etait pose sur `WhenCardSetup`, "
+                     "fenetre qui n'existe qu'a la mise en place : une carte JOUEE ne l'a jamais"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61021', under_control=True)"],
+        "main_exclusive": ["61007", "01088"],
+        "declencher": [],
+        "jouer": ["61007"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["61007", "61021"]},
+    },
+    {
+        "nom": "61039 Lay Low — TEMOIN : une manigance ordinaire compte, la 2e est defaussee",
+        "pourquoi": ("contre-cas du precedent : meme decor, mais `61039` n'a PAS l'exemption. "
+                     "Avec `61021` deja en jeu et une seule place, le moniteur doit faire "
+                     "defausser l'une des deux. Prouve que le test ci-dessus ne passe pas "
+                     "parce que la limite serait morte"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.PutIntoPlay('61021', under_control=True)"],
+        "main_exclusive": ["61039", "01088"],
+        "declencher": [],
+        "jouer": ["61039"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["61021"], "hors_jeu": ["61039"]},
     },
     {
         "nom": "61019 Strategy Session — recherche ACCEPTEE : la manigance part en main",
@@ -42093,6 +43710,48 @@ CAS = [
         "jouer": ["62022"],
         "verifier": "etat_attendu",
         "attendu": {"aucune_en_resolution": True},
+    },
+    {
+        "nom": "62022 Dynamic Duo — ramene la Team-Up ET l'allie nomme par son mot-cle",
+        "pourquoi": ("signalement joueur du 02/10/2026 : « va seulement chercher la carte "
+                     "en equipe mais pas l'allie ». Order and Chaos (14018) porte "
+                     "Team-Up (Quicksilver et Scarlet Witch) : Quicksilver allie (15002) "
+                     "doit rejoindre la main avec elle"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.PutIntoDeck('14018')", "Puzzle.PutIntoDeck('15002')"],
+        "main_exclusive": ["62022", "01088", "01088"],
+        "declencher": [],
+        "jouer": ["62022"],
+        "verifier": "etat_attendu",
+        "attendu": {"aucune_en_resolution": True,
+                    "en_main": ["14018", "15002"]},
+    },
+    {
+        "nom": "62022 Dynamic Duo — Team-Up lue dans l'attribut (Unbreakable Bond, Jessica Jones)",
+        "pourquoi": ("61027 n'a PAS « Team-Up (...) » dans son texte imprime a plat : le nom de l'allie vient de l'attribut TeamUp. L'allie nomme est Jessica Jones (62002)"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.PutIntoDeck('61027')", "Puzzle.PutIntoDeck('62002')"],
+        "main_exclusive": ["62022", "01088", "01088"],
+        "declencher": [],
+        "jouer": ["62022"],
+        "verifier": "etat_attendu",
+        "attendu": {"aucune_en_resolution": True,
+                    "en_main": ["61027", "62002"]},
+    },
+    {
+        "nom": "62022 Dynamic Duo — Team-Up sans attribut, lue dans le texte (Power Couple)",
+        "pourquoi": ("jj022 n'a pas d'attribut TeamUp, seulement le texte « Team-Up (Jessica Jones and Luke Cage) » : repli sur le texte"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.PutIntoDeck('jj022')", "Puzzle.PutIntoDeck('62002')"],
+        "main_exclusive": ["62022", "01088", "01088"],
+        "declencher": [],
+        "jouer": ["62022"],
+        "verifier": "etat_attendu",
+        "attendu": {"aucune_en_resolution": True,
+                    "en_main": ["jj022", "62002"]},
     },
 
     # ------------------------------------------------------------------------
@@ -44104,6 +45763,116 @@ CAS = [
         "verifier": "mc4db_target_spotter",
     },
     {
+        "nom": "51002 T'Challa — Hero Response : en forme heros, contrer declenche le Special de Kimoyo Beads",
+        "pourquoi": "signalement Yarro n29 (30/09/2026) : la Response ne partait pas ; temoin en forme heros",
+        "scenario": "rhino",
+        "heros": "black_panther_shuri",
+        "mise_en_place": ["Puzzle.ChangeForm('51001b')", "Puzzle.PutIntoPlay('51002', under_control=True)",
+                          "Puzzle.PutIntoPlay('51010', under_control=True)", "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('51002')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "51002 T'Challa — Hero Response : en alter-ego, aucun Special (seul le pouvoir de base retire de la menace)",
+        "pourquoi": "signalement Yarro n29 : « Hero Response » ne s'utilise qu'en forme heros, Shuri etait en alter-ego",
+        "scenario": "rhino",
+        "heros": "black_panther_shuri",
+        "mise_en_place": ["Puzzle.PutIntoPlay('51002', under_control=True)",
+                          "Puzzle.PutIntoPlay('51010', under_control=True)", "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Thwart('51002')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "40051 Wolfsbane payee Genius puis Pip : Pip est au-dessus de la defausse",
+        "pourquoi": "signalement Yarro n30 (30/09/2026) : l'ordre de paiement decide de la carte du dessus de la defausse",
+        "scenario": "rhino", "heros": "domino",
+        "mise_en_place": ["Puzzle.ChangeForm('40037b')"],
+        "main_exclusive": ["40051", "40062", "40044"],
+        "declencher": [],
+        "jouer": ["40051"],
+        "payer_avec": ["40062", "40044"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["40062", "40044"], "defausse_dessus": "40044"},
+    },
+    {
+        "nom": "40051 Wolfsbane payee Pip puis Genius : Genius est au-dessus de la defausse",
+        "pourquoi": "signalement Yarro n30 (30/09/2026) : l'ordre de paiement decide de la carte du dessus de la defausse",
+        "scenario": "rhino", "heros": "domino",
+        "mise_en_place": ["Puzzle.ChangeForm('40037b')"],
+        "main_exclusive": ["40051", "40062", "40044"],
+        "declencher": [],
+        "jouer": ["40051"],
+        "payer_avec": ["40044", "40062"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["40062", "40044"], "defausse_dessus": "40062"},
+    },
+    {
+        "nom": "40051 Wolfsbane payee avec deux cartes : le journal donne l'ordre",
+        "pourquoi": "signalement Yarro n30 : l'ordre de paiement doit etre lisible dans le journal",
+        "scenario": "rhino", "heros": "domino",
+        "mise_en_place": ["Puzzle.ChangeForm('40037b')"],
+        "main_exclusive": ["40051", "40062", "40044"],
+        "declencher": [],
+        "jouer": ["40051"],
+        "payer_avec": ["40062", "40044"],
+        "verifier": "journal_ordre_paiement_dit",
+    },
+    {
+        "nom": "40044 Pip the Pug payee avec une seule carte : pas de ligne d'ordre (temoin)",
+        "pourquoi": "signalement Yarro n30 : la ligne n'apparait qu'a partir de deux cartes",
+        "scenario": "rhino", "heros": "domino",
+        "mise_en_place": ["Puzzle.ChangeForm('40037b')"],
+        "main_exclusive": ["40044", "40060"],
+        "declencher": [],
+        "jouer": ["40044"],
+        "payer_avec": ["40060"],
+        "verifier": "journal_ordre_paiement_absent",
+    },
+    {
+        "nom": "12011 Ant-Man paye avec The Power of Leadership : le surpaiement n'est pas double (2 pym, pas 3)",
+        "pourquoi": ("signalement Phocea n31 : RR « Cost » : les ressources au-dela du cout sont "
+                     "« overpaid » et « were not paid for that cost ». Ant-Man coute 0, donc 01072 "
+                     "ne paie rien et ne double pas (fil itch.io 4958786, resources.py). NE PAS « corriger »."),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [],
+        "main_exclusive": ["12011", "01072"],
+        "declencher": [],
+        "jouer": ["12011"],
+        "surpayer": "12011",
+        "payer_avec": ["01072"],
+        "verifier": "pol_ne_double_pas",
+    },
+    {
+        "nom": "01072 The Power of Leadership double bien sur un vrai cout : Maria Hill (2) payee avec elle seule (temoin)",
+        "pourquoi": "signalement Phocea n31 : le cas Ant-Man ne doit pas cacher un doublement casse partout",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [],
+        "main_exclusive": ["01067", "01072"],
+        "declencher": [],
+        "jouer": ["01067"],
+        "payer_avec": ["01072"],
+        "verifier": "pol_double",
+    },
+    {
+        "nom": "01123 Sonic Boom — pas de bouton Passer (il equivalait a l'option Exhaust) et l'option Exhaust epuise les personnages",
+        "pourquoi": ("mesure du 30/09/2026 : Passer (reponse id 0) retombait sur la branche « Exhaust each "
+                     "character » (fallthrough de ChoiceAndSpellEffect), aucune carte n'etait defaussee. Le "
+                     "bouton n'evitait rien : le moteur le masque (`show_cancel` faux) quand le choix a un "
+                     "fallthrough. `passer_interdit` echoue si le bouton reapparait"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": [],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": ["Puzzle.Reveal('01123')"],
+        "passer_interdit": True,
+        "choisir_option": "Exhaust_each_character_you_control",
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 3, "exhausted": ["01001b"]},
+    },
+    {
         "nom": "[mc4db] 04028 Marked for Death — When Revealed : la Mockingbird du joueur Clint, pas celle d'un autre joueur (FAQ)",
         "pourquoi": "FindCardsOnField sans controleur prenait la copie de l'autre joueur (01083 basique, en jeu chez Spider-Man)",
         "scenario": "rhino",
@@ -44779,6 +46548,27 @@ def cameo_new_suit(monde, aides):
 def cameo_ye_be_worthy(monde, aides):
     """cc003 : une amelioration WEAPON NON PERMANENTE, identite absente."""
     return _cameo_compliment(monde, aides, "cc003", "Upgrade", "WEAPON", True)
+
+
+def carte_de_rencontre_releve_en_fin_de_phase(monde, aides):
+    """Signalement #38 : une obligation epuisee par sa Forced Action doit se
+    relever a la fin de la phase des joueurs (« Ready each exhausted encounter
+    card »), sans quoi la Forced Action ne part qu'une fois par partie.
+
+    On appelle la VRAIE etape `PlayersEndPhase` (defausse, pioche, relever),
+    pas des messages a la main : c'est elle qui a ete corrigee.
+    """
+    obligation = aides["par_id"](monde, "60107")
+    if obligation is None:
+        return False, "aucune \"Serve.\" (60107) en jeu avant le declenchement"
+    if not obligation.card.IsExhaust():
+        return False, "\"Serve.\" n'est pas epuisee apres sa Forced Action (cas mal monte)"
+
+    monde.PlayersEndPhase()
+
+    if obligation.card.IsExhaust():
+        return False, "\"Serve.\" est restee epuisee apres la fin de la phase joueur"
+    return True, "\"Serve.\" epuisee avant la fin de phase joueur, relevee apres"
 
 
 def sunfire_fin_de_phase_joueur(monde, aides):
@@ -45550,7 +47340,7 @@ IMPRIME = {
 CLES_ETAT_ATTENDU = {
     'attributs', 'attributs_carte', 'compteurs', 'compteurs_identite', 'compteurs_total',
     'dans_deck_joueur', 'dans_deck_registered', 'dans_deck_rencontre', 'defausse',
-    'defausse_joueur', 'defausse_rencontre', 'degats', 'degats_identite',
+    'defausse_joueur', 'defausse_dessus', 'defausse_rencontre', 'degats', 'degats_identite',
     'degats_identite_min', 'degats_min', 'en_jeu', 'en_jeu_trait', 'en_main', 'en_reserve',
     'exhausted', 'forme', 'hors_jeu', 'icones', 'icones_boost', 'jetons', 'menace',
     'menace_min', 'mis_de_cote', 'pose_sous', 'pret', 'statuts', 'statuts_absents',
@@ -46637,6 +48427,15 @@ def etat_attendu(monde, aides):
         if card_id not in cartes:
             soucis.append(f"{card_id} n'est pas dans la defausse du joueur "
                           f"(defausse = {cartes})")
+
+    # Cle `defausse_dessus` (30/09/2026, signalement Yarro n30) : le card_id de la
+    # carte du DESSUS de la defausse du joueur. `defausse` ne voit que
+    # l'appartenance, or l'action de Neena Thurman echange avec la carte du dessus.
+    if "defausse_dessus" in attendu:
+        dessus = monde.players[0].discard_pile.GetTop()
+        vu = getattr(getattr(dessus, "paper", None), "card_id", None)
+        if vu != attendu["defausse_dessus"]:
+            soucis.append(f"dessus de la defausse = {vu}, attendu {attendu['defausse_dessus']}")
 
     # Cle `defausse_rencontre` (AJOUT 10/09/2026, pack iron_patriot) : le
     # pendant de `defausse` pour la pile de RENCONTRE. Sans elle, la regle de
@@ -48270,6 +50069,15 @@ def si001b_opa_limite_phase(monde, aides):
 
 ################################################################################
 # Pack « kate_bishop » (kb001-kb020).
+def jj_strategy_session_mentale(monde, aides):
+    """61019 : la ressource imprimee doit etre mentale (B), pas energie (Y)."""
+    face = next((f for f in monde.players[0].hand_cards.Get()
+                 if getattr(f.paper, "card_id", None) == "61019"), None)
+    if face is None:
+        return False, "Strategy Session absente de la main"
+    res = face.printed_resource_internal.text
+    return (res == "B"), f"ressource imprimee de 61019 = {res!r} (attendu 'B')"
+
 def kb_hawkeye_ally_consequential(monde, aides):
     """kb002 : Hawkeye defait par degat CONSEQUENT doit etre REMELANGE au deck
     (pas defausse) et poser 1 compteur fleche sur Kate's Bow.
@@ -49147,6 +50955,67 @@ def ss012_mark_of_kaine_deferlement(monde, aides):
 
     return True, "01110 vaincu ; le journal trace le gain d'overkill avec Mark of Kaine comme source"
 
+def _journal_du_cas(aides):
+    import os
+    chemin_log = f"/tmp/capacites_{os.environ.get('CAS_PREFIX', '')}{aides['index']}.log"
+    try:
+        return open(chemin_log, encoding="utf-8", errors="replace").read(), None
+    except Exception as exc:
+        return None, f"journal introuvable ({chemin_log}) : {exc}"
+
+
+def journal_ordre_paiement_dit(monde, aides):
+    """Yarro n30 : payer avec 2 cartes ecrit UNE ligne qui donne l'ordre."""
+    contenu, erreur = _journal_du_cas(aides)
+    if erreur:
+        return False, erreur
+    import re
+    if re.search(r"(dans cet ordre|were paid in this order)", contenu):
+        return True, "le journal donne l'ordre de paiement"
+    return False, "aucune ligne d'ordre de paiement dans le journal"
+
+
+def journal_ordre_paiement_absent(monde, aides):
+    """Temoin : un paiement par UNE seule carte n'ecrit pas de ligne d'ordre."""
+    contenu, erreur = _journal_du_cas(aides)
+    if erreur:
+        return False, erreur
+    import re
+    if re.search(r"(dans cet ordre|were paid in this order)", contenu):
+        return False, "ligne d'ordre ecrite pour un paiement a une seule carte"
+    return True, "aucune ligne d'ordre pour un paiement a une seule carte"
+
+
+def _ressources_de_01072(aides):
+    """Nombre de ressources annoncees par le journal pour The Power of Leadership."""
+    contenu, erreur = _journal_du_cas(aides)
+    if erreur:
+        return None, erreur
+    import re
+    propre = re.sub(r"\x1b\[[0-9;]*m", "", contenu)
+    m = re.search(r"gagne la ressource (.*?) de \[\(\d+,01072\)", propre) \
+        or re.search(r"gains? (?:the )?resources? (.*?) from \[\(\d+,01072\)", propre)
+    if not m:
+        return None, "aucune ligne de ressource pour 01072 dans le journal"
+    return len(re.findall(r"[A-Za-z]", m.group(1))), None
+
+
+def pol_ne_double_pas(monde, aides):
+    """Phocea n31 : 01072 paie un cout de 0, tout est surpaiement, donc UNE ressource."""
+    n, erreur = _ressources_de_01072(aides)
+    if erreur:
+        return False, erreur
+    return n == 1, f"01072 a genere {n} ressource(s), attendu 1 (non doublee)"
+
+
+def pol_double(monde, aides):
+    """Temoin : 01072 paie un vrai cout Leadership, donc DEUX ressources."""
+    n, erreur = _ressources_de_01072(aides)
+    if erreur:
+        return False, erreur
+    return n == 2, f"01072 a genere {n} ressource(s), attendu 2 (doublee)"
+
+
 def ss007_spider_pathy_pose_sbire(monde, aides):
     """ss007/ss008 : Search.EncounterCard(card_type=Minion) puis PutIntoPlay,
     qui engage AUTOMATIQUEMENT le sbire trouve avec le joueur courant
@@ -49269,6 +51138,20 @@ def wc001a_defausse_au_debut_de_la_phase_du_vilain(monde, aides):
         return False, (f"la carte defaussee n'est pas celle du dessus "
                        f"(attendue {attendu}, defausse = {apres})")
     return True, f"carte du dessus ({attendu}) defaussee au debut de la phase du vilain"
+
+def lj002_x_cartes_defaussees(monde, aides):
+    """lj002 Black Bolt : X = ATK cartes defaussees du deck du joueur ET du
+    deck Rencontre. Les deux decks sont reconstruits a la main (6 cartes
+    chacun), donc la defausse Rencontre vaut exactement X et il en reste
+    6 - X dans le deck."""
+    from game.operate.worlds import Worlds
+    x = aides["cas"]["attendu"]["x"]
+    defaussees = _wc_defausse_rencontre(monde)
+    restantes = Worlds.GetEncounterDeckCards(monde)
+    if len(defaussees) != x or len(restantes) != 6 - x:
+        return False, (f"deck Rencontre : {len(defaussees)} defaussee(s) et {len(restantes)} "
+                       f"restante(s), attendu {x} et {6 - x}")
+    return etat_attendu(monde, aides)
 
 def wc_defausse_rencontre_non_vide(monde, aides):
     """wc001b : « look at the top 2 cards, you may discard one of them ». La
@@ -49659,6 +51542,25 @@ def sd011_restriction_du_tour(monde, aides):
                        "joue pas")
     return True, ("sd014 (payee par Top Speed) est en jeu, et sd013 n'est plus jouable "
                   "pour le reste du tour")
+
+def sd011_refus_par_passer(monde, aides):
+    """sd011 : « Passer » sur « you may generate » REFUSE le supplement. La
+    carte payee par Top Speed seul (1 energie) entre en jeu, et sd013 reste
+    jouable : aucune restriction du tour."""
+    joueur = monde.players[0]
+    if aides["par_id"](monde, "sd014") is None:
+        return False, "sd014 n'est pas en jeu : Top Speed seul (1 energie) aurait du la payer"
+    suivante = None
+    for face in joueur.hand_cards.GetAll():
+        if getattr(face.paper, "card_id", None) == "sd013":
+            suivante = face
+            break
+    if suivante is None:
+        return False, "sd013 n'est plus en main : le montage du cas a echoue"
+    if not suivante.CanPlayBy(joueur):
+        return False, ("sd013 n'est plus jouable : « Passer » a PRIS le supplement de Top "
+                       "Speed au lieu de le refuser (restriction du tour posee)")
+    return True, "Passer a refuse le supplement : sd014 en jeu, sd013 encore jouable"
 
 def sd017_obligation_retiree(monde, aides):
     """sd017, branche 1 : l'obligation quitte le jeu et l'identite civile est
@@ -51253,6 +53155,246 @@ def a3_activation_annulee(monde, aides):
     return True, (f"annonce #{annonce.get('activation_id')} puis annulation sous le "
                   f"meme identifiant, 1 seul fait garde")
 
+def a4_activation_annulee_par(monde, aides):
+    """« → Annulée par X » (decision du 03/10/2026) : un vilain SONNE ne frappe
+    pas, la carte Sonne est retiree A LA PLACE ; le fait de cloture nomme ce qui
+    a remplace l'activation (`annule_par`)."""
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+    _a3_journal_neuf(monde)
+    trace = _a3_tracer(monde)
+    _a3_attaquer(vilain, heros, regle)
+    faits = _a3_activations(trace)
+    if len(faits) != 2 or faits[1].get('etat') != 'annule':
+        return False, f"attendu une annonce puis une annulation ; trace = {faits}"
+    par = faits[1].get('annule_par')
+    if not par or 'Stun' not in str(par):
+        return False, (f"le fait annule ne dit pas qui l'a remplace : annule_par={par!r} "
+                       f"(attendu la carte Sonne) ; fait = {faits[1]}")
+    if not isinstance(faits[1].get('annule_par_id'), int):
+        return False, f"annule_par_id absent ou non entier : {faits[1]}"
+    return True, f"attaque annulee par {par!r} (#{faits[1].get('annule_par_id')})"
+
+
+def a4_revelation_annulee_par(monde, aides):
+    """Une carte revelee dont l'effet « Une fois révélée » est ANNULE : son fait
+    de revelation nomme qui l'a annulee (`annulee_par`). Temoin : la meme carte
+    revelee sans annulation ne porte pas la marque."""
+    from game.ability import AbilityType
+    from game.ability.factory import AbilityFactory
+    from game.operate.effects import Effects
+    from game.world.phase import Phase
+    from game.puzzle.puzzle import PuzzleHelper
+
+    joueur = monde.players[0]
+    monde.current_player = joueur
+    identite = joueur.GetIdentity()
+
+    def reveler(annuler):
+        monde.phase.SetState(Phase.State.PlayerTurn)
+        PuzzleHelper.Exec(["Puzzle.Deal('01186')"], monde)
+        effets = None
+        if annuler:
+            effets = identite.effect.RegisterTemp(
+                AbilityFactory.WhenPlayerRevealCard(
+                    AbilityType.Temp0, "AnyPlayer", None, "WhenRevealed",
+                    lambda effect, message: message.CancelWhenRevealedEffect(effect),
+                    from_encounter=True,
+                ),
+                unregister_after_exec=True,
+            )
+        _a2_vider_le_journal(monde)
+        monde.phase.SetState(Phase.State.RevealsEncounterCards)
+        try:
+            joueur.RevealEncounterCards()
+        finally:
+            if effets is not None:
+                try:
+                    Effects.UnRegister(effets)
+                except ValueError:
+                    pass
+        return _a2_faits(monde, 'revelation')
+
+    temoin = reveler(False)
+    if len(temoin) != 1 or temoin[0].get('annulee_par'):
+        return False, f"temoin (sans annulation) : {temoin}"
+    faits = reveler(True)
+    if len(faits) != 1:
+        return False, f"{len(faits)} fait(s) de revelation ; journal = {monde.stat.faits_mechant}"
+    par = faits[0].get('annulee_par')
+    if par != identite.name:
+        return False, (f"annulee_par={par!r} (attendu {identite.name!r}, la source de "
+                       f"l'annulation) ; fait = {faits[0]}")
+    return True, f"temoin sans marque ; carte annulee par {par!r}"
+
+
+def a4_fait_stade(monde, aides):
+    """CHANGEMENT DE STADE en pleine phase du mechant (decision du 03/10/2026 :
+    « étape à part, nouvelle carte en grand ») : la manigance principale qui
+    avance, puis le mechant qui passe au stade suivant, inscrivent chacun un
+    fait `stade`. Temoin : la meme avancee pendant le tour du joueur n'inscrit
+    rien (le cartouche ne raconte que la phase du mechant)."""
+    from game.world.phase import Phase
+    from game.effect.rule import GameRule
+    from game.puzzle.puzzle import PuzzleHelper
+
+    monde.current_player = monde.players[0]
+    monde.phase.SetState(Phase.State.PlayerTurn)
+    _a2_vider_le_journal(monde)
+    # Temoin direct sur la garde (une vraie avancee ici consommerait un stade).
+    schemes = monde.area_schemes_main.Get()
+    monde.stat.RecordStade(monde, 'manigance', schemes[-1], schemes[-1])
+    if _a2_faits(monde, 'stade'):
+        return False, f"fait `stade` inscrit PENDANT LE TOUR DU JOUEUR : {_a2_faits(monde, 'stade')}"
+
+    PuzzleHelper.Exec(["Puzzle.BeginVillainPhase()"], monde)
+    _a2_vider_le_journal(monde)
+    PuzzleHelper.Exec(["Puzzle.AdvanceMainScheme()"], monde)
+    faits = _a2_faits(monde, 'stade')
+    # Au moins un : une manigance dont le stade suivant avance a son tour en se
+    # revelant en inscrit un par pas (vu sur Ultron), et c'est juste.
+    if not faits or any(f.get('quoi') != 'manigance' for f in faits):
+        return False, f"manigance : attendu des faits `stade` (quoi=manigance) ; journal = {monde.stat.faits_mechant}"
+    manques = [c for c in ('carte', 'carte_id', 'avant', 'phase', 'round_id') if c not in faits[0]]
+    if manques:
+        return False, f"champs manquants : {manques} ({faits[0]})"
+
+    vilain = _a3_vilain(monde)
+    if not vilain:
+        return False, "aucun vilain en jeu"
+    avant = vilain.name
+    _a2_vider_le_journal(monde)
+    vilain.Advance(GameRule(vilain))
+    faits = _a2_faits(monde, 'stade')
+    if len(faits) != 1 or faits[0].get('quoi') != 'mechant':
+        return False, f"mechant : attendu UN fait `stade` (quoi=mechant) ; journal = {monde.stat.faits_mechant}"
+    if faits[0].get('avant') != avant or not isinstance(faits[0].get('carte_id'), int):
+        return False, f"fait mechant inattendu : {faits[0]} (avant attendu {avant!r})"
+    return True, f"temoin muet ; manigance puis mechant : {faits[0]['avant']} → {faits[0]['carte']}"
+
+
+def _a4_boosts_publies(monde):
+    """Les boosts des activations RESOLUES du journal, a plat."""
+    return [b for f in monde.stat.faits_mechant
+            if f.get('genre') in ('attaque', 'manigance') and f.get('etat') in (None, 'resolu')
+            for b in f.get('boosts', [])]
+
+def a4_boost_etoile(monde, aides):
+    """L'effet ★ d'un boost (decision du 03/10/2026 : « ligne sous l'attaque ») :
+    le boost publie dit qu'il porte une capacite Boost (`etoile`)."""
+    boosts = _a4_boosts_publies(monde)
+    if not boosts:
+        return False, f"aucun boost publie ; journal = {monde.stat.faits_mechant}"
+    if boosts[0].get('etoile') is not True:
+        return False, f"boost a capacite sans `etoile: True` : {boosts[0]}"
+    return True, f"boost {boosts[0].get('nom')!r} publie avec etoile"
+
+def a4_boost_sans_etoile(monde, aides):
+    """Temoin : un boost SANS capacite Boost ne porte pas `etoile`."""
+    boosts = _a4_boosts_publies(monde)
+    if not boosts:
+        return False, f"aucun boost publie ; journal = {monde.stat.faits_mechant}"
+    if boosts[0].get('etoile'):
+        return False, f"boost sans capacite marque etoile : {boosts[0]}"
+    return True, f"boost {boosts[0].get('nom')!r} sans etoile"
+
+
+def a4_activation_hors_phase(monde, aides):
+    """HORS PHASE DU MECHANT (decision du 03/10/2026) : une attaque du vilain
+    pendant le TOUR DU JOUEUR ouvre le cartouche pour ce seul coup. Le plateau
+    le reconnait a la phase du fait : elle doit etre « Player Turn », et le fait
+    resolu doit etre publie comme en phase."""
+    from game.world.phase import Phase
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+    monde.phase.SetState(Phase.State.PlayerTurn)
+    _a3_journal_neuf(monde)
+    _a3_attaquer(vilain, heros, regle)
+    faits = _a3_activations(monde.stat.faits_mechant)
+    if len(faits) != 1:
+        return False, f"{len(faits)} fait(s) d'activation hors phase (attendu 1) ; journal = {monde.stat.faits_mechant}"
+    fait = faits[0]
+    phase = str(getattr(fait.get('phase'), 'value', fait.get('phase')))
+    # « Player 1 Turn » : `GetPhaseText` numerote le joueur. Le plateau ne
+    # compare qu'aux quatre phases du mechant.
+    if phase in ('Main Scheme Place Threat', 'Enemy Activation', 'Deal Encounter Cards',
+                 'Reveal Encounter Cards') or 'Turn' not in phase:
+        return False, f"phase du fait = {phase!r} (attendu le tour d'un joueur)"
+    if fait.get('etat') not in (None, 'resolu') or 'subi' not in fait:
+        return False, f"le fait hors phase n'est pas resolu : {fait}"
+    return True, f"attaque hors phase publiee : {fait.get('auteur')} → {fait.get('cible')} ({fait.get('subi')} subi)"
+
+
+def a5_bonus_publies(monde, aides):
+    """« Ne pas défendre (ATQ 2 + 1 Charge + 1 carte boost) » (decision du
+    04/10/2026) : le descripteur d'une carte publie CHAQUE bonus d'ATQ et de DEF
+    avec la carte qui le donne (`bonus`). Le moteur les tient deja par source
+    (`keywords['ATK'][face]`) ; la valeur imprimee de la carte n'y figure pas."""
+    from game.effect.rule import GameRule
+    from game.puzzle.puzzle import PuzzleHelper
+    vilain = _a3_vilain(monde)
+    if not vilain:
+        return False, "aucun vilain en jeu"
+    # Temoin : sans Charge, aucun bonus d'ATK.
+    temoin = vilain.card.Render().bonus
+    if temoin.get('ATK'):
+        return False, f"bonus d'ATK publie avant tout bonus : {temoin}"
+    # Charge (01099) attachee a Rhino lui donne son bonus d'ATK reel.
+    PuzzleHelper.Exec(["Puzzle.PutIntoPlay('01099')"], monde)
+    charge = next((c.face for c in monde.object_manager.card_dict.values()
+                   if c.face.paper.card_id == '01099' and c.face.IsInPlay()), None)
+    if charge is None:
+        return False, "Charge (01099) introuvable apres PutIntoPlay"
+    heros = monde.players[0].GetIdentity()
+    heros.GainDefense(2, GameRule(charge))
+    atk = vilain.card.Render().bonus.get('ATK')
+    dfs = heros.card.Render().bonus.get('DEF')
+    if not atk or atk[0][:2] != [charge.name, charge.card.object_id] or atk[0][2] <= 0:
+        return False, f"ATK : bonus publie {atk!r} (attendu Charge, #{charge.card.object_id}, positif)"
+    if dfs != [[charge.name, charge.card.object_id, 2]]:
+        return False, f"DEF : bonus publie {dfs!r}"
+    return True, f"ATK {atk}, DEF {dfs} ; temoin sans bonus vide"
+
+
+def refus_sans_passe_de_cout(monde, aides):
+    """Signalement du 04/10/2026 : Limitless Strength (hk012) affichee
+    « Injouable · Une carte ne peut pas payer son propre cout » alors qu'elle
+    se joue. Le canal des refus (`world.render.derniers_refus`, lu par le
+    plateau) etait ECRASE par la passe INTERNE qui verifie le cout : le refus de
+    sa propre ressource (`check_cannot_generate_self`, juste) partait comme
+    raison d'injouabilite. Apres un filtre des cartes jouables, le canal ne doit
+    porter que les refus de cette passe-la."""
+    from game.event.manager import EventManager
+    from game.effect.rule import GameRule
+    from game.message import Message
+    joueur = monde.players[0]
+    identite = joueur.GetIdentity()
+    face = next((f for f in joueur.hand_cards.GetAll() if f.paper.card_id == 'hk012'), None)
+    if face is None:
+        return False, "hk012 n'est pas en main"
+    effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+    message = Message.WhenPlayerLikeInTurn(joueur, GameRule(identite))
+    message.Send()
+    face.card.can_state.is_like_in_hand = True
+    try:
+        dispo = EventManager.FilterAvailableEffects(message, effets, joueur, monde, None)
+    finally:
+        face.card.can_state.is_like_in_hand = None
+    if not dispo:
+        return False, f"hk012 refusee : {[e.failures.GetText(joueur.player_id) for e in effets]}"
+    motifs = []
+    for e in monde.render.derniers_refus or []:
+        try:
+            motifs.append(e.failures.GetText(joueur.player_id))
+        except Exception:
+            pass
+    if 'check_cannot_generate_self' in [str(m) for m in motifs]:
+        return False, f"le canal des refus porte la passe du cout : {motifs}"
+    return True, f"hk012 jouable ; refus transmis : {motifs}"
+
+
 def a3_deux_activations_deux_identifiants(monde, aides):
     """Deux activations du meme auteur dans le round : deux identifiants distincts.
 
@@ -51964,6 +54106,78 @@ def echo_etat(monde, aides):
     return True, " | ".join(dits) or "etat conforme"
 
 
+def deck_joueur_remelange(monde, aides):
+    """Le deck joueur est-il remelange par la FOUILLE ?
+
+    Le vertificateur lance lui-meme la fouille (`attendu["fouille"]`, commandes
+    Puzzle) : il vide d'abord `for_undo_shuffle`, que `Deck.Shuffle` remplit a
+    chaque melange. Sans ce remise a zero, le melange de la mise en place
+    suffisait a rendre le cas vert (vu le 04/10/2026 : faux vert sur les deux
+    cas, avant tout correctif). Cle `attendu["en_jeu"]` : la carte cherchee
+    doit etre en jeu ensuite."""
+    from game.puzzle.puzzle import PuzzleHelper
+    attendu = aides["cas"].get("attendu") or {}
+    deck = monde.players[0].player_deck
+    deck.for_undo_shuffle = []
+    PuzzleHelper.Exec(attendu.get("fouille") or [], monde)
+    for card_id in attendu.get("en_jeu") or []:
+        if aides["par_id"](monde, card_id) is None:
+            return False, f"{card_id} n'est pas en jeu"
+    if not deck.cards:
+        return False, "deck joueur vide, rien a mesurer"
+    if attendu.get("remelange", True) is False:
+        if deck.for_undo_shuffle:
+            return False, "deck joueur remelange alors qu'il n'a pas ete fouille"
+        return True, "deck joueur intact : la carte venait d'une zone publique"
+    if not deck.for_undo_shuffle:
+        return False, "deck joueur fouille mais PAS remelange"
+    return True, f"deck joueur remelange apres la fouille ({deck.GetSize()} cartes)"
+
+
+def deck_de_scenario_melange(monde, aides):
+    """Un deck de scenario (`world.scenario_decks[nom]`) a-t-il ete MELANGE a sa
+    formation ? `Deck.Shuffle` retient l'ordre d'avant dans `for_undo_shuffle`,
+    vide tant qu'aucun melange n'a eu lieu. Un ordre tire ne se compare pas a un
+    ordre attendu : une graine fixe peut rendre l'ordre d'origine par hasard."""
+    nom = (aides["cas"].get("attendu") or {}).get("deck_de_scenario")
+    if not nom:
+        return False, "le cas doit declarer `deck_de_scenario`"
+    pile = monde.scenario_decks.get(nom)
+    if pile is None:
+        return False, f"aucun deck de scenario « {nom} »"
+    deck = pile.deck
+    taille = deck.GetSize()
+    if taille < 2:
+        return False, f"deck « {nom} » : {taille} carte(s), rien a melanger"
+    # `>=` et non `==` : la mise en place peut retirer une carte APRES le
+    # melange (une arme de Crossbones, une Gemme mise en jeu).
+    if len(deck.for_undo_shuffle) < taille:
+        return False, (f"deck « {nom} » jamais melange a sa formation "
+                       f"(for_undo_shuffle = {len(deck.for_undo_shuffle)} / {taille})")
+    return True, f"deck « {nom} » : {taille} cartes, melange a sa formation"
+
+
+def hercules_travaux_et_dons_melanges(monde, aides):
+    """59001b : les 3 Travaux et les 3 Dons vivent ensemble dans le deck annexe,
+    et le dessus de chaque deck se trouve PAR TRAIT (`GetAdditionalDeckTop`).
+    Melanger le deck annexe entier melange donc chacun des deux decks.
+
+    Un tirage ne se compare pas a un ordre attendu (il est aleatoire, et une
+    graine fixe peut rendre l'ordre d'origine par hasard). On mesure donc deux
+    choses : le deck annexe tient bien les six cartes, et il a ete MELANGE
+    (`Deck.Shuffle` retient l'ordre d'avant dans `for_undo_shuffle`, vide tant
+    qu'aucun melange n'a eu lieu)."""
+    joueur = monde.players[0]
+    deck = joueur.additional_deck
+    ids = sorted(getattr(f.paper, "card_id", "") for f in deck.Get())
+    voulus = sorted(["59002", "59003", "59004", "59005", "59006", "59007"])
+    if ids != voulus:
+        return False, f"deck annexe = {ids} (attendu {voulus})"
+    if len(deck.for_undo_shuffle) != 6:
+        return False, f"le deck annexe n'a jamais ete melange (for_undo_shuffle = {len(deck.for_undo_shuffle)} carte(s))"
+    return True, "six cartes, deck melange a la mise en place"
+
+
 def daredevil_dessus_deck_annexe(monde, aides):
     """Le cache `IsLikeInHand` du DESSUS du deck Sense (Daredevil, 60001a) ne
     se remet a zero qu'au DEPLACEMENT de la carte elle-meme (`card.py`,
@@ -52238,6 +54452,22 @@ def executer_un_cas(game_dir, port, index):
     etat = {"phase": "attente", "asks": 0, "resultat": None}
 
     def rendre(ok, message):
+        if ok and etat.get("passe_indu"):
+            ok, message = False, "le bouton Passer est offert alors qu'il equivaut a une option (`passer_interdit`)"
+        for attendu in cas.get("prompts_attendus") or []:
+            if ok and attendu not in etat.get("prompts", []):
+                ok, message = False, f"aucune question n'a affiche « {attendu} » (`prompts_attendus`) ; vus : {etat.get('prompts', [])}"
+        # `options_attendues` (04/10/2026) : le NOM d'une option proposee (le
+        # `prompt` d'un `AskChooseFace` devient le nom de l'option, pas le titre
+        # de la question). Soulignes lus comme des espaces. Additive.
+        for attendu in cas.get("options_attendues") or []:
+            if ok and attendu not in etat.get("options_vues", []):
+                ok, message = False, f"aucune option ne s'appelle « {attendu} » (`options_attendues`) ; vues : {etat.get('options_vues', [])}"
+        if ok and cas.get("passer_sur_option"):
+            if etat.get("passer_absent"):
+                ok, message = False, "le bouton Passer n'est pas offert sur un choix facultatif (`passer_sur_option`)"
+            elif not etat.get("passer_repondu"):
+                ok, message = False, "la question visee par `passer_sur_option` n'a jamais ete posee"
         etat["resultat"] = {"ok": bool(ok), "message": message}
         prefixe = os.environ.get("CAS_PREFIX", "")
         with open(f"/tmp/capacites_{prefixe}{index}.json", "w") as f:
@@ -52581,10 +54811,23 @@ def executer_un_cas(game_dir, port, index):
 
     def pilote(self, data, player_id, check):
         etat["asks"] += 1
+        etat["passe_offert"] = bool(getattr(data, "show_cancel", False))
         try:
             options = json.loads(data.options_json or "[]")
         except Exception:
             options = []
+        # `passer_interdit` en CHAINE (30/09/2026) : ne vise que la question qui
+        # propose une option de ce nom (un « Response » se decline toujours, la
+        # question qui suit peut, elle, etre obligatoire). `True` : toute question.
+        if etat["phase"] == "cas":
+            etat.setdefault("prompts", []).append(str(getattr(data, "prompt_text", "") or ""))
+            etat.setdefault("options_vues", []).extend(
+                str(o.get("name", "")).replace("_", " ") for o in options if isinstance(o, dict))
+        cible_interdit = cas.get("passer_interdit")
+        if cible_interdit and etat["phase"] == "cas" and etat["passe_offert"] and (
+                cible_interdit is True or any(
+                    cible_interdit in str(o.get("name", "")) for o in options if isinstance(o, dict))):
+            etat["passe_indu"] = True
         noms = {o.get("name") for o in options if isinstance(o, dict)}
 
         # AJOUT 11/09/2026 : les avertissements « paiement sans effet »
@@ -52744,46 +54987,61 @@ def executer_un_cas(game_dir, port, index):
             # indispensable des que la ressource depensee a elle-meme un effet
             # (The Power of Forgiveness). Les options designent les cartes par
             # leur identifiant interne, d'ou la traduction depuis le card_id.
+            # ORDRE (30/09/2026, signalement Yarro n30) : chaque carte de
+            # `payer_avec` est resolue A SA PLACE. Les cles de `payment` sont
+            # des ids d'EFFET de ressource, pas des ids de carte : on remonte de
+            # l'effet a sa carte, puis (repli) a la couleur imprimee. Avant, le
+            # repli ne servait que si AUCUNE carte n'avait ete trouvee : une
+            # ressource dont l'id d'effet differe de l'id d'objet (Genius)
+            # retombait en fin de liste et l'ordre demande etait perdu.
             priorite = []
+            par_couleur = {}
+            for entree in infos.get("payment") or []:
+                for objet_id, couleur in entree.items():
+                    par_couleur.setdefault(couleur, []).append(str(objet_id))
+                    break
+            gestionnaire = monde_courant().object_manager
             for card_id in cas.get("payer_avec") or []:
-                for objet_id, objet in monde_courant().object_manager.card_dict.items():
+                trouve = None
+                for objet_id, objet in gestionnaire.card_dict.items():
                     face = objet.face
                     if face is not None \
                             and getattr(face.paper, "card_id", None) == card_id \
                             and str(objet_id) in candidates:
-                        priorite.append(str(objet_id))
+                        trouve = str(objet_id)
                         break
-            if not priorite and cas.get("payer_avec"):
-                # Les cles de `payment` ne correspondent pas toujours aux ids
-                # d'objets (espace d'ids propre aux effets de ressource, vu sur
-                # venom_rainy ou l'identite elle-meme est candidate). Repli :
-                # apparier par COULEUR de ressource imprimee des cartes exigees.
-                couleurs = []
-                for card_id in cas["payer_avec"]:
-                    for objet in monde_courant().object_manager.card_dict.values():
+                if trouve is None:
+                    for x in candidates:
+                        effet = gestionnaire.paying_effect_dict.get(int(x)) \
+                            or gestionnaire.effect_dict.get(int(x))
+                        source = getattr(getattr(effet, "this", None), "paper", None)
+                        if getattr(source, "card_id", None) == card_id and x not in priorite:
+                            trouve = x
+                            break
+                if trouve is None:
+                    for objet in gestionnaire.card_dict.values():
                         face = objet.face
                         if face is not None and getattr(face.paper, "card_id", None) == card_id:
                             res = (getattr(face.paper, "desc", None) or {}).get("RES", "")
-                            if res:
-                                couleurs.append(res[0])
+                            disponibles = [x for x in par_couleur.get(res[:1], [])
+                                           if x in candidates and x not in priorite]
+                            # Seulement si la couleur designe UNE carte sans
+                            # ambiguite (Totally Awesome Hulk : Hypermind
+                            # convertit tout en G).
+                            if res and len(disponibles) == 1:
+                                trouve = disponibles[0]
                             break
-                par_couleur = {}
-                for entree in infos.get("payment") or []:
-                    for objet_id, couleur in entree.items():
-                        par_couleur.setdefault(couleur, []).append(str(objet_id))
-                        break
-                for couleur in couleurs:
-                    disponibles = [x for x in par_couleur.get(couleur, [])
-                                   if x in candidates and x not in priorite]
-                    # Seulement si la couleur designe UNE carte sans ambiguite :
-                    # chez Totally Awesome Hulk, Hypermind convertit tout en G,
-                    # et choisir « le premier G » prendrait la mauvaise carte.
-                    if len(disponibles) == 1:
-                        priorite.append(disponibles[0])
+                if trouve is not None and trouve not in priorite:
+                    priorite.append(trouve)
             ordonnees = priorite + [x for x in candidates if x not in priorite]
             choisies, couvert = [], 0
+            # `payer_tout` : toutes les cartes de `payer_avec` paient, meme
+            # au-dela du cout (cout « 2 types differents » de 60070). Sans lui,
+            # `payer_avec` n'est qu'un ORDRE de preference et le paiement
+            # s'arrete des que le cout est couvert.
+            tout_demande = bool(cas.get("payer_tout")) and len(priorite) == len(cas.get("payer_avec") or [])
             for objet_id in ordonnees:
-                if couvert >= besoin:
+                if couvert >= besoin and not (tout_demande and objet_id in priorite):
                     break
                 choisies.append(objet_id)
                 couvert += poids.get(objet_id, 1)
@@ -52871,6 +55129,18 @@ def executer_un_cas(game_dir, port, index):
             # ADDITIVE : n'affecte AUCUN cas qui ne la definit pas (repli
             # integral sur la boucle historique ci-dessous si absente ou sans
             # correspondance), donc aucun cas existant n'est modifie.
+            # `passer_sur_option` (30/09/2026) : repondre « Passer » (id 0, ce
+            # qu'envoie le bouton) a la question qui propose cette option. Si le
+            # bouton n'est PAS offert, le cas echoue : un « you may » doit
+            # pouvoir se refuser. Additive : sans la cle, rien ne change.
+            cible_passer = cas.get("passer_sur_option")
+            if cible_passer and etat["phase"] == "cas" and any(
+                    cible_passer in str(o.get("name", "")) for o in options if isinstance(o, dict)):
+                if not etat.get("passe_offert"):
+                    etat["passer_absent"] = True
+                else:
+                    etat["passer_repondu"] = True
+                    return json.dumps({"id": "0", "targets": [], "resources": []})
             voulues = cas.get("choisir_option")
             if voulues and etat["phase"] == "cas":
                 if isinstance(voulues, str):

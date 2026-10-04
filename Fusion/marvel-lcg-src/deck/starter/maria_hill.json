@@ -2,7 +2,17 @@
     "version": "0.5.8",
     "name": "Maria Hill",
     "metadata": {
-        "url": ""
+        "url": "",
+        "deckbuilding": {
+            "hors_aspect": {
+                "max": 3,
+                "compte": "titres",
+                "traits": ["S.H.I.E.L.D."],
+                "types": ["Support"],
+                "label": "3 supports S.H.I.E.L.D. d’autres aspects (Maria Hill)"
+            }
+        },
+        "deckbuilding_note": "Maria Hill (50001b) : « You may include the maximum number of copies of 3 S.H.I.E.L.D. supports in your deck from aspects other than your chosen aspect. » Declare ici (GUIDE-CREATION-CONTENU §5.4). `compte: titres` : le quota porte sur 3 TITRES, chacun en exemplaires max. Signalement Aghenatak du 03/10/2026 : le deck marvelcdb 64390 etait refuse (« Trop d'aspects »)."
     },
     "hero": [
         "50001a,50001b"

@@ -59,6 +59,9 @@ def construire_config(base: dict, place: int) -> dict:
     # le reste de ce qui appartient au compte, sans quoi la progression de
     # l'un ouvrirait les boites de l'autre.
     cfg["legacy_file"] = f"../legacy-serveur-{place}.json"
+    # Les arts alternatifs de heros du compte : suivent le joueur d'un appareil
+    # a l'autre (le navigateur, lui, ne suit que l'appareil).
+    cfg["arts_heros_file"] = f"../arts-heros-serveur-{place}.json"
     cfg["campaign_log_last_file"] = f"./campaign-log-last-serveur-{place}.json"
     # L'ordre compte : le moteur ECRIT dans deck_folders[0] et LIT toute la
     # liste (server_get.py, save_deck et list_deck). L'ami construit donc ses

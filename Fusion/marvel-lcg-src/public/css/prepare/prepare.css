@@ -1810,6 +1810,41 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .legacy-bande .legacy-regle{flex-basis:100%;color:var(--dim);font-size:11px;font-style:italic;opacity:.75}
 /* La ligne anglaise de l'ecran de langue : la meme phrase, en retrait, pour
    qu'on voie d'un coup d'oeil laquelle des deux on lit. */
+/* « Choisis ton affichage » (04/10/2026) : deux apercus reels de la table, cote
+   a cote sur ordinateur, l'un sous l'autre sur telephone. */
+.affichage-modal .deck-modal-panel{width:min(980px,94vw)}
+.affichage-modal .af-choix-grille{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0}
+.affichage-modal .af-choix{
+  text-align:left;padding:10px;color:var(--txt);cursor:pointer;
+  border:2px solid var(--line);background:#161b22;border-radius:10px;
+}
+.affichage-modal .af-choix:hover,.affichage-modal .af-choix:focus-visible{border-color:var(--affiche-jaune)}
+.affichage-modal .af-choix img{display:block;width:100%;height:auto;border-radius:6px;margin-bottom:10px}
+.affichage-modal .af-choix b{display:block;font-size:19px}
+.affichage-modal .af-choix small{display:block;color:var(--dim);margin-top:4px;font-size:13px}
+.affichage-modal .af-choix.on{border-color:var(--affiche-jaune);box-shadow:0 0 0 1px var(--affiche-jaune)}
+/* La couleur du fond (04/10/2026) : roue, curseur, couleur d'origine, et un
+   petit apercu de table qui change en direct. */
+.affichage-modal .af-teinte{display:grid;gap:6px;margin:4px 0 12px}
+.affichage-modal .af-teinte > b{font-size:17px}
+.affichage-modal .af-teinte > small{color:var(--dim);font-size:13px}
+.affichage-modal .rt{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
+.affichage-modal .rt-commandes{display:grid;justify-items:center;gap:8px}
+.affichage-modal .rt-disque{position:relative;width:150px;aspect-ratio:1;border-radius:50%;border:2px solid rgba(255,255,255,.18);cursor:crosshair;touch-action:none}
+.affichage-modal .rt-disque:focus-visible{outline:2px solid var(--affiche-jaune);outline-offset:3px}
+.affichage-modal .rt-repere{position:absolute;width:18px;height:18px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.6);transform:translate(-50%,-50%);pointer-events:none}
+.affichage-modal .rt-clarte{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim)}
+.affichage-modal .rt-clarte input{width:130px}
+.affichage-modal .rt-origine{padding:5px 12px;color:var(--txt);background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:6px;cursor:pointer}
+.affichage-modal .rt-origine:disabled{opacity:.45;cursor:default}
+.affichage-modal .rt-apercu{position:relative;min-height:170px;border-radius:8px;border:1px solid var(--line);overflow:hidden;padding:30px 14px 14px}
+.affichage-modal .rt-apercu-bandeau{position:absolute;inset:0 0 auto;height:20px}
+.affichage-modal .rt-apercu-titre{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.affichage-modal .rt-apercu-cartes{display:flex;gap:8px;margin-top:8px}
+.affichage-modal .rt-apercu-cartes i{width:46px;height:64px;border-radius:4px;background:linear-gradient(160deg,#c9b27a,#7d6a3e);box-shadow:0 2px 6px rgba(0,0,0,.45)}
+.affichage-modal .rt-apercu-panneau{position:absolute;right:14px;bottom:14px;width:42%;height:46px;border-radius:6px;border:1px solid rgba(255,255,255,.12)}
+.affichage-modal .af-valider{display:flex;justify-content:flex-end;margin-top:10px}
+@media (max-width:560px){.affichage-modal .rt{grid-template-columns:1fr}}
 .langue-modal .lg-en{font-style:italic;opacity:.7;margin-top:-4px}
 /* La modale d'explication du mode (16/09/2026) : elle s'ouvre a chaque entree,
    sauf si on a coche « ne plus afficher ». Les regles en liste, la case et le
@@ -2557,6 +2592,55 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   }
 }
 
+
+/* --- Carrousel d'arts de la modale du héros (03/10/2026) -------------------
+   Un carrousel par face (héros, alter ego). Sur ordinateur la modale prend
+   la moitié de l'écran ; sur téléphone elle passe plein écran (plus bas). */
+.deck-modal-panel.vh-arts{width:min(96vw,max(50vw,780px));max-width:none}
+.ra-carrousels .ca-rangee{display:flex;gap:18px;justify-content:center;align-items:flex-start}
+.ca{flex:1 1 0;min-width:0;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.ca-titre{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--mute)}
+.ca-scene{--ca-haut:clamp(220px,44dvh,470px);position:relative;height:var(--ca-haut);
+  aspect-ratio:225/326;max-width:100%;touch-action:pan-y;user-select:none;outline-offset:3px}
+.ca-image{width:100%;height:100%;object-fit:contain;display:block;border-radius:8px;pointer-events:none}
+.ca-corps{display:flex;align-items:center;justify-content:center;gap:6px;max-width:100%}
+.ca-fleche{flex:0 0 auto;width:32px;height:56px;border:1px solid var(--line);
+  border-radius:8px;background:var(--ink);color:#fff;font-size:30px;line-height:1;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 0 4px}
+.ca-fleche:hover{border-color:var(--gold);background:rgba(230,36,41,.22)}
+.ca-sans-g .ca-fleche-g,.ca-sans-d .ca-fleche-d,.ca-seul .ca-fleche{visibility:hidden}
+.ca-pied{display:flex;gap:10px;align-items:baseline;justify-content:center;font-size:13px}
+.ca-nom{font-weight:700;color:var(--txt)}
+.ca-compteur{font-size:11px;color:var(--mute)}
+.ca-onglets{display:none}
+.ca-memes{display:flex;align-items:center;gap:8px;margin:2px 0 10px;font-size:13px;cursor:pointer}
+.ca-memes input{width:18px;height:18px;accent-color:var(--gold)}
+
+@media (max-width: 600px), (pointer: coarse) and (max-width: 900px) {
+  /* Plein écran à l'ouverture : les images se dimensionnent sur la largeur
+     d'une colonne, bornées par la hauteur restante. */
+  .deck-modal-panel.vh-panel.vh-arts{
+    width:100vw;height:100dvh;max-height:100dvh;border-radius:0;overflow-y:auto}
+  .vh-arts .dm-head{flex:0 0 auto}
+  .vh-arts .ra-carrousels .ca-rangee{gap:10px}
+  .vh-arts .ca{max-width:none}
+  /* La largeur de la carte laisse la place des deux flèches (2 x 30 px + écarts). */
+  .vh-arts .ca-scene{--ca-haut:max(200px,min(calc((100vw - 60px - 76px) * 1.449),calc(100dvh - 390px - var(--autres,0) * 120px)))}
+  .vh-arts .ca-titre{display:none}
+  .vh-arts .ca-onglets{display:flex;gap:8px;margin:0 0 8px}
+  .vh-arts .ca-onglet{flex:1 1 0;min-height:44px;border:1px solid var(--line);border-radius:8px;
+    background:var(--ink);color:var(--mute);font:inherit;font-weight:800;text-transform:uppercase;
+    letter-spacing:.5px;font-size:13px;cursor:pointer}
+  .vh-arts .ca-onglet.actif{border-color:var(--gold);color:#fff;background:rgba(230,36,41,.14)}
+  .vh-arts .ca-rangee .ca{display:none;flex:1 1 auto}
+  .vh-arts .ca-rangee:not(.vue-ae) .ca:first-child,.vh-arts .ca-rangee.vue-ae .ca:last-child{display:flex}
+  .vh-arts .ca-rangee:only-child .ca,.vh-arts .ca-rangee .ca:only-child{display:flex}
+  .vh-arts .vh-note{margin-top:auto}
+  .vh-arts .ca-fleche{width:30px;height:48px}
+  /* Une seule face à la fois sur téléphone : chacune garde ses deux flèches. */
+  .vh-arts .ca-sans-g .ca-fleche-g,.vh-arts .ca-sans-d .ca-fleche-d{visibility:visible}
+}
+
 /* --- La fiche du héros au tap (12/09/2026, téléphone et tablette) --------- */
 .fiche-heros .fh-art {
   height: min(38vh, 360px);
@@ -2596,4 +2680,22 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .hh-avis-source{
   margin:2px 12px 10px;padding-top:6px;border-top:1px solid var(--soft);
   font-size:11px;color:var(--mute);
+}
+
+/* --- AFFICHAGE SOBRE (réglage Normal / Sobre, js/prepare/affichage.js) -----
+   Fond gris uni, aucun mouvement. Les durées tombent à 1 ms au lieu d'un
+   `animation: none` : l'éclair des cartes se retire sur `animationend`
+   (app.js), qui doit donc toujours partir. */
+html[data-affichage="sobre"] body {
+    background-image: none;
+    background-color: #1c1d20;
+}
+html[data-affichage="sobre"] *,
+html[data-affichage="sobre"] *::before,
+html[data-affichage="sobre"] *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
 }

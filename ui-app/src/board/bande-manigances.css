@@ -1,0 +1,93 @@
+/* La BANDE DES MANIGANCES du plateau PC (Board.tsx, `bandeManigances`).
+
+   Hors couche, comme VoletJournal.css : l'ordre des `@layer` n'est pas garanti
+   en production, et ces regles doivent passer devant la grille de board.css.
+
+   Choix de l'utilisateur (03/10/2026) : le mechant se colle a gauche, contre le
+   deck rencontre, puis la manigance principale et les annexes s'alignent sur
+   toute la largeur du haut. Plus de colonne a droite : le cartouche du mechant
+   et les questions sont au milieu, deplacables, et le journal est dans le volet.
+   Colonnes : piles | mechant | principale | annexes (le reste). */
+.plateau-scene.avec-bande {
+  grid-template-columns: 300px auto auto minmax(0, 1fr);
+  grid-template-areas:
+    'piles-rencontre rencontre       complot-principal complots-secondaires'
+    '.               terrain-combat  terrain-combat    terrain-combat'
+    'piles-joueur    terrain-soutien terrain-soutien   terrain-soutien'
+    'annexes         main            main              main';
+}
+
+.plateau-scene.avec-bande .zone-rencontre,
+.plateau-scene.avec-bande .zone-complots-secondaires {
+  justify-content: flex-start;
+}
+
+/* Beaucoup d'annexes : elles gardent leur taille et restent sur UNE ligne, en
+   se CHEVAUCHANT quand la place manque (ni reduction, ni defilement). Chaque
+   unite peut retrecir sous la largeur de sa carte, qui elle ne retrecit pas ;
+   la derniere garde toute sa largeur. La carte survolee passe devant. */
+.plateau-scene.avec-bande .zone-complots-secondaires .plateau-cartes,
+.plateau-scene.avec-bande .zone-complots-secondaires .plateau-groupe {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.plateau-scene.avec-bande .zone-complots-secondaires .plateau-unite {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.plateau-scene.avec-bande .zone-complots-secondaires .plateau-unite:hover {
+  z-index: 2;
+}
+
+.plateau-scene.avec-bande .zone-complots-secondaires .plateau-unite:last-child {
+  flex-shrink: 0;
+}
+
+.plateau-scene.avec-bande .zone-complot-principal {
+  --mc-zoom-origine: left top;
+}
+
+/* La bande alignee sur le CENTRE du mechant : les trois cases centrent leurs
+   cartes sur la meme ligne. */
+.plateau-scene.avec-bande .zone-rencontre,
+.plateau-scene.avec-bande .zone-complot-principal,
+.plateau-scene.avec-bande .zone-complots-secondaires {
+  align-items: center;
+}
+
+.plateau-scene.avec-bande .zone-rencontre .plateau-cartes,
+.plateau-scene.avec-bande .zone-complot-principal .plateau-cartes,
+.plateau-scene.avec-bande .zone-complots-secondaires .plateau-cartes {
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 0;
+}
+
+/* Les manigances alignees, badge « Crise » ou non : la pastille vit dans la
+   bande `.top-strip` au-dessus de la carte, repliee quand elle est vide ; on la
+   reserve sur toutes les manigances de la ligne. */
+.plateau-scene.avec-bande .zone-complot-principal .scan-visuel:has(.top-strip:empty),
+.plateau-scene.avec-bande .zone-complots-secondaires .scan-visuel:has(.top-strip:empty) {
+  row-gap: 5px;
+}
+
+.plateau-scene.avec-bande .zone-complot-principal .top-strip:empty,
+.plateau-scene.avec-bande .zone-complots-secondaires .top-strip:empty {
+  min-height: 24px;
+}
+
+/* Pas de voile sur la table pendant la phase du mechant : les cartes en cause
+   s'y allument (surbrillance-etape.ts), elles doivent rester lisibles. */
+.deroule-voile .plateau-scene.avec-bande::after {
+  display: none;
+}
+
+/* LA TAILLE DES CARTES PAR ZONE (table personnalisable, 04/10/2026) :
+   `--taille-zone`, posee par Board depuis disposition.ts. A 1, rien ne change. */
+.plateau-scene.avec-bande .plateau-emplacement > .plateau-cartes {
+  zoom: var(--taille-zone, 1);
+}

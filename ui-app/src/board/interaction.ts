@@ -63,6 +63,37 @@ export function lireValidationCourte(): boolean {
   }
 }
 
+/**
+ * Paiement automatique : quand une seule carte peut encore payer le reste du
+ * cout (un seul payeur pulse), elle est payee toute seule au lieu d'attendre
+ * le clic. Demande de l'utilisateur, 24/09/2026.
+ *
+ * TROIS etats, comme `ChoixFinTourAuto` (board/moteur.ts) : la premiere fois
+ * que la situation se presente, une modale demande explicitement au joueur
+ * s'il veut ce comportement. `'pas-demande'` = jamais repondu (la modale
+ * doit encore s'afficher) ; `'on'`/`'off'` = deja repondu, plus jamais
+ * redemande, modifiable a tout moment dans Reglages.
+ */
+export type ChoixPaiementAuto = 'pas-demande' | 'on' | 'off'
+export const CLE_PAIEMENT_AUTO = 'marvel-board-paiement-auto'
+
+function lirePaiementAuto(): ChoixPaiementAuto {
+  try {
+    const brut = window.localStorage.getItem(CLE_PAIEMENT_AUTO)
+    return brut === 'on' || brut === 'off' ? brut : 'pas-demande'
+  } catch {
+    return 'pas-demande'
+  }
+}
+
+function ecrirePaiementAuto(choix: 'on' | 'off'): void {
+  try {
+    window.localStorage.setItem(CLE_PAIEMENT_AUTO, choix)
+  } catch {
+    /* stockage refuse : le choix vaudra pour la session, c'est tout */
+  }
+}
+
 export type RoleCarte =
   | 'porteur'
   | 'cible'
@@ -77,6 +108,34 @@ export type EtatInteractif = {
   choisie: boolean
   /** Combien de fois cette carte a ete choisie ou depensee. */
   fois?: number
+  /**
+   * Position (1-based) dans une selection dont l'ORDRE de clic compte, voir
+   * `optionEstOrdonnee`. Absent hors de ce cas, ou si la carte n'est pas
+   * encore choisie.
+   */
+  ordre?: number
+  /**
+   * Echange cette carte avec sa voisine de rang immediatement INFERIEUR dans
+   * `cibles` (demande de l'utilisateur, 28/09/2026, sur le modele du bouton
+   * « ← » de Felt Table/Flesh and Blood pour reordonner une selection : pas
+   * de glisser-depose, deux boutons qui permutent avec le voisin). Absent
+   * hors selection ordonnee, ou quand cette carte est deja en tete (rien a sa
+   * gauche).
+   */
+  ordreReculer?: () => void
+  /** Symetrique de `ordreReculer`, vers le voisin de rang superieur. */
+  ordreAvancer?: () => void
+  /**
+   * Assigne d'un coup tout ce que cette carte peut encore recevoir dans une
+   * selection repetable (`cibleRepetable`), plutot qu'un clic par point.
+   * Demande de l'utilisateur relayee par Yarro (28/09/2026, nice-to-have) :
+   * repartir des degats sur plusieurs sbires/allies se faisait clic par clic.
+   * Absent hors selection repetable, ou quand cette carte est deja a son
+   * maximum, ou qu'il ne reste rien a distribuer (voir `assignerResteQuantite`).
+   */
+  assignerReste?: () => void
+  /** Combien de points `assignerReste` ajouterait en un seul clic. */
+  assignerResteQuantite?: number
   /** Halo pulse temporaire depuis le menu d'action. */
   pulse?: boolean
   agir?: () => void
@@ -116,6 +175,16 @@ export type CibleHorsTable = {
   props: ScanCardProps
   choisie: boolean
   fois?: number
+  /** Voir `EtatInteractif.ordre`. */
+  ordre?: number
+  /** Voir `EtatInteractif.ordreReculer`. */
+  ordreReculer?: () => void
+  /** Voir `EtatInteractif.ordreAvancer`. */
+  ordreAvancer?: () => void
+  /** Voir `EtatInteractif.assignerReste`. */
+  assignerReste?: () => void
+  /** Voir `EtatInteractif.assignerResteQuantite`. */
+  assignerResteQuantite?: number
   agir: () => void
 }
 
@@ -170,6 +239,7 @@ export type Interaction = {
    * même défaut, dont deux officielles.
    */
   surpaiementRecompense: boolean
+  ciblesRestantes: number
   assistant: AssistantInteraction
   /**
    * Engage une action. `parGeste` dit que le joueur a DESIGNE sa cible d'un
@@ -180,6 +250,15 @@ export type Interaction = {
   abandonnerOption: () => void
   valider: () => void
   annuler: () => void
+  /**
+   * Paiement automatique : 'pas-demande' tant que la modale d'accord n'a pas
+   * encore ete posee, 'on'/'off' une fois repondu. Expose ici (plutot que lu
+   * en localStorage a la volee, comme `autoCible`) pour que le panneau
+   * Reglages reflete tout de suite la reponse donnee dans la modale, sans
+   * attendre un remontage.
+   */
+  paiementAutoChoix: ChoixPaiementAuto
+  basculerPaiementAuto: () => void
 }
 
 /** Toutes les cartes du monde, par identifiant d'objet. */
@@ -286,6 +365,17 @@ export function textesCoupSansEffet(avertissement: Avertissement): { titre: stri
   }
 }
 
+/** Les mots de l'avertissement « des points ne sont pas tous places ». */
+export function textesPointsNonPlaces(restants: number): { titre: string; texte: string } {
+  return {
+    titre: t('Tout n’est pas placé'),
+    texte: t('Il te reste {n} à placer. Si tu valides maintenant, ils seront perdus. Valider quand même ?').replace(
+      '{n}',
+      String(restants)
+    ),
+  }
+}
+
 function reglesCout(paiement: Paiement | undefined): string[] {
   return (paiement?.rule ?? [])
     .filter((regle) => regle !== 'UpTo')
@@ -296,8 +386,59 @@ function optionDemarreAuto(option: Option): boolean {
   return option.failure_reason === '' && option.name.toLowerCase().includes('mulligan')
 }
 
+/**
+ * Une selection ou l'ORDRE de clic compte, pas seulement le fait d'etre
+ * choisi : « Place on top »/« Place on bottom » (`PlaceOnTopInAnyOrder`,
+ * `PlaceOnBottomInAnyOrder`, `PlaceOnTopAndOrBottomInAnyOrder`, cote moteur
+ * `player_cards.py` -- Madame Web et une dizaine d'autres cartes) posent les
+ * cartes sur le deck dans l'ordre INVERSE du clic (le dernier clic finit
+ * dessus). Signalement Yarro n28 (27/09/2026) : rien a l'ecran ne montre cet
+ * ordre, le joueur clique a l'aveugle. Meme famille pour l'ordre d'activation
+ * des sbires (`ChooseOrder`, `enemies.py`).
+ *
+ * Reconnue par le NOM de l'option (`AbilityFactory.ForChoiceAbility(prompt)`
+ * cote moteur pose ce texte comme nom de l'option) -- meme convention que
+ * `optionDemarreAuto` juste au-dessus pour « mulligan ». Aucun champ dedie
+ * n'existe cote moteur pour distinguer une selection ordonnee d'une simple
+ * selection multiple ; ce nom est le seul signal disponible sans y toucher.
+ */
+function optionEstOrdonnee(option: Option | undefined): boolean {
+  if (!option) return false
+  // Le moteur remplace les espaces par des underscores dans `name`
+  // (src/game/effect/effect.py, `remove_space`) : le format reel sur le
+  // fil est "Place_on_top", pas "Place on top".
+  return (
+    option.name === 'Place_on_top' ||
+    option.name === 'Place_on_bottom' ||
+    option.name === 'Minion_Activates_Order'
+  )
+}
+
 function estIdentiteJoueur(carte: WorldCard | undefined): boolean {
   return carte?.card_type === 'Hero' || carte?.card_type === 'AlterEgo'
+}
+
+/** Le nom du héros affiché à l'index `i` (celui de `world.players`), ou
+    `undefined` si cet index n'a pas de héros nommé — un cas qu'on ne bloque
+    jamais dessus, voir `texteAutreHeros` plus bas. */
+function nomHeros(world: World | undefined, i: number): string | undefined {
+  return world?.players?.[i]?.area_hero?.[0]?.name
+}
+
+/**
+ * La confirmation « tu regardes un héros, mais l'action va agir pour un
+ * autre » (24/09/2026, demande de l'utilisateur, capture à l'appui : « je
+ * peux faire fin de tour en cliquant sur She-Hulk alors que c'est la phase
+ * de Shuri »). Nomme les DEUX héros : dire seulement « ce n'est pas ton tour »
+ * ne dirait pas pour qui le clic va compter.
+ */
+function texteAutreHeros(nomAffiche: string, nomCible: string): { titre: string; texte: string } {
+  return {
+    titre: t('Agir pour {heros} ?').replace('{heros}', nomCible),
+    texte: t('Le plateau affiché est celui de {affiche}, pas de {heros}.')
+      .replace('{affiche}', nomAffiche)
+      .replace('{heros}', nomCible),
+  }
 }
 
 export function useInteraction(
@@ -457,6 +598,13 @@ export function useInteraction(
     cibles.length >= cibleMinimum &&
     cibles.length < cibleMaximum &&
     cibles.length < capaciteCibles
+  // Combien de points d'une selection REPARTIE (degats, soins) restent a placer.
+  // Reserve aux selections repetables : « jusqu'a 3 cartes » distinctes n'est
+  // pas une repartition, et personne n'y a de « reste » a perdre.
+  const ciblesRestantes =
+    option !== undefined && cibleRepetable
+      ? Math.max(0, Math.min(cibleMaximum, capaciteCibles) - cibles.length)
+      : 0
   // L'annonce suit ce que le joueur a ete invite a faire. Le paiement passait
   // devant les cibles restantes : une action « jusqu'a 3 cibles » basculait sur
   // « Paie 0/1 » des la premiere designee, et les deux autres paraissaient
@@ -571,6 +719,35 @@ export function useInteraction(
     []
   )
 
+  /**
+   * Echange la position de deux cibles DEJA CHOISIES dans `cibles` -- les
+   * deux boutons « ← »/« → » d'une selection ordonnee (voir `ordreReculer`/
+   * `ordreAvancer`, `EtatInteractif`). N'ajoute ni ne retire rien : si l'un
+   * des deux id est absent, ne fait rien plutot que de deviner.
+   */
+  const permuterCibles = useCallback((idA: number, idB: number) => {
+    setCibles((actuelles) => {
+      const posA = actuelles.indexOf(idA)
+      const posB = actuelles.indexOf(idB)
+      if (posA === -1 || posB === -1) return actuelles
+      const permutee = [...actuelles]
+      ;[permutee[posA], permutee[posB]] = [permutee[posB], permutee[posA]]
+      return permutee
+    })
+  }, [])
+
+  /**
+   * Assigne `quantite` occurrences de `id` d'un coup, plutot qu'un clic par
+   * occurrence (voir `EtatInteractif.assignerReste`). L'appelant calcule
+   * deja `quantite` a partir de `maxParCible` et du total encore a
+   * distribuer : cette fonction ne revalide rien, elle pousse tel quel.
+   */
+  const assignerReste = useCallback((id: number, quantite: number) => {
+    if (quantite <= 0) return
+    setCibles((actuelles) => [...actuelles, ...Array(quantite).fill(id)])
+    setRessources([])
+  }, [])
+
   const basculerRessource = useCallback(
     (carte: WorldCard) => {
       setRessources((actuelles) => {
@@ -677,6 +854,7 @@ export function useInteraction(
     // la cible et le payeur : tant qu'il manque des cibles son clic vise, une
     // fois le compte atteint il paie (voir le bloc des payeurs plus bas).
     const ciblageSatisfait = cibles.length >= minCibles
+    const ordonnee = optionEstOrdonnee(option)
     for (const [cible, maxParCible] of ciblesParOccurrence(option)) {
       // Une cible que la table ne dessine pas ne peut pas etre cliquee dessus :
       // elle passe par le selecteur (voir ciblesHorsTable).
@@ -690,13 +868,48 @@ export function useInteraction(
       // retirer.
       const peutViser = cibles.length < max && !refuseeParLaRegle(cible)
       if (!peutViser && fois === 0) continue
+      // Une cible deja choisie reste cliquable pour la retirer -- SAUF si
+      // elle est la SEULE candidate possible et que le compte exige est FIXE
+      // (min === max) : la retirer ne mene nulle part (rien a lui substituer,
+      // le minimum l'exige de toute facon), et ne fait plus que declencher
+      // l'effet de bord de `basculerCible` (vider tout paiement deja pose)
+      // sans aucune action utile. Signalement Yarro n24 (27/09/2026) : la
+      // carte qui porte Sync Ratio est AUSSI la cible unique et obligatoire
+      // de l'amelioration jouee (elle s'attache au heros) ; une fois ses
+      // interfaces toutes inclinees elle n'est plus payeuse, et le joueur qui
+      // la recliquait par reflexe perdait toute sa main deja payee, sans un
+      // mot.
+      const detargetInutile = minCibles >= max && ciblesParOccurrence(option).size <= max
+      // Position dans `cibles` : -1 si pas encore choisie (ordre alors absent
+      // plus bas, `indexOf` seul ne suffit pas a le dire sans ce garde-fou
+      // sur `fois`).
+      const position = ordonnee && fois > 0 ? cibles.indexOf(cible) : -1
+      // Combien `assignerReste` ajouterait en un clic : plafonne par ce que
+      // CETTE carte peut encore recevoir ET par ce qu'il reste a distribuer
+      // au total. En dessous de 2, ca ne ferait rien de plus qu'un clic
+      // ordinaire : pas la peine de proposer le raccourci.
+      const resteQuantite = Math.min(maxParCible - fois, max - cibles.length)
       etats.set(cible, {
         role: 'cible',
         choisie: fois > 0,
         fois: maxParCible > 1 ? fois : undefined,
+        ordre: position >= 0 ? position + 1 : undefined,
+        ordreReculer: position > 0 ? () => permuterCibles(cible, cibles[position - 1]) : undefined,
+        ordreAvancer:
+          position >= 0 && position < cibles.length - 1
+            ? () => permuterCibles(cible, cibles[position + 1])
+            : undefined,
+        assignerReste:
+          maxParCible > 1 && peutViser && resteQuantite > 1
+            ? () => assignerReste(cible, resteQuantite)
+            : undefined,
+        assignerResteQuantite:
+          maxParCible > 1 && peutViser && resteQuantite > 1 ? resteQuantite : undefined,
         pulse: etape === 'target' && fois === 0,
         agir:
-          peutViser || fois > 0 ? () => basculerCible(cible, max, maxParCible) : undefined,
+          peutViser || (fois > 0 && !detargetInutile)
+            ? () => basculerCible(cible, max, maxParCible)
+            : undefined,
       })
     }
 
@@ -808,6 +1021,8 @@ export function useInteraction(
     focaliserCarte,
     focaliserCible,
     basculerCible,
+    permuterCibles,
+    assignerReste,
     basculerRessource,
     refuseeParLaRegle,
   ])
@@ -815,6 +1030,7 @@ export function useInteraction(
   const ciblesHorsTable = useMemo<CibleHorsTable[]>(() => {
     if (!option || etape !== 'target') return []
     const [, max] = option.target_num_range
+    const ordonnee = optionEstOrdonnee(option)
     const liste: CibleHorsTable[] = []
 
     for (const [cible, maxParCible] of ciblesParOccurrence(option)) {
@@ -825,6 +1041,9 @@ export function useInteraction(
       // Une cible que la regle de selection refuse n'est pas proposee (sauf
       // si elle est deja choisie, pour pouvoir la retirer).
       if (fois === 0 && refuseeParLaRegle(cible)) continue
+      const position = ordonnee && fois > 0 ? cibles.indexOf(cible) : -1
+      // Voir le commentaire jumeau dans la boucle des cibles sur table.
+      const resteQuantite = Math.min(maxParCible - fois, max - cibles.length)
       liste.push({
         // Une carte proposee au choix est forcement visible pour nous : le
         // moteur ne demanderait pas de choisir a l'aveugle. On la montre donc
@@ -835,12 +1054,33 @@ export function useInteraction(
         ),
         choisie: fois > 0,
         fois: maxParCible > 1 ? fois : undefined,
+        ordre: position >= 0 ? position + 1 : undefined,
+        ordreReculer: position > 0 ? () => permuterCibles(cible, cibles[position - 1]) : undefined,
+        ordreAvancer:
+          position >= 0 && position < cibles.length - 1
+            ? () => permuterCibles(cible, cibles[position + 1])
+            : undefined,
+        assignerReste:
+          maxParCible > 1 && resteQuantite > 1 ? () => assignerReste(cible, resteQuantite) : undefined,
+        assignerResteQuantite: maxParCible > 1 && resteQuantite > 1 ? resteQuantite : undefined,
         agir: () => basculerCible(cible, max, maxParCible),
       })
     }
 
     return liste
-  }, [option, etape, index, idsAffiches, cibles, playerId, catalogue, basculerCible, refuseeParLaRegle])
+  }, [
+    option,
+    etape,
+    index,
+    idsAffiches,
+    cibles,
+    playerId,
+    catalogue,
+    basculerCible,
+    permuterCibles,
+    assignerReste,
+    refuseeParLaRegle,
+  ])
 
   const controle = option
     ? reponsePrete(option, cibles, ressources)
@@ -902,24 +1142,129 @@ export function useInteraction(
   // tient vraiment a payer Crisis Averted sans mentale sous une Crise. Hors
   // fournisseur (tests), `useConfirmation` retombe sur window.confirm.
   const confirmer = useConfirmation()
+
+  // Paiement automatique (24/09/2026, demande de l'utilisateur). Expose ici,
+  // pas lu en localStorage a la volee comme `lireAutoCible` : la modale de
+  // premiere fois peut ecrire ce choix, et le panneau Reglages (board.tsx)
+  // doit le refleter tout de suite, sans attendre un remontage.
+  const [paiementAutoChoix, setPaiementAutoChoix] = useState(lirePaiementAuto)
+  const basculerPaiementAuto = useCallback(() => {
+    setPaiementAutoChoix((c) => {
+      const nouveau = c === 'on' ? 'off' : 'on'
+      ecrirePaiementAuto(nouveau)
+      return nouveau
+    })
+  }, [])
+  // Un seul payeur restant (une seule carte au role 'ressource' qui pulse
+  // encore, cf. `cartes` ci-dessus) : ce n'est plus un choix, c'est la seule
+  // carte cliquable. On la paie a sa place. Cle de garde = option + nombre de
+  // ressources deja posees, pour avancer a chaque paiement automatique sans
+  // jamais re-agir deux fois sur le meme etat (une carte a payer plusieurs
+  // fois reste donc payee coup par coup, un evenement par clic economise).
+  const paiementAutoFait = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    if (etape !== 'payment' || !option) {
+      paiementAutoFait.current = undefined
+      return
+    }
+    const payeurs = [...cartes.entries()].filter(([, e]) => e.role === 'ressource' && e.pulse)
+    if (payeurs.length !== 1) return
+    const cle = `${option.id}:${ressources.length}`
+    if (paiementAutoFait.current === cle) return
+    paiementAutoFait.current = cle
+    // ⚠ CHEMIN SYNCHRONE QUAND LE CHOIX EST DEJA TRANCHE, comme
+    // `detecterAutreHeros`/`valider` plus bas : y faire systematiquement
+    // passer une Promise (meme sans modale a attendre) decale `agir()` d'un
+    // tick de micro-tache et casse la meme classe de test (glisser-depose
+    // synchrone) que le piege deja corrige le jour meme pour l'ecart de
+    // heros. Seul le premier "jamais demande" a vraiment besoin d'attendre.
+    if (paiementAutoChoix === 'on') {
+      payeurs[0][1].agir?.()
+      return
+    }
+    if (paiementAutoChoix === 'off') return
+    void confirmer({
+      titre: t('Payer automatiquement ?'),
+      texte: t(
+        'Quand une seule carte peut encore payer le reste du coût, le jeu peut la dépenser tout seul sans attendre un clic. Ce choix se change à tout moment dans Réglages.'
+      ),
+      confirmer: t('Oui, automatiquement'),
+      annuler: t('Non, je clique moi-même'),
+    }).then((accepte) => {
+      ecrirePaiementAuto(accepte ? 'on' : 'off')
+      setPaiementAutoChoix(accepte ? 'on' : 'off')
+      if (accepte) payeurs[0][1].agir?.()
+    })
+  }, [etape, option, cartes, ressources.length, paiementAutoChoix, confirmer])
+
+  // La confirmation « tu regardes un héros, l'action va agir pour un autre »
+  // (24/09/2026). PAS fusionnée avec « coup sans effet » ci-dessous : deux
+  // motifs différents méritent deux messages différents, et annuler celle-ci
+  // ne doit pas laisser passer l'autre par accident.
+  //
+  // ⚠ VERIFICATION SYNCHRONE, PAS UNE PROMESSE SYSTEMATIQUE. Faire passer
+  // TOUTE validation par un `.then()`, meme sans ecart, decale `repondre` d'un
+  // tick de micro-tache -- deux gestes de glisser-deposer (validation-geste)
+  // attendaient un `repondre` synchrone juste apres l'appel et cassaient.
+  const detecterAutreHeros = useCallback(
+    (bindPlayerId: number): { nomAffiche: string; nomCible: string } | undefined => {
+      if (bindPlayerId === playerId) return undefined
+      const nomCible = nomHeros(world, bindPlayerId)
+      const nomAffiche = nomHeros(world, playerId)
+      if (nomCible === undefined || nomAffiche === undefined) return undefined
+      return { nomAffiche, nomCible }
+    },
+    [world, playerId]
+  )
+
   const valider = useCallback(() => {
     if (!option) return
     const envoyer = () =>
       repondre({ id: option.id, targets: cibles, resources: ressources }, option.bind_player_id)
-    const avertissement = coupSansEffet(paiement, ressources)
-    if (!avertissement) {
-      envoyer()
+    const envoyerAvecAvertissementCout = () => {
+      const avertissement = coupSansEffet(paiement, ressources)
+      if (!avertissement) {
+        envoyer()
+        return
+      }
+      void confirmer({
+        ...textesCoupSansEffet(avertissement),
+        confirmer: t('Continuer'),
+        annuler: t('Annuler'),
+        ton: 'danger',
+      }).then((accepte) => {
+        if (accepte) envoyer()
+      })
+    }
+    const verifierAutreHeros = () => {
+      const ecart = detecterAutreHeros(option.bind_player_id)
+      if (!ecart) {
+        envoyerAvecAvertissementCout()
+        return
+      }
+      void confirmer({
+        ...texteAutreHeros(ecart.nomAffiche, ecart.nomCible),
+        confirmer: t('Continuer'),
+        ton: 'normal',
+      }).then((accepte) => {
+        if (accepte) envoyerAvecAvertissementCout()
+      })
+    }
+    // Des degats (ou soins) repartis dont il reste des points : le joueur les
+    // perd en validant, autant qu'il le sache (30/09/2026).
+    if (ciblesRestantes === 0) {
+      verifierAutreHeros()
       return
     }
     void confirmer({
-      ...textesCoupSansEffet(avertissement),
-      confirmer: t('Continuer'),
-      annuler: t('Annuler'),
+      ...textesPointsNonPlaces(ciblesRestantes),
+      confirmer: t('Valider quand même'),
+      annuler: t('Continuer à placer'),
       ton: 'danger',
     }).then((accepte) => {
-      if (accepte) envoyer()
+      if (accepte) verifierAutreHeros()
     })
-  }, [option, cibles, ressources, paiement, repondre, confirmer])
+  }, [option, cibles, ressources, paiement, repondre, confirmer, detecterAutreHeros, ciblesRestantes])
 
   // --- Validation courte -----------------------------------------------------
   // L'etape « valider » ne sert a rien quand il ne reste RIEN a decider. Quatre
@@ -939,6 +1284,27 @@ export function useInteraction(
   // il reste un paiement facultatif, un surpaiement recompense, une cible
   // repetable ou une cible de plus a prendre.
   const designeeParGeste = option !== undefined && optionParGeste.current === option.id
+  // Signalement Yarro n23 (26/09/2026) : Sync Ratio (SP//dr) annonce, pour
+  // UN SEUL clic, la somme des ressources de TOUTES ses interfaces pretes
+  // (2 si 2 sont pretes), meme si le joueur ne veut en incliner qu'une pour
+  // completer avec une carte de main. Ce clic seul suffisait donc a couvrir
+  // le cout ANNONCE, la validation courte partait aussitot -- avant que la
+  // carte de main ait pu s'ajouter -- et le paiement REEL (souvent inferieur
+  // a l'annonce) tombait court : le correctif atomique du 20/09/2026 rendait
+  // tout, sans perte, mais l'action se terminait quand meme sans effet.
+  // Meme forme sur toute capacite qui GENERE plus d'une ressource par clic
+  // (`valeurMoyen` > 1) : tant qu'un AUTRE moyen de payer existe et n'a pas
+  // ete choisi, un dernier "Valider" explicite laisse le temps de l'ajouter.
+  const moyenSurvaloriseNonExclusif = useMemo(() => {
+    if (!paiement) return false
+    const distincts = new Set(paiement.payment.map((moyen) => moyen.effect_id))
+    if (distincts.size <= 1) return false
+    const texteParEffet = new Map<number, string>()
+    for (const moyen of paiement.payment) {
+      if (!texteParEffet.has(moyen.effect_id)) texteParEffet.set(moyen.effect_id, moyen.res_text)
+    }
+    return ressources.some((id) => valeurMoyen(texteParEffet.get(id) ?? '') > 1)
+  }, [paiement, ressources])
   const validationEvidente =
     option !== undefined &&
     etape === 'confirm' &&
@@ -947,6 +1313,7 @@ export function useInteraction(
     !cibleSupplementairePossible &&
     !surpaiementRecompense &&
     !paiementFacultatif(paiement) &&
+    !moyenSurvaloriseNonExclusif &&
     // Un coup sans effet merite le dernier regard : pas de validation courte.
     coupSansEffet(paiement, ressources) === undefined
 
@@ -971,8 +1338,20 @@ export function useInteraction(
       abandonnerOption()
       return
     }
-    repondre(null, demande?.options[0]?.bind_player_id ?? 0)
-  }, [option, abandonnerOption, repondre, demande])
+    const bindPlayerId = demande?.options[0]?.bind_player_id ?? 0
+    const ecart = detecterAutreHeros(bindPlayerId)
+    if (!ecart) {
+      repondre(null, bindPlayerId)
+      return
+    }
+    void confirmer({
+      ...texteAutreHeros(ecart.nomAffiche, ecart.nomCible),
+      confirmer: t('Continuer'),
+      ton: 'normal',
+    }).then((accepte) => {
+      if (accepte) repondre(null, bindPlayerId)
+    })
+  }, [option, abandonnerOption, repondre, demande, confirmer, detecterAutreHeros])
 
   // Une carte focalisee reduit le panneau a SES options. L'identite du joueur
   // sert aussi de hub pour les actions generales (bind_id 0). Une cible focalisee
@@ -1018,10 +1397,13 @@ export function useInteraction(
     prete: controle.prete,
     coutAffiche,
     surpaiementRecompense,
+    ciblesRestantes,
     assistant,
     choisirOption,
     abandonnerOption,
     valider,
     annuler,
+    paiementAutoChoix,
+    basculerPaiementAuto,
   }
 }

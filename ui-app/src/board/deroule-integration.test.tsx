@@ -362,7 +362,8 @@ describe('le cartouche branche sur un vrai moteur', () => {
       ability_type: 'Normal',
     }
     await ouvrir()
-    expect(screen.getByText('À toi de jouer')).toBeInTheDocument()
+    // Plus de bandeau « À toi de jouer » (retire le 03/10/2026).
+    expect(screen.queryByText('À toi de jouer')).toBeNull()
     expect(screen.getByRole('button', { name: 'Passer' })).toBeInTheDocument()
     // Et pas de « Suivant » : il n'y a aucune etape a lire.
     expect(screen.queryByRole('button', { name: /Suivant/i })).toBeNull()
@@ -380,6 +381,13 @@ describe('le cartouche branche sur un vrai moteur', () => {
     // Le joueur valide la menace. Le moteur avance d'une trame — l'intention
     // du premier sbire — puis d'une seconde toute seule (l'intention ne coute
     // pas de clic), et s'arrete sur la RESOLUTION.
+    await act(async () => {
+      fireEvent.click(suivant())
+    })
+    await laisserTourner()
+    // Pas d'activation du mechant dans cette phase (que des sbires) : son
+    // temps est DIT par une etape courte, qui coute un clic (03/10/2026).
+    expect(screen.getByText('Le méchant ne s’active pas')).toBeInTheDocument()
     await act(async () => {
       fireEvent.click(suivant())
     })
@@ -418,7 +426,8 @@ describe('le cartouche branche sur un vrai moteur', () => {
   // franchies sans clic sont les deux intentions, et rien d'autre.
   it('acquitte chaque trame une fois, et une seule', async () => {
     await ouvrir()
-    for (let clic = 0; clic < 5; clic += 1) {
+    // Cinq etapes resolues, plus l'etape courte du mechant absent.
+    for (let clic = 0; clic < 6; clic += 1) {
       await act(async () => {
         fireEvent.click(suivant())
       })
@@ -446,6 +455,13 @@ describe('le cartouche branche sur un vrai moteur', () => {
     // Trame de l'intention.
     await act(async () => {
       serveur.libererLaSuite()
+    })
+    await laisserTourner()
+    // Pas d'activation du mechant dans cette phase (que des sbires) : son
+    // temps est DIT par une etape courte, qui coute un clic (03/10/2026).
+    expect(screen.getByText('Le méchant ne s’active pas')).toBeInTheDocument()
+    await act(async () => {
+      fireEvent.click(suivant())
     })
     await laisserTourner()
     expect(screen.getByText('Drone va manigancer sur Assault on NORAD')).toBeInTheDocument()
@@ -529,6 +545,13 @@ describe('le cartouche branche sur un vrai moteur', () => {
     await laisserTourner()
     await act(async () => {
       serveur.libererLaSuite()
+    })
+    await laisserTourner()
+    // Pas d'activation du mechant dans cette phase (que des sbires) : son
+    // temps est DIT par une etape courte, qui coute un clic (03/10/2026).
+    expect(screen.getByText('Le méchant ne s’active pas')).toBeInTheDocument()
+    await act(async () => {
+      fireEvent.click(suivant())
     })
     await laisserTourner()
     expect(screen.getByText('Drone va manigancer sur Assault on NORAD')).toBeInTheDocument()
@@ -782,6 +805,12 @@ describe('deux clients, un en Instantane et un en Detaille', () => {
 
     // Le lent valide la menace : la table franchit sa trame, et le rapide
     // acquitte la suivante sans qu'on lui demande rien.
+    await act(async () => {
+      fireEvent.click(suivant())
+    })
+    await laisserTourner()
+    // Le mechant ne s'active pas dans cette phase : son etape courte d'abord.
+    expect(screen.getByText('Le méchant ne s’active pas')).toBeInTheDocument()
     await act(async () => {
       fireEvent.click(suivant())
     })

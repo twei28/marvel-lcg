@@ -22,6 +22,12 @@ export type WorldCard = {
   info: Partial<Record<string, number>>
   traits: Partial<Record<string, number>>
   buffs: Partial<Record<string, string>>
+  /**
+   * Les BONUS d'ATQ et de DEF, chacun avec la carte qui le donne :
+   * `{ ATK: [[nom, id, valeur], ...], DEF: [...] }` (moteur du 04/10/2026,
+   * `CardFace.BonusParSource`). Absent sur un moteur plus ancien.
+   */
+  bonus?: Partial<Record<string, [string, number, number][]>>
   card_id: string
   /** Identifiant d'image. Voir scanUrl() dans card-model.ts. */
   pic_id: string
@@ -40,6 +46,12 @@ export type WorldCard = {
 
 /** Les zones qui appartiennent a un joueur. */
 export type WorldPlayer = {
+  /**
+   * Taille de main ACTUELLE de l'identite (AJOUT moteur du 04/10/2026), pour
+   * la consigne de fin de tour. Absente d'un moteur plus ancien, 0 sans
+   * identite : ne jamais l'afficher dans ces deux cas.
+   */
+  hand_size?: number
   /** Identite (Hero ou AlterEgo) puis ses ameliorations attachees. */
   area_hero: WorldCard[]
   allies: WorldCard[]
@@ -54,6 +66,13 @@ export type WorldPlayer = {
    * pour tout autre héros : toujours la lire avec `?? []`.
    */
   reserve?: WorldCard[]
+  /**
+   * Rising Tide area du pack Wave : hors jeu, cartes posées individuellement,
+   * face visible ou cachée selon `is_face_up`. Absente des sauvegardes
+   * d'avant le pack, et vide pour tout autre héros : toujours la lire avec
+   * `?? []`.
+   */
+  rising_tide?: WorldCard[]
   /**
    * Les cartes de CE joueur en cours de résolution : un événement joué, une
    * traîtrise qu'il subit, le temps que son texte s'applique.
@@ -76,6 +95,13 @@ export type WorldPlayer = {
   /** Chaine, et non liste : mesure faite sur une partie reelle (valeur ''). */
   resources: string
   is_eliminated: boolean
+  /**
+   * Ce héros a-t-il déjà bouclé son tour ce round ? (24/09/2026, pour griser
+   * son onglet dans le sélecteur de vue). Optionnel : une sauvegarde ou un
+   * moteur plus ancien n'a pas ce champ, et les fixtures de test qui
+   * construisent un `WorldPlayer` à la main n'ont pas à le fournir.
+   */
+  has_finished_turn_this_round?: boolean
 }
 
 /**
@@ -157,6 +183,12 @@ export type FaitActivationAnnonce = FaitActivationCommun & {
    * la moitié des faits de cette forme.
    */
   base?: number
+  /**
+   * Sur une annulation : la carte dont l'effet a REMPLACÉ l'activation (« Stunned »,
+   * une carte de joueur), pour « → Annulée par X » (04/10/2026). Absent si inconnue.
+   */
+  annule_par?: string
+  annule_par_id?: number
 }
 
 /**
@@ -186,7 +218,8 @@ export type FaitActivationResolue = FaitActivationCommun & {
   subi: number
   /** PV ou menace de la cible après coup. Absent si la cible n'en a pas. */
   restant?: number | null
-  boosts: { nom: string; id: number; apport: number }[]
+  /** `etoile` : le boost porte une capacite Boost (★), 04/10/2026. */
+  boosts: { nom: string; id: number; apport: number; etoile?: boolean }[]
 }
 
 export type FaitActivation = FaitActivationAnnonce | FaitActivationResolue
@@ -250,6 +283,18 @@ export type FaitRevelation = FaitMechantCommun & {
   carte: string
   /** Son identifiant d'objet, pour la mise en scène sur la table. */
   carte_id: number
+  /**
+   * Cette carte a été révélée par un Renfort (Surge) déclenché par la
+   * précédente, pas par la distribution ordinaire du point 3. Signalement
+   * Yarro n27 (28/09/2026) : sans ce marqueur, une DEUXIÈME carte enchaînée
+   * par Renfort se lisait comme la SUITE du même événement, et un joueur qui
+   * venait d'annuler la première (Spider-Tingle) croyait son effet en échec.
+   * Absent sur un moteur ancien : traité comme `false`.
+   */
+  par_surge?: boolean
+  /** Son effet « Une fois révélée » a été ANNULÉ, par cette carte (04/10/2026). */
+  annulee_par?: string
+  annulee_par_id?: number
   /**
    * Ce que la carte a CHANGÉ en se révélant, mesuré par le moteur entre une
    * photo de la table avant et après (`PlayerAction._EffetsDeLaRevelation`).
@@ -317,13 +362,45 @@ export type FaitEntree = FaitMechantCommun & {
   cause_id?: number | null
 }
 
+/**
+ * Un CHANGEMENT DE STADE en pleine phase du méchant (04/10/2026) : la manigance
+ * principale ou le méchant passe au stade suivant (`WorldStat.RecordStade`).
+ */
+export type FaitStade = FaitMechantCommun & {
+  genre: 'stade'
+  quoi: 'manigance' | 'mechant'
+  /** Le nom de la carte d'avant. */
+  avant: string
+  /** La NOUVELLE carte, montrée en grand. */
+  carte: string
+  carte_id: number
+}
+
 export type FaitMechant =
+  | FaitStade
   | FaitActivation
   | FaitMenace
   | FaitDistribution
   | FaitRevelation
   | FaitStatut
   | FaitEntree
+
+/** Un effet refusé en silence, et pourquoi (voir `refus-effets.tsx`). */
+export type RefusEffet = {
+  /** Numéro croissant dans la partie : le plateau ne montre que les nouveaux. */
+  n: number
+  genre: 'statut'
+  /** « Stunned », « Confused », « Tough » : le nom moteur de la carte d'état. */
+  statut: string
+  /** robuste : Stalwart ; deja : le statut y est déjà ; immunite : « ne peut pas être… ». */
+  motif: 'robuste' | 'deja' | 'immunite'
+  cible_id: number
+  cible: string
+  cible_code?: string
+  /** La carte responsable (la Lance de Drang), vide si inconnue. */
+  source?: string
+  source_code?: string
+}
 
 export type World = {
   /** Change a chaque rendu du moteur : sert a ne redessiner que si besoin. */
@@ -447,6 +524,12 @@ export type World = {
    * lecteur doit tenir le cas où la liste manque.
    */
   faits_mechant?: FaitMechant[]
+  /**
+   * Effets REFUSES en silence par le moteur (`WorldStat.RecordRefusEffet`) :
+   * « Drang n'est pas sonné, il est Robuste ». Numérotés (`n`) pour que le
+   * plateau n'affiche que les nouveaux. Absent des moteurs non mis à jour.
+   */
+  refus_effets?: RefusEffet[]
   area_schemes_main: WorldCard[]
   main_schemes_deck: WorldCard[]
   area_schemes_side: WorldCard[]

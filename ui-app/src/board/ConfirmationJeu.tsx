@@ -31,6 +31,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { t } from './langue'
+import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 
 export type DemandeConfirmation = {
   titre: string
@@ -88,6 +89,10 @@ export function FournisseurConfirmation({ children }: { children: ReactNode }) {
 function Dialogue({ demande }: { demande: EnAttente }) {
   const { repondre } = demande
   const valider = useRef<HTMLButtonElement | null>(null)
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »).
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(demande.titre)
 
   // Le bouton qui valide prend le focus : la touche Entrée répond « oui », et
   // le lecteur d'écran annonce le dialogue au lieu de le laisser passer.
@@ -121,9 +126,18 @@ function Dialogue({ demande }: { demande: EnAttente }) {
         role="alertdialog"
         aria-modal="true"
         aria-label={demande.titre}
+        style={transformDecalage(decalage)}
       >
-        <span className="plateau-eyebrow">{t('Confirmation')}</span>
-        <strong className="confirm-titre">{demande.titre}</strong>
+        <div
+          className="poignee-glisser"
+          onPointerDown={gestesGlisser.onPointerDown}
+          onPointerMove={gestesGlisser.onPointerMove}
+          onPointerUp={gestesGlisser.onPointerUp}
+          onPointerCancel={gestesGlisser.onPointerCancel}
+        >
+          <span className="plateau-eyebrow">{t('Confirmation')}</span>
+          <strong className="confirm-titre">{demande.titre}</strong>
+        </div>
         {demande.texte ? <p className="confirm-texte">{demande.texte}</p> : null}
         <div className="confirm-boutons">
           <button type="button" className="confirm-non" onClick={() => repondre(false)}>

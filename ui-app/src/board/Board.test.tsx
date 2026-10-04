@@ -63,6 +63,18 @@ describe('ApercuMarvelcdb', () => {
     expect(container).toBeEmptyDOMElement()
   })
 
+  it('un art alternatif (scan anglais) donne le texte francais meme si la carte a son scan FR', async () => {
+    // Demande du 03/10/2026 : « les cartes alternatives sont en anglais ».
+    render(<ApercuMarvelcdb codeCarte={AVEC_SCAN} artAlternatif />)
+    expect(await screen.findByText(/Sens d'Araignée/)).toBeInTheDocument()
+  })
+
+  it('pas d art alternatif en scans anglais : rien de plus', () => {
+    window.localStorage.setItem(CLE_SCANS_FR, 'off')
+    const { container } = render(<ApercuMarvelcdb codeCarte={AVEC_SCAN} artAlternatif />)
+    expect(container).toBeEmptyDOMElement()
+  })
+
   it('rend les sauts de ligne visibles au lieu de coller les capacites', () => {
     ;(TEXTES_FR as Record<string, string | undefined>)[SANS_SCAN] =
       'Première capacité.\nSeconde capacité.'

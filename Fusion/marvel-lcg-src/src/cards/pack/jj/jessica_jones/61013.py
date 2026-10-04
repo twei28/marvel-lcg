@@ -8,6 +8,6 @@ def GetAbilities() -> Sequence['Ability']:
         return message.property.damage >= 3 and message.would_atk_message is not None
     return [
         AbilityFactory.WhenUnitWouldTakeDamage(
-            AbilityType.Interrupt, "You", reluctant_flier, conditions=[check_min_damage]
+            AbilityType.HeroInterrupt, "You", reluctant_flier, conditions=[check_min_damage]
         ).SetCostFunc(CostFunc.Discard("This")),
     ]

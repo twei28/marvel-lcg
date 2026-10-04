@@ -13,6 +13,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   web: 'toile',
   glory: 'gloire',
   damage: 'dégâts',
+  acceleration: 'accélération',
   infamy: 'infamie',
   madness: 'folie',
   arrow: 'flèche',
@@ -92,6 +93,15 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   'psionic web': 'toile psionique',
   aegis: 'égide',
   fire: 'feu',
+  // Pack red_sonja (23/09/2026) : Crimson Shadow (rs011, « stealth ») et
+  // She-Devil Shackled! (rs018, « fetter ») — trouve en ecrivant le test de
+  // rendu de l'etape 8 bis, avant meme d'avoir ete joue.
+  stealth: 'discrétion',
+  fetter: 'entrave',
+  // Pack conan (25/09/2026) : compteurs de The Cimmerian (cn012a/b) et de
+  // The Coils of Doom (cn013). « Crom » est un nom propre (le dieu cimmérien).
+  crom: 'Crom',
+  serpent: 'serpent',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »

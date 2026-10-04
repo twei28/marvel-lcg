@@ -20,7 +20,18 @@ const REDIGES = new Set([
   'revelation',
   'entree',
   'bilan',
+  'vide',
+  'stade',
 ])
+
+/** Ce que dit un temps passe sans rien (`avecTempsVides`, frise-phase.ts). */
+const TEXTE_TEMPS_VIDE: Partial<Record<EtapeDeroule['temps'], string>> = {
+  menace: 'Aucune menace posée',
+  mechant: 'Le méchant ne s’active pas',
+  sbires: 'Aucun sbire engagé',
+  distribution: 'Aucune carte rencontre distribuée',
+  revelation: 'Rien à révéler',
+}
 
 /**
  * Accord du pluriel francais : « 1 degat », « 2 degats ». L'anglais rend le
@@ -52,6 +63,11 @@ export function titreEtape(etape: EtapeDeroule): string {
   // Le bilan n'a ni auteur ni cible : c'est le point final de la phase, pas un
   // coup de plus. Son detail se lit sur ses lignes, juste en dessous.
   if (etape.titre === 'bilan') return t('Fin de la phase du méchant')
+  if (etape.titre === 'stade') {
+    const debut = etape.stade === 'mechant' ? 'Le méchant passe au stade suivant' : 'La manigance passe au stade suivant'
+    return etape.cibleNom ? `${t(debut)} : ${etape.cibleNom}` : t(debut)
+  }
+  if (etape.titre === 'vide') return t(TEXTE_TEMPS_VIDE[etape.temps] ?? 'Rien')
 
   // Les noms viennent du FAIT (voir deroule-phase.ts), pas d'une recherche
   // dans l'index du monde courant : une carte morte pendant la phase n'y est
@@ -107,7 +123,15 @@ export function titreEtape(etape: EtapeDeroule): string {
     // Sans heros connu (joueur introuvable, ou l'appelant ne l'a pas fourni),
     // repli sur l'ancienne formule generique : une carte revelee anonyme vaut
     // mieux qu'un « undefined révèle ».
-    return auteur ? `${auteur} ${t('révèle')} ${cible}` : `${cible} ${t('révélée')}`
+    const phrase = auteur ? `${auteur} ${t('révèle')} ${cible}` : `${cible} ${t('révélée')}`
+    // Marque le Renfort (Surge) qui a enchaine CETTE carte, distinctement de
+    // la revelation ordinaire du point 3 : signalement Yarro n27 (28/09/2026),
+    // un joueur qui venait d'annuler la carte precedente (Spider-Tingle) ne
+    // pouvait pas savoir que celle-ci en etait une AUTRE, sans rapport.
+    // Le Renfort (Surge) se dit en SURTITRE (`surtitreEtape`), plus dans la
+    // phrase : decision du 03/10/2026. Signalement Yarro n27 (28/09/2026) : sans
+    // marque, le joueur ne savait pas que cette carte en etait une AUTRE.
+    return phrase
   }
 
   // L'INTENTION, au futur proche : « Klaw VA attaquer Colossus ». C'est le
@@ -127,6 +151,27 @@ export function titreEtape(etape: EtapeDeroule): string {
 }
 
 /**
+ * Le SURTITRE d'une carte revelee par Renfort : « Renfort de X », ou
+ * « Renfort » quand la carte qui l'a declenchee n'est pas connue. Vide ailleurs.
+ */
+export function surtitreEtape(etape: EtapeDeroule): string {
+  if (etape.titre !== 'revelation' || !etape.parSurge) return ''
+  return etape.renfortDe ? t('Renfort de %1').replace('%1', etape.renfortDe) : t('Renfort')
+}
+
+/** Les boosts a capacite (★) d'un coup : une ligne chacun, sous l'attaque. */
+export function lignesEtoileBoost(etape: EtapeDeroule): string[] {
+  return etape.boosts
+    .filter((boost) => boost.etoile)
+    .map((boost) => `★ ${boost.nom} : ${t('son effet de boost s’applique')}`)
+}
+
+/** La fin d'une carte que suit un Renfort : la suite est une AUTRE carte. */
+export function texteSuiteRenfort(etape: EtapeDeroule): string {
+  return etape.suivieDUnRenfort ? `→ ${t('Renfort : une autre carte est révélée')}` : ''
+}
+
+/**
  * Le chiffre du coup, sous le titre : « → 4 dégâts », « → 2 menaces ».
  *
  * Vide pour l'etape de menace, dont le chiffre est deja dans le titre, et
@@ -137,11 +182,11 @@ export function resultatEtape(etape: EtapeDeroule): string {
   // defense ni les cartes de boost ne sont encore connues, donc ce nombre-la
   // n'est pas un resultat. Une annulation ne le montre pas : il n'y a plus
   // rien a attendre, et `texteActivationAnnulee` prend sa place.
+  // Pas de chiffre sur une ATTAQUE annoncee (decision du 04/10/2026) : « → 0
+  // dégât annoncé » (Klaw I, ATQ 0 + 2 boosts) faisait croire a un coup sans
+  // effet, et le bouton « Ne pas défendre (ATQ …) » le dit deja.
   if (etape.etat === 'annonce') {
     if (etape.valeurAnnoncee === undefined) return ''
-    if (etape.titre === 'attaque') {
-      return `→ ${etape.valeurAnnoncee} ${pluriel(etape.valeurAnnoncee, 'dégât annoncé', 'dégâts annoncés')}`
-    }
     if (etape.titre === 'manigance') {
       return `→ ${etape.valeurAnnoncee} ${pluriel(etape.valeurAnnoncee, 'menace annoncée', 'menaces annoncées')}`
     }
@@ -288,6 +333,11 @@ export function texteDefaite(etape: EtapeDeroule): string {
  * pas.
  */
 export function texteActivationAnnulee(etape: EtapeDeroule): string {
+  // « → Annulée par X » (decision du 03/10/2026) des que le moteur nomme ce qui
+  // a annule : activation remplacee (un statut, traduit) ou carte revelee.
+  if (etape.annuleePar && (etape.etat === 'annule' || etape.titre === 'revelation')) {
+    return `→ ${t('Annulée par %1').replace('%1', libelleDeStatut(etape.annuleePar))}`
+  }
   if (etape.etat !== 'annule') return ''
   return etape.titre === 'attaque'
     ? t('L\'attaque n\'a pas lieu.')
@@ -400,6 +450,16 @@ export function texteEffet(effet: EffetRevelation): string {
     return `→ ${effet.cible} ${t('subit')} ${effet.montant} ${pluriel(effet.montant, 'dégât', 'dégâts')}${restant(effet.restant, ` ${t('PV')}`)}`
   }
   return `→ ${effet.carte} ${t('entre en jeu')} (${t(effet.type)})`
+}
+
+/**
+ * Une CONSEQUENCE de la carte revelee, sur une ligne : « → Bloody Mary
+ * manigance sur Stop the Presses! : 1 + 3 (Hit List) = 4 menaces ».
+ */
+export function texteConsequence(etape: EtapeDeroule): string {
+  const titre = titreEtape(etape)
+  const detail = (detailEtape(etape) || resultatEtape(etape)).replace(/^→\s*/, '')
+  return detail ? `→ ${titre} : ${detail}` : `→ ${titre}`
 }
 
 export function regleEtape(etape: EtapeDeroule): string {

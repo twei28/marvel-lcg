@@ -33,14 +33,28 @@ export function rgbVersHex(couleur) {
 }
 
 /** Les arrêts de la bande diagonale, position en % et force de la couleur.
- *  Mêmes valeurs que le plateau, montées deux fois à la demande de
+ *  Mêmes valeurs que le plateau, montées quatre fois à la demande de
  *  l'utilisateur : 14/09/2026 (0,32 / 0,24 / 0,14 → 0,46 / 0,34 / 0,20), puis
- *  22/09/2026 (→ 0,60 / 0,44 / 0,26). */
+ *  22/09/2026 (→ 0,60 / 0,44 / 0,26), puis 23/09/2026 en deux temps (→ 0,74 /
+ *  0,54 / 0,32, « encore plus flashy », puis au maximum → 1,0 / 0,9 / 0,75,
+ *  la primaire à pleine opacité). Les POSITIONS ont aussi bougé une fois
+ *  (0/16/30 % → 0/22/38 %, « la couleur primaire peut ressortir un peu
+ *  plus » -- impossible de monter l'opacité plus haut que 1,0, alors la
+ *  primaire pure occupe une plus grande part de la bande à la place). */
 export const ARRETS = [
-    { a: 0, force: 0.6 },
-    { a: 16, force: 0.44 },
-    { a: 30, force: 0.26 },
+    { a: 0, force: 1.0 },
+    { a: 22, force: 0.9 },
+    { a: 38, force: 0.75 },
 ];
+
+/** L'ordre dans lequel les trois couleurs du fichier (primaire, secondaire,
+ *  tertiaire) tiennent les arrêts ci-dessus (23/09/2026, demande de
+ *  l'utilisateur, capture de cet éditeur à l'appui : « la primaire je la
+ *  veux à droite, la secondaire à gauche et le tertiaire au milieu »). La
+ *  primaire (index 0) reste au coin (0 %, « à droite »), la tertiaire
+ *  (index 2) tient l'arrêt du milieu (22 %), la secondaire (index 1) tient
+ *  le dernier arrêt visible (38 %, le plus diffus -- « à gauche »). */
+export const ORDRE = [0, 2, 1];
 
 /** Le fond du plateau pour ces couleurs : une bande diagonale au coin bas
  *  droit, qui s'éteint avant le centre. Voir `halo-heros.ts` pour le pourquoi
@@ -50,10 +64,10 @@ export function fondDe(couleurs, sombre) {
     const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
     const derniere = couleurs[couleurs.length - 1];
     const etapes = ARRETS.map((arret, i) => {
-        const couleur = couleurs[i] ?? derniere;
+        const couleur = couleurs[ORDRE[i]] ?? derniere;
         return `${rgba(couleur, arret.force)} ${arret.a}%`;
     });
-    const fin = couleurs[ARRETS.length - 1] ?? derniere;
+    const fin = couleurs[ORDRE[ARRETS.length - 1]] ?? derniere;
     return `linear-gradient(315deg, ${etapes.join(", ")}, ${rgba(fin, 0)} 50%), ${sombre}`;
 }
 

@@ -23,6 +23,9 @@ import {
   texteLigneBilan,
   titreEtape,
   decouperPhrase,
+  surtitreEtape,
+  texteSuiteRenfort,
+  lignesEtoileBoost,
 } from './deroule-textes'
 import type { EtapeDeroule, LigneBilan } from './deroule-phase'
 
@@ -118,6 +121,43 @@ describe('phrases du deroule', () => {
     expect(
       titreEtape(etape({ temps: 'revelation', titre: 'revelation', auteurNom: undefined, cibleNom: 'Bombe à retardement' }))
     ).toBe('Bombe à retardement révélée')
+  })
+
+  // Signalement Yarro n27 (28/09/2026) : sans cette marque, un joueur qui
+  // venait d'annuler la carte precedente (Spider-Tingle) ne pouvait pas
+  // savoir que celle-ci en etait une AUTRE, enchainee par Renfort (Surge).
+  // Decision du 03/10/2026 : le Renfort passe en SURTITRE (« Renfort de X »),
+  // le titre reste la phrase ordinaire ; la carte precedente finit par
+  // « → Renfort : une autre carte est révélée ».
+  it('marque le Renfort en surtitre quand la carte est enchainee par Surge', () => {
+    const surge = etape({
+      temps: 'revelation',
+      titre: 'revelation',
+      auteurNom: 'Colossus',
+      cibleNom: 'Bombe à retardement',
+      parSurge: true,
+      renfortDe: 'Mines',
+    })
+    expect(titreEtape(surge)).toBe('Colossus révèle Bombe à retardement')
+    expect(surtitreEtape(surge)).toBe('Renfort de Mines')
+    expect(surtitreEtape({ ...surge, renfortDe: undefined })).toBe('Renfort')
+    expect(surtitreEtape({ ...surge, parSurge: undefined })).toBe('')
+    expect(texteSuiteRenfort({ ...surge, suivieDUnRenfort: true })).toBe('→ Renfort : une autre carte est révélée')
+    expect(texteSuiteRenfort(surge)).toBe('')
+  })
+
+  it('ne marque rien sur une revelation ordinaire', () => {
+    expect(
+      titreEtape(
+        etape({
+          temps: 'revelation',
+          titre: 'revelation',
+          auteurNom: 'Colossus',
+          cibleNom: 'Bombe à retardement',
+          parSurge: false,
+        })
+      )
+    ).toBe('Colossus révèle Bombe à retardement')
   })
 
   // Le temps DISTRIBUTION n'avait jamais d'etape avant la tache A2 : rien ne
@@ -322,9 +362,15 @@ describe("les deux temps d'une activation", () => {
     )
   })
 
-  it("montre la valeur imprimee, dite pour ce qu'elle est", () => {
-    expect(resultatEtape(annonce())).toBe('→ 4 dégâts annoncés')
-    expect(resultatEtape(annonce({ valeurAnnoncee: 1 }))).toBe('→ 1 dégât annoncé')
+  // Decision du 04/10/2026 : « → 0 dégât annoncé » (Klaw I, ATQ 0 + 2 boosts)
+  // faisait croire a un coup sans effet. Le bouton « Ne pas défendre (ATQ …) »
+  // le dit deja ; l'attaque annoncee ne montre plus de chiffre.
+  it("ne montre aucun chiffre sur une attaque annoncee", () => {
+    expect(resultatEtape(annonce())).toBe('')
+    expect(resultatEtape(annonce({ valeurAnnoncee: 0 }))).toBe('')
+  })
+
+  it("montre la menace imprimee, dite pour ce qu'elle est", () => {
     expect(resultatEtape(annonce({ titre: 'manigance', valeurAnnoncee: 2 }))).toBe(
       '→ 2 menaces annoncées'
     )
@@ -346,6 +392,17 @@ describe("les deux temps d'une activation", () => {
     )
     // Plus rien a attendre : la valeur annoncee ne s'affiche plus.
     expect(resultatEtape(annulee)).toBe('')
+  })
+
+  // Decision du 03/10/2026 : l'etape annulee reste, et dit « → Annulée par X »
+  // quand le moteur nomme ce qui l'a remplacee (statut traduit).
+  it('dit qui a annule, quand le moteur le sait', () => {
+    expect(texteActivationAnnulee(annonce({ etat: 'annule', annuleePar: 'Stunned' }))).toBe('→ Annulée par Sonné')
+    expect(
+      texteActivationAnnulee(
+        etape({ temps: 'revelation', titre: 'revelation', cibleNom: 'Advance', annuleePar: 'Spider-Man' })
+      )
+    ).toBe('→ Annulée par Spider-Man')
   })
 
   it('ne dit rien sur une etape qui n est pas annulee', () => {
@@ -451,8 +508,8 @@ describe('le detail du coup', () => {
     expect(detailEtape(etape({ etat: 'resolu', base: 2, montant: 2 }))).toBe('→ 2 dégâts')
   })
 
-  it('dit l annonce comme avant', () => {
-    expect(detailEtape(etape({ etat: 'annonce', valeurAnnoncee: 3 }))).toBe('→ 3 dégâts annoncés')
+  it('ne chiffre pas une attaque annoncee', () => {
+    expect(detailEtape(etape({ etat: 'annonce', valeurAnnoncee: 3 }))).toBe('')
   })
 
   it('ne dit rien sur une menace, dont le titre porte deja le chiffre', () => {
@@ -546,7 +603,7 @@ describe('les cartes de statut dans le cartouche', () => {
       'Klaw gagne Sonné'
     )
     expect(titreEtape(etape({ titre: 'statut', cibleNom: 'Colossus', statut: 'Tough' }))).toBe(
-      'Colossus gagne Robuste'
+      'Colossus gagne Tenace'
     )
   })
 
@@ -572,7 +629,7 @@ describe('les cartes de statut dans le cartouche', () => {
     ).toBe('Klaw gagne Sonné')
     expect(
       texteLigneBilan({ cle: 'k', genre: 'statuts', statut: 'Tough', cibleNom: 'Klaw', total: 2 })
-    ).toBe('Klaw gagne Robuste x2')
+    ).toBe('Klaw gagne Tenace x2')
   })
 })
 
@@ -624,5 +681,28 @@ describe('les noms de cartes se détachent dans la phrase', () => {
   it('sans nom du tout, la phrase reste entière et sans gras', () => {
     const m = decouperPhrase('Fin de la phase du méchant', [undefined, ''])
     expect(m).toEqual([{ texte: 'Fin de la phase du méchant', gras: false }])
+  })
+})
+
+describe('changement de stade (04/10/2026)', () => {
+  it('dit ce qui change de stade, et la nouvelle carte', () => {
+    expect(titreEtape(etape({ titre: 'stade', stade: 'manigance', auteurNom: 'The Break-In!', cibleNom: 'Countdown' })))
+      .toBe('La manigance passe au stade suivant : Countdown')
+    expect(titreEtape(etape({ titre: 'stade', stade: 'mechant', auteurNom: 'Rhino', cibleNom: 'Rhino' })))
+      .toBe('Le méchant passe au stade suivant : Rhino')
+  })
+})
+
+describe('effet ★ d un boost (04/10/2026)', () => {
+  it('une ligne par boost a capacite, sous l attaque', () => {
+    const coup = etape({
+      titre: 'attaque', etat: 'resolu', montant: 3,
+      boosts: [
+        { cle: 'b1', nom: 'Venom Blast', cibleId: 81, apport: 1, etoile: true },
+        { cle: 'b2', nom: 'Hydra Mercenary', cibleId: 82, apport: 2 },
+      ],
+    })
+    expect(lignesEtoileBoost(coup)).toEqual(['★ Venom Blast : son effet de boost s’applique'])
+    expect(lignesEtoileBoost({ ...coup, boosts: coup.boosts.slice(1) })).toEqual([])
   })
 })

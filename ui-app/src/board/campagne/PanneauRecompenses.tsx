@@ -12,7 +12,11 @@
 // qu'on préfère une case modifiable à une campagne faussée.
 import { useEffect, useMemo, useState } from 'react'
 import { t } from '../langue'
-import { scanUrl } from '../card-model'
+import { paysageSelonTypePapier, scanUrl } from '../card-model'
+import { CarteApercu } from '../Board'
+import { useApercuSurvol } from '../apercu-survol'
+import { catalogueVide, chargerCatalogue, type Catalogue } from '../catalogue'
+import type { ScanCardProps } from '../../components/ScanCard'
 import type { World } from '../world'
 import {
   cleCarnet,
@@ -589,6 +593,71 @@ function ChampRecompense({
   )
 }
 
+/**
+ * Des cartes cliquables, avec l'agrandissement au survol de la table (même
+ * `CarteApercu`, même règle `useApercuSurvol` : un seul écouteur sur le
+ * conteneur). L'écran de fin de partie est à 600 : l'aperçu passe au-dessus.
+ */
+function ListeCartes({
+  ids,
+  choisie,
+  inerte,
+  basculer,
+}: {
+  ids: readonly string[]
+  choisie: (id: string) => boolean
+  inerte: boolean
+  basculer: (id: string) => void
+}) {
+  const [catalogue, setCatalogue] = useState<Catalogue>(catalogueVide)
+  useEffect(() => {
+    let annule = false
+    void chargerCatalogue().then((c) => {
+      if (!annule) setCatalogue(c)
+    })
+    return () => {
+      annule = true
+    }
+  }, [])
+
+  const cartes = useMemo<ScanCardProps[]>(
+    () =>
+      ids.map((id) => ({
+        id,
+        name: id,
+        kind: 'unknown',
+        imageUrl: scanUrl(id),
+        isLandscape: paysageSelonTypePapier(catalogue.type(id)),
+        keywords: catalogue.motsCles(id),
+        codeCarte: id,
+      })),
+    [ids, catalogue]
+  )
+  const { regardee, survol, quitter } = useApercuSurvol(cartes)
+
+  return (
+    <div className="camp-cartes" onMouseOver={survol} onMouseLeave={quitter}>
+      {ids.map((id) => (
+        // Le survol se lit sur l'enveloppe : un bouton désactivé (carnet d'un
+        // autre siège) n'émet plus d'évènement souris, et l'aperçu doit
+        // pourtant s'ouvrir pour lire la carte.
+        <span key={id} data-card-id={id} className="camp-carte-enveloppe">
+          <button
+            type="button"
+            className={`camp-carte${choisie(id) ? ' sel' : ''}`}
+            aria-pressed={choisie(id)}
+            disabled={inerte}
+            onClick={() => basculer(id)}
+          >
+            <img src={scanUrl(id)} alt={id} loading="lazy" />
+          </button>
+        </span>
+      ))}
+      {regardee ? <CarteApercu carte={regardee} classe="au-dessus-de-la-fin" /> : null}
+    </div>
+  )
+}
+
 function Controle({
   champ,
   cle,
@@ -610,20 +679,12 @@ function Controle({
   // une décision de jeu, elle mérite qu'on voie ce qu'on prend.
   if (champ.type === 'choix' && champ.options?.length) {
     return (
-      <div className="camp-cartes">
-        {champ.options.map((id) => (
-          <button
-            type="button"
-            key={id}
-            className={`camp-carte${valeur === id ? ' sel' : ''}`}
-            aria-pressed={valeur === id}
-            disabled={inerte}
-            onClick={() => poser(cle, valeur === id ? '' : id)}
-          >
-            <img src={scanUrl(id)} alt={id} loading="lazy" />
-          </button>
-        ))}
-      </div>
+      <ListeCartes
+        ids={champ.options}
+        choisie={(id) => valeur === id}
+        inerte={inerte}
+        basculer={(id) => poser(cle, valeur === id ? '' : id)}
+      />
     )
   }
 
@@ -644,25 +705,17 @@ function Controle({
   if (champ.options?.length) {
     const choisies = new Set(deListe(valeur))
     return (
-      <div className="camp-cartes">
-        {champ.options.map((id) => (
-          <button
-            type="button"
-            key={id}
-            className={`camp-carte${choisies.has(id) ? ' sel' : ''}`}
-            aria-pressed={choisies.has(id)}
-            disabled={inerte}
-            onClick={() => {
-              const suite = new Set(choisies)
-              if (suite.has(id)) suite.delete(id)
-              else suite.add(id)
-              poser(cle, enListe(champ.options!.filter((x) => suite.has(x))))
-            }}
-          >
-            <img src={scanUrl(id)} alt={id} loading="lazy" />
-          </button>
-        ))}
-      </div>
+      <ListeCartes
+        ids={champ.options}
+        choisie={(id) => choisies.has(id)}
+        inerte={inerte}
+        basculer={(id) => {
+          const suite = new Set(choisies)
+          if (suite.has(id)) suite.delete(id)
+          else suite.add(id)
+          poser(cle, enListe(champ.options!.filter((x) => suite.has(x))))
+        }}
+      />
     )
   }
 

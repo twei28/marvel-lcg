@@ -9,10 +9,10 @@ def GetAbilities() -> Sequence['Ability']:
 
     def after_scheme(effect: 'Effect', message: 'Message.AfterEnemyActivationEnd') -> None:
         player = message.GetToPlayer()
-        player.TakeIndirectDamage(effect.this, 1, effect)
+        player.GetIdentity().TakeIndirectDamage(effect.this, 1, effect)
 
     def psycho_man_schemed(effect: 'Effect', message: 'Message.AfterEnemyActivationEnd') -> bool:
-        return message.active_message.IsScheme() and message.trigger == effect.this.bind_face
+        return message.sch_message is not None and message.trigger == effect.this.bind_face
 
     return [
         # CORRECTIF 4/8/2026 : `WhenThisBoostAttachTo` ne se declenche QUE si

@@ -1,0 +1,313 @@
+/* Les ONGLETS de la phase du mechant (la chronologie du cartouche, DeroulePhase).
+
+   Hors couche, comme VoletJournal.css : ces regles passent devant board.css.
+
+   Choix de l'utilisateur (03/10/2026) : un onglet par etape officielle, ROUGE
+   des qu'elle est passee ou en cours, GRIS tant qu'elle est a venir ; l'onglet
+   en cours est souligne. La bande rouge oblique de l'en-tete est retiree : des
+   onglets rouges s'y seraient fondus. */
+.deroule-phase::before {
+  display: none;
+}
+
+.deroule-phase .deroule-temps {
+  gap: 4px 6px;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: rgba(248, 250, 252, 0.6);
+  text-shadow: none;
+}
+
+.deroule-phase .deroule-temps li {
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: #3a3e44;
+  color: rgba(248, 250, 252, 0.6);
+}
+
+.deroule-phase .deroule-temps li.est-passe,
+.deroule-phase .deroule-temps li.est-courant,
+.deroule-phase .deroule-temps li.est-vide {
+  background: var(--rouge-vif);
+  color: #fff;
+}
+
+.deroule-phase .deroule-temps li.est-courant {
+  box-shadow: inset 0 -3px 0 #fff;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* Un temps passe sans rien : rouge comme les autres, son texte barre. */
+.deroule-phase .deroule-temps li.est-vide {
+  opacity: 0.8;
+}
+
+/* La question de DEFENSE (et toute question a vignettes) : la carte AU-DESSUS
+   de son bouton (demande de l'utilisateur, 03/10/2026). */
+.deroule-phase.est-question .af-action-wrap {
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+/* LES BOUTONS D'UN MEME CHOIX SUR LA MEME LIGNE (04/10/2026, demande de
+   l'utilisateur). La carte au-dessus de son bouton rend cette option plus haute
+   qu'un « Ne pas utiliser » ou un « Passer » : alignes par le MILIEU (regle du
+   15/09/2026, ecrite quand la vignette etait A COTE du bouton), les boutons ne
+   tombaient plus au meme niveau. Alignes par le BAS, ils forment une rangee, la
+   phrase de gauche comprise ; l'espace libre passe au-dessus du refus. */
+.deroule-phase.est-question .demande-centrale,
+.deroule-phase.est-question .dc-boutons {
+  align-items: flex-end;
+}
+
+/* LES CHOIX DE DEFENSE COTE A COTE (04/10/2026, capture a l'appui : Hulk
+   au-dessus, Black Widow et « Ne pas défendre » dessous). La rangee etait
+   bornee a 640 px et passait a la ligne des le troisieme choix. */
+.deroule-phase.est-question .dc-boutons {
+  flex-wrap: nowrap;
+  max-width: none;
+}
+
+/* Et la rangee tient DANS le cadre : les choix se partagent la largeur, le
+   texte d'un bouton passe sur deux lignes plutot que de sortir du cadre
+   (vu a l'ecran a 1024 et 1600 px, 04/10/2026). */
+.deroule-phase.est-question .deroule-question-scene,
+.deroule-phase.est-question .demande-centrale {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.deroule-phase.est-question .dc-boutons > .af-action-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.deroule-phase.est-question .dc-boutons .af-action {
+  white-space: normal;
+  max-width: 100%;
+}
+
+/* Plusieurs defenseurs : la rangee ne tient plus a cote du titre. Tout passe
+   en une colonne, le titre au-dessus des choix. */
+.deroule-phase.est-question:has(.af-action-wrap.a-vignette ~ .af-action-wrap.a-vignette) {
+  grid-template-columns: minmax(0, auto);
+}
+
+/* Le compteur « 1 → 3 / 7 » : la police de bande dessinee (Bangers) dessine le
+   7 presque comme un 1, et l'utilisateur lisait « 3 sur 1 » (03/10/2026). Une
+   police ou les chiffres se distinguent. */
+.deroule-phase .deroule-compteur {
+  font-family: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  font-style: normal;
+  letter-spacing: 0.02em;
+  word-spacing: 0.1em;
+}
+
+/* La poignee qui remplace le bandeau « À toi de jouer » quand la question
+   arrive avant toute etape (pas encore de frise a saisir). */
+.deroule-poignee {
+  height: 10px;
+  margin: -6px auto 6px;
+  width: 64px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  cursor: grab;
+}
+
+/* LE RESULTAT COURT sous le nom d'un onglet passe (« 3 dégâts · +1 menace »,
+   « aucun ») et l'onglet passe CLIQUABLE, qui se relit (03/10/2026). */
+.deroule-phase .deroule-temps li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.deroule-phase .deroule-onglet-resume {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.9;
+}
+
+.deroule-phase .deroule-onglet-bouton {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.deroule-phase .deroule-onglet-bouton:hover .deroule-onglet-nom,
+.deroule-phase .deroule-onglet-bouton:focus-visible .deroule-onglet-nom {
+  text-decoration: underline;
+}
+
+/* L'onglet qu'on relit : cadre blanc, pour le distinguer de celui en cours. */
+.deroule-phase .deroule-temps li.est-relu {
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+.deroule-phase .deroule-relecture-mention {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.6);
+}
+
+.deroule-phase .deroule-relecture-liste {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.deroule-phase .deroule-relecture-liste button {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.deroule-phase .deroule-relecture-liste button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.deroule-phase .deroule-relecture-chiffre {
+  opacity: 0.75;
+}
+
+/* Le RENFORT (03/10/2026) : surtitre de la carte enchainee, et ligne de suite
+   sous la carte qui l'a declenchee. */
+.deroule-phase .deroule-surtitre {
+  margin: 6px 0 -2px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--menace, #f0b95f);
+}
+
+.deroule-phase .deroule-suite-renfort {
+  margin: 6px 0 0;
+  font-style: italic;
+  color: var(--menace, #f0b95f);
+}
+
+/* LA CARTE DECOUVERTE EN GRAND (decision du 03/10/2026) : la rangee des boosts
+   et de la carte revelee prend toute la largeur du cartouche, au-dessus du
+   texte, cartes cote a cote. Pas pendant une question : la place y est
+   comptee pour les boutons (regles de board.css). */
+.deroule-phase:not(.est-question):not(.est-replie) .deroule-cartes {
+  width: 100%;
+  justify-content: center;
+}
+
+.deroule-phase:not(.est-question):not(.est-replie) .deroule-cartes,
+.deroule-phase:not(.est-question):not(.est-replie) .deroule-cartes .scan-card {
+  --card-w: clamp(84px, 17vh, 180px);
+}
+
+.deroule-phase:not(.est-question):not(.est-replie) .deroule-cartes .scan-card.is-landscape {
+  --card-w: clamp(118px, 24vh, 250px);
+}
+
+/* L'effet ★ d'un boost, sous l'attaque (03/10/2026). */
+.deroule-phase .deroule-etoile {
+  margin: 2px 0 0;
+  font-size: 0.86rem;
+  color: var(--menace, #f0b95f);
+}
+
+/* TELEPHONE (03/10/2026) : des pastilles numerotees ; seul l'onglet en cours
+   garde son nom et son resultat. Meme seuil que le volet du journal. */
+@media (max-width: 760px), (max-height: 520px) {
+  .deroule-phase .deroule-temps li:not(.est-courant) .deroule-onglet-libelle,
+  .deroule-phase .deroule-temps li:not(.est-courant) .deroule-onglet-resume {
+    display: none;
+  }
+
+  .deroule-phase .deroule-temps li:not(.est-courant) {
+    min-width: 1.9em;
+    align-items: center;
+    padding: 3px 7px;
+    border-radius: 999px;
+  }
+
+  /* Une pastille garde sa largeur : seul l'onglet en cours s'etire. */
+  .deroule-phase .deroule-temps li:not(.est-courant) {
+    flex: 0 0 auto;
+  }
+
+  /* La carte decouverte, plus petite : le texte doit rester a l'ecran. */
+  .deroule-phase:not(.est-question):not(.est-replie) .deroule-cartes,
+  .deroule-phase:not(.est-question):not(.est-replie) .deroule-cartes .scan-card {
+    --card-w: clamp(64px, 11vh, 110px);
+  }
+
+  /* Le Bilan n'a pas de numero : sa pastille garde son nom court. */
+  .deroule-phase .deroule-temps li:not(.est-courant):last-child .deroule-onglet-libelle {
+    display: inline;
+  }
+}
+
+/* LA REVUE DE LA PHASE dans le volet du journal (03/10/2026) : le meme
+   cartouche, mais pose dans le flux du volet, pas fixe au-dessus de la table. */
+.deroule-phase.est-revue {
+  position: static;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  translate: none;
+  width: auto;
+  max-height: none;
+  margin: 0 0 12px;
+}
+
+/* UNE SEULE LIGNE POUR LES SIX ONGLETS (vu a l'ecran le 04/10/2026 : le Bilan
+   passait seul a la ligne). Les onglets se partagent la largeur, leur nom
+   passe sur deux lignes au besoin ; le Bilan, court, garde sa largeur. */
+.deroule-phase .deroule-temps {
+  flex-wrap: nowrap;
+}
+
+.deroule-phase .deroule-temps li {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.deroule-phase .deroule-temps li:last-child {
+  flex: 0 0 auto;
+}
+
+/* Un onglet vide n'est plus barre : son resultat court dit « aucun »
+   (03/10/2026), et le trait rendait ce mot illisible. */
+.deroule-phase .deroule-temps li.est-vide {
+  text-decoration: none;
+}
+
+/* Dans le volet, la frise de la revue passe a la ligne : le volet est etroit. */
+.deroule-phase.est-revue .deroule-temps {
+  flex-wrap: wrap;
+}
+
+.deroule-phase.est-revue .deroule-temps li,
+.deroule-phase.est-revue .deroule-temps li:last-child {
+  flex: 1 1 140px;
+}

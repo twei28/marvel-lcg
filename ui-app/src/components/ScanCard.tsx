@@ -31,6 +31,7 @@ import jetonMenaceImage from './jetons/menace.png'
 import jetonCompteurImage from './jetons/compteur.png'
 import jetonAccelerationImage from './jetons/acceleration.png'
 import jetonDegatsImage from './jetons/degats.png'
+import { mouvementReduit } from '../board/affichage'
 import {
   STAT_BUBBLE_POSITIONS,
   type StatBubbleLabel,
@@ -303,12 +304,44 @@ export type ScanCardProps = {
   onSelect?: () => void
   /** Nombre de fois que cette carte a ete depensee (paiement). */
   spentCount?: number
+  /**
+   * Position (1-based) de cette carte dans une selection dont l'ordre de clic
+   * compte (« Place on top », activation des sbires...). Voir
+   * `optionEstOrdonnee` dans `board/interaction.ts`.
+   */
+  orderNumber?: number
+  /**
+   * Echange cette carte avec sa voisine de rang immediatement inferieur/
+   * superieur dans la meme selection ordonnee (demande de l'utilisateur,
+   * 28/09/2026, sur le modele des boutons « ←/→ » de Felt Table pour
+   * Flesh and Blood -- pas de glisser-depose). Absent = pas de bouton
+   * (selection non ordonnee, ou carte deja en tete/en queue).
+   */
+  onOrdreReculer?: () => void
+  onOrdreAvancer?: () => void
+  /**
+   * Assigne d'un coup tout ce que cette carte peut encore recevoir dans une
+   * selection repetable (degats a repartir, soin a repartir...), plutot
+   * qu'un clic par point (demande de l'utilisateur relayee par Yarro,
+   * 28/09/2026). Voir `assignerReste`/`assignerResteQuantite` dans
+   * `board/interaction.ts`. Absent = pas de raccourci (selection non
+   * repetable, carte deja a son maximum, ou rien a distribuer).
+   */
+  onAssignerReste?: () => void
+  /** Combien de points `onAssignerReste` ajouterait en un seul clic. */
+  assignerResteQuantite?: number
   /** Cible possible mise en avant depuis le menu d'action. */
   targetPulse?: boolean
   /** Mots-cles de la carte, affiches (avec definition) par l'apercu seulement. */
   keywords?: Array<{ nom: string; definition: string }>
   /** Identifiant catalogue (ex. 01001a) : liens et textes marvelcdb. */
   codeCarte?: string
+  /**
+   * L'image est un art alternatif (heros ou ressources) : un scan ANGLAIS,
+   * meme quand la carte a un scan francais. L'apercu ajoute alors le texte
+   * francais sous l'image.
+   */
+  artAlternatif?: boolean
   /**
    * Aspect de la carte, pose en classe pour que le CSS puisse en tirer un
    * lisere. Il ne sert QUE lorsqu'un effet d'ambiance desature le plateau :
@@ -510,6 +543,11 @@ export function ScanCard({
   highlight = false,
   onSelect,
   spentCount,
+  orderNumber,
+  onOrdreReculer,
+  onOrdreAvancer,
+  onAssignerReste,
+  assignerResteQuantite,
   targetPulse = false,
   effectDelta,
   jauge,
@@ -542,11 +580,17 @@ export function ScanCard({
   useEffect(() => {
     if (facedown) {
       dosRetenu.current = imageUrl
+      // ⚠ La carte se recache EN PLEIN retournement (une recherche de deck montre
+      // un instant le dessus au joueur) : le nettoyage ci-dessous a déjà coupé les
+      // minuteries, donc plus rien ne ramènerait l'état à zéro et le cadre
+      // resterait sur `retourne-dos`, de chant à 90° donc invisible (rapport n°48,
+      // le deck du héros disparaissait). On remet l'état à zéro ici.
+      setRetournement(null)
       return
     }
     const dos = dosRetenu.current
     dosRetenu.current = undefined
-    if (dos === undefined || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (dos === undefined || mouvementReduit()) return
     setRetournement({ phase: 'dos', dos })
     const versLaFace = window.setTimeout(() => setRetournement({ phase: 'face', dos }), 280)
     const fin = window.setTimeout(() => setRetournement(null), 560)
@@ -699,9 +743,57 @@ export function ScanCard({
             <span className="pastille-morsure">{t('Mordu')}</span>
           ) : null}
 
-          {spentCount ? (
-            <span className="spent-badge" aria-label={`${t('Dépensée')} ${spentCount} ${t('fois')}`}>
-              <b>{spentCount > 1 ? `${spentCount}x` : '✓'}</b>
+          {spentCount || onAssignerReste ? (
+            <span
+              className="spent-badge"
+              aria-label={spentCount ? `${t('Dépensée')} ${spentCount} ${t('fois')}` : t('Assigner ici')}
+            >
+              {spentCount ? <b>{spentCount > 1 ? `${spentCount}x` : '✓'}</b> : null}
+              {onAssignerReste ? (
+                <button
+                  type="button"
+                  className="spent-bouton-tout"
+                  aria-label={`${t('Assigner le reste ici')} (+${assignerResteQuantite})`}
+                  onClick={(evenement) => {
+                    evenement.stopPropagation()
+                    onAssignerReste()
+                  }}
+                >
+                  +{assignerResteQuantite}
+                </button>
+              ) : null}
+            </span>
+          ) : null}
+
+          {orderNumber ? (
+            <span className="order-badge" aria-label={`${t('Ordre')} ${orderNumber}`}>
+              {onOrdreReculer ? (
+                <button
+                  type="button"
+                  className="order-bouton order-bouton-reculer"
+                  aria-label={t('Reculer d’un rang')}
+                  onClick={(evenement) => {
+                    evenement.stopPropagation()
+                    onOrdreReculer()
+                  }}
+                >
+                  ‹
+                </button>
+              ) : null}
+              <b>{orderNumber}</b>
+              {onOrdreAvancer ? (
+                <button
+                  type="button"
+                  className="order-bouton order-bouton-avancer"
+                  aria-label={t('Avancer d’un rang')}
+                  onClick={(evenement) => {
+                    evenement.stopPropagation()
+                    onOrdreAvancer()
+                  }}
+                >
+                  ›
+                </button>
+              ) : null}
             </span>
           ) : null}
 

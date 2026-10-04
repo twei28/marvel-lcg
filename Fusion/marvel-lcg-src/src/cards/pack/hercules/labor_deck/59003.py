@@ -17,8 +17,8 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this
         if (message.trigger != this.bind_face):
             return False
-        remover = message.by_effect.GetInitiator() if message.by_effect else None
-        if remover and remover.GetIdentity() and remover.GetIdentity().IsName('Hercules'):
+        remover = message.by_face
+        if remover and Identity.IsType(remover) and remover.IsName('Hercules'):
             return False
         return True
     def after_leave(effect: 'Effect', message: 'Message.AfterCardLeavePlay') -> None:

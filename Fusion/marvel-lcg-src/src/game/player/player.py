@@ -66,6 +66,10 @@ class Player(User, PlayerAsk, PlayerCards, PlayerGet, PlayerAction, ):
         # change rien pour les autres heros, et le descripteur la rend vide.
         self.reserve = Deck2(self, DeckType.ReserveArea, CardFace)
         self.reserve_limit = 3
+        # AJOUT (pack wave) : la Rising Tide area, toujours creee comme la
+        # Reserve ci-dessus (meme correctif, meme raison) — une zone vide ne
+        # change rien pour les autres heros, et le descripteur la rend vide.
+        self.rising_tide = Deck2(self, DeckType.RisingTideArea, CardFace)
         self.player_deck = Deck2(self, DeckType.PlayerDeck, CardFace)
         self.discard_pile = Deck2(self, DeckType.DiscardPile, CardFace)
         def process_after_shuffle(deck: 'Deck', by_effect: 'Effect') -> None:
@@ -104,6 +108,12 @@ class Player(User, PlayerAsk, PlayerCards, PlayerGet, PlayerAction, ):
         self.limit_team = TeamLimit(self)
 
         self.is_eliminated = False
+        # Indicateur d'affichage (24/09/2026) : ce héros a-t-il déjà bouclé
+        # son tour ce round ? Pose par `World.PlayerPhase` juste après
+        # `EndTurn()`, remis à `False` par `PlayerPhase.BeginRound`. Sert
+        # uniquement le sélecteur de vue (griser l'onglet) -- aucune règle
+        # de jeu n'en dépend.
+        self.has_finished_turn_this_round = False
         self.hero_name = ""
         # Le camp, en mode competitif (mc56 p.14). Pose par
         # `World.SetupTeamGameAreas` depuis le descripteur ; 0 partout ailleurs,

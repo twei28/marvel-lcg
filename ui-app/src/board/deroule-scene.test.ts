@@ -119,3 +119,11 @@ describe('les cartes de la scene', () => {
     expect(scene.voile).toBe(false)
   })
 })
+
+describe('changement de stade (04/10/2026)', () => {
+  it('montre la NOUVELLE carte en grand, retournee comme une carte revelee', () => {
+    expect(sceneDe(etape({ temps: 'mechant', titre: 'stade', carteId: 49, stade: 'mechant' })).cartes).toEqual([
+      { role: 'revelee', id: 49 },
+    ])
+  })
+})

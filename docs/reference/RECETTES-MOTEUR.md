@@ -383,6 +383,20 @@ simplement injouable). Écrire `effect.this.printed_cost.val` (modèles `50081`,
 > `database.py:223` pose un assert, et son absence fait tomber **le setup du
 > deck**.
 
+> ⚠ **`range=(0, n)` ne s'écrit QUE pour un « up to n ».** Le minimum 0 rend
+> la cible FACULTATIVE : l'écran s'ouvre sur « 0/1 sélectionnée(s) · nombre au
+> choix » avec son bouton de confirmation ACTIF, et valider sans rien cliquer
+> résout la capacité à vide (la carte partait même à la défausse). Un texte
+> « Stun AN enemy » ou « Choose a status card » est une cible obligatoire :
+> `SetTarget(Enemy)` sans `range`. Constaté le 04/10/2026 sur `09032` Crimson
+> Bands of Cyttorak (signalement n°51). Le harnais, lui, prend le minimum : un
+> `range=(0, n)` fautif y donne donc « 0 dégât, aucun statut », cas rouge.
+> `09035` Vapors of Valtorr avait le même défaut, corrigé le 04/10/2026 par un
+> minimum DYNAMIQUE : `range=(lambda effect: min(1, len(effect.context.all_legal_targets)), 1)`
+> (obligatoire dès qu'une cible existe, 0 sinon, pour que la carte reste
+> lançable à vide). Ne PAS écrire `"Zero"` comme minimum ici : il vaut
+> `len(targets)`, donc exigerait de TOUT choisir quand plusieurs cibles existent.
+
 > ### ⚠⚠ UN NOM DE CARTE UNIQUE S'ÉCRIT **SANS** L'ÉTOILE
 >
 > Le « ✦ » imprimé devant un nom unique **n'appartient pas au nom** :
@@ -1106,6 +1120,21 @@ porte la connaissance de chaque boite.
 
 Pieges payes en l'ecrivant, tous reutilisables :
 
+- **L'estampille du carnet sortant DOIT egaler l'id du scenario de la campagne.**
+  `WriteCampaignLogAtGameOver` la derive du `set_name` de la manigance
+  principale, et le panneau de recompenses (`preremplissage.ts`) ignore TOUT
+  le releve du moteur si elle differe de `lireContexte().scenario`, puis retombe
+  sur le carnet ANCIEN : les gains du scenario disparaissent sans un mot. `gmw`
+  ecrivait `collector_1` / `collector_2` pour `infiltrate_the_museum` /
+  `escape_the_museum` : les unites des scenarios 2 et 3 n'arrivaient jamais au
+  Marche (signalement n°50, 04/10/2026). Quand les deux ne coincident pas, la
+  boite passe `scenario_id=` au collecteur. Une epreuve
+  `"carnet_attendu": {"scenario": "<id>"}` par scenario de la boite le garde.
+- **Un collecteur qui plante n'ecrit RIEN, et ne le dit qu'au journal moteur.**
+  `s.GetThreatInternal()` sur un complot principal (`AttributeError`, la
+  methode n'existe pas : c'est la propriete `.threat`) a prive tout le
+  scenario 2 de gmw de son releve, silencieusement cote joueur. Une epreuve qui
+  ne lit que le carnet ENTRANT ne le voit pas : lire le sortant.
 - **Le resultat de la partie n'est pas encore pose pendant `WhenGameOver`.**
   `GameOver.SetGameOver` envoie le message PUIS affecte `players_won` : un
   collecteur qui lit `world.game_over` voit toujours « perdue ». Le collecteur

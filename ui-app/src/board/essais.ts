@@ -41,12 +41,25 @@ async function demander(): Promise<boolean> {
 }
 
 /**
+ * Le plateau est-il servi par un moteur lancé sur cette machine ?
+ *
+ * AJOUT du 03/10/2026 : « je veux que le local soit le même qu'en ligne pour
+ * faire les tests avant de déployer ». En local il n'y a pas de site, donc pas
+ * d'adresse d'administration : sans cette exception, l'administrateur testait
+ * un écran différent de celui qu'il voit en production. Seul celui qui a lancé
+ * le moteur peut atteindre `localhost` : aucun joueur en ligne n'est concerné.
+ */
+export function estHoteLocal(hote: string): boolean {
+  return hote === 'localhost' || hote === '127.0.0.1' || hote === '[::1]'
+}
+
+/**
  * Les essais sont-ils ouverts pour ce client ?
  *
  * Rend toujours la MÊME promesse : la question n'est posée qu'une fois.
  */
-export function essaisOuverts(): Promise<boolean> {
-  promesse ??= demander()
+export function essaisOuverts(hote: string = globalThis.location?.hostname ?? ''): Promise<boolean> {
+  promesse ??= estHoteLocal(hote) ? Promise.resolve(true) : demander()
   return promesse
 }
 

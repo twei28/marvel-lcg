@@ -21,6 +21,7 @@ import {
   type PorteeRapport,
   type RapportBug as Rapport,
 } from './rapport-bug'
+import { sonderPilesDuJoueur } from './sonde-affichage'
 import type { World } from './world'
 
 export type ResultatEnvoi = { ok: boolean; erreur?: string }
@@ -95,6 +96,10 @@ export function useRapportBug(
         decouverte: enModeDecouverte(),
         erreurs: erreursRecentes(),
         url: window.location.href,
+        affichage: sonderPilesDuJoueur({
+          deck: monde.players?.[siege ?? 0]?.player_deck?.length ?? 0,
+          defausse: monde.players?.[siege ?? 0]?.player_discard_pile?.length ?? 0,
+        }),
       })
     },
     [monde, demande, entrees, siege]

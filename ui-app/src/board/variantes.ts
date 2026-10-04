@@ -61,28 +61,193 @@ const COLLECTIONS: Record<string, [string, string, string]> = {
   gwenpool: ['gp015', 'gp016', 'gp017'],
   howard: ['hd018', 'hd019', 'hd020'],
   ms_america: ['ma027', 'ma028', 'ma029'],
+  // Idem, ajoutes le 22/09/2026 : Angel, Beast, Gambit, Human Torch, Jubilee,
+  // Magneto, The Thing, Wave. Chaque pack a ses PROPRES card_id (pas de
+  // full_link vers 01088/89/90) ; sans objet ici, purement cosmetique.
+  angel: ['42033', '42034', '42035'],
+  beast: ['bt024', 'bt025', 'bt026'],
+  gambit: ['37036', '37037', '37038'],
+  human_torch: ['ht015', 'ht016', 'ht017'],
+  jubilee: ['47035', '47036', '47037'],
+  magneto: ['49043', '49044', '49045'],
+  the_thing: ['th016', 'th017', 'th018'],
+  wave: ['65017', '65018', '65019'],
 }
 
 /**
- * Arts ALTERNATIFS des cartes de HEROS (planche « Alternate Art Hero Cards »
- * de M3T4LB0X, hallofheroeslcg.com). Meme principe que les ressources : la
- * carte reste la meme pour le moteur, seule l'image change.
+ * Arts ALTERNATIFS des cartes de HEROS, par FACE (la carte reste la meme pour
+ * le moteur, seule l'image change). Trois series :
+ *  - m3t  : planche « Alternate Art Hero Cards » de M3T4LB0X ;
+ *  - cb   : zip « Marvel Champions Alt Art » (style comic, Core Set a Defenders) ;
+ *  - rog, rog2 : album Flickr de The Rose of Gondolin.
  *
- * N'ont ete retenus que les arts dont les VALEURS IMPRIMEES (statistiques,
- * points de vie, taille de main, traits) sont identiques a notre carte : un
- * art qui afficherait d'autres chiffres mentirait en pleine partie. Sont donc
- * ecartes le Wasp de la planche (statistiques et traits differents des deux
- * formes de 13001), Beta Ray Bill (c'est un autre heros, pas un art) et le
- * Spider-Man « Bombastic Bag-Man » (trait imprime FANTASTIC FOUR au lieu
- * d'AVENGER).
+ * N'ont ete retenus que les arts dont les VALEURS et le TEXTE imprimes sont
+ * identiques a notre carte. Ecartes : le Wasp, Beta Ray Bill et le Spider-Man
+ * « Bag-Man » de M3T4LB0X ; War Machine et Wolverine alter ego « cb » (limite
+ * ajoutee, recherche de Wolverine's Claws absente) ; Rogue heros « rog »
+ * (« Action » au lieu de « Forced Response ») : la face heros de Rogue garde
+ * donc son scan sous les codes rog et rog2, seuls l'alter ego et Touched changent.
  */
 const ARTS_HEROS: Record<string, string[]> = {
-  '01001a': ['m3t'], // Spider-Man
-  '01010a': ['m3t'], // Captain Marvel
-  '01019a': ['m3t'], // She-Hulk
-  '01029a': ['m3t'], // Iron Man
-  '03001a': ['m3t'], // Captain America
-  '04001a': ['m3t'], // Hawkeye
+  '01001a': ['m3t', 'cb'],
+  '01001b': ['cb'],
+  '01010a': ['m3t', 'cb'],
+  '01010b': ['cb'],
+  '01019a': ['m3t', 'cb', 'rog'],
+  '01019b': ['cb', 'rog'],
+  '01029a': ['m3t', 'cb'],
+  '01029b': ['cb'],
+  '01040a': ['cb'],
+  '01040b': ['cb'],
+  '03001a': ['m3t', 'cb'],
+  '03001b': ['cb'],
+  '04001a': ['m3t', 'cb'],
+  '04001b': ['cb'],
+  '04031a': ['cb'],
+  '04031b': ['cb'],
+  '05001a': ['cb', 'rog', 'rog2'],
+  '05001b': ['cb', 'rog', 'rog2'],
+  '06001a': ['cb'],
+  '06001b': ['cb'],
+  '08001a': ['cb'],
+  '08001b': ['cb'],
+  '09001a': ['cb'],
+  '09001b': ['cb'],
+  '10001a': ['cb'],
+  '10001b': ['cb'],
+  '12001a': ['cb'],
+  '12001b': ['cb'],
+  '12001c': ['cb'],
+  '13001a': ['cb'],
+  '13001b': ['cb'],
+  '13001c': ['cb'],
+  '14001a': ['cb'],
+  '14001b': ['cb'],
+  '15001a': ['cb', 'rog', 'rog2'],
+  '15001b': ['cb', 'rog', 'rog2'],
+  '16001a': ['cb'],
+  '16001b': ['cb'],
+  '16029a': ['cb'],
+  '16029b': ['cb'],
+  '17001a': ['cb'],
+  '17001b': ['cb'],
+  '18001a': ['cb'],
+  '18001b': ['cb'],
+  '19001a': ['cb'],
+  '19001b': ['cb'],
+  '20001a': ['cb'],
+  '20001b': ['cb'],
+  '21001a': ['cb'],
+  '21001b': ['cb'],
+  '21031a': ['cb', 'rog'],
+  '21031b': ['cb', 'rog'],
+  '22001a': ['cb'],
+  '22001b': ['cb'],
+  '23001a': ['cb'],
+  '25001a': ['cb'],
+  '25001b': ['cb'],
+  '26001a': ['cb'],
+  '26001b': ['cb'],
+  '27001a': ['cb'],
+  '27001b': ['cb'],
+  '27030a': ['cb'],
+  '27030b': ['cb'],
+  '28001a': ['cb'],
+  '28001b': ['cb'],
+  '29001a': ['cb'],
+  '29001b': ['cb'],
+  '29002a': ['cb'],
+  '29002b': ['cb'],
+  '29003a': ['cb'],
+  '29003b': ['cb'],
+  '30001a': ['cb'],
+  '30001b': ['cb'],
+  '31001a': ['cb', 'rog'],
+  '31001b': ['cb', 'rog'],
+  '31002a': ['cb', 'rog'],
+  '31002b': ['cb', 'rog'],
+  '32001a': ['cb'],
+  '32001b': ['cb'],
+  '32030a': ['cb', 'rog'],
+  '32030b': ['cb', 'rog'],
+  '33001a': ['cb'],
+  '33001b': ['cb'],
+  '34001a': ['cb'],
+  '34001b': ['cb'],
+  '35001a': ['cb'],
+  '36001a': ['cb'],
+  '36001b': ['cb'],
+  '37001a': ['cb'],
+  '37001b': ['cb'],
+  '38001a': ['cb', 'rog', 'rog2'],
+  '38001b': ['cb', 'rog', 'rog2'],
+  '38002': ['rog', 'rog2'],
+  '40001a': ['cb'],
+  '40001b': ['cb'],
+  '40037a': ['cb', 'rog'],
+  '40037b': ['cb', 'rog'],
+  '41001a': ['cb'],
+  '41001b': ['cb'],
+  '42001a': ['cb'],
+  '42001b': ['cb'],
+  '42001c': ['cb'],
+  '43001a': ['cb', 'rog'],
+  '43001b': ['cb'],
+  '44001a': ['cb'],
+  '44001b': ['cb'],
+  '45001a': ['cb'],
+  '45001b': ['cb'],
+  '45030a': ['cb'],
+  '45030b': ['cb'],
+  '46001a': ['cb'],
+  '46001b': ['cb'],
+  '47001a': ['cb'],
+  '47001b': ['cb'],
+  '48001a': ['cb'],
+  '48001b': ['cb'],
+  '49001a': ['cb'],
+  '49001b': ['cb'],
+  '50001a': ['cb'],
+  '50001b': ['cb'],
+  '50034a': ['cb'],
+  '50034b': ['cb'],
+  '51001a': ['cb'],
+  '51001b': ['cb'],
+  '52001a': ['cb'],
+  '52001b': ['cb'],
+  '53001a': ['cb'],
+  '53001b': ['cb'],
+  '54001a': ['cb'],
+  '54001b': ['cb'],
+  '56001a': ['cb'],
+  '56001b': ['cb'],
+  '56029a': ['cb'],
+  '56029b': ['cb'],
+  '58001a': ['cb'],
+  '58001b': ['cb'],
+  '59001a': ['cb'],
+  '59001b': ['cb'],
+  '60001a': ['cb'],
+  '60001b': ['cb'],
+  '60037a': ['cb'],
+  '60037b': ['cb'],
+  '61001a': ['cb'],
+  '61001b': ['cb'],
+  '62001a': ['cb'],
+  '62001b': ['cb'],
+}
+
+/**
+ * Cartes dont le choix d'art est celui d'un AUTRE identifiant de heros : le
+ * choix est range sous la cle du heros du wizard (« 38001 » pour Rogue), et
+ * Touched, les pieces de SP//dr ou les formes 2 et 3 d'Ironheart n'en portent
+ * pas le numero.
+ */
+const HEROS_DE_LA_CARTE: Record<string, string> = {
+  '29002': '29001',
+  '29003': '29001',
+  '31002': '31001',
+  '38002': '38001',
 }
 
 /** Cle partagee avec le frontend de preparation. */
@@ -108,12 +273,22 @@ export function artsDisponiblesPourHeros(cardId: string | undefined): string[] {
   return ARTS_HEROS[String(cardId ?? '').split(',')[0]!] ?? []
 }
 
-/** Applique l'art de heros choisi, s'il en existe un pour cette carte. */
+/**
+ * Applique l'art de heros choisi, s'il en existe un pour cette carte.
+ *
+ * Le choix est range sous la cle du heros (« 38001 ») et vaut pour toutes ses
+ * faces. L'alter ego peut avoir le sien, sous « 38001b » : il l'emporte sur
+ * celui du heros, y compris la valeur « standard » (qui n'est un code d'aucune
+ * serie, donc rend le scan).
+ */
 function picIdHeros(picId: string): string {
   const codes = ARTS_HEROS[picId]
   if (!codes || codes.length === 0) return picId
-  const choix = lireArtsHeros()[cleHeros(picId)]
-  return choix && codes.includes(choix) ? `${picId}_${choix}` : picId
+  const cle = cleHeros(picId)
+  const cleChoix = HEROS_DE_LA_CARTE[cle] ?? cle
+  const choix = lireArtsHeros()
+  const choisi = (picId.endsWith('b') ? choix[`${cleChoix}b`] : undefined) ?? choix[cleChoix]
+  return choisi && codes.includes(choisi) ? `${picId}_${choisi}` : picId
 }
 
 /** Position de chaque ressource dans une collection. */

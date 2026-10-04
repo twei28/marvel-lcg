@@ -218,29 +218,57 @@ export function ecrireAvanceAuto(actif: boolean): void {
 }
 
 /**
- * Le dépliant de la règle sous chaque étape du déroulé (DeroulePhase.tsx) :
- * un réglage personnel, donc localStorage, sur le même modèle que
- * lireAvanceAuto/ecrireAvanceAuto ci-dessus. Sans rapport avec le rythme de
- * la phase : ce dépliant reste ouvert ou fermé quel que soit le mode.
+ * Fin de tour automatique : quand le bouton « Fin du tour » est déjà suggéré
+ * (plus rien de jouable), le jeu peut le déclencher tout seul au lieu
+ * d'attendre le clic. Demande de l'utilisateur, 24/09/2026, inspirée de MTG
+ * Arena.
+ *
+ * TROIS états, pas un booléen : la première fois que la suggestion
+ * apparaît, une modale demande explicitement au joueur s'il veut ce
+ * comportement. `'pas-demande'` = jamais répondu (la modale doit encore
+ * s'afficher) ; `'on'`/`'off'` = déjà répondu, plus jamais redemandé, mais
+ * modifiable à tout moment dans Réglages.
  */
-export const CLE_REGLE_DEPLIEE = 'marvel-board-regle-deroule-depliee'
+export type ChoixFinTourAuto = 'pas-demande' | 'on' | 'off'
+const CLE_FIN_TOUR_AUTO = 'marvel-board-fin-tour-auto'
+
+export function lireFinTourAuto(): ChoixFinTourAuto {
+  try {
+    const brut = window.localStorage.getItem(CLE_FIN_TOUR_AUTO)
+    return brut === 'on' || brut === 'off' ? brut : 'pas-demande'
+  } catch {
+    return 'pas-demande'
+  }
+}
+
+export function ecrireFinTourAuto(choix: 'on' | 'off'): void {
+  try {
+    window.localStorage.setItem(CLE_FIN_TOUR_AUTO, choix)
+  } catch {
+    /* stockage refuse : le choix vaudra pour la session, c'est tout */
+  }
+}
 
 /**
- * Bete elle aussi, comme lireAvanceAuto, mais rend VRAI si la cle est
- * absente : un joueur qui decouvre la phase doit voir la regle sans avoir a
- * la chercher, c'est celui qui connait qui fera le geste de la replier.
+ * Sauvegarde automatique a chaque debut de phase (24/09/2026), EN PLUS des
+ * trois emplacements manuels (`board/sauvegardes.ts`) -- jamais a la place.
+ * Filet de securite silencieux : pas de modale de premiere fois (l'utilisateur
+ * a simplement dit « Oui »), juste ce reglage, actif par defaut comme
+ * `autoCible`/`validationCourte` (interaction.ts).
  */
-export function lireRegleDepliee(): boolean {
+const CLE_SAUVEGARDE_AUTO = 'marvel-board-sauvegarde-auto'
+
+export function lireSauvegardeAuto(): boolean {
   try {
-    return window.localStorage.getItem(CLE_REGLE_DEPLIEE) !== 'off'
+    return window.localStorage.getItem(CLE_SAUVEGARDE_AUTO) !== 'off'
   } catch {
     return true
   }
 }
 
-export function ecrireRegleDepliee(depliee: boolean): void {
+export function ecrireSauvegardeAuto(actif: boolean): void {
   try {
-    window.localStorage.setItem(CLE_REGLE_DEPLIEE, depliee ? 'on' : 'off')
+    window.localStorage.setItem(CLE_SAUVEGARDE_AUTO, actif ? 'on' : 'off')
   } catch {
     /* idem */
   }

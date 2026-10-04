@@ -35,7 +35,14 @@ def GetAbilities() -> Sequence['Ability']:
         return True
     def after_leave(effect: 'Effect', message: 'Message.AfterCardLeavePlay') -> None:
         this = effect.this.CastTo(Attachment)
-        player = this.GetControlByOrOwner()
+        # Attache a un sbire, le Travail n'a ni controleur ni proprietaire
+        # « joueur » (les deux rendent le vilain) : on retrouve Hercules par son
+        # identite. 59003, sur un complot, obtient lui le joueur.
+        player = None
+        for candidat in Worlds.GetPlayers(effect):
+            identite = candidat.GetIdentity()
+            if identite and identite.IsName('Hercules'):
+                player = candidat
         if Player.IsType(player):
             Atonement(effect, player)
     return [AbilityFactory.WhenThisRevealed(None, when_revealed),

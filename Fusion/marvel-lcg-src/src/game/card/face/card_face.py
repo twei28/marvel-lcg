@@ -168,6 +168,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # mutuellement des qu'une carte ROTATION entre en jeu.
         "RANGER", "ROTATION", "DEMON",
         "CYBORG",  # CORRECTIF : trait du pack custom beta_ray_bill (Rainy)
+        # AJOUT (25/09/2026) : traits des packs custom conan et red_sonja (RyCoRan).
+        # THIEF, KING et TITLE existaient deja. Lus par cn002 Belit, cn009 et la
+        # remise « Discount 1 (KING) ».
+        "ADVENTURER", "CIMMERIA", "PIRATE", "BARBARIAN",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -324,6 +328,15 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # construction du deck (meme panne que 'style' pour kate_bishop et
         # 'disguise' pour beast). Fiche du mot-cle : docs/reference/mots-cles/uses.md
         'foe',
+        # CORRECTIF : compteurs du pack custom red_sonja (RyCoRan). rs011
+        # Crimson Shadow entre en jeu avec « Uses (2 stealth counters) »,
+        # rs018 She-Devil Shackled! avec « Uses (3 fetter counters) » : sans
+        # ces entrees, `IsCounter` refuse le nom et la carte tombe des sa
+        # construction (meme panne que 'foe' pour throg).
+        'stealth', 'fetter',
+        # AJOUT (25/09/2026) : pack custom conan (RyCoRan). 'crom' sur The Cimmerian
+        # (cn012a/b), 'serpent' sur l'obligation cn013 The Coils of Doom (Uses).
+        'crom', 'serpent',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)
@@ -507,6 +520,23 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
             return value
         else:
             return 0
+
+    def BonusParSource(self) -> 'Dict[str, List[List[Any]]]':
+        """Les bonus d'ATK et de DEF, chacun avec la carte qui le donne
+        (`[nom, object_id, valeur]`). La carte elle-meme (sa valeur de base,
+        posee par `OnResetKeywords`) n'en est pas un. Sous garde : un rendu
+        n'a pas a pouvoir tomber pour un affichage."""
+        resultat: 'Dict[str, List[List[Any]]]' = {}
+        try:
+            for cle in ('ATK', 'DEF'):
+                lignes = [[face.name, face.card.object_id, valeur]
+                          for face, valeur in self.keywords.get(cle, {}).items()
+                          if face is not self and face.card is not self.card and valeur != 0]
+                if lignes:
+                    resultat[cle] = lignes
+        except Exception:
+            return {}
+        return resultat
 
     @final
     def ResetKeywords(self):

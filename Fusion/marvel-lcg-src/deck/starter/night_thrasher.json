@@ -3,6 +3,16 @@
     "name": "Night Thrasher",
     "metadata": {
         "url": "",
+        "deckbuilding": {
+            "hors_aspect": {
+                "max": 4,
+                "traits": [
+                    "SKILL"
+                ],
+                "label": "4 cartes SKILL d’autres aspects (Tech Deck)"
+            }
+        },
+        "deckbuilding_note": "nt001b : « During deck-building you may include up to 4 SKILL cards in your deck from aspects other than your own. » Audit du 03/10/2026.",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Justice + Agressivite (construite par le portage, aspect arbitre le 03/09/2026).",
         "planche_note": "LA MECANIQUE VEDETTE. nt003a/nt003b Battle Board est une amelioration PERMANENTE RECTO-VERSO qui bascule entre VEHICLE (+1 CTR, `agile 1`, 1 menace retiree a chaque retour) et WEAPON (+1 ATQ, +1 DEF, 1 degat a chaque retour). NEUF des quinze cartes du deck la retournent ou testent sa face : nt001a, nt002, nt004, nt005, nt006, nt007, nt009, nt011, et l'obligation nt012 la bloque. Les statistiques de base du heros sont MINUSCULES (1/1/1) : la planche vaut la moitie de sa fiche, et la retourner au bon moment EST le jeu. ⚠ ELLE EST DANS `hero_deck`, PAS DANS `set_aside`, et c'est un correctif du 03/09/2026 verifie en VRAIE PARTIE (sonde qui monte le jeu et regarde le terrain : `en_jeu: false` en set_aside, `en_jeu: true` dans le deck). Le moteur ne CHARGE pas `set_aside` (player_setup.py:213, appel en commentaire) : une carte qui y vit n'existe que si le HEROS la cree lui-meme, par `SetupPutIntoPlay` — ce que font Jean Grey pour Phoenix Force, Peter Parker pour Spider Armor, sr001b pour Impact Webbing et hd001b pour Nexus of all Realities. La Battle Board, elle, n'a AUCUNE identite qui la pose : elle porte `desc.Setup` sur la carte (motif 04159a), et world.py:531 ne scanne le mot-cle Setup que dans le DECK DU JOUEUR. Placee en set_aside, elle n'entrait jamais en jeu et 20 cas de test sur 29 tombaient d'un coup. Le deck compte donc 16 entrees signature, dont une quitte le deck des la mise en place : 15 restent, comme la numerotation imprimee de l'auteur (1..16, la planche en 13).",
         "agile_note": "Mot-cle MAISON `agile 1`, porte par la seule face VEHICLE : « reduce damage from attacks with boost cards by 1 ». DEFINI PAR L'AUTEUR entre parentheses sur la carte, donc aucun arbitrage — mais AUCUNE primitive moteur non plus. Fiche complete et montage retenu : docs/reference/mots-cles/agile.md. Le moteur ne garde la liste des cartes de boost d'une attaque que dans les messages d'APRES-COUP ; le montage s'accroche donc au retournement d'une carte de boost pendant une attaque, avec un garde-fou qui empeche la reduction de se cumuler.",

@@ -1,0 +1,43 @@
+{
+    "version": "0.5.9",
+    "name": "Conan",
+    "metadata": {
+        "url": "",
+        "author": "Arnaud",
+        "deck_note": "⚠ `player_deck` VIDE. Consigne utilisateur du 06/09/2026 : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit. Le zip Conan (RyCoRan, 25/09/2026) ne livre aucune decklist. Ce fichier ne contient que de l'IMPRIME : l'identite a cinq faces (cn001a-e), les 15 cartes signature du deck (11 uniques), The Cimmerian (cn012a/b, 16e carte signature, mise en jeu au Setup par cn001b et non melangee au deck), l'obligation et le set nemesis (5 cartes, deux sbires nemesis)."
+    },
+    "hero": [
+        "cn001a,cn001b,cn001c,cn001d,cn001e"
+    ],
+    "hero_deck": [
+        "cn002",
+        "cn003",
+        "cn003",
+        "cn004",
+        "cn004",
+        "cn005",
+        "cn005",
+        "cn006",
+        "cn006",
+        "cn007",
+        "cn007",
+        "cn008",
+        "cn009",
+        "cn010",
+        "cn011"
+    ],
+    "set_aside": [
+        "cn012a,cn012b"
+    ],
+    "obligations": [
+        "cn013"
+    ],
+    "nemesis_set": [
+        "cn014",
+        "cn015",
+        "cn016",
+        "cn017",
+        "cn017"
+    ],
+    "player_deck": []
+}

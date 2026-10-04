@@ -5,7 +5,11 @@
 // « ferme ». Un repli « ouvert » donnerait un ecran en chantier a tout le
 // monde, ce qui est exactement ce que cette garde existe pour empecher.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { essaisOuverts, oublierEssais } from './essais'
+import { essaisOuverts as essaisDe, estHoteLocal, oublierEssais } from './essais'
+
+// ⚠ jsdom sert les tests depuis `localhost` : sans hote explicite, tous les
+// cas ci-dessous tomberaient dans l'exception locale.
+const essaisOuverts = () => essaisDe('p1.exemple.test')
 
 describe('les essais ne s ouvrent que si le serveur le dit', () => {
   beforeEach(() => oublierEssais())
@@ -56,5 +60,29 @@ describe('les essais ne s ouvrent que si le serveur le dit', () => {
     await Promise.all([essaisOuverts(), essaisOuverts(), essaisOuverts()])
     await essaisOuverts()
     expect(appels).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('en local, les essais sont ouverts comme en ligne pour l administrateur', () => {
+  beforeEach(() => oublierEssais())
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    oublierEssais()
+  })
+
+  it('un moteur lance sur la machine ouvre les essais sans demander au serveur', async () => {
+    const appels = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ url: '' }) })
+    vi.stubGlobal('fetch', appels)
+    expect(await essaisDe('127.0.0.1')).toBe(true)
+    expect(appels).not.toHaveBeenCalled()
+  })
+
+  it('seules les adresses de la machine comptent', () => {
+    expect(estHoteLocal('localhost')).toBe(true)
+    expect(estHoteLocal('[::1]')).toBe(true)
+    // Un sous-domaine qui commence pareil n'est PAS la machine.
+    expect(estHoteLocal('localhost.exemple.test')).toBe(false)
+    expect(estHoteLocal('123.discordsays.com')).toBe(false)
+    expect(estHoteLocal('')).toBe(false)
   })
 })

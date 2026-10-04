@@ -156,6 +156,22 @@ class Cache:
         #     url = 'player'
         card_id = card_id.lstrip("/")
 
+        # ⚠⚠ REPLI SUR LE DOS GENERIQUE, PAS UN CRASH (24/09/2026). Un
+        # `card_id` vide plantait ici (`assert card_id != ""`) et RE-plantait
+        # a chaque nouvelle tentative du client -- vu en production, en
+        # boucle continue, des l'entree en jeu de Wave (Pearl Pangan). La
+        # route qui appelle `LoadImage` (`handle_image_request`,
+        # server_files.py) est un FOURRE-TOUT public (`/{path:.+}`) : elle ne
+        # doit jamais faire tomber la reponse sur une requete malformee, au
+        # meme titre que le repli deja en place pour `link_pic` plus bas.
+        # Cause exacte encore incertaine (jamais reproduite en local malgre
+        # un essai fidele sur la vraie mecanique Rising Tide) ; ce repli
+        # rend le symptome invisible au joueur sans attendre de l'avoir
+        # trouvee, comme le meme principe deja en place pour une carte
+        # inconnue de la base (server_get.py, `nom_lisible`, 24/09/2026).
+        if card_id == "":
+            card_id = "player"
+
         if card_id in Cache.cache:
             return Cache.cache[card_id]
 

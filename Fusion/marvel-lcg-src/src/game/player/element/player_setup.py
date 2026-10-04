@@ -96,7 +96,17 @@ class PlayerSetup:
                                         not effect.GetInitiator().has_change_form and \
                                         identity.card.face != face and \
                                         identity.IsInPlay(is_same_face=True),
-                                    check_is_same_card
+                                    check_is_same_card,
+                                    # AJOUT (25/09/2026, pack custom conan) : une face
+                                    # marquee `hors_pile_identite` (King Conan mis de cote
+                                    # au Setup, puis Thief/Barbarian/alter-ego retires de la
+                                    # partie au couronnement) n'est plus proposee au
+                                    # changement volontaire. Filtrer ICI, a l'offre, et non
+                                    # annuler a la resolution : un refus apres coup couterait
+                                    # au joueur son changement du tour (lecon Moon Knight/TAH).
+                                    # AJOUT PUR : aucune face existante ne porte ce drapeau.
+                                    lambda effect, message:
+                                        not getattr(face, 'hors_pile_identite', False),
                                 ],
                             ).SetFuncName("Change Form").SetName(name).NoOutOfPlayLimit()
                         )
@@ -344,6 +354,16 @@ class PlayerSetup:
         for carte in cartes_nemesis:
             for face in carte.printed_faces:
                 face.nemesis_of_player = player
+
+        # CORRECTIF (04/10/2026) : le set contient-il un sbire MARQUE
+        # « Nemesis » ? Si oui, lui seul est le sbire nemesis (voir
+        # `IsNemesis`). Signale en jeu sur Hercules : Face the Past mettait en
+        # jeu Ares ET la Lernean Hydra, second sbire de son set.
+        from game.card.face.card_type import Minion
+        player.set_nemesis_a_un_sbire_marque = any(
+            Minion.IsType(face) and getattr(face, "nemesis", "")
+            for carte in cartes_nemesis for face in carte.printed_faces
+        )
 
         # 6. Shuffle Player Decks
         if player.world.rule.create_player_deck_first:

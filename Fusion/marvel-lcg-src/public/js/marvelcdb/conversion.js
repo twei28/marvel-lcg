@@ -17,7 +17,8 @@ export function versDeckMoteur(entree, deckStarter, classeDe) {
     for (const id in (entree.cartes || {})) {
         // 26002 : exclusion héritée de deck.html, conservée à l'identique.
         if (id === "26002") continue;
-        if (classeDe(id) === "Hero") continue;
+        // « Hero;Aggression » (signatures de Spider-Woman) est aussi une signature.
+        if (String(classeDe(id) || "").split(";").includes("Hero")) continue;
         for (let n = 0; n < entree.cartes[id]; n++) player_deck.push(id);
     }
     return {

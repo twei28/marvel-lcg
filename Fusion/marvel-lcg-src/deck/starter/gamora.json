@@ -2,7 +2,16 @@
     "version": "0.5.8",
     "name": "Gamora",
     "metadata": {
-        "url": "https://hallofheroeslcg.com/gamora/"
+        "url": "https://hallofheroeslcg.com/gamora/",
+        "deckbuilding": {
+            "hors_aspect": {
+                "max": 6,
+                "traits": ["ATTACK", "THWART"],
+                "types": ["Event"],
+                "label": "6 événements ATTACK/THWART d’autres aspects (Skilled Tactician)"
+            }
+        },
+        "deckbuilding_note": "Skilled Tactician (18001b) : « You may include up to 6 attack and thwart events in your deck from aspects other than your own. » Declare ici (GUIDE-CREATION-CONTENU §5.4). Signalement Phocea n°32 du 30/09/2026 : sans cette declaration, le deck-builder refusait 6 evenements d'autres aspects (« Trop d'aspects »)."
     },
     "hero": [
         "18001a,18001b"

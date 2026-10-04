@@ -17,6 +17,7 @@ import { useState } from 'react'
 import { scanUrl } from '../card-model'
 import { t } from '../langue'
 import type { Catalogue } from '../catalogue'
+import { transformDecalage, useGlisserPanneau } from '../placement/useGlisserPanneau'
 
 export type CatalogueManuelProps = {
   catalogue: Catalogue
@@ -33,6 +34,11 @@ export type CatalogueManuelProps = {
 export function CatalogueManuel({ catalogue, onFermer, onPoser }: CatalogueManuelProps) {
   const [recherche, setRecherche] = useState('')
   const resultats = catalogue.chercherParNom(recherche)
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »). Pas de signature variable :
+  // ce panneau est demonte/remonte par le parent a chaque ouverture.
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau('catalogue-manuel')
 
   return (
     <div className="pile-triche-voile" onPointerDown={onFermer}>
@@ -40,10 +46,19 @@ export function CatalogueManuel({ catalogue, onFermer, onPoser }: CatalogueManue
         className="pile-triche catalogue-manuel"
         role="dialog"
         aria-label={t('Faire apparaître une carte')}
+        style={transformDecalage(decalage)}
         onPointerDown={(evenement) => evenement.stopPropagation()}
       >
         <header className="pile-triche-entete">
-          <h2>{t('Faire apparaître une carte')}</h2>
+          <h2
+            className="poignee-glisser"
+            onPointerDown={gestesGlisser.onPointerDown}
+            onPointerMove={gestesGlisser.onPointerMove}
+            onPointerUp={gestesGlisser.onPointerUp}
+            onPointerCancel={gestesGlisser.onPointerCancel}
+          >
+            {t('Faire apparaître une carte')}
+          </h2>
           <span className="pile-triche-aide">{t('Cherche un nom, à partir de deux lettres')}</span>
           <button type="button" onClick={onFermer}>{t('Fermer')}</button>
         </header>

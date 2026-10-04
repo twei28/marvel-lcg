@@ -224,6 +224,11 @@ export function BarreAction({
               {option.target_num_range[0] > 0 ? (
                 <i>min {option.target_num_range[0]}</i>
               ) : null}
+              {interaction.ciblesRestantes > 0 ? (
+                <i className="pa-reste">
+                  {t('reste {n} à placer').replace('{n}', String(interaction.ciblesRestantes))}
+                </i>
+              ) : null}
             </span>
           ) : null}
           {interaction.coutAffiche ? (

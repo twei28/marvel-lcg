@@ -11,6 +11,7 @@
 
 import { useEffect, useRef } from 'react'
 import { t } from '../langue'
+import { useGlisserPanneau } from '../placement/useGlisserPanneau'
 
 export type MenuTableProps = {
   /** Position du clic, en pixels écran. */
@@ -59,10 +60,25 @@ export function MenuTable({
     left: Math.min(x, window.innerWidth - 240),
     top: Math.min(y, window.innerHeight - 340),
   }
+  // Deplacement volontaire, a la poignee -- meme mecanisme que MenuTriche
+  // (demande de l'utilisateur, 28/09/2026, « toutes les fenetres, tous les
+  // panneaux »).
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(`${x}|${y}`)
 
   return (
-    <div className="menu-triche" style={style} ref={boite} role="menu">
-      <header className="menu-triche-titre">
+    <div
+      className="menu-triche"
+      style={{ left: style.left + decalage.dx, top: style.top + decalage.dy }}
+      ref={boite}
+      role="menu"
+    >
+      <header
+        className="menu-triche-titre poignee-glisser"
+        onPointerDown={gestesGlisser.onPointerDown}
+        onPointerMove={gestesGlisser.onPointerMove}
+        onPointerUp={gestesGlisser.onPointerUp}
+        onPointerCancel={gestesGlisser.onPointerCancel}
+      >
         <span>{t('Table')}</span>
       </header>
       <ul className="menu-triche-liste">

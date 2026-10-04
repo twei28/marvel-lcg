@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from 'react'
 // Meme mesure que le placement des panneaux : une seule definition de boite
 // d'ecran pour tout le plateau (voir placement/boites.ts).
 import { boiteDe, type Boite } from './placement/boites'
+import { mouvementReduit } from './affichage'
 
 const ALLER = 320
 const PAUSE = 220
@@ -126,7 +127,7 @@ export function CoucheCharge({
     dernierRender = renderId
 
     if (!actif) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (mouvementReduit()) return
 
     const type = EVENEMENTS[eventName]
     if (!type || activeIds.length < 2) {

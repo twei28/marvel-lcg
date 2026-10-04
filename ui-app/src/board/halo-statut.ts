@@ -13,6 +13,7 @@
 
 import { useEffect } from 'react'
 import type { World } from './world'
+import { mouvementReduit } from './affichage'
 
 const DUREE = 1000
 
@@ -32,7 +33,7 @@ export function useHaloStatut(monde: World | undefined, actif: boolean) {
     dernierRender = monde.render_id
 
     if (!actif) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (mouvementReduit()) return
     const evenement = monde.event_name ?? ''
     if (evenement !== 'AfterUnitGainStatus' && evenement !== 'AfterUnitLostStatus') return
 

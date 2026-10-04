@@ -10,9 +10,9 @@
 //
 // PIÈGE (voir historique-brut.test.ts) : le monde doit être construit HORS
 // du callback de renderHook, sous peine de boucle.
-import { act, fireEvent, render, renderHook } from '@testing-library/react'
+import { act, render, renderHook } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { HistoriquePartie, useHistoriquePartie, type EntreeHistorique } from './HistoriquePartie'
+import { ContenuHistorique, useHistoriquePartie, type EntreeHistorique } from './HistoriquePartie'
 import type { World } from './world'
 
 const ZONES = {
@@ -61,19 +61,17 @@ const ENTREE_MANUEL: EntreeHistorique = {
 
 describe('l’étiquette affichée dépend du type (I4)', () => {
   it('affiche « Triche » pour une entrée de type triche', () => {
-    const { getByText, getByRole, queryByText } = render(
-      <HistoriquePartie entrees={[ENTREE_TRICHE]} effacer={vi.fn()} />
+    const { getByText, queryByText } = render(
+      <ContenuHistorique entrees={[ENTREE_TRICHE]} effacer={vi.fn()} />
     )
-    fireEvent.click(getByRole('button', { name: /Historique/ }))
     expect(getByText('Triche')).not.toBeNull()
     expect(queryByText('Geste manuel')).toBeNull()
   })
 
   it('affiche « Geste manuel », jamais « Triche », pour une entrée de type manuel', () => {
-    const { getByText, getByRole, queryByText } = render(
-      <HistoriquePartie entrees={[ENTREE_MANUEL]} effacer={vi.fn()} />
+    const { getByText, queryByText } = render(
+      <ContenuHistorique entrees={[ENTREE_MANUEL]} effacer={vi.fn()} />
     )
-    fireEvent.click(getByRole('button', { name: /Historique/ }))
     expect(getByText('Geste manuel')).not.toBeNull()
     expect(queryByText('Triche')).toBeNull()
   })

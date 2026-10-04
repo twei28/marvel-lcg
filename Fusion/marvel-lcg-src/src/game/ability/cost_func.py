@@ -100,6 +100,30 @@ class CostFunc:
                         targets = []
                     elif len(targets) == num_range[0] and targets and targets[0].IsInDeck():
                         targets = targets[:num_range[0]]
+                    elif len(targets) == num_range[0] and targets:
+                        # ⚠⚠ RACCOURCI GENERALISE (25/09/2026, demande de
+                        # l'utilisateur : « trop cliquer » sur She-Devil de
+                        # Red Sonja -- rs001a/rs002 -- et ~18 autres cartes au
+                        # meme motif). Le cas juste au-dessus (`IsInDeck()`)
+                        # sautait deja la demande au joueur quand il n'y a pas
+                        # de vrai choix pour une carte DU DECK ; le meme
+                        # raisonnement vaut pour n'importe quelle carte : des
+                        # que le nombre de cibles LEGALES egale le nombre
+                        # EXIGE, prendre les unes ou les autres n'est pas un
+                        # choix, c'est une formalite. La demander quand meme
+                        # coute un aller-retour reseau et un clic pour rien.
+                        # Meme convention que `ChooseOrder()`
+                        # (player_ask.py), qui a ce raccourci depuis
+                        # longtemps pour un besoin voisin
+                        # (`if len(faces) == 1: return list(faces)`).
+                        #
+                        # ⚠ ON NE TOUCHE PAS a la branche `IsInDeck()`
+                        # ci-dessus : elle existe depuis le moteur d'origine,
+                        # sans commentaire pour en expliquer la portee
+                        # exacte -- ce nouveau cas s'ajoute a cote plutot que
+                        # de la generaliser sur place, pour ne rien changer
+                        # a son comportement deja verifie.
+                        targets = targets[:num_range[0]]
                     else:
                         if self.selector.selector_rule.random:
                             targets = self.selector.GetRandomTarget(targets, effect)
@@ -1188,7 +1212,20 @@ class CostFunc:
                     select_size = max_size
 
                 if which_deck == "YourDeck":
+                    # ⚠ DECK PLUS COURT QUE LE COUT (25/09/2026, signalements
+                    # 21/22 de Yarro, arbitrage utilisateur). Rules Reference,
+                    # Empty Player Deck : si le deck s'epuise pendant une
+                    # defausse, on remelange, on prend 1 carte rencontre, et
+                    # rien n'est defausse du nouveau deck. La defausse
+                    # s'arrete donc la (`continue_after_shuffle=False`) et le
+                    # cout est PAYE. Avant, il etait declare impaye : cartes
+                    # perdues, effet jamais resolu (gb011-gb014, nv002,
+                    # nv003, 04164...).
+                    taille_avant = player.player_deck.GetSize()
                     discarded_cards = player.DiscardDeckTopCards(select_size, effect)
+                    self.return_discarded_cards = discarded_cards
+                    attendu = min(select_size, taille_avant)
+                    return attendu > 0 and len(discarded_cards) == attendu
                 else:
                     discarded_cards = Worlds.DiscardEncounterCards(select_size, effect)
                 self.return_discarded_cards = discarded_cards

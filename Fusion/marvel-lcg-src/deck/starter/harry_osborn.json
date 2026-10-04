@@ -3,6 +3,20 @@
     "name": "Harry Osborn",
     "metadata": {
         "url": "",
+        "deckbuilding": {
+            "hors_aspect": {
+                "max": 3,
+                "compte": "titres",
+                "traits": [
+                    "TECH"
+                ],
+                "types": [
+                    "Upgrade"
+                ],
+                "label": "3 améliorations TECH d’autres aspects (Harry Osborn)"
+            }
+        },
+        "deckbuilding_note": "ho001b : « You may include the maximum number of copies of 3 TECH upgrades in your deck from aspects other than your chosen aspect. » `compte: titres` : 3 TITRES, chacun en exemplaires max. Audit du 03/10/2026.",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite + Protection + Justice (construite par le portage, aspect arbitre le 31/08/2026).",
         "collision_note": "Homonymes verifies avant montage, tous dans d'AUTRES sets, aucun partage d'identifiant : « Green Goblin » (vilains officiels 02001b-02003b et 02014-02016, sbire wd033), « Risky Business » (ho013 porte le meme nom que le SET vilain officiel de Norman Osborn ET que l'obligation du pack officiel gob - pure coincidence d'auteur), « Repulsor Blast » (01031/56070, Iron Man, textes differents), « Powered Gauntlets » (01038 Iron Man, texte PROCHE mais different : degats bonus au lieu de confusion payante ; 56065 attachement de scenario), « Goblin Glider » (02019, attachement du vilain officiel), « Pumpkin Bombs » au pluriel (02021), « Kingpin » (wd091-wd093, 60061), « Bullseye » (56088, 60033), « Spider-Man » (nombreux allies homonymes officiels). L'allie ho002 est exclu d'office des decks des heros Spider-Man par la regle du nom."
     },

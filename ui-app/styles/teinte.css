@@ -1,0 +1,101 @@
+/* LA TEINTE DU FOND choisie par le joueur (board/teinte.ts, 04/10/2026).
+
+   Une roue de couleurs ternes et un curseur de luminosite, dans les Reglages et
+   a la premiere visite. Le fond de la table, le bandeau du haut et les panneaux
+   suivent la MEME teinte, pour rester coherents (choix de l'utilisateur).
+
+   ⚠ HORS DE TOUTE COUCHE ET CHARGEE APRES affichage-sobre.css, comme elle : une
+   regle hors couche passe devant les `@layer` du plateau, et a specificite
+   egale la derniere chargee gagne. La teinte s'applique donc en Normal comme en
+   Sobre. Sans choix (`data-teinte` absent), aucune de ces regles ne joue : la
+   « couleur d'origine » est exactement l'affichage d'avant.
+
+   Les surfaces visees sont celles qui portaient un gris ecrit en dur
+   (rgba(30, 30, 30, a), rgba(18, 21, 30, a), le degrade de la table) : releve
+   automatique du 04/10/2026. Les autres passent par `--fond`, redefinie ici. */
+
+html[data-teinte] {
+  /* ⚠ `--fond` = la couleur des PANNEAUX, pas celle de la table. Elle sert
+     aussi de couleur de TEXTE fonce (bouton actif `.mode-actions`, sur fond
+     ambre) : rattachee a une table gris clair, ce texte devenait illisible
+     (vu a l'ecran le 04/10/2026). Les panneaux restent toujours fonces. */
+  --fond: var(--teinte-panneau);
+  --fond-nuit: var(--teinte-panneau);
+  --cadre: var(--teinte-cadre);
+  --mc-fond: var(--teinte-bandeau);
+  /* La base du halo du heros (board.tsx, `fondDe`) : le halo reste PAR-DESSUS
+     la teinte choisie, en mode Normal. */
+  --fond-halo-base: var(--teinte-table);
+}
+
+/* --- 1. La table et la page ------------------------------------------------ */
+html[data-teinte][data-affichage='sobre'],
+html[data-teinte][data-affichage='sobre'] body {
+  background: var(--teinte-table);
+}
+
+html[data-teinte] .plateau-scene,
+html[data-teinte][data-affichage='sobre'] .plateau-scene,
+html[data-teinte][data-affichage='sobre'] body.a-halo-heros .plateau-scene,
+html[data-teinte] #scene {
+  background: var(--teinte-table);
+}
+
+/* Le halo garde sa bande de couleurs ; seule sa base change (variable). */
+html[data-teinte]:not([data-affichage='sobre']) body.a-halo-heros .plateau-scene {
+  background: var(--fond-plateau);
+}
+
+/* Les titres de zones et l'etiquette d'une pile vide sont poses SUR la table :
+   fonces sur une table claire. */
+html[data-teinte] .plateau-emplacement-titre {
+  color: var(--teinte-texte-table);
+}
+
+html[data-teinte='claire'] .pile-vide {
+  color: var(--teinte-texte-table);
+  border-color: rgba(27, 29, 33, 0.45);
+}
+
+/* --- 2. Le bandeau du haut et les barres ----------------------------------- */
+html[data-teinte] .plateau-barre,
+html[data-teinte] .pas-a-pas-barre,
+html[data-teinte] .barre-revoir {
+  background: rgb(var(--teinte-bandeau-rgb) / 0.94);
+}
+
+/* --- 3. Les panneaux -------------------------------------------------------- */
+html[data-teinte] .plateau-regardees,
+html[data-teinte] .plateau-selecteur,
+html[data-teinte] .menu-actions-carte,
+html[data-teinte] .evenement-centrale,
+html[data-teinte] .dc-texte,
+html[data-teinte] .plateau-action,
+html[data-teinte] .plateau-action-secondaire,
+html[data-teinte] .assistant-action,
+html[data-teinte] .stages-bouton,
+html[data-teinte] .historique-panneau,
+html[data-teinte] .panneau-journal,
+html[data-teinte] .popover-sauvegardes,
+html[data-teinte] .reglages-fenetre,
+html[data-teinte] .volet-journal,
+html[data-teinte] .deroule-phase {
+  background: rgb(var(--teinte-panneau-rgb) / 0.95);
+}
+
+html[data-teinte] .dc-capacites,
+html[data-teinte] .af-vide,
+html[data-teinte] .af-poignee,
+html[data-teinte] .assistant-simple-indication,
+html[data-teinte] .assistant-simple-resume,
+html[data-teinte] .hp-round,
+html[data-teinte] .hp-type {
+  background: rgb(var(--teinte-panneau-rgb) / 0.75);
+}
+
+html[data-teinte] .arts-modale,
+html[data-teinte] .fin-partie-carte,
+html[data-teinte] .confirm-modale,
+html[data-teinte] .ambiance-modale {
+  background: linear-gradient(180deg, var(--teinte-cadre), var(--teinte-panneau));
+}

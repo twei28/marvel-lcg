@@ -1,10 +1,22 @@
 import { describe, expect, it } from 'vitest'
 import { render } from '@testing-library/react'
-import { avecIcones, coutEnIcones, marquerRessources } from './icones-ressources'
+import { avecIcones, coutEnIcones, marquerRessources, ressourcesEnMots } from './icones-ressources'
 
 describe('les ressources en icones', () => {
   it('remplace les jetons du moteur par des marqueurs', () => {
     expect(marquerRessources('Génère [[physical]][[energy]]')).toBe('Génère ⟦P⟧⟦E⟧')
+  })
+
+  it('remplace aussi le jeton a UN crochet des textes francais officiels (Boom Sonique)', () => {
+    expect(marquerRessources('les ressources suivantes : [energy] [mental] [physical]')).toBe(
+      'les ressources suivantes : ⟦E⟧ ⟦M⟧ ⟦P⟧'
+    )
+  })
+
+  it('rend les icones en mots pour une infobulle native', () => {
+    expect(ressourcesEnMots('Spend [[energy]][[mental]] puis [physical]')).toBe(
+      'Spend énergiementale puis physique'
+    )
   })
 
   it('remplace le mot devant « resource(s) », et garde le mot resource', () => {

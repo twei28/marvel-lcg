@@ -28,6 +28,7 @@ class ToDescriptor:
         player_descriptor.area_processing           = deck_to_descriptors(player.area_processing)
         player_descriptor.hand_cards                = deck_to_descriptors(player.hand_cards)
         player_descriptor.reserve                   = deck_to_descriptors(player.reserve) # CORRECTIF (pack brawn)
+        player_descriptor.rising_tide                = deck_to_descriptors(player.rising_tide) # AJOUT (pack wave)
         player_descriptor.engaged_enemies           = deck_to_descriptors(player.engaged_minions)
         player_descriptor.set_aside_nemesis_sets    = deck_to_descriptors(player.set_aside_nemesis_sets)
         player_descriptor.additional_deck           = deck_to_descriptors(player.additional_deck)
@@ -37,6 +38,11 @@ class ToDescriptor:
             
         player_descriptor.resources = player.res_pool.Get().text_legacy
         player_descriptor.is_eliminated = player.is_eliminated
+        # Pendant la mise en place, `GetIdentity()` rend None ou un `Insert`
+        # (carte provisoire, sans taille de main) : on publie alors 0, que le
+        # plateau sait ne pas afficher. Constate au premier passage du harnais.
+        player_descriptor.hand_size = getattr(player.GetIdentity(), 'hand_size', 0) or 0
+        player_descriptor.has_finished_turn_this_round = player.has_finished_turn_this_round
         return player_descriptor
 
     @staticmethod

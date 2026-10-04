@@ -16,9 +16,7 @@ def GetAbilities() -> Sequence['Ability']:
         for joueur in Worlds.GetPlayers(effect):
             joueur.DiscardDeckTopCards(valeur, effect)
 
-        deck = Worlds.GetEncounterDeck(effect)
-        if deck is not None:
-            deck.DiscardTopCards(valeur, effect)
+        Worlds.DiscardEncounterCards(valeur, effect)
 
     return [
         AbilityFactory.WhenUnitMakeAttack(

@@ -31,6 +31,7 @@ import {
 } from './CoucheMeteo'
 import { t } from './langue'
 import { ecrireReponseAmbiance, lireReponseAmbiance, type ReponseAmbiance } from './moteur'
+import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import type { World } from './world'
 
 export function ModaleAmbiance({
@@ -90,6 +91,11 @@ export function ModaleAmbiance({
     setDemande(carte)
   }, [monde, ambianceActive, apercu, reglerApercu, traite])
 
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »).
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(demande ? demande.nom : 'aucune')
+
   if (!demande) return null
 
   function repondre(garder: boolean) {
@@ -112,9 +118,18 @@ export function ModaleAmbiance({
         role="alertdialog"
         aria-modal="true"
         aria-label={t('Une ambiance s’allume')}
+        style={transformDecalage(decalage)}
       >
-        <span className="plateau-eyebrow">{t('Une ambiance s’allume')}</span>
-        <strong className="ambiance-carte">{demande.nom}</strong>
+        <div
+          className="poignee-glisser"
+          onPointerDown={gestesGlisser.onPointerDown}
+          onPointerMove={gestesGlisser.onPointerMove}
+          onPointerUp={gestesGlisser.onPointerUp}
+          onPointerCancel={gestesGlisser.onPointerCancel}
+        >
+          <span className="plateau-eyebrow">{t('Une ambiance s’allume')}</span>
+          <strong className="ambiance-carte">{demande.nom}</strong>
+        </div>
         <p className="ambiance-effet">
           {t('change l’atmosphère du plateau')} :{' '}
           <em>{t(LIBELLE_EFFET[demande.effet])}</em>

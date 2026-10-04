@@ -41,6 +41,13 @@ export function sceneDe(etape: EtapeDeroule): SceneEtape {
   // une attaque : auteur, boosts, fleche, cible. Signale en jeu le 09/09/2026 :
   // la seconde attaque montrait Klaw seul, en retournement de carte revelee,
   // sans cible ni boosts, et « idem pour la manigance ».
+  // UN CHANGEMENT DE STADE : la nouvelle carte, en grand, retournee comme une
+  // carte revelee (04/10/2026).
+  if (etape.titre === 'stade') {
+    return etape.carteId === undefined
+      ? RIEN
+      : { cartes: [{ role: 'revelee', id: etape.carteId }], fleche: false, voile: true }
+  }
   const activation = etape.titre === 'attaque' || etape.titre === 'manigance'
   if (etape.temps === 'revelation' && !activation) {
     if (etape.carteId === undefined) return RIEN

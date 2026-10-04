@@ -57,18 +57,33 @@ export function oublierPalettes(): void {
  * ⚠ ELLE S'ETEINT AVANT LE CENTRE (50 %). La couleur appartient au heros : elle
  * ne doit jamais atteindre la zone du mechant, en haut a gauche.
  *
- * ⚠ LES FORCES ONT ETE MONTEES DEUX FOIS, a la demande de l'utilisateur :
+ * ⚠ LES FORCES ONT ETE MONTEES QUATRE FOIS, a la demande de l'utilisateur :
  * 14/09/2026 (0,32 / 0,24 / 0,14 -> 0,46 / 0,34 / 0,20, « pousse un peu la
- * colorisation du halo pour qu'on le voie mieux »), puis 22/09/2026 (-> 0,60 /
- * 0,44 / 0,26, « j'aimerais que les couleurs ressortent un peu plus »), meme
- * ecart relatif applique une seconde fois. Les aplats colores des zones
- * (rouge sur la ligne de combat, jaune sur les manigances annexes) ont ete
- * retires au premier passage : ils se superposaient a la bande et
- * brouillaient les deux.
+ * colorisation du halo pour qu'on le voie mieux »), 22/09/2026 (-> 0,60 /
+ * 0,44 / 0,26, « j'aimerais que les couleurs ressortent un peu plus »), puis
+ * 23/09/2026 en DEUX temps : d'abord (-> 0,74 / 0,54 / 0,32, « encore plus
+ * flashy »), puis au maximum (-> 1,0 / 0,9 / 0,75, la primaire desormais a
+ * PLEINE opacite -- au-dela, la bande cesse d'etre un degrade et devient un
+ * aplat). Les aplats colores des zones (rouge sur la ligne de combat, jaune
+ * sur les manigances annexes) ont ete retires au premier passage : ils se
+ * superposaient a la bande et brouillaient les deux.
+ *
+ * ⚠ LES POSITIONS AUSSI, UNE FOIS (23/09/2026, « la couleur primaire peut
+ * ressortir un peu plus », la primaire etant deja a 1,0 -- impossible de
+ * pousser l'opacite plus haut) : 0/16/30 % -> 0/22/38 %. La primaire pure
+ * occupe donc une plus grande part de la bande avant que la tertiaire puis
+ * la secondaire n'entrent en jeu, plutot que de renforcer le contraste en
+ * affaiblissant les deux autres (option ecartee par l'utilisateur, montree
+ * a cote de celle-ci).
  *
  * `315deg` progresse vers le HAUT GAUCHE : la position 0 % est donc le coin bas
  * droit, celui que l'utilisateur a designe (« en diagonale, la couleur en bas a
  * droite »).
+ *
+ * ⚠⚠ L'ORDRE DES TEINTES NE SUIT PLUS L'ORDRE DU FICHIER (23/09/2026,
+ * demande de l'utilisateur, capture de l'editeur de palettes a l'appui :
+ * « la primaire je la veux a droite, la secondaire a gauche et le tertiaire
+ * au milieu »). Voir `ORDRE` ci-dessous.
  */
 export function fondDe(couleurs: readonly Couleur[] | undefined, sombre: string): string {
   if (!couleurs || couleurs.length === 0) return sombre
@@ -77,20 +92,25 @@ export function fondDe(couleurs: readonly Couleur[] | undefined, sombre: string)
   // (au coin) a la plus diffuse. Trois arrets : au-dela les teintes se
   // melangent en boue, en deca la bande n'a plus de degrade.
   const ARRETS: Array<{ a: number; force: number }> = [
-    { a: 0, force: 0.6 },
-    { a: 16, force: 0.44 },
-    { a: 30, force: 0.26 },
+    { a: 0, force: 1.0 },
+    { a: 22, force: 0.9 },
+    { a: 38, force: 0.75 },
   ]
+  // La primaire (index 0 du fichier) reste au coin, la plus dense (0 %,
+  // « a droite »). La tertiaire (index 2) vient ensuite (22 %, « au
+  // milieu »). La secondaire (index 1) tient le dernier arret visible
+  // (38 %, le plus diffus -- le plus loin du coin, donc « a gauche »).
+  const ORDRE = [0, 2, 1]
   // ⚠ UN HEROS PEUT N'AVOIR QU'UNE OU DEUX COULEURS (onze cadres sont noirs ou
   // gris, deux sets fan-made n'ont qu'un blanc). On repete alors la derniere :
   // la bande garde sa longueur et son degrade, elle porte juste moins de
   // teintes. C'est la forme exacte qui a ete montree et validee.
   const derniere = couleurs[couleurs.length - 1]
   const etapes = ARRETS.map((arret, i) => {
-    const couleur = couleurs[i] ?? derniere
+    const couleur = couleurs[ORDRE[i]] ?? derniere
     return `${rgba(couleur, arret.force)} ${arret.a}%`
   })
-  const fin = couleurs[ARRETS.length - 1] ?? derniere
+  const fin = couleurs[ORDRE[ARRETS.length - 1]] ?? derniere
   return `linear-gradient(315deg, ${etapes.join(', ')}, ${rgba(fin, 0)} 50%), ${sombre}`
 }
 

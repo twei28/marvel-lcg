@@ -320,6 +320,15 @@
   }
   .encoche {
     transition: opacity 180ms ease;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  /* Languette saisie (appui long) : elle se leve et suit le doigt sans delai. */
+  .encoche.est-deplacee {
+    transition: none;
+    transform: scale(1.08);
+    border-color: var(--menace-clair);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65);
   }
   .encoche-main {
     right: 0;

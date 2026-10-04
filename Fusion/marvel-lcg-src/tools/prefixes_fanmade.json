@@ -508,6 +508,13 @@
    "cartes": 17,
    "depuis": "2026-09-11",
    "note": "Auteur Mozilla (Drive « Zeus (Released) »). ze001a/b identite, ze002-ze011 set heros (10 cartes distinctes, 15 exemplaires), ze012 obligation, ze013-ze016 set nemesis Nyx (4 cartes distinctes, 5 exemplaires). ⚠ CE PACK INVENTE UNE RESSOURCE : l'ECLAIR, cinquieme couleur du moteur `L` ajoutee le 11/09/2026 (fiche docs/reference/mots-cles/eclair.md), imprimee sur les 4 Thunder Strike et fabriquee par Mount Olympus. Skyfather's Tempest exige une ENERGIE officielle ET un ECLAIR sur le paiement d'un meme evenement ; le set nemesis vise l'energie, pas l'eclair. Sept cartes portent une capacite « Special » resolue depuis la main ou au paiement. Homonymes : 40004 Precognition (next_evol), 50131b Thunderbolt Backup, 57021 The Thunderbolts, 59010 Son of Zeus. Aucune decklist d'auteur : player_deck vide. Voir .planning/todos/2026-09-11-zeus-releve-des-cartes.md."
+  },
+  "cn": {
+   "pack": "conan",
+   "libelle": "177. Custom (Conan)",
+   "cartes": 22,
+   "depuis": "2026-09-25",
+   "note": "Auteur RyCoRan (meme gabarit que Red Sonja). cn001a-e identite a CINQ faces (Thief et Barbarian heros + alter-ego Conan, King Conan heros + alter-ego roi mis de cote au Setup, drapeau moteur `hors_pile_identite`), cn002-cn012a/b set heros (11 cartes distinctes, 16 exemplaires dont The Cimmerian recto/verso mise en jeu au Setup), cn013 obligation, cn014-cn017 set nemesis (deux sbires nemesis Hrothgar et Hymdul). Compteurs MAISON `crom` et `serpent`. Aucune decklist d'auteur : player_deck vide. Voir .planning/todos/2026-09-25-portage-conan.md."
   }
  }
 }

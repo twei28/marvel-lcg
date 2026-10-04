@@ -45,6 +45,15 @@ const MOTEUR_FR: Record<string, string> = {
   Ask: 'Demander',
   Resource: 'Ressource',
   Discard: 'Défausser',
+  // Le choix facultatif d'un script (`MayChooseOneAbility`) : l'option de
+  // refus s'appelle « Cancel », et l'intitule du choix est le `prompt` du
+  // script. Signalement Yarro n43 (03/10/2026) : « je n'arrive pas a jouer la
+  // capa de Ben Urich », devant deux boutons anglais dont aucun ne disait
+  // « defausser ».
+  Cancel: 'Annuler',
+  'Discard one': 'En défausser une',
+  // Robbie Robertson 60156 : meme defaut, meme correctif (04/10/2026).
+  'Discard it and deal another': 'La défausser et en distribuer une autre',
 
   // — Étapes de jeu rendues comme des options —
   'Resolve Mulligans': 'Résoudre les mulligans',
@@ -165,6 +174,7 @@ const MOTEUR_FR: Record<string, string> = {
   'Campaign Setup': 'Mise en place de la campagne',
   'Campaign Setup After Mulligans': 'Mise en place de campagne après les mulligans',
   'Cannot Prevent Unpreventable Damage_Text': 'Ces dégâts ne peuvent pas être évités',
+  'Cards Paid Order_Text': 'Ordre de paiement',
   'Card Apply_Text': 'Carte appliquée',
   'Card Attach To': 'Carte attachée',
   'Card Be Created': 'Carte créée',

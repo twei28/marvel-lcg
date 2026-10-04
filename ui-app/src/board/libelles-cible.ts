@@ -67,7 +67,9 @@ export function libellesCible(etat: EtatCible): LibellesCible {
         : `${choisies}/${minimum} ${t('requise(s)')} · ${cartesCiblables} ${t('possible(s)')}`
 
   const indice = repetable
-    ? t('Une même carte peut être choisie plusieurs fois (1 clic = 1 attribution)')
+    ? t(
+        'Une même carte peut être choisie plusieurs fois (1 clic = 1 attribution, ou « +N » pour tout lui donner d’un coup)'
+      )
     : undefined
 
   return { titre, detail, indice }

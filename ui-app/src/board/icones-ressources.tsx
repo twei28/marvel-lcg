@@ -42,7 +42,9 @@ export function marqueurRessource(cle: Ressource['cle']): string {
   return `⟦${PAR_CLE.get(cle)?.glyphe ?? 'W'}⟧`
 }
 
-const JETONS = /\[\[(physical|mental|energy|wild|lightning)\]\]/g
+// Un ou deux crochets : le moteur ecrit « [[energy]] », les textes francais
+// officiels « [energy] ».
+const JETONS = /\[{1,2}(physical|mental|energy|wild|lightning)\]{1,2}/g
 const MOTS = /\b(physical|mental|energy|wild|lightning)(?= resources?\b)/gi
 
 /**
@@ -54,6 +56,13 @@ export function marquerRessources(texte: string): string {
   return texte
     .replace(JETONS, (_, cle: Ressource['cle']) => marqueurRessource(cle))
     .replace(MOTS, (mot: string) => marqueurRessource(mot.toLowerCase() as Ressource['cle']))
+}
+
+/** Le meme texte SANS icones, pour une infobulle native (`title`) : « ⟦E⟧ » devient « énergie ». */
+export function ressourcesEnMots(texte: string): string {
+  return marquerRessources(texte).replace(/⟦([PMEWL])⟧/g, (_, glyphe: Ressource['glyphe']) =>
+    t(PAR_GLYPHE.get(glyphe)?.nom ?? 'libre')
+  )
 }
 
 /**

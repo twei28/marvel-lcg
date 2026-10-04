@@ -13,6 +13,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { catalogueVide, type Catalogue } from './catalogue'
 import { scanUrl } from './card-model'
 import { t } from './langue'
+import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import { CatalogueManuel } from './manuel/CatalogueManuel'
 import {
   creerEtatTouches,
@@ -648,6 +649,13 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
   // TABLE. `FinManuelle` tient déjà sa propre confirmation ; `onDeclarer`
   // n'est donc appelé qu'une fois la décision prise, jamais au premier clic.
   const [finOuverte, setFinOuverte] = useState(false)
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »).
+  const { decalage: decalageFin, gestes: gestesGlisserFin } = useGlisserPanneau(
+    finOuverte ? 'fin-ouverte' : 'fin-fermee'
+  )
+  const { decalage: decalagePile, gestes: gestesGlisserPile } = useGlisserPanneau(pile?.titre ?? 'aucune-pile')
 
   // Échap ferme le catalogue et la fenêtre de fin de partie, comme les deux
   // menus le font déjà (`MenuTriche.tsx`, `MenuTable.tsx`) — défaut relevé
@@ -783,10 +791,19 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
             className="pile-triche fin-manuelle"
             role="dialog"
             aria-label={t('Terminer la partie')}
+            style={transformDecalage(decalageFin)}
             onPointerDown={(evenement) => evenement.stopPropagation()}
           >
             <header className="pile-triche-entete">
-              <h2>{t('Terminer la partie')}</h2>
+              <h2
+                className="poignee-glisser"
+                onPointerDown={gestesGlisserFin.onPointerDown}
+                onPointerMove={gestesGlisserFin.onPointerMove}
+                onPointerUp={gestesGlisserFin.onPointerUp}
+                onPointerCancel={gestesGlisserFin.onPointerCancel}
+              >
+                {t('Terminer la partie')}
+              </h2>
               <button type="button" onClick={() => setFinOuverte(false)}>{t('Fermer')}</button>
             </header>
             <FinManuelle onDeclarer={(gagne) => void declarerFin(gagne)} />
@@ -800,10 +817,17 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
             className="pile-triche"
             role="dialog"
             aria-label={pile.titre}
+            style={transformDecalage(decalagePile)}
             onPointerDown={(evenement) => evenement.stopPropagation()}
           >
             <header className="pile-triche-entete">
-              <h2>
+              <h2
+                className="poignee-glisser"
+                onPointerDown={gestesGlisserPile.onPointerDown}
+                onPointerMove={gestesGlisserPile.onPointerMove}
+                onPointerUp={gestesGlisserPile.onPointerUp}
+                onPointerCancel={gestesGlisserPile.onPointerCancel}
+              >
                 {pile.titre} <small>({pile.cartes.length})</small>
               </h2>
               <span className="pile-triche-aide">

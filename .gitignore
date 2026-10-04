@@ -152,6 +152,7 @@ deploiement/_a_supprimer/
 
 # Journal du dernier deploiement (DEPLOYER.bat)
 deploiement/dernier-deploiement.log
+deploiement/construction-plateau.log
 
 # Espace de travail des chantiers pilotes par sous-agents (journal, briefs,
 # rapports, paquets de revue). Ephemere : le depot garde les commits, pas ca.

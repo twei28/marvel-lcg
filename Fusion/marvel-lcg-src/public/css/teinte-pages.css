@@ -1,0 +1,55 @@
+/* LA TEINTE DU FOND sur les pages du jeu (js/teinte-page.js, 04/10/2026).
+
+   Choix de l'utilisateur : « partout ». Sans choix (`data-teinte` absent),
+   aucune regle ne joue : la page reste exactement comme avant.
+
+   ⚠ A CHARGER APRES la feuille de la page : a specificite egale, la derniere
+   gagne (le mode sobre de la preparation pose `html[data-affichage] body`).
+
+   Sur ces pages le texte est pose a meme le fond : les fonds prennent la
+   luminosite des PANNEAUX (24 % au plus), la teinte et la saturation suivent.
+   Les variables `--ink`/`--steel`/`--line` sont celles que partagent la
+   preparation, la campagne, la galerie et les palettes. */
+
+html[data-teinte] {
+  --ink: rgb(var(--teinte-bandeau-rgb));
+  --ink2: color-mix(in srgb, var(--teinte-bandeau) 70%, var(--teinte-panneau));
+  --steel: var(--teinte-panneau);
+  --steel2: color-mix(in srgb, var(--teinte-panneau) 88%, white);
+  --steel3: color-mix(in srgb, var(--teinte-panneau) 78%, white);
+  --soft: color-mix(in srgb, var(--teinte-panneau) 84%, white);
+  --line: color-mix(in srgb, var(--teinte-cadre) 80%, white);
+  /* Succes (achievements.css) et pages a fond nomme. */
+  --hf-fond: rgb(var(--teinte-bandeau-rgb));
+  --hf-panneau: var(--teinte-panneau);
+  /* deck-builder.html, salon.html, rejoindre.html : `--fond` / `--panneau` /
+     `--carte` / `--bord`. Vus bleu nuit sous une teinte (04/10/2026). */
+  --fond: rgb(var(--teinte-bandeau-rgb));
+  --panneau: var(--teinte-panneau);
+  --carte: color-mix(in srgb, var(--teinte-panneau) 90%, white);
+  --bord: color-mix(in srgb, var(--teinte-cadre) 80%, white);
+  /* scene.html (assistant de partie, wizard.css). */
+  --w-bg-0: rgb(var(--teinte-bandeau-rgb));
+  --w-bg-1: var(--teinte-panneau);
+  --w-panel: var(--teinte-panneau);
+  --w-panel-2: color-mix(in srgb, var(--teinte-panneau) 90%, white);
+  --w-line: color-mix(in srgb, var(--teinte-cadre) 80%, white);
+  --w-line-soft: var(--teinte-cadre);
+}
+
+html[data-teinte] body,
+html[data-teinte][data-affichage] body {
+  background: linear-gradient(180deg, var(--teinte-panneau) 0, var(--teinte-bandeau) 60%);
+  background-color: var(--teinte-bandeau);
+  /* Sans cela, sur une page plus courte que la fenetre, le degrade se repetait
+     en BANDES horizontales (salon, replay : vu le 04/10/2026). */
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Les BANDEAUX du haut (hauts faits, assistant de partie) : couleur des
+   bandeaux, comme sur le plateau. */
+html[data-teinte] .hf-barre,
+html[data-teinte] .w-topbar {
+  background: rgb(var(--teinte-bandeau-rgb) / 0.94);
+}

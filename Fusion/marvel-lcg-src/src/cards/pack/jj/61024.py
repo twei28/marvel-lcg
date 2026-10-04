@@ -8,6 +8,6 @@ def GetAbilities() -> Sequence['Ability']:
         if villain:
             this.DealDamage([villain], message.placed_threat, effect)
     return [
-        AbilityFactory.AfterUnitSchemeAgainst(AbilityType.AlterEgoResponse, None, "You", entrapment)
+        AbilityFactory.AfterUnitSchemeAgainst(AbilityType.AlterEgoResponse, Villain, "You", entrapment)
         .SetLabel('attack').SetCostFunc(CostFunc.Discard("This")),
     ]

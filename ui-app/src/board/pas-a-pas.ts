@@ -26,6 +26,7 @@
 
 import { useEffect } from 'react'
 import type { EntreeHistorique } from './HistoriquePartie'
+import { mouvementReduit } from './affichage'
 
 /** Durée du halo. Volontairement plus courte que le délai minimal d'une étape
  *  (300 ms) x 2 : le halo doit s'éteindre avant la fin de l'étape, sinon deux
@@ -123,7 +124,7 @@ export function usePasAPas(entrees: EntreeHistorique[], actif: boolean): void {
   const cle = derniere?.cle
   useEffect(() => {
     if (!actif || !derniere) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (mouvementReduit()) return
     return montrerEtape(derniere)
     // `cle` suffit : une entrée est immuable, sa clé identifie le fait.
     // eslint-disable-next-line react-hooks/exhaustive-deps

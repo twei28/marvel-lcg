@@ -1,0 +1,51 @@
+{
+    "version": "0.5.9",
+    "name": "Red Sonja",
+    "metadata": {
+        "url": "",
+        "deckbuilding": {
+            "hors_aspect": {
+                "max": 6,
+                "types": [
+                    "Event"
+                ],
+                "label": "6 événements d’autres aspects (Red Sonja)"
+            }
+        },
+        "deckbuilding_note": "rs001b : « During deck-building you may include up to 6 events from aspects other than your chosen aspect. » Audit du 03/10/2026.",
+        "author": "Arnaud",
+        "deck_note": "⚠ `player_deck` VIDE. Consigne utilisateur du 06/09/2026 : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit. Le dossier `Extras` du zip (RyCoRan, 22/09/2026) ne contient que des reimpressions ART SEULEMENT de cartes deja existantes dans le catalogue (Army of One, Innate Aggression officielles ; Bloodfang Dagger/Hyrkanian Longbow = reskins de Pulse Grenade/Plasma Pistol) plus une carte Team-Up Red Sonja/Conan hors norme (le mot-cle suppose deux identites heros, pas un heros et son propre allie) : ce n'est pas une decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les 15 cartes signature (12 uniques), l'obligation et le set nemesis (5 cartes)."
+    },
+    "hero": [
+        "rs001a,rs001b"
+    ],
+    "hero_deck": [
+        "rs002",
+        "rs003",
+        "rs003",
+        "rs004",
+        "rs004",
+        "rs005",
+        "rs005",
+        "rs006",
+        "rs007",
+        "rs008",
+        "rs009",
+        "rs010",
+        "rs011",
+        "rs012",
+        "rs013"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "rs014"
+    ],
+    "nemesis_set": [
+        "rs015",
+        "rs016",
+        "rs017",
+        "rs018",
+        "rs019"
+    ],
+    "player_deck": []
+}

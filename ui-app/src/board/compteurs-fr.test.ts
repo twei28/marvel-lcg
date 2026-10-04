@@ -28,4 +28,19 @@ describe('nomDeCompteur', () => {
     vi.spyOn(langue, 'langueActuelle').mockReturnValue('en')
     expect(nomDeCompteur('steel')).toBe('steel')
   })
+
+  it('traduit les compteurs du pack Red Sonja (stealth, fetter)', () => {
+    // rs011 Crimson Shadow et rs018 She-Devil Shackled! : sans entree dans
+    // la table, le plateau ecrivait le mot anglais brut en pleine partie
+    // francaise (etape 8 bis de PROCESSUS-CARTE, 23/09/2026).
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('stealth')).toBe('discrétion')
+    expect(nomDeCompteur('fetter')).toBe('entrave')
+  })
+
+  it('traduit les compteurs du pack Conan (crom, serpent)', () => {
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('crom')).toBe('Crom')
+    expect(nomDeCompteur('serpent')).toBe('serpent')
+  })
 })

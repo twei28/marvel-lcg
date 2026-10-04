@@ -1,0 +1,65 @@
+/* LA FENETRE DES REGLAGES, agrandie (decision du 04/10/2026) : environ
+   1000 x 760, au plus 90 % de l'ecran, texte un cran plus grand ; chaque ligne
+   dit son effet sous son intitule. Hors couche : passe devant board.css. */
+.reglages-fenetre.est-reglages {
+  width: min(1000px, 90vw);
+  /* Hauteur FIXE : la fenetre ne change pas de taille d'un onglet a l'autre. */
+  height: min(760px, 90dvh);
+  max-height: min(760px, 90dvh);
+  grid-template-columns: minmax(170px, 210px) 1fr;
+  font-size: 16px;
+}
+
+.reglages-fenetre.est-reglages .ligne-option {
+  padding-block: 10px;
+}
+
+.reglages-fenetre.est-reglages .ligne-option-libelle {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 1rem;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* L'aide, sous l'intitule : l'effet concret du reglage. */
+.reglages-fenetre.est-reglages .ligne-option-aide {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: rgba(248, 250, 252, 0.62);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Le titre d'un groupe (« Le jeu agit pour moi quand il n'y a qu'un choix »). */
+.reglages-fenetre.est-reglages .reglages-groupe {
+  margin: 16px 0 4px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--menace, #f0b95f);
+}
+
+.reglages-fenetre.est-reglages .reglages-onglet {
+  font-size: 1rem;
+}
+
+/* « Modifier la table » : un bouton, pas une barre. */
+.reglages-fenetre.est-reglages .reglage-table .bh-bouton {
+  justify-self: start;
+  padding: 8px 18px;
+}
+
+@media (max-width: 760px) {
+  .reglages-fenetre.est-reglages {
+    width: 100%;
+    height: auto;
+    max-height: calc(100dvh - 24px);
+    grid-template-columns: 1fr;
+  }
+}

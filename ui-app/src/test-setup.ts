@@ -18,6 +18,25 @@ if (typeof window !== 'undefined' && !window.matchMedia) {
   })) as typeof window.matchMedia
 }
 
+// jsdom n'implemente pas window.confirm (il journalise "not implemented" et
+// rend undefined, donc un appel non bouchonne est deja lu comme "refuse" par
+// le code, mais bruite chaque test qui l'atteint). Un bouchon qui refuse
+// explicitement donne le meme resultat SANS le bruit -- utile depuis l'ajout
+// du paiement/de la fin de tour automatiques (24/09/2026), qui retombent sur
+// `window.confirm` via `useConfirmation()` hors `FournisseurConfirmation`
+// (interaction.ts, board.tsx) des qu'une seule carte peut encore payer, meme
+// dans des tests qui ne testent pas cette fonctionnalite. Un test qui pilote
+// vraiment la reponse pose son propre `vi.stubGlobal('confirm', ...)`, qui
+// prend le pas le temps du test et se retire proprement ensuite
+// (`vi.unstubAllGlobals()` restaure CE bouchon-ci, jamais `undefined`).
+//
+// ⚠ PAS DE GARDE `!window.confirm` : jsdom DEFINIT deja la methode (c'est son
+// CORPS qui journalise et rend undefined), donc une garde sur sa seule
+// presence ne la remplacerait jamais.
+if (typeof window !== 'undefined') {
+  window.confirm = () => false
+}
+
 // Node 25 expose un localStorage NATIF global dont clear() est absent, et vitest
 // ne le remplace pas par celui de jsdom (localStorage n'est pas dans sa liste de
 // globales figee). Mesure : node -e "typeof globalThis.localStorage.clear" donne

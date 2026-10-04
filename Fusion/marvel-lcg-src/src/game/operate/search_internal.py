@@ -99,6 +99,25 @@ class SearchInternal:
             if origine is not None and origine.flags.is_deck:
                 by_effect.context.search_transit.append((face, origine))
 
+        # FOUILLE FACULTATIVE REFUSEE (correctif du 04/10/2026). Le joueur a vu
+        # le contenu du deck puis n'a rien pris : le deck a ete fouille et doit
+        # etre melange (Rules Reference v1.8, Search : « If any portion of a
+        # deck is searched … shuffle that entire deck »), sinon il connait
+        # l'ordre de ses prochaines pioches. `SelectorEnd.DoShuffle` ne melange
+        # que le deck d'ou une carte SORT, donc rien ici. Choix de
+        # l'utilisateur : « tu as vu le deck ». Une carte prise dans une zone
+        # PUBLIQUE (defausse) ne declenche toujours aucun melange : le deck n'a
+        # pas eu a etre fouille (lecture « Find », autre choix de l'utilisateur).
+        # `not_move` reste respecte : il annonce une recherche qui ne melange pas.
+        if may and not faces and not not_move:
+            fouilles: List[Deck] = []
+            for zone in zones_avant.values():
+                if zone.flags.is_deck and not zone.flags.is_face_up and zone not in fouilles:
+                    fouilles.append(zone)
+            for deck in fouilles:
+                if deck.GetSize() > 0:
+                    deck.Shuffle(by_effect)
+
         def process(targets: Sequence['CardFace']) -> None:
             for face in targets:
                 if process_choose:

@@ -17,7 +17,11 @@ def GetAbilities() -> Sequence['Ability']:
         AbilityFactory.WhenResolveSpecialAbility(
             "This",
             crimson_bands_of_cyttorak
-        ).SetTarget(Enemy, range=(0, 1))
+        # « Stun AN enemy » : une cible, obligatoire. `range=(0, 1)` ouvrait l'ecran
+        # de choix avec « 0/1 selectionnee(s) » et son bouton de confirmation
+        # ACTIF : valider sans cliquer l'ennemi resolvait le sort a vide, qui
+        # partait quand meme a la defausse (signalement n°51, 04/10/2026).
+        ).SetTarget(Enemy)
         .NoOutOfPlayLimit(),
     ]
 

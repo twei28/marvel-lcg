@@ -31,7 +31,6 @@ import {
   compteurLigneBilan,
   detailEtape,
   evolutionEtape,
-  regleEtape,
   texteActivationAnnulee,
   texteCauseActivation,
   texteArretDefaite,
@@ -40,24 +39,36 @@ import {
   texteBilanVide,
   texteDefaite,
   texteEffet,
+  texteConsequence,
   texteFenetreReponse,
   texteLigneBilan,
   texteTempsParDecision,
   titreEtape,
   decouperPhrase,
+  resultatEtape,
+  surtitreEtape,
+  texteSuiteRenfort,
+  lignesEtoileBoost,
 } from './deroule-textes'
 import { t } from './langue'
-import { DELAI_PAS_A_PAS_DEFAUT, ecrireRegleDepliee, lireRegleDepliee } from './moteur'
+import { DELAI_PAS_A_PAS_DEFAUT } from './moteur'
 import { CarteApercu } from './Board'
 import { useApercuSurvol } from './apercu-survol'
 import { sceneDe, type CarteDeScene } from './deroule-scene'
 import { useDerouleScene } from './useDerouleScene'
 import { useAncrageSurTable } from './useAncrageSurTable'
+import { cartesConcernees, useSurbrillanceEtape } from './surbrillance-etape'
+import './deroule-onglets.css'
+import { ONGLETS, avecTempsVides, resumeOnglet, type CleOnglet } from './frise-phase'
+import { DetailCoup, ListeDesCoups } from './DetailCoup'
+import { etapeEnLangue } from './etape-en-langue'
+import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import { CoucheTraitPhase } from './CoucheTraitPhase'
 import { cartoucheEstAJour } from './cartouche-a-jour'
 import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
 import { contenuDuTrait } from './trait-phase'
+import './boutons-bd.css'
 
 /**
  * Le temps de VOIR une etape qui vise un autre joueur, avant qu'elle passe.
@@ -71,13 +82,8 @@ const DELAI_ETAPE_D_UN_AUTRE_MS = 2200
 /** Le temps de lire un boost a capacite avant le suivant. */
 const DELAI_BOOST_MS = 1500
 
-/**
- * Le pas du defilement apres Echap (« Tout derouler ») : le temps de VOIR
- * passer une etape, pas de la lire. Assez court pour que la phase file, assez
- * long pour que chaque etape soit peinte une fois et que le journal, la mise
- * en scene et le moteur la voient passer dans l'ordre.
- */
-export const DELAI_DEFILEMENT_MS = 120
+// ⚠ PLUS DE « TOUT DEROULER » (Echap) : pas a pas strict, decision de
+// l'utilisateur du 03/10/2026. Le defilement et son delai sont retires.
 
 /**
  * A partir de quand le cartouche annonce le filet anti-blocage.
@@ -91,21 +97,23 @@ export const DELAI_DEFILEMENT_MS = 120
  */
 export const DELAI_ALERTE_FILET_MS = 15_000
 
+// LES SIX ONGLETS (intitules officiels numerotes, puis le Bilan) : voir
+// `ONGLETS`, frise-phase.ts.
+
 /**
- * Les cinq temps de la carte de reference, dans l'ordre.
- *
- * Le mechant et ses sbires sont deux moments distincts du tour (le vilain
- * s'active AVANT ses sbires) : les fondre dans un seul « Activations »
- * cachait ou l'on en etait. Arbitrage de l'utilisateur, qui a decrit la
- * phase exactement dans ces termes.
+ * Le nom d'un onglet, son NUMERO a part (« 1. » puis « Placer les menaces ») :
+ * sur telephone, seul le numero reste, en pastille (decision du 03/10/2026).
  */
-const TEMPS: { cle: TempsPhase; libelle: string }[] = [
-  { cle: 'menace', libelle: 'Menace' },
-  { cle: 'mechant', libelle: 'Méchant' },
-  { cle: 'sbires', libelle: 'Sbires' },
-  { cle: 'distribution', libelle: 'Distribution' },
-  { cle: 'revelation', libelle: 'Révélation' },
-]
+function nomDOnglet(libelle: string): ReactNode {
+  const morceaux = /^(\d+[ab]?\.)(.*)$/.exec(libelle)
+  if (!morceaux) return <span className="deroule-onglet-libelle">{libelle}</span>
+  return (
+    <>
+      <span className="deroule-onglet-numero">{morceaux[1]}</span>
+      <span className="deroule-onglet-libelle">{morceaux[2]}</span>
+    </>
+  )
+}
 
 export function DeroulePhase({
   etapes,
@@ -116,6 +124,7 @@ export function DeroulePhase({
   phaseMechantEnCours = false,
   partieFinie = false,
   questionAuJoueur = false,
+  tempsQuestion,
   carteScene,
   dosRencontre,
   nomFr,
@@ -134,6 +143,7 @@ export function DeroulePhase({
   onActivite,
   onTerminer,
   onDefaiteVue,
+  onEtapeAffichee,
 }: {
   etapes: EtapeDeroule[]
   /**
@@ -146,7 +156,7 @@ export function DeroulePhase({
    *                les vraies cartes qu'on regarde. Le mode « Sur la table ».
    *
    * ⚠ LA MECANIQUE N'EST PAS DUPLIQUEE, ET C'EST LE POINT. Remise a zero entre
-   * deux phases, avance auto, defilement d'Echap, bilan de fin, coup fatal,
+   * deux phases, avance auto, bilan de fin, coup fatal,
    * filet anti-blocage : tout cela a ete mesure et corrige en partie reelle a
    * de multiples reprises (voir les commentaires de ce fichier). Un second
    * composant qui refarait « la meme chose en plus joli » aurait refait les
@@ -224,6 +234,12 @@ export function DeroulePhase({
    * joueur qui attend le moteur.
    */
   questionAuJoueur?: boolean
+  /**
+   * Le temps de la question en cours, d'apres la phase du moteur
+   * (`tempsDeLaQuestion`) : la frise s'y cale quand l'etape correspondante
+   * n'existe pas encore (l'attaque qu'on te demande de defendre).
+   */
+  tempsQuestion?: TempsPhase
   /**
    * LES CARTES DE LA SCENE (board.tsx : `carteScene`).
    *
@@ -389,11 +405,17 @@ export function DeroulePhase({
    * d'agir (mesure en jeu, 07/09/2026 : clics a 60 s et 120 s, filet joue a
    * 151 s).
    *
-   * Appele aussi par l'avance auto et par le defilement d'Echap, qui passent
+   * Appele aussi par l'avance auto, qui passe
    * par la meme fonction. C'est sans consequence : ces deux-la acquittent des
    * que le cartouche est a jour, donc le filet se desarme aussitot apres.
    */
   onActivite?: () => void
+  /**
+   * L'etape que le cartouche montre (sa `cle`), pour que la table se cale sur
+   * le recit (`table-calee.ts`, 04/10/2026). `undefined` quand il n'en montre
+   * aucune.
+   */
+  onEtapeAffichee?: (cle: string | undefined) => void
   /** Appele une fois la derniere etape validee. */
   onTerminer: () => void
   /**
@@ -439,14 +461,6 @@ export function DeroulePhase({
   // motif a deja vecu dans ce fichier (enchainement des etapes techniques,
   // retire avec elles) : il revient pour la meme raison.
   const [suspendu, setSuspendu] = useState(false)
-  // Vrai apres Echap (« Tout derouler ») : les etapes defilent sans delai de
-  // lecture, jusqu'au bilan, qui attend un vrai clic. C'est le CARTOUCHE qui
-  // defile, par la meme fonction que « Suivant » : le moteur suit, une trame
-  // a la fois, il ne precede jamais. Avant, Echap relachait le moteur pour
-  // tout le reste de la phase (`passerToutLaPhase`, `phaseSautee`) et le
-  // cartouche restait sur son etape pendant que le moteur filait : le joueur
-  // n'avait plus aucune autorite sur le rythme. Un « Precedent » y met fin.
-  const [defilement, setDefilement] = useState(false)
   // La derniere etape que le joueur a VALIDEE, et l'ETAT dans lequel il l'a
   // validee. Les deux comptent, et c'est tout le sujet de la reprise : une
   // activation s'annonce d'abord (`etat: 'annonce'`) puis se resout, et le
@@ -460,6 +474,10 @@ export function DeroulePhase({
   // 262 en deux secondes — deux activations de sbires, la distribution et la
   // revelation resolues sans qu'aucune etape n'ait ete validee.
   const [validee, setValidee] = useState<{ cle: string; etat?: EtapeDeroule['etat'] }>()
+  // LA RELECTURE d'un onglet passe (decision du 03/10/2026) : lecture seule,
+  // « Revenir à l'étape en cours ». `cle` designe le coup dont on lit le
+  // detail quand l'onglet en compte plusieurs. Rien ne part au moteur.
+  const [relecture, setRelecture] = useState<{ temps: CleOnglet; cle?: string }>()
 
   // La derniere trame pour laquelle un accuse de reception est parti. C'est LA
   // garde contre la rafale d'accuses : l'etat du cartouche se recalcule
@@ -545,22 +563,27 @@ export function DeroulePhase({
     mondeDeLaPartiePrecedente.current = false
   }
 
-  const cleDeLaPhase = phaseRacontee.current
+  const etapesDeCettePartie = mondeDeLaPartiePrecedente.current ? [] : etapes
 
-  // Le dépliant de la règle sous l'étape : un choix qu'on ne fait qu'une
-  // fois (voir lireRegleDepliee dans moteur.ts). Lu une seule fois a l'etat
-  // initial, PAS reinitialise a chaque nouvelle phase (contrairement a
-  // `index`, `termine`, etc. ci-dessous) : il doit rester replie sur toutes
-  // les etapes et toutes les parties, jusqu'a ce que le joueur le replie.
-  const [regleDepliee, setRegleDepliee] = useState(() => lireRegleDepliee())
-
-  const basculerRegle = () => {
-    setRegleDepliee((avant) => {
-      const apres = !avant
-      ecrireRegleDepliee(apres)
-      return apres
-    })
+  // UN UNDO, lui, ramene le monde EN ARRIERE : un round plus bas, ou le meme
+  // round mais sans plus aucun fait a raconter et hors phase du mechant. La
+  // fin ORDINAIRE d'une phase, elle, a toujours un round de plus (le moteur
+  // l'incremente dans la meme foulee). Sans cette garde, la memoire gardait la
+  // phase annulee et le bilan la remontrait en plein tour du joueur
+  // (signalement 42). La sentinelle -1 force la remise a zero plus bas ; la
+  // phase suivante rouvre normalement, puisqu'elle differe de toute identite.
+  if (
+    memoireEtapes.current.length > 0 &&
+    ((identitePhase !== undefined &&
+      phaseRacontee.current !== undefined &&
+      identitePhase < phaseRacontee.current) ||
+      (identitePhase === phaseRacontee.current && !phaseMechantEnCours && etapesDeCettePartie.length === 0))
+  ) {
+    memoireEtapes.current = []
+    phaseRacontee.current = -1
   }
+
+  const cleDeLaPhase = phaseRacontee.current
 
   // Une nouvelle phase repart de sa premiere etape, et RIEN D'AUTRE ne remet
   // le cartouche a zero. La remise a zero suivait auparavant le contenu de la
@@ -587,8 +610,8 @@ export function DeroulePhase({
     setTermine(false)
     setEnAttente(false)
     setSuspendu(false)
-    setDefilement(false)
     setValidee(undefined)
+    setRelecture(undefined)
     derniereTrameAcquittee.current = undefined
     memoireEtapes.current = []
     // `identitePartie` autant que la phase : deux parties peuvent s'arreter et
@@ -608,7 +631,6 @@ export function DeroulePhase({
   //
   // La memoire est ecrite pendant le rendu, comme `avancerRef` plus bas : elle
   // ne doit provoquer aucun rendu, elle suit celui qui a lieu.
-  const etapesDeCettePartie = mondeDeLaPartiePrecedente.current ? [] : etapes
   if (identitePhase === cleDeLaPhase && etapesDeCettePartie.length > 0) {
     memoireEtapes.current = etapesDeCettePartie
   }
@@ -636,9 +658,11 @@ export function DeroulePhase({
   // `arreterSurDefaite` vient EN DERNIER, et l'ordre tranche la question : un
   // heros tombe coupe le deroule a son etape, bilan compris. Le bilan de fin de
   // phase ne s'affiche donc jamais derriere une defaite.
+  // Les TEMPS VIDES ont leur etape courte (« Aucune menace posée »), avec son
+  // « Suivant » (decision du 03/10/2026) : `avecTempsVides`, frise-phase.ts.
   const etapesConnues = phaseRaconteeEnCours
-    ? etapesDeLaPhase
-    : avecBilan(etapesDeLaPhase, pvMaxParNom)
+    ? avecTempsVides(etapesDeLaPhase, false)
+    : avecBilan(avecTempsVides(etapesDeLaPhase, true), pvMaxParNom)
   const etapesAffichees = arreterSurDefaite(etapesConnues, herosLocauxIds)
   // La coupe a-t-elle vraiment emporte quelque chose ? C'est ce qui distingue
   // « la liste a change d'ordre » de « un heros vient de tomber », et le repli
@@ -687,6 +711,12 @@ export function DeroulePhase({
           : 0
 
   const etape = etapesAffichees[index]
+  const cleAffichee = etape?.cle
+  useEffect(() => {
+    onEtapeAffichee?.(cleAffichee)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- board.tsx passe un
+    // setter d'etat, stable ; seule la cle decide.
+  }, [cleAffichee])
 
   // EST-CE NOTRE HEROS QUI EST TOMBE ? La chute d'un autre joueur se DIT (le
   // crane et « X est vaincu » restent), mais elle n'arrete rien ici : pas de
@@ -850,7 +880,6 @@ export function DeroulePhase({
     // au bouton « Suivant », comme apres tout « Precedent ».
     setEnAttente(false)
     setSuspendu(true)
-    setDefilement(false)
     // Relire, c'est n'etre plus a jour : le moteur doit attendre de nouveau
     // qu'on revienne au bout. Sans cet oubli, « Precedent » relachait le
     // moteur pendant que le joueur relisait.
@@ -858,15 +887,9 @@ export function DeroulePhase({
     setCleCourante(etapesAffichees[index - 1]?.cle)
   }
 
-  // Echap : tout derouler. Une intention d'aller de l'avant, qui leve donc la
-  // suspension d'un « Precedent » anterieur.
-  const derouler = () => {
-    setSuspendu(false)
-    setDefilement(true)
-  }
 
   // La version la plus recente de `avancer`, pour l'horloge du cartouche
-  // (plus bas : avance auto et defilement d'Echap). `avancer` est recreee a
+  // (plus bas : avance auto). `avancer` est recreee a
   // chaque rendu et lit `index`,
   // `etapesAffichees` et `phaseRaconteeEnCours` du rendu courant : un minuteur
   // qui la capturerait a l'armement jouerait, a l'echeance, sur un etat vieux
@@ -1028,8 +1051,7 @@ export function DeroulePhase({
     const auClavier = (evenement: KeyboardEvent) => {
       // Le cartouche est replie devant une question du moteur : il n'a plus de
       // bouton, il n'a donc plus de touche non plus. Entree appartient a la
-      // question, et Echap ne doit pas demander de derouler une phase que le
-      // moteur ne fait pas avancer tant qu'on ne lui a pas repondu.
+      // question.
       if (questionAuJoueur) return
       // On ecrit peut-etre ailleurs : le tchat est a portee de main pendant la
       // phase, et un espace tape dedans ne doit pas la faire avancer.
@@ -1053,12 +1075,14 @@ export function DeroulePhase({
       }
       if (evenement.key === 'Enter' || evenement.key === ' ') {
         evenement.preventDefault()
+        // En relecture, Entree ramene a l'etape en cours, et ne valide RIEN :
+        // l'etape en cours n'est meme pas a l'ecran.
+        if (relecture) {
+          setRelecture(undefined)
+          return
+        }
         avancer()
         return
-      }
-      if (evenement.key === 'Escape') {
-        evenement.preventDefault()
-        derouler()
       }
     }
     document.addEventListener('keydown', auClavier)
@@ -1145,21 +1169,19 @@ export function DeroulePhase({
   const etapeAttendUnClic = etape?.temps === 'bilan' || Boolean(etape?.defaite)
 
   // Le delai avant que l'etape courante ne se valide seule, ou `undefined`
-  // quand elle attend un clic. Le defilement d'Echap l'emporte sur l'avance
-  // auto : il ne lit pas, il fait voir passer.
+  // quand elle attend un clic.
   // ⚠ UNE ETAPE QUI VISE UN AUTRE JOUEUR PASSE TOUTE SEULE, le temps de la
   // lire. Voir `viseUnAutreJoueur` : elle se montre, mais elle ne demande pas
-  // NOTRE clic. Le delai est celui du defilement, assez long pour voir le coup.
-  const delaiAvant = defilement
-    ? DELAI_DEFILEMENT_MS
-    : surTable && viseUnAutreJoueur
+  // NOTRE clic, le temps de voir le coup.
+  const delaiAvant =
+    surTable && viseUnAutreJoueur
       ? DELAI_ETAPE_D_UN_AUTRE_MS
       : avanceAuto
         ? delaiAvanceMs
         : undefined
 
   // L'HORLOGE du cartouche, la seule de toute la phase. Elle sert a l'avance
-  // auto (delai de lecture) comme au defilement d'Echap (pas de lecture).
+  // auto (delai de lecture).
   //
   // Un minuteur par etape affichee, nettoye au demontage et a chaque
   // changement d'etape (c'est `etape?.cle` dans les dependances qui le
@@ -1169,7 +1191,7 @@ export function DeroulePhase({
   // se superposeraient et une etape serait sautee.
   //
   // Aucun minuteur :
-  //  - sans avance auto ni defilement, evidemment ;
+  //  - sans avance auto, evidemment ;
   //  - hors ecran (`visible`) : rien a avancer ;
   //  - `suspendu` : le joueur relit, apres un « Precedent » ;
   //  - `enAttente` : le cartouche est au bout de ce qu'il sait et attend que
@@ -1238,12 +1260,16 @@ export function DeroulePhase({
   // le recit, et l'assombrir reviendrait a eteindre ce qu'on demande de
   // regarder. Constate a l'ecran des la premiere capture.
   useDerouleScene(etape, visible && !surTable)
+  // Les cartes en cause s'allument sur la table, sans mouvement (rapport
+  // Yarro n46) : le recit est dans le cartouche, le regard trouve ses cartes.
+  useSurbrillanceEtape(visible ? cartesConcernees(etape) : [])
 
   // LE MOMENT OU L'ON PEUT AGIR change d'aspect : tant que la question du
   // moteur est logee dans la scene, le body porte `deroule-question` et
-  // board.css sort la main du voile, eclairee, ses cartes jouables en
-  // surbrillance. Demande de l'utilisateur : « si on peut defendre ou jouer
-  // une carte, j'ai envie que ce soit bien visible ».
+  // board.css sort la main du voile, ses cartes jouables en surbrillance.
+  // Demande de l'utilisateur : « si on peut defendre ou jouer une carte, j'ai
+  // envie que ce soit bien visible ». La lueur rouge qui l'accompagnait a ete
+  // retiree le 04/10/2026 (halo-main.test.ts).
   const questionLogee = visible && questionAuJoueur && question !== undefined
   useEffect(() => {
     if (!questionLogee) return
@@ -1305,6 +1331,28 @@ export function DeroulePhase({
       ? { left: `${place.x}px`, top: `${place.y}px` }
       : { visibility: 'hidden' }
     : undefined
+
+  // Deplacement a la poignee du bandeau rouge, sur le cartouche de QUESTION
+  // seulement (signalement Yarro, 30/09/2026 : la fenetre principale ne
+  // bougeait pas, seule celle des cibles hors table). `translate` et non
+  // `transform` : `.deroule-phase` se centre deja par `transform:
+  // translateX(-50%)`, que la propriete `translate` compose sans l'ecraser.
+  // Le cartouche des ETAPES garde sa place d'une etape a la suivante (signalement
+  // Yarro, 01/10/2026 : « toujours pas moyen de bouger la fenetre des etapes
+  // du mechant ») ; seule la question se repose a chaque etape.
+  const { decalage: decalageQuestion, gestes: gestesQuestion } = useGlisserPanneau(
+    questionAuJoueur ? `question|${etape?.cle ?? 'sans-etape'}` : 'etapes'
+  )
+  const styleDeplace: CSSProperties | undefined =
+    decalageQuestion.dx !== 0 || decalageQuestion.dy !== 0
+      ? { ...styleCartouche, translate: `${decalageQuestion.dx}px ${decalageQuestion.dy}px` }
+      : styleCartouche
+  const gestesDeplacer = {
+    onPointerDown: gestesQuestion.onPointerDown,
+    onPointerMove: gestesQuestion.onPointerMove,
+    onPointerUp: gestesQuestion.onPointerUp,
+    onPointerCancel: gestesQuestion.onPointerCancel,
+  }
 
   /**
    * ⚠ SUR LA TABLE, LE CARTOUCHE VA DANS LE CADRE DU PLATEAU, par un portail.
@@ -1377,13 +1425,11 @@ export function DeroulePhase({
       <section
         ref={setElCartouche}
         className={classeCartouche('est-question')}
-        style={styleCartouche}
+        style={styleDeplace}
         role="dialog"
         aria-label={t('Phase du méchant')}
       >
-        <p className="deroule-a-toi" aria-live="assertive">
-          {t('À toi de jouer')}
-        </p>
+        <div className="deroule-poignee poignee-glisser" {...gestesDeplacer} aria-hidden="true" />
         <div className="deroule-question-scene">{question}</div>
       </section>
     )
@@ -1394,47 +1440,8 @@ export function DeroulePhase({
   // L'etape TELLE QU'ON LA LIT : noms francais quand le plateau les connait.
   // `etape` reste la source pour ce qui se cherche par nom anglais (les PV
   // maximum, indexes par le nom du monde).
-  const enFrancais = (id: number | undefined, nom: string | undefined) =>
-    (id !== undefined ? nomFr?.(id) : undefined) || nom
-  const etapeLue: EtapeDeroule = {
-    ...etape,
-    // ⚠ SUR UNE REVELATION, L'AUTEUR N'EST PAS `carteId`. `carteId` designe la
-    // carte REVELEE ; l'auteur, lui, est le HEROS qui la revele, et il n'a pas
-    // d'identifiant dans l'etape. Traduire l'auteur par `carteId` remplacait
-    // donc le nom du heros par celui de la carte, et le cartouche annoncait
-    // « Maitres du Chaos revele Maitres du Chaos ».
-    //
-    // Signale DEUX FOIS par l'utilisateur (14/09/2026), et introuvable dans les
-    // faits du moteur : une capture d'autoplay montre bien
-    // `joueur_nom = 'Jessica Jones'`. Le defaut n'etait pas dans la donnee mais
-    // ICI, dans la traduction. La ligne voisine (`cibleNom`) portait deja le
-    // meme cas particulier, pour la meme raison, depuis le 09/09/2026.
-    auteurNom: enFrancais(
-      etape.titre === 'revelation' ? undefined : etape.carteId,
-      etape.auteurNom
-    ),
-    // Sur une vraie revelation, la « cible » est la carte revelee elle-meme
-    // (carteId). Mais une ATTAQUE rangee sous Revelation (le vilain qu'une
-    // carte fait frapper une seconde fois) a une vraie cible : prendre
-    // carteId ici ecrivait « Klaw attaque Klaw ». On decide par le TITRE, pas
-    // par le temps. Signale et teste le 09/09/2026.
-    cibleNom: enFrancais(etape.titre === 'revelation' ? etape.carteId : etape.cibleId, etape.cibleNom),
-    boosts: etape.boosts.map((boost) => ({ ...boost, nom: enFrancais(boost.cibleId, boost.nom) ?? boost.nom })),
-    effets: etape.effets?.map((effet) =>
-      effet.genre === 'entree'
-        ? { ...effet, carte: enFrancais(effet.carte_id, effet.carte) ?? effet.carte }
-        : { ...effet, cible: enFrancais(effet.cible_id, effet.cible) ?? effet.cible }
-    ),
-    // ⚠ LE BILAN AUSSI, ET IL A ETE OUBLIE JUSQU'AU 15/09/2026. Mesure en
-    // partie francaise : « The Break-In! a gagne 1 menace » sous un cartouche
-    // qui ecrivait « L'EFFRACTION ! » deux lignes plus haut. Le bilan est
-    // construit sur les etapes BRUTES (`avecBilan`), il ne passait donc par
-    // aucune traduction.
-    bilan: etape.bilan?.map((ligne) => ({
-      ...ligne,
-      cibleNom: enFrancais(ligne.cibleId, ligne.cibleNom) ?? ligne.cibleNom,
-    })),
-  }
+  const enLangue = (e: EtapeDeroule): EtapeDeroule => etapeEnLangue(e, nomFr)
+  const etapeLue = enLangue(etape)
 
   // Position du temps COURANT dans la chronologie : elle seule dit qui est
   // deja passe. Calculee une fois pour les cinq temps, pas a chaque `<li>`.
@@ -1443,8 +1450,15 @@ export function DeroulePhase({
   // les autres : sur la derniere etape, les cinq temps s'affichent alors tous
   // valides, ce qui est exactement ce qui vient de se passer. Sans cela, le
   // `-1` rendu par findIndex n'en aurait marque aucun.
-  const trouve = TEMPS.findIndex((item) => item.cle === etape.temps)
-  const positionCourante = trouve === -1 ? TEMPS.length : trouve
+  // Pendant une question, la frise suit la phase REELLE du moteur quand elle a
+  // pris de l'avance sur la derniere etape connue (voir `tempsDeLaQuestion`).
+  const positionDe = (cle: TempsPhase | undefined) => ONGLETS.findIndex((item) => item.cle === cle)
+  const tempsAffiche =
+    questionAuJoueur && tempsQuestion !== undefined && positionDe(tempsQuestion) > positionDe(etape.temps)
+      ? tempsQuestion
+      : etape.temps
+  const trouve = positionDe(tempsAffiche)
+  const positionCourante = trouve === -1 ? ONGLETS.length : trouve
 
   // « 1 sur 3 » : combien d'etapes ce temps compte, et ou l'on en est.
   // `undefined` quand il n'en compte qu'une, et rien ne s'affiche alors.
@@ -1465,43 +1479,54 @@ export function DeroulePhase({
     { ...etapeLue, plafond: plafondConnu },
     etape.cibleNom ? pvMaxParNom?.get(etape.cibleNom) : undefined
   )
-  const regle = regleEtape(etapeLue)
   const annulee = texteActivationAnnulee(etapeLue)
   const cause = texteCauseActivation(etapeLue)
 
-  // La chronologie des cinq temps : la seule chose que le cartouche garde
-  // quand il se replie devant une question du moteur.
+  // LA FRISE DES SIX ONGLETS (decisions du 03/10/2026) : la seule chose que le
+  // cartouche garde quand il se replie devant une question du moteur.
+  //
+  // Un onglet se juge par rapport au temps COURANT, celui de l'etape affichee :
+  //  - avant lui : PASSE, rouge, avec son resultat court (« 3 dégâts · +1
+  //    menace », « aucun ») ; « vide » quand il n'a eu que son etape vide ;
+  //  - lui : en cours, rouge souligne ;
+  //  - apres lui : A VENIR, gris, jamais vide (constat en partie : « Sbires
+  //    (aucun) » affiche pendant que le moteur demandait dans quel ordre
+  //    activer deux sbires).
+  // Sur le bilan, c'est l'onglet Bilan qui est en cours, et tous les autres
+  // sont passes.
   const chronologie = (
     <ol className="deroule-temps">
-      {TEMPS.map((temps, position) => {
-        // Un temps se juge par rapport au temps COURANT, celui de l'etape
-        // affichee, et par rapport a lui seul :
-        //  - avant lui et sans etape : VIDE (barre, « aucun »). Il n'a coute
-        //    aucun clic (etapesDeroule ne cree pas de placeholder pour lui),
-        //    le joueur doit seulement voir qu'il a ete saute, et pourquoi ;
-        //  - avant lui avec des etapes : passe, coche ;
-        //  - lui : mis en avant ;
-        //  - apres lui : A VENIR, jamais vide, quel que soit le nombre
-        //    d'etapes connues. Constate en partie : le moteur demandait dans
-        //    quel ordre activer DEUX sbires, dont les faits n'existaient donc
-        //    pas encore, et la chronologie affichait « Sbires (aucun) »
-        //    barre. La marque etait prematuree et disait le contraire de la
-        //    verite.
-        // Sur le bilan, tous les temps sont passes (`positionCourante` vaut
-        // alors TEMPS.length) : ceux sans etape sont vides, c'est exact.
-        const estCourant = temps.cle === etape.temps
+      {ONGLETS.map((onglet, position) => {
+        const estCourant = onglet.cle === tempsAffiche
         const estAvant = !estCourant && position < positionCourante
-        const aDesEtapes = etapesAffichees.some((e) => e.temps === temps.cle)
+        const aDesEtapes = etapesAffichees.some((e) => e.temps === onglet.cle && e.titre !== 'vide')
         const estVide = estAvant && !aDesEtapes
         const estPasse = estAvant && aDesEtapes
         const classe = estVide ? 'est-vide' : estCourant ? 'est-courant' : estPasse ? 'est-passe' : ''
         return (
-          <li key={temps.cle} className={classe}>
-            {t(temps.libelle)}
-            {/* Motif deja utilise pour « Fin du tour » (board.tsx) : un
-                symbole colle au texte, pas une traduction a part. */}
-            {estPasse ? ' ✓' : null}
-            {estVide ? <span className="deroule-temps-vide-detail"> ({t('Aucun')})</span> : null}
+          <li
+            key={onglet.cle}
+            className={`${classe}${relecture?.temps === onglet.cle ? ' est-relu' : ''}`}
+          >
+            {/* Un onglet PASSE se relit d'un clic (pas pendant une question :
+                elle doit rester sous les yeux). */}
+            {estAvant && !questionAuJoueur ? (
+              <button
+                type="button"
+                className="deroule-onglet-bouton"
+                onClick={() => setRelecture({ temps: onglet.cle })}
+              >
+                <span className="deroule-onglet-nom">{nomDOnglet(t(onglet.libelle))}</span>
+                <small className="deroule-onglet-resume">{resumeOnglet(etapesAffichees, onglet.cle)}</small>
+              </button>
+            ) : (
+              <>
+                <span className="deroule-onglet-nom">{nomDOnglet(t(onglet.libelle))}</span>
+                {estAvant ? (
+                  <small className="deroule-onglet-resume">{resumeOnglet(etapesAffichees, onglet.cle)}</small>
+                ) : null}
+              </>
+            )}
           </li>
         )
       })}
@@ -1773,15 +1798,15 @@ export function DeroulePhase({
       <section
         ref={setElCartouche}
         className={classeCartouche('est-question')}
-        style={styleCartouche}
+        style={styleDeplace}
         role="dialog"
         aria-label={t('Phase du méchant')}
       >
-        {/* Le bandeau rouge : impossible a confondre avec une etape a lire. */}
-        <p className="deroule-a-toi" aria-live="assertive">
-          {t('À toi de jouer')}
-        </p>
-        <div className="deroule-chrono">{chronologie}</div>
+        {/* Plus de bandeau « À toi de jouer » (retire le 03/10/2026, demande de
+            l'utilisateur) : la frise sert de poignee pour deplacer la fenetre. */}
+        <div className="deroule-chrono poignee-glisser" {...gestesDeplacer}>
+          {chronologie}
+        </div>
         {loupe}
         {cartesMontrees}
         {/* L'intention reste dite au-dessus de la question : « Ultron va
@@ -1823,12 +1848,14 @@ export function DeroulePhase({
         <section
           ref={setElCartouche}
           className={classeCartouche('est-replie')}
-          style={styleCartouche}
+          style={styleDeplace}
           role="dialog"
           aria-label={t('Phase du méchant')}
         >
           {loupe}
-          <div className="deroule-chrono">{chronologie}</div>
+          <div className="deroule-chrono poignee-glisser" {...gestesDeplacer}>
+            {chronologie}
+          </div>
           {/* L'INTENTION, et elle seule, reste dite pendant la question. C'est
               le second temps de la decision 7 : « Klaw va attaquer Colossus,
               tu peux defendre ou repondre ». Sur toute autre etape, le
@@ -1901,6 +1928,47 @@ export function DeroulePhase({
 
   // Le bandeau d'ouverture joue encore : la table se tait. Voir la prop.
   if (surTable && attendreBandeau) return null
+
+  // LA RELECTURE D'UN ONGLET PASSE, en lecture seule (03/10/2026).
+  if (relecture) {
+    const duTemps = etapesAffichees.filter((e) => e.temps === relecture.temps)
+    const choisie =
+      (relecture.cle !== undefined ? duTemps.find((e) => e.cle === relecture.cle) : undefined) ??
+      (duTemps.length === 1 ? duTemps[0] : undefined)
+    const lue = choisie ? enLangue(choisie) : undefined
+    return enveloppe(
+      <section
+        ref={setElCartouche}
+        className={classeCartouche('est-relecture')}
+        style={styleDeplace}
+        role="dialog"
+        aria-label={t('Phase du méchant')}
+      >
+        <div className="deroule-chrono poignee-glisser" {...gestesDeplacer}>
+          {chronologie}
+        </div>
+        <p className="deroule-relecture-mention">{t('Relecture')}</p>
+        {lue ? (
+          <DetailCoup etape={lue} />
+        ) : (
+          <ListeDesCoups
+            coups={duTemps.map(enLangue)}
+            choisir={(cle) => setRelecture({ temps: relecture.temps, cle })}
+          />
+        )}
+        <div className="deroule-boutons">
+          {lue && duTemps.length > 1 ? (
+            <button type="button" className="bh-bouton" onClick={() => setRelecture({ temps: relecture.temps })}>
+              {t('Tous les coups')}
+            </button>
+          ) : null}
+          <button type="button" className="bh-bouton deroule-suivant" onClick={() => setRelecture(undefined)}>
+            {t('Revenir à l’étape en cours')}
+          </button>
+        </div>
+      </section>
+    )
+  }
 
   if (surTable && etape.temps !== 'bilan' && (!defaiteLocale || fatalAMontrerSurTable)) {
     return enveloppe(
@@ -2004,11 +2072,11 @@ export function DeroulePhase({
       <section
         ref={setElCartouche}
         className={classeCartouche('')}
-        style={styleCartouche}
+        style={styleDeplace}
         role="dialog"
         aria-label={t('Phase du méchant')}
       >
-        <div className="deroule-chrono">
+        <div className="deroule-chrono poignee-glisser" {...gestesDeplacer}>
           {chronologie}
           {rang ? (
             <span className="deroule-rang">
@@ -2026,6 +2094,8 @@ export function DeroulePhase({
         {/* Le titre dit le fait, et le compteur de la cible se lit a sa
             droite. Un titre generique suivi de la meme chose en dessous
             faisait dire une seule chose a trois lignes. */}
+        {/* « Renfort de X » (03/10/2026) : cette carte en est une AUTRE. */}
+        {surtitreEtape(etapeLue) ? <p className="deroule-surtitre">{surtitreEtape(etapeLue)}</p> : null}
         <div className="deroule-entete">
           {/* Le bilan porte le meme titre que les autres etapes, en capitales :
               il annonce la fin de la phase, pas un coup de plus. */}
@@ -2042,6 +2112,10 @@ export function DeroulePhase({
           ) : null}
         </div>
         {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
+        {/* L'effet ★ des boosts DEJA retournes, une ligne chacun (03/10/2026). */}
+        {lignesEtoileBoost({ ...etapeLue, boosts: etapeLue.boosts.slice(0, boostsMontres) }).map((ligne) => (
+          <p key={ligne} className="deroule-etoile">{ligne}</p>
+        ))}
         {/* L'activation annoncee qui n'a pas lieu. Sans cette ligne, l'etape
             resterait sur « Klaw va attaquer Colossus » et le joueur
             attendrait un coup qui ne vient pas. */}
@@ -2059,6 +2133,17 @@ export function DeroulePhase({
             ))}
           </ul>
         ) : null}
+        {/* Ce que l'effet de la carte a declenche (le vilain manigance...),
+            range ici plutot qu'en etapes a part (rapport Yarro n46). */}
+        {etapeLue.consequences && etapeLue.consequences.length > 0 ? (
+          <ul className="deroule-effets deroule-consequences">
+            {etapeLue.consequences.map((consequence) => (
+              <li key={consequence.cle}>{texteConsequence(consequence)}</li>
+            ))}
+          </ul>
+        ) : null}
+        {/* Un Renfort suit cette carte : la suite est une AUTRE carte. */}
+        {texteSuiteRenfort(etapeLue) ? <p className="deroule-suite-renfort">{texteSuiteRenfort(etapeLue)}</p> : null}
         {/* La chute du heros. Elle ne ressemble a aucune autre ligne du
             cartouche, et c'est voulu : c'est le moment le plus important d'une
             partie, il ne doit pas defiler comme les autres. Le crane est
@@ -2088,23 +2173,6 @@ export function DeroulePhase({
               ))
             )}
           </ul>
-        ) : null}
-        {regle ? (
-          <div className="deroule-regle">
-            {/* Vrai bouton, pas un <span> cliquable : atteignable au Tab et a
-                Entree/Espace nativement, et `aria-expanded` annonce l'etat au
-                lecteur d'ecran. Meme motif que `.recap-mechant-repli`
-                (RecapPhaseMechant.tsx), le seul autre dépliant du plateau. */}
-            <button
-              type="button"
-              className="deroule-regle-bouton"
-              aria-expanded={regleDepliee}
-              onClick={basculerRegle}
-            >
-              <span aria-hidden="true">{regleDepliee ? '▾' : '▸'}</span> {t('la règle')}
-            </button>
-            {regleDepliee ? <p className="deroule-regle-texte">{regle}</p> : null}
-          </div>
         ) : null}
         {mentionTempsParDecision}
         <div className="deroule-boutons">

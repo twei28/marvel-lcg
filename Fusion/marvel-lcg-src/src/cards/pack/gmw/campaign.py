@@ -27,6 +27,11 @@ CHASSEUR = '16183'
 SCENARIOS = ['Brotherhood of Badoon', 'Infiltrate the Museum', 'Escape the Museum',
              'Nebula', 'Ronan the Accuser']
 
+# Les memes, par ID de scenario de la campagne (`data/campagnes/gmw.json`) : c'est
+# l'estampille que le panneau de recompenses attend sur le carnet sortant.
+IDS_SCENARIOS = ['brotherhood_of_badoon', 'infiltrate_the_museum', 'escape_the_museum',
+                 'nebula', 'ronan']
+
 # Palier de marques « Headhunter Defeated? » -> carte ajoutee au deck rencontre.
 # Le livret les CUMULE : a 3 marques, les trois premieres sont la.
 RENFORTS = [(1, '16184'),   # On the Hunt (traitrise)
@@ -292,7 +297,8 @@ def CampaignSetup(level: int) -> 'List[Ability]':
         # une depense, elle se fait a l'ecran avant le lancement, le moteur ne
         # sachant pas debiter le carnet en cours de partie.
         abilities.append(AbilityFactoryCampaign.ExpertCampaignSetPlayersHPToTheirRemainingHP())
-    abilities.append(WriteCampaignLogAtGameOver(lambda effect, message: CollectGMW(level, effect)))
+    abilities.append(WriteCampaignLogAtGameOver(lambda effect, message: CollectGMW(level, effect),
+                                                scenario_id=IDS_SCENARIOS[level - 1]))
     return abilities
 
 
@@ -322,7 +328,7 @@ def _unites_gagnees(level: int, effect: 'Effect') -> int:
     elif level == 2:
         if len(CartesDeLaCollection(effect)) <= 1:
             total += 1
-        if all(s.GetThreatInternal() == 0 for s in Worlds.GetAllMainSchemes(effect.world)):
+        if all(s.threat == 0 for s in Worlds.GetAllMainSchemes(effect.world)):
             total += 1
     elif level == 3:
         total += len(_artefacts_en_pile_victoire(effect)) // 2

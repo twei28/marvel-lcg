@@ -430,6 +430,58 @@ EPREUVES += [
         "avant": ["Puzzle.PutIntoPlay('16183')"],
         "carnet_attendu": {"cles": {"Player 1 Unspent Units": "6"}},
     },
+    # Signalement n°50 (Phocea, 04/10/2026) : les unites des scenarios 2 et 3
+    # n'arrivaient JAMAIS au Marche. Le moteur estampillait son carnet sortant
+    # avec le set_name de la manigance principale (« collector_1 », « collector_2 »)
+    # et le panneau de recompenses n'utilise le releve du moteur que si
+    # l'estampille egale l'id du scenario (`preremplissage.ts`) : sinon il retombe
+    # sur le carnet ANCIEN, et les gains du scenario sont perdus en silence.
+    {
+        "nom": "gmw — l'estampille du carnet sortant est l'id du scenario : brotherhood_of_badoon",
+        "scenario": "brotherhood_of_badoon",
+        "heros": "captain_america",
+        "carnet_attendu": {"scenario": "brotherhood_of_badoon"},
+    },
+    {
+        "nom": "gmw — l'estampille du carnet sortant est l'id du scenario : infiltrate_the_museum",
+        "scenario": "infiltrate_the_museum",
+        "heros": "captain_america",
+        "carnet_attendu": {"scenario": "infiltrate_the_museum"},
+    },
+    {
+        "nom": "gmw — l'estampille du carnet sortant est l'id du scenario : escape_the_museum",
+        "scenario": "escape_the_museum",
+        "heros": "captain_america",
+        "carnet_attendu": {"scenario": "escape_the_museum"},
+    },
+    {
+        "nom": "gmw — l'estampille du carnet sortant est l'id du scenario : nebula",
+        "scenario": "nebula",
+        "heros": "captain_america",
+        "carnet_attendu": {"scenario": "nebula"},
+    },
+    {
+        "nom": "gmw — l'estampille du carnet sortant est l'id du scenario : ronan",
+        "scenario": "ronan",
+        "heros": "captain_america",
+        "carnet_attendu": {"scenario": "ronan"},
+    },
+    {
+        "nom": "gmw — scenario 2 : les unites S'AJOUTENT (1 de base + 1 car la Collection n'a retenu qu'une carte au plus)",
+        "scenario": "infiltrate_the_museum",
+        "heros": "captain_america",
+        "carnet": {"Player 1 Unspent Units": "4"},
+        # Livret p.10 : 1 unite, +1 si La Collection compte 1 carte ou moins, +1 si
+        # les manigances principales n'ont plus de menace (ici elles en portent : 0).
+        "carnet_attendu": {"cles": {"Player 1 Unspent Units": "6"}},
+    },
+    {
+        "nom": "gmw — scenario 3 : les unites S'AJOUTENT (1 de base, aucun artefact rapporte)",
+        "scenario": "escape_the_museum",
+        "heros": "captain_america",
+        "carnet": {"Player 1 Unspent Units": "4"},
+        "carnet_attendu": {"cles": {"Player 1 Unspent Units": "5"}},
+    },
     {
         "nom": "gmw — une carte achetee au Marche reste dans le deck au scenario suivant",
         "scenario": "brotherhood_of_badoon",

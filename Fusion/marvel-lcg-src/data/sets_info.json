@@ -456,7 +456,7 @@
   "encounters": [
    "exodus"
   ],
-  "max_id": "37035"
+  "max_id": "37038"
  },
  "38. Rogue": {
   "name": "rogue",
@@ -531,7 +531,7 @@
    "angel"
   ],
   "encounters": [],
-  "max_id": "42032"
+  "max_id": "42035"
  },
  "43. X-23": {
   "name": "x23",
@@ -603,7 +603,7 @@
   "encounters": [
    "arcade"
   ],
-  "max_id": "47034"
+  "max_id": "47037"
  },
  "48. Nightcrawler": {
   "name": "ncrawler",
@@ -625,7 +625,7 @@
   "encounters": [
    "hellfire"
   ],
-  "max_id": "49042"
+  "max_id": "49045"
  },
  "50. Agents of S.H.I.E.L.D.": {
   "name": "aos",
@@ -958,7 +958,7 @@
    "human_torch"
   ],
   "encounters": [],
-  "max_id": "ht014"
+  "max_id": "ht017"
  },
  "103. Custom (Mister Fantastic)": {
   "name": "mister_fantastic",
@@ -985,7 +985,7 @@
    "the_thing"
   ],
   "encounters": [],
-  "max_id": "th015"
+  "max_id": "th018"
  },
  "106. Custom (Totally Awesome Hulk)": {
   "name": "totally_awesome_hulk",
@@ -1301,7 +1301,7 @@
    "beast"
   ],
   "encounters": [],
-  "max_id": "bt023"
+  "max_id": "bt026"
  },
  "139. Custom (Doctor Doom)": {
   "name": "doctor_doom",
@@ -1586,5 +1586,32 @@
   "indisponible": true,
   "indisponible_note": "Set modulaire mis de cote le 13/09/2026, a la demande de l'utilisateur : il ne doit pas partir en production. Les fichiers restent en place (cartes, scripts, cas de test) pour que le harnais continue de tourner ; seul l'ecran de preparation cesse de le proposer. Pour le remettre : supprimer la cle `indisponible`."
  },
- "checksum": "18a22240734af2365fedde18672bd2b40a9e06ec14343c4a4b81e0bb74bf90fd"
+ "175. Custom (Wave)": {
+  "name": "wave",
+  "scenarios": [],
+  "heroes": [
+   "wave"
+  ],
+  "encounters": [],
+  "max_id": "65019"
+ },
+ "checksum": "9733d80d08ae84ce3766f36eab7acbab734322eb8334abec50ae737f1c1923d8",
+ "176. Custom (Red Sonja)": {
+  "name": "red_sonja",
+  "scenarios": [],
+  "heroes": [
+   "red_sonja"
+  ],
+  "encounters": [],
+  "max_id": "rs019"
+ },
+ "177. Custom (Conan)": {
+  "name": "conan",
+  "scenarios": [],
+  "heroes": [
+   "conan"
+  ],
+  "encounters": [],
+  "max_id": "cn017"
+ }
 }

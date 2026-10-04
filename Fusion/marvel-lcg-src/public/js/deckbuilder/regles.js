@@ -7,7 +7,7 @@
 //
 // Le module ne connait ni le DOM, ni `cards`, ni la langue : le catalogue
 // arrive par la fonction `carte(id)` et les libelles par `t(texte)`. Node
-// l'execute donc tel quel — voir outils/verifier-marvelcdb.mjs.
+// l'execute donc tel quel — voir tools/tests-lanceur/regles-aspect.test.mjs.
 "use strict";
 
 // « 'Pool » : l'apostrophe fait partie du nom d'aspect dans les donnees (Deadpool).
@@ -70,7 +70,25 @@ export function cartesImposees(choisies, carte) {
 const brut = (s) => s;
 
 export function estStanLee(hero) { return /stan\s*lee/i.test((hero && hero.name) || ""); }
-export function estSignature(c) { return !!c && c.class === "Hero"; }
+/** La classe qui compte pour la construction. Le catalogue porte des classes
+ *  doubles : « Hero;Aggression » (les quatre evenements signature de
+ *  Spider-Woman) et « Campaign;Basic ». Une signature reste « Hero », sinon
+ *  l'aspect l'emporte, sinon la classe neutre. Audit du 03/10/2026 : sans ce
+ *  tri, tout deck marvelcdb de Spider-Woman etait refuse a l'import. */
+export function classeDeConstruction(classe) {
+    const liste = String(classe || "").split(";").map((x) => x.trim()).filter(Boolean);
+    if (liste.length < 2) return classe;
+    if (liste.includes("Hero")) return "Hero";
+    return liste.find((x) => ASPECTS.includes(x)) || liste.find((x) => CLASSES_NEUTRES.includes(x)) || liste[0];
+}
+
+const avecClasseDeConstruction = (c) => {
+    if (!c) return c;
+    const classe = classeDeConstruction(c.class);
+    return classe === c.class ? c : Object.assign(Object.create(Object.getPrototypeOf(c)), c, { class: classe });
+};
+
+export function estSignature(c) { return !!c && classeDeConstruction(c.class) === "Hero"; }
 
 export function estTypeJouable(c) {
     return TYPES_JOUEUR.includes(String(c.type).replace(/ /g, ""))
@@ -109,7 +127,9 @@ export function maxParDeck(carte) {
  *          "aspects":         { "min": 1, "max": 1, "label": "…" },
  *          "hors_aspect":     { "max": 6, "traits": ["TECH", "SPELL"], "label": "…" },
  *          // + "types": ["Upgrade"] pour ne compter que certains types (Ares, 07/09/2026)
- *          "types_interdits": ["Ally"]
+ *          // + "compte": "titres" : `max` compte des TITRES, pas des cartes (Maria Hill)
+ *          "types_interdits": ["Ally"],
+ *          "types_interdits_aspect": ["Ally"]   // seulement les cartes D'ASPECT (Iron Patriot)
  *      }
  *
  *  La table cablee plus bas reste la pour les 112 heros officiels, qu'on ne va
@@ -153,6 +173,16 @@ export function reglesAspect(hero, t = brut) {
     if (id === "moon_knight") return { min: 0, max: 99, label: t("tous les aspects, coût max 2 (Moon Knight)") };
     return { min: 0, max: 1, label: t("un seul aspect") };
 }
+
+/** Types de cartes D'ASPECT que le heros s'interdit, les basiques restant
+ *  permis (Iron Patriot, ip001b : « your deck cannot include any aspect allies »). */
+export function typesInterditsAspect(hero) {
+    const decl = reglesDeclarees(hero);
+    const liste = decl && decl.types_interdits_aspect;
+    return Array.isArray(liste) ? liste.map(String) : [];
+}
+
+const aTrait = (carte, trait) => (carte.traits || []).some((tr) => String(tr).toUpperCase().replace(/\.$/, "") === trait);
 
 /** Types de cartes que le heros s'interdit (Fatalis : « You cannot include any
  *  additional allies in your deck »). Ses allies SIGNATURE ne sont pas
@@ -239,8 +269,21 @@ export function exemptDeLaLimiteAspect(hero, carte) {
      * pose aucune condition. Les deux orthographes du type sont celles de
      * `TYPES_JOUEUR` (le catalogue porte « PlayerSideScheme », marvelcdb
      * « Player_Side_Scheme »). */
-    if (((hero && hero.id) || "") === "cable") {
+    const id = (hero && hero.id) || "";
+    if (id === "cable") {
         return String(carte.type).replace(/[ _]/g, "") === "PlayerSideScheme";
+    }
+    /* Audit du 03/10/2026 (apres le refus du deck Maria Hill d'Aghenatak) :
+     * trois autres identites levaient la limite d'aspect sans que la regle
+     * soit ecrite. Toutes ancrees sur `hero.id`, comme Cable. */
+    // Scott Summers (33001b) : « You may include X-MEN allies from any aspect ».
+    if (id === "cyclops") return carte.type === "Ally" && aTrait(carte, "X-MEN");
+    // Kate Bishop (kb001b) : « you may include SKILL cards from any aspect ».
+    if (id === "kate_bishop") return aTrait(carte, "SKILL");
+    // Simon Williams (58001b) : « events with a printed [energy] resource icon
+    // from any aspect ». L'energie est la lettre « Y » de `desc.RES`.
+    if (id === "wonder_man") {
+        return carte.type === "Event" && String((carte.desc && carte.desc.RES) || "").toUpperCase().includes("Y");
     }
     return false;
 }
@@ -260,16 +303,22 @@ export function quotaHorsAspect(hero, t = brut) {
     if (!q) return null;
     const max = Number(q.max);
     if (!Number.isFinite(max) || max <= 0) return null;
-    const traits = (Array.isArray(q.traits) ? q.traits : []).map((x) => String(x).toUpperCase());
+    // Le catalogue ecrit « S.H.I.E.L.D » comme « S.H.I.E.L.D. » : le point final
+    // ne doit pas decider de la legalite.
+    const norme = (x) => String(x).toUpperCase().replace(/\.$/, "");
+    const traits = (Array.isArray(q.traits) ? q.traits : []).map(norme);
     // `types` (ajoute le 07/09/2026 pour Ares, « up to 5 TACTIC UPGRADES ») :
     // restreint le quota a certains TYPES de carte. Sans lui, un evenement
     // TACTIC d'aspect serait compte comme une amelioration TACTIC.
     const types = (Array.isArray(q.types) ? q.types : []).map((x) => String(x));
     return {
         max,
+        // Maria Hill (50001b) : « the maximum number of copies of 3 S.H.I.E.L.D.
+        // supports » compte des titres ; les exemplaires restent bornes par titre.
+        parTitre: q.compte === "titres",
         // Sans liste de traits ni de types, le quota porte sur N cartes hors
         // aspect QUELLES QU'ELLES SOIENT : c'est le cas degenere, pas une erreur.
-        test: (c) => (!traits.length || (c.traits || []).some((tr) => traits.includes(String(tr).toUpperCase())))
+        test: (c) => (!traits.length || (c.traits || []).some((tr) => traits.includes(norme(tr))))
             && (!types.length || types.includes(String(c.type))),
         label: q.label || `${max} ${t("cartes")} ${traits.join("/")} ${t("d’autres aspects")}`,
     };
@@ -294,6 +343,61 @@ export function choisiesDuDeck(hero, deck) {
     return m;
 }
 
+/* COPIES ET UNICITE (Rules Reference v1.8, « Copy » et « Unique Icon », audit
+ * du 03/10/2026). Une copie partage le titre ET le sous-titre : les cinq
+ * allies « Spider-Woman » de Madame Web, aux sous-titres differents, ne sont
+ * pas des copies (on comptait par titre seul, et son deck etait refuse). Une
+ * carte unique (« * » devant le nom) ne figure qu'une fois, et deux cartes
+ * uniques, identite comprise, ne peuvent pas « correspondre » :
+ *   - meme titre, sans sous-titre ni titre d'alter ego des deux cotes ;
+ *   - ou le sous-titre / titre d'alter ego de l'une egale le titre, le
+ *     sous-titre ou le titre d'alter ego de l'autre. */
+const titreDe = (c) => String((c && c.name) || "").replace(/^\*\s*/, "").trim();
+const estUnique = (c) => /^\*/.test(String((c && c.name) || ""));
+const cleCopie = (c) => `${titreDe(c)}|${String((c && c.subtitle) || "").trim()}`;
+const cleCopieU = (u) => `${u.t}|${u.s}`;
+
+function correspondent(a, b) {
+    if (a.t === b.t && !a.s && !b.s && !a.alt && !b.alt) return true;
+    const autres = (x) => [x.t, x.s, x.alt].filter(Boolean);
+    return [a.s, a.alt].filter(Boolean).some((v) => autres(b).includes(v))
+        || [b.s, b.alt].filter(Boolean).some((v) => autres(a).includes(v));
+}
+
+/** L'identite, pour la correspondance : chaque face heros porte le titre
+ *  d'alter ego (le sien n'existe pas cote catalogue, on prend les faces). */
+function identitePourUnicite(hero, carte) {
+    const faces = String(((hero.deck && hero.deck.hero) || [])[0] || "").split(",").map((id) => carte(id)).filter(Boolean);
+    const heros = faces.filter((f) => f.type === "Hero").map(titreDe);
+    const alters = faces.filter((f) => f.type !== "Hero").map(titreDe);
+    return heros.flatMap((t) => (alters.length ? alters : [""]).map((alt) => ({ t, s: "", alt })));
+}
+
+function problemesUnicite(hero, choisies, carte, t) {
+    const out = [];
+    const uniques = [];
+    for (const [id] of choisies) {
+        const c = carte(id);
+        if (!c || !estUnique(c)) continue;
+        uniques.push({ t: titreDe(c), s: String(c.subtitle || "").trim(), alt: "", nom: titreDe(c) + (c.subtitle ? ` (${c.subtitle})` : "") });
+    }
+    const signatures = estStanLee(hero) ? [] : ((hero.deck && hero.deck.hero_deck) || []).map((id) => carte(id)).filter(estUnique)
+        .map((c) => ({ t: titreDe(c), s: String(c.subtitle || "").trim(), alt: "", nom: titreDe(c) }));
+    const identite = identitePourUnicite(hero, carte);
+    const vus = new Set();
+    for (let i = 0; i < uniques.length; i++) {
+        const u = uniques[i];
+        const rivaux = [...uniques.slice(i + 1), ...signatures].filter((v) => cleCopieU(v) !== cleCopieU(u) && correspondent(u, v));
+        if (identite.some((x) => correspondent(u, x))) rivaux.push({ nom: hero.name || t("l’identité") });
+        for (const v of rivaux) {
+            const cle = [u.nom, v.nom].sort().join(" / ");
+            if (vus.has(cle)) continue;
+            vus.add(cle);
+            out.push(`${t("Cartes uniques qui se correspondent :")} « ${u.nom} » ${t("et")} « ${v.nom} »`);
+        }
+    }
+    return out;
+}
 /**
  * Verdict de legalite d'un deck.
  *
@@ -303,7 +407,8 @@ export function choisiesDuDeck(hero, deck) {
  * @param {Function} o.carte     (card_id) -> carte du catalogue, ou undefined
  * @param {Function} [o.t]       traduction
  */
-export function validerDeck({ hero, choisies, carte, t = brut }) {
+export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
+    const carte = (id) => avecClasseDeConstruction(carteBrute(id));
     const problemes = [];
     if (!hero) return { ok: false, problemes: [t("Choisis un héros")], total: 0 };
     const marvelous = estStanLee(hero);
@@ -317,25 +422,37 @@ export function validerDeck({ hero, choisies, carte, t = brut }) {
     // « choisi ») et combien de cartes sont empruntees a chacun des autres.
     const parAspect = new Map();    // classe -> nombre de cartes
     const admissibles = new Map();  // classe -> cartes de cette classe qui passent le test du quota
+    const titresAdmissibles = new Map();  // classe -> titres de ces cartes
     const quota = quotaHorsAspect(hero, t);
     const interdits = typesInterdits(hero);
+    const interditsAspect = typesInterditsAspect(hero);
+    const idHeros = hero.id || "";
     const horsDeckJoueur = [];   // cartes de rencontre, ou signatures d'un autre heros
     const typesRefuses = [];     // « no additional allies » et consorts
     for (const [id, n] of choisies) {
         const c = carte(id);
         if (!c) continue;
         total += n;
-        parTitre.set(c.name, { n: (parTitre.get(c.name)?.n || 0) + n, max: maxParDeck(c) });
+        const copie = cleCopie(c);
+        parTitre.set(copie, {
+            n: (parTitre.get(copie)?.n || 0) + n,
+            max: estUnique(c) ? 1 : maxParDeck(c),
+            nom: titreDe(c) + (c.subtitle ? ` (${c.subtitle})` : ""),
+        });
         // Rien ne garantissait jusqu'ici que la carte soit seulement JOUABLE :
         // un attachement de rencontre (Magical Suspension, 15026) passait tous
         // les controles, faute de `class`, et sortait « deck legal ».
         if (!estCarteJoueur(c) && !(marvelous && estCarteSignature(c))) horsDeckJoueur.push(c.name);
         else if (interdits.includes(String(c.type))) typesRefuses.push(c.name);
+        else if (interditsAspect.includes(String(c.type)) && ASPECTS.includes(c.class)) typesRefuses.push(c.name);
         if (estSignature(c)) empruntees += n;
         else if (c.class && !CLASSES_NEUTRES.includes(c.class)
                  && !exemptDeLaLimiteAspect(hero, c)) {
             parAspect.set(c.class, (parAspect.get(c.class) || 0) + n);
-            if (quota && quota.test(c)) admissibles.set(c.class, (admissibles.get(c.class) || 0) + n);
+            if (quota && quota.test(c)) {
+                admissibles.set(c.class, (admissibles.get(c.class) || 0) + n);
+                titresAdmissibles.set(c.class, (titresAdmissibles.get(c.class) || new Set()).add(c.name));
+            }
         }
     }
 
@@ -350,7 +467,10 @@ export function validerDeck({ hero, choisies, carte, t = brut }) {
         const sortis = [];
         for (const [classe, n] of parAspect) {
             if (classe === principal) continue;
-            if ((admissibles.get(classe) || 0) === n) { horsAspect += n; sortis.push(classe); }
+            if ((admissibles.get(classe) || 0) === n) {
+                horsAspect += quota.parTitre ? titresAdmissibles.get(classe).size : n;
+                sortis.push(classe);
+            }
         }
         for (const classe of sortis) parAspect.delete(classe);
     }
@@ -395,8 +515,38 @@ export function validerDeck({ hero, choisies, carte, t = brut }) {
     if (quota && horsAspect > quota.max) {
         problemes.push(`${t("Hors aspect : au plus")} ${quota.label} — ${t("actuellement")} ${horsAspect}`);
     }
-    for (const [titre, x] of parTitre) {
-        if (x.n > x.max) problemes.push(`${t("Trop d’exemplaires de")} « ${titre} » : ${x.n}/${x.max}`);
+    // Adam Warlock (21031b) : « You cannot include more than 1 copy of any
+    // non-Adam Warlock card » (ses signatures ne sont pas dans `choisies`).
+    const maxCopies = idHeros === "adam_warlock" ? 1 : Infinity;
+    for (const x of parTitre.values()) {
+        const max = Math.min(x.max, maxCopies);
+        if (x.n > max) problemes.push(`${t("Trop d’exemplaires de")} « ${x.nom} » : ${x.n}/${max}`);
+    }
+    problemes.push(...problemesUnicite(hero, choisies, carte, t));
+    // Autant de cartes de chaque aspect : Spider-Woman (04031b, ses deux
+    // aspects) et Adam Warlock (21031b, les quatre).
+    const egaux = idHeros === "spider_woman" ? 2 : idHeros === "adam_warlock" ? 4 : 0;
+    if (egaux && aspects.size === egaux) {
+        const nombres = [...parAspect.values()];
+        if (Math.min(...nombres) !== Math.max(...nombres)) {
+            problemes.push(`${t("Il faut autant de cartes de chaque aspect")} (${[...parAspect].map(([a, n]) => `${a} ${n}`).join(", ")})`);
+        }
+    }
+    if (idHeros === "adam_warlock" && aspects.size > 0 && aspects.size < 4) {
+        problemes.push(`${t("Il faut les 4 aspects (Adam Warlock)")} — ${t("actuellement")} ${aspects.size}`);
+    }
+    // Moon Knight (mk001b, Cheap Shots) : aucune carte de cout imprime 3 ou
+    // plus, et au moins 4 cartes de chaque aspect.
+    if (idHeros === "moon_knight") {
+        const chers = [];
+        for (const [id] of choisies) {
+            const c = carte(id);
+            const cout = Number(String((c && c.desc && c.desc.Cost) ?? "").trim());
+            if (c && Number.isFinite(cout) && cout >= 3) chers.push(c.name);
+        }
+        if (chers.length) problemes.push(`${t("Coût imprimé 3 ou plus interdit (Moon Knight) :")} ${[...new Set(chers)].join(", ")}`);
+        const manquants = ["Aggression", "Justice", "Leadership", "Protection"].filter((a) => (parAspect.get(a) || 0) < 4);
+        if (manquants.length) problemes.push(`${t("Au moins 4 cartes de chaque aspect (Moon Knight) :")} ${manquants.join(", ")}`);
     }
     return { ok: problemes.length === 0, problemes, total, aspects: [...aspects], signature, empruntees,
              horsAspect, quotaMax: quota ? quota.max : 0,

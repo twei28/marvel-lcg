@@ -47,11 +47,17 @@ test("une composante hors bornes est ramenée dans 0..255", () => {
 });
 
 test("le fond reproduit la bande diagonale du plateau", () => {
+    // ⚠ ORDRE REVU (23/09/2026, demande de l'utilisateur) : la primaire
+    // (140,41,31) reste au coin (0 %), la TERTIAIRE (219,220,222) tient
+    // l'arret du milieu (22 %), la secondaire (32,43,114) tient le dernier
+    // arret visible (38 %) -- pas l'ordre du fichier. Forces au maximum
+    // (1,0 / 0,9 / 0,75) et positions elargies (« la couleur primaire peut
+    // ressortir un peu plus »).
     const fond = fondDe([[140, 41, 31], [32, 43, 114], [219, 220, 222]], "#111");
     assert.equal(
         fond,
-        "linear-gradient(315deg, rgba(140,41,31,0.6) 0%, rgba(32,43,114,0.44) 16%, " +
-        "rgba(219,220,222,0.26) 30%, rgba(219,220,222,0) 50%), #111");
+        "linear-gradient(315deg, rgba(140,41,31,1) 0%, rgba(219,220,222,0.9) 22%, " +
+        "rgba(32,43,114,0.75) 38%, rgba(32,43,114,0) 50%), #111");
 });
 
 test("un héros d'une seule couleur garde la longueur de la bande", () => {
@@ -60,8 +66,8 @@ test("un héros d'une seule couleur garde la longueur de la bande", () => {
     const fond = fondDe([[18, 18, 17]], "#111");
     assert.equal(
         fond,
-        "linear-gradient(315deg, rgba(18,18,17,0.6) 0%, rgba(18,18,17,0.44) 16%, " +
-        "rgba(18,18,17,0.26) 30%, rgba(18,18,17,0) 50%), #111");
+        "linear-gradient(315deg, rgba(18,18,17,1) 0%, rgba(18,18,17,0.9) 22%, " +
+        "rgba(18,18,17,0.75) 38%, rgba(18,18,17,0) 50%), #111");
 });
 
 test("sans couleur, le fond reste celui du plateau", () => {

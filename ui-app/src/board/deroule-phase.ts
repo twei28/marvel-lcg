@@ -27,6 +27,7 @@ import type {
   FaitMechant,
   FaitMenace,
   FaitRevelation,
+  FaitStade,
   FaitStatut,
 } from './world'
 
@@ -109,6 +110,9 @@ function estStatut(fait: FaitMechant): fait is FaitStatut {
 function estRevelation(fait: FaitMechant): fait is FaitRevelation {
   return fait.genre === 'revelation'
 }
+function estStade(fait: FaitMechant): fait is FaitStade {
+  return fait.genre === 'stade'
+}
 function estEntree(fait: FaitMechant): fait is FaitEntree {
   return fait.genre === 'entree'
 }
@@ -154,6 +158,8 @@ export type BoostDeroule = {
   nom: string
   cibleId: number
   apport: number
+  /** Le boost porte une capacite Boost (★) : sa ligne sous l'attaque. */
+  etoile?: boolean
 }
 
 /**
@@ -318,6 +324,45 @@ export type EtapeDeroule = {
    */
   effets?: EffetRevelation[]
   /**
+   * Sur une revelation : cette carte a ete revelee par un Renfort (Surge)
+   * declenche par la precedente, pas par la distribution ordinaire du point
+   * 3. Signalement Yarro n27 (28/09/2026), voir `FaitRevelation.par_surge`.
+   */
+  parSurge?: boolean
+  /**
+   * Sur une revelation PAR RENFORT : le nom de la carte dont le Renfort l'a
+   * revelee (« Renfort de X » en surtitre, decision du 03/10/2026). Absent si
+   * aucune revelation ne la precede.
+   */
+  renfortDe?: string
+  /** Un coup du mechant HORS de sa phase (tour d'un joueur), 03/10/2026. */
+  horsPhase?: boolean
+  /** Sur une etape de changement de stade : ce qui change (04/10/2026). */
+  stade?: 'manigance' | 'mechant'
+  /**
+   * Ce qui a ANNULE cette etape (activation remplacee, effet d'une carte revelee
+   * annule), tel que le moteur le nomme : « → Annulée par X » (03/10/2026).
+   */
+  annuleePar?: string
+  annuleeParId?: number
+  /**
+   * Sur une revelation : un Renfort la SUIT (la carte suivante en vient).
+   * L'etape finit alors par « → Renfort : une autre carte est révélée ».
+   */
+  suivieDUnRenfort?: boolean
+  /**
+   * La carte qui a DECLENCHE cette etape (son identifiant d'objet), quand le
+   * moteur le dit : la carte revelee qui fait attaquer ou manigancer le vilain.
+   */
+  causeId?: number
+  /**
+   * Sur une carte REVELEE : ce que son effet a declenche (le vilain manigance,
+   * un sbire entre en jeu), range sous elle au lieu de former des etapes a part.
+   * Choix de l'utilisateur apres le rapport Yarro n46 (03/10/2026) : « effets
+   * sous la carte ».
+   */
+  consequences?: EtapeDeroule[]
+  /**
    * La valeur IMPRIMEE annoncee, avant boosts et avant defense. Portee par les
    * seules etapes d'activation annoncees ou annulees : sur une resolution,
    * c'est `montant` qui dit ce qui a ete encaisse, et afficher les deux
@@ -351,9 +396,39 @@ export type EtapeDeroule = {
   bilan?: LigneBilan[]
 }
 
+/**
+ * Le temps d'une QUESTION posee par le moteur (« Défendre ? »), d'apres sa phase.
+ * Pendant « Enemy Activation », le mechant et ses sbires s'activent tous les
+ * deux : c'est l'attaquant qui tranche. Signale par l'utilisateur (03/10/2026) :
+ * la question de defense allumait l'onglet « 1. Placer les menaces », la
+ * derniere etape connue, parce que l'attaque n'avait pas encore d'etape.
+ */
+export function tempsDeLaQuestion(
+  phase: string | undefined,
+  attaquantEstLeMechant: boolean | undefined
+): TempsPhase | undefined {
+  const connu = tempsDe(phase)
+  if (connu !== undefined) return connu
+  if (phase === 'Enemy Activation') return attaquantEstLeMechant === false ? 'sbires' : 'mechant'
+  return undefined
+}
+
 function tempsDe(phase: string | undefined): TempsPhase | undefined {
   if (!phase || !PHASES_CONNUES.has(phase)) return undefined
   return TEMPS_PAR_PHASE[phase as PhaseDuMechant]
+}
+
+/**
+ * Le journal local ne nourrit le repli de `etapesDeroule` que PENDANT la phase
+ * du mechant. Hors phase, un Undo (qui rejoue la partie depuis zero et rend un
+ * monde sans aucun fait) laissait le journal d'avant relu au meme round, et le
+ * cartouche rouvrait une phase deja annulee (signalement 42).
+ */
+export function entreesPourRepli(
+  entrees: EntreeHistorique[],
+  phaseMechantEnCours: boolean
+): EntreeHistorique[] {
+  return phaseMechantEnCours ? entrees : []
 }
 
 /**
@@ -411,7 +486,8 @@ export function etapesDeroule(
   mechantIds: Set<number>,
   herosVaincusIds: Set<number> = new Set(),
   premierJoueurId?: number,
-  nomsHerosParJoueur: (string | undefined)[] = []
+  nomsHerosParJoueur: (string | undefined)[] = [],
+  selection: 'phase' | 'hors-phase' = 'phase'
 ): EtapeDeroule[] {
   const etapes: EtapeDeroule[] = []
 
@@ -436,9 +512,14 @@ export function etapesDeroule(
   // Chaque fait garde son RANG D'ORIGINE dans `faits_mechant` (voir
   // `cleDuFait`) : c'est de lui que vient l'identite des etapes, et il ne doit
   // donc jamais etre celui d'un tableau filtre ou retrie.
+  // HORS PHASE (03/10/2026) : une activation datee du tour d'un joueur
+  // (« Player 1 Turn ») n'appartient PAS a la phase du mechant du meme round ;
+  // elle a son propre cartouche (`etapesHorsPhase`). Un fait sans phase reste
+  // dans la phase, comme avant.
   const faitsDuRound = faits
     .map((fait, rang) => ({ fait, rang }))
     .filter(({ fait }) => fait.round_id === undefined || fait.round_id === round)
+    .filter(({ fait }) => estHorsPhase(fait) === (selection === 'hors-phase'))
 
   const faitsMenace = faitsDuRound.filter(
     (porte): porte is FaitRange<FaitMenace> => estMenace(porte.fait)
@@ -548,6 +629,23 @@ export function etapesDeroule(
     // son attaque (spec du 06/09, « sa mise en jeu, puis son attaque,
     // separement »). Aux points 3 et 4 le moteur n'inscrit pas ce fait : la
     // revelation raconte deja l'entree par ses `effets`.
+    // UN CHANGEMENT DE STADE en pleine phase : une etape a part, la nouvelle
+    // carte en grand (decision du 03/10/2026). Meme temps qu'une entree : celui
+    // de l'activation en cours, ou celui de sa phase.
+    if (estStade(fait)) {
+      etapes.push({
+        cle: cleDuFait('stade', fait.round_id ?? round, rang, fait.carte_id),
+        temps: tempsDeLEntree(rang, fait.phase),
+        titre: 'stade',
+        regle: '',
+        stade: fait.quoi,
+        carteId: fait.carte_id,
+        auteurNom: nomNettoye(fait.avant),
+        cibleNom: nomNettoye(fait.carte),
+        boosts: [],
+      })
+      return
+    }
     if (estEntree(fait)) {
       etapes.push({
         cle: cleDuFait('entree', fait.round_id ?? round, rang, fait.carte_id),
@@ -558,6 +656,7 @@ export function etapesDeroule(
         carteId: fait.carte_id,
         cibleNom: nomNettoye(fait.carte),
         cause: fait.cause || undefined,
+        causeId: fait.cause_id ?? undefined,
         boosts: [],
       })
       return
@@ -583,6 +682,7 @@ export function etapesDeroule(
         cibleNom: nomNettoye(fait.cible),
         statut: fait.statut,
         cause: fait.cause || undefined,
+        causeId: fait.cause_id ?? undefined,
         // Un statut vaut UN, pour que le bilan de fin de phase puisse les
         // compter comme il compte les degats.
         montant: 1,
@@ -635,6 +735,8 @@ export function etapesDeroule(
         ...commun,
         etat: fait.etat,
         valeurAnnoncee: fait.base,
+        annuleePar: fait.annule_par || undefined,
+        annuleeParId: fait.annule_par_id ?? undefined,
         boosts: [],
       })
       return
@@ -661,6 +763,7 @@ export function etapesDeroule(
         nom: boost.nom,
         cibleId: boost.id,
         apport: boost.apport,
+        etoile: boost.etoile || undefined,
       })),
     })
   })
@@ -750,6 +853,9 @@ export function etapesDeroule(
       cibleNom: fait.carte,
       boosts: [],
       effets: fait.effets && fait.effets.length > 0 ? fait.effets : undefined,
+      parSurge: fait.par_surge || undefined,
+      annuleePar: fait.annulee_par || undefined,
+      annuleeParId: fait.annulee_par_id ?? undefined,
     })
   }
 
@@ -788,7 +894,85 @@ export function etapesDeroule(
     }
   }
 
-  return etapes.sort((a, b) => ORDRE.indexOf(a.temps) - ORDRE.indexOf(b.temps))
+  return relierLesRenforts(
+    rangerLesConsequences(etapes).sort((a, b) => ORDRE.indexOf(a.temps) - ORDRE.indexOf(b.temps))
+  )
+}
+
+/**
+ * LA CHAINE DES RENFORTS, maillon par maillon (decision du 03/10/2026) : une
+ * carte revelee par Renfort nomme celle qui l'a declenchee (la revelation qui
+ * la precede, chez le meme heros quand on le sait), et celle-ci sait qu'un
+ * Renfort la suit.
+ */
+function relierLesRenforts(etapes: EtapeDeroule[]): EtapeDeroule[] {
+  etapes.forEach((etape, rang) => {
+    if (etape.titre !== 'revelation' || !etape.parSurge) return
+    for (let avant = rang - 1; avant >= 0; avant--) {
+      const precedente = etapes[avant]
+      if (precedente.titre !== 'revelation') continue
+      if (etape.auteurNom && precedente.auteurNom && precedente.auteurNom !== etape.auteurNom) continue
+      etape.renfortDe = nomNettoye(precedente.cibleNom)
+      precedente.suivieDUnRenfort = true
+      return
+    }
+  })
+  return etapes
+}
+
+/** Un fait date d'une phase CONNUE du moteur qui n'est pas celle du mechant. */
+function estHorsPhase(fait: FaitMechant): boolean {
+  return fait.phase !== undefined && fait.phase !== '' && !PHASES_CONNUES.has(fait.phase)
+}
+
+/**
+ * LES COUPS DU MECHANT HORS DE SA PHASE (pendant le tour d'un joueur), pour le
+ * cartouche d'un seul coup (decision du 03/10/2026). Les activations
+ * seulement, resolues ou annulees ; marquees `horsPhase`.
+ */
+export function etapesHorsPhase(faits: FaitMechant[], round: number, mechantIds: Set<number>): EtapeDeroule[] {
+  return etapesDeroule(faits, [], round, mechantIds, new Set(), undefined, [], 'hors-phase')
+    .filter((etape) => etape.titre === 'attaque' || etape.titre === 'manigance')
+    .map((etape) => ({ ...etape, horsPhase: true }))
+}
+
+/**
+ * LES CASCADES SOUS LEUR CARTE (rapport Yarro n46, 03/10/2026).
+ *
+ * Une carte revelee qui fait manigancer ou attaquer le vilain, poser un statut
+ * ou entrer un sbire produisait une etape A PART. Et une etape mal placee : les
+ * activations sont construites avant les revelations, et le tri final ne
+ * regarde que le temps, si bien que « Bloody Mary manigance » s'affichait AVANT
+ * « Echo revele Psionic Slash », la carte qui l'avait provoquee.
+ *
+ * Choix de l'utilisateur : une seule etape par carte revelee, ses consequences
+ * listees dessous. La carte se retrouve par l'identifiant de la cause, a defaut
+ * par son nom. Les effets mesures par le moteur sur la MEME cible sont retires :
+ * la consequence les raconte mieux (auteur, boosts, total).
+ */
+function rangerLesConsequences(etapes: EtapeDeroule[]): EtapeDeroule[] {
+  const revelations = etapes.filter((e) => e.titre === 'revelation')
+  if (revelations.length === 0) return etapes
+  const gardees: EtapeDeroule[] = []
+  for (const etape of etapes) {
+    const parent =
+      etape.titre !== 'revelation' && etape.temps === 'revelation' && (etape.causeId !== undefined || etape.cause)
+        ? revelations.find((r) => etape.causeId !== undefined && r.carteId === etape.causeId) ??
+          revelations.find((r) => etape.cause !== undefined && nomNettoye(r.cibleNom) === nomNettoye(etape.cause))
+        : undefined
+    if (!parent) {
+      gardees.push(etape)
+      continue
+    }
+    parent.consequences = [...(parent.consequences ?? []), etape]
+    if (parent.effets) {
+      const restants = parent.effets.filter((effet) =>
+        effet.genre === 'entree' ? effet.carte_id !== etape.carteId : effet.cible_id !== etape.cibleId
+      )
+      parent.effets = restants.length > 0 ? restants : undefined
+    }
+  }
+  return gardees
 }
 
 /**

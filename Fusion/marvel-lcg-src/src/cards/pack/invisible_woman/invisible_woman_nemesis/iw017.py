@@ -11,7 +11,7 @@ def GetAbilities() -> Sequence['Ability']:
         effect.this.PlaceThreatOnSchemes("MainScheme", 1, effect)
 
     def psycho_man_attacked(effect: 'Effect', message: 'Message.AfterEnemyActivationEnd') -> bool:
-        return message.active_message.IsAttack() and message.trigger == effect.this.bind_face
+        return message.atk_message is not None and message.trigger == effect.this.bind_face
 
     return [
         # CORRECTIF 4/8/2026 : `WhenThisBoostAttachTo` ne se declenche QUE si

@@ -23,6 +23,8 @@ import {
 import { createRoot, type Root } from 'react-dom/client'
 import '../styles/tokens.css'
 import '../styles/palette.css'
+import '../styles/affichage-sobre.css'
+import '../styles/teinte.css'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
 import { estEnPause, estModeManuel, leMoteurSeTait } from './board/manuel/mode'
@@ -45,7 +47,6 @@ import {
   zonesSansCible,
 } from './board/glisser/cibles'
 import { PlateauMobile } from './board/mobile/PlateauMobile'
-import { enModeFeuille } from './board/placement/usePlacement'
 import { useModeMobile, type ReglageMode } from './board/mobile/useModeMobile'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
@@ -74,7 +75,7 @@ import {
 } from './board/ou-va-la-question'
 import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
-import { animationsDuPlateau } from './board/animations-en-scene'
+import { animationsDuPlateau, estResynchronisation } from './board/animations-en-scene'
 import { kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
 import { carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
@@ -83,7 +84,7 @@ import {
   demandeDoitApparaitreAuCentre,
   moteurAttendUneReponse,
 } from './board/DemandeCentrale'
-import { HistoriquePartie, useHistoriquePartie } from './board/HistoriquePartie'
+import { useHistoriquePartie } from './board/HistoriquePartie'
 import { peutSuivre } from './board/suivi-vue'
 import { deltasStatuts } from './board/effets-statuts'
 import { traduireMoteur } from './board/vocabulaire-moteur'
@@ -107,15 +108,32 @@ import {
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { BandeauAnnonce } from './board/BandeauAnnonce'
 import { BandeauMiseAJour } from './board/BandeauMiseAJour'
+import { BoutonVoirLaTable } from './board/BoutonVoirLaTable'
 import { useMiseAJour } from './board/maj'
-import { cheminEmplacement } from './board/sauvegardes'
+import { cheminEmplacement, dossierSauvegardes } from './board/sauvegardes'
 import { useAnnonce, usePassage } from './board/annonce'
 import { JournalHeros } from './board/JournalHeros'
 import { RecapPhaseMechant } from './board/RecapPhaseMechant'
 import { CiblesScene } from './board/CiblesScene'
 import { DeroulePhase } from './board/DeroulePhase'
 import { BandeauPhase } from './board/BandeauPhase'
-import { etapesDeroule, nomNettoye } from './board/deroule-phase'
+import { entreesPourRepli, etapesDeroule, etapesHorsPhase, nomNettoye, tempsDeLaQuestion } from './board/deroule-phase'
+import { CoupHorsPhase } from './board/CoupHorsPhase'
+import './board/fin-partie-bd.css'
+import { RevuePhase } from './board/RevuePhase'
+import { EditeurTable } from './board/EditeurTable'
+import { DISPOSITION_DE_DEPART, DISPOSITION_ORIGINE, type Disposition } from './board/disposition'
+import { enregistrerDisposition, useDispositionTable } from './board/table-perso'
+import { detailAttaqueComplet, ligneAttaqueConnue } from './board/ligne-attaque'
+import { majInstantanes, mondeDeLaTable, type Instantanes } from './board/table-calee'
+import {
+  appliquerTeinte,
+  chercherTeinteDuCompte,
+  ecrireTeinte,
+  envoyerTeinteAuCompte,
+  lireTeinteDuNavigateur,
+  type Teinte,
+} from './board/teinte'
 import { texteTempsParDecision } from './board/deroule-textes'
 import { SplashTour } from './board/SplashTour'
 import {
@@ -127,6 +145,7 @@ import {
   type EtatInteractif,
 } from './board/interaction'
 import { phraseDuRefus } from './board/raisons-refus'
+import { CoucheRefusEffets } from './board/refus-effets'
 import { MenuActionsCarte } from './board/MenuActionsCarte'
 import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJeu'
 import { basculerLangue, langueActuelle, synchroniserLangueServeur, t } from './board/langue'
@@ -163,19 +182,17 @@ import {
   PHASES_DU_MECHANT,
   estMultijoueur,
   evenementNarreImportant,
-  ecrireAvanceAuto,
-  ecrireDelaiPasAPas,
+  ecrireFinTourAuto,
   ecrireModePhaseMechant,
   ecrireReponseAmbiance,
+  ecrireSauvegardeAuto,
   estSpectateur,
   libelleModePhase,
-  lireAvanceAuto,
-  lireDelaiPasAPas,
+  lireFinTourAuto,
   lireModePhaseMechant,
   lireReponseAmbiance,
+  lireSauvegardeAuto,
   migrerReglagesPhase,
-  DELAI_PAS_A_PAS_MAX,
-  DELAI_PAS_A_PAS_MIN,
   type EtatMoteur,
   type ModeActions,
   type ModePhaseMechant,
@@ -185,10 +202,21 @@ import {
 import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
 import { essaisOuverts } from './board/essais'
+import { VoletJournal } from './board/VoletJournal'
+import { JournalConsole } from './board/JournalConsole'
+import {
+  appliquerAffichage,
+  chercherAffichageDuCompte,
+  CLE_AFFICHAGE,
+  ecrireAffichage,
+  lireAffichage,
+  type Affichage,
+} from './board/affichage'
 import { fondDe, identiteAffichee, palettes, type Couleur } from './board/halo-heros'
 // CouchePasAPas et usePasAPas : DEBRANCHES a la demande de l'utilisateur, voir
 // les commentaires a leurs points d'appel plus bas pour les rallumer.
 import { SelecteurCibles } from './board/SelecteurCibles'
+import { transformDecalage, useGlisserPanneau } from './board/placement/useGlisserPanneau'
 import { nomLisible } from './board/BarreAction'
 import { construirePlateau, type Plateau } from './board/zones'
 import type { Demande, Option, Reponse } from './board/ask'
@@ -353,7 +381,7 @@ function useEffetsCartes(monde: World | undefined): Map<number, CardEffectDelta>
         }
       }
 
-      // Statuts poses ou retires (Sonne / Desoriente / Robuste). Un porteur
+      // Statuts poses ou retires (Sonne / Desoriente / Tenace). Un porteur
       // n'a qu'un badge a la fois : si sa vie ou sa menace a bouge dans le
       // meme rendu, ce chiffre garde la place, le statut se lit sur la
       // mini-carte. Voir effets-statuts.ts.
@@ -667,6 +695,12 @@ function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }
     if (!signature) setSignatureFermee(undefined)
   }, [signature])
 
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »). Les hooks se declarent AVANT
+  // le retour anticipe ci-dessous.
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signature)
+
   if (!signature || signatureFermee === signature) return null
 
   const total = groupes.reduce((somme, groupe) => somme + groupe.cartes.length, 0)
@@ -678,13 +712,20 @@ function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }
         className="plateau-regardees"
         role="dialog"
         aria-label={t('Cartes regardées')}
+        style={transformDecalage(decalage)}
         onMouseOver={survoler}
         onMouseLeave={() => setApercuId(null)}
         onFocus={focaliser}
         onBlur={perdreFocus}
       >
         <header className="plateau-regardees-entete">
-          <div>
+          <div
+            className="poignee-glisser"
+            onPointerDown={gestesGlisser.onPointerDown}
+            onPointerMove={gestesGlisser.onPointerMove}
+            onPointerUp={gestesGlisser.onPointerUp}
+            onPointerCancel={gestesGlisser.onPointerCancel}
+          >
             <span className="plateau-eyebrow">{t('Cartes regardées')}</span>
             <strong>
               {total} card{total > 1 ? 's' : ''}
@@ -766,6 +807,10 @@ function ModaleCiblesMenu({
   }, [fermer])
 
   const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »).
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(`${titre}|${cartes.map((c) => c.id).join(',')}`)
 
   return (
     <div className="plateau-regardees-voile plateau-cibles-menu-voile" onPointerDown={fermer}>
@@ -773,6 +818,7 @@ function ModaleCiblesMenu({
         className="plateau-regardees plateau-cibles-menu"
         role="dialog"
         aria-label="Possible off-table targets"
+        style={transformDecalage(decalage)}
         onPointerDown={(evenement) => evenement.stopPropagation()}
         onMouseOver={survoler}
         onMouseLeave={() => setApercuId(null)}
@@ -780,7 +826,13 @@ function ModaleCiblesMenu({
         onBlur={perdreFocus}
       >
         <header className="plateau-regardees-entete">
-          <div>
+          <div
+            className="poignee-glisser"
+            onPointerDown={gestesGlisser.onPointerDown}
+            onPointerMove={gestesGlisser.onPointerMove}
+            onPointerUp={gestesGlisser.onPointerUp}
+            onPointerCancel={gestesGlisser.onPointerCancel}
+          >
             <span className="plateau-eyebrow">{t('Cibles possibles')}</span>
             <strong>
               {titre} - {cartes.length} card{cartes.length > 1 ? 's' : ''}
@@ -982,44 +1034,92 @@ async function lireMetaSauvegarde(nom: string): Promise<MetaSauvegarde | undefin
  */
 
 /**
- * Le menu « Partie » : ce qu'on CONSULTE en jouant.
- *
- * ⚠ ANCIENNEMENT « ⚙ Reglages », renomme le 14/09/2026 avec tout ce que ce
- * changement implique. Il contenait a la fois des actions (historique, log,
- * journal, retour au menu) et un SECOND bouton « ⚙ Options » ouvrant une
- * deuxieme colonne de 18 reglages. Constat de l'utilisateur : « il y a une
- * colonne et puis quand j'ouvre les options, il y a encore la colonne des
- * options ».
- *
- * Les reglages sont partis dans `FenetreReglages`. Ce qui reste ici est
- * exactement ce qui n'y avait pas sa place : on consulte un log EN JOUANT,
- * souvent parce qu'un bug vient de se produire, et il serait absurde d'ouvrir
- * une fenetre modale par-dessus le plateau pour cela.
- *
- * ⚠ ET LE RETOUR AU MENU EN EST SORTI le 14/09/2026, a la demande de
- * l'utilisateur : tout ce qui reste ici se CONSULTE, lui fait SORTIR. Il est
- * dans la barre, en tete.
+ * ⌂ Menu (24/09/2026) : FUSION de deux boutons distincts (« Menu » et
+ * « Déconnexion complète »), demande de l'utilisateur apres avoir vu les deux
+ * actions confondues sur le meme ecran (capture a l'appui). Un choix, pas un
+ * clic direct -- `retourMenu` (navigation douce, sans consequence) et
+ * `retourMenuPrincipal` (ferme la table, avec SA PROPRE confirmation
+ * detaillee juste apres, cf. commentaire au-dessus de sa definition) restent
+ * INTACTS : cette modale ne fait que choisir lequel appeler, elle n'ajoute
+ * pas une seconde confirmation devant celle qui existe deja.
  */
-function PopoverPartie({ children }: { children: React.ReactNode }) {
-  const [ouvert, setOuvert] = useState(false)
-  if (enModeFeuille()) return <>{children}</>
+function ModaleMenu({
+  ouvert,
+  fermer,
+  retourMenu,
+  retourMenuPrincipal,
+}: {
+  ouvert: boolean
+  fermer: () => void
+  retourMenu: () => void
+  retourMenuPrincipal: () => void
+}) {
+  useEffect(() => {
+    if (!ouvert) return
+    const surTouche = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') fermer()
+    }
+    document.addEventListener('keydown', surTouche)
+    return () => document.removeEventListener('keydown', surTouche)
+  }, [ouvert, fermer])
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(ouvert ? 'menu-ouvert' : 'menu-ferme')
+  if (!ouvert) return null
   return (
-    <span className="popover-sauvegardes-ancre">
-      <button
-        type="button"
-        className={`bh-bouton bh-reglages${ouvert ? ' est-actif' : ''}`}
-        onClick={() => setOuvert((o) => !o)}
-        aria-expanded={ouvert}
-        title={t('Historique, log et journal du héros')}
+    <div
+      className="reglages-fond"
+      role="presentation"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) fermer()
+      }}
+    >
+      <div
+        className="reglages-fenetre sans-onglets modale-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('Menu')}
+        style={transformDecalage(decalage)}
       >
-        <span aria-hidden="true">▶</span> {t('Partie')}
-      </button>
-      {ouvert ? (
-        <div className="popover-sauvegardes popover-reglages" role="menu">
-          {children}
+        <header className="reglages-tete">
+          <h2
+            className="poignee-glisser"
+            onPointerDown={gestesGlisser.onPointerDown}
+            onPointerMove={gestesGlisser.onPointerMove}
+            onPointerUp={gestesGlisser.onPointerUp}
+            onPointerCancel={gestesGlisser.onPointerCancel}
+          >
+            {t('Menu')}
+          </h2>
+          <button type="button" className="reglages-fermer" onClick={fermer} title={t('Fermer')}>
+            ×
+          </button>
+        </header>
+        <div className="reglages-contenu modale-menu-choix">
+          <button
+            type="button"
+            className="bh-bouton bh-menu"
+            onClick={() => {
+              fermer()
+              retourMenu()
+            }}
+            title={t('Revenir au menu principal')}
+          >
+            <span aria-hidden="true">⌂</span> {t('Retour au menu')}
+          </button>
+          <button
+            type="button"
+            className="bh-bouton bh-fermer-table"
+            onClick={() => {
+              fermer()
+              retourMenuPrincipal()
+            }}
+            title={t('Fermer et déconnecter la table (surtout pour le multijoueur en ligne)')}
+          >
+            <span aria-hidden="true">⏻</span>{' '}
+            {t('Déconnexion complète (surtout multijoueur en ligne)')}
+          </button>
         </div>
-      ) : null}
-    </span>
+      </div>
+    </div>
   )
 }
 
@@ -1094,6 +1194,11 @@ function PopoverSauvegardes() {
       .finally(() => setOccupe(undefined))
   }, [])
 
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »).
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(ouvert ? 'sauvegardes-ouvert' : 'sauvegardes-ferme')
+
   return (
     <span className="popover-sauvegardes-ancre">
       <button
@@ -1106,7 +1211,16 @@ function PopoverSauvegardes() {
         <span aria-hidden="true">💾</span> {t('Sauver')}
       </button>
       {ouvert ? (
-        <div className="popover-sauvegardes" role="menu">
+        <div className="popover-sauvegardes" role="menu" style={transformDecalage(decalage)}>
+          <span
+            className="popover-sauvegardes-titre poignee-glisser"
+            onPointerDown={gestesGlisser.onPointerDown}
+            onPointerMove={gestesGlisser.onPointerMove}
+            onPointerUp={gestesGlisser.onPointerUp}
+            onPointerCancel={gestesGlisser.onPointerCancel}
+          >
+            {t('Sauvegardes')}
+          </span>
           {[1, 2, 3].map((slot) => {
             const meta = metas[slot]
             return (
@@ -1438,6 +1552,7 @@ function PageEtat({
       playerId={playerId}
       plateau={plateau}
       outils={outils}
+      bandeManigances={mode !== 'mobile'}
       bas={
         <footer className="plateau-action plateau-action-attente" role="status">
           <strong>Saved state.</strong>
@@ -1552,6 +1667,12 @@ function EcranFinPartie({
           ))}
         </div>
       ) : null}
+      {/* L'ONOMATOPEE BD (04/10/2026, choix de l'utilisateur) : un eclat a
+          pointes derriere le mot, qui arrive avec un petit choc (coupe sans
+          animations, en sobre et en mouvement reduit : fin-partie-bd.css). */}
+      <div className="fin-partie-eclat" aria-hidden="true">
+        {bataille?.nul ? t('MATCH NUL !') : gagne ? t('VICTOIRE !') : t('DÉFAITE !')}
+      </div>
       <div className="fin-partie-carte">
         <span className="fin-partie-eyebrow">{eyebrow}</span>
         <strong className="fin-partie-titre">{titre}</strong>
@@ -1857,6 +1978,13 @@ export function PagePartie({
     },
     [cartesMondeParId, catalogue, etat.demande?.ability_type, textesFrComplets]
   )
+  // Le bouton de refus d'une reaction dit « Ne pas jouer » pour une carte EN
+  // MAIN et « Ne pas utiliser » pour une capacite en jeu (04/10/2026).
+  const idsEnMain = useMemo(
+    () => new Set((etat.monde?.players ?? []).flatMap((joueur) => joueur.hand_cards.map((carte) => carte.id))),
+    [etat.monde]
+  )
+  const estEnMain = useCallback((bindId: number) => idsEnMain.has(bindId), [idsEnMain])
   // Les cartes de la scene du deroule detaille : lues dans l'index du MONDE,
   // jamais sur la table. Face visible sur demande : la carte revelee et les
   // boosts sont encore face cachee dans le monde de la trame retenue (le fait
@@ -2010,6 +2138,61 @@ export function PagePartie({
   }, [reglageMode, changerReglageMode])
 
   const [animations, setAnimations] = useState(lireAnimations)
+  // L'affichage sobre coupe les animations sans toucher au reglage du joueur :
+  // revenir en normal lui rend ce qu'il avait choisi.
+  const [affichage, setAffichage] = useState<Affichage>(lireAffichage)
+  const animationsActives = animations && affichage !== 'sobre'
+  useEffect(() => {
+    appliquerAffichage(affichage)
+  }, [affichage])
+  // Le compte fait foi quand il a deja un choix (meme contrat que la
+  // preparation) : un plateau rejoint directement suit l'autre appareil.
+  useEffect(() => {
+    let vivant = true
+    void chercherAffichageDuCompte().then((duCompte) => {
+      if (!vivant || duCompte === undefined) return
+      try {
+        window.localStorage.setItem(CLE_AFFICHAGE, duCompte)
+      } catch {
+        /* stockage indisponible */
+      }
+      setAffichage(duCompte)
+    })
+    return () => {
+      vivant = false
+    }
+  }, [])
+  const changerAffichage = useCallback((choisi: Affichage) => {
+    ecrireAffichage(choisi)
+    setAffichage(choisi)
+  }, [])
+  // LA TEINTE DU FOND (04/10/2026, teinte.ts). Rendu en direct pendant qu'on
+  // tourne la roue ; le compte n'est prevenu qu'au repos (600 ms), pas a
+  // chaque mouvement du pointeur.
+  const [teinte, setTeinte] = useState<Teinte | undefined>(lireTeinteDuNavigateur)
+  useEffect(() => {
+    appliquerTeinte(teinte)
+  }, [teinte])
+  useEffect(() => {
+    let vivant = true
+    void chercherTeinteDuCompte().then((duCompte) => {
+      if (!vivant || duCompte === undefined) return
+      ecrireTeinte(duCompte ?? undefined, false)
+      setTeinte(duCompte ?? undefined)
+    })
+    return () => {
+      vivant = false
+    }
+  }, [])
+  const envoiTeinte = useRef<number | undefined>(undefined)
+  const retenirTeinte = useCallback((choisie: Teinte | undefined) => {
+    ecrireTeinte(choisie, false)
+    setTeinte(choisie)
+    window.clearTimeout(envoiTeinte.current)
+    envoiTeinte.current = window.setTimeout(() => envoyerTeinteAuCompte(choisie), 600)
+  }, [])
+  const changerTeinte = useCallback((choisie: Teinte) => retenirTeinte(choisie), [retenirTeinte])
+  const reinitialiserTeinte = useCallback(() => retenirTeinte(undefined), [retenirTeinte])
   const basculerAnimations = useCallback(() => {
     setAnimations((a) => {
       const nouveau = !a
@@ -2037,6 +2220,8 @@ export function PagePartie({
   // moteur (meme piege que dans DeroulePhase.tsx), donc `faits_mechant`
   // change deja d'identite a chaque trame et relancait deja ce useMemo aussi
   // souvent.
+  // L'etape que montre le cartouche : la table se cale dessus (table-calee.ts).
+  const [cleEtapeAffichee, setCleEtapeAffichee] = useState<string>()
   const etapesPhaseMechant = useMemo(() => {
     const mechantIds = new Set<number>()
     for (const carte of cartesMondeParId.values()) {
@@ -2084,7 +2269,7 @@ export function PagePartie({
     )
     return etapesDeroule(
       etat.monde?.faits_mechant ?? [],
-      historique.entrees,
+      entreesPourRepli(historique.entrees, PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')),
       etat.monde?.round_id ?? 0,
       mechantIds,
       herosVaincusIds,
@@ -2096,8 +2281,63 @@ export function PagePartie({
     etat.monde?.faits_mechant,
     etat.monde?.players,
     historique.entrees,
+    etat.monde?.phase,
     etat.monde?.round_id,
   ])
+  // LES COUPS DU MECHANT HORS DE SA PHASE (03/10/2026) : leur propre cartouche,
+  // un coup a la fois (CoupHorsPhase).
+  const coupsHorsPhase = useMemo(() => {
+    const mechantIds = new Set<number>()
+    for (const carte of cartesMondeParId.values()) {
+      if (kindOf(carte) === 'villain') mechantIds.add(carte.id)
+    }
+    return etapesHorsPhase(etat.monde?.faits_mechant ?? [], etat.monde?.round_id ?? 0, mechantIds)
+  }, [cartesMondeParId, etat.monde?.faits_mechant, etat.monde?.round_id])
+  // « REVOIR LA PHASE DU MECHANT » (03/10/2026), dans le volet du journal : la
+  // phase du round PRECEDENT. Le moteur garde ses faits jusqu'au premier fait
+  // du round suivant ; on ne la propose donc qu'hors de la phase du mechant.
+  const etapesPhasePrecedente = useMemo(() => {
+    if (PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')) return []
+    const mechantIds = new Set<number>()
+    for (const carte of cartesMondeParId.values()) {
+      if (kindOf(carte) === 'villain') mechantIds.add(carte.id)
+    }
+    const round = (etat.monde?.round_id ?? 0) - 1
+    if (round < 1) return []
+    return etapesDeroule(etat.monde?.faits_mechant ?? [], [], round, mechantIds)
+  }, [cartesMondeParId, etat.monde?.faits_mechant, etat.monde?.round_id, etat.monde?.phase])
+  // LA TABLE CALEE SUR LE RECIT (04/10/2026, table-calee.ts). Pendant la
+  // phase, la table dessine le monde de l'etape AFFICHEE par le cartouche, pas
+  // le plus recent : sinon le boost ou la carte rencontre se retournaient sur
+  // la table avant le « Suivant ». Une question au joueur rend le monde reel.
+  const instantanesRef = useRef<Instantanes>(new Map())
+  const instantanes = useMemo(() => {
+    const suivants = majInstantanes(
+      instantanesRef.current,
+      etapesPhaseMechant,
+      etat.monde,
+      PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')
+    )
+    instantanesRef.current = suivants
+    return suivants
+  }, [etapesPhaseMechant, etat.monde])
+  const mondeTable = mondeDeLaTable(
+    instantanes,
+    cleEtapeAffichee,
+    Boolean(etat.aNous && etat.demande)
+  )
+  const plateauTable = useMemo(
+    () =>
+      mondeTable
+        ? construirePlateau(mondeTable, {
+            playerId: joueurActif,
+            viewerId: playerId,
+            catalogue,
+            seulCeJoueur: vueForcee !== null || modePlateau === 'mobile',
+          })
+        : undefined,
+    [mondeTable, joueurActif, playerId, catalogue, vueForcee, modePlateau]
+  )
 
   // Les PV MAXIMUM des personnages, par nom, pour le bilan de fin de phase du
   // mechant : sans eux il dit « 8 » la ou il pourrait dire « 8/14 ».
@@ -2149,6 +2389,58 @@ export function PagePartie({
   // mulligan PENDANT la mise en place — la partie resterait bloquee pour
   // toujours, sans rien a cliquer sur la premiere main.
   const manuel = leMoteurSeTait(etat.monde)
+
+  // Fin de tour automatique (24/09/2026, inspiré de MTG Arena) : quand le
+  // bouton « Fin du tour » est déjà suggéré (plus rien de jouable), on
+  // déclenche `interaction.annuler()` tout seul au lieu d'attendre le clic.
+  // La toute première fois que ça arriverait, une modale demande au joueur
+  // s'il veut ce comportement ; sa réponse est mémorisée et ne redemande
+  // plus jamais — modifiable ensuite dans Réglages (`bascluerFinTourAuto`).
+  const [finTourAutoChoix, setFinTourAutoChoix] = useState(lireFinTourAuto)
+  const basculerFinTourAuto = useCallback(() => {
+    setFinTourAutoChoix((c) => {
+      const nouveau = c === 'on' ? 'off' : 'on'
+      ecrireFinTourAuto(nouveau)
+      return nouveau
+    })
+  }, [])
+  // Empreinte de LA suggestion en cours : sert a ne declencher qu'UNE FOIS
+  // par nouvelle demande suggeree, meme si `finDeTourSuggeree` (un booleen)
+  // reste egal a lui-meme d'un rendu a l'autre pendant que le moteur
+  // enchaine plusieurs demandes toutes aussi peu jouables les unes que les
+  // autres (meme principe que `empreinte` dans interaction.ts).
+  const empreinteFinTourSuggeree = useMemo(() => {
+    if (!finDeTourSuggeree) return undefined
+    const options = etat.demande?.options ?? []
+    return `${etat.demande?.event_name ?? ''}|${options.map((o) => o.id).join(',')}`
+  }, [finDeTourSuggeree, etat.demande])
+  const derniereFinTourAutoPassee = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    if (manuel || !empreinteFinTourSuggeree) return
+    if (derniereFinTourAutoPassee.current === empreinteFinTourSuggeree) return
+    derniereFinTourAutoPassee.current = empreinteFinTourSuggeree
+    // ⚠ CHEMIN SYNCHRONE QUAND LE CHOIX EST DEJA TRANCHE (meme piege corrige
+    // le jour meme dans interaction.ts pour l'ecart de heros et le paiement
+    // automatique) : une Promise systematique decalerait `annuler()` d'un
+    // tick sans raison des que le reglage est deja 'on'/'off'.
+    if (finTourAutoChoix === 'on') {
+      interaction.annuler()
+      return
+    }
+    if (finTourAutoChoix === 'off') return
+    void confirmer({
+      titre: t('Terminer ton tour automatiquement ?'),
+      texte: t(
+        'Quand il ne reste plus rien à jouer, le jeu peut passer directement au joueur suivant, sans attendre un clic sur Fin du tour. Ce choix se change à tout moment dans Réglages.'
+      ),
+      confirmer: t('Oui, automatiquement'),
+      annuler: t('Non, je clique moi-même'),
+    }).then((accepte) => {
+      ecrireFinTourAuto(accepte ? 'on' : 'off')
+      setFinTourAutoChoix(accepte ? 'on' : 'off')
+      if (accepte) interaction.annuler()
+    })
+  }, [empreinteFinTourSuggeree, manuel, confirmer, finTourAutoChoix, interaction.annuler])
 
   // ⚠ `estModeManuel`, PAS `manuel` (tâche 3, arbitrage du plan). Deux
   // exceptions au partage règle/état ci-dessus, et pour une raison sérieuse :
@@ -2294,6 +2586,24 @@ export function PagePartie({
       return nom || nomDeCarte(etat.monde, bindId)
     },
     [etat.monde, nomsFr]
+  )
+  // Sous « Ne pas défendre » : CE QUI EST CONNU au moment de choisir, jamais un
+  // total. Rules Reference v1.8, « Attack (Enemy Activation) » : la carte boost
+  // est donnee face cachee AVANT la declaration du defenseur et retournee
+  // APRES. L'utilisateur, 04/10/2026 : « le joueur ne sait pas le nombre de
+  // dégâts final avant de défendre ». D'ou « ATQ 3 + 1 carte boost » : l'ATQ
+  // actuelle de l'attaquant (la cible de l'option « Defense ») et le nombre de
+  // cartes face cachee qui lui sont attachees (`boostable`, publie par
+  // `ToDescriptor.Card` a la suite de l'ennemi). Un sbire sans Villainous n'en
+  // a aucune : la ligne dit alors seulement « ATQ 2 ».
+  const ligneSansDefense = useMemo(
+    () => ligneAttaqueConnue(etat.demande?.options ?? [], cartesMondeParId, nomPorteurFr),
+    [etat.demande, cartesMondeParId, nomPorteurFr]
+  )
+  // Le meme detail sans abreger : l'infobulle de « Ne pas défendre ».
+  const survolSansDefense = useMemo(
+    () => detailAttaqueComplet(etat.demande?.options ?? [], cartesMondeParId, nomPorteurFr),
+    [etat.demande, cartesMondeParId, nomPorteurFr]
   )
   /* ---- Le glisser-deposer : les REGLES (8 septembre 2026) -----------------
      Le plateau tient le geste et le dessin ; ici vivent les regles, parce que
@@ -2575,7 +2885,6 @@ export function PagePartie({
   // entiere « pas-a-pas ». Le moteur ne le connait PAS : c'est le cartouche
   // du deroule (DeroulePhase, plus bas) qui s'avance tout seul, et qui
   // relache le moteur par le meme chemin que le clic « Suivant ».
-  const [avanceAuto, setAvanceAuto] = useState(lireAvanceAuto)
   /**
    * ⚠ L'AVANCE AUTO N'EXISTE QUE DANS « Detaille », et il a fallu l'ecrire ici.
    *
@@ -2590,7 +2899,6 @@ export function PagePartie({
    * ⚠ UN REGLAGE GRISE DOIT AUSSI ETRE SANS EFFET. Le griser ne fait que le
    * rendre inchangeable ; c'est ici, a la source, qu'il cesse de s'appliquer.
    */
-  const avanceAutoActive = sceneCentrale && avanceAuto
   /**
    * LE BANDEAU D'OUVERTURE JOUE SEUL, ET LA PHASE ATTEND QU'IL SOIT PARTI.
    *
@@ -2610,19 +2918,6 @@ export function PagePartie({
     roundDuBandeau.current = roundCourant
     if (bandeauPasse) setBandeauPasse(false)
   }
-  const basculerAvanceAuto = useCallback(() => {
-    setAvanceAuto((a) => {
-      const nouveau = !a
-      ecrireAvanceAuto(nouveau)
-      return nouveau
-    })
-  }, [])
-
-  const [delaiPasAPas, setDelaiPasAPas] = useState(lireDelaiPasAPas)
-  const choisirDelaiPasAPas = useCallback((ms: number) => {
-    setDelaiPasAPas(ms)
-    ecrireDelaiPasAPas(ms)
-  }, [])
 
   // Le mode vit dans le composant, mais c'est le Moteur qui retient (ou non)
   // l'accuse de reception : il faut le lui redire a chaque changement. Avance
@@ -2651,6 +2946,43 @@ export function PagePartie({
   // mention a l'ecran. Les regles sont pures et testees dans
   // `board/attente-table.ts` ; ici, on ne fait que les alimenter.
   const phaseMechantEnCours = PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')
+  // Meme repere que `libelleRound` (board/etat-partie.ts) : la partie n'a pas
+  // encore commence tant que `round_id` n'est pas un nombre strictement
+  // positif (mise en place, mulligans).
+  const enMiseEnPlace = typeof etat.monde?.round_id !== 'number' || etat.monde.round_id <= 0
+
+  // Sauvegarde automatique a chaque debut de phase (24/09/2026, demande de
+  // l'utilisateur). Filet de securite EN PLUS des trois emplacements manuels
+  // (board/sauvegardes.ts), jamais a leur place : fichier DEDIE
+  // (`save_auto.json`), construit avec le meme `dossierSauvegardes()` que
+  // `sauverSlot`. Fire-and-forget : une sauvegarde manquee ne doit jamais se
+  // voir ni gener la partie. Le premier rendu ne compte pas comme « nouvelle
+  // phase » (`dernierePhaseSauvee.current === undefined`), sinon chaque
+  // arrivee sur l'ecran (montage, reconnexion) declencherait une ecriture
+  // pour rien.
+  const [sauvegardeAuto, setSauvegardeAuto] = useState(lireSauvegardeAuto)
+  const basculerSauvegardeAuto = useCallback(() => {
+    setSauvegardeAuto((a) => {
+      const nouveau = !a
+      ecrireSauvegardeAuto(nouveau)
+      return nouveau
+    })
+  }, [])
+  const dernierePhaseSauvee = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    const phase = etat.monde?.phase
+    if (!phase || !sauvegardeAuto) return
+    if (dernierePhaseSauvee.current === undefined) {
+      dernierePhaseSauvee.current = phase
+      return
+    }
+    if (dernierePhaseSauvee.current === phase) return
+    dernierePhaseSauvee.current = phase
+    void dossierSauvegardes()
+      .then((dossier) => fetch(`/debug?/save ${dossier}save_auto.json`))
+      .catch(() => undefined)
+  }, [etat.monde?.phase, sauvegardeAuto])
+
   const nomsHerosParJoueur = useMemo(
     () =>
       (etat.monde?.players ?? []).map((joueur) =>
@@ -2810,12 +3142,32 @@ export function PagePartie({
   }, [])
 
   const [revelation, setRevelation] = useState<ModeRevelation>(lireRevelation)
-  // Le panneau du journal du heros, ouvert depuis le menu « … ».
-  const [journalOuvert, setJournalOuvert] = useState(false)
   // La fenetre des reglages (board/FenetreReglages.tsx). ⚠ Volontairement PAS
   // retenue entre deux parties : on ne veut pas rouvrir un ecran de reglages
   // par-dessus le plateau au chargement.
   const [reglagesOuverts, setReglagesOuverts] = useState(false)
+  // LA TABLE PERSONNALISABLE (04/10/2026) : une disposition par nombre de
+  // joueurs (table-perso.ts), et celle qu'on edite (`origine` : « Disposition
+  // d'origine » a ete choisie, « Terminer » efface alors le choix).
+  const nombreDeJoueurs = Math.max(1, etat.monde?.players?.length ?? 1)
+  const dispositionTable = useDispositionTable(nombreDeJoueurs)
+  const [editionTable, setEditionTable] = useState<{ d: Disposition; origine: boolean }>()
+  // Refonte du header (24/09/2026) : trois nouvelles modales, meme famille que
+  // `reglagesOuverts` (jamais retenues entre deux parties, memes raisons).
+  //
+  // ⌂ Menu (fusion « Menu » + « Deconnexion complete ») : un choix, pas un
+  // clic direct -- demande de l'utilisateur, capture a l'appui, apres avoir
+  // vu ces deux actions confondues sur le meme ecran.
+  const [menuOuvert, setMenuOuvert] = useState(false)
+  // ▶ Partie (ex-PopoverPartie) : promue en fenetre centree comme
+  // `FenetreReglages`, au lieu d'un popover ancre a son bouton -- son
+  // declencheur vit maintenant DANS la modale « Plus d'options » ci-dessus,
+  // qui se ferme avant de l'ouvrir (« lanceurs simples », pas de menu
+  // imbrique dans un menu -- exactement le defaut deja corrige le 14/09/2026
+  // sur ce meme bouton, voir le commentaire de PopoverPartie plus bas).
+  const [partieOuverte, setPartieOuverte] = useState(false)
+  const ouvrirVolet = useCallback(() => setPartieOuverte(true), [])
+  const fermerVolet = useCallback(() => setPartieOuverte(false), [])
   // Les essais reserves a un seul compte (board/essais.ts). ⚠ Faux tant que le
   // serveur n'a pas repondu : on n'ouvre jamais un essai « par defaut », le
   // temps d'un aller-retour reseau.
@@ -2846,7 +3198,7 @@ export function PagePartie({
     const racine = document.documentElement
     const corps = document.body
     let vivant = true
-    if (!essais || !identite) {
+    if (!essais || !identite || affichage === 'sobre') {
       corps.classList.remove('a-halo-heros')
       return
     }
@@ -2859,14 +3211,14 @@ export function PagePartie({
       }
       racine.style.setProperty(
         '--fond-plateau',
-        fondDe(couleurs, 'linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98))')
+        fondDe(couleurs, 'var(--fond-halo-base, linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98)))')
       )
       corps.classList.add('a-halo-heros')
     })
     return () => {
       vivant = false
     }
-  }, [essais, identite])
+  }, [essais, identite, affichage])
   const cyclerRevelation = useCallback(() => {
     setRevelation((r) => {
       const suivant: ModeRevelation = r === 'off' ? 'court' : r === 'court' ? 'long' : 'off'
@@ -2879,13 +3231,39 @@ export function PagePartie({
     })
   }, [])
 
+  // Resynchronisation massive (Undo, reconnexion, remelange...) : le moteur
+  // repart d'un `render_id` plus bas que le dernier vu (`GameSession.Undo`
+  // relance toute la partie et rejoue l'historique depuis zero, cote
+  // Fusion/marvel-lcg-src/src/game/game_run/game_session.py). Le plateau
+  // recoit alors un etat entierement neuf, indiscernable pour lui d'une
+  // vraie nouveaute : tout semblait « reclaquer » d'un coup (demande de
+  // l'utilisateur, 28/09/2026). On le detecte par la seule baisse du
+  // render_id — une hausse, meme un grand saut, reste un rendu normal (voir
+  // CoucheAnimations.tsx) — et on coupe brievement les memes animations
+  // d'entree que le reglage « sans animations », le temps qu'un rendu
+  // s'affiche sans jouer ses entrees.
+  const dernierRenderId = useRef<number | undefined>(undefined)
+  const [resynchronisation, setResynchronisation] = useState(false)
+  useEffect(() => {
+    const actuel = etat.monde?.render_id
+    if (actuel === undefined) return
+    const precedent = dernierRenderId.current
+    dernierRenderId.current = actuel
+    if (!estResynchronisation(actuel, precedent)) return
+    setResynchronisation(true)
+    // 1000ms : couvre la plus longue animation d'entree gardee par
+    // `plateau-sans-animations` (statut-arrive, 900ms) avec une marge.
+    const t = window.setTimeout(() => setResynchronisation(false), 1000)
+    return () => window.clearTimeout(t)
+  }, [etat.monde?.render_id])
+
   // Les effets CSS transitoires (secousse d'impact, halo de statut) sont
   // debrayes par une classe sur <body> : ils vivent dans des feuilles de style,
   // pas dans des composants qu'on peut couper par prop.
   useEffect(() => {
-    document.body.classList.toggle('plateau-sans-animations', !animations)
+    document.body.classList.toggle('plateau-sans-animations', !animationsActives || resynchronisation)
     return () => document.body.classList.remove('plateau-sans-animations')
-  }, [animations])
+  }, [animationsActives, resynchronisation])
 
   // Le plateau descend sous la barre du spectateur, et les feuilles de style
   // ont besoin de le savoir : meme motif que ci-dessus.
@@ -2944,12 +3322,16 @@ export function PagePartie({
   useMusique(etat.monde, musique)
 
   // Raccourcis clavier : E = fin du tour (quand le bouton simple est visible),
-  // U = annuler la derniere action. Ignorés pendant une saisie ou avec un
-  // modificateur. HOOKS DECLARES ICI, avant le retour anticipe « monde pas
-  // charge » : sinon le nombre de hooks change entre deux rendus (React #310).
-  // La cible reelle du raccourci E est assignee plus bas, une fois
-  // afficherFinTourSimple connu, via ce ref.
+  // Espace = fin du tour (des que le bouton complet est cliquable, meme hors
+  // mode simple -- demande de l'utilisateur, 24/09/2026, inspire de MTG
+  // Arena), U = annuler la derniere action. Ignorés pendant une saisie ou
+  // avec un modificateur. HOOKS DECLARES ICI, avant le retour anticipe
+  // « monde pas charge » : sinon le nombre de hooks change entre deux rendus
+  // (React #310). La cible reelle des raccourcis E et Espace est assignee
+  // plus bas, une fois `afficherFinTourSimple`/`finDeTourDisponible` connus,
+  // via ces refs.
   const finTourClavier = useRef<() => void>(() => {})
+  const finTourClavierEspace = useRef<() => void>(() => {})
   // Même mécanique pour B : l'écoute est installée une fois, sa cible change à
   // chaque monde reçu. Sans le ref, l'effet se réinstallerait à chaque rendu.
   const rapportClavier = useRef<() => void>(() => {})
@@ -2961,6 +3343,12 @@ export function PagePartie({
       const touche = evenement.key.toLowerCase()
       if (touche === 'e') {
         finTourClavier.current()
+      } else if (touche === ' ') {
+        // Empeche a la fois le defilement de page (comportement natif de la
+        // barre espace) et un second declenchement si le focus se trouve deja
+        // sur le bouton Fin du tour (qui s'active lui-meme a l'espace).
+        evenement.preventDefault()
+        finTourClavierEspace.current()
       } else if (touche === 'u') {
         fetch('/debug?/undo auto').catch(() => undefined)
       } else if (touche === 'b') {
@@ -3207,6 +3595,11 @@ export function PagePartie({
   finTourClavier.current = () => {
     if (afficherFinTourSimple) interaction.annuler()
   }
+  // Meme garde que le bouton complet lui-meme : `disabled={!finDeTourDisponible}`
+  // et absent en mode manuel (`{manuel ? null : (<button ...>)}`, plus bas).
+  finTourClavierEspace.current = () => {
+    if (finDeTourDisponible && !manuel) interaction.annuler()
+  }
 
   const RenduPartie = modePlateau === 'mobile' ? PlateauMobile : Board
 
@@ -3241,11 +3634,13 @@ export function PagePartie({
       <SplashTour monde={etat.monde} annonceMechantAilleurs={unCartouche} />
 
 
-      <SelecteurCibles
-        cibles={interaction.ciblesHorsTable}
-        titre={interaction.option ? nomLisible(interaction.option) : ''}
-        survoler={setApercuSelecteur}
-      />
+      {(
+        <SelecteurCibles
+          cibles={interaction.ciblesHorsTable}
+          titre={interaction.option ? nomLisible(interaction.option) : ''}
+          survoler={setApercuSelecteur}
+        />
+      )}
       {apercuSelecteur ? <CarteApercu carte={apercuSelecteur} /> : null}
       {interaction.ciblesHorsTable.length === 0 && !interaction.option ? (
         <ModaleCartesRegardees groupes={groupesRegardes} />
@@ -3271,6 +3666,9 @@ export function PagePartie({
           carteAuSurvol={carteAuSurvol}
           nomPorteur={nomPorteurFr}
           texteCapacite={texteCapaciteDeLOption}
+          estEnMain={estEnMain}
+          ligneSansDefense={ligneSansDefense}
+          survolSansDefense={survolSansDefense}
         />
       ) : null}
 
@@ -3328,6 +3726,8 @@ export function PagePartie({
           affichage={modeActions}
           designEssai={designEssai}
           nomPorteur={nomPorteurFr}
+          tailleMain={etat.monde?.players[etat.joueurDemande ?? playerId]?.hand_size}
+          choixDansLaScene={ciblageEnScene}
         />
       )}
 
@@ -3420,8 +3820,11 @@ export function PagePartie({
           un plateau fige et muet. Le reglage est personnel, mais le rythme est
           celui de la table — c'est exactement ce que F5 reprochait. */}
       {!unCartouche && attendUnAutreJoueur && phaseMechantEnCours ? (
-        <AttenteTable nom={autreJoueurInterroge?.nom} />
+        (<AttenteTable nom={autreJoueurInterroge?.nom} />)
       ) : null}
+      {manuel || !unCartouche || phaseMechantEnCours ? null : (
+        <CoupHorsPhase etapes={coupsHorsPhase} ignorerLesPremiers />
+      )}
       {manuel ? null : unCartouche ? (
         <>
           <BandeauPhase
@@ -3471,6 +3874,18 @@ export function PagePartie({
             // moteur attend ta reponse » serait alors faux. C'est la mention
             // d'attente ci-dessous qui prend le relais dans ce cas.
             questionAuJoueur={moteurAttendLeJoueur && autreJoueurInterroge === undefined}
+            // L'onglet de la question : la phase du moteur, et pendant les
+            // activations, l'attaquant (la cible de l'option « Defense »).
+            tempsQuestion={tempsDeLaQuestion(
+              etat.monde?.phase,
+              (() => {
+                const defense = etat.demande?.options?.find((o) => o.name === 'Defense')
+                const attaquant = defense?.all_legal_targets?.[0]
+                if (attaquant === undefined) return undefined
+                const carte = cartesMondeParId.get(attaquant)
+                return carte ? kindOf(carte) === 'villain' : undefined
+              })()
+            )}
             // Les cartes de la scene, et le dos d'une carte rencontre pour
             // l'etape de distribution (voir `carteScene` plus haut).
             carteScene={carteScene}
@@ -3493,6 +3908,11 @@ export function PagePartie({
                         },
                         choisie: e.choisie,
                         fois: e.fois,
+                        ordre: e.ordre,
+                        ordreReculer: e.ordreReculer,
+                        ordreAvancer: e.ordreAvancer,
+                        assignerReste: e.assignerReste,
+                        assignerResteQuantite: e.assignerResteQuantite,
                         agir: e.agir,
                       })),
                     ...interaction.ciblesHorsTable,
@@ -3517,6 +3937,9 @@ export function PagePartie({
                   carteAuSurvol={carteAuSurvol}
                   nomPorteur={nomPorteurFr}
                   texteCapacite={texteCapaciteDeLOption}
+                  estEnMain={estEnMain}
+                  ligneSansDefense={ligneSansDefense}
+                  survolSansDefense={survolSansDefense}
                   enScene
                 />
               ) : undefined
@@ -3550,13 +3973,10 @@ export function PagePartie({
             // suppose pourtant impossible. Le cartouche le DIT, il ne corrige
             // rien.
             tempsParDecision={etat.maxTimeout}
-            // « Avance toute seule » et sa vitesse (panneau Options) : c'est le
-            // cartouche qui tient cette horloge, pas le moteur. Il s'avance
-            // par la meme fonction que le clic « Suivant », donc l'accuse
-            // ci-dessous part par le meme chemin, et le moteur ne peut pas
-            // partir devant.
-            avanceAuto={avanceAutoActive}
-            delaiAvanceMs={delaiPasAPas}
+            // PAS A PAS, TOUJOURS (choix de l'utilisateur, 03/10/2026, apres le
+            // rapport Yarro n°46 : « tout est alle a 2000 a l'heure »). Chaque
+            // etape attend le clic « Suivant » ; le reglage « Avance toute
+            // seule » et sa vitesse ont ete retires.
             // L'accuse de reception. Il ne part plus a chaque « Suivant » : le
             // cartouche le declenche quand il n'a plus rien a montrer, donc
             // quand le joueur a valide tout ce qu'il sait deja. onTerminer
@@ -3569,6 +3989,7 @@ export function PagePartie({
             // une inactivite, il doit donc voir ces clics-la aussi.
             onActivite={signalerActivite}
             onTerminer={avancerPasAPas}
+            onEtapeAffichee={setCleEtapeAffichee}
             // Le coup fatal est vu : l'ecran de fin de partie peut paraitre.
             onDefaiteVue={() => setCoupFatalVu(true)}
           />
@@ -3624,9 +4045,25 @@ export function PagePartie({
       />
 
       <RenduPartie
-        world={etat.monde}
+        world={mondeTable ?? etat.monde}
         playerId={joueurActif}
-        plateau={plateau}
+        bandeManigances={modePlateau !== 'mobile'}
+        disposition={editionTable?.d ?? dispositionTable}
+        superposition={
+          editionTable && modePlateau !== 'mobile' ? (
+            <EditeurTable
+              disposition={editionTable.d}
+              changer={(d) => setEditionTable({ d, origine: false })}
+              origine={() => setEditionTable({ d: DISPOSITION_DE_DEPART, origine: true })}
+              annuler={() => setEditionTable(undefined)}
+              terminer={() => {
+                enregistrerDisposition(nombreDeJoueurs, editionTable.origine ? undefined : editionTable.d)
+                setEditionTable(undefined)
+              }}
+            />
+          ) : undefined
+        }
+        plateau={plateauTable ?? plateau}
         effets={effets}
         heroActifId={heroActifId}
         // Le bandeau portrait n'a pas de quoi recalculer « qui agit » (il ne
@@ -3659,7 +4096,7 @@ export function PagePartie({
         onFermerSelecteur={interaction.abandonnerOption}
         // Le journal du heros ne vit plus sur la table : la colonne de droite
         // est aux manigances (demande de l'utilisateur, 7 septembre 2026).
-        // Il s'ouvre depuis le menu « … » (voir `journalOuvert`).
+        // Il se lit dans le volet du journal (VoletJournal, menu « ⋯ »).
         actionsPartie={
           /* ORDRE : par intention, et il se lit comme une phrase —
               ce que je FAIS, ce que je REGARDE, comment c'est REGLE, je PARS.
@@ -3697,24 +4134,21 @@ export function PagePartie({
                 journal) ; celle-ci fait SORTIR, et n'a rien a faire avec elles.
 
                 En tete de barre : c'est le geste qui ramene en arriere, il se
-                lit avant tout le reste, comme dans un navigateur. */}
+                lit avant tout le reste, comme dans un navigateur.
+
+                ⚠ FUSIONNE AVEC « Déconnexion complète » LE 24/09/2026 (demande
+                de l'utilisateur, capture a l'appui : les deux actions cote a
+                cote pretaient a confusion). Un clic ouvre `ModaleMenu`, qui
+                choisit laquelle appeler -- voir sa definition plus haut. */}
             <button
               type="button"
               className="bh-bouton bh-menu"
-              onClick={retourMenu}
+              onClick={() => setMenuOuvert(true)}
               title={t('Revenir au menu principal')}
             >
               <span aria-hidden="true">⌂</span> {t('Menu')}
             </button>
-            <button
-              type="button"
-              className="bh-bouton bh-fermer-table"
-              onClick={retourMenuPrincipal}
-              title={t('Fermer et déconnecter la table (surtout pour le multijoueur en ligne)')}
-            >
-              <span aria-hidden="true">⏻</span>{' '}
-              {t('Déconnexion complète (surtout multijoueur en ligne)')}
-            </button>
+            <BoutonVoirLaTable />
             <button
               type="button"
               className="bh-bouton bh-undo"
@@ -3725,33 +4159,6 @@ export function PagePartie({
                   « Annuler » -> « Cancel » pour l'assistant d'action). */}
               <span aria-hidden="true">↶</span> {langueActuelle() === 'fr' ? 'Annuler' : 'Undo'}
             </button>
-            {/* Mettre en pause (tâche 3) : DANS LA BARRE, à côté d'Annuler,
-                pas dans « Partie » ni dans les Réglages. Même raisonnement
-                que le bouton ⌂ Menu ci-dessus (14/09/2026) : « Partie » ne
-                sert qu'à CONSULTER en jouant (historique, log, journal), les
-                Réglages ne sont que des préférences -- la pause, elle,
-                arrête la partie pour tout le monde, exactement ce qu'on
-                cherche directement quand le jeu vient de faire quelque chose
-                d'absurde. Elle n'a pas sa place non plus dans le menu de
-                TABLE du mode manuel (`MenuTable.tsx`) : ce menu n'existe
-                QU'EN mode manuel, alors que ce bouton-ci est réservé au mode
-                ORDINAIRE (`!modeManuelDeclare`) -- une partie déclarée
-                manuelle n'a rien à « pauser », `ManualLoop` la tient déjà
-                muette en permanence.
-
-                Masqué PENDANT la pause (`!manuel`) : `BandeauPause`, plus
-                haut dans ce rendu, devient alors le SEUL moyen de reprendre
-                -- un second bouton ferait double emploi. */}
-            {!modeManuelDeclare && !manuel ? (
-              <button
-                type="button"
-                className="bh-bouton bh-pause"
-                onClick={() => { void basculerPause(true) }}
-                title={t('Arrêter la partie pour tout le monde, le temps de corriger un bug à la main')}
-              >
-                <span aria-hidden="true">⏸</span> {t('Mettre en pause')}
-              </button>
-            ) : null}
             <PopoverSauvegardes />
             {/* Signaler un bug : le journal de toute la partie part avec la
                 description et la capture. Ne s'affiche que si un site ecoute. */}
@@ -3801,13 +4208,18 @@ export function PagePartie({
                 </button>
                 {/* Un joueur elimine n'est plus une vue possible : sa table a
                     disparu (voir zones.ts), il n'y aurait rien a regarder. */}
+                {/* ⚠ TOUR TERMINE, ONGLET GRISE (24/09/2026, inspire
+                    d'Arkham Horror LCG qui grise la carte d'un investigateur
+                    dont le tour est fini). Purement visuel -- le bouton reste
+                    cliquable, on peut toujours aller regarder la main d'un
+                    heros qui a deja joue. */}
                 {etat.monde!.players.map((joueur, i) =>
                   joueur.is_eliminated ? null : (
                     <button
                       type="button"
                       key={i}
-                      className={`bh-bouton${vueForcee === i ? ' est-actif' : ''}${joueurActif === i ? ' est-joueur-actif' : ''}`}
-                      title={joueur.area_hero?.[0]?.name ?? `${t('Joueur')} ${i}`}
+                      className={`bh-bouton${vueForcee === i ? ' est-actif' : ''}${joueurActif === i ? ' est-joueur-actif' : ''}${joueur.has_finished_turn_this_round ? ' est-tour-fini' : ''}`}
+                      title={`${joueur.area_hero?.[0]?.name ?? `${t('Joueur')} ${i}`}${joueur.has_finished_turn_this_round ? ` — ${t('tour terminé')}` : ''}`}
                       onClick={() => setVueForcee(i)}
                     >
                       {joueur.area_hero?.[0]?.name?.replace(/^\W*/, '').split(' ')[0] ?? `P${i}`}
@@ -3826,82 +4238,30 @@ export function PagePartie({
             {modeManuelDeclare ? (
               <SelecteurHeros joueurs={joueursAffichables} regarde={joueurActif} onRegarder={setVueForcee} />
             ) : null}
-            {/* « Partie » (14/09/2026) : historique, log, journal du heros,
-                vue et retour au menu. Les REGLAGES n'y sont plus, ils ont leur
-                fenetre a onglets (bouton ⚙ juste apres). Sur telephone,
-                PopoverPartie rend ses lignes a plat dans la feuille « … ». */}
-            <PopoverPartie>
-            <HistoriquePartie
-              entrees={historique.entrees}
-              effacer={historique.effacer}
-              rapport={rapport}
-            />
-            {/* « Log » : le rapport complet en UN clic, sans ouvrir le panneau
-                ni choisir une profondeur. Les mêmes boutons existent au bas du
-                panneau Historique depuis le 12/8/2026, mais personne ne les y
-                trouvait — et c'est au moment où un bug vient de se produire
-                qu'on a le moins envie de chercher. Toute la partie, en texte
-                lisible, parce que c'est ce qu'on relit et ce qu'on transmet. */}
-            <MessageRapport message={rapport.message} />
-
-
-              {/* Le journal du heros, en panneau : ce qui est arrive a CE
-                  heros, dans l'ordre. Il vivait sur la table, dans la colonne
-                  des manigances, qu'il rognait. */}
+            {/* PLUS DE FENETRE « Plus d'options » (04/10/2026, choix de
+                l'utilisateur, questions une a une) : elle coutait un clic de
+                plus. La pause a son bouton (visible quand elle est possible),
+                la langue aussi, ⚙ ouvre directement les Reglages, et le
+                journal reste sur sa languette. */}
+            {!modeManuelDeclare && !manuel ? (
               <button
                 type="button"
-                className={`bh-bouton bh-journal${journalOuvert ? ' est-actif' : ''}`}
-                onClick={() => setJournalOuvert((o) => !o)}
-                aria-pressed={journalOuvert}
-                title={t('Ce qui est arrivé à ton héros, dans l’ordre')}
+                className="bh-bouton bh-pause"
+                onClick={() => {
+                  void basculerPause(true)
+                }}
+                aria-label={t('Mettre en pause')}
+                title={t('Arrêter la partie pour tout le monde, le temps de corriger un bug à la main')}
               >
-                {t('Journal du héros')}
+                <span aria-hidden="true">⏸</span>
               </button>
-              {/* « Log » : le rapport complet en UN clic. Toute la partie, en
-                  texte lisible, parce que c'est ce qu'on relit et ce qu'on
-                  transmet quand un bug vient de se produire. */}
-              <button
-                type="button"
-                className="bh-bouton bh-log"
-                onClick={() => rapport.telecharger('partie', 'txt')}
-                title={t('Télécharger tout le déroulé de la partie en fichier texte')}
-              >
-                {t('Log de la partie')}
-              </button>
-              {/* Musique et langue sont partis dans la fenetre des reglages
-                  (onglet « Image et son ») le 14/09/2026 : ce sont des
-                  reglages, pas des actions de partie. */}
-            </PopoverPartie>
-
-            {/* ⚙ Reglages : une FENETRE, pas un menu. Elle s'ouvre au centre,
-                en quatre onglets. Voir board/FenetreReglages.tsx pour le
-                pourquoi (14/09/2026). */}
-            <button
-              type="button"
-              className={`bh-bouton bh-options${reglagesOuverts ? ' est-actif' : ''}`}
-              onClick={() => setReglagesOuverts(true)}
-              aria-haspopup="dialog"
-              title={t('Tous les réglages du plateau, en quatre onglets')}
-            >
-              <span aria-hidden="true">{'\u2699'}</span> {t('Réglages')}
-            </button>
-
-            {/* FR / EN, TOUJOURS VISIBLE EN JEU.
-                ⚠ REMIS LE 14/09/2026 APRES L'AVOIR RETIRE LE MATIN MEME. En
-                rangeant les reglages dans leur fenetre, la langue y avait suivi
-                les autres — sauf qu'elle n'est pas un reglage comme les autres :
-                la modale de premiere connexion PROMET « tu peux changer a tout
-                moment : le bouton FR / EN, en haut de l'ecran », et ce bouton
-                n'existait plus une fois la partie lancee. Une promesse faite au
-                joueur ne peut pas dependre d'un rangement.
-                Format court (FR / EN), comme dans l'assistant : l'ancien
-                « Français → English » mangeait la barre. La ligne « Langue » de
-                l'onglet « Image et son » reste, et les deux appellent la meme
-                fonction : c'est un raccourci, pas un second reglage. */}
+            ) : null}
             <button
               type="button"
               className="bh-bouton bh-langue"
-              onClick={() => void basculerLangue()}
+              onClick={() => {
+                void basculerLangue()
+              }}
               title={
                 langueActuelle() === 'fr'
                   ? 'Interface et narration en français : cliquer pour passer en anglais'
@@ -3909,6 +4269,16 @@ export function PagePartie({
               }
             >
               {langueActuelle() === 'fr' ? 'FR' : 'EN'}
+            </button>
+            <button
+              type="button"
+              className={`bh-bouton bh-plus${reglagesOuverts ? ' est-actif' : ''}`}
+              onClick={() => setReglagesOuverts(true)}
+              aria-haspopup="dialog"
+              aria-label={t('Réglages')}
+              title={t('Réglages')}
+            >
+              <span aria-hidden="true">{'\u2699\ufe0f'}</span>
             </button>
 
             {/* Fin du tour : le seul bouton colore, toujours a droite.
@@ -4018,25 +4388,6 @@ export function PagePartie({
         </button>
       ) : null}
 
-      {journalOuvert ? (
-        <aside className="panneau-journal" aria-label={t('Journal du héros')}>
-          <button
-            type="button"
-            className="bh-bouton panneau-journal-fermer"
-            onClick={() => setJournalOuvert(false)}
-            aria-label={t('Fermer')}
-          >
-            ×
-          </button>
-          <JournalHeros
-            entrees={historique.entrees}
-            monde={etat.monde}
-            joueur={joueurActif}
-            nomHeros={etat.monde.players?.[joueurActif]?.area_hero?.[0]?.name?.replace(/^\W*/, '')}
-            toujoursVisible
-          />
-        </aside>
-      ) : null}
       {/* La fenetre des reglages. ⚠ RENDUE HORS DE LA BARRE, au meme niveau
           que les autres couches : ancree dans la barre, elle aurait herite de
           son `overflow` et de son empilement, c'est-a-dire exactement le
@@ -4047,6 +4398,23 @@ export function PagePartie({
         // Le mode « Sur la table » n'est propose qu'aux essais, le temps que
         // l'utilisateur le valide a l'usage (board/essais.ts).
         essais={essais}
+        affichage={affichage}
+        changerAffichage={changerAffichage}
+        teinte={teinte}
+        changerTeinte={changerTeinte}
+        reinitialiserTeinte={reinitialiserTeinte}
+        // « Modifier la table » : plateau PC seulement (telephone inchange).
+        modifierLaTable={
+          modePlateau !== 'mobile'
+            ? () => {
+                setReglagesOuverts(false)
+                setEditionTable({
+                  d: dispositionTable === DISPOSITION_ORIGINE ? DISPOSITION_DE_DEPART : dispositionTable,
+                  origine: false,
+                })
+              }
+            : undefined
+        }
         animations={animations}
         basculerAnimations={basculerAnimations}
         sons={sons}
@@ -4065,14 +4433,16 @@ export function PagePartie({
         libelleModePhase={libelleModePhase}
         tempsParDecision={etat.maxTimeout}
         texteTempsParDecision={texteTempsParDecision}
-        avanceAuto={avanceAuto}
-        basculerAvanceAuto={basculerAvanceAuto}
-        delaiPasAPas={delaiPasAPas}
-        reglerDelaiPasAPas={choisirDelaiPasAPas}
         validationCourte={validationCourte}
         basculerValidationCourte={basculerValidationCourte}
         autoCible={autoCible}
         basculerAutoCible={basculerAutoCible}
+        finTourAuto={finTourAutoChoix === 'on'}
+        basculerFinTourAuto={basculerFinTourAuto}
+        paiementAuto={interaction.paiementAutoChoix === 'on'}
+        basculerPaiementAuto={interaction.basculerPaiementAuto}
+        sauvegardeAuto={sauvegardeAuto}
+        basculerSauvegardeAuto={basculerSauvegardeAuto}
         revelation={revelation}
         cyclerRevelation={cyclerRevelation}
         meteo={meteo}
@@ -4091,6 +4461,39 @@ export function PagePartie({
         reglageMode={reglageMode}
         cyclerReglageMode={cyclerReglageMode}
       />
+      {/* Les trois modales de la refonte du header (24/09/2026), HORS DE LA
+          BARRE pour la meme raison que `FenetreReglages` juste au-dessus :
+          ancrees dans la barre, elles heriteraient de son `overflow` et de
+          son empilement. */}
+      <ModaleMenu
+        ouvert={menuOuvert}
+        fermer={() => setMenuOuvert(false)}
+        retourMenu={retourMenu}
+        retourMenuPrincipal={() => { void retourMenuPrincipal() }}
+      />
+      <VoletJournal ouvert={partieOuverte} ouvrir={ouvrirVolet} fermer={fermerVolet}>
+        <MessageRapport message={rapport.message} />
+        <JournalConsole
+          entrees={historique.entrees}
+          effacer={historique.effacer}
+          rapport={rapport}
+          telechargerLog={() => rapport.telecharger('partie', 'txt')}
+          revuePhase={
+            etapesPhasePrecedente.length > 0 ? (
+              <RevuePhase etapes={etapesPhasePrecedente} pvMaxParNom={pvMaxParNom} nomFr={nomPorteurFr} />
+            ) : undefined
+          }
+          journalHeros={
+            <JournalHeros
+              entrees={historique.entrees}
+              monde={etat.monde}
+              joueur={joueurActif}
+              nomHeros={etat.monde.players?.[joueurActif]?.area_hero?.[0]?.name?.replace(/^\W*/, '')}
+              toujoursVisible
+            />
+          }
+        />
+      </VoletJournal>
       <BandeauConnexion
         etat={etat}
         reconnecter={reconnecter}
@@ -4104,12 +4507,14 @@ export function PagePartie({
       <CoucheAnimations
         renderId={etat.monde.render_id}
         actif={animationsDuPlateau({
-          reglage: animations,
+          reglage: animationsActives,
           sceneCentrale,
           phaseMechantEnCours,
+          enMiseEnPlace,
         })}
         essais={essais}
       />
+      <CoucheRefusEffets refus={etat.monde.refus_effets} />
       <CoucheTriche
         actif={triche.actif}
         manuel={triche.manuel}
@@ -4133,6 +4538,7 @@ export function PagePartie({
           monde={etat.monde}
           duree={DUREES_REVELATION[revelation]}
           joueurId={joueurActif}
+          seulementManigance={enMiseEnPlace}
         />
       )}
       <CoucheCharge
@@ -4140,9 +4546,10 @@ export function PagePartie({
         eventName={etat.monde.event_name ?? ''}
         activeIds={etat.monde.active_card_ids ?? []}
         actif={animationsDuPlateau({
-          reglage: animations,
+          reglage: animationsActives,
           sceneCentrale,
           phaseMechantEnCours,
+          enMiseEnPlace,
         })}
       />
 
@@ -4245,6 +4652,10 @@ if (!import.meta.env.VITEST) {
   const cible = document.getElementById('plateau')
   if (!cible) throw new Error('Element #plateau not found in board.html')
   synchroniserLangueServeur()
+  // Avant le premier rendu, et pour TOUTES les pages (etat enregistre, revoir,
+  // salon) : le plateau en partie le reapplique ensuite a chaque changement.
+  appliquerAffichage(lireAffichage())
+  appliquerTeinte(lireTeinteDuNavigateur())
   window.racinePlateau ??= createRoot(cible)
   window.racinePlateau.render(<Page />)
 }

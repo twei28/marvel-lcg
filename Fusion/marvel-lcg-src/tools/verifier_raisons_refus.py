@@ -109,6 +109,9 @@ def jouer(game_dir: str, port: int, deck: str) -> dict:
     vus = collections.Counter()
     exemples = {}
     compteur = {"asks": 0}
+    muettes = collections.Counter()
+    exemples_muettes = {}
+    sur_identite = collections.Counter()
 
     from engine.device.manager.base import DeviceManager
 
@@ -118,12 +121,19 @@ def jouer(game_dir: str, port: int, deck: str) -> dict:
             refus = json.loads(getattr(data, "refus_json", None) or "[]")
         except Exception:
             refus = []
+        try:
+            ids_identites = {j.GetIdentity().card.object_id for j in jeu.world.players
+                             if j.GetIdentity() is not None}
+        except Exception:
+            ids_identites = set()
         for o in refus:
             if not isinstance(o, dict):
                 continue
             motif = (o.get("failure_reason") or "").strip()
             if not motif:
                 continue
+            if o.get("bind_id") in ids_identites:
+                sur_identite[f"{o.get('name')} : {motif}"] += 1
             code = motif.split("|", 1)[0] if "|" in motif else motif
             vus[code] += 1
             exemples.setdefault(code, {"option": o.get("name"), "carte": o.get("bind_id")})
@@ -131,6 +141,25 @@ def jouer(game_dir: str, port: int, deck: str) -> dict:
             options = json.loads(data.options_json or "[]")
         except Exception:
             options = []
+        # CARTE MUETTE (30/09/2026) : pendant le tour, une carte de la main qui
+        # n'a ni option (pas de halo) ni refus (pas d'encart) laisse le joueur
+        # sans explication. On les compte, par nom d'evenement et par carte.
+        evenement = getattr(data, "event_name", "") or ""
+        if "Turn" in evenement:
+            try:
+                monde = jeu.world
+                avec_option = {o.get("bind_id") for o in options if isinstance(o, dict)}
+                avec_refus = {o.get("bind_id") for o in refus if isinstance(o, dict)}
+                for joueur in monde.players:
+                    for face in joueur.hand_cards.Get():
+                        oid = face.card.object_id
+                        if oid in avec_option or oid in avec_refus:
+                            continue
+                        cid = getattr(face.paper, "card_id", "?")
+                        muettes[cid] += 1
+                        exemples_muettes.setdefault(cid, {"evenement": evenement, "nom": getattr(face.paper, "name", "?")})
+            except Exception as exc:
+                muettes[f"(erreur {type(exc).__name__})"] += 1
         for o in options:
             if isinstance(o, dict) and not o.get("failure_reason"):
                 legales = [str(x) for x in (o.get("all_legal_targets") or [])]
@@ -159,7 +188,9 @@ def jouer(game_dir: str, port: int, deck: str) -> dict:
     while time.time() - debut < SECONDES_PAR_DECK:
         time.sleep(0.5)
 
-    return {"deck": deck, "asks": compteur["asks"], "vus": dict(vus), "exemples": exemples}
+    return {"deck": deck, "asks": compteur["asks"], "vus": dict(vus), "exemples": exemples,
+            "muettes": dict(muettes), "exemples_muettes": exemples_muettes,
+            "sur_identite": dict(sur_identite)}
 
 
 def main() -> None:
@@ -182,6 +213,9 @@ def main() -> None:
 
     tous = collections.Counter()
     exemples = {}
+    muettes = collections.Counter()
+    exemples_muettes = {}
+    sur_identite = collections.Counter()
     for index, deck in enumerate(decks):
         chemin = f"/tmp/raisons_refus_{deck}.json"
         if os.path.exists(chemin):
@@ -197,6 +231,12 @@ def main() -> None:
         for code, n in r["vus"].items():
             tous[code] += n
         exemples.update(r["exemples"])
+        for cid, n in (r.get("muettes") or {}).items():
+            muettes[f"{deck}:{cid}"] += n
+        for cid, ex in (r.get("exemples_muettes") or {}).items():
+            exemples_muettes.setdefault(f"{deck}:{cid}", ex)
+        for cle, n in (r.get("sur_identite") or {}).items():
+            sur_identite[f"{deck} / {cle}"] += n
         print(f"  {deck:26s} : {r['asks']:5d} questions, {len(r['vus'])} codes")
 
     print()
@@ -205,7 +245,19 @@ def main() -> None:
         etat = "OK " if code in connus else "SANS PHRASE"
         print(f"  {n:7d}  {etat:11s} {code}")
 
+    if muettes:
+        print()
+        print("CARTES MUETTES (en main pendant le tour, ni jouables ni expliquees) :")
+        for cle, n in muettes.most_common():
+            print(f"  {n:7d}  {cle}   {exemples_muettes.get(cle)}")
+
     print()
+    if sur_identite:
+        print("ECHEC : un refus est attache a la carte d'IDENTITE (heros / alter ego), "
+              "qui ne doit jamais porter l'encart « Injouable » :")
+        for cle, n in sur_identite.most_common():
+            print(f"  {n:7d}  {cle}")
+        sys.exit(1)
     if manquants:
         print(f"ECHEC : {len(manquants)} code(s) sans phrase francaise :")
         for code in manquants:

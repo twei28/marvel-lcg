@@ -1,5 +1,7 @@
 // prefs.js — préférences locales (favoris, récents, dernier deck) via localStorage.
 "use strict";
+import { lireChoix, changementsPour, appliquer, reconcilier, memesArts } from "/public/js/prepare/arts-heros-choix.js";
+
 const KEY = "mc_prepare_prefs_v1";
 
 /**
@@ -27,19 +29,64 @@ function readHeroArt() {
     catch (e) { return {}; }
 }
 
+/** Le serveur est-il la référence des arts ? `undefined` tant que la synchro n'a pas répondu. */
+let compteArts;
+
+/** Envoie des changements au compte, sans bloquer l'écran. Un invité reçoit un
+ *  refus, sans conséquence : son navigateur a déjà le choix. */
+function envoyerArts(changements) {
+    if (compteArts === false) return;
+    try {
+        fetch("/save_arts_heros", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ changements }),
+        }).catch(() => {});
+    } catch (e) { /* hors ligne : le navigateur garde le choix */ }
+}
+
 export const prefs = {
-    /** Collection d'arts des ressources doubles pour ce héros ("standard" par défaut). */
     /** Art alternatif de la carte de héros ("standard" par défaut). */
     heroArt(heroCardId) {
-        return readHeroArt()[String(heroCardId || "").split(",")[0].replace(/[a-z]$/, "")] || "standard";
+        return lireChoix(readHeroArt(), heroCardId).heros;
     },
-    setHeroArt(heroCardId, code) {
-        const o = readHeroArt();
-        const cle = String(heroCardId || "").split(",")[0].replace(/[a-z]$/, "");
-        if (!cle) return;
-        if (code === "standard") delete o[cle]; else o[cle] = code;
-        try { localStorage.setItem(KEY_HERO_ART, JSON.stringify(o)); } catch (e) { /* stockage indisponible */ }
+    /** Art propre de l'alter ego, ou null tant qu'il suit celui du héros. */
+    heroArtAlterEgo(heroCardId) {
+        return lireChoix(readHeroArt(), heroCardId).alterEgo;
     },
+    /** Range le choix d'un héros (face héros + alter ego) : toujours dans le
+     *  navigateur, et sur le compte quand il y en a un. `alterEgo` null = il
+     *  suit le héros. */
+    setArtsHeros(heroCardId, heros, alterEgo) {
+        const changements = changementsPour(heroCardId, heros, alterEgo);
+        if (!Object.keys(changements).length) return;
+        try { localStorage.setItem(KEY_HERO_ART, JSON.stringify(appliquer(readHeroArt(), changements))); }
+        catch (e) { /* stockage indisponible */ }
+        envoyerArts(changements);
+    },
+    /** Les arts sont-ils rangés sur le compte (et non seulement dans ce navigateur) ? */
+    artsSurCompte() { return compteArts === true; },
+    /** Aligne le navigateur sur le compte au chargement. Rend true si l'écran
+     *  doit être redessiné. Sans compte (invité, moteur local) : ne fait rien,
+     *  le navigateur reste la référence. */
+    async synchroniserArts() {
+        let reponse;
+        try {
+            const r = await fetch("/get_arts_heros", { cache: "no-store" });
+            if (!r.ok) return false;
+            reponse = await r.json();
+        } catch (e) { return false; }
+        compteArts = !!(reponse && reponse.compte);
+        const maj = reconcilier(readHeroArt(), reponse);
+        if (!maj) return false;
+        const change = !memesArts(readHeroArt(), maj.arts);
+        if (change) {
+            try { localStorage.setItem(KEY_HERO_ART, JSON.stringify(maj.arts)); } catch (e) { /* idem */ }
+        }
+        if (Object.keys(maj.pousser).length) envoyerArts(maj.pousser);
+        return change;
+    },
+    /** Collection d'arts des ressources doubles pour ce héros ("standard" par défaut). */
     resourceArt(heroCardId, defaut) {
         // Rien d'enregistré : on prend le défaut proposé (la collection au nom
         // du héros), et « standard » seulement à défaut de défaut.

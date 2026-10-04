@@ -18,6 +18,16 @@ export type CibleScene = {
   choisie: boolean
   /** Combien de fois cette cible est prise, quand une cible compte plusieurs fois. */
   fois?: number
+  /** Voir `EtatInteractif.ordre`. */
+  ordre?: number
+  /** Voir `EtatInteractif.ordreReculer`. */
+  ordreReculer?: () => void
+  /** Voir `EtatInteractif.ordreAvancer`. */
+  ordreAvancer?: () => void
+  /** Voir `EtatInteractif.assignerReste`. */
+  assignerReste?: () => void
+  /** Voir `EtatInteractif.assignerResteQuantite`. */
+  assignerResteQuantite?: number
   agir?: () => void
 }
 
@@ -85,6 +95,11 @@ export function CiblesScene({
                 state={cible.choisie ? 'selected' : 'targetable'}
                 onSelect={cible.agir}
                 spentCount={cible.fois}
+                orderNumber={cible.ordre}
+                onOrdreReculer={cible.ordreReculer}
+                onOrdreAvancer={cible.ordreAvancer}
+                onAssignerReste={cible.assignerReste}
+                assignerResteQuantite={cible.assignerResteQuantite}
                 counters={undefined}
                 schemeThreat={undefined}
                 allyHp={undefined}

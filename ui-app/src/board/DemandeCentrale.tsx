@@ -1,3 +1,4 @@
+import { ligneDefense } from './ligne-attaque'
 import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import { classeTonaliteAction } from './action-style'
@@ -7,11 +8,13 @@ import { nettoyerNarration, nomLisible, sansIdentifiants } from './BarreAction'
 import { t } from './langue'
 import { avecIcones, marquerRessources } from './icones-ressources'
 import { usePlacement } from './placement/usePlacement'
+import { useGlisserPanneau, styleAvecDecalage } from './placement/useGlisserPanneau'
 import { traduireMoteur } from './vocabulaire-moteur'
 import type { WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
 import { NOMS_FR } from './noms-fr'
 import { scansFrActifs } from './scans-fr'
+import './boutons-bd.css'
 
 type DemandeCentraleProps = {
   demande: Demande
@@ -46,6 +49,15 @@ type DemandeCentraleProps = {
    * » ne dit rien a un nouveau joueur, le texte dit tout.
    */
   texteCapacite?: (option: Option) => string | undefined
+  /** La carte qui porte l'option est-elle EN MAIN (« Ne pas jouer ») plutot qu'en jeu (« Ne pas utiliser ») ? */
+  estEnMain?: (bindId: number) => boolean
+  /**
+   * Ce qui est connu de l'attaque (« ATQ 2 + 3 Charge + 1 carte boost »),
+   * jamais un total : entre parentheses DANS « Ne pas défendre » (04/10/2026).
+   */
+  ligneSansDefense?: string
+  /** Le meme detail, sans abreger : l'infobulle de « Ne pas défendre ». */
+  survolSansDefense?: string
   /**
    * Loge dans la scene du deroule detaille (DeroulePhase, prop `question`)
    * plutot que pose au centre de la table : plus de placement, plus de
@@ -194,10 +206,56 @@ export function nomDeCapacite(option: Option, texteCapacite: string | undefined)
   if (!texteCapacite) return nom
   const entete = texteCapacite.match(/^[«"]?\s*([^«»"—]{2,60}?)\s*[»"]?\s+—\s/)
   if (!entete) return nom
-  // Seulement si le moteur nomme lui aussi une capacite (guillemets ou nom
-  // propre avant un tiret), jamais pour un simple « Interrupt ».
-  const moteurNomme = /^["«]/.test(option.name) || /—/.test(option.name)
+  // Seulement si le moteur nomme lui aussi une capacite, jamais pour un simple
+  // « Interrupt » ni pour un nom technique (« Generate_Energy »). Les noms SANS
+  // guillemets comptent : « Spider-Sense » restait en anglais au lieu de
+  // « Sens d'Araignée » (signale par l'utilisateur, 04/10/2026).
+  const moteurNomme =
+    /^["«]/.test(option.name) || /—/.test(option.name) || estNomDeCapacite(option.name)
   return moteurNomme ? entete[1]!.trim() : nom
+}
+
+/** Un vrai nom de capacite (« Spider-Sense »), pas un TYPE ni un nom technique. */
+function estNomDeCapacite(nomMoteur: string): boolean {
+  if (nomMoteur.includes('_')) return false
+  return !TYPES_DE_CAPACITE.test(nomMoteur.trim())
+}
+
+/** Les noms d'option qui ne sont qu'un TYPE de capacite, pas un nom propre. */
+const TYPES_DE_CAPACITE =
+  /^(forced |hero |alter-?ego )?(interrupt|response|action|resource|special|play|when revealed|defen[cs]e|attack|thwart|recover|scheme|activate|basic.*)$/i
+
+/**
+ * Le libelle du bouton de refus, a la place de « Passer » qui ne disait pas ce
+ * qu'il fait. Choix de l'utilisateur, questions une a une (04/10/2026) :
+ *  - une question de defense : « Ne pas défendre » ;
+ *  - une reaction a UNE carte en main : « Ne pas jouer Contre-attaque » ;
+ *  - une reaction a UNE capacite en jeu : « Ne pas utiliser Sens d'Araignée » ;
+ *  - plusieurs reactions proposees : « Ne rien jouer » ;
+ *  - tout le reste garde « Passer ».
+ */
+export function libelleRefus(
+  options: Option[],
+  reaction: boolean,
+  cartesParId: Map<number, WorldCard>,
+  nomPorteur?: (bindId: number) => string | undefined,
+  texteCapacite?: (option: Option) => string | undefined,
+  estEnMain?: (bindId: number) => boolean
+): string {
+  if (options.some((option) => option.name === 'Defense')) return t('Ne pas défendre')
+  if (!reaction) return t('Passer')
+  if (options.length !== 1) return t('Ne rien jouer')
+  const option = options[0]!
+  const carte = nomSource(option, cartesParId, nomPorteur)
+  if (estEnMain?.(option.bind_id)) return carte ? `${t('Ne pas jouer')} ${carte}` : t('Ne rien jouer')
+  // Capacite en jeu : le MEME nom que son bouton (« Spider-Sense », « Objection
+  // ! »), sinon celui de la carte quand le moteur ne donne qu'un TYPE de
+  // capacite : « Ne pas utiliser Interruption » ne voudrait rien dire. Vu en
+  // capture le 04/10/2026 : la premiere version ne reconnaissait que les noms
+  // entre guillemets, et ecrivait « Ne pas utiliser Spider-Man ».
+  const nommee = /^["«]/.test(option.name) || /—/.test(option.name) || estNomDeCapacite(option.name)
+  const nom = nommee ? nomDeCapacite(option, texteCapacite?.(option)) : carte
+  return nom ? `${t('Ne pas utiliser')} ${nom}` : t('Passer')
 }
 
 export function demandeDoitApparaitreAuCentre(demande: Demande | undefined): boolean {
@@ -282,6 +340,8 @@ export function EvenementCentrale({
     signature,
     actif: visible,
   })
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signature)
+  const styleDeplace = styleAvecDecalage(style, decalage)
 
   useEffect(() => {
     const propre =
@@ -301,12 +361,20 @@ export function EvenementCentrale({
     <section
       ref={panneau}
       className="evenement-centrale"
-      style={style}
+      style={styleDeplace}
       aria-live="polite"
       aria-label={t('Événement de jeu')}
     >
-      <span className="plateau-eyebrow">{libelleEvenement(eventName)}</span>
-      <strong>{avecIcones(texte)}</strong>
+      <div
+        className="poignee-glisser"
+        onPointerDown={gestesGlisser.onPointerDown}
+        onPointerMove={gestesGlisser.onPointerMove}
+        onPointerUp={gestesGlisser.onPointerUp}
+        onPointerCancel={gestesGlisser.onPointerCancel}
+      >
+        <span className="plateau-eyebrow">{libelleEvenement(eventName)}</span>
+        <strong>{avecIcones(texte)}</strong>
+      </div>
       {validationRequise && continuer ? (
         <button type="button" className="dc-continue" onClick={continuer}>
           {t('Continuer')}
@@ -327,9 +395,17 @@ export function DemandeCentrale({
   carteAuSurvol,
   nomPorteur,
   texteCapacite,
+  estEnMain,
+  ligneSansDefense,
+  survolSansDefense,
   enScene = false,
 }: DemandeCentraleProps) {
   const reaction = estFenetreDeReaction(demande)
+  // UN SEUL CHOIX, SANS « Passer » : le titre recopiait le bouton (« Fin de
+  // phase pour Domino » au-dessus de « FIN DE PHASE / Domino »). Demande de
+  // l'utilisateur, 03/10/2026 : garder seulement le bouton. Le bandeau reste en
+  // fine barre, parce que c'est lui qui sert de poignee pour deplacer le panneau.
+  const choixUnique = options.length === 1 && !demande.show_cancel && !enScene
   /**
    * Les images de vignette deja posees dans CE rendu, pour n'en poser qu'une
    * par carte. Volontairement recree a chaque rendu : c'est un compteur de
@@ -356,6 +432,14 @@ export function DemandeCentrale({
   // (z-index 400 contre 92) — le panneau est permanent, l'agrandissement non.
   const panneau = useRef<HTMLElement | null>(null)
   const { style } = usePlacement(panneau, { candidats: ['centre'], signature, actif: !enScene })
+  // Deplacement volontaire, a la poignee (le bandeau `.dc-texte`), par-dessus
+  // le placement automatique : deux decisions qui s'enchainent posent deux
+  // panneaux l'un sur l'autre, rien ne permettait d'ecarter celui du dessus.
+  // Remis a zero a chaque nouvelle decision (`signature`) : une position
+  // gardee par-dessus une decision qui n'existe plus deroute plus qu'elle
+  // n'aide. Inactif en scene (`enScene`), ou le panneau ne flotte pas.
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signature)
+  const styleDeplace: typeof style = enScene ? style : styleAvecDecalage(style, decalage)
 
   useEffect(() => {
     setRaisonVisible(undefined)
@@ -411,14 +495,26 @@ export function DemandeCentrale({
     <section
       ref={panneau}
       className={`demande-centrale${enScene ? ' est-en-scene' : ''}`}
-      style={enScene ? undefined : style}
+      style={enScene ? undefined : styleDeplace}
       role="dialog"
       aria-label="Game decision"
       aria-live="polite"
     >
-      <div className="dc-texte">
-        <span className="plateau-eyebrow">{libelleTypeDemande(demande)}</span>
-        <strong>
+      {/* Poignee de deplacement : le bandeau du haut, deja sans bouton ni
+          contenu cliquable. Un simple clic (sans franchir le seuil de
+          glisser) ne fait rien, donc rien ne casse pour qui ne glisse pas. */}
+      <div
+        className={enScene ? 'dc-texte' : `dc-texte poignee-glisser${choixUnique ? ' est-poignee-seule' : ''}`}
+        onPointerDown={enScene ? undefined : gestesGlisser.onPointerDown}
+        onPointerMove={enScene ? undefined : gestesGlisser.onPointerMove}
+        onPointerUp={enScene ? undefined : gestesGlisser.onPointerUp}
+        onPointerCancel={enScene ? undefined : gestesGlisser.onPointerCancel}
+      >
+        {/* Dans le cartouche du mechant, ni « À toi de jouer » ni « Tu peux
+            réagir » (retires le 03/10/2026, demande de l'utilisateur) : la
+            phrase et les boutons disent tout. */}
+        {enScene || choixUnique ? null : <span className="plateau-eyebrow">{libelleTypeDemande(demande)}</span>}
+        {choixUnique ? null : <strong>
           {avecIcones(
             marquerRessources(
               reaction
@@ -426,10 +522,12 @@ export function DemandeCentrale({
                 : titreDepuisSource(demande, options, cartesParId)
             )
           )}
-        </strong>
+        </strong>}
         {/* Qui peut reagir, en clair : le nom de la capacite seul (« I Object! »)
             ne le dit pas a un nouveau joueur. */}
-        {reaction ? <span className="dc-reagit">{phraseDeReaction(options, cartesParId, nomPorteur)}</span> : null}
+        {reaction && !enScene ? (
+          <span className="dc-reagit">{phraseDeReaction(options, cartesParId, nomPorteur)}</span>
+        ) : null}
       </div>
 
       <div className="af-boutons dc-boutons" onMouseOver={survolerZone} onMouseLeave={quitterZone}>
@@ -447,8 +545,16 @@ export function DemandeCentrale({
           seule vignette et on ne saurait plus ce qu'on choisit.
         */}
         {options.map((option) => {
-          const nom = reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
+          const nomBrut = reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
           const source = nomSource(option, cartesParId, nomPorteur)
+          // « Défendre avec Domino » plutôt que « DÉFENDRE / Domino » : le bouton
+          // dit d'un trait QUI défend (demande de l'utilisateur, 03/10/2026).
+          const defense = option.name === 'Defense' && source !== undefined
+          // Sa DÉF entre parentheses (04/10/2026) : on compare d'un coup d'oeil
+          // avec « Ne pas défendre (ATQ …) ».
+          const defenseur = defense ? cartesParId.get(option.bind_id) : undefined
+          const def = defense ? ligneDefense(defenseur, nomPorteur) : undefined
+          const nom = defense ? `${t('Défendre avec')} ${source}${def ? ` (${def})` : ''}` : nomBrut
           const cibles = resumeCibles(option, cartesParId)
           const indisponible = option.failure_reason !== ''
           const montrerRaison = indisponible && raisonVisible === option.id
@@ -483,7 +589,7 @@ export function DemandeCentrale({
                 type="button"
                 className={`af-action ${classeTonaliteAction(`${nom} ${demande.ability_type}`)}${
                   indisponible ? ' est-indisponible' : ''
-                }`}
+                }${defense ? ' est-defense' : ''}`}
                 aria-disabled={indisponible || undefined}
                 title={indisponible ? option.failure_reason : undefined}
                 onFocus={() => activerOption(option, carteAuSurvol?.(option) ?? carteBrute)}
@@ -491,8 +597,8 @@ export function DemandeCentrale({
                 onClick={() => choisirOuInformer(option)}
               >
                 <span>{avecIcones(marquerRessources(nom))}</span>
-                {source ? <small>{source}</small> : null}
-                {cibles ? <small className="af-cibles">{cibles}</small> : null}
+                {source && !defense ? <small>{source}</small> : null}
+                {cibles && !defense ? <small className="af-cibles">{cibles}</small> : null}
               </button>
               {montrerRaison ? <span className="af-raison">{option.failure_reason}</span> : null}
             </span>
@@ -500,42 +606,27 @@ export function DemandeCentrale({
         })}
         {demande.show_cancel ? (
           <span className="af-action-wrap">
-            <button type="button" className="af-action tonalite-general dc-pass" onClick={annuler}>
-              {t('Passer')}
-            </button>
+            {(() => {
+              const attaque = ligneSansDefense && options.some((option) => option.name === 'Defense')
+              return (
+                <button
+                  type="button"
+                  className={`af-action tonalite-general dc-pass${attaque ? ' est-defense' : ''}`}
+                  onClick={annuler}
+                  title={attaque ? (survolSansDefense ?? ligneSansDefense) : undefined}
+                >
+                  {libelleRefus(options, reaction, cartesParId, nomPorteur, texteCapacite, estEnMain)}
+                  {attaque ? ` (${ligneSansDefense})` : null}
+                </button>
+              )
+            })()}
           </span>
         ) : null}
       </div>
 
-      {/* Ce que FAIT chaque capacite proposee, sous la rangee des boutons et
-          non dans la colonne du bouton : la colonne etirait « Passer » a la
-          hauteur de la vignette et du texte reunis (signale le 12/09/2026).
-          Une ligne par option, son nom en tete quand il y en a plusieurs. */}
-      {reaction ? (
-        <div className="dc-capacites">
-          {options.map((option) => {
-            const capacite = texteCapacite?.(option)
-            if (!capacite) return null
-            return (
-              // ⚠ UNE LIGNE, ET LE RESTE AU SURVOL (15/09/2026). C'est ce que
-              // l'utilisateur a choisi le jour ou il a fallu decider ce qui
-              // cede quand le cartouche ne tient plus : « le rappel de regle
-              // sous les boutons devient une ligne courte qu'on survole pour
-              // lire en entier ». C'est le bloc le plus long et le moins urgent
-              // au moment de decider s'il faut defendre.
-              //
-              // Le `title` plutot qu'un panneau a nous : le cartouche est en
-              // `overflow-y: auto`, tout ce qu'on y dessinerait serait rogne, et
-              // au-dela de son bord bas il n'y a plus d'ecran. L'infobulle du
-              // navigateur, elle, se pose par-dessus tout et ne rogne rien.
-              <p className="dc-capacite" key={`capacite-${option.id}`} title={capacite}>
-                {options.length > 1 ? <b>{nomLisible(option)} — </b> : null}
-                {avecIcones(marquerRessources(capacite))}
-              </p>
-            )
-          })}
-        </div>
-      ) : null}
+      {/* Plus de texte de capacite sous les boutons (retire le 03/10/2026, demande
+          de l'utilisateur) : la carte, au-dessus de son bouton, se lit en grand
+          au survol. */}
       {/* Le meme agrandissement que sur la table : scan en grand, mots-cles et
           texte francais. Il se monte dans <body> (portail) et passe devant ce
           panneau, comme il passe devant la table. */}

@@ -7,6 +7,7 @@ import type { Catalogue } from './catalogue'
 import { t } from './langue'
 import { nomAffiche } from './noms-cartes-fr'
 import { enModeFeuille, usePlacement } from './placement/usePlacement'
+import { styleAvecDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import { codeMarvelcdb, urlMarvelcdb } from './marvelcdb'
 import { isScheme, isUnit, isVisibleFor, type WorldCard } from './world'
 
@@ -443,10 +444,16 @@ export function MenuActionsCarte({
 
   // Fixe, comme les autres panneaux de decision : il s'ouvre toujours au meme
   // endroit. Une carte agrandie passe devant lui, pas l'inverse.
+  const signaturePlacement = `${carte.id}|${mode}|${options.map((o) => o.id).join(',')}`
   const { style: stylePlacement } = usePlacement(ref, {
     candidats: ['centre'],
-    signature: `${carte.id}|${mode}|${options.map((o) => o.id).join(',')}`,
+    signature: signaturePlacement,
   })
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »).
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signaturePlacement)
+  const styleDeplace = styleAvecDecalage(stylePlacement, decalage)
 
   const activerOption = (option: Option) => {
     if (option.failure_reason) return
@@ -594,7 +601,7 @@ export function MenuActionsCarte({
     return (
       <section
         className="actions-flottantes"
-        style={stylePlacement}
+        style={styleDeplace}
         ref={ref}
         role="dialog"
         aria-label={`${t('Actions de')} ${carte.name}`}
@@ -607,6 +614,18 @@ export function MenuActionsCarte({
             <ScanCard {...carte} onSelect={undefined} highlight={false} />
           </div>
         ) : null}
+        {/* Poignee de deplacement : ce mode n'a pas de bandeau de titre comme
+            `.ma-entete`, juste la carte (mobile) et les boutons -- un petit
+            libelle sert de zone dediee, sans bouton dedans. */}
+        <span
+          className="af-poignee poignee-glisser"
+          onPointerDown={gestesGlisser.onPointerDown}
+          onPointerMove={gestesGlisser.onPointerMove}
+          onPointerUp={gestesGlisser.onPointerUp}
+          onPointerCancel={gestesGlisser.onPointerCancel}
+        >
+          {carte.name}
+        </span>
         <button type="button" className="af-fermer" aria-label={t('Fermer')} onClick={fermer}>
           X
         </button>
@@ -650,7 +669,7 @@ export function MenuActionsCarte({
   return (
     <section
       className={`menu-actions-carte${mode === 'target' ? ' mode-cible-focus' : ''}`}
-      style={stylePlacement}
+      style={styleDeplace}
       ref={ref}
       role="dialog"
       aria-label={`${t('Actions de')} ${carte.name}`}
@@ -661,7 +680,13 @@ export function MenuActionsCarte({
         </div>
       ) : null}
       <header className="ma-entete">
-        <div>
+        <div
+          className="poignee-glisser"
+          onPointerDown={gestesGlisser.onPointerDown}
+          onPointerMove={gestesGlisser.onPointerMove}
+          onPointerUp={gestesGlisser.onPointerUp}
+          onPointerCancel={gestesGlisser.onPointerCancel}
+        >
           <span className="plateau-eyebrow">
             {mode === 'target' ? t('Cible') : t(kindLabel[carte.kind])}
           </span>

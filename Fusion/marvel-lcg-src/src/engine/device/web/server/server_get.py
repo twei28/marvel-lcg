@@ -13,6 +13,10 @@ REPLAY_FOLDERS          = ConfigVariables.Folders('replay_folders')
 # La fiche du mode Legacy, separee par place comme l'historique et les hauts
 # faits : la progression appartient au compte, pas au serveur.
 LEGACY_FILE             = ConfigVariables.File('legacy_file', '../legacy.json')
+# Les arts alternatifs de heros choisis par le titulaire de la table : meme
+# cle que le stockage du navigateur (`mc_hero_art_v1`), mais portee par le
+# compte pour suivre le joueur d'un appareil a l'autre.
+ARTS_HEROS_FILE         = ConfigVariables.File('arts_heros_file', '../arts-heros.json')
 DECK_FOLDERS            = ConfigVariables.Folders('deck_folders')
 STARTER_DECK_FOLDER     = ConfigVariables.Folder('starter_deck_folder')
 ENCOUNTER_SETS_FOLDERS  = ConfigVariables.Folders('encounter_sets_folders')
@@ -274,11 +278,26 @@ class GameServerGet(GameServerBase):
     async def list_starter_deck(self, request: web.Request) -> web.Response:
         return self.ListFile(STARTER_DECK_FOLDER.value)
 
+    def _dossiers_replay_autorises(self) -> list[str]:
+        return [REPLAY_FOLDERS.value[0]] if READ_ONLY_FIRST_REPLAY_FOLDER.value else list(REPLAY_FOLDERS.value)
+
     async def list_replay_files(self, request: web.Request) -> web.Response:
-        if READ_ONLY_FIRST_REPLAY_FOLDER.value:
-            return self.ListFile(REPLAY_FOLDERS.value[0])
-        else:
-            return self.ListFile(*REPLAY_FOLDERS.value)
+        return web.json_response(FileManager.ListFiles(*self._dossiers_replay_autorises()))
+
+    async def delete_replay(self, request: web.Request) -> web.Response:
+        # Suppression manuelle depuis "Reprendre une partie" (24/09/2026,
+        # demande de l'utilisateur : la liste s'accumulait sans moyen de la
+        # nettoyer). `nom` doit etre EXACTEMENT une entree de la liste que le
+        # serveur vient de rendre -- pas un chemin reconstruit a partir de
+        # morceaux envoyes par le client -- pour qu'aucune requete ne puisse
+        # faire effacer un fichier hors des dossiers de replay autorises.
+        donnees = await request.json()
+        nom = str(donnees.get('nom') or '')
+        if nom not in FileManager.ListFiles(*self._dossiers_replay_autorises()):
+            return web.json_response({'error': f'sauvegarde introuvable : {nom}'}, status=404)
+        import os
+        os.remove(nom)
+        return web.json_response({'result': 'deleted', 'nom': nom})
 
     async def list_puzzle_files(self, request: web.Request) -> web.Response:
         return self.ListFile(PUZZLE_FOLDER.value)
@@ -288,7 +307,35 @@ class GameServerGet(GameServerBase):
 
     def ReadReplayFile(self, file_path: str) -> web.Response:
         from game.scene.scene import Scene
+        from cards.database import CardsDB
         replay, checksum = Json.LoadAsInternal(file_path, Scene)
+        # ⚠⚠ NOM LISIBLE, PAS L'IDENTIFIANT BRUT (23/09/2026, demande de
+        # l'utilisateur, capture a l'appui : « on comprend rien »). Cette
+        # reponse alimentait jusqu'ici la liste "Resume a game" de l'assistant
+        # avec des `card_id` tels quels ("01113", "03001a,03001b") -- illisible
+        # pour un joueur. `CardsDB.FindCardPaper` PLANTE (`assert False`) sur
+        # un id absent de la base courante : une sauvegarde d'une version
+        # anterieure du moteur ne doit jamais faire echouer cette route pour
+        # autant (meme principe que `charger_partie_interrompue`, qui ne leve
+        # jamais). Repli sur l'id lui-meme si la carte est introuvable.
+        def nom_lisible(card_id: str) -> str:
+            # Le « * » en tete du nom imprime (carte unique) est un marqueur
+            # de donnees, pas du texte a montrer : meme nettoyage que
+            # `cleanName` cote assistant (public/js/prepare/catalog.js).
+            #
+            # `card_id` peut porter un id COMBINE recto/verso ("03001a,03001b")
+            # : c'est le format que `HeroDescriptor.hero[0]` porte deja pour
+            # une identite a deux faces, et que public/js/prepare/catalog.js
+            # decoupe au meme endroit (`.split(",")[0]`, lignes ~101 et ~219).
+            # Oublier ce decoupage ici faisait planter `FindCardPaper` (id
+            # introuvable tel quel) et retomber sur l'id brut affiche cru dans
+            # "Resume a game" (24/09/2026, capture a l'appui).
+            id_seul = card_id.split(",")[0]
+            try:
+                return CardsDB.FindCardPaper(id_seul).name.lstrip("*").strip()
+            except Exception:
+                return card_id
+        villain_id = replay.campaign.villain[0] if replay.campaign.villain else replay.campaign.schemes[0]
         return web.json_response({
             "version": replay.version,
             "is_puzzle": replay.is_puzzle,
@@ -296,8 +343,8 @@ class GameServerGet(GameServerBase):
             "cover": replay.cover,
             "path": replay.path,
             "comment": replay.comment,
-            "villain": replay.campaign.villain[0] if replay.campaign.villain else replay.campaign.schemes[0],
-            "players": [x.hero[0] for x in replay.players],
+            "villain": nom_lisible(villain_id),
+            "players": [nom_lisible(x.hero[0]) for x in replay.players],
             "seed": replay.seed,
             "checksum": checksum == "Ok",
             "author": "",
@@ -749,8 +796,35 @@ class GameServerGet(GameServerBase):
 
         controller = self.get_first_controller(request)
         world = controller.world if controller else None
-        if not world:
-            # Table neuve, ou eteinte : aucune partie ne tourne.
+        # ⚠⚠ ET LE MONDE DOIT ETRE CELUI DE LA SCENE COURANTE (21/09/2026,
+        # essai de la chaine entiere a l'ecran). `debut` vient de la SESSION,
+        # ou `SetScene` l'ecrit des la seconde ou `/new` arrive. Le MONDE, lui,
+        # n'est remonte que lorsque le fil du jeu reprend la main et qu'un
+        # client s'est connecte (`GameSession.GameSetup` ->
+        # `controller_manager.WaitConnect()`). Entre les deux, cette route
+        # melangeait le repere de la partie NEUVE au heros de l'ANCIENNE.
+        #
+        # Mesure sur moteur local : apres un second `/new`, la route a rendu
+        # pendant plus de six secondes `debut` neuf et `heros` ancien — et tant
+        # qu'aucun VRAI plateau ne se connectait, elle ne s'en est jamais
+        # remise. La fenetre n'est donc pas une milliseconde de course : elle
+        # dure le temps que met l'hote a ouvrir sa table, et le salon sonde
+        # toutes les deux secondes.
+        #
+        # Ce melange n'est pas qu'un message de travers. Un hote qui relance a
+        # DEUX alors que la manche precedente se jouait a TROIS : le siege 2 y
+        # lisait SON heros (celui de l'ancien monde) sous un repere neuf, se
+        # reconnaissait, et partait vers une table ou son siege n'existe pas —
+        # au lieu de lire « l'hote a lance sans ce siege », qu'il ne verrait
+        # plus jamais puisqu'il a quitte le salon.
+        #
+        # On ne rend donc RIEN plutot qu'un melange : la partie que `debut`
+        # nomme n'a pas encore commence, et celle qui tient encore la table est
+        # finie. C'est mot pour mot la reponse d'une table neuve, et le salon en
+        # fait ce qu'il faut — il attend un tour de plus.
+        if not world:  # CONSTAT ROUGE TEMPORAIRE, a restaurer
+            # Table neuve, eteinte, ou partie annoncee mais pas encore montee :
+            # aucune partie ne tourne.
             return web.json_response({'en_jeu': False, 'p': p, 'heros': '', 'debut': ''})
 
         joueurs = world.scene.players or []
@@ -1271,6 +1345,242 @@ class GameServerGet(GameServerBase):
         os.replace(provisoire, chemin)
         return web.json_response({'ok': True})
 
+    def _est_titulaire_du_compte(self, request: web.Request) -> bool:
+        """Ce client est-il le TITULAIRE d'un compte du site, sur sa propre table ?
+
+        Deux conditions : le moteur tourne sous le site (`site_url` renseignee
+        par l'orchestrateur), et le client tient le siege 0. Un invite arrive
+        par un lien de siege n'a pas de compte ici, et un moteur lance a la
+        main (`site_url` vide) n'a pas de compte du tout : dans les deux cas le
+        choix d'art reste dans le navigateur.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS, SITE_URL
+        if not (SITE_URL.value or ''):
+            return False
+        passwords = SEAT_PASSWORDS.value
+        return not (passwords and any(passwords)) or self.tient_le_siege(request, 0)
+
+    @staticmethod
+    def _arts_heros_valides(brut) -> 'dict[str, str]':
+        """Ne garde que les entrees bien formees : cle de heros (avec « b »
+        eventuel pour l'alter ego) -> code de serie. Le reste est ignore, un
+        fichier ne doit jamais accepter n'importe quoi du navigateur."""
+        import re
+        propres = {}
+        if isinstance(brut, dict):
+            for cle, code in brut.items():
+                if (isinstance(cle, str) and isinstance(code, str)
+                        and re.fullmatch(r'[a-z]{0,4}\d{1,6}b?', cle)
+                        and re.fullmatch(r'[a-z0-9]{1,12}', code)):
+                    propres[cle] = code
+        return propres
+
+    async def get_arts_heros(self, request: web.Request) -> web.Response:
+        """Les arts alternatifs de ce compte.
+
+        `compte` dit si le serveur est la reference : faux pour un invite ou un
+        moteur local, et le client garde alors son navigateur. `existe` dit si
+        le compte a deja un fichier : sinon le client y verse ce que son
+        navigateur contient (premier passage), sans rien perdre.
+        """
+        import json as json_lib
+        import os
+        if not self._est_titulaire_du_compte(request):
+            return web.json_response({'compte': False, 'existe': False, 'arts': {}})
+        chemin = ARTS_HEROS_FILE.value
+        if not chemin or not os.path.isfile(chemin):
+            return web.json_response({'compte': True, 'existe': False, 'arts': {}})
+        try:
+            with open(chemin, encoding='utf-8') as f:
+                lu = json_lib.load(f)
+        except Exception:
+            # Fichier illisible : comme absent, le client le reecrit depuis son navigateur.
+            return web.json_response({'compte': True, 'existe': False, 'arts': {}})
+        return web.json_response({'compte': True, 'existe': True,
+                                  'arts': self._arts_heros_valides(lu)})
+
+    async def save_arts_heros(self, request: web.Request) -> web.Response:
+        """Applique des changements au fichier d'arts du compte.
+
+        Corps : `{"changements": {"38001": "rog", "38001b": null}}` ; `null`
+        efface la cle (retour au scan standard).
+
+        ⚠ DES CHANGEMENTS, PAS LE FICHIER ENTIER : deux appareils ouverts en
+        meme temps ne s'ecrasent que sur le meme heros. Le fichier est relu a
+        chaque appel.
+        ⚠ ECRITURE ATOMIQUE, comme `save_legacy`.
+        """
+        import json as json_lib
+        import os
+        if not self._est_titulaire_du_compte(request):
+            return web.json_response({'error': 'reserve au titulaire du compte'}, status=403)
+        data = await request.json()
+        changements = data.get('changements') if isinstance(data, dict) else None
+        if not isinstance(changements, dict) or len(changements) > 400:
+            return web.json_response({'error': 'changements invalides'}, status=400)
+        chemin = ARTS_HEROS_FILE.value
+        if not chemin:
+            return web.json_response({'error': 'pas de fichier d arts'}, status=500)
+        arts = {}
+        try:
+            with open(chemin, encoding='utf-8') as f:
+                arts = self._arts_heros_valides(json_lib.load(f))
+        except Exception:
+            arts = {}
+        ajouts = self._arts_heros_valides(
+            {c: v for c, v in changements.items() if v is not None})
+        for cle, valeur in changements.items():
+            if valeur is None:
+                arts.pop(cle, None)
+        arts.update(ajouts)
+        dossier = os.path.dirname(chemin)
+        if dossier:
+            os.makedirs(dossier, exist_ok=True)
+        provisoire = chemin + '.tmp'
+        with open(provisoire, 'w', encoding='utf-8') as f:
+            json_lib.dump(arts, f, ensure_ascii=False, indent=1, sort_keys=True)
+        os.replace(provisoire, chemin)
+        return web.json_response({'ok': True, 'arts': arts})
+
+    # Les preferences du compte : une liste FERMEE de cles et de valeurs. Rien
+    # d'autre n'est jamais ecrit, un fichier ne doit pas accepter n'importe quoi
+    # du navigateur.
+    PREFERENCES_PERMISES = {'affichage': ('normal', 'sobre')}
+
+    # La TEINTE du fond (04/10/2026) : « h,s,l », trois entiers bornes. Les
+    # bornes sont celles de la roue (`board/teinte.ts`,
+    # `public/js/prepare/teinte-choix.js`) : teinte 0-359, saturation 0-18 (la
+    # roue n'offre que des couleurs ternes), luminosite 6-62 (jusqu'au gris
+    # clair). Toujours une liste fermee : la forme est verifiee, pas devinee.
+    TEINTE_BORNES = ((0, 359), (0, 18), (6, 62))
+
+    @classmethod
+    def _teinte_valide(cls, valeur) -> bool:
+        if not isinstance(valeur, str):
+            return False
+        morceaux = valeur.split(',')
+        if len(morceaux) != 3 or not all(m.isdigit() for m in morceaux):
+            return False
+        return all(bas <= int(m) <= haut for m, (bas, haut) in zip(morceaux, cls.TEINTE_BORNES))
+
+    # LA TABLE PERSONNALISABLE (04/10/2026) : une disposition par nombre de
+    # joueurs, cles `table-1` a `table-4`. « 12x8|c,l,w,h,t;... » : la grille
+    # (fixe), puis NEUF zones dans l'ordre de `ZONES` (ui-app/src/board/
+    # disposition.ts) — colonne et ligne de depart, largeur et hauteur en
+    # cases, taille des cartes en pour cent (60-160). Entieres dans la grille,
+    # sans chevauchement : le plateau n'a jamais a reparer ce qu'il relit.
+    TABLE_CLES = ('table-1', 'table-2', 'table-3', 'table-4')
+    TABLE_GRILLE = (12, 8)
+    TABLE_ZONES = 9
+    TABLE_TAILLE = (60, 160)
+
+    @classmethod
+    def _table_valide(cls, valeur) -> bool:
+        if not isinstance(valeur, str) or len(valeur) > 400:
+            return False
+        tete, _, corps = valeur.partition('|')
+        if tete != f'{cls.TABLE_GRILLE[0]}x{cls.TABLE_GRILLE[1]}':
+            return False
+        zones = corps.split(';')
+        if len(zones) != cls.TABLE_ZONES:
+            return False
+        rects = []
+        for zone in zones:
+            morceaux = zone.split(',')
+            if len(morceaux) != 5 or not all(m.isdigit() for m in morceaux):
+                return False
+            c, l, w, h, t = (int(m) for m in morceaux)
+            if c < 1 or l < 1 or w < 1 or h < 1:
+                return False
+            if c + w - 1 > cls.TABLE_GRILLE[0] or l + h - 1 > cls.TABLE_GRILLE[1]:
+                return False
+            if not cls.TABLE_TAILLE[0] <= t <= cls.TABLE_TAILLE[1]:
+                return False
+            rects.append((c, l, w, h))
+        for i, (c1, l1, w1, h1) in enumerate(rects):
+            for (c2, l2, w2, h2) in rects[i + 1:]:
+                if c1 < c2 + w2 and c2 < c1 + w1 and l1 < l2 + h2 and l2 < l1 + h1:
+                    return False
+        return True
+
+    @staticmethod
+    def _chemin_preferences() -> str:
+        """Le fichier de preferences du compte, a cote de son fichier d'arts
+        (`arts-heros-serveur-3.json` -> `preferences-serveur-3.json`). Derive
+        plutot que configure : la configuration des tables n'a pas a bouger."""
+        import os
+        arts = ARTS_HEROS_FILE.value or ''
+        if not arts:
+            return ''
+        return os.path.join(os.path.dirname(arts),
+                            os.path.basename(arts).replace('arts-heros', 'preferences', 1))
+
+    @classmethod
+    def _preferences_valides(cls, brut) -> 'dict[str, str]':
+        propres = {}
+        if isinstance(brut, dict):
+            for cle, valeur in brut.items():
+                if cle == 'teinte':
+                    if cls._teinte_valide(valeur):
+                        propres[cle] = valeur
+                elif cle in cls.TABLE_CLES:
+                    if cls._table_valide(valeur):
+                        propres[cle] = valeur
+                elif valeur in cls.PREFERENCES_PERMISES.get(cle, ()):
+                    propres[cle] = valeur
+        return propres
+
+    async def get_preferences(self, request: web.Request) -> web.Response:
+        """Les preferences de ce compte, sur le meme contrat que `get_arts_heros` :
+        `compte` faux = le navigateur reste la reference ; `existe` faux = le
+        client y verse ce que son navigateur contient."""
+        import json as json_lib
+        import os
+        if not self._est_titulaire_du_compte(request):
+            return web.json_response({'compte': False, 'existe': False, 'preferences': {}})
+        chemin = self._chemin_preferences()
+        if not chemin or not os.path.isfile(chemin):
+            return web.json_response({'compte': True, 'existe': False, 'preferences': {}})
+        try:
+            with open(chemin, encoding='utf-8') as f:
+                lu = json_lib.load(f)
+        except Exception:
+            return web.json_response({'compte': True, 'existe': False, 'preferences': {}})
+        return web.json_response({'compte': True, 'existe': True,
+                                  'preferences': self._preferences_valides(lu)})
+
+    async def save_preferences(self, request: web.Request) -> web.Response:
+        """Applique des changements (`{"changements": {"affichage": "sobre"}}`,
+        `null` efface). Ecriture atomique, fichier relu a chaque appel."""
+        import json as json_lib
+        import os
+        if not self._est_titulaire_du_compte(request):
+            return web.json_response({'error': 'reserve au titulaire du compte'}, status=403)
+        data = await request.json()
+        changements = data.get('changements') if isinstance(data, dict) else None
+        if not isinstance(changements, dict) or len(changements) > 20:
+            return web.json_response({'error': 'changements invalides'}, status=400)
+        chemin = self._chemin_preferences()
+        if not chemin:
+            return web.json_response({'error': 'pas de fichier de preferences'}, status=500)
+        try:
+            with open(chemin, encoding='utf-8') as f:
+                preferences = self._preferences_valides(json_lib.load(f))
+        except Exception:
+            preferences = {}
+        for cle, valeur in changements.items():
+            if valeur is None:
+                preferences.pop(cle, None)
+        preferences.update(self._preferences_valides(changements))
+        dossier = os.path.dirname(chemin)
+        if dossier:
+            os.makedirs(dossier, exist_ok=True)
+        provisoire = chemin + '.tmp'
+        with open(provisoire, 'w', encoding='utf-8') as f:
+            json_lib.dump(preferences, f, ensure_ascii=False, indent=1, sort_keys=True)
+        os.replace(provisoire, chemin)
+        return web.json_response({'ok': True, 'preferences': preferences})
+
     async def sauver_pour_le_site(self, request: web.Request) -> web.Response:
         """Ecrit la partie en cours dans les sauvegardes, a la demande du site.
 
@@ -1510,6 +1820,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_max_timeout', self.get_max_timeout)
         self.AddAwaitGetSecurity('/get_puzzle_json', self.get_puzzle_json)
         self.AddAwaitGetSecurity('/get_replay_json', self.get_replay_json)
+        self.AddPostSecurity('/delete_replay', self.delete_replay)
 
         self.AddAwaitGetSecurity('/marvelcdb_card', self.marvelcdb_card)
         self.AddPostSecurity('/set_cursor', self.set_cursor)
@@ -1537,6 +1848,10 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/save_images_cartes', self.save_images_cartes)
         self.AddAwaitGetSecurity('/get_legacy', self.get_legacy)
         self.AddPostSecurity('/save_legacy', self.save_legacy)
+        self.AddAwaitGetSecurity('/get_arts_heros', self.get_arts_heros)
+        self.AddPostSecurity('/save_arts_heros', self.save_arts_heros)
+        self.AddAwaitGetSecurity('/get_preferences', self.get_preferences)
+        self.AddPostSecurity('/save_preferences', self.save_preferences)
         # Sauvegarde demandee par le SITE avant de fermer une table inactive :
         # jeton du site en guise d'authentification, et pas de controle de
         # version (le site n'est pas un client du jeu).

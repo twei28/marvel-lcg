@@ -26,6 +26,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import html
+import re
 import json
 import os
 import secrets
@@ -606,6 +607,21 @@ VERROU_DEMARRAGE = threading.Lock()
 # se reproposera, ce qui est le bon repli.
 A_REPRENDRE: set[str] = set()
 
+# ⚠⚠ COURSE CORRIGEE (23/09/2026, signale par l'utilisateur : « on fait
+# resume et on arrive sur la page de choix de style de partie »). `lancer_jeu`
+# ATTEND DEJA que le moteur reponde avant de rendre la main -- donc des que
+# `demarrer_en_fond` en ressort, `/pret` (interroge par la page d'attente
+# toutes les 1,5 s, DANS UNE AUTRE REQUETE) voit le port repondre et redirige
+# aussitot le joueur vers la table, AVANT que `charger_partie_interrompue`
+# (appelee juste apres, dans le MEME fil de fond) n'ait eu le temps d'envoyer
+# le rechargement de la sauvegarde au moteur. Le joueur atterrit donc sur
+# l'ecran par defaut du moteur -- le choix de heros et de scenario -- une
+# ou deux secondes avant que sa partie ne soit effectivement rechargee, sans
+# que rien ne rafraichisse la page pour lui. Rempli juste avant l'appel a
+# `charger_partie_interrompue`, vide juste apres (succes ou echec) : `/pret`
+# doit rester « pas encore » tant que ce chargement est en cours.
+REPRISE_EN_COURS: set[str] = set()
+
 
 def charger_partie_interrompue(partie: "Partie", pseudo: str) -> bool:
     """Demande au moteur de recharger la partie sauvegardee de ce joueur.
@@ -711,16 +727,27 @@ def demarrer_en_fond(pseudo: str, joueurs: int = 1) -> None:
 
     def travail() -> None:
         try:
-            partie = lancer_jeu(pseudo)
+            partie = lancer_jeu(pseudo, joueurs)
             journal_partie_ouverte(partie, pseudo)
             # ⚠ APRES `lancer_jeu`, QUI ATTEND DEJA QUE LE MOTEUR REPONDE : lui
             # demander de charger avant qu'il ecoute ne donnerait rien.
             if pseudo in A_REPRENDRE:
-                A_REPRENDRE.discard(pseudo)
-                charger_partie_interrompue(partie, pseudo)
+                REPRISE_EN_COURS.add(pseudo)
+                try:
+                    charger_partie_interrompue(partie, pseudo)
+                finally:
+                    REPRISE_EN_COURS.discard(pseudo)
         except Exception as erreur:
             ERREURS_DEMARRAGE[pseudo] = str(erreur)
         finally:
+            # ⚠ TOUJOURS ICI, MEME SI `lancer_jeu` A LEVE. Avant, ce retrait
+            # vivait dans le `if` ci-dessus, apres un `lancer_jeu` reussi : un
+            # echec de demarrage (moteur mort, port deja pris...) laissait
+            # `pseudo` dans `A_REPRENDRE` pour de bon, et `/pret` -- qui le
+            # verifie desormais aussi -- restait bloque a `false` sur TOUT
+            # lancement suivant de ce compte, meme sans rapport avec une
+            # reprise, jusqu'au redemarrage du site.
+            A_REPRENDRE.discard(pseudo)
             with VERROU_DEMARRAGE:
                 DEMARRAGES.discard(pseudo)
 
@@ -2659,49 +2686,129 @@ PAGE = """<!doctype html>
 {tete}
 {tete_appli}
 <title>NarwhalChampions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
 <style>
-  :root {{ color-scheme: dark; }}
-  body {{ margin:0; font:16px/1.5 system-ui,sans-serif; background:#0e1116; color:#e6edf3;
-         display:flex; justify-content:center; padding:2rem 1rem; }}
-  main {{ width:100%; max-width:44rem; }}
-  h1 {{ font-size:1.9rem; margin:0 0 .25rem; letter-spacing:-.02em; }}
-  p.sous {{ color:#9aa7b4; margin:0 0 2rem; }}
+  /* ===== REFONTE (23/09/2026) ================================================
+     Alignee sur le plateau de jeu (ui-app/public/css/prepare/prepare.css) :
+     fond quasi noir, le rouge Marvel comme SEULE couleur d'action, Anton pour
+     les titres (meme police que l'ecran de selection de heros). Avant : une
+     seule passe de couleur sur l'ancien HTML brut (liens colles par des
+     « &middot; », pas de hierarchie typographique) -- signale par
+     l'utilisateur comme insuffisant : « juste ajoute du rouge ». Cette passe
+     change aussi la STRUCTURE (barre de nav, boutons de choix), pas
+     seulement l'habillage -- voir _barre() et page_reprise().
+     Pour revenir a l'ancien rendu : `git log` sur ce fichier, avant ce
+     commit. */
+  :root {{
+    color-scheme: dark;
+    --bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;
+    --text:#eef1f5; --muted:#8b95a3;
+    --accent:#e62429; --accent-hover:#ff3b40; --accent-soft:rgba(230,36,41,.14); --accent-ink:#fff;
+    --ok:#3fb950; --danger:#f85149; --warn:#e8a53d;
+    --affiche: "Anton", "Arial Narrow", sans-serif;
+  }}
+  * {{ box-sizing:border-box; }}
+  /* Fond a trame de points (23/09/2026, demande de l'utilisateur) : meme
+     esprit que les trames « comics » des cadres de cartes du jeu. Degrade
+     en calque au-dessus : dense en haut, disparait vers le bas -- la
+     couche de degrade RECOUVRE les points d'une couleur opaque (--bg) a
+     mesure qu'on descend, elle ne les eclaircit pas. */
+  body {{ margin:0; font:16px/1.55 system-ui,sans-serif; color:var(--text);
+         display:flex; justify-content:center; padding:0 1.1rem 2.5rem;
+         background-color:var(--bg);
+         background-image:
+           linear-gradient(to bottom, transparent 0%, transparent 12%, var(--bg) 60%),
+           radial-gradient(rgba(230,36,41,.4) 1px, transparent 1.6px);
+         background-size:100% 100%, 15px 15px;
+         background-repeat:no-repeat, repeat;
+         /* ⚠⚠ « fixed » RETIRE (23/09/2026, « ca rame blinde sur le
+            telephone » signale juste apres le deploiement) : un fond
+            attache au VIEWPORT force le navigateur a le repeindre a
+            chaque frame de defilement -- il ne peut plus deleguer le
+            scroll au compositeur seul. Connu pour etre couteux sur
+            mobile, plus encore avec un motif REPETE (le halftone,
+            15x15px). `scroll` (l'attache par defaut, l'element plutot
+            que le viewport) est visuellement quasi identique sur une
+            page aussi courte que celles du site, et rend le defilement
+            fluide. */
+         background-attachment:scroll, scroll; }}
+  main {{ width:100%; max-width:40rem; padding-top:5.5rem; }}
+  @media (max-width:640px) {{ main {{ padding-top:7.4rem; }} }}
+  h1 {{ font:clamp(2.1rem,7vw,2.7rem)/1 var(--affiche); margin:0; font-weight:400;
+       letter-spacing:.01em; text-transform:uppercase; text-wrap:balance; }}
+  p.sous {{ color:var(--muted); margin:0 0 1.75rem; font-size:1.05rem; }}
   form {{ display:flex; gap:.5rem; margin-bottom:2rem; }}
-  input, button {{ font:inherit; border-radius:.5rem; border:1px solid #30363d; padding:.6rem .9rem; }}
-  input {{ flex:1; background:#161b22; color:inherit; }}
-  button {{ background:#1f6feb; color:#fff; border-color:#1f6feb; cursor:pointer; }}
-  button:hover {{ background:#388bfd; }}
-  button.rouge {{ background:transparent; color:#f85149; border-color:#f85149; padding:.35rem .7rem; font-size:.85rem; }}
-  .table {{ border:1px solid #30363d; border-radius:.6rem; padding:1rem 1.1rem; margin-bottom:1rem; background:#161b22; }}
-  .entete {{ display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.7rem; }}
-  .entete strong {{ font-size:1.05rem; }}
-  .mdp {{ color:#9aa7b4; font-size:.9rem; }}
-  .mdp code {{ background:#0e1116; padding:.15rem .4rem; border-radius:.3rem; color:#e6edf3; }}
+  input, button {{ font:inherit; border-radius:0; border:1px solid var(--border); padding:.65rem .9rem; }}
+  input {{ flex:1; background:var(--panel-2); color:inherit; }}
+  input:focus-visible, button:focus-visible {{ outline:2px solid var(--accent); outline-offset:2px; }}
+  button {{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent);
+           cursor:pointer; font-weight:700; transition:background .12s ease,transform .12s ease; }}
+  button:hover {{ background:var(--accent-hover); }}
+  button:active {{ transform:scale(.98); }}
+  button.rouge {{ background:transparent; color:var(--muted); border-color:var(--border);
+                 padding:.35rem .7rem; font-size:.85rem; font-weight:400; }}
+  button.rouge:hover {{ background:var(--panel-2); color:var(--danger); border-color:var(--danger); }}
+  /* Coins nets partout (23/09/2026, demande de l'utilisateur : « comme dans
+     la selection de perso et de vilains », ui-app/.../prepare.css .hero-card
+     n'a AUCUN border-radius) -- fini les coins arrondis herites du premier
+     essai. */
+  .table {{ border:1px solid var(--border); border-radius:0; padding:1.4rem 1.5rem;
+           margin-bottom:1.1rem; background:var(--panel);
+           border-top:3px solid var(--accent);
+           box-shadow:0 24px 48px -20px rgba(0,0,0,.85), 0 8px 16px -10px rgba(0,0,0,.7);
+           opacity:0; animation:entree .5s ease-out .05s forwards; }}
+  @keyframes entree {{ from {{ opacity:0; transform:translateY(10px); }} to {{ opacity:1; transform:translateY(0); }} }}
+  @media (prefers-reduced-motion:reduce) {{ .table {{ animation:none; opacity:1; }} }}
+  .entete-partie {{ display:flex; gap:1rem; align-items:flex-start; margin-bottom:.8rem; }}
+  .entete-partie strong {{ font-size:1.25rem; font-weight:700; letter-spacing:-.01em; display:block; }}
+  .portrait-vilain {{ flex:none; width:56px; height:81px; object-fit:cover; border:1px solid var(--border); }}
+  .badges-partie {{ display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.45rem; }}
+  .badge-partie {{ font-size:.78rem; color:var(--muted); background:var(--panel-2);
+                  border:1px solid var(--border); padding:.15rem .55rem; }}
+  .mdp {{ color:var(--muted); font-size:.9rem; }}
+  .mdp code {{ background:var(--bg); padding:.15rem .4rem; border-radius:.3rem; color:var(--text); }}
   ul {{ list-style:none; margin:0; padding:0; }}
   li {{ display:flex; align-items:center; gap:.6rem; padding:.3rem 0; }}
-  li span {{ min-width:8.5rem; color:#9aa7b4; font-size:.9rem; }}
-  li a {{ color:#58a6ff; word-break:break-all; font-size:.9rem; }}
-  .vide {{ color:#9aa7b4; }}
-  .choix {{ display:grid; gap:.75rem; margin-bottom:1.5rem; }}
+  li span {{ min-width:8.5rem; color:var(--muted); font-size:.9rem; }}
+  li a {{ color:var(--accent); word-break:break-all; font-size:.9rem; }}
+  .vide {{ color:var(--muted); }}
+  /* Les deux choix de /entrer (23/09/2026) : icone + texte. L'option
+     PRINCIPALE (la premiere du groupe -- « Commencer autre chose », voir
+     page_reprise()) est nettement plus grande, fond rouge plein et icone
+     blanche ; la secondaire reste petite et discrete. La hierarchie se voit
+     avant meme de lire les mots. */
+  .choix {{ display:grid; gap:.6rem; margin-bottom:1.5rem; }}
   .choix form {{ display:block; margin:0; }}
-  .choix button {{ width:100%; text-align:left; padding:.9rem 1.1rem; }}
-  .choix b {{ display:block; font-size:1rem; font-weight:600; }}
-  .choix em {{ display:block; font-size:.85rem; font-style:normal; opacity:.75; margin-top:.2rem; }}
-  button.calme {{ background:#161b22; color:#e6edf3; border-color:#30363d; }}
-  button.calme:hover {{ background:#1c232c; }}
+  .choix button {{ width:100%; text-align:left; border-radius:0;
+                  display:flex; align-items:center; gap:.9rem; }}
+  .choix form:first-child button {{ padding:1.3rem 1.4rem; }}
+  .choix form:first-child .choix-icone {{ width:26px; height:26px; }}
+  .choix form:first-child b {{ font-size:1.15rem; }}
+  .choix form:last-child button {{ padding:.7rem 1rem; background:transparent; color:var(--text);
+                                   border:1px solid var(--border); font-weight:600; }}
+  .choix form:last-child button:hover {{ border-color:var(--muted); background:var(--panel-2); }}
+  .choix form:last-child .choix-icone {{ width:18px; height:18px; opacity:.7; }}
+  .choix form:last-child b {{ font-size:.92rem; }}
+  .choix form:last-child em {{ font-size:.78rem; }}
+  .choix-icone {{ flex:none; opacity:.9; }}
+  .choix b {{ display:block; font-weight:700; }}
+  .choix em {{ display:block; font-style:normal; opacity:.85; margin-top:.15rem; font-weight:400; }}
+  button.calme {{ background:var(--panel-2); color:var(--text); border-color:var(--border); font-weight:600; }}
+  button.calme:hover {{ background:#1e242e; border-color:#38404d; }}
   .places {{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin:0 0 1.5rem; }}
   .places form {{ display:inline; margin:0; }}
   .places button {{ min-width:5.5rem; }}
-  .places span {{ color:#9aa7b4; font-size:.9rem; }}
+  .places span {{ color:var(--muted); font-size:.9rem; }}
   .apres {{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;
-           margin-top:1rem; padding-top:.9rem; border-top:1px solid #21262d; }}
+           margin-top:1rem; padding-top:.9rem; border-top:1px solid var(--border); }}
   .apres form {{ display:inline; margin:0; }}
-  .apres span {{ color:#9aa7b4; font-size:.85rem; }}
-  .apres button {{ background:transparent; color:#9aa7b4; border-color:#30363d;
-                  font-size:.85rem; padding:.25rem .7rem; min-width:0; }}
-  .apres button:hover {{ background:#1c232c; color:#e6edf3; }}
-  .apres button[disabled] {{ border-color:#1f6feb; color:#58a6ff; cursor:default; }}
-  a.retour {{ color:#58a6ff; font-size:.9rem; }}
+  .apres span {{ color:var(--muted); font-size:.85rem; }}
+  .apres button {{ background:transparent; color:var(--muted); border-color:var(--border);
+                  font-size:.85rem; padding:.25rem .7rem; min-width:0; font-weight:400; }}
+  .apres button:hover {{ background:var(--panel-2); color:var(--text); }}
+  .apres button[disabled] {{ border-color:var(--accent); color:var(--accent); cursor:default; }}
+  a.retour {{ color:var(--accent); font-size:.9rem; }}
   /* L'ATTENTE (17/09/2026). Elle etait une boite de texte grise que le
      navigateur rechargeait toutes les trois secondes : « c'est vraiment
      moche ». Le narval, une barre qui avance, et plus aucun clignotement. */
@@ -2714,8 +2821,8 @@ PAGE = """<!doctype html>
                   animation:respire 2.6s ease-in-out infinite; }}
   @keyframes respire {{ 0%,100% {{ transform:scale(1); }} 50% {{ transform:scale(1.045); }} }}
   .attente-barre {{ width:min(260px,70vw); height:3px; border-radius:3px;
-                   background:#21262d; overflow:hidden; }}
-  .attente-barre i {{ display:block; width:40%; height:100%; background:#1f6feb;
+                   background:var(--border); overflow:hidden; }}
+  .attente-barre i {{ display:block; width:40%; height:100%; background:var(--accent);
                      animation:glisse 1.5s ease-in-out infinite; }}
   @keyframes glisse {{ 0% {{ transform:translateX(-100%); }}
                       100% {{ transform:translateX(250%); }} }}
@@ -2723,32 +2830,60 @@ PAGE = """<!doctype html>
   @media (prefers-reduced-motion:reduce) {{
     .attente-logo, .attente-barre i {{ animation:none; }}
   }}
-  .barre {{ display:flex; justify-content:space-between; align-items:center;
-           gap:1rem; margin-bottom:1.5rem; color:#9aa7b4; font-size:.9rem; }}
-  .barre a {{ color:#58a6ff; }}
-  .barre .pastille {{ background:#f85149; color:#0e1116; border-radius:1rem;
-                     padding:.05rem .45rem; font-size:.8rem; }}
+  /* La barre (23/09/2026, reecrite en vraie barre d'appli fixee -- voir
+     _barre()) : logo + liens a gauche/centre, identite + deconnexion a
+     droite, fond noir plein qui se detache du fond a trame en dessous. Fixee
+     en haut de l'ECRAN (pas du contenu) : `main` recoit le degagement en
+     haut (`padding-top`) pour ne jamais passer dessous. */
+  .barre {{ position:fixed; top:0; left:0; right:0; z-index:10;
+           display:flex; flex-wrap:wrap; align-items:center; gap:.5rem 1.2rem;
+           padding:.7rem 1.2rem; background:#040508; border-bottom:1px solid var(--border); }}
+  .barre-logo {{ display:flex; align-items:center; gap:.55rem; flex:none;
+                font:1rem/1 var(--affiche); text-transform:uppercase; letter-spacing:.01em;
+                color:var(--text); text-decoration:none; }}
+  .barre-logo img {{ width:2.1rem; height:2.1rem; border-radius:50%; box-shadow:0 0 0 2px var(--border); }}
+  .barre-qui {{ color:var(--muted); font-size:.85rem; margin-left:auto; }}
+  .barre-qui strong {{ color:var(--text); }}
+  .barre-nav {{ display:flex; flex-wrap:wrap; gap:.3rem 1rem; align-items:center;
+               flex-basis:100%; order:3; padding-top:.5rem; border-top:1px solid var(--border); }}
+  @media (min-width:641px) {{
+    .barre-nav {{ flex-basis:auto; order:2; padding-top:0; border-top:0; margin-left:1.2rem; }}
+    .barre-qui {{ order:3; }}
+  }}
+  .barre-nav a {{ color:var(--muted); font-size:.85rem; text-decoration:none; }}
+  .barre-nav a:hover {{ color:var(--text); }}
+  .barre-nav a.sortie {{ color:var(--muted); }}
+  .barre-nav a.sortie:hover {{ color:var(--danger); }}
+  /* L'interrupteur FR/EN (23/09/2026, demande de l'utilisateur) : les deux
+     langues restent visibles, celle qui est active est en rouge -- un vrai
+     interrupteur, pas un lien vers « l'autre » langue sans dire laquelle est
+     active. */
+  .lang {{ display:inline-flex; align-items:center; border:1px solid var(--border);
+          font-size:.75rem; font-weight:700; text-decoration:none; overflow:hidden; }}
+  .lang span {{ padding:.2rem .5rem; color:var(--muted); }}
+  .lang span.lang-active {{ background:var(--accent); color:var(--accent-ink); }}
+  .barre .pastille {{ background:var(--accent); color:var(--accent-ink); border-radius:1rem;
+                     padding:.03rem .4rem; font-size:.72rem; font-weight:700; }}
   /* Le FIL d'un signalement (16/09/2026) : ma reponse et la sienne, distinguees
      par leur bord. Meme forme que dans /admin, pour que la meme conversation se
      lise pareil des deux cotes. */
   .fil {{ display:grid; gap:.4rem; margin:.4rem 0 .6rem; }}
-  .fil .msg {{ margin:0; padding:.45rem .6rem; border-radius:.4rem;
-              background:#0b0f14; border-left:3px solid #30363d; font-size:.9rem; }}
-  .fil .msg.de-lui {{ border-left-color:#1f6feb; }}
-  .fil .msg.de-moi {{ border-left-color:#f0b429; }}
+  .fil .msg {{ margin:0; padding:.45rem .6rem; border-radius:0;
+              background:var(--bg); border-left:3px solid var(--border); font-size:.9rem; }}
+  .fil .msg.de-lui {{ border-left-color:var(--accent); }}
+  .fil .msg.de-moi {{ border-left-color:var(--warn); }}
   .repondre {{ display:flex; gap:.4rem; align-items:flex-start; }}
-  .repondre textarea {{ flex:1; font:inherit; background:#0b0f14; color:inherit;
-                       border:1px solid #30363d; border-radius:.4rem;
+  .repondre textarea {{ flex:1; font:inherit; background:var(--bg); color:inherit;
+                       border:1px solid var(--border); border-radius:0;
                        padding:.4rem .6rem; resize:vertical; }}
   .repondre button {{ width:auto; }}
-  .avert {{ border:1px solid #9e6a03; background:#1d1a0e; color:#e3b341;
-           border-radius:.5rem; padding:.7rem .9rem; margin-bottom:1.5rem; font-size:.9rem; }}
-  footer {{ margin-top:2.5rem; color:#6e7681; font-size:.85rem; }}
+  .avert {{ border:1px solid #9e6a03; background:#1d1a0e; color:var(--warn);
+           border-radius:0; padding:.7rem .9rem; margin-bottom:1.5rem; font-size:.9rem; }}
+  footer {{ margin-top:2.5rem; color:#5b6270; font-size:.85rem; }}
 </style>
 <main>
-  <h1>NarwhalChampions</h1>
-  <p class="sous">{sous}</p>
   {barre}
+  <p class="sous">{sous}</p>
   {corps}
   {bouton_appli}
   <footer>{pied}</footer>
@@ -2779,24 +2914,47 @@ def _bouton_langue() -> str:
     JEU vit dans le `localStorage`, que le serveur ne lit pas. Ce bouton pose le
     cookie que `langue.detecter` regarde en premier.
     """
-    vers = "fr" if lang.actuelle() == "en" else "en"
-    return (' &middot; <a href="/langue?vers=%s" title="%s">%s</a>'
-            % (vers, lang.t("Changer la langue du site"), vers.upper()))
+    # ⚠⚠ EN VRAI INTERRUPTEUR (23/09/2026, demande de l'utilisateur), pas un
+    # simple lien vers l'autre langue : les DEUX libelles restent visibles,
+    # celui qui correspond a la langue active est mis en avant -- un clic sur
+    # l'un ou l'autre bascule (le lien vise toujours l'autre langue, un clic
+    # sur la langue deja active ne fait donc rien d'inattendu). CSS pur
+    # (`.lang-active`), aucun script necessaire.
+    actuelle = lang.actuelle()
+    vers = "fr" if actuelle == "en" else "en"
+    return ('<a href="/langue?vers=%s" title="%s" class="lang">'
+            '<span class="%s">FR</span><span class="%s">EN</span>'
+            '</a>'
+            % (vers, lang.t("Changer la langue du site"),
+               "lang-active" if actuelle == "fr" else "",
+               "lang-active" if actuelle == "en" else ""))
 
 
 def _barre(pseudo: str) -> str:
-    admin = (' &middot; <a href="/admin">Administration</a>'
-             ' &middot; <a href="/suivi">Suivi des parties</a>'
-             # Portage separe (Hogwarts Battle), visible seulement pour
-             # l'administrateur : ce n'est pas un lien pour les joueurs de
-             # Marvel Champions, seulement un raccourci prive.
-             ' &middot; <a href="https://hogwarts.narwhalchampions.com" target="_blank" rel="noopener">Hogwarts Battle</a>') if pseudo == ADMIN else ""
+    """La barre presente sur toutes les pages connectees : identite + menu.
+
+    ⚠⚠ REECRITE EN VRAI MENU (23/09/2026, demande de l'utilisateur : « c'est
+    pas du tout user-friendly »). Avant : UN SEUL <span>, les liens separes
+    par du texte « &middot; » -- impossible a espacer, a transformer en
+    puces cliquables, ou a distinguer visuellement les uns des autres. Chaque
+    lien est maintenant un element propre (`.barre-nav a`), le CSS decide de
+    son espacement -- rien a refaire ici si l'habillage change.
+    """
+    admin = (
+        '<a href="/admin">%s</a>' % lang.t("Administration")
+        + '<a href="/suivi">%s</a>' % lang.t("Suivi des parties")
+        # Portage separe (Hogwarts Battle), visible seulement pour
+        # l'administrateur : ce n'est pas un lien pour les joueurs de
+        # Marvel Champions, seulement un raccourci prive.
+        + '<a href="https://hogwarts.narwhalchampions.com" target="_blank" rel="noopener">Hogwarts Battle</a>'
+    ) if pseudo == ADMIN else ""
     # ⚠ L'ENTREE EST LA POUR TOUT LE MONDE, le compteur seulement quand une
     # reponse attend. Une page « Mes signalements » qu'on ne trouve qu'une fois
     # prevenu n'existe pas vraiment.
     attente = reponses_non_lues(pseudo)
-    signalements = (' &middot; <a href="/signalements">%s</a>' % lang.t("Mes signalements")
-                    + (' <span class="pastille">(%d)</span>' % attente if attente else ""))
+    signalements = ('<a href="/signalements">%s%s</a>'
+                    % (lang.t("Mes signalements"),
+                       ' <span class="pastille">%d</span>' % attente if attente else ""))
     # ⚠ LE RETOUR N'EST PAS UN CONFORT, C'EST LA SEULE SORTIE. Le site
     # s'installe en application (`MANIFESTE_APPLI`, `display: standalone`), donc
     # dans une fenetre SANS bouton Precedent. Signale par un joueur le
@@ -2804,11 +2962,22 @@ def _barre(pseudo: str) -> str:
     # qu'en fermant la fenetre et en en rouvrant une. La barre est la seule
     # chose presente sur toutes les pages : c'est donc ici, et nulle part
     # ailleurs, que le retour doit vivre.
-    accueil = ' &middot; <a href="/">%s</a>' % lang.t("Accueil")
-    return ('<div class="barre"><span>%s : <strong>%s</strong>%s%s%s%s</span>'
-            '<a href="/deconnexion">%s</a></div>'
-            % (lang.t("Connecte"), html.escape(pseudo), accueil, signalements, admin,
-               _bouton_langue(), lang.t("Se deconnecter")))
+    # ⚠⚠ EN BARRE FIXE, LOGO INCLUS (23/09/2026, demande de l'utilisateur) :
+    # le narval vivait avant dans le contenu de chaque page (`.marque` dans
+    # PAGE) ; il vit maintenant ICI, une seule fois, puisque la barre entiere
+    # est devenue fixe en haut de l'ecran sur toutes les pages connectees.
+    # Le logo EST le lien « Accueil » (convention universelle) : l'ancien
+    # lien texte separe a ete retire, il aurait fait doublon juste a cote.
+    return ('<header class="barre">'
+            '<a href="/" class="barre-logo"><img src="/narwhal.png" alt="" width="512" height="512">'
+            'NarwhalChampions</a>'
+            '<div class="barre-qui">%s <strong>%s</strong></div>'
+            '<nav class="barre-nav">%s%s%s'
+            '<a href="/deconnexion" class="sortie">%s</a>'
+            '</nav></header>'
+            % (lang.t("Connecte"), html.escape(pseudo),
+               signalements, admin, _bouton_langue(),
+               lang.t("Se deconnecter")))
 
 
 def page_reprise(pseudo: str, attendue: dict) -> bytes:
@@ -2822,35 +2991,61 @@ def page_reprise(pseudo: str, attendue: dict) -> bytes:
     raison laisse croire a un plantage ; le motif est deja traduit pour la page
     de suivi (`CAUSES_ABANDON`), on le reutilise.
     """
-    quoi = " · ".join(x for x in (attendue.get("scenario"), attendue.get("heros")) if x)
-    tour = int(attendue.get("tour") or 0)
-    if tour:
-        quoi += (" · " if quoi else "") + "round %d" % tour
     motif = CAUSES_ABANDON.get(attendue.get("cause") or "", attendue.get("cause") or "")
+    # Etiquettes separees (23/09/2026, demande de l'utilisateur) : avant, une
+    # seule ligne « Klaw · Steve Rogers · round 1 » -- trois pastilles se
+    # scannent plus vite qu'une phrase a decouper soi-meme.
+    etiquettes = "".join(
+        '<span class="badge-partie">%s</span>' % html.escape(x)
+        for x in (attendue.get("scenario"), attendue.get("heros"),
+                  ("round %d" % int(attendue.get("tour") or 0)) if attendue.get("tour") else None)
+        if x)
+    # Portrait du vilain (23/09/2026) : voir _portrait_vilain(). N'affiche
+    # rien si le fichier n'existe pas -- jamais de repli laid.
+    slug_vilain = _slug_vilain(attendue.get("scenario") or "")
+    portrait = ('<img class="portrait-vilain" src="/vilains/%s.jpg" alt="" width="80" height="116">'
+               % slug_vilain) if _portrait_vilain(slug_vilain) is not None else ""
+    # Icones (23/09/2026, demande de l'utilisateur : rendre les deux choix
+    # plus lisibles au premier coup d'oeil) : deux SVG inline minuscules,
+    # sans emoji -- `currentColor` pour suivre la couleur du texte du bouton
+    # (blanc sur le rouge, clair sur le gris) sans variante a maintenir.
+    icone_reprendre = ('<svg class="choix-icone" viewBox="0 0 24 24" width="22" height="22" '
+                       'aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>')
+    icone_nouvelle = ('<svg class="choix-icone" viewBox="0 0 24 24" width="22" height="22" '
+                      'aria-hidden="true"><path fill="currentColor" d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>')
+    # ⚠⚠ ORDRE DES BOUTONS INVERSE (23/09/2026, demande de l'utilisateur) :
+    # « si quelqu'un a quitte la partie, c'est le plus souvent pour en
+    # commencer une autre » -- donc « Commencer autre chose » est maintenant
+    # le choix PRINCIPAL (rouge, grand), « Reprendre » repasse en secondaire
+    # (bordure fine). Uniquement un choix d'AFFICHAGE : les deux restent de
+    # vrais boutons, aucun forcage (voir la note en tete de fonction).
     corps = ('<div class="table">'
-             '<div class="entete"><strong>%s</strong>'
-             '<span class="mdp">%s</span></div>'
+             '<div class="entete-partie">%s'
+             '<div><strong>%s</strong>'
+             '<div class="badges-partie">%s</div></div></div>'
              '<p class="mdp">%s</p>'
              '<div class="choix" style="margin-top:1rem">'
-             '<form method="get" action="/reprendre">'
-             '<button type="submit"><b>%s</b>'
-             '<em>%s</em>'
-             '</button></form>'
              '<form method="get" action="/nouvelle-partie">'
-             '<button type="submit" class="calme"><b>%s</b>'
-             '<em>%s</em></button></form>'
+             '<button type="submit">%s<span><b>%s</b>'
+             '<em>%s</em></span></button></form>'
+             '<form method="get" action="/reprendre">'
+             '<button type="submit" class="calme">%s<span><b>%s</b>'
+             '<em>%s</em></span></button></form>'
              '</div></div>'
-             % (lang.t("Ta partie t'attend"),
-                html.escape(quoi),
+             % (portrait,
+                lang.t("Ta partie t'attend"),
+                etiquettes,
                 lang.t("Interrompue le {quand}{motif}. Elle a ete sauvegardee : "
                        "tu peux la reprendre la ou tu l'avais laissee.")
                 .replace("{quand}", _horodate(attendue.get("quand") or ""))
                 .replace("{motif}", (", " + html.escape(motif)) if motif else ""),
-                lang.t("Reprendre cette partie"),
-                lang.t("On recharge la sauvegarde et on te remet au plateau."),
+                icone_nouvelle,
                 lang.t("Commencer autre chose"),
                 lang.t("La sauvegarde reste dans « Reprendre », sur l'ecran de "
-                       "preparation.")))
+                       "preparation."),
+                icone_reprendre,
+                lang.t("Reprendre cette partie"),
+                lang.t("On recharge la sauvegarde et on te remet au plateau.")))
     return PAGE.format(tete="", sous=lang.t("Tu etais en pleine partie."),
                        barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
@@ -3177,30 +3372,51 @@ PAGE_FORMULAIRE = """<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{titre} — NarwhalChampions</title>
 {tete_appli}
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
 <style>
-  :root {{ color-scheme: dark; }}
-  body {{ margin:0; font:16px/1.5 system-ui,sans-serif; background:#0e1116; color:#e6edf3;
-         display:flex; justify-content:center; padding:3rem 1rem; }}
-  main {{ width:100%; max-width:24rem; }}
-  h1 {{ font-size:1.4rem; margin:0 0 1.5rem; }}
-  label {{ display:block; margin-bottom:1rem; font-size:.9rem; color:#9aa7b4; }}
-  input {{ width:100%; box-sizing:border-box; font:inherit; margin-top:.3rem;
-          background:#161b22; color:inherit; border:1px solid #30363d;
-          border-radius:.5rem; padding:.6rem .9rem; }}
-  button {{ width:100%; font:inherit; background:#1f6feb; color:#fff; border:0;
-           border-radius:.5rem; padding:.7rem; cursor:pointer; }}
-  .erreur {{ border:1px solid #f85149; background:#1d1113; color:#ff7b72;
+  :root {{
+    color-scheme: dark;
+    --bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;
+    --text:#eef1f5; --muted:#8b95a3;
+    --accent:#e62429; --accent-hover:#ff3b40; --accent-ink:#fff;
+    --danger:#f85149;
+    --affiche: "Anton", "Arial Narrow", sans-serif;
+  }}
+  * {{ box-sizing:border-box; }}
+  body {{ margin:0; font:16px/1.5 system-ui,sans-serif; background:var(--bg); color:var(--text);
+         min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2.5rem 1.1rem; }}
+  main {{ width:100%; max-width:23rem; }}
+  .marque {{ display:flex; align-items:center; gap:.7rem; margin:0 0 1.6rem; }}
+  .marque img {{ width:2.5rem; height:2.5rem; border-radius:50%; box-shadow:0 0 0 2px var(--border); }}
+  h1 {{ font:clamp(1.5rem,6vw,1.85rem)/1 var(--affiche); margin:0; font-weight:400;
+       letter-spacing:.01em; text-transform:uppercase; }}
+  .carte {{ background:var(--panel); border:1px solid var(--border); border-radius:.9rem;
+           padding:1.5rem 1.4rem; box-shadow:0 12px 28px -18px rgba(0,0,0,.7); }}
+  form {{ margin:0; }}
+  label {{ display:block; margin-bottom:1rem; font-size:.88rem; color:var(--muted); }}
+  input {{ width:100%; box-sizing:border-box; font:inherit; margin-top:.35rem;
+          background:var(--panel-2); color:inherit; border:1px solid var(--border);
+          border-radius:.5rem; padding:.65rem .9rem; }}
+  input:focus-visible, button:focus-visible {{ outline:2px solid var(--accent); outline-offset:2px; }}
+  button {{ width:100%; font:inherit; font-weight:700; background:var(--accent); color:var(--accent-ink);
+           border:0; border-radius:.5rem; padding:.8rem; cursor:pointer; transition:background .12s ease; }}
+  button:hover {{ background:var(--accent-hover); }}
+  .erreur {{ border:1px solid var(--danger); background:#1d1113; color:#ff7b72;
             border-radius:.5rem; padding:.7rem .9rem; margin-bottom:1.2rem; font-size:.9rem; }}
-  p {{ color:#9aa7b4; font-size:.9rem; }} a {{ color:#58a6ff; }}
+  p {{ color:var(--muted); font-size:.85rem; line-height:1.6; margin:1.2rem .1rem 0; }}
+  a {{ color:var(--accent); }}
 </style>
 <main>
-  <h1>{titre}</h1>
-  {erreur}
-  <form method="post" action="{action}">
-    {champs}
-    <label>{mdp}<input name="mdp" type="password" autocomplete="{auto}" required></label>
-    <button type="submit">{bouton}</button>
-  </form>
+  <div class="marque"><img src="/narwhal.png" alt="" width="512" height="512"><h1>{titre}</h1></div>
+  <div class="carte">
+    {erreur}
+    <form method="post" action="{action}">
+      {champs}
+      <label>{mdp}<input name="mdp" type="password" autocomplete="{auto}" required></label>
+      <button type="submit">{bouton}</button>
+    </form>
+  </div>
   <p>{pied}</p>
   {bouton_appli}
 </main>
@@ -3209,164 +3425,330 @@ PAGE_FORMULAIRE = """<!doctype html>
 PAGE_ADMIN = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Validations — NarwhalChampions</title>
+<title>Administration — NarwhalChampions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
 <style>
-  :root {{ color-scheme: dark; }}
-  body {{ margin:0; font:16px/1.5 system-ui,sans-serif; background:#0e1116; color:#e6edf3;
-         display:flex; justify-content:center; padding:2rem 1rem; }}
-  main {{ width:100%; max-width:40rem; }}
-  h1 {{ font-size:1.4rem; margin:0 0 .3rem; }}
-  p.sous {{ color:#9aa7b4; margin:0 0 2rem; }}
+  /* ===== REFONTE (23/09/2026) =================================================
+     La page etait UN SEUL long defilement (Annonce, Comptes, Invitations, Mots
+     de passe, Rapports, Joueurs, Parties, Journal, empiles) -- signale par
+     l'utilisateur : « la page est beaucoup trop longue ». Elle passe en
+     ONGLETS : un seul groupe visible a la fois, memorise (localStorage) d'une
+     visite a l'autre, sauf premiere visite ou l'onglet qui attend le plus est
+     choisi (voir ADMIN_ONGLETS_SCRIPT). Meme palette/typo/trame que le reste
+     du site (voir PAGE) -- dupliquee ici, aucun mecanisme d'inclusion partagee
+     dans ce depot. */
+  :root {{
+    color-scheme: dark;
+    --bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;
+    --text:#eef1f5; --muted:#8b95a3;
+    --accent:#e62429; --accent-hover:#ff3b40; --accent-soft:rgba(230,36,41,.14); --accent-ink:#fff;
+    --ok:#3fb950; --danger:#f85149; --warn:#e8a53d;
+    --affiche: "Anton", "Arial Narrow", sans-serif;
+  }}
+  * {{ box-sizing:border-box; }}
+  body {{ margin:0; font:16px/1.5 system-ui,sans-serif; color:var(--text);
+         display:flex; justify-content:center; padding:0 1.1rem 2.5rem;
+         background-color:var(--bg);
+         background-image:
+           linear-gradient(to bottom, transparent 0%, transparent 12%, var(--bg) 60%),
+           radial-gradient(rgba(230,36,41,.4) 1px, transparent 1.6px);
+         background-size:100% 100%, 15px 15px;
+         background-repeat:no-repeat, repeat;
+         /* ⚠⚠ « fixed » RETIRE (23/09/2026, « ca rame blinde sur le
+            telephone » signale juste apres le deploiement) : un fond
+            attache au VIEWPORT force le navigateur a le repeindre a
+            chaque frame de defilement -- il ne peut plus deleguer le
+            scroll au compositeur seul. Connu pour etre couteux sur
+            mobile, plus encore avec un motif REPETE (le halftone,
+            15x15px). `scroll` (l'attache par defaut, l'element plutot
+            que le viewport) est visuellement quasi identique sur une
+            page aussi courte que celles du site, et rend le defilement
+            fluide. */
+         background-attachment:scroll, scroll; }}
+  /* Elargie (23/09/2026, demande de l'utilisateur) : les fiches de comptes et
+     les rapports respirent mieux sur une page d'outil que sur une page de
+     lecture -- 40rem (comme /entrer) etait etroit pour ce contenu-la. */
+  main {{ width:100%; max-width:60rem; padding-top:5.5rem; }}
+  @media (max-width:640px) {{ main {{ padding-top:7.4rem; }} }}
+  h1 {{ font:clamp(1.7rem,5vw,2.2rem)/1 var(--affiche); margin:0 0 1.1rem; font-weight:400;
+       letter-spacing:.01em; text-transform:uppercase; }}
+  p.sous {{ color:var(--muted); margin:0 0 1.2rem; }}
   table {{ width:100%; border-collapse:collapse; }}
-  th, td {{ text-align:left; padding:.6rem .4rem; border-bottom:1px solid #21262d; }}
-  th {{ color:#9aa7b4; font-weight:500; font-size:.85rem; }}
-  button {{ font:inherit; font-size:.85rem; border-radius:.4rem; padding:.3rem .7rem;
-           cursor:pointer; border:1px solid #30363d; background:transparent; color:inherit; }}
-  button.oui {{ border-color:#238636; color:#3fb950; }}
-  button.non {{ border-color:#f85149; color:#f85149; }}
-  code {{ background:#161b22; padding:.2rem .45rem; border-radius:.3rem;
+  th, td {{ text-align:left; padding:.6rem .4rem; border-bottom:1px solid var(--border); }}
+  th {{ color:var(--muted); font-weight:500; font-size:.85rem; }}
+  button {{ font:inherit; font-size:.85rem; font-weight:600; border-radius:0; padding:.4rem .8rem;
+           cursor:pointer; border:1px solid var(--border); background:transparent; color:inherit; }}
+  button:hover {{ background:var(--panel-2); }}
+  button:focus-visible {{ outline:2px solid var(--accent); outline-offset:2px; }}
+  button.oui {{ border-color:var(--ok); color:var(--ok); }}
+  button.oui:hover {{ background:rgba(63,185,80,.12); }}
+  button.non {{ border-color:var(--danger); color:var(--danger); }}
+  button.non:hover {{ background:rgba(248,81,73,.12); }}
+  code {{ background:var(--panel-2); padding:.2rem .45rem; border-radius:.2rem;
          font-size:.8rem; word-break:break-all; }}
   form {{ display:inline; margin-right:.3rem; }}
-  a {{ color:#58a6ff; }}
-  .rapport {{ border:1px solid #21262d; border-radius:.5rem; margin-bottom:.6rem;
-             background:#11161d; }}
-  .rapport[open] {{ border-color:#30363d; }}
+  a {{ color:var(--accent); }}
+  /* ===== La barre fixe (identique a PAGE, voir _barre()) ===================== */
+  .barre {{ position:fixed; top:0; left:0; right:0; z-index:10;
+           display:flex; flex-wrap:wrap; align-items:center; gap:.5rem 1.2rem;
+           padding:.7rem 1.2rem; background:#040508; border-bottom:1px solid var(--border); }}
+  .barre-logo {{ display:flex; align-items:center; gap:.55rem; flex:none;
+                font:1rem/1 var(--affiche); text-transform:uppercase; letter-spacing:.01em;
+                color:var(--text); text-decoration:none; }}
+  .barre-logo img {{ width:2.1rem; height:2.1rem; border-radius:50%; box-shadow:0 0 0 2px var(--border); }}
+  .barre-qui {{ color:var(--muted); font-size:.85rem; margin-left:auto; }}
+  .barre-qui strong {{ color:var(--text); }}
+  .barre-nav {{ display:flex; flex-wrap:wrap; gap:.3rem 1rem; align-items:center;
+               flex-basis:100%; order:3; padding-top:.5rem; border-top:1px solid var(--border); }}
+  @media (min-width:641px) {{
+    .barre-nav {{ flex-basis:auto; order:2; padding-top:0; border-top:0; margin-left:1.2rem; }}
+    .barre-qui {{ order:3; }}
+  }}
+  .barre-nav a {{ color:var(--muted); font-size:.85rem; text-decoration:none; }}
+  .barre-nav a:hover {{ color:var(--text); }}
+  .barre-nav a.sortie {{ color:var(--muted); }}
+  .barre-nav a.sortie:hover {{ color:var(--danger); }}
+  .lang {{ display:inline-flex; align-items:center; border:1px solid var(--border);
+          font-size:.75rem; font-weight:700; text-decoration:none; overflow:hidden; }}
+  .lang span {{ padding:.2rem .5rem; color:var(--muted); }}
+  .lang span.lang-active {{ background:var(--accent); color:var(--accent-ink); }}
+  .barre .pastille {{ background:var(--accent); color:var(--accent-ink); border-radius:1rem;
+                     padding:.03rem .4rem; font-size:.72rem; font-weight:700; }}
+  /* ===== L'annonce : toujours visible, repliee (23/09/2026) ================== */
+  .annonce-bloc {{ margin:0 0 1.6rem; padding:.9rem 1.1rem; background:var(--panel);
+                  border:1px solid var(--border); border-top:3px solid var(--accent); }}
+  .annonce-ligne {{ display:flex; gap:1rem; flex-wrap:wrap; align-items:center; justify-content:space-between; }}
+  .annonce-etat {{ margin:0; color:var(--muted); font-size:.92rem; flex:1; min-width:12rem; }}
+  .annonce-boutons {{ display:flex; gap:.5rem; flex-wrap:wrap; }}
+  .annonce-toggle {{ background:transparent; color:var(--text); border:1px solid var(--border);
+                    font-size:.82rem; padding:.4rem .8rem; }}
+  .annonce-toggle:hover {{ border-color:var(--accent); color:var(--accent); }}
+  .annonce-form {{ margin-top:.9rem; padding-top:.9rem; border-top:1px solid var(--border); }}
+  .annonce-form form {{ display:block; }}
+  /* ===== Les onglets principaux ============================================= */
+  .onglets {{ position:sticky; top:5.5rem; z-index:9; display:flex; gap:.3rem; overflow-x:auto;
+             -webkit-overflow-scrolling:touch; background:var(--bg); padding:.6rem 0 .5rem;
+             margin-bottom:1.4rem; border-bottom:1px solid var(--border); scrollbar-width:none; }}
+  .onglets::-webkit-scrollbar {{ display:none; }}
+  @media (max-width:640px) {{ .onglets {{ top:7.4rem; }} }}
+  .onglet {{ flex:none; display:flex; align-items:center; gap:.4rem; font:inherit; font-weight:700;
+            font-size:.88rem; background:transparent; color:var(--muted); border:1px solid var(--border);
+            border-radius:0; padding:.55rem 1rem; cursor:pointer; white-space:nowrap; }}
+  .onglet:hover {{ color:var(--text); border-color:#38404d; }}
+  .onglet[aria-selected="true"] {{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }}
+  .pastille-onglet {{ background:#fff; color:var(--accent); border-radius:1rem; font-size:.72rem;
+                     font-weight:700; padding:.03rem .42rem; line-height:1.4; }}
+  .panneau[hidden] {{ display:none; }}
+  /* ===== Les sous-onglets : plus discrets, un cran en dessous (23/09/2026,
+     demande de l'utilisateur : garder la hierarchie visible) ================= */
+  .sous-onglets {{ display:flex; gap:1.2rem; margin-bottom:1.1rem; border-bottom:1px solid var(--border); }}
+  .sous-onglet {{ background:transparent; border:0; border-bottom:2px solid transparent; border-radius:0;
+                color:var(--muted); font:inherit; font-size:.82rem; font-weight:600; padding:.45rem 0;
+                cursor:pointer; }}
+  .sous-onglet:hover {{ color:var(--text); }}
+  .sous-onglet[aria-selected="true"] {{ color:var(--accent); border-bottom-color:var(--accent); }}
+  .sous-onglet .compte {{ color:inherit; opacity:.7; font-weight:400; margin-left:.3rem; }}
+  .sous-panneau[hidden] {{ display:none; }}
+  /* Les comptes, en fiches (23/09/2026, demande de l'utilisateur : le
+     tableau a 6 colonnes etait illisible, surtout etroit). Une pastille
+     d'initiale, le nom et son statut sur une ligne, le reste en meta. Les
+     invitations et mots de passe oublies reprennent la meme fiche, pour la
+     coherence (23/09/2026). */
+  .comptes {{ display:grid; gap:.5rem; margin-bottom:1rem; }}
+  .compte-ligne {{ display:flex; align-items:center; gap:.85rem; flex-wrap:wrap;
+                  background:var(--panel); border:1px solid var(--border); border-radius:0;
+                  padding:.7rem .9rem; }}
+  .compte-avatar {{ flex:none; width:2.1rem; height:2.1rem; border-radius:50%; background:var(--panel-2);
+                    border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
+                    font-weight:700; font-size:.9rem; color:var(--muted); }}
+  .compte-info {{ flex:1; min-width:10rem; }}
+  .compte-nom {{ font-weight:700; display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }}
+  .compte-meta {{ color:var(--muted); font-size:.8rem; margin-top:.1rem; }}
+  /* Actions en icones discretes (23/09/2026, demande de l'utilisateur) :
+     invisibles au repos, revelees au survol/focus -- sauf tactile
+     (`pointer:coarse`, meme convention que _bouton_appli()) ou il n'y a pas
+     de survol possible, donc toujours visibles. */
+  .compte-actions {{ display:flex; gap:.3rem; flex-wrap:wrap; opacity:0; transition:opacity .12s ease; }}
+  .compte-ligne:hover .compte-actions, .compte-ligne:focus-within .compte-actions {{ opacity:1; }}
+  @media (pointer:coarse) {{ .compte-actions {{ opacity:1; }} }}
+  .compte-actions button {{ width:1.9rem; height:1.9rem; padding:0; display:inline-flex;
+                           align-items:center; justify-content:center; }}
+  .icone-action {{ width:15px; height:15px; }}
+  .etat-pastille {{ font-size:.68rem; text-transform:uppercase; letter-spacing:.04em;
+                    border-radius:.3rem; padding:.08rem .4rem; border:1px solid; font-weight:600; }}
+  .etat-pastille.oui {{ color:var(--ok); border-color:var(--ok); }}
+  .etat-pastille.non {{ color:var(--danger); border-color:var(--danger); }}
+  .etat-pastille.attente {{ color:var(--warn); border-color:var(--warn); }}
+  .rapport {{ border:1px solid var(--border); border-radius:0; margin-bottom:.6rem;
+             background:var(--panel); }}
+  .rapport[open] {{ border-color:#38404d; }}
   .rapport > summary {{ cursor:pointer; padding:.6rem .8rem; list-style:none;
                        display:flex; gap:.6rem; align-items:baseline; flex-wrap:wrap; }}
   .rapport > summary::-webkit-details-marker {{ display:none; }}
   .rapport .quoi {{ flex:1; min-width:12rem; }}
-  .rapport .meta {{ color:#9aa7b4; font-size:.8rem; }}
+  .rapport .meta {{ color:var(--muted); font-size:.8rem; }}
   .rapport .corps {{ padding:0 .8rem .8rem; }}
-  .rapport pre {{ background:#0b0f14; border:1px solid #21262d; border-radius:.4rem;
+  .rapport pre {{ background:var(--bg); border:1px solid var(--border); border-radius:.3rem;
                  padding:.6rem; max-height:22rem; overflow:auto; font-size:.78rem;
                  white-space:pre-wrap; word-break:break-word; }}
-  .rapport img {{ max-width:100%; border:1px solid #30363d; border-radius:.4rem; }}
+  .rapport img {{ max-width:100%; border:1px solid var(--border); border-radius:.3rem; }}
   .etat {{ font-size:.72rem; text-transform:uppercase; letter-spacing:.04em;
           border-radius:.3rem; padding:.1rem .45rem; border:1px solid; }}
-  .etat.nouveau {{ color:#f0b429; border-color:#f0b429; }}
-  .etat.encours {{ color:#58a6ff; border-color:#58a6ff; }}
-  .etat.traite {{ color:#3fb950; border-color:#3fb950; }}
-  .etat.refuse {{ color:#9aa7b4; border-color:#9aa7b4; }}
+  .etat.nouveau {{ color:var(--warn); border-color:var(--warn); }}
+  .etat.encours {{ color:var(--accent); border-color:var(--accent); }}
+  .etat.traite {{ color:var(--ok); border-color:var(--ok); }}
+  .etat.refuse {{ color:var(--muted); border-color:var(--muted); }}
   /* Le FIL d'un ticket (16/09/2026) : ce que j'ai repondu, ce que le joueur a
      repondu. Les deux camps se distinguent par leur bord, pas par un alignement
      a droite : une conversation a deux voix, pas une messagerie. */
   .fil {{ margin:.6rem 0; display:grid; gap:.4rem; }}
-  .fil .msg {{ margin:0; padding:.45rem .6rem; border-radius:.4rem;
-              background:#0b0f14; border-left:3px solid #30363d; font-size:.88rem; }}
-  .fil .msg.de-moi {{ border-left-color:#1f6feb; }}
-  .fil .msg.de-lui {{ border-left-color:#f0b429; }}
+  .fil .msg {{ margin:0; padding:.45rem .6rem; border-radius:.3rem;
+              background:var(--bg); border-left:3px solid var(--border); font-size:.88rem; }}
+  .fil .msg.de-moi {{ border-left-color:var(--accent); }}
+  .fil .msg.de-lui {{ border-left-color:var(--warn); }}
   .fil .msg b {{ font-size:.8rem; }}
   .repondre {{ display:flex; gap:.4rem; align-items:flex-start; margin-top:.2rem; }}
-  .repondre textarea {{ flex:1; font:inherit; background:#0b0f14; color:inherit;
-                       border:1px solid #30363d; border-radius:.4rem; padding:.4rem .6rem;
+  .repondre textarea {{ flex:1; font:inherit; background:var(--bg); color:inherit;
+                       border:1px solid var(--border); border-radius:.3rem; padding:.4rem .6rem;
                        resize:vertical; }}
-  .pastille {{ font-size:.8rem; vertical-align:middle; background:#f85149;
-              color:#0e1116; border-radius:1rem; padding:.05rem .5rem; }}
-  /* Les sections repliees (12/09/2026, demande de l'utilisateur : « je dois
-     defiler trop longtemps ») : un titre qu'on ouvre, avec le compte. */
-  .section {{ margin-top:2rem; }}
-  .section > summary {{ cursor:pointer; list-style:none; display:flex; gap:.6rem;
-                        align-items:baseline; }}
-  .section > summary::-webkit-details-marker {{ display:none; }}
-  .section > summary h1 {{ margin:0; }}
-  .section > summary::before {{ content:"▸"; color:#9aa7b4; font-size:1.1rem; }}
-  .section[open] > summary::before {{ content:"▾"; }}
-  .section .compte {{ color:#9aa7b4; font-weight:normal; font-size:.85rem; }}
+  .pastille {{ font-size:.8rem; vertical-align:middle; background:var(--accent);
+              color:var(--accent-ink); border-radius:1rem; padding:.05rem .5rem; }}
   .groupe {{ margin:.6rem 0; }}
-  .groupe > summary {{ cursor:pointer; color:#c9d1d9; font-size:.9rem; padding:.3rem 0; }}
-  .msg {{ border-left:3px solid #30363d; padding:.3rem .6rem; margin:.35rem 0;
+  .groupe > summary {{ cursor:pointer; color:var(--text); font-size:.9rem; padding:.3rem 0;
+                      display:flex; gap:.5rem; align-items:center; }}
+  .msg {{ border-left:3px solid var(--border); padding:.3rem .6rem; margin:.35rem 0;
          font-size:.9rem; }}
-  .msg.moi {{ border-color:#1f6feb; }}
-  .msg.lui {{ border-color:#3fb950; }}
-  .msg .meta {{ color:#6e7681; font-size:.75rem; }}
+  .msg.moi {{ border-color:var(--accent); }}
+  .msg.lui {{ border-color:var(--ok); }}
+  .msg .meta {{ color:#5b6270; font-size:.75rem; }}
+  .voir-plus {{ display:block; width:100%; margin-top:.6rem; background:transparent;
+               color:var(--muted); border:1px dashed var(--border); font-weight:600; }}
+  .voir-plus:hover {{ color:var(--text); border-color:var(--muted); }}
 </style>
 {styles_suivi}
 <main>
-  <!-- L'ANNONCE EST EN TETE, ET C'EST VOULU. On vient ici pour la poser quand
-       le deploiement est deja lance dans l'autre fenetre : elle doit tomber
-       sous la main, pas au bout d'un defilement. -->
-  <h1>Annonce aux joueurs</h1>
-  <p class="sous">{annonce_etat}</p>
-  <form method="post" action="/admin" style="margin-bottom:2rem">
-    <input type="hidden" name="action" value="annonce">
-    <label style="color:#9aa7b4;font-size:.9rem">Dans
-      <input name="minutes" type="number" min="1" max="{annonce_max}" value="10"
-             style="width:4.5rem;font:inherit;background:#161b22;color:inherit;
-                    border:1px solid #30363d;border-radius:.4rem;padding:.3rem .5rem">
-      minutes</label>
-    <input name="texte" type="text" maxlength="400" placeholder="Message (vide = preavis de mise a jour)"
-           style="width:100%;box-sizing:border-box;margin:.5rem 0;font:inherit;
-                  background:#161b22;color:inherit;border:1px solid #30363d;
-                  border-radius:.4rem;padding:.4rem .6rem">
-    <button class="oui" type="submit">Prevenir</button>
-  </form>
-  {annonce_annuler}
+  {barre}
+  <h1>Administration</h1>
 
-  <h1>Comptes</h1>
-  <p class="sous">{valides} valide(s) sur {max}. {regle_expiration}
-  <a href="/">Retour au site</a></p>
-  <table>
-    <tr><th>Pseudo</th><th>Adresse</th><th>Demande le</th><th>Derniere visite</th>
-        <th>Statut</th><th></th></tr>
-    {lignes}
-  </table>
-  <details class="section">
-  <summary><h1>Invitations</h1> <span class="compte">{nb_invitations}</span></summary>
-  <p class="sous">Un lien vaut une place, une seule fois. Celui qui le recoit
-  entre directement, sans passer par la file d'attente.</p>
-  <form method="post" action="/admin" style="margin-bottom:1rem">
-    <input type="hidden" name="action" value="inviter">
-    <button class="oui" type="submit">Creer un lien d'invitation</button>
-  </form>
-  <table>
-    <tr><th>Lien</th><th>Cree le</th><th>Utilise par</th><th></th></tr>
-    {invitations}
-  </table>
-  </details>
-
-  <details class="section"{ouvrir_reinit}>
-  <summary><h1>Mots de passe oublies</h1> <span class="compte">{nb_reinit}</span></summary>
-  <p class="sous">Le bouton « Mot de passe » d'un compte cree un lien a usage
-  unique, valable 24 heures. Transmets-le a la personne : elle y choisit son
-  nouveau mot de passe, et ses anciennes sessions sont fermees.</p>
-  <table>
-    <tr><th>Compte</th><th>Lien</th><th>Cree le</th><th></th></tr>
-    {reinitialisations}
-  </table>
-  </details>
-
-  <details class="section"{ouvrir_rapports}>
-  <summary><h1>Rapports de bug {pastille}</h1> <span class="compte">{nb_rapports}</span></summary>
-  <p class="sous">Les 60 derniers, le plus recent en haut, ranges par etat.
-  Deplie pour voir la capture et le journal de la partie.</p>
-  {rapports}
-  </details>
-
-  <details class="section"{ouvrir_salon}>
-  <summary><h1>Joueurs {pastille_salon}</h1> <span class="compte">{nb_en_ligne}</span></summary>
-  <p class="sous">Qui est la, et de quoi on se parle. Un message part tout de
-  suite : la personne voit une pastille dans son jeu, et te repond de la.</p>
-  {salon}
-  </details>
-
-  <h1 style="margin-top:2.5rem">Parties <small id="maj" style="color:#9aa7b4;font-weight:normal;font-size:.8rem">chargement…</small></h1>
-  <p class="sous">Qui joue en ce moment, et les {suivi_max} dernieres parties
-  finies : heros, deck, aspect, mechant, rounds et resultat. Les abandons sont
-  en orange. Rafraichi tout seul toutes les 30 s. La meme chose, a epingler sur
-  le telephone : <a href="/suivi">page de suivi</a>.</p>
-  {suivi}
-
-  <details class="rapport" style="margin-top:1.5rem">
-    <summary><span class="quoi">Journal technique des tables</span>
-    <span class="meta">allumage et extinction des 25 dernieres</span></summary>
-    <div style="padding:0 .8rem .8rem">
-      <table>
-        <tr><th>Table</th><th>Hote</th><th>Ouverte le</th><th>Fermee le</th></tr>
-        {parties}
-      </table>
+  <!-- L'ANNONCE EST TOUJOURS VISIBLE, AU-DESSUS DES ONGLETS, ET C'EST VOULU.
+       On vient ici pour la poser quand le deploiement est deja lance dans
+       l'autre fenetre : elle doit tomber sous la main, jamais cachee dans un
+       onglet. Repliee par defaut (23/09/2026, demande de l'utilisateur) :
+       une ligne d'etat + un bouton qui deplie le formulaire. -->
+  <div class="annonce-bloc">
+    <div class="annonce-ligne">
+      <p class="annonce-etat">{annonce_etat}</p>
+      <div class="annonce-boutons">
+        {annonce_annuler}
+        <button type="button" class="annonce-toggle" id="annonce-toggle"
+                data-ouvert="Fermer" data-ferme="Créer une annonce">Créer une annonce</button>
+      </div>
     </div>
-  </details>
+    <div class="annonce-form" id="annonce-form" hidden>
+      <form method="post" action="/admin">
+        <input type="hidden" name="action" value="annonce">
+        <label style="color:var(--muted);font-size:.9rem">Dans
+          <input name="minutes" type="number" min="1" max="{annonce_max}" value="10"
+                 style="width:4.5rem;font:inherit;background:var(--panel-2);color:inherit;
+                        border:1px solid var(--border);border-radius:0;padding:.3rem .5rem">
+          minutes</label>
+        <input name="texte" type="text" maxlength="400" placeholder="Message (vide = preavis de mise a jour)"
+               style="width:100%;box-sizing:border-box;margin:.5rem 0;font:inherit;
+                      background:var(--panel-2);color:inherit;border:1px solid var(--border);
+                      border-radius:0;padding:.4rem .6rem">
+        <button class="oui" type="submit">Prevenir</button>
+      </form>
+    </div>
+  </div>
+
+  <nav class="onglets" id="onglets" role="tablist">
+    <button type="button" class="onglet" data-onglet="comptes" data-n="{n_comptes}" role="tab">Comptes{badge_comptes}</button>
+    <button type="button" class="onglet" data-onglet="rapports" data-n="{n_rapports}" role="tab">Rapports{badge_rapports}</button>
+    <button type="button" class="onglet" data-onglet="joueurs" data-n="{n_joueurs}" role="tab">Joueurs{badge_joueurs}</button>
+    <button type="button" class="onglet" data-onglet="parties" data-n="0" role="tab">Parties</button>
+    <button type="button" class="onglet" data-onglet="journal" data-n="0" role="tab">Journal</button>
+  </nav>
+
+  <section class="panneau" data-panneau="comptes">
+    <nav class="sous-onglets">
+      <button type="button" class="sous-onglet" data-sous="comptes-liste" role="tab">Comptes</button>
+      <button type="button" class="sous-onglet" data-sous="comptes-invitations" role="tab">Invitations <span class="compte">{nb_invitations}</span></button>
+      <button type="button" class="sous-onglet" data-sous="comptes-mdp" role="tab">Mots de passe <span class="compte">{nb_reinit}</span></button>
+    </nav>
+    <div class="sous-panneau" data-sous-panneau="comptes-liste">
+      <p class="sous">{valides} valide(s) sur {max}. {regle_expiration}
+      <a href="/">Retour au site</a></p>
+      <div class="comptes">
+        {lignes}
+      </div>
+    </div>
+    <div class="sous-panneau" data-sous-panneau="comptes-invitations" hidden>
+      <p class="sous">Un lien vaut une place, une seule fois. Celui qui le recoit
+      entre directement, sans passer par la file d'attente.</p>
+      <form method="post" action="/admin" style="margin-bottom:1rem">
+        <input type="hidden" name="action" value="inviter">
+        <button class="oui" type="submit">Creer un lien d'invitation</button>
+      </form>
+      <div class="comptes">
+        {invitations}
+      </div>
+    </div>
+    <div class="sous-panneau" data-sous-panneau="comptes-mdp" hidden>
+      <p class="sous">Le bouton « Mot de passe » d'un compte cree un lien a usage
+      unique, valable 24 heures. Transmets-le a la personne : elle y choisit son
+      nouveau mot de passe, et ses anciennes sessions sont fermees.</p>
+      <div class="comptes">
+        {reinitialisations}
+      </div>
+    </div>
+  </section>
+
+  <section class="panneau" data-panneau="rapports" hidden>
+    <p class="sous">Les 60 derniers, le plus recent en haut, ranges par etat
+    (code couleur, comme sur chaque rapport). Deplie pour voir la capture et
+    le journal de la partie.</p>
+    {rapports}
+  </section>
+
+  <section class="panneau" data-panneau="joueurs" hidden>
+    <p class="sous">Qui est la, et de quoi on se parle. Un message part tout de
+    suite : la personne voit une pastille dans son jeu, et te repond de la.</p>
+    {salon}
+  </section>
+
+  <section class="panneau" data-panneau="parties" hidden>
+    <div id="suivi">
+      <div id="erreur" class="erreur" hidden></div>
+      <nav class="sous-onglets">
+        <button type="button" class="sous-onglet" data-sous="parties-encours" role="tab">En cours</button>
+        <button type="button" class="sous-onglet" data-sous="parties-historique" role="tab">Historique</button>
+      </nav>
+      <div class="sous-panneau" data-sous-panneau="parties-encours">
+        <p class="sous">Qui joue en ce moment. Rafraichi tout seul toutes les
+        30 s <small id="maj" style="color:var(--muted)">chargement…</small>.</p>
+        <div id="encours"><p class="vide">…</p></div>
+      </div>
+      <div class="sous-panneau" data-sous-panneau="parties-historique" hidden>
+        <p class="sous">Les {suivi_max} dernieres parties finies : heros, deck,
+        aspect, mechant, rounds et resultat. Les abandons sont en orange. 20
+        affichees d'abord, le reste sur demande. La meme chose, a epingler sur
+        le telephone : <a href="/suivi">page de suivi</a>.</p>
+        <div id="terminees"><p class="vide">…</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panneau" data-panneau="journal" hidden>
+    <p class="sous">Allumage et extinction des 25 dernieres tables.</p>
+    <table>
+      <tr><th>Table</th><th>Hote</th><th>Ouverte le</th><th>Fermee le</th></tr>
+      {parties}
+    </table>
+  </section>
 </main>
+{script_suivi}
+{script_onglets}
 """
 
 
@@ -3793,6 +4175,116 @@ SUIVI_SCRIPT = """<script>
 })();
 </script>"""
 
+# Le pilote des onglets de /admin (23/09/2026). CHAINE PYTHON ORDINAIRE, PAS
+# formatee par `.format()` : passee telle quelle a PAGE_ADMIN via
+# `{script_onglets}`, exactement comme SUIVI_STYLE_BLOC/SUIVI_SCRIPT plus haut
+# -- aucune accolade a doubler ici.
+ADMIN_ONGLETS_SCRIPT = """<script>
+(function () {
+  var CLE = "admin-onglet";
+  var onglets = Array.prototype.slice.call(document.querySelectorAll(".onglet"));
+  var panneaux = Array.prototype.slice.call(document.querySelectorAll(".panneau"));
+
+  function choisir(id, memoriser) {
+    onglets.forEach(function (b) {
+      b.setAttribute("aria-selected", b.dataset.onglet === id ? "true" : "false");
+    });
+    panneaux.forEach(function (p) { p.hidden = p.dataset.panneau !== id; });
+    if (memoriser !== false) {
+      try { localStorage.setItem(CLE, id); } catch (e) {}
+    }
+  }
+  onglets.forEach(function (b) {
+    b.addEventListener("click", function () { choisir(b.dataset.onglet); });
+  });
+
+  // Premiere visite (rien en memoire) : on ouvre l'onglet qui attend le plus
+  // de monde, plutot que « Comptes » par defaut sans raison.
+  var depart = null;
+  try { depart = localStorage.getItem(CLE); } catch (e) {}
+  if (!depart || !onglets.some(function (b) { return b.dataset.onglet === depart; })) {
+    var meilleur = onglets[0], max = -1;
+    onglets.forEach(function (b) {
+      var n = parseInt(b.dataset.n || "0", 10);
+      if (n > max) { max = n; meilleur = b; }
+    });
+    depart = meilleur.dataset.onglet;
+  }
+  choisir(depart, false);
+
+  // Les sous-onglets : meme mecanique, un groupe independant par conteneur.
+  Array.prototype.slice.call(document.querySelectorAll(".sous-onglets")).forEach(function (nav) {
+    var boutons = Array.prototype.slice.call(nav.querySelectorAll(".sous-onglet"));
+    var conteneur = nav.parentElement;
+    function choisirSous(id) {
+      boutons.forEach(function (b) {
+        b.setAttribute("aria-selected", b.dataset.sous === id ? "true" : "false");
+      });
+      Array.prototype.slice.call(conteneur.querySelectorAll(".sous-panneau")).forEach(function (p) {
+        p.hidden = p.dataset.sousPanneau !== id;
+      });
+    }
+    boutons.forEach(function (b) {
+      b.addEventListener("click", function () { choisirSous(b.dataset.sous); });
+    });
+  });
+
+  // L'annonce : un bouton deplie le formulaire de creation (23/09/2026).
+  var toggle = document.getElementById("annonce-toggle");
+  var form = document.getElementById("annonce-form");
+  if (toggle && form) {
+    toggle.addEventListener("click", function () {
+      form.hidden = !form.hidden;
+      toggle.textContent = form.hidden ? toggle.dataset.ferme : toggle.dataset.ouvert;
+    });
+  }
+
+  // L'historique des parties : 20 affichees d'abord, le reste sur demande
+  // (23/09/2026). ⚠ ON NE TOUCHE PAS A SUIVI_SCRIPT (partage avec /suivi,
+  // hors perimetre de cette refonte) : ce bloc observe seulement le DOM
+  // qu'il produit dans #terminees, et le complete sans le modifier.
+  //
+  // ⚠⚠ BOUCLE INFINIE CORRIGEE (23/09/2026, page « ne repond pas » signalee
+  // par l'utilisateur juste apres le deploiement). `terminees.appendChild`
+  // EST une mutation "childList" sur le noeud observe : l'observateur se
+  // redeclenchait donc lui-meme a chaque bouton pose, en boucle, sans jamais
+  // s'arreter -- exactement le genre de piege documente pour tout
+  // MutationObserver qui ecrit dans le noeud qu'il observe. Corrige en le
+  // DECONNECTANT le temps de ses propres ecritures (`disconnect()` /
+  // `observe()` autour du bloc), pour qu'il ne reagisse qu'aux VRAIS
+  // rafraichissements de SUIVI_SCRIPT (qui remplace tout `#terminees` toutes
+  // les 30 s), jamais a ses propres changements.
+  var terminees = document.getElementById("terminees");
+  if (terminees) {
+    var LIMITE = 20, deploye = false;
+    var observateur = new MutationObserver(function () { limiter(); });
+    function limiter() {
+      if (deploye) return;
+      observateur.disconnect();
+      var ancien = terminees.querySelector(".voir-plus");
+      if (ancien) ancien.remove();
+      var cartes = Array.prototype.slice.call(terminees.querySelectorAll(".carte"));
+      if (cartes.length > LIMITE) {
+        var caches = 0;
+        cartes.forEach(function (c, i) { if (i >= LIMITE) { c.hidden = true; caches++; } });
+        var bouton = document.createElement("button");
+        bouton.type = "button";
+        bouton.className = "voir-plus";
+        bouton.textContent = "Voir " + caches + " de plus";
+        bouton.addEventListener("click", function () {
+          deploye = true;
+          cartes.forEach(function (c) { c.hidden = false; });
+          bouton.remove();
+        });
+        terminees.appendChild(bouton);
+      }
+      observateur.observe(terminees, {childList: true});
+    }
+    observateur.observe(terminees, {childList: true});
+  }
+})();
+</script>"""
+
 PAGE_SUIVI = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -4002,16 +4494,16 @@ def _bouton_appli() -> str:
     """
     return (
     '<div id="appli-installer" hidden style="margin:1.2rem 0 0;padding:.8rem .9rem;'
-    'border:1px solid #30363d;border-radius:.5rem;background:#161b22;font-size:.9rem">'
-    '<button id="appli-bouton" type="button" style="width:100%;font:inherit;background:#238636;'
-    'color:#fff;border:0;border-radius:.5rem;padding:.7rem;cursor:pointer">'
+    'border:1px solid var(--border);border-radius:.5rem;background:var(--panel-2);font-size:.9rem">'
+    '<button id="appli-bouton" type="button" style="width:100%;font:inherit;font-weight:600;background:var(--accent);'
+    'color:var(--accent-ink);border:0;border-radius:.5rem;padding:.7rem;cursor:pointer">'
     + lang.t("Installer l'application sur ce telephone") + '</button>'
-    '<p id="appli-ios" hidden style="margin:.4rem 0 0;color:#9aa7b4">'
+    '<p id="appli-ios" hidden style="margin:.4rem 0 0;color:var(--muted)">'
     + lang.t("Sur iPhone : bouton Partager, puis « Sur l'ecran d'accueil ».") + '</p>'
     # ⚠ DIT AVANT L'INSTALLATION, pas apres. Une icone sur l'ecran d'accueil
     # laisse croire au hors ligne ; le jeu tourne sur le serveur, il n'y a
     # rien a jouer sans connexion.
-    '<p style="margin:.5rem 0 0;color:#9aa7b4;font-size:.85rem">'
+    '<p style="margin:.5rem 0 0;color:var(--muted);font-size:.85rem">'
     + lang.t("C'est un raccourci vers le jeu, pas une version hors ligne : "
              "il faut une connexion pour jouer.") + '</p>'
     '</div>'
@@ -4019,6 +4511,14 @@ def _bouton_appli() -> str:
     'var bloc=document.getElementById("appli-installer"),bouton=document.getElementById("appli-bouton"),'
     'ios=document.getElementById("appli-ios"),retenu=null;'
     'if(window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true)return;'
+    # ⚠⚠ CORRECTIF (23/09/2026, signale par l'utilisateur : « ca s'affiche
+    # aussi sur ordi, ca va pas ca »). Le texte dit « sur ce telephone » --
+    # Chrome/Edge de BUREAU proposent pourtant `beforeinstallprompt` eux
+    # aussi (ils savent installer une PWA sur le bureau). `pointer: coarse`
+    # est vrai sur un ecran tactile, faux avec une souris : c'est le signal
+    # le plus fiable pour « vrai telephone/tablette », plus robuste qu'un
+    # `navigator.userAgent` a maintenir a la main.
+    'if(!window.matchMedia("(pointer: coarse)").matches)return;'
     'window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();retenu=e;bloc.hidden=false;});'
     'bouton.addEventListener("click",function(){if(!retenu)return;retenu.prompt();'
     'retenu.userChoice.then(function(){retenu=null;bloc.hidden=true;});});'
@@ -4103,6 +4603,34 @@ def _icone_suivi(nom: str) -> bytes | None:
         return None
     try:
         with open(os.path.join(RACINE_SITE, "static", nom), "rb") as f:
+            return f.read()
+    except OSError:
+        return None
+
+
+# ⚠ PORTRAIT DU VILAIN sur /entrer (23/09/2026, demande de l'utilisateur :
+# rendre la carte « Ta partie t'attend » plus concrete). Le site et le
+# moteur de jeu sont deux serveurs SEPARES (narwhalchampions.com vs
+# p<N>.narwhalchampions.com) : le site n'a jamais eu de vignettes de cartes,
+# il faut donc les lui donner. Convention volontairement simple pour ne PAS
+# construire un annuaire nom -> card_id tout de suite : un fichier
+# `static/vilains/<slug>.jpg` (slug = nom en minuscules, non-alphanumerique
+# -> "_") sert de portrait pour ce vilain. Absent -> pas de portrait, la
+# carte reste sans image plutot que de planter ou d'afficher un repli laid.
+# `_slug_vilain` est reutilisee par la route ET par page_reprise() : les deux
+# DOIVENT produire le meme nom de fichier pour un meme nom de vilain.
+def _slug_vilain(nom: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", (nom or "").strip().lower()).strip("_")
+
+
+def _portrait_vilain(slug: str) -> bytes | None:
+    # `_slug_vilain` ne produit jamais de "/" ni de "..", mais on protege
+    # quand meme l'entree venant de l'URL (`self.chemin`), qui elle n'est PAS
+    # passee par cette fonction.
+    if not re.fullmatch(r"[a-z0-9_]{1,40}", slug or ""):
+        return None
+    try:
+        with open(os.path.join(RACINE_SITE, "static", "vilains", "%s.jpg" % slug), "rb") as f:
             return f.read()
     except OSError:
         return None
@@ -4545,61 +5073,122 @@ class Handler(BaseHTTPRequestHandler):
         self._repondre(200, image, mime)
 
     def _page_admin(self) -> bytes:
+        # ⚠⚠ COMPTES EN FICHES, PAS EN TABLEAU (23/09/2026, demande de
+        # l'utilisateur : « c'est pas du tout user-friendly »). Un <table>
+        # de 6 colonnes serrait pseudo/adresse/dates/statut/actions sur une
+        # seule ligne minuscule, illisible sur telephone (le seul endroit ou
+        # un tableau HTML ne peut pas defiler horizontalement sans y penser).
+        # Chaque compte est maintenant une fiche : initiale en pastille,
+        # pseudo + statut sur une ligne, le reste en meta juste dessous.
+        # Les actions sont des ICONES DISCRETES (23/09/2026, demande de
+        # l'utilisateur) : invisibles au repos (`.compte-actions`, voir CSS),
+        # revelees au survol/tap -- Invitations et Mots de passe reprennent la
+        # meme fiche et les memes icones, pour la coherence.
+        ICONE_CHECK = 'M9 16.17 4.83 12l-1.42 1.41L9 19l12-12-1.41-1.42z'
+        ICONE_CROIX = ('M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59'
+                       ' 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z')
+        ICONE_CLE = ('M7 14a5 5 0 1 1 4.9-6H21v4h-2v3h-3v-3H11.9A5 5 0 0 1 7 14z'
+                     'm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6z')
+        icone_svg = ('<svg class="icone-action" viewBox="0 0 24 24" aria-hidden="true">'
+                    '<path fill="currentColor" d="%s"/></svg>')
+        comptes_liste = liste_comptes()
         lignes = []
-        for c in liste_comptes():
+        for c in comptes_liste:
             statut = c["statut"]
             actions = ""
             if c["pseudo"] != ADMIN:
-                for cible, classe, libelle in (("valide", "oui", "Valider"),
-                                               ("refuse", "non", "Refuser")):
+                for cible, classe, libelle, icone in (
+                        ("valide", "oui", "Valider", ICONE_CHECK),
+                        ("refuse", "non", "Refuser", ICONE_CROIX)):
                     if statut != cible:
                         actions += ('<form method="post" action="/admin">'
                                     '<input type="hidden" name="pseudo" value="%s">'
                                     '<input type="hidden" name="statut" value="%s">'
-                                    '<button class="%s" type="submit">%s</button></form>'
-                                    % (html.escape(c["pseudo"]), cible, classe, libelle))
+                                    '<button class="%s" type="submit" title="%s" aria-label="%s">%s</button>'
+                                    '</form>'
+                                    % (html.escape(c["pseudo"]), cible, classe, libelle,
+                                       libelle, icone_svg % icone))
                 actions += ('<form method="post" action="/admin">'
                             '<input type="hidden" name="action" value="reinitialiser">'
                             '<input type="hidden" name="pseudo" value="%s">'
-                            '<button type="submit" title="Creer un lien pour choisir un nouveau mot de passe">'
-                            'Mot de passe</button></form>' % html.escape(c["pseudo"]))
+                            '<button type="submit" title="Mot de passe"'
+                            ' aria-label="Creer un lien pour choisir un nouveau mot de passe">%s</button>'
+                            '</form>' % (html.escape(c["pseudo"]), icone_svg % ICONE_CLE))
+            classe_etat = {"valide": "oui", "refuse": "non"}.get(statut, "attente")
+            initiale = (c["pseudo"] or "?")[:1].upper()
             lignes.append(
-                "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
-                    html.escape(c["pseudo"]), html.escape(c["email"] or "—"),
-                    html.escape(c["cree"] or ""),
-                    html.escape(_visite_lisible(c)),
-                    html.escape(statut), actions))
+                '<div class="compte-ligne">'
+                '<div class="compte-avatar">%s</div>'
+                '<div class="compte-info">'
+                '<div class="compte-nom">%s <span class="etat-pastille %s">%s</span></div>'
+                '<div class="compte-meta">%s &middot; demande le %s &middot; %s</div>'
+                '</div>'
+                '<div class="compte-actions">%s</div>'
+                '</div>'
+                % (html.escape(initiale), html.escape(c["pseudo"]), classe_etat, html.escape(statut),
+                   html.escape(c["email"] or "—"), html.escape(c["cree"] or "?"),
+                   html.escape(_visite_lisible(c)), actions))
+        n_comptes = sum(1 for c in comptes_liste if c["statut"] not in ("valide", "refuse"))
         base = ("https://%s" % DOMAINE) if DOMAINE else "http://127.0.0.1:%d" % PORT_SITE
+        # Invitations et mots de passe oublies, en fiches (23/09/2026) : avant,
+        # deux tableaux a part -- desormais la meme carte que Comptes.
         inv = []
         for i in invitations_libres():
             lien = "%s/inscription?i=%s" % (base, i["jeton"])
-            inv.append('<tr><td><code>%s</code></td><td>%s</td><td>—</td>'
-                       '<td><form method="post" action="/admin">'
-                       '<input type="hidden" name="action" value="annuler">'
-                       '<input type="hidden" name="jeton" value="%s">'
-                       '<button class="non" type="submit">Annuler</button></form></td></tr>'
-                       % (html.escape(lien), _horodate(i["cree_le"]),
-                          html.escape(i["jeton"])))
+            inv.append(
+                '<div class="compte-ligne">'
+                '<div class="compte-avatar">?</div>'
+                '<div class="compte-info">'
+                '<div class="compte-nom">Lien d\'invitation <span class="etat-pastille attente">libre</span></div>'
+                '<div class="compte-meta"><code>%s</code> &middot; cree le %s</div>'
+                '</div>'
+                '<div class="compte-actions"><form method="post" action="/admin">'
+                '<input type="hidden" name="action" value="annuler">'
+                '<input type="hidden" name="jeton" value="%s">'
+                '<button class="non" type="submit" title="Annuler" aria-label="Annuler cette invitation">%s</button>'
+                '</form></div></div>'
+                % (html.escape(lien), _horodate(i["cree_le"]), html.escape(i["jeton"]),
+                   icone_svg % ICONE_CROIX))
         for i in invitations_utilisees():
-            inv.append("<tr><td>—</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
-                _horodate(i["cree_le"]), html.escape(i["utilise_par"] or ""),
-                html.escape(i["utilise_le"] or "")))
+            initiale = (i["utilise_par"] or "?")[:1].upper()
+            inv.append(
+                '<div class="compte-ligne">'
+                '<div class="compte-avatar">%s</div>'
+                '<div class="compte-info">'
+                '<div class="compte-nom">%s <span class="etat-pastille oui">utilisee</span></div>'
+                '<div class="compte-meta">cree le %s &middot; utilisee le %s</div>'
+                '</div></div>'
+                % (html.escape(initiale), html.escape(i["utilise_par"] or "?"),
+                   _horodate(i["cree_le"]), html.escape(i["utilise_le"] or "")))
         if not inv:
-            inv.append('<tr><td colspan="4">Aucune invitation. '
-                       'Cree-en une ci-dessus.</td></tr>')
+            inv.append('<p class="sous">Aucune invitation. Cree-en une ci-dessus.</p>')
         reinit = []
         for r in reinitialisations_ouvertes():
             lien = "%s/reinitialisation?r=%s" % (base, r["jeton"])
-            reinit.append('<tr><td>%s</td><td><code>%s</code></td><td>%s</td>'
-                          '<td><form method="post" action="/admin">'
-                          '<input type="hidden" name="action" value="reinit_annuler">'
-                          '<input type="hidden" name="jeton" value="%s">'
-                          '<button class="non" type="submit">Annuler</button></form></td></tr>'
-                          % (html.escape(r["pseudo"]), html.escape(lien),
-                             _horodate(r["cree_le"]), html.escape(r["jeton"])))
+            initiale = (r["pseudo"] or "?")[:1].upper()
+            reinit.append(
+                '<div class="compte-ligne">'
+                '<div class="compte-avatar">%s</div>'
+                '<div class="compte-info">'
+                '<div class="compte-nom">%s</div>'
+                '<div class="compte-meta"><code>%s</code> &middot; cree le %s</div>'
+                '</div>'
+                '<div class="compte-actions"><form method="post" action="/admin">'
+                '<input type="hidden" name="action" value="reinit_annuler">'
+                '<input type="hidden" name="jeton" value="%s">'
+                '<button class="non" type="submit" title="Annuler" aria-label="Annuler ce lien">%s</button>'
+                '</form></div></div>'
+                % (html.escape(initiale), html.escape(r["pseudo"]), html.escape(lien),
+                   _horodate(r["cree_le"]), html.escape(r["jeton"]), icone_svg % ICONE_CROIX))
         if not reinit:
-            reinit.append('<tr><td colspan="4">Aucun lien en cours. Le bouton '
-                          '« Mot de passe » d\'un compte en cree un.</td></tr>')
+            reinit.append('<p class="sous">Aucun lien en cours. Le bouton '
+                          '« Mot de passe » d\'un compte en cree un.</p>')
+        # Rapports : groupes repliables par etat, chacun avec un compte en
+        # COULEUR (23/09/2026, demande de l'utilisateur) -- meme code couleur
+        # que le badge de chaque rapport individuel (`.etat.*`, voir
+        # _bloc_rapport), pour que le groupe se lise d'un coup d'oeil.
+        classes_etat = {"nouveau": "nouveau", "en cours": "encours",
+                        "traite": "traite", "refuse": "refuse"}
         tous_rapports = liste_rapports()
         rapports = ""
         for etat_r in ETATS_RAPPORT:
@@ -4607,9 +5196,11 @@ class Handler(BaseHTTPRequestHandler):
             groupe = [r for r in tous_rapports if (r["etat"] or "nouveau") == etat_r]
             if not groupe:
                 continue
-            rapports += ('<details class="groupe"%s><summary>%s (%d)</summary>%s</details>'
-                         % (" open" if etat_r == "nouveau" else "", libelle_r, len(groupe),
-                            "".join(self._bloc_rapport(r) for r in groupe)))
+            rapports += ('<details class="groupe"%s><summary>%s '
+                        '<span class="etat %s">%d</span></summary>%s</details>'
+                        % (" open" if etat_r == "nouveau" else "", libelle_r,
+                           classes_etat.get(etat_r, "nouveau"), len(groupe),
+                           "".join(self._bloc_rapport(r) for r in groupe)))
         if not rapports:
             rapports = '<p class="sous">Aucun rapport. Bonne nouvelle.</p>'
         # L'annonce : son etat en une phrase, et le bouton d'annulation qui
@@ -4628,8 +5219,7 @@ class Handler(BaseHTTPRequestHandler):
             # formulaire ci-dessus, le champ cache `action` part en premier et
             # `_champs` ne garde que la premiere valeur : le bouton d'annulation
             # aurait repose une annonce au lieu de l'effacer.
-            annonce_annuler = ('<form method="post" action="/admin"'
-                               ' style="margin:-1.5rem 0 2rem">'
+            annonce_annuler = ('<form method="post" action="/admin">'
                                '<input type="hidden" name="action" value="annonce_annuler">'
                                '<button class="non" type="submit">Annuler l\'annonce</button>'
                                '</form>')
@@ -4638,12 +5228,7 @@ class Handler(BaseHTTPRequestHandler):
         # qui sont en ligne : ecrire a quelqu'un d'absent est justement l'usage
         # le plus courant, il lira en revenant.
         qui = presence()
-        nb_en_ligne = sum(1 for p in qui if p["etat"] in ("ligne", "partie"))
         attente_salon = messages_non_lus(ADMIN)
-        pastille_salon = ('<span class="pastille">%d nouveau%s</span>'
-                          % (attente_salon["nouveaux"],
-                             "x" if attente_salon["nouveaux"] > 1 else "")
-                          ) if attente_salon["nouveaux"] else ""
         salon = ""
         for personne in qui:
             if personne["pseudo"] == ADMIN:
@@ -4665,8 +5250,8 @@ class Handler(BaseHTTPRequestHandler):
                 '<input type="hidden" name="action" value="message">'
                 '<input type="hidden" name="a" value="%s">'
                 '<input name="texte" maxlength="%d" placeholder="Ecrire a %s" required'
-                ' style="flex:1;font:inherit;background:#161b22;color:inherit;'
-                'border:1px solid #30363d;border-radius:.4rem;padding:.4rem .6rem">'
+                ' style="flex:1;font:inherit;background:var(--panel-2);color:inherit;'
+                'border:1px solid var(--border);border-radius:0;padding:.4rem .6rem">'
                 '<button class="oui" type="submit">Envoyer</button>'
                 '</form></div></details>'
                 % (" open" if nouveau else "",
@@ -4679,9 +5264,8 @@ class Handler(BaseHTTPRequestHandler):
             salon = '<p class="sous">Aucun compte valide a qui ecrire.</p>'
         nb_invitations = len(invitations_libres()) + len(invitations_utilisees())
         nb_reinit = len(reinitialisations_ouvertes())
-        nouveaux = nb_rapports_nouveaux()
-        pastille = ('<span class="pastille">%d nouveau%s</span>'
-                    % (nouveaux, "x" if nouveaux > 1 else "")) if nouveaux else ""
+        n_rapports = nb_rapports_nouveaux()
+        n_joueurs = attente_salon["nouveaux"]
         parties = "".join(
             "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
                 html.escape(p["nom"]), html.escape(p["hote"]),
@@ -4690,17 +5274,21 @@ class Handler(BaseHTTPRequestHandler):
             for p in dernieres_parties())
         if not parties:
             parties = '<tr><td colspan="4">Aucune partie pour le moment.</td></tr>'
+
+        def badge(n: int) -> str:
+            return '<span class="pastille-onglet">%d</span>' % n if n else ""
+
         # ⚠ Le bloc de suivi et ses styles passent en ARGUMENTS, jamais dans
         # le gabarit : PAGE_ADMIN est une chaine `.format`, ou chaque accolade
-        # de CSS ou de JavaScript devrait etre doublee.
-        return PAGE_ADMIN.format(valides=nb_valides(), max=MAX_COMPTES,
+        # de CSS ou de JavaScript devrait etre doublee. Meme chose pour le
+        # script des onglets (ADMIN_ONGLETS_SCRIPT).
+        return PAGE_ADMIN.format(barre=_barre(ADMIN),
+                                 valides=nb_valides(), max=MAX_COMPTES,
                                  lignes="".join(lignes),
                                  invitations="".join(inv),
                                  reinitialisations="".join(reinit),
-                                 rapports=rapports, pastille=pastille,
-                                 salon=salon, nb_en_ligne=nb_en_ligne,
-                                 pastille_salon=pastille_salon,
-                                 ouvrir_salon=" open" if attente_salon["nouveaux"] else "",
+                                 rapports=rapports,
+                                 salon=salon,
                                  regle_expiration=(
                                      "Sans visite pendant %d jours, un compte passe"
                                      " en « expire » : sa place retourne au pot, ses"
@@ -4710,16 +5298,16 @@ class Handler(BaseHTTPRequestHandler):
                                  annonce_etat=annonce_etat,
                                  annonce_annuler=annonce_annuler,
                                  annonce_max=ANNONCE_MINUTES_MAX,
-                                 nb_rapports=len(tous_rapports),
                                  nb_invitations=nb_invitations, nb_reinit=nb_reinit,
-                                 # Une section s'ouvre d'elle-meme quand elle
-                                 # attend quelque chose de l'administrateur.
-                                 ouvrir_rapports=" open" if nouveaux else "",
-                                 ouvrir_reinit=" open" if nb_reinit else "",
+                                 n_comptes=n_comptes, n_rapports=n_rapports, n_joueurs=n_joueurs,
+                                 badge_comptes=badge(n_comptes),
+                                 badge_rapports=badge(n_rapports),
+                                 badge_joueurs=badge(n_joueurs),
                                  parties=parties,
                                  suivi_max=SUIVI_TERMINEES_MAX,
                                  styles_suivi=SUIVI_STYLE_BLOC,
-                                 suivi=SUIVI_CORPS + SUIVI_SCRIPT).encode("utf-8")
+                                 script_suivi=SUIVI_SCRIPT,
+                                 script_onglets=ADMIN_ONGLETS_SCRIPT).encode("utf-8")
 
     @staticmethod
     def _bloc_rapport(r: dict) -> str:
@@ -4881,7 +5469,33 @@ class Handler(BaseHTTPRequestHandler):
                                "application/json; charset=utf-8")
                 return
             partie = jeu_de(pseudo)
-            pret = bool(partie and partie.vivant() and _moteur_repond(partie.port))
+            # ⚠ PAS PRET TANT QUE LA REPRISE EST EN ATTENTE OU EN COURS.
+            #
+            # ⚠⚠ COURSE ENCORE OUVERTE (24/09/2026, apres le correctif du
+            # 23/09 qui n'a corrige qu'une MOITIE de la fenetre). Cette route
+            # ne verifiait que `REPRISE_EN_COURS`, ajoute par `demarrer_en_fond`
+            # SEULEMENT APRES que `lancer_jeu` soit revenu ET que
+            # `journal_partie_ouverte` ait fini. Entre le moment ou le moteur
+            # commence a repondre (`_moteur_repond` devient vrai) et celui ou
+            # ce fil de fond atteint enfin `REPRISE_EN_COURS.add(...)`, cette
+            # route-ci -- interrogee par une requete TOUT A FAIT SEPAREE, sur
+            # un autre fil -- voyait deja le moteur repondre et rendait
+            # `pret: true` la premiere. Le joueur repartait sur l'ecran par
+            # defaut, sa sauvegarde se rechargeant une ou deux secondes plus
+            # tard, sans que rien ne le lui montre. Constate en partie
+            # (compte arnaud, 24/09/2026 18:52 UTC, partie Crossbones/Shuri
+            # jamais rechargee) : `.site/moteur-1.log` de cette relance
+            # commence directement sur « Select Hero and Villain », aucune
+            # trace de chargement.
+            #
+            # `A_REPRENDRE` est pose de facon SYNCHRONE par la route
+            # `/reprendre`, avant meme que `demarrer_en_fond` ne soit appelee :
+            # aucune requete posterieure ne peut donc jamais le voir vide alors
+            # qu'une reprise reste a faire. Le verifier ICI AUSSI ferme la
+            # fenetre entiere, du clic jusqu'a la fin du chargement.
+            pret = bool(partie and partie.vivant() and _moteur_repond(partie.port)
+                       and pseudo not in A_REPRENDRE
+                       and pseudo not in REPRISE_EN_COURS)
             self._repondre(200, json.dumps({
                 "pret": pret,
                 "erreur": ERREURS_DEMARRAGE.get(pseudo, ""),
@@ -5057,6 +5671,20 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
                 return
             self._repondre(200, image, "image/png")
+        elif self.chemin.startswith("/vilains/") and self.chemin.endswith(".jpg"):
+            # Portrait de vilain pour /entrer, voir _portrait_vilain(). Public
+            # (pas de session requise) : ce ne sont que des illustrations de
+            # cartes deja imprimees, rien de prive.
+            image = _portrait_vilain(self.chemin[len("/vilains/"):-len(".jpg")])
+            if image is None:
+                self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "image/jpeg")
+            self.send_header("Cache-Control", "public, max-age=86400")
+            self.send_header("Content-Length", str(len(image)))
+            self.end_headers()
+            self.wfile.write(image)
         elif self.chemin.startswith("/admin/capture"):
             # La capture d'un rapport, reservee a l'administrateur comme la
             # page qui l'affiche. On ne sert JAMAIS le nom de fichier venu de

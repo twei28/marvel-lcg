@@ -8,7 +8,10 @@ import { describe, expect, it } from 'vitest'
 import {
   arreterSurDefaite,
   avecBilan,
+  entreesPourRepli,
   etapesDeroule,
+  etapesHorsPhase,
+  tempsDeLaQuestion,
   lignesBilan,
   rangDansLeTemps,
   type EtapeDeroule,
@@ -628,6 +631,69 @@ describe('les cinq temps depuis les faits du moteur', () => {
     expect(etape.carteId).toBe(88)
   })
 
+  // Signalement Yarro n27 (28/09/2026) : une carte enchainee par Renfort
+  // (Surge) doit porter la marque `parSurge`, pour que le cartouche la
+  // distingue d'une revelation ordinaire du point 3.
+  it('porte parSurge quand le fait vient d un Renfort, absent sinon', () => {
+    const [surge] = etapesDeroule([faitRevelation({ par_surge: true })], [], 1, AUCUN_MECHANT)
+    expect(surge.parSurge).toBe(true)
+    const [ordinaire] = etapesDeroule([faitRevelation({ par_surge: false })], [], 1, AUCUN_MECHANT)
+    expect(ordinaire.parSurge).toBeUndefined()
+    const [absent] = etapesDeroule([faitRevelation()], [], 1, AUCUN_MECHANT)
+    expect(absent.parSurge).toBeUndefined()
+  })
+
+  // Decision du 03/10/2026 : la carte enchainee porte le nom de celle dont le
+  // Renfort l'a revelee (« Renfort de X » en surtitre), et la precedente sait
+  // qu'un Renfort la suit. Chaine maillon par maillon.
+  it('relie chaque Renfort a la carte qui l a declenche, maillon par maillon', () => {
+    const etapes = etapesDeroule(
+      [
+        faitRevelation({ carte: 'Carte A', carte_id: 1 }),
+        faitRevelation({ carte: 'Carte B', carte_id: 2, par_surge: true }),
+        faitRevelation({ carte: 'Carte C', carte_id: 3, par_surge: true }),
+      ],
+      [],
+      1,
+      AUCUN_MECHANT
+    )
+    expect(etapes.map((e) => e.renfortDe)).toEqual([undefined, 'Carte A', 'Carte B'])
+    expect(etapes.map((e) => e.suivieDUnRenfort)).toEqual([true, true, undefined])
+  })
+
+  it('porte qui a annule une activation ou une carte revelee (04/10/2026)', () => {
+    const [carte] = etapesDeroule(
+      [faitRevelation({ annulee_par: 'Spider-Man', annulee_par_id: 1 })], [], 1, AUCUN_MECHANT
+    )
+    expect(carte).toMatchObject({ annuleePar: 'Spider-Man', annuleeParId: 1 })
+    const [activation] = etapesDeroule(
+      [{ genre: 'attaque', etat: 'annule', activation_id: 3, round_id: 1, phase: 'Enemy Activation',
+         auteur: 'Rhino', auteur_id: 50, cible: 'Shuri', cible_id: 12, annule_par: 'Stunned', annule_par_id: 89 }],
+      [], 1, new Set([50])
+    )
+    expect(activation).toMatchObject({ etat: 'annule', annuleePar: 'Stunned', annuleeParId: 89 })
+  })
+
+  it('un changement de stade en pleine phase est une etape a part (04/10/2026)', () => {
+    const etapes = etapesDeroule(
+      [
+        faitMenace(),
+        { genre: 'stade', quoi: 'manigance', phase: 'Main Scheme Place Threat', round_id: 1,
+          avant: 'The Break-In!', carte: 'Countdown', carte_id: 49 },
+      ],
+      [], 1, AUCUN_MECHANT
+    )
+    const stade = etapes.find((e) => e.titre === 'stade')
+    expect(stade).toMatchObject({ temps: 'menace', carteId: 49, cibleNom: 'Countdown', auteurNom: 'The Break-In!', stade: 'manigance' })
+  })
+
+  it('garde la marque ★ des boosts publies par le moteur', () => {
+    const [coup] = etapesDeroule(
+      [attaque({ round_id: 1, boosts: [{ nom: 'Venom Blast', id: 81, apport: 1, etoile: true }] })], [], 1, new Set([50])
+    )
+    expect(coup.boosts[0].etoile).toBe(true)
+  })
+
   it('range les revelations dans l ordre du tour, comme les entrees du journal', () => {
     const etapes = etapesDeroule(
       [
@@ -747,6 +813,24 @@ describe('les cinq temps depuis les faits du moteur', () => {
     // Et c'est bien l'entree du journal du round 2, pas le fait du round 1.
     expect(menaces[0].restant).toBe(5)
     expect(menaces[0].cle.startsWith('menace:k1')).toBe(true)
+  })
+})
+
+describe('le journal de repli apres un Undo', () => {
+  // Signalement Yarro n42 (02/10/2026). L'Undo rejoue la partie depuis zero :
+  // le monde revient SANS aucun fait du mechant, mais le journal du navigateur
+  // garde la phase du mechant d'avant, au meme round. Relu par le repli, il
+  // rouvrait le cartouche en plein tour du joueur.
+  const phaseDAvant = [entree({ round: 1 })]
+
+  it('hors phase du mechant, le journal ne nourrit rien', () => {
+    const etapes = etapesDeroule([], entreesPourRepli(phaseDAvant, false), 1, AUCUN_MECHANT)
+    expect(etapes).toHaveLength(0)
+  })
+
+  it('pendant la phase du mechant, le repli relit toujours le journal', () => {
+    const etapes = etapesDeroule([], entreesPourRepli(phaseDAvant, true), 1, AUCUN_MECHANT)
+    expect(etapes.filter((e) => e.temps === 'menace')).toHaveLength(1)
   })
 })
 
@@ -1391,5 +1475,98 @@ describe('les cartes de statut de la phase du mechant', () => {
       ['statuts', 'Stunned', 2],
       ['statuts', 'Tough', 1],
     ])
+  })
+})
+
+describe('les cascades sous leur carte revelee (rapport Yarro n46)', () => {
+  // Psionic Slash est revelee et fait manigancer Bloody Mary, avec Hit List en
+  // boost. Avant : une etape « Bloody Mary manigance » A PART, affichee AVANT
+  // la revelation qui la provoquait.
+  const revelation: FaitRevelation = {
+    genre: 'revelation',
+    phase: 'Reveal Encounter Cards',
+    round_id: 4,
+    joueur: 0,
+    joueur_nom: 'Echo',
+    carte: 'Psionic Slash',
+    carte_id: 54,
+    effets: [
+      { genre: 'menace', cible: 'Stop the Presses!', cible_id: 48, montant: 4, restant: 6 },
+      { genre: 'degats', cible: 'Echo', cible_id: 1, montant: 1, restant: 8 },
+    ],
+  }
+  const manigance = attaque({
+    genre: 'manigance',
+    phase: 'Reveal Encounter Cards',
+    round_id: 4,
+    auteur: 'Bloody Mary',
+    auteur_id: 49,
+    cible: 'Stop the Presses!',
+    cible_id: 48,
+    base: 1,
+    boost: 3,
+    defense: 0,
+    inflige: 4,
+    subi: 4,
+    restant: 6,
+    boosts: [{ nom: 'Hit List', id: 77, apport: 3 }],
+    cause: 'Psionic Slash',
+  })
+  const mechants = new Set([49])
+
+  it('la manigance declenchee se range SOUS la carte, plus d etape a part', () => {
+    const etapes = etapesDeroule([revelation, manigance], [], 4, mechants)
+    const revelees = etapes.filter((e) => e.temps === 'revelation')
+    expect(revelees).toHaveLength(1)
+    expect(revelees[0].titre).toBe('revelation')
+    expect(revelees[0].consequences?.map((c) => c.titre)).toEqual(['manigance'])
+    expect(revelees[0].consequences?.[0].auteurNom).toBe('Bloody Mary')
+  })
+
+  it('le meme ordre des faits ne change rien (activation inscrite avant la revelation)', () => {
+    const etapes = etapesDeroule([manigance, revelation], [], 4, mechants)
+    expect(etapes.filter((e) => e.temps === 'revelation').map((e) => e.titre)).toEqual(['revelation'])
+  })
+
+  it('l effet mesure sur la meme cible est retire, les autres restent', () => {
+    const [etape] = etapesDeroule([revelation, manigance], [], 4, mechants).filter((e) => e.titre === 'revelation')
+    expect(etape.effets).toEqual([{ genre: 'degats', cible: 'Echo', cible_id: 1, montant: 1, restant: 8 }])
+  })
+
+  it('⚠ TEMOIN : une activation causee par autre chose reste une etape a part', () => {
+    const autre = { ...manigance, cause: 'Ultron' }
+    const etapes = etapesDeroule([revelation, autre], [], 4, mechants)
+    expect(etapes.filter((e) => e.temps === 'revelation').map((e) => e.titre)).toEqual(['manigance', 'revelation'])
+  })
+})
+
+describe("l'onglet d'une question posee par le moteur", () => {
+  it('pendant les activations, suit l attaquant : le mechant (2a) ou un sbire (2b)', () => {
+    expect(tempsDeLaQuestion('Enemy Activation', true)).toBe('mechant')
+    expect(tempsDeLaQuestion('Enemy Activation', false)).toBe('sbires')
+    expect(tempsDeLaQuestion('Enemy Activation', undefined)).toBe('mechant')
+  })
+
+  it('ailleurs, la phase du moteur suffit', () => {
+    expect(tempsDeLaQuestion('Main Scheme Place Threat', undefined)).toBe('menace')
+    expect(tempsDeLaQuestion('Reveal Encounter Cards', undefined)).toBe('revelation')
+    expect(tempsDeLaQuestion('Player Turn', undefined)).toBeUndefined()
+  })
+})
+
+// Decision du 03/10/2026 : HORS PHASE du mechant (tour du joueur), une attaque
+// ou une manigance du mechant ouvre le cartouche pour ce seul coup. Le moteur
+// la date du tour (« Player 1 Turn ») : elle ne doit pas se glisser dans la
+// phase du mechant du meme round.
+describe('les activations hors phase', () => {
+  const horsPhase = attaque({ round_id: 2, phase: 'Player 1 Turn', auteur_id: 50 })
+  it('ne font pas partie de la phase du mechant', () => {
+    expect(etapesDeroule([horsPhase], [], 2, new Set([50]))).toEqual([])
+  })
+  it('forment leurs propres etapes, marquees hors phase', () => {
+    const [coup] = etapesHorsPhase([horsPhase], 2, new Set([50]))
+    expect(coup).toMatchObject({ titre: 'attaque', horsPhase: true, auteurNom: 'Ultron', montant: 5 })
+    expect(etapesHorsPhase([horsPhase], 3, new Set([50]))).toEqual([])
+    expect(etapesHorsPhase([attaque({ round_id: 2 })], 2, new Set([50]))).toEqual([])
   })
 })

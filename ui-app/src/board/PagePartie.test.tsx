@@ -179,6 +179,21 @@ describe('la barre du haut', () => {
     expect(screen.queryByRole('button', { name: 'Captain' })).toBeNull()
   })
 
+  // 24/09/2026 : griser l'onglet d'un heros qui a deja boucle son tour ce
+  // round (inspire d'Arkham Horror LCG). Purement visuel -- toujours
+  // cliquable, jamais desactive.
+  it('grise l\'onglet d\'un heros qui a fini son tour, sans le desactiver', async () => {
+    monter()
+    const fini = heros('Captain Marvel', 2)
+    ;(fini as { has_finished_turn_this_round: boolean }).has_finished_turn_this_round = true
+    await emettre({ monde: table(heros('Spider-Man', 1), fini) })
+    const boutonFini = screen.getByRole('button', { name: 'Captain' })
+    expect(boutonFini.className).toMatch(/est-tour-fini/)
+    expect(boutonFini).not.toBeDisabled()
+    const boutonPasFini = screen.getByRole('button', { name: 'Spider-Man' })
+    expect(boutonPasFini.className).not.toMatch(/est-tour-fini/)
+  })
+
   // TACHE 7 BIS (19/09/2026). Ce bandeau a ete reconditionne sur `!manuel`
   // (board.tsx) pour laisser la place a `SelecteurHeros` en mode manuel, qui
   // n'a pas de bouton Auto (le moteur n'y demande plus rien). Rien ne
@@ -213,7 +228,7 @@ describe('le selecteur de heros manuel (tache 3, correctif de gating)', () => {
     monde.mode_manuel = false
     monde.manuel_actif = true
     await emettre({ monde: monde as never })
-    expect(screen.queryByRole('tablist')).toBeNull()
+    expect(screen.queryByRole('tablist', { name: /Quel héros/ })).toBeNull()
   })
 
   it('s\'active bien en mode manuel DECLARE (boucle manuelle entree)', async () => {
@@ -222,7 +237,7 @@ describe('le selecteur de heros manuel (tache 3, correctif de gating)', () => {
     monde.mode_manuel = true
     monde.manuel_actif = true
     await emettre({ monde: monde as never })
-    expect(screen.queryByRole('tablist')).not.toBeNull()
+    expect(screen.queryByRole('tablist', { name: /Quel héros/ })).not.toBeNull()
   })
 })
 
@@ -262,15 +277,36 @@ describe('le selecteur de vue Auto (tache 3, correctif de gating)', () => {
   })
 })
 
-// TACHE 3. Le bouton qui met une partie ORDINAIRE en pause : dans la barre du
-// haut, a cote d'Annuler -- ni un reglage cache (FenetreReglages), ni un
-// bouton qu'on presse par accident (voir board.tsx pour la justification
-// complete). Masque des que la pause est posee : `BandeauPause` devient alors
-// le seul moyen de reprendre.
+/** Depuis le 04/10/2026, plus de fenetre « Plus d'options » : la pause est un
+ * bouton de la barre (choix de l'utilisateur). Rien a ouvrir. */
+function ouvrirPlusOptions() {}
+
+describe('la barre du haut sans « Plus d options » (04/10/2026)', () => {
+  it('le bouton ⚙ ouvre directement les Reglages', async () => {
+    monter()
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    expect(screen.queryByRole('button', { name: /Plus d.?options/ })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Réglages' }))
+    expect(screen.getByRole('dialog', { name: 'Réglages' })).toBeTruthy()
+  })
+
+  it('la langue a son bouton dans la barre', async () => {
+    monter()
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    expect(screen.getByRole('button', { name: /^(FR|EN)$/ })).toBeTruthy()
+  })
+})
+
+// TACHE 3. Le bouton qui met une partie ORDINAIRE en pause : dans la modale
+// « Plus d'options » (refonte du header du 24/09/2026, ex-barre a plat), ni
+// un reglage cache (FenetreReglages), ni un bouton qu'on presse par accident
+// (voir board.tsx pour la justification complete). Masque des que la pause
+// est posee : `BandeauPause` devient alors le seul moyen de reprendre.
 describe('le bouton de pause (tache 3)', () => {
   it('existe en partie ORDINAIRE, hors pause', async () => {
     monter()
     await emettre({ monde: table(heros('Spider-Man', 1)) })
+    ouvrirPlusOptions()
     expect(screen.getByRole('button', { name: /Mettre en pause/ })).toBeTruthy()
   })
 
@@ -278,6 +314,7 @@ describe('le bouton de pause (tache 3)', () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
     monter()
     await emettre({ monde: table(heros('Spider-Man', 1)) })
+    ouvrirPlusOptions()
     fireEvent.click(screen.getByRole('button', { name: /Mettre en pause/ }))
     await attendreLeReseau()
     expect(fetch).toHaveBeenCalledWith('/manuel_pause', expect.objectContaining({
@@ -293,6 +330,7 @@ describe('le bouton de pause (tache 3)', () => {
     monde.mode_manuel = false
     monde.manuel_actif = true
     await emettre({ monde: monde as never })
+    ouvrirPlusOptions()
     expect(screen.queryByRole('button', { name: /Mettre en pause/ })).toBeNull()
     expect(screen.getByText('Reprendre')).toBeTruthy()
   })
@@ -303,6 +341,7 @@ describe('le bouton de pause (tache 3)', () => {
     monde.mode_manuel = true
     monde.manuel_actif = true
     await emettre({ monde: monde as never })
+    ouvrirPlusOptions()
     expect(screen.queryByRole('button', { name: /Mettre en pause/ })).toBeNull()
   })
 })
@@ -503,19 +542,25 @@ describe('le bouton « Menu » du plateau', () => {
 
   const questions: string[] = []
 
-  /** Monte, laisse l'adresse du site se lire, pose la table, clique la sortie demandée. */
+  /**
+   * Monte, laisse l'adresse du site se lire, pose la table, ouvre la modale
+   * « Menu » (refonte du header du 24/09/2026 : « Menu » et « Déconnexion
+   * complète » sont FUSIONNÉS derrière un seul bouton qui ouvre un choix),
+   * puis clique le choix demandé DANS cette modale.
+   */
   async function cliquerSortie(nom: string | RegExp, playerId = 0) {
     monter(playerId)
     // ⚠ L'ADRESSE EST LUE AU MONTAGE, plus au clic : sans ce tour de boucle,
     // le plateau croirait encore ne rien savoir du site.
     await attendreLeReseau()
     await emettre({ monde: table(heros('Spider-Man', 1)) })
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
     fireEvent.click(screen.getByRole('button', { name: nom }))
     await attendreLeReseau()
     await attendreLeReseau()
   }
 
-  const cliquerMenu = (playerId = 0) => cliquerSortie('Menu', playerId)
+  const cliquerMenu = (playerId = 0) => cliquerSortie(/Retour au menu/, playerId)
   const cliquerDeconnexion = (playerId = 0) =>
     cliquerSortie(/Déconnexion complète/, playerId)
 
@@ -666,5 +711,24 @@ describe('le bouton « Menu » du plateau', () => {
     // montage, pas de la réponse — d'où l'intérêt de l'avoir déjà.
     expect(atterrissages).toEqual(['https://exemple.test'])
     vi.unstubAllGlobals()
+  })
+})
+
+// L'ECRAN DE FIN EN ONOMATOPEE BD (decision du 04/10/2026, questions une a
+// une) : un eclat de BD derriere « DÉFAITE ! » (rouge) ou « VICTOIRE ! »
+// (jaune et bleu), puis le cartouche en dessous.
+describe('l ecran de fin de partie en onomatopee BD', () => {
+  it('defaite : un eclat « DÉFAITE ! »', async () => {
+    monter()
+    await emettre({ monde: { ...table(heros('Spider-Man', 1)), game_over: true, players_won: false } as never })
+    const eclat = document.querySelector('.fin-partie .fin-partie-eclat')
+    expect(eclat?.textContent).toBe('DÉFAITE !')
+    expect(document.querySelector('.fin-partie.est-defaite')).not.toBeNull()
+  })
+
+  it('victoire : un eclat « VICTOIRE ! »', async () => {
+    monter()
+    await emettre({ monde: { ...table(heros('Spider-Man', 1)), game_over: true, players_won: true } as never })
+    expect(document.querySelector('.fin-partie .fin-partie-eclat')?.textContent).toBe('VICTOIRE !')
   })
 })

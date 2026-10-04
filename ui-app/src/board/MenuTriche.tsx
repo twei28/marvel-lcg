@@ -12,6 +12,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { t } from './langue'
+import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import * as triche from './triche'
 
 export type CibleTriche = {
@@ -51,6 +52,10 @@ export const ZONES_MANUELLES: readonly string[] = [
   // ni clic droit). Voir le test qui généralise ce contrôle,
   // `board/manuel/glisser-manuel.test.ts`.
   'ReserveArea',
+  // AJOUT (pack wave) : la Rising Tide area, meme famille que ReserveArea
+  // juste au-dessus, atteignable par le glisser (`PILE_PAR_ZONE`,
+  // glisser-manuel.ts) mais qui manquait ici.
+  'RisingTideArea',
   'MainSchemesArea',
   'AdditionalDeck',
   // La défausse du deck spécial : le moteur ne l'exposait à AUCUNE des deux
@@ -124,6 +129,9 @@ export function libellePile(zone: string): string {
     // que le glisser les atteignait déjà. Voir `ZONES_MANUELLES`.
     case 'AdditionalDiscardPile': return t('Défausse du deck spécial')
     case 'ReserveArea': return t('Ta réserve')
+    // AJOUT (pack wave) : même clé que `zones.ts` (`emplacement('rising-tide',
+    // t('Ta marée montante'), ...)`), même objet (`player.rising_tide`).
+    case 'RisingTideArea': return t('Ta marée montante')
     case 'MainSchemesArea': return t('Manigance principale')
     // I2 (revue finale) : MÊME CLÉ que `zones.ts` pour « Mises de côté du
     // scénario » (`t('Mises de côté du scénario')`, groupe de la pile
@@ -229,6 +237,12 @@ export function MenuTriche({ cible, x, y, onFermer, emettreGeste, manuel = false
       top: Math.max(marge, Math.min(y, window.innerHeight - height - marge)),
     })
   }, [x, y, deplacer, saisie])
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »). Signature sur `x|y` : un
+  // NOUVEAU clic droit (nouvelle position d'origine) repart de zero, changer
+  // de sous-vue (saisie, deplacer) dans le MEME menu garde le glisser.
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(`${x}|${y}`)
 
   // Fermeture au clic extérieur et à Échap : sans ça, un menu oublié reste
   // par-dessus le plateau et intercepte les clics de jeu.
@@ -298,8 +312,19 @@ export function MenuTriche({ cible, x, y, onFermer, emettreGeste, manuel = false
   }
 
   return (
-    <div className="menu-triche" style={position} ref={boite} role="menu">
-      <header className="menu-triche-titre">
+    <div
+      className="menu-triche"
+      style={{ left: position.left + decalage.dx, top: position.top + decalage.dy }}
+      ref={boite}
+      role="menu"
+    >
+      <header
+        className="menu-triche-titre poignee-glisser"
+        onPointerDown={gestesGlisser.onPointerDown}
+        onPointerMove={gestesGlisser.onPointerMove}
+        onPointerUp={gestesGlisser.onPointerUp}
+        onPointerCancel={gestesGlisser.onPointerCancel}
+      >
         <span>{cible.nom}</span>
         <span className="menu-triche-marque">{manuel ? t('Geste manuel') : t('Triche')}</span>
       </header>

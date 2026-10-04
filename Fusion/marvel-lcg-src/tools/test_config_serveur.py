@@ -15,7 +15,7 @@ import tempfile
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(RACINE, "tools"))
 
-from config_serveur import PORT_BASE, construire_config, ecrire_configs
+from config_serveur import PLACES_MAX, PORT_BASE, construire_config, ecrire_configs
 
 resultats = []
 
@@ -51,6 +51,9 @@ for place in (1, 2, 3, 4):
     verifier(f"place {place} : hauts faits separes",
              cfg["achievements_file"] == f"../achievements-serveur-{place}.json",
              cfg["achievements_file"])
+    verifier(f"place {place} : arts alternatifs de heros separes",
+             cfg["arts_heros_file"] == f"../arts-heros-serveur-{place}.json",
+             cfg.get("arts_heros_file"))
     verifier(f"place {place} : carnet de fin de partie separe",
              cfg["campaign_log_last_file"] == f"./campaign-log-last-serveur-{place}.json",
              cfg["campaign_log_last_file"])
@@ -75,7 +78,7 @@ verifier("launch.json d'origine intact",
          BASE["server_addresses"])
 
 # --- Cas limites : places hors bornes ---
-for mauvaise in (0, 5, -1):
+for mauvaise in (0, PLACES_MAX + 1, -1):
     try:
         construire_config(BASE, mauvaise)
         verifier(f"place {mauvaise} refusee", False, "aucune erreur levee")
@@ -101,10 +104,10 @@ try:
     verifier("place 3 non demandee, donc non creee",
              not os.path.exists(os.path.join(bac, ".serveur", "launch-3.json")))
     try:
-        ecrire_configs(bac, 9)
-        verifier("nb_places 9 refuse", False, "aucune erreur levee")
+        ecrire_configs(bac, PLACES_MAX + 1)
+        verifier("nb_places au-dela du maximum refuse", False, "aucune erreur levee")
     except ValueError:
-        verifier("nb_places 9 refuse", True)
+        verifier("nb_places au-dela du maximum refuse", True)
 finally:
     # Tout est desormais cree sous bac/ (bac/.game/... ou bac/replays/...) :
     # ce seul rmtree suffit, plus besoin de nettoyer hors du bac a sable.

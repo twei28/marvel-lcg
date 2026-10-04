@@ -377,7 +377,11 @@ export function autresFacesDe(card: WorldCard, catalogue: Catalogue): AutreFace[
   for (const dos of card.down_card_ids ?? []) {
     const autre = dos.match(MOTIF_FACE)
     if (autre && autre[1] === face[1] && autre[2] !== face[2]) {
-      faces.push({ url: scanUrl(dos), isLandscape: paysageSelonTypePapier(catalogue.type(dos)) })
+      // L'art choisi pour le heros vaut aussi pour l'AUTRE face montree dans
+      // l'apercu : sans `picIdAffiche`, l'alter ego y restait en scan
+      // standard alors que la carte sur la table portait la serie choisie
+      // (signale par l'utilisateur, 03/10/2026, Captain America « Comic »).
+      faces.push({ url: scanUrl(picIdAffiche(dos, undefined)), isLandscape: paysageSelonTypePapier(catalogue.type(dos)) })
     }
   }
   return faces
@@ -415,6 +419,21 @@ function compteursAffiches(card: WorldCard): Array<{ label: string; value: numbe
     if (valeur === 0 && typeof imprime !== 'number') continue
     compteurs.push({ label: nomDeCompteur(cle.slice(2)), value: valeur, cle: cle.slice(2) })
   }
+  // Des jetons de DEGATS sur une carte SANS PV (60112 Disturbed Psyche : « 3 jetons
+  // ou plus, les joueurs gagnent ») : aucune jauge ne les montre, ils deviennent un
+  // compteur. Un personnage, lui, les dit deja par sa jauge (signalement Yarro n°44).
+  const degats = nombre(card.info.k_damage)
+  if (degats !== undefined && degats > 0 && nombre(card.info.max_health) === undefined) {
+    compteurs.push({ label: nomDeCompteur('damage'), value: degats, cle: 'damage' })
+  }
+  // Les jetons d'ACCELERATION (`k_acceleration_token`, pose par
+  // `PlaceAccelerationToken`) : le moteur les compte dans la menace de la phase
+  // du mechant, mais ils n'etaient dessines nulle part (signalement Yarro n°45,
+  // 60200 Ivan Banionis). `ScanCard` leur donne deja leur propre jeton.
+  const acceleration = nombre(card.info.k_acceleration_token)
+  if (acceleration !== undefined && acceleration > 0) {
+    compteurs.push({ label: nomDeCompteur('acceleration'), value: acceleration, cle: 'acceleration' })
+  }
   return compteurs
 }
 
@@ -439,7 +458,13 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
       kind: 'unknown',
       state,
       exhausted,
-      imageUrl: scanUrl(dos ?? 'no_image'),
+      // `??` laisserait passer une chaine VIDE (`down_card_ids[0] === ''`) :
+      // `scanUrl('')` construit alors `/scan/`, une requete que le serveur
+      // ne sait pas servir (500, vu en production en boucle continue des
+      // l'entree en jeu de Wave/Pearl Pangan, Rising Tide area). `||`
+      // rattrape aussi ce cas, comme `ScanCard.tsx` (`!url`) et le repli
+      // cote moteur (`cache.py`, `card_id == ""`) le font deja ailleurs.
+      imageUrl: scanUrl(dos || 'no_image'),
       isLandscape: false,
       facedown: true,
       pileCount: contexte.pileCount,
@@ -460,6 +485,9 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     exhausted,
     // Art alternatif eventuel (promos FFG) : cosmetique, la carte reste la meme.
     imageUrl: scanUrl(picIdAffiche(card.pic_id, contexte.collectionRessources)),
+    // Les arts alternatifs n'existent qu'en anglais : l'apercu doit alors
+    // donner le texte francais (demande de l'utilisateur, 03/10/2026).
+    artAlternatif: picIdAffiche(card.pic_id, contexte.collectionRessources) !== card.pic_id,
     picId: card.pic_id,
     autresFaces: autresFacesDe(card, contexte.catalogue),
     // Un complot EN MAIN (side scheme joueur) est montre en PORTRAIT, pour tenir

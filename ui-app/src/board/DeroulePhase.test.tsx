@@ -6,10 +6,9 @@
 // ce qui ne rejoue rien dans la partie : c'est une relecture, pas un undo.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, fireEvent, render } from '@testing-library/react'
-import { DELAI_ALERTE_FILET_MS, DELAI_DEFILEMENT_MS, DeroulePhase } from './DeroulePhase'
+import { DELAI_ALERTE_FILET_MS, DeroulePhase } from './DeroulePhase'
 import type { EtapeDeroule } from './deroule-phase'
 import type { ScanCardProps } from '../components/ScanCard'
-import { CLE_REGLE_DEPLIEE } from './moteur'
 import { ecran as screen } from '../test-textes'
 
 // Les requetes de texte tolerantes a une phrase decoupee : voir
@@ -33,7 +32,22 @@ const etapes: EtapeDeroule[] = [
 const suivant = () => screen.getByRole('button', { name: /Suivant/i })
 // Le bouton de la DERNIERE etape, celle du bilan : il ne dit plus « Suivant »
 // et c'est lui qui rend la main au joueur.
-const aToiDeJouer = () => screen.getByRole('button', { name: /À toi de jouer/i })
+//
+// ⚠ DEPUIS LE 04/10/2026, LES TEMPS VIDES ONT LEUR ETAPE (« Aucun sbire engagé »,
+// frise-phase.ts) : le raccourci les traverse d'abord, d'un « Suivant » chacune.
+// Seules les etapes VIDES sont traversees : une vraie etape restante fait
+// echouer le test comme avant.
+const ETAPE_VIDE = /^(Aucune menace posée|Le méchant ne s’active pas|Aucun sbire engagé|Aucune carte rencontre distribuée|Rien à révéler)$/
+const titreAffiche = () => document.querySelector('.deroule-titre')?.textContent ?? ''
+const traverserLesVides = () => {
+  for (let garde = 0; garde < 6 && ETAPE_VIDE.test(titreAffiche()); garde++) {
+    fireEvent.click(screen.getByRole('button', { name: /Suivant/i }))
+  }
+}
+const aToiDeJouer = () => {
+  traverserLesVides()
+  return screen.getByRole('button', { name: /À toi de jouer/i })
+}
 
 describe('cartouche du deroule', () => {
   // Le depliant de la regle lit et ecrit son reglage dans localStorage
@@ -114,9 +128,9 @@ describe('cartouche du deroule', () => {
     expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
   })
 
-  it('rappelle la regle de l etape courante', () => {
+  it('ne rappelle plus la regle de l etape (retiree le 03/10/2026)', () => {
     render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-    expect(screen.getByText(/Point 1/)).toBeInTheDocument()
+    expect(screen.queryByText(/Point 1/)).toBeNull()
   })
 
   it('revient en arriere sans rien rejouer', () => {
@@ -165,9 +179,9 @@ describe('cartouche du deroule', () => {
     // le cartouche : ce chemin n'etait verifie qu'au clic, jamais au clavier,
     // alors que les deux passent par la meme fonction.
     render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-    fireEvent.keyDown(document, { key: 'Enter' })
-    fireEvent.keyDown(document, { key: 'Enter' })
-    fireEvent.keyDown(document, { key: 'Enter' })
+    // Menace, mechant, puis les trois temps vides (sbires, distribution,
+    // revelation), puis le bilan : six Entree.
+    for (let i = 0; i < 6; i++) fireEvent.keyDown(document, { key: 'Enter' })
     expect(document.querySelector('.deroule-phase')).toBeNull()
   })
 
@@ -223,9 +237,10 @@ describe('cartouche du deroule', () => {
     expect(container).toBeEmptyDOMElement()
   })
 
-  it('montre les cinq temps, celui en cours mis en avant', () => {
+  it('montre les six onglets (le Bilan compris), celui en cours mis en avant', () => {
     const { container } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-    expect(container.querySelectorAll('.deroule-temps li')).toHaveLength(5)
+    expect(container.querySelectorAll('.deroule-temps li')).toHaveLength(6)
+    expect(container.querySelectorAll('.deroule-temps li')[5].textContent).toMatch(/Bilan/)
     expect(container.querySelector('.deroule-temps li.est-courant')?.textContent).toMatch(/Menace/i)
   })
 
@@ -257,6 +272,7 @@ describe('cartouche du deroule', () => {
     const { container } = render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
     fireEvent.click(suivant())
     fireEvent.click(suivant())
+    traverserLesVides()
     expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
     const sbires = temps(container, /Sbires/i)
     expect(sbires?.className).toContain('est-vide')
@@ -304,12 +320,10 @@ describe('cartouche du deroule', () => {
     expect(temps(container, /Menace/i)?.className).toContain('est-passe')
   })
 
-  it('ne coute aucun clic pour un temps vide : le compte de clics suit le nombre d etapes', () => {
-    // La phase brute (voir brief) : menace, mechant, distribution ; ni
-    // sbires, ni revelation ne produisent d'etape ici. Le joueur doit
-    // traverser la phase en exactement 3 clics, pas 5 : un temps vide ne
-    // consomme jamais de clic pour lui-meme. Le bilan de fin de phase en
-    // ajoute un quatrieme, et un seul, quel que soit le nombre de temps vides.
+  it('un temps vide a son etape courte, avec Suivant (decision du 03/10/2026)', () => {
+    // Menace, mechant, distribution : les sbires et la revelation n'ont rien
+    // produit. Chacun est DIT par une etape courte qui coute un clic, au lieu
+    // d'etre saute en silence.
     const onTerminer = vi.fn()
     const sansSbiresNiRevelation: EtapeDeroule[] = [
       { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
@@ -319,10 +333,26 @@ describe('cartouche du deroule', () => {
     render(<DeroulePhase etapes={sansSbiresNiRevelation} onTerminer={onTerminer} />)
     fireEvent.click(suivant())
     fireEvent.click(suivant())
+    expect(screen.getByText('Aucun sbire engagé')).toBeInTheDocument()
+    fireEvent.click(suivant())
+    fireEvent.click(suivant())
+    expect(screen.getByText('Rien à révéler')).toBeInTheDocument()
     fireEvent.click(suivant())
     expect(onTerminer).not.toHaveBeenCalled()
-    fireEvent.click(aToiDeJouer())
+    fireEvent.click(screen.getByRole('button', { name: /À toi de jouer/i }))
     expect(onTerminer).toHaveBeenCalledTimes(1)
+  })
+
+  it('les onglets passes portent leur resultat court', () => {
+    const coups: EtapeDeroule[] = [
+      { cle: 'a', temps: 'menace', titre: 'menace', regle: '', cibleNom: 'Effraction', montant: 1, boosts: [] },
+      { cle: 'b', temps: 'mechant', titre: 'attaque', etat: 'resolu', regle: '', auteurNom: 'Rhino', cibleNom: 'Shuri', montant: 3, boosts: [] },
+    ]
+    const { container } = render(<DeroulePhase etapes={coups} phaseMechantEnCours onTerminer={() => {}} />)
+    expect(container.querySelector('.deroule-onglet-resume')).toBeNull()
+    fireEvent.click(suivant())
+    expect(temps(container, /Menace/i)?.querySelector('.deroule-onglet-resume')?.textContent).toBe('+1 menace')
+    expect(temps(container, /Méchant/i)?.querySelector('.deroule-onglet-resume')).toBeNull()
   })
 
   it('avance a la touche Entree', () => {
@@ -902,6 +932,7 @@ describe('cartouche du deroule', () => {
       />
     )
     fireEvent.click(suivant())
+    traverserLesVides()
     expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
     fireEvent.click(aToiDeJouer())
     expect(onTerminer).toHaveBeenCalledTimes(1)
@@ -934,6 +965,7 @@ describe('cartouche du deroule', () => {
         onTerminer={onTerminer}
       />
     )
+    traverserLesVides()
     expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
     expect(document.querySelector('.deroule-attente')).toBeNull()
     expect(onTerminer).not.toHaveBeenCalled()
@@ -1320,208 +1352,20 @@ describe('cartouche du deroule', () => {
     })
   })
 
-  // --- Echap : « Tout derouler » fait defiler le CARTOUCHE ------------------
-  //
-  // Avant, Echap relachait le moteur pour tout le reste de la phase
-  // (`passerToutLaPhase`, `phaseSautee`) : le moteur filait, le cartouche
-  // restait sur son etape, et le joueur n'avait plus aucune autorite sur le
-  // rythme. Desormais Echap fait defiler les etapes du cartouche, vite et
-  // sans delai de lecture, par la MEME fonction que « Suivant » : l'accuse
-  // part par le chemin ordinaire, le moteur suit, il ne precede jamais. Le
-  // bilan, lui, attend toujours un vrai clic.
-  describe('Echap : tout derouler', () => {
-    const troisEtapes: EtapeDeroule[] = [
-      { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
-      {
-        cle: 'b',
-        temps: 'mechant',
-        titre: 'attaque',
-        regle: 'regle:activations',
-        auteurNom: 'Ultron',
-        cibleNom: 'Shuri',
-        boosts: [],
-      },
-      {
-        cle: 'c',
-        temps: 'sbires',
-        titre: 'attaque',
-        regle: 'regle:activations',
-        auteurNom: 'Drone',
-        cibleNom: 'Shuri',
-        boosts: [],
-      },
-    ]
-    const echap = () =>
-      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
-    // Une echeance par act, meme raison que pour l'avance auto ci-dessus.
-    const defiler = async (etapes: number) => {
-      for (let i = 0; i < etapes; i += 1) {
-        await act(async () => {
-          await vi.advanceTimersByTimeAsync(DELAI_DEFILEMENT_MS)
-        })
-      }
-    }
-
-    beforeEach(() => {
-      vi.useFakeTimers()
-    })
-    afterEach(() => {
-      vi.useRealTimers()
-    })
-
-    it('fait defiler les etapes jusqu au bilan, qui attend un vrai clic', async () => {
-      const onTerminer = vi.fn()
-      render(<DeroulePhase etapes={troisEtapes} identitePhase={3} onTerminer={onTerminer} />)
-      echap()
-      await defiler(3)
-      expect(aToiDeJouer()).toBeInTheDocument()
-      await defiler(5)
-      expect(aToiDeJouer()).toBeInTheDocument()
-      expect(onTerminer).not.toHaveBeenCalled()
-      fireEvent.click(aToiDeJouer())
-      expect(onTerminer).toHaveBeenCalledTimes(1)
-    })
-
-    it('ne relache le moteur que par le chemin ordinaire, une trame a la fois', async () => {
-      // Le moteur SUIT le cartouche : une trame acquittee quand le cartouche
-      // est a jour, jamais un « laissez passer » pour toute la phase. La
-      // preuve : entre deux trames, le cartouche attend la suite comme
-      // d'habitude, et repart de lui-meme sur l'etape qui arrive.
-      const onSuivant = vi.fn()
-      const onTerminer = vi.fn()
-      const cartouche = (liste: EtapeDeroule[], trame: number, enCours: boolean) => (
-        <DeroulePhase
-          etapes={liste}
-          identitePhase={3}
-          phaseMechantEnCours={enCours}
-          trameRetenue={trame}
-          onSuivant={onSuivant}
-          onTerminer={onTerminer}
-        />
-      )
-      const { rerender } = render(cartouche(etapes, 11, true))
-      echap()
-      await defiler(2)
-      expect(document.querySelector('.deroule-attente')).not.toBeNull()
-      expect(onSuivant).toHaveBeenCalledTimes(1)
-      await defiler(3)
-      expect(onSuivant).toHaveBeenCalledTimes(1)
-      rerender(cartouche(troisEtapes, 12, true))
-      expect(screen.getByText('Drone attaque Shuri')).toBeInTheDocument()
-      await defiler(1)
-      expect(onSuivant).toHaveBeenCalledTimes(2)
-      rerender(cartouche(troisEtapes, 13, false))
-      await defiler(3)
-      expect(aToiDeJouer()).toBeInTheDocument()
-      expect(onTerminer).not.toHaveBeenCalled()
-    })
-
-    it('ignore le delai de lecture de l avance auto', async () => {
-      render(
-        <DeroulePhase
-          etapes={troisEtapes}
-          identitePhase={3}
-          avanceAuto
-          delaiAvanceMs={1000}
-          onTerminer={() => {}}
-        />
-      )
-      echap()
-      await defiler(3)
-      expect(aToiDeJouer()).toBeInTheDocument()
-    })
-
-    it('s arrete sur un « Precedent » : le joueur reprend la main', async () => {
-      render(<DeroulePhase etapes={troisEtapes} identitePhase={3} onTerminer={() => {}} />)
-      echap()
-      await defiler(3)
-      expect(aToiDeJouer()).toBeInTheDocument()
-      fireEvent.click(screen.getByRole('button', { name: /Précédent/i }))
-      expect(screen.getByText('Drone attaque Shuri')).toBeInTheDocument()
-      await defiler(5)
-      expect(screen.getByText('Drone attaque Shuri')).toBeInTheDocument()
-    })
-
-    it('ne fait rien quand le moteur pose une question au joueur', async () => {
-      render(
-        <DeroulePhase
-          etapes={troisEtapes}
-          identitePhase={3}
-          phaseMechantEnCours
-          questionAuJoueur
-          onTerminer={() => {}}
-        />
-      )
-      echap()
-      await defiler(5)
-      expect(vi.getTimerCount()).toBe(0)
-    })
+  // --- Echap ne deroule plus rien : pas a pas strict (decision du 03/10/2026)
+  it('Echap ne fait rien : aucun « tout derouler », chaque etape attend son clic', () => {
+    const onSuivant = vi.fn()
+    render(<DeroulePhase etapes={etapes} trameRetenue={1} onSuivant={onSuivant} onTerminer={() => {}} />)
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
+    expect(onSuivant).not.toHaveBeenCalled()
   })
 
-  describe('depliant de la regle', () => {
-    const regle = () => screen.getByRole('button', { name: /la règle/i })
-
-    it('montre la regle par defaut, sans rien avoir stocke', () => {
-      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(screen.getByText(/Point 1/)).toBeInTheDocument()
-      expect(regle()).toHaveAttribute('aria-expanded', 'true')
-    })
-
-    it('un clic la replie et ecrit le reglage dans le stockage', () => {
-      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      fireEvent.click(regle())
-      expect(screen.queryByText(/Point 1/)).not.toBeInTheDocument()
-      expect(regle()).toHaveAttribute('aria-expanded', 'false')
-      expect(window.localStorage.getItem(CLE_REGLE_DEPLIEE)).toBe('off')
-    })
-
-    it('reste repliee au premier rendu quand le reglage est deja stocke replie', () => {
-      window.localStorage.setItem(CLE_REGLE_DEPLIEE, 'off')
-      render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-      expect(screen.queryByText(/Point 1/)).not.toBeInTheDocument()
-      expect(regle()).toHaveAttribute('aria-expanded', 'false')
-    })
-
-    it('le repli survit au passage a l etape suivante', () => {
-      // Le coeur de la decision : un seul rendu ne prouve rien, il faut voir
-      // le reglage tenir quand le moteur produit l'etape suivante (meme
-      // motif que les tests ci-dessus qui font grossir `etapes` via
-      // `rerender`, a identite de phase inchangee).
-      const menaceSeule: EtapeDeroule[] = [etapes[0]]
-      const { rerender } = render(
-        <DeroulePhase etapes={menaceSeule} identitePhase={7} phaseMechantEnCours onTerminer={() => {}} />
-      )
-      fireEvent.click(regle())
-      expect(screen.queryByText(/Point 1/)).not.toBeInTheDocument()
-
-      fireEvent.click(suivant())
-      rerender(
-        <DeroulePhase etapes={etapes} identitePhase={7} phaseMechantEnCours onTerminer={() => {}} />
-      )
-      expect(screen.getByText('Ultron attaque Shuri')).toBeInTheDocument()
-      expect(screen.queryByText(/Point 2/)).not.toBeInTheDocument()
-      expect(regle()).toHaveAttribute('aria-expanded', 'false')
-    })
-
-    it('un stockage qui leve ne fait pas tomber le composant', () => {
-      const espionLecture = vi.spyOn(window.localStorage, 'getItem').mockImplementation(() => {
-        throw new Error('localStorage access denied')
-      })
-      const espionEcriture = vi.spyOn(window.localStorage, 'setItem').mockImplementation(() => {
-        throw new Error('localStorage access denied')
-      })
-      try {
-        render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
-        // Lecture en echec : repli sur le defaut (depliee).
-        expect(screen.getByText(/Point 1/)).toBeInTheDocument()
-        expect(() => fireEvent.click(regle())).not.toThrow()
-        // Ecriture en echec elle aussi : le clic replie quand meme l'affichage,
-        // seul le stockage ne suit pas.
-        expect(screen.queryByText(/Point 1/)).not.toBeInTheDocument()
-      } finally {
-        espionLecture.mockRestore()
-        espionEcriture.mockRestore()
-      }
+  describe('plus de rappel de regle (demande de l utilisateur, 03/10/2026)', () => {
+    it('le cartouche n affiche plus « la règle » ni son texte', () => {
+      render(<DeroulePhase etapes={etapes} identitePhase={1} phaseMechantEnCours onTerminer={() => {}} />)
+      expect(screen.queryByRole('button', { name: /la règle/i })).toBeNull()
+      expect(document.querySelector('.deroule-regle')).toBeNull()
     })
   })
 })
@@ -1563,6 +1407,7 @@ describe('le bilan de fin de phase', () => {
     fireEvent.click(suivant())
     fireEvent.click(suivant())
     fireEvent.click(suivant())
+    traverserLesVides()
     expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
     expect(document.querySelectorAll('.deroule-bilan li')).toHaveLength(1)
     expect(screen.getByText('Colossus a pris 6 dégâts')).toBeInTheDocument()
@@ -1587,7 +1432,9 @@ describe('le bilan de fin de phase', () => {
     ]
     render(<DeroulePhase etapes={attaqueEtMenace} onTerminer={() => {}} />)
     fireEvent.click(suivant())
+    traverserLesVides()
     fireEvent.click(suivant())
+    traverserLesVides()
     expect(document.querySelectorAll('.deroule-bilan li')).toHaveLength(2)
     expect(screen.getByText('L’Effraction ! a gagné 3 menaces')).toBeInTheDocument()
     expect(screen.getByText('Colossus a pris 6 dégâts')).toBeInTheDocument()
@@ -1629,6 +1476,7 @@ describe('le bilan de fin de phase', () => {
         onTerminer={onTerminer}
       />
     )
+    traverserLesVides()
     expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
     expect(document.querySelectorAll('.deroule-bilan li')).toHaveLength(1)
     expect(screen.getByText('Colossus a pris 6 dégâts')).toBeInTheDocument()
@@ -1680,6 +1528,7 @@ describe('le bilan de fin de phase', () => {
     rerender(
       <DeroulePhase etapes={[]} identitePhase={4} phaseMechantEnCours={false} onTerminer={onTerminer} />
     )
+    traverserLesVides()
     expect(screen.getByText('Fin de la phase du méchant')).toBeInTheDocument()
 
     // La phase du mechant du round 4 s'ouvre avec sa propre menace.
@@ -1732,6 +1581,7 @@ describe('le bilan de fin de phase', () => {
       <DeroulePhase etapes={[coup({ cle: 'a' })]} onTerminer={onTerminer} />
     )
     fireEvent.click(suivant())
+    traverserLesVides()
     expect(screen.queryByRole('button', { name: /Suivant/i })).toBeNull()
     fireEvent.click(aToiDeJouer())
     expect(onTerminer).toHaveBeenCalledTimes(1)
@@ -1756,21 +1606,24 @@ describe('le bilan de fin de phase', () => {
     expect(screen.getByText('Aucun dégât, aucune menace.')).toBeInTheDocument()
   })
 
-  it('montre les cinq temps tous valides sur le bilan', () => {
-    // Le bilan n'est pas un des cinq temps de la carte de reference : il vient
-    // apres, et la chronologie les montre alors tous passes ou vides.
+  it('sur le bilan, les cinq temps sont passes et l onglet Bilan est en cours', () => {
+    // Le Bilan est le sixieme onglet (03/10/2026) : sur lui, les cinq temps de
+    // la carte de reference sont passes ou vides, et lui seul est en cours.
     const { container } = render(
       <DeroulePhase etapes={troisCoupsSurColossus} onTerminer={() => {}} />
     )
     fireEvent.click(suivant())
     fireEvent.click(suivant())
     fireEvent.click(suivant())
+    traverserLesVides()
     const items = [...container.querySelectorAll('.deroule-temps li')]
-    expect(items).toHaveLength(5)
-    for (const item of items) {
+    expect(items).toHaveLength(6)
+    for (const item of items.slice(0, 5)) {
       expect(item.className).toMatch(/est-passe|est-vide/)
     }
-    expect(container.querySelector('.deroule-temps li.est-courant')).toBeNull()
+    expect(items[5].className).toContain('est-courant')
+    // Le resultat court du Bilan n'est pas montre sur lui-meme : il est en cours.
+    expect(items[1].querySelector('.deroule-onglet-resume')?.textContent).toBe('3 dégâts')
   })
 
   it('laisse relire l etape precedente depuis le bilan', () => {
@@ -2274,6 +2127,8 @@ describe('le bilan de fin de phase', () => {
       const dosBoost = container.querySelector('.deroule-carte.est-boost .deroule-retourne-dos img')
       expect(dosBoost?.getAttribute('src')).toBe('/scan/encounter')
       fireEvent.click(suivant())
+      // Entre les deux : les sbires et la distribution, vides, ont leur etape.
+      traverserLesVides()
       expect(container.querySelector('.deroule-carte.est-revelee .deroule-retourne')).not.toBeNull()
     })
 
@@ -2439,7 +2294,7 @@ describe('le bilan de fin de phase', () => {
       const { container } = render(
         <DeroulePhase etapes={etapes} phaseMechantEnCours questionAuJoueur onTerminer={() => {}} />
       )
-      expect(container.querySelectorAll('.deroule-temps li')).toHaveLength(5)
+      expect(container.querySelectorAll('.deroule-temps li')).toHaveLength(6)
       expect(screen.getByText('Le moteur attend ta réponse')).toBeInTheDocument()
       // Ni titre, ni bouton : rien a lire ni a cliquer ici, c'est la question
       // du moteur qui a la main.
@@ -2488,11 +2343,10 @@ describe('le bilan de fin de phase', () => {
       expect(screen.getByRole('button', { name: 'Défendre' })).toBeInTheDocument()
       expect(screen.queryByText('Suivant')).not.toBeInTheDocument()
       expect(screen.queryByText('Le moteur attend ta réponse')).not.toBeInTheDocument()
-      // Le moment ou l'on peut agir change d'aspect : un bandeau « A toi »
-      // dans la scene, et la main sort du voile (classe sur le body, lue par
-      // board.css).
-      expect(container.querySelector('.deroule-a-toi')).not.toBeNull()
-      expect(screen.getByText('À toi de jouer')).toBeInTheDocument()
+      // Plus de bandeau « À toi de jouer » (retire le 03/10/2026, demande de
+      // l'utilisateur) ; la main sort toujours du voile (classe sur le body).
+      expect(container.querySelector('.deroule-a-toi')).toBeNull()
+      expect(screen.queryByText('À toi de jouer')).toBeNull()
       expect(document.body.classList.contains('deroule-question')).toBe(true)
     })
 
@@ -2671,7 +2525,7 @@ describe('le bilan de fin de phase', () => {
         document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
         rerender(cartouche(false))
         await act(async () => {
-          await vi.advanceTimersByTimeAsync(DELAI_DEFILEMENT_MS * 5)
+          await vi.advanceTimersByTimeAsync(5000)
         })
         expect(screen.getByText('Menace sur la manigance principale')).toBeInTheDocument()
         expect(screen.queryByText('Ultron attaque Shuri')).not.toBeInTheDocument()
@@ -2717,10 +2571,10 @@ describe("l'annonce d'une activation", () => {
     window.localStorage.clear()
   })
 
-  it("dit l'intention au futur proche, avec sa valeur imprimee", () => {
+  it("dit l'intention au futur proche, sans chiffre d'attaque", () => {
     render(<DeroulePhase etapes={[annonce]} onTerminer={() => {}} />)
     expect(screen.getByText('Klaw va attaquer Colossus')).toBeInTheDocument()
-    expect(screen.getByText('→ 4 dégâts annoncés')).toBeInTheDocument()
+    expect(screen.queryByText(/dégâts? annoncés?/)).toBeNull()
   })
 
   // Le cas central : l'etape se COMPLETE sous les yeux du joueur. Il ne recule
@@ -2781,6 +2635,61 @@ describe("l'annonce d'une activation", () => {
     // Pas de bouton : c'est ailleurs qu'on repond, et « La suite arrive… »
     // serait un mensonge (c'est le moteur qui attend).
     expect(screen.queryByRole('button', { name: /Suivant/i })).not.toBeInTheDocument()
+  })
+
+  // Signalement Yarro (30/09/2026) : « je peux bouger la fenetre dans le fond
+  // mais pas la fenetre principale ». La fenetre principale, c'est ce cartouche
+  // de question : seul son bandeau rouge sert de poignee.
+  it("se deplace a la poignee de la frise, sans perdre son centrage", () => {
+    const { container } = render(
+      <DeroulePhase
+        etapes={[annonce]}
+        phaseMechantEnCours
+        questionAuJoueur
+        question={<button type="button">Défendre</button>}
+        onTerminer={() => {}}
+      />
+    )
+    const cartouche = container.querySelector<HTMLElement>('.deroule-phase.est-question')
+    // Le bandeau « À toi de jouer » est retire (03/10/2026) : la frise d'onglets
+    // sert de poignee.
+    const bandeau = container.querySelector<HTMLElement>('.deroule-phase.est-question .deroule-chrono')
+    expect(cartouche).not.toBeNull()
+    expect(bandeau?.classList.contains('poignee-glisser')).toBe(true)
+    expect(cartouche?.style.translate).toBe('')
+
+    const pointeur = (type: string, x: number, y: number) =>
+      new MouseEvent(type, { bubbles: true, clientX: x, clientY: y, button: 0 })
+    act(() => {
+      bandeau?.dispatchEvent(pointeur('pointerdown', 100, 100))
+    })
+    act(() => {
+      bandeau?.dispatchEvent(pointeur('pointermove', 160, 60))
+    })
+    expect(cartouche?.style.translate).toBe('60px -40px')
+  })
+
+  // Seconde partie du meme signalement (01/10/2026, capture a l'appui) : le
+  // cartouche des ETAPES du mechant (« Gagne 1 menace », bouton Suivant) ne
+  // bougeait pas non plus. Son bandeau rouge (la chronologie) sert de poignee.
+  it("deplace aussi le cartouche des etapes, par son bandeau rouge", () => {
+    const { container } = render(
+      <DeroulePhase etapes={[annonce]} phaseMechantEnCours onTerminer={() => {}} />
+    )
+    const cartouche = container.querySelector<HTMLElement>('.deroule-phase')
+    const bandeau = container.querySelector<HTMLElement>('.deroule-chrono')
+    expect(cartouche).not.toBeNull()
+    expect(bandeau?.classList.contains('poignee-glisser')).toBe(true)
+
+    const pointeur = (type: string, x: number, y: number) =>
+      new MouseEvent(type, { bubbles: true, clientX: x, clientY: y, button: 0 })
+    act(() => {
+      bandeau?.dispatchEvent(pointeur('pointerdown', 100, 100))
+    })
+    act(() => {
+      bandeau?.dispatchEvent(pointeur('pointermove', 30, 140))
+    })
+    expect(cartouche?.style.translate).toBe('-70px 40px')
   })
 
   // Sur une etape ordinaire, le cartouche se replie comme avant : la fenetre
@@ -3038,6 +2947,7 @@ describe('l identite de l etape courante', () => {
       <DeroulePhase etapes={[menace, carteB]} phaseMechantEnCours onTerminer={() => {}} />
     )
     fireEvent.click(suivant())
+    traverserLesVides()
     expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
     // Le Deferlement : une revelation de plus, qui passe DEVANT celle qu'on
     // lit parce qu'elle appartient a un joueur plus avance dans l'ordre du
@@ -3054,6 +2964,7 @@ describe('l identite de l etape courante', () => {
       <DeroulePhase etapes={[menace, carteA, carteB]} phaseMechantEnCours onTerminer={() => {}} />
     )
     fireEvent.click(suivant())
+    traverserLesVides()
     fireEvent.click(suivant())
     expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
     // Meme liste, autre ordre : rien n'a ete produit, rien ne doit bouger.
@@ -3093,6 +3004,7 @@ describe('l identite de l etape courante', () => {
       <DeroulePhase etapes={[menace, carteA, carteB]} phaseMechantEnCours onTerminer={() => {}} />
     )
     fireEvent.click(suivant())
+    traverserLesVides()
     fireEvent.click(suivant())
     expect(screen.getByText('Heros1 révèle Carte B')).toBeInTheDocument()
     // La carte revelee frappe, et le heros tombe.
@@ -3114,6 +3026,7 @@ describe('l identite de l etape courante', () => {
       <DeroulePhase etapes={[menace, carteA, carteB]} phaseMechantEnCours onTerminer={() => {}} />
     )
     fireEvent.click(suivant())
+    traverserLesVides()
     expect(screen.getByText('Heros0 révèle Carte A')).toBeInTheDocument()
     // Carte A s'en va (une defaite survenue plus tot coupe le deroule derriere
     // elle) : la menace reste la seule etape validee, donc on repart de celle
@@ -3456,5 +3369,169 @@ describe('une partie neuve n herite pas des etapes de la precedente', () => {
     // la garde tombe plutot que de se reposer.
     rerender(vue('partie-C'))
     expect(screen.getByText('The Break-In! gagne 1 menace')).toBeInTheDocument()
+  })
+
+  // Signalement Yarro n42 (02/10/2026) : apres un Undo, le monde revient en
+  // arriere et n'a plus rien a raconter, mais la memoire du cartouche garde
+  // la phase d'avant et la remontre en plein tour du joueur.
+  describe('apres un Undo', () => {
+    const cartouche = (liste: EtapeDeroule[], round: number, enPhase: boolean) => (
+      <DeroulePhase
+        etapes={liste}
+        identitePhase={round}
+        phaseMechantEnCours={enPhase}
+        onTerminer={() => {}}
+      />
+    )
+    const cartoucheAffiche = () => document.querySelector('.deroule-temps') !== null
+
+    it('le cartouche est bien visible pendant la phase', () => {
+      render(cartouche(etapes, 1, true))
+      expect(cartoucheAffiche()).toBe(true)
+    })
+
+    it('un monde revenu au meme round, sans plus rien a raconter, efface le cartouche', () => {
+      const { rerender } = render(cartouche(etapes, 1, true))
+      rerender(cartouche([], 1, false))
+      expect(cartoucheAffiche()).toBe(false)
+    })
+
+    it('un round qui recule efface le cartouche', () => {
+      const { rerender } = render(cartouche(etapes, 2, true))
+      rerender(cartouche([], 1, false))
+      expect(cartoucheAffiche()).toBe(false)
+    })
+
+    it('la phase rejouee apres l Undo se raconte de nouveau', () => {
+      const { rerender } = render(cartouche(etapes, 1, true))
+      rerender(cartouche([], 1, false))
+      rerender(cartouche(etapes, 1, true))
+      expect(cartoucheAffiche()).toBe(true)
+    })
+
+    it('la fin ORDINAIRE d une phase (round suivant) garde son bilan', () => {
+      const { rerender } = render(cartouche(etapes, 1, true))
+      rerender(cartouche([], 2, false))
+      expect(cartoucheAffiche()).toBe(true)
+    })
+  })
+})
+
+describe('les consequences d une carte revelee (rapport Yarro n46)', () => {
+  it('s affichent sous la carte, une par ligne', () => {
+    const revelation: EtapeDeroule = {
+      cle: 'revelation:4:9:54',
+      temps: 'revelation',
+      titre: 'revelation',
+      regle: 'regle:revelation',
+      carteId: 54,
+      auteurNom: 'Echo',
+      cibleNom: 'Psionic Slash',
+      boosts: [],
+      consequences: [
+        {
+          cle: 'activation:7',
+          temps: 'revelation',
+          titre: 'manigance',
+          regle: 'regle:activations',
+          auteurNom: 'Bloody Mary',
+          cibleNom: 'Stop the Presses!',
+          etat: 'resolu',
+          montant: 4,
+          boosts: [],
+        },
+      ],
+    }
+    render(<DeroulePhase etapes={[revelation]} identitePhase={4} phaseMechantEnCours onTerminer={() => {}} />)
+    expect(screen.getByText('Echo révèle Psionic Slash')).toBeInTheDocument()
+    expect(document.querySelector('.deroule-consequences li')?.textContent).toContain('Bloody Mary manigance sur Stop the Presses!')
+  })
+})
+
+// ------------------------------------------------- relecture d'un onglet passe
+// Decision du 03/10/2026 : un clic sur un onglet PASSE le relit en lecture
+// seule, avec « Revenir à l'étape en cours » ; plusieurs coups sont listes, un
+// clic sur une ligne en donne le detail. Rien ne part au moteur pendant ce temps.
+describe('la relecture d un onglet passe', () => {
+  const coup = (cle: string, auteur: string, montant: number): EtapeDeroule => ({
+    cle, temps: 'sbires', titre: 'attaque', etat: 'resolu', regle: '', auteurNom: auteur, cibleNom: 'Shuri',
+    montant, base: montant, defense: 0, boosts: [],
+  })
+  const phase: EtapeDeroule[] = [
+    { cle: 'm', temps: 'menace', titre: 'menace', regle: '', cibleNom: 'Effraction', montant: 1, boosts: [] },
+    { cle: 'v', temps: 'mechant', titre: 'attaque', etat: 'resolu', regle: '', auteurNom: 'Rhino', cibleNom: 'Shuri', montant: 3, boosts: [] },
+    coup('s1', 'Drone', 1),
+    coup('s2', 'Hydra', 2),
+    { cle: 'd', temps: 'distribution', titre: 'distribution', regle: '', auteurNom: 'Shuri', montant: 1, boosts: [] },
+  ]
+  const onglet = (nom: RegExp) =>
+    [...document.querySelectorAll('.deroule-temps li')].find((li) => li.textContent?.match(nom))
+  const aLaDistribution = (onSuivant = vi.fn()) => {
+    render(<DeroulePhase etapes={phase} phaseMechantEnCours trameRetenue={7} onSuivant={onSuivant} onTerminer={() => {}} />)
+    for (let i = 0; i < 4; i++) fireEvent.click(suivant())
+    expect(screen.getByText('Shuri reçoit sa carte rencontre')).toBeInTheDocument()
+    return onSuivant
+  }
+
+  it('un onglet passe se relit, en lecture seule, puis on revient', () => {
+    const onSuivant = aLaDistribution()
+    const avant = onSuivant.mock.calls.length
+    fireEvent.click(onglet(/Méchant/i)!.querySelector('button')!)
+    expect(screen.getByText('Rhino attaque Shuri')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Suivant/i })).toBeNull()
+    expect(onglet(/Méchant/i)?.className).toContain('est-relu')
+    fireEvent.keyDown(document, { key: 'Enter' })
+    expect(onSuivant.mock.calls.length).toBe(avant)
+    // Entree ramene a l'etape en cours, sans rien valider.
+    expect(screen.getByText('Shuri reçoit sa carte rencontre')).toBeInTheDocument()
+    fireEvent.click(onglet(/Menace/i)!.querySelector('button')!)
+    fireEvent.click(screen.getByRole('button', { name: /Revenir à l’étape en cours/ }))
+    expect(screen.getByText('Shuri reçoit sa carte rencontre')).toBeInTheDocument()
+    expect(onSuivant.mock.calls.length).toBe(avant)
+  })
+
+  it('plusieurs coups sont listes ; un clic sur une ligne en donne le detail', () => {
+    aLaDistribution()
+    fireEvent.click(onglet(/Sbires/i)!.querySelector('button')!)
+    const lignes = document.querySelectorAll('.deroule-relecture-liste button')
+    expect(lignes).toHaveLength(2)
+    expect(lignes[0].textContent).toContain('Drone attaque Shuri')
+    fireEvent.click(lignes[1])
+    expect(document.querySelector('.deroule-relecture-liste')).toBeNull()
+    expect(screen.getByText('Hydra attaque Shuri')).toBeInTheDocument()
+    expect(screen.getByText('→ 2 dégâts')).toBeInTheDocument()
+  })
+
+  it('un onglet a venir ne se relit pas', () => {
+    aLaDistribution()
+    expect(onglet(/Révéler/i)?.querySelector('button')).toBeNull()
+    expect(onglet(/Bilan/i)?.querySelector('button')).toBeNull()
+  })
+})
+
+describe('le Renfort dans le cartouche (03/10/2026)', () => {
+  it('la carte precedente annonce le Renfort, la suivante porte « Renfort de X » en surtitre', () => {
+    const chaine: EtapeDeroule[] = [
+      { cle: 'r1', temps: 'revelation', titre: 'revelation', regle: '', auteurNom: 'Shuri', cibleNom: 'Mines', suivieDUnRenfort: true, boosts: [] },
+      { cle: 'r2', temps: 'revelation', titre: 'revelation', regle: '', auteurNom: 'Shuri', cibleNom: 'Bombe', parSurge: true, renfortDe: 'Mines', boosts: [] },
+    ]
+    render(<DeroulePhase etapes={chaine} phaseMechantEnCours onTerminer={() => {}} />)
+    expect(screen.getByText('→ Renfort : une autre carte est révélée')).toBeInTheDocument()
+    expect(document.querySelector('.deroule-surtitre')).toBeNull()
+    fireEvent.click(suivant())
+    expect(document.querySelector('.deroule-surtitre')?.textContent).toBe('Renfort de Mines')
+    expect(screen.getByText('Shuri révèle Bombe')).toBeInTheDocument()
+  })
+})
+
+describe('les pastilles du telephone (03/10/2026)', () => {
+  it('chaque onglet separe son numero de son nom (le telephone ne garde que le numero)', () => {
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    const premier = document.querySelector('.deroule-temps li')!
+    expect(premier.querySelector('.deroule-onglet-numero')?.textContent).toBe('1.')
+    expect(premier.querySelector('.deroule-onglet-libelle')?.textContent).toBe(' Placer les menaces')
+    const bilan = document.querySelectorAll('.deroule-temps li')[5]
+    expect(bilan.querySelector('.deroule-onglet-numero')).toBeNull()
+    expect(bilan.querySelector('.deroule-onglet-libelle')?.textContent).toBe('Bilan')
   })
 })

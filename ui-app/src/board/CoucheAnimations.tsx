@@ -15,6 +15,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 // Meme mesure que le placement des panneaux : une seule definition de boite
 // d'ecran pour tout le plateau (voir placement/boites.ts).
 import { boiteDe, type Boite } from './placement/boites'
+import { mouvementReduit } from './affichage'
 
 /**
  * LA DUREE SUIT LA DISTANCE, et c'est le coeur du poids.
@@ -275,7 +276,7 @@ export function CoucheAnimations({
     // Respect du reglage systeme : si l'OS demande de reduire les animations, on
     // ne masque meme pas les vraies cartes (sinon elles clignoteraient sans
     // fantome). On met quand meme `precedent` a jour pour repartir proprement.
-    const reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduit = mouvementReduit()
 
     const prev = memoire
     if (actif && !reduit && prev.size > 0) {

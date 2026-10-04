@@ -27,6 +27,9 @@ export function nettoyerTexteCarte(texte: string): string {
     .replace(/&#8594;|&rarr;/g, '→')
     .replace(/&quot;/g, '"')
     .replace(/\[star\]\s*/g, '★ ')
+    // Les jetons de ressource survivent, sous leur forme a un crochet : ils sont
+    // dessines en icones plus loin (`marquerRessources`).
+    .replace(/\[\[(physical|mental|energy|wild|lightning)\]\]/g, '[$1]')
     .replace(/\[\[([^\]]+)\]\]/g, '$1')
     .replace(/\s+/g, ' ')
     .trim()

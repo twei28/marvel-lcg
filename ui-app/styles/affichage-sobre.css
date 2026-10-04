@@ -1,0 +1,249 @@
+/* AFFICHAGE SOBRE (reglage « Affichage : Normal / Sobre », board/affichage.ts).
+
+   Demande de l'utilisateur, 03/10/2026, apres le retour d'un joueur (« le jeu
+   a tendance a me faire mal aux yeux ») : fond gris sombre, pas les couleurs du
+   heros, pas de pulsation, moins de mouvement, pas de couleurs flashy.
+
+   ⚠ HORS DE TOUTE COUCHE, ET C'EST VOULU. Toutes les feuilles du plateau vivent
+   dans des `@layer` (tokens.css) ; une regle hors couche passe devant elles
+   sans `!important`. Tout est prefixe par `html[data-affichage='sobre']` : le
+   mode Normal ne voit aucune de ces regles.
+
+   Ce que cette feuille NE fait PAS : couper les animations deja couvertes par
+   le reglage « Animations ». Le mode sobre force ce reglage a « non »
+   (`animationsActives` dans board.tsx), donc `body.plateau-sans-animations`
+   joue en plus de ce qui suit. */
+
+/* --- 1. Les couleurs de la palette, ternies --------------------------------
+   Le sens reste (rouge = rencontre, vert = nous, ambre = menace), l'eclat part. */
+html[data-affichage='sobre'] {
+  --rouge: #5c3f3f;
+  --rouge-vif: #6c4a4a;
+  --rouge-clair: #b39d9d;
+  --camp-nous: #737c62;
+  --camp-nous-clair: #a9b096;
+  --camp-eux: #5c3f3f;
+  --camp-eux-vif: #6c4a4a;
+  --menace: #b3a588;
+  --menace-clair: #d3c9b4;
+  --info: #9aabb6;
+  --info-fonce: #3e4b57;
+  --fond: #232528;
+  --fond-nuit: #26292d;
+  --cadre: #3a3e44;
+  --cadre-clair: #565c64;
+  --soin: #3e4d3e;
+  --soin-clair: #9db09d;
+  --statut: #403a45;
+  --statut-clair: #b2a6c0;
+  --alerte: #8a6e5c;
+  --mc-fond: #1c1d20;
+}
+
+/* --- 2. Les fonds : gris uni, sans lueur rouge et bleue --------------------- */
+html[data-affichage='sobre'],
+html[data-affichage='sobre'] body {
+  background: #1c1d20;
+}
+
+html[data-affichage='sobre'] .plateau-scene,
+html[data-affichage='sobre'] body.a-halo-heros .plateau-scene {
+  background: #202226;
+  box-shadow: none;
+}
+
+html[data-affichage='sobre'] #scene {
+  background: #202226;
+  box-shadow: none;
+}
+
+/* --- 3. Les cartes : un contour fin, aucune lueur ---------------------------
+   Le camp et l'etat (jouable, ciblable, source) restent lisibles, par un trait
+   plein au lieu d'un halo flou. */
+html[data-affichage='sobre'] .scan-card {
+  --state-glow: transparent;
+  --camp-glow: transparent;
+  --camp-epaisseur: 2px;
+}
+
+html[data-affichage='sobre'] .scan-card.camp-player {
+  --camp-ring: rgba(150, 158, 130, 0.6);
+}
+
+html[data-affichage='sobre'] .scan-card.camp-encounter {
+  --camp-ring: rgba(160, 118, 118, 0.65);
+}
+
+html[data-affichage='sobre'] .scan-frame,
+html[data-affichage='sobre'] .state-playable .scan-frame,
+html[data-affichage='sobre'] .state-targetable .scan-frame,
+html[data-affichage='sobre'] .scan-card.state-source .scan-frame {
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.72),
+    0 0 0 var(--camp-epaisseur) var(--camp-ring, transparent),
+    0 0 0 calc(var(--camp-epaisseur) + 2px) var(--contour-sobre, transparent);
+}
+
+html[data-affichage='sobre'] .scan-card.state-playable {
+  --contour-sobre: rgba(176, 184, 150, 0.85);
+}
+
+html[data-affichage='sobre'] .scan-card.state-targetable {
+  --contour-sobre: rgba(206, 192, 158, 0.9);
+}
+
+html[data-affichage='sobre'] .scan-card.state-source {
+  --contour-sobre: rgba(184, 174, 204, 0.85);
+}
+
+html[data-affichage='sobre'] .scan-card.is-highlighted {
+  --contour-sobre: rgba(170, 186, 200, 0.85);
+}
+
+/* Les jauges de PV et de menace : la teinte suit toujours la valeur, mais
+   desaturee et en aplat. */
+html[data-affichage='sobre'] .jauge-remplissage {
+  background: hsl(var(--jauge-teinte, 140deg) 26% 40%);
+  box-shadow: none;
+}
+
+html[data-affichage='sobre'] .jeton-carte {
+  text-shadow: none;
+}
+
+/* --- 4. Le cartouche de la phase du mechant : une fenetre grise -------------- */
+html[data-affichage='sobre'] .deroule-phase {
+  background: #26282c;
+  border-color: #111214;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+html[data-affichage='sobre'] .deroule-phase::before {
+  background: linear-gradient(100deg, #3a3e44 0, #3a3e44 52%, transparent 52.1%);
+}
+
+html[data-affichage='sobre'] .deroule-phase .deroule-titre,
+html[data-affichage='sobre'] .deroule-phase .deroule-titre * {
+  color: #e4e6e9;
+  text-shadow: none;
+}
+
+html[data-affichage='sobre'] .deroule-phase .deroule-compteur {
+  color: #cfc6b0;
+  text-shadow: none;
+}
+
+html[data-affichage='sobre'] .deroule-phase .deroule-boutons .bh-bouton {
+  box-shadow: none;
+  transform: none;
+}
+
+html[data-affichage='sobre'] .deroule-phase .deroule-boutons .deroule-suivant {
+  background: #4a4f57;
+}
+
+html[data-affichage='sobre'] .deroule-phase .deroule-boutons .deroule-suivant:hover {
+  background: #565c64;
+}
+
+/* --- 5. Aucun mouvement ----------------------------------------------------
+   Les pulsations en boucle d'abord (le premier grief), puis les entrees de
+   fenetres et les trajets. Chaque element ci-dessous a une forme de base
+   lisible : couper son animation le laisse a sa place finale.
+
+   ⚠ Les messages qui s'effacent d'eux-memes (`.bulle-refus-effet`,
+   `.pas-a-pas-chiffre`) ne sont PAS dans la liste : leur base est visible, et
+   sans animation ils ne disparaitraient plus. */
+html[data-affichage='sobre'] .ligne-cible,
+html[data-affichage='sobre'] .trait-phase-ligne,
+html[data-affichage='sobre'] .bouton-fin-tour.est-suggere,
+html[data-affichage='sobre'] .bh-fin-tour.est-suggere,
+html[data-affichage='sobre'] .bh-voir-table.est-actif,
+html[data-affichage='sobre'] .pas-a-pas-halo,
+html[data-affichage='sobre'] .scan-card.is-target-pulse .scan-frame,
+html[data-affichage='sobre'] .scan-frame.retourne-dos,
+html[data-affichage='sobre'] .scan-frame.retourne-face,
+html[data-affichage='sobre'] .evenement-centrale,
+html[data-affichage='sobre'] .menu-actions-carte,
+html[data-affichage='sobre'] .carte-apercu,
+html[data-affichage='sobre'] .bandeau-annonce,
+html[data-affichage='sobre'] .confirm-voile,
+html[data-affichage='sobre'] .confirm-modale,
+html[data-affichage='sobre'] .ambiance-voile,
+html[data-affichage='sobre'] .ambiance-modale,
+html[data-affichage='sobre'] .fin-partie,
+html[data-affichage='sobre'] .fin-partie-carte,
+html[data-affichage='sobre'] .banniere-succes,
+html[data-affichage='sobre'] .rencontre-sortie,
+html[data-affichage='sobre'] .glisser-refus,
+html[data-affichage='sobre'] .volet-journal {
+  animation: none;
+}
+
+/* Les glissements (zoom au survol, panneaux qui coulissent) deviennent
+   instantanes. Aucun code n'attend `transitionend` : PanneauManigance et ses
+   semblables passent par `mouvementReduit()`, vrai en sobre. */
+html[data-affichage='sobre'] *,
+html[data-affichage='sobre'] *::before,
+html[data-affichage='sobre'] *::after {
+  transition: none !important;
+}
+
+/* --- 6. Les boutons aux couleurs ecrites en dur ----------------------------
+   Releve du 03/10/2026 sur board.css (fonds a forte saturation) : ceux qu'on
+   voit en partie. Ils gardent leur role (annuler, confirmer, fin du tour),
+   seul l'eclat part. */
+html[data-affichage='sobre'] .assistant-annuler,
+html[data-affichage='sobre'] .confirm-modale.est-danger .confirm-oui {
+  background: #6c4a4a;
+}
+
+html[data-affichage='sobre'] .assistant-annuler:hover {
+  background: #7a5555;
+}
+
+html[data-affichage='sobre'] .confirm-oui,
+html[data-affichage='sobre'] .ambiance-oui,
+html[data-affichage='sobre'] .bandeau-pause-reprendre {
+  background: #b3a588;
+}
+
+html[data-affichage='sobre'] .bouton-fin-tour.est-suggere,
+html[data-affichage='sobre'] .board-actions.design-essai .bh-fin-tour.est-suggere {
+  background: #4f6352;
+}
+
+/* --- 7. Le bouton principal des questions et le bandeau du mechant ----------
+   Revu le 03/10/2026 sur captures en vraie partie (choix de l'utilisateur) :
+   le bouton qui valide une question (« Garder cette main », « Fin de phase »,
+   « Continuer ») restait jaune, et franchement jaune au SURVOL, ecrit en dur
+   (#ffe488) hors de la palette. Il devient gris clair a texte fonce : il reste
+   le plus clair de la fenetre, donc toujours le premier qu'on voit. Le bandeau
+   « Phase du mechant » perd son halo rouge et son eclair. */
+html[data-affichage='sobre'] .assistant-confirmer,
+html[data-affichage='sobre'] .dc-continue {
+  color: #1c1d20;
+  background: #b9bdc3;
+  border-color: #d0d3d8;
+}
+
+html[data-affichage='sobre'] .assistant-confirmer:hover:not(:disabled),
+html[data-affichage='sobre'] .dc-continue:hover,
+html[data-affichage='sobre'] .dc-continue:focus-visible {
+  background: #cdd0d5;
+}
+
+html[data-affichage='sobre'] .bandeau-phase {
+  background: linear-gradient(90deg, transparent, #3a3e44 12%, #3a3e44 88%, transparent);
+  box-shadow: none;
+}
+
+html[data-affichage='sobre'] .bandeau-phase-eclair {
+  display: none;
+}
+
+/* La surbrillance des cartes du deroule (surbrillance-etape.ts) : un contour
+   gris clair plutot que jaune. */
+html[data-affichage='sobre'] {
+  --surbrillance-etape: #c9ccd1;
+}

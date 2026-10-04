@@ -25,6 +25,19 @@ class EncounterNonVillainCard(HasBoostIcon, CanIncite, HasVictory, HasPeril, Enc
         # joueur. Aucun heros officiel ne change de comportement, son set
         # portant deja son nom.
         if getattr(self, "nemesis_of_player", None) is player:
+            # CORRECTIF (04/10/2026). Le marqueur dit « cette carte est dans
+            # le set nemesis du joueur », PAS « c'est son sbire nemesis ». Un
+            # set peut tenir deux sbires : Ares et la Lernean Hydra (Hercules),
+            # Taskmaster et Hydra Mercenary (Black Widow), 37 heros officiels
+            # en tout. Rendre True pour tous mettait le second en jeu avec le
+            # premier (Face the Past, Shadow of the Past). Regle choisie par
+            # l'utilisateur : si le set contient un sbire MARQUE « Nemesis »,
+            # lui seul compte ; sinon (Zzzax emprunte par Viv Vision, sbire de
+            # module sans mention), le sbire du set compte.
+            from game.card.face.card_type import Minion
+            if (Minion.IsType(self) and not self.nemesis
+                    and getattr(player, "set_nemesis_a_un_sbire_marque", False)):
+                return False
             return True
 
         if not self.paper.set_name.endswith(" Nemesis"):

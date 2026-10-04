@@ -13,6 +13,7 @@ import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import { useApercuSurvol } from './apercu-survol'
 import type { CibleHorsTable } from './interaction'
 import { t } from './langue'
+import { useGlisserPanneau } from './placement/useGlisserPanneau'
 
 export type SelecteurCiblesProps = {
   cibles: CibleHorsTable[]
@@ -35,6 +36,12 @@ export function SelecteurCibles({ cibles, titre, survoler }: SelecteurCiblesProp
   // Le panneau ferme emporte l'agrandissement : sans cela le dernier survol
   // resterait affiche par-dessus la table apres le choix.
   useEffect(() => () => remonter?.(undefined), [remonter])
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux » -- c'est CE panneau, precisement,
+  // qui restait cache sous `AssistantAction` sans aucun moyen de l'ecarter).
+  // Les hooks se declarent AVANT le retour anticipe ci-dessous.
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(`${titre}|${cibles.length}`)
 
   if (cibles.length === 0) return null
 
@@ -43,10 +50,26 @@ export function SelecteurCibles({ cibles, titre, survoler }: SelecteurCiblesProp
       className="plateau-selecteur"
       role="group"
       aria-label={`${t('Cibles possibles :')} ${titre}`}
+      // ⚠ `.plateau-selecteur` centre DEJA avec `transform: translate(-50%,
+      // -50%)` en CSS (board.css) : un `transformDecalage` naif ECRASERAIT ce
+      // centrage au lieu de s'y ajouter. On compose les deux dans le MEME
+      // `translate()`, seul cas du chantier ou le panneau se centre par son
+      // PROPRE transform plutot que par celui d'un parent.
+      style={
+        decalage.dx !== 0 || decalage.dy !== 0
+          ? { transform: `translate(calc(-50% + ${decalage.dx}px), calc(-50% + ${decalage.dy}px))` }
+          : undefined
+      }
       onMouseOver={survol}
       onMouseLeave={quitter}
     >
-      <div className="plateau-selecteur-entete">
+      <div
+        className="plateau-selecteur-entete poignee-glisser"
+        onPointerDown={gestesGlisser.onPointerDown}
+        onPointerMove={gestesGlisser.onPointerMove}
+        onPointerUp={gestesGlisser.onPointerUp}
+        onPointerCancel={gestesGlisser.onPointerCancel}
+      >
         <span className="plateau-eyebrow">{t('Cibles hors table')}</span>
         <strong>
           {titre} · {cibles.length} {cibles.length > 1 ? t('cartes') : t('carte')}
@@ -66,6 +89,11 @@ export function SelecteurCibles({ cibles, titre, survoler }: SelecteurCiblesProp
               state={cible.choisie ? 'selected' : 'targetable'}
               onSelect={cible.agir}
               spentCount={cible.fois}
+              orderNumber={cible.ordre}
+              onOrdreReculer={cible.ordreReculer}
+              onOrdreAvancer={cible.ordreAvancer}
+              onAssignerReste={cible.assignerReste}
+              assignerResteQuantite={cible.assignerResteQuantite}
             />
           </span>
         ))}

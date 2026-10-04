@@ -158,15 +158,17 @@ describe('tout revient a la reprise (tache 4) : demande centrale (le mulligan)',
 describe("tout revient a la reprise (tache 4) : l'assistant d'action", () => {
   it('disparait pendant la pause puis reapparait a la reprise', async () => {
     const { container } = monter()
+    // Au tour du joueur : en phase du mechant, un ciblage se joue dans la
+    // scene du deroule et l'assistant se tait (AssistantAction, 04/10/2026).
     const demande = demandeMulliganAutoSelectionnee()
 
-    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: false }), demande, aNous: true })
+    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: false, phase: 'Player Turn' }), demande, aNous: true })
     expect(container.querySelector('.assistant-action')).not.toBeNull()
 
-    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: true }), demande, aNous: true })
+    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: true, phase: 'Player Turn' }), demande, aNous: true })
     expect(container.querySelector('.assistant-action')).toBeNull()
 
-    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: false }), demande, aNous: true })
+    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: false, phase: 'Player Turn' }), demande, aNous: true })
     expect(container.querySelector('.assistant-action')).not.toBeNull()
   })
 })

@@ -20,30 +20,25 @@ def GetAbilities() -> Sequence['Ability']:
         if not candidats:
             return
 
-        def recuperer(targets: Sequence['CardFace']) -> None:
-            from game.player import Player
-            for face in targets:
-                # CORRECTIF (4/8/2026) : `GetOwner` peut rendre le SCENARIO
-                # (cartes cote Rencontre), pas un joueur. Le garde `hasattr`
-                # laissait passer ce cas et la carte plantait sur
-                # « 'Scenario' object has no attribute 'GainCard' ».
-                proprietaire = face.GetOwner()
-                if not isinstance(proprietaire, Player):
-                    proprietaire = initiator
-                proprietaire.GainCard(face, effect)
-
-        initiator.ChooseAbilities(
+        # CORRECTIF : `ChooseAbilities` + `Select.From(faces=...)` ne
+        # restreignait RIEN sur des cartes hors jeu : le choix tombait sur la
+        # MANIGANCE PRINCIPALE, qui partait dans la main de Lockjaw puis dans
+        # la defausse. Plus de manigance, donc IndexError a la fin de partie.
+        choisie = initiator.AskChooseFace(
+            candidats,
             effect,
-            AbilityFactory.ForChoiceAbility(
-                "Add a non-resource card from a discard pile to its owner's hand",
-                recuperer,
-            # CORRECTIF (4/8/2026) : une liste de faces se passe par le
-            # parametre nomme `faces`. En premier argument POSITIONNEL, elle
-            # atterrit dans `target`, que le moteur utilise comme cle de
-            # dictionnaire : « TypeError: unhashable type: 'list' » a chaque
-            # usage de la capacite.
-            ).SetTarget(Select.From(faces=candidats)),
+            prompt="Add a non-resource card from a discard pile to its owner's hand",
         )
+        if choisie is None:
+            return
+
+        from game.player import Player
+        # CORRECTIF (4/8/2026) : `GetOwner` peut rendre le SCENARIO (cartes
+        # cote Rencontre), pas un joueur.
+        proprietaire = choisie.GetOwner()
+        if not isinstance(proprietaire, Player):
+            proprietaire = initiator
+        proprietaire.GainCard(choisie, effect)
 
     return [
         AbilityFactory.WhenInYourPlayTurn(

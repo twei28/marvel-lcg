@@ -131,6 +131,7 @@ class WorldDescriptor:
         area_processing: List[CardDescriptor] = field(default_factory=lambda: [])
         hand_cards: List[CardDescriptor] = field(default_factory=lambda: [])
         reserve: List[CardDescriptor] = field(default_factory=lambda: []) # CORRECTIF (pack brawn)
+        rising_tide: List[CardDescriptor] = field(default_factory=lambda: []) # AJOUT (pack wave)
         engaged_enemies: List[CardDescriptor] = field(default_factory=lambda: [])
         set_aside_nemesis_sets: List[CardDescriptor] = field(default_factory=lambda: [])
         set_aside_deck: List[CardDescriptor] = field(default_factory=lambda: [])
@@ -142,6 +143,11 @@ class WorldDescriptor:
 
         resources: str = field(default='')
         is_eliminated: bool = field(default=False)
+        # AJOUT du 04/10/2026 : la taille de main ACTUELLE de l'identite. Le
+        # plateau l'ecrit dans la consigne de fin de tour (« tu repioches
+        # jusqu'a 6 ») : elle varie selon le heros, sa forme et ses cartes.
+        hand_size: int = field(default=0)
+        has_finished_turn_this_round: bool = field(default=False)
     players: List[PlayerDescriptor] = field(default_factory=lambda: [])
     # player_id: int = field(default=0)
     # Other

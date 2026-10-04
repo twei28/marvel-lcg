@@ -362,6 +362,12 @@ class SenderCard:
             self.cancel_by_effect: Final = by_effect
             self.be_cancel_effect: Final = be_cancel_effect
             super().__init__(trigger=face)
+            # La revelation du point 4 la relit pour dire « → Annulée par X »
+            # (player_action.py, 04/10/2026). Remise a zero avant chaque revelation.
+            try:
+                face.card.annulee_par = (by_effect.this.name, by_effect.this.card.object_id)
+            except Exception:
+                pass
             text = TransText("{face}'s {be_cancel_effect} effect was canceled by {by_effect}", face=face, be_cancel_effect=be_cancel_effect, by_effect=by_effect.this)
             self.Present(text, "negate", by_effect.this)
 
@@ -376,7 +382,18 @@ class SenderCard:
             super().__init__(player=player, trigger=face, end_event=Message.AfterCardRevealedEnd)
 
             if face.card.area.flags.is_dealt_encounter:
-                text = TransText("{face} would be revealed ({by_effect})", face=face, by_effect=by_effect.this)
+                # ⚠ NE PAS INTERPOLER `{face}` : `TransText.__init__` appelle
+                # `text.format(**kwargs)`, qui affiche le VRAI nom de la carte
+                # -- ce message part comme `prompt_text` de la decision
+                # d'interruption (controller.py:388, `check_message.prompt`),
+                # donc droit sous les yeux du joueur AVANT qu'il ait decide de
+                # payer pour l'interrompre (Spider-Tingle, Scarlet Spider...).
+                # La partie n'est pas censee connaitre l'identite d'une carte
+                # qui n'est pas encore revelee. Texte generique aligne sur la
+                # convention deja utilisee cote client pour une carte cachee
+                # inconnue (`ui-app/src/board/DemandeCentrale.tsx`,
+                # `resumeCibles` -> "facedown card").
+                text = TransText("A facedown card would be revealed ({by_effect})", by_effect=by_effect.this)
                 self.Present(text, "", face, player.GetIdentity())
 
     class AfterCardsMovedToRevealingArea_Text(TextMessage):
@@ -807,6 +824,12 @@ class SenderCard:
                     self.Present(text, "carddrop")
                 message = Message.AfterCardsMoved(face_deck, by_discard=True)
                 message.Send()
+
+    class AfterCardsPaidOrder_Text(TextMessage):
+        def __init__(self, faces: Sequence['CardFace']) -> None:
+            super().__init__(world=faces[0].card.world)
+            text = TransText("{cards} were paid in this order, the last one is on top of the discard pile", cards=list(faces))
+            self.Present(text, "carddrop")
 
     class AfterCardsReturnToHand_Text(TextMessage):
         def __init__(self, faces: Sequence['CardFace'], by_effect: 'Effect') -> None:

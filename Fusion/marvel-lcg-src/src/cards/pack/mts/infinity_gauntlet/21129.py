@@ -36,6 +36,10 @@ def GetAbilities() -> Sequence['Ability']:
             faces = Worlds.GetEncounterDeckCards(effect) + Worlds.GetEncounterDiscardPileCards(effect)
             faces = CardFinder(set_name=this.paper.set_name).Checks(faces)
             deck.PushCards(faces, effect)
+            # « shuffle the six Infinity Stone environment cards together ».
+            # `PushCards` ne melange pas : meme effet de bord que Crossbones
+            # (audit du 04/10/2026).
+            deck.deck.Shuffle(effect)
 
     return [
         # When using the Infinity Gauntlet set in a scenario, attach the Infinity Gauntlet attachment card to the villain during setup. If there is more than one villain (or no villain) in play at the start of the game, The Infinity Gauntlet set cannot be used

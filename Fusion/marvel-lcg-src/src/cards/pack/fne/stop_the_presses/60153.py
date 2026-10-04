@@ -13,7 +13,12 @@ def GetAbilities() -> Sequence['Ability']:
         vues = joueur.LookAtDeck("EncounterDeck", 2, effect)
         if not vues:
             return
-        choisie = joueur.AskChooseFace(list(vues), effect, forced=False)  # « You may » = forced=False (pas de `may`)
+        # ⚠ L'INTITULE EST OBLIGATOIRE (signalement Yarro n43, 03/10/2026). Sans
+        # `prompt`, l'option du choix reprenait le NOM DE LA CAPACITE (« Ben
+        # Urich: look at the top 2 cards... ») : le joueur croyait devoir la
+        # relancer et ne voyait jamais qu'il s'agissait de defausser. « Discard
+        # one » est l'intitule deja employe par 45036 (Magik).
+        choisie = joueur.AskChooseFace(list(vues), effect, forced=False, prompt="Discard one")  # « You may » = forced=False (pas de `may`)
         if choisie is not None:
             Faces.DiscardAll([choisie], effect)
 

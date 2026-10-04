@@ -69,6 +69,9 @@ export const PILE_PAR_ZONE: Record<string, string> = {
   // `data-zone` (le nom de l'emplacement) suffit à désigner la pile.
   main: 'HandsArea',
   reserve: 'ReserveArea',
+  // AJOUT (pack wave) : meme forme que 'reserve' juste au-dessus (un seul
+  // contenu, `posees()` sans pile fine).
+  'rising-tide': 'RisingTideArea',
   'complot-principal': 'MainSchemesArea',
   'complots-secondaires': 'SideSchemesArea',
 

@@ -32,7 +32,13 @@ def GetAbilities() -> Sequence['Ability']:
         AbilityFactory.WhenResolveSpecialAbility(
             "This",
             vapors_of_valtorr
-        ).SetTarget(StatusCard, range=(0, 1))
+        # « Choose a status card in play » : une cible OBLIGATOIRE des qu'un statut
+        # existe. `range=(0, 1)` laissait valider a 0 cible, et le sort partait a
+        # la defausse sans rien remplacer (meme piege que 09032, signalement n°51).
+        # Sans aucun statut en jeu le sort reste lancable a vide : il peut encore
+        # partir a la defausse de l'Invocation, ce qui change l'etat du jeu (ruling
+        # FFG de Images of Ikonn, voir 09033), donc le minimum retombe a 0.
+        ).SetTarget(StatusCard, range=(lambda effect: min(1, len(effect.context.all_legal_targets)), 1))
         .NoOutOfPlayLimit()
     ]
 

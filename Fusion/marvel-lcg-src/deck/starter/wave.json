@@ -1,0 +1,42 @@
+{
+    "version": "0.5.9",
+    "name": "Wave",
+    "metadata": {
+        "url": "",
+        "author": "Arnaud",
+        "deck_note": "⚠ `player_deck` VIDE. Consigne utilisateur du 06/09/2026 : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et l'auteur (Mysteltainn, dossier Google Drive « Wave (Pearl Pangan) », 22/09/2026) ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les 15 cartes signature (9 uniques), l'obligation et le set nemesis (5 cartes). Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement.",
+        "rising_tide_note": "Wave/Pearl Pangan utilise la Rising Tide area, une zone maison propre a ce pack (game/deck/deck_type.py DeckType.RisingTideArea). Documentee au §9 de docs/reference/GUIDE-CREATION-CONTENU.md, meme traitement que la Reserve du pack Brawn : ce n'est pas un mot-cle imprime en gras, donc aucune fiche dans docs/reference/mots-cles/."
+    },
+    "hero": [
+        "65001a,65001b"
+    ],
+    "hero_deck": [
+        "65002",
+        "65003",
+        "65003",
+        "65003",
+        "65004",
+        "65004",
+        "65005",
+        "65005",
+        "65006",
+        "65006",
+        "65007",
+        "65007",
+        "65008",
+        "65009",
+        "65010"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "65015"
+    ],
+    "nemesis_set": [
+        "65011",
+        "65012",
+        "65013",
+        "65013",
+        "65014"
+    ],
+    "player_deck": []
+}

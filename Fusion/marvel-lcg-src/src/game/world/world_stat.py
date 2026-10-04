@@ -159,6 +159,27 @@ class WorldStat:
             self.faits_mechant = []
             self._activation_suivante = 0
 
+    @staticmethod
+    def RecordStade(world: 'Any', quoi: str, avant: 'Any', apres: 'Any') -> None:
+        """CHANGEMENT DE STADE en pleine phase du mechant (04/10/2026) : la
+        manigance principale ou le mechant passe au stade suivant. Le cartouche
+        en fait une etape a part, la nouvelle carte en grand. Hors phase du
+        mechant, rien : le cartouche ne raconte que cette phase. Sous garde,
+        comme tout ce journal d'affichage."""
+        try:
+            if not world.phase.IsVillainPhase() or world.is_game_over or apres is None:
+                return
+            world.stat.RecordFaitMechant(world.round_id, {
+                'genre': 'stade',
+                'quoi': quoi,
+                'phase': world.GetPhaseText(),
+                'avant': avant.name if avant is not None else '',
+                'carte': apres.name,
+                'carte_id': apres.card.object_id,
+            })
+        except Exception:
+            pass
+
     def NouvelleActivation(self, round_id: int) -> int:
         """Le numero de la prochaine activation ennemie de ce round.
 

@@ -43,11 +43,21 @@ export function CoucheRevelation({
   monde,
   duree,
   joueurId,
+  seulementManigance = false,
 }: {
   monde: World | undefined
   /** 0 = desactive. Sinon duree d'affichage en ms. */
   duree: number
   joueurId: number
+  /**
+   * Pendant la mise en place automatique, seule la manigance principale garde
+   * sa presentation en grand : le reste (carte de rencontre initiale, etc.)
+   * n'est le geste de personne. Constat de l'utilisateur, 24/09/2026 : « ça
+   * fait beaucoup de bruit pour rien ». Les cartes ecartees ici restent
+   * marquees VUES (`idsVus`) : elles ne resurgissent pas plus tard si la
+   * mise en place se termine avant leur propre disparition de `area_revealing`.
+   */
+  seulementManigance?: boolean
 }) {
   const [revelations, setRevelations] = useState<Revelation[]>([])
   const compteur = useRef(0)
@@ -71,6 +81,7 @@ export function CoucheRevelation({
         // reveler d'un dos de carte).
         const visible = carte.is_face_up || carte.visible_for_players.includes(joueurId)
         if (!visible || !carte.pic_id) continue
+        if (seulementManigance && carte.card_type !== 'MainScheme') continue
         nouvelles.push({
           cle: `r${compteur.current++}`,
           src: scanUrl(carte.pic_id),
@@ -88,7 +99,7 @@ export function CoucheRevelation({
     window.setTimeout(() => {
       setRevelations((r) => r.filter((x) => !cles.has(x.cle)))
     }, duree)
-  }, [monde, monde?.render_id, duree, joueurId])
+  }, [monde, monde?.render_id, duree, joueurId, seulementManigance])
 
   if (revelations.length === 0) return null
   return (

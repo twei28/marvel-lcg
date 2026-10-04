@@ -21,6 +21,15 @@ describe('nettoyerTexteCarte', () => {
   })
 })
 
+describe('nettoyerTexteCarte, jetons de ressource', () => {
+  it('garde les jetons de ressource (a un crochet) pour qu’ils deviennent des icones', () => {
+    expect(nettoyerTexteCarte('<b>Spend</b> [[energy]][[mental]][[physical]] or exhaust a [[Drone]]')).toBe(
+      'Spend [energy][mental][physical] or exhaust a Drone'
+    )
+    expect(nettoyerTexteCarte('ressources : [energy] [mental]')).toBe('ressources : [energy] [mental]')
+  })
+})
+
 describe('extraireCapacite', () => {
   it('rend tout le texte quand la carte n’a qu’une capacite', () => {
     expect(extraireCapacite(JENNIFER, '"I_Object!"', 'Interrupt')).toBe(

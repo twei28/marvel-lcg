@@ -109,7 +109,11 @@ que le relais suffise à garder l'activité ouverte d'une page à l'autre.
   # ajouter : Environment=DISCORD_CLIENT_ID=<l'Application ID copié plus haut>
   sudo systemctl restart narwhal
   ```
-- Le `Caddyfile` porte l'en-tête `frame-ancestors` (apex et tables) et le
+- Le `Caddyfile` porte l'en-tête `frame-ancestors` (apex et tables), qui
+  DOIT garder `'self'` : la couche météo du plateau est une iframe du même
+  site, et sans `'self'` elle affiche la page d'erreur du navigateur en
+  plein écran (voile blanc, visage triste, 30/09/2026 ; gate
+  `ui-app/src/board/csp-cadre-meteo.test.ts`). Il porte aussi le
   bloc `@discord` (dans le bloc joker `*.{DOMAINE}`). ⚠ Ce fichier est
   « surveillé, jamais réécrit » par le déploiement : sur le serveur, il se
   modifie à la main (sauvegarde, `caddy validate --envfile

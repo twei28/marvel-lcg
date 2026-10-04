@@ -66,6 +66,8 @@ if [ "${1:-}" = "--verifier" ]; then
   echo "  replays serveur              : $(compter '*/replays/serveur-*/*')"
   echo "  hauts faits (achievements)   : $(compter '*achievements-serveur-*.json')"
   echo "  fiches du mode Legacy        : $(compter '*legacy-serveur-*.json')"
+  echo "  arts alternatifs de heros    : $(compter '*arts-heros-serveur-*.json')"
+  echo "  preferences des comptes      : $(compter '*preferences-serveur-*.json')"
 
   base="$(find "$tmp" -name 'narwhal.db' -print -quit)"
   if [ -n "$base" ]; then
@@ -152,7 +154,9 @@ for motif in \
   "$MOTEUR"/achievements-serveur-*.json \
   "$MOTEUR"/games_history-serveur-*.json \
   "$MOTEUR"/statistics-serveur-*.json \
-  "$MOTEUR"/legacy-serveur-*.json ; do
+  "$MOTEUR"/legacy-serveur-*.json \
+  "$MOTEUR"/arts-heros-serveur-*.json \
+  "$MOTEUR"/preferences-serveur-*.json ; do
   for f in $motif; do
     rel="${f#"$RACINE"/}"
     mkdir -p "$(dirname "$stage/$rel")"

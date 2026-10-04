@@ -18,6 +18,20 @@ describe('ScanCard : le retournement', () => {
     await waitFor(() => expect(cadre.className).toBe('scan-frame'), { timeout: 1500 })
   })
 
+  // Rapport de bug n°48 (04/10/2026) : le deck du héros disparaissait. Le
+  // dessus du deck redevient face cachée EN PLEIN retournement (une recherche de
+  // deck le montre un instant au joueur) : le nettoyage de l'effet coupe les
+  // minuteries, et plus rien ne remet l'état à zéro. Le cadre garde `retourne-dos`,
+  // dont l'animation finit à 90° : la pile est de chant, donc invisible.
+  it('ne reste pas coincé de chant quand la carte se recache en plein retournement', async () => {
+    const { container, rerender } = render(<ScanCard {...props} imageUrl="/dos.jpg" facedown />)
+    rerender(<ScanCard {...props} imageUrl="/face.jpg" facedown={false} />)
+    expect(container.querySelector('.scan-frame')!.classList.contains('retourne-dos')).toBe(true)
+    rerender(<ScanCard {...props} imageUrl="/dos.jpg" facedown />)
+    await new Promise((fin) => setTimeout(fin, 800))
+    expect(container.querySelector('.scan-frame')?.className).toBe('scan-frame')
+  })
+
   it('ne pivote pas une carte qui arrive déjà face visible', () => {
     const { container } = render(<ScanCard {...props} imageUrl="/face.jpg" />)
     expect(container.querySelector('.scan-frame')?.className).toBe('scan-frame')

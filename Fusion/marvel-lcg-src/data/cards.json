@@ -65206,8 +65206,8 @@
    "desc": {
     "Cost": "0",
     "HP": "3",
-    "ATK": "1*",
-    "THW": "1*",
+    "ATK": "1**",
+    "THW": "1**",
     "Class": "Encounter"
    },
    "traits": [
@@ -67796,7 +67796,7 @@
    "desc": {
     "Cost": "4",
     "HP": "2",
-    "THW": "1",
+    "THW": "1*",
     "ATK": "1*",
     "RES": "G",
     "Class": "Hero"
@@ -71883,8 +71883,8 @@
    "desc": {
     "Cost": "3",
     "HP": "3",
-    "ATK": "4",
-    "THW": "2",
+    "ATK": "4*",
+    "THW": "2*",
     "RES": "G",
     "Class": "Hero"
    },
@@ -72163,8 +72163,8 @@
    "desc": {
     "Cost": "1",
     "HP": "2",
-    "ATK": "2",
-    "THW": "1",
+    "ATK": "2*",
+    "THW": "1*",
     "RES": "R",
     "Class": "Aggression"
    },
@@ -72184,8 +72184,8 @@
    "desc": {
     "Cost": "1",
     "HP": "2",
-    "ATK": "1",
-    "THW": "1",
+    "ATK": "1*",
+    "THW": "1*",
     "RES": "Y",
     "Class": "Justice"
    },
@@ -72205,8 +72205,8 @@
    "desc": {
     "Cost": "1",
     "HP": "2",
-    "ATK": "1",
-    "THW": "1",
+    "ATK": "1*",
+    "THW": "1*",
     "RES": "B",
     "Class": "Leadership"
    },
@@ -72227,8 +72227,8 @@
    "desc": {
     "Cost": "1",
     "HP": "2",
-    "ATK": "1",
-    "THW": "1",
+    "ATK": "1*",
+    "THW": "1*",
     "RES": "G",
     "Class": "Protection"
    },
@@ -72247,8 +72247,8 @@
    "desc": {
     "Cost": "2",
     "HP": "2",
-    "ATK": "1",
-    "THW": "1",
+    "ATK": "1*",
+    "THW": "1*",
     "RES": "R",
     "Class": "Protection"
    },
@@ -72303,8 +72303,8 @@
    "desc": {
     "Cost": "1",
     "HP": "2",
-    "ATK": "1",
-    "THW": "1",
+    "ATK": "1*",
+    "THW": "1*",
     "RES": "G",
     "Class": "Basic"
    },
@@ -79487,8 +79487,8 @@
     "Cost": "3",
     "RES": "G",
     "HP": "3",
-    "ATK": "2",
-    "THW": "2",
+    "ATK": "2**",
+    "THW": "2**",
     "Class": "Hero",
     "Toughness": "1"
    },
@@ -79689,8 +79689,8 @@
     "Cost": "4",
     "RES": "Y",
     "HP": "3",
-    "ATK": "3",
-    "THW": "2",
+    "ATK": "3**",
+    "THW": "2*",
     "Class": "Justice"
    },
    "traits": [
@@ -79709,8 +79709,8 @@
     "Cost": "4",
     "RES": "R",
     "HP": "3",
-    "ATK": "2",
-    "THW": "2",
+    "ATK": "2**",
+    "THW": "2**",
     "Class": "Justice"
    },
    "traits": [
@@ -79728,8 +79728,8 @@
     "Cost": "2",
     "RES": "B",
     "HP": "2",
-    "ATK": "1",
-    "THW": "1",
+    "ATK": "1*",
+    "THW": "1*",
     "Class": "Justice"
    },
    "traits": [
@@ -79762,7 +79762,7 @@
    "subtitle": "",
    "desc": {
     "Cost": "1",
-    "RES": "Y",
+    "RES": "B",
     "MaxPerDeck": "3",
     "Class": "Justice"
    },
@@ -79781,7 +79781,7 @@
    "desc": {
     "Cost": "0",
     "RES": "R",
-    "StartingThreat": "4",
+    "StartingThreat": "4*",
     "Victory": "0",
     "Class": "Justice"
    },
@@ -79797,7 +79797,7 @@
    "desc": {
     "Cost": "1",
     "RES": "Y",
-    "StartingThreat": "3",
+    "StartingThreat": "3*",
     "Victory": "0",
     "Class": "Justice"
    },
@@ -79864,8 +79864,8 @@
     "Cost": "4",
     "RES": "R",
     "HP": "3",
-    "ATK": "2",
-    "THW": "2",
+    "ATK": "2*",
+    "THW": "2*",
     "Class": "Basic"
    },
    "traits": [
@@ -79917,7 +79917,7 @@
    "desc": {
     "Cost": "0",
     "RES": "B",
-    "StartingThreat": "3",
+    "StartingThreat": "3*",
     "Victory": "0",
     "Class": "Basic"
    },
@@ -79933,7 +79933,7 @@
    "desc": {
     "Cost": "0",
     "RES": "R",
-    "StartingThreat": "3*",
+    "StartingThreat": "3",
     "Class": "Basic",
     "Hinder": "1*"
    },
@@ -79977,7 +79977,7 @@
    "subtitle": "",
    "desc": {
     "Boost": "1",
-    "StartingThreat": "2*",
+    "StartingThreat": "2",
     "Hinder": "3*"
    },
    "traits": [],
@@ -80101,8 +80101,8 @@
     "Cost": "3",
     "RES": "R",
     "HP": "3",
-    "ATK": "1",
-    "THW": "1",
+    "ATK": "1*",
+    "THW": "1*",
     "Class": "Protection"
    },
    "traits": [
@@ -80120,7 +80120,7 @@
    "desc": {
     "Cost": "0",
     "RES": "Y",
-    "StartingThreat": "3",
+    "StartingThreat": "3*",
     "Victory": "0",
     "Class": "Protection"
    },
@@ -80190,7 +80190,7 @@
     "Cost": "3",
     "RES": "G",
     "HP": "3",
-    "ATK": "2",
+    "ATK": "2*",
     "THW": "1*",
     "Class": "Hero"
    },
@@ -80364,8 +80364,8 @@
     "Cost": "3",
     "RES": "B",
     "HP": "3",
-    "ATK": "2",
-    "THW": "1",
+    "ATK": "2*",
+    "THW": "1*",
     "Class": "Leadership"
    },
    "traits": [
@@ -80405,8 +80405,8 @@
     "Cost": "3",
     "RES": "B",
     "HP": "3",
-    "ATK": "2",
-    "THW": "1",
+    "ATK": "2*",
+    "THW": "1*",
     "Class": "Leadership",
     "Toughness": "1"
    },
@@ -80487,7 +80487,7 @@
     "Cost": "4",
     "RES": "R",
     "HP": "5",
-    "ATK": "2",
+    "ATK": "2**",
     "Class": "Basic"
    },
    "traits": [
@@ -80506,8 +80506,8 @@
     "Cost": "4",
     "RES": "B",
     "HP": "3",
-    "ATK": "2",
-    "THW": "2",
+    "ATK": "2**",
+    "THW": "2**",
     "Class": "Basic",
     "Toughness": "1"
    },
@@ -80670,7 +80670,7 @@
     "Cost": "2",
     "RES": "Y",
     "MaxPerDeck": "3",
-    "Class": "Justice"
+    "Class": "Aggression"
    },
    "traits": [
     "ATTACK"
@@ -83119,7 +83119,7 @@
     "Cost": "3",
     "HP": "4",
     "ATK": "0*",
-    "THW": "0",
+    "THW": "0*",
     "RES": "G",
     "Class": "Hero"
    },
@@ -83415,8 +83415,8 @@
    "desc": {
     "Cost": "2",
     "HP": "2",
-    "ATK": "2",
-    "THW": "2",
+    "ATK": "2*",
+    "THW": "2*",
     "RES": "R",
     "Class": "Hero"
    },
@@ -84172,8 +84172,8 @@
    "desc": {
     "Cost": "2",
     "HP": "2",
-    "ATK": "2",
-    "THW": "1",
+    "ATK": "2*",
+    "THW": "1*",
     "RES": "B",
     "Class": "Hero"
    },
@@ -84193,8 +84193,8 @@
    "desc": {
     "Cost": "2",
     "HP": "2",
-    "ATK": "1",
-    "THW": "2",
+    "ATK": "1*",
+    "THW": "2*",
     "RES": "Y",
     "Class": "Hero"
    },
@@ -84448,8 +84448,8 @@
    "desc": {
     "Cost": "0",
     "HP": "2",
-    "ATK": "1",
-    "THW": "1",
+    "ATK": "1*",
+    "THW": "1*",
     "Class": "Hero"
    },
    "traits": [
@@ -84468,8 +84468,8 @@
    "desc": {
     "Cost": "0",
     "HP": "3",
-    "ATK": "2",
-    "THW": "2",
+    "ATK": "2*",
+    "THW": "2*",
     "Class": "Hero"
    },
    "traits": [
@@ -86650,7 +86650,7 @@
     "Cost": "2",
     "HP": "2",
     "ATK": "3**",
-    "THW": "1*",
+    "THW": "1",
     "RES": "G",
     "Class": "Hero"
    },
@@ -94163,7 +94163,8 @@
     "HP": "12",
     "SCH": "3",
     "ATK": "3",
-    "Boost": "3"
+    "Boost": "3",
+    "Nemesis": "Blade"
    },
    "traits": [
     "ELITE",
@@ -96345,7 +96346,7 @@
    "desc": {
     "Cost": "3",
     "HP": "3",
-    "ATK": "0**",
+    "ATK": "0*",
     "THW": "2*",
     "RES": "B",
     "Class": "Hero"
@@ -98145,8 +98146,8 @@
    "desc": {
     "Cost": "2",
     "RES": "Y",
-    "THW": "1",
-    "ATK": "1",
+    "THW": "1*",
+    "ATK": "1*",
     "HP": "3",
     "MaxPerDeck": "1",
     "Class": "Hero"
@@ -98321,7 +98322,8 @@
     "SCH": "2",
     "ATK": "2",
     "HP": "5",
-    "Boost": "0"
+    "Boost": "0",
+    "Nemesis": "Wave"
    },
    "traits": [
     "ALONTECH",
@@ -98461,8 +98463,8 @@
    "desc": {
     "Cost": "3",
     "RES": "R",
-    "THW": "1",
-    "ATK": "1",
+    "THW": "1*",
+    "ATK": "1*",
     "HP": "3",
     "Class": "Hero"
    },
@@ -98689,7 +98691,8 @@
     "SCH": "2",
     "ATK": "2",
     "HP": "5",
-    "Boost": "0"
+    "Boost": "0",
+    "Nemesis": "Red Sonja"
    },
    "traits": [
     "ELITE",

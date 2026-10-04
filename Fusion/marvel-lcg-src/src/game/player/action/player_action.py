@@ -179,6 +179,16 @@ class PlayerAction:
         if would_message.is_be_instead:
             return
 
+        # ⚠ MARQUE ICI, PAS PLUS TARD. `RevealEncounterCards` revele les cartes
+        # de `dealt_encounter_cards` une par une, bien apres cet appel : sans
+        # cette marque posee au moment de la distribution, rien ne dit plus
+        # laquelle vient d'un Renfort (Surge) une fois dans la pile. Demande
+        # de l'utilisateur (28/09/2026, signalement Yarro n27) : le joueur
+        # doit voir a l'ecran qu'une nouvelle carte s'enchaine par Renfort,
+        # pour ne pas croire qu'un effet d'annulation a echoue alors qu'une
+        # DEUXIEME carte, sans rapport, vient d'etre revelee.
+        face.card.revele_par_surge = by_surge
+
         pos = None
         if world.rule.v16_reveal:
             pos = "Bottom"
@@ -250,14 +260,27 @@ class PlayerAction:
                 'carte': face.name,
                 'carte_id': face.card.object_id,
                 'fait_id': fait_id,
+                # Posee par `DealEncounterCard` au moment de la distribution
+                # (voir la ou `by_surge` est lu). Signalement Yarro n27
+                # (28/09/2026) : sans elle, le joueur ne peut pas distinguer
+                # une DEUXIEME carte revelee par Renfort (Surge) d'une reprise
+                # du meme evenement, et croit qu'un effet d'annulation a
+                # echoue.
+                'par_surge': bool(getattr(face.card, 'revele_par_surge', False)),
             }
             PlayerAction._JournaliserPhaseDuMechant(player, 'Reveal Encounter Cards', revelation)
             avant = PlayerAction._PhotoDeLaTable(world)
+            face.card.annulee_par = None
             face.Reveal(player, GameRule(face))
             effets = PlayerAction._EffetsDeLaRevelation(avant, world)
-            if effets:
+            # « → Annulée par X » (04/10/2026) : posee par WhenEffectBeCancel.
+            annulee = getattr(face.card, 'annulee_par', None)
+            if annulee:
+                revelation = {**revelation, 'annulee_par': annulee[0], 'annulee_par_id': annulee[1]}
+            if effets or annulee:
                 PlayerAction._JournaliserPhaseDuMechant(
-                    player, 'Reveal Encounter Cards', {**revelation, 'effets': effets})
+                    player, 'Reveal Encounter Cards',
+                    {**revelation, **({'effets': effets} if effets else {})})
             if player.world.is_game_over:
                 break
             if player.is_eliminated:
@@ -339,7 +362,7 @@ class PlayerAction:
 
     ################################################################################
     # Effect
-    def ChooseEffects(self, effects: List['Effect'], message: 'Message2', *, forced: bool=False, priority: 'TimingPriority'=TimingPriority.Normal) -> 'Effect|None':
+    def ChooseEffects(self, effects: List['Effect'], message: 'Message2', *, forced: bool=False, priority: 'TimingPriority'=TimingPriority.Normal, passer_refuse: bool=False) -> 'Effect|None':
         from game.event.manager import EventManager
         # from game.object.object_manager import ObjectManager
         player = self.GetPlayer()
@@ -353,7 +376,7 @@ class PlayerAction:
                 return None
             from game.message import Message
             Message.PlayerOnEvent_Text(player, message)
-            effect, cheat = self.ChoiceAndSpellEffect(filtered_effects, message, priority, forced)
+            effect, cheat = self.ChoiceAndSpellEffect(filtered_effects, message, priority, forced, passer_refuse=passer_refuse)
             if cheat:
                 continue
             else:
@@ -390,6 +413,10 @@ class PlayerAction:
 
         player = self.GetPlayer()
         player.world.object_manager.ResetChooseEffect()
+        # « You may » : la CARTE a demande un choix facultatif. Pris AVANT que
+        # `ForChoiceAbilityWithCost` n'abaisse `forced`, qui ne fait pas pour
+        # autant du choix un « you may » (Sonic Boom 01123).
+        passer_refuse = not forced
         effects: List['Effect'] = []
         identity = player.GetIdentity()
         for ability in abilities:
@@ -404,7 +431,7 @@ class PlayerAction:
         message = Message.WhenPlayerChooseAbility(player, by_effect, step, for_second_target)
         message.Send()
         # Cannot set `forced=True`, see "39019"
-        return self.ChooseEffects(effects, message, forced=forced, priority=priority)
+        return self.ChooseEffects(effects, message, forced=forced, priority=priority, passer_refuse=passer_refuse)
 
     def MayChooseOneAbility(self, by_effect: 'Effect', *abilities: 'Ability') -> 'Effect|None':
         cancel_ability = AbilityFactory.ForChoiceAbility(
@@ -417,7 +444,7 @@ class PlayerAction:
         return effects[0]
 
     # effects[force_index] = fallthrough_effect
-    def ChoiceAndSpellEffect(self, filtered_effects: List['Effect'], message: 'Message2', priority: 'TimingPriority', forced: bool|Literal["Forced_Action"]=False) -> Tuple['Effect|None', bool]:
+    def ChoiceAndSpellEffect(self, filtered_effects: List['Effect'], message: 'Message2', priority: 'TimingPriority', forced: bool|Literal["Forced_Action"]=False, *, passer_refuse: bool=False) -> Tuple['Effect|None', bool]:
         from engine import Engine
         game = Engine.game
 
@@ -492,27 +519,38 @@ class PlayerAction:
                 else:
                     bind_effect = None
 
-                from game.world.world import Phase
-                set_undo = False
-                if type(message) == Message.WhenPlayerInTurn:
-                    set_undo = True
-                elif message.world.phase.state == Phase.State.PlayerTurnEnd:
-                    set_undo = True
-                elif message.world.phase.state == Phase.State.EnemyActivation:
-                    if type(message) == Message.WhenUnitBeingAttack:
-                        set_undo = True
-                    pass
-                elif message.world.phase.state == Phase.State.RevealsEncounterCards:
-                    if type(message) == Message.WhenPlayerRevealCard:
-                        set_undo = True
-                    pass
-                elif message.world.phase.state == Phase.State.ResolveMulligans:
-                    set_undo = True
+                # ⚠ POINT DE REPRISE A CHAQUE DECISION, PAS SEULEMENT AUX 5
+                # JALONS D'ORIGINE (demande de l'utilisateur, 28/09/2026,
+                # signalement Yarro n25 : « Annuler » retombait souvent
+                # plusieurs actions en arriere, parce que `last_step` ne
+                # bougeait qu'a un tour qui commence/finit, une defense, une
+                # revelation ou un mulligan -- tout le reste (jouer une carte,
+                # choisir une cible, payer un cout...) etait invisible pour
+                # lui). Verifie avant ce changement : `replay.Push()`
+                # (engine/controller/module/replay.py) avance deja
+                # `current_step_id` apres CHAQUE decision repondue, pas
+                # seulement ces 5-la -- chaque decision a donc toujours eu son
+                # propre step_id individuellement rejouable (`Cheat.try_skip_to`
+                # /`/undo <n>` le prouvent en debug), aucun etat intermediaire
+                # incoherent identifie. Le fait de ne poser `PushNewStep` que
+                # sur 5 cas etait donc un choix de granularite, pas une
+                # necessite technique.
+                #
+                # Compromis accepte explicitement par l'utilisateur : les 5
+                # jalons d'origine marquaient le moment ou une information
+                # cachee devient publique (carte de rencontre retournee...) --
+                # elargir permet desormais d'annuler APRES avoir vu cette
+                # information, ce qu'on ne peut pas faire a la vraie table.
+                # Assume comme acceptable ici.
+                game.controller_manager.undo.PushNewStep(game.controller_manager.replay.current_step_id)
 
-                if set_undo:
-                    game.controller_manager.undo.PushNewStep(game.controller_manager.replay.current_step_id)
-
-                selected, is_cheating = player.GetController().ChoiceOne(effect_list, bind_effect, message, priority, forced)
+                # PASSER NE DOIT JAMAIS ETRE UNE OPTION DEGUISEE (30/09/2026).
+                # Sur un choix « you may », il refuse (voir plus bas). Sinon, il
+                # retombe sur `fallthrough_effect` : il n'evite rien (Sonic Boom
+                # 01123 : Passer = « Exhaust each character »), on le masque.
+                passer_est_une_option = fallthrough_effect is not None and \
+                    not fallthrough_effect.IsName("Cancel") and not passer_refuse
+                selected, is_cheating = player.GetController().ChoiceOne(effect_list, bind_effect, message, priority, forced, masquer_passer=passer_est_une_option)
 
                 game.controller_manager.undo.UpdateLastStep()
 
@@ -527,7 +565,10 @@ class PlayerAction:
             else:
                 break
 
-        if not effect and fallthrough_effect:
+        # ⚠ PAS SUR UN « YOU MAY » : `ForChoiceAbility` pose `SetDefault()`,
+        # l'option unique d'un choix facultatif devenait le repli, et « Passer »
+        # la PRENAIT (Top Speed sd011, Lock Jaws d'Alligator Loki...).
+        if not effect and fallthrough_effect and not passer_refuse:
             effect = fallthrough_effect
 
         while True:

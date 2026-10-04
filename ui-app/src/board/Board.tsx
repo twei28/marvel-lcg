@@ -7,6 +7,7 @@
 // L'original faisait exactement cela (scene 1920x1080, scale(min(vw/1920,
 // vh/1080)), voir public/js/marvel/scene.js).
 
+import { DISPOSITION_ORIGINE, styleDeGrille, styleDeZone as tailleDeZone, type Disposition } from './disposition'
 import {
   useCallback,
   useEffect,
@@ -23,6 +24,7 @@ import { JetonsCarte, ScanCard, type CardEffectDelta, type ScanCardProps } from 
 import { langueActuelle, t } from './langue'
 import { codeCarteConnu, codeMarvelcdb, lireTextesCdb, texteMarvelcdb, type TexteCdb } from './marvelcdb'
 import { usePlacement } from './placement/usePlacement'
+import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import { CoucheGlisser, BulleRefus } from './glisser/CoucheGlisser'
 import { cibleSousLePoint, useGlisser, type CibleSurvolee } from './glisser/useGlisser'
 import { aScanFr, scansFrActifs } from './scans-fr'
@@ -32,6 +34,7 @@ import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Pl
 import type { World } from './world'
 import type { EtatInteractif } from './interaction'
 import './board.css'
+import './bande-manigances.css'
 
 /**
  * Taille de la table, en pixels de scene. Doit coller a la grille de board.css :
@@ -187,6 +190,11 @@ export function avecInteraction(
     state: etat.role === 'source' ? 'source' : etat.choisie ? 'selected' : ETAT_PAR_ROLE[etat.role],
     onSelect: etat.agir,
     spentCount: etat.fois,
+    orderNumber: etat.ordre,
+    onOrdreReculer: etat.ordreReculer,
+    onOrdreAvancer: etat.ordreAvancer,
+    onAssignerReste: etat.assignerReste,
+    assignerResteQuantite: etat.assignerResteQuantite,
     targetPulse: etat.pulse,
     effectDelta: effets.get(Number(props.id)),
   }
@@ -387,6 +395,7 @@ function Emplacement({
   bloquerActionsPassives,
   heroActifId,
   accueilleLeGlisser = false,
+  styleDeZone,
 }: {
   emplacement: EmplacementAffiche
   interactifs: Map<number, EtatInteractif>
@@ -396,12 +405,14 @@ function Emplacement({
   heroActifId?: number
   /** Cette zone attend la carte qu'on est en train de glisser. */
   accueilleLeGlisser?: boolean
+  /** La taille des cartes de la zone (`--taille-zone`), disposition.ts. */
+  styleDeZone?: CSSProperties
 }) {
   const vide = emplacement.groupes.every((groupe) => groupe.length === 0)
   return (
     <section
       className={`plateau-emplacement zone-${emplacement.cle}${vide ? ' est-vide' : ''}`}
-      style={{ '--n': emplacement.nombreSurLaLigne } as CSSProperties}
+      style={{ '--n': emplacement.nombreSurLaLigne, ...styleDeZone } as CSSProperties}
       aria-label={emplacement.titre}
       // ⚠ `data-zone` EST LA CIBLE DE DEPOT D'UNE CARTE SANS CIBLE : un allie
       // se lache chez les allies, un soutien dans l'aire du heros. Meme
@@ -461,16 +472,33 @@ function Emplacement({
  *     compte le plus.
  *  3. A defaut, le comportement historique : marvelcdb par reseau, sur option,
  *     coupee par defaut. */
-export function ApercuMarvelcdb({ codeCarte }: { codeCarte?: string }) {
+export function ApercuMarvelcdb({ codeCarte, artAlternatif = false }: { codeCarte?: string; artAlternatif?: boolean }) {
   // Deux codes, deux rôles. `code` sert de CLÉ aux dictionnaires français et
   // accepte le fan-made ; `codeCdb` désigne une page marvelcdb, que seules les
   // cartes officielles possèdent. Les confondre revenait à n'afficher aucun
   // texte français sur le contenu fan-made.
   const code = codeCarteConnu(codeCarte)
   const codeCdb = codeMarvelcdb(codeCarte)
+  // Un ART ALTERNATIF est un scan anglais, meme sur une carte qui a son scan
+  // francais : il faut alors le texte francais de TOUTES les cartes
+  // (textes-fr-complets.ts, 700 Ko), charge une fois a la demande.
+  const scanAnglais = code !== undefined && scansFrActifs() && (artAlternatif || !aScanFr(code))
+  const [textesComplets, setTextesComplets] = useState<Readonly<Record<string, string | undefined>>>()
+  useEffect(() => {
+    if (!scanAnglais || !artAlternatif || textesComplets) return
+    let vivant = true
+    import('./textes-fr-complets')
+      .then((module) => {
+        if (vivant) setTextesComplets(module.TEXTES_FR_COMPLETS)
+      })
+      .catch(() => undefined)
+    return () => {
+      vivant = false
+    }
+  }, [scanAnglais, artAlternatif, textesComplets])
   const repli =
-    code && scansFrActifs() && !aScanFr(code)
-      ? (TEXTES_FR[code] ?? TEXTES_FR_FANMADE[code])
+    code && scanAnglais
+      ? (TEXTES_FR[code] ?? TEXTES_FR_FANMADE[code] ?? textesComplets?.[code])
       : undefined
   const [texte, setTexte] = useState<TexteCdb | null>(null)
   useEffect(() => {
@@ -568,7 +596,13 @@ export function CarteApercu({
     // colonne des manigances, qu'elle n'a aucune raison de recouvrir. Une carte
     // recto-verso fait près de 930 px : la borner la pousserait jusqu'au centre,
     // sur le panneau de décision — pour elle, mieux vaut la colonne.
-    borneDroite: nbFaces === 1 ? ['.zone-complot-principal'] : undefined,
+    //
+    // ⚠ SANS LA BANDE DES MANIGANCES SEULEMENT (signalement du 04/10/2026,
+    // « avant c'etait a droite »). Avec la bande, la manigance principale est
+    // EN HAUT A GAUCHE : la borner a son bord gauche rejetait l'apercu a
+    // gauche de l'ecran. Le selecteur ne trouve alors rien, et l'apercu reste
+    // ancre a droite comme avant.
+    borneDroite: nbFaces === 1 ? ['.plateau-scene:not(.avec-bande) .zone-complot-principal'] : undefined,
     signature: `${carte.id}|${nbFaces}`,
   })
 
@@ -606,6 +640,23 @@ export function CarteApercu({
           highlight={false}
           taille="grande"
         />
+        {/* POURQUOI ON NE PEUT PAS LA JOUER, juste sous la carte : place apres
+            les mots-cles, en petit, on ne le voyait pas (30/09/2026). Une ligne
+            par action refusee : le joueur doit savoir LAQUELLE il peut
+            debloquer. Rien du tout quand la carte est jouable. */}
+        {raisons && raisons.length > 0 ? (
+          <div className="apercu-refus" role="note">
+            <p className="apercu-refus-titre">
+              <span className="apercu-refus-icone" aria-hidden="true">⊘</span>
+              {t('Injouable')}
+            </p>
+            <ul>
+              {raisons.map((raison) => (
+                <li key={raison}>{raison}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         {aQuelqueChoseDessous ? (
           <div className="apercu-dessous">
             <JetonsCarte
@@ -642,10 +693,6 @@ export function CarteApercu({
             ))}
           </dl>
         ) : null}
-        {/* POURQUOI ON NE PEUT PAS LA JOUER. Une ligne par action refusee,
-            parce qu'une carte peut porter plusieurs capacites bloquees pour
-            des raisons differentes : le joueur doit savoir LAQUELLE il peut
-            debloquer. Rien du tout quand la carte est jouable. */}
         {/* CRISE : le complot principal est verrouille par une manigance
             annexe. Un contre qui le vise part sans effet ; on le dit AVANT que
             le joueur ne joue sa carte (rapport joueur du 11/09/2026). */}
@@ -660,14 +707,7 @@ export function CarteApercu({
             {t('Crise')} · <b>{carte.crise}</b>
           </p>
         ) : null}
-        {raisons && raisons.length > 0 ? (
-          <ul className="apercu-refus">
-            {raisons.map((raison) => (
-              <li key={raison}>{raison}</li>
-            ))}
-          </ul>
-        ) : null}
-        {!carte.facedown ? <ApercuMarvelcdb codeCarte={carte.codeCarte} /> : null}
+        {!carte.facedown ? <ApercuMarvelcdb codeCarte={carte.codeCarte} artAlternatif={carte.artAlternatif} /> : null}
       </div>
       {/* Carte multi-faces (recto-verso, ou 3 formes comme Ant-Man) : on montre
           AUSSI les autres faces (image seule, badges masques par le CSS car ils
@@ -780,6 +820,22 @@ export type BoardProps = {
    */
   glisser?: ReglagesGlisser
   /**
+   * La BANDE DES MANIGANCES (plateau PC) : le mechant colle au deck rencontre,
+   * puis la manigance principale et les annexes sur toute la largeur du haut.
+   * Voir `bande-manigances.css`.
+   */
+  bandeManigances?: boolean
+  /**
+   * LA DISPOSITION DE LA TABLE (table personnalisable, 04/10/2026), lue avec
+   * la bande des manigances seulement (plateau PC). Absente : celle d'origine.
+   */
+  disposition?: Disposition
+  /**
+   * Une couche posee DANS la scene, sur sa grille (l'editeur de la table,
+   * EditeurTable). Plateau PC seulement.
+   */
+  superposition?: ReactNode
+  /**
    * « À toi de jouer », « Le méchant agit »... Déjà calculé par board.tsx pour
    * sa propre barre (libelleQuiAgit a besoin de aNous/connecte/demande, que ce
    * plateau ne connaît pas) : le rendu portrait n'a qu'à l'afficher tel quel.
@@ -841,6 +897,9 @@ export function Board({
   heroActifId,
   journal,
   glisser,
+  bandeManigances = false,
+  disposition = DISPOSITION_ORIGINE,
+  superposition,
 }: BoardProps) {
   const cadre = useRef<HTMLDivElement>(null)
   const { echelle, largeur, hauteur } = useEchelle(cadre)
@@ -1092,7 +1151,7 @@ export function Board({
         onPointerCancel={gestes.onPointerCancel}
       >
         <div
-          className="plateau-scene"
+          className={`plateau-scene${bandeManigances ? ' avec-bande' : ''}`}
           style={
             {
               '--echelle': echelle,
@@ -1105,19 +1164,25 @@ export function Board({
               '--echelle-fixe': Math.min(1, echelle),
               width: `${largeur}px`,
               height: `${hauteur}px`,
+              // La grille vient des DONNEES (disposition.ts) : a l'origine, la
+              // meme que bande-manigances.css.
+              ...(bandeManigances ? styleDeGrille(disposition) : {}),
             } as CSSProperties
           }
         >
           {plateau.emplacements.map((e) => {
             // Le deck special partage la case « terrain-soutien » : il occupe un
             // slot dedie a GAUCHE, le heros et les soutiens sont a sa droite.
-            // La RESERVE de Brawn prend exactement la meme place : c'est la zone
-            // personnelle du personnage, comme l'Invocation de Strange. Aucun
-            // heros n'a les deux, l'autre slot est donc simplement absent.
-            if (e.cle === 'deck-special' || e.cle === 'reserve') return null
+            // La RESERVE de Brawn et la RISING TIDE AREA de Wave prennent
+            // exactement la meme place : ce sont les zones personnelles du
+            // personnage, comme l'Invocation de Strange. Aucun heros n'a deux
+            // de ces trois zones a la fois, les autres slots sont donc
+            // simplement absents.
+            if (e.cle === 'deck-special' || e.cle === 'reserve' || e.cle === 'rising-tide') return null
             if (e.cle === 'terrain-soutien') {
               const deckSpecial = plateau.emplacements.find((x) => x.cle === 'deck-special')
               const reserve = plateau.emplacements.find((x) => x.cle === 'reserve')
+              const risingTide = plateau.emplacements.find((x) => x.cle === 'rising-tide')
               return (
                 <div className="colonne-terrain-soutien" key="colonne-terrain-soutien">
                   {deckSpecial ? (
@@ -1142,8 +1207,20 @@ export function Board({
                       heroActifId={heroActifId}
                     />
                   ) : null}
+                  {risingTide ? (
+                    <Emplacement
+                      emplacement={risingTide}
+                      accueilleLeGlisser={zonesDuGlisser?.has(risingTide.cle)}
+                      interactifs={interactifsEffectifs}
+                      effets={effets}
+                      ouvrirPile={ouvrirPile}
+                      bloquerActionsPassives={bloquerActionsPassives}
+                      heroActifId={heroActifId}
+                    />
+                  ) : null}
                   <Emplacement
                     emplacement={e}
+                    styleDeZone={bandeManigances ? tailleDeZone(disposition, e.cle) : undefined}
                     accueilleLeGlisser={zonesDuGlisser?.has(e.cle)}
                     interactifs={interactifsEffectifs}
                     effets={effets}
@@ -1163,11 +1240,13 @@ export function Board({
                 ouvrirPile={ouvrirPile}
                 bloquerActionsPassives={bloquerActionsPassives}
                 heroActifId={heroActifId}
+                styleDeZone={bandeManigances ? tailleDeZone(disposition, e.cle) : undefined}
                 key={e.cle}
               />
             )
           })}
           {journal}
+          {superposition}
         </div>
       </div>
 
@@ -1232,6 +1311,11 @@ export function PileRegardee({
     setApercuId(carte?.dataset.cardId ?? null)
   }, [])
   const apercu = apercuId ? parId.get(apercuId) : undefined
+  // Deplacement volontaire, a la poignee -- meme mecanisme que
+  // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
+  // « toutes les fenetres, tous les panneaux »). Pas de `usePlacement` ici
+  // (centre par le voile en CSS), le decalage se pose donc en `transform`.
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(`${titre}|${cartes.length}`)
 
   return (
     <div className="plateau-regardees-voile" onClick={fermer}>
@@ -1239,12 +1323,19 @@ export function PileRegardee({
         className="plateau-regardees"
         role="dialog"
         aria-label={titre}
+        style={transformDecalage(decalage)}
         onClick={(evenement) => evenement.stopPropagation()}
         onMouseOver={survol}
         onMouseLeave={() => setApercuId(null)}
       >
         <header className="plateau-regardees-entete">
-          <div>
+          <div
+            className="poignee-glisser"
+            onPointerDown={gestesGlisser.onPointerDown}
+            onPointerMove={gestesGlisser.onPointerMove}
+            onPointerUp={gestesGlisser.onPointerUp}
+            onPointerCancel={gestesGlisser.onPointerCancel}
+          >
             <span className="plateau-eyebrow">{titre}</span>
             <strong>
               {cartes.length} {cartes.length > 1 ? t('cartes') : t('carte')}

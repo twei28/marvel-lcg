@@ -575,7 +575,16 @@ class EventManager:
         # Les effets ECARTES de cette passe, avec leur motif. Vides a chaque
         # appel : seule la derniere passe interesse la question en cours.
         refuses: List['Effect'] = []
-        world.render.derniers_refus = refuses
+        # ⚠ PAS POUR LA PASSE INTERNE DU COUT (signalement du 04/10/2026). En
+        # verifiant qu'une carte peut se payer, le moteur refait un filtre sur
+        # les capacites de ressource (`CheckPlayerCanPayCost`) : la ressource de
+        # la carte elle-meme y est refusee, a juste titre
+        # (`check_cannot_generate_self`). Ce refus-la ecrasait le canal, et le
+        # plateau affichait Limitless Strength « Injouable · Une carte ne peut
+        # pas payer son propre cout » alors qu'elle se jouait.
+        from game.message import Message as _Message
+        if not isinstance(message, _Message.CheckPlayerCanPayCost):
+            world.render.derniers_refus = refuses
 
         def check():
 

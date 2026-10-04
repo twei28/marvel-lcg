@@ -56,6 +56,8 @@
     "preparation-v2": "playwright test tests/preparation-v2.spec.ts --project=pc",
     "legacy-v2-mobile": "playwright test tests/legacy-v2-mobile.spec.ts --project=pc",
     "langue": "playwright test tests/langue-premiere-fois.spec.ts --project=pc",
+    "voir-la-table": "playwright test tests/voir-la-table.spec.ts --project=pc",
+    "glisser-fenetre-etapes": "playwright test tests/glisser-fenetre-etapes.spec.ts --project=pc",
     "deroule-boutons": "playwright test tests/deroule-boutons.spec.ts --project=pc",
     "releve-images": "playwright test tests/releve-images.spec.ts --project=pc",
     "bouton-langue": "playwright test tests/bouton-langue.spec.ts --project=pc",

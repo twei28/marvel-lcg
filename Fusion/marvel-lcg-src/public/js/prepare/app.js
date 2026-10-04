@@ -8,6 +8,7 @@ import { nomExtension, titreDeBoite } from "/public/js/prepare/titres-extensions
 import { validate } from "/public/js/prepare/validation.js";
 import { launch } from "/public/js/prepare/launcher.js?v=dfa2d51b";
 import { prefs } from "/public/js/prepare/prefs.js";
+import { STANDARD, cleHeros, codeAlterEgoAffiche } from "/public/js/prepare/arts-heros-choix.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { regrouperUnderlings, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
@@ -29,6 +30,11 @@ import { jouerSon, SON } from "/public/js/prepare/sons.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
          langueDejaChoisie, retenirLangue } from "/public/js/prepare/langue.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
+import { boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, affichageJamaisChoisi } from "/public/js/prepare/affichage.js";
+import { roueTeinte, teinteActuelle, choisirTeinte, synchroniserTeinte } from "/public/js/prepare/teinte.js";
+// ⚠ MEME ADRESSE que la balise de prepare.html (`?v=1` compris) : une autre
+// adresse chargerait le module une seconde fois.
+import { appliquerTeintePage } from "/public/js/teinte-page.js?v=1";
 import { sauverDeck, decksSauvegardesPourHeros } from "/public/js/prepare/decks-serveur.js";
 import { NIVEAUX_STANDARD, libelleNiveau, niveauDuScenario } from "/public/js/prepare/niveau-standard.js";
 import { urlNarval } from "/public/js/prepare/narval.js";
@@ -700,6 +706,10 @@ function render() {
         if (rangee && !rangee.querySelector(".btn-langue")) {
             rangee.prepend(boutonLangue("btn ghost btn-langue"));
         }
+        // Le réglage d'affichage suit le bouton de langue, ici comme dans l'en-tête.
+        if (rangee && !rangee.querySelector(".btn-affichage")) {
+            rangee.querySelector(".btn-langue").after(boutonAffichage("btn ghost"));
+        }
         root.replaceChildren(
             el("div", { class: "layout accueil-layout" },
                 el("main", { class: "stage accueil-stage" }, accueilView()),
@@ -744,6 +754,7 @@ function progressBar() {
             ),
         ),
         boutonLangue("btn ghost btn-langue"),
+        boutonAffichage("btn ghost"),
         el("div", { class: "steps" }, STEPS.map((label, i) => {
             const done = i < state.step && stepComplete(i);
             const cls = "pstep" + (i === state.step && !state.accueil ? " active" : "") + (done ? " done" : "");
@@ -772,6 +783,8 @@ function progressBar() {
         // le reposera de lui-même au prochain passage.
         const langueEnTrop = rangee.querySelector(".btn-langue");
         if (langueEnTrop) langueEnTrop.remove();
+        const affichageEnTrop = rangee.querySelector(".btn-affichage");
+        if (affichageEnTrop) affichageEnTrop.remove();
         entete.insertBefore(rangee, entete.querySelector(".steps"));
     }
     return entete;
@@ -1199,6 +1212,78 @@ function demanderLaLangue() {
                     "Tu peux changer à tout moment : le bouton FR / EN, en haut de l'écran."),
                 el("div", { class: "vh-note lg-en" },
                     "You can switch at any time: the FR / EN button at the top of the screen."),
+            ),
+        );
+        ouvrirModale(overlay);
+    });
+}
+
+/** « Choisis ton affichage », posée une seule fois (04/10/2026).
+ *
+ *  Demandée par l'utilisateur : « qu'il y ait un exemple, comme ça ils peuvent
+ *  voir et choisir en connaissance de cause, et indiquer que ça peut encore être
+ *  changé ». Deux aperçus réels de la table, pris sur une question de la phase
+ *  du méchant, seul le mode change. Pour les refaire : `ui-check/scripts/capture-affichage.spec.ts`,
+ *  hors du dossier des tests parce qu'il CRÉE une partie (à lancer contre un
+ *  moteur d'essai, jamais contre une partie en cours).
+ *
+ *  ⚠ Même règle que la langue : on ne la ferme pas en cliquant à côté, un clic
+ *  distrait vaudrait réponse et la question ne reviendrait jamais.
+ */
+function demanderLAffichage() {
+    return new Promise((resolve) => {
+        // Les cartes SE CHOISISSENT, elles ne ferment plus : la roue de la
+        // couleur du fond vit dans la meme fenetre (choix de l'utilisateur,
+        // 04/10/2026), et c'est « Valider » qui ferme le tout.
+        let choixAffichage = "normal";
+        let choixTeinte = teinteActuelle();
+        const cartes = [];
+        const carte = (valeur, titre, sous) => {
+            const bouton = el("button", {
+                class: "af-choix" + (valeur === choixAffichage ? " on" : ""),
+                "aria-pressed": valeur === choixAffichage ? "true" : "false",
+                onclick: () => {
+                    choixAffichage = valeur;
+                    for (const c of cartes) {
+                        const on = c.dataset.valeur === valeur;
+                        c.classList.toggle("on", on);
+                        c.setAttribute("aria-pressed", on ? "true" : "false");
+                    }
+                },
+            },
+                el("img", { src: `/public/img/affichage/apercu-${valeur}.jpg`, alt: titre, loading: "eager" }),
+                el("b", {}, titre),
+                el("small", {}, sous));
+            bouton.dataset.valeur = valeur;
+            cartes.push(bouton);
+            return bouton;
+        };
+        const valider = () => {
+            choisirAffichage(choixAffichage);
+            if (choixTeinte) choisirTeinte(choixTeinte);
+            // La page elle-meme prend la teinte tout de suite (« partout »).
+            appliquerTeintePage(teinteActuelle());
+            fermerModale(overlay);
+            resolve();
+        };
+        const overlay = el("div", { class: "deck-modal affichage-modal" },
+            el("div", { class: "deck-modal-panel vh-panel" },
+                el("div", { class: "dm-head" },
+                    el("b", { class: "mvl" }, t("Choisis ton affichage")),
+                ),
+                el("div", { class: "af-choix-grille" },
+                    carte("normal", t("Normal"), t("Couleurs du héros, animations.")),
+                    carte("sobre", t("Sobre"), t("Fond gris, sans couleurs ni animations, plus reposant.")),
+                ),
+                el("div", { class: "af-teinte" },
+                    el("b", {}, t("Couleur du fond")),
+                    el("small", {}, t("Des teintes douces pour la table, les bandeaux et les panneaux.")),
+                    roueTeinte(choixTeinte, (teinte) => { choixTeinte = teinte; }),
+                ),
+                el("div", { class: "vh-note" },
+                    t("Tu pourras changer à tout moment : bouton Affichage en haut de cette page, ou Réglages en partie.")),
+                el("div", { class: "af-valider" },
+                    el("button", { class: "btn primary", onclick: valider }, t("Valider"))),
             ),
         );
         ouvrirModale(overlay);
@@ -2475,19 +2560,158 @@ const COLLECTIONS_RESSOURCES = [
 ];
 
 /* ---- Arts alternatifs des CARTES DE HEROS ------------------------------
-   Planche « Alternate Art Hero Cards » de M3T4LB0X (hallofheroeslcg.com).
+   Trois séries : M3T4LB0X (m3t), le zip « Marvel Champions Alt Art » (cb) et
+   l'album Flickr de The Rose of Gondolin (rog, rog2).
    Purement cosmétique : la carte reste la même pour le moteur.
-   N'ont été retenus que les arts dont les VALEURS IMPRIMÉES sont identiques à
-   notre carte ; un art affichant d'autres chiffres mentirait en pleine partie.
+   N'ont été retenus que les arts dont les VALEURS et le TEXTE imprimés sont
+   identiques à notre carte ; un art affichant autre chose mentirait en pleine partie.
+   Ici, seule la face héros du wizard ; le plateau connaît aussi les autres
+   faces (alter ego, Touched, SP//dr...).
    Doit rester aligné avec ui-app/src/board/variantes.ts (ARTS_HEROS). */
 const ARTS_HEROS = {
-    "01001a": [{ code: "m3t", nom: "M3T4LB0X" }],
-    "01010a": [{ code: "m3t", nom: "M3T4LB0X" }],
-    "01019a": [{ code: "m3t", nom: "M3T4LB0X" }],
-    "01029a": [{ code: "m3t", nom: "M3T4LB0X" }],
-    "03001a": [{ code: "m3t", nom: "M3T4LB0X" }],
-    "04001a": [{ code: "m3t", nom: "M3T4LB0X" }],
+    "01001a": [{ code: "m3t", nom: "M3T4LB0X" }, { code: "cb", nom: "Comic" }],
+    "01010a": [{ code: "m3t", nom: "M3T4LB0X" }, { code: "cb", nom: "Comic" }],
+    "01019a": [{ code: "m3t", nom: "M3T4LB0X" }, { code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "01029a": [{ code: "m3t", nom: "M3T4LB0X" }, { code: "cb", nom: "Comic" }],
+    "01040a": [{ code: "cb", nom: "Comic" }],
+    "03001a": [{ code: "m3t", nom: "M3T4LB0X" }, { code: "cb", nom: "Comic" }],
+    "04001a": [{ code: "m3t", nom: "M3T4LB0X" }, { code: "cb", nom: "Comic" }],
+    "04031a": [{ code: "cb", nom: "Comic" }],
+    "05001a": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }, { code: "rog2", nom: "Rose of Gondolin 2" }],
+    "06001a": [{ code: "cb", nom: "Comic" }],
+    "08001a": [{ code: "cb", nom: "Comic" }],
+    "09001a": [{ code: "cb", nom: "Comic" }],
+    "10001a": [{ code: "cb", nom: "Comic" }],
+    "12001a": [{ code: "cb", nom: "Comic" }],
+    "13001a": [{ code: "cb", nom: "Comic" }],
+    "14001a": [{ code: "cb", nom: "Comic" }],
+    "15001a": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }, { code: "rog2", nom: "Rose of Gondolin 2" }],
+    "16001a": [{ code: "cb", nom: "Comic" }],
+    "16029a": [{ code: "cb", nom: "Comic" }],
+    "17001a": [{ code: "cb", nom: "Comic" }],
+    "18001a": [{ code: "cb", nom: "Comic" }],
+    "19001a": [{ code: "cb", nom: "Comic" }],
+    "20001a": [{ code: "cb", nom: "Comic" }],
+    "21001a": [{ code: "cb", nom: "Comic" }],
+    "21031a": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "22001a": [{ code: "cb", nom: "Comic" }],
+    "23001a": [{ code: "cb", nom: "Comic" }],
+    "25001a": [{ code: "cb", nom: "Comic" }],
+    "26001a": [{ code: "cb", nom: "Comic" }],
+    "27001a": [{ code: "cb", nom: "Comic" }],
+    "27030a": [{ code: "cb", nom: "Comic" }],
+    "28001a": [{ code: "cb", nom: "Comic" }],
+    "29001a": [{ code: "cb", nom: "Comic" }],
+    "30001a": [{ code: "cb", nom: "Comic" }],
+    "31001a": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "32001a": [{ code: "cb", nom: "Comic" }],
+    "32030a": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "33001a": [{ code: "cb", nom: "Comic" }],
+    "34001a": [{ code: "cb", nom: "Comic" }],
+    "35001a": [{ code: "cb", nom: "Comic" }],
+    "36001a": [{ code: "cb", nom: "Comic" }],
+    "37001a": [{ code: "cb", nom: "Comic" }],
+    "38001a": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }, { code: "rog2", nom: "Rose of Gondolin 2" }],
+    "40001a": [{ code: "cb", nom: "Comic" }],
+    "40037a": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "41001a": [{ code: "cb", nom: "Comic" }],
+    "42001a": [{ code: "cb", nom: "Comic" }],
+    "43001a": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "44001a": [{ code: "cb", nom: "Comic" }],
+    "45001a": [{ code: "cb", nom: "Comic" }],
+    "45030a": [{ code: "cb", nom: "Comic" }],
+    "46001a": [{ code: "cb", nom: "Comic" }],
+    "47001a": [{ code: "cb", nom: "Comic" }],
+    "48001a": [{ code: "cb", nom: "Comic" }],
+    "49001a": [{ code: "cb", nom: "Comic" }],
+    "50001a": [{ code: "cb", nom: "Comic" }],
+    "50034a": [{ code: "cb", nom: "Comic" }],
+    "51001a": [{ code: "cb", nom: "Comic" }],
+    "52001a": [{ code: "cb", nom: "Comic" }],
+    "53001a": [{ code: "cb", nom: "Comic" }],
+    "54001a": [{ code: "cb", nom: "Comic" }],
+    "56001a": [{ code: "cb", nom: "Comic" }],
+    "56029a": [{ code: "cb", nom: "Comic" }],
+    "58001a": [{ code: "cb", nom: "Comic" }],
+    "59001a": [{ code: "cb", nom: "Comic" }],
+    "60001a": [{ code: "cb", nom: "Comic" }],
+    "60037a": [{ code: "cb", nom: "Comic" }],
+    "61001a": [{ code: "cb", nom: "Comic" }],
+    "62001a": [{ code: "cb", nom: "Comic" }],
 };
+
+/** Arts de la face ALTER EGO (face « b »), par héros : même format que ci-dessus,
+ *  clé = numéro du héros sans suffixe. Absent : l'alter ego garde son scan. */
+const ARTS_ALTER_EGOS = {
+    "01001": [{ code: "cb", nom: "Comic" }],
+    "01010": [{ code: "cb", nom: "Comic" }],
+    "01019": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "01029": [{ code: "cb", nom: "Comic" }],
+    "01040": [{ code: "cb", nom: "Comic" }],
+    "03001": [{ code: "cb", nom: "Comic" }],
+    "04001": [{ code: "cb", nom: "Comic" }],
+    "04031": [{ code: "cb", nom: "Comic" }],
+    "05001": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }, { code: "rog2", nom: "Rose of Gondolin 2" }],
+    "06001": [{ code: "cb", nom: "Comic" }],
+    "08001": [{ code: "cb", nom: "Comic" }],
+    "09001": [{ code: "cb", nom: "Comic" }],
+    "10001": [{ code: "cb", nom: "Comic" }],
+    "12001": [{ code: "cb", nom: "Comic" }],
+    "13001": [{ code: "cb", nom: "Comic" }],
+    "14001": [{ code: "cb", nom: "Comic" }],
+    "15001": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }, { code: "rog2", nom: "Rose of Gondolin 2" }],
+    "16001": [{ code: "cb", nom: "Comic" }],
+    "16029": [{ code: "cb", nom: "Comic" }],
+    "17001": [{ code: "cb", nom: "Comic" }],
+    "18001": [{ code: "cb", nom: "Comic" }],
+    "19001": [{ code: "cb", nom: "Comic" }],
+    "20001": [{ code: "cb", nom: "Comic" }],
+    "21001": [{ code: "cb", nom: "Comic" }],
+    "21031": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "22001": [{ code: "cb", nom: "Comic" }],
+    "25001": [{ code: "cb", nom: "Comic" }],
+    "26001": [{ code: "cb", nom: "Comic" }],
+    "27001": [{ code: "cb", nom: "Comic" }],
+    "27030": [{ code: "cb", nom: "Comic" }],
+    "28001": [{ code: "cb", nom: "Comic" }],
+    "29001": [{ code: "cb", nom: "Comic" }],
+    "30001": [{ code: "cb", nom: "Comic" }],
+    "31001": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "32001": [{ code: "cb", nom: "Comic" }],
+    "32030": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "33001": [{ code: "cb", nom: "Comic" }],
+    "34001": [{ code: "cb", nom: "Comic" }],
+    "36001": [{ code: "cb", nom: "Comic" }],
+    "37001": [{ code: "cb", nom: "Comic" }],
+    "38001": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }, { code: "rog2", nom: "Rose of Gondolin 2" }],
+    "40001": [{ code: "cb", nom: "Comic" }],
+    "40037": [{ code: "cb", nom: "Comic" }, { code: "rog", nom: "Rose of Gondolin" }],
+    "41001": [{ code: "cb", nom: "Comic" }],
+    "42001": [{ code: "cb", nom: "Comic" }],
+    "43001": [{ code: "cb", nom: "Comic" }],
+    "44001": [{ code: "cb", nom: "Comic" }],
+    "45001": [{ code: "cb", nom: "Comic" }],
+    "45030": [{ code: "cb", nom: "Comic" }],
+    "46001": [{ code: "cb", nom: "Comic" }],
+    "47001": [{ code: "cb", nom: "Comic" }],
+    "48001": [{ code: "cb", nom: "Comic" }],
+    "49001": [{ code: "cb", nom: "Comic" }],
+    "50001": [{ code: "cb", nom: "Comic" }],
+    "50034": [{ code: "cb", nom: "Comic" }],
+    "51001": [{ code: "cb", nom: "Comic" }],
+    "52001": [{ code: "cb", nom: "Comic" }],
+    "53001": [{ code: "cb", nom: "Comic" }],
+    "54001": [{ code: "cb", nom: "Comic" }],
+    "56001": [{ code: "cb", nom: "Comic" }],
+    "56029": [{ code: "cb", nom: "Comic" }],
+    "58001": [{ code: "cb", nom: "Comic" }],
+    "59001": [{ code: "cb", nom: "Comic" }],
+    "60001": [{ code: "cb", nom: "Comic" }],
+    "60037": [{ code: "cb", nom: "Comic" }],
+    "61001": [{ code: "cb", nom: "Comic" }],
+    "62001": [{ code: "cb", nom: "Comic" }],
+};
+
 
 /** Identifiant d'image de la carte de héros, art alternatif choisi compris. */
 function picIdHeros(heroCardId) {
@@ -2608,6 +2832,153 @@ function sectionVariantes(titre, sous, options, actuel, surChoix) {
     return zone;
 }
 
+/** Un carrousel d'arts pour UNE face : grande image, une flèche de chaque côté
+ *  (hors de l'image), balayage. `options` : [{ code, nom }], « standard » en
+ *  tête. Rend `{ noeud, regler, avancer, deleguer, masquer }` :
+ *  - `regler(code, fige)` change l'art montré sans rappeler `surChoix` ;
+ *  - `avancer(sens)` passe à l'art voisin, comme un clic sur une flèche ;
+ *  - `deleguer(fn)` renvoie les flèches et le balayage vers `fn(sens)` (l'alter
+ *    ego qui suit la face héros fait défiler celle-ci) ; `null` pour annuler ;
+ *  - `masquer(gauche, droite)` cache une flèche sur ordinateur (une seule paire
+ *    pour les deux faces en « même série »). */
+function carrouselArts({ titre, picId, options, actuel, inactif, surChoix }) {
+    let idx = Math.max(0, options.findIndex((o) => o.code === actuel));
+    let figé = !!inactif;
+    let delegue = null;
+    const image = el("img", { class: "ca-image", alt: "", draggable: "false" });
+    const nom = el("span", { class: "ca-nom" });
+    const compteur = el("span", { class: "ca-compteur" });
+    const aller = (n) => {
+        if (figé || options.length < 2) return;
+        idx = (n + options.length) % options.length;
+        dessiner();
+        surChoix(options[idx].code);
+    };
+    const pousser = (sens) => (delegue ? delegue(sens) : aller(idx + sens));
+    const fleche = (sens, glyphe, libelle) => el("button", {
+        type: "button", class: "ca-fleche ca-fleche-" + (sens < 0 ? "g" : "d"),
+        "aria-label": libelle, onclick: () => pousser(sens),
+    }, glyphe);
+    const scene = el("div", { class: "ca-scene", tabindex: "0",
+        onkeydown: (e) => {
+            if (e.key === "ArrowLeft") { e.preventDefault(); pousser(-1); }
+            if (e.key === "ArrowRight") { e.preventDefault(); pousser(1); }
+        },
+    }, image);
+    let departX = null;
+    scene.addEventListener("pointerdown", (e) => { departX = e.clientX; });
+    scene.addEventListener("pointerup", (e) => {
+        if (departX === null) return;
+        const dx = e.clientX - departX;
+        departX = null;
+        if (Math.abs(dx) > 40) pousser(dx < 0 ? 1 : -1);
+    });
+    scene.addEventListener("pointercancel", () => { departX = null; });
+    const noeud = el("div", { class: "ca" },
+        el("div", { class: "ca-titre" }, titre),
+        el("div", { class: "ca-corps" },
+            fleche(-1, "\u2039", t("Art précédent")), scene, fleche(1, "\u203A", t("Art suivant"))),
+        el("div", { class: "ca-pied" }, nom, compteur),
+    );
+    function dessiner() {
+        const o = options[idx];
+        image.src = cardImageUrlHd(o.code === STANDARD ? picId : `${picId}_${o.code}`);
+        nom.textContent = o.nom;
+        compteur.textContent = options.length > 1 ? `${idx + 1} / ${options.length}` : "";
+        noeud.classList.toggle("ca-seul", options.length < 2 && !delegue);
+    }
+    dessiner();
+    return {
+        noeud,
+        regler(code, nouveauFige) {
+            figé = !!nouveauFige;
+            const n = options.findIndex((o) => o.code === code);
+            idx = n >= 0 ? n : 0;
+            dessiner();
+        },
+        avancer(sens) { aller(idx + sens); },
+        deleguer(fn) { delegue = fn; dessiner(); },
+        masquer(gauche, droite) {
+            noeud.classList.toggle("ca-sans-g", !!gauche);
+            noeud.classList.toggle("ca-sans-d", !!droite);
+        },
+    };
+}
+
+/** La section « Carte de héros » de la modale : un carrousel par face, avec
+ *  la case « même série pour les deux ». `choix.art` = face héros,
+ *  `choix.artAE` = alter ego (null = il suit le héros). */
+function sectionArtsHeros(h, choix, artsHeros, artsAlterEgo) {
+    const base = String(h.heroCardId || "").split(",")[0];
+    const numero = cleHeros(base);
+    const codesAE = artsAlterEgo.map((a) => a.code);
+    const liste = (arts) => [{ code: STANDARD, nom: t("Standard") }].concat(arts.map((a) => ({ code: a.code, nom: t(a.nom) })));
+    const aUnAlterEgo = artsAlterEgo.length > 0;
+    let memes = choix.artAE === null;
+
+    const alterEgoAffiche = () => codeAlterEgoAffiche({ heros: choix.art, alterEgo: choix.artAE }, codesAE);
+    const carrouselAE = aUnAlterEgo ? carrouselArts({
+        titre: t("Face alter ego"), picId: `${numero}b`, options: liste(artsAlterEgo),
+        actuel: alterEgoAffiche(), inactif: memes,
+        surChoix: (code) => { choix.artAE = code; },
+    }) : null;
+    const carrouselHeros = carrouselArts({
+        titre: t("Face héros"), picId: base, options: liste(artsHeros), actuel: choix.art,
+        surChoix: (code) => {
+            choix.art = code;
+            if (carrouselAE && memes) carrouselAE.regler(alterEgoAffiche(), true);
+        },
+    });
+    // « Même série » : une seule paire de flèches, à l'extérieur des deux
+    // cartes (gauche de la face héros, droite de l'alter ego), qui fait défiler
+    // les deux ensemble. Décochée : une paire par carte.
+    const paireUnique = (oui) => {
+        if (!carrouselAE) return;
+        carrouselHeros.masquer(false, oui);
+        carrouselAE.masquer(oui, false);
+        carrouselAE.deleguer(oui ? (sens) => carrouselHeros.avancer(sens) : null);
+    };
+    paireUnique(memes);
+    const zone = el("div", { class: "res-art ra-carrousels" },
+        el("div", { class: "ra-tete" },
+            el("span", { class: "ra-titre" }, t("Carte de héros")),
+            el("span", { class: "ra-sous" }, t("Art alternatif, mêmes valeurs de jeu")),
+        ),
+    );
+    if (aUnAlterEgo) {
+        const case_ = el("input", { type: "checkbox", id: "ca-memes" });
+        case_.checked = memes;
+        case_.addEventListener("change", () => {
+            memes = case_.checked;
+            paireUnique(memes);
+            if (memes) {
+                choix.artAE = null;
+                carrouselAE.regler(alterEgoAffiche(), true);
+            } else {
+                choix.artAE = alterEgoAffiche();
+                carrouselAE.regler(choix.artAE, false);
+            }
+        });
+        zone.append(el("label", { class: "ca-memes", for: "ca-memes" }, case_, t("Même série pour les deux faces")));
+    }
+    const rangee = el("div", { class: "ca-rangee" }, carrouselHeros.noeud, carrouselAE ? carrouselAE.noeud : null);
+    if (aUnAlterEgo) {
+        // Téléphone : une seule face à la fois, en grand (les onglets sont cachés sur ordinateur).
+        const ongletH = el("button", { type: "button", class: "ca-onglet actif" }, t("Face héros"));
+        const ongletAE = el("button", { type: "button", class: "ca-onglet" }, t("Face alter ego"));
+        const voir = (ae) => {
+            rangee.classList.toggle("vue-ae", ae);
+            ongletH.classList.toggle("actif", !ae);
+            ongletAE.classList.toggle("actif", ae);
+        };
+        ongletH.addEventListener("click", () => voir(false));
+        ongletAE.addEventListener("click", () => voir(true));
+        zone.append(el("div", { class: "ca-onglets" }, ongletH, ongletAE));
+    }
+    zone.append(rangee);
+    return zone;
+}
+
 /* ---- La modale du vilain interchangeable (Fear No Evil, 18/09/2026) ------
    Une tuile par manigance ; au clic, les vilains « underling » portes pour
    elle, en vignettes (carte du vilain). Le choix envoie le scenario concret
@@ -2654,8 +3025,10 @@ function ouvrirModaleVariantes(i, h) {
     const choix = {
         version: p.version || h.id,
         identite: p.identity ? cleIdentite(p.identity) : (identites[0] ? cleIdentite(identites[0]) : ""),
-        art: prefs.heroArt(h.heroCardId) || "standard",
+        art: prefs.heroArt(h.heroCardId) || STANDARD,
+        artAE: prefs.heroArtAlterEgo(h.heroCardId),
     };
+    const artsAlterEgo = ARTS_ALTER_EGOS[cleHeros(base)] || [];
     const sections = [];
     if (opts.versions.length) {
         sections.push(sectionVariantes(t("Version du deck de héros"), t("Ce choix change le deck envoyé au jeu"),
@@ -2667,22 +3040,19 @@ function ouvrirModaleVariantes(i, h) {
             opts.identites.map((v) => ({ code: cleIdentite(v), nom: (v.distinctif && v.distinctif[0]) || v.name, apercu: v.heroCardId })),
             choix.identite, (code) => { choix.identite = code; }));
     }
-    if (opts.arts.length) {
-        sections.push(sectionVariantes(t("Carte de héros"), t("Art alternatif — mêmes valeurs de jeu"),
-            [{ code: "standard", nom: t("Standard"), apercu: base }]
-                .concat(opts.arts.map((a) => ({ code: a.code, nom: t(a.nom), apercu: `${base}_${a.code}` }))),
-            choix.art, (code) => { choix.art = code; }));
-    }
+    const avecArts = opts.arts.length > 0;
+    if (avecArts) sections.push(sectionArtsHeros(h, choix, opts.arts, artsAlterEgo));
     const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
         // `--sections` : sur telephone, la feuille dimensionne ses vignettes
         // pour que TOUTES les sections tiennent sans defiler (prepare.css).
-        el("div", { class: "deck-modal-panel vh-panel", style: { "--sections": String(sections.length) } },
+        el("div", { class: "deck-modal-panel vh-panel" + (avecArts ? " vh-arts" : ""),
+            style: { "--sections": String(sections.length), "--autres": String(sections.length - (avecArts ? 1 : 0)) } },
             el("div", { class: "dm-head" },
                 el("b", { class: "mvl" }, nomAffiche(h)),
                 el("span", { class: "dm-sub" }, t("Options de ce héros")),
             ),
             ...sections,
-            el("div", { class: "vh-note" }, t("Mémorisé pour ce héros sur cet appareil")),
+            el("div", { class: "vh-note" }, t(prefs.artsSurCompte() ? "Mémorisé pour ce héros sur ton compte" : "Mémorisé pour ce héros sur cet appareil")),
             el("div", { class: "vh-actions" },
                 el("button", { class: "tampon", onclick: () => { hideHover(); fermerModale(overlay); } }, t("Annuler")),
                 el("button", { class: "tampon jaune", onclick: () => {
@@ -2693,7 +3063,7 @@ function ouvrirModaleVariantes(i, h) {
                     p.deckSource = "base";
                     p.deckAuto = true;
                     p.identity = identites.find((v) => cleIdentite(v) === choix.identite) || null;
-                    prefs.setHeroArt(h.heroCardId, choix.art);
+                    prefs.setArtsHeros(h.heroCardId, choix.art, choix.artAE);
                     prefs.setVariantes(h.id, { version: choix.version, identite: choix.identite });
                     hideHover();
                     fermerModale(overlay);
@@ -4097,6 +4467,12 @@ function blocAvance() {
     // plateau, mais jamais a un retour ici.
     appliquerTutoriel(window.localStorage, null);
     synchroniserLangueServeur();
+    appliquerAffichage();
+    // Gardee : la fenetre « Choisis ton affichage », plus bas, attend la
+    // reponse du compte pour savoir s'il a deja choisi.
+    const syncAffichage = synchroniserAffichage();
+    // Les arts alternatifs suivent le compte d'un appareil à l'autre.
+    prefs.synchroniserArts().then((change) => { if (change) render(); });
     if (creationCampagne()) {
         state.mode = MODES.find((m) => m.id === "campaign") || state.mode;
         state.playerCount = Math.max(1, Math.min(4, BROUILLON_CAMPAGNE.nbJoueurs | 0)) || 1;
@@ -4122,6 +4498,14 @@ function blocAvance() {
     // question y tomberait de nulle part.
     if (!langueDejaChoisie() && !creationCampagne()) {
         await demanderLaLangue();
+    }
+    // Apres la langue : la fenetre parle alors la langue choisie.
+    const reponsePreferences = await syncAffichage;
+    // La teinte suit le compte comme l'affichage, sur la MEME reponse.
+    synchroniserTeinte(reponsePreferences);
+    appliquerTeintePage(teinteActuelle());
+    if (!creationCampagne() && affichageJamaisChoisi(reponsePreferences)) {
+        await demanderLAffichage();
     }
     // Le salon ne concerne que le multi, mais on sonde toujours : la reponse
     // dit elle-meme si on y est (multi:false en solo, et tout reste inerte).

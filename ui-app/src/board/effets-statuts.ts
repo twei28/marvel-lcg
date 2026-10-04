@@ -1,7 +1,7 @@
 // Ce qu'un rendu du moteur change aux STATUTS des personnages.
 //
 // Signale en jeu le 09/09/2026 : pendant la phase du mechant, les cartes de
-// statut (Sonne / Desoriente / Robuste) se posent sans un mot. Le moteur ne
+// statut (Sonne / Desoriente / Tenace) se posent sans un mot. Le moteur ne
 // publie aucun fait « statut » pour le cartouche, la couche d'animations ignore
 // volontairement la pile des statuts, et les badges +N / -N ne comparent que
 // les compteurs. Le seul signal etait la mini-carte de 50 px sous le porteur.
@@ -64,7 +64,7 @@ function compter(liste: Statut[] | undefined): Record<Statut, number> {
  * Pour chaque porteur dont les statuts ont change : ce qui vient d'arriver.
  *
  * Un statut POSE l'emporte sur un statut RETIRE dans le meme rendu (le
- * remplacement d'un Robuste consomme par un nouveau Robuste se lit « Robuste »).
+ * remplacement d'un Tenace consomme par un nouveau Tenace se lit « Tenace »).
  * Une carte qui n'est plus dans le monde (vaincue) n'a plus de porteur : on ne
  * signale pas la perte de ses statuts, elle est partie avec eux.
  */
@@ -97,7 +97,7 @@ export function libelleStatut(statut: Statut, value: 1 | -1, langue: 'fr' | 'en'
   const NOMS: Record<Statut, { fr: string; en: string }> = {
     stunned: { fr: 'Sonné', en: 'Stunned' },
     confused: { fr: 'Désorienté', en: 'Confused' },
-    tough: { fr: 'Robuste', en: 'Tough' },
+    tough: { fr: 'Tenace', en: 'Tough' },
     exposed: { fr: 'Exposé', en: 'Exposed' },
   }
   const nom = NOMS[statut][langue]

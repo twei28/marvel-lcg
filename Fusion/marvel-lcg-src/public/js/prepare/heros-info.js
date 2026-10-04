@@ -1603,4 +1603,37 @@ export const HEROS_INFO = {
         apparition: "Sentinel #1 (2003)",
     },
 
+    "rs001a": {
+        bio: "Sonja de Hyrkanie, dite Red Sonja, est une guerrière itinérante de l'âge hyborien, réputée pour son habileté à l'épée et son armure d'écailles. Sa légende veut qu'elle ait juré de ne jamais partager la couche d'un homme tant qu'il ne l'aurait pas vaincue loyalement au combat. Mercenaire et aventurière sans attaches, elle croise régulièrement la route de Conan le Cimmérien, tantôt alliée, tantôt rivale. Son tempérament féroce et son sens de l'honneur brutal en ont fait l'une des figures les plus reconnaissables de la fantasy héroïque.",
+        bioEn: "Sonja of Hyrkania, known as Red Sonja, is a wandering warrior of the Hyborian age, renowned for her swordsmanship and scale-mail armor. Legend holds she swore never to share a man's bed until he had bested her fairly in combat. A mercenary and adventurer with no fixed allegiance, she regularly crosses paths with Conan the Cimmerian, sometimes as ally, sometimes as rival. Her ferocious temper and brutal sense of honor have made her one of heroic fantasy's most recognizable figures.",
+        civil: "Sonja of Hyrkania",
+        base: "Les royaumes hyboriens",
+        baseEn: "The Hyborian kingdoms",
+        equipes: "Aucune (mercenaire solitaire)",
+        equipesEn: "None (solitary mercenary)",
+        ennemis: "L'Ice Queen, les sorciers et despotes de Hyrkanie",
+        ennemisEn: "The Ice Queen, Hyrkania's sorcerers and despots",
+        apparition: "Conan the Barbarian #23 (1973)",
+    },
+
+    "cn001a": {
+        bio: "Conan le Cimmérien, né sur un champ de bataille des collines glacées de Cimmérie, parcourt l'âge hyborien en voleur, mercenaire, pirate et chef de guerre. Aussi rusé que brutal, il ne se fie qu'à son épée, à sa force et à son instinct, et méprise les sorciers comme les rois décadents. Sa route le mène des repaires de voleurs de Zamora aux côtes noires où il navigue aux côtés de Bêlit, reine des pirates. Il finit par s'emparer du trône d'Aquilonie, devenant le roi Conan.",
+        bioEn: "Conan the Cimmerian, born on a battlefield in the frozen hills of Cimmeria, roams the Hyborian age as a thief, mercenary, pirate and warlord. As cunning as he is brutal, he trusts only his sword, his strength and his instincts, and despises sorcerers and decadent kings alike. His road leads from the thieves' dens of Zamora to the Black Coast, where he sails beside Bêlit, queen of pirates. He eventually seizes the throne of Aquilonia and becomes King Conan.",
+        civil: "Conan",
+        base: "Les royaumes hyboriens, puis Tarantia (Aquilonie)",
+        baseEn: "The Hyborian kingdoms, then Tarantia (Aquilonia)",
+        equipes: "Aucune (aventurier), roi d'Aquilonie",
+        equipesEn: "None (adventurer), King of Aquilonia",
+        ennemis: "Thoth-Amon, Thulsa Doom, les sorciers de Stygie",
+        ennemisEn: "Thoth-Amon, Thulsa Doom, the sorcerers of Stygia",
+        apparition: "Conan the Barbarian #1 (Marvel, 1970)",
+    },
+
+    "65001a": {
+        bio: "Pearl Pangan, alias Wave, est une héroïne américaine d'origine philippine capable de manipuler l'eau et les vagues avec une force dévastatrice. Membre des Agents of Atlas, elle met ses pouvoirs hydrocinétiques au service d'une équipe de héros asiatiques et américano-asiatiques trop souvent ignorés des grandes ligues super-héroïques. Son tempérament direct et sa fierté pour ses origines infusent chacune de ses apparitions.",
+        bioEn: "Pearl Pangan, known as Wave, is a Filipino American heroine able to manipulate water and waves with devastating force. A member of the Agents of Atlas, she lends her hydrokinetic powers to a team of Asian and Asian American heroes too often overlooked by the mainstream super-teams. Her blunt attitude and pride in her heritage color every appearance she makes.",
+        civil: "Pearl Pangan",
+        equipes: "Agents of Atlas",
+    },
+
 };

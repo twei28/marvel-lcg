@@ -16,6 +16,10 @@ def GetAbilities() -> Sequence['Ability']:
         )
         GetExperimentalWeapons(effect).Create(effect, villain, has_discard_pile=False)
         GetExperimentalWeapons(effect).PushCards(faces, effect)
+        # « shuffle them together, and set them facedown ». `PushCards` ne
+        # melange pas : l'ordre n'etait aleatoire que parce que les cartes
+        # sortaient du deck rencontre deja melange (audit du 04/10/2026).
+        GetExperimentalWeapons(effect).deck.Shuffle(effect)
 
 
     return [

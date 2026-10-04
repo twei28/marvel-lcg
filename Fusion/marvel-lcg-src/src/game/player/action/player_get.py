@@ -244,6 +244,12 @@ class PlayerGet:
                 if check_face == exclude:
                     continue
                 if isinstance(check_face, AlterEgo|Hero):
+                    # AJOUT (25/09/2026, pack custom conan) : meme drapeau que le
+                    # changement volontaire (player_setup.py) : les effets qui
+                    # changent de forme « vers le heros / l'alter-ego » ne doivent
+                    # pas atterrir sur une face mise de cote ou retiree de la partie.
+                    if getattr(check_face, 'hors_pile_identite', False):
+                        continue
                     # Fix for "29001a"
                     if check_face.paper.card_id[:-1] == identity_card_id:
                         identities.append(check_face)

@@ -2231,8 +2231,13 @@ verifier("et la partie n'est plus proposee, meme apres un echec",
 #
 # ⚠ PSEUDO DEDIE, PAS « hote ». `charger_partie_interrompue` s'appelle ici
 # directement (sans passer par la route `/reprendre`) : nul besoin d'un
-# compte reel. Un pseudo jamais implique dans un thread de fond ailleurs
-# dans ce fichier evite toute course avec ce dernier.
+# compte reel. Reutiliser « hote » l'exposerait au thread de fond que
+# `demarrer_en_fond` a lance PLUS HAUT (bloc « /reprendre note le chargement
+# a faire ») pour ce meme pseudo — fil separe, non rejoint par le test, qui
+# peut toujours tourner et disputer `A_REPRENDRE`/`REPRISE_EN_COURS` au bloc
+# « LA COURSE DU 24/09 » juste apres. Constate a l'ecriture de ce test :
+# partage le pseudo, et cette course (pourtant deja connue et commentee plus
+# bas) devenait intermittente.
 _table_isolee = o.Partie(4, "cookie-test-25-09", "Jeu isole pour ce test")
 _table_isolee.mot_de_passe = "un mot de passe bien a elle"
 o.retenir_partie_interrompue("cookie-test-25-09", "../replays/serveur-4/partie.json",
@@ -2460,7 +2465,6 @@ verifier("un invite SANS compte reste visible sur la table de l'hote",
 verifier("⚠ mais n'ouvre de ticket pour personne (comportement inchange)",
          not any(x["id"] == _num_anon for x in o.tickets_de("hote")),
          "num=%s tickets_hote=%s" % (_num_anon, o.tickets_de("hote")))
-
 
 o.ecrire_message(_r_hote, "admin", "Corrige, merci du signalement.")
 _fil = (o.ticket_de(_r_hote) or {}).get("messages") or []

@@ -11,6 +11,8 @@ import { ContenuOnglet, FenetreReglages, ONGLETS, type ProprietesReglages } from
 
 function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
   return {
+    affichage: 'normal',
+    changerAffichage: vi.fn(),
     animations: true,
     basculerAnimations: vi.fn(),
     sons: true,
@@ -34,14 +36,16 @@ function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
       m === 'detaille' ? 'Détaillé' : m === 'sur-table' ? 'Sur la table' : 'Instantané',
     tempsParDecision: 0,
     texteTempsParDecision: () => 'le moteur n’attend pas',
-    avanceAuto: false,
-    basculerAvanceAuto: vi.fn(),
-    delaiPasAPas: 1200,
-    reglerDelaiPasAPas: vi.fn(),
     validationCourte: false,
     basculerValidationCourte: vi.fn(),
     autoCible: true,
     basculerAutoCible: vi.fn(),
+    finTourAuto: false,
+    basculerFinTourAuto: vi.fn(),
+    paiementAuto: false,
+    basculerPaiementAuto: vi.fn(),
+    sauvegardeAuto: true,
+    basculerSauvegardeAuto: vi.fn(),
     revelation: 'court',
     cyclerRevelation: vi.fn(),
 
@@ -61,6 +65,8 @@ function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
     montrerDisposition: false,
     reglageMode: 'auto',
     cyclerReglageMode: vi.fn(),
+    changerTeinte: vi.fn(),
+    reinitialiserTeinte: vi.fn(),
     ...sur,
   }
 }
@@ -73,41 +79,17 @@ describe('un sous-reglage inutilisable reste VISIBLE', () => {
   // ⚠ Le coeur du changement. Avant, « Vitesse du deroule » n'existait dans le
   // DOM que si « Avance toute seule » etait active : impossible de savoir
   // qu'elle existait. Maintenant elle est la, grisee.
-  it('« Vitesse du deroule » est affichee meme quand l’avance auto est coupee', () => {
-    render(<ContenuOnglet onglet="deroule" p={proprietes({ avanceAuto: false })} />)
-    const curseur = ligne('Vitesse du déroulé')
-    expect(curseur).toBeTruthy()
-    expect(curseur.className).toContain('est-desactive')
-    expect(within(curseur).getByRole('slider')).toBeDisabled()
-  })
-
-  it('et elle devient utilisable des que l’avance auto est allumee', () => {
-    render(<ContenuOnglet onglet="deroule" p={proprietes({ avanceAuto: true })} />)
-    const curseur = ligne('Vitesse du déroulé')
-    expect(curseur.className).not.toContain('est-desactive')
-    expect(within(curseur).getByRole('slider')).not.toBeDisabled()
-  })
-
-  it('« Avance toute seule » est visible mais inerte en phase instantanee', () => {
-    // Elle ne veut rien dire hors du mode detaille, mais la cacher reviendrait
-    // a faire croire qu'elle n'existe pas.
-    render(<ContenuOnglet onglet="deroule" p={proprietes({ modePhase: 'instantane' })} />)
-    const bascule = ligne('Avance toute seule')
-    expect(bascule).toBeTruthy()
-    expect(bascule).toBeDisabled()
-  })
-
-  it('« Actions » est visible mais inerte sans le nouveau design', () => {
+  it('« Aide quand je joue une carte » est visible mais inerte sans le nouveau plateau', () => {
     render(<ContenuOnglet onglet="avance" p={proprietes({ designEssai: false })} />)
-    const choix = ligne('Actions')
+    const choix = ligne('Aide quand je joue une carte')
     expect(choix.className).toContain('est-desactive')
     for (const bouton of within(choix).getAllByRole('button')) expect(bouton).toBeDisabled()
   })
 
   it('un sous-reglage porte le retrait, son parent non', () => {
-    render(<ContenuOnglet onglet="deroule" p={proprietes()} />)
-    expect(ligne('Avance toute seule').className).toContain('est-enfant')
-    expect(ligne('Validation courte').className).not.toContain('est-enfant')
+    render(<ContenuOnglet onglet="apparence" p={proprietes()} />)
+    expect(ligne('Animations').className).toContain('est-enfant')
+    expect(ligne('Langue').className).not.toContain('est-enfant')
   })
 })
 
@@ -115,26 +97,32 @@ describe('aucun reglage n’a ete perdu au rangement', () => {
   // Les 18 reglages de l'ancien panneau, avec l'onglet ou chacun doit se
   // trouver. Un reglage qui disparaitrait d'un onglet sans reapparaitre
   // ailleurs ferait rougir ce test.
+  // Rangement du 04/10/2026 (questions une a une) : Apparence, Son, Jeu,
+  // Avance ; intitules qui disent l'effet.
   const ATTENDUS: Record<string, string[]> = {
-    image: [
+    apparence: [
+      'Style d’affichage',
+      'Couleur de la table',
       'Animations',
-      'Sons',
-      'Musique',
-      'Succès',
-      'Scans en français',
-      'Textes marvelcdb (réseau)',
+      'Météo et décor',
+      'Aperçu d’ambiance',
       'Langue',
+      'Cartes en français',
+      'Texte des cartes en français',
+      'Annonce des exploits',
     ],
-    deroule: [
+    son: ['Bruitages', 'Musique de fond'],
+    jeu: [
       'Phase du méchant',
-      'Avance toute seule',
-      'Vitesse du déroulé',
-      'Validation courte',
-      'Auto-ciblage',
-      'Cartes révélées',
+      'Carte révélée en grand',
+      'Le jeu agit pour moi quand il n’y a qu’un choix',
+      'Choisir la seule cible possible',
+      'Valider sans demander',
+      'Payer avec la seule carte possible',
+      'Finir mon tour quand je ne peux plus rien jouer',
+      'Sauvegarde à chaque phase',
     ],
-    ambiance: ['Ambiance', 'Aperçu d’ambiance'],
-    avance: ['Nouveau design', 'Actions', 'Curseurs des autres joueurs'],
+    avance: ['Nouveau plateau', 'Aide quand je joue une carte', 'Pointeurs des autres joueurs'],
   }
 
   for (const [onglet, libelles] of Object.entries(ATTENDUS)) {
@@ -150,37 +138,54 @@ describe('aucun reglage n’a ete perdu au rangement', () => {
     const { unmount } = render(
       <ContenuOnglet onglet="avance" p={proprietes({ montrerDisposition: false })} />
     )
-    expect(screen.queryByText('Disposition')).toBeNull()
+    expect(screen.queryByText('Table complète comme sur PC')).toBeNull()
     unmount()
     render(<ContenuOnglet onglet="avance" p={proprietes({ montrerDisposition: true })} />)
-    expect(screen.getByText('Disposition')).toBeTruthy()
+    expect(screen.getByText('Table complète comme sur PC')).toBeTruthy()
   })
 
   it('la note du « temps par decision » ne sort qu’en phase detaillee et si le moteur en a un', () => {
     const { unmount } = render(
-      <ContenuOnglet onglet="deroule" p={proprietes({ modePhase: 'detaille', tempsParDecision: 0 })} />
+      <ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'detaille', tempsParDecision: 0 })} />
     )
     expect(screen.queryByText(/n’attend pas/)).toBeNull()
     unmount()
     render(
-      <ContenuOnglet onglet="deroule" p={proprietes({ modePhase: 'detaille', tempsParDecision: 30 })} />
+      <ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'detaille', tempsParDecision: 30 })} />
     )
     expect(screen.getByText(/n’attend pas/)).toBeTruthy()
   })
 })
 
 describe('chaque interrupteur appelle bien sa fonction', () => {
+  it('choisir l affichage sobre', () => {
+    const changerAffichage = vi.fn()
+    render(<ContenuOnglet onglet="apparence" p={proprietes({ changerAffichage })} />)
+    fireEvent.click(screen.getByText('Sobre'))
+    expect(changerAffichage).toHaveBeenCalledWith('sobre')
+  })
+
+  it('en affichage sobre, « Animations » reste visible mais inerte et sur « Non »', () => {
+    const basculerAnimations = vi.fn()
+    render(<ContenuOnglet onglet="apparence" p={proprietes({ affichage: 'sobre', basculerAnimations })} />)
+    const ligne = screen.getByText('Animations').closest('button')!
+    expect(ligne).toBeDisabled()
+    expect(ligne).toHaveAttribute('aria-checked', 'false')
+    fireEvent.click(ligne)
+    expect(basculerAnimations).not.toHaveBeenCalled()
+  })
+
   it('basculer les animations', () => {
     const basculerAnimations = vi.fn()
-    render(<ContenuOnglet onglet="image" p={proprietes({ basculerAnimations })} />)
+    render(<ContenuOnglet onglet="apparence" p={proprietes({ basculerAnimations })} />)
     fireEvent.click(screen.getByText('Animations'))
     expect(basculerAnimations).toHaveBeenCalledTimes(1)
   })
 
   it('choisir la phase instantanee', () => {
     const changerModePhase = vi.fn()
-    render(<ContenuOnglet onglet="deroule" p={proprietes({ changerModePhase })} />)
-    fireEvent.click(screen.getByText('Instantané'))
+    render(<ContenuOnglet onglet="jeu" p={proprietes({ changerModePhase })} />)
+    fireEvent.click(screen.getByText('D’un coup'))
     expect(changerModePhase).toHaveBeenCalledWith('instantane')
   })
 
@@ -194,9 +199,10 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
         p={proprietes({ montrerDisposition: true, reglageMode: 'auto', cyclerReglageMode })}
       />
     )
-    fireEvent.click(screen.getByText('Automatique'))
+    const table = within(ligne('Table complète comme sur PC'))
+    fireEvent.click(table.getByText('Non'))
     expect(cyclerReglageMode).not.toHaveBeenCalled()
-    fireEvent.click(screen.getByText('Ordinateur'))
+    fireEvent.click(table.getByText('Oui'))
     expect(cyclerReglageMode).toHaveBeenCalledTimes(1)
   })
 
@@ -205,10 +211,10 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
     // offre pourtant trois pastilles, donc elle cycle autant de fois qu'il
     // faut. Depuis « court », atteindre « off » demande deux pas.
     const cyclerRevelation = vi.fn()
-    render(<ContenuOnglet onglet="deroule" p={proprietes({ revelation: 'court', cyclerRevelation })} />)
+    render(<ContenuOnglet onglet="jeu" p={proprietes({ revelation: 'court', cyclerRevelation })} />)
     // ⚠ Chercher DANS la ligne : « Non » est aussi l'etat affiche par chaque
     // interrupteur coupe de l'onglet, un `getByText` global en trouve plusieurs.
-    const cartes = within(ligne('Cartes révélées'))
+    const cartes = within(ligne('Carte révélée en grand'))
     fireEvent.click(cartes.getByText('5 s'))
     expect(cyclerRevelation).toHaveBeenCalledTimes(1)
     cyclerRevelation.mockClear()
@@ -225,11 +231,12 @@ describe('la fenetre elle-meme', () => {
     expect(container.querySelector('.reglages-fenetre')).toBeNull()
   })
 
-  it('ouvre sur l’onglet « Image et son », et on peut changer d’onglet', () => {
+  it('ouvre sur l’onglet « Apparence », et on peut changer d’onglet', () => {
     render(<FenetreReglages ouvert fermer={vi.fn()} {...proprietes()} />)
     expect(screen.getByText('Animations')).toBeTruthy()
-    fireEvent.click(screen.getByRole('tab', { name: 'Ambiance' }))
-    expect(screen.getByText('Aperçu d’ambiance')).toBeTruthy()
+    expect(screen.getAllByRole('tab').map((o) => o.textContent)).toEqual(['Apparence', 'Son', 'Jeu', 'Avancé'])
+    fireEvent.click(screen.getByRole('tab', { name: 'Son' }))
+    expect(screen.getByText('Bruitages')).toBeTruthy()
     expect(screen.queryByText('Animations')).toBeNull()
   })
 
@@ -295,7 +302,7 @@ describe('le mode « Sur la table » est proposé aux essais', () => {
     // ici, au moment du choix, et elle nomme le relais : l'infobulle.
     // ⚠ Le `detail` d'une ligne de réglage devient un attribut `title`, pas du
     // texte : c'est l'infobulle du bouton lui-même. On cherche donc là.
-    render(<ContenuOnglet onglet="image" p={proprietes()} />)
+    render(<ContenuOnglet onglet="apparence" p={proprietes()} />)
     const ligne = screen.getByTitle(/Langue de l’interface et de la narration/)
     expect(ligne.getAttribute('title')).toMatch(/sans scan dans cette langue reste en anglais/)
     expect(ligne.getAttribute('title')).toMatch(/infobulle/)
@@ -304,20 +311,20 @@ describe('le mode « Sur la table » est proposé aux essais', () => {
   it('avec les essais, il apparaît entre les deux autres', () => {
     // Il raconte la même chose que « Détaillé », au même rythme : sa place est
     // à côté de lui, pas à la fin de la liste.
-    render(<ContenuOnglet onglet="deroule" p={proprietes({ essais: true })} />)
-    expect(modes()).toEqual(['Détaillé', 'Sur la table', 'Instantané'])
+    render(<ContenuOnglet onglet="jeu" p={proprietes({ essais: true })} />)
+    expect(modes()).toEqual(['Étape par étape', 'Sur la table', 'D’un coup'])
   })
 
   it('sans les essais, il n’est pas proposé', () => {
     // La garde de `board/essais.ts` décide qui le voit, pas l'interrupteur.
-    render(<ContenuOnglet onglet="deroule" p={proprietes({ essais: false })} />)
-    expect(modes()).toEqual(['Détaillé', 'Instantané'])
+    render(<ContenuOnglet onglet="jeu" p={proprietes({ essais: false })} />)
+    expect(modes()).toEqual(['Étape par étape', 'D’un coup'])
   })
 
   it('⚠ un mode DÉJÀ choisi reste dans la liste même sans les essais', () => {
     // Sinon l'écran des réglages montrerait deux boutons dont aucun n'est
     // actif, et le joueur n'aurait aucun moyen d'en sortir.
-    render(<ContenuOnglet onglet="deroule" p={proprietes({ essais: false, modePhase: 'sur-table' })} />)
-    expect(modes()).toEqual(['Détaillé', 'Sur la table', 'Instantané'])
+    render(<ContenuOnglet onglet="jeu" p={proprietes({ essais: false, modePhase: 'sur-table' })} />)
+    expect(modes()).toEqual(['Étape par étape', 'Sur la table', 'D’un coup'])
   })
 })

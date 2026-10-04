@@ -549,86 +549,49 @@ function libelleType(type: TypeHistorique): string {
   return t('Événement')
 }
 
-export function HistoriquePartie({
+/**
+ * L'historique de la partie, AFFICHE TEL QUEL dans le volet du journal
+ * (VoletJournal.tsx). Il vivait derriere un bouton qui ouvrait un panneau
+ * flottant : dans le volet, ce bouton aurait rouvert une fenetre de plus, ce
+ * que le volet devait justement supprimer (retour de joueur, 03/10/2026).
+ */
+export function ContenuHistorique({
   entrees,
   effacer,
   rapport,
 }: {
   entrees: EntreeHistorique[]
   effacer: () => void
-  /** Absent hors partie : le panneau se contente alors du bouton « Effacer ». */
+  /** Absent hors partie : seul le bouton « Effacer » reste. */
   rapport?: OutilsRapport
 }) {
-  const [ouvert, setOuvert] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!ouvert) return
-    const fermer = (evenement: PointerEvent) => {
-      const cible = evenement.target
-      if (cible instanceof Node && ref.current?.contains(cible)) return
-      setOuvert(false)
-    }
-    const fermerClavier = (evenement: KeyboardEvent) => {
-      if (evenement.key === 'Escape') setOuvert(false)
-    }
-    document.addEventListener('pointerdown', fermer)
-    document.addEventListener('keydown', fermerClavier)
-    return () => {
-      document.removeEventListener('pointerdown', fermer)
-      document.removeEventListener('keydown', fermerClavier)
-    }
-  }, [ouvert])
-
   return (
-    <div className="historique-partie" ref={ref}>
-      <button
-        type="button"
-        className={`bh-bouton bh-history${ouvert ? ' est-ouvert' : ''}`}
-        aria-expanded={ouvert}
-        onClick={() => setOuvert((actuel) => !actuel)}
-        title={t('Historique de la partie')}
-      >
-        <span aria-hidden="true">H</span> {t('Historique')} <em>{entrees.length}</em>
-      </button>
+    <section className="historique-contenu" aria-label={t('Historique de la partie')}>
+      <header className="hp-entete">
+        <div className="hp-entete-actions">
+          {rapport ? <BoutonsRapportBug outils={rapport} /> : null}
+          <button type="button" onClick={effacer} disabled={entrees.length === 0}>
+            {t('Effacer')}
+          </button>
+        </div>
+      </header>
 
-      {ouvert ? (
-        <section
-          className="historique-panneau"
-          role="dialog"
-          aria-label={t('Historique de la partie')}
-        >
-          <header className="hp-entete">
-            <div>
-              <span className="plateau-eyebrow">{t('Historique de la partie')}</span>
-              <strong>{entrees[0]?.titre ?? t('Aucune entrée pour le moment')}</strong>
-            </div>
-            <div className="hp-entete-actions">
-              {rapport ? <BoutonsRapportBug outils={rapport} /> : null}
-              <button type="button" onClick={effacer} disabled={entrees.length === 0}>
-                {t('Effacer')}
-              </button>
-            </div>
-          </header>
-
-          {entrees.length === 0 ? (
-            <p className="hp-vide">The log will fill as the board changes.</p>
-          ) : (
-            <ol className="hp-liste">
-              {entrees.map((entree) => (
-                <li className={`hp-entree type-${entree.type}`} key={entree.cle}>
-                  <span className="hp-round">R{entree.round}</span>
-                  <span className="hp-type">{libelleType(entree.type)}</span>
-                  <span className="hp-texte">
-                    <b>{avecIcones(entree.titre)}</b>
-                    {entree.detail ? <small>{avecIcones(entree.detail)}</small> : null}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          )}
-        </section>
-      ) : null}
-    </div>
+      {entrees.length === 0 ? (
+        <p className="hp-vide">{t('Aucune entrée pour le moment')}</p>
+      ) : (
+        <ol className="hp-liste">
+          {entrees.map((entree) => (
+            <li className={`hp-entree type-${entree.type}`} key={entree.cle}>
+              <span className="hp-round">R{entree.round}</span>
+              <span className="hp-type">{libelleType(entree.type)}</span>
+              <span className="hp-texte">
+                <b>{avecIcones(entree.titre)}</b>
+                {entree.detail ? <small>{avecIcones(entree.detail)}</small> : null}
+              </span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   )
 }

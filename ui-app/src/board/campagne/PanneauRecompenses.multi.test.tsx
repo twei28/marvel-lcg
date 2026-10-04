@@ -5,7 +5,7 @@
 // rempli qu'une case. La règle est déjà testée dans `droits-carnet.test.ts` ;
 // ici on vérifie qu'elle est bien BRANCHÉE, ce qu'un test de règle ne dit pas.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { PanneauRecompenses } from './PanneauRecompenses'
 import { CLE_CAMPAGNE } from './contexte'
 import { mondeDeTest } from './world-de-test'
@@ -54,7 +54,15 @@ function serveurDeCampagne() {
   return envois
 }
 
+// jsdom n'implemente pas ResizeObserver : l'aperçu agrandi l'observe pour se poser.
+class ResizeObserverBouchon {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
 beforeEach(() => {
+  ;(globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverBouchon
   window.localStorage.clear()
   serveurDeCampagne()
   window.localStorage.setItem(
@@ -99,5 +107,20 @@ describe('le panneau à plusieurs', () => {
     expect(cartes).toHaveLength(2)
     expect(cartes[0]?.disabled).toBe(true)
     expect(cartes[1]?.disabled).toBe(false)
+  })
+
+  it("agrandit la carte au survol, même quand sa case est inerte, et la ferme en sortant", async () => {
+    render(<PanneauRecompenses monde={mondeDeTest()} gagne siege={1} onTermine={() => {}} />)
+    await waitFor(() => expect(screen.getByText(/Envoyer mes champs/)).toBeInTheDocument())
+    const cartes = screen.getAllByRole('button', { name: '01001' }) as HTMLButtonElement[]
+    const inerte = cartes[0]!
+    expect(inerte.disabled).toBe(true)
+    expect(document.querySelector('.carte-apercu')).toBeNull()
+
+    fireEvent.mouseOver(inerte.closest('[data-card-id]')!)
+    expect(document.querySelector('.carte-apercu.au-dessus-de-la-fin')).not.toBeNull()
+
+    fireEvent.mouseLeave(inerte.closest('.camp-cartes')!)
+    expect(document.querySelector('.carte-apercu')).toBeNull()
   })
 })

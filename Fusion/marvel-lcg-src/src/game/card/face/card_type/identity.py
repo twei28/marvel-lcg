@@ -105,6 +105,11 @@ class Identity(Friend, HasHandSize, PlayerCard):
 
     def ChangeToOtherHeroForm(self, by_effect: 'Effect'):
         for face in self.card.back_faces:
+            # AJOUT (25/09/2026, pack custom conan) : ignorer une face mise de
+            # cote ou retiree de la partie (drapeau `hors_pile_identite`, voir
+            # player_setup.py). Aucune autre face ne porte ce drapeau.
+            if getattr(face, 'hors_pile_identite', False):
+                continue
             if Hero.IsType(face) and face != self:
                 self.ChangeToFace(face, by_effect)
                 return
@@ -112,7 +117,9 @@ class Identity(Friend, HasHandSize, PlayerCard):
 
     def ChangeToOtherForm(self, by_effect: 'Effect'):
         player = self.GetControlByPlayer()
-        face = player.AskChooseOneText([x.name for x in self.card.back_faces])
+        # AJOUT (25/09/2026, pack custom conan) : meme filtre `hors_pile_identite`.
+        face = player.AskChooseOneText([x.name for x in self.card.back_faces
+                                        if not getattr(x, 'hors_pile_identite', False)])
         self.ChangeToForm(CardFinder(name=face), by_effect)
 
     def SetActive(self, by_effect: 'Effect'):

@@ -268,6 +268,36 @@ class AbilityFactoryTurnPhase:
         )
 
     @staticmethod
+    def WhenPlayerEndPhase(ability_type: 'AbilityType',
+                            operation: OperationType[Message.WhenPlayerEndPhase],
+                            *,
+                            conditions: ConditionsType[Message.WhenPlayerEndPhase]=[]
+                            ) -> 'Ability':
+        # AJOUT (pack wave) : distinct de `WhenPlayerPhaseEnd` ci-dessus, qui
+        # filtre le message GENERAL `Message.WhenPhaseEnd` (une fois, quand
+        # TOUTE la phase joueur — tous les joueurs confondus — se termine).
+        # Celui-ci ecoute `Message.WhenPlayerEndPhase`, envoye UNE FOIS PAR
+        # JOUEUR a la fin de SON PROPRE tour (`PlayerPhase.EndPhase`,
+        # `player_phase.py`), juste AVANT la pioche jusqu'a la taille de main
+        # (`MayDiscardHandCardsAndDrawUpToMax`). C'est ce second instant que
+        # vise « at the end of the player phase, before players draw up to
+        # their hand size » (Rising Tide area, pack wave) : le nettoyage doit
+        # arriver pour LE JOUEUR dont c'etait le tour, pas pour tout le monde
+        # a la fin de la phase entiere.
+        def check_which_player(effect: 'Effect', message: 'Message.WhenPlayerEndPhase') -> bool:
+            return effect.initiator == message.to_player
+
+        return Ability(
+            ability_type,
+            Message.WhenPlayerEndPhase,
+            [
+                check_which_player,
+                *conditions
+            ],
+            operation
+        )
+
+    @staticmethod
     def WhenVillainPhaseEnd(ability_type: 'AbilityType',
                             operation: OperationType[Message.WhenPhaseEnd],
                             *,

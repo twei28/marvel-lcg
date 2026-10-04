@@ -32,6 +32,14 @@ export type EtatDesAnimations = {
   sceneCentrale: boolean
   /** Le moteur est dans une des quatre phases du méchant. */
   phaseMechantEnCours: boolean
+  /**
+   * La mise en place automatique (mains distribuées, decks posés, manigance
+   * et première carte de rencontre révélées) n'est le geste de PERSONNE :
+   * personne n'a demandé chaque carte une par une. Constat de l'utilisateur,
+   * 24/09/2026 : « ça fait beaucoup de bruit pour rien ». Seule la manigance
+   * principale garde sa présentation (CoucheRevelation, `seulementManigance`).
+   */
+  enMiseEnPlace: boolean
 }
 
 /**
@@ -43,5 +51,32 @@ export type EtatDesAnimations = {
  */
 export function animationsDuPlateau(etat: EtatDesAnimations): boolean {
   if (!etat.reglage) return false
+  if (etat.enMiseEnPlace) return false
   return !(etat.sceneCentrale && etat.phaseMechantEnCours)
+}
+
+/**
+ * Une resynchronisation massive (Undo, reconnexion, remelange...) a-t-elle
+ * eu lieu entre ces deux rendus ?
+ *
+ * ⚠ « GameSession.Undo » (Fusion/marvel-lcg-src/src/game/game_run/
+ * game_session.py) ne defait pas UN geste : il relance toute la partie et
+ * rejoue l'historique depuis zero jusqu'a un point de reprise. Le client
+ * recoit alors un etat entierement neuf, un `render_id` reparti bien plus
+ * bas que celui deja affiche — indiscernable d'une vraie nouveaute, donc
+ * toutes les animations d'entree (statut, revelation, retournement de
+ * carte...) semblaient rejouer d'un coup. Constat de l'utilisateur,
+ * 28/09/2026 : « le reclaquement de cartes... ça perturbe les gens ».
+ *
+ * Seule une BAISSE du `render_id` compte : une hausse, meme un grand saut
+ * (le moteur avance par dizaines a chaque mise a jour), reste un rendu
+ * normal — c'est deja la regle que `CoucheAnimations.tsx` applique aux
+ * cartes de la main (MAX_VOLS), transposee ici a tout le plateau.
+ */
+export function estResynchronisation(
+  renderIdActuel: number | undefined,
+  renderIdPrecedent: number | undefined
+): boolean {
+  if (renderIdActuel === undefined || renderIdPrecedent === undefined) return false
+  return renderIdActuel < renderIdPrecedent
 }

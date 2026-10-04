@@ -45,6 +45,12 @@
     touch-action: manipulation;
   }
 
+  /* L'encoche se DEPLACE au doigt (appui long, Encoche.tsx) : `manipulation`
+     laisserait le navigateur annuler le geste en le prenant pour un defilement. */
+  html[data-ui-version='v2'] body.mode-plateau-portrait .encoche {
+    touch-action: none;
+  }
+
   html[data-ui-version='v2'] body.mode-plateau-portrait :is(
     button,
     [role='button'],

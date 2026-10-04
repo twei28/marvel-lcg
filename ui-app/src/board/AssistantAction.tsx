@@ -7,8 +7,10 @@ import { avecIcones, coutEnIcones } from './icones-ressources'
 import { t } from './langue'
 import { consigne, phraseEtat } from './phrase-etat'
 import { usePlacement } from './placement/usePlacement'
+import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import type { WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
+import './boutons-bd.css'
 
 type AssistantActionProps = {
   demande?: Demande
@@ -27,6 +29,14 @@ type AssistantActionProps = {
   designEssai?: boolean
   /** Le nom (français si connu) de la carte qui porte l'option, comme dans la barre d'action. */
   nomPorteur?: (bindId: number) => string | undefined
+  /** Taille de main du joueur interroge, pour la consigne de fin de tour. */
+  tailleMain?: number
+  /**
+   * La cible se choisit DANS la scene du deroule (CiblesScene, qui porte deja
+   * Annuler / Confirmer) : l'assistant se tait, sauf pour payer un cout, que
+   * la scene ne sait pas faire. Capture du 04/10/2026 (Hulk contre Klaw).
+   */
+  choixDansLaScene?: boolean
 }
 
 function nomCarte(id: number, cartesParId: Map<number, WorldCard>): string {
@@ -101,8 +111,16 @@ export function AssistantAction({
   affichage = 'detailed',
   designEssai = false,
   nomPorteur,
+  tailleMain,
+  choixDansLaScene = false,
 }: AssistantActionProps) {
-  const utile = Boolean(connecte && aNous && demande && interaction.option)
+  const utile = Boolean(
+    connecte &&
+      aNous &&
+      demande &&
+      interaction.option &&
+      !(choixDansLaScene && interaction.assistant.etape !== 'payment')
+  )
 
   // Les hooks se déclarent AVANT le premier retour : `actif` porte la condition,
   // pas un `return` anticipé. Les cartes à ménager sont celle qui agit et les
@@ -114,6 +132,22 @@ export function AssistantAction({
     signature,
     actif: utile,
   })
+  // Deplacement volontaire, a la poignee (le bandeau `.assistant-eyebrow`),
+  // par-dessus le placement automatique -- meme mecanisme que
+  // `DemandeCentrale`/`.dc-texte` (demande de l'utilisateur, 28/09/2026,
+  // signalement Yarro : ce panneau-ci, PAS SEULEMENT DemandeCentrale, peut
+  // recouvrir le selecteur de cibles hors table (`.plateau-selecteur`), qui ne
+  // s'esquive jamais lui-meme). Remis a zero a chaque nouvelle decision
+  // (`signature`).
+  const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signature)
+  const styleDeplace: typeof style =
+    decalage.dx !== 0 || decalage.dy !== 0
+      ? {
+          ...style,
+          left: style.left !== undefined ? `calc(${style.left} + ${decalage.dx}px)` : style.left,
+          top: style.top !== undefined ? `calc(${style.top} + ${decalage.dy}px)` : style.top,
+        }
+      : style
 
   if (!utile || !interaction.option) return null
 
@@ -136,11 +170,77 @@ export function AssistantAction({
   // le bouton repeterait le titre sans dire ce que le clic fait. Le bouton dit
   // donc le geste : garder la main, ou defausser N cartes.
   const estMulligan = interaction.option.name.toLowerCase().includes('mulligan')
+  // La fin de tour pose LA MEME question que le mulligan (moteur :
+  // `MayDiscardHandCardsAndDrawUpToMax`), avec un minimum quand la main
+  // depasse sa taille.
+  const estFinDeTour = /^end[ _]phase$/i.test(interaction.option.name)
+  const minimumDefausse = interaction.option.target_num_range[0] ?? 0
+  const cartes = (n: number) => `${n} ${n > 1 ? t('cartes') : t('carte')}`
   const libelleMulligan =
     assistant.cibleNombre === 0
-      ? t('Garder cette main')
-      : `${t('Défausser')} ${assistant.cibleNombre} ${assistant.cibleNombre > 1 ? t('cartes') : t('carte')}`
+      ? minimumDefausse > 0
+        ? `${t('Défausser')} ${cartes(minimumDefausse)}`
+        : t('Garder ma main')
+      : `${t('Défausser')} ${cartes(assistant.cibleNombre)}`
   const libelleValider = estMulligan ? libelleMulligan : nomActionEssai || t('Confirmer')
+
+  // LE MULLIGAN A SON PROPRE PANNEAU, dans tous les modes d'affichage.
+  // Capture du 03/10/2026 : « Résoudre les mulligans », « Choisis les cibles
+  // 0/6 », « Annuler » et « Confirmer » ne disaient pas que c'est FACULTATIF.
+  // Choix de l'utilisateur, questions une a une : titre « Mulligan », consigne
+  // « Sélectionne les cartes que tu veux changer (facultatif) », un seul bouton
+  // (« Garder ma main » / « Défausser N cartes ») et PAS d'« Annuler » : il ne
+  // faisait que fermer le panneau, qui revenait, et se lisait comme un refus.
+  //
+  // FIN DE TOUR, meme panneau (demande de l'utilisateur, 04/10/2026 : « ce
+  // n'est pas clair qu'on peut défausser des cartes en fin de tour »). La
+  // taille de main est celle du heros, jamais un 5 fixe ; un moteur qui ne
+  // l'envoie pas encore donne une consigne sans chiffre.
+  if (estMulligan || estFinDeTour) {
+    const n = assistant.cibleNombre
+    const taille = tailleMain && tailleMain > 0 ? tailleMain : undefined
+    const repioche = taille ? ` ${t('Tu repioches jusqu’à')} ${taille}.` : ''
+    const consigneMulligan =
+      n < minimumDefausse
+        ? `${t('Défausse au moins')} ${cartes(minimumDefausse - n)}${
+            taille ? ` : ${t('ta main est limitée à')} ${taille}.` : '.'
+          }`
+        : n > 0
+          ? `${n} ${n > 1 ? t('cartes sélectionnées') : t('carte sélectionnée')}`
+          : estFinDeTour
+            ? `${t('Sélectionne les cartes que tu veux défausser (facultatif).')}${repioche}`
+            : t('Sélectionne les cartes que tu veux changer (facultatif)')
+    return (
+      <aside
+        ref={panneau}
+        className={`assistant-action mode-simple est-mulligan etape-${assistant.etape}`}
+        style={styleDeplace}
+        aria-live="polite"
+      >
+        <span
+          className="assistant-simple-action poignee-glisser"
+          onPointerDown={gestesGlisser.onPointerDown}
+          onPointerMove={gestesGlisser.onPointerMove}
+          onPointerUp={gestesGlisser.onPointerUp}
+          onPointerCancel={gestesGlisser.onPointerCancel}
+        >
+          {estFinDeTour ? t('Fin de tour') : t('Mulligan')}
+        </span>
+        <span className="assistant-simple-indication">{consigneMulligan}</span>
+        {assistant.indice ? <span className="assistant-indice">{assistant.indice}</span> : null}
+        <div className="assistant-boutons">
+          <button
+            type="button"
+            className="assistant-confirmer"
+            disabled={!interaction.prete}
+            onClick={interaction.valider}
+          >
+            {libelleMulligan}
+          </button>
+        </div>
+      </aside>
+    )
+  }
 
   if (designEssai) {
     const phrase = phraseEtat(assistant, interaction.prete)
@@ -148,11 +248,19 @@ export function AssistantAction({
       <aside
         ref={panneau}
         className={`assistant-action design-essai etape-${assistant.etape} ${classeTonaliteAction(nomAction)}`}
-        style={style}
+        style={styleDeplace}
         aria-live="polite"
       >
-        <span className="assistant-eyebrow">{nomDuPorteur ?? nomAction}</span>
-        <strong>{consigne(assistant, nomAction)}</strong>
+        <div
+          className="poignee-glisser"
+          onPointerDown={gestesGlisser.onPointerDown}
+          onPointerMove={gestesGlisser.onPointerMove}
+          onPointerUp={gestesGlisser.onPointerUp}
+          onPointerCancel={gestesGlisser.onPointerCancel}
+        >
+          <span className="assistant-eyebrow">{nomDuPorteur ?? nomAction}</span>
+          <strong>{consigne(assistant, nomAction)}</strong>
+        </div>
         <div className="assistant-ligne-cout">
           {assistant.etape === 'payment' && assistant.coutSlots.length > 0 ? (
             <span className="assistant-cout" aria-label={t('Coût à payer')}>
@@ -198,10 +306,18 @@ export function AssistantAction({
       <aside
         ref={panneau}
         className={`assistant-action mode-simple etape-${assistant.etape} ${classeTonaliteAction(nomAction)}`}
-        style={style}
+        style={styleDeplace}
         aria-live="polite"
       >
-        <span className="assistant-simple-action">{nomAction}</span>
+        <span
+          className="assistant-simple-action poignee-glisser"
+          onPointerDown={gestesGlisser.onPointerDown}
+          onPointerMove={gestesGlisser.onPointerMove}
+          onPointerUp={gestesGlisser.onPointerUp}
+          onPointerCancel={gestesGlisser.onPointerCancel}
+        >
+          {nomAction}
+        </span>
         {indication ? <span className="assistant-simple-indication">{indication}</span> : null}
         {assistant.indice ? <span className="assistant-indice">{assistant.indice}</span> : null}
         {montrerResume && action ? <span className="assistant-simple-resume">{action}</span> : null}
@@ -223,11 +339,19 @@ export function AssistantAction({
     <aside
       ref={panneau}
       className={`assistant-action etape-${assistant.etape}`}
-      style={style}
+      style={styleDeplace}
       aria-live="polite"
     >
-      <span className="assistant-eyebrow">{nomLisible(interaction.option)}</span>
-      <strong>{titre || assistant.titre}</strong>
+      <div
+        className="poignee-glisser"
+        onPointerDown={gestesGlisser.onPointerDown}
+        onPointerMove={gestesGlisser.onPointerMove}
+        onPointerUp={gestesGlisser.onPointerUp}
+        onPointerCancel={gestesGlisser.onPointerCancel}
+      >
+        <span className="assistant-eyebrow">{nomLisible(interaction.option)}</span>
+        <strong>{titre || assistant.titre}</strong>
+      </div>
       {assistant.detail ? <span className="assistant-detail">{assistant.detail}</span> : null}
       {assistant.indice ? <span className="assistant-indice">{assistant.indice}</span> : null}
 

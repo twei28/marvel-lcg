@@ -68,6 +68,32 @@ class DeckTypeFlags:
         is_like_in_hand = True
         is_face_up = True
 
+    # AJOUT (pack wave) : la Rising Tide area de Wave/Pearl Pangan, zone
+    # hors-jeu propre au joueur ou les cartes arrivent face visible et se
+    # retournent face cachee (ou l'inverse) SUR PLACE, sans en sortir.
+    #
+    # ⚠ `is_face_up = True` NE FIGE RIEN : ce drapeau ne pilote que
+    # `MoveTo` (`Card.MoveToArea`, `card.py` ~L405), qui retourne face
+    # visible une carte qui ARRIVE dans une zone ainsi marquee et qui ne
+    # l'est pas deja. Une fois dans la zone, chaque carte garde son PROPRE
+    # `state.is_face_up` (`Card.IsFaceUp`), et `Card.Flip()` le bascule
+    # sans jamais deplacer la carte. C'est exactement le mecanisme voulu :
+    # toute carte qui ARRIVE (Ocean's Fury, Tide Wall, Champion Swimmer)
+    # arrive face visible sans que chaque capacite ait a le redemander, et
+    # les capacites qui retournent une carte DEJA presente (Sea Hunter,
+    # Crashing Wave, Instinctive Flow, Marine Patrol, Pearl's Lolo, Wave's
+    # Swords) le font par un simple `Flip()`, jamais un deplacement.
+    #
+    # ⚠ NI `is_like_in_hand` NI `is_in_hand` : l'insert du pack est explicite,
+    # « the Rising Tide area is an area, rather than a deck », et ses cartes
+    # « cannot be affected by effects that do not explicitly target » la
+    # zone. Le drapeau `is_like_in_hand` etendrait a tort les effets « comme
+    # si en main » (paiement, ciblage generique) que la carte imprimee
+    # refuse explicitement.
+    class RisingTideArea(Base):
+        is_out_of_play = True
+        is_face_up = True
+
     class EngagedEnemiesArea(Base):
         is_in_play = True
         is_engaged = True
@@ -207,6 +233,7 @@ class DeckType(Enum):
     HeroArea                = 17
     ResourcesArea           = 18
     ReserveArea             = 19 # CORRECTIF (pack brawn)
+    RisingTideArea          = 24 # AJOUT (pack wave)
 
     AdditionalDeck          = 20
     AdditionalDiscardPile   = 21
@@ -246,6 +273,7 @@ class DeckType(Enum):
                 DeckType.HeroArea:                  DeckTypeFlags.HeroArea,
                 DeckType.ResourcesArea:             DeckTypeFlags.ResourcesArea,
                 DeckType.ReserveArea:               DeckTypeFlags.ReserveArea, # CORRECTIF (pack brawn)
+                DeckType.RisingTideArea:             DeckTypeFlags.RisingTideArea, # AJOUT (pack wave)
                 DeckType.AdditionalDeck:            DeckTypeFlags.AdditionalDeck,
                 DeckType.AdditionalDiscardPile:     DeckTypeFlags.AdditionalDiscardPile,
                 DeckType.AsideDeck:                 DeckTypeFlags.AsideDeck,

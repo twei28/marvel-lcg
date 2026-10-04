@@ -9,6 +9,12 @@ def GetAbilities() -> Sequence['Ability']:
         labors = [f for f in faces if f.HasTrait('LABOR')]
         Faces.FlipAllTo(gifts + labors, False, effect)
         Faces.MoveAllTo(labors + gifts, initiator.additional_deck, effect)
+        # Encart du pack : « shuffle the three gift cards together to form the
+        # gift deck and the three labor cards to form the labor deck ». Les deux
+        # decks partagent le deck annexe et leur dessus se cherche PAR TRAIT
+        # (`GetAdditionalDeckTop`) : melanger le tout melange chacun des deux.
+        # Oubli signale en jeu le 04/10/2026 (« toujours dans le meme ordre »).
+        initiator.additional_deck.Shuffle(effect)
     def new_labors(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         this = effect.this.CastTo(AlterEgo)
         Unused(this)

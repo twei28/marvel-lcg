@@ -96,13 +96,19 @@ class WorldAction:
         # We need this for "23032"
         from game.effect.rule import GameRule
         from game.operate.faces import Faces
+        from game.message import Message
 
         world = self.GetWorld()
 
         for player in self.const_players:
             faces = player.area_resources.GetAll(False)
             if faces:
-                Faces.DiscardAll(faces, GameRule(world.GetFirstPlayer().GetIdentity()))
+                discarded = Faces.DiscardAll(faces, GameRule(world.GetFirstPlayer().GetIdentity()))
+                # L'ordre de paiement est l'ordre des clics : la derniere carte
+                # payee finit au-dessus de la defausse (Neena Thurman echange
+                # avec cette carte). Le journal le dit des qu'il y a un ordre.
+                if len(discarded) >= 2:
+                    Message.AfterCardsPaidOrder_Text(discarded)
 
     def UpdatePlayersOrder(self, by_effect: 'Effect'):
         from game.message import Message

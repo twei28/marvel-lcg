@@ -168,7 +168,7 @@ class CanAttack(CardFace):
             is_base_attack, by_effect,
         )
 
-        def cloturer_annonce_non_resolue() -> None:
+        def cloturer_annonce_non_resolue(par: 'Effect|None' = None) -> None:
             """L'attaque annoncee n'a pas eu lieu : on ferme l'intention.
 
             Sans cette cloture, le cartouche resterait sur « Klaw va attaquer
@@ -179,13 +179,13 @@ class CanAttack(CardFace):
             if not annonce_id:
                 return
             identifiant, annonce_id = annonce_id, 0
-            CanAttack.AnnulerActivation(this, annonce_cible, 'attaque', identifiant, by_effect)
+            CanAttack.AnnulerActivation(this, annonce_cible, 'attaque', identifiant, by_effect, par)
 
         # Q: If Ebony Maw is prevented from attacking or scheming by a status card, he removes the status gard instead of resolving his activation.
         would_atk_message = Message.WhenUnitWouldAttack(this, units, by_effect, property=property)
         would_atk_message.Send()
         if would_atk_message.is_be_instead:
-            cloturer_annonce_non_resolue()
+            cloturer_annonce_non_resolue(would_atk_message.be_instead_by)
             return None
 
         if Enemy.IsType(this):
@@ -496,6 +496,7 @@ class CanAttack(CardFace):
                     boost_apports, defense, calculated_damage, took_damage,
                     by_effect, activation_id=annonce_id,
                     total_avant_defense=total_avant_defense,
+                    boost_cards=boost_cards,
                 )
                 # L'intention est CONSOMMEE, mais SEULEMENT si un fait resolu a
                 # vraiment pris sa place : `JournaliserActivation` a ses propres
@@ -628,7 +629,8 @@ class CanAttack(CardFace):
 
     @staticmethod
     def AnnulerActivation(auteur: 'CardFace', cible: 'CardFace|None', genre: str,
-                          activation_id: int, by_effect: 'Effect|None'=None) -> None:
+                          activation_id: int, by_effect: 'Effect|None'=None,
+                          annule_par: 'Effect|None'=None) -> None:
         """Clot une intention qui n'a pas eu de resolution.
 
         Meme identifiant que l'annonce, donc le fait la REMPLACE : le
@@ -655,9 +657,42 @@ class CanAttack(CardFace):
                 'auteur_id': auteur.card.object_id,
                 'cible': cible.name,
                 'cible_id': cible.card.object_id,
+                # « → Annulée par X » (04/10/2026) : la carte dont l'effet a
+                # remplace l'activation (Sonne, Desoriente, une carte de joueur).
+                **CanAttack._SourceDe(annule_par, 'annule_par'),
             })
         except Exception:
             pass
+
+    @staticmethod
+    def _BoostsPublies(boost_apports: 'List[Tuple[str, int, int]]',
+                       boost_cards: 'List[CardFace]|None') -> 'List[Dict[str, Any]]':
+        """Les boosts du fait, et `etoile` sur ceux qui portent une capacite
+        Boost (★) : le cartouche lui donne sa ligne sous l'attaque (04/10/2026)."""
+        from game.ability import AbilityType
+        etoiles: 'Set[int]' = set()
+        for face in boost_cards or []:
+            try:
+                if face.effect.Find(type=AbilityType.Boost):
+                    etoiles.add(face.card.object_id)
+            except Exception:
+                pass
+        return [
+            {'nom': nom, 'id': object_id, 'apport': valeur,
+             **({'etoile': True} if object_id in etoiles else {})}
+            for nom, object_id, valeur in boost_apports
+        ]
+
+    @staticmethod
+    def _SourceDe(effet: 'Effect|None', cle: str) -> 'Dict[str, Any]':
+        """`{cle: nom, cle_id: identifiant}` de la carte source d'un effet, ou {}."""
+        try:
+            source = effet.this if effet is not None else None
+            if source is None:
+                return {}
+            return {cle: source.name, f'{cle}_id': source.card.object_id}
+        except Exception:
+            return {}
 
     @staticmethod
     def JournaliserActivation(attaquant: 'CardFace', cible: 'CardFace', is_base_attack: bool,
@@ -665,7 +700,8 @@ class CanAttack(CardFace):
                               defense: int, inflige: int, subi: int,
                               by_effect: 'Effect|None'=None,
                               activation_id: int=0,
-                              total_avant_defense: 'int|None'=None) -> bool:
+                              total_avant_defense: 'int|None'=None,
+                              boost_cards: 'List[CardFace]|None'=None) -> bool:
         """Inscrit une attaque D'ENNEMI au journal du bilan de phase.
 
         On ne journalise que les ennemis : ce panneau raconte la phase du
@@ -735,10 +771,7 @@ class CanAttack(CardFace):
             # n'ont pas de PV (une carte retournee en cours d'attaque) : le
             # bilan se passe du reste plutot que de faire tomber la resolution.
             'restant': getattr(cible, 'health', None),
-            'boosts': [
-                {'nom': nom, 'id': object_id, 'apport': valeur}
-                for nom, object_id, valeur in boost_apports
-            ],
+            'boosts': CanAttack._BoostsPublies(boost_apports, boost_cards),
         })
         return True
 
@@ -746,7 +779,8 @@ class CanAttack(CardFace):
     def JournaliserManigance(auteur: 'CardFace', manigance: 'CardFace', is_base_scheme: bool,
                              boost_apports: 'List[Tuple[str, int, int]]', pose: int,
                              by_effect: 'Effect|None'=None,
-                             activation_id: int=0) -> bool:
+                             activation_id: int=0,
+                             boost_cards: 'List[CardFace]|None'=None) -> bool:
         """Inscrit une MANIGANCE d'ennemi au meme journal que ses attaques.
 
         Elle vit ici, a cote de son attaque, parce que les deux forment une
@@ -792,10 +826,7 @@ class CanAttack(CardFace):
             # Menace APRES la pose. Le seuil (« /6 ») n'est pas ici : le client
             # le lit sur la carte elle-meme, ou il figure deja.
             'restant': getattr(manigance, 'threat', None),
-            'boosts': [
-                {'nom': nom, 'id': object_id, 'apport': valeur}
-                for nom, object_id, valeur in boost_apports
-            ],
+            'boosts': CanAttack._BoostsPublies(boost_apports, boost_cards),
         })
         return True
 

@@ -372,6 +372,7 @@ Carte terminée : OUI.
 - [x] Étape 7 bis : NON.
 - [x] Étape 8 bis : NON.
 - [x] Homonyme : RESKIN de `62034`, même texte mais AGRESSIVITÉ au lieu de Justice, et SANS le trait ATTACK imprimé — elle échappe donc au malus d'Arms détruite, et c'est l'image qui tranche.
+  ⚠ Correction du 03/10/2026 : `62034` est AUSSI en Agressivité (scan `assets/pics/62034.jpg` et marvelcdb). Le « Justice » venait d'une erreur de `data/cards.json`, corrigée ce jour. Seule différence restante : le trait ATTACK.
 Carte terminée : OUI.
 
 ### st021 : Reboot *(extra, hors set du héros)*

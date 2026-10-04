@@ -86,6 +86,20 @@ class PlayerPhase:
         message = Message.WhenPlayerEndPhase(player)
         message.Send()
 
+        # AJOUT (pack wave, 22/9/2026) : « At the end of the player phase,
+        # before players draw up to their hand size, place all cards in the
+        # Rising Tide area in their owner's discard pile. » Regle UNIVERSELLE
+        # de la zone (comme le plafond de la Reserve, `EnforceReserveLimit`),
+        # pas une capacite de carte -- appliquee a CHAQUE joueur (la zone
+        # existe pour tous, `player.rising_tide`, mais ne se remplit que par
+        # des effets qui la ciblent explicitement : un joueur sans carte du
+        # pack `wave` y trouve toujours une zone vide, et cette purge ne fait
+        # alors rien). Place AVANT `MayDiscardHandCardsAndDrawUpToMax`,
+        # exactement comme l'insert l'exige.
+        cartes_rising_tide = player.rising_tide.GetAll(False)
+        if cartes_rising_tide:
+            Faces.DiscardAll(cartes_rising_tide, EndPhase(player))
+
         self.MayDiscardHandCardsAndDrawUpToMax("End Phase", message)
 
         if player.is_eliminated:
@@ -106,6 +120,7 @@ class PlayerPhase:
 
     def BeginRound(self) -> None:
         player = self.player
+        player.has_finished_turn_this_round = False
         player.stat.OnBeginRound()
 
     def EndRound(self) -> None:

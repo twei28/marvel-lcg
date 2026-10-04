@@ -83,18 +83,18 @@ class CanScheme(CardFace):
             is_base_scheme, by_effect,
         )
 
-        def cloturer_annonce_non_resolue() -> None:
+        def cloturer_annonce_non_resolue(par: 'Effect|None' = None) -> None:
             """La manigance annoncee n'a pas eu lieu : on ferme l'intention."""
             nonlocal annonce_id
             if not annonce_id:
                 return
             identifiant, annonce_id = annonce_id, 0
-            CanAttack.AnnulerActivation(this, annonce_cible, 'manigance', identifiant, by_effect)
+            CanAttack.AnnulerActivation(this, annonce_cible, 'manigance', identifiant, by_effect, par)
 
         would_sch_message = Message.WhenUnitWouldScheme(this, by_effect, property=property)
         would_sch_message.Send()
         if would_sch_message.is_be_instead:
-            cloturer_annonce_non_resolue()
+            cloturer_annonce_non_resolue(would_sch_message.be_instead_by)
             return None
 
         if Enemy.IsType(this):
@@ -168,7 +168,7 @@ class CanScheme(CardFace):
         try:
             journalise = CanAttack.JournaliserManigance(
                 this, target_scheme, is_base_scheme, boost_apports, value, by_effect,
-                activation_id=annonce_id,
+                activation_id=annonce_id, boost_cards=boost_cards,
             )
             # L'intention n'est CONSOMMEE que si un fait resolu a vraiment pris
             # sa place : `JournaliserManigance` a ses propres gardes et sort

@@ -25,3 +25,8 @@ class CardDescriptor:
     crc                 : int
     is_new              : bool
     is_action           : bool
+    # Les BONUS d'ATQ et de DEF, chacun avec la carte qui le donne :
+    # {"ATK": [[nom, id, valeur], ...], "DEF": [...]} (04/10/2026, boutons de
+    # defense « Ne pas défendre (ATQ 2 + 1 Charge + 1 carte boost) »). La valeur
+    # imprimee de la carte elle-meme n'y figure pas.
+    bonus               : Dict[str, List[List[Any]]] = field(default_factory=dict)

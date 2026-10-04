@@ -35,6 +35,9 @@ export type ContexteRapport = {
   /** Erreurs console relevées, de la plus ancienne à la plus récente. */
   erreurs?: string[]
   url?: string
+  /** Ce que le navigateur a réellement posé pour les piles du joueur
+   *  (`sonde-affichage.ts`). */
+  affichage?: string[]
 }
 
 export type CarteBug = {
@@ -117,6 +120,8 @@ export type ContexteBug = {
   fin?: string
   erreurs: string[]
   url?: string
+  /** Constat d'affichage des piles du joueur : voir `sonde-affichage.ts`. */
+  affichage?: string[]
   /**
    * La TRACE (tâche 2) : au moins une intervention manuelle a eu lieu au
    * cours de cette partie, posée une fois pour toutes et jamais éteinte.
@@ -379,6 +384,7 @@ export function construireRapport(
       fin: monde.game_over ? (monde.game_over_reason ?? 'partie terminée') : undefined,
       erreurs: contexte.erreurs ?? [],
       url: contexte.url,
+      affichage: contexte.affichage,
       corrigeeALaMain: monde.corrigee_a_la_main === true,
     },
     demande: demande
@@ -491,6 +497,10 @@ export function rapportEnTexte(rapport: RapportBug): string {
   if (c.erreurs.length > 0) {
     lignes.push(`Erreurs console (${c.erreurs.length}) :`)
     for (const erreur of c.erreurs) lignes.push(`  ${erreur}`)
+  }
+  if (c.affichage && c.affichage.length > 0) {
+    lignes.push('Affichage des piles du joueur :')
+    for (const ligne of c.affichage) lignes.push(`  ${ligne}`)
   }
 
   lignes.push('')

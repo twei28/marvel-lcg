@@ -18,9 +18,16 @@ import { useEffect, useState } from 'react'
 // chargée. Le déploiement recalcule cette empreinte depuis le contenu
 // (`ui-app/deployer.sh`) : elle change si et seulement si le code a changé.
 
-/** Toutes les cinq minutes : un déploiement n'est pas une urgence, et on vient
- *  justement de réduire le bavardage du client avec le serveur. */
-export const PERIODE_MAJ_MS = 300_000
+/** Toutes les minutes.
+ *
+ *  ⚠ ETAIT A CINQ MINUTES, RACCOURCI LE 25/09/2026 (demande de l'utilisateur,
+ *  cas vecu). Un deploiement pendant une session de developpement OU l'un
+ *  joue et l'autre code en meme temps n'a rien d'exceptionnel : l'ecart de
+ *  cinq minutes a laisse le bandeau muet le temps d'un round entier, avec le
+ *  deck du heros introuvable a l'ecran (correctif deja livre, simplement pas
+ *  encore vu par cet onglet). Une minute reste un ecart raisonnable devant
+ *  un `fetch` unique et tres leger. */
+export const PERIODE_MAJ_MS = 60_000
 
 /** L'empreinte du script principal citée par un HTML, ou '' si introuvable.
  *

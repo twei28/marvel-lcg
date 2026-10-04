@@ -61,6 +61,9 @@ export type GroupeDePile = { cle: string; titre: string; cartes: ScanCardProps[]
  */
 export const CLE_PILE_ENGAGES = 'terrain-combat-engages'
 
+/** Trait des cartes du deck Weather de Storm (voir `meteoEnJeu`). */
+const TRAIT_METEO = 't_WEATHER'
+
 export type UniteAffichee = {
   cle: string
   carte: ScanCardProps
@@ -118,6 +121,10 @@ export type CleEmplacement =
   | 'piles-joueur'
   | 'annexes'
   | 'reserve'
+  // AJOUT (pack wave) : la Rising Tide area, meme case que 'deck-special' et
+  // 'reserve' (voir Board.tsx et board.css, "colonne-terrain-soutien") --
+  // aucun heros n'a deux de ces trois zones personnelles a la fois.
+  | 'rising-tide'
   | 'main'
 
 export type EmplacementAffiche = {
@@ -717,10 +724,22 @@ export function construirePlateau(world: World, options: Options): Plateau {
   const deckSpecialConsultable =
     cartesDeckSpecial.length > 0 &&
     cartesDeckSpecial.every((carte) => isVisibleFor(carte, options.playerId))
+  // METEO (Storm, 01/10/2026) : la carte Weather EN JEU appartient a la case
+  // Weather, pas aux soutiens, et les cartes NON UTILISEES du deck se rangent
+  // SOUS elle (« les cartes climat non utilisees doivent aller sous celle qui
+  // est en cours d'utilisation »). Limite volontairement au trait Weather : les
+  // autres decks speciaux gardent leur disposition.
+  const estMeteo = (carte: unknown): boolean =>
+    estUneCarte(carte) && Boolean((carte.traits ?? {})[TRAIT_METEO])
+  const meteoEnJeu = (notre?.supports ?? []).filter(estMeteo)
+  const soutiensHorsMeteo = (notre?.supports ?? []).filter((carte) => !estMeteo(carte))
+  const deckEstMeteo = cartesDeckSpecial.some(estMeteo)
+
   // Nom du deck special (ex. « Invocation »), pour son etiquette et sa zone.
   const nomSpecial =
     nomDeckSpecial(notre?.additional_deck) ??
     nomDeckSpecial(notre?.additional_discard_pile) ??
+    nomDeckSpecial(meteoEnJeu) ??
     t('Deck spécial')
 
   // Au PLURIEL, une entree de ces deux zones est un deck entier, pas une carte.
@@ -822,12 +841,26 @@ export function construirePlateau(world: World, options: Options): Plateau {
     // Le DECK SPECIAL du heros (Invocation...) a sa PROPRE zone, a gauche : deck +
     // sa defausse cote a cote. Le heros et ses soutiens sont decales a sa droite.
     emplacement('deck-special', nomSpecial, [
+      // La meteo EN JEU, avec le reste de son deck glisse DERRIERE elle comme
+      // une pile d'ameliorations (voir `meteoEnJeu`).
+      posees(meteoEnJeu, rendu).map((unite, index) =>
+        index === 0 && deckEstMeteo
+          ? {
+              ...unite,
+              attachees: [
+                ...unite.attachees,
+                ...cartes(notre?.additional_deck, rendu).map((carte) => toScanCard(carte, rendu.ctx)),
+              ],
+            }
+          : unite
+      ),
       piles(
         'soutien',
         [
           {
             cle: 'deck',
-            cartes: notre?.additional_deck,
+            // Sous la meteo en jeu quand il y en a une : pas deux fois a l'ecran.
+            cartes: deckEstMeteo && meteoEnJeu.length > 0 ? undefined : notre?.additional_deck,
             deckSpecial: true,
             titre: nomSpecial,
             regardable: deckSpecialConsultable,
@@ -864,6 +897,24 @@ export function construirePlateau(world: World, options: Options): Plateau {
       }),
     ]),
 
+    // AJOUT (pack wave) : la Rising Tide area, meme case que 'deck-special' /
+    // 'reserve' juste au-dessus. MEME PRINCIPE (Board.tsx exclut ces trois
+    // clés de la case commune) : aucun heros n'a deux de ces zones a la fois,
+    // l'emplacement vide disparait tout seul.
+    //
+    // ⚠ PAS `dansLaMain: true`, a la difference de la Reserve : la Reserve
+    // porte `is_like_in_hand` (ses cartes sont visibles au proprietaire comme
+    // si elles etaient en main), la Rising Tide area NON -- l'insert du pack
+    // est explicite (« an area, rather than a deck »). Une carte face cachee
+    // que le moteur rendrait visible doit donc garder l'encadre en
+    // pointilles (`peeking`, card-model.ts) au lieu d'etre traitee comme une
+    // carte de main ordinaire.
+    emplacement('rising-tide', t('Ta marée montante'), [
+      posees(notre?.rising_tide, rendu, {
+        collectionRessources: notreCollection,
+      }),
+    ]),
+
     // Chaque groupe est appairee a son proprietaire au moment ou elle est
     // construite (pas dans un tableau separe recompte a la main) : si un jour
     // un joueur gagne ou perd un groupe ici, le proprietaire suit sans qu'on
@@ -871,7 +922,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
     ((): EmplacementAffiche | undefined => {
       const groupesEtProprietaires: Array<[UniteAffichee[], number]> = [
         [posees(notre?.area_hero, rendu), options.playerId],
-        [posees(notre?.supports, rendu), options.playerId],
+        [posees(soutiensHorsMeteo, rendu), options.playerId],
         [posees(notre?.obligations_area, rendu), options.playerId],
         // La carte en cours de resolution se pose aupres de SON heros, le
         // temps que son texte s'applique : c'est ce qu'on fait sur une vraie

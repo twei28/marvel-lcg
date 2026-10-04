@@ -80,6 +80,46 @@
     text-overflow: ellipsis;
   }
 
+  /* Poignee de deplacement (useGlisserPanneau) : classe posee EN PLUS de
+     l'habillage propre a chaque panneau (`.plateau-eyebrow`, `.ma-entete`...),
+     jamais a la place -- demande de l'utilisateur, 28/09/2026 (« toutes les
+     fenetres, tous les panneaux »). Ne pas la poser sur une zone qui porte
+     deja un bouton cliquable : le seuil de 6 px protege le clic, mais un
+     texte qui ne fait QUE demarrer un glisser reste le plus sur. */
+  .poignee-glisser {
+    cursor: grab;
+    touch-action: none;
+    /* ⚠ CERTAINS PANNEAUX (`.assistant-action`, `.demande-centrale`,
+       `.evenement-centrale`) sont `pointer-events: none` a la racine, pour
+       laisser les clics traverser vers la table -- seuls leurs boutons
+       reprenaient la main jusqu'ici (`.assistant-boutons { pointer-events:
+       auto }`). La poignee en heritait donc `none` et n'a JAMAIS repondu a un
+       vrai clic malgre des tests qui la disaient fonctionnelle : ces tests
+       appelaient le gestionnaire JS directement (`dispatchEvent`), ce qui
+       contourne le calcul reel du navigateur. Trouve seulement le 28/09/2026,
+       via `elementFromPoint`, apres un signalement de l'utilisateur. */
+    pointer-events: auto;
+  }
+
+  /* Repere visuel de la poignee (demande de l'utilisateur, 28/09/2026 : « il
+     faudrait indiquer dans les cases ou on peut cliquer pour drag »). Un
+     `cursor: grab` ne se voit qu'au survol -- inutile au doigt, et personne ne
+     passe la souris partout pour verifier. Le grelot suit le texte, jamais en
+     position absolue : les poignees sont posees sur des elements de nature
+     tres differente (span, div, header, h2), et un positionnement absolu se
+     serait comporte differemment sur chacun. */
+  .poignee-glisser::after {
+    content: ' \22EE\22EE';
+    margin-left: 4px;
+    opacity: 0.5;
+    font-size: 0.85em;
+    letter-spacing: -2px;
+  }
+
+  .poignee-glisser:active {
+    cursor: grabbing;
+  }
+
   .plateau-compte {
     margin-left: auto;
     flex: 0 0 auto;
@@ -180,7 +220,9 @@
        dictée par l'utilisateur : « le deck du méchant sur la première, le deck
        du héros sur la troisième, et la pile avec le reste c'est la 4e ligne ».
        Les autres piles n'ont plus qu'UNE rangée : au-delà de deux piles elles
-       passent à la ligne et grandissent vers le haut (align-self: end). */
+       passent à la ligne, et au-delà de ce que la rangée peut tenir, la zone
+       défile plutôt que d'empiéter sur celle du deck du héros au-dessus
+       (`.zone-annexes`, 23/09/2026 : `height: 100%` + `overflow-y: auto`). */
     grid-template-areas:
       "piles-rencontre rencontre       complot-principal"
       ".               terrain-combat  complots-secondaires"
@@ -1081,6 +1123,35 @@
       0 0 0 3px rgba(0, 0, 0, 0.68),
       0 16px 34px rgba(0, 0, 0, 0.52);
     backdrop-filter: blur(8px);
+    /* Poignee de deplacement (useGlisserPanneau) : le curseur dit qu'on peut
+       la prendre. `touch-action: none` laisse le geste au JS plutot qu'au
+       defilement tactile de la page. */
+    cursor: grab;
+    touch-action: none;
+  }
+
+  /* Un seul choix : le bandeau n'a plus de texte (il recopiait le bouton),
+     il reste en fine barre de prise pour deplacer le panneau. */
+  .dc-texte.est-poignee-seule {
+    width: 64px;
+    height: 10px;
+    margin: 0 auto 4px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.22);
+    border: 0;
+    border-radius: 999px;
+    box-shadow: none;
+  }
+
+  .dc-texte.est-poignee-seule::after {
+    content: none;
+  }
+
+  /* En scene (DeroulePhase), le panneau coule dans la mise en page : pas de
+     poignee a deplacer, le curseur normal du texte suffit. */
+  .demande-centrale.est-en-scene .dc-texte {
+    cursor: default;
+    touch-action: auto;
   }
 
   /* « Jennifer Walters peut réagir » : sous la phrase du moteur, en clair. */
@@ -1292,6 +1363,19 @@
     border-radius: 7px;
   }
 
+  .af-poignee {
+    pointer-events: auto;
+    padding: 4px 12px;
+    color: #f8fafc;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-align: center;
+    background: rgba(30, 30, 30, 0.74);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 7px;
+  }
+
   .af-fermer {
     pointer-events: auto;
     width: 28px;
@@ -1311,6 +1395,15 @@
 
   .dc-pass {
     min-width: 92px;
+  }
+
+  /* Sous « Ne pas défendre » : ce que coute le refus, en petit. */
+  .dc-pass-consequence {
+    display: block;
+    margin-top: 4px;
+    color: rgba(248, 250, 252, 0.78);
+    font-size: 0.72rem;
+    text-align: center;
   }
 
   .tonalite-attack {
@@ -1350,9 +1443,12 @@
     color: var(--fond);
   }
 
+  /* Une CAPACITE : ambre, comme « jouer une carte » (decision du 04/10/2026,
+     choix assume). Elle etait mauve (`--statut`). */
   .tonalite-ability {
-    --action-bg: var(--statut);
-    --action-border: var(--statut-clair);
+    --action-bg: var(--menace);
+    --action-border: var(--menace-clair);
+    color: #14100a;
   }
 
   .tonalite-general {
@@ -1633,7 +1729,10 @@
   .assistant-action.mode-simple .assistant-simple-action {
     display: inline-grid;
     place-items: center;
-    cursor: default;
+    /* Poignee de deplacement (useGlisserPanneau) : ce mode n'a pas d'eyebrow
+       separe, le titre lui-meme sert de bandeau (signalement Yarro, 28/09/2026). */
+    cursor: grab;
+    touch-action: none;
   }
 
   .assistant-simple-indication,
@@ -1678,6 +1777,11 @@
     font-weight: 900;
     line-height: 1;
     text-transform: uppercase;
+    /* Poignee de deplacement (useGlisserPanneau), meme convention que
+       `.dc-texte` : ce panneau peut recouvrir le selecteur de cibles hors
+       table, qui ne s'esquive jamais lui-meme (signalement Yarro, 28/09/2026). */
+    cursor: grab;
+    touch-action: none;
   }
 
   .assistant-action strong {
@@ -2341,6 +2445,13 @@
     z-index: 545;
   }
 
+  /* L'ecran de fin de partie (600) porte le panneau des recompenses de
+     campagne : son agrandissement doit le depasser, sans quoi il s'ouvre
+     derriere le panneau. */
+  .carte-apercu.au-dessus-de-la-fin {
+    z-index: 605;
+  }
+
   /* Les deux largeurs de carte de l'apercu vivent ICI, sur le conteneur, et non
      sur .scan-card : les blocs de texte poses SOUS la carte (mots-cles, texte
      francais) doivent s'y caler, et ils ne peuvent pas lire une variable definie
@@ -2398,6 +2509,27 @@
   .carte-apercu.a-faces-3 {
     --largeur-face: min(272px, 21vw);
     --largeur-face-paysage: min(398px, 30vw);
+  }
+
+  /* Conan (5 faces : Conan / Thief / Barbarian / King Conan / Conan roi) est
+     le premier heros a depasser 3 faces. Un premier essai les avait retrecies
+     (meme taper que .a-faces-2/.a-faces-3) : illisibles, revenu en arriere
+     a la demande de l'utilisateur (26/09/2026). A la place : la taille de
+     depart (345px/506px, heritee de `.carte-apercu` de base, aucune des deux
+     classes ne la redefinit ici) et un RETOUR A LA LIGNE sur plusieurs
+     rangees.
+     ⚠ `width`, PAS SEULEMENT `max-width`. `.carte-apercu` est en position
+     fixed, largeur automatique : un conteneur flex qui enveloppe (wrap) sans
+     largeur EXPLICITE se dimensionne sur son plus PETIT contenu possible
+     (une carte par rangee, mesure a 345px de large et 2806px de haut pour 5
+     faces) au lieu de profiter de la place disponible. `max-width` seul ne
+     change rien a ce calcul ; il faut forcer la largeur pour que plusieurs
+     cartes tiennent sur une meme rangee avant de passer a la suivante. */
+  .carte-apercu.a-faces-4,
+  .carte-apercu.a-faces-5 {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: min(980px, 92vw);
   }
 
   /* L'autre face n'est qu'une image de reference : on masque les pastilles/stats
@@ -2489,6 +2621,19 @@
   .zone-annexes {
     grid-area: annexes;
     --mc-zoom-origine: left bottom;
+    /* ⚠⚠ PLAFONNEE A SA PROPRE RANGEE (23/09/2026, demande de l'utilisateur,
+       capture a l'appui : « le deck de la defausse et le deck du joueur
+       doivent toujours etre seuls dans cette zone [...] toutes les autres
+       cartes vont dans la zone en dessous »). Avant : `align-self: end` sans
+       hauteur bornee laissait la zone grandir vers le HAUT des qu'elle avait
+       plus de deux piles (nemesis + les tiroirs repliables) -- en debordant
+       de sa propre rangee de grille pour empieter sur celle de
+       « Deck du heros » juste au-dessus, les deux etiquettes et leurs cartes
+       se melangeant a l'ecran. `height: 100%` + `overflow-y: auto` gardent la
+       zone strictement dans sa rangee : au-dela de ce qui tient, elle defile
+       PLUTOT que de chevaucher sa voisine, qui doit rester intouchee. */
+    height: 100%;
+    overflow-y: auto;
   }
 
   /* Les piles d'une meme zone forment UN groupe : c'est donc le groupe qui doit
@@ -2536,14 +2681,10 @@
 
   /* ⚠ « Mises de côté / autres piles » a couvert DEUX RANGÉES du 14/09 au
      18/09/2026 ; depuis, elle n'a que la rangée de la main (voir la grille).
-     `align-self: end` reste : la zone se réduit à sa hauteur utile, calée en
-     bas, et si elle a plus de deux piles elle grandit vers le HAUT, dans la
-     rangée du deck du héros. Sans ce calage l'étiquette, qui flotte en haut de
-     la zone, se retrouvait à 200 px au-dessus de ses propres cartes (mesuré à
-     l'écran, 14/09/2026). */
-  .zone-annexes {
-    align-self: end;
-  }
+     Elle grandissait alors vers le HAUT au-delà de deux piles, dans la rangée
+     du deck du héros -- retiré le 23/09/2026 (voir `.zone-annexes` plus haut,
+     `height: 100%` + `overflow-y: auto` la gardent maintenant strictement
+     dans sa propre rangée). */
 
   /* ⚠ DEUX ÉTIQUETTES SE DISPUTAIENT LES MÊMES 20 PIXELS. Le titre de zone
      (« Mises de côté / autres piles ») flotte à 4 px du haut ; la pastille
@@ -2557,8 +2698,7 @@
 
      Le retrait passe donc à 38 px POUR CETTE ZONE SEULEMENT : les deux autres
      zones de piles n'ont aucune pastille au-dessus de leurs cartes et n'ont
-     donc rien à réserver. Le calage `align-self: end` fait grandir la zone vers
-     le haut, là où il y a de la place : rien ne bouge en bas. */
+     donc rien à réserver. */
   .zone-annexes .plateau-cartes {
     padding-top: 38px;
   }
@@ -2636,7 +2776,8 @@
   }
 
   .colonne-terrain-soutien > .zone-deck-special,
-  .colonne-terrain-soutien > .zone-reserve {
+  .colonne-terrain-soutien > .zone-reserve,
+  .colonne-terrain-soutien > .zone-rising-tide {
     flex: 0 0 auto;
   }
 
@@ -2664,12 +2805,18 @@
     background: rgba(120, 82, 200, 0.06);
   }
 
+  /* Le deck special se cale comme le heros voisin (01/10/2026, capture de Storm :
+     Blizzard 13 px plus bas que les alter egos, mesure au navigateur). Le
+     heros occupe toute la hauteur de sa zone (carte + barre de PV) : il ne peut
+     pas descendre. Le deck remonte donc au meme niveau (6 px, mesure), et son titre,
+     qui avait besoin des 22 px du haut, passe a cheval sur le bord de la zone. */
   .zone-deck-special .plateau-cartes {
     align-items: flex-start;
-    padding-top: 22px;
+    padding-top: 6px;
   }
 
   .zone-deck-special .plateau-emplacement-titre {
+    top: -9px;
     color: rgba(201, 166, 255, 0.9);
   }
 
@@ -2690,6 +2837,25 @@
 
   .zone-reserve .plateau-emplacement-titre {
     color: rgba(150, 230, 175, 0.9);
+  }
+
+  /* Zone RISING TIDE AREA (pack Wave) : meme place et meme mise en forme que
+     le deck special et la Reserve, accent BLEU-SARCELLE (theme aquatique du
+     personnage) pour ne confondre aucune des trois. */
+  .zone-rising-tide {
+    --mc-zoom-origine: center bottom;
+    align-items: flex-start;
+    border-color: rgba(70, 190, 220, 0.35);
+    background: rgba(60, 170, 200, 0.07);
+  }
+
+  .zone-rising-tide .plateau-cartes {
+    align-items: flex-start;
+    padding-top: 22px;
+  }
+
+  .zone-rising-tide .plateau-emplacement-titre {
+    color: rgba(150, 225, 240, 0.9);
   }
 
   /* Identite + upgrades attaches = un bloc de lecture. On garde ce bloc serre,
@@ -2887,10 +3053,22 @@
      Desactive en fenetre etroite (media query plus bas) : `.plateau-barre`
      y repasse en flux normal, un positionnement absolu ignorerait le
      retour a la ligne. */
+  /* ⚠ 01/10/2026 (capture : « le texte passe au dessus des boutons »).
+     Le groupe de boutons fait ~880 px et le bandeau ~300 a 400 px : un
+     centrage absolu sur la barre ne tient qu'a partir de ~2200 px. En
+     dessous, le bandeau se range AU MILIEU DE LA PLACE LIBRE a gauche des
+     boutons (marges auto), il ne peut plus passer dessous. */
   .plateau-barre > .board-actions > .bh-etat {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-inline: auto;
+  }
+
+  @media (min-width: 2200px) {
+    .plateau-barre > .board-actions > .bh-etat {
+      position: absolute;
+      left: 50%;
+      margin-inline: 0;
+      transform: translateX(-50%);
+    }
   }
 
   /* Separateur de groupe. La barre est rangee par intention — agir, consulter,
@@ -3501,13 +3679,13 @@
 
   /* LE MOMENT OU L'ON PEUT AGIR (body.deroule-question, pose par
      DeroulePhase tant que la question du moteur est logee dans la scene) :
-     la main sort du voile, eclairee, et la scene remonte pour la degager. */
+     la main sort du voile, et la scene remonte pour la degager.
+     ⚠ PLUS DE LUEUR ROUGE (04/10/2026, demande de l'utilisateur) : l'ombre et
+     le fond rgba(166, 0, 0, …) d'origine, invisibles sur le noir, faisaient
+     une nappe pourpre sur une table teintee. Verrou : halo-main.test.ts. */
   .deroule-question .plateau-scene .zone-main {
     position: relative;
     z-index: 120;
-    box-shadow: 0 -18px 40px rgba(166, 0, 0, 0.28);
-    background: rgba(166, 0, 0, 0.06);
-    border-radius: 10px;
   }
 
   /* ⚠ PENDANT UNE QUESTION ET SUR UNE FENETRE COURTE, LES CARTES DE L'ETAPE
@@ -4538,6 +4716,13 @@
     box-shadow: 0 0 6px rgba(85, 224, 138, 0.8);
   }
 
+  /* Onglet grise : ce heros a deja boucle son tour ce round (24/09/2026).
+     Purement visuel -- le bouton reste cliquable, on peut toujours aller
+     regarder son plateau ou sa main. */
+  .bh-vue .bh-bouton.est-tour-fini {
+    opacity: 0.45;
+  }
+
   .bh-anim:not(.est-actif) {
     opacity: 0.7;
   }
@@ -4627,6 +4812,10 @@
 
   .scan-card.a-recu {
     animation: pile-recoit 260ms ease-out;
+  }
+
+  body.plateau-sans-animations .scan-card.a-recu {
+    animation: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -4804,13 +4993,81 @@
      Meme cartouche que les mots-cles juste dessous, meme largeur, mais en
      ROUGE SOURD : c'est un empechement, pas un rappel de regles, et l'oeil doit
      faire la difference sans lire. Une ligne par action refusee. */
+  /* Effet refusé en silence par le moteur (refus-effets.tsx) : une bulle sur
+     la carte visée, au-dessus de la table et de l'aperçu. */
+  .couche-refus-effets {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 450;
+  }
+
+  .bulle-refus-effet {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 280px;
+    padding: 7px 12px;
+    border-radius: 10px;
+    background: rgba(120, 20, 28, 0.96);
+    border: 2px solid #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.25), 0 6px 18px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.25;
+    animation: bulle-refus-effet 4.5s ease-out forwards;
+  }
+
+  .bulle-refus-effet-icone {
+    font-size: 1.1rem;
+    color: #ffb3b3;
+  }
+
+  @keyframes bulle-refus-effet {
+    0% { opacity: 0; transform: translate(-50%, -30%) scale(0.9); }
+    8% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bulle-refus-effet { animation: none; }
+  }
+
   .apercu-refus {
     margin: 8px 0 0;
-    padding: 8px 10px;
-    border-radius: 9px;
-    background: rgba(46, 14, 18, 0.94);
-    border: 1px solid rgba(226, 92, 92, 0.5);
+    padding: 9px 12px 10px;
+    border-radius: 10px;
+    background: rgba(120, 20, 28, 0.96);
+    border: 2px solid #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.25), 0 6px 18px rgba(0, 0, 0, 0.45);
     max-width: 340px;
+  }
+
+  .apercu-refus-titre {
+    margin: 0 0 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .apercu-refus-icone {
+    font-size: 1.15rem;
+    line-height: 1;
+    color: #ffb3b3;
+  }
+
+  .apercu-refus ul {
+    margin: 0;
+    padding: 0;
     list-style: none;
     display: flex;
     flex-direction: column;
@@ -4819,17 +5076,10 @@
 
   .apercu-refus li {
     margin: 0;
-    font-size: 0.78rem;
-    line-height: 1.25;
-    color: #f0c9c9;
-  }
-
-  /* La puce est un point rouge, pas celle du navigateur : elle doit rester
-     lisible sur le fond sombre et ne pas decaler le texte. */
-  .apercu-refus li::before {
-    content: '▸ ';
-    color: #e25c5c;
-    font-weight: 700;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #fff;
   }
 
   /* --- Mots-cles dans l'apercu (CarteApercu) ------------------------------ */
@@ -4905,6 +5155,14 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+  }
+
+  .popover-sauvegardes-titre {
+    display: block;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--menace);
   }
 
   .ligne-sauvegarde {
@@ -5092,6 +5350,13 @@
     text-align: center;
     animation: revelation-entre 260ms ease-out both;
     filter: drop-shadow(0 16px 34px rgba(0, 0, 0, 0.65));
+  }
+
+  /* Meme garde que les autres animations d'entree (voir plus haut dans ce
+     fichier) : coupee au reglage « sans animations » ET pendant une
+     resynchronisation massive (Undo...), posee sur <body> par PagePartie. */
+  body.plateau-sans-animations .revelation {
+    animation: none;
   }
 
   .revelation-cadre {
@@ -7182,6 +7447,12 @@
 
   .camp-carte:hover { opacity: 0.85; transform: translateY(-2px) }
 
+  .camp-carte-enveloppe { display: block; line-height: 0 }
+
+  /* Le curseur traverse une carte inerte jusqu'a son enveloppe, qui porte le
+     survol (apercu agrandi). */
+  .camp-carte:disabled { pointer-events: none }
+
   .camp-carte.sel {
     opacity: 1;
     border-color: var(--menace);
@@ -7944,6 +8215,59 @@
     overflow-y: auto;
   }
 
+  /* --- Modales sans onglets (Menu, Plus d'options, Partie) ------------------
+     Refonte du header (24/09/2026). Même famille que `.reglages-fenetre`
+     (fond, en-tête, fermeture au clic dehors et à Échap), mais sans la
+     colonne d'onglets : une seule colonne, tête puis contenu. Sans ce
+     modificateur, la grille à deux colonnes de `.reglages-fenetre` réserverait
+     une bande vide à gauche pour un onglet qui n'existe pas ici. */
+  .reglages-fenetre.sans-onglets {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'tete'
+      'contenu';
+    width: min(420px, 100%);
+  }
+
+  .modale-menu-choix,
+  .modale-plus-contenu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .modale-menu-choix .bh-bouton,
+  .modale-plus-contenu .bh-bouton {
+    justify-content: flex-start;
+    padding: 10px 14px;
+  }
+
+  .modale-plus-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modale-plus-section h3 {
+    margin: 4px 0 0;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #8b96a8;
+  }
+
+  .modale-plus-section:first-child h3 {
+    margin-top: 0;
+  }
+
+  .modale-partie-contenu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   /* Un sous-réglage : en retrait sous son parent, et relié par un filet. Il
      reste VISIBLE quand il est inutilisable (voir FenetreReglages.tsx) : un
      réglage qui apparaît est un réglage qu'on ne découvre jamais. */
@@ -8692,5 +9016,48 @@
     padding: 4px 10px;
     border-radius: 6px;
     background: rgba(10, 11, 14, 0.9);
+  }
+}
+
+/* « Voir la table » (BoutonVoirLaTable.tsx). Les fenêtres de décision restent
+   en fantôme et laissent passer les clics ; seul le bouton reste actif.
+   ⚠ Garder la liste identique à FENETRES_DE_DECISION. */
+@layer utilitaires {
+  /* Dans l'en-tete, a cote de « Menu » : c'est un `.bh-bouton`, il en prend le
+     style ; ici seulement l'etat grise et le rappel quand les fenetres sont
+     effacees. */
+  .bh-voir-table:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .bh-voir-table.est-actif {
+    animation: voir-la-table-rappel 1.6s ease-in-out infinite;
+  }
+
+  @keyframes voir-la-table-rappel {
+    50% {
+      box-shadow: 0 0 0 4px rgba(240, 180, 41, 0.55);
+    }
+  }
+
+  body.voir-la-table
+    :is(.demande-centrale, .assistant-action, .plateau-selecteur, .deroule-phase, .plateau-regardees-voile) {
+    opacity: 0.15;
+    transition: opacity 120ms ease;
+  }
+
+  body.voir-la-table
+    :is(.demande-centrale, .assistant-action, .plateau-selecteur, .deroule-phase, .plateau-regardees-voile),
+  body.voir-la-table
+    :is(.demande-centrale, .assistant-action, .plateau-selecteur, .deroule-phase, .plateau-regardees-voile)
+    * {
+    pointer-events: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bh-voir-table.est-actif {
+      animation: none;
+    }
   }
 }

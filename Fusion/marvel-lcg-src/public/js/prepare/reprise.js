@@ -30,6 +30,11 @@
       "No saves yet. In game, use the board's \u{1F4BE} Save button.",
     'Reprendre': 'Resume',
     'Revoir': 'Replay',
+    'Supprimer': 'Delete',
+    'Supprimer cette sauvegarde ?': 'Delete this save?',
+    'Suppression impossible.': 'Could not delete.',
+    'Rechercher un heros ou un vilain...': 'Search a hero or villain...',
+    'Aucun resultat pour cette recherche.': 'No results for this search.',
     'pas': 'step',
     'Fermer': 'Close',
     'Import impossible : fichier invalide ?': 'Import failed: invalid file?',
@@ -60,6 +65,7 @@
     'Statistiques et journal des parties': 'Statistics and game log',
     'Hauts faits': 'Feats',
     'Hauts faits debloques et progression': 'Unlocked feats and progress',
+    'Partie sauvegardee': 'Saved game',
   };
   function t(fr) {
     return LANGUE === 'en' && Object.prototype.hasOwnProperty.call(DICO_EN_LOCAL, fr)
@@ -136,6 +142,13 @@
     .reprise-ligne button:hover { background: #454545; }
     .reprise-ligne button.principal { background: #b3202b; border-color: #b3202b; color: #fff; }
     .reprise-ligne button.principal:hover { background: #d02733; }
+    .reprise-ligne button.discret { background: transparent; border-color: transparent;
+      color: #999; padding: 5px 8px; }
+    .reprise-ligne button.discret:hover { color: #e06c65; background: #3a3a3a; }
+    .reprise-recherche { width: 100%; box-sizing: border-box; padding: .5rem .7rem;
+      margin-bottom: .7rem; border-radius: 7px; border: 1px solid #555;
+      background: #1e1e1e; color: #ddd; font-size: .88rem; }
+    .reprise-recherche:focus { outline: none; border-color: #888; }
     .stats-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 10px; margin-bottom: 1.1rem; }
     .stats-tuile { background: #1e1e1e; border: 1px solid #444; border-radius: 8px;
@@ -177,10 +190,22 @@
     window.location.href = url;
   }
 
+  async function supprimerReplay(nom) {
+    const reponse = await fetch('/delete_replay', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nom }),
+    }).catch(() => undefined);
+    return !!(reponse && reponse.ok);
+  }
+
   async function ouvrirReprise() {
     const panneau = el('div', { class: 'reprise-panneau' }, titre(t('Reprendre une partie')));
+    const recherche = el('input', {
+      type: 'search', class: 'reprise-recherche', placeholder: t('Rechercher un heros ou un vilain...'),
+    });
     const zone = el('div', null, el('div', { class: 'reprise-vide' }, t('Chargement...')));
-    panneau.append(zone);
+    panneau.append(recherche, zone);
 
     const importer = el('input', { type: 'file', accept: '.json', style: 'display:none' });
     importer.addEventListener('change', async () => {
@@ -206,25 +231,71 @@
     ouvrir(panneau);
 
     const noms = (await lireJson('/list_replay_files')) || [];
-    zone.textContent = '';
     if (!Array.isArray(noms) || noms.length === 0) {
+      recherche.style.display = 'none';
+      zone.textContent = '';
       zone.append(el('div', { class: 'reprise-vide' },
         t("Aucune sauvegarde pour l'instant. En partie, bouton \u{1F4BE} Save du plateau.")));
       return;
     }
-    const lignes = await Promise.all(noms.slice(0, 40).map(async (nom) => {
+    // Le nettoyage automatique (deploiement/purge.sh, 14 jours) garde la liste
+    // courte ; une borne de securite au-dela reste utile si la purge n'a pas
+    // encore tourne (juste apres un pic de parties, par ex.).
+    const toutesLesLignes = await Promise.all(noms.slice(0, 200).map(async (nom) => {
       const meta = (await lireJson(`/get_replay_json?${nom}`)) || {};
       return { nom, meta };
     }));
-    for (const { nom, meta } of lignes) {
-      const heros = Array.isArray(meta.players) ? meta.players.join(', ') : '';
-      zone.append(el('div', { class: 'reprise-ligne' },
-        el('div', { class: 'info' },
-          el('div', null, `${meta.villain || nom}`),
-          el('small', null, `${nom} · ${t('pas')} ${meta.step ?? '?'} ${meta.time ? '· ' + meta.time : ''} ${heros ? '· ' + heros : ''}`)),
-        el('button', { class: 'principal', onclick: () => chargerEtOuvrir(nom, false) }, t('Reprendre')),
-        el('button', { onclick: () => chargerEtOuvrir(nom, true, meta.step || 0) }, t('Revoir'))));
+    // Plus recente d'abord : `meta.time` ("2026-09-19 09-57") se compare
+    // directement en chaine, annee-mois-jour en tete.
+    toutesLesLignes.sort((a, b) => (b.meta.time || '').localeCompare(a.meta.time || ''));
+
+    // ⚠⚠ LISIBLE PAR UN JOUEUR, PAS PAR UN DEVELOPPEUR (23/09/2026, demande
+    // de l'utilisateur, capture a l'appui : « on comprend rien »). Avant :
+    // titre = `meta.villain` (deja corrige cote serveur pour porter un nom,
+    // pas un `card_id` brut comme « 01113 ») ou, a defaut, LE CHEMIN DU
+    // FICHIER lui-meme (« ./replays/serveur-1/[0.5.9.200]-... ») ; le
+    // sous-titre enchainait ce meme chemin, le pas et les heros. Le chemin ne
+    // dit rien a un joueur -- il reste disponible en infobulle (`title`) pour
+    // qui en a besoin, jamais affiche en clair.
+    function dessiner(filtre) {
+      zone.textContent = '';
+      const aiguille = filtre.trim().toLowerCase();
+      const visibles = toutesLesLignes.filter(({ meta }) => !aiguille
+        || (Array.isArray(meta.players) ? meta.players.join(' ') : '').toLowerCase().includes(aiguille)
+        || (meta.villain || '').toLowerCase().includes(aiguille));
+      if (visibles.length === 0) {
+        zone.append(el('div', { class: 'reprise-vide' }, t('Aucun resultat pour cette recherche.')));
+        return;
+      }
+      for (const { nom, meta } of visibles.slice(0, 40)) {
+        const heros = Array.isArray(meta.players) ? meta.players.join(', ') : '';
+        const sousTitre = [
+          meta.time || '',
+          (meta.step ?? null) !== null ? `${t('pas')} ${meta.step}` : '',
+        ].filter(Boolean).join(' · ');
+        zone.append(el('div', { class: 'reprise-ligne', title: nom },
+          el('div', { class: 'info' },
+            el('div', null, heros || meta.villain || t('Partie sauvegardee')),
+            el('small', null, [meta.villain, sousTitre].filter(Boolean).join(' · '))),
+          el('button', { class: 'principal', onclick: () => chargerEtOuvrir(nom, false) }, t('Reprendre')),
+          el('button', { onclick: () => chargerEtOuvrir(nom, true, meta.step || 0) }, t('Revoir')),
+          el('button', {
+            class: 'discret', 'aria-label': t('Supprimer'), title: t('Supprimer'),
+            onclick: async () => {
+              if (!confirm(t('Supprimer cette sauvegarde ?'))) return;
+              if (await supprimerReplay(nom)) {
+                const idx = toutesLesLignes.findIndex((l) => l.nom === nom);
+                if (idx !== -1) toutesLesLignes.splice(idx, 1);
+                dessiner(recherche.value);
+              } else {
+                alert(t('Suppression impossible.'));
+              }
+            },
+          }, '\u{1F5D1}')));
+      }
     }
+    recherche.addEventListener('input', () => dessiner(recherche.value));
+    dessiner('');
   }
 
   // ---------------------------------------------------------------- stats --

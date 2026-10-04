@@ -1,0 +1,72 @@
+/* La roue de couleurs du fond (RoueTeinte.tsx, 04/10/2026). */
+@layer composants {
+  .roue-teinte {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+  }
+
+  .roue-teinte-disque {
+    position: relative;
+    width: 168px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    cursor: crosshair;
+    /* Le doigt dessine la teinte, il ne fait pas defiler la page. */
+    touch-action: none;
+  }
+
+  .roue-teinte-disque:focus-visible {
+    outline: 2px solid var(--info);
+    outline-offset: 3px;
+  }
+
+  .roue-teinte-repere {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.6);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .roue-teinte-clarte {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: rgba(226, 232, 240, 0.8);
+  }
+
+  .roue-teinte-clarte input {
+    width: 150px;
+  }
+
+  .roue-teinte-origine {
+    padding: 5px 12px;
+    color: #f8fafc;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .roue-teinte-origine:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .reglage-teinte {
+    display: grid;
+    gap: 8px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .reglage-teinte-titre {
+    font-weight: 700;
+  }
+}

@@ -45,6 +45,60 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-03",
+        genre: "jeu",
+        fr: "Les arts alternatifs se choisissent maintenant dans un grand carrousel, une série pour le héros et une autre pour son alter ego si tu veux. Avec un compte, ton choix te suit sur tous tes appareils.",
+        en: "Alternate arts are now picked in a big carousel, one set for the hero and another for the alter ego if you like. With an account, your choice follows you across devices.",
+    },
+    {
+        date: "2026-10-02",
+        genre: "jeu",
+        fr: "Près de 170 arts alternatifs de héros et d'alter ego, de Spider-Man à Luke Cage, à choisir dans la fiche du héros. Les valeurs et le texte sont ceux de la vraie carte.",
+        en: "Nearly 170 alternate hero and alter-ego arts, from Spider-Man to Luke Cage, to pick from the hero sheet. Values and text match the real card.",
+    },
+    {
+        date: "2026-10-02",
+        genre: "heros",
+        fr: "Conan rejoint le roster fan-made : il passe librement de Thief à Barbarian, accumule des compteurs Crom sur The Cimmerian jusqu'à devenir King Conan, et affronte deux sbires némésis.",
+        en: "Conan joins the fan-made roster: he switches freely between Thief and Barbarian, builds Crom counters on The Cimmerian until he becomes King Conan, and faces two nemesis minions.",
+    },
+    {
+        date: "2026-10-02",
+        genre: "correction",
+        fr: "Les alliés de Luke Cage et une quinzaine d'alliés fan-made (Lockjaw, Okoye, Iron Lad, Red Sonja...) subissent maintenant leurs dégâts consécutifs, et « Piecing It All Together » ne compte plus dans la limite de manigances de joueur.",
+        en: "Luke Cage allies and about fifteen fan-made allies (Lockjaw, Okoye, Iron Lad, Red Sonja...) now take their consequential damage, and \"Piecing It All Together\" no longer counts against the player side scheme limit.",
+    },
+    {
+        date: "2026-10-02",
+        genre: "correction",
+        fr: "Pack Jessica Jones revérifié carte par carte : les alliés (Squirrel Girl, Spider-Woman...) subissent bien les dégâts consécutifs en attaquant ou en contrant, la menace de départ de plusieurs complots est corrigée, et Ticked Off, Strategy Session et deux autres cartes fonctionnent comme sur la carte.",
+        en: "Jessica Jones pack rechecked card by card: allies (Squirrel Girl, Spider-Woman...) now take consequential damage when attacking or thwarting, the starting threat of several schemes is fixed, and Ticked Off, Strategy Session and two other cards work as printed.",
+    },
+    {
+        date: "2026-10-01",
+        genre: "jeu",
+        fr: "Chez Storm, les cartes Météo que tu n'utilises pas se rangent maintenant sous celle qui est en jeu, et chacune se survole pour la lire.",
+        en: "On Storm's board, the Weather cards you aren't using now tuck under the one in play, and you can hover each one to read it.",
+    },
+    {
+        date: "2026-10-01",
+        genre: "correction",
+        fr: "Le bandeau « À toi de jouer » ne passe plus sous les boutons du haut, et il se déplace comme les autres fenêtres. Un bouton « Voir la table » rend les fenêtres transparentes pour regarder le plateau.",
+        en: "The “Your turn” banner no longer slides under the top buttons, and it can be dragged like the other windows. A “See the table” button makes windows see-through so you can look at the board.",
+    },
+    {
+        date: "2026-10-01",
+        genre: "correction",
+        fr: "Une carte d'identité n'affiche plus à tort « Injouable » pendant la mise en place.",
+        en: "An identity card no longer wrongly shows “Unplayable” during setup.",
+    },
+    {
+        date: "2026-09-30",
+        genre: "correction",
+        fr: "En fin de phase joueur, les obligations et attachements de la rencontre épuisés se redressent bien, comme le demandent les règles.",
+        en: "At the end of the player phase, exhausted encounter obligations and attachments now ready properly, as the rules say.",
+    },
+    {
         date: "2026-09-29",
         genre: "jeu",
         fr: "Le jeu se lance depuis un salon vocal du serveur Discord : le premier qui ouvre l'activité tient la table avec son compte, les autres s'assoient en un clic, avec leur compte ou en invité.",

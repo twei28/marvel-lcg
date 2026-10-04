@@ -170,7 +170,7 @@ describe('AssistantAction — le bouton nomme aussi la carte', () => {
   })
 })
 
-describe('AssistantAction — mulligan sous le design essai', () => {
+describe('AssistantAction — mulligan', () => {
   const mulligan = () => ({ ...option(), name: 'Resolve Mulligans' }) as Option
 
   it('propose de garder la main tant qu’aucune carte n’est choisie', () => {
@@ -185,7 +185,7 @@ describe('AssistantAction — mulligan sous le design essai', () => {
         affichage="detailed"
       />
     )
-    expect(screen.getByRole('button', { name: 'Garder cette main' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Garder ma main' })).toBeInTheDocument()
   })
 
   it('compte les cartes à défausser dès qu’il y en a', () => {
@@ -247,5 +247,109 @@ describe('AssistantAction — phrase d’état', () => {
   it('garde le détail d’origine sans le drapeau', () => {
     rendre({ affichage: 'detailed' }, { detail: '1/2 payé' })
     expect(screen.getByText('1/2 payé')).toBeInTheDocument()
+  })
+})
+
+describe('AssistantAction — le mulligan se lit comme facultatif, dans tous les modes', () => {
+  // Capture du 03/10/2026 : « ce n'est pas clair que le mulligan n'est pas
+  // obligatoire ». Le panneau simple disait « Choisis les cibles 0/6 »,
+  // « Annuler » et « Confirmer ».
+  const mulligan = () => ({ ...option(), name: 'Resolve Mulligans' }) as Option
+  const rendreMulligan = (affichage: 'simple' | 'detailed', cibleNombre: number) =>
+    render(
+      <AssistantAction
+        demande={demande()}
+        interaction={{ ...interaction({ etape: 'target', cibleNombre, cibleMaximum: 6 }), option: mulligan() }}
+        aNous={true}
+        connecte={true}
+        cartesParId={new Map()}
+        affichage={affichage}
+      />
+    )
+
+  it.each(['simple', 'detailed'] as const)('mode %s : titre, consigne facultative, un seul bouton', (affichage) => {
+    rendreMulligan(affichage, 0)
+    expect(screen.getByText('Mulligan')).toBeInTheDocument()
+    expect(screen.getByText('Sélectionne les cartes que tu veux changer (facultatif)')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Garder ma main' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Annuler' })).toBeNull()
+    expect(screen.queryByText(/Choisis les cibles/)).toBeNull()
+  })
+
+  it('une carte touchee : le compte remplace la consigne et le bouton dit le geste', () => {
+    rendreMulligan('simple', 1)
+    expect(screen.getByText('1 carte sélectionnée')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Défausser 1 carte' })).toBeInTheDocument()
+  })
+})
+
+describe('AssistantAction — la fin de tour dit qu on peut defausser', () => {
+  // Capture du 04/10/2026 : « Fin de phase », « Choisis les cibles 0/6 » et un
+  // seul « Annuler ». « Ce n'est pas clair qu'on peut défausser en fin de tour. »
+  const finDePhase = (minimum: number) =>
+    ({ ...option(), name: 'End Phase', target_num_range: [minimum, 6] }) as Option
+  const rendreFin = (minimum: number, cibleNombre: number, tailleMain?: number) =>
+    render(
+      <AssistantAction
+        demande={demande()}
+        interaction={{
+          ...interaction({ etape: 'target', cibleNombre, cibleMaximum: 6 }, cibleNombre >= minimum),
+          option: finDePhase(minimum),
+        }}
+        aNous={true}
+        connecte={true}
+        cartesParId={new Map()}
+        affichage="simple"
+        tailleMain={tailleMain}
+      />
+    )
+
+  it('facultatif : la consigne donne la taille de main DU heros', () => {
+    rendreFin(0, 0, 6)
+    expect(screen.getByText('Fin de tour')).toBeInTheDocument()
+    expect(
+      screen.getByText('Sélectionne les cartes que tu veux défausser (facultatif). Tu repioches jusqu’à 6.')
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Garder ma main' })).toBeEnabled()
+    expect(screen.queryByRole('button', { name: 'Annuler' })).toBeNull()
+  })
+
+  it('main trop grande : le minimum est dit, le bouton attend', () => {
+    rendreFin(1, 0, 5)
+    expect(screen.getByText('Défausse au moins 1 carte : ta main est limitée à 5.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Défausser 1 carte' })).toBeDisabled()
+  })
+
+  it('moteur sans taille de main : aucun chiffre invente', () => {
+    rendreFin(0, 0, undefined)
+    expect(screen.getByText('Sélectionne les cartes que tu veux défausser (facultatif).')).toBeInTheDocument()
+  })
+})
+
+// Capture du 04/10/2026 (Hulk, « Deal 1 damage to an enemy » pendant l'attaque
+// de Klaw) : la cible se choisissait DANS la scene du deroule, et l'assistant
+// reposait la meme question hors de la scene, a moitie sous elle.
+describe('AssistantAction — cede la place a la scene du deroule', () => {
+  function rendreEnScene(etape: 'target' | 'confirm' | 'payment') {
+    return render(
+      <AssistantAction
+        demande={demande()}
+        interaction={interaction({ etape })}
+        aNous={true}
+        connecte={true}
+        cartesParId={new Map()}
+        affichage="detailed"
+        choixDansLaScene={true}
+      />
+    )
+  }
+
+  it('se tait au choix de la cible et a la confirmation', () => {
+    expect(rendreEnScene('target').container.querySelector('.assistant-action')).toBeNull()
+    expect(rendreEnScene('confirm').container.querySelector('.assistant-action')).toBeNull()
+  })
+
+  it('reste la pour payer un cout, que la scene ne sait pas faire', () => {
+    expect(rendreEnScene('payment').container.querySelector('.assistant-action')).not.toBeNull()
   })
 })

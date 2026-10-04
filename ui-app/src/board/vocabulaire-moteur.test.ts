@@ -16,6 +16,19 @@ describe('traduireMoteur', () => {
     expect(traduireMoteur('Resolve Mulligans')).toBe('Résoudre les mulligans')
   })
 
+  it('traduit le choix facultatif d un script (signalement Yarro n43, Ben Urich)', () => {
+    enFrancais()
+    expect(traduireMoteur('Discard one')).toBe('En défausser une')
+    expect(traduireMoteur('Cancel')).toBe('Annuler')
+    enAnglais()
+    expect(traduireMoteur('Discard one')).toBe('Discard one')
+  })
+
+  it('traduit le choix de Robbie Robertson 60156 (meme defaut que Ben Urich)', () => {
+    enFrancais()
+    expect(traduireMoteur('Discard it and deal another')).toBe('La défausser et en distribuer une autre')
+  })
+
   it('traduit les pouvoirs de base', () => {
     enFrancais()
     expect(traduireMoteur('Attack')).toBe('Attaquer')

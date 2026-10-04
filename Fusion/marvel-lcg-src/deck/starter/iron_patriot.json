@@ -84,6 +84,12 @@
  ],
  "metadata": {
   "url": "",
+  "deckbuilding": {
+   "types_interdits_aspect": [
+    "Ally"
+   ]
+  },
+  "deckbuilding_note": "ip001b : « During deck building, your deck cannot include any aspect allies. » Les allies basiques restent permis. Audit du 03/10/2026.",
   "auteur": "Neptune",
   "deck_note": "Deck de depart DE L'AUTEUR, releve sur « Iron Patriot Deck.png » (carte « Starter Deck » du zip). Rien d'invente. Aspect LEADERSHIP, comme le dit l'insert. Total : 15 cartes heros comptees (Registration Act est Permanent/Setup et ne compte pas) + 18 d'aspect + 8 basiques = 41.",
   "registered_note": "Les 20 cartes de `set_aside` sont le DECK REGISTERED. Elles n'y restent pas : la face alter-ego les deplace vers `player.additional_deck` au montage, sur le modele du deck d'Invocation de Doctor Strange (09001b).",

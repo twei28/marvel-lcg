@@ -655,6 +655,11 @@ class World(WorldAction, WorldFind):
             if self.is_game_over:
                 return
             player.phase.EndTurn()
+            # ⚠ NE COUVRE PAS UN TOUR SUPPLEMENTAIRE (carte qui rejoue ce
+            # heros plus tard dans le meme round, sans passer par
+            # `BeginRound`) : cas connu, accepte, pas traite ici -- l'onglet
+            # resterait grise a tort le temps de ce second tour.
+            player.has_finished_turn_this_round = True
             turn_end()
 
         self.phase.SetState(Phase.State.PlayerTurnEnd)
@@ -662,7 +667,34 @@ class World(WorldAction, WorldFind):
     def PlayersEndPhase(self, team: 'int|None'=None) -> None:
         def process_player(player: 'Player'):
             player.phase.EndPhase()
-        JobManager.Simultaneous(process_player, self.GetPhasePlayers(team))
+        phase_players = self.GetPhasePlayers(team)
+        JobManager.Simultaneous(process_player, phase_players)
+        self.ReadyEncounterCardsAtEndOfPlayerPhase(team, phase_players)
+
+    # AJOUT (01/10/2026, signalement #38) : Rules Reference « End of Player
+    # Phase » etape 3, « Ready each exhausted encounter card ». Le moteur ne
+    # relevait que les cartes du joueur (`GetControlCards`) : une obligation ou
+    # un attachement de rencontre epuise pour payer sa Forced Action restait
+    # epuise jusqu'a la fin de la partie, donc ne servait qu'une fois.
+    def ReadyEncounterCardsAtEndOfPlayerPhase(self, team: 'int|None', phase_players: List['Player']) -> None:
+        from game.card.face.base.card_encounter import EncounterCard
+        from game.card.face.base.card_player import PlayerCard
+        from game.effect.rule import EndPhase
+        from game.operate.faces import Faces
+        from game.operate.worlds import Worlds
+
+        initiators = [p for p in phase_players if not p.is_eliminated]
+        if not initiators:
+            return
+        game_areas = self.game_areas if team is None else [self.GetTeamGameArea(team)]
+
+        faces: List['CardFace'] = []
+        for game_area in game_areas:
+            for face in Worlds.GetOnFieldCards(game_area):
+                if EncounterCard.IsType(face) and not PlayerCard.IsType(face) and face.card.IsExhaust():
+                    faces.append(face)
+        if faces:
+            Faces.ReadyAll(faces, EndPhase(initiators[0]))
 
     def VillainPhase(self, team: 'int|None'=None) -> None:
         from game.message import Message
@@ -1214,6 +1246,7 @@ class World(WorldAction, WorldFind):
         message.Send()
         if message.is_be_instead:
             return
+        nouvelle = None
         if prev_scheme.card.printed_faces[0] == prev_scheme:
             card = prev_scheme.card
             # Le temps d'arret sur la face A. Cette branche est la SEULE qui
@@ -1222,6 +1255,7 @@ class World(WorldAction, WorldFind):
             # 01117a a l'etape 2 y passent tous les deux.
             self.ConfirmMainSchemeReveal(prev_scheme)
             card.Flip(GameRule(card.face))
+            nouvelle = card.face
             # Reveal is call when `Filp`
             # card.face.Reveal(None, GameRule(card.face))
         elif self.main_schemes_deck.GetSize() > 0:
@@ -1242,6 +1276,7 @@ class World(WorldAction, WorldFind):
                 Faces.RemoveAllFromGame([prev_scheme], GameRule(prev_scheme))
             scheme.PlaceAccelerationToken(acceleration_token, GameRule(scheme))
             scheme.Reveal(None, by_effect)
+            nouvelle = scheme
         elif self.CountMainSchemesOfSameArea(prev_scheme) == 1:
             # En competitif, le complot accompli est celui d'UNE table : son
             # camp perd, la partie continue jusqu'a ce que les deux camps aient
@@ -1250,6 +1285,7 @@ class World(WorldAction, WorldFind):
                 self.game_over.SetGameOverByRule("The Final Stage of the Main Scheme was Completed")
         after_message = Message.AfterMainSchemeAdvanced(message)
         after_message.Send()
+        self.stat.RecordStade(self, 'manigance', prev_scheme, nouvelle)
 
     def CheckIsAllPlayersEliminated(self):
         if self.rule.mode_competitive:

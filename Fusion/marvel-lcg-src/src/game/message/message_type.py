@@ -256,6 +256,9 @@ class GettingMessage(NoSendResolve):
 class CanBeInstead(Message2):
     def __init__(self, **kwargs: Any) -> None:
         self.be_instead_internal = False
+        # QUI a remplace ce message (frise de la phase du mechant, 04/10/2026 :
+        # « → Annulée par X »). Rien d'autre ne le lit.
+        self.be_instead_by: 'Effect|None' = None
         super().__init__(**kwargs)
 
     def SilentInstead(self):
@@ -267,6 +270,8 @@ class CanBeInstead(Message2):
         message = Message.WhenMessageBeInstead(self, by_effect)
         message.Send()
         self.SilentInstead()
+        if self.be_instead_internal and self.be_instead_by is None:
+            self.be_instead_by = by_effect
 
     @property
     def is_be_instead(self) -> bool:

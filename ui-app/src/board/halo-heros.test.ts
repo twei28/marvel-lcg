@@ -39,9 +39,12 @@ describe('la bande diagonale que compose une palette', () => {
 
   it('la premiere couleur est celle du coin, la plus dense', () => {
     const fond = fondDe([ROUGE, BLEU, BLANC], SOMBRE)
-    expect(fond).toContain('rgba(140,41,31,0.6) 0%')
-    expect(fond.indexOf('140,41,31')).toBeLessThan(fond.indexOf('32,43,114'))
-    expect(fond.indexOf('32,43,114')).toBeLessThan(fond.indexOf('219,220,222'))
+    expect(fond).toContain('rgba(140,41,31,1) 0%')
+    // ⚠ ORDRE REVU (23/09/2026, demande de l'utilisateur) : primaire au
+    // coin (0 %), TERTIAIRE ensuite (22 %), secondaire en dernier (38 %) --
+    // pas l'ordre du fichier.
+    expect(fond.indexOf('140,41,31')).toBeLessThan(fond.indexOf('219,220,222'))
+    expect(fond.indexOf('219,220,222')).toBeLessThan(fond.indexOf('32,43,114'))
   })
 
   it('la bande s eteint avant le centre, pour ne pas teindre tout le plateau', () => {
@@ -53,16 +56,16 @@ describe('la bande diagonale que compose une palette', () => {
     // Onze cadres sont noirs ou gris, deux sets fan-made n'ont qu'un blanc :
     // la bande garde sa longueur et son degrade, elle porte juste une teinte.
     const fond = fondDe([BLANC], SOMBRE)
-    expect(fond).toContain('rgba(219,220,222,0.6) 0%')
-    expect(fond).toContain('rgba(219,220,222,0.26) 30%')
+    expect(fond).toContain('rgba(219,220,222,1) 0%')
+    expect(fond).toContain('rgba(219,220,222,0.75) 38%')
     expect(fond).toContain('rgba(219,220,222,0) 50%')
   })
 
   it('a DEUX couleurs, la seconde tient les deux derniers arrets', () => {
     const fond = fondDe([ROUGE, BLANC], SOMBRE)
-    expect(fond).toContain('rgba(140,41,31,0.6) 0%')
-    expect(fond).toContain('rgba(219,220,222,0.44) 16%')
-    expect(fond).toContain('rgba(219,220,222,0.26) 30%')
+    expect(fond).toContain('rgba(140,41,31,1) 0%')
+    expect(fond).toContain('rgba(219,220,222,0.9) 22%')
+    expect(fond).toContain('rgba(219,220,222,0.75) 38%')
   })
 
   it('au-dela de trois couleurs, les suivantes sont ignorees', () => {

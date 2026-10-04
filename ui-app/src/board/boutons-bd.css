@@ -1,0 +1,81 @@
+/* LES BOUTONS DES QUESTIONS EN STYLE BD (decision du 04/10/2026).
+
+   Tous les panneaux de question : le cartouche du mechant (DeroulePhase), la
+   question centrale (DemandeCentrale) et l'assistant d'action. PAS les menus
+   de carte (MenuActionsCarte) : ses `.af-action` ne sont pas sous ces trois
+   panneaux. Coins coupes, police Bangers, plus d'arrondi ni de gros liseré
+   blanc ; la couleur reste celle du type d'action (`.tonalite-*`, board.css) ;
+   un refus (« Passer », « Ne pas … ») est gris et discret.
+
+   Hors couche, comme VoletJournal.css : passe devant board.css. L'affichage
+   sobre (`html[data-affichage='sobre']`, plus specifique) garde la main. */
+
+.demande-centrale .af-action,
+.demande-centrale .dc-continue,
+.assistant-action .assistant-simple-action,
+.assistant-action .assistant-boutons button,
+.deroule-phase .deroule-boutons .bh-bouton {
+  --coin: 10px;
+  font-family: 'Bangers', Impact, 'Arial Black', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(
+    var(--coin) 0,
+    100% 0,
+    100% calc(100% - var(--coin)),
+    calc(100% - var(--coin)) 100%,
+    0 100%,
+    0 var(--coin)
+  );
+  /* Le liseré blanc et l'ombre noire sont remplaces par un fin trait interieur
+     de la couleur du type : il survit a la decoupe des coins. */
+  box-shadow: inset 0 0 0 2px var(--action-border, rgba(255, 255, 255, 0.35));
+}
+
+/* Les boutons qui n'ont pas de type d'action gardent l'ambre de « jouer » :
+   continuer, confirmer, suivant. */
+.demande-centrale .dc-continue,
+.assistant-action .assistant-confirmer,
+.deroule-phase .deroule-boutons .deroule-suivant {
+  --action-border: var(--menace-clair);
+  color: #14100a;
+  background: var(--menace);
+}
+
+/* LE REFUS, gris et discret : « Passer », « Ne pas défendre », « Annuler »,
+   et « Précédent » dans le cartouche. */
+.demande-centrale .dc-pass,
+.assistant-action .assistant-annuler,
+.deroule-phase .deroule-boutons .bh-bouton:not(.deroule-suivant) {
+  --action-border: rgba(203, 213, 225, 0.35);
+  color: #cbd5e1;
+  background: rgba(71, 85, 105, 0.55);
+  font-size: 0.95em;
+}
+
+.demande-centrale .dc-pass:hover,
+.assistant-action .assistant-annuler:hover,
+.deroule-phase .deroule-boutons .bh-bouton:not(.deroule-suivant):hover {
+  background: rgba(100, 116, 139, 0.7);
+}
+
+/* LA QUESTION DE DEFENSE (04/10/2026) : « Défendre avec X (DÉF …) » et « Ne pas
+   défendre (ATQ …) » sur UNE ligne chacun, au meme niveau. Le texte est abrege
+   au-dela de deux bonus (ligne-attaque.ts) : on peut lever la limite de largeur. */
+.demande-centrale .af-action.est-defense,
+.demande-centrale .dc-pass.est-defense {
+  max-width: none;
+  white-space: nowrap;
+}
+
+/* Meme hauteur et meme corps pour les deux boutons de defense : le refus,
+   ordinairement plus petit, s'aligne ici sur « Défendre avec X ». */
+.demande-centrale .af-action.est-defense,
+.demande-centrale .dc-pass.est-defense {
+  min-height: 46px;
+  padding-block: 9px;
+  font-size: 1.14rem;
+}

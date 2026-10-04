@@ -41,6 +41,11 @@ def GetAbilities() -> Sequence['Ability']:
             shows,
             effect,
         )
+        # « Shuffle each other SHOW environment together with the Cornered!
+        # treachery to create the show deck ». `PushCards` ne melange pas, et
+        # Cornered!, ajoutee en dernier, etait toujours le premier Show revele.
+        # Trouve par l'audit des decks du 04/10/2026.
+        GetShowDeck(effect).deck.Shuffle(effect)
 
 
     return [

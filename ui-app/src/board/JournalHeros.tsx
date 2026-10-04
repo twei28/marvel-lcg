@@ -18,6 +18,7 @@
 // que les faits marquants.
 
 import { useEffect, useRef } from 'react'
+import type { PointerEventHandler } from 'react'
 import type { EntreeHistorique } from './HistoriquePartie'
 import { t } from './langue'
 import { avecIcones } from './icones-ressources'
@@ -60,6 +61,7 @@ export function JournalHeros({
   joueur,
   nomHeros,
   toujoursVisible = false,
+  gestesGlisser,
 }: {
   entrees: EntreeHistorique[]
   monde: World | undefined
@@ -71,6 +73,18 @@ export function JournalHeros({
    * contient rien serait pris pour un bug.
    */
   toujoursVisible?: boolean
+  /**
+   * Geste de deplacement du panneau parent (`.panneau-journal`, board.tsx) :
+   * ce composant ne pose pas lui-meme `position: fixed`, il ne porte que la
+   * poignee (demande de l'utilisateur, 28/09/2026, « toutes les fenetres,
+   * tous les panneaux »). Absent hors panneau (colonne collee a la table).
+   */
+  gestesGlisser?: {
+    onPointerDown: PointerEventHandler<HTMLElement>
+    onPointerMove: PointerEventHandler<HTMLElement>
+    onPointerUp: PointerEventHandler<HTMLElement>
+    onPointerCancel: PointerEventHandler<HTMLElement>
+  }
 }) {
   const liste = entreesDuHeros(entrees, monde, joueur)
   const bas = useRef<HTMLDivElement>(null)
@@ -92,7 +106,13 @@ export function JournalHeros({
 
   return (
     <section className="journal-heros" aria-label={t('Journal du héros')}>
-      <header className="journal-heros-entete">
+      <header
+        className={gestesGlisser ? 'journal-heros-entete poignee-glisser' : 'journal-heros-entete'}
+        onPointerDown={gestesGlisser?.onPointerDown}
+        onPointerMove={gestesGlisser?.onPointerMove}
+        onPointerUp={gestesGlisser?.onPointerUp}
+        onPointerCancel={gestesGlisser?.onPointerCancel}
+      >
         <span className="plateau-eyebrow">{t('Journal')}</span>
         {nomHeros ? <strong>{nomHeros}</strong> : null}
         {/* « retenues / total du tampon ». Sert à savoir, quand la colonne

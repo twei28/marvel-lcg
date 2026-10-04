@@ -4,6 +4,7 @@
 # Lancé chaque dimanche par narwhal-purge.timer, ou à la main :
 #     sudo -u narwhal RACINE=/opt/narwhal narwhal-purge
 #     sudo -u narwhal RACINE=/opt/narwhal JOURS=90 narwhal-purge   (plus clément)
+#     sudo -u narwhal RACINE=/opt/narwhal JOURS_REPLAYS=7 narwhal-purge   (sauvegardes seules)
 #
 # Chaque table écrit dans ses propres dossiers. Ce qui se régénère ou ne sert
 # qu'un temps est purgé ; ce qui appartient aux joueurs (decks, comptes,
@@ -14,6 +15,10 @@ set -euo pipefail
 RACINE="${RACINE:-@RACINE@}"
 MOTEUR="${MOTEUR:-$RACINE/Fusion/marvel-lcg-src}"
 JOURS="${JOURS:-30}"
+# Seuil propre aux sauvegardes de partie (24/09/2026, demande de
+# l'utilisateur : la liste "Reprendre une partie" s'accumulait) -- plus court
+# que JOURS, qui reste a 30 jours pour logs/tmp/journaux.
+JOURS_REPLAYS="${JOURS_REPLAYS:-14}"
 
 # Liste blanche explicite. Ajouter un dossier ici est une décision, pas un effet
 # de bord : tout ce qui n'y figure pas survit.
@@ -24,14 +29,16 @@ DOSSIERS_PURGEABLES=(
   "$RACINE/journaux"
 )
 
-echo "Purge des fichiers de plus de $JOURS jours"
+echo "Purge des fichiers de plus de $JOURS jours ($JOURS_REPLAYS pour les sauvegardes de partie)"
 for dossier in "${DOSSIERS_PURGEABLES[@]}"; do
   [ -d "$dossier" ] || { echo "  (absent, ignoré) $dossier"; continue; }
+  seuil="$JOURS"
+  [ "$dossier" = "$MOTEUR/replays" ] && seuil="$JOURS_REPLAYS"
   avant="$(du -sh "$dossier" 2>/dev/null | cut -f1)"
-  supprimes="$(find "$dossier" -type f -mtime "+$JOURS" -print -delete | wc -l)"
+  supprimes="$(find "$dossier" -type f -mtime "+$seuil" -print -delete | wc -l)"
   find "$dossier" -mindepth 1 -type d -empty -delete 2>/dev/null || true
   apres="$(du -sh "$dossier" 2>/dev/null | cut -f1)"
-  echo "  $dossier : $supprimes fichiers supprimés ($avant -> $apres)"
+  echo "  $dossier (+${seuil}j) : $supprimes fichiers supprimés ($avant -> $apres)"
 done
 
 # --- Rapports de bug classés « traité » ---------------------------------------

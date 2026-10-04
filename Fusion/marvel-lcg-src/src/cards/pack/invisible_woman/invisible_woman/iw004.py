@@ -4,10 +4,10 @@ from . import *
 def GetAbilities() -> Sequence['Ability']:
 
     def gain_thwart(effect: 'Effect', message: 'Message.AfterUnitChangeForm') -> None:
-        effect.GetInitiator().GetIdentity().TemporaryGain(effect, message, thwart=1)
+        effect.GetInitiator().GetIdentity().GainUntilTurnEnd(effect, thwart=1)
 
     def gain_attack(effect: 'Effect', message: 'Message.AfterUnitChangeForm') -> None:
-        effect.GetInitiator().GetIdentity().TemporaryGain(effect, message, attack=1)
+        effect.GetInitiator().GetIdentity().GainUntilTurnEnd(effect, attack=1)
 
     return [
         *AbilityFactory.GiveKeywordToAttached("You", defense=1),

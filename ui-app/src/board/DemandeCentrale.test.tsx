@@ -9,7 +9,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ScanCardProps } from '../components/ScanCard'
 import type { Demande, Option } from './ask'
-import { DemandeCentrale } from './DemandeCentrale'
+import { DemandeCentrale, libelleRefus } from './DemandeCentrale'
 import type { WorldCard } from './world'
 
 class ResizeObserverBouchon {
@@ -74,7 +74,20 @@ describe('DemandeCentrale — une fenetre de reaction se comprend sans survoler'
     [12, { id: 12, name: 'Jennifer Walters', card_type: 'AlterEgo', card_id: '01019b' } as unknown as WorldCard],
   ])
 
-  it('dit qui peut reagir, montre la carte porteuse et le texte de la capacite', () => {
+  it('dans le cartouche du mechant, ni « À toi de jouer » ni « peut réagir » (03/10/2026)', () => {
+    const { container } = rendre({
+      demande: fenetre(),
+      options: [objection()],
+      cartesParId: jennifer,
+      carteAuSurvol: () => ({ ...scan, name: 'Jennifer Walters' }),
+      enScene: true,
+    })
+    expect(container.querySelector('.plateau-eyebrow')).toBeNull()
+    expect(container.querySelector('.dc-reagit')).toBeNull()
+    expect(screen.queryByText('Jennifer Walters peut réagir')).toBeNull()
+  })
+
+  it('dit qui peut reagir et montre la carte porteuse, sans le texte de la capacite', () => {
     rendre({
       demande: fenetre(),
       options: [objection()],
@@ -89,10 +102,13 @@ describe('DemandeCentrale — une fenetre de reaction se comprend sans survoler'
     expect(screen.queryByText(/Main Scheme Phase/)).toBeNull()
     expect(screen.queryByText(/The Break-In!/)).toBeNull()
     expect(screen.getByText(/Effraction/)).toBeInTheDocument()
-    expect(screen.getByText(/prevent 1 of that threat/)).toBeInTheDocument()
+    // Plus de texte de capacite sous les boutons (retire le 03/10/2026).
+    expect(screen.queryByText(/prevent 1 of that threat/)).toBeNull()
     // La vignette de la carte porteuse, sans survol.
     expect(document.querySelector('.dc-vignette')).not.toBeNull()
-    expect(screen.getByRole('button', { name: /Passer/ })).toBeInTheDocument()
+    // « Passer » est devenu « Ne pas utiliser … » (04/10/2026) : Objection est
+    // une capacite EN JEU (pas d'`estEnMain` ici).
+    expect(screen.getByRole('button', { name: /^Ne pas utiliser/ })).toBeInTheDocument()
   })
 
   it('le bouton prend le nom francais de la capacite quand le texte le donne', () => {
@@ -103,7 +119,9 @@ describe('DemandeCentrale — une fenetre de reaction se comprend sans survoler'
       texteCapacite: () =>
         '"Objection !" — Interruption : quand de la menace est censée être placée sur une manigance, prévenez 1 de ces menaces.',
     })
-    expect(screen.getByRole('button', { name: /Objection !/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^Objection !/ })).toBeInTheDocument()
+    // Le refus reprend le meme nom : « Ne pas utiliser Objection ! ».
+    expect(screen.getByRole('button', { name: 'Ne pas utiliser Objection !' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /I Object/ })).toBeNull()
   })
 
@@ -195,5 +213,125 @@ describe('DemandeCentrale — deux boutons portes par la meme carte', () => {
     })
 
     expect(document.querySelectorAll('.dc-vignette')).toHaveLength(2)
+  })
+})
+
+describe('DemandeCentrale — un seul choix ne se dit pas deux fois', () => {
+  // Capture du 03/10/2026 : « Fin de phase pour Domino » en titre, puis
+  // « FIN DE PHASE / Domino » sur l'unique bouton. « Pourquoi il y a deux
+  // boutons qui disent la meme chose ? »
+  const finDePhase = (): Demande =>
+    ({
+      options: [option()],
+      prompt_text: 'Fin de phase pour Domino',
+      event_name: 'WhenPlayerInTurn',
+      show_cancel: false,
+      ability_type: 'Normal',
+    }) as unknown as Demande
+
+  it('sans « Passer », le titre disparait et la poignee reste', () => {
+    const { container } = rendre({ demande: finDePhase() })
+    expect(screen.queryByText('Fin de phase pour Domino')).toBeNull()
+    expect(container.querySelector('.dc-texte.poignee-glisser.est-poignee-seule')).not.toBeNull()
+    expect(container.querySelectorAll('.af-action-wrap')).toHaveLength(1)
+  })
+
+  it('avec « Passer », le titre reste : il dit ce qui declenche la fenetre', () => {
+    const { container } = rendre({ demande: { ...finDePhase(), show_cancel: true } })
+    expect(screen.getByText('Fin de phase pour Domino')).toBeTruthy()
+    expect(container.querySelector('.est-poignee-seule')).toBeNull()
+  })
+
+  it('deux choix gardent le titre', () => {
+    const deux = [option(), { ...option(), id: 8 }]
+    rendre({ demande: { ...finDePhase(), options: deux }, options: deux })
+    expect(screen.getByText('Fin de phase pour Domino')).toBeTruthy()
+  })
+})
+
+describe('DemandeCentrale — le bouton de refus dit ce qu il fait', () => {
+  // Demande du 04/10/2026 : « le mot "passer" n'indique pas vraiment ce que ça
+  // fait ». Choix pris une question a la fois.
+  const avec = (surcharge: Partial<Option>): Option => ({ ...option(), ...surcharge }) as Option
+
+  // Decision du 04/10/2026 : ce qui est connu de l'attaque entre parentheses
+  // DANS le bouton, sur la meme ligne, pour que « Défendre avec X » et « Ne pas
+  // défendre » restent au meme niveau ; detail complet au survol.
+  it('defense : « Ne pas défendre (ATQ …) » dans le bouton, plus de ligne en dessous', () => {
+    const defendre = avec({ name: 'Defense' })
+    const { container } = rendre({
+      demande: { ...demande(), options: [defendre], event_name: 'WhenEnemyAttack' } as unknown as Demande,
+      options: [defendre],
+      ligneSansDefense: 'ATQ 2 + 1 Armure + 1 Charge + 3 autres + 1 carte boost',
+      survolSansDefense: 'ATQ 2 + 1 Armure + 1 Charge + 1 Rage + 2 Furie + 1 carte boost',
+    })
+    const refus = screen.getByRole('button', { name: 'Ne pas défendre (ATQ 2 + 1 Armure + 1 Charge + 3 autres + 1 carte boost)' })
+    expect(refus.getAttribute('title')).toBe('ATQ 2 + 1 Armure + 1 Charge + 1 Rage + 2 Furie + 1 carte boost')
+    expect(container.querySelector('.dc-pass-consequence')).toBeNull()
+  })
+
+  it('defense : « Défendre avec X (DÉF …) », la defense du personnage et ses bonus', () => {
+    const defendre = avec({ name: 'Defense' })
+    const avecDef = new Map<number, WorldCard>([
+      [12, { id: 12, name: 'Jessica Jones', card_type: 'hero', info: { defense: 3 }, bonus: { DEF: [['Bouclier', 40, 1]] } } as unknown as WorldCard],
+    ])
+    rendre({
+      demande: { ...demande(), options: [defendre], event_name: 'WhenEnemyAttack' } as unknown as Demande,
+      options: [defendre],
+      cartesParId: avecDef,
+    })
+    expect(screen.getByRole('button', { name: 'Défendre avec Jessica Jones (DÉF 2 + 1 Bouclier)' })).toBeInTheDocument()
+  })
+
+  it('reaction a une carte EN MAIN : « Ne pas jouer » et son nom', () => {
+    expect(libelleRefus([avec({ name: 'Play' })], true, cartes, undefined, undefined, () => true)).toBe(
+      'Ne pas jouer Backflip'
+    )
+  })
+
+  it('reaction a une capacite EN JEU : « Ne pas utiliser » et son nom', () => {
+    const sens = avec({ name: '"Spider-Sense"' })
+    expect(libelleRefus([sens], true, cartes, undefined, () => '« Sens d’Araignée » — Interruption : piochez 1 carte.', () => false)).toBe(
+      'Ne pas utiliser Sens d’Araignée'
+    )
+  })
+
+  it('capacite nommee SANS guillemets (Spider-Sense) : son nom, pas celui de la carte', () => {
+    // Vu en capture le 04/10/2026 : « Ne pas utiliser Spider-Man ».
+    expect(libelleRefus([avec({ name: 'Spider-Sense' })], true, cartes, undefined, undefined, () => false)).toBe(
+      'Ne pas utiliser Spider-Sense'
+    )
+  })
+
+  it('en francais, la capacite prend son nom francais : « Sens d’Araignée », pas « Spider-Sense »', () => {
+    // Signale le 04/10/2026. Le texte francais officiel commence par le nom.
+    const texte = () => 'Sens d’Araignée — Interruption : quand le méchant initie une attaque contre vous, piochez 1 carte.'
+    expect(libelleRefus([avec({ name: 'Spider-Sense' })], true, cartes, undefined, texte, () => false)).toBe(
+      'Ne pas utiliser Sens d’Araignée'
+    )
+  })
+
+  it('un nom technique ou un type ne prend JAMAIS l’en-tete du texte', () => {
+    const texte = () => 'Scientifique — Ressource : générez une ressource.'
+    expect(libelleRefus([avec({ name: 'Generate_Mental' })], true, cartes, undefined, texte, () => false)).toBe(
+      'Ne pas utiliser Backflip'
+    )
+    expect(libelleRefus([avec({ name: 'Resource' })], true, cartes, undefined, texte, () => false)).toBe(
+      'Ne pas utiliser Backflip'
+    )
+  })
+
+  it('capacite sans nom : le nom de la carte, jamais « Ne pas utiliser Interruption »', () => {
+    expect(libelleRefus([avec({ name: 'Interrupt' })], true, cartes, undefined, undefined, () => false)).toBe(
+      'Ne pas utiliser Backflip'
+    )
+  })
+
+  it('plusieurs reactions : « Ne rien jouer »', () => {
+    expect(libelleRefus([avec({}), avec({ id: 8 })], true, cartes)).toBe('Ne rien jouer')
+  })
+
+  it('hors reaction et hors defense : « Passer » reste', () => {
+    expect(libelleRefus([avec({})], false, cartes)).toBe('Passer')
   })
 })

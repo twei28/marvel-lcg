@@ -762,6 +762,8 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         cle = cibles[0] if cibles and cibles[0] in paiements else next(iter(paiements))
         infos = paiements.get(cle) or {}
         cout = str(infos.get("cost", "0"))
+        if cout == "*":
+            return []
         besoin = int(cout) if cout.isdigit() else len(cout)
         if besoin <= 0:
             return []
@@ -807,6 +809,10 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             return True
         infos = paiements.get(cle) or {}
         cout = str(infos.get("cost", "0"))
+        # « * » : cout deja annule par la carte (Chaos Magic 15003 joue sans
+        # payer), rien a payer, et la demande est obligatoire.
+        if cout == "*":
+            return True
         besoin = int(cout) if cout.isdigit() else len(cout)
         if besoin <= 0:
             return True
@@ -937,6 +943,8 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                   if isinstance(o, dict) and not o.get("failure_reason")]
         if not libres:
             etat["derniere_reponse_legale"] = False
+            if trace and etat["asks"] <= trace:
+                print("SANS OPTION LIBRE, passer:", brute[:1500], flush=True)
             return passer
 
         try:
@@ -1110,7 +1118,18 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         executables = [o for o in retenues if executable(o, ctx)]
         if executables:
             retenues = executables
-        elif all((o.get("target_num_range") or [0, 0])[0] == 0 for o in retenues):
+        elif all((o.get("target_num_range") or [0, 0])[0] == 0
+                 or o.get("name") == "Play" for o in retenues):
+            # CORRECTIF (25/09/2026, pack conan) : un « Play » impayable est
+            # declinable meme s'il annonce une cible obligatoire. Sa plage
+            # [1, 1] decrit les cibles de la CARTE, pas une question forcee :
+            # jouer une carte n'est jamais impose. Mesure : graine 2, main
+            # reduite a cn003 Crush Your Enemies (cout 1, cible un ennemi,
+            # `target_payment.payment` vide) ; le pilote la rejouait par
+            # « prudence » et la partie finissait « bloquee » au round 1.
+            # Le « 0 » est ici la fin de tour, deja envoyee par le garde-fou
+            # du score nul sur ce meme menu (Attack/Thwart en [1, 1]).
+
             # AUCUNE option restante ne peut reellement se jouer (paiement
             # insuffisant pour toutes), mais toutes acceptent 0 cible : decliner
             # est une reponse legale (pas de risque d'AssertionError ChoiceOne,
