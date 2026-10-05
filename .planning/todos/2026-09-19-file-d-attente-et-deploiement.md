@@ -1644,3 +1644,15 @@ resté affiché pendant tout le tour du méchant en mode « Sur la table » (dé
 
 Sur « si personne n'est en ligne, vas-y » : 3 connexions HTTPS, toutes de l'IP de l'utilisateur (109.136.116.9), aucun autre joueur. `bash ui-app/deployer.sh` puis `deployer.ps1 -Code` (lancé deux fois par erreur, sans effet). Bundle `board-BKJCJCLU.js` et `board-CMjWbA_A.css` : md5 identiques en prod (ef7f3881…, abb2937c…), service actif, site en 200. Contenu : table par briques (étapes 1 à 4 de `2026-10-05-table-par-briques-decisions.md`, validation serveur incluse), bulles de stats d'après l'art affiché (e0955eb8), `palettes-heros-corrections.json`, `prepare.html`. NON COMMITÉ : le travail de la table par briques n'est pas encore dans git.
 Non vérifié : mode manuel (`data-zone`, `data-pile`) sur une table éclatée dans une vraie partie.
+
+## ✅ DÉPLOIEMENT du 05/10/2026 : mode Auto / Manuel façon OCTGN, table par briques, phase du méchant
+
+Sur « déploie » de l'utilisateur. `bash ui-app/deployer.sh` puis `deployer.ps1 -Code` : bundle
+`board-MSpgHV1a.js` (md5 d2fa5aae798d) et `nouveautes.js` (md5 3565cdb3c010) identiques à la prod,
+service actif, site en 200. Contenu : interrupteur Auto / Manuel et fenêtre « On en est où ? »,
+reprise en Auto côté moteur (`POST /manuel_reprise`), gestes OCTGN (flèches, Suppr, double-clic, C,
+vaincre ce stade, manigance terminée), onglet d'aide, choix au lanceur et dans les Réglages, table par
+briques, phase du méchant en trois modes, bulles d'arts alternatifs, nouveautés à jour.
+⚠ Connexions non vérifiées avant l'envoi (SSH en lecture refusé par le classifieur avant le « déploie »).
+Reste : limite connue, annuler (Ctrl+Z) juste après une reprise en Auto non géré ; mode manuel à regarder
+sur une table éclatée en vraie partie.
