@@ -153,6 +153,12 @@ export const creerCarte = (cardId: string) =>
  */
 export const declarerFin = (gagne: boolean) => envoyer([`Puzzle.${gagne ? 'Win' : 'Lose'}()`])
 
+/** « Vaincre ce stade » (OCTGN) : le méchant passe au stade suivant, par le moteur. */
+export const avancerLeMechant = () => envoyer(['Puzzle.AdvanceVillain()'])
+
+/** « Manigance terminée » (OCTGN) : la manigance principale passe à l'étape suivante. */
+export const avancerLaManigance = () => envoyer(['Puzzle.AdvanceMainScheme()'])
+
 /**
  * Ctrl+Z : retire le dernier geste et rejoue la partie sans lui.
  *

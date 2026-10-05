@@ -656,7 +656,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Poser la carte glissée SOUS la pile': 'Put the dragged card UNDER the pile',
   'Chercher une carte dans tout le catalogue et la poser': 'Search the whole catalogue and place a card',
   'Clic droit sur la table': 'Right-click on the table',
-  'Faire apparaître une carte, terminer la partie': 'Bring in a card, end the game',
+  'Faire apparaître une carte, vaincre ce stade, manigance terminée, terminer la partie': 'Bring in a card, defeat this stage, scheme completed, end the game',
   'Mode automatique': 'Automatic mode',
   'Mode manuel': 'Manual mode',
   'Le moteur applique les règles et pose les questions': 'The engine applies the rules and asks the questions',
@@ -726,6 +726,8 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   // ---- Mode manuel : déclarer la fin de la partie (tâche 7) ----
   'Terminer la partie': 'End the game',
+  'Vaincre ce stade': 'Defeat this stage',
+  'Manigance terminée': 'Scheme completed',
   'Le moteur ne surveille plus la table : c’est à toi de déclarer la fin.':
     'The engine no longer watches the table: it’s up to you to declare the end.',
   'Déclarer la victoire ?': 'Declare victory?',

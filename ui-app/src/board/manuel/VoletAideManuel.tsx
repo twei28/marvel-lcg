@@ -23,7 +23,7 @@ const SUR_UNE_PILE: Raccourci[] = [
 
 const PARTOUT: Raccourci[] = [
   { touches: 'C', effet: 'Chercher une carte dans tout le catalogue et la poser' },
-  { touches: 'Clic droit sur la table', effet: 'Faire apparaître une carte, terminer la partie' },
+  { touches: 'Clic droit sur la table', effet: 'Faire apparaître une carte, vaincre ce stade, manigance terminée, terminer la partie' },
 ]
 
 function Tableau({ titre, lignes }: { titre: string; lignes: Raccourci[] }) {

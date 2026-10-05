@@ -26,6 +26,9 @@ export type MenuTableProps = {
    * précise, elle a donc sa place ici plutôt que dans `MenuTriche`.
    */
   onTerminerPartie: () => void
+  /** Gestes OCTGN côté méchant : le stade du méchant, l'étape de la manigance. */
+  onVaincreStade: () => void
+  onManigancePrincipale: () => void
 }
 
 export function MenuTable({
@@ -34,6 +37,8 @@ export function MenuTable({
   onFermer,
   onFaireApparaitre,
   onTerminerPartie,
+  onVaincreStade,
+  onManigancePrincipale,
 }: MenuTableProps) {
   const boite = useRef<HTMLDivElement | null>(null)
 
@@ -91,6 +96,28 @@ export function MenuTable({
             }}
           >
             {t('Faire apparaître une carte')}
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            onClick={() => {
+              onVaincreStade()
+              onFermer()
+            }}
+          >
+            {t('Vaincre ce stade')}
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            onClick={() => {
+              onManigancePrincipale()
+              onFermer()
+            }}
+          >
+            {t('Manigance terminée')}
           </button>
         </li>
         <li>

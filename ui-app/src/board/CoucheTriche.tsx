@@ -833,6 +833,10 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           onFermer={() => setMenuTable(undefined)}
           onFaireApparaitre={() => setCatalogueOuvert(true)}
           onTerminerPartie={() => setFinOuverte(true)}
+          onVaincreStade={() => void emettreGeste(t('Vaincre ce stade'), () => triche.avancerLeMechant())}
+          onManigancePrincipale={() =>
+            void emettreGeste(t('Manigance terminée'), () => triche.avancerLaManigance())
+          }
         />
       ) : null}
 

@@ -14,6 +14,8 @@ describe('MenuTable', () => {
         onFermer={onFermer}
         onFaireApparaitre={onFaireApparaitre}
         onTerminerPartie={vi.fn()}
+        onVaincreStade={vi.fn()}
+        onManigancePrincipale={vi.fn()}
       />
     )
     fireEvent.click(getByText('Faire apparaître une carte'))
@@ -31,11 +33,35 @@ describe('MenuTable', () => {
         onFermer={onFermer}
         onFaireApparaitre={vi.fn()}
         onTerminerPartie={onTerminerPartie}
+        onVaincreStade={vi.fn()}
+        onManigancePrincipale={vi.fn()}
       />
     )
     fireEvent.click(getByText('Terminer la partie'))
     expect(onTerminerPartie).toHaveBeenCalled()
     expect(onFermer).toHaveBeenCalled()
+  })
+
+  it('propose les gestes OCTGN du méchant : vaincre ce stade, manigance terminée', () => {
+    const onVaincreStade = vi.fn()
+    const onManigancePrincipale = vi.fn()
+    const onFermer = vi.fn()
+    const { getByText } = render(
+      <MenuTable
+        x={0}
+        y={0}
+        onFermer={onFermer}
+        onFaireApparaitre={vi.fn()}
+        onTerminerPartie={vi.fn()}
+        onVaincreStade={onVaincreStade}
+        onManigancePrincipale={onManigancePrincipale}
+      />
+    )
+    fireEvent.click(getByText('Vaincre ce stade'))
+    expect(onVaincreStade).toHaveBeenCalledTimes(1)
+    fireEvent.click(getByText('Manigance terminée'))
+    expect(onManigancePrincipale).toHaveBeenCalledTimes(1)
+    expect(onFermer).toHaveBeenCalledTimes(2)
   })
 
   it('se ferme à Échap', () => {
@@ -47,6 +73,8 @@ describe('MenuTable', () => {
         onFermer={onFermer}
         onFaireApparaitre={vi.fn()}
         onTerminerPartie={vi.fn()}
+        onVaincreStade={vi.fn()}
+        onManigancePrincipale={vi.fn()}
       />
     )
     fireEvent.keyDown(document, { key: 'Escape' })
@@ -62,6 +90,8 @@ describe('MenuTable', () => {
         onFermer={onFermer}
         onFaireApparaitre={vi.fn()}
         onTerminerPartie={vi.fn()}
+        onVaincreStade={vi.fn()}
+        onManigancePrincipale={vi.fn()}
       />
     )
     fireEvent.mouseDown(document.body)
