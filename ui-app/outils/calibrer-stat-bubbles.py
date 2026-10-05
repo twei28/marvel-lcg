@@ -13,6 +13,7 @@ import argparse
 import colorsys
 import json
 import re
+import statistics
 from collections import deque
 from io import BytesIO
 from pathlib import Path
@@ -26,6 +27,11 @@ RACINE_DEPOT = RACINE_APP.parent
 CARTES_JSON = RACINE_DEPOT / "Fusion" / "marvel-lcg-src" / "data" / "cards.json"
 SORTIE = RACINE_APP / "src" / "components" / "stat-bubbles" / "positions.ts"
 CACHE = RACINE_APP / ".cache" / "stat-scans"
+PICS = RACINE_DEPOT / "Fusion" / "marvel-lcg-src" / "assets" / "pics"
+
+# Arts alternatifs de heros et d'alter-egos : « 01001a_cb ». Leurs stats
+# imprimees ne sont pas aux memes endroits que sur la carte officielle.
+ART_ALTERNATIF = re.compile(r"^(\d{5}[ab])_(cb|m3t|rog2?)\.jpg$")
 
 FRAME_H_SUR_W = 176 / 127
 LABELS = ("THW", "ATK", "DEF", "REC", "SCH")
@@ -73,6 +79,27 @@ Y_ATTENDU: dict[str, dict[str, float]] = {
 }
 
 
+# Les arts « cb » partagent TOUS le meme gabarit (mesure sur 140 images, dispersion
+# nulle) : on pose les boites en pixels d'une image 600x860 au lieu de les
+# detecter, car la detection par couleur accroche parfois l'illustration. Les
+# rares « cb » d'une autre taille retombent sur la detection, avec ces zones.
+TAILLE_GABARIT_CB = (600, 860)
+GABARIT_CB: dict[str, tuple[int, int, int, int]] = {
+    "THW": (24, 237, 94, 290),
+    "ATK": (23, 328, 95, 382),
+    "DEF": (23, 420, 95, 474),
+    "REC": (26, 235, 100, 290),
+}
+RECHERCHE["HeroCB"] = {
+    "THW": (0.0, 0.22, 0.30, 0.42),
+    "ATK": (0.0, 0.36, 0.30, 0.54),
+    "DEF": (0.0, 0.48, 0.30, 0.66),
+}
+Y_ATTENDU["HeroCB"] = {"THW": 0.29, "ATK": 0.41, "DEF": 0.52}
+RECHERCHE["AlterEgoCB"] = {"REC": (0.0, 0.22, 0.30, 0.42)}
+Y_ATTENDU["AlterEgoCB"] = {"REC": 0.29}
+
+
 def valeur_stat(brut: object) -> bool:
     return isinstance(brut, str) and re.match(r"^\d+\*?$", brut) is not None
 
@@ -95,6 +122,63 @@ def cartes_a_calibrer() -> list[tuple[str, str, list[str]]]:
             if labels:
                 cartes.append((card_id, type_carte, labels))
     return cartes
+
+
+def faces_alternatives(officielles: dict[str, tuple[str, list[str]]]) -> list[tuple[str, str, str, list[str]]]:
+    """(pic_id de l'art, style, type de la carte officielle, ses labels)."""
+    faces: list[tuple[str, str, str, list[str]]] = []
+    for chemin in sorted(PICS.iterdir()):
+        trouve = ART_ALTERNATIF.match(chemin.name)
+        if not trouve or trouve.group(1) not in officielles:
+            continue
+        type_carte, labels = officielles[trouve.group(1)]
+        if type_carte in ("Hero", "AlterEgo"):
+            faces.append((chemin.stem, trouve.group(2), type_carte, labels))
+    return faces
+
+
+def calibrer_alternative(
+    image: Image.Image, style: str, type_carte: str, labels: list[str]
+) -> dict[str, dict[str, float]]:
+    par_label: dict[str, dict[str, float]] = {}
+    gabarit_cb = style == "cb" and image.size == TAILLE_GABARIT_CB
+    zones = type_carte + "CB" if style == "cb" else type_carte
+    for label in labels:
+        boite = GABARIT_CB.get(label) if gabarit_cb else detecter_bulle(image, zones, label)
+        if boite is not None:
+            par_label[label] = convertir_vers_frame(image, boite)
+    return par_label
+
+
+def completer_par_mediane(
+    positions: dict[str, dict[str, dict[str, float]]],
+    alternatives: list[tuple[str, str, str, list[str]]],
+) -> None:
+    """Les arts rog et m3t suivent un gabarit unique par type de carte : une
+    bulle que la detection ne trouve pas (illustration trop chargee) prend la
+    mediane des autres faces du meme style, plutot que de retomber sur la
+    position officielle, fausse pour cet art."""
+    par_style: dict[tuple[str, str, str], list[dict[str, float]]] = {}
+    for pic_id, style, type_carte, labels in alternatives:
+        if style == "cb":
+            continue
+        for label, boite in positions.get(pic_id, {}).items():
+            par_style.setdefault((style, type_carte, label), []).append(boite)
+    for pic_id, style, type_carte, labels in alternatives:
+        if style == "cb":
+            continue
+        for label in labels:
+            if label in positions.get(pic_id, {}):
+                continue
+            echantillon = par_style.get((style, type_carte, label))
+            if not echantillon:
+                print(f"  sans repli : {pic_id} {label}")
+                continue
+            positions.setdefault(pic_id, {})[label] = {
+                cle: round(statistics.median(b[cle] for b in echantillon), 5)
+                for cle in ("x", "y", "w", "h")
+            }
+            print(f"  complete par mediane : {pic_id} {label}")
 
 
 def charger_scan(base_url: str, pic_id: str) -> Image.Image | None:
@@ -276,6 +360,18 @@ def main() -> int:
             positions[pic_id] = par_label
         if index % 100 == 0:
             print(f"{index}/{len(cartes)} cartes analysees...")
+
+    officielles = {pic_id: (type_carte, labels) for pic_id, type_carte, labels in cartes}
+    alternatives = faces_alternatives(officielles)
+    for pic_id, style, type_carte, labels in alternatives:
+        image = Image.open(PICS / f"{pic_id}.jpg").convert("RGB")
+        par_label = calibrer_alternative(image, style, type_carte, labels)
+        if len(par_label) < len(labels):
+            print(f"  incomplet : {pic_id} ({len(par_label)}/{len(labels)})")
+        if par_label:
+            positions[pic_id] = par_label
+    completer_par_mediane(positions, alternatives)
+    print(f"{len(alternatives)} arts alternatifs de heros et d'alter-egos traites.")
 
     ecrire_positions(positions)
     print(f"{len(positions)} cartes calibrees sur {len(cartes)} candidates. {erreurs} scans illisibles.")

@@ -472,6 +472,7 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     }
   }
 
+  const picAffiche = picIdAffiche(card.pic_id, contexte.collectionRessources)
   return {
     id: String(card.id),
     // Le nom FRANCAIS quand les scans le sont : sans cela la carte montrait
@@ -484,11 +485,13 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     state,
     exhausted,
     // Art alternatif eventuel (promos FFG) : cosmetique, la carte reste la meme.
-    imageUrl: scanUrl(picIdAffiche(card.pic_id, contexte.collectionRessources)),
+    imageUrl: scanUrl(picAffiche),
     // Les arts alternatifs n'existent qu'en anglais : l'apercu doit alors
     // donner le texte francais (demande de l'utilisateur, 03/10/2026).
-    artAlternatif: picIdAffiche(card.pic_id, contexte.collectionRessources) !== card.pic_id,
-    picId: card.pic_id,
+    artAlternatif: picAffiche !== card.pic_id,
+    // L'image AFFICHEE, pas la carte officielle : les bulles de stats se posent
+    // sur ses stats imprimees, qui changent de place selon l'art.
+    picId: picAffiche,
     autresFaces: autresFacesDe(card, contexte.catalogue),
     // Un complot EN MAIN (side scheme joueur) est montre en PORTRAIT, pour tenir
     // dans l'eventail comme les autres cartes. Il reprend son format paysage a
