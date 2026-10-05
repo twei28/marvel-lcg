@@ -425,7 +425,7 @@ class RunPuzzle:
             if size > 0:
                 Faces.PlaceTokensOn([face], size, name, self.debug_rule)
             else:
-                Faces.RemoveTokensOn([face], size, name, self.debug_rule)
+                Faces.RemoveTokensOn([face], -size, name, self.debug_rule)
 
     ################################################################################
     #

@@ -3597,6 +3597,28 @@ def cas_relire_reprise(game_dir, port):
     return "la reprise survit : tour rejoue, geste rejoue, aucun desaccord"
 
 
+def cas_jeton_acceleration(game_dir, port):
+    """Un jeton d'acceleration se pose ET se retire par Puzzle.Token.
+
+    ⚠ ECRIT ROUGE (05/10/2026) : la branche negative passait `size` tel quel a
+    `RemoveTokensOn` (valeur negative), seul `Counter` l'opposait. F4 / Maj+F4
+    du mode manuel (OCTGN) reposent sur ce retrait.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    schemes = monde.area_schemes_main.Get()
+    assert schemes, "aucun complot principal en jeu"
+    carte = schemes[-1].card.object_id
+    face = monde.object_manager.card_dict[carte].face
+
+    deposer(jeu, f"Puzzle.Token({carte}, 'acceleration_token', 3)")
+    assert face.GetTokens('acceleration_token') == 3, \
+        f"3 jetons attendus, {face.GetTokens('acceleration_token')} trouves"
+    deposer(jeu, f"Puzzle.Token({carte}, 'acceleration_token', -1)")
+    assert face.GetTokens('acceleration_token') == 2, \
+        f"2 jetons attendus apres le retrait, {face.GetTokens('acceleration_token')} trouves"
+    return "Puzzle.Token pose puis retire un jeton d'acceleration"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
@@ -3658,6 +3680,7 @@ CAS = {
     "reprise_refusee_hors_manuel": cas_reprise_refusee_hors_manuel,
     "reprise_survit_sauvegarde": cas_reprise_survit_sauvegarde,
     "relire_reprise": cas_relire_reprise,
+    "jeton_acceleration": cas_jeton_acceleration,
 }
 
 
