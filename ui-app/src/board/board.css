@@ -433,6 +433,20 @@
     text-transform: uppercase;
   }
 
+  .plateau-regardees-masque {
+    margin: 0 0 8px;
+    color: #cbd5e1;
+    font-size: 0.85rem;
+  }
+
+  .plateau-regardees-masque-liste {
+    margin: 0;
+    padding-left: 18px;
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
   .plateau-regardees-cartes {
     display: flex;
     flex-wrap: wrap;

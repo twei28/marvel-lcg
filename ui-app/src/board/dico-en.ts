@@ -1277,6 +1277,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Combat': 'Combat',
   'Piles du héros': 'Hero piles',
   'Autres piles': 'Other piles',
+  'Masqué, mais il contient :': 'Hidden, but it contains:',
   'Revoir la phase du méchant': 'Review the villain phase',
   'Retour au journal': 'Back to the log',
   'Hors de la phase du méchant': 'Outside the villain phase',

@@ -51,7 +51,9 @@ export function TiroirPiles({
         <ul className="tiroir-liste">
           {piles.map((pile) => {
             const contenu = pile.unite.pileContenu
-            const consultable = contenu !== undefined && contenu.length > 0
+            const consultable =
+              contenu !== undefined &&
+              (contenu.length > 0 || pile.unite.pileGroupes?.some((groupe) => groupe.masque !== undefined) === true)
             const libelle = libelleDePile(pile)
             return (
               <li key={pile.cle}>

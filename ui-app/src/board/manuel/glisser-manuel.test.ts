@@ -110,7 +110,7 @@ describe('le glisser du mode manuel', () => {
     expect(PILE_PAR_ZONE['rencontre-encounter-deck']).toBe('EncounterDeck')
     expect(PILE_PAR_ZONE['rencontre-encounter-discard']).toBe('EncounterDiscardPile')
     expect(PILE_PAR_ZONE['joueur-defausse']).toBe('DiscardPile')
-    expect(PILE_PAR_ZONE['annexes-nemesis']).toBe('AsideDeck')
+    expect(PILE_PAR_ZONE['annexes-nemesis']).toBeUndefined()
     expect(PILE_PAR_ZONE['annexes-visibles']).toBeUndefined()
     expect(PILE_PAR_ZONE['annexes-cachees']).toBeUndefined()
   })

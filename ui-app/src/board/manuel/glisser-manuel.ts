@@ -34,8 +34,8 @@ import { CLE_PILE_ENGAGES, type CleEmplacement } from '../zones'
  *
  * Volontairement ABSENTES, plutôt que devinées :
  *  - `'annexes-visibles'` / `'annexes-cachees'` : ces piles sont FONDUES à
- *    l'affichage (`zones.ts`, `pileFondue`) — victoire, retirées, mises de
- *    côté du scénario, etc. partagent un seul dos de carte. Aucune n'est
+ *    l'affichage (`zones.ts`, `pileFondue`) — set némésis, victoire, retirées,
+ *    mises de côté du scénario, etc. partagent un seul dos de carte. Aucune n'est
  *    désignable sans ambiguïté depuis ce seul dos ; `zones.ts` ne leur pose
  *    donc pas de `pile`, et un lâcher dessus retombe sur `data-zone`
  *    (`'annexes'`), lui aussi absent d'ici : refus poli, jamais un geste au
@@ -86,7 +86,6 @@ export const PILE_PAR_ZONE: Record<string, string> = {
   // `RunPuzzle.ZONES_JOUEUR` (`puzzle.py`) — cette entrée était refusée
   // jusque-là, faute de pile moteur à viser.
   'soutien-defausse': 'AdditionalDiscardPile',
-  'annexes-nemesis': 'AsideDeck',
 }
 
 export function reglagesGlisserManuel(

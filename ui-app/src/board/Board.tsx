@@ -1313,6 +1313,10 @@ export function PileRegardee({
   // plateau : les cartes de l'overlay ne grandissent pas sur place.
   const [apercuId, setApercuId] = useState<string | null>(null)
   const parId = useMemo(() => new Map(cartes.map((c) => [c.id, c])), [cartes])
+  const masque = groupes?.some((groupe) => groupe.masque !== undefined) === true
+  const total = masque
+    ? (groupes ?? []).reduce((somme, groupe) => somme + (groupe.masque?.nombre ?? 0), 0)
+    : cartes.length
   const survol = useCallback((evenement: ReactMouseEvent) => {
     const carte = (evenement.target as HTMLElement).closest<HTMLElement>('.scan-card')
     setApercuId(carte?.dataset.cardId ?? null)
@@ -1345,7 +1349,7 @@ export function PileRegardee({
           >
             <span className="plateau-eyebrow">{titre}</span>
             <strong>
-              {cartes.length} {cartes.length > 1 ? t('cartes') : t('carte')}
+              {total} {total > 1 ? t('cartes') : t('carte')}
             </strong>
           </div>
           <button type="button" onClick={fermer}>
@@ -1354,7 +1358,19 @@ export function PileRegardee({
         </header>
 
         <div className="plateau-regardees-corps">
-          {groupes && groupes.length > 0 ? (
+          {masque ? (
+            <>
+              <p className="plateau-regardees-masque">{t('Masqué, mais il contient :')}</p>
+              <ul className="plateau-regardees-masque-liste">
+                {(groupes ?? []).map((groupe) => (
+                  <li key={groupe.cle}>
+                    {groupe.titre} · {groupe.masque?.nombre ?? 0}{' '}
+                    {(groupe.masque?.nombre ?? 0) > 1 ? t('cartes') : t('carte')}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : groupes && groupes.length > 0 ? (
             groupes.map((groupe) => (
               <section className="plateau-regardees-groupe" key={groupe.cle}>
                 <h2>
