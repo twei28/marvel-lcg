@@ -1666,3 +1666,9 @@ vérifiées avant l'envoi (3 sockets, une seule adresse : celle de l'utilisateur
 est où ? » mise en page, bouton d'affichage de prepare.html compact).
 Reste : mode manuel à regarder sur une table éclatée en vraie partie ; `passerLaQuestion` (triche.ts) et
 `estEnPause` (mode.ts) n'ont plus d'appelant à l'écran ; CSS `.bandeau-pause*` morte dans board.css.
+
+## ✅ DÉPLOIEMENT du 05/10/2026 (nuit) : clavier et souris fidèles à OCTGN
+
+Sur « déploie » de l'utilisateur. Connexions vérifiées avant l'envoi (3 sockets, une seule adresse : celle de l'utilisateur). `bash ui-app/deployer.sh` puis `deployer.ps1 -Code` : bundle `board-JHqzwFZq.js` (md5 20ba55f9691d) identique sur le serveur, service actif, site en 200. Contenu : commits 07166caf, a9496d2d (moteur : `Puzzle.Token` négatif retire vraiment un jeton) et 5b88d9a2 (touches F7, Ctrl+F, F3/F4/F5, Alt+S/C/T et Ctrl+Alt pour retirer, flèches par type de carte, Suppr, Ctrl+Q, F12, double-clic OCTGN, menu de table au hasard, remélange de défausse dans le deck, aide réécrite). Les touches maison F/Q/R et les chiffres sur une carte sont retirés.
+Non porté d'OCTGN : Ctrl+U et Ctrl+F sur une pile, défausse au hasard, mulligan, Ctrl+A, Ctrl+H, chargement du méchant, sauvegarde de table. F12 ne remélange pas la défausse et ne défausse pas l'excédent de main.
+Non vérifié : aucun test en navigateur réel de ces gestes (tests unitaires et câblage verts seulement) ; mode manuel sur une table éclatée en vraie partie. Le rapport du fork de recherche OCTGN générale (vue, zoom, tchat) n'a jamais été écrit.
