@@ -1656,3 +1656,13 @@ briques, phase du méchant en trois modes, bulles d'arts alternatifs, nouveauté
 ⚠ Connexions non vérifiées avant l'envoi (SSH en lecture refusé par le classifieur avant le « déploie »).
 Reste : limite connue, annuler (Ctrl+Z) juste après une reprise en Auto non géré ; mode manuel à regarder
 sur une table éclatée en vraie partie.
+
+## ✅ DÉPLOIEMENT du 05/10/2026 (soir) : bandeau de pause supprimé, aide OCTGN, bouton d'affichage compact
+
+Sur « déploie » de l'utilisateur. `bash ui-app/deployer.sh` puis `deployer.ps1 -Code` : bundle
+`board-DFjMUYtG.js` (md5 25291e0fbc4a) identique à la prod, service actif, site en 200. Connexions
+vérifiées avant l'envoi (3 sockets, une seule adresse : celle de l'utilisateur). Contenu : commit
+329daedc (bandeau « Table en manuel » retiré, onglet d'aide limité aux gestes d'OCTGN, fenêtre « On en
+est où ? » mise en page, bouton d'affichage de prepare.html compact).
+Reste : mode manuel à regarder sur une table éclatée en vraie partie ; `passerLaQuestion` (triche.ts) et
+`estEnPause` (mode.ts) n'ont plus d'appelant à l'écran ; CSS `.bandeau-pause*` morte dans board.css.
