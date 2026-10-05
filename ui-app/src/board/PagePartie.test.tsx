@@ -3,7 +3,7 @@
 // Voir `moteur-faux.ts` pour le pourquoi : ce fichier est le premier a rendre
 // `board.tsx`. Il ne rejoue pas de regles — il pose une table, emet la trame,
 // et affirme sur ce que le joueur voit.
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { MoteurFaux, etatInitial } from './moteur-faux'
 import type { EtatMoteur } from './moteur'
@@ -355,6 +355,26 @@ describe('l\'interrupteur Auto / Manuel', () => {
       body: JSON.stringify({ phase: 'mechant' }),
     }))
     vi.unstubAllGlobals()
+  })
+
+  it('en manuel : l\'aide s\'ouvre toute seule, se ferme a la main, et la languette la rouvre', async () => {
+    monter()
+    const monde = table(heros('Spider-Man', 1)) as { mode_manuel?: boolean; manuel_actif?: boolean }
+    monde.mode_manuel = false
+    monde.manuel_actif = true
+    await emettre({ monde: monde as never })
+    expect(screen.getByRole('dialog', { name: 'Aide du mode manuel' })).toBeTruthy()
+    fireEvent.click(within(screen.getByRole('dialog', { name: 'Aide du mode manuel' })).getByTitle('Fermer'))
+    expect(screen.queryByRole('dialog', { name: 'Aide du mode manuel' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Aide' }))
+    expect(screen.getByRole('dialog', { name: 'Aide du mode manuel' })).toBeTruthy()
+  })
+
+  it('en automatique : ni aide ni languette', async () => {
+    monter()
+    await emettre({ monde: table(heros('Spider-Man', 1)) })
+    expect(screen.queryByRole('dialog', { name: 'Aide du mode manuel' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Aide' })).toBeNull()
   })
 })
 

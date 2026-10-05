@@ -1,0 +1,121 @@
+/* L'aide du mode manuel (VoletAideManuel.tsx). Hors couche, comme VoletJournal.css.
+   En haut a droite, sous la barre ; la languette est au-dessus de celle du journal. */
+
+.volet-aide {
+  position: fixed;
+  right: 0;
+  top: 56px;
+  z-index: 610;
+  width: min(380px, 92vw);
+  max-height: calc(100dvh - 72px);
+  display: flex;
+  flex-direction: column;
+  background: rgba(18, 21, 30, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  box-shadow: -12px 0 32px rgba(0, 0, 0, 0.55);
+  color: #e8eef6;
+}
+
+.volet-aide-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.volet-aide-tete h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.volet-aide-contenu {
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.aide-manuel-intro {
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  opacity: 0.8;
+}
+
+.aide-manuel-groupe h3 {
+  margin: 12px 0 6px;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.aide-manuel-groupe dl {
+  margin: 0;
+}
+
+.aide-manuel-ligne {
+  display: grid;
+  grid-template-columns: 9.5em 1fr;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 0.85rem;
+}
+
+.aide-manuel-ligne dt,
+.aide-manuel-ligne dd {
+  margin: 0;
+}
+
+.aide-manuel-ligne kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 4px;
+}
+
+.volet-aide-languette {
+  position: fixed;
+  right: 0;
+  top: 120px;
+  z-index: 605;
+  padding: 12px 5px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d9e1ea;
+  background: rgba(30, 34, 44, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.volet-aide-languette.est-ouvert {
+  right: min(380px, 92vw);
+  z-index: 612;
+}
+
+@media (max-width: 760px), (max-height: 520px) {
+  .volet-aide {
+    inset: 0;
+    width: 100%;
+    max-height: none;
+    border: none;
+    border-radius: 0;
+  }
+
+  .volet-aide-languette.est-ouvert {
+    display: none;
+  }
+}

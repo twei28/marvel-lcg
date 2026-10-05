@@ -31,6 +31,7 @@ import { estEnPause, estModeManuel, leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
 import { BandeauPause } from './board/manuel/BandeauPause'
 import { InterrupteurFacon } from './board/manuel/InterrupteurFacon'
+import { VoletAideManuel } from './board/manuel/VoletAideManuel'
 import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
 // ⚠ IMPORT NOMME, PAS `import * as triche` : `PagePartie` a deja un
 // identifiant local `triche` (`useTriche(...)`, le bac a sable) -- un import
@@ -3257,6 +3258,14 @@ export function PagePartie({
   const [partieOuverte, setPartieOuverte] = useState(false)
   const ouvrirVolet = useCallback(() => setPartieOuverte(true), [])
   const fermerVolet = useCallback(() => setPartieOuverte(false), [])
+  // L'aide du mode manuel s'ouvre toute seule a chaque passage en manuel ;
+  // la main la ferme, et la languette la rouvre tant qu'on est en manuel.
+  const [aideManuelOuverte, setAideManuelOuverte] = useState(false)
+  const ouvrirAideManuel = useCallback(() => setAideManuelOuverte(true), [])
+  const fermerAideManuel = useCallback(() => setAideManuelOuverte(false), [])
+  useEffect(() => {
+    setAideManuelOuverte(manuel)
+  }, [manuel])
   // « REVOIR LA PHASE DU MÉCHANT » EN SCENE PC (D38) : le journal rouvre le
   // cartouche du bas en relecture. Elle se referme d'elle-meme quand la phase
   // du mechant reprend, ou quand un coup du mechant arrive pendant le tour :
@@ -4678,6 +4687,9 @@ export function PagePartie({
         retourMenu={retourMenu}
         retourMenuPrincipal={() => { void retourMenuPrincipal() }}
       />
+      {manuel ? (
+        <VoletAideManuel ouvert={aideManuelOuverte} ouvrir={ouvrirAideManuel} fermer={fermerAideManuel} />
+      ) : null}
       <VoletJournal ouvert={partieOuverte} ouvrir={ouvrirVolet} fermer={fermerVolet}>
         <MessageRapport message={rapport.message} />
         <JournalConsole
