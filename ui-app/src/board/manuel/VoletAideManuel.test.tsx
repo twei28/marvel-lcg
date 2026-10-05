@@ -7,7 +7,7 @@ describe('l’aide du mode manuel', () => {
   it('ouvert : liste les raccourcis d’OCTGN', () => {
     render(<VoletAideManuel ouvert ouvrir={() => {}} fermer={() => {}} />)
     const aide = screen.getByRole('dialog', { name: 'Aide du mode manuel' })
-    for (const texte of ['Suppr', 'Double-clic', 'Clic droit sur la table', 'Défausser', 'Ctrl + F', 'F7', 'Alt + S']) {
+    for (const texte of ['Suppr', 'Double-clic', 'Clic droit sur la table', 'Défausser', 'Ctrl + F', 'F7', 'Alt + S', 'Ctrl + Alt + S', 'F4', 'Ctrl + Q', 'F12', 'Ctrl + Maj + D']) {
       expect(aide.textContent).toContain(texte)
     }
     expect(aide.textContent).toContain('Mélanger la pile')

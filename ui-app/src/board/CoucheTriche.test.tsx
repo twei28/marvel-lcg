@@ -27,6 +27,8 @@ function coucheVide() {
     emettreGeste: vi.fn(async (_libelle: string, deposer: () => Promise<boolean>) => {
       await deposer()
     }),
+    executerGeste: vi.fn(async () => {}),
+    tirerAuHasard: vi.fn(),
     avisRefus: undefined as string | undefined,
     annulationEnCours: false,
     menuTable: undefined as { x: number; y: number } | undefined,
@@ -64,6 +66,32 @@ describe('la pile ouverte propose de la mélanger', () => {
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
       body: JSON.stringify({ commands: ["Puzzle.Shuffle('EncounterDeck')"] }),
     }))
+  })
+})
+
+describe('une défausse se remélange dans son deck (OCTGN : Shuffle discard into deck)', () => {
+  it('remet chaque carte dans le deck, puis mélange', async () => {
+    const couche = {
+      ...coucheVide(),
+      pile: { titre: 'Pile de défausse', cartes: [CARTE, { ...CARTE, id: 2 } as WorldCard], duJoueur: true, zone: 'DiscardPile' },
+    }
+    const { getByText } = render(<CoucheTriche actif manuel couche={couche} />)
+    fireEvent.click(getByText('Remélanger dans le deck'))
+    await Promise.resolve()
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({
+        commands: ["Puzzle.MoveTo(1, 'PlayerDeck', 'Top')", "Puzzle.MoveTo(2, 'PlayerDeck', 'Top')", "Puzzle.Shuffle('PlayerDeck')"],
+      }),
+    }))
+  })
+
+  it('n’est pas proposé sur un deck', () => {
+    const couche = {
+      ...coucheVide(),
+      pile: { titre: 'Deck Rencontre', cartes: [CARTE], duJoueur: false, zone: 'EncounterDeck' },
+    }
+    const { queryByText } = render(<CoucheTriche actif manuel couche={couche} />)
+    expect(queryByText('Remélanger dans le deck')).toBeNull()
   })
 })
 
@@ -152,7 +180,7 @@ describe('un geste manuel refusé se voit, sans jamais dire l’inverse (correct
     const ajouterAuJournal = vi.fn()
     render(<Harness world={mondeManuel()} ajouterAuJournal={ajouterAuJournal} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await attendreLeReseau()
     expect(fetch).toHaveBeenCalled()
     expect(ajouterAuJournal).not.toHaveBeenCalled()
@@ -163,7 +191,7 @@ describe('un geste manuel refusé se voit, sans jamais dire l’inverse (correct
     const avant = mondeManuel()
     const { rerender } = render(<Harness world={avant} ajouterAuJournal={ajouterAuJournal} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await attendreLeReseau()
     expect(ajouterAuJournal).not.toHaveBeenCalled()
 
@@ -180,7 +208,7 @@ describe('un geste manuel refusé se voit, sans jamais dire l’inverse (correct
     const avant = mondeManuel()
     const { container, rerender } = render(<Harness world={avant} ajouterAuJournal={ajouterAuJournal} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await attendreLeReseau()
 
     const suivant = {
@@ -207,7 +235,7 @@ describe('un geste manuel refusé se voit, sans jamais dire l’inverse (correct
     const ajouterAuJournal = vi.fn()
     render(<Harness world={mondeManuel()} ajouterAuJournal={ajouterAuJournal} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await attendreLeReseau()
     expect(ajouterAuJournal).toHaveBeenCalledTimes(1)
     expect(ajouterAuJournal).toHaveBeenCalledWith('Retourner — Rhino (refusé)')
@@ -219,9 +247,9 @@ describe('un geste manuel refusé se voit, sans jamais dire l’inverse (correct
     const { rerender } = render(<Harness world={avant} ajouterAuJournal={ajouterAuJournal} />)
 
     survoler(7)
-    fireEvent.keyDown(document, { key: 'f' }) // Retourner — Rhino
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true }) // Retourner — Rhino
     survoler(8)
-    fireEvent.keyDown(document, { key: 'q' }) // Incliner — Klaw
+    fireEvent.keyDown(document, { key: 'F7' }) // Incliner — Klaw
     await attendreLeReseau()
     expect(ajouterAuJournal).not.toHaveBeenCalled()
 
@@ -254,7 +282,7 @@ describe('un geste manuel refusé se voit, sans jamais dire l’inverse (correct
     const avant = mondeManuel()
     const { rerender } = render(<Harness world={avant} ajouterAuJournal={ajouterAuJournal} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await attendreLeReseau()
 
     const suivant = { ...avant, render_id: 2, manuel_refus: '' } as World

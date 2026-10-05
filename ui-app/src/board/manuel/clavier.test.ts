@@ -1,130 +1,158 @@
 import { describe, expect, it } from 'vitest'
-import { creerEtatTouches, interpreterTouche } from './clavier'
+import { creerEtatTouches, interpreterDoubleClic, interpreterTouche, natureDe, type CarteVisee } from './clavier'
 
-const VILAIN = { genre: 'carte', id: 7, jetonNaturel: 'degats' } as const
-const MANIGANCE = { genre: 'carte', id: 9, jetonNaturel: 'menace' } as const
+const carte = (type: string, id: number, plus: Partial<CarteVisee> = {}): CarteVisee => ({
+  genre: 'carte',
+  id,
+  type,
+  prete: true,
+  faceVisible: true,
+  statuts: { stunned: false, confused: false, tough: false },
+  ...plus,
+})
+const HEROS = carte('Hero', 1)
+const ALLIE = carte('Ally', 2)
+const SBIRE = carte('Minion', 3)
+const VILAIN = carte('EncounterVillain', 7)
+const MANIGANCE = carte('SideScheme', 9)
+const PRINCIPALE = carte('MainScheme', 10)
+const EVENEMENT = carte('Event', 4)
+const SOUTIEN = carte('Support', 5)
 const DECK = { genre: 'pile', zone: 'PlayerDeck' } as const
 
-describe('les touches du mode manuel', () => {
-  it('raccourcis OCTGN : Ctrl+F, F7, F3, F5, Alt+S/C/T, Ctrl+V', () => {
-    expect(interpreterTouche({ cle: 'f', majuscule: false, ctrl: true }, VILAIN))
-      .toEqual({ geste: 'retourner', id: 7 })
-    expect(interpreterTouche({ cle: 'F7', majuscule: false }, VILAIN))
-      .toEqual({ geste: 'incliner', id: 7 })
-    expect(interpreterTouche({ cle: 'F3', majuscule: false }, VILAIN))
-      .toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: 1 })
-    expect(interpreterTouche({ cle: 'F3', majuscule: true }, VILAIN))
-      .toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: -1 })
-    expect(interpreterTouche({ cle: 'F5', majuscule: false }, MANIGANCE))
-      .toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre: 1 })
-    expect(interpreterTouche({ cle: 'F5', majuscule: false }, VILAIN)).toBeUndefined()
-    expect(interpreterTouche({ cle: 's', majuscule: false, alt: true }, VILAIN))
-      .toEqual({ geste: 'statut', id: 7, statut: 'stun' })
-    expect(interpreterTouche({ cle: 'c', majuscule: false, alt: true, ctrl: true }, VILAIN))
-      .toEqual({ geste: 'statut', id: 7, statut: 'confuse' })
-    expect(interpreterTouche({ cle: 't', majuscule: false, alt: true }, MANIGANCE)).toBeUndefined()
-    expect(interpreterTouche({ cle: 'v', majuscule: false, ctrl: true }, VILAIN))
-      .toEqual({ geste: 'victoire', id: 7 })
+const touche = (cle: string, plus: { majuscule?: boolean; ctrl?: boolean; alt?: boolean } = {}) => ({
+  cle,
+  majuscule: plus.majuscule ?? false,
+  ctrl: plus.ctrl,
+  alt: plus.alt,
+})
+
+describe('les touches du mode manuel, calquées sur OCTGN', () => {
+  it('Ctrl+F retourne, Ctrl+V donne la victoire', () => {
+    expect(interpreterTouche(touche('f', { ctrl: true }), SBIRE)).toEqual({ geste: 'retourner', id: 3 })
+    expect(interpreterTouche(touche('v', { ctrl: true }), SBIRE)).toEqual({ geste: 'victoire', id: 3 })
   })
 
-  it('raccourcis OCTGN sur une pile : Ctrl+S mélange, Ctrl+D pioche', () => {
-    expect(interpreterTouche({ cle: 's', majuscule: false, ctrl: true }, DECK))
-      .toEqual({ geste: 'melanger', zone: 'PlayerDeck' })
-    expect(interpreterTouche({ cle: 'd', majuscule: false, ctrl: true }, DECK))
+  it('F7 incline une carte redressée et redresse une carte inclinée', () => {
+    expect(interpreterTouche(touche('F7'), ALLIE)).toEqual({ geste: 'incliner', id: 2 })
+    expect(interpreterTouche(touche('F7'), carte('Ally', 2, { prete: false }))).toEqual({ geste: 'redresser', id: 2 })
+    expect(interpreterTouche(touche('F7'), EVENEMENT)).toBeUndefined()
+  })
+
+  it('F3 / Maj+F3 : dégâts, jamais sur une manigance', () => {
+    expect(interpreterTouche(touche('F3'), SBIRE)).toEqual({ geste: 'jetons', id: 3, nature: 'degats', nombre: 1 })
+    expect(interpreterTouche(touche('F3', { majuscule: true }), SBIRE))
+      .toEqual({ geste: 'jetons', id: 3, nature: 'degats', nombre: -1 })
+    expect(interpreterTouche(touche('F3'), MANIGANCE)).toBeUndefined()
+  })
+
+  it('F5 / Maj+F5 : menace, seulement sur une manigance', () => {
+    expect(interpreterTouche(touche('F5'), MANIGANCE)).toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre: 1 })
+    expect(interpreterTouche(touche('F5', { majuscule: true }), MANIGANCE))
+      .toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre: -1 })
+    expect(interpreterTouche(touche('F5'), VILAIN)).toBeUndefined()
+  })
+
+  it('F4 / Maj+F4 : accélération', () => {
+    expect(interpreterTouche(touche('F4'), PRINCIPALE)).toEqual({ geste: 'acceleration', id: 10, nombre: 1 })
+    expect(interpreterTouche(touche('F4', { majuscule: true }), PRINCIPALE))
+      .toEqual({ geste: 'acceleration', id: 10, nombre: -1 })
+  })
+
+  it('Alt+S/C/T pose un statut absent, Ctrl+Alt+S/C/T retire un statut présent', () => {
+    expect(interpreterTouche(touche('s', { alt: true }), VILAIN))
+      .toEqual({ geste: 'statut', id: 7, statut: 'stun', pose: true })
+    expect(interpreterTouche(touche('c', { alt: true }), SBIRE))
+      .toEqual({ geste: 'statut', id: 3, statut: 'confuse', pose: true })
+    expect(interpreterTouche(touche('t', { alt: true }), HEROS))
+      .toEqual({ geste: 'statut', id: 1, statut: 'tough', pose: true })
+    const sonne = carte('Minion', 3, { statuts: { stunned: true, confused: false, tough: false } })
+    expect(interpreterTouche(touche('s', { alt: true }), sonne)).toBeUndefined()
+    expect(interpreterTouche(touche('s', { alt: true, ctrl: true }), sonne))
+      .toEqual({ geste: 'statut', id: 3, statut: 'stun', pose: false })
+    expect(interpreterTouche(touche('s', { alt: true, ctrl: true }), SBIRE)).toBeUndefined()
+    expect(interpreterTouche(touche('t', { alt: true }), MANIGANCE)).toBeUndefined()
+  })
+
+  it('Suppr : défausse, vainc le stade du méchant, termine la manigance principale, rien sur un héros', () => {
+    expect(interpreterTouche(touche('Delete'), ALLIE)).toEqual({ geste: 'defausser', id: 2 })
+    expect(interpreterTouche(touche('Delete'), VILAIN)).toEqual({ geste: 'vaincreStade' })
+    expect(interpreterTouche(touche('Delete'), PRINCIPALE)).toEqual({ geste: 'maniganceTerminee' })
+    expect(interpreterTouche(touche('Delete'), HEROS)).toBeUndefined()
+    expect(interpreterTouche(touche('Delete'), DECK)).toBeUndefined()
+  })
+
+  it('haut / bas : points de vie d’un héros ou d’un méchant, dégâts d’un allié, menace d’une manigance, marqueur ailleurs', () => {
+    expect(interpreterTouche(touche('ArrowUp'), HEROS)).toEqual({ geste: 'jetons', id: 1, nature: 'pv', nombre: 1 })
+    expect(interpreterTouche(touche('ArrowDown'), VILAIN)).toEqual({ geste: 'jetons', id: 7, nature: 'pv', nombre: -1 })
+    expect(interpreterTouche(touche('ArrowUp'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'degats', nombre: 1 })
+    expect(interpreterTouche(touche('ArrowDown'), MANIGANCE))
+      .toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre: -1 })
+    expect(interpreterTouche(touche('ArrowUp'), SOUTIEN)).toEqual({ geste: 'compteur', id: 5, nombre: 1 })
+  })
+
+  it('droite / gauche : marqueur générique, sur tout type de carte', () => {
+    expect(interpreterTouche(touche('ArrowRight'), VILAIN)).toEqual({ geste: 'compteur', id: 7, nombre: 1 })
+    expect(interpreterTouche(touche('ArrowLeft'), MANIGANCE)).toEqual({ geste: 'compteur', id: 9, nombre: -1 })
+  })
+
+  it('sur une pile : Ctrl+S mélange, Ctrl+D pioche, Ctrl+Maj+D demande combien', () => {
+    expect(interpreterTouche(touche('s', { ctrl: true }), DECK)).toEqual({ geste: 'melanger', zone: 'PlayerDeck' })
+    expect(interpreterTouche(touche('d', { ctrl: true }), DECK))
       .toEqual({ geste: 'piocher', zone: 'PlayerDeck', nombre: 1 })
-    expect(interpreterTouche({ cle: 'f', majuscule: false, ctrl: true }, DECK)).toBeUndefined()
+    expect(interpreterTouche(touche('d', { ctrl: true, majuscule: true }), DECK))
+      .toEqual({ geste: 'piocherPlusieurs', zone: 'PlayerDeck' })
+    expect(interpreterTouche(touche('f', { ctrl: true }), DECK)).toBeUndefined()
   })
 
-  it('Alt+Entrée sort une carte d’amplification', () => {
-    expect(interpreterTouche({ cle: 'Enter', majuscule: false, alt: true }, DECK))
-      .toEqual({ geste: 'amplification' })
+  it('un chiffre sur une pile pioche autant de cartes, un chiffre sur une carte ne fait rien', () => {
+    expect(interpreterTouche(touche('5'), DECK)).toEqual({ geste: 'piocher', zone: 'PlayerDeck', nombre: 5 })
+    expect(interpreterTouche(touche('3'), VILAIN)).toBeUndefined()
   })
 
-  it('un Ctrl+lettre qui n’est pas à OCTGN ne fait rien', () => {
-    expect(interpreterTouche({ cle: 'r', majuscule: false, ctrl: true }, DECK)).toBeUndefined()
-    expect(interpreterTouche({ cle: '3', majuscule: false, ctrl: true }, VILAIN)).toBeUndefined()
+  it('les gestes de table : Alt+Entrée, Ctrl+Q, F12, même sans rien survoler', () => {
+    expect(interpreterTouche(touche('Enter', { alt: true }), DECK)).toEqual({ geste: 'amplification' })
+    expect(interpreterTouche(touche('q', { ctrl: true }), DECK)).toEqual({ geste: 'toutRedresser' })
+    expect(interpreterTouche(touche('F12'), DECK)).toEqual({ geste: 'finPhaseHeros' })
   })
 
-  it('F retourne la carte survolee', () => {
-    expect(interpreterTouche({ cle: 'f', majuscule: false }, VILAIN))
-      .toEqual({ geste: 'retourner', id: 7 })
+  it('les anciennes touches maison (F, Q, R seuls) ne font plus rien', () => {
+    expect(interpreterTouche(touche('f'), VILAIN)).toBeUndefined()
+    expect(interpreterTouche(touche('q'), VILAIN)).toBeUndefined()
+    expect(interpreterTouche(touche('r'), DECK)).toBeUndefined()
+    expect(interpreterTouche(touche('r', { ctrl: true }), DECK)).toBeUndefined()
   })
 
-  it('Q incline la carte survolee', () => {
-    expect(interpreterTouche({ cle: 'q', majuscule: false }, VILAIN))
-      .toEqual({ geste: 'incliner', id: 7 })
+  it('une touche inconnue ne fait rien', () => {
+    expect(interpreterTouche(touche('z'), VILAIN)).toBeUndefined()
   })
+})
 
-  it('R melange la pile survolee', () => {
-    expect(interpreterTouche({ cle: 'r', majuscule: false }, DECK))
-      .toEqual({ geste: 'melanger', zone: 'PlayerDeck' })
+describe('le double-clic d’OCTGN', () => {
+  it('retourne une carte face cachée', () => {
+    expect(interpreterDoubleClic(carte('Minion', 3, { faceVisible: false }))).toEqual({ geste: 'retourner', id: 3 })
   })
-
-  it('R ne melange pas une carte', () => {
-    expect(interpreterTouche({ cle: 'r', majuscule: false }, VILAIN)).toBeUndefined()
+  it('sur le méchant : amplification', () => {
+    expect(interpreterDoubleClic(VILAIN)).toEqual({ geste: 'amplification' })
   })
-
-  it('un chiffre sur une pile prend ce nombre de cartes', () => {
-    expect(interpreterTouche({ cle: '5', majuscule: false }, DECK))
-      .toEqual({ geste: 'piocher', zone: 'PlayerDeck', nombre: 5 })
+  it('incline ou redresse un allié, une amélioration, un soutien, un héros', () => {
+    expect(interpreterDoubleClic(ALLIE)).toEqual({ geste: 'incliner', id: 2 })
+    expect(interpreterDoubleClic(carte('Support', 5, { prete: false }))).toEqual({ geste: 'redresser', id: 5 })
   })
-
-  it('un chiffre sur un personnage pose des degats', () => {
-    expect(interpreterTouche({ cle: '3', majuscule: false }, VILAIN))
-      .toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: 3 })
+  it('rien sur une manigance, un sbire ou un événement', () => {
+    expect(interpreterDoubleClic(MANIGANCE)).toBeUndefined()
+    expect(interpreterDoubleClic(SBIRE)).toBeUndefined()
+    expect(interpreterDoubleClic(EVENEMENT)).toBeUndefined()
   })
+})
 
-  it('un chiffre sur une manigance pose de la menace', () => {
-    expect(interpreterTouche({ cle: '3', majuscule: false }, MANIGANCE))
-      .toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre: 3 })
-  })
-
-  it('Maj plus chiffre retire autant', () => {
-    expect(interpreterTouche({ cle: '3', majuscule: true }, VILAIN))
-      .toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: -3 })
-  })
-
-  it('ne devine pas le jeton d une carte qui n en a pas', () => {
-    const evenement = { genre: 'carte', id: 4, jetonNaturel: 'aucun' } as const
-    expect(interpreterTouche({ cle: '3', majuscule: false }, evenement)).toBeUndefined()
-  })
-
-  it('fleche haut / bas : un degat de plus ou de moins sur un personnage', () => {
-    expect(interpreterTouche({ cle: 'ArrowUp', majuscule: false }, VILAIN))
-      .toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: 1 })
-    expect(interpreterTouche({ cle: 'ArrowDown', majuscule: false }, VILAIN))
-      .toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: -1 })
-  })
-
-  it('fleche droite / gauche : un jeton generique sur un personnage', () => {
-    expect(interpreterTouche({ cle: 'ArrowRight', majuscule: false }, VILAIN))
-      .toEqual({ geste: 'compteur', id: 7, nombre: 1 })
-    expect(interpreterTouche({ cle: 'ArrowLeft', majuscule: false }, VILAIN))
-      .toEqual({ geste: 'compteur', id: 7, nombre: -1 })
-  })
-
-  it('sur une manigance, les quatre fleches jouent sur la menace', () => {
-    for (const [cle, nombre] of [['ArrowUp', 1], ['ArrowDown', -1], ['ArrowRight', 1], ['ArrowLeft', -1]] as const) {
-      expect(interpreterTouche({ cle, majuscule: false }, MANIGANCE))
-        .toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre })
-    }
-  })
-
-  it('les fleches ne devinent rien sur une carte sans etat, ni sur une pile', () => {
-    const evenement = { genre: 'carte', id: 4, jetonNaturel: 'aucun' } as const
-    expect(interpreterTouche({ cle: 'ArrowUp', majuscule: false }, evenement)).toBeUndefined()
-    expect(interpreterTouche({ cle: 'ArrowRight', majuscule: false }, evenement)).toBeUndefined()
-    expect(interpreterTouche({ cle: 'ArrowUp', majuscule: false }, DECK)).toBeUndefined()
-  })
-
-  it('Suppr defausse la carte survolee, mais jamais une pile', () => {
-    expect(interpreterTouche({ cle: 'Delete', majuscule: false }, VILAIN))
-      .toEqual({ geste: 'defausser', id: 7 })
-    expect(interpreterTouche({ cle: 'Delete', majuscule: false }, DECK)).toBeUndefined()
-  })
-
-  it('ignore une touche inconnue', () => {
-    expect(interpreterTouche({ cle: 'z', majuscule: false }, VILAIN)).toBeUndefined()
+describe('ce que mesure une carte', () => {
+  it('suit le type', () => {
+    expect(natureDe('Hero')).toBe('pv')
+    expect(natureDe('Villain')).toBe('pv')
+    expect(natureDe('Minion')).toBe('degats')
+    expect(natureDe('MainScheme')).toBe('menace')
+    expect(natureDe('Upgrade')).toBe('marqueur')
   })
 })
 

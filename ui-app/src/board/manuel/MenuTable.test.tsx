@@ -16,6 +16,10 @@ describe('MenuTable', () => {
         onTerminerPartie={vi.fn()}
         onVaincreStade={vi.fn()}
         onManigancePrincipale={vi.fn()}
+        onToutRedresser={vi.fn()}
+        onFinPhaseHeros={vi.fn()}
+        onAmplification={vi.fn()}
+        onHasard={vi.fn()}
       />
     )
     fireEvent.click(getByText('Faire apparaître une carte'))
@@ -35,6 +39,10 @@ describe('MenuTable', () => {
         onTerminerPartie={onTerminerPartie}
         onVaincreStade={vi.fn()}
         onManigancePrincipale={vi.fn()}
+        onToutRedresser={vi.fn()}
+        onFinPhaseHeros={vi.fn()}
+        onAmplification={vi.fn()}
+        onHasard={vi.fn()}
       />
     )
     fireEvent.click(getByText('Terminer la partie'))
@@ -55,6 +63,10 @@ describe('MenuTable', () => {
         onTerminerPartie={vi.fn()}
         onVaincreStade={onVaincreStade}
         onManigancePrincipale={onManigancePrincipale}
+        onToutRedresser={vi.fn()}
+        onFinPhaseHeros={vi.fn()}
+        onAmplification={vi.fn()}
+        onHasard={vi.fn()}
       />
     )
     fireEvent.click(getByText('Vaincre ce stade'))
@@ -75,6 +87,10 @@ describe('MenuTable', () => {
         onTerminerPartie={vi.fn()}
         onVaincreStade={vi.fn()}
         onManigancePrincipale={vi.fn()}
+        onToutRedresser={vi.fn()}
+        onFinPhaseHeros={vi.fn()}
+        onAmplification={vi.fn()}
+        onHasard={vi.fn()}
       />
     )
     fireEvent.keyDown(document, { key: 'Escape' })
@@ -92,9 +108,39 @@ describe('MenuTable', () => {
         onTerminerPartie={vi.fn()}
         onVaincreStade={vi.fn()}
         onManigancePrincipale={vi.fn()}
+        onToutRedresser={vi.fn()}
+        onFinPhaseHeros={vi.fn()}
+        onAmplification={vi.fn()}
+        onHasard={vi.fn()}
       />
     )
     fireEvent.mouseDown(document.body)
     expect(onFermer).toHaveBeenCalled()
+  })
+
+  it('propose le menu au hasard d’OCTGN et le tire sans toucher au moteur', () => {
+    const onHasard = vi.fn()
+    const onToutRedresser = vi.fn()
+    const { getByText } = render(
+      <MenuTable
+        x={0}
+        y={0}
+        onFermer={vi.fn()}
+        onFaireApparaitre={vi.fn()}
+        onTerminerPartie={vi.fn()}
+        onVaincreStade={vi.fn()}
+        onManigancePrincipale={vi.fn()}
+        onToutRedresser={onToutRedresser}
+        onFinPhaseHeros={vi.fn()}
+        onAmplification={vi.fn()}
+        onHasard={onHasard}
+      />
+    )
+    fireEvent.click(getByText('Pile ou face'))
+    fireEvent.click(getByText('Nombre au hasard'))
+    fireEvent.click(getByText('Joueur au hasard'))
+    fireEvent.click(getByText('Tout redresser (Ctrl+Q)'))
+    expect(onHasard.mock.calls.map((appel) => appel[0])).toEqual(['pile-ou-face', 'nombre', 'joueur'])
+    expect(onToutRedresser).toHaveBeenCalled()
   })
 })

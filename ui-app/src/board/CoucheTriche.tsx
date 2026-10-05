@@ -17,10 +17,15 @@ import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPann
 import { CatalogueManuel } from './manuel/CatalogueManuel'
 import {
   creerEtatTouches,
+  estInclinable,
+  estManigance,
+  estSansEtat,
+  interpreterDoubleClic,
   interpreterTouche,
   type CibleClavier,
   type GesteClavier,
 } from './manuel/clavier'
+import { statutsPortes } from './effets-statuts'
 import { FinManuelle } from './manuel/FinManuelle'
 import { leMoteurSeTait } from './manuel/mode'
 import { estSpectateur } from './moteur'
@@ -56,24 +61,6 @@ type MenuOuvert = { cible: CibleTriche; x: number; y: number }
  * de quoi retenir l'écran plus que le temps de le lire.
  */
 const DUREE_AVIS_REFUS = 3500
-
-/** Les types de cartes qui se mesurent en menace plutôt qu'en points de vie. */
-const MANIGANCES = new Set(['MainScheme', 'SideScheme', 'Scheme'])
-/** Ce qui ne s'incline pas et n'a pas d'état : inutile de proposer ces entrées. */
-const SANS_ETAT = new Set(['Event', 'Treachery', 'Obligation', 'Resource'])
-
-/**
- * Le jeton qu'un chiffre pose « naturellement » sur cette carte, pour le
- * clavier (voir `manuel/clavier.ts`). MÊMES ENSEMBLES que le menu au clic
- * droit, juste au-dessus : une manigance se mesure en menace, une carte SANS
- * ÉTAT n'a rien à recevoir — mieux vaut ne rien poser qu'un jeton faux qu'on
- * ne relira pas.
- */
-function jetonNaturelDe(carte: WorldCard): 'degats' | 'menace' | 'aucun' {
-  if (MANIGANCES.has(carte.card_type)) return 'menace'
-  if (SANS_ETAT.has(carte.card_type)) return 'aucun'
-  return 'degats'
-}
 
 /**
  * Un champ de saisie a le focus : le clavier du mode manuel ne doit pas le
@@ -177,6 +164,7 @@ export function useTriche(
   const [interventions, setInterventions] = useState<string[]>([])
 
   const index = useMemo(() => (actif ? indexer(world) : new Map()), [actif, world])
+  const statuts = useMemo(() => statutsPortes(index), [index])
   const piles = useMemo(
     () => (actif ? pilesParDessus(world, joueurId) : new Map()),
     [actif, world, joueurId]
@@ -188,6 +176,27 @@ export function useTriche(
       ajouterAuJournal?.(libelle)
     },
     [ajouterAuJournal]
+  )
+
+  // Le menu « Random » d'OCTGN : un tirage ne touche pas au moteur, il
+  // s'écrit seulement au journal.
+  const tirerAuHasard = useCallback(
+    (tirage: 'pile-ou-face' | 'nombre' | 'joueur') => {
+      if (tirage === 'pile-ou-face') {
+        noter(`${t('Pile ou face')} : ${Math.random() < 0.5 ? t('Pile') : t('Face')}`)
+        return
+      }
+      if (tirage === 'nombre') {
+        const reponse = window.prompt(t('Jusqu’à quel nombre ?'), '6')
+        const maximum = Number(reponse)
+        if (!reponse || !Number.isInteger(maximum) || maximum < 1) return
+        noter(`${t('Nombre au hasard')} (1-${maximum}) : ${1 + Math.floor(Math.random() * maximum)}`)
+        return
+      }
+      const nombre = Math.max(1, world?.players?.length ?? 1)
+      noter(`${t('Joueur au hasard')} : ${t('Joueur')} ${1 + Math.floor(Math.random() * nombre)}`)
+    },
+    [noter, world]
   )
 
   // --- Un geste refusé doit se voir, SANS jamais dire l'inverse -------------
@@ -362,8 +371,8 @@ export function useTriche(
         cible: {
           id,
           nom: carte.name || `${t('Carte')} ${id}`,
-          estManigance: MANIGANCES.has(carte.card_type),
-          estPersonnage: !SANS_ETAT.has(carte.card_type),
+          estManigance: estManigance(carte.card_type),
+          estPersonnage: !estSansEtat(carte.card_type),
         },
         x: evenement.clientX,
         y: evenement.clientY,
@@ -372,6 +381,21 @@ export function useTriche(
     document.addEventListener('contextmenu', surClicDroit)
     return () => document.removeEventListener('contextmenu', surClicDroit)
   }, [actif, index, piles, manuel])
+
+  // Un geste qui touche plusieurs cartes (Ctrl+Q, F12) : une commande par
+  // carte, une ligne de journal par carte, un seul bloc en attente (même
+  // issue pour toutes, voir plus haut).
+  const emettreLot = useCallback(
+    async (lignes: { libelle: string; deposer: () => Promise<boolean> }[]) => {
+      const libelles: string[] = []
+      for (const { libelle, deposer } of lignes) {
+        if (await deposer()) libelles.push(libelle)
+        else noter(`${libelle} (${t('refusé')})`)
+      }
+      if (libelles.length > 0) enAttenteRef.current.push({ libelles })
+    },
+    [noter]
+  )
 
   // Traduit un geste du clavier en appel du canal `triche.ts`. La ligne
   // n'est pas écrite ici : `emettreGeste` la retarde jusqu'au rendu qui
@@ -387,6 +411,11 @@ export function useTriche(
         case 'incliner': {
           const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
           await emettreGeste(`${t('Incliner')} — ${nom}`, () => triche.incliner(geste.id))
+          return
+        }
+        case 'redresser': {
+          const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          await emettreGeste(`${t('Redresser')} — ${nom}`, () => triche.redresser(geste.id))
           return
         }
         case 'melanger': {
@@ -463,10 +492,13 @@ export function useTriche(
         }
         case 'statut': {
           const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          // Le moteur BASCULE : `interpreterTouche` n'envoie ce geste que
+          // quand il change vraiment l'état (pose si absent, retrait si présent).
           const action =
             geste.statut === 'stun' ? triche.assommer : geste.statut === 'confuse' ? triche.rendreConfus : triche.rendreCoriace
-          const libelle =
+          const base =
             geste.statut === 'stun' ? t('Étourdi') : geste.statut === 'confuse' ? t('Confus') : t('Coriace')
+          const libelle = geste.pose ? base : `${base} ${t('retiré')}`
           await emettreGeste(`${libelle} — ${nom}`, () => action(geste.id))
           return
         }
@@ -501,17 +533,77 @@ export function useTriche(
             return
           }
           // Puzzle.Damage ne sait pas soigner avec une valeur négative : le
-          // « retirer » du clavier (Maj) passe par Puzzle.Heal, comme le menu.
-          const libelle = geste.nombre >= 0 ? t('Infliger des dégâts') : t('Soigner')
-          await emettreGeste(`${libelle} ${Math.abs(geste.nombre)} — ${nom}`, () =>
-            geste.nombre >= 0
-              ? triche.blesser(geste.id, geste.nombre)
-              : triche.soigner(geste.id, -geste.nombre)
+          // « retirer » passe par Puzzle.Heal, comme le menu. Sur un héros ou
+          // un méchant, OCTGN compte les points de vie RESTANTS : « plus »
+          // soigne, « moins » blesse. Sur un sbire ou un allié, il compte
+          // les dégâts : « plus » blesse.
+          const soigne = geste.nature === 'pv' ? geste.nombre >= 0 : geste.nombre < 0
+          const libelle = soigne ? t('Soigner') : t('Infliger des dégâts')
+          const valeur = Math.abs(geste.nombre)
+          await emettreGeste(`${libelle} ${valeur} — ${nom}`, () =>
+            soigne ? triche.soigner(geste.id, valeur) : triche.blesser(geste.id, valeur)
           )
+          return
+        }
+        case 'acceleration': {
+          const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          const libelle = geste.nombre >= 0 ? t('Ajouter de l’accélération') : t('Retirer de l’accélération')
+          await emettreGeste(`${libelle} ${Math.abs(geste.nombre)} — ${nom}`, () =>
+            triche.poserAcceleration(geste.id, geste.nombre)
+          )
+          return
+        }
+        case 'vaincreStade':
+          await emettreGeste(t('Vaincre ce stade'), () => triche.avancerLeMechant())
+          return
+        case 'maniganceTerminee':
+          await emettreGeste(t('Manigance terminée'), () => triche.avancerLaManigance())
+          return
+        case 'piocherPlusieurs': {
+          const reponse = window.prompt(t('Combien de cartes ?'), '3')
+          const nombre = Number(reponse)
+          if (reponse === null || !Number.isInteger(nombre) || nombre < 1) return
+          await executerGeste({ geste: 'piocher', zone: geste.zone, nombre })
+          return
+        }
+        case 'toutRedresser':
+        case 'finPhaseHeros': {
+          const joueur = world?.players?.[joueurId]
+          const lignes: { libelle: string; deposer: () => Promise<boolean> }[] = []
+          // Les cartes du joueur seulement (`readyAll` d'OCTGN ignore tout ce
+          // qui est Rencontre, méchant ou manigance principale).
+          const inclinees = [...(joueur?.area_hero ?? []), ...(joueur?.allies ?? []), ...(joueur?.supports ?? [])].filter(
+            (carte) => !carte.is_ready && estInclinable(carte.card_type)
+          )
+          for (const carte of inclinees) {
+            lignes.push({
+              libelle: `${t('Redresser')} — ${carte.name || `${t('Carte')} ${carte.id}`}`,
+              deposer: () => triche.redresser(carte.id),
+            })
+          }
+          // Fin de la phase des héros : on repioche jusqu'à la taille de main
+          // (`doEndHeroPhase`). La défausse n'est PAS remélangée dans un deck
+          // vide, et l'excédent de main n'est pas défaussé : à la main.
+          if (geste.geste === 'finPhaseHeros' && joueur) {
+            const manque = (joueur.hand_size ?? 0) - joueur.hand_cards.length
+            const cartes = manque > 0 ? joueur.player_deck.slice(-manque).reverse() : []
+            for (const carte of cartes) {
+              lignes.push({
+                libelle: `${t('Piocher')} — ${carte.name || `${t('Carte')} ${carte.id}`}`,
+                deposer: () => triche.envoyerEnMain(carte.id),
+              })
+            }
+          }
+          if (lignes.length === 0) {
+            noter(geste.geste === 'toutRedresser' ? t('Rien à redresser') : t('Rien à redresser ni à piocher'))
+            return
+          }
+          await emettreLot(lignes)
+          return
         }
       }
     },
-    [index, piles, emettreGeste, noter]
+    [index, piles, emettreGeste, emettreLot, noter, world, joueurId]
   )
 
   // --- Ctrl+Z : annule le dernier geste (tâche 6) ---------------------------
@@ -569,7 +661,19 @@ export function useTriche(
       if (pileVisee) return { genre: 'pile', zone: pileVisee.zone }
       const carte = index.get(id)
       if (!carte) return undefined
-      return { genre: 'carte', id, jetonNaturel: jetonNaturelDe(carte) }
+      const portes = statuts.get(id) ?? []
+      return {
+        genre: 'carte',
+        id,
+        type: carte.card_type,
+        prete: carte.is_ready,
+        faceVisible: carte.is_face_up,
+        statuts: {
+          stunned: portes.includes('stunned'),
+          confused: portes.includes('confused'),
+          tough: portes.includes('tough'),
+        },
+      }
     }
 
     const surTouche = (evenement: KeyboardEvent) => {
@@ -592,18 +696,23 @@ export function useTriche(
         return
       }
       // Ctrl/Cmd/Alt : raccourcis du NAVIGATEUR (Ctrl+R recharge, Ctrl+1..9
-      // change d'onglet). Seules les combinaisons d'OCTGN passent (Ctrl+F,
-      // Ctrl+S, Ctrl+D, Ctrl+V, Alt+S/C/T, Alt+Entrée), et le navigateur ne
-      // perd la sienne (`preventDefault`) que si le geste s'applique à ce
-      // qu'on survole : sinon Ctrl+F ouvre bien la recherche.
+      // change d'onglet). Seules les combinaisons d'OCTGN passent, et le
+      // navigateur ne perd la sienne (`preventDefault`) que si le geste
+      // s'applique : sinon Ctrl+F ouvre bien la recherche.
       if (evenement.metaKey) return
       // Une saisie de texte en cours : le chiffre tapé est un chiffre, pas un
       // geste de jeu.
       if (estZoneDeSaisie(document.activeElement)) return
-      const avecModificateur = evenement.ctrlKey || evenement.altKey
-      if (survole.current === undefined && !(avecModificateur && evenement.key === 'Enter')) return
+      // Les gestes de TABLE d'OCTGN (Alt+Entrée, Ctrl+Q, F12) n'ont besoin de
+      // rien sous le pointeur.
+      const cle = evenement.key.toLowerCase()
+      const geste_de_table =
+        (evenement.altKey && !evenement.ctrlKey && cle === 'enter') ||
+        (evenement.ctrlKey && !evenement.altKey && !evenement.shiftKey && cle === 'q') ||
+        (!evenement.ctrlKey && !evenement.altKey && cle === 'f12')
+      if (survole.current === undefined && !geste_de_table) return
       const cible = survole.current === undefined ? undefined : cibleClavier(survole.current)
-      if (!cible && !(avecModificateur && evenement.key === 'Enter')) return
+      if (!cible && !geste_de_table) return
       const geste = interpreterTouche(
         { cle: evenement.key, majuscule: evenement.shiftKey, ctrl: evenement.ctrlKey, alt: evenement.altKey },
         cible ?? { genre: 'pile', zone: '' }
@@ -613,23 +722,19 @@ export function useTriche(
       void executerGeste(geste)
     }
 
-    // Double-clic d'OCTGN : sur un personnage, il s'incline (comme Q) ; sur le
-    // méchant, il sort la carte du dessus du deck Rencontre en résolution
-    // (l'amplification), comme le chiffre 1 sur ce deck. Une pile, une
-    // manigance ou une carte sans état : rien, on ne devine pas.
+    // Double-clic d'OCTGN (`defaultCardAction`) : une carte face cachée se
+    // retourne ; sur le méchant, il sort la carte du dessus du deck Rencontre
+    // (l'amplification) ; sur un héros, un allié, une amélioration ou un
+    // soutien, il s'incline ou se redresse. Une pile ou une manigance : rien.
     const surDoubleClic = (evenement: MouseEvent) => {
       if (estZoneDeSaisie(document.activeElement)) return
       const noeud = (evenement.target as HTMLElement | null)?.closest?.('[data-card-id]')
       const id = noeud ? Number(noeud.getAttribute('data-card-id')) : NaN
       if (!Number.isFinite(id) || piles.has(id)) return
-      const carte = index.get(id)
-      if (!carte) return
-      if (carte.card_type === 'EncounterVillain') {
-        void executerGeste({ geste: 'piocher', zone: 'EncounterDeck', nombre: 1 })
-        return
-      }
-      if (MANIGANCES.has(carte.card_type) || SANS_ETAT.has(carte.card_type)) return
-      void executerGeste({ geste: 'incliner', id })
+      const cible = cibleClavier(id)
+      if (!cible || cible.genre !== 'carte') return
+      const geste = interpreterDoubleClic(cible)
+      if (geste) void executerGeste(geste)
     }
 
     const surRelachement = (evenement: KeyboardEvent) => etatTouches.enregistrer(evenement)
@@ -644,7 +749,7 @@ export function useTriche(
       document.removeEventListener('keydown', surTouche)
       document.removeEventListener('keyup', surRelachement)
     }
-  }, [manuel, index, piles, executerGeste, etatTouches, lancerAnnulation])
+  }, [manuel, index, piles, statuts, executerGeste, etatTouches, lancerAnnulation])
 
   return {
     actif,
@@ -656,6 +761,8 @@ export function useTriche(
       setMenu,
       setPile,
       emettreGeste,
+      executerGeste,
+      tirerAuHasard,
       avisRefus,
       annulationEnCours,
       menuTable,
@@ -686,6 +793,8 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
     setMenu,
     setPile,
     emettreGeste,
+    executerGeste,
+    tirerAuHasard,
     avisRefus,
     annulationEnCours,
     menuTable,
@@ -784,6 +893,21 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
     setPile(undefined)
   }
 
+  const zoneDeckDeLaDefausse =
+    pile?.zone === 'DiscardPile' ? 'PlayerDeck' : pile?.zone === 'EncounterDiscardPile' ? 'EncounterDeck' : undefined
+
+  const remelangerLaDefausse = async () => {
+    if (!pile || !zoneDeckDeLaDefausse || pile.cartes.length === 0) return
+    const zoneDeck = zoneDeckDeLaDefausse
+    await emettreGeste(`${t('Remélanger dans le deck')} — ${pile.titre}`, () =>
+      triche.remelangerDansLeDeck(
+        pile.cartes.map((carte) => carte.id),
+        zoneDeck
+      )
+    )
+    setPile(undefined)
+  }
+
   return (
     <>
       {/* Le bandeau ne s'affiche qu'en bac à sable : il dit qu'une partie
@@ -853,6 +977,10 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           onManigancePrincipale={() =>
             void emettreGeste(t('Manigance terminée'), () => triche.avancerLaManigance())
           }
+          onToutRedresser={() => void executerGeste({ geste: 'toutRedresser' })}
+          onFinPhaseHeros={() => void executerGeste({ geste: 'finPhaseHeros' })}
+          onAmplification={() => void executerGeste({ geste: 'amplification' })}
+          onHasard={tirerAuHasard}
         />
       ) : null}
 
@@ -918,6 +1046,11 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
                   : t('Choisis une carte pour la mettre en jeu')}
               </span>
               <button type="button" onClick={() => void melangerPile()}>{t('Mélanger')}</button>
+              {zoneDeckDeLaDefausse ? (
+                <button type="button" onClick={() => void remelangerLaDefausse()}>
+                  {t('Remélanger dans le deck')}
+                </button>
+              ) : null}
               <button type="button" onClick={() => setPile(undefined)}>{t('Fermer')}</button>
             </header>
 

@@ -283,7 +283,7 @@ describe('tout revient a la reprise (tache 4) : les gestes manuels (clic droit, 
     expect(container.querySelector('[role="menu"]')).toBeNull()
   })
 
-  it('le clavier (F = retourner) parle au moteur PENDANT la pause, plus APRES la reprise', async () => {
+  it('le clavier (Ctrl+F = retourner) parle au moteur PENDANT la pause, plus APRES la reprise', async () => {
     const { container } = monter()
     await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: false }) })
 
@@ -295,14 +295,14 @@ describe('tout revient a la reprise (tache 4) : les gestes manuels (clic droit, 
     // `/get_annonce` et `/get_rapport_actif` en tache de fond, sans rapport
     // avec ce geste -- seul l'APPEL PRECIS du geste manuel compte ici.
     fireEvent.pointerMove(carte as Element)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await act(async () => { await Promise.resolve() })
     expect(fetch).not.toHaveBeenCalledWith('/sandbox_command', expect.anything())
 
     // Pendant la pause : il repond.
     await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: true }) })
     fireEvent.pointerMove(carte as Element)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await act(async () => { await Promise.resolve() })
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
       body: JSON.stringify({ commands: ['Puzzle.Flip(1)'] }),
@@ -312,7 +312,7 @@ describe('tout revient a la reprise (tache 4) : les gestes manuels (clic droit, 
     ;(fetch as ReturnType<typeof vi.fn>).mockClear()
     await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: false }) })
     fireEvent.pointerMove(carte as Element)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await act(async () => { await Promise.resolve() })
     expect(fetch).not.toHaveBeenCalledWith('/sandbox_command', expect.anything())
   })

@@ -1,100 +1,172 @@
 // clavier.ts — ce que veut dire une touche, quand on survole quelque chose.
 //
-// Calqué sur Tabletop Simulator : F retourne, R mélange, Q incline, un chiffre
-// agit sur ce qu'on survole. `interpreterTouche` est une fonction PURE : elle
-// ne touche ni au DOM ni au réseau, elle dit seulement quel geste la touche
-// demande. Le branchement (survol du pointeur, envoi au moteur) vit dans
-// CoucheTriche.tsx, et se teste ailleurs.
+// Calqué sur le plugin OCTGN de Marvel Champions (definition.xml et
+// scripts/actions.py du dépôt twistedsistem/OCTGN-Marvel-Champions) : mêmes
+// touches, mêmes effets, y compris la façon dont une même touche change de
+// sens selon le TYPE de la carte survolée (flèches haut et bas : points de
+// vie sur un héros ou un méchant, dégâts sur un sbire ou un allié, menace sur
+// une manigance, marqueur ailleurs).
 //
-// ⚠ ON NE DEVINE PAS le jeton d'une carte qui n'en a pas de naturel : mieux
-// vaut ne rien poser que poser la mauvaise chose sur une carte qu'on ne
-// relira pas. Le clic droit, lui, nomme chaque jeton.
+// `interpreterTouche` est une fonction PURE : elle ne touche ni au DOM ni au
+// réseau, elle dit seulement quel geste la touche demande. Le branchement
+// (survol du pointeur, envoi au moteur) vit dans CoucheTriche.tsx.
+//
+// ⚠ ON NE DEVINE PAS : une touche qui ne s'applique pas à cette carte ne fait
+// rien. Le clic droit, lui, nomme chaque jeton.
 
 export type Touche = { cle: string; majuscule: boolean; ctrl?: boolean; alt?: boolean }
 
-export type CibleClavier =
-  | { genre: 'carte'; id: number; jetonNaturel: 'degats' | 'menace' | 'aucun' }
-  | { genre: 'pile'; zone: string }
+export type StatutsPortes = { stunned: boolean; confused: boolean; tough: boolean }
+
+export type CarteVisee = {
+  genre: 'carte'
+  id: number
+  /** `card_type` du moteur : « Hero », « Minion », « MainScheme »... */
+  type: string
+  /** Redressée (false = inclinée). */
+  prete: boolean
+  faceVisible: boolean
+  statuts: StatutsPortes
+}
+
+export type CibleClavier = CarteVisee | { genre: 'pile'; zone: string }
 
 export type GesteClavier =
   | { geste: 'retourner'; id: number }
   | { geste: 'incliner'; id: number }
+  | { geste: 'redresser'; id: number }
   | { geste: 'melanger'; zone: string }
   | { geste: 'piocher'; zone: string; nombre: number }
-  | { geste: 'jetons'; id: number; nature: 'degats' | 'menace'; nombre: number }
+  | { geste: 'piocherPlusieurs'; zone: string }
+  | { geste: 'jetons'; id: number; nature: 'degats' | 'menace' | 'pv'; nombre: number }
   | { geste: 'compteur'; id: number; nombre: number }
+  | { geste: 'acceleration'; id: number; nombre: number }
   | { geste: 'defausser'; id: number }
-  | { geste: 'statut'; id: number; statut: 'stun' | 'confuse' | 'tough' }
+  | { geste: 'statut'; id: number; statut: 'stun' | 'confuse' | 'tough'; pose: boolean }
   | { geste: 'victoire'; id: number }
   | { geste: 'amplification' }
+  | { geste: 'vaincreStade' }
+  | { geste: 'maniganceTerminee' }
+  | { geste: 'toutRedresser' }
+  | { geste: 'finPhaseHeros' }
 
-export function interpreterTouche(
-  touche: Touche,
-  cible: CibleClavier
-): GesteClavier | undefined {
+// --- Les types de cartes, comme `isScheme`, `isAttackable`... d'OCTGN --------
+
+const IDENTITES = new Set(['Hero', 'AlterEgo'])
+const VILAINS = new Set(['EncounterVillain', 'Villain'])
+const MANIGANCES = new Set(['MainScheme', 'SideScheme', 'EncounterSideScheme', 'PlayerSideScheme', 'Scheme'])
+const ATTAQUABLES = new Set(['Hero', 'AlterEgo', 'EncounterVillain', 'Villain', 'Minion', 'Ally'])
+/** Ce qui s'incline : héros, alliés, améliorations, soutiens (`exhaustable`). */
+const INCLINABLES = new Set(['Hero', 'AlterEgo', 'Ally', 'Upgrade', 'Support'])
+/** Ce qui ne porte aucun état : un événement, une traîtrise... */
+const SANS_ETAT = new Set(['Event', 'Treachery', 'Obligation', 'Resource'])
+
+export const estIdentite = (type: string) => IDENTITES.has(type)
+export const estVilain = (type: string) => VILAINS.has(type)
+export const estManigance = (type: string) => MANIGANCES.has(type)
+export const estAttaquable = (type: string) => ATTAQUABLES.has(type)
+export const estInclinable = (type: string) => INCLINABLES.has(type)
+export const estSansEtat = (type: string) => SANS_ETAT.has(type)
+
+/**
+ * Ce que mesure naturellement une carte (`addMarker` d'OCTGN) : les points de
+ * vie d'un héros ou d'un méchant, les dégâts d'un sbire ou d'un allié, la
+ * menace d'une manigance, un marqueur générique partout ailleurs.
+ */
+export function natureDe(type: string): 'pv' | 'degats' | 'menace' | 'marqueur' {
+  if (MANIGANCES.has(type)) return 'menace'
+  if (IDENTITES.has(type) || VILAINS.has(type)) return 'pv'
+  if (ATTAQUABLES.has(type)) return 'degats'
+  return 'marqueur'
+}
+
+function basculer(carte: CarteVisee): GesteClavier {
+  return carte.prete ? { geste: 'incliner', id: carte.id } : { geste: 'redresser', id: carte.id }
+}
+
+/** Le double-clic d'OCTGN (`defaultCardAction`). */
+export function interpreterDoubleClic(carte: CarteVisee): GesteClavier | undefined {
+  if (MANIGANCES.has(carte.type)) return undefined
+  if (!carte.faceVisible) return { geste: 'retourner', id: carte.id }
+  if (VILAINS.has(carte.type)) return { geste: 'amplification' }
+  if (INCLINABLES.has(carte.type)) return basculer(carte)
+  return undefined
+}
+
+export function interpreterTouche(touche: Touche, cible: CibleClavier): GesteClavier | undefined {
   const cle = touche.cle.toLowerCase()
+  const ctrl = touche.ctrl === true
+  const alt = touche.alt === true
+  const maj = touche.majuscule
 
-  // Raccourcis d'OCTGN (plugin Marvel Champions) : touches de fonction et
-  // combinaisons Ctrl / Alt. Ils n'agissent que sur ce qu'on survole.
-  if (touche.alt && cle === 'enter') return { geste: 'amplification' }
-  if (touche.ctrl || touche.alt) {
-    if (cible.genre === 'pile') {
-      if (touche.ctrl && !touche.alt && !touche.majuscule) {
-        if (cle === 's') return { geste: 'melanger', zone: cible.zone }
-        if (cle === 'd') return { geste: 'piocher', zone: cible.zone, nombre: 1 }
+  // La table entière : pas besoin de survoler quoi que ce soit.
+  if (alt && !ctrl && cle === 'enter') return { geste: 'amplification' }
+  if (ctrl && !alt && !maj && cle === 'q') return { geste: 'toutRedresser' }
+  if (!ctrl && !alt && cle === 'f12') return { geste: 'finPhaseHeros' }
+
+  if (cible.genre === 'pile') {
+    if (ctrl && !alt) {
+      if (cle === 's' && !maj) return { geste: 'melanger', zone: cible.zone }
+      if (cle === 'd') {
+        return maj
+          ? { geste: 'piocherPlusieurs', zone: cible.zone }
+          : { geste: 'piocher', zone: cible.zone, nombre: 1 }
       }
       return undefined
     }
-    if (touche.ctrl && !touche.alt && cle === 'f') return { geste: 'retourner', id: cible.id }
-    if (touche.ctrl && !touche.alt && cle === 'v') return { geste: 'victoire', id: cible.id }
-    const statut = cle === 's' ? 'stun' : cle === 'c' ? 'confuse' : cle === 't' ? 'tough' : undefined
-    if (touche.alt && statut && cible.jetonNaturel === 'degats') {
-      return { geste: 'statut', id: cible.id, statut }
-    }
+    // Un chiffre pioche autant de cartes : notre raccourci, en plus d'OCTGN
+    // (Ctrl+Maj+D y demande le nombre dans une fenêtre).
+    if (!ctrl && !alt && /^[1-9]$/.test(cle)) return { geste: 'piocher', zone: cible.zone, nombre: Number(cle) }
     return undefined
   }
-  if (cible.genre === 'carte') {
-    if (cle === 'f7') return { geste: 'incliner', id: cible.id }
-    const sensF = touche.majuscule ? -1 : 1
-    if (cle === 'f3' && cible.jetonNaturel === 'degats') {
-      return { geste: 'jetons', id: cible.id, nature: 'degats', nombre: sensF }
-    }
-    if (cle === 'f5' && cible.jetonNaturel === 'menace') {
-      return { geste: 'jetons', id: cible.id, nature: 'menace', nombre: sensF }
-    }
+
+  const sens = maj ? -1 : 1
+  const type = cible.type
+
+  if (alt) {
+    const statut = cle === 's' ? 'stun' : cle === 'c' ? 'confuse' : cle === 't' ? 'tough' : undefined
+    if (!statut || !ATTAQUABLES.has(type)) return undefined
+    const present =
+      statut === 'stun' ? cible.statuts.stunned : statut === 'confuse' ? cible.statuts.confused : cible.statuts.tough
+    // Le moteur BASCULE le statut : on ne l'appelle que si ça change quelque chose.
+    return ctrl === present ? { geste: 'statut', id: cible.id, statut, pose: !ctrl } : undefined
+  }
+  if (ctrl) {
+    if (maj) return undefined
+    if (cle === 'f') return { geste: 'retourner', id: cible.id }
+    if (cle === 'v') return { geste: 'victoire', id: cible.id }
+    return undefined
   }
 
-  if (cle === 'f' && cible.genre === 'carte') return { geste: 'retourner', id: cible.id }
-  if (cle === 'q' && cible.genre === 'carte') return { geste: 'incliner', id: cible.id }
-  if (cle === 'r' && cible.genre === 'pile') return { geste: 'melanger', zone: cible.zone }
-
-  // Gestes d'OCTGN, en plus des nôtres. Flèches haut/bas : un dégât (une
-  // menace sur une manigance) ; droite/gauche : un jeton générique (de la
-  // menace sur une manigance, qui n'en a pas d'autre) ; Suppr : défausse.
-  if (cle === 'delete' && cible.genre === 'carte') return { geste: 'defausser', id: cible.id }
-  const sens = cle === 'arrowup' || cle === 'arrowright' ? 1 : cle === 'arrowdown' || cle === 'arrowleft' ? -1 : 0
-  if (sens !== 0 && cible.genre === 'carte') {
-    if (cible.jetonNaturel === 'aucun') return undefined
-    if (cle === 'arrowright' || cle === 'arrowleft') {
-      return cible.jetonNaturel === 'menace'
-        ? { geste: 'jetons', id: cible.id, nature: 'menace', nombre: sens }
-        : { geste: 'compteur', id: cible.id, nombre: sens }
+  switch (cle) {
+    case 'f7':
+      return SANS_ETAT.has(type) ? undefined : basculer(cible)
+    case 'f3':
+      return MANIGANCES.has(type) || SANS_ETAT.has(type)
+        ? undefined
+        : { geste: 'jetons', id: cible.id, nature: 'degats', nombre: sens }
+    case 'f5':
+      return MANIGANCES.has(type) ? { geste: 'jetons', id: cible.id, nature: 'menace', nombre: sens } : undefined
+    case 'f4':
+      return { geste: 'acceleration', id: cible.id, nombre: sens }
+    case 'delete':
+      if (IDENTITES.has(type)) return undefined
+      if (VILAINS.has(type)) return { geste: 'vaincreStade' }
+      if (type === 'MainScheme') return { geste: 'maniganceTerminee' }
+      return { geste: 'defausser', id: cible.id }
+    case 'arrowup':
+    case 'arrowdown': {
+      const nombre = cle === 'arrowup' ? 1 : -1
+      const nature = natureDe(type)
+      if (nature === 'marqueur') return { geste: 'compteur', id: cible.id, nombre }
+      return { geste: 'jetons', id: cible.id, nature, nombre }
     }
-    return { geste: 'jetons', id: cible.id, nature: cible.jetonNaturel, nombre: sens }
-  }
-
-  const chiffre = /^[1-9]$/.test(cle) ? Number(cle) : undefined
-  if (chiffre === undefined) return undefined
-
-  if (cible.genre === 'pile') {
-    return { geste: 'piocher', zone: cible.zone, nombre: chiffre }
-  }
-  if (cible.jetonNaturel === 'aucun') return undefined
-  return {
-    geste: 'jetons',
-    id: cible.id,
-    nature: cible.jetonNaturel,
-    nombre: touche.majuscule ? -chiffre : chiffre,
+    case 'arrowright':
+      return { geste: 'compteur', id: cible.id, nombre: 1 }
+    case 'arrowleft':
+      return { geste: 'compteur', id: cible.id, nombre: -1 }
+    default:
+      return undefined
   }
 }
 

@@ -29,6 +29,12 @@ export type MenuTableProps = {
   /** Gestes OCTGN côté méchant : le stade du méchant, l'étape de la manigance. */
   onVaincreStade: () => void
   onManigancePrincipale: () => void
+  /** Gestes de table d'OCTGN : Ctrl+Q, F12, Alt+Entrée. */
+  onToutRedresser: () => void
+  onFinPhaseHeros: () => void
+  onAmplification: () => void
+  /** Le menu « Random » d'OCTGN : pile ou face, nombre, joueur. */
+  onHasard: (tirage: 'pile-ou-face' | 'nombre' | 'joueur') => void
 }
 
 export function MenuTable({
@@ -39,6 +45,10 @@ export function MenuTable({
   onTerminerPartie,
   onVaincreStade,
   onManigancePrincipale,
+  onToutRedresser,
+  onFinPhaseHeros,
+  onAmplification,
+  onHasard,
 }: MenuTableProps) {
   const boite = useRef<HTMLDivElement | null>(null)
 
@@ -118,6 +128,72 @@ export function MenuTable({
             }}
           >
             {t('Manigance terminée')}
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            onClick={() => {
+              onToutRedresser()
+              onFermer()
+            }}
+          >
+            {t('Tout redresser (Ctrl+Q)')}
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            onClick={() => {
+              onFinPhaseHeros()
+              onFermer()
+            }}
+          >
+            {t('Fin de phase des héros (F12)')}
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            onClick={() => {
+              onAmplification()
+              onFermer()
+            }}
+          >
+            {t('Amplification (Alt+Entrée)')}
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            onClick={() => {
+              onHasard('pile-ou-face')
+              onFermer()
+            }}
+          >
+            {t('Pile ou face')}
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            onClick={() => {
+              onHasard('nombre')
+              onFermer()
+            }}
+          >
+            {t('Nombre au hasard')}
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            onClick={() => {
+              onHasard('joueur')
+              onFermer()
+            }}
+          >
+            {t('Joueur au hasard')}
           </button>
         </li>
         <li>

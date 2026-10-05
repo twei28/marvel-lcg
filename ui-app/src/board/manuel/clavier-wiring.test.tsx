@@ -65,33 +65,33 @@ beforeEach(() => {
 })
 
 describe('le clavier du mode manuel parle au moteur', () => {
-  it('F retourne la carte survolee', async () => {
+  it('Ctrl+F retourne la carte survolee', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await act(async () => { await Promise.resolve() })
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
       body: JSON.stringify({ commands: ['Puzzle.Flip(7)'] }),
     }))
   })
 
-  it('un chiffre sur une manigance pose de la menace', async () => {
+  it('F5 sur une manigance pose de la menace, Maj+F5 en retire', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(9)
-    fireEvent.keyDown(document, { key: '3' })
+    fireEvent.keyDown(document, { key: 'F5' })
     await act(async () => { await Promise.resolve() })
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
-      body: JSON.stringify({ commands: ["Puzzle.PlaceThreat(9, 3)"] }),
+      body: JSON.stringify({ commands: ['Puzzle.PlaceThreat(9, 1)'] }),
     }))
   })
 
-  it('Maj plus chiffre sur un personnage soigne au lieu de blesser', async () => {
+  it('Maj+F3 sur un personnage soigne au lieu de blesser', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: '3', shiftKey: true })
+    fireEvent.keyDown(document, { key: 'F3', shiftKey: true })
     await act(async () => { await Promise.resolve() })
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
-      body: JSON.stringify({ commands: ['Puzzle.Heal(7, 3)'] }),
+      body: JSON.stringify({ commands: ['Puzzle.Heal(7, 1)'] }),
     }))
   })
 
@@ -125,34 +125,46 @@ describe('le clavier du mode manuel parle au moteur', () => {
     }))
   })
 
-  it('un chiffre nu, sans modificateur, pose des degats (cas de base)', async () => {
+  it('F3 sur un personnage pose un degat', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: '3' })
+    fireEvent.keyDown(document, { key: 'F3' })
     await act(async () => { await Promise.resolve() })
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
-      body: JSON.stringify({ commands: ['Puzzle.Damage(7, 3)'] }),
+      body: JSON.stringify({ commands: ['Puzzle.Damage(7, 1)'] }),
     }))
   })
 
-  it('Q incline la carte survolee', async () => {
+  it('les anciennes touches maison (F, Q, R, chiffre sur une carte) ne font rien', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: 'q' })
-    await act(async () => { await Promise.resolve() })
-    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
-      body: JSON.stringify({ commands: ['Puzzle.Exhaust(7)'] }),
-    }))
-  })
-
-  it('R melange la pile survolee', async () => {
-    render(<Harness world={mondeManuel()} capture={{}} />)
+    for (const cle of ['f', 'q', '3']) fireEvent.keyDown(document, { key: cle })
     survoler(20)
     fireEvent.keyDown(document, { key: 'r' })
     await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('Ctrl+Q redresse tout ce qui est incline chez le joueur', async () => {
+    const monde = tableAvec(siege({ area_hero: [{ ...ALLIE, id: 30, is_ready: false } as never], allies: [] }), {
+      mode_manuel: true,
+      manuel_actif: true,
+    } as never)
+    render(<Harness world={monde} capture={{}} />)
+    fireEvent.keyDown(document, { key: 'q', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
-      body: JSON.stringify({ commands: ["Puzzle.Shuffle('PlayerDeck')"] }),
+      body: JSON.stringify({ commands: ['Puzzle.Ready(30)'] }),
     }))
+  })
+
+  it('Ctrl+Maj+D demande combien de cartes piocher', async () => {
+    vi.stubGlobal('prompt', vi.fn(() => '3'))
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(20)
+    fireEvent.keyDown(document, { key: 'd', ctrlKey: true, shiftKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(prompt).toHaveBeenCalled()
   })
 
   // LE CRITIQUE (retour de revue, 19/09/2026) : Ctrl/Cmd/Alt sont les
@@ -204,11 +216,11 @@ describe('le clavier du mode manuel parle au moteur', () => {
 
   it('F7 incline la carte survolée, F3 lui pose un dégât, Maj+F3 en retire un', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
-    survoler(7)
+    survoler(5)
     fireEvent.keyDown(document, { key: 'F7' })
     await act(async () => { await Promise.resolve() })
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
-      body: JSON.stringify({ commands: ['Puzzle.Exhaust(7)'] }),
+      body: JSON.stringify({ commands: ['Puzzle.Exhaust(5)'] }),
     }))
   })
 
@@ -245,14 +257,14 @@ describe('le clavier du mode manuel parle au moteur', () => {
   it('ne devine pas le jeton d’une carte qui n’en a pas', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(4)
-    fireEvent.keyDown(document, { key: '3' })
+    fireEvent.keyDown(document, { key: 'F3' })
     await act(async () => { await Promise.resolve() })
     expect(fetch).not.toHaveBeenCalled()
   })
 
   it('ne mord pas quand rien n’est survole', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await act(async () => { await Promise.resolve() })
     expect(fetch).not.toHaveBeenCalled()
   })
@@ -261,7 +273,7 @@ describe('le clavier du mode manuel parle au moteur', () => {
     const monde = { ...mondeManuel(), mode_manuel: false, manuel_actif: false, mode_sandbox: true } as World
     render(<Harness world={monde} capture={{}} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await act(async () => { await Promise.resolve() })
     expect(fetch).not.toHaveBeenCalled()
   })
@@ -277,7 +289,7 @@ describe('le clavier du mode manuel parle au moteur', () => {
     const monde = { ...mondeManuel(), manuel_actif: false } as World
     render(<Harness world={monde} capture={{}} />)
     survoler(7)
-    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await act(async () => { await Promise.resolve() })
     expect(fetch).not.toHaveBeenCalled()
   })
@@ -292,7 +304,7 @@ describe('le clavier du mode manuel parle au moteur', () => {
     survoler(7)
     const champ = container.querySelector('input') as HTMLInputElement
     champ.focus()
-    fireEvent.keyDown(champ, { key: 'f' })
+    fireEvent.keyDown(champ, { key: 'f', ctrlKey: true })
     await act(async () => { await Promise.resolve() })
     expect(fetch).not.toHaveBeenCalled()
   })
@@ -387,18 +399,18 @@ describe('les gestes OCTGN parlent au moteur', () => {
       body: JSON.stringify({ commands: [commande] }),
     }))
 
-  it('fleche haut / bas : un degat de plus ou de moins', async () => {
+  it('fleche haut / bas : un point de vie de plus ou de moins sur le mechant', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(7)
     fireEvent.keyDown(document, { key: 'ArrowUp' })
     await act(async () => { await Promise.resolve() })
-    envoye('Puzzle.Damage(7, 1)')
+    envoye('Puzzle.Heal(7, 1)')
     fireEvent.keyDown(document, { key: 'ArrowDown' })
     await act(async () => { await Promise.resolve() })
-    envoye('Puzzle.Heal(7, 1)')
+    envoye('Puzzle.Damage(7, 1)')
   })
 
-  it('fleche droite / gauche : un jeton generique, ou de la menace sur une manigance', async () => {
+  it('fleche droite / gauche : un jeton generique ; haut sur une manigance : de la menace', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(7)
     fireEvent.keyDown(document, { key: 'ArrowRight' })
@@ -408,7 +420,7 @@ describe('les gestes OCTGN parlent au moteur', () => {
     await act(async () => { await Promise.resolve() })
     envoye("Puzzle.Counter(7, 'counter', -1)")
     survoler(9)
-    fireEvent.keyDown(document, { key: 'ArrowRight' })
+    fireEvent.keyDown(document, { key: 'ArrowUp' })
     await act(async () => { await Promise.resolve() })
     envoye('Puzzle.PlaceThreat(9, 1)')
   })

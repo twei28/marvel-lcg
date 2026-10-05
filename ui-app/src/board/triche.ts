@@ -64,6 +64,10 @@ export const fixerMenace = (id: number, valeur: number) =>
 export const poserCompteur = (id: number, nom: string, taille: number) =>
   envoyer([`Puzzle.Counter(${id}, ${texte(nom)}, ${taille})`])
 
+/** Pose (valeur positive) ou retire (négative) des jetons d'accélération. */
+export const poserAcceleration = (id: number, valeur: number) =>
+  envoyer([`Puzzle.Token(${id}, 'acceleration_token', ${valeur})`])
+
 // --- Depuis les piles ------------------------------------------------------
 
 /** Deck ou défausse du joueur -> la main. */
@@ -97,6 +101,10 @@ export const deplacerVers = (
   zone: string,
   position: 'Top' | 'Bottom' = 'Top'
 ) => envoyer([`Puzzle.MoveTo(${id}, ${texte(zone)}, ${texte(position)})`])
+
+/** Remet toute une défausse dans son deck, puis mélange le deck (OCTGN : « Shuffle discard into deck »). */
+export const remelangerDansLeDeck = (ids: number[], zoneDeck: string) =>
+  envoyer([...ids.map((id) => `Puzzle.MoveTo(${id}, ${texte(zoneDeck)}, 'Top')`), `Puzzle.Shuffle(${texte(zoneDeck)})`])
 
 /** Mélange une pile. */
 export const melanger = (zone: string) => envoyer([`Puzzle.Shuffle(${texte(zone)})`])
