@@ -45,6 +45,30 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-05",
+        genre: "jeu",
+        fr: "Deux façons de jouer : Automatique, où le moteur fait tout, ou Manuel, comme sur OCTGN, où tu poses, tournes et comptes tout à la main. Un interrupteur en haut permet de passer de l'une à l'autre en pleine partie, et un onglet à droite rappelle les raccourcis.",
+        en: "Two ways to play: Automatic, where the engine does everything, or Manual, like OCTGN, where you place, turn and count everything by hand. A switch at the top flips between them mid-game, and a tab on the right lists the shortcuts.",
+    },
+    {
+        date: "2026-10-05",
+        genre: "jeu",
+        fr: "La table se réarrange à ta main : tu peux séparer ou regrouper les cartes (héros, soutiens, alliés, sbires, manigances...) et poser chaque zone où tu veux. Rien ne change tant que tu n'y touches pas.",
+        en: "The table now rearranges to your liking: split or group cards (heroes, supports, allies, minions, schemes...) and put each zone wherever you want. Nothing changes until you touch it.",
+    },
+    {
+        date: "2026-10-05",
+        genre: "jeu",
+        fr: "La phase du méchant se vit comme tu préfères : étape par étape, directement sur la table dans un carré déplaçable, ou d'un coup. Une fenêtre te présente les trois façons à ta première partie, et le choix se change dans les Réglages.",
+        en: "The villain phase plays out the way you like: step by step, right on the table in a movable square, or all at once. A window shows the three ways on your first game, and you can change it in Settings.",
+    },
+    {
+        date: "2026-10-05",
+        genre: "correction",
+        fr: "Les bulles de dégâts et de jetons se posent maintenant d'après l'art affiché, y compris pour les arts alternatifs, au lieu de la carte officielle.",
+        en: "Damage and token bubbles are now placed according to the displayed art, alternate arts included, instead of the official card.",
+    },
+    {
         date: "2026-10-03",
         genre: "jeu",
         fr: "Les arts alternatifs se choisissent maintenant dans un grand carrousel, une série pour le héros et une autre pour son alter ego si tu veux. Avec un compte, ton choix te suit sur tous tes appareils.",
