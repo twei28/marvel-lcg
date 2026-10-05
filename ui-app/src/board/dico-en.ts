@@ -624,6 +624,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Rendre sonné': 'Stun',
   'Rendre tenace': 'Make tough',
   'Ajouter des compteurs': 'Add counters',
+  'Retirer des compteurs': 'Remove counters',
   'Défausser': 'Discard',
   'Retirer de la partie': 'Remove from game',
   'Appliquer': 'Apply',

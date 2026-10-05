@@ -22,6 +22,8 @@ export type GesteClavier =
   | { geste: 'melanger'; zone: string }
   | { geste: 'piocher'; zone: string; nombre: number }
   | { geste: 'jetons'; id: number; nature: 'degats' | 'menace'; nombre: number }
+  | { geste: 'compteur'; id: number; nombre: number }
+  | { geste: 'defausser'; id: number }
 
 export function interpreterTouche(
   touche: Touche,
@@ -32,6 +34,21 @@ export function interpreterTouche(
   if (cle === 'f' && cible.genre === 'carte') return { geste: 'retourner', id: cible.id }
   if (cle === 'q' && cible.genre === 'carte') return { geste: 'incliner', id: cible.id }
   if (cle === 'r' && cible.genre === 'pile') return { geste: 'melanger', zone: cible.zone }
+
+  // Gestes d'OCTGN, en plus des nôtres. Flèches haut/bas : un dégât (une
+  // menace sur une manigance) ; droite/gauche : un jeton générique (de la
+  // menace sur une manigance, qui n'en a pas d'autre) ; Suppr : défausse.
+  if (cle === 'delete' && cible.genre === 'carte') return { geste: 'defausser', id: cible.id }
+  const sens = cle === 'arrowup' || cle === 'arrowright' ? 1 : cle === 'arrowdown' || cle === 'arrowleft' ? -1 : 0
+  if (sens !== 0 && cible.genre === 'carte') {
+    if (cible.jetonNaturel === 'aucun') return undefined
+    if (cle === 'arrowright' || cle === 'arrowleft') {
+      return cible.jetonNaturel === 'menace'
+        ? { geste: 'jetons', id: cible.id, nature: 'menace', nombre: sens }
+        : { geste: 'compteur', id: cible.id, nombre: sens }
+    }
+    return { geste: 'jetons', id: cible.id, nature: cible.jetonNaturel, nombre: sens }
+  }
 
   const chiffre = /^[1-9]$/.test(cle) ? Number(cle) : undefined
   if (chiffre === undefined) return undefined

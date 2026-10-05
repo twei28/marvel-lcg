@@ -50,6 +50,40 @@ describe('les touches du mode manuel', () => {
     expect(interpreterTouche({ cle: '3', majuscule: false }, evenement)).toBeUndefined()
   })
 
+  it('fleche haut / bas : un degat de plus ou de moins sur un personnage', () => {
+    expect(interpreterTouche({ cle: 'ArrowUp', majuscule: false }, VILAIN))
+      .toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: 1 })
+    expect(interpreterTouche({ cle: 'ArrowDown', majuscule: false }, VILAIN))
+      .toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: -1 })
+  })
+
+  it('fleche droite / gauche : un jeton generique sur un personnage', () => {
+    expect(interpreterTouche({ cle: 'ArrowRight', majuscule: false }, VILAIN))
+      .toEqual({ geste: 'compteur', id: 7, nombre: 1 })
+    expect(interpreterTouche({ cle: 'ArrowLeft', majuscule: false }, VILAIN))
+      .toEqual({ geste: 'compteur', id: 7, nombre: -1 })
+  })
+
+  it('sur une manigance, les quatre fleches jouent sur la menace', () => {
+    for (const [cle, nombre] of [['ArrowUp', 1], ['ArrowDown', -1], ['ArrowRight', 1], ['ArrowLeft', -1]] as const) {
+      expect(interpreterTouche({ cle, majuscule: false }, MANIGANCE))
+        .toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre })
+    }
+  })
+
+  it('les fleches ne devinent rien sur une carte sans etat, ni sur une pile', () => {
+    const evenement = { genre: 'carte', id: 4, jetonNaturel: 'aucun' } as const
+    expect(interpreterTouche({ cle: 'ArrowUp', majuscule: false }, evenement)).toBeUndefined()
+    expect(interpreterTouche({ cle: 'ArrowRight', majuscule: false }, evenement)).toBeUndefined()
+    expect(interpreterTouche({ cle: 'ArrowUp', majuscule: false }, DECK)).toBeUndefined()
+  })
+
+  it('Suppr defausse la carte survolee, mais jamais une pile', () => {
+    expect(interpreterTouche({ cle: 'Delete', majuscule: false }, VILAIN))
+      .toEqual({ geste: 'defausser', id: 7 })
+    expect(interpreterTouche({ cle: 'Delete', majuscule: false }, DECK)).toBeUndefined()
+  })
+
   it('ignore une touche inconnue', () => {
     expect(interpreterTouche({ cle: 'z', majuscule: false }, VILAIN)).toBeUndefined()
   })

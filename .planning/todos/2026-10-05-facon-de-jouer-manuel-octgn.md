@@ -1,0 +1,34 @@
+# Une « façon de jouer » : Automatique ou Manuel (gestes OCTGN) : décisions du 05/10/2026
+
+Demande de l'utilisateur : proposer le jeu comme une autre manière de jouer, au même titre que les
+styles (sombre, etc.), façon OCTGN. Le mode manuel (déployé le 22/09) et la pause existent déjà ;
+la pause est jugée « pas une bonne version ».
+
+## Décisions (questions une à une)
+
+- La pause disparaît comme idée : elle devient un INTERRUPTEUR « Auto / Manuel » toujours visible
+  dans la barre (nom et emplacement jugés mauvais).
+- Partie commencée en auto : Manuel s'allume, on joue ; Auto recalcule toute la table et le moteur
+  continue exactement à sa question.
+- Partie commencée en manuel : la mise en place est faite par le moteur (comme aujourd'hui, puis il se
+  tait). Au premier clic sur Auto, une fenêtre demande « On en est où ? » (phase héros, phase méchant,
+  nouveau tour) ; le moteur recalcule la table et reprend là.
+- Choix au départ : dans le lanceur (par partie) ET dans les Réglages (valeur par défaut).
+- Gestes : ceux d'OCTGN S'AJOUTENT aux nôtres (Q, F, R, chiffres), pas de remplacement.
+- Gestes OCTGN à reprendre (source : marvelchampionsmonthly.podbean.com) : double-clic sur une carte
+  joueur = incliner ; double-clic sur le méchant = carte d'amplification ; flèches haut/bas = +/-1 dégât ;
+  flèches droite/gauche = +/-1 jeton générique ; Suppr = défausse appropriée ; F12 = change de phase
+  (simple repère, rien n'est joué) ; clic droit sur la table = charger héros / méchant, vaincre le stade
+  (charge le suivant), manigance terminée (charge la suivante).
+- Multijoueur : tout joueur peut passer la table en manuel, pour tout le monde, avec un bandeau qui dit
+  qui l'a fait ; chacun peut remettre Auto.
+- Onglet d'aide (demande du même jour) : en passant en manuel, un onglet s'ouvre à droite, comme celui du
+  journal, et liste les raccourcis (OCTGN et nôtres). Choix pris sans question : il s'ouvre tout seul au
+  passage en manuel, se ferme à la main, et se rouvre par un bouton tant qu'on est en manuel.
+
+## À trancher en cours de route
+
+- La spec du manuel disait « aucun repère de phase » : F12 en ajoute un. Mettre à jour la spec.
+- Recalcul de la table au retour en Auto : à étudier côté moteur (modificateurs perdus en manuel,
+  `manuel_actif`, déclencheurs fermés).
+- Charger un deck par URL MarvelCDB (OCTGN le fait) : non demandé, non cadré.

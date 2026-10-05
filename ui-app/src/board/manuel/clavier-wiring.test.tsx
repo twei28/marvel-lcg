@@ -16,6 +16,7 @@ import type { World } from '../world'
 
 const VILAIN = carteSurTable(7, '01001a', 'EncounterVillain', 'Rhino')
 const MANIGANCE = carteSurTable(9, '01002a', 'MainScheme', 'Crisis')
+const ALLIE = carteSurTable(5, '01006a', 'Ally', 'Allie de test')
 const SANS_JETON = carteSurTable(4, '01003a', 'Event', 'Coup de circonstance')
 // Dessus des deux piles du cas « piocher » (voir plus bas) : une du joueur,
 // une du monde. Chacune devient la REPRÉSENTANTE de sa pile (`pilesParDessus`).
@@ -28,7 +29,7 @@ function mondeManuel(): World {
   // y placer la seule carte de la pile en ferait aussi une cible de pile, ce
   // qui n'est pas ce que ce cas veut prouver.
   return tableAvec(
-    siege({ allies: [SANS_JETON], player_deck: [DESSUS_DECK_JOUEUR] }),
+    siege({ allies: [SANS_JETON, ALLIE], player_deck: [DESSUS_DECK_JOUEUR] }),
     {
       mode_manuel: true,
       // La boucle manuelle a deja pris la main (tache 8 bis) : le clavier ne
@@ -334,5 +335,77 @@ describe("l'etat des touches est expose pour la tache 5", () => {
     expect(capture.estToucheEnfoncee?.('Shift')).toBe(true)
     fireEvent.keyUp(document, { key: 'Shift', shiftKey: false })
     expect(capture.estToucheEnfoncee?.('Shift')).toBe(false)
+  })
+})
+
+describe('les gestes OCTGN parlent au moteur', () => {
+  const envoye = (commande: string) =>
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: [commande] }),
+    }))
+
+  it('fleche haut / bas : un degat de plus ou de moins', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    fireEvent.keyDown(document, { key: 'ArrowUp' })
+    await act(async () => { await Promise.resolve() })
+    envoye('Puzzle.Damage(7, 1)')
+    fireEvent.keyDown(document, { key: 'ArrowDown' })
+    await act(async () => { await Promise.resolve() })
+    envoye('Puzzle.Heal(7, 1)')
+  })
+
+  it('fleche droite / gauche : un jeton generique, ou de la menace sur une manigance', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    fireEvent.keyDown(document, { key: 'ArrowRight' })
+    await act(async () => { await Promise.resolve() })
+    envoye("Puzzle.Counter(7, 'counter', 1)")
+    fireEvent.keyDown(document, { key: 'ArrowLeft' })
+    await act(async () => { await Promise.resolve() })
+    envoye("Puzzle.Counter(7, 'counter', -1)")
+    survoler(9)
+    fireEvent.keyDown(document, { key: 'ArrowRight' })
+    await act(async () => { await Promise.resolve() })
+    envoye('Puzzle.PlaceThreat(9, 1)')
+  })
+
+  it('Suppr defausse la carte survolee', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(5)
+    fireEvent.keyDown(document, { key: 'Delete' })
+    await act(async () => { await Promise.resolve() })
+    envoye('Puzzle.Discard(5)')
+  })
+
+  it('double-clic sur un personnage : il s incline', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    fireEvent.doubleClick(survoler(5))
+    await act(async () => { await Promise.resolve() })
+    envoye('Puzzle.Exhaust(5)')
+  })
+
+  it('double-clic sur le mechant : la carte du dessus du deck Rencontre sort en resolution', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    fireEvent.doubleClick(survoler(7))
+    await act(async () => { await Promise.resolve() })
+    envoye("Puzzle.MoveTo(21, 'ProcessingArea', 'Top')")
+  })
+
+  it('double-clic sur une manigance, une carte sans etat ou une pile : rien', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    for (const id of [9, 4, 20]) fireEvent.doubleClick(survoler(id))
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('double-clic ignore hors du mode manuel', async () => {
+    const monde = mondeManuel()
+    ;(monde as unknown as { manuel_actif: boolean }).manuel_actif = false
+    ;(monde as unknown as { mode_manuel: boolean }).mode_manuel = false
+    render(<Harness world={monde} capture={{}} />)
+    fireEvent.doubleClick(survoler(5))
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
   })
 })

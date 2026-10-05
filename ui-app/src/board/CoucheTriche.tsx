@@ -461,6 +461,19 @@ export function useTriche(
           if (libelles.length > 0) enAttenteRef.current.push({ libelles })
           return
         }
+        case 'defausser': {
+          const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          await emettreGeste(`${t('Défausser')} — ${nom}`, () => triche.defausser(geste.id))
+          return
+        }
+        case 'compteur': {
+          const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          const libelle = geste.nombre >= 0 ? t('Ajouter des compteurs') : t('Retirer des compteurs')
+          await emettreGeste(`${libelle} ${Math.abs(geste.nombre)} — ${nom}`, () =>
+            triche.poserCompteur(geste.id, 'counter', geste.nombre)
+          )
+          return
+        }
         case 'jetons': {
           const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
           if (geste.nature === 'menace') {
@@ -584,12 +597,33 @@ export function useTriche(
       void executerGeste(geste)
     }
 
+    // Double-clic d'OCTGN : sur un personnage, il s'incline (comme Q) ; sur le
+    // méchant, il sort la carte du dessus du deck Rencontre en résolution
+    // (l'amplification), comme le chiffre 1 sur ce deck. Une pile, une
+    // manigance ou une carte sans état : rien, on ne devine pas.
+    const surDoubleClic = (evenement: MouseEvent) => {
+      if (estZoneDeSaisie(document.activeElement)) return
+      const noeud = (evenement.target as HTMLElement | null)?.closest?.('[data-card-id]')
+      const id = noeud ? Number(noeud.getAttribute('data-card-id')) : NaN
+      if (!Number.isFinite(id) || piles.has(id)) return
+      const carte = index.get(id)
+      if (!carte) return
+      if (carte.card_type === 'EncounterVillain') {
+        void executerGeste({ geste: 'piocher', zone: 'EncounterDeck', nombre: 1 })
+        return
+      }
+      if (MANIGANCES.has(carte.card_type) || SANS_ETAT.has(carte.card_type)) return
+      void executerGeste({ geste: 'incliner', id })
+    }
+
     const surRelachement = (evenement: KeyboardEvent) => etatTouches.enregistrer(evenement)
 
     document.addEventListener('pointermove', surPointeur)
     document.addEventListener('keydown', surTouche)
     document.addEventListener('keyup', surRelachement)
+    document.addEventListener('dblclick', surDoubleClic)
     return () => {
+      document.removeEventListener('dblclick', surDoubleClic)
       document.removeEventListener('pointermove', surPointeur)
       document.removeEventListener('keydown', surTouche)
       document.removeEventListener('keyup', surRelachement)
