@@ -155,6 +155,11 @@ html[data-affichage='sobre'] .deroule-phase.est-scene {
   line-height: 1;
 }
 
+.deroule-phase.est-scene .deroule-pastille-nom {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .deroule-phase.est-scene .deroule-pastille-resume {
   font-size: 0.72rem;
 }

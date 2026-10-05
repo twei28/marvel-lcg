@@ -79,7 +79,7 @@ import { mainVisibleForcee } from './board/main-visible'
 import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
 import { animationsDuPlateau, estResynchronisation } from './board/animations-en-scene'
-import { kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
+import { autresFacesDe, kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
 import { carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
   DemandeCentrale,
@@ -2670,14 +2670,18 @@ export function PagePartie({
   // cartes face cachee qui lui sont attachees (`boostable`, publie par
   // `ToDescriptor.Card` a la suite de l'ennemi). Un sbire sans Villainous n'en
   // a aucune : la ligne dit alors seulement « ATQ 2 ».
+  const idsDecksSupplementaires = useMemo(
+    () => new Set((etat.monde?.additional_decks ?? []).flat().map((carte) => carte.id)),
+    [etat.monde]
+  )
   const ligneSansDefense = useMemo(
-    () => ligneAttaqueConnue(etat.demande?.options ?? [], cartesMondeParId, nomPorteurFr),
-    [etat.demande, cartesMondeParId, nomPorteurFr]
+    () => ligneAttaqueConnue(etat.demande?.options ?? [], cartesMondeParId, nomPorteurFr, idsDecksSupplementaires),
+    [etat.demande, cartesMondeParId, nomPorteurFr, idsDecksSupplementaires]
   )
   // Le meme detail sans abreger : l'infobulle de « Ne pas défendre ».
   const survolSansDefense = useMemo(
-    () => detailAttaqueComplet(etat.demande?.options ?? [], cartesMondeParId, nomPorteurFr),
-    [etat.demande, cartesMondeParId, nomPorteurFr]
+    () => detailAttaqueComplet(etat.demande?.options ?? [], cartesMondeParId, nomPorteurFr, idsDecksSupplementaires),
+    [etat.demande, cartesMondeParId, nomPorteurFr, idsDecksSupplementaires]
   )
   /* ---- Le glisser-deposer : les REGLES (8 septembre 2026) -----------------
      Le plateau tient le geste et le dessin ; ici vivent les regles, parce que
@@ -4790,6 +4794,7 @@ export function PagePartie({
              imprimees et le moteur la retourne. Une annexe n'en a qu'une, elle
              vient simplement d'entrer en jeu. */
           retournement={priseManigance.question.name === NOM_OPTION_MANIGANCE}
+          versoUrl={autresFacesDe(priseManigance.carte, catalogue)[0]?.url}
           onValider={() =>
             repondre(
               { id: priseManigance.question.id, targets: [], resources: [] },

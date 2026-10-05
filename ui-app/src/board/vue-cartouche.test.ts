@@ -530,6 +530,11 @@ describe('D15, D22, D27, D34 : les cinq pastilles', () => {
 
   it('chaque nom de pastille a son anglais (il passe par une variable, la gate du dictionnaire ne le voit pas)', () => {
     expect(PASTILLES.filter((p) => !(p.libelle in DICO_EN_BASE)).map((p) => p.libelle)).toEqual([])
+    expect(PASTILLES.filter((p) => !(p.nom in DICO_EN_BASE)).map((p) => p.nom)).toEqual([])
+  })
+
+  it('chaque pastille porte le nom de son étape à côté du chiffre', () => {
+    expect(pastilles(args()).map((p) => p.nom)).toEqual(['Menaces', 'Méchant', 'Sbires', 'Cartes rencontre', 'Bilan'])
   })
 
   it('passe, courant, a venir, avec leur resultat court', () => {

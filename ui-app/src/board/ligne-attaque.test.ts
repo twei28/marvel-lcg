@@ -34,6 +34,19 @@ describe('sous « Ne pas défendre », seulement ce qui est connu', () => {
     expect(ligneAttaqueConnue(defense(20), cartes)).toBe('ATQ 2')
   })
 
+  it('un deck rattache au vilain (Armes Experimentales) ne compte pas comme des boosts', () => {
+    const cartes = new Map([
+      [10, carte(10, { info: { attack: 1 } })],
+      [11, carte(11, { bind_object_id: 10, is_face_up: false })],
+      [12, carte(12, { bind_object_id: 10, is_face_up: false })],
+      [13, carte(13, { bind_object_id: 10, is_face_up: false })],
+      [14, carte(14, { bind_object_id: 10, is_face_up: false })],
+    ])
+    const deck = new Set([12, 13, 14])
+    expect(ligneAttaqueConnue(defense(10), cartes, undefined, deck)).toBe('ATQ 1 + 1 carte boost')
+    expect(detailAttaqueComplet(defense(10), cartes, undefined, deck)).toBe('ATQ 1 + 1 carte boost')
+  })
+
   it('pas de question de defense : rien', () => {
     expect(ligneAttaqueConnue([], new Map())).toBeUndefined()
   })

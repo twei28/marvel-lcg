@@ -53,13 +53,15 @@ export const PASTILLES: ReadonlyArray<{
   libelle: string
   /** Nom court pour « Revenir à 2B ». */
   court: string
+  /** Nom de l'étape, écrit à côté du chiffre dans la frise. Clé t(). */
+  nom: string
   temps: ReadonlyArray<TempsPhase>
 }> = [
-  { cle: 'menace', numero: '①', libelle: '1. Placer les menaces', court: '1', temps: ['menace'] },
-  { cle: 'mechant', numero: '②', libelle: '2A. Le méchant s’active', court: '2A', temps: ['mechant'] },
-  { cle: 'sbires', numero: '③', libelle: '2B. Les sbires s’activent', court: '2B', temps: ['sbires'] },
-  { cle: 'cartes-rencontre', numero: '④', libelle: '3. Cartes rencontre', court: '3', temps: ['distribution', 'revelation'] },
-  { cle: 'bilan', numero: '⑤', libelle: 'Bilan', court: 'Bilan', temps: ['bilan'] },
+  { cle: 'menace', numero: '①', libelle: '1. Placer les menaces', court: '1', nom: 'Menaces', temps: ['menace'] },
+  { cle: 'mechant', numero: '②', libelle: '2A. Le méchant s’active', court: '2A', nom: 'Méchant', temps: ['mechant'] },
+  { cle: 'sbires', numero: '③', libelle: '2B. Les sbires s’activent', court: '2B', nom: 'Sbires', temps: ['sbires'] },
+  { cle: 'cartes-rencontre', numero: '④', libelle: '3. Cartes rencontre', court: '3', nom: 'Cartes rencontre', temps: ['distribution', 'revelation'] },
+  { cle: 'bilan', numero: '⑤', libelle: 'Bilan', court: 'Bilan', nom: 'Bilan', temps: ['bilan'] },
 ]
 
 /** La pastille qui dessine un temps du modele ; aucune pour 'premier-joueur'. */
@@ -72,6 +74,7 @@ export type Pastille = {
   numero: string
   libelle: string
   court: string
+  nom: string
   /** Resultat court (resumeOnglet agrege), « 1 carte distribuée » en tete sur ④, '' a venir. */
   resume: string
   etat: 'passe' | 'courant' | 'a-venir'
@@ -163,6 +166,7 @@ export function pastilles(args: {
       numero: pastille.numero,
       libelle: t(pastille.libelle),
       court: t(pastille.court),
+      nom: t(pastille.nom),
       resume: etat === 'courant' && resume === t('aucun') ? '' : resume,
       etat,
       relu: args.relecture === pastille.cle,

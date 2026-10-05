@@ -28,10 +28,19 @@ import { mouvementReduit } from './affichage'
  */
 export const DUREE_RETOURNEMENT = 400
 
+/**
+ * Le pivot de la carte quand on connait sa face B (05/10/2026, demande de
+ * l'utilisateur : « quand on clique sur retourner, elle se retourne au meme
+ * endroit, a la meme taille, puis on fait OK »). ⚠ DOIT VALOIR la transition de
+ * `.panneau-manigance-pivot-tourne` dans board.css (meme valeur dupliquee).
+ */
+export const DUREE_PIVOT = 500
+
 export function PanneauManigance({
   carte,
   onValider,
   retournement = true,
+  versoUrl,
 }: {
   carte: WorldCard
   /**
@@ -43,6 +52,14 @@ export function PanneauManigance({
    * animation de retournement raconterait quelque chose qui n'arrive pas.
    */
   retournement?: boolean
+  /**
+   * Le scan de la face B, quand le monde la connait. Present : le clic sur
+   * « Retourner la manigance » fait PIVOTER la carte sur place, a la meme
+   * taille, sur sa face B, et c'est un second bouton « OK » qui repond au
+   * moteur. Absent : l'ancien comportement (la reponse part apres l'animation
+   * de fondu), faute d'image a montrer.
+   */
+  versoUrl?: string
   /**
    * Poste la reponse au moteur, et dit si elle EST PARTIE (voir
    * `Moteur.repondre`). Un `false` rouvre le bouton : sans ce fait, un envoi
@@ -56,6 +73,10 @@ export function PanneauManigance({
   // les deux se decident au meme instant, seul l'appel a `onValider` est
   // retarde.
   const [envoye, setEnvoye] = useState(false)
+  // Face B montree (premier clic) et pivot termine : voir `versoUrl`.
+  const [faceB, setFaceB] = useState(false)
+  const [pivote, setPivote] = useState(false)
+  const pivoter = versoUrl !== undefined && retournement
   const idMinuteur = useRef<number | undefined>(undefined)
   const monte = useRef(true)
 
@@ -81,7 +102,7 @@ export function PanneauManigance({
 
   return (
     <div
-      className={`panneau-manigance${envoye && retournement ? ' est-retournee' : ''}`}
+      className={`panneau-manigance${envoye && retournement && !pivoter ? ' est-retournee' : ''}${faceB ? ' est-face-b' : ''}`}
       role="dialog"
       aria-modal="true"
     >
@@ -92,16 +113,47 @@ export function PanneauManigance({
           carte DEBOUT, texte a la verticale : signale en jeu le 15/09/2026,
           « le main scheme n'est pas en paysage ». Meme montage que
           `CoucheRevelation`, qui avait deja paye ce defaut le 09/09. */}
-      <div className="panneau-manigance-cadre">
-        <img src={scanUrl(carte.pic_id)} alt={nomAffiche(carte)} />
-      </div>
+      {pivoter ? (
+        <div className="panneau-manigance-pivot">
+          <div className="panneau-manigance-pivot-tourne">
+            <div className="panneau-manigance-cadre">
+              <img src={scanUrl(carte.pic_id)} alt={nomAffiche(carte)} />
+            </div>
+            <div className="panneau-manigance-cadre panneau-manigance-cadre-verso">
+              <img src={versoUrl} alt="" />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="panneau-manigance-cadre">
+          <img src={scanUrl(carte.pic_id)} alt={nomAffiche(carte)} />
+        </div>
+      )}
       <button
         type="button"
         className="bh-bouton panneau-manigance-ok"
-        disabled={envoye}
+        disabled={envoye || (pivoter && faceB && !pivote)}
         onClick={() => {
           if (envoye) return
+          if (pivoter && !faceB) {
+            // Premier clic : la carte pivote sur sa face B, rien ne part. Le
+            // bouton ne repond a nouveau qu'une fois le pivot fini, pour qu'un
+            // double clic ne saute pas la face B.
+            setFaceB(true)
+            if (mouvementReduit()) {
+              setPivote(true)
+              return
+            }
+            idMinuteur.current = window.setTimeout(() => {
+              if (monte.current) setPivote(true)
+            }, DUREE_PIVOT)
+            return
+          }
           setEnvoye(true)
+          if (pivoter) {
+            void envoyer()
+            return
+          }
           // ⚠ PAS DE onTransitionEnd. Sous prefers-reduced-motion la
           // transition CSS n'existe pas (voir board.css) : l'evenement ne
           // partirait jamais et la partie resterait bloquee pour toujours,
@@ -116,7 +168,7 @@ export function PanneauManigance({
           idMinuteur.current = window.setTimeout(() => void envoyer(), DUREE_RETOURNEMENT)
         }}
       >
-        {retournement ? t('Retourner la manigance') : t('Continuer')}
+        {pivoter && faceB ? t('OK') : retournement ? t('Retourner la manigance') : t('Continuer')}
       </button>
     </div>
   )

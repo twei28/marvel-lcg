@@ -13,7 +13,7 @@
 // clic pose la classe tout de suite, la reponse part apres DUREE_RETOURNEMENT.
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { DUREE_RETOURNEMENT, PanneauManigance } from './PanneauManigance'
+import { DUREE_PIVOT, DUREE_RETOURNEMENT, PanneauManigance } from './PanneauManigance'
 import type { WorldCard } from './world'
 
 const carte = { id: 48, card_id: '01097a', pic_id: '01097a', name: 'The Break-In!' } as unknown as WorldCard
@@ -201,5 +201,118 @@ describe('PanneauManigance, sans retournement (manigance annexe)', () => {
     fireEvent.click(screen.getByRole('button'))
 
     expect(document.querySelector('.panneau-manigance.est-retournee')).not.toBeNull()
+  })
+})
+
+// 05/10/2026, demande de l'utilisateur : « quand on clique sur retourner la
+// carte, elle se retourne au meme endroit, a la meme taille, puis on fait OK ».
+// Avec le scan de la face B connu, le premier clic fait PIVOTER la carte sans
+// rien envoyer ; c'est le second bouton, « OK », qui repond au moteur.
+describe('PanneauManigance, avec la face B connue', () => {
+  const versoUrl = '/scan/01097b.jpg'
+
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('monte les deux faces dans le meme pivot, a la meme taille', () => {
+    render(<PanneauManigance carte={carte} versoUrl={versoUrl} onValider={async () => true} />)
+    const cadres = document.querySelectorAll('.panneau-manigance-pivot .panneau-manigance-cadre')
+    expect(cadres).toHaveLength(2)
+    expect(cadres[1]?.querySelector('img')?.getAttribute('src')).toBe(versoUrl)
+  })
+
+  it('⚠ le premier clic pivote sur la face B et NE REPOND PAS au moteur', () => {
+    const onValider = vi.fn(async () => true)
+    render(<PanneauManigance carte={carte} versoUrl={versoUrl} onValider={onValider} />)
+    fireEvent.click(screen.getByRole('button'))
+    act(() => {
+      vi.advanceTimersByTime(DUREE_PIVOT * 4)
+    })
+    expect(screen.getByRole('dialog').className).toContain('est-face-b')
+    expect(onValider).not.toHaveBeenCalled()
+  })
+
+  it('le bouton devient « OK », et ne repond qu\'une fois le pivot fini', () => {
+    const onValider = vi.fn(async () => true)
+    render(<PanneauManigance carte={carte} versoUrl={versoUrl} onValider={onValider} />)
+    const bouton = screen.getByRole('button')
+    fireEvent.click(bouton)
+    expect(bouton.textContent).toBe('OK')
+    expect(bouton.hasAttribute('disabled')).toBe(true)
+    fireEvent.click(bouton)
+    expect(onValider).not.toHaveBeenCalled()
+    act(() => {
+      vi.advanceTimersByTime(DUREE_PIVOT)
+    })
+    expect(bouton.hasAttribute('disabled')).toBe(false)
+  })
+
+  it('OK envoie la reponse une seule fois, meme sur double clic', () => {
+    const onValider = vi.fn(async () => true)
+    render(<PanneauManigance carte={carte} versoUrl={versoUrl} onValider={onValider} />)
+    const bouton = screen.getByRole('button')
+    fireEvent.click(bouton)
+    act(() => {
+      vi.advanceTimersByTime(DUREE_PIVOT)
+    })
+    fireEvent.click(bouton)
+    fireEvent.click(bouton)
+    expect(onValider).toHaveBeenCalledTimes(1)
+  })
+
+  it('un envoi rate rouvre le bouton OK, la carte reste sur sa face B', async () => {
+    const onValider = vi.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true)
+    render(<PanneauManigance carte={carte} versoUrl={versoUrl} onValider={onValider} />)
+    const bouton = screen.getByRole('button')
+    fireEvent.click(bouton)
+    act(() => {
+      vi.advanceTimersByTime(DUREE_PIVOT)
+    })
+    await act(async () => {
+      fireEvent.click(bouton)
+    })
+    expect(bouton.hasAttribute('disabled')).toBe(false)
+    expect(screen.getByRole('dialog').className).toContain('est-face-b')
+    await act(async () => {
+      fireEvent.click(bouton)
+    })
+    expect(onValider).toHaveBeenCalledTimes(2)
+  })
+
+  it('en mouvement reduit, le pivot est immediat et OK est tout de suite actif', () => {
+    vi.stubGlobal('matchMedia', (media: string) => ({
+      media,
+      matches: true,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }))
+    try {
+      const onValider = vi.fn(async () => true)
+      render(<PanneauManigance carte={carte} versoUrl={versoUrl} onValider={onValider} />)
+      const bouton = screen.getByRole('button')
+      fireEvent.click(bouton)
+      expect(bouton.hasAttribute('disabled')).toBe(false)
+      expect(onValider).not.toHaveBeenCalled()
+      fireEvent.click(bouton)
+      expect(onValider).toHaveBeenCalledTimes(1)
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('une manigance annexe garde le flux direct meme avec un verso', () => {
+    const onValider = vi.fn(async () => true)
+    render(<PanneauManigance carte={carte} versoUrl={versoUrl} retournement={false} onValider={onValider} />)
+    fireEvent.click(screen.getByRole('button'))
+    expect(document.querySelector('.panneau-manigance-pivot')).toBeNull()
+    expect(onValider).toHaveBeenCalledTimes(1)
   })
 })

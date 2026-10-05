@@ -1296,6 +1296,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   '2B. Les sbires s’activent': '2B. Minions activate',
   '3. Cartes rencontre': '3. Encounter cards',
   'Cartes rencontre': 'Encounter cards',
+  'Menaces': 'Threat',
   '%1 carte distribuée': '%1 card dealt',
   '%1 cartes distribuées': '%1 cards dealt',
   'Suivant (espace)': 'Next (space)',

@@ -421,6 +421,7 @@ function LigneDuHaut({
               const contenu = (
                 <>
                   <span className="deroule-pastille-numero">{pastille.numero}</span>
+                  <span className="deroule-pastille-nom">{pastille.nom}</span>
                   {pastille.resume ? <small className="deroule-pastille-resume">{pastille.resume}</small> : null}
                   {pastille.compteur ? <small className="deroule-pastille-compteur">{pastille.compteur}</small> : null}
                 </>

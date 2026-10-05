@@ -10,6 +10,12 @@
 // rien sur le type d'attaquant, on COMPTE les cartes face cachee qui lui sont
 // attachees (`boostable`, publie par `ToDescriptor.Card` a la suite de
 // l'ennemi, `bind_object_id` = l'ennemi).
+//
+// ⚠ UN DECK RATTACHE AU VILAIN N'EST PAS DES BOOSTS (05/10/2026). La mise en
+// place d'« Attack on Mount Athena » cree le deck Armes Experimentales avec le
+// vilain pour porteur : ses cartes, face cachee, portent le meme
+// `bind_object_id` et se comptaient en « 4 cartes boost ». L'appelant donne
+// donc les ids des `additional_decks` (`horsBoost`), a ignorer.
 import type { Option } from './ask'
 import { t } from './langue'
 import type { WorldCard } from './world'
@@ -40,7 +46,11 @@ function detailCaracteristique(
   return [`${t(sigle)} ${actuelle - somme}`, ...nommes.map(morceau), ...autres].join(' ') + suite
 }
 
-function attaquantEtBoosts(options: Option[], cartesParId: Map<number, WorldCard>) {
+function attaquantEtBoosts(
+  options: Option[],
+  cartesParId: Map<number, WorldCard>,
+  horsBoost: ReadonlySet<number>
+) {
   const defense = options.find((option) => option.name === 'Defense')
   const idAttaquant = defense?.all_legal_targets?.[0]
   const attaquant = idAttaquant !== undefined ? cartesParId.get(idAttaquant) : undefined
@@ -48,7 +58,7 @@ function attaquantEtBoosts(options: Option[], cartesParId: Map<number, WorldCard
   if (!attaquant || typeof atq !== 'number') return undefined
   let boosts = 0
   for (const carte of cartesParId.values()) {
-    if (carte.bind_object_id === attaquant.id && !carte.is_face_up) boosts += 1
+    if (carte.bind_object_id === attaquant.id && !carte.is_face_up && !horsBoost.has(carte.id)) boosts += 1
   }
   const suite = boosts > 0 ? ` + ${boosts} ${boosts > 1 ? t('cartes boost') : t('carte boost')}` : ''
   return { atq, bonus: attaquant.bonus?.ATK ?? [], suite }
@@ -57,9 +67,10 @@ function attaquantEtBoosts(options: Option[], cartesParId: Map<number, WorldCard
 export function ligneAttaqueConnue(
   options: Option[],
   cartesParId: Map<number, WorldCard>,
-  nomFr?: (id: number) => string | undefined
+  nomFr?: (id: number) => string | undefined,
+  horsBoost: ReadonlySet<number> = new Set()
 ): string | undefined {
-  const a = attaquantEtBoosts(options, cartesParId)
+  const a = attaquantEtBoosts(options, cartesParId, horsBoost)
   return a ? detailCaracteristique('ATQ', a.atq, a.bonus, a.suite, nomFr) : undefined
 }
 
@@ -67,9 +78,10 @@ export function ligneAttaqueConnue(
 export function detailAttaqueComplet(
   options: Option[],
   cartesParId: Map<number, WorldCard>,
-  nomFr?: (id: number) => string | undefined
+  nomFr?: (id: number) => string | undefined,
+  horsBoost: ReadonlySet<number> = new Set()
 ): string | undefined {
-  const a = attaquantEtBoosts(options, cartesParId)
+  const a = attaquantEtBoosts(options, cartesParId, horsBoost)
   return a ? detailCaracteristique('ATQ', a.atq, a.bonus, a.suite, nomFr, false) : undefined
 }
 
