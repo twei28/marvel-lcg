@@ -6906,6 +6906,46 @@
   }
   .bandeau-pause-passer:hover { background: rgba(255, 255, 255, 0.12); }
 
+  .bh-facon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bh-facon-choix {
+    padding: 3px 12px;
+    background: transparent;
+    border: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .bh-facon-choix.est-actif {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1a1304;
+    font-weight: 600;
+  }
+  .bh-facon-choix:disabled { opacity: 0.45; cursor: default; }
+  .bh-facon-refus {
+    margin-left: 8px;
+    color: #ffb4a8;
+    font-size: 12px;
+  }
+  .choix-reprise { width: min(420px, 92vw); }
+  .choix-reprise-aide { margin: 4px 0 10px; opacity: 0.75; font-size: 13px; }
+  .choix-reprise-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .choix-reprise-liste button {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+    padding: 10px 12px;
+    cursor: pointer;
+  }
+  .choix-reprise-liste span { opacity: 0.7; font-size: 12px; }
   .bandeau-pause-reprendre {
     border: none;
     background: #f0b429;

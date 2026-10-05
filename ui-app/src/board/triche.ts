@@ -241,3 +241,28 @@ export async function passerLaQuestion(): Promise<ResultatPasser> {
     return { ok: false, code: 'reseau' }
   }
 }
+
+// --- Reprendre en Auto une partie COMMENCEE en manuel ------------------------
+
+/** Où le moteur reprend la main après une partie commencée en manuel. */
+export type PhaseDeReprise = 'heros' | 'mechant' | 'tour'
+
+/**
+ * Rend la table au moteur, à la phase indiquée, route `POST /manuel_reprise`.
+ * Même moule que `passerLaQuestion` : un refus du moteur rend son CODE STABLE
+ * (jamais une phrase), un échec de la requête rend `'reseau'`.
+ */
+export async function reprendreEnAuto(phase: PhaseDeReprise): Promise<ResultatPasser> {
+  try {
+    const reponse = await fetch('/manuel_reprise', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phase }),
+    })
+    if (reponse.ok) return { ok: true }
+    const corps = (await reponse.json().catch(() => ({}))) as { error?: string }
+    return { ok: false, code: corps.error ?? 'inconnu' }
+  } catch {
+    return { ok: false, code: 'reseau' }
+  }
+}

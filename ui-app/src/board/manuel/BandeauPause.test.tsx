@@ -3,7 +3,7 @@
 //   1. ne s'affiche pas hors pause
 //   2. s'affiche en pause
 //   3. nomme qui a mis en pause (ou « quelqu'un » à défaut)
-//   4. appelle `onReprendre`
+//   4. n'a plus de bouton Reprendre (l'interrupteur de la barre reprend)
 //   5. (tâche 5) une question passée avec succès n'affiche aucun motif
 //   6. (tâche 5) un refus affiche un motif LISIBLE, pas un code nu
 //   7. (tâche 5) deux codes de refus distincts donnent deux phrases distinctes
@@ -16,7 +16,6 @@ describe('le bandeau de pause', () => {
     const { container } = render(
       <BandeauPause
         enPause={{ actif: false, par: '', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={async () => ({ ok: true })}
       />
     )
@@ -27,7 +26,6 @@ describe('le bandeau de pause', () => {
     const { container } = render(
       <BandeauPause
         enPause={{ actif: true, par: '', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={async () => ({ ok: true })}
       />
     )
@@ -38,7 +36,6 @@ describe('le bandeau de pause', () => {
     render(
       <BandeauPause
         enPause={{ actif: true, par: 'Nick Fury', depuis: '2026-09-20 14-30' }}
-        onReprendre={() => {}}
         onPasser={async () => ({ ok: true })}
       />
     )
@@ -49,24 +46,20 @@ describe('le bandeau de pause', () => {
     render(
       <BandeauPause
         enPause={{ actif: true, par: '', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={async () => ({ ok: true })}
       />
     )
     expect(screen.getByText(/Quelqu.un/)).toBeTruthy()
   })
 
-  it('appelle onReprendre au clic sur Reprendre', () => {
-    const reprendre = vi.fn()
+  it('n\'a plus de bouton Reprendre : c\'est l\'interrupteur de la barre qui reprend', () => {
     render(
       <BandeauPause
         enPause={{ actif: true, par: '', depuis: '' }}
-        onReprendre={reprendre}
         onPasser={async () => ({ ok: true })}
       />
     )
-    fireEvent.click(screen.getByText('Reprendre'))
-    expect(reprendre).toHaveBeenCalled()
+    expect(screen.queryByText('Reprendre')).toBeNull()
   })
 
   // --- Tâche 5 : passer la question fautive ---------------------------------
@@ -76,7 +69,6 @@ describe('le bandeau de pause', () => {
     const { container } = render(
       <BandeauPause
         enPause={{ actif: true, par: '', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={passer}
       />
     )
@@ -90,7 +82,6 @@ describe('le bandeau de pause', () => {
     render(
       <BandeauPause
         enPause={{ actif: true, par: '', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={passer}
       />
     )
@@ -109,7 +100,6 @@ describe('le bandeau de pause', () => {
     render(
       <BandeauPause
         enPause={{ actif: true, par: '', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={passer}
       />
     )
@@ -124,7 +114,6 @@ describe('le bandeau de pause', () => {
     render(
       <BandeauPause
         enPause={{ actif: true, par: '', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={passer}
       />
     )
@@ -149,7 +138,6 @@ describe('le spectateur REGARDE la pause, il n’en sort pas (I2)', () => {
     render(
       <BandeauPause
         enPause={{ actif: true, par: 'Nick Fury', depuis: '2026-09-20 14-30' }}
-        onReprendre={() => {}}
         onPasser={async () => ({ ok: true })}
         lectureSeule
       />
@@ -160,15 +148,13 @@ describe('le spectateur REGARDE la pause, il n’en sort pas (I2)', () => {
     expect(screen.getByText(/Nick Fury/)).toBeTruthy()
   })
 
-  it('garde les deux boutons pour un joueur assis (témoin de contrôle)', () => {
+  it('garde le bouton Passer la question pour un joueur assis (témoin de contrôle)', () => {
     render(
       <BandeauPause
         enPause={{ actif: true, par: 'Nick Fury', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={async () => ({ ok: true })}
       />
     )
-    expect(screen.getByText('Reprendre')).toBeTruthy()
     expect(screen.getByText('Passer la question')).toBeTruthy()
   })
 })
@@ -183,7 +169,6 @@ describe('le motif de refus ne survit pas à la pause qui l’a produit', () => 
     const { rerender } = render(
       <BandeauPause
         enPause={{ actif: true, par: '', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={passer}
       />
     )
@@ -194,7 +179,6 @@ describe('le motif de refus ne survit pas à la pause qui l’a produit', () => 
     const reprise = (
       <BandeauPause
         enPause={{ actif: false, par: '', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={passer}
       />
     )
@@ -202,7 +186,6 @@ describe('le motif de refus ne survit pas à la pause qui l’a produit', () => 
     rerender(
       <BandeauPause
         enPause={{ actif: true, par: '', depuis: '' }}
-        onReprendre={() => {}}
         onPasser={passer}
       />
     )
@@ -242,7 +225,6 @@ describe('« depuis » est une DURÉE, pas l’heure murale du serveur', () => {
           depuis: '2026-09-20 17-12',
           depuisEpoch: MAINTENANT / 1000 - 18 * 60,
         }}
-        onReprendre={() => {}}
         onPasser={async () => ({ ok: true })}
       />
     )
@@ -255,7 +237,6 @@ describe('« depuis » est une DURÉE, pas l’heure murale du serveur', () => {
     render(
       <BandeauPause
         enPause={{ actif: true, par: 'Nick Fury', depuis: '2026-09-20 17-12' }}
-        onReprendre={() => {}}
         onPasser={async () => ({ ok: true })}
       />
     )

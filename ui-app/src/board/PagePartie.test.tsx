@@ -297,25 +297,23 @@ describe('la barre du haut sans « Plus d options » (04/10/2026)', () => {
   })
 })
 
-// TACHE 3. Le bouton qui met une partie ORDINAIRE en pause : dans la modale
-// « Plus d'options » (refonte du header du 24/09/2026, ex-barre a plat), ni
-// un reglage cache (FenetreReglages), ni un bouton qu'on presse par accident
-// (voir board.tsx pour la justification complete). Masque des que la pause
-// est posee : `BandeauPause` devient alors le seul moyen de reprendre.
-describe('le bouton de pause (tache 3)', () => {
-  it('existe en partie ORDINAIRE, hors pause', async () => {
+// L'interrupteur « Auto / Manuel » (05/10/2026) : remplace l'ancien bouton
+// « Mettre en pause ». Toujours dans la barre, il pose ou leve la pause d'une
+// partie commencee en auto, et rend la table au moteur (fenetre « On en est
+// ou ? ») pour une partie commencee en manuel.
+describe('l\'interrupteur Auto / Manuel', () => {
+  it('est toujours dans la barre, sur Auto en partie ordinaire', async () => {
     monter()
     await emettre({ monde: table(heros('Spider-Man', 1)) })
-    ouvrirPlusOptions()
-    expect(screen.getByRole('button', { name: /Mettre en pause/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Mode automatique', pressed: true })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Mode manuel', pressed: false })).toBeTruthy()
   })
 
-  it('pose la pause au clic (POST /manuel_pause, actif: true, aucun champ qui)', async () => {
+  it('Manuel pose la pause au clic (POST /manuel_pause, actif: true, aucun champ qui)', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
     monter()
     await emettre({ monde: table(heros('Spider-Man', 1)) })
-    ouvrirPlusOptions()
-    fireEvent.click(screen.getByRole('button', { name: /Mettre en pause/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'Mode manuel' }))
     await attendreLeReseau()
     expect(fetch).toHaveBeenCalledWith('/manuel_pause', expect.objectContaining({
       method: 'POST',
@@ -324,25 +322,39 @@ describe('le bouton de pause (tache 3)', () => {
     vi.unstubAllGlobals()
   })
 
-  it('disparait pendant la pause : le bandeau devient le seul moyen de reprendre', async () => {
+  it('en pause : Manuel est allume, et Auto leve la pause (le moteur reprend a sa question)', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
     monter()
     const monde = table(heros('Spider-Man', 1)) as { mode_manuel?: boolean; manuel_actif?: boolean }
     monde.mode_manuel = false
     monde.manuel_actif = true
     await emettre({ monde: monde as never })
-    ouvrirPlusOptions()
-    expect(screen.queryByRole('button', { name: /Mettre en pause/ })).toBeNull()
-    expect(screen.getByText('Reprendre')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Mode manuel', pressed: true })).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Mode automatique' }))
+    await attendreLeReseau()
+    expect(fetch).toHaveBeenCalledWith('/manuel_pause', expect.objectContaining({
+      body: JSON.stringify({ actif: false }),
+    }))
+    vi.unstubAllGlobals()
   })
 
-  it('n\'existe pas en mode manuel DECLARE : rien a « pauser », ManualLoop tient deja la table muette', async () => {
+  it('partie commencee en manuel : Auto ouvre « On en est ou ? » et reprend a la phase choisie', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
     monter()
     const monde = table(heros('Spider-Man', 1)) as { mode_manuel?: boolean; manuel_actif?: boolean }
     monde.mode_manuel = true
     monde.manuel_actif = true
     await emettre({ monde: monde as never })
-    ouvrirPlusOptions()
-    expect(screen.queryByRole('button', { name: /Mettre en pause/ })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Mode automatique' }))
+    expect(screen.getByRole('dialog', { name: 'On en est où ?' })).toBeTruthy()
+    expect(fetch).not.toHaveBeenCalledWith('/manuel_reprise', expect.anything())
+    fireEvent.click(screen.getByText('Au début de la phase méchant'))
+    await attendreLeReseau()
+    expect(fetch).toHaveBeenCalledWith('/manuel_reprise', expect.objectContaining({
+      method: 'POST',
+      body: JSON.stringify({ phase: 'mechant' }),
+    }))
+    vi.unstubAllGlobals()
   })
 })
 

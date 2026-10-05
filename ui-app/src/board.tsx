@@ -30,11 +30,12 @@ import { AssistantAction } from './board/AssistantAction'
 import { estEnPause, estModeManuel, leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
 import { BandeauPause } from './board/manuel/BandeauPause'
+import { InterrupteurFacon } from './board/manuel/InterrupteurFacon'
 import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
 // ⚠ IMPORT NOMME, PAS `import * as triche` : `PagePartie` a deja un
 // identifiant local `triche` (`useTriche(...)`, le bac a sable) -- un import
 // namespace du meme nom serait ombrage silencieusement par lui a l'usage.
-import { basculerPause, passerLaQuestion } from './board/triche'
+import { basculerPause, passerLaQuestion, reprendreEnAuto } from './board/triche'
 import { BarreAction } from './board/BarreAction'
 import { Board, CarteApercu, type ReglagesGlisser } from './board/Board'
 import {
@@ -3945,7 +3946,6 @@ export function PagePartie({
           // un joueur distant et illisible comme durée (revue finale).
           depuisEpoch: etat.monde?.pause_epoch,
         }}
-        onReprendre={() => { void basculerPause(false) }}
         onPasser={passerLaQuestion}
         /* I2 : le spectateur VOIT la pause (sinon la table s'arrête sous ses
            yeux sans un mot) mais n'en sort pas -- et surtout ne « passe » pas
@@ -4458,19 +4458,14 @@ export function PagePartie({
                 plus. La pause a son bouton (visible quand elle est possible),
                 la langue aussi, ⚙ ouvre directement les Reglages, et le
                 journal reste sur sa languette. */}
-            {!modeManuelDeclare && !manuel ? (
-              <button
-                type="button"
-                className="bh-bouton bh-pause"
-                onClick={() => {
-                  void basculerPause(true)
-                }}
-                aria-label={t('Mettre en pause')}
-                title={t('Arrêter la partie pour tout le monde, le temps de corriger un bug à la main')}
-              >
-                <span aria-hidden="true">⏸</span>
-              </button>
-            ) : null}
+            <InterrupteurFacon
+              manuel={manuel}
+              commenceEnManuel={modeManuelDeclare}
+              lectureSeule={spectateur}
+              onManuel={() => basculerPause(true)}
+              onReprendre={() => basculerPause(false)}
+              onReprendreA={reprendreEnAuto}
+            />
             <button
               type="button"
               className="bh-bouton bh-langue"

@@ -89,8 +89,6 @@ function motifDuRefus(code: string): string {
 
 export type BandeauPauseProps = {
   enPause: InfoPause
-  /** Reprend la partie (`POST /manuel_pause` avec `actif: false`). */
-  onReprendre: () => void
   /**
    * Tente de passer la question fautive du moteur (tâche 5, échappatoire de
    * dernier recours) : `POST /manuel_passer`. Rend `{ ok: true }` quand le
@@ -119,7 +117,6 @@ export type BandeauPauseProps = {
 
 export function BandeauPause({
   enPause,
-  onReprendre,
   onPasser,
   lectureSeule = false,
 }: BandeauPauseProps) {
@@ -163,20 +160,18 @@ export function BandeauPause({
   return (
     <div className="bandeau-pause" role="alert">
       <span className="bandeau-pause-titre">
-        <span aria-hidden="true">⏸</span> {t('Partie en pause')}
+        {t('Table en manuel')}
       </span>
       <span className="bandeau-pause-texte">
-        {qui} {t('a mis la partie en pause')}
+        {qui} {t('a passé la table en manuel')}
         {depuis ? ` ${t('depuis')} ${depuis}` : ''}
       </span>
-      {/* Aucun bouton pour qui ne fait que regarder : voir `lectureSeule`. */}
+      {/* Aucun bouton pour qui ne fait que regarder : voir `lectureSeule`.
+          Reprendre en Auto se fait par l'interrupteur de la barre. */}
       {lectureSeule ? null : (
         <span className="bandeau-pause-boutons">
           <button type="button" className="bandeau-pause-passer" onClick={() => { void passer() }}>
             {t('Passer la question')}
-          </button>
-          <button type="button" className="bandeau-pause-reprendre" onClick={onReprendre}>
-            {t('Reprendre')}
           </button>
         </span>
       )}
