@@ -3347,6 +3347,256 @@ def cas_relire_geste_au_bon_rang(game_dir, port):
     return (f"le geste est rejoue a son rang ({rang}/{entrees}) : la table "
             "rechargee est identique")
 
+
+# ---------------------------------------------------------------------------
+# LA REPRISE EN AUTOMATIQUE d'une partie DECLAREE manuelle (POST /manuel_reprise)
+# ---------------------------------------------------------------------------
+
+def _serveur_factice(jeu):
+    """Le VRAI `GameServerGet`, sans socket (meme montage que
+    `cas_pause_par_nom_du_heros`)."""
+    from engine.device.web.server.server_get import GameServerGet
+    serveur = GameServerGet.__new__(GameServerGet)
+    serveur.device_manager = jeu.world.controller_manager.device_manager
+    return serveur
+
+
+def _appeler_reprise(serveur, phase, cookies=None):
+    import asyncio
+    reponse = asyncio.run(serveur.manuel_reprise(
+        _RequeteFactice(cookies or {}, {"phase": phase}, "/manuel_reprise")))
+    return reponse.status, json.loads(reponse.text)
+
+
+def _espionner_le_deroule(monde):
+    """Note l'ORDRE dans lequel le moteur entre dans ses phases et clot un
+    tour : c'est la seule facon de voir de quelle phase la reprise est
+    repartie. A poser AVANT la reprise (le moteur la lit sur l'instance)."""
+    ordre = []
+
+    def envelopper(objet, nom, etiquette):
+        vrai = getattr(objet, nom)
+
+        def enveloppe(*a, **k):
+            ordre.append(etiquette)
+            return vrai(*a, **k)
+        setattr(objet, nom, enveloppe)
+
+    envelopper(monde, "PlayerPhase", "PlayerPhase")
+    envelopper(monde, "VillainPhase", "VillainPhase")
+    envelopper(monde.buff_manager, "OnRoundEnd", "FinDeTour")
+    return ordre
+
+
+def _reprendre_et_regarder(game_dir, port, phase):
+    jeu, monde, journal = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    assert monde.manuel_actif is True, "premisse cassee : la boucle manuelle n'a pas demarre"
+    vilain = id_du_vilain(monde)
+    deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
+    avant = len(journal)
+    assert monde.round_id == 0
+
+    ordre = _espionner_le_deroule(monde)
+    statut, corps = _appeler_reprise(_serveur_factice(jeu), phase)
+    assert statut == 200, f"la reprise a ete refusee : {statut} {corps}"
+    time.sleep(15)
+
+    assert monde.scene.reprise_auto == phase, \
+        f"la scene ne se souvient pas de la reprise : {monde.scene.reprise_auto!r}"
+    assert monde.manuel_actif is False, \
+        "le moteur est reste muet apres la reprise"
+    assert len(journal) > avant, \
+        "le moteur n'a repose aucune question apres la reprise : il ne conduit pas"
+    assert monde.round_id >= 1, f"aucun tour demarre : round_id={monde.round_id}"
+    descripteur = monde.render.descriptor
+    assert descripteur.mode_manuel is False, \
+        "la trame annonce encore une partie declaree manuelle apres la reprise"
+    assert descripteur.manuel_actif is False, \
+        "la trame annonce encore le moteur muet apres la reprise"
+    assert monde.object_manager.card_dict[vilain].face.GetLostHealth() >= 3, \
+        "le geste d'avant la reprise a disparu"
+    return jeu, monde, ordre
+
+
+def cas_reprise_heros(game_dir, port):
+    """Reprise « phase heros » : le tour demarre, la phase heros est jouee
+    en premier, et la partie est redevenue ordinaire (la pause rouvre)."""
+    jeu, monde, ordre = _reprendre_et_regarder(game_dir, port, "heros")
+    assert ordre and ordre[0] == "PlayerPhase", \
+        f"la phase heros n'est pas la premiere jouee : {ordre!r}"
+    assert "FinDeTour" not in ordre[:1], f"fin de tour avant le premier tour : {ordre!r}"
+
+    import asyncio
+    serveur = _serveur_factice(jeu)
+    reponse = asyncio.run(serveur.manuel_pause(_RequeteFactice({}, {"actif": True})))
+    assert reponse.status == 200, (
+        f"la pause reste fermee apres la reprise (HTTP {reponse.status}) : la "
+        "partie n'est pas redevenue ordinaire")
+    assert monde.manuel_actif is True
+    asyncio.run(serveur.manuel_pause(_RequeteFactice({}, {"actif": False})))
+    return "reprise en phase heros : le moteur conduit, la pause se pose et se leve"
+
+
+def cas_reprise_mechant(game_dir, port):
+    """Reprise « phase mechant » : la phase heros, jouee a la main, est sautee."""
+    _, _, ordre = _reprendre_et_regarder(game_dir, port, "mechant")
+    assert ordre and ordre[0] == "VillainPhase", \
+        f"la reprise en phase mechant n'a pas commence par elle : {ordre!r}"
+    return "reprise en phase mechant : la phase heros est sautee"
+
+
+def cas_reprise_tour(game_dir, port):
+    """Reprise « nouveau tour » : le tour joue a la main est clos, puis un
+    tour neuf commence par la phase heros."""
+    _, _, ordre = _reprendre_et_regarder(game_dir, port, "tour")
+    assert ordre[:2] == ["FinDeTour", "PlayerPhase"], \
+        f"la reprise « nouveau tour » ne clot pas l'ancien puis ouvre le neuf : {ordre!r}"
+    return "reprise en nouveau tour : fin de tour, puis phase heros"
+
+
+def cas_reprise_refusee(game_dir, port):
+    """Les refus de `/manuel_reprise`, chacun avec son code, et RIEN ne bouge.
+
+    Le temoin qui compte est le REFUS : apres chaque refus, le moteur est
+    toujours muet, aucun tour n'a demarre, la scene ne porte aucune reprise.
+    """
+    jeu, monde, journal = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    from engine.device.web.server.server_base import SEAT_PASSWORDS
+    assert monde.manuel_actif is True
+    serveur = _serveur_factice(jeu)
+    avant = len(journal)
+
+    def rien_n_a_bouge(contexte):
+        assert monde.manuel_actif is True, f"{contexte} : le moteur a parle"
+        assert monde.round_id == 0, f"{contexte} : un tour a demarre"
+        assert monde.scene.reprise_auto == "", f"{contexte} : la scene garde une reprise"
+        assert monde.reprise_demandee is None, f"{contexte} : une reprise est restee en attente"
+        assert len(journal) == avant, f"{contexte} : le moteur a repose une question"
+
+    statut, corps = _appeler_reprise(serveur, "nimporte")
+    assert (statut, corps.get("error")) == (409, "phase_inconnue"), (statut, corps)
+    rien_n_a_bouge("phase inconnue")
+
+    fini = jeu.session.mise_en_place_finie
+    jeu.session.mise_en_place_finie = False
+    try:
+        statut, corps = _appeler_reprise(serveur, "heros")
+    finally:
+        jeu.session.mise_en_place_finie = fini
+    assert (statut, corps.get("error")) == (409, "mise_en_place_non_finie"), (statut, corps)
+    rien_n_a_bouge("mise en place non finie")
+
+    ancien = list(SEAT_PASSWORDS.value)
+    try:
+        # Tous les sieges proteges : un siege orphelin s'ouvre a tout le monde.
+        SEAT_PASSWORDS.value = ["secret-siege-0", "secret-siege-1",
+                                "secret-siege-2", "secret-siege-3"]
+        serveur.seat_orphelin = lambda siege: False
+        statut, corps = _appeler_reprise(serveur, "heros")
+    finally:
+        SEAT_PASSWORDS.value = ancien
+    assert statut == 403, f"un client sans siege a pu reprendre : {statut} {corps}"
+    rien_n_a_bouge("sans siege")
+
+    # Une fois repartie, la partie n'est plus « manuelle » : une 2e reprise est refusee.
+    statut, corps = _appeler_reprise(serveur, "heros")
+    assert statut == 200, (statut, corps)
+    time.sleep(10)
+    statut, corps = _appeler_reprise(serveur, "heros")
+    assert (statut, corps.get("error")) == (409, "pas_manuel"), (statut, corps)
+    return "refus : phase inconnue, mise en place non finie, sans siege, deja reprise"
+
+
+def cas_reprise_refusee_hors_manuel(game_dir, port):
+    """Sur une partie ordinaire (jamais declaree manuelle), pas de reprise :
+    c'est `/manuel_pause` qui reprend. Refus `pas_manuel`, rien ne bouge."""
+    jeu, monde, journal = monter_le_moteur(game_dir, port, [])
+    assert bool(monde.rule.mode_manuel) is False
+    statut, corps = _appeler_reprise(_serveur_factice(jeu), "heros")
+    assert (statut, corps.get("error")) == (409, "pas_manuel"), (statut, corps)
+    assert monde.scene.reprise_auto == "" and monde.reprise_demandee is None
+    return "pas de reprise sur une partie ordinaire : 409 pas_manuel"
+
+
+def cas_reprise_survit_sauvegarde(game_dir, port):
+    """Une partie repartie en automatique se sauvegarde et se rouvre.
+
+    Un geste (`Puzzle.Draw(2)`, qui change ce que toutes les entrees
+    suivantes ont sous les yeux) est fait en manuel, puis la partie reprend
+    en phase heros et joue une vingtaine de questions avant d'etre
+    sauvegardee. Le fils (`relire_reprise`) la rouvre en rejouant les entrees.
+    """
+    global PLAFOND_QUESTIONS
+    jeu, monde, journal = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    assert monde.manuel_actif is True
+    deposer(jeu, "Puzzle.Draw(2)")
+    PLAFOND_QUESTIONS = len(journal) + 25
+    statut, corps = _appeler_reprise(_serveur_factice(jeu), "heros")
+    assert statut == 200, (statut, corps)
+    time.sleep(20)
+    assert monde.round_id >= 1, "premisse cassee : aucun tour n'a demarre apres la reprise"
+
+    entrees = len(jeu.controller_manager.replay.history_inputs)
+    rang = jeu.session.scene.manuel_commands_step
+    assert rang and entrees > rang[0], \
+        f"premisse cassee : aucune entree apres la reprise (rang {rang}, {entrees} entrees)"
+
+    nom = "manuel-reprise-aller-retour.json"
+    assert jeu.session.SaveScene(name=nom, delete_old=False), \
+        "la sauvegarde n'a pas ete ecrite"
+    env = dict(os.environ)
+    env["MC_SAUVEGARDE"] = nom
+    env["MC_ENTREES"] = str(entrees)
+    fils = subprocess.run(
+        [sys.executable, os.path.abspath(__file__), game_dir,
+         str(port + 1), "relire_reprise", "--fils"],
+        cwd=RACINE, capture_output=True, text=True, timeout=300, env=env)
+    assert fils.returncode == 0, \
+        f"le rechargement a echoue :\n{fils.stdout[-4000:]}\n{fils.stderr[-3000:]}"
+    return "la partie repartie en automatique se rouvre, rejeu sans desaccord de CRC"
+
+
+def cas_relire_reprise(game_dir, port):
+    """Le fils de `cas_reprise_survit_sauvegarde`."""
+    chemin = os.environ["MC_SAUVEGARDE"]
+    entrees = int(os.environ["MC_ENTREES"])
+
+    game_dir = os.path.abspath(game_dir)
+    os.chdir(game_dir)
+    sys.path.insert(0, game_dir)
+    from engine.log import Log
+
+    crc_fautifs = []
+    _vrai_assert = Log.Assert
+
+    def _assert_espion(categorie, *info):
+        if categorie == "REPLAY":
+            crc_fautifs.append(" ".join(str(x) for x in info))
+        return _vrai_assert(categorie, *info)
+
+    Log.Assert = _assert_espion
+
+    jeu, monde, journal = monter_le_moteur(game_dir, port, [], sauvegarde=chemin,
+                                           rejouer_les_entrees=True)
+    scene = jeu.session.scene
+    assert scene.reprise_auto == "heros", \
+        f"la sauvegarde a perdu la reprise : {scene.reprise_auto!r}"
+    assert scene.manuel_commands == ["Puzzle.Draw(2)"], \
+        f"la sauvegarde a perdu le geste : {scene.manuel_commands}"
+    assert not crc_fautifs, (
+        f"{len(crc_fautifs)} desaccord(s) de CRC au rejeu : le geste d'avant la "
+        f"reprise n'est pas rejoue au meme moment que dans la partie vivante. "
+        f"Premier :\n{crc_fautifs[0][:800]}")
+    assert monde.manuel_actif is False, \
+        "la partie rouverte est restee muette : la reprise n'a pas survecu"
+    assert monde.render.descriptor.mode_manuel is False
+    assert monde.round_id >= 1, f"le tour n'a pas ete rejoue : round_id={monde.round_id}"
+    rejouees = len(jeu.controller_manager.replay.history_inputs)
+    assert rejouees >= entrees, \
+        f"le rejeu s'est arrete en route : {rejouees} entrees sur {entrees}"
+    return "la reprise survit : tour rejoue, geste rejoue, aucun desaccord"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
@@ -3401,6 +3651,13 @@ CAS = {
     "relire_histoire": cas_relire_histoire,
     "geste_au_bon_rang": cas_geste_au_bon_rang,
     "relire_geste_au_bon_rang": cas_relire_geste_au_bon_rang,
+    "reprise_heros": cas_reprise_heros,
+    "reprise_mechant": cas_reprise_mechant,
+    "reprise_tour": cas_reprise_tour,
+    "reprise_refusee": cas_reprise_refusee,
+    "reprise_refusee_hors_manuel": cas_reprise_refusee_hors_manuel,
+    "reprise_survit_sauvegarde": cas_reprise_survit_sauvegarde,
+    "relire_reprise": cas_relire_reprise,
 }
 
 
@@ -3411,7 +3668,7 @@ def main():
     # Les cas appeles par un AUTRE cas, jamais tout seuls.
     SUR_DEMANDE = {"relire_sauvegarde", "relire_marque_survit",
                    "relire_geste_ordinaire", "relire_histoire",
-                   "relire_geste_au_bon_rang"}
+                   "relire_geste_au_bon_rang", "relire_reprise"}
     noms = [voulu] if voulu else [n for n in CAS if n not in SUR_DEMANDE]
     for rang, nom in enumerate(noms):
         fils = subprocess.run(

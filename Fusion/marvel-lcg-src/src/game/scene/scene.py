@@ -143,6 +143,15 @@ class Scene:
     # aucun. Zero = aucune pause en cours, comme la chaine vide a cote.
     pause_epoch: float = field(default=0.0)
 
+    # LA REPRISE EN AUTOMATIQUE d'une partie DECLAREE manuelle : la phase ou
+    # le moteur a repris la main ("heros", "mechant" ou "tour"), vide tant que
+    # la partie est restee manuelle. Posee par `World.ReprendreEnAuto`, c'est
+    # la memoire durable de la reprise (le `World` est reconstruit a chaque
+    # chargement ou annulation) : `World.OnGameLoop` la relit pour ne plus
+    # entrer dans `ManualLoop` et reprendre la meme phase au rejeu.
+    # Champ a defaut vide : une sauvegarde anterieure se recharge inchangee.
+    reprise_auto: str = field(default="")
+
     inputs: List[OperationDescriptor] = field(default_factory=lambda: [])
 
     @property

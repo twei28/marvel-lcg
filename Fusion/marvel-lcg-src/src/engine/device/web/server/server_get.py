@@ -185,12 +185,48 @@ class GameServerGet(GameServerBase):
         # s'affiche pas sur une partie declaree (`estEnPause`, `mode.ts`), et
         # « Mettre en pause » y est masque (`board.tsx`, `!modeManuelDeclare`).
         # Injoignable au clic, ferme quand meme : la route est publique.
-        if world.rule.mode_manuel:
+        # Une fois repartie en automatique (`scene.reprise_auto`), elle est
+        # redevenue ordinaire : la pause s'y pose et s'y leve comme ailleurs.
+        if world.rule.mode_manuel and not world.scene.reprise_auto:
             return web.json_response({'error': 'partie declaree manuelle'}, status=409)
 
         qui = self.nom_du_heros_qui_parle(request) if actif else ''
         en_pause = world.BasculerPauseManuelle(actif, qui)
         return web.json_response({'result': 'en pause' if en_pause else 'repris'})
+
+    async def manuel_reprise(self, request: web.Request) -> web.Response:
+        """Rend la main au moteur sur une partie DECLAREE manuelle.
+
+        Corps : {"phase": "heros"|"mechant"|"tour"} (voir
+        `World.ReprendreEnAuto`). 403 sans siege ; 409 avec un code stable
+        (`pas_manuel`, `phase_inconnue`, `mise_en_place_non_finie`) que le
+        plateau traduit. Ne fait qu'un appel a `World.ReprendreEnAuto` : des
+        affectations et un reveil, le travail se fait sur le fil du jeu.
+        Pour une partie ordinaire mise en pause, c'est `/manuel_pause` qui
+        reprend.
+        """
+        if not self.prouve_un_siege(request):
+            return web.json_response({'error': 'aucun siege'}, status=403)
+
+        data = await request.json()
+        phase = data.get('phase', None)
+
+        world = self.game.world
+        if world is None:
+            return web.json_response({'error': 'no game in progress'}, status=409)
+        if not world.rule.mode_manuel or world.scene.reprise_auto:
+            return web.json_response({'error': 'pas_manuel'}, status=409)
+        if phase not in world.PHASES_DE_REPRISE:
+            return web.json_response({'error': 'phase_inconnue'}, status=409)
+        if not self.game.session.mise_en_place_finie:
+            return web.json_response({'error': 'mise_en_place_non_finie'}, status=409)
+
+        world.ReprendreEnAuto(phase)
+        return web.json_response({
+            'result': 'repris',
+            'phase': phase,
+            'par': self.nom_du_heros_qui_parle(request),
+        })
 
     async def manuel_passer(self, request: web.Request) -> web.Response:
         """Passe la question fautive EN COURS DE PARTIE (tache 5) : l'echappatoire
@@ -1811,6 +1847,7 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/manuel_undo', self.manuel_undo)
         self.AddPostSecurity('/manuel_pause', self.manuel_pause)
         self.AddPostSecurity('/manuel_passer', self.manuel_passer)
+        self.AddPostSecurity('/manuel_reprise', self.manuel_reprise)
         self.AddAwaitGetSecurity('/list_starter_deck', self.list_starter_deck)
         self.AddAwaitGetSecurity('/list_replay_files', self.list_replay_files)
         self.AddAwaitGetSecurity('/list_puzzle_files', self.list_puzzle_files)

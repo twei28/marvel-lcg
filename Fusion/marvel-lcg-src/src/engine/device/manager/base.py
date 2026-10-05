@@ -155,6 +155,13 @@ class DeviceManager:
         self.rendu_a_forcer = True
         self.notify.input.NotifyAll()
 
+    def SignalerRepriseAuto(self) -> None:
+        """Reveille `World.ManualLoop` pour qu'il rende la main au moteur
+        (`World.ReprendreEnAuto`). Meme reveil que `QueueSandboxCommands`,
+        depuis le meme fil HTTP : rien d'autre a faire ici, la boucle relit
+        `world.reprise_demandee`."""
+        self.notify.input.NotifyAll()
+
     def PasserQuestionCourante(self) -> str:
         """Passe la question EN COURS pour le joueur interroge (tache 5,
         dernier recours de la pause manuelle : la QUESTION est fautive, pas

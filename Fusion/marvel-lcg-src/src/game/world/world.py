@@ -57,6 +57,10 @@ class World(WorldAction, WorldFind):
         # apres lui marchait par accident, pas par garantie. Le deplacer ici
         # rend la dependance d'ordre impossible a rompre par megarde.
         self.manuel_actif: bool = False
+        # La phase ou reprendre en automatique, demandee depuis le fil HTTP
+        # (`ReprendreEnAuto`) a une partie declaree manuelle ; `ManualLoop`
+        # sort quand elle est posee. None = on reste en manuel.
+        self.reprise_demandee: 'str|None' = None
 
         self.render = WorldRender(self)
 
@@ -872,6 +876,28 @@ class World(WorldAction, WorldFind):
         self.controller_manager.device_manager.SignalerPauseAPublier()
         return self.manuel_actif
 
+    PHASES_DE_REPRISE = ("heros", "mechant", "tour")
+
+    def ReprendreEnAuto(self, phase: str) -> None:
+        """Rend la main au moteur sur une partie DECLAREE manuelle.
+
+        `phase` : "heros" (le tour commence, phase heros comprise), "mechant"
+        (la phase heros est deja jouee a la main : on passe a la phase
+        vilain) ou "tour" (le tour joue a la main est fini : fin de tour,
+        puis un tour neuf).
+
+        ⚠ APPELEE DEPUIS LE FIL HTTP (route POST /manuel_reprise), meme regle
+        que `BasculerPauseManuelle` : que des affectations, plus le reveil de
+        `notify.input` qui sort `ManualLoop` de son attente. Le travail (fin
+        de tour, debut de phase) est fait par le fil du jeu, dans
+        `OnGameLoop`. La phase est inscrite dans la scene : c'est sa memoire
+        durable au rechargement.
+        """
+        assert phase in self.PHASES_DE_REPRISE
+        self.scene.reprise_auto = phase
+        self.reprise_demandee = phase
+        self.controller_manager.device_manager.SignalerRepriseAuto()
+
     def ManualLoop(self) -> None:
         """Le moteur ne conduit plus : il attend, il execute, il redessine.
 
@@ -956,6 +982,7 @@ class World(WorldAction, WorldFind):
             device_manager.notify.input.Wait(
                 lambda: bool(device_manager.sandbox_commands)
                         or device_manager.notify.should_exit_wait
+                        or self.reprise_demandee is not None
                         or self.is_game_over,
                 None,
             )
@@ -998,12 +1025,16 @@ class World(WorldAction, WorldFind):
                 # commande du lot invalide) : c'est le seul moyen pour le
                 # plateau de voir `sandbox_last_error` a jour.
                 self.render.PresentForceNoWait()
+            # La reprise en automatique : les gestes deposes avant elle sont
+            # deja draines ci-dessus, on rend la main au moteur.
+            if self.reprise_demandee is not None:
+                break
 
     def OnGameLoop(self) -> None:
         from game.message import Message
         from game.effect.rule import GameRule
 
-        def game_round() -> None:
+        def game_round(depart: str = "heros") -> None:
 
             def start_round() -> None:
                 self.phase.SetState(Phase.State.StartRound)
@@ -1070,6 +1101,13 @@ class World(WorldAction, WorldFind):
                 end_message = Message.AfterPhaseEnd(self.phase_id, phase_type, phase_message)
                 end_message.Send()
 
+            # Reprise apres une partie manuelle : "tour" clot d'abord le tour
+            # joue a la main, "mechant" saute la phase heros deja jouee.
+            if depart == "tour":
+                end_round()
+                if self.is_game_over:
+                    return
+
             start_round()
             if self.is_game_over:
                 return
@@ -1085,7 +1123,7 @@ class World(WorldAction, WorldFind):
             if self.rule.mode_competitive:
                 teams = [0, 1]
 
-            for team in teams:
+            for team in ([] if depart == "mechant" else teams):
                 phase_begin("Player")
                 if self.is_game_over:
                     return
@@ -1125,9 +1163,29 @@ class World(WorldAction, WorldFind):
 
         # Mode manuel : on n'entre JAMAIS dans le deroule des tours. C'est le
         # seul endroit qui conduit une partie, donc le seul a neutraliser.
+        #
+        # Sauf si la partie a deja repris en automatique (`scene.reprise_auto`) :
+        # au rechargement, la mise en place et les gestes d'avant la reprise
+        # sont rejoues, puis le deroule repart de la phase choisie.
+        depart = "heros"
         if self.rule.mode_manuel:
-            return self.ManualLoop()
+            if self.scene.reprise_auto:
+                session = self.controller_manager.game.session
+                session.RejouerGestesManuelsJusqua(
+                    self.controller_manager.replay.current_step_id)
+                depart = self.scene.reprise_auto
+            else:
+                self.ManualLoop()
+                if self.reprise_demandee is None:
+                    return
+                depart = self.reprise_demandee
+                self.reprise_demandee = None
+                self.manuel_actif = False
+                self.render.PresentForceNoWait()
 
+        if self.is_game_over:
+            return
+        game_round(depart)
         while not self.is_game_over:
             game_round()
 

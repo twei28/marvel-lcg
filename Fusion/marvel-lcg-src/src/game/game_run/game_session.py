@@ -276,7 +276,8 @@ class GameSession:
         if self.world is None or not self.mise_en_place_finie:
             return
         self.RejouerGestesManuelsJusqua(None)
-        if self.world.rule.mode_manuel or self.world.scene.pause_en_cours:
+        if (self.world.rule.mode_manuel and not self.world.scene.reprise_auto) \
+                or self.world.scene.pause_en_cours:
             self.world.manuel_actif = True
 
     ################################################################################
