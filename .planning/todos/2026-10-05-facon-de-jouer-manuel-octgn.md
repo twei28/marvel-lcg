@@ -32,3 +32,21 @@ la pause est jugée « pas une bonne version ».
 - Recalcul de la table au retour en Auto : à étudier côté moteur (modificateurs perdus en manuel,
   `manuel_actif`, déclencheurs fermés).
 - Charger un deck par URL MarvelCDB (OCTGN le fait) : non demandé, non cadré.
+
+## Avancement (05/10/2026, soir)
+
+FAIT et commité (branche `mode-manuel`, non déployé) :
+- Interrupteur Auto / Manuel, fenêtre « On en est où ? », bandeau, onglet d'aide à droite.
+- Choix au lanceur (`facon-de-jouer.js`) et défaut dans les Réglages.
+- Gestes OCTGN : flèches, Suppr, double-clic, recherche dans tout le catalogue (C).
+- Côté méchant : clic droit sur la table = « Vaincre ce stade » (`Puzzle.AdvanceVillain`, cas A5 manuel)
+  et « Manigance terminée » (`Puzzle.AdvanceMainScheme`).
+
+VOLONTAIREMENT NON FAIT :
+- F12 (repère de phase) : rien n'est joué, aucune valeur pour le joueur ; la spec « aucun repère de
+  phase » reste donc exacte.
+- « Charger héros / méchant » : déjà couvert par « Faire apparaître une carte » (catalogue complet).
+
+RESTE : reprise en Auto côté moteur (`POST /manuel_reprise`, travail d'un agent séparé en cours), preuve
+que l'Auto tient compte des modifs manuelles, table éclatée en vraie partie, entrée « nouveautés »,
+déploiement seulement sur « déploie ».
