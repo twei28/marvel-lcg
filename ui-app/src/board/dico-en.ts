@@ -629,6 +629,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'a passé la table en manuel': 'switched the table to manual',
   'Façon de jouer': 'Way to play',
   'Manuel': 'Manual',
+  'Choix proposé au lancement d’une nouvelle partie ; la partie en cours ne change pas': 'Offered when a new game starts; the current game is unchanged',
   'Aide': 'Help',
   'Aide du mode manuel': 'Manual mode help',
   'Refermer l’aide du mode manuel': 'Close the manual mode help',

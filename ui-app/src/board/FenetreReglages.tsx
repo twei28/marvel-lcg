@@ -38,6 +38,7 @@ import type { ReglageMode } from './mobile/useModeMobile'
 import type { Affichage } from './affichage'
 import { RoueTeinte } from './RoueTeinte'
 import type { Teinte } from './teinte'
+import { ecrireFaconParDefaut, lireFaconParDefaut, type FaconDeJouer } from './manuel/facon-de-jouer'
 import './reglages.css'
 
 /** Les quatre onglets, dans l'ordre ou ils s'affichent. */
@@ -154,6 +155,26 @@ export function LigneChoix<T extends string | number>({
         ))}
       </span>
     </div>
+  )
+}
+
+/** Le défaut du lanceur : Automatique ou Manuel façon OCTGN. Se retient sur cet appareil. */
+function LigneFaconDeJouer() {
+  const [facon, setFacon] = useState<FaconDeJouer>(lireFaconParDefaut)
+  return (
+    <LigneChoix
+      libelle={t('Façon de jouer')}
+      valeur={facon}
+      choix={[
+        { valeur: 'auto' as FaconDeJouer, libelle: t('Auto') },
+        { valeur: 'manuel' as FaconDeJouer, libelle: t('Manuel') },
+      ]}
+      onChoisir={(valeur) => {
+        ecrireFaconParDefaut(valeur)
+        setFacon(valeur)
+      }}
+      detail={t('Choix proposé au lancement d’une nouvelle partie ; la partie en cours ne change pas')}
+    />
   )
 }
 
@@ -340,6 +361,7 @@ export function ContenuOnglet({
   if (onglet === 'jeu') {
     return (
       <>
+        <LigneFaconDeJouer />
         <LigneChoix
           libelle={t('Phase du méchant')}
           valeur={p.modePhase}

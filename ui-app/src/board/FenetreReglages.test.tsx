@@ -188,6 +188,17 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
     expect(changerModePhase).toHaveBeenCalledWith('instantane')
   })
 
+  it('« Façon de jouer » : Auto par défaut, et Manuel se retient pour le lanceur', () => {
+    window.localStorage.removeItem('marvel-board-facon-de-jouer')
+    render(<ContenuOnglet onglet="jeu" p={proprietes()} />)
+    const groupe = screen.getByRole('group', { name: 'Façon de jouer' })
+    expect(within(groupe).getByText('Auto').className).toContain('est-actif')
+    fireEvent.click(within(groupe).getByText('Manuel'))
+    expect(window.localStorage.getItem('marvel-board-facon-de-jouer')).toBe('manuel')
+    expect(within(groupe).getByText('Manuel').className).toContain('est-actif')
+    window.localStorage.removeItem('marvel-board-facon-de-jouer')
+  })
+
   it('rechoisir la valeur deja active ne declenche rien', () => {
     // Sans quoi cliquer « Détaillé » alors qu'on y est ferait un aller-retour
     // inutile, visible a l'ecran sur les reglages qui se cyclent.

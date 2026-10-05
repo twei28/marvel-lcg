@@ -475,6 +475,10 @@ export const DICO_EN_BASE = {
     "Règles v16": "v16 rules",
     "Activées (recommandé)": "Enabled (recommended)",
     "Le moteur pose la table, puis ne joue plus": "The engine sets up the table, then stops playing",
+    "Automatique : le moteur applique les règles": "Automatic: the engine applies the rules",
+    "Manuel façon OCTGN : le moteur pose la table, puis ne joue plus": "Manual, OCTGN style: the engine sets up the table, then stops playing",
+    "Façon de jouer": "Way to play",
+    "En manuel, tu appliques toutes les règles toi-même": "In manual mode, you apply every rule yourself",
     "Partie manuelle": "Manual game",
     "Tu appliques toutes les règles toi-même": "You apply every rule yourself",
 

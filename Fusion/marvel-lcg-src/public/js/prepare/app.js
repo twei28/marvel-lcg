@@ -33,6 +33,7 @@ import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, affichageJamaisChoisi } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
          doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire } from "/public/js/prepare/phase-mode-choix.js";
+import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
 import { roueTeinte, teinteActuelle, choisirTeinte, synchroniserTeinte } from "/public/js/prepare/teinte.js";
 // ⚠ MEME ADRESSE que la balise de prepare.html (`?v=1` compris) : une autre
 // adresse chargerait le module une seconde fois.
@@ -308,6 +309,8 @@ const state = {
     // ligne, c'est presque toujours pour attendre du monde.
     coopEnLigne: true,
     reglesV16: true,      // pousse "v16_all" dans rules (défaut actif)
+    // Façon de jouer de CETTE partie ; le défaut vient des Réglages du plateau.
+    modeManuel: lanceEnManuel(faconParDefaut(window.localStorage)),
 };
 
 /**
@@ -4560,15 +4563,20 @@ function blocAvance() {
         }),
         el("span", {}, t("Activées (recommandé)")));
 
-    // Partie manuelle : combinable avec Solo, Coop locale et Campagne, donc une
-    // CASE et non une tuile de mode. Le moteur pose la table puis se tait.
-    const manuel = el("label", { class: "cj-chk" },
+    // Façon de jouer : combinable avec Solo, Coop locale et Campagne, donc un
+    // CHOIX et non une tuile de mode. En manuel, le moteur pose la table puis se
+    // tait ; la fenêtre « On en est où ? » rend la main plus tard.
+    const choixFacon = (valeur, libelle) => el("label", { class: "cj-chk" },
         el("input", {
-            type: "checkbox",
-            checked: state.modeManuel === true || undefined,
-            onchange: (e) => { state.modeManuel = e.target.checked; },
+            type: "radio",
+            name: "facon-de-jouer",
+            checked: (state.modeManuel === true) === (valeur === FACON_MANUEL) || undefined,
+            onchange: () => { state.modeManuel = valeur === FACON_MANUEL; },
         }),
-        el("span", {}, t("Le moteur pose la table, puis ne joue plus")));
+        el("span", {}, libelle));
+    const manuel = el("div", {},
+        choixFacon(FACON_AUTO, t("Automatique : le moteur applique les règles")),
+        choixFacon(FACON_MANUEL, t("Manuel façon OCTGN : le moteur pose la table, puis ne joue plus")));
 
     return el("details", { class: "camp-journal avance" },
         el("summary", {}, t("Avancé")),
@@ -4577,8 +4585,8 @@ function blocAvance() {
             ligne(t("Temps par décision (secondes)"), timeoutInput, t("0 = illimité")),
             lignePremierJoueur,
             ligne(t("Règles v16"), v16, null),
-            ligne(t("Partie manuelle"), manuel,
-                  t("Tu appliques toutes les règles toi-même")),
+            ligne(t("Façon de jouer"), manuel,
+                  t("En manuel, tu appliques toutes les règles toi-même")),
         ),
     );
 }
