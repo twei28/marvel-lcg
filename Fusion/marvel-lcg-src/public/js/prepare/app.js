@@ -1315,7 +1315,25 @@ function demanderLaPhaseDuMechant() {
         try { brutAvant = localStorage.getItem(CLE_MODE_PHASE); } catch (e) { /* stockage indisponible */ }
         let choix = normaliserModePhase(brutAvant);
         const cartes = [];
-        const minuteurs = [];
+        const dossiers = { "detaille": "etape", "sur-table": "sur-table", "instantane": "d-un-coup" };
+        const NOMBRE = 4;
+        // Une seule grande visionneuse, au-dessus de laquelle on choisit le mode :
+        // les captures sont des tables entieres, trop petites a un tiers de largeur.
+        let dossier = dossiers[choix] || "etape";
+        let i = 0;
+        let minuteur = null;
+        const src = (k) => `/public/img/phase-modes/${dossier}-${k + 1}.jpg`;
+        const img = el("img", { src: src(0), alt: "", loading: "eager" });
+        const points = Array.from({ length: NOMBRE }, () => el("span", { class: "pm-point" }));
+        const dessiner = () => {
+            img.src = src(i);
+            points.forEach((p, n) => p.classList.toggle("on", n === i));
+        };
+        const aller = (k) => { i = (k + NOMBRE) % NOMBRE; dessiner(); };
+        const arreter = () => { if (minuteur !== null) { clearInterval(minuteur); minuteur = null; } };
+        const reduit = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const demarrer = () => { arreter(); if (!reduit) minuteur = setInterval(() => aller(i + 1), 3200); };
+        for (const d of Object.values(dossiers)) for (let k = 0; k < NOMBRE; k++) { const pre = new Image(); pre.src = `/public/img/phase-modes/${d}-${k + 1}.jpg`; }
         const choisir = (valeur) => {
             choix = valeur;
             for (const c of cartes) {
@@ -1323,40 +1341,23 @@ function demanderLaPhaseDuMechant() {
                 c.classList.toggle("on", on);
                 c.setAttribute("aria-pressed", on ? "true" : "false");
             }
+            dossier = dossiers[valeur];
+            i = 0;
+            dessiner();
+            demarrer();
         };
-        // Un carrousel par mode : plusieurs captures de vraies parties, pour voir
-        // chaque moment (annonce, trait entre deux cartes, dégâts, récap).
-        const carrousel = (dossier, nombre, titre) => {
-            const images = Array.from({ length: nombre }, (_, i) => `/public/img/phase-modes/${dossier}-${i + 1}.jpg`);
-            for (const src of images.slice(1)) { const pre = new Image(); pre.src = src; }
-            let i = 0;
-            const img = el("img", { src: images[0], alt: titre, loading: "eager" });
-            const points = images.map((_, k) => el("span", { class: "pm-point" + (k === 0 ? " on" : "") }));
-            const aller = (k) => {
-                i = (k + nombre) % nombre;
-                img.src = images[i];
-                points.forEach((p, n) => p.classList.toggle("on", n === i));
-            };
-            let minuteur = null;
-            const arreter = () => { if (minuteur !== null) { clearInterval(minuteur); minuteur = null; } };
-            const reduit = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
-            if (!reduit) {
-                minuteur = setInterval(() => aller(i + 1), 3200);
-                minuteurs.push(arreter);
-            }
-            const fleche = (sens, texte, nom) => el("button", {
-                class: "pm-fleche pm-fleche-" + (sens < 0 ? "g" : "d"),
-                type: "button",
-                "aria-label": nom,
-                onclick: (e) => { e.stopPropagation(); arreter(); aller(i + sens); },
-            }, texte);
-            return el("div", { class: "pm-carrousel" },
-                img,
-                fleche(-1, "‹", t("Image précédente")),
-                fleche(1, "›", t("Image suivante")),
-                el("div", { class: "pm-points" }, ...points));
-        };
-        const carte = (valeur, dossier, nombre, titre, sous, note) => {
+        const fleche = (sens, texte, nom) => el("button", {
+            class: "pm-fleche pm-fleche-" + (sens < 0 ? "g" : "d"),
+            type: "button",
+            "aria-label": nom,
+            onclick: () => { arreter(); aller(i + sens); },
+        }, texte);
+        const visionneuse = el("div", { class: "pm-carrousel" },
+            img,
+            fleche(-1, "‹", t("Image précédente")),
+            fleche(1, "›", t("Image suivante")),
+            el("div", { class: "pm-points" }, ...points));
+        const carte = (valeur, titre, sous, note) => {
             const bouton = el("div", {
                 class: "af-choix" + (valeur === choix ? " on" : ""),
                 role: "button",
@@ -1368,7 +1369,6 @@ function demanderLaPhaseDuMechant() {
                     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choisir(valeur); }
                 },
             },
-                carrousel(dossier, nombre, titre),
                 el("b", {}, titre),
                 el("small", {}, sous),
                 note ? el("small", { class: "pm-note" }, note) : null);
@@ -1382,7 +1382,7 @@ function demanderLaPhaseDuMechant() {
                 if (aEcrire) localStorage.setItem(CLE_MODE_PHASE, aEcrire);
                 localStorage.setItem(CLE_PHASE_MODE_VU, "1");
             } catch (e) { /* stockage refuse : la fenetre reviendra, c'est tout */ }
-            for (const arreter of minuteurs) arreter();
+            arreter();
             fermerModale(overlay);
             resolve();
         };
@@ -1393,21 +1393,24 @@ function demanderLaPhaseDuMechant() {
                     el("span", { class: "dm-sub" }, t("Trois façons de vivre la phase du méchant, du plus détaillé au plus rapide.")),
                 ),
                 el("div", { class: "af-choix-grille" },
-                    carte("detaille", "etape", 4, t("Étape par étape"),
+                    carte("detaille", t("Étape par étape"),
                         t("Chaque étape de la phase est détaillée, avec un « Suivant » à chaque fois. C'est le plus long, parce que tout est expliqué."),
                         t("Encore en chantier : je cherche le bon équilibre.")),
-                    carte("sur-table", "sur-table", 4, t("Sur la table"),
+                    carte("sur-table", t("Sur la table"),
                         t("Tu vois les cartes bouger directement sur la table. Un peu moins de détails, mais plus vivant.")),
-                    carte("instantane", "d-un-coup", 4, t("D’un coup"),
+                    carte("instantane", t("D’un coup"),
                         t("Tout se fait d'un coup. Seule une interruption te laisse jouer une carte quand c'est possible."),
                         t("On voit beaucoup moins ce qui se passe : un défaut éventuel est bien plus difficile à repérer.")),
                 ),
+                visionneuse,
                 el("div", { class: "vh-note" },
                     t("Tu pourras changer à tout moment : Réglages en partie, onglet Jeu.")),
                 el("div", { class: "af-valider" },
                     el("button", { class: "btn primary", onclick: valider }, t("Valider"))),
             ),
         );
+        dessiner();
+        demarrer();
         ouvrirModale(overlay);
     });
 }

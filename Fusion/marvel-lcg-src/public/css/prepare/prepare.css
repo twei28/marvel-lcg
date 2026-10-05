@@ -1825,10 +1825,11 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .affichage-modal .af-choix.on{border-color:var(--affiche-jaune);box-shadow:0 0 0 1px var(--affiche-jaune)}
 /* « Choisis ta phase du méchant » (05/10/2026) : memes cartes que l'affichage,
    mais trois colonnes sur ordinateur, et la mise en garde en jaune doux. */
-.phase-modal .af-choix-grille{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.phase-modal .deck-modal-panel{width:min(1560px,97vw);max-height:96vh;overflow:auto}
+.phase-modal .af-choix-grille{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin:10px 0}
 .phase-modal .af-choix .pm-note{color:var(--affiche-jaune);font-style:italic}
-.phase-modal .pm-carrousel{position:relative;margin-bottom:10px}
-.phase-modal .pm-carrousel img{margin-bottom:0}
+.phase-modal .pm-carrousel{position:relative;margin:4px auto 10px;width:fit-content;max-width:100%}
+.phase-modal .pm-carrousel img{display:block;width:auto;max-width:100%;max-height:54vh;margin:0;border-radius:8px;border:2px solid var(--line)}
 .phase-modal .pm-fleche{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:rgba(13,17,23,.78);color:var(--txt);font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .phase-modal .pm-fleche:hover,.phase-modal .pm-fleche:focus-visible{border-color:var(--affiche-jaune);color:var(--affiche-jaune)}
 .phase-modal .pm-fleche-g{left:6px}
