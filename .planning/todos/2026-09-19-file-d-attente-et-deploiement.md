@@ -1626,3 +1626,16 @@ Reste : validation de la planche, « déploie », puis `bash ui-app/deployer.sh`
 hash du bundle, `voir-sur-2347.sh --restaurer`, nettoyage des fichiers d'essai,
 arrêt du 2347 par PID, relance du 2345. Ensuite : « Sur la table », exemples au
 survol dans les Réglages, refonte du téléphone.
+
+## ✅ DÉPLOIEMENT du 05/10/2026 (matin) : manigance retournée, noms d'étapes, boosts, fenêtre « Choisis ta phase du méchant »
+
+Sur « déploie » de l'utilisateur, après contrôle des connexions (seule son IP, 3 connexions
+sur la table 2351 ; un autre joueur était en partie plus tôt, déploiement attendu). `bash ui-app/deployer.sh`
+puis `deployer.ps1` : bundle `board-5aNNDRQt.js` présent en prod, `app.js` du lanceur identique (md5
+b73a725e…), 12 images `phase-modes/` envoyées, service actif, site en 200. Commits : `b6425dc1`
+(manigance retournée sur place avec OK, noms d'étapes dans la frise, boosts sans le deck rattaché au vilain),
+`101791dc` et `e3261f1e` (fenêtre de choix de la phase du méchant : trois modes, grande visionneuse
+unique à 4 captures par mode ; « Sur la table » ouvert à tous, aussi dans les Réglages).
+Non vérifié : l'affichage de la fenêtre sur téléphone, l'option « Sur la table » dans les Réglages en partie,
+un vrai trait « 4 dégâts » (CoucheTraitPhase) jamais apparu en capture, et le panneau « gagne 1 menace / Suivant »
+resté affiché pendant tout le tour du méchant en mode « Sur la table » (défaut possible, à voir à la main).
