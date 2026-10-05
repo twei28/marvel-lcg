@@ -338,3 +338,5 @@ L'utilisateur a jugé le cartouche collé en bas « beaucoup trop petit » (text
 - **Interruptions** : sous-cadre DANS le carré, l'étape grisée derrière.
 - **Animation** : fondu de 150 ms à l'ouverture, le carré reste fixe, seul le contenu glisse (250 ms) entre les étapes ; tout coupé en Sobre / sans animations / mouvement réduit.
 - Inchangé : frise de 5 pastilles, Sonné, Renfort (flèche + case vide), texte FR de la carte révélée, choix traduits, « 1 / 2 » des sbires, clavier, relecture, mode multi, téléphone intact.
+
+**Livraison (05/10/2026)** : commité (`397331a5`) puis déployé le 05/10/2026 après une annonce de 10 minutes. Non vérifié : le rendu du carré sur le site de production (planche locale et vitest seulement).

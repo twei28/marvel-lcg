@@ -3,7 +3,29 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
-## PRÊT, PAS DÉPLOYÉ (04/10/2026) : frise de la phase du méchant, table personnalisable, boutons BD
+## DÉPLOYÉ le 05/10/2026 : phase du méchant en carré au milieu (commit `397331a5`)
+
+Parti en production le 05/10/2026 vers 10 h 36 (heure locale), après une annonce
+de 10 minutes aux joueurs, sur l'accord explicite de l'utilisateur (déploiement
+même avec des joueurs en ligne, pour ce lot seulement). Contenu : tout ce qui
+était « PRÊT, PAS DÉPLOYÉ » du 04/10 (`461093ec`) ET la refonte du cartouche en
+carré 760×570 centré et déplaçable, le fait moteur « sonné », le total de
+sbires, les choix du moteur traduits, la main visible et cliquable.
+- Bundle plateau : `board-DFpkPvbG.js` (md5 `c4fa08ac…`), `board-GL_Eqa95.css`
+  (md5 `86d7f0d6…`), identiques en local et sur le serveur.
+- Site HTTP 200, service `narwhal` actif, faits moteur présents sur le serveur
+  (`sbire_en_cours` dans `world_stat.py`). Annonce retirée après coup.
+- `deployer.ps1` exclut désormais `.game-essai*` de l'archive (tar échouait sur
+  ces liens). Moteur local 2345 relancé, moteur d'essai 2347, `.game-essai` et
+  `launcher_essai.py` supprimés.
+- NON VÉRIFIÉ : aucun écran de la production n'a été regardé après coup (pas de
+  partie jouée sur le site) ; le rendu du carré n'a été vu que sur la planche
+  locale et en vitest.
+- Reste : `launcher_fast_essai_salon.py` et `.game-essai-undofix` (à demander à
+  l'utilisateur), chantier « Sur la table », exemples au survol des Réglages,
+  refonte du téléphone.
+
+## ANCIEN « PRÊT, PAS DÉPLOYÉ » (04/10/2026), PARTI LE 05/10/2026 : frise de la phase du méchant, table personnalisable, boutons BD
 
 Commité le 04/10/2026 au soir (`461093ec`, branche `mode-manuel`, 370 fichiers,
 point d'étape avant la refonte du cartouche, sur « Oui, un commit maintenant »).
