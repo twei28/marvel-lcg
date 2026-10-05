@@ -23506,6 +23506,16 @@ CAS = [
         "verifier": "a4_revelation_annulee_par",
     },
     {
+        "nom": "A5 manuel — Puzzle.AdvanceVillain fait passer le mechant au stade suivant",
+        "pourquoi": ("Mode manuel (05/10/2026) : « vaincre ce stade » d'OCTGN. Meme pas que "
+                     "AdvanceMainScheme, sans passer par la defaite : la carte change, la partie continue"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "a5_avancer_le_mechant",
+    },
+    {
         "nom": "A4 stade — manigance puis mechant qui changent de stade en pleine phase inscrivent un fait `stade`",
         "pourquoi": ("Frise de la phase du mechant (03/10/2026) : un changement de stade en pleine phase "
                      "est une etape a part, la nouvelle carte en grand. Temoin : rien pendant le tour du joueur"),
@@ -53593,6 +53603,33 @@ def a4_revelation_annulee_par(monde, aides):
         return False, (f"annulee_par={par!r} (attendu {identite.name!r}, la source de "
                        f"l'annulation) ; fait = {faits[0]}")
     return True, f"temoin sans marque ; carte annulee par {par!r}"
+
+
+def a5_avancer_le_mechant(monde, aides):
+    """`Puzzle.AdvanceVillain()` fait passer le mechant au stade suivant et ne termine pas la partie.
+
+    Les stades de Rhino portent le MEME nom : la preuve est le code de la
+    carte imprimee (`paper.card_id`) de la face avant et apres l'avancee.
+    """
+    from game.puzzle.puzzle import PuzzleHelper
+
+    def code(v):
+        return getattr(getattr(v.card.face, 'paper', None), 'card_id', None)
+
+    vilain = _a3_vilain(monde)
+    if not vilain:
+        return False, "aucun vilain en jeu"
+    avant = code(vilain)
+    PuzzleHelper.Exec(["Puzzle.AdvanceVillain()"], monde)
+    if monde.is_game_over:
+        return False, "la partie s'est terminee : l'avancee n'a pas pris le stade suivant"
+    apres_v = _a3_vilain(monde)
+    if not apres_v:
+        return False, "plus aucun vilain en jeu apres l'avancee"
+    apres = code(apres_v)
+    if avant is None or apres is None or avant == apres:
+        return False, f"le stade n'a pas change : carte {avant!r} puis {apres!r}"
+    return True, f"{apres_v.name} : carte {avant} -> {apres}"
 
 
 def a4_fait_stade(monde, aides):

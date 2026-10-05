@@ -918,6 +918,19 @@ class RunPuzzle:
                 raise RuntimeError("aucun complot principal en jeu : rien a faire avancer")
             schemes[-1].Advance(to, self.debug_rule)
 
+    def AdvanceVillain(self):
+        """Fait passer le mechant au stade SUIVANT, par le chemin du moteur.
+
+        Ajoute le 05/10/2026 pour le mode manuel (« vaincre ce stade », comme
+        sur OCTGN) : meme pas que `AdvanceMainScheme`, sans passer par la
+        defaite du mechant. La carte du stade courant va a la pile de
+        victoire, la suivante prend sa place.
+        """
+        villains = Worlds.GetAllVillains(self.world)
+        if not villains:
+            raise RuntimeError("aucun mechant en jeu : rien a faire avancer")
+        villains[0].Advance(self.debug_rule)
+
     ################################################################################
     #
     def Win(self):
