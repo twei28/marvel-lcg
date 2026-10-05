@@ -27,16 +27,15 @@ import '../styles/affichage-sobre.css'
 import '../styles/teinte.css'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
-import { estEnPause, estModeManuel, leMoteurSeTait } from './board/manuel/mode'
+import { estModeManuel, leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
-import { BandeauPause } from './board/manuel/BandeauPause'
 import { InterrupteurFacon } from './board/manuel/InterrupteurFacon'
 import { VoletAideManuel } from './board/manuel/VoletAideManuel'
 import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
 // ⚠ IMPORT NOMME, PAS `import * as triche` : `PagePartie` a deja un
 // identifiant local `triche` (`useTriche(...)`, le bac a sable) -- un import
 // namespace du meme nom serait ombrage silencieusement par lui a l'usage.
-import { basculerPause, passerLaQuestion, reprendreEnAuto } from './board/triche'
+import { basculerPause, reprendreEnAuto } from './board/triche'
 import { BarreAction } from './board/BarreAction'
 import { Board, CarteApercu, type ReglagesGlisser } from './board/Board'
 import {
@@ -2528,10 +2527,6 @@ export function PagePartie({
   // les mains -- voir `manuel/mode.ts`, `estEnPause`.
   const modeManuelDeclare = estModeManuel(etat.monde)
 
-  // Tache 3 (ronde de correction 1) : nommee comme ses deux voisines
-  // ci-dessus, au lieu d'un appel en ligne au point d'usage.
-  const enPause = estEnPause(etat.monde)
-
   const [sons, setSons] = useState(lireSons)
   const basculerSons = useCallback(() => {
     setSons((s) => {
@@ -3937,31 +3932,6 @@ export function PagePartie({
           onReprendre={() => setVueForcee(etat.joueurDemande ?? null)}
         />
       ) : null}
-
-      {/* Le bandeau de pause EN COURS DE PARTIE (tâche 3). ⚠ EXEMPTÉ du
-          masquage manuel (`{manuel ? null : ...}` plus bas, et partout
-          ailleurs dans ce rendu) : c'est le SEUL moyen de reprendre une
-          partie ORDINAIRE mise en pause -- le masquer avec le reste des
-          couches du moteur la rendrait définitive. `estEnPause` (et non
-          `manuel` tout seul) exclut le mode manuel DÉCLARÉ, qui n'a rien à
-          « reprendre » : voir `manuel/mode.ts`. */}
-      <BandeauPause
-        enPause={{
-          actif: enPause,
-          par: etat.monde?.pause_par ?? '',
-          depuis: etat.monde?.pause_a ?? '',
-          // L'INSTANT, dont le bandeau tire une durée avec l'horloge de CE
-          // navigateur : `pause_a` est l'heure murale du SERVEUR, fausse pour
-          // un joueur distant et illisible comme durée (revue finale).
-          depuisEpoch: etat.monde?.pause_epoch,
-        }}
-        onPasser={passerLaQuestion}
-        /* I2 : le spectateur VOIT la pause (sinon la table s'arrête sous ses
-           yeux sans un mot) mais n'en sort pas -- et surtout ne « passe » pas
-           la question à la place d'un joueur assis. Ce bandeau est monté HORS
-           de `.board-actions`, la seule chose que la CSS spectateur masque. */
-        lectureSeule={spectateur}
-      />
 
       {/* CouchePasAPas (barre « où on en est » + Tout passer) : DEBRANCHEE a
           la demande de l'utilisateur - double emploi avec le cartouche du

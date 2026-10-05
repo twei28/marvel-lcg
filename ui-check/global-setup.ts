@@ -40,7 +40,13 @@ export default async function globalSetup(_config: FullConfig) {
 
     // La question de la langue est deja repondue pour tous les parcours : on
     // ecrit la cle sur l'ORIGINE du jeu, celle que les tests visitent.
-    await page.evaluate(() => localStorage.setItem('marvel-langue-choisie', '1'));
+    await page.evaluate(() => {
+      localStorage.setItem('marvel-langue-choisie', '1');
+      // Fenetres de premier lancement deja repondues (affichage, phase du mechant) :
+      // sinon elles interceptent le premier clic de tous les parcours.
+      localStorage.setItem('mc_affichage_v1', 'normal');
+      localStorage.setItem('mc_phase_mode_vu_v1', '1');
+    });
 
     fs.mkdirSync('./.auth', { recursive: true });
     await ctx.storageState({ path: './.auth/state.json' });

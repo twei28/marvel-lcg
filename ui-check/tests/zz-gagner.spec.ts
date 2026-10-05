@@ -19,7 +19,7 @@ test('la commande Gagner termine-t-elle la partie', async ({ page, request }) =>
   await page.waitForURL(/board\.html/, { timeout: 120000 })
   // La partie s'ouvre sur les mulligans : tant qu'on n'a pas garde sa main,
   // la boucle de jeu attend une reponse et ne regarde pas la fin de partie.
-  const garder = page.getByRole('button', { name: /garder cette main/i })
+  const garder = page.getByRole('button', { name: /garder (?:cette|ma) main/i })
   await garder.first().waitFor({ state: 'visible', timeout: 120000 })
   await garder.first().click()
   console.log('MULLIGAN gardé')

@@ -1315,8 +1315,10 @@ button{cursor:pointer}
 /* --- Onglet Défis (pas d'image de boîte) + bouton langue du header --------- */
 .ext-tab .box-defis{display:flex;align-items:center;justify-content:center;
   font-size:34px;color:var(--agir);background:linear-gradient(145deg,#3a2c07,#141414)}
-.progress .btn-langue{margin-left:14px;align-self:center;
-  white-space:nowrap;padding:7px 13px;font-size:.85rem}
+.progress .btn-langue,.progress .btn-affichage{margin-left:14px;align-self:center;
+  white-space:nowrap;padding:7px 13px;font-size:.85rem;width:auto;height:auto;min-height:0;
+  text-transform:none;letter-spacing:0}
+.progress .btn-langue + .btn-affichage{margin-left:6px}
 .progress .reprise-boutons{margin-left:4px}
 .progress .steps{margin-left:auto}
 

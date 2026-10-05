@@ -95,8 +95,8 @@ async function lancerPartieManuelleDepuisPrepare(page: Page) {
   //   Étape 4 - Final ........ la case « Partie manuelle » vit dans le bloc
   //   « Avancé », replié par défaut (public/js/prepare/app.js, blocAvance).
   await page.getByText('Avancé', { exact: true }).click()
-  const caseManuelle = page.getByRole('checkbox', {
-    name: /Le moteur pose la table, puis ne joue plus/i,
+  const caseManuelle = page.getByRole('radio', {
+    name: /Manuel façon OCTGN/i,
   })
   await caseManuelle.check()
   await expect(caseManuelle).toBeChecked()
@@ -142,11 +142,14 @@ test('la table manuelle : nue, silencieuse, manipulable, annulable', async ({ pa
   // launcher.js`) : SANS RAPPORT avec le mode manuel — toute partie NEUVE le
   // pose, Rhino (manigance à deux faces) le déclenche. Un vrai joueur le
   // franchit avant le mulligan ; ce test aussi.
-  const manigance = page.getByRole('button', { name: 'Retourner la manigance' })
+  // Le voile se franchit en deux clics : « Retourner la manigance », puis « OK ».
+  const voile = page.getByRole('dialog').getByRole('button')
   try {
-    await manigance.first().waitFor({ state: 'visible', timeout: 5000 })
-    await manigance.first().click()
-    await expect(manigance).toHaveCount(0)
+    await voile.first().waitFor({ state: 'visible', timeout: 5000 })
+    for (let i = 0; i < 3 && (await voile.count()) > 0; i++) {
+      await voile.first().click()
+      await page.waitForTimeout(800)
+    }
   } catch {
     // Rien à retourner sur cette configuration : la manigance est déjà côté B.
   }
@@ -158,7 +161,7 @@ test('la table manuelle : nue, silencieuse, manipulable, annulable', async ({ pa
   // en partie ordinaire (voir `zz-gagner.spec.ts`). Avant le correctif, ce
   // bouton n'existait jamais : la partie restait bloquée ici pour toujours,
   // sans rien à cliquer.
-  const garder = page.getByRole('button', { name: /garder cette main/i })
+  const garder = page.getByRole('button', { name: /garder (?:cette|ma) main/i })
   await garder.first().waitFor({ state: 'visible', timeout: 40000 })
   await garder.first().click()
 
@@ -430,11 +433,14 @@ test(
     // Le voile d'ouverture (`confirm_main_scheme`) : SANS RAPPORT avec le
     // mode manuel -- toute partie NEUVE le pose, Rhino (manigance à deux
     // faces) le déclenche. Un vrai joueur le franchit avant le mulligan.
-    const manigance = page.getByRole('button', { name: 'Retourner la manigance' })
+    // Le voile se franchit en deux clics : « Retourner la manigance », puis « OK ».
+    const voile = page.getByRole('dialog').getByRole('button')
     try {
-      await manigance.first().waitFor({ state: 'visible', timeout: 5000 })
-      await manigance.first().click()
-      await expect(manigance).toHaveCount(0)
+      await voile.first().waitFor({ state: 'visible', timeout: 5000 })
+      for (let i = 0; i < 3 && (await voile.count()) > 0; i++) {
+        await voile.first().click()
+        await page.waitForTimeout(800)
+      }
     } catch {
       // Rien à retourner sur cette configuration : la manigance est déjà côté B.
     }
@@ -447,7 +453,7 @@ test(
     // coincé sur une question, et c'est précisément ce cas-là qui ne
     // marchait pas.
     // ------------------------------------------------------------------
-    const garder = page.getByRole('button', { name: /garder cette main/i })
+    const garder = page.getByRole('button', { name: /garder (?:cette|ma) main/i })
     await garder.first().waitFor({ state: 'visible', timeout: 40000 })
 
     // ⚠ GARDE-FOU DU SCÉNARIO : PARTIE ORDINAIRE, PAS MANUELLE DÉCLARÉE. Sans
@@ -499,7 +505,7 @@ test(
       'le panneau du mulligan a disparu avant la pause : plus aucune question ouverte à reposer'
     ).toBeVisible()
 
-    const boutonPause = page.getByRole('button', { name: /Mettre en pause/i })
+    const boutonPause = page.getByRole('button', { name: 'Mode manuel', exact: true })
     await boutonPause.waitFor({ state: 'visible', timeout: 10000 })
     await boutonPause.click()
 
@@ -522,9 +528,9 @@ test(
     // le bouton qui vient d'être cliqué disparaît lui-même -- `BandeauPause`
     // devient alors le SEUL moyen de reprendre, par construction.
     await expect(
-      page.getByRole('button', { name: /Mettre en pause/i }),
-      'le bouton Mettre en pause est encore là : un second clic y resterait possible'
-    ).toHaveCount(0)
+      page.getByRole('button', { name: 'Mode manuel', exact: true }),
+      "l'interrupteur n'affiche pas Manuel comme actif après la pause"
+    ).toHaveAttribute('aria-pressed', 'true')
     await expect(
       page.locator('.deroule-phase'),
       'le déroulé de la phase du méchant est toujours affiché'
@@ -536,13 +542,10 @@ test(
     await expect(page.locator('.assistant-action')).toHaveCount(0)
 
     // ------------------------------------------------------------------
-    // 3. LE BANDEAU DE PAUSE EST LÀ, ET DIT QUI A MIS EN PAUSE. Table locale
-    // sans mot de passe de siège : « Quelqu'un » est le comportement
-    // attendu, pas un défaut (aucun siège protégé ne peut être prouvé).
+    // 3. L'INTERRUPTEUR MONTRE « MANUEL » ET AUCUN BANDEAU NE S'AFFICHE.
     // ------------------------------------------------------------------
-    const bandeauPause = page.locator('.bandeau-pause')
-    await expect(bandeauPause).toBeVisible()
-    await expect(bandeauPause).toContainText(/Quelqu.?un a mis la partie en pause/)
+    await expect(page.getByRole('button', { name: 'Mode manuel', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await expect(page.locator('.bandeau-pause')).toHaveCount(0)
 
     // ------------------------------------------------------------------
     // 4. UN GESTE MANUEL PASSE PENDANT LA PAUSE, ET CHANGE RÉELLEMENT LA
@@ -632,12 +635,12 @@ test(
     // le même panneau, avant et après.
     const phaseAvantReponse = String((await monde(request)).phase)
 
-    const boutonReprendre = bandeauPause.getByRole('button', { name: /^Reprendre$/i })
+    const boutonReprendre = page.getByRole('button', { name: 'Mode automatique', exact: true })
     await boutonReprendre.click()
-    await expect(bandeauPause, 'le bandeau de pause ne disparaît pas après la reprise').toHaveCount(
-      0,
-      { timeout: 10000 }
-    )
+    await expect(
+      page.getByRole('button', { name: 'Mode automatique', exact: true }),
+      'l’interrupteur ne repasse pas sur Auto après la reprise'
+    ).toHaveAttribute('aria-pressed', 'true', { timeout: 10000 })
     // Le plateau reparle : le bouton Fin du tour (notre repère de silence,
     // point 2) redevient visible...
     await expect(

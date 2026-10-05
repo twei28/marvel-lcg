@@ -4,25 +4,14 @@ import './VoletAideManuel.css'
 type Raccourci = { touches: string; effet: string }
 
 const SUR_UNE_CARTE: Raccourci[] = [
-  { touches: 'F', effet: 'Retourner la carte' },
-  { touches: 'Q', effet: 'Incliner / redresser' },
-  { touches: '1 à 9', effet: 'Poser des dégâts (menace sur une manigance)' },
-  { touches: 'Maj + 1 à 9', effet: 'En retirer' },
-  { touches: '↑  ↓', effet: 'Un dégât en plus / en moins' },
-  { touches: '→  ←', effet: 'Un jeton générique (menace sur une manigance)' },
-  { touches: 'Suppr', effet: 'Défausser' },
-  { touches: 'Double-clic', effet: 'Incliner ; sur le méchant, révéler la carte du dessus (amplification)' },
+  { touches: 'Double-clic', effet: 'Incliner / redresser ; sur le méchant, révéler la carte d’amplification' },
+  { touches: '↑  ↓', effet: 'Un dégât en plus / en moins (menace sur une manigance)' },
+  { touches: '→  ←', effet: 'Un jeton générique en plus / en moins' },
+  { touches: 'Suppr', effet: 'Défausser dans la bonne pile' },
   { touches: 'Clic droit', effet: 'Tous les jetons, un par un' },
 ]
 
-const SUR_UNE_PILE: Raccourci[] = [
-  { touches: 'R', effet: 'Mélanger' },
-  { touches: '1 à 9', effet: 'Piocher ce nombre de cartes' },
-  { touches: 'Maj + lâcher', effet: 'Poser la carte glissée SOUS la pile' },
-]
-
 const PARTOUT: Raccourci[] = [
-  { touches: 'C', effet: 'Chercher une carte dans tout le catalogue et la poser' },
   { touches: 'Clic droit sur la table', effet: 'Faire apparaître une carte, vaincre ce stade, manigance terminée, terminer la partie' },
 ]
 
@@ -78,7 +67,6 @@ export function VoletAideManuel({
               {t('Le moteur se tait. Les touches agissent sur ce que la souris survole.')}
             </p>
             <Tableau titre="Sur une carte" lignes={SUR_UNE_CARTE} />
-            <Tableau titre="Sur une pile" lignes={SUR_UNE_PILE} />
             <Tableau titre="Partout" lignes={PARTOUT} />
             <p className="aide-manuel-intro">
               {t('Pour rendre la main au moteur, clique sur Auto en haut de l’écran.')}
