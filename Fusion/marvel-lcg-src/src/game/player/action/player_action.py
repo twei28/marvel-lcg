@@ -392,13 +392,75 @@ class PlayerAction:
             must_different = True
             repeat = choose_x_different_options
 
-        for i in range(repeat):
+        # ⚠ « COMBIEN DE FOIS CE CHOIX ? » (rapport n°49, Yarro, 05/10/2026). Un « for each
+        # ..., choose » est regle instance par instance (Rules Reference p.20 : chaque
+        # iteration est une instance distincte, meme sur la meme cible, et l'etat du jeu
+        # se met a jour apres chacune). Six traits = six fois « choisir l'effet » puis
+        # « choisir la cible » : douze clics pour six degats sur Kingpin. Apres un choix,
+        # on propose donc de le REPETER N fois d'un coup, chaque instance etant appliquee
+        # a son tour. La question n'existe que s'il reste au moins deux iterations et que
+        # les options peuvent se repeter (`must_different` l'interdit : « X options
+        # DIFFERENTES »).
+        # La question est posee apres le PREMIER choix, puis seulement tant que le joueur
+        # s'en sert : une reponse « 0 » l'eteint pour le reste de l'effet, sinon elle
+        # doublerait les clics de ceux qui choisissent un par un.
+        proposer = True
+        i = 0
+        while i < repeat:
             effect = self.ChooseAbilitiesHelper(by_effect, *all_abilities, forced=forced, step=(i+1, repeat), for_second_target=for_second_target)
+            i += 1
             if effect:
                 chose_effects.append(effect)
                 if must_different:
                     all_abilities.remove(effect.ability)
+                elif proposer and repeat - i >= 1 and self._PeutRepeterLeChoix(effect):
+                    en_plus = self._DemanderCombienDeFois(repeat - i)
+                    if en_plus == 0:
+                        proposer = False
+                    for _ in range(en_plus):
+                        if not self._RepeterLeChoix(effect, by_effect, (i+1, repeat), for_second_target):
+                            break
+                        i += 1
         return chose_effects
+
+    @staticmethod
+    def _PeutRepeterLeChoix(effect: 'Effect') -> bool:
+        """Un choix a cible(s) fixee(s), du type `ChooseAbility` (`ForChoiceAbility`), sans cout."""
+        return effect.ability.type == AbilityType.ChooseAbility \
+            and not effect.ability.NeedCost() \
+            and len(effect.targets) > 0
+
+    def _DemanderCombienDeFois(self, restantes: int) -> int:
+        """0 (defaut) a `restantes` repetitions supplementaires du choix qui vient d'etre fait."""
+        textes = ["Do not repeat this choice"] + [
+            "Repeat this choice 1 more time" if n == 1 else f"Repeat this choice {n} more times"
+            for n in range(1, restantes + 1)
+        ]
+        return self.AskChooseOneText(list(range(0, restantes + 1)), textes)
+
+    def _RepeterLeChoix(self, modele: 'Effect', by_effect: 'Effect', step: Tuple[int, int], for_second_target: bool) -> bool:
+        """Une instance de plus du meme choix, sur les memes cibles, si elles sont encore legales.
+
+        Chaque instance est une `Effect` NEUVE, resolue seule : l'etat du jeu se met a jour
+        entre deux (un sbire vaincu au 2e degat n'est plus une cible au 3e). Rend False des que
+        les cibles ne sont plus toutes legales : les iterations restantes redeviennent des
+        choix ordinaires.
+        """
+        player = self.GetPlayer()
+        if by_effect.world.is_game_over:
+            return False
+        effect = Effect(player.GetIdentity(), modele.ability, world=by_effect.world)
+        effect.checker.UpdateLegalTargets()
+        legales = effect.context.all_legal_targets
+        cibles = list(modele.targets)
+        if not cibles or any(c not in legales for c in cibles):
+            return False
+        effect.context.targets_internal = cibles
+        effect.context.initiator = player.GetIdentity()
+        message = Message.WhenPlayerChooseAbility(player, by_effect, step, for_second_target)
+        message.Send()
+        effect.ResolveSelf(message, effect)
+        return True
 
     # Only choose one
     def ChooseAbilitiesHelper(self, by_effect: 'Effect', *abilities: 'Ability|None', forced: bool=True, step: Tuple[int, int]=(1, 1), for_second_target: bool=False) -> 'Effect|None':

@@ -36178,6 +36178,27 @@ CAS = [
         "attendu": {"en_jeu": ["60062"]},
     },
     {
+        "nom": "53019 Strength in Diversity — « Combien de fois ce choix ? » : plusieurs degats d'un coup sur la meme cible",
+        "pourquoi": ("rapport n°49 (Yarro, 05/10/2026) : un « for each, choose » se jouait instance par "
+                     "instance, douze clics pour six degats. `ChooseAbilities(repeat=...)` propose desormais "
+                     "de repeter le choix N fois d'un coup ; chaque instance reste appliquee a son tour. "
+                     "Le pilote prend sinon la reponse minimale (0), donc aucun cas existant ne change"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01067')",
+                          "Puzzle.PutIntoPlay('23012')",
+                          "Puzzle.CreateHandCards('53019', '01072', '01072')"],
+        "declencher": [],
+        "jouer": ["53019"],
+        "choisir_option": ["Deal_1_damage_to_an_enemy", "Repeat_this_choice_2_more_times"],
+        "options_attendues": ["Repeat this choice 2 more times"],
+        "verifier": "etat_attendu",
+        # Spider-Man (AVENGER) + Maria Hill (S.H.I.E.L.D) + Black Panther (WAKANDA) = 3 traits
+        # = 3 iterations. 1 choix + « 2 de plus » = 3 degats sur Rhino.
+        "attendu": {"degats": [["01094", 3]]},
+    },
+    {
         "nom": "60159a Kingpin A1 [fne4] — ne peut pas subir de degats : 10 degats -> 0",
         "pourquoi": "*UnitCannotTakeDamage(CardFinder(name=Kingpin, Villain)) (sd022) : PreventDamage('All')",
         "scenario": "kingpin_fne",
