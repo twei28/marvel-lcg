@@ -408,4 +408,44 @@ describe('les gestes OCTGN parlent au moteur', () => {
     await act(async () => { await Promise.resolve() })
     expect(fetch).not.toHaveBeenCalled()
   })
+
+  it('C ouvre la recherche dans tout le catalogue, sans carte survolee', async () => {
+    const { queryByRole } = render(<Harness world={mondeManuel()} capture={{}} />)
+    expect(queryByRole('dialog')).toBeNull()
+    const nonAnnule = fireEvent.keyDown(document, { key: 'c' })
+    await act(async () => { await Promise.resolve() })
+    expect(queryByRole('dialog')).not.toBeNull()
+    expect(nonAnnule).toBe(false)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('le bouton « Chercher une carte » ouvre la meme recherche', async () => {
+    const { getByText, queryByRole } = render(<Harness world={mondeManuel()} capture={{}} />)
+    fireEvent.click(getByText('Chercher une carte'))
+    expect(queryByRole('dialog')).not.toBeNull()
+  })
+
+  it('C tape dans un champ de texte, ou avec Ctrl, n ouvre rien', async () => {
+    const { queryByRole } = render(<Harness world={mondeManuel()} capture={{}} />)
+    const champ = document.createElement('input')
+    document.body.appendChild(champ)
+    champ.focus()
+    fireEvent.keyDown(champ, { key: 'c' })
+    champ.blur()
+    const nonAnnule = fireEvent.keyDown(document, { key: 'c', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(queryByRole('dialog')).toBeNull()
+    expect(nonAnnule).toBe(true)
+  })
+
+  it('hors du mode manuel, C n ouvre rien et le bouton est absent', async () => {
+    const monde = mondeManuel()
+    ;(monde as unknown as { manuel_actif: boolean }).manuel_actif = false
+    ;(monde as unknown as { mode_manuel: boolean }).mode_manuel = false
+    const { queryByRole, queryByText } = render(<Harness world={monde} capture={{}} />)
+    fireEvent.keyDown(document, { key: 'c' })
+    await act(async () => { await Promise.resolve() })
+    expect(queryByRole('dialog')).toBeNull()
+    expect(queryByText('Chercher une carte')).toBeNull()
+  })
 })

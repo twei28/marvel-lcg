@@ -6970,6 +6970,26 @@
      que le bandeau bac a sable (discret, arrondi, sombre) mais TRANSITOIRE -
      ce n'est pas un etat permanent de la partie, juste une reponse a un
      geste. */
+  .bouton-catalogue-manuel {
+    position: fixed;
+    top: 50px;
+    left: 12px;
+    z-index: 900;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(24, 18, 4, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .bouton-catalogue-manuel kbd {
+    margin-left: 4px;
+    padding: 0 5px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 4px;
+    font-size: 11px;
+  }
   .avis-refus-manuel {
     position: fixed;
     top: 50px;

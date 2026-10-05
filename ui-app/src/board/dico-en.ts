@@ -625,6 +625,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Rendre tenace': 'Make tough',
   'Ajouter des compteurs': 'Add counters',
   'Retirer des compteurs': 'Remove counters',
+  'Chercher une carte': 'Find a card',
+  'Chercher une carte dans tout le catalogue pour la poser (raccourci : C)': 'Search the whole card catalogue to put a card on the table (shortcut: C)',
   'Défausser': 'Discard',
   'Retirer de la partie': 'Remove from game',
   'Appliquer': 'Apply',

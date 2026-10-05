@@ -678,10 +678,10 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
   // Le catalogue (tâche 6) : une carte qui n'était pas dans la partie. Mode
   // manuel uniquement, ouvert depuis le menu de la TABLE (clic droit hors de
   // toute carte — voir `MenuTable.tsx` et le menu plus bas).
-  const [catalogueOuvert, setCatalogueOuvert] = useState(false)
   // Déclarer la fin (tâche 7) : même origine que le catalogue, le menu de la
   // TABLE. `FinManuelle` tient déjà sa propre confirmation ; `onDeclarer`
   // n'est donc appelé qu'une fois la décision prise, jamais au premier clic.
+  const [catalogueOuvert, setCatalogueOuvert] = useState(false)
   const [finOuverte, setFinOuverte] = useState(false)
   // Deplacement volontaire, a la poignee -- meme mecanisme que
   // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
@@ -705,6 +705,23 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
     document.addEventListener('keydown', surEchap)
     return () => document.removeEventListener('keydown', surEchap)
   }, [catalogueOuvert, finOuverte])
+
+  // C : chercher une carte dans TOUT le catalogue (celle qu'on veut poser n'est
+  // pas dans la partie). Indépendant de la carte survolée, d'où cet effet à
+  // part de l'écoute des gestes. Ctrl/Cmd/Alt et les champs de texte restent
+  // au navigateur.
+  useEffect(() => {
+    if (!manuel) return
+    const surC = (evenement: KeyboardEvent) => {
+      if (evenement.key.toLowerCase() !== 'c') return
+      if (evenement.ctrlKey || evenement.metaKey || evenement.altKey || evenement.shiftKey) return
+      if (estZoneDeSaisie(document.activeElement)) return
+      evenement.preventDefault()
+      setCatalogueOuvert(true)
+    }
+    document.addEventListener('keydown', surC)
+    return () => document.removeEventListener('keydown', surC)
+  }, [manuel])
 
   if (!actif) return null
 
@@ -768,6 +785,17 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
       {/* Tâche 4 ter : un geste manuel refusé se voit, brièvement et sans
           alarmer — ce n'est pas une erreur de l'application, c'est une
           réponse à un geste. Discret comme le bandeau lui-même. */}
+      {manuel ? (
+        <button
+          type="button"
+          className="bouton-catalogue-manuel"
+          onClick={() => setCatalogueOuvert(true)}
+          title={t('Chercher une carte dans tout le catalogue pour la poser (raccourci : C)')}
+        >
+          {t('Chercher une carte')} <kbd>C</kbd>
+        </button>
+      ) : null}
+
       {manuel && avisRefus ? (
         <div className="avis-refus-manuel" role="status">
           {avisRefus}
