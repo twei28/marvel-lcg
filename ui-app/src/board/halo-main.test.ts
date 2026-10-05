@@ -10,19 +10,14 @@ import path from 'node:path'
 
 const css = fs.readFileSync(path.join(__dirname, 'board.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
 
-function bloc(selecteur: string): string {
-  const i = css.indexOf(selecteur)
-  if (i < 0) return ''
-  return css.slice(i, css.indexOf('}', i))
-}
-
 describe('la main pendant une question du moteur', () => {
-  it('sort du voile (z-index) mais sans lueur rouge ni fond colore', () => {
-    const regle = bloc('.deroule-question .plateau-scene .zone-main')
-    expect(regle, 'la regle qui sort la main du voile doit rester').toContain('z-index: 120')
-    expect(regle).not.toContain('166, 0, 0')
-    expect(regle).not.toMatch(/box-shadow/)
-    expect(regle).not.toMatch(/background/)
+  // ⚠ LA REGLE ELLE-MEME EST PARTIE (lot 3 de la refonte du cartouche,
+  // 05/10/2026). Elle sortait la main du voile tant que `body.deroule-question`
+  // etait pose ; la scene PC cache desormais la main pendant la phase (D3) et
+  // le composant ne pose plus cette classe. Une regle restee la viserait un
+  // body qui ne la porte jamais.
+  it('aucune regle ne vise plus le body pendant une question (body.deroule-question)', () => {
+    expect(css).not.toMatch(/\.deroule-question\s+\.plateau-scene/)
   })
 
   it('aucune autre regle ne colore la boite de la main en rouge', () => {

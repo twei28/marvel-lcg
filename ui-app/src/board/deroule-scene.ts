@@ -56,7 +56,13 @@ export function sceneDe(etape: EtapeDeroule): SceneEtape {
 
   const cartes: CarteDeScene[] = []
   if (etape.carteId !== undefined) cartes.push({ role: 'auteur', id: etape.carteId })
-  for (const boost of etape.boosts) cartes.push({ role: 'boost', id: boost.cibleId })
+  // ⚠ UNE ANNONCE ENRICHIE PORTE DEJA SES BOOSTS (fait moteur `boosts`, lot 3
+  // de la refonte du cartouche) : la table et le telephone ne les sortent du
+  // paquet qu'une fois l'attaque resolue, comme avant. Un fait sans etat est
+  // un fait resolu.
+  if (etape.etat !== 'annonce') {
+    for (const boost of etape.boosts) cartes.push({ role: 'boost', id: boost.cibleId })
+  }
   // Un auteur qui est sa propre cible : une seule carte, la fleche n'aurait
   // rien a relier.
   const cible = etape.cibleId !== undefined && etape.cibleId !== etape.carteId

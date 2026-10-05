@@ -1,0 +1,1066 @@
+/* LE CARRE DE LA PHASE DU MECHANT (CartouchePhase.tsx, scene PC, mode
+   « Étape par étape »). Refonte du 04/10/2026, REVIREMENT du 05/10/2026 : le
+   cartouche colle en bas etait trop petit ; c'est un carre au milieu de
+   l'ecran, deplacable, qui montre tout.
+
+   Hors couche, comme fin-partie-bd.css et deroule-onglets.css : ces regles
+   passent devant board.css, qui est en couches. Importee en DERNIER (par
+   CartouchePhase.tsx, lui-meme importe apres boutons-bd.css dans
+   DeroulePhase.tsx).
+
+   ⚠ TOUT EST SOUS `.deroule-phase.est-scene`. La table (`est-sur-table`) et
+   le telephone gardent les regles d'avant et n'heritent de rien ici. Aucune
+   regle sur le body : la table, la main et la barre d'action restent
+   visibles et jouables derriere le carre (une ombre, pas de voile). Verrou :
+   cartouche-phase.css.test.ts.
+
+   ⚠ LA SECTION NE DECLARE JAMAIS SON FOND : `teinte.css` le pose
+   (`html[data-teinte] .deroule-phase`, moins specifique) et le Sobre aussi
+   (`affichage-sobre.css`). La trame BD vit sur `::before`, par-dessus.
+
+   ⚠ ELLE NE DECLARE JAMAIS `transform` (autre que `none`) : le deplacement a
+   la main pose un `translate` inline (useGlisserPanneau), le centrage passe
+   par `inset: 0` + `margin: auto`. */
+
+/* --- Le carre : 4/3 a l'echelle 1 (environ 1,3 fois l'ancienne modale) -------
+   Centre par `inset: 0` + `margin: auto` + `height: fit-content`. La hauteur
+   n'est JAMAIS figee : `min-height` donne le 4/3, et le carre GRANDIT quand le
+   contenu ne tient pas (jamais tronque, jamais de defilement). ⚠ BORDER-BOX
+   OBLIGATOIRE : la base est en content-box (board.css). */
+.deroule-phase.est-scene {
+  --carre-l: clamp(560px, calc(760px * var(--echelle, 1)), 1100px);
+  /* La carte en grand (carte revelee, stade) et celles d'une rangee. */
+  --grande-h: clamp(190px, calc(260px * var(--echelle, 1)), 360px);
+  --vignette-h: clamp(120px, calc(170px * var(--echelle, 1)), 240px);
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: var(--carre-l);
+  height: fit-content;
+  min-height: calc(var(--carre-l) * 0.75);
+  max-height: none;
+  transform: none;
+  box-sizing: border-box;
+  overflow: visible;
+  padding: 16px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: grab;
+  user-select: none;
+  /* L'ouverture : un fondu, le carre reste fixe. Rien n'est pose hors de
+     l'animation : l'etat de base est l'arrivee (lecon de board.css). */
+  animation: cartouche-fondu 150ms ease-out;
+}
+
+@keyframes cartouche-fondu {
+  from {
+    opacity: 0;
+  }
+}
+
+body.plateau-sans-animations .deroule-phase.est-scene,
+html[data-affichage='sobre'] .deroule-phase.est-scene {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deroule-phase.est-scene {
+    animation: none;
+  }
+}
+
+/* Une carte, un bouton, un lien se cliquent : on ne les attrape pas. */
+.deroule-phase.est-scene .scan-card {
+  cursor: default;
+}
+
+.deroule-phase.est-scene .bh-bouton {
+  cursor: pointer;
+}
+
+/* La trame BD, au-dessus du fond teinte (piege 15). `deroule-onglets.css`
+   eteint ce `::before` pour la table ; on le rallume ici, sur toute la case. */
+.deroule-phase.est-scene::before {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 0;
+  height: auto;
+  opacity: 1;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.075) 0 1px, transparent 1.6px) 0 0 / 7px 7px;
+  pointer-events: none;
+}
+
+/* --- L'en-tete sur deux lignes : la frise, puis le titre -------------------- */
+.deroule-phase.est-scene .deroule-ligne-haut {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  cursor: grab;
+  user-select: none;
+}
+
+.deroule-phase.est-scene .deroule-frise {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  min-width: 0;
+}
+
+.deroule-phase.est-scene .deroule-pastilles {
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.deroule-phase.est-scene .deroule-pastille {
+  flex: none;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 9px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  color: rgba(248, 250, 252, 0.6);
+  background: #3a3e44;
+}
+
+.deroule-phase.est-scene .deroule-pastille.est-passe,
+.deroule-phase.est-scene .deroule-pastille.est-courant {
+  color: #fff;
+  background: var(--rouge, #a60000);
+}
+
+.deroule-phase.est-scene .deroule-pastille.est-courant {
+  box-shadow: inset 0 -2px 0 #fff;
+}
+
+.deroule-phase.est-scene .deroule-pastille-numero {
+  flex: none;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.deroule-phase.est-scene .deroule-pastille-resume {
+  font-size: 0.72rem;
+}
+
+.deroule-phase.est-scene .deroule-pastille-compteur {
+  flex: none;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* Une pastille passee se relit d'un clic (D22) : le bouton prend toute la
+   pastille et n'ajoute rien a son dessin. */
+.deroule-phase.est-scene .deroule-pastille-bouton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.deroule-phase.est-scene .deroule-pastille:has(> .deroule-pastille-bouton:hover) {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+}
+
+.deroule-phase.est-scene .deroule-pastille-bouton:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* La pastille relue (D23) : cerclee, l'etape en cours garde son trait. */
+.deroule-phase.est-scene .deroule-pastille.est-relu {
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+/* Le bandeau a cote du titre : « Relecture », gris (D23), ou « Pendant ton
+   tour » a la place des pastilles (D26). */
+.deroule-phase.est-scene .deroule-bandeau {
+  flex: none;
+  margin: 0;
+  min-height: 24px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  background: #5b616b;
+}
+
+.deroule-phase.est-scene.est-hors-phase .deroule-bandeau {
+  background: var(--rouge, #a60000);
+}
+
+/* Le titre court (D30) : en Title Case dans le code, en capitales ici. Il passe
+   a la ligne plutot que de se couper. */
+.deroule-phase.est-scene .deroule-titre-court {
+  margin: 0;
+  font-family: 'Bangers', Impact, sans-serif;
+  font-weight: 400;
+  font-size: 1.7rem;
+  line-height: 1.15;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.deroule-phase.est-scene .deroule-page {
+  flex: none;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: rgba(248, 250, 252, 0.75);
+}
+
+/* --- Le corps : une grille a CELLULE UNIQUE ----------------------------------
+   Le sous-cadre (et la question du plateau) s'y superposent a l'etape grisee :
+   la cellule prend la hauteur du plus grand des deux, donc le carre grandit
+   au lieu de couper. */
+.deroule-phase.est-scene .deroule-corps {
+  flex: 1 1 auto;
+  min-width: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  gap: 8px;
+  /* D35 : chaque page entre par la droite, comme une page qu'on tourne. La
+     cle du corps (`etape|page`) le remonte, donc rejoue l'animation. Seul le
+     CONTENU glisse : le carre reste fixe. Rien n'est pose hors de
+     l'animation : l'etat de base est l'arrivee (lecon de board.css). */
+  animation: cartouche-page-entre 250ms ease-out;
+}
+
+@keyframes cartouche-page-entre {
+  from {
+    translate: 40px 0;
+    opacity: 0;
+  }
+}
+
+/* Coupe sans animations, en Sobre et en mouvement reduit (D35, meme regle
+   que l'ecran de fin, fin-partie-bd.css). */
+body.plateau-sans-animations .deroule-phase.est-scene .deroule-corps,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-corps {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deroule-phase.est-scene .deroule-corps {
+    animation: none;
+  }
+}
+
+/* --- Les vignettes (D7 a D11) --------------------------------------------- */
+.deroule-phase.est-scene .deroule-vignette {
+  flex: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ⚠ `--card-w` SE POSE SUR LA CARTE (piege 18) : ScanCard.css la redeclare
+   sur `.scan-card`, une valeur posee sur le conteneur serait ecrasee. */
+.deroule-phase.est-scene .deroule-vignette .scan-card {
+  --card-w: calc(var(--vignette-h) * 127 / 176);
+  cursor: default;
+}
+
+.deroule-phase.est-scene .deroule-vignette .scan-visuel {
+  gap: 0;
+}
+
+/* L'etiquette de type (vide : `masquerType`) garde sinon 24 px au-dessus de
+   la carte. */
+.deroule-phase.est-scene .deroule-vignette .top-strip {
+  display: none;
+}
+
+.deroule-phase.est-scene .deroule-vignette .scan-card.is-landscape {
+  --card-w: calc(var(--vignette-h) * 176 / 127);
+}
+
+.deroule-phase.est-scene .deroule-carte-grande .scan-card {
+  --card-w: calc(var(--grande-h) * 127 / 176);
+}
+
+.deroule-phase.est-scene .deroule-carte-grande .scan-card.is-landscape {
+  --card-w: calc(var(--grande-h) * 176 / 127);
+}
+
+/* Pas d'agrandissement sur place : la loupe s'ouvre a cote du carre (D29,
+   `.au-dessus-du-deroule`). */
+.deroule-phase.est-scene .deroule-vignette .scan-card:hover {
+  filter: none;
+  z-index: auto;
+}
+
+.deroule-phase.est-scene .deroule-vignette .scan-card:hover .scan-visuel {
+  transform: none;
+}
+
+/* Une carte dont le scan manque : son nom, a la place et a la taille de la carte. */
+.deroule-phase.est-scene .deroule-vignette-nom {
+  box-sizing: border-box;
+  width: calc(var(--vignette-h) * 127 / 176);
+  height: var(--vignette-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-align: center;
+  border: 1px dashed rgba(248, 250, 252, 0.35);
+  border-radius: 6px;
+}
+
+.deroule-phase.est-scene .deroule-legende {
+  max-width: calc(var(--vignette-h) * 1.05);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-align: center;
+  color: #f8fafc;
+}
+
+/* --- La rangee ------------------------------------------------------------ */
+.deroule-phase.est-scene .deroule-rangee {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+}
+
+.deroule-phase.est-scene .deroule-rangee-cartes {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Une carte SANS legende (le heros vise) garde la place de la ligne : centree
+   dans la rangee, elle descendait de 8 px sous ses voisines legendees
+   (planche du lot 6). Meme hauteur que `.deroule-legende` ; le `gap` de la
+   vignette s'ajoute, comme pour une vraie legende. */
+.deroule-phase.est-scene .deroule-rangee-cartes .deroule-vignette:not(:has(> .deroule-legende))::after {
+  content: '';
+  height: calc(0.78rem * 1.2);
+}
+
+.deroule-phase.est-scene .deroule-total {
+  flex: none;
+  /* Pas de Bangers ici : son « = » se lit comme deux points (« : 3 »). */
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #f8fafc;
+}
+
+.deroule-phase.est-scene .deroule-total.est-gros {
+  font-size: 2rem;
+  color: var(--menace, #f0b95f);
+  text-shadow: 2px 2px 0 #000;
+}
+
+.deroule-phase.est-scene .deroule-calcul {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(248, 250, 252, 0.85);
+}
+
+.deroule-phase.est-scene .deroule-vers {
+  flex: none;
+  font-size: 1.6rem;
+  color: rgba(248, 250, 252, 0.55);
+}
+
+/* Le resultat, en gros, a la suite de la rangee (D11) : il se lit dans la
+   foulee de la cible, pas a l'autre bout de l'ecran. */
+.deroule-phase.est-scene .deroule-resultat-gros {
+  flex: none;
+  margin-left: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.deroule-phase.est-scene .deroule-resultat-texte {
+  font-family: 'Bangers', Impact, sans-serif;
+  font-weight: 400;
+  font-size: 1.9rem;
+  letter-spacing: 0.04em;
+  color: #ffe3e3;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.deroule-phase.est-scene .deroule-jauge {
+  font-size: 0.95rem;
+  font-weight: 800;
+  white-space: nowrap;
+  color: #f8fafc;
+}
+
+/* L'activation annulee (D24) : un trait rouge en travers, la cause en gros. */
+.deroule-phase.est-scene .deroule-rangee.est-annulee .deroule-rangee-cartes::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 4px;
+  background: var(--rouge-vif, #e01e1e);
+  transform: rotate(-1.5deg);
+  pointer-events: none;
+}
+
+.deroule-phase.est-scene .deroule-annulee-cause {
+  flex: none;
+  margin-left: 18px;
+  position: relative;
+  z-index: 1;
+  font-family: 'Bangers', Impact, sans-serif;
+  font-weight: 400;
+  font-size: 1.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--rouge-vif, #e01e1e);
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* Sous une question (le sous-cadre, ou une question sans sous-cadre) :
+   l'etape reste lisible en fond, grisee. */
+.deroule-phase.est-scene .deroule-rangee.est-grisee,
+.deroule-phase.est-scene .deroule-revelee.est-grisee,
+.deroule-phase.est-scene .deroule-stade.est-grisee,
+.deroule-phase.est-scene .deroule-bilan.est-grisee {
+  opacity: 0.35;
+  filter: grayscale(0.6);
+}
+
+/* L'effet ★ d'un boost (D10), une ligne sous la rangee. */
+.deroule-phase.est-scene .deroule-etoile {
+  margin: 0;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+  color: var(--menace, #f0b95f);
+}
+
+/* --- La carte revelee (D16, D17) ------------------------------------------ */
+.deroule-phase.est-scene .deroule-revelee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 0;
+}
+
+.deroule-phase.est-scene .deroule-revelee-texte {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.deroule-phase.est-scene .deroule-type {
+  margin: 0;
+  font-family: 'Bangers', Impact, sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  color: var(--menace, #f0b95f);
+}
+
+.deroule-phase.est-scene .deroule-surtitre-renfort {
+  margin: 0;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: rgba(248, 250, 252, 0.7);
+}
+
+.deroule-phase.est-scene .deroule-lignes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.deroule-phase.est-scene .deroule-renfort-fleche {
+  flex: none;
+  font-family: 'Bangers', Impact, sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  color: var(--menace, #f0b95f);
+}
+
+/* La case vide a droite de la fleche « Renfort » : la carte suivante n'est
+   connue qu'apres le clic, la case garde sa place (meme gabarit qu'une
+   vignette) pour que la carte qui arrive ne decale rien. */
+.deroule-phase.est-scene .deroule-renfort-vide {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: var(--vignette-h);
+  aspect-ratio: 127 / 176;
+  border: 2px dashed currentColor;
+  border-radius: 6px;
+  font-family: 'Bangers', Impact, sans-serif;
+  font-size: 1.6rem;
+  color: var(--menace, #f0b95f);
+  opacity: 0.7;
+}
+
+/* --- Le stade (D25) ------------------------------------------------------- */
+.deroule-phase.est-scene .deroule-stade {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+/* « PV 14 → 15, ATQ 2 → 3 » : le RESULTAT du stade (D25), ecrit comme
+   « 3 DÉGÂTS SUBIS » des autres etats. En petit texte gris, il se lisait
+   comme une note (planche du lot 6, etat 7). Quatre lignes au plus (PV,
+   ATQ, MAN, menace) tiennent dans le corps. */
+.deroule-phase.est-scene .deroule-stade .deroule-lignes {
+  margin-left: 4px;
+  font-family: 'Bangers', Impact, sans-serif;
+  font-weight: 400;
+  font-size: 1.45rem;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  color: #ffe3e3;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* --- Le bilan (D19) : trois colonnes -------------------------------------- */
+.deroule-phase.est-scene .deroule-bilan {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-items: start;
+}
+
+.deroule-phase.est-scene .deroule-colonne {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.deroule-phase.est-scene .deroule-colonne-titre {
+  margin: 0;
+  font-family: 'Bangers', Impact, sans-serif;
+  font-weight: 400;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  color: var(--menace, #f0b95f);
+}
+
+.deroule-phase.est-scene .deroule-bilan .deroule-lignes li {
+  display: flex;
+  align-items: baseline;
+  /* Le chiffre colle a son nom : pousse au bout de la colonne (la regle du
+     bilan d'avant, board.css), il se lisait comme le debut de la colonne
+     voisine. */
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.deroule-phase.est-scene .deroule-colonne-nom {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.deroule-phase.est-scene .deroule-statut {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #c4b5fd;
+}
+
+.deroule-phase.est-scene .deroule-rien {
+  color: rgba(248, 250, 252, 0.45);
+}
+
+.deroule-phase.est-scene .deroule-nouveautes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.deroule-phase.est-scene .deroule-nouveautes .deroule-vignette .scan-card {
+  --card-w: calc(var(--vignette-h) * 0.7 * 127 / 176);
+}
+
+/* --- Une phrase seule (temps vide), la chute du heros ----------------------- */
+.deroule-phase.est-scene .deroule-vide {
+  margin: 0;
+  font-size: 1rem;
+  font-style: italic;
+  color: rgba(248, 250, 252, 0.75);
+}
+
+.deroule-phase.est-scene .deroule-defaite {
+  margin: 4px 0 0;
+  padding: 2px 8px;
+  font-size: 0.85rem;
+}
+
+/* --- Le sous-cadre (D4 a D6) -----------------------------------------------
+   DANS le carre : il se superpose, dans la cellule unique du corps, a l'etape
+   grisee (« Rhino va attaquer Spider-Man », grise). Il est en flux : s'il est
+   plus haut que l'etape, c'est le carre qui grandit. Sa tete (question), ses
+   cartes (a la ligne si besoin) puis ses boutons, en colonne. */
+.deroule-phase.est-scene .deroule-sous-cadre {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(17, 17, 17, 0.9);
+  border: 3px solid var(--menace, #f0b95f);
+  border-radius: 4px;
+}
+
+/* La question rendue par le plateau (table, banc d'essai, page d'etat), meme
+   cellule, centree. Fond quasi opaque : l'etape et la question se
+   melangeaient (planche du lot 3, etat 7). */
+.deroule-phase.est-scene .deroule-sous-cadre.est-provisoire {
+  align-items: center;
+  background: rgba(17, 17, 17, 0.92);
+}
+
+.deroule-phase.est-scene .deroule-sous-cadre-tete {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.deroule-phase.est-scene .deroule-sous-cadre-titre {
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  color: #f8fafc;
+}
+
+.deroule-phase.est-scene .deroule-sous-cadre-compte,
+.deroule-phase.est-scene .deroule-sous-cadre-phrase {
+  font-size: 0.85rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  color: var(--menace, #f0b95f);
+}
+
+.deroule-phase.est-scene .deroule-sous-cadre-phrase {
+  color: rgba(248, 250, 252, 0.75);
+}
+
+.deroule-phase.est-scene .deroule-sous-cadre-cartes {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Les boutons du sous-cadre, en ligne sous ses cartes : le refus a gauche,
+   l'action a droite. Ils gardent le style BD des boutons du cartouche
+   (boutons-bd.css, `.deroule-boutons`). */
+.deroule-phase.est-scene .deroule-sous-cadre-boutons {
+  margin-top: 0;
+  justify-content: space-between;
+}
+
+/* « Confirmer », « Jouer X » : l'ambre de « jouer », comme « Suivant ». Pas
+   la classe `deroule-suivant` : un pilote qui clique « Suivant » ne doit pas
+   tomber sur un « Confirmer » desactive. */
+.deroule-phase.est-scene .deroule-boutons .bh-bouton.deroule-valider {
+  --action-border: var(--menace-clair);
+  color: #14100a;
+  background: var(--menace, #f0b95f);
+}
+
+.deroule-phase.est-scene .deroule-boutons .bh-bouton:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.7) brightness(0.7);
+}
+
+/* Les pastilles du cout (D6) : elles se remplissent a chaque carte depensee. */
+.deroule-phase.est-scene .deroule-cout {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.deroule-phase.est-scene .deroule-cout-pastille {
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--menace, #f0b95f);
+  border-radius: 50%;
+  font-size: 0.7rem;
+}
+
+.deroule-phase.est-scene .deroule-cout-pastille.est-rempli {
+  color: #14100a;
+  background: var(--menace, #f0b95f);
+}
+
+/* --- Les choix en vignettes (D7, D8, D18, D32, D37) -------------------------
+   La vignette ENTIERE est le bouton : la carte, son numero « (1) » pour le
+   clavier, son nom, et dessous son texte. */
+.deroule-phase.est-scene button.deroule-vignette {
+  position: relative;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.deroule-phase.est-scene button.deroule-vignette:hover,
+.deroule-phase.est-scene button.deroule-vignette:focus-visible {
+  outline: 2px solid var(--menace, #f0b95f);
+  outline-offset: 2px;
+}
+
+.deroule-phase.est-scene button.deroule-vignette.est-choisie {
+  outline: 3px solid #4ade80;
+  outline-offset: 2px;
+}
+
+/* Le halo bref d'une carte que le menu vient de designer : sur la carte
+   seule, pas sur tout le bouton (legende comprise). */
+.deroule-phase.est-scene button.deroule-vignette.est-pulse .scan-card {
+  filter: drop-shadow(0 0 5px var(--menace, #f0b95f));
+}
+
+.deroule-phase.est-scene button.deroule-vignette.est-indisponible {
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+}
+
+.deroule-phase.est-scene button.deroule-vignette .scan-card {
+  cursor: pointer;
+}
+
+/* La carte d'un choix et ses badges (numero, ordre, fois), poses sur elle. */
+.deroule-phase.est-scene .deroule-vignette-carte {
+  position: relative;
+  display: inline-flex;
+}
+
+.deroule-phase.est-scene .deroule-chiffre {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  z-index: 1;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.35;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.78);
+}
+
+.deroule-phase.est-scene .deroule-vignette.est-choix .deroule-legende {
+  max-width: calc(var(--vignette-h) * 1.9);
+  color: var(--menace, #f0b95f);
+}
+
+.deroule-phase.est-scene .deroule-sous-texte,
+.deroule-phase.est-scene .deroule-raison {
+  max-width: calc(var(--vignette-h) * 1.9);
+  font-size: 0.74rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-align: center;
+  color: rgba(248, 250, 252, 0.75);
+}
+
+.deroule-phase.est-scene .deroule-raison {
+  color: #fca5a5;
+}
+
+/* Dans la RANGEE (defense, pendant la defense), la vignette garde sa pleine
+   hauteur : une seule ligne sous la carte. Le texte de la capacite passe a
+   l'infobulle et a la loupe ; la raison d'une option indisponible prend la
+   place du nom. */
+.deroule-phase.est-scene .deroule-rangee .deroule-sous-texte,
+.deroule-phase.est-scene .deroule-rangee .deroule-vignette.est-indisponible .deroule-legende {
+  display: none;
+}
+
+/* Un choix sans carte (« Subir 2 dégâts ») : un bouton de texte, a la taille
+   d'une ligne. */
+.deroule-phase.est-scene .deroule-vignette.est-texte {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 2px solid var(--menace, #f0b95f);
+  background: rgba(240, 185, 95, 0.12);
+  text-align: left;
+}
+
+.deroule-phase.est-scene .deroule-vignette.est-texte .deroule-chiffre {
+  position: static;
+  background: none;
+  padding: 0;
+}
+
+.deroule-phase.est-scene .deroule-choix-nom {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+/* L'ordre de clic d'un sbire, et les fois ou une cible est prise. */
+.deroule-phase.est-scene .deroule-ordre,
+.deroule-phase.est-scene .deroule-fois {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 1;
+  min-width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  padding: 0 4px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 20px;
+  text-align: center;
+  color: #14100a;
+  background: var(--menace, #f0b95f);
+}
+
+.deroule-phase.est-scene .deroule-fois {
+  top: auto;
+  bottom: 2px;
+}
+
+/* --- La question d'une carte revelee, a sa droite (D18) ------------------- */
+.deroule-phase.est-scene .deroule-question-carte {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deroule-phase.est-scene .deroule-question-intitule {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+  color: var(--menace, #f0b95f);
+}
+
+.deroule-phase.est-scene .deroule-question-choix {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* --- Un autre joueur choisit (D28) : ses cartes grisees, son nom qui pulse - */
+.deroule-phase.est-scene .deroule-vignette.est-grisee {
+  opacity: 0.45;
+  filter: grayscale(0.8);
+}
+
+.deroule-phase.est-scene .deroule-pulse {
+  flex: none;
+  margin-left: 18px;
+  font-family: 'Bangers', Impact, sans-serif;
+  font-weight: 400;
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  color: var(--menace, #f0b95f);
+  text-shadow: 2px 2px 0 #000;
+  animation: cartouche-pulse 1.4s ease-in-out infinite;
+}
+
+.deroule-phase.est-scene .deroule-mentions .deroule-pulse {
+  margin-left: 0;
+  font-size: 1.1rem;
+}
+
+@keyframes cartouche-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+body.plateau-sans-animations .deroule-phase.est-scene .deroule-pulse,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-pulse {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deroule-phase.est-scene .deroule-pulse {
+    animation: none;
+  }
+}
+
+/* --- Le pied : une barre FIXE en bas du carre ---------------------------------
+   Le refus a gauche, « Suivant (espace) » a droite, les mentions entre les
+   deux. Elle passe a la ligne plutot que de couper. */
+.deroule-phase.est-scene .deroule-boutons {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.deroule-phase.est-scene > .deroule-boutons {
+  flex: none;
+  flex-wrap: wrap;
+  min-height: 40px;
+  margin-top: auto;
+}
+
+.deroule-phase.est-scene .deroule-boutons [data-refus] {
+  order: -1;
+}
+
+.deroule-phase.est-scene .deroule-mentions {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+}
+
+.deroule-phase.est-scene .deroule-attente,
+.deroule-phase.est-scene .deroule-filet,
+.deroule-phase.est-scene .deroule-arret,
+.deroule-phase.est-scene .deroule-timeout,
+.deroule-phase.est-scene .deroule-fenetre {
+  margin: 0;
+  align-self: auto;
+}
+
+.deroule-phase.est-scene .deroule-fenetre {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--menace, #f0b95f);
+}
+
+.deroule-phase.est-scene .deroule-boutons .bh-bouton {
+  min-height: 40px;
+  padding: 0 20px;
+  font-size: 1.05rem;
+}
+
+/* --- Sobre (D39) : meme disposition, fond uni, polices du body -------------
+   Selecteur COMPLET (piege 16) : il doit battre `affichage-sobre.css`, qui
+   peint sinon une bande grise sur la moitie du cartouche. */
+html[data-affichage='sobre'] .deroule-phase.est-scene::before {
+  display: none;
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-titre-court,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-pastille,
+html[data-affichage='sobre'] .deroule-phase.est-scene .bh-bouton,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-vignette,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-resultat-texte,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-annulee-cause,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-type,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-colonne-titre,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-renfort-fleche,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-renfort-vide,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-pulse,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-bandeau,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-stade .deroule-lignes {
+  font-family: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-titre-court,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-total,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-resultat-texte,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-annulee-cause,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-stade .deroule-lignes {
+  font-weight: 800;
+  text-shadow: none;
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-pastille.est-passe,
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-pastille.est-courant,
+html[data-affichage='sobre'] .deroule-phase.est-scene.est-hors-phase .deroule-bandeau {
+  background: #4a4f57;
+}

@@ -46,6 +46,24 @@ export type EtatDeLaQuestion = {
    * panneau : personne d'autre ne l'affiche.
    */
   questionDeLaManigance: boolean
+  /**
+   * Le carre de la phase est a l'ecran, au milieu (refonte du 04/10/2026,
+   * revirement du 05/10, scene PC). Pendant la phase, il porte tout : la
+   * question, et ce que la narration centrale racontait. Absent : faux.
+   */
+  cartoucheEnBas?: boolean
+  /**
+   * HORS PHASE, une attaque du mechant annoncee pendant le tour du joueur a
+   * ouvert le cartouche « Pendant ton tour » (D26) : c'est lui qui porte la
+   * defense. Absent : faux.
+   */
+  coupHorsPhaseEnScene?: boolean
+  /**
+   * HORS PHASE, un cartouche du bas est a l'ecran (« Pendant ton tour » sur un
+   * coup, ou la relecture du journal) : il raconte, la narration centrale se
+   * tait (planche du lot 5). Absent : faux.
+   */
+  cartoucheHorsPhaseAffiche?: boolean
 }
 
 /**
@@ -73,7 +91,10 @@ function priseParLePanneauManigance(e: EtatDeLaQuestion): boolean {
  */
 export function questionDansLaScene(e: EtatDeLaQuestion): boolean {
   if (priseParLePanneauManigance(e)) return false
-  if (!e.sceneCentrale || !e.phaseMechantEnCours) return false
+  if (!e.sceneCentrale) return false
+  // Hors phase, la scene ne prend la question que si le cartouche « Pendant
+  // ton tour » est ouvert sur une annonce : sinon rien ne la porterait.
+  if (!e.phaseMechantEnCours && e.coupHorsPhaseEnScene !== true) return false
   if (!e.moteurAttendLeJoueur || !e.demandePresente) return false
   // Les deux seules autres façons de répondre à la MÊME question : le ciblage
   // se joue sur la table (la scène se replie pour la laisser cliquable), et le
@@ -114,6 +135,15 @@ export function narrationAuCentre(
   // scène) laisserait la narration se poser au centre, par-dessus la carte
   // montrée en grand — exactement ce que le silence de l'ouverture refuse.
   if (priseParLePanneauManigance(e)) return false
+  // Sous le cartouche du bas, pendant la phase, la narration se tait : le
+  // cartouche raconte deja chaque etape, et la narration se poserait au centre
+  // de la table pour redire ce qu'il dit (« plus aucun panneau hors du
+  // cartouche », decisions du 04/10/2026).
+  if (e.cartoucheEnBas === true && e.phaseMechantEnCours) return false
+  // Hors phase, meme regle tant qu'un cartouche du bas est a l'ecran : sinon
+  // « Spider-Man subit 4 dégâts » se posait au centre pendant que « Pendant
+  // ton tour » montrait la meme attaque.
+  if (e.cartoucheEnBas === true && e.cartoucheHorsPhaseAffiche === true) return false
   if (!e.effetEnCours && !contexte.evenementImportant) return false
   if (e.ciblage || e.menuCarte) return false
   return !questionDansLePanneau(e) && !questionDansLaScene(e)

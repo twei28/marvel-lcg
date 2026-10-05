@@ -127,12 +127,27 @@ describe('le plateau manuel reste normal PENDANT LA MISE EN PLACE', () => {
     + 'la boucle manuelle n\'a pas encore pris la main',
   async () => {
     const { container } = monter()
+    // Au tour du joueur : en phase du mechant (celle de la fixture), le
+    // cartouche du bas porte la question dans son sous-cadre (lot 4 de la
+    // refonte du 04/10/2026) et le panneau central se tait. Un mulligan ne se
+    // pose de toute facon jamais la.
+    await emettre({
+      monde: mondeDeTest({ mode_manuel: true, manuel_actif: false, phase: 'Player Turn' }),
+      demande: demandeMulligan(),
+      aNous: true,
+    })
+    expect(container.querySelector('.demande-centrale')).not.toBeNull()
+  })
+
+  it('en phase du mechant, la question reste atteignable : dans le sous-cadre du cartouche du bas', async () => {
+    const { container } = monter()
     await emettre({
       monde: mondeDeTest({ mode_manuel: true, manuel_actif: false }),
       demande: demandeMulligan(),
       aNous: true,
     })
-    expect(container.querySelector('.demande-centrale')).not.toBeNull()
+    expect(container.querySelector('.demande-centrale')).toBeNull()
+    expect(container.querySelectorAll('.deroule-phase.est-scene .deroule-sous-cadre [data-choix]')).toHaveLength(2)
   })
 
   it('la masque bien une fois la boucle manuelle entree (manuel_actif)', async () => {

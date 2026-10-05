@@ -68,17 +68,29 @@ class Enemies:
             if not minions:
                 break
 
+            deja_actives = len(activated_minions)
             for minion in activate_against_player.ChooseOrder(minions, prompt="Minion Activates Order"):
                 # Fix "35028"
                 # if not minion.IsDefeated():
                 if minion.IsInPlay():
                     has_enemy = True
-                    if activate == "Attack":
-                        do_active = minion.DoAttackYou(activate_against_player, effect)
-                    elif activate == "Scheme":
-                        do_active = minion.DoSchemes(activate_against_player, effect)
-                    else:
-                        do_active = minion.DoActivate(activate_against_player, effect)
+                    # Rang et total du groupe, lus par `RecordFaitMechant`
+                    # (05/10/2026) : « sbire 1 / 2 » juste des la premiere annonce.
+                    stat = minion.card.world.stat
+                    stat.sbire_en_cours = {
+                        'id': minion.card.object_id,
+                        'rang': len(activated_minions) + 1,
+                        'total': deja_actives + len(minions),
+                    }
+                    try:
+                        if activate == "Attack":
+                            do_active = minion.DoAttackYou(activate_against_player, effect)
+                        elif activate == "Scheme":
+                            do_active = minion.DoSchemes(activate_against_player, effect)
+                        else:
+                            do_active = minion.DoActivate(activate_against_player, effect)
+                    finally:
+                        stat.sbire_en_cours = None
                     if do_active:
                         active_cnt += 1
 

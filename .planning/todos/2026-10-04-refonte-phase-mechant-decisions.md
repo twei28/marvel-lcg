@@ -312,3 +312,29 @@ Points tranchés sans question, parce que les 40 réponses les impliquent :
 - Assistant d'action muet pendant un ciblage en scène (fait, sera absorbé
   par le sous-cadre).
 - Défenseurs côte à côte (fait, sera absorbé par la rangée).
+
+## Points tranchés le 05/10/2026 (après la planche)
+
+- **Sonné (état 04)** : le moteur publie un fait quand une activation est annulée par Sonné ; le cartouche affiche une étape « Sonné » (carte du méchant, « n'attaque pas, perd Sonné »), même gabarit, bouton Suivant.
+- **Renfort (état 09)** : flèche « Renfort » + case vide « ? » à droite de la carte ; au clic, glissement et la nouvelle carte arrive en grand à gauche. Pas de changement moteur.
+- **Carte révélée sans résumé** : afficher son texte français imprimé (raccourci, paginé si trop long).
+- **Choix du moteur en anglais** : traduits dans le plateau (table de libellés), un libellé inconnu reste en anglais.
+- **1280×720** : on ne change rien, le cartouche se déplace à la main.
+- **Sbires « 1 / 2 »** : le moteur annonce le total dès le début.
+- **Glissement** : seule l'entrée glisse (D35 confirmé).
+- **Vignettes du sous-cadre** : taille fixe 126 px.
+- **Plateau, étape Sonné + compteur sbires (05/10/2026, fait, non déployé)** : fait `sonne` lu par `etapesDeroule` (titre `sonne`, temps du vilain ou des sbires, aucune étape d'attaque à côté), vue `revelee` avec « Sonné : n’attaque pas / ne manigance pas » et « perd Sonné » / « reste Sonné » (ennemi Constant), titre court « Sonné ». Compteur « 1 / 2 » via `rang_sbire/total_sbires` (`compteurDeLEtape`), repli sur le compte des étapes. Ligne aussi dans `RecapPhaseMechant`. 2525 tests verts, tsc propre, gate mécanique verte. Pas encore vu à l'écran (moteur d'essai 2347 à relancer avec le fait Sonné).
+
+## REVIREMENT du 05/10/2026 (après la planche v1) : retour à un carré au milieu
+
+L'utilisateur a jugé le cartouche collé en bas « beaucoup trop petit » (textes tronqués, cartes minuscules). Il REMPLACE D1/D2 (position, hauteur figée de 224 px) par :
+- **Forme et taille** : rectangle 4/3 au milieu de l'écran, un peu plus grand que l'ancienne modale (environ 1,3 fois, repère 760×570 px à 1920×1080), déplaçable.
+- **Déplacement** : on l'attrape n'importe où sur un fond libre (pas sur une carte ou un bouton). Revient au milieu à chaque nouvelle phase (reste là où on l'a mis pendant toute la phase).
+- **Fond** : table visible, sans voile, juste une ombre.
+- **Main** : visible et NORMALE (cliquable comme d'habitude) ; les cartes jouables en réponse sont en surbrillance dans la main ET proposées aussi dans le carré. Raison : voir tout de suite une carte mal paramétrée qu'on devrait pouvoir jouer, pour remonter le bug. Supprime D3 (main cachée) et la visibility:hidden de body.cartouche-scene.
+- **Hauteur** : constante, mais le carré GRANDIT en hauteur quand le texte ou la rangée ne tiennent pas (jamais de texte tronqué, plus de pagination imposée), puis reprend sa taille à l'étape suivante.
+- **Cartes** : grandes. Carte révélée environ 260 px de haut à gauche, cartes de la rangée (attaquant, boosts, défenseurs, cibles) environ 170 px.
+- **Intérieur** : en-tête sur deux lignes (frise des 5 pastilles, puis titre Bangers) ; contenu ; barre de boutons fixe en bas (refus à gauche, « Suivant (espace) » à droite) ; rangée sur deux lignes si besoin (attaquant, boosts, total / défenseurs ou cibles).
+- **Interruptions** : sous-cadre DANS le carré, l'étape grisée derrière.
+- **Animation** : fondu de 150 ms à l'ouverture, le carré reste fixe, seul le contenu glisse (250 ms) entre les étapes ; tout coupé en Sobre / sans animations / mouvement réduit.
+- Inchangé : frise de 5 pastilles, Sonné, Renfort (flèche + case vide), texte FR de la carte révélée, choix traduits, « 1 / 2 » des sbires, clavier, relecture, mode multi, téléphone intact.

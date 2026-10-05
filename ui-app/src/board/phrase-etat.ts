@@ -7,7 +7,7 @@
 // payables brillent déjà dans la main (retour de l'utilisateur, 11/09/2026).
 
 import type { AssistantInteraction } from './interaction'
-import { t } from './langue'
+import { langueActuelle, t } from './langue'
 
 /** Les lettres du moteur (game/element/resources.py), dites en français. */
 const NOM_TYPE_FR: Record<string, string> = {
@@ -44,4 +44,15 @@ export function phraseEtat(assistant: AssistantInteraction, prete: boolean): str
   }
   if (assistant.etape === 'confirm' && prete) return t('Tout est prêt')
   return assistant.detail ?? ''
+}
+
+/** La raison d'un ciblage « pas prêt », née en anglais dans `reponsePrete`, dite en français. */
+export function raisonDite(raison: string): string {
+  if (langueActuelle() === 'en') return raison
+  const cibles = (n: number) => `${n} ${n > 1 ? 'cibles' : 'cible'}`
+  const encore = /^Choose (\d+) more target\(s\)$/.exec(raison)
+  if (encore) return `Choisis encore ${cibles(Number(encore[1]))}`
+  const enTrop = /^Remove (\d+) target\(s\)$/.exec(raison)
+  if (enTrop) return `Retire ${cibles(Number(enTrop[1]))}`
+  return raison
 }

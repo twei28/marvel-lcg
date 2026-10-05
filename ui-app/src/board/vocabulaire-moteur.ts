@@ -388,6 +388,35 @@ const MOTEUR_FR: Record<string, string> = {
  */
 const SUFFIXE_INDEX = /^(.*?) (\d+)$/
 
+const degats = (n: string) => `${n} ${Number(n) > 1 ? 'dégâts' : 'dégât'}`
+const menaces = (n: string) => `${n} ${Number(n) > 1 ? 'menaces' : 'menace'}`
+
+/**
+ * Les CHOIX que les scripts de cartes impriment en anglais (`ForChoiceAbility
+ * ("Take 2 damage", ...)`, 589 libellés distincts dans les scripts) : leurs
+ * formes les plus courantes, avec le nombre. Une forme absente reste en
+ * anglais, comme un nom de capacité : le texte de la carte en grand est le
+ * repère.
+ */
+const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
+  [/^Take (\d+) indirect damage$/, (m) => `Subir ${m[1]} ${Number(m[1]) > 1 ? 'dégâts indirects' : 'dégât indirect'}`],
+  [/^Take (\d+) damage$/, (m) => `Subir ${degats(m[1]!)}`],
+  [/^Place (\d+) threat on the main scheme$/, (m) => `Placer ${menaces(m[1]!)} sur la manigance principale`],
+  [/^Place (\d+) threat here$/, (m) => `Placer ${menaces(m[1]!)} ici`],
+  [/^Remove (\d+) threat from a scheme$/, (m) => `Retirer ${menaces(m[1]!)} d’une manigance`],
+  [/^Draw (\d+) cards?$/, (m) => `Piocher ${m[1]} ${Number(m[1]) > 1 ? 'cartes' : 'carte'}`],
+  [/^Deal (\d+) damage to an enemy$/, (m) => `Infliger ${degats(m[1]!)} à un ennemi`],
+  [/^Heal (\d+) damage from your identity$/, (m) => `Soigner ${degats(m[1]!)} de ton identité`],
+  [/^Heal (\d+) damage from an identity$/, (m) => `Soigner ${degats(m[1]!)} d’une identité`],
+  [/^Stun an enemy$/, () => 'Rendre un ennemi sonné'],
+  [/^Confuse an enemy$/, () => 'Rendre un ennemi désorienté'],
+  [/^Stun a minion$/, () => 'Rendre un sbire sonné'],
+  [/^Ready your hero$/, () => 'Redresser ton héros'],
+  [/^Ready your identity$/, () => 'Redresser ton identité'],
+  [/^Exhaust your identity$/, () => 'Engager ton identité'],
+  [/^Flip to alter-ego form$/, () => 'Passer en forme alter ego'],
+]
+
 /**
  * Rend le libellé du moteur en français. Une chaîne absente de la table est
  * rendue INCHANGÉE : c'est le cas des noms de capacités imprimés sur les
@@ -398,6 +427,11 @@ export function traduireMoteur(libelle: string): string {
 
   const direct = MOTEUR_FR[libelle]
   if (direct) return direct
+
+  for (const [motif, rendre] of GABARITS_CHOIX) {
+    const trouve = motif.exec(libelle)
+    if (trouve) return rendre(trouve)
+  }
 
   const numerote = SUFFIXE_INDEX.exec(libelle)
   if (numerote) {

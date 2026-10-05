@@ -130,6 +130,14 @@ type FaitMechantCommun = {
    * paraissait attaquer deux fois sans raison.
    */
   phase?: string
+  /**
+   * Le sbire en cours dans l'ordre des activations, et le NOMBRE de sbires qui
+   * vont s'activer (05/10/2026) : le moteur l'annonce des le premier fait d'un
+   * sbire, ce que le plateau ne peut pas compter avant d'avoir tout reçu.
+   * Absents du vilain et d'un moteur plus ancien.
+   */
+  rang_sbire?: number
+  total_sbires?: number
 }
 
 /**
@@ -156,6 +164,12 @@ type FaitActivationCommun = FaitMechantCommun & {
   activation_id?: number
   /** Carte qui a déclenché l'activation, vide quand c'est l'ennemi lui-même. */
   cause?: string
+  /**
+   * Son identifiant d'objet, quand le moteur le connaît (04/10/2026) : il range
+   * la conséquence sous sa carte révélée sans comparer des noms. Absent sur un
+   * moteur plus ancien.
+   */
+  cause_id?: number | null
   auteur: string
   auteur_id: number
   cible: string
@@ -191,6 +205,33 @@ export type FaitActivationAnnonce = FaitActivationCommun & {
   annule_par_id?: number
 }
 
+/** Un boost retourné, tel que le moteur le publie (`_BoostsPublies`). */
+export type BoostPublie = { nom: string; id: number; apport: number; etoile?: boolean }
+
+/**
+ * LE TEMPS INTERMÉDIAIRE (04/10/2026) : le défenseur est choisi, les boosts
+ * sont retournés, les dégâts ne sont pas encore portés. Il remplace l'annonce
+ * sous le même `activation_id`, et la résolution le remplace à son tour.
+ *
+ * Il ne porte JAMAIS `subi` ni `inflige` : rien n'a encore été encaissé. Toutes
+ * ses clés sont optionnelles, pour qu'une fixture partielle reste lisible.
+ */
+export type FaitActivationBoosts = FaitActivationCommun & {
+  etat: 'boosts'
+  /** Le personnage qui défend, `null` sans défense. */
+  defenseur?: string | null
+  defenseur_id?: number | null
+  /** La DÉF du défenseur, 0 sans défense. */
+  defense?: number
+  boosts?: BoostPublie[]
+  /** Apport total des boosts. */
+  boost?: number
+  /** Ce qui sera porté avant la défense : imprimé, bonus et boosts. */
+  total_avant_defense?: number
+  /** La valeur IMPRIMÉE annoncée, la même que `base` sur l'annonce. */
+  base_imprimee?: number
+}
+
 /**
  * La RÉSOLUTION, décomposée par le moteur au moment où il la calcule.
  *
@@ -219,10 +260,24 @@ export type FaitActivationResolue = FaitActivationCommun & {
   /** PV ou menace de la cible après coup. Absent si la cible n'en a pas. */
   restant?: number | null
   /** `etoile` : le boost porte une capacite Boost (★), 04/10/2026. */
-  boosts: { nom: string; id: number; apport: number; etoile?: boolean }[]
+  boosts: BoostPublie[]
+  /**
+   * Le DÉFENSEUR, nommé à part (04/10/2026) : `cible` est déjà lui quand
+   * quelqu'un défend, et le héros visé disparaissait de l'étape. `null` sans
+   * défense ; absent sur un moteur plus ancien.
+   */
+  defenseur?: string | null
+  defenseur_id?: number | null
+  /** La cible ANNONCÉE (le héros visé), même quand un autre a défendu. */
+  cible_annoncee?: string
+  cible_annoncee_id?: number
+  /** La valeur IMPRIMÉE annoncée, avant tout bonus (celle de l'annonce). */
+  base_imprimee?: number
+  /** Sur une manigance : le seuil de la manigance visée, `null` sans seuil. */
+  plafond?: number | null
 }
 
-export type FaitActivation = FaitActivationAnnonce | FaitActivationResolue
+export type FaitActivation = FaitActivationAnnonce | FaitActivationBoosts | FaitActivationResolue
 
 /**
  * La menace du POINT 1, posée par la règle du jeu sur une manigance principale.
@@ -245,6 +300,14 @@ export type FaitMenace = FaitMechantCommun & {
   restant?: number | null
   /** Son seuil (`target_threat`), absent quand la manigance n'en affiche pas. */
   plafond?: number | null
+  /**
+   * LA DÉCOMPOSITION de `montant` (04/10/2026) : l'escalade imprimée de la
+   * manigance, ce que l'accélération (icônes et jetons) y ajoute, et le nombre
+   * de joueurs qui multiplie l'escalade. Absents sur un moteur plus ancien.
+   */
+  escalade?: number
+  acceleration?: number
+  joueurs?: number
 }
 
 /**
@@ -292,6 +355,12 @@ export type FaitRevelation = FaitMechantCommun & {
    * Absent sur un moteur ancien : traité comme `false`.
    */
   par_surge?: boolean
+  /**
+   * Le TYPE de la carte, nom de classe du moteur (« Treachery », « Minion »,
+   * « Attachment », « SideScheme », « Environment », « Obligation »),
+   * 04/10/2026. Absent sur un moteur plus ancien.
+   */
+  type?: string
   /** Son effet « Une fois révélée » a été ANNULÉ, par cette carte (04/10/2026). */
   annulee_par?: string
   annulee_par_id?: number
@@ -363,6 +432,28 @@ export type FaitEntree = FaitMechantCommun & {
 }
 
 /**
+ * Une activation ANNULÉE PAR SONNÉ (05/10/2026, `JournaliserActivationEmpechee`).
+ * Le moteur s'arrête avant l'annonce : sans ce fait, l'étape disparaissait
+ * sans un mot.
+ */
+export type FaitSonne = FaitMechantCommun & {
+  genre: 'sonne'
+  /** Ce qui a été empêché. */
+  temps: 'attaque' | 'manigance'
+  type: 'mechant' | 'sbire'
+  joueur?: number | null
+  auteur: string
+  auteur_id: number
+  cible?: string | null
+  cible_id?: number | null
+  /** Faux pour un ennemi Constant : il garde Sonné. */
+  statut_retire: boolean
+  annule_par?: string
+  annule_par_id?: number | null
+  fait_id?: string
+}
+
+/**
  * Un CHANGEMENT DE STADE en pleine phase du méchant (04/10/2026) : la manigance
  * principale ou le méchant passe au stade suivant (`WorldStat.RecordStade`).
  */
@@ -374,6 +465,23 @@ export type FaitStade = FaitMechantCommun & {
   /** La NOUVELLE carte, montrée en grand. */
   carte: string
   carte_id: number
+  /** L'identifiant de la carte d'avant (04/10/2026), absent sur un moteur plus ancien. */
+  avant_id?: number
+  /**
+   * Les stats IMPRIMÉES d'avant et d'après (04/10/2026). Jamais les PV courants
+   * de l'ancienne carte : le moteur l'a déjà retirée quand il écrit le fait.
+   */
+  stats_avant?: StatsStade
+  stats_apres?: StatsStade
+}
+
+/** Les stats d'une carte de stade, chacune `null` quand la carte n'en a pas. */
+export type StatsStade = {
+  pv_max?: number | null
+  atq?: number | null
+  man?: number | null
+  menace?: number | null
+  seuil?: number | null
 }
 
 export type FaitMechant =
@@ -384,6 +492,7 @@ export type FaitMechant =
   | FaitRevelation
   | FaitStatut
   | FaitEntree
+  | FaitSonne
 
 /** Un effet refusé en silence, et pourquoi (voir `refus-effets.tsx`). */
 export type RefusEffet = {

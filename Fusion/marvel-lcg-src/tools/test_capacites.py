@@ -23466,6 +23466,36 @@ CAS = [
         "verifier": "a4_activation_annulee_par",
     },
     {
+        "nom": "B1 sonne — un vilain SONNE s'active : le journal publie un fait `sonne`",
+        "pourquoi": ("Refonte du cartouche (05/10/2026), etat 04 : par DoActivate (le vrai chemin de "
+                     "la phase du mechant) la carte Sonne remplace l'activation AVANT toute annonce, "
+                     "donc aucun fait n'existait et le cartouche sautait l'etape sans rien montrer"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Stun('01094')"],
+        "declencher": [],
+        "verifier": "b1_vilain_sonne_publie_un_fait",
+    },
+    {
+        "nom": "B1 sonne — un sbire SONNE s'active : fait `sonne` de type sbire, pas d'attaque",
+        "pourquoi": "Meme fait pour un sbire engage (le cartouche l'affiche aussi, avec son rang)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Engage('01110')"],
+        "declencher": [],
+        "verifier": "b1_sbire_sonne_publie_un_fait",
+    },
+    {
+        "nom": "B2 sbires — chaque activation de sbire annonce son rang et le total du groupe",
+        "pourquoi": ("Refonte du cartouche (05/10/2026) : « 1 / 2 » doit etre juste des le premier "
+                     "sbire ; le plateau ne connaissait que les etapes deja arrivees"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Engage('01101')", "Puzzle.Engage('01110')"],
+        "declencher": [],
+        "verifier": "b2_sbires_annoncent_rang_et_total",
+    },
+    {
         "nom": "A4 annulee par — une carte revelee dont l'effet est annule nomme qui l'a annulee",
         "pourquoi": ("Meme decision : la revelation garde son etape et dit « → Annulée par X ». "
                      "Temoin : la meme carte (Advance 01186) revelee sans annulation ne porte rien"),
@@ -23614,6 +23644,103 @@ CAS = [
         "verifier": "a4_fait_menace_sans_seuil",
     },
     # FIN DU BLOC A4 -------------------------------------------------------
+
+    # DEBUT DU BLOC A6 (04/10/2026) : NE PAS FUSIONNER AVEC LES CAS D'UN PACK.
+    #
+    # Les faits que lit le nouveau CARTOUCHE de la phase du mechant (refonte du
+    # 04/10/2026, faits E1 a E8 du plan). Aucune regle de jeu ne change : le
+    # moteur publie ce qu'il sait deja, au moment ou il le calcule. Le bloc
+    # s'appelle A6 parce que « A4 » et « A5 » sont pris : un filtre « A4 »
+    # relancerait sept cas etrangers.
+    #
+    # Filtre pour les rejouer seuls :
+    #     python3.10 tools/test_capacites.py .game-src 40000 /tmp/a6.json "A6"
+    {
+        "nom": "A6 cartouche : le fait `boosts` s'intercale entre l'annonce et la resolution, defenseur compris",
+        "pourquoi": ("Le cartouche montre « Rhino ATQ 2 + 1 boost, Spider-Man defend » AVANT les "
+                     "degats. Il n'existait que l'annonce (rien de retourne) et le resolu (tout "
+                     "tombe d'un coup) : l'etat intermediaire `etat: 'boosts'` porte le defenseur, "
+                     "les boosts et le total avant defense, sous le MEME identifiant"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a6_boosts_entre_annonce_et_resolution",
+    },
+    {
+        "nom": "A6 cartouche : sans defenseur, le fait `boosts` porte defenseur_id None",
+        "pourquoi": ("Temoin du precedent : en alter-ego personne ne defend. Le fait existe quand "
+                     "meme, sa cle `defenseur_id` vaut None et sa defense 0"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "a6_boosts_sans_defense",
+    },
+    {
+        "nom": "A6 cartouche : la manigance a aussi son fait `boosts`, sans defenseur",
+        "pourquoi": ("Les deux moities d'une activation ennemie se lisent de la meme facon : la "
+                     "manigance montre ses boosts avant de poser sa menace"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "a6_boosts_manigance",
+    },
+    {
+        "nom": "A6 cartouche : le resolu porte le defenseur, la cible annoncee et la base imprimee",
+        "pourquoi": ("`cible_id` du resolu est la carte qui a pris le coup (le defenseur) : le "
+                     "cartouche ne savait plus quel heros etait VISE, ni separer l'apport d'un "
+                     "boost ★ de la base. Temoin : une seconde attaque sans defense"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a6_resolu_porte_le_defenseur",
+    },
+    {
+        "nom": "A6 cartouche : la manigance resolue porte le seuil de la manigance visee",
+        "pourquoi": ("La jauge « 4 → 6 / 7 » lisait le seuil sur l'etape de menace du round, ou sur "
+                     "la carte : le fait le porte maintenant (`plafond`)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a6_manigance_porte_le_plafond",
+    },
+    {
+        "nom": "A6 cartouche : un jeton d'acceleration se lit a part dans le fait de menace",
+        "pourquoi": ("« 1 par joueur + 1 acceleration = 2 » : le fait de l'etape 1 decompose sa "
+                     "menace en escalade imprimee et acceleration (icones et jetons)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "a6_menace_acceleree",
+    },
+    {
+        "nom": "A6 cartouche : le fait `stade` porte la carte d'avant et ses stats avant et apres",
+        "pourquoi": ("« PV 14 → 15, ATQ 2 → 3 » : la carte d'avant a quitte la table quand le fait "
+                     "part, le plateau ne peut plus la relire. Temoin : sans carte d'avant, pas de "
+                     "`stats_avant`"),
+        "scenario": "ultron",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a6_stade_porte_les_stats",
+    },
+    {
+        "nom": "A6 cartouche : une carte rencontre revelee pendant le tour du joueur est journalisee",
+        "pourquoi": ("« Pendant ton tour » montre aussi les revelations hors phase (D26). Seul "
+                     "`RevealEncounterCards` (phase du mechant) les inscrivait. Temoins : en phase "
+                     "du mechant `Puzzle.Reveal` n'ajoute rien, une distribution hors phase non plus"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "a6_revelation_hors_phase",
+    },
+    # FIN DU BLOC A6 -------------------------------------------------------
     # ================================================================ ARES ==
     # Pack `ares` (Rainy, set 164, prefixe ar). Journal :
     # .planning/todos/2026-09-07-ares-gabarits-processus-carte.md
@@ -52821,8 +52948,22 @@ def a2_fait_menace(monde, aides):
         return False, f"restant = {fait['restant']} (menace reelle {manigance.threat})"
     if fait['round_id'] != monde.round_id:
         return False, f"round_id = {fait['round_id']} (attendu {monde.round_id})"
+    # La DECOMPOSITION de la menace (cartouche, 04/10/2026) : « 1 par joueur
+    # + 1 acceleration = 2 ». Aucune acceleration ici ; le cas « A6 cartouche :
+    # un jeton d'acceleration... » couvre l'autre branche.
+    manques = [c for c in ('escalade', 'acceleration', 'joueurs') if c not in fait]
+    if manques:
+        return False, f"decomposition absente du fait : {manques} ({fait})"
+    if fait['escalade'] + fait['acceleration'] != fait['montant']:
+        return False, (f"escalade {fait['escalade']} + acceleration {fait['acceleration']} != "
+                       f"montant {fait['montant']}")
+    if fait['acceleration'] != 0:
+        return False, f"acceleration = {fait['acceleration']} (attendu 0 : rien n'accelere ici)"
+    if fait['joueurs'] != len(monde.players):
+        return False, f"joueurs = {fait['joueurs']} (attendu {len(monde.players)})"
     return True, (f"fait menace : {fait['cible']} +{fait['montant']} -> "
-                  f"{fait['restant']}/{fait.get('plafond')}")
+                  f"{fait['restant']}/{fait.get('plafond')} (escalade {fait['escalade']}, "
+                  f"{fait['joueurs']} joueur(s))")
 
 def a2_fait_distribution(monde, aides):
     """Etape 3 : chaque carte distribuee inscrit un fait `distribution`.
@@ -52880,6 +53021,8 @@ def a2_fait_revelation(monde, aides):
     attendues = [(f.name, f.card.object_id) for f in joueur.dealt_encounter_cards.Get(True)]
     if not attendues:
         return False, "01101 n'a pas ete distribuee"
+    # Le TYPE de la carte (cartouche, 04/10/2026) : « Assaut (Traîtrise) ».
+    types_attendus = [type(f).__name__ for f in joueur.dealt_encounter_cards.Get(True)]
 
     _a2_vider_le_journal(monde)
     monde.phase.SetState(Phase.State.RevealsEncounterCards)
@@ -52901,7 +53044,10 @@ def a2_fait_revelation(monde, aides):
     if (fait['carte'], fait['carte_id']) != attendues[0]:
         return False, (f"carte = {(fait['carte'], fait['carte_id'])} "
                        f"(attendu {attendues[0]})")
-    return True, f"fait revelation : {fait['carte']} (#{fait['carte_id']}) par le siege {fait['joueur']}"
+    if fait.get('type') != types_attendus[0]:
+        return False, f"type = {fait.get('type')!r} (attendu {types_attendus[0]!r})"
+    return True, (f"fait revelation : {fait['carte']} (#{fait['carte_id']}, {fait['type']}) "
+                  f"par le siege {fait['joueur']}")
 
 def _a2_revele_et_lit_le_fait(monde, code):
     """Distribue `code` pendant le tour du joueur, le revele a l'etape 4, et
@@ -53000,6 +53146,11 @@ def a2_pas_de_doublon_revelation_attaque(monde, aides):
     if attaques[0].get('phase') != 'Reveal Encounter Cards':
         return False, (f"l'attaque est datee {attaques[0].get('phase')!r} "
                        f"(attendu 'Reveal Encounter Cards')")
+    # La CAUSE par son identifiant (cartouche, 04/10/2026) : le plateau range
+    # l'attaque sous sa carte sans comparer des noms.
+    if attaques[0].get('cause_id') != stampede[0]['carte_id']:
+        return False, (f"cause_id de l'attaque = {attaques[0].get('cause_id')!r} (attendu "
+                       f"#{stampede[0]['carte_id']}, Stampede) ; fait = {attaques[0]}")
     return True, (f"1 revelation ({stampede[0]['carte']}) + 1 attaque "
                   f"({attaques[0]['auteur']} -> {attaques[0]['cible']}), "
                   f"{len(revelations)} revelation(s) au total")
@@ -53086,20 +53237,24 @@ def a3_annonce_puis_resolution(monde, aides):
     attaque_imprimee = vilain.attack
     _a3_attaquer(vilain, heros, regle)
 
+    # TROIS temps depuis le 04/10/2026 (cartouche) : l'annonce, le fait
+    # intermediaire `boosts` (defenseur choisi, boosts retournes), la resolution.
     faits = _a3_activations(trace)
-    if len(faits) != 2:
-        return False, (f"{len(faits)} fait(s) d'activation traces (attendu 2 : une "
-                       f"annonce puis une resolution) ; trace = {faits}")
-    annonce, resolu = faits
+    if len(faits) != 3:
+        return False, (f"{len(faits)} fait(s) d'activation traces (attendu 3 : une "
+                       f"annonce, les boosts, puis une resolution) ; trace = {faits}")
+    annonce, boosts, resolu = faits
     if annonce.get('etat') != 'annonce':
         return False, f"le PREMIER fait porte etat={annonce.get('etat')!r} (attendu 'annonce')"
+    if boosts.get('etat') != 'boosts':
+        return False, f"le DEUXIEME fait porte etat={boosts.get('etat')!r} (attendu 'boosts')"
     if resolu.get('etat') != 'resolu':
-        return False, f"le SECOND fait porte etat={resolu.get('etat')!r} (attendu 'resolu')"
+        return False, f"le TROISIEME fait porte etat={resolu.get('etat')!r} (attendu 'resolu')"
     if annonce.get('activation_id') is None:
         return False, f"l'annonce n'a pas d'activation_id ({annonce})"
-    if annonce['activation_id'] != resolu.get('activation_id'):
-        return False, (f"identifiants differents : annonce {annonce['activation_id']}, "
-                       f"resolution {resolu.get('activation_id')}")
+    if not annonce['activation_id'] == boosts.get('activation_id') == resolu.get('activation_id'):
+        return False, (f"identifiants differents : annonce {annonce['activation_id']}, boosts "
+                       f"{boosts.get('activation_id')}, resolution {resolu.get('activation_id')}")
 
     # L'annonce ne porte QUE ce qui est connu avant le coup.
     manques = [c for c in ('genre', 'auteur', 'auteur_id', 'cible', 'cible_id', 'base')
@@ -53151,12 +53306,15 @@ def a3_defense_entre_les_deux(monde, aides):
     _a3_attaquer(vilain, heros, regle)
 
     faits = _a3_activations(trace)
-    if len(faits) != 2:
-        return False, f"{len(faits)} fait(s) d'activation traces (attendu 2) ; trace = {faits}"
-    annonce, resolu = faits
-    if annonce.get('etat') != 'annonce' or resolu.get('etat') != 'resolu':
-        return False, (f"ordre inattendu : {annonce.get('etat')!r} puis "
-                       f"{resolu.get('etat')!r}")
+    if len(faits) != 3:
+        return False, f"{len(faits)} fait(s) d'activation traces (attendu 3) ; trace = {faits}"
+    annonce, boosts, resolu = faits
+    if [f.get('etat') for f in faits] != ['annonce', 'boosts', 'resolu']:
+        return False, f"ordre inattendu : {[f.get('etat') for f in faits]}"
+    # Le fait intermediaire nomme deja le defenseur : c'est lui que le
+    # cartouche montre pendant que le joueur repond aux questions de la defense.
+    if not isinstance(boosts.get('defenseur_id'), int):
+        return False, f"le fait boosts ne nomme pas le defenseur : {boosts}"
     if resolu.get('defense', 0) <= 0:
         return False, (f"la defense n'a pas eu lieu : defense={resolu.get('defense')} "
                        f"dans le fait resolu ({resolu})")
@@ -53258,6 +53416,132 @@ def a4_activation_annulee_par(monde, aides):
         return False, f"annule_par_id absent ou non entier : {faits[1]}"
     return True, f"attaque annulee par {par!r} (#{faits[1].get('annule_par_id')})"
 
+
+# ============================ BLOC B (05/10/2026) ===========================
+# Refonte du cartouche : fait `sonne` et rang/total des sbires.
+# ----------------------------------------------------------------------------
+
+def _b_faits_sonne(monde):
+    return [f for f in monde.stat.faits_mechant if f.get('genre') == 'sonne']
+
+def _b_controle_fait_sonne(fait, auteur, type_attendu):
+    manques = [c for c in ('genre', 'phase', 'temps', 'type', 'auteur', 'auteur_id',
+                           'cible', 'cible_id', 'statut_retire', 'annule_par',
+                           'annule_par_id', 'fait_id', 'round_id') if c not in fait]
+    if manques:
+        return f"champs absents du fait sonne : {manques} ({fait})"
+    if fait['auteur_id'] != auteur.card.object_id:
+        return f"auteur_id = {fait['auteur_id']} (attendu {auteur.card.object_id})"
+    if fait['temps'] != 'attaque':
+        return f"temps = {fait['temps']!r} (attendu 'attaque')"
+    if fait['type'] != type_attendu:
+        return f"type = {fait['type']!r} (attendu {type_attendu!r})"
+    if fait['statut_retire'] is not True:
+        return f"statut_retire = {fait['statut_retire']!r} (attendu True : la carte Sonne a ete retiree)"
+    if 'Stun' not in str(fait['annule_par']):
+        return f"annule_par = {fait['annule_par']!r} (attendu la carte Sonne)"
+    return ""
+
+def b1_vilain_sonne_publie_un_fait(monde, aides):
+    """Un vilain SONNE qui s'active (`DoActivate`, le chemin de la phase) :
+    la carte Sonne remplace l'activation avant l'annonce ; le journal garde
+    quand meme UN fait `sonne`, et aucune attaque. Temoin : l'activation
+    suivante (le statut est parti) n'en publie plus."""
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+    if not vilain.IsStunned():
+        return False, "le decor n'a pas Sonne le vilain"
+    joueur = monde.players[0]
+    _a3_journal_neuf(monde)
+    vilain.DoActivate(joueur, regle, do_not_give_boost=True)
+    faits = _b_faits_sonne(monde)
+    if len(faits) != 1:
+        return False, f"{len(faits)} fait(s) sonne (attendu 1) ; journal = {monde.stat.faits_mechant}"
+    erreur = _b_controle_fait_sonne(faits[0], vilain, 'mechant')
+    if erreur:
+        return False, erreur
+    if _a3_activations(monde.stat.faits_mechant):
+        return False, f"une attaque est journalisee malgre Sonne : {monde.stat.faits_mechant}"
+    if vilain.IsStunned():
+        return False, "le vilain est encore Sonne apres l'activation annulee"
+
+    # Temoin : sans Sonne, plus de fait `sonne`.
+    _a3_journal_neuf(monde)
+    vilain.DoActivate(joueur, regle, do_not_give_boost=True)
+    if _b_faits_sonne(monde):
+        return False, f"temoin : fait sonne sans Sonne ; journal = {monde.stat.faits_mechant}"
+    return True, f"fait sonne #{faits[0]['fait_id']} (temps attaque, type mechant), temoin muet"
+
+def b1_sbire_sonne_publie_un_fait(monde, aides):
+    """Meme fait pour un sbire engage SONNE."""
+    from game.operate.worlds import Worlds
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+    joueur = monde.players[0]
+    sbires = list(joueur.GetEngagedMinions())
+    if len(sbires) != 1:
+        return False, f"decor : {len(sbires)} sbire(s) engage(s) (attendu 1)"
+    sbire = sbires[0]
+    # `Puzzle.Stun` ne tient pas sur un sbire fraichement engage : on pose la carte Sonne a la main.
+    from game.operate.faces import Faces
+    Faces.GiveStatus([sbire], "Stunned", regle)
+    if not sbire.IsStunned():
+        return False, "le sbire n'a pas pu etre Sonne"
+    _a3_journal_neuf(monde)
+    sbire.DoActivate(joueur, regle, do_not_give_boost=True)
+    faits = _b_faits_sonne(monde)
+    if len(faits) != 1:
+        return False, f"{len(faits)} fait(s) sonne (attendu 1) ; journal = {monde.stat.faits_mechant}"
+    erreur = _b_controle_fait_sonne(faits[0], sbire, 'sbire')
+    if erreur:
+        return False, erreur
+    if _a3_activations(monde.stat.faits_mechant):
+        return False, f"une attaque est journalisee malgre Sonne : {monde.stat.faits_mechant}"
+    return True, f"fait sonne du sbire {faits[0]['auteur']} (type sbire)"
+
+def b2_sbires_annoncent_rang_et_total(monde, aides):
+    """Deux sbires engages s'activent l'un apres l'autre : l'annonce de chacun
+    porte `rang_sbire` (1 puis 2) et `total_sbires` (2 des le premier)."""
+    from game.operate.enemies import Enemies
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+    joueur = monde.players[0]
+    engages = list(joueur.GetEngagedMinions())
+    if len(engages) != 2:
+        return False, f"decor : {len(engages)} sbire(s) engage(s) (attendu 2)"
+    _a3_journal_neuf(monde)
+    # Le fait ENRICHI : l'espion standard copie le dict avant que
+    # `RecordFaitMechant` y ajoute rang et total, on relit donc le journal.
+    trace = []
+    original = monde.stat.RecordFaitMechant
+
+    def espion(round_id, fait):
+        original(round_id, fait)
+        aid = fait.get('activation_id')
+        stocke = next((f for f in monde.stat.faits_mechant if f.get('activation_id') == aid), None)
+        trace.append(dict(stocke if stocke is not None else fait))
+
+    monde.stat.RecordFaitMechant = espion
+    Enemies.DoActivateAgainstYouInternal(regle, joueur, activate="Activate",
+                                          include_minion="Engaged", include_villain=False)
+    annonces = [f for f in _a3_activations(trace) if f.get('etat') == 'annonce']
+    if len(annonces) != 2:
+        return False, f"{len(annonces)} annonce(s) (attendu 2) ; trace = {_a3_activations(trace)}"
+    rangs = [(f.get('rang_sbire'), f.get('total_sbires')) for f in annonces]
+    if rangs != [(1, 2), (2, 2)]:
+        return False, f"(rang, total) = {rangs} (attendu [(1, 2), (2, 2)])"
+    ids = {f['auteur_id'] for f in annonces}
+    if len(ids) != 2:
+        return False, f"les deux annonces portent le meme auteur : {annonces}"
+    # La resolution REMPLACE l'annonce a sa place : le rang et le total survivent.
+    finaux = [f for f in monde.stat.faits_mechant if f.get('genre') == 'attaque']
+    if len(finaux) != 2 or [(f.get('rang_sbire'), f.get('total_sbires')) for f in finaux] != [(1, 2), (2, 2)]:
+        return False, f"journal final sans rang/total : {finaux}"
+    # Un vilain n'est pas un sbire : aucun champ.
+    return True, f"annonces {rangs}"
 
 def a4_revelation_annulee_par(monde, aides):
     """Une carte revelee dont l'effet « Une fois révélée » est ANNULE : son fait
@@ -53495,9 +53779,9 @@ def a3_deux_activations_deux_identifiants(monde, aides):
     vilain.BasicSchemes(regle, property=SchemeProperty(do_not_give_boost=True))
 
     faits = _a3_activations(trace)
-    if len(faits) != 4:
-        return False, (f"{len(faits)} fait(s) traces (attendu 4 : deux annonces et "
-                       f"deux resolutions) ; trace = "
+    if len(faits) != 6:
+        return False, (f"{len(faits)} fait(s) traces (attendu 6 : deux annonces, deux "
+                       f"faits boosts et deux resolutions) ; trace = "
                        f"{[(f.get('genre'), f.get('etat'), f.get('activation_id')) for f in faits]}")
     identifiants = [f.get('activation_id') for f in faits]
     if None in identifiants:
@@ -53571,13 +53855,12 @@ def a3_base_attaque_renforcee(monde, aides):
                                                additional_value=_A3B_RENFORT))
 
     faits = _a3_activations(trace)
-    if len(faits) != 2:
-        return False, (f"{len(faits)} fait(s) d'activation traces (attendu 2) ; "
+    if len(faits) != 3:
+        return False, (f"{len(faits)} fait(s) d'activation traces (attendu 3) ; "
                        f"trace = {faits}")
-    annonce, resolu = faits
-    if annonce.get('etat') != 'annonce' or resolu.get('etat') != 'resolu':
-        return False, (f"ordre inattendu : {annonce.get('etat')!r} puis "
-                       f"{resolu.get('etat')!r}")
+    annonce, _boosts, resolu = faits
+    if [f.get('etat') for f in faits] != ['annonce', 'boosts', 'resolu']:
+        return False, f"ordre inattendu : {[f.get('etat') for f in faits]}"
 
     # L'INTENTION annonce ce qui est ecrit sur la carte : le renfort n'est pas
     # encore applique quand elle part, et l'inventer serait pire que se taire.
@@ -53614,13 +53897,12 @@ def a3_base_manigance(monde, aides):
                                                        additional_value=_A3B_RENFORT))
 
     faits = [f for f in _a3_activations(trace) if f.get('genre') == 'manigance']
-    if len(faits) != 2:
-        return False, (f"{len(faits)} fait(s) de manigance traces (attendu 2) ; "
+    if len(faits) != 3:
+        return False, (f"{len(faits)} fait(s) de manigance traces (attendu 3) ; "
                        f"trace = {faits}")
-    annonce, resolu = faits
-    if annonce.get('etat') != 'annonce' or resolu.get('etat') != 'resolu':
-        return False, (f"ordre inattendu : {annonce.get('etat')!r} puis "
-                       f"{resolu.get('etat')!r}")
+    annonce, _boosts, resolu = faits
+    if [f.get('etat') for f in faits] != ['annonce', 'boosts', 'resolu']:
+        return False, f"ordre inattendu : {[f.get('etat') for f in faits]}"
     if annonce.get('base') != imprimee:
         return False, (f"l'annonce porte base={annonce.get('base')} (manigance imprimee "
                        f"{imprimee})")
@@ -53703,6 +53985,372 @@ def a4_fait_menace_sans_seuil(monde, aides):
                   f"{fait['restant']}/{fait.get('plafond')}")
 
 # ========================== FIN DU BLOC A4 ===================================
+
+# ============================ BLOC A6 (04/10/2026) ==========================
+# Les faits du CARTOUCHE de la phase du mechant (faits E1 a E8 du plan de la
+# refonte). Voir les cas « A6 cartouche : ... » dans CAS. Les aides des blocs
+# A2 (journal, phase) et A3 (trace des appels, decor) sont reprises telles
+# quelles : ces fonctions ne verifient aucune carte.
+# ----------------------------------------------------------------------------
+
+#: Les cles du fait intermediaire `etat: 'boosts'` (E1).
+_A6_CLES_BOOSTS = ('genre', 'activation_id', 'phase', 'cause', 'auteur', 'auteur_id', 'cible',
+                   'cible_id', 'defenseur', 'defenseur_id', 'defense', 'boosts', 'boost',
+                   'total_avant_defense', 'base_imprimee')
+
+def _a6_boost_sur_le_deck(monde, vilain, code):
+    """Pose `code` sur le dessus du deck rencontre du vilain : la carte de boost
+    de la prochaine activation est connue. Deux `PutIntoDeck`, comme la planche :
+    le premier fait entrer la carte dans le deck, le second la monte en haut.
+    Rend un message d'erreur, vide si la carte est bien en haut."""
+    from game.puzzle.puzzle import PuzzleHelper
+    PuzzleHelper.Exec([f"Puzzle.PutIntoDeck('{code}')", f"Puzzle.PutIntoDeck('{code}')"], monde)
+    dessus = vilain.encounter_deck.GetTop()
+    if getattr(getattr(dessus, 'paper', None), 'card_id', None) != code:
+        return f"{code} n'est pas en haut du deck rencontre (dessus = {dessus})"
+    return ""
+
+def _a6_trois_temps(trace, genre):
+    """Les faits traces d'UNE activation : rend (annonce, boosts, resolu, erreur)."""
+    faits = [f for f in _a3_activations(trace) if f.get('genre') == genre]
+    etats = [f.get('etat') for f in faits]
+    if etats != ['annonce', 'boosts', 'resolu']:
+        return None, None, None, (f"etats traces {etats} (attendu annonce, boosts, resolu) ; "
+                                  f"trace = {faits}")
+    identifiants = {f.get('activation_id') for f in faits}
+    if len(identifiants) != 1 or None in identifiants:
+        return None, None, None, f"identifiants {identifiants} (attendu UN seul, non nul)"
+    return faits[0], faits[1], faits[2], ""
+
+def _a6_controle_boosts(annonce, boosts, resolu):
+    """Ce que tout fait `boosts` doit tenir face a son annonce et a son resolu."""
+    manques = [c for c in _A6_CLES_BOOSTS if c not in boosts]
+    if manques:
+        return f"champs absents du fait boosts : {manques} ({boosts})"
+    interdits = [c for c in ('subi', 'inflige', 'restant') if c in boosts]
+    if interdits:
+        return f"le fait boosts porte des champs de RESOLUTION : {interdits} ({boosts})"
+    if boosts['cible_id'] != annonce['cible_id']:
+        return f"cible_id {boosts['cible_id']} (attendu la cible annoncee {annonce['cible_id']})"
+    if boosts['base_imprimee'] != annonce['base']:
+        return f"base_imprimee {boosts['base_imprimee']} (attendu la base annoncee {annonce['base']})"
+    if boosts['total_avant_defense'] != resolu['base'] + resolu['boost']:
+        return (f"total_avant_defense {boosts['total_avant_defense']} != base {resolu['base']} "
+                f"+ boost {resolu['boost']} du resolu")
+    if boosts['defense'] != resolu['defense']:
+        return f"defense {boosts['defense']} (le resolu dit {resolu['defense']})"
+    if boosts['boosts'] != resolu['boosts'] or boosts['boost'] != resolu['boost']:
+        return f"boosts {boosts['boosts']}/{boosts['boost']} != resolu {resolu['boosts']}/{resolu['boost']}"
+    return ""
+
+def _a6_journal_final(monde, genre):
+    """Le journal ne garde qu'UN fait de l'activation, le resolu."""
+    gardes = [f for f in _a3_activations(monde.stat.faits_mechant) if f.get('genre') == genre]
+    if len(gardes) != 1 or gardes[0].get('etat') != 'resolu':
+        return f"journal final = {gardes} (attendu UN fait resolu)"
+    return ""
+
+def a6_boosts_entre_annonce_et_resolution(monde, aides):
+    """E1 : annonce, boosts, resolu sous le meme identifiant ; le heros defend."""
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+    erreur = _a6_boost_sur_le_deck(monde, vilain, '01101')
+    if erreur:
+        return False, erreur
+    _a3_journal_neuf(monde)
+    trace = _a3_tracer(monde)
+    vilain.BasicAttack([heros], regle)
+    annonce, boosts, resolu, erreur = _a6_trois_temps(trace, 'attaque')
+    if erreur:
+        return False, erreur
+    erreur = _a6_controle_boosts(annonce, boosts, resolu)
+    if erreur:
+        return False, erreur
+    if not boosts['boosts']:
+        return False, f"aucun boost publie alors que 01101 etait en haut du deck ({boosts})"
+    if resolu['defense'] <= 0:
+        return False, f"le heros n'a pas defendu (defense {resolu['defense']}) : le cas ne prouve rien"
+    if boosts['defenseur_id'] != heros.card.object_id:
+        return False, f"defenseur_id {boosts['defenseur_id']} (attendu le heros {heros.card.object_id})"
+    erreur = _a6_journal_final(monde, 'attaque')
+    if erreur:
+        return False, erreur
+    return True, (f"#{annonce['activation_id']} annonce puis boosts ({boosts['defenseur']} defend "
+                  f"DEF {boosts['defense']}, boosts {boosts['boosts']}, total "
+                  f"{boosts['total_avant_defense']}) puis resolu ; 1 seul fait garde")
+
+def a6_boosts_sans_defense(monde, aides):
+    """E1, temoin : en alter-ego personne ne defend, `defenseur_id` vaut None."""
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+    _a3_journal_neuf(monde)
+    trace = _a3_tracer(monde)
+    _a3_attaquer(vilain, heros, regle)
+    annonce, boosts, resolu, erreur = _a6_trois_temps(trace, 'attaque')
+    if erreur:
+        return False, erreur
+    erreur = _a6_controle_boosts(annonce, boosts, resolu)
+    if erreur:
+        return False, erreur
+    if boosts['defenseur_id'] is not None or boosts['defenseur'] is not None or boosts['defense'] != 0:
+        return False, f"un defenseur en alter-ego ? {boosts}"
+    return True, f"boosts sans defenseur : defenseur_id None, total {boosts['total_avant_defense']}"
+
+def a6_boosts_manigance(monde, aides):
+    """E1 sur la manigance : meme trois temps, jamais de defenseur."""
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+    erreur = _a6_boost_sur_le_deck(monde, vilain, '01101')
+    if erreur:
+        return False, erreur
+    _a3_journal_neuf(monde)
+    trace = _a3_tracer(monde)
+    vilain.BasicSchemes(regle)
+    annonce, boosts, resolu, erreur = _a6_trois_temps(trace, 'manigance')
+    if erreur:
+        return False, erreur
+    erreur = _a6_controle_boosts(annonce, boosts, resolu)
+    if erreur:
+        return False, erreur
+    if boosts['defenseur_id'] is not None or boosts['defense'] != 0:
+        return False, f"une manigance avec defenseur ? {boosts}"
+    if not boosts['boosts']:
+        return False, f"aucun boost publie alors que 01101 etait en haut du deck ({boosts})"
+    erreur = _a6_journal_final(monde, 'manigance')
+    if erreur:
+        return False, erreur
+    return True, (f"manigance #{annonce['activation_id']} : boosts {boosts['boosts']}, total "
+                  f"{boosts['total_avant_defense']} = menace posee {resolu['inflige']}")
+
+def a6_resolu_porte_le_defenseur(monde, aides):
+    """E2 : le resolu porte defenseur, cible annoncee et base imprimee. Temoin :
+    une seconde attaque, le heros deja incline par sa defense, sans defenseur."""
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+
+    def attaque():
+        _a3_journal_neuf(monde)
+        trace = _a3_tracer(monde)
+        _a3_attaquer(vilain, heros, regle)
+        faits = _a3_activations(trace)
+        annonces = [f for f in faits if f.get('etat') == 'annonce']
+        resolus = [f for f in faits if f.get('etat') == 'resolu']
+        if len(annonces) != 1 or len(resolus) != 1:
+            return None, None, f"trace inattendue : {faits}"
+        return annonces[0], resolus[0], ""
+
+    annonce, resolu, erreur = attaque()
+    if erreur:
+        return False, erreur
+    manques = [c for c in ('defenseur', 'defenseur_id', 'cible_annoncee', 'cible_annoncee_id',
+                           'base_imprimee') if c not in resolu]
+    if manques:
+        return False, f"champs absents du resolu : {manques} ({resolu})"
+    if resolu['defense'] <= 0:
+        return False, f"le heros n'a pas defendu (defense {resolu['defense']}) : le cas ne prouve rien"
+    if resolu['defenseur_id'] != heros.card.object_id:
+        return False, f"defenseur_id {resolu['defenseur_id']} (attendu {heros.card.object_id})"
+    if resolu['cible_annoncee_id'] != annonce['cible_id']:
+        return False, f"cible_annoncee_id {resolu['cible_annoncee_id']} (annonce {annonce['cible_id']})"
+    if resolu['base_imprimee'] != annonce['base']:
+        return False, f"base_imprimee {resolu['base_imprimee']} (annonce {annonce['base']})"
+
+    # Temoin : le heros est incline par sa defense, la seconde attaque passe.
+    annonce2, resolu2, erreur = attaque()
+    if erreur:
+        return False, f"temoin : {erreur}"
+    if resolu2.get('defense') != 0:
+        return False, f"temoin : la seconde attaque a ete defendue ({resolu2}), le temoin ne prouve rien"
+    if 'defenseur_id' not in resolu2 or resolu2['defenseur_id'] is not None:
+        return False, f"temoin : defenseur_id {resolu2.get('defenseur_id', 'ABSENT')!r} (attendu None)"
+    if resolu2.get('cible_annoncee_id') != resolu2.get('cible_id'):
+        return False, (f"temoin : cible_annoncee_id {resolu2.get('cible_annoncee_id')} != cible_id "
+                       f"{resolu2.get('cible_id')} sans defense")
+    return True, (f"defendu par {resolu['defenseur']} (#{resolu['defenseur_id']}), cible annoncee "
+                  f"#{resolu['cible_annoncee_id']}, base imprimee {resolu['base_imprimee']} ; "
+                  f"temoin sans defense : defenseur_id None")
+
+def a6_manigance_porte_le_plafond(monde, aides):
+    """E3 : `plafond` sur la manigance resolue = seuil de la manigance visee."""
+    from game.card.face.attribute.can_scheme import SchemeProperty
+    from game.operate.worlds import Worlds
+    vilain, heros, regle, erreur = _a3_preparer(monde)
+    if erreur:
+        return False, erreur
+    _a3_journal_neuf(monde)
+    vilain.BasicSchemes(regle, property=SchemeProperty(do_not_give_boost=True))
+    resolus = [f for f in _a3_activations(monde.stat.faits_mechant)
+               if f.get('genre') == 'manigance' and f.get('etat') == 'resolu']
+    if len(resolus) != 1:
+        return False, f"{len(resolus)} manigance(s) resolue(s) ; journal = {monde.stat.faits_mechant}"
+    fait = resolus[0]
+    manigance = next((m for m in Worlds.GetAllMainSchemes(monde)
+                      if m.card.object_id == fait.get('cible_id')), None)
+    if manigance is None:
+        return False, f"la manigance visee #{fait.get('cible_id')} n'est pas une manigance principale"
+    if 'plafond' not in fait:
+        return False, f"`plafond` absent du fait ({fait})"
+    if not isinstance(manigance.target_threat, int) or fait['plafond'] != manigance.target_threat:
+        return False, f"plafond {fait['plafond']!r} (seuil reel {manigance.target_threat!r})"
+    return True, (f"{fait['cible']} : +{fait.get('inflige')} posee, {fait['restant']} / "
+                  f"{fait['plafond']}")
+
+def a6_menace_acceleree(monde, aides):
+    """E4 : un jeton d'acceleration se lit dans `acceleration`, l'escalade a part."""
+    from game.world.phase import Phase
+    from game.operate.worlds import Worlds
+    from game.effect.rule import GameRule
+
+    monde.phase.SetState(Phase.State.PlaceThreat)
+    monde.current_player = None
+    maniganes = Worlds.GetAllMainSchemes(monde)
+    if len(maniganes) != 1:
+        return False, f"{len(maniganes)} manigance(s) principale(s) (attendu 1)"
+    manigance = maniganes[0]
+    manigance.PlaceAccelerationToken(1, GameRule(manigance))
+    zone = manigance.card.GetGameArea()
+    attendue = (Worlds.GetAccelerationIcons(zone)
+                + sum(f.acceleration_token for f in Worlds.GetAccelerationTokenFaces(zone)))
+    if attendue < 1:
+        return False, f"le jeton d'acceleration n'a pas ete pose (acceleration attendue {attendue})"
+
+    _a2_vider_le_journal(monde)
+    manigance.Phase()
+    faits = _a2_faits(monde, 'menace')
+    if len(faits) != 1:
+        return False, f"{len(faits)} fait(s) de menace ; journal = {monde.stat.faits_mechant}"
+    fait = faits[0]
+    manques = [c for c in ('escalade', 'acceleration', 'joueurs') if c not in fait]
+    if manques:
+        return False, f"champs absents du fait : {manques} ({fait})"
+    if fait['acceleration'] != attendue:
+        return False, f"acceleration {fait['acceleration']} (attendu {attendue})"
+    if fait['escalade'] != manigance.escalation_threat:
+        return False, f"escalade {fait['escalade']} (escalade imprimee {manigance.escalation_threat})"
+    if fait['escalade'] + fait['acceleration'] != fait['montant']:
+        return False, (f"escalade {fait['escalade']} + acceleration {fait['acceleration']} != "
+                       f"montant {fait['montant']}")
+    return True, (f"menace +{fait['montant']} = escalade {fait['escalade']} + acceleration "
+                  f"{fait['acceleration']} ({fait['joueurs']} joueur(s))")
+
+def a6_stade_porte_les_stats(monde, aides):
+    """E5 : `avant_id`, `stats_avant`, `stats_apres` sur le fait `stade`."""
+    from game.effect.rule import GameRule
+    from game.puzzle.puzzle import PuzzleHelper
+
+    monde.current_player = monde.players[0]
+    PuzzleHelper.Exec(["Puzzle.BeginVillainPhase()"], monde)
+
+    # Temoin : sans carte d'avant, ni `avant_id` ni `stats_avant`.
+    _a2_vider_le_journal(monde)
+    schemes = monde.area_schemes_main.Get()
+    monde.stat.RecordStade(monde, 'manigance', None, schemes[-1])
+    temoin = _a2_faits(monde, 'stade')
+    if len(temoin) != 1:
+        return False, f"temoin : {len(temoin)} fait(s) stade ; journal = {monde.stat.faits_mechant}"
+    if 'stats_avant' in temoin[0] or 'avant_id' in temoin[0] or 'stats_apres' not in temoin[0]:
+        return False, f"temoin sans carte d'avant inattendu : {temoin[0]}"
+
+    # La manigance qui avance.
+    ancienne_id = schemes[-1].card.object_id
+    _a2_vider_le_journal(monde)
+    PuzzleHelper.Exec(["Puzzle.AdvanceMainScheme()"], monde)
+    faits = _a2_faits(monde, 'stade')
+    if not faits:
+        return False, f"manigance : aucun fait stade ; journal = {monde.stat.faits_mechant}"
+    # Sur Ultron, le stade revele avance a son tour en se revelant : le pas
+    # INTERIEUR finit le premier et s'inscrit avant. On cherche donc le fait de
+    # la carte qu'on a fait avancer, et chaque fait doit porter son `avant_id`.
+    if not all(isinstance(f.get('avant_id'), int) for f in faits):
+        return False, f"manigance : un fait stade sans avant_id entier : {faits}"
+    fait = next((f for f in faits if f.get('avant_id') == ancienne_id), None)
+    if fait is None:
+        return False, (f"manigance : aucun fait d'avant_id {ancienne_id} "
+                       f"({[(f.get('avant'), f.get('avant_id')) for f in faits]})")
+    # Une face A n'imprime pas de seuil (mesure : « Assault on NORAD », le pas
+    # vers la face A, n'en porte pas) ; la face B qui suit, si.
+    seuils = [(f.get('stats_apres') or {}).get('seuil') for f in faits]
+    seuil = next((s for s in seuils if isinstance(s, int)), None)
+    if seuil is None:
+        return False, f"manigance : aucun stats_apres avec un seuil entier ({faits})"
+
+    # Le mechant qui avance.
+    vilain = _a3_vilain(monde)
+    if not vilain:
+        return False, "aucun vilain en jeu"
+    avant_id, pv_max_avant, atq_avant = vilain.card.object_id, vilain.max_health, vilain.attack
+    _a2_vider_le_journal(monde)
+    vilain.Advance(GameRule(vilain))
+    faits = _a2_faits(monde, 'stade')
+    if len(faits) != 1 or faits[0].get('quoi') != 'mechant':
+        return False, f"mechant : attendu UN fait stade ; journal = {monde.stat.faits_mechant}"
+    fait = faits[0]
+    if fait.get('avant_id') != avant_id:
+        return False, f"mechant : avant_id {fait.get('avant_id')!r} (attendu {avant_id})"
+    avant, apres = fait.get('stats_avant') or {}, fait.get('stats_apres') or {}
+    if avant.get('pv_max') != pv_max_avant or avant.get('atq') != atq_avant:
+        return False, (f"mechant : stats_avant {avant} (lu avant l'avancee : pv_max {pv_max_avant}, "
+                       f"atq {atq_avant})")
+    if not isinstance(apres.get('pv_max'), int) or not isinstance(apres.get('atq'), int):
+        return False, f"mechant : stats_apres incomplet {apres}"
+    if 'pv' in avant or 'health' in avant:
+        return False, f"mechant : les PV courants de l'ancienne carte sont publies ({avant})"
+    return True, (f"temoin muet ; manigance #{ancienne_id} -> seuil {seuil} ; mechant "
+                  f"{fait.get('avant')} {avant} -> {fait.get('carte')} {apres}")
+
+def a6_revelation_hors_phase(monde, aides):
+    """E8 : une carte rencontre revelee pendant le TOUR DU JOUEUR inscrit un fait
+    `revelation` date du tour (D26). Temoins : une distribution hors phase
+    n'inscrit rien, et en phase du mechant `Puzzle.Reveal` n'ajoute aucun fait
+    (seul `RevealEncounterCards` journalise a l'etape 4)."""
+    from game.world.phase import Phase
+    from game.puzzle.puzzle import PuzzleHelper
+
+    joueur = monde.players[0]
+    monde.current_player = joueur
+
+    # Temoin 1 : distribution hors phase.
+    monde.phase.SetState(Phase.State.PlayerTurn)
+    _a2_vider_le_journal(monde)
+    PuzzleHelper.Exec(["Puzzle.Deal('01186')"], monde)
+    if _a2_faits(monde, 'revelation') or _a2_faits(monde, 'distribution'):
+        return False, f"temoin distribution : journal = {monde.stat.faits_mechant}"
+
+    # Temoin 2 : en phase du mechant, le chemin `face.Reveal` direct se tait.
+    monde.phase.SetState(Phase.State.RevealsEncounterCards)
+    _a2_vider_le_journal(monde)
+    PuzzleHelper.Exec(["Puzzle.Reveal('01186')"], monde)
+    if _a2_faits(monde, 'revelation'):
+        return False, f"temoin phase du mechant : journal = {monde.stat.faits_mechant}"
+
+    # Le cas : Stampede revelee pendant le tour du joueur.
+    monde.phase.SetState(Phase.State.PlayerTurn)
+    _a2_vider_le_journal(monde)
+    PuzzleHelper.Exec(["Puzzle.Reveal('01106')"], monde)
+    faits = [f for f in _a2_faits(monde, 'revelation') if f.get('carte') == 'Stampede']
+    if len(faits) != 1:
+        return False, f"{len(faits)} fait(s) de revelation de Stampede ; journal = {monde.stat.faits_mechant}"
+    fait = faits[0]
+    manques = [c for c in ('phase', 'joueur', 'joueur_nom', 'carte', 'carte_id', 'fait_id',
+                           'par_surge', 'type', 'round_id') if c not in fait]
+    if manques:
+        return False, f"champs absents du fait : {manques} ({fait})"
+    if not str(fait['phase']).startswith('Player'):
+        return False, f"phase {fait['phase']!r} (attendu le tour d'un joueur)"
+    if fait['type'] != 'Treachery':
+        return False, f"type {fait['type']!r} (attendu 'Treachery')"
+    if fait['joueur'] != _a2_siege(monde, joueur) or fait['par_surge'] is not False:
+        return False, f"fait inattendu : {fait}"
+    if not isinstance(fait['carte_id'], int):
+        return False, f"carte_id non entier : {fait}"
+    return True, (f"temoins muets ; {fait['carte']} ({fait['type']}) revelee en "
+                  f"{fait['phase']} par le siege {fait['joueur']}")
+
+# ========================== FIN DU BLOC A6 ===================================
 
 def ares_hotes(monde, aides):
     """Pack ares : « attendu.hotes » = [[carte, hote], ...]. Chaque carte doit

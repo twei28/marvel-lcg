@@ -8,7 +8,7 @@
 
 import { describe, expect, it } from 'vitest'
 import type { AssistantInteraction } from './interaction'
-import { consigne, phraseEtat } from './phrase-etat'
+import { consigne, phraseEtat, raisonDite } from './phrase-etat'
 
 function assistant(partiel: Partial<AssistantInteraction>): AssistantInteraction {
   return {
@@ -68,5 +68,35 @@ describe('consigne', () => {
     expect(consigne(assistant({ etape: 'target', titre: 'Choisir la cible' }), 'Jouer')).toBe(
       'Choisir la cible'
     )
+  })
+})
+
+// ⚠ La raison d'un ciblage naît en anglais dans `reponsePrete` (ask.ts) : le
+// sous-cadre du carré de la phase la montrait telle quelle, « Choose 2 more
+// target(s) », au milieu d'un écran français (planche du 05/10/2026).
+describe('raisonDite', () => {
+  const langue = (code: 'fr' | 'en') => window.localStorage.setItem('marvel-langue', code)
+
+  it('dit en français combien de cibles il reste à choisir', () => {
+    langue('fr')
+    expect(raisonDite('Choose 2 more target(s)')).toBe('Choisis encore 2 cibles')
+    expect(raisonDite('Choose 1 more target(s)')).toBe('Choisis encore 1 cible')
+  })
+
+  it('dit en français combien de cibles retirer', () => {
+    langue('fr')
+    expect(raisonDite('Remove 1 target(s)')).toBe('Retire 1 cible')
+    expect(raisonDite('Remove 3 target(s)')).toBe('Retire 3 cibles')
+  })
+
+  it('laisse une phrase inconnue telle quelle', () => {
+    langue('fr')
+    expect(raisonDite('Quelque chose')).toBe('Quelque chose')
+  })
+
+  it('garde l’anglais du moteur en anglais', () => {
+    langue('en')
+    expect(raisonDite('Choose 2 more target(s)')).toBe('Choose 2 more target(s)')
+    langue('fr')
   })
 })

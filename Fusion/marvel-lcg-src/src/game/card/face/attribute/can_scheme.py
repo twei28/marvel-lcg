@@ -77,9 +77,9 @@ class CanScheme(CardFace):
         # qui s'active — vivent aux memes endroits des deux cotes.
         from game.card.face.attribute.can_attack import CanAttack
         annonce_cible = target_scheme or Worlds.FindMainScheme(self)
+        annonce_base = this.scheme if HasScheme.IsType(this) else 0
         annonce_id = CanAttack.AnnoncerActivation(
-            this, annonce_cible, 'manigance',
-            this.scheme if HasScheme.IsType(this) else 0,
+            this, annonce_cible, 'manigance', annonce_base,
             is_base_scheme, by_effect,
         )
 
@@ -158,6 +158,13 @@ class CanScheme(CardFace):
         recalculate.Send()
         value = recalculate.value
 
+        # ETAT INTERMEDIAIRE (fait `boosts`, voir can_attack.py) : les boosts
+        # sont retournes, la menace n'est pas encore posee. Jamais de defenseur.
+        CanAttack.JournaliserBoosts(
+            this, annonce_cible, 'manigance', annonce_id, annonce_base, None, 0,
+            boost_apports, boost_cards, value, by_effect,
+        )
+
         if would_sch_message.remove_threat_instead_of_placing:
             target_scheme.RemoveThreatInternal(this, value, would_sch_message.remove_threat_instead_of_placing)
             value *= - 1
@@ -169,6 +176,7 @@ class CanScheme(CardFace):
             journalise = CanAttack.JournaliserManigance(
                 this, target_scheme, is_base_scheme, boost_apports, value, by_effect,
                 activation_id=annonce_id, boost_cards=boost_cards,
+                cible_annoncee=annonce_cible, base_imprimee=annonce_base,
             )
             # L'intention n'est CONSOMMEE que si un fait resolu a vraiment pris
             # sa place : `JournaliserManigance` a ses propres gardes et sort

@@ -22,6 +22,7 @@ const REDIGES = new Set([
   'bilan',
   'vide',
   'stade',
+  'sonne',
 ])
 
 /** Ce que dit un temps passe sans rien (`avecTempsVides`, frise-phase.ts). */
@@ -66,6 +67,11 @@ export function titreEtape(etape: EtapeDeroule): string {
   if (etape.titre === 'stade') {
     const debut = etape.stade === 'mechant' ? 'Le méchant passe au stade suivant' : 'La manigance passe au stade suivant'
     return etape.cibleNom ? `${t(debut)} : ${etape.cibleNom}` : t(debut)
+  }
+  if (etape.titre === 'sonne') {
+    const nom = etape.auteurNom ?? ''
+    const quoi = etape.sonneTemps === 'manigance' ? 'Sonné, ne manigance pas' : 'Sonné, n’attaque pas'
+    return nom ? `${nom} : ${t(quoi)}` : t(quoi)
   }
   if (etape.titre === 'vide') return t(TEXTE_TEMPS_VIDE[etape.temps] ?? 'Rien')
 
@@ -538,4 +544,15 @@ export function decouperPhrase(
     morceaux = suivants
   }
   return morceaux
+}
+
+/**
+ * Les deux lignes de l'etape « sonne » : ce qui est empeche, et le sort de la
+ * carte Sonne (un ennemi Constant la garde).
+ */
+export function lignesSonne(etape: EtapeDeroule): string[] {
+  return [
+    etape.sonneTemps === 'manigance' ? t('Sonné : ne manigance pas') : t('Sonné : n’attaque pas'),
+    etape.statutRetire === false ? t('reste Sonné') : t('perd Sonné'),
+  ]
 }

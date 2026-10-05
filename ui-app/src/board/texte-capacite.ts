@@ -97,3 +97,36 @@ export function extraireCapacite(
   }
   return paras.join(' ')
 }
+
+/**
+ * LA PHRASE DU BOOST ★ d'une carte rencontre (D10, cartouche du bas) : le
+ * paragraphe qui porte « Boost », sans son mot-cle ni l'etoile. Le reste de la
+ * carte (son effet « Une fois revelee ») n'a rien a faire sous la rangee de
+ * l'attaque. `undefined` sans un tel paragraphe : la vue dit alors seulement
+ * que l'effet s'applique.
+ */
+export function extraireBoost(texte: string | undefined): string | undefined {
+  if (!texte) return undefined
+  for (const paragraphe of paragraphes(texte)) {
+    const lu = nettoyerTexteCarte(paragraphe)
+    const trouve = /^(?:★\s*)?Boost\s*:\s*(.+)$/i.exec(lu)
+    if (trouve) return trouve[1].trim()
+  }
+  return undefined
+}
+
+/**
+ * LE TEXTE IMPRIME d'une carte rencontre revelee, une ligne par paragraphe,
+ * sans ce que le cartouche dit deja ailleurs : le Renfort (la fleche) et le
+ * Boost ★ (la ligne sous la rangee de l'attaque). Sert quand le moteur n'a
+ * publie aucun resume de l'effet : le joueur lit alors la carte telle qu'elle
+ * est imprimee, plutot que rien.
+ */
+export function extraireEffetRevele(texte: string | undefined): string[] {
+  if (!texte) return []
+  return paragraphes(texte)
+    .map(nettoyerTexteCarte)
+    .filter((ligne) => ligne !== '')
+    .filter((ligne) => !/^(?:★\s*)?Boost\s*:/i.test(ligne))
+    .filter((ligne) => !/^(?:Surge|Renfort)\s*\.?(?:\s*\(.*\))?$/i.test(ligne))
+}

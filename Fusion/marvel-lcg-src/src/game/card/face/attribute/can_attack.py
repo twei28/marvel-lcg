@@ -393,6 +393,22 @@ class CanAttack(CardFace):
             total_avant_defense = calculated_damage
             calculated_damage = max(0, calculated_damage - defense)
 
+            # Le personnage qui defend VRAIMENT ce coup (un defenseur vaincu
+            # avant les degats ne defend plus : `defense` vient d'etre remise a
+            # zero plus haut). Le fait `boosts` et le fait resolu le nomment.
+            defenseur_retenu = CanAttack._DefenseurRetenu(being_atk_message.defender or defender)
+
+            # ETAT INTERMEDIAIRE de l'activation (fait `boosts`, lu par ui-app,
+            # 04/10/2026). Le defenseur est choisi, les boosts sont retournes,
+            # les degats ne sont pas encore tombes : le cartouche montre « Rhino
+            # ATQ 2 + 1 boost, Spider-Man defend » pendant ce temps-la. Meme
+            # identifiant que l'annonce, qu'il REMPLACE ; le fait resolu le
+            # remplace a son tour. Seulement tant que l'annonce vit.
+            CanAttack.JournaliserBoosts(
+                this, target, 'attaque', annonce_id, annonce_base, defenseur_retenu,
+                defense, boost_apports, boost_cards, total_avant_defense, by_effect,
+            )
+
             # unit_health = target.health
 
             excess_damage = 0
@@ -497,6 +513,8 @@ class CanAttack(CardFace):
                     by_effect, activation_id=annonce_id,
                     total_avant_defense=total_avant_defense,
                     boost_cards=boost_cards,
+                    defenseur=defenseur_retenu, cible_annoncee=target,
+                    base_imprimee=annonce_base,
                 )
                 # L'intention est CONSOMMEE, mais SEULEMENT si un fait resolu a
                 # vraiment pris sa place : `JournaliserActivation` a ses propres
@@ -584,6 +602,80 @@ class CanAttack(CardFace):
         return nom
 
     @staticmethod
+    def _CauseDe(auteur: 'CardFace', cible: 'CardFace', phase: str,
+                 by_effect: 'Effect|None') -> 'Dict[str, Any]':
+        """`cause` (le nom, '' quand la regle du jeu suffit) et, quand un nom
+        est donne, `cause_id` : l'identifiant de la meme carte (04/10/2026).
+        Le plateau range l'attaque sous la carte qui l'a provoquee par cet
+        identifiant, sans comparer des noms (deux Stampede, un nom traduit)."""
+        nom = CanAttack.CauseDeLActivation(auteur, cible, phase, by_effect)
+        if not nom:
+            return {'cause': nom}
+        source = CanAttack._SourceDe(by_effect, 'cause')
+        return {'cause': nom, **({'cause_id': source['cause_id']} if 'cause_id' in source else {})}
+
+    @staticmethod
+    def _DefenseurRetenu(defenseur: 'CardFace|None') -> 'CardFace|None':
+        """Le defenseur d'un coup, ou None s'il n'y en a pas ou plus (vaincu
+        avant les degats). Sous garde : il ne sert qu'au journal d'affichage."""
+        try:
+            if defenseur is None or defenseur.IsDefeated():
+                return None
+            return defenseur
+        except Exception:
+            return None
+
+    @staticmethod
+    def JournaliserBoosts(auteur: 'CardFace', cible: 'CardFace|None', genre: str,
+                          activation_id: int, base_imprimee: int,
+                          defenseur: 'CardFace|None', defense: int,
+                          boost_apports: 'List[Tuple[str, int, int]]',
+                          boost_cards: 'List[CardFace]|None',
+                          total_avant_defense: int,
+                          by_effect: 'Effect|None'=None) -> None:
+        """Inscrit l'ETAT INTERMEDIAIRE d'une activation (`etat: 'boosts'`).
+
+        Entre l'annonce et la resolution : le defenseur est choisi, les cartes
+        de boost sont retournees, rien n'est encore subi. Meme identifiant que
+        l'annonce, donc il la REMPLACE a la meme place ; le fait resolu le
+        remplace a son tour. Ni `subi` ni `inflige` : ils n'existent pas encore.
+
+        Rien a inscrire sans annonce vivante (`activation_id` nul) : l'appelant
+        n'a alors rien annonce, ou l'a deja clos. Sous garde, comme tout ce
+        journal d'affichage.
+        """
+        if not activation_id or cible is None:
+            return
+        try:
+            world = auteur.card.world
+            phase = world.GetPhaseText()
+            world.stat.RecordFaitMechant(world.round_id, {
+                'genre': genre,
+                'etat': 'boosts',
+                'activation_id': activation_id,
+                'phase': phase,
+                **CanAttack._CauseDe(auteur, cible, phase, by_effect),
+                'auteur': auteur.name,
+                'auteur_id': auteur.card.object_id,
+                # La cible ANNONCEE, pas le defenseur : le cartouche montre qui
+                # etait vise ET qui defend.
+                'cible': cible.name,
+                'cible_id': cible.card.object_id,
+                'defenseur': defenseur.name if defenseur is not None else None,
+                'defenseur_id': defenseur.card.object_id if defenseur is not None else None,
+                'defense': defense,
+                'boosts': CanAttack._BoostsPublies(boost_apports, boost_cards),
+                'boost': sum(valeur for _, _, valeur in boost_apports),
+                # La valeur que le moteur retranchera de la defense : tout y
+                # est deja compte (voir `AttackInternal`).
+                'total_avant_defense': total_avant_defense,
+                # Ce qui est ecrit sur la carte, celle de l'annonce.
+                'base_imprimee': base_imprimee,
+            })
+        except Exception:
+            pass
+
+    @staticmethod
     def AnnoncerActivation(auteur: 'CardFace', cible: 'CardFace|None', genre: str,
                            base: int, is_base_power: bool,
                            by_effect: 'Effect|None'=None) -> int:
@@ -614,7 +706,7 @@ class CanAttack(CardFace):
                 'etat': 'annonce',
                 'activation_id': activation_id,
                 'phase': phase,
-                'cause': CanAttack.CauseDeLActivation(auteur, cible, phase, by_effect),
+                **CanAttack._CauseDe(auteur, cible, phase, by_effect),
                 'auteur': auteur.name,
                 'auteur_id': auteur.card.object_id,
                 'cible': cible.name,
@@ -652,7 +744,7 @@ class CanAttack(CardFace):
                 'etat': 'annule',
                 'activation_id': activation_id,
                 'phase': phase,
-                'cause': CanAttack.CauseDeLActivation(auteur, cible, phase, by_effect),
+                **CanAttack._CauseDe(auteur, cible, phase, by_effect),
                 'auteur': auteur.name,
                 'auteur_id': auteur.card.object_id,
                 'cible': cible.name,
@@ -660,6 +752,49 @@ class CanAttack(CardFace):
                 # « → Annulée par X » (04/10/2026) : la carte dont l'effet a
                 # remplace l'activation (Sonne, Desoriente, une carte de joueur).
                 **CanAttack._SourceDe(annule_par, 'annule_par'),
+            })
+        except Exception:
+            pass
+
+    @staticmethod
+    def JournaliserActivationEmpechee(auteur: 'CardFace', contre: 'Player',
+                                      would_act_message: 'Any') -> None:
+        """Inscrit un fait `sonne` : un ennemi SONNE s'est vu retirer son
+        activation par la carte Sonne (05/10/2026, etat 04 du cartouche).
+
+        `Enemy.DoActivate` s'arrete des que `WhenEnemyWouldActivate` est
+        remplace, AVANT l'annonce : ni intention ni cloture n'existaient, et le
+        cartouche sautait l'etape sans rien dire. Seule la carte Sonne est
+        publiee ici ; une autre cause d'empechement ne change pas ce qu'on
+        affichait. Sous garde, comme tout ce journal.
+        """
+        try:
+            par = getattr(would_act_message, 'be_instead_by', None)
+            source = getattr(par, 'this', None)
+            if getattr(source, 'name', '') != 'Stunned':
+                return
+            from game.card.face.card_type.minion import Minion
+            from game.operate.worlds import Worlds
+            from game.player.action.player_action import PlayerAction
+            world = auteur.card.world
+            temps = 'attaque' if would_act_message.power == 'ATK' else 'manigance'
+            cible = contre.GetIdentity() if temps == 'attaque' else Worlds.FindMainScheme(auteur)
+            world.stat.RecordFaitMechant(world.round_id, {
+                'genre': 'sonne',
+                'phase': world.GetPhaseText(),
+                'temps': temps,
+                'type': 'sbire' if Minion.IsType(auteur) else 'mechant',
+                'joueur': PlayerAction._SiegeDuJoueur(contre),
+                'auteur': auteur.name,
+                'auteur_id': auteur.card.object_id,
+                'cible': cible.name if cible is not None else None,
+                'cible_id': cible.card.object_id if cible is not None else None,
+                # La carte Sonne a-t-elle quitte l'ennemi ? Un ennemi Constant
+                # (Steady) en porte deux : la premiere s'en va, il reste Sonne.
+                'statut_retire': not auteur.IsStunned(),
+                **CanAttack._SourceDe(par, 'annule_par'),
+                'fait_id': (f"sonne:{world.round_id}:{auteur.card.object_id}"
+                            f":{len(world.stat.faits_mechant)}"),
             })
         except Exception:
             pass
@@ -701,7 +836,10 @@ class CanAttack(CardFace):
                               by_effect: 'Effect|None'=None,
                               activation_id: int=0,
                               total_avant_defense: 'int|None'=None,
-                              boost_cards: 'List[CardFace]|None'=None) -> bool:
+                              boost_cards: 'List[CardFace]|None'=None,
+                              defenseur: 'CardFace|None'=None,
+                              cible_annoncee: 'CardFace|None'=None,
+                              base_imprimee: 'int|None'=None) -> bool:
         """Inscrit une attaque D'ENNEMI au journal du bilan de phase.
 
         On ne journalise que les ennemis : ce panneau raconte la phase du
@@ -755,7 +893,7 @@ class CanAttack(CardFace):
             'etat': 'resolu',
             'activation_id': activation_id or world.stat.NouvelleActivation(world.round_id),
             'phase': phase,
-            'cause': CanAttack.CauseDeLActivation(attaquant, cible, phase, by_effect),
+            **CanAttack._CauseDe(attaquant, cible, phase, by_effect),
             'auteur': attaquant.name,
             'auteur_id': attaquant.card.object_id,
             'cible': cible.name,
@@ -772,6 +910,15 @@ class CanAttack(CardFace):
             # bilan se passe du reste plutot que de faire tomber la resolution.
             'restant': getattr(cible, 'health', None),
             'boosts': CanAttack._BoostsPublies(boost_apports, boost_cards),
+            # Cartouche (04/10/2026). `cible` est la carte qui a pris le coup,
+            # donc le DEFENSEUR quand il y en a un : le heros VISE est
+            # `cible_annoncee`. `base_imprimee` (la valeur de l'annonce) separe
+            # de `base` ce qu'un boost ★ ou un renfort a ajoute.
+            'defenseur': defenseur.name if defenseur is not None else None,
+            'defenseur_id': defenseur.card.object_id if defenseur is not None else None,
+            'cible_annoncee': (cible_annoncee or cible).name,
+            'cible_annoncee_id': (cible_annoncee or cible).card.object_id,
+            'base_imprimee': base_imprimee,
         })
         return True
 
@@ -780,7 +927,9 @@ class CanAttack(CardFace):
                              boost_apports: 'List[Tuple[str, int, int]]', pose: int,
                              by_effect: 'Effect|None'=None,
                              activation_id: int=0,
-                             boost_cards: 'List[CardFace]|None'=None) -> bool:
+                             boost_cards: 'List[CardFace]|None'=None,
+                             cible_annoncee: 'CardFace|None'=None,
+                             base_imprimee: 'int|None'=None) -> bool:
         """Inscrit une MANIGANCE d'ennemi au meme journal que ses attaques.
 
         Elle vit ici, a cote de son attaque, parce que les deux forment une
@@ -813,7 +962,7 @@ class CanAttack(CardFace):
             'etat': 'resolu',
             'activation_id': activation_id or world.stat.NouvelleActivation(world.round_id),
             'phase': phase,
-            'cause': CanAttack.CauseDeLActivation(auteur, manigance, phase, by_effect),
+            **CanAttack._CauseDe(auteur, manigance, phase, by_effect),
             'auteur': auteur.name,
             'auteur_id': auteur.card.object_id,
             'cible': manigance.name,
@@ -823,10 +972,15 @@ class CanAttack(CardFace):
             'defense': 0,
             'inflige': pose,
             'subi': pose,
-            # Menace APRES la pose. Le seuil (« /6 ») n'est pas ici : le client
-            # le lit sur la carte elle-meme, ou il figure deja.
+            # Menace APRES la pose, et le seuil de la manigance visee (« /6 »,
+            # cartouche du 04/10/2026) : la carte a pu avancer de stade dans la
+            # foulee, le plateau ne le relit plus sur elle. None sans seuil.
             'restant': getattr(manigance, 'threat', None),
+            'plafond': getattr(manigance, 'target_threat', None),
             'boosts': CanAttack._BoostsPublies(boost_apports, boost_cards),
+            'cible_annoncee': (cible_annoncee or manigance).name,
+            'cible_annoncee_id': (cible_annoncee or manigance).card.object_id,
+            'base_imprimee': base_imprimee,
         })
         return True
 

@@ -5,6 +5,14 @@ déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
 ## PRÊT, PAS DÉPLOYÉ (04/10/2026) : frise de la phase du méchant, table personnalisable, boutons BD
 
+Commité le 04/10/2026 au soir (`461093ec`, branche `mode-manuel`, 370 fichiers,
+point d'étape avant la refonte du cartouche, sur « Oui, un commit maintenant »).
+Toujours PAS déployé. Laissés hors commit : archives de scans et PNG à la
+racine, `.tmb-captures/`, `.planning/captures-carrousel/`,
+`ui-check/captures-tmp/`, `ui-check/salon-*.png`, `.game-essai*`,
+`launcher_essai.py`, `launcher_fast_essai_salon.py`,
+`deck/custom/SP_dr_Suit_Peni_Parker_Prebuilt_copie.json`, `RAPPORT-SCANS-FR.md`.
+
 ### Frise d'onglets (A4, spec du 03/10 ci-dessous, décisions postérieures appliquées)
 - 6 onglets officiels numérotés + Bilan (`frise-phase.ts`), rouges passés et en
   cours, gris à venir, une seule ligne ; résultat court sous chaque onglet passé
@@ -140,6 +148,26 @@ déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
   « Sur la table » sera le chantier suivant ; téléphone inchangé.
 - Validation exigée : planche de 15 captures sur le moteur d'essai, regardée
   par l'utilisateur avant tout déploiement.
+- 04/10 au soir : questions 41 à 43 posées après cartographie du code
+  (pagination dans le cadre, réglage « Carte révélée en grand » grisé en
+  Étape par étape, commit préalable). Plan final (trois plans jugés) dans le
+  scratchpad de session `plans/PLAN-FINAL.md` : 7 lots (0 gates, 1 faits
+  moteur E1-E8, 2 modèle TS pur, 3 cartouche sans question, 4 sous-cadre et
+  questions, 5 relecture / hors phase / transitions, 6 planche et ménage).
+  Réalisation lancée, vérification adverse après chaque lot, sans
+  déploiement ni commit.
+- 05/10 matin : **lots 0 à 6 faits et vérifiés, PAS commités, PAS déployés.**
+  Plateau 2493/2493, tsc propre, gate du rythme verte (DeroulePhase.tsx
+  445-1048 et cartouche-a-jour.ts intacts). Moteur : faits E1-E8 (cas A6 8/8,
+  A3 récrits, batterie 2649/2654, 4 rouges sg préexistants). Planche envoyée
+  (`scratchpad/planche-cartouche.jpg`) : 13 états sur 15, boîte 1872 x 224
+  partout sans défilement. Le 2347 sert `ui-app/dist` (lien
+  `.game-essai/public` remplacé, `voir-sur-2347.sh --restaurer` à la fin).
+  Non capturables : état 4 (un méchant Sonné ne publie aucun fait) et état 9
+  (aucun Renfort observé). À trancher : texte FR de la carte révélée quand le
+  résumé manque (états 08, 15c), options du moteur en anglais (« Take 2
+  damage »), à 1280 x 720 le cartouche couvre le bas de la carte du héros.
+  Après « déploie » : relancer le 2345 pour les faits E1-E8.
 - **Halo rouge autour de la main : retiré** (demandé le même soir). Une seule
   règle en cause, `.deroule-question .plateau-scene .zone-main` (board.css) :
   ombre et fond rgba(166, 0, 0, …) posés sur toute la boîte de la main dès
@@ -1528,3 +1556,51 @@ le redémarrage (la table de l'hôte était en pleine partie Black Widow/Klaw).
 Toujours le même transitoire d'après déploiement, pas corrigé.
 
 Entrée du 29/09 dans `nouveautes.js` (activité Discord) déployée à 07:58 UTC.
+
+## 05/10/2026 : étape Sonné + compteur des sbires (plateau), en attente de « déploie »
+
+Plateau fait (non déployé) : étape « Sonné » du cartouche (fait moteur `sonne`),
+compteur « 1 / 2 » des sbires lu sur `rang_sbire/total_sbires`, ligne dans
+`RecapPhaseMechant`, anglais dans `dico-en.ts`. vitest 2525 verts, tsc propre,
+gate mécanique verte. Reste : batterie moteur du fork, vérif à l'écran sur le
+2347 (planche), puis « déploie » de l'utilisateur.
+
+### Moteur (fork, 05/10/2026) : fait `sonne` + total des sbires, FAIT, non déployé
+
+- Fait `genre:'sonne'` dans `faits_mechant` : champs `temps` ('attaque'|'manigance'),
+  `type` ('mechant'|'sbire'), `auteur`, `auteur_id`, `cible`, `cible_id`,
+  `statut_retire`, `annule_par`, `annule_par_id`, `joueur`, `fait_id`
+  (`sonne:<round>:<auteur_id>:<n>`), `round_id`. Produit par
+  `CanAttack.JournaliserActivationEmpechee`, appelé par `Enemy.DoActivate`
+  quand la carte Sonné remplace l'activation.
+- `rang_sbire` / `total_sbires` : posés par `RecordFaitMechant` (via
+  `WorldStat.sbire_en_cours`, rempli par `Enemies.DoActivateAgainstYouInternal`)
+  sur tout fait d'un sbire en activation (annonce, boosts, résolu, sonne).
+- Tests : 3 cas « B1 sonne » / « B2 sbires » dans `tools/test_capacites.py`,
+  vus rouges puis verts. A2/A3/A4/A6 verts.
+- Batterie 2653/2659 : rouges sg006/007/009/013 (préexistants), Battery Pack
+  16034 (artefact, vert rejoué seul), « statistiques par siège » (rouge rejoué
+  seul : le siège 0 porte des stats persistées, 428 cartes piochées, sans lien
+  avec ce changement mais NON prouvé préexistant, à vérifier sur HEAD propre).
+
+### Carré de la phase du méchant : planche refaite et relue (05/10/2026), en attente de « déploie »
+
+Vérifié sur le moteur d'essai 2347 (bundle `board-DFpkPvbG.js`) : carré 760×570 au
+milieu (décentrage 0), 560×420 à 1280×720, grandit sans rien tronquer (11a 706,
+11b 842, 11c 844), table visible sans voile, main levée quand une question est
+posée. États 04 (Sonné) et 09 (Renfort) capturés. Planche : 24 verts sur 25 au
+passage complet, l'état 15 corrigé puis revalidé seul.
+
+Corrigé en cours de route :
+- `raisonDite` (`phrase-etat.ts`) : « Choose 2 more target(s) » est dit en français
+  dans le sous-cadre (4 tests).
+- Main forcée aussi pendant la défense « Pendant ton tour » (`carreDeLaPhase` dans
+  `board.tsx` et `main-visible.ts`).
+- Légendes de rangée réduites, cartes alignées en haut (`cartouche-phase.css`).
+- Specs `planche-cartouche` et `phase-detaille-defense` mises à jour pour le carré.
+
+Gate : vitest 2538 verts (220 fichiers), tsc propre, build + `verifier-sortie` verts.
+Reste : validation de la planche, « déploie », puis `bash ui-app/deployer.sh`,
+hash du bundle, `voir-sur-2347.sh --restaurer`, nettoyage des fichiers d'essai,
+arrêt du 2347 par PID, relance du 2345. Ensuite : « Sur la table », exemples au
+survol dans les Réglages, refonte du téléphone.

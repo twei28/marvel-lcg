@@ -35,6 +35,14 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Tu peux réagir': 'You can react',
   // ---- Un sbire entre en jeu en pleine phase du mechant (12/09/2026) ----
   'Un sbire entre en jeu': 'A minion enters play',
+  // ---- Un ennemi Sonné n'agit pas (05/10/2026) ----
+  'Sonné': 'Stunned',
+  'Sonné : n’attaque pas': 'Stunned: does not attack',
+  'Sonné : ne manigance pas': 'Stunned: does not scheme',
+  'perd Sonné': 'loses Stunned',
+  'reste Sonné': 'stays Stunned',
+  'Sonné, n’attaque pas': 'Stunned, does not attack',
+  'Sonné, ne manigance pas': 'Stunned, does not scheme',
   'Un sbire qui entre en jeu pendant la phase du méchant s\'active à l\'étape des sbires, s\'il est arrivé avant elle.':
     'A minion that enters play during the villain phase activates in the minion step, if it arrived before it.',
   // ---- Confirmation « ce coup ne fera rien » (11/09/2026) ----
@@ -1281,4 +1289,45 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Tous les coups': 'All steps',
   'Revenir à l’étape en cours': 'Back to the current step',
   'Outils du journal': 'Log tools',
+  // ---- Cartouche du bas de la phase du mechant (refonte du 04/10/2026) ----
+  // Pastilles : « 1. Placer les menaces » et « Bilan » existent deja.
+  '2A. Le méchant s’active': '2A. Villain activates',
+  '2B. Les sbires s’activent': '2B. Minions activate',
+  '3. Cartes rencontre': '3. Encounter cards',
+  'Cartes rencontre': 'Encounter cards',
+  '%1 carte distribuée': '%1 card dealt',
+  '%1 cartes distribuées': '%1 cards dealt',
+  'Suivant (espace)': 'Next (space)',
+  'Pendant ton tour': 'During your turn',
+  'Revenir à %1': 'Back to %1',
+  // Titres courts (D30) : Title Case, la majuscule vient du CSS.
+  'Attaque de %1': '%1 attacks',
+  'Manigance de %1': '%1 schemes',
+  'Stade %1': 'Stage %1',
+  'Stade suivant': 'Next stage',
+  '%1 entre en jeu': '%1 enters play',
+  'Carte révélée': 'Revealed card',
+  'Obligation': 'Obligation',
+  // La rangee (D7 a D13, D24).
+  'MAN': 'SCH',
+  'défend': 'defends',
+  'dégât subi': 'damage taken',
+  'dégâts subis': 'damage taken',
+  'Annulée': 'Cancelled',
+  'par joueur': 'per player',
+  'd’escalade': 'escalation',
+  // Le sous-cadre (D4 a D8, D28, D31, D32).
+  'Aucune réponse': 'No response',
+  'Continuer sans rien jouer': 'Continue without playing',
+  '%1 choisit…': '%1 is choosing…',
+  'Un autre joueur choisit…': 'Another player is choosing…',
+  'Réponse de %1': '%1 responds',
+  'Interruption de %1': '%1 interrupts',
+  'Choisir l’ordre': 'Choose the order',
+  'Jouer %1': 'Play %1',
+  // Le bilan en trois colonnes (D19) et le reglage (D42).
+  'Héros et alliés': 'Heroes and allies',
+  'Nouveautés sur la table': 'New on the table',
+  'Rien de nouveau sur la table': 'Nothing new on the table',
+  'Le cartouche s’en charge': 'The panel takes care of it',
 }

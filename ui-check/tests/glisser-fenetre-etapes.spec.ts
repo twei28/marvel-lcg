@@ -19,11 +19,11 @@ test('glisser la fenêtre des étapes par son bandeau', async ({ page }) => {
   await page.goto('/app/board.html');
   await page.evaluate(() => localStorage.setItem('marvel-langue-choisie', '1'));
   await page.goto('/app/board.html?etat=rhino__spider_man__phase-mechant-complet.js');
-  await page.waitForSelector('.deroule-phase .deroule-chrono', { timeout: 30000 });
+  await page.waitForSelector('.deroule-phase .deroule-ligne-haut', { timeout: 30000 });
   await page.waitForTimeout(2500);
 
   const fenetre = page.locator('.deroule-phase').first();
-  const chrono = page.locator('.deroule-phase .deroule-chrono').first();
+  const chrono = page.locator('.deroule-phase .deroule-ligne-haut').first();
   const avant = (await fenetre.boundingBox())!;
   const c = (await chrono.boundingBox())!;
   const x = c.x + c.width - 40;

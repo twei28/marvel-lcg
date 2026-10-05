@@ -55,7 +55,9 @@ import { CoucheTriche, useTriche } from './board/CoucheTriche'
 import { useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
-import { extraireCapacite } from './board/texte-capacite'
+import { extraireBoost, extraireCapacite, extraireEffetRevele } from './board/texte-capacite'
+import type { InfoRevelee } from './board/vue-cartouche'
+import { fusionnerDistribution, retenirCartesDistribuees, type DistribueesRetenues } from './board/frise-phase'
 import { quitterPleinEcran } from './board/mobile/plein-ecran'
 import {
   atterrir,
@@ -73,6 +75,7 @@ import {
   questionDansLePanneau,
   type EtatDeLaQuestion,
 } from './board/ou-va-la-question'
+import { mainVisibleForcee } from './board/main-visible'
 import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
 import { animationsDuPlateau, estResynchronisation } from './board/animations-en-scene'
@@ -119,6 +122,8 @@ import { DeroulePhase } from './board/DeroulePhase'
 import { BandeauPhase } from './board/BandeauPhase'
 import { entreesPourRepli, etapesDeroule, etapesHorsPhase, nomNettoye, tempsDeLaQuestion } from './board/deroule-phase'
 import { CoupHorsPhase } from './board/CoupHorsPhase'
+import { CartoucheHorsPhase, RelectureJournal } from './board/CartouchePhase'
+import type { QuestionDuMoteur } from './board/sous-cadre'
 import './board/fin-partie-bd.css'
 import { RevuePhase } from './board/RevuePhase'
 import { EditeurTable } from './board/EditeurTable'
@@ -995,9 +1000,8 @@ function usePartieEnCours(playerId: number) {
     reconnecter,
     reglerModePhase,
     // Branche sur le cartouche du deroule detaille (DeroulePhase, plus bas) :
-    // c'est lui qui relache le moteur, etape par etape, et lui seul. La
-    // vitesse de l'avance auto ne se regle plus ici : c'est une horloge du
-    // cartouche (prop delaiAvanceMs), le moteur n'en a plus.
+    // c'est lui qui relache le moteur, etape par etape, et lui seul. L'avance
+    // auto est retiree (pas a pas strict) : le moteur n'a plus d'horloge.
     avancerPasAPas,
     signalerActivite,
   }
@@ -1469,6 +1473,16 @@ function PageEtat({
     )
   }, [monde])
   const modePhaseEnregistre = lireModePhaseMechant()
+  // La scene du PC dessine le cartouche du bas, distribution fondue (D15),
+  // comme la partie elle-meme ; le telephone garde le rendu d'avant (D36).
+  const cartoucheDuBas = modePhaseEnregistre === 'detaille' && mode !== 'mobile'
+  const pourLeCartouche = useMemo(
+    () =>
+      cartoucheDuBas
+        ? fusionnerDistribution(etapesEnregistrees)
+        : { etapes: etapesEnregistrees, cartesDistribuees: 0 },
+    [cartoucheDuBas, etapesEnregistrees]
+  )
   const [bandeauFini, setBandeauFini] = useState(false)
   // Le mode manuel : tout ce qui parlait au nom du moteur disparait, meme sur
   // un etat enregistre (un capture de partie manuelle reste muette).
@@ -1505,7 +1519,10 @@ function PageEtat({
       <DeroulePhase
         attendreBandeau={!bandeauFini}
         presentation={modePhaseEnregistre === 'detaille' ? 'scene' : 'table'}
-        etapes={etapesEnregistrees}
+        telephone={mode === 'mobile'}
+        etapes={pourLeCartouche.etapes}
+        cartesDistribuees={pourLeCartouche.cartesDistribuees}
+        infoCarte={(id) => indexerCartesMonde(monde).get(id)?.info}
         identitePhase={monde.round_id ?? 0}
         identitePartie={fichier}
         phaseMechantEnCours={PHASES_DU_MECHANT.has(monde.phase ?? '')}
@@ -1955,8 +1972,11 @@ export function PagePartie({
   // l'interim, et le panneau se redessine a l'arrivee du dictionnaire.
   const [textesFrComplets, setTextesFrComplets] = useState<Readonly<Record<string, string | undefined>>>()
   const fenetreDeReactionOuverte = etat.demande !== undefined && estFenetreDeReaction(etat.demande)
+  // Le cartouche de la phase du Mechant lit aussi ce dictionnaire : la carte
+  // revelee dont le moteur ne publie aucun resume se lit par son texte imprime.
+  const francaisCompletUtile = fenetreDeReactionOuverte || PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')
   useEffect(() => {
-    if (!fenetreDeReactionOuverte || textesFrComplets || !scansFrActifs()) return
+    if (!francaisCompletUtile || textesFrComplets || !scansFrActifs()) return
     let vivant = true
     import('./board/textes-fr-complets')
       .then((module) => {
@@ -1966,7 +1986,7 @@ export function PagePartie({
     return () => {
       vivant = false
     }
-  }, [fenetreDeReactionOuverte, textesFrComplets])
+  }, [francaisCompletUtile, textesFrComplets])
   const texteCapaciteDeLOption = useCallback(
     (option: Option): string | undefined => {
       const porteuse = option.bind_id !== 0 ? cartesMondeParId.get(option.bind_id) : undefined
@@ -1978,6 +1998,47 @@ export function PagePartie({
       return extraireCapacite(francais ?? catalogue.texte(cardId), option.name, etat.demande?.ability_type)
     },
     [cartesMondeParId, catalogue, etat.demande?.ability_type, textesFrComplets]
+  )
+  // L'EFFET BOOST ★ d'une carte rencontre, en une phrase (D10) : la ligne
+  // « ★ Sweeping Swoop : … » sous la rangee du cartouche du bas. Meme source
+  // que le texte d'une capacite : le francais quand le plateau l'a, l'anglais
+  // de cards.json sinon. Muet sans paragraphe « Boost » : la vue dit alors
+  // seulement que l'effet s'applique.
+  const texteBoostEtoile = useCallback(
+    (carteId: number): string | undefined => {
+      const carte = cartesMondeParId.get(carteId)
+      if (!carte) return undefined
+      const cardId = carte.card_id
+      const francais = scansFrActifs()
+        ? (TEXTES_FR[cardId] ?? TEXTES_FR_FANMADE[cardId] ?? textesFrComplets?.[cardId])
+        : undefined
+      return extraireBoost(francais) ?? extraireBoost(catalogue.texte(cardId))
+    },
+    [cartesMondeParId, catalogue, textesFrComplets]
+  )
+  // Une carte rencontre revelee : son Renfort (le mot-cle du catalogue, dans la
+  // langue de l'interface) et son texte imprime, francais quand le plateau
+  // l'a, anglais de cards.json sinon (meme source que le Boost ★).
+  const infoRevelee = useCallback(
+    (carteId: number): InfoRevelee | undefined => {
+      const carte = cartesMondeParId.get(carteId)
+      if (!carte) return undefined
+      const cardId = carte.card_id
+      const francais = scansFrActifs()
+        ? (TEXTES_FR[cardId] ?? TEXTES_FR_FANMADE[cardId] ?? textesFrComplets?.[cardId])
+        : undefined
+      return {
+        renfort: catalogue.motsCles(cardId).some((mot) => mot.nom === t('Renfort')),
+        texteImprime: extraireEffetRevele(francais ?? catalogue.texte(cardId)),
+      }
+    },
+    [cartesMondeParId, catalogue, textesFrComplets]
+  )
+  // Les nombres que le monde publie sur une carte (`info` : stade imprime,
+  // seuil de menace), pour le titre court et les jauges du cartouche du bas.
+  const infoCarte = useCallback(
+    (id: number): Partial<Record<string, number>> | undefined => cartesMondeParId.get(id)?.info,
+    [cartesMondeParId]
   )
   // Le bouton de refus d'une reaction dit « Ne pas jouer » pour une carte EN
   // MAIN et « Ne pas utiliser » pour une capacite en jeu (04/10/2026).
@@ -2293,6 +2354,18 @@ export function PagePartie({
       if (kindOf(carte) === 'villain') mechantIds.add(carte.id)
     }
     return etapesHorsPhase(etat.monde?.faits_mechant ?? [], etat.monde?.round_id ?? 0, mechantIds)
+  }, [cartesMondeParId, etat.monde?.faits_mechant, etat.monde?.round_id])
+  // Les memes, cartes revelees comprises, pour le cartouche « Pendant ton
+  // tour » de la scene PC (D26, lot 5 de la refonte du 04/10/2026). Le
+  // cartouche de la table ne montre que des coups, comme avant.
+  const coupsPendantTonTour = useMemo(() => {
+    const mechantIds = new Set<number>()
+    for (const carte of cartesMondeParId.values()) {
+      if (kindOf(carte) === 'villain') mechantIds.add(carte.id)
+    }
+    return etapesHorsPhase(etat.monde?.faits_mechant ?? [], etat.monde?.round_id ?? 0, mechantIds, {
+      avecRevelations: true,
+    })
   }, [cartesMondeParId, etat.monde?.faits_mechant, etat.monde?.round_id])
   // « REVOIR LA PHASE DU MECHANT » (03/10/2026), dans le volet du journal : la
   // phase du round PRECEDENT. Le moteur garde ses faits jusqu'au premier fait
@@ -2876,30 +2949,40 @@ export function PagePartie({
    */
   const sceneCentrale = modePhase === 'detaille'
   const unCartouche = modePhase !== 'instantane'
+  /**
+   * LE CARTOUCHE DU BAS (refonte du 04/10/2026) : la scene du mode « Étape par
+   * étape », sur PC seulement. Le telephone garde le rendu d'avant (D36).
+   */
+  const nouvelleScenePC = sceneCentrale && modePlateau !== 'mobile'
+  // LA DISTRIBUTION NE COUTE PLUS AUCUN CLIC (D15) : ses etapes sont retirees
+  // AVANT le cartouche, et leur compte s'ecrit en tete de la pastille
+  // « Cartes rencontre ». Rien ne change pour le rythme : `fusionnerDistribution`
+  // retire des etapes, n'en fabrique aucune (piege 44). Place ICI, et non a
+  // cote de `etapesPhaseMechant` : `nouvelleScenePC` n'existe qu'a partir
+  // d'ici.
+  const etapesPourLeCartouche = useMemo(
+    () =>
+      nouvelleScenePC
+        ? fusionnerDistribution(etapesPhaseMechant)
+        : { etapes: etapesPhaseMechant, cartesDistribuees: 0 },
+    [nouvelleScenePC, etapesPhaseMechant]
+  )
+  // Le compte des cartes distribuees, retenu pour la PHASE : le bilan le lit
+  // apres que le round a tourne (voir `retenirCartesDistribuees`). Un `ref`
+  // ecrit pendant le rendu, comme la memoire d'etapes de DeroulePhase : le
+  // retenir ne doit provoquer aucun rendu.
+  const distribueesRetenues = useRef<DistribueesRetenues>({ round: undefined, compte: 0 })
+  distribueesRetenues.current = retenirCartesDistribuees(distribueesRetenues.current, {
+    round: etat.monde?.round_id,
+    compte: etapesPourLeCartouche.cartesDistribuees,
+    enPhase: PHASES_DU_MECHANT.has(etat.monde?.phase ?? ''),
+  })
+  const cartesDistribuees = distribueesRetenues.current.compte
   const choisirModePhase = useCallback((mode: ModePhaseMechant) => {
     setModePhase(mode)
     ecrireModePhaseMechant(mode)
   }, [])
 
-  // Avance auto : reglage independant (case a cocher du panneau Options), qui
-  // ne veut rien dire hors du mode « detaille ». Remplace l'ancien mode a part
-  // entiere « pas-a-pas ». Le moteur ne le connait PAS : c'est le cartouche
-  // du deroule (DeroulePhase, plus bas) qui s'avance tout seul, et qui
-  // relache le moteur par le meme chemin que le clic « Suivant ».
-  /**
-   * ⚠ L'AVANCE AUTO N'EXISTE QUE DANS « Detaille », et il a fallu l'ecrire ici.
-   *
-   * Le reglage est GRISE hors de ce mode (FenetreReglages, `disponible`), mais
-   * sa VALEUR continuait d'etre transmise au cartouche : un joueur qui l'avait
-   * allumee en Detaille la gardait active en passant sur « Sur la table », ou
-   * elle n'a aucun sens. Constate en partie le 14/09/2026, premiere partie
-   * jouee dans le nouveau mode : « tout avance tout seul sans attendre le
-   * suivant », alors que ce mode est defini par l'inverse - un clic a chaque
-   * etape, sa demande la plus explicite.
-   *
-   * ⚠ UN REGLAGE GRISE DOIT AUSSI ETRE SANS EFFET. Le griser ne fait que le
-   * rendre inchangeable ; c'est ici, a la source, qu'il cesse de s'appliquer.
-   */
   /**
    * LE BANDEAU D'OUVERTURE JOUE SEUL, ET LA PHASE ATTEND QU'IL SOIT PARTI.
    *
@@ -3169,6 +3252,20 @@ export function PagePartie({
   const [partieOuverte, setPartieOuverte] = useState(false)
   const ouvrirVolet = useCallback(() => setPartieOuverte(true), [])
   const fermerVolet = useCallback(() => setPartieOuverte(false), [])
+  // « REVOIR LA PHASE DU MÉCHANT » EN SCENE PC (D38) : le journal rouvre le
+  // cartouche du bas en relecture. Elle se referme d'elle-meme quand la phase
+  // du mechant reprend, ou quand un coup du mechant arrive pendant le tour :
+  // le cartouche « Pendant ton tour » (et sa question de defense) passe avant.
+  const [relectureJournal, setRelectureJournal] = useState(false)
+  // « Pendant ton tour » montre un coup : la narration du centre se tait.
+  const [horsPhaseAffiche, setHorsPhaseAffiche] = useState(false)
+  useEffect(() => {
+    if (phaseMechantEnCours) setRelectureJournal(false)
+  }, [phaseMechantEnCours])
+  const nombreDeCoupsPendantTonTour = coupsPendantTonTour.length
+  useEffect(() => {
+    setRelectureJournal(false)
+  }, [nombreDeCoupsPendantTonTour])
   // Les essais reserves a un seul compte (board/essais.ts). ⚠ Faux tant que le
   // serveur n'a pas repondu : on n'ouvre jamais un essai « par defaut », le
   // temps d'un aller-retour reseau.
@@ -3544,6 +3641,22 @@ export function PagePartie({
     // La face A de la manigance a son propre panneau : ni le panneau central,
     // ni la scene, ni la barre du bas ne la proposent en double.
     questionDeLaManigance: priseManigance !== undefined,
+    // Le cartouche du bas raconte deja chaque etape : la narration centrale se
+    // tait pendant la phase (« plus aucun panneau hors du cartouche »).
+    cartoucheEnBas: nouvelleScenePC,
+    // HORS PHASE, la defense d'une attaque annoncee pendant le tour se joue
+    // dans le cartouche « Pendant ton tour » (D26) ; rien d'autre n'y va.
+    coupHorsPhaseEnScene:
+      nouvelleScenePC &&
+      !phaseMechantEnCours &&
+      coupsPendantTonTour.some((coup) => coup.etat === 'annonce') &&
+      Boolean(etat.demande?.options.some((option) => option.name === 'Defense')),
+    // Un cartouche du bas a l'ecran hors phase (ce coup, ou la relecture du
+    // journal) : la narration centrale se tait, il raconte seul.
+    cartoucheHorsPhaseAffiche:
+      nouvelleScenePC &&
+      !phaseMechantEnCours &&
+      (horsPhaseAffiche || (relectureJournal && etapesPhasePrecedente.length > 0)),
   }
   // Le PANNEAU central cede la place a toutes les autres facons de repondre a
   // cette meme question : un ciblage sur la table, le menu d'une carte, une
@@ -3561,6 +3674,30 @@ export function PagePartie({
   // validation. Ceux de la table gardent leur halo et restent cliquables
   // derriere le voile : les deux chemins menent au meme `agir`.
   const ciblageEnScene = sceneCentrale && phaseMechantEnCours && interaction.option !== undefined
+  // LA QUESTION STRUCTUREE du cartouche du bas (scene PC, lots 4 et 5) : la
+  // defense et le choix d'une carte revelee dans sa rangee, le reste dans son
+  // sous-cadre. Pendant la phase, c'est DeroulePhase qui la porte ; hors
+  // phase, le cartouche « Pendant ton tour » (sa defense seulement, voir
+  // `coupHorsPhaseEnScene`). Les gestionnaires restent ici ; le cartouche
+  // n'appelle que `choisirOption`, `valider`, `annuler` et `agir`.
+  const questionDuMoteurPC: QuestionDuMoteur | undefined =
+    nouvelleScenePC && etat.demande && (questionEnScene || ciblageEnScene)
+      ? {
+          demande: etat.demande,
+          interaction,
+          cartesParId: cartesMondeParId,
+          choisirOption: choisirOptionDepuisMenu,
+          survolerOption: setOptionSurvolee,
+          carteDeLOption,
+          carteAuSurvol,
+          nomPorteur: nomPorteurFr,
+          texteCapacite: texteCapaciteDeLOption,
+          estEnMain,
+          ligneSansDefense,
+          survolSansDefense,
+          carteScene,
+        }
+      : undefined
   // etat.validationRequise n'entre pas dans la condition ci-dessous : c'est
   // desormais le cartouche du deroule detaille (DeroulePhase) qui garde la
   // validation, ce panneau-la ne fait plus que narrer. Ses deux raisons
@@ -3569,11 +3706,18 @@ export function PagePartie({
   // ⚠ ET ELLE SE TAIT AUSSI DEVANT LA QUESTION LOGEE DANS LA SCENE. Sans
   // cette garde, la narration se posait AU CENTRE, par-dessus la scene qui
   // porte desormais les boutons « Defendre / Passer » pendant une animation.
-  const afficherEvenementCentrale = narrationAuCentre(etatQuestion, {
-    connecte: etat.connecte,
-    evenementImportant:
-      etat.monde.phase === 'Enemy Activation' && evenementNarreImportant(etat.monde),
-  })
+  const afficherEvenementCentrale =
+    narrationAuCentre(etatQuestion, {
+      connecte: etat.connecte,
+      evenementImportant:
+        etat.monde.phase === 'Enemy Activation' && evenementNarreImportant(etat.monde),
+    }) &&
+    // ⚠ LE BILAN AUSSI. Le moteur sort de la phase (et tourne le round) avant
+    // que le joueur ait valide le bilan : `cartoucheEnBas` ne joue plus, et la
+    // narration du tour suivant se posait au centre pendant que le cartouche
+    // du bas montrait encore son bilan (planche du lot 3). Tant qu'il montre
+    // une etape, il est le seul panneau.
+    !(nouvelleScenePC && cleEtapeAffichee !== undefined)
 
   // Mode simple : la barre du bas disparait. Il reste juste un bouton flottant
   // « End Turn » quand on est en phase libre (sinon plus aucun moyen visible de
@@ -3593,13 +3737,19 @@ export function PagePartie({
   // ne l'affiche pas encore ailleurs.
   const quiAgit = libelleQuiAgit(etat.monde, etat)
 
+  // Le cartouche « Pendant ton tour » recouvre le bouton de fin de tour : ses
+  // raccourcis se taisent avec lui. Espace
+  // tournait les pages de ce meme cartouche toute la phase, et le reflexe
+  // finissait le tour du joueur venu fermer le coup du mechant (verification
+  // du lot 5 de la refonte).
+  const finDeTourCachee = nouvelleScenePC && horsPhaseAffiche
   finTourClavier.current = () => {
-    if (afficherFinTourSimple) interaction.annuler()
+    if (afficherFinTourSimple && !finDeTourCachee) interaction.annuler()
   }
   // Meme garde que le bouton complet lui-meme : `disabled={!finDeTourDisponible}`
   // et absent en mode manuel (`{manuel ? null : (<button ...>)}`, plus bas).
   finTourClavierEspace.current = () => {
-    if (finDeTourDisponible && !manuel) interaction.annuler()
+    if (finDeTourDisponible && !manuel && !finDeTourCachee) interaction.annuler()
   }
 
   const RenduPartie = modePlateau === 'mobile' ? PlateauMobile : Board
@@ -3635,7 +3785,10 @@ export function PagePartie({
       <SplashTour monde={etat.monde} annonceMechantAilleurs={unCartouche} />
 
 
-      {(
+      {/* Le cartouche du bas (scene PC, lot 4) montre les cibles hors table
+          dans son sous-cadre : le selecteur les montrerait une seconde fois,
+          hors du cartouche (piege 29). */}
+      {ciblageEnScene && nouvelleScenePC ? null : (
         <SelecteurCibles
           cibles={interaction.ciblesHorsTable}
           titre={interaction.option ? nomLisible(interaction.option) : ''}
@@ -3729,6 +3882,8 @@ export function PagePartie({
           nomPorteur={nomPorteurFr}
           tailleMain={etat.monde?.players[etat.joueurDemande ?? playerId]?.hand_size}
           choixDansLaScene={ciblageEnScene}
+          // Le sous-cadre du cartouche du bas porte tout, paiement compris (D6).
+          sousCadre={nouvelleScenePC && phaseMechantEnCours && interaction.option !== undefined}
         />
       )}
 
@@ -3823,9 +3978,39 @@ export function PagePartie({
       {!unCartouche && attendUnAutreJoueur && phaseMechantEnCours ? (
         (<AttenteTable nom={autreJoueurInterroge?.nom} />)
       ) : null}
-      {manuel || !unCartouche || phaseMechantEnCours ? null : (
+      {/* Hors phase, un coup du mechant : le cartouche d'un seul coup a la
+          table et au telephone ; en scene PC, le cartouche du bas « Pendant
+          ton tour » (D26), defense et carte revelee comprises. */}
+      {manuel || !unCartouche || phaseMechantEnCours || nouvelleScenePC ? null : (
         <CoupHorsPhase etapes={coupsHorsPhase} ignorerLesPremiers />
       )}
+      {!manuel && nouvelleScenePC && !phaseMechantEnCours ? (
+        <CartoucheHorsPhase
+          coups={coupsPendantTonTour}
+          questionAuJoueur={moteurAttendLeJoueur && autreJoueurInterroge === undefined}
+          questionDuMoteur={questionDuMoteurPC}
+          masque={relectureJournal}
+          onAffiche={setHorsPhaseAffiche}
+          pvMaxParNom={pvMaxParNom}
+          carteScene={carteScene}
+          nomFr={nomPorteurFr}
+          texteEtoile={texteBoostEtoile}
+          infoCarte={infoCarte}
+          infoRevelee={infoRevelee}
+        />
+      ) : null}
+      {!manuel && nouvelleScenePC && !phaseMechantEnCours && relectureJournal && etapesPhasePrecedente.length > 0 ? (
+        <RelectureJournal
+          etapes={etapesPhasePrecedente}
+          pvMaxParNom={pvMaxParNom}
+          carteScene={carteScene}
+          nomFr={nomPorteurFr}
+          texteEtoile={texteBoostEtoile}
+          infoCarte={infoCarte}
+          infoRevelee={infoRevelee}
+          onFermer={() => setRelectureJournal(false)}
+        />
+      ) : null}
       {manuel ? null : unCartouche ? (
         <>
           <BandeauPhase
@@ -3839,7 +4024,13 @@ export function PagePartie({
             // « Sur la table ».
             presentation={sceneCentrale ? 'scene' : 'table'}
             attendreBandeau={!bandeauPasse}
-            etapes={etapesPhaseMechant}
+            // Distribution retiree en scene PC (D15), liste brute ailleurs.
+            etapes={etapesPourLeCartouche.etapes}
+            telephone={modePlateau === 'mobile'}
+            cartesDistribuees={cartesDistribuees}
+            texteEtoile={texteBoostEtoile}
+            infoCarte={infoCarte}
+            infoRevelee={infoRevelee}
             // L'identite de la phase en cours, seule chose qui remet le
             // cartouche a zero. Il y a une phase du mechant par round, donc le
             // round suffit a distinguer deux phases ; la liste d'etapes, elle,
@@ -3892,9 +4083,28 @@ export function PagePartie({
             carteScene={carteScene}
             dosRencontre={dosRencontre}
             nomFr={nomPorteurFr}
-            // La question du moteur, logee dans la scene (voir `questionEnScene`).
+            // LA QUESTION STRUCTUREE du cartouche du bas, pendant la phase
+            // (voir `questionDuMoteurPC`).
+            questionDuMoteur={phaseMechantEnCours ? questionDuMoteurPC : undefined}
+            // La question d'un AUTRE siege, en lecture seule (D28) : des noms,
+            // aucun gestionnaire. Sans demande lisible (siege protege), la
+            // rangee dit quand meme qui choisit, sans ses cartes.
+            questionDUnAutre={
+              nouvelleScenePC && phaseMechantEnCours && autreJoueurInterroge !== undefined
+                ? {
+                    options: (etat.demande?.options ?? []).map((option) => ({
+                      id: option.id,
+                      bindId: option.bind_id,
+                      nom: nomPorteurFr(option.bind_id) ?? nomLisible(option),
+                    })),
+                  }
+                : undefined
+            }
+            // La question rendue par le plateau, logee dans la scene (voir
+            // `questionEnScene`) : la table et le telephone seulement, le
+            // cartouche du bas a la sienne.
             question={
-              ciblageEnScene && interaction.option ? (
+              nouvelleScenePC ? undefined : ciblageEnScene && interaction.option ? (
                 <CiblesScene
                   titre={nomLisible(interaction.option)}
                   cibles={[
@@ -4311,16 +4521,16 @@ export function PagePartie({
         raisonsRefus={raisonsRefus}
         glisser={reglagesGlisser}
         bloquerActionsPassives={interaction.option !== undefined}
-        mainVisibleForcee={
+        mainVisibleForcee={mainVisibleForcee({
           // Manuel DÉCLARÉ seulement (tâche 3, `modeManuelDeclare`, pas
-          // `manuel`) : un seul opérateur pour tous les héros, la main ne
-          // doit plus se cacher derrière un survol qui suppose un joueur par
-          // siège. Une PAUSE ne doit PAS forcer cet affichage : voir le
-          // commentaire de `modeManuelDeclare` plus haut.
-          modeManuelDeclare ||
-          (interaction.option !== undefined &&
-            (interaction.assistant.etape === 'target' || interaction.assistant.etape === 'payment'))
-        }
+          // `manuel`) : une PAUSE ne doit PAS forcer cet affichage (voir le
+          // commentaire de `modeManuelDeclare` plus haut).
+          modeManuelDeclare,
+          ciblageEnCours: interaction.option !== undefined,
+          etapeAssistant: interaction.assistant.etape,
+          carreDeLaPhase: nouvelleScenePC && (phaseMechantEnCours || etatQuestion.coupHorsPhaseEnScene === true),
+          questionAuJoueur: moteurAttendLeJoueur && autreJoueurInterroge === undefined,
+        })}
         delave={effetsAffiches(etat.monde, meteo, apercuMeteo).some((e) => EFFETS_DELAVANTS.includes(e))}
         onCardClick={
           etat.aNous && etat.connecte && !interaction.option
@@ -4479,10 +4689,21 @@ export function PagePartie({
           effacer={historique.effacer}
           rapport={rapport}
           telechargerLog={() => rapport.telecharger('partie', 'txt')}
+          // En scene PC, la phase precedente se relit dans le cartouche du bas
+          // (D38) ; la table et le telephone gardent la revue du volet.
           revuePhase={
-            etapesPhasePrecedente.length > 0 ? (
+            etapesPhasePrecedente.length > 0 && !nouvelleScenePC ? (
               <RevuePhase etapes={etapesPhasePrecedente} pvMaxParNom={pvMaxParNom} nomFr={nomPorteurFr} />
             ) : undefined
+          }
+          onRevoirPhase={
+            etapesPhasePrecedente.length > 0 && nouvelleScenePC
+              ? () => {
+                  // Le volet se referme : il passerait par-dessus le cartouche.
+                  fermerVolet()
+                  setRelectureJournal(true)
+                }
+              : undefined
           }
           journalHeros={
             <JournalHeros
@@ -4534,7 +4755,11 @@ export function PagePartie({
           cette couche la montrerait donc en grand au centre, en meme temps que
           le panneau qui la montre deja. Deux presentations de la meme carte,
           l'une par-dessus l'autre, exactement le defaut n°2 du 14/09. */}
-      {(unCartouche && phaseMechantEnCours) || priseManigance ? null : (
+      {/* ⚠ ET PLUS DU TOUT EN SCENE PC (D42, lot 5 de la refonte) : le
+          cartouche du bas montre la carte revelee, pendant la phase comme
+          pendant le tour (« Pendant ton tour »). Seule la mise en place garde
+          la manigance principale en grand : elle n'a pas de cartouche. */}
+      {(unCartouche && phaseMechantEnCours) || priseManigance || (nouvelleScenePC && !enMiseEnPlace) ? null : (
         <CoucheRevelation
           monde={etat.monde}
           duree={DUREES_REVELATION[revelation]}

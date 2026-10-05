@@ -131,6 +131,8 @@ const PHASE_PAR_GENRE: Record<FaitMechant['genre'], PhaseDuMechant> = {
   entree: 'Enemy Activation',
   // Un changement de stade : sa phase reelle (que le fait porte) le range.
   stade: 'Enemy Activation',
+  // Un ennemi Sonné n'agit pas : sa phase reelle le range (05/10/2026).
+  sonne: 'Enemy Activation',
 }
 
 function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitMechant[] {
@@ -459,6 +461,16 @@ function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
         genre: 'carte',
         titre: `${noms.carte(fait.carte_id) ?? fait.carte} ${t('entre en jeu')}`,
         cibleId: fait.carte_id,
+      }
+    }
+
+    // Un ennemi Sonné (05/10/2026) : une ligne de carte, la même phrase que le cartouche.
+    if (fait.genre === 'sonne') {
+      return {
+        cle: `moteur:${index}:sonne:${fait.auteur_id}`,
+        genre: 'carte',
+        titre: `${noms.carte(fait.auteur_id) ?? fait.auteur} : ${t(fait.temps === 'manigance' ? 'Sonné, ne manigance pas' : 'Sonné, n’attaque pas')}`,
+        cibleId: fait.auteur_id,
       }
     }
 

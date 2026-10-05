@@ -37,6 +37,12 @@ type AssistantActionProps = {
    * la scene ne sait pas faire. Capture du 04/10/2026 (Hulk contre Klaw).
    */
   choixDansLaScene?: boolean
+  /**
+   * Le cartouche du bas (scene PC, refonte du 04/10/2026) porte la question
+   * dans son sous-cadre, paiement compris (D6) : l'assistant se tait tout a
+   * fait. « Plus aucun panneau hors du cartouche pendant la phase. »
+   */
+  sousCadre?: boolean
 }
 
 function nomCarte(id: number, cartesParId: Map<number, WorldCard>): string {
@@ -113,12 +119,14 @@ export function AssistantAction({
   nomPorteur,
   tailleMain,
   choixDansLaScene = false,
+  sousCadre = false,
 }: AssistantActionProps) {
   const utile = Boolean(
     connecte &&
       aNous &&
       demande &&
       interaction.option &&
+      !sousCadre &&
       !(choixDansLaScene && interaction.assistant.etape !== 'payment')
   )
 

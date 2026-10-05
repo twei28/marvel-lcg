@@ -11,6 +11,13 @@
 // BOUTON, et il ne restait au joueur que le menu d'une carte de la table.
 // La règle est désormais dans `ui-app/src/board/ou-va-la-question.ts`.
 //
+// ⚠ RÉÉCRIT AVEC LE CARTOUCHE DU BAS (lot 4 de la refonte du 04/10/2026). Ce
+// fichier était déjà rouge avant ce chantier : il attendait `.deroule-a-toi`,
+// retiré le 03/10. Pendant la phase en scène PC, la question se joue DANS le
+// cartouche du bas : les défenseurs en vignettes (`[data-choix]`) dans la
+// rangée, « Ne pas défendre (ATQ …) » en refus (`[data-refus]`), le reste dans
+// son sous-cadre. Le mouchard, le compte des panneaux et la mesure suivent.
+//
 //   npm run phase-detaille-defense
 //
 // ⚠ IL LANCE UNE NOUVELLE PARTIE sur le serveur visé, comme tout test qui
@@ -51,11 +58,13 @@ const CONDUITE: Conduite = { resterEnHeros: true, attaquer: true };
 /**
  * ⚠ LE MOUCHARD, ET C'EST LUI QUI GARDE LE DÉFAUT.
  *
- * Le cartouche REPLIÉ veut dire « le client SAIT que le moteur attend une
- * réponse ». En mode Détaillé, pendant la phase du méchant, cette branche ne
- * porte AUCUN bouton : la scène est le seul endroit où répondre. Tant qu'on ne
- * clique aucune carte (ce test n'en clique aucune), elle ne doit jamais
- * paraître.
+ * Le cartouche du bas qui dit « Le moteur attend ta réponse » (ou « tu peux
+ * défendre ou répondre ») veut dire « le client SAIT que le moteur attend une
+ * réponse ». Pendant la phase du méchant en scène PC, la question doit alors
+ * être DANS le cartouche : au moins un choix (`[data-choix]`) ou un refus
+ * (`[data-refus]`) visible. Une mention sans bouton, c'est exactement le
+ * défaut du 14/09/2026 : tant qu'on ne clique aucune carte (ce test n'en
+ * clique aucune), elle ne doit jamais paraître seule.
  *
  * Il relève l'écran toutes les 50 ms DEPUIS LA PAGE, et non depuis le test :
  * le défaut ne durait que le temps d'une animation d'effet (1,7 s), et un
@@ -70,10 +79,19 @@ async function poserLeMouchard(page: Page) {
     const fenetre = window as unknown as { __replis?: string[]; __mouchard?: number };
     fenetre.__replis = [];
     if (fenetre.__mouchard !== undefined) window.clearInterval(fenetre.__mouchard);
+    const visible = (el: Element) => {
+      const r = (el as HTMLElement).getBoundingClientRect();
+      return r.width > 0 && r.height > 0 && el.closest('[aria-hidden="true"]') === null;
+    };
     fenetre.__mouchard = window.setInterval(() => {
-      const replie = document.querySelector('.deroule-phase.est-replie');
-      if (replie) {
-        fenetre.__replis!.push((replie as HTMLElement).innerText.replace(/\s+/g, ' ').slice(0, 120));
+      const section = document.querySelector('.deroule-phase.est-scene');
+      // La mention « le moteur attend ta réponse », ou un sous-cadre ouvert :
+      // dans les deux cas, le client sait qu'une question est posée.
+      const question = section?.querySelector('.deroule-fenetre, .deroule-sous-cadre:not(.est-provisoire)');
+      if (!section || !question) return;
+      const boutons = [...section.querySelectorAll('[data-choix], [data-refus], .deroule-valider')].filter(visible);
+      if (boutons.length === 0) {
+        fenetre.__replis!.push((section as HTMLElement).innerText.replace(/\s+/g, ' ').slice(0, 120));
       }
     }, 50);
   });
@@ -112,8 +130,8 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
   // défectueux — vérifié le 14/09/2026 en remettant l'ancienne règle.
   const DEFENSES_A_VOIR = 2;
   let defensesVues = 0;
-  /** Le survol d'un nom ne s'éprouve qu'une fois : il ne dépend pas de l'étape. */
-  let nomEprouve = false;
+  /** La loupe ne s'éprouve qu'une fois : elle ne dépend pas de l'étape. */
+  let loupeEprouvee = false;
 
   // ⚠ LE TOUR DU HÉROS SE JOUE PAR LE PILOTE, LA PHASE DU MÉCHANT PAR L'ÉCRAN.
   // En mode Détaillé, la phase n'avance QUE sur le clic « Suivant » du joueur :
@@ -122,32 +140,40 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
   // mesuré le 14/09/2026, une seule fenêtre de défense atteinte au lieu de deux.
   for (let tour = 0; tour < 200 && defensesVues < DEFENSES_A_VOIR; tour += 1) {
     const suivant = page.locator('.deroule-suivant');
-    const defendre = page.getByRole('button', { name: /défendre/i }).first();
-    const passer = page.getByRole('button', { name: /^passer$/i }).first();
+    const defendre = page.getByRole('button', { name: /^Défendre avec/i }).first();
+    const passer = page.getByRole('button', { name: /^Ne pas défendre/ }).first();
+    // Tout autre refus du cartouche (« Ne pas utiliser Sens d’Araignée »,
+    // « Aucune réponse », « Continuer sans rien jouer », « Annuler »).
+    const refus = page.locator('.deroule-phase.est-scene [data-refus]').first();
 
     if (await defendre.count()) {
       defensesVues += 1;
 
-      // La question est posée : l'écran doit la porter, bandeau ET boutons.
+      // La question est posée : le cartouche du bas la porte, choix ET refus.
       await expect(
-        page.locator('.deroule-a-toi'),
-        'le moteur demande « Défendre / Passer » et rien ne l’annonce'
+        page.locator('.deroule-phase.est-scene .deroule-rangee [data-choix]').first(),
+        'le moteur demande « Défendre ? » et la rangée du cartouche ne propose aucun défenseur'
       ).toBeVisible();
-      await expect(passer, 'fenêtre de défense sans bouton « Passer »').toBeVisible();
+      await expect(passer, 'fenêtre de défense sans bouton « Ne pas défendre »').toBeVisible();
 
-      // Un seul panneau au centre, jamais deux (défaut n°2 du 14/09/2026).
-      // ⚠ ON NE COMPTE QUE LES PANNEAUX DE PREMIER NIVEAU : en mode Détaillé, la
-      // demande du moteur est IMBRIQUÉE dans le cartouche
-      // (`.deroule-question-scene`). C'est un seul panneau, pas deux qui se
-      // recouvrent — compter les nœuds à plat faisait échouer ce test sur un
-      // écran parfaitement correct.
+      // Un seul panneau, jamais deux (défaut n°2 du 14/09/2026) : plus aucun
+      // panneau de question hors du cartouche pendant la phase (lot 4).
+      // ⚠ ON NE COMPTE QUE LES PANNEAUX DE PREMIER NIVEAU : un panneau logé
+      // dans le cartouche n'en fait pas un second.
       const panneaux = await page.evaluate(() => {
         const tous = [
-          ...document.querySelectorAll('.deroule-phase, .demande-centrale, .cibles-scene'),
-        ].filter((e) => (e as HTMLElement).offsetParent !== null);
-        return tous.filter((e) => !tous.some((autre) => autre !== e && autre.contains(e))).length;
+          ...document.querySelectorAll(
+            '.deroule-phase, .demande-centrale, .cibles-scene, .assistant-action, .couche-revelation, .plateau-selecteur, .evenement-centrale'
+          ),
+        ].filter((e) => {
+          const r = (e as HTMLElement).getBoundingClientRect();
+          return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden';
+        });
+        return tous
+          .filter((e) => !tous.some((autre) => autre !== e && autre.contains(e)))
+          .map((e) => String((e as HTMLElement).className).split(' ').slice(0, 2).join('.'));
       });
-      expect(panneaux, `${panneaux} panneaux empilés au centre`).toBeLessThanOrEqual(1);
+      expect(panneaux, `${panneaux.join(', ')} : panneaux empilés`).toHaveLength(1);
 
       // ⚠ LE CARTOUCHE TIENT DANS L'ÉCRAN. Mesuré le 15/09/2026 en 1920×1080 :
     // `top: -44px`, le haut du panneau (la chronologie MENACE / MÉCHANT /
@@ -156,7 +182,7 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
     // alors que la hauteur maximale en supposait 31, et la boîte est en
     // content-box, donc padding et bordures s'ajoutent à cette hauteur.
     const boite = await page.evaluate(() => {
-      const e = document.querySelector('.deroule-phase') as HTMLElement | null;
+      const e = document.querySelector('.deroule-phase.est-scene') as HTMLElement | null;
       if (!e) return null;
       const r = e.getBoundingClientRect();
       return { haut: Math.round(r.top), bas: Math.round(r.bottom), ecran: window.innerHeight };
@@ -199,7 +225,7 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
       await page.setViewportSize(taille);
       await page.waitForTimeout(300);
       const mesure = await page.evaluate(() => {
-        const e = document.querySelector('.deroule-phase') as HTMLElement | null;
+        const e = document.querySelector('.deroule-phase.est-scene') as HTMLElement | null;
         if (!e) return null;
         // Le détail par enfant : quand ça défile, il faut savoir CE QUI prend
         // la place, sinon on règle au hasard. On descend tant que le bloc est
@@ -216,7 +242,17 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
           return `${nom}=${h(c)}${dedans}`;
         };
         const r = e.getBoundingClientRect();
+        // La LARGEUR du carré de la phase (revirement du 05/10) : la variable
+        // que la feuille pose, clamp(560px, 760px × échelle, 1100px). La
+        // hauteur, elle, grandit avec le contenu (minimum les 3/4 de la largeur).
+        const sonde = document.createElement('div');
+        sonde.style.width = 'var(--carre-l)';
+        sonde.style.position = 'absolute';
+        e.appendChild(sonde);
+        const attendue = sonde.getBoundingClientRect().width;
+        sonde.remove();
         return {
+          attendue: Math.round(attendue * 10) / 10,
           largeurBoite: Math.round(r.width),
           hauteurBoite: Math.round(r.height),
           contenu: e.scrollHeight,
@@ -246,7 +282,17 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
         `le cartouche DÉFILE en ${mesure!.largeur}×${mesure!.hauteur} : ` +
           `${mesure!.contenu}px de contenu pour ${mesure!.visible}px visibles` +
           ` — par enfant : ${mesure!.detail}`
-      ).toBeLessThanOrEqual(mesure!.visible + 1);
+      ).toBeLessThanOrEqual(mesure!.visible);
+      // Le carré fait la largeur de la variable, à 1 px près, et jamais moins
+      // que les 3/4 de sa largeur de haut.
+      expect.soft(
+        Math.abs(mesure!.largeurBoite - mesure!.attendue),
+        `largeur ${mesure!.largeurBoite} pour ${mesure!.attendue} en ${mesure!.largeur}×${mesure!.hauteur}`
+      ).toBeLessThanOrEqual(1);
+      expect.soft(
+        mesure!.hauteurBoite,
+        `hauteur ${mesure!.hauteurBoite} sous les 3/4 de ${mesure!.largeurBoite}`
+      ).toBeGreaterThanOrEqual(Math.round(mesure!.largeurBoite * 0.75) - 1);
       // Et il reste dans l'écran, à cette taille-là aussi : un cartouche qui ne
       // défile pas mais dont le haut est coupé ne vaut pas mieux.
       expect.soft(
@@ -287,8 +333,9 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
     // deux cents tours de boucle, un test de treize secondes en mettait cinq
     // minutes. Mesuré le 14/09/2026, et c'est ce qui a fait abandonner un
     // premier test en vraie partie.
-    const bloc = page.locator('.deroule-titre').first();
-    const titre = (await bloc.count()) ? await bloc.innerText() : '';
+    // La phrase de l'étape est le nom accessible du corps du cartouche du bas.
+    const bloc = page.locator('.deroule-phase.est-scene .deroule-corps').first();
+    const titre = (await bloc.count()) ? ((await bloc.getAttribute('aria-label')) ?? '') : '';
     const revele = /^(.+?)\s+RÉVÈLE\s+(.+)$/i.exec(titre.replace(/\s+/g, ' ').trim());
     if (revele) {
       expect(
@@ -298,30 +345,38 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
       ).not.toBe(revele[2].trim().toLowerCase());
     }
 
-    // ⚠ LE SURVOL D'UN NOM OUVRE SA CARTE, ET LA REFERME QUAND ON S'EN VA.
-    //
-    // C'est ce qui REMPLACE les cartes de l'etape depuis le 15/09/2026 : « il
-    // n'y a pas besoin de montrer les cartes ; par contre, quand on hover sur
-    // le nom, on voit la carte en question ». Si ce geste ne marche pas, la
-    // refonte a retire quelque chose sans rien rendre — on le verifie donc en
-    // vraie partie, une fois, sur le premier nom rencontre.
-    if (!nomEprouve && (await page.locator('.deroule-nom').count())) {
-      nomEprouve = true;
-      const nom = page.locator('.deroule-nom').first();
-      await nom.hover();
-      await expect(
-        page.locator('.carte-apercu'),
-        'survoler un nom de carte n’ouvre pas la carte en grand'
-      ).toBeVisible();
+    // ⚠ LE SURVOL D'UNE CARTE DU CARTOUCHE L'OUVRE EN GRAND, DEVANT LE
+    // CARRÉ, ET LA REFERME QUAND ON S'EN VA (D29, lot 4). Le cartouche du
+    // bas montre les cartes de l'étape en vignettes : sans ce geste, on ne
+    // pourrait pas les lire. On le vérifie en vraie partie, une fois.
+    const vignette = page.locator('.deroule-phase.est-scene .deroule-vignette [data-card-id]').first();
+    if (!loupeEprouvee && (await vignette.count()) && (await vignette.isVisible())) {
+      loupeEprouvee = true;
+      await vignette.hover();
+      const apercu = page.locator('.carte-apercu.au-dessus-du-deroule');
+      await expect(apercu, 'survoler une carte du cartouche n’ouvre pas la carte en grand').toBeVisible();
+      // Devant le carré (z-index au-dessus) et dans l'écran.
+      const position = await page.evaluate(() => {
+        const el = document.querySelector('.carte-apercu.au-dessus-du-deroule');
+        const a = el?.getBoundingClientRect();
+        const c = document.querySelector('.deroule-phase.est-scene');
+        return a && c && el
+          ? {
+              haut: Math.round(a.top), bas: Math.round(a.bottom), hauteur: window.innerHeight,
+              z: Number(getComputedStyle(el).zIndex), zCarre: Number(getComputedStyle(c).zIndex) || 0,
+            }
+          : null;
+      });
+      expect(position, 'aperçu ou carré introuvable').not.toBeNull();
+      expect.soft(position!.z, 'l’aperçu passe derrière le carré').toBeGreaterThan(position!.zCarre);
+      expect.soft(position!.bas, `l’aperçu sort de l’écran par le bas (${position!.bas})`).toBeLessThanOrEqual(position!.hauteur);
+      expect.soft(position!.haut, `l’aperçu sort de l’écran par le haut (${position!.haut})`).toBeGreaterThanOrEqual(0);
       if (process.env.CAPTURE_PETITE) {
-        await page.screenshot({ path: `${process.env.CAPTURE_PETITE}/nom-survole.png` });
+        await page.screenshot({ path: `${process.env.CAPTURE_PETITE}/loupe.png` });
       }
-      // « Dès que le curseur quitte le nom » : on s'en va, et rien ne reste.
+      // « Dès que le curseur quitte la carte » : on s'en va, et rien ne reste.
       await page.mouse.move(4, 4);
-      await expect(
-        page.locator('.carte-apercu'),
-        'la carte reste ouverte alors que le curseur a quitté le nom'
-      ).toBeHidden();
+      await expect(apercu, 'la carte reste ouverte alors que le curseur a quitté la vignette').toBeHidden();
     }
 
     if ((await suivant.count()) && (await suivant.first().isVisible())) {
@@ -333,9 +388,9 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
     const m = await monde(request);
     if (PHASES_MECHANT.includes(String(m.phase))) {
       // Une question de la phase du méchant qui n'est pas une défense (une
-      // interruption, un ciblage) : on la passe par l'écran quand on peut.
-      if ((await passer.count()) && (await passer.first().isVisible())) {
-        await passer.first().click();
+      // interruption, un ciblage) : on la refuse par le cartouche quand on peut.
+      if ((await refus.count()) && (await refus.isVisible())) {
+        await refus.click();
         await page.waitForTimeout(500);
       } else {
         await page.waitForTimeout(400);
@@ -355,9 +410,9 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
   }
 
   expect(
-    nomEprouve,
-    'aucun nom de carte survolable n’est apparu de toute la phase : le cartouche ne ' +
-      'montre plus les cartes de l’étape, il DOIT montrer leurs noms (15/09/2026)'
+    loupeEprouvee,
+    'aucune carte survolable n’est apparue dans le cartouche de toute la phase : ' +
+      'la loupe au-dessus du cartouche (D29) n’a pas pu être éprouvée'
   ).toBe(true);
 
   expect(
@@ -369,7 +424,7 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
   const replis = await replisReleves(page);
   expect(
     replis,
-    'le cartouche s’est replié SANS BOUTON pendant que le moteur attendait une réponse : ' +
+    'le cartouche a dit « le moteur attend ta réponse » SANS UN CHOIX NI UN REFUS : ' +
       'c’est exactement le défaut du 14/09/2026 (voir ou-va-la-question.ts)'
   ).toEqual([]);
 });

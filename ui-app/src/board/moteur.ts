@@ -422,10 +422,9 @@ export function decisionAccuse(mode: ModePhaseMechant, monde: World | undefined)
   // acquitte une trame a la fois par ce meme chemin.
   const phase = monde?.phase ?? ''
   if (!PHASES_DU_MECHANT.has(phase)) return 'immediat'
-  // « Detaille » attend TOUJOURS que le cartouche relache la trame, que
-  // l'avance auto soit active ou non : l'avance auto est une horloge du
-  // CARTOUCHE (DeroulePhase, prop `avanceAuto`), qui appelle la meme fonction
-  // que le clic « Suivant ». Le moteur en a tenu une lui-meme
+  // « Detaille » attend TOUJOURS que le cartouche relache la trame. L'avance
+  // auto, retiree depuis (pas a pas strict), etait une horloge du CARTOUCHE,
+  // qui appelait la meme fonction que le clic « Suivant ». Le moteur en a tenu une lui-meme
   // (`attendre-delai`, un minuteur qui relachait la trame toutes les 1200 ms)
   // pendant que le cartouche attendait des clics : deux horloges, qui
   // divergeaient a la premiere etape. Constate en partie reelle : le joueur

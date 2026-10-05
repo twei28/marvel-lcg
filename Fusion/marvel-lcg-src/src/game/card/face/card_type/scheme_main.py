@@ -155,6 +155,19 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
         # en fait sa propre copie, rien n'est mute ici.
         if place_message is not None:
             world = self.card.world
+            # La DECOMPOSITION du montant (cartouche, 04/10/2026) : « 1 par
+            # joueur + 1 acceleration = 2 ». `escalade` est la valeur passee a
+            # `CalcMainSchemeEscalation`, `acceleration` tout ce qu'il y a
+            # ajoute (icones, jetons, effets de carte). Sous garde : un journal
+            # d'affichage ne doit pas pouvoir interrompre la phase.
+            try:
+                decomposition = {
+                    'escalade': self.escalation_threat,
+                    'acceleration': message.escalation_threat - self.escalation_threat,
+                    'joueurs': world.GetPlayerNumIcon(),
+                }
+            except Exception:
+                decomposition = {}
             world.stat.RecordFaitMechant(world.round_id, {
                 'genre': 'menace',
                 'phase': world.GetPhaseText(),
@@ -169,6 +182,7 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
                 # avancer de stade dans la foulee de cette meme pose.
                 'restant': self.threat,
                 'plafond': self.target_threat,
+                **decomposition,
             })
 
     def Advance(self, to_face: Literal["2A", "3A"]|CardFace|None, by_effect: 'Effect') -> None:

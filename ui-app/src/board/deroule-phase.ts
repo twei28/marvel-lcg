@@ -19,6 +19,7 @@
 import type { EntreeHistorique } from './HistoriquePartie'
 import { PHASES_DU_MECHANT_ORDONNEES, type PhaseDuMechant } from './moteur'
 import type {
+  BoostPublie,
   EffetRevelation,
   FaitActivation,
   FaitActivationResolue,
@@ -27,8 +28,10 @@ import type {
   FaitMechant,
   FaitMenace,
   FaitRevelation,
+  FaitSonne,
   FaitStade,
   FaitStatut,
+  StatsStade,
 } from './world'
 
 export type TempsPhase =
@@ -112,6 +115,9 @@ function estRevelation(fait: FaitMechant): fait is FaitRevelation {
 }
 function estStade(fait: FaitMechant): fait is FaitStade {
   return fait.genre === 'stade'
+}
+function estSonne(fait: FaitMechant): fait is FaitSonne {
+  return fait.genre === 'sonne'
 }
 function estEntree(fait: FaitMechant): fait is FaitEntree {
   return fait.genre === 'entree'
@@ -350,6 +356,12 @@ export type EtapeDeroule = {
    * L'etape finit alors par « → Renfort : une autre carte est révélée ».
    */
   suivieDUnRenfort?: boolean
+  /** Etape « sonne » : ce que Sonné a empeché, et si l'ennemi perd la carte. */
+  sonneTemps?: 'attaque' | 'manigance'
+  statutRetire?: boolean
+  /** Le sbire en cours et le total annonce par le moteur (05/10/2026). */
+  rangSbire?: number
+  totalSbires?: number
   /**
    * La carte qui a DECLENCHE cette etape (son identifiant d'objet), quand le
    * moteur le dit : la carte revelee qui fait attaquer ou manigancer le vilain.
@@ -394,6 +406,42 @@ export type EtapeDeroule = {
    * lettres. Absent sur toutes les autres etapes.
    */
   bilan?: LigneBilan[]
+  // ---------------------------------------------------------------------
+  // LES CLES DU CARTOUCHE DU BAS (refonte du 04/10/2026). Toutes optionnelles
+  // et lues telles que le moteur les publie : un moteur plus ancien, une
+  // sauvegarde ou une fixture n'en portent aucune, et l'etape est alors
+  // exactement celle d'avant.
+  // ---------------------------------------------------------------------
+  /**
+   * Sur une resolution : ce qui a ete PORTE, defense deduite. `montant` reste
+   * ce qui a ete subi (voir son commentaire) ; les deux se lisent ensemble.
+   */
+  inflige?: number
+  /**
+   * Le DEFENSEUR, sur une annonce enrichie (fait `boosts`) ou une resolution.
+   * Absent sans defense : le cartouche ne montre alors aucun « défend ».
+   */
+  defenseurId?: number
+  defenseurNom?: string
+  /**
+   * Le HEROS VISE, sur une resolution : `cibleId` y est le defenseur quand
+   * quelqu'un a defendu, et le heros vise disparaissait de l'etape.
+   */
+  cibleAnnonceeId?: number
+  /** La valeur IMPRIMEE annoncee, avant bonus et boosts. */
+  baseImprimee?: number
+  /** Sur une annonce enrichie : ce qui sera porte avant la defense. */
+  totalAvantDefense?: number
+  /** Sur la menace du point 1 : l'escalade, l'acceleration, le nombre de joueurs. */
+  escalade?: number
+  acceleration?: number
+  joueurs?: number
+  /** Sur une revelation : le type de la carte, nom de classe du moteur (« Treachery »). */
+  typeCarte?: string
+  /** Sur un stade : la carte d'avant et les stats imprimees avant et apres. */
+  stadeAvantId?: number
+  statsAvant?: StatsStade
+  statsApres?: StatsStade
 }
 
 /**
@@ -574,6 +622,9 @@ export function etapesDeroule(
       montant: fait.montant > 0 ? fait.montant : undefined,
       restant: fait.restant ?? undefined,
       plafond: fait.plafond ?? undefined,
+      escalade: fait.escalade,
+      acceleration: fait.acceleration,
+      joueurs: fait.joueurs,
       boosts: [],
     })
   }
@@ -642,6 +693,30 @@ export function etapesDeroule(
         carteId: fait.carte_id,
         auteurNom: nomNettoye(fait.avant),
         cibleNom: nomNettoye(fait.carte),
+        stadeAvantId: fait.avant_id,
+        statsAvant: fait.stats_avant,
+        statsApres: fait.stats_apres,
+        boosts: [],
+      })
+      return
+    }
+    // UNE ACTIVATION ANNULEE PAR SONNE (decision du 05/10/2026) : le moteur
+    // s'arrete avant d'annoncer quoi que ce soit, donc aucune etape d'attaque
+    // n'existe a cote. Le temps est celui de l'AUTEUR (vilain ou sbire).
+    if (estSonne(fait)) {
+      etapes.push({
+        cle: `sonne:${fait.fait_id ?? `${fait.round_id ?? round}:${rang}:${fait.auteur_id}`}`,
+        temps: fait.type === 'sbire' ? 'sbires' : 'mechant',
+        titre: 'sonne',
+        regle: 'regle:activations',
+        carteId: fait.auteur_id,
+        auteurNom: nomNettoye(fait.auteur),
+        sonneTemps: fait.temps,
+        statutRetire: fait.statut_retire,
+        annuleePar: fait.annule_par || undefined,
+        annuleeParId: fait.annule_par_id ?? undefined,
+        rangSbire: fait.rang_sbire,
+        totalSbires: fait.total_sbires,
         boosts: [],
       })
       return
@@ -724,6 +799,30 @@ export function etapesDeroule(
       auteurNom: nomNettoye(fait.auteur),
       cibleNom: nomNettoye(fait.cible),
       cause: fait.cause || undefined,
+      causeId: fait.cause_id ?? undefined,
+      rangSbire: fait.rang_sbire,
+      totalSbires: fait.total_sbires,
+    }
+
+    // LE TEMPS INTERMEDIAIRE (fait `boosts`, 04/10/2026) : defenseur choisi,
+    // boosts retournes, degats pas encore portes. Il devient une ANNONCE
+    // enrichie, sous la meme cle : la regle du rythme (`estResolue`, l'annonce
+    // qui acquitte seule en scene, `cartouche-a-jour.ts`) n'y voit rien de neuf.
+    // Toujours aucun resultat : rien n'a encore ete subi.
+    if (fait.etat === 'boosts') {
+      const defenseurId = fait.defenseur_id ?? undefined
+      etapes.push({
+        ...commun,
+        etat: 'annonce',
+        valeurAnnoncee: fait.base_imprimee,
+        baseImprimee: fait.base_imprimee,
+        defenseurId,
+        defenseurNom: defenseurId === undefined ? undefined : nomNettoye(fait.defenseur ?? undefined),
+        defense: fait.defense,
+        totalAvantDefense: fait.total_avant_defense,
+        boosts: boostsDeroule(fait.boosts ?? []),
+      })
+      return
     }
 
     // L'INTENTION (ou son annulation) : le coup n'a pas eu lieu, et l'etape ne
@@ -747,24 +846,26 @@ export function etapesDeroule(
     const restant = fait.restant ?? undefined
     // Les deux accords exiges par `EtapeDeroule.defaite`, et rien de moins.
     const defaite = restant !== undefined && restant <= 0 && herosVaincusIds.has(fait.cible_id)
+    const defenseurId = fait.defenseur_id ?? undefined
     etapes.push({
       ...commun,
       etat: 'resolu',
       // `subi` et non `inflige` : voir le commentaire de `montant`.
       montant: fait.subi,
+      inflige: fait.inflige,
       base: fait.base,
       defense: fait.defense,
       restant,
+      // Sur une manigance seulement (le moteur ne le pose pas ailleurs).
+      plafond: fait.plafond ?? undefined,
+      defenseurId,
+      defenseurNom: defenseurId === undefined ? undefined : nomNettoye(fait.defenseur ?? undefined),
+      cibleAnnonceeId: fait.cible_annoncee_id,
+      baseImprimee: fait.base_imprimee,
       // Absent, et non `false`, sur une etape ordinaire : le champ ne parait
       // que la ou il dit quelque chose.
       defaite: defaite ? true : undefined,
-      boosts: fait.boosts.map((boost, rang) => ({
-        cle: `boost:${rang}:${boost.id}`,
-        nom: boost.nom,
-        cibleId: boost.id,
-        apport: boost.apport,
-        etoile: boost.etoile || undefined,
-      })),
+      boosts: boostsDeroule(fait.boosts),
     })
   })
 
@@ -851,6 +952,7 @@ export function etapesDeroule(
       auteurNom: nomNettoye(fait.joueur_nom ?? undefined)
         ?? nomNettoye(nomsHerosParJoueur[fait.joueur ?? -1]),
       cibleNom: fait.carte,
+      typeCarte: fait.type || undefined,
       boosts: [],
       effets: fait.effets && fait.effets.length > 0 ? fait.effets : undefined,
       parSurge: fait.par_surge || undefined,
@@ -920,6 +1022,21 @@ function relierLesRenforts(etapes: EtapeDeroule[]): EtapeDeroule[] {
   return etapes
 }
 
+/**
+ * Les boosts retournes d'une activation, tels que le moteur les publie. La
+ * meme forme sur une resolution et sur une annonce enrichie (fait `boosts`) :
+ * la cle de chaque boost ne change donc pas quand les degats arrivent.
+ */
+function boostsDeroule(boosts: BoostPublie[]): BoostDeroule[] {
+  return boosts.map((boost, rang) => ({
+    cle: `boost:${rang}:${boost.id}`,
+    nom: boost.nom,
+    cibleId: boost.id,
+    apport: boost.apport,
+    etoile: boost.etoile || undefined,
+  }))
+}
+
 /** Un fait date d'une phase CONNUE du moteur qui n'est pas celle du mechant. */
 function estHorsPhase(fait: FaitMechant): boolean {
   return fait.phase !== undefined && fait.phase !== '' && !PHASES_CONNUES.has(fait.phase)
@@ -929,10 +1046,25 @@ function estHorsPhase(fait: FaitMechant): boolean {
  * LES COUPS DU MECHANT HORS DE SA PHASE (pendant le tour d'un joueur), pour le
  * cartouche d'un seul coup (decision du 03/10/2026). Les activations
  * seulement, resolues ou annulees ; marquees `horsPhase`.
+ *
+ * `avecRevelations` (04/10/2026, cartouche « Pendant ton tour ») garde aussi
+ * les cartes rencontre revelees pendant le tour, que le moteur journalise
+ * desormais. Faux par defaut : le cartouche de la table (`CoupHorsPhase`) ne
+ * montre que des coups, comme avant.
  */
-export function etapesHorsPhase(faits: FaitMechant[], round: number, mechantIds: Set<number>): EtapeDeroule[] {
+export function etapesHorsPhase(
+  faits: FaitMechant[],
+  round: number,
+  mechantIds: Set<number>,
+  options: { avecRevelations?: boolean } = {}
+): EtapeDeroule[] {
   return etapesDeroule(faits, [], round, mechantIds, new Set(), undefined, [], 'hors-phase')
-    .filter((etape) => etape.titre === 'attaque' || etape.titre === 'manigance')
+    .filter(
+      (etape) =>
+        etape.titre === 'attaque' ||
+        etape.titre === 'manigance' ||
+        (options.avecRevelations === true && etape.titre === 'revelation')
+    )
     .map((etape) => ({ ...etape, horsPhase: true }))
 }
 
@@ -1034,6 +1166,22 @@ export function rangDansLeTemps(
   if (total < 2) return undefined
   const rang = etapes.slice(0, index + 1).filter((e) => e.temps === etape.temps).length
   return { rang, total }
+}
+
+/**
+ * Le compteur « 1 / 2 » de l'etape : le rang du SBIRE et le total que le moteur
+ * annonce des sa premiere activation (05/10/2026), a defaut le compte des
+ * etapes deja connues de ce temps (`rangDansLeTemps`, moteur ancien).
+ */
+export function compteurDeLEtape(
+  etapes: EtapeDeroule[],
+  index: number
+): { rang: number; total: number } | undefined {
+  const etape = etapes[index]
+  if (etape?.rangSbire !== undefined && etape.totalSbires !== undefined) {
+    return etape.totalSbires < 2 ? undefined : { rang: etape.rangSbire, total: etape.totalSbires }
+  }
+  return rangDansLeTemps(etapes, index)
 }
 
 /**

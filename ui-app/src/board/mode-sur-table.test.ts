@@ -11,7 +11,12 @@
 // cartouche bloque la partie jusqu'au filet anti-blocage de 90 secondes,
 // puisque le cartouche est le SEUL à relâcher les trames retenues. C'est la
 // raison pour laquelle `unCartouche` (board.tsx) inclut « sur-table ».
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { createElement } from 'react'
+import { act, cleanup, render } from '@testing-library/react'
+import { DeroulePhase } from './DeroulePhase'
+import type { EtapeDeroule } from './deroule-phase'
+import { sceneDe } from './deroule-scene'
 import {
   CLE_MODE_PHASE,
   decisionAccuse,
@@ -106,5 +111,91 @@ describe('l’interrupteur du mode', () => {
   it('le moteur le traite toujours comme « Détaillé » pour le rythme', () => {
     expect(MODES).toContain('sur-table')
     expect(decisionAccuse('sur-table', monde('Enemy Activation'))).toBe('attendre-clic')
+  })
+})
+
+// ⚠ LE SEUL MINUTEUR QUI PASSE UNE ETAPE SANS CLIC (lot 3 de la refonte du
+// cartouche, 05/10/2026). L'avance auto est retiree, mais une etape qui vise
+// le heros d'un AUTRE joueur passe toujours seule sur la table, apres
+// `DELAI_ETAPE_D_UN_AUTRE_MS` : c'est son joueur a lui qui donne le rythme.
+// Aucun cas ne couvrait ce minuteur avant le menage : celui-ci le garde.
+describe('sur la table, l’étape d’un autre joueur', () => {
+  const SON_HEROS = 40
+  const coups: EtapeDeroule[] = [
+    { cle: 'a', temps: 'mechant', titre: 'attaque', regle: '', etat: 'resolu', auteurNom: 'Rhino', cibleId: SON_HEROS, cibleNom: 'Black Panther', montant: 2, boosts: [] },
+    { cle: 'b', temps: 'mechant', titre: 'attaque', regle: '', etat: 'resolu', auteurNom: 'Rhino', cibleId: 12, cibleNom: 'Spider-Man', montant: 1, boosts: [] },
+  ]
+
+  afterEach(() => {
+    cleanup()
+    vi.useRealTimers()
+  })
+
+  it('passe seule après 2200 ms, et pas avant', () => {
+    vi.useFakeTimers()
+    const affichees: Array<string | undefined> = []
+    render(
+      createElement(DeroulePhase, {
+        etapes: coups,
+        presentation: 'table',
+        phaseMechantEnCours: true,
+        herosDesAutresIds: new Set([SON_HEROS]),
+        onEtapeAffichee: (cle: string | undefined) => affichees.push(cle),
+        onTerminer: () => {},
+      })
+    )
+    expect(affichees.at(-1)).toBe('a')
+    act(() => {
+      vi.advanceTimersByTime(2100)
+    })
+    expect(affichees.at(-1)).toBe('a')
+    act(() => {
+      vi.advanceTimersByTime(200)
+    })
+    expect(affichees.at(-1)).toBe('b')
+  })
+
+  it('l’étape de MON héros, elle, attend mon clic', () => {
+    vi.useFakeTimers()
+    const affichees: Array<string | undefined> = []
+    render(
+      createElement(DeroulePhase, {
+        etapes: [coups[1], { ...coups[0], cle: 'c' }],
+        presentation: 'table',
+        phaseMechantEnCours: true,
+        herosDesAutresIds: new Set([SON_HEROS]),
+        onEtapeAffichee: (cle: string | undefined) => affichees.push(cle),
+        onTerminer: () => {},
+      })
+    )
+    act(() => {
+      vi.advanceTimersByTime(10_000)
+    })
+    expect(affichees.at(-1)).toBe('b')
+  })
+})
+
+// ⚠ LA FUITE VERS LA TABLE (lot 3 de la refonte). Le fait moteur `boosts`
+// devient une ANNONCE enrichie qui porte deja ses cartes boost (deroule-
+// phase.ts). Le cartouche du bas les colle a l'attaquant ; la table, elle, ne
+// doit les sortir du paquet qu'une fois l'attaque resolue, comme avant.
+describe('une annonce enrichie sur la table', () => {
+  it('ne dessine aucun boost tant que l’attaque n’est pas résolue', () => {
+    const enrichie: EtapeDeroule = {
+      cle: 'activation:7',
+      temps: 'mechant',
+      titre: 'attaque',
+      regle: '',
+      etat: 'annonce',
+      carteId: 50,
+      cibleId: 12,
+      defenseurId: 12,
+      totalAvantDefense: 3,
+      boosts: [{ cle: 'b', nom: 'Charge', cibleId: 91, apport: 1 }],
+    }
+    expect(sceneDe(enrichie).cartes.filter((c) => c.role === 'boost')).toHaveLength(0)
+    expect(sceneDe({ ...enrichie, etat: 'resolu' }).cartes.filter((c) => c.role === 'boost')).toHaveLength(1)
+    // Un fait ancien, sans etat, reste une attaque resolue : ses boosts se montrent.
+    expect(sceneDe({ ...enrichie, etat: undefined }).cartes.filter((c) => c.role === 'boost')).toHaveLength(1)
   })
 })

@@ -2,8 +2,9 @@
 // un resultat court par onglet, et les temps vides dits par une etape courte.
 import { afterEach, describe, expect, it } from 'vitest'
 import type { EtapeDeroule } from './deroule-phase'
-import { ONGLETS, avecTempsVides, resumeOnglet } from './frise-phase'
+import { ONGLETS, avecTempsVides, compter, fusionnerDistribution, resumeOnglet, retenirCartesDistribuees, totauxVides } from './frise-phase'
 import { titreEtape } from './deroule-textes'
+import { bilanTroisColonnes } from './vue-cartouche'
 
 afterEach(() => window.localStorage.clear())
 
@@ -106,13 +107,113 @@ describe('avecTempsVides : un temps passe sans rien a son etape courte', () => {
   })
 
   it('chaque etape vide se dit en une phrase', () => {
+    // Trois et non quatre : la distribution n'est jamais declaree vide (voir
+    // le cas suivant). Sa phrase reste dans `TEXTE_TEMPS_VIDE`, sans emploi.
     const textes = avecTempsVides([menace], true).slice(1).map(titreEtape)
     expect(textes).toEqual([
       'Le méchant ne s’active pas',
       'Aucun sbire engagé',
-      'Aucune carte rencontre distribuée',
       'Rien à révéler',
     ])
     expect(titreEtape(etape({ cle: 'v', temps: 'menace', titre: 'vide' }))).toBe('Aucune menace posée')
+  })
+})
+
+// LA DISTRIBUTION FONDUE (decision D15 du 04/10/2026) : en scene PC, le point 3
+// ne coute plus de clic. Ses etapes sont retirees de la liste AVANT le
+// controleur, et leur compte voyage a part (« 1 carte distribuée » en tete de
+// la pastille « 3. Cartes rencontre »).
+describe('fusionnerDistribution : le point 3 sans clic', () => {
+  it('retire les etapes du temps distribution et compte les cartes, dans l ordre', () => {
+    const deux = { ...distribution, cle: 'd2', auteurNom: 'Hulk', montant: 2 }
+    const { etapes, cartesDistribuees } = fusionnerDistribution([menace, attaqueMechant, distribution, deux, revelation])
+    expect(etapes.map((e) => e.cle)).toEqual(['m', 'a1', 'r'])
+    expect(cartesDistribuees).toBe(3)
+  })
+
+  it('rend la MEME reference quand il n y a rien a retirer', () => {
+    const liste = [menace, attaqueMechant, revelation]
+    const fusion = fusionnerDistribution(liste)
+    expect(fusion.etapes).toBe(liste)
+    expect(fusion.cartesDistribuees).toBe(0)
+  })
+
+  it('une etape de distribution sans montant compte une carte', () => {
+    const { cartesDistribuees } = fusionnerDistribution([{ ...distribution, montant: undefined }])
+    expect(cartesDistribuees).toBe(1)
+  })
+
+  it('une liste vide reste vide', () => {
+    expect(fusionnerDistribution([])).toEqual({ etapes: [], cartesDistribuees: 0 })
+  })
+})
+
+describe('avecTempsVides : la distribution n est jamais declaree vide', () => {
+  it('une liste deja fondue ne fabrique pas d etape vide:distribution', () => {
+    const liste = avecTempsVides([menace, attaqueMechant, revelation], true)
+    expect(liste.map((e) => e.cle)).not.toContain('vide:distribution')
+    expect(liste.map((e) => e.cle)).toEqual(['m', 'a1', 'vide:sbires', 'r'])
+  })
+})
+
+describe('compter : la regle unique de comptage, exportee', () => {
+  it('additionne une carte revelee, ses effets et ses consequences', () => {
+    const consequence = etape({ cle: 'c', temps: 'revelation', titre: 'attaque', etat: 'resolu', montant: 4 })
+    const totaux = totauxVides()
+    compter({ ...revelation, consequences: [consequence] }, totaux)
+    expect(totaux).toMatchObject({ degats: 4, menaces: 2, sbires: 0, autres: 0 })
+  })
+
+  it('ne compte pas une activation seulement annoncee', () => {
+    const totaux = totauxVides()
+    compter({ ...attaqueMechant, etat: 'annonce' }, totaux)
+    expect(totaux.degats).toBe(0)
+  })
+})
+
+// ⚠ PIEGE 43 DE LA CARTE (04/10/2026) : `lignesBilan` et `resumeOnglet` ne
+// comptaient pas la meme chose (l'un ignorait les effets et les consequences
+// d'une carte revelee). Le bilan du cartouche du bas lit la MEME regle que les
+// onglets (`compter`, `coupsDe`) : leurs totaux ne peuvent plus diverger.
+describe('une seule regle de comptage : onglets et bilan en trois colonnes', () => {
+  it('donnent le meme total de degats et de menaces sur les fixtures du fichier', () => {
+    const consequence = etape({ cle: 'c', temps: 'revelation', titre: 'attaque', etat: 'resolu', montant: 4, cibleNom: 'Spider-Man', cibleId: 40 })
+    const etapes = [menace, attaqueMechant, distribution, { ...revelation, consequences: [consequence] }]
+    const totaux = totauxVides()
+    for (const e of etapes) compter(e, totaux)
+    expect(resumeOnglet(etapes, 'bilan')).toBe(`${totaux.degats} dégâts · +${totaux.menaces} menaces`)
+    const bilan = bilanTroisColonnes(etapes, { etapes, index: 0, boostsMontres: 0 })
+    expect(bilan.heros.reduce((somme, c) => somme + c.total, 0)).toBe(totaux.degats)
+    expect(bilan.menace.reduce((somme, c) => somme + c.total, 0)).toBe(totaux.menaces)
+    expect(totaux).toMatchObject({ degats: 7, menaces: 3 })
+  })
+})
+
+// Le compte des cartes distribuees, RETENU pour la phase (board.tsx) : le
+// moteur incremente le round en quittant la phase, le journal du round se vide,
+// et le bilan doit encore dire « 1 carte distribuée ».
+describe('retenirCartesDistribuees', () => {
+  const vide = { round: undefined, compte: 0 }
+
+  it('retient le plus grand compte vu pendant la phase', () => {
+    let r = retenirCartesDistribuees(vide, { round: 3, compte: 1, enPhase: true })
+    r = retenirCartesDistribuees(r, { round: 3, compte: 2, enPhase: true })
+    r = retenirCartesDistribuees(r, { round: 3, compte: 0, enPhase: true })
+    expect(r).toEqual({ round: 3, compte: 2 })
+  })
+
+  it('le garde quand le round tourne en sortant de la phase (le bilan le lit)', () => {
+    const pendant = retenirCartesDistribuees(vide, { round: 3, compte: 1, enPhase: true })
+    expect(retenirCartesDistribuees(pendant, { round: 4, compte: 0, enPhase: false })).toEqual({ round: 3, compte: 1 })
+  })
+
+  it('repart de zero a la phase du mechant du round suivant', () => {
+    const pendant = retenirCartesDistribuees(vide, { round: 3, compte: 1, enPhase: true })
+    expect(retenirCartesDistribuees(pendant, { round: 4, compte: 0, enPhase: true })).toEqual({ round: 4, compte: 0 })
+  })
+
+  it('rend la meme reference quand rien ne change', () => {
+    const pendant = retenirCartesDistribuees(vide, { round: 3, compte: 1, enPhase: true })
+    expect(retenirCartesDistribuees(pendant, { round: 3, compte: 1, enPhase: true })).toBe(pendant)
   })
 })

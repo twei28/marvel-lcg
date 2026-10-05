@@ -127,3 +127,13 @@ describe('changement de stade (04/10/2026)', () => {
     ])
   })
 })
+
+describe('un ennemi Sonne (05/10/2026)', () => {
+  it('sa carte seule, en grand : ni cible ni fleche', () => {
+    expect(sceneDe(etape({ temps: 'mechant', titre: 'sonne', carteId: 12 }))).toEqual({
+      cartes: [{ role: 'auteur', id: 12 }],
+      fleche: false,
+      voile: true,
+    })
+  })
+})

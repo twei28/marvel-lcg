@@ -3654,13 +3654,6 @@
     background: var(--rouge-vif);
   }
 
-  /* Le bandeau « A toi de jouer » reprend le meme rouge que la bande. */
-  .deroule-a-toi {
-    font-family: 'Bangers', Impact, sans-serif;
-    font-size: 1.15rem;
-    letter-spacing: 0.14em;
-  }
-
   /* Le voile : la table derriere la scene n'est plus a lire, elle peut etre
      en avance sur le recit. Assez sombre pour que l'oeil reste sur la scene,
      pas opaque : la table reste un decor, et une carte qui bouge s'y devine.
@@ -3675,17 +3668,6 @@
        joueur veut continuer a voir sa manigance monter et son heros. */
     background: rgba(20, 20, 20, 0.45);
     pointer-events: none;
-  }
-
-  /* LE MOMENT OU L'ON PEUT AGIR (body.deroule-question, pose par
-     DeroulePhase tant que la question du moteur est logee dans la scene) :
-     la main sort du voile, et la scene remonte pour la degager.
-     ⚠ PLUS DE LUEUR ROUGE (04/10/2026, demande de l'utilisateur) : l'ombre et
-     le fond rgba(166, 0, 0, …) d'origine, invisibles sur le noir, faisaient
-     une nappe pourpre sur une table teintee. Verrou : halo-main.test.ts. */
-  .deroule-question .plateau-scene .zone-main {
-    position: relative;
-    z-index: 120;
   }
 
   /* ⚠ PENDANT UNE QUESTION ET SUR UNE FENETRE COURTE, LES CARTES DE L'ETAPE
@@ -3763,9 +3745,8 @@
     row-gap: 6px;
   }
 
-  /* Les deux bandeaux d'en-tete gardent leur ligne : ils disent OU l'on en est,
-     et se lisent en travers, pas a cote d'une carte. */
-  .deroule-phase.est-question .deroule-a-toi,
+  /* Le bandeau d'en-tete garde sa ligne : il dit OU l'on en est, et se lit en
+     travers, pas a cote d'une carte. */
   .deroule-phase.est-question .deroule-chrono {
     grid-column: 1 / -1;
     justify-self: stretch;
@@ -3856,18 +3837,6 @@
     box-shadow:
       0 0 0 2px rgba(166, 0, 0, 0.45),
       0 30px 80px rgba(0, 0, 0, 0.7);
-  }
-
-  .deroule-a-toi {
-    margin: -14px -22px 10px;
-    padding: 6px 22px;
-    font-size: 0.8rem;
-    font-weight: 900;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #fff;
-    background: var(--rouge-vif);
-    border-radius: 12px 12px 0 0;
   }
 
   /* Les cartes de l'etape : une seule taille pour toutes, 2,5 fois une carte
@@ -4008,13 +3977,6 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--menace);
-  }
-
-  .deroule-fleche {
-    font-size: 2.6rem;
-    line-height: 1;
-    color: var(--rouge-vif);
-    text-shadow: 0 0 18px rgba(166, 0, 0, 0.6);
   }
 
   /* Ecran etroit : les cartes retrecissent avant de passer a la ligne. */
@@ -4264,49 +4226,6 @@
     color: rgba(248, 250, 252, 0.7);
   }
 
-  /* Les cartes de boost, retournees une par une : c'est le moment de tension
-     du jeu, il merite d'etre montre. */
-  .deroule-boosts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 0 0 10px;
-    padding: 0;
-    list-style: none;
-  }
-
-  .deroule-boosts li {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    padding: 4px 8px;
-    font-size: 0.82rem;
-    background: rgba(166, 0, 0, 0.16);
-    border: 1px solid rgba(166, 0, 0, 0.5);
-    border-radius: 6px;
-    animation: deroule-boost-entre 220ms ease-out;
-  }
-
-  .deroule-boosts li span {
-    font-weight: 900;
-    color: var(--menace);
-  }
-
-  @keyframes deroule-boost-entre {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  body.plateau-sans-animations .deroule-boosts li {
-    animation: none;
-  }
-
   /* Le bilan de fin de phase : une ligne par cible touchee, son compteur
      aligne a droite comme celui de l'entete. C'est la derniere chose que le
      joueur lit avant de decider de son tour, elle doit se prendre d'un coup
@@ -4346,36 +4265,6 @@
   .deroule-bilan-rien {
     font-style: italic;
     color: rgba(248, 250, 252, 0.7);
-  }
-
-  .deroule-regle {
-    margin: 0 0 10px;
-  }
-
-  /* Le bouton du dépliant : meme discretion que `.recap-mechant-repli`, seul
-     autre dépliant du plateau (RecapPhaseMechant.tsx). */
-  .deroule-regle-bouton {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    margin: 0;
-    padding: 2px 0;
-    background: none;
-    border: none;
-    font-family: inherit;
-    font-size: 0.8rem;
-    color: rgba(248, 250, 252, 0.62);
-    cursor: pointer;
-  }
-
-  .deroule-regle-bouton:hover {
-    color: #fff;
-  }
-
-  .deroule-regle-texte {
-    margin: 4px 0 0;
-    font-size: 0.8rem;
-    color: rgba(248, 250, 252, 0.62);
   }
 
   .deroule-boutons {
@@ -7811,10 +7700,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pas-a-pas-halo, .pas-a-pas-chiffre { animation: none; }
-
-  .deroule-boosts li {
-    animation: none;
-  }
 
   .bandeau-phase {
     animation: none;

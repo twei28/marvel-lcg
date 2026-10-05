@@ -51,7 +51,6 @@ import {
   lignesEtoileBoost,
 } from './deroule-textes'
 import { t } from './langue'
-import { DELAI_PAS_A_PAS_DEFAUT } from './moteur'
 import { CarteApercu } from './Board'
 import { useApercuSurvol } from './apercu-survol'
 import { sceneDe, type CarteDeScene } from './deroule-scene'
@@ -69,6 +68,12 @@ import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
 import { contenuDuTrait } from './trait-phase'
 import './boutons-bd.css'
+// ⚠ APRES boutons-bd.css : CartouchePhase importe sa feuille, qui doit passer
+// la DERNIERE (cartouche-phase.css, hors couche).
+import { CartouchePhase, type CartouchePhaseProps } from './CartouchePhase'
+import { boutonPageSuivante, cibleDeLaTouche, clavierBloque } from './clavier-cartouche'
+import type { QuestionDuMoteur } from './sous-cadre'
+import { pastilleDuTemps, type ClePastille, type InfoRevelee } from './vue-cartouche'
 
 /**
  * Le temps de VOIR une etape qui vise un autre joueur, avant qu'elle passe.
@@ -137,8 +142,13 @@ export function DeroulePhase({
   trameRetenue,
   echeanceFilet,
   tempsParDecision = 0,
-  avanceAuto = false,
-  delaiAvanceMs = DELAI_PAS_A_PAS_DEFAUT,
+  telephone = false,
+  cartesDistribuees = 0,
+  texteEtoile,
+  infoCarte,
+  infoRevelee,
+  questionDuMoteur,
+  questionDUnAutre,
   onSuivant,
   onActivite,
   onTerminer,
@@ -156,7 +166,7 @@ export function DeroulePhase({
    *                les vraies cartes qu'on regarde. Le mode « Sur la table ».
    *
    * ⚠ LA MECANIQUE N'EST PAS DUPLIQUEE, ET C'EST LE POINT. Remise a zero entre
-   * deux phases, avance auto, bilan de fin, coup fatal,
+   * deux phases, bilan de fin, coup fatal,
    * filet anti-blocage : tout cela a ete mesure et corrige en partie reelle a
    * de multiples reprises (voir les commentaires de ce fichier). Un second
    * composant qui refarait « la meme chose en plus joli » aurait refait les
@@ -362,25 +372,38 @@ export function DeroulePhase({
    */
   tempsParDecision?: number
   /**
-   * « Avance toute seule » (reglage du panneau Options, board.tsx) : chaque
-   * etape se valide d'elle-meme au bout de `delaiAvanceMs`, par la MEME
-   * fonction que le clic « Suivant », donc par le meme accuse de reception.
+   * LE PLATEAU EST CELUI DU TELEPHONE (board.tsx : `modePlateau === 'mobile'`).
    *
-   * C'est le CARTOUCHE qui tient cette horloge, et lui seul. Elle a d'abord
-   * ete tenue par le moteur (`attendre-delai`, un minuteur qui relachait la
-   * trame de lui-meme) pendant que le cartouche, lui, attendait des clics :
-   * deux horloges qui divergeaient a la premiere etape. Constate en partie
-   * reelle : le joueur lisait la menace, le mechant et ses sbires avaient
-   * deja frappe. Le moteur n'a plus aucune horloge propre.
-   *
-   * Ce que l'avance auto ne valide JAMAIS a la place du joueur : le bilan de
-   * fin de phase (c'est la qu'il reprend la main, il doit le voir) et la
-   * chute d'un heros (« Continuer »). Un « Precedent » la suspend jusqu'au
-   * prochain « Suivant », sans quoi l'etape relue repartirait aussitot.
+   * La scene du PC se dessine dans le cartouche du bas (`CartouchePhase`,
+   * refonte du 04/10/2026) ; le telephone garde le rendu d'avant, inchange
+   * pour ce chantier (D36). La table (`presentation="table"`) aussi.
    */
-  avanceAuto?: boolean
-  /** Le temps de lire une etape avant qu'elle ne se valide seule (ms). */
-  delaiAvanceMs?: number
+  telephone?: boolean
+  /**
+   * Les cartes rencontre DISTRIBUEES pendant la phase, dont les etapes ont ete
+   * retirees de la liste avant d'arriver ici (board.tsx, `fusionnerDistribution`,
+   * D15) : leur compte s'ecrit en tete de la pastille « Cartes rencontre ».
+   * Zero, le defaut, pour la table et le telephone, qui gardent ces etapes.
+   */
+  cartesDistribuees?: number
+  /** Le texte de l'effet Boost ★ d'une carte, par son identifiant (D10). */
+  texteEtoile?: (carteId: number) => string | undefined
+  /** Les nombres que le monde publie sur une carte (`info` : stade, seuil). */
+  infoCarte?: (id: number) => Partial<Record<string, number>> | undefined
+  /** Ce que le catalogue sait d'une carte revelee : son Renfort, son texte imprime. */
+  infoRevelee?: (carteId: number) => InfoRevelee | undefined
+  /**
+   * La question du moteur, STRUCTUREE, pour le cartouche du bas (scene PC,
+   * lot 4 de la refonte) : la defense et le choix d'une carte revelee dans la
+   * rangee, le reste dans le sous-cadre. La table et le telephone l'ignorent
+   * et gardent `question`, rendue par le plateau.
+   */
+  questionDuMoteur?: QuestionDuMoteur
+  /**
+   * La question d'un AUTRE siege, en lecture seule (D28) : le cartouche du
+   * bas montre ses cartes grisees et « X choisit… », sans un bouton.
+   */
+  questionDUnAutre?: CartouchePhaseProps['questionDUnAutre']
   /**
    * L'accuse de reception : il autorise le moteur a poursuivre son rendu
    * (board.tsx le branche sur `avancerMaintenant`).
@@ -405,9 +428,10 @@ export function DeroulePhase({
    * d'agir (mesure en jeu, 07/09/2026 : clics a 60 s et 120 s, filet joue a
    * 151 s).
    *
-   * Appele aussi par l'avance auto, qui passe
-   * par la meme fonction. C'est sans consequence : ces deux-la acquittent des
-   * que le cartouche est a jour, donc le filet se desarme aussitot apres.
+   * Appele aussi par le minuteur qui passe seule, sur la table, l'etape d'un
+   * autre joueur : il passe par la meme fonction. C'est sans consequence : il
+   * acquitte des que le cartouche est a jour, donc le filet se desarme
+   * aussitot apres.
    */
   onActivite?: () => void
   /**
@@ -441,6 +465,10 @@ export function DeroulePhase({
   // s'insererait AVANT elle (une menace journalisee apres une activation)
   // changerait ce que le joueur lit.
   // Deux presentations, une seule mecanique (voir la prop `presentation`).
+  // La scene du PC se dessine dans le cartouche du bas (CartouchePhase) ; la
+  // scene du telephone garde le rendu d'avant (D36). Declaree ICI, avant tout
+  // hook qui la lit (`useGlisserPanneau`, plus bas).
+  const nouvelleScene = presentation !== 'table' && !telephone
   const surTable = presentation === 'table'
   const [cleCourante, setCleCourante] = useState<string>()
   // Vrai une fois la derniere etape validee : le cartouche doit alors
@@ -1049,10 +1077,6 @@ export function DeroulePhase({
 
   useEffect(() => {
     const auClavier = (evenement: KeyboardEvent) => {
-      // Le cartouche est replie devant une question du moteur : il n'a plus de
-      // bouton, il n'a donc plus de touche non plus. Entree appartient a la
-      // question.
-      if (questionAuJoueur) return
       // On ecrit peut-etre ailleurs : le tchat est a portee de main pendant la
       // phase, et un espace tape dedans ne doit pas la faire avancer.
       const cible = evenement.target
@@ -1073,12 +1097,35 @@ export function DeroulePhase({
       ) {
         return
       }
+      // Une question du moteur est posee : Entree et Espace lui appartiennent
+      // et ne valident rien ici. Dans le cartouche du bas (scene PC, D37), les
+      // chiffres 1 a 9 cliquent le choix qui porte ce numero et Echap le refus,
+      // sauf si une fenetre ouverte par-dessus garde la touche (volet du
+      // journal, reglages, confirmation, menu d'une carte). Les deux gardes
+      // ci-dessus passent AVANT : elles valent aussi pour ces touches.
+      if (questionAuJoueur) {
+        if (nouvelleScene && !clavierBloque(document)) {
+          const vise = cibleDeLaTouche(evenement.key, document.querySelector('.deroule-phase.est-scene'))
+          if (vise) {
+            evenement.preventDefault()
+            vise.click()
+          }
+        }
+        return
+      }
       if (evenement.key === 'Enter' || evenement.key === ' ') {
         evenement.preventDefault()
         // En relecture, Entree ramene a l'etape en cours, et ne valide RIEN :
         // l'etape en cours n'est meme pas a l'ecran.
         if (relecture) {
           setRelecture(undefined)
+          return
+        }
+        // Le cartouche du bas a encore une page a montrer pour cette etape
+        // (D41) : la touche la tourne, comme son bouton, sans rien valider.
+        const page = nouvelleScene ? boutonPageSuivante(document.querySelector('.deroule-phase.est-scene')) : undefined
+        if (page) {
+          page.click()
           return
         }
         avancer()
@@ -1162,7 +1209,7 @@ export function DeroulePhase({
   // bas : un hook place apres elle ferait tomber tout le plateau.
   const visible = Boolean(etape) && !termine && !partieFinie
 
-  // Les etapes qui attendent un VRAI clic, avance auto ou pas : le bilan de
+  // Les etapes qui attendent un VRAI clic, meme celles d'un autre joueur : le bilan de
   // fin de phase (le joueur reprend la main, il doit le voir) et la chute
   // d'un heros (le moment le plus important d'une partie ne defile pas). Le
   // bilan se reconnait a son temps : `avecBilan` est le seul a le produire.
@@ -1173,15 +1220,12 @@ export function DeroulePhase({
   // ⚠ UNE ETAPE QUI VISE UN AUTRE JOUEUR PASSE TOUTE SEULE, le temps de la
   // lire. Voir `viseUnAutreJoueur` : elle se montre, mais elle ne demande pas
   // NOTRE clic, le temps de voir le coup.
-  const delaiAvant =
-    surTable && viseUnAutreJoueur
-      ? DELAI_ETAPE_D_UN_AUTRE_MS
-      : avanceAuto
-        ? delaiAvanceMs
-        : undefined
+  // L'avance auto est retiree (pas a pas strict, 03/10/2026) : ce minuteur ne
+  // sert plus qu'a cela.
+  const delaiAvant = surTable && viseUnAutreJoueur ? DELAI_ETAPE_D_UN_AUTRE_MS : undefined
 
-  // L'HORLOGE du cartouche, la seule de toute la phase. Elle sert a l'avance
-  // auto (delai de lecture).
+  // L'HORLOGE du cartouche, la seule de toute la phase. Elle passe seule, sur
+  // la table, l'etape qui vise un autre joueur (delai de lecture).
   //
   // Un minuteur par etape affichee, nettoye au demontage et a chaque
   // changement d'etape (c'est `etape?.cle` dans les dependances qui le
@@ -1191,7 +1235,7 @@ export function DeroulePhase({
   // se superposeraient et une etape serait sautee.
   //
   // Aucun minuteur :
-  //  - sans avance auto, evidemment ;
+  //  - sur une etape qui ne vise pas un autre joueur, evidemment ;
   //  - hors ecran (`visible`) : rien a avancer ;
   //  - `suspendu` : le joueur relit, apres un « Precedent » ;
   //  - `enAttente` : le cartouche est au bout de ce qu'il sait et attend que
@@ -1259,26 +1303,18 @@ export function DeroulePhase({
   // Dans le mode « Sur la table », c'est exactement l'inverse : la table EST
   // le recit, et l'assombrir reviendrait a eteindre ce qu'on demande de
   // regarder. Constate a l'ecran des la premiere capture.
-  useDerouleScene(etape, visible && !surTable)
+  // ⚠ LE CARTOUCHE DU BAS NON PLUS (refonte du 04/10/2026) : il ne rejoue
+  // aucune carte par-dessus la table, il la laisse lisible au-dessus de lui.
+  // Seul le telephone garde le voile.
+  useDerouleScene(etape, visible && !surTable && telephone)
   // Les cartes en cause s'allument sur la table, sans mouvement (rapport
   // Yarro n46) : le recit est dans le cartouche, le regard trouve ses cartes.
   useSurbrillanceEtape(visible ? cartesConcernees(etape) : [])
 
-  // LE MOMENT OU L'ON PEUT AGIR change d'aspect : tant que la question du
-  // moteur est logee dans la scene, le body porte `deroule-question` et
-  // board.css sort la main du voile, ses cartes jouables en surbrillance.
-  // Demande de l'utilisateur : « si on peut defendre ou jouer une carte, j'ai
-  // envie que ce soit bien visible ». La lueur rouge qui l'accompagnait a ete
-  // retiree le 04/10/2026 (halo-main.test.ts).
-  const questionLogee = visible && questionAuJoueur && question !== undefined
-  useEffect(() => {
-    if (!questionLogee) return
-    document.body.classList.add('deroule-question')
-    return () => {
-      document.body.classList.remove('deroule-question')
-    }
-  }, [questionLogee])
-
+  // ⚠ PLUS DE `body.deroule-question` (refonte du 04/10/2026). Il sortait la
+  // main du voile pendant une question ; la scene du PC laisse desormais la
+  // main visible pendant la phase, sans voile (revirement du 05/10/2026,
+  // `main-visible.ts`) ; sa regle est partie de board.css (halo-main.test.ts).
 
   // Le `return null` vient APRES tous les hooks, jamais avant : React exige
   // le meme nombre de hooks, dans le meme ordre, a chaque rendu. Ce composant
@@ -1340,8 +1376,14 @@ export function DeroulePhase({
   // Le cartouche des ETAPES garde sa place d'une etape a la suivante (signalement
   // Yarro, 01/10/2026 : « toujours pas moyen de bouger la fenetre des etapes
   // du mechant ») ; seule la question se repose a chaque etape.
+  // ⚠ LE CARTOUCHE DU BAS revient en bas a la PHASE suivante, jamais d'une
+  // etape a l'autre (D2) : sa signature est la phase racontee.
   const { decalage: decalageQuestion, gestes: gestesQuestion } = useGlisserPanneau(
-    questionAuJoueur ? `question|${etape?.cle ?? 'sans-etape'}` : 'etapes'
+    nouvelleScene
+      ? `scene|${cleDeLaPhase}`
+      : questionAuJoueur
+        ? `question|${etape?.cle ?? 'sans-etape'}`
+        : 'etapes'
   )
   const styleDeplace: CSSProperties | undefined =
     decalageQuestion.dx !== 0 || decalageQuestion.dy !== 0
@@ -1364,7 +1406,7 @@ export function DeroulePhase({
    * à côté d'elle.
    *
    * Un PORTAIL plutôt qu'un recalcul en coordonnées de page : l'état du
-   * composant reste où il est (index de l'étape, avance auto, minuteurs), seul
+   * composant reste où il est (index de l’étape, minuteurs), seul
    * le nœud DOM déménage. Et le trait, qui couvre tout le cadre, a besoin du
    * même repère.
    */
@@ -1408,6 +1450,61 @@ export function DeroulePhase({
         {contenu}
       </>,
       cadre
+    )
+  }
+
+  // LE CARTOUCHE DU BAS (scene PC, refonte du 04/10/2026). Tout ce qui precede
+  // est la mecanique, commune aux trois rendus ; a partir d'ici, la scene du PC
+  // dessine dans `CartouchePhase`, et la table comme le telephone gardent le
+  // rendu qui suit, inchange. Le composant rend lui-meme `null` quand il n'a
+  // rien a montrer (ni etape, ni question avant la premiere etape).
+  if (nouvelleScene) {
+    // LA RELECTURE PAR LES PASTILLES (D22, D23). Le controleur la retient en
+    // onglets (six temps, `relecture`) ; le cartouche du bas parle en
+    // pastilles (cinq) : ④ « Cartes rencontre » se relit par ses revelations,
+    // la distribution n'etant plus une etape (D15).
+    const ongletDeLaPastille: Record<ClePastille, CleOnglet> = {
+      menace: 'menace',
+      mechant: 'mechant',
+      sbires: 'sbires',
+      'cartes-rencontre': 'revelation',
+      bilan: 'bilan',
+    }
+    const pastilleRelue = relecture ? pastilleDuTemps(relecture.temps) : undefined
+    return (
+      <CartouchePhase
+        refCartouche={setElCartouche}
+        style={styleDeplace}
+        gestes={gestesDeplacer}
+        etape={etape}
+        etapes={etapesAffichees}
+        index={index}
+        efface={termine || partieFinie}
+        questionAuJoueur={questionAuJoueur}
+        question={question}
+        questionDuMoteur={questionDuMoteur}
+        questionDUnAutre={questionDUnAutre}
+        tempsQuestion={tempsQuestion}
+        avancer={avancer}
+        enAttente={enAttente}
+        attendUnAutreJoueur={attendUnAutreJoueur}
+        nomJoueurAttendu={nomJoueurAttendu}
+        secondesFilet={secondesFilet}
+        defaiteLocale={defaiteLocale}
+        boostsMontres={boostsMontres}
+        tempsParDecision={tempsParDecision}
+        pvMaxParNom={pvMaxParNom}
+        carteScene={carteScene}
+        nomFr={nomFr}
+        texteEtoile={texteEtoile}
+        infoCarte={infoCarte}
+        infoRevelee={infoRevelee}
+        cartesDistribuees={cartesDistribuees}
+        herosLocauxIds={herosLocauxIds}
+        herosDesAutresIds={herosDesAutresIds}
+        relecture={pastilleRelue ? { temps: pastilleRelue } : undefined}
+        setRelecture={(r) => setRelecture(r ? { temps: ongletDeLaPastille[r.temps] } : undefined)}
+      />
     )
   }
 

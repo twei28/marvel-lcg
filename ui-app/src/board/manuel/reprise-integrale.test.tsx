@@ -144,13 +144,18 @@ describe('tout revient a la reprise (tache 4) : bandeau et deroule de phase', ()
 describe('tout revient a la reprise (tache 4) : demande centrale (le mulligan)', () => {
   it('disparait pendant la pause puis reapparait a la reprise', async () => {
     const { container } = monter()
-    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: false }), demande: demandeMulligan(), aNous: true })
+    // Au tour du joueur, comme l'assistant ci-dessous : en phase du mechant
+    // (la phase de la fixture), le cartouche du bas porte la question dans
+    // son sous-cadre (lot 4 de la refonte du 04/10/2026) et le panneau
+    // central se tait. Un mulligan ne se pose de toute facon jamais la.
+    const tour = { mode_manuel: false, phase: 'Player Turn' }
+    await emettre({ monde: mondeDeTest({ ...tour, manuel_actif: false }), demande: demandeMulligan(), aNous: true })
     expect(container.querySelector('.demande-centrale')).not.toBeNull()
 
-    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: true }), demande: demandeMulligan(), aNous: true })
+    await emettre({ monde: mondeDeTest({ ...tour, manuel_actif: true }), demande: demandeMulligan(), aNous: true })
     expect(container.querySelector('.demande-centrale')).toBeNull()
 
-    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: false }), demande: demandeMulligan(), aNous: true })
+    await emettre({ monde: mondeDeTest({ ...tour, manuel_actif: false }), demande: demandeMulligan(), aNous: true })
     expect(container.querySelector('.demande-centrale')).not.toBeNull()
   })
 })

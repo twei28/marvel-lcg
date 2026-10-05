@@ -71,6 +71,34 @@ describe('traduireMoteur', () => {
   })
 })
 
+describe('traduireMoteur : les choix imprimés par les scripts de cartes (D4, 05/10/2026)', () => {
+  it('traduit les choix les plus fréquents, nombre compris', () => {
+    enFrancais()
+    expect(traduireMoteur('Take 2 damage')).toBe('Subir 2 dégâts')
+    expect(traduireMoteur('Take 1 damage')).toBe('Subir 1 dégât')
+    expect(traduireMoteur('Take 2 indirect damage')).toBe('Subir 2 dégâts indirects')
+    expect(traduireMoteur('Place 1 threat on the main scheme')).toBe('Placer 1 menace sur la manigance principale')
+    expect(traduireMoteur('Place 2 threat here')).toBe('Placer 2 menaces ici')
+    expect(traduireMoteur('Draw 1 card')).toBe('Piocher 1 carte')
+    expect(traduireMoteur('Draw 2 cards')).toBe('Piocher 2 cartes')
+    expect(traduireMoteur('Deal 3 damage to an enemy')).toBe('Infliger 3 dégâts à un ennemi')
+    expect(traduireMoteur('Remove 2 threat from a scheme')).toBe('Retirer 2 menaces d’une manigance')
+    expect(traduireMoteur('Stun an enemy')).toBe('Rendre un ennemi sonné')
+    expect(traduireMoteur('Confuse an enemy')).toBe('Rendre un ennemi désorienté')
+  })
+
+  it('laisse en anglais un choix inconnu (le texte de la carte reste le repère)', () => {
+    enFrancais()
+    expect(traduireMoteur('Vertigo gets +2 ATK for this attack')).toBe('Vertigo gets +2 ATK for this attack')
+    expect(traduireMoteur('Take damage equal to Juggernaut\'s ATK')).toBe('Take damage equal to Juggernaut\'s ATK')
+  })
+
+  it("ne touche à rien en anglais", () => {
+    enAnglais()
+    expect(traduireMoteur('Take 2 damage')).toBe('Take 2 damage')
+  })
+})
+
 describe('tonaliteAction — les couleurs survivent à la traduction', () => {
   it('reconnaît les libellés français', () => {
     expect(tonaliteAction('Attaquer')).toBe('attack')

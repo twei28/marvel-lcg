@@ -152,3 +152,57 @@ describe('la question de la manigance (Reveal_Main_Scheme)', () => {
     expect(questionDansLePanneau(defense({ sceneCentrale: false }))).toBe(true)
   })
 })
+
+// LE CARTOUCHE DU BAS (refonte du 04/10/2026, scene PC). Deux champs
+// optionnels, faux par defaut : les seize cas ci-dessus ne bougent pas.
+//  - `cartoucheEnBas` : pendant la phase, le cartouche colle en bas porte TOUT
+//    (la question, et ce que la narration racontait au centre) ;
+//  - `coupHorsPhaseEnScene` : hors phase, une attaque annoncee pendant le tour
+//    du joueur ouvre le cartouche « Pendant ton tour », qui porte la defense.
+describe('le cartouche du bas (scene PC)', () => {
+  it('la narration se tait sous le cartouche du bas pendant la phase', () => {
+    const sansQuestion = defense({ moteurAttendLeJoueur: false, effetEnCours: true, cartoucheEnBas: true })
+    expect(narrationAuCentre(sansQuestion, { connecte: true, evenementImportant: true })).toBe(false)
+    // Temoin : sans le cartouche du bas, la meme situation narre au centre.
+    const temoin = defense({ moteurAttendLeJoueur: false, effetEnCours: true })
+    expect(narrationAuCentre(temoin, { connecte: true, evenementImportant: true })).toBe(true)
+    // Hors phase, le cartouche du bas ne dit rien a la narration.
+    const horsPhase = defense({ moteurAttendLeJoueur: false, effetEnCours: true, cartoucheEnBas: true, phaseMechantEnCours: false })
+    expect(narrationAuCentre(horsPhase, { connecte: true, evenementImportant: true })).toBe(true)
+  })
+
+  it('hors phase, une annonce hors phase en scene met la question dans la scene', () => {
+    const e = defense({ phaseMechantEnCours: false, coupHorsPhaseEnScene: true })
+    expect(questionDansLaScene(e)).toBe(true)
+    expect(questionDansLePanneau(e)).toBe(false)
+  })
+
+  it('hors phase sans coup : le panneau prend la question', () => {
+    const e = defense({ phaseMechantEnCours: false, coupHorsPhaseEnScene: false })
+    expect(questionDansLaScene(e)).toBe(false)
+    expect(questionDansLePanneau(e)).toBe(true)
+  })
+
+  it('mode table hors phase : le panneau, meme avec un coup hors phase', () => {
+    const e = defense({ sceneCentrale: false, phaseMechantEnCours: false, coupHorsPhaseEnScene: true })
+    expect(questionDansLaScene(e)).toBe(false)
+    expect(questionDansLePanneau(e)).toBe(true)
+  })
+
+  // LOT 5 (planche, etat 15b) : pendant le tour, « Spider-Man subit 4 dégâts »
+  // se posait au centre pendant que le cartouche « Pendant ton tour » montrait
+  // la meme attaque. Tant qu'un cartouche du bas est a l'ecran hors phase (ce
+  // coup, ou la relecture du journal), il est le seul a raconter.
+  it('hors phase, la narration se tait tant qu un cartouche du bas est a l ecran', () => {
+    const affiche = defense({
+      moteurAttendLeJoueur: false,
+      effetEnCours: true,
+      cartoucheEnBas: true,
+      phaseMechantEnCours: false,
+      cartoucheHorsPhaseAffiche: true,
+    })
+    expect(narrationAuCentre(affiche, { connecte: true, evenementImportant: false })).toBe(false)
+    // Temoin : le meme effet sans cartouche a l'ecran narre au centre.
+    expect(narrationAuCentre({ ...affiche, cartoucheHorsPhaseAffiche: false }, { connecte: true, evenementImportant: false })).toBe(true)
+  })
+})

@@ -90,6 +90,54 @@ class PlayerAction:
         })
 
     @staticmethod
+    def _TypeDeLaCarte(face: 'CardFace') -> str:
+        """Le type d'une carte rencontre, en anglais du moteur (`Treachery`)."""
+        return getattr(face, 'type_name', type(face).__name__)
+
+    @staticmethod
+    def JournaliserRevelationHorsPhase(player: 'Player', face: 'CardFace',
+                                       reveal_message: 'Message.WhenPlayerRevealCard',
+                                       is_by_flipping: bool) -> None:
+        """Une carte rencontre revelee PENDANT LE TOUR D'UN JOUEUR (D26,
+        04/10/2026) : « Pendant ton tour » la montre comme la phase montre les
+        siennes. Appelee par `ModelOnEvent.Reveal`, le seul passage commun :
+        `RevealEncounterCards` (ci-dessus) ne sert qu'a l'etape 4, et
+        `Puzzle.Reveal` ou `Worlds.RevealEncounterDeckTopCard` passent par
+        `Reveal` directement.
+
+        Quatre gardes : le tour d'un joueur (pas la mise en place, pas la phase
+        du mechant, que l'etape 4 journalise deja) ; pas un retournement ; une
+        carte rencontre, jamais une manigance principale ; venue du deck
+        rencontre ou des cartes distribuees. Le fait a la forme de celui de
+        l'etape 4, sans `effets`. Sous garde, comme tout ce journal.
+        """
+        from game.card.face.base.card_encounter import EncounterCard
+        from game.card.face.card_type import MainScheme
+        try:
+            world = player.world
+            phase = world.GetPhaseText()
+            if not isinstance(phase, str) or not phase.startswith('Player ') or is_by_flipping:
+                return
+            if not EncounterCard.IsType(face) or MainScheme.IsType(face):
+                return
+            if not reveal_message.IsFromEncounterDeck():
+                return
+            world.stat.RecordFaitMechant(world.round_id, {
+                'genre': 'revelation',
+                'phase': phase,
+                'joueur': PlayerAction._SiegeDuJoueur(player),
+                'joueur_nom': getattr(player.GetIdentity(), 'name', None),
+                'carte': face.name,
+                'carte_id': face.card.object_id,
+                'fait_id': (f"revelation:{world.round_id}:{face.card.object_id}"
+                            f":{len(world.stat.faits_mechant)}"),
+                'par_surge': bool(getattr(face.card, 'revele_par_surge', False)),
+                'type': PlayerAction._TypeDeLaCarte(face),
+            })
+        except Exception:
+            pass
+
+    @staticmethod
     def _PhotoDeLaTable(world: 'World') -> 'Dict[str, Any]':
         """Ce qu'une carte revelee peut changer, photographie AVANT puis APRES.
 
@@ -267,6 +315,10 @@ class PlayerAction:
                 # du meme evenement, et croit qu'un effet d'annulation a
                 # echoue.
                 'par_surge': bool(getattr(face.card, 'revele_par_surge', False)),
+                # Le TYPE de la carte (cartouche, 04/10/2026), « Treachery »,
+                # « Minion »... : le nom de classe, meme source que le
+                # `card_type` du descripteur.
+                'type': PlayerAction._TypeDeLaCarte(face),
             }
             PlayerAction._JournaliserPhaseDuMechant(player, 'Reveal Encounter Cards', revelation)
             avant = PlayerAction._PhotoDeLaTable(world)

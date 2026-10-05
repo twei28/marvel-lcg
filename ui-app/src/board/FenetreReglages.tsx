@@ -391,7 +391,15 @@ export function ContenuOnglet({
             p.cyclerRevelation()
             if (vers !== suivantRevelation(p.revelation)) p.cyclerRevelation()
           }}
-          detail={t('Au centre de l’écran, le temps de la lire')}
+          // D42 (04/10/2026) : en « Étape par étape », la carte révélée se montre
+          // en grand DANS le cartouche du bas. La ligne reste, grisée, et dit
+          // pourquoi ; les deux autres modes la gardent.
+          disponible={p.modePhase !== 'detaille'}
+          detail={
+            p.modePhase === 'detaille'
+              ? t('Le cartouche s’en charge')
+              : t('Au centre de l’écran, le temps de la lire')
+          }
         />
         <p className="reglages-groupe">{t('Le jeu agit pour moi quand il n’y a qu’un choix')}</p>
         <LigneBascule

@@ -211,7 +211,8 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
     // offre pourtant trois pastilles, donc elle cycle autant de fois qu'il
     // faut. Depuis « court », atteindre « off » demande deux pas.
     const cyclerRevelation = vi.fn()
-    render(<ContenuOnglet onglet="jeu" p={proprietes({ revelation: 'court', cyclerRevelation })} />)
+    // « D'un coup » : en « Étape par étape », la ligne est grisée (D42, plus bas).
+    render(<ContenuOnglet onglet="jeu" p={proprietes({ revelation: 'court', cyclerRevelation, modePhase: 'instantane' })} />)
     // ⚠ Chercher DANS la ligne : « Non » est aussi l'etat affiche par chaque
     // interrupteur coupe de l'onglet, un `getByText` global en trouve plusieurs.
     const cartes = within(ligne('Carte révélée en grand'))
@@ -220,6 +221,29 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
     cyclerRevelation.mockClear()
     fireEvent.click(cartes.getByText('Non'))
     expect(cyclerRevelation).toHaveBeenCalledTimes(2)
+  })
+})
+
+// D42 (refonte du cartouche, 04/10/2026) : en « Étape par étape », la carte
+// révélée se montre en grand DANS le cartouche du bas. La ligne reste dans les
+// réglages, grisée, et dit pourquoi ; les deux autres modes la gardent active.
+describe('« Carte révélée en grand » et le cartouche', () => {
+  it('grisée en « Étape par étape », avec « Le cartouche s’en charge »', () => {
+    render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'detaille' })} />)
+    const rangee = ligne('Carte révélée en grand')
+    expect(rangee.className).toContain('est-desactive')
+    expect(within(rangee).getByText('Le cartouche s’en charge')).toBeInTheDocument()
+    for (const bouton of within(rangee).getAllByRole('button')) expect(bouton).toBeDisabled()
+  })
+
+  it('active, avec son explication d’origine, dans les deux autres modes', () => {
+    for (const modePhase of ['instantane', 'sur-table'] as const) {
+      const { unmount } = render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase, essais: true })} />)
+      const rangee = ligne('Carte révélée en grand')
+      expect(rangee.className, modePhase).not.toContain('est-desactive')
+      expect(within(rangee).getByText('Au centre de l’écran, le temps de la lire')).toBeInTheDocument()
+      unmount()
+    }
   })
 })
 

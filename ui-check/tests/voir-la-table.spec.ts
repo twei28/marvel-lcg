@@ -31,7 +31,7 @@ function feuilleDuPlateau(): string {
 const TABLE = `
 <div id="table" style="position:fixed;inset:0;z-index:1;background:#234"></div>
 <section class="deroule-phase est-question" role="dialog">
-  <p class="deroule-a-toi poignee-glisser">À toi de jouer</p>
+  <div class="deroule-ligne-haut poignee-glisser">Attaque de Rhino</div>
   <div class="deroule-question-scene"><button type="button" id="choix">Choisir</button></div>
 </section>
 <div class="plateau-selecteur" role="group">
@@ -63,8 +63,8 @@ const toucheAuCentre = (page: import('@playwright/test').Page, selecteur: string
 
 test('le bandeau rouge du cartouche de question reçoit le pointeur', async ({ page }) => {
   await poser(page);
-  const touche = await toucheAuCentre(page, '.deroule-a-toi');
-  expect(touche?.classes, 'le bandeau n est pas ce que le pointeur touche').toContain('deroule-a-toi');
+  const touche = await toucheAuCentre(page, '.deroule-ligne-haut');
+  expect(touche?.classes, 'le bandeau n est pas ce que le pointeur touche').toContain('deroule-ligne-haut');
 });
 
 test("« Voir la table » rend les fenêtres fantômes et la table cliquable à travers", async ({ page }) => {
@@ -79,7 +79,7 @@ test("« Voir la table » rend les fenêtres fantômes et la table cliquable à 
   expect(opacites.selecteur).toBe('0.15');
 
   // Le bandeau, la poignée et le bouton « Choisir » ne captent plus rien.
-  for (const sel of ['.deroule-a-toi', '#choix', '.plateau-selecteur-entete']) {
+  for (const sel of ['.deroule-ligne-haut', '#choix', '.plateau-selecteur-entete']) {
     const touche = await toucheAuCentre(page, sel);
     expect(touche?.id, `${sel} capte encore le pointeur`).toBe('table');
   }

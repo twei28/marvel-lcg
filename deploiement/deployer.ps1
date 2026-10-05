@@ -92,7 +92,9 @@ if ($faireCode) {
     # possible des qu'une partie a tourne. Ils n'ont de toute facon rien a faire
     # sur le serveur : ils sont gitignores, ils pointent vers des chemins
     # Windows, et le launcher les reconstruit a son demarrage.
-    "--exclude=.game","--exclude=.game-src*",
+    "--exclude=.game","--exclude=.game-src*","--exclude=.game-essai*",
+    # Caches d'essai des sessions de test (.game-essai, .game-essai-*) : des liens vers des
+    # chemins Windows, qui faisaient echouer tar (Cannot stat: Invalid argument) le 05/10/2026.
     "--exclude=*.pyc","--exclude=.venv","--exclude=venv",
     # Les scans voyagent par l'etape « Images custom », jamais dans
     # l'archive de code. Sans pics-fr, oubliee jusqu'au 06/09/2026,

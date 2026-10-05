@@ -1,6 +1,6 @@
 // Le texte d'une capacite proposee par le moteur (voir texte-capacite.ts).
 import { describe, expect, it } from 'vitest'
-import { extraireCapacite, nettoyerTexteCarte } from './texte-capacite'
+import { extraireBoost, extraireCapacite, extraireEffetRevele, nettoyerTexteCarte } from './texte-capacite'
 
 const JENNIFER =
   '"I Object!" — <b>Interrupt</b>: When threat would be placed on a scheme, prevent 1 of that threat. (Limit once per round.)'
@@ -70,5 +70,48 @@ describe('extraireCapacite', () => {
   it('rien sans texte', () => {
     expect(extraireCapacite(undefined, 'Interrupt', 'Interrupt')).toBeUndefined()
     expect(extraireCapacite('   ', 'Interrupt', 'Interrupt')).toBeUndefined()
+  })
+})
+
+// LA PHRASE DU BOOST ★ (D10) : ce que la ligne « ★ Sweeping Swoop : … » du
+// cartouche du bas dit sous la rangee. Le texte complet de la carte porte aussi
+// son effet « Une fois révélée », qui n'a rien a faire la.
+describe('extraireBoost', () => {
+  it('rend la phrase apres « Boost : », sans balises ni etoile (01168, francais)', () => {
+    const texte =
+      '<b>Une fois révélée</b> : sonnez votre héros. Si le Vautour est en jeu, cette carte gagne Renfort.\n\n[star] <b>Boost</b>: si cette activation inflige des dégâts à un personnage ami, sonnez ce personnage.'
+    expect(extraireBoost(texte)).toBe('si cette activation inflige des dégâts à un personnage ami, sonnez ce personnage.')
+  })
+
+  it('lit aussi le texte anglais de cards.json', () => {
+    expect(extraireBoost('When Revealed: Stun your hero.\n[star] <b>Boost</b>: Deal 1 damage to each player.')).toBe(
+      'Deal 1 damage to each player.'
+    )
+  })
+
+  it('rien sans paragraphe de boost, ni sans texte', () => {
+    expect(extraireBoost('<b>When Revealed</b>: Stun your hero.')).toBeUndefined()
+    expect(extraireBoost(undefined)).toBeUndefined()
+  })
+})
+
+describe('extraireEffetRevele : le texte imprimé d une carte révélée, sans ce que le cartouche dit déjà', () => {
+  it('rend un paragraphe par ligne, sans balises', () => {
+    expect(extraireEffetRevele('<b>When Revealed</b>: Take 2 damage.\nThe villain gets +1 ATK.')).toEqual([
+      'When Revealed: Take 2 damage.',
+      'The villain gets +1 ATK.',
+    ])
+  })
+
+  it('retire le Renfort (la flèche le dit) et le Boost (il se lit sous la rangée)', () => {
+    const texte =
+      'Surge. <i>(After this card is revealed, reveal 1 additional encounter card.)</i>\n<hr />\n[star] <b>Boost</b>: Put Weapons Runner into play engaged with you.\n<b>When Revealed</b>: Discard 1 card.'
+    expect(extraireEffetRevele(texte)).toEqual(['When Revealed: Discard 1 card.'])
+    expect(extraireEffetRevele('Renfort. (Après avoir été révélée…)\nAbsorbe 1 dégât.')).toEqual(['Absorbe 1 dégât.'])
+  })
+
+  it('rien à lire : liste vide', () => {
+    expect(extraireEffetRevele(undefined)).toEqual([])
+    expect(extraireEffetRevele('Surge.')).toEqual([])
   })
 })

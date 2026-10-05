@@ -149,12 +149,19 @@ function useEchelle(cadre: React.RefObject<HTMLDivElement | null>) {
         largeur: Math.max(SCENE.largeur, width / echelle),
         hauteur: Math.max(SCENE.hauteur, height / echelle),
       })
+      // Recopiee sur la RACINE pour ce qui vit hors de la scene : le cartouche
+      // du bas (cartouche-phase.css) se dimensionne sur la rangee de la main,
+      // a l'echelle de la table.
+      document.documentElement.style.setProperty('--echelle', String(echelle))
     }
 
     recalculer()
     const observateur = new ResizeObserver(recalculer)
     observateur.observe(element)
-    return () => observateur.disconnect()
+    return () => {
+      observateur.disconnect()
+      document.documentElement.style.removeProperty('--echelle')
+    }
   }, [cadre])
 
   return mise

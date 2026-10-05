@@ -14,10 +14,12 @@ import {
   tempsDeLaQuestion,
   lignesBilan,
   rangDansLeTemps,
+  compteurDeLEtape,
   type EtapeDeroule,
 } from './deroule-phase'
 import type {
   FaitActivationAnnonce,
+  FaitActivationBoosts,
   FaitActivationResolue,
   FaitDistribution,
   FaitEntree,
@@ -27,6 +29,7 @@ import type {
   FaitStatut,
 } from './world'
 import type { EntreeHistorique } from './HistoriquePartie'
+import { coupsDe } from './frise-phase'
 
 const attaque = (extra: Partial<FaitActivationResolue> = {}): FaitActivationResolue => ({
   genre: 'attaque',
@@ -1568,5 +1571,327 @@ describe('les activations hors phase', () => {
     expect(coup).toMatchObject({ titre: 'attaque', horsPhase: true, auteurNom: 'Ultron', montant: 5 })
     expect(etapesHorsPhase([horsPhase], 3, new Set([50]))).toEqual([])
     expect(etapesHorsPhase([attaque({ round_id: 2 })], 2, new Set([50]))).toEqual([])
+  })
+})
+
+// LE CARTOUCHE DU BAS (refonte du 04/10/2026) lit des faits enrichis : le fait
+// intermediaire `boosts` (defenseur et boosts retournes avant les degats), le
+// heros vise et le defenseur sur le resolu, la decomposition de la menace, les
+// stats d'un stade, le type d'une carte revelee. Chaque cle est OPTIONNELLE :
+// un moteur plus ancien, une sauvegarde ou une fixture donnent l'etape
+// d'avant, sans rien inventer.
+describe('les faits enrichis du cartouche', () => {
+  const fait = (f: FaitMechant): FaitMechant => f
+  const annonceRhino = fait({
+    genre: 'attaque',
+    etat: 'annonce',
+    activation_id: 3,
+    round_id: 1,
+    phase: 'Enemy Activation',
+    auteur: 'Rhino',
+    auteur_id: 12,
+    cible: 'Spider-Man',
+    cible_id: 40,
+    base: 2,
+  })
+  const boostsRhino: FaitActivationBoosts = {
+    genre: 'attaque',
+    etat: 'boosts',
+    activation_id: 3,
+    round_id: 1,
+    phase: 'Enemy Activation',
+    auteur: 'Rhino',
+    auteur_id: 12,
+    cible: 'Spider-Man',
+    cible_id: 40,
+    defenseur: 'Spider-Man',
+    defenseur_id: 40,
+    defense: 3,
+    boosts: [
+      { nom: 'Charge', id: 77, apport: 1 },
+      { nom: 'Sweeping Swoop', id: 78, apport: 0, etoile: true },
+    ],
+    boost: 1,
+    total_avant_defense: 3,
+    base_imprimee: 2,
+  }
+
+  it('un fait etat boosts donne une etape annonce sous la meme cle, enrichie', () => {
+    const [annonce] = etapesDeroule([annonceRhino], [], 1, new Set([12]))
+    const [etape] = etapesDeroule([boostsRhino], [], 1, new Set([12]))
+    expect(etape?.cle).toBe(annonce?.cle)
+    expect(etape?.cle).toBe('activation:3')
+    expect(etape).toMatchObject({
+      etat: 'annonce',
+      temps: 'mechant',
+      titre: 'attaque',
+      defenseurId: 40,
+      defenseurNom: 'Spider-Man',
+      defense: 3,
+      totalAvantDefense: 3,
+      baseImprimee: 2,
+      valeurAnnoncee: 2,
+    })
+    expect(etape?.boosts).toHaveLength(2)
+    expect(etape?.boosts[1]).toMatchObject({ nom: 'Sweeping Swoop', cibleId: 78, apport: 0, etoile: true })
+    // Rien n'est encore subi : ni montant, ni compteur, ni defaite.
+    expect(etape?.montant).toBeUndefined()
+    expect(etape?.restant).toBeUndefined()
+    expect(etape?.defaite).toBeUndefined()
+  })
+
+  it('un fait boosts sans defenseur reste une annonce sans defenseur', () => {
+    const sansDefense: FaitActivationBoosts = { ...boostsRhino, defenseur: null, defenseur_id: null, defense: 0 }
+    const [etape] = etapesDeroule([sansDefense], [], 1, new Set([12]))
+    expect(etape?.etat).toBe('annonce')
+    expect(etape?.defenseurId).toBeUndefined()
+    expect(etape?.defenseurNom).toBeUndefined()
+  })
+
+  it('les cles nouvelles sont portees quand le fait les a', () => {
+    const resolu = attaque({
+      etat: 'resolu',
+      activation_id: 4,
+      round_id: 1,
+      auteur: 'Rhino',
+      auteur_id: 12,
+      cible: 'Black Widow',
+      cible_id: 41,
+      base: 2,
+      boost: 1,
+      defense: 1,
+      inflige: 2,
+      subi: 1,
+      restant: 1,
+      defenseur: 'Black Widow',
+      defenseur_id: 41,
+      cible_annoncee: 'Spider-Man',
+      cible_annoncee_id: 40,
+      base_imprimee: 2,
+      cause: 'Stampede',
+      cause_id: 88,
+    })
+    const manigance = attaque({
+      genre: 'manigance',
+      activation_id: 5,
+      round_id: 1,
+      auteur: 'Rhino',
+      auteur_id: 12,
+      cible: 'Effraction',
+      cible_id: 9,
+      subi: 2,
+      restant: 6,
+      plafond: 7,
+    })
+    const menace = fait({
+      genre: 'menace',
+      round_id: 1,
+      phase: 'Main Scheme Place Threat',
+      cible: 'Effraction',
+      cible_id: 9,
+      montant: 2,
+      restant: 4,
+      plafond: 7,
+      escalade: 1,
+      acceleration: 1,
+      joueurs: 1,
+    })
+    const revelation = fait({
+      genre: 'revelation',
+      round_id: 1,
+      phase: 'Reveal Encounter Cards',
+      carte: 'Stampede',
+      carte_id: 88,
+      type: 'Treachery',
+    })
+    const stade = fait({
+      genre: 'stade',
+      round_id: 1,
+      phase: 'Enemy Activation',
+      quoi: 'mechant',
+      avant: 'Rhino',
+      carte: 'Rhino',
+      carte_id: 13,
+      avant_id: 12,
+      stats_avant: { pv_max: 14, atq: 2, man: 1 },
+      stats_apres: { pv_max: 15, atq: 3, man: 1 },
+    })
+    const etapes = etapesDeroule([menace, resolu, manigance, stade, revelation], [], 1, new Set([12]))
+    const parCle = (debut: string) => etapes.find((e) => e.cle.startsWith(debut))
+    expect(parCle('activation:4')).toMatchObject({
+      inflige: 2,
+      defenseurId: 41,
+      defenseurNom: 'Black Widow',
+      cibleAnnonceeId: 40,
+      baseImprimee: 2,
+      causeId: 88,
+    })
+    expect(parCle('activation:5')?.plafond).toBe(7)
+    expect(parCle('menace:')).toMatchObject({ escalade: 1, acceleration: 1, joueurs: 1 })
+    expect(parCle('revelation:')?.typeCarte).toBe('Treachery')
+    expect(parCle('stade:')).toMatchObject({
+      stadeAvantId: 12,
+      statsAvant: { pv_max: 14, atq: 2, man: 1 },
+      statsApres: { pv_max: 15, atq: 3, man: 1 },
+    })
+  })
+
+  it('un fait ancien sans ces champs : l etape ne les porte pas', () => {
+    const etapes = etapesDeroule(
+      [
+        fait({ genre: 'menace', round_id: 1, phase: 'Main Scheme Place Threat', cible: 'Effraction', cible_id: 9, montant: 1 }),
+        attaque({ activation_id: 4, round_id: 1, auteur_id: 12 }),
+        attaque({ genre: 'manigance', activation_id: 5, round_id: 1, auteur_id: 12 }),
+        fait({ genre: 'stade', round_id: 1, phase: 'Enemy Activation', quoi: 'mechant', avant: 'Rhino', carte: 'Rhino', carte_id: 13 }),
+        fait({ genre: 'revelation', round_id: 1, phase: 'Reveal Encounter Cards', carte: 'Stampede', carte_id: 88 }),
+      ],
+      [],
+      1,
+      new Set([12])
+    )
+    for (const etape of etapes) {
+      expect(etape.defenseurId).toBeUndefined()
+      expect(etape.defenseurNom).toBeUndefined()
+      expect(etape.cibleAnnonceeId).toBeUndefined()
+      expect(etape.baseImprimee).toBeUndefined()
+      expect(etape.totalAvantDefense).toBeUndefined()
+      expect(etape.escalade).toBeUndefined()
+      expect(etape.acceleration).toBeUndefined()
+      expect(etape.joueurs).toBeUndefined()
+      expect(etape.typeCarte).toBeUndefined()
+      expect(etape.stadeAvantId).toBeUndefined()
+      expect(etape.statsAvant).toBeUndefined()
+      expect(etape.statsApres).toBeUndefined()
+      expect(etape.causeId).toBeUndefined()
+    }
+    expect(etapes.find((e) => e.titre === 'manigance')?.plafond).toBeUndefined()
+    // `inflige` est publie depuis toujours : il est porte, meme par un fait ancien.
+    expect(etapes.find((e) => e.titre === 'attaque')?.inflige).toBe(5)
+  })
+
+  it('etapesHorsPhase avecRevelations garde une revelation datee du tour d un joueur, pas sans l option', () => {
+    const revelation = fait({
+      genre: 'revelation',
+      round_id: 2,
+      phase: 'Player 1 Turn',
+      carte: 'Stampede',
+      carte_id: 88,
+      type: 'Treachery',
+      par_surge: false,
+      joueur: 0,
+      joueur_nom: 'Spider-Man',
+    })
+    const [carte] = etapesHorsPhase([revelation], 2, new Set([12]), { avecRevelations: true })
+    expect(carte).toMatchObject({ titre: 'revelation', horsPhase: true, carteId: 88, typeCarte: 'Treachery' })
+    expect(etapesHorsPhase([revelation], 2, new Set([12]))).toEqual([])
+    // Elle n'entre jamais dans la phase du mechant du meme round.
+    expect(etapesDeroule([revelation], [], 2, new Set([12]))).toEqual([])
+  })
+})
+
+// L'ACTIVATION ANNULEE PAR SONNE (decision du 05/10/2026, etat 04 du
+// cartouche) : le moteur publie un fait `sonne`, l'etape le raconte. Le total
+// des sbires (`rang_sbire` / `total_sbires`) voyage sur les faits d'un sbire.
+describe('le fait Sonne et le total des sbires', () => {
+  const sonneRhino: FaitMechant = {
+    genre: 'sonne',
+    round_id: 1,
+    phase: 'Enemy Activation',
+    temps: 'attaque',
+    type: 'mechant',
+    joueur: 0,
+    auteur: 'Rhino',
+    auteur_id: 12,
+    cible: 'Spider-Man',
+    cible_id: 40,
+    statut_retire: true,
+    annule_par: 'Stunned',
+    annule_par_id: 99,
+    fait_id: 'sonne:1:12',
+  }
+
+  it('un ennemi sonne donne une etape sonne, rangee sous le mechant, sans etape d attaque', () => {
+    const etapes = etapesDeroule([sonneRhino], [], 1, new Set([12]))
+    expect(etapes).toHaveLength(1)
+    expect(etapes[0]).toMatchObject({
+      temps: 'mechant',
+      titre: 'sonne',
+      carteId: 12,
+      auteurNom: 'Rhino',
+      sonneTemps: 'attaque',
+      statutRetire: true,
+    })
+    expect(etapes[0]?.cibleId).toBeUndefined()
+  })
+
+  it('un sbire sonne se range sous les sbires, et une manigance se dit manigance', () => {
+    const [etape] = etapesDeroule(
+      [{ ...sonneRhino, type: 'sbire', temps: 'manigance', auteur_id: 31, auteur: 'Drone' }],
+      [],
+      1,
+      new Set([12])
+    )
+    expect(etape).toMatchObject({ temps: 'sbires', titre: 'sonne', carteId: 31, sonneTemps: 'manigance' })
+  })
+
+  it('un ennemi Constant ne perd pas Sonne : statutRetire reste faux', () => {
+    const [etape] = etapesDeroule([{ ...sonneRhino, statut_retire: false }], [], 1, new Set([12]))
+    expect(etape?.statutRetire).toBe(false)
+  })
+
+  it('une etape sonne ne compte ni degats ni menaces dans le bilan', () => {
+    const etapes = etapesDeroule([sonneRhino], [], 1, new Set([12]))
+    expect(coupsDe(etapes[0] as EtapeDeroule)).toEqual([])
+  })
+
+  it('rang_sbire et total_sbires passent du fait a l etape (activation et sonne)', () => {
+    const attaqueDrone: FaitMechant = {
+      genre: 'attaque',
+      etat: 'annonce',
+      activation_id: 5,
+      round_id: 1,
+      phase: 'Enemy Activation',
+      auteur: 'Drone',
+      auteur_id: 31,
+      cible: 'Spider-Man',
+      cible_id: 40,
+      base: 1,
+      rang_sbire: 1,
+      total_sbires: 2,
+    }
+    const [attaque, sonne] = etapesDeroule(
+      [attaqueDrone, { ...sonneRhino, type: 'sbire', auteur_id: 32, rang_sbire: 2, total_sbires: 2 }],
+      [],
+      1,
+      new Set([12])
+    )
+    expect(attaque).toMatchObject({ rangSbire: 1, totalSbires: 2 })
+    expect(sonne).toMatchObject({ rangSbire: 2, totalSbires: 2 })
+  })
+
+  it('sans rang_sbire (moteur ancien), l etape n en porte pas', () => {
+    const [etape] = etapesDeroule([sonneRhino], [], 1, new Set([12]))
+    expect(etape?.rangSbire).toBeUndefined()
+    expect(etape?.totalSbires).toBeUndefined()
+  })
+
+  it('compteurDeLEtape : le total annonce par le moteur des la premiere etape, repli sur le compte des etapes', () => {
+    const sbire = (cle: string, rangSbire?: number, totalSbires?: number): EtapeDeroule => ({
+      cle,
+      temps: 'sbires',
+      titre: 'attaque',
+      regle: '',
+      boosts: [],
+      rangSbire,
+      totalSbires,
+    })
+    // Une seule etape connue, mais le moteur annonce deux sbires.
+    expect(compteurDeLEtape([sbire('a', 1, 2)], 0)).toEqual({ rang: 1, total: 2 })
+    expect(compteurDeLEtape([sbire('a', 1, 2), sbire('b', 2, 2)], 1)).toEqual({ rang: 2, total: 2 })
+    // Un seul sbire : « 1 sur 1 » n'apprend rien.
+    expect(compteurDeLEtape([sbire('a', 1, 1)], 0)).toBeUndefined()
+    // Sans rang, l'ancien compte.
+    expect(compteurDeLEtape([sbire('a'), sbire('b')], 1)).toEqual({ rang: 2, total: 2 })
+    expect(compteurDeLEtape([sbire('a')], 0)).toBeUndefined()
   })
 })

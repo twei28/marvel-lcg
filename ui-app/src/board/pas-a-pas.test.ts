@@ -191,9 +191,9 @@ describe('le recentrage', () => {
 describe('qui retient l’accusé de réception', () => {
   const degats = monde({ phase: 'Enemy Activation', prompt: 'Doom subit 3 dégât(s)' })
 
-  // « Avance toute seule » n'est PAS l'affaire du moteur : c'est le cartouche
-  // qui s'avance lui-meme (DeroulePhase, prop `avanceAuto`) et relache la
-  // trame par le meme chemin que le clic « Suivant ». Le moteur, lui, attend
+  // « Avance toute seule » n'etait PAS l'affaire du moteur (reglage retire
+  // depuis, pas a pas strict) : c'est le cartouche qui relache la
+  // trame, par le meme chemin que le clic « Suivant ». Le moteur, lui, attend
   // toujours ce relachement : il n'a plus d'horloge propre. Il en avait une
   // (`attendre-delai`), et les deux divergeaient a la premiere etape : le
   // joueur lisait la menace, le mechant et ses sbires avaient deja frappe.

@@ -143,6 +143,11 @@ class Scenario(User):
 
         def advance(prev_villain: 'Villain', next_villain: 'Villain'):
             villain_card = prev_villain.card
+            # Les stats de la carte d'avant, lues AVANT l'avancee (fait `stade`,
+            # cartouche du 04/10/2026) : la nouvelle carte reprend le meme
+            # objet, et apres coup l'ancienne face rendait les PV max de la
+            # nouvelle (mesure sur Ultron : 22 au lieu de 17).
+            stats_avant = self.world.stat.StatsDuStade(prev_villain, courantes=False)
 
             world = by_effect.world
 
@@ -216,7 +221,8 @@ class Scenario(User):
 
             after_message = Message.AfterVillainAdvanced(new_villain, by_effect, message)
             after_message.Send()
-            self.world.stat.RecordStade(self.world, 'mechant', prev_villain, new_villain)
+            self.world.stat.RecordStade(self.world, 'mechant', prev_villain, new_villain,
+                                        stats_avant=stats_avant)
         pass
 
         if to_villain:

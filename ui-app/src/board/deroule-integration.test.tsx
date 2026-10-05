@@ -21,6 +21,7 @@ import { AttenteTable } from './AttenteTable'
 import { DELAI_SILENCE_TABLE_MS, useTableSilencieuse } from './attente-table'
 import { DeroulePhase } from './DeroulePhase'
 import { etapesDeroule } from './deroule-phase'
+import { fusionnerDistribution } from './frise-phase'
 import { Moteur, PHASES_DU_MECHANT, type EtatMoteur } from './moteur'
 import { moteurAttendUneReponse } from './DemandeCentrale'
 import type { Demande } from './ask'
@@ -254,22 +255,32 @@ function fauxFetch(url: string): Promise<Response> {
   return Promise.resolve(new Response('', { status: 404 }))
 }
 
-/** Le plateau, reduit a ce que la phase du mechant met en jeu. */
-function Table({ moteur }: { moteur: Moteur }) {
+/**
+ * Le plateau, reduit a ce que la phase du mechant met en jeu.
+ *
+ * `fusionner` : comme board.tsx en scene PC (D15), la distribution est retiree
+ * de la liste AVANT le cartouche (`fusionnerDistribution`). Sans lui, la liste
+ * brute de la table et du telephone.
+ */
+function Table({ moteur, fusionner = false }: { moteur: Moteur; fusionner?: boolean }) {
   const [etat, setEtat] = useState<EtatMoteur>()
   useEffect(() => moteur.ecouter(setEtat), [moteur])
   const monde = etat?.monde
   if (!etat || !monde) return null
   // Le meme cablage que board.tsx, aux seuls arguments que la phase demande.
-  const etapes = etapesDeroule(
+  const brutes = etapesDeroule(
     monde.faits_mechant ?? [],
     [],
     monde.round_id,
     new Set([MECHANT_ID])
   )
+  const { etapes, cartesDistribuees } = fusionner
+    ? fusionnerDistribution(brutes)
+    : { etapes: brutes, cartesDistribuees: 0 }
   return (
     <DeroulePhase
       etapes={etapes}
+      cartesDistribuees={cartesDistribuees}
       identitePhase={monde.round_id}
       phaseMechantEnCours={PHASES_DU_MECHANT.has(monde.phase)}
       partieFinie={false}
@@ -285,6 +296,13 @@ function Table({ moteur }: { moteur: Moteur }) {
     />
   )
 }
+
+/**
+ * LA PHRASE DE L'ETAPE LUE. Le cartouche du bas (scene PC, refonte du
+ * 04/10/2026) dessine une rangee de cartes : la phrase devient le nom
+ * accessible de son corps. Le rythme verifie ici ne change pas.
+ */
+const etapeLue = () => document.querySelector('.deroule-corps')?.getAttribute('aria-label') ?? ''
 
 /** Laisse les lectures asynchrones du moteur (fetch) se terminer. */
 async function laisserTourner() {
@@ -312,8 +330,8 @@ describe('le cartouche branche sur un vrai moteur', () => {
     vi.unstubAllGlobals()
   })
 
-  async function ouvrir() {
-    render(<Table moteur={moteur} />)
+  async function ouvrir(fusionner = false) {
+    render(<Table moteur={moteur} fusionner={fusionner} />)
     await act(async () => {
       moteur.demarrer()
     })
@@ -375,7 +393,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
   it('ne franchit pas une trame sans un clic sur une etape resolue', async () => {
     await ouvrir()
     // Trame 1 : la menace. Le moteur est retenu, le cartouche la montre.
-    expect(screen.getByText(/Assault on NORAD gagne 1 menace/)).toBeInTheDocument()
+    expect(etapeLue()).toMatch(/Assault on NORAD gagne 1 menace/)
     expect(serveur.rang).toBe(0)
 
     // Le joueur valide la menace. Le moteur avance d'une trame — l'intention
@@ -387,13 +405,13 @@ describe('le cartouche branche sur un vrai moteur', () => {
     await laisserTourner()
     // Pas d'activation du mechant dans cette phase (que des sbires) : son
     // temps est DIT par une etape courte, qui coute un clic (03/10/2026).
-    expect(screen.getByText('Le méchant ne s’active pas')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Le méchant ne s’active pas')
     await act(async () => {
       fireEvent.click(suivant())
     })
     await laisserTourner()
     expect(serveur.rang).toBe(2)
-    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Drone manigance sur Assault on NORAD')
 
     // Deuxieme clic : meme chose pour le second sbire.
     await act(async () => {
@@ -401,7 +419,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
     })
     await laisserTourner()
     expect(serveur.rang).toBe(4)
-    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Drone manigance sur Assault on NORAD')
 
     // Troisieme clic : la distribution. Elle n'a pas de second temps, le
     // moteur s'arrete donc dessus.
@@ -410,7 +428,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
     })
     await laisserTourner()
     expect(serveur.rang).toBe(5)
-    expect(screen.getByText('Bishop reçoit sa carte rencontre')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Bishop reçoit sa carte rencontre')
 
     // Quatrieme clic : la revelation, la derniere trame de la phase.
     await act(async () => {
@@ -418,7 +436,41 @@ describe('le cartouche branche sur un vrai moteur', () => {
     })
     await laisserTourner()
     expect(serveur.rang).toBe(6)
-    expect(screen.getByText('Bishop révèle Drone Swarm')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Bishop révèle Drone Swarm')
+  })
+
+  // LA DISTRIBUTION NE COUTE AUCUN CLIC EN SCENE PC (D15, lot 4). board.tsx
+  // retire ses etapes de la liste avant le cartouche : apres le dernier sbire
+  // valide, la trame de distribution n'ajoute rien a lire, le cartouche est a
+  // jour et la relache SEUL ; la revelation qui suit, elle, attend son clic.
+  // La table et le telephone gardent leur clic (cas precedent, liste brute).
+  it('la distribution ne coute aucun clic en scene PC', async () => {
+    await ouvrir(true)
+    for (const attendue of ['Le méchant ne s’active pas', 'Drone manigance sur Assault on NORAD']) {
+      await act(async () => {
+        fireEvent.click(suivant())
+      })
+      await laisserTourner()
+      expect(etapeLue()).toBe(attendue)
+    }
+    expect(serveur.rang).toBe(2)
+    // Le dernier sbire valide : sa resolution, puis la distribution, puis la
+    // revelation, sans un clic de plus.
+    await act(async () => {
+      fireEvent.click(suivant())
+    })
+    await laisserTourner()
+    expect(serveur.rang).toBe(4)
+    await act(async () => {
+      fireEvent.click(suivant())
+    })
+    await laisserTourner()
+    expect(serveur.rang).toBe(6)
+    expect(etapeLue()).toBe('Bishop révèle Drone Swarm')
+    // La pastille des cartes rencontre dit la carte distribuee (D15).
+    expect(document.querySelectorAll('.deroule-pastille')[3]?.textContent).toContain('1 carte distribuée')
+    // Et la revelation attend son clic : rien n'est relache derriere elle.
+    expect(serveur.accuses).toEqual([101, 102, 103, 104, 105, 106])
   })
 
   // Le compte, sechement : CINQ clics pour SEPT trames — la menace, les deux
@@ -459,18 +511,21 @@ describe('le cartouche branche sur un vrai moteur', () => {
     await laisserTourner()
     // Pas d'activation du mechant dans cette phase (que des sbires) : son
     // temps est DIT par une etape courte, qui coute un clic (03/10/2026).
-    expect(screen.getByText('Le méchant ne s’active pas')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Le méchant ne s’active pas')
     await act(async () => {
       fireEvent.click(suivant())
     })
     await laisserTourner()
-    expect(screen.getByText('Drone va manigancer sur Assault on NORAD')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Drone va manigancer sur Assault on NORAD')
     // L'intention a ete acquittee toute seule (decision 7), et c'est bien.
     expect(serveur.accuses).toEqual([101, 102])
 
-    // LE CLIC DE TROP. Il ne doit rien relacher de plus.
+    // LE CLIC DE TROP. Il ne doit rien relacher de plus. Le cartouche du bas
+    // ne porte plus de « Suivant » sur une intention (piege 2) : seule la
+    // touche Espace peut encore la valider, c'est elle qu'on presse.
+    expect(screen.queryByRole('button', { name: /Suivant/i })).toBeNull()
     await act(async () => {
-      fireEvent.click(suivant())
+      fireEvent.keyDown(document, { key: ' ' })
     })
     await laisserTourner()
     expect(serveur.accuses).toEqual([101, 102])
@@ -481,7 +536,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
       serveur.libererLaSuite()
     })
     await laisserTourner()
-    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Drone manigance sur Assault on NORAD')
     expect(screen.queryByText('La suite arrive…')).not.toBeInTheDocument()
     expect(serveur.accuses).toEqual([101, 102])
 
@@ -517,7 +572,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
     // etape.
     expect(serveur.accuses).toEqual([])
     expect(serveur.rang).toBe(0)
-    expect(screen.getByText(/Assault on NORAD gagne 1 menace/)).toBeInTheDocument()
+    expect(etapeLue()).toMatch(/Assault on NORAD gagne 1 menace/)
   })
 
   // LE PIEGE NOMME PAR LA REVUE D'A3-FIX, ET SA SORTIE.
@@ -549,12 +604,12 @@ describe('le cartouche branche sur un vrai moteur', () => {
     await laisserTourner()
     // Pas d'activation du mechant dans cette phase (que des sbires) : son
     // temps est DIT par une etape courte, qui coute un clic (03/10/2026).
-    expect(screen.getByText('Le méchant ne s’active pas')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Le méchant ne s’active pas')
     await act(async () => {
       fireEvent.click(suivant())
     })
     await laisserTourner()
-    expect(screen.getByText('Drone va manigancer sur Assault on NORAD')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Drone va manigancer sur Assault on NORAD')
     expect(serveur.accuses).toEqual([101, 102])
 
     // LE MOTEUR POSE SA QUESTION, sur la MEME trame : il repousse la trame 102
@@ -615,7 +670,7 @@ describe('le cartouche branche sur un vrai moteur', () => {
       serveur.pousser()
     })
     await laisserTourner()
-    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Drone manigance sur Assault on NORAD')
     expect(serveur.accuses).toEqual([101, 102, 103])
   })
 
@@ -796,7 +851,7 @@ describe('deux clients, un en Instantane et un en Detaille', () => {
     expect(screen.getByText("En attente d'un autre joueur")).toBeInTheDocument()
 
     // Et le cartouche du joueur en Detaille, lui, montre bien son etape.
-    expect(screen.getByText(/Assault on NORAD gagne 1 menace/)).toBeInTheDocument()
+    expect(etapeLue()).toMatch(/Assault on NORAD gagne 1 menace/)
   })
 
   it('la phase avance au rythme du joueur en Detaille', async () => {
@@ -810,13 +865,13 @@ describe('deux clients, un en Instantane et un en Detaille', () => {
     })
     await laisserTourner()
     // Le mechant ne s'active pas dans cette phase : son etape courte d'abord.
-    expect(screen.getByText('Le méchant ne s’active pas')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Le méchant ne s’active pas')
     await act(async () => {
       fireEvent.click(suivant())
     })
     await laisserTourner()
     expect(serveurMulti.rang).toBe(2)
-    expect(screen.getByText('Drone manigance sur Assault on NORAD')).toBeInTheDocument()
+    expect(etapeLue()).toBe('Drone manigance sur Assault on NORAD')
 
     for (let clic = 0; clic < 4; clic += 1) {
       await act(async () => {

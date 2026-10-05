@@ -291,6 +291,13 @@ class ModelOnEvent(ModelBase):
             this.card.state.is_revealing = False
             return None
 
+        # Journal de la phase du mechant (ajout local, lu par ui-app) : une
+        # revelation HORS PHASE, pendant le tour d'un joueur (D26, 04/10/2026).
+        # Ici, parce que c'est le seul passage commun a tous les chemins de
+        # revelation ; les gardes sont dans la fonction.
+        from game.player.action.player_action import PlayerAction
+        PlayerAction.JournaliserRevelationHorsPhase(player, this, reveal_message, is_by_flipping)
+
         entered = False
         def set_enter_play():
             nonlocal entered

@@ -39,6 +39,15 @@ class WorldStat:
         #                  PlayerAction.DealEncounterCard
         #   'revelation'   point 4 — game/player/action/player_action.py,
         #                  PlayerAction.RevealEncounterCards
+        #   'sonne'        (05/10/2026) un ennemi Sonne s'active : la carte Sonne
+        #                  remplace l'activation AVANT l'annonce, donc ni
+        #                  `attaque` ni `annule` n'existent. game/card/face/
+        #                  attribute/can_attack.py, JournaliserActivationEmpechee,
+        #                  appele par Enemy.DoActivate. Champs : temps ('attaque'
+        #                  | 'manigance'), type ('mechant' | 'sbire'), auteur,
+        #                  auteur_id, cible, cible_id, statut_retire, annule_par,
+        #                  annule_par_id, fait_id, et rang_sbire/total_sbires
+        #                  pour un sbire.
         #
         # Les activations (points 2) sont inscrites QUELLE QUE SOIT la phase :
         # une carte revelee peut faire frapper le vilain, et le client range le
@@ -63,6 +72,12 @@ class WorldStat:
         # sa seule fonction est de lier l'intention a sa resolution. Reparti de
         # zero a chaque round, comme le journal lui-meme.
         self._activation_suivante: int = 0
+        # Le sbire en train de s'activer (`{'id', 'rang', 'total'}`), pose par
+        # Enemies.DoActivateAgainstYouInternal le temps de son activation et
+        # remis a None ensuite. `RecordFaitMechant` en recopie `rang_sbire` et
+        # `total_sbires` sur chaque fait dont l'`auteur_id` est ce sbire : le
+        # cartouche affiche « 1 / 2 » des la premiere annonce (05/10/2026).
+        self.sbire_en_cours: 'Dict[str, int]|None' = None
 
     def OnTurnBegin(self):
         self.this_turn_made_attack = []
@@ -118,6 +133,11 @@ class WorldStat:
         """
         self._DemarrerLeRound(round_id)
         complet = {**fait, 'round_id': round_id}
+        en_cours = self.sbire_en_cours
+        if en_cours is not None and 'auteur_id' in fait \
+                and fait['auteur_id'] == en_cours['id'] and 'rang_sbire' not in fait:
+            complet['rang_sbire'] = en_cours['rang']
+            complet['total_sbires'] = en_cours['total']
 
         # REMPLACEMENT plutot qu'ajout quand le fait porte un identifiant
         # d'activation deja vu : c'est la resolution qui prend la place de son
@@ -160,7 +180,8 @@ class WorldStat:
             self._activation_suivante = 0
 
     @staticmethod
-    def RecordStade(world: 'Any', quoi: str, avant: 'Any', apres: 'Any') -> None:
+    def RecordStade(world: 'Any', quoi: str, avant: 'Any', apres: 'Any',
+                    stats_avant: 'Dict[str, int]|None' = None) -> None:
         """CHANGEMENT DE STADE en pleine phase du mechant (04/10/2026) : la
         manigance principale ou le mechant passe au stade suivant. Le cartouche
         en fait une etape a part, la nouvelle carte en grand. Hors phase du
@@ -176,9 +197,36 @@ class WorldStat:
                 'avant': avant.name if avant is not None else '',
                 'carte': apres.name,
                 'carte_id': apres.card.object_id,
+                # « PV 14 → 15, ATQ 2 → 3 » (cartouche, 04/10/2026). La carte
+                # d'avant a deja quitte la table quand ce fait part : ses
+                # valeurs relues ICI sont fausses (mesure sur Ultron, PV max 22
+                # au lieu de 17, l'objet est repris par la nouvelle carte).
+                # L'appelant les lit donc AVANT l'avancee et les passe dans
+                # `stats_avant` ; sans elles, le fait se tait plutot que mentir.
+                **({'avant_id': avant.card.object_id} if avant is not None else {}),
+                **({'stats_avant': stats_avant} if avant is not None and stats_avant else {}),
+                'stats_apres': WorldStat.StatsDuStade(apres, courantes=True),
             })
         except Exception:
             pass
+
+    @staticmethod
+    def StatsDuStade(face: 'Any', courantes: bool) -> 'Dict[str, int]':
+        """Les valeurs qu'un changement de stade fait varier, celles que la
+        carte porte seulement (un mechant n'a pas de seuil, une manigance pas
+        d'ATQ). `courantes` ajoute la menace posee, lue sur la carte en jeu."""
+        noms = {'pv_max': 'max_health', 'atq': 'attack', 'man': 'scheme', 'seuil': 'target_threat'}
+        if courantes:
+            noms['menace'] = 'threat'
+        stats: 'Dict[str, int]' = {}
+        try:
+            for cle, attribut in noms.items():
+                valeur = getattr(face, attribut, None)
+                if isinstance(valeur, int) and not isinstance(valeur, bool):
+                    stats[cle] = valeur
+        except Exception:
+            pass
+        return stats
 
     def NouvelleActivation(self, round_id: int) -> int:
         """Le numero de la prochaine activation ennemie de ce round.

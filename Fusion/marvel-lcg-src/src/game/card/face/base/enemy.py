@@ -228,6 +228,8 @@ class Enemy(HasScheme, CanScheme, HasAttack, CanAttack, CanHinder, HasThreatLeve
         would_act_message = Message.WhenEnemyWouldActivate(self, against_player)
         would_act_message.Send()
         if would_act_message.is_be_instead:
+            from game.card.face.attribute.can_attack import CanAttack
+            CanAttack.JournaliserActivationEmpechee(self, against_player, would_act_message)
             return None
 
         if against_player.IsAlterEgo():

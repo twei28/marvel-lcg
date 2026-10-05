@@ -330,7 +330,7 @@ describe('AssistantAction — la fin de tour dit qu on peut defausser', () => {
 // de Klaw) : la cible se choisissait DANS la scene du deroule, et l'assistant
 // reposait la meme question hors de la scene, a moitie sous elle.
 describe('AssistantAction — cede la place a la scene du deroule', () => {
-  function rendreEnScene(etape: 'target' | 'confirm' | 'payment') {
+  function rendreEnScene(etape: 'target' | 'confirm' | 'payment', sousCadre = false) {
     return render(
       <AssistantAction
         demande={demande()}
@@ -340,6 +340,7 @@ describe('AssistantAction — cede la place a la scene du deroule', () => {
         cartesParId={new Map()}
         affichage="detailed"
         choixDansLaScene={true}
+        sousCadre={sousCadre}
       />
     )
   }
@@ -349,7 +350,16 @@ describe('AssistantAction — cede la place a la scene du deroule', () => {
     expect(rendreEnScene('confirm').container.querySelector('.assistant-action')).toBeNull()
   })
 
-  it('reste la pour payer un cout, que la scene ne sait pas faire', () => {
+  // Le cartouche du bas (lot 4 de la refonte du 04/10/2026, D6) porte le
+  // paiement dans son sous-cadre, avec les cartes de la main : « plus aucun
+  // panneau hors du cartouche ». Ce cas remplace « reste la pour payer un cout,
+  // que la scene ne sait pas faire », devenu faux en scene PC.
+  it('se tait aussi au paiement quand le sous-cadre du cartouche le porte', () => {
+    expect(rendreEnScene('payment', true).container.querySelector('.assistant-action')).toBeNull()
+    expect(rendreEnScene('target', true).container.querySelector('.assistant-action')).toBeNull()
+  })
+
+  it('sans sous-cadre (table, telephone), reste la pour payer un cout', () => {
     expect(rendreEnScene('payment').container.querySelector('.assistant-action')).not.toBeNull()
   })
 })

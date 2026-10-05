@@ -18,6 +18,7 @@ export function JournalConsole({
   telechargerLog,
   journalHeros,
   revuePhase,
+  onRevoirPhase,
 }: {
   entrees: EntreeHistorique[]
   effacer: () => void
@@ -29,6 +30,12 @@ export function JournalConsole({
    * lecture seule (RevuePhase). Absente tant qu'il n'y en a pas.
    */
   revuePhase?: ReactNode
+  /**
+   * Scene PC (D38, refonte du 04/10/2026) : le bouton rouvre la phase dans le
+   * cartouche du bas, en relecture, et le journal reste le journal. Prend le
+   * pas sur `revuePhase`.
+   */
+  onRevoirPhase?: () => void
 }) {
   const [vue, setVue] = useState<'historique' | 'heros' | 'phase'>('historique')
   const [menu, setMenu] = useState(false)
@@ -52,11 +59,17 @@ export function JournalConsole({
         <strong>
           {vue === 'historique' ? t('Journal') : vue === 'phase' ? t('Phase du méchant') : t('Journal du héros')}
         </strong>
-        {revuePhase ? (
+        {revuePhase || onRevoirPhase ? (
           <button
             type="button"
             className="jc-revue-bouton"
-            onClick={() => setVue(vue === 'phase' ? 'historique' : 'phase')}
+            onClick={() => {
+              if (onRevoirPhase) {
+                onRevoirPhase()
+                return
+              }
+              setVue(vue === 'phase' ? 'historique' : 'phase')
+            }}
           >
             {vue === 'phase' ? t('Retour au journal') : t('Revoir la phase du méchant')}
           </button>

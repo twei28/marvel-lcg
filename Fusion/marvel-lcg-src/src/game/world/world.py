@@ -1242,6 +1242,9 @@ class World(WorldAction, WorldFind):
         from game.operate.faces import Faces
 
         assert prev_scheme.card.back_faces, f"{prev_scheme.card=}"
+        # Les stats de la carte d'avant, lues AVANT qu'elle quitte la table
+        # (fait `stade`, cartouche du 04/10/2026 ; meme raison que le mechant).
+        stats_avant = self.stat.StatsDuStade(prev_scheme, courantes=False)
         message = Message.WhenMainSchemeWouldAdvance(prev_scheme, by_effect)
         message.Send()
         if message.is_be_instead:
@@ -1285,7 +1288,7 @@ class World(WorldAction, WorldFind):
                 self.game_over.SetGameOverByRule("The Final Stage of the Main Scheme was Completed")
         after_message = Message.AfterMainSchemeAdvanced(message)
         after_message.Send()
-        self.stat.RecordStade(self, 'manigance', prev_scheme, nouvelle)
+        self.stat.RecordStade(self, 'manigance', prev_scheme, nouvelle, stats_avant=stats_avant)
 
     def CheckIsAllPlayersEliminated(self):
         if self.rule.mode_competitive:
