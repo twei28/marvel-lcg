@@ -36117,6 +36117,67 @@ CAS = [
         }
     },
     {
+        "nom": "60161a The King's Gambit 1A [fne4] — Setup avec Echo : UN SEUL sbire nemesis (Kingpin) est concerne, jamais Kingpin's Henchman",
+        "pourquoi": ("signalement n°58 (Yarro, 04/10/2026) : le script prenait pour « nemesis minion » TOUS les "
+                     "sbires du set d'Echo (`is_nemesis` = « dans le set nemesis »). Un Henchman etait donc revele, "
+                     "le second retire (meme titre que le premier) et un 2e UNDERLING trouve : Echo commencait avec "
+                     "3 ennemis. Rules Reference p.30 : le sbire nemesis est celui que designe le texte entre "
+                     "parentheses (« Echo's nemesis minion. »), ici 60061 seul"),
+        "scenario": "kingpin_fne",
+        "heros": "echo",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "fne4_sbires_en_jeu",
+        "attendu": {
+            "retirees": ["60061"],
+            "underlings": 1,
+            "hors_jeu": ["60061", "60063"]
+        }
+    },
+    {
+        "nom": "60176 Unrelenting Hate [fne4] — avec Echo, le sbire nemesis retire du jeu n'est pas remplace par un Kingpin's Henchman",
+        "pourquoi": ("meme defaut que 60161a : `CardFinder(is_nemesis=joueur)` trouvait n'importe quel sbire du set. "
+                     "Kingpin (60061) est retire du jeu par le Setup : il n'est pas trouvable, donc l'UNDERLING "
+                     "demande par la carte est revele, pas un Henchman (qui n'est PAS « votre sbire nemesis »)"),
+        "scenario": "kingpin_fne",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.Reveal('60176')"],
+        "declencher": [],
+        "verifier": "fne4_sbires_en_jeu",
+        "attendu": {
+            "underlings": 2,
+            "hors_jeu": ["60061", "60063"]
+        }
+    },
+    {
+        "nom": "60064 Pawn of the Kingpin [fne4] — face Alter-Ego : le VILAIN Kingpin en jeu comploterait (pas de surge)",
+        "pourquoi": ("signalement n°55 (Yarro, 04/10/2026), regle choisie par l'utilisateur : « If Kingpin is "
+                     "in play » compte le VILAIN. Le script ne cherchait que le SBIRE (`card_type=Minion`), "
+                     "absent de The King's Gambit (le Setup le retire du jeu pour Echo) : Pawn prenait "
+                     "toujours surge au lieu de faire comploter Kingpin"),
+        "scenario": "kingpin_fne",
+        "heros": "echo",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('60064')"],
+        "verifier": "etat_attendu",
+        # Le complot principal porte 3 menace apres la mise en place. Kingpin A1 a SCH 2 :
+        # au moins 3 + 2 = 5 (les icones de la carte de boost peuvent en ajouter, d'ou
+        # `menace_min`). Avec surge, rien ne s'ajoute : 3.
+        "attendu": {"menace_min": [["60161b", 5]]},
+    },
+    {
+        "nom": "60062 Master Manipulator [fne4] — en boost, le VILAIN Kingpin en jeu fait reveler le complot",
+        "pourquoi": ("meme defaut que 60064 (signalement n°55) : « Boost: If Kingpin is in play, reveal this "
+                     "scheme » ne testait que le SBIRE ; avec le seul vilain en jeu le complot allait a la "
+                     "defausse sans se reveler"),
+        "scenario": "kingpin_fne",
+        "heros": "echo",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Boost('60062')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["60062"]},
+    },
+    {
         "nom": "60159a Kingpin A1 [fne4] — ne peut pas subir de degats : 10 degats -> 0",
         "pourquoi": "*UnitCannotTakeDamage(CardFinder(name=Kingpin, Villain)) (sd022) : PreventDamage('All')",
         "scenario": "kingpin_fne",

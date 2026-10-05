@@ -1,10 +1,11 @@
 from . import *
+from cards.pack.fne import KingpinEnJeu
 def GetAbilities() -> Sequence['Ability']:
     def pawn_alter_ego(effect: 'Effect', message: 'Message.WhenCardRevealed') -> None:
         this = effect.this.CastTo(Treachery)
         Unused(this)
         player = message.GetToPlayer()
-        kingpin = Worlds.FindCardOnField(effect, name='Kingpin', card_type=Minion)
+        kingpin = KingpinEnJeu(effect)
         if kingpin:
             kingpin.DoSchemes(player, effect)
             return

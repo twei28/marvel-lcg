@@ -62,3 +62,16 @@ def RetournerLAttachement(this: 'Attachment', effect: 'Effect', *, call_reveal: 
             nouvelle.OnAttachTo(hote, True)
     else:
         nouvelle.AttachTo2(hote, effect)
+
+def KingpinEnJeu(effect: 'Effect') -> 'Enemy|None':
+    """« If Kingpin is in play » : le SBIRE Kingpin (nemesis d'Echo) OU le VILAIN
+    Kingpin du scenario The King's Gambit.
+
+    ⚠ `card_type=Minion` seul ne voit jamais le vilain, et dans ce scenario le
+    sbire est justement retire du jeu par le Setup : « Pawn of the Kingpin »
+    prenait surge au lieu de faire comploter Kingpin, et « Master Manipulator »
+    en boost ne se revelait pas (signalement n°55, 04/10/2026). Regle choisie
+    par l'utilisateur : le vilain compte, il s'appelle Kingpin et il est en jeu.
+    """
+    return (Worlds.FindCardOnField(effect, name='Kingpin', card_type=Minion)
+            or Worlds.FindCardOnField(effect, name='Kingpin', card_type=Villain))

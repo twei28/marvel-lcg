@@ -839,3 +839,61 @@ describe('useInteraction, la question de la manigance est prise par son panneau'
     expect(result.current.options).toHaveLength(1)
   })
 })
+
+// Rapport n°57 (04/10/2026) : Study the Tape propose 4 cartes dans la fenêtre, la 5e
+// (le DESSUS de la défausse) n'est offerte que sur la table. La règle vaut pour TOUTE
+// liste de cibles : une carte qui est le dessus d'une pile y figure aussi.
+describe('useInteraction, liste hors table et dessus de pile', () => {
+  function optionUneCible(): Option {
+    return { ...optionTroisCibles(), target_num_range: [1, 1], target_payment: {} }
+  }
+
+  // Des cartes complètes : la liste hors table les DESSINE (`toScanCard` lit leurs dos).
+  const MONDE_COMPLET = {
+    render_id: 1,
+    players: [
+      {
+        area_hero: [carte(HEROS, { card_type: 'hero' })],
+        area_ally: CIBLES.map((id) =>
+          carte(id, { down_card_ids: [], visible_for_players: [0], is_face_up: true, pic_id: `0100${id}` })
+        ),
+        hand: [],
+      },
+    ],
+  } as unknown as World
+
+  const CATALOGUE_COMPLET = { ...CATALOGUE, aspect: () => undefined } as unknown as Catalogue
+
+  function monterAvec(representants?: ReadonlyMap<number, number>) {
+    const option = optionUneCible()
+    const demande: Demande = {
+      options: [option],
+      refus: [],
+      prompt_text: '',
+      event_name: 'test',
+      show_cancel: true,
+      ability_type: '',
+    }
+    // 201 est dessinée sur la table (dessus d'une pile), 202 et 203 ne le sont pas.
+    const affiches = new Set([HEROS, CIBLES[0]])
+    const rendu = renderHook(() =>
+      useInteraction(MONDE_COMPLET, demande, vi.fn(), affiches, 0, CATALOGUE_COMPLET, 'simple', representants)
+    )
+    act(() => rendu.result.current.choisirOption(option))
+    return rendu
+  }
+
+  it('garde le dessus d une pile dans la liste, avec les cartes hors table', () => {
+    const { result } = monterAvec(new Map([[CIBLES[0], CIBLES[0]]]))
+    expect(result.current.ciblesHorsTable.map((c) => c.props.id).sort()).toEqual(
+      CIBLES.map(String)
+    )
+  })
+
+  it('une carte simplement posée sur la table reste absente de la liste', () => {
+    const { result } = monterAvec(new Map())
+    expect(result.current.ciblesHorsTable.map((c) => c.props.id).sort()).toEqual(
+      [CIBLES[1], CIBLES[2]].map(String)
+    )
+  })
+})

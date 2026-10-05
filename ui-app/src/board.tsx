@@ -1909,7 +1909,8 @@ export function PagePartie({
     plateau?.idsAffiches ?? AUCUN_ID,
     joueurActif,
     catalogue,
-    modeActions
+    modeActions,
+    plateau?.representantsDePile
   )
   const groupesRegardes = useMemo(
     () => (etat.monde ? cartesRegardees(etat.monde, joueurActif, catalogue) : []),

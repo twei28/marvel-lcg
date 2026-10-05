@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.fne import KingpinEnJeu
 def GetAbilities() -> Sequence['Ability']:
     def find_kingpin(effect: 'Effect', message: 'Message.WhenCardRevealed') -> None:
         this = effect.this.CastTo(EncounterSideScheme)
@@ -15,7 +16,7 @@ def GetAbilities() -> Sequence['Ability']:
         player = message.GetToPlayer()
         this.Reveal(player, effect)
     def check_kingpin_in_play(effect: 'Effect', message: 'Message.WhenBoostCardTurnedFaceUp') -> bool:
-        return (Worlds.FindCardOnField(effect, name='Kingpin', card_type=Minion) != None)
+        return (KingpinEnJeu(effect) is not None)
     return [AbilityFactory.UnitCannotTakeDamageWhile(AbilityType.NonKeyword, CardFinder(name='Kingpin')),
             AbilityFactory.WhenThisRevealed(None, find_kingpin),
             AbilityFactory.WhenBoostCardTurnedFaceUp(AbilityType.Boost, None, boost_reveal, conditions=[check_kingpin_in_play])]

@@ -453,7 +453,13 @@ export function useInteraction(
   idsAffiches: Set<number>,
   playerId: number,
   catalogue: Catalogue,
-  modeActions: 'simple' | 'detailed' = 'simple'
+  modeActions: 'simple' | 'detailed' = 'simple',
+  /**
+   * Pour chaque carte d'une pile, la carte que la pile montre (`Plateau.representantsDePile`).
+   * Sert à garder dans la liste « hors table » la carte du DESSUS d'une pile, que la table
+   * dessine donc déjà : voir `ciblesHorsTable`.
+   */
+  representantsDePile?: ReadonlyMap<number, number>
 ): Interaction {
   const [idOption, setIdOption] = useState<number | undefined>(undefined)
   const [cibles, setCibles] = useState<number[]>([])
@@ -1034,7 +1040,12 @@ export function useInteraction(
     const liste: CibleHorsTable[] = []
 
     for (const [cible, maxParCible] of ciblesParOccurrence(option)) {
-      if (idsAffiches.has(cible)) continue
+      // La carte du DESSUS d'une pile (la défausse, le deck) est dessinée sur la table
+      // et cliquable là, mais la fenêtre de liste doit l'offrir AUSSI : sinon une
+      // recherche (Study the Tape) montre 4 cartes alors que 5 sont éligibles, et la
+      // 5e, qui clignote ailleurs, passe inaperçue (rapport n°57, 04/10/2026).
+      const dessusDePile = representantsDePile?.get(cible) === cible
+      if (idsAffiches.has(cible) && !dessusDePile) continue
       const carte = index.get(cible)
       if (!carte) continue
       const fois = nombreDeFois(cibles, cible)
@@ -1073,6 +1084,7 @@ export function useInteraction(
     etape,
     index,
     idsAffiches,
+    representantsDePile,
     cibles,
     playerId,
     catalogue,
