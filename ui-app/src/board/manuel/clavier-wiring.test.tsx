@@ -156,9 +156,8 @@ describe('le clavier du mode manuel parle au moteur', () => {
   })
 
   // LE CRITIQUE (retour de revue, 19/09/2026) : Ctrl/Cmd/Alt sont les
-  // raccourcis du NAVIGATEUR (Ctrl+F cherche, Ctrl+R recharge, Ctrl+1..9
-  // change d'onglet). Sans garde, survoler une carte pendant Ctrl+F la
-  // retournait — irreversible sur une carte face cachee. Le temoin qui
+  // raccourcis du NAVIGATEUR (Ctrl+R recharge, Ctrl+1..9 change d'onglet).
+  // Seules les combinaisons d'OCTGN agissent (voir plus bas). Le temoin qui
   // compte est le REFUS : ni geste, ni `preventDefault` (le retour de
   // `fireEvent.keyDown` est `true` quand l'evenement n'a PAS ete annule).
   it('Ctrl+chiffre ne pose rien, et laisse le raccourci du navigateur agir', async () => {
@@ -170,13 +169,57 @@ describe('le clavier du mode manuel parle au moteur', () => {
     expect(nonAnnule).toBe(true)
   })
 
-  it('Ctrl+F ne retourne rien, et laisse la recherche du navigateur s’ouvrir', async () => {
+  // Depuis l'ajout des raccourcis d'OCTGN (06/10/2026) : Ctrl+F retourne la
+  // carte survolee et ne laisse PLUS la recherche du navigateur s'ouvrir, mais
+  // seulement quand une carte est survolee.
+  it('Ctrl+F retourne la carte survolee (OCTGN) et garde le raccourci pour le jeu', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(7)
     const nonAnnule = fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
     await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Flip(7)'] }),
+    }))
+    expect(nonAnnule).toBe(false)
+  })
+
+  it('Ctrl+F sans rien sous la souris laisse la recherche du navigateur s’ouvrir', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    const nonAnnule = fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
     expect(fetch).not.toHaveBeenCalled()
     expect(nonAnnule).toBe(true)
+  })
+
+  it('Ctrl+S sur une pile la mélange ; Ctrl+D pioche une carte', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(20)
+    const nonAnnule = fireEvent.keyDown(document, { key: 's', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.Shuffle('PlayerDeck')"] }),
+    }))
+    expect(nonAnnule).toBe(false)
+  })
+
+  it('F7 incline la carte survolée, F3 lui pose un dégât, Maj+F3 en retire un', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    fireEvent.keyDown(document, { key: 'F7' })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Exhaust(7)'] }),
+    }))
+  })
+
+  it('Alt+S pose ou retire Étourdi sur un personnage', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    fireEvent.keyDown(document, { key: 's', altKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Stun(7)'] }),
+    }))
   })
 
   it('Cmd+F (Mac) ne retourne rien non plus', async () => {

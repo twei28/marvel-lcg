@@ -4,13 +4,13 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { VoletAideManuel } from './VoletAideManuel'
 
 describe('l’aide du mode manuel', () => {
-  it('ouvert : ne liste que les gestes d’OCTGN', () => {
+  it('ouvert : liste les raccourcis d’OCTGN', () => {
     render(<VoletAideManuel ouvert ouvrir={() => {}} fermer={() => {}} />)
     const aide = screen.getByRole('dialog', { name: 'Aide du mode manuel' })
-    for (const texte of ['Suppr', 'Double-clic', 'Clic droit sur la table', 'Défausser']) {
+    for (const texte of ['Suppr', 'Double-clic', 'Clic droit sur la table', 'Défausser', 'Ctrl + F', 'F7', 'Alt + S']) {
       expect(aide.textContent).toContain(texte)
     }
-    expect(aide.textContent).not.toContain('Mélanger')
+    expect(aide.textContent).toContain('Mélanger la pile')
   })
 
   it('la croix ferme, la languette rouvre', () => {

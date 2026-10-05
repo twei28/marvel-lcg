@@ -6,6 +6,45 @@ const MANIGANCE = { genre: 'carte', id: 9, jetonNaturel: 'menace' } as const
 const DECK = { genre: 'pile', zone: 'PlayerDeck' } as const
 
 describe('les touches du mode manuel', () => {
+  it('raccourcis OCTGN : Ctrl+F, F7, F3, F5, Alt+S/C/T, Ctrl+V', () => {
+    expect(interpreterTouche({ cle: 'f', majuscule: false, ctrl: true }, VILAIN))
+      .toEqual({ geste: 'retourner', id: 7 })
+    expect(interpreterTouche({ cle: 'F7', majuscule: false }, VILAIN))
+      .toEqual({ geste: 'incliner', id: 7 })
+    expect(interpreterTouche({ cle: 'F3', majuscule: false }, VILAIN))
+      .toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: 1 })
+    expect(interpreterTouche({ cle: 'F3', majuscule: true }, VILAIN))
+      .toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: -1 })
+    expect(interpreterTouche({ cle: 'F5', majuscule: false }, MANIGANCE))
+      .toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre: 1 })
+    expect(interpreterTouche({ cle: 'F5', majuscule: false }, VILAIN)).toBeUndefined()
+    expect(interpreterTouche({ cle: 's', majuscule: false, alt: true }, VILAIN))
+      .toEqual({ geste: 'statut', id: 7, statut: 'stun' })
+    expect(interpreterTouche({ cle: 'c', majuscule: false, alt: true, ctrl: true }, VILAIN))
+      .toEqual({ geste: 'statut', id: 7, statut: 'confuse' })
+    expect(interpreterTouche({ cle: 't', majuscule: false, alt: true }, MANIGANCE)).toBeUndefined()
+    expect(interpreterTouche({ cle: 'v', majuscule: false, ctrl: true }, VILAIN))
+      .toEqual({ geste: 'victoire', id: 7 })
+  })
+
+  it('raccourcis OCTGN sur une pile : Ctrl+S mélange, Ctrl+D pioche', () => {
+    expect(interpreterTouche({ cle: 's', majuscule: false, ctrl: true }, DECK))
+      .toEqual({ geste: 'melanger', zone: 'PlayerDeck' })
+    expect(interpreterTouche({ cle: 'd', majuscule: false, ctrl: true }, DECK))
+      .toEqual({ geste: 'piocher', zone: 'PlayerDeck', nombre: 1 })
+    expect(interpreterTouche({ cle: 'f', majuscule: false, ctrl: true }, DECK)).toBeUndefined()
+  })
+
+  it('Alt+Entrée sort une carte d’amplification', () => {
+    expect(interpreterTouche({ cle: 'Enter', majuscule: false, alt: true }, DECK))
+      .toEqual({ geste: 'amplification' })
+  })
+
+  it('un Ctrl+lettre qui n’est pas à OCTGN ne fait rien', () => {
+    expect(interpreterTouche({ cle: 'r', majuscule: false, ctrl: true }, DECK)).toBeUndefined()
+    expect(interpreterTouche({ cle: '3', majuscule: false, ctrl: true }, VILAIN)).toBeUndefined()
+  })
+
   it('F retourne la carte survolee', () => {
     expect(interpreterTouche({ cle: 'f', majuscule: false }, VILAIN))
       .toEqual({ geste: 'retourner', id: 7 })

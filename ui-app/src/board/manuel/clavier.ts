@@ -10,7 +10,7 @@
 // vaut ne rien poser que poser la mauvaise chose sur une carte qu'on ne
 // relira pas. Le clic droit, lui, nomme chaque jeton.
 
-export type Touche = { cle: string; majuscule: boolean }
+export type Touche = { cle: string; majuscule: boolean; ctrl?: boolean; alt?: boolean }
 
 export type CibleClavier =
   | { genre: 'carte'; id: number; jetonNaturel: 'degats' | 'menace' | 'aucun' }
@@ -24,12 +24,45 @@ export type GesteClavier =
   | { geste: 'jetons'; id: number; nature: 'degats' | 'menace'; nombre: number }
   | { geste: 'compteur'; id: number; nombre: number }
   | { geste: 'defausser'; id: number }
+  | { geste: 'statut'; id: number; statut: 'stun' | 'confuse' | 'tough' }
+  | { geste: 'victoire'; id: number }
+  | { geste: 'amplification' }
 
 export function interpreterTouche(
   touche: Touche,
   cible: CibleClavier
 ): GesteClavier | undefined {
   const cle = touche.cle.toLowerCase()
+
+  // Raccourcis d'OCTGN (plugin Marvel Champions) : touches de fonction et
+  // combinaisons Ctrl / Alt. Ils n'agissent que sur ce qu'on survole.
+  if (touche.alt && cle === 'enter') return { geste: 'amplification' }
+  if (touche.ctrl || touche.alt) {
+    if (cible.genre === 'pile') {
+      if (touche.ctrl && !touche.alt && !touche.majuscule) {
+        if (cle === 's') return { geste: 'melanger', zone: cible.zone }
+        if (cle === 'd') return { geste: 'piocher', zone: cible.zone, nombre: 1 }
+      }
+      return undefined
+    }
+    if (touche.ctrl && !touche.alt && cle === 'f') return { geste: 'retourner', id: cible.id }
+    if (touche.ctrl && !touche.alt && cle === 'v') return { geste: 'victoire', id: cible.id }
+    const statut = cle === 's' ? 'stun' : cle === 'c' ? 'confuse' : cle === 't' ? 'tough' : undefined
+    if (touche.alt && statut && cible.jetonNaturel === 'degats') {
+      return { geste: 'statut', id: cible.id, statut }
+    }
+    return undefined
+  }
+  if (cible.genre === 'carte') {
+    if (cle === 'f7') return { geste: 'incliner', id: cible.id }
+    const sensF = touche.majuscule ? -1 : 1
+    if (cle === 'f3' && cible.jetonNaturel === 'degats') {
+      return { geste: 'jetons', id: cible.id, nature: 'degats', nombre: sensF }
+    }
+    if (cle === 'f5' && cible.jetonNaturel === 'menace') {
+      return { geste: 'jetons', id: cible.id, nature: 'menace', nombre: sensF }
+    }
+  }
 
   if (cle === 'f' && cible.genre === 'carte') return { geste: 'retourner', id: cible.id }
   if (cle === 'q' && cible.genre === 'carte') return { geste: 'incliner', id: cible.id }

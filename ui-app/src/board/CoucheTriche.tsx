@@ -461,6 +461,23 @@ export function useTriche(
           if (libelles.length > 0) enAttenteRef.current.push({ libelles })
           return
         }
+        case 'statut': {
+          const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          const action =
+            geste.statut === 'stun' ? triche.assommer : geste.statut === 'confuse' ? triche.rendreConfus : triche.rendreCoriace
+          const libelle =
+            geste.statut === 'stun' ? t('Étourdi') : geste.statut === 'confuse' ? t('Confus') : t('Coriace')
+          await emettreGeste(`${libelle} — ${nom}`, () => action(geste.id))
+          return
+        }
+        case 'victoire': {
+          const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          await emettreGeste(`${t('Pile de victoire')} — ${nom}`, () => triche.deplacerVers(geste.id, 'VictoryDisplay'))
+          return
+        }
+        case 'amplification':
+          await executerGeste({ geste: 'piocher', zone: 'EncounterDeck', nombre: 1 })
+          return
         case 'defausser': {
           const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
           await emettreGeste(`${t('Défausser')} — ${nom}`, () => triche.defausser(geste.id))
@@ -574,24 +591,23 @@ export function useTriche(
         lancerAnnulation()
         return
       }
-      // Ctrl/Cmd/Alt : ce sont des raccourcis du NAVIGATEUR (Ctrl+F cherche,
-      // Ctrl+R recharge, Ctrl+1..9 change d'onglet), pas du jeu. Sans cette
-      // garde, survoler une carte pendant Ctrl+F la retournait — un dos de
-      // pile ou une carte face cachée révélée, et la remettre face cachée ne
-      // fait pas oublier ce qu'on a lu : irréversible au sens fort. On sort
-      // AVANT tout `preventDefault`, pour laisser le navigateur faire son
-      // travail. Alt a en plus son propre rôle : il agrandit tout de suite la
-      // carte survolée (`Board.tsx`), une raison de plus pour qu'il ne
-      // déclenche jamais un geste de jeu ici. Seul Maj reste porteur de
-      // sens : il inverse un chiffre (retirer au lieu d'ajouter).
-      if (evenement.ctrlKey || evenement.metaKey || evenement.altKey) return
+      // Ctrl/Cmd/Alt : raccourcis du NAVIGATEUR (Ctrl+R recharge, Ctrl+1..9
+      // change d'onglet). Seules les combinaisons d'OCTGN passent (Ctrl+F,
+      // Ctrl+S, Ctrl+D, Ctrl+V, Alt+S/C/T, Alt+Entrée), et le navigateur ne
+      // perd la sienne (`preventDefault`) que si le geste s'applique à ce
+      // qu'on survole : sinon Ctrl+F ouvre bien la recherche.
+      if (evenement.metaKey) return
       // Une saisie de texte en cours : le chiffre tapé est un chiffre, pas un
       // geste de jeu.
       if (estZoneDeSaisie(document.activeElement)) return
-      if (survole.current === undefined) return
-      const cible = cibleClavier(survole.current)
-      if (!cible) return
-      const geste = interpreterTouche({ cle: evenement.key, majuscule: evenement.shiftKey }, cible)
+      const avecModificateur = evenement.ctrlKey || evenement.altKey
+      if (survole.current === undefined && !(avecModificateur && evenement.key === 'Enter')) return
+      const cible = survole.current === undefined ? undefined : cibleClavier(survole.current)
+      if (!cible && !(avecModificateur && evenement.key === 'Enter')) return
+      const geste = interpreterTouche(
+        { cle: evenement.key, majuscule: evenement.shiftKey, ctrl: evenement.ctrlKey, alt: evenement.altKey },
+        cible ?? { genre: 'pile', zone: '' }
+      )
       if (!geste) return
       evenement.preventDefault()
       void executerGeste(geste)
