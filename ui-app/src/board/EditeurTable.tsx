@@ -7,7 +7,7 @@
 //  - « la taille des cartes » (coin haut-droit) : glisser vers le haut grossit.
 // La zone elle-meme se deplace en la faisant glisser. Un deplacement qui ferait
 // chevaucher deux zones, sortir de la grille ou passer sous le minimum est
-// montre en rouge et refuse (disposition.ts : deplacer, redimensionner).
+// montre en rouge et refuse (table-briques.ts : deplacer, redimensionner).
 //
 // La barre (Terminer, Disposition d'origine, Annuler) vit hors de la scene,
 // qui est mise a l'echelle : sans cela ses boutons changeraient de taille.
@@ -15,29 +15,23 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as PointerEventReact } from 'react'
 import { createPortal } from 'react-dom'
 import {
-  ZONES,
+  NOMS,
+  ancre,
   changerTaille,
   deplacer,
+  deposerBrique,
+  estEpinglee,
+  minimumDeZone,
   redimensionner,
-  type CleZone,
+  titreDeZone,
+  zoneDe,
+  zoneSousLaCase,
+  type CleBrique,
   type Disposition,
   type PlaceZone,
-} from './disposition'
+} from './table-briques'
 import { t } from './langue'
 import './EditeurTable.css'
-
-/** Le nom d'une zone, tel que le joueur la voit sur la table. */
-const NOMS: Record<CleZone, string> = {
-  'piles-rencontre': 'Piles rencontre',
-  rencontre: 'Méchant',
-  'complot-principal': 'Manigance principale',
-  'complots-secondaires': 'Manigances annexes',
-  'terrain-combat': 'Combat',
-  'terrain-soutien': 'Héros et soutiens',
-  'piles-joueur': 'Piles du héros',
-  annexes: 'Autres piles',
-  main: 'Main',
-}
 
 /** La case (a partir de 1) sous le pointeur, bornee a la grille. */
 export function caseSousLePointeur(
@@ -55,9 +49,10 @@ export function caseSousLePointeur(
 }
 
 type Geste =
-  | { genre: 'deplacer'; zone: CleZone; depart: { col: number; ligne: number }; origine: PlaceZone }
-  | { genre: 'place'; zone: CleZone }
-  | { genre: 'taille'; zone: CleZone; y: number; taille: number }
+  | { genre: 'deplacer'; zone: CleBrique; depart: { col: number; ligne: number }; origine: PlaceZone }
+  | { genre: 'place'; zone: CleBrique }
+  | { genre: 'taille'; zone: CleBrique; y: number; taille: number }
+  | { genre: 'brique'; zone: CleBrique; brique: CleBrique }
 
 const grille = (p: PlaceZone): CSSProperties => ({
   gridColumn: `${p.col} / span ${p.largeur}`,
@@ -98,12 +93,21 @@ export function EditeurTable({
 
   /** Ce que donnerait le geste sous ce pointeur. */
   const resultat = (g: Geste, e: PointerEventReact): { d?: Disposition; place: PlaceZone } => {
-    const p = disposition.zones[g.zone]
+    const p = zoneDe(disposition, g.zone)
+    if (!p) return { place: { col: 1, ligne: 1, largeur: 1, hauteur: 1, taille: 1 } }
     if (g.genre === 'taille') {
       const d = changerTaille(disposition, g.zone, g.taille + (g.y - e.clientY) / 150)
-      return { d, place: d.zones[g.zone] }
+      return { d, place: zoneDe(d, g.zone) ?? p }
     }
     const ici = caseDe(e)
+    if (g.genre === 'brique') {
+      const d = deposerBrique(disposition, g.brique, ici.col, ici.ligne)
+      // Sur une autre zone : elle sera la place de la fusion ; ailleurs : une case de depart.
+      const cible = zoneSousLaCase(disposition, ici.col, ici.ligne)
+      const m = minimumDeZone([g.brique])
+      const place = cible && cible !== p ? cible : { ...p, col: ici.col, ligne: ici.ligne, ...m }
+      return { d, place }
+    }
     if (g.genre === 'deplacer') {
       const col = g.origine.col + ici.col - g.depart.col
       const ligne = g.origine.ligne + ici.ligne - g.depart.ligne
@@ -138,7 +142,7 @@ export function EditeurTable({
   const barre = (
     <div className="editeur-table-barre" role="toolbar" aria-label={t('Modifier la table')}>
       <span className="editeur-table-aide">
-        {t('Glisse une zone pour la déplacer. Coin bas-droit : sa place. Coin haut-droit : la taille des cartes.')}
+        {t('Glisse une zone pour la déplacer. Coin bas-droit : sa place. Coin haut-droit : la taille des cartes. Une pastille glissée sur une autre zone les réunit, dehors elle s’en sépare.')}
       </span>
       <button type="button" className="bh-bouton" onClick={origine}>
         {t('Disposition d’origine')}
@@ -168,8 +172,9 @@ export function EditeurTable({
           setFantome(undefined)
         }}
       >
-        {ZONES.map((zone) => {
-          const p = disposition.zones[zone]
+        {disposition.zones.map((p) => {
+          const zone = ancre(p)
+          const nom = titreDeZone(p.briques, (b) => t(NOMS[b]), t('et'))
           return (
             <div
               key={zone}
@@ -180,11 +185,25 @@ export function EditeurTable({
                 commencer({ genre: 'deplacer', zone, depart: caseDe(e), origine: p })(e)
               }
             >
-              <span className="editeur-zone-nom">{t(NOMS[zone])}</span>
+              <span className="editeur-zone-nom">{nom}</span>
+              <span className="editeur-briques">
+                {p.briques.filter((b) => !estEpinglee(b)).map((b) => (
+                  <button
+                    type="button"
+                    key={b}
+                    className={`editeur-brique${geste?.genre === 'brique' && geste.brique === b ? ' est-saisie' : ''}`}
+                    data-brique={b}
+                    title={t('Glisse cette pastille sur une autre zone pour les réunir, ou dehors pour la séparer.')}
+                    onPointerDown={(e) => commencer({ genre: 'brique', zone, brique: b })(e)}
+                  >
+                    {t(NOMS[b])}
+                  </button>
+                ))}
+              </span>
               <button
                 type="button"
                 className="editeur-poignee-taille"
-                aria-label={`${t('Taille des cartes')} : ${t(NOMS[zone])}`}
+                aria-label={`${t('Taille des cartes')} : ${nom}`}
                 title={t('Taille des cartes')}
                 onPointerDown={(e) => commencer({ genre: 'taille', zone, y: e.clientY, taille: p.taille })(e)}
                 onKeyDown={(e) => {
@@ -199,7 +218,7 @@ export function EditeurTable({
               <button
                 type="button"
                 className="editeur-poignee-place"
-                aria-label={`${t('Place de la zone')} : ${t(NOMS[zone])}`}
+                aria-label={`${t('Place de la zone')} : ${nom}`}
                 title={t('Place de la zone')}
                 onPointerDown={commencer({ genre: 'place', zone })}
               >

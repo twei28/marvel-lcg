@@ -5,7 +5,7 @@
 // (`_table_valide`, server_get.py) ; le texte est celui de `ecrireTable`.
 
 import { useEffect, useState } from 'react'
-import { DISPOSITION_ORIGINE, cleTable, ecrireTable, lireTable, type Disposition } from './disposition'
+import { DISPOSITION_ORIGINE, cleTable, ecrireTable, lireTable, type Disposition } from './table-briques'
 
 export const CLE_TABLE = 'mc_table_v1'
 /** Evenement de la page : une disposition vient de changer. */

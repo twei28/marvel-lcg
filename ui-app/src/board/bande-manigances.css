@@ -7,14 +7,17 @@
    deck rencontre, puis la manigance principale et les annexes s'alignent sur
    toute la largeur du haut. Plus de colonne a droite : le cartouche du mechant
    et les questions sont au milieu, deplacables, et le journal est dans le volet.
-   Colonnes : piles | mechant | principale | annexes (le reste). */
+   Colonnes : piles | mechant | principale | annexes (le reste).
+   Les aires portent le nom de la PREMIERE BRIQUE de chaque zone
+   (table-briques.ts) : `allies` = allies, sbires et environnement, `heros` =
+   heros et soutiens. */
 .plateau-scene.avec-bande {
   grid-template-columns: 300px auto auto minmax(0, 1fr);
   grid-template-areas:
-    'piles-rencontre rencontre       complot-principal complots-secondaires'
-    '.               terrain-combat  terrain-combat    terrain-combat'
-    'piles-joueur    terrain-soutien terrain-soutien   terrain-soutien'
-    'annexes         main            main              main';
+    'piles-rencontre mechant manigance-principale manigances-annexes'
+    '.               allies  allies               allies'
+    'piles-joueur    heros   heros                heros'
+    'annexes         main    main                 main';
 }
 
 .plateau-scene.avec-bande .zone-rencontre,

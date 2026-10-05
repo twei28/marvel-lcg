@@ -7,7 +7,8 @@
 // L'original faisait exactement cela (scene 1920x1080, scale(min(vw/1920,
 // vh/1080)), voir public/js/marvel/scene.js).
 
-import { DISPOSITION_ORIGINE, styleDeGrille, styleDeZone as tailleDeZone, type Disposition } from './disposition'
+import { DISPOSITION_ORIGINE, styleDeGrille, styleDeZone as tailleDeZone, type Disposition } from './table-briques'
+import { ACCOMPAGNEMENT, assemblerZones } from './table-rendu'
 import {
   useCallback,
   useEffect,
@@ -403,6 +404,7 @@ function Emplacement({
   heroActifId,
   accueilleLeGlisser = false,
   styleDeZone,
+  aire,
 }: {
   emplacement: EmplacementAffiche
   interactifs: Map<number, EtatInteractif>
@@ -412,14 +414,20 @@ function Emplacement({
   heroActifId?: number
   /** Cette zone attend la carte qu'on est en train de glisser. */
   accueilleLeGlisser?: boolean
-  /** La taille des cartes de la zone (`--taille-zone`), disposition.ts. */
+  /** La taille des cartes de la zone (`--taille-zone`), table-briques.ts. */
   styleDeZone?: CSSProperties
+  /** L'aire de grille de la zone (table-briques.ts), qui prend le pas sur celle de board.css. */
+  aire?: string
 }) {
   const vide = emplacement.groupes.every((groupe) => groupe.length === 0)
+  // Une zone ASSEMBLEE (table-rendu.ts) reprend la classe de chaque emplacement
+  // d'origine, pour garder leur apparence.
+  const origines = emplacement.emplacementsDOrigine ?? [emplacement.cle]
+  const classesDOrigine = origines.map((cle) => `zone-${cle}`).join(' ')
   return (
     <section
-      className={`plateau-emplacement zone-${emplacement.cle}${vide ? ' est-vide' : ''}`}
-      style={{ '--n': emplacement.nombreSurLaLigne, ...styleDeZone } as CSSProperties}
+      className={`plateau-emplacement ${classesDOrigine}${vide ? ' est-vide' : ''}`}
+      style={{ '--n': emplacement.nombreSurLaLigne, ...(aire ? { gridArea: aire } : {}), ...styleDeZone } as CSSProperties}
       aria-label={emplacement.titre}
       // ⚠ `data-zone` EST LA CIBLE DE DEPOT D'UNE CARTE SANS CIBLE : un allie
       // se lache chez les allies, un soutien dans l'aire du heros. Meme
@@ -441,6 +449,9 @@ function Emplacement({
             // tous les autres emplacements (`groupesPiles` n'est fourni que
             // par `terrain-combat`, zones.ts).
             data-pile={emplacement.groupesPiles?.[index]}
+            // Une zone assemblee de plusieurs origines : chaque groupe garde la
+            // cible de depot de SON emplacement d'origine.
+            data-zone={origines.length > 1 ? emplacement.groupesDOrigine?.[index] : undefined}
           >
             {groupe.map((unite) => (
               <Unite
@@ -1111,6 +1122,25 @@ export function Board({
     []
   )
 
+  const zonesRendues = useMemo(
+    () => (bandeManigances ? assemblerZones(plateau, disposition) : []),
+    [bandeManigances, plateau, disposition]
+  )
+  const unEmplacement = (e: EmplacementAffiche, styleDeZone?: CSSProperties, aire?: string) => (
+    <Emplacement
+      emplacement={e}
+      aire={aire}
+      styleDeZone={styleDeZone}
+      accueilleLeGlisser={[e.cle, ...(e.emplacementsDOrigine ?? [])].some((cle) => zonesDuGlisser?.has(cle))}
+      interactifs={interactifsEffectifs}
+      effets={effets}
+      ouvrirPile={ouvrirPile}
+      bloquerActionsPassives={bloquerActionsPassives}
+      heroActifId={heroActifId}
+      key={e.cle}
+    />
+  )
+
   return (
     <main
       className={`plateau${mainVisibleForcee ? ' main-visible-forcee' : ''}${delave ? ' est-delave' : ''}`}
@@ -1177,81 +1207,40 @@ export function Board({
             } as CSSProperties
           }
         >
-          {plateau.emplacements.map((e) => {
-            // Le deck special partage la case « terrain-soutien » : il occupe un
-            // slot dedie a GAUCHE, le heros et les soutiens sont a sa droite.
-            // La RESERVE de Brawn et la RISING TIDE AREA de Wave prennent
-            // exactement la meme place : ce sont les zones personnelles du
-            // personnage, comme l'Invocation de Strange. Aucun heros n'a deux
-            // de ces trois zones a la fois, les autres slots sont donc
-            // simplement absents.
-            if (e.cle === 'deck-special' || e.cle === 'reserve' || e.cle === 'rising-tide') return null
-            if (e.cle === 'terrain-soutien') {
-              const deckSpecial = plateau.emplacements.find((x) => x.cle === 'deck-special')
-              const reserve = plateau.emplacements.find((x) => x.cle === 'reserve')
-              const risingTide = plateau.emplacements.find((x) => x.cle === 'rising-tide')
-              return (
-                <div className="colonne-terrain-soutien" key="colonne-terrain-soutien">
-                  {deckSpecial ? (
-                    <Emplacement
-                      emplacement={deckSpecial}
-                      accueilleLeGlisser={zonesDuGlisser?.has(deckSpecial.cle)}
-                      interactifs={interactifsEffectifs}
-                      effets={effets}
-                      ouvrirPile={ouvrirPile}
-                      bloquerActionsPassives={bloquerActionsPassives}
-                      heroActifId={heroActifId}
-                    />
-                  ) : null}
-                  {reserve ? (
-                    <Emplacement
-                      emplacement={reserve}
-                      accueilleLeGlisser={zonesDuGlisser?.has(reserve.cle)}
-                      interactifs={interactifsEffectifs}
-                      effets={effets}
-                      ouvrirPile={ouvrirPile}
-                      bloquerActionsPassives={bloquerActionsPassives}
-                      heroActifId={heroActifId}
-                    />
-                  ) : null}
-                  {risingTide ? (
-                    <Emplacement
-                      emplacement={risingTide}
-                      accueilleLeGlisser={zonesDuGlisser?.has(risingTide.cle)}
-                      interactifs={interactifsEffectifs}
-                      effets={effets}
-                      ouvrirPile={ouvrirPile}
-                      bloquerActionsPassives={bloquerActionsPassives}
-                      heroActifId={heroActifId}
-                    />
-                  ) : null}
-                  <Emplacement
-                    emplacement={e}
-                    styleDeZone={bandeManigances ? tailleDeZone(disposition, e.cle) : undefined}
-                    accueilleLeGlisser={zonesDuGlisser?.has(e.cle)}
-                    interactifs={interactifsEffectifs}
-                    effets={effets}
-                    ouvrirPile={ouvrirPile}
-                    bloquerActionsPassives={bloquerActionsPassives}
-                    heroActifId={heroActifId}
-                  />
-                </div>
-              )
-            }
-            return (
-              <Emplacement
-                emplacement={e}
-                accueilleLeGlisser={zonesDuGlisser?.has(e.cle)}
-                interactifs={interactifsEffectifs}
-                effets={effets}
-                ouvrirPile={ouvrirPile}
-                bloquerActionsPassives={bloquerActionsPassives}
-                heroActifId={heroActifId}
-                styleDeZone={bandeManigances ? tailleDeZone(disposition, e.cle) : undefined}
-                key={e.cle}
-              />
-            )
-          })}
+          {bandeManigances
+            ? zonesRendues.map((z) => {
+                const taille = tailleDeZone(z.zone) as CSSProperties
+                // La brique Heros emmene ses zones personnelles (deck special,
+                // reserve, maree montante) a sa GAUCHE, comme avant.
+                if (z.avecHeros) {
+                  return (
+                    <div className="colonne-terrain-soutien" key={`colonne-${z.aire}`} style={{ gridArea: z.aire }}>
+                      {z.accompagnement.map((a) => unEmplacement(a))}
+                      {z.emplacement ? unEmplacement(z.emplacement, taille) : null}
+                    </div>
+                  )
+                }
+                return z.emplacement ? unEmplacement(z.emplacement, taille, z.aire) : null
+              })
+            : plateau.emplacements.map((e) => {
+                // Le deck special partage la case « terrain-soutien » : il occupe un
+                // slot dedie a GAUCHE, le heros et les soutiens sont a sa droite.
+                // La RESERVE de Brawn et la RISING TIDE AREA de Wave prennent
+                // exactement la meme place : ce sont les zones personnelles du
+                // personnage, comme l'Invocation de Strange. Aucun heros n'a deux
+                // de ces trois zones a la fois, les autres slots sont donc
+                // simplement absents.
+                if (ACCOMPAGNEMENT.includes(e.cle)) return null
+                if (e.cle === 'terrain-soutien') {
+                  return (
+                    <div className="colonne-terrain-soutien" key="colonne-terrain-soutien">
+                      {plateau.emplacements.filter((x) => ACCOMPAGNEMENT.includes(x.cle)).map((a) => unEmplacement(a))}
+                      {unEmplacement(e)}
+                    </div>
+                  )
+                }
+                return unEmplacement(e)
+              })}
           {journal}
           {superposition}
         </div>

@@ -16,6 +16,7 @@ import { kindLabel, type ScanCardProps } from '../components/ScanCard'
 import type { Catalogue } from './catalogue'
 import { representantNemesis, scanUrl, toPileCard, toScanCard, type ContexteCarte } from './card-model'
 import { t } from './langue'
+import type { CleBrique } from './table-briques'
 import { collectionPourJoueur, lireArtsRessources } from './variantes'
 import { estUneCarte, isVisibleFor, type World, type WorldCard, type WorldPlayer } from './world'
 
@@ -158,6 +159,22 @@ export type EmplacementAffiche = {
    * secteur de cet emplacement n'a besoin d'être distingué.
    */
   groupesPiles?: (string | undefined)[]
+  /**
+   * Table par briques (05/10/2026) : la BRIQUE de chaque groupe, meme longueur
+   * que `groupes`, pour les deux emplacements qui en melangent plusieurs
+   * (`terrain-combat` : allies, sbires, environnement ; `terrain-soutien` :
+   * heros, soutiens). C'est ce qui permet a la table de les separer ou de les
+   * regrouper autrement (table-rendu.ts). Absent = une seule brique.
+   */
+  groupesBriques?: (CleBrique | undefined)[]
+  /**
+   * Seulement sur une zone ASSEMBLEE par la table (table-rendu.ts) : les
+   * emplacements d'origine dont elle reprend des groupes. Le premier est
+   * `cle` ; tous donnent leur classe CSS `zone-<cle>` a la zone.
+   */
+  emplacementsDOrigine?: CleEmplacement[]
+  /** Idem : l'emplacement d'origine de chaque groupe, cible de depot de la carte lachee dessus. */
+  groupesDOrigine?: CleEmplacement[]
 }
 
 export type Plateau = {
@@ -644,7 +661,9 @@ function emplacement(
   // Secteur de chaque groupe (tache 5, glisser-depose) : meme longueur et
   // meme ordre que `groupes`. Seul terrain-combat le fournit pour l'instant
   // (voir EmplacementAffiche.groupesPiles).
-  groupesPiles?: (string | undefined)[]
+  groupesPiles?: (string | undefined)[],
+  // Brique de chaque groupe (EmplacementAffiche.groupesBriques).
+  groupesBriques?: (CleBrique | undefined)[]
 ): EmplacementAffiche | undefined {
   // Les groupes vides sont retires ; on filtre proprietaires et secteurs du
   // meme geste, pour que les trois tableaux restent alignes apres coup.
@@ -653,6 +672,7 @@ function emplacement(
       groupe,
       proprietaire: proprietaires?.[index],
       pile: groupesPiles?.[index],
+      brique: groupesBriques?.[index],
     }))
     .filter((garde) => garde.groupe.length > 0)
   if (gardes.length === 0) return undefined
@@ -667,6 +687,7 @@ function emplacement(
     nombreSurLaLigne,
     ...(proprietaires ? { proprietaires: gardes.map((garde) => garde.proprietaire as number) } : {}),
     ...(groupesPiles ? { groupesPiles: gardes.map((garde) => garde.pile) } : {}),
+    ...(groupesBriques ? { groupesBriques: gardes.map((garde) => garde.brique) } : {}),
   }
 }
 
@@ -850,7 +871,8 @@ export function construirePlateau(world: World, options: Options): Plateau {
       // joueur COURANT). Marquer aussi le groupe d'un AUTRE joueur engagerait
       // silencieusement le sbire chez le mauvais joueur ; on prefere ne rien
       // marquer et laisser ce lacher refuse plutot que de deviner.
-      [undefined, CLE_PILE_ENGAGES, ...autres.flatMap(() => [undefined, undefined]), undefined, undefined]
+      [undefined, CLE_PILE_ENGAGES, ...autres.flatMap(() => [undefined, undefined]), undefined, undefined],
+      ['allies', 'sbires', ...autres.flatMap((): CleBrique[] => ['allies', 'sbires']), 'environnements', 'environnements']
     ),
 
     // Rangee CENTRALE de l'aire joueur : d'abord le DECK SPECIAL du heros s'il en
@@ -938,15 +960,15 @@ export function construirePlateau(world: World, options: Options): Plateau {
     // un joueur gagne ou perd un groupe ici, le proprietaire suit sans qu'on
     // ait besoin de resynchroniser deux listes.
     ((): EmplacementAffiche | undefined => {
-      const groupesEtProprietaires: Array<[UniteAffichee[], number]> = [
-        [posees(notre?.area_hero, rendu), options.playerId],
-        [posees(soutiensHorsMeteo, rendu), options.playerId],
-        [posees(notre?.obligations_area, rendu), options.playerId],
+      const groupesEtProprietaires: Array<[UniteAffichee[], number, CleBrique]> = [
+        [posees(notre?.area_hero, rendu), options.playerId, 'heros'],
+        [posees(soutiensHorsMeteo, rendu), options.playerId, 'soutiens'],
+        [posees(notre?.obligations_area, rendu), options.playerId, 'soutiens'],
         // La carte en cours de resolution se pose aupres de SON heros, le
         // temps que son texte s'applique : c'est ce qu'on fait sur une vraie
         // table, et non chez le mechant.
-        [posees(notre?.area_processing, rendu), options.playerId],
-        ...autres.flatMap((joueur, index): Array<[UniteAffichee[], number]> => {
+        [posees(notre?.area_processing, rendu), options.playerId, 'soutiens'],
+        ...autres.flatMap((joueur, index): Array<[UniteAffichee[], number, CleBrique]> => {
           const idJoueur = joueurs.indexOf(joueur)
           return [
             [
@@ -954,10 +976,11 @@ export function construirePlateau(world: World, options: Options): Plateau {
                 { cle: 'deck-special', cartes: joueur.additional_deck },
               ], rendu),
               idJoueur,
+              'heros',
             ],
-            [posees(joueur.area_hero, rendu), idJoueur],
-            [posees(joueur.supports, rendu), idJoueur],
-            [posees(joueur.area_processing, rendu), idJoueur],
+            [posees(joueur.area_hero, rendu), idJoueur, 'heros'],
+            [posees(joueur.supports, rendu), idJoueur, 'soutiens'],
+            [posees(joueur.area_processing, rendu), idJoueur, 'soutiens'],
           ]
         }),
       ]
@@ -975,7 +998,9 @@ export function construirePlateau(world: World, options: Options): Plateau {
         'terrain-soutien',
         t('Héros et soutiens'),
         ordonnes.map(([groupe]) => groupe),
-        ordonnes.map(([, idJoueur]) => idJoueur)
+        ordonnes.map(([, idJoueur]) => idJoueur),
+        undefined,
+        ordonnes.map(([, , brique]) => brique)
       )
     })(),
 

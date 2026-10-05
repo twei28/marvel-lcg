@@ -1,7 +1,7 @@
 // La table personnalisable, etape 3 : l'ENREGISTREMENT. Une disposition par
 // nombre de joueurs, dans le navigateur et sur le compte (decision du 04/10/2026).
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { DISPOSITION_DE_DEPART, DISPOSITION_ORIGINE, changerTaille, ecrireTable } from './disposition'
+import { DISPOSITION_DE_DEPART, DISPOSITION_ORIGINE, changerTaille, ecrireTable, zoneDe } from './table-briques'
 import { CLE_TABLE, dispositionPour, enregistrerDisposition, tablesDuCompte, synchroniserTables } from './table-perso'
 
 const envois: unknown[] = []
@@ -26,7 +26,7 @@ describe('une disposition par nombre de joueurs', () => {
 
   it('enregistre pour un nombre de joueurs, sans toucher aux autres, et previent le compte', () => {
     enregistrerDisposition(2, grande)
-    expect(dispositionPour(2).zones.main.taille).toBe(1.3)
+    expect(zoneDe(dispositionPour(2), 'main')?.taille).toBe(1.3)
     expect(dispositionPour(1)).toBe(DISPOSITION_ORIGINE)
     expect(envois).toEqual([{ changements: { 'table-2': ecrireTable(grande) } }])
   })
@@ -58,6 +58,6 @@ describe('le compte fait foi quand il existe (meme contrat que la teinte)', () =
     enregistrerDisposition(1, grande, false)
     synchroniserTables({ 'table-4': ecrireTable(grande) })
     expect(dispositionPour(1)).toBe(DISPOSITION_ORIGINE)
-    expect(dispositionPour(4).zones.main.taille).toBe(1.3)
+    expect(zoneDe(dispositionPour(4), 'main')?.taille).toBe(1.3)
   })
 })

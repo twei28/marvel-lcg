@@ -1463,16 +1463,22 @@ class GameServerGet(GameServerBase):
             return False
         return all(bas <= int(m) <= haut for m, (bas, haut) in zip(morceaux, cls.TEINTE_BORNES))
 
-    # LA TABLE PERSONNALISABLE (04/10/2026) : une disposition par nombre de
-    # joueurs, cles `table-1` a `table-4`. « 12x8|c,l,w,h,t;... » : la grille
-    # (fixe), puis NEUF zones dans l'ordre de `ZONES` (ui-app/src/board/
-    # disposition.ts) — colonne et ligne de depart, largeur et hauteur en
-    # cases, taille des cartes en pour cent (60-160). Entieres dans la grille,
-    # sans chevauchement : le plateau n'a jamais a reparer ce qu'il relit.
+    # LA TABLE PERSONNALISABLE (04/10/2026, par briques le 05/10/2026) : une
+    # disposition par nombre de joueurs, cles `table-1` a `table-4`.
+    # « 12x8|he+so:c,l,w,h,t;... » : la grille (fixe), puis les zones, chacune
+    # avec les CODES de ses briques (ui-app/src/board/table-briques.ts) et sa
+    # place : colonne et ligne de depart, largeur et hauteur en cases, taille
+    # des cartes en pour cent (60-160). Chaque brique apparait une seule fois,
+    # les epinglees (pr, pj, an, ma) seules dans leur zone. L'ANCIEN texte (neuf
+    # zones sans codes) reste accepte : le plateau le convertit. Entieres dans
+    # la grille, sans chevauchement : le plateau n'a jamais a reparer ce qu'il
+    # relit.
     TABLE_CLES = ('table-1', 'table-2', 'table-3', 'table-4')
     TABLE_GRILLE = (12, 8)
-    TABLE_ZONES = 9
+    TABLE_ZONES_ANCIEN = 9
     TABLE_TAILLE = (60, 160)
+    TABLE_BRIQUES = ('pr', 'he', 'so', 'al', 'me', 'sb', 'en', 'mp', 'mx', 'pj', 'an', 'ma')
+    TABLE_EPINGLEES = ('pr', 'pj', 'an', 'ma')
 
     @classmethod
     def _table_valide(cls, valeur) -> bool:
@@ -1482,11 +1488,23 @@ class GameServerGet(GameServerBase):
         if tete != f'{cls.TABLE_GRILLE[0]}x{cls.TABLE_GRILLE[1]}':
             return False
         zones = corps.split(';')
-        if len(zones) != cls.TABLE_ZONES:
+        nouveau = ':' in corps
+        if not nouveau and len(zones) != cls.TABLE_ZONES_ANCIEN:
             return False
         rects = []
+        vues = []
         for zone in zones:
-            morceaux = zone.split(',')
+            codes, deux_points, place = zone.rpartition(':')
+            if nouveau != bool(deux_points):
+                return False
+            if nouveau:
+                briques = codes.split('+')
+                if any(b not in cls.TABLE_BRIQUES for b in briques):
+                    return False
+                if len(briques) > 1 and any(b in cls.TABLE_EPINGLEES for b in briques):
+                    return False
+                vues.extend(briques)
+            morceaux = place.split(',')
             if len(morceaux) != 5 or not all(m.isdigit() for m in morceaux):
                 return False
             c, l, w, h, t = (int(m) for m in morceaux)
@@ -1497,6 +1515,8 @@ class GameServerGet(GameServerBase):
             if not cls.TABLE_TAILLE[0] <= t <= cls.TABLE_TAILLE[1]:
                 return False
             rects.append((c, l, w, h))
+        if nouveau and sorted(vues) != sorted(cls.TABLE_BRIQUES):
+            return False
         for i, (c1, l1, w1, h1) in enumerate(rects):
             for (c2, l2, w2, h2) in rects[i + 1:]:
                 if c1 < c2 + w2 and c2 < c1 + w1 and l1 < l2 + h2 and l2 < l1 + h1:

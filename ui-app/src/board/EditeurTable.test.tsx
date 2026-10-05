@@ -5,7 +5,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render } from '@testing-library/react'
 import { EditeurTable, caseSousLePointeur } from './EditeurTable'
-import { DISPOSITION_DE_DEPART, ZONES } from './disposition'
+import { DISPOSITION_DE_DEPART } from './table-briques'
 import { ecran as screen } from '../test-textes'
 
 afterEach(() => window.localStorage.clear())
@@ -30,10 +30,10 @@ describe('l editeur de table', () => {
 
   it('encadre les neuf zones, main comprise, chacune avec ses deux poignees', () => {
     rendre()
-    expect(document.querySelectorAll('.editeur-zone')).toHaveLength(ZONES.length)
-    expect(screen.getByText('Main')).toBeInTheDocument()
-    expect(document.querySelectorAll('.editeur-poignee-place')).toHaveLength(ZONES.length)
-    expect(document.querySelectorAll('.editeur-poignee-taille')).toHaveLength(ZONES.length)
+    expect(document.querySelectorAll('.editeur-zone')).toHaveLength(DISPOSITION_DE_DEPART.zones.length)
+    expect(screen.getByText('Ta main')).toBeInTheDocument()
+    expect(document.querySelectorAll('.editeur-poignee-place')).toHaveLength(DISPOSITION_DE_DEPART.zones.length)
+    expect(document.querySelectorAll('.editeur-poignee-taille')).toHaveLength(DISPOSITION_DE_DEPART.zones.length)
   })
 
   it('pose chaque zone sur sa place de la grille', () => {
@@ -58,6 +58,16 @@ describe('l editeur de table', () => {
     const appels = rendre()
     const poignee = document.querySelector<HTMLElement>('.editeur-zone[data-zone="main"] .editeur-poignee-taille')!
     fireEvent.keyDown(poignee, { key: 'ArrowUp' })
-    expect(appels.changer.mock.calls[0][0].zones.main.taille).toBe(1.05)
+    expect(appels.changer.mock.calls[0][0].zones.find((z: { briques: string[] }) => z.briques.includes('main')).taille).toBe(1.05)
+  })
+
+  it('une pastille par brique non epinglee, dans la zone qui la porte', () => {
+    rendre()
+    const pastilles = [...document.querySelectorAll<HTMLElement>('.editeur-brique')].map((b) => b.dataset.brique)
+    expect(pastilles.sort()).toEqual(
+      ['allies', 'environnements', 'heros', 'manigance-principale', 'manigances-annexes', 'mechant', 'sbires', 'soutiens'].sort()
+    )
+    expect(document.querySelector('.editeur-zone[data-zone="allies"] [data-brique="sbires"]')).not.toBeNull()
+    expect(document.querySelector('.editeur-zone[data-zone="main"] .editeur-brique')).toBeNull()
   })
 })

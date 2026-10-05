@@ -90,8 +90,9 @@ try:
 
     # LA TABLE PERSONNALISABLE (04/10/2026) : une disposition par nombre de
     # joueurs (`table-1` a `table-4`), grille 12x8, neuf zones dans l'ordre fixe
-    # de board/disposition.ts (« col,ligne,largeur,hauteur,taille% »), bornee et
-    # SANS chevauchement. Rien d'autre n'est ecrit.
+    # de l'ANCIEN format (« col,ligne,largeur,hauteur,taille% »), bornee et
+    # SANS chevauchement. Rien d'autre n'est ecrit. Le format par briques
+    # (05/10/2026) est verifie plus bas.
     TABLE = ("12x8|1,1,2,2,100;3,1,2,2,100;5,1,3,2,100;8,1,5,2,100;3,3,10,2,100;"
              "3,5,10,2,100;1,5,2,2,100;1,7,2,2,100;3,7,10,2,130")
     appeler(serveur.save_preferences, Requete(cookie, {"changements": {"table-1": TABLE, "table-4": TABLE}}))
@@ -121,6 +122,36 @@ try:
     _, corps = appeler(serveur.get_preferences, Requete(cookie))
     verifier("null efface la table (disposition d'origine)",
              not any(c.startswith("table-") for c in corps["preferences"]), corps["preferences"])
+
+    # LA TABLE PAR BRIQUES (05/10/2026) : « codes:col,ligne,largeur,hauteur,taille% »,
+    # chaque brique une seule fois, les epinglees (pr, pj, an, ma) seules.
+    # Textes ecrits par `ecrireTable` (ui-app/src/board/table-briques.ts).
+    DEPART = ("12x8|pr:1,1,2,2,100;he+so:3,5,10,2,100;al+sb+en:3,3,10,2,100;me:3,1,2,2,100;"
+              "mp:5,1,3,2,100;mx:8,1,5,2,100;pj:1,5,2,2,100;an:1,7,2,2,100;ma:3,7,10,2,100")
+    ECLATE = ("12x8|pr:1,1,2,2,100;he+so:3,5,10,2,100;al+en:3,3,10,2,100;me:3,1,2,2,100;"
+              "sb:1,3,2,2,100;mp:5,1,3,2,100;mx:8,1,5,2,100;pj:1,5,2,2,100;an:1,7,2,2,100;"
+              "ma:3,7,10,2,100")
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {"table-1": DEPART, "table-2": ECLATE}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("table par briques (depart et eclatee) ecrite et relue",
+             corps["preferences"].get("table-1") == DEPART and corps["preferences"].get("table-2") == ECLATE,
+             corps["preferences"])
+    mauvaises = [
+        DEPART.replace("sb+", ""),                           # une brique manque
+        DEPART.replace("he+so", "he+he"),                    # une brique en double
+        DEPART.replace("pr:", "xx:"),                        # code inconnu
+        DEPART.replace("ma:3,7,10,2,100", "pr+ma:3,7,10,2,100").replace("pr:1,1,2,2,100;", ""),  # epinglee accompagnee
+        DEPART.replace("ma:3,7,10,2,100", "ma:3,6,10,2,100"),  # la main chevauche
+        DEPART.replace("ma:3,7,10,2,100", "ma:3,7,10,2,170"),  # taille hors bornes
+        DEPART.replace("ma:3,7,10,2,100", "3,7,10,2,100"),   # zone sans codes dans un texte a briques
+        DEPART + ";me:1,1,1,1,100",                          # zone de trop
+    ]
+    for mauvaise in mauvaises:
+        appeler(serveur.save_preferences, Requete(cookie, {"changements": {"table-3": mauvaise}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("tables par briques incompletes, doublees, chevauchantes ou hors bornes ignorees",
+             "table-3" not in corps["preferences"], corps["preferences"])
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {"table-1": None, "table-2": None}}))
 
     statut, _ = appeler(serveur.save_preferences, Requete(cookie, {"changements": ["sobre"]}))
     verifier("corps invalide refuse (400)", statut == 400, statut)
