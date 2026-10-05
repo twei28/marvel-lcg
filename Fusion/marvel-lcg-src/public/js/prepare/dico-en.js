@@ -842,6 +842,26 @@ export const DICO_EN_BASE = {
   "Fond gris, sans couleurs ni animations, plus reposant.": "Grey background, no colours or animations, easier on the eyes.",
   "Tu pourras changer à tout moment : bouton Affichage en haut de cette page, ou Réglages en partie.":
     "You can change it at any time: the Display button at the top of this page, or Settings during a game.",
+  // Fenêtre « Choisis ta phase du méchant » (app.js, demanderLaPhaseDuMechant, 05/10/2026).
+  "Choisis ta phase du méchant": "Choose your villain phase",
+  "Image précédente": "Previous image",
+  "Image suivante": "Next image",
+  "Trois façons de vivre la phase du méchant, du plus détaillé au plus rapide.":
+    "Three ways to play the villain phase, from the most detailed to the quickest.",
+  "Étape par étape": "Step by step",
+  "Chaque étape de la phase est détaillée, avec un « Suivant » à chaque fois. C'est le plus long, parce que tout est expliqué.":
+    "Every step of the phase is spelled out, with a “Next” each time. It is the longest one, because everything is explained.",
+  "Encore en chantier : je cherche le bon équilibre.": "Still a work in progress: I am looking for the right balance.",
+  "Sur la table": "On the table",
+  "Tu vois les cartes bouger directement sur la table. Un peu moins de détails, mais plus vivant.":
+    "You see the cards move straight on the table. Slightly less detail, but livelier.",
+  "D’un coup": "All at once",
+  "Tout se fait d'un coup. Seule une interruption te laisse jouer une carte quand c'est possible.":
+    "Everything happens at once. Only an interruption lets you play a card when you can.",
+  "On voit beaucoup moins ce qui se passe : un défaut éventuel est bien plus difficile à repérer.":
+    "You see much less of what happens: a possible bug is much harder to spot.",
+  "Tu pourras changer à tout moment : Réglages en partie, onglet Jeu.":
+    "You can change it at any time: Settings during a game, Game tab.",
   // Réglage d'affichage (affichage.js, 03/10/2026).
   "Affichage normal": "Normal display",
   "Affichage sobre": "Muted display",

@@ -31,6 +31,8 @@ import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
          langueDejaChoisie, retenirLangue } from "/public/js/prepare/langue.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, affichageJamaisChoisi } from "/public/js/prepare/affichage.js";
+import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
+         doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire } from "/public/js/prepare/phase-mode-choix.js";
 import { roueTeinte, teinteActuelle, choisirTeinte, synchroniserTeinte } from "/public/js/prepare/teinte.js";
 // ⚠ MEME ADRESSE que la balise de prepare.html (`?v=1` compris) : une autre
 // adresse chargerait le module une seconde fois.
@@ -1282,6 +1284,126 @@ function demanderLAffichage() {
                 ),
                 el("div", { class: "vh-note" },
                     t("Tu pourras changer à tout moment : bouton Affichage en haut de cette page, ou Réglages en partie.")),
+                el("div", { class: "af-valider" },
+                    el("button", { class: "btn primary", onclick: valider }, t("Valider"))),
+            ),
+        );
+        ouvrirModale(overlay);
+    });
+}
+
+/** « Choisis ta phase du méchant », posée une seule fois (05/10/2026).
+ *
+ *  Demandée par l'utilisateur : présenter, à la première connexion et à tout
+ *  joueur qui ne les a pas encore vus, les trois façons de vivre la phase du
+ *  méchant, « un petit peu comme pour le mode sobre et le mode normal », avec
+ *  une image chacune. Les images sont de vraies captures du plateau.
+ *
+ *  ⚠ « Étape par étape » est annoncé EN CHANTIER, parce qu'il l'est : l'auteur
+ *  cherche encore le bon équilibre. Le dire ici vaut mieux que de le laisser
+ *  deviner.
+ *
+ *  ⚠ « D'un coup » dit son prix : on voit beaucoup moins, donc beaucoup moins
+ *  de chances de repérer un défaut. Le choix se fait en connaissance de cause.
+ *
+ *  ⚠ Même règle que la langue et l'affichage : on ne la ferme pas en cliquant
+ *  à côté, un clic distrait vaudrait « j'ai vu » et elle ne reviendrait jamais.
+ */
+function demanderLaPhaseDuMechant() {
+    return new Promise((resolve) => {
+        let brutAvant = null;
+        try { brutAvant = localStorage.getItem(CLE_MODE_PHASE); } catch (e) { /* stockage indisponible */ }
+        let choix = normaliserModePhase(brutAvant);
+        const cartes = [];
+        const minuteurs = [];
+        const choisir = (valeur) => {
+            choix = valeur;
+            for (const c of cartes) {
+                const on = c.dataset.valeur === valeur;
+                c.classList.toggle("on", on);
+                c.setAttribute("aria-pressed", on ? "true" : "false");
+            }
+        };
+        // Un carrousel par mode : plusieurs captures de vraies parties, pour voir
+        // chaque moment (annonce, trait entre deux cartes, dégâts, récap).
+        const carrousel = (dossier, nombre, titre) => {
+            const images = Array.from({ length: nombre }, (_, i) => `/public/img/phase-modes/${dossier}-${i + 1}.jpg`);
+            for (const src of images.slice(1)) { const pre = new Image(); pre.src = src; }
+            let i = 0;
+            const img = el("img", { src: images[0], alt: titre, loading: "eager" });
+            const points = images.map((_, k) => el("span", { class: "pm-point" + (k === 0 ? " on" : "") }));
+            const aller = (k) => {
+                i = (k + nombre) % nombre;
+                img.src = images[i];
+                points.forEach((p, n) => p.classList.toggle("on", n === i));
+            };
+            let minuteur = null;
+            const arreter = () => { if (minuteur !== null) { clearInterval(minuteur); minuteur = null; } };
+            const reduit = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+            if (!reduit) {
+                minuteur = setInterval(() => aller(i + 1), 3200);
+                minuteurs.push(arreter);
+            }
+            const fleche = (sens, texte, nom) => el("button", {
+                class: "pm-fleche pm-fleche-" + (sens < 0 ? "g" : "d"),
+                type: "button",
+                "aria-label": nom,
+                onclick: (e) => { e.stopPropagation(); arreter(); aller(i + sens); },
+            }, texte);
+            return el("div", { class: "pm-carrousel" },
+                img,
+                fleche(-1, "‹", t("Image précédente")),
+                fleche(1, "›", t("Image suivante")),
+                el("div", { class: "pm-points" }, ...points));
+        };
+        const carte = (valeur, dossier, nombre, titre, sous, note) => {
+            const bouton = el("div", {
+                class: "af-choix" + (valeur === choix ? " on" : ""),
+                role: "button",
+                tabindex: "0",
+                "aria-pressed": valeur === choix ? "true" : "false",
+                onclick: () => choisir(valeur),
+                onkeydown: (e) => {
+                    if (e.target !== bouton) return;
+                    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choisir(valeur); }
+                },
+            },
+                carrousel(dossier, nombre, titre),
+                el("b", {}, titre),
+                el("small", {}, sous),
+                note ? el("small", { class: "pm-note" }, note) : null);
+            bouton.dataset.valeur = valeur;
+            cartes.push(bouton);
+            return bouton;
+        };
+        const valider = () => {
+            const aEcrire = modePhaseAEcrire(brutAvant, choix);
+            try {
+                if (aEcrire) localStorage.setItem(CLE_MODE_PHASE, aEcrire);
+                localStorage.setItem(CLE_PHASE_MODE_VU, "1");
+            } catch (e) { /* stockage refuse : la fenetre reviendra, c'est tout */ }
+            for (const arreter of minuteurs) arreter();
+            fermerModale(overlay);
+            resolve();
+        };
+        const overlay = el("div", { class: "deck-modal affichage-modal phase-modal" },
+            el("div", { class: "deck-modal-panel vh-panel" },
+                el("div", { class: "dm-head" },
+                    el("b", { class: "mvl" }, t("Choisis ta phase du méchant")),
+                    el("span", { class: "dm-sub" }, t("Trois façons de vivre la phase du méchant, du plus détaillé au plus rapide.")),
+                ),
+                el("div", { class: "af-choix-grille" },
+                    carte("detaille", "etape", 4, t("Étape par étape"),
+                        t("Chaque étape de la phase est détaillée, avec un « Suivant » à chaque fois. C'est le plus long, parce que tout est expliqué."),
+                        t("Encore en chantier : je cherche le bon équilibre.")),
+                    carte("sur-table", "sur-table", 4, t("Sur la table"),
+                        t("Tu vois les cartes bouger directement sur la table. Un peu moins de détails, mais plus vivant.")),
+                    carte("instantane", "d-un-coup", 4, t("D’un coup"),
+                        t("Tout se fait d'un coup. Seule une interruption te laisse jouer une carte quand c'est possible."),
+                        t("On voit beaucoup moins ce qui se passe : un défaut éventuel est bien plus difficile à repérer.")),
+                ),
+                el("div", { class: "vh-note" },
+                    t("Tu pourras changer à tout moment : Réglages en partie, onglet Jeu.")),
                 el("div", { class: "af-valider" },
                     el("button", { class: "btn primary", onclick: valider }, t("Valider"))),
             ),
@@ -4506,6 +4628,13 @@ function blocAvance() {
     appliquerTeintePage(teinteActuelle());
     if (!creationCampagne() && affichageJamaisChoisi(reponsePreferences)) {
         await demanderLAffichage();
+    }
+    // Apres l'affichage : une seule fenetre a la fois, et la langue est deja
+    // choisie. Chaque joueur la voit une fois, nouveau comme ancien.
+    let phaseVue = null;
+    try { phaseVue = localStorage.getItem(CLE_PHASE_MODE_VU); } catch (e) { /* stockage indisponible */ }
+    if (!creationCampagne() && doitProposerLaPhase(phaseVue)) {
+        await demanderLaPhaseDuMechant();
     }
     // Le salon ne concerne que le multi, mais on sonde toujours : la reponse
     // dit elle-meme si on y est (multi:false en solo, et tout reste inerte).

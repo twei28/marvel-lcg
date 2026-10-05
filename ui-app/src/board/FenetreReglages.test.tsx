@@ -29,7 +29,6 @@ function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
 
     // Essais fermes par defaut, comme pour presque tout le monde : le mode
     // « Sur la table » ne doit alors pas etre propose.
-    essais: false,
     modePhase: 'detaille',
     changerModePhase: vi.fn(),
     libelleModePhase: (m) =>
@@ -238,7 +237,7 @@ describe('« Carte révélée en grand » et le cartouche', () => {
 
   it('active, avec son explication d’origine, dans les deux autres modes', () => {
     for (const modePhase of ['instantane', 'sur-table'] as const) {
-      const { unmount } = render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase, essais: true })} />)
+      const { unmount } = render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase })} />)
       const rangee = ligne('Carte révélée en grand')
       expect(rangee.className, modePhase).not.toContain('est-desactive')
       expect(within(rangee).getByText('Au centre de l’écran, le temps de la lire')).toBeInTheDocument()
@@ -306,7 +305,7 @@ describe('la fenetre elle-meme', () => {
   })
 })
 
-describe('le mode « Sur la table » est proposé aux essais', () => {
+describe('le mode « Sur la table » est proposé à tous', () => {
   // ⚠ FERMÉ PUIS ROUVERT le 14/09/2026. Fermé après la première partie jouée
   // dedans (« je le retire jusqu'à ce que ce soit prêt »), rouvert une fois les
   // 32 décisions de la refonte traitées, à sa demande.
@@ -332,23 +331,16 @@ describe('le mode « Sur la table » est proposé aux essais', () => {
     expect(ligne.getAttribute('title')).toMatch(/infobulle/)
   })
 
-  it('avec les essais, il apparaît entre les deux autres', () => {
-    // Il raconte la même chose que « Détaillé », au même rythme : sa place est
-    // à côté de lui, pas à la fin de la liste.
-    render(<ContenuOnglet onglet="jeu" p={proprietes({ essais: true })} />)
+  it('il apparaît entre les deux autres, pour tous les joueurs', () => {
+    // OUVERT À TOUS le 05/10/2026 : la fenêtre de préparation le présente à
+    // chacun, il doit donc se retrouver ici sans condition. Il raconte la même
+    // chose que « Détaillé », au même rythme : sa place est à côté de lui.
+    render(<ContenuOnglet onglet="jeu" p={proprietes()} />)
     expect(modes()).toEqual(['Étape par étape', 'Sur la table', 'D’un coup'])
   })
 
-  it('sans les essais, il n’est pas proposé', () => {
-    // La garde de `board/essais.ts` décide qui le voit, pas l'interrupteur.
-    render(<ContenuOnglet onglet="jeu" p={proprietes({ essais: false })} />)
-    expect(modes()).toEqual(['Étape par étape', 'D’un coup'])
-  })
-
-  it('⚠ un mode DÉJÀ choisi reste dans la liste même sans les essais', () => {
-    // Sinon l'écran des réglages montrerait deux boutons dont aucun n'est
-    // actif, et le joueur n'aurait aucun moyen d'en sortir.
-    render(<ContenuOnglet onglet="jeu" p={proprietes({ essais: false, modePhase: 'sur-table' })} />)
+  it('un mode déjà choisi reste dans la liste', () => {
+    render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'sur-table' })} />)
     expect(modes()).toEqual(['Étape par étape', 'Sur la table', 'D’un coup'])
   })
 })

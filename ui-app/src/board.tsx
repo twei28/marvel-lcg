@@ -4610,9 +4610,6 @@ export function PagePartie({
       <FenetreReglages
         ouvert={reglagesOuverts}
         fermer={() => setReglagesOuverts(false)}
-        // Le mode « Sur la table » n'est propose qu'aux essais, le temps que
-        // l'utilisateur le valide a l'usage (board/essais.ts).
-        essais={essais}
         affichage={affichage}
         changerAffichage={changerAffichage}
         teinte={teinte}
