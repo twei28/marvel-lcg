@@ -53,7 +53,7 @@ class PlayerAsk:
             text_list2 = None
         return self.AskChooseOneText(item_list2, text_list2)
 
-    def AskChooseOneText(self, item_list: Sequence[T], text_list: Sequence[str]|None=None) -> T:
+    def AskChooseOneText(self, item_list: Sequence[T], text_list: Sequence[str]|None=None, titre: str="") -> T:
         from game.card.face.card_face import CardFace
         from game.effect.rule import GameRule
 
@@ -86,7 +86,8 @@ class PlayerAsk:
 
         effect = player.ChooseAbilities(
             GameRule(player.GetIdentity()),
-            *abilities
+            *abilities,
+            titre=titre
         )
         assert effect
         return select

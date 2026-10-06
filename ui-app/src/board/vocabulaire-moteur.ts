@@ -415,6 +415,9 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   [/^Ready your identity$/, () => 'Redresser ton identité'],
   [/^Exhaust your identity$/, () => 'Engager ton identité'],
   [/^Flip to alter-ego form$/, () => 'Passer en forme alter ego'],
+  // « Combien de fois ce choix ? » (player_action.py, `ChooseAbilities(repeat=...)`).
+  [/^(\d+) times?$/, (m) => `${m[1]} fois`],
+  [/^No repeat$/, () => 'Aucun'],
 ]
 
 /**
@@ -440,6 +443,25 @@ export function traduireMoteur(libelle: string): string {
   }
 
   return libelle
+}
+
+/**
+ * Les deux titres de la question « combien de fois ce choix ? » : la carte, le
+ * choix en cause et le reste à faire, sans qu'il faille deviner (signalement
+ * Yarro du 05/10/2026). Le nom de carte arrive déjà remis dans la langue du
+ * plateau par `sansIdentifiantsEnFrancais` ; le choix, lui, est de l'anglais du
+ * moteur et passe par `traduireMoteur`, comme le bouton qu'il désigne.
+ * Un texte qui n'a pas cette forme sort inchangé.
+ */
+export function traduireTitreRepetition(texte: string): string {
+  if (langueActuelle() !== 'fr') return texte
+  const total = /^(.+): (.+?)\. How many times\? \(1 to (\d+)\)$/.exec(texte)
+  if (total) return `${total[1]} : ${traduireMoteur(total[2]!)}. Combien de fois ? (1 à ${total[3]})`
+  const enPlus = /^(.+): (.+?) done \((\d+) of (\d+)\)\. How many more times\?$/.exec(texte)
+  if (enPlus) {
+    return `${enPlus[1]} : ${traduireMoteur(enPlus[2]!)} fait (${enPlus[3]} sur ${enPlus[4]}). Combien de fois en plus ?`
+  }
+  return texte
 }
 
 /**

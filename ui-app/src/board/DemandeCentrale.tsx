@@ -9,7 +9,7 @@ import { t } from './langue'
 import { avecIcones, marquerRessources } from './icones-ressources'
 import { usePlacement } from './placement/usePlacement'
 import { useGlisserPanneau, styleAvecDecalage } from './placement/useGlisserPanneau'
-import { traduireMoteur } from './vocabulaire-moteur'
+import { traduireMoteur, traduireTitreRepetition } from './vocabulaire-moteur'
 import type { WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
 import { NOMS_FR } from './noms-fr'
@@ -81,7 +81,7 @@ export function sansIdentifiantsEnFrancais(texte: string): string {
 /** Le texte que le moteur a VRAIMENT envoyé, ou rien s'il n'a rien dit. */
 function promptDemande(demande: Demande): string {
   const prompt = nettoyerNarration(sansIdentifiantsEnFrancais(demande.prompt_text))
-  return prompt ? prompt.replace(/^---\s*/, '').replace(/\s*---$/, '') : ''
+  return prompt ? traduireTitreRepetition(prompt.replace(/^---\s*/, '').replace(/\s*---$/, '')) : ''
 }
 
 function texteDemande(demande: Demande): string {

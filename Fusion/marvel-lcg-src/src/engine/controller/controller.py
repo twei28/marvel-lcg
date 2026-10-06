@@ -390,7 +390,9 @@ class Controller:
                 check_message = message
                 prompt_text = ""
 
-                if isinstance(check_message, Message.WhenPlayerChooseAbility) and \
+                if isinstance(check_message, Message.WhenPlayerChooseAbility) and check_message.titre:
+                    prompt_text = check_message.titre
+                elif isinstance(check_message, Message.WhenPlayerChooseAbility) and \
                     check_message.by_effect.bind_message:
                     if check_message.step[1] > 1:
                         prompt_text = f"({check_message.step[0]}/{check_message.step[1]})"

@@ -36315,11 +36315,13 @@ CAS = [
         "attendu": {"en_jeu": ["60062"]},
     },
     {
-        "nom": "53019 Strength in Diversity — « Combien de fois ce choix ? » : plusieurs degats d'un coup sur la meme cible",
+        "nom": "53019 Strength in Diversity — option unique : la question du nombre vient AVANT, et nomme la carte",
         "pourquoi": ("rapport n°49 (Yarro, 05/10/2026) : un « for each, choose » se jouait instance par "
-                     "instance, douze clics pour six degats. `ChooseAbilities(repeat=...)` propose desormais "
-                     "de repeter le choix N fois d'un coup ; chaque instance reste appliquee a son tour. "
-                     "Le pilote prend sinon la reponse minimale (0), donc aucun cas existant ne change"),
+                     "instance, douze clics pour six degats ; `ChooseAbilities(repeat=...)` propose de "
+                     "repeter le choix d'un coup. Retour de Yarro le meme jour : avec la manigance a 0 menace "
+                     "le premier choix etait pris sans rien dire et la question « Repeat this choice » ne "
+                     "nommait ni la carte ni le choix deja fait. Une seule option possible : on demande "
+                     "donc d'emblee « combien de fois » (1 a N), avec le nom de la carte dans le titre"),
         "scenario": "rhino",
         "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')",
@@ -36328,12 +36330,52 @@ CAS = [
                           "Puzzle.CreateHandCards('53019', '01072', '01072')"],
         "declencher": [],
         "jouer": ["53019"],
-        "choisir_option": ["Deal_1_damage_to_an_enemy", "Repeat_this_choice_2_more_times"],
-        "options_attendues": ["Repeat this choice 2 more times"],
+        "choisir_option": ["3_times"],
+        "options_attendues": ["3 times"],
+        "prompts_attendus": ["[(83,53019) Strength in Diversity]: Deal 1 damage to an enemy. How many times? (1 to 3)"],
         "verifier": "etat_attendu",
         # Spider-Man (AVENGER) + Maria Hill (S.H.I.E.L.D) + Black Panther (WAKANDA) = 3 traits
-        # = 3 iterations. 1 choix + « 2 de plus » = 3 degats sur Rhino.
+        # = 3 iterations, manigance a 0 menace : « 3 fois » = 3 degats sur Rhino.
         "attendu": {"degats": [["01094", 3]]},
+    },
+    {
+        "nom": "53019 Strength in Diversity — plusieurs options : « +2 » apres le premier choix, avec carte et choix nommes",
+        "pourquoi": ("meme carte, mais la manigance porte de la menace : deux options possibles (degats ou "
+                     "menace retiree ; Crowd Control est une manigance annexe, le complot principal du pilote "
+                     "n'offre pas « retirer de la menace »). On choisit d'abord, puis la fenetre dit "
+                     "« <choix> fait (1 sur 3). Combien de fois en plus ? » avec « Aucun », « +1 », « +2 »"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01108', under_control=True)",
+                          "Puzzle.PutIntoPlay('01067')",
+                          "Puzzle.PutIntoPlay('23012')",
+                          "Puzzle.CreateHandCards('53019', '01072', '01072')"],
+        "declencher": [],
+        "jouer": ["53019"],
+        "choisir_option": ["Deal_1_damage_to_an_enemy", "+2"],
+        "options_attendues": ["+2"],
+        "prompts_attendus": ["[(83,53019) Strength in Diversity]: Deal 1 damage to an enemy done (1 of 3). How many more times?"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]]},
+    },
+    {
+        "nom": "60055 See No Evil, Hear No Evil [fne] — « Combien de fois ce choix ? » : deux options, « Aucun » apres le premier choix",
+        "pourquoi": ("meme mecanique que 53019 (`ChooseAbilities(repeat=2)`), carte de Team-Up (Daredevil et Echo), ici l'allie Daredevil 60039 est en jeu : le titre de la fenetre "
+                     "nomme la carte et le choix deja fait, et le bouton « Aucun » arrete la repetition : "
+                     "3 menaces retirees une seule fois, pas deux"),
+        "scenario": "kingpin_fne",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')", "Puzzle.PutIntoPlay('60039', under_control=True)",
+                          "Puzzle.CreateHandCards('60055', '01072', '01072')"],
+        "declencher": [],
+        "main_exclusive": ["60055", "01072", "01072"],
+        "jouer": ["60055"],
+        "payer_avec": ["01072", "01072"],
+        "choisir_option": ["Remove_3_threat_from_a_scheme", "No_repeat"],
+        "options_attendues": ["No repeat"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["60161b", 0]]},
     },
     {
         "nom": "60159a Kingpin A1 [fne4] — ne peut pas subir de degats : 10 degats -> 0",

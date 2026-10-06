@@ -6,7 +6,7 @@
 // « Backflip » restait en anglais sous « Jouer » (retours de l'utilisateur,
 // 11/09/2026).
 import { fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ScanCardProps } from '../components/ScanCard'
 import type { Demande, Option } from './ask'
 import { DemandeCentrale, libelleRefus } from './DemandeCentrale'
@@ -333,5 +333,55 @@ describe('DemandeCentrale — le bouton de refus dit ce qu il fait', () => {
 
   it('hors reaction et hors defense : « Passer » reste', () => {
     expect(libelleRefus([avec({})], false, cartes)).toBe('Passer')
+  })
+})
+
+// « Combien de fois ce choix ? » (signalement Yarro, 05/10/2026) : la fenetre
+// « Echo — choose an option » proposait « Repeat this choice 1..4 more times »
+// sans dire quelle carte, quel choix etait deja fait ni combien en restait.
+describe('DemandeCentrale — la question « combien de fois » nomme la carte et le choix', () => {
+  const choix = (id: number, name: string): Option => ({ ...option(), id, name, bind_id: 0 })
+  const question = (prompt_text: string, noms: string[]): Demande =>
+    ({
+      options: noms.map((nom, i) => choix(i + 1, nom)),
+      prompt_text,
+      event_name: 'WhenPlayerChooseAbility',
+      show_cancel: false,
+      ability_type: 'ChooseAbility',
+    }) as unknown as Demande
+
+  beforeEach(() => window.localStorage.setItem('marvel-langue', 'fr'))
+  afterEach(() => window.localStorage.clear())
+
+  it('apres un premier choix : carte, choix fait, reste a faire, et « Aucun / +N »', () => {
+    const noms = ['No repeat', '+1', '+2', '+3', '+4']
+    const d = question('[(83,53019) Strength in Diversity]: Deal 1 damage to an enemy done (1 of 5). How many more times?', noms)
+    rendre({ demande: d, options: d.options })
+    expect(
+      screen.getByText('Strength in Diversity : Infliger 1 dégât à un ennemi fait (1 sur 5). Combien de fois en plus ?')
+    ).toBeInTheDocument()
+    expect(screen.getByText('Aucun')).toBeInTheDocument()
+    expect(screen.getByText('+4')).toBeInTheDocument()
+  })
+
+  it('choix unique : la question vient avant, en nombre de fois au total', () => {
+    const d = question(
+      '[(83,53019) Strength in Diversity]: Deal 1 damage to an enemy. How many times? (1 to 5)',
+      ['1 time', '2 times', '3 times', '4 times', '5 times']
+    )
+    rendre({ demande: d, options: d.options })
+    expect(
+      screen.getByText('Strength in Diversity : Infliger 1 dégât à un ennemi. Combien de fois ? (1 à 5)')
+    ).toBeInTheDocument()
+    expect(screen.getByText('1 fois')).toBeInTheDocument()
+    expect(screen.getByText('5 fois')).toBeInTheDocument()
+  })
+
+  it('en anglais, rien n est traduit', () => {
+    window.localStorage.setItem('marvel-langue', 'en')
+    const d = question('[(83,53019) Strength in Diversity]: Deal 1 damage to an enemy. How many times? (1 to 2)', ['1 time', '2 times'])
+    rendre({ demande: d, options: d.options })
+    expect(screen.getByText('Strength in Diversity: Deal 1 damage to an enemy. How many times? (1 to 2)')).toBeInTheDocument()
+    expect(screen.getByText('2 times')).toBeInTheDocument()
   })
 })

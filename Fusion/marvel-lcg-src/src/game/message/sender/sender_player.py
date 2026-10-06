@@ -375,10 +375,13 @@ class SenderPlayer:
 
     # Only for `ForChoiceAbility`
     class WhenPlayerChooseAbility(TriggerPlayerMessage, NoSendResolve):
-        def __init__(self, player: 'Player', by_effect: 'Effect', step: Tuple[int, int], for_second_target: bool) -> None:
+        def __init__(self, player: 'Player', by_effect: 'Effect', step: Tuple[int, int], for_second_target: bool, titre: str="") -> None:
             self.by_effect: Final = by_effect
             self.step: Final = step
             self.for_second_target: Final = for_second_target
+            # Le titre que le plateau affiche au-dessus des boutons, quand la question
+            # n'est portee par aucune carte (voir `controller.py`, `prompt_text`).
+            self.titre: Final = titre
             # self.Present(None, "", by_effect.this)
             super().__init__(player=player)
 

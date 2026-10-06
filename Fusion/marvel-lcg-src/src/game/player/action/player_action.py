@@ -435,7 +435,7 @@ class PlayerAction:
                 break
         return effect
 
-    def ChooseAbilities(self, by_effect: 'Effect', *abilities: 'Ability|None', forced: bool=True, repeat: int=1, choose_x_different_options: int|None=None, for_second_target: bool=False) -> List['Effect']:
+    def ChooseAbilities(self, by_effect: 'Effect', *abilities: 'Ability|None', forced: bool=True, repeat: int=1, choose_x_different_options: int|None=None, for_second_target: bool=False, titre: str="") -> List['Effect']:
         all_abilities = list(abilities)
         chose_effects: List['Effect'] = []
 
@@ -448,25 +448,42 @@ class PlayerAction:
         # ..., choose » est regle instance par instance (Rules Reference p.20 : chaque
         # iteration est une instance distincte, meme sur la meme cible, et l'etat du jeu
         # se met a jour apres chacune). Six traits = six fois « choisir l'effet » puis
-        # « choisir la cible » : douze clics pour six degats sur Kingpin. Apres un choix,
-        # on propose donc de le REPETER N fois d'un coup, chaque instance etant appliquee
-        # a son tour. La question n'existe que s'il reste au moins deux iterations et que
-        # les options peuvent se repeter (`must_different` l'interdit : « X options
-        # DIFFERENTES »).
-        # La question est posee apres le PREMIER choix, puis seulement tant que le joueur
-        # s'en sert : une reponse « 0 » l'eteint pour le reste de l'effet, sinon elle
-        # doublerait les clics de ceux qui choisissent un par un.
+        # « choisir la cible » : douze clics pour six degats sur Kingpin. On propose donc de
+        # REPETER un choix N fois d'un coup, chaque instance etant appliquee a son tour. La
+        # question n'existe que s'il reste au moins deux iterations et que les options
+        # peuvent se repeter (`must_different` l'interdit : « X options DIFFERENTES »).
+        #
+        # Deux formes, au choix de l'utilisateur (05/10/2026, questions une a une) :
+        #  - UNE SEULE option possible : la question vient AVANT tout (« 1 degat a un
+        #    ennemi : combien de fois ? »). Le premier choix, automatique, se faisait sans
+        #    rien dire et la question suivante ne s'expliquait pas (signalement Yarro).
+        #  - Plusieurs options : on choisit, la premiere instance est jouee, puis on
+        #    demande combien de fois EN PLUS, tant que le joueur s'en sert : une reponse
+        #    « aucune » l'eteint pour le reste de l'effet.
         proposer = True
+        a_repeter = 0
+        if repeat > 1 and not must_different and forced:
+            seule = self._SeuleOptionPossible(by_effect, all_abilities, (1, repeat), for_second_target)
+            if seule is not None:
+                total = self._DemanderCombienDeFoisAuTotal(by_effect, seule, repeat)
+                a_repeter = total - 1
+                proposer = False
         i = 0
         while i < repeat:
-            effect = self.ChooseAbilitiesHelper(by_effect, *all_abilities, forced=forced, step=(i+1, repeat), for_second_target=for_second_target)
+            effect = self.ChooseAbilitiesHelper(by_effect, *all_abilities, forced=forced, step=(i+1, repeat), for_second_target=for_second_target, titre=titre)
             i += 1
             if effect:
                 chose_effects.append(effect)
                 if must_different:
                     all_abilities.remove(effect.ability)
+                elif a_repeter > 0 and self._PeutRepeterLeChoix(effect):
+                    for _ in range(a_repeter):
+                        if not self._RepeterLeChoix(effect, by_effect, (i+1, repeat), for_second_target):
+                            break
+                        i += 1
+                    a_repeter = 0
                 elif proposer and repeat - i >= 1 and self._PeutRepeterLeChoix(effect):
-                    en_plus = self._DemanderCombienDeFois(repeat - i)
+                    en_plus = self._DemanderCombienDeFoisEnPlus(by_effect, effect, i, repeat)
                     if en_plus == 0:
                         proposer = False
                     for _ in range(en_plus):
@@ -482,13 +499,38 @@ class PlayerAction:
             and not effect.ability.NeedCost() \
             and len(effect.targets) > 0
 
-    def _DemanderCombienDeFois(self, restantes: int) -> int:
-        """0 (defaut) a `restantes` repetitions supplementaires du choix qui vient d'etre fait."""
-        textes = ["Do not repeat this choice"] + [
-            "Repeat this choice 1 more time" if n == 1 else f"Repeat this choice {n} more times"
-            for n in range(1, restantes + 1)
-        ]
-        return self.AskChooseOneText(list(range(0, restantes + 1)), textes)
+    def _SeuleOptionPossible(self, by_effect: 'Effect', abilities: Sequence['Ability|None'], step: Tuple[int, int], for_second_target: bool) -> 'Effect|None':
+        """L'unique option qu'offrirait la question, si elle n'en offre qu'une et qu'elle est repetable."""
+        from game.event.manager import EventManager
+        player = self.GetPlayer()
+        identity = player.GetIdentity()
+        effects = [Effect(identity, ability, world=by_effect.world) for ability in abilities if ability is not None]
+        message = Message.WhenPlayerChooseAbility(player, by_effect, step, for_second_target)
+        disponibles = EventManager.FilterAvailableEffects(message, effects, player, player.world, None)
+        if len(disponibles) != 1:
+            return None
+        seule = disponibles[0]
+        if seule.ability.type != AbilityType.ChooseAbility or seule.ability.NeedCost():
+            return None
+        return seule
+
+    @staticmethod
+    def _CarteCitee(by_effect: 'Effect') -> str:
+        """La carte qui pose la question, au format que le plateau remet dans sa langue (« [(48,01097b) Nom] »)."""
+        return by_effect.this.GetDisplayName()
+
+    def _DemanderCombienDeFoisAuTotal(self, by_effect: 'Effect', seule: 'Effect', repeat: int) -> int:
+        """Option unique : de 1 a `repeat` fois au total (1 = une par une, le defaut)."""
+        textes = ["1 time"] + [f"{n} times" for n in range(2, repeat + 1)]
+        titre = f"{self._CarteCitee(by_effect)}: {seule.GetDisplayName()}. How many times? (1 to {repeat})"
+        return self.AskChooseOneText(list(range(1, repeat + 1)), textes, titre)
+
+    def _DemanderCombienDeFoisEnPlus(self, by_effect: 'Effect', fait: 'Effect', i: int, repeat: int) -> int:
+        """Plusieurs options : 0 (defaut) a `repeat - i` repetitions de plus du choix qui vient d'etre fait."""
+        restantes = repeat - i
+        textes = ["No repeat"] + [f"+{n}" for n in range(1, restantes + 1)]
+        titre = f"{self._CarteCitee(by_effect)}: {fait.GetDisplayName()} done ({i} of {repeat}). How many more times?"
+        return self.AskChooseOneText(list(range(0, restantes + 1)), textes, titre)
 
     def _RepeterLeChoix(self, modele: 'Effect', by_effect: 'Effect', step: Tuple[int, int], for_second_target: bool) -> bool:
         """Une instance de plus du meme choix, sur les memes cibles, si elles sont encore legales.
@@ -515,7 +557,7 @@ class PlayerAction:
         return True
 
     # Only choose one
-    def ChooseAbilitiesHelper(self, by_effect: 'Effect', *abilities: 'Ability|None', forced: bool=True, step: Tuple[int, int]=(1, 1), for_second_target: bool=False) -> 'Effect|None':
+    def ChooseAbilitiesHelper(self, by_effect: 'Effect', *abilities: 'Ability|None', forced: bool=True, step: Tuple[int, int]=(1, 1), for_second_target: bool=False, titre: str="") -> 'Effect|None':
         priority = TimingPriority.Normal
         if not by_effect.is_rule:
             # Hack for "50014"
@@ -542,7 +584,7 @@ class PlayerAction:
             if "ForChoiceAbilityWithCost" in ability.func_names:
                 forced = False
 
-        message = Message.WhenPlayerChooseAbility(player, by_effect, step, for_second_target)
+        message = Message.WhenPlayerChooseAbility(player, by_effect, step, for_second_target, titre)
         message.Send()
         # Cannot set `forced=True`, see "39019"
         return self.ChooseEffects(effects, message, forced=forced, priority=priority, passer_refuse=passer_refuse)
