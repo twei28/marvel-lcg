@@ -1686,3 +1686,13 @@ Sur « Commit et déployer » de l'utilisateur (signalement de Yarro : fenêtre 
 - Vérifié : cas moteur 53019 (x2) et 60055 verts, rouges avec l'ancien moteur ; autoplay echo, spider_man, falcon sans erreur ; 2553 tests plateau ; batterie complète 2660/2665.
 - Les 5 échecs de la batterie ne viennent pas de ce changement : sg006, sg007, sg009, sg013 (Squirrel Girl, mise de côté) échouent à l'identique sur HEAD ; « statistiques » échouait seulement parce que statistics.json s'était cumulé avec mes autoplays (vert avec un fichier propre).
 - Non vérifié : la fenêtre sur une vraie partie en prod.
+
+## ✅ DÉPLOIEMENT du 06/10/2026 (soir) : mode manuel comme OCTGN, journal interactif, boutons x1,5
+
+Sur « Deploie » de l'utilisateur. Connexions vérifiées avant l'envoi : 2, toutes de l'adresse de l'utilisateur. `bash ui-app/deployer.sh` puis `deployer.ps1 -Code`, HTTP 200, md5 de board.html, puzzle.py, world.py et event/manager.py identiques en prod, bundle board-C3HqaLqg.js. Commits 7d964343 (journal), 59759beb (mode manuel), 7907eb5b (fiche).
+- Mode manuel : poser une carte de la main sur la table (selon son type), double-clic en main, tactile, plusieurs héros, en ligne chacun ses cartes, gestes OCTGN restants ; le moteur se tait vraiment ; constantes réarmées à la reprise ; rounds justes. Détail : `.planning/todos/2026-10-06-mode-manuel-comme-octgn.md`.
+- Journal : noms de cartes survolables (image en grand), phases et rounds séparés, noms en français.
+- Fin de tour et boutons des fenêtres du centre agrandis x1,5.
+- Vérifié : vitest 2772, tsc, test_mode_manuel 78/78, e2e, passage navigateur souris et tactile, batterie 2662/2667 (5 rouges préexistants).
+- Parti AUSSI (non commité, autre session) : le correctif moteur dz003 (`dz003.py`, `worlds.py`, `Puzzle.EndPlayerPhase`), couvert par la même batterie verte. Sa section « NON DÉPLOYÉ » plus haut est donc périmée pour la prod.
+- Non vérifié en prod : une vraie partie en manuel.
