@@ -378,3 +378,7 @@ Toutes données le 06/10/2026, une à une.
      referme quand l'action pour laquelle elle s'était ouverte disparaît
      (`PlateauPortrait.tsx`). Reproduit puis vu corrigé au navigateur.
   Vitest 2772/2772, tsc propre.
+  Batterie `test_capacites` complète (`world.py` est partagé) : 2662/2667,
+  les 5 échecs connus (sg006, sg007, sg009, sg013 ; « statistiques » vert
+  rejoué seul avec un fichier propre). `statistics.json`, `save_auto.json` et
+  `launch.json` identiques (md5) à leur état d'avant.
