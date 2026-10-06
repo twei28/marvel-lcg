@@ -1,0 +1,12 @@
+/* Un nom de carte identifiee dans un texte du journal (NomsDeCartes.tsx) :
+   souligne, il montre la carte au survol ou au toucher. */
+.nom-carte-journal {
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  cursor: zoom-in;
+}
+
+.nom-carte-journal:hover {
+  text-decoration-style: solid;
+}

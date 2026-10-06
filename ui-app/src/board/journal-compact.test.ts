@@ -18,7 +18,7 @@ describe('le journal compact de la console', () => {
       e('2', 1, 'text', 'Fin du round 1'),
       e('1', 1, 'damage', 'Rhino attaque Domino', '3 dégâts'),
     ])
-    expect(lignes.map((l) => (l.genre === 'round' ? `-- R${l.round}` : l.texte))).toEqual([
+    expect(lignes.map((l) => (l.genre === 'round' ? `-- R${l.round}` : l.genre === 'fait' ? l.texte : `== ${l.famille}`))).toEqual([
       '-- R2',
       'Tour de Domino',
       'Domino entre en jeu',
@@ -31,6 +31,52 @@ describe('le journal compact de la console', () => {
   it('un round sans fait affichable ne laisse pas de separateur', () => {
     const lignes = lignesCompactes([e('2', 3, 'text', '=== Début du round 3 ==='), e('1', 2, 'text', 'Domino entre en jeu')])
     expect(lignes.map((l) => l.genre)).toEqual(['round', 'fait'])
+  })
+
+  it('ouvre un bandeau a chaque changement de phase, et colore les faits de la phase', () => {
+    const p = (cle: string, round: number, phase: string, titre: string): EntreeHistorique =>
+      ({ cle, round, type: 'text', titre, renderId: 1, phase }) as EntreeHistorique
+    const lignes = lignesCompactes([
+      p('5', 2, 'Enemy Activation', 'Rhino attaque Spider-Man'),
+      p('4', 2, 'Main Scheme Place Threat', 'Le complot gagne 2 menace'),
+      p('3', 2, 'Player 1 Turn', 'Spider-Man joue Uppercut'),
+      p('2', 2, '', 'Ligne sans phase'),
+      p('1', 1, 'Reveal Encounter Cards', 'Assaut révélée'),
+    ])
+    expect(
+      lignes.map((l) =>
+        l.genre === 'round' ? `-- R${l.round}` : l.genre === 'phase' ? `== ${l.famille}` : `${l.famille ?? '?'} ${l.texte}`
+      )
+    ).toEqual([
+      '-- R2',
+      '== mechant',
+      'mechant Rhino attaque Spider-Man',
+      'mechant Le complot gagne 2 menace',
+      '== joueurs',
+      'joueurs Spider-Man joue Uppercut',
+      'joueurs Ligne sans phase',
+      '-- R1',
+      '== mechant',
+      'mechant Assaut révélée',
+    ])
+  })
+
+  it('un bandeau de phase sans fait affichable disparait', () => {
+    const p = (cle: string, phase: string, titre: string): EntreeHistorique =>
+      ({ cle, round: 1, type: 'text', titre, renderId: 1, phase }) as EntreeHistorique
+    const lignes = lignesCompactes([p('2', 'Enemy Activation', '=== technique ==='), p('1', 'Player 1 Turn', 'Domino entre en jeu')])
+    expect(lignes.map((l) => l.genre)).toEqual(['round', 'phase', 'fait'])
+  })
+
+  it('porte les cartes identifiees de chaque fait', () => {
+    const lignes = lignesCompactes([
+      { ...e('1', 1, 'text', 'Klaw attacks Spider-Man'), brut: '[(50,01113) Klaw] attacks [(12,01001a) Spider-Man]' },
+    ])
+    const fait = lignes.find((l) => l.genre === 'fait')
+    expect(fait?.genre === 'fait' ? fait.cartes : undefined).toEqual([
+      { id: 50, nom: 'Klaw' },
+      { id: 12, nom: 'Spider-Man' },
+    ])
   })
 
   it('ecarte la plomberie des paquets du moteur', () => {

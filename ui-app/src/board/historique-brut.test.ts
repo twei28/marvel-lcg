@@ -48,3 +48,24 @@ describe('le texte brut du journal', () => {
     expect(phase?.brut).toBeUndefined()
   })
 })
+
+describe('les noms de cartes du journal, dans la langue du joueur', () => {
+  const STAMPEDE = monde('[(61,01106) Stampede] discarded')
+
+  it('affiche le nom francais quand on joue en francais', () => {
+    const { result } = renderHook(() => useHistoriquePartie(STAMPEDE, undefined, 'a1:2'))
+    const narration = result.current.entrees.find((e) => e.type === 'text')
+    expect(narration?.titre).toBe('Ruée discarded')
+    expect(narration?.brut).toBe('[(61,01106) Stampede] discarded')
+  })
+
+  it('garde le nom anglais quand le francais est coupe', () => {
+    window.localStorage.setItem('marvel-board-scans-fr', 'off')
+    try {
+      const { result } = renderHook(() => useHistoriquePartie(STAMPEDE, undefined, 'a1:3'))
+      expect(result.current.entrees.find((e) => e.type === 'text')?.titre).toBe('Stampede discarded')
+    } finally {
+      window.localStorage.removeItem('marvel-board-scans-fr')
+    }
+  })
+})

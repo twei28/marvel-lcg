@@ -9,6 +9,7 @@ import { avecIcones } from './icones-ressources'
 import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { EntreeHistorique } from './HistoriquePartie'
 import { lignesCompactes } from './journal-compact'
+import { TexteAvecCartes } from './NomsDeCartes'
 import './JournalConsole.css'
 
 export function JournalConsole({
@@ -134,9 +135,17 @@ export function JournalConsole({
               <li key={ligne.cle} className="jc-round">
                 {t('Round')} {ligne.round}
               </li>
+            ) : ligne.genre === 'phase' ? (
+              <li key={ligne.cle} className={`jc-phase phase-${ligne.famille}`}>
+                {ligne.famille === 'mechant' ? t('Phase du méchant') : t('Phase des joueurs')}
+              </li>
             ) : (
-              <li key={ligne.cle} className={`jc-fait type-${ligne.type}`} title={ligne.detail}>
-                {avecIcones(ligne.texte)}
+              <li
+                key={ligne.cle}
+                className={`jc-fait type-${ligne.type}${ligne.famille ? ` phase-${ligne.famille}` : ''}`}
+                title={ligne.detail}
+              >
+                <TexteAvecCartes texte={ligne.texte} cartes={ligne.cartes} />
                 {ligne.detail ? <span className="jc-detail"> · {avecIcones(ligne.detail)}</span> : null}
               </li>
             )

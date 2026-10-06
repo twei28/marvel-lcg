@@ -70,14 +70,45 @@
   list-style: none;
 }
 
+/* Le round : une barre pleine doree, bien distincte des bandeaux de phase
+   (decision du 06/10/2026). */
 .jc-round {
-  margin: 6px 0 2px;
+  margin: 8px 0 3px;
+  padding: 2px 8px;
   font-size: 0.7rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #9fb0c4;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #1e1e1e;
+  background: var(--menace, #f0b95f);
+  border-radius: 4px;
+}
+
+/* Les phases : un bandeau a chaque changement, et le meme liseré sur le bord
+   gauche des faits de la phase. Bleu les joueurs, rouge le mechant. */
+.phase-joueurs {
+  --jc-phase: var(--info, #96ebff);
+}
+
+.phase-mechant {
+  --jc-phase: var(--rouge-clair, #d98c8c);
+}
+
+.jc-phase {
+  margin: 4px 0 1px;
+  padding: 1px 0 1px 8px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--jc-phase);
+  border-left: 3px solid var(--jc-phase);
+}
+
+.jc-fait.phase-joueurs,
+.jc-fait.phase-mechant {
+  padding-left: 8px;
+  border-left: 3px solid var(--jc-phase);
 }
 
 .jc-fait {

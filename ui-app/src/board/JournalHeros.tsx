@@ -23,6 +23,9 @@ import type { EntreeHistorique } from './HistoriquePartie'
 import { t } from './langue'
 import { avecIcones } from './icones-ressources'
 import type { World } from './world'
+import { referencesDeEntree } from './cartes-journal'
+import { familleDePhase, type FamillePhase } from './journal-compact'
+import { TexteAvecCartes } from './NomsDeCartes'
 
 /** Noms des cartes que ce joueur contrôle. Sert à reconnaître ses actions. */
 function nomsDuJoueur(monde: World | undefined, joueur: number): Set<string> {
@@ -53,6 +56,32 @@ export function entreesDuHeros(
     if (entree.acteur && siens.has(entree.acteur.replace(/^\W*/, '').trim().toLowerCase())) return true
     return false
   })
+}
+
+type LigneHeros =
+  | { genre: 'round'; cle: string; round: number }
+  | { genre: 'phase'; cle: string; famille: FamillePhase }
+  | { genre: 'entree'; entree: EntreeHistorique; famille?: FamillePhase }
+
+/** Dans l'ordre du jeu : une barre a chaque round, un bandeau a chaque changement de phase. */
+export function avecSeparateurs(entrees: EntreeHistorique[]): LigneHeros[] {
+  const lignes: LigneHeros[] = []
+  let round: number | undefined
+  let famille: FamillePhase | undefined
+  for (const entree of entrees) {
+    if (entree.round !== round) {
+      round = entree.round
+      famille = undefined
+      lignes.push({ genre: 'round', cle: `round:${entree.round}:${entree.cle}`, round: entree.round })
+    }
+    const nouvelle = familleDePhase(entree.phase)
+    if (nouvelle && nouvelle !== famille) {
+      famille = nouvelle
+      lignes.push({ genre: 'phase', cle: `phase:${nouvelle}:${entree.cle}`, famille: nouvelle })
+    }
+    lignes.push({ genre: 'entree', entree, famille })
+  }
+  return lignes
 }
 
 export function JournalHeros({
@@ -125,15 +154,30 @@ export function JournalHeros({
 
       {(
         <ol className="journal-heros-liste">
-          {ordreDuJeu.map((entree) => (
-            <li className={`journal-heros-entree type-${entree.type}`} key={entree.cle}>
-              <span className="jh-round">R{entree.round}</span>
-              <span className="jh-texte">
-                <b>{avecIcones(entree.titre)}</b>
-                {entree.detail ? <small>{avecIcones(entree.detail)}</small> : null}
-              </span>
-            </li>
-          ))}
+          {avecSeparateurs(ordreDuJeu).map((ligne) =>
+            ligne.genre === 'round' ? (
+              <li className="jh-round-barre" key={ligne.cle}>
+                {t('Round')} {ligne.round}
+              </li>
+            ) : ligne.genre === 'phase' ? (
+              <li className={`jh-phase phase-${ligne.famille}`} key={ligne.cle}>
+                {ligne.famille === 'mechant' ? t('Phase du méchant') : t('Phase des joueurs')}
+              </li>
+            ) : (
+              <li
+                className={`journal-heros-entree type-${ligne.entree.type}${ligne.famille ? ` phase-${ligne.famille}` : ''}`}
+                key={ligne.entree.cle}
+              >
+                <span className="jh-round">R{ligne.entree.round}</span>
+                <span className="jh-texte">
+                  <b>
+                    <TexteAvecCartes texte={ligne.entree.titre} cartes={referencesDeEntree(ligne.entree)} />
+                  </b>
+                  {ligne.entree.detail ? <small>{avecIcones(ligne.entree.detail)}</small> : null}
+                </span>
+              </li>
+            )
+          )}
           <div ref={bas} aria-hidden="true" />
         </ol>
       )}

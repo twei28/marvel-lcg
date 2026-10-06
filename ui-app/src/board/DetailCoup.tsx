@@ -6,6 +6,8 @@
 // mise en langue par l'appelant quand il le peut.
 
 import type { EtapeDeroule } from './deroule-phase'
+import type { RefCarte } from './cartes-journal'
+import { TexteAvecCartes } from './NomsDeCartes'
 import {
   compteurLigneBilan,
   detailEtape,
@@ -23,8 +25,28 @@ import {
   titreEtape,
 } from './deroule-textes'
 
+/**
+ * Sur ces etapes, `carteId` est la carte NOMMEE par `cibleNom` (la carte
+ * revelee, le nouveau stade, la carte qui entre) et `auteurNom` un autre nom
+ * (le heros qui revele, l'ancien stade) : voir deroule-phase.ts.
+ */
+const CARTE_NOMMEE_PAR_LA_CIBLE = new Set(['revelation', 'stade', 'entree'])
+
+/** Les cartes que l'etape designe par leur identifiant, chacune avec SON nom. */
+export function cartesDeEtape(etape: EtapeDeroule): RefCarte[] {
+  const refs: RefCarte[] = []
+  if (CARTE_NOMMEE_PAR_LA_CIBLE.has(etape.titre)) {
+    if (etape.carteId !== undefined && etape.cibleNom) refs.push({ id: etape.carteId, nom: etape.cibleNom })
+    return refs
+  }
+  if (etape.carteId !== undefined && etape.auteurNom) refs.push({ id: etape.carteId, nom: etape.auteurNom })
+  if (etape.cibleId !== undefined && etape.cibleNom) refs.push({ id: etape.cibleId, nom: etape.cibleNom })
+  return refs
+}
+
 export function DetailCoup({ etape }: { etape: EtapeDeroule }) {
   const resultat = detailEtape(etape)
+  const cartes = cartesDeEtape(etape)
   const annulee = texteActivationAnnulee(etape)
   const cause = texteCauseActivation(etape)
   const suite = texteSuiteRenfort(etape)
@@ -32,9 +54,15 @@ export function DetailCoup({ etape }: { etape: EtapeDeroule }) {
     <>
       {surtitreEtape(etape) ? <p className="deroule-surtitre">{surtitreEtape(etape)}</p> : null}
       <div className="deroule-entete">
-        <p className="deroule-titre">{titreEtape(etape)}</p>
+        <p className="deroule-titre">
+          <TexteAvecCartes texte={titreEtape(etape)} cartes={cartes} />
+        </p>
       </div>
-      {resultat ? <p className="deroule-resultat">{resultat}</p> : null}
+      {resultat ? (
+        <p className="deroule-resultat">
+          <TexteAvecCartes texte={resultat} cartes={cartes} />
+        </p>
+      ) : null}
       {lignesEtoileBoost(etape).map((ligne) => (
         <p key={ligne} className="deroule-etoile">{ligne}</p>
       ))}

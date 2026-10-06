@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Demande } from './ask'
-import { remplacerSymboles, sansIdentifiants } from './BarreAction'
+import { remplacerSymboles } from './BarreAction'
+import { sansIdentifiantsEnFrancais } from './DemandeCentrale'
 import {
   creerMemoireCauses,
   detailAvecCause,
@@ -133,7 +134,7 @@ function nombreInfo(carte: WorldCard, cle: string): number | undefined {
 }
 
 function nettoyerTexte(texte: string | undefined): string {
-  return remplacerSymboles(sansIdentifiants(texte ?? ''))
+  return remplacerSymboles(sansIdentifiantsEnFrancais(texte ?? ''))
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/^---\s*/, '')
