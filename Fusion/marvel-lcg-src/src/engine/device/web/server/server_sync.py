@@ -177,6 +177,12 @@ class GameServerSync(GameServerBase):
             return web.Response(status=403, text='This seat is protected')
         post_json = Unquote(post_data)
         assert len(player_ids) == 1
+        # TABLE MUETTE : aucune reponse a la question garee (06/10/2026). En
+        # pause, « Fin du tour » ou E faisaient avancer le moteur. La seule
+        # echappatoire voulue, `/manuel_passer`, ne passe pas par ici.
+        world = self.game.world
+        if post_json and world is not None and world.manuel_actif:
+            return web.Response(status=409, text='table en pause')
         if post_json:
             for player_id in player_ids:
                 if player_id in self.device_manager.asking_players:

@@ -33,6 +33,10 @@ class EventManager:
 
         self.registered_message_type: Dict[Type['Message2'], int] = {}
 
+        # Vrai des que la porte du manuel a jete un message : voir
+        # `ReconcilierApresSilence`.
+        self.silence_a_reconcilier = False
+
         self.event_size = EventCounter()
         # self.last_message: Message2|None = None
         # self.process_message: Message2|None = None
@@ -650,6 +654,8 @@ class EventManager:
             # garder ne sert a rien, et les laisser s'accumuler pendant toute
             # une session (une table manuelle se joue lentement, sur des
             # heures) fait grossir la liste sans limite.
+            if self.stack_message:
+                self.silence_a_reconcilier = True
             self.stack_message.clear()
             return
         if self.stack_message:
@@ -662,6 +668,47 @@ class EventManager:
                 #     message.updated_face not in process_faces:
                 self.BroadcastMessage(message)
                 # process_faces.append(message.updated_face)
+
+    def ReconcilierApresSilence(self) -> None:
+        """La porte du manuel vient de se rouvrir apres avoir jete des
+        messages : remettre d'accord les capacites `arme_en_jeu` (constantes
+        `WhileValid`, etats `WhenEvent`) avec la table telle que le joueur l'a
+        laissee.
+
+        - carte EN JEU, face visible, capacite pas armee (posee pendant le
+          silence) : on l'arme, comme `WhenCardEnterPlay` l'aurait fait ;
+        - capacite armee, carte sortie de jeu ou face retournee pendant le
+          silence : on la desarme, comme `WhileThisStateUpdate` l'aurait fait ;
+        - capacite armee et toujours en jeu : on la recalcule, ses evenements
+          de suivi ayant ete manques.
+
+        ⚠ AUCUN effet « quand elle entre en jeu » n'est relance : seules les
+        capacites `arme_en_jeu` sont touchees, et sans envoyer
+        `WhenCardEnterPlay`. En manuel, le joueur a deja applique ces effets a
+        la main.
+
+        Appelee sur le fil du jeu, au premier message qui passe la porte
+        rouverte : jamais depuis le fil HTTP qui leve la pause.
+        """
+        from game.effect.rule import DebugRule
+        from game.message import Message
+
+        self.silence_a_reconcilier = False
+        for carte in list(self.world.object_manager.card_dict.values()):
+            for face in [carte.face] + list(carte.back_faces):
+                doit_etre_armee = face is carte.face and face.IsInPlay()
+                for effet in list(face.effect.GetAll()):
+                    if not effet.ability.arme_en_jeu or effet.is_unregister:
+                        continue
+                    if effet.en_jeu_arme:
+                        if not doit_etre_armee:
+                            if effet.en_jeu_desarmer:
+                                effet.en_jeu_desarmer()
+                        elif effet.en_jeu_rafraichir:
+                            effet.en_jeu_rafraichir()
+                    elif doit_etre_armee:
+                        entree = Message.WhenCardEnterPlay(face, DebugRule(face), is_flip=False)
+                        effet.ability.operation(effet, entree)
 
     def BroadcastMessage(self, message: 'Message2'):
         from game.ability.ability import TimingPriority
@@ -683,7 +730,10 @@ class EventManager:
         # assume : les modificateurs de caracteristiques ne s'appliquent plus
         # non plus, le plateau montre les valeurs imprimees.
         if self.world.manuel_actif:
+            self.silence_a_reconcilier = True
             return
+        if self.silence_a_reconcilier:
+            self.ReconcilierApresSilence()
 
         if self.world.is_game_over:
             from game.message.sender.sender import CanBeInstead

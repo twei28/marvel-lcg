@@ -9,7 +9,7 @@
 // il ne surprend personne. Si d'autres actions de table se présentent plus
 // tard, elles ont leur place toute trouvée ici plutôt que dans MenuTriche.
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { t } from '../langue'
 import { useGlisserPanneau } from '../placement/useGlisserPanneau'
 
@@ -35,6 +35,11 @@ export type MenuTableProps = {
   onAmplification: () => void
   /** Le menu « Random » d'OCTGN : pile ou face, nombre, joueur. */
   onHasard: (tirage: 'pile-ou-face' | 'nombre' | 'joueur') => void
+  /** Le menu de la main d'OCTGN (lot 6 du 06/10/2026) : absent quand la main est vide. */
+  onDefausseAuHasard?: () => void
+  onMulligan?: () => void
+  /** Second F12 d'OCTGN : premier joueur suivant, round suivant (lot 6). */
+  onFinDeRound?: () => void
 }
 
 export function MenuTable({
@@ -49,6 +54,9 @@ export function MenuTable({
   onFinPhaseHeros,
   onAmplification,
   onHasard,
+  onDefausseAuHasard,
+  onMulligan,
+  onFinDeRound,
 }: MenuTableProps) {
   const boite = useRef<HTMLDivElement | null>(null)
 
@@ -69,12 +77,21 @@ export function MenuTable({
     }
   }, [onFermer])
 
-  // Même clamp que MenuTriche : un clic droit près du bord ouvrirait sinon un
-  // menu partiellement invisible.
-  const style = {
-    left: Math.min(x, window.innerWidth - 240),
-    top: Math.min(y, window.innerHeight - 340),
-  }
+  // Même calcul que MenuTriche : la VRAIE hauteur mesurée, pas une hauteur
+  // devinée. Les 340 px devinés ne suffisaient plus depuis le lot 6 (13
+  // entrées) : à 1280x720, ouvert au milieu, le menu sortait par le bas et
+  // « Mulligan » était inatteignable (constat du 06/10/2026).
+  const [style, setStyle] = useState({ left: x, top: y })
+  useLayoutEffect(() => {
+    const el = boite.current
+    if (!el) return
+    const { width, height } = el.getBoundingClientRect()
+    const marge = 8
+    setStyle({
+      left: Math.max(marge, Math.min(x, window.innerWidth - width - marge)),
+      top: Math.max(marge, Math.min(y, window.innerHeight - height - marge)),
+    })
+  }, [x, y])
   // Deplacement volontaire, a la poignee -- meme mecanisme que MenuTriche
   // (demande de l'utilisateur, 28/09/2026, « toutes les fenetres, tous les
   // panneaux »).
@@ -196,6 +213,45 @@ export function MenuTable({
             {t('Joueur au hasard')}
           </button>
         </li>
+        {onFinDeRound ? (
+          <li>
+            <button
+              type="button"
+              onClick={() => {
+                onFinDeRound()
+                onFermer()
+              }}
+            >
+              {t('Fin du round')}
+            </button>
+          </li>
+        ) : null}
+        {onDefausseAuHasard ? (
+          <li>
+            <button
+              type="button"
+              onClick={() => {
+                onDefausseAuHasard()
+                onFermer()
+              }}
+            >
+              {t('Défausser une carte au hasard')}
+            </button>
+          </li>
+        ) : null}
+        {onMulligan ? (
+          <li>
+            <button
+              type="button"
+              onClick={() => {
+                onMulligan()
+                onFermer()
+              }}
+            >
+              {t('Mulligan')}
+            </button>
+          </li>
+        ) : null}
         <li>
           <button
             type="button"

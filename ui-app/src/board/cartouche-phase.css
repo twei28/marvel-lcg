@@ -1069,3 +1069,13 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-pastille.est-cour
 html[data-affichage='sobre'] .deroule-phase.est-scene.est-hors-phase .deroule-bandeau {
   background: #4a4f57;
 }
+
+/* Centre sous la barre du haut (environ 46 px), pas sur tout l'ecran : avec
+   les boutons agrandis a 1,5 (boutons-bd.css), une question a vignettes
+   faisait 655 px de haut a 1280x720 et montait sous la barre (mesure du
+   06/10/2026). Meme seuil que l'agrandissement. */
+@media (min-width: 561px) {
+  .deroule-phase.est-scene {
+    inset: 48px 0 0;
+  }
+}

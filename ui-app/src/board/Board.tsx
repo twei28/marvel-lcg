@@ -258,6 +258,7 @@ export function Unite({
   bloquerActionsPassives,
   heroActifId,
   titreZone,
+  pilesAccueillantes,
 }: {
   unite: UniteAffichee
   interactifs: Map<number, EtatInteractif>
@@ -268,12 +269,16 @@ export function Unite({
   /** Le nom de la zone qui accueille l'unité, pour taire la pastille qui le
    *  répéterait. */
   titreZone?: string
+  /** Les piles qui accueillent la carte qu'on glisse (mode manuel, question 12). */
+  pilesAccueillantes?: Set<string>
 }) {
+  const pileAccueille = unite.pile !== undefined && (pilesAccueillantes?.has(unite.pile) ?? false)
   if (unite.pileVide) {
     return (
       <div
         className="plateau-unite pile-vide"
         data-pile={unite.pile}
+        data-pile-accueille={pileAccueille ? '' : undefined}
         aria-label={unite.carte.name}
       >
         <span>{unite.carte.name}</span>
@@ -326,6 +331,7 @@ export function Unite({
       // glisser de distinguer « je lache sur cette pile » de « je lache sur
       // cette carte, j'attache » (`useGlisser.ts`, `cibleSousLePoint`).
       data-pile={unite.pile}
+      data-pile-accueille={pileAccueille ? '' : undefined}
     >
       {/* Phases A VENIR (vilain/complot) : un petit tas DERRIERE la carte, plus
           un bouton loupe qui ouvre la vue de toutes les phases. Purement visuel :
@@ -403,6 +409,7 @@ function Emplacement({
   bloquerActionsPassives,
   heroActifId,
   accueilleLeGlisser = false,
+  pilesAccueillantes,
   styleDeZone,
   aire,
 }: {
@@ -414,6 +421,8 @@ function Emplacement({
   heroActifId?: number
   /** Cette zone attend la carte qu'on est en train de glisser. */
   accueilleLeGlisser?: boolean
+  /** Les piles fines qui l'attendent aussi (deck, défausse : question 12). */
+  pilesAccueillantes?: Set<string>
   /** La taille des cartes de la zone (`--taille-zone`), table-briques.ts. */
   styleDeZone?: CSSProperties
   /** L'aire de grille de la zone (table-briques.ts), qui prend le pas sur celle de board.css. */
@@ -449,6 +458,9 @@ function Emplacement({
             // tous les autres emplacements (`groupesPiles` n'est fourni que
             // par `terrain-combat`, zones.ts).
             data-pile={emplacement.groupesPiles?.[index]}
+            // Le siege du joueur a qui est ce groupe (lot 5 du 06/10/2026) :
+            // une carte lachee dedans, en mode manuel, arrive chez lui.
+            data-joueur={emplacement.proprietaires?.[index]}
             // Une zone assemblee de plusieurs origines : chaque groupe garde la
             // cible de depot de SON emplacement d'origine.
             data-zone={origines.length > 1 ? emplacement.groupesDOrigine?.[index] : undefined}
@@ -462,6 +474,7 @@ function Emplacement({
                 bloquerActionsPassives={bloquerActionsPassives}
                 heroActifId={heroActifId}
                 titreZone={emplacement.titre}
+                pilesAccueillantes={pilesAccueillantes}
                 key={unite.cle}
               />
             ))}
@@ -553,6 +566,7 @@ export function CarteApercu({
   statuts,
   raisons,
   classe,
+  borneDroite,
 }: {
   carte: ScanCardProps
   /** Cartes de statut posees sur ce personnage : montrees comme sur la table. */
@@ -571,6 +585,8 @@ export function CarteApercu({
    * phase du mechant (540) le recouvrirait sans cela.
    */
   classe?: string
+  /** Panneaux a ne pas recouvrir, a la place de la colonne des manigances (le volet du journal). */
+  borneDroite?: readonly string[]
 }) {
   const autresFaces = carte.autresFaces ?? []
   const nbFaces = 1 + autresFaces.length
@@ -620,7 +636,7 @@ export function CarteApercu({
     // EN HAUT A GAUCHE : la borner a son bord gauche rejetait l'apercu a
     // gauche de l'ecran. Le selecteur ne trouve alors rien, et l'apercu reste
     // ancre a droite comme avant.
-    borneDroite: nbFaces === 1 ? ['.plateau-scene:not(.avec-bande) .zone-complot-principal'] : undefined,
+    borneDroite: borneDroite ?? (nbFaces === 1 ? ['.plateau-scene:not(.avec-bande) .zone-complot-principal'] : undefined),
     signature: `${carte.id}|${nbFaces}`,
   })
 
@@ -890,6 +906,21 @@ export type ReglagesGlisser = {
   /** Ce qui va se passer, en une ligne, pour l'etiquette qui suit le pointeur. */
   libelle: (sourceId: number, cible: CibleSurvolee) => string | undefined
   /**
+   * Le lacher sera-t-il accepte ? Optionnel (lot 2 du 06/10/2026, mode
+   * manuel) : absent, le plateau le deduit des cibles et zones legales comme
+   * avant. Present, il decide seul du rouge : un lacher qui ne fait rien (une
+   * carte deja en jeu relachee sur la table) n'est pas un refus.
+   */
+  accepte?: (sourceId: number, cible: CibleSurvolee) => boolean
+  /**
+   * Mode manuel, au doigt (question 11) : la carte se glisse au lieu de faire
+   * defiler la page, et l'appui long appartient au menu du clic droit
+   * (CoucheTriche), plus a l'action du portrait.
+   */
+  auDoigt?: boolean
+  /** La table entiere accueille-t-elle cette carte ? Un seul cadre autour du plateau (question 12). */
+  accueilleLaTable?: (sourceId: number) => boolean
+  /**
    * Le lacher. Rend `undefined` quand l'action est partie, ou la raison du
    * refus, que le plateau affiche en bulle a l'endroit du lacher.
    */
@@ -1099,12 +1130,15 @@ export function Board({
   const secteurSurvole = glisse?.cible.secteur
   const depotRefuse =
     glisse !== null &&
-    !(
-      (cibleSurvoleeId !== undefined && (ciblesDuGlisser?.has(cibleSurvoleeId) ?? false)) ||
-      (cibleSurvoleeId === undefined &&
-        ((zoneSurvolee !== undefined && (zonesDuGlisser?.has(zoneSurvolee) ?? false)) ||
-          (secteurSurvole !== undefined && (zonesDuGlisser?.has(secteurSurvole) ?? false))))
-    )
+    (glisser?.accepte
+      ? !glisser.accepte(glisse.sourceId, glisse.cible)
+      : !(
+          (cibleSurvoleeId !== undefined && (ciblesDuGlisser?.has(cibleSurvoleeId) ?? false)) ||
+          (cibleSurvoleeId === undefined &&
+            ((zoneSurvolee !== undefined && (zonesDuGlisser?.has(zoneSurvolee) ?? false)) ||
+              (secteurSurvole !== undefined && (zonesDuGlisser?.has(secteurSurvole) ?? false))))
+        ))
+  const tableAccueille = glisse !== null && (glisser?.accueilleLaTable?.(glisse.sourceId) ?? false)
   const libelleGlisser = glisse && glisser ? glisser.libelle(glisse.sourceId, glisse.cible) : undefined
 
   const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
@@ -1132,6 +1166,7 @@ export function Board({
       aire={aire}
       styleDeZone={styleDeZone}
       accueilleLeGlisser={[e.cle, ...(e.emplacementsDOrigine ?? [])].some((cle) => zonesDuGlisser?.has(cle))}
+      pilesAccueillantes={zonesDuGlisser}
       interactifs={interactifsEffectifs}
       effets={effets}
       ouvrirPile={ouvrirPile}
@@ -1173,6 +1208,10 @@ export function Board({
         // dit pas s'il est refuse (pas notre tour, action deja engagee) ou
         // casse. Cherche pendant une demi-heure le 08/09/2026, faute de l'avoir.
         data-glisser={glisser ? 'offert' : 'absent'}
+        // Mode manuel (lot 2, question 12) : la table entiere accueille la
+        // carte tenue, un seul cadre autour du plateau.
+        data-table-accueille={tableAccueille ? '' : undefined}
+        data-glisser-doigt={glisser?.auDoigt ? '' : undefined}
         onMouseOver={survol}
         onMouseLeave={quitter}
         onPointerDown={gestes.onPointerDown}

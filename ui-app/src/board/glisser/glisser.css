@@ -68,6 +68,11 @@
 
 .glisser-refus {
   position: absolute;
+  /* Bornée à l'écran (lot 2 du 06/10/2026) : centrée sur le point du lâcher,
+     elle sortait à moitié près d'un bord (max-width 300 px, donc 150 px de
+     chaque côté, plus une marge). */
+  left: clamp(160px, var(--refus-x), calc(100vw - 160px));
+  top: max(64px, var(--refus-y));
   transform: translate(-50%, -120%);
   max-width: 300px;
   padding: 7px 11px;
@@ -171,7 +176,38 @@
   color: var(--affiche-jaune, #f0b95f);
 }
 
+/* Mode manuel (lot 2 du 06/10/2026, question 12) : TOUT ce qui accepte la
+   carte tenue s'entoure, comme les zones ci-dessus. La table entiere d'un
+   seul cadre (la carte s'y pose selon son type), et chaque pile fine (deck,
+   defausse) qui l'accueille. */
+/* ⚠ UN PSEUDO-ÉLÉMENT, PAS `outline` : la scène (`.plateau-scene`, en
+   absolu) se peint par-dessus le contour de son cadre. Mesuré dans le
+   navigateur le 06/10/2026 : `outline` calculé en pointillés, invisible à
+   l'écran. Le cadre se dessine donc au-dessus, sans capter la souris. */
+.plateau-cadre.est-en-glisser[data-table-accueille]::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 2px dashed var(--affiche-jaune, #f0b95f);
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 5;
+}
+.plateau-cadre.est-en-glisser .plateau-unite[data-pile-accueille] {
+  outline: 2px dashed var(--affiche-jaune, #f0b95f);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
 /* Pendant le geste, le curseur dit qu'on tient quelque chose. */
 .plateau-cadre.est-en-glisser {
   cursor: grabbing;
+}
+
+/* Au doigt, en mode manuel (lot 4, question 11 du 06/10/2026) : sur une
+   carte, le doigt glisse la carte au lieu de faire defiler la page. Le reste
+   du cadre garde son defilement. A surveiller : la main ne defile plus au
+   doigt quand on la touche sur une carte. */
+.plateau-cadre[data-glisser-doigt] .scan-card {
+  touch-action: none;
 }

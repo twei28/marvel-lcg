@@ -1034,12 +1034,15 @@ class World(WorldAction, WorldFind):
         from game.message import Message
         from game.effect.rule import GameRule
 
-        def game_round(depart: str = "heros") -> None:
+        def game_round(depart: str = "heros", reprise: bool = False) -> None:
 
             def start_round() -> None:
                 self.phase.SetState(Phase.State.StartRound)
                 self.current_player = None
-                self.round_id += 1
+                # Reprise d'une partie manuelle en phase heros ou mechant : le
+                # round en cours est deja compte (voir plus bas), on le joue.
+                if not (reprise and depart in ("heros", "mechant")):
+                    self.round_id += 1
                 start_message = Message.WhenRoundStart(self.round_id, self)
                 start_message.Send()
 
@@ -1168,7 +1171,15 @@ class World(WorldAction, WorldFind):
         # au rechargement, la mise en place et les gestes d'avant la reprise
         # sont rejoues, puis le deroule repart de la phase choisie.
         depart = "heros"
+        reprise = False
         if self.rule.mode_manuel:
+            # Le joueur est dans le round 1 des la fin de la mise en place :
+            # `round_id` compte le round EN COURS, comme en automatique, ou
+            # `start_round` le pose. Avant les gestes rejoues, dont les « Fin
+            # du round » (`Puzzle.EndRound`) qui l'avancent.
+            if self.round_id == 0:
+                self.round_id = 1
+            reprise = True
             if self.scene.reprise_auto:
                 session = self.controller_manager.game.session
                 session.RejouerGestesManuelsJusqua(
@@ -1185,7 +1196,7 @@ class World(WorldAction, WorldFind):
 
         if self.is_game_over:
             return
-        game_round(depart)
+        game_round(depart, reprise)
         while not self.is_game_over:
             game_round()
 

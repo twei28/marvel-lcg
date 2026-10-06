@@ -12,6 +12,7 @@
  * en coordonnees ecran, comme les autres couches (`CoucheCurseurs`,
  * `CoucheAnimations`).
  */
+import type { CSSProperties } from 'react'
 import type { ScanCardProps } from '../../components/ScanCard'
 import { ScanCard } from '../../components/ScanCard'
 import type { EtatGlisser } from './useGlisser'
@@ -92,8 +93,16 @@ export function BulleRefus({
   texte: string
 }) {
   return (
-    <div className="couche-glisser" aria-hidden="true">
-      <div className="glisser-refus" style={{ left: `${x}px`, top: `${y}px` }} role="status">
+    <div className="couche-glisser">
+      {/* Bornée à l'écran (lot 2 du 06/10/2026) : centrée sur le lâcher
+          (`max-width: 300px`), elle sortait à moitié près d'un bord.
+          Annoncée par un lecteur d'écran (lot 6) : la couche n'est plus
+          `aria-hidden`, qui taisait son `role="status"`. */}
+      <div
+        className="glisser-refus"
+        style={{ '--refus-x': `${x}px`, '--refus-y': `${y}px` } as CSSProperties}
+        role="status"
+      >
         {texte}
       </div>
     </div>

@@ -142,6 +142,45 @@ describe('PlateauPortrait — le geste sur une carte', () => {
   })
 })
 
+describe('PlateauPortrait — en mode manuel (lot 4, question 11)', () => {
+  // L'appui long revient au menu du mode manuel (CoucheTriche, écoute du
+  // document) : le portrait ne doit pas AUSSI agir ou ouvrir le menu d'actions.
+  const manuel = {
+    estSource: () => true,
+    ciblesLegales: () => new Set<number>(),
+    zonesLegales: () => new Set<string>(),
+    libelle: () => undefined,
+    auDoigt: true,
+    onDepot: () => undefined,
+  }
+
+  it('appui long sur une carte de la table : ni action ni menu d actions', () => {
+    vi.useFakeTimers()
+    const agir = vi.fn()
+    const onCardClick = vi.fn()
+    const { container } = rendre({
+      plateau: plateau(emplacement('rencontre', unite('7', { name: 'Rhino', kind: 'villain' }))),
+      interactifs: new Map([[7, { role: 'cible', choisie: false, agir } as EtatInteractif]]),
+      onCardClick,
+      glisser: manuel,
+    })
+    fireEvent.pointerDown(container.querySelector('.bande-carte')!)
+    act(() => {
+      vi.advanceTimersByTime(APPUI_LONG_MS)
+    })
+    expect(agir).not.toHaveBeenCalled()
+    expect(onCardClick).not.toHaveBeenCalled()
+  })
+
+  it('la carte porte data-card-id, que le menu du mode manuel lit', () => {
+    const { container } = rendre({
+      plateau: plateau(emplacement('rencontre', unite('7', { name: 'Rhino', kind: 'villain' }))),
+      glisser: manuel,
+    })
+    expect(container.querySelector('.bande-carte [data-card-id="7"]')).not.toBeNull()
+  })
+})
+
 describe('PlateauPortrait — la main derriere son encoche', () => {
   const avecMain = plateau(emplacement('main', unite('quinjet', { kind: 'support' }), unite('backflip', { kind: 'event' })))
 

@@ -29,7 +29,8 @@ export type CarteVisee = {
   statuts: StatutsPortes
 }
 
-export type CibleClavier = CarteVisee | { genre: 'pile'; zone: string }
+/** `dessus` : la carte du dessus de la pile (Ctrl+F la retourne). */
+export type CibleClavier = CarteVisee | { genre: 'pile'; zone: string; dessus?: number }
 
 export type GesteClavier =
   | { geste: 'retourner'; id: number }
@@ -38,6 +39,8 @@ export type GesteClavier =
   | { geste: 'melanger'; zone: string }
   | { geste: 'piocher'; zone: string; nombre: number }
   | { geste: 'piocherPlusieurs'; zone: string }
+  | { geste: 'piocherCache'; zone: string; nombre: number }
+  | { geste: 'piocherCachePlusieurs'; zone: string }
   | { geste: 'jetons'; id: number; nature: 'degats' | 'menace' | 'pv'; nombre: number }
   | { geste: 'compteur'; id: number; nombre: number }
   | { geste: 'acceleration'; id: number; nombre: number }
@@ -49,6 +52,8 @@ export type GesteClavier =
   | { geste: 'maniganceTerminee' }
   | { geste: 'toutRedresser' }
   | { geste: 'finPhaseHeros' }
+  | { geste: 'menuCarte'; id: number }
+  | { geste: 'effacerMarqueurs'; id: number }
 
 // --- Les types de cartes, comme `isScheme`, `isAttackable`... d'OCTGN --------
 
@@ -86,8 +91,9 @@ function basculer(carte: CarteVisee): GesteClavier {
 
 /** Le double-clic d'OCTGN (`defaultCardAction`). */
 export function interpreterDoubleClic(carte: CarteVisee): GesteClavier | undefined {
-  if (MANIGANCES.has(carte.type)) return undefined
-  if (!carte.faceVisible) return { geste: 'retourner', id: carte.id }
+  // `revealHide` d'OCTGN : une manigance se retourne ; le moteur repose sa
+  // menace de départ s'il n'en reste plus (`Scheme2.OnFlip`). Lot 6.
+  if (MANIGANCES.has(carte.type) || !carte.faceVisible) return { geste: 'retourner', id: carte.id }
   if (VILAINS.has(carte.type)) return { geste: 'amplification' }
   if (INCLINABLES.has(carte.type)) return basculer(carte)
   return undefined
@@ -107,6 +113,14 @@ export function interpreterTouche(touche: Touche, cible: CibleClavier): GesteCla
   if (cible.genre === 'pile') {
     if (ctrl && !alt) {
       if (cle === 's' && !maj) return { geste: 'melanger', zone: cible.zone }
+      // Lot 6 du 06/10/2026 : `FlipDeckTopCard` (Ctrl+F) et `drawUnrevealed`
+      // (Ctrl+U, Ctrl+Maj+U) d'OCTGN.
+      if (cle === 'f' && !maj) return cible.dessus === undefined ? undefined : { geste: 'retourner', id: cible.dessus }
+      if (cle === 'u') {
+        return maj
+          ? { geste: 'piocherCachePlusieurs', zone: cible.zone }
+          : { geste: 'piocherCache', zone: cible.zone, nombre: 1 }
+      }
       if (cle === 'd') {
         return maj
           ? { geste: 'piocherPlusieurs', zone: cible.zone }
@@ -117,11 +131,22 @@ export function interpreterTouche(touche: Touche, cible: CibleClavier): GesteCla
     // Un chiffre pioche autant de cartes : notre raccourci, en plus d'OCTGN
     // (Ctrl+Maj+D y demande le nombre dans une fenêtre).
     if (!ctrl && !alt && /^[1-9]$/.test(cle)) return { geste: 'piocher', zone: cible.zone, nombre: Number(cle) }
+    // Touche maison (question 10 du 06/10/2026) : R mélange.
+    if (!ctrl && !alt && !maj && cle === 'r') return { geste: 'melanger', zone: cible.zone }
     return undefined
   }
 
   const sens = maj ? -1 : 1
   const type = cible.type
+
+  // Lot 6 du 06/10/2026. F1 d'OCTGN (`addAnyMarker`) demande QUEL marqueur
+  // poser : ici, le menu de la carte, qui nomme chaque jeton. Maj+F1
+  // (`clearMarker`) efface le marqueur naturel de la carte. La touche Menu et
+  // Maj+F10 ouvrent le même menu au clavier seul (accessibilité).
+  if (!ctrl && !alt) {
+    if (cle === 'f1') return maj ? { geste: 'effacerMarqueurs', id: cible.id } : { geste: 'menuCarte', id: cible.id }
+    if (cle === 'contextmenu' || (maj && cle === 'f10')) return { geste: 'menuCarte', id: cible.id }
+  }
 
   if (alt) {
     const statut = cle === 's' ? 'stun' : cle === 'c' ? 'confuse' : cle === 't' ? 'tough' : undefined
@@ -137,6 +162,21 @@ export function interpreterTouche(touche: Touche, cible: CibleClavier): GesteCla
     if (cle === 'v') return { geste: 'victoire', id: cible.id }
     return undefined
   }
+
+  // Touches maison (question 10 du 06/10/2026), EN PLUS d'OCTGN : F retourne,
+  // Q incline, un chiffre pose autant de jetons naturels. ⚠ AZERTY : un chiffre
+  // s'y tape avec Maj, donc Maj ne change rien au chiffre ; on retire avec les
+  // flèches ou Maj+F3/F5.
+  if (/^[1-9]$/.test(cle)) {
+    const nature = natureDe(type)
+    if (SANS_ETAT.has(type)) return undefined
+    // Le chiffre BLESSE aussi un héros ou un méchant : la nature « pv »
+    // d'OCTGN (points de vie restants) le ferait soigner.
+    if (nature === 'marqueur') return { geste: 'compteur', id: cible.id, nombre: Number(cle) }
+    return { geste: 'jetons', id: cible.id, nature: nature === 'menace' ? 'menace' : 'degats', nombre: Number(cle) }
+  }
+  if (!maj && cle === 'f') return { geste: 'retourner', id: cible.id }
+  if (!maj && cle === 'q') return INCLINABLES.has(type) ? { geste: 'incliner', id: cible.id } : undefined
 
   switch (cle) {
     case 'f7':

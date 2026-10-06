@@ -242,27 +242,56 @@ test('la table manuelle : nue, silencieuse, manipulable, annulable', async ({ pa
   )
   await expect(page.locator('.plateau-unite[data-pile="rencontre-encounter-discard"]')).toHaveCount(1)
 
-  // 4. UN REFUS SE VOIT : lâcher une carte dans le vide (aucune pile visée)
-  // doit refuser poliment, pas agir en silence — la garantie sur laquelle le
-  // chantier a passé le plus de temps.
+  // 4. POSER UNE CARTE COMME SUR OCTGN (lot 2 du 06/10/2026). Une carte de
+  // la main lâchée sur la table, hors de toute pile, quitte la main et arrive
+  // EN JEU selon son type : un allié chez les alliés, un soutien dans « Héros
+  // et soutiens », une amélioration sous le héros. Avant le lot 2, ce même
+  // lâcher était refusé (« Lâche la carte sur une pile »).
+  const posable = page
+    .locator(
+      '[data-zone="main"] .scan-card.kind-ally[data-card-id], ' +
+        '[data-zone="main"] .scan-card.kind-support[data-card-id], ' +
+        '[data-zone="main"] .scan-card.kind-upgrade[data-card-id]'
+    )
+    .first()
+  await expect(posable, 'aucun allié, soutien ni amélioration en main').toHaveCount(1)
+  const idPosee = await posable.getAttribute('data-card-id')
+  const mainAvantPose = await page.locator('[data-zone="main"] .scan-card[data-card-id]').count()
+  const boitePosee = await posable.boundingBox()
+  expect(boitePosee).not.toBeNull()
+  await page.mouse.move(boitePosee!.x + boitePosee!.width / 2, boitePosee!.y + boitePosee!.height / 2)
+  await page.mouse.down()
+  // Un point du plateau qui n'est ni une pile, ni une carte : le centre du
+  // grand vide sous la zone Rencontre. L'étiquette annonce la pose.
+  await page.mouse.move(600, 450, { steps: 12 })
+  await expect(page.locator('.glisser-etiquette')).toContainText('Poser en jeu')
+  await page.mouse.up()
+  await page.waitForTimeout(1500)
+  await expect(page.locator('[data-zone="main"] .scan-card[data-card-id]')).toHaveCount(mainAvantPose - 1)
+  await expect(
+    page.locator(`[data-zone="terrain-soutien"] [data-card-id="${idPosee}"], [data-zone="terrain-combat"] [data-card-id="${idPosee}"]`)
+  ).toHaveCount(1)
+
+  // 4 bis. UN REFUS SE VOIT : lâcher une carte HORS du plateau (sur la barre
+  // du haut) refuse poliment, sans rien envoyer.
   const carteRefus = page.locator('[data-zone="main"] .scan-card[data-card-id]').first()
   const boiteRefusSource = await carteRefus.boundingBox()
   expect(boiteRefusSource).not.toBeNull()
+  const mainAvantRefus = await page.locator('[data-zone="main"] .scan-card[data-card-id]').count()
+  const barre = await page.locator('.plateau-barre').boundingBox()
+  expect(barre).not.toBeNull()
   await page.mouse.move(
     boiteRefusSource!.x + boiteRefusSource!.width / 2,
     boiteRefusSource!.y + boiteRefusSource!.height / 2
   )
   await page.mouse.down()
-  // Un point du plateau qui n'est ni une pile, ni une carte : le centre du
-  // grand vide sous la zone Rencontre. Aucune étiquette PENDANT le glisser
-  // (`glisser-manuel.ts`, `libelle` rend `undefined` sur du vide pur) : le
-  // refus se voit APRÈS le lâcher, dans la bulle `.glisser-refus`.
-  await page.mouse.move(600, 450, { steps: 12 })
+  await page.mouse.move(barre!.x + 40, barre!.y + barre!.height / 2, { steps: 12 })
   await page.mouse.up()
-  await expect(page.locator('.glisser-refus')).toContainText('Lâche la carte sur une pile')
+  await expect(page.locator('.glisser-refus')).toContainText('Lâche la carte sur la table ou sur une pile')
   await page.waitForTimeout(500)
+  await expect(page.locator('[data-zone="main"] .scan-card[data-card-id]')).toHaveCount(mainAvantRefus)
 
-  // 5. SURVOLER LE VILAIN ET TAPER « 3 » LUI POSE TROIS DÉGÂTS, lus À L'ÉCRAN
+  // 5. SURVOLER LE VILAIN ET TAPER BAS LUI ÔTE UN POINT DE VIE, lu À L'ÉCRAN
   // (voir l'en-tête de ce fichier : `/get_world` ne calcule pas `info.health`
   // en dehors d'une action légale, qui n'existe pas en mode manuel).
   const vieAvant = await vieVilainAffichee(page)
@@ -275,10 +304,14 @@ test('la table manuelle : nue, silencieuse, manipulable, annulable', async ({ pa
     boiteVilain!.x + boiteVilain!.width / 2,
     boiteVilain!.y + boiteVilain!.height / 2
   )
-  await page.keyboard.press('3')
+  // Flèche Bas d'OCTGN (`clavier.ts`) : 1 PV de moins sur un méchant. UNE
+  // seule pression, parce que l'étape 6 ne fait qu'un Ctrl+Z (un geste).
+  await page.keyboard.press('ArrowDown')
   await page.waitForTimeout(1500)
   const vieApres = await vieVilainAffichee(page)
   expect(vieApres, "le vilain n'a pas visiblement encaissé les dégâts").not.toBe(vieAvant)
+  const pv = (texte: string | null) => Number((texte ?? '').match(/\d+/)?.[0] ?? NaN)
+  expect(pv(vieApres), 'Bas doit ôter exactement 1 PV au méchant').toBe(pv(vieAvant) - 1)
 
   // 6. CTRL+Z RAMÈNE L'ÉTAT D'AVANT.
   await page.keyboard.press('Control+z')

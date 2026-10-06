@@ -1,5 +1,14 @@
 from . import *
 
+
+def _RetirerLesTemporaires(effets: List['Effect']) -> None:
+    """Retire les temporaires encore inscrits : celui qui a deja servi
+    (`unregister_after_exec`) n'est plus dans la liste de sa face."""
+    for effet in effets:
+        if effet in effet.this.effect.GetAll():
+            effet.UnRegisterSelf()
+
+
 class AbilityFactoryWhile:
 
     @staticmethod
@@ -31,8 +40,9 @@ class AbilityFactoryWhile:
 
             def when_this_invalid(invalid_effect: 'Effect', message: 'Message2') -> None:
                 Effects.UnRegister(loop_check_effects)
+                effect.en_jeu_arme = False
 
-            this.effect.RegisterTemp(
+            temp_invalide = this.effect.RegisterTemp(
                 AbilityFactory.WhileThisStateUpdate(
                     AbilityType.Temp0,
                     when_this_invalid
@@ -40,11 +50,25 @@ class AbilityFactoryWhile:
                 unregister_after_exec=True,
             )
 
-        return AbilityFactory.WhenCardEnterPlay(
+            def desarmer() -> None:
+                _RetirerLesTemporaires(temp_invalide)
+                when_this_invalid(effect, message)
+
+            def rafraichir() -> None:
+                if not this.is_treat_as_if_blank and condition(effect, message): # type: ignore
+                    operation(effect, message) # type: ignore
+
+            effect.en_jeu_arme = True
+            effect.en_jeu_desarmer = desarmer
+            effect.en_jeu_rafraichir = rafraichir
+
+        ability = AbilityFactory.WhenCardEnterPlay(
             AbilityType.NonKeyword,
             "This",
             when_this_valid
         )
+        ability.arme_en_jeu = True
+        return ability
 
     @staticmethod
     def WhileValid( change_on_event: EventType,
@@ -156,6 +180,7 @@ class AbilityFactoryWhile:
             def when_this_invalid(invalid_effect: 'Effect', message: 'Message2') -> None:
                 Effects.UnRegister(loop_check_effects)
                 Effects.UnRegister(check_blank_effects)
+                effect.en_jeu_arme = False
                 # if after_attach_defeated_effect:
                 #     after_attach_defeated_effect.UnRegisterSelf()
                 nonlocal last_value
@@ -165,18 +190,38 @@ class AbilityFactoryWhile:
                     effect.context.bind_message = message
                     process_fn(effect, -1 * old_last_value, 0)
 
-            this.effect.RegisterTemp(
+            temp_invalide = this.effect.RegisterTemp(
                 AbilityFactory.WhileThisStateUpdate(
                     AbilityType.Temp0,
                     when_this_invalid
                 ),
                 unregister_after_exec=True,
             )
-            pass
 
-        return AbilityFactory.WhenCardEnterPlay(
+            def desarmer() -> None:
+                _RetirerLesTemporaires(temp_invalide)
+                when_this_invalid(effect, message)
+
+            def rafraichir() -> None:
+                # Le meme calcul que `new_condition`, sans le filtre d'evenement :
+                # les evenements ont ete manques pendant le silence.
+                nonlocal new_value
+                if this.is_treat_as_if_blank:
+                    return
+                effect.context.bind_message = message
+                new_value, forced = invoke_check_value(effect)
+                if new_value != last_value or forced:
+                    update_valid(message)
+
+            effect.en_jeu_arme = True
+            effect.en_jeu_desarmer = desarmer
+            effect.en_jeu_rafraichir = rafraichir
+
+        ability = AbilityFactory.WhenCardEnterPlay(
             AbilityType.NonKeyword,
             "This",
             when_this_valid
         )
+        ability.arme_en_jeu = True
+        return ability
 

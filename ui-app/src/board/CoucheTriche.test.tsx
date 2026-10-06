@@ -8,6 +8,7 @@
 // Les tests de résolution (plus bas) ont besoin du VRAI `useTriche`, sur le
 // modèle de `board/manuel/clavier-wiring.test.tsx`.
 import { act, fireEvent, render, screen } from '@testing-library/react'
+import type { ChoixCible } from './manuel/ChoixCibleAmelioration'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { CoucheTriche, useTriche } from './CoucheTriche'
 import { catalogueVide, type Catalogue } from './catalogue'
@@ -33,6 +34,22 @@ function coucheVide() {
     annulationEnCours: false,
     menuTable: undefined as { x: number; y: number } | undefined,
     setMenuTable: vi.fn(),
+    choixCible: undefined as ChoixCible | undefined,
+    choisirCible: vi.fn(),
+    attacherChoisie: vi.fn(),
+    fermerChoixCible: vi.fn(),
+    estEnMain: () => false,
+    poserDepuisLaMain: vi.fn(),
+    versLaMain: vi.fn(async () => true),
+    mainAffichee: [],
+    mulliganOuvert: false,
+    setMulliganOuvert: vi.fn(),
+    excedent: undefined,
+    setExcedent: vi.fn(),
+    defausserExcedent: vi.fn(),
+    defausserAuHasard: vi.fn(),
+    confirmerMulligan: vi.fn(),
+    echangerAvecLeDessus: vi.fn(),
   }
 }
 
@@ -70,18 +87,31 @@ describe('la pile ouverte propose de la mélanger', () => {
 })
 
 describe('une défausse se remélange dans son deck (OCTGN : Shuffle discard into deck)', () => {
-  it('remet chaque carte dans le deck, puis mélange', async () => {
+  // Lot 6 du 06/10/2026 : UNE commande moteur, donc un seul Ctrl+Z la défait
+  // entière ; la pile d'un joueur se vise par son siège (lot 5).
+  it('remet toute la défausse dans le deck et mélange, en une seule commande', async () => {
     const couche = {
       ...coucheVide(),
-      pile: { titre: 'Pile de défausse', cartes: [CARTE, { ...CARTE, id: 2 } as WorldCard], duJoueur: true, zone: 'DiscardPile' },
+      pile: { titre: 'Pile de défausse', cartes: [CARTE, { ...CARTE, id: 2 } as WorldCard], duJoueur: true, zone: 'DiscardPile', siege: 1 },
     }
     const { getByText } = render(<CoucheTriche actif manuel couche={couche} />)
     fireEvent.click(getByText('Remélanger dans le deck'))
     await Promise.resolve()
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
-      body: JSON.stringify({
-        commands: ["Puzzle.MoveTo(1, 'PlayerDeck', 'Top')", "Puzzle.MoveTo(2, 'PlayerDeck', 'Top')", "Puzzle.Shuffle('PlayerDeck')"],
-      }),
+      body: JSON.stringify({ commands: ["Puzzle.ShuffleDiscardIntoDeck('DiscardPile', siege=1)"] }),
+    }))
+  })
+
+  it('mélanger le deck d’un joueur vise son siège', async () => {
+    const couche = {
+      ...coucheVide(),
+      pile: { titre: 'Deck du héros', cartes: [CARTE], duJoueur: true, zone: 'PlayerDeck', siege: 1 },
+    }
+    const { getByText } = render(<CoucheTriche actif manuel couche={couche} />)
+    fireEvent.click(getByText('Mélanger'))
+    await Promise.resolve()
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.Shuffle('PlayerDeck', siege=1)"] }),
     }))
   })
 
@@ -681,3 +711,17 @@ describe('le bac à sable garde son journal (correction du 19/09/2026, ronde 2)'
     expect(ajouterAuJournal).toHaveBeenCalledWith('Incliner — Rhino (refusé)')
   })
 })
+
+// Question 3 du 06/10/2026 : la fenêtre de choix vit dans la couche manuelle.
+describe('le choix de la carte qui reçoit une amélioration', () => {
+  it('s’ouvre en manuel et choisir attache la carte', () => {
+    const couche = {
+      ...coucheVide(),
+      choixCible: { sourceId: 42, nom: 'Web-Shooter', cibles: [{ id: 1, nom: 'Spider-Man' }, { id: 4, nom: 'Black Cat' }] },
+    }
+    const { getByRole } = render(<CoucheTriche actif manuel couche={couche} />)
+    fireEvent.click(getByRole('button', { name: 'Black Cat' }))
+    expect(couche.attacherChoisie).toHaveBeenCalledWith({ id: 4, nom: 'Black Cat' })
+  })
+})
+

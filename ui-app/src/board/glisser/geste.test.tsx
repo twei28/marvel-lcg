@@ -13,6 +13,7 @@
 // On le remplace donc par une table « point -> carte » ecrite par le test.
 // C'est la seule chose simulee ; tout le reste (les handlers, le seuil, la
 // suppression du clic) est le vrai code.
+import { readFileSync } from 'node:fs'
 import { fireEvent, render } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Board, type ReglagesGlisser } from '../Board'
@@ -142,7 +143,7 @@ describe('le geste', () => {
     const surDepot = vi.fn(() => undefined)
     const { source } = monter(surDepot)
     glisser(source, 300)
-    expect(surDepot).toHaveBeenCalledWith(HEROS, { carteId: RHINO, zone: 'terrain-combat' })
+    expect(surDepot).toHaveBeenCalledWith(HEROS, { carteId: RHINO, zone: 'terrain-combat', surLaTable: true })
   })
 
   // ⚠ LE CAS QUI COMPTE. Sans la garde posee sur `onPointerUp`, le lacher
@@ -214,6 +215,29 @@ describe('ce que le geste montre', () => {
     expect(container.querySelector('.glisser-refus')?.textContent).toBe('Un Gardien vous en empeche')
   })
 
+  // Lot 2 du 06/10/2026 : lâchée près du bord gauche de l'écran, la bulle
+  // (centrée sur le point du lâcher) sortait à moitié de l'écran et le refus
+  // devenait illisible (capture lot2-1280-06). Elle reste dans l'écran.
+  it('la bulle de refus reste dans l’écran, même lâchée au bord', () => {
+    const { source, container } = monter(() => 'Une ressource se défausse pour payer')
+    glisser(source, 300, 0)
+    const bulle = container.querySelector<HTMLElement>('.glisser-refus')!
+    expect(bulle.style.getPropertyValue('--refus-x')).toBe('300px')
+    expect(bulle.style.getPropertyValue('--refus-y')).toBe('0px')
+    const css = readFileSync('src/board/glisser/glisser.css', 'utf-8')
+    expect(css).toContain('left: clamp(160px, var(--refus-x), calc(100vw - 160px));')
+    expect(css).toContain('top: max(64px, var(--refus-y));')
+  })
+
+  // Lot 6 du 06/10/2026 : un lecteur d'écran annonce le refus.
+  it('la bulle de refus est annoncée (role status, hors aria-hidden)', () => {
+    const { source, container } = monter(() => 'Un Gardien vous en empeche')
+    glisser(source, 300)
+    const bulle = container.querySelector<HTMLElement>('.glisser-refus')!
+    expect(bulle.getAttribute('role')).toBe('status')
+    expect(bulle.closest('[aria-hidden="true"]')).toBeNull()
+  })
+
   it('un lacher accepte n affiche aucune bulle', () => {
     const { source, container } = monter(vi.fn(() => undefined))
     glisser(source, 300)
@@ -270,5 +294,169 @@ describe('ce que le geste montre', () => {
     pointeur(source, 'pointerup', 300, 0)
     expect(container.querySelector('.est-en-glisser')).toBeNull()
     expect(surClic).toHaveBeenCalledTimes(1)
+  })
+
+  // Lot 2 du 06/10/2026 (mode manuel, question 12) : tout ce qui accepte la
+  // carte s'entoure, la table d'un seul cadre et les piles fines ; et le rouge
+  // ne s'affiche que si le lâcher sera VRAIMENT refusé (`accepte`).
+  it('en manuel, la table et la pile qui accueillent la carte s’entourent, sans rouge', () => {
+    const avecPile: Plateau = {
+      ...PLATEAU,
+      emplacements: [
+        ...PLATEAU.emplacements,
+        {
+          cle: 'piles-joueur',
+          titre: 'Piles',
+          nombreSurLaLigne: 1,
+          groupes: [[{ cle: 'u3', carte: carte(3, 'Deck'), attachees: [], pile: 'joueur-deck' }]],
+        },
+      ],
+    }
+    const manuel: ReglagesGlisser = {
+      estSource: () => true,
+      ciblesLegales: () => new Set<number>(),
+      zonesLegales: () => new Set(['joueur-deck']),
+      libelle: () => 'Poser en jeu : Blade (Alliés)',
+      accepte: () => true,
+      accueilleLaTable: () => true,
+      onDepot: () => undefined,
+    }
+    const { container } = render(
+      <Board world={MONDE} playerId={0} plateau={avecPile} glisser={manuel} onCardClick={vi.fn()} />
+    )
+    poserLaTable(container)
+    const source = container.querySelector<HTMLElement>(`.scan-card[data-card-id="${HEROS}"]`)!
+    pointeur(source, 'pointerdown', 0, 0)
+    pointeur(source, 'pointermove', 300, 0)
+    const cadre = container.querySelector('.plateau-cadre') as HTMLElement
+    expect(cadre.hasAttribute('data-table-accueille')).toBe(true)
+    expect(container.querySelector('.plateau-unite[data-pile="joueur-deck"]')?.hasAttribute('data-pile-accueille')).toBe(true)
+    expect(container.querySelector('.glisser-etiquette.est-refuse')).toBeNull()
+  })
+
+  it('en manuel, un lâcher que les règles refusent vire au rouge', () => {
+    const manuel: ReglagesGlisser = {
+      estSource: () => true,
+      ciblesLegales: () => new Set<number>(),
+      zonesLegales: () => new Set<string>(),
+      libelle: () => undefined,
+      accepte: () => false,
+      accueilleLaTable: () => false,
+      onDepot: () => 'non',
+    }
+    const { container } = render(
+      <Board world={MONDE} playerId={0} plateau={PLATEAU} glisser={manuel} onCardClick={vi.fn()} />
+    )
+    poserLaTable(container)
+    const source = container.querySelector<HTMLElement>(`.scan-card[data-card-id="${HEROS}"]`)!
+    pointeur(source, 'pointerdown', 0, 0)
+    pointeur(source, 'pointermove', 300, 0)
+    expect((container.querySelector('.plateau-cadre') as HTMLElement).hasAttribute('data-table-accueille')).toBe(false)
+    expect(container.querySelector('.est-refuse')).not.toBeNull()
+  })
+})
+
+// Lot 4 du 06/10/2026 (question 11) : au doigt, une carte doit pouvoir se
+// glisser sans que la page défile. Le cadre l'annonce, le CSS coupe le
+// défilement tactile sur les seules cartes.
+describe('au doigt, en manuel', () => {
+  it('le cadre annonce un glisser au doigt quand les réglages le demandent', () => {
+    const manuel: ReglagesGlisser = {
+      estSource: () => true,
+      ciblesLegales: () => new Set<number>(),
+      zonesLegales: () => new Set<string>(),
+      libelle: () => undefined,
+      auDoigt: true,
+      onDepot: () => undefined,
+    }
+    const { container } = render(
+      <Board world={MONDE} playerId={0} plateau={PLATEAU} glisser={manuel} onCardClick={vi.fn()} />
+    )
+    expect((container.querySelector('.plateau-cadre') as HTMLElement).hasAttribute('data-glisser-doigt')).toBe(true)
+  })
+
+  it('hors manuel, le doigt garde le défilement de la page', () => {
+    const { container } = render(<Board world={MONDE} playerId={0} plateau={PLATEAU} onCardClick={vi.fn()} />)
+    expect((container.querySelector('.plateau-cadre') as HTMLElement).hasAttribute('data-glisser-doigt')).toBe(false)
+  })
+
+  it('le CSS coupe le défilement tactile sur les cartes seulement', () => {
+    const css = readFileSync('src/board/glisser/glisser.css', 'utf-8')
+    expect(css).toMatch(/\.plateau-cadre\[data-glisser-doigt\] \.scan-card \{\s*touch-action: none;/)
+  })
+})
+
+// Lot 5 du 06/10/2026 (question 6) : chaque groupe dit à quel siège il
+// appartient, pour qu'une carte lâchée dedans arrive chez ce joueur.
+describe('le siège de chaque groupe', () => {
+  it('un groupe avec propriétaire porte data-joueur, un groupe sans n’en porte pas', () => {
+    const avecProprietaires: Plateau = {
+      ...PLATEAU,
+      emplacements: [
+        {
+          cle: 'terrain-combat',
+          titre: 'Combat',
+          nombreSurLaLigne: 2,
+          groupes: [
+            [{ cle: 'u1', carte: carte(HEROS, 'Blade'), attachees: [] }],
+            [{ cle: 'u2', carte: carte(RHINO, 'Rhino'), attachees: [] }],
+          ],
+          proprietaires: [1, undefined],
+        },
+      ],
+    }
+    const { container } = render(
+      <Board world={MONDE} playerId={0} plateau={avecProprietaires} onCardClick={vi.fn()} />
+    )
+    const groupes = container.querySelectorAll<HTMLElement>('.plateau-groupe')
+    expect(groupes[0].dataset.joueur).toBe('1')
+    expect(groupes[1].hasAttribute('data-joueur')).toBe(false)
+  })
+})
+
+// Écart 32 de la spec du 06/10/2026 : comme sur OCTGN, saisir une pile prend
+// sa carte du DESSUS (celle que la pile montre, `card-model.ts`, `toPileCard`).
+describe('glisser depuis une pile', () => {
+  const DESSUS = 7
+  const PLATEAU_AVEC_PILE: Plateau = {
+    ...PLATEAU,
+    emplacements: [
+      ...PLATEAU.emplacements,
+      {
+        cle: 'piles-joueur',
+        titre: 'Deck',
+        nombreSurLaLigne: 1,
+        groupes: [
+          [
+            {
+              cle: 'joueur-deck',
+              carte: carte(DESSUS, 'Dessus du deck'),
+              attachees: [],
+              pile: 'joueur-deck',
+              pileTitre: 'Deck',
+              pileContenu: [carte(DESSUS, 'Dessus du deck')],
+            },
+          ],
+        ],
+      },
+    ],
+    idsAffiches: new Set([HEROS, RHINO, DESSUS]),
+  }
+
+  it('la carte du dessus se soulève et se lâche ailleurs', () => {
+    const surDepot = vi.fn(() => undefined)
+    const rendu = render(
+      <Board
+        world={MONDE}
+        playerId={0}
+        plateau={PLATEAU_AVEC_PILE}
+        glisser={{ ...reglages(surDepot), estSource: () => true }}
+        onCardClick={vi.fn()}
+      />
+    )
+    poserLaTable(rendu.container)
+    const dessus = rendu.container.querySelector<HTMLElement>(`.scan-card[data-card-id="${DESSUS}"]`)!
+    glisser(dessus, 300)
+    expect(surDepot).toHaveBeenCalledWith(DESSUS, expect.objectContaining({ carteId: RHINO }))
   })
 })

@@ -45,6 +45,20 @@ describe('le sous-menu « Déplacer vers »', () => {
     )
   })
 
+  // Lot 5 du 06/10/2026 : à plusieurs héros, une pile de joueur se vise par
+  // le siège du propriétaire, jamais le premier joueur du moment.
+  it('vise le siège du propriétaire quand la cible le porte', async () => {
+    const { getByText } = render(
+      <MenuTriche cible={{ ...CIBLE, siege: 1 }} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} />
+    )
+    fireEvent.click(getByText('Déplacer vers'))
+    fireEvent.click(getByText('Pile de défausse'))
+    await attendreLeReseau()
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(42, 'DiscardPile', 'Top', siege=1)"] }),
+    }))
+  })
+
   it('depose sous la pile quand on le demande explicitement', async () => {
     // « Deck du héros » (PlayerDeck) est un deck ORDONNÉ : le dessous a un
     // sens, contrairement aux zones en jeu (voir `ZONES_ORDONNEES`).

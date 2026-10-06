@@ -144,3 +144,37 @@ describe('MenuTable', () => {
     expect(onToutRedresser).toHaveBeenCalled()
   })
 })
+
+// Constat du 06/10/2026 (lot 7, navigateur 1280x720) : ouvert au milieu de
+// l'écran, le menu de la table (13 entrées depuis le lot 6) sortait par le bas ;
+// « Mulligan » et « Terminer la partie » étaient inatteignables. Il devinait une
+// hauteur fixe de 340 px, comme MenuTriche avant le 22/09/2026.
+describe('MenuTable reste dans l’écran', () => {
+  it('un menu plus haut que la place sous le curseur remonte, mesuré, pas deviné', () => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1280 })
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 720 })
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 242, height: 470, top: 0, left: 0, right: 242, bottom: 470, x: 0, y: 0,
+      toJSON: () => ({}),
+    })
+    const { container } = render(
+      <MenuTable
+        x={640}
+        y={330}
+        onFermer={vi.fn()}
+        onFaireApparaitre={vi.fn()}
+        onTerminerPartie={vi.fn()}
+        onVaincreStade={vi.fn()}
+        onManigancePrincipale={vi.fn()}
+        onToutRedresser={vi.fn()}
+        onFinPhaseHeros={vi.fn()}
+        onAmplification={vi.fn()}
+        onHasard={vi.fn()}
+      />
+    )
+    const boite = container.querySelector('.menu-triche') as HTMLElement
+    // 720 - 470 - 8 de marge : le bas du menu tient dans l'écran.
+    expect(parseFloat(boite.style.top)).toBe(242)
+    vi.restoreAllMocks()
+  })
+})

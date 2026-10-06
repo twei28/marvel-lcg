@@ -5,6 +5,10 @@
 > `superpowers:executing-plans` pour dérouler ce plan tâche par tâche. Les
 > étapes sont en cases à cocher (`- [ ]`).
 
+> **06/10/2026 :** exécuté et déployé (`file-d-attente:744-751`, dans
+> `.planning/todos/2026-09-19-file-d-attente-et-deploiement.md`). Les cases
+> n'ont pas été cochées. Suite : `2026-10-06-mode-manuel-comme-octgn.md`.
+
 **But :** rendre le moteur muet après la mise en place. Il tient l'état, il
 exécute les gestes qu'on lui dépose, il ne conduit plus rien et ne déclenche
 plus aucune capacité.

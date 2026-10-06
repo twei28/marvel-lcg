@@ -5,6 +5,10 @@
 > `superpowers:executing-plans` pour dérouler ce plan tâche par tâche. Les
 > étapes sont en cases à cocher (`- [ ]`).
 
+> **06/10/2026 :** exécuté et déployé (`file-d-attente:948-951` ; l'écran de pause a été supprimé le 05/10 par `329daedc`, dans
+> `.planning/todos/2026-09-19-file-d-attente-et-deploiement.md`). Les cases
+> n'ont pas été cochées. Suite : `2026-10-06-mode-manuel-comme-octgn.md`.
+
 **But :** pouvoir arrêter le moteur en pleine partie ORDINAIRE, corriger la
 table à la main, et reprendre là où on en était. C'est ce qui permet à un
 joueur de contourner un bug du moteur et de finir sa partie, au lieu de la

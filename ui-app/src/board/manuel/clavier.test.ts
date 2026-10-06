@@ -105,9 +105,12 @@ describe('les touches du mode manuel, calquées sur OCTGN', () => {
     expect(interpreterTouche(touche('f', { ctrl: true }), DECK)).toBeUndefined()
   })
 
-  it('un chiffre sur une pile pioche autant de cartes, un chiffre sur une carte ne fait rien', () => {
+  it('un chiffre sur une pile pioche autant de cartes, sur un méchant pose ses jetons (question 10)', () => {
     expect(interpreterTouche(touche('5'), DECK)).toEqual({ geste: 'piocher', zone: 'PlayerDeck', nombre: 5 })
-    expect(interpreterTouche(touche('3'), VILAIN)).toBeUndefined()
+    // Sur un méchant ou un héros aussi, le chiffre BLESSE (la nature « pv »
+    // d'OCTGN soignerait : « plus » y compte les points de vie restants).
+    expect(interpreterTouche(touche('3'), VILAIN)).toEqual({ geste: 'jetons', id: 7, nature: 'degats', nombre: 3 })
+    expect(interpreterTouche(touche('3'), EVENEMENT)).toBeUndefined()
   })
 
   it('les gestes de table : Alt+Entrée, Ctrl+Q, F12, même sans rien survoler', () => {
@@ -116,11 +119,49 @@ describe('les touches du mode manuel, calquées sur OCTGN', () => {
     expect(interpreterTouche(touche('F12'), DECK)).toEqual({ geste: 'finPhaseHeros' })
   })
 
-  it('les anciennes touches maison (F, Q, R seuls) ne font plus rien', () => {
-    expect(interpreterTouche(touche('f'), VILAIN)).toBeUndefined()
-    expect(interpreterTouche(touche('q'), VILAIN)).toBeUndefined()
-    expect(interpreterTouche(touche('r'), DECK)).toBeUndefined()
+  // Question 10 du 06/10/2026 : les touches maison restent, EN PLUS d'OCTGN.
+  it('touches maison : F retourne, Q incline, R mélange une pile', () => {
+    expect(interpreterTouche(touche('f'), VILAIN)).toEqual({ geste: 'retourner', id: 7 })
+    expect(interpreterTouche(touche('q'), ALLIE)).toEqual({ geste: 'incliner', id: 2 })
+    expect(interpreterTouche(touche('r'), DECK)).toEqual({ geste: 'melanger', zone: 'PlayerDeck' })
     expect(interpreterTouche(touche('r', { ctrl: true }), DECK)).toBeUndefined()
+    expect(interpreterTouche(touche('r'), VILAIN)).toBeUndefined()
+    expect(interpreterTouche(touche('q'), EVENEMENT)).toBeUndefined()
+  })
+
+  // ⚠ AZERTY : un chiffre s'y tape AVEC Maj. Maj ne peut donc pas vouloir
+  // dire « retirer » : le chiffre pose toujours, le retrait reste aux flèches.
+  it('touches maison : un chiffre pose autant de jetons naturels, Maj ou pas (AZERTY)', () => {
+    expect(interpreterTouche(touche('3'), SBIRE)).toEqual({ geste: 'jetons', id: 3, nature: 'degats', nombre: 3 })
+    expect(interpreterTouche(touche('2', { majuscule: true }), MANIGANCE)).toEqual({
+      geste: 'jetons', id: 9, nature: 'menace', nombre: 2,
+    })
+    expect(interpreterTouche(touche('4'), SOUTIEN)).toEqual({ geste: 'compteur', id: 5, nombre: 4 })
+    expect(interpreterTouche(touche('4', { ctrl: true }), SBIRE)).toBeUndefined()
+  })
+
+  // Lot 6 du 06/10/2026 : gestes OCTGN de pile restants.
+  it('Ctrl+F sur une pile retourne la carte du dessus (FlipDeckTopCard)', () => {
+    expect(interpreterTouche(touche('f', { ctrl: true }), { ...DECK, dessus: 40 })).toEqual({ geste: 'retourner', id: 40 })
+    expect(interpreterTouche(touche('f', { ctrl: true }), DECK)).toBeUndefined()
+  })
+
+  it('Ctrl+U pioche face cachée, Ctrl+Maj+U demande combien (drawUnrevealed)', () => {
+    expect(interpreterTouche(touche('u', { ctrl: true }), DECK)).toEqual({ geste: 'piocherCache', zone: 'PlayerDeck', nombre: 1 })
+    expect(interpreterTouche(touche('U', { ctrl: true, majuscule: true }), DECK)).toEqual({
+      geste: 'piocherCachePlusieurs', zone: 'PlayerDeck',
+    })
+  })
+
+  it('F1 ouvre le choix du marqueur (le menu de la carte), Maj+F1 efface les marqueurs', () => {
+    expect(interpreterTouche(touche('F1'), SBIRE)).toEqual({ geste: 'menuCarte', id: 3 })
+    expect(interpreterTouche(touche('F1', { majuscule: true }), SBIRE)).toEqual({ geste: 'effacerMarqueurs', id: 3 })
+  })
+
+  it('la touche Menu et Maj+F10 ouvrent le menu de la carte survolée (clavier seul)', () => {
+    expect(interpreterTouche(touche('ContextMenu'), ALLIE)).toEqual({ geste: 'menuCarte', id: 2 })
+    expect(interpreterTouche(touche('F10', { majuscule: true }), ALLIE)).toEqual({ geste: 'menuCarte', id: 2 })
+    expect(interpreterTouche(touche('F10'), ALLIE)).toBeUndefined()
   })
 
   it('une touche inconnue ne fait rien', () => {
@@ -139,8 +180,13 @@ describe('le double-clic d’OCTGN', () => {
     expect(interpreterDoubleClic(ALLIE)).toEqual({ geste: 'incliner', id: 2 })
     expect(interpreterDoubleClic(carte('Support', 5, { prete: false }))).toEqual({ geste: 'redresser', id: 5 })
   })
-  it('rien sur une manigance, un sbire ou un événement', () => {
-    expect(interpreterDoubleClic(MANIGANCE)).toBeUndefined()
+  // Lot 6 du 06/10/2026 : comme `defaultCardAction` d'OCTGN, une manigance se
+  // retourne ; le moteur repose sa menace de départ (`Scheme2.OnFlip`).
+  it('sur une manigance : la retourner', () => {
+    expect(interpreterDoubleClic(MANIGANCE)).toEqual({ geste: 'retourner', id: 9 })
+    expect(interpreterDoubleClic(PRINCIPALE)).toEqual({ geste: 'retourner', id: 10 })
+  })
+  it('rien sur un sbire ou un événement', () => {
     expect(interpreterDoubleClic(SBIRE)).toBeUndefined()
     expect(interpreterDoubleClic(EVENEMENT)).toBeUndefined()
   })

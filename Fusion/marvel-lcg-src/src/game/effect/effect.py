@@ -48,6 +48,12 @@ class Effect(Object):
         self.is_unregister = False
         self.is_local = is_local
 
+        # Etat d'une capacite `arme_en_jeu` (voir `Ability`), tenu par
+        # on_while.py et relu par `EventManager.ReconcilierApresSilence`.
+        self.en_jeu_arme = False
+        self.en_jeu_desarmer: Callable[[], None]|None = None
+        self.en_jeu_rafraichir: Callable[[], None]|None = None
+
         # Debug Check
         if not self.is_forced:
             if not Event.IsType(self.this):

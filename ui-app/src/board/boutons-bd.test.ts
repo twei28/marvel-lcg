@@ -15,7 +15,10 @@ describe('les boutons des questions en style BD', () => {
 
   it('ne touche QUE les panneaux de question, jamais les menus de carte', () => {
     const css = lire('boutons-bd.css').replace(/\/\*[\s\S]*?\*\//g, '')
-    const selecteurs = [...css.matchAll(/([^{}]+)\{/g)].flatMap((m) => m[1].split(',').map((s) => s.trim()))
+    // Un `@media` n'est pas un selecteur : seules les regles qu'il contient comptent.
+    const selecteurs = [...css.matchAll(/([^{}]+)\{/g)]
+      .filter((m) => !m[1].trim().startsWith('@'))
+      .flatMap((m) => m[1].split(',').map((s) => s.trim()))
     expect(selecteurs.length).toBeGreaterThan(0)
     for (const s of selecteurs) expect(s).toMatch(/^\.(demande-centrale|assistant-action|deroule-phase) /)
   })

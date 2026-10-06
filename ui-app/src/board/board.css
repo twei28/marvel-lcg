@@ -1772,6 +1772,26 @@
     margin-top: 0;
   }
 
+  /* Fin de tour et mulligan : tout 1,5 fois plus grand (« cette petite modale
+     est vraiment petite », decision du 06/10/2026). */
+  .assistant-action.mode-simple {
+    max-width: min(840px, calc(100vw - 28px));
+    gap: 12px;
+  }
+
+  .assistant-action.mode-simple .assistant-simple-action {
+    max-width: 360px;
+    min-height: 72px;
+    padding: 14px 28px;
+    font-size: 1.71rem;
+  }
+
+  .assistant-action.mode-simple .assistant-simple-indication {
+    max-width: min(645px, calc(100vw - 34px));
+    padding: 8px 14px;
+    font-size: 1.23rem;
+  }
+
   .assistant-action.mode-simple .assistant-boutons button {
     min-height: 34px;
     padding: 5px 14px;
@@ -2464,6 +2484,12 @@
      derriere le panneau. */
   .carte-apercu.au-dessus-de-la-fin {
     z-index: 605;
+  }
+
+  /* Survol d'un nom de carte dans le volet du journal (620) : l'apercu passe
+     devant, sinon le volet plein ecran du telephone le cacherait. */
+  .carte-apercu.depuis-le-journal {
+    z-index: 630;
   }
 
   /* Les deux largeurs de carte de l'apercu vivent ICI, sur le conteneur, et non
@@ -6410,6 +6436,37 @@
   .journal-heros-entree.type-card { --jh-teinte: #4aa8ff; }
   .journal-heros-entree.type-phase { --jh-teinte: rgba(255, 255, 255, 0.4); }
 
+  /* Barre de round et bandeaux de phase, comme le journal de la console
+     (06/10/2026). Le liseré de phase est HORS de la barre de type, a gauche. */
+  .journal-heros-liste .jh-round-barre {
+    margin-top: 6px;
+    padding: 2px 8px;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #1e1e1e;
+    background: var(--menace, #f0b95f);
+    border-radius: 4px;
+  }
+
+  .journal-heros-liste .jh-phase {
+    margin: 2px 0 0 4px;
+    padding-left: 6px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--jc-phase);
+    border-left: 3px solid var(--jc-phase);
+  }
+
+  .journal-heros-entree.phase-joueurs,
+  .journal-heros-entree.phase-mechant {
+    margin-left: 4px;
+    box-shadow: -4px 0 0 var(--jc-phase);
+  }
+
   .journal-heros-entree .jh-round {
     flex: none;
     font-weight: 800;
@@ -7143,7 +7200,10 @@
   }
   .menu-triche-deplacer-ligne { display: flex; align-items: center; gap: 4px }
   .menu-triche-deplacer-ligne button:first-child { flex: 1 }
-  .menu-triche-sous {
+  /* `.menu-triche-liste button.` devant : sans lui, `.menu-triche-liste button
+     { width: 100% }`, plus specifique, l'emportait et le bouton ecrasait le nom
+     de la pile sur trois lignes (constat du 06/10/2026). */
+  .menu-triche-liste button.menu-triche-sous {
     flex: none;
     width: auto;
     font-size: 11px;

@@ -58,7 +58,7 @@ const monde = {
   area_schemes_main: [],
 } as unknown as World
 
-function proprietairesTerrainSoutien(playerId: number, viewerId?: number): number[] {
+function proprietairesTerrainSoutien(playerId: number, viewerId?: number): (number | undefined)[] {
   const plateau = construirePlateau(monde, { playerId, viewerId, catalogue: catalogueVide })
   const emplacement = plateau.emplacements.find((e) => e.cle === 'terrain-soutien')
   return emplacement?.proprietaires ?? []

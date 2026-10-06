@@ -5,6 +5,10 @@
 > `superpowers:executing-plans` pour dérouler ce plan tâche par tâche. Les
 > étapes sont en cases à cocher (`- [ ]`).
 
+> **06/10/2026 :** exécuté et déployé (`file-d-attente:744-751` et `:859-861`, dans
+> `.planning/todos/2026-09-19-file-d-attente-et-deploiement.md`). Les cases
+> n'ont pas été cochées. Suite : `2026-10-06-mode-manuel-comme-octgn.md`.
+
 **But :** rendre le mode manuel jouable à la souris et au clavier. Le plateau
 se tait, le menu de triche devient le menu normal, et la table se manipule
 comme sur Tabletop Simulator.
@@ -874,7 +878,9 @@ export const PILE_PAR_ZONE: Record<string, string> = {
   'victoire': 'VictoryDisplay',
   'retirees': 'RemovedArea',
   'terrain-combat': 'EngagedEnemiesArea',
-  'terrain-soutien': 'SupportsArea',
+  'terrain-soutien': 'SupportsArea',  // 06/10/2026 : ces deux lignes ont été retirées
+  // par la tâche 5 (`.superpowers/sdd/.../task-5-report.md:165-180`, hors git),
+  // sans décision de l'utilisateur. Repris par le plan du 06/10, lot 2.
   'complots-secondaires': 'SideSchemesArea',
   'complot-principal': 'MainSchemesArea',
 }

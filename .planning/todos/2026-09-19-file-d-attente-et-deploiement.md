@@ -743,6 +743,9 @@ Par chantier, pas par commit (la liste complète est dans `git log`) :
   moteur ET plateau, spectateur fermé aux routes POST et aux gestes de pause,
   section « gestes manuels » du rapport de bug avec sa propre alerte
   d'incomplétude.
+  *06/10/2026 : « vers n'importe quelle pile » est inexact, le glisser vise les piles du plateau
+  sauf le terrain, les alliés, les soutiens et la zone du vilain : une carte de la main ne se
+  pose pas sur la table (`.planning/todos/2026-10-06-mode-manuel-comme-octgn.md`).*
 - **SP//dr, paiement incomplet (`ab0b6e7e`)** : le défaut était dans le moteur
   (`EffectChecker.check_pay`), pas la carte — 107 cartes concernées, corrigé
   pour toutes.
@@ -867,6 +870,8 @@ constaté). Section gardée pour mémoire du piège, plus d'action requise.
   tard »). La fiche dit les deux moitiés déployées le 22/09, mais l'utilisateur
   le tient pour inachevé : le reste à finir n'est pas encore détaillé, à lui
   faire préciser avant de cadrer.
+  *06/10/2026 : détaillé et planifié (rien codé) dans
+  `.planning/todos/2026-10-06-mode-manuel-comme-octgn.md`.*
 - **Disposition de la table modifiable par le joueur** (demande de
   l'utilisateur, 01/10/2026, idée seulement, rien de cadré). Un système « Lego »
   de blocs déplaçables : par exemple mettre le paquet du méchant à un autre
@@ -1642,7 +1647,7 @@ resté affiché pendant tout le tour du méchant en mode « Sur la table » (dé
 
 ## ✅ DÉPLOIEMENT du 05/10/2026 (après-midi) : table par briques + bulles de stats d'arts alternatifs
 
-Sur « si personne n'est en ligne, vas-y » : 3 connexions HTTPS, toutes de l'IP de l'utilisateur (109.136.116.9), aucun autre joueur. `bash ui-app/deployer.sh` puis `deployer.ps1 -Code` (lancé deux fois par erreur, sans effet). Bundle `board-BKJCJCLU.js` et `board-CMjWbA_A.css` : md5 identiques en prod (ef7f3881…, abb2937c…), service actif, site en 200. Contenu : table par briques (étapes 1 à 4 de `2026-10-05-table-par-briques-decisions.md`, validation serveur incluse), bulles de stats d'après l'art affiché (e0955eb8), `palettes-heros-corrections.json`, `prepare.html`. NON COMMITÉ : le travail de la table par briques n'est pas encore dans git.
+Sur « si personne n'est en ligne, vas-y » : 3 connexions HTTPS, toutes de l'IP de l'utilisateur (109.136.116.9), aucun autre joueur. `bash ui-app/deployer.sh` puis `deployer.ps1 -Code` (lancé deux fois par erreur, sans effet). Bundle `board-BKJCJCLU.js` et `board-CMjWbA_A.css` : md5 identiques en prod (ef7f3881…, abb2937c…), service actif, site en 200. Contenu : table par briques (étapes 1 à 4 de `2026-10-05-table-par-briques-decisions.md`, validation serveur incluse), bulles de stats d'après l'art affiché (e0955eb8), `palettes-heros-corrections.json`, `prepare.html`. NON COMMITÉ : le travail de la table par briques n'est pas encore dans git. *06/10/2026 : commité depuis dans `3a6afcf0`.*
 Non vérifié : mode manuel (`data-zone`, `data-pile`) sur une table éclatée dans une vraie partie.
 
 ## ✅ DÉPLOIEMENT du 05/10/2026 : mode Auto / Manuel façon OCTGN, table par briques, phase du méchant
@@ -1672,6 +1677,7 @@ Reste : mode manuel à regarder sur une table éclatée en vraie partie ; `passe
 Sur « déploie » de l'utilisateur. Connexions vérifiées avant l'envoi (3 sockets, une seule adresse : celle de l'utilisateur). `bash ui-app/deployer.sh` puis `deployer.ps1 -Code` : bundle `board-JHqzwFZq.js` (md5 20ba55f9691d) identique sur le serveur, service actif, site en 200. Contenu : commits 07166caf, a9496d2d (moteur : `Puzzle.Token` négatif retire vraiment un jeton) et 5b88d9a2 (touches F7, Ctrl+F, F3/F4/F5, Alt+S/C/T et Ctrl+Alt pour retirer, flèches par type de carte, Suppr, Ctrl+Q, F12, double-clic OCTGN, menu de table au hasard, remélange de défausse dans le deck, aide réécrite). Les touches maison F/Q/R et les chiffres sur une carte sont retirés.
 Non porté d'OCTGN : Ctrl+U et Ctrl+F sur une pile, défausse au hasard, mulligan, Ctrl+A, Ctrl+H, chargement du méchant, sauvegarde de table. F12 ne remélange pas la défausse et ne défausse pas l'excédent de main.
 Non vérifié : aucun test en navigateur réel de ces gestes (tests unitaires et câblage verts seulement) ; mode manuel sur une table éclatée en vraie partie. Le rapport du fork de recherche OCTGN générale (vue, zoom, tchat) n'a jamais été écrit.
+*06/10/2026 : la source à jour est le plugin Ouroboros009 0.0.3.97. Non porté en plus : F1, Maj+F1, Ctrl+I, Ctrl+Maj+U, F9, échange avec le dessus du deck, PgUp/PgDn, ciblage, sélection multiple, et surtout poser une carte sur la table. Guide OCTGN et écarts : `docs/superpowers/specs/2026-10-06-mode-manuel-comme-octgn-design.md`.*
 
 ## ✅ DÉPLOIEMENT du 06/10/2026 : la question « combien de fois » nomme la carte, le choix et le reste
 

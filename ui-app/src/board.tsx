@@ -27,11 +27,14 @@ import '../styles/affichage-sobre.css'
 import '../styles/teinte.css'
 import { ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
+import { CartesDuJournal, type AccesCartesJournal } from './board/NomsDeCartes'
 import { estModeManuel, leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
 import { InterrupteurFacon } from './board/manuel/InterrupteurFacon'
-import { VoletAideManuel } from './board/manuel/VoletAideManuel'
+import { aideSOuvreSeule, VoletAideManuel } from './board/manuel/VoletAideManuel'
 import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
+import { carteDeLaTrame, contexteDePose, estCacheePourLeJoueur, origineDe } from './board/manuel/poser-en-jeu'
+import { peutBouger, proprietaireDe, siegesControles } from './board/manuel/proprietaire'
 // ⚠ IMPORT NOMME, PAS `import * as triche` : `PagePartie` a deja un
 // identifiant local `triche` (`useTriche(...)`, le bac a sable) -- un import
 // namespace du meme nom serait ombrage silencieusement par lui a l'usage.
@@ -2064,6 +2067,14 @@ export function PagePartie({
     },
     [cartesMondeParId, joueurActif, catalogue]
   )
+  const cartesDuPlateau = useMemo<AccesCartesJournal>(
+    () => ({ existe: (id) => cartesMondeParId.has(id), voir: carteScene, classe: 'au-dessus-du-deroule' }),
+    [cartesMondeParId, carteScene]
+  )
+  const cartesDuVolet = useMemo<AccesCartesJournal>(
+    () => ({ ...cartesDuPlateau, classe: 'depuis-le-journal', borneDroite: ['.volet-journal'] }),
+    [cartesDuPlateau]
+  )
   const dosRencontre = useMemo<ScanCardProps>(
     () => ({
       id: 'dos-rencontre',
@@ -2102,9 +2113,12 @@ export function PagePartie({
     for (const id of pulseTemporaire) ids.add(id)
     return ids
   }, [ciblesPulseesSurvol, ciblesPulseesPhaseEnnemie, pulseTemporaire])
+  // En manuel, la question garée du moteur ne doit plus être atteignable par
+  // la table : une carte surlignée cliquée y répondrait (lot 1, 06/10/2026).
+  const moteurMuet = leMoteurSeTait(etat.monde)
   const interactifsAvecPulse = useMemo(
-    () => ajouterPulse(interaction.cartes, ciblesPulsees),
-    [interaction.cartes, ciblesPulsees]
+    () => (moteurMuet ? new Map<number, EtatInteractif>() : ajouterPulse(interaction.cartes, ciblesPulsees)),
+    [moteurMuet, interaction.cartes, ciblesPulsees]
   )
 
   /**
@@ -2697,8 +2711,28 @@ export function PagePartie({
     // parfois vraies par accident. Le glisser manuel ne dépend que du
     // plateau, comme le clic droit et le clavier du même mode.
     if (manuel) {
-      if (!plateau) return undefined
-      return reglagesGlisserManuel(triche.couche.emettreGeste, () => triche.estToucheEnfoncee('Shift'))
+      // Un spectateur ne soulève rien : le serveur refuserait le geste (403).
+      if (!plateau || spectateur) return undefined
+      // Lot 2 du 06/10/2026 : la carte se pose chez le héros affiché, selon
+      // son type (`poser-en-jeu.ts`). `joueurActif` est un rang dans
+      // `world.players`, donc un SIÈGE (`to_descriptor.py`).
+      const monde = etat.monde
+      return reglagesGlisserManuel(triche.couche.emettreGeste, () => triche.estToucheEnfoncee('Shift'), {
+        carte: (id) => {
+          const carte = carteDeLaTrame(monde, id)
+          return carte
+            ? { type: carte.card_type, nom: nomPorteurFr(id) ?? carte.name, faceCachee: estCacheePourLeJoueur(monde, id) }
+            : undefined
+        },
+        origine: (id) => origineDe(monde, id),
+        // Lot 5 (question 6) : chez le héros du groupe visé, sinon l'affiché.
+        contexte: (siege) => contexteDePose(monde, siege ?? joueurActif),
+        proprietaire: (id) => proprietaireDe(monde, id),
+        // Question 14 : en ligne, chacun ne bouge que ses cartes (Rencontre à tous).
+        peutBouger: (id) => peutBouger(monde, id, siegesControles(monde, playerId, estMultijoueur())),
+        dejaEngage: (id) => (monde?.players?.[joueurActif]?.engaged_enemies ?? []).some((c) => Number(c.id) === id),
+        choisirCible: triche.couche.choisirCible,
+      })
     }
     if (!etat.aNous || !etat.connecte || interaction.option !== undefined || !plateau) {
       return undefined
@@ -2835,6 +2869,7 @@ export function PagePartie({
     }
   }, [
     manuel,
+    spectateur,
     triche.couche.emettreGeste,
     triche.estToucheEnfoncee,
     etat.aNous,
@@ -2846,6 +2881,9 @@ export function PagePartie({
     cartesMondeParId,
     nomPorteurFr,
     choisirOptionDepuisMenu,
+    etat.monde,
+    joueurActif,
+    triche.couche.choisirCible,
   ])
 
   const basculerTextesCdb = useCallback(() => {
@@ -3253,13 +3291,14 @@ export function PagePartie({
   const [partieOuverte, setPartieOuverte] = useState(false)
   const ouvrirVolet = useCallback(() => setPartieOuverte(true), [])
   const fermerVolet = useCallback(() => setPartieOuverte(false), [])
-  // L'aide du mode manuel s'ouvre toute seule a chaque passage en manuel ;
+  // L'aide du mode manuel s'ouvre toute seule a chaque passage en manuel, SUR
+  // PC seulement (tablette et telephone : elle couvrait la main, 06/10/2026) ;
   // la main la ferme, et la languette la rouvre tant qu'on est en manuel.
   const [aideManuelOuverte, setAideManuelOuverte] = useState(false)
   const ouvrirAideManuel = useCallback(() => setAideManuelOuverte(true), [])
   const fermerAideManuel = useCallback(() => setAideManuelOuverte(false), [])
   useEffect(() => {
-    setAideManuelOuverte(manuel)
+    setAideManuelOuverte(manuel && aideSOuvreSeule())
   }, [manuel])
   // « REVOIR LA PHASE DU MÉCHANT » EN SCENE PC (D38) : le journal rouvre le
   // cartouche du bas en relecture. Elle se referme d'elle-meme quand la phase
@@ -3442,6 +3481,7 @@ export function PagePartie({
   // Même mécanique pour B : l'écoute est installée une fois, sa cible change à
   // chaque monde reçu. Sans le ref, l'effet se réinstallerait à chaque rendu.
   const rapportClavier = useRef<() => void>(() => {})
+  const annulerClavier = useRef<() => void>(() => {})
   useEffect(() => {
     const surTouche = (evenement: KeyboardEvent) => {
       if (evenement.ctrlKey || evenement.metaKey || evenement.altKey) return
@@ -3457,7 +3497,7 @@ export function PagePartie({
         evenement.preventDefault()
         finTourClavierEspace.current()
       } else if (touche === 'u') {
-        fetch('/debug?/undo auto').catch(() => undefined)
+        annulerClavier.current()
       } else if (touche === 'b') {
         // « B » comme bug : copie les 20 dernières entrées SANS ouvrir le
         // panneau, parce que le symptôme peut disparaître au rendu suivant.
@@ -3475,11 +3515,19 @@ export function PagePartie({
 
   useHaloStatut(etat.monde, animations)
 
+  const annulerGesteManuel = triche.annulerDernierGeste
   const annulerCoup = useCallback(() => {
+    // En manuel, on défait le dernier GESTE, comme Ctrl+Z (lot 1, 06/10/2026) :
+    // « /undo auto » rejouerait la partie jusqu'au dernier coup du moteur.
+    if (manuel) {
+      annulerGesteManuel()
+      return
+    }
     // « /undo auto » remonte au dernier point de decision, comme le bouton Undo
     // du client d'origine. L'espace est encode par fetch, le '/' est conserve.
     fetch('/debug?/undo auto').catch(() => undefined)
-  }, [])
+  }, [manuel, annulerGesteManuel])
+  annulerClavier.current = annulerCoup
 
   // Sortir du plein ecran AVANT de naviguer (spec mobile §6.3) : sinon
   // l'assistant s'ouvre encore en plein ecran, sans barre d'adresse.
@@ -3740,7 +3788,8 @@ export function PagePartie({
     !demandeDoitApparaitreAuCentre(etat.demande) &&
     !interaction.option &&
     !carteMenu
-  const afficherFinTourSimple = modeActions === 'simple' && finDeTourDisponible
+  // Absent en manuel : il répondrait à la question garée du moteur (lot 1).
+  const afficherFinTourSimple = modeActions === 'simple' && finDeTourDisponible && !manuel
   // Le troisieme segment du bandeau, « qui agit ». Calcule inconditionnellement :
   // le portrait (RenduPartie) en a besoin meme quand la barre PC (design essai)
   // ne l'affiche pas encore ailleurs.
@@ -3764,7 +3813,7 @@ export function PagePartie({
   const RenduPartie = modePlateau === 'mobile' ? PlateauMobile : Board
 
   return (
-    <>
+    <CartesDuJournal.Provider value={cartesDuPlateau}>
       {/* ⚠ LA BARRE DU SPECTATEUR PASSE AVANT TOUT LE RESTE. Un plateau sans
           boutons ressemble a un plateau CASSE : elle dit, en permanence, qu'on
           regarde. Voir BarreSpectateur.tsx. */}
@@ -4661,6 +4710,7 @@ export function PagePartie({
         <VoletAideManuel ouvert={aideManuelOuverte} ouvrir={ouvrirAideManuel} fermer={fermerAideManuel} />
       ) : null}
       <VoletJournal ouvert={partieOuverte} ouvrir={ouvrirVolet} fermer={fermerVolet}>
+        <CartesDuJournal.Provider value={cartesDuVolet}>
         <MessageRapport message={rapport.message} />
         <JournalConsole
           entrees={historique.entrees}
@@ -4693,6 +4743,7 @@ export function PagePartie({
             />
           }
         />
+        </CartesDuJournal.Provider>
       </VoletJournal>
       <BandeauConnexion
         etat={etat}
@@ -4792,7 +4843,7 @@ export function PagePartie({
           onDeconnexion={retourMenuPrincipal}
         />
       ) : null}
-    </>
+    </CartesDuJournal.Provider>
   )
 }
 

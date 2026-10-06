@@ -22,6 +22,12 @@ export type CibleTriche = {
   estManigance?: boolean
   /** Un personnage : points de vie, inclinaison, états. */
   estPersonnage?: boolean
+  /**
+   * Le siège visé par une pile de JOUEUR (lot 5 du 06/10/2026) : celui du
+   * propriétaire de la carte. Sans lui, la pile visait le premier joueur du
+   * moment.
+   */
+  siege?: number
 }
 
 /**
@@ -146,6 +152,9 @@ export function libellePile(zone: string): string {
     case 'ObligationsArea': return t('Obligations')
     case 'EnvironmentArea': return t('Environnement')
     case 'ProcessingArea': return t('En cours de résolution')
+    // Lot 2 du 06/10/2026 : un événement posé à la main reste à côté de SON
+    // héros (`player.area_processing`), distinct de la résolution du scénario.
+    case 'PlayerProcessingArea': return t('À côté de ton héros')
     default: return zone
   }
 }
@@ -200,6 +209,14 @@ export type MenuTricheProps = {
    * existants (les tests de ce fichier compris).
    */
   manuel?: boolean
+  /**
+   * Une carte EN MAIN, en mode manuel : « Poser en jeu » la pose selon son
+   * type, le même geste que le glisser sur la table et le double-clic (lot 3
+   * du 06/10/2026). Absent pour toute autre carte.
+   */
+  poserEnJeu?: () => void
+  /** Une carte EN MAIN : « Échanger avec le dessus du deck » (lot 6, `switchCard` d'OCTGN). */
+  echangerAvecLeDessus?: () => void
 }
 
 /** Une entrée du menu. `valeur` ouvre une saisie de nombre avant d'agir. */
@@ -210,7 +227,16 @@ type Entree = {
   danger?: boolean
 }
 
-export function MenuTriche({ cible, x, y, onFermer, emettreGeste, manuel = false }: MenuTricheProps) {
+export function MenuTriche({
+  cible,
+  x,
+  y,
+  onFermer,
+  emettreGeste,
+  manuel = false,
+  poserEnJeu,
+  echangerAvecLeDessus,
+}: MenuTricheProps) {
   const [saisie, setSaisie] = useState<Entree | undefined>(undefined)
   const [nombre, setNombre] = useState(1)
   // Le sous-menu « Déplacer vers » : une liste de piles plutôt qu'une saisie
@@ -306,7 +332,7 @@ export function MenuTriche({ cible, x, y, onFermer, emettreGeste, manuel = false
     const suite = position === 'Bottom' ? ` (${t('Sous la pile')})` : ''
     await emettreGeste(
       `${t('Déplacer vers')} ${libellePile(zone)}${suite} — ${cible.nom}`,
-      () => triche.deplacerVers(cible.id, zone, position)
+      () => triche.deplacerVers(cible.id, zone, position, cible.siege)
     )
     onFermer()
   }
@@ -376,6 +402,32 @@ export function MenuTriche({ cible, x, y, onFermer, emettreGeste, manuel = false
         </div>
       ) : (
         <ul className="menu-triche-liste">
+          {poserEnJeu ? (
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  poserEnJeu()
+                  onFermer()
+                }}
+              >
+                {t('Poser en jeu')}
+              </button>
+            </li>
+          ) : null}
+          {echangerAvecLeDessus ? (
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  echangerAvecLeDessus()
+                  onFermer()
+                }}
+              >
+                {t('Échanger avec le dessus du deck')}
+              </button>
+            </li>
+          ) : null}
           <li>
             <button type="button" onClick={() => setDeplacer(true)}>
               {t('Déplacer vers')}

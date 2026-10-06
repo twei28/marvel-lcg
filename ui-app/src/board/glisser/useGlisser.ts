@@ -20,7 +20,24 @@ import type { PointerEvent as ReactPointerEvent } from 'react'
 export const SEUIL_GLISSER = 6
 
 /** Ce qui se trouve sous le pointeur : une carte, une zone du plateau, rien. */
-export type CibleSurvolee = { carteId?: number; zone?: string; secteur?: string }
+export type CibleSurvolee = {
+  carteId?: number
+  zone?: string
+  secteur?: string
+  /**
+   * Le point est-il DANS le cadre du plateau (`.plateau-cadre`) ? Lot 2 du
+   * 06/10/2026 : en mode manuel, une carte lâchée n'importe où sur la table se
+   * pose selon son type, comme sur OCTGN. Seul le mode manuel le lit : le mode
+   * ordinaire reste intact.
+   */
+  surLaTable?: boolean
+  /**
+   * Le siege du groupe vise (`data-joueur`, lot 5 du 06/10/2026, question 6) :
+   * une carte lachee dans le groupe d'un joueur arrive chez lui. Seul le mode
+   * manuel le lit.
+   */
+  siege?: number
+}
 
 export type EtatGlisser = {
   sourceId: number
@@ -162,6 +179,12 @@ export function useGlisser({ estSource, cibleSous, onDepot }: Reglages) {
  * `pointer-events: none`, donc c'est bien `.scan-card` qui est touchee, a sa
  * taille normale et non a son agrandissement au survol.
  */
+function siegeDuGroupe(sous: HTMLElement): number | undefined {
+  const brut = sous.closest<HTMLElement>('.plateau-groupe')?.dataset.joueur
+  const siege = brut === undefined || brut === '' ? NaN : Number(brut)
+  return Number.isInteger(siege) ? siege : undefined
+}
+
 export function cibleSousLePoint(x: number, y: number): CibleSurvolee {
   const sous = document.elementFromPoint(x, y)
   if (!(sous instanceof HTMLElement)) return {}
@@ -204,5 +227,8 @@ export function cibleSousLePoint(x: number, y: number): CibleSurvolee {
     carteId,
     zone: zone || undefined,
     secteur: secteur || undefined,
+    // Absent plutôt que faux hors du cadre : seul le mode manuel le lit.
+    surLaTable: sous.closest('.plateau-cadre') !== null ? true : undefined,
+    siege: siegeDuGroupe(sous),
   }
 }

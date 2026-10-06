@@ -13,7 +13,7 @@
 // avec un moteur remplace (`MoteurFaux`) : on ne reecrit pas un second
 // montage a cote.
 import { act, render } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { MoteurFaux, etatInitial } from '../moteur-faux'
 import type { EtatMoteur } from '../moteur'
 import type { Demande, Option } from '../ask'
@@ -211,5 +211,122 @@ describe('le bouton Fin du tour disparait en mode manuel', () => {
     const { container } = monter()
     await emettre({ monde: mondeDeTest({ mode_manuel: true, manuel_actif: true }) })
     expect(container.querySelector('.bh-fin-tour')).toBeNull()
+  })
+})
+
+// LOT 1 DU PLAN DU 06/10/2026 (mode manuel joué comme OCTGN). Sur une partie
+// ORDINAIRE basculée en Manuel, le moteur garde sa question ouverte (un tour
+// du joueur, avec « Fin du tour » possible). Le bouton flottant, la touche E et
+// les cartes jouables surlignées faisaient AVANCER ce moteur pendant que la
+// table était censée être muette (captures manuel-75/76 du 06/10).
+function demandeTourDuJoueur(): Demande {
+  return {
+    options: [option({ id: 7, name: 'Play', bind_id: 101 })],
+    refus: [],
+    prompt_text: '',
+    event_name: 'WhenPlayerInTurn',
+    show_cancel: true,
+    ability_type: 'Normal',
+  } as unknown as Demande
+}
+
+describe('une partie basculée en Manuel ne fait plus avancer le moteur', () => {
+  const basculee = () => mondeDeTest({ mode_manuel: false, manuel_actif: true, phase: 'Player Turn' })
+
+  it('témoin : en partie ordinaire, le bouton flottant existe et E répond au moteur', async () => {
+    const { container } = monter()
+    await emettre({ monde: mondeDeTest({ phase: 'Player Turn' }), demande: demandeTourDuJoueur(), aNous: true })
+    expect(container.querySelector('.bouton-fin-tour')).not.toBeNull()
+    expect(container.querySelector('[data-card-id="101"]:not(.state-ready)')).not.toBeNull()
+    await act(async () => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'e' }))
+    })
+    expect(MoteurFaux.derniere?.reponses).toHaveLength(1)
+  })
+
+  it('pas de bouton flottant « Fin du tour »', async () => {
+    const { container } = monter()
+    await emettre({ monde: basculee(), demande: demandeTourDuJoueur(), aNous: true })
+    expect(container.querySelector('.bouton-fin-tour')).toBeNull()
+  })
+
+  it('la touche E ne répond pas au moteur', async () => {
+    monter()
+    await emettre({ monde: basculee(), demande: demandeTourDuJoueur(), aNous: true })
+    await act(async () => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'e' }))
+    })
+    expect(MoteurFaux.derniere?.reponses).toHaveLength(0)
+  })
+
+  it('aucune carte n est surlignée comme jouable', async () => {
+    const { container } = monter()
+    await emettre({ monde: basculee(), demande: demandeTourDuJoueur(), aNous: true })
+    expect(container.querySelector('[data-card-id="101"]:not(.state-ready)')).toBeNull()
+  })
+})
+
+// LOT 1 : en manuel, « ↶ Annuler » et U défont le dernier GESTE (comme Ctrl+Z,
+// `/manuel_undo`), pas un coup du moteur (`/debug?/undo auto`), qui rejouait
+// la partie jusqu'au dernier point de décision du moteur.
+describe('en manuel, Annuler et U défont le dernier geste', () => {
+  const appels = () => vi.mocked(fetch).mock.calls.map(([url]) => String(url))
+
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('{}')))
+  })
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('témoin : en partie ordinaire, Annuler remonte au dernier coup du moteur', async () => {
+    const { container } = monter()
+    await emettre({ monde: mondeDeTest({}) })
+    await act(async () => {
+      container.querySelector<HTMLButtonElement>('.bh-undo')?.click()
+    })
+    expect(appels()).toContain('/debug?/undo auto')
+    expect(appels()).not.toContain('/manuel_undo')
+  })
+
+  it('le bouton Annuler appelle /manuel_undo', async () => {
+    const { container } = monter()
+    await emettre({ monde: mondeDeTest({ mode_manuel: true, manuel_actif: true }) })
+    await act(async () => {
+      container.querySelector<HTMLButtonElement>('.bh-undo')?.click()
+    })
+    expect(appels()).toContain('/manuel_undo')
+    expect(appels()).not.toContain('/debug?/undo auto')
+  })
+
+  it('la touche U appelle /manuel_undo', async () => {
+    monter()
+    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: true }) })
+    await act(async () => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'u' }))
+    })
+    expect(appels()).toContain('/manuel_undo')
+    expect(appels()).not.toContain('/debug?/undo auto')
+  })
+})
+
+// LOT 1 : un spectateur ne soulève aucune carte en manuel. Le serveur lui
+// refuserait le geste (403) : l'écran ne doit pas le promettre. Le plateau
+// publie si le geste est offert (`data-glisser`, Board.tsx).
+describe('un spectateur ne lance pas le glisser manuel', () => {
+  const adresse = (recherche: string) => window.history.replaceState({}, '', `/app/board.html${recherche}`)
+  afterEach(() => adresse(''))
+
+  async function glisserOffert(recherche: string) {
+    adresse(recherche)
+    const { container } = monter()
+    await emettre({ monde: mondeDeTest({ mode_manuel: false, manuel_actif: true }) })
+    return container.querySelector('.plateau-cadre')?.getAttribute('data-glisser')
+  }
+
+  it('témoin : un joueur assis se voit offrir le glisser', async () => {
+    expect(await glisserOffert('?p=0')).toBe('offert')
+  })
+
+  it('un spectateur, non', async () => {
+    expect(await glisserOffert('?p=0&spectateur=1')).toBe('absent')
   })
 })

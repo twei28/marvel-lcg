@@ -95,19 +95,55 @@ export const remettreDansLeDeck = (id: number) => envoyer([`Puzzle.PutIntoDeck($
 // pile, sans aucune vérification de règle. Les noms de pile sont ceux de
 // `DeckType` côté moteur (`Puzzle.MoveTo`, `Puzzle.Shuffle`).
 
-/** Envoie une carte dans n'importe quelle pile, sans aucune vérification. */
+/**
+ * Envoie une carte dans n'importe quelle pile, sans aucune vérification.
+ *
+ * `siege` (lot 2 du 06/10/2026) : le rang du joueur dans `world.players`, qui
+ * est l'ordre des SIÈGES (`to_descriptor.py`). Sans lui, une pile de joueur
+ * vise le premier joueur du moment, un ordre qui tourne à chaque round.
+ */
 export const deplacerVers = (
   id: number,
   zone: string,
-  position: 'Top' | 'Bottom' = 'Top'
-) => envoyer([`Puzzle.MoveTo(${id}, ${texte(zone)}, ${texte(position)})`])
+  position: 'Top' | 'Bottom' = 'Top',
+  siege?: number,
+  /** Lot 6 du 06/10/2026 : la carte arrive face cachée, en une seule commande. */
+  faceCachee = false
+) =>
+  envoyer([
+    `Puzzle.MoveTo(${id}, ${texte(zone)}, ${texte(position)}${siege === undefined ? '' : `, siege=${siege}`}${faceCachee ? ', face_cachee=True' : ''})`,
+  ])
 
-/** Remet toute une défausse dans son deck, puis mélange le deck (OCTGN : « Shuffle discard into deck »). */
-export const remelangerDansLeDeck = (ids: number[], zoneDeck: string) =>
-  envoyer([...ids.map((id) => `Puzzle.MoveTo(${id}, ${texte(zoneDeck)}, 'Top')`), `Puzzle.Shuffle(${texte(zoneDeck)})`])
+const avecSiege = (siege?: number) => (siege === undefined ? '' : `, siege=${siege}`)
 
-/** Mélange une pile. */
-export const melanger = (zone: string) => envoyer([`Puzzle.Shuffle(${texte(zone)})`])
+/**
+ * Remet toute une défausse dans son deck, puis mélange le deck (OCTGN :
+ * « Shuffle discard into deck »). UNE commande moteur (lot 6 du 06/10/2026) :
+ * un seul Ctrl+Z la défait entière.
+ */
+export const remelangerDefausse = (zoneDefausse: string, siege?: number) =>
+  envoyer([`Puzzle.ShuffleDiscardIntoDeck(${texte(zoneDefausse)}${avecSiege(siege)})`])
+
+/** F12 d'OCTGN : piocher jusqu'à la taille de main, deck vide remélangé, en UNE commande (lot 6). */
+export const piocherJusquALaMain = (siege?: number) =>
+  envoyer([`Puzzle.DrawUpToHandSize(${siege === undefined ? '' : `siege=${siege}`})`])
+
+/** Défausser plusieurs cartes en UNE commande (l'excédent de main, lot 6). */
+export const defausserPlusieurs = (ids: number[]) => envoyer([`Puzzle.Discard(${ids.join(', ')})`])
+
+/** Second F12 d'OCTGN : premier joueur suivant, round suivant (lot 6). */
+export const finDeRound = () => envoyer(['Puzzle.EndRound()'])
+
+/** « Switch Card with top Deck Card » d'OCTGN : UNE commande (lot 6 du 06/10/2026). */
+export const echangerAvecLeDessusDuDeck = (id: number, siege?: number) =>
+  envoyer([`Puzzle.SwapWithDeckTop(${id}${avecSiege(siege)})`])
+
+/** « Mulligan Hand » d'OCTGN : défausse ces cartes et en repioche autant, en UNE commande (lot 6). */
+export const mulligan = (ids: number[], siege?: number) =>
+  envoyer([`Puzzle.Mulligan(${ids.join(', ')}${avecSiege(siege)})`])
+
+/** Mélange une pile ; celle d'un joueur se vise par son siège (lot 5). */
+export const melanger = (zone: string, siege?: number) => envoyer([`Puzzle.Shuffle(${texte(zone)}${avecSiege(siege)})`])
 
 /** Pose une amélioration ou un soutien sur une carte précise. */
 export const attacher = (id: number, cible: number) =>

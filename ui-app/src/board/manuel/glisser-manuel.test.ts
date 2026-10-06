@@ -20,7 +20,42 @@ import { CLE_PILE_ENGAGES } from '../zones'
 import { construirePlateau } from '../zones'
 import { catalogueVide } from '../catalogue'
 import { mondeDeTest } from './fixture-monde'
-import { PILE_PAR_ZONE, reglagesGlisserManuel } from './glisser-manuel'
+import { PILE_PAR_ZONE, reglagesGlisserManuel, type ContexteGlisserManuel } from './glisser-manuel'
+import type { CibleAmelioration, Origine } from './poser-en-jeu'
+
+/** Un contexte de trame minimal : type et origine de chaque carte, cibles d'amélioration. */
+function monde(
+  types: Record<number, string>,
+  options: {
+    origines?: Record<number, Origine>
+    cibles?: CibleAmelioration[]
+    engages?: number[]
+    choisirCible?: ContexteGlisserManuel['choisirCible']
+    cachees?: number[]
+    proprietaires?: Record<number, number>
+    interdites?: number[]
+  } = {}
+): ContexteGlisserManuel {
+  const cibles = options.cibles ?? [{ id: 1, nom: 'Spider-Man' }]
+  return {
+    carte: (id) =>
+      types[id] !== undefined
+        ? { type: types[id], nom: `Carte ${id}`, faceCachee: (options.cachees ?? []).includes(id) }
+        : undefined,
+    origine: (id) => options.origines?.[id] ?? 'main',
+    contexte: (siege) => ({ siege: siege ?? 0, identite: cibles[0], ciblesAmelioration: cibles }),
+    proprietaire: (id) => options.proprietaires?.[id],
+    peutBouger: (id) => !(options.interdites ?? []).includes(id),
+    dejaEngage: (id) => (options.engages ?? []).includes(id),
+    choisirCible: options.choisirCible ?? (() => undefined),
+  }
+}
+
+async function commandeEnvoyee(emettreGeste: ReturnType<typeof emettreGesteDeTest>) {
+  const [, deposer] = emettreGeste.mock.calls[0] as [string, () => Promise<boolean>]
+  await deposer()
+  return JSON.parse((vi.mocked(fetch).mock.calls[0][1] as RequestInit).body as string).commands as string[]
+}
 
 /** Simule `emettreGeste` : invoque tout de suite le dépôt, comme le fait la
  *  vraie fonction (voir `CoucheTriche.tsx`), pour que les tests puissent
@@ -40,6 +75,10 @@ describe('le glisser du mode manuel', () => {
     const reglages = reglagesGlisserManuel(emettreGesteDeTest())
     expect(reglages.estSource(1)).toBe(true)
     expect(reglages.estSource(999)).toBe(true)
+  })
+
+  it('se glisse aussi au doigt (lot 4, question 11)', () => {
+    expect(reglagesGlisserManuel(emettreGesteDeTest()).auDoigt).toBe(true)
   })
 
   it('n’allume aucune cible : tout est permis, rien n’est suggéré', () => {
@@ -131,10 +170,10 @@ describe('le glisser du mode manuel', () => {
     )
   })
 
-  it('refuse poliment un lâcher dans le vide, sans jamais interroger le moteur', () => {
+  it('refuse poliment un lâcher hors de la table, sans jamais interroger le moteur', () => {
     const emettreGeste = emettreGesteDeTest()
     const reglages = reglagesGlisserManuel(emettreGeste)
-    expect(reglages.onDepot(42, {})).toBe(t('Lâche la carte sur une pile'))
+    expect(reglages.onDepot(42, {})).toBe(t('Lâche la carte sur la table ou sur une pile'))
     expect(emettreGeste).not.toHaveBeenCalled()
   })
 
@@ -154,9 +193,11 @@ describe('le glisser du mode manuel', () => {
 
   // --- Les deux gestes que le brief oubliait -------------------------------
 
-  it('lâcher une carte sur une autre carte attache', async () => {
+  // Question 2 du 06/10/2026 : seule une amélioration (ou un attachement)
+  // s'attache ; une autre carte se pose selon son type (voir plus bas).
+  it('lâcher une amélioration sur une autre carte l’attache', async () => {
     const emettreGeste = emettreGesteDeTest()
-    const reglages = reglagesGlisserManuel(emettreGeste)
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Upgrade' }))
     expect(reglages.onDepot(42, { zone: 'terrain-combat', carteId: 99 })).toBeUndefined()
     const [, deposer] = emettreGeste.mock.calls[0] as [string, () => Promise<boolean>]
     await deposer()
@@ -180,7 +221,7 @@ describe('le glisser du mode manuel', () => {
     const emettreGeste = emettreGesteDeTest()
     const reglages = reglagesGlisserManuel(emettreGeste)
     expect(reglages.onDepot(42, { zone: 'annexes', carteId: 501 })).toBe(
-      t('Lâche la carte sur une pile')
+      t('Lâche la carte sur la table ou sur une pile')
     )
     expect(emettreGeste).not.toHaveBeenCalled()
   })
@@ -191,7 +232,7 @@ describe('le glisser du mode manuel', () => {
   it('refuse poliment l’attache quand la zone de la carte visée est inconnue', () => {
     const emettreGeste = emettreGesteDeTest()
     const reglages = reglagesGlisserManuel(emettreGeste)
-    expect(reglages.onDepot(42, { carteId: 501 })).toBe(t('Lâche la carte sur une pile'))
+    expect(reglages.onDepot(42, { carteId: 501 })).toBe(t('Lâche la carte sur la table ou sur une pile'))
     expect(emettreGeste).not.toHaveBeenCalled()
   })
 
@@ -216,10 +257,12 @@ describe('le glisser du mode manuel', () => {
   it('ne s’attache pas à elle-même', () => {
     const emettreGeste = emettreGesteDeTest()
     const reglages = reglagesGlisserManuel(emettreGeste)
-    expect(reglages.onDepot(42, { carteId: 42 })).toBe(t('Lâche la carte sur une pile'))
+    expect(reglages.onDepot(42, { carteId: 42 })).toBe(t('Lâche la carte sur la table ou sur une pile'))
     expect(emettreGeste).not.toHaveBeenCalled()
   })
 
+  // Lot 2 : `MoveTo` vers les engagés du siège, et non plus `Engage`, qui
+  // BASCULE (un sbire déjà engagé se désengageait).
   it('lâcher un sbire sur le secteur des ennemis engagés l’engage', async () => {
     const emettreGeste = emettreGesteDeTest()
     const reglages = reglagesGlisserManuel(emettreGeste)
@@ -231,7 +274,7 @@ describe('le glisser du mode manuel', () => {
     expect(fetch).toHaveBeenCalledWith(
       '/sandbox_command',
       expect.objectContaining({
-        body: JSON.stringify({ commands: ['Puzzle.Engage(42)'] }),
+        body: JSON.stringify({ commands: ["Puzzle.MoveTo(42, 'EngagedEnemiesArea', 'Top', siege=0)"] }),
       })
     )
   })
@@ -249,7 +292,7 @@ describe('le glisser du mode manuel', () => {
     expect(fetch).toHaveBeenCalledWith(
       '/sandbox_command',
       expect.objectContaining({
-        body: JSON.stringify({ commands: ['Puzzle.Engage(42)'] }),
+        body: JSON.stringify({ commands: ["Puzzle.MoveTo(42, 'EngagedEnemiesArea', 'Top', siege=0)"] }),
       })
     )
   })
@@ -280,5 +323,253 @@ describe('toute pile atteignable au glisser reste atteignable au clic droit', ()
   it('le témoin n’est pas vide : la propriété teste vraiment quelque chose', () => {
     expect(Object.keys(PILE_PAR_ZONE).length).toBeGreaterThan(0)
     expect(ZONES_MANUELLES.length).toBeGreaterThan(0)
+  })
+})
+
+
+// --- Lot 2 du 06/10/2026 : poser une carte de la main, comme sur OCTGN ------
+describe('poser une carte sur la table en mode manuel', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
+  })
+
+  it.each([
+    [{ zone: 'terrain-soutien', surLaTable: true }],
+    [{ zone: 'terrain-combat', surLaTable: true }],
+    [{ surLaTable: true }],
+  ])('un allié lâché sur la table va dans les Alliés du siège (%o)', async (cible) => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Ally' }))
+    expect(reglages.onDepot(42, cible)).toBeUndefined()
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(["Puzzle.MoveTo(42, 'AlliesArea', 'Top', siege=0)"])
+  })
+
+  it('un allié lâché sur une carte en jeu se pose aussi selon son type (question 2)', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Ally' }))
+    reglages.onDepot(42, { zone: 'terrain-soutien', carteId: 1, surLaTable: true })
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(["Puzzle.MoveTo(42, 'AlliesArea', 'Top', siege=0)"])
+  })
+
+  it('la pile gagne toujours, même pour une carte qui se poserait', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, () => true, monde({ 42: 'Ally' }))
+    reglages.onDepot(42, { zone: 'joueur-defausse', carteId: 3, surLaTable: true })
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(["Puzzle.MoveTo(42, 'DiscardPile', 'Bottom', siege=0)"])
+  })
+
+  it('un événement lâché sur la manigance principale va à côté du héros, pas dans les manigances', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Event' }))
+    reglages.onDepot(42, { zone: 'complot-principal', carteId: 7, surLaTable: true })
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(["Puzzle.MoveTo(42, 'PlayerProcessingArea', 'Top', siege=0)"])
+  })
+
+  it('une manigance lâchée sur les manigances annexes y va', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(
+      emettreGeste,
+      undefined,
+      monde({ 42: 'EncounterSideScheme' }, { origines: { 42: 'resolution' } })
+    )
+    reglages.onDepot(42, { zone: 'complots-secondaires', surLaTable: true })
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(["Puzzle.MoveTo(42, 'SideSchemesArea', 'Top')"])
+  })
+
+  it('un sbire déjà engagé relâché sur son secteur : rien, jamais un désengagement', () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(
+      emettreGeste,
+      undefined,
+      monde({ 42: 'Minion' }, { origines: { 42: 'jeu' }, engages: [42] })
+    )
+    expect(reglages.onDepot(42, { secteur: CLE_PILE_ENGAGES, surLaTable: true })).toBeUndefined()
+    expect(emettreGeste).not.toHaveBeenCalled()
+    expect(reglages.accepte?.(42, { secteur: CLE_PILE_ENGAGES, surLaTable: true })).toBe(true)
+  })
+
+  it('une carte déjà en jeu relâchée sur la table : rien, aucun geste, pas de refus (question 13)', () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Ally' }, { origines: { 42: 'jeu' } }))
+    expect(reglages.onDepot(42, { zone: 'terrain-combat', surLaTable: true })).toBeUndefined()
+    expect(emettreGeste).not.toHaveBeenCalled()
+    expect(reglages.libelle(42, { zone: 'terrain-combat', surLaTable: true })).toBeUndefined()
+    expect(reglages.accepte?.(42, { zone: 'terrain-combat', surLaTable: true })).toBe(true)
+  })
+
+  it('une ressource lâchée sur la table est refusée en bulle, rien n’est envoyé', () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Resource' }))
+    expect(reglages.onDepot(42, { surLaTable: true })).toBe(
+      t('Une ressource se défausse pour payer : Suppr, ou glisse-la sur ta défausse')
+    )
+    expect(emettreGeste).not.toHaveBeenCalled()
+    expect(reglages.accepte?.(42, { surLaTable: true })).toBe(false)
+  })
+
+  it('une amélioration lâchée sur la table s’attache à l’identité quand elle est la seule cible (question 3)', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Upgrade' }))
+    reglages.onDepot(42, { surLaTable: true })
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(['Puzzle.Attach(42, 1)'])
+  })
+
+  it('une amélioration lâchée sur la table, plusieurs cibles : on ouvre le choix, rien n’est envoyé', () => {
+    const emettreGeste = emettreGesteDeTest()
+    const choisirCible = vi.fn()
+    const cibles = [
+      { id: 1, nom: 'Spider-Man' },
+      { id: 4, nom: 'Black Cat' },
+    ]
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Upgrade' }, { cibles, choisirCible }))
+    expect(reglages.onDepot(42, { surLaTable: true })).toBeUndefined()
+    expect(choisirCible).toHaveBeenCalledWith(42, 'Carte 42', cibles)
+    expect(emettreGeste).not.toHaveBeenCalled()
+  })
+
+  it('l’étiquette nomme la carte et sa destination, sans coût (question 9)', () => {
+    const reglages = reglagesGlisserManuel(emettreGesteDeTest(), undefined, monde({ 42: 'Support' }))
+    const libelle = reglages.libelle(42, { surLaTable: true })
+    expect(libelle).toBe(`${t('Poser en jeu')} : Carte 42 (${t('Soutiens')})`)
+    expect(libelle).not.toMatch(/co[uû]t|cost/i)
+  })
+
+  it('lâcher hors du plateau : refus', () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Ally' }))
+    expect(reglages.onDepot(42, {})).toBe(t('Lâche la carte sur la table ou sur une pile'))
+    expect(emettreGeste).not.toHaveBeenCalled()
+  })
+
+  it('la table entière accueille une carte qui se pose, pas une ressource ni une carte déjà en jeu', () => {
+    const reglages = reglagesGlisserManuel(
+      emettreGesteDeTest(),
+      undefined,
+      monde({ 1: 'Ally', 2: 'Resource', 3: 'Ally' }, { origines: { 3: 'jeu' } })
+    )
+    expect(reglages.accueilleLaTable?.(1)).toBe(true)
+    expect(reglages.accueilleLaTable?.(2)).toBe(false)
+    expect(reglages.accueilleLaTable?.(3)).toBe(false)
+  })
+
+  it('les zones de manigance ne s’allument que pour une manigance', () => {
+    const reglages = reglagesGlisserManuel(emettreGesteDeTest(), undefined, monde({ 1: 'Ally', 2: 'PlayerSideScheme' }))
+    expect(reglages.zonesLegales(1).has('complot-principal')).toBe(false)
+    expect(reglages.zonesLegales(2).has('complots-secondaires')).toBe(true)
+    expect(reglages.zonesLegales(1).has('joueur-defausse')).toBe(true)
+  })
+
+  it('les cartes qui peuvent recevoir l’amélioration s’allument', () => {
+    const cibles = [
+      { id: 1, nom: 'Spider-Man' },
+      { id: 4, nom: 'Black Cat' },
+    ]
+    const reglages = reglagesGlisserManuel(emettreGesteDeTest(), undefined, monde({ 42: 'Upgrade', 43: 'Ally' }, { cibles }))
+    expect([...reglages.ciblesLegales(42)]).toEqual([1, 4])
+    expect(reglages.ciblesLegales(43).size).toBe(0)
+  })
+
+  // ⚠ UNE PROPRIÉTÉ, PAS UN EXEMPLE : l'étiquette ne doit jamais promettre un
+  // geste que le lâcher refuse, ni se taire sur un geste qu'il envoie.
+  it('l’étiquette existe si et seulement si le lâcher envoie un geste', () => {
+    const types: Record<number, string> = { 1: 'Ally', 2: 'Upgrade', 3: 'Resource', 4: 'Event', 5: 'Minion', 6: 'Hero', 7: 'Ally' }
+    const cibles = [{}, { surLaTable: true }, { zone: 'joueur-deck' }, { zone: 'complot-principal', surLaTable: true },
+      { zone: 'terrain-combat', carteId: 99, surLaTable: true }, { secteur: CLE_PILE_ENGAGES, surLaTable: true },
+      { zone: 'annexes', carteId: 501, surLaTable: true }, { carteId: 1 }]
+    for (const id of Object.keys(types).map(Number)) {
+      for (const cible of cibles) {
+        const emettreGeste = emettreGesteDeTest()
+        const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde(types, { origines: { 7: 'jeu' } }))
+        const libelle = reglages.libelle(id, cible)
+        reglages.onDepot(id, cible)
+        expect(libelle !== undefined, `carte ${id} (${types[id]}) sur ${JSON.stringify(cible)}`).toBe(
+          emettreGeste.mock.calls.length > 0
+        )
+      }
+    }
+  })
+
+  // D.8 de la spec : une carte face cachée (le dessus du deck) n'est jamais
+  // nommée, et rien ne trahit son type avant qu'elle soit retournée. Constaté
+  // dans le navigateur le 06/10/2026 : le dessus du deck, une ressource cachée,
+  // était refusé avec « Une ressource se défausse pour payer ».
+  it('une carte face cachée n’est ni nommée ni trahie par son type', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(
+      emettreGeste,
+      undefined,
+      monde({ 30: 'Resource', 31: 'Ally', 32: 'Upgrade' }, { origines: { 30: 'pile', 31: 'pile', 32: 'pile' }, cachees: [30, 31, 32] })
+    )
+    expect(reglages.onDepot(30, { surLaTable: true })).toBe(
+      t('Carte face cachée : retourne-la (Ctrl+F) ou glisse-la sur une pile')
+    )
+    expect(reglages.libelle(31, { surLaTable: true })).toBe(`${t('Poser en jeu')} : ${t('carte face cachée')}`)
+    expect(reglages.ciblesLegales(32).size).toBe(0)
+    expect(reglages.accueilleLaTable?.(30)).toBe(reglages.accueilleLaTable?.(31))
+    reglages.onDepot(31, { surLaTable: true })
+    const [libelle] = emettreGeste.mock.calls[0] as [string, () => Promise<boolean>]
+    expect(libelle).not.toContain('Carte 31')
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(["Puzzle.MoveTo(31, 'AlliesArea', 'Top', siege=0)"])
+  })
+})
+
+
+
+// --- Lot 5 du 06/10/2026 : plusieurs héros, et chacun ses cartes ----------
+describe('plusieurs héros en mode manuel', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
+  })
+
+  it('lâchée dans le groupe du héros 2, la carte arrive chez lui (question 6)', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Ally' }))
+    reglages.onDepot(42, { zone: 'terrain-soutien', surLaTable: true, siege: 1 })
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(["Puzzle.MoveTo(42, 'AlliesArea', 'Top', siege=1)"])
+  })
+
+  it('lâchée dans le vide, chez le héros d’où elle vient', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Ally' }, { proprietaires: { 42: 1 } }))
+    reglages.onDepot(42, { surLaTable: true })
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(["Puzzle.MoveTo(42, 'AlliesArea', 'Top', siege=1)"])
+  })
+
+  it('une pile du joueur vise son siège, jamais le premier joueur du moment', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, undefined, monde({ 42: 'Ally' }))
+    reglages.onDepot(42, { zone: 'joueur-deck', carteId: 3, surLaTable: true })
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(["Puzzle.MoveTo(42, 'PlayerDeck', 'Top', siege=0)"])
+  })
+
+  it('en ligne, la carte d’un autre joueur ne se soulève pas (question 14)', () => {
+    const reglages = reglagesGlisserManuel(emettreGesteDeTest(), undefined, monde({ 42: 'Ally', 43: 'Ally' }, { interdites: [43] }))
+    expect(reglages.estSource(42)).toBe(true)
+    expect(reglages.estSource(43)).toBe(false)
+  })
+})
+
+// Lot 6 du 06/10/2026 : comme sur OCTGN, Maj enfoncée pendant le glisser pose
+// la carte FACE CACHÉE, en une seule commande.
+describe('Maj pendant le glisser sur la table', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
+  })
+
+  it('pose la carte face cachée, et l’étiquette le dit', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, () => true, monde({ 42: 'Support' }))
+    expect(reglages.libelle(42, { surLaTable: true })).toContain(t('face cachée'))
+    reglages.onDepot(42, { surLaTable: true })
+    expect(await commandeEnvoyee(emettreGeste)).toEqual([
+      "Puzzle.MoveTo(42, 'SupportsArea', 'Top', siege=0, face_cachee=True)",
+    ])
+  })
+
+  it('sans Maj, face visible', async () => {
+    const emettreGeste = emettreGesteDeTest()
+    const reglages = reglagesGlisserManuel(emettreGeste, () => false, monde({ 42: 'Support' }))
+    reglages.onDepot(42, { surLaTable: true })
+    expect(await commandeEnvoyee(emettreGeste)).toEqual(["Puzzle.MoveTo(42, 'SupportsArea', 'Top', siege=0)"])
   })
 })

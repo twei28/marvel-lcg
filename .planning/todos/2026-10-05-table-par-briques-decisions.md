@@ -51,6 +51,9 @@ regrouper à volonté.
 
 ## Avancement (05/10/2026, soir) : étapes 1 à 5 FAITES, non commité, non déployé
 
+*06/10/2026 : commité dans `3a6afcf0` et déployé le 05/10 (file d'attente). Le mode manuel sur une
+table éclatée n'est toujours pas vérifié : prévu au lot 2 de `docs/superpowers/plans/2026-10-06-mode-manuel-comme-octgn.md`.*
+
 - Étape 1 : `table-briques.ts` (12 briques, zones, fusion / séparation, `deposerBrique`, texte compact, conversion de l'ancien format). `disposition.ts` supprimé.
 - Étape 2 : `table-rendu.ts` (`assemblerZones`), `Board.tsx`, `zones.ts`, `bande-manigances.css`. Une zone qui reprend un emplacement d'origine entier est rendue telle quelle (origine identique).
 - Étape 3 : `EditeurTable.tsx` (pastilles, glisser dehors = séparer, dessus = fusionner).

@@ -276,9 +276,17 @@ class GameSession:
         if self.world is None or not self.mise_en_place_finie:
             return
         self.RejouerGestesManuelsJusqua(None)
+        deja_muet = self.world.manuel_actif
         if (self.world.rule.mode_manuel and not self.world.scene.reprise_auto) \
                 or self.world.scene.pause_en_cours:
             self.world.manuel_actif = True
+        # PUBLIER LE SILENCE QU'ON VIENT DE REPOSER (06/10/2026). Apres un
+        # Ctrl+Z sur une partie ORDINAIRE en pause, le dernier rendu datait du
+        # rejeu (porte ouverte) : `/get_world` servait `manuel_actif=false` et
+        # le plateau repassait en Auto, moteur pourtant muet
+        # (`cas_annulation_geste_garde_la_pause`).
+        if self.world.manuel_actif and not deja_muet and not self.world.is_game_over:
+            self.world.render.PresentForceNoWait()
 
     ################################################################################
     #

@@ -26,6 +26,14 @@ describe('libellePhase', () => {
     expect(libellePhase(monde('Main Scheme Place Threat'))).toBe('Phase du méchant · Menace')
   })
 
+  it('en manuel, aucun repère de phase : le moteur se tait, sa phase ne veut plus rien dire', () => {
+    // Constat du 06/10/2026 (lot 7) : après « Fin du round », la barre
+    // affichait « ROUND 1 Init Finished », la phase brute où reste une partie
+    // manuelle déclarée après sa mise en place.
+    expect(libellePhase({ ...monde('Init Finished'), manuel_actif: true } as World)).toBe('')
+    expect(libellePhase({ ...monde('Player 1 Turn'), manuel_actif: true } as World)).toBe('')
+  })
+
   it('reste muet sans monde, et traduit le reste par le vocabulaire moteur', () => {
     expect(libellePhase(undefined)).toBe('')
     expect(libellePhase(monde('End Phase'))).toBe('Fin de phase')

@@ -294,11 +294,24 @@ class RunPuzzle:
 
     ################################################################################
     # Unit
+    def _RefuserEnManuel(self, face: 'CardFace', geste: str) -> None:
+        """En mode manuel, une commande sans effet sur cette carte est REFUSEE.
+
+        AJOUT (06/10/2026, lot 6 du mode manuel « comme OCTGN ») : un degat
+        sur un soutien ne faisait rien EN SILENCE, et le journal du plateau
+        affirmait un geste qui n'avait rien change. L'erreur devient
+        `manuel_refus`. Hors manuel (harnais, bac a sable), rien ne change.
+        """
+        if getattr(self.world, 'manuel_actif', False):
+            raise ValueError(f"{geste} : {face.name} n'en accepte pas")
+
     def Heal(self, card: CardName, val: int):
         face = self.FindOrCreateFace(card)
         from game.card.face.attribute.can_health import CanHealth
         if CanHealth.IsType(face):
             face.HealHealth(val, self.debug_rule)
+        else:
+            self._RefuserEnManuel(face, "Soin")
 
     def Damage(self, card: CardName, val: int, source: CardFace|None=None):
         face = self.FindOrCreateFace(card)
@@ -307,6 +320,8 @@ class RunPuzzle:
             if source == None:
                 source = face
             face.TakeDamage(source, val, self.debug_rule)
+        else:
+            self._RefuserEnManuel(face, "Degats")
 
     def PlaceCounters(self, card: CardName, name: str, val: int):
         """AJOUT (01/09/2026, pack custom doctor_doom) : poser des compteurs.
@@ -415,6 +430,8 @@ class RunPuzzle:
                 Faces.PlaceCountersOn([face], size, name, self.debug_rule)
             else:
                 Faces.RemoveCountersOn([face], -1 * size, name, self.debug_rule)
+        else:
+            self._RefuserEnManuel(face, "Compteurs")
 
     def Token(self, card: CardName, name: 'CardFace.TOKEN', size: int=3):
         from game.card.face.attribute.can_place_token import CanPlaceToken
@@ -426,6 +443,8 @@ class RunPuzzle:
                 Faces.PlaceTokensOn([face], size, name, self.debug_rule)
             else:
                 Faces.RemoveTokensOn([face], -size, name, self.debug_rule)
+        else:
+            self._RefuserEnManuel(face, "Jetons")
 
     ################################################################################
     #
@@ -792,6 +811,12 @@ class RunPuzzle:
         # sur `additional_discard_pile`, mais sous un nom qui pretend etre
         # autre chose). Ici on nomme l'attribut reel directement.
         'AdditionalDiscardPile': lambda j: j.additional_discard_pile,
+        # AJOUT (06/10/2026, lot 2 du mode manuel « comme OCTGN ») : un
+        # evenement pose a la main reste a cote de SON heros, en cours de
+        # resolution, jusqu'a ce que le joueur le defausse (Suppr). Pile
+        # `DeckType.ProcessingArea` propre au joueur (`player.py:90`), distincte
+        # de la resolution du scenario (`'ProcessingArea'`, ZONES_MONDE).
+        'PlayerProcessingArea': lambda j: j.area_processing,
     }
 
     ZONES_MONDE = {
@@ -813,7 +838,21 @@ class RunPuzzle:
         'AsideModular':         lambda w: w.aside_modular,
     }
 
-    def _ZoneParNom(self, zone: str, player: int) -> 'Deck':
+    def _JoueurVise(self, player: int, siege: int|None) -> 'Player':
+        """Le joueur qu'une commande vise.
+
+        `player` est un rang dans `const_players`, l'ordre du MOMENT : il
+        tourne avec le premier joueur, donc un geste ancien rejoue plus tard
+        peut viser quelqu'un d'autre. `siege` (06/10/2026, lot 2 du mode
+        manuel) est un rang dans `const_seat_order_players`, l'ordre des
+        SIEGES, qui ne bouge jamais : avec lui, le geste est deterministe.
+        Un siege inexistant leve, jamais un repli sur un autre joueur.
+        """
+        if siege is not None:
+            return self.world.const_seat_order_players[siege]
+        return self.world.const_players[player]
+
+    def _ZoneParNom(self, zone: str, player: int, siege: int|None=None) -> 'Deck':
         """Rend la pile designee par son nom.
 
         ⚠ Un nom inconnu doit ECHOUER bruyamment. Un repli silencieux sur une
@@ -822,10 +861,11 @@ class RunPuzzle:
         if zone in RunPuzzle.ZONES_MONDE:
             return RunPuzzle.ZONES_MONDE[zone](self.world)
         if zone in RunPuzzle.ZONES_JOUEUR:
-            return RunPuzzle.ZONES_JOUEUR[zone](self.world.const_players[player])
+            return RunPuzzle.ZONES_JOUEUR[zone](self._JoueurVise(player, siege))
         raise KeyError(f"zone inconnue : {zone}")
 
-    def MoveTo(self, card: CardName, zone: str, position: str='Top', player: int=0):
+    def MoveTo(self, card: CardName, zone: str, position: str='Top', player: int=0, siege: int|None=None,
+               face_cachee: bool=False):
         """Le deplacement LIBRE : n'importe quelle carte vers n'importe quelle
         pile, sans aucune verification.
 
@@ -849,7 +889,7 @@ class RunPuzzle:
         """
         from game.operate.faces import Faces
         face = self.FindOrCreateFace(card)
-        pile = self._ZoneParNom(zone, player)
+        pile = self._ZoneParNom(zone, player, siege)
         if position == 'Bottom' and (pile.flags.is_deck or pile.flags.is_dealt_encounter):
             face.card.MoveToBottom(pile, self.debug_rule)
             if face.card.area is not pile:
@@ -858,10 +898,113 @@ class RunPuzzle:
                     "carte dans la pile visee")
         else:
             Faces.MoveAllTo([face], pile, self.debug_rule)
+        # AJOUT (06/10/2026, lot 6 du mode manuel « comme OCTGN ») : Maj
+        # pendant le glisser, ou Ctrl+U sur une pile (`drawUnrevealed`), pose
+        # la carte FACE CACHEE en UNE commande (un Ctrl+Z la defait entiere).
+        # L'etat est force sans `Flip` : un retournement enverrait ses messages
+        # et rejouerait les effets « quand elle est retournee ».
+        if face_cachee and face.card.IsFaceUp():
+            face.card.state.is_face_up = False
 
-    def Shuffle(self, zone: str, player: int=0):
+    # La pile ou retourne chaque defausse (`shuffleDiscardIntoDeck` d'OCTGN).
+    DECK_DE_LA_DEFAUSSE = {
+        'DiscardPile': 'PlayerDeck',
+        'EncounterDiscardPile': 'EncounterDeck',
+        'AdditionalDiscardPile': 'AdditionalDeck',
+    }
+
+    def ShuffleDiscardIntoDeck(self, zone: str, player: int=0, siege: int|None=None):
+        """Remet toute une defausse dans son deck, puis melange le deck.
+
+        AJOUT (06/10/2026, lot 6 du mode manuel « comme OCTGN ») : UNE commande,
+        donc UN geste, qu'un seul Ctrl+Z defait entier. Le plateau envoyait un
+        `MoveTo` par carte puis `Shuffle` : autant de gestes que de cartes. Une
+        defausse inconnue leve (`KeyError`), jamais un repli.
+        """
+        from game.operate.faces import Faces
+        defausse = self._ZoneParNom(zone, player, siege)
+        deck = self._ZoneParNom(RunPuzzle.DECK_DE_LA_DEFAUSSE[zone], player, siege)
+        cartes = list(defausse.GetAll())
+        if cartes:
+            Faces.MoveAllTo(cartes, deck, self.debug_rule)
+        deck.Shuffle(self.debug_rule)
+
+    def DrawUpToHandSize(self, player: int=0, siege: int|None=None):
+        """F12 d'OCTGN (`doEndHeroPhase`) : le joueur pioche jusqu'a sa taille
+        de main. Un deck vide se reconstitue en remelangeant la defausse
+        (`checkDeckRemainingCards`), SANS la carte Rencontre de penalite des
+        regles : en manuel, c'est au joueur de la tirer.
+
+        AJOUT (06/10/2026, lot 6 du mode manuel) : UNE commande par heros. Le
+        plateau choisissait les cartes du dessus lui-meme, et ne savait pas
+        quoi faire d'un deck vide. S'arrete si deck ET defausse sont vides.
+        """
+        from game.operate.faces import Faces
+        joueur = self._JoueurVise(player, siege)
+        while len(joueur.hand_cards.GetAll()) < joueur.hand_size:
+            if not joueur.player_deck.GetAll():
+                defausse = list(joueur.discard_pile.GetAll())
+                if not defausse:
+                    break
+                Faces.MoveAllTo(defausse, joueur.player_deck, self.debug_rule)
+                joueur.player_deck.Shuffle(self.debug_rule)
+            Faces.MoveAllTo([joueur.player_deck.GetAll()[-1]], joueur.hand_cards, self.debug_rule)
+
+    def EndRound(self):
+        """Second F12 d'OCTGN (`advanceGame`, fin de la phase du mechant) : le
+        jeton de premier joueur passe (dans chaque camp) et le compteur de
+        rounds avance.
+
+        AJOUT (06/10/2026, lot 6 du mode manuel). Aucun message de debut de
+        round : en manuel, le moteur se tait.
+        """
+        camps: list[int] = []
+        for joueur in self.world.const_players:
+            camp = self.world.GetTeamOfPlayer(joueur)
+            if camp not in camps:
+                camps.append(camp)
+        for camp in camps:
+            self.world.PassFirstPlayerToken(camp, self.debug_rule)
+        self.world.round_id += 1
+
+    def SwapWithDeckTop(self, card: CardName, player: int=0, siege: int|None=None):
+        """« Switch Card with top Deck Card » d'OCTGN (menu de la main).
+
+        AJOUT (06/10/2026, lot 6 du mode manuel) : la carte part sur le DESSUS
+        du deck du joueur, l'ancien dessus vient dans sa main. UNE commande,
+        donc un seul Ctrl+Z. Deck vide : la carte part sur le deck, rien ne
+        revient.
+        """
+        from game.operate.faces import Faces
+        joueur = self._JoueurVise(player, siege)
+        face = self.FindOrCreateFace(card)
+        dessus = joueur.player_deck.GetAll()[-1:] if joueur.player_deck.GetAll() else []
+        Faces.MoveAllTo([face], joueur.player_deck, self.debug_rule)
+        if dessus and dessus[0] is not face:
+            Faces.MoveAllTo([dessus[0]], joueur.hand_cards, self.debug_rule)
+
+    def Mulligan(self, *cards: CardName, player: int=0, siege: int|None=None):
+        """« Mulligan Hand » d'OCTGN : les cartes choisies vont en defausse,
+        puis le joueur en repioche autant depuis le dessus de son deck.
+
+        AJOUT (06/10/2026, lot 6 du mode manuel) : UNE commande, un seul
+        Ctrl+Z. La pioche s'arrete si le deck est vide : remelanger la
+        defausse reste un geste a part, comme sur OCTGN.
+        """
+        from game.operate.faces import Faces
+        joueur = self._JoueurVise(player, siege)
+        faces = [self.FindOrCreateFace(card) for card in cards]
+        if faces:
+            Faces.MoveAllTo(faces, joueur.discard_pile, self.debug_rule)
+        for _ in faces:
+            pioche = joueur.player_deck.GetAll()
+            if not pioche:
+                break
+            Faces.MoveAllTo([pioche[-1]], joueur.hand_cards, self.debug_rule)
+
+    def Shuffle(self, zone: str, player: int=0, siege: int|None=None):
         """Melange une pile."""
-        self._ZoneParNom(zone, player).Shuffle(self.debug_rule)
+        self._ZoneParNom(zone, player, siege).Shuffle(self.debug_rule)
 
     def Attach(self, card: CardName, cible: CardName):
         """Pose une amelioration ou un soutien SUR une carte precise."""
@@ -870,11 +1013,11 @@ class RunPuzzle:
         hote = self.FindOrCreateFace(cible)
         Faces.MoveAllTo([face], hote.components.inventory.deck, self.debug_rule)
 
-    def Engage(self, card: CardName, player: int=0):
+    def Engage(self, card: CardName, player: int=0, siege: int|None=None):
         """Engage un sbire avec un joueur, ou l'en desengage s'il y est deja."""
         from game.operate.faces import Faces
         face = self.FindOrCreateFace(card)
-        joueur = self.world.const_players[player]
+        joueur = self._JoueurVise(player, siege)
         if face.card.area is joueur.engaged_minions:
             Faces.MoveAllTo([face], self.world.area_processing, self.debug_rule)
         else:

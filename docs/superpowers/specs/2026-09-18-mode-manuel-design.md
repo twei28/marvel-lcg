@@ -3,6 +3,11 @@
 **Date :** 18/09/2026
 **Fiche d'origine :** `.planning/todos/2026-09-14-mode-manuel-sans-automatisation.md`
 **Statut :** cadrée avec l'utilisateur, à relire avant le plan d'exécution.
+> **06/10/2026 :** livrée et déployée le 22/09. Complétée par l'avenant du
+> 18/09 (plus bas), par les décisions du 05/10
+> (`.planning/todos/2026-10-05-facon-de-jouer-manuel-octgn.md`) et par
+> `2026-10-06-mode-manuel-comme-octgn-design.md`. Les annotations datées du
+> 06/10 signalent ce que le code ou une décision plus récente a changé.
 
 ## But
 
@@ -44,6 +49,14 @@ brutes, et tout raccourci qui ferait exécuter une règle par le moteur.
 | Catalogue | Recherche par nom sur les 6217 cartes, pose directe sur la table |
 | Table | Une personne, plusieurs héros, un écran |
 | Fin de partie | Déclarée à la main, journal de campagne saisi à la main |
+
+> **06/10/2026, écarts avec ce tableau :** « fais-le pour moi : aucun » et
+> « repère de phase : aucun » ne tiennent plus, le 05/10 a ajouté Vaincre ce
+> stade, Manigance terminée, F12 et Alt+Entrée. Les statuts ont aussi des
+> touches (Alt+S/C/T). Le calque Tabletop Simulator a été remplacé par OCTGN
+> (`5b88d9a2`). Le catalogue pose la carte en zone de résolution, pas sur la
+> table (`ui-app/src/board/triche.ts:119-133`). Le multijoueur a été décidé le
+> 05/10 (`facon-de-jouer-manuel-octgn.md:23-24`).
 
 ## Architecture
 
@@ -102,6 +115,15 @@ caractéristiques disparaissent aussi**. Une amélioration « +1 ATQ »
 n'augmentera plus l'attaque affichée. Le plateau montre les valeurs
 imprimées, le joueur compte.
 
+> **06/10/2026 :** le silence n'est pas total. Les crochets d'entrée en jeu
+> (`OnWhenCardEnterPlay`, `game/card/face/model/face_on_event.py:372-378`)
+> passent à côté de la porte : une carte posée à la main reçoit ses compteurs
+> Uses (`has_uses.py:20-28`, observé) et son statut Tenace
+> (`has_toughness.py:14-20`, lu). La porte ferme `BroadcastMessage`
+> (`game/event/manager.py:685`), `BroadcastStackMessage` (`:648`) et la
+> défaite automatique (`face_on_event.py:428`). À trancher : question 5 de
+> `.planning/todos/2026-10-06-mode-manuel-comme-octgn.md`.
+
 ### 4. Le canal des gestes
 
 Inchangé : `/sandbox_command`, qui n'accepte que des appels `Puzzle.<methode>`
@@ -136,6 +158,14 @@ sur décision de l'utilisateur. Aucune lettre à mémoriser.
 Quand le jeton naturel d'une carte est douteux, le chiffre ne fait rien et le
 plateau renvoie au clic droit, qui nomme chaque jeton. Mieux vaut ne rien
 poser que poser la mauvaise chose sur une carte qu'on ne relira pas.
+
+> **06/10/2026 :** ce vocabulaire n'est plus celui du code. Le glisser
+> « vers la zone visée » n'a jamais été tenu pour le terrain : la table est
+> refusée (`glisser-manuel.ts:67-89`, `:157`), à corriger par le lot 2 de
+> `plans/2026-10-06-mode-manuel-comme-octgn.md`. Les chiffres 1 à 9 agissent
+> tout de suite et seulement sur une pile (`clavier.ts:119`), sans délai pour
+> taper 12. F, Q, R et les chiffres sur une carte ont été retirés par
+> `5b88d9a2` sans décision tracée (question 10 de la fiche du 06/10).
 
 ## Les gestes, côté moteur
 
@@ -192,6 +222,8 @@ On masque tout ce qui parlait au nom du moteur : `BandeauPhase`,
 conservé : le mode doit pouvoir être retiré sans laisser de traces.
 
 Toutes les mains sont visibles en même temps, puisqu'il n'y a qu'un opérateur.
+> **06/10/2026 :** remplacé par la décision 7 bis (une main à l'écran plus un
+> sélecteur de héros, `plans/2026-09-18-mode-manuel-plateau.md:1277-1284`).
 
 Le journal de partie note chaque geste, comme il note déjà les interventions
 du bac à sable.
@@ -224,6 +256,9 @@ Un mode vert ne prouve rien tant que ces cinq-là ne sont pas passés.
    Le témoin qui compte est le **refus**, pas l'absence de plantage.
 3. **La table reste manipulable.** Une carte de chaque type peut aller dans
    chaque zone, y compris là où les règles l'interdisent.
+   > **06/10/2026 :** aucun geste ne précise le joueur visé, tout part sur
+   > `world.players[0]`, dont l'ordre tourne à chaque round. Voir D.6 de
+   > `2026-10-06-mode-manuel-comme-octgn-design.md`.
 4. **L'aller-retour de sauvegarde.** Un geste, une sauvegarde, un
    rechargement, et l'état est identique carte par carte. C'est ce test qui
    lève définitivement le point 2 ci-dessus.

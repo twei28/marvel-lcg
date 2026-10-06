@@ -8,6 +8,7 @@
 
 import { t } from './langue'
 import { PHASES_DU_MECHANT_ORDONNEES, type PhaseDuMechant } from './moteur'
+import { leMoteurSeTait } from './manuel/mode'
 import { traduireMoteur } from './vocabulaire-moteur'
 import type { World } from './world'
 
@@ -27,6 +28,10 @@ function nomDuHeros(monde: World, numero: number): string | undefined {
 /** La phase en cours, dite au joueur. */
 export function libellePhase(monde: World | undefined): string {
   if (!monde) return ''
+  // En manuel, le moteur se tait : sa phase est figée (« Init Finished » sur une
+  // partie déclarée) et ne dit plus où en est la table. Spec du 18/09 : aucun
+  // repère de phase en manuel.
+  if (leMoteurSeTait(monde)) return ''
   const phase = monde.phase ?? ''
   const tour = phase.match(/^Player (\d+) Turn$/)
   if (tour) {

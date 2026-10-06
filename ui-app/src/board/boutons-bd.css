@@ -79,3 +79,16 @@
   padding-block: 9px;
   font-size: 1.14rem;
 }
+
+/* Boutons des fenetres du centre 1,5 fois plus grands (decision du
+   06/10/2026, apres « cette petite modale est vraiment petite »). `zoom`
+   agrandit aussi la decoupe des coins et la zone cliquable. Pas sur
+   telephone : la place y manque deja. */
+@media (min-width: 561px) {
+  .demande-centrale .af-action,
+  .demande-centrale .dc-continue,
+  .assistant-action .assistant-boutons button,
+  .deroule-phase .deroule-boutons .bh-bouton {
+    zoom: 1.5;
+  }
+}

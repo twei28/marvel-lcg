@@ -143,11 +143,13 @@ export type EmplacementAffiche = {
   nombreSurLaLigne: number
   /**
    * Identifiant du joueur proprietaire de chaque groupe, meme longueur que
-   * `groupes`. Renseigne pour `terrain-soutien` seulement, ou les aires de tous
-   * les joueurs sont aplaties. Le rendu PC l'ignore : c'est le mode mobile qui
-   * s'en sert pour ne deplier qu'un joueur a la fois.
+   * `groupes`. Renseigne pour `terrain-soutien` et `terrain-combat`, ou les
+   * aires de tous les joueurs sont aplaties ; `undefined` pour un groupe a
+   * personne (l'environnement). Le mode mobile s'en sert pour ne deplier
+   * qu'un joueur a la fois ; le mode manuel pour poser une carte chez le
+   * joueur du groupe vise (lot 5 du 06/10/2026, `data-joueur`).
    */
-  proprietaires?: number[]
+  proprietaires?: (number | undefined)[]
   /**
    * Tâche 5 (glisser-déposer, mode manuel) : le SECTEUR de chaque groupe,
    * même longueur que `groupes`, pour les emplacements qui mélangent
@@ -657,7 +659,7 @@ function emplacement(
   // Proprietaire de chaque groupe, meme longueur et meme ordre que `groupes`.
   // Seul terrain-soutien le fournit (voir plus bas) : c'est ce que lit le mode
   // mobile pour recoudre les groupes par joueur (mobile/joueurs.ts).
-  proprietaires?: number[],
+  proprietaires?: (number | undefined)[],
   // Secteur de chaque groupe (tache 5, glisser-depose) : meme longueur et
   // meme ordre que `groupes`. Seul terrain-combat le fournit pour l'instant
   // (voir EmplacementAffiche.groupesPiles).
@@ -685,7 +687,7 @@ function emplacement(
     titre,
     groupes: gardes.map((garde) => garde.groupe),
     nombreSurLaLigne,
-    ...(proprietaires ? { proprietaires: gardes.map((garde) => garde.proprietaire as number) } : {}),
+    ...(proprietaires ? { proprietaires: gardes.map((garde) => garde.proprietaire) } : {}),
     ...(groupesPiles ? { groupesPiles: gardes.map((garde) => garde.pile) } : {}),
     ...(groupesBriques ? { groupesBriques: gardes.map((garde) => garde.brique) } : {}),
   }
@@ -864,13 +866,23 @@ export function construirePlateau(world: World, options: Options): Plateau {
         posees(world.area_environment, rendu),
         posees(notre?.environment_area, rendu),
       ],
-      undefined,
+      // Lot 5 du 06/10/2026 (question 6) : le siege de chaque groupe, pour
+      // poser une carte chez le joueur du groupe vise. L'environnement n'est a
+      // personne.
+      [
+        options.playerId,
+        options.playerId,
+        ...autres.flatMap((joueur) => [joueurs.indexOf(joueur), joueurs.indexOf(joueur)]),
+        undefined,
+        undefined,
+      ],
       // Tache 5 (glisser-depose) : seuls LES ENNEMIS ENGAGES DE NOTRE joueur
       // portent un secteur (`CLE_PILE_ENGAGES`) : lacher un sbire dessus
-      // l'engage (`Puzzle.Engage`, sans parametre de joueur -> toujours le
-      // joueur COURANT). Marquer aussi le groupe d'un AUTRE joueur engagerait
-      // silencieusement le sbire chez le mauvais joueur ; on prefere ne rien
-      // marquer et laisser ce lacher refuse plutot que de deviner.
+      // l'engage. Depuis le lot 2 du 06/10/2026, par
+      // `Puzzle.MoveTo(..., 'EngagedEnemiesArea', siege=<le heros affiche>)` :
+      // sans siege, une pile de joueur visait le premier joueur DU MOMENT, un
+      // ordre qui tourne a chaque round. Le groupe d'un AUTRE joueur reste
+      // sans secteur jusqu'au lot 5 (chez qui va une carte posee).
       [undefined, CLE_PILE_ENGAGES, ...autres.flatMap(() => [undefined, undefined]), undefined, undefined],
       ['allies', 'sbires', ...autres.flatMap((): CleBrique[] => ['allies', 'sbires']), 'environnements', 'environnements']
     ),

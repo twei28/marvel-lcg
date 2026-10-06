@@ -101,3 +101,8 @@ Simulator, et la manipulation directe en est le cœur, pas la décoration.
    montrera les valeurs imprimées.
 
 **Statut** : cadrée avec l'utilisateur le 18/09/2026. Spec à écrire.
+
+**06/10/2026 : fiche close.** Spec écrite
+(`docs/superpowers/specs/2026-09-18-mode-manuel-design.md`), livrée le 22/09,
+complétée par `docs/superpowers/specs/2026-10-06-mode-manuel-comme-octgn-design.md`.
+Suivi : `.planning/todos/2026-10-06-mode-manuel-comme-octgn.md`.

@@ -35,6 +35,12 @@ PLAFOND_QUESTIONS_HISTOIRE = 600
 # le budget de temps d'un cas.
 QUESTIONS_JOUEES_PAR_ROUND = 8
 
+# Les options BRUTES de chaque question posee au pilote, dans l'ordre (lot 2
+# du 06/10/2026). `journal` ne garde que les noms : pour savoir si une carte
+# posee a la main propose bien SA capacite apres la reprise, il faut voir a
+# quelle carte chaque option est rattachee.
+OPTIONS_VUES = []
+
 
 def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man",
                      sauvegarde=None, avant_reponse=None, rejouer_les_entrees=False):
@@ -77,6 +83,7 @@ def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man
             options = []
         noms = [o.get("name") for o in options if isinstance(o, dict)]
         journal.append(noms)
+        OPTIONS_VUES.append(options)
 
         if avant_reponse is not None:
             avant_reponse(jeu)
@@ -139,9 +146,14 @@ def monter_le_moteur(game_dir, port, regles, scenario="rhino", heros="spider_man
     else:
         with open(_chemin_json("Campaign", scenario)) as f:
             campagne = f.read()
-        with open(_chemin_json("Hero", heros)) as f:
-            hero = f.read()
-        scene = SceneLoader.NewFromJson(campagne, None, [hero], 42, regles, {})
+        # Un nom, ou une LISTE de noms pour une table a plusieurs heros (lot 2
+        # du 06/10/2026 : les gestes visent un siege precis).
+        liste = list(heros) if isinstance(heros, (list, tuple)) else [heros]
+        decks = []
+        for nom in liste:
+            with open(_chemin_json("Hero", nom)) as f:
+                decks.append(f.read())
+        scene = SceneLoader.NewFromJson(campagne, None, decks, 42, regles, {})
 
     jeu = Engine.game
     jeu.session.SetScene(scene, "Load")
@@ -411,8 +423,10 @@ def cas_moteur_muet(game_dir, port):
     time.sleep(8)
     assert len(journal) == avant, \
         f"le moteur a repose {len(journal) - avant} question(s) apres la mise en place"
-    assert monde.round_id == 0, \
-        f"le moteur a demarre un tour tout seul : round_id={monde.round_id}"
+    # `round_id` vaut 1 (le round joue a la main, cas_round_partie_declaree) :
+    # c'est l'etat de phase qui dit si le moteur a demarre un tour.
+    assert monde.phase.state == "Init Finished", \
+        f"le moteur a demarre un tour tout seul : phase={monde.phase.state!r}"
     return "le moteur se tait apres la mise en place"
 
 
@@ -445,8 +459,8 @@ def cas_commande_executee(game_dir, port):
     """
     jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
     assert monde.manuel_actif is True, "la boucle manuelle n'a pas demarre"
-    assert monde.round_id == 0, \
-        f"le moteur a demarre un tour tout seul : round_id={monde.round_id}"
+    assert monde.phase.state == "Init Finished", \
+        f"le moteur a demarre un tour tout seul : phase={monde.phase.state!r}"
     vilain = id_du_vilain(monde)
     deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
     carte = monde.object_manager.card_dict[vilain]
@@ -3082,6 +3096,113 @@ def cas_annulation_ordinaire_garde_tout(game_dir, port):
     return ("« Annuler » garde les corrections ET la pause : la partie ne "
             "reprend pas toute seule")
 
+def cas_annulation_geste_garde_la_pause(game_dir, port):
+    """Ctrl+Z (`AnnulerDernierGeste`) sur une partie ORDINAIRE mise en pause :
+    le geste part, et la table RESTE en pause.
+
+    Lot 1 du plan du 06/10/2026 : dans le navigateur, sur une partie basculee
+    en Manuel, Ctrl+Z repassait la table en Auto (captures manuel-80/81,
+    `mode_manuel=false`, `restants: 0`). `cas_annulation` ne couvre que la
+    partie manuelle DECLAREE, et `cas_annulation_ordinaire_garde_tout` le
+    bouton « Annuler » ordinaire (`GameSession.Undo`), pas le Ctrl+Z.
+    """
+    jeu, commande, etat = monter_avec_geste_par_le_vrai_dogetinput(
+        game_dir, port,
+        lambda jeu: f"Puzzle.Damage({id_du_vilain(jeu.world)}, 3)")
+
+    vilain = id_du_vilain(jeu.world)
+    monde_avant = jeu.world
+    assert monde_avant.object_manager.card_dict[vilain].face.GetLostHealth() == 3, \
+        "premisse cassee : le geste n'a pas ete applique avant l'annulation"
+    assert jeu.session.scene.manuel_commands == [commande], \
+        f"premisse cassee : le geste n'est pas dans la scene ({jeu.session.scene.manuel_commands})"
+
+    etat["etape"] = "attend_regare"
+    assert jeu.session.AnnulerDernierGeste() is True, "rien a annuler"
+
+    limite = time.time() + 180
+    while (jeu.world is monde_avant or etat["gares"] < 2) and time.time() < limite:
+        time.sleep(0.5)
+    time.sleep(3)
+    monde_apres = jeu.world
+    assert monde_apres is not monde_avant, \
+        "premisse cassee : l'annulation n'a pas reconstruit le monde"
+
+    assert jeu.session.scene.manuel_commands == [], \
+        f"le geste n'a pas ete retire : {jeu.session.scene.manuel_commands}"
+    assert jeu.session.scene.pause_en_cours is True, \
+        "l'annulation a efface la pause de la scene (pause_a vide)"
+    assert monde_apres.manuel_actif is True, (
+        f"apres Ctrl+Z, la table est repassee en Auto (manuel_actif="
+        f"{monde_apres.manuel_actif}, gares={etat['gares']}, etape={etat['etape']!r}, "
+        f"mise_en_place_finie={jeu.session.mise_en_place_finie})"
+    )
+    # LA TRAME PUBLIEE, PAS SEULEMENT L'OBJET. C'est elle que lit le plateau
+    # (`/get_world`) : dans le navigateur, le moteur etait bien muet apres le
+    # Ctrl+Z, mais la trame servie disait encore `manuel_actif=false`, et la
+    # table repassait en Auto a l'ecran (06/10/2026, cause etablie par un
+    # second `/manuel_undo` qui repondait « rien a annuler », pas « pas une
+    # partie manuelle »).
+    publie = getattr(monde_apres.render.descriptor, "manuel_actif", None)
+    assert publie is True, (
+        f"la trame publiee apres Ctrl+Z dit manuel_actif={publie!r} alors que "
+        "le moteur est muet : le plateau repasse en Auto"
+    )
+    return "Ctrl+Z sur une partie ordinaire en pause retire le geste et garde la pause, publiee"
+
+
+def cas_reponse_refusee_pendant_la_pause(game_dir, port):
+    """Pendant que la table est muette (`manuel_actif`), `/post` ne repond
+    plus a la question garee du moteur.
+
+    Lot 1 du plan du 06/10/2026 : sur une partie basculee en Manuel, le
+    bouton flottant « Fin du tour » et la touche E repondaient a la question
+    garee, et le moteur AVANCAIT (captures manuel-75/76). Le plateau ne les
+    montre plus ; le moteur, lui, doit refuser quand meme (une garde qui ne
+    vivrait que dans l'interface n'est pas une garde). `/manuel_passer`
+    reste la seule echappatoire voulue : il passe par `PasserQuestionCourante`,
+    pas par `/post`.
+
+    Aucun moteur monte : on frappe la VRAIE `GameServerSync.handle_post`
+    sur un serveur factice, comme `cas_post_ferme_au_spectateur`.
+    """
+    import asyncio
+    import sys
+    import types
+    racine_src = os.path.join(RACINE, "src")
+    if racine_src not in sys.path:
+        sys.path.insert(0, racine_src)
+    from engine.device.web.server.server_sync import GameServerSync
+
+    def frapper(muet):
+        recues = []
+        serveur = GameServerSync.__new__(GameServerSync)
+        serveur.get_player_ids = lambda request: [0]
+        # `game` est une propriete (server_base.py) : elle lit le jeu du
+        # premier controleur du gestionnaire.
+        jeu_factice = types.SimpleNamespace(world=types.SimpleNamespace(manuel_actif=muet))
+        serveur.device_manager = types.SimpleNamespace(
+            asking_players=[0], WhenInput=lambda texte, joueur: recues.append(texte),
+            controllers=[types.SimpleNamespace(game=jeu_factice)])
+
+        class _Requete:
+            async def text(self):
+                return "{}"
+
+        reponse = asyncio.run(serveur.handle_post(_Requete()))
+        return reponse.status, recues
+
+    statut, recues = frapper(False)
+    assert statut == 200 and recues == ["{}"], \
+        f"temoin : hors pause, /post doit transmettre la reponse (statut={statut}, recues={recues})"
+
+    statut, recues = frapper(True)
+    assert recues == [], \
+        f"pendant la pause, /post a transmis une reponse au moteur : {recues}"
+    assert statut == 409, f"pendant la pause, /post doit refuser (409), statut={statut}"
+    return "pendant la pause, /post ne repond plus a la question garee du moteur"
+
+
 def cas_histoire_rejouee_apres_pause(game_dir, port):
     """Une sauvegarde qui porte une VRAIE histoire se rouvre sur LA MEME
     table -- pas sur une table vierge. Constat C1 de la ronde de correction 1.
@@ -3394,7 +3515,7 @@ def _reprendre_et_regarder(game_dir, port, phase):
     vilain = id_du_vilain(monde)
     deposer(jeu, f"Puzzle.Damage({vilain}, 3)")
     avant = len(journal)
-    assert monde.round_id == 0
+    assert monde.phase.state == "Init Finished", f"premisse cassee : phase={monde.phase.state!r}"
 
     ordre = _espionner_le_deroule(monde)
     statut, corps = _appeler_reprise(_serveur_factice(jeu), phase)
@@ -3454,6 +3575,62 @@ def cas_reprise_tour(game_dir, port):
     return "reprise en nouveau tour : fin de tour, puis phase heros"
 
 
+def _rounds_aux_phases(monde):
+    """Le numero de round AU MOMENT ou le moteur entre dans une phase ou clot
+    un tour. Lu apres coup, `round_id` ne dirait rien : le moteur a pu jouer
+    d'autres rounds pendant l'attente."""
+    vus = []
+
+    def envelopper(objet, nom, etiquette):
+        vrai = getattr(objet, nom)
+
+        def enveloppe(*a, **k):
+            vus.append((etiquette, monde.round_id))
+            return vrai(*a, **k)
+        setattr(objet, nom, enveloppe)
+
+    envelopper(monde, "PlayerPhase", "PlayerPhase")
+    envelopper(monde, "VillainPhase", "VillainPhase")
+    envelopper(monde.buff_manager, "OnRoundEnd", "FinDeTour")
+    return vus
+
+
+def cas_round_partie_declaree(game_dir, port):
+    """Partie DECLAREE manuelle : le joueur est dans le round 1 des la fin de
+    la mise en place, « Fin du round » le fait passer au round 2, et une
+    reprise « phase heros » joue CE round 2, sans en compter un de plus
+    (constat du passage navigateur final du 06/10/2026 : la barre restait
+    vide au premier round et « Round 1 » s'affichait au debut du deuxieme)."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    assert monde.manuel_actif is True, "premisse cassee : la boucle manuelle n'a pas demarre"
+    assert monde.round_id == 1, f"premier round joue a la main, round_id={monde.round_id}, attendu 1"
+    deposer(jeu, "Puzzle.EndRound()")
+    assert monde.round_id == 2, f"apres Fin du round, round_id={monde.round_id}, attendu 2"
+
+    vus = _rounds_aux_phases(monde)
+    statut, corps = _appeler_reprise(_serveur_factice(jeu), "heros")
+    assert statut == 200, f"la reprise a ete refusee : {statut} {corps}"
+    time.sleep(15)
+    assert vus and vus[0] == ("PlayerPhase", 2), \
+        f"la reprise en phase heros doit jouer le round 2 : {vus[:3]!r}"
+    return "round 1 au depart, 2 apres Fin du round, la reprise joue ce round 2"
+
+
+def cas_round_reprise_nouveau_tour(game_dir, port):
+    """Reprise « nouveau tour » depuis le premier round joue a la main : le
+    round 1 est clos, puis le round 2 commence. Temoin de l'autre branche :
+    elle seule ajoute un round."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    assert monde.round_id == 1, f"premier round joue a la main, round_id={monde.round_id}, attendu 1"
+    vus = _rounds_aux_phases(monde)
+    statut, corps = _appeler_reprise(_serveur_factice(jeu), "tour")
+    assert statut == 200, f"la reprise a ete refusee : {statut} {corps}"
+    time.sleep(15)
+    assert vus[:2] == [("FinDeTour", 1), ("PlayerPhase", 2)], \
+        f"nouveau tour : fin du round 1 puis round 2 attendus : {vus[:3]!r}"
+    return "nouveau tour : fin du round 1, puis round 2"
+
+
 def cas_reprise_refusee(game_dir, port):
     """Les refus de `/manuel_reprise`, chacun avec son code, et RIEN ne bouge.
 
@@ -3468,7 +3645,7 @@ def cas_reprise_refusee(game_dir, port):
 
     def rien_n_a_bouge(contexte):
         assert monde.manuel_actif is True, f"{contexte} : le moteur a parle"
-        assert monde.round_id == 0, f"{contexte} : un tour a demarre"
+        assert monde.phase.state == "Init Finished", f"{contexte} : un tour a demarre"
         assert monde.scene.reprise_auto == "", f"{contexte} : la scene garde une reprise"
         assert monde.reprise_demandee is None, f"{contexte} : une reprise est restee en attente"
         assert len(journal) == avant, f"{contexte} : le moteur a repose une question"
@@ -3619,6 +3796,449 @@ def cas_jeton_acceleration(game_dir, port):
     return "Puzzle.Token pose puis retire un jeton d'acceleration"
 
 
+# ---------------------------------------------------------------------------
+# POSER UNE CARTE A LA MAIN, comme sur OCTGN (lot 2 du 06/10/2026)
+# ---------------------------------------------------------------------------
+
+def _carte_de_code_dans(pile, code):
+    """L'identifiant d'objet de la carte de code imprime `code` dans `pile`.
+
+    ⚠ Pas `max(card_dict)` : `MoveTo('01002', ...)` RETROUVE d'abord une carte
+    de ce code deja dans la partie (le deck du heros, `FindOrCreateFace`) et ne
+    la fabrique que si elle n'existe nulle part.
+    """
+    for face in pile.GetAll():
+        if getattr(getattr(face, "paper", None), "card_id", None) == code:
+            return face.card.object_id
+    raise AssertionError(f"premisse cassee : aucune carte {code} dans la pile visee")
+
+
+def _creer_en_main(jeu, monde, code, siege=0):
+    """Amene la carte `code` dans la main du siege `siege` et rend son
+    identifiant d'objet."""
+    deposer(jeu, f"Puzzle.MoveTo('{code}', 'HandsArea', 'Top', siege={siege})")
+    return _carte_de_code_dans(monde.const_seat_order_players[siege].hand_cards, code)
+
+
+def cas_poser_depuis_la_main(game_dir, port):
+    """Un allie et un soutien de la main, poses a la main, arrivent en jeu
+    face visible, un geste chacun, sans capacite declenchee ; une amelioration
+    a compteurs arrive avec eux (Uses) et un allie Toughness avec son statut
+    Tenace, comme le fait le plugin OCTGN (question 5 du 06/10/2026)."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    joueur = monde.const_seat_order_players[0]
+    allie = _creer_en_main(jeu, monde, "01002")
+    soutien = _creer_en_main(jeu, monde, "01006")
+    tireur = _creer_en_main(jeu, monde, "01008")
+    coriace = _creer_en_main(jeu, monde, "01076")
+    identite = joueur.GetIdentity().card.object_id
+    avant = len(jeu.session.scene.manuel_commands)
+
+    zone_allie = os.environ.get("ZONE_POSE_ALLIE", "AlliesArea")
+    deposer(jeu, f"Puzzle.MoveTo({allie}, '{zone_allie}', 'Top', siege=0)")
+    deposer(jeu, f"Puzzle.MoveTo({soutien}, 'SupportsArea', 'Top', siege=0)")
+    deposer(jeu, f"Puzzle.Attach({tireur}, {identite})")
+    deposer(jeu, f"Puzzle.MoveTo({coriace}, 'AlliesArea', 'Top', siege=0)")
+
+    cartes = monde.object_manager.card_dict
+    assert cartes[allie].face.card.area is joueur.allies, \
+        "l'allie n'est pas arrive dans les Allies du joueur"
+    assert cartes[soutien].face.card.area is joueur.supports, \
+        "le soutien n'est pas arrive dans les Soutiens du joueur"
+    for nom, ident in (("allie", allie), ("soutien", soutien)):
+        assert cartes[ident].face.IsInPlay(), f"{nom} pose mais pas en jeu"
+        assert cartes[ident].face.card.IsFaceUp(), f"{nom} pose face cachee"
+    gestes = len(jeu.session.scene.manuel_commands) - avant
+    assert gestes == 4, f"4 gestes attendus, {gestes} enregistres"
+    assert monde.manuel_actif is True, "le moteur a quitte le silence"
+
+    compteurs = cartes[tireur].face.GetCounters("web")
+    assert compteurs == 3, f"Web-Shooter devait arriver avec 3 compteurs, il en a {compteurs!r}"
+    assert cartes[coriace].face.IsTough(), "Luke Cage devait arriver Tenace (Toughness)"
+    return "allie et soutien poses depuis la main ; Uses et Tenace poses a l'arrivee"
+
+
+def cas_manigance_posee_avec_sa_menace(game_dir, port):
+    """Une manigance annexe posee a la main arrive avec sa menace de depart
+    imprimee (question 5 du 06/10/2026), comme sur OCTGN."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    deposer(jeu, "Puzzle.MoveTo('01107', 'ProcessingArea', 'Top')")
+    manigance = _carte_de_code_dans(monde.area_processing, "01107")
+    deposer(jeu, f"Puzzle.MoveTo({manigance}, 'SideSchemesArea', 'Top')")
+    face = monde.object_manager.card_dict[manigance].face
+    assert face.card.area is monde.area_schemes_side, "la manigance n'est pas dans les annexes"
+    assert face.threat == face.start_threat and face.threat > 0, \
+        f"menace a l'arrivee {face.threat}, menace de depart imprimee {face.start_threat}"
+    return f"manigance annexe posee avec sa menace de depart ({face.threat})"
+
+
+def cas_manigance_retournee_pose_sa_menace(game_dir, port):
+    """Le double-clic d'OCTGN sur une manigance la retourne (`revealHide`) :
+    cachee, elle perd sa menace ; revelee sans menace, elle repose sa menace de
+    depart (`placeThreatOnScheme`). Lot 6 du 06/10/2026 : le plateau envoie
+    `Puzzle.Flip`, et le moteur repose la menace (`Scheme2.OnFlip`)."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    deposer(jeu, "Puzzle.MoveTo('01107', 'ProcessingArea', 'Top')")
+    ident = _carte_de_code_dans(monde.area_processing, "01107")
+    deposer(jeu, f"Puzzle.MoveTo({ident}, 'SideSchemesArea', 'Top')")
+    face = monde.object_manager.card_dict[ident].face
+    assert face.start_threat > 0, "premisse cassee : menace de depart nulle, le cas ne prouverait rien"
+    deposer(jeu, f"Puzzle.SetThreat({ident}, 0)")
+    assert face.threat == 0, "premisse cassee : la menace n'est pas a 0"
+    deposer(jeu, f"Puzzle.Flip({ident})")
+    deposer(jeu, f"Puzzle.Flip({ident})")
+    face = monde.object_manager.card_dict[ident].face
+    assert face.card.IsFaceUp(), "deux retournements ne ramenent pas la manigance face visible"
+    assert face.threat == face.start_threat, \
+        f"menace apres retournement {face.threat}, menace de depart {face.start_threat}"
+    return f"manigance retournee : menace de depart reposee ({face.threat})"
+
+
+def cas_poser_face_cachee(game_dir, port):
+    """Maj pendant le glisser, ou Ctrl+U sur une pile : la carte arrive FACE
+    CACHEE, en une seule commande (lot 6 du 06/10/2026). Rouge sur l'ancien
+    `puzzle.py` : `MoveTo` ne connait pas `face_cachee`."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    soutien = _creer_en_main(jeu, monde, "01006")
+    avant = len(jeu.session.scene.manuel_commands)
+    deposer(jeu, f"Puzzle.MoveTo({soutien}, 'SupportsArea', 'Top', siege=0, face_cachee=True)")
+    carte = monde.object_manager.card_dict[soutien]
+    joueur = monde.const_seat_order_players[0]
+    assert carte.area is joueur.supports, "la carte n'est pas arrivee dans les soutiens"
+    assert not carte.IsFaceUp(), "la carte est arrivee face visible"
+    assert len(jeu.session.scene.manuel_commands) == avant + 1, "le geste a pris plus d'une commande"
+    deposer(jeu, f"Puzzle.MoveTo({soutien}, 'SupportsArea', 'Top', siege=0)")
+    return "carte posee face cachee en une commande"
+
+
+def cas_remelanger_defausse_une_commande(game_dir, port):
+    """« Remelanger la defausse dans le deck » (`shuffleDiscardIntoDeck`
+    d'OCTGN) est UNE commande : un seul Ctrl+Z la defait entiere (lot 6 du
+    06/10/2026). Le plateau envoyait un `MoveTo` par carte, puis `Shuffle`."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"],
+                                     heros=["spider_man", "captain_marvel"])
+    joueur = monde.const_seat_order_players[1]
+    a = _creer_en_main(jeu, monde, "01002", siege=1)
+    b = _creer_en_main(jeu, monde, "01006", siege=1)
+    deposer(jeu, f"Puzzle.MoveTo({a}, 'DiscardPile', 'Top', siege=1)",
+            f"Puzzle.MoveTo({b}, 'DiscardPile', 'Top', siege=1)")
+    assert len(joueur.discard_pile.GetAll()) >= 2, "premisse cassee : defausse du siege 1 trop courte"
+    avant = len(jeu.session.scene.manuel_commands)
+    deposer(jeu, "Puzzle.ShuffleDiscardIntoDeck('DiscardPile', siege=1)")
+    assert joueur.discard_pile.GetAll() == [], "la defausse du siege 1 n'est pas vide"
+    zones = {monde.object_manager.card_dict[x].area for x in (a, b)}
+    assert zones == {joueur.player_deck}, "les cartes ne sont pas dans le deck du siege 1"
+    assert len(jeu.session.scene.manuel_commands) == avant + 1, "le geste a pris plus d'une commande"
+    return "defausse remelangee dans le deck du siege 1, en une commande"
+
+
+def cas_refus_jetons_carte_incompatible(game_dir, port):
+    """En manuel, un degat ou un soin sur une carte qui n'a pas de points de
+    vie (un soutien) est REFUSE, pas avale en silence : sinon le journal du
+    plateau affirme un geste qui n'a rien change (lot 6 du 06/10/2026). Rouge
+    sur l'ancien `puzzle.py` : aucune erreur, `sandbox_last_error` vide."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    soutien = _creer_en_main(jeu, monde, "01006")
+    deposer(jeu, f"Puzzle.MoveTo({soutien}, 'SupportsArea', 'Top', siege=0)")
+    gestionnaire = monde.controller_manager.device_manager
+    for commande in (f"Puzzle.Damage({soutien}, 2)", f"Puzzle.Heal({soutien}, 1)"):
+        gestionnaire.sandbox_last_error = ""
+        deposer(jeu, commande)
+        assert gestionnaire.sandbox_last_error, f"{commande} sur un soutien n'a pas ete refuse"
+    vilain = id_du_vilain(monde)
+    gestionnaire.sandbox_last_error = ""
+    deposer(jeu, f"Puzzle.Damage({vilain}, 1)")
+    assert not gestionnaire.sandbox_last_error, \
+        f"temoin : un degat sur le mechant est refuse ({gestionnaire.sandbox_last_error!r})"
+    return "degat et soin refuses sur un soutien, acceptes sur le mechant"
+
+
+def cas_echanger_avec_le_dessus_du_deck(game_dir, port):
+    """« Switch Card with top Deck Card » d'OCTGN (menu de la main) : la carte
+    de la main part sur le deck, le dessus du deck vient en main, en UNE
+    commande (lot 6 du 06/10/2026)."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"],
+                                     heros=["spider_man", "captain_marvel"])
+    joueur = monde.const_seat_order_players[1]
+    carte = _creer_en_main(jeu, monde, "01006", siege=1)
+    dessus = joueur.player_deck.GetAll()[-1].card.object_id
+    avant = len(jeu.session.scene.manuel_commands)
+    deposer(jeu, f"Puzzle.SwapWithDeckTop({carte}, siege=1)")
+    cartes = monde.object_manager.card_dict
+    assert cartes[carte].area is joueur.player_deck, "la carte de la main n'est pas partie sur le deck"
+    assert joueur.player_deck.GetAll()[-1].card.object_id == carte, "elle n'est pas sur le DESSUS du deck"
+    assert cartes[dessus].area is joueur.hand_cards, "l'ancien dessus du deck n'est pas venu en main"
+    assert len(jeu.session.scene.manuel_commands) == avant + 1, "le geste a pris plus d'une commande"
+    return "carte de la main echangee avec le dessus du deck, en une commande"
+
+
+def cas_mulligan_une_commande(game_dir, port):
+    """« Mulligan Hand » d'OCTGN : les cartes choisies vont en defausse, on en
+    repioche autant, en UNE commande (lot 6 du 06/10/2026)."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"],
+                                     heros=["spider_man", "captain_marvel"])
+    joueur = monde.const_seat_order_players[1]
+    a = _creer_en_main(jeu, monde, "01002", siege=1)
+    b = _creer_en_main(jeu, monde, "01006", siege=1)
+    taille = len(joueur.hand_cards.GetAll())
+    attendues = [f.card.object_id for f in joueur.player_deck.GetAll()[-2:]]
+    avant = len(jeu.session.scene.manuel_commands)
+    deposer(jeu, f"Puzzle.Mulligan({a}, {b}, siege=1)")
+    cartes = monde.object_manager.card_dict
+    assert {cartes[a].area, cartes[b].area} == {joueur.discard_pile}, "les cartes choisies ne sont pas en defausse"
+    assert len(joueur.hand_cards.GetAll()) == taille, "la main n'a pas retrouve sa taille"
+    assert all(cartes[x].area is joueur.hand_cards for x in attendues), "on n'a pas repioche le dessus du deck"
+    assert len(jeu.session.scene.manuel_commands) == avant + 1, "le geste a pris plus d'une commande"
+    return "mulligan de 2 cartes en une commande"
+
+
+def cas_piocher_jusqu_a_la_main_remelange(game_dir, port):
+    """F12 d'OCTGN (`doEndHeroPhase`, `drawMany`, `checkDeckRemainingCards`) :
+    on pioche jusqu'a la taille de main, et un deck vide se reconstitue en
+    remelangeant la defausse. UNE commande par heros (lot 6 du 06/10/2026)."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"],
+                                     heros=["spider_man", "captain_marvel"])
+    joueur = monde.const_seat_order_players[1]
+    for face in list(joueur.hand_cards.GetAll()):
+        deposer(jeu, f"Puzzle.MoveTo({face.card.object_id}, 'DiscardPile', 'Top', siege=1)")
+    deck = list(joueur.player_deck.GetAll())
+    for face in deck[:-2]:
+        deposer(jeu, f"Puzzle.MoveTo({face.card.object_id}, 'DiscardPile', 'Top', siege=1)")
+    assert len(joueur.player_deck.GetAll()) == 2, "premisse cassee : le deck du siege 1 n'a pas 2 cartes"
+    voulu = joueur.hand_size
+    assert voulu > 2, f"premisse cassee : taille de main {voulu}"
+    avant = len(jeu.session.scene.manuel_commands)
+    deposer(jeu, "Puzzle.DrawUpToHandSize(siege=1)")
+    assert len(joueur.hand_cards.GetAll()) == voulu, \
+        f"main de {len(joueur.hand_cards.GetAll())} carte(s), attendu {voulu}"
+    assert len(jeu.session.scene.manuel_commands) == avant + 1, "le geste a pris plus d'une commande"
+    return f"pioche jusqu'a {voulu} cartes, defausse remelangee quand le deck s'est vide"
+
+
+def cas_fin_de_round(game_dir, port):
+    """Second F12 d'OCTGN (`advanceGame`, phase du mechant) : le jeton de
+    premier joueur passe et le compteur de rounds avance (lot 6 du
+    06/10/2026)."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"],
+                                     heros=["spider_man", "captain_marvel"])
+    premier = monde.players[0]
+    round_avant = monde.round_id
+    deposer(jeu, "Puzzle.EndRound()")
+    assert monde.round_id == round_avant + 1, f"round {monde.round_id}, attendu {round_avant + 1}"
+    assert monde.players[0] is not premier, "le jeton de premier joueur n'a pas passe"
+    return f"round {monde.round_id}, premier joueur suivant"
+
+
+def cas_moveto_par_siege(game_dir, port):
+    """`MoveTo(..., siege=1)` vise le SIEGE 1, quel que soit l'ordre du moment.
+
+    On tourne l'ordre des joueurs (le jeton de premier joueur) avant le
+    geste : `player=1` viserait alors le siege 0, `siege=1` reste le siege 1.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"],
+                                     heros=["spider_man", "captain_marvel"])
+    sieges = monde.const_seat_order_players
+    assert len(sieges) == 2, f"premisse cassee : {len(sieges)} siege(s)"
+    allie = _creer_en_main(jeu, monde, "01002", siege=1)
+    monde.players.reverse()
+    assert monde.const_players[1] is sieges[0], "premisse cassee : l'ordre n'a pas tourne"
+
+    deposer(jeu, f"Puzzle.MoveTo({allie}, 'AlliesArea', 'Top', siege=1)")
+    zone = monde.object_manager.card_dict[allie].face.card.area
+    assert zone is sieges[1].allies, \
+        "le geste n'a pas pose l'allie chez le siege 1"
+    return "MoveTo(siege=1) vise le siege 1 meme quand l'ordre des joueurs a tourne"
+
+
+def cas_piocher_chez_le_proprietaire(game_dir, port):
+    """Piocher la carte du dessus du deck du siege 1 la met dans la main du
+    SIEGE 1, pas dans celle du joueur courant (lot 5 du 06/10/2026). Le plateau
+    piochait par `Puzzle.Gain`, qui donne au joueur courant (`puzzle.py`,
+    `GetCurrentPlayer`). Rouge par substitution : `PIOCHE_COMMANDE=gain`."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"],
+                                     heros=["spider_man", "captain_marvel"])
+    sieges = monde.const_seat_order_players
+    assert len(sieges) == 2, f"premisse cassee : {len(sieges)} siege(s)"
+    carte = _creer_en_main(jeu, monde, "01002", siege=1)
+    deposer(jeu, f"Puzzle.MoveTo({carte}, 'PlayerDeck', 'Top', siege=1)")
+    assert monde.object_manager.card_dict[carte].face.card.area is sieges[1].player_deck, \
+        "premisse cassee : la carte n'est pas sur le deck du siege 1"
+    assert monde.GetCurrentPlayer() is not sieges[1], \
+        "premisse cassee : le siege 1 est le joueur courant, le cas ne prouverait rien"
+
+    if os.environ.get("PIOCHE_COMMANDE") == "gain":
+        deposer(jeu, f"Puzzle.Gain({carte})")
+    else:
+        deposer(jeu, f"Puzzle.MoveTo({carte}, 'HandsArea', 'Top', siege=1)")
+    zone = monde.object_manager.card_dict[carte].face.card.area
+    assert zone is sieges[1].hand_cards, \
+        "la carte piochee n'est pas arrivee dans la main du siege 1"
+    return "la carte piochee arrive dans la main de son proprietaire (siege 1)"
+
+
+def cas_rejeu_geste_avec_siege(game_dir, port):
+    """Un geste avec `siege` se rejoue chez le meme siege, meme si l'ordre des
+    joueurs n'est plus celui du moment du geste (l'annulation recharge la
+    partie et rejoue les gestes restants)."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"],
+                                     heros=["spider_man", "captain_marvel"])
+    allie = _creer_en_main(jeu, monde, "01002", siege=1)
+    monde.players.reverse()
+    deposer(jeu, f"Puzzle.MoveTo({allie}, 'AlliesArea', 'Top', siege=1)")
+    vilain = id_du_vilain(monde)
+    deposer(jeu, f"Puzzle.Damage({vilain}, 1)")
+
+    assert jeu.session.AnnulerDernierGeste() is True
+    time.sleep(20)
+    monde2 = jeu.world
+    zone = monde2.object_manager.card_dict[allie].face.card.area
+    assert zone is monde2.const_seat_order_players[1].allies, \
+        "au rejeu, l'allie n'est pas revenu chez le siege 1"
+    return "le geste avec siege est rejoue chez le meme siege"
+
+
+def cas_evenement_en_resolution_du_joueur(game_dir, port):
+    """Un evenement pose a la main reste a cote de SON heros, en cours de
+    resolution (question 4 du 06/10/2026), jusqu'a ce qu'on le defausse."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    joueur = monde.const_seat_order_players[0]
+    evenement = _creer_en_main(jeu, monde, "01087")
+    deposer(jeu, f"Puzzle.MoveTo({evenement}, 'PlayerProcessingArea', 'Top', siege=0)")
+    carte = monde.object_manager.card_dict[evenement]
+    assert carte.face.card.area is joueur.area_processing, \
+        "l'evenement n'est pas dans la resolution du joueur"
+    deposer(jeu, f"Puzzle.Discard({evenement})")
+    assert carte.face.card.area is joueur.discard_pile, \
+        "Suppr (Discard) n'a pas envoye l'evenement dans la defausse du joueur"
+    return "evenement pose en resolution du joueur, puis defausse"
+
+
+def _option_de(options, object_id):
+    """Vrai si une option est rattachee a la carte `object_id`."""
+    for o in options:
+        if not isinstance(o, dict) or o.get("failure_reason"):
+            continue
+        for cle in ("bind_id", "card_id", "object_id", "source_id", "this_id"):
+            if o.get(cle) == object_id:
+                return True
+    return False
+
+
+def cas_allie_pose_agit_apres_reprise(game_dir, port):
+    """Un allie pose a la main pendant le manuel peut agir quand le moteur
+    reprend (preuve reclamee par la fiche du 05/10, lignes 50-51)."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    allie = _creer_en_main(jeu, monde, "01002")
+    deposer(jeu, f"Puzzle.MoveTo({allie}, 'AlliesArea', 'Top', siege=0)")
+    debut = len(OPTIONS_VUES)
+    statut, corps = _appeler_reprise(_serveur_factice(jeu), "heros")
+    assert statut == 200, f"reprise refusee : {statut} {corps}"
+    time.sleep(15)
+    vues = OPTIONS_VUES[debut:]
+    assert vues, "aucune question posee apres la reprise"
+    assert any(_option_de(opts, allie) for opts in vues), (
+        "aucune option rattachee a l'allie pose a la main. Premiere question : "
+        + json.dumps(vues[0][:4])[:900])
+    return "l'allie pose a la main propose ses actions apres la reprise"
+
+
+def cas_amelioration_posee_modifie_apres_reprise(game_dir, port):
+    """Une amelioration attachee a la main modifie la statistique de l'identite
+    une fois le moteur repris (Captain Marvel's Helmet : +1 DEF).
+
+    Rouge jusqu'au 06/10/2026 (« DEF 1 avant, 1 apres reprise ») : les
+    capacites constantes s'ARMENT sur `WhenCardEnterPlay`
+    (`AbilityFactory.WhileValid`) et la porte du silence jetait ce message.
+    Corrige par `EventManager.ReconcilierApresSilence`, appelee au premier
+    message qui repasse la porte.
+
+    Pas Superhuman Strength (+2 ATK a She-Hulk) : constate le 06/10/2026, le
+    pilote joue une attaque des la reprise et la Forced Response de la carte
+    la defausse aussitot, conformement au texte.
+    """
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"], heros="captain_marvel")
+    joueur = monde.const_seat_order_players[0]
+    # Le geste manuel de changement de forme (Ctrl+F) : `Puzzle.Flip` sur
+    # l'identite.
+    if not hasattr(joueur.GetIdentity(), "defense"):
+        deposer(jeu, f"Puzzle.Flip({joueur.GetIdentity().card.object_id})")
+    identite = joueur.GetIdentity()
+    assert hasattr(identite, "defense"), "premisse cassee : Captain Marvel n'est pas en forme heros"
+    avant = identite.defense
+    casque = _creer_en_main(jeu, monde, "01016")
+    deposer(jeu, f"Puzzle.Attach({casque}, {identite.card.object_id})")
+    statut, corps = _appeler_reprise(_serveur_factice(jeu), "heros")
+    assert statut == 200, f"reprise refusee : {statut} {corps}"
+    time.sleep(15)
+    # Le pilote repond a la premiere option legale, qui peut etre « changer
+    # de forme » (constate le 06/10/2026 : Carol Danvers au moment de la
+    # mesure). Une face inactive ne porte aucun modificateur : on remet la
+    # forme heros depuis ce fil (le moteur conduit, personne d'autre ne
+    # drainera la commande), puis on lit la DEF de la face visible.
+    monde2 = jeu.world
+    joueur2 = monde2.const_seat_order_players[0]
+    zone = monde2.object_manager.card_dict[casque].face.card.area
+    assert zone is not joueur2.discard_pile, "le casque a ete defausse apres la reprise"
+    if not hasattr(joueur2.GetIdentity(), "defense"):
+        deposer(jeu, f"Puzzle.Flip({joueur2.GetIdentity().card.object_id})", drainer_soi_meme=True)
+    identite2 = joueur2.GetIdentity()
+    assert hasattr(identite2, "defense"), "premisse cassee : pas de forme heros apres la reprise"
+    apres = identite2.defense
+    assert apres == avant + 1, f"DEF {avant} avant, {apres} apres reprise : +1 attendu"
+    return f"l'amelioration attachee a la main compte apres la reprise (DEF {avant} -> {apres})"
+
+
+def cas_entree_en_jeu_pas_relancee_a_la_reprise(game_dir, port):
+    """Temoin de `ReconcilierApresSilence` : elle arme les constantes, mais
+    ne relance AUCUN effet d'entree en jeu. Hawkeye (01066) « entre en jeu
+    avec 4 fleches » ; pose a la main, le joueur lui met 2 fleches lui-meme.
+    Apres la reprise, il en a toujours 2, jamais 6."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    tireur = _creer_en_main(jeu, monde, "01066")
+    deposer(jeu, f"Puzzle.MoveTo({tireur}, 'AlliesArea', 'Top', siege=0)",
+            f"Puzzle.Counter({tireur}, 'arrow', 2)")
+    face = monde.object_manager.card_dict[tireur].face
+    assert face.GetCounters("arrow") == 2, \
+        f"premisse cassee : 2 fleches posees a la main, {face.GetCounters('arrow')} trouvees"
+    statut, corps = _appeler_reprise(_serveur_factice(jeu), "heros")
+    assert statut == 200, f"reprise refusee : {statut} {corps}"
+    time.sleep(5)
+    monde2 = jeu.world
+    assert monde2.manuel_actif is False, "le moteur est reste muet"
+    assert monde2.event_manager.silence_a_reconcilier is False, \
+        "la porte n'a pas reconcilie apres la reprise : le temoin ne prouve rien"
+    fleches = monde2.object_manager.card_dict[tireur].face.GetCounters("arrow")
+    assert fleches == 2, f"2 fleches attendues apres la reprise, {fleches} trouvees"
+    return "un effet d'entree en jeu n'est pas relance a la reprise (2 fleches gardees)"
+
+
+def cas_reprise_avec_evenement_en_resolution(game_dir, port):
+    """Un evenement laisse en resolution du joueur ne bloque pas la reprise :
+    le moteur reprend la main et pose des questions."""
+    jeu, monde, journal = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    evenement = _creer_en_main(jeu, monde, "01087")
+    deposer(jeu, f"Puzzle.MoveTo({evenement}, 'PlayerProcessingArea', 'Top', siege=0)")
+    avant = len(journal)
+    statut, corps = _appeler_reprise(_serveur_factice(jeu), "heros")
+    assert statut == 200, f"reprise refusee : {statut} {corps}"
+    time.sleep(15)
+    assert monde.manuel_actif is False, "le moteur est reste muet"
+    assert len(journal) > avant, "le moteur n'a repose aucune question apres la reprise"
+    return "la reprise conduit la partie malgre un evenement laisse en resolution"
+
+
+def cas_deux_gestes_meme_carte(game_dir, port):
+    """Deux gestes de suite sur la meme carte : le DERNIER gagne."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    joueur = monde.const_seat_order_players[0]
+    allie = _creer_en_main(jeu, monde, "01002")
+    deposer(jeu, f"Puzzle.MoveTo({allie}, 'AlliesArea', 'Top', siege=0)",
+            f"Puzzle.MoveTo({allie}, 'SupportsArea', 'Top', siege=0)")
+    zone = monde.object_manager.card_dict[allie].face.card.area
+    assert zone is joueur.supports, "le dernier geste n'a pas gagne"
+    return "deux gestes sur la meme carte : le dernier gagne"
+
+
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
     "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
@@ -3669,6 +4289,8 @@ CAS = {
     "geste_ordinaire_survit_sauvegarde": cas_geste_ordinaire_survit_sauvegarde,
     "relire_geste_ordinaire": cas_relire_geste_ordinaire,
     "annulation_ordinaire_garde_tout": cas_annulation_ordinaire_garde_tout,
+    "annulation_geste_garde_la_pause": cas_annulation_geste_garde_la_pause,
+    "reponse_refusee_pendant_la_pause": cas_reponse_refusee_pendant_la_pause,
     "histoire_rejouee_apres_pause": cas_histoire_rejouee_apres_pause,
     "relire_histoire": cas_relire_histoire,
     "geste_au_bon_rang": cas_geste_au_bon_rang,
@@ -3676,11 +4298,32 @@ CAS = {
     "reprise_heros": cas_reprise_heros,
     "reprise_mechant": cas_reprise_mechant,
     "reprise_tour": cas_reprise_tour,
+    "round_partie_declaree": cas_round_partie_declaree,
+    "round_reprise_nouveau_tour": cas_round_reprise_nouveau_tour,
     "reprise_refusee": cas_reprise_refusee,
     "reprise_refusee_hors_manuel": cas_reprise_refusee_hors_manuel,
     "reprise_survit_sauvegarde": cas_reprise_survit_sauvegarde,
     "relire_reprise": cas_relire_reprise,
     "jeton_acceleration": cas_jeton_acceleration,
+    "poser_depuis_la_main": cas_poser_depuis_la_main,
+    "manigance_posee_avec_sa_menace": cas_manigance_posee_avec_sa_menace,
+    "manigance_retournee_pose_sa_menace": cas_manigance_retournee_pose_sa_menace,
+    "poser_face_cachee": cas_poser_face_cachee,
+    "remelanger_defausse_une_commande": cas_remelanger_defausse_une_commande,
+    "refus_jetons_carte_incompatible": cas_refus_jetons_carte_incompatible,
+    "echanger_avec_le_dessus_du_deck": cas_echanger_avec_le_dessus_du_deck,
+    "mulligan_une_commande": cas_mulligan_une_commande,
+    "piocher_jusqu_a_la_main_remelange": cas_piocher_jusqu_a_la_main_remelange,
+    "fin_de_round": cas_fin_de_round,
+    "moveto_par_siege": cas_moveto_par_siege,
+    "piocher_chez_le_proprietaire": cas_piocher_chez_le_proprietaire,
+    "rejeu_geste_avec_siege": cas_rejeu_geste_avec_siege,
+    "evenement_en_resolution_du_joueur": cas_evenement_en_resolution_du_joueur,
+    "allie_pose_agit_apres_reprise": cas_allie_pose_agit_apres_reprise,
+    "amelioration_posee_modifie_apres_reprise": cas_amelioration_posee_modifie_apres_reprise,
+    "entree_en_jeu_pas_relancee_a_la_reprise": cas_entree_en_jeu_pas_relancee_a_la_reprise,
+    "reprise_avec_evenement_en_resolution": cas_reprise_avec_evenement_en_resolution,
+    "deux_gestes_meme_carte": cas_deux_gestes_meme_carte,
 }
 
 

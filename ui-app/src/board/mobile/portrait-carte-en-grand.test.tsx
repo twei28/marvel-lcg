@@ -88,3 +88,30 @@ describe('taper une carte de la table', () => {
     expect(document.querySelectorAll('.carte-ouverte-attachee')).toHaveLength(0)
   })
 })
+
+// Constat du 06/10/2026 au téléphone : pendant le mulligan, une carte touchée
+// pour la lire s'ouvre avec « Utiliser cette carte » (l'action du mulligan),
+// et « Garder ma main » reste touchable au-dessus. La mise en place finie, la
+// carte restait ouverte, son bouton pointant vers une question terminée.
+describe('la carte ouverte suit la question en cours', () => {
+  it("se referme quand l'action pour laquelle elle s'était ouverte n'existe plus", () => {
+    const agir = vi.fn()
+    const { rerender } = render(
+      <PlateauPortrait world={monde} playerId={0} plateau={plateau('rencontre', unite('7', { name: 'Rhino', onSelect: agir }))} />
+    )
+    fireEvent.click(document.querySelector('.bande-carte .scan-card')!)
+    expect(screen.getByRole('button', { name: 'Utiliser cette carte' })).toBeInTheDocument()
+
+    rerender(<PlateauPortrait world={monde} playerId={0} plateau={plateau('rencontre', unite('7', { name: 'Rhino' }))} />)
+    expect(document.querySelector('.carte-ouverte')).not.toBeInTheDocument()
+  })
+
+  it('une carte ouverte pour la lire, sans action, reste ouverte au rendu suivant', () => {
+    const { rerender } = render(
+      <PlateauPortrait world={monde} playerId={0} plateau={plateau('rencontre', unite('7', { name: 'Rhino' }))} />
+    )
+    fireEvent.click(document.querySelector('.bande-carte .scan-card')!)
+    rerender(<PlateauPortrait world={monde} playerId={0} plateau={plateau('rencontre', unite('7', { name: 'Rhino' }))} />)
+    expect(document.querySelector('.carte-ouverte')).toBeInTheDocument()
+  })
+})

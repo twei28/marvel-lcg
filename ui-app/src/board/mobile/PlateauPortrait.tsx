@@ -60,6 +60,21 @@ export function questionSurLaMain(
   return false
 }
 
+/** La carte `id` telle que le plateau la porte maintenant : posee, attachee ou en main. */
+function trouverCarte(
+  plateau: BoardProps['plateau'],
+  main: UniteAffichee[],
+  id: string
+): ScanCardProps | undefined {
+  const unites = [...(plateau?.emplacements ?? []).flatMap((emplacement) => emplacement.groupes.flat()), ...main]
+  for (const unite of unites) {
+    if (unite.carte.id === id) return unite.carte
+    const attachee = unite.attachees.find((carte) => carte.id === id)
+    if (attachee) return attachee
+  }
+  return undefined
+}
+
 export function PlateauPortrait(props: BoardProps) {
   const bandes = useMemo(() => repartirEnBandes(props.plateau), [props.plateau])
   const interactifs = props.interactifs ?? AUCUNE_INTERACTION
@@ -79,6 +94,21 @@ export function PlateauPortrait(props: BoardProps) {
     (carte: ScanCardProps, attachees: ScanCardProps[] = []) => setCarteLue({ carte, attachees }),
     []
   )
+  // La carte ouverte SUIT la question en cours (06/10/2026) : son action est
+  // relue a chaque rendu. Ouverte pendant le mulligan, elle portait l'action du
+  // mulligan ; « Garder ma main » restait touchable au-dessus, et la mise en
+  // place finie, elle restait ouverte avec un bouton vers une question close.
+  // Une carte ouverte POUR une action se referme quand l'action disparait ;
+  // une carte ouverte pour la lire reste ouverte.
+  const carteLueActuelle = useMemo(() => {
+    if (!carteLue) return undefined
+    const brute = trouverCarte(props.plateau, bandes.main, carteLue.carte.id)
+    return brute ? avecInteraction(brute, interactifs, effets) : undefined
+  }, [carteLue, props.plateau, bandes.main, interactifs, effets])
+  const actionPerdue = carteLue?.carte.onSelect !== undefined && carteLueActuelle?.onSelect === undefined
+  useEffect(() => {
+    if (actionPerdue) setCarteLue(undefined)
+  }, [actionPerdue])
   // Les encoches s'effacent pendant le defilement de la table (elles se
   // posent sur la bande du heros).
   const [enDefilement, setEnDefilement] = useState(false)
@@ -146,12 +176,16 @@ export function PlateauPortrait(props: BoardProps) {
   )
   // Agir avec une carte : l'action DIRECTE posee par le moteur ; a defaut,
   // `onCardClick` ouvre le menu des actions de la carte (board.tsx).
+  // En mode manuel, l'appui long ouvre le menu du clic droit (CoucheTriche,
+  // lot 4) : le portrait n'agit pas en plus.
+  const manuelAuDoigt = props.glisser?.auDoigt === true
   const agir = useCallback(
     (carte: ScanCardProps) => {
+      if (manuelAuDoigt) return
       if (carte.onSelect) carte.onSelect()
       else props.onCardClick?.(carte)
     },
-    [props.onCardClick]
+    [props.onCardClick, manuelAuDoigt]
   )
   const decor = useMemo(
     () => ({
@@ -233,9 +267,9 @@ export function PlateauPortrait(props: BoardProps) {
         onOuvrir={(unite) => ouvrirCarte(unite.carte)}
         onJouer={(unite) => agir(unite.carte)}
       />
-      {carteLue ? (
+      {carteLue && !actionPerdue ? (
         <CarteOuverte
-          carte={carteLue.carte}
+          carte={carteLueActuelle ?? carteLue.carte}
           attachees={carteLue.attachees}
           onOuvrirAttachee={(carte) => ouvrirCarte(carte)}
           onFermer={() => setCarteLue(undefined)}

@@ -8,7 +8,7 @@
 // Harnais calqué sur `CoucheTriche.test.tsx` : `useTriche` a besoin d'un
 // monde complet, construit ici avec `plateau-de-test.ts` comme
 // `fixture-monde.ts` le fait déjà pour ce dossier.
-import { act, fireEvent, render } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { CoucheTriche, useTriche } from '../CoucheTriche'
 import { carteSurTable, siege, tableAvec } from '../plateau-de-test'
@@ -95,13 +95,15 @@ describe('le clavier du mode manuel parle au moteur', () => {
     }))
   })
 
-  it('sur une pile du JOUEUR, un chiffre pioche en main', async () => {
+  // Lot 5 du 06/10/2026 : en manuel, la carte va dans la main de SON
+  // propriétaire (`MoveTo` par siège). `Gain` donnait au joueur courant.
+  it('sur une pile du JOUEUR, un chiffre pioche dans la main de son propriétaire', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(20)
     fireEvent.keyDown(document, { key: '1' })
     await act(async () => { await Promise.resolve() })
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
-      body: JSON.stringify({ commands: ['Puzzle.Gain(20)'] }),
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(20, 'HandsArea', 'Top', siege=0)"] }),
     }))
   })
 
@@ -135,14 +137,18 @@ describe('le clavier du mode manuel parle au moteur', () => {
     }))
   })
 
-  it('les anciennes touches maison (F, Q, R, chiffre sur une carte) ne font rien', async () => {
+  // Question 10 du 06/10/2026 : les touches maison reviennent, en plus d'OCTGN.
+  it('touches maison : F retourne, 3 pose 3 dégâts, R mélange la pile', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(7)
-    for (const cle of ['f', 'q', '3']) fireEvent.keyDown(document, { key: cle })
+    fireEvent.keyDown(document, { key: 'f' })
+    fireEvent.keyDown(document, { key: '3' })
     survoler(20)
     fireEvent.keyDown(document, { key: 'r' })
     await act(async () => { await Promise.resolve() })
-    expect(fetch).not.toHaveBeenCalled()
+    const envoyees = vi.mocked(fetch).mock.calls.flatMap(([, init]) => JSON.parse((init as RequestInit).body as string).commands)
+    expect(envoyees).toEqual(expect.arrayContaining(['Puzzle.Flip(7)', "Puzzle.Shuffle('PlayerDeck', siege=0)"]))
+    expect(envoyees).toContain('Puzzle.Damage(7, 3)')
   })
 
   it('Ctrl+Q redresse tout ce qui est incline chez le joueur', async () => {
@@ -209,9 +215,63 @@ describe('le clavier du mode manuel parle au moteur', () => {
     const nonAnnule = fireEvent.keyDown(document, { key: 's', ctrlKey: true })
     await act(async () => { await Promise.resolve() })
     expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
-      body: JSON.stringify({ commands: ["Puzzle.Shuffle('PlayerDeck')"] }),
+      body: JSON.stringify({ commands: ["Puzzle.Shuffle('PlayerDeck', siege=0)"] }),
     }))
     expect(nonAnnule).toBe(false)
+  })
+
+  it('F1 ouvre le menu de la carte survolée', () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(7)
+    fireEvent.keyDown(document, { key: 'F1' })
+    expect(screen.getByText('Incliner')).toBeTruthy()
+  })
+
+  it('Maj+F1 efface la menace d’une manigance et les dégâts d’un personnage', async () => {
+    const monde = {
+      ...mondeManuel(),
+      villains: [{ ...VILAIN, info: { k_damage: 2 } }],
+      area_schemes_main: [{ ...MANIGANCE, info: { k_threat: 3 } }],
+    } as World
+    render(<Harness world={monde} capture={{}} />)
+    survoler(9)
+    fireEvent.keyDown(document, { key: 'F1', shiftKey: true })
+    survoler(7)
+    fireEvent.keyDown(document, { key: 'F1', shiftKey: true })
+    await act(async () => { await Promise.resolve() })
+    const envoyees = vi.mocked(fetch).mock.calls.flatMap(([, init]) => JSON.parse((init as RequestInit).body as string).commands)
+    expect(envoyees).toEqual(expect.arrayContaining(['Puzzle.SetThreat(9, 0)', 'Puzzle.Heal(7, 2)']))
+  })
+
+  // Lot 6 du 06/10/2026.
+  it('Ctrl+F sur une pile retourne la carte du dessus', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(20)
+    fireEvent.keyDown(document, { key: 'f', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Flip(20)'] }),
+    }))
+  })
+
+  it('Ctrl+U sur le deck du joueur : la carte du dessus va face cachée à côté de son héros', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(20)
+    fireEvent.keyDown(document, { key: 'u', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(20, 'PlayerProcessingArea', 'Top', siege=0, face_cachee=True)"] }),
+    }))
+  })
+
+  it('Ctrl+U sur le deck Rencontre : face cachée en zone de résolution', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(21)
+    fireEvent.keyDown(document, { key: 'u', ctrlKey: true })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(21, 'ProcessingArea', 'Top', face_cachee=True)"] }),
+    }))
   })
 
   it('F7 incline la carte survolée, F3 lui pose un dégât, Maj+F3 en retire un', async () => {
@@ -447,11 +507,65 @@ describe('les gestes OCTGN parlent au moteur', () => {
     envoye("Puzzle.MoveTo(21, 'ProcessingArea', 'Top')")
   })
 
-  it('double-clic sur une manigance, une carte sans etat ou une pile : rien', async () => {
+  it('double-clic sur une carte sans etat ou une pile : rien', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
-    for (const id of [9, 4, 20]) fireEvent.doubleClick(survoler(id))
+    for (const id of [4, 20]) fireEvent.doubleClick(survoler(id))
     await act(async () => { await Promise.resolve() })
     expect(fetch).not.toHaveBeenCalled()
+  })
+
+  // Lot 6 du 06/10/2026 : comme `defaultCardAction` d'OCTGN, une manigance se
+  // retourne (le moteur repose sa menace de départ, cas moteur
+  // `manigance_retournee_pose_sa_menace`).
+  it('double-clic sur une manigance : elle se retourne', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    fireEvent.doubleClick(survoler(9))
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Flip(9)'] }),
+    }))
+  })
+
+  // Question 8 du 06/10/2026 : le double-clic sur une carte EN MAIN ne la
+  // retourne plus en secret (lot 1 : `is_face_up` faux puis vrai, capture
+  // manuel-30) ; il la POSE en jeu selon son type, exactement comme la
+  // lâcher sur la table (`gesteDePose`, partagé avec le glisser).
+  it('double-clic sur un allié EN MAIN : il va dans les Alliés du siège, jamais retourné', async () => {
+    const monde = mondeManuel()
+    const joueur = (monde as unknown as { players: { hand_cards: unknown[] }[] }).players[0]
+    joueur.hand_cards = [carteSurTable(30, '01007a', 'Ally', 'Allie en main', { is_face_up: false })]
+    render(<Harness world={monde} capture={{}} />)
+    fireEvent.doubleClick(survoler(30))
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.MoveTo(30, 'AlliesArea', 'Top', siege=0)"] }),
+    }))
+  })
+
+  it('double-clic sur une amélioration EN MAIN : elle s’attache à l’identité, seule cible', async () => {
+    const monde = mondeManuel()
+    const joueur = (monde as unknown as { players: { hand_cards: unknown[]; area_hero: unknown[]; allies: unknown[] }[] }).players[0]
+    joueur.area_hero = [carteSurTable(1, '01001a', 'Hero', 'Spider-Man')]
+    joueur.allies = []
+    joueur.hand_cards = [carteSurTable(32, '01008', 'Upgrade', 'Web-Shooter')]
+    render(<Harness world={monde} capture={{}} />)
+    fireEvent.doubleClick(survoler(32))
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ['Puzzle.Attach(32, 1)'] }),
+    }))
+  })
+
+  it('double-clic sur une ressource EN MAIN : refus en bulle, aucune commande', async () => {
+    const monde = mondeManuel()
+    const joueur = (monde as unknown as { players: { hand_cards: unknown[] }[] }).players[0]
+    joueur.hand_cards = [carteSurTable(33, '01088', 'Resource', 'Energy')]
+    const { findByRole } = render(<Harness world={monde} capture={{}} />)
+    fireEvent.doubleClick(survoler(33))
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+    expect((await findByRole('status')).textContent).toMatch(/ressource se défausse/i)
   })
 
   it('double-clic ignore hors du mode manuel', async () => {

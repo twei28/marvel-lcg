@@ -53,6 +53,12 @@ class Ability:
 
         self.cannot_be_cancel = False
 
+        # Capacite qui s'ARME a l'entree en jeu de sa carte et vit tant qu'elle
+        # y reste (`AbilityFactory.WhileValid`, `WhenEvent`). Le silence du
+        # manuel lui fait manquer ses messages : `EventManager` la reconcilie a
+        # la reouverture de la porte.
+        self.arme_en_jeu = False
+
         self.cost_fn: Callable[['Effect', List['CardFace']], Cost]|None = None
         self.play_cost: Cost|None = None
 

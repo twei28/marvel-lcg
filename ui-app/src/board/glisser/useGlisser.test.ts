@@ -191,9 +191,45 @@ describe('cibleSousLePoint', () => {
     expect(cibleSousLePoint(0, 0)).toEqual({ carteId: 9, zone: 'terrain-combat', secteur: undefined })
   })
 
+  // Lot 2 du 06/10/2026 : le mode manuel pose la carte n'importe où DANS le
+  // cadre du plateau. Hors du cadre (journal, barre), le champ est absent.
+  it('lâchée dans le cadre du plateau : sur la table', () => {
+    const cadre = document.createElement('div')
+    cadre.className = 'plateau-cadre'
+    const vide = document.createElement('span')
+    cadre.appendChild(vide)
+    document.body.innerHTML = ''
+    document.body.appendChild(cadre)
+    document.elementFromPoint = () => vide
+    expect(cibleSousLePoint(0, 0).surLaTable).toBe(true)
+  })
+
+  it('lâchée hors du cadre du plateau : pas sur la table', () => {
+    const { scanCard } = poserPlateau({ zoneEmplacement: 'terrain-combat', carteId: 9 })
+    document.elementFromPoint = () => scanCard!
+    expect(cibleSousLePoint(0, 0).surLaTable).toBeUndefined()
+  })
+
   it('lâchée dans le vide (rien à cette position) : rien du tout', () => {
     document.body.innerHTML = ''
     document.elementFromPoint = () => null
     expect(cibleSousLePoint(0, 0)).toEqual({ carteId: undefined, zone: undefined })
+  })
+})
+
+// Lot 5 du 06/10/2026 (question 6) : une carte lâchée dans le groupe d'un
+// joueur arrive chez CE joueur. Le groupe porte son siège (`data-joueur`).
+describe('cibleSousLePoint, le siège du groupe visé', () => {
+  it('lâchée dans le groupe d’un joueur : son siège', () => {
+    const { scanCard } = poserPlateau({ zoneEmplacement: 'terrain-soutien', carteId: 4 })
+    scanCard!.closest<HTMLElement>('.plateau-groupe')!.dataset.joueur = '1'
+    document.elementFromPoint = () => scanCard!
+    expect(cibleSousLePoint(0, 0).siege).toBe(1)
+  })
+
+  it('un groupe sans propriétaire (environnement) : aucun siège', () => {
+    const { scanCard } = poserPlateau({ zoneEmplacement: 'terrain-combat', carteId: 4 })
+    document.elementFromPoint = () => scanCard!
+    expect(cibleSousLePoint(0, 0).siege).toBeUndefined()
   })
 })

@@ -22,13 +22,22 @@ import {
   estSansEtat,
   interpreterDoubleClic,
   interpreterTouche,
+  natureDe,
   type CibleClavier,
   type GesteClavier,
 } from './manuel/clavier'
 import { statutsPortes } from './effets-statuts'
+import { nomAffiche } from './noms-cartes-fr'
 import { FinManuelle } from './manuel/FinManuelle'
+import { ChoixCibleAmelioration, type ChoixCible } from './manuel/ChoixCibleAmelioration'
+import { ChoixMulligan } from './manuel/ChoixMulligan'
+import { gesteDePose } from './manuel/glisser-manuel'
+import { carteDeLaTrame, contexteDePose, poserEnJeu, type CibleAmelioration } from './manuel/poser-en-jeu'
 import { leMoteurSeTait } from './manuel/mode'
-import { estSpectateur } from './moteur'
+import { peutBouger, proprietaireDe, siegesControles } from './manuel/proprietaire'
+import { appuiCompte, issueAppui, type AppuiEnCours } from './manuel/appui-tactile'
+import { APPUI_LONG_MS } from './mobile/useAppuiLong'
+import { estMultijoueur, estSpectateur } from './moteur'
 import { MenuTable } from './manuel/MenuTable'
 import { MenuTriche, type CibleTriche } from './MenuTriche'
 import * as triche from './triche'
@@ -49,6 +58,8 @@ export type PileTriche = {
   duJoueur: boolean
   /** Le nom moteur de la pile (`DeckType`), pour pouvoir la mélanger. */
   zone: string
+  /** Pile d'un joueur : son siège, sans quoi elle viserait le joueur courant (lot 5). */
+  siege?: number
 }
 
 type MenuOuvert = { cible: CibleTriche; x: number; y: number }
@@ -114,7 +125,7 @@ function pilesParDessus(
   ) => {
     if (!cartes || cartes.length === 0) return
     const dessus = cartes.at(-1)
-    if (dessus) piles.set(dessus.id, { titre, cartes, duJoueur, zone })
+    if (dessus) piles.set(dessus.id, { titre, cartes, duJoueur, zone, ...(duJoueur ? { siege: joueurId } : {}) })
   }
 
   ajouter(joueur?.player_deck, t('Deck du héros'), true, 'PlayerDeck')
@@ -124,11 +135,20 @@ function pilesParDessus(
   return piles
 }
 
+/** Une main trop grande à la fin de la phase des héros (F12). */
+type Excedent = { siege: number; nombre: number; main: { id: number; nom: string }[] }
+
 export function useTriche(
   world: World | undefined,
   joueurId: number,
   /** Verse l'intervention dans le journal de partie. */
-  ajouterAuJournal?: (libelle: string) => void
+  ajouterAuJournal?: (libelle: string) => void,
+  /**
+   * Le siège de CET écran (lot 5 du 06/10/2026, question 14). En ligne, il ne
+   * bouge que ses cartes ; à une même table, tous les sièges sont à lui.
+   * `joueurId`, lui, est le héros AFFICHÉ.
+   */
+  monSiege: number = joueurId
 ) {
   // Le menu s'ouvre dans les DEUX modes : bac à sable (on truque une partie
   // qui se joue aux règles) et manuel (il n'y a plus que lui pour jouer).
@@ -162,9 +182,36 @@ export function useTriche(
   // `MenuTable.tsx`.
   const [menuTable, setMenuTable] = useState<{ x: number; y: number } | undefined>(undefined)
   const [interventions, setInterventions] = useState<string[]>([])
+  // Question 3 du 06/10/2026 : une amélioration posée sur la table, plusieurs
+  // cartes peuvent la recevoir, le joueur choisit.
+  const [choixCible, setChoixCible] = useState<ChoixCible | undefined>(undefined)
+  const choisirCible = useCallback(
+    (sourceId: number, nom: string, cibles: CibleAmelioration[]) => setChoixCible({ sourceId, nom, cibles }),
+    []
+  )
+  const fermerChoixCible = useCallback(() => setChoixCible(undefined), [])
 
   const index = useMemo(() => (actif ? indexer(world) : new Map()), [actif, world])
+  const controles = useMemo(() => siegesControles(world, monSiege, estMultijoueur()), [world, monSiege])
+  const touchable = useCallback((id: number) => peutBouger(world, id, controles), [world, controles])
+  /**
+   * Piocher vers la main de SON propriétaire (lot 5) : en manuel par
+   * `MoveTo(..., 'HandsArea', siege)`. `Gain` donne au joueur COURANT
+   * (`puzzle.py`), donc chez le mauvais héros dès qu'on est deux. Le bac à
+   * sable garde `Gain`, qui suit les règles.
+   */
+  const versLaMain = useCallback(
+    (id: number) =>
+      manuel ? triche.deplacerVers(id, 'HandsArea', 'Top', proprietaireDe(world, id) ?? joueurId) : triche.envoyerEnMain(id),
+    [manuel, world, joueurId]
+  )
   const statuts = useMemo(() => statutsPortes(index), [index])
+  // Les cartes EN MAIN, tous joueurs : le double-clic d'OCTGN n'y fait rien
+  // (lot 1 du 06/10/2026). Il les retournait en secret, ou inclinait un allié.
+  const enMain = useMemo(
+    () => new Set((world?.players ?? []).flatMap((joueur) => (joueur.hand_cards ?? []).map((carte) => carte.id))),
+    [world]
+  )
   const piles = useMemo(
     () => (actif ? pilesParDessus(world, joueurId) : new Map()),
     [actif, world, joueurId]
@@ -255,6 +302,82 @@ export function useTriche(
     [noter]
   )
 
+  // Question 8 du 06/10/2026 : un double-clic sur une carte EN MAIN la pose
+  // en jeu selon son type, exactement comme la lâcher sur la table
+  // (`gesteDePose`, partagé avec le glisser). Une carte refusée (une
+  // ressource...) le dit en bulle, sans rien envoyer.
+  const poserDepuisLaMain = useCallback(
+    (id: number) => {
+      const carte = carteDeLaTrame(world, id)
+      const nomDe = (autre: number) => {
+        const trouvee = carteDeLaTrame(world, autre)
+        return trouvee ? nomAffiche(trouvee) : t('carte')
+      }
+      const pose = poserEnJeu({ id, type: carte?.card_type ?? '' }, contexteDePose(world, proprietaireDe(world, id) ?? joueurId))
+      const decision = gesteDePose(id, pose, { nomDe, emettreGeste, choisirCible })
+      if (decision.genre === 'geste') decision.executer()
+      else if (decision.genre === 'refus') afficherBrievement(decision.raison)
+    },
+    [world, joueurId, emettreGeste, choisirCible, afficherBrievement]
+  )
+
+  const attacherChoisie = useCallback(
+    (cible: CibleAmelioration) => {
+      if (!choixCible) return
+      const { sourceId, nom } = choixCible
+      setChoixCible(undefined)
+      void emettreGeste(`${t('Poser en jeu')} : ${nom} (${t('sous')} ${cible.nom})`, () =>
+        triche.attacher(sourceId, cible.id)
+      )
+    },
+    [choixCible, emettreGeste]
+  )
+
+  // Le menu de la main d'OCTGN (lot 6 du 06/10/2026) : la main du héros
+  // affiché, si cet écran a le droit d'y toucher (question 14).
+  const mainAffichee = useMemo(
+    () =>
+      (world?.players?.[joueurId]?.hand_cards ?? [])
+        .filter((carte) => touchable(carte.id))
+        .map((carte) => ({ id: carte.id, nom: nomAffiche(carte) || `${t('Carte')} ${carte.id}` })),
+    [world, joueurId, touchable]
+  )
+  const [mulliganOuvert, setMulliganOuvert] = useState(false)
+  // F12 avec une main trop grande (`doEndHeroPhase` d'OCTGN, lot 6).
+  const [excedent, setExcedent] = useState<Excedent | undefined>(undefined)
+  const defausserExcedent = useCallback(
+    (ids: number[]) => {
+      setExcedent(undefined)
+      if (ids.length === 0) return
+      void emettreGeste(`${t('Défausser l’excédent')} ${ids.length}`, () => triche.defausserPlusieurs(ids))
+    },
+    [emettreGeste]
+  )
+  const defausserAuHasard = useCallback(() => {
+    if (mainAffichee.length === 0) return
+    const carte = mainAffichee[Math.min(mainAffichee.length - 1, Math.floor(Math.random() * mainAffichee.length))]
+    void emettreGeste(`${t('Défausser au hasard')} — ${carte.nom}`, () =>
+      triche.deplacerVers(carte.id, 'DiscardPile', 'Top', joueurId)
+    )
+  }, [mainAffichee, emettreGeste, joueurId])
+  const confirmerMulligan = useCallback(
+    (ids: number[]) => {
+      setMulliganOuvert(false)
+      if (ids.length === 0) return
+      void emettreGeste(`${t('Mulligan')} ${ids.length}`, () => triche.mulligan(ids, joueurId))
+    },
+    [emettreGeste, joueurId]
+  )
+  const echangerAvecLeDessus = useCallback(
+    (id: number) => {
+      const nom = index.get(id)?.name ?? `${t('Carte')} ${id}`
+      void emettreGeste(`${t('Échanger avec le dessus du deck')} — ${nom}`, () =>
+        triche.echangerAvecLeDessusDuDeck(id, proprietaireDe(world, id) ?? joueurId)
+      )
+    },
+    [index, emettreGeste, world, joueurId]
+  )
+
   // Résout la file au rendu suivant. En manuel, `World.ManualLoop` redessine
   // même quand un geste échoue (voir engine/game/world/world.py), donc ce
   // rendu arrive toujours — pas besoin d'attente supplémentaire. En bac à
@@ -332,12 +455,45 @@ export function useTriche(
     []
   )
 
+  // Le menu d'UNE carte, à une position d'écran : clic droit, appui long,
+  // F1, touche Menu, Maj+F10 (lot 6 du 06/10/2026).
+  const ouvrirMenuCarte = useCallback(
+    (id: number, x: number, y: number) => {
+      // Question 14 : la carte d'un autre joueur, en ligne, n'a pas de menu.
+      if (!touchable(id)) return
+      const pileVisee = piles.get(id)
+      if (pileVisee) {
+        setPile(pileVisee)
+        return
+      }
+      const carte = index.get(id)
+      if (!carte) return
+      setMenu({
+        cible: {
+          id,
+          nom: nomAffiche(carte) || `${t('Carte')} ${id}`,
+          estManigance: estManigance(carte.card_type),
+          estPersonnage: !estSansEtat(carte.card_type),
+          // Lot 5 : la pile de joueur visée est celle du propriétaire ; une
+          // carte Rencontre va chez le héros affiché.
+          siege: manuel ? (proprietaireDe(world, id) ?? joueurId) : undefined,
+        },
+        x,
+        y,
+      })
+    },
+    [touchable, piles, index, manuel, world, joueurId]
+  )
+  // Dernière position du pointeur : le menu ouvert au clavier s'y pose.
+  const dernierPointeur = useRef({ x: 0, y: 0 })
+
   // L'écoute vit au niveau du document : les cartes portent déjà
   // `data-card-id`, il suffit de remonter depuis la cible du clic.
   useEffect(() => {
     if (!actif) return
-    const surClicDroit = (evenement: MouseEvent) => {
-      const cible = evenement.target as HTMLElement | null
+    // Rend vrai si le geste a ouvert un menu (le clic droit coupe alors celui
+    // du navigateur). Partagée par le clic droit et l'appui long au doigt.
+    const ouvrirMenuSous = (cible: HTMLElement | null, x: number, y: number): boolean => {
       const noeud = cible?.closest?.('[data-card-id]') as HTMLElement | null
       if (!noeud) {
         // Clic droit dans le vide : c'est une action de TABLE (« Faire
@@ -349,38 +505,81 @@ export function useTriche(
         // pas besoin de cette échappatoire, et son clic droit dans le vide
         // doit garder son comportement d'avant (rien, menu du navigateur).
         if (manuel) {
-          evenement.preventDefault()
-          setMenuTable({ x: evenement.clientX, y: evenement.clientY })
+          setMenuTable({ x, y })
+          return true
         }
-        return
+        return false
       }
       const id = Number(noeud.getAttribute('data-card-id'))
-      if (!Number.isFinite(id)) return
-
-      evenement.preventDefault()
-
-      const pileVisee = piles.get(id)
-      if (pileVisee) {
-        setPile(pileVisee)
-        return
-      }
-
-      const carte = index.get(id)
-      if (!carte) return
-      setMenu({
-        cible: {
-          id,
-          nom: carte.name || `${t('Carte')} ${id}`,
-          estManigance: estManigance(carte.card_type),
-          estPersonnage: !estSansEtat(carte.card_type),
-        },
-        x: evenement.clientX,
-        y: evenement.clientY,
-      })
+      if (!Number.isFinite(id)) return false
+      ouvrirMenuCarte(id, x, y)
+      return true
     }
+    const surClicDroit = (evenement: MouseEvent) => {
+      if (ouvrirMenuSous(evenement.target as HTMLElement | null, evenement.clientX, evenement.clientY)) {
+        evenement.preventDefault()
+      }
+    }
+
+    // Au doigt (lot 4, question 11) : iPad n'envoie aucun `contextmenu` à
+    // l'appui long. Une minuterie tient lieu de clic droit ; un déplacement au
+    // delà du seuil du glisser la coupe et laisse le glisser prendre la main.
+    let appui: (AppuiEnCours & { cible: HTMLElement | null }) | undefined
+    let minuteurAppui: number | undefined
+    // Le menu s'ouvre SOUS le doigt : au lever, le navigateur envoie mousedown,
+    // mouseup puis click au point de contact, qui déclenchaient l'entrée du menu
+    // sous le doigt (« Défausser » : tenir une carte la défaussait, constat du
+    // 06/10/2026). Le lever qui suit un menu ouvert par appui long est avalé.
+    let leverAAvaler = false
+    const oublierAppui = () => {
+      if (minuteurAppui !== undefined) window.clearTimeout(minuteurAppui)
+      minuteurAppui = undefined
+      appui = undefined
+    }
+    const surAppui = (evenement: PointerEvent) => {
+      oublierAppui()
+      leverAAvaler = false
+      if (!appuiCompte(evenement.pointerType)) return
+      const tenu = { x: evenement.clientX, y: evenement.clientY, debut: Date.now(), cible: evenement.target as HTMLElement | null }
+      appui = tenu
+      minuteurAppui = window.setTimeout(() => {
+        minuteurAppui = undefined
+        if (appui === tenu && ouvrirMenuSous(tenu.cible, tenu.x, tenu.y)) leverAAvaler = true
+        appui = undefined
+      }, APPUI_LONG_MS)
+    }
+    const surDeplacementAppui = (evenement: PointerEvent) => {
+      if (appui && issueAppui(appui, Date.now(), evenement.clientX, evenement.clientY) === 'glisser') oublierAppui()
+    }
+
+    const surFinDuToucher = (evenement: TouchEvent) => {
+      if (leverAAvaler) evenement.preventDefault()
+    }
+    const surClicApresAppui = (evenement: MouseEvent) => {
+      if (!leverAAvaler) return
+      leverAAvaler = false
+      evenement.preventDefault()
+      evenement.stopPropagation()
+    }
+
     document.addEventListener('contextmenu', surClicDroit)
-    return () => document.removeEventListener('contextmenu', surClicDroit)
-  }, [actif, index, piles, manuel])
+    document.addEventListener('touchend', surFinDuToucher, { capture: true, passive: false })
+    document.addEventListener('click', surClicApresAppui, true)
+    document.addEventListener('pointerdown', surAppui)
+    document.addEventListener('pointermove', surDeplacementAppui)
+    document.addEventListener('pointerup', oublierAppui)
+    document.addEventListener('pointercancel', oublierAppui)
+    return () => {
+      oublierAppui()
+      document.removeEventListener('contextmenu', surClicDroit)
+      document.removeEventListener('touchend', surFinDuToucher, { capture: true })
+      document.removeEventListener('click', surClicApresAppui, true)
+      document.removeEventListener('pointerdown', surAppui)
+      document.removeEventListener('pointermove', surDeplacementAppui)
+      document.removeEventListener('pointerup', oublierAppui)
+      document.removeEventListener('pointercancel', oublierAppui)
+    }
+  }, [actif, manuel, ouvrirMenuCarte])
 
   // Un geste qui touche plusieurs cartes (Ctrl+Q, F12) : une commande par
   // carte, une ligne de journal par carte, un seul bloc en attente (même
@@ -421,7 +620,7 @@ export function useTriche(
         case 'melanger': {
           const pileVisee = [...piles.values()].find((candidate) => candidate.zone === geste.zone)
           await emettreGeste(`${t('Mélanger')} — ${pileVisee?.titre ?? geste.zone}`, () =>
-            triche.melanger(geste.zone)
+            triche.melanger(geste.zone, pileVisee?.siege)
           )
           return
         }
@@ -474,7 +673,7 @@ export function useTriche(
             const nom = carte.name || `${t('Carte')} ${carte.id}`
             const description = `${libelle} — ${nom}`
             const depose = pileVisee?.duJoueur
-              ? await triche.envoyerEnMain(carte.id)
+              ? await versLaMain(carte.id)
               : await triche.deplacerVers(carte.id, 'ProcessingArea')
             if (depose) {
               libelles.push(description)
@@ -497,7 +696,7 @@ export function useTriche(
           const action =
             geste.statut === 'stun' ? triche.assommer : geste.statut === 'confuse' ? triche.rendreConfus : triche.rendreCoriace
           const base =
-            geste.statut === 'stun' ? t('Étourdi') : geste.statut === 'confuse' ? t('Confus') : t('Coriace')
+            geste.statut === 'stun' ? t('Sonné') : geste.statut === 'confuse' ? t('Désorienté') : t('Tenace')
           const libelle = geste.pose ? base : `${base} ${t('retiré')}`
           await emettreGeste(`${libelle} — ${nom}`, () => action(geste.id))
           return
@@ -559,6 +758,70 @@ export function useTriche(
         case 'maniganceTerminee':
           await emettreGeste(t('Manigance terminée'), () => triche.avancerLaManigance())
           return
+        // Lot 6 du 06/10/2026 : `drawUnrevealed` d'OCTGN. La carte du dessus
+        // part FACE CACHÉE sur la table : à côté de son héros pour une pile de
+        // joueur, en zone de résolution pour une pile Rencontre. Le journal ne
+        // la nomme pas.
+        case 'piocherCache': {
+          const pileVisee = [...piles.values()].find((candidate) => candidate.zone === geste.zone)
+          const cartes = pileVisee ? pileVisee.cartes.slice(-geste.nombre).reverse() : []
+          const libelle = `${t('Piocher face cachée')} — ${pileVisee?.titre ?? geste.zone}`
+          if (!pileVisee || cartes.length === 0) {
+            noter(`${libelle} (${t('refusé')})`)
+            return
+          }
+          await emettreLot(
+            cartes.map((carte: WorldCard) => ({
+              libelle,
+              deposer: () =>
+                pileVisee.duJoueur
+                  ? triche.deplacerVers(carte.id, 'PlayerProcessingArea', 'Top', pileVisee.siege, true)
+                  : triche.deplacerVers(carte.id, 'ProcessingArea', 'Top', undefined, true),
+            }))
+          )
+          return
+        }
+        case 'piocherCachePlusieurs': {
+          const reponse = window.prompt(t('Combien de cartes ?'), '3')
+          const nombre = Number(reponse)
+          if (reponse === null || !Number.isInteger(nombre) || nombre < 1) return
+          await executerGeste({ geste: 'piocherCache', zone: geste.zone, nombre })
+          return
+        }
+        case 'menuCarte': {
+          ouvrirMenuCarte(geste.id, dernierPointeur.current.x, dernierPointeur.current.y)
+          return
+        }
+        // Maj+F1 (`clearMarker` d'OCTGN) : le marqueur NATUREL de la carte
+        // revient à zéro. La menace d'une manigance, les dégâts d'un
+        // personnage, sinon les compteurs génériques.
+        case 'effacerMarqueurs': {
+          const carte = index.get(geste.id)
+          if (!carte) return
+          const nom = carte.name || `${t('Carte')} ${geste.id}`
+          const valeur = (cle: string) => {
+            const brut = carte.info?.[cle]
+            return typeof brut === 'number' ? brut : 0
+          }
+          const nature = natureDe(carte.card_type)
+          if (nature === 'menace') {
+            if (valeur('k_threat') === 0) return noter(`${t('Aucun marqueur')} — ${nom}`)
+            await emettreGeste(`${t('Effacer la menace')} — ${nom}`, () => triche.fixerMenace(geste.id, 0))
+            return
+          }
+          if (nature === 'pv' || nature === 'degats') {
+            const degats = valeur('k_damage')
+            if (degats === 0) return noter(`${t('Aucun marqueur')} — ${nom}`)
+            await emettreGeste(`${t('Effacer les dégâts')} — ${nom}`, () => triche.soigner(geste.id, degats))
+            return
+          }
+          const compteurs = valeur('c_counter')
+          if (compteurs === 0) return noter(`${t('Aucun marqueur')} — ${nom}`)
+          await emettreGeste(`${t('Effacer les compteurs')} — ${nom}`, () =>
+            triche.poserCompteur(geste.id, 'counter', -compteurs)
+          )
+          return
+        }
         case 'piocherPlusieurs': {
           const reponse = window.prompt(t('Combien de cartes ?'), '3')
           const nombre = Number(reponse)
@@ -568,34 +831,52 @@ export function useTriche(
         }
         case 'toutRedresser':
         case 'finPhaseHeros': {
-          const joueur = world?.players?.[joueurId]
           const lignes: { libelle: string; deposer: () => Promise<boolean> }[] = []
-          // Les cartes du joueur seulement (`readyAll` d'OCTGN ignore tout ce
-          // qui est Rencontre, méchant ou manigance principale).
-          const inclinees = [...(joueur?.area_hero ?? []), ...(joueur?.allies ?? []), ...(joueur?.supports ?? [])].filter(
-            (carte) => !carte.is_ready && estInclinable(carte.card_type)
-          )
-          for (const carte of inclinees) {
-            lignes.push({
-              libelle: `${t('Redresser')} — ${carte.name || `${t('Carte')} ${carte.id}`}`,
-              deposer: () => triche.redresser(carte.id),
-            })
-          }
-          // Fin de la phase des héros : on repioche jusqu'à la taille de main
-          // (`doEndHeroPhase`). La défausse n'est PAS remélangée dans un deck
-          // vide, et l'excédent de main n'est pas défaussé : à la main.
-          if (geste.geste === 'finPhaseHeros' && joueur) {
-            const manque = (joueur.hand_size ?? 0) - joueur.hand_cards.length
-            const cartes = manque > 0 ? joueur.player_deck.slice(-manque).reverse() : []
-            for (const carte of cartes) {
+          const excedents: Excedent[] = []
+          // Question 7 du 06/10/2026 : pour TOUS les héros de cet écran, comme
+          // OCTGN (à une même table, tous ; en ligne, le sien seul).
+          for (const siegeDuJoueur of controles) {
+            const joueur = world?.players?.[siegeDuJoueur]
+            if (!joueur || joueur.is_eliminated) continue
+            // Les cartes du joueur seulement (`readyAll` d'OCTGN ignore tout ce
+            // qui est Rencontre, méchant ou manigance principale).
+            const inclinees = [...(joueur.area_hero ?? []), ...(joueur.allies ?? []), ...(joueur.supports ?? [])].filter(
+              (carte) => !carte.is_ready && estInclinable(carte.card_type)
+            )
+            for (const carte of inclinees) {
               lignes.push({
-                libelle: `${t('Piocher')} — ${carte.name || `${t('Carte')} ${carte.id}`}`,
-                deposer: () => triche.envoyerEnMain(carte.id),
+                libelle: `${t('Redresser')} — ${carte.name || `${t('Carte')} ${carte.id}`}`,
+                deposer: () => triche.redresser(carte.id),
               })
             }
+            // Fin de la phase des héros : on repioche jusqu'à la taille de main
+            // (`doEndHeroPhase`), dans la main de CE joueur (`MoveTo` par siège,
+            // jamais `Gain`, qui donne au joueur courant).
+            // Lot 6 du 06/10/2026, `doEndHeroPhase` complet : main trop grande,
+            // on propose de défausser l'excédent ; sinon le moteur pioche
+            // jusqu'à la taille de main en une commande, deck vide remélangé.
+            if (geste.geste === 'finPhaseHeros') {
+              const enMainJoueur = joueur.hand_cards ?? []
+              const taille = joueur.hand_size ?? 0
+              if (enMainJoueur.length > taille) {
+                excedents.push({
+                  siege: siegeDuJoueur,
+                  nombre: enMainJoueur.length - taille,
+                  main: enMainJoueur.map((carte) => ({ id: carte.id, nom: nomAffiche(carte) || `${t('Carte')} ${carte.id}` })),
+                })
+              } else if (enMainJoueur.length < taille) {
+                lignes.push({
+                  libelle: `${t('Piocher jusqu’à la taille de main')} — ${nomAffiche(joueur.area_hero?.[0] ?? ({ name: '' } as WorldCard)) || `${t('Joueur')} ${siegeDuJoueur + 1}`}`,
+                  deposer: () => triche.piocherJusquALaMain(siegeDuJoueur),
+                })
+              }
+            }
           }
+          if (excedents.length > 0) setExcedent(excedents[0])
           if (lignes.length === 0) {
-            noter(geste.geste === 'toutRedresser' ? t('Rien à redresser') : t('Rien à redresser ni à piocher'))
+            if (excedents.length === 0) {
+              noter(geste.geste === 'toutRedresser' ? t('Rien à redresser') : t('Rien à redresser ni à piocher'))
+            }
             return
           }
           await emettreLot(lignes)
@@ -603,7 +884,7 @@ export function useTriche(
         }
       }
     },
-    [index, piles, emettreGeste, emettreLot, noter, world, joueurId]
+    [index, piles, emettreGeste, emettreLot, noter, world, controles, versLaMain, ouvrirMenuCarte]
   )
 
   // --- Ctrl+Z : annule le dernier geste (tâche 6) ---------------------------
@@ -654,11 +935,14 @@ export function useTriche(
       const noeud = cible?.closest?.('[data-card-id]') as HTMLElement | null
       const id = noeud ? Number(noeud.getAttribute('data-card-id')) : NaN
       survole.current = Number.isFinite(id) ? id : undefined
+      dernierPointeur.current = { x: evenement.clientX, y: evenement.clientY }
     }
 
     const cibleClavier = (id: number): CibleClavier | undefined => {
+      // Question 14 : ni touche ni double-clic sur la carte d'un autre joueur.
+      if (!touchable(id)) return undefined
       const pileVisee = piles.get(id)
-      if (pileVisee) return { genre: 'pile', zone: pileVisee.zone }
+      if (pileVisee) return { genre: 'pile', zone: pileVisee.zone, dessus: id }
       const carte = index.get(id)
       if (!carte) return undefined
       const portes = statuts.get(id) ?? []
@@ -731,6 +1015,11 @@ export function useTriche(
       const noeud = (evenement.target as HTMLElement | null)?.closest?.('[data-card-id]')
       const id = noeud ? Number(noeud.getAttribute('data-card-id')) : NaN
       if (!Number.isFinite(id) || piles.has(id)) return
+      if (!touchable(id)) return
+      if (enMain.has(id)) {
+        poserDepuisLaMain(id)
+        return
+      }
       const cible = cibleClavier(id)
       if (!cible || cible.genre !== 'carte') return
       const geste = interpreterDoubleClic(cible)
@@ -749,7 +1038,7 @@ export function useTriche(
       document.removeEventListener('keydown', surTouche)
       document.removeEventListener('keyup', surRelachement)
     }
-  }, [manuel, index, piles, statuts, executerGeste, etatTouches, lancerAnnulation])
+  }, [manuel, index, piles, enMain, statuts, executerGeste, etatTouches, lancerAnnulation, poserDepuisLaMain, touchable])
 
   return {
     actif,
@@ -767,9 +1056,27 @@ export function useTriche(
       annulationEnCours,
       menuTable,
       setMenuTable,
+      choixCible,
+      choisirCible,
+      attacherChoisie,
+      fermerChoixCible,
+      estEnMain: (id: number) => enMain.has(id),
+      poserDepuisLaMain,
+      versLaMain,
+      mainAffichee,
+      mulliganOuvert,
+      setMulliganOuvert,
+      excedent,
+      setExcedent,
+      defausserExcedent,
+      defausserAuHasard,
+      confirmerMulligan,
+      echangerAvecLeDessus,
     },
     /** Pour la tâche 5 (glisser-déposer) : lire l'état sans poser d'écoute. */
     estToucheEnfoncee: etatTouches.estEnfoncee,
+    /** Le Ctrl+Z du manuel, pour « ↶ Annuler » et U (lot 1, 06/10/2026). */
+    annulerDernierGeste: lancerAnnulation,
   }
 }
 
@@ -799,6 +1106,21 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
     annulationEnCours,
     menuTable,
     setMenuTable,
+    choixCible,
+    attacherChoisie,
+    fermerChoixCible,
+    estEnMain,
+    poserDepuisLaMain,
+    versLaMain,
+    mainAffichee,
+    mulliganOuvert,
+    setMulliganOuvert,
+    excedent,
+    setExcedent,
+    defausserExcedent,
+    defausserAuHasard,
+    confirmerMulligan,
+    echangerAvecLeDessus,
   } = couche
   // Le catalogue (tâche 6) : une carte qui n'était pas dans la partie. Mode
   // manuel uniquement, ouvert depuis le menu de la TABLE (clic droit hors de
@@ -879,7 +1201,7 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
         : t('Mise en jeu')
     await emettreGeste(`${quoi} — ${carte.name}`, () =>
       pile.duJoueur
-        ? triche.envoyerEnMain(carte.id)
+        ? versLaMain(carte.id)
         : mode === 'reveler'
           ? triche.reveler(carte.id)
           : triche.mettreEnJeu(carte.id)
@@ -889,21 +1211,16 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
 
   const melangerPile = async () => {
     if (!pile) return
-    await emettreGeste(`${t('Mélanger')} — ${pile.titre}`, () => triche.melanger(pile.zone))
+    await emettreGeste(`${t('Mélanger')} — ${pile.titre}`, () => triche.melanger(pile.zone, pile.siege))
     setPile(undefined)
   }
 
-  const zoneDeckDeLaDefausse =
-    pile?.zone === 'DiscardPile' ? 'PlayerDeck' : pile?.zone === 'EncounterDiscardPile' ? 'EncounterDeck' : undefined
+  const estUneDefausse = pile?.zone === 'DiscardPile' || pile?.zone === 'EncounterDiscardPile'
 
   const remelangerLaDefausse = async () => {
-    if (!pile || !zoneDeckDeLaDefausse || pile.cartes.length === 0) return
-    const zoneDeck = zoneDeckDeLaDefausse
+    if (!pile || !estUneDefausse || pile.cartes.length === 0) return
     await emettreGeste(`${t('Remélanger dans le deck')} — ${pile.titre}`, () =>
-      triche.remelangerDansLeDeck(
-        pile.cartes.map((carte) => carte.id),
-        zoneDeck
-      )
+      triche.remelangerDefausse(pile.zone, pile.siege)
     )
     setPile(undefined)
   }
@@ -936,6 +1253,10 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
         </button>
       ) : null}
 
+      {manuel && choixCible ? (
+        <ChoixCibleAmelioration choix={choixCible} onChoisir={attacherChoisie} onFermer={fermerChoixCible} />
+      ) : null}
+
       {manuel && avisRefus ? (
         <div className="avis-refus-manuel" role="status">
           {avisRefus}
@@ -959,6 +1280,8 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           onFermer={() => setMenu(undefined)}
           emettreGeste={emettreGeste}
           manuel={manuel}
+          poserEnJeu={manuel && estEnMain(menu.cible.id) ? () => poserDepuisLaMain(menu.cible.id) : undefined}
+          echangerAvecLeDessus={manuel && estEnMain(menu.cible.id) ? () => echangerAvecLeDessus(menu.cible.id) : undefined}
         />
       ) : null}
 
@@ -981,7 +1304,27 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           onFinPhaseHeros={() => void executerGeste({ geste: 'finPhaseHeros' })}
           onAmplification={() => void executerGeste({ geste: 'amplification' })}
           onHasard={tirerAuHasard}
+          onDefausseAuHasard={mainAffichee.length > 0 ? defausserAuHasard : undefined}
+          onMulligan={mainAffichee.length > 0 ? () => setMulliganOuvert(true) : undefined}
+          onFinDeRound={() => void emettreGeste(t('Fin du round'), () => triche.finDeRound())}
         />
+      ) : null}
+
+      {manuel && excedent ? (
+        <ChoixMulligan
+          key={excedent.siege}
+          main={excedent.main}
+          titre={t('Main trop grande')}
+          consigne={`${t('Défausse')} ${excedent.nombre} ${t('carte(s)')}`}
+          libelle={t('Défausser')}
+          maximum={excedent.nombre}
+          onConfirmer={defausserExcedent}
+          onFermer={() => setExcedent(undefined)}
+        />
+      ) : null}
+
+      {manuel && mulliganOuvert ? (
+        <ChoixMulligan main={mainAffichee} onConfirmer={confirmerMulligan} onFermer={() => setMulliganOuvert(false)} />
       ) : null}
 
       {manuel && catalogueOuvert ? (
@@ -1046,7 +1389,7 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
                   : t('Choisis une carte pour la mettre en jeu')}
               </span>
               <button type="button" onClick={() => void melangerPile()}>{t('Mélanger')}</button>
-              {zoneDeckDeLaDefausse ? (
+              {estUneDefausse ? (
                 <button type="button" onClick={() => void remelangerLaDefausse()}>
                   {t('Remélanger dans le deck')}
                 </button>

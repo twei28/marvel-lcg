@@ -15,6 +15,9 @@
 - Jouer depuis un salon vocal Discord : `reference/DISCORD.md`
 - Administrer le serveur, lire les rapports de bug reçus, ajouter un livret
   de règles au panneau « Documents » : `../deploiement/MODE-EMPLOI.md`
+- Jouer en mode manuel comme sur OCTGN (guide des gestes, état actuel,
+  ce qui manque) : `superpowers/specs/2026-10-06-mode-manuel-comme-octgn-design.md` §A,
+  plan dans `superpowers/plans/2026-10-06-mode-manuel-comme-octgn.md`
 - Le cadre de décision tour par tour (aussi la spec du bot autoplay) :
   `reference/GUIDE-STRATEGIE-JEU.md`
 
