@@ -492,6 +492,20 @@ EPREUVES += [
         "attendu": {"parmi": [["16150", ["deck", "main"]]]},
     },
     {
+        "nom": "gmw — les cartes du Marche sont MELANGEES au deck, pas posees sur le dessus (07/10/2026)",
+        "scenario": "nebula",
+        "heros": "captain_america",
+        # Signalement de Phocea, 07/10/2026 : ses 3 cartes du Marche etaient
+        # TOUJOURS dans sa main de depart (21 mises en place sur 21, mesure).
+        # `ShuffleAllTo` ne melangeait pas quand la carte etait deja creee DANS
+        # le deck de destination : rien ne bougeait, donc aucun melange. Sur le
+        # deck de 40+ cartes, avoir les trois en main de depart vaut ~1 sur 600 :
+        # au moins une doit encore etre dans le deck.
+        "choix": {"Player 1 Market Cards": "16162;16163;16176"},
+        "suivant": "ronan",
+        "attendu": {"un_parmi": [["deck", ["16162", "16163", "16176"]]]},
+    },
+    {
         "nom": "gmw — une carte confisquee par La Collection est RETIREE du jeu au scenario 3, et la main est refaite",
         "scenario": "infiltrate_the_museum",
         "heros": "captain_america",

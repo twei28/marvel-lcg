@@ -51,8 +51,15 @@ class Faces:
         if deck == "EncounterDeck":
             deck = Worlds.GetEncounterDeck(by_effect)
         Message.CardsShuffleToDeck_Text(faces, deck)
+        # ⚠ UNE CARTE DEJA DANS LE DECK DE DESTINATION NE « BOUGE » PAS : `MoveAllTo`
+        # ne la rend pas (CheckIfCanMove refuse de deplacer une carte vers sa propre
+        # zone), donc le melange sautait. Les cartes creees DIRECTEMENT dans le deck
+        # (`GenerateCard(id, player.player_deck, ...)` puis `ShuffleAllTo`) restaient
+        # alors sur le dessus : les cartes du Marche de gmw (07/10/2026) partaient
+        # toutes en main de depart. Melanger est dû dans les deux cas.
+        deja_dedans = any(face.card.area == deck for face in faces)
         moved_faces = Faces.MoveAllTo(faces, deck, by_effect, by_shuffle=True)
-        if moved_faces:
+        if moved_faces or deja_dedans:
             deck.Shuffle(by_effect)
         return moved_faces
 
