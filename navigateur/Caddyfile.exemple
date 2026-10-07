@@ -14,8 +14,14 @@
 #		# Version du paquet et page de demarrage : jamais en cache. Le reste porte un ?v=<version> ou ne change pas.
 #		@frais path /version.json /navigateur.html
 #		header @frais Cache-Control "no-store"
-#		@stable path /pyodide* /moteur.zip /*.whl /css/* /js/* /fonts/* /img/* /app/*
+#		# Seul ce qui ne change JAMAIS se garde 24 h. Le code (js, css, html, plateau,
+#		# moteur.zip) est revalide a chaque chargement : beaucoup de modules sont
+#		# importes sans numero de version, et 24 h de cache laissaient l'ecran de
+#		# preparation de la veille (constat du 07/10/2026).
+#		@stable path /pyodide* /*.whl /fonts/* /img/*
 #		header @stable Cache-Control "public, max-age=86400"
+#		@code not path /pyodide* /*.whl /fonts/* /img/* /version.json /navigateur.html
+#		header @code Cache-Control "no-cache"
 #
 #		redir / /navigateur.html 302
 #
