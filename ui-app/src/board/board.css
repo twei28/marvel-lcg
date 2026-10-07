@@ -476,7 +476,7 @@
 
   .plateau-selecteur {
     position: fixed;
-    z-index: 60;
+    z-index: var(--z-fenetre-centre);
     /* Modale CENTREE plutot qu'un bandeau colle en bas qui recouvrait la main. */
     left: 50%;
     top: 50%;
@@ -970,7 +970,7 @@
 
   .demande-centrale {
     position: fixed;
-    z-index: 92;
+    z-index: var(--z-fenetre-centre);
     /* Repli : usePlacement pose le centre reel. */
     left: 50%;
     top: 45%;
@@ -1052,7 +1052,7 @@
 
   .evenement-centrale {
     position: fixed;
-    z-index: 91;
+    z-index: var(--z-fenetre-centre);
     /* Repli : usePlacement pose le centre reel. */
     left: 50%;
     top: 45%;
@@ -1704,7 +1704,7 @@
 
   .assistant-action {
     position: fixed;
-    z-index: 86;
+    z-index: var(--z-fenetre-centre);
     /* left/top sont poses par usePlacement (placement/placer.ts) : ce sont des
        valeurs de REPLI, utilisees le temps de la premiere mesure. */
     left: 50%;
@@ -3325,6 +3325,23 @@
     font-family: 'Bangers';
     src: url('/public/fonts/Bangers-Regular.ttf') format('truetype');
     font-display: swap;
+  }
+
+  /* --- Fenetres du centre devant la phase du mechant ------------------------
+     La modale du deroule (540) est taillee pour lire une scene ; une question
+     qui n'y loge pas (panneau central, choix de cibles, assistant, evenement)
+     tombait DERRIERE elle et restait cachee. 541 : devant le deroule (540),
+     derriere l'apercu de carte (545, on doit pouvoir lire une carte survolee
+     depuis la fenetre), le splash de tour (550), la fin de partie (600) et
+     la confirmation (700). La modale reste visible, estompee derriere. */
+  :root {
+    --z-fenetre-centre: 541;
+  }
+
+  body:has(.demande-centrale:not(.est-en-scene), .evenement-centrale, .assistant-action, .plateau-selecteur)
+    .deroule-phase:not(.est-question) {
+    opacity: 0.45;
+    transition: opacity 120ms ease-out;
   }
 
   .deroule-phase {
