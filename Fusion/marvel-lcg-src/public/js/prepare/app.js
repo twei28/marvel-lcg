@@ -3678,12 +3678,33 @@ async function doImport(i) {
 
 /** Joueurs dont les paquets d'aspect sont dépliés. Voir loadDecks(). */
 const aspectsDeplies = new Set();
+/** Meme chose pour la section des decks du tableur. */
+const tableurDeplies = new Set();
+
+/** D'ou vient le tableur, en une phrase (info-bulle de la section : ca ne prend
+ *  aucune place a l'ecran). Voir aussi credits.html. */
+const CREDIT_TABLEUR = "Decks du fichier « Marvel Champions Universal Prebuilt Decks » de acharlie1377 (Austin Charlie), sur BoardGameGeek. Conçus par un joueur : ce ne sont pas les decks officiels des héros.";
+
+/** « Cyclops — Prebuilt » du tableur ne doit pas se confondre avec le deck de depart. */
+function nomDeckAffiche(dk) {
+    const nom = cleanNomDeck(dk.name);
+    if (dk.source !== "tableur") return nom;
+    return nom
+        .replace(/\s*[—-]\s*Prebuilt\s*$/i, " — " + t("Version tableur"))
+        .replace(/\s*[—-]\s*Mutant\s*$/i, " — " + t("Version tableur, mutant"));
+}
 
 async function loadDecks(i) {
     const p = state.players[i];
     await cards.load();
     const catDecks = await catalog.decksForHero(p.hero);
-    const saved = (await decksSauvegardesPourHeros(p.hero.heroCardId)).map((d, idx) => ({
+    // UN DECK IMPORTE NE SE LISTE QU'UNE FOIS (07/10/2026). Il vit dans
+    // deck/serveur-<place>/ : le catalogue le liste deja (toutes les sources de
+    // /list_deck), et `decksSauvegardesPourHeros` le rendait une seconde fois.
+    // On ne garde ici que ce que le catalogue n'a pas vu (le cache du
+    // navigateur, quand le serveur ne repond pas).
+    const dejaListes = new Set(catDecks.filter((dk) => dk.source === "saved").map((dk) => dk.deck && dk.deck.name));
+    const saved = (await decksSauvegardesPourHeros(p.hero.heroCardId)).filter((d) => !dejaListes.has(d.name)).map((d, idx) => ({
         id: "saved-" + idx, name: d.name || t("Deck importé"), source: "saved", deck: d,
         aspects: [...new Set((d.player_deck || []).map((id) => cards.aspectOf(id)).filter((a) => a && a !== "basic"))],
     }));
