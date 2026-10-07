@@ -1,5 +1,7 @@
 # Portage de Red Sonja
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : CLOS : les cases A à N non cochées sont faites (sections « Étape … FAITE » et « Statut final » plus bas) ; 30/30 cas, déployé le 23/09. N (partie humaine) hors backlog.
+
 Demande de l'utilisateur, 22/09/2026 : « crée le héros red Sonia qu'ils a
 dans le zip ». Zip trouvé à la racine du dépôt :
 `Red Sonja (08-26)-20260922T153645Z-1-001.zip` (auteur : RyCoRan, template

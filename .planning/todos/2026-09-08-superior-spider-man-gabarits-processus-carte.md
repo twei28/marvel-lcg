@@ -1,5 +1,7 @@
 # Superior Spider-Man — gabarits `PROCESSUS-CARTE.md`, carte par carte
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : Même cas que Spider-Man 2099 : cartes faites (21/21 substitutions rouges). Reste : preuve visuelle de la biographie au survol. Partie humaine hors backlog.
+
 Pack `superior_spider_man`, set **167**, prefixe **`su`**, **21 card_id**,
 auteur **Rainy**. Ouvert le 08/09/2026.
 

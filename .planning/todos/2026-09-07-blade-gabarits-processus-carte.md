@@ -1,5 +1,7 @@
 # PROCESSUS-CARTE.md : les 17 gabarits du pack BLADE (set 165, `bl`)
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : CLOS : 17 gabarits « OUI ». L'unique case vide est la partie jouée à la main, sortie du backlog le 15/09.
+
 Gate de `PROCESSUS-HEROS.md` : un gabarit rempli par carte. Rédigés le
 07/09/2026 (soir). Auteur du pack : **Rainy**, zip « Blade » (dossier
 `A créer`), 26 scans pour 17 card_id (15 cartes héros, 1 obligation, set

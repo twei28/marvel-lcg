@@ -1,5 +1,7 @@
 # Mode manuel joué comme sur OCTGN : poser une carte, et le reste (06/10/2026)
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : L'en-tête « PLANIFIÉ, RIEN CODÉ » est PÉRIMÉ : les lots 0 à 7 sont faits, commités (`59759beb`, `7907eb5b`) et déployés le 06/10 (`56349b00`). RESTE : table éclatée et carte à deux faces non vérifiées en vraie partie ; l'amélioration à cibler ne propose pas les ennemis (question en suspens) ; glisser le dessus d'une pile (écart 32) ; volet d'aide à 1024 et 390 px qui couvre la main.
+
 **Statut : PLANIFIÉ, RIEN CODÉ.**
 
 Demande de l'utilisateur : « pour le mode manuel, ça va pas vraiment, comment

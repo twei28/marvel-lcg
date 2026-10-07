@@ -1,5 +1,7 @@
 # PROCESSUS-CARTE.md : les 22 gabarits du pack Conan (cn001a-cn017)
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : CLOS : 22/22 « OUI », 49/49 cas. Les cases vides sont des « NON » / « sans objet » jamais cochées. Réserve : le plateau de cn001d n'a pas été regardé dans un navigateur.
+
 Gate de `CLAUDE.md` : rien n'est terminé sans le gabarit rempli, preuve à
 l'appui. Rédigés le 25/09/2026, à la suite du portage complet du héros
 (demande du 25/09/2026 : zip « Conan (09-26) », auteur RyCoRan). Journal de

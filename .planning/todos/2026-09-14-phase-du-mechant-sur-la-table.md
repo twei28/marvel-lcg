@@ -1,5 +1,7 @@
 # La phase du méchant jouée SUR LA TABLE — LES TROIS GESTES SONT FAITS (à valider à l'usage)
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : La garde « compte de l'utilisateur » est PÉRIMÉE : `101791dc` a ouvert « Sur la table » à tous. Reste seulement la validation à l'usage.
+
 **Demande de l'utilisateur, 14/09/2026**, après avoir vu une vidéo de
 `play.marvelsimulator.com` et m'avoir envoyé cinq captures de leur phase du
 méchant.

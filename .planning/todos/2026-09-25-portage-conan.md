@@ -1,5 +1,7 @@
 # Portage de Conan
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : Portage fait. RESTE, vérifié dans `data/cards.json` au 07/10 : rs014 (desc réduit à GiveTo, sans Boost), rs015 (Boost « 0 », sans Amplify) et rs019 (Boost « 0 ») du pack Red Sonja, listés dans « Défauts trouvés au passage » et jamais corrigés. À corriger après relecture des scans.
+
 Demande de l'utilisateur, 25/09/2026 : « je viens d'ajouter un zip avec le
 héros Conan dans le dossier, tu peux le créer ». Zip à la racine du dépôt :
 `Conan (09-26)-20260925T173138Z-1-001.zip` (auteur : RyCoRan, même auteur et

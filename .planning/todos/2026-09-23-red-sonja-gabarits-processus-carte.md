@@ -1,5 +1,7 @@
 # PROCESSUS-CARTE.md — les 20 gabarits du pack Red Sonja (rs001-rs019)
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : CLOS : 20/20 « Carte terminée : OUI ». Les cases vides sont des « 7 bis : NON » ou « 8 bis : sans objet » jamais cochées.
+
 Gate de `CLAUDE.md` : rien n'est terminé sans le gabarit rempli, preuve à
 l'appui. Rédigés le 23/09/2026, à la suite du portage complet du héros
 (demande initiale du 22/09/2026 : zip « Red Sonja (08-26) », auteur RyCoRan,

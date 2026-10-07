@@ -1,5 +1,7 @@
 # Portage Viv Vision (set 147, préfixe `vv`) — journal
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : Les 12 cases « Étape 8 : voir §8 » sont PÉRIMÉES (le §8 documente 8 parties autoplay, 0 incident). Reste seulement la preuve visuelle de la biographie vv001a au survol dans l'assistant.
+
 Pack fan-made de **Rainy**, vague 0 du deuxième arrivage. Zip
 `Viv Vision-20260902T074028Z-1-001.zip`, 21 images, **12 card_id**.
 Dossier de préparation : `2026-09-02-prep-vague0-viv-vision.md`.

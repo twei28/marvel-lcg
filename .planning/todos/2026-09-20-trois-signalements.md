@@ -1,5 +1,7 @@
 # Trois signalements du 20/09/2026
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : La mention « rien n'est déployé » est PÉRIMÉE (déploiements du 25/09 et suivants). A, B, D corrigés avec preuve par substitution.
+
 Lus en production le 20/09 au soir (`rapports` 18, 19, 20). Aucun n'est traité.
 Les deux d'Aghenatak sont **le même défaut**, pas deux.
 

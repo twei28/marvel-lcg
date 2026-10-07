@@ -1,5 +1,7 @@
 # PROCESSUS-CARTE.md — les 16 gabarits du pack Wave (65001-65019)
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : CLOS : les 16 cartes sont « OUI ». Les 8 cases vides sont « 7 bis : limite imprimée ? NON » (jamais cochées). Le paragraphe de bilan « 3 cartes restent NON » est PÉRIMÉ : 65008, 65011, 65012 sont fermées le 23/09 dans le corps de la fiche.
+
 Gate de `CLAUDE.md` : rien n'est terminé sans le gabarit rempli, preuve à
 l'appui. Rédigés le 22/09/2026, à la suite du portage complet du héros
 (demande initiale : dossier Google Drive « Wave (Pearl Pangan) », autrice

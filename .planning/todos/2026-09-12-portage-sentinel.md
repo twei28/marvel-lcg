@@ -1,5 +1,7 @@
 # À FAIRE : porter le héros fan-made Sentinel
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : CLOS : « Terminé le 13/09/2026 », 26 cartes (`5efc5b74`, `2dcca8ae`), voir la fiche des gabarits.
+
 **Demandé par l'utilisateur le 12/09/2026** : « on doit faire ce héros ».
 
 ## Le matériel

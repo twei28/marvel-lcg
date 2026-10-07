@@ -1,5 +1,7 @@
 # À FAIRE : 5 cas rouges préexistants (squirrel_girl, scarlet_spider)
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : CLOS : ss012 résolu le 01/09 (le contrôle était cassé, pas la carte) ; sg006, sg007, sg009, sg013 sont sortis du backlog le 13/09 (Squirrel Girl mise de côté) et restent rouges dans le harnais (confirmé à la batterie du 07/10 : 2661/2667).
+
 **Constatés le 31/08/2026** par la batterie complète de non-régression du
 portage harry_osborn (801/829, rapport `/tmp/rapport-batterie-complete.json`).
 Aucun traceback dans les journaux : ce sont des écarts de COMPORTEMENT, pas

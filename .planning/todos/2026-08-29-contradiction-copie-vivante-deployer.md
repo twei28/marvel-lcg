@@ -1,5 +1,7 @@
 # TODO — Contradiction non résolue : quelle copie alimente vraiment le dev/tests
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : RÉSOLUE : la copie WSL a été supprimée le 31/08 ; `deployer.sh` ne la cite plus qu'en commentaire ; le bandeau de `serveur-dev.py` est traité (`d0ec2e5e`).
+
 > ⚠ **PÉRIMÉE, relevée le 16/09/2026.** La question posée ici a été tranchée
 > le 31/08/2026 : la copie WSL a été SUPPRIMÉE lors du grand rangement.
 > `ui-app/deployer.sh` ne déclare plus qu'une seule installation dans `JEUX`

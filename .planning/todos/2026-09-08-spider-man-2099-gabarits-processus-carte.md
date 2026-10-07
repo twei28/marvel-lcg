@@ -1,5 +1,7 @@
 # Spider-Man 2099 — gabarits `PROCESSUS-CARTE.md`, carte par carte
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : L'en-tête « 8 sur 18 » est PÉRIMÉE : les 18 gabarits portent « Carte terminée : OUI » (sm010 vert le 09/09). Seule case ouverte : la preuve visuelle de la biographie au survol dans l'assistant ; la partie humaine est hors backlog.
+
 Pack `spider_man_2099`, set **166**, prefixe **`sm`**, **18 card_id**, auteur
 **Rainy**. Ouvert le 08/09/2026.
 

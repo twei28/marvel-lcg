@@ -1,5 +1,7 @@
 # Les statistiques sont celles de la TABLE, pas du joueur
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : PÉRIMÉ : `aa52d133` (25/09) sépare les statistiques personnelles par siège (`Statistics.par_siege`). Doute restant : le même défaut pour `achievements-serveur-N.json` n'est pas confirmé traité.
+
 Constaté par l'utilisateur le 20/09/2026, pendant une partie à deux.
 Diagnostiqué le même soir sur les données de production.
 

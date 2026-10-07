@@ -1,5 +1,7 @@
 # Revoir les sons
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : Statut « non commité » PÉRIMÉ : `b175b2ef` (07/10) a intégré les sons CC0, le volume réglable et le survol. RESTE : demander à l'utilisateur quels déclencheurs tombent mal. Déploiement des sons non vérifié.
+
 **Demande de l'utilisateur, 14/09/2026**, dans la foulée des animations : « et
 après il faudra revoir les sons aussi ».
 

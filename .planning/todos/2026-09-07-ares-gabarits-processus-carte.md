@@ -1,5 +1,7 @@
 # PROCESSUS-CARTE.md : les 15 gabarits du pack ARES (set 164, `ar`)
 
+> **Mise à jour du 07/10/2026 (audit du backlog)** : CLOS : 15 gabarits « OUI ». L'unique case vide est la partie jouée à la main, sortie du backlog le 15/09.
+
 Gate de `PROCESSUS-HEROS.md` : un gabarit rempli par carte. Rédigés le
 07/09/2026. Auteur du pack : **Rainy**, zip « Ares » (dossier `A créer`).
 
