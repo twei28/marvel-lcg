@@ -2471,14 +2471,17 @@
     z-index: 60;
   }
 
-  /* Ameliorations A GAUCHE (Reglages > Jeu, cote-ameliorations.ts) : meme
-     decalage, dans l'autre sens ; la place reservee passe a gauche du porteur. */
-  body.ameliorations-a-gauche .plateau-unite {
-    padding-right: 0;
-    padding-left: calc(var(--nb, 0) * var(--attach-step-x));
+  /* Ameliorations A GAUCHE du porteur (reglage, ou Alt + glisser de l'autre
+     cote) : meme decalage, dans l'autre sens. `--nb-g` en compte, `--nb` les
+     seules de droite. La place reservee a gauche decale le porteur ; toutes les
+     ameliorations partent donc de sa position (`left`). */
+  .plateau-unite {
+    padding-left: calc(var(--nb-g, 0) * var(--attach-step-x));
   }
-  body.ameliorations-a-gauche .plateau-scene .est-attachee {
-    left: calc(var(--nb, 0) * var(--attach-step-x));
+  .plateau-scene .est-attachee {
+    left: calc(var(--nb-g, 0) * var(--attach-step-x));
+  }
+  .plateau-scene .est-attachee.est-a-gauche {
     transform: translate(
       calc((var(--i, 0) + 1) * var(--attach-step-x) * -1),
       calc((var(--i, 0) + 1) * var(--attach-step-y))

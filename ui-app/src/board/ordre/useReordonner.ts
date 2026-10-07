@@ -4,7 +4,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 import { SEUIL_GLISSER } from '../glisser/useGlisser'
-import { cleDePile, deplacer, placeVisee, type Ordres, type Voisine } from './ordre-cartes'
+import { cleDePile, deplacer, placeVisee, poserDuCote, type Cote, type Ordres, type Voisine } from './ordre-cartes'
 
 export type GesteOrdre = {
   sourceId: number
@@ -12,6 +12,8 @@ export type GesteOrdre = {
   y: number
   /** Repere d'insertion, en coordonnees ecran. */
   repere?: { gauche: number; haut: number; hauteur: number; pile: boolean; cibleId: number }
+  /** Pile d'ameliorations : le porteur, encadre, pour dire a qui elle reste attachee. */
+  cadre?: { gauche: number; haut: number; largeur: number; hauteur: number }
 }
 
 type Depart = {
@@ -23,6 +25,8 @@ type Depart = {
   y: number
   pointerId: number
   element: HTMLElement
+  /** Pile d'ameliorations : la carte qui les porte. */
+  porteurId?: number
 }
 
 const idDe = (element: Element | null | undefined): number | undefined => {
@@ -47,6 +51,49 @@ function voisinesDe(depart: Depart): { id: number; element: HTMLElement }[] {
     }
   }
   return resultat
+}
+
+/**
+ * Pile d'ameliorations : le cote vise (par rapport au centre du porteur), la
+ * voisine de ce cote la plus proche et si l'on pose « apres » elle (plus loin du
+ * porteur), le trait et le cadre a montrer. Le cote se choisit librement : la
+ * place d'une amelioration se decide a gauche OU a droite du personnage.
+ */
+function viseeDansPile(depart: Depart, x: number, y: number) {
+  const porteur = depart.racine.querySelector<HTMLElement>(':scope > .scan-card')?.getBoundingClientRect()
+  if (!porteur) return undefined
+  const cote: Cote = x < porteur.left + porteur.width / 2 ? 'gauche' : 'droite'
+  const ici = voisinesDe(depart)
+    .filter((v) => v.id !== depart.sourceId)
+    .filter((v) => (v.element.parentElement?.classList.contains('est-a-gauche') ? 'gauche' : 'droite') === cote)
+    .map(({ id, element }) => ({ id, rect: element.getBoundingClientRect() }))
+  let proche: (typeof ici)[number] | undefined
+  let distance = Infinity
+  for (const v of ici) {
+    const d = Math.hypot(v.rect.left + v.rect.width / 2 - x, v.rect.top + v.rect.height / 2 - y)
+    if (d < distance) {
+      distance = d
+      proche = v
+    }
+  }
+  const apres = proche
+    ? cote === 'droite'
+      ? x > proche.rect.left + proche.rect.width / 2
+      : x < proche.rect.left + proche.rect.width / 2
+    : false
+  const bord = proche
+    ? cote === 'droite' === apres
+      ? proche.rect.right
+      : proche.rect.left
+    : cote === 'droite'
+      ? porteur.right
+      : porteur.left
+  return {
+    cote,
+    cible: proche ? { id: proche.id, apres } : undefined,
+    repere: { gauche: bord, haut: porteur.top, hauteur: porteur.height },
+    cadre: { gauche: porteur.left, haut: porteur.top, largeur: porteur.width, hauteur: porteur.height },
+  }
 }
 
 // Les ids de cartes n'ont de sens que dans UNE partie : l'ordre est etiquete
@@ -109,11 +156,13 @@ export function useReordonner(partieId?: string) {
     const attachee = carte.closest<HTMLElement>('.est-attachee')
     let racine: HTMLElement | null
     let cle: string
+    let porteurDuGeste: number | undefined
     if (attachee) {
       racine = attachee.closest<HTMLElement>('.plateau-unite')
       const porteurId = idDe(racine?.querySelector(':scope > .scan-card'))
       if (!racine || porteurId === undefined) return false
       cle = cleDePile(porteurId)
+      porteurDuGeste = porteurId
     } else {
       racine = carte.closest<HTMLElement>('.plateau-groupe')
       const unite = carte.parentElement
@@ -130,6 +179,7 @@ export function useReordonner(partieId?: string) {
       y: evenement.clientY,
       pointerId: evenement.pointerId,
       element: evenement.currentTarget,
+      porteurId: porteurDuGeste,
     }
     commence.current = false
     return true
@@ -147,6 +197,17 @@ export function useReordonner(partieId?: string) {
       } catch {
         /* pas de capture : on suit le pointeur sans */
       }
+    }
+    if (debut.pile) {
+      const visee = viseeDansPile(debut, evenement.clientX, evenement.clientY)
+      setGeste({
+        sourceId: debut.sourceId,
+        x: evenement.clientX,
+        y: evenement.clientY,
+        repere: visee ? { ...visee.repere, pile: true, cibleId: visee.cible?.id ?? debut.sourceId } : undefined,
+        cadre: visee?.cadre,
+      })
+      return true
     }
     const voisines = voisinesDe(debut)
     const mesurees: (Voisine & { rect: DOMRect })[] = voisines.map(({ id, element }) => {
@@ -183,7 +244,17 @@ export function useReordonner(partieId?: string) {
       const debut = depart.current
       if (!debut) return false
       const aBouge = commence.current
-      if (aBouge) {
+      if (aBouge && debut.pile && debut.porteurId !== undefined) {
+        const visee = viseeDansPile(debut, evenement.clientX, evenement.clientY)
+        const porteurId = debut.porteurId
+        if (visee) {
+          const ids = voisinesDe(debut).map((v) => v.id)
+          setOrdres((courant) => {
+            const ordre = visee.cible ? deplacer(ids, debut.sourceId, visee.cible.id, visee.cible.apres) : ids
+            return poserDuCote({ ...courant, [debut.cle]: ordre }, porteurId, debut.sourceId, visee.cote)
+          })
+        }
+      } else if (aBouge) {
         const voisines = voisinesDe(debut)
         const mesurees: Voisine[] = voisines
           .filter((v) => v.id !== debut.sourceId)

@@ -15,6 +15,17 @@ export function CoucheOrdre({ geste, carte }: { geste: GesteOrdre; carte?: ScanC
           <ScanCard {...carte} state={undefined} onSelect={undefined} targetPulse={false} />
         </div>
       ) : null}
+      {geste.cadre ? (
+        <div
+          className="ordre-cadre"
+          style={{
+            left: `${geste.cadre.gauche}px`,
+            top: `${geste.cadre.haut}px`,
+            width: `${geste.cadre.largeur}px`,
+            height: `${geste.cadre.hauteur}px`,
+          }}
+        />
+      ) : null}
       {repere ? (
         <div
           className="ordre-repere"

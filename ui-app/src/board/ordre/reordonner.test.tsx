@@ -113,6 +113,30 @@ describe('ranger les cartes avec Alt + glisser', () => {
     expect(pile(container)).toEqual(['32', '31'])
   })
 
+  it('Alt + glisser une amelioration a gauche du porteur la pose de ce cote, les autres restent', () => {
+    window.localStorage.clear()
+    const { container } = monter()
+    const gamma = container.querySelector<HTMLElement>('[data-card-id="3"]')!
+    // Gamma va de 200 a 300 : lacher a 220, a gauche de son centre.
+    pointeur(container.querySelector<HTMLElement>('[data-card-id="32"]')!, 'pointerdown', 50, 50)
+    pointeur(container.querySelector<HTMLElement>('[data-card-id="32"]')!, 'pointermove', 220, 50)
+    expect(document.querySelector('.ordre-cadre')).not.toBeNull()
+    pointeur(container.querySelector<HTMLElement>('[data-card-id="32"]')!, 'pointerup', 220, 50)
+    expect(gamma).toBeTruthy()
+    const cote = (id: string) =>
+      container.querySelector(`[data-card-id="${id}"]`)!.parentElement!.classList.contains('est-a-gauche') ? 'gauche' : 'droite'
+    expect([cote('31'), cote('32')]).toEqual(['droite', 'gauche'])
+  })
+
+  it('le reglage a gauche met toutes les ameliorations non touchees a gauche', () => {
+    window.localStorage.setItem('mc_ameliorations_cote', 'gauche')
+    const { container } = monter()
+    const cote = (id: string) =>
+      container.querySelector(`[data-card-id="${id}"]`)!.parentElement!.classList.contains('est-a-gauche') ? 'gauche' : 'droite'
+    expect([cote('31'), cote('32')]).toEqual(['gauche', 'gauche'])
+    window.localStorage.removeItem('mc_ameliorations_cote')
+  })
+
   it('l ordre survit a un rechargement de la meme partie, pas a une autre', () => {
     window.sessionStorage.clear()
     const premier = monter('partie-1')

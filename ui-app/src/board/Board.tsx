@@ -29,7 +29,8 @@ import { usePlacement } from './placement/usePlacement'
 import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import { CoucheGlisser, BulleRefus } from './glisser/CoucheGlisser'
 import { CoucheOrdre } from './ordre/CoucheOrdre'
-import { cleDePile, cleDeRangee, ranger, type Ordres } from './ordre/ordre-cartes'
+import { cleDePile, cleDeRangee, coteDe, ranger, type Ordres } from './ordre/ordre-cartes'
+import { useCoteAmeliorations } from './cote-ameliorations'
 import { useReordonner } from './ordre/useReordonner'
 import { cibleSousLePoint, useGlisser, type CibleSurvolee } from './glisser/useGlisser'
 import { aScanFr, scansFrActifs } from './scans-fr'
@@ -264,6 +265,7 @@ export function Unite({
   titreZone,
   pilesAccueillantes,
   ordreAmeliorations,
+  ordres,
 }: {
   unite: UniteAffichee
   interactifs: Map<number, EtatInteractif>
@@ -278,7 +280,10 @@ export function Unite({
   pilesAccueillantes?: Set<string>
   /** Ordre d'affichage choisi par le joueur pour les ameliorations de cette carte. */
   ordreAmeliorations?: number[]
+  /** Les ameliorations que le joueur a posees d'un cote precis (Alt + glisser). */
+  ordres?: Ordres
 }) {
+  const coteParDefaut = useCoteAmeliorations()
   const pileAccueille = unite.pile !== undefined && (pilesAccueillantes?.has(unite.pile) ?? false)
   if (unite.pileVide) {
     return (
@@ -302,6 +307,10 @@ export function Unite({
     (a) => Number(a.id),
     ordreAmeliorations
   )
+
+  const porteurId = Number(unite.carte.id)
+  const aGauche = upgrades.filter((a) => coteDe(Number(a.id), porteurId, ordres, coteParDefaut) === 'gauche')
+  const aDroite = upgrades.filter((a) => coteDe(Number(a.id), porteurId, ordres, coteParDefaut) === 'droite')
 
   // Carte du porteur, avec l'interaction en cours superposee. Si le moteur ne la
   // rend PAS agissante et que c'est une pile publique, un clic l'ouvre pour la
@@ -333,7 +342,7 @@ export function Unite({
     // cartes voisines. --i donne le cran de decalage de chaque upgrade.
     <div
       className="plateau-unite"
-      style={{ '--nb': upgrades.length } as CSSProperties}
+      style={{ '--nb': aDroite.length, '--nb-g': aGauche.length } as CSSProperties}
       // ⚠ `data-pile` NE VISE QUE LES VRAIES PILES (tache 5, glisser-depose du
       // mode manuel) : `unite.pile` n'est pose par zones.ts QUE sur un deck,
       // une defausse... jamais sur une carte posee (allie, heros, sbire) ni
@@ -382,11 +391,19 @@ export function Unite({
       ) : null}
 
       <ScanCard {...cartePorteur} />
-      {upgrades.map((attachee, i) => (
-        <span className="est-attachee" key={attachee.id} style={{ '--i': i } as CSSProperties}>
-          <ScanCard {...avecInteraction(attachee, interactifs, effets)} />
-        </span>
-      ))}
+      {upgrades.map((attachee) => {
+        const cote = coteDe(Number(attachee.id), Number(unite.carte.id), ordres, coteParDefaut)
+        const i = (cote === 'gauche' ? aGauche : aDroite).indexOf(attachee)
+        return (
+          <span
+            className={`est-attachee${cote === 'gauche' ? ' est-a-gauche' : ''}`}
+            key={attachee.id}
+            style={{ '--i': i } as CSSProperties}
+          >
+            <ScanCard {...avecInteraction(attachee, interactifs, effets)} />
+          </span>
+        )
+      })}
       {statuts.length > 0 ? (
         // `--nb-statuts` : le nombre de mini-cartes REELLEMENT dessinees (apres
         // repli). La CSS s'en sert pour serrer la rangee jusqu'a la largeur du
@@ -499,6 +516,7 @@ function Emplacement({
                 titreZone={emplacement.titre}
                 pilesAccueillantes={pilesAccueillantes}
                 ordreAmeliorations={ordres?.[cleDePile(Number(unite.carte.id))]}
+                ordres={ordres}
                 key={unite.cle}
               />
             ))}

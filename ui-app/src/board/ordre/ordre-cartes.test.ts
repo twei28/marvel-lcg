@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cleDeRangee, deplacer, placeVisee, ranger } from './ordre-cartes'
+import { cleDeCote, cleDeRangee, coteDe, deplacer, placeVisee, poserDuCote, ranger } from './ordre-cartes'
 
 describe('ranger', () => {
   const id = (n: number) => n
@@ -53,5 +53,19 @@ describe('placeVisee', () => {
 describe('cleDeRangee', () => {
   it('distingue deux rangees d un meme emplacement', () => {
     expect(cleDeRangee('terrain-combat', 0, 1, 'x')).not.toBe(cleDeRangee('terrain-combat', 1, 1, 'x'))
+  })
+})
+
+describe('cote des ameliorations', () => {
+  it('le cote pose a la main l emporte sur le reglage, et reste quand le reglage change', () => {
+    const ordres = poserDuCote({}, 3, 32, 'droite')
+    expect(coteDe(32, 3, ordres, 'gauche')).toBe('droite')
+    expect(coteDe(31, 3, ordres, 'gauche')).toBe('gauche')
+    expect(coteDe(31, 3, ordres, 'droite')).toBe('droite')
+  })
+  it('changer de cote retire de l autre liste', () => {
+    const ordres = poserDuCote(poserDuCote({}, 3, 32, 'droite'), 3, 32, 'gauche')
+    expect(coteDe(32, 3, ordres, 'droite')).toBe('gauche')
+    expect(ordres[cleDeCote(3, 'droite')]).toEqual([])
   })
 })

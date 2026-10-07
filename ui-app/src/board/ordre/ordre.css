@@ -23,3 +23,11 @@
   filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.65));
   opacity: 0.92;
 }
+
+/* Le porteur de l'amelioration qu'on range : elle lui reste attachee, de quel cote qu'on la pose. */
+.ordre-cadre {
+  position: absolute;
+  border: 3px solid var(--affiche-jaune, #f0b95f);
+  border-radius: 8px;
+  box-shadow: 0 0 18px 4px rgba(240, 185, 95, 0.55);
+}

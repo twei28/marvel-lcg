@@ -62,3 +62,27 @@ export function placeVisee(
   }
   return meilleure ? { cibleId: meilleure.id, apres: x > meilleure.cx } : undefined
 }
+
+export type Cote = 'gauche' | 'droite'
+
+/** Clef des ameliorations d'un porteur posees EXPLICITEMENT d'un cote (Alt + glisser). */
+export const cleDeCote = (porteurId: number, cote: Cote): string => `cote-${cote}|${porteurId}`
+
+/** Le cote d'une amelioration : celui ou le joueur l'a posee, sinon celui du reglage. */
+export function coteDe(id: number, porteurId: number, ordres: Ordres | undefined, parDefaut: Cote): Cote {
+  if (ordres?.[cleDeCote(porteurId, 'gauche')]?.includes(id)) return 'gauche'
+  if (ordres?.[cleDeCote(porteurId, 'droite')]?.includes(id)) return 'droite'
+  return parDefaut
+}
+
+/** Range l'amelioration `id` du cote choisi : elle quitte la liste de l'autre cote. */
+export function poserDuCote(ordres: Ordres, porteurId: number, id: number, cote: Cote): Ordres {
+  const autre: Cote = cote === 'gauche' ? 'droite' : 'gauche'
+  const ici = ordres[cleDeCote(porteurId, cote)] ?? []
+  const la = ordres[cleDeCote(porteurId, autre)] ?? []
+  return {
+    ...ordres,
+    [cleDeCote(porteurId, cote)]: ici.includes(id) ? ici : [...ici, id],
+    [cleDeCote(porteurId, autre)]: la.filter((x) => x !== id),
+  }
+}
