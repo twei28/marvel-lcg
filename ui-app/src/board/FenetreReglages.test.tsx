@@ -355,3 +355,26 @@ describe('le mode « Sur la table » est proposé à tous', () => {
     expect(modes()).toEqual(['Étape par étape', 'Sur la table', 'D’un coup'])
   })
 })
+
+describe('le volume des bruitages (refonte des sons, 07/10/2026)', () => {
+  it('l’onglet Son propose un curseur de volume, à 20 % par défaut', () => {
+    window.localStorage.removeItem('marvel-board-volume-sons')
+    render(<ContenuOnglet onglet="son" p={proprietes()} />)
+    const curseur = screen.getByRole('slider', { name: /volume des bruitages/i })
+    expect((curseur as HTMLInputElement).value).toBe('20')
+  })
+
+  it('bouger le curseur enregistre le volume', () => {
+    window.localStorage.removeItem('marvel-board-volume-sons')
+    render(<ContenuOnglet onglet="son" p={proprietes()} />)
+    const curseur = screen.getByRole('slider', { name: /volume des bruitages/i })
+    fireEvent.change(curseur, { target: { value: '65' } })
+    expect(window.localStorage.getItem('marvel-board-volume-sons')).toBe('65')
+    expect((curseur as HTMLInputElement).value).toBe('65')
+  })
+
+  it('bruitages coupés : le curseur reste VISIBLE mais grisé', () => {
+    render(<ContenuOnglet onglet="son" p={proprietes({ sons: false })} />)
+    expect((screen.getByRole('slider', { name: /volume des bruitages/i }) as HTMLInputElement).disabled).toBe(true)
+  })
+})

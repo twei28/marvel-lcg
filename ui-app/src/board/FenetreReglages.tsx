@@ -39,6 +39,7 @@ import type { Affichage } from './affichage'
 import { RoueTeinte } from './RoueTeinte'
 import type { Teinte } from './teinte'
 import { ecrireFaconParDefaut, lireFaconParDefaut, type FaconDeJouer } from './manuel/facon-de-jouer'
+import { ecrireVolumeSons, jouerSon, lireVolumeSons } from './sons'
 import './reglages.css'
 
 /** Les quatre onglets, dans l'ordre ou ils s'affichent. */
@@ -159,6 +160,46 @@ export function LigneChoix<T extends string | number>({
 }
 
 /** Le défaut du lanceur : Automatique ou Manuel façon OCTGN. Se retient sur cet appareil. */
+/**
+ * Le volume des bruitages, séparé de la musique (refonte des sons, 07/10/2026).
+ * Autonome comme `LigneFaconDeJouer` : il lit et écrit lui-même son réglage,
+ * partagé avec le lanceur (`prepare/sons.js`). Grisé, jamais caché, quand les
+ * bruitages sont coupés. Lâcher le curseur fait entendre le niveau choisi.
+ */
+function LigneVolumeSons({ disponible }: { disponible: boolean }) {
+  const [volume, setVolume] = useState(lireVolumeSons)
+  const libelle = t('Volume des bruitages')
+  return (
+    <div
+      className={'ligne-option ligne-option-choix' + (disponible ? '' : ' est-desactive')}
+      title={t('Coups, cartes, jetons, survol des menus')}
+    >
+      <span className="ligne-option-libelle">
+        {libelle}
+        <small className="ligne-option-aide">{`${volume} %`}</small>
+      </span>
+      <input
+        type="range"
+        className="ligne-option-curseur"
+        min={0}
+        max={100}
+        step={5}
+        value={volume}
+        disabled={!disponible}
+        aria-label={libelle}
+        aria-valuetext={`${volume} %`}
+        onChange={(evenement) => {
+          const valeur = Number(evenement.target.value)
+          setVolume(valeur)
+          ecrireVolumeSons(valeur)
+        }}
+        onPointerUp={() => jouerSon('activate')}
+        onKeyUp={() => jouerSon('activate')}
+      />
+    </div>
+  )
+}
+
 function LigneFaconDeJouer() {
   const [facon, setFacon] = useState<FaconDeJouer>(lireFaconParDefaut)
   return (
@@ -348,6 +389,7 @@ export function ContenuOnglet({
           actif={p.sons}
           onBascule={p.basculerSons}
         />
+        <LigneVolumeSons disponible={p.sons} />
         <LigneBascule
           libelle={t('Musique de fond')}
           detail={t('Si un fichier de musique est installé')}

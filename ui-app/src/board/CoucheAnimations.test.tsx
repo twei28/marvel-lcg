@@ -10,6 +10,7 @@
 import { act, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CoucheAnimations, dureeDe, inclinaisonDe } from './CoucheAnimations'
+import * as sons from './sons'
 
 /**
  * La couche ne diffe qu'UNE fois par render_id et garde sa memoire au niveau
@@ -262,5 +263,37 @@ describe('une carte defaussee ne vole pas vers le deck', () => {
     // place deduite de la defausse a une gouttiere de la (8 px par defaut).
     // Une arrivee a x=0 voudrait dire « la carte est partie sur le DECK ».
     expect(vol?.style.transform).toContain('translate(8px')
+  })
+})
+
+describe('le son de la carte qui vole (refonte des sons, 07/10/2026)', () => {
+  it('une carte qui decolle joue vol.wav, une seule fois', () => {
+    const espion = vi.spyOn(sons, 'jouerVol').mockImplementation(() => undefined)
+    const { main } = poserScene()
+    const { rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
+    main.append(carte('31', 'https://exemple.test/scan.png'))
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
+    expect(espion).not.toHaveBeenCalled()
+    act(() => {
+      vi.advanceTimersByTime(30)
+    })
+    expect(espion).toHaveBeenCalledTimes(1)
+    act(() => {
+      vi.advanceTimersByTime(2000)
+    })
+    expect(espion).toHaveBeenCalledTimes(1)
+    espion.mockRestore()
+  })
+
+  it('aucun vol, aucun son', () => {
+    const espion = vi.spyOn(sons, 'jouerVol').mockImplementation(() => undefined)
+    poserScene()
+    const { rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
+    act(() => {
+      vi.advanceTimersByTime(2000)
+    })
+    expect(espion).not.toHaveBeenCalled()
+    espion.mockRestore()
   })
 })

@@ -11,6 +11,8 @@
 // doublons fantômes dans l'ancienne console. L'identifiant, lui, désigne
 // exactement la carte qu'on a sous les yeux.
 
+import { jouerGeste } from './sons'
+
 /** Une intervention envoyée, telle qu'on la raconte dans l'historique. */
 export type Intervention = {
   /** Ce qu'on lit dans le journal : « Soigne 3 sur Rhino ». */
@@ -26,6 +28,8 @@ async function envoyer(commandes: string[]): Promise<boolean> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ commands: commandes }),
     })
+    // Un geste fait à la main sonne comme en automatique (refonte des sons).
+    if (reponse.ok) jouerGeste(commandes)
     return reponse.ok
   } catch {
     return false

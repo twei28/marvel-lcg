@@ -117,3 +117,61 @@ simultanés, ou les deux ? Le volume est aujourd'hui figé à 20 % sans réglage
 Rien ne commence côté fichiers tant que l'utilisateur ne les a pas ; le volume,
 les simultanés et les déclencheurs peuvent partir avant, dès qu'on saura
 lesquels le gênent.
+
+## Décisions du 06/10/2026 (reprise du chantier)
+
+Questions posées une à une :
+- **Fichiers** : pris dans une banque libre CC0 que je propose (packs Kenney en
+  priorité), écoutés par l'utilisateur sur une page de comparaison (actuel
+  contre trois candidats par famille) AVANT tout remplacement. Remplace la
+  décision du 15/09 « l'utilisateur fournit les fichiers ».
+- **Mélange** : curseur de volume des effets dans Réglages « Image et son »
+  (séparé de la musique) ET au plus 2 sons simultanés (un 3e pendant une
+  rafale est sauté).
+- **Déclencheurs** : l'utilisateur ne se souvient plus lesquels tombaient mal ;
+  on n'y touche pas.
+- **Sons nouveaux côté plateau** : sans préférence exprimée, retenus d'après la
+  demande du 15/09 : carte qui vole (calée sur l'animation), survol des
+  boutons et des héros des menus, gestes du mode manuel joués avec le son de
+  leur famille. Pas de fanfare de victoire ou de défaite (jamais demandée).
+- **07/10/2026, durées** : l'utilisateur veut « de préférence des sons d'une
+  durée similaire à l'originale », et plus de candidats par famille. Cela
+  remplace la règle « la brièveté prime » et les plages de durée du tableau
+  des sept familles. La limite de 2 sons simultanés reste le garde-fou
+  contre la bouillie en rafale.
+
+## Statut au 07/10/2026 : INTÉGRÉ (non commité, non déployé)
+
+Choix de l'utilisateur sur la page d'écoute (version 4, Freesound CC0) :
+Capacité B, Impact D, Carte qui bouge J, Retournement E, Jeton H, Gong I,
+Survol K, Carte qui vole I ; **Disparition : garder l'actuel**. Détail des
+sources et des noms servis : `Fusion/marvel-lcg-src/assets/sounds/SOURCES.md`.
+
+- Fichiers : chaque son copié sous tous les noms de sa famille, niveau ramené
+  entre −18 et −21 dB RMS (crête −1 dB) pour rester proche de la Disparition
+  conservée ; `survol.wav` et `vol.wav` ajoutés. Anciens fichiers sauvegardés
+  hors dépôt (récupérables aussi par git).
+- Plateau (`ui-app/src/board/sons.ts`) : curseur « Volume des bruitages » dans
+  Réglages, onglet Son (défaut 20 %, clé `marvel-board-volume-sons` partagée
+  avec le lanceur) ; au plus 2 sons simultanés ; survol des boutons des
+  fenêtres Menu et Réglages (35 % du volume, un toutes les 80 ms, souris
+  seulement) ; `vol.wav` au décollage de chaque carte qui vole ; gestes du mode
+  manuel sonorisés via `triche.ts`, un son du moteur de la même famille dans
+  les 600 ms qui suivent est sauté (pas de doublon).
+- Lanceur (`public/js/prepare/sons.js`) : même volume partagé, même limite de
+  2 sons, survol des boutons et tuiles.
+- Inchangé : réglage « Bruitages » coupé = silence, onglet caché = silence,
+  voile d'ouverture, pas de son pendant une question sauf le gong.
+- Vérifié au navigateur le 07/10/2026 (moteur d'essai, espion sur
+  `HTMLMediaElement.play`) : sons du moteur à 20 %, curseur à 60 % suivi par
+  les sons suivants, survol à 35 % dans les Réglages et le lanceur, geste
+  manuel (F7, Ctrl+D, double-clic) avec son de famille, `vol.wav` au décollage
+  d'une mise en jeu (main vers table).
+- ⚠ Le vol ne suit PAS la règle « pas de son pendant une question » : elle
+  vise le son répété du moteur ; appliquée au vol, elle le rendait muet en
+  mode manuel (question garée) et pendant presque toutes les pioches.
+- ⚠ Constaté hors périmètre : une PIOCHE (deck vers main) ne fait voler
+  aucune carte, donc pas de `vol.wav`. `CoucheAnimations` n'anime qu'une carte
+  APPARUE dans la main, or le deck affiche désormais sa carte du dessus avec
+  son vrai identifiant : la carte piochée « existait » déjà. Animation à
+  corriger à part (la mise en jeu et la défausse depuis la main volent bien).

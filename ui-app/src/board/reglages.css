@@ -63,3 +63,17 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Volume des bruitages (refonte des sons, 07/10/2026) : le curseur prend la
+   place des pastilles d'une ligne « choix entre N ». */
+.ligne-option-curseur {
+  flex: 0 1 180px;
+  min-width: 110px;
+  accent-color: var(--ambre, #f2a516);
+  cursor: pointer;
+}
+
+.ligne-option-curseur:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}

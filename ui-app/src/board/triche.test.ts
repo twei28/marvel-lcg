@@ -41,3 +41,25 @@ describe('basculerPause (POST /manuel_pause)', () => {
     expect(await basculerPause(true)).toBe(false)
   })
 })
+
+describe('un geste accepté sonne comme en automatique (refonte des sons, 07/10/2026)', () => {
+  it('le moteur accepte : le son de la famille du geste part', async () => {
+    const sons = await import('./sons')
+    const espion = vi.spyOn(sons, 'jouerGeste').mockImplementation(() => undefined)
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
+    const { incliner } = await import('./triche')
+    await incliner(12)
+    expect(espion).toHaveBeenCalledWith(['Puzzle.Exhaust(12)'])
+    espion.mockRestore()
+  })
+
+  it('le moteur refuse : aucun son', async () => {
+    const sons = await import('./sons')
+    const espion = vi.spyOn(sons, 'jouerGeste').mockImplementation(() => undefined)
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false }) as Response))
+    const { incliner } = await import('./triche')
+    await incliner(12)
+    expect(espion).not.toHaveBeenCalled()
+    espion.mockRestore()
+  })
+})

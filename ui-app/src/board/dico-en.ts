@@ -1327,6 +1327,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Annonce des exploits': 'Achievement banners',
   'Bannière « Premier sang », « Double K.O. »…': '"First blood", "Double K.O." banner…',
   'Bruitages': 'Sound effects',
+  'Volume des bruitages': 'Sound effects volume',
+  'Coups, cartes, jetons, survol des menus': 'Hits, cards, tokens, menu hover',
   'Coups, cartes jouées, menaces': 'Hits, played cards, threat',
   'Musique de fond': 'Background music',
   'Si un fichier de musique est installé': 'If a music file is installed',

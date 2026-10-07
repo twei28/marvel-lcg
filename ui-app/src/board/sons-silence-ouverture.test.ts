@@ -10,7 +10,7 @@
 // module par nom de fichier, partage par tous les cas de ce fichier.
 import { renderHook } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { useSons } from './sons'
+import { reinitialiserSons, useSons } from './sons'
 import type { World } from './world'
 
 /** Ce que la trame du moteur porte de pertinent pour le son. */
@@ -26,8 +26,13 @@ function ecouterLesSons(): string[] {
     class {
       volume = 0
       currentTime = 0
+      paused = true
+      ended = false
+      error = null
       constructor(public src: string) {}
+      addEventListener() {}
       play() {
+        this.paused = false
         joues.push(this.src)
         return Promise.resolve()
       }
@@ -38,6 +43,9 @@ function ecouterLesSons(): string[] {
 
 afterEach(() => {
   vi.unstubAllGlobals()
+  // Les lecteurs « en cours » de ce faux Audio ne finissent jamais : sans
+  // remise à zéro, la limite de 2 sons simultanés fermerait le cas suivant.
+  reinitialiserSons()
 })
 
 describe('useSons pendant le voile d’ouverture', () => {

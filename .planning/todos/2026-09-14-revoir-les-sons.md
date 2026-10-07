@@ -35,3 +35,10 @@ fichiers.
 
 ⚠ Reste à lui faire nommer QUELS déclencheurs tombent au mauvais moment. Il dit
 que certains arrivent mal, on ne sait pas lesquels. Ne rien déplacer avant.
+
+## 07/10/2026 : intégré (non commité, non déployé)
+
+Page d'écoute en quatre versions (Kenney rejeté : « génériques, moches,
+8 bits » ; Sonniss bloqué par Cloudflare ; retenu : Freesound CC0). Choix et
+intégration détaillés dans la spec, section « Statut au 07/10/2026 ».
+Sources : `Fusion/marvel-lcg-src/assets/sounds/SOURCES.md`.

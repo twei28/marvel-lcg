@@ -56,7 +56,7 @@ import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
 import { CoucheRevelation } from './board/CoucheRevelation'
 import { CoucheTriche, useTriche } from './board/CoucheTriche'
-import { useSons } from './board/sons'
+import { installerSurvol, SELECTEUR_SURVOL_PLATEAU, useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
 import { extraireBoost, extraireCapacite, extraireEffetRevele } from './board/texte-capacite'
@@ -3465,6 +3465,8 @@ export function PagePartie({
   // le voile. C'est la seule raison pour laquelle le bloc du voile est calcule
   // ici, au-dessus, et pas juste avant le retour anticipe qui s'en sert.
   useSons(etat.monde, sons, etat.demande !== undefined, voile)
+  // Survol des boutons du Menu et des Réglages (refonte des sons, 07/10/2026).
+  useEffect(() => installerSurvol(document, SELECTEUR_SURVOL_PLATEAU), [])
   useMusique(etat.monde, musique)
 
   // Raccourcis clavier : E = fin du tour (quand le bouton simple est visible),

@@ -16,6 +16,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 // d'ecran pour tout le plateau (voir placement/boites.ts).
 import { boiteDe, type Boite } from './placement/boites'
 import { mouvementReduit } from './affichage'
+import { jouerVol } from './sons'
 
 /**
  * LA DUREE SUIT LA DISTANCE, et c'est le coeur du poids.
@@ -143,6 +144,8 @@ function VolCarte({ vol }: { vol: Vol }) {
   const [atterri, setAtterri] = useState(false)
   useEffect(() => {
     const decolle = window.setTimeout(() => setPose(true), 20)
+    // Le son part quand CETTE carte décolle, cascade comprise (refonte des sons).
+    const son = window.setTimeout(() => jouerVol(), 20 + vol.delai)
     // Le geste se resorbe AVANT la fin du trajet : la carte se remet a plat en
     // approchant, elle ne se pose pas de travers.
     const pose_ = window.setTimeout(
@@ -151,6 +154,7 @@ function VolCarte({ vol }: { vol: Vol }) {
     )
     return () => {
       window.clearTimeout(decolle)
+      window.clearTimeout(son)
       window.clearTimeout(pose_)
     }
   }, [vol.delai, vol.duree])
