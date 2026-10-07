@@ -199,7 +199,13 @@ describe('le filet anti-blocage de la phase du mechant', () => {
 
   it('ne s arme pas sur un geste du joueur quand rien n est retenu', async () => {
     await ouvrir()
-    courant = monde('Player 1 Turn', 102)
+    // La premiere trame qui suit la phase (« End Phase », le Bilan) se retient
+    // aussi (07/10/2026) : on la relache, puis le tour du joueur ne retient rien.
+    courant = monde('End Phase', 102)
+    pousser()
+    await laisserTourner()
+    await moteur.continuer()
+    courant = monde('Player 1 Turn', 103)
     pousser()
     await laisserTourner()
     expect(etat?.echeanceFilet).toBeUndefined()
@@ -235,7 +241,15 @@ describe('le filet anti-blocage de la phase du mechant', () => {
   it('desarme le filet a la sortie de la phase du mechant', async () => {
     await ouvrir()
     expect(etat?.echeanceFilet).toBeDefined()
-    courant = monde('Player 1 Turn', 102)
+    // La trame du Bilan (« End Phase ») reste sous la protection du filet : un
+    // onglet fantome ne doit pas la bloquer plus que les autres.
+    courant = monde('End Phase', 102)
+    pousser()
+    await laisserTourner()
+    expect(etat?.trameRetenue).toBe(102)
+    expect(etat?.echeanceFilet).toBeDefined()
+    await moteur.continuer()
+    courant = monde('Player 1 Turn', 103)
     pousser()
     await laisserTourner()
     expect(etat?.trameRetenue).toBeUndefined()

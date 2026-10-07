@@ -394,8 +394,13 @@ export const PHASES_DU_MECHANT: ReadonlySet<string> = new Set<string>(
  */
 export type DecisionAccuse = 'immediat' | 'attendre-clic'
 
-export function decisionAccuse(mode: ModePhaseMechant, monde: World | undefined): DecisionAccuse {
+export function decisionAccuse(
+  mode: ModePhaseMechant,
+  monde: World | undefined,
+  apresLaPhaseDuMechant = false
+): DecisionAccuse {
   if (mode === 'instantane') return 'immediat'
+  if (monde === undefined) return 'immediat'
   // ⚠ « sur-table » RETIENT COMME « detaille ». Les deux attendent un clic par
   // etape : ils ne different que par l'endroit ou l'etape est racontee. Ecrire
   // la regle sur le seul nom « detaille » aurait fait defiler toute la phase du
@@ -421,7 +426,13 @@ export function decisionAccuse(mode: ModePhaseMechant, monde: World | undefined)
   // `phaseSautee`, pose par Echap) : Echap fait defiler le cartouche, qui
   // acquitte une trame a la fois par ce meme chemin.
   const phase = monde?.phase ?? ''
-  if (!PHASES_DU_MECHANT.has(phase)) return 'immediat'
+  // LA PREMIERE TRAME QUI SUIT LA PHASE (07/10/2026). Sans elle, le moteur
+  // filait de « End Phase » a « Player 1 Turn » du round suivant en 44 ms, et le
+  // joueur lisait son Bilan au-dessus d'une table deja au round 2, avec « A toi
+  // de jouer » et le bandeau du round suivant par-dessus. Le Bilan est la
+  // derniere etape de la phase : le moteur l'attend comme les autres. `lire()`
+  // dit si cette trame est celle-la (il tient la memoire de la phase vue).
+  if (!PHASES_DU_MECHANT.has(phase)) return apresLaPhaseDuMechant ? 'attendre-clic' : 'immediat'
   // « Detaille » attend TOUJOURS que le cartouche relache la trame. L'avance
   // auto, retiree depuis (pas a pas strict), etait une horloge du CARTOUCHE,
   // qui appelait la meme fonction que le clic « Suivant ». Le moteur en a tenu une lui-meme
@@ -842,6 +853,10 @@ export class Moteur {
   private lectureEnCours = false
   private lectureADemander = false
   private trameEnAttente: Trame | undefined
+  /** La partie dans laquelle une des quatre phases du mechant vient d'etre lue. */
+  private partiePhaseMechantVue: string | undefined
+  /** Le rendu de la premiere trame apres la phase du mechant (retenue comme le Bilan). */
+  private renduDuBilan: { partie: string; render: number } | undefined
   /**
    * Filet anti-blocage de la phase ennemie. On retient l'accuse de reception
    * jusqu'au bouton Continue, mais le moteur attend l'ack de CHAQUE client
@@ -1097,6 +1112,15 @@ export class Moteur {
     if (!this.vivant) return
     const trame = this.trame
     if (!trame) return
+    // UNE TRAME RETENUE NE SE RELACHE PAS TOUTE SEULE (07/10/2026). Elle est
+    // volontairement non acquittee : elle attend le clic du joueur, ou le filet
+    // de 90 s. Le battement la voyait pourtant « en retard » (le serveur liste
+    // notre siege tant qu'il n'a pas acquitte) et l'acquittait au bout de 4 s :
+    // mesure sur un moteur d'essai, une etape lue 8 s sans clic laissait le moteur
+    // avancer de 18 rendus. C'etait « l'etape suivante part sans mon Suivant ».
+    // Le battement ne sert qu'a rattraper un accuse PERDU, donc une trame que
+    // personne n'a retenue.
+    if (this.trameEnAttente) return
     const doit = doitRenvoyerAccuse({
       connecte: this.etat.connecte,
       aDemande: this.etat.demande !== undefined,
@@ -1232,7 +1256,41 @@ export class Moteur {
       // `decisionAccuse`). Le moteur attend sans limite (max_timeout = 0),
       // c'est donc le cartouche qui donne le rythme : aucun monde n'est
       // bufferise, aucune desynchronisation possible.
-      const decision = decisionAccuse(this.mode, monde)
+      // La premiere trame hors des quatre phases, juste apres l'une d'elles,
+      // porte le Bilan : elle se retient comme les autres, jusqu'a ce que le
+      // cartouche rende la main. On la reconnait a son rendu, pas a un
+      // drapeau : le moteur repousse la MEME trame chaque fois qu'il pose une
+      // question, et la lire deux fois ne doit pas la relacher.
+      const partie = this.trame ? clePartie(this.trame) : undefined
+      // La trame que l'on tient est-elle CELLE du monde lu ? Une lecture
+      // declenchee par une reponse peut preceder l'arrivee de la trame par le
+      // socket : le monde est alors deja a « End Phase » et la trame encore la
+      // precedente. On n'etiquette pas le Bilan sur la mauvaise trame (elle
+      // serait relachee par le cartouche, et la vraie arriverait sans marqueur) :
+      // la lecture suivante, a l'arrivee de la bonne trame, s'en charge.
+      const trameDuMonde = this.trame !== undefined && this.trame.render_id === monde.render_id
+      if (PHASES_DU_MECHANT.has(monde.phase ?? '')) {
+        this.partiePhaseMechantVue = partie
+        this.renduDuBilan = undefined
+      } else if (
+        trameDuMonde &&
+        monde.phase === 'End Phase' &&
+        partie !== undefined &&
+        this.partiePhaseMechantVue === partie
+      ) {
+        this.renduDuBilan = { partie, render: monde.render_id }
+        this.partiePhaseMechantVue = undefined
+      }
+      const apresLaPhase =
+        trameDuMonde &&
+        monde.phase === 'End Phase' &&
+        this.renduDuBilan !== undefined &&
+        this.renduDuBilan.partie === partie &&
+        this.renduDuBilan.render === monde.render_id
+      // Un spectateur ne retient jamais : il ne peut ni cliquer « Suivant » ni
+      // accuser, une trame retenue le laissait figé sur l'étape 1 pendant que
+      // le joueur était déjà au Bilan. Le moteur avance au rythme du joueur.
+      const decision = estSpectateur() ? 'immediat' : decisionAccuse(this.mode, monde, apresLaPhase)
       if (this.trame && decision === 'attendre-clic') {
         this.trameEnAttente = this.trame
         // FILET ANTI-BLOCAGE : 90 s D'INACTIVITE PENDANT UNE TRAME RETENUE.

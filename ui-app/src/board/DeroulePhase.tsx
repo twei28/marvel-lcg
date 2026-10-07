@@ -649,9 +649,14 @@ export function DeroulePhase({
 
   // Les etapes de la phase RACONTEE, memorisees.
   //
+  // (Depuis le 07/10/2026 le moteur RETIENT la trame « End Phase » : le Bilan
+  // la lit, round inchange, jusqu'a « Terminer » (moteur.ts, `decisionAccuse`).
+  // Cette memoire reste le filet des cas ou cette trame ne vient pas : mode
+  // « d'un coup », rechargement de page, filet des 90 s.)
+  //
   // Le moteur quitte la phase du mechant et incremente le round dans la MEME
-  // foulee : il ne retient aucune trame entre les deux, donc le plateau ne voit
-  // jamais l'etat intermediaire « phase finie, round inchange ». Or les etapes
+  // foulee : il ne retenait aucune trame entre les deux, donc le plateau ne
+  // voyait jamais l'etat intermediaire « phase finie, round inchange ». Or les etapes
   // sont filtrees sur le round du monde (`etapesDeroule`, deroule-phase.ts) :
   // a la premiere trame d'apres, la liste retombe a zero. Sans cette memoire,
   // `avecBilan` n'a plus rien a compter et le bilan de fin de phase ne
