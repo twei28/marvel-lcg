@@ -7292,6 +7292,17 @@
     gap: 12px;
     padding: 16px 16px 72px;
     overflow-y: auto;
+    /* Indice de defilement : barre toujours visible et bas de liste estompe
+       (le padding du bas laisse la derniere rangee sortir de l'estompe). */
+    scrollbar-color: rgba(255, 196, 60, 0.6) rgba(255, 255, 255, 0.08);
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
+  }
+  .pile-triche-cartes::-webkit-scrollbar { width: 12px }
+  .pile-triche-cartes::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08) }
+  .pile-triche-cartes::-webkit-scrollbar-thumb {
+    background: rgba(255, 196, 60, 0.6);
+    border-radius: 6px;
   }
 
   .pile-triche-carte { display: flex; flex-direction: column; gap: 6px; width: 132px }
@@ -7309,17 +7320,6 @@
   }
   .pile-triche-actions button:hover { background: rgba(255, 196, 60, 0.26) }
   .pile-triche-vide { opacity: 0.5; padding: 24px }
-    /* Indice de defilement : barre toujours visible et bas de liste estompe
-       (le padding du bas laisse la derniere rangee sortir de l'estompe). */
-    scrollbar-color: rgba(255, 196, 60, 0.6) rgba(255, 255, 255, 0.08);
-    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
-    mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
-  }
-  .pile-triche-cartes::-webkit-scrollbar { width: 12px }
-  .pile-triche-cartes::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.08) }
-  .pile-triche-cartes::-webkit-scrollbar-thumb {
-    background: rgba(255, 196, 60, 0.6);
-    border-radius: 6px;
 
   /* Le catalogue (tache 6) reutilise le gabarit de la pile ouverte
      (.pile-triche*) : meme voile, meme dialogue, meme grille de scans - une
