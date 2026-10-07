@@ -23,6 +23,7 @@
 // ⚠ AUCUN REGLAGE N'EST AJOUTE, SUPPRIME NI RENOMME. C'est un rangement, pas
 // une refonte : chaque interrupteur continue d'appeler exactement la meme
 // fonction qu'avant.
+import { ecrireCoteAmeliorations, lireCoteAmeliorations, type CoteAmeliorations } from './cote-ameliorations'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import { ReglagesApercuAmbiance, type ApercuMeteo } from './CoucheMeteo'
@@ -219,6 +220,25 @@ function LigneFaconDeJouer() {
   )
 }
 
+function LigneCoteAmeliorations() {
+  const [cote, setCote] = useState<CoteAmeliorations>(lireCoteAmeliorations)
+  return (
+    <LigneChoix
+      libelle={t('Améliorations')}
+      valeur={cote}
+      choix={[
+        { valeur: 'gauche' as CoteAmeliorations, libelle: t('À gauche') },
+        { valeur: 'droite' as CoteAmeliorations, libelle: t('À droite') },
+      ]}
+      onChoisir={(valeur) => {
+        ecrireCoteAmeliorations(valeur)
+        setCote(valeur)
+      }}
+      detail={t('De quel côté de la carte qui les porte (héros, alliés, méchant, sbires)')}
+    />
+  )
+}
+
 /* -------------------------------------------------------------- fenetre -- */
 
 export type ProprietesReglages = {
@@ -404,6 +424,7 @@ export function ContenuOnglet({
     return (
       <>
         <LigneFaconDeJouer />
+        <LigneCoteAmeliorations />
         <LigneChoix
           libelle={t('Phase du méchant')}
           valeur={p.modePhase}

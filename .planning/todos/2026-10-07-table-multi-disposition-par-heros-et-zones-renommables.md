@@ -29,3 +29,8 @@ ajoute seulement un choix de rangée par joueur à l'intérieur de la zone.
 - **Renommer** : un nom libre par zone ? Retenu par zone, par joueur ou par nombre de joueurs ? Un bouton « remettre le titre automatique » ?
 - La disposition enregistrée par nombre de joueurs suffit-elle, ou faut-il l'enregistrer par COMPOSITION (2 héros, mais lesquels) ?
 - Téléphone : l'éditeur reste-t-il réservé au PC ?
+
+## Décidé le 07/10/2026 (questions une à une), EN COURS de codage
+
+- **Renommer une zone** : double-clic sur le titre de la zone, seulement en mode « Modifier la table ». Entrée valide, Échap annule. Vider le champ remet le titre automatique. Le nom vaut pour ce joueur, toutes ses parties, sur ce navigateur (gardé avec sa disposition) ; les autres joueurs gardent les leurs. Constat de l'utilisateur : « je n'arrive pas à cliquer à un endroit pour changer le nom de la zone » (rien n'était codé).
+- **Améliorations à gauche ou à droite de la carte** (demande nouvelle : « il y a des gens qui aiment avoir les améliorations du côté gauche de la carte du héros ou de l'allié ») : réglage dans Réglages, onglet Jeu ; s'applique à TOUTES les cartes qui portent des améliorations (héros, alliés, méchant, sbires) ; droite par défaut, comme aujourd'hui.

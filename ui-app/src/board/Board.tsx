@@ -9,6 +9,7 @@
 
 import { DISPOSITION_ORIGINE, styleDeGrille, styleDeZone as tailleDeZone, type Disposition } from './table-briques'
 import { ACCOMPAGNEMENT, assemblerZones } from './table-rendu'
+import { useNomsZones } from './noms-zones'
 import {
   useCallback,
   useEffect,
@@ -1184,9 +1185,15 @@ export function Board({
     []
   )
 
+  // Le nom donne par le joueur (Modifier la table, double-clic) remplace le titre automatique.
+  const nomsZones = useNomsZones()
   const zonesRendues = useMemo(
-    () => (bandeManigances ? assemblerZones(plateau, disposition) : []),
-    [bandeManigances, plateau, disposition]
+    () =>
+      (bandeManigances ? assemblerZones(plateau, disposition) : []).map((rendue) => {
+        const nom = nomsZones[rendue.aire]
+        return nom && rendue.emplacement ? { ...rendue, emplacement: { ...rendue.emplacement, titre: nom } } : rendue
+      }),
+    [bandeManigances, plateau, disposition, nomsZones]
   )
   const unEmplacement = (e: EmplacementAffiche, styleDeZone?: CSSProperties, aire?: string) => (
     <Emplacement

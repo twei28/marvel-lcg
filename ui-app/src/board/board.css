@@ -2471,6 +2471,20 @@
     z-index: 60;
   }
 
+  /* Ameliorations A GAUCHE (Reglages > Jeu, cote-ameliorations.ts) : meme
+     decalage, dans l'autre sens ; la place reservee passe a gauche du porteur. */
+  body.ameliorations-a-gauche .plateau-unite {
+    padding-right: 0;
+    padding-left: calc(var(--nb, 0) * var(--attach-step-x));
+  }
+  body.ameliorations-a-gauche .plateau-scene .est-attachee {
+    left: calc(var(--nb, 0) * var(--attach-step-x));
+    transform: translate(
+      calc((var(--i, 0) + 1) * var(--attach-step-x) * -1),
+      calc((var(--i, 0) + 1) * var(--attach-step-y))
+    );
+  }
+
   /* Les cartes attachees gardent la MEME taille que les autres cartes en jeu :
      une amelioration reste une carte. */
   .plateau-scene .est-attachee .scan-card {

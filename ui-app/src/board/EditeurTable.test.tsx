@@ -70,4 +70,27 @@ describe('l editeur de table', () => {
     expect(document.querySelector('.editeur-zone[data-zone="allies"] [data-brique="sbires"]')).not.toBeNull()
     expect(document.querySelector('.editeur-zone[data-zone="main"] .editeur-brique')).toBeNull()
   })
+
+  it('double-clic sur le titre : renomme la zone, Echap annule, vide rend le titre automatique', () => {
+    const appels = rendre()
+    const titre = () => document.querySelector<HTMLElement>('.editeur-zone[data-zone="main"] .editeur-zone-nom')!
+    expect(titre().textContent).toBe('Ta main')
+    fireEvent.doubleClick(titre())
+    const champ = () => document.querySelector<HTMLInputElement>('.editeur-zone-saisie')!
+    fireEvent.change(champ(), { target: { value: 'Mes cartes' } })
+    fireEvent.keyDown(champ(), { key: 'Enter' })
+    expect(titre().textContent).toBe('Mes cartes')
+    expect(JSON.parse(window.localStorage.getItem('mc_noms_zones_v1')!)).toEqual({ main: 'Mes cartes' })
+
+    fireEvent.doubleClick(titre())
+    fireEvent.change(champ(), { target: { value: 'Autre chose' } })
+    fireEvent.keyDown(champ(), { key: 'Escape' })
+    expect(titre().textContent).toBe('Mes cartes')
+    expect(appels.annuler).not.toHaveBeenCalled()
+
+    fireEvent.doubleClick(titre())
+    fireEvent.change(champ(), { target: { value: '  ' } })
+    fireEvent.keyDown(champ(), { key: 'Enter' })
+    expect(titre().textContent).toBe('Ta main')
+  })
 })

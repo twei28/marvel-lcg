@@ -31,6 +31,7 @@ import {
   type PlaceZone,
 } from './table-briques'
 import { t } from './langue'
+import { LONGUEUR_MAX_NOM, nommerZone, useNomsZones } from './noms-zones'
 import './EditeurTable.css'
 
 /** La case (a partir de 1) sous le pointeur, bornee a la grille. */
@@ -75,11 +76,15 @@ export function EditeurTable({
 }) {
   const couche = useRef<HTMLDivElement>(null)
   const [geste, setGeste] = useState<Geste>()
+  const nomsZones = useNomsZones()
+  const [enSaisie, setEnSaisie] = useState<string>()
+  const saisieClose = useRef(false)
   // Ce que le geste en cours donnerait : la nouvelle disposition, ou un refus.
   const [fantome, setFantome] = useState<{ place: PlaceZone; refuse: boolean }>()
 
   useEffect(() => {
     const surTouche = (e: KeyboardEvent) => {
+      // Echap dans le champ du nom n'annule que la saisie (il ne remonte pas jusqu'ici).
       if (e.key === 'Escape') annuler()
     }
     document.addEventListener('keydown', surTouche)
@@ -174,7 +179,8 @@ export function EditeurTable({
       >
         {disposition.zones.map((p) => {
           const zone = ancre(p)
-          const nom = titreDeZone(p.briques, (b) => t(NOMS[b]), t('et'))
+          const automatique = titreDeZone(p.briques, (b) => t(NOMS[b]), t('et'))
+          const nom = nomsZones[zone] ?? automatique
           return (
             <div
               key={zone}
@@ -185,7 +191,46 @@ export function EditeurTable({
                 commencer({ genre: 'deplacer', zone, depart: caseDe(e), origine: p })(e)
               }
             >
-              <span className="editeur-zone-nom">{nom}</span>
+              {enSaisie === zone ? (
+                <input
+                  className="editeur-zone-saisie"
+                  defaultValue={nomsZones[zone] ?? ''}
+                  placeholder={automatique}
+                  maxLength={LONGUEUR_MAX_NOM}
+                  aria-label={t('Nom de la zone')}
+                  autoFocus
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => {
+                    e.stopPropagation()
+                    if (e.key === 'Enter') {
+                      saisieClose.current = true
+                      nommerZone(zone, e.currentTarget.value)
+                      setEnSaisie(undefined)
+                    } else if (e.key === 'Escape') {
+                      saisieClose.current = true
+                      setEnSaisie(undefined)
+                    }
+                  }}
+                  onFocus={() => {
+                    saisieClose.current = false
+                  }}
+                  onBlur={(e) => {
+                    // Clic ailleurs : on garde ce qui est ecrit. Apres Entree ou
+                    // Echap, la perte de focus du champ retire ne compte pas.
+                    if (!saisieClose.current) nommerZone(zone, e.currentTarget.value)
+                    setEnSaisie(undefined)
+                  }}
+                />
+              ) : (
+                <span
+                  className="editeur-zone-nom"
+                  title={t('Double-clic pour renommer la zone (vide = titre automatique)')}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onDoubleClick={() => setEnSaisie(zone)}
+                >
+                  {nom}
+                </span>
+              )}
               <span className="editeur-briques">
                 {p.briques.filter((b) => !estEpinglee(b)).map((b) => (
                   <button
