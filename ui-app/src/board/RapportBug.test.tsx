@@ -81,7 +81,7 @@ describe('les outils de rapport', () => {
   it('inscrit la campagne en cours au rapport', async () => {
     const ecrire = pressePapier('ok')
     window.localStorage.setItem(CLE_CAMPAGNE, JSON.stringify({ id: 'trors-1', scenario: 'crossbones' }))
-    const { result } = renderHook(() => useRapportBug(MONDE, undefined, [], 0))
+    const { result } = renderHook(() => useRapportBug({ ...MONDE, mode_campaign: true }, undefined, [], 0))
     await act(async () => {
       await result.current.copier('recent')
     })
@@ -135,5 +135,27 @@ describe('la confirmation', () => {
   it("s'annonce aux lecteurs d'ecran", () => {
     render(<MessageRapport message="Rapport copié" />)
     expect(screen.getByRole('status')).toHaveTextContent('Rapport copié')
+  })
+})
+
+describe('la ligne « campagne » du rapport suit la règle du monde', () => {
+  const cle = JSON.stringify({ id: 'trors-1', scenario: 'crossbones' })
+
+  async function texteDuRapport(mode_campaign: boolean): Promise<string> {
+    window.localStorage.setItem(CLE_CAMPAGNE, cle)
+    const ecrire = pressePapier('ok')
+    const { result } = renderHook(() => useRapportBug({ ...MONDE, mode_campaign }, undefined, [], 0))
+    await act(async () => {
+      await result.current.copier('recent')
+    })
+    return String(ecrire.mock.calls[0]?.[0])
+  }
+
+  it('partie ordinaire : la clé restée dans le navigateur ne rattache rien à une campagne', async () => {
+    expect(await texteDuRapport(false)).not.toContain('crossbones')
+  })
+
+  it('partie de campagne : la ligne est là', async () => {
+    expect(await texteDuRapport(true)).toContain('crossbones')
   })
 })

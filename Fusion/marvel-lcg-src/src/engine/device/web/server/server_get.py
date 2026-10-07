@@ -900,6 +900,15 @@ class GameServerGet(GameServerBase):
         # quatre cles, c'est-a-dire avec la partie.
         if not self.tient_le_siege(request, 0):
             return web.json_response({'error': 'not the host'}, status=403)
+        # ⚠ SIGNAL D'INTENTION (07/10/2026). Seul l'assistant de partie
+        # ORDINAIRE (public/js/prepare/app.js, `genererLiens`) demande ces
+        # liens : l'ecran des campagnes n'en distribue pas. L'hote qui les
+        # genere monte donc une table ordinaire, et le monde que tient encore le
+        # moteur (un scenario de campagne abandonne, par exemple) n'est PAS ce
+        # qu'on va jouer : `get_campagne_en_cours` se tait jusqu'au prochain
+        # /new, qui efface ce drapeau. Si un jour l'ecran des campagnes
+        # distribue ses propres liens, il ne doit PAS passer par cette route.
+        self.table_ordinaire = True
         return web.json_response({'multi': True, 'cles': list(passwords)})
 
     async def get_site_admin(self, request: web.Request) -> web.Response:

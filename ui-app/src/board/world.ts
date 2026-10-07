@@ -528,6 +528,14 @@ export type World = {
    */
   mode_sandbox?: boolean
   /**
+   * La RÈGLE : cette partie a été lancée comme un scénario de campagne
+   * (`mode_campaign`). Seul critère fiable pour ouvrir le panneau de
+   * récompenses : la clé du navigateur et le `partieEnCours` du serveur
+   * survivent à une partie ordinaire. Absent d'un descripteur ancien : traité
+   * comme faux.
+   */
+  mode_campaign?: boolean
+  /**
    * La RÈGLE : cette partie EST manuelle. Vraie dès la création de la partie,
    * mise en place comprise — NE DIT PAS si le moteur s'est déjà tu. Réservé à
    * ce qui décrit la NATURE de la partie et ne dépend pas du moment (refus

@@ -86,6 +86,9 @@ export function mondeDeTest(surcharge: Partial<World> = {}): World {
     phase: 'End Round',
     prompt: '',
     event_name: 'PlayerOnEvent_Text',
+    // Les tests de ce dossier jouent une partie de campagne ; ceux d'une partie
+    // ordinaire passent `mode_campaign: false`.
+    mode_campaign: true,
     ...ZONES,
     players: [
       siegeDeTest({ area_hero: [carteDeTest(1, 'Spider-Man', '01001a', 'Hero', { health: 10 })] }),

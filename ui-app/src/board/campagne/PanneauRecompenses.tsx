@@ -124,6 +124,16 @@ export function PanneauRecompenses({
     let annule = false
     ;(async () => {
       try {
+        // Une partie ORDINAIRE n'a pas de campagne, quoi que disent la clé du
+        // navigateur ou le `partieEnCours` du serveur : ce sont des états
+        // durables qu'elle n'efface pas (ils servent à reprendre un scénario),
+        // et c'est ainsi qu'une victoire hors campagne validait un scénario
+        // sans rapport (07/10/2026). Le critère est la RÈGLE du moteur, la même
+        // pour tous les sièges. Aucun appel réseau avant.
+        if (monde?.mode_campaign !== true) {
+          setEtat({ phase: 'absent' })
+          return
+        }
         // Le contexte vient du localStorage chez l'hôte, du serveur chez tous
         // les autres. La garde est DANS la fonction : dehors, elle rendrait
         // « absent » aux sièges distants avant même d'avoir demandé.

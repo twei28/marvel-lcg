@@ -107,6 +107,19 @@ def _campagne_la_plus_recente() -> 'Optional[Dict[str, Any]]':
     return meilleure
 
 
+def _partie_du_moteur_est_de_campagne(serveur: 'Any') -> bool:
+    """La partie que tient le moteur a-t-elle ete lancee comme une campagne ?
+
+    Lit la regle `mode_campaign` du monde courant : c'est elle, et non un etat
+    durable (`partieEnCours`, cle du navigateur), qui dit ce qu'on joue. Faux
+    pour tout ce qu'on ne sait pas lire (aucune partie, moteur pas pret).
+    """
+    try:
+        return bool(serveur.game.world.rule.mode_campaign)
+    except Exception:
+        return False
+
+
 def secret_pour_le_moteur() -> 'Dict[str, str]':
     """Le secret de la campagne dont une partie vient d'etre lancee.
 
@@ -378,6 +391,20 @@ class GameServerCampagne(GameServerBase):
         `lancerScenario` dans public/js/campagne/app.js). Le salon n'a donc rien
         a choisir, seulement a le DIRE.
         """
+        # La GATE (07/10/2026) : `partieEnCours` seul ne dit pas que la partie
+        # jouee EST une campagne, seulement qu'un scenario a ete lance un jour
+        # et jamais solde. Une partie ordinaire apres un scenario abandonne
+        # ressuscitait la campagne : panneau de recompenses sur une victoire
+        # sans rapport, salon « equipe fixee par la campagne » sur une table
+        # ordinaire. La reponse exige donc que la partie que tient le moteur
+        # soit de campagne (regle `mode_campaign`, conservee par les
+        # sauvegardes). Cas inconnu (aucune partie, moteur absent) : on ne dit
+        # rien, jamais l'inverse.
+        # ET l'hote n'a pas declare une table ordinaire (voir
+        # `get_liens_sieges`) : le monde tenu par le moteur est alors celui de la
+        # partie PRECEDENTE, pas de celle qui va etre lancee.
+        if getattr(self, 'table_ordinaire', False) or not _partie_du_moteur_est_de_campagne(self):
+            return web.json_response({})
         campagne = _campagne_la_plus_recente()
         if not campagne:
             return web.json_response({})

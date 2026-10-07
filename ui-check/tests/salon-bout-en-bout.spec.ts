@@ -69,7 +69,11 @@ async function carteHeros(ctx: APIRequestContext, deck: string): Promise<string>
 }
 
 /** Le lancement, tel que `prepare/launcher.js` le fait : un `/new?data=`. */
-async function lancerManche(ctx: APIRequestContext, heros: string[]): Promise<void> {
+async function lancerManche(
+  ctx: APIRequestContext,
+  heros: string[],
+  regles: readonly string[] = REGLES
+): Promise<void> {
   const definition = await (await ctx.get(`/get_scenario_json?${SCENARIO}`)).json();
   const decks: string[] = [];
   for (const h of heros) decks.push(JSON.stringify(await (await ctx.get(`/get_hero_json?${h}`)).json()));
@@ -84,7 +88,7 @@ async function lancerManche(ctx: APIRequestContext, heros: string[]): Promise<vo
             ...new Set([...(definition.encounter_sets ?? []), ...(definition.modular_sets ?? [])]),
           ],
           hero_json: decks,
-          rules: REGLES,
+          rules: regles,
           seed: 4242,
           timeout: 0,
         })
@@ -480,11 +484,16 @@ test('⚠ campagne : un invite qui recharge APRES le lancement bascule seul', as
     },
   });
   expect(enregistree.ok(), 'la campagne d’essai n’a pas pu etre enregistree').toBeTruthy();
+
+  // La manche precedente de la campagne, encore chargee. LANCEE EN MODE
+  // CAMPAGNE (`mode_campaign`, comme le fait launcher.js) : depuis le
+  // 07/10/2026 la route ne parle que si la partie que tient le moteur est de
+  // campagne, `partieEnCours` seul ne suffit plus (une table ordinaire ne doit
+  // pas s'annoncer « equipe fixee par la campagne »).
+  const reglesCampagne = [...REGLES, 'mode_campaign'];
+  await lancerManche(ctx, membres, reglesCampagne);
   const encours = await (await ctx.get('/get_campagne_en_cours?')).json();
   expect(encours.id, 'le moteur ne voit aucune campagne en cours').toBeTruthy();
-
-  // La manche precedente de la campagne, encore chargee.
-  await lancerManche(ctx, membres);
   const plateauHote = await ouvrirLePlateauDeLHote(browser);
   const vu1 = await clientDeSiege(1);
   const repereAncien = await attendreQueLaTableTourne(vu1, 1);
@@ -503,7 +512,7 @@ test('⚠ campagne : un invite qui recharge APRES le lancement bascule seul', as
   // correction vient d'ouvrir (le repere de campagne etait ecrit, jamais relu).
   await a.page.goto('/main.html');
 
-  await lancerManche(ctx, membres);
+  await lancerManche(ctx, membres, reglesCampagne);
   await plateauHote.goto('/app/board.html?p=0&multi=1', { waitUntil: 'domcontentloaded' });
   const repereNeuf = await attendreQueLaTableTourne(vu1, 1);
   expect(repereNeuf).not.toBe(repereAncien);

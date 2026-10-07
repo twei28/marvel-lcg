@@ -37,6 +37,20 @@ def cas(nom, obtenu, attendu):
     return 1
 
 
+def jeu_de(campagne):
+    """Un moteur factice dont le monde porte la VRAIE regle `mode_campaign`.
+
+    `WorldRule` et `SetRule` sont ceux du moteur : un faux monde a bool brut
+    laisserait passer une garde qui testerait `is True` et casserait en
+    production (la regle est un `VariableBool`).
+    """
+    from types import SimpleNamespace
+    from game.world.world_rule import WorldRule
+    regle = WorldRule()
+    regle.SetRule(["mode_campaign"] if campagne else [], False, 1)
+    return SimpleNamespace(world=SimpleNamespace(rule=regle))
+
+
 def main():
     echecs = 0
     with tempfile.TemporaryDirectory() as dossier:
@@ -107,7 +121,18 @@ def main():
     # Le secret de la taupe ne doit jamais atteindre le navigateur, et le
     # carnet n'a rien a faire ici : il se lit par /get_campagne, qui le filtre.
     # Une route neuve qui l'oublie ouvre l'enveloppe devant les joueurs.
-    serveur = server_campagne.GameServerCampagne.__new__(server_campagne.GameServerCampagne)
+    from engine.device.web.server.server_get import GameServerGet
+
+    class Serveur(GameServerGet, server_campagne.GameServerCampagne):
+        # `game` est une propriete en lecture seule du vrai serveur : le test
+        # y met son moteur factice.
+        game = None
+
+    serveur = Serveur.__new__(Serveur)
+    # La route ne parle que si la partie du MOTEUR est de campagne (regle
+    # `mode_campaign`, 07/10/2026) : `partieEnCours` seul est un etat durable
+    # qu'une partie ordinaire n'efface pas.
+    serveur.game = jeu_de(True)
     boucle = asyncio.new_event_loop()
     with tempfile.TemporaryDirectory() as dossier:
         server_campagne.CAMPAGNES_FOLDER.value = dossier
@@ -136,7 +161,92 @@ def main():
         echecs += cas("LE SECRET NE SORT PAS", server_campagne.CLE_SECRET in brut, False)
         echecs += cas("aucune preuve ne sort", "50185" in brut, False)
         echecs += cas("le carnet ne sort pas", "carnet" in corps, False)
+
+        # --- LA GATE : une partie ORDINAIRE ne ressuscite pas la campagne -----
+        #
+        # Meme dossier, MEME `partieEnCours` arme : seul le moteur change. C'est
+        # le defaut du 07/10/2026 (panneau de recompenses sur une victoire sans
+        # rapport, salon « equipe fixee par la campagne » sur une table
+        # ordinaire). Le temoin positif est juste au-dessus : sans lui, une
+        # route qui ne dit plus jamais rien passerait pour correcte.
+        serveur.game = jeu_de(False)
+        reponse = boucle.run_until_complete(serveur.get_campagne_en_cours(None))
+        echecs += cas("partie ordinaire malgre partieEnCours arme : la route ne dit rien",
+                      json.loads(reponse.body.decode("utf-8")), {})
+        serveur.game = None
+        reponse = boucle.run_until_complete(serveur.get_campagne_en_cours(None))
+        echecs += cas("aucune partie dans le moteur : la route ne dit rien",
+                      json.loads(reponse.body.decode("utf-8")), {})
+        from types import SimpleNamespace
+        serveur.game = SimpleNamespace(world=None)
+        reponse = boucle.run_until_complete(serveur.get_campagne_en_cours(None))
+        echecs += cas("moteur sans monde monte : la route ne dit rien",
+                      json.loads(reponse.body.decode("utf-8")), {})
+        serveur.game = jeu_de(True)
+        reponse = boucle.run_until_complete(serveur.get_campagne_en_cours(None))
+        echecs += cas("partie de campagne : la route redit la campagne",
+                      json.loads(reponse.body.decode("utf-8")).get("id"), "ma_camp")
+
+        # --- L'INTENTION DE L'HOTE : une table ordinaire montee APRES un scenario
+        # abandonne. Le moteur tient encore le monde de campagne, mais l'hote qui
+        # distribue ses liens (`get_liens_sieges`) monte une partie ordinaire :
+        # le salon ne doit pas annoncer « equipe fixee par la campagne ».
+        from engine.device.web.server import server_base
+        ancien = (list(server_base.SEAT_PASSWORDS.value), Serveur.tient_le_siege)
+        server_base.SEAT_PASSWORDS.value = ["a", "b"]
+        Serveur.tient_le_siege = lambda self, requete, siege: True
+        try:
+            reponse = boucle.run_until_complete(serveur.get_liens_sieges(None))
+            echecs += cas("l'hote obtient ses liens", json.loads(reponse.body.decode("utf-8")).get("multi"), True)
+        finally:
+            server_base.SEAT_PASSWORDS.value, Serveur.tient_le_siege = ancien
+        reponse = boucle.run_until_complete(serveur.get_campagne_en_cours(None))
+        echecs += cas("monde de campagne MAIS table ordinaire declaree : la route ne dit rien",
+                      json.loads(reponse.body.decode("utf-8")), {})
+        serveur.table_ordinaire = False
+        reponse = boucle.run_until_complete(serveur.get_campagne_en_cours(None))
+        echecs += cas("le drapeau retombe : la route redit la campagne",
+                      json.loads(reponse.body.decode("utf-8")).get("id"), "ma_camp")
     boucle.close()
+
+    # --- /new : le secret ne va que dans une partie de CAMPAGNE -------------
+    from engine.device.web.server.server_new_game import GameServerNewGame
+
+    class _Jeu:
+        recu = None
+
+        def NewGame(self, nouvelle):
+            self.recu = nouvelle
+
+    class Nouveau(GameServerNewGame):
+        game = None
+
+    def lancer(regles):
+        nouveau = Nouveau.__new__(Nouveau)
+        nouveau.game = _Jeu()
+        donnees = {
+            "campaign_json": "{}", "encounter_set_names": [], "hero_json": [],
+            "seed": 1, "timeout": 0, "challenges": [], "rules": regles,
+            "campaign_log": {},
+        }
+        requete = type("R", (), {"rel_url": type("U", (), {"query": {"data": json.dumps(donnees)}})()})()
+        nouveau.table_ordinaire = True
+        asyncio.new_event_loop().run_until_complete(nouveau.new_game(requete))
+        assert nouveau.table_ordinaire is False, "/new doit effacer la table ordinaire declaree"
+        return nouveau.game.recu.campaign_log
+
+    with tempfile.TemporaryDirectory() as dossier:
+        server_campagne.CAMPAGNES_FOLDER.value = dossier
+        ecrire(dossier, "aim_perimee", {
+            "code": "aos", "nom": "A.I.M. perimee",
+            server_campagne.CLE_SECRET: "50185;50188;50191",
+            "partieEnCours": {"scenario": "aim", "depuis": "2026-08-13T10:00:00"},
+        })
+        echecs += cas("/new ordinaire : le secret n'est pas depose",
+                      server_campagne.CLE_CARNET_SECRET in lancer(["v16_all"]), False)
+        echecs += cas("/new de campagne : le secret est depose",
+                      lancer(["v16_all", "mode_campaign"]).get(server_campagne.CLE_CARNET_SECRET),
+                      "50185;50188;50191")
 
     print("ECHECS : %d" % echecs)
     return 1 if echecs else 0

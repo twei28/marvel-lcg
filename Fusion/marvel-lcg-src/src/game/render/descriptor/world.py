@@ -17,6 +17,14 @@ class WorldDescriptor:
     # clic droit. Transmis a chaque rendu : il survit donc au
     # rechargement de page et au chargement d'une sauvegarde.
     mode_sandbox: bool = field(default=False)
+    # La REGLE : cette partie a ete lancee comme un scenario de CAMPAGNE
+    # (`mode_campaign` de la liste `rules` de /new). C'est le seul critere
+    # fiable pour savoir si une victoire doit s'ouvrir sur les recompenses
+    # d'une campagne : la cle du navigateur et le `partieEnCours` du serveur
+    # sont des etats durables qu'une partie ordinaire n'efface pas. Transmis a
+    # chaque rendu a TOUS les sieges : il survit au rechargement de page et au
+    # chargement d'une sauvegarde.
+    mode_campaign: bool = field(default=False)
     # La REGLE : cette partie EST manuelle. Vraie des la creation de la
     # partie, mise en place comprise -- NE DIT PAS si le moteur s'est deja
     # tu. Reserve a ce qui decrit la NATURE de la partie et ne depend pas du

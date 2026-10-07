@@ -16,6 +16,9 @@ class GameServerNewGame(GameServerBase):
     async def new_game(self, request: web.Request) -> web.Response:
         data = request.rel_url.query.get('data', "")
         new_game = Json.LoadsAs(data, NewGameDescriptor)
+        # La table n'est plus « en attente d'une partie ordinaire » : la partie
+        # qui demarre dit elle-meme ce qu'elle est (regle `mode_campaign`).
+        self.table_ordinaire = False
         # Le salon multijoueur a rempli son office : on le vide pour que la
         # partie suivante ne reparte pas avec les choix de la precedente.
         # GameServer herite de GameServerGet et de GameServerNewGame :
@@ -25,9 +28,12 @@ class GameServerNewGame(GameServerBase):
         # de voir. Le serveur y remet ici la part secrete de la campagne — pour
         # Agents of S.H.I.E.L.D., la combinaison de la taupe. Le moteur recoit
         # un carnet complet, le navigateur n'en a jamais eu qu'une moitie.
+        # Seulement pour une partie de CAMPAGNE (regle `mode_campaign`) : une
+        # campagne dont un scenario est reste « en cours » ne doit pas deposer
+        # son secret dans une partie ordinaire (07/10/2026).
         try:
             from engine.device.web.server.server_campagne import secret_pour_le_moteur
-            secret = secret_pour_le_moteur()
+            secret = secret_pour_le_moteur() if 'mode_campaign' in (new_game.rules or []) else {}
             if secret:
                 new_game.campaign_log = {**(new_game.campaign_log or {}), **secret}
         except Exception:
@@ -36,6 +42,7 @@ class GameServerNewGame(GameServerBase):
         return web.json_response({'result': "New game created"})
 
     async def load_replay(self, request: web.Request) -> web.Response:
+        self.table_ordinaire = False
         self.game.LoadReplay(request.rel_url.query_string)
         return web.json_response({'result': "New game created"})
 
@@ -57,6 +64,7 @@ class GameServerNewGame(GameServerBase):
         # Log.Print("Received replay data:", replay_data)
 
         scene = Json.LoadsAs(replay_data, Scene)
+        self.table_ordinaire = False
         if step == 0:
             state = 'Replay'
         else:

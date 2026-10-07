@@ -863,6 +863,10 @@ la première qui est en place :
 - **Injection** : `new_game` remet la part secrète dans `campaign_log` juste
   avant `NewGame`. Le moteur reçoit un carnet complet.
 
+> **Correctif du 07/10/2026.** L'injection n'a lieu que si `new_game.rules`
+> contient `mode_campaign` : une campagne dont un scénario est resté « en cours »
+> ne dépose plus son secret dans une partie ordinaire.
+
 La difficulté était d'identifier la campagne concernée : le descripteur de
 `/new` est **gelé** et ne porte pas d'identifiant. Plutôt que de toucher au
 contrat, on se sert de ce qui existe déjà : l'écran écrit `partieEnCours` AVANT
@@ -2049,8 +2053,10 @@ un plateau qui ignore la campagne — rien ne les convoquait.
 
 | Route | Ce qu'elle fait | Ce qu'elle ne peut PAS faire |
 |---|---|---|
-| `GET /get_campagne_en_cours` | Rend `{id, scenario, nom, equipe}` de la campagne dont `partieEnCours.depuis` est la plus récente | Rendre le carnet ou le secret. Vérifié sur la **chaîne** de réponse, pas seulement sur l'objet |
+| `GET /get_campagne_en_cours` | Rend `{id, scenario, nom, equipe}` de la campagne dont `partieEnCours.depuis` est la plus récente, **si la partie du moteur est de campagne** (sinon `{}`) | Rendre le carnet ou le secret. Vérifié sur la **chaîne** de réponse, pas seulement sur l'objet |
 | `POST /save_carnet_partiel` | Fusionne des clés de carnet | Terminer un scénario, gagner une campagne, toucher au secret, créer une campagne |
+
+> **Correctif du 07/10/2026.** La route ne répond plus que si la partie tenue par le moteur porte la règle `mode_campaign` (`_partie_du_moteur_est_de_campagne`, `server_campagne.py`), et se tait tant que l'hôte a déclaré une table ordinaire (`get_liens_sieges` pose `table_ordinaire`, tout `/new` ou chargement l'efface). Sans cela, un `partieEnCours` resté armé faisait passer toute partie ordinaire pour la campagne (panneau de récompenses, salon « équipe fixée par la campagne »). Elle ne dit toujours pas QUELLE campagne : c'est la plus récente avec un `partieEnCours`. Le plateau garde sa propre garde, `monde.mode_campaign === true`, avant tout appel réseau (`PanneauRecompenses.tsx`).
 
 La déduction de la première **existait déjà**, enfouie dans
 `secret_pour_le_moteur()` : elle a été extraite dans `_campagne_la_plus_recente()`

@@ -1,9 +1,10 @@
 // Contexte de campagne du plateau — « cette partie appartient-elle à une
 // campagne, et si oui laquelle ? »
 //
-// Le plateau n'a aucun moyen de le déduire tout seul : la partie qu'il affiche
-// ressemble à n'importe quelle autre. C'est l'écran des campagnes qui le lui
-// dit, en déposant une clé avant de rediriger — même mécanique que le coach du
+// SI la partie est de campagne, c'est la règle `mode_campaign` du monde qui le
+// dit (`World.mode_campaign`, publiée par le moteur à tous les sièges) : le
+// panneau de récompenses l'exige avant tout. LAQUELLE, c'est l'écran des
+// campagnes qui le dit, en déposant une clé avant de rediriger — même mécanique que le coach du
 // mode Découverte (voir CoucheCoach). La clé est effacée dès que les
 // récompenses sont validées, pour qu'une partie hors campagne lancée ensuite
 // n'hérite pas du contexte de la précédente.

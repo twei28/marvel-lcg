@@ -374,6 +374,35 @@ def cas_drapeau_pose(game_dir, port):
     return "le drapeau mode_manuel est pose et publie"
 
 
+def cas_campagne_publiee(game_dir, port):
+    """La regle `mode_campaign` est publiee a TOUS les sieges, et vraie ou fausse.
+
+    Defaut du 07/10/2026 : une victoire en partie ORDINAIRE ouvrait les
+    recompenses d'une campagne, parce que le plateau deduisait la campagne
+    d'un etat durable (cle du navigateur, `partieEnCours` du serveur) qu'une
+    partie ordinaire n'efface pas. Le plateau se regle desormais sur la regle du
+    moteur ; ce cas verrouille qu'elle est bien publiee, DANS LES DEUX SENS
+    (un descripteur qui rendrait toujours vrai ferait rouvrir le panneau partout).
+    """
+    _, monde, _ = monter_le_moteur(game_dir, port, ["mode_campaign"])
+    assert bool(monde.rule.mode_campaign) is True, \
+        "la regle mode_campaign n'a pas ete posee"
+    descripteur = monde.render.descriptor
+    assert getattr(descripteur, "mode_campaign", None) is True, \
+        "la trame ne publie pas mode_campaign pour une partie de campagne"
+    return "mode_campaign est vrai dans la trame d'une partie de campagne"
+
+
+def cas_campagne_absente_hors_campagne(game_dir, port):
+    """Le temoin : une partie ordinaire publie `mode_campaign` FAUX."""
+    _, monde, _ = monter_le_moteur(game_dir, port, [])
+    assert bool(monde.rule.mode_campaign) is False
+    descripteur = monde.render.descriptor
+    assert getattr(descripteur, "mode_campaign", None) is False, \
+        "la trame d'une partie ordinaire ne publie pas mode_campaign faux"
+    return "mode_campaign est faux dans la trame d'une partie ordinaire"
+
+
 def cas_manuel_actif_pas_avant_la_boucle(game_dir, port):
     """`manuel_actif` de la trame distingue la mise en place de la boucle.
 
@@ -4241,6 +4270,8 @@ def cas_deux_gestes_meme_carte(game_dir, port):
 
 CAS = {
     "drapeau_pose": cas_drapeau_pose,
+    "campagne_publiee": cas_campagne_publiee,
+    "campagne_absente_hors_campagne": cas_campagne_absente_hors_campagne,
     "manuel_actif_pas_avant_la_boucle": cas_manuel_actif_pas_avant_la_boucle,
     "moteur_muet": cas_moteur_muet,
     "automatique_avance": cas_automatique_avance,

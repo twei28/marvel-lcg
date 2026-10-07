@@ -1208,10 +1208,10 @@ async function lancerScenario(scenario, options = {}) {
     campagne.tentatives[scenario.id] = (campagne.tentatives[scenario.id] || 0) + 1;
     etat.campagne = await apiCampagne.enregistrer(campagne);
 
-    // Le PLATEAU n'a aucun moyen de deviner qu'il joue une campagne : la partie
-    // qu'il affiche ressemble a n'importe quelle autre. On le lui dit ici, et
-    // c'est le panneau de recompenses qui effacera la cle une fois le scenario
-    // reporte au carnet (voir ui-app/src/board/campagne/contexte.ts).
+    // SI le plateau joue une campagne, c'est la regle `mode_campaign` du monde
+    // qui le dit (posee par launch() ci-dessous). LAQUELLE : on le lui dit ici,
+    // et c'est le panneau de recompenses qui effacera la cle une fois le
+    // scenario reporte au carnet (voir ui-app/src/board/campagne/contexte.ts).
     try {
         window.localStorage.setItem("mc-campagne-partie",
             JSON.stringify({ id: etat.campagne.id, scenario: scenario.id }));

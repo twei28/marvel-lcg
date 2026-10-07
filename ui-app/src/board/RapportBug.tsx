@@ -62,7 +62,12 @@ function enModeDecouverte(): boolean {
 // pas attendre le réseau. Chez un siège distant, qui n'a pas la clé, la ligne
 // « campagne » manquera au rapport ; c'est un moindre mal comparé à un bouton
 // qui rame. `resoudreContexte()` est là pour ce qui peut attendre.
-function contexteCampagne(): { id: string; scenario: string } | undefined {
+//
+// Et seulement pour une partie de CAMPAGNE (règle `mode_campaign` du monde) : la
+// clé du navigateur survit à une partie ordinaire, et le rapport l'aurait
+// rattachée à un scénario sans rapport.
+function contexteCampagne(monde: World): { id: string; scenario: string } | undefined {
+  if (monde.mode_campaign !== true) return undefined
   const contexte = lireContexte()
   return contexte ? { id: contexte.id, scenario: contexte.scenario } : undefined
 }
@@ -92,7 +97,7 @@ export function useRapportBug(
       return construireRapport(monde, demande, entrees, portee, {
         horodatage: new Date().toISOString(),
         siege,
-        campagne: contexteCampagne(),
+        campagne: contexteCampagne(monde),
         decouverte: enModeDecouverte(),
         erreurs: erreursRecentes(),
         url: window.location.href,
