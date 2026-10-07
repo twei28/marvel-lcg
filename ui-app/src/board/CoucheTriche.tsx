@@ -39,6 +39,7 @@ import { appuiCompte, issueAppui, type AppuiEnCours } from './manuel/appui-tacti
 import { APPUI_LONG_MS } from './mobile/useAppuiLong'
 import { estMultijoueur, estSpectateur } from './moteur'
 import { MenuTable } from './manuel/MenuTable'
+import { useConfirmation } from './ConfirmationJeu'
 import { MenuTriche, type CibleTriche } from './MenuTriche'
 import * as triche from './triche'
 import type { World, WorldCard } from './world'
@@ -279,6 +280,7 @@ export function useTriche(
   const [avisRefus, setAvisRefus] = useState<string | undefined>(undefined)
   const minuteurRefus = useRef<number | undefined>(undefined)
 
+  const confirmer = useConfirmation()
   const afficherBrievement = useCallback((ligne: string) => {
     setAvisRefus(ligne)
     if (minuteurRefus.current !== undefined) window.clearTimeout(minuteurRefus.current)
@@ -706,11 +708,54 @@ export function useTriche(
           await emettreGeste(`${t('Pile de victoire')} — ${nom}`, () => triche.deplacerVers(geste.id, 'VictoryDisplay'))
           return
         }
-        case 'amplification':
-          await executerGeste({ geste: 'piocher', zone: 'EncounterDeck', nombre: 1 })
+        case 'boost': {
+          // `villainBoost` d'OCTGN : la carte du dessus du deck Rencontre va
+          // FACE CACHÉE à côté du méchant ; deck vidé, la défausse y est
+          // remélangée.
+          const deck = [...piles.values()].find((candidate) => candidate.zone === 'EncounterDeck')
+          const dessus = deck?.cartes.at(-1)?.id
+          if (dessus === undefined) {
+            noter(`${t('Carte boost')} (${t('refusé')})`)
+            afficherBrievement(t('Le deck Rencontre est vide.'))
+            return
+          }
+          await emettreGeste(t('Carte boost'), () => triche.deplacerVers(dessus, 'BoostArea', 'Top', undefined, true))
+          if (deck!.cartes.length === 1) {
+            await emettreGeste(t('Remélanger la défausse Rencontre dans le deck'), () =>
+              triche.remelangerDefausse('EncounterDiscardPile')
+            )
+          }
           return
+        }
         case 'defausser': {
-          const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
+          const carte = index.get(geste.id)
+          const nom = carte?.name ?? `${t('Carte')} ${geste.id}`
+          const info = (carte?.info ?? {}) as Record<string, number | undefined>
+          // `discard` d'OCTGN (actions.py:1013) : une carte Permanente ne se
+          // défausse pas.
+          if ((info.permanent ?? 0) > 0) {
+            noter(`${t('Défausser')} — ${nom} (${t('refusé')})`)
+            afficherBrievement(t('Cette carte est Permanente : elle ne se défausse pas.'))
+            return
+          }
+          // Une carte « Victoire X » va à la pile de victoire. OCTGN ne demande
+          // rien pour un sbire vaincu (des dégâts, ni menace ni marqueur) ;
+          // sinon il demande (actions.py:1029).
+          if ((info.victory ?? 0) > 0) {
+            const blessee = (info.max_health ?? 0) - (info.health ?? info.max_health ?? 0) > 0
+            const versVictoire =
+              (blessee && (info.k_threat ?? 0) === 0) ||
+              (await confirmer({
+                titre: nom,
+                texte: t('Cette carte a « Victoire » : la défausser, ou la mettre dans la pile de victoire ?'),
+                confirmer: t('Pile de victoire'),
+                annuler: t('Défausse'),
+              }))
+            if (versVictoire) {
+              await emettreGeste(`${t('Pile de victoire')} — ${nom}`, () => triche.deplacerVers(geste.id, 'VictoryDisplay'))
+              return
+            }
+          }
           await emettreGeste(`${t('Défausser')} — ${nom}`, () => triche.defausser(geste.id))
           return
         }
@@ -888,7 +933,7 @@ export function useTriche(
         }
       }
     },
-    [index, piles, emettreGeste, emettreLot, noter, world, controles, versLaMain, ouvrirMenuCarte, enMain, afficherBrievement]
+    [index, piles, emettreGeste, emettreLot, noter, world, controles, versLaMain, ouvrirMenuCarte, enMain, afficherBrievement, confirmer]
   )
 
   // --- Ctrl+Z : annule le dernier geste (tâche 6) ---------------------------
@@ -1307,7 +1352,7 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           }
           onToutRedresser={() => void executerGeste({ geste: 'toutRedresser' })}
           onFinPhaseHeros={() => void executerGeste({ geste: 'finPhaseHeros' })}
-          onAmplification={() => void executerGeste({ geste: 'amplification' })}
+          onBoost={() => void executerGeste({ geste: 'boost' })}
           onHasard={tirerAuHasard}
           onDefausseAuHasard={mainAffichee.length > 0 ? defausserAuHasard : undefined}
           onMulligan={mainAffichee.length > 0 ? () => setMulliganOuvert(true) : undefined}

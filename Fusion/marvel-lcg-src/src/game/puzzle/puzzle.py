@@ -854,6 +854,10 @@ class RunPuzzle:
         'ProcessingArea':       lambda w: w.area_processing,
         'RemovedArea':          lambda w: w.area_removed,
         'VictoryDisplay':       lambda w: w.victory_display,
+        # La zone de boost, a cote du mechant (07/10/2026) : c'est la que
+        # `villainBoost` d'OCTGN pose la carte du dessus du deck Rencontre,
+        # FACE CACHEE (actions.py:693, `moveToTable(x, y, True)`).
+        'BoostArea':            lambda w: w.area_boosting,
         # Tache 4 bis (19/09/2026) : `'AsideDeck'` (ZONES_JOUEUR) designe deja
         # le set nemesis du heros. Les deux zones ci-dessous sont les mises de
         # cote du SCENARIO, visuellement distinctes sur le plateau mais qui

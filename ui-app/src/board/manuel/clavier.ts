@@ -48,7 +48,7 @@ export type GesteClavier =
   | { geste: 'defausser'; id: number }
   | { geste: 'statut'; id: number; statut: 'stun' | 'confuse' | 'tough'; pose: boolean }
   | { geste: 'victoire'; id: number }
-  | { geste: 'amplification' }
+  | { geste: 'boost' }
   | { geste: 'vaincreStade' }
   | { geste: 'maniganceTerminee' }
   | { geste: 'toutRedresser' }
@@ -95,7 +95,7 @@ export function interpreterDoubleClic(carte: CarteVisee): GesteClavier | undefin
   // `revealHide` d'OCTGN : une manigance se retourne ; le moteur repose sa
   // menace de départ s'il n'en reste plus (`Scheme2.OnFlip`). Lot 6.
   if (MANIGANCES.has(carte.type) || !carte.faceVisible) return { geste: 'retourner', id: carte.id }
-  if (VILAINS.has(carte.type)) return { geste: 'amplification' }
+  if (VILAINS.has(carte.type)) return { geste: 'boost' }
   if (INCLINABLES.has(carte.type)) return basculer(carte)
   return undefined
 }
@@ -107,7 +107,7 @@ export function interpreterTouche(touche: Touche, cible: CibleClavier): GesteCla
   const maj = touche.majuscule
 
   // La table entière : pas besoin de survoler quoi que ce soit.
-  if (alt && !ctrl && cle === 'enter') return { geste: 'amplification' }
+  if (alt && !ctrl && cle === 'enter') return { geste: 'boost' }
   if (ctrl && !alt && !maj && cle === 'q') return { geste: 'toutRedresser' }
   if (!ctrl && !alt && cle === 'f12') return { geste: 'finPhaseHeros' }
 
@@ -200,10 +200,9 @@ export function interpreterTouche(touche: Touche, cible: CibleClavier): GesteCla
       const nombre = cle === 'arrowup' ? 1 : -1
       const nature = natureDe(type)
       if (nature === 'marqueur') return { geste: 'compteur', id: cible.id, nombre }
-      // ÉCART VOULU avec OCTGN (07/10/2026) : sur un sbire ou un allié, OCTGN
-      // compte les jetons de dégâts (haut = blesser), à l'inverse d'un héros ou
-      // d'un méchant (haut = soigner). Ici, haut SOIGNE et bas BLESSE partout.
-      if (nature === 'degats') return { geste: 'jetons', id: cible.id, nature, nombre: -nombre }
+      // COMME OCTGN (07/10/2026, « 100 % identique ») : sur un sbire ou un
+      // allié, la flèche compte les jetons de DÉGÂTS (haut = +1 dégât), sur un
+      // héros ou un méchant elle compte les PV (haut = +1 PV).
       return { geste: 'jetons', id: cible.id, nature, nombre }
     }
     case 'arrowright':

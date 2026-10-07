@@ -85,9 +85,9 @@ describe('les touches du mode manuel, calquées sur OCTGN', () => {
   it('haut / bas : points de vie d’un héros ou d’un méchant, dégâts d’un allié, menace d’une manigance, marqueur ailleurs', () => {
     expect(interpreterTouche(touche('ArrowUp'), HEROS)).toEqual({ geste: 'jetons', id: 1, nature: 'pv', nombre: 1 })
     expect(interpreterTouche(touche('ArrowDown'), VILAIN)).toEqual({ geste: 'jetons', id: 7, nature: 'pv', nombre: -1 })
-    // Haut soigne, bas blesse : comme sur un héros (écart voulu avec OCTGN).
-    expect(interpreterTouche(touche('ArrowUp'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'degats', nombre: -1 })
-    expect(interpreterTouche(touche('ArrowDown'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'degats', nombre: 1 })
+    // Comme OCTGN : sur un allié ou un sbire, haut = +1 dégât, bas = -1 dégât.
+    expect(interpreterTouche(touche('ArrowUp'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'degats', nombre: 1 })
+    expect(interpreterTouche(touche('ArrowDown'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'degats', nombre: -1 })
     expect(interpreterTouche(touche('ArrowDown'), MANIGANCE))
       .toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre: -1 })
     expect(interpreterTouche(touche('ArrowUp'), SOUTIEN)).toEqual({ geste: 'compteur', id: 5, nombre: 1 })
@@ -116,7 +116,7 @@ describe('les touches du mode manuel, calquées sur OCTGN', () => {
   })
 
   it('les gestes de table : Alt+Entrée, Ctrl+Q, F12, même sans rien survoler', () => {
-    expect(interpreterTouche(touche('Enter', { alt: true }), DECK)).toEqual({ geste: 'amplification' })
+    expect(interpreterTouche(touche('Enter', { alt: true }), DECK)).toEqual({ geste: 'boost' })
     expect(interpreterTouche(touche('q', { ctrl: true }), DECK)).toEqual({ geste: 'toutRedresser' })
     expect(interpreterTouche(touche('F12'), DECK)).toEqual({ geste: 'finPhaseHeros' })
   })
@@ -175,8 +175,8 @@ describe('le double-clic d’OCTGN', () => {
   it('retourne une carte face cachée', () => {
     expect(interpreterDoubleClic(carte('Minion', 3, { faceVisible: false }))).toEqual({ geste: 'retourner', id: 3 })
   })
-  it('sur le méchant : amplification', () => {
-    expect(interpreterDoubleClic(VILAIN)).toEqual({ geste: 'amplification' })
+  it('sur le méchant : carte boost (villainBoost d’OCTGN)', () => {
+    expect(interpreterDoubleClic(VILAIN)).toEqual({ geste: 'boost' })
   })
   it('incline ou redresse un allié, une amélioration, un soutien, un héros', () => {
     expect(interpreterDoubleClic(ALLIE)).toEqual({ geste: 'incliner', id: 2 })

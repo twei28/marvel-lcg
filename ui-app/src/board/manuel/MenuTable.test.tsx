@@ -18,7 +18,7 @@ describe('MenuTable', () => {
         onManigancePrincipale={vi.fn()}
         onToutRedresser={vi.fn()}
         onFinPhaseHeros={vi.fn()}
-        onAmplification={vi.fn()}
+        onBoost={vi.fn()}
         onHasard={vi.fn()}
       />
     )
@@ -41,7 +41,7 @@ describe('MenuTable', () => {
         onManigancePrincipale={vi.fn()}
         onToutRedresser={vi.fn()}
         onFinPhaseHeros={vi.fn()}
-        onAmplification={vi.fn()}
+        onBoost={vi.fn()}
         onHasard={vi.fn()}
       />
     )
@@ -65,7 +65,7 @@ describe('MenuTable', () => {
         onManigancePrincipale={onManigancePrincipale}
         onToutRedresser={vi.fn()}
         onFinPhaseHeros={vi.fn()}
-        onAmplification={vi.fn()}
+        onBoost={vi.fn()}
         onHasard={vi.fn()}
       />
     )
@@ -89,7 +89,7 @@ describe('MenuTable', () => {
         onManigancePrincipale={vi.fn()}
         onToutRedresser={vi.fn()}
         onFinPhaseHeros={vi.fn()}
-        onAmplification={vi.fn()}
+        onBoost={vi.fn()}
         onHasard={vi.fn()}
       />
     )
@@ -110,7 +110,7 @@ describe('MenuTable', () => {
         onManigancePrincipale={vi.fn()}
         onToutRedresser={vi.fn()}
         onFinPhaseHeros={vi.fn()}
-        onAmplification={vi.fn()}
+        onBoost={vi.fn()}
         onHasard={vi.fn()}
       />
     )
@@ -132,7 +132,7 @@ describe('MenuTable', () => {
         onManigancePrincipale={vi.fn()}
         onToutRedresser={onToutRedresser}
         onFinPhaseHeros={vi.fn()}
-        onAmplification={vi.fn()}
+        onBoost={vi.fn()}
         onHasard={onHasard}
       />
     )
@@ -168,7 +168,7 @@ describe('MenuTable reste dans l’écran', () => {
         onManigancePrincipale={vi.fn()}
         onToutRedresser={vi.fn()}
         onFinPhaseHeros={vi.fn()}
-        onAmplification={vi.fn()}
+        onBoost={vi.fn()}
         onHasard={vi.fn()}
       />
     )

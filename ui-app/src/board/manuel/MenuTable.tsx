@@ -32,7 +32,7 @@ export type MenuTableProps = {
   /** Gestes de table d'OCTGN : Ctrl+Q, F12, Alt+Entrée. */
   onToutRedresser: () => void
   onFinPhaseHeros: () => void
-  onAmplification: () => void
+  onBoost: () => void
   /** Le menu « Random » d'OCTGN : pile ou face, nombre, joueur. */
   onHasard: (tirage: 'pile-ou-face' | 'nombre' | 'joueur') => void
   /** Le menu de la main d'OCTGN (lot 6 du 06/10/2026) : absent quand la main est vide. */
@@ -52,7 +52,7 @@ export function MenuTable({
   onManigancePrincipale,
   onToutRedresser,
   onFinPhaseHeros,
-  onAmplification,
+  onBoost,
   onHasard,
   onDefausseAuHasard,
   onMulligan,
@@ -173,7 +173,7 @@ export function MenuTable({
           <button
             type="button"
             onClick={() => {
-              onAmplification()
+              onBoost()
               onFermer()
             }}
           >

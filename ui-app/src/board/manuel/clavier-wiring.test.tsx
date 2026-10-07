@@ -22,6 +22,11 @@ const SANS_JETON = carteSurTable(4, '01003a', 'Event', 'Coup de circonstance')
 // une du monde. Chacune devient la REPRÉSENTANTE de sa pile (`pilesParDessus`).
 const DESSUS_DECK_JOUEUR = carteSurTable(20, '01004a', 'PlayerSideScheme', 'Dessus du deck joueur')
 const DESSUS_DECK_RENCONTRE = carteSurTable(21, '01005a', 'EncounterVillain', 'Dessus du deck Rencontre')
+const PERMANENTE = carteSurTable(130, '01007a', 'Support', 'Soutien permanent', { info: { permanent: 1 } })
+// Sbire « Victoire 1 » blessé, sans menace : OCTGN l'envoie en victoire sans rien demander.
+const SBIRE_VAINCU = carteSurTable(131, '01008a', 'Minion', 'Sbire victoire', { info: { victory: 1, max_health: 3, health: 1 } })
+// Manigance annexe « Victoire 1 » sans dégâts : OCTGN demande où l'envoyer.
+const ANNEXE_VICTOIRE = carteSurTable(132, '01009a', 'SideScheme', 'Annexe victoire', { info: { victory: 1 } })
 
 function mondeManuel(): World {
   // ⚠ `SANS_JETON` va dans `allies`, PAS dans une pile (deck/défausse) : le
@@ -29,7 +34,7 @@ function mondeManuel(): World {
   // y placer la seule carte de la pile en ferait aussi une cible de pile, ce
   // qui n'est pas ce que ce cas veut prouver.
   return tableAvec(
-    siege({ allies: [SANS_JETON, ALLIE], player_deck: [DESSUS_DECK_JOUEUR] }),
+    siege({ allies: [SANS_JETON, ALLIE, SBIRE_VAINCU], supports: [PERMANENTE], player_deck: [DESSUS_DECK_JOUEUR] }),
     {
       mode_manuel: true,
       // La boucle manuelle a deja pris la main (tache 8 bis) : le clavier ne
@@ -38,6 +43,7 @@ function mondeManuel(): World {
       manuel_actif: true,
       villains: [VILAIN],
       area_schemes_main: [MANIGANCE],
+      area_schemes_side: [ANNEXE_VICTOIRE],
       encounter_deck: [DESSUS_DECK_RENCONTRE],
     } as never
   )
@@ -500,11 +506,43 @@ describe('les gestes OCTGN parlent au moteur', () => {
     envoye('Puzzle.Exhaust(5)')
   })
 
-  it('double-clic sur le mechant : la carte du dessus du deck Rencontre sort en resolution', async () => {
+  it('double-clic sur le mechant : la carte du dessus du deck Rencontre va face cachee dans la zone de boost', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     fireEvent.doubleClick(survoler(7))
     await act(async () => { await Promise.resolve() })
-    envoye("Puzzle.MoveTo(21, 'ProcessingArea', 'Top')")
+    envoye("Puzzle.MoveTo(21, 'BoostArea', 'Top', face_cachee=True)")
+    // Deck vide apres le tirage : la defausse Rencontre y est remelangee.
+    await act(async () => { await Promise.resolve() })
+    envoye("Puzzle.ShuffleDiscardIntoDeck('EncounterDiscardPile')")
+  })
+
+  it('Suppr refuse une carte Permanente', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(130)
+    fireEvent.keyDown(document, { key: 'Delete' })
+    await act(async () => { await Promise.resolve() })
+    expect(fetch).not.toHaveBeenCalled()
+    expect(screen.getByText('Cette carte est Permanente : elle ne se défausse pas.')).toBeInTheDocument()
+  })
+
+  it('Suppr : un sbire « Victoire » vaincu va a la pile de victoire sans question', async () => {
+    const confirmer = vi.spyOn(window, 'confirm')
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(131)
+    fireEvent.keyDown(document, { key: 'Delete' })
+    await act(async () => { await Promise.resolve() })
+    expect(confirmer).not.toHaveBeenCalled()
+    envoye("Puzzle.MoveTo(131, 'VictoryDisplay', 'Top')")
+  })
+
+  it('Suppr : sinon, une carte « Victoire » demande defausse ou pile de victoire', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValueOnce(false)
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(132)
+    fireEvent.keyDown(document, { key: 'Delete' })
+    await act(async () => { await Promise.resolve() })
+    await act(async () => { await Promise.resolve() })
+    envoye('Puzzle.Discard(132)')
   })
 
   it('double-clic sur une carte sans etat ou une pile : rien', async () => {

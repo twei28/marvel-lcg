@@ -3940,6 +3940,23 @@ def cas_poser_face_cachee(game_dir, port):
     return "carte posee face cachee en une commande"
 
 
+def cas_carte_boost_face_cachee(game_dir, port):
+    """Double-clic sur le mechant, ou Alt+Entree : la carte du dessus du deck
+    Rencontre va FACE CACHEE dans la zone de boost, a cote du mechant, comme
+    `villainBoost` d'OCTGN (actions.py:693). Rouge sur l'ancien `puzzle.py` :
+    `BoostArea` n'etait pas une zone connue (07/10/2026)."""
+    jeu, monde, _ = monter_le_moteur(game_dir, port, ["mode_manuel"])
+    deck = monde.GetScenario().encounter_deck
+    dessus = deck.GetTop()
+    assert dessus is not None, "premisse cassee : deck Rencontre vide"
+    ident = dessus.card.object_id
+    deposer(jeu, f"Puzzle.MoveTo({ident}, 'BoostArea', 'Top', face_cachee=True)")
+    carte = monde.object_manager.card_dict[ident]
+    assert carte.area is monde.area_boosting, "la carte n'est pas dans la zone de boost"
+    assert not carte.IsFaceUp(), "la carte boost est arrivee face visible"
+    return "carte boost posee face cachee a cote du mechant"
+
+
 def cas_remelanger_defausse_une_commande(game_dir, port):
     """« Remelanger la defausse dans le deck » (`shuffleDiscardIntoDeck`
     d'OCTGN) est UNE commande : un seul Ctrl+Z la defait entiere (lot 6 du
@@ -4340,6 +4357,7 @@ CAS = {
     "manigance_posee_avec_sa_menace": cas_manigance_posee_avec_sa_menace,
     "manigance_retournee_pose_sa_menace": cas_manigance_retournee_pose_sa_menace,
     "poser_face_cachee": cas_poser_face_cachee,
+    "carte_boost_face_cachee": cas_carte_boost_face_cachee,
     "remelanger_defausse_une_commande": cas_remelanger_defausse_une_commande,
     "refus_jetons_carte_incompatible": cas_refus_jetons_carte_incompatible,
     "echanger_avec_le_dessus_du_deck": cas_echanger_avec_le_dessus_du_deck,

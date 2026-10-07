@@ -18,12 +18,12 @@ const JOUER_UNE_CARTE: Raccourci[] = [
 ]
 
 const SUR_UNE_CARTE: Raccourci[] = [
-  { touches: 'Double-clic', effet: 'Incliner / redresser ; face cachée : retourner ; sur le méchant : tirer une carte boost' },
+  { touches: 'Double-clic', effet: 'Incliner / redresser ; face cachée : retourner ; sur le méchant : carte boost, face cachée à côté de lui' },
   { touches: 'F7', effet: 'Incliner / redresser' },
   { touches: 'Ctrl + F', effet: 'Retourner la carte' },
-  { touches: 'Suppr', effet: 'Défausser ; sur le méchant : vaincre le stade ; sur la manigance principale : manigance terminée' },
+  { touches: 'Suppr', effet: 'Défausser ; sur le méchant : vaincre le stade ; sur la manigance principale : manigance terminée ; une carte Permanente refuse ; une carte « Victoire » va à la pile de victoire (question si elle n’a pas été vaincue)' },
   { touches: 'Ctrl + V', effet: 'Envoyer dans la pile de victoire' },
-  { touches: '↑  ↓', effet: '↑ soigne, ↓ blesse (héros, méchant, sbire, allié) ; menace (manigance), sinon marqueur' },
+  { touches: '↑  ↓', effet: '↑ +1 PV, ↓ −1 PV (héros, méchant) ; ↑ +1 dégât, ↓ −1 dégât (allié, sbire) ; menace (manigance), sinon marqueur' },
   { touches: '→  ←', effet: 'Un marqueur générique en plus / en moins' },
   { touches: 'F3  Maj + F3', effet: 'Un dégât en plus / en moins' },
   { touches: 'F5  Maj + F5', effet: 'Une menace en plus / en moins sur une manigance' },
@@ -55,7 +55,7 @@ const SUR_UNE_PILE: Raccourci[] = [
 ]
 
 const PARTOUT: Raccourci[] = [
-  { touches: 'Alt + Entrée', effet: 'Carte boost : sortir la carte du dessus du deck Rencontre' },
+  { touches: 'Alt + Entrée', effet: 'Carte boost : la carte du dessus du deck Rencontre, face cachée, à côté du méchant' },
   { touches: 'Ctrl + Q', effet: 'Tout redresser' },
   { touches: 'F12', effet: 'Fin de phase des héros, pour tous les héros : tout redresser, défausser l’excédent de main, piocher jusqu’à la taille de main (la défausse est remélangée si le deck est vide)' },
   { touches: 'Ctrl + Z', effet: 'Annuler le dernier geste' },
