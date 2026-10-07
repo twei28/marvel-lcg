@@ -3,6 +3,11 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 07/10/2026 (fin de nuit) : table et aide, site normal ET play.
+
+Premier usage de `bash deploiement/deployer-tout.sh` (les deux sites en parallèle). Site normal : `board-C1gmIuII.js`, identique au poste, service actif, 200. play. : échec de mon script (empreinte du moteur cherchée dans le mauvais dossier, corrigé `fix(play)`), republié seul : 20 parties identiques sur 20, même plateau que le poste, 200. Parti : renommer une zone au double-clic, améliorations à gauche ou à droite (réglage + Alt + glisser de l'autre côté), volet Aide en mode auto, plus d'étiquette de type sur les cartes en jeu (interrupteur pour les remettre), règle de cache de play. (le code n'est plus gardé 24 h) et adresses à empreinte. Vérifié au navigateur sans moteur, sauf le volet Aide auto.
+⚠ NON DÉPLOYÉ : `40a78417` (aide du manuel : carte boost, C, Échap ; double-clic qui incline un sbire), commité après la construction du plateau.
+
 ## ✅ DÉPLOYÉ LE 07/10/2026 (nuit) : « Revoir sa partie », site normal ET play.
 
 Sur « tout commit et déployer, sur le site normal et la version play », table 2351 active (la sienne, accord explicite). Site normal : `bash ui-app/deployer.sh` (`board-BJJi_SrG.js`) puis `deployer.ps1 -Code` : md5 de `board-*.js` et `board.html` identiques en prod, `enregistrement.py` présent, service actif, 200. Play : `python3 navigateur/publier.py --oui`, 20 parties identiques sur 20 au contrôle d'équivalence, rsync vers `/opt/narwhal-play`, le bundle contient la relecture, `navigateur.html` en 200.
