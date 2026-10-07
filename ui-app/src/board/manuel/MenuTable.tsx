@@ -40,6 +40,11 @@ export type MenuTableProps = {
   onMulligan?: () => void
   /** Second F12 d'OCTGN : premier joueur suivant, round suivant (lot 6). */
   onFinDeRound?: () => void
+  /**
+   * « Move All to Encounter Deck and Shuffle / Top / Bottom » d'OCTGN, sur les
+   * cartes mises de cote (lot 6 du 07/10/2026). Absent quand il n'y en a pas.
+   */
+  onMisDeCoteVersRencontre?: (position: 'melanger' | 'dessus' | 'dessous') => void
 }
 
 export function MenuTable({
@@ -57,6 +62,7 @@ export function MenuTable({
   onDefausseAuHasard,
   onMulligan,
   onFinDeRound,
+  onMisDeCoteVersRencontre,
 }: MenuTableProps) {
   const boite = useRef<HTMLDivElement | null>(null)
 
@@ -213,6 +219,27 @@ export function MenuTable({
             {t('Joueur au hasard')}
           </button>
         </li>
+        {onMisDeCoteVersRencontre
+          ? (
+              [
+                ['melanger', t('Mis de côté : tout dans le deck Rencontre, mélangé')],
+                ['dessus', t('Mis de côté : tout sur le deck Rencontre')],
+                ['dessous', t('Mis de côté : tout sous le deck Rencontre')],
+              ] as const
+            ).map(([position, libelle]) => (
+              <li key={position}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onMisDeCoteVersRencontre(position)
+                    onFermer()
+                  }}
+                >
+                  {libelle}
+                </button>
+              </li>
+            ))
+          : null}
         {onFinDeRound ? (
           <li>
             <button

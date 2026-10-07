@@ -70,6 +70,21 @@ beforeEach(() => {
   vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true }) as Response))
 })
 
+describe('le clavier sur une selection (lot 5)', () => {
+  it('F7 sur une carte selectionnee incline toute la selection, en UNE commande', async () => {
+    const { selection } = await import('./selection')
+    selection.remplacer([5, 131])
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(5)
+    fireEvent.keyDown(document, { key: 'F7' })
+    await act(async () => { await new Promise((r) => setTimeout(r, 0)) })
+    const envois = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls.filter(([u]) => u === '/sandbox_command')
+    expect(envois).toHaveLength(1)
+    expect(JSON.parse(envois[0][1].body as string).commands).toEqual(['Puzzle.Exhaust(5)\nPuzzle.Exhaust(131)'])
+    selection.vider()
+  })
+})
+
 describe('le clavier du mode manuel parle au moteur', () => {
   it('Ctrl+F retourne la carte survolee', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)

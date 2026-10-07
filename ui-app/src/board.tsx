@@ -45,6 +45,8 @@ import { Board, CarteApercu, type ReglagesGlisser } from './board/Board'
 import type { CibleSurvolee } from './board/glisser/useGlisser'
 import { envoyerMarque, useMarques } from './board/manuel/marques'
 import { CoucheMarques } from './board/manuel/CoucheMarques'
+import { CoucheSelection } from './board/manuel/CoucheSelection'
+import { cartesDuGeste, selection } from './board/manuel/selection'
 import {
   ciblesDeLaSource,
   estSourceGlissable,
@@ -2775,6 +2777,19 @@ export function PagePartie({
           return true
         },
         majClic: (id) => void envoyerMarque(joueurActif, { genre: 'cibler', id }),
+        ctrlClic: (id) => selection.basculer(id),
+        // Lot 5 : glisser une carte SELECTIONNEE emmene toute la selection (OCTGN),
+        // en une seule commande. Le refus ne vaut que pour la carte tenue.
+        onDepot: (sourceId, cible) => {
+          const ids = cartesDuGeste(sourceId)
+          if (ids.length < 2 || estFleche(sourceId, cible)) return base.onDepot(sourceId, cible)
+          const raison = base.accepte?.(sourceId, cible) === false ? base.onDepot(sourceId, cible) : undefined
+          if (raison) return raison
+          void triche.couche.capturerEnLot(() => {
+            for (const id of ids) base.onDepot(id, cible)
+          })
+          return undefined
+        },
         accepte: (sourceId, cible) => estFleche(sourceId, cible) || (base.accepte?.(sourceId, cible) ?? true),
         libelle: (sourceId, cible) =>
           estFleche(sourceId, cible)
@@ -4768,6 +4783,7 @@ export function PagePartie({
         <>
           <VoletAideManuel ouvert={aideManuelOuverte} ouvrir={ouvrirAideManuel} fermer={fermerAideManuel} />
           <CoucheMarques marques={marquesManuel} />
+          <CoucheSelection />
         </>
       ) : spectateur ? null : (
         <VoletAideAuto ouvert={aideAutoOuverte} ouvrir={ouvrirAideAuto} fermer={fermerAideAuto} />

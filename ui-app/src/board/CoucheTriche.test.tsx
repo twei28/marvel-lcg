@@ -29,6 +29,9 @@ function coucheVide() {
       await deposer()
     }),
     executerGeste: vi.fn(async () => {}),
+    capturerEnLot: vi.fn(async (agir: () => Promise<void> | void) => { await agir() }),
+    misDeCote: [] as number[],
+    envoyerMisDeCote: vi.fn(async () => {}),
     tirerAuHasard: vi.fn(),
     avisRefus: undefined as string | undefined,
     annulationEnCours: false,

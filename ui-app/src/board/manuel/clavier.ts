@@ -16,10 +16,11 @@
 // rien. Le clic droit, lui, nomme chaque jeton.
 
 /** `code` : la touche PHYSIQUE (`KeyboardEvent.code`) ; seul le pave numerique la lit, son chiffre ayant la meme `key` que celui de la rangee. */
-export type CouleurSurlignage = 'bleu' | 'orange' | 'vert' | 'violet' | 'rouge' | 'noir' | 'blanc'
+export type CouleurSurlignage = 'bleu' | 'orange' | 'vert' | 'violet' | 'rouge' | 'noir' | 'blanc' | 'actif'
 
 /** `highlight` d'OCTGN (constantsGlobal.py) : pave 1 a 7, dans cet ordre ; 0 retire. */
 export const COULEURS_PAVE: readonly CouleurSurlignage[] = ['bleu', 'orange', 'vert', 'violet', 'rouge', 'noir', 'blanc']
+// « actif » n'est pas au pave : c'est le `ActiveColour` d'OCTGN (Ctrl+A, le mechant actif).
 
 /** La couleur du pave numerique (`event.code`), ou `undefined` si ce n'en est pas une. */
 export function couleurDuPave(code: string | undefined): CouleurSurlignage | null | undefined {
@@ -70,6 +71,7 @@ export type GesteClavier =
   | { geste: 'menuCarte'; id: number }
   | { geste: 'effacerMarqueurs'; id: number }
   | { geste: 'surligner'; id: number; couleur: CouleurSurlignage | null }
+  | { geste: 'mechantActif'; id: number }
 
 // --- Les types de cartes, comme `isScheme`, `isAttackable`... d'OCTGN --------
 
@@ -186,6 +188,8 @@ export function interpreterTouche(touche: Touche, cible: CibleClavier): GesteCla
     if (maj) return undefined
     if (cle === 'f') return { geste: 'retourner', id: cible.id }
     if (cle === 'v') return { geste: 'victoire', id: cible.id }
+    // `setActiveVillain` d'OCTGN : le mechant survole devient l'actif (repere vert).
+    if (cle === 'a') return VILAINS.has(type) ? { geste: 'mechantActif', id: cible.id } : undefined
     return undefined
   }
 

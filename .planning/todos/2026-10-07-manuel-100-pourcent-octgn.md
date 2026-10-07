@@ -1,6 +1,6 @@
 # Mode manuel 100 % identique à OCTGN, et rangement des cartes posées (07/10/2026)
 
-**Statut : EN COURS.** Demande de l'utilisateur : « Je veux qu'en manuel ce soit 100 % identique. Par contre, il faut trouver un moyen d'aussi pouvoir déplacer les cartes après qu'elles soient posées pour changer l'ordre, que ce soit les alliés, les sbires, les manigances ou les améliorations, et pouvoir aussi choisir que ce soit à gauche ou à droite. »
+**Statut : FAIT le 07/10/2026 (non déployé).** Demande de l'utilisateur : « Je veux qu'en manuel ce soit 100 % identique. Par contre, il faut trouver un moyen d'aussi pouvoir déplacer les cartes après qu'elles soient posées pour changer l'ordre, que ce soit les alliés, les sbires, les manigances ou les améliorations, et pouvoir aussi choisir que ce soit à gauche ou à droite. »
 
 Référence : `definition.xml` et `actions.py` du dépôt Ouroboros009/OCTGN-Marvel-Champions (voir la mémoire raccourcis-octgn-source). Audit du 07/10 : l'aide du manuel est fidèle au code ; écarts listés ci-dessous.
 
@@ -25,8 +25,11 @@ Chaque lot : tests, vérification au navigateur, aide du manuel mise à jour, co
 ## Avancement
 
 - Lot 1 : FAIT (a6370398), vérifié en vrai sauf le chemin « Victoire » (tests seulement).
-- Lot 2 : FAIT (4a15c9a8), tests unitaires ; vérification au navigateur à faire avec les lots suivants.
-- Lots 3 et 4 : EN COURS (fork).
+- Lot 2 : FAIT (4a15c9a8), vérifié en vrai le 07/10 (allié rangé au glisser simple dans sa rangée, amélioration passée à gauche de son héros).
+- Lots 3 et 4 : FAITS (8a88b772), vérifiés en vrai.
 - Lot 6, étudié le 07/10 (source OCTGN lue) :
   - À FAIRE : Ctrl+I (aperçu fixe de la carte, mots-clés) ; Ctrl+A (méchant actif = surlignage « actif », après le lot 4, repère visuel seulement) ; confirmation de « Remélanger la défausse dans le deck » si le deck n'est pas vide ; entrées directes « Sous le deck du héros » et « Sous le deck Rencontre » ; « Tout envoyer dans le deck Rencontre » (mélanger / dessus / dessous) en UNE commande (un seul Ctrl+Z) ; « Choisir un set et le mélanger dans le deck Rencontre » (set de chaque carte à vérifier dans le monde) ; vérifier que « Sauver » reste offert en manuel et qu'une sauvegarde faite en manuel se recharge.
   - SANS OBJET, à dire dans l'aide : Ctrl+H et Ctrl+V sur la table (OCTGN les refuse dès que des cartes sont chargées ; chez nous la préparation le fait), F8 (contrôle des cartes propre à OCTGN), F10 / molette / Espace (pas de caméra libre), Get Position et Toggle Debug (outils de développeur OCTGN).
+- Lot 5 : FAIT, vérifié en vrai (`ui-check/tests/zz-manuel-lots56.spec.ts`, moteur d'essai) : Ctrl+clic, rectangle sur la table vide, clic vide qui vide la sélection, F7 / double-clic / menu / glisser valent pour toute la sélection en UNE commande (lignes jointes, `triche.enLot`) donc un seul Ctrl+Z, vérifié. Sélection locale (comme OCTGN), cadre en pointillés jaunes distinct du ciblage et du surlignage.
+- Lot 6 : FAIT, vérifié en vrai : Ctrl+I (fiche fixe, Échap ou clic ferme), Ctrl+A (méchant actif, surlignage vert `ActiveColour` #82FA58), « Sous le deck du héros / Rencontre » au menu de carte, confirmation du remélange de la défausse quand le deck n'est pas vide (défaut trouvé et corrigé : la question s'ouvrait DERRIÈRE la fenêtre de la pile), « Mis de côté : tout dans / sur / sous le deck Rencontre » au menu de la table (une commande, confirmation ; pas vu en vrai faute de carte mise de côté dans la partie d'essai), « Sauver » offert en manuel et une sauvegarde manuelle se recharge à l'identique, gestes groupés compris. Section « Sans objet ici » dans l'aide.
+- NON FAIT : « Choisir un set et le mélanger dans le deck Rencontre » : le monde ne donne pas le set de chaque carte (`WorldCard` n'a ni set ni pack). Il faudrait l'exposer côté moteur.

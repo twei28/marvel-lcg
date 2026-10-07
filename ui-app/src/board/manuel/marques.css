@@ -29,6 +29,8 @@
 .scan-card[data-surlignage='rouge'] { --teinte-surlignage: #b80404; }
 .scan-card[data-surlignage='noir'] { --teinte-surlignage: #000000; }
 .scan-card[data-surlignage='blanc'] { --teinte-surlignage: #ffffff; }
+/* Ctrl+A, le mechant actif : `ActiveColour` d'OCTGN (constantsGlobal.py). */
+.scan-card[data-surlignage='actif'] { --teinte-surlignage: #82fa58; }
 
 /* Les FLECHES d'une carte vers une autre. */
 .couche-marques {

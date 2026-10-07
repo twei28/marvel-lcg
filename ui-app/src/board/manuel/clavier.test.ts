@@ -31,6 +31,9 @@ describe('les touches du mode manuel, calquées sur OCTGN', () => {
   it('Ctrl+F retourne, Ctrl+V donne la victoire', () => {
     expect(interpreterTouche(touche('f', { ctrl: true }), SBIRE)).toEqual({ geste: 'retourner', id: 3 })
     expect(interpreterTouche(touche('v', { ctrl: true }), SBIRE)).toEqual({ geste: 'victoire', id: 3 })
+    // Ctrl+A (`setActiveVillain`) : seulement sur un mechant.
+    expect(interpreterTouche(touche('a', { ctrl: true }), VILAIN)).toEqual({ geste: 'mechantActif', id: 7 })
+    expect(interpreterTouche(touche('a', { ctrl: true }), ALLIE)).toBeUndefined()
   })
 
   it('F7 incline une carte redressée et redresse une carte inclinée', () => {

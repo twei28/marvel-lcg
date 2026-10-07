@@ -752,7 +752,7 @@ class GameServerGet(GameServerBase):
     # qui cible), Maj+glisser trace une fleche, le pave numerique surligne. Rien
     # ne touche au moteur : un etat cosmetique, en memoire, remis a zero a chaque
     # nouvelle partie, borne en taille (rien du reseau ne grossit sans limite).
-    COULEURS_SURLIGNAGE = {"bleu", "orange", "vert", "violet", "rouge", "noir", "blanc"}
+    COULEURS_SURLIGNAGE = {"bleu", "orange", "vert", "violet", "rouge", "noir", "blanc", "actif"}
     MARQUES_MAX = 200
 
     def _marques(self) -> dict:

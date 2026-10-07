@@ -21,7 +21,14 @@ export type Intervention = {
   reussi: boolean
 }
 
+// Un LOT en cours (`enLot`) : les commandes sont collectees au lieu de partir.
+let collecte: string[] | null = null
+
 async function envoyer(commandes: string[]): Promise<boolean> {
+  if (collecte) {
+    collecte.push(...commandes)
+    return true
+  }
   try {
     const reponse = await fetch('/sandbox_command', {
       method: 'POST',
@@ -34,6 +41,29 @@ async function envoyer(commandes: string[]): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+/**
+ * UN GESTE SUR PLUSIEURS CARTES = UNE SEULE COMMANDE (multi-selection du mode
+ * manuel, lot 5 du 07/10/2026). Le moteur annule commande par commande
+ * (`Scene.RetirerDernierGesteManuel`) : les commandes du lot sont jointes en
+ * une seule chaine (plusieurs appels `Puzzle.*`, que `Puzzle.Exec` accepte
+ * ligne par ligne), donc un seul Ctrl+Z les defait toutes. Les actions sont
+ * appelees SANS attente entre elles : chacune depose sa commande au moment de
+ * l'appel, et rien d'autre ne peut se glisser dans le lot.
+ */
+export async function enLot(actions: (() => Promise<boolean>)[]): Promise<boolean> {
+  const commandes: string[] = []
+  collecte = commandes
+  let promesses: Promise<boolean>[]
+  try {
+    promesses = actions.map((agir) => agir())
+  } finally {
+    collecte = null
+  }
+  await Promise.all(promesses)
+  if (commandes.length === 0) return false
+  return envoyer([commandes.join('\n')])
 }
 
 /** Échappe une chaîne pour l'insérer dans une commande Python. */

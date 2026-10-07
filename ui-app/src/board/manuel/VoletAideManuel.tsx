@@ -16,6 +16,8 @@ const JOUER_UNE_CARTE: Raccourci[] = [
   { touches: 'Maj + glisser une carte en jeu', effet: 'Sur une autre carte en jeu : tracer une flèche vers elle (la refaire l’efface)' },
   { touches: 'Clic droit sur une carte', effet: 'Poser en jeu (carte de ta main), Déplacer vers…' },
   { touches: 'Clic droit sur une carte en main', effet: 'Échanger avec le dessus du deck' },
+  { touches: 'Glisser dans sa rangée', effet: 'Lâchée entre deux cartes de sa rangée (alliés, sbires, manigances…), la carte s’y range ; Alt + glisser aussi' },
+  { touches: 'Glisser une amélioration', effet: 'Lâchée près de son personnage, elle change de rang ou de côté et reste attachée' },
 ]
 
 const SUR_UNE_CARTE: Raccourci[] = [
@@ -24,6 +26,9 @@ const SUR_UNE_CARTE: Raccourci[] = [
   { touches: 'Ctrl + F', effet: 'Retourner la carte' },
   { touches: 'Suppr', effet: 'Défausser ; sur le méchant : vaincre le stade ; sur la manigance principale : manigance terminée ; une carte Permanente refuse ; une carte « Victoire » va à la pile de victoire (question si elle n’a pas été vaincue)' },
   { touches: 'Ctrl + V', effet: 'Envoyer dans la pile de victoire' },
+  { touches: 'Ctrl + I', effet: 'Fiche de la carte (et ses mots-clés), fixe jusqu’à Échap ou un clic' },
+  { touches: 'Ctrl + A', effet: 'Sur un méchant : le marquer méchant actif (repère vert)' },
+  { touches: 'Clic droit', effet: 'Aussi : Sous le deck du héros, Sous le deck Rencontre' },
   { touches: 'Maj + clic', effet: 'Cibler / décibler la carte (à ta couleur, vu de tous)' },
   { touches: 'Pavé num. 1 à 7', effet: 'Surligner : 1 bleu, 2 orange, 3 vert, 4 violet, 5 rouge, 6 noir, 7 blanc' },
   { touches: 'Pavé num. 0', effet: 'Retirer le surlignage' },
@@ -65,7 +70,21 @@ const PARTOUT: Raccourci[] = [
   { touches: 'Ctrl + Z', effet: 'Annuler le dernier geste' },
   { touches: 'Échap', effet: 'Fermer le catalogue ; sinon décibler toutes tes cartes et effacer tes flèches (aussi à la fin de phase des héros, F12)' },
   { touches: 'C', effet: 'Chercher une carte dans tout le catalogue pour la poser' },
-  { touches: 'Clic droit sur la table', effet: 'Faire apparaître une carte, Vaincre ce stade, Manigance terminée, Tout redresser, Fin de phase des héros, Carte boost, Pile ou face, Nombre au hasard, Joueur au hasard, Fin du round, Défausser une carte au hasard, Mulligan, Terminer la partie' },
+  { touches: 'Clic droit sur la table', effet: 'Faire apparaître une carte, Vaincre ce stade, Manigance terminée, Tout redresser, Fin de phase des héros, Carte boost, Pile ou face, Nombre au hasard, Joueur au hasard, Fin du round, Défausser une carte au hasard, Mulligan, Mis de côté vers le deck Rencontre, Terminer la partie' },
+]
+
+const SELECTION: Raccourci[] = [
+  { touches: 'Ctrl + clic', effet: 'Ajouter ou retirer la carte de la sélection' },
+  { touches: 'Glisser sur la table vide', effet: 'Tracer un rectangle : les cartes qu’il touche sont sélectionnées (Ctrl pour ajouter)' },
+  { touches: 'Clic simple', effet: 'Ailleurs : vider la sélection' },
+  { touches: 'Sur une carte sélectionnée', effet: 'Touches, double-clic, menu et glisser valent pour toute la sélection ; un seul Ctrl+Z annule tout' },
+]
+
+const SANS_OBJET: Raccourci[] = [
+  { touches: 'Ctrl + H, Ctrl + V sur la table', effet: 'Charger un héros ou un méchant : la préparation de la partie le fait' },
+  { touches: 'F8', effet: 'Prendre le contrôle des cartes : notion propre à OCTGN, chacun bouge déjà ses cartes' },
+  { touches: 'F10, molette, Espace', effet: 'Caméra d’OCTGN : la table s’adapte seule à l’écran' },
+  { touches: 'Get Position, Toggle Debug', effet: 'Outils de développeur d’OCTGN' },
 ]
 
 function Tableau({ titre, lignes }: { titre: string; lignes: Raccourci[] }) {
@@ -140,6 +159,8 @@ export function VoletAideManuel({
             <Tableau titre="Sur une carte" lignes={SUR_UNE_CARTE} />
             <Tableau titre="Sur une pile" lignes={SUR_UNE_PILE} />
             <Tableau titre="Partout" lignes={PARTOUT} />
+            <Tableau titre="Plusieurs cartes à la fois" lignes={SELECTION} />
+            <Tableau titre="Sans objet ici" lignes={SANS_OBJET} />
             <p className="aide-manuel-intro">
               {t('Pour rendre la main au moteur, clique sur Auto en haut de l’écran.')}
             </p>

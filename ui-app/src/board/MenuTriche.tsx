@@ -219,12 +219,15 @@ export type MenuTricheProps = {
   poserEnJeu?: () => void
   /** Une carte EN MAIN : « Échanger avec le dessus du deck » (lot 6, `switchCard` d'OCTGN). */
   echangerAvecLeDessus?: () => void
+  /** Les cartes sur lesquelles agit le menu : la selection si elle contient la carte (lot 5). */
+  ids?: number[]
 }
 
 /** Une entrée du menu. `valeur` ouvre une saisie de nombre avant d'agir. */
 type Entree = {
   libelle: string
-  agir: (valeur: number) => Promise<boolean>
+  /** `id` : la carte visee, ou chacune des cartes selectionnees (lot 5). */
+  agir: (valeur: number, id: number) => Promise<boolean>
   valeur?: number
   danger?: boolean
 }
@@ -239,7 +242,9 @@ export function MenuTriche({
   enMain = false,
   poserEnJeu,
   echangerAvecLeDessus,
+  ids: idsDonnes,
 }: MenuTricheProps) {
+  const ids = idsDonnes && idsDonnes.length > 0 ? idsDonnes : [cible.id]
   const [saisie, setSaisie] = useState<Entree | undefined>(undefined)
   const [nombre, setNombre] = useState(1)
   // Le sous-menu « Déplacer vers » : une liste de piles plutôt qu'une saisie
@@ -294,50 +299,61 @@ export function MenuTriche({
 
   if (cible.estManigance) {
     entrees.push(
-      { libelle: t('Poser de la menace'), valeur: 1, agir: (n) => triche.poserMenace(cible.id, n) },
-      { libelle: t('Retirer de la menace'), valeur: 1, agir: (n) => triche.poserMenace(cible.id, -n) },
-      { libelle: t('Fixer la menace à'), valeur: 0, agir: (n) => triche.fixerMenace(cible.id, n) },
+      { libelle: t('Poser de la menace'), valeur: 1, agir: (n, id) => triche.poserMenace(id, n) },
+      { libelle: t('Retirer de la menace'), valeur: 1, agir: (n, id) => triche.poserMenace(id, -n) },
+      { libelle: t('Fixer la menace à'), valeur: 0, agir: (n, id) => triche.fixerMenace(id, n) },
     )
   } else {
     entrees.push(
-      { libelle: t('Soigner'), valeur: 3, agir: (n) => triche.soigner(cible.id, n) },
-      { libelle: t('Infliger des dégâts'), valeur: 3, agir: (n) => triche.blesser(cible.id, n) },
+      { libelle: t('Soigner'), valeur: 3, agir: (n, id) => triche.soigner(id, n) },
+      { libelle: t('Infliger des dégâts'), valeur: 3, agir: (n, id) => triche.blesser(id, n) },
     )
   }
 
   if (cible.estPersonnage !== false) {
     entrees.push(
-      { libelle: t('Redresser'), agir: () => triche.redresser(cible.id) },
-      { libelle: t('Incliner'), agir: () => triche.incliner(cible.id) },
-      { libelle: t('Rendre désorienté'), agir: () => triche.rendreConfus(cible.id) },
-      { libelle: t('Rendre sonné'), agir: () => triche.assommer(cible.id) },
+      { libelle: t('Redresser'), agir: (_n, id) => triche.redresser(id) },
+      { libelle: t('Incliner'), agir: (_n, id) => triche.incliner(id) },
+      { libelle: t('Rendre désorienté'), agir: (_n, id) => triche.rendreConfus(id) },
+      { libelle: t('Rendre sonné'), agir: (_n, id) => triche.assommer(id) },
       // ECART CORRIGE le 14/09/2026 : ce menu disait « coriace » la ou la carte,
       // les mots-cles et les textes FR officiels disent tous « Tenace ». Le nom
       // interne `rendreCoriace` n'est pas touche : il n'est vu par personne.
-      { libelle: t('Rendre tenace'), agir: () => triche.rendreCoriace(cible.id) },
+      { libelle: t('Rendre tenace'), agir: (_n, id) => triche.rendreCoriace(id) },
     )
   }
 
   if (!enMain) {
     entrees.push({ libelle: t('Ajouter des compteurs'), valeur: 1,
-      agir: (n) => triche.poserCompteur(cible.id, 'counter', n) })
+      agir: (n, id) => triche.poserCompteur(id, 'counter', n) })
   }
   entrees.push(
-    { libelle: t('Défausser'), agir: () => triche.defausser(cible.id), danger: true },
-    { libelle: t('Retirer de la partie'), agir: () => triche.retirer(cible.id), danger: true },
+    // `bottomPlayerDeck` / `bottomEncounterDeck` d'OCTGN, en une entree chacun.
+    { libelle: t('Sous le deck du héros'), agir: (_n, id) => triche.deplacerVers(id, 'PlayerDeck', 'Bottom', cible.siege) },
+    { libelle: t('Sous le deck Rencontre'), agir: (_n, id) => triche.deplacerVers(id, 'EncounterDeck', 'Bottom') },
+    { libelle: t('Défausser'), agir: (_n, id) => triche.defausser(id), danger: true },
+    { libelle: t('Retirer de la partie'), agir: (_n, id) => triche.retirer(id), danger: true },
   )
+
+  // Une carte SELECTIONNEE : l'entree vaut pour toute la selection, en UNE
+  // commande (un seul Ctrl+Z), comme une `cardaction` d'OCTGN (lot 5).
+  const plusieurs = ids.length > 1 ? ` (×${ids.length})` : ''
+  const surChacune = (agir: (id: number) => Promise<boolean>) =>
+    ids.length > 1 ? triche.enLot(ids.map((id) => () => agir(id))) : agir(cible.id)
 
   const executer = async (entree: Entree, valeur: number) => {
     const chiffre = entree.valeur !== undefined ? ` ${valeur}` : ''
-    await emettreGeste(`${entree.libelle}${chiffre} — ${cible.nom}`, () => entree.agir(valeur))
+    await emettreGeste(`${entree.libelle}${chiffre} — ${cible.nom}${plusieurs}`, () =>
+      surChacune((id) => entree.agir(valeur, id))
+    )
     onFermer()
   }
 
   const executerDeplacement = async (zone: string, position: 'Top' | 'Bottom') => {
     const suite = position === 'Bottom' ? ` (${t('Sous la pile')})` : ''
     await emettreGeste(
-      `${t('Déplacer vers')} ${libellePile(zone)}${suite} — ${cible.nom}`,
-      () => triche.deplacerVers(cible.id, zone, position, cible.siege)
+      `${t('Déplacer vers')} ${libellePile(zone)}${suite} — ${cible.nom}${plusieurs}`,
+      () => surChacune((id) => triche.deplacerVers(id, zone, position, cible.siege))
     )
     onFermer()
   }

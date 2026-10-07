@@ -972,6 +972,8 @@ export type ReglagesGlisser = {
   fleche?: (sourceId: number, cible: CibleSurvolee) => boolean
   /** Mode manuel, Maj+clic sur une carte de la table : la cibler ou la decibler (OCTGN). */
   majClic?: (id: number) => void
+  /** Mode manuel, Ctrl+clic sur une carte de la table : l'ajouter ou la retirer de la selection (OCTGN). */
+  ctrlClic?: (id: number) => void
   /** La table entiere accueille-t-elle cette carte ? Un seul cadre autour du plateau (question 12). */
   accueilleLaTable?: (sourceId: number) => boolean
   /**
@@ -1207,6 +1209,26 @@ export function Board({
   const tableAccueille = glisse !== null && (glisser?.accueilleLaTable?.(glisse.sourceId) ?? false)
   const libelleGlisser = glisse && glisser ? glisser.libelle(glisse.sourceId, glisse.cible) : undefined
 
+  // Ctrl+I d'OCTGN (`cardInfo`, mode manuel) : la fiche de la carte survolee,
+  // FIXE jusqu'a Echap, un clic ou un nouveau Ctrl+I.
+  const manuelPlateau = glisser?.rangerAuGlisser === true
+  const [ficheId, setFicheId] = useState<string | null>(null)
+  useEffect(() => {
+    if (!manuelPlateau) return
+    const surTouche = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && ficheId !== null) {
+        setFicheId(null)
+        return
+      }
+      if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || e.key.toLowerCase() !== 'i') return
+      e.preventDefault()
+      setFicheId((ouverte) => (ouverte !== null ? null : pointee.current))
+    }
+    document.addEventListener('keydown', surTouche)
+    return () => document.removeEventListener('keydown', surTouche)
+  }, [manuelPlateau, ficheId])
+  const carteFiche = ficheId ? cartesParId.get(ficheId) : undefined
+
   const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
   const statutsApercu = apercuId ? statutsParId.get(apercuId) : undefined
 
@@ -1303,6 +1325,14 @@ export function Board({
         onPointerUp={(evenement) => {
           if (reordre.gestes.surRelache(evenement)) return
           if (gestes.onPointerUp(evenement)) return
+          // Ctrl+clic d'OCTGN : ajouter ou retirer une carte de la table a la selection.
+          if ((evenement.ctrlKey || evenement.metaKey) && glisser?.ctrlClic && evenement.target instanceof HTMLElement) {
+            const carte = evenement.target.closest<HTMLElement>('.scan-card[data-card-id]')
+            if (carte && !carte.closest('.zone-main') && !carte.closest('.plateau-unite[data-pile]')) {
+              glisser.ctrlClic(Number(carte.dataset.cardId))
+              return
+            }
+          }
           // Maj+clic d'OCTGN : cibler une carte de la table (pas de la main).
           if (evenement.shiftKey && glisser?.majClic && evenement.target instanceof HTMLElement) {
             const carte = evenement.target.closest<HTMLElement>('.scan-card[data-card-id]')
@@ -1377,7 +1407,18 @@ export function Board({
         </div>
       </div>
 
-      {carteApercu ? (
+      {carteFiche ? (
+        <>
+          <div
+            className="fiche-carte-fond"
+            role="dialog"
+            aria-label={t('Fiche de la carte')}
+            onClick={() => setFicheId(null)}
+          />
+          <CarteApercu carte={carteFiche} statuts={statutsParId.get(ficheId!)} classe="est-fiche" />
+        </>
+      ) : null}
+      {carteApercu && !carteFiche ? (
         <CarteApercu
           carte={carteApercu}
           statuts={statutsApercu}

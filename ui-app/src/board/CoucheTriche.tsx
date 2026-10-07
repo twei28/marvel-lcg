@@ -10,6 +10,7 @@
 // sans laisser de traces éparpillées dans un plateau de 2000 lignes.
 
 import { envoyerMarque } from './manuel/marques'
+import { cartesDuGeste } from './manuel/selection'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { catalogueVide, type Catalogue } from './catalogue'
 import { scanUrl } from './card-model'
@@ -21,6 +22,7 @@ import {
   estInclinable,
   estManigance,
   estSansEtat,
+  estVilain,
   interpreterDoubleClic,
   interpreterTouche,
   natureDe,
@@ -62,6 +64,8 @@ export type PileTriche = {
   zone: string
   /** Pile d'un joueur : son siège, sans quoi elle viserait le joueur courant (lot 5). */
   siege?: number
+  /** Défausse : les cartes encore dans le deck où elle se remélange (OCTGN demande confirmation s'il en reste). */
+  tailleDuDeck?: number
 }
 
 type MenuOuvert = { cible: CibleTriche; x: number; y: number }
@@ -123,17 +127,27 @@ function pilesParDessus(
     cartes: WorldCard[] | undefined,
     titre: string,
     duJoueur: boolean,
-    zone: string
+    zone: string,
+    tailleDuDeck?: number
   ) => {
     if (!cartes || cartes.length === 0) return
     const dessus = cartes.at(-1)
-    if (dessus) piles.set(dessus.id, { titre, cartes, duJoueur, zone, ...(duJoueur ? { siege: joueurId } : {}) })
+    if (dessus) {
+      piles.set(dessus.id, {
+        titre,
+        cartes,
+        duJoueur,
+        zone,
+        ...(duJoueur ? { siege: joueurId } : {}),
+        ...(tailleDuDeck === undefined ? {} : { tailleDuDeck }),
+      })
+    }
   }
 
   ajouter(joueur?.player_deck, t('Deck du héros'), true, 'PlayerDeck')
-  ajouter(joueur?.player_discard_pile, t('Pile de défausse'), true, 'DiscardPile')
+  ajouter(joueur?.player_discard_pile, t('Pile de défausse'), true, 'DiscardPile', joueur?.player_deck?.length ?? 0)
   ajouter(world.encounter_deck, t('Deck Rencontre'), false, 'EncounterDeck')
-  ajouter(world.encounter_discard_pile, t('Défausse Rencontre'), false, 'EncounterDiscardPile')
+  ajouter(world.encounter_discard_pile, t('Défausse Rencontre'), false, 'EncounterDiscardPile', world.encounter_deck?.length ?? 0)
   return piles
 }
 
@@ -293,8 +307,16 @@ export function useTriche(
    * Utilisé par `executerGeste` (clavier) ci-dessous, et exposé via `couche`
    * pour `MenuTriche` (clic droit) et les actions sur une pile ouverte.
    */
+  // Lot 5 (multi-selection) : pendant `capturerEnLot`, les gestes ne partent
+  // pas un par un, ils sont reunis en UNE commande (un seul Ctrl+Z).
+  const captureRef = useRef<{ libelles: string[]; deposers: (() => Promise<boolean>)[] } | null>(null)
   const emettreGeste = useCallback(
     async (libelle: string, deposer: () => Promise<boolean>) => {
+      if (captureRef.current) {
+        captureRef.current.libelles.push(libelle)
+        captureRef.current.deposers.push(deposer)
+        return
+      }
       const depose = await deposer()
       if (!depose) {
         noter(`${libelle} (${t('refusé')})`)
@@ -370,6 +392,34 @@ export function useTriche(
       void emettreGeste(`${t('Mulligan')} ${ids.length}`, () => triche.mulligan(ids, joueurId))
     },
     [emettreGeste, joueurId]
+  )
+  // « Move All to Encounter Deck... » d'OCTGN (lot 6 du 07/10/2026) : les cartes
+  // MISES DE COTE, en une commande (un seul Ctrl+Z), apres confirmation.
+  const misDeCote = useMemo(() => (world?.area_set_aside ?? []).map((carte) => carte.id), [world])
+  const envoyerMisDeCote = useCallback(
+    async (position: 'melanger' | 'dessus' | 'dessous') => {
+      if (misDeCote.length === 0) return
+      const libelles = {
+        melanger: t('Mis de côté : tout dans le deck Rencontre, mélangé'),
+        dessus: t('Mis de côté : tout sur le deck Rencontre'),
+        dessous: t('Mis de côté : tout sous le deck Rencontre'),
+      }
+      const oui = await confirmer({
+        titre: libelles[position],
+        texte: t('%1 carte(s) mises de côté partent dans le deck Rencontre.').replace('%1', String(misDeCote.length)),
+        confirmer: t('Confirmer'),
+        annuler: t('Annuler'),
+      })
+      if (!oui) return
+      const vers = position === 'dessous' ? 'Bottom' : 'Top'
+      await emettreGeste(`${libelles[position]} (${misDeCote.length})`, () =>
+        triche.enLot([
+          ...misDeCote.map((id) => () => triche.deplacerVers(id, 'EncounterDeck', vers)),
+          ...(position === 'melanger' ? [() => triche.melanger('EncounterDeck')] : []),
+        ])
+      )
+    },
+    [misDeCote, confirmer, emettreGeste]
   )
   const echangerAvecLeDessus = useCallback(
     (id: number) => {
@@ -599,6 +649,35 @@ export function useTriche(
     [noter]
   )
 
+  /**
+   * Joue `agir` (qui emet des gestes) en reunissant tous ses gestes en UNE
+   * commande moteur : un geste fait sur une selection de plusieurs cartes ne
+   * doit coûter qu'un Ctrl+Z (lot 5 du 07/10/2026).
+   */
+  const capturerEnLot = useCallback(
+    async (agir: () => Promise<void> | void) => {
+      if (captureRef.current) {
+        await agir()
+        return
+      }
+      const capture = { libelles: [] as string[], deposers: [] as (() => Promise<boolean>)[] }
+      captureRef.current = capture
+      try {
+        await agir()
+      } finally {
+        captureRef.current = null
+      }
+      if (capture.deposers.length === 0) return
+      if (capture.deposers.length === 1) {
+        await emettreGeste(capture.libelles[0], capture.deposers[0])
+        return
+      }
+      if (await triche.enLot(capture.deposers)) enAttenteRef.current.push({ libelles: capture.libelles })
+      else for (const libelle of capture.libelles) noter(`${libelle} (${t('refusé')})`)
+    },
+    [emettreGeste, noter]
+  )
+
   // Traduit un geste du clavier en appel du canal `triche.ts`. La ligne
   // n'est pas écrite ici : `emettreGeste` la retarde jusqu'au rendu qui
   // connaît l'issue réelle (voir plus haut).
@@ -712,6 +791,16 @@ export function useTriche(
         case 'surligner':
           await envoyerMarque(monSiege, { genre: 'surligner', id: geste.id, couleur: geste.couleur })
           return
+        case 'mechantActif': {
+          // `setActiveVillain` : les autres mechants perdent leur surlignage.
+          for (const carte of index.values()) {
+            if (carte.id !== geste.id && estVilain(carte.card_type)) {
+              await envoyerMarque(monSiege, { genre: 'surligner', id: carte.id, couleur: null })
+            }
+          }
+          await envoyerMarque(monSiege, { genre: 'surligner', id: geste.id, couleur: 'actif' })
+          return
+        }
         case 'boost': {
           // `villainBoost` d'OCTGN : la carte du dessus du deck Rencontre va
           // FACE CACHÉE à côté du méchant ; deck vidé, la défausse y est
@@ -1070,6 +1159,20 @@ export function useTriche(
       )
       if (!geste) return
       evenement.preventDefault()
+      // Une carte SELECTIONNEE : la touche vaut pour toute la selection, chaque
+      // carte selon son type (une `cardaction` d'OCTGN par carte selectionnee).
+      const ids = cible?.genre === 'carte' ? cartesDuGeste(cible.id) : []
+      if (ids.length > 1) {
+        const touche = { cle: evenement.key, majuscule: evenement.shiftKey, ctrl: evenement.ctrlKey, alt: evenement.altKey, code: evenement.code }
+        void capturerEnLot(async () => {
+          for (const id of ids) {
+            const autre = cibleClavier(id)
+            const sien = autre?.genre === 'carte' ? interpreterTouche(touche, autre) : undefined
+            if (sien) await executerGeste(sien)
+          }
+        })
+        return
+      }
       void executerGeste(geste)
     }
 
@@ -1089,6 +1192,17 @@ export function useTriche(
       }
       const cible = cibleClavier(id)
       if (!cible || cible.genre !== 'carte') return
+      const ids = cartesDuGeste(id)
+      if (ids.length > 1) {
+        void capturerEnLot(async () => {
+          for (const autreId of ids) {
+            const autre = cibleClavier(autreId)
+            const sien = autre?.genre === 'carte' ? interpreterDoubleClic(autre) : undefined
+            if (sien) await executerGeste(sien)
+          }
+        })
+        return
+      }
       const geste = interpreterDoubleClic(cible)
       if (geste) void executerGeste(geste)
     }
@@ -1105,7 +1219,7 @@ export function useTriche(
       document.removeEventListener('keydown', surTouche)
       document.removeEventListener('keyup', surRelachement)
     }
-  }, [manuel, index, piles, enMain, statuts, executerGeste, etatTouches, lancerAnnulation, poserDepuisLaMain, touchable])
+  }, [manuel, index, piles, enMain, statuts, executerGeste, capturerEnLot, etatTouches, lancerAnnulation, poserDepuisLaMain, touchable])
 
   return {
     actif,
@@ -1118,6 +1232,7 @@ export function useTriche(
       setPile,
       emettreGeste,
       executerGeste,
+      capturerEnLot,
       tirerAuHasard,
       avisRefus,
       annulationEnCours,
@@ -1139,6 +1254,8 @@ export function useTriche(
       defausserAuHasard,
       confirmerMulligan,
       echangerAvecLeDessus,
+      misDeCote,
+      envoyerMisDeCote,
     },
     /** Pour la tâche 5 (glisser-déposer) : lire l'état sans poser d'écoute. */
     estToucheEnfoncee: etatTouches.estEnfoncee,
@@ -1161,6 +1278,7 @@ export type CoucheTricheProps = {
 }
 
 export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide }: CoucheTricheProps) {
+  const confirmerPile = useConfirmation()
   const {
     menu,
     pile,
@@ -1188,6 +1306,8 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
     defausserAuHasard,
     confirmerMulligan,
     echangerAvecLeDessus,
+    misDeCote,
+    envoyerMisDeCote,
   } = couche
   // Le catalogue (tâche 6) : une carte qui n'était pas dans la partie. Mode
   // manuel uniquement, ouvert depuis le menu de la TABLE (clic droit hors de
@@ -1286,6 +1406,26 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
 
   const remelangerLaDefausse = async () => {
     if (!pile || !estUneDefausse || pile.cartes.length === 0) return
+    // `shuffleDiscardIntoDeck` d'OCTGN : il reste des cartes dans le deck ? On demande.
+    // La fenetre de la pile se ferme d'abord : la question passerait sinon dessous.
+    if ((pile.tailleDuDeck ?? 0) > 0) {
+      const ouverte = pile
+      setPile(undefined)
+      const oui = await confirmerPile({
+        titre: pile.titre,
+        texte: t('Il reste %1 carte(s) dans le deck. Remélanger quand même la défausse dedans ?').replace(
+          '%1',
+          String(pile.tailleDuDeck)
+        ),
+        confirmer: t('Remélanger'),
+        annuler: t('Annuler'),
+      })
+      if (!oui) return
+      await emettreGeste(`${t('Remélanger dans le deck')} — ${ouverte.titre}`, () =>
+        triche.remelangerDefausse(ouverte.zone, ouverte.siege)
+      )
+      return
+    }
     await emettreGeste(`${t('Remélanger dans le deck')} — ${pile.titre}`, () =>
       triche.remelangerDefausse(pile.zone, pile.siege)
     )
@@ -1350,6 +1490,7 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           enMain={estEnMain(menu.cible.id)}
           poserEnJeu={manuel && estEnMain(menu.cible.id) ? () => poserDepuisLaMain(menu.cible.id) : undefined}
           echangerAvecLeDessus={manuel && estEnMain(menu.cible.id) ? () => echangerAvecLeDessus(menu.cible.id) : undefined}
+          ids={manuel ? cartesDuGeste(menu.cible.id) : undefined}
         />
       ) : null}
 
@@ -1375,6 +1516,7 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           onDefausseAuHasard={mainAffichee.length > 0 ? defausserAuHasard : undefined}
           onMulligan={mainAffichee.length > 0 ? () => setMulliganOuvert(true) : undefined}
           onFinDeRound={() => void emettreGeste(t('Fin du round'), () => triche.finDeRound())}
+          onMisDeCoteVersRencontre={misDeCote.length > 0 ? (position) => void envoyerMisDeCote(position) : undefined}
         />
       ) : null}
 
