@@ -711,6 +711,26 @@ class GameServerGet(GameServerBase):
         }
         return web.json_response(frais)
 
+    # L'etape du cartouche de la phase du mechant que chaque joueur LIT, pour
+    # que le spectateur affiche la meme (07/10/2026). Une trame retenue peut
+    # porter deux etapes : le monde seul ne dit pas laquelle le joueur regarde.
+    # Cosmetique comme les curseurs, mais sans peremption : un joueur peut
+    # lire une etape longtemps sans bouger la souris.
+    async def set_etape(self, request: web.Request) -> web.Response:
+        import time
+        data = await request.json()
+        try:
+            p = int(data['p'])
+        except Exception:
+            return web.json_response({'error': 'p required'}, status=400)
+        if not hasattr(self, 'etapes_lues'):
+            self.etapes_lues = {}
+        self.etapes_lues[p] = {'cle': str(data.get('cle') or '')[:200], 't': time.time()}
+        return web.json_response({'result': 'ok'})
+
+    async def get_etapes(self, request: web.Request) -> web.Response:
+        return web.json_response(getattr(self, 'etapes_lues', {}))
+
     # --- Salon multijoueur : un choix de heros/deck par siege ---------------
     # Meme forme que set_cursor/get_cursors ci-dessus, a deux differences pres :
     # aucune peremption (un choix vaut jusqu'au lancement) et une verification
@@ -1900,6 +1920,8 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/marvelcdb_card', self.marvelcdb_card)
         self.AddPostSecurity('/set_cursor', self.set_cursor)
         self.AddAwaitGetSecurity('/get_cursors', self.get_cursors)
+        self.AddPostSecurity('/set_etape', self.set_etape)
+        self.AddAwaitGetSecurity('/get_etapes', self.get_etapes)
         self.AddPostSecurity('/set_choix_siege', self.set_choix_siege)
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)
         self.AddAwaitGetSecurity('/get_heros_du_siege', self.get_heros_du_siege)

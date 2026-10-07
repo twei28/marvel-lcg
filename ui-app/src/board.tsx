@@ -183,6 +183,7 @@ import {
 } from './board/CoucheMeteo'
 import { ModaleAmbiance } from './board/ModaleAmbiance'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
+import { publierEtape } from './board/etape-partagee'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
 import { CoucheSucces, CLE_SUCCES, lireSuccesActifs } from './board/CoucheSucces'
 import { CLE_MUSIQUE, lireMusiqueActive, useMusique } from './board/musique'
@@ -2299,6 +2300,11 @@ export function PagePartie({
   // souvent.
   // L'etape que montre le cartouche : la table se cale dessus (table-calee.ts).
   const [cleEtapeAffichee, setCleEtapeAffichee] = useState<string>()
+  // Le spectateur affiche la meme etape que le joueur (etape-partagee.ts).
+  useEffect(() => {
+    if (spectateur) return
+    publierEtape(playerId, cleEtapeAffichee)
+  }, [cleEtapeAffichee, playerId, spectateur])
   const etapesPhaseMechant = useMemo(() => {
     const mechantIds = new Set<number>()
     for (const carte of cartesMondeParId.values()) {

@@ -19,6 +19,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { estSpectateur } from './moteur'
+import { indexSpectateur, useEtapeSuivie } from './etape-partagee'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import {
   arreterSurDefaite,
@@ -731,14 +732,16 @@ export function DeroulePhase({
   // rang jusqu'a l'etape, alors qu'il ne sert aujourd'hui qu'a fabriquer sa
   // cle. Le repli, lui, se lit et se teste ici, et il rend au joueur ce qu'il
   // doit voir : l'etape de la defaite.
+  const spectateur = estSpectateur()
+  const cleSuivie = useEtapeSuivie(spectateur)
   const rangDeLaCle =
     cleCourante === undefined ? -1 : etapesAffichees.findIndex((e) => e.cle === cleCourante)
   const rangValidee =
     validee === undefined ? -1 : etapesAffichees.findIndex((e) => e.cle === validee.cle)
-  // Un spectateur ne clique jamais : il suit la derniere etape connue.
+  // Un spectateur ne clique jamais : il montre l'etape que le joueur lit.
   const index =
-    estSpectateur()
-      ? Math.max(0, etapesAffichees.length - 1)
+    spectateur
+      ? indexSpectateur(etapesAffichees.map((e) => e.cle), cleSuivie)
       : rangDeLaCle !== -1
       ? rangDeLaCle
       : rangValidee !== -1
