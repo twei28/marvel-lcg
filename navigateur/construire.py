@@ -115,6 +115,44 @@ def pages_publiques():
             else:
                 shutil.copy(s, d)
 
+def empreintes():
+    """Chaque adresse de code (js, css) des pages porte l'empreinte de la publication.
+
+    ⚠ SANS ELLE, UN JOUEUR GARDAIT L'ANCIEN ECRAN (constat du 07/10/2026). Beaucoup
+    de modules sont importes sans numero de version (« ./repliques-heros.js ») et
+    le navigateur les garde en cache : apres une publication, il melangeait du
+    code neuf et du code de la veille sans que rien ne le dise au joueur. Une
+    adresse qui change a chaque publication l'oblige a tout reprendre, tout seul.
+
+    Une seule empreinte pour toutes les pages : un module qui change change aussi
+    l'adresse de ceux qui l'importent, sans calcul de dependances. `app/` (le
+    plateau) est laisse tel quel : Vite nomme deja ses fichiers par leur contenu,
+    et y ajouter un parametre dedoublerait ses modules charges par d'autres chemins.
+    """
+    fichiers = []
+    for dp, dn, fn in os.walk(DIST):
+        rel = os.path.relpath(dp, DIST)
+        if rel == "app" or rel.startswith("app" + os.sep):
+            continue
+        fichiers += [os.path.join(dp, f) for f in fn if f.endswith((".html", ".js", ".mjs", ".css"))]
+    h = hashlib.sha1()
+    for chemin in sorted(fichiers):
+        h.update(open(chemin, "rb").read())
+    v = h.hexdigest()[:10]
+    motif = re.compile(r"([\"'`])((?:\.{1,2}/|/)[^\"'`?\s]+?\.(?:m?js|css))(?:\?v=[^\"'`]*)?\1")
+    for chemin in fichiers:
+        t = open(chemin, encoding="utf-8").read()
+        def remplacer(m):
+            cible = m.group(2)
+            base = DIST if cible.startswith("/") else os.path.dirname(chemin)
+            if cible.startswith("/app/") or not os.path.exists(os.path.normpath(os.path.join(base, cible.lstrip("/")))):
+                return m.group(0)
+            return f"{m.group(1)}{cible}?v={v}{m.group(1)}"
+        neuf = motif.sub(remplacer, t)
+        if neuf != t:
+            open(chemin, "w", encoding="utf-8").write(neuf)
+    print("  empreinte des pages", v)
+
 def main():
     print("Pyodide", PYODIDE)
     for f in CORE:
@@ -125,7 +163,7 @@ def main():
     rapide = "--sans-pages" in sys.argv      # ne refait que le moteur et les scripts (les pages copiees restent)
     if not rapide:
         shutil.rmtree(DIST, ignore_errors=True); os.makedirs(DIST)
-        print("Pages et plateau"); pages_publiques()
+        print("Pages et plateau"); pages_publiques(); empreintes()
     print("Moteur"); construire_moteur(os.path.join(DIST, "moteur.zip"))
     for f in CORE + wheels:
         shutil.copy(os.path.join(CACHE, f), DIST)
