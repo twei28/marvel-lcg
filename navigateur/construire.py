@@ -85,8 +85,9 @@ def construire_moteur(zip_path):
         for f in sorted(fn):
             chemin = os.path.join(dp, f)
             h.update(os.path.relpath(chemin, stage).encode()); h.update(open(chemin, "rb").read())
-    for f in ("boot_navigateur.py", "moteur-worker.js", "shim.js", os.path.join("essais", "equivalence.py")):
-        h.update(open(os.path.join(ICI, f), "rb").read())
+    for f in ("boot_navigateur.py", "moteur-worker.js", "shim.js"):
+        h.update(open(os.path.join(SRC, f), "rb").read())
+    h.update(open(os.path.join(ICI, "essais", "equivalence.py"), "rb").read())
     open(os.path.join(os.path.dirname(zip_path), "empreinte-moteur.txt"), "w").write(h.hexdigest())
     # colorama (pur Python) : le moteur l'importe, Pyodide ne l'embarque pas
     wheel = os.path.join(CACHE, "colorama-0.4.6-py2.py3-none-any.whl"); telecharger(COLORAMA, wheel)
