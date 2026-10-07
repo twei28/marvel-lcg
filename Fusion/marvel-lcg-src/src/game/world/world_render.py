@@ -109,6 +109,18 @@ class WorldRender:
         from engine import Engine
         game = Engine.game
 
+        # « Revoir sa partie » : chaque rendu montre, monde NON filtre.
+        from game.test import Test
+        if not Test.IsInTesting():
+            from engine.enregistrement import Enregistrement, entete_de
+            from dataclasses import asdict
+            session = game.session
+            Enregistrement.Rendu(
+                f"{getattr(session, 'game_uid', '')}-{getattr(session, 'game_id', '')}",
+                asdict(self.descriptor),
+                lambda: entete_de(game),
+            )
+
         if not Build.release:
             self.debug_message = f"""<div id='debug-render'>Render: {self.last_render_id}, Step: {game.controller_manager.replay.current_step_id}</div>
 <div id='debug-effect'>{world.event_manager.debug_log_both.GetLog()}</div>

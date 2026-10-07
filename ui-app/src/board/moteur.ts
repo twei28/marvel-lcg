@@ -655,7 +655,9 @@ export function estMultijoueur(): boolean {
  * cliquable ».
  */
 export function estSpectateur(): boolean {
-  return new URLSearchParams(window.location.search).has('spectateur')
+  // Une relecture se regarde comme une partie d'un autre : rien de cliquable.
+  const url = new URLSearchParams(window.location.search)
+  return url.has('spectateur') || url.has('relecture')
 }
 
 /**
@@ -820,6 +822,8 @@ export type EtatMoteur = {
    * l'historique de survivre à un « Annuler ».
    */
   partieId?: string
+  /** Relecture : cette trame vient d'un saut, elle se pose sans animations ni sons. */
+  saut?: boolean
 }
 
 type Ecouteur = (etat: EtatMoteur) => void

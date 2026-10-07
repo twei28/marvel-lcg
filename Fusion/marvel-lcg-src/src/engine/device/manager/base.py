@@ -390,6 +390,9 @@ class DeviceManager:
         self.notify.RefreshExitWait()
         self.ask_options[player_id] = data
         self.asking_players.append(player_id)
+        from engine.enregistrement import Enregistrement
+        from dataclasses import asdict
+        Enregistrement.Evenement("q", {"p": player_id, "q": asdict(data)})
         self.notify.has_client_input = False
 
         wait = self.timer.max_timeout

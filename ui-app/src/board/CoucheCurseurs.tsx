@@ -15,6 +15,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { t } from './langue'
 import { estSpectateur } from './moteur'
+import { lecteurActif } from './relecture/lecteur'
 
 export const CLE_CURSEURS = 'marvel-board-curseurs'
 
@@ -26,7 +27,7 @@ export function lireCurseursActifs(): boolean {
   }
 }
 
-const COULEURS = ['#4da3ff', '#ffd45a', '#7fd77f', '#ff7a7a']
+export const COULEURS_JOUEURS = ['#4da3ff', '#ffd45a', '#7fd77f', '#ff7a7a']
 
 type Curseurs = Record<string, { x: number; y: number; survol?: string; clic?: number }>
 
@@ -112,6 +113,19 @@ export function CoucheCurseurs({
     if (!actif) {
       setCurseurs({})
       return
+    }
+    // Relecture : les curseurs viennent du fichier, au temps de la lecture.
+    const lecteur = lecteurActif()
+    if (lecteur) {
+      const lireFichier = () => {
+        const donnees = lecteur.curseursA(lecteur.tempsCourant())
+        if (clicsVus.current === null) {
+          clicsVus.current = Object.fromEntries(Object.entries(donnees).map(([p, c]) => [p, c.clic]))
+        }
+        setCurseurs(donnees)
+      }
+      const minuteurFichier = window.setInterval(lireFichier, 100)
+      return () => window.clearInterval(minuteurFichier)
     }
     const minuteur = window.setInterval(() => {
       fetch('/get_cursors')
@@ -199,7 +213,7 @@ export function CoucheCurseurs({
               style={{
                 left: zone.left + position.x * zone.width,
                 top: zone.top + position.y * zone.height,
-                '--couleur': COULEURS[joueur % COULEURS.length],
+                '--couleur': COULEURS_JOUEURS[joueur % COULEURS_JOUEURS.length],
               } as React.CSSProperties}
             >
               <span className="curseur-pointe" />
@@ -214,7 +228,7 @@ export function CoucheCurseurs({
           style={{
             left: zone.left + onde.x * zone.width,
             top: zone.top + onde.y * zone.height,
-            '--couleur': COULEURS[onde.joueur % COULEURS.length],
+            '--couleur': COULEURS_JOUEURS[onde.joueur % COULEURS_JOUEURS.length],
           } as React.CSSProperties}
         />
       ))}

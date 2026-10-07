@@ -3,6 +3,7 @@
 // une trame retenue peut porter deux etapes, et seul le joueur sait laquelle
 // il regarde.
 import { useEffect, useState } from 'react'
+import { lecteurActif } from './relecture/lecteur'
 
 export type EtapesLues = Record<string, { cle: string; t: number }>
 
@@ -36,6 +37,11 @@ export function useEtapeSuivie(actif: boolean): string | undefined {
   const [cle, setCle] = useState<string>()
   useEffect(() => {
     if (!actif) return
+    const lecteur = lecteurActif()
+    if (lecteur) {
+      const minuteur = window.setInterval(() => setCle(lecteur.etapeA(lecteur.tempsCourant())), 100)
+      return () => window.clearInterval(minuteur)
+    }
     let vivant = true
     const lire = () =>
       fetch('/get_etapes', { cache: 'no-store' })

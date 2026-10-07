@@ -1,0 +1,259 @@
+.relecture-page {
+  min-height: 100vh;
+  padding: 48px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background: #0d1116;
+  color: #e8edf2;
+  font-family: inherit;
+}
+
+.relecture-page h1 {
+  margin: 0;
+  font-family: Bangers, Impact, sans-serif;
+  letter-spacing: 0.04em;
+  font-size: 2.2rem;
+  color: #f0b95f;
+}
+
+.relecture-depot {
+  width: min(560px, 100%);
+  padding: 56px 20px;
+  border: 3px dashed #4d5b6b;
+  border-radius: 14px;
+  text-align: center;
+  font-size: 1.1rem;
+  transition: border-color 150ms, background 150ms;
+}
+
+.relecture-depot.est-survolee {
+  border-color: #f0b95f;
+  background: rgba(240, 185, 95, 0.08);
+}
+
+.relecture-choisir {
+  display: inline-block;
+  margin-top: 8px;
+  color: #96ebff;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.relecture-choisir input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.relecture-erreur {
+  color: #ff8a8a;
+  font-weight: 700;
+}
+
+.relecture-fiche {
+  position: fixed;
+  z-index: 700;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, calc(100vw - 32px));
+  padding: 24px;
+  border-radius: 14px;
+  background: #151b22;
+  color: #e8edf2;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  text-align: center;
+}
+
+.relecture-fiche h2 {
+  margin: 0 0 6px;
+  font-family: Bangers, Impact, sans-serif;
+  font-size: 1.8rem;
+  color: #f0b95f;
+}
+
+.relecture-fiche ul {
+  list-style: none;
+  padding: 0;
+  font-weight: 800;
+}
+
+.relecture-version {
+  font-size: 0.75rem;
+  color: #8fa0b2;
+}
+
+.relecture-bouton-lecture {
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 99px;
+  background: #f0b95f;
+  color: #0d1116;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.relecture-barre {
+  position: fixed;
+  z-index: 690;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: min(900px, calc(100vw - 16px));
+  padding: 6px 12px 8px;
+  border-radius: 12px;
+  background: rgba(13, 17, 22, 0.92);
+  color: #e8edf2;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  font-size: 0.8rem;
+}
+
+.relecture-progression {
+  position: relative;
+  height: 22px;
+}
+
+.relecture-progression input[type='range'] {
+  width: 100%;
+  margin: 0;
+  accent-color: #f0b95f;
+}
+
+.relecture-repere {
+  position: absolute;
+  top: 0;
+  width: 4px;
+  height: 8px;
+  margin-left: -2px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: #8fa0b2;
+  cursor: pointer;
+}
+
+.relecture-repere.est-phase-mechant {
+  background: #c27cff;
+}
+
+.relecture-repere.est-vaincu {
+  width: 9px;
+  height: 9px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background: #ff4d4d;
+}
+
+.relecture-commandes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.relecture-commandes > button {
+  min-width: 34px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: #253040;
+  color: inherit;
+  cursor: pointer;
+}
+
+.relecture-commandes > .relecture-bouton-lecture {
+  background: #f0b95f;
+  color: #0d1116;
+}
+
+.relecture-commandes label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.relecture-commandes select {
+  background: #253040;
+  color: inherit;
+  border: 0;
+  border-radius: 6px;
+  padding: 2px 4px;
+}
+
+.relecture-situation {
+  font-weight: 800;
+  margin-right: auto;
+}
+
+.relecture-bascule-journal {
+  position: fixed;
+  z-index: 690;
+  right: 8px;
+  top: 50%;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px 0 0 8px;
+  background: #253040;
+  color: #e8edf2;
+  cursor: pointer;
+  writing-mode: vertical-rl;
+}
+
+.relecture-journal {
+  position: fixed;
+  z-index: 689;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: min(340px, 85vw);
+  overflow-y: auto;
+  padding: 12px 40px 120px 12px;
+  background: rgba(13, 17, 22, 0.95);
+  color: #e8edf2;
+  font-size: 0.8rem;
+}
+
+.relecture-journal ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.relecture-journal button {
+  display: block;
+  width: 100%;
+  margin: 2px 0;
+  padding: 4px 8px;
+  border: 0;
+  border-left: 4px solid transparent;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.relecture-journal .est-courante button {
+  background: rgba(240, 185, 95, 0.18);
+}
+
+.relecture-journal-round {
+  color: #8fa0b2;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .relecture-commandes label {
+    font-size: 0;
+  }
+  .relecture-commandes select {
+    font-size: 0.8rem;
+  }
+}
+
+.relecture-derniere {
+  color: #96ebff;
+  font-size: 0.85rem;
+}

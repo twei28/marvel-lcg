@@ -699,6 +699,8 @@ class GameServerGet(GameServerBase):
             'survol': str(data.get('survol', ''))[:40],
             'clic': clic,
         }
+        from engine.enregistrement import Enregistrement
+        Enregistrement.Evenement('c', {'p': p, 'x': round(x, 4), 'y': round(y, 4), 'clic': clic})
         return web.json_response({'result': 'ok'})
 
     async def get_cursors(self, request: web.Request) -> web.Response:
@@ -726,10 +728,24 @@ class GameServerGet(GameServerBase):
         if not hasattr(self, 'etapes_lues'):
             self.etapes_lues = {}
         self.etapes_lues[p] = {'cle': str(data.get('cle') or '')[:200], 't': time.time()}
+        from engine.enregistrement import Enregistrement
+        Enregistrement.Evenement('e', {'p': p, 'cle': self.etapes_lues[p]['cle']})
         return web.json_response({'result': 'ok'})
 
     async def get_etapes(self, request: web.Request) -> web.Response:
         return web.json_response(getattr(self, 'etapes_lues', {}))
+
+    async def get_enregistrement(self, request: web.Request) -> web.Response:
+        """Le fichier .marvelreplay de la derniere partie jouee sur cette table."""
+        from engine.enregistrement import Enregistrement
+        contenu = Enregistrement.Fichier()
+        if contenu is None:
+            return web.json_response({'error': 'aucune partie enregistree'}, status=404)
+        return web.Response(
+            body=contenu,
+            content_type='application/octet-stream',
+            headers={'Content-Disposition': 'attachment; filename="partie.marvelreplay"'},
+        )
 
     # --- Salon multijoueur : un choix de heros/deck par siege ---------------
     # Meme forme que set_cursor/get_cursors ci-dessus, a deux differences pres :
@@ -1922,6 +1938,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_cursors', self.get_cursors)
         self.AddPostSecurity('/set_etape', self.set_etape)
         self.AddAwaitGetSecurity('/get_etapes', self.get_etapes)
+        self.AddAwaitGetSecurity('/get_enregistrement', self.get_enregistrement)
         self.AddPostSecurity('/set_choix_siege', self.set_choix_siege)
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)
         self.AddAwaitGetSecurity('/get_heros_du_siege', self.get_heros_du_siege)

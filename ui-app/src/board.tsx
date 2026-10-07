@@ -184,6 +184,8 @@ import {
 import { ModaleAmbiance } from './board/ModaleAmbiance'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { publierEtape } from './board/etape-partagee'
+import { lecteurActif, estRelecture, type Lecteur } from './board/relecture/lecteur'
+import { PageRelecture } from './board/relecture/PageRelecture'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
 import { CoucheSucces, CLE_SUCCES, lireSuccesActifs } from './board/CoucheSucces'
 import { CLE_MUSIQUE, lireMusiqueActive, useMusique } from './board/musique'
@@ -951,7 +953,8 @@ function useEtatEnregistre(fichier: string) {
 
 /** La partie en cours : socket, accuse de reception, demandes du moteur. */
 function usePartieEnCours(playerId: number) {
-  const [moteur] = useState(() => new Moteur(playerId))
+  // En relecture, le lecteur tient la place du moteur (relecture/lecteur.ts).
+  const [moteur] = useState<Moteur | Lecteur>(() => lecteurActif() ?? new Moteur(playerId))
   const [etat, setEtat] = useState<EtatMoteur>({
     hautsFaits: [],
     siegesAbsents: [],
@@ -1722,14 +1725,25 @@ function EcranFinPartie({
             else onMenu()
           }}
         />
-        <div className="fin-partie-choix-sortie">
-          <button type="button" className="fin-partie-menu" onClick={onMenu}>
-            {t('Retour au choix du héros')}
-          </button>
-          <button type="button" className="fin-partie-menu fin-partie-deconnexion" onClick={onDeconnexion}>
-            {t('Fermer et déconnecter la table (surtout pour le multijoueur en ligne)')}
-          </button>
-        </div>
+        {estRelecture() ? (
+          <div className="fin-partie-choix-sortie">
+            <button type="button" className="fin-partie-menu" onClick={() => lecteurActif()?.aller(0)}>
+              {t('Revoir depuis le début')}
+            </button>
+          </div>
+        ) : (
+          <div className="fin-partie-choix-sortie">
+            <button type="button" className="fin-partie-menu" onClick={onMenu}>
+              {t('Retour au choix du héros')}
+            </button>
+            <a className="fin-partie-menu" href="/get_enregistrement" download="partie.marvelreplay">
+              {t('Télécharger la partie')}
+            </a>
+            <button type="button" className="fin-partie-menu fin-partie-deconnexion" onClick={onDeconnexion}>
+              {t('Fermer et déconnecter la table (surtout pour le multijoueur en ligne)')}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -3401,13 +3415,14 @@ export function PagePartie({
     if (actuel === undefined) return
     const precedent = dernierRenderId.current
     dernierRenderId.current = actuel
-    if (!estResynchronisation(actuel, precedent)) return
+    // Un saut dans la relecture se pose sans rejouer ses entrees, comme une resynchronisation.
+    if (!estResynchronisation(actuel, precedent) && etat.saut !== true) return
     setResynchronisation(true)
     // 1000ms : couvre la plus longue animation d'entree gardee par
     // `plateau-sans-animations` (statut-arrive, 900ms) avec une marge.
     const t = window.setTimeout(() => setResynchronisation(false), 1000)
     return () => window.clearTimeout(t)
-  }, [etat.monde?.render_id])
+  }, [etat.monde?.render_id, etat.saut])
 
   // Les effets CSS transitoires (secousse d'impact, halo de statut) sont
   // debrayes par une classe sur <body> : ils vivent dans des feuilles de style,
@@ -3470,7 +3485,7 @@ export function PagePartie({
   // chaque trame de mise en place portant un `sound_name` etait jouee derriere
   // le voile. C'est la seule raison pour laquelle le bloc du voile est calcule
   // ici, au-dessus, et pas juste avant le retour anticipe qui s'en sert.
-  useSons(etat.monde, sons, etat.demande !== undefined, voile)
+  useSons(etat.monde, sons, etat.demande !== undefined, voile || etat.saut === true || (lecteurActif()?.lireControle().muet ?? false))
   // Survol des boutons du Menu et des Réglages (refonte des sons, 07/10/2026).
   useEffect(() => installerSurvol(document, SELECTEUR_SURVOL_PLATEAU), [])
   useMusique(etat.monde, musique)
@@ -4885,7 +4900,19 @@ function Page() {
   // bloquantes, et le dialogue doit exister avant qu'on la pose.
   return (
     <FournisseurConfirmation>
-      {etat ? (
+      {estRelecture() ? (
+        <PageRelecture
+          rendrePartie={(siege) => (
+            <PagePartie
+              key={siege}
+              playerId={siege}
+              catalogue={catalogue}
+              modeActions={modeActions}
+              changerModeActions={changerModeActions}
+            />
+          )}
+        />
+      ) : etat ? (
         <PageEtat fichier={etat} playerId={playerId} catalogue={catalogue} outils={outils} />
       ) : (
         <PagePartie

@@ -63,6 +63,7 @@
     'Defaite': 'Lost',
     'Reprendre ou revoir une partie sauvegardee': 'Resume or replay a saved game',
     'Statistiques et journal des parties': 'Statistics and game log',
+    'Revoir une partie a partir de son fichier .marvelreplay': 'Watch a game again from its .marvelreplay file',
     'Hauts faits': 'Feats',
     'Hauts faits debloques et progression': 'Unlocked feats and progress',
     'Partie sauvegardee': 'Saved game',
@@ -435,6 +436,9 @@
   rangee.append(
     el('button', { onclick: ouvrirReprise, title: t('Reprendre ou revoir une partie sauvegardee') },
        el('i', { class: 'fa fa-play', 'aria-hidden': 'true' }), ' ' + t('Reprendre')),
+    el('button', { onclick: () => { window.location.href = '/app/board.html?relecture=1'; },
+                   title: t('Revoir une partie a partir de son fichier .marvelreplay') },
+       el('i', { class: 'fa fa-film', 'aria-hidden': 'true' }), ' ' + t('Revoir')),
     el('button', { onclick: ouvrirStats, title: t('Statistiques et journal des parties') },
        el('i', { class: 'fa fa-bar-chart', 'aria-hidden': 'true' }), ' Stats'));
 
