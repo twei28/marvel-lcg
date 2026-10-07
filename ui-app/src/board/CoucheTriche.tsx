@@ -715,6 +715,10 @@ export function useTriche(
           return
         }
         case 'compteur': {
+          if (enMain.has(geste.id)) {
+            afficherBrievement(t('Une carte en main ne porte pas de compteurs : pose-la en jeu d’abord.'))
+            return
+          }
           const nom = index.get(geste.id)?.name ?? `${t('Carte')} ${geste.id}`
           const libelle = geste.nombre >= 0 ? t('Ajouter des compteurs') : t('Retirer des compteurs')
           await emettreGeste(`${libelle} ${Math.abs(geste.nombre)} — ${nom}`, () =>
@@ -884,7 +888,7 @@ export function useTriche(
         }
       }
     },
-    [index, piles, emettreGeste, emettreLot, noter, world, controles, versLaMain, ouvrirMenuCarte]
+    [index, piles, emettreGeste, emettreLot, noter, world, controles, versLaMain, ouvrirMenuCarte, enMain, afficherBrievement]
   )
 
   // --- Ctrl+Z : annule le dernier geste (tâche 6) ---------------------------
@@ -1280,6 +1284,7 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           onFermer={() => setMenu(undefined)}
           emettreGeste={emettreGeste}
           manuel={manuel}
+          enMain={estEnMain(menu.cible.id)}
           poserEnJeu={manuel && estEnMain(menu.cible.id) ? () => poserDepuisLaMain(menu.cible.id) : undefined}
           echangerAvecLeDessus={manuel && estEnMain(menu.cible.id) ? () => echangerAvecLeDessus(menu.cible.id) : undefined}
         />

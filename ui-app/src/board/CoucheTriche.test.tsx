@@ -725,3 +725,35 @@ describe('le choix de la carte qui reçoit une amélioration', () => {
   })
 })
 
+
+describe('les compteurs ne se posent pas sur une carte en main', () => {
+  const EN_MAIN = carteSurTable(50, '01065', 'Upgrade', 'Instinct')
+  const EN_JEU = carteSurTable(51, '01092', 'Support', 'Helicarrier')
+
+  const monde = () =>
+    tableAvec(siege({ hand_cards: [EN_MAIN], supports: [EN_JEU] }), {
+      mode_manuel: true,
+      manuel_actif: true,
+      render_id: 1,
+      manuel_refus: '',
+    } as never)
+
+  it('la flèche sur une carte en main refuse, le dit, et n’envoie rien', async () => {
+    const { container } = render(<Harness world={monde()} />)
+    survoler(50)
+    fireEvent.keyDown(document, { key: 'ArrowUp' })
+    await attendreLeReseau()
+    expect(fetch).not.toHaveBeenCalled()
+    expect(container.textContent).toContain('ne porte pas de compteurs')
+  })
+
+  it('la même flèche sur un soutien en jeu envoie bien le compteur', async () => {
+    render(<Harness world={monde()} />)
+    survoler(51)
+    fireEvent.keyDown(document, { key: 'ArrowUp' })
+    await attendreLeReseau()
+    expect(fetch).toHaveBeenCalledWith('/sandbox_command', expect.objectContaining({
+      body: JSON.stringify({ commands: ["Puzzle.Counter(51, 'counter', 1)"] }),
+    }))
+  })
+})

@@ -314,3 +314,19 @@ describe('le menu contextuel reste dans l’écran', () => {
     vi.restoreAllMocks()
   })
 })
+
+describe('« Ajouter des compteurs » n’est pas offert sur une carte en main', () => {
+  it('offert sur une carte en jeu', () => {
+    const { queryByText } = render(
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} manuel />
+    )
+    expect(queryByText('Ajouter des compteurs')).not.toBeNull()
+  })
+
+  it('absent sur une carte en main', () => {
+    const { queryByText } = render(
+      <MenuTriche cible={CIBLE} x={0} y={0} onFermer={vi.fn()} emettreGeste={emettreGesteDeTest()} manuel enMain />
+    )
+    expect(queryByText('Ajouter des compteurs')).toBeNull()
+  })
+})

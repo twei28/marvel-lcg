@@ -214,6 +214,8 @@ export type MenuTricheProps = {
    * type, le même geste que le glisser sur la table et le double-clic (lot 3
    * du 06/10/2026). Absent pour toute autre carte.
    */
+  /** Carte en main : pas de compteurs, personne ne les verrait (voir `executerGeste`). */
+  enMain?: boolean
   poserEnJeu?: () => void
   /** Une carte EN MAIN : « Échanger avec le dessus du deck » (lot 6, `switchCard` d'OCTGN). */
   echangerAvecLeDessus?: () => void
@@ -234,6 +236,7 @@ export function MenuTriche({
   onFermer,
   emettreGeste,
   manuel = false,
+  enMain = false,
   poserEnJeu,
   echangerAvecLeDessus,
 }: MenuTricheProps) {
@@ -315,9 +318,11 @@ export function MenuTriche({
     )
   }
 
+  if (!enMain) {
+    entrees.push({ libelle: t('Ajouter des compteurs'), valeur: 1,
+      agir: (n) => triche.poserCompteur(cible.id, 'counter', n) })
+  }
   entrees.push(
-    { libelle: t('Ajouter des compteurs'), valeur: 1,
-      agir: (n) => triche.poserCompteur(cible.id, 'counter', n) },
     { libelle: t('Défausser'), agir: () => triche.defausser(cible.id), danger: true },
     { libelle: t('Retirer de la partie'), agir: () => triche.retirer(cible.id), danger: true },
   )
