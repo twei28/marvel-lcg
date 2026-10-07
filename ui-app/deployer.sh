@@ -26,6 +26,9 @@ JEUX=(
 cd "$RACINE_APP"
 npm run build
 npm run verifier-sortie
+# La boite de question du centre ne doit JAMAIS avoir de barre de defilement ni deborder (07/10/2026) :
+# le garde monte la vraie feuille de style, de 1 a 14 defenseurs, sur quatre tailles de fenetre.
+(cd "$RACINE_APP/../ui-check" && node scripts/garde-boite-defense.mjs)
 
 deployer_vers() {
   local JEU="$1"

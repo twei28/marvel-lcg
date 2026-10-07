@@ -91,4 +91,11 @@
   .deroule-phase .deroule-boutons .bh-bouton {
     zoom: 1.5;
   }
+  /* La question du centre (hors cartouche) : 80 % de cette taille (07/10/2026).
+     A 1,5 un « Défendre avec Captain America (DÉF 2 + 1 Bouclier…) » depassait
+     la boite et faisait apparaitre une barre de defilement. */
+  .demande-centrale:not(.est-en-scene) .af-action,
+  .demande-centrale:not(.est-en-scene) .dc-continue {
+    zoom: 1.2;
+  }
 }

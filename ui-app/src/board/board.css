@@ -1231,10 +1231,20 @@
      etaient inatteignables. Les boutons prennent maintenant toute la largeur du
      panneau (plusieurs par rangee) et defilent au-dela de la hauteur de la
      fenetre. Hors cartouche du mechant, qui a ses propres regles. */
+  /* JAMAIS DE BARRE DE DEFILEMENT (07/10/2026, « cette barre de scroll
+     degueulasse ») : la boite est assez large pour un bouton de defense sur une
+     ligne, rien ne deborde en largeur, et si une tres longue liste depasse en
+     hauteur elle se fait defiler a la molette, sans barre visible. */
   .demande-centrale:not(.est-en-scene) .dc-boutons {
-    width: min(640px, calc(100vw - 28px));
+    width: min(960px, calc(100vw - 28px));
+    max-width: none;
     max-height: calc(100dvh - 230px);
+    overflow-x: hidden;
     overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .demande-centrale:not(.est-en-scene) .dc-boutons::-webkit-scrollbar {
+    display: none;
   }
 
   /* Le refus (« Ne pas defendre ») reste TOUJOURS visible : c'est le bouton qu'on
@@ -1262,7 +1272,9 @@
   /* 7 choix et plus : une VRAIE LISTE, une ligne par choix. La mini-vignette sert
      a reconnaitre la carte ; le grand apercu au survol reste la facon de la lire. */
   .demande-centrale.dc-liste .dc-boutons {
-    width: min(480px, calc(100vw - 28px));
+    /* Aussi large que la boite ordinaire : un bouton de defense reste sur UNE
+       ligne (boutons-bd.css) et ne doit jamais deborder (07/10/2026). */
+    width: min(960px, calc(100vw - 28px));
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: stretch;

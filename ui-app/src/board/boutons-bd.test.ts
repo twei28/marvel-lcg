@@ -20,7 +20,8 @@ describe('les boutons des questions en style BD', () => {
       .filter((m) => !m[1].trim().startsWith('@'))
       .flatMap((m) => m[1].split(',').map((s) => s.trim()))
     expect(selecteurs.length).toBeGreaterThan(0)
-    for (const s of selecteurs) expect(s).toMatch(/^\.(demande-centrale|assistant-action|deroule-phase) /)
+    // `:not(...)` reste dans le panneau : il ne fait que l'affiner (la question du centre hors cartouche).
+    for (const s of selecteurs) expect(s).toMatch(/^\.(demande-centrale|assistant-action|deroule-phase)(:not\([^)]*\))? /)
   })
 
   it('coins coupes, police Bangers, plus d arrondi ; refus gris', () => {
