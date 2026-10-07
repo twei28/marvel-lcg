@@ -14,7 +14,7 @@ outils differents, donc les octets different). Tout le reste doit etre identique
 ⚠ Interroger TOUT le classique charge chaque image dans la memoire du moteur (Cache.cache) : sur le moteur de
 jeu du poste, garder --echantillon. Sans echantillon, viser un moteur d'essai.
 """
-import concurrent.futures as cf, hashlib, io, json, os, random, sys, urllib.request, http.cookiejar
+import concurrent.futures as cf, hashlib, io, json, os, random, sys, urllib.parse, urllib.request, http.cookiejar
 from PIL import Image
 
 args = [a for a in sys.argv[1:] if not a.startswith("--")]
@@ -67,8 +67,9 @@ def empreinte_image(octets):
         return None
 
 def comparer(chemin):
-    sc, bc = lire(classique + chemin)
-    sp, bp = lire(play + chemin)
+    url = urllib.parse.quote(chemin)          # « /sets/1. Core Set » : espaces et signes encodes
+    sc, bc = lire(classique + url)
+    sp, bp = lire(play + url)
     if sc != 200 or sp != 200:
         return (chemin, f"statut classique {sc}, play {sp}") if sc != sp or sc != 200 else None
     if bc == bp:
@@ -89,6 +90,6 @@ with cf.ThreadPoolExecutor(8) as ex:
         if i and i % 1000 == 0:
             print(f"{i}/{len(adresses)}, ecarts : {len(ecarts)}", flush=True)
 print(f"ADRESSES : {len(adresses)} ; ECARTS : {len(ecarts)}")
-for chemin, raison in ecarts[:60]:
+for chemin, raison in ecarts:
     print(f"  {chemin} : {raison}")
 sys.exit(1 if ecarts else 0)

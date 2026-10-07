@@ -17,6 +17,9 @@ import json, os, shutil, sys
 
 source, scans = sys.argv[1], sys.argv[2]
 resolution = json.load(open(os.path.join(source, "resolution.json"), encoding="utf-8"))
+# Les cibles COUCHEES (plus larges que hautes) : seules elles se servent redressees. Un fichier de pivotes/ pour
+# une image debout est un reste d'une ancienne version (vu le 07/10/2026 : la vignette 50172, 1 px de trop).
+couchees = set(resolution.pop("_couchees", []))
 neuf = os.path.join(scans, "resolu.neuf")
 shutil.rmtree(neuf, ignore_errors=True)
 manquants = []
@@ -30,7 +33,7 @@ for route, table in resolution.items():
             shutil.copyfile(os.path.join(source, cible), lien)
             n += 1
             continue
-        for base in ("pivotes", "originaux"):
+        for base in (("pivotes", "originaux") if cible in couchees else ("originaux",)):
             chemin = os.path.join(scans, base, cible)
             if os.path.isfile(chemin):
                 os.symlink(chemin, lien)
