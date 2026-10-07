@@ -33,8 +33,8 @@ const EVENEMENTS: Record<string, Action['genre']> = {
   WhenSchemeWouldPlaceThreat: 'manigance',
 }
 
-/** Fenetre (en rendus) ou une defausse depuis la main compte comme paiement du coup joue. */
-const FENETRE_PAIEMENT = 4
+/** Fenetre (en rendus) ou une ressource depensee paie le coup joue. */
+const FENETRE_PAIEMENT = 8
 /** Fenetre (en rendus) ou des degats se rattachent a l'action qui precede. */
 const FENETRE_DEGATS = 4
 
@@ -95,24 +95,44 @@ export function actionsDe(relecture: Relecture): Action[] {
       const apres = ici.get(id)
       if (!apres || apres.zone === 'hand_cards') continue
       const carte = { id, nom: apres.nom || place.nom }
-      if (apres.zone === 'player_discard_pile') {
-        const paiement = { ...carte, ressources: ressourcesLisibles(relecture.ressources[id]) }
-        const action = derniereParSiege.get(place.siege)
-        if (action && action.genre === 'joue' && index - action.index <= FENETRE_PAIEMENT) action.paiement.push(paiement)
-        else enAttente.push({ index, siege: place.siege, paiement })
-      } else if (!ZONES_HORS_JEU.has(apres.zone)) {
-        const action: Action = { index, genre: 'joue', siege: place.siege, carte, paiement: [], degats: [] }
-        for (let n = enAttente.length - 1; n >= 0; n -= 1) {
-          const attente = enAttente[n]
-          if (attente.siege === place.siege && index - attente.index <= FENETRE_PAIEMENT) {
-            action.paiement.unshift(attente.paiement)
-            enAttente.splice(n, 1)
-          }
+      // La carte DEPENSEE passe par la reserve de ressources : ce n'est pas un coup joue.
+      if (ZONES_HORS_JEU.has(apres.zone) || apres.zone === 'area_resources') continue
+      const action: Action = { index, genre: 'joue', siege: place.siege, carte, paiement: [], degats: [] }
+      for (let n = enAttente.length - 1; n >= 0; n -= 1) {
+        const attente = enAttente[n]
+        if (attente.siege === place.siege && index - attente.index <= FENETRE_PAIEMENT) {
+          action.paiement.unshift(attente.paiement)
+          enAttente.splice(n, 1)
         }
-        actions.push(action)
-        derniereParSiege.set(place.siege, action)
-        nouvelle = action
       }
+      actions.push(action)
+      derniereParSiege.set(place.siege, action)
+      nouvelle = action
+    }
+
+    // LE PAIEMENT, DIT PAR LE MOTEUR : chaque ressource depensee est un rendu
+    // `WhenCardBeSpendAsResource`, la carte en `active_card_ids`. Il couvre aussi
+    // ce qui ne vient pas de la main (le Joker du Lance-toile, mesure du
+    // 07/10/2026), que suivre les cartes quittant la main ne voyait pas.
+    const actifsPaiement = monde.active_card_ids ?? []
+    const memeDepense =
+      avant.event_name === monde.event_name && (avant.active_card_ids ?? []).join() === actifsPaiement.join()
+    if (monde.event_name === 'WhenCardBeSpendAsResource' && actifsPaiement.length > 0 && !memeDepense) {
+      const id = actifsPaiement[0]
+      const place = precedent.get(id) ?? ici.get(id)
+      const siege = place?.siege ?? ici.get(id)?.siege
+      // « gagne la ressource [[physical]] de [carte], total [[physical]] » : les
+      // symboles AVANT le total sont ceux de cette carte.
+      const symboles = (monde.prompt ?? '').split(/,\s*total/i)[0].match(/\[\[[a-z]+\]\]/gi) ?? []
+      const depuisLeMoteur = ressourcesLisibles(symboles.join(''))
+      const paiement = {
+        id,
+        nom: place?.nom ?? '',
+        ressources: depuisLeMoteur.length > 0 ? depuisLeMoteur : ressourcesLisibles(relecture.ressources[id]),
+      }
+      const action = siege === undefined ? undefined : derniereParSiege.get(siege)
+      if (action && action.genre === 'joue' && index - action.index <= FENETRE_PAIEMENT) action.paiement.push(paiement)
+      else if (siege !== undefined) enAttente.push({ index, siege, paiement })
     }
 
     const genre = EVENEMENTS[monde.event_name ?? '']

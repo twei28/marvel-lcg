@@ -69,6 +69,15 @@ with tempfile.TemporaryDirectory() as dossier:
         rejoues.append(monde)
     cas("tous les mondes se reconstruisent", rejoues, mondes)
 
+    # L'en-tete se complete au round 1 : au premier rendu, le heros n'est pas pose.
+    appels = []
+    def entete_qui_change():
+        appels.append(1)
+        return {"joueurs": [{"heros": "rule" if len(appels) == 1 else "Spider-Man"}]}
+    E.Enregistrement.Rendu("partie-x", {"render_id": 1, "round_id": 0}, entete_qui_change)
+    E.Enregistrement.Rendu("partie-x", {"render_id": 2, "round_id": 1}, entete_qui_change)
+    x = json.loads(gzip.decompress(E.Enregistrement.Fichier()).decode("utf-8").splitlines()[0])
+    cas("en-tete complete au round 1", x["joueurs"], [{"heros": "Spider-Man"}])
     E.Enregistrement.Rendu("partie-2", {"render_id": 1, "game_over": True, "players_won": True}, entete)
     fin = json.loads(gzip.decompress(E.Enregistrement.Fichier()).decode("utf-8").splitlines()[0])
     cas("nouvelle partie, nouveau fichier, victoire", fin["resultat"], "victoire")

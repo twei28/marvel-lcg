@@ -141,7 +141,7 @@ function nettoyerTexte(texte: string | undefined): string {
     .replace(/\s*---$/, '')
 }
 
-function texteSignificatif(texte: string | undefined): string | undefined {
+export function texteSignificatif(texte: string | undefined): string | undefined {
   const propre = nettoyerTexte(texte)
   if (!propre) return undefined
   // Bilingue : narration moteur en anglais, ou en francais via translate_fr.json.

@@ -66,6 +66,7 @@ export function BandeauRelecture({ lecteur, relecture }: { lecteur: Lecteur; rel
   const actions = useMemo(() => actionsDe(relecture), [relecture])
   const degats = useMemo(() => degatsParRendu(relecture), [relecture])
   const [effet, setEffet] = useState<Effet>()
+  const [aAllumer, setAAllumer] = useState<{ id: number; cle: number }>()
   const indexPrecedent = useRef(index)
 
   let courante: Action | undefined
@@ -79,12 +80,17 @@ export function BandeauRelecture({ lecteur, relecture }: { lecteur: Lecteur; rel
   useEffect(() => {
     const avance = index === indexPrecedent.current + 1
     indexPrecedent.current = index
-    if (!avance) return
+    // Le nettoyage du rendu precedent a coupe son minuteur : sans cette remise a
+    // zero, sa fleche restait a l'ecran pour de bon apres un saut.
+    if (!avance) {
+      setEffet(undefined)
+      setAAllumer(undefined)
+      return
+    }
     const action = actions.find((a) => a.index === index)
-    const surbrillance = action?.carte ? document.querySelector(`.scan-card[data-card-id="${action.carte.id}"]`) : null
-    surbrillance?.classList.add('relecture-surbrillance')
+    if (action?.carte) setAAllumer({ id: action.carte.id, cle: index })
     let fleche: Effet['fleche']
-    if (action?.acteur && action.cible) {
+    if (action?.acteur && action.cible && action.acteur.id !== action.cible.id) {
       const de = centre(action.acteur.id)
       const a = centre(action.cible.id)
       if (de && a) fleche = { de, a, genre: action.genre }
@@ -93,16 +99,36 @@ export function BandeauRelecture({ lecteur, relecture }: { lecteur: Lecteur; rel
       const ou = centre(d.id)
       return ou ? [{ ...d, ...ou }] : []
     })
-    if (fleche || chiffres.length > 0) setEffet({ cle: index, fleche, degats: chiffres })
-    const minuteur = window.setTimeout(() => {
-      surbrillance?.classList.remove('relecture-surbrillance')
-      setEffet((e) => (e?.cle === index ? undefined : e))
-    }, DUREE_EFFET_MS)
-    return () => {
-      window.clearTimeout(minuteur)
-      surbrillance?.classList.remove('relecture-surbrillance')
-    }
+    setEffet(fleche || chiffres.length > 0 ? { cle: index, fleche, degats: chiffres } : undefined)
+    const minuteur = window.setTimeout(() => setEffet((e) => (e?.cle === index ? undefined : e)), DUREE_EFFET_MS)
+    return () => window.clearTimeout(minuteur)
   }, [index, actions, degats])
+
+  // LA CARTE JOUEE S'ALLUME QUAND ELLE PARAIT. Au moment du coup elle est dans
+  // la zone de resolution, que la table ne dessine pas : on l'attend (3 s au
+  // plus), puis elle reste allumee le temps de l'effet, quels que soient les
+  // rendus qui passent entre-temps.
+  useEffect(() => {
+    if (!aAllumer) return
+    let allumee: Element | null = null
+    let eteindre: number | undefined
+    const debut = performance.now()
+    const guetteur = window.setInterval(() => {
+      allumee = document.querySelector(`.scan-card[data-card-id="${aAllumer.id}"]`)
+      if (allumee) {
+        window.clearInterval(guetteur)
+        allumee.classList.add('relecture-surbrillance')
+        eteindre = window.setTimeout(() => allumee?.classList.remove('relecture-surbrillance'), DUREE_EFFET_MS)
+      } else if (performance.now() - debut > 3000) {
+        window.clearInterval(guetteur)
+      }
+    }, 100)
+    return () => {
+      window.clearInterval(guetteur)
+      window.clearTimeout(eteindre)
+      allumee?.classList.remove('relecture-surbrillance')
+    }
+  }, [aAllumer])
 
   const lignes = courante ? phrasesDe(courante, relecture) : []
   return (

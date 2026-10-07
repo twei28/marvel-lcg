@@ -3,6 +3,7 @@
 // lecture (pause, pas a pas, vitesse, reperes, point de vue, journal).
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { t } from '../langue'
+import { texteSignificatif } from '../HistoriquePartie'
 import { COULEURS_JOUEURS } from '../CoucheCurseurs'
 import { FichierInvalide, lireRelecture, type Relecture } from './fichier'
 import { activerLecteur, Lecteur, VITESSES } from './lecteur'
@@ -91,7 +92,7 @@ function Fiche({ relecture, lancer }: { relecture: Relecture; lancer: () => void
         {relecture.entete.joueurs.map((joueur, siege) => (
           <li key={siege} style={{ color: couleur(siege) }}>
             {nomHeros(relecture, siege)}
-            {joueur.deck ? ` (${joueur.deck})` : ''}
+            {joueur.deck && joueur.deck !== nomHeros(relecture, siege) ? ` (${joueur.deck})` : ''}
           </li>
         ))}
       </ul>
@@ -113,7 +114,8 @@ function Journal({ lecteur, relecture }: { lecteur: TypeLecteur; relecture: Rele
     const resultat: { index: number; texte: string; siege?: number; round: number }[] = []
     let precedent = ''
     relecture.trames.forEach(({ monde }, i) => {
-      const texte = (monde.prompt || '').trim()
+      // Le meme nettoyage que le journal du plateau : sans « [(01,01001b) Peter Parker] ».
+      const texte = texteSignificatif(monde.prompt) ?? ''
       if (!texte || texte === precedent) return
       precedent = texte
       const siege = (monde.players ?? []).findIndex((j) => {
@@ -195,7 +197,7 @@ function Barre({ lecteur, relecture }: { lecteur: TypeLecteur; relecture: Relect
           ⏭
         </button>
         <span className="relecture-situation">
-          {monde ? `${t('Round')} ${monde.round_id}` : ''} · {index + 1}/{total}
+          {monde ? (monde.round_id >= 1 ? `${t('Round')} ${monde.round_id}` : t('Mise en place')) : ''} · {index + 1}/{total}
         </span>
         <label>
           {t('Vitesse')}

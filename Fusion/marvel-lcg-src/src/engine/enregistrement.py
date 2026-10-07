@@ -88,6 +88,7 @@ class Enregistrement:
     dernier: Optional[Dict[str, Any]] = None
     depuis_cle = 0
     entete: Dict[str, Any] = {}
+    entete_complet = False
     ressources_vues: set = set()
 
     @staticmethod
@@ -125,6 +126,7 @@ class Enregistrement:
         cls.dernier = None
         cls.depuis_cle = 0
         cls.entete = entete
+        cls.entete_complet = False
         cls.ressources_vues = set()
         with open(cls.chemin, "w", encoding="utf-8") as f:
             f.write(json.dumps({"k": "entete", **entete}, ensure_ascii=False) + "\n")
@@ -138,6 +140,11 @@ class Enregistrement:
                 if partie != cls.partie or cls.chemin is None:
                     cls._ouvrir(partie, entete_si_nouvelle())
                 rendu = monde.get("render_id", 0)
+                # Au premier rendu, les heros ne sont pas encore poses (l'identite
+                # lue est la carte de regles) : l'en-tete se complete au round 1.
+                if not cls.entete_complet and monde.get("round_id", 0) >= 1:
+                    cls.entete = {**cls.entete, **entete_si_nouvelle()}
+                    cls.entete_complet = True
                 if cls.dernier is None or cls.depuis_cle >= CLE_TOUS_LES:
                     cls._ecrire({"k": "cle", "r": rendu, "t": _ms(), "m": monde})
                     cls.depuis_cle = 0
@@ -171,7 +178,9 @@ class Enregistrement:
             with open(cls.chemin, "r", encoding="utf-8") as f:
                 lignes = f.read().splitlines()
             dernier = cls.dernier or {}
+            complement = dict(cls.entete)
         entete = json.loads(lignes[0]) if lignes else {"k": "entete"}
+        entete.update({k: v for k, v in complement.items() if k != "date"})
         entete["format"] = VERSION_FORMAT
         entete["rounds"] = dernier.get("round_id", 0)
         if dernier.get("game_over"):
@@ -197,8 +206,11 @@ def entete_de(game: Any) -> Dict[str, Any]:
             except Exception:
                 heros = None
             nom = getattr(getattr(heros or identite, "paper", None), "name", "")
+            # Le nom du HEROS (« Spider-Man »), pas celui de l'identite du moment
+            # (« Peter Parker » en alter ego) : `hero_name` est le nom du deck.
+            deck = str(getattr(joueur, "hero_name", "") or "")
             entete["joueurs"].append({
-                "heros": str(nom or "").lstrip("* "),
+                "heros": deck or str(nom or "").lstrip("* "),
                 "deck": str(getattr(joueur, "hero_name", "") or ""),
             })
     except Exception:

@@ -38,6 +38,7 @@ import type { ScanCardProps } from '../components/ScanCard'
 import { useApercuSurvol } from './apercu-survol'
 import { CarteApercu } from './Board'
 import { avecBilan, type EtapeDeroule, type TempsPhase } from './deroule-phase'
+import { estSpectateur } from './moteur'
 import {
   texteArretDefaite,
   texteAttente,
@@ -947,7 +948,9 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             Ni sur une ANNONCE en cours (piege 2) : elle se complete sur place,
             sans clic ; la rangee resolue, elle, porte toujours « Suivant ».
             Ni pendant qu'un autre joueur choisit sur l'etape en cours (D28). */}
-        {etape && !relu && !questionAuJoueur && !annonceEnCours && !attenteSurPlace ? (
+        {/* Un spectateur (ou une relecture) ne valide rien : il tourne les
+            pages d'une etape, mais l'etape suit le joueur (etape-partagee.ts). */}
+        {etape && !relu && !questionAuJoueur && !annonceEnCours && !attenteSurPlace && !(dernierePage && estSpectateur()) ? (
           <button
             type="button"
             className="bh-bouton deroule-suivant"
