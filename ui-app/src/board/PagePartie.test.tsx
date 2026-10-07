@@ -370,11 +370,14 @@ describe('l\'interrupteur Auto / Manuel', () => {
     expect(screen.getByRole('dialog', { name: 'Aide du mode manuel' })).toBeTruthy()
   })
 
-  it('en automatique : ni aide ni languette', async () => {
+  it('en automatique : pas l aide du manuel, mais sa propre aide, fermee par defaut', async () => {
     monter()
     await emettre({ monde: table(heros('Spider-Man', 1)) })
     expect(screen.queryByRole('dialog', { name: 'Aide du mode manuel' })).toBeNull()
-    expect(screen.queryByRole('button', { name: 'Aide' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: 'Aide' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Aide' }))
+    expect(screen.getByRole('dialog', { name: 'Aide' })).toBeInTheDocument()
+    expect(screen.getByText('Alt + glisser')).toBeInTheDocument()
   })
 })
 

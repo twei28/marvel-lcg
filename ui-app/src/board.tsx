@@ -32,6 +32,7 @@ import { estModeManuel, leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
 import { InterrupteurFacon } from './board/manuel/InterrupteurFacon'
 import { aideSOuvreSeule, VoletAideManuel } from './board/manuel/VoletAideManuel'
+import { VoletAideAuto } from './board/VoletAideAuto'
 import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
 import { carteDeLaTrame, contexteDePose, estCacheePourLeJoueur, origineDe } from './board/manuel/poser-en-jeu'
 import { peutBouger, proprietaireDe, siegesControles } from './board/manuel/proprietaire'
@@ -3316,6 +3317,9 @@ export function PagePartie({
   // PC seulement (tablette et telephone : elle couvrait la main, 06/10/2026) ;
   // la main la ferme, et la languette la rouvre tant qu'on est en manuel.
   const [aideManuelOuverte, setAideManuelOuverte] = useState(false)
+  const [aideAutoOuverte, setAideAutoOuverte] = useState(false)
+  const ouvrirAideAuto = useCallback(() => setAideAutoOuverte(true), [])
+  const fermerAideAuto = useCallback(() => setAideAutoOuverte(false), [])
   const ouvrirAideManuel = useCallback(() => setAideManuelOuverte(true), [])
   const fermerAideManuel = useCallback(() => setAideManuelOuverte(false), [])
   useEffect(() => {
@@ -4734,7 +4738,9 @@ export function PagePartie({
       />
       {manuel ? (
         <VoletAideManuel ouvert={aideManuelOuverte} ouvrir={ouvrirAideManuel} fermer={fermerAideManuel} />
-      ) : null}
+      ) : spectateur ? null : (
+        <VoletAideAuto ouvert={aideAutoOuverte} ouvrir={ouvrirAideAuto} fermer={fermerAideAuto} />
+      )}
       <VoletJournal ouvert={partieOuverte} ouvrir={ouvrirVolet} fermer={fermerVolet}>
         <CartesDuJournal.Provider value={cartesDuVolet}>
         <MessageRapport message={rapport.message} />
