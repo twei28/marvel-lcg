@@ -70,7 +70,7 @@ const PARTOUT: Raccourci[] = [
   { touches: 'Ctrl + Z', effet: 'Annuler le dernier geste' },
   { touches: 'Échap', effet: 'Fermer le catalogue ; sinon décibler toutes tes cartes et effacer tes flèches (aussi à la fin de phase des héros, F12)' },
   { touches: 'C', effet: 'Chercher une carte dans tout le catalogue pour la poser' },
-  { touches: 'Clic droit sur la table', effet: 'Faire apparaître une carte, Vaincre ce stade, Manigance terminée, Tout redresser, Fin de phase des héros, Carte boost, Pile ou face, Nombre au hasard, Joueur au hasard, Fin du round, Défausser une carte au hasard, Mulligan, Mis de côté vers le deck Rencontre, Terminer la partie' },
+  { touches: 'Clic droit sur la table', effet: 'Faire apparaître une carte, Vaincre ce stade, Manigance terminée, Tout redresser, Fin de phase des héros, Carte boost, Pile ou face, Nombre au hasard, Joueur au hasard, Fin du round, Défausser une carte au hasard, Mulligan, Mis de côté vers le deck Rencontre (tout, ou un set choisi), Terminer la partie' },
 ]
 
 const SELECTION: Raccourci[] = [

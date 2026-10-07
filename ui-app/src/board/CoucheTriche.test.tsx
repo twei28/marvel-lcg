@@ -32,6 +32,8 @@ function coucheVide() {
     capturerEnLot: vi.fn(async (agir: () => Promise<void> | void) => { await agir() }),
     misDeCote: [] as number[],
     envoyerMisDeCote: vi.fn(async () => {}),
+    envoyerSetVersRencontre: vi.fn(async () => {}),
+    cardIdDe: (_id: number) => undefined as string | undefined,
     tirerAuHasard: vi.fn(),
     avisRefus: undefined as string | undefined,
     annulationEnCours: false,

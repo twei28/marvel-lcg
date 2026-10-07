@@ -421,6 +421,30 @@ export function useTriche(
     },
     [misDeCote, confirmer, emettreGeste]
   )
+  // « Choose a set and shuffle it into the encounter deck » d'OCTGN (actions.py) :
+  // les cartes mises de cote d'UN set, melangees dans le deck Rencontre, en une
+  // commande. Le set vient du catalogue (set_name de cards.json).
+  const cardIdDe = useCallback((id: number) => index.get(id)?.card_id as string | undefined, [index])
+  const envoyerSetVersRencontre = useCallback(
+    async (nom: string, ids: number[]) => {
+      if (ids.length === 0) return
+      const libelle = t('Set « %1 » mélangé dans le deck Rencontre').replace('%1', nom)
+      const oui = await confirmer({
+        titre: libelle,
+        texte: t('%1 carte(s) mises de côté partent dans le deck Rencontre.').replace('%1', String(ids.length)),
+        confirmer: t('Confirmer'),
+        annuler: t('Annuler'),
+      })
+      if (!oui) return
+      await emettreGeste(`${libelle} (${ids.length})`, () =>
+        triche.enLot([
+          ...ids.map((id) => () => triche.deplacerVers(id, 'EncounterDeck', 'Top')),
+          () => triche.melanger('EncounterDeck'),
+        ])
+      )
+    },
+    [confirmer, emettreGeste]
+  )
   const echangerAvecLeDessus = useCallback(
     (id: number) => {
       const nom = index.get(id)?.name ?? `${t('Carte')} ${id}`
@@ -1256,6 +1280,8 @@ export function useTriche(
       echangerAvecLeDessus,
       misDeCote,
       envoyerMisDeCote,
+      envoyerSetVersRencontre,
+      cardIdDe,
     },
     /** Pour la tâche 5 (glisser-déposer) : lire l'état sans poser d'écoute. */
     estToucheEnfoncee: etatTouches.estEnfoncee,
@@ -1308,7 +1334,20 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
     echangerAvecLeDessus,
     misDeCote,
     envoyerMisDeCote,
+    envoyerSetVersRencontre,
+    cardIdDe,
   } = couche
+  // Les sets presents parmi les cartes mises de cote, pour « Choisir un set ».
+  const setsMisDeCote = (() => {
+    const parSet = new Map<string, number[]>()
+    for (const id of misDeCote) {
+      const code = cardIdDe(id)
+      const nom = code ? catalogue.set(code) : undefined
+      if (!nom) continue
+      parSet.set(nom, [...(parSet.get(nom) ?? []), id])
+    }
+    return [...parSet.entries()].sort(([a], [b]) => a.localeCompare(b))
+  })()
   // Le catalogue (tâche 6) : une carte qui n'était pas dans la partie. Mode
   // manuel uniquement, ouvert depuis le menu de la TABLE (clic droit hors de
   // toute carte — voir `MenuTable.tsx` et le menu plus bas).
@@ -1517,6 +1556,11 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
           onMulligan={mainAffichee.length > 0 ? () => setMulliganOuvert(true) : undefined}
           onFinDeRound={() => void emettreGeste(t('Fin du round'), () => triche.finDeRound())}
           onMisDeCoteVersRencontre={misDeCote.length > 0 ? (position) => void envoyerMisDeCote(position) : undefined}
+          setsMisDeCote={setsMisDeCote.map(([nom, ids]) => ({ nom, nombre: ids.length }))}
+          onSetVersRencontre={(nom) => {
+            const ids = setsMisDeCote.find(([n]) => n === nom)?.[1] ?? []
+            void envoyerSetVersRencontre(nom, ids)
+          }}
         />
       ) : null}
 

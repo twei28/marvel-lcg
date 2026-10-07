@@ -16,6 +16,8 @@ import { motsClesDeCarte, type MotCle } from './mots-cles'
 
 type CartePapier = {
   card_id?: string
+  /** Le set de rencontre ou de joueur (« Risky Business »...). */
+  set_name?: string
   type?: string
   name?: string
   desc?: Partial<Record<string, string>>
@@ -80,6 +82,8 @@ export function aspectDeClasse(brut: string | undefined): Aspect | undefined {
 }
 
 export type Catalogue = {
+  /** Le set de la carte (« Risky Business »), pour « Choisir un set » du mode manuel. */
+  set(cardId: string): string | undefined
   /** PV imprimes, ou undefined si la carte n'en a pas de valeur fixe. */
   pvMax(cardId: string): number | undefined
   /** Stat imprimee sur la carte, utilisee seulement si le moteur n'envoie rien. */
@@ -126,6 +130,7 @@ export type Catalogue = {
 
 /** Catalogue absent : le plateau s'affiche quand meme, sans les PV maximum. */
 export const catalogueVide: Catalogue = {
+  set: () => undefined,
   pvMax: () => undefined,
   statImprimee: () => undefined,
   motsCles: () => [],
@@ -167,6 +172,7 @@ export function construire(donnees: unknown): Catalogue {
   const textes = new Map<string, string>()
   /** Nom (et pic_id eventuel) de CHAQUE carte, pour `chercherParNom`. */
   const nomsParCarte = new Map<string, { name: string; pic_id?: string }>()
+  const sets = new Map<string, string>()
 
   // cards.json = { "<nom de paquet>": [cartes...], "checksum": "<hexa>" }.
   for (const paquet of Object.values(donnees as Record<string, unknown>)) {
@@ -175,6 +181,7 @@ export function construire(donnees: unknown): Catalogue {
       const id = carte?.card_id
       if (typeof id !== 'string') continue
       if (typeof carte.text === 'string' && carte.text.trim()) textes.set(id, carte.text)
+      if (typeof carte.set_name === 'string' && carte.set_name.trim()) sets.set(id, carte.set_name.trim())
       const pv = pvImprimes(carte.desc?.HP)
       if (pv !== undefined) parCarte.set(id, pv)
       const stats: Partial<Record<string, number>> = {}
@@ -210,6 +217,7 @@ export function construire(donnees: unknown): Catalogue {
   }
 
   return {
+    set: (cardId) => sets.get(cardId),
     pvMax: (cardId) => parCarte.get(cardId),
     statImprimee: (cardId, label) => statsParCarte.get(cardId)?.[label],
     motsCles: (cardId) => motsClesParCarte.get(cardId) ?? [],

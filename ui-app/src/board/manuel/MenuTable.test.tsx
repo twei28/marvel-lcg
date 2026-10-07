@@ -177,4 +177,27 @@ describe('MenuTable reste dans l’écran', () => {
     expect(parseFloat(boite.style.top)).toBe(242)
     vi.restoreAllMocks()
   })
+
+  it('« Choisir un set » : une entree par set mis de cote, qui envoie ce set', () => {
+    const onSetVersRencontre = vi.fn()
+    const { getByText } = render(
+      <MenuTable
+        x={0}
+        y={0}
+        onFermer={vi.fn()}
+        onFaireApparaitre={vi.fn()}
+        onTerminerPartie={vi.fn()}
+        onVaincreStade={vi.fn()}
+        onManigancePrincipale={vi.fn()}
+        onToutRedresser={vi.fn()}
+        onFinPhaseHeros={vi.fn()}
+        onBoost={vi.fn()}
+        onHasard={vi.fn()}
+        setsMisDeCote={[{ nom: 'Hydra Assault', nombre: 3 }, { nom: 'Risky Business', nombre: 2 }]}
+        onSetVersRencontre={onSetVersRencontre}
+      />
+    )
+    fireEvent.click(getByText('Mis de côté : le set « Risky Business » dans le deck Rencontre, mélangé (2)'))
+    expect(onSetVersRencontre).toHaveBeenCalledWith('Risky Business')
+  })
 })

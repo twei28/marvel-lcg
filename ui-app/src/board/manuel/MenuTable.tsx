@@ -45,6 +45,9 @@ export type MenuTableProps = {
    * cartes mises de cote (lot 6 du 07/10/2026). Absent quand il n'y en a pas.
    */
   onMisDeCoteVersRencontre?: (position: 'melanger' | 'dessus' | 'dessous') => void
+  /** « Choisir un set » d'OCTGN : les sets presents parmi les cartes mises de cote. */
+  setsMisDeCote?: { nom: string; nombre: number }[]
+  onSetVersRencontre?: (nom: string) => void
 }
 
 export function MenuTable({
@@ -63,6 +66,8 @@ export function MenuTable({
   onMulligan,
   onFinDeRound,
   onMisDeCoteVersRencontre,
+  setsMisDeCote = [],
+  onSetVersRencontre,
 }: MenuTableProps) {
   const boite = useRef<HTMLDivElement | null>(null)
 
@@ -236,6 +241,21 @@ export function MenuTable({
                   }}
                 >
                   {libelle}
+                </button>
+              </li>
+            ))
+          : null}
+        {onSetVersRencontre
+          ? setsMisDeCote.map(({ nom, nombre }) => (
+              <li key={`set-${nom}`}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onSetVersRencontre(nom)
+                    onFermer()
+                  }}
+                >
+                  {t('Mis de côté : le set « %1 » dans le deck Rencontre, mélangé (%2)').replace('%1', nom).replace('%2', String(nombre))}
                 </button>
               </li>
             ))
