@@ -27,6 +27,9 @@ import { codeCarteConnu, codeMarvelcdb, lireTextesCdb, texteMarvelcdb, type Text
 import { usePlacement } from './placement/usePlacement'
 import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import { CoucheGlisser, BulleRefus } from './glisser/CoucheGlisser'
+import { CoucheOrdre } from './ordre/CoucheOrdre'
+import { cleDePile, cleDeRangee, ranger, type Ordres } from './ordre/ordre-cartes'
+import { useReordonner } from './ordre/useReordonner'
 import { cibleSousLePoint, useGlisser, type CibleSurvolee } from './glisser/useGlisser'
 import { aScanFr, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
@@ -259,6 +262,7 @@ export function Unite({
   heroActifId,
   titreZone,
   pilesAccueillantes,
+  ordreAmeliorations,
 }: {
   unite: UniteAffichee
   interactifs: Map<number, EtatInteractif>
@@ -271,6 +275,8 @@ export function Unite({
   titreZone?: string
   /** Les piles qui accueillent la carte qu'on glisse (mode manuel, question 12). */
   pilesAccueillantes?: Set<string>
+  /** Ordre d'affichage choisi par le joueur pour les ameliorations de cette carte. */
+  ordreAmeliorations?: number[]
 }) {
   const pileAccueille = unite.pile !== undefined && (pilesAccueillantes?.has(unite.pile) ?? false)
   if (unite.pileVide) {
@@ -290,7 +296,11 @@ export function Unite({
   // vrai jeu ce sont de petits marqueurs. On les sort de la cascade d'upgrades
   // pour les poser en petit, en bas du personnage.
   const statuts = unite.attachees.filter((a) => a.kind === 'status')
-  const upgrades = unite.attachees.filter((a) => a.kind !== 'status')
+  const upgrades = ranger(
+    unite.attachees.filter((a) => a.kind !== 'status'),
+    (a) => Number(a.id),
+    ordreAmeliorations
+  )
 
   // Carte du porteur, avec l'interaction en cours superposee. Si le moteur ne la
   // rend PAS agissante et que c'est une pile publique, un clic l'ouvre pour la
@@ -412,6 +422,7 @@ function Emplacement({
   pilesAccueillantes,
   styleDeZone,
   aire,
+  ordres,
 }: {
   emplacement: EmplacementAffiche
   interactifs: Map<number, EtatInteractif>
@@ -427,6 +438,8 @@ function Emplacement({
   styleDeZone?: CSSProperties
   /** L'aire de grille de la zone (table-briques.ts), qui prend le pas sur celle de board.css. */
   aire?: string
+  /** L'ordre des cartes choisi par le joueur (Alt + glisser), local. */
+  ordres?: Ordres
 }) {
   const vide = emplacement.groupes.every((groupe) => groupe.length === 0)
   // Une zone ASSEMBLEE (table-rendu.ts) reprend la classe de chaque emplacement
@@ -447,10 +460,19 @@ function Emplacement({
     >
       <h2 className="plateau-emplacement-titre">{emplacement.titre}</h2>
       <div className="plateau-cartes">
-        {emplacement.groupes.map((groupe, index) => (
+        {emplacement.groupes.map((groupeBrut, index) => {
+          const rangee = cleDeRangee(
+            emplacement.cle,
+            index,
+            emplacement.proprietaires?.[index],
+            emplacement.groupesPiles?.[index]
+          )
+          const groupe = ranger(groupeBrut, (u) => Number(u.carte.id), ordres?.[rangee])
+          return (
           <div
             className="plateau-groupe"
-            key={groupe[0]?.cle ?? index}
+            data-rangee={rangee}
+            key={groupeBrut[0]?.cle ?? index}
             // Le SECTEUR de ce groupe (tache 5, glisser-depose) : un
             // emplacement qui melange plusieurs secteurs (`terrain-combat` :
             // allies, ennemis engages, environnement) a besoin de distinguer
@@ -475,11 +497,13 @@ function Emplacement({
                 heroActifId={heroActifId}
                 titreZone={emplacement.titre}
                 pilesAccueillantes={pilesAccueillantes}
+                ordreAmeliorations={ordres?.[cleDePile(Number(unite.carte.id))]}
                 key={unite.cle}
               />
             ))}
           </div>
-        ))}
+          )
+        })}
       </div>
     </section>
   )
@@ -774,6 +798,8 @@ export function CarteApercu({
 }
 
 export type BoardProps = {
+  /** La partie en cours : l'ordre rangé à la main n'est gardé que pour elle. */
+  identitePartie?: string
   world: World
   playerId: number
   /**
@@ -949,6 +975,7 @@ export function Board({
   bandeManigances = false,
   disposition = DISPOSITION_ORIGINE,
   superposition,
+  identitePartie,
 }: BoardProps) {
   const cadre = useRef<HTMLDivElement>(null)
   const { echelle, largeur, hauteur } = useEchelle(cadre)
@@ -1079,6 +1106,7 @@ export function Board({
     onDepot: surDepot,
   })
 
+  const reordre = useReordonner(identitePartie)
   const enGlisser = glisse !== null
   enGlisserRef.current = enGlisser
   // L'apercu DEJA ouvert quand le geste commence resterait par-dessus la table.
@@ -1167,6 +1195,7 @@ export function Board({
       styleDeZone={styleDeZone}
       accueilleLeGlisser={[e.cle, ...(e.emplacementsDOrigine ?? [])].some((cle) => zonesDuGlisser?.has(cle))}
       pilesAccueillantes={zonesDuGlisser}
+      ordres={reordre.ordres}
       interactifs={interactifsEffectifs}
       effets={effets}
       ouvrirPile={ouvrirPile}
@@ -1214,17 +1243,27 @@ export function Board({
         data-glisser-doigt={glisser?.auDoigt ? '' : undefined}
         onMouseOver={survol}
         onMouseLeave={quitter}
-        onPointerDown={gestes.onPointerDown}
-        onPointerMove={gestes.onPointerMove}
+        onPointerDown={(evenement) => {
+          if (reordre.gestes.surAppui(evenement)) return
+          gestes.onPointerDown(evenement)
+        }}
+        onPointerMove={(evenement) => {
+          if (reordre.gestes.surDeplacement(evenement)) return
+          gestes.onPointerMove(evenement)
+        }}
         // ⚠ LE CLIC PASSE APRES, ET SEULEMENT SI AUCUN GLISSER NE S'ACHEVE.
         // `gestes.onPointerUp` rend `true` quand il vient de lacher une carte :
         // sans cette garde, un lacher declencherait AUSSI le clic sous le
         // pointeur, donc deux actions pour un seul geste.
         onPointerUp={(evenement) => {
+          if (reordre.gestes.surRelache(evenement)) return
           if (gestes.onPointerUp(evenement)) return
           cliquerCarte(evenement)
         }}
-        onPointerCancel={gestes.onPointerCancel}
+        onPointerCancel={() => {
+          reordre.gestes.annuler()
+          gestes.onPointerCancel()
+        }}
       >
         <div
           className={`plateau-scene${bandeManigances ? ' avec-bande' : ''}`}
@@ -1303,6 +1342,9 @@ export function Board({
           libelle={libelleGlisser}
           refuse={depotRefuse}
         />
+      ) : null}
+      {reordre.geste ? (
+        <CoucheOrdre geste={reordre.geste} carte={cartesParId.get(String(reordre.geste.sourceId))} />
       ) : null}
       {refus ? <BulleRefus x={refus.x} y={refus.y} texte={refus.texte} /> : null}
 

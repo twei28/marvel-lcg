@@ -4294,6 +4294,7 @@ export function PagePartie({
         playerId={joueurActif}
         bandeManigances={modePlateau !== 'mobile'}
         disposition={editionTable?.d ?? dispositionTable}
+        identitePartie={etat.partieId}
         superposition={
           editionTable && modePlateau !== 'mobile' ? (
             <EditeurTable
