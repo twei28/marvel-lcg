@@ -125,8 +125,16 @@ class PlayerSetup:
                 for identity in [face] + face.card.back_faces:
                     if isinstance(identity, AlterEgo|Hero):
                         identities.add(identity)
-            for identity in sorted(identities):
-                add_change_form_effect(identity, list(identities))
+            # ⚠ UN TRI TOTAL, PAS `sorted(identities)` SEUL (07/10/2026). Les formes d'un heros a plusieurs
+            # formes (Conan : cn001a a cn001e) sont les FACES d'UNE SEULE carte : `CardFace.__lt__` compare
+            # `card.object_id`, donc toutes egales, et le tri laissait l'ordre d'iteration du `set` (des objets
+            # haches par adresse memoire). L'ordre d'enregistrement des « Change To ... », donc leurs
+            # `object_id`, donc l'ORDRE DES BOUTONS, changeait d'un processus a l'autre : meme graine, memes
+            # reponses, parties differentes (mesure : Conan, 3 issues pour 1 graine dans le navigateur ;
+            # Invisible Woman). `paper.card_id` departage deux faces de la meme carte, de facon stable.
+            identities_triees = sorted(identities, key=lambda x: (x.card.object_id, x.paper.card_id))
+            for identity in identities_triees:
+                add_change_form_effect(identity, identities_triees)
 
         def register_ask_effect():
             if player.world.GetPlayerNum() > 1:
