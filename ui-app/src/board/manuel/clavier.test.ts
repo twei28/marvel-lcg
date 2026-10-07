@@ -85,7 +85,9 @@ describe('les touches du mode manuel, calquées sur OCTGN', () => {
   it('haut / bas : points de vie d’un héros ou d’un méchant, dégâts d’un allié, menace d’une manigance, marqueur ailleurs', () => {
     expect(interpreterTouche(touche('ArrowUp'), HEROS)).toEqual({ geste: 'jetons', id: 1, nature: 'pv', nombre: 1 })
     expect(interpreterTouche(touche('ArrowDown'), VILAIN)).toEqual({ geste: 'jetons', id: 7, nature: 'pv', nombre: -1 })
-    expect(interpreterTouche(touche('ArrowUp'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'degats', nombre: 1 })
+    // Haut soigne, bas blesse : comme sur un héros (écart voulu avec OCTGN).
+    expect(interpreterTouche(touche('ArrowUp'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'degats', nombre: -1 })
+    expect(interpreterTouche(touche('ArrowDown'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'degats', nombre: 1 })
     expect(interpreterTouche(touche('ArrowDown'), MANIGANCE))
       .toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre: -1 })
     expect(interpreterTouche(touche('ArrowUp'), SOUTIEN)).toEqual({ geste: 'compteur', id: 5, nombre: 1 })

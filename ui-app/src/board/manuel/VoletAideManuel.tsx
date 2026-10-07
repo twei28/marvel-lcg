@@ -23,7 +23,7 @@ const SUR_UNE_CARTE: Raccourci[] = [
   { touches: 'Ctrl + F', effet: 'Retourner la carte' },
   { touches: 'Suppr', effet: 'Défausser ; sur le méchant : vaincre le stade ; sur la manigance principale : manigance terminée' },
   { touches: 'Ctrl + V', effet: 'Envoyer dans la pile de victoire' },
-  { touches: '↑  ↓', effet: 'Points de vie (héros, méchant), dégâts (sbire, allié), menace (manigance), sinon marqueur' },
+  { touches: '↑  ↓', effet: '↑ soigne, ↓ blesse (héros, méchant, sbire, allié) ; menace (manigance), sinon marqueur' },
   { touches: '→  ←', effet: 'Un marqueur générique en plus / en moins' },
   { touches: 'F3  Maj + F3', effet: 'Un dégât en plus / en moins' },
   { touches: 'F5  Maj + F5', effet: 'Une menace en plus / en moins sur une manigance' },

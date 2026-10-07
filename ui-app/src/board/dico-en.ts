@@ -1482,7 +1482,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Jusqu’à quel nombre ?': 'Up to which number?',
   'Incliner / redresser ; face cachée : retourner ; sur le méchant : amplification': 'Exhaust / ready; face down: flip; on the villain: boost',
   'Défausser ; sur le méchant : vaincre le stade ; sur la manigance principale : manigance terminée': 'Discard; on the villain: defeat the stage; on the main scheme: scheme complete',
-  'Points de vie (héros, méchant), dégâts (sbire, allié), menace (manigance), sinon marqueur': 'Hit points (hero, villain), damage (minion, ally), threat (scheme), otherwise a counter',
+  '↑ soigne, ↓ blesse (héros, méchant, sbire, allié) ; menace (manigance), sinon marqueur': '↑ heals, ↓ damages (hero, villain, minion, ally); threat (scheme), otherwise a counter',
   'Un marqueur générique en plus / en moins': 'One more / one fewer generic counter',
   'Un jeton d’accélération en plus / en moins': 'One more / one fewer acceleration token',
   'Poser Sonné': 'Add Stunned',

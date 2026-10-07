@@ -5,7 +5,8 @@
 // touches, mêmes effets, y compris la façon dont une même touche change de
 // sens selon le TYPE de la carte survolée (flèches haut et bas : points de
 // vie sur un héros ou un méchant, dégâts sur un sbire ou un allié, menace sur
-// une manigance, marqueur ailleurs).
+// une manigance, marqueur ailleurs). Un seul écart : sur un sbire ou un allié,
+// haut soigne et bas blesse, comme sur un héros (voir `arrowup`).
 //
 // `interpreterTouche` est une fonction PURE : elle ne touche ni au DOM ni au
 // réseau, elle dit seulement quel geste la touche demande. Le branchement
@@ -199,6 +200,10 @@ export function interpreterTouche(touche: Touche, cible: CibleClavier): GesteCla
       const nombre = cle === 'arrowup' ? 1 : -1
       const nature = natureDe(type)
       if (nature === 'marqueur') return { geste: 'compteur', id: cible.id, nombre }
+      // ÉCART VOULU avec OCTGN (07/10/2026) : sur un sbire ou un allié, OCTGN
+      // compte les jetons de dégâts (haut = blesser), à l'inverse d'un héros ou
+      // d'un méchant (haut = soigner). Ici, haut SOIGNE et bas BLESSE partout.
+      if (nature === 'degats') return { geste: 'jetons', id: cible.id, nature, nombre: -nombre }
       return { geste: 'jetons', id: cible.id, nature, nombre }
     }
     case 'arrowright':
