@@ -6,6 +6,9 @@ Une ligne JSON par evenement, dans `<replays>/enregistrements/<partie>.jsonl` :
   {"k": "q",   "r": rendu, "t": ms, "p": siege, "q": demande}
   {"k": "c",   "t": ms, "p": siege, "x": .., "y": .., "clic": id}   curseur
   {"k": "e",   "t": ms, "p": siege, "cle": etape}                   etape du cartouche
+  {"k": "res", "r": rendu, "m": {id: "YB"}}  ressources imprimees des cartes en main
+                                             (le monde ne les porte pas : le bandeau
+                                             de la relecture dit avec quoi on a paye)
 Le monde est celui du moteur, NON filtre : la relecture montre toutes les mains.
 
 Le format de difference (meme algorithme que `relecture/difference.ts`) :
@@ -85,6 +88,7 @@ class Enregistrement:
     dernier: Optional[Dict[str, Any]] = None
     depuis_cle = 0
     entete: Dict[str, Any] = {}
+    ressources_vues: set = set()
 
     @staticmethod
     def dossier() -> str:
@@ -121,12 +125,14 @@ class Enregistrement:
         cls.dernier = None
         cls.depuis_cle = 0
         cls.entete = entete
+        cls.ressources_vues = set()
         with open(cls.chemin, "w", encoding="utf-8") as f:
             f.write(json.dumps({"k": "entete", **entete}, ensure_ascii=False) + "\n")
         cls._purger(dossier)
 
     @classmethod
-    def Rendu(cls, partie: str, monde: Dict[str, Any], entete_si_nouvelle) -> None:
+    def Rendu(cls, partie: str, monde: Dict[str, Any], entete_si_nouvelle,
+              ressources: Optional[Dict[int, str]] = None) -> None:
         try:
             with cls.verrou:
                 if partie != cls.partie or cls.chemin is None:
@@ -139,6 +145,10 @@ class Enregistrement:
                     cls._ecrire({"k": "d", "r": rendu, "t": _ms(), "d": difference(cls.dernier, monde) or {}})
                     cls.depuis_cle += 1
                 cls.dernier = monde
+                neuves = {i: r for i, r in (ressources or {}).items() if i not in cls.ressources_vues}
+                if neuves:
+                    cls._ecrire({"k": "res", "r": rendu, "m": {str(i): r for i, r in neuves.items()}})
+                    cls.ressources_vues.update(neuves)
         except Exception:
             cls.chemin = None
 
@@ -194,3 +204,19 @@ def entete_de(game: Any) -> Dict[str, Any]:
     except Exception:
         pass
     return entete
+
+
+def ressources_des_mains(world: Any) -> Dict[int, str]:
+    """Les ressources imprimees des cartes en main, par identifiant d'objet."""
+    resultat: Dict[int, str] = {}
+    try:
+        for joueur in world.const_players:
+            for face in joueur.hand_cards.GetAll():
+                try:
+                    texte = str(face.printed_resource.text or "")
+                except Exception:
+                    continue
+                resultat[face.card.object_id] = texte
+    except Exception:
+        pass
+    return resultat

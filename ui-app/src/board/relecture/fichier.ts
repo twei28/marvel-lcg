@@ -50,6 +50,8 @@ export type Relecture = {
   trames: TrameRelecture[]
   curseurs: Curseur[]
   etapes: EtapeLue[]
+  /** Ressources imprimees des cartes passees en main (le monde ne les porte pas). */
+  ressources: Record<number, string>
 }
 
 export class FichierInvalide extends Error {}
@@ -75,6 +77,7 @@ export function analyserRelecture(texte: string): Relecture {
   const trames: TrameRelecture[] = []
   const curseurs: Curseur[] = []
   const etapes: EtapeLue[] = []
+  const ressources: Record<number, string> = {}
   let monde: unknown
   try {
     for (const [n, ligne] of lignes.entries()) {
@@ -99,6 +102,8 @@ export function analyserRelecture(texte: string): Relecture {
         if (demande && derniere) derniere.demandes = { ...derniere.demandes, [Number(o.p)]: demande }
       } else if (o.k === 'c') {
         curseurs.push({ t, p: Number(o.p), x: Number(o.x), y: Number(o.y), clic: Number(o.clic) || 0 })
+      } else if (o.k === 'res') {
+        for (const [id, texte] of Object.entries((o.m ?? {}) as Record<string, unknown>)) ressources[Number(id)] = String(texte)
       } else if (o.k === 'e') {
         etapes.push({ t, p: Number(o.p), cle: String(o.cle ?? '') })
       }
@@ -109,5 +114,5 @@ export function analyserRelecture(texte: string): Relecture {
   }
   if (!entete) throw new FichierInvalide('Ce fichier est vide.')
   if (trames.length === 0) throw new FichierInvalide('Ce fichier ne contient aucune action.')
-  return { entete, trames, curseurs, etapes }
+  return { entete, trames, curseurs, etapes, ressources }
 }

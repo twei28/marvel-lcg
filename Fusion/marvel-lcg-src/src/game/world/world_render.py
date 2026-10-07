@@ -112,13 +112,14 @@ class WorldRender:
         # « Revoir sa partie » : chaque rendu montre, monde NON filtre.
         from game.test import Test
         if not Test.IsInTesting():
-            from engine.enregistrement import Enregistrement, entete_de
+            from engine.enregistrement import Enregistrement, entete_de, ressources_des_mains
             from dataclasses import asdict
             session = game.session
             Enregistrement.Rendu(
                 f"{getattr(session, 'game_uid', '')}-{getattr(session, 'game_id', '')}",
                 asdict(self.descriptor),
                 lambda: entete_de(game),
+                ressources_des_mains(world),
             )
 
         if not Build.release:

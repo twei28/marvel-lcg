@@ -8,6 +8,7 @@ import { FichierInvalide, lireRelecture, type Relecture } from './fichier'
 import { activerLecteur, Lecteur, VITESSES } from './lecteur'
 
 type TypeLecteur = Lecteur
+import { BandeauRelecture } from './BandeauRelecture'
 import './relecture.css'
 
 const nomHeros = (relecture: Relecture, siege: number) =>
@@ -316,6 +317,7 @@ export function PageRelecture({ rendrePartie }: { rendrePartie: (siege: number) 
         {t('Journal')}
       </button>
       {journalOuvert ? <Journal lecteur={lecteur} relecture={relecture} /> : null}
+      {ficheVue ? <BandeauRelecture lecteur={lecteur} relecture={relecture} /> : null}
       <Barre lecteur={lecteur} relecture={relecture} />
     </div>
   )

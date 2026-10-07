@@ -42,6 +42,9 @@ with tempfile.TemporaryDirectory() as dossier:
     mondes = [{"render_id": i, "round_id": 1 + i // 30, "x": i % 7} for i in range(1, 121)]
     for m in mondes:
         E.Enregistrement.Rendu("partie-1", m, entete)
+    E.Enregistrement.Rendu("partie-1", {"render_id": 121, "round_id": 5, "x": 0}, entete, {13: "Y", 14: "RR"})
+    E.Enregistrement.Rendu("partie-1", {"render_id": 122, "round_id": 5, "x": 1}, entete, {13: "Y", 15: "B"})
+    mondes += [{"render_id": 121, "round_id": 5, "x": 0}, {"render_id": 122, "round_id": 5, "x": 1}]
     E.Enregistrement.Evenement("c", {"p": 0, "x": 0.5, "y": 0.2, "clic": 3})
     brut = E.Enregistrement.Fichier()
     lignes = [json.loads(x) for x in gzip.decompress(brut).decode("utf-8").splitlines()]
@@ -51,7 +54,9 @@ with tempfile.TemporaryDirectory() as dossier:
     cas("rounds", lignes[0]["rounds"], 5)
     cles = [l for l in lignes if l["k"] == "cle"]
     cas("un monde complet tous les 51 rendus", [l["r"] for l in cles], [1, 52, 103])
-    cas("curseur rattache au dernier rendu", lignes[-1]["r"], 120)
+    cas("curseur rattache au dernier rendu", lignes[-1]["r"], 122)
+    res = [l["m"] for l in lignes if l["k"] == "res"]
+    cas("ressources des mains, chaque carte une seule fois", res, [{"13": "Y", "14": "RR"}, {"15": "B"}])
     monde = None
     rejoues = []
     for l in lignes:

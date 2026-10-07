@@ -257,3 +257,85 @@
   color: #96ebff;
   font-size: 0.85rem;
 }
+
+.relecture-bandeau {
+  position: fixed;
+  z-index: 688;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(720px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 16px;
+  border-left: 6px solid;
+  border-radius: 10px;
+  background: rgba(13, 17, 22, 0.92);
+  color: #e8edf2;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.relecture-bandeau strong {
+  font-size: 1rem;
+}
+
+.relecture-surbrillance {
+  outline: 3px solid #f0b95f;
+  outline-offset: 2px;
+  box-shadow: 0 0 22px 6px rgba(240, 185, 95, 0.7);
+}
+
+.relecture-effets {
+  position: fixed;
+  inset: 0;
+  z-index: 560;
+  pointer-events: none;
+}
+
+.relecture-fleche {
+  position: absolute;
+  inset: 0;
+  stroke: #ff4d4d;
+  fill: #ff4d4d;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 1200;
+  animation: relecture-trace 350ms ease-out both;
+}
+
+.relecture-fleche.est-contre,
+.relecture-fleche.est-manigance {
+  stroke: #4da3ff;
+  fill: #4da3ff;
+}
+
+@keyframes relecture-trace {
+  from { stroke-dashoffset: 1200; }
+  to { stroke-dashoffset: 0; }
+}
+
+.relecture-degats {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-family: Bangers, Impact, sans-serif;
+  font-size: 2.4rem;
+  color: #ff4d4d;
+  -webkit-text-stroke: 2px #0d1116;
+  animation: relecture-envol 1400ms ease-out forwards;
+}
+
+@keyframes relecture-envol {
+  0% { opacity: 0; transform: translate(-50%, -30%) scale(0.6); }
+  15% { opacity: 1; transform: translate(-50%, -60%) scale(1.15); }
+  100% { opacity: 0; transform: translate(-50%, -160%) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relecture-fleche,
+  .relecture-degats {
+    animation-duration: 1ms;
+  }
+}
