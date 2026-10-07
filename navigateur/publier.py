@@ -3,7 +3,7 @@
 
     python3 navigateur/publier.py              # construit, controle l'equivalence, montre ce qui partirait
     python3 navigateur/publier.py --oui        # envoie vraiment (apres le « deploie » de l'utilisateur)
-    options : --sans-construire  --parties N (controle, defaut 20)  --scans <dossier des scans redresses>
+    options : --sans-construire  --parties N (controle, defaut 20)  --forcer-controle  --scans <dossier des scans redresses>
 
 Le CONTROLE D'EQUIVALENCE est la porte : N parties jouees par le moteur normal et par celui du navigateur
 (essais/equivalence.py). La moindre difference arrete tout, avant tout envoi. Typique d'un changement qui
@@ -38,12 +38,22 @@ def main():
         print("  rappel : le plateau n'est pas reconstruit ici (bash ui-app/deployer.sh si ui-app a change)")
         lancer([sys.executable, os.path.join(ICI, "construire.py")])
     etape(f"2. Controle d'equivalence ({N} parties)")
-    p = subprocess.run([sys.executable, os.path.join(ICI, "essais", "equivalence.py"), N], capture_output=True, text=True)
-    fin = [l for l in p.stdout.splitlines() if "identiques," in l]
-    print("  " + (fin[-1] if fin else p.stdout[-300:]))
-    if p.returncode != 0 or not fin or " 0 differentes" not in fin[-1]:
-        print("  ARRET : le moteur du navigateur ne se comporte pas comme le moteur normal. Rien n'est envoye.")
-        sys.exit(1)
+    # Le controle ne porte que sur le MOTEUR : si son empreinte est celle du
+    # dernier controle reussi, il n'y a rien de neuf a verifier (une publication
+    # qui ne change que le plateau ou les pages part alors en une minute).
+    empreinte = open(os.path.join(ICI, "dist", "empreinte-moteur.txt")).read().strip()
+    deja = os.path.join(ICI, ".cache", "equivalence-ok.txt")
+    if "--forcer-controle" not in args and os.path.isfile(deja) and open(deja).read().strip() == empreinte:
+        print(f"  moteur inchange depuis le dernier controle reussi ({empreinte[:10]}) : controle saute")
+    else:
+        p = subprocess.run([sys.executable, os.path.join(ICI, "essais", "equivalence.py"), N], capture_output=True, text=True)
+        fin = [l for l in p.stdout.splitlines() if "identiques," in l]
+        print("  " + (fin[-1] if fin else p.stdout[-300:]))
+        if p.returncode != 0 or not fin or " 0 differentes" not in fin[-1]:
+            print("  ARRET : le moteur du navigateur ne se comporte pas comme le moteur normal. Rien n'est envoye.")
+            sys.exit(1)
+        os.makedirs(os.path.dirname(deja), exist_ok=True)
+        open(deja, "w").write(empreinte)
     etape("3. Scans redresses")
     print("  un hebergement statique ne peut pas redresser les scans paysage : voir preparer-scans.py")
     scans = option("--scans", "")

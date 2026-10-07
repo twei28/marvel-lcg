@@ -14,7 +14,7 @@ Hebergement : n'importe quel serveur statique, avec ces deux en-tetes sur TOUTES
 et les scans servis sous /scan/<id> (voir serveur-local.py pour la resolution : pics-fr, pics, textures,
 cache ; .webp, .jpg, .png).
 """
-import hashlib, json, os, re, shutil, subprocess, sys, time, urllib.request, zipfile
+import tempfile, hashlib, json, os, re, shutil, subprocess, sys, time, urllib.request, zipfile
 
 PYODIDE = "0.27.8"
 CDN = f"https://cdn.jsdelivr.net/pyodide/v{PYODIDE}/full/"
@@ -64,7 +64,9 @@ def config_navigateur():
     return c
 
 def construire_moteur(zip_path):
-    stage = os.path.join(ICI, ".cache", "stage")
+    # Sur le disque Linux, pas sous /mnt/c : des milliers de petits fichiers y
+    # s'ecrivent et se compilent plusieurs fois plus vite.
+    stage = os.path.join(tempfile.gettempdir(), "narwhal-play-stage")
     shutil.rmtree(stage, ignore_errors=True); os.makedirs(stage)
     ignore = shutil.ignore_patterns("__pycache__", "*.bak*", "marvelcdb")
     for d in ("cards", "core", "engine", "game", "editor"):
@@ -75,6 +77,17 @@ def construire_moteur(zip_path):
         shutil.copytree(os.path.join(MOTEUR, d), os.path.join(stage, d), ignore=ignore)
     os.makedirs(os.path.join(stage, "deck", "custom"), exist_ok=True)
     json.dump(config_navigateur(), open(os.path.join(stage, "launch.json"), "w", encoding="utf-8"), indent=1)
+    # L'EMPREINTE DU MOTEUR, prise avant compilation : ce que le controle
+    # d'equivalence a valide. Meme empreinte, meme moteur, controle inutile.
+    h = hashlib.sha1()
+    for dp, dn, fn in sorted(os.walk(stage)):
+        dn.sort()
+        for f in sorted(fn):
+            chemin = os.path.join(dp, f)
+            h.update(os.path.relpath(chemin, stage).encode()); h.update(open(chemin, "rb").read())
+    for f in ("boot_navigateur.py", "moteur-worker.js", "shim.js", os.path.join("essais", "equivalence.py")):
+        h.update(open(os.path.join(ICI, f), "rb").read())
+    open(os.path.join(os.path.dirname(zip_path), "empreinte-moteur.txt"), "w").write(h.hexdigest())
     # colorama (pur Python) : le moteur l'importe, Pyodide ne l'embarque pas
     wheel = os.path.join(CACHE, "colorama-0.4.6-py2.py3-none-any.whl"); telecharger(COLORAMA, wheel)
     zipfile.ZipFile(wheel).extractall(stage)
