@@ -9,6 +9,7 @@
 // Ce regroupement est délibéré : le mode doit pouvoir être remanié ou retiré
 // sans laisser de traces éparpillées dans un plateau de 2000 lignes.
 
+import { envoyerMarque } from './manuel/marques'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { catalogueVide, type Catalogue } from './catalogue'
 import { scanUrl } from './card-model'
@@ -708,6 +709,9 @@ export function useTriche(
           await emettreGeste(`${t('Pile de victoire')} — ${nom}`, () => triche.deplacerVers(geste.id, 'VictoryDisplay'))
           return
         }
+        case 'surligner':
+          await envoyerMarque(monSiege, { genre: 'surligner', id: geste.id, couleur: geste.couleur })
+          return
         case 'boost': {
           // `villainBoost` d'OCTGN : la carte du dessus du deck Rencontre va
           // FACE CACHÉE à côté du méchant ; deck vidé, la défausse y est
@@ -880,6 +884,8 @@ export function useTriche(
         }
         case 'toutRedresser':
         case 'finPhaseHeros': {
+          // `doEndHeroPhase` d'OCTGN décible tout le monde en fin de phase des héros.
+          if (geste.geste === 'finPhaseHeros') void envoyerMarque(monSiege, { genre: 'decibler', tous: true })
           const lignes: { libelle: string; deposer: () => Promise<boolean> }[] = []
           const excedents: Excedent[] = []
           // Question 7 du 06/10/2026 : pour TOUS les héros de cet écran, comme
@@ -1039,6 +1045,18 @@ export function useTriche(
       // Les gestes de TABLE d'OCTGN (Alt+Entrée, Ctrl+Q, F12) n'ont besoin de
       // rien sous le pointeur.
       const cle = evenement.key.toLowerCase()
+      // Échap : `clearTargets` d'OCTGN, mes cibles et mes flèches. Pas quand une
+      // fenêtre ou un menu est ouvert : Échap le ferme d'abord (catalogue, fin).
+      if (
+        cle === 'escape' &&
+        !evenement.ctrlKey &&
+        !evenement.altKey &&
+        // Les volets latéraux (aide, journal) restent ouverts en jouant : ce ne sont pas des fenêtres.
+        !document.querySelector('[role="dialog"]:not(.volet-aide):not(.volet-journal), [role="menu"]')
+      ) {
+        void envoyerMarque(monSiege, { genre: 'decibler' })
+        return
+      }
       const geste_de_table =
         (evenement.altKey && !evenement.ctrlKey && cle === 'enter') ||
         (evenement.ctrlKey && !evenement.altKey && !evenement.shiftKey && cle === 'q') ||
@@ -1047,7 +1065,7 @@ export function useTriche(
       const cible = survole.current === undefined ? undefined : cibleClavier(survole.current)
       if (!cible && !geste_de_table) return
       const geste = interpreterTouche(
-        { cle: evenement.key, majuscule: evenement.shiftKey, ctrl: evenement.ctrlKey, alt: evenement.altKey },
+        { cle: evenement.key, majuscule: evenement.shiftKey, ctrl: evenement.ctrlKey, alt: evenement.altKey, code: evenement.code },
         cible ?? { genre: 'pile', zone: '' }
       )
       if (!geste) return

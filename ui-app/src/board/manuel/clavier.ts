@@ -5,8 +5,8 @@
 // touches, mêmes effets, y compris la façon dont une même touche change de
 // sens selon le TYPE de la carte survolée (flèches haut et bas : points de
 // vie sur un héros ou un méchant, dégâts sur un sbire ou un allié, menace sur
-// une manigance, marqueur ailleurs). Un seul écart : sur un sbire ou un allié,
-// haut soigne et bas blesse, comme sur un héros (voir `arrowup`).
+// une manigance, marqueur ailleurs). Aucun écart depuis le 07/10/2026 : sur un
+// sbire ou un allié, haut AJOUTE un dégât, comme OCTGN (voir `arrowup`).
 //
 // `interpreterTouche` est une fonction PURE : elle ne touche ni au DOM ni au
 // réseau, elle dit seulement quel geste la touche demande. Le branchement
@@ -15,7 +15,21 @@
 // ⚠ ON NE DEVINE PAS : une touche qui ne s'applique pas à cette carte ne fait
 // rien. Le clic droit, lui, nomme chaque jeton.
 
-export type Touche = { cle: string; majuscule: boolean; ctrl?: boolean; alt?: boolean }
+/** `code` : la touche PHYSIQUE (`KeyboardEvent.code`) ; seul le pave numerique la lit, son chiffre ayant la meme `key` que celui de la rangee. */
+export type CouleurSurlignage = 'bleu' | 'orange' | 'vert' | 'violet' | 'rouge' | 'noir' | 'blanc'
+
+/** `highlight` d'OCTGN (constantsGlobal.py) : pave 1 a 7, dans cet ordre ; 0 retire. */
+export const COULEURS_PAVE: readonly CouleurSurlignage[] = ['bleu', 'orange', 'vert', 'violet', 'rouge', 'noir', 'blanc']
+
+/** La couleur du pave numerique (`event.code`), ou `undefined` si ce n'en est pas une. */
+export function couleurDuPave(code: string | undefined): CouleurSurlignage | null | undefined {
+  const trouve = /^Numpad([0-7])$/.exec(code ?? '')
+  if (!trouve) return undefined
+  const rang = Number(trouve[1])
+  return rang === 0 ? null : COULEURS_PAVE[rang - 1]
+}
+
+export type Touche = { cle: string; majuscule: boolean; ctrl?: boolean; alt?: boolean; code?: string }
 
 export type StatutsPortes = { stunned: boolean; confused: boolean; tough: boolean }
 
@@ -55,6 +69,7 @@ export type GesteClavier =
   | { geste: 'finPhaseHeros' }
   | { geste: 'menuCarte'; id: number }
   | { geste: 'effacerMarqueurs'; id: number }
+  | { geste: 'surligner'; id: number; couleur: CouleurSurlignage | null }
 
 // --- Les types de cartes, comme `isScheme`, `isAttackable`... d'OCTGN --------
 
@@ -110,6 +125,16 @@ export function interpreterTouche(touche: Touche, cible: CibleClavier): GesteCla
   if (alt && !ctrl && cle === 'enter') return { geste: 'boost' }
   if (ctrl && !alt && !maj && cle === 'q') return { geste: 'toutRedresser' }
   if (!ctrl && !alt && cle === 'f12') return { geste: 'finPhaseHeros' }
+
+  // Pave numerique 1 a 7, 0 : le surlignage d'OCTGN (`blueHighlight`...), sur
+  // une carte seulement. AVANT tout le reste : son chiffre a la meme `key` que
+  // celui de la rangee, qui pose des jetons ou pioche.
+  const couleur = couleurDuPave(touche.code)
+  if (couleur !== undefined || /^Numpad[89]$/.test(touche.code ?? '')) {
+    return couleur !== undefined && !ctrl && !alt && cible.genre === 'carte'
+      ? { geste: 'surligner', id: cible.id, couleur }
+      : undefined
+  }
 
   if (cible.genre === 'pile') {
     if (ctrl && !alt) {

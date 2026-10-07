@@ -747,6 +747,72 @@ class GameServerGet(GameServerBase):
             headers={'Content-Disposition': 'attachment; filename="partie.marvelreplay"'},
         )
 
+    # --- Marques du mode manuel (07/10/2026) : cibles, fleches, surlignages ---
+    # Comme OCTGN, ou elles sont vues de tous : Maj+clic cible (a la couleur de
+    # qui cible), Maj+glisser trace une fleche, le pave numerique surligne. Rien
+    # ne touche au moteur : un etat cosmetique, en memoire, remis a zero a chaque
+    # nouvelle partie, borne en taille (rien du reseau ne grossit sans limite).
+    COULEURS_SURLIGNAGE = {"bleu", "orange", "vert", "violet", "rouge", "noir", "blanc"}
+    MARQUES_MAX = 200
+
+    def _marques(self) -> dict:
+        try:
+            partie = str(getattr(self.controller_manager.game.session, "game_uid", "") or "")
+        except Exception:
+            partie = ""
+        if getattr(self, "marques_partie", None) != partie or not hasattr(self, "marques"):
+            self.marques_partie = partie
+            self.marques = {"cibles": {}, "fleches": [], "surlignages": {}}
+        return self.marques
+
+    async def set_marque(self, request: web.Request) -> web.Response:
+        data = await request.json()
+        try:
+            p = int(data["p"])
+            genre = str(data["genre"])
+        except Exception:
+            return web.json_response({"error": "p, genre required"}, status=400)
+        m = self._marques()
+        try:
+            if genre == "cibler":
+                carte = str(int(data["id"]))
+                if m["cibles"].get(carte) == p:
+                    del m["cibles"][carte]
+                    m["fleches"] = [f for f in m["fleches"] if not (f["a"] == int(carte) and f["p"] == p)]
+                elif len(m["cibles"]) < self.MARQUES_MAX:
+                    m["cibles"][carte] = p
+            elif genre == "fleche":
+                de, a = int(data["de"]), int(data["a"])
+                existe = [f for f in m["fleches"] if f["de"] == de and f["a"] == a]
+                if existe:
+                    m["fleches"] = [f for f in m["fleches"] if f not in existe]
+                    if m["cibles"].get(str(a)) == p:
+                        del m["cibles"][str(a)]
+                elif len(m["fleches"]) < self.MARQUES_MAX:
+                    m["fleches"].append({"de": de, "a": a, "p": p})
+                    m["cibles"][str(a)] = p
+            elif genre == "decibler":
+                # `clearTargets` d'OCTGN : mes cibles et mes fleches (p = -1 : tout le monde).
+                m["cibles"] = {c: q for c, q in m["cibles"].items() if p != -1 and q != p}
+                m["fleches"] = [f for f in m["fleches"] if p != -1 and f["p"] != p]
+            elif genre == "surligner":
+                carte = str(int(data["id"]))
+                couleur = data.get("couleur")
+                if couleur is None:
+                    m["surlignages"].pop(carte, None)
+                elif couleur in self.COULEURS_SURLIGNAGE and len(m["surlignages"]) < self.MARQUES_MAX:
+                    m["surlignages"][carte] = couleur
+                else:
+                    return web.json_response({"error": "couleur"}, status=400)
+            else:
+                return web.json_response({"error": "genre"}, status=400)
+        except (KeyError, TypeError, ValueError):
+            return web.json_response({"error": "donnees"}, status=400)
+        return web.json_response(m)
+
+    async def get_marques(self, request: web.Request) -> web.Response:
+        return web.json_response(self._marques())
+
     # --- Salon multijoueur : un choix de heros/deck par siege ---------------
     # Meme forme que set_cursor/get_cursors ci-dessus, a deux differences pres :
     # aucune peremption (un choix vaut jusqu'au lancement) et une verification
@@ -1938,6 +2004,8 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_cursors', self.get_cursors)
         self.AddPostSecurity('/set_etape', self.set_etape)
         self.AddAwaitGetSecurity('/get_etapes', self.get_etapes)
+        self.AddPostSecurity('/set_marque', self.set_marque)
+        self.AddAwaitGetSecurity('/get_marques', self.get_marques)
         self.AddAwaitGetSecurity('/get_enregistrement', self.get_enregistrement)
         self.AddPostSecurity('/set_choix_siege', self.set_choix_siege)
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)

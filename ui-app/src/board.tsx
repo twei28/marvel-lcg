@@ -42,6 +42,9 @@ import { peutBouger, proprietaireDe, siegesControles } from './board/manuel/prop
 import { basculerPause, reprendreEnAuto } from './board/triche'
 import { BarreAction } from './board/BarreAction'
 import { Board, CarteApercu, type ReglagesGlisser } from './board/Board'
+import type { CibleSurvolee } from './board/glisser/useGlisser'
+import { envoyerMarque, useMarques } from './board/manuel/marques'
+import { CoucheMarques } from './board/manuel/CoucheMarques'
 import {
   ciblesDeLaSource,
   estSourceGlissable,
@@ -2739,7 +2742,7 @@ export function PagePartie({
       // son type (`poser-en-jeu.ts`). `joueurActif` est un rang dans
       // `world.players`, donc un SIÈGE (`to_descriptor.py`).
       const monde = etat.monde
-      return reglagesGlisserManuel(triche.couche.emettreGeste, () => triche.estToucheEnfoncee('Shift'), {
+      const base = reglagesGlisserManuel(triche.couche.emettreGeste, () => triche.estToucheEnfoncee('Shift'), {
         carte: (id) => {
           const carte = carteDeLaTrame(monde, id)
           return carte
@@ -2755,6 +2758,29 @@ export function PagePartie({
         dejaEngage: (id) => (monde?.players?.[joueurActif]?.engaged_enemies ?? []).some((c) => Number(c.id) === id),
         choisirCible: triche.couche.choisirCible,
       })
+      // Lot 3 du 07/10/2026 : Maj+glisser d'une carte EN JEU vers une autre carte
+      // en jeu trace une flèche (OCTGN) ; depuis la main, Maj pose toujours
+      // face cachée. Maj+clic cible.
+      const estFleche = (sourceId: number, cible: CibleSurvolee) =>
+        triche.estToucheEnfoncee('Shift') &&
+        origineDe(monde, sourceId) === 'jeu' &&
+        cible.carteId !== undefined &&
+        cible.carteId !== sourceId &&
+        origineDe(monde, cible.carteId) === 'jeu'
+      return {
+        ...base,
+        fleche: (sourceId, cible) => {
+          if (!estFleche(sourceId, cible)) return false
+          void envoyerMarque(joueurActif, { genre: 'fleche', de: sourceId, a: cible.carteId! })
+          return true
+        },
+        majClic: (id) => void envoyerMarque(joueurActif, { genre: 'cibler', id }),
+        accepte: (sourceId, cible) => estFleche(sourceId, cible) || (base.accepte?.(sourceId, cible) ?? true),
+        libelle: (sourceId, cible) =>
+          estFleche(sourceId, cible)
+            ? `${t('Flèche vers')} ${nomPorteurFr(cible.carteId!) ?? ''}`.trim()
+            : base.libelle(sourceId, cible),
+      }
     }
     if (!etat.aNous || !etat.connecte || interaction.option !== undefined || !plateau) {
       return undefined
@@ -3317,6 +3343,8 @@ export function PagePartie({
   // PC seulement (tablette et telephone : elle couvrait la main, 06/10/2026) ;
   // la main la ferme, et la languette la rouvre tant qu'on est en manuel.
   const [aideManuelOuverte, setAideManuelOuverte] = useState(false)
+  // Lots 3 et 4 du 07/10/2026 : cibles, flèches et surlignages du manuel, vus de tous (spectateur compris).
+  const marquesManuel = useMarques(manuel)
   const [aideAutoOuverte, setAideAutoOuverte] = useState(false)
   const ouvrirAideAuto = useCallback(() => setAideAutoOuverte(true), [])
   const fermerAideAuto = useCallback(() => setAideAutoOuverte(false), [])
@@ -4737,7 +4765,10 @@ export function PagePartie({
         retourMenuPrincipal={() => { void retourMenuPrincipal() }}
       />
       {manuel ? (
-        <VoletAideManuel ouvert={aideManuelOuverte} ouvrir={ouvrirAideManuel} fermer={fermerAideManuel} />
+        <>
+          <VoletAideManuel ouvert={aideManuelOuverte} ouvrir={ouvrirAideManuel} fermer={fermerAideManuel} />
+          <CoucheMarques marques={marquesManuel} />
+        </>
       ) : spectateur ? null : (
         <VoletAideAuto ouvert={aideAutoOuverte} ouvrir={ouvrirAideAuto} fermer={fermerAideAuto} />
       )}

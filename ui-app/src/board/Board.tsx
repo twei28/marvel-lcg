@@ -965,6 +965,13 @@ export type ReglagesGlisser = {
   auDoigt?: boolean
   /** Mode manuel : une carte lachee dans sa propre rangee s'y range (ordre, cote des ameliorations). */
   rangerAuGlisser?: boolean
+  /**
+   * Mode manuel, Maj+glisser d'une carte EN JEU vers une autre : une fleche
+   * (OCTGN), pas un deplacement. Rend `true` quand c'en est une.
+   */
+  fleche?: (sourceId: number, cible: CibleSurvolee) => boolean
+  /** Mode manuel, Maj+clic sur une carte de la table : la cibler ou la decibler (OCTGN). */
+  majClic?: (id: number) => void
   /** La table entiere accueille-t-elle cette carte ? Un seul cadre autour du plateau (question 12). */
   accueilleLaTable?: (sourceId: number) => boolean
   /**
@@ -1112,6 +1119,10 @@ export function Board({
   const estSourceGlisser = useCallback((id: number) => glisser?.estSource(id) ?? false, [glisser])
   const surDepot = useCallback(
     (sourceId: number, cible: CibleSurvolee, point: { x: number; y: number }) => {
+      if (glisser?.fleche?.(sourceId, cible)) {
+        setRefus(null)
+        return
+      }
       // Mode manuel : lachee dans sa rangee (ou pres de son personnage), la carte s'y range.
       if (rangerAuGlisser && reordre.rangerAuGlisser(sourceId, point.x, point.y, true)) {
         setRefus(null)
@@ -1292,6 +1303,14 @@ export function Board({
         onPointerUp={(evenement) => {
           if (reordre.gestes.surRelache(evenement)) return
           if (gestes.onPointerUp(evenement)) return
+          // Maj+clic d'OCTGN : cibler une carte de la table (pas de la main).
+          if (evenement.shiftKey && glisser?.majClic && evenement.target instanceof HTMLElement) {
+            const carte = evenement.target.closest<HTMLElement>('.scan-card[data-card-id]')
+            if (carte && !carte.closest('.zone-main')) {
+              glisser.majClic(Number(carte.dataset.cardId))
+              return
+            }
+          }
           cliquerCarte(evenement)
         }}
         onPointerCancel={() => {

@@ -1,0 +1,44 @@
+/* Marques du mode manuel (marques.ts, CoucheMarques.tsx). */
+
+/* La carte CIBLEE : un repere rond a la couleur du joueur qui cible, comme OCTGN. */
+.scan-card[data-ciblee]::after {
+  content: '';
+  position: absolute;
+  z-index: 40;
+  top: 50%;
+  left: 50%;
+  width: 34%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border: 4px solid var(--couleur-cible, #4da3ff);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.6), inset 0 0 0 2px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+/* Le SURLIGNAGE du pave numerique : les couleurs exactes d'OCTGN (constantsGlobal.py). */
+.scan-card[data-surlignage] {
+  outline: 5px solid var(--teinte-surlignage);
+  outline-offset: 2px;
+  box-shadow: 0 0 18px 6px var(--teinte-surlignage);
+}
+.scan-card[data-surlignage='bleu'] { --teinte-surlignage: #0059d6; }
+.scan-card[data-surlignage='orange'] { --teinte-surlignage: #d68f00; }
+.scan-card[data-surlignage='vert'] { --teinte-surlignage: #046c06; }
+.scan-card[data-surlignage='violet'] { --teinte-surlignage: #3f00bd; }
+.scan-card[data-surlignage='rouge'] { --teinte-surlignage: #b80404; }
+.scan-card[data-surlignage='noir'] { --teinte-surlignage: #000000; }
+.scan-card[data-surlignage='blanc'] { --teinte-surlignage: #ffffff; }
+
+/* Les FLECHES d'une carte vers une autre. */
+.couche-marques {
+  position: fixed;
+  inset: 0;
+  z-index: 545;
+  pointer-events: none;
+}
+.couche-marques line {
+  stroke-width: 6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
+}

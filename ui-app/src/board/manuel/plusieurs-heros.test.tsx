@@ -34,7 +34,9 @@ function Harness({ world, joueur, monSiege }: { world: World; joueur: number; mo
 }
 
 const commandes = () =>
-  vi.mocked(fetch).mock.calls.flatMap(([, init]) => JSON.parse((init as RequestInit).body as string).commands as string[])
+  vi.mocked(fetch)
+    .mock.calls.filter(([adresse]) => !String(adresse).includes('marque'))
+    .flatMap(([, init]) => JSON.parse((init as RequestInit).body as string).commands as string[])
 
 function survoler(id: number): HTMLElement {
   const noeud = document.createElement('div')

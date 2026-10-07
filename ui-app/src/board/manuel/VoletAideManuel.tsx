@@ -13,6 +13,7 @@ const JOUER_UNE_CARTE: Raccourci[] = [
   { touches: 'Lâche sur une carte', effet: 'Y attacher une amélioration.' },
   { touches: 'Lâche sur une pile', effet: 'La mettre dessus, ou dessous avec Maj.' },
   { touches: 'Maj en glissant', effet: 'Sur la table : la poser face cachée.' },
+  { touches: 'Maj + glisser une carte en jeu', effet: 'Sur une autre carte en jeu : tracer une flèche vers elle (la refaire l’efface)' },
   { touches: 'Clic droit sur une carte', effet: 'Poser en jeu (carte de ta main), Déplacer vers…' },
   { touches: 'Clic droit sur une carte en main', effet: 'Échanger avec le dessus du deck' },
 ]
@@ -23,6 +24,9 @@ const SUR_UNE_CARTE: Raccourci[] = [
   { touches: 'Ctrl + F', effet: 'Retourner la carte' },
   { touches: 'Suppr', effet: 'Défausser ; sur le méchant : vaincre le stade ; sur la manigance principale : manigance terminée ; une carte Permanente refuse ; une carte « Victoire » va à la pile de victoire (question si elle n’a pas été vaincue)' },
   { touches: 'Ctrl + V', effet: 'Envoyer dans la pile de victoire' },
+  { touches: 'Maj + clic', effet: 'Cibler / décibler la carte (à ta couleur, vu de tous)' },
+  { touches: 'Pavé num. 1 à 7', effet: 'Surligner : 1 bleu, 2 orange, 3 vert, 4 violet, 5 rouge, 6 noir, 7 blanc' },
+  { touches: 'Pavé num. 0', effet: 'Retirer le surlignage' },
   { touches: '↑  ↓', effet: '↑ +1 PV, ↓ −1 PV (héros, méchant) ; ↑ +1 dégât, ↓ −1 dégât (allié, sbire) ; menace (manigance), sinon marqueur' },
   { touches: '→  ←', effet: 'Un marqueur générique en plus / en moins' },
   { touches: 'F3  Maj + F3', effet: 'Un dégât en plus / en moins' },
@@ -59,8 +63,8 @@ const PARTOUT: Raccourci[] = [
   { touches: 'Ctrl + Q', effet: 'Tout redresser' },
   { touches: 'F12', effet: 'Fin de phase des héros, pour tous les héros : tout redresser, défausser l’excédent de main, piocher jusqu’à la taille de main (la défausse est remélangée si le deck est vide)' },
   { touches: 'Ctrl + Z', effet: 'Annuler le dernier geste' },
+  { touches: 'Échap', effet: 'Fermer le catalogue ; sinon décibler toutes tes cartes et effacer tes flèches (aussi à la fin de phase des héros, F12)' },
   { touches: 'C', effet: 'Chercher une carte dans tout le catalogue pour la poser' },
-  { touches: 'Échap', effet: 'Fermer le catalogue' },
   { touches: 'Clic droit sur la table', effet: 'Faire apparaître une carte, Vaincre ce stade, Manigance terminée, Tout redresser, Fin de phase des héros, Carte boost, Pile ou face, Nombre au hasard, Joueur au hasard, Fin du round, Défausser une carte au hasard, Mulligan, Terminer la partie' },
 ]
 

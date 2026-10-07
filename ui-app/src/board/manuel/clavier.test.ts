@@ -230,3 +230,25 @@ describe("l'etat des touches enfoncees (pour la tache 5)", () => {
     expect(etat.estEnfoncee('shift')).toBe(false)
   })
 })
+
+describe('le pave numerique : surlignage d OCTGN (lot 4, 07/10/2026)', () => {
+  const pave = (chiffre: string) => ({ cle: chiffre, majuscule: false, code: `Numpad${chiffre}` })
+  it('1 a 7 surlignent dans l ordre d OCTGN, 0 retire', () => {
+    expect(interpreterTouche(pave('1'), ALLIE)).toEqual({ geste: 'surligner', id: 2, couleur: 'bleu' })
+    expect(interpreterTouche(pave('5'), SBIRE)).toEqual({ geste: 'surligner', id: 3, couleur: 'rouge' })
+    expect(interpreterTouche(pave('7'), HEROS)).toEqual({ geste: 'surligner', id: 1, couleur: 'blanc' })
+    expect(interpreterTouche(pave('0'), HEROS)).toEqual({ geste: 'surligner', id: 1, couleur: null })
+  })
+  it('8 et 9 du pave ne font rien, ni sur une carte ni sur une pile', () => {
+    expect(interpreterTouche(pave('8'), ALLIE)).toBeUndefined()
+    expect(interpreterTouche(pave('3'), { genre: 'pile', zone: 'PlayerDeck' })).toBeUndefined()
+  })
+  it('la rangee principale ne change pas : un chiffre pose des jetons, pioche sur une pile', () => {
+    expect(interpreterTouche({ cle: '3', majuscule: false, code: 'Digit3' }, SBIRE)?.geste).toBe('jetons')
+    expect(interpreterTouche({ cle: '2', majuscule: true, code: 'Digit2' }, { genre: 'pile', zone: 'PlayerDeck' })).toEqual({
+      geste: 'piocher',
+      zone: 'PlayerDeck',
+      nombre: 2,
+    })
+  })
+})
