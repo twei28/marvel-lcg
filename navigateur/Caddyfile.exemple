@@ -1,0 +1,39 @@
+# EXEMPLE (NON DEPLOYE) : servir navigateur/dist sur play.<domaine>, dans TON Caddyfile existant.
+#
+# A inserer DANS le bloc `*.{$DOMAINE} { ... }` (celui qui porte deja `tls { dns cloudflare ... }` et les routes
+# p1..p30), AVANT `@p1 host p1.{$DOMAINE}`. Le certificat wildcard couvre deja play.<domaine> ; l'apex, les tables
+# et l'activite Discord ne sont pas touches. Les deux premiers en-tetes sont OBLIGATOIRES : sans eux le moteur ne
+# peut pas tourner dans la page. Ils ne concernent QUE play.
+#
+#	@play host play.{$DOMAINE}
+#	handle @play {
+#		encode zstd gzip
+#		header Cross-Origin-Opener-Policy same-origin
+#		header Cross-Origin-Embedder-Policy credentialless
+#		header X-Content-Type-Options nosniff
+#		header Strict-Transport-Security "max-age=31536000"
+#
+#		# Version du paquet et page de demarrage : jamais en cache. Le reste porte un ?v=<version> ou ne change pas.
+#		@frais path /version.json /navigateur.html
+#		header @frais Cache-Control "no-store"
+#		@stable path /pyodide* /moteur.zip /*.whl /css/* /js/* /fonts/* /img/* /app/*
+#		header @stable Cache-Control "public, max-age=86400"
+#
+#		# Scans : d'abord les versions REDRESSEES (voir navigateur/preparer-scans.py), puis les originaux.
+#		# Le moteur redresse en portrait toute image plus large que haute ; le plateau les remet a plat.
+#		handle /scan/* {
+#			uri strip_prefix /scan
+#			root * /opt/narwhal-play-scans
+#			try_files pivotes/pics-fr/{path}.webp pivotes/pics-fr/{path}.jpg pivotes/pics/{path}.webp pivotes/pics/{path}.jpg \
+#			          originaux/pics-fr/{path}.webp originaux/pics-fr/{path}.jpg originaux/pics/{path}.webp originaux/pics/{path}.jpg \
+#			          originaux/textures/{path}.png originaux/textures/{path}.svg originaux/cache/{path}.jpg
+#			file_server
+#		}
+#
+#		root * /opt/narwhal-play
+#		try_files {path} /navigateur.html
+#		file_server
+#	}
+#
+# Dossiers sur le serveur (proposition) : /opt/narwhal-play (navigateur/dist) et /opt/narwhal-play-scans
+# (pivotes/ = sortie de preparer-scans.py ; originaux/ = copie ou lien vers Fusion/marvel-lcg-src/assets).

@@ -157,3 +157,7 @@ deploiement/construction-plateau.log
 # Espace de travail des chantiers pilotes par sous-agents (journal, briefs,
 # rapports, paquets de revue). Ephemere : le depot garde les commits, pas ca.
 .superpowers/
+
+# Jeu dans le navigateur : paquet genere et caches de telechargement.
+navigateur/dist/
+navigateur/.cache/
