@@ -5,10 +5,23 @@ déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
 ## BACKLOG ajouté le 07/10/2026 (demandes de l'utilisateur, questions à trancher une à une)
 
-- [ ] Les questions « bloquantes » de la phase du méchant passent au premier plan. Décidé : la fenêtre est aujourd'hui DERRIÈRE la modale de la phase du méchant ; toutes les fenêtres du centre passent devant ; la modale reste visible, estompée derrière.
+- [x] FAIT le 07/10/2026 (CSS seul, `board.css`, non commité, non déployé) : fenêtres du centre à z-index 541 (variable `--z-fenetre-centre`, devant le déroulé 540, derrière l'aperçu 545), déroulé estompé à 0,45 quand l'une est ouverte. Vérifié sur une page statique (empilement + opacité), PAS en vraie partie. Les questions « bloquantes » de la phase du méchant passent au premier plan. Décidé : la fenêtre est aujourd'hui DERRIÈRE la modale de la phase du méchant ; toutes les fenêtres du centre passent devant ; la modale reste visible, estompée derrière.
 - [x] Pouvoir déplacer les cartes d'une même zone pour changer leur ordre (fait et commité le 07/10/2026, non déployé). Geste : Alt + glisser à la souris, trait jaune entre les deux cartes visées, aussi pour l'ordre des améliorations d'une même carte. Aucun regroupement automatique. Affichage local seulement (non partagé), gardé au rechargement (sessionStorage, étiqueté par partie, jeté si une autre partie arrive). Vérifié au navigateur en auto et en manuel. Non géré : tactile (l'appui long ouvre déjà le menu), vue mobile `Bande.tsx`.
 - [x] Vérifier le mélange du deck rencontre de Klaw (Radioactive Man sort souvent). FAIT le 07/10/2026 : IMPRESSION, pas de défaut. 60 mises en place : rang relatif moyen de Radioactive Man 0,47 (attendu 0,50), tops normaux. Cause de l'impression : « Underground Distribution » 1B révèle puis défausse jusqu'à un sbire qui engage le héros ; Radioactive Man est ce sbire dans 8 parties sur 60 (13 %, attendu ~11 % avec 9 sbires dans le deck de 30), et seulement 6 sbires différents contre 1 copie chacun, donc il revient vite. Aucun fichier du projet modifié. Décidé : mesure sur une dizaine de parties, deck rencontre de Klaw seulement, rang de sortie de Radioactive Man.
 - [ ] Revérifier la phase du méchant étape par étape. Décidé : symptôme incertain (résultat déjà sur la table avant la modale, ET/OU étape suivante lancée sans validation) ; jouer une phase sur le moteur d'essai en capturant chaque étape, comparer table et modale, corriger l'écart.
+
+## NON DÉPLOYÉ, 07/10/2026 : une partie ordinaire ne valide plus un scénario de campagne
+
+Défaut signalé par l'utilisateur : campagne en cours (scénario lancé, jamais validé), partie normale gagnée, le panneau « Alliés secourus » s'ouvre et valide le scénario. Cause (enquête à 5 angles + contre-vérification) : le repli serveur `/get_campagne_en_cours` (12/08/2026) ressuscitait le contexte que `launcher.js` venait d'effacer, via `partieEnCours` jamais soldé.
+
+Correctif, en trois gardes :
+- **Plateau** : règle `mode_campaign` publiée dans le descripteur du monde (`descriptor/world.py`, `to_descriptor.py`, `world.ts`) ; `PanneauRecompenses` et la ligne « campagne » du rapport de bug (`RapportBug.tsx`) restent absents sans elle.
+- **Route** `/get_campagne_en_cours` (salon, sièges distants) : ne répond que si la partie du moteur est de campagne, et se tait tant que l'hôte a déclaré une table ordinaire (`get_liens_sieges` pose `table_ordinaire`, tout `/new` ou chargement l'efface).
+- **/new** : le secret A.I.M. n'est déposé que si `rules` contient `mode_campaign`.
+
+Témoins : `PanneauRecompenses.partie-ordinaire.test.tsx` (5 rouges avant), `RapportBug.test.tsx`, `tools/test_campagne_en_cours.py` (rouge prouvé par substitution pour la gate, le drapeau et le secret), cas `campagne_publiee` et `campagne_absente_hors_campagne` dans `tools/test_mode_manuel.py`. Revue adversariale à 4 angles faite, ses trouvailles reprises.
+
+NON fait ou NON exécuté : `ui-check/tests/salon-bout-en-bout.spec.ts` (cas campagne) mis à jour pour lancer ses manches avec `mode_campaign`, MAIS PAS RELANCÉ : `serveur-essai-salon.py`, cité par ce fichier, n'existe plus dans le dépôt. Aucune spec Playwright de bout en bout du défaut lui-même. Fenêtre étroite connue : après le `/new` d'une vraie campagne, le salon d'un invité qui recharge lit encore l'ancien monde pendant quelques secondes. Moteur dans le navigateur : régénérer `navigateur/dist` (`construire.py`) au prochain déploiement.
 
 ## NON DÉPLOYÉ, 06/10/2026 : correctif moteur dz003 (en pause, non commité)
 
@@ -1709,3 +1722,19 @@ Sur « Deploie » de l'utilisateur. Connexions vérifiées avant l'envoi : 2, to
 - Vérifié : vitest 2772, tsc, test_mode_manuel 78/78, e2e, passage navigateur souris et tactile, batterie 2662/2667 (5 rouges préexistants).
 - Parti AUSSI (non commité, autre session) : le correctif moteur dz003 (`dz003.py`, `worlds.py`, `Puzzle.EndPlayerPhase`), couvert par la même batterie verte. Sa section « NON DÉPLOYÉ » plus haut est donc périmée pour la prod.
 - Non vérifié en prod : une vraie partie en manuel.
+
+## ✅ DÉPLOIEMENT du 07/10/2026 (matin) : correctif des formes des héros + mode navigateur `play.`
+Sur « commit et déployer » puis « Les deux » / « Déploie maintenant, tel quel » de l'utilisateur, alors que l'autre session travaillait
+encore sur le plateau (accord explicite, demandé avant l'envoi). `deployer.ps1 -Code` SEUL, sans `bash ui-app/deployer.sh` : le plateau
+parti est celui DÉJÀ construit à 09:38, `board-vm1FWojQ.js` (identique en ligne et en local au moment de l'envoi, vérifié), et NON celui
+reconstruit à 10:41 (`board-CYxXcc6s.js`, qui contient « ranger les cartes d'une zone avec Alt + glisser », commit `b4f2106a`).
+**Donc le rangement des cartes (Alt + glisser) n'est PAS en ligne.** Service `narwhal` actif, HTTP 200.
+- Parti côté moteur : `player_setup.py` (tri total des formes d'un héros, commit `9937458b`) ; vérifié 139 héros identiques entre moteur
+  normal et navigateur, batterie `test_capacites` 2661/2667 (les 6 échecs préexistent ou passent isolés : sg006, sg007, sg009, sg013,
+  « statistiques » cumulatif, Proxima Midnight [fne3a] processus mort).
+- Parti AUSSI (autre session, non commité à l'envoi, commité depuis) : le correctif moteur dz003 (`f7b4e6a0`) ; il était déjà parti le 06/10.
+- **Nouveau : `https://play.narwhalchampions.com`** (le jeu dans le navigateur, sans compte ni signalement de bug). Détail complet,
+  réglages faits à la main sur le serveur (Caddyfile, `/opt/narwhal-play-scans`) et procédure de redéploiement :
+  `2026-10-06-moteur-dans-le-navigateur-pyodide.md`, section « DÉPLOYÉ le 07/10/2026 ».
+Reste : un prochain `bash ui-app/deployer.sh` puis `deployer.ps1 -Code` enverra le plateau à jour (Alt + glisser compris) ; republier
+`play.` ensuite avec `python3 navigateur/publier.py --oui` pour que les deux versions restent alignées.
