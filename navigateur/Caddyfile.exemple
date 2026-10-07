@@ -19,62 +19,66 @@
 #
 #		redir / /navigateur.html 302
 #
-#		# Images demandees PAR LEUR NOM, a la racine (« /fr_01001a », logos « /narwhal-thor ») ou en haute definition
-#		# (« /hd/01001a ») : le moteur classique les sert par sa route attrape-tout, le serveur statique non (404,
-#		# constate en ligne le 07/10/2026 : aucune image dans l'ecran de preparation). Elles passent par /scan/.
-#		# Un nom sans point ni barre : jamais une page ni un fichier du paquet (qui ont tous une extension ou un dossier).
-#		@image_nue path_regexp image_nue ^/[A-Za-z0-9_-]+$
-#		rewrite @image_nue /scan{path}
-#		# Image demandee AVEC extension (/mvc_logo.svg) et absente du paquet : meme chemin, sans l'extension.
-#		@image_ext {
-#			path_regexp image_ext ^/([A-Za-z0-9_-]+)\.(svg|png|jpe?g|webp)$
+#		# IMAGES ET SONS, EXACTEMENT COMME LE MOTEUR CLASSIQUE (07/10/2026). Le moteur RESOUT un nom (dossiers,
+#		# extensions, images liees, repli fr_, telechargement, carte dessinee) : navigateur/resoudre-images.py a fait
+#		# tourner SON code sur tous les noms, installer-images.py en a tire /opt/narwhal-play-scans/resolu/. Ici,
+#		# seulement l'aiguillage du moteur (web_server.py puis server_files.py) : les fichiers du paquet d'abord,
+#		# puis les sons et les SVG par extension, puis /sets, /vignette, /hd, et tout le reste par le DERNIER segment.
+#		# Les rewrite d'un meme bloc s'excluent : le premier qui correspond s'applique.
+#		@son {
 #			not file {
 #				root /opt/narwhal-play
 #			}
+#			path_regexp son ^/(?:.*/)?([^/]+\.(?:wav|mp3))$
 #		}
-#		rewrite @image_ext /scan/{re.image_ext.1}
-#		@image_hd path_regexp image_hd ^/hd/([A-Za-z0-9_-]+)$
-#		rewrite @image_hd /scan/{re.image_hd.1}
-#
-#		# Scans : d'abord les versions REDRESSEES (navigateur/preparer-scans.py), puis les originaux.
-#		# Le moteur redresse en portrait toute image plus large que haute ; le plateau les remet a plat par CSS.
-#		handle /scan/* {
-#			# route : ordre LITTERAL. Un scan FR absent retombe sur l'anglais (fr_X -> X), comme le moteur (07/10/2026).
-#			route {
-#				uri strip_prefix /scan
-#				@fr_absent {
-#					path_regexp fr ^/fr_([A-Za-z0-9_-]+)$
-#					not file {
-#						root /opt/narwhal-play-scans
-#						try_files /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics-fr{path}.png /pivotes/pics{path}.webp /pivotes/pics{path}.jpg /pivotes/pics{path}.png /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics-fr{path}.png /originaux/pics{path}.webp /originaux/pics{path}.jpg /originaux/pics{path}.png /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
-#					}
-#				}
-#				rewrite @fr_absent /{re.fr.1}
-#				root * /opt/narwhal-play-scans
-#				try_files /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics-fr{path}.png /pivotes/pics{path}.webp /pivotes/pics{path}.jpg /pivotes/pics{path}.png /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics-fr{path}.png /originaux/pics{path}.webp /originaux/pics{path}.jpg /originaux/pics{path}.png /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
-#				file_server
+#		rewrite @son /_son/{re.son.1}
+#		@svg {
+#			not file {
+#				root /opt/narwhal-play
 #			}
+#			path_regexp svg ^/(?:.*/)?([^/]+\.svg)$
 #		}
-#
-#		# Miniatures des cartes de la table : la miniature si elle existe, sinon le scan complet (comme Cache.LoadVignette).
-#		handle /vignette/* {
-#			# route : ordre LITTERAL. Un scan FR absent retombe sur l'anglais (fr_X -> X), comme le moteur (07/10/2026).
-#			route {
-#				uri strip_prefix /vignette
-#				@fr_absent {
-#					path_regexp fr ^/fr_([A-Za-z0-9_-]+)$
-#					not file {
-#						root /opt/narwhal-play-scans
-#						try_files /pivotes/vignettes{path}.jpg /originaux/vignettes{path}.jpg /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics-fr{path}.png /pivotes/pics{path}.webp /pivotes/pics{path}.jpg /pivotes/pics{path}.png /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics-fr{path}.png /originaux/pics{path}.webp /originaux/pics{path}.jpg /originaux/pics{path}.png /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
-#					}
-#				}
-#				rewrite @fr_absent /{re.fr.1}
-#				root * /opt/narwhal-play-scans
-#				try_files /pivotes/vignettes{path}.jpg /originaux/vignettes{path}.jpg /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics-fr{path}.png /pivotes/pics{path}.webp /pivotes/pics{path}.jpg /pivotes/pics{path}.png /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics-fr{path}.png /originaux/pics{path}.webp /originaux/pics{path}.jpg /originaux/pics{path}.png /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
-#				file_server
+#		rewrite @svg /_svg/{re.svg.1}
+#		@sets path_regexp sets ^/sets/([^/]+)$
+#		rewrite @sets /_img/sets__{re.sets.1}
+#		@vig path_regexp vig ^/vignette/(?:.*/)?([^/]+)$
+#		rewrite @vig /_vig/{re.vig.1}
+#		@hd path_regexp hd ^/hd/(?:.*/)?([^/]+)$
+#		rewrite @hd /_hd/{re.hd.1}
+#		@scan path_regexp scan ^/scan/([^/]+)$
+#		rewrite @scan /_img/{re.scan.1}
+#		@img {
+#			not file {
+#				root /opt/narwhal-play
 #			}
+#			not path_regexp \.(?i:html|css|js|mjs|ts|map|json|wasm|zip|whl|ico|txt|eot|woff2?|ttf|gif|jpe?g|png|webp)$
+#			path_regexp img ^/(?:.*/)?([^/]+)$
 #		}
+#		rewrite @img /_img/{re.img.1}
 #
+#		handle_path /_img/* {
+#			root * /opt/narwhal-play-scans/resolu
+#			try_files /image{path}.webp /image{path}.jpg /image{path}.png /image{path}.svg /image/__inconnu__.jpg
+#			file_server
+#		}
+#		handle_path /_vig/* {
+#			root * /opt/narwhal-play-scans/resolu
+#			try_files /vignette{path}.webp /vignette{path}.jpg /vignette{path}.png /image{path}.webp /image{path}.jpg /image{path}.png /image{path}.svg /image/__inconnu__.jpg
+#			file_server
+#		}
+#		handle_path /_hd/* {
+#			root * /opt/narwhal-play-scans/resolu
+#			try_files /hd{path}.webp /hd{path}.jpg /hd{path}.png /image{path}.webp /image{path}.jpg /image{path}.png /image{path}.svg /image/__inconnu__.jpg
+#			file_server
+#		}
+#		handle_path /_son/* {
+#			root * /opt/narwhal-play-scans/originaux/sounds
+#			file_server
+#		}
+#		handle_path /_svg/* {
+#			root * /opt/narwhal-play-scans/originaux/textures
+#			file_server
+#		}
 #		root * /opt/narwhal-play
 #		file_server
 #	}

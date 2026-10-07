@@ -10,7 +10,7 @@ AVANT les originaux sous /scan/<id> (dans Caddy : try_files vers ce dossier d'ab
 import os, sys
 from PIL import Image, ImageOps
 ASSETS = os.environ.get("ASSETS", os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Fusion", "marvel-lcg-src", "assets"))
-DOSSIERS = ("pics-fr", "pics", "textures", "cache", "vignettes")
+DOSSIERS = ("pics-fr", "pics", "textures", "cache", "vignettes", "pics-hd")
 compter = "--compter" in sys.argv
 sortie = None if compter else sys.argv[1]
 n = tot = octets = 0
