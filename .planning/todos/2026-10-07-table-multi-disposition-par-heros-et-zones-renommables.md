@@ -1,0 +1,31 @@
+# Table personnalisable : aussi en multijoueur, par héros, et zones renommables (07/10/2026)
+
+**Statut : BACKLOG, demande de l'utilisateur. Rien n'est commencé.** Suite de la fiche
+`2026-10-05-table-par-briques-decisions.md` (la table faite de briques), à lire avant.
+
+## La demande (ses mots)
+« Pour le truc où on peut changer la disposition de la table, on doit avoir un bouton pour le faire aussi pour le multi, genre
+choisir où vont les sbires et alliés de chaque héros, et aussi peut-être pouvoir renommer les zones. »
+
+## Trois demandes distinctes
+1. **Un bouton pour modifier la disposition AUSSI en multijoueur.** À vérifier d'abord pourquoi / où il manque aujourd'hui : l'éditeur
+   (`ui-app/src/board/EditeurTable.tsx`, monté dans `board.tsx` ~l. 4299 avec `enregistrerDisposition(nombreDeJoueurs, ...)`) est
+   réservé au plateau PC, et la disposition est enregistrée PAR NOMBRE DE JOUEURS.
+2. **Choisir où vont les sbires et les alliés DE CHAQUE HÉROS.** Chaque joueur (ou l'hôte ?) place les zones de ses propres sbires
+   engagés et de ses alliés.
+3. **Peut-être renommer les zones.** (« peut-être » : à confirmer.)
+
+## ⚠ Contradiction avec une décision déjà prise (05/10/2026)
+La fiche des briques dit : « Multijoueur : UNE brique par type, rangée par joueur à l'intérieur (pas de brique par joueur) » et
+« titre AUTOMATIQUE » d'après les briques de la zone. La demande d'aujourd'hui va dans l'autre sens :
+- placer les sbires/alliés **héros par héros** suppose une brique (ou une zone) PAR JOUEUR ;
+- renommer une zone remplace le titre automatique (« Héros et soutiens », « X et Y »).
+À arbitrer avant de coder : soit on assouplit la règle « une brique par type » en multi, soit on garde l'organisation par type et on
+ajoute seulement un choix de rangée par joueur à l'intérieur de la zone.
+
+## Questions à trancher le jour où on le fait (à poser une à une)
+- **Qui décide en multi** : chaque joueur règle SA table (vue personnelle, chez lui seulement), ou l'hôte règle pour tout le monde ?
+- Les zones d'un autre héros (alliés, sbires engagés avec lui) : on les voit où ? Les déplacer change-t-il la vue des autres joueurs ?
+- **Renommer** : un nom libre par zone ? Retenu par zone, par joueur ou par nombre de joueurs ? Un bouton « remettre le titre automatique » ?
+- La disposition enregistrée par nombre de joueurs suffit-elle, ou faut-il l'enregistrer par COMPOSITION (2 héros, mais lesquels) ?
+- Téléphone : l'éditeur reste-t-il réservé au PC ?

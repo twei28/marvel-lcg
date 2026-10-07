@@ -4,6 +4,29 @@ Question de l'utilisateur, 16/09/2026 : « si j'enlève la limite de 20 places,
 je pourrai avoir combien de joueurs en même temps ? », puis « comment passer à
 100 sans payer plus ? ».
 
+
+## ⚠ CORRECTION DU 06/10/2026 (soir) : le banc de charge interrogeait la MAUVAISE route
+
+Le banc (`outils/charge-serveur.py`) lisait « le monde » par `/get_partie_en_cours`. **C'est une petite
+route de suivi du site** (`server_get.py`, `get_partie_en_cours` : une fiche de quelques champs), pas
+le monde. Le plateau lit la partie par **`/get_world`** (`ui-app/src/board/sources.ts`,
+`chargerPartieEnCours`) : le descripteur COMPLET du monde, masqué par siège puis compressé en gzip,
+à CHAQUE trame et pour chaque client.
+
+Conséquences, à relire avant de s'appuyer sur les sections ci-dessous :
+1. **Le test de charge de 18 minutes SOUS-ESTIME la charge réelle** : la sérialisation et la
+   compression du monde (`Json.DumpGZip`, `MasquerCeQuOnNaPasLeDroitDeVoir`) n'y étaient pas. Le
+   plafond réel est probablement PLUS BAS que ~25 à 40 tables jouées. Non remesuré.
+2. **Le constat du profil « la part web pèse ~2 % » est invalide** pour de vrais joueurs : le profil
+   a été pris sans aucune requête `/get_world`. Ce qui reste vrai : `Present` →
+   `deck_to_descriptors` (~75 % du fil du jeu) tourne à chaque événement, requête ou non. S'y ajoute,
+   en vrai, la sérialisation du monde par client, non mesurée.
+3. **L'hypothèse de départ (« la relecture du monde coûte ») n'était donc pas réfutée**, seulement
+   non testée. Elle redevient plausible.
+
+Le script est corrigé (`/get_world?hot_seat&p=0`). **À refaire : le banc de charge avec la bonne
+route, puis un nouveau profil.**
+
 ## Les mesures, toutes prises le jour même
 
 | Quoi | Valeur |
@@ -221,3 +244,88 @@ que plus aucun client ne tient) et **7** (redimensionner à l'heure).
 ⚠ Correction du 16/09/2026 : cette fiche annonçait « les points 3 à 7 restent
 disponibles, aucun n'est engagé » alors que le swap et le seuil d'inactivité
 étaient déjà livrés. Relevé en relisant le serveur, pas la fiche.
+
+## Test de charge JOUÉ du 06/10/2026 : 100 tables, ça NE TIENT PAS
+
+Demande de l'utilisateur : « voir si ça tient, sinon trouver une solution ». Tables jouées en vrai
+par des bots via WebSocket (`outils/charge-serveur.py`, lancé en `narwhal`, places 161+, ports 2511+,
+sur le vrai serveur pendant que des joueurs pouvaient jouer). Montée de 10 en 10 toutes les 60 s,
+18 minutes en tout. Mesures brutes : `.planning/todos/2026-10-06-charge-serveur-resultats.jsonl`.
+
+| Tables vivantes | Charge (2 vCPU) | Latence p95 d'un coup | Latence p95 du monde | Mémoire libre / swap |
+|---|---|---|---|---|
+| 10 | 0,7 | 11 ms | 3 ms | 2150 Mo / 54 Mo |
+| 22 | 7,9 | 22 ms | 19 ms | 1170 Mo / 76 Mo |
+| 26 | 11,7 | 57 ms | 59 ms | 825 Mo / 146 Mo |
+| 33 | 13,2 | 194 ms | 157 ms | 147 Mo / 302 Mo |
+| 43 | 15,7 | 359 ms | 331 ms | 83 Mo / 1609 Mo |
+
+- **Le mur est le CPU, pas la mémoire.** Charge de 8 à 17 sur 2 vCPU. Une table jouée coûte
+  ~60 à 75 Mo (PSS), donc la mémoire tenait jusqu'à ~40 tables.
+- **Dégradation visible dès ~22 tables jouées, mauvaise à ~33, saturée à ~43.** Au-delà de ~44, les
+  nouvelles tables n'ont jamais répondu dans les 240 s (le démarrage d'un moteur coûte du CPU) et
+  le nombre de tables vivantes est retombé à 25.
+- **Le site (orchestrateur) est resté à 2 à 18 ms** : le goulot est le moteur.
+- **Le client qui pèse le plus** : `/get_partie_en_cours` (le monde complet) est relu à CHAQUE trame,
+  ~2,5 requêtes par seconde et par table, contre ~0,15 pour les coups. C'est le premier suspect.
+
+⚠ **Limites du test, qui le rendent plus sévère que la réalité** : les bots tournent sur la même
+machine et lui prennent du CPU (part non mesurée) ; leurs parties durent ~25 s (le bot perd vite),
+donc elles enchaînent des créations de partie, bien plus coûteuses qu'une partie humaine de 30 min ;
+ils jouent des coups au hasard. Le vrai plafond est donc plus haut que ~25 à 30 tables jouées, mais
+**pas de 100**. Non mesuré : les pertes de tables sur arrêt du moteur, la part CPU du banc.
+
+## Pistes pour tenir plus (à valider, rien n'est engagé)
+
+1. **Alléger la trame** : ne pas resserialiser tout le monde à chaque trame (diff, ou cache par
+   `render_id` partagé entre les clients d'une même table). À profiler d'abord (`py-spy` sur une table
+   sous charge) pour confirmer que c'est bien la sérialisation du monde.
+2. **Plus de cœurs** : Hetzner redimensionne à l'heure. Le CPU étant le mur, viser des vCPU
+   dédiés plutôt que de la RAM.
+3. **Plusieurs machines** : l'orchestrateur aiguille déjà par place ; répartir les places sur
+   plusieurs serveurs. Plus de travail, mais le seul chemin au-delà d'une machine.
+4. **Relancer le banc** après chaque piste, avec les bots sur une AUTRE machine pour ne plus fausser
+   la mesure.
+
+## Profil du moteur sous charge, 06/10/2026 (⚠ voir la correction en tête de fiche : pris SANS requête /get_world)
+
+Mesure : py-spy (installé en dossier temporaire, retiré après), 40 s à 100 Hz sur UN moteur de table
+jouée, 17 tables jouées en même temps (banc `outils/charge-serveur.py`, places 261+).
+
+⚠ **Ce que l'on croyait** : le navigateur relit le monde complet à chaque trame
+(`/get_partie_en_cours`, ~2,5 fois par seconde et par table), et c'est cela qui coûte. **Non.** La part
+web (aiohttp, envoi des trames) est de l'ordre de 2 % des échantillons.
+
+**Ce qui coûte vraiment** : `WorldRender.PresentInternal` (`game/world/world_render.py:107`) reconstruit
+le descripteur de TOUT le monde à CHAQUE événement du moteur, qu'un client demande quelque chose ou non :
+`ToDescriptor.World` → `Player` → `deck_to_descriptors` → `ToDescriptor.Card` → `Card.Render`
+(`game/render/to_descriptor.py:12`, `:162` ; `game/card/card.py:891`), pour CHAQUE carte de CHAQUE pile
+(paquet joueur de 40 cartes, défausses, pile rencontre, main, zones), y compris les piles qui n'ont pas
+bougé ni ne sont visibles.
+
+| Part des échantillons | Quoi |
+|---|---|
+| **37 %** | `Present` (reconstruction du descripteur) ; **34 %** dans `deck_to_descriptors` seul |
+| 32 % | `ToDescriptor.Card` ; dont 22 % dans `Card.Render` |
+| ~21 % | boucle de jeu et résolution des effets (la logique de jeu elle-même) |
+| ~16 % | création de partie (gonflé par le banc : ses parties durent 25 s) |
+| ~43 % | un fil `_worker` (probablement en attente, compté à tort) |
+
+En ne gardant que le fil du jeu (48 % du total), **le rendu pèse ~75 % de son temps**. Le rendre
+presque gratuit pourrait doubler à tripler la capacité ; ce n'est pas mesuré, seulement estimé.
+
+**Pistes de correction, par ordre de risque croissant** (rien n'est engagé) :
+1. Ne pas détailler carte par carte les piles cachées ou inchangées (paquet joueur, pile rencontre) :
+   ne garder que le décompte, SI le plateau n'a pas besoin de leur contenu (à vérifier : recherche
+   dans le paquet, « voir la défausse »).
+2. Un compteur de version par pile (`Deck`), qui n'est incrémenté que sur un déplacement, pour réutiliser
+   le descripteur de la pile entière quand elle n'a pas changé.
+3. Un cache par carte avec invalidation (le plus risqué : l'état d'une carte dépend de beaucoup de choses).
+
+⚠ Le descripteur est par SIÈGE (la main d'un joueur ne doit jamais sortir du moteur, correctif du
+15/09) : tout cache doit le respecter. Toucher à ce chemin impose `tools/test_capacites.py` et un
+passage par le plateau (étape 8 bis de PROCESSUS-CARTE).
+
+Note du 06/10/2026 : `outils/charge-serveur.py` appelle maintenant `/get_world` (la vraie charge) ET
+`/get_partie_en_cours` (petite fiche, uniquement pour détecter la fin de partie et enchaîner la
+suivante). Non rejoué depuis la correction.

@@ -151,9 +151,14 @@ ralentirait tout le monde. Le serveur est aujourd'hui à 60.
 
 ## Combien de joueurs la machine peut-elle tenir ?
 
-Mesuré le 16/09/2026 : **une table coûte 221 Mo**, la machine a 3,8 Go, soit
-**une dizaine de tables allumées en même temps**. La limite de 20 places compte
-des COMPTES, pas des parties simultanées. Le détail, et ce qui a été écarté
+Mesuré le 16/09/2026 : **une table coûte 70 à 140 Mo** selon qu'elle a servi
+(le chiffre de 221 Mo, d'abord retenu, était faux : il comptait les pages
+partagées plusieurs fois), la machine a 3,8 Go, soit **une quarantaine de tables
+allumées en même temps** en mémoire. Le vrai mur est le CPU sous jeu réel
+(2 vCPU) : le banc de charge du 06/10/2026 en situait la saturation vers 25 à 40
+tables jouées, mais il sous-estimait la charge réelle (il n'interrogeait pas
+`/get_world`, voir la correction en tête de la fiche). La limite de 20 comptes
+(`MAX_COMPTES`) n'est pas celle des parties simultanées (`NB_EMPLACEMENTS`). Le détail, et ce qui a été écarté
 pour aller plus loin, sont dans
 `.planning/todos/2026-09-16-tenir-plus-de-joueurs.md`.
 
