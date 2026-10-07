@@ -57,10 +57,15 @@ test('forcer un deck jugé illégal l’importe ET envoie un rapport', async ({ 
     rapports.push(JSON.parse(route.request().postData() ?? '{}'))
     await route.fulfill({ json: { ok: true, numero: 1 } })
   })
+  // ⚠ JAMAIS DE VRAIE SAUVEGARDE : « le sauvegarder ? » est refusé, et la route
+  // est simulée par sécurité (une première version a écrit un deck de test dans
+  // le dossier des decks du jeu visé).
+  await page.route('**/save_deck', (route) => route.fulfill({ json: { ok: true } }))
   const dialogues: string[] = []
   page.on('dialog', async (d) => {
     dialogues.push(d.message())
-    await d.accept()
+    if (/notre code/i.test(d.message())) await d.accept()
+    else await d.dismiss()
   })
   await jusquAuChampImport(page)
   await collerEtImporter(page)
