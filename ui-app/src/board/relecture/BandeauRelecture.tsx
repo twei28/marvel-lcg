@@ -110,23 +110,32 @@ export function BandeauRelecture({ lecteur, relecture }: { lecteur: Lecteur; rel
   // rendus qui passent entre-temps.
   useEffect(() => {
     if (!aAllumer) return
-    let allumee: Element | null = null
-    let eteindre: number | undefined
+    // ⚠ LA CLASSE EST REPOSEE A CHAQUE TOUR : React reecrit `className` des que
+    // l'etat de la carte change (mesure du 07/10/2026, le Lance-toile perdait
+    // sa surbrillance au rendu suivant), et la carte change de noeud quand elle
+    // s'attache a son porteur.
+    const selecteur = `.scan-card[data-card-id="${aAllumer.id}"]`
     const debut = performance.now()
+    let allumeeDepuis: number | undefined
+    const eteindre = () => {
+      for (const carte of document.querySelectorAll(selecteur)) carte.classList.remove('relecture-surbrillance')
+    }
     const guetteur = window.setInterval(() => {
-      allumee = document.querySelector(`.scan-card[data-card-id="${aAllumer.id}"]`)
-      if (allumee) {
+      const maintenant = performance.now()
+      const cartes = document.querySelectorAll(selecteur)
+      if (allumeeDepuis === undefined && cartes.length > 0) allumeeDepuis = maintenant
+      if (allumeeDepuis !== undefined && maintenant - allumeeDepuis > DUREE_EFFET_MS) {
         window.clearInterval(guetteur)
-        allumee.classList.add('relecture-surbrillance')
-        eteindre = window.setTimeout(() => allumee?.classList.remove('relecture-surbrillance'), DUREE_EFFET_MS)
-      } else if (performance.now() - debut > 3000) {
+        eteindre()
+      } else if (allumeeDepuis === undefined && maintenant - debut > 3000) {
         window.clearInterval(guetteur)
+      } else {
+        for (const carte of cartes) carte.classList.add('relecture-surbrillance')
       }
-    }, 100)
+    }, 50)
     return () => {
       window.clearInterval(guetteur)
-      window.clearTimeout(eteindre)
-      allumee?.classList.remove('relecture-surbrillance')
+      eteindre()
     }
   }, [aAllumer])
 
