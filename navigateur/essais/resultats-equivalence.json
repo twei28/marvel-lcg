@@ -2,33 +2,33 @@
  {
   "combo": [
    "deadpool",
-   "wd_vulture_underling",
-   7851
+   "master_mold",
+   5697
   ],
   "natif": {
-   "asks": 5,
-   "cartes": 2,
+   "asks": 27,
+   "cartes": 10,
    "hero": "deadpool",
    "reason": "The Main Scheme was Completed",
-   "round": 1,
-   "secondes": 11.7,
-   "seed": 7851,
+   "round": 3,
+   "secondes": 13.8,
+   "seed": 5697,
    "setup": true,
-   "vilain_pv": 10,
-   "villain": "wd_vulture_underling",
+   "vilain_pv": 12,
+   "villain": "master_mold",
    "won": "False"
   },
   "pyodide": {
-   "asks": 5,
-   "cartes": 2,
+   "asks": 27,
+   "cartes": 10,
    "hero": "deadpool",
    "reason": "The Main Scheme was Completed",
-   "round": 1,
-   "secondes": 4.0,
-   "seed": 7851,
+   "round": 3,
+   "secondes": 7.5,
+   "seed": 5697,
    "setup": true,
-   "vilain_pv": 10,
-   "villain": "wd_vulture_underling",
+   "vilain_pv": 12,
+   "villain": "master_mold",
    "won": "False"
   },
   "differences": {}
@@ -36,33 +36,33 @@
  {
   "combo": [
    "patriot",
-   "batroc",
-   4366
+   "protection_racket_purple_man_expert",
+   6167
   ],
   "natif": {
-   "asks": 23,
-   "cartes": 7,
+   "asks": 22,
+   "cartes": 10,
    "hero": "patriot",
-   "reason": "All players were eliminated",
+   "reason": "The Main Scheme was Completed",
    "round": 3,
-   "secondes": 12.0,
-   "seed": 4366,
+   "secondes": 12.3,
+   "seed": 6167,
    "setup": true,
-   "vilain_pv": 7,
-   "villain": "batroc",
+   "vilain_pv": 15,
+   "villain": "protection_racket_purple_man_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 23,
-   "cartes": 7,
+   "asks": 22,
+   "cartes": 10,
    "hero": "patriot",
-   "reason": "All players were eliminated",
+   "reason": "The Main Scheme was Completed",
    "round": 3,
-   "secondes": 5.2,
-   "seed": 4366,
+   "secondes": 4.9,
+   "seed": 6167,
    "setup": true,
-   "vilain_pv": 7,
-   "villain": "batroc",
+   "vilain_pv": 15,
+   "villain": "protection_racket_purple_man_expert",
    "won": "False"
   },
   "differences": {}
@@ -70,33 +70,33 @@
  {
   "combo": [
    "war_machine",
-   "stryfe_expert",
-   6065
+   "thanos_expert",
+   1251
   ],
   "natif": {
-   "asks": 11,
-   "cartes": 2,
+   "asks": 24,
+   "cartes": 8,
    "hero": "war_machine",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 11.7,
-   "seed": 6065,
+   "reason": "All players were eliminated",
+   "round": 4,
+   "secondes": 13.1,
+   "seed": 1251,
    "setup": true,
-   "vilain_pv": 17,
-   "villain": "stryfe_expert",
+   "vilain_pv": 23,
+   "villain": "thanos_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 11,
-   "cartes": 2,
+   "asks": 24,
+   "cartes": 8,
    "hero": "war_machine",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.3,
-   "seed": 6065,
+   "reason": "All players were eliminated",
+   "round": 4,
+   "secondes": 6.7,
+   "seed": 1251,
    "setup": true,
-   "vilain_pv": 17,
-   "villain": "stryfe_expert",
+   "vilain_pv": 23,
+   "villain": "thanos_expert",
    "won": "False"
   },
   "differences": {}
@@ -104,33 +104,33 @@
  {
   "combo": [
    "wiccan",
-   "captain_marvel",
-   3189
+   "wd_vulture_expert",
+   5578
   ],
   "natif": {
-   "asks": 18,
-   "cartes": 6,
+   "asks": 7,
+   "cartes": 2,
    "hero": "wiccan",
-   "reason": "All players were eliminated",
+   "reason": "The Main Scheme was Completed",
    "round": 2,
-   "secondes": 10.2,
-   "seed": 3189,
+   "secondes": 9.5,
+   "seed": 5578,
    "setup": true,
-   "vilain_pv": 13,
-   "villain": "captain_marvel",
+   "vilain_pv": 15,
+   "villain": "wd_vulture_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 18,
-   "cartes": 6,
+   "asks": 7,
+   "cartes": 2,
    "hero": "wiccan",
-   "reason": "All players were eliminated",
+   "reason": "The Main Scheme was Completed",
    "round": 2,
-   "secondes": 5.7,
-   "seed": 3189,
+   "secondes": 4.1,
+   "seed": 5578,
    "setup": true,
-   "vilain_pv": 13,
-   "villain": "captain_marvel",
+   "vilain_pv": 15,
+   "villain": "wd_vulture_expert",
    "won": "False"
   },
   "differences": {}
@@ -138,33 +138,33 @@
  {
   "combo": [
    "conan",
-   "sandman_expert",
-   2398
+   "captain_america",
+   9134
   ],
   "natif": {
-   "asks": 18,
-   "cartes": 5,
+   "asks": 23,
+   "cartes": 7,
    "hero": "conan",
-   "reason": "The Main Scheme was Completed",
+   "reason": "All players were eliminated",
    "round": 3,
-   "secondes": 9.6,
-   "seed": 2398,
+   "secondes": 11.4,
+   "seed": 9134,
    "setup": true,
-   "vilain_pv": 18,
-   "villain": "sandman_expert",
+   "vilain_pv": 14,
+   "villain": "captain_america",
    "won": "False"
   },
   "pyodide": {
-   "asks": 18,
-   "cartes": 5,
+   "asks": 23,
+   "cartes": 7,
    "hero": "conan",
-   "reason": "The Main Scheme was Completed",
+   "reason": "All players were eliminated",
    "round": 3,
-   "secondes": 5.5,
-   "seed": 2398,
+   "secondes": 7.0,
+   "seed": 9134,
    "setup": true,
-   "vilain_pv": 18,
-   "villain": "sandman_expert",
+   "vilain_pv": 14,
+   "villain": "captain_america",
    "won": "False"
   },
   "differences": {}
@@ -172,33 +172,33 @@
  {
   "combo": [
    "iron_man_model_42",
-   "spiral_expert",
-   230
+   "the_getaway_hammerhead_expert",
+   4787
   ],
   "natif": {
-   "asks": 12,
-   "cartes": 2,
+   "asks": 15,
+   "cartes": 0,
    "hero": "iron_man_model_42",
-   "reason": "The Main Scheme was Completed",
+   "reason": "All players were eliminated",
    "round": 2,
-   "secondes": 15.3,
-   "seed": 230,
+   "secondes": 10.8,
+   "seed": 4787,
    "setup": true,
    "vilain_pv": 15,
-   "villain": "spiral_expert",
+   "villain": "the_getaway_hammerhead_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 12,
-   "cartes": 2,
+   "asks": 15,
+   "cartes": 0,
    "hero": "iron_man_model_42",
-   "reason": "The Main Scheme was Completed",
+   "reason": "All players were eliminated",
    "round": 2,
-   "secondes": 4.8,
-   "seed": 230,
+   "secondes": 5.1,
+   "seed": 4787,
    "setup": true,
    "vilain_pv": 15,
-   "villain": "spiral_expert",
+   "villain": "the_getaway_hammerhead_expert",
    "won": "False"
   },
   "differences": {}
@@ -206,33 +206,33 @@
  {
   "combo": [
    "squirrel_girl",
-   "captain_america_expert",
-   4
+   "morlock_siege_expert",
+   7495
   ],
   "natif": {
-   "asks": 13,
-   "cartes": 2,
+   "asks": 27,
+   "cartes": 14,
    "hero": "squirrel_girl",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 13.3,
-   "seed": 4,
+   "reason": "Players Lost",
+   "round": 3,
+   "secondes": 21.5,
+   "seed": 7495,
    "setup": true,
-   "vilain_pv": 18,
-   "villain": "captain_america_expert",
+   "vilain_pv": 14,
+   "villain": "morlock_siege_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 13,
-   "cartes": 2,
+   "asks": 27,
+   "cartes": 14,
    "hero": "squirrel_girl",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 7.9,
-   "seed": 4,
+   "reason": "Players Lost",
+   "round": 3,
+   "secondes": 8.0,
+   "seed": 7495,
    "setup": true,
-   "vilain_pv": 18,
-   "villain": "captain_america_expert",
+   "vilain_pv": 14,
+   "villain": "morlock_siege_expert",
    "won": "False"
   },
   "differences": {}
@@ -240,33 +240,33 @@
  {
   "combo": [
    "venompool",
-   "spiral_expert",
-   9514
+   "escape_the_museum",
+   9461
   ],
   "natif": {
-   "asks": 10,
-   "cartes": 2,
+   "asks": 4,
+   "cartes": 1,
    "hero": "venompool",
    "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 10.2,
-   "seed": 9514,
+   "round": 1,
+   "secondes": 13.7,
+   "seed": 9461,
    "setup": true,
-   "vilain_pv": 15,
-   "villain": "spiral_expert",
+   "vilain_pv": 8,
+   "villain": "escape_the_museum",
    "won": "False"
   },
   "pyodide": {
-   "asks": 10,
-   "cartes": 2,
+   "asks": 4,
+   "cartes": 1,
    "hero": "venompool",
    "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.7,
-   "seed": 9514,
+   "round": 1,
+   "secondes": 3.7,
+   "seed": 9461,
    "setup": true,
-   "vilain_pv": 15,
-   "villain": "spiral_expert",
+   "vilain_pv": 8,
+   "villain": "escape_the_museum",
    "won": "False"
   },
   "differences": {}
@@ -274,33 +274,33 @@
  {
   "combo": [
    "superior_iron_man",
-   "the_getaway_purple_man_expert",
-   1361
+   "nebula_expert",
+   406
   ],
   "natif": {
-   "asks": 40,
-   "cartes": 16,
+   "asks": 12,
+   "cartes": 2,
    "hero": "superior_iron_man",
    "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 16.1,
-   "seed": 1361,
+   "round": 2,
+   "secondes": 13.6,
+   "seed": 406,
    "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_getaway_purple_man_expert",
+   "vilain_pv": 17,
+   "villain": "nebula_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 40,
-   "cartes": 16,
+   "asks": 12,
+   "cartes": 2,
    "hero": "superior_iron_man",
    "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.4,
-   "seed": 1361,
+   "round": 2,
+   "secondes": 5.3,
+   "seed": 406,
    "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_getaway_purple_man_expert",
+   "vilain_pv": 17,
+   "villain": "nebula_expert",
    "won": "False"
   },
   "differences": {}
@@ -308,33 +308,33 @@
  {
   "combo": [
    "jessica_jones_custom",
-   "the_spot",
-   3258
+   "wd_shocker_expert",
+   6044
   ],
   "natif": {
-   "asks": 60,
-   "cartes": 7,
+   "asks": 26,
+   "cartes": 8,
    "hero": "jessica_jones_custom",
    "reason": "The Main Scheme was Completed",
-   "round": 4,
+   "round": 5,
    "secondes": 17.9,
-   "seed": 3258,
+   "seed": 6044,
    "setup": true,
-   "vilain_pv": 10,
-   "villain": "the_spot",
+   "vilain_pv": 20,
+   "villain": "wd_shocker_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 60,
-   "cartes": 7,
+   "asks": 26,
+   "cartes": 8,
    "hero": "jessica_jones_custom",
    "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 7.8,
-   "seed": 3258,
+   "round": 5,
+   "secondes": 9.5,
+   "seed": 6044,
    "setup": true,
-   "vilain_pv": 10,
-   "villain": "the_spot",
+   "vilain_pv": 20,
+   "villain": "wd_shocker_expert",
    "won": "False"
   },
   "differences": {}
@@ -342,33 +342,33 @@
  {
   "combo": [
    "adam_warlock",
-   "mansion_attack_expert",
-   1980
+   "protection_racket_typhoid_mary_expert",
+   7555
   ],
   "natif": {
-   "asks": 23,
-   "cartes": 6,
+   "asks": 26,
+   "cartes": 11,
    "hero": "adam_warlock",
-   "reason": "Players Lost",
+   "reason": "All players were eliminated",
    "round": 3,
-   "secondes": 13.1,
-   "seed": 1980,
+   "secondes": 14.5,
+   "seed": 7555,
    "setup": true,
-   "vilain_pv": 16,
-   "villain": "mansion_attack_expert",
+   "vilain_pv": 13,
+   "villain": "protection_racket_typhoid_mary_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 23,
-   "cartes": 6,
+   "asks": 26,
+   "cartes": 11,
    "hero": "adam_warlock",
-   "reason": "Players Lost",
+   "reason": "All players were eliminated",
    "round": 3,
-   "secondes": 6.8,
-   "seed": 1980,
+   "secondes": 7.4,
+   "seed": 7555,
    "setup": true,
-   "vilain_pv": 16,
-   "villain": "mansion_attack_expert",
+   "vilain_pv": 13,
+   "villain": "protection_racket_typhoid_mary_expert",
    "won": "False"
   },
   "differences": {}
@@ -376,2073 +376,33 @@
  {
   "combo": [
    "brawn",
-   "the_tower_defense",
-   732
-  ],
-  "natif": {
-   "asks": 23,
-   "cartes": 3,
-   "hero": "brawn",
-   "reason": "Players Lost",
-   "round": 5,
-   "secondes": 11.3,
-   "seed": 732,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "the_tower_defense",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 23,
-   "cartes": 3,
-   "hero": "brawn",
-   "reason": "Players Lost",
-   "round": 5,
-   "secondes": 7.7,
-   "seed": 732,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "the_tower_defense",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "black_cat",
-   "the_getaway_purple_man_expert",
-   4400
-  ],
-  "natif": {
-   "asks": 25,
-   "cartes": 5,
-   "hero": "black_cat",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 7.4,
-   "seed": 4400,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_getaway_purple_man_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 25,
-   "cartes": 5,
-   "hero": "black_cat",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.2,
-   "seed": 4400,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_getaway_purple_man_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "echo",
-   "venom_goblin_expert",
-   5854
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 4,
-   "hero": "echo",
-   "reason": "Players Lost",
-   "round": 3,
-   "secondes": 9.2,
-   "seed": 5854,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_goblin_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 13,
-   "cartes": 4,
-   "hero": "echo",
-   "reason": "Players Lost",
-   "round": 3,
-   "secondes": 6.3,
-   "seed": 5854,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_goblin_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "spider_man_rainy",
-   "four_horsemen_expert",
-   85
-  ],
-  "natif": {
-   "asks": 31,
-   "cartes": 5,
-   "hero": "spider_man_rainy",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 10.2,
-   "seed": 85,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "four_horsemen_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 31,
-   "cartes": 5,
-   "hero": "spider_man_rainy",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.0,
-   "seed": 85,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "four_horsemen_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "beta_ray_bill",
-   "on_the_run",
-   9553
-  ],
-  "natif": {
-   "asks": 11,
-   "cartes": 2,
-   "hero": "beta_ray_bill",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 9.2,
-   "seed": 9553,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "on_the_run",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 11,
-   "cartes": 2,
-   "hero": "beta_ray_bill",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.4,
-   "seed": 9553,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "on_the_run",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "wolverine",
-   "the_raft_breakout_bullseye_expert",
-   8061
-  ],
-  "natif": {
-   "asks": 22,
-   "cartes": 4,
-   "hero": "wolverine",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 11.4,
-   "seed": 8061,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "the_raft_breakout_bullseye_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 22,
-   "cartes": 4,
-   "hero": "wolverine",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.7,
-   "seed": 8061,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "the_raft_breakout_bullseye_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "agatha_harkness",
-   "wd_electro",
-   2210
-  ],
-  "natif": {
-   "asks": 14,
-   "cartes": 2,
-   "hero": "agatha_harkness",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 10.9,
-   "seed": 2210,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "wd_electro",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 14,
-   "cartes": 2,
-   "hero": "agatha_harkness",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.7,
-   "seed": 2210,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "wd_electro",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "venom_rainy",
-   "the_getaway_purple_man_expert",
-   3653
-  ],
-  "natif": {
-   "asks": 16,
-   "cartes": 5,
-   "hero": "venom_rainy",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 8.9,
-   "seed": 3653,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_getaway_purple_man_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 16,
-   "cartes": 5,
-   "hero": "venom_rainy",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.7,
-   "seed": 3653,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_getaway_purple_man_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "superior_spider_man_tolliver",
-   "stop_the_presses_hammerhead_expert",
-   9633
-  ],
-  "natif": {
-   "asks": 43,
-   "cartes": 17,
-   "hero": "superior_spider_man_tolliver",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 11.7,
-   "seed": 9633,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "stop_the_presses_hammerhead_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 43,
-   "cartes": 17,
-   "hero": "superior_spider_man_tolliver",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 7.4,
-   "seed": 9633,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "stop_the_presses_hammerhead_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "rescue_rainy",
-   "en_sabah_nur_expert",
-   9800
-  ],
-  "natif": {
-   "asks": 9,
-   "cartes": 0,
-   "hero": "rescue_rainy",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 11.2,
-   "seed": 9800,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "en_sabah_nur_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 9,
-   "cartes": 0,
-   "hero": "rescue_rainy",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.1,
-   "seed": 9800,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "en_sabah_nur_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "jubilee",
-   "wd_electro_expert",
-   8270
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 2,
-   "hero": "jubilee",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 10.5,
-   "seed": 8270,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "wd_electro_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 13,
-   "cartes": 2,
-   "hero": "jubilee",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 6.3,
-   "seed": 8270,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "wd_electro_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "red_sonja",
-   "mutagen_formula",
-   1384
-  ],
-  "natif": {
-   "asks": 16,
-   "cartes": 1,
-   "hero": "red_sonja",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 9.6,
-   "seed": 1384,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "mutagen_formula",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 16,
-   "cartes": 1,
-   "hero": "red_sonja",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.1,
-   "seed": 1384,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "mutagen_formula",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "ghost_spider",
-   "she_hulk_pvp",
-   2624
-  ],
-  "natif": {
-   "asks": 31,
-   "cartes": 14,
-   "hero": "ghost_spider",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 11.9,
-   "seed": 2624,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "she_hulk_pvp",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 31,
-   "cartes": 14,
-   "hero": "ghost_spider",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 7.4,
-   "seed": 2624,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "she_hulk_pvp",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "wolverine_x23",
-   "enchantress",
-   9602
-  ],
-  "natif": {
-   "asks": 32,
-   "cartes": 11,
-   "hero": "wolverine_x23",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 13.0,
-   "seed": 9602,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "enchantress",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 32,
-   "cartes": 11,
-   "hero": "wolverine_x23",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 8.0,
-   "seed": 9602,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "enchantress",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "hulk_rainy",
-   "nebula",
-   8319
-  ],
-  "natif": {
-   "asks": 30,
-   "cartes": 4,
-   "hero": "hulk_rainy",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 11.0,
-   "seed": 8319,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "nebula",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 30,
-   "cartes": 4,
-   "hero": "hulk_rainy",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 6.8,
-   "seed": 8319,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "nebula",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "doctor_druid",
-   "sandman_expert",
-   6397
-  ],
-  "natif": {
-   "asks": 5,
-   "cartes": 0,
-   "hero": "doctor_druid",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 9.2,
-   "seed": 6397,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "sandman_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 5,
-   "cartes": 0,
-   "hero": "doctor_druid",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.2,
-   "seed": 6397,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "sandman_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "hawkeye",
-   "four_horsemen",
-   8521
-  ],
-  "natif": {
-   "asks": 5,
-   "cartes": 0,
-   "hero": "hawkeye",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 9.3,
-   "seed": 8521,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "four_horsemen",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 5,
-   "cartes": 0,
-   "hero": "hawkeye",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.8,
-   "seed": 8521,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "four_horsemen",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "hellcat",
-   "juggernaut",
-   6161
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 3,
-   "hero": "hellcat",
-   "reason": "Players Lost",
-   "round": 2,
-   "secondes": 9.6,
-   "seed": 6161,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "juggernaut",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 13,
-   "cartes": 3,
-   "hero": "hellcat",
-   "reason": "Players Lost",
-   "round": 2,
-   "secondes": 5.1,
-   "seed": 6161,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "juggernaut",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "spider_man_noir",
-   "apocalypse_expert",
-   1739
-  ],
-  "natif": {
-   "asks": 21,
-   "cartes": 8,
-   "hero": "spider_man_noir",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 9.8,
-   "seed": 1739,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "apocalypse_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 21,
-   "cartes": 8,
-   "hero": "spider_man_noir",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 5.4,
-   "seed": 1739,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "apocalypse_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "howard_the_duck",
-   "risky_business_expert",
-   1204
-  ],
-  "natif": {
-   "asks": 11,
-   "cartes": 2,
-   "hero": "howard_the_duck",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 9.4,
-   "seed": 1204,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "risky_business_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 11,
-   "cartes": 2,
-   "hero": "howard_the_duck",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 5.0,
-   "seed": 1204,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "risky_business_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "silk",
-   "art_museum_heist_typhoid_mary_expert",
-   5686
-  ],
-  "natif": {
-   "asks": 10,
-   "cartes": 0,
-   "hero": "silk",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 10.2,
-   "seed": 5686,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "art_museum_heist_typhoid_mary_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 10,
-   "cartes": 0,
-   "hero": "silk",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 5.5,
-   "seed": 5686,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "art_museum_heist_typhoid_mary_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "lockjaw",
-   "ultron_expert",
-   5791
-  ],
-  "natif": {
-   "asks": 20,
-   "cartes": 4,
-   "hero": "lockjaw",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 10.9,
-   "seed": 5791,
-   "setup": true,
-   "vilain_pv": 22,
-   "villain": "ultron_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 20,
-   "cartes": 4,
-   "hero": "lockjaw",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.6,
-   "seed": 5791,
-   "setup": true,
-   "vilain_pv": 22,
-   "villain": "ultron_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "yondu",
-   "art_museum_heist_electro",
-   420
-  ],
-  "natif": {
-   "asks": 15,
-   "cartes": 2,
-   "hero": "yondu",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 10.6,
-   "seed": 420,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "art_museum_heist_electro",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 15,
-   "cartes": 2,
-   "hero": "yondu",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 5.8,
-   "seed": 420,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "art_museum_heist_electro",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "ares",
-   "thanos",
-   7800
-  ],
-  "natif": {
-   "asks": 22,
-   "cartes": 5,
-   "hero": "ares",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 10.9,
-   "seed": 7800,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "thanos",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 22,
-   "cartes": 5,
-   "hero": "ares",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 6.1,
-   "seed": 7800,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "thanos",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "sentinel",
-   "project_wideawake_expert",
-   4976
-  ],
-  "natif": {
-   "asks": 29,
-   "cartes": 8,
-   "hero": "sentinel",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 11.8,
-   "seed": 4976,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "project_wideawake_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 29,
-   "cartes": 8,
-   "hero": "sentinel",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 7.4,
-   "seed": 4976,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "project_wideawake_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "harry_osborn",
-   "spiral_expert",
-   5342
-  ],
-  "natif": {
-   "asks": 11,
-   "cartes": 3,
-   "hero": "harry_osborn",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 9.0,
-   "seed": 5342,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "spiral_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 11,
-   "cartes": 3,
-   "hero": "harry_osborn",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 4.7,
-   "seed": 5342,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "spiral_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "beast",
-   "ebony_maw_expert",
-   8153
-  ],
-  "natif": {
-   "asks": 21,
-   "cartes": 3,
-   "hero": "beast",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 12.3,
-   "seed": 8153,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "ebony_maw_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 21,
-   "cartes": 3,
-   "hero": "beast",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 5.7,
-   "seed": 8153,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "ebony_maw_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "mister_fantastic",
-   "stop_the_presses_electro_expert",
-   9366
-  ],
-  "natif": {
-   "asks": 12,
-   "cartes": 1,
-   "hero": "mister_fantastic",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 10.0,
-   "seed": 9366,
-   "setup": true,
-   "vilain_pv": 17,
-   "villain": "stop_the_presses_electro_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 12,
-   "cartes": 1,
-   "hero": "mister_fantastic",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.4,
-   "seed": 9366,
-   "setup": true,
-   "vilain_pv": 17,
-   "villain": "stop_the_presses_electro_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "magik",
-   "the_tower_defense",
-   2798
-  ],
-  "natif": {
-   "asks": 34,
-   "cartes": 12,
-   "hero": "magik",
-   "reason": "Players Lost",
-   "round": 6,
-   "secondes": 14.2,
-   "seed": 2798,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "the_tower_defense",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 34,
-   "cartes": 12,
-   "hero": "magik",
-   "reason": "Players Lost",
-   "round": 6,
-   "secondes": 11.7,
-   "seed": 2798,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "the_tower_defense",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "falcon",
-   "four_horsemen_expert",
-   9688
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 5,
-   "hero": "falcon",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 9.7,
-   "seed": 9688,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "four_horsemen_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 13,
-   "cartes": 5,
-   "hero": "falcon",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 6.0,
-   "seed": 9688,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "four_horsemen_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "wonder_man",
-   "the_getaway_bullseye_expert",
-   3392
-  ],
-  "natif": {
-   "asks": 16,
-   "cartes": 4,
-   "hero": "wonder_man",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 9.4,
-   "seed": 3392,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "the_getaway_bullseye_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 16,
-   "cartes": 4,
-   "hero": "wonder_man",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 5.7,
-   "seed": 3392,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "the_getaway_bullseye_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "iron_patriot",
-   "sinister_six_expert",
-   5512
-  ],
-  "natif": {
-   "asks": 4,
-   "cartes": 0,
-   "hero": "iron_patriot",
-   "reason": "The Main Scheme was Completed",
-   "round": 1,
-   "secondes": 12.3,
-   "seed": 5512,
-   "setup": true,
-   "vilain_pv": 8,
-   "villain": "sinister_six_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 4,
-   "cartes": 0,
-   "hero": "iron_patriot",
-   "reason": "The Main Scheme was Completed",
-   "round": 1,
-   "secondes": 5.0,
-   "seed": 5512,
-   "setup": true,
-   "vilain_pv": 8,
-   "villain": "sinister_six_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "blade",
-   "stop_the_presses_bullseye_expert",
-   9802
-  ],
-  "natif": {
-   "asks": 10,
-   "cartes": 3,
-   "hero": "blade",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 8.3,
-   "seed": 9802,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "stop_the_presses_bullseye_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 10,
-   "cartes": 3,
-   "hero": "blade",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.4,
-   "seed": 9802,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "stop_the_presses_bullseye_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "phoenix",
-   "magneto_expert",
-   1139
-  ],
-  "natif": {
-   "asks": 23,
-   "cartes": 7,
-   "hero": "phoenix",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 11.7,
-   "seed": 1139,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "magneto_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 23,
-   "cartes": 7,
-   "hero": "phoenix",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 7.3,
-   "seed": 1139,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "magneto_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "scarlet_spider",
-   "the_getaway_typhoid_mary",
-   6540
-  ],
-  "natif": {
-   "asks": 5,
-   "cartes": 0,
-   "hero": "scarlet_spider",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 7.2,
-   "seed": 6540,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "the_getaway_typhoid_mary",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 5,
-   "cartes": 0,
-   "hero": "scarlet_spider",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 3.8,
-   "seed": 6540,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "the_getaway_typhoid_mary",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "scarlet_witch",
-   "art_museum_heist_hammerhead",
-   3203
-  ],
-  "natif": {
-   "asks": 10,
-   "cartes": 1,
-   "hero": "scarlet_witch",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 7.4,
-   "seed": 3203,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "art_museum_heist_hammerhead",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 10,
-   "cartes": 1,
-   "hero": "scarlet_witch",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.5,
-   "seed": 3203,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "art_museum_heist_hammerhead",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "ms_america",
-   "ultron_expert",
-   2841
-  ],
-  "natif": {
-   "asks": 21,
-   "cartes": 5,
-   "hero": "ms_america",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 9.2,
-   "seed": 2841,
-   "setup": true,
-   "vilain_pv": 22,
-   "villain": "ultron_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 21,
-   "cartes": 5,
-   "hero": "ms_america",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 4.5,
-   "seed": 2841,
-   "setup": true,
-   "vilain_pv": 22,
-   "villain": "ultron_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "gamora",
-   "art_museum_heist_purple_man_expert",
-   8926
-  ],
-  "natif": {
-   "asks": 26,
-   "cartes": 8,
-   "hero": "gamora",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 9.5,
-   "seed": 8926,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "art_museum_heist_purple_man_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 26,
-   "cartes": 8,
-   "hero": "gamora",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.3,
-   "seed": 8926,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "art_museum_heist_purple_man_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "agent_anti_venom",
-   "art_museum_heist_typhoid_mary",
-   7403
-  ],
-  "natif": {
-   "asks": 38,
-   "cartes": 20,
-   "hero": "agent_anti_venom",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 9.7,
-   "seed": 7403,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "art_museum_heist_typhoid_mary",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 38,
-   "cartes": 20,
-   "hero": "agent_anti_venom",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 7.2,
-   "seed": 7403,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "art_museum_heist_typhoid_mary",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "hercules",
-   "ultron",
-   3089
-  ],
-  "natif": {
-   "asks": 11,
-   "cartes": 0,
-   "hero": "hercules",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 10.5,
-   "seed": 3089,
-   "setup": true,
-   "vilain_pv": 17,
-   "villain": "ultron",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 11,
-   "cartes": 0,
-   "hero": "hercules",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.3,
-   "seed": 3089,
-   "setup": true,
-   "vilain_pv": 17,
-   "villain": "ultron",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "hellcat_she_hulk",
-   "stop_the_presses_purple_man_expert",
-   336
-  ],
-  "natif": {
-   "asks": 23,
-   "cartes": 6,
-   "hero": "hellcat_she_hulk",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 9.6,
-   "seed": 336,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "stop_the_presses_purple_man_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 23,
-   "cartes": 6,
-   "hero": "hellcat_she_hulk",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.9,
-   "seed": 336,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "stop_the_presses_purple_man_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "ironheart",
-   "en_sabah_nur_expert",
-   8683
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 5,
-   "hero": "ironheart",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 10.2,
-   "seed": 8683,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "en_sabah_nur_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 13,
-   "cartes": 5,
-   "hero": "ironheart",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.1,
-   "seed": 8683,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "en_sabah_nur_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "invisible_woman",
-   "klaw_expert",
-   8469
-  ],
-  "natif": {
-   "asks": 26,
-   "cartes": 12,
-   "hero": "invisible_woman",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 11.1,
-   "seed": 8469,
-   "setup": true,
-   "vilain_pv": 26,
-   "villain": "klaw_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 26,
-   "cartes": 12,
-   "hero": "invisible_woman",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 7.2,
-   "seed": 8469,
-   "setup": true,
-   "vilain_pv": 26,
-   "villain": "klaw_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "spider_man_2099",
-   "enchantress_expert",
-   2628
-  ],
-  "natif": {
-   "asks": 44,
-   "cartes": 17,
-   "hero": "spider_man_2099",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 13.2,
-   "seed": 2628,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "enchantress_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 44,
-   "cartes": 17,
-   "hero": "spider_man_2099",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 8.5,
-   "seed": 2628,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "enchantress_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "hulkling",
-   "venom_expert",
-   3048
-  ],
-  "natif": {
-   "asks": 3,
-   "cartes": 0,
-   "hero": "hulkling",
-   "reason": "The Main Scheme was Completed",
-   "round": 1,
-   "secondes": 13.5,
-   "seed": 3048,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 3,
-   "cartes": 0,
-   "hero": "hulkling",
-   "reason": "The Main Scheme was Completed",
-   "round": 1,
-   "secondes": 4.2,
-   "seed": 3048,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "ms_marvel",
-   "risky_business_expert",
-   4470
-  ],
-  "natif": {
-   "asks": 22,
-   "cartes": 2,
-   "hero": "ms_marvel",
-   "reason": "The Main Scheme was Completed",
-   "round": 6,
-   "secondes": 15.9,
-   "seed": 4470,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "risky_business_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 22,
-   "cartes": 2,
-   "hero": "ms_marvel",
-   "reason": "The Main Scheme was Completed",
-   "round": 6,
-   "secondes": 7.1,
-   "seed": 4470,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "risky_business_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "maria_hill",
    "she_hulk_pvp_competitive_expert",
-   8733
+   1486
   ],
   "natif": {
-   "asks": 11,
-   "cartes": 4,
-   "hero": "maria_hill",
+   "asks": 35,
+   "cartes": 3,
+   "hero": "brawn",
    "reason": "All players were eliminated",
-   "round": 1,
-   "secondes": 9.4,
-   "seed": 8733,
+   "round": 5,
+   "secondes": 14.8,
+   "seed": 1486,
    "setup": true,
    "vilain_pv": 20,
    "villain": "she_hulk_pvp_competitive_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 11,
-   "cartes": 4,
-   "hero": "maria_hill",
+   "asks": 35,
+   "cartes": 3,
+   "hero": "brawn",
    "reason": "All players were eliminated",
-   "round": 1,
-   "secondes": 4.5,
-   "seed": 8733,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "she_hulk_pvp_competitive_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "kate_bishop",
-   "she_hulk_pvp",
-   1289
-  ],
-  "natif": {
-   "asks": 44,
-   "cartes": 19,
-   "hero": "kate_bishop",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 9.6,
-   "seed": 1289,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "she_hulk_pvp",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 44,
-   "cartes": 19,
-   "hero": "kate_bishop",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 6.2,
-   "seed": 1289,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "she_hulk_pvp",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "vision",
-   "risky_business",
-   4996
-  ],
-  "natif": {
-   "asks": 29,
-   "cartes": 11,
-   "hero": "vision",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 10.9,
-   "seed": 4996,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "risky_business",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 29,
-   "cartes": 11,
-   "hero": "vision",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
+   "round": 5,
    "secondes": 7.7,
-   "seed": 4996,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "risky_business",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "red_guardian",
-   "infiltrate_the_museum_expert",
-   5638
-  ],
-  "natif": {
-   "asks": 27,
-   "cartes": 8,
-   "hero": "red_guardian",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 9.9,
-   "seed": 5638,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "infiltrate_the_museum_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 27,
-   "cartes": 8,
-   "hero": "red_guardian",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.8,
-   "seed": 5638,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "infiltrate_the_museum_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "lady_sif",
-   "hela",
-   4317
-  ],
-  "natif": {
-   "asks": 36,
-   "cartes": 15,
-   "hero": "lady_sif",
-   "reason": "The Final Stage of the Main Scheme was Completed",
-   "round": 4,
-   "secondes": 11.0,
-   "seed": 4317,
-   "setup": true,
-   "vilain_pv": 8,
-   "villain": "hela",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 36,
-   "cartes": 15,
-   "hero": "lady_sif",
-   "reason": "The Final Stage of the Main Scheme was Completed",
-   "round": 4,
-   "secondes": 7.0,
-   "seed": 4317,
-   "setup": true,
-   "vilain_pv": 8,
-   "villain": "hela",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "nick_fury",
-   "stop_the_presses_electro",
-   8153
-  ],
-  "natif": {
-   "asks": 22,
-   "cartes": 5,
-   "hero": "nick_fury",
-   "reason": "Players Lost",
-   "round": 3,
-   "secondes": 9.8,
-   "seed": 8153,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "stop_the_presses_electro",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 22,
-   "cartes": 5,
-   "hero": "nick_fury",
-   "reason": "Players Lost",
-   "round": 3,
-   "secondes": 5.7,
-   "seed": 8153,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "stop_the_presses_electro",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "thor",
-   "she_hulk_pvp",
-   4714
-  ],
-  "natif": {
-   "asks": 28,
-   "cartes": 10,
-   "hero": "thor",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 10.2,
-   "seed": 4714,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "she_hulk_pvp",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 28,
-   "cartes": 10,
-   "hero": "thor",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 7.0,
-   "seed": 4714,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "she_hulk_pvp",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "superior_spider_man",
-   "stop_the_presses_electro_expert",
-   2900
-  ],
-  "natif": {
-   "asks": 7,
-   "cartes": 1,
-   "hero": "superior_spider_man",
-   "reason": "The Main Scheme was Completed",
-   "round": 1,
-   "secondes": 8.4,
-   "seed": 2900,
-   "setup": true,
-   "vilain_pv": 17,
-   "villain": "stop_the_presses_electro_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 7,
-   "cartes": 1,
-   "hero": "superior_spider_man",
-   "reason": "The Main Scheme was Completed",
-   "round": 1,
-   "secondes": 3.9,
-   "seed": 2900,
-   "setup": true,
-   "vilain_pv": 17,
-   "villain": "stop_the_presses_electro_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "madame_web",
-   "project_wideawake_expert",
-   8509
-  ],
-  "natif": {
-   "asks": 9,
-   "cartes": 2,
-   "hero": "madame_web",
-   "reason": "Players Lost",
-   "round": 3,
-   "secondes": 9.9,
-   "seed": 8509,
-   "setup": true,
-   "vilain_pv": 26,
-   "villain": "project_wideawake_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 9,
-   "cartes": 2,
-   "hero": "madame_web",
-   "reason": "Players Lost",
-   "round": 3,
-   "secondes": 5.9,
-   "seed": 8509,
-   "setup": true,
-   "vilain_pv": 26,
-   "villain": "project_wideawake_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "doctor_strange",
-   "stop_the_presses_purple_man_expert",
-   7285
-  ],
-  "natif": {
-   "asks": 23,
-   "cartes": 6,
-   "hero": "doctor_strange",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 9.7,
-   "seed": 7285,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "stop_the_presses_purple_man_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 23,
-   "cartes": 6,
-   "hero": "doctor_strange",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.3,
-   "seed": 7285,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "stop_the_presses_purple_man_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "iceman",
-   "ebony_maw",
-   8639
-  ],
-  "natif": {
-   "asks": 45,
-   "cartes": 17,
-   "hero": "iceman",
-   "reason": "The Main Scheme was Completed",
-   "round": 5,
-   "secondes": 12.4,
-   "seed": 8639,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "ebony_maw",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 45,
-   "cartes": 17,
-   "hero": "iceman",
-   "reason": "The Main Scheme was Completed",
-   "round": 5,
-   "secondes": 8.5,
-   "seed": 8639,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "ebony_maw",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "wasp",
-   "the_getaway_electro",
-   4487
-  ],
-  "natif": {
-   "asks": 7,
-   "cartes": 1,
-   "hero": "wasp",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 8.7,
-   "seed": 4487,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_getaway_electro",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 7,
-   "cartes": 1,
-   "hero": "wasp",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.4,
-   "seed": 4487,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_getaway_electro",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "spider_woman_kajislav",
-   "captain_marvel",
-   3512
-  ],
-  "natif": {
-   "asks": 24,
-   "cartes": 3,
-   "hero": "spider_woman_kajislav",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 11.3,
-   "seed": 3512,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "captain_marvel",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 24,
-   "cartes": 3,
-   "hero": "spider_woman_kajislav",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 7.5,
-   "seed": 3512,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "captain_marvel",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "luke_cage",
-   "magneto_expert",
-   81
-  ],
-  "natif": {
-   "asks": 11,
-   "cartes": 1,
-   "hero": "luke_cage",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 13.4,
-   "seed": 81,
+   "seed": 1486,
    "setup": true,
    "vilain_pv": 20,
-   "villain": "magneto_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 11,
-   "cartes": 1,
-   "hero": "luke_cage",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 5.6,
-   "seed": 81,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "magneto_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "rogue",
-   "captain_america_expert",
-   7441
-  ],
-  "natif": {
-   "asks": 27,
-   "cartes": 14,
-   "hero": "rogue",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 14.7,
-   "seed": 7441,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "captain_america_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 27,
-   "cartes": 14,
-   "hero": "rogue",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 8.2,
-   "seed": 7441,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "captain_america_expert",
+   "villain": "she_hulk_pvp_competitive_expert",
    "won": "False"
   },
   "differences": {}
@@ -2450,781 +410,67 @@
  {
   "combo": [
    "daredevil",
-   "ultron_expert",
-   5414
+   "sabretooth",
+   9597
   ],
   "natif": {
    "asks": 30,
-   "cartes": 14,
+   "cartes": 12,
    "hero": "daredevil",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 12.1,
-   "seed": 5414,
+   "reason": "Players Lost",
+   "round": 4,
+   "secondes": 14.9,
+   "seed": 9597,
    "setup": true,
-   "vilain_pv": 22,
-   "villain": "ultron_expert",
+   "vilain_pv": 13,
+   "villain": "sabretooth",
    "won": "False"
   },
   "pyodide": {
    "asks": 30,
-   "cartes": 14,
+   "cartes": 12,
    "hero": "daredevil",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 8.9,
-   "seed": 5414,
-   "setup": true,
-   "vilain_pv": 22,
-   "villain": "ultron_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "black_panther_shuri",
-   "sandman",
-   8931
-  ],
-  "natif": {
-   "asks": 24,
-   "cartes": 9,
-   "hero": "black_panther_shuri",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 11.2,
-   "seed": 8931,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "sandman",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 24,
-   "cartes": 9,
-   "hero": "black_panther_shuri",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 7.2,
-   "seed": 8931,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "sandman",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "angel",
-   "venom_goblin_expert",
-   2990
-  ],
-  "natif": {
-   "asks": 23,
-   "cartes": 1,
-   "hero": "angel",
    "reason": "Players Lost",
-   "round": 3,
-   "secondes": 12.9,
-   "seed": 2990,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_goblin_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 23,
-   "cartes": 1,
-   "hero": "angel",
-   "reason": "Players Lost",
-   "round": 3,
-   "secondes": 7.4,
-   "seed": 2990,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_goblin_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "bishop",
-   "art_museum_heist_electro",
-   5767
-  ],
-  "natif": {
-   "asks": 19,
-   "cartes": 3,
-   "hero": "bishop",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 11.2,
-   "seed": 5767,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "art_museum_heist_electro",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 19,
-   "cartes": 3,
-   "hero": "bishop",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.0,
-   "seed": 5767,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "art_museum_heist_electro",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "storm",
-   "god_of_lies",
-   5763
-  ],
-  "natif": {
-   "asks": 28,
-   "cartes": 11,
-   "hero": "storm",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 14.1,
-   "seed": 5763,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "god_of_lies",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 28,
-   "cartes": 11,
-   "hero": "storm",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 9.2,
-   "seed": 5763,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "god_of_lies",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "shadowcat",
-   "the_hood_expert",
-   9378
-  ],
-  "natif": {
-   "asks": 19,
-   "cartes": 4,
-   "hero": "shadowcat",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 13.2,
-   "seed": 9378,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "the_hood_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 19,
-   "cartes": 4,
-   "hero": "shadowcat",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 6.8,
-   "seed": 9378,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "the_hood_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "cyclops",
-   "the_getaway_hammerhead_expert",
-   3548
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 4,
-   "hero": "cyclops",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 10.1,
-   "seed": 3548,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_getaway_hammerhead_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 13,
-   "cartes": 4,
-   "hero": "cyclops",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.7,
-   "seed": 3548,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_getaway_hammerhead_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "zeus",
-   "dark_beast",
-   4596
-  ],
-  "natif": {
-   "asks": 18,
-   "cartes": 9,
-   "hero": "zeus",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 10.6,
-   "seed": 4596,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "dark_beast",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 18,
-   "cartes": 9,
-   "hero": "zeus",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 6.3,
-   "seed": 4596,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "dark_beast",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "tigra",
-   "the_hood",
-   9307
-  ],
-  "natif": {
-   "asks": 22,
-   "cartes": 8,
-   "hero": "tigra",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 15.4,
-   "seed": 9307,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "the_hood",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 22,
-   "cartes": 8,
-   "hero": "tigra",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 9.8,
-   "seed": 9307,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "the_hood",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "the_thing",
-   "wd_vulture_underling_expert",
-   3514
-  ],
-  "natif": {
-   "asks": 9,
-   "cartes": 0,
-   "hero": "the_thing",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 10.7,
-   "seed": 3514,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "wd_vulture_underling_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 9,
-   "cartes": 0,
-   "hero": "the_thing",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.3,
-   "seed": 3514,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "wd_vulture_underling_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "iron_man",
-   "the_once_and_future_kang_expert",
-   4829
-  ],
-  "natif": {
-   "asks": 31,
-   "cartes": 12,
-   "hero": "iron_man",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 11.7,
-   "seed": 4829,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_once_and_future_kang_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 31,
-   "cartes": 12,
-   "hero": "iron_man",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 7.4,
-   "seed": 4829,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "the_once_and_future_kang_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "nova",
-   "the_once_and_future_kang",
-   4393
-  ],
-  "natif": {
-   "asks": 16,
-   "cartes": 3,
-   "hero": "nova",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 11.9,
-   "seed": 4393,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "the_once_and_future_kang",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 16,
-   "cartes": 3,
-   "hero": "nova",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 5.5,
-   "seed": 4393,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "the_once_and_future_kang",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "nightcrawler",
-   "venom_goblin_expert",
-   9106
-  ],
-  "natif": {
-   "asks": 26,
-   "cartes": 7,
-   "hero": "nightcrawler",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 12.6,
-   "seed": 9106,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_goblin_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 26,
-   "cartes": 7,
-   "hero": "nightcrawler",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 8.6,
-   "seed": 9106,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_goblin_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "angela",
-   "en_sabah_nur_expert",
-   1663
-  ],
-  "natif": {
-   "asks": 34,
-   "cartes": 16,
-   "hero": "angela",
-   "reason": "The Main Scheme was Completed",
    "round": 4,
-   "secondes": 11.7,
-   "seed": 1663,
+   "secondes": 8.0,
+   "seed": 9597,
    "setup": true,
-   "vilain_pv": 20,
-   "villain": "en_sabah_nur_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 34,
-   "cartes": 16,
-   "hero": "angela",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 7.1,
-   "seed": 1663,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "en_sabah_nur_expert",
+   "vilain_pv": 13,
+   "villain": "sabretooth",
    "won": "False"
   },
   "differences": {}
  },
  {
   "combo": [
-   "texas_twister",
-   "mister_sinister_expert",
-   1580
+   "ms_america",
+   "the_getaway_typhoid_mary_expert",
+   8167
   ],
   "natif": {
-   "asks": 8,
-   "cartes": 2,
-   "hero": "texas_twister",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 15.0,
-   "seed": 1580,
-   "setup": true,
-   "vilain_pv": 17,
-   "villain": "mister_sinister_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 8,
-   "cartes": 2,
-   "hero": "texas_twister",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 6.5,
-   "seed": 1580,
-   "setup": true,
-   "vilain_pv": 17,
-   "villain": "mister_sinister_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "sunfire",
-   "sinister_six_expert",
-   2807
-  ],
-  "natif": {
-   "asks": 8,
-   "cartes": 1,
-   "hero": "sunfire",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 11.2,
-   "seed": 2807,
-   "setup": true,
-   "vilain_pv": 8,
-   "villain": "sinister_six_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 8,
-   "cartes": 1,
-   "hero": "sunfire",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 4.9,
-   "seed": 2807,
-   "setup": true,
-   "vilain_pv": 8,
-   "villain": "sinister_six_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "dazzler",
-   "crossbones_expert",
-   991
-  ],
-  "natif": {
-   "asks": 22,
-   "cartes": 5,
-   "hero": "dazzler",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 13.2,
-   "seed": 991,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "crossbones_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 22,
-   "cartes": 5,
-   "hero": "dazzler",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 7.9,
-   "seed": 991,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "crossbones_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "spider_man_miles_morales",
-   "protection_racket_purple_man_expert",
-   3040
-  ],
-  "natif": {
-   "asks": 6,
-   "cartes": 0,
-   "hero": "spider_man_miles_morales",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 10.9,
-   "seed": 3040,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "protection_racket_purple_man_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 6,
-   "cartes": 0,
-   "hero": "spider_man_miles_morales",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 5.4,
-   "seed": 3040,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "protection_racket_purple_man_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "valkyrie",
-   "ultron_expert",
-   1742
-  ],
-  "natif": {
-   "asks": 19,
-   "cartes": 6,
-   "hero": "valkyrie",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 13.2,
-   "seed": 1742,
-   "setup": true,
-   "vilain_pv": 22,
-   "villain": "ultron_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 19,
-   "cartes": 6,
-   "hero": "valkyrie",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 6.4,
-   "seed": 1742,
-   "setup": true,
-   "vilain_pv": 22,
-   "villain": "ultron_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "nebula",
-   "taskmaster_expert",
-   5138
-  ],
-  "natif": {
-   "asks": 6,
-   "cartes": 1,
-   "hero": "nebula",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 11.8,
-   "seed": 5138,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "taskmaster_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 6,
-   "cartes": 1,
-   "hero": "nebula",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.4,
-   "seed": 5138,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "taskmaster_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "domino",
-   "mojo",
-   9636
-  ],
-  "natif": {
-   "asks": 12,
+   "asks": 11,
    "cartes": 4,
-   "hero": "domino",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 14.0,
-   "seed": 9636,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "mojo",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 12,
-   "cartes": 4,
-   "hero": "domino",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.4,
-   "seed": 9636,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "mojo",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "magneto",
-   "batroc",
-   4769
-  ],
-  "natif": {
-   "asks": 5,
-   "cartes": 0,
-   "hero": "magneto",
+   "hero": "ms_america",
    "reason": "The Main Scheme was Completed",
    "round": 2,
-   "secondes": 14.0,
-   "seed": 4769,
+   "secondes": 10.5,
+   "seed": 8167,
    "setup": true,
-   "vilain_pv": 8,
-   "villain": "batroc",
+   "vilain_pv": 13,
+   "villain": "the_getaway_typhoid_mary_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 5,
-   "cartes": 0,
-   "hero": "magneto",
+   "asks": 11,
+   "cartes": 4,
+   "hero": "ms_america",
    "reason": "The Main Scheme was Completed",
    "round": 2,
    "secondes": 4.5,
-   "seed": 4769,
+   "seed": 8167,
    "setup": true,
-   "vilain_pv": 8,
-   "villain": "batroc",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "drax",
-   "on_the_run",
-   2645
-  ],
-  "natif": {
-   "asks": 28,
-   "cartes": 16,
-   "hero": "drax",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 13.6,
-   "seed": 2645,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "on_the_run",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 28,
-   "cartes": 16,
-   "hero": "drax",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 6.4,
-   "seed": 2645,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "on_the_run",
+   "vilain_pv": 13,
+   "villain": "the_getaway_typhoid_mary_expert",
    "won": "False"
   },
   "differences": {}
@@ -3232,407 +478,67 @@
  {
   "combo": [
    "colossus",
-   "mister_sinister",
-   4197
+   "dark_beast_expert",
+   6971
   ],
   "natif": {
-   "asks": 19,
-   "cartes": 6,
+   "asks": 6,
+   "cartes": 2,
    "hero": "colossus",
-   "reason": "Players Lost",
-   "round": 2,
-   "secondes": 11.1,
-   "seed": 4197,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "mister_sinister",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 19,
-   "cartes": 6,
-   "hero": "colossus",
-   "reason": "Players Lost",
-   "round": 2,
-   "secondes": 6.5,
-   "seed": 4197,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "mister_sinister",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "gwenpool",
-   "batroc",
-   228
-  ],
-  "natif": {
-   "asks": 26,
-   "cartes": 7,
-   "hero": "gwenpool",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 9.9,
-   "seed": 228,
-   "setup": true,
-   "vilain_pv": 7,
-   "villain": "batroc",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 26,
-   "cartes": 7,
-   "hero": "gwenpool",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.5,
-   "seed": 228,
-   "setup": true,
-   "vilain_pv": 7,
-   "villain": "batroc",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "blink",
-   "sandman_expert",
-   4212
-  ],
-  "natif": {
-   "asks": 37,
-   "cartes": 10,
-   "hero": "blink",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 15.5,
-   "seed": 4212,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "sandman_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 37,
-   "cartes": 10,
-   "hero": "blink",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 11.9,
-   "seed": 4212,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "sandman_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "psylocke",
-   "she_hulk_pvp",
-   253
-  ],
-  "natif": {
-   "asks": 28,
-   "cartes": 9,
-   "hero": "psylocke",
-   "reason": "The Main Scheme was Completed",
-   "round": 5,
-   "secondes": 43.7,
-   "seed": 253,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "she_hulk_pvp",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 28,
-   "cartes": 9,
-   "hero": "psylocke",
-   "reason": "The Main Scheme was Completed",
-   "round": 5,
-   "secondes": 13.0,
-   "seed": 253,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "she_hulk_pvp",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "wave",
-   "baron_zemo",
-   1581
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 1,
-   "hero": "wave",
    "reason": "The Main Scheme was Completed",
    "round": 1,
-   "secondes": 69.9,
-   "seed": 1581,
+   "secondes": 12.7,
+   "seed": 6971,
    "setup": true,
    "vilain_pv": 18,
-   "villain": "baron_zemo",
+   "villain": "dark_beast_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 13,
-   "cartes": 1,
-   "hero": "wave",
+   "asks": 6,
+   "cartes": 2,
+   "hero": "colossus",
    "reason": "The Main Scheme was Completed",
    "round": 1,
    "secondes": 5.0,
-   "seed": 1581,
+   "seed": 6971,
    "setup": true,
    "vilain_pv": 18,
-   "villain": "baron_zemo",
+   "villain": "dark_beast_expert",
    "won": "False"
   },
   "differences": {}
  },
  {
   "combo": [
-   "stan_lee",
-   "magog",
-   377
+   "texas_twister",
+   "taskmaster_expert",
+   9834
   ],
   "natif": {
-   "asks": 25,
-   "cartes": 11,
-   "hero": "stan_lee",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 51.7,
-   "seed": 377,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "magog",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 25,
-   "cartes": 11,
-   "hero": "stan_lee",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 6.5,
-   "seed": 377,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "magog",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "hulk",
-   "nebula_expert",
-   2016
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 1,
-   "hero": "hulk",
+   "asks": 5,
+   "cartes": 0,
+   "hero": "texas_twister",
    "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 18.5,
-   "seed": 2016,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "nebula_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 13,
-   "cartes": 1,
-   "hero": "hulk",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.3,
-   "seed": 2016,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "nebula_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "jessica_jones",
-   "captain_marvel",
-   9195
-  ],
-  "natif": {
-   "asks": 30,
-   "cartes": 8,
-   "hero": "jessica_jones",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 11.6,
-   "seed": 9195,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "captain_marvel",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 30,
-   "cartes": 8,
-   "hero": "jessica_jones",
-   "reason": "All players were eliminated",
-   "round": 4,
-   "secondes": 7.4,
-   "seed": 9195,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "captain_marvel",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "venom",
-   "the_raft_breakout_bullseye_expert",
-   5740
-  ],
-  "natif": {
-   "asks": 29,
-   "cartes": 6,
-   "hero": "venom",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 10.6,
-   "seed": 5740,
+   "round": 2,
+   "secondes": 12.3,
+   "seed": 9834,
    "setup": true,
    "vilain_pv": 16,
-   "villain": "the_raft_breakout_bullseye_expert",
+   "villain": "taskmaster_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 29,
-   "cartes": 6,
-   "hero": "venom",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 7.0,
-   "seed": 5740,
+   "asks": 5,
+   "cartes": 0,
+   "hero": "texas_twister",
+   "reason": "The Main Scheme was Completed",
+   "round": 2,
+   "secondes": 4.5,
+   "seed": 9834,
    "setup": true,
    "vilain_pv": 16,
-   "villain": "the_raft_breakout_bullseye_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "winter_soldier",
-   "on_the_run",
-   7472
-  ],
-  "natif": {
-   "asks": 12,
-   "cartes": 1,
-   "hero": "winter_soldier",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 9.5,
-   "seed": 7472,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "on_the_run",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 12,
-   "cartes": 1,
-   "hero": "winter_soldier",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 5.0,
-   "seed": 7472,
-   "setup": true,
-   "vilain_pv": 9,
-   "villain": "on_the_run",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "black_widow",
-   "the_raft_breakout_typhoid_mary_expert",
-   623
-  ],
-  "natif": {
-   "asks": 7,
-   "cartes": 0,
-   "hero": "black_widow",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 11.4,
-   "seed": 623,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "the_raft_breakout_typhoid_mary_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 7,
-   "cartes": 0,
-   "hero": "black_widow",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 5.2,
-   "seed": 623,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "the_raft_breakout_typhoid_mary_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "x_23",
-   "sabretooth_expert",
-   5179
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 4,
-   "hero": "x_23",
-   "reason": "Players Lost",
-   "round": 4,
-   "secondes": 10.5,
-   "seed": 5179,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "sabretooth_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 13,
-   "cartes": 4,
-   "hero": "x_23",
-   "reason": "Players Lost",
-   "round": 4,
-   "secondes": 5.9,
-   "seed": 5179,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "sabretooth_expert",
+   "villain": "taskmaster_expert",
    "won": "False"
   },
   "differences": {}
@@ -3640,543 +546,33 @@
  {
   "combo": [
    "agent_13",
-   "the_raft_breakout_typhoid_mary_expert",
-   3533
+   "stop_the_presses_typhoid_mary_expert",
+   6524
   ],
   "natif": {
-   "asks": 23,
-   "cartes": 7,
+   "asks": 20,
+   "cartes": 5,
    "hero": "agent_13",
    "reason": "All players were eliminated",
    "round": 2,
-   "secondes": 8.6,
-   "seed": 3533,
+   "secondes": 12.0,
+   "seed": 6524,
    "setup": true,
    "vilain_pv": 13,
-   "villain": "the_raft_breakout_typhoid_mary_expert",
+   "villain": "stop_the_presses_typhoid_mary_expert",
    "won": "False"
   },
   "pyodide": {
-   "asks": 23,
-   "cartes": 7,
+   "asks": 20,
+   "cartes": 5,
    "hero": "agent_13",
    "reason": "All players were eliminated",
    "round": 2,
-   "secondes": 5.1,
-   "seed": 3533,
+   "secondes": 5.6,
+   "seed": 6524,
    "setup": true,
    "vilain_pv": 13,
-   "villain": "the_raft_breakout_typhoid_mary_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "albert",
-   "the_raft_breakout_purple_man",
-   7581
-  ],
-  "natif": {
-   "asks": 18,
-   "cartes": 2,
-   "hero": "albert",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 9.5,
-   "seed": 7581,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "the_raft_breakout_purple_man",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 18,
-   "cartes": 2,
-   "hero": "albert",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 6.1,
-   "seed": 7581,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "the_raft_breakout_purple_man",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "viv_vision",
-   "she_hulk_pvp_expert",
-   1957
-  ],
-  "natif": {
-   "asks": 16,
-   "cartes": 4,
-   "hero": "viv_vision",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 10.0,
-   "seed": 1957,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "she_hulk_pvp_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 16,
-   "cartes": 4,
-   "hero": "viv_vision",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 5.0,
-   "seed": 1957,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "she_hulk_pvp_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "spider_ham",
-   "vision_pvp_expert",
-   6131
-  ],
-  "natif": {
-   "asks": 15,
-   "cartes": 6,
-   "hero": "spider_ham",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 20.2,
-   "seed": 6131,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "vision_pvp_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 15,
-   "cartes": 6,
-   "hero": "spider_ham",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.8,
-   "seed": 6131,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "vision_pvp_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "groot",
-   "taskmaster",
-   4122
-  ],
-  "natif": {
-   "asks": 23,
-   "cartes": 3,
-   "hero": "groot",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 19.5,
-   "seed": 4122,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "taskmaster",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 23,
-   "cartes": 3,
-   "hero": "groot",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 6.8,
-   "seed": 4122,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "taskmaster",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "iron_lad",
-   "risky_business_expert",
-   4783
-  ],
-  "natif": {
-   "asks": 11,
-   "cartes": 4,
-   "hero": "iron_lad",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 16.5,
-   "seed": 4783,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "risky_business_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 11,
-   "cartes": 4,
-   "hero": "iron_lad",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.2,
-   "seed": 4783,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "risky_business_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "speed",
-   "protection_racket_purple_man_expert",
-   945
-  ],
-  "natif": {
-   "asks": 32,
-   "cartes": 13,
-   "hero": "speed",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 13.8,
-   "seed": 945,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "protection_racket_purple_man_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 32,
-   "cartes": 13,
-   "hero": "speed",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 7.4,
-   "seed": 945,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "protection_racket_purple_man_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "rocket_raccoon",
-   "zola",
-   7156
-  ],
-  "natif": {
-   "asks": 26,
-   "cartes": 7,
-   "hero": "rocket_raccoon",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 12.3,
-   "seed": 7156,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "zola",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 26,
-   "cartes": 7,
-   "hero": "rocket_raccoon",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 8.0,
-   "seed": 7156,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "zola",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "black_panther",
-   "art_museum_heist_electro",
-   4611
-  ],
-  "natif": {
-   "asks": 27,
-   "cartes": 8,
-   "hero": "black_panther",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 11.0,
-   "seed": 4611,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "art_museum_heist_electro",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 27,
-   "cartes": 8,
-   "hero": "black_panther",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 6.9,
-   "seed": 4611,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "art_museum_heist_electro",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "quicksilver",
-   "wd_electro_expert",
-   5416
-  ],
-  "natif": {
-   "asks": 9,
-   "cartes": 0,
-   "hero": "quicksilver",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 12.8,
-   "seed": 5416,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "wd_electro_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 9,
-   "cartes": 0,
-   "hero": "quicksilver",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 6.3,
-   "seed": 5416,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "wd_electro_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "night_thrasher",
-   "mutagen_formula",
-   2005
-  ],
-  "natif": {
-   "asks": 8,
-   "cartes": 1,
-   "hero": "night_thrasher",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 10.7,
-   "seed": 2005,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "mutagen_formula",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 8,
-   "cartes": 1,
-   "hero": "night_thrasher",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.8,
-   "seed": 2005,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "mutagen_formula",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "ant_man",
-   "mysterio",
-   6827
-  ],
-  "natif": {
-   "asks": 18,
-   "cartes": 4,
-   "hero": "ant_man",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 14.0,
-   "seed": 6827,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "mysterio",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 18,
-   "cartes": 4,
-   "hero": "ant_man",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.3,
-   "seed": 6827,
-   "setup": true,
-   "vilain_pv": 15,
-   "villain": "mysterio",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "captain_marvel",
-   "on_the_run_expert",
-   9595
-  ],
-  "natif": {
-   "asks": 18,
-   "cartes": 9,
-   "hero": "captain_marvel",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 12.1,
-   "seed": 9595,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "on_the_run_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 18,
-   "cartes": 9,
-   "hero": "captain_marvel",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 6.1,
-   "seed": 9595,
-   "setup": true,
-   "vilain_pv": 12,
-   "villain": "on_the_run_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "throg",
-   "art_museum_heist_bullseye_expert",
-   8883
-  ],
-  "natif": {
-   "asks": 3,
-   "cartes": 0,
-   "hero": "throg",
-   "reason": "The Main Scheme was Completed",
-   "round": 1,
-   "secondes": 9.3,
-   "seed": 8883,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "art_museum_heist_bullseye_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 3,
-   "cartes": 0,
-   "hero": "throg",
-   "reason": "The Main Scheme was Completed",
-   "round": 1,
-   "secondes": 3.6,
-   "seed": 8883,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "art_museum_heist_bullseye_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "cloak_dagger",
-   "protection_racket_electro_expert",
-   3235
-  ],
-  "natif": {
-   "asks": 24,
-   "cartes": 1,
-   "hero": "cloak_dagger",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 12.3,
-   "seed": 3235,
-   "setup": true,
-   "vilain_pv": 33,
-   "villain": "protection_racket_electro_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 24,
-   "cartes": 1,
-   "hero": "cloak_dagger",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 6.5,
-   "seed": 3235,
-   "setup": true,
-   "vilain_pv": 33,
-   "villain": "protection_racket_electro_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "spectrum",
-   "the_hood_expert",
-   920
-  ],
-  "natif": {
-   "asks": 21,
-   "cartes": 6,
-   "hero": "spectrum",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 13.4,
-   "seed": 920,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "the_hood_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 21,
-   "cartes": 6,
-   "hero": "spectrum",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 8.5,
-   "seed": 920,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "the_hood_expert",
+   "villain": "stop_the_presses_typhoid_mary_expert",
    "won": "False"
   },
   "differences": {}
@@ -4184,543 +580,101 @@
  {
   "combo": [
    "okoye",
-   "wd_vulture",
-   1845
+   "the_getaway_electro",
+   4238
   ],
   "natif": {
-   "asks": 11,
-   "cartes": 3,
+   "asks": 21,
+   "cartes": 8,
    "hero": "okoye",
    "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 10.0,
-   "seed": 1845,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "wd_vulture",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 11,
-   "cartes": 3,
-   "hero": "okoye",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 4.7,
-   "seed": 1845,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "wd_vulture",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "she_hulk",
-   "god_of_lies_expert",
-   2011
-  ],
-  "natif": {
-   "asks": 38,
-   "cartes": 14,
-   "hero": "she_hulk",
-   "reason": "The Main Scheme was Completed",
-   "round": 5,
-   "secondes": 16.3,
-   "seed": 2011,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "god_of_lies_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 38,
-   "cartes": 14,
-   "hero": "she_hulk",
-   "reason": "The Main Scheme was Completed",
-   "round": 5,
-   "secondes": 10.7,
-   "seed": 2011,
-   "setup": true,
-   "vilain_pv": 20,
-   "villain": "god_of_lies_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "armored_spidey",
-   "ebony_maw",
-   612
-  ],
-  "natif": {
-   "asks": 25,
-   "cartes": 6,
-   "hero": "armored_spidey",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 12.7,
-   "seed": 612,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "ebony_maw",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 25,
-   "cartes": 6,
-   "hero": "armored_spidey",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 7.3,
-   "seed": 612,
-   "setup": true,
-   "vilain_pv": 14,
-   "villain": "ebony_maw",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "spider_woman",
-   "en_sabah_nur",
-   8563
-  ],
-  "natif": {
-   "asks": 31,
-   "cartes": 10,
-   "hero": "spider_woman",
-   "reason": "All players were eliminated",
-   "round": 5,
-   "secondes": 14.4,
-   "seed": 8563,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "en_sabah_nur",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 31,
-   "cartes": 10,
-   "hero": "spider_woman",
-   "reason": "All players were eliminated",
-   "round": 5,
-   "secondes": 8.9,
-   "seed": 8563,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "en_sabah_nur",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "gambit",
-   "protection_racket_purple_man",
-   9781
-  ],
-  "natif": {
-   "asks": 36,
-   "cartes": 10,
-   "hero": "gambit",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 11.5,
-   "seed": 9781,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "protection_racket_purple_man",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 36,
-   "cartes": 10,
-   "hero": "gambit",
-   "reason": "The Main Scheme was Completed",
-   "round": 4,
-   "secondes": 8.1,
-   "seed": 9781,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "protection_racket_purple_man",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "alligator_loki",
-   "ultron_expert",
-   4952
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 2,
-   "hero": "alligator_loki",
-   "reason": "All players were eliminated",
-   "round": 1,
-   "secondes": 8.6,
-   "seed": 4952,
-   "setup": true,
-   "vilain_pv": 22,
-   "villain": "ultron_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 13,
-   "cartes": 2,
-   "hero": "alligator_loki",
-   "reason": "All players were eliminated",
-   "round": 1,
-   "secondes": 4.9,
-   "seed": 4952,
-   "setup": true,
-   "vilain_pv": 22,
-   "villain": "ultron_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "spider_man",
-   "art_museum_heist_electro_expert",
-   6960
-  ],
-  "natif": {
-   "asks": 28,
-   "cartes": 6,
-   "hero": "spider_man",
-   "reason": "The Main Scheme was Completed",
    "round": 3,
-   "secondes": 11.6,
-   "seed": 6960,
-   "setup": true,
-   "vilain_pv": 17,
-   "villain": "art_museum_heist_electro_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 28,
-   "cartes": 6,
-   "hero": "spider_man",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.9,
-   "seed": 6960,
-   "setup": true,
-   "vilain_pv": 17,
-   "villain": "art_museum_heist_electro_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "totally_awesome_hulk",
-   "the_raft_breakout_electro",
-   2070
-  ],
-  "natif": {
-   "asks": 7,
-   "cartes": 0,
-   "hero": "totally_awesome_hulk",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 11.7,
-   "seed": 2070,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "the_raft_breakout_electro",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 7,
-   "cartes": 0,
-   "hero": "totally_awesome_hulk",
-   "reason": "The Main Scheme was Completed",
-   "round": 2,
-   "secondes": 5.1,
-   "seed": 2070,
-   "setup": true,
-   "vilain_pv": 13,
-   "villain": "the_raft_breakout_electro",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "sp_dr",
-   "protection_racket_purple_man_expert",
-   6805
-  ],
-  "natif": {
-   "asks": 10,
-   "cartes": 0,
-   "hero": "sp_dr",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 11.3,
-   "seed": 6805,
+   "secondes": 13.0,
+   "seed": 4238,
    "setup": true,
    "vilain_pv": 15,
-   "villain": "protection_racket_purple_man_expert",
+   "villain": "the_getaway_electro",
    "won": "False"
   },
   "pyodide": {
-   "asks": 10,
-   "cartes": 0,
-   "hero": "sp_dr",
+   "asks": 21,
+   "cartes": 8,
+   "hero": "okoye",
    "reason": "The Main Scheme was Completed",
    "round": 3,
    "secondes": 5.9,
-   "seed": 6805,
+   "seed": 4238,
    "setup": true,
    "vilain_pv": 15,
-   "villain": "protection_racket_purple_man_expert",
+   "villain": "the_getaway_electro",
    "won": "False"
   },
   "differences": {}
  },
  {
   "combo": [
-   "moon_knight",
-   "risky_business",
-   6180
+   "iceman",
+   "she_hulk_pvp_competitive",
+   9241
   ],
   "natif": {
-   "asks": 9,
+   "asks": 22,
    "cartes": 1,
-   "hero": "moon_knight",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 11.1,
-   "seed": 6180,
+   "hero": "iceman",
+   "reason": "All players were eliminated",
+   "round": 4,
+   "secondes": 12.9,
+   "seed": 9241,
    "setup": true,
    "vilain_pv": 14,
-   "villain": "risky_business",
+   "villain": "she_hulk_pvp_competitive",
    "won": "False"
   },
   "pyodide": {
-   "asks": 9,
+   "asks": 22,
    "cartes": 1,
-   "hero": "moon_knight",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.7,
-   "seed": 6180,
+   "hero": "iceman",
+   "reason": "All players were eliminated",
+   "round": 4,
+   "secondes": 8.0,
+   "seed": 9241,
    "setup": true,
    "vilain_pv": 14,
-   "villain": "risky_business",
+   "villain": "she_hulk_pvp_competitive",
    "won": "False"
   },
   "differences": {}
  },
  {
   "combo": [
-   "cable",
-   "magog_expert",
-   6898
-  ],
-  "natif": {
-   "asks": 16,
-   "cartes": 2,
-   "hero": "cable",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 12.6,
-   "seed": 6898,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "magog_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 16,
-   "cartes": 2,
-   "hero": "cable",
-   "reason": "All players were eliminated",
-   "round": 3,
-   "secondes": 5.7,
-   "seed": 6898,
-   "setup": true,
-   "vilain_pv": 10,
-   "villain": "magog_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "captain_america",
-   "venom_expert",
-   3598
-  ],
-  "natif": {
-   "asks": 13,
-   "cartes": 4,
-   "hero": "captain_america",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 12.1,
-   "seed": 3598,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 13,
-   "cartes": 4,
-   "hero": "captain_america",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 5.7,
-   "seed": 3598,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "doctor_doom",
-   "en_sabah_nur",
-   3006
-  ],
-  "natif": {
-   "asks": 18,
-   "cartes": 10,
-   "hero": "doctor_doom",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 10.4,
-   "seed": 3006,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "en_sabah_nur",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 18,
-   "cartes": 10,
-   "hero": "doctor_doom",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 5.6,
-   "seed": 3006,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "en_sabah_nur",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "thor_jane_foster",
-   "the_getaway_purple_man",
-   466
+   "spider_man_2099",
+   "stop_the_presses_purple_man",
+   8405
   ],
   "natif": {
    "asks": 6,
-   "cartes": 1,
-   "hero": "thor_jane_foster",
+   "cartes": 0,
+   "hero": "spider_man_2099",
    "reason": "The Main Scheme was Completed",
    "round": 2,
    "secondes": 9.2,
-   "seed": 466,
+   "seed": 8405,
    "setup": true,
    "vilain_pv": 13,
-   "villain": "the_getaway_purple_man",
+   "villain": "stop_the_presses_purple_man",
    "won": "False"
   },
   "pyodide": {
    "asks": 6,
-   "cartes": 1,
-   "hero": "thor_jane_foster",
+   "cartes": 0,
+   "hero": "spider_man_2099",
    "reason": "The Main Scheme was Completed",
    "round": 2,
-   "secondes": 4.1,
-   "seed": 466,
+   "secondes": 4.0,
+   "seed": 8405,
    "setup": true,
    "vilain_pv": 13,
-   "villain": "the_getaway_purple_man",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "human_torch",
-   "venom_expert",
-   8870
-  ],
-  "natif": {
-   "asks": 27,
-   "cartes": 10,
-   "hero": "human_torch",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 11.6,
-   "seed": 8870,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 27,
-   "cartes": 10,
-   "hero": "human_torch",
-   "reason": "The Main Scheme was Completed",
-   "round": 3,
-   "secondes": 6.7,
-   "seed": 8870,
-   "setup": true,
-   "vilain_pv": 18,
-   "villain": "venom_expert",
-   "won": "False"
-  },
-  "differences": {}
- },
- {
-  "combo": [
-   "star_lord",
-   "vision_pvp_expert",
-   9092
-  ],
-  "natif": {
-   "asks": 18,
-   "cartes": 4,
-   "hero": "star_lord",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 11.5,
-   "seed": 9092,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "vision_pvp_expert",
-   "won": "False"
-  },
-  "pyodide": {
-   "asks": 18,
-   "cartes": 4,
-   "hero": "star_lord",
-   "reason": "All players were eliminated",
-   "round": 2,
-   "secondes": 5.9,
-   "seed": 9092,
-   "setup": true,
-   "vilain_pv": 16,
-   "villain": "vision_pvp_expert",
+   "villain": "stop_the_presses_purple_man",
    "won": "False"
   },
   "differences": {}
