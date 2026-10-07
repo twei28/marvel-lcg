@@ -444,7 +444,11 @@ export const catalog = {
                 try {
                     const d = await api.deck(id);
                     if (d && d.hero && d.hero[0] && d.hero[0].split(",")[0] === hero.heroCardId) {
-                        out.push({ id, name: d.name || id, source: "saved", deck: d, aspects: aspectsOfDeck(d) });
+                        // Les decks par heros du tableur « Universal Prebuilt Decks »
+                        // (deck/custom/prebuilt_*) ne sont PAS des decks sauvegardes
+                        // par le joueur : ils portent leur propre origine.
+                        const duTableur = String((d.metadata || {}).source || "").startsWith("Universal Prebuilt Decks");
+                        out.push({ id, name: d.name || id, source: duTableur ? "tableur" : "saved", deck: d, aspects: aspectsOfDeck(d) });
                     }
                 } catch (e) {}
             }

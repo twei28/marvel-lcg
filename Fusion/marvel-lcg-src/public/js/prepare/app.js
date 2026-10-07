@@ -3737,8 +3737,9 @@ async function loadDecks(i) {
         const st = deckStats(dk.deck);
         // Contrôle de construction : signalé, jamais bloquant.
         const ecarts = verifierDeck(dk.deck);
-        const etiquette = dk.source === "base" ? "Base"
+        const etiquette = dk.source === "base" ? t("Deck de départ")
             : dk.source === "aspect" ? (dk.recommande ? t("Conseillé") : t("Paquet"))
+            : dk.source === "tableur" ? t("Tableur")
             : dk.source === "campagne" ? t("En cours")
             : t("Sauvegardé");
         return el("button", {
@@ -3755,7 +3756,7 @@ async function loadDecks(i) {
                 if (nav) nav.replaceWith(navBar());
             },
         },
-            el("div", { class: "do-name" }, cleanNomDeck(dk.name)),
+            el("div", { class: "do-name" }, nomDeckAffiche(dk)),
             el("div", { class: "do-tags" },
                 el("span", { class: "tag" }, etiquette),
                 ...dk.aspects.map((a) => el("span", { class: "tag asp", style: { background: ASPECTS[a] || "#555" } }, a)),
@@ -3781,9 +3782,32 @@ async function loadDecks(i) {
     // Le pli est mémorisé PAR JOUEUR dans un état de module : loadDecks() est
     // rappelé à chaque render(), donc à chaque clic sur un deck. Un simple
     // booléen local se refermerait sous les doigts.
-    const principaux = decks.filter((dk) => dk.source !== "aspect");
+    const principaux = decks.filter((dk) => dk.source !== "aspect" && dk.source !== "tableur");
     const aspects = decks.filter((dk) => dk.source === "aspect");
+    const duTableur = decks.filter((dk) => dk.source === "tableur");
     const enfants = principaux.map(option);
+
+    // Les decks par heros du tableur : leur propre section repliee, avec
+    // l'origine (et l'auteur) dans l'info-bulle, sans rien ajouter a l'ecran.
+    if (duTableur.length) {
+        const deplieT = tableurDeplies.has(i);
+        const listeT = el("div", { class: "deck-aspects" + (deplieT ? " est-deplie" : "") },
+            ...duTableur.map(option));
+        const bascule = el("button", {
+            type: "button",
+            class: "deck-aspects-bascule" + (deplieT ? " est-deplie" : ""),
+            "aria-expanded": deplieT ? "true" : "false",
+            title: t(CREDIT_TABLEUR),
+        }, `${t("Decks du tableur")} (${duTableur.length}) ⓘ`);
+        bascule.addEventListener("click", () => {
+            const ouvert = !tableurDeplies.has(i);
+            if (ouvert) tableurDeplies.add(i); else tableurDeplies.delete(i);
+            listeT.classList.toggle("est-deplie", ouvert);
+            bascule.classList.toggle("est-deplie", ouvert);
+            bascule.setAttribute("aria-expanded", ouvert ? "true" : "false");
+        });
+        enfants.push(bascule, listeT);
+    }
 
     if (aspects.length) {
         // Sans deck de base, les paquets SONT le choix : ils s'ouvrent d'office.
