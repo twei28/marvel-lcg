@@ -12,7 +12,7 @@
 // partie solo regardée. Et si on l'avait simplement allumée, il aurait envoyé
 // SA souris au moteur : son curseur serait apparu sur l'écran du joueur, alors
 // que tout le mode spectateur est bâti pour qu'il reste invisible.
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { t } from './langue'
 import { estSpectateur } from './moteur'
 
@@ -28,7 +28,11 @@ export function lireCurseursActifs(): boolean {
 
 const COULEURS = ['#4da3ff', '#ffd45a', '#7fd77f', '#ff7a7a']
 
-type Curseurs = Record<string, { x: number; y: number; survol?: string }>
+type Curseurs = Record<string, { x: number; y: number; survol?: string; clic?: number }>
+
+type Onde = { cle: string; x: number; y: number; joueur: number }
+
+const DUREE_ONDE_MS = 700
 
 /** La carte sous le pointeur, ou '' s'il n'y en a pas.
  *
@@ -48,14 +52,20 @@ function sceneDuPlateau(): HTMLElement | null {
 
 export function CoucheCurseurs({
   actif,
-  monJoueur,
+  monJoueur: monSiege,
   nomsJoueurs,
 }: {
   actif: boolean
   monJoueur: number
   nomsJoueurs: string[]
 }) {
+  // ⚠ UN SPECTATEUR N'EST AUCUN JOUEUR. Son siege vaut 0 par defaut : sans cela
+  // il se filtrait lui-meme et ne voyait jamais le curseur du joueur 0, donc
+  // jamais celui d'une partie solo (mesure du 07/10/2026, deux clients).
+  const monJoueur = estSpectateur() ? -1 : monSiege
   const [curseurs, setCurseurs] = useState<Curseurs>({})
+  const [ondes, setOndes] = useState<Onde[]>([])
+  const clicsVus = useRef<Record<string, number> | null>(null)
 
   // Émission : position de MA souris, normalisée sur la scène.
   useEffect(() => {
@@ -63,25 +73,38 @@ export function CoucheCurseurs({
     // Un spectateur ne montre rien de lui : voir l'en-tête.
     if (estSpectateur()) return
     let dernierEnvoi = 0
-    const surSouris = (evenement: MouseEvent) => {
-      const maintenant = Date.now()
-      if (maintenant - dernierEnvoi < 150) return
+    const envoyer = (evenement: MouseEvent, clic?: number) => {
       const scene = sceneDuPlateau()
       if (!scene) return
       const zone = scene.getBoundingClientRect()
       if (zone.width === 0 || zone.height === 0) return
-      dernierEnvoi = maintenant
       const x = (evenement.clientX - zone.left) / zone.width
       const y = (evenement.clientY - zone.top) / zone.height
       const survol = carteSousLePointeur(evenement.clientX, evenement.clientY)
       void fetch('/set_cursor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ p: monJoueur, x, y, survol }),
+        body: JSON.stringify({ p: monJoueur, x, y, survol, ...(clic === undefined ? {} : { clic }) }),
       }).catch(() => undefined)
     }
+    const surSouris = (evenement: MouseEvent) => {
+      const maintenant = Date.now()
+      if (maintenant - dernierEnvoi < 150) return
+      dernierEnvoi = maintenant
+      envoyer(evenement)
+    }
+    // Un clic part tout de suite, hors du plafond des 150 ms : sinon un clic
+    // juste apres un mouvement n'arriverait jamais au spectateur.
+    const surClic = (evenement: MouseEvent) => {
+      dernierEnvoi = Date.now()
+      envoyer(evenement, dernierEnvoi)
+    }
     document.addEventListener('mousemove', surSouris)
-    return () => document.removeEventListener('mousemove', surSouris)
+    document.addEventListener('mousedown', surClic, true)
+    return () => {
+      document.removeEventListener('mousemove', surSouris)
+      document.removeEventListener('mousedown', surClic, true)
+    }
   }, [actif, monJoueur])
 
   // Réception : les curseurs des autres.
@@ -93,11 +116,50 @@ export function CoucheCurseurs({
     const minuteur = window.setInterval(() => {
       fetch('/get_cursors')
         .then((reponse) => (reponse.ok ? reponse.json() : {}))
-        .then((donnees: Curseurs) => setCurseurs(donnees))
+        .then((donnees: Curseurs) => {
+          // Premiere lecture : elle fixe la base des clics deja faits.
+          if (clicsVus.current === null) {
+            clicsVus.current = Object.fromEntries(Object.entries(donnees).map(([p, c]) => [p, c.clic ?? 0]))
+          }
+          setCurseurs(donnees)
+        })
         .catch(() => undefined)
     }, 700)
     return () => window.clearInterval(minuteur)
   }, [actif])
+
+  // Une onde par clic nouveau. La premiere lecture ne fait qu'enregistrer : un
+  // clic d'avant notre arrivee n'est pas un clic a rejouer.
+  useEffect(() => {
+    if (!actif) {
+      clicsVus.current = null
+      return
+    }
+    const vus = clicsVus.current
+    if (vus === null) return
+    const suivant: Record<string, number> = {}
+    const nouvelles: Onde[] = []
+    for (const [p, position] of Object.entries(curseurs)) {
+      const clic = position.clic ?? 0
+      suivant[p] = clic
+      // Un joueur qu'on voit pour la premiere fois n'a que son dernier clic
+      // d'avant (le serveur le garde apres la peremption) : on le retient sans
+      // le rejouer.
+      if (vus[p] !== undefined && clic !== 0 && clic !== vus[p] && Number(p) !== monJoueur) {
+        nouvelles.push({ cle: `${p}-${clic}`, x: position.x, y: position.y, joueur: Number(p) })
+      }
+    }
+    clicsVus.current = suivant
+    if (nouvelles.length === 0) return
+    setOndes((courantes) => [...courantes, ...nouvelles])
+    const cles = new Set(nouvelles.map((o) => o.cle))
+    // Pas de nettoyage : chaque lecture (700 ms) relance cet effet et
+    // annulerait le retrait avant son terme.
+    window.setTimeout(
+      () => setOndes((courantes) => courantes.filter((o) => !cles.has(o.cle))),
+      DUREE_ONDE_MS
+    )
+  }, [actif, curseurs, monJoueur])
 
   // ⚠ LE HALO EST POSE SUR LA CARTE ELLE-MEME, PAS DESSINE PAR-DESSUS. Une
   // boite superposee serait calee sur la position d'un instant, et glisserait
@@ -145,6 +207,17 @@ export function CoucheCurseurs({
             </div>
           )
         })}
+      {ondes.map((onde) => (
+        <span
+          key={onde.cle}
+          className="curseur-onde"
+          style={{
+            left: zone.left + onde.x * zone.width,
+            top: zone.top + onde.y * zone.height,
+            '--couleur': COULEURS[onde.joueur % COULEURS.length],
+          } as React.CSSProperties}
+        />
+      ))}
     </div>
   )
 }

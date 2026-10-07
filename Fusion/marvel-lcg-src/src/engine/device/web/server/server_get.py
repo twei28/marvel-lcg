@@ -686,9 +686,18 @@ class GameServerGet(GameServerBase):
         # ainsi ce que le joueur REGARDE, pas seulement ou il pointe. Borne a
         # 40 caracteres : un card_id en fait moins de dix, et rien de ce qui
         # vient du reseau ne doit pouvoir grossir sans limite.
+        # `clic` : identifiant du dernier clic (18/10/2026, pour l'onde du
+        # spectateur). Un simple entier qui change a chaque clic ; un envoi de
+        # position sans `clic` garde celui d'avant, sinon le mouvement suivant
+        # l'effacerait avant que le spectateur l'ait lu.
+        try:
+            clic = int(data['clic'])
+        except Exception:
+            clic = self.cursors.get(p, {}).get('clic', 0)
         self.cursors[p] = {
             'x': x, 'y': y, 't': time.time(),
             'survol': str(data.get('survol', ''))[:40],
+            'clic': clic,
         }
         return web.json_response({'result': 'ok'})
 
@@ -697,7 +706,7 @@ class GameServerGet(GameServerBase):
         cursors = getattr(self, 'cursors', {})
         now = time.time()
         frais = {
-            p: {'x': c['x'], 'y': c['y'], 'survol': c.get('survol', '')}
+            p: {'x': c['x'], 'y': c['y'], 'survol': c.get('survol', ''), 'clic': c.get('clic', 0)}
             for p, c in cursors.items() if now - c['t'] < 5.0
         }
         return web.json_response(frais)

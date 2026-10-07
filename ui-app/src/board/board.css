@@ -6074,6 +6074,25 @@
     white-space: nowrap;
   }
 
+  /* Onde au clic d'un autre joueur (spectateur). */
+  .curseur-onde {
+    position: fixed;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border-radius: 50%;
+    border: 3px solid var(--couleur, #4da3ff);
+    box-shadow: 0 0 10px var(--couleur, #4da3ff);
+    animation: curseur-onde 700ms ease-out forwards;
+  }
+  @keyframes curseur-onde {
+    from { transform: scale(0.4); opacity: 1; }
+    to { transform: scale(4); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .curseur-onde { animation-duration: 1ms; }
+  }
+
   /* La carte que l'AUTRE survole (17/09/2026, pour le spectateur).
      ⚠ Pose sur la carte elle-meme, pas dessine par-dessus : une boite
      superposee serait calee sur la position d'un instant et glisserait des
