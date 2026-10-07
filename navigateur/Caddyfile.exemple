@@ -25,29 +25,54 @@
 #		# Un nom sans point ni barre : jamais une page ni un fichier du paquet (qui ont tous une extension ou un dossier).
 #		@image_nue path_regexp image_nue ^/[A-Za-z0-9_-]+$
 #		rewrite @image_nue /scan{path}
+#		# Image demandee AVEC extension (/mvc_logo.svg) et absente du paquet : meme chemin, sans l'extension.
+#		@image_ext {
+#			path_regexp image_ext ^/([A-Za-z0-9_-]+)\.(svg|png|jpe?g|webp)$
+#			not file {
+#				root /opt/narwhal-play
+#			}
+#		}
+#		rewrite @image_ext /scan/{re.image_ext.1}
 #		@image_hd path_regexp image_hd ^/hd/([A-Za-z0-9_-]+)$
 #		rewrite @image_hd /scan/{re.image_hd.1}
 #
 #		# Scans : d'abord les versions REDRESSEES (navigateur/preparer-scans.py), puis les originaux.
 #		# Le moteur redresse en portrait toute image plus large que haute ; le plateau les remet a plat par CSS.
 #		handle /scan/* {
-#			uri strip_prefix /scan
-#			root * /opt/narwhal-play-scans
-#			try_files /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics{path}.webp /pivotes/pics{path}.jpg \
-#			          /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics{path}.webp /originaux/pics{path}.jpg \
-#			          /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
-#			file_server
+#			# route : ordre LITTERAL. Un scan FR absent retombe sur l'anglais (fr_X -> X), comme le moteur (07/10/2026).
+#			route {
+#				uri strip_prefix /scan
+#				@fr_absent {
+#					path_regexp fr ^/fr_([A-Za-z0-9_-]+)$
+#					not file {
+#						root /opt/narwhal-play-scans
+#						try_files /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics-fr{path}.png /pivotes/pics{path}.webp /pivotes/pics{path}.jpg /pivotes/pics{path}.png /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics-fr{path}.png /originaux/pics{path}.webp /originaux/pics{path}.jpg /originaux/pics{path}.png /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
+#					}
+#				}
+#				rewrite @fr_absent /{re.fr.1}
+#				root * /opt/narwhal-play-scans
+#				try_files /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics-fr{path}.png /pivotes/pics{path}.webp /pivotes/pics{path}.jpg /pivotes/pics{path}.png /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics-fr{path}.png /originaux/pics{path}.webp /originaux/pics{path}.jpg /originaux/pics{path}.png /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
+#				file_server
+#			}
 #		}
 #
 #		# Miniatures des cartes de la table : la miniature si elle existe, sinon le scan complet (comme Cache.LoadVignette).
 #		handle /vignette/* {
-#			uri strip_prefix /vignette
-#			root * /opt/narwhal-play-scans
-#			try_files /pivotes/vignettes{path}.jpg /originaux/vignettes{path}.jpg \
-#			          /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics{path}.webp /pivotes/pics{path}.jpg \
-#			          /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics{path}.webp /originaux/pics{path}.jpg \
-#			          /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
-#			file_server
+#			# route : ordre LITTERAL. Un scan FR absent retombe sur l'anglais (fr_X -> X), comme le moteur (07/10/2026).
+#			route {
+#				uri strip_prefix /vignette
+#				@fr_absent {
+#					path_regexp fr ^/fr_([A-Za-z0-9_-]+)$
+#					not file {
+#						root /opt/narwhal-play-scans
+#						try_files /pivotes/vignettes{path}.jpg /originaux/vignettes{path}.jpg /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics-fr{path}.png /pivotes/pics{path}.webp /pivotes/pics{path}.jpg /pivotes/pics{path}.png /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics-fr{path}.png /originaux/pics{path}.webp /originaux/pics{path}.jpg /originaux/pics{path}.png /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
+#					}
+#				}
+#				rewrite @fr_absent /{re.fr.1}
+#				root * /opt/narwhal-play-scans
+#				try_files /pivotes/vignettes{path}.jpg /originaux/vignettes{path}.jpg /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics-fr{path}.png /pivotes/pics{path}.webp /pivotes/pics{path}.jpg /pivotes/pics{path}.png /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics-fr{path}.png /originaux/pics{path}.webp /originaux/pics{path}.jpg /originaux/pics{path}.png /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
+#				file_server
+#			}
 #		}
 #
 #		root * /opt/narwhal-play
