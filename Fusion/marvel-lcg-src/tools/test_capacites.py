@@ -55609,6 +55609,14 @@ def executer_un_cas(game_dir, port, index):
         try:
             ok, message = espace[cas["verifier"]](monde, aides)
         except Exception as exc:
+            # `jouer_apres` : cartes jouees (cout PAYE) APRES `declencher_apres`.
+            # Ajoutee le 06/10/2026 pour dz003 « A Little Girl's Dream » :
+            # « the next ally or event you play THIS ROUND » ne se prouve qu'en
+            # jouant la carte suivante dans une AUTRE phase (le vilain) que celle
+            # ou la reduction a ete posee. Cle ADDITIVE : aucun cas existant ne
+            # la definit.
+            for card_id in cas.get("jouer_apres") or []:
+                jouer_carte(card_id)
             import traceback
             traceback.print_exc()
             ok, message = False, f"verification en erreur : {type(exc).__name__}: {exc}"
