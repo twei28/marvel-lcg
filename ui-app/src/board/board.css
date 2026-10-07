@@ -1223,6 +1223,72 @@
     max-width: min(640px, calc(100vw - 28px));
   }
 
+  /* BEAUCOUP DE CHOIX, UNE FENETRE QUI DEBORDE (signalement d'Aghenatak,
+     07/10/2026 : « l'allie que je veux sacrifier est hors champs de la
+     fenetre »). Le panneau est pose au centre et se dimensionne sur son titre :
+     ses boutons s'empilaient alors en UNE colonne de vignettes, et avec une
+     dizaine de defenseurs possibles la colonne depassait l'ecran, les derniers
+     etaient inatteignables. Les boutons prennent maintenant toute la largeur du
+     panneau (plusieurs par rangee) et defilent au-dela de la hauteur de la
+     fenetre. Hors cartouche du mechant, qui a ses propres regles. */
+  .demande-centrale:not(.est-en-scene) .dc-boutons {
+    width: min(640px, calc(100vw - 28px));
+    max-height: calc(100dvh - 230px);
+    overflow-y: auto;
+  }
+
+  /* Le refus (« Ne pas defendre ») reste TOUJOURS visible : c'est le bouton qu'on
+     cherche le plus, il ne doit jamais sortir de l'ecran avec la liste. */
+  .demande-centrale:not(.est-en-scene) .dc-boutons > .dc-refus {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    width: 100%;
+    justify-items: center;
+    padding-top: 6px;
+    background: linear-gradient(to bottom, transparent, rgba(8, 10, 16, 0.94) 35%);
+  }
+
+  /* 4 a 6 choix : vignettes plus petites, boutons plus compacts. */
+  .demande-centrale.dc-compact .dc-vignette .scan-card {
+    --card-w: 76px;
+  }
+  .demande-centrale.dc-compact .af-action-wrap.a-vignette .af-action {
+    font-size: 0.85rem;
+    min-height: 34px;
+    padding: 5px 12px;
+  }
+
+  /* 7 choix et plus : une VRAIE LISTE, une ligne par choix. La mini-vignette sert
+     a reconnaitre la carte ; le grand apercu au survol reste la facon de la lire. */
+  .demande-centrale.dc-liste .dc-boutons {
+    width: min(480px, calc(100vw - 28px));
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .demande-centrale.dc-liste .af-action-wrap.a-vignette {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    align-items: center;
+    justify-items: stretch;
+    gap: 10px;
+  }
+  .demande-centrale.dc-liste .dc-vignette {
+    padding-bottom: 0;
+  }
+  .demande-centrale.dc-liste .dc-vignette .scan-card {
+    --card-w: 46px;
+  }
+  .demande-centrale.dc-liste .af-action-wrap.a-vignette .af-action {
+    max-width: none;
+    min-height: 34px;
+    padding: 5px 12px;
+    font-size: 0.85rem;
+    text-align: left;
+  }
+
   .af-boutons {
     display: flex;
     flex-wrap: wrap;

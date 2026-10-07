@@ -406,6 +406,10 @@ export function DemandeCentrale({
   // l'utilisateur, 03/10/2026 : garder seulement le bouton. Le bandeau reste en
   // fine barre, parce que c'est lui qui sert de poignee pour deplacer le panneau.
   const choixUnique = options.length === 1 && !demande.show_cancel && !enScene
+  // BEAUCOUP DE CHOIX (07/10/2026) : les vignettes rapetissent, puis la liste
+  // devient une colonne de lignes (mini-vignette a gauche, bouton a droite). Le
+  // refus reste epingle en bas ; seule la liste defile. Voir board.css.
+  const tailleDesChoix = enScene ? '' : options.length >= 7 ? ' dc-liste' : options.length >= 4 ? ' dc-compact' : ''
   /**
    * Les images de vignette deja posees dans CE rendu, pour n'en poser qu'une
    * par carte. Volontairement recree a chaque rendu : c'est un compteur de
@@ -494,7 +498,7 @@ export function DemandeCentrale({
   return (
     <section
       ref={panneau}
-      className={`demande-centrale${enScene ? ' est-en-scene' : ''}`}
+      className={`demande-centrale${enScene ? ' est-en-scene' : ''}${tailleDesChoix}`}
       style={enScene ? undefined : styleDeplace}
       role="dialog"
       aria-label="Game decision"
@@ -605,7 +609,7 @@ export function DemandeCentrale({
           )
         })}
         {demande.show_cancel ? (
-          <span className="af-action-wrap">
+          <span className="af-action-wrap dc-refus">
             {(() => {
               const attaque = ligneSansDefense && options.some((option) => option.name === 'Defense')
               return (
