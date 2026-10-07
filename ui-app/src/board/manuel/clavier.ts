@@ -62,8 +62,8 @@ const IDENTITES = new Set(['Hero', 'AlterEgo'])
 const VILAINS = new Set(['EncounterVillain', 'Villain'])
 const MANIGANCES = new Set(['MainScheme', 'SideScheme', 'EncounterSideScheme', 'PlayerSideScheme', 'Scheme'])
 const ATTAQUABLES = new Set(['Hero', 'AlterEgo', 'EncounterVillain', 'Villain', 'Minion', 'Ally'])
-/** Ce qui s'incline : héros, alliés, améliorations, soutiens (`exhaustable`). */
-const INCLINABLES = new Set(['Hero', 'AlterEgo', 'Ally', 'Upgrade', 'Support'])
+/** Ce qui s'incline : héros, alliés, améliorations, soutiens, sbires (`exhaustable` d'OCTGN, actions.py). */
+const INCLINABLES = new Set(['Hero', 'AlterEgo', 'Ally', 'Upgrade', 'Support', 'Minion'])
 /** Ce qui ne porte aucun état : un événement, une traîtrise... */
 const SANS_ETAT = new Set(['Event', 'Treachery', 'Obligation', 'Resource'])
 

@@ -188,8 +188,9 @@ describe('le double-clic d’OCTGN', () => {
     expect(interpreterDoubleClic(MANIGANCE)).toEqual({ geste: 'retourner', id: 9 })
     expect(interpreterDoubleClic(PRINCIPALE)).toEqual({ geste: 'retourner', id: 10 })
   })
-  it('rien sur un sbire ou un événement', () => {
-    expect(interpreterDoubleClic(SBIRE)).toBeUndefined()
+  // OCTGN incline aussi un sbire au double-clic (`exhaustable`, actions.py:88).
+  it('un sbire s incline, un evenement ne fait rien', () => {
+    expect(interpreterDoubleClic(SBIRE)?.geste).toBe('incliner')
     expect(interpreterDoubleClic(EVENEMENT)).toBeUndefined()
   })
 })

@@ -177,7 +177,7 @@ export function MenuTable({
               onFermer()
             }}
           >
-            {t('Amplification (Alt+Entrée)')}
+            {t('Carte boost (Alt+Entrée)')}
           </button>
         </li>
         <li>

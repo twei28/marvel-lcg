@@ -18,7 +18,7 @@ const JOUER_UNE_CARTE: Raccourci[] = [
 ]
 
 const SUR_UNE_CARTE: Raccourci[] = [
-  { touches: 'Double-clic', effet: 'Incliner / redresser ; face cachée : retourner ; sur le méchant : amplification' },
+  { touches: 'Double-clic', effet: 'Incliner / redresser ; face cachée : retourner ; sur le méchant : tirer une carte boost' },
   { touches: 'F7', effet: 'Incliner / redresser' },
   { touches: 'Ctrl + F', effet: 'Retourner la carte' },
   { touches: 'Suppr', effet: 'Défausser ; sur le méchant : vaincre le stade ; sur la manigance principale : manigance terminée' },
@@ -55,11 +55,13 @@ const SUR_UNE_PILE: Raccourci[] = [
 ]
 
 const PARTOUT: Raccourci[] = [
-  { touches: 'Alt + Entrée', effet: 'Amplification : sortir la carte du dessus du deck Rencontre' },
+  { touches: 'Alt + Entrée', effet: 'Carte boost : sortir la carte du dessus du deck Rencontre' },
   { touches: 'Ctrl + Q', effet: 'Tout redresser' },
   { touches: 'F12', effet: 'Fin de phase des héros, pour tous les héros : tout redresser, défausser l’excédent de main, piocher jusqu’à la taille de main (la défausse est remélangée si le deck est vide)' },
   { touches: 'Ctrl + Z', effet: 'Annuler le dernier geste' },
-  { touches: 'Clic droit sur la table', effet: 'Faire apparaître une carte, Vaincre ce stade, Manigance terminée, Tout redresser, Fin de phase des héros, Amplification, Pile ou face, Nombre au hasard, Joueur au hasard, Fin du round, Défausser une carte au hasard, Mulligan, Terminer la partie' },
+  { touches: 'C', effet: 'Chercher une carte dans tout le catalogue pour la poser' },
+  { touches: 'Échap', effet: 'Fermer le catalogue' },
+  { touches: 'Clic droit sur la table', effet: 'Faire apparaître une carte, Vaincre ce stade, Manigance terminée, Tout redresser, Fin de phase des héros, Carte boost, Pile ou face, Nombre au hasard, Joueur au hasard, Fin du round, Défausser une carte au hasard, Mulligan, Terminer la partie' },
 ]
 
 function Tableau({ titre, lignes }: { titre: string; lignes: Raccourci[] }) {
