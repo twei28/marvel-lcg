@@ -3741,3 +3741,57 @@ describe('le clavier des questions du cartouche du bas (D37)', () => {
     expect(q.interaction.annuler).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('cle de l etape lue qui disparait (capture du 07/10/2026, Rhino / Assaut)', () => {
+  // L'etape du journal (« carte:76 ») arrive avant le fait du moteur, puis le
+  // fait la remplace sous une autre cle. Le cartouche lisait par repli sans
+  // reprendre la cle, et sa sortie d'attente avancait une fois de trop :
+  // « Aucun sbire » -> « Assaut » 25 ms -> « Aucun sbire ».
+  const menaceJournal: EtapeDeroule = { cle: 'menace:57', temps: 'menace', titre: 'menace', regle: '', boosts: [] }
+  const menace: EtapeDeroule = { cle: 'menace:1', temps: 'menace', titre: 'menace', regle: '', boosts: [] }
+  const attaque: EtapeDeroule = { ...etapes[1], cle: 'activation:1' }
+  const vide: EtapeDeroule = { cle: 'vide:sbires', temps: 'sbires', titre: 'vide', regle: '', boosts: [] }
+  const revelee: EtapeDeroule = { cle: 'carte:76', temps: 'revelation', titre: 'revelation', regle: '', carteId: 70, boosts: [] }
+
+  it('ne saute jamais l etape vide ni ne revient en arriere', () => {
+    const vues: (string | undefined)[] = []
+    const rendu = (liste: EtapeDeroule[]) => (
+      <DeroulePhase etapes={liste} phaseMechantEnCours onTerminer={() => {}} onEtapeAffichee={(c) => vues.push(c)} />
+    )
+    const { rerender } = render(rendu([menaceJournal]))
+    fireEvent.click(suivant())
+    // La menace du journal est remplacee par le fait du moteur, sous une autre cle.
+    rerender(rendu([menace]))
+    fireEvent.click(suivant())
+    rerender(rendu([menace, attaque]))
+    fireEvent.click(suivant())
+    rerender(rendu([menace, attaque, vide, revelee]))
+    rerender(rendu([menace, attaque, vide, { ...revelee, cle: 'revelation:1:3:70' }]))
+    const apresAttaque = vues.slice(vues.lastIndexOf('activation:1') + 1)
+    expect(apresAttaque).toEqual(['vide:sbires'])
+  })
+
+  it('la menace validee puis recle par le moteur ne demande pas un second clic', () => {
+    const vues: (string | undefined)[] = []
+    const rendu = (liste: EtapeDeroule[]) => (
+      <DeroulePhase etapes={liste} phaseMechantEnCours onTerminer={() => {}} onEtapeAffichee={(c) => vues.push(c)} />
+    )
+    const { rerender } = render(rendu([menaceJournal]))
+    fireEvent.click(suivant())
+    rerender(rendu([menace]))
+    rerender(rendu([menace, attaque]))
+    expect(vues.at(-1)).toBe('activation:1')
+  })
+
+  it('une autre etape a la meme place n est pas prise pour la validee', () => {
+    const vues: (string | undefined)[] = []
+    const rendu = (liste: EtapeDeroule[]) => (
+      <DeroulePhase etapes={liste} phaseMechantEnCours onTerminer={() => {}} onEtapeAffichee={(c) => vues.push(c)} />
+    )
+    const { rerender } = render(rendu([menaceJournal]))
+    fireEvent.click(suivant())
+    rerender(rendu([{ ...menace, cibleId: 99 }]))
+    rerender(rendu([{ ...menace, cibleId: 99 }, attaque]))
+    expect(vues.at(-1)).toBe('menace:1')
+  })
+})

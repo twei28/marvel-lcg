@@ -503,7 +503,13 @@ export function DeroulePhase({
   // « a jour » pour toutes les trames suivantes, et le journal a saute de 192 a
   // 262 en deux secondes — deux activations de sbires, la distribution et la
   // revelation resolues sans qu'aucune etape n'ait ete validee.
-  const [validee, setValidee] = useState<{ cle: string; etat?: EtapeDeroule['etat'] }>()
+  const [validee, setValidee] = useState<{
+    cle: string
+    etat?: EtapeDeroule['etat']
+    temps?: EtapeDeroule['temps']
+    titre?: EtapeDeroule['titre']
+    cibleId?: number
+  }>()
   // LA RELECTURE d'un onglet passe (decision du 03/10/2026) : lecture seule,
   // « Revenir à l'étape en cours ». `cle` designe le coup dont on lit le
   // detail quand l'onglet en compte plusieurs. Rien ne part au moteur.
@@ -814,6 +820,15 @@ export function DeroulePhase({
     if (cleCourante === undefined && premiereCle !== undefined) setCleCourante(premiereCle)
   }, [cleCourante, premiereCle])
 
+  // La cle lue a disparu (une etape du journal remplacee par le fait du moteur,
+  // sous une autre cle) : le cartouche reprend celle de ce qu'il affiche. Sans
+  // cela il lisait toute la suite par repli, et le repli, combine a la sortie
+  // d'attente, sautait une etape (capture du 07/10/2026, Rhino / Assaut).
+  useEffect(() => {
+    if (spectateur || cleCourante === undefined || rangDeLaCle !== -1 || cleAffichee === undefined) return
+    setCleCourante(cleAffichee)
+  }, [spectateur, cleCourante, rangDeLaCle, cleAffichee])
+
   // LES DEUX MESURES DU « PLUS RIEN A MONTRER », calculees ici parce que la
   // sortie d'attente comme l'accuse de reception s'y appuient.
   //
@@ -829,10 +844,20 @@ export function DeroulePhase({
   //    intention validee ne vaut pas validation de la resolution qui prend sa
   //    place sous la meme cle.
   const surLaDerniereEtape = etapesAffichees.length > 0 && index === etapesAffichees.length - 1
+  // La MEME etape sous une autre cle compte aussi : la menace tiree du journal
+  // est remplacee par le fait du moteur, et sans cela le joueur la validait
+  // deux fois (capture du 07/10/2026).
+  const memeEtapeRecle =
+    etape !== undefined &&
+    validee !== undefined &&
+    rangValidee === -1 &&
+    validee.temps === etape.temps &&
+    validee.titre === etape.titre &&
+    validee.cibleId === etape.cibleId
   const etapeValidee =
     etape !== undefined &&
     validee !== undefined &&
-    validee.cle === etape.cle &&
+    (validee.cle === etape.cle || memeEtapeRecle) &&
     validee.etat === etape.etat
 
   /**
@@ -867,7 +892,7 @@ export function DeroulePhase({
     // L'etape courante est validee, DANS L'ETAT OU ELLE EST AU MOMENT DU CLIC.
     // Une intention validee ici ne vaudra pas validation de la resolution qui
     // prendra sa place (voir `validee` et `cartoucheAJour`).
-    setValidee({ cle: etape.cle, etat: etape.etat })
+    setValidee({ cle: etape.cle, etat: etape.etat, temps: etape.temps, titre: etape.titre, cibleId: etape.cibleId })
     // Le jeton de menace s'envole MAINTENANT, sur l'étape que le joueur vient
     // de valider (voir `volMenace`). Les autres étapes n'en posent pas.
     if (etape.titre === 'menace' || etape.titre === 'manigance') {
@@ -959,6 +984,11 @@ export function DeroulePhase({
   // qu'aucune etape n'ait ete produite.
   useEffect(() => {
     if (!enAttente) return
+    // Deja au-dela de l'etape validee (le repli y a conduit) : on y reste.
+    if (rangValidee !== -1 && rangValidee < index) {
+      setEnAttente(false)
+      return
+    }
     if (index + 1 < etapesAffichees.length) {
       setEnAttente(false)
       setCleCourante(etapesAffichees[index + 1].cle)
@@ -981,7 +1011,7 @@ export function DeroulePhase({
     // a chaque trame du moteur, donc appellerait `onTerminer` en boucle. Les
     // cinq dependances ci-dessous sont des primitifs et decrivent a elles
     // seules la sortie d'attente.
-  }, [enAttente, index, etapesAffichees.length, etapeValidee, phaseRaconteeEnCours])
+  }, [enAttente, index, rangValidee, etapesAffichees.length, etapeValidee, phaseRaconteeEnCours])
 
   // LE RYTHME DE LA PHASE, en une ligne : le cartouche est-il a jour ?
   //
