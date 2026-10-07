@@ -54,6 +54,23 @@
   --eclat-bord: #ffd24a;
 }
 
+/* VICTOIRE : l'image fournie par l'utilisateur (07/10/2026) remplace l'eclat
+   dessine. Le mot reste dans le DOM (lecteurs d'ecran, tests) mais n'est plus
+   peint : l'image porte deja « VICTORY! ». Image 3:1, d'ou le ratio. */
+.fin-partie.est-victoire .fin-partie-eclat {
+  aspect-ratio: 3 / 1;
+  width: min(640px, 90vw);
+  margin-bottom: -24px;
+  background: url('/public/img/fin-partie/victory.webp') center / contain no-repeat;
+  font-size: 0;
+  text-shadow: none;
+}
+
+.fin-partie.est-victoire .fin-partie-eclat::before,
+.fin-partie.est-victoire .fin-partie-eclat::after {
+  content: none;
+}
+
 /* Victoire de campagne : le panneau des recompenses est haut. L'eclat
    rapetisse et la carte se borne a ce qui reste sous lui, sinon l'eclat
    recouvre le haut du panneau (vu a l'ecran le 04/10/2026). */
@@ -61,6 +78,16 @@
   width: min(360px, 70vw);
   font-size: clamp(40px, 7vw, 68px);
   margin-bottom: -28px;
+}
+
+.fin-partie.est-victoire:has(.camp-recomp) .fin-partie-eclat {
+  width: min(360px, 70vw);
+  font-size: 0;
+  margin-bottom: -14px;
+}
+
+.fin-partie.est-victoire .fin-partie-carte:has(.camp-recomp) {
+  max-height: calc(100dvh - 48px - min(360px, 70vw) / 3 + 14px);
 }
 
 .fin-partie .fin-partie-carte:has(.camp-recomp) {
