@@ -262,6 +262,10 @@ export const DICO_EN_BASE = {
     "Le sauvegarder pour plus tard ?": "Save it for later?",
     "Échec de l’import :": "Import failed:",
     "Ce deck n’est pas légal pour": "This deck is not legal for",
+    "D’après notre code, ce deck n’est pas légal pour": "According to our code, this deck is not legal for",
+    "Tu peux l’importer quand même. Si tu penses que c’est notre code qui se trompe, valide : ton deck et les raisons de notre refus nous seront envoyés automatiquement, pour qu’on vérifie.": "You can import it anyway. If you think our code is wrong, confirm: your deck and the reasons we refused it will be sent to us automatically so we can check.",
+    "OK : importer et nous le signaler. Annuler : ne pas importer.": "OK: import it and report it to us. Cancel: do not import.",
+    "Import annulé.": "Import cancelled.",
     "Import en cours...": "Importing...",
 
     /* ---- Panneau de recherche marvelcdb ---- */

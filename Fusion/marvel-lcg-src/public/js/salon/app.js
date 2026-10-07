@@ -15,6 +15,7 @@ import { t, boutonLangue } from "/public/js/prepare/langue.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { versDeckMoteur } from "/public/js/marvelcdb/conversion.js";
 import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
+import { demanderForcage } from "/public/js/prepare/deck-force.js";
 import {
     decisionSalon, memoriserRepere, relireRepere, oublierRepere,
 } from "/public/js/salon/bascule.js";
@@ -202,8 +203,13 @@ async function importerMarvelcdb(saisie) {
         hero: etat.hero, choisies: choisiesDuDeck(etat.hero, deck), carte: (cid) => cards.get(cid), t,
     });
     if (!verdict.ok) {
-        throw new Error(`${t("Ce deck n’est pas légal pour")} ${etat.hero.name} : `
-            + verdict.problemes.join(" ; "));
+        // Nos regles peuvent se tromper : l'invite peut forcer, et forcer nous
+        // envoie le deck et les raisons du refus (voir prepare/deck-force.js).
+        const force = await demanderForcage({
+            hero: etat.hero, deck, problemes: verdict.problemes, source: `marvelcdb ${id}`,
+            ecran: "salon", nomCarte: (cid) => { const c = cards.get(cid); return c && c.name; }, t,
+        });
+        if (!force) throw new Error(t("Import annulé."));
     }
 
     // Un nom par siege ET par deck : deux invites qui importent le meme deck

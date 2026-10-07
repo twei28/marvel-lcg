@@ -50,6 +50,7 @@ import { etatSalon } from "/public/js/prepare/salon-etat.js";
 import { appliquerTutoriel } from "/public/js/prepare/tutoriel-etat.js";
 import { versDeckMoteur, ecartDeConversion } from "/public/js/marvelcdb/conversion.js";
 import { chargerHeros } from "/public/js/marvelcdb/index.js";
+import { demanderForcage } from "/public/js/prepare/deck-force.js";
 import { filtrer, aspectsPresents, tagsPresents, aDesRangs } from "/public/js/marvelcdb/filtres.js";
 import { lireFavoris, basculerFavori } from "/public/js/marvelcdb/favoris.js";
 import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
@@ -3324,7 +3325,7 @@ async function importMarvelcdb(slotIndex, input) {
         hero.deck,
         (cid) => { const c = cards.get(cid); return (c && c.class) || ""; },
     );
-    refuserSiIllegal(hero, deck);
+    await verifierOuForcer(hero, deck, `marvelcdb ${id}`);
     return { hero, deck };
 }
 
@@ -3333,13 +3334,19 @@ async function importMarvelcdb(slotIndex, input) {
  *  emprunts. Le verdict est celui de l'ÉDITEUR DE DECK (js/deckbuilder/regles.js),
  *  pas une seconde règle écrite ici : un deck refusé au collage doit être
  *  exactement un deck que l'éditeur refuserait aussi. */
-function refuserSiIllegal(hero, deck) {
+async function verifierOuForcer(hero, deck, source) {
     const verdict = validerDeck({
         hero, choisies: choisiesDuDeck(hero, deck), carte: (cid) => cards.get(cid), t,
     });
     if (verdict.ok) return;
-    throw new Error(`${t("Ce deck n’est pas légal pour")} ${hero.name} :\n\n`
-        + verdict.problemes.map((x) => "\u2022 " + x).join("\n"));
+    // Ni refus sec ni silence (07/10/2026) : nos regles de construction sont du
+    // code et peuvent se tromper. La joueuse peut forcer, et forcer nous envoie
+    // le deck et les raisons du refus (voir deck-force.js).
+    const force = await demanderForcage({
+        hero, deck, problemes: verdict.problemes, source, ecran: "préparation",
+        nomCarte: (cid) => { const c = cards.get(cid); return c && c.name; }, t,
+    });
+    if (!force) { const e = new Error(t("Import annulé.")); e.annule = true; throw e; }
 }
 
 /* ---- Visionneuse : cartes d'un deck ---- */
@@ -3672,6 +3679,7 @@ async function doImport(i) {
         render();
     } catch (e) {
         if (status) status.textContent = "";
+        if (e && e.annule) return;
         alert(t("Échec de l’import :") + " " + e.message);
     }
 }
