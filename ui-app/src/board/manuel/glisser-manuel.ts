@@ -313,6 +313,7 @@ export function reglagesGlisserManuel(
       return zones
     },
     auDoigt: true,
+    rangerAuGlisser: true,
     accueilleLaTable: (sourceId: number) =>
       monde.origine(sourceId) !== 'jeu' &&
       (estCachee(sourceId) || poserEnJeu({ id: sourceId, type: typeDe(sourceId) }, monde.contexte()).genre !== 'refus'),

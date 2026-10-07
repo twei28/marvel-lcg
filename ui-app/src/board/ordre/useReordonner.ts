@@ -96,6 +96,36 @@ function viseeDansPile(depart: Depart, x: number, y: number) {
   }
 }
 
+/** Le depart d'un geste de rangement depuis cette carte, ou rien si elle ne se range pas. */
+function departDe(carte: HTMLElement, x: number, y: number, pointerId: number, element: HTMLElement): Depart | undefined {
+  const sourceId = idDe(carte)
+  if (sourceId === undefined) return undefined
+  const attachee = carte.closest<HTMLElement>('.est-attachee')
+  if (attachee) {
+    const racine = attachee.closest<HTMLElement>('.plateau-unite')
+    const porteurId = idDe(racine?.querySelector(':scope > .scan-card'))
+    if (!racine || porteurId === undefined) return undefined
+    return { sourceId, cle: cleDePile(porteurId), pile: true, racine, x, y, pointerId, element, porteurId }
+  }
+  const racine = carte.closest<HTMLElement>('.plateau-groupe')
+  const unite = carte.parentElement
+  if (!racine || !unite?.classList.contains('plateau-unite') || unite.dataset.pile) return undefined
+  const cle = racine.dataset.rangee ?? ''
+  if (!cle) return undefined
+  return { sourceId, cle, pile: false, racine, x, y, pointerId, element }
+}
+
+/**
+ * Le lacher retombe-t-il dans la rangee de la carte (ou, pour une
+ * amelioration, tout pres de son personnage) ? Mode manuel : c'est alors un
+ * rangement, pas un deplacement (decision du 07/10/2026).
+ */
+function dansSaRangee(depart: Depart, x: number, y: number): boolean {
+  const boite = depart.racine.getBoundingClientRect()
+  const marge = depart.pile ? boite.height / 2 : 0
+  return x >= boite.left - marge && x <= boite.right + marge && y >= boite.top && y <= boite.bottom
+}
+
 // Les ids de cartes n'ont de sens que dans UNE partie : l'ordre est etiquete
 // par la partie, garde au rechargement, jete des qu'une autre partie arrive.
 const CLE_ORDRES = 'marvel-ordre-cartes'
@@ -151,36 +181,9 @@ export function useReordonner(partieId?: string) {
     const sous = evenement.target
     if (!(sous instanceof HTMLElement)) return false
     const carte = sous.closest<HTMLElement>('.scan-card')
-    const sourceId = idDe(carte)
-    if (!carte || sourceId === undefined) return false
-    const attachee = carte.closest<HTMLElement>('.est-attachee')
-    let racine: HTMLElement | null
-    let cle: string
-    let porteurDuGeste: number | undefined
-    if (attachee) {
-      racine = attachee.closest<HTMLElement>('.plateau-unite')
-      const porteurId = idDe(racine?.querySelector(':scope > .scan-card'))
-      if (!racine || porteurId === undefined) return false
-      cle = cleDePile(porteurId)
-      porteurDuGeste = porteurId
-    } else {
-      racine = carte.closest<HTMLElement>('.plateau-groupe')
-      const unite = carte.parentElement
-      if (!racine || !unite?.classList.contains('plateau-unite') || unite.dataset.pile) return false
-      cle = racine.dataset.rangee ?? ''
-      if (!cle) return false
-    }
-    depart.current = {
-      sourceId,
-      cle,
-      pile: attachee !== null,
-      racine,
-      x: evenement.clientX,
-      y: evenement.clientY,
-      pointerId: evenement.pointerId,
-      element: evenement.currentTarget,
-      porteurId: porteurDuGeste,
-    }
+    const trouve = carte ? departDe(carte, evenement.clientX, evenement.clientY, evenement.pointerId, evenement.currentTarget) : undefined
+    if (!trouve) return false
+    depart.current = trouve
     commence.current = false
     return true
   }, [])
@@ -278,5 +281,62 @@ export function useReordonner(partieId?: string) {
     [oublier]
   )
 
-  return { ordres, geste, gestes: { surAppui, surDeplacement, surRelache, annuler: oublier } }
+  /**
+   * MODE MANUEL, GLISSER SIMPLE (decision du 07/10/2026) : une carte lachee dans
+   * sa propre rangee s'y range, une amelioration lachee pres de son personnage
+   * change de rang ou de cote. Rend `true` quand c'en etait un (l'appelant ne
+   * deplace alors rien) ; `appliquer` faux ne fait que montrer le repere.
+   */
+  const rangerAuGlisser = useCallback((sourceId: number, x: number, y: number, appliquer: boolean): boolean => {
+    if (appliquer) setGeste(null)
+    const carte = [...document.querySelectorAll<HTMLElement>(`.plateau-scene .scan-card[data-card-id="${sourceId}"]`)].find(
+      (c) => !c.closest('.zone-main')
+    )
+    const debut = carte ? departDe(carte, x, y, 0, carte) : undefined
+    if (!debut || !dansSaRangee(debut, x, y)) {
+      if (!appliquer) setGeste(null)
+      return false
+    }
+    if (debut.pile && debut.porteurId !== undefined) {
+      const visee = viseeDansPile(debut, x, y)
+      if (!visee) return false
+      if (!appliquer) {
+        setGeste({ sourceId, x, y, repere: { ...visee.repere, pile: true, cibleId: visee.cible?.id ?? sourceId }, cadre: visee.cadre })
+        return true
+      }
+      const porteurId = debut.porteurId
+      const ids = voisinesDe(debut).map((v) => v.id)
+      setOrdres((courant) => {
+        const ordre = visee.cible ? deplacer(ids, sourceId, visee.cible.id, visee.cible.apres) : ids
+        return poserDuCote({ ...courant, [debut.cle]: ordre }, porteurId, sourceId, visee.cote)
+      })
+    } else {
+      const voisines = voisinesDe(debut)
+      const mesurees = voisines.map(({ id, element }) => {
+        const rect = element.getBoundingClientRect()
+        return { id, cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2, rect }
+      })
+      const visee = placeVisee(mesurees.filter((v) => v.id !== sourceId), x, y)
+      if (!visee) return false
+      const cible = mesurees.find((v) => v.id === visee.cibleId)!
+      if (!appliquer) {
+        setGeste({
+          sourceId,
+          x,
+          y,
+          repere: { gauche: visee.apres ? cible.rect.right : cible.rect.left, haut: cible.rect.top, hauteur: cible.rect.height, pile: false, cibleId: visee.cibleId },
+        })
+        return true
+      }
+      const ids = voisines.map((v) => v.id)
+      setOrdres((courant) => {
+        const suivant = deplacer(ids, sourceId, visee.cibleId, visee.apres)
+        return suivant === ids ? courant : { ...courant, [debut.cle]: suivant }
+      })
+    }
+    setGeste(null)
+    return true
+  }, [])
+
+  return { ordres, geste, rangerAuGlisser, gestes: { surAppui, surDeplacement, surRelache, annuler: oublier } }
 }

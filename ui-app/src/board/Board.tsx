@@ -963,6 +963,8 @@ export type ReglagesGlisser = {
    * (CoucheTriche), plus a l'action du portrait.
    */
   auDoigt?: boolean
+  /** Mode manuel : une carte lachee dans sa propre rangee s'y range (ordre, cote des ameliorations). */
+  rangerAuGlisser?: boolean
   /** La table entiere accueille-t-elle cette carte ? Un seul cadre autour du plateau (question 12). */
   accueilleLaTable?: (sourceId: number) => boolean
   /**
@@ -1105,9 +1107,16 @@ export function Board({
   const minuteurRefus = useRef(0)
   useEffect(() => () => window.clearTimeout(minuteurRefus.current), [])
 
+  const reordre = useReordonner(identitePartie)
+  const rangerAuGlisser = glisser?.rangerAuGlisser === true
   const estSourceGlisser = useCallback((id: number) => glisser?.estSource(id) ?? false, [glisser])
   const surDepot = useCallback(
     (sourceId: number, cible: CibleSurvolee, point: { x: number; y: number }) => {
+      // Mode manuel : lachee dans sa rangee (ou pres de son personnage), la carte s'y range.
+      if (rangerAuGlisser && reordre.rangerAuGlisser(sourceId, point.x, point.y, true)) {
+        setRefus(null)
+        return
+      }
       const raison = glisser?.onDepot(sourceId, cible)
       window.clearTimeout(minuteurRefus.current)
       if (!raison) {
@@ -1117,7 +1126,7 @@ export function Board({
       setRefus({ x: point.x, y: point.y, texte: raison })
       minuteurRefus.current = window.setTimeout(() => setRefus(null), 2600)
     },
-    [glisser]
+    [glisser, rangerAuGlisser, reordre.rangerAuGlisser]
   )
   const { glisse, gestes } = useGlisser({
     estSource: estSourceGlisser,
@@ -1125,7 +1134,6 @@ export function Board({
     onDepot: surDepot,
   })
 
-  const reordre = useReordonner(identitePartie)
   const enGlisser = glisse !== null
   enGlisserRef.current = enGlisser
   // L'apercu DEJA ouvert quand le geste commence resterait par-dessus la table.
@@ -1275,6 +1283,7 @@ export function Board({
         onPointerMove={(evenement) => {
           if (reordre.gestes.surDeplacement(evenement)) return
           gestes.onPointerMove(evenement)
+          if (rangerAuGlisser && glisse) reordre.rangerAuGlisser(glisse.sourceId, evenement.clientX, evenement.clientY, false)
         }}
         // ⚠ LE CLIC PASSE APRES, ET SEULEMENT SI AUCUN GLISSER NE S'ACHEVE.
         // `gestes.onPointerUp` rend `true` quand il vient de lacher une carte :
@@ -1369,7 +1378,11 @@ export function Board({
         />
       ) : null}
       {reordre.geste ? (
-        <CoucheOrdre geste={reordre.geste} carte={cartesParId.get(String(reordre.geste.sourceId))} />
+        <CoucheOrdre
+          geste={reordre.geste}
+          // Au glisser simple du mode manuel, la carte tenue est deja dessinee par CoucheGlisser.
+          carte={glisse ? undefined : cartesParId.get(String(reordre.geste.sourceId))}
+        />
       ) : null}
       {refus ? <BulleRefus x={refus.x} y={refus.y} texte={refus.texte} /> : null}
 
