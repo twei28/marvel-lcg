@@ -1079,3 +1079,93 @@ html[data-affichage='sobre'] .deroule-phase.est-scene.est-hors-phase .deroule-ba
     inset: 48px 0 0;
   }
 }
+
+/* --- LES ONGLETS EN INTERCALAIRES (decision du 07/10/2026, questions une a une) ---
+   Rectangles a coins carres, colles au bord haut du cadre, sur UNE SEULE ligne :
+   ils retrecissent (resume abrege) plutot que de passer a la ligne. Memes
+   couleurs : fait en rouge, en cours en rouge et OUVERT sur le contenu (pas de
+   trait dessous), a venir en gris. */
+.deroule-phase.est-scene .deroule-frise {
+  flex-wrap: nowrap;
+}
+
+.deroule-phase.est-scene .deroule-pastilles {
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: 3px;
+  margin-top: -16px;
+  border-bottom: 2px solid var(--rouge, #a60000);
+}
+
+.deroule-phase.est-scene .deroule-pastille {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 30px;
+  padding: 4px 8px;
+  border-radius: 0;
+  flex-wrap: wrap;
+  column-gap: 5px;
+  row-gap: 0;
+  white-space: normal;
+  line-height: 1.15;
+}
+
+/* Jamais de « … » (test de la feuille) : un onglet etroit passe son texte a la
+   ligne et grandit en hauteur, la rangee d'onglets reste une seule ligne. */
+.deroule-phase.est-scene .deroule-pastille-bouton {
+  min-width: 0;
+  flex-wrap: wrap;
+  white-space: normal;
+}
+
+.deroule-phase.est-scene .deroule-pastille-nom,
+.deroule-phase.est-scene .deroule-pastille-resume {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.deroule-phase.est-scene .deroule-pastille.est-courant {
+  flex-grow: 2;
+  min-height: 34px;
+  margin-bottom: -2px;
+  box-shadow: none;
+}
+
+.deroule-phase.est-scene .deroule-pastille.est-relu {
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+/* --- « DEFENDRE AVEC … » EST UN VRAI BOUTON (07/10/2026) ---------------------
+   Sous chaque carte que l'on peut choisir (defenseur, heros comme allie), la
+   legende devient un bouton BD, couleur « jouer », comme « Ne pas defendre »
+   l'est pour le refus. Toute la vignette reste cliquable (c'est un seul
+   <button>) : le bouton dit ce que fait le clic. */
+.deroule-phase.est-scene .deroule-vignette.est-choix:not(.est-indisponible) > .deroule-legende {
+  --coin: 8px;
+  max-width: none;
+  margin-top: 4px;
+  padding: 7px 12px;
+  font-family: 'Bangers', Impact, 'Arial Black', sans-serif;
+  font-weight: 400;
+  font-size: 1.05rem;
+  letter-spacing: 0.05em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: #14100a;
+  background: var(--menace, #f5b301);
+  box-shadow: inset 0 0 0 2px var(--menace-clair, #ffd56b);
+  clip-path: polygon(
+    var(--coin) 0,
+    100% 0,
+    100% calc(100% - var(--coin)),
+    calc(100% - var(--coin)) 100%,
+    0 100%,
+    0 var(--coin)
+  );
+}
+
+.deroule-phase.est-scene .deroule-vignette.est-choix:not(.est-indisponible):hover > .deroule-legende,
+.deroule-phase.est-scene .deroule-vignette.est-choix:not(.est-indisponible):focus-visible > .deroule-legende {
+  filter: brightness(1.1);
+}
