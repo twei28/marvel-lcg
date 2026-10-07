@@ -625,6 +625,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Rendre désorienté': 'Confuse',
   'Rendre sonné': 'Stun',
   'Rendre tenace': 'Make tough',
+  'Une carte en main ne porte pas de compteurs : pose-la en jeu d’abord.': 'A card in hand cannot hold counters: put it into play first.',
   'Ajouter des compteurs': 'Add counters',
   'Retirer des compteurs': 'Remove counters',
   'Table en manuel': 'Table in manual mode',

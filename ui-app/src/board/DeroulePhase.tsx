@@ -18,6 +18,7 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { estSpectateur } from './moteur'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import {
   arreterSurDefaite,
@@ -734,8 +735,11 @@ export function DeroulePhase({
     cleCourante === undefined ? -1 : etapesAffichees.findIndex((e) => e.cle === cleCourante)
   const rangValidee =
     validee === undefined ? -1 : etapesAffichees.findIndex((e) => e.cle === validee.cle)
+  // Un spectateur ne clique jamais : il suit la derniere etape connue.
   const index =
-    rangDeLaCle !== -1
+    estSpectateur()
+      ? Math.max(0, etapesAffichees.length - 1)
+      : rangDeLaCle !== -1
       ? rangDeLaCle
       : rangValidee !== -1
         ? Math.min(rangValidee + 1, etapesAffichees.length - 1)
@@ -2134,6 +2138,7 @@ export function DeroulePhase({
               <span aria-hidden="true">‹</span>
             </button>
           ) : null}
+          {estSpectateur() ? null : (
           <button
             type="button"
             className="deroule-rond"
@@ -2149,6 +2154,7 @@ export function DeroulePhase({
           >
             {t('Suivant')}
           </button>
+          )}
         </span>
         )}
         {/* Les deux seules mentions qui survivent : « la suite arrive » quand on
@@ -2318,6 +2324,7 @@ export function DeroulePhase({
               rien apres, et c'est lui qui rend la main au joueur. Sur une
               defaite, il dit « Continuer » : ce n'est pas une etape de plus
               qu'on demande, c'est le droit de reprendre la partie. */}
+          {estSpectateur() ? null : (
           <button type="button" className="bh-bouton deroule-suivant" onClick={avancer}>
             {defaiteLocale
               ? t('Continuer')
@@ -2325,6 +2332,7 @@ export function DeroulePhase({
                 ? t('À toi de jouer')
                 : t('Suivant')}
           </button>
+          )}
         </div>
       </section>
     </>
