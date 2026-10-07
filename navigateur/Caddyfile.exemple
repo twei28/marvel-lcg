@@ -26,7 +26,18 @@
 #			root * /opt/narwhal-play-scans
 #			try_files /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics{path}.webp /pivotes/pics{path}.jpg \
 #			          /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics{path}.webp /originaux/pics{path}.jpg \
-#			          /originaux/textures{path}.png /originaux/textures{path}.svg /originaux/cache{path}.jpg
+#			          /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
+#			file_server
+#		}
+#
+#		# Miniatures des cartes de la table : la miniature si elle existe, sinon le scan complet (comme Cache.LoadVignette).
+#		handle /vignette/* {
+#			uri strip_prefix /vignette
+#			root * /opt/narwhal-play-scans
+#			try_files /pivotes/vignettes{path}.jpg /originaux/vignettes{path}.jpg \
+#			          /pivotes/pics-fr{path}.webp /pivotes/pics-fr{path}.jpg /pivotes/pics{path}.webp /pivotes/pics{path}.jpg \
+#			          /originaux/pics-fr{path}.webp /originaux/pics-fr{path}.jpg /originaux/pics{path}.webp /originaux/pics{path}.jpg \
+#			          /originaux/textures{path}.webp /originaux/textures{path}.png /originaux/textures{path}.jpg /originaux/textures{path}.svg /originaux/cache{path}.jpg
 #			file_server
 #		}
 #
@@ -34,5 +45,6 @@
 #		file_server
 #	}
 #
-# Dossiers sur le serveur : /opt/narwhal-play (navigateur/dist) ; /opt/narwhal-play-scans/pivotes (sortie de preparer-scans.py,
+# Dossiers sur le serveur : /opt/narwhal-play (navigateur/dist) ; /opt/narwhal-play-scans/originaux = COPIE de pics-fr, pics, textures, cache, vignettes
+# (Caddy ne peut pas lire /opt/narwhal, en 750 narwhal) ; /opt/narwhal-play-scans/pivotes (sortie de preparer-scans.py,
 # genere SUR le serveur) et /opt/narwhal-play-scans/originaux (lien vers Fusion/marvel-lcg-src/assets).

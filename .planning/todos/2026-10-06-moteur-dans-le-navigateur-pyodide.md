@@ -354,3 +354,47 @@ boucle et pour la liste des « autres formes ». `paper.card_id` départage deux
   « Change Form » pour **52 héros sur 139** au premier tour (le plus souvent 7 → 8) : sans conséquence pour la reprise.
 - **« Reprendre » avec Conan dans le navigateur**, par la vraie interface : changement de forme vers Barbarian, sauvegarde,
   rechargement complet de la page, reprise → Conan the Barbarian, 6 cartes en main, round 1, aucune erreur.
+
+
+---
+
+# ✅ DÉPLOYÉ le 07/10/2026 : `https://play.narwhalchampions.com`
+
+Sur « Les deux » puis « Déploie maintenant, tel quel » de l'utilisateur (son autre session travaillait encore sur le plateau :
+`board.tsx`, `Board.tsx`, `test_capacites.py` modifiés à 09:43 et 09:58 ; le plateau construit `board-vm1FWojQ.js` de 09:38 est
+parti avec). Trois commits sur la branche `mode-manuel` : `9937458b` (correctif moteur), `2d5e8e48` (navigateur/), `72792d29` (docs).
+
+## 1. Le jeu (serveur actuel) : `deployer.ps1 -Code`
+Service `narwhal` actif, `https://narwhalchampions.com/` HTTP 200, correctif présent sur le serveur (3 occurrences de
+`identities_triees`), bundle en ligne identique au local (`board-vm1FWojQ.js`). Le serveur de jeu a redémarré (parties en cours perdues).
+
+## 2. Le mode navigateur : `python3 navigateur/publier.py --oui`
+Construction (version `29ade4bb1b`), contrôle d'équivalence **20 parties sur 20 identiques**, `rsync` vers `/opt/narwhal-play` (82 Mo).
+
+## 3. Ce qui a été fait À LA MAIN sur le serveur (hors du dépôt, à connaître)
+- **`/etc/caddy/Caddyfile`** (jamais écrasé par `deployer.ps1`, il importe karaoke et publicverse) : bloc `@play host play.{$DOMAINE}`
+  inséré avant `@p1` dans le bloc wildcard, puis les routes `/scan/*` et `/vignette/*`, puis les textures `.webp`. Trois sauvegardes :
+  `/etc/caddy/Caddyfile.avant-play-20261007`, `...avant-vignettes-20261007`, `...avant-textures-20261007`. Chaque modification a été
+  validée (`caddy validate`, avec `/etc/caddy/cloudflare.env` chargé) avant `systemctl reload caddy`.
+- **`/opt/narwhal-play-scans/`** : `originaux/` = COPIE de `pics-fr`, `pics`, `textures`, `cache`, `vignettes` (1,9 Go) ; `pivotes/` =
+  2947 scans paysage redressés (270 Mo), générés SUR le serveur par `preparer-scans.py` (venv du jeu, `nice 19`).
+  ⚠ Pourquoi une copie et pas un lien : `/opt/narwhal` est en 750 `narwhal:narwhal`, Caddy (groupes `caddy`, `www-data`) ne peut pas le lire.
+  Ne PAS ouvrir les droits de `/opt/narwhal` pour ça.
+- DNS : rien à faire, le DNS générique `*.narwhalchampions.com` couvrait déjà `play.`.
+
+## 4. Défauts trouvés au contrôle sur l'adresse en ligne, corrigés
+- Miniatures de la table grises : le plateau demande aussi `/vignette/<id>` (le moteur sert la miniature, sinon le scan complet,
+  `Cache.LoadVignette`) ; route absente, 404. Corrigé (route Caddy + copie du dossier `vignettes`).
+- Dos génériques `player` / `encounter` : ils vivent dans `textures/` en `.webp`, extension absente de la liste. Corrigé.
+- `preparer-scans.py` s'arrêtait sur un scan RGBA enregistré en JPEG : conversion en RGB, un échec n'arrête plus le lot.
+
+## 5. Vérifié sur l'adresse en ligne (Chrome)
+Page isolée, moteur prêt en 8 s, assistant, partie lancée, plateau, manigance à l'endroit, miniatures et dos affichés, scans et
+miniatures en HTTP 200 sans échec, « Reprendre » après rechargement. En-têtes COOP/COEP présents, apex toujours à 200.
+
+## 6. Pour redéployer le mode navigateur
+`python3 navigateur/publier.py --oui` (construit, contrôle l'équivalence, envoie). Les scans et le Caddyfile ne changent que si de
+nouveaux scans paysage apparaissent : relancer alors `preparer-scans.py` sur le serveur (voir ci-dessus).
+## 7. Reste non fait
+Firefox / Safari / mobile jamais testés ; ouverture publique non tranchée (l'adresse est joignable, SANS lien depuis le site) ;
+`publier.py` pas branché sur `deployer.ps1`.

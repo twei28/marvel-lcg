@@ -29,6 +29,8 @@ def servir_scan(f):
     im = ImageOps.exif_transpose(Image.open(f))
     if im.width > im.height:
         im = im.rotate(90, expand=True)
+        if f.lower().endswith((".jpg", ".jpeg")) and im.mode not in ("RGB", "L"):
+            im = im.convert("RGB")
         buf = io.BytesIO(); im.save(buf, "WEBP" if f.endswith(".webp") else "PNG" if f.endswith(".png") else "JPEG", quality=90)
         data = buf.getvalue()
     else:

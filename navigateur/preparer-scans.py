@@ -14,6 +14,7 @@ DOSSIERS = ("pics-fr", "pics", "textures", "cache", "vignettes")
 compter = "--compter" in sys.argv
 sortie = None if compter else sys.argv[1]
 n = tot = octets = 0
+echecs = []
 for d in DOSSIERS:
     base = os.path.join(ASSETS, d)
     if not os.path.isdir(base):
@@ -33,6 +34,14 @@ for d in DOSSIERS:
         if sortie:
             os.makedirs(os.path.join(sortie, "pivotes", d), exist_ok=True)
             dest = os.path.join(sortie, "pivotes", d, nom)
-            im.rotate(90, expand=True).save(dest, quality=90)
-            octets += os.path.getsize(dest)
+            tournee = im.rotate(90, expand=True)
+            try:
+                if nom.lower().endswith((".jpg", ".jpeg")) and tournee.mode not in ("RGB", "L"):
+                    tournee = tournee.convert("RGB")      # un JPEG ne porte pas de transparence (vu sur un scan RGBA)
+                tournee.save(dest, quality=90)
+                octets += os.path.getsize(dest)
+            except Exception as e:                        # une image en echec n'arrete pas le lot
+                echecs.append(f"{d}/{nom}: {e}")
 print(f"{n} scans paysage sur {tot}" + (f", {octets/1e6:.0f} Mo ecrits" if sortie else ""))
+if echecs:
+    print(f"{len(echecs)} echec(s) :", *echecs[:10], sep="\n  ")
