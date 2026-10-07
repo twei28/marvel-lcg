@@ -48,7 +48,7 @@ Témoins : `PanneauRecompenses.partie-ordinaire.test.tsx` (5 rouges avant), `Rap
 
 NON fait ou NON exécuté : `ui-check/tests/salon-bout-en-bout.spec.ts` (cas campagne) mis à jour pour lancer ses manches avec `mode_campaign`, MAIS PAS RELANCÉ : `serveur-essai-salon.py`, cité par ce fichier, n'existe plus dans le dépôt. Aucune spec Playwright de bout en bout du défaut lui-même. Fenêtre étroite connue : après le `/new` d'une vraie campagne, le salon d'un invité qui recharge lit encore l'ancien monde pendant quelques secondes. Moteur dans le navigateur : régénérer `navigateur/dist` (`construire.py`) au prochain déploiement.
 
-## NON DÉPLOYÉ, 06/10/2026 : correctif moteur dz003 (en pause, non commité)
+## ~~NON DÉPLOYÉ, 06/10/2026 : correctif moteur dz003 (en pause, non commité)~~ COMMITÉ le 07/10/2026 (`f7b4e6a0`), reste à déployer avec le prochain lot moteur
 
 `UpdateNextCardPlayCost` accepte `in_this="Round"`, dz003 l'utilise, `Puzzle.EndPlayerPhase()`
 et deux cas de test ajoutés. Détail et reste à faire dans
@@ -917,13 +917,13 @@ constaté). Section gardée pour mémoire du piège, plus d'action requise.
 
 ## Ce qui reste ouvert, sans être planifié
 
-- **Finir le mode manuel** (demande de l'utilisateur, 01/10/2026, « pour plus
+- ~~**Finir le mode manuel**~~ **FAIT ET DÉPLOYÉ (05/10 et 06/10/2026 : lots 0 à 7 du plan « mode manuel comme OCTGN », voir les déploiements du 05 et du 06/10 plus bas).** Texte d'origine : (demande de l'utilisateur, 01/10/2026, « pour plus
   tard »). La fiche dit les deux moitiés déployées le 22/09, mais l'utilisateur
   le tient pour inachevé : le reste à finir n'est pas encore détaillé, à lui
   faire préciser avant de cadrer.
   *06/10/2026 : détaillé et planifié (rien codé) dans
   `.planning/todos/2026-10-06-mode-manuel-comme-octgn.md`.*
-- **Disposition de la table modifiable par le joueur** (demande de
+- ~~**Disposition de la table modifiable par le joueur**~~ **FAIT ET DÉPLOYÉ le 05/10/2026 (table personnalisable, « table par briques », voir « DÉPLOIEMENT du 05/10/2026 »).** Texte d'origine : (demande de
   l'utilisateur, 01/10/2026, idée seulement, rien de cadré). Un système « Lego »
   de blocs déplaçables : par exemple mettre le paquet du méchant à un autre
   endroit. À étudier pour le mode manuel ET le mode automatique (question
