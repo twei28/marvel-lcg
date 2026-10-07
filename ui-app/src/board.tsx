@@ -185,6 +185,7 @@ import {
 import { ModaleAmbiance } from './board/ModaleAmbiance'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { publierEtape } from './board/etape-partagee'
+import { appliquerEtiquettesTable, lireEtiquettesTable } from './board/etiquettes-table'
 import { lecteurActif, estRelecture, type Lecteur } from './board/relecture/lecteur'
 import { PageRelecture } from './board/relecture/PageRelecture'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
@@ -4954,6 +4955,7 @@ if (!import.meta.env.VITEST) {
   // Avant le premier rendu, et pour TOUTES les pages (etat enregistre, revoir,
   // salon) : le plateau en partie le reapplique ensuite a chaque changement.
   appliquerAffichage(lireAffichage())
+  appliquerEtiquettesTable(lireEtiquettesTable())
   appliquerTeinte(lireTeinteDuNavigateur())
   window.racinePlateau ??= createRoot(cible)
   window.racinePlateau.render(<Page />)

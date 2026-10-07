@@ -23,6 +23,7 @@
 // ⚠ AUCUN REGLAGE N'EST AJOUTE, SUPPRIME NI RENOMME. C'est un rangement, pas
 // une refonte : chaque interrupteur continue d'appeler exactement la meme
 // fonction qu'avant.
+import { ecrireEtiquettesTable, lireEtiquettesTable } from './etiquettes-table'
 import { ecrireCoteAmeliorations, lireCoteAmeliorations, type CoteAmeliorations } from './cote-ameliorations'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
@@ -220,6 +221,21 @@ function LigneFaconDeJouer() {
   )
 }
 
+function LigneEtiquettesTable() {
+  const [actif, setActif] = useState(lireEtiquettesTable)
+  return (
+    <LigneBascule
+      libelle={t('Étiquettes de type sur la table')}
+      detail={t('« Allié », « Soutien »… au-dessus des cartes en jeu ; toujours visibles dans la main')}
+      actif={actif}
+      onBascule={() => {
+        ecrireEtiquettesTable(!actif)
+        setActif(!actif)
+      }}
+    />
+  )
+}
+
 function LigneCoteAmeliorations() {
   const [cote, setCote] = useState<CoteAmeliorations>(lireCoteAmeliorations)
   return (
@@ -338,6 +354,7 @@ export function ContenuOnglet({
             </button>
           </div>
         ) : null}
+        <LigneEtiquettesTable />
         <LigneBascule
           libelle={t('Animations')}
           detail={t('Cartes qui bougent, secousses, halos')}

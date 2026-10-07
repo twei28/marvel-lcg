@@ -105,6 +105,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Télécharger cette partie en .json': 'Download this game as .json',
   'Contrôles de relecture': 'Replay controls',
   'Relecture': 'Replay',
+  "Étiquettes de type sur la table": "Type labels on the table",
+  "« Allié », « Soutien »… au-dessus des cartes en jeu ; toujours visibles dans la main": "“Ally”, “Support”… above cards in play; always shown in hand",
   "Refermer l’aide": "Close help",
   "Ouvrir l’aide": "Open help",
   "Pendant la partie": "During the game",

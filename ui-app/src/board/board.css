@@ -2498,6 +2498,13 @@
     --card-w: 176px;
   }
 
+  /* Pas d'etiquette de type sur les cartes EN JEU (decision du 07/10/2026) :
+     seule la main la garde ; les fenetres et l'apercu sont hors des zones.
+     L'interrupteur « Etiquettes de type sur la table » la remet (etiquettes-table.ts). */
+  body:not(.etiquettes-sur-la-table) .plateau-emplacement:not(.zone-main) .kind-pill {
+    display: none;
+  }
+
   .plateau-scene .est-attachee .kind-pill {
     font-size: 9px;
   }
