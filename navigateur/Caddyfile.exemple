@@ -19,6 +19,15 @@
 #
 #		redir / /navigateur.html 302
 #
+#		# Images demandees PAR LEUR NOM, a la racine (« /fr_01001a », logos « /narwhal-thor ») ou en haute definition
+#		# (« /hd/01001a ») : le moteur classique les sert par sa route attrape-tout, le serveur statique non (404,
+#		# constate en ligne le 07/10/2026 : aucune image dans l'ecran de preparation). Elles passent par /scan/.
+#		# Un nom sans point ni barre : jamais une page ni un fichier du paquet (qui ont tous une extension ou un dossier).
+#		@image_nue path_regexp image_nue ^/[A-Za-z0-9_-]+$
+#		rewrite @image_nue /scan{path}
+#		@image_hd path_regexp image_hd ^/hd/([A-Za-z0-9_-]+)$
+#		rewrite @image_hd /scan/{re.image_hd.1}
+#
 #		# Scans : d'abord les versions REDRESSEES (navigateur/preparer-scans.py), puis les originaux.
 #		# Le moteur redresse en portrait toute image plus large que haute ; le plateau les remet a plat par CSS.
 #		handle /scan/* {
