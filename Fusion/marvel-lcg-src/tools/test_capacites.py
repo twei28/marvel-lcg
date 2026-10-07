@@ -6819,6 +6819,50 @@ CAS = [
         "attendu": {"compteurs": [["dz002", "knife", 2]]},
     },
     {
+        "nom": "dz003 A Little Girl's Dream — Hero Action : la carte suivante coute 3 de moins (meme phase, temoin)",
+        "pourquoi": ("temoin du cas suivant : meme montage SANS ouvrir la phase du vilain. "
+                     "Prouve que la reduction existe et que dz004 (cout 2) devient payable "
+                     "sans ressource ; si ce temoin est rouge, le cas « tout le round » "
+                     "ne mesure rien"),
+        "scenario": "rhino",
+        "heros": "dazzler",
+        "mise_en_place": ["Puzzle.ChangeForm('dz001b')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["dz003", "dz004"],
+        "ne_pas_depenser": ["dz003"],
+        "cibles": ["01097b"],
+        "declencher": [],
+        "jouer": ["dz003", "dz004"],
+        "verifier": "etat_attendu",
+        # Une CHANSON jouee se range dans la Setlist de Live Concert : elle ne
+        # va PAS en defausse. Seule la menace prouve que dz004 a ete jouee.
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "dz003 A Little Girl's Dream — Hero Action : la reduction de 3 dure TOUT LE ROUND (survit a la phase du vilain)",
+        "pourquoi": ("« the next ally or event you play THIS ROUND » : la reduction etait "
+                     "posee avec `in_this=\"Phase\"` et tombait a la fin de la phase des "
+                     "joueurs. Beautiful Dreamer (dz004, cout 2) est jouee APRES l'ouverture "
+                     "de la phase du vilain : payable seulement si la reduction a survecu. "
+                     "Preuve par insuffisance : dz003 est interdite comme ressource et la "
+                     "main ne contient rien d'autre, donc sans reduction dz004 est impayable"),
+        "scenario": "rhino",
+        "heros": "dazzler",
+        "mise_en_place": ["Puzzle.ChangeForm('dz001b')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["dz003", "dz004"],
+        "ne_pas_depenser": ["dz003"],
+        "cibles": ["01097b"],
+        "declencher": [],
+        "jouer": ["dz003"],
+        "declencher_apres": ["Puzzle.EndPlayerPhase()", "Puzzle.BeginVillainPhase()"],
+        "jouer_apres": ["dz004"],
+        "verifier": "etat_attendu",
+        # Une CHANSON jouee se range dans la Setlist de Live Concert : elle ne
+        # va PAS en defausse. Seule la menace prouve que dz004 a ete jouee.
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
         "nom": "wx002 Wolverine's Claws — Setup : posee en jeu par Laura Kinney",
         "pourquoi": "re-skin de X-23 : verifier que le Setup vise bien wx002 et pas 43002",
         "scenario": "rhino",
@@ -55520,6 +55564,12 @@ def executer_un_cas(game_dir, port, index):
                       "| zone =", face.card.area, flush=True)
 
         try:
+            if cas.get("verifier") == "stats_par_siege_isolees":
+                # `statistics.json` du dossier de jeu est relu a chaque cas et
+                # cumule sur toute la batterie : sans cette remise a zero, le
+                # siege 0 affichait 129 au lieu de 2 (07/10/2026).
+                from engine import Engine
+                Engine.statistics.content.par_siege.clear()
             if cas["mise_en_place"]:
                 PuzzleHelper.Exec(cas["mise_en_place"], monde)
             # Cartes deposees en main AVANT de jouer : elles servent de
@@ -55559,6 +55609,14 @@ def executer_un_cas(game_dir, port, index):
             # existant ne la definit, aucun n'est modifie.
             if cas.get("declencher_apres"):
                 PuzzleHelper.Exec(cas["declencher_apres"], monde)
+            # `jouer_apres` : cartes jouees (cout PAYE) APRES `declencher_apres`.
+            # Ajoutee le 06/10/2026 pour dz003 « A Little Girl's Dream » :
+            # « the next ally or event you play THIS ROUND » ne se prouve qu'en
+            # jouant la carte suivante dans une AUTRE phase (le vilain) que celle
+            # ou la reduction a ete posee. Cle ADDITIVE : aucun cas existant ne
+            # la definit.
+            for card_id in cas.get("jouer_apres") or []:
+                jouer_carte(card_id)
             # `declencher_tolerant` : commandes Puzzle.* dont l'ECHEC EST LE
             # RESULTAT ATTENDU. Ajoutee le 05/09/2026 (pack throg).
             #
@@ -55609,14 +55667,6 @@ def executer_un_cas(game_dir, port, index):
         try:
             ok, message = espace[cas["verifier"]](monde, aides)
         except Exception as exc:
-            # `jouer_apres` : cartes jouees (cout PAYE) APRES `declencher_apres`.
-            # Ajoutee le 06/10/2026 pour dz003 « A Little Girl's Dream » :
-            # « the next ally or event you play THIS ROUND » ne se prouve qu'en
-            # jouant la carte suivante dans une AUTRE phase (le vilain) que celle
-            # ou la reduction a ete posee. Cle ADDITIVE : aucun cas existant ne
-            # la definit.
-            for card_id in cas.get("jouer_apres") or []:
-                jouer_carte(card_id)
             import traceback
             traceback.print_exc()
             ok, message = False, f"verification en erreur : {type(exc).__name__}: {exc}"

@@ -9,11 +9,10 @@ from . import *
 # `Worlds.UpdateNextCardPlayCost` est le crochet du moteur pour « la prochaine
 # carte que tu joues » (modele Evaluate Threat 59028, Recruitment Drive 59023).
 #
-# ECART ASSUME, minime : la carte dit « this ROUND », le moteur ne connait que
-# `in_this="Phase"` ou `"Turn"`. On prend « Phase », la plus large des deux :
-# elle couvre toute la phase des joueurs, donc tout le temps ou l'on joue
-# normalement un allie ou un evenement. Une carte jouee en reaction PENDANT la
-# phase du vilain ne beneficierait pas de la reduction.
+# « This ROUND » : `in_this="Round"` (ajoute au moteur le 06/10/2026). La
+# reduction survit donc a la fin de la phase des joueurs et couvre aussi une
+# carte jouee en reaction pendant la phase du vilain. Avant, seul « Phase »
+# existait et la reduction tombait a la fin de la phase des joueurs.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -27,7 +26,7 @@ def GetAbilities() -> Sequence['Ability']:
         Worlds.UpdateNextCardPlayCost(
             joueur, -3, effect,
             finder=CardFinder(card_type=Ally | Event),
-            in_this="Phase",
+            in_this="Round",
         )
 
     def showtime(effect: 'Effect', message: 'Message2') -> None:

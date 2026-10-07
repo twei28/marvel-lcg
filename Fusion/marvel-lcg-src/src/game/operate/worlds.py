@@ -812,7 +812,7 @@ class Worlds:
                                 update_to: bool=False,
                                 finder: 'CardFinder|None'=None,
                                 # condition: Callable[['CardFace'], bool] = lambda face: True,
-                                in_this: Literal["Phase", "Turn"],
+                                in_this: Literal["Phase", "Turn", "Round"],
                                 ):
         from game.message import Message
         from game.ability import Ability, AbilityType
@@ -838,6 +838,7 @@ class Worlds:
 
         phase_end = in_this == "Phase"
         turn_end = in_this == "Turn"
+        round_end = in_this == "Round"
 
         def check_is_player(effect: 'Effect', message: 'TriggerNonePlayerMessage'):
             return player == "Any" or player == message.to_player
@@ -857,7 +858,8 @@ class Worlds:
             ),
             unregister_after_exec=False,
             until_phase_end=phase_end,
-            until_turn_end=turn_end
+            until_turn_end=turn_end,
+            until_round_end=round_end
         )
 
         def unregister_modify_cost_effect(effect: 'Effect', message: 'Message2'):
@@ -880,7 +882,8 @@ class Worlds:
             ),
             unregister_after_exec=True,
             until_phase_end=phase_end,
-            until_turn_end=turn_end
+            until_turn_end=turn_end,
+            until_round_end=round_end
         )
 
     ################################################################################

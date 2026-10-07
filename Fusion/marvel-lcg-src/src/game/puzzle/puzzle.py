@@ -685,6 +685,31 @@ class RunPuzzle:
         controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["THW"])
         return face
 
+    def EndPlayerPhase(self) -> None:
+        """FERME la phase des joueurs, comme `phase_end("Player")` du moteur.
+
+        AJOUT (06/10/2026, dz003 « A Little Girl's Dream »). `BeginVillainPhase`
+        ouvre la phase du mechant mais ne ferme JAMAIS celle des joueurs : aucun
+        `AfterPhaseEnd` ne partait, donc tout effet temporaire « jusqu'a la fin
+        de la phase » restait vivant et un cas sur sa DUREE etait vert meme avec
+        la mauvaise duree (preuve par substitution rouge impossible). On reprend
+        `phase_end` (`world.py`, fonction locale) : etat de fin de phase, tour
+        courant vide, `WhenPhaseEnd`, puis `AfterPhaseEnd`.
+        """
+        from game.message import Message
+        from game.world.phase import Phase
+
+        world = self.world
+        world.phase.SetState(Phase.State.EndPhase)
+        world.current_player = None
+
+        phase_message = Message.WhenPhaseEnd(world.phase_id, "Player", world)
+        phase_message.Send()
+
+        world.stat.OnPhaseEnd()
+
+        Message.AfterPhaseEnd(world.phase_id, "Player", phase_message).Send()
+
     def BeginVillainPhase(self) -> None:
         """Ouvre la PHASE DU MECHANT, sans la jouer.
 

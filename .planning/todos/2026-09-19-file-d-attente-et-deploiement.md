@@ -10,6 +10,12 @@ déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 - [x] Vérifier le mélange du deck rencontre de Klaw (Radioactive Man sort souvent). FAIT le 07/10/2026 : IMPRESSION, pas de défaut. 60 mises en place : rang relatif moyen de Radioactive Man 0,47 (attendu 0,50), tops normaux. Cause de l'impression : « Underground Distribution » 1B révèle puis défausse jusqu'à un sbire qui engage le héros ; Radioactive Man est ce sbire dans 8 parties sur 60 (13 %, attendu ~11 % avec 9 sbires dans le deck de 30), et seulement 6 sbires différents contre 1 copie chacun, donc il revient vite. Aucun fichier du projet modifié. Décidé : mesure sur une dizaine de parties, deck rencontre de Klaw seulement, rang de sortie de Radioactive Man.
 - [ ] Revérifier la phase du méchant étape par étape. Décidé : symptôme incertain (résultat déjà sur la table avant la modale, ET/OU étape suivante lancée sans validation) ; jouer une phase sur le moteur d'essai en capturant chaque étape, comparer table et modale, corriger l'écart.
 
+## NON DÉPLOYÉ, 06/10/2026 : correctif moteur dz003 (en pause, non commité)
+
+`UpdateNextCardPlayCost` accepte `in_this="Round"`, dz003 l'utilise, `Puzzle.EndPlayerPhase()`
+et deux cas de test ajoutés. Détail et reste à faire dans
+`2026-10-06-verification-cartes-hors-irefrixs.md`. À déployer avec le prochain lot moteur.
+
 ## DÉPLOYÉ le 05/10/2026 : phase du méchant en carré au milieu (commit `397331a5`)
 
 Parti en production le 05/10/2026 vers 10 h 36 (heure locale), après une annonce
