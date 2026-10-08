@@ -66,8 +66,21 @@
   text-shadow: none;
 }
 
+/* DEFAITE : meme principe, image fournie le 08/10/2026 (« DEFEAT! », 3:1).
+   Pas pour un match nul de bataille, qui garde l'eclat dessine. */
+.fin-partie.est-defaite:not(.est-nul) .fin-partie-eclat {
+  aspect-ratio: 3 / 1;
+  width: min(640px, 90vw);
+  margin-bottom: -24px;
+  background: url('/public/img/fin-partie/defeat.webp') center / contain no-repeat;
+  font-size: 0;
+  text-shadow: none;
+}
+
 .fin-partie.est-victoire .fin-partie-eclat::before,
-.fin-partie.est-victoire .fin-partie-eclat::after {
+.fin-partie.est-victoire .fin-partie-eclat::after,
+.fin-partie.est-defaite:not(.est-nul) .fin-partie-eclat::before,
+.fin-partie.est-defaite:not(.est-nul) .fin-partie-eclat::after {
   content: none;
 }
 
@@ -80,7 +93,8 @@
   margin-bottom: -28px;
 }
 
-.fin-partie.est-victoire:has(.camp-recomp) .fin-partie-eclat {
+.fin-partie.est-victoire:has(.camp-recomp) .fin-partie-eclat,
+.fin-partie.est-defaite:not(.est-nul):has(.camp-recomp) .fin-partie-eclat {
   width: min(360px, 70vw);
   font-size: 0;
   margin-bottom: -14px;

@@ -1689,7 +1689,7 @@ function EcranFinPartie({
   const mechants = (monde?.area_villain ?? []).map((carte) => nomAffiche(carte)).filter(Boolean)
   return (
     <div
-      className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}`}
+      className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}${bataille?.nul ? ' est-nul' : ''}`}
       role="dialog"
       aria-modal="true"
       aria-label={eyebrow}
