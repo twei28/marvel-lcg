@@ -46152,6 +46152,21 @@ CAS = [
         "verifier": "pol_ne_double_pas",
     },
     {
+        "nom": "12011 Ant-Man mis en jeu par Make the Call : le surpaiement de SON cout (fenetre Spend) donne des pym (rapport Phocea n65)",
+        "pourquoi": ("rapport n65 : Make the Call ouvre DEUX fenetres de paiement de cout 0 : la sienne (Play, "
+                     "ou le pilote surpaie Energy + Genius pour rien) puis celle d'Ant-Man (Spend_of_any_type). "
+                     "Le moteur calcule bien `overpaid` : il reste Strength (RR) pour la 2e fenetre, donc 2 pym. "
+                     "Le defaut etait cote plateau : la validation courte fermait la 2e fenetre sans rien depenser"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreatePlayerDiscardPile('12011')"],
+        "main_exclusive": ["01071", "01088", "01089", "01090"],
+        "declencher": [],
+        "jouer": ["01071"],
+        "surpayer": True,
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["12011", "pym", 2]]},
+    },
+    {
         "nom": "01072 The Power of Leadership double bien sur un vrai cout : Maria Hill (2) payee avec elle seule (temoin)",
         "pourquoi": "signalement Phocea n31 : le cas Ant-Man ne doit pas cacher un doublement casse partout",
         "scenario": "rhino", "heros": "spider_man",

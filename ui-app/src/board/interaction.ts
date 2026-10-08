@@ -17,6 +17,7 @@ import {
   foisDisponible,
   paiementCourant,
   paiementFacultatif,
+  paiementNulDUneAutreCarte,
   nombreDeRessources,
   typesManquants,
   valeurMoyen,
@@ -518,7 +519,8 @@ export function useInteraction(
   // La carte que porte l'option recompense-t-elle un surpaiement ? (Ant-Man,
   // Wasp, Wonder Man : voir catalogue.surpayable.)
   const surpaiementRecompense =
-    option !== undefined && catalogue.surpayable(index.get(option.bind_id)?.card_id ?? '')
+    option !== undefined &&
+    (catalogue.surpayable(index.get(option.bind_id)?.card_id ?? '') || paiementNulDUneAutreCarte(option))
   const identiteJoueurId = world?.players?.[playerId]?.area_hero?.[0]?.id
 
   /**

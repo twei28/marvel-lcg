@@ -234,6 +234,19 @@ export function paiementCourant(option: Option, cibles: number[]): Paiement | un
   return option.target_payment[premiere] ?? option.target_payment[0]
 }
 
+/**
+ * La fenetre « Spend ... » d'un cout imprime NUL, ouverte sans cible par une
+ * carte qui en paie une AUTRE (Make the Call : « pay the printed cost of an
+ * ally »). L'option porte la carte qui paie, pas l'allie paye : le catalogue ne
+ * peut donc pas dire que ce surpaiement est recompense (Ant-Man). Rapport
+ * Phocea n65 : la validation courte la fermait aussitot, sans rien depenser.
+ */
+export function paiementNulDUneAutreCarte(option: Option): boolean {
+  if (!option.name.startsWith('Spend') || option.all_legal_targets.length > 0) return false
+  const paiement = option.target_payment[0]
+  return paiement !== undefined && totalDuCout(paiement.cost) === 0 && paiement.payment.length > 0
+}
+
 /** Nombre de ressources a depenser. undefined = le moteur en jugera. */
 export function nombreDeRessources(paiement: Paiement | undefined): number | undefined {
   if (!paiement) return undefined
