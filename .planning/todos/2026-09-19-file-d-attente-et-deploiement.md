@@ -3,6 +3,13 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 08/10/2026 (17 h 28) : roue du hasard, Hellcat, deck Sens de Daredevil, Luke Cage, compteur des piles
+
+Sur « tu peux déployer » (table 2351, celle de l'utilisateur, coupée avec son accord). `deployer-tout.sh` : `board-B00nEiZs.js` identique au poste sur les deux sites, service actif, 200 ; play. 20 identiques sur 20 (moteur changé) ; sons de play. 149 ; sauvegarde `code-20261008-1728-c4d4ec61.zip`. Vérifié présents en prod : `roue.js`/`roue.css`, `set_roue`, le correctif `card.py` (deck spécial sans cache + Tenaces après retournement), `61025.py` avec `CanWorkOnlyInHand`.
+Commits : `cc7aa56e` (roue), `be6bf463` (Hellcat n66), `f2506529` (deck Sens + cas n68), `ac071904` (Luke Cage n67, batterie 2669/2675 : 4 Squirrel Girl connus + 2 processus morts verts seuls), `bffb0655` (compteur des piles en haut à droite), `831464be`.
+Non vu en vrai : la roue avec 3 ou 4 invités en ligne ; le deck Sens cliqué au navigateur (moteur prouvé, plateau non vu) ; le compteur des piles (vu par l'utilisateur en local : « parfait »).
+Restent ouverts : n°68 (game over après correction manuelle + rechargement raté : cause non prouvée, à surveiller), n°69 classé misplay (backlog : annoncer un choix à option unique).
+
 ## ✅ DÉPLOYÉ LE 08/10/2026 (12 h 54) : répliques au choix du héros ou du scénario, plus au survol
 
 Sur « Déployer » puis « Déployer maintenant » (table 2351 coupée, accord explicite). `deployer-tout.sh` : plateau inchangé `board-BoiLNOBv.js`, service actif, 200 ; play. contrôle sauté (moteur inchangé) ; copie des sons de play. passée pour la première fois (149 fichiers) ; sauvegarde `code-20261008-1254-535a924a.zip`. `jouerReplique` présent dans `app.js` en prod. Commit `535a924a`.
