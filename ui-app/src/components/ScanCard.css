@@ -1178,12 +1178,14 @@
     font-size: 0.54rem;
   }
 
-  /* Hauteur de pile : coin oppose aux compteurs de jeu, teinte acier neutre.
+  /* Hauteur de pile : teinte acier neutre, coin HAUT DROIT (demande du
+     08/10/2026). Ce coin est celui des PV d'allie et de la menace, mais ces
+     badges ne vivent que sur une carte EN JEU, jamais sur une pile.
      Ce n'est pas une donnee de la carte, c'est le nombre de cartes empilees. */
   .pile-count-badge {
     position: absolute;
     top: 6px;
-    left: 6px;
+    right: 6px;
     z-index: 2;
     min-width: 26px;
     height: 24px;
@@ -1254,7 +1256,7 @@
 
   /* Ordre de clic pour une selection ou il compte (Madame Web et consorts,
      signalement Yarro n28 du 27/09/2026) : coin bas droit, seul coin encore
-     libre (haut gauche = pile-count, haut droit = scheme-threat/ally-hp, bas
+     libre (haut droit = pile-count sur une pile, scheme-threat/ally-hp en jeu, bas
      gauche = spent). Couleur distincte du vert « depensee » pour ne pas
      laisser croire a un paiement. */
   .order-badge {
