@@ -1,6 +1,6 @@
 # Mode normal : glisser un événement sur la table pour le jouer (08/10/2026)
 
-**Statut : EN COURS.** Demande : « en mode normal, on ne peut pas glisser les événements. J'aimerais qu'on puisse les glisser vers la zone de jeu pour les jouer, parce qu'il y a plein de cartes où il faut cliquer dessus et cliquer Jouer, alors qu'elles n'ont pas de lieu où être posées. »
+**Statut : FAIT le 08/10/2026 (fd54189e), vérifié en vrai sans défaut (5 cas, ui-check/tests/zz-glisser-evenements.spec.ts), NON DÉPLOYÉ.** Demande : « en mode normal, on ne peut pas glisser les événements. J'aimerais qu'on puisse les glisser vers la zone de jeu pour les jouer, parce qu'il y a plein de cartes où il faut cliquer dessus et cliquer Jouer, alors qu'elles n'ont pas de lieu où être posées. »
 
 ## Décidé (questions une à une)
 
