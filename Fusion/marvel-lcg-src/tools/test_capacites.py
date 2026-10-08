@@ -43395,6 +43395,45 @@ CAS = [
         "attendu": {"degats": [["61025", 1]]},
     },
     {
+        "nom": "61025 Hellcat — Action depuis la main (identite DEFENDER) : mise en jeu SANS payer (rapport BL-Stark n66)",
+        "pourquoi": ("« Action: Put Hellcat into play from your hand » : une ACTION portee par la carte EN MAIN, "
+                     "pas sa mise en jeu payante (modele 50013 Slingshot). Main = Hellcat seule : aucune "
+                     "ressource, la mise en jeu normale (cout 4) est impossible, seule l'Action peut la poser"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        # Jessica commence en forme CIVILE : ChangeForm('61001b') la retourne cote heros (61001a, DEFENDER).
+        "mise_en_place": ["Puzzle.ChangeForm('61001b')"],
+        "main_exclusive": ["61025"],
+        "declencher": [],
+        "action_en_main": ["61025"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["61025"]},
+    },
+    {
+        "nom": "61025 Hellcat — CONTRE-CAS : Jessica en forme civile (pas DEFENDER), l'Action n'est pas offerte",
+        "pourquoi": "« If your identity has the [[Defender]] trait » : 61001b porte CIVILIAN seul (forme de depart)",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": [],
+        "main_exclusive": ["61025"],
+        "declencher": [],
+        "verifier": "echo_etat",
+        "attendu": {"action_offerte": [["61025", False]], "main_avec": ["61025"]},
+    },
+    {
+        "nom": "61025 Hellcat — sans Defender, la mise en jeu NORMALE (cout 4 paye) reste possible",
+        "pourquoi": ("avant le correctif, `.SetPlay()` nommait l'Action « Play » : `Ally` n'ajoutait plus la "
+                     "mise en jeu normale, et Hellcat etait injouable hors identite Defender"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": [],
+        "main_exclusive": ["61025", "01088", "01089", "01090", "01088"],
+        "declencher": [],
+        "jouer": ["61025"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["61025"]},
+    },
+    {
         "nom": "61038 Echo — attaque : subit 1 degat(s) consecutif(s)",
         "pourquoi": "scan : 1 icone(s) sous ATK ; sans asterisque dans `desc`, aucun degat",
         "scenario": "rhino",

@@ -12,5 +12,10 @@ def GetAbilities() -> Sequence['Ability']:
         identity = effect.GetInitiator().GetIdentity()
         return bool(identity and identity.HasTrait('DEFENDER'))
     return [
-        AbilityFactory.WhenInYourPlayTurn(AbilityType.Action, hellcat, conditions=[check_defender]).SetPlay(),
+        # ⚠ PAS DE `.SetPlay()` : il baptise la capacite « Play », et `Ally`
+        # n'ajoute alors plus la mise en jeu normale (card_type/ally.py). L'Action
+        # devenait la mise en jeu PAYANTE (cout 4) et Hellcat etait injouable
+        # sans Defender (rapport BL-Stark n66). Modele 50013 Slingshot.
+        AbilityFactory.WhenInYourPlayTurn(AbilityType.Action, hellcat, conditions=[check_defender])
+        .CanWorkOnlyInHand(),
     ]
