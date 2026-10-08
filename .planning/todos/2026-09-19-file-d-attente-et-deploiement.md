@@ -3,6 +3,10 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 08/10/2026 (12 h 54) : répliques au choix du héros ou du scénario, plus au survol
+
+Sur « Déployer » puis « Déployer maintenant » (table 2351 coupée, accord explicite). `deployer-tout.sh` : plateau inchangé `board-BoiLNOBv.js`, service actif, 200 ; play. contrôle sauté (moteur inchangé) ; copie des sons de play. passée pour la première fois (149 fichiers) ; sauvegarde `code-20261008-1254-535a924a.zip`. `jouerReplique` présent dans `app.js` en prod. Commit `535a924a`.
+
 ## ✅ DÉPLOYÉ LE 08/10/2026 (11 h 14) : relecture fidèle, voix de Marvel Rivals, image DEFEAT!
 
 Sur « deploie » puis « Déployer maintenant » (tables 2351 et 2360 coupées, accord explicite). `deployer-tout.sh` : `board-BoiLNOBv.js` identique au poste sur les deux sites, service actif, 200 ; play. 20 identiques sur 20 (moteur changé : `set_vu`) ; sauvegarde `code-20261008-1114-ff68acd4.zip`. Parti : relecture et spectateur fidèles (`a4915ff7`, fiche `2026-10-08-relecture-fidele.md`), 124 répliques au survol (`90ce4f8d`), image DEFEAT! (`40062aea`). Fichiers vérifiés présents sur le serveur.
