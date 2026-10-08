@@ -60,6 +60,7 @@ URL_MC4DB = "https://mc4db.merlindumesnil.net/api/public/cards/?locale=fr"
 # Fautes des sources, corrigees ici pour survivre a chaque regeneration.
 CORRECTIONS_NOMS = {
     "40002": "Translation Corporelle",  # « Translatation » chez fr.marvelcdb.com
+    "50028": "Organisation de Façade",  # « Organization » (anglicisme) chez fr.marvelcdb.com
 }
 
 

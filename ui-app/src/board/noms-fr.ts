@@ -2723,7 +2723,7 @@ export const NOMS_FR: Readonly<Record<string, string | undefined>> = {
   '50025': "Énergie",
   '50026': "Génie",
   '50027': "Force",
-  '50028': "Organization de Façade",
+  '50028': "Organisation de Façade",
   '50029': "Conférence de Presse",
   '50030': "Le Contrôleur",
   '50031': "Armée des Contrôlés",
