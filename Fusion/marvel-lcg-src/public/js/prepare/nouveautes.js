@@ -45,6 +45,66 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-08",
+        genre: "jeu",
+        fr: "En mode Manuel, tout fonctionne maintenant comme sur OCTGN : Maj+clic pour cibler une carte, Maj+glisser pour tracer une flèche, le pavé numérique pour colorer une carte, Ctrl+clic pour en sélectionner plusieurs, Ctrl+I pour lire une carte. La carte boost se pose face cachée à côté du méchant.",
+        en: "In Manual mode, everything now works like OCTGN: Shift+click to target a card, Shift+drag to draw an arrow, the numeric keypad to colour a card, Ctrl+click to select several, Ctrl+I to read a card. The boost card goes face down next to the villain.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "jeu",
+        fr: "Glisse un événement de ta main n'importe où sur la table pour le jouer, ou directement sur sa cible. Plus besoin de cliquer la carte puis « Jouer ».",
+        en: "Drag an event from your hand anywhere on the table to play it, or straight onto its target. No more clicking the card and then “Play”.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "correction",
+        fr: "Plus de 800 cartes ont maintenant leur nom et leur texte en français, et 289 leur scan français, dont tout Peur de Rien, Jessica Jones et Luke Cage. Merci à mc4db pour les traductions.",
+        en: "More than 800 cards now have their French name and text, and 289 their French scan, including all of Fear No Evil, Jessica Jones and Luke Cage. Thanks to mc4db for the translations.",
+    },
+    {
+        date: "2026-10-07",
+        genre: "jeu",
+        fr: "Revois tes parties : à la fin d'une partie, télécharge-la, puis ouvre « Revoir » dans le menu pour la rejouer pas à pas, avec chaque carte jouée, ce qu'elle a coûté et les dégâts.",
+        en: "Watch your games again: at the end of a game, download it, then open “Replay” in the menu to play it back step by step, with every card played, what it cost and the damage.",
+    },
+    {
+        date: "2026-10-07",
+        genre: "jeu",
+        fr: "Range tes cartes en jeu comme tu veux : maintiens Alt et glisse une carte dans sa rangée, ou une amélioration de l'autre côté de son personnage. En Manuel, un simple glisser suffit.",
+        en: "Arrange your cards in play as you like: hold Alt and drag a card within its row, or an upgrade to the other side of its character. In Manual mode, a simple drag is enough.",
+    },
+    {
+        date: "2026-10-07",
+        genre: "jeu",
+        fr: "La table se personnalise encore plus : renomme une zone d'un double-clic dans « Modifier la table », choisis de quel côté se posent les améliorations, et un onglet Aide rappelle les gestes cachés.",
+        en: "More ways to personalise the table: rename a zone with a double-click in “Edit the table”, choose which side upgrades go on, and a Help tab lists the hidden gestures.",
+    },
+    {
+        date: "2026-10-07",
+        genre: "jeu",
+        fr: "Quand tu regardes la partie d'un autre, tu vois son curseur, ses clics et la phase du méchant avancer en direct.",
+        en: "When you watch someone else's game, you see their cursor, their clicks and the villain phase moving forward live.",
+    },
+    {
+        date: "2026-10-07",
+        genre: "coulisses",
+        fr: "Nouveaux bruitages avec un volume réglable, nouvel écran de face-à-face et nouvelle image de victoire. Les étiquettes de type disparaissent des cartes en jeu (un réglage les remet).",
+        en: "New sound effects with adjustable volume, a new face-off screen and a new victory image. Type labels are gone from cards in play (a setting brings them back).",
+    },
+    {
+        date: "2026-10-07",
+        genre: "correction",
+        fr: "La phase du méchant ne saute plus d'étape et n'avance plus toute seule pendant que tu lis, la fenêtre de défense reste dans l'écran, et une partie ordinaire ne valide plus un scénario de campagne.",
+        en: "The villain phase no longer skips a step or moves on by itself while you read, the defence window stays on screen, and an ordinary game no longer completes a campaign scenario.",
+    },
+    {
+        date: "2026-10-06",
+        genre: "jeu",
+        fr: "Le journal de la partie est plus lisible : les noms de cartes s'affichent en survol, et les phases et les rounds sont séparés.",
+        en: "The game log is easier to read: card names show on hover, and phases and rounds are separated.",
+    },
+    {
         date: "2026-10-05",
         genre: "jeu",
         fr: "Deux façons de jouer : Automatique, où le moteur fait tout, ou Manuel, comme sur OCTGN, où tu poses, tournes et comptes tout à la main. Un interrupteur en haut permet de passer de l'une à l'autre en pleine partie, et un onglet à droite rappelle les raccourcis.",

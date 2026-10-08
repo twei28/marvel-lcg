@@ -17,6 +17,21 @@ JOURNAUX="$(mktemp -d)"
 CLE_WIN="$(wslpath -w "$RACINE/deploiement/cle_narwhal")"
 HOTE=root@178.105.177.39
 
+# LE JOURNAL DES NOUVEAUTES DOIT SUIVRE LE CODE (08/10/2026). Il etait reste
+# au 05/10 pendant six deploiements : les joueurs ne savaient pas ce qui avait
+# change. Le deploiement s'arrete si une fonctionnalite ou une correction a ete
+# commitee APRES la derniere entree de `nouveautes.js`. Pour passer outre (rien
+# a annoncer aux joueurs) : NOUVEAUTES_A_JOUR=1 bash deploiement/deployer-tout.sh
+NOUVEAUTES="Fusion/marvel-lcg-src/public/js/prepare/nouveautes.js"
+derniere_entree=$(grep -oE 'date: "[0-9-]+"' "$NOUVEAUTES" | cut -d'"' -f2 | sort -r | head -1)
+dernier_changement=$(git log -E --grep='^(feat|fix)' --format=%ad --date=short -1 -- ui-app Fusion/marvel-lcg-src/src Fusion/marvel-lcg-src/public Fusion/marvel-lcg-src/data)
+if [[ "$dernier_changement" > "$derniere_entree" && "${NOUVEAUTES_A_JOUR:-}" != "1" ]]; then
+  echo "ARRET : le journal des nouveautes s'arrete au $derniere_entree, le code a change le $dernier_changement."
+  echo "        Ajoute les entrees (fr + en) dans $NOUVEAUTES, ou relance avec NOUVEAUTES_A_JOUR=1."
+  exit 1
+fi
+echo "   nouveautes a jour (derniere entree $derniere_entree)"
+
 echo "== Plateau"
 bash ui-app/deployer.sh > "$JOURNAUX/plateau.log" 2>&1 || { tail -20 "$JOURNAUX/plateau.log"; exit 1; }
 tail -1 "$JOURNAUX/plateau.log"
