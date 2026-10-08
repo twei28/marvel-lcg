@@ -148,6 +148,29 @@ DOSSIER_ASSETS = os.environ.get(
     "DOSSIER_ASSETS", os.path.join(os.path.dirname(RACINE_SITE), "Fusion", "marvel-lcg-src", "assets"))
 
 
+DOSSIER_PARTIES_JOUEURS = os.environ.get(
+    "DOSSIER_PARTIES_JOUEURS", os.path.join(os.path.dirname(RACINE_SITE), "parties-joueurs"))
+
+
+def parties_des_joueurs(dossier: str = "") -> dict[str, list[str]]:
+    """{pseudo: [fichiers .marvelreplay, le plus recent en tete]}, joueurs tries."""
+    dossier = dossier or DOSSIER_PARTIES_JOUEURS
+    resultat: dict[str, list[str]] = {}
+    try:
+        pseudos = sorted(os.listdir(dossier))
+    except OSError:
+        return resultat
+    for pseudo in pseudos:
+        try:
+            noms = os.listdir(os.path.join(dossier, pseudo))
+        except OSError:
+            continue
+        parties = sorted((n for n in noms if n.endswith(".marvelreplay")), reverse=True)
+        if parties:
+            resultat[pseudo] = parties
+    return resultat
+
+
 def sauvegardes_du_code(dossier: str = "") -> list[str]:
     """Les zips de sauvegarde, le plus recent en tete (le nom porte la date)."""
     dossier = dossier or DOSSIER_SAUVEGARDES_CODE
@@ -407,6 +430,10 @@ def _config_partie(emplacement: int, partie: Partie) -> str:
     # du cookie de session, pour un service qui n'en vaut pas le prix.
     cfg["site_interne"] = f"http://127.0.0.1:{PORT_SITE}"
     cfg["site_jeton"] = partie.jeton_site
+    # Les parties TERMINEES de l'hote, rangees par le moteur pour l'administrateur
+    # (engine/enregistrement.py, 08/10/2026).
+    cfg["pseudo_hote"] = partie.code
+    cfg["parties_joueurs_dossier"] = DOSSIER_PARTIES_JOUEURS
 
     # Les chemins de la configuration sont relatifs a `.game/`, pas a la
     # racine : le moteur fait `os.chdir(.game)` avant de les resoudre.
@@ -3744,7 +3771,13 @@ PAGE_ADMIN = """<!doctype html>
       <nav class="sous-onglets">
         <button type="button" class="sous-onglet" data-sous="parties-encours" role="tab">En cours</button>
         <button type="button" class="sous-onglet" data-sous="parties-historique" role="tab">Historique</button>
+        <button type="button" class="sous-onglet" data-sous="parties-revoir" role="tab">À revoir</button>
       </nav>
+      <div class="sous-panneau" data-sous-panneau="parties-revoir" hidden>
+        <p class="sous">Les 3 dernieres parties TERMINEES de chaque joueur (rangees chez l'hote de la
+        table). Telecharge le fichier, puis ouvre-le dans « Revoir » sur l'ecran de preparation.</p>
+        {parties_a_revoir}
+      </div>
       <div class="sous-panneau" data-sous-panneau="parties-encours">
         <p class="sous">Qui joue en ce moment. Rafraichi tout seul toutes les
         30 s <small id="maj" style="color:var(--muted)">chargement…</small>.</p>
@@ -5093,6 +5126,40 @@ class Handler(BaseHTTPRequestHandler):
         mime = types.get(nom.rsplit(".", 1)[-1].lower(), "application/octet-stream")
         self._repondre(200, image, mime)
 
+    @staticmethod
+    def _parties_a_revoir() -> str:
+        blocs = []
+        for pseudo, parties in parties_des_joueurs().items():
+            liens = "".join(
+                '<li><a href="/admin/partie-joueur?j=%s&amp;n=%d">%s</a></li>'
+                % (urllib.parse.quote(pseudo), rang, html.escape(nom))
+                for rang, nom in enumerate(parties))
+            blocs.append("<h3>%s</h3><ul>%s</ul>" % (html.escape(pseudo), liens))
+        return "".join(blocs) or '<p class="vide">Aucune partie terminee rangee pour le moment.</p>'
+
+    def _servir_partie_joueur(self) -> None:
+        # Le joueur et le fichier sont pris DANS LA LISTE, jamais dans l'adresse.
+        requete = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+        demande = requete.get("j", [""])[0]
+        try:
+            rang = int(requete.get("n", ["-1"])[0])
+        except ValueError:
+            rang = -1
+        parties = parties_des_joueurs()
+        pseudo = next((p for p in parties if p == demande), None)
+        if pseudo is None or not 0 <= rang < len(parties[pseudo]):
+            self._repondre(404, b"Aucune partie.", "text/plain; charset=utf-8")
+            return
+        nom = parties[pseudo][rang]
+        try:
+            with open(os.path.join(DOSSIER_PARTIES_JOUEURS, pseudo, nom), "rb") as f:
+                contenu = f.read()
+        except OSError:
+            self._repondre(404, b"Partie introuvable.", "text/plain; charset=utf-8")
+            return
+        self._repondre(200, contenu, "application/octet-stream",
+                       [("Content-Disposition", 'attachment; filename="%s-%s"' % (pseudo, nom))])
+
     def _page_sauvegardes(self) -> bytes:
         lignes = []
         for rang, nom in enumerate(sauvegardes_du_code()):
@@ -5394,6 +5461,7 @@ class Handler(BaseHTTPRequestHandler):
                                  badge_rapports=badge(n_rapports),
                                  badge_joueurs=badge(n_joueurs),
                                  parties=parties,
+                                 parties_a_revoir=self._parties_a_revoir(),
                                  suivi_max=SUIVI_TERMINEES_MAX,
                                  styles_suivi=SUIVI_STYLE_BLOC,
                                  script_suivi=SUIVI_SCRIPT,
@@ -5789,6 +5857,11 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
                 return
             self._servir_images()
+        elif self.chemin == "/admin/partie-joueur":
+            if pseudo != ADMIN:
+                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                return
+            self._servir_partie_joueur()
         elif self.chemin == "/admin/sauvegarde-code":
             # Le zip designe par son RANG dans la liste (0 = le plus recent),
             # jamais par un nom venu de l'adresse : pas de traversee de dossier.

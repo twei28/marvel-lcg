@@ -49,5 +49,15 @@ with tempfile.TemporaryDirectory() as racine:
     cas("l'archive des images contient assets/ et ses scans", "assets/pics-fr/fr_61002.jpg" in noms, True)
     cas("elle part en piece jointe", any(n == "Content-Disposition" for n, _ in faux.entetes), True)
 
+# Les parties terminees des joueurs (onglet Parties > A revoir).
+with tempfile.TemporaryDirectory() as dossier:
+    os.makedirs(os.path.join(dossier, "yarro"))
+    os.makedirs(os.path.join(dossier, "vide"))
+    for nom in ("partie-20261007-2000-Rhino.marvelreplay", "partie-20261008-0900-Klaw.marvelreplay", "notes.txt"):
+        open(os.path.join(dossier, "yarro", nom), "w").close()
+    cas("par joueur, la plus recente en tete, sans les dossiers vides",
+        o.parties_des_joueurs(dossier),
+        {"yarro": ["partie-20261008-0900-Klaw.marvelreplay", "partie-20261007-2000-Rhino.marvelreplay"]})
+
 print("\n%s" % ("TOUT EST VERT" if not echecs else "%d ECHEC(S)" % len(echecs)))
 sys.exit(1 if echecs else 0)
