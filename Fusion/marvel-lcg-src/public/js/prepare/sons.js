@@ -45,6 +45,12 @@ export const SON = {
     lancement: "phase",      // le gong : la partie commence
 };
 
+/** Au survol de son portrait (`data-hero`), ce héros joue SON son, à la place
+ *  du survol générique. Fichier `assets/sounds/<valeur>`, extension comprise. */
+const SON_SURVOL_HEROS = {
+    wolverine: "heros-wolverine.mp3",
+};
+
 const enCours = new Set();
 let dernierSurvol = -Infinity;
 
@@ -75,7 +81,7 @@ function jouer(nom, facteur) {
     for (const a of enCours) if (a.ended || a.paused || a.error) enCours.delete(a);
     if (enCours.size >= MAX_SIMULTANES) return false;
     try {
-        const audio = new Audio("/" + nom + ".wav");
+        const audio = new Audio("/" + (nom.includes(".") ? nom : nom + ".wav"));
         audio.volume = Math.min(1, volume() * facteur);
         audio.addEventListener("ended", () => enCours.delete(audio));
         enCours.add(audio);
@@ -103,6 +109,11 @@ document.addEventListener("pointerover", (evenement) => {
     if (cible === dernierSurvole) return;
     dernierSurvole = cible;
     if (!cible || cible.disabled) return;
+    const sonHeros = SON_SURVOL_HEROS[cible.getAttribute("data-hero")];
+    if (sonHeros) {
+        jouer(sonHeros, 1);
+        return;
+    }
     const t = performance.now();
     if (t - dernierSurvol < ECART_SURVOL_MS) return;
     if (jouer("survol", FACTEUR_SURVOL)) dernierSurvol = t;

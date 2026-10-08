@@ -20,6 +20,12 @@ Un même son sert plusieurs noms : le moteur nomme 21 déclencheurs
 | Survol (plateau) | `survol` | Modern UI Hover (coupé à 80 ms) | yuugfr1a | https://freesound.org/people/yuugfr1a/sounds/770203/ |
 | Carte qui vole (plateau) | `vol` | Metallic Whoosh.wav | MissCellany | https://freesound.org/people/MissCellany/sounds/240640/ |
 
+**Survol d'un héros** (écran de préparation, `SON_SURVOL_HEROS` dans
+`public/js/prepare/sons.js`) : `heros-wolverine.mp3` (Wolverine d'origine),
+fourni par l'utilisateur le 08/10/2026, extrait de la vidéo « Solo Echo vs
+Bullseye » de la chaîne JCE TV. Pas sous licence libre : à remplacer si le
+site devait s'en passer.
+
 **Inchangés** (sons d'origine du client, choix de l'utilisateur « garder
 l'actuel ») : `destroyed`, `banished`, `negate` (famille Disparition), et
 `musique-plateau.mp3`.
