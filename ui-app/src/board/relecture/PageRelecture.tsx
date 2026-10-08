@@ -10,7 +10,7 @@ import { activerLecteur, Lecteur, VITESSES } from './lecteur'
 
 type TypeLecteur = Lecteur
 import { BandeauRelecture } from './BandeauRelecture'
-import { CadreJoueur } from '../CadreJoueur'
+import { BoutonReglagesDuJoueur, CadreJoueur } from '../CadreJoueur'
 import './relecture.css'
 
 const nomHeros = (relecture: Relecture, siege: number) =>
@@ -272,6 +272,7 @@ function Barre({ lecteur, relecture, visible }: { lecteur: TypeLecteur; relectur
         <span className="relecture-situation">
           {monde ? (monde.round_id >= 1 ? `${t('Round')} ${monde.round_id}` : t('Mise en place')) : ''} · {index + 1}/{total}
         </span>
+        <BoutonReglagesDuJoueur />
         <label>
           {t('Vitesse')}
           <select value={controle.vitesse} onChange={(e) => lecteur.reglerVitesse(Number(e.target.value))}>

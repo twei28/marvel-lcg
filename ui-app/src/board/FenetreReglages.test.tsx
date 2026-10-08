@@ -378,3 +378,18 @@ describe('le volume des bruitages (refonte des sons, 07/10/2026)', () => {
     expect((screen.getByRole('slider', { name: /volume des bruitages/i }) as HTMLInputElement).disabled).toBe(true)
   })
 })
+
+describe('FenetreReglages en lecture seule (relecture et spectateur)', () => {
+  it('dit que ce sont les reglages du joueur et grise le contenu', () => {
+    render(<FenetreReglages ouvert fermer={vi.fn()} lectureSeule {...proprietes()} />)
+    expect(screen.getByText('Réglages du joueur, en lecture seule.')).toBeTruthy()
+    const panneau = screen.getByRole('tabpanel')
+    expect(panneau.querySelector('[inert]')).not.toBeNull()
+  })
+
+  it('temoin : hors lecture seule, rien n est grise ni annonce', () => {
+    render(<FenetreReglages ouvert fermer={vi.fn()} {...proprietes()} />)
+    expect(screen.queryByText('Réglages du joueur, en lecture seule.')).toBeNull()
+    expect(screen.getByRole('tabpanel').querySelector('[inert]')).toBeNull()
+  })
+})

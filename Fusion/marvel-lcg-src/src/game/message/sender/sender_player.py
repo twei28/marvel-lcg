@@ -15,6 +15,13 @@ class SenderPlayer:
                 text = TransText("\n{player} on event {message}", player=player, message=message.GetDisplayName())
                 self.Present(text, "")
 
+    class ChooseAbilityOnlyOption_Text(TextMessage):
+        """Un « choisis l'un ou l'autre » dont une seule option est possible : le dire (rapport n°69, 08/10/2026)."""
+        def __init__(self, player: 'Player', card: str, option: str) -> None:
+            super().__init__(world=player.world)
+            text = TransText("{card}: only one option is possible, {option}", card=card, option=option)
+            self.Present(text, "")
+
     class WhenPlayerSearchingDeckCards_Text(TextMessage):
         def __init__(self, player: 'Player', deck: 'Deck', size: int|None, faces: Sequence['CardFace']) -> None:
             if len(faces) > 0 and player.world.is_game_started:

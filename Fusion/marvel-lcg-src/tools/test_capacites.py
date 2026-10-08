@@ -44481,6 +44481,29 @@ CAS = [
         "attendu": {},
     },
     {
+        "nom": "27131 Common Criminal — une seule option possible (aucune manigance annexe) : le journal le dit",
+        "pourquoi": ("rapport n°69 (BL-Stark, 08/10/2026) : sans manigance annexe en jeu, le choix « piocher "
+                     "1 carte OU retirer 3 menaces » n'a qu'UNE option, appliquee en silence, et le joueur "
+                     "croyait que la carte ne faisait rien. Attendu : la pioche reste automatique ET une "
+                     "ligne du journal dit qu'une seule option est possible"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Engage('27131')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('27131', 'AlterEgoAction')"],
+        "verifier": "choix_option_unique_dit",
+    },
+    {
+        "nom": "27131 Common Criminal — DEUX options possibles (manigance annexe en jeu) : pas de ligne « une seule option »",
+        "pourquoi": "temoin du cas precedent : avec une manigance annexe, le joueur choisit, rien n'est annonce",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Engage('27131')", "Puzzle.PutIntoPlay('27133')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('27131', 'AlterEgoAction')"],
+        "verifier": "choix_option_unique_absent",
+    },
+    {
         "nom": "65001b Champion Swimmer — pose le dessus du deck FACE VISIBLE en Rising Tide area",
         "pourquoi": ("premiere preuve d'ecriture dans la zone : Champion Swimmer l'alimente depuis le "
                      "dessus du deck, imprimee face visible. PAS de ChangeForm : Wave, comme les autres "
@@ -51421,6 +51444,28 @@ def journal_ordre_paiement_absent(monde, aides):
     if re.search(r"(dans cet ordre|were paid in this order)", contenu):
         return False, "ligne d'ordre ecrite pour un paiement a une seule carte"
     return True, "aucune ligne d'ordre pour un paiement a une seule carte"
+
+def choix_option_unique_dit(monde, aides):
+    """Rapport n°69 : un choix reduit a une option l'ecrit au journal."""
+    contenu, erreur = _journal_du_cas(aides)
+    if erreur:
+        return False, erreur
+    import re
+    if re.search(r"(only one option is possible|une seule option est possible)", contenu):
+        return True, "le journal dit qu'une seule option est possible"
+    return False, "aucune ligne « une seule option » : le choix est reste silencieux"
+
+
+def choix_option_unique_absent(monde, aides):
+    """Temoin : deux options possibles, rien n'est annonce."""
+    contenu, erreur = _journal_du_cas(aides)
+    if erreur:
+        return False, erreur
+    import re
+    if re.search(r"(only one option is possible|une seule option est possible)", contenu):
+        return False, "ligne « une seule option » ecrite alors que deux options etaient possibles"
+    return True, "aucune annonce quand le joueur a un vrai choix"
+
 
 
 def _ressources_de_01072(aides):

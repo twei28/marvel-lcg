@@ -14,6 +14,7 @@
 // `/post` en 403). Cette barre est ce qu'on VOIT de cette règle.
 
 import { t } from './langue'
+import { BoutonReglagesDuJoueur } from './CadreJoueur'
 
 export type BarreSpectateurProps = {
   /** Le siège par les yeux duquel on regarde. */
@@ -48,6 +49,8 @@ export function BarreSpectateur({ siege, sieges, terminee, raison }: BarreSpecta
         👁
       </span>
       <span className="bs-mention">{t('Tu regardes cette partie')}</span>
+
+      <BoutonReglagesDuJoueur className="bs-siege" />
 
       {places.length > 1 ? (
         <span className="bs-sieges">

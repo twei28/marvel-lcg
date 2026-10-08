@@ -582,8 +582,9 @@ export function suivantRevelation(actuel: ModeRevelation): ModeRevelation {
 export function FenetreReglages({
   ouvert,
   fermer,
+  lectureSeule,
   ...p
-}: { ouvert: boolean; fermer: () => void } & ProprietesReglages) {
+}: { ouvert: boolean; fermer: () => void; lectureSeule?: boolean } & ProprietesReglages) {
   const [onglet, setOnglet] = useState<Onglet>('apparence')
   const boite = useRef<HTMLDivElement | null>(null)
   // Deplacement volontaire, a la poignee -- meme mecanisme que
@@ -656,7 +657,10 @@ export function FenetreReglages({
           ))}
         </nav>
         <div className="reglages-contenu" role="tabpanel" aria-label={libelleOnglet(onglet)}>
-          <ContenuOnglet onglet={onglet} p={p} />
+          {lectureSeule ? <p className="reglages-lecture-seule">{t('Réglages du joueur, en lecture seule.')}</p> : null}
+          <div {...(lectureSeule ? { inert: true } : {})}>
+            <ContenuOnglet onglet={onglet} p={p} />
+          </div>
         </div>
       </div>
     </div>

@@ -433,6 +433,12 @@ class PlayerAction:
                 continue
             else:
                 break
+        # ⚠ UNE SEULE OPTION POSSIBLE : le moteur l'applique sans rien demander, et le
+        # joueur croyait que la carte n'avait rien fait (rapport n°69, Common Criminal).
+        # On le DIT dans le journal ; la pioche ou l'effet reste automatique.
+        if effect is not None and len(filtered_effects) == 1 and len(effects) > 1 \
+                and type(message) is Message.WhenPlayerChooseAbility and not effect.IsName("Cancel"):
+            Message.ChooseAbilityOnlyOption_Text(player, message.by_effect.this.GetDisplayName(), effect.GetDisplayName())
         return effect
 
     def ChooseAbilities(self, by_effect: 'Effect', *abilities: 'Ability|None', forced: bool=True, repeat: int=1, choose_x_different_options: int|None=None, for_second_target: bool=False, titre: str="") -> List['Effect']:

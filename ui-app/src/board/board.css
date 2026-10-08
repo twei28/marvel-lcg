@@ -9303,3 +9303,9 @@
 @media (prefers-reduced-motion: reduce) {
   .suivant-spectateur { animation: none; }
 }
+
+.reglages-lecture-seule {
+  margin: 0 0 8px;
+  opacity: 0.75;
+  font-style: italic;
+}

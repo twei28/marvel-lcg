@@ -3437,7 +3437,18 @@ export function PagePartie({
   // SES MENUS (08/10/2026) : Reglages, Menu, journal, volets d'aide, ouverts
   // chez le spectateur et en relecture comme chez lui (genre « menu »).
   const menusDuJoueur = useVuDuJoueur<MenusOuverts | null>('menu', spectateur ? joueurActif : undefined)
-  const reglagesOuverts = spectateur ? menusDuJoueur?.r === true : reglagesOuvertsLocal
+  // Celui qui regarde peut ouvrir les reglages DU JOUEUR, en lecture seule
+  // (message du bouton de la barre du spectateur ou de la relecture).
+  const [reglagesVus, setReglagesVus] = useState(false)
+  useEffect(() => {
+    if (!spectateur) return
+    const recevoir = (message: MessageEvent) => {
+      if (message.origin === window.location.origin && message.data?.type === 'reglages-du-joueur') setReglagesVus(true)
+    }
+    window.addEventListener('message', recevoir)
+    return () => window.removeEventListener('message', recevoir)
+  }, [spectateur])
+  const reglagesOuverts = spectateur ? menusDuJoueur?.r === true || reglagesVus : reglagesOuvertsLocal
   const menuOuvert = spectateur ? menusDuJoueur?.m === true : menuOuvertLocal
   const partieOuverte = spectateur ? menusDuJoueur?.j === true : partieOuverteLocale
   const aideManuelOuverte = spectateur ? menusDuJoueur?.am === true : aideManuelOuverteLocale
@@ -4841,7 +4852,11 @@ export function PagePartie({
           travers qu'on corrige. */}
       <FenetreReglages
         ouvert={reglagesOuverts}
-        fermer={() => setReglagesOuverts(false)}
+        fermer={() => {
+          setReglagesOuverts(false)
+          setReglagesVus(false)
+        }}
+        lectureSeule={spectateur}
         affichage={affichage}
         changerAffichage={changerAffichage}
         teinte={teinte}

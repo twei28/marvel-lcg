@@ -101,6 +101,7 @@
  "{player} gains {faces}": "{player} gagne {faces}",
  "{player} looks at {faces}": "{player} regarde {faces}",
  "{player} played {this} with {resource}": "{player} joue {this} avec {resource}",
+ "{card}: only one option is possible, {option}": "{card} : une seule option est possible, {option}",
  "{player} resolves mulligans": "{player} résout son mulligan",
  "{player} resolves {face}'s Preparation ({by_effect})": "{player} résout la Préparation de {face} ({by_effect})",
  "{player} resolves {face}'s {ability_name} ({by_effect})": "{player} résout {ability_name} de {face} ({by_effect})",

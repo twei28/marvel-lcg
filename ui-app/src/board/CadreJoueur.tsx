@@ -49,3 +49,25 @@ export function CadreJoueur({ src, siege, haut = 0 }: { src: string; siege: numb
     </div>
   )
 }
+
+/**
+ * Ouvre, dans le cadre, la fenêtre des Réglages DU JOUEUR, en lecture seule
+ * (décidé le 08/10/2026) : la barre du jeu est masquée pour celui qui regarde,
+ * donc rien d'autre ne les montre. Le cadre écoute ce message (board.tsx).
+ */
+export function BoutonReglagesDuJoueur({ className }: { className?: string }) {
+  return (
+    <button
+      type="button"
+      className={className}
+      title={t('Voir les réglages du joueur')}
+      onClick={() =>
+        document
+          .querySelector<HTMLIFrameElement>('iframe.cadre-joueur')
+          ?.contentWindow?.postMessage({ type: 'reglages-du-joueur' }, window.location.origin)
+      }
+    >
+      ⚙ {t('Réglages')}
+    </button>
+  )
+}

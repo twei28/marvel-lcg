@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-08",
         genre: "jeu",
+        fr: "En relecture et en spectateur, un bouton Réglages affiche les réglages du joueur (lecture seule). Quand un choix n'a qu'une seule option possible, le journal l'indique.",
+        en: "In replay and spectator mode, a Settings button shows the player's settings (read-only). When a choice has only one possible option, the log now says so.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "jeu",
         fr: "Nouvelle tuile « Partie au hasard » : une roue tire tes héros et ton scénario dans toutes les boîtes, et chaque bandeau peut être relancé.",
         en: "New “Random game” tile: a wheel draws your heroes and your scenario from every box, and each reel can be spun again.",
     },
