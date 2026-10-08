@@ -24,7 +24,9 @@ HOTE=root@178.105.177.39
 # a annoncer aux joueurs) : NOUVEAUTES_A_JOUR=1 bash deploiement/deployer-tout.sh
 NOUVEAUTES="Fusion/marvel-lcg-src/public/js/prepare/nouveautes.js"
 derniere_entree=$(grep -oE 'date: "[0-9-]+"' "$NOUVEAUTES" | cut -d'"' -f2 | sort -r | head -1)
-dernier_changement=$(git log -E --grep='^(feat|fix)' --format=%ad --date=short -1 -- ui-app Fusion/marvel-lcg-src/src Fusion/marvel-lcg-src/public Fusion/marvel-lcg-src/data)
+# Les commits « feat(admin) » / « fix(admin) » ne concernent que l'administrateur : rien a annoncer.
+dernier_changement=$(git log -E --grep='^(feat|fix)' --format='%ad %s' --date=short -- ui-app Fusion/marvel-lcg-src/src Fusion/marvel-lcg-src/public Fusion/marvel-lcg-src/data site \
+  | grep -vE '^[0-9-]+ (feat|fix)\(admin\)' | head -1 | cut -d' ' -f1)
 if [[ "$dernier_changement" > "$derniere_entree" && "${NOUVEAUTES_A_JOUR:-}" != "1" ]]; then
   echo "ARRET : le journal des nouveautes s'arrete au $derniere_entree, le code a change le $dernier_changement."
   echo "        Ajoute les entrees (fr + en) dans $NOUVEAUTES, ou relance avec NOUVEAUTES_A_JOUR=1."
