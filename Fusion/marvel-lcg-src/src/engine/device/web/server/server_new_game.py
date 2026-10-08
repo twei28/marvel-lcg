@@ -24,6 +24,8 @@ class GameServerNewGame(GameServerBase):
         # GameServer herite de GameServerGet et de GameServerNewGame :
         # `self.choix_sieges` est le meme attribut des deux cotes.
         self.choix_sieges = {}
+        # La roue de « Partie au hasard » aussi : la partie est lancee.
+        self.roue = None
         # Le carnet arrive du CLIENT, donc ampute de ce qu'il n'a pas le droit
         # de voir. Le serveur y remet ici la part secrete de la campagne — pour
         # Agents of S.H.I.E.L.D., la combinaison de la taupe. Le moteur recoit

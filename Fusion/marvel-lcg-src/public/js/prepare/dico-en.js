@@ -7,6 +7,20 @@
 "use strict";
 
 export const DICO_EN_BASE = {
+    /* ---- Partie au hasard : la roue (08/10/2026) ---- */
+    "Partie au hasard": "Random game",
+    "Héros et scénario tirés au sort": "Heroes and scenario drawn at random",
+    "Une roue tire les héros et le scénario dans toutes les boîtes. Tu choisis ensuite les decks et la difficulté.": "A wheel draws the heroes and the scenario from every box. You then choose the decks and the difficulty.",
+    "Pas assez de héros ou de scénarios à tirer.": "Not enough heroes or scenarios to draw from.",
+    "Relancer": "Spin again",
+    "Inclure les fan-made": "Include fan-made",
+    "Tout le salon voit la roue. Chaque joueur peut relancer son héros depuis son écran.": "Everyone in the lobby sees the wheel. Each player can spin their own hero again from their screen.",
+    "Il relance depuis son écran": "They spin from their screen",
+    "Chargement des héros et des scénarios...": "Loading heroes and scenarios...",
+    "Relancer mon héros": "Spin my hero again",
+    "Choisir mon deck": "Choose my deck",
+    "L’hôte lance la roue : ton héros est tiré au sort.": "The host is spinning the wheel: your hero is drawn at random.",
+    "La roue t’a donné ce héros : choisis ton deck.": "The wheel gave you this hero: choose your deck.",
     /* ---- Modale du héros (11/09/2026) ---- */
     "Variantes": "Variants",
     "Version, identité, art, ressources : les options de ce héros": "Version, identity, art, resources: this hero's options",

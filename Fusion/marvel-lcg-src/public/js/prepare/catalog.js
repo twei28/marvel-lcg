@@ -623,6 +623,15 @@ export const catalog = {
         return out;
     },
 
+    /** Tous les scénarios de toutes les extensions, onglet « Défis » compris
+     *  (la roue de « Partie au hasard » fait elle-même le tri, roue.js). */
+    async tousLesScenarios() {
+        const exts = await this.extensions();
+        const parExt = await Promise.all(exts.map((e) =>
+            this.scenariosForExtension(e.key).catch(() => [])));
+        return parExt.flat();
+    },
+
     /** Variante Expert d'un scénario (fichier *_expert). */
     async expertVariant(scenarioId) {
         try {

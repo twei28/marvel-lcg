@@ -912,6 +912,91 @@ class GameServerGet(GameServerBase):
             'sieges': {str(p): c for p, c in choix.items()},
         })
 
+    # --- La roue de « Partie au hasard » (08/10/2026) ------------------------
+    # En ligne, tout le salon voit les bandeaux tourner et s'arreter sur les
+    # MEMES resultats. Le tirage est fait UNE fois, chez celui qui lance ou
+    # relance, et seul son RESULTAT voyage ici ; chacun anime ce qu'il lit.
+    # `n` compte les lancers d'un bandeau : il change meme quand le hasard
+    # retombe sur le meme heros, et c'est lui qui dit « fais tourner ».
+    #
+    # Droits (decision 8 de .planning/todos/2026-10-08-roue-du-hasard.md) :
+    # l'hote (siege 0) lance tout et relance le scenario ; chaque joueur ne
+    # relance que SON heros. Meme garde stricte que `set_choix_siege`.
+    async def set_roue(self, request: web.Request) -> web.Response:
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        try:
+            data = await request.json()
+        except Exception:
+            return web.json_response({'error': 'json required'}, status=400)
+        if not isinstance(data, dict):
+            return web.json_response({'error': 'json required'}, status=400)
+        passwords = SEAT_PASSWORDS.value
+        protegee = bool(passwords) and any(passwords)
+        quoi = str(data.get('quoi', ''))
+
+        def ident(valeur) -> str:
+            texte = str(valeur or '')
+            return texte if 0 < len(texte) <= 80 else ''
+
+        roue = getattr(self, 'roue', None)
+        if quoi in ('tout', 'scenario', 'fermer'):
+            if protegee and not self.tient_le_siege(request, 0):
+                return web.json_response({'error': 'host only'}, status=403)
+        if quoi == 'fermer':
+            self.roue = None
+            return web.json_response({'result': 'ok'})
+        if quoi == 'tout':
+            try:
+                nombre = int(data.get('nombre', 0))
+            except Exception:
+                nombre = 0
+            heros = data.get('heros') or {}
+            scenario = ident(data.get('scenario'))
+            if not 1 <= nombre <= 4 or not isinstance(heros, dict) or not scenario:
+                return web.json_response({'error': 'bad draw'}, status=400)
+            avant = (roue or {}).get('heros', {})
+            propres = {}
+            for p in range(nombre):
+                hid = ident(heros.get(str(p)))
+                if not hid:
+                    return web.json_response({'error': 'bad draw'}, status=400)
+                propres[str(p)] = {'id': hid, 'n': avant.get(str(p), {}).get('n', 0) + 1}
+            self.roue = {
+                'v': (roue or {}).get('v', 0) + 1,
+                'nombre': nombre,
+                'fanmade': bool(data.get('fanmade')),
+                'heros': propres,
+                'scenario': {'id': scenario,
+                             'n': (roue or {}).get('scenario', {}).get('n', 0) + 1},
+            }
+            return web.json_response({'result': 'ok', 'roue': self.roue})
+        if not roue:
+            return web.json_response({'error': 'no wheel'}, status=409)
+        if quoi == 'scenario':
+            scenario = ident(data.get('id'))
+            if not scenario:
+                return web.json_response({'error': 'id required'}, status=400)
+            roue['scenario'] = {'id': scenario, 'n': roue['scenario']['n'] + 1}
+        elif quoi == 'heros':
+            try:
+                p = int(data.get('p'))
+            except Exception:
+                return web.json_response({'error': 'p required'}, status=400)
+            hid = ident(data.get('id'))
+            if not 0 <= p < roue['nombre'] or not hid:
+                return web.json_response({'error': 'bad seat'}, status=400)
+            if protegee and not self.tient_le_siege(request, p):
+                return web.json_response({'error': 'not your seat'}, status=403)
+            ancien = roue['heros'].get(str(p), {})
+            roue['heros'][str(p)] = {'id': hid, 'n': ancien.get('n', 0) + 1}
+        else:
+            return web.json_response({'error': 'unknown'}, status=400)
+        roue['v'] = roue['v'] + 1
+        return web.json_response({'result': 'ok', 'roue': roue})
+
+    async def get_roue(self, request: web.Request) -> web.Response:
+        return web.json_response({'roue': getattr(self, 'roue', None)})
+
     async def get_heros_du_siege(self, request: web.Request) -> web.Response:
         """Le heros que tient UN siege dans la partie EN COURS. Rien d'autre.
 
@@ -2089,6 +2174,8 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_ma_partie', self.get_ma_partie)
         self.AddPostSecurity('/set_choix_siege', self.set_choix_siege)
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)
+        self.AddPostSecurity('/set_roue', self.set_roue)
+        self.AddAwaitGetSecurity('/get_roue', self.get_roue)
         self.AddAwaitGetSecurity('/get_heros_du_siege', self.get_heros_du_siege)
         self.AddAwaitGetSecurity('/get_liens_sieges', self.get_liens_sieges)
         self.AddAwaitGetSecurity('/get_site_admin', self.get_site_admin)

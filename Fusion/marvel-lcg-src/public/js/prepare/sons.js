@@ -164,6 +164,22 @@ export function jouerReplique(id, genre) {
     if (repliques) jouer(repliqueAuHasard(repliques), 1);
 }
 
+// LE CLIC DE LA ROUE (« Partie au hasard », 08/10/2026) : le son de survol,
+// déjà très court, à volume bas, une case qui passe sous le repère. Plusieurs
+// bandeaux tournent ensemble : on n'en garde qu'un toutes les 45 ms, sinon les
+// clics de quatre bandeaux se marchent dessus et saturent les deux places.
+const FACTEUR_CLIC_ROUE = 0.3;
+const ECART_CLIC_ROUE_MS = 45;
+let dernierClicRoue = -Infinity;
+
+/** Un clic de roue. Ne lève jamais. */
+export function jouerClicRoue() {
+    const t = performance.now();
+    if (t - dernierClicRoue < ECART_CLIC_ROUE_MS) return;
+    dernierClicRoue = t;
+    jouer("survol", FACTEUR_CLIC_ROUE);
+}
+
 /** Joue un son de la table `SON`. Ne lève jamais. */
 export function jouerSon(nom) {
     jouer(nom, 1);

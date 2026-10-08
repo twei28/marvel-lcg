@@ -252,9 +252,57 @@ try:
     verifier("le lien invite mene au salon",
              code == 302 and cible == "/salon.html?p=1", f"code={code} -> {cible}")
 
+    # --- La roue de « Partie au hasard » (08/10/2026) ----------------------
+    # L'hote lance tout et relance le scenario ; chacun ne relance que SON
+    # heros (decision 8 de .planning/todos/2026-10-08-roue-du-hasard.md).
+    def poster_roue(corps, cookie=None):
+        entetes = {"Content-Type": "application/json"}
+        if cookie:
+            entetes["Cookie"] = cookie
+        requete = urllib.request.Request(
+            BASE + "/set_roue", data=json.dumps(corps).encode(), headers=entetes)
+        try:
+            with urllib.request.urlopen(requete, timeout=5) as reponse:
+                return reponse.status, json.load(reponse)
+        except urllib.error.HTTPError as erreur:
+            return erreur.code, {}
+
+    def lire_roue():
+        try:
+            with urllib.request.urlopen(BASE + "/get_roue", timeout=5) as reponse:
+                return json.loads(reponse.read().decode("utf-8")).get("roue")
+        except Exception:
+            return "illisible"
+
+    verifier("roue : aucune avant le premier lancer", lire_roue() is None, str(lire_roue()))
+    tirage = {"quoi": "tout", "nombre": 2, "fanmade": False,
+              "heros": {"0": "spider_man", "1": "iron_man"}, "scenario": "rhino"}
+    code, _ = poster_roue(tirage, cookie=cookie_j1)
+    verifier("roue : un invite ne lance pas tout -> 403", code == 403, f"code={code}")
+    code, _ = poster_roue(tirage, cookie=cookie_h0)
+    roue = lire_roue() or {}
+    verifier("roue : l'hote lance, tout le monde relit le meme tirage",
+             code == 200 and roue.get("heros", {}).get("1", {}).get("id") == "iron_man"
+             and roue.get("scenario", {}).get("id") == "rhino", f"code={code} {roue}")
+    code, _ = poster_roue({"quoi": "heros", "p": 1, "id": "she_hulk"}, cookie=cookie_j1)
+    roue = lire_roue() or {}
+    verifier("roue : l'invite relance SON heros, le compteur avance",
+             code == 200 and roue.get("heros", {}).get("1") == {"id": "she_hulk", "n": 2},
+             f"code={code} {roue}")
+    code, _ = poster_roue({"quoi": "heros", "p": 0, "id": "she_hulk"}, cookie=cookie_j1)
+    verifier("roue : l'invite ne relance pas le heros de l'hote -> 403", code == 403, f"code={code}")
+    code, _ = poster_roue({"quoi": "scenario", "id": "klaw"}, cookie=cookie_j1)
+    verifier("roue : l'invite ne relance pas le scenario -> 403", code == 403, f"code={code}")
+    code, _ = poster_roue({"quoi": "heros", "p": 3, "id": "zeus"}, cookie=cookie_h0)
+    verifier("roue : un siege hors de la partie -> 400", code == 400, f"code={code}")
+    code, _ = poster_roue({"quoi": "scenario", "id": "klaw"}, cookie=cookie_h0)
+    verifier("roue : l'hote relance le scenario",
+             code == 200 and (lire_roue() or {}).get("scenario", {}).get("n") == 2, f"code={code}")
+
     creer_partie()
     verifier("le salon est vide apres /new", lire().get("sieges") == {},
              json.dumps(lire().get("sieges")))
+    verifier("roue : effacee au lancement de la partie", lire_roue() is None, str(lire_roue()))
 
 except SystemExit:
     pass

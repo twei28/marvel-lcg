@@ -26,7 +26,9 @@ import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-d
 // centrales (assignHero, selectScenario) sont aussi appelees a la reprise de
 // session et par le tirage aleatoire, et un son s'y jouerait tout seul au
 // chargement de la page.
-import { jouerSon, jouerReplique, SON } from "/public/js/prepare/sons.js";
+import { jouerSon, jouerReplique, jouerClicRoue, SON } from "/public/js/prepare/sons.js";
+import { herosTirables, scenariosTirables, tirer, tirerPlusieurs, creerBandeau, caseHeros, caseScenario,
+         lireRoue, publierRoue } from "/public/js/prepare/roue.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
          langueDejaChoisie, retenirLangue } from "/public/js/prepare/langue.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
@@ -386,10 +388,22 @@ async function randomize() {
         render();
     } else if (state.step === 2) {
         // En campagne, l'ordre est imposé : on ne tire pas de scénario au hasard.
-        if (!isCampaignMode()) {
+        if (estBataille()) {
             const tous = await catalog.scenariosForExtension(state.extensionTab);
             const scs = state.legacy ? tous.filter((sc) => state.legacy.verrou.scenario(sc).ouvert) : tous;
             if (scs.length) selectScenario(rnd(scs));
+        } else if (!isCampaignMode()) {
+            // TOUTES LES BOÎTES (décision 11 de la roue, 08/10/2026) : le tirage
+            // ne se limite plus à l'onglet ouvert, et suit la case « fan-made »
+            // de la roue. En Legacy, c'est le verrou qui fait le tri.
+            const verrou = state.legacy ? state.legacy.verrou : null;
+            const pool = scenariosTirables(await catalog.tousLesScenarios(),
+                { fanmade: state.legacy ? true : roueFanmade(), verrou });
+            const sc = tirer(pool, { exclus: state.scenario ? [state.scenario.id] : [] });
+            if (sc) {
+                state.extensionTab = sc.extension;
+                selectScenario(sc);
+            }
         }
         render();
     }
@@ -1652,12 +1666,20 @@ function accueilView() {
         tuiles.push({ mode: m, distant: null, mark: m.mark, libelle: m.label,
                       detail: m.desc, aide: m.aide, cle: m.id });
     }
+    // PARTIE AU HASARD (08/10/2026) : pas un mode du moteur, une façon de
+    // remplir l'équipe et la cible. Elle repart sur Solo ou Coop selon le
+    // nombre de héros choisi sur la tuile.
+    tuiles.push({ mode: { id: "hasard", min: 1, max: 4 }, distant: null, mark: "?",
+                  libelle: t("Partie au hasard"), detail: t("Héros et scénario tirés au sort"),
+                  aide: t("Une roue tire les héros et le scénario dans toutes les boîtes. Tu choisis ensuite les decks et la difficulté."),
+                  cle: "hasard" });
 
     const partir = (tuile, nombre) => {
         const m = tuile.mode;
         // Le seul passage pour choisir un mode : la grande tuile ET les boutons
         // de nombre y aboutissent, d'où un seul appel au son.
         jouerSon(SON.mode);
+        if (tuile.cle === "hasard") { void ouvrirRoue(nombre || 1); return; }
         if (tuile.distant !== null) state.coopEnLigne = tuile.distant;
         if (m.id === "campaign") { window.location.href = "/campagne.html"; return; }
         // On quitte Legacy dès qu'on choisit autre chose : le jeu libre n'est
@@ -1754,6 +1776,211 @@ function accueilView() {
         ),
         grille,
     );
+}
+
+/* ---- Partie au hasard : la roue (08/10/2026) -------------------------------
+   Décisions de l'utilisateur, une à une : .planning/todos/2026-10-08-roue-du-hasard.md.
+   Un bandeau par héros, qui tournent ensemble et s'arrêtent l'un après
+   l'autre, puis celui du scénario. En ligne, l'hôte tire et publie
+   (`/set_roue`), chacun anime ce qu'il lit (`/get_roue`) ; un invité ne
+   relance que SON héros, depuis le salon (js/salon/app.js). */
+
+const CLE_ROUE_FANMADE = "mc_roue_fanmade";
+const SONDAGE_ROUE_MS = 1000;
+
+function roueFanmade() {
+    try { return localStorage.getItem(CLE_ROUE_FANMADE) === "oui"; } catch (e) { return false; }
+}
+
+function retenirRoueFanmade(oui) {
+    try { localStorage.setItem(CLE_ROUE_FANMADE, oui ? "oui" : "non"); } catch (e) { /* stockage indisponible */ }
+}
+
+/** Les bandeaux s'arrêtent l'un après l'autre : le héros i, puis le scénario. */
+function dureeBandeau(i) {
+    return 2600 + 400 * i;
+}
+
+async function ouvrirRoue(nombre) {
+    // On quitte Legacy, comme pour tout autre mode : le jeu libre n'est
+    // jamais verrouillé.
+    state.legacy = null;
+    const n = Math.max(1, Math.min(4, nombre || 1));
+    state.mode = MODES.find((m) => m.id === (n === 1 ? "solo" : "hotseat"));
+    state.playerCount = n;
+    state.activeSlot = 0;
+    const enReseau = n > 1 && enLigne();
+
+    let fanmade = roueFanmade();
+    let heros = [], scenarios = [], tousHeros = [];
+    const chargerPools = async () => {
+        const [h, s] = await Promise.all([catalog.heroes(), catalog.tousLesScenarios()]);
+        tousHeros = h;
+        heros = herosTirables(h, { fanmade });
+        scenarios = scenariosTirables(s, { fanmade });
+    };
+
+    const resultats = { heros: [], scenario: null };
+    // En ligne : le compteur de lancers déjà animé, par bandeau.
+    const vus = { heros: {}, scenario: 0 };
+    let animations = 0;
+
+    const bandeauxHeros = Array.from({ length: n }, () => creerBandeau({ surClic: jouerClicRoue }));
+    const bandeauScn = creerBandeau({ surClic: jouerClicRoue });
+    const message = el("p", { class: "roue-message", role: "status" });
+    const continuer = el("button", { class: "btn primary", disabled: true }, t("Continuer"));
+    const relances = [];
+
+    const majBoutons = () => {
+        const pret = !animations && resultats.scenario
+            && (enReseau ? !!resultats.heros[0] : resultats.heros.length === n && resultats.heros.every(Boolean));
+        continuer.disabled = !pret;
+        relances.forEach((b) => { b.disabled = animations > 0; });
+    };
+    const animer = async (promesses) => {
+        animations += 1;
+        majBoutons();
+        try { await Promise.all(promesses); } finally { animations -= 1; majBoutons(); }
+    };
+    const casesHeros = () => heros.map(caseHeros);
+    const casesScn = () => scenarios.map(caseScenario);
+
+    const noterVus = (roue) => {
+        if (!roue) return;
+        Object.entries(roue.heros || {}).forEach(([p, e]) => { vus.heros[p] = e.n; });
+        if (roue.scenario) vus.scenario = roue.scenario.n;
+    };
+
+    async function toutLancer() {
+        const tires = tirerPlusieurs(heros, n);
+        const sc = scenarios.length ? tirer(scenarios) : null;
+        if (tires.length < n || !sc) {
+            message.textContent = t("Pas assez de héros ou de scénarios à tirer.");
+            return;
+        }
+        message.textContent = "";
+        resultats.heros = tires;
+        resultats.scenario = sc;
+        if (enReseau) {
+            noterVus(await publierRoue({
+                quoi: "tout", nombre: n, fanmade,
+                heros: Object.fromEntries(tires.map((h, i) => [String(i), h.id])),
+                scenario: sc.id,
+            }));
+        }
+        await animer([
+            ...tires.map((h, i) => bandeauxHeros[i].tourner(casesHeros(), caseHeros(h), dureeBandeau(i))),
+            bandeauScn.tourner(casesScn(), caseScenario(sc), dureeBandeau(n)),
+        ]);
+    }
+
+    async function relancerHeros(p) {
+        // Jamais le héros d'un autre siège ; et si possible pas celui qu'on a déjà.
+        const autres = resultats.heros.map((x, i) => (i !== p && x ? x.id : null)).filter(Boolean);
+        const actuel = resultats.heros[p];
+        const h = tirer(heros, { exclus: actuel ? [...autres, actuel.id] : autres })
+            || tirer(heros, { exclus: autres });
+        if (!h) return;
+        resultats.heros[p] = h;
+        if (enReseau) noterVus(await publierRoue({ quoi: "heros", p, id: h.id }));
+        await animer([bandeauxHeros[p].tourner(casesHeros(), caseHeros(h), dureeBandeau(0))]);
+    }
+
+    async function relancerScenario() {
+        const sc = tirer(scenarios, { exclus: resultats.scenario ? [resultats.scenario.id] : [] })
+            || tirer(scenarios);
+        if (!sc) return;
+        resultats.scenario = sc;
+        if (enReseau) noterVus(await publierRoue({ quoi: "scenario", id: sc.id }));
+        await animer([bandeauScn.tourner(casesScn(), caseScenario(sc), dureeBandeau(0))]);
+    }
+
+    const boutonRelancer = (surClic) => {
+        const b = el("button", { class: "btn ghost roue-relancer", onclick: () => { jouerSon(SON.aleatoire); void surClic(); } },
+            picto("fa-random"), " ", t("Relancer"));
+        relances.push(b);
+        return b;
+    };
+
+    const ligne = (titre, bandeau, bouton, attente) => el("div", { class: "roue-ligne" },
+        el("b", { class: "roue-titre" }, titre),
+        bandeau.element,
+        bouton || el("span", { class: "roue-relance-ailleurs" }, attente || ""),
+    );
+
+    const caseFanmade = el("input", { type: "checkbox", class: "roue-fanmade-case" });
+    caseFanmade.checked = fanmade;
+    caseFanmade.addEventListener("change", async () => {
+        fanmade = caseFanmade.checked;
+        retenirRoueFanmade(fanmade);
+        await chargerPools();
+        await toutLancer();
+    });
+
+    let sondage = null;
+    const overlay = el("div", { class: "deck-modal roue-modal", role: "dialog", "aria-modal": "true",
+                                "aria-label": t("Partie au hasard") });
+    const fermer = () => {
+        clearInterval(sondage);
+        fermerModale(overlay);
+    };
+    const retour = el("button", { class: "btn ghost", onclick: () => {
+        if (enReseau) void publierRoue({ quoi: "fermer" });
+        fermer();
+    } }, t("Retour"));
+    continuer.addEventListener("click", () => {
+        if (continuer.disabled) return;
+        jouerSon(SON.etapeSuivante);
+        for (let p = 0; p < n; p++) {
+            if (!enReseau || p === 0) assignHero(p, resultats.heros[p]);
+            else state.players[p].hero = null;
+        }
+        const sc = resultats.scenario;
+        state.extensionTab = sc.extension;
+        selectScenario(sc);
+        fermer();
+        state.step = 0;
+        goto(1);
+    });
+
+    overlay.append(el("div", { class: "deck-modal-panel roue-panel" },
+        el("div", { class: "roue-entete" },
+            el("b", { class: "mvl roue-nom" }, t("Partie au hasard")),
+            el("label", { class: "roue-fanmade" }, caseFanmade, " ", t("Inclure les fan-made")),
+        ),
+        enReseau ? el("p", { class: "roue-aide" },
+            t("Tout le salon voit la roue. Chaque joueur peut relancer son héros depuis son écran.")) : null,
+        ...bandeauxHeros.map((b, p) => ligne(
+            n > 1 ? `${t("Joueur")} ${p + 1}` : t("Héros"), b,
+            (!enReseau || p === 0) ? boutonRelancer(() => relancerHeros(p)) : null,
+            t("Il relance depuis son écran"))),
+        ligne(t("Scénario"), bandeauScn, boutonRelancer(relancerScenario)),
+        message,
+        el("div", { class: "roue-actions" }, retour, continuer),
+    ));
+    ouvrirModale(overlay);
+    message.textContent = t("Chargement des héros et des scénarios...");
+    await chargerPools();
+    if (!overlay.isConnected) return;
+    await toutLancer();
+
+    if (enReseau) {
+        // Les relances des invités : on anime ce que le salon publie.
+        sondage = setInterval(async () => {
+            if (!overlay.isConnected) { clearInterval(sondage); return; }
+            const roue = await lireRoue();
+            if (!roue) return;
+            for (let p = 1; p < n; p++) {
+                const e = (roue.heros || {})[String(p)];
+                if (!e || e.n === vus.heros[String(p)]) continue;
+                vus.heros[String(p)] = e.n;
+                const h = tousHeros.find((x) => x.id === e.id);
+                if (!h) continue;
+                resultats.heros[p] = h;
+                void animer([bandeauxHeros[p].tourner(casesHeros(), caseHeros(h), dureeBandeau(0))]);
+            }
+        }, SONDAGE_ROUE_MS);
+    }
 }
 
 /* ---- Le journal des nouveautés (8 septembre 2026, refondu le 17/09) -------

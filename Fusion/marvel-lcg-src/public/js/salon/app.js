@@ -19,6 +19,9 @@ import { demanderForcage } from "/public/js/prepare/deck-force.js";
 import {
     decisionSalon, memoriserRepere, relireRepere, oublierRepere,
 } from "/public/js/salon/bascule.js";
+import {
+    herosTirables, scenariosTirables, tirer, creerBandeau, caseHeros, caseScenario, lireRoue, publierRoue,
+} from "/public/js/prepare/roue.js";
 
 const siege = Number(new URLSearchParams(location.search).get("p") ?? "-1");
 
@@ -533,6 +536,163 @@ function rendreCampagne(campagne) {
     }
 }
 
+/* ---------------- La roue de « Partie au hasard » (08/10/2026) ----------------
+   L'hôte tire et publie (`/set_roue`) ; ici on anime ce qu'on lit, et on ne
+   relance que SON héros (décision 8 de .planning/todos/2026-10-08-roue-du-hasard.md).
+   Quand son bandeau s'arrête, le héros tiré devient celui du siège et l'invité
+   passe au choix du deck. */
+
+const roue = {
+    v: 0,
+    nombre: 0,
+    vus: { heros: {}, scenario: 0 },
+    bandeaux: [],
+    bandeauScn: null,
+    bouton: null,
+    animations: 0,
+    actuelle: null,
+    tousHeros: [],
+    tousScenarios: [],
+};
+
+// LE CLIC DE LA ROUE, écrit ICI et pas importé de sons.js : ce module-là pose
+// à son chargement le son de survol de toute la page, que le salon n'a jamais
+// eu. Même son, même réglage partagé (`marvel-board-sons`, volume en %).
+let dernierClic = -Infinity;
+function clicRoue() {
+    const maintenant = performance.now();
+    if (maintenant - dernierClic < 45 || document.visibilityState !== "visible") return;
+    dernierClic = maintenant;
+    try {
+        if (localStorage.getItem("marvel-board-sons") === "off") return;
+        const brut = Number(localStorage.getItem("marvel-board-volume-sons") ?? 20);
+        const audio = new Audio("/survol.wav");
+        audio.volume = Math.min(1, Math.max(0, (Number.isFinite(brut) ? brut : 20) / 100) * 0.3);
+        const p = audio.play();
+        if (p && p.catch) p.catch(() => {});
+    } catch (e) { /* audio indisponible : le silence suffit */ }
+}
+
+const herosDeLaRoue = () => herosTirables(roue.tousHeros, { fanmade: !!(roue.actuelle && roue.actuelle.fanmade) });
+const casesHerosRoue = () => herosDeLaRoue().map(caseHeros);
+const casesScnRoue = () => scenariosTirables(roue.tousScenarios, { fanmade: !!(roue.actuelle && roue.actuelle.fanmade) })
+    .map(caseScenario);
+
+function majBoutonRoue() {
+    if (roue.bouton) roue.bouton.disabled = roue.animations > 0;
+}
+
+async function animerRoue(promesse) {
+    roue.animations += 1;
+    majBoutonRoue();
+    try { return await promesse; } finally { roue.animations -= 1; majBoutonRoue(); }
+}
+
+function fermerRoue() {
+    const section = $("#salon-roue");
+    section.hidden = true;
+    section.replaceChildren();
+    roue.v = 0;
+    roue.nombre = 0;
+    roue.vus = { heros: {}, scenario: 0 };
+    roue.bandeaux = [];
+    roue.bandeauScn = null;
+    roue.bouton = null;
+    roue.actuelle = null;
+}
+
+function construireRoue(nombre) {
+    roue.nombre = nombre;
+    roue.bandeaux = Array.from({ length: nombre }, () => creerBandeau({ surClic: clicRoue }));
+    roue.bandeauScn = creerBandeau({ surClic: clicRoue });
+    roue.bouton = el("button", { class: "salon-roue-bouton", onclick: relancerMonHeros }, t("Relancer mon héros"));
+    const ligne = (titre, bandeau, extra, moi) => el("div", { class: "roue-ligne" + (moi ? " est-moi" : "") },
+        el("b", { class: "roue-titre" }, titre), bandeau.element, extra || el("span"));
+    $("#salon-roue").replaceChildren(
+        el("h2", {}, t("Partie au hasard")),
+        el("p", { class: "roue-aide" }, t("L’hôte lance la roue : ton héros est tiré au sort.")),
+        ...roue.bandeaux.map((b, p) => ligne(`${t("Joueur")} ${p + 1}`, b, p === siege ? roue.bouton : null, p === siege)),
+        ligne(t("Scénario"), roue.bandeauScn, null, false),
+    );
+    $("#salon-roue").hidden = false;
+}
+
+async function monHerosTire(heroId) {
+    const hero = roue.tousHeros.find((h) => h.id === heroId);
+    if (!hero) return;
+    if (!etat.hero || etat.hero.id !== hero.id) {
+        etat.hero = hero;
+        etat.deckChoisi = null;
+        bandeauAttente(false);
+    }
+    statut(t("La roue t’a donné ce héros : choisis ton deck."));
+    await rendreDecks();
+}
+
+async function sonderRoue() {
+    if (sansChoix || document.hidden) return;
+    const lue = await lireRoue();
+    if (!lue) {
+        if (roue.nombre) fermerRoue();
+        return;
+    }
+    if (lue.v === roue.v) return;
+    if (!Number.isInteger(lue.nombre) || siege >= lue.nombre) return;
+    roue.v = lue.v;
+    roue.actuelle = lue;
+    if (!roue.tousHeros.length) {
+        const [h, s] = await Promise.all([catalog.heroes(), catalog.tousLesScenarios()]);
+        roue.tousHeros = h;
+        roue.tousScenarios = s;
+    }
+    if (roue.nombre !== lue.nombre) construireRoue(lue.nombre);
+    // Les bandeaux s'arrêtent l'un après l'autre, comme chez l'hôte.
+    const attentes = [];
+    for (let p = 0; p < lue.nombre; p++) {
+        const e = (lue.heros || {})[String(p)];
+        if (!e || e.n === roue.vus.heros[String(p)]) continue;
+        const premier = roue.vus.heros[String(p)] === undefined;
+        roue.vus.heros[String(p)] = e.n;
+        const hero = roue.tousHeros.find((h) => h.id === e.id);
+        if (!hero) continue;
+        const fin = animerRoue(roue.bandeaux[p].tourner(casesHerosRoue(), caseHeros(hero), premier ? 2600 + 400 * p : 2600));
+        if (p === siege) attentes.push(fin.then(() => monHerosTire(e.id)));
+    }
+    const s = lue.scenario;
+    if (s && s.n !== roue.vus.scenario) {
+        const premier = !roue.vus.scenario;
+        roue.vus.scenario = s.n;
+        const sc = roue.tousScenarios.find((x) => x.id === s.id);
+        if (sc) void animerRoue(roue.bandeauScn.tourner(casesScnRoue(), caseScenario(sc), premier ? 2600 + 400 * lue.nombre : 2600));
+    }
+    await Promise.all(attentes);
+}
+
+async function relancerMonHeros() {
+    if (!roue.actuelle || roue.animations) return;
+    const autres = Object.entries(roue.actuelle.heros || {})
+        .filter(([p]) => Number(p) !== siege).map(([, e]) => e.id);
+    const moi = (roue.actuelle.heros || {})[String(siege)];
+    const pool = herosDeLaRoue();
+    const h = tirer(pool, { exclus: moi ? [...autres, moi.id] : autres }) || tirer(pool, { exclus: autres });
+    if (!h) return;
+    roue.bouton.disabled = true;
+    const ok = await publierRoue({ quoi: "heros", p: siege, id: h.id });
+    if (!ok) {
+        statut(t("Choix refusé par le serveur."), true);
+        majBoutonRoue();
+        return;
+    }
+    await sonderRoue();
+}
+
+function boucleRoue() {
+    // Vite quand une roue est ouverte (on veut voir les relances), lentement
+    // sinon : la plupart des parties n'en ont pas.
+    const suivant = () => setTimeout(boucleRoue, roue.nombre ? 1000 : 2000);
+    sonderRoue().then(suivant, suivant);
+}
+
 /* ---------------- Démarrage ---------------- */
 
 async function reprendreChoixExistant() {
@@ -620,6 +780,7 @@ async function demarrer() {
     else await rendreHeros();
 
     surveillerLeLancement();
+    boucleRoue();
 }
 
 demarrer();

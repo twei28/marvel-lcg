@@ -144,7 +144,25 @@
             border-bottom: 1px dotted var(--bord);
         }
         .salon-galerie:hover { color: var(--or); }
+        /* La roue de « Partie au hasard », vue d'un invite (08/10/2026) : les
+           bandeaux viennent de roue.css, partagee avec la preparation. */
+        #salon-roue {
+            margin: 14px 0 0; padding: 12px; border: 1px solid var(--or);
+            border-radius: 10px; background: var(--carte);
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        #salon-roue[hidden] { display: none; }
+        #salon-roue h2 { margin: 0; }
+        .salon-roue-bouton {
+            font: inherit; font-size: 0.85rem; font-weight: 700; color: var(--or);
+            background: rgba(255, 212, 90, 0.12);
+            border: 1px solid rgba(255, 212, 90, 0.45);
+            border-radius: 6px; padding: 7px 12px; cursor: pointer;
+        }
+        .salon-roue-bouton:disabled { opacity: 0.5; cursor: default; }
+        #salon-roue .roue-ligne.est-moi .roue-titre { color: var(--or); }
     </style>
+    <link rel="stylesheet" href="/public/css/prepare/roue.css?v=1">
     <link rel="stylesheet" href="/public/css/teinte-pages.css?v=1">
     <script type="module" src="/public/js/teinte-page.js?v=1"></script>
 </head>
@@ -161,6 +179,7 @@
             <b>Tu es prêt<span class="points"></span></b>
             <span id="salon-attente-detail">En attente du lancement de la partie par l’hôte.</span>
         </div>
+        <section id="salon-roue" hidden></section>
         <div id="salon-choix"></div>
     </main>
     <script type="module" src="/public/js/salon/app.js"></script>

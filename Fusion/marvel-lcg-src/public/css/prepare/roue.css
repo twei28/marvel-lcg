@@ -1,0 +1,157 @@
+/* roue.css — « Partie au hasard » (08/10/2026) : les bandeaux façon machine à
+   sous. Feuille à part parce que deux pages la lisent : la préparation (l'hôte)
+   et le salon (les invités, salon.html). Voir js/prepare/roue.js. */
+
+/* Au-dessus de la rangée flottante de l'accueil (Reprendre, Revoir...,
+   z-index 900 dans reprise.js), qui couvrait le titre sur téléphone. */
+.deck-modal.roue-modal { z-index: 960; }
+
+.roue-panel {
+    width: min(1100px, 96vw);
+    max-height: 94vh;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.roue-entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.roue-nom { font-size: 1.6rem; }
+
+.roue-fanmade {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: .95rem;
+}
+
+.roue-fanmade input { width: 18px; height: 18px; }
+
+.roue-aide, .roue-message {
+    margin: 0;
+    font-size: .9rem;
+    opacity: .85;
+}
+
+.roue-ligne {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr) 150px;
+    align-items: center;
+    gap: 12px;
+}
+
+.roue-titre { font-size: 1rem; }
+
+/* La fenêtre, sa piste qui défile, et le repère fixe au centre. */
+.roue-fenetre {
+    position: relative;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, .35);
+    border: 1px solid rgba(255, 255, 255, .12);
+}
+
+.roue-piste {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 0;
+    display: flex;
+    gap: 8px;
+    will-change: transform;
+}
+
+.roue-case {
+    flex: 0 0 108px;
+    height: 100%;
+    border-radius: 8px;
+    background-color: #2a2f3a;
+    background-size: cover;
+    background-position: center 18%;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .5);
+}
+
+.roue-case-nom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 4px 4px 3px;
+    font-size: .7rem;
+    line-height: 1.15;
+    background: linear-gradient(transparent, rgba(0, 0, 0, .9));
+    color: #fff;
+    text-align: center;
+}
+
+.roue-repere {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: 50%;
+    width: 116px;
+    transform: translateX(-50%);
+    border: 3px solid #f0b429;
+    border-radius: 10px;
+    pointer-events: none;
+    box-shadow: 0 0 0 2000px rgba(0, 0, 0, .3);
+}
+
+/* Posé sans défilement (mouvement réduit, affichage sobre) : une case, au centre. */
+.roue-fenetre.est-pose .roue-piste {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.roue-fenetre.est-arrete .roue-repere,
+.roue-fenetre.est-pose .roue-repere {
+    animation: roue-arret .45s ease-out;
+}
+
+@keyframes roue-arret {
+    0% { box-shadow: 0 0 0 2000px rgba(0, 0, 0, .3), 0 0 0 0 rgba(240, 180, 41, .9); }
+    100% { box-shadow: 0 0 0 2000px rgba(0, 0, 0, .3), 0 0 0 14px rgba(240, 180, 41, 0); }
+}
+
+.roue-relancer { white-space: nowrap; }
+
+.roue-relance-ailleurs {
+    font-size: .8rem;
+    opacity: .7;
+}
+
+.roue-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .roue-fenetre .roue-repere { animation: none !important; }
+}
+
+html[data-affichage="sobre"] .roue-fenetre .roue-repere { animation: none; }
+
+/* Téléphone : le titre au-dessus, le bouton dessous, des cases plus petites. */
+@media (max-width: 640px) {
+    .roue-ligne {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 6px;
+    }
+    .roue-fenetre { height: 124px; }
+    .roue-case { flex-basis: 84px; }
+    .roue-repere { width: 92px; }
+    .roue-nom { font-size: 1.3rem; }
+}
