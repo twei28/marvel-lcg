@@ -40,6 +40,14 @@ Sur « tout commit et déployer, sur le site normal et la version play », table
 Sur « commit et déploie » de l'utilisateur, table 2351 active (la sienne, accord explicite). `bash ui-app/deployer.sh` (bundle `board-CI69Zby-.js`, `board-CBWl8G11.css`) puis `deployer.ps1 -Code` : md5 de `board-*.js` et `board.html` identiques en prod, `set_etape` présent dans `server_get.py` en prod, service `narwhal` actif, site en 200. Parti avec : sons (`b175b2ef`), Alt + glisser pour ranger les cartes (`b4f2106a`), image VS, indice de défilement des piles, pas de compteurs en main (`7604555c`), onde au clic du spectateur (`177fbc1a`), spectateur synchrone sur la phase du méchant (`caea5423`, `28bbad05`, `63462227`), cartouche du joueur sans saut ni double clic sur la Menace (`b9e6b8f1`), fenêtres du centre devant la modale du méchant, Bilan qui retient le moteur. Non vu en vraie partie en prod.
 ⚠ Le script signale que `deploiement/Caddyfile` local DIFFÈRE de celui du serveur (le serveur a le bloc `play.` du 07/10 et parle de 20 tables, le local de 30 tables sans `play.`). Le script ne l'écrase pas. À réaligner : rapatrier celui du serveur dans le dépôt.
 
+## BACKLOG ajouté le 08/10/2026 : portage de la campagne fan-made Hunting Season
+
+- [ ] **Hunting Season** (auteur Nugget, préfixe `hs`, pack `hunting_season`). À faire QUAND TOUT LE RESTE EST FINI (décision de l'utilisateur, 08/10/2026), bloc par bloc comme Fear No Evil, questions une à une.
+  - Matière : `Hunting_Season_Pour_Claude.zip` à la racine du dépôt, préparé par ChatGPT avec le kit. ⚠ Zip TRONQUÉ (pas de répertoire central) : `unzip`/`zipfile` refusent, mais les 520 entrées se récupèrent en lisant les en-têtes locaux (script Python du 08/10, zéro perte). L'original Google Drive : `C:\Users\arnau\Downloads\Hunting Season - Campaign-20261008T113414Z-1-001.zip` (449 Mo).
+  - Contenu : 239 fiches JSON (226 cartes physiques), 239 scans de référence, livret PDF, 10 scénarios (5 vilains × standard/expert), 4 modulaires, `campagnes/hunting_season.json`, `campaign.py`, `reference/campaign_rules.py` (XP, Lodge, soins), `POINTS_OUVERTS.md` (11 points).
+  - Reste : 231 scripts sur 239 VIDES (`A_FAIRE_CLAUDE`, texte imprimé recopié) ; mécaniques de campagne absentes du moteur (expérience, boutique « The Lodge », marché partagé, pénalités de défaite, Master Hunter) à construire moteur + écran.
+  - Décision en attente : « Swarmed by Rats » (hs018/hs019), imprimée « Interrupt » avec un déclencheur « After » : Interrupt ou Response ?
+
 ## BACKLOG ajouté le 07/10/2026 (demandes de l'utilisateur, questions à trancher une à une)
 - [ ] Relecture et spectateur : la barre du haut est masquée (voulu, elle ne porte que des actions de joueur), donc les RÉGLAGES (sons, animations, côté des améliorations, étiquettes) ne s'ouvrent pas pendant une relecture. Vu le 07/10/2026. Piste : un bouton Réglages dans la barre de lecture / la barre du spectateur.
 
