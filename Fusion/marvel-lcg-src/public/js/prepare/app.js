@@ -26,7 +26,7 @@ import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-d
 // centrales (assignHero, selectScenario) sont aussi appelees a la reprise de
 // session et par le tirage aleatoire, et un son s'y jouerait tout seul au
 // chargement de la page.
-import { jouerSon, SON } from "/public/js/prepare/sons.js";
+import { jouerSon, jouerReplique, SON } from "/public/js/prepare/sons.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
          langueDejaChoisie, retenirLangue } from "/public/js/prepare/langue.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
@@ -2327,6 +2327,7 @@ function recruter(h, portraitEl) {
 function recruterVraiment(h, portraitEl) {
     herosPresente = null;
     jouerSon(SON.heros);
+    jouerReplique(h.id, "heros");
     const siege = state.activeSlot;
     assignHero(siege, h);
     autoAdvanceSlot();
@@ -4125,6 +4126,7 @@ function regleDuDefi(sc) {
 /** Verrouiller une cible : le cri, puis la scène et la table. */
 function verrouillerCible(sc) {
     jouerSon(SON.cible);
+    jouerReplique(sc.id, "mechant");
     selectScenario(sc);
     rendreSceneMechant(sc);
     rendreMenace();

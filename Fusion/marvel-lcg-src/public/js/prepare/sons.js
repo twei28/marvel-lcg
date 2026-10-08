@@ -45,8 +45,8 @@ export const SON = {
     lancement: "phase",      // le gong : la partie commence
 };
 
-/** Au survol de son portrait (`data-hero`), ce héros dit une de SES répliques,
- *  tirée au hasard, à la place du survol générique. Fichiers
+/** Quand on le choisit (`jouerReplique`), ce héros dit une de SES répliques,
+ *  tirée au hasard. Fichiers
  *  `assets/sounds/<valeur>`, extension comprise. Origine : SOURCES.md. Seule la
  *  MÊME personne a une voix (pas Miles Morales ni X-23). */
 const SON_SURVOL_HEROS = {
@@ -87,7 +87,7 @@ const SON_SURVOL_HEROS = {
     wolverine: ["heros-wolverine.mp3", "voix-wolverine-2.mp3", "voix-wolverine-3.mp3"],
 };
 
-/** Même chose au survol d'une tuile de scénario (`data-scn`), pour son méchant. */
+/** Même chose quand on choisit un scénario (son id), pour son méchant. */
 const SON_SURVOL_MECHANTS = {
     kingpin_fne: ["voix-kingpin-1.mp3", "voix-kingpin-2.mp3", "voix-kingpin-3.mp3"],
     venom: ["voix-venom-1.mp3", "voix-venom-2.mp3", "voix-venom-3.mp3"],
@@ -156,6 +156,14 @@ function jouer(nom, facteur) {
     }
 }
 
+/** La réplique d'un héros (`data-hero`) ou du méchant d'un scénario (`data-scn`),
+ *  jouée QUAND ON LE CHOISIT, plus au survol (demande du 08/10/2026 : au survol,
+ *  c'était trop). Rien si ce personnage n'a pas de voix. Ne lève jamais. */
+export function jouerReplique(id, genre) {
+    const repliques = (genre === "mechant" ? SON_SURVOL_MECHANTS : SON_SURVOL_HEROS)[id];
+    if (repliques) jouer(repliqueAuHasard(repliques), 1);
+}
+
 /** Joue un son de la table `SON`. Ne lève jamais. */
 export function jouerSon(nom) {
     jouer(nom, 1);
@@ -170,12 +178,6 @@ document.addEventListener("pointerover", (evenement) => {
     if (cible === dernierSurvole) return;
     dernierSurvole = cible;
     if (!cible || cible.disabled) return;
-    const repliques = SON_SURVOL_HEROS[cible.getAttribute("data-hero")]
-        || SON_SURVOL_MECHANTS[cible.getAttribute("data-scn")];
-    if (repliques) {
-        jouer(repliqueAuHasard(repliques), 1);
-        return;
-    }
     const t = performance.now();
     if (t - dernierSurvol < ECART_SURVOL_MS) return;
     if (jouer("survol", FACTEUR_SURVOL)) dernierSurvol = t;

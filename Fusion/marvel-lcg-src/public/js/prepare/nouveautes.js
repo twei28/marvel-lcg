@@ -53,8 +53,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-08",
         genre: "jeu",
-        fr: "Passe la souris sur les héros et les méchants dans les choix de partie : 35 héros et 8 méchants ont maintenant leurs répliques.",
-        en: "Hover over heroes and villains when setting up a game: 35 heroes and 8 villains now have their voice lines.",
+        fr: "Choisis un héros ou un scénario : 35 héros et 8 méchants ont maintenant leurs répliques.",
+        en: "Pick a hero or a scenario: 35 heroes and 8 villains now have their voice lines.",
     },
     {
         date: "2026-10-08",
@@ -71,8 +71,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-08",
         genre: "jeu",
-        fr: "Passe la souris sur Wolverine dans le choix des héros.",
-        en: "Hover over Wolverine in the hero selection.",
+        fr: "Choisis Wolverine dans le choix des héros.",
+        en: "Pick Wolverine in the hero selection.",
     },
     {
         date: "2026-10-08",
