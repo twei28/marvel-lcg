@@ -86,3 +86,20 @@ describe('en local, les essais sont ouverts comme en ligne pour l administrateur
     expect(estHoteLocal('')).toBe(false)
   })
 })
+
+describe('vue joueur de l administrateur (08/10/2026)', () => {
+  beforeEach(() => oublierEssais())
+  afterEach(() => {
+    window.localStorage.removeItem('mc_vue_joueur')
+    vi.unstubAllGlobals()
+    oublierEssais()
+  })
+  it('ferme les essais meme pour l administrateur, sans rien demander au serveur', async () => {
+    const appel = vi.fn(async () => ({ ok: true, json: async () => ({ url: 'https://site/admin' }) }))
+    vi.stubGlobal('fetch', appel)
+    window.localStorage.setItem('mc_vue_joueur', 'oui')
+    expect(await essaisDe('narwhalchampions.com')).toBe(false)
+    expect(await essaisDe('localhost')).toBe(false)
+    expect(appel).not.toHaveBeenCalled()
+  })
+})

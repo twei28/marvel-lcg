@@ -412,7 +412,10 @@ async function charger() {
         json("/get_site_admin").catch(() => ({ url: "" })),
     ]);
 
-    etat.administrateur = Boolean(admin && admin.url);
+    // « Vue joueur » (08/10/2026, lien-admin.js) : l'administrateur voit la page comme un joueur.
+    let vueJoueur = false;
+    try { vueJoueur = localStorage.getItem("mc_vue_joueur") === "oui"; } catch (e) { vueJoueur = false; }
+    etat.administrateur = Boolean(admin && admin.url) && !vueJoueur;
     const palettes = (releve && releve.palettes) || {};
     const corrections = (releve && releve.corrections) || {};
     const noms = nomsDesCartes(cartesParGroupe);

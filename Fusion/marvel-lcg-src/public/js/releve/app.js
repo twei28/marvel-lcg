@@ -475,7 +475,10 @@ async function demarrer() {
     // politesse, pour ne pas laisser un invité remplir un formulaire inutile.
     try {
         const admin = await json("/get_site_admin");
-        if (!admin || !admin.url) {
+        // « Vue joueur » (08/10/2026, lien-admin.js) : la page se montre comme a un joueur.
+        let vueJoueur = false;
+        try { vueJoueur = localStorage.getItem("mc_vue_joueur") === "oui"; } catch (e) { vueJoueur = false; }
+        if (!admin || !admin.url || vueJoueur) {
             $("message").innerHTML =
                 "<strong>Page réservée à l'administrateur.</strong><br>" +
                 "Le relevé des illustrations se remplit depuis le compte qui héberge le site.";

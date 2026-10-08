@@ -28,6 +28,10 @@
     'Dire qui est dessiné sur chaque carte': 'Record who is drawn on each card',
     'Palettes des héros': 'Hero palettes',
     'Corriger la couleur du fond de plateau': 'Fix the board background colour',
+    'Voir comme un joueur': 'View as a player',
+    'Masquer tous mes accès en plus, comme un compte classique': 'Hide all my extra access, like a regular account',
+    'Vue joueur · revenir en admin': 'Player view · back to admin',
+    'Tu vois le site comme un compte classique ; clique pour retrouver tes accès': 'You see the site like a regular account; click to get your access back',
   };
   function t(fr) {
     return LANGUE === 'en' && Object.prototype.hasOwnProperty.call(DICO_EN_LOCAL, fr)
@@ -61,6 +65,36 @@
   }).then(function (data) {
     var url = data && data.url;
     if (!url) return;   // pas de site devant, ou pas l'administrateur
+
+    // « Voir comme un compte classique » (08/10/2026). Le choix est gardé dans
+    // ce navigateur jusqu'au prochain clic ; il est lu par le plateau
+    // (ui-app/src/board/essais.ts), les palettes et le relevé. En vue joueur,
+    // ce bouton est la SEULE trace des accès en plus : sans lui, pas de retour.
+    var CLE_VUE_JOUEUR = 'mc_vue_joueur';
+    var vueJoueur = false;
+    try { vueJoueur = localStorage.getItem(CLE_VUE_JOUEUR) === 'oui'; } catch (e) { vueJoueur = false; }
+    var bascule = document.createElement('button');
+    bascule.type = 'button';
+    bascule.className = 'bouton-vue-joueur' + (vueJoueur ? ' est-actif' : '');
+    bascule.textContent = '👁️ ' + (vueJoueur ? t('Vue joueur · revenir en admin') : t('Voir comme un joueur'));
+    bascule.title = vueJoueur
+      ? t('Tu vois le site comme un compte classique ; clique pour retrouver tes accès')
+      : t('Masquer tous mes accès en plus, comme un compte classique');
+    if (vueJoueur) {
+      bascule.style.background = '#f0b95f';
+      bascule.style.color = '#0d1116';
+      bascule.style.borderColor = '#f0b95f';
+    }
+    bascule.addEventListener('click', function () {
+      try {
+        if (vueJoueur) localStorage.removeItem(CLE_VUE_JOUEUR);
+        else localStorage.setItem(CLE_VUE_JOUEUR, 'oui');
+      } catch (e) { /* stockage indisponible : rien ne change */ }
+      window.location.reload();
+    });
+    rangeeBoutons().append(bascule);
+    if (vueJoueur) return;
+
     var bouton = document.createElement('button');
     bouton.type = 'button';
     bouton.textContent = '⚙️ ' + t('Administration');

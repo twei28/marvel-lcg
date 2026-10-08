@@ -59,8 +59,24 @@ export function estHoteLocal(hote: string): boolean {
  * Rend toujours la MÊME promesse : la question n'est posée qu'une fois.
  */
 export function essaisOuverts(hote: string = globalThis.location?.hostname ?? ''): Promise<boolean> {
-  promesse ??= estHoteLocal(hote) ? Promise.resolve(true) : demander()
+  promesse ??= enVueJoueur() ? Promise.resolve(false) : estHoteLocal(hote) ? Promise.resolve(true) : demander()
   return promesse
+}
+
+/**
+ * « Voir comme un compte classique » (08/10/2026) : l'administrateur coupe tous
+ * ses acces en plus, pour voir exactement l'ecran d'un joueur. Le bouton vit
+ * dans le header de preparation (public/js/prepare/lien-admin.js) ; la meme cle
+ * est lue partout ou un acces reserve se decide cote client.
+ */
+export const CLE_VUE_JOUEUR = 'mc_vue_joueur'
+
+export function enVueJoueur(): boolean {
+  try {
+    return globalThis.localStorage?.getItem(CLE_VUE_JOUEUR) === 'oui'
+  } catch {
+    return false
+  }
 }
 
 /** Pour les tests seulement : oublie la réponse retenue. */
