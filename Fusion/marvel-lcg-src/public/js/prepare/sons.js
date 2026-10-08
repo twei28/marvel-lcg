@@ -45,11 +45,72 @@ export const SON = {
     lancement: "phase",      // le gong : la partie commence
 };
 
-/** Au survol de son portrait (`data-hero`), ce héros joue SON son, à la place
- *  du survol générique. Fichier `assets/sounds/<valeur>`, extension comprise. */
+/** Au survol de son portrait (`data-hero`), ce héros dit une de SES répliques,
+ *  tirée au hasard, à la place du survol générique. Fichiers
+ *  `assets/sounds/<valeur>`, extension comprise. Origine : SOURCES.md. Seule la
+ *  MÊME personne a une voix (pas Miles Morales ni X-23). */
 const SON_SURVOL_HEROS = {
-    wolverine: "heros-wolverine.mp3",
+    adam_warlock: ["voix-adam_warlock-1.mp3", "voix-adam_warlock-2.mp3", "voix-adam_warlock-3.mp3"],
+    angela: ["voix-angela-1.mp3", "voix-angela-2.mp3", "voix-angela-3.mp3"],
+    black_cat: ["voix-black_cat-1.mp3", "voix-black_cat-2.mp3", "voix-black_cat-3.mp3"],
+    black_panther: ["voix-black_panther-1.mp3", "voix-black_panther-2.mp3", "voix-black_panther-3.mp3"],
+    black_widow: ["voix-black_widow-1.mp3", "voix-black_widow-2.mp3", "voix-black_widow-3.mp3"],
+    blade: ["voix-blade-1.mp3", "voix-blade-2.mp3", "voix-blade-3.mp3"],
+    captain_america: ["voix-captain_america-1.mp3", "voix-captain_america-2.mp3", "voix-captain_america-3.mp3"],
+    cloak_dagger: ["voix-cloak_dagger-1.mp3", "voix-cloak_dagger-2.mp3", "voix-cloak_dagger-3.mp3"],
+    cyclops: ["voix-cyclops-1.mp3", "voix-cyclops-2.mp3", "voix-cyclops-3.mp3"],
+    daredevil: ["voix-daredevil-1.mp3", "voix-daredevil-2.mp3", "voix-daredevil-3.mp3"],
+    deadpool: ["voix-deadpool-1.mp3", "voix-deadpool-2.mp3", "voix-deadpool-3.mp3"],
+    doctor_strange: ["voix-doctor_strange-1.mp3", "voix-doctor_strange-2.mp3", "voix-doctor_strange-3.mp3"],
+    gambit: ["voix-gambit-1.mp3", "voix-gambit-2.mp3", "voix-gambit-3.mp3"],
+    groot: ["voix-groot-1.mp3", "voix-groot-2.mp3"],
+    hawkeye: ["voix-hawkeye-1.mp3", "voix-hawkeye-2.mp3", "voix-hawkeye-3.mp3"],
+    hulk: ["voix-hulk-1.mp3", "voix-hulk-2.mp3", "voix-hulk-3.mp3"],
+    human_torch: ["voix-human_torch-1.mp3", "voix-human_torch-2.mp3", "voix-human_torch-3.mp3"],
+    invisible_woman: ["voix-invisible_woman-1.mp3", "voix-invisible_woman-2.mp3", "voix-invisible_woman-3.mp3"],
+    iron_man: ["voix-iron_man-1.mp3", "voix-iron_man-2.mp3", "voix-iron_man-3.mp3"],
+    jubilee: ["voix-jubilee-1.mp3", "voix-jubilee-2.mp3", "voix-jubilee-3.mp3"],
+    magik: ["voix-magik-1.mp3", "voix-magik-2.mp3", "voix-magik-3.mp3"],
+    magneto: ["voix-magneto-1.mp3", "voix-magneto-2.mp3", "voix-magneto-3.mp3"],
+    mister_fantastic: ["voix-mister_fantastic-1.mp3", "voix-mister_fantastic-2.mp3", "voix-mister_fantastic-3.mp3"],
+    moon_knight: ["voix-moon_knight-1.mp3", "voix-moon_knight-2.mp3", "voix-moon_knight-3.mp3"],
+    phoenix: ["voix-phoenix-1.mp3", "voix-phoenix-2.mp3", "voix-phoenix-3.mp3"],
+    rocket_raccoon: ["voix-rocket_raccoon-1.mp3", "voix-rocket_raccoon-2.mp3", "voix-rocket_raccoon-3.mp3"],
+    rogue: ["voix-rogue-1.mp3", "voix-rogue-2.mp3", "voix-rogue-3.mp3"],
+    scarlet_witch: ["voix-scarlet_witch-1.mp3", "voix-scarlet_witch-2.mp3", "voix-scarlet_witch-3.mp3"],
+    spider_man: ["voix-spider_man-1.mp3", "voix-spider_man-2.mp3", "voix-spider_man-3.mp3"],
+    star_lord: ["voix-star_lord-1.mp3", "voix-star_lord-2.mp3", "voix-star_lord-3.mp3"],
+    storm: ["voix-storm-1.mp3", "voix-storm-2.mp3", "voix-storm-3.mp3"],
+    the_thing: ["voix-the_thing-1.mp3", "voix-the_thing-2.mp3", "voix-the_thing-3.mp3"],
+    thor: ["voix-thor-1.mp3", "voix-thor-2.mp3", "voix-thor-3.mp3"],
+    winter_soldier: ["voix-winter_soldier-1.mp3", "voix-winter_soldier-2.mp3", "voix-winter_soldier-3.mp3"],
+    wolverine: ["heros-wolverine.mp3", "voix-wolverine-2.mp3", "voix-wolverine-3.mp3"],
 };
+
+/** Même chose au survol d'une tuile de scénario (`data-scn`), pour son méchant. */
+const SON_SURVOL_MECHANTS = {
+    kingpin_fne: ["voix-kingpin-1.mp3", "voix-kingpin-2.mp3", "voix-kingpin-3.mp3"],
+    venom: ["voix-venom-1.mp3", "voix-venom-2.mp3", "voix-venom-3.mp3"],
+    wd_kingpin: ["voix-kingpin-1.mp3", "voix-kingpin-2.mp3", "voix-kingpin-3.mp3"],
+    gorr: ["voix-gorr-1.mp3", "voix-gorr-2.mp3", "voix-gorr-3.mp3"],
+    hela: ["voix-hela-1.mp3", "voix-hela-2.mp3", "voix-hela-3.mp3"],
+    loki: ["voix-loki-1.mp3", "voix-loki-2.mp3", "voix-loki-3.mp3"],
+    magneto: ["voix-magneto-1.mp3", "voix-magneto-2.mp3", "voix-magneto-3.mp3"],
+    the_hood: ["voix-the_hood-1.mp3", "voix-the_hood-2.mp3", "voix-the_hood-3.mp3"],
+    the_hood_2: ["voix-the_hood-1.mp3", "voix-the_hood-2.mp3", "voix-the_hood-3.mp3"],
+    ultron: ["voix-ultron-1.mp3", "voix-ultron-2.mp3", "voix-ultron-3.mp3"],
+};
+
+/** La dernière réplique jouée par liste : on ne la rejoue pas deux fois de suite. */
+const derniereReplique = new Map();
+
+function repliqueAuHasard(liste) {
+    const precedente = derniereReplique.get(liste);
+    const possibles = liste.length > 1 ? liste.filter((f) => f !== precedente) : liste;
+    const choisie = possibles[Math.floor(Math.random() * possibles.length)];
+    derniereReplique.set(liste, choisie);
+    return choisie;
+}
 
 const enCours = new Set();
 let dernierSurvol = -Infinity;
@@ -109,9 +170,10 @@ document.addEventListener("pointerover", (evenement) => {
     if (cible === dernierSurvole) return;
     dernierSurvole = cible;
     if (!cible || cible.disabled) return;
-    const sonHeros = SON_SURVOL_HEROS[cible.getAttribute("data-hero")];
-    if (sonHeros) {
-        jouer(sonHeros, 1);
+    const repliques = SON_SURVOL_HEROS[cible.getAttribute("data-hero")]
+        || SON_SURVOL_MECHANTS[cible.getAttribute("data-scn")];
+    if (repliques) {
+        jouer(repliqueAuHasard(repliques), 1);
         return;
     }
     const t = performance.now();

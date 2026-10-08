@@ -26,6 +26,21 @@ fourni par l'utilisateur le 08/10/2026, extrait de la vidéo « Solo Echo vs
 Bullseye » de la chaîne JCE TV. Pas sous licence libre : à remplacer si le
 site devait s'en passer.
 
+**Répliques des héros et des méchants** (`voix-<id>-<n>.mp3`,
+08/10/2026, tables `SON_SURVOL_HEROS` et `SON_SURVOL_MECHANTS` de `sons.js`) :
+voix du jeu **Marvel Rivals** (NetEase / Marvel), téléchargées depuis le wiki
+fandom (`marvelrivals.fandom.com`, pages `<Nom>/Quotes`, section Abilities) :
+cri d'ultime « Self » et répliques de capacités, jamais de skin, d'événement
+ni de team-up. **Voix non libres**, choix de l'utilisateur. Converties en mp3
+mono 96 kbit/s, ramenées à −20 dB RMS (crête ≤ −1 dB). Seulement la même
+personne que dans Rivals (pas Miles Morales, X-23, Flash Thompson…). Le
+Magnéto méchant reprend les fichiers du héros ; `the_hood_2` ceux de
+`the_hood`. Venom méchant (Eddie Brock, vérifié dans `mechants-info.js`) :
+3 répliques de capacités de Venom. Kingpin (`kingpin_fne`, `wd_kingpin`) :
+3 répliques de boss (pas de capacités dans Rivals). Pas de voix pour Venom
+héros (Flash Thompson), Psylocke (Rivals : Sai, pas Betsy), ni Shuri (ses
+seuls dialogues durent 4,5 à 8,4 s). 124 fichiers en tout.
+
 **Inchangés** (sons d'origine du client, choix de l'utilisateur « garder
 l'actuel ») : `destroyed`, `banished`, `negate` (famille Disparition), et
 `musique-plateau.mp3`.
