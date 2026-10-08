@@ -3,6 +3,12 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 08/10/2026 : manuel 100 % OCTGN, glisser des événements, FR mc4db, bouton Player / Admin
+
+Deux passes de `deployer-tout.sh` (site normal + play.), sur accord explicite de l'utilisateur, même avec des joueurs en ligne. Plateau `board-Bp3po-9i.js` identique au poste sur les deux sites, service actif, 200 ; play. : 20 parties identiques sur 20 à la première passe, contrôle sauté à la seconde (moteur inchangé). Parti : mode manuel identique à OCTGN (lots 1 à 6, `.planning/todos/2026-10-07-manuel-100-pourcent-octgn.md`), rangement au glisser simple, glisser des événements en mode normal, 812 noms et 1 006 textes FR de mc4db, bouton « Player » / « Admin » (vue joueur, premier lancement redemandé, réglages de l'admin rendus au retour).
+Scans : 289 scans FR de mc4db posés À LA MAIN sur le serveur (`deployer.ps1` ne synchronise pas `pics-fr`, voulu) dans `pics-fr`, propriétaire narwhal, 289 vignettes générées ; play. : chaîne d'images refaite (resoudre, originaux, preparer-scans sur les nouveaux, installer), 6 adresses contrôlées. Défaut corrigé : `resoudre-images.py` ne produisait pas `_couchees` (3d35f2de).
+Non vu en vrai : le bouton Player / Admin (n'apparaît qu'avec le compte admin, en ligne), les scans FR servis par une table du site normal (aucune table ne tournait).
+
 ## ✅ DÉPLOYÉ LE 07/10/2026 (fin de nuit) : table et aide, site normal ET play.
 
 Premier usage de `bash deploiement/deployer-tout.sh` (les deux sites en parallèle). Site normal : `board-C1gmIuII.js`, identique au poste, service actif, 200. play. : échec de mon script (empreinte du moteur cherchée dans le mauvais dossier, corrigé `fix(play)`), republié seul : 20 parties identiques sur 20, même plateau que le poste, 200. Parti : renommer une zone au double-clic, améliorations à gauche ou à droite (réglage + Alt + glisser de l'autre côté), volet Aide en mode auto, plus d'étiquette de type sur les cartes en jeu (interrupteur pour les remettre), règle de cache de play. (le code n'est plus gardé 24 h) et adresses à empreinte. Vérifié au navigateur sans moteur, sauf le volet Aide auto.
