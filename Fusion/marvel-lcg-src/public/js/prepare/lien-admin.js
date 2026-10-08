@@ -28,6 +28,8 @@
     'Dire qui est dessiné sur chaque carte': 'Record who is drawn on each card',
     'Palettes des héros': 'Hero palettes',
     'Corriger la couleur du fond de plateau': 'Fix the board background colour',
+    'Sauvegarde du code': 'Code backup',
+    'Télécharger tout le projet sans les images (5 dernières sauvegardes)': 'Download the whole project without images (last 5 backups)',
     'Masquer tous mes accès en plus, comme un compte classique ; la langue, l’affichage et la phase du méchant seront redemandés': 'Hide all my extra access, like a regular account; language, display and villain phase will be asked again',
     'Tu vois le site comme un compte classique ; clique pour retrouver tes accès et tes réglages': 'You see the site like a regular account; click to get your access and settings back',
   };
@@ -155,6 +157,17 @@
       window.open('/palettes-heros.html', '_blank', 'noopener');
     });
     rangee.append(palettes);
+
+    // La sauvegarde du code (08/10/2026) : la page du SITE qui liste les 5
+    // derniers zips, reservee a l'administrateur par le site lui-meme.
+    var sauvegarde = document.createElement('button');
+    sauvegarde.type = 'button';
+    sauvegarde.textContent = '💾 ' + t('Sauvegarde du code');
+    sauvegarde.title = t('Télécharger tout le projet sans les images (5 dernières sauvegardes)');
+    sauvegarde.addEventListener('click', function () {
+      window.open(url.replace(/\/admin\/?$/, '') + '/admin/sauvegardes', '_blank', 'noopener');
+    });
+    rangee.append(sauvegarde);
   }).catch(function () {
     // Moteur lancé à la main, route absente : pas de bouton, pas d'erreur.
   });

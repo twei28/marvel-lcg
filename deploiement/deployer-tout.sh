@@ -42,11 +42,31 @@ powershell.exe -ExecutionPolicy Bypass -File "$(wslpath -w "$RACINE/deploiement/
 normal=$!
 python3 navigateur/publier.py --oui > "$JOURNAUX/play.log" 2>&1 &
 play=$!
+# La sauvegarde du code, fabriquee pendant les envois (sauvegarde-code.sh).
+bash deploiement/sauvegarde-code.sh "$JOURNAUX" > "$JOURNAUX/sauvegarde.log" 2>&1 &
+sauvegarde=$!
 wait $normal; r_normal=$?
 echo "   site normal : $([ $r_normal -eq 0 ] && echo termine || echo "ECHEC ($r_normal)")"
 wait $play; r_play=$?
 echo "   play.       : $([ $r_play -eq 0 ] && echo termine || echo "ECHEC ($r_play)")"
 grep -E "identiques,|controle saute|ARRET" "$JOURNAUX/play.log" | sed 's/^/   /'
+
+echo "== Sauvegarde du code"
+if wait $sauvegarde; then
+  ZIP="$(tail -1 "$JOURNAUX/sauvegarde.log")"
+  NOM_ZIP="$(basename "$ZIP")"
+  cp "$ZIP" "$RACINE/deploiement/_a_supprimer/$NOM_ZIP"
+  if scp.exe -q -i "$CLE_WIN" "$(wslpath -w "$RACINE/deploiement/_a_supprimer/$NOM_ZIP")" "$HOTE:/tmp/$NOM_ZIP"; then
+    ssh.exe -i "$CLE_WIN" "$HOTE" "set -e; D=/opt/narwhal/sauvegardes-code; mkdir -p \$D; mv /tmp/$NOM_ZIP \$D/; ls -1 \$D/code-*.zip | sort -r | tail -n +6 | xargs -r rm -f; chown -R narwhal:narwhal \$D; ls \$D | wc -l" \
+      | sed 's/^/   sauvegardes sur le serveur : /'
+    echo "   $NOM_ZIP envoye ($(du -h "$ZIP" | cut -f1))"
+  else
+    echo "   ⚠ envoi de la sauvegarde en echec (le deploiement, lui, est fait)"
+  fi
+  rm -f "$RACINE/deploiement/_a_supprimer/$NOM_ZIP"
+else
+  echo "   ⚠ sauvegarde du code en echec, voir $JOURNAUX/sauvegarde.log"
+fi
 
 echo "== Verification"
 local_js=$(md5sum Fusion/marvel-lcg-src/public/app/assets/board-*.js | cut -c1-32)

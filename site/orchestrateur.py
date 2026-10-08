@@ -135,6 +135,21 @@ INSCRIPTION_LIBRE = os.environ.get("INSCRIPTION_LIBRE", "1") != "0"
 # une image de 400 Ko par rapport ferait grossir narwhal.db sans raison, et un
 # fichier se sert directement.
 DOSSIER_RAPPORTS = os.environ.get("DOSSIER_RAPPORTS", os.path.join(RACINE_SITE, "rapports"))
+# Les SAUVEGARDES DU CODE (08/10/2026) : un zip par deploiement (tout le projet
+# sans les images, historique compris), pose par deploiement/deployer-tout.sh,
+# les 5 derniers gardes. HORS de site/ : le deploiement vide ce dossier.
+DOSSIER_SAUVEGARDES_CODE = os.environ.get(
+    "DOSSIER_SAUVEGARDES_CODE", os.path.join(os.path.dirname(RACINE_SITE), "sauvegardes-code"))
+
+
+def sauvegardes_du_code(dossier: str = "") -> list[str]:
+    """Les zips de sauvegarde, le plus recent en tete (le nom porte la date)."""
+    dossier = dossier or DOSSIER_SAUVEGARDES_CODE
+    try:
+        noms = os.listdir(dossier)
+    except OSError:
+        return []
+    return sorted((n for n in noms if n.startswith("code-") and n.endswith(".zip")), reverse=True)
 # Plafonds. La capture est deja reduite par le navigateur avant l'envoi (voir
 # panneau-bug.js) ; ce plafond-ci est la ceinture, pas la bretelle.
 MAX_CAPTURE_OCTETS = int(os.environ.get("MAX_CAPTURE_OCTETS", str(4 * 1024 * 1024)))
@@ -5072,6 +5087,53 @@ class Handler(BaseHTTPRequestHandler):
         mime = types.get(nom.rsplit(".", 1)[-1].lower(), "application/octet-stream")
         self._repondre(200, image, mime)
 
+    def _page_sauvegardes(self) -> bytes:
+        lignes = []
+        for rang, nom in enumerate(sauvegardes_du_code()):
+            try:
+                taille = os.path.getsize(os.path.join(DOSSIER_SAUVEGARDES_CODE, nom)) / 1e6
+            except OSError:
+                continue
+            lignes.append('<li><a href="/admin/sauvegarde-code?n=%d">%s</a> (%.0f Mo)%s</li>'
+                          % (rang, html.escape(nom), taille, " &larr; la plus recente" if rang == 0 else ""))
+        corps = "".join(lignes) or "<li>Aucune sauvegarde pour l'instant : elle se cree au prochain deploiement.</li>"
+        return ("<!doctype html><meta charset=utf-8><title>Sauvegardes du code</title>"
+                "<body style='font-family:system-ui;background:#0d1116;color:#e8edf2;padding:2rem'>"
+                "<h1>Sauvegardes du code</h1>"
+                "<p>Tout le projet sans les images, historique compris. Un zip par deploiement, les 5 derniers. "
+                "La notice de restauration est dans le zip (LISEZ-MOI.txt).</p>"
+                "<ul style='line-height:2'>%s</ul>"
+                "<style>a{color:#f0b95f}</style></body>" % corps).encode("utf-8")
+
+    def _servir_sauvegarde(self) -> None:
+        requete = urllib.parse.urlparse(self.path).query
+        try:
+            rang = int(urllib.parse.parse_qs(requete).get("n", ["0"])[0])
+        except ValueError:
+            rang = -1
+        noms = sauvegardes_du_code()
+        if not 0 <= rang < len(noms):
+            self._repondre(404, b"Aucune sauvegarde.", "text/plain; charset=utf-8")
+            return
+        chemin = os.path.join(DOSSIER_SAUVEGARDES_CODE, noms[rang])
+        try:
+            taille = os.path.getsize(chemin)
+            fichier = open(chemin, "rb")
+        except OSError:
+            self._repondre(404, b"Sauvegarde introuvable.", "text/plain; charset=utf-8")
+            return
+        with fichier:
+            self.send_response(200)
+            self.send_header("Content-Type", "application/zip")
+            self.send_header("Content-Length", str(taille))
+            self.send_header("Content-Disposition", 'attachment; filename="%s"' % noms[rang])
+            self.end_headers()
+            while True:
+                morceau = fichier.read(1 << 20)
+                if not morceau:
+                    break
+                self.wfile.write(morceau)
+
     def _page_admin(self) -> bytes:
         # ⚠⚠ COMPTES EN FICHES, PAS EN TABLEAU (23/09/2026, demande de
         # l'utilisateur : « c'est pas du tout user-friendly »). Un <table>
@@ -5685,6 +5747,19 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(len(image)))
             self.end_headers()
             self.wfile.write(image)
+        elif self.chemin == "/admin/sauvegardes":
+            # La liste des sauvegardes du code, reservee a l'administrateur.
+            if pseudo != ADMIN:
+                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                return
+            self._repondre(200, self._page_sauvegardes())
+        elif self.chemin == "/admin/sauvegarde-code":
+            # Le zip designe par son RANG dans la liste (0 = le plus recent),
+            # jamais par un nom venu de l'adresse : pas de traversee de dossier.
+            if pseudo != ADMIN:
+                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                return
+            self._servir_sauvegarde()
         elif self.chemin.startswith("/admin/capture"):
             # La capture d'un rapport, reservee a l'administrateur comme la
             # page qui l'affiche. On ne sert JAMAIS le nom de fichier venu de
