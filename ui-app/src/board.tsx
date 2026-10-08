@@ -50,9 +50,11 @@ import { cartesDuGeste, selection } from './board/manuel/selection'
 import {
   ciblesDeLaSource,
   estSourceGlissable,
+  optionJouer,
   optionsDuDepot,
   optionsSansCible,
   raisonDuRefus,
+  refusJouer,
   zonesDeLaSource,
   zonesSansCible,
 } from './board/glisser/cibles'
@@ -2820,7 +2822,7 @@ export function PagePartie({
         (id) => zoneDeLaCarte.get(id),
         idIdentiteGlisser
       )
-    return {
+    const regles: ReglagesGlisser = {
       estSource: (id) => estSourceGlissable(optionsCourantes, id, idIdentiteGlisser),
       ciblesLegales: (sourceId) =>
         ciblesDeLaSource(optionsCourantes, sourceId, plateau.idsAffiches, idIdentiteGlisser),
@@ -2930,6 +2932,52 @@ export function PagePartie({
         return undefined
       },
     }
+    // UNE CARTE QUI SE JOUE SE LACHE N'IMPORTE OU SUR LA TABLE (08/10/2026,
+    // .planning/todos/2026-10-08-glisser-evenements-mode-normal.md). Sur une
+    // cible possible, les regles ci-dessus la visent ; partout ailleurs sur la
+    // table, elle se joue comme au bouton « Jouer » et la cible se choisit
+    // ensuite. Injouable maintenant : elle se souleve quand meme, et le lacher
+    // dit pourquoi.
+    const refusDuMoteur = etat.demande?.refus ?? []
+    const enMain = new Set((etat.monde?.players?.[joueurActif]?.hand_cards ?? []).map((carte) => Number(carte.id)))
+    const jouer = (sourceId: number) => (enMain.has(sourceId) ? optionJouer(optionsCourantes, sourceId) : undefined)
+    const refusPourJouer = (sourceId: number) =>
+      enMain.has(sourceId) && !estSourceGlissable(optionsCourantes, sourceId, idIdentiteGlisser)
+        ? refusJouer(refusDuMoteur, sourceId)
+        : undefined
+    const viseUneCible = (sourceId: number, cible: CibleSurvolee) =>
+      cible.carteId !== undefined &&
+      optionsDuDepot(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser).length > 0
+    // La main n'est pas la table : relacher la carte dans la main ne la joue pas.
+    const surLaTable = (cible: CibleSurvolee) =>
+      cible.zone !== 'main' && (cible.surLaTable === true || cible.zone !== undefined)
+    return {
+      ...regles,
+      estSource: (id) => regles.estSource(id) || refusPourJouer(id) !== undefined,
+      accueilleLaTable: (sourceId) => jouer(sourceId) !== undefined,
+      accepte: (sourceId, cible) => {
+        if (refusPourJouer(sourceId) !== undefined) return false
+        if (jouer(sourceId) && surLaTable(cible)) return true
+        return regles.accepte ? regles.accepte(sourceId, cible) : true
+      },
+      libelle: (sourceId, cible) => {
+        const refus = refusPourJouer(sourceId)
+        if (refus !== undefined) return traduireRefusGlisser(refus) ?? t('Pas maintenant')
+        const option = jouer(sourceId)
+        if (option && surLaTable(cible) && !viseUneCible(sourceId, cible)) return nomLisible(option)
+        return regles.libelle(sourceId, cible)
+      },
+      onDepot: (sourceId, cible) => {
+        const refus = refusPourJouer(sourceId)
+        if (refus !== undefined) return traduireRefusGlisser(refus) ?? t('Cette carte ne peut pas être jouée maintenant.')
+        const option = jouer(sourceId)
+        if (option && surLaTable(cible) && !viseUneCible(sourceId, cible)) {
+          choisirOptionDepuisMenu(option, [], true)
+          return undefined
+        }
+        return regles.onDepot(sourceId, cible)
+      },
+    }
   }, [
     manuel,
     spectateur,
@@ -2945,8 +2993,10 @@ export function PagePartie({
     nomPorteurFr,
     choisirOptionDepuisMenu,
     etat.monde,
+    etat.demande,
     joueurActif,
     triche.couche.choisirCible,
+    traduireRefusGlisser,
   ])
 
   const basculerTextesCdb = useCallback(() => {

@@ -215,3 +215,20 @@ export function zonesSansCible(
     ? new Set(ZONES_DU_TERRAIN)
     : new Set()
 }
+
+/**
+ * L'action « Jouer » de cette carte (une carte de la main), si le moteur l'offre.
+ *
+ * DECISION DU 08/10/2026 : une carte qui se JOUE (evenement, ressource
+ * speciale, manigance annexe du joueur...) se lache n'importe ou sur la table ;
+ * lachee sur une cible possible elle la vise, sinon elle se joue comme au
+ * bouton « Jouer », et la cible se choisit ensuite.
+ */
+export function optionJouer(options: Option[], sourceId: number): Option | undefined {
+  return options.find((option) => option.bind_id === sourceId && option.name === 'Play' && offerte(option))
+}
+
+/** Pourquoi cette carte ne peut pas se jouer maintenant (le code du moteur), si elle est refusee. */
+export function refusJouer(refus: Option[], sourceId: number): string | undefined {
+  return refus.find((option) => option.bind_id === sourceId && option.name === 'Play')?.failure_reason || undefined
+}

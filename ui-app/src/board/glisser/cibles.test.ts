@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { Option } from '../ask'
 import {
+  optionJouer,
+  refusJouer,
   ciblesDeLaSource,
   estSourceGlissable,
   optionsDuDepot,
@@ -224,5 +226,21 @@ describe('ou se lache une carte qui ne vise rien', () => {
   it('suit les actions generales quand la source est l identite', () => {
     const options = [option({ id: 1, bind_id: 0, target_num_range: [0, 0] })]
     expect(zonesSansCible(options, HEROS, HEROS).size).toBe(2)
+  })
+})
+
+describe('jouer une carte en la lachant sur la table (08/10/2026)', () => {
+  it('trouve l action « Jouer » offerte de la carte, pas une autre, pas celle d une autre carte', () => {
+    const jouer = option({ id: 1, name: 'Play', bind_id: 13 })
+    const autre = option({ id: 2, name: 'Discard', bind_id: 13 })
+    const ailleurs = option({ id: 3, name: 'Play', bind_id: 14 })
+    expect(optionJouer([autre, ailleurs, jouer], 13)).toBe(jouer)
+    expect(optionJouer([autre], 13)).toBeUndefined()
+  })
+  it('une action « Jouer » refusee ne compte pas comme offerte, mais donne sa raison', () => {
+    const refusee = option({ id: 1, name: 'Play', bind_id: 13, failure_reason: 'check_can_pay' })
+    expect(optionJouer([refusee], 13)).toBeUndefined()
+    expect(refusJouer([refusee], 13)).toBe('check_can_pay')
+    expect(refusJouer([refusee], 14)).toBeUndefined()
   })
 })
