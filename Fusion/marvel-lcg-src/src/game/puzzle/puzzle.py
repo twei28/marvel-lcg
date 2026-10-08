@@ -364,6 +364,15 @@ class RunPuzzle:
         else:
             Faces.GiveStatus([unit], "Tough", DebugRule(unit))
 
+    def AddTough(self, card: CardName, n: int = 1):
+        """Pose n cartes Coriace, sans la bascule de `Tough` (qui en RETIRE une
+        si l'unite est deja Coriace) : pour empiler sur un porteur de
+        `ThisCanHaveAdditionalTough`. Le plafond reste celui du moteur."""
+        from game.operate.faces import Faces
+        unit = self.FindOrCreateFace(card).CastTo(Unit2)
+        for _ in range(n):
+            Faces.GiveStatus([unit], "Tough", DebugRule(unit))
+
     def Expose(self, card: CardName):
         """Pose (ou retire) une carte d'etat Exposed, pack `sentinel`.
 

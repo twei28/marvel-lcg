@@ -809,6 +809,7 @@ class Card(Object):
         self.state.is_flipping = False
         self.state.is_revealing = False
         self.face.OnAfterFlip(by_effect, call_reveal)
+        self._DefausserTenacesEnTrop(by_effect)
 
         self.visible.Update()
 
@@ -820,6 +821,18 @@ class Card(Object):
             self.face.OnAfterCardFlip(after_flip_message)
             return True
         return False
+
+    def _DefausserTenacesEnTrop(self, by_effect: 'Effect') -> None:
+        """Les Coriace au-dela du plafond de la face d'ARRIVEE partent apres le
+        retournement : `ThisCanHaveAdditionalTough` ne juge plus pendant
+        celui-ci (rapport n67)."""
+        from game.card.face.base import Unit2
+        if not Unit2.IsType(self.face) or not self.face.IsInPlay():
+            return
+        unite = self.face.CastTo(Unit2)
+        exceed = unite.tough - unite.tough_max
+        if exceed > 0:
+            unite.DiscardTough(by_effect, rule=exceed)
 
     def Render(self) -> 'CardDescriptor':
         from game.card.face.base import Villain

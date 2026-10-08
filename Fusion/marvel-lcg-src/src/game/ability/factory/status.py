@@ -93,6 +93,11 @@ class AbilityFactoryStatus:
             else:
                 effects = this.effect.Find(name="ThisCanHaveAdditionalTough")
                 Effects.UnRegister(effects)
+                # Pendant un retournement, le plafond se juge sur la face
+                # d'ARRIVEE : `Card.Flip` le controle une fois celle-ci en place
+                # (rapport n67, Luke Cage dont les deux faces autorisent tout).
+                if this.card.state.is_flipping:
+                    return
                 exceed = this.tough - this.tough_max
                 if exceed > 0:
                     this.DiscardTough(effect, rule=exceed)

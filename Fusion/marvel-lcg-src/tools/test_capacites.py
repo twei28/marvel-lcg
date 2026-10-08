@@ -44056,6 +44056,43 @@ CAS = [
                     "en_jeu": ["01107"]},
     },
     {
+        "nom": "62001 Luke Cage — garde ses 3 Tenaces en passant d'alter-ego a heros (rapport n67)",
+        "pourquoi": ("rapport n67 (Aghenatak, 08/10/2026) : les DEUX faces disent « any number of "
+                     "tough ». Le WhileValid de la face sortante rendait 0 pendant le retournement "
+                     "et defaussait l'excedent avant que la face entrante ne le reautorise"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.AddTough('62001b', 3)"],
+        "declencher": ["Puzzle.ChangeForm('62001b')"],
+        "verifier": "tenaces_identite",
+        "tenaces": 3,
+        "face_attendue": "62001a",
+    },
+    {
+        "nom": "62001 Luke Cage — garde ses 3 Tenaces en passant de heros a alter-ego (rapport n67)",
+        "pourquoi": "sens inverse du cas precedent : meme texte sur les deux faces",
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.AddTough('62001a', 3)"],
+        "declencher": ["Puzzle.ChangeForm('62001a')"],
+        "verifier": "tenaces_identite",
+        "tenaces": 3,
+        "face_attendue": "62001b",
+    },
+    {
+        "nom": "32001 Colossus — CONTRE-CAS : 2 Tenaces en heros, 1 seule reste en Piotr Rasputin",
+        "pourquoi": ("rapport n67 : le correctif reporte le controle du plafond APRES le "
+                     "retournement ; une face d'arrivee SANS ThisCanHaveAdditionalTough "
+                     "doit toujours perdre l'excedent (regle : 1 Tenace au plus)"),
+        "scenario": "rhino",
+        "heros": "colossus",
+        "mise_en_place": ["Puzzle.ChangeForm('32001b')", "Puzzle.AddTough('32001a', 2)"],
+        "declencher": ["Puzzle.ChangeForm('32001a')"],
+        "verifier": "tenaces_identite",
+        "tenaces": 1,
+        "face_attendue": "32001b",
+    },
+    {
         "nom": "62022 Dynamic Duo — la carte cherchee qui n'est pas un Team-Up retourne au deck",
         "pourquoi": ("troisieme carte prise au meme piege, dans un pack SANS rapport avec "
                      "Jessica Jones : la recherche n'a aucun filtre, elle sort du deck une "
@@ -49075,6 +49112,19 @@ def jj_une_autre_manigance_revelee(monde, aides):
         return False, "aucune autre manigance secondaire n'a ete revelee"
     noms = [getattr(x.paper, "card_id", "?") for x in autres]
     return True, f"manigance(s) revelee(s) : {noms}"
+
+def tenaces_identite(monde, aides):
+    """Nombre exact de cartes Coriace sur l'identite, et sa face apres le changement."""
+    cas = aides["cas"]
+    identite = aides["identite"](monde)
+    if identite is None:
+        return False, "identite introuvable"
+    face = identite.paper.card_id
+    if cas.get("face_attendue") and face != cas["face_attendue"]:
+        return False, f"face {face}, attendue {cas['face_attendue']} (le changement de forme n'a pas eu lieu)"
+    if identite.tough != cas["tenaces"]:
+        return False, f"{identite.tough} Tenace(s) sur {face}, {cas['tenaces']} attendue(s)"
+    return True, f"{identite.tough} Tenace(s) sur {face}"
 
 def jj_couple_tenace(monde, aides):
     """jj022 : Jessica Jones ET Luke Cage portent un statut Tenace."""
