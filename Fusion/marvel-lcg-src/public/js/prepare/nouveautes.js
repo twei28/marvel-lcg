@@ -46,6 +46,18 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-08",
+        genre: "correction",
+        fr: "Ant-Man (Hank Pym) mis en jeu par Appel de détresse : la fenêtre pour payer son coût reste ouverte, et chaque ressource en trop lui donne bien un jeton pym. Merci Phocéa.",
+        en: "Ant-Man (Hank Pym) put into play with Make the Call: the window to pay his cost now stays open, and each extra resource gives him a pym counter. Thanks Phocéa.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "jeu",
+        fr: "Passe la souris sur Wolverine dans le choix des héros.",
+        en: "Hover over Wolverine in the hero selection.",
+    },
+    {
+        date: "2026-10-08",
         genre: "jeu",
         fr: "Tes 3 dernières parties terminées sont gardées : ouvre « Revoir » dans le menu pour les rejouer en un clic, ou les télécharger.",
         en: "Your last 3 finished games are kept: open “Replay” in the menu to watch them again in one click, or download them.",
