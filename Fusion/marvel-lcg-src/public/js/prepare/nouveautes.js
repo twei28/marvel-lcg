@@ -46,6 +46,24 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-08",
+        genre: "jeu",
+        fr: "Revoir une partie montre maintenant exactement ce que tu voyais : les fenêtres de paiement et tes choix dedans, les cartes que tu agrandissais, tes menus. La barre de lecture se cache toute seule, Espace et les flèches la pilotent.",
+        en: "Replaying a game now shows exactly what you saw: the payment windows and your choices in them, the cards you zoomed in on, your menus. The playback bar hides by itself, Space and the arrow keys control it.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "jeu",
+        fr: "Passe la souris sur les héros et les méchants dans les choix de partie : 35 héros et 8 méchants ont maintenant leurs répliques.",
+        en: "Hover over heroes and villains when setting up a game: 35 heroes and 8 villains now have their voice lines.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "jeu",
+        fr: "Nouvel écran de défaite.",
+        en: "New defeat screen.",
+    },
+    {
+        date: "2026-10-08",
         genre: "correction",
         fr: "Ant-Man (Hank Pym) mis en jeu par Appel de détresse : la fenêtre pour payer son coût reste ouverte, et chaque ressource en trop lui donne bien un jeton pym. Merci Phocéa.",
         en: "Ant-Man (Hank Pym) put into play with Make the Call: the window to pay his cost now stays open, and each extra resource gives him a pym counter. Thanks Phocéa.",
