@@ -53,6 +53,14 @@ wait $play; r_play=$?
 echo "   play.       : $([ $r_play -eq 0 ] && echo termine || echo "ECHEC ($r_play)")"
 grep -E "identiques,|controle saute|ARRET" "$JOURNAUX/play.log" | sed 's/^/   /'
 
+# Les sons de play. ne viennent pas du paquet publie mais de
+# /opt/narwhal-play-scans/originaux/sounds (Caddy, /_son/) : sans cette copie,
+# un son ajoute au depot marche sur le site normal et manque sur play.
+if [ $r_normal -eq 0 ]; then
+  ssh.exe -i "$CLE_WIN" "$HOTE" "cp -u /opt/narwhal/Fusion/marvel-lcg-src/assets/sounds/*.wav /opt/narwhal/Fusion/marvel-lcg-src/assets/sounds/*.mp3 /opt/narwhal-play-scans/originaux/sounds/; chown 1000:1000 /opt/narwhal-play-scans/originaux/sounds/*; ls /opt/narwhal-play-scans/originaux/sounds | wc -l" \
+    | sed 's/^/   sons de play. : /'
+fi
+
 echo "== Sauvegarde du code"
 if wait $sauvegarde; then
   ZIP="$(tail -1 "$JOURNAUX/sauvegarde.log")"
