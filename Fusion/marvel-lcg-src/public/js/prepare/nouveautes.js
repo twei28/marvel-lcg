@@ -47,6 +47,36 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-08",
         genre: "jeu",
+        fr: "Nouvelle tuile « Partie au hasard » : une roue tire tes héros et ton scénario dans toutes les boîtes, et chaque bandeau peut être relancé.",
+        en: "New “Random game” tile: a wheel draws your heroes and your scenario from every box, and each reel can be spun again.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "correction",
+        fr: "Daredevil peut de nouveau jouer la carte du dessus de son deck Sens. Merci pour le signalement.",
+        en: "Daredevil can play the top card of his Sense deck again. Thanks for the report.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "correction",
+        fr: "Luke Cage garde tous ses Tenaces quand il change de forme. Merci Aghenatak.",
+        en: "Luke Cage keeps all his tough cards when he changes form. Thanks Aghenatak.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "correction",
+        fr: "Hellcat : son Action la met en jeu gratuitement quand ton identité est Defender, et on peut toujours la jouer normalement. Merci BL-Stark.",
+        en: "Hellcat: her Action puts her into play for free when your identity is a Defender, and she can still be played normally. Thanks BL-Stark.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "jeu",
+        fr: "Le nombre de cartes d'une pile s'affiche maintenant en haut à droite.",
+        en: "The number of cards in a pile now shows in the top right corner.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "jeu",
         fr: "Revoir une partie montre maintenant exactement ce que tu voyais : les fenêtres de paiement et tes choix dedans, les cartes que tu agrandissais, tes menus. La barre de lecture se cache toute seule, Espace et les flèches la pilotent.",
         en: "Replaying a game now shows exactly what you saw: the payment windows and your choices in them, the cards you zoomed in on, your menus. The playback bar hides by itself, Space and the arrow keys control it.",
     },
