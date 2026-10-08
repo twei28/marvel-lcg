@@ -41,8 +41,16 @@ Repartir de cette sauvegarde (avec Git installe) :
   cd "Marvel LCG"
   git checkout $BRANCHE
 
-Les images ne sont pas dans la sauvegarde : elles se recuperent depuis le
-serveur (dossier /opt/narwhal/Fusion/marvel-lcg-src/assets) ou se retelechargent.
+Les images (scans, vignettes, HD, sons, documents, environ 2,5 Go) ne sont
+pas dans ce zip. Pour les recuperer :
+  1. sur le site, connecte avec le compte administrateur, ouvrir
+     https://narwhalchampions.com/admin/sauvegardes et cliquer sur « Toutes les
+     images » : un fichier images-AAAAMMJJ.tar se telecharge ;
+  2. l'extraire dans le dossier Fusion/marvel-lcg-src/ du projet restaure
+     (il contient le dossier assets/), par exemple :
+       tar -xf images-AAAAMMJJ.tar -C "Marvel LCG/Fusion/marvel-lcg-src"
+Le programme lit ses images dans Fusion/marvel-lcg-src/assets/ : rien d'autre
+a relier.
 EOF
 
 python3 - "$TRAVAIL" "$SORTIE/$NOM" <<'PY'

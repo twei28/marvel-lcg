@@ -142,6 +142,12 @@ DOSSIER_SAUVEGARDES_CODE = os.environ.get(
     "DOSSIER_SAUVEGARDES_CODE", os.path.join(os.path.dirname(RACINE_SITE), "sauvegardes-code"))
 
 
+# Les IMAGES du jeu (scans, vignettes, HD, sons, documents), servies d'un bloc a
+# l'administrateur pour reconstruire un poste a partir d'une sauvegarde du code.
+DOSSIER_ASSETS = os.environ.get(
+    "DOSSIER_ASSETS", os.path.join(os.path.dirname(RACINE_SITE), "Fusion", "marvel-lcg-src", "assets"))
+
+
 def sauvegardes_du_code(dossier: str = "") -> list[str]:
     """Les zips de sauvegarde, le plus recent en tete (le nom porte la date)."""
     dossier = dossier or DOSSIER_SAUVEGARDES_CODE
@@ -5103,7 +5109,29 @@ class Handler(BaseHTTPRequestHandler):
                 "<p>Tout le projet sans les images, historique compris. Un zip par deploiement, les 5 derniers. "
                 "La notice de restauration est dans le zip (LISEZ-MOI.txt).</p>"
                 "<ul style='line-height:2'>%s</ul>"
+                "<h2>Images</h2>"
+                "<p><a href='/admin/images'>Toutes les images (scans, vignettes, HD, sons, documents), environ 2,5 Go</a>"
+                " : un fichier .tar fabrique a l'instant depuis le serveur. Apres une restauration, l'extraire dans "
+                "<code>Fusion/marvel-lcg-src/</code> (il contient le dossier <code>assets/</code>).</p>"
                 "<style>a{color:#f0b95f}</style></body>" % corps).encode("utf-8")
+
+    def _servir_images(self) -> None:
+        import tarfile
+        if not os.path.isdir(DOSSIER_ASSETS):
+            self._repondre(404, b"Dossier des images introuvable.", "text/plain; charset=utf-8")
+            return
+        self.send_response(200)
+        self.send_header("Content-Type", "application/x-tar")
+        self.send_header("Content-Disposition",
+                         'attachment; filename="images-%s.tar"' % time.strftime("%Y%m%d"))
+        self.send_header("Connection", "close")
+        self.end_headers()
+        try:
+            with tarfile.open(fileobj=self.wfile, mode="w|") as archive:
+                archive.add(DOSSIER_ASSETS, arcname="assets")
+        except (BrokenPipeError, ConnectionResetError):
+            pass  # telechargement interrompu par le navigateur
+        self.close_connection = True
 
     def _servir_sauvegarde(self) -> None:
         requete = urllib.parse.urlparse(self.path).query
@@ -5753,6 +5781,14 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
                 return
             self._repondre(200, self._page_sauvegardes())
+        elif self.chemin == "/admin/images":
+            # Toutes les images d'un bloc (tar), fabrique A LA VOLEE : toujours
+            # a jour, rien de stocke en double. Plusieurs Go : le site sert un
+            # fil par requete, les joueurs ne l'attendent pas.
+            if pseudo != ADMIN:
+                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                return
+            self._servir_images()
         elif self.chemin == "/admin/sauvegarde-code":
             # Le zip designe par son RANG dans la liste (0 = le plus recent),
             # jamais par un nom venu de l'adresse : pas de traversee de dossier.
