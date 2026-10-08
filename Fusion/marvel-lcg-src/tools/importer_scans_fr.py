@@ -52,6 +52,33 @@ RAPPORT = RACINE / "RAPPORT-SCANS-FR.md"
 
 URL_CDB = "https://fr.marvelcdb.com/api/public/cards/?encounter=1"
 URL_CDB_EN = "https://marvelcdb.com/api/public/cards/?encounter=1"
+# Complement (08/10/2026) : mc4db.merlindumesnil.net traduit des cartes FFG
+# que fr.marvelcdb.com n'a pas (Peur de Rien, Civil War, Agents du S.H.I.E.L.D.,
+# Magneto...). Meme format que marvelcdb. Il ne fait que COMBLER : une valeur
+# deja donnee par fr.marvelcdb.com n'est jamais remplacee.
+URL_MC4DB = "https://mc4db.merlindumesnil.net/api/public/cards/?locale=fr"
+# Fautes des sources, corrigees ici pour survivre a chaque regeneration.
+CORRECTIONS_NOMS = {
+    "40002": "Translation Corporelle",  # « Translatation » chez fr.marvelcdb.com
+}
+
+
+def nettoyer_mc4db(texte):
+    """Les fautes de saisie de mc4db, mesurees le 08/10/2026 sur les textes importes.
+
+    Caracteres invisibles (BOM), symbole de ressource ecrit en francais
+    (« [physique] » pour [physical], 59037), balises cassees (« <b><b>[[Elite]] »
+    en 49007, « b> » sans son « < » en tete de 50089a).
+    """
+    texte = texte.replace("\ufeff", "")
+    for francais, anglais in (("[physique]", "[physical]"), ("[énergie]", "[energy]"), ("[joker]", "[wild]")):
+        texte = texte.replace(francais, anglais)
+    texte = texte.replace("<b><b>[[", "[[")
+    # « [[Magnétique ]]soit » (49001a) : l'espace sort du trait.
+    texte = re.sub(r"\[\[([^\]]*?) +\]\]", r"[[\1]] ", texte)
+    if texte.startswith("b>"):
+        texte = "<" + texte
+    return texte
 URL_OCTGN = (
     "https://codeload.github.com/twistedsistem/OCTGN-Marvel-Champions/"
     "tar.gz/refs/heads/master"
@@ -104,6 +131,62 @@ def charger_marvelcdb_anglais():
     }
     noms = {carte["code"]: carte["name"] for carte in cartes if carte.get("name")}
     return textes, noms
+
+
+def charger_mc4db():
+    """Textes et noms francais de mc4db, cartes FFG seulement, avec leur anglais.
+
+    mc4db porte aussi des cartes fan-made (Designhacker, Kajislav...) : leur
+    scan est anglais, leur nom doit le rester (voir l'en-tete de noms-fr.ts).
+    Rend (textes, noms, textes_en, noms_en), meme balisage que marvelcdb.
+    """
+    with urllib.request.urlopen(URL_MC4DB, timeout=120) as reponse:
+        cartes = json.load(reponse)
+    textes, noms, textes_en, noms_en = {}, {}, {}, {}
+    for carte in cartes:
+        if carte.get("creator") != "FFG" or carte.get("hidden"):
+            continue
+        code = carte["code"]
+        if carte.get("text"):
+            textes[code] = nettoyer_mc4db(BALISES_GARDEES.sub("", carte["text"]))
+        if carte.get("real_text"):
+            textes_en[code] = BALISES_GARDEES.sub("", carte["real_text"])
+        if carte.get("name"):
+            noms[code] = nettoyer_mc4db(carte["name"]).strip()
+        if carte.get("real_name"):
+            noms_en[code] = carte["real_name"]
+    return textes, noms, textes_en, noms_en
+
+
+def completer(textes, noms, textes_en, noms_en):
+    """Comble avec mc4db ce que fr.marvelcdb.com n'a pas traduit, puis corrige.
+
+    Une carte compte comme « non traduite » chez marvelcdb quand son texte (ou
+    son nom) y est absent ou identique a l'anglais : c'est le filtre de
+    sinceritee d'ecrire_modules. On n'y prend chez mc4db que ce qui est
+    vraiment traduit (different de son propre anglais). Modifie les deux
+    dictionnaires francais sur place et rend le nombre d'entrees ajoutees.
+    """
+    m_textes, m_noms, m_textes_en, m_noms_en = charger_mc4db()
+    ajouts_textes = ajouts_noms = 0
+    for code, texte in m_textes.items():
+        deja = textes.get(code)
+        if deja and deja.strip() != textes_en.get(code, "").strip():
+            continue
+        if texte.strip() == m_textes_en.get(code, "").strip():
+            continue
+        textes[code] = texte
+        ajouts_textes += 1
+    for code, nom in m_noms.items():
+        deja = noms.get(code)
+        if deja and deja != noms_en.get(code):
+            continue
+        if nom == m_noms_en.get(code):
+            continue
+        noms[code] = nom
+        ajouts_noms += 1
+    noms.update(CORRECTIONS_NOMS)
+    return ajouts_textes, ajouts_noms
 
 
 def charger_octgn():
@@ -329,7 +412,8 @@ def ecrire_modules(attributions, textes, textes_en, noms, noms_en, ids_jeu):
     (SORTIE_TS / "noms-fr.ts").write_text(
         "// Genere par tools/importer_scans_fr.py — NE PAS EDITER A LA MAIN.\n"
         "//\n"
-        "// Nom francais OFFICIEL des cartes, tel que fr.marvelcdb.com le publie.\n"
+        "// Nom francais OFFICIEL des cartes, tel que fr.marvelcdb.com le publie,\n"
+        "// complete par mc4db.merlindumesnil.net pour ce qu'il n'a pas traduit.\n"
         "// Rien n'est traduit ici : c'est la VF editee par FFG/Asmodee, recopiee.\n"
         "//\n"
         "// N'y figurent que les cartes du catalogue du jeu dont le nom francais\n"
@@ -398,6 +482,8 @@ def main():
 
     ecrites = "sautees" if options.modules_seuls else extraire(attributions)
     textes_en, noms_en = charger_marvelcdb_anglais()
+    ajouts_textes, ajouts_noms = completer(textes, noms, textes_en, noms_en)
+    print(f"{'Complements mc4db (textes, noms)':34} {ajouts_textes}, {ajouts_noms}")
     nb_codes, nb_textes, nb_noms = ecrire_modules(
         attributions, textes, textes_en, noms, noms_en, ids_jeu
     )

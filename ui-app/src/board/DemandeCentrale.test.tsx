@@ -358,7 +358,7 @@ describe('DemandeCentrale — la question « combien de fois » nomme la carte e
     const d = question('[(83,53019) Strength in Diversity]: Deal 1 damage to an enemy done (1 of 5). How many more times?', noms)
     rendre({ demande: d, options: d.options })
     expect(
-      screen.getByText('Strength in Diversity : Infliger 1 dégât à un ennemi fait (1 sur 5). Combien de fois en plus ?')
+      screen.getByText('La Force de la Diversité : Infliger 1 dégât à un ennemi fait (1 sur 5). Combien de fois en plus ?')
     ).toBeInTheDocument()
     expect(screen.getByText('Aucun')).toBeInTheDocument()
     expect(screen.getByText('+4')).toBeInTheDocument()
@@ -371,7 +371,7 @@ describe('DemandeCentrale — la question « combien de fois » nomme la carte e
     )
     rendre({ demande: d, options: d.options })
     expect(
-      screen.getByText('Strength in Diversity : Infliger 1 dégât à un ennemi. Combien de fois ? (1 à 5)')
+      screen.getByText('La Force de la Diversité : Infliger 1 dégât à un ennemi. Combien de fois ? (1 à 5)')
     ).toBeInTheDocument()
     expect(screen.getByText('1 fois')).toBeInTheDocument()
     expect(screen.getByText('5 fois')).toBeInTheDocument()
@@ -379,6 +379,8 @@ describe('DemandeCentrale — la question « combien de fois » nomme la carte e
 
   it('en anglais, rien n est traduit', () => {
     window.localStorage.setItem('marvel-langue', 'en')
+    // Le nom suit les SCANS (noms-cartes-fr.ts) : la bascule 🌐 coupe les deux.
+    window.localStorage.setItem('marvel-board-scans-fr', 'off')
     const d = question('[(83,53019) Strength in Diversity]: Deal 1 damage to an enemy. How many times? (1 to 2)', ['1 time', '2 times'])
     rendre({ demande: d, options: d.options })
     expect(screen.getByText('Strength in Diversity: Deal 1 damage to an enemy. How many times? (1 to 2)')).toBeInTheDocument()

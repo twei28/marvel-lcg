@@ -38,8 +38,10 @@ def main() -> int:
             for carte in paquet:
                 if isinstance(carte, dict) and isinstance(carte.get("card_id"), str):
                     codes_du_jeu.add(carte["card_id"])
-    _, textes_fr, _ = imp.charger_marvelcdb()
-    textes_en, _ = imp.charger_marvelcdb_anglais()
+    _, textes_fr, noms_fr = imp.charger_marvelcdb()
+    textes_en, noms_en = imp.charger_marvelcdb_anglais()
+    # Complement mc4db (08/10/2026) : les cartes que fr.marvelcdb.com n'a pas traduites.
+    imp.completer(textes_fr, noms_fr, textes_en, noms_en)
     gardes = {}
     for code, texte in sorted(textes_fr.items()):
         if code not in codes_du_jeu:
@@ -51,7 +53,8 @@ def main() -> int:
         "// Genere par tools/generer_textes_fr_complets.py — NE PAS EDITER A LA MAIN.",
         "//",
         "// Texte francais OFFICIEL de toutes les cartes du catalogue que fr.marvelcdb.com",
-        "// a traduites (les non traduites sont ecartees : leur texte y est l'anglais).",
+        "// a traduites, complete par mc4db.merlindumesnil.net pour ce qu'il n'a pas",
+        "// traduit (les non traduites sont ecartees : leur texte y est l'anglais).",
         "// Charge paresseusement par le plateau (import dynamique) : il ne sert qu'aux",
         "// fenetres de reaction, qui ecrivent le texte de la capacite proposee.",
         "export const TEXTES_FR_COMPLETS: Readonly<Record<string, string | undefined>> = {",
