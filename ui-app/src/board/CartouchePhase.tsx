@@ -950,10 +950,14 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             Ni pendant qu'un autre joueur choisit sur l'etape en cours (D28). */}
         {/* Un spectateur (ou une relecture) ne valide rien : il tourne les
             pages d'une etape, mais l'etape suit le joueur (etape-partagee.ts). */}
-        {etape && !relu && !questionAuJoueur && !annonceEnCours && !attenteSurPlace && !(dernierePage && estSpectateur()) ? (
+        {etape && !relu && !questionAuJoueur && !annonceEnCours && !attenteSurPlace ? (
           <button
             type="button"
-            className="bh-bouton deroule-suivant"
+            // Spectateur : visible, grise et inactif sur la derniere page ; il
+            // s'allume quand le joueur passe a l'etape suivante (cle).
+            key={dernierePage && estSpectateur() ? `suivant-${etape.cle}` : 'suivant'}
+            disabled={dernierePage && estSpectateur()}
+            className={`bh-bouton deroule-suivant${dernierePage && estSpectateur() ? ' suivant-spectateur' : ''}`}
             data-page-suivante={dernierePage ? undefined : ''}
             onClick={() => {
               if (dernierePage) {

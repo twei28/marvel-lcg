@@ -2171,10 +2171,14 @@ export function DeroulePhase({
               <span aria-hidden="true">‹</span>
             </button>
           ) : null}
-          {estSpectateur() ? null : (
           <button
             type="button"
-            className="deroule-rond"
+            // SPECTATEUR (08/10/2026) : le bouton reste, grise et inactif, pour
+            // voir l'ecran du joueur ; la cle suit l'etape, il s'allume donc
+            // brievement (CSS) a chaque fois que le joueur passe a la suivante.
+            key={estSpectateur() ? `suivant-${etapeLue?.cle ?? ''}` : 'suivant'}
+            className={`deroule-rond${estSpectateur() ? ' suivant-spectateur' : ''}`}
+            disabled={estSpectateur()}
             // ⚠ SUR UN COUP FATAL, CE BOUTON N'AVANCE PAS : il fait paraitre le
             // panneau, qui demandera ensuite le droit de reprendre la partie.
             // Avancer ici sauterait la fin de la partie du joueur.
@@ -2187,7 +2191,6 @@ export function DeroulePhase({
           >
             {t('Suivant')}
           </button>
-          )}
         </span>
         )}
         {/* Les deux seules mentions qui survivent : « la suite arrive » quand on
@@ -2357,15 +2360,19 @@ export function DeroulePhase({
               rien apres, et c'est lui qui rend la main au joueur. Sur une
               defaite, il dit « Continuer » : ce n'est pas une etape de plus
               qu'on demande, c'est le droit de reprendre la partie. */}
-          {estSpectateur() ? null : (
-          <button type="button" className="bh-bouton deroule-suivant" onClick={avancer}>
+          <button
+            type="button"
+            key={estSpectateur() ? `suivant-${etape.cle}` : 'suivant'}
+            className={`bh-bouton deroule-suivant${estSpectateur() ? ' suivant-spectateur' : ''}`}
+            disabled={estSpectateur()}
+            onClick={avancer}
+          >
             {defaiteLocale
               ? t('Continuer')
               : etape.temps === 'bilan'
                 ? t('À toi de jouer')
                 : t('Suivant')}
           </button>
-          )}
         </div>
       </section>
     </>

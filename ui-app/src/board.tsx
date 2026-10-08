@@ -191,7 +191,7 @@ import {
 } from './board/CoucheMeteo'
 import { ModaleAmbiance } from './board/ModaleAmbiance'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
-import { publierEtape } from './board/etape-partagee'
+import { publierEtape, useSuiviDuJoueur } from './board/etape-partagee'
 import { appliquerEtiquettesTable, lireEtiquettesTable } from './board/etiquettes-table'
 import { lecteurActif, estRelecture, type Lecteur } from './board/relecture/lecteur'
 import { PageRelecture } from './board/relecture/PageRelecture'
@@ -2323,11 +2323,6 @@ export function PagePartie({
   // souvent.
   // L'etape que montre le cartouche : la table se cale dessus (table-calee.ts).
   const [cleEtapeAffichee, setCleEtapeAffichee] = useState<string>()
-  // Le spectateur affiche la meme etape que le joueur (etape-partagee.ts).
-  useEffect(() => {
-    if (spectateur) return
-    publierEtape(playerId, cleEtapeAffichee)
-  }, [cleEtapeAffichee, playerId, spectateur])
   const etapesPhaseMechant = useMemo(() => {
     const mechantIds = new Set<number>()
     for (const carte of cartesMondeParId.values()) {
@@ -3084,7 +3079,16 @@ export function PagePartie({
     })
   }, [])
 
-  const [modePhase, setModePhase] = useState<ModePhaseMechant>(lireModePhaseMechant)
+  const [modePhaseChoisi, setModePhase] = useState<ModePhaseMechant>(lireModePhaseMechant)
+  // LE SPECTATEUR VOIT LA PHASE DANS LE MODE DU JOUEUR REGARDE (08/10/2026),
+  // publie avec son etape (etape-partagee.ts) ; son propre reglage ne change pas.
+  const modeDuJoueurSuivi = useSuiviDuJoueur(spectateur).mode
+  const modePhase = spectateur && modeDuJoueurSuivi ? modeDuJoueurSuivi : modePhaseChoisi
+  // Le spectateur affiche la meme etape que le joueur, dans son mode (etape-partagee.ts).
+  useEffect(() => {
+    if (spectateur) return
+    publierEtape(playerId, cleEtapeAffichee, modePhaseChoisi)
+  }, [cleEtapeAffichee, playerId, spectateur, modePhaseChoisi])
   /**
    * DEUX INTENTIONS DIFFERENTES, QUE LE SEUL NOM « detaille » CONFONDAIT.
    *
@@ -4786,7 +4790,7 @@ export function PagePartie({
         textesCdb={textesCdb}
         basculerTextesCdb={basculerTextesCdb}
         basculerLangue={basculerLangue}
-        modePhase={modePhase}
+        modePhase={modePhaseChoisi}
         changerModePhase={choisirModePhase}
         libelleModePhase={libelleModePhase}
         tempsParDecision={etat.maxTimeout}

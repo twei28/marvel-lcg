@@ -4,17 +4,34 @@
 // il regarde.
 import { useEffect, useState } from 'react'
 import { lecteurActif } from './relecture/lecteur'
+import type { ModePhaseMechant } from './moteur'
 
-export type EtapesLues = Record<string, { cle: string; t: number }>
+export type EtapesLues = Record<string, { cle: string; t: number; mode?: string }>
+
+/** Ce que le spectateur suit du joueur : l'etape qu'il lit, et son mode de phase. */
+export type Suivi = { cle?: string; mode?: ModePhaseMechant }
+
+const MODES: readonly string[] = ['detaille', 'sur-table', 'instantane']
+export const modeLu = (mode: string | undefined): ModePhaseMechant | undefined =>
+  mode && MODES.includes(mode) ? (mode as ModePhaseMechant) : undefined
 
 export const DELAI_LECTURE_ETAPES_MS = 700
 
-export function publierEtape(siege: number, cle: string | undefined): void {
+export function publierEtape(siege: number, cle: string | undefined, mode?: ModePhaseMechant): void {
   void fetch('/set_etape', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ p: siege, cle: cle ?? '' }),
+    body: JSON.stringify({ p: siege, cle: cle ?? '', mode: mode ?? '' }),
   }).catch(() => undefined)
+}
+
+/** Le suivi du joueur le plus recent : son etape (non vide) et son mode (le dernier publie). */
+export function suiviLePlusRecent(etapes: EtapesLues): Suivi {
+  let recent: { t: number; mode?: string } | undefined
+  for (const etape of Object.values(etapes)) {
+    if (!recent || etape.t > recent.t) recent = etape
+  }
+  return { cle: cleLaPlusRecente(etapes), mode: modeLu(recent?.mode) }
 }
 
 /** La cle lue le plus recemment, tous joueurs confondus : celui qui vient de cliquer. */
@@ -33,13 +50,18 @@ export function indexSpectateur(cles: string[], cleSuivie: string | undefined): 
   return rang !== -1 ? rang : Math.max(0, cles.length - 1)
 }
 
-export function useEtapeSuivie(actif: boolean): string | undefined {
-  const [cle, setCle] = useState<string>()
+export function useSuiviDuJoueur(actif: boolean): Suivi {
+  const [suivi, setSuivi] = useState<Suivi>({})
   useEffect(() => {
     if (!actif) return
+    const changer = (neuf: Suivi) =>
+      setSuivi((ancien) => (ancien.cle === neuf.cle && ancien.mode === neuf.mode ? ancien : neuf))
     const lecteur = lecteurActif()
     if (lecteur) {
-      const minuteur = window.setInterval(() => setCle(lecteur.etapeA(lecteur.tempsCourant())), 100)
+      const minuteur = window.setInterval(() => {
+        const t = lecteur.tempsCourant()
+        changer({ cle: lecteur.etapeA(t), mode: modeLu(lecteur.modeA(t)) })
+      }, 100)
       return () => window.clearInterval(minuteur)
     }
     let vivant = true
@@ -47,7 +69,7 @@ export function useEtapeSuivie(actif: boolean): string | undefined {
       fetch('/get_etapes', { cache: 'no-store' })
         .then((reponse) => (reponse.ok ? reponse.json() : {}))
         .then((donnees: EtapesLues) => {
-          if (vivant) setCle(cleLaPlusRecente(donnees))
+          if (vivant) changer(suiviLePlusRecent(donnees))
         })
         .catch(() => undefined)
     void lire()
@@ -57,5 +79,9 @@ export function useEtapeSuivie(actif: boolean): string | undefined {
       window.clearInterval(minuteur)
     }
   }, [actif])
-  return cle
+  return suivi
+}
+
+export function useEtapeSuivie(actif: boolean): string | undefined {
+  return useSuiviDuJoueur(actif).cle
 }

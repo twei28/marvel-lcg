@@ -43,7 +43,7 @@ export type TrameRelecture = {
 }
 
 export type Curseur = { t: number; p: number; x: number; y: number; clic: number }
-export type EtapeLue = { t: number; p: number; cle: string }
+export type EtapeLue = { t: number; p: number; cle: string; mode?: string }
 
 export type Relecture = {
   entete: EnteteRelecture
@@ -105,7 +105,7 @@ export function analyserRelecture(texte: string): Relecture {
       } else if (o.k === 'res') {
         for (const [id, texte] of Object.entries((o.m ?? {}) as Record<string, unknown>)) ressources[Number(id)] = String(texte)
       } else if (o.k === 'e') {
-        etapes.push({ t, p: Number(o.p), cle: String(o.cle ?? '') })
+        etapes.push({ t, p: Number(o.p), cle: String(o.cle ?? ''), ...(o.mode ? { mode: String(o.mode) } : {}) })
       }
     }
   } catch (erreur) {

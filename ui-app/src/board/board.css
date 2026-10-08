@@ -9286,3 +9286,20 @@
     cursor: zoom-out;
   }
 }
+
+/* Le « Suivant » du SPECTATEUR (08/10/2026) : visible, grise, inactif ; il
+   s'allume brievement quand le joueur regarde passe a l'etape suivante (le
+   bouton est remonte a chaque etape, l'animation joue une fois). */
+.suivant-spectateur,
+.suivant-spectateur:disabled {
+  opacity: 0.5;
+  cursor: default;
+  animation: suivant-eclat 700ms ease-out;
+}
+@keyframes suivant-eclat {
+  0% { opacity: 1; box-shadow: 0 0 0 0 rgba(240, 185, 95, 0.9); }
+  100% { opacity: 0.5; box-shadow: 0 0 0 14px rgba(240, 185, 95, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .suivant-spectateur { animation: none; }
+}

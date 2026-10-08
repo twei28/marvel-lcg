@@ -727,9 +727,13 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'p required'}, status=400)
         if not hasattr(self, 'etapes_lues'):
             self.etapes_lues = {}
-        self.etapes_lues[p] = {'cle': str(data.get('cle') or '')[:200], 't': time.time()}
+        # `mode` : le mode de phase du joueur (08/10/2026), pour que le
+        # spectateur voie la phase comme lui. Une valeur inconnue est ignoree.
+        mode = data.get('mode')
+        self.etapes_lues[p] = {'cle': str(data.get('cle') or '')[:200], 't': time.time(),
+                               'mode': mode if mode in ('detaille', 'sur-table', 'instantane') else ''}
         from engine.enregistrement import Enregistrement
-        Enregistrement.Evenement('e', {'p': p, 'cle': self.etapes_lues[p]['cle']})
+        Enregistrement.Evenement('e', {'p': p, 'cle': self.etapes_lues[p]['cle'], 'mode': self.etapes_lues[p]['mode']})
         return web.json_response({'result': 'ok'})
 
     async def get_etapes(self, request: web.Request) -> web.Response:

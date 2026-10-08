@@ -185,6 +185,16 @@ export class Lecteur {
     return frais
   }
 
+  /** Le mode de phase du joueur a cet instant (publie avec ses etapes). */
+  modeA(t: number): string | undefined {
+    let mode: string | undefined
+    for (const e of this.relecture.etapes) {
+      if (e.t > t) break
+      if (e.mode) mode = e.mode
+    }
+    return mode
+  }
+
   /** L'etape du cartouche que le joueur lisait a cet instant. */
   etapeA(t: number): string | undefined {
     let cle: string | undefined
