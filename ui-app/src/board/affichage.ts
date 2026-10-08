@@ -5,6 +5,8 @@
 // inversement. Il se traduit par `data-affichage` sur <html>, que lit
 // `styles/affichage-sobre.css`.
 
+import { enVueJoueur } from './essais'
+
 export const CLE_AFFICHAGE = 'mc_affichage_v1'
 
 export type Affichage = 'normal' | 'sobre'
@@ -26,6 +28,8 @@ export function appliquerAffichage(affichage: Affichage): void {
 }
 
 function envoyer(changements: Record<string, Affichage>): void {
+  // Vue Player de l'administrateur : le compte n'est pas ecrit (essais.ts).
+  if (enVueJoueur()) return
   try {
     void fetch('/save_preferences', {
       method: 'POST',
@@ -67,6 +71,7 @@ export function affichageDuCompte(reponse: ReponsePreferences | null | undefined
 
 /** Interroge le compte au chargement du plateau. */
 export async function chercherAffichageDuCompte(): Promise<Affichage | undefined> {
+  if (enVueJoueur()) return undefined
   try {
     const r = await fetch('/get_preferences', { cache: 'no-store' })
     if (!r.ok) return undefined

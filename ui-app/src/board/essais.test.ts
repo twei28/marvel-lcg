@@ -103,3 +103,19 @@ describe('vue joueur de l administrateur (08/10/2026)', () => {
     expect(appel).not.toHaveBeenCalled()
   })
 })
+
+describe('vue Player : l affichage ne touche pas au compte', () => {
+  afterEach(() => {
+    window.localStorage.removeItem('mc_vue_joueur')
+    vi.unstubAllGlobals()
+  })
+  it('ni lecture ni ecriture des preferences du compte', async () => {
+    const { chercherAffichageDuCompte, ecrireAffichage } = await import('./affichage')
+    const appel = vi.fn(async () => ({ ok: true, json: async () => ({ compte: true, existe: true, preferences: { affichage: 'sobre' } }) }))
+    vi.stubGlobal('fetch', appel)
+    window.localStorage.setItem('mc_vue_joueur', 'oui')
+    expect(await chercherAffichageDuCompte()).toBeUndefined()
+    ecrireAffichage('normal')
+    expect(appel).not.toHaveBeenCalled()
+  })
+})

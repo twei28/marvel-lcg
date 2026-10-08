@@ -28,10 +28,8 @@
     'Dire qui est dessiné sur chaque carte': 'Record who is drawn on each card',
     'Palettes des héros': 'Hero palettes',
     'Corriger la couleur du fond de plateau': 'Fix the board background colour',
-    'Voir comme un joueur': 'View as a player',
-    'Masquer tous mes accès en plus, comme un compte classique': 'Hide all my extra access, like a regular account',
-    'Vue joueur · revenir en admin': 'Player view · back to admin',
-    'Tu vois le site comme un compte classique ; clique pour retrouver tes accès': 'You see the site like a regular account; click to get your access back',
+    'Masquer tous mes accès en plus, comme un compte classique ; la langue, l’affichage et la phase du méchant seront redemandés': 'Hide all my extra access, like a regular account; language, display and villain phase will be asked again',
+    'Tu vois le site comme un compte classique ; clique pour retrouver tes accès et tes réglages': 'You see the site like a regular account; click to get your access and settings back',
   };
   function t(fr) {
     return LANGUE === 'en' && Object.prototype.hasOwnProperty.call(DICO_EN_LOCAL, fr)
@@ -76,19 +74,48 @@
     var bascule = document.createElement('button');
     bascule.type = 'button';
     bascule.className = 'bouton-vue-joueur' + (vueJoueur ? ' est-actif' : '');
-    bascule.textContent = '👁️ ' + (vueJoueur ? t('Vue joueur · revenir en admin') : t('Voir comme un joueur'));
+    // Libellés fixes, quelle que soit la langue (demande du 08/10/2026) : le
+    // bouton dit OÙ il mène, « Player » depuis l'admin, « Admin » depuis Player.
+    bascule.textContent = vueJoueur ? 'Admin' : 'Player';
     bascule.title = vueJoueur
-      ? t('Tu vois le site comme un compte classique ; clique pour retrouver tes accès')
-      : t('Masquer tous mes accès en plus, comme un compte classique');
+      ? t('Tu vois le site comme un compte classique ; clique pour retrouver tes accès et tes réglages')
+      : t('Masquer tous mes accès en plus, comme un compte classique ; la langue, l’affichage et la phase du méchant seront redemandés');
     if (vueJoueur) {
       bascule.style.background = '#f0b95f';
       bascule.style.color = '#0d1116';
       bascule.style.borderColor = '#f0b95f';
     }
+    // LES TROIS FENÊTRES DU PREMIER LANCEMENT (langue, affichage, phase du
+    // méchant) se rouvrent à chaque passage en Player, comme pour un nouveau
+    // joueur ; leurs réponses ne valent que pour la vue Player : les réglages
+    // de l'admin sont mis de côté ici et reviennent au retour en Admin. Le
+    // compte n'est ni lu ni écrit pour l'affichage pendant la vue Player
+    // (affichage.js et ui-app/src/board/affichage.ts).
+    var CLE_REGLAGES_ADMIN = 'mc_vue_joueur_reglages_admin';
+    var CLES_DU_PREMIER_LANCEMENT = [
+      'marvel-langue', 'marvel-langue-choisie', 'marvel-board-scans-fr',
+      'mc_affichage_v1', 'marvel-board-mode-phase-mechant', 'mc_phase_mode_vu_v1',
+    ];
     bascule.addEventListener('click', function () {
       try {
-        if (vueJoueur) localStorage.removeItem(CLE_VUE_JOUEUR);
-        else localStorage.setItem(CLE_VUE_JOUEUR, 'oui');
+        if (vueJoueur) {
+          var mis = JSON.parse(localStorage.getItem(CLE_REGLAGES_ADMIN) || '{}');
+          CLES_DU_PREMIER_LANCEMENT.forEach(function (cle) {
+            if (typeof mis[cle] === 'string') localStorage.setItem(cle, mis[cle]);
+            else localStorage.removeItem(cle);
+          });
+          localStorage.removeItem(CLE_REGLAGES_ADMIN);
+          localStorage.removeItem(CLE_VUE_JOUEUR);
+        } else {
+          var aGarder = {};
+          CLES_DU_PREMIER_LANCEMENT.forEach(function (cle) {
+            var valeur = localStorage.getItem(cle);
+            if (valeur !== null) aGarder[cle] = valeur;
+            localStorage.removeItem(cle);
+          });
+          localStorage.setItem(CLE_REGLAGES_ADMIN, JSON.stringify(aGarder));
+          localStorage.setItem(CLE_VUE_JOUEUR, 'oui');
+        }
       } catch (e) { /* stockage indisponible : rien ne change */ }
       window.location.reload();
     });

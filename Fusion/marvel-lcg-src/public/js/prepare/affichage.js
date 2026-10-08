@@ -18,7 +18,13 @@ export function appliquerAffichage(valeur = affichageActuel()) {
     document.documentElement.dataset.affichage = normaliser(valeur);
 }
 
+// Vue Player de l'administrateur (lien-admin.js) : ni lu ni écrit sur le compte.
+function enVueJoueur() {
+    try { return localStorage.getItem("mc_vue_joueur") === "oui"; } catch (e) { return false; }
+}
+
 function envoyer(changements) {
+    if (enVueJoueur()) return;
     try {
         fetch("/save_preferences", {
             method: "POST",
@@ -40,6 +46,7 @@ export function choisirAffichage(valeur) {
  *  Rend la réponse de `/get_preferences` (ou `null`) : la fenêtre « Choisis ton
  *  affichage » en a besoin pour savoir si le compte a déjà choisi. */
 export async function synchroniserAffichage() {
+    if (enVueJoueur()) return null;
     let reponse;
     try {
         const r = await fetch("/get_preferences", { cache: "no-store" });
