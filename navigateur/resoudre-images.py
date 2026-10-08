@@ -141,7 +141,24 @@ for i, nom in enumerate(tous):
     if i % 2000 == 0:
         print(f"{i}/{len(tous)}", flush=True)
 
+# LES CIBLES COUCHEES (plus larges que hautes), que `installer-images.py` sert
+# depuis `pivotes/` : le moteur redresse en portrait toute image couchee. Oubliee
+# jusqu'au 08/10/2026 : sans elle, TOUS les paysages partaient non redresses.
+from PIL import Image
+couchees = set()
+for cible in {c for table in resultat.values() for c in table.values()}:
+    if cible.startswith("generes/"):
+        continue
+    try:
+        with Image.open(os.path.join("assets", cible)) as image:
+            largeur, hauteur = image.size
+    except Exception:
+        continue
+    if largeur > hauteur:
+        couchees.add(cible)
+resultat["_couchees"] = sorted(couchees)
+
 with open(os.path.join(sortie, "resolution.json"), "w", encoding="utf-8") as f:
     json.dump(resultat, f, ensure_ascii=False)
-gen = sum(1 for r in resultat.values() for v in r.values() if v.startswith("generes/"))
-print(f"noms : {len(tous)} ; vignettes : {len(resultat['vignette'])} ; hd : {len(resultat['hd'])} ; fabriques : {gen}")
+gen = sum(1 for k, r in resultat.items() if k != "_couchees" for v in r.values() if v.startswith("generes/"))
+print(f"noms : {len(tous)} ; vignettes : {len(resultat['vignette'])} ; hd : {len(resultat['hd'])} ; fabriques : {gen} ; couchees : {len(couchees)}")
