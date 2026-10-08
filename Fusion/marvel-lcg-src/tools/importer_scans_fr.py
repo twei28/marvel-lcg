@@ -291,6 +291,21 @@ def est_fan_made(code):
     return 61 <= prefixe <= 75
 
 
+def scans_hors_pack(attributions, ids_jeu):
+    """Les scans FR deja sur le disque qui ne viennent PAS du pack OCTGN.
+
+    Complement du 08/10/2026 : 289 scans francais telecharges depuis mc4db
+    (`/bundles/cards/FR/<pack>/<code>.webp`, convertis en fr_<code>.jpg 615x880)
+    pour Peur de Rien, Jessica Jones, Luke Cage, Jubile et la Boite de base,
+    que le pack OCTGN n'a pas. Sans ce complement, une regeneration les
+    rayerait de scans-fr-liste.ts alors qu'ils sont bien dans assets/pics-fr.
+    """
+    return {
+        code for code in ids_jeu
+        if code not in attributions and (SORTIE_IMAGES / f"fr_{code}.jpg").exists()
+    }
+
+
 def ecrire_rapport(mesures, inconnus, ecarts, manquants, audite):
     officielles = [c for c in manquants if not est_fan_made(c)]
     fan = [c for c in manquants if est_fan_made(c)]
@@ -459,15 +474,17 @@ def main():
                         guids_du_pack.add(trouve.group(1).lower())
 
     ecarts = desaccords(par_guid_cdb, par_guid_octgn, guids_du_pack)
+    complement = scans_hors_pack(attributions, ids_jeu)
     manquants = sorted(c for c in ids_jeu
-                       if c not in attributions and CODE_CARTE.match(c))
+                       if c not in attributions and c not in complement and CODE_CARTE.match(c))
     poids = sum(t for _, _, t in attributions.values())
 
     mesures = {
         "Images dans le pack": nb_images,
         "GUID distincts": len(guids_du_pack),
         "GUID inconnus de marvelcdb": len(inconnus),
-        "Cartes couvertes en francais": len(attributions),
+        "Cartes couvertes en francais": len(attributions) + len(complement),
+        "dont scans hors pack (mc4db)": len(complement),
         "Cartes du jeu sans scan FR": len(manquants),
         "Desaccords avec le module OCTGN": len(ecarts),
         "Poids des images": f"{poids / 1e6:.0f} Mo",
@@ -485,8 +502,10 @@ def main():
     textes_en, noms_en = charger_marvelcdb_anglais()
     ajouts_textes, ajouts_noms = completer(textes, noms, textes_en, noms_en)
     print(f"{'Complements mc4db (textes, noms)':34} {ajouts_textes}, {ajouts_noms}")
+    # Un scan hors pack compte comme couvert : meme liste, meme filtre des textes.
+    couverts = {**attributions, **{code: None for code in complement}}
     nb_codes, nb_textes, nb_noms = ecrire_modules(
-        attributions, textes, textes_en, noms, noms_en, ids_jeu
+        couverts, textes, textes_en, noms, noms_en, ids_jeu
     )
     print(f"{'Images ecrites':34} {ecrites}")
     print(f"{'Codes dans scans-fr-liste.ts':34} {nb_codes}")
