@@ -3,6 +3,12 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 08/10/2026 (11 h 14) : relecture fidèle, voix de Marvel Rivals, image DEFEAT!
+
+Sur « deploie » puis « Déployer maintenant » (tables 2351 et 2360 coupées, accord explicite). `deployer-tout.sh` : `board-BoiLNOBv.js` identique au poste sur les deux sites, service actif, 200 ; play. 20 identiques sur 20 (moteur changé : `set_vu`) ; sauvegarde `code-20261008-1114-ff68acd4.zip`. Parti : relecture et spectateur fidèles (`a4915ff7`, fiche `2026-10-08-relecture-fidele.md`), 124 répliques au survol (`90ce4f8d`), image DEFEAT! (`40062aea`). Fichiers vérifiés présents sur le serveur.
+Défaut trouvé et corrigé : les sons de play. viennent de `/opt/narwhal-play-scans/originaux/sounds`, que rien ne remplissait ; copiés à la main, puis `deployer-tout.sh` le fait désormais (`94c8f782`, pas encore passé par un vrai déploiement). Vérifié : `voix-*.mp3` et `heros-wolverine.mp3` en 200 audio/mpeg sur play.
+Non vu en vrai : relecture fidèle en multijoueur, en mode manuel, tablette et mobile ; spectateur en direct sur une vraie table.
+
 ## ✅ DÉPLOYÉ LE 08/10/2026 (9 h 25) : Ant-Man / Appel de détresse, son de Wolverine, archives de parties, spectateur, sauvegarde du code
 
 Sur « deploie ceci » puis « Déployer maintenant » de l'utilisateur, alors que deux tables jouaient (2351, 2360 : coupées, accord explicite). `deployer-tout.sh` : plateau `board-CAwQ8qLd.js` identique au poste sur les deux sites, service actif, 200 ; play. 20 identiques sur 20 ; première sauvegarde du code envoyée (`code-20261008-0925-47261de6.zip`, 126 Mo). Parti : correctif Ant-Man mis en jeu par Make the Call (rapport Phocéa n°65, `74ce091d`), son au survol de Wolverine (`614ef2b9`), 3 dernières parties à revoir (joueur + onglet admin), spectateur dans le mode de phase du joueur, sauvegarde du code + export des images (admin).
