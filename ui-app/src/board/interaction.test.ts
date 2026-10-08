@@ -897,3 +897,47 @@ describe('useInteraction, liste hors table et dessus de pile', () => {
     )
   })
 })
+
+describe('useInteraction chez celui qui regarde (relecture fidele, 08/10/2026)', () => {
+  const demande: Demande = {
+    options: [optionTroisCibles()],
+    refus: [],
+    prompt_text: '',
+    event_name: 'test',
+    show_cancel: true,
+    ability_type: '',
+  }
+  const affiches = new Set([HEROS, RESSOURCE, ...CIBLES])
+
+  it('le joueur publie sa selection, le spectateur la montre telle quelle', () => {
+    const joueur = renderHook(() => useInteraction(MONDE, demande, vi.fn(), affiches, 0, CATALOGUE, 'simple'))
+    act(() => joueur.result.current.choisirOption(optionTroisCibles()))
+    act(() => joueur.result.current.focaliserCible(CIBLES[1]))
+    const publiee = joueur.result.current.selectionPartagee!
+    expect(publiee.o).toBe(optionTroisCibles().id)
+
+    const spectateur = renderHook(() =>
+      useInteraction(MONDE, demande, vi.fn(), affiches, 0, CATALOGUE, 'simple', undefined, publiee)
+    )
+    expect(spectateur.result.current.option?.id).toBe(optionTroisCibles().id)
+    expect(spectateur.result.current.cibles).toEqual(joueur.result.current.cibles)
+    expect(spectateur.result.current.ressources).toEqual(joueur.result.current.ressources)
+  })
+
+  it('une selection d une autre question, ou aucune, ne montre rien', () => {
+    const autre = renderHook(() =>
+      useInteraction(MONDE, demande, vi.fn(), affiches, 0, CATALOGUE, 'simple', undefined, {
+        e: 'une autre question',
+        o: optionTroisCibles().id,
+        c: [],
+        r: [],
+      })
+    )
+    expect(autre.result.current.option).toBeUndefined()
+    const rien = renderHook(() => useInteraction(MONDE, demande, vi.fn(), affiches, 0, CATALOGUE, 'simple', undefined, null))
+    expect(rien.result.current.option).toBeUndefined()
+    // Ses propres clics n'y changent rien : il regarde.
+    act(() => rien.result.current.choisirOption(optionTroisCibles()))
+    expect(rien.result.current.option).toBeUndefined()
+  })
+})

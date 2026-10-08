@@ -45,6 +45,7 @@ import { MenuTable } from './manuel/MenuTable'
 import { useConfirmation } from './ConfirmationJeu'
 import { MenuTriche, type CibleTriche } from './MenuTriche'
 import * as triche from './triche'
+import { publierVu, useVuDuJoueur } from './vu-partage'
 import type { World, WorldCard } from './world'
 
 /** Une pile ouverte à la consultation. */
@@ -1301,21 +1302,43 @@ export type CoucheTricheProps = {
    * simplement jamais rien — rien ne casse.
    */
   catalogue?: Catalogue
+  /**
+   * SPECTATEUR ET RELECTURE (08/10/2026) : le siège regardé et les cartes du
+   * monde. Avec eux, les menus, piles et avis du mode manuel du joueur
+   * (genre « manu » de vu-partage.ts) s'affichent comme chez lui.
+   */
+  siege?: number
+  cartesParId?: Map<number, WorldCard>
 }
 
-export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide }: CoucheTricheProps) {
+/** Ce que le mode manuel du joueur montre (genre « manu »). */
+type ManuelVu = {
+  on: boolean
+  m: MenuOuvert | null
+  t: { x: number; y: number } | null
+  p: (Omit<PileTriche, 'cartes'> & { ids: number[] }) | null
+  a: string | null
+  c: boolean
+  f: boolean
+  mu: boolean
+}
+
+export function CoucheTriche({ actif, manuel: manuelLocal, couche, catalogue = catalogueVide, siege, cartesParId }: CoucheTricheProps) {
   const confirmerPile = useConfirmation()
+  const regardeManuel = estSpectateur()
+  const vuManuel = useVuDuJoueur<ManuelVu | null>('manu', regardeManuel ? siege : undefined)
+  const manuel = regardeManuel ? vuManuel?.on === true : manuelLocal
   const {
-    menu,
-    pile,
+    menu: menuLocal,
+    pile: pileLocale,
     setMenu,
     setPile,
     emettreGeste,
     executerGeste,
     tirerAuHasard,
-    avisRefus,
+    avisRefus: avisRefusLocal,
     annulationEnCours,
-    menuTable,
+    menuTable: menuTableLocal,
     setMenuTable,
     choixCible,
     attacherChoisie,
@@ -1324,7 +1347,7 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
     poserDepuisLaMain,
     versLaMain,
     mainAffichee,
-    mulliganOuvert,
+    mulliganOuvert: mulliganOuvertLocal,
     setMulliganOuvert,
     excedent,
     setExcedent,
@@ -1354,8 +1377,36 @@ export function CoucheTriche({ actif, manuel, couche, catalogue = catalogueVide 
   // Déclarer la fin (tâche 7) : même origine que le catalogue, le menu de la
   // TABLE. `FinManuelle` tient déjà sa propre confirmation ; `onDeclarer`
   // n'est donc appelé qu'une fois la décision prise, jamais au premier clic.
-  const [catalogueOuvert, setCatalogueOuvert] = useState(false)
-  const [finOuverte, setFinOuverte] = useState(false)
+  const [catalogueOuvertLocal, setCatalogueOuvert] = useState(false)
+  const [finOuverteLocale, setFinOuverte] = useState(false)
+  useEffect(() => {
+    if (regardeManuel || siege === undefined) return
+    const vu: ManuelVu = {
+      on: manuelLocal,
+      m: menuLocal ?? null,
+      t: menuTableLocal ?? null,
+      p: pileLocale ? { ...pileLocale, cartes: undefined, ids: pileLocale.cartes.map((c) => c.id) } as ManuelVu['p'] : null,
+      a: avisRefusLocal ?? null,
+      c: catalogueOuvertLocal,
+      f: finOuverteLocale,
+      mu: mulliganOuvertLocal,
+    }
+    publierVu(siege, 'manu', vu)
+  }, [regardeManuel, siege, manuelLocal, menuLocal, menuTableLocal, pileLocale, avisRefusLocal, catalogueOuvertLocal, finOuverteLocale, mulliganOuvertLocal])
+  const menu = regardeManuel ? (vuManuel?.m ?? undefined) : menuLocal
+  const menuTable = regardeManuel ? (vuManuel?.t ?? undefined) : menuTableLocal
+  const avisRefus = regardeManuel ? (vuManuel?.a ?? undefined) : avisRefusLocal
+  const catalogueOuvert = regardeManuel ? vuManuel?.c === true : catalogueOuvertLocal
+  const finOuverte = regardeManuel ? vuManuel?.f === true : finOuverteLocale
+  const mulliganOuvert = regardeManuel ? vuManuel?.mu === true : mulliganOuvertLocal
+  const pile: PileTriche | undefined = regardeManuel
+    ? vuManuel?.p
+      ? {
+          ...vuManuel.p,
+          cartes: vuManuel.p.ids.map((id) => cartesParId?.get(id)).filter((c): c is WorldCard => c !== undefined),
+        }
+      : undefined
+    : pileLocale
   // Deplacement volontaire, a la poignee -- meme mecanisme que
   // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
   // « toutes les fenetres, tous les panneaux »).

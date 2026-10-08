@@ -189,7 +189,26 @@ export type CibleHorsTable = {
   agir: () => void
 }
 
+/**
+ * La sélection en cours, telle que le joueur la publie au spectateur et à la
+ * relecture (genre « sel ») : l'empreinte de la question, l'option, les cibles,
+ * les ressources cochées, la carte et la cible focalisées, la carte lâchée.
+ */
+export type SelectionPartagee = {
+  e: string
+  o?: number
+  c: number[]
+  r: number[]
+  cf?: number
+  cb?: number
+  sd?: number
+}
+
+const AUCUN: number[] = []
+
 export type Interaction = {
+  /** La sélection en cours, à publier pour le spectateur et la relecture. */
+  selectionPartagee?: SelectionPartagee
   /** Option en cours de composition, s'il y en a une. */
   option?: Option
   cibles: number[]
@@ -460,13 +479,20 @@ export function useInteraction(
    * Sert à garder dans la liste « hors table » la carte du DESSUS d'une pile, que la table
    * dessine donc déjà : voir `ciblesHorsTable`.
    */
-  representantsDePile?: ReadonlyMap<number, number>
+  representantsDePile?: ReadonlyMap<number, number>,
+  /**
+   * SPECTATEUR ET RELECTURE (08/10/2026) : la sélection que le JOUEUR compose,
+   * telle qu'il la publie (`selectionPartagee`, genre « sel » de vu-partage.ts).
+   * `undefined` : ce plateau joue, il se sert de son propre état. `null` : il
+   * regarde, et le joueur n'a rien en cours.
+   */
+  selectionImposee?: SelectionPartagee | null
 ): Interaction {
-  const [idOption, setIdOption] = useState<number | undefined>(undefined)
-  const [cibles, setCibles] = useState<number[]>([])
-  const [ressources, setRessources] = useState<number[]>([])
-  const [carteFocus, setCarteFocus] = useState<number | undefined>(undefined)
-  const [cibleFocus, setCibleFocus] = useState<number | undefined>(undefined)
+  const [idOptionLocal, setIdOption] = useState<number | undefined>(undefined)
+  const [ciblesLocales, setCibles] = useState<number[]>([])
+  const [ressourcesLocales, setRessources] = useState<number[]>([])
+  const [carteFocusLocale, setCarteFocus] = useState<number | undefined>(undefined)
+  const [cibleFocusLocale, setCibleFocus] = useState<number | undefined>(undefined)
   /**
    * La carte LÂCHÉE qui a ouvert ce menu de cible, quand il vient d'un dépôt.
    *
@@ -479,7 +505,7 @@ export function useInteraction(
    * dépôt, et le menu liste alors tout ce qui peut la viser, ce qui est bien
    * son rôle.
    */
-  const [sourceDepot, setSourceDepot] = useState<number | undefined>(undefined)
+  const [sourceDepotLocale, setSourceDepot] = useState<number | undefined>(undefined)
 
   /**
    * ⚠ LA QUESTION DE LA MANIGANCE N'EXISTE PAS POUR LA TABLE. Son panneau la
@@ -511,6 +537,21 @@ export function useInteraction(
     setCibleFocus(undefined)
     setSourceDepot(undefined)
   }, [empreinte])
+
+  // Ce plateau regarde : la sélection est celle du joueur, si elle vise bien
+  // la question affichée (une sélection d'une autre question ne veut rien dire).
+  const regarde = selectionImposee !== undefined
+  const imposee = regarde && selectionImposee && selectionImposee.e === empreinte ? selectionImposee : undefined
+  const idOption = regarde ? imposee?.o : idOptionLocal
+  const cibles = regarde ? (imposee?.c ?? AUCUN) : ciblesLocales
+  const ressources = regarde ? (imposee?.r ?? AUCUN) : ressourcesLocales
+  const carteFocus = regarde ? imposee?.cf : carteFocusLocale
+  const cibleFocus = regarde ? imposee?.cb : cibleFocusLocale
+  const sourceDepot = regarde ? imposee?.sd : sourceDepotLocale
+  const selectionPartagee = useMemo<SelectionPartagee>(
+    () => ({ e: empreinte, o: idOption, c: cibles, r: ressources, cf: carteFocus, cb: cibleFocus, sd: sourceDepot }),
+    [empreinte, idOption, cibles, ressources, carteFocus, cibleFocus, sourceDepot]
+  )
 
   const option = options.find((o) => o.id === idOption)
   const paiement = option ? paiementCourant(option, cibles) : undefined
@@ -1399,6 +1440,7 @@ export function useInteraction(
     option,
     cibles,
     ressources,
+    selectionPartagee,
     options: optionsAffichees,
     carteFocus,
     cibleFocus,

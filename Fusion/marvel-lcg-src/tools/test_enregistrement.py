@@ -108,5 +108,41 @@ with tempfile.TemporaryDirectory() as racine:
     premiere = os.path.join(chez, E.Enregistrement.PartiesDeLHote()[0])
     cas("le fichier rangé est une partie gagnee", json.loads(gzip.decompress(open(premiere, "rb").read()).decode("utf-8").splitlines()[0])["resultat"], "victoire")
 
+# CE QUE LE JOUEUR VOIT (08/10/2026) : /set_vu enregistre une ligne « v »,
+# relayee au spectateur par /get_vus. Genre inconnu et valeur trop longue refuses.
+import asyncio
+from engine.device.web.server.server_get import GameServerGet
+
+
+class _Requete:
+    def __init__(self, donnees):
+        self.donnees = donnees
+
+    async def json(self):
+        return self.donnees
+
+
+class _Table:
+    GENRES_VUS = GameServerGet.GENRES_VUS
+    TAILLE_VU_MAX = GameServerGet.TAILLE_VU_MAX
+    TAILLE_REGLAGES_MAX = GameServerGet.TAILLE_REGLAGES_MAX
+
+
+with tempfile.TemporaryDirectory() as enreg:
+    E.Enregistrement.dossier = staticmethod(lambda: enreg)
+    E.Enregistrement.Rendu("vus", {"render_id": 7, "round_id": 1}, entete)
+    table = _Table()
+    poster = lambda d: asyncio.run(GameServerGet.set_vu(table, _Requete(d))).status
+    cas("une selection est acceptee", poster({"p": 0, "g": "sel", "v": {"e": "x", "o": 3, "c": [12], "r": []}}), 200)
+    cas("un genre inconnu est refuse", poster({"p": 0, "g": "n_importe_quoi", "v": 1}), 400)
+    cas("une valeur trop longue est refusee", poster({"p": 0, "g": "loupe", "v": "x" * 5000}), 413)
+    cas("les reglages ont droit a plus", poster({"p": 0, "g": "regl", "v": {"mc_a": "x" * 5000}}), 200)
+    relayes = json.loads(asyncio.run(GameServerGet.get_vus(table, None)).text)
+    cas("le spectateur lit la derniere valeur de chaque genre", relayes["0"]["sel"]["c"], [12])
+    lignes = [json.loads(x) for x in gzip.decompress(E.Enregistrement.Fichier()).decode("utf-8").splitlines()]
+    vus = [l for l in lignes if l["k"] == "v"]
+    cas("deux lignes v enregistrees (les refus n'en laissent pas)", [l["g"] for l in vus], ["sel", "regl"])
+    cas("rattachees au dernier rendu", vus[0]["r"], 7)
+
 print("\n%s" % ("TOUT EST VERT" if echecs == 0 else "%d ECHEC(S)" % echecs))
 sys.exit(1 if echecs else 0)

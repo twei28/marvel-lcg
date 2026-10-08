@@ -6,6 +6,10 @@ Une ligne JSON par evenement, dans `<replays>/enregistrements/<partie>.jsonl` :
   {"k": "q",   "r": rendu, "t": ms, "p": siege, "q": demande}
   {"k": "c",   "t": ms, "p": siege, "x": .., "y": .., "clic": id}   curseur
   {"k": "e",   "t": ms, "p": siege, "cle": etape}                   etape du cartouche
+  {"k": "v",   "t": ms, "p": siege, "g": genre, "v": valeur}       ce que le joueur voit
+                                             (selection, loupe, pile, reglages, ecran,
+                                             messages, menus, manuel, glisser,
+                                             defilements : `server_get.set_vu`)
   {"k": "res", "r": rendu, "m": {id: "YB"}}  ressources imprimees des cartes en main
                                              (le monde ne les porte pas : le bandeau
                                              de la relecture dit avec quoi on a paye)

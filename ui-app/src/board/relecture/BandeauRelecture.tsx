@@ -49,11 +49,26 @@ export function phrasesDe(action: Action, relecture: Relecture): string[] {
   return lignes
 }
 
+/**
+ * La table est dans le cadre du joueur (CadreJoueur.tsx) : ses cartes sont
+ * dans le document du cadre, et leurs positions se ramenent a cette page par
+ * l'echelle et le decalage du cadre.
+ */
+function tableDuCadre(): { doc: Document; versPage: (x: number, y: number) => { x: number; y: number } } {
+  const cadre = document.querySelector<HTMLIFrameElement>('iframe.cadre-joueur')
+  const doc = cadre?.contentDocument
+  if (!cadre || !doc) return { doc: document, versPage: (x, y) => ({ x, y }) }
+  const r = cadre.getBoundingClientRect()
+  const k = cadre.offsetWidth > 0 ? r.width / cadre.offsetWidth : 1
+  return { doc, versPage: (x, y) => ({ x: r.left + x * k, y: r.top + y * k }) }
+}
+
 function centre(id: number): { x: number; y: number } | undefined {
-  const carte = document.querySelector<HTMLElement>(`.scan-card[data-card-id="${id}"]`)
+  const { doc, versPage } = tableDuCadre()
+  const carte = doc.querySelector<HTMLElement>(`.scan-card[data-card-id="${id}"]`)
   const r = carte?.getBoundingClientRect()
   if (!r || r.width === 0) return undefined
-  return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+  return versPage(r.left + r.width / 2, r.top + r.height / 2)
 }
 
 type Effet = { cle: number; fleche?: { de: { x: number; y: number }; a: { x: number; y: number }; genre: string }; degats: (Degat & { x: number; y: number })[] }
@@ -118,11 +133,11 @@ export function BandeauRelecture({ lecteur, relecture }: { lecteur: Lecteur; rel
     const debut = performance.now()
     let allumeeDepuis: number | undefined
     const eteindre = () => {
-      for (const carte of document.querySelectorAll(selecteur)) carte.classList.remove('relecture-surbrillance')
+      for (const carte of tableDuCadre().doc.querySelectorAll(selecteur)) carte.classList.remove('relecture-surbrillance')
     }
     const guetteur = window.setInterval(() => {
       const maintenant = performance.now()
-      const cartes = document.querySelectorAll(selecteur)
+      const cartes = tableDuCadre().doc.querySelectorAll(selecteur)
       if (allumeeDepuis === undefined && cartes.length > 0) allumeeDepuis = maintenant
       if (allumeeDepuis !== undefined && maintenant - allumeeDepuis > DUREE_EFFET_MS) {
         window.clearInterval(guetteur)

@@ -1,7 +1,7 @@
 // La page « Revoir une partie » : deposer un fichier .marvelreplay, voir la
 // fiche de la partie, puis la relire sur le vrai plateau avec la barre de
 // lecture (pause, pas a pas, vitesse, reperes, point de vue, journal).
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { t } from '../langue'
 import { texteSignificatif } from '../HistoriquePartie'
 import { COULEURS_JOUEURS } from '../CoucheCurseurs'
@@ -10,6 +10,7 @@ import { activerLecteur, Lecteur, VITESSES } from './lecteur'
 
 type TypeLecteur = Lecteur
 import { BandeauRelecture } from './BandeauRelecture'
+import { CadreJoueur } from '../CadreJoueur'
 import './relecture.css'
 
 const nomHeros = (relecture: Relecture, siege: number) =>
@@ -219,14 +220,19 @@ function Journal({ lecteur, relecture }: { lecteur: TypeLecteur; relecture: Rele
   )
 }
 
-function Barre({ lecteur, relecture }: { lecteur: TypeLecteur; relecture: Relecture }) {
+function Barre({ lecteur, relecture, visible }: { lecteur: TypeLecteur; relecture: Relecture; visible: boolean }) {
   const controle = useControle(lecteur)
   const { index, total } = controle
   const fin = total - 1
   const position = (i: number) => `${fin === 0 ? 0 : (i / fin) * 100}%`
   const monde = relecture.trames[index]?.monde
   return (
-    <div className="relecture-barre" role="toolbar" aria-label={t('Contrôles de relecture')}>
+    <div
+      className={`relecture-barre${visible ? '' : ' est-cachee'}`}
+      role="toolbar"
+      aria-label={t('Contrôles de relecture')}
+      aria-hidden={visible ? undefined : true}
+    >
       <div className="relecture-progression">
         <input
           type="range"
@@ -288,7 +294,11 @@ function Barre({ lecteur, relecture }: { lecteur: TypeLecteur; relecture: Relect
         </label>
         <label>
           {t('Vue')}
-          <select value={controle.pointDeVue} onChange={(e) => lecteur.reglerPointDeVue(Number(e.target.value))}>
+          <select
+            value={controle.vueAuto ? 'auto' : controle.pointDeVue}
+            onChange={(e) => lecteur.reglerPointDeVue(e.target.value === 'auto' ? 'auto' : Number(e.target.value))}
+          >
+            <option value="auto">{t('Auto (qui a la main)')}</option>
             {relecture.entete.joueurs.map((_, siege) => (
               <option key={siege} value={siege}>
                 {nomHeros(relecture, siege)}
@@ -310,7 +320,63 @@ function Barre({ lecteur, relecture }: { lecteur: TypeLecteur; relecture: Relect
   )
 }
 
-export function PageRelecture({ rendrePartie }: { rendrePartie: (siege: number) => ReactNode }) {
+type ActionClavier = 'basculerLecture' | 'suivant' | 'precedent' | 'roundSuivant' | 'roundPrecedent' | 'vitessePlus' | 'vitesseMoins'
+
+/** La commande de lecture d'une touche, ou undefined si la touche n'en est pas une. */
+export function actionDuClavier(e: Pick<KeyboardEvent, 'key' | 'shiftKey' | 'ctrlKey' | 'altKey' | 'metaKey'>): ActionClavier | undefined {
+  if (e.ctrlKey || e.altKey || e.metaKey) return undefined
+  if (e.key === ' ') return 'basculerLecture'
+  if (e.key === 'ArrowRight') return e.shiftKey ? 'roundSuivant' : 'suivant'
+  if (e.key === 'ArrowLeft') return e.shiftKey ? 'roundPrecedent' : 'precedent'
+  if (e.key === '+' || e.key === '=') return 'vitessePlus'
+  if (e.key === '-' || e.key === '_') return 'vitesseMoins'
+  return undefined
+}
+
+export const BARRE_DELAI_MS = 2000
+export const BARRE_ZONE_BAS_PX = 140
+
+/**
+ * LA BARRE SE CACHE TOUTE SEULE (08/10/2026, elle cachait la main) : 2 s sans
+ * bouger la souris, elle s'en va ; elle revient quand la souris approche du bas
+ * de l'ecran, ou a chaque touche. Elle reste tant que la souris est dessus ou
+ * qu'une de ses listes est ouverte.
+ */
+function useBarreQuiSeCache(active: boolean) {
+  const [visible, setVisible] = useState(true)
+  const visibleRef = useRef(true)
+  visibleRef.current = visible
+  const minuteur = useRef<number | undefined>(undefined)
+  const armer = useCallback(() => {
+    window.clearTimeout(minuteur.current)
+    minuteur.current = window.setTimeout(() => {
+      const survolee = document.querySelector('.relecture-barre:hover, .relecture-barre :focus-visible, .relecture-barre select:focus')
+      if (survolee) armer()
+      else setVisible(false)
+    }, BARRE_DELAI_MS)
+  }, [])
+  const montrer = useCallback(() => {
+    setVisible(true)
+    armer()
+  }, [armer])
+  useEffect(() => {
+    if (!active) return
+    armer()
+    // Visible, tout mouvement la garde ; cachee, seule l'approche du bas la rappelle.
+    const bouger = (e: MouseEvent) => {
+      if (e.clientY >= window.innerHeight - BARRE_ZONE_BAS_PX) montrer()
+      else if (visibleRef.current) armer()
+    }
+    window.addEventListener('mousemove', bouger, true)
+    return () => {
+      window.removeEventListener('mousemove', bouger, true)
+      window.clearTimeout(minuteur.current)
+    }
+  }, [active, armer, montrer])
+  return { visible, montrer }
+}
+
+export function PageRelecture() {
   const [relecture, setRelecture] = useState<Relecture>()
   const [lecteur, setLecteur] = useState<TypeLecteur>()
   const [erreur, setErreur] = useState<string>()
@@ -340,6 +406,12 @@ export function PageRelecture({ rendrePartie }: { rendrePartie: (siege: number) 
 
   useEffect(() => () => activerLecteur(undefined), [])
 
+  const { visible: barreVisible, montrer: montrerBarre } = useBarreQuiSeCache(ficheVue)
+
+  // LE CLAVIER, COMME UNE VIDEO (08/10/2026) : Espace lecture/pause, fleches
+  // action precedente/suivante, Maj+fleches round precedent/suivant, + et -
+  // la vitesse. Lu sur la FENETRE en capture : avant la vitre du plateau
+  // (vitre-spectateur.ts), qui arrete ses raccourcis a lui.
   useEffect(() => {
     if (!lecteur || !ficheVue) return
     const auClavier = (e: KeyboardEvent) => {
@@ -347,20 +419,16 @@ export function PageRelecture({ rendrePartie }: { rendrePartie: (siege: number) 
       if (cible instanceof HTMLElement && (cible.tagName === 'INPUT' || cible.tagName === 'SELECT' || cible.tagName === 'TEXTAREA')) {
         if (!(cible instanceof HTMLInputElement && cible.type === 'range')) return
       }
-      if (e.key === ' ') {
-        e.preventDefault()
-        lecteur.basculerLecture()
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault()
-        lecteur.suivant()
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault()
-        lecteur.precedent()
-      }
+      const action = actionDuClavier(e)
+      if (!action) return
+      e.preventDefault()
+      e.stopPropagation()
+      montrerBarre()
+      lecteur[action]()
     }
-    document.addEventListener('keydown', auClavier)
-    return () => document.removeEventListener('keydown', auClavier)
-  }, [lecteur, ficheVue])
+    window.addEventListener('keydown', auClavier, true)
+    return () => window.removeEventListener('keydown', auClavier, true)
+  }, [lecteur, ficheVue, montrerBarre])
 
   const pointDeVue = useSyncExternalStore(
     (rappel) => lecteur?.ecouterControle(rappel) ?? (() => undefined),
@@ -371,7 +439,8 @@ export function PageRelecture({ rendrePartie }: { rendrePartie: (siege: number) 
 
   return (
     <div className="relecture-cadre">
-      {rendrePartie(pointDeVue)}
+      {/* Le plateau, dans le cadre du joueur : sa taille d'ecran, ses reglages (CadreJoueur.tsx). */}
+      <CadreJoueur src={`${window.location.pathname}?relecture&cadre`} siege={pointDeVue} />
       {ficheVue ? null : (
         <Fiche
           relecture={relecture}
@@ -391,7 +460,7 @@ export function PageRelecture({ rendrePartie }: { rendrePartie: (siege: number) 
       </button>
       {journalOuvert ? <Journal lecteur={lecteur} relecture={relecture} /> : null}
       {ficheVue ? <BandeauRelecture lecteur={lecteur} relecture={relecture} /> : null}
-      <Barre lecteur={lecteur} relecture={relecture} />
+      <Barre lecteur={lecteur} relecture={relecture} visible={barreVisible || !ficheVue} />
     </div>
   )
 }

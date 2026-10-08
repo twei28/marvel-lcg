@@ -44,12 +44,16 @@ export type TrameRelecture = {
 
 export type Curseur = { t: number; p: number; x: number; y: number; clic: number }
 export type EtapeLue = { t: number; p: number; cle: string; mode?: string }
+/** Ce que le joueur voyait (ligne « v », `server_get.set_vu`) : un genre, une valeur. */
+export type VuEnregistre = { t: number; p: number; g: string; v: unknown }
 
 export type Relecture = {
   entete: EnteteRelecture
   trames: TrameRelecture[]
   curseurs: Curseur[]
   etapes: EtapeLue[]
+  /** Absent des parties enregistrees avant le 08/10/2026 : elles se relisent sans. */
+  vus: VuEnregistre[]
   /** Ressources imprimees des cartes passees en main (le monde ne les porte pas). */
   ressources: Record<number, string>
 }
@@ -77,6 +81,7 @@ export function analyserRelecture(texte: string): Relecture {
   const trames: TrameRelecture[] = []
   const curseurs: Curseur[] = []
   const etapes: EtapeLue[] = []
+  const vus: VuEnregistre[] = []
   const ressources: Record<number, string> = {}
   let monde: unknown
   try {
@@ -104,6 +109,8 @@ export function analyserRelecture(texte: string): Relecture {
         curseurs.push({ t, p: Number(o.p), x: Number(o.x), y: Number(o.y), clic: Number(o.clic) || 0 })
       } else if (o.k === 'res') {
         for (const [id, texte] of Object.entries((o.m ?? {}) as Record<string, unknown>)) ressources[Number(id)] = String(texte)
+      } else if (o.k === 'v') {
+        if (typeof o.g === 'string') vus.push({ t, p: Number(o.p), g: o.g, v: o.v })
       } else if (o.k === 'e') {
         etapes.push({ t, p: Number(o.p), cle: String(o.cle ?? ''), ...(o.mode ? { mode: String(o.mode) } : {}) })
       }
@@ -114,5 +121,5 @@ export function analyserRelecture(texte: string): Relecture {
   }
   if (!entete) throw new FichierInvalide('Ce fichier est vide.')
   if (trames.length === 0) throw new FichierInvalide('Ce fichier ne contient aucune action.')
-  return { entete, trames, curseurs, etapes, ressources }
+  return { entete, trames, curseurs, etapes, vus, ressources }
 }

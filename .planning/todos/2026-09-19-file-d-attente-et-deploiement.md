@@ -3,6 +3,12 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 08/10/2026 (9 h 25) : Ant-Man / Appel de détresse, son de Wolverine, archives de parties, spectateur, sauvegarde du code
+
+Sur « deploie ceci » puis « Déployer maintenant » de l'utilisateur, alors que deux tables jouaient (2351, 2360 : coupées, accord explicite). `deployer-tout.sh` : plateau `board-CAwQ8qLd.js` identique au poste sur les deux sites, service actif, 200 ; play. 20 identiques sur 20 ; première sauvegarde du code envoyée (`code-20261008-0925-47261de6.zip`, 126 Mo). Parti : correctif Ant-Man mis en jeu par Make the Call (rapport Phocéa n°65, `74ce091d`), son au survol de Wolverine (`614ef2b9`), 3 dernières parties à revoir (joueur + onglet admin), spectateur dans le mode de phase du joueur, sauvegarde du code + export des images (admin).
+Non vu en vrai : la fenêtre de surpaiement d'Ant-Man au navigateur, les pages admin Sauvegardes / À revoir avec un vrai compte.
+⚠ PAS PARTI : l'image « DEFEAT! » à l'écran de défaite (code dans `git stash` « image defaite en attente du fichier », il manque le fichier image).
+
 ## ✅ DÉPLOYÉ LE 08/10/2026 : manuel 100 % OCTGN, glisser des événements, FR mc4db, bouton Player / Admin
 
 Deux passes de `deployer-tout.sh` (site normal + play.), sur accord explicite de l'utilisateur, même avec des joueurs en ligne. Plateau `board-Bp3po-9i.js` identique au poste sur les deux sites, service actif, 200 ; play. : 20 parties identiques sur 20 à la première passe, contrôle sauté à la seconde (moteur inchangé). Parti : mode manuel identique à OCTGN (lots 1 à 6, `.planning/todos/2026-10-07-manuel-100-pourcent-octgn.md`), rangement au glisser simple, glisser des événements en mode normal, 812 noms et 1 006 textes FR de mc4db, bouton « Player » / « Admin » (vue joueur, premier lancement redemandé, réglages de l'admin rendus au retour).

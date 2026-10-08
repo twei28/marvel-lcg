@@ -42,6 +42,7 @@ const relecture = (mondes: World[], ressources: Record<number, string> = {}): Re
   trames: mondes.map((m, i) => ({ t: i * 1000, monde: m, demandes: {} })),
   curseurs: [],
   etapes: [],
+  vus: [],
   ressources,
 })
 

@@ -366,3 +366,40 @@
   color: #96ebff;
   font-size: 0.85rem;
 }
+
+/* LA BARRE SE CACHE TOUTE SEULE (08/10/2026) : elle cachait la main du joueur.
+   Voir useBarreQuiSeCache (PageRelecture.tsx). */
+.relecture-barre {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.relecture-barre.est-cachee {
+  transform: translate(-50%, calc(100% + 16px));
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* LE CADRE DU JOUEUR (08/10/2026) : le plateau a la taille de l'ecran du joueur,
+   mis a l'echelle. Voir CadreJoueur.tsx. */
+.cadre-joueur-fond {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #05070a;
+}
+
+.cadre-joueur {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: 0;
+  transform-origin: 0 0;
+  background: transparent;
+}
+
+/* La souris de celui qui regarde ne touche pas l'ecran du joueur : ni survol,
+   ni clic. Ce qu'il survolait, LUI, est rejoue (CoucheCurseurs, classe
+   survol-joueur). Clavier et souris restent a la page qui contient le cadre. */
+.cadre-joueur {
+  pointer-events: none;
+}

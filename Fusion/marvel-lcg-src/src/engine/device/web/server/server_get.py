@@ -739,6 +739,46 @@ class GameServerGet(GameServerBase):
     async def get_etapes(self, request: web.Request) -> web.Response:
         return web.json_response(getattr(self, 'etapes_lues', {}))
 
+    # CE QUE LE JOUEUR VOIT, pour le spectateur et la relecture (08/10/2026,
+    # « voir 100 % de ce que le joueur a vu ») : sa selection dans une fenetre,
+    # la carte qu'il agrandit, la pile qu'il ouvre, ses reglages (volume des
+    # sons compris), la taille de son ecran, ses messages, ses menus (dont
+    # ceux du mode manuel), son glisser, ses defilements. Un genre par
+    # information, une valeur JSON bornee. Cosmetique comme les curseurs :
+    # rien ne touche la partie. Enregistre en ligne « v ».
+    GENRES_VUS = {'sel', 'loupe', 'pile', 'regl', 'ecran', 'msg', 'menu', 'manu',
+                  'glis', 'defil'}
+    TAILLE_VU_MAX = 4000
+    # Les reglages : une vingtaine de cles, dont quelques-unes longues (art des
+    # heros, noms des zones). Le client en ecarte deja toute valeur de plus de
+    # 2000 caracteres.
+    TAILLE_REGLAGES_MAX = 30000
+
+    async def set_vu(self, request: web.Request) -> web.Response:
+        import json
+        import time
+        data = await request.json()
+        try:
+            p = int(data['p'])
+            g = str(data['g'])
+        except Exception:
+            return web.json_response({'error': 'p, g required'}, status=400)
+        if g not in self.GENRES_VUS:
+            return web.json_response({'error': 'genre inconnu'}, status=400)
+        v = data.get('v')
+        if len(json.dumps(v)) > (self.TAILLE_REGLAGES_MAX if g == 'regl' else self.TAILLE_VU_MAX):
+            return web.json_response({'error': 'trop long'}, status=413)
+        if not hasattr(self, 'vus'):
+            self.vus = {}
+        self.vus.setdefault(p, {})[g] = {'v': v, 't': time.time()}
+        from engine.enregistrement import Enregistrement
+        Enregistrement.Evenement('v', {'p': p, 'g': g, 'v': v})
+        return web.json_response({'result': 'ok'})
+
+    async def get_vus(self, request: web.Request) -> web.Response:
+        vus = getattr(self, 'vus', {})
+        return web.json_response({p: {g: e['v'] for g, e in genres.items()} for p, genres in vus.items()})
+
     async def get_enregistrement(self, request: web.Request) -> web.Response:
         """Le fichier .marvelreplay de la derniere partie jouee sur cette table."""
         from engine.enregistrement import Enregistrement
@@ -2040,6 +2080,8 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_cursors', self.get_cursors)
         self.AddPostSecurity('/set_etape', self.set_etape)
         self.AddAwaitGetSecurity('/get_etapes', self.get_etapes)
+        self.AddPostSecurity('/set_vu', self.set_vu)
+        self.AddAwaitGetSecurity('/get_vus', self.get_vus)
         self.AddPostSecurity('/set_marque', self.set_marque)
         self.AddAwaitGetSecurity('/get_marques', self.get_marques)
         self.AddAwaitGetSecurity('/get_enregistrement', self.get_enregistrement)

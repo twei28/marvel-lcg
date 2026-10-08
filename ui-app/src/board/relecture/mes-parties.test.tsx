@@ -15,14 +15,14 @@ describe('mes dernieres parties (08/10/2026)', () => {
       'fetch',
       vi.fn(async () => ({ ok: true, json: async () => [{ n: 0, nom: 'partie-20261008-143005-Rhino.marvelreplay' }] }))
     )
-    const { container, getByText } = render(<PageRelecture rendrePartie={() => null} />)
+    const { container, getByText } = render(<PageRelecture />)
     await waitFor(() => expect(getByText('08/10/2026 14:30 · Rhino')).toBeInTheDocument())
     expect(container.querySelector('a[href="/get_ma_partie?n=0"]')).not.toBeNull()
   })
 
   it('rien quand la table ne rend aucune partie', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, json: async () => [] })))
-    const { container } = render(<PageRelecture rendrePartie={() => null} />)
+    const { container } = render(<PageRelecture />)
     await new Promise((r) => setTimeout(r, 10))
     expect(container.querySelector('.relecture-mes-parties')).toBeNull()
   })

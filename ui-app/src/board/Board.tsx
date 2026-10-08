@@ -32,13 +32,15 @@ import { CoucheOrdre } from './ordre/CoucheOrdre'
 import { cleDePile, cleDeRangee, coteDe, ranger, type Ordres } from './ordre/ordre-cartes'
 import { useCoteAmeliorations } from './cote-ameliorations'
 import { useReordonner } from './ordre/useReordonner'
-import { cibleSousLePoint, useGlisser, type CibleSurvolee } from './glisser/useGlisser'
+import { cibleSousLePoint, useGlisser, type CibleSurvolee, type EtatGlisser } from './glisser/useGlisser'
 import { aScanFr, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
 import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Plateau, type UniteAffichee } from './zones'
 import type { World } from './world'
 import type { EtatInteractif } from './interaction'
+import { estSpectateur } from './moteur'
+import { publierVu, publierVuLimite, useVuDuJoueur } from './vu-partage'
 import './board.css'
 import './bande-manigances.css'
 
@@ -270,7 +272,7 @@ export function Unite({
   unite: UniteAffichee
   interactifs: Map<number, EtatInteractif>
   effets: Map<number, CardEffectDelta>
-  ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
+  ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[], origine?: OriginePile) => void
   bloquerActionsPassives: boolean
   heroActifId?: number
   /** Le nom de la zone qui accueille l'unité, pour taire la pastille qui le
@@ -332,7 +334,8 @@ export function Unite({
     !bloquerActionsPassives && !porteur.onSelect && unite.pileContenu
       ? {
           ...porteur,
-          onSelect: () => ouvrirPile(unite.pileTitre ?? unite.carte.name, unite.pileContenu!, unite.pileGroupes),
+          onSelect: () =>
+            ouvrirPile(unite.pileTitre ?? unite.carte.name, unite.pileContenu!, unite.pileGroupes, { u: unite.carte.id, s: 'pile' }),
         }
       : porteur
 
@@ -382,7 +385,7 @@ export function Unite({
             onClick={(evenement) => {
               evenement.stopPropagation()
               if (bloquerActionsPassives) return
-              ouvrirPile(unite.stagesTitre ?? t('Stades'), unite.stagesTout ?? [])
+              ouvrirPile(unite.stagesTitre ?? t('Stades'), unite.stagesTout ?? [], undefined, { u: unite.carte.id, s: 'stages' })
             }}
           >
             🔍<b>{unite.stagesTout?.length ?? 0}</b>
@@ -445,7 +448,7 @@ function Emplacement({
   emplacement: EmplacementAffiche
   interactifs: Map<number, EtatInteractif>
   effets: Map<number, CardEffectDelta>
-  ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
+  ouvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[], origine?: OriginePile) => void
   bloquerActionsPassives: boolean
   heroActifId?: number
   /** Cette zone attend la carte qu'on est en train de glisser. */
@@ -985,6 +988,32 @@ export type ReglagesGlisser = {
 
 const AUCUNE_INTERACTION: Map<number, EtatInteractif> = new Map()
 
+/** D'ou vient une pile ouverte : la carte qui la porte, et quelle liste (pile ou stades). */
+export type OriginePile = { u: string; s: 'pile' | 'stages' }
+
+type PileRegardee = {
+  titre: string
+  cartes: ScanCardProps[]
+  groupes?: GroupeDePile[]
+  origine?: OriginePile
+}
+
+/** La pile que designe une origine, retrouvee sur le plateau (celui du spectateur est le meme). */
+export function pileDepuisOrigine(plateau: Plateau, origine: OriginePile | null | undefined): PileRegardee | null {
+  if (!origine) return null
+  for (const emplacement of plateau.emplacements) {
+    for (const groupe of emplacement.groupes) {
+      for (const unite of groupe) {
+        if (unite.carte.id !== origine.u) continue
+        if (origine.s === 'stages') return { titre: unite.stagesTitre ?? t('Stades'), cartes: unite.stagesTout ?? [], origine }
+        if (!unite.pileContenu) return null
+        return { titre: unite.pileTitre ?? unite.carte.name, cartes: unite.pileContenu, groupes: unite.pileGroupes, origine }
+      }
+    }
+  }
+  return null
+}
+
 export function Board({
   world,
   playerId,
@@ -1043,7 +1072,8 @@ export function Board({
   // Survol avec petit delai : la carte pointee est mise en aperçu apres ~0,2s,
   // pour que l'aperçu ne clignote pas quand la souris traverse le plateau. On se
   // vide des qu'on ne pointe plus aucune carte.
-  const [apercuId, setApercuId] = useState<string | null>(null)
+  const [apercuIdLocal, setApercuId] = useState<string | null>(null)
+  const regarde = estSpectateur()
   const minuteur = useRef<number | undefined>(undefined)
   const pointee = useRef<string | null>(null)
 
@@ -1112,7 +1142,16 @@ export function Board({
      Le plateau tient le GESTE et le DESSIN ; les regles restent a la page, qui
      seule connait les options du moteur. Sans la prop `glisser`, tout ce bloc
      est inerte et le plateau se comporte exactement comme avant. */
-  const [refus, setRefus] = useState<{ x: number; y: number; texte: string } | null>(null)
+  const [refusLocal, setRefus] = useState<{ x: number; y: number; texte: string } | null>(null)
+  // Ses messages passagers (la bulle de refus d'un depot), rejoues (genre « msg »).
+  const messageDuJoueur = useVuDuJoueur<{ refus: { x: number; y: number; texte: string } | null } | null>(
+    'msg',
+    regarde ? playerId : undefined
+  )
+  useEffect(() => {
+    if (!regarde) publierVu(playerId, 'msg', { refus: refusLocal })
+  }, [regarde, playerId, refusLocal])
+  const refus = regarde ? (messageDuJoueur?.refus ?? null) : refusLocal
   const minuteurRefus = useRef(0)
   useEffect(() => () => window.clearTimeout(minuteurRefus.current), [])
 
@@ -1141,12 +1180,19 @@ export function Board({
     },
     [glisser, rangerAuGlisser, reordre.rangerAuGlisser]
   )
-  const { glisse, gestes } = useGlisser({
+  const { glisse: glisseLocal, gestes } = useGlisser({
     estSource: estSourceGlisser,
     cibleSous: cibleSousLePoint,
     onDepot: surDepot,
   })
 
+  // Le glisser du joueur, rejoue chez le spectateur et en relecture : la carte
+  // qui suit sa souris, pas seulement son arrivee.
+  const glisseDuJoueur = useVuDuJoueur<EtatGlisser | null>('glis', regarde ? playerId : undefined)
+  useEffect(() => {
+    if (!regarde) publierVuLimite(playerId, 'glis', glisseLocal, 60)
+  }, [regarde, playerId, glisseLocal])
+  const glisse = regarde ? (glisseDuJoueur ?? null) : glisseLocal
   const enGlisser = glisse !== null
   enGlisserRef.current = enGlisser
   // L'apercu DEJA ouvert quand le geste commence resterait par-dessus la table.
@@ -1212,11 +1258,11 @@ export function Board({
   // Ctrl+I d'OCTGN (`cardInfo`, mode manuel) : la fiche de la carte survolee,
   // FIXE jusqu'a Echap, un clic ou un nouveau Ctrl+I.
   const manuelPlateau = glisser?.rangerAuGlisser === true
-  const [ficheId, setFicheId] = useState<string | null>(null)
+  const [ficheIdLocal, setFicheId] = useState<string | null>(null)
   useEffect(() => {
     if (!manuelPlateau) return
     const surTouche = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && ficheId !== null) {
+      if (e.key === 'Escape' && ficheIdLocal !== null) {
         setFicheId(null)
         return
       }
@@ -1226,23 +1272,33 @@ export function Board({
     }
     document.addEventListener('keydown', surTouche)
     return () => document.removeEventListener('keydown', surTouche)
-  }, [manuelPlateau, ficheId])
+  }, [manuelPlateau, ficheIdLocal])
+  // LA LOUPE DU JOUEUR (08/10/2026) : la carte qu'il agrandit (survol ou
+  // fiche Ctrl+I), agrandie chez le spectateur et en relecture au meme moment.
+  const loupeDuJoueur = useVuDuJoueur<{ a: string | null; f: string | null } | null>('loupe', regarde ? playerId : undefined)
+  useEffect(() => {
+    if (!regarde) publierVu(playerId, 'loupe', { a: apercuIdLocal, f: ficheIdLocal })
+  }, [regarde, playerId, apercuIdLocal, ficheIdLocal])
+  const apercuId = regarde ? (loupeDuJoueur?.a ?? null) : apercuIdLocal
+  const ficheId = regarde ? (loupeDuJoueur?.f ?? null) : ficheIdLocal
   const carteFiche = ficheId ? cartesParId.get(ficheId) : undefined
 
   const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
   const statutsApercu = apercuId ? statutsParId.get(apercuId) : undefined
 
   // Pile publique ouverte pour etre regardee (defausse, victoire, retirees...).
-  const [pileRegardee, setPileRegardee] = useState<{
-    titre: string
-    cartes: ScanCardProps[]
-    groupes?: GroupeDePile[]
-  } | null>(null)
+  const [pileOuverte, setPileRegardee] = useState<PileRegardee | null>(null)
   const ouvrirPile = useCallback(
-    (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) =>
-      setPileRegardee({ titre, cartes, groupes }),
+    (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[], origine?: OriginePile) =>
+      setPileRegardee({ titre, cartes, groupes, origine }),
     []
   )
+  // La pile que le joueur ouvre, rouverte chez le spectateur et en relecture.
+  const pileDuJoueur = useVuDuJoueur<OriginePile | null>('pile', regarde ? playerId : undefined)
+  useEffect(() => {
+    if (!regarde) publierVu(playerId, 'pile', pileOuverte?.origine ?? null)
+  }, [regarde, playerId, pileOuverte])
+  const pileRegardee = regarde ? pileDepuisOrigine(plateau, pileDuJoueur) : pileOuverte
 
   // Le nom donne par le joueur (Modifier la table, double-clic) remplace le titre automatique.
   const nomsZones = useNomsZones()

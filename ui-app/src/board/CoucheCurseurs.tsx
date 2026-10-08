@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react'
 import { t } from './langue'
 import { estSpectateur } from './moteur'
 import { lecteurActif } from './relecture/lecteur'
+import { CLASSE_SURVOL, estCadre } from './cadre-joueur'
 
 export const CLE_CURSEURS = 'marvel-board-curseurs'
 
@@ -194,6 +195,24 @@ export function CoucheCurseurs({
     }
     return () => poses.forEach((n) => n.classList.remove('carte-survolee-par-un-autre'))
   }, [actif, curseurs, monJoueur])
+
+  // DANS LE CADRE du spectateur et de la relecture : ce que la souris du
+  // joueur SURVOLE prend la classe qui remplace `:hover` (cadre-joueur.ts) --
+  // sa main remonte, son bouton s'eclaire, comme chez lui.
+  useEffect(() => {
+    if (!actif || !estCadre()) return
+    const position = curseurs[String(monSiege)]
+    const scene = sceneDuPlateau()
+    if (!position || !scene) return
+    const zone = scene.getBoundingClientRect()
+    const sous = document.elementFromPoint(zone.left + position.x * zone.width, zone.top + position.y * zone.height)
+    const poses: Element[] = []
+    for (let noeud: Element | null = sous; noeud; noeud = noeud.parentElement) {
+      noeud.classList.add(CLASSE_SURVOL)
+      poses.push(noeud)
+    }
+    return () => poses.forEach((n) => n.classList.remove(CLASSE_SURVOL))
+  }, [actif, curseurs, monSiege])
 
   if (!actif) return null
   const scene = sceneDuPlateau()

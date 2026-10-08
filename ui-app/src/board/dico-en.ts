@@ -106,6 +106,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Contrôles de relecture': 'Replay controls',
   'Relecture': 'Replay',
   "Mes dernières parties": "My latest games",
+  "Auto (qui a la main)": "Auto (whoever is playing)",
+  "Écran du joueur": "Player's screen",
   "Revoir": "Replay",
   "Pas maintenant": "Not now",
   "Cette carte ne peut pas être jouée maintenant.": "This card cannot be played right now.",

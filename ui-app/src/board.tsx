@@ -11,12 +11,16 @@
 // Attention : en mode partie en cours, cette page ouvre le socket du moteur et
 // devient donc un vrai client de jeu. Elle DOIT accuser reception des rendus,
 // sinon la partie se figerait (voir moteur.ts).
+// ⚠ EN PREMIER : dans le cadre du spectateur et de la relecture, ce module
+// remplace localStorage avant que quiconque ne le lise (cadre-joueur.ts).
+import { estCadre, poserSurvolsDuJoueur, recouvrir, reglagesDuJoueur, stockageDuCadre } from './board/cadre-joueur'
 import {
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type FocusEvent as ReactFocusEvent,
   type MouseEvent as ReactMouseEvent,
 } from 'react'
@@ -160,7 +164,12 @@ import {
   lireValidationCourte,
   useInteraction,
   type EtatInteractif,
+  type SelectionPartagee,
 } from './board/interaction'
+import { publierVu, publierVuLimite, useVuDuJoueur } from './board/vu-partage'
+import { poserVitre } from './board/vitre-spectateur'
+import { CadreJoueur } from './board/CadreJoueur'
+import { suivreDefilements, useDefilementsDuJoueur } from './board/defilement-partage'
 import { phraseDuRefus } from './board/raisons-refus'
 import { CoucheRefusEffets } from './board/refus-effets'
 import { MenuActionsCarte } from './board/MenuActionsCarte'
@@ -1734,7 +1743,8 @@ function EcranFinPartie({
             else onMenu()
           }}
         />
-        {estRelecture() ? (
+        {/* Dans le cadre, l'ecran de fin est celui que le joueur a vu (ses boutons, inertes). */}
+        {estRelecture() && !estCadre() ? (
           <div className="fin-partie-choix-sortie">
             <button type="button" className="fin-partie-menu" onClick={() => lecteurActif()?.aller(0)}>
               {t('Revoir depuis le début')}
@@ -1947,6 +1957,10 @@ export function PagePartie({
   // jamais sur `etat.demande`. La reference est la meme pour toute autre
   // question : rien d'autre ne change.
   const demandeOrdinaire = demandeHorsPanneauManigance(etat.demande, etat.monde)
+  // Le siège qui compose la réponse : celui que le moteur interroge. C'est sa
+  // sélection que le spectateur et la relecture montrent (vu-partage.ts).
+  const siegeQuiCompose = etat.joueurDemande ?? joueurActif
+  const selectionDuJoueur = useVuDuJoueur<SelectionPartagee | null>('sel', spectateur ? siegeQuiCompose : undefined)
   const interaction = useInteraction(
     etat.monde,
     demandeOrdinaire,
@@ -1955,8 +1969,13 @@ export function PagePartie({
     joueurActif,
     catalogue,
     modeActions,
-    plateau?.representantsDePile
+    plateau?.representantsDePile,
+    spectateur ? (selectionDuJoueur ?? null) : undefined
   )
+  useEffect(() => {
+    if (spectateur || !interaction.selectionPartagee) return
+    publierVu(siegeQuiCompose, 'sel', interaction.selectionPartagee)
+  }, [spectateur, siegeQuiCompose, interaction.selectionPartagee])
   const groupesRegardes = useMemo(
     () => (etat.monde ? cartesRegardees(etat.monde, joueurActif, catalogue) : []),
     [etat.monde, joueurActif, catalogue]
@@ -3385,7 +3404,7 @@ export function PagePartie({
   // La fenetre des reglages (board/FenetreReglages.tsx). ⚠ Volontairement PAS
   // retenue entre deux parties : on ne veut pas rouvrir un ecran de reglages
   // par-dessus le plateau au chargement.
-  const [reglagesOuverts, setReglagesOuverts] = useState(false)
+  const [reglagesOuvertsLocal, setReglagesOuverts] = useState(false)
   // LA TABLE PERSONNALISABLE (04/10/2026) : une disposition par nombre de
   // joueurs (table-perso.ts), et celle qu'on edite (`origine` : « Disposition
   // d'origine » a ete choisie, « Terminer » efface alors le choix).
@@ -3398,23 +3417,45 @@ export function PagePartie({
   // ⌂ Menu (fusion « Menu » + « Deconnexion complete ») : un choix, pas un
   // clic direct -- demande de l'utilisateur, capture a l'appui, apres avoir
   // vu ces deux actions confondues sur le meme ecran.
-  const [menuOuvert, setMenuOuvert] = useState(false)
+  const [menuOuvertLocal, setMenuOuvert] = useState(false)
   // ▶ Partie (ex-PopoverPartie) : promue en fenetre centree comme
   // `FenetreReglages`, au lieu d'un popover ancre a son bouton -- son
   // declencheur vit maintenant DANS la modale « Plus d'options » ci-dessus,
   // qui se ferme avant de l'ouvrir (« lanceurs simples », pas de menu
   // imbrique dans un menu -- exactement le defaut deja corrige le 14/09/2026
   // sur ce meme bouton, voir le commentaire de PopoverPartie plus bas).
-  const [partieOuverte, setPartieOuverte] = useState(false)
+  const [partieOuverteLocale, setPartieOuverte] = useState(false)
   const ouvrirVolet = useCallback(() => setPartieOuverte(true), [])
   const fermerVolet = useCallback(() => setPartieOuverte(false), [])
   // L'aide du mode manuel s'ouvre toute seule a chaque passage en manuel, SUR
   // PC seulement (tablette et telephone : elle couvrait la main, 06/10/2026) ;
   // la main la ferme, et la languette la rouvre tant qu'on est en manuel.
-  const [aideManuelOuverte, setAideManuelOuverte] = useState(false)
+  const [aideManuelOuverteLocale, setAideManuelOuverte] = useState(false)
   // Lots 3 et 4 du 07/10/2026 : cibles, flèches et surlignages du manuel, vus de tous (spectateur compris).
   const marquesManuel = useMarques(manuel)
-  const [aideAutoOuverte, setAideAutoOuverte] = useState(false)
+  const [aideAutoOuverteLocale, setAideAutoOuverte] = useState(false)
+  // SES MENUS (08/10/2026) : Reglages, Menu, journal, volets d'aide, ouverts
+  // chez le spectateur et en relecture comme chez lui (genre « menu »).
+  const menusDuJoueur = useVuDuJoueur<MenusOuverts | null>('menu', spectateur ? joueurActif : undefined)
+  const reglagesOuverts = spectateur ? menusDuJoueur?.r === true : reglagesOuvertsLocal
+  const menuOuvert = spectateur ? menusDuJoueur?.m === true : menuOuvertLocal
+  const partieOuverte = spectateur ? menusDuJoueur?.j === true : partieOuverteLocale
+  const aideManuelOuverte = spectateur ? menusDuJoueur?.am === true : aideManuelOuverteLocale
+  const aideAutoOuverte = spectateur ? menusDuJoueur?.aa === true : aideAutoOuverteLocale
+  useEffect(() => {
+    if (spectateur) return
+    const menus: MenusOuverts = {
+      r: reglagesOuvertsLocal,
+      m: menuOuvertLocal,
+      j: partieOuverteLocale,
+      am: aideManuelOuverteLocale,
+      aa: aideAutoOuverteLocale,
+    }
+    publierVu(joueurActif, 'menu', menus)
+  }, [spectateur, joueurActif, reglagesOuvertsLocal, menuOuvertLocal, partieOuverteLocale, aideManuelOuverteLocale, aideAutoOuverteLocale])
+  // Ses defilements (main, journal, piles...) : defilement-partage.ts.
+  useEffect(() => (spectateur ? undefined : suivreDefilements(joueurActif)), [spectateur, joueurActif])
+  useDefilementsDuJoueur(spectateur ? joueurActif : undefined)
   const ouvrirAideAuto = useCallback(() => setAideAutoOuverte(true), [])
   const fermerAideAuto = useCallback(() => setAideAutoOuverte(false), [])
   const ouvrirAideManuel = useCallback(() => setAideManuelOuverte(true), [])
@@ -3537,9 +3578,50 @@ export function PagePartie({
   // Le plateau descend sous la barre du spectateur, et les feuilles de style
   // ont besoin de le savoir : meme motif que ci-dessus.
   useEffect(() => {
-    document.body.classList.toggle('est-spectateur', spectateur)
-    return () => document.body.classList.remove('est-spectateur')
+    // Dans le cadre, la barre du spectateur est DEHORS (PageSpectateur) : le
+    // plateau garde la place exacte qu'il avait chez le joueur.
+    document.body.classList.toggle('est-spectateur', spectateur && !estCadre())
+    document.body.classList.toggle('est-cadre', estCadre())
+    const retirerVitre = spectateur ? poserVitre() : undefined
+    return () => {
+      document.body.classList.remove('est-spectateur')
+      document.body.classList.remove('est-cadre')
+      retirerVitre?.()
+    }
   }, [spectateur])
+
+  // Dans le cadre du direct : la barre du spectateur, dehors, a besoin du
+  // nombre de sieges et de la fin de partie.
+  const siegesDuMonde = etat.monde?.players?.length ?? 1
+  const termineePourLaBarre = partieFinieMoteur || (!etat.connecte && etat.monde !== undefined)
+  const raisonPourLaBarre = partieFinieMoteur
+    ? etat.monde?.game_over_reason || undefined
+    : !etat.connecte
+      ? t('La table s’est éteinte')
+      : undefined
+  useEffect(() => {
+    if (!spectateur || !estCadre() || window.parent === window) return
+    window.parent.postMessage(
+      { type: 'etat-spectateur', sieges: siegesDuMonde, terminee: termineePourLaBarre, raison: raisonPourLaBarre },
+      window.location.origin
+    )
+  }, [spectateur, siegesDuMonde, termineePourLaBarre, raisonPourLaBarre])
+
+  // CE QUE LE JOUEUR VOIT (vu-partage.ts) : la taille de son ecran et ses
+  // reglages, pour que le cadre du spectateur et de la relecture les reprenne.
+  useEffect(() => {
+    if (spectateur) return
+    const publierEcran = () => publierVuLimite(joueurActif, 'ecran', { w: window.innerWidth, h: window.innerHeight }, 300)
+    const publierReglages = () => publierVu(joueurActif, 'regl', reglagesDuJoueur())
+    publierEcran()
+    publierReglages()
+    window.addEventListener('resize', publierEcran)
+    const minuteur = window.setInterval(publierReglages, 2000)
+    return () => {
+      window.removeEventListener('resize', publierEcran)
+      window.clearInterval(minuteur)
+    }
+  }, [spectateur, joueurActif])
 
 
   // Le voile d'ouverture : on ne montre pas la table en train de se monter.
@@ -3942,7 +4024,7 @@ export function PagePartie({
       {/* ⚠ LA BARRE DU SPECTATEUR PASSE AVANT TOUT LE RESTE. Un plateau sans
           boutons ressemble a un plateau CASSE : elle dit, en permanence, qu'on
           regarde. Voir BarreSpectateur.tsx. */}
-      {spectateur ? (
+      {spectateur && !estCadre() ? (
         <BarreSpectateur
           siege={playerId}
           sieges={etat.monde?.players?.length ?? 1}
@@ -3965,7 +4047,7 @@ export function PagePartie({
 
       {/* En mode detaille, BandeauPhase (plus bas) annonce deja la phase du
           mechant, plus fort : ce splash-ci ne doit pas la doubler. */}
-      <SplashTour monde={etat.monde} annonceMechantAilleurs={unCartouche} />
+      <SplashTour monde={etat.monde} annonceMechantAilleurs={unCartouche} saut={etat.saut === true} />
 
 
       {/* Le cartouche du bas (scene PC, lot 4) montre les cibles hors table
@@ -4029,7 +4111,7 @@ export function PagePartie({
           toutes refusees par le moteur : l'ouvrir serait promettre ce qu'on ne
           peut pas tenir. L'agrandissement au survol, lui, reste : c'est
           precisement ce qu'on vient faire. */}
-      {carteMenu && !interaction.option && !spectateur ? (
+      {carteMenu && !interaction.option ? (
         <MenuActionsCarte
           carte={carteMenu}
           carteMonde={cartesMondeParId.get(Number(carteMenu.id))}
@@ -4480,7 +4562,7 @@ export function PagePartie({
               couper le son ou changer de langue doit se faire d'un geste (voir
               le commentaire du bouton musique). */
           <div
-            className={`board-actions${designEssai ? ' design-essai' : ''}${spectateur ? ' est-spectateur' : ''}`}
+            className={`board-actions${designEssai ? ' design-essai' : ''}${spectateur && !estCadre() ? ' est-spectateur' : ''}`}
           >
             {/* OÙ ON EN EST. La barre n'avait que des boutons : le round et
                 la phase n'étaient écrits nulle part une fois le cartouche
@@ -4725,7 +4807,7 @@ export function PagePartie({
             : undefined
         }
         bas={
-          !manuel && modeActions === 'detailed' && !spectateur ? (
+          !manuel && modeActions === 'detailed' ? (
             <BarreAction
               demande={etat.demande}
               interaction={interaction}
@@ -4738,7 +4820,7 @@ export function PagePartie({
         }
       />
 
-      {afficherFinTourSimple && modePlateau !== 'mobile' && !spectateur ? (
+      {afficherFinTourSimple && modePlateau !== 'mobile' ? (
         <button
           type="button"
           className={`bouton-fin-tour${finDeTourSuggeree ? ' est-suggere' : ''}`}
@@ -4839,7 +4921,7 @@ export function PagePartie({
           <CoucheMarques marques={marquesManuel} />
           <CoucheSelection />
         </>
-      ) : spectateur ? null : (
+      ) : (
         <VoletAideAuto ouvert={aideAutoOuverte} ouvrir={ouvrirAideAuto} fermer={fermerAideAuto} />
       )}
       <VoletJournal ouvert={partieOuverte} ouvrir={ouvrirVolet} fermer={fermerVolet}>
@@ -4904,6 +4986,8 @@ export function PagePartie({
         manuel={triche.manuel}
         couche={triche.couche}
         catalogue={catalogue}
+        siege={joueurActif}
+        cartesParId={cartesMondeParId}
       />
       {/* En Detaille, pendant la phase du mechant, la scene montre deja la
           carte revelee face visible, avec ce qu'elle a fait : la couche a
@@ -4980,6 +5064,77 @@ export function PagePartie({
   )
 }
 
+/**
+ * L'INTERIEUR DU CADRE (spectateur et relecture, 08/10/2026) : le plateau seul,
+ * au siege regarde, avec les reglages du joueur (genre « regl »). Voir
+ * cadre-joueur.ts et CadreJoueur.tsx.
+ */
+/** Les menus ouverts du joueur (genre « menu ») : Reglages, Menu, journal, aide manuel, aide auto. */
+type MenusOuverts = { r: boolean; m: boolean; j: boolean; am: boolean; aa: boolean }
+
+function PageCadre() {
+  const lecteur = lecteurActif()
+  const siegeLu = useSyncExternalStore(
+    (rappel) => lecteur?.ecouterControle(rappel) ?? (() => undefined),
+    () => lecteur?.lireControle().pointDeVue ?? 0
+  )
+  const siege = lecteur ? siegeLu : parametres().playerId
+  const [catalogue, setCatalogue] = useState<Catalogue>(catalogueVide)
+  useEffect(() => {
+    chargerCatalogue().then(setCatalogue).catch(() => undefined)
+  }, [])
+  useEffect(() => {
+    // Les feuilles du plateau sont chargees au plus tard a `load`.
+    if (document.readyState === 'complete') poserSurvolsDuJoueur()
+    else window.addEventListener('load', () => poserSurvolsDuJoueur(), { once: true })
+  }, [])
+  const reglages = useVuDuJoueur<Record<string, string>>('regl', siege)
+  const [version, setVersion] = useState(0)
+  useEffect(() => {
+    const copie = stockageDuCadre()
+    if (!copie || !reglages) return
+    recouvrir(copie, reglages)
+    appliquerAffichage(lireAffichage())
+    appliquerEtiquettesTable(lireEtiquettesTable())
+    setVersion((v) => v + 1)
+  }, [reglages])
+  const modeActions = useMemo(() => lireModeActions(), [version])
+  return (
+    <FournisseurConfirmation>
+      <PagePartie
+        key={`${siege}-${version}`}
+        playerId={siege}
+        catalogue={catalogue}
+        modeActions={modeActions}
+        changerModeActions={() => undefined}
+      />
+    </FournisseurConfirmation>
+  )
+}
+
+/** Celui qui regarde en direct : sa barre, et le cadre du joueur. */
+function PageSpectateur() {
+  const { playerId } = parametres()
+  const [infos, setInfos] = useState<{ sieges: number; terminee?: boolean; raison?: string }>({ sieges: 1 })
+  useEffect(() => {
+    const recevoir = (message: MessageEvent) => {
+      if (message.origin !== window.location.origin) return
+      const donnees = message.data as { type?: string; sieges?: number; terminee?: boolean; raison?: string }
+      if (donnees?.type !== 'etat-spectateur') return
+      setInfos({ sieges: Number(donnees.sieges) || 1, terminee: donnees.terminee, raison: donnees.raison })
+    }
+    window.addEventListener('message', recevoir)
+    return () => window.removeEventListener('message', recevoir)
+  }, [])
+  const src = `${window.location.pathname}${window.location.search}${window.location.search ? '&' : '?'}cadre`
+  return (
+    <>
+      <BarreSpectateur siege={playerId} sieges={infos.sieges} terminee={infos.terminee} raison={infos.raison} />
+      <CadreJoueur src={src} siege={playerId} haut={32} />
+    </>
+  )
+}
+
 function Page() {
   const { etat, playerId } = parametres()
   // Le catalogue ne fait que completer les pastilles PV (« 1/3 » au lieu de
@@ -5007,20 +5162,13 @@ function Page() {
 
   // Le fournisseur enveloppe TOUT : les deux ecrans posent des questions
   // bloquantes, et le dialogue doit exister avant qu'on la pose.
+  if (estCadre()) return <PageCadre />
   return (
     <FournisseurConfirmation>
       {estRelecture() ? (
-        <PageRelecture
-          rendrePartie={(siege) => (
-            <PagePartie
-              key={siege}
-              playerId={siege}
-              catalogue={catalogue}
-              modeActions={modeActions}
-              changerModeActions={changerModeActions}
-            />
-          )}
-        />
+        <PageRelecture />
+      ) : parametres().spectateur ? (
+        <PageSpectateur />
       ) : etat ? (
         <PageEtat fichier={etat} playerId={playerId} catalogue={catalogue} outils={outils} />
       ) : (

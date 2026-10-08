@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { analyserRelecture, appliquer, FichierInvalide, lireRelecture } from './fichier'
-import { Lecteur, reperesDe } from './lecteur'
+import { echelle, Lecteur, reperesDe, tempsReel } from './lecteur'
 import type { EtatMoteur } from '../moteur'
 
 const ligne = (o: unknown) => JSON.stringify(o)
@@ -100,8 +100,11 @@ describe('lecteur', () => {
     expect(vus).toEqual([1])
     vi.advanceTimersByTime(1)
     expect(vus).toEqual([1, 2])
-    // 58 s d'ecart reel : plafonnees a 5 s.
-    vi.advanceTimersByTime(5000)
+    // 58 s d'ecart reel : le clic a +200 ms joue en temps reel, le temps mort
+    // qui suit (plus long que la pause max de 5 s) est ramene a 2 s.
+    vi.advanceTimersByTime(2199)
+    expect(vus).toEqual([1, 2])
+    vi.advanceTimersByTime(1)
     expect(vus).toEqual([1, 2, 3])
     lecteur.reglerVitesse(2)
     vi.advanceTimersByTime(500)
@@ -115,11 +118,60 @@ describe('lecteur', () => {
     lecteur.ecouter((etat) => etats.push(etat))
     lecteur.aller(3)
     expect(etats.at(-1)?.saut).toBe(true)
-    lecteur.precedent()
+    lecteur.aller(2)
     expect(etats.at(-1)?.saut).toBe(false)
     lecteur.aller(1)
     expect(etats.at(-1)?.demande?.options).toHaveLength(1)
+    // Le siege affiche est interroge : la fenetre s'ouvre comme pour lui.
+    expect(etats.at(-1)?.aNous).toBe(true)
+    lecteur.aller(0)
     expect(etats.at(-1)?.aNous).toBe(false)
+  })
+
+  it('action suivante et precedente sautent d une decision a l autre, Maj+fleches d un round a l autre', () => {
+    const lecteur = new Lecteur(analyserRelecture(fichierTexte()), 'test')
+    expect(lecteur.decisions).toEqual([1])
+    lecteur.suivant()
+    expect(lecteur.lireControle().index).toBe(1)
+    lecteur.suivant()
+    expect(lecteur.lireControle().index).toBe(3)
+    lecteur.precedent()
+    expect(lecteur.lireControle().index).toBe(1)
+    lecteur.precedent()
+    expect(lecteur.lireControle().index).toBe(0)
+    lecteur.roundSuivant()
+    expect(lecteur.lireControle().index).toBe(3)
+    lecteur.roundPrecedent()
+    expect(lecteur.lireControle().index).toBe(0)
+    lecteur.vitessePlus()
+    expect(lecteur.lireControle().vitesse).toBe(2)
+    lecteur.vitesseMoins()
+    lecteur.vitesseMoins()
+    expect(lecteur.lireControle().vitesse).toBe(0.5)
+  })
+
+  it('ce que le joueur voyait (lignes v), au temps de la lecture', () => {
+    const texte = fichierTexte() + '\n' + [
+      ligne({ k: 'v', r: 2, t: 2400, p: 0, g: 'sel', v: { o: 1, c: [], r: [] } }),
+      ligne({ k: 'v', r: 2, t: 2600, p: 0, g: 'sel', v: { o: 1, c: [49], r: [] } }),
+    ].join('\n')
+    const r = analyserRelecture(texte)
+    expect(r.vus).toHaveLength(2)
+    const lecteur = new Lecteur(r, 'test')
+    expect(lecteur.vuA(2399, 0, 'sel')).toBeUndefined()
+    expect(lecteur.vuA(2500, 0, 'sel')).toEqual({ o: 1, c: [], r: [] })
+    expect(lecteur.vuA(9999, 0, 'sel')).toEqual({ o: 1, c: [49], r: [] })
+    expect(lecteur.vuA(9999, 1, 'sel')).toBeUndefined()
+    // Une partie d'avant le 08/10/2026 n'a pas de ligne v : elle se relit quand meme.
+    expect(analyserRelecture(fichierTexte()).vus).toEqual([])
+  })
+
+  it('un temps mort entre deux evenements est raccourci, pas le geste lui-meme', () => {
+    // 20 s de reflexion, puis deux clics a 300 ms d'intervalle, puis la reponse.
+    const e = echelle(0, 21000, [20000, 20300], 5000)
+    expect(e.lu).toEqual([0, 2000, 2300, 3000])
+    expect(tempsReel(e, 2150)).toBe(20150)
+    expect(tempsReel(e, 99999)).toBe(21000)
   })
 
   it('curseurs et etape au temps de la lecture, curseur perime apres 5 s', () => {
@@ -144,5 +196,37 @@ describe('fichier produit par le serveur (engine/enregistrement.py)', () => {
     expect(r.trames.map((t) => t.monde.render_id)).toEqual(Array.from({ length: 60 }, (_, i) => i + 1))
     expect(r.trames[59].monde.prompt).toBe('etape 59')
     expect(r.trames[59].monde.players[0].hand_cards.length).toBe(r.trames[0].monde.players[0].hand_cards.length - 1)
+  })
+})
+
+describe('pause entre deux trames (relecture fidele)', () => {
+  beforeEach(() => vi.useFakeTimers())
+  afterEach(() => vi.useRealTimers())
+
+  it('la pause garde l instant, la lecture repart de la, et l on peut viser un instant', () => {
+    const lecteur = new Lecteur(analyserRelecture(fichierTexte()), 'test')
+    const vus: number[] = []
+    lecteur.ecouter((etat: EtatMoteur) => vus.push(etat.monde!.render_id))
+    lecteur.aller(1)
+    lecteur.lecture()
+    vi.advanceTimersByTime(150)
+    lecteur.pause()
+    const arrete = lecteur.tempsCourant()
+    expect(arrete).toBeGreaterThan(2100)
+    expect(arrete).toBeLessThan(2200)
+    vi.advanceTimersByTime(10000)
+    expect(lecteur.tempsCourant()).toBe(arrete)
+    expect(vus.at(-1)).toBe(2)
+    // Il restait ~50 ms de geste puis 2 s de temps mort raccourci.
+    lecteur.lecture()
+    vi.advanceTimersByTime(2000)
+    expect(vus.at(-1)).toBe(2)
+    vi.advanceTimersByTime(100)
+    expect(vus.at(-1)).toBe(3)
+    lecteur.pause()
+    lecteur.allerAuTemps(2250)
+    expect(lecteur.lireControle().index).toBe(1)
+    expect(lecteur.tempsCourant()).toBe(2250)
+    expect(lecteur.curseursA(lecteur.tempsCourant())).toEqual({ 0: { x: 0.5, y: 0.4, clic: 7 } })
   })
 })

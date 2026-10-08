@@ -78,8 +78,15 @@ function tourCourant(monde: World | undefined, annonceMechantAilleurs: boolean):
 export function SplashTour({
   monde,
   annonceMechantAilleurs = false,
+  saut = false,
 }: {
   monde: World | undefined
+  /**
+   * Relecture : ce monde vient d'un SAUT (barre, repere, action suivante). Le
+   * joueur n'a pas vu ce tour commencer a cet instant : on retient le tour
+   * sans l'annoncer.
+   */
+  saut?: boolean
   /**
    * Neutralise la seule branche « phase du mechant » de ce splash. Sert
    * quand une autre annonce prend deja le relais sur le meme declencheur
@@ -92,6 +99,8 @@ export function SplashTour({
   const tour = tourCourant(monde, annonceMechantAilleurs)
   const [affiche, setAffiche] = useState<Tour | undefined>(undefined)
   const dernier = useRef<string | undefined>(undefined)
+  const sautRef = useRef(saut)
+  sautRef.current = saut
 
   // Ce qui est affiche est COPIE dans l'etat, au lieu d'etre lu sur la phase
   // courante. La phase du mechant ne s'attarde pas sur sa premiere etape : elle
@@ -101,6 +110,7 @@ export function SplashTour({
   useEffect(() => {
     if (!tour || tour.cle === dernier.current) return
     dernier.current = tour.cle
+    if (sautRef.current) return
     setAffiche(tour)
   }, [tour?.cle])
 
