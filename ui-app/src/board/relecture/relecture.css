@@ -339,3 +339,30 @@
     animation-duration: 1ms;
   }
 }
+
+.relecture-mes-parties {
+  width: min(560px, 100%);
+}
+.relecture-mes-parties h2 {
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+}
+.relecture-mes-parties ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.relecture-mes-parties li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #253040;
+}
+.relecture-mes-parties li span {
+  margin-right: auto;
+}
+.relecture-mes-parties a {
+  color: #96ebff;
+  font-size: 0.85rem;
+}

@@ -1041,6 +1041,38 @@ class GameServerGet(GameServerBase):
             return web.json_response({'url': ''})
         return web.json_response({'url': url})
 
+    def _hote_de_la_table(self, request: web.Request) -> bool:
+        """Meme garde que get_site_admin : le siege 0, quand des sieges sont proteges."""
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        return not (passwords and any(passwords) and not self.tient_le_siege(request, 0))
+
+    async def get_mes_parties(self, request: web.Request) -> web.Response:
+        """Les dernieres parties terminees de l'hote (08/10/2026), pour « Revoir une partie »."""
+        from engine.enregistrement import Enregistrement
+        if not self._hote_de_la_table(request):
+            return web.json_response([])
+        return web.json_response([{'n': n, 'nom': nom} for n, nom in enumerate(Enregistrement.PartiesDeLHote())])
+
+    async def get_ma_partie(self, request: web.Request) -> web.Response:
+        """Une de ces parties, par son RANG (jamais un nom venu de l'adresse)."""
+        from engine.enregistrement import Enregistrement
+        import os
+        if not self._hote_de_la_table(request):
+            return web.json_response({'error': 'reserve a l hote'}, status=403)
+        try:
+            rang = int(request.query.get('n', '-1'))
+        except ValueError:
+            rang = -1
+        parties = Enregistrement.PartiesDeLHote()
+        dossier = Enregistrement.DossierDeLHote()
+        if not dossier or not 0 <= rang < len(parties):
+            return web.json_response({'error': 'aucune partie'}, status=404)
+        with open(os.path.join(dossier, parties[rang]), 'rb') as f:
+            contenu = f.read()
+        return web.Response(body=contenu, content_type='application/octet-stream',
+                            headers={'Content-Disposition': 'attachment; filename="%s"' % parties[rang]})
+
     async def get_site_url(self, request: web.Request) -> web.Response:
         """L'adresse publique du site, pour TOUS les joueurs de la table.
 
@@ -2011,6 +2043,8 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/set_marque', self.set_marque)
         self.AddAwaitGetSecurity('/get_marques', self.get_marques)
         self.AddAwaitGetSecurity('/get_enregistrement', self.get_enregistrement)
+        self.AddAwaitGetSecurity('/get_mes_parties', self.get_mes_parties)
+        self.AddAwaitGetSecurity('/get_ma_partie', self.get_ma_partie)
         self.AddPostSecurity('/set_choix_siege', self.set_choix_siege)
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)
         self.AddAwaitGetSecurity('/get_heros_du_siege', self.get_heros_du_siege)

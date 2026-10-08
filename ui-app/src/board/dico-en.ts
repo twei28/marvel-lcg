@@ -105,6 +105,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Télécharger cette partie en .json': 'Download this game as .json',
   'Contrôles de relecture': 'Replay controls',
   'Relecture': 'Replay',
+  "Mes dernières parties": "My latest games",
+  "Revoir": "Replay",
   "Pas maintenant": "Not now",
   "Cette carte ne peut pas être jouée maintenant.": "This card cannot be played right now.",
   "Faire apparaître une carte, Vaincre ce stade, Manigance terminée, Tout redresser, Fin de phase des héros, Carte boost, Pile ou face, Nombre au hasard, Joueur au hasard, Fin du round, Défausser une carte au hasard, Mulligan, Mis de côté vers le deck Rencontre (tout, ou un set choisi), Terminer la partie": "Spawn a card, Defeat this stage, Scheme completed, Ready all, End hero phase, Boost card, Coin flip, Random number, Random player, End of round, Discard a random card, Mulligan, Set aside into the encounter deck (all, or a chosen set), End the game",

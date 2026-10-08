@@ -28,6 +28,12 @@ from typing import Any, Dict, List, Optional
 VERSION_FORMAT = 1
 CLE_TOUS_LES = 50
 PARTIES_GARDEES = 3
+# Les PARTIES TERMINEES de chaque joueur, pour l'administrateur (08/10/2026) :
+# a la fin d'une partie (victoire ou defaite), le fichier .marvelreplay est
+# range chez l'HOTE de la table, ses 3 dernieres gardees. Le site donne le
+# pseudo et le dossier dans la configuration de la table ; sans eux (moteur
+# lance a la main), rien n'est range.
+PARTIES_PAR_JOUEUR = 3
 
 
 def difference(a: Any, b: Any) -> Optional[Dict[str, Any]]:
@@ -132,6 +138,53 @@ class Enregistrement:
             f.write(json.dumps({"k": "entete", **entete}, ensure_ascii=False) + "\n")
         cls._purger(dossier)
 
+    @staticmethod
+    def DossierDeLHote() -> Optional[str]:
+        """Le dossier des parties terminees de l'hote de cette table, s'il est configure."""
+        try:
+            from engine.config import ConfigVariables
+            pseudo = ConfigVariables.Str("pseudo_hote", "").value or ""
+            racine = ConfigVariables.Str("parties_joueurs_dossier", "").value or ""
+        except Exception:
+            return None
+        pseudo = "".join(c for c in pseudo.lower() if c.isalnum() or c in "-_.")
+        return os.path.join(racine, pseudo) if pseudo and racine else None
+
+    @staticmethod
+    def PartiesDeLHote() -> List[str]:
+        """Ses parties terminees, la plus recente en tete."""
+        dossier = Enregistrement.DossierDeLHote()
+        try:
+            noms = os.listdir(dossier) if dossier else []
+        except OSError:
+            return []
+        return sorted((n for n in noms if n.endswith(".marvelreplay")), reverse=True)
+
+    @classmethod
+    def _archiver_si_finie(cls, avant: Optional[Dict[str, Any]], monde: Dict[str, Any]) -> None:
+        if not monde.get("game_over") or (avant or {}).get("game_over"):
+            return
+        dossier = cls.DossierDeLHote()
+        if dossier:
+            threading.Thread(target=cls._ranger_chez, args=(dossier,), daemon=True).start()
+
+    @classmethod
+    def _ranger_chez(cls, dossier: str) -> None:
+        try:
+            contenu = cls.Fichier()
+            if contenu is None:
+                return
+            os.makedirs(dossier, exist_ok=True)
+            scenario = "".join(c for c in str(cls.entete.get("scenario", "")) if c.isalnum())[:30] or "partie"
+            nom = "partie-%s-%s.marvelreplay" % (time.strftime("%Y%m%d-%H%M%S"), scenario)
+            with open(os.path.join(dossier, nom), "wb") as f:
+                f.write(contenu)
+            parties = sorted(n for n in os.listdir(dossier) if n.endswith(".marvelreplay"))
+            for vieille in parties[:-PARTIES_PAR_JOUEUR]:
+                os.remove(os.path.join(dossier, vieille))
+        except Exception:
+            pass
+
     @classmethod
     def Rendu(cls, partie: str, monde: Dict[str, Any], entete_si_nouvelle,
               ressources: Optional[Dict[int, str]] = None) -> None:
@@ -151,11 +204,13 @@ class Enregistrement:
                 else:
                     cls._ecrire({"k": "d", "r": rendu, "t": _ms(), "d": difference(cls.dernier, monde) or {}})
                     cls.depuis_cle += 1
+                avant = cls.dernier
                 cls.dernier = monde
                 neuves = {i: r for i, r in (ressources or {}).items() if i not in cls.ressources_vues}
                 if neuves:
                     cls._ecrire({"k": "res", "r": rendu, "m": {str(i): r for i, r in neuves.items()}})
                     cls.ressources_vues.update(neuves)
+            cls._archiver_si_finie(avant, monde)
         except Exception:
             cls.chemin = None
 

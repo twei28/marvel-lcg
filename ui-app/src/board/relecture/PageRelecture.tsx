@@ -32,7 +32,73 @@ function useControle(lecteur: TypeLecteur) {
   )
 }
 
-function Depot({ charger, erreur }: { charger: (fichier: File) => void; erreur?: string }) {
+type MaPartie = { n: number; nom: string }
+
+/** « partie-20261008-143005-Rhino.marvelreplay » -> « 08/10/2026 14:30 · Rhino ». */
+export function libelleDePartie(nom: string): string {
+  const m = /^partie-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})\d{2}-(.*)\.marvelreplay$/.exec(nom)
+  return m ? `${m[3]}/${m[2]}/${m[1]} ${m[4]}:${m[5]} · ${m[6]}` : nom
+}
+
+/**
+ * MES DERNIERES PARTIES (08/10/2026) : les parties terminees de l'hote de cette
+ * table, rangees par le moteur (engine/enregistrement.py). La table ne les rend
+ * qu'a son hote ; ailleurs (moteur local, invite) la liste est vide et ne
+ * s'affiche pas.
+ */
+function MesParties({ ouvrir }: { ouvrir: (donnees: ArrayBuffer, nom: string) => void }) {
+  const [parties, setParties] = useState<MaPartie[]>([])
+  useEffect(() => {
+    let vivant = true
+    fetch('/get_mes_parties', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((liste: unknown) => {
+        if (vivant && Array.isArray(liste)) setParties(liste as MaPartie[])
+      })
+      .catch(() => undefined)
+    return () => {
+      vivant = false
+    }
+  }, [])
+  if (parties.length === 0) return null
+  return (
+    <section className="relecture-mes-parties">
+      <h2>{t('Mes dernières parties')}</h2>
+      <ul>
+        {parties.map((partie) => (
+          <li key={partie.nom}>
+            <span>{libelleDePartie(partie.nom)}</span>
+            <button
+              type="button"
+              className="relecture-bouton-lecture"
+              onClick={() => {
+                void fetch(`/get_ma_partie?n=${partie.n}`, { cache: 'no-store' })
+                  .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error('absente'))))
+                  .then((donnees) => ouvrir(donnees, partie.nom))
+                  .catch(() => undefined)
+              }}
+            >
+              ▶ {t('Revoir')}
+            </button>
+            <a href={`/get_ma_partie?n=${partie.n}`} download={partie.nom}>
+              {t('Télécharger')}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function Depot({
+  charger,
+  ouvrir,
+  erreur,
+}: {
+  charger: (fichier: File) => void
+  ouvrir: (donnees: ArrayBuffer, nom: string) => void
+  erreur?: string
+}) {
   const [survol, setSurvol] = useState(false)
   return (
     <main className="relecture-page">
@@ -65,6 +131,7 @@ function Depot({ charger, erreur }: { charger: (fichier: File) => void; erreur?:
           />
         </label>
       </div>
+      <MesParties ouvrir={ouvrir} />
       {/* La derniere partie jouee sur CETTE table, finie ou non : c'est aussi
           le chemin d'une partie abandonnee, qui n'a pas d'ecran de fin. */}
       <a className="relecture-derniere" href="/get_enregistrement" download="partie.marvelreplay">
@@ -250,13 +317,11 @@ export function PageRelecture({ rendrePartie }: { rendrePartie: (siege: number) 
   const [ficheVue, setFicheVue] = useState(false)
   const [journalOuvert, setJournalOuvert] = useState(false)
 
-  const charger = useCallback((fichier: File) => {
+  const ouvrir = useCallback((donnees: ArrayBuffer, identite: string) => {
     setErreur(undefined)
-    fichier
-      .arrayBuffer()
-      .then(lireRelecture)
+    lireRelecture(donnees)
       .then((lue) => {
-        const nouveau = new Lecteur(lue, `${fichier.name}-${fichier.size}-${fichier.lastModified}`)
+        const nouveau = new Lecteur(lue, identite)
         activerLecteur(nouveau)
         setRelecture(lue)
         setLecteur(nouveau)
@@ -266,6 +331,12 @@ export function PageRelecture({ rendrePartie }: { rendrePartie: (siege: number) 
         setErreur(cause instanceof FichierInvalide ? t(cause.message) : t('Ce fichier ne peut pas être relu.'))
       })
   }, [])
+  const charger = useCallback(
+    (fichier: File) => {
+      void fichier.arrayBuffer().then((donnees) => ouvrir(donnees, `${fichier.name}-${fichier.size}-${fichier.lastModified}`))
+    },
+    [ouvrir]
+  )
 
   useEffect(() => () => activerLecteur(undefined), [])
 
@@ -296,7 +367,7 @@ export function PageRelecture({ rendrePartie }: { rendrePartie: (siege: number) 
     () => lecteur?.lireControle().pointDeVue ?? 0
   )
 
-  if (!relecture || !lecteur) return <Depot charger={charger} erreur={erreur} />
+  if (!relecture || !lecteur) return <Depot charger={charger} ouvrir={ouvrir} erreur={erreur} />
 
   return (
     <div className="relecture-cadre">

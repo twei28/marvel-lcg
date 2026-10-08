@@ -85,5 +85,28 @@ with tempfile.TemporaryDirectory() as dossier:
         E.Enregistrement.Rendu("partie-%d" % n, {"render_id": 1}, entete)
     cas("seules les 3 dernieres parties restent", len(os.listdir(dossier)), 3)
 
+# Les parties TERMINEES de l'hote, rangees pour l'administrateur et pour lui.
+import threading  # noqa: E402
+class _Fil:
+    def __init__(self, target, args=(), daemon=None):
+        self.f, self.a = target, args
+    def start(self):
+        self.f(*self.a)
+E.threading.Thread = _Fil
+with tempfile.TemporaryDirectory() as racine:
+    chez = os.path.join(racine, "arnaud")
+    E.Enregistrement.DossierDeLHote = staticmethod(lambda: chez)
+    with tempfile.TemporaryDirectory() as enreg:
+        E.Enregistrement.dossier = staticmethod(lambda: enreg)
+        for n in range(5):
+            E.Enregistrement.Rendu("fin-%d" % n, {"render_id": 1, "round_id": 2}, entete)
+            E.Enregistrement.Rendu("fin-%d" % n, {"render_id": 2, "round_id": 2, "game_over": True, "players_won": True}, entete)
+            E.Enregistrement.Rendu("fin-%d" % n, {"render_id": 3, "round_id": 2, "game_over": True, "players_won": True}, entete)
+            import time as _t; _t.sleep(1.05)
+        E.Enregistrement.Rendu("inachevee", {"render_id": 1, "round_id": 1}, entete)
+    cas("une partie terminee est rangee chez l'hote, ses 3 dernieres gardees", len(E.Enregistrement.PartiesDeLHote()), 3)
+    premiere = os.path.join(chez, E.Enregistrement.PartiesDeLHote()[0])
+    cas("le fichier rangé est une partie gagnee", json.loads(gzip.decompress(open(premiere, "rb").read()).decode("utf-8").splitlines()[0])["resultat"], "victoire")
+
 print("\n%s" % ("TOUT EST VERT" if echecs == 0 else "%d ECHEC(S)" % echecs))
 sys.exit(1 if echecs else 0)

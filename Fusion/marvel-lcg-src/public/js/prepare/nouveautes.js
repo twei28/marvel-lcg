@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-08",
         genre: "jeu",
+        fr: "Tes 3 dernières parties terminées sont gardées : ouvre « Revoir » dans le menu pour les rejouer en un clic, ou les télécharger.",
+        en: "Your last 3 finished games are kept: open “Replay” in the menu to watch them again in one click, or download them.",
+    },
+    {
+        date: "2026-10-08",
+        genre: "jeu",
         fr: "En mode Manuel, tout fonctionne maintenant comme sur OCTGN : Maj+clic pour cibler une carte, Maj+glisser pour tracer une flèche, le pavé numérique pour colorer une carte, Ctrl+clic pour en sélectionner plusieurs, Ctrl+I pour lire une carte. La carte boost se pose face cachée à côté du méchant.",
         en: "In Manual mode, everything now works like OCTGN: Shift+click to target a card, Shift+drag to draw an arrow, the numeric keypad to colour a card, Ctrl+click to select several, Ctrl+I to read a card. The boost card goes face down next to the villain.",
     },
