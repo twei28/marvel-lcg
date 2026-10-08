@@ -242,6 +242,15 @@ class Card(Object):
         # entre en Reserve.
         if self.area.flags.is_like_in_hand:
             return True
+        # DECK SPECIAL D'UN JOUEUR (deck Sense de Daredevil...) : jamais de
+        # cache. La reponse depend de QUELLE carte est au sommet, et un cache
+        # lu pendant un deplacement restait fige (dessus du deck Sense refuse,
+        # signalement du 08/10/2026). Quelques cartes au plus : recalcul gratuit.
+        if self.area.deck_type == DeckType.AdditionalDeck:
+            from game.message import Message
+            message = Message.CheckIfFaceIsLikeInHand(self.face)
+            message.Send()
+            return message.is_like_in_hand
         if self.can_state.is_like_in_hand == None:
             from game.message import Message
             message = Message.CheckIfFaceIsLikeInHand(self.face)

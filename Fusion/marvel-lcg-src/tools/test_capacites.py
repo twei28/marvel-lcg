@@ -43434,6 +43434,20 @@ CAS = [
         "attendu": {"en_jeu": ["61025"]},
     },
     {
+        "nom": "61025 Hellcat — mise en jeu par l'Action, puis fin de la phase : defaussee, la partie continue (rapport BL-Stark n68)",
+        "pourquoi": ("« At the end of the phase, discard her » : rapport n68, un game over quand Hellcat devait "
+                     "partir. Le cas ferme la phase des joueurs apres l'Action et exige Hellcat en defausse"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": ["Puzzle.ChangeForm('61001b')"],
+        "main_exclusive": ["61025"],
+        "declencher": [],
+        "action_en_main": ["61025"],
+        "declencher_final": ["Puzzle.EndPlayerPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["61025"]},
+    },
+    {
         "nom": "61038 Echo — attaque : subit 1 degat(s) consecutif(s)",
         "pourquoi": "scan : 1 icone(s) sous ATK ; sans asterisque dans `desc`, aucun degat",
         "scenario": "rhino",
@@ -44414,6 +44428,20 @@ CAS = [
         "declencher": [],
         "verifier": "daredevil_dessus_deck_annexe",
         "attendu": {"dessus_suivant": "60002"},
+    },
+    {
+        "nom": "60001a Daredevil — le DESSUS du deck Sense est offert a jouer (Play), la carte dessous non (signalement 08/10/2026)",
+        "pourquoi": ("l'utilisateur clique la pile Sense et rien ne s'ouvre : mesurer d'abord si le "
+                     "moteur OFFRE un Play sur le dessus (chemin reel, `_echo_effets_de_jeu`), "
+                     "et pas sur la carte d'en dessous (contre-bout)"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')",
+                          "Puzzle.PutOnAdditionalDeckTop('60002')",
+                          "Puzzle.PutOnAdditionalDeckTop('60003')"],
+        "declencher": [],
+        "verifier": "daredevil_sens_offert",
+        "attendu": {},
     },
     {
         "nom": "65001b Champion Swimmer — pose le dessus du deck FACE VISIBLE en Rising Tide area",
@@ -55085,6 +55113,38 @@ def hercules_travaux_et_dons_melanges(monde, aides):
     return True, "six cartes, deck melange a la mise en place"
 
 
+def daredevil_sens_offert(monde, aides):
+    """Le moteur OFFRE-t-il un Play sur le dessus du deck Sense, et pas dessous ?"""
+    joueur = monde.players[0]
+    faces = [f for f in joueur.additional_deck.Get() if f is not None]
+    if len(faces) < 2:
+        return False, f"deck Sense : {len(faces)} carte(s), il en faut 2"
+    dessus, dessous = faces[-1], faces[-2]
+    ident = lambda f: getattr(f.paper, "card_id", "?")
+    offre_dessus = _echo_effets_de_jeu(joueur, dessus, monde)
+    offre_dessous = _echo_effets_de_jeu(joueur, dessous, monde)
+    info = (f"forme heros={joueur.IsInHeroForm()}, dessus={ident(dessus)} offert={bool(offre_dessus)}, "
+            f"dessous={ident(dessous)} offert={bool(offre_dessous)}, "
+            f"visible dessus={getattr(dessus, 'IsVisibleFor', lambda p: '?')(joueur) if hasattr(dessus, 'IsVisibleFor') else '?'}")
+    if not offre_dessus:
+        from game.message import Message
+        jeux = dessus.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+        main = [getattr(f.paper, "card_id", "?") for f in joueur.hand_cards.GetAll()]
+        m = Message.CheckIfFaceIsLikeInHand(dessus); m.Send()
+        hero = joueur.GetIdentity()
+        regles = [e.ability.func_name if hasattr(e.ability,'func_name') else str(e.ability) for e in hero.effect.Find(when=Message.CheckIfFaceIsLikeInHand)] if hasattr(hero.effect,'Find') else '?'
+        info += (f" | message.is_like_in_hand={m.is_like_in_hand} cache={dessus.card.can_state.is_like_in_hand} "
+                 f"top_moteur={getattr(joueur.additional_deck.GetTop().paper,'card_id','?')} "
+                 f"identite={getattr(hero.paper,'card_id','?')} effets_like_in_hand_heros={regles} "
+                 f"zone_dessus={dessus.card.area.name if hasattr(dessus.card.area,'name') else dessus.card.area}")
+        info += (f" | IsLikeInHand={dessus.IsLikeInHand()} effets Play={len(jeux)} "
+                 f"main={main} cout={getattr(dessus, 'printed_cost', '?')}")
+        return False, "dessus NON offert : " + info
+    if offre_dessous:
+        return False, "dessous offert aussi : " + info
+    return True, info
+
+
 def daredevil_dessus_deck_annexe(monde, aides):
     """Le cache `IsLikeInHand` du DESSUS du deck Sense (Daredevil, 60001a) ne
     se remet a zero qu'au DEPLACEMENT de la carte elle-meme (`card.py`,
@@ -55711,6 +55771,12 @@ def executer_un_cas(game_dir, port, index):
                           f"{type(exc).__name__}: {exc}", flush=True)
             for card_id in cas.get("action_en_main") or []:
                 declencher_action_en_main(card_id)
+            # `declencher_final` (08/10/2026, rapport n68 Hellcat) : commandes
+            # Puzzle.* jouees APRES `action_en_main`, qui passe en dernier.
+            # Sans elle, une fin de phase ne peut suivre une Action depuis la
+            # main. Cle ADDITIVE.
+            if cas.get("declencher_final"):
+                PuzzleHelper.Exec(cas["declencher_final"], monde)
         except Exception as exc:
             import traceback
             traceback.print_exc()
