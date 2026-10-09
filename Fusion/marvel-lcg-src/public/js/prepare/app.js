@@ -31,7 +31,10 @@ import { jouerSon, jouerReplique, jouerClicRoue, SON, couperSurvolPendant } from
 import { herosTirables, scenariosTirables, tirer, tirerPlusieurs, creerBandeau, caseHeros, caseScenario,
          lireRoue, publierRoue } from "/public/js/prepare/roue.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
-         langueDejaChoisie, retenirLangue } from "/public/js/prepare/langue.js";
+         langueDejaChoisie, retenirLangue, basculerLangue, enregistrerTraductions } from "/public/js/prepare/langue.js";
+import { DICO_TEL_EN } from "/public/js/prepare/dico-tel-en.js";
+import { estTel, suivreTel, installerHistorique, noterEcran, reculerVers,
+         brancherBandeau, ajouterPoignee } from "/public/js/prepare/tel.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, affichageJamaisChoisi } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
@@ -369,7 +372,11 @@ function goto(step) {
 }
 const next = () => { if (canContinue()) goto(state.step + 1); };
 const prev = () => {
-    if (state.step === 0 && !creationCampagne()) { hideHover(); state.accueil = true; render(); return; }
+    if (state.step === 0 && !creationCampagne()) {
+        if (reculerVers("accueil")) return;
+        hideHover(); state.accueil = true; render(); return;
+    }
+    if (reculerVers("e" + (state.step - 1))) return;
     goto(state.step - 1);
 };
 
@@ -704,6 +711,313 @@ function surveillerGrilles() {
     });
 }
 
+/* ======================= MODE TÉLÉPHONE (< 768 px) ==========================
+   Refonte du 09/10/2026 (.planning/todos/2026-10-09-mode-telephone-refonte.md).
+   Au-dessus de 768 px, RIEN de ce bloc ne s'exécute : le PC reste identique.
+   Les briques génériques (historique, bandeau, poignée) sont dans tel.js. */
+
+/** La clé d'historique de l'écran affiché. */
+function cleEcranTel() { return state.accueil ? "accueil" : "e" + state.step; }
+
+function pileTelReinit() { /* la pile se reconstruit seule au prochain rendu */ }
+
+/** Retour du système : on rejoue l'écran dont la clé est donnée. */
+function appliquerCleTel(cle) {
+    hideHover();
+    if (cle === "accueil") state.accueil = true;
+    else { state.accueil = false; state.step = Math.min(LAST_STEP, Math.max(0, parseInt(cle.slice(1), 10) || 0)); }
+    render();
+}
+
+let menuTelOuvert = false;
+/** L'héros qu'on regarde sans l'avoir choisi (toucher = aperçu, Choisir = valide). */
+let herosApercuTel = null;
+/** Idem pour le méchant : { sc, concret } ou null. */
+let mechantApercuTel = null;
+
+/** En-tête fin : logo, langue (un toucher), burger ; dessous, les étapes. */
+function enteteTel() {
+    document.title = t("Préparation de mission") + " — Marvel Champions";
+    const fermer = () => { menuTelOuvert = false; majMenuTel(); };
+    const lien = (href, libelle, icone) => el("a", { class: "tel-lien", href }, picto(icone), " ", t(libelle));
+    const panneau = el("nav", { class: "tel-menu", id: "tel-menu", "aria-label": t("Menu") },
+        el("button", { class: "tel-lien", type: "button", onclick: () => { fermer(); hideHover(); state.accueil = true; render(); } },
+            picto("fa-home"), " ", t("Mode de jeu")),
+        lien("/campagne.html", "Campagne", "fa-book"),
+        lien("/galerie.html", "Galerie", "fa-th"),
+        lien("/deck-builder.html", "Éditeur de deck", "fa-pencil"),
+        boutonAffichage("btn ghost tel-affichage"),
+    );
+    const voile = el("div", { class: "tel-voile", id: "tel-voile", onclick: fermer });
+    const entete = el("header", { class: "progress tel-entete" },
+        el("div", { class: "tel-rang" },
+            el("a", { class: "brand", href: "main", "aria-label": t("Accueil du jeu") },
+                el("img", { class: "brand-narwhal", src: urlNarval(), alt: "NarwhalChampions" })),
+            el("div", { class: "spacer" }),
+            boutonLangue("btn ghost btn-langue tel-langue"),
+            el("button", {
+                class: "tel-burger", id: "tel-burger", type: "button",
+                "aria-label": t("Menu"), "aria-expanded": menuTelOuvert ? "true" : "false",
+                onclick: () => { menuTelOuvert = !menuTelOuvert; majMenuTel(); },
+            }, picto("fa-bars")),
+        ),
+        el("div", { class: "steps tel-etapes" }, STEPS.map((label, i) => {
+            const done = i < state.step && stepComplete(i);
+            const cls = "pstep" + (i === state.step && !state.accueil ? " active" : "") + (done ? " done" : "");
+            return el("button", { class: cls, onclick: () => { menuTelOuvert = false; gotoTel(i); } },
+                el("span", { class: "pnum" }, done ? "✓" : String(i + 1)),
+                el("span", { class: "plabel" }, label));
+        })),
+        voile,
+        panneau,
+    );
+    // Les outils annexes (Reprendre, Stats, Documents, Bug...) vivent dans le
+    // menu : le nœud est vivant, on le DÉPLACE (écouteurs conservés).
+    const rangee = document.querySelector(".reprise-boutons");
+    if (rangee) {
+        rangee.classList.remove("est-flottante");
+        rangee.querySelectorAll(".btn-langue, .btn-affichage").forEach((n) => n.remove());
+        panneau.append(rangee);
+    }
+    majMenuTel(entete);
+    return entete;
+}
+
+function majMenuTel(entete) {
+    const racine = entete || document.querySelector(".tel-entete");
+    if (!racine) return;
+    racine.classList.toggle("menu-ouvert", menuTelOuvert);
+    const b = racine.querySelector("#tel-burger");
+    if (b) b.setAttribute("aria-expanded", menuTelOuvert ? "true" : "false");
+}
+
+/** Une étape cliquée dans la barre : en arrière, on recule dans l'historique. */
+function gotoTel(i) {
+    if (i < state.step && i === state.step - 1 && reculerVers("e" + i)) return;
+    goto(i);
+}
+
+/** Le bouton principal de la barre du bas : Continuer, Valider ou Lancer. */
+function boutonPrincipalNav() {
+    return state.step < LAST_STEP
+        ? el("button", {
+            class: "btn primary",
+            disabled: !canContinue() || undefined,
+            onclick: () => { jouerSon(SON.etapeSuivante); next(); },
+        }, t("Continuer"))
+        : creationCampagne()
+            ? el("button", {
+                class: "btn launch",
+                disabled: !stepComplete(1) || undefined,
+                onclick: validerEquipeCampagne,
+            }, BROUILLON_CAMPAGNE.modifie ? t("Valider les decks") : t("Valider l'équipe"))
+            : el("button", {
+                class: "btn launch",
+                disabled: (!validate(state).ok || (enLigne() && !state.salon.prete)) || undefined,
+                onclick: () => { jouerSon(SON.lancement); doLaunch(); },
+            }, t("Lancer la partie"));
+}
+
+/** Barre du bas : les pastilles de l'équipe, puis Retour, Aléatoire, Continuer. */
+function navBarTel() {
+    const showRandom = [0, 2].includes(state.step);
+    return el("footer", { class: "nav tel-nav" },
+        state.step <= 2 ? el("div", { class: "tel-equipe-rang" },
+            el("div", { class: "tb-equipe", id: "tb-equipe" }),
+            el("div", { class: "nav-status" }, navStatus())) : el("div", { class: "nav-status" }, navStatus()),
+        el("div", { class: "tel-actions" },
+            el("button", {
+                class: "btn ghost tel-retour", "aria-label": t("Retour"),
+                disabled: (state.step === 0 && creationCampagne()) || undefined,
+                onclick: () => { jouerSon(SON.etapePrecedente); prev(); },
+            }, picto("fa-chevron-left")),
+            showRandom
+                ? el("button", { class: "btn ghost", onclick: () => { jouerSon(SON.aleatoire); randomize(); } },
+                    picto("fa-random"), " ", t("Aléatoire"))
+                : null,
+            boutonPrincipalNav(),
+        ),
+    );
+}
+
+/** Remplace la barre du bas (Continuer s'allume sans reconstruire l'écran). */
+function majNav() {
+    const nav = document.querySelector(".nav");
+    if (!nav) return;
+    nav.replaceWith(navBar());
+    if (estTel() && state.step <= 2) {
+        if (state.step === 2) rendreTable(); else rendreEquipe();
+    }
+}
+
+/** Dans le bandeau : le contenu commun aux trois étapes. `art` est le nœud
+ *  d'image, `actions` les boutons (Choisir en premier). */
+function poserBandeauTel(scene, { art, titre, sous, tampons, actions }) {
+    poser(scene,
+        art,
+        el("div", { class: "tb-trame" }),
+        el("div", { class: "ts-contenu" },
+            el("div", { class: "ts-tampons" }, ...(tampons || [])),
+            el("div", { class: "ts-ligne" },
+                el("div", { class: "ts-titre" },
+                    el("b", { class: "mvl" }, titre),
+                    sous ? el("small", {}, sous) : null),
+                el("div", { class: "ts-actions" }, ...(actions || []).filter(Boolean)),
+            ),
+        ),
+    );
+}
+
+const boutonBandeau = (libelle, classe, action, icone) => el("button", {
+    type: "button", class: "ts-btn " + classe, onclick: action,
+}, icone ? picto(icone) : null, icone ? " " : null, libelle);
+
+/** La feuille « Fiche » : l'essentiel d'un héros ou d'un méchant. */
+function feuilleTel(classe, ...contenu) {
+    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) fermerModale(overlay); } },
+        el("div", { class: "deck-modal-panel vh-panel " + classe }, ...contenu));
+    ouvrirModale(overlay);
+    return overlay;
+}
+
+/** Une carte en grand, dans une feuille basse (toucher sur une vignette). */
+function ouvrirCarteGrande(id) {
+    const overlay = feuilleTel("carte-grande",
+        el("img", { class: "cg-image", src: cardImageUrlHd(id), alt: "", onclick: () => fermerModale(overlay) }));
+}
+
+/** Le bandeau du héros (étape 1). `h` : le héros montré, `choisi` : s'il est posé. */
+function rendreSceneTel(h) {
+    const scene = document.getElementById("tb-scene");
+    if (!scene) return;
+    if (!h) {
+        poserBandeauTel(scene, {
+            art: el("div", { class: "tb-art vide" }),
+            titre: t("Choisis un héros"),
+            sous: t("Siège") + " " + (state.activeSlot + 1),
+        });
+        return;
+    }
+    const siege = siegeDuHeros(h);
+    const choisi = activePlayers().some((p) => p.hero && p.hero.id === h.id);
+    const traits = [...new Set([...(h.traits || []), ...(h.traitsAlterEgo || [])])].slice(0, 3).join(" · ");
+    const options = optionsDuHeros(h, contexteVariantes(h));
+    poserBandeauTel(scene, {
+        art: h.lie
+            ? el("div", { class: "tb-art" }, portraitDuo(h, "", cardImageUrlHd))
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(picIdHeros(h.heroCardId))}")` } }),
+        titre: nomAffiche(h),
+        sous: traits,
+        tampons: [
+            pvAffiches(h) ? el("span", { class: "tampon jaune" }, t("PV") + " " + pvAffiches(h)) : null,
+            h.handSize != null ? el("span", { class: "tampon" }, t("Main") + " " + h.handSize) : null,
+        ],
+        actions: [
+            choisi
+                ? boutonBandeau(t("Choisi"), "jaune est-choisi", () => {}, "fa-check")
+                : boutonBandeau(t("Choisir"), "jaune", () => recruterVraiment(h, null)),
+            choisi && !options.aucune
+                ? boutonBandeau(t("Art"), "", () => ouvrirModaleVariantes(siege, h), "fa-eye") : null,
+            boutonBandeau(t("Fiche"), "", () => ouvrirFicheHeros(h, null), "fa-info"),
+        ],
+    });
+}
+
+/** Le bandeau des decks (étape 2). */
+function rendreSceneDeckTel() {
+    const scene = document.getElementById("tb-scene");
+    if (!scene) return;
+    const p = state.players[state.activeSlot];
+    const h = p && p.hero;
+    if (!h) {
+        poserBandeauTel(scene, { art: el("div", { class: "tb-art vide" }), titre: t("Aucun héros"), sous: t("Arsenal") });
+        return;
+    }
+    const st = p.deck ? deckStats(p.deck) : null;
+    const aspects = st ? Object.keys(st.asp).filter((x) => x !== "basic") : [];
+    const options = optionsDuHeros(h, contexteVariantes(h));
+    poserBandeauTel(scene, {
+        art: h.lie
+            ? el("div", { class: "tb-art" }, portraitDuo(h, "", cardImageUrlHd))
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(picIdHeros(h.heroCardId))}")` } }),
+        titre: nomAffiche(h),
+        sous: p.deck ? cleanNomDeck(p.deck.name) : t("Deck de base"),
+        tampons: [
+            st ? el("span", { class: "tampon" }, st.total + " " + t("cartes")) : null,
+            ...aspects.map((x) => el("span", { class: "tampon aspect", style: { background: ASPECTS[x] || "#555", borderColor: "#111" } }, x)),
+        ],
+        actions: [
+            options.aucune ? null : boutonBandeau(t("Art"), "jaune", () => ouvrirModaleVariantes(state.activeSlot, h), "fa-eye"),
+            p.deck ? boutonBandeau(t("Cartes"), "", () => showDeckCards(p.deck, h, null), "fa-th") : null,
+        ],
+    });
+}
+
+/** Le bandeau du méchant (étape 3). `sc` : le scénario montré (concret). */
+function rendreSceneMechantTel(sc) {
+    const scene = document.getElementById("tb-scene");
+    if (!scene) return;
+    if (!sc) {
+        poserBandeauTel(scene, { art: el("div", { class: "tb-art vide" }), titre: t("Choisis un méchant"), sous: t("Méchant") });
+        return;
+    }
+    const carte = cards.get((sc.villainCards || [])[0] || sc.tileImage);
+    const d = (carte && carte.desc) || {};
+    const pv = String(d.HP || "").replace("*", "");
+    const parJoueur = String(d.HP || "").includes("*");
+    const apercu = mechantApercuTel;
+    const choisi = !!state.scenario && state.scenario.id === sc.id;
+    poserBandeauTel(scene, {
+        art: el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(sc.tileImage)}")` } }),
+        titre: sc.name,
+        sous: nomExtension(sc.extension, langueActuelle()),
+        tampons: [
+            pv ? el("span", { class: "tampon rouge" }, t("PV") + " " + pv + (parJoueur ? " / " + t("joueur") : "")) : null,
+            d.ATK ? el("span", { class: "tampon" }, t("ATQ") + " " + d.ATK) : null,
+            d.SCH ? el("span", { class: "tampon" }, t("MEN") + " " + d.SCH) : null,
+        ],
+        actions: [
+            choisi
+                ? boutonBandeau(t("Choisi"), "jaune est-choisi", () => {}, "fa-check")
+                : boutonBandeau(t("Choisir"), "jaune", () => choisirMechantTel(apercu || { sc, concret: sc })),
+            boutonBandeau(t("Fiche"), "", () => ouvrirFicheMechant(sc), "fa-info"),
+        ],
+    });
+}
+
+function choisirMechantTel({ sc, concret }) {
+    const plusieurs = sc.interchangeable && sc.underlings && sc.underlings.length > 1;
+    if (plusieurs) ouvrirModaleUnderling(sc);
+    else verrouillerCible(concret);
+}
+
+function ouvrirFicheMechant(sc) {
+    const overlay = feuilleTel("fiche-heros fiche-mechant",
+        el("div", { class: "fh-art", style: { backgroundImage: `url("${cardImageUrlHd(sc.tileImage)}")` } }),
+        el("div", { class: "dm-head" },
+            el("b", { class: "mvl" }, sc.name),
+            el("span", { class: "dm-sub" }, nomExtension(sc.extension, langueActuelle()))),
+        regleDuDefi(sc),
+        bioDepliee_(bioDuMechant(sc)),
+        documentsDeLaCible(sc),
+        el("div", { class: "vh-actions" },
+            el("button", { class: "tampon jaune", onclick: () => fermerModale(overlay) }, t("Fermer"))),
+    );
+}
+
+/** La feuille d'import marvelcdb : champ, Import, Decks MarvelCDB. */
+function ouvrirFeuilleImport(i) {
+    const overlay = feuilleTel("feuille-import",
+        el("div", { class: "dm-head" }, el("b", { class: "mvl" }, t("Importer un deck"))),
+        el("input", { class: "search tb-search", id: "mcdb-" + i, placeholder: t("Colle une URL ou un ID marvelcdb...") }),
+        el("span", { class: "mcdb-status", id: "mcdb-st-" + i }),
+        el("div", { class: "vh-actions" },
+            el("button", { class: "tampon", onclick: () => { fermerModale(overlay); ouvrirPanneauCdb(i); } }, t("Decks MarvelCDB")),
+            el("button", { class: "tampon jaune", onclick: async () => { if (await doImport(i)) fermerModale(overlay); } }, t("Import")),
+        ),
+    );
+}
+
 function render() {
     if (state.accueil) {
         // Pas d'en-tête sur l'accueil : logo, langue et onglets d'étapes n'y
@@ -749,12 +1063,16 @@ function render() {
             navBar(),
         );
     }
+    root.classList.toggle("tel-assistant", estTel() && !state.accueil);
+    if (estTel() && !state.accueil) brancherBandeau();
+    noterEcran(cleEcranTel());
     fixMarvelText();
     ajusterGrilles();
     surveillerGrilles();
 }
 
 function progressBar() {
+    if (estTel()) return enteteTel();
     // Le titre de l'onglet est ecrit en dur en ANGLAIS dans prepare.html, donc
     // faux des qu'on joue en francais. On le repose ici, ou t() existe.
     document.title = t("Préparation de mission") + " — Marvel Champions";
@@ -811,6 +1129,7 @@ function progressBar() {
 }
 
 function navBar() {
+    if (estTel()) return navBarTel();
     const showRandom = [0, 2].includes(state.step);
     return el("footer", { class: "nav" },
         el("button", {
@@ -2164,10 +2483,11 @@ function stepTeam() {
         // seul filtre fan-made (demande du 18/09/2026).
         el("div", { class: "tb-merci", id: "tb-merci", hidden: true }),
         el("div", { class: "hero-grid tb-roster", id: "hero-grid" }, el("div", { class: "loading" }, t("Chargement des héros..."))),
-        el("div", { class: "tb-equipe", id: "tb-equipe" }),
+        estTel() ? null : el("div", { class: "tb-equipe", id: "tb-equipe" }),
     );
     wrap.append(droite);
     herosSurvole = null;
+    herosApercuTel = null;
     loadHeroes();
     // La scène et l'équipe se dessinent une fois la section DANS la page :
     // elles se retrouvent par identifiant.
@@ -2291,6 +2611,7 @@ function ajusterNomGeant(scene) {
 }
 
 function rendreScene(h) {
+    if (estTel()) return rendreSceneTel(h);
     const scene = document.getElementById("tb-scene");
     if (!scene) return;
     if (!h) {
@@ -2392,6 +2713,8 @@ function ouvrirCartesHeros(h) {
             src: cardImageUrl(id), loading: "lazy", alt: "",
             onmouseenter: auSurvol(() => loupe(id)),
             onmouseleave: () => loupe(null),
+            // Téléphone : pas de loupe au survol, un toucher ouvre la carte en grand.
+            onclick: estTel() ? () => ouvrirCarteGrande(id) : undefined,
         }),
         etiquette ? el("span", { class: "tb-carte-etiquette" }, etiquette) : null,
         n > 1 ? el("span", { class: "tb-carte-n" }, "×" + n) : null,
@@ -2482,6 +2805,7 @@ function rendreEquipe() {
             onclick: () => {
                 if (!pilotable) return;
                 state.activeSlot = i;
+                herosApercuTel = null;
                 rendreEquipe();
                 // Chaque étape a sa scène : les héros la remplissent avec le
                 // héros du siège, l'arsenal avec son deck.
@@ -2529,6 +2853,13 @@ function ouvrirFicheHeros(h, portraitEl) {
             bioDepliee_(bioDuHeros(h)),
             bioDepliee_(avisDuHeros(h)),
             el("div", { class: "vh-actions" },
+                estTel() ? el("button", {
+                    class: "tampon" + (prefs.isFavHero(h.id) ? " on" : ""), onclick: (e) => {
+                        const on = prefs.toggleFavHero(h.id);
+                        e.currentTarget.classList.toggle("on", on);
+                    },
+                }, "★ ", t("Favori")) : null,
+                estTel() ? el("button", { class: "tampon", onclick: () => { fermerModale(overlay); ouvrirDeckDuHeros(h); } }, t("Deck")) : null,
                 el("button", { class: "tampon", onclick: () => { fermerModale(overlay); ouvrirCartesHeros(h); } }, t("Voir ses cartes")),
                 el("button", { class: "tampon jaune", onclick: () => { fermerModale(overlay); recruterVraiment(h, portraitEl); } }, t("Choisir ce héros")),
             ),
@@ -2556,7 +2887,10 @@ function recruterVraiment(h, portraitEl) {
     herosPresente = null;
     // Avec variantes, la modale s'ouvre aussitôt : pas de bruit de carte posée
     // par-dessus, la réplique suffit.
-    const avecVariantes = !optionsDuHeros(h, contexteVariantes(h)).aucune;
+    // Sur téléphone, « Options de ce héros » ne s'ouvre plus d'office : le
+    // bouton « Art » du bandeau la rend à la demande (décision du 09/10/2026).
+    const tel = estTel();
+    const avecVariantes = !tel && !optionsDuHeros(h, contexteVariantes(h)).aucune;
     if (!avecVariantes) jouerSon(SON.heros);
     jouerReplique(h.id, "heros");
     const siege = state.activeSlot;
@@ -2565,10 +2899,11 @@ function recruterVraiment(h, portraitEl) {
     herosSurvole = null;
     // La scène d'abord (elle se reconstruit), la carte qui surgit ensuite,
     // par-dessus : dans l'autre ordre, la reconstruction l'emportait.
-    rendreScene(herosDuSiegeActif());
+    if (tel) { herosApercuTel = h; rendreSceneTel(h); }
+    else rendreScene(herosDuSiegeActif());
     rendreEquipe();
     const scene = document.getElementById("tb-scene");
-    if (scene) {
+    if (scene && !tel) {
         const cri = replique(h);
         const eclair = el("div", { class: "tb-eclair" },
             el("img", { src: cardImageUrlEn(picIdHeros(h.heroCardId)), alt: "" }),
@@ -2583,11 +2918,13 @@ function recruterVraiment(h, portraitEl) {
         b.classList.toggle("chosen", activePlayers().some((p) => p.hero && p.hero.id === b.dataset.hero));
     });
     // La barre du bas suit (Continuer s'allume) sans reconstruire l'écran.
-    const nav = document.querySelector(".nav");
-    if (nav) nav.replaceWith(navBar());
+    majNav();
     // Ce héros a des variantes ? La modale s'ouvre tout de suite, pré-remplie
     // de la mémoire. Sans variante, rien : jamais de modale vide.
     if (avecVariantes) ouvrirModaleVariantes(siege, h);
+    // Téléphone : l'équipe est au complet, on file aux decks (le temps de voir
+    // « Choisi »). Le retour du système ramène ici.
+    if (tel && canContinue()) setTimeout(() => { if (!state.accueil && state.step === 0 && canContinue()) goto(1); }, 260);
 }
 
 /** Libellé d'une vague : la vague 0 est le Set de base, qui n'en est pas une.
@@ -2706,17 +3043,20 @@ async function refreshHeroGrid(pre) {
             "aria-disabled": ferme && !verrou.achetable ? "true" : null,
             title: ferme ? verrou.condition : nomAffiche(h),
             onclick: (e) => {
+                if (!ferme && estTel()) return apercevoirHerosTel(h, e.currentTarget);
                 if (!ferme) return recruter(h, e.currentTarget);
                 if (verrou.achetable) return void acheterHerosLegacy(h, e.currentTarget);
             },
-            onmouseenter: () => { herosSurvole = h; rendreScene(h); },
-            onmouseleave: () => { herosSurvole = null; rendreScene(herosDuSiegeActif()); },
-            onfocus: () => { herosSurvole = h; rendreScene(h); },
+            // Téléphone : pas de survol (un doigt ne « quitte » jamais la tuile,
+            // et mouseleave re-dessinerait le bandeau en plein toucher).
+            onmouseenter: estTel() ? undefined : () => { herosSurvole = h; rendreScene(h); },
+            onmouseleave: estTel() ? undefined : () => { herosSurvole = null; rendreScene(herosDuSiegeActif()); },
+            onfocus: estTel() ? undefined : () => { herosSurvole = h; rendreScene(h); },
         },
             portraitHeros(h),
             el("span", { class: "tb-port-nom" }, nomAffiche(h)),
             ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
-            el("span", {
+            estTel() ? null : el("span", {
                 class: "hc-fav" + (prefs.isFavHero(h.id) ? " on" : ""),
                 title: t("Favori"),
                 onclick: (e) => {
@@ -2727,13 +3067,21 @@ async function refreshHeroGrid(pre) {
                     e.currentTarget.classList.toggle("on", on);
                 },
             }, "★"),
-            el("span", {
+            estTel() ? null : el("span", {
                 class: "hc-deck",
                 title: t("Voir le deck"),
                 onclick: (e) => { e.stopPropagation(); e.preventDefault(); ouvrirDeckDuHeros(h); },
             }, "▤"),
         );
     }));
+}
+
+/** Téléphone : un toucher montre le héros dans le bandeau, sans le choisir. */
+function apercevoirHerosTel(h, tuile) {
+    herosApercuTel = h;
+    document.querySelectorAll(".tb-port.apercu").forEach((b) => b.classList.remove("apercu"));
+    if (tuile) tuile.classList.add("apercu");
+    rendreSceneTel(h);
 }
 
 /** Apercu du deck de base d'un heros, depuis sa vignette. La modale porte le
@@ -3639,6 +3987,9 @@ function ouvrirModale(overlay) {
     }
     _modalesOuvertes += 1;
     document.body.append(overlay);
+    // Téléphone : feuille basse, qu'on ferme en tirant la poignée vers le bas.
+    const panneau = overlay.querySelector(".deck-modal-panel");
+    if (panneau) ajouterPoignee(panneau, () => fermerModale(overlay));
 }
 
 function fermerModale(overlay) {
@@ -3678,7 +4029,8 @@ function showDeckCards(deck, hero, deckId) {
             ),
             el("div", { class: "dm-grid" }, ...Object.keys(counts).map((id) =>
                 el("div", { class: "dm-card" },
-                    el("img", { src: cardImageUrl(id), loading: "lazy", onmouseenter: auSurvol((e) => showCardHover(id, e.currentTarget)), onmouseleave: auSurvol(scheduleHide) }),
+                    el("img", { src: cardImageUrl(id), loading: "lazy", onmouseenter: auSurvol((e) => showCardHover(id, e.currentTarget)), onmouseleave: auSurvol(scheduleHide),
+                        onclick: estTel() ? () => ouvrirCarteGrande(id) : undefined }),
                     counts[id] > 1 ? el("span", { class: "dm-count" }, "x" + counts[id]) : null,
                 ))),
         ));
@@ -3821,7 +4173,7 @@ function stepDecks() {
         el("div", { class: "hero-grid tb-roster tb-roster-deck", id: "deck-liste" },
             el("div", { class: "loading" }, t("Chargement des decks..."))),
         el("div", { class: "tb-arsenal-outils", id: "deck-outils" }),
-        el("div", { class: "tb-equipe", id: "tb-equipe" }),
+        estTel() ? null : el("div", { class: "tb-equipe", id: "tb-equipe" }),
     );
     wrap.append(droite);
     Promise.resolve().then(() => {
@@ -3835,6 +4187,7 @@ function stepDecks() {
 
 /** La moitié gauche : le héros du siège actif, et ce que son deck contient. */
 function rendreSceneDeck() {
+    if (estTel()) return rendreSceneDeckTel();
     const scene = document.getElementById("tb-scene");
     if (!scene) return;
     const p = state.players[state.activeSlot];
@@ -3878,6 +4231,23 @@ function rendreOutilsDeck() {
     const i = state.activeSlot;
     const p = state.players[i];
     if (!p || !p.hero) { poser(zone); return; }
+    if (estTel()) {
+        // Téléphone : trois gros boutons au-dessus de la liste ; l'import
+        // passe dans une feuille basse (le champ n'est plus posé en pleine page).
+        poser(zone,
+            el("div", { class: "tel-outils" },
+                el("button", { class: "tampon jaune", onclick: () => ouvrirFeuilleImport(i) }, picto("fa-download"), " ", t("Importer")),
+                el("button", {
+                    class: "tampon",
+                    onclick: () => { window.open("/deck-builder.html?hero=" + encodeURIComponent(p.hero.id)
+                                                 + (state.legacy ? "&legacy=1" : ""), "_blank"); },
+                }, picto("fa-pencil"), " ", t("Éditeur de deck")),
+                el("button", { class: "tampon", onclick: () => ouvrirModaleRessources(i, p.hero) }, picto("fa-th"), " ", t("Ressources")),
+            ),
+            rappelVariantes(p, i),
+        );
+        return;
+    }
     poser(zone,
         el("div", { class: "tb-menace-ligne" },
             el("input", { class: "search tb-search", id: "mcdb-" + i, placeholder: t("Colle une URL ou un ID marvelcdb...") }),
@@ -3910,7 +4280,7 @@ function rendreOutilsDeck() {
 async function doImport(i) {
     const input = document.getElementById("mcdb-" + i);
     const status = document.getElementById("mcdb-st-" + i);
-    if (!input || !input.value.trim()) return;
+    if (!input || !input.value.trim()) return false;
     if (status) status.textContent = t("Import en cours...");
     try {
         const { hero, deck } = await importMarvelcdb(i, input.value);
@@ -3926,10 +4296,12 @@ async function doImport(i) {
             }
         }
         render();
+        return true;
     } catch (e) {
         if (status) status.textContent = "";
-        if (e && e.annule) return;
+        if (e && e.annule) return false;
         alert(t("Échec de l’import :") + " " + e.message);
+        return false;
     }
 }
 
@@ -4020,19 +4392,39 @@ async function loadDecks(i) {
             : dk.source === "tableur" ? t("Tableur")
             : dk.source === "campagne" ? t("En cours")
             : t("Sauvegardé");
+        const choisir = () => {
+            p.deck = dk.deck; p.deckSource = dk.source; p.deckAuto = false;
+            // « campagne » n'existe que sur cet ecran-ci : le retenir comme
+            // dernier deck du heros ne designerait plus rien demain.
+            if (dk.source !== "campagne") prefs.setLastDeck(p.hero.heroCardId, dk.id);
+            loadDecks(i);
+            rendreSceneDeck();
+            rendreEquipe();
+            majNav();
+        };
+        // Téléphone : une carte empilée par deck. Plus d'élément interactif
+        // imbriqué (la carte entière n'est plus un bouton) : deux vrais boutons.
+        if (estTel()) {
+            return el("article", { class: "tb-deck tel-deck" + (on ? " chosen" : "") },
+                el("div", { class: "do-name" }, nomDeckAffiche(dk)),
+                el("div", { class: "do-tags" },
+                    el("span", { class: "tag" }, etiquette),
+                    ...dk.aspects.map((a) => el("span", { class: "tag asp", style: { background: ASPECTS[a] || "#555" } }, a)),
+                ),
+                aspectBar(st),
+                el("div", { class: "do-foot" },
+                    el("span", { class: "do-size" }, st.total + " " + t("cartes")),
+                    ...(ecarts.length
+                        ? [el("span", { class: "do-alerte", title: ecarts.join(" · ") }, "⚠ " + t("Hors règles"))]
+                        : [])),
+                el("div", { class: "tel-deck-actions" },
+                    el("button", { class: "ts-btn", type: "button", onclick: () => showDeckCards(dk.deck, p.hero, dk.id) }, picto("fa-th"), " ", t("Voir les cartes")),
+                    el("button", { class: "ts-btn jaune", type: "button", onclick: choisir }, on ? picto("fa-check") : null, on ? " " : null, on ? t("Choisi") : t("Choisir"))),
+            );
+        }
         return el("button", {
             class: "tb-deck" + (on ? " chosen" : ""),
-            onclick: () => {
-                p.deck = dk.deck; p.deckSource = dk.source; p.deckAuto = false;
-                // « campagne » n'existe que sur cet ecran-ci : le retenir comme
-                // dernier deck du heros ne designerait plus rien demain.
-                if (dk.source !== "campagne") prefs.setLastDeck(p.hero.heroCardId, dk.id);
-                loadDecks(i);
-                rendreSceneDeck();
-                rendreEquipe();
-                const nav = document.querySelector(".nav");
-                if (nav) nav.replaceWith(navBar());
-            },
+            onclick: choisir,
         },
             el("div", { class: "do-name" }, nomDeckAffiche(dk)),
             el("div", { class: "do-tags" },
@@ -4261,9 +4653,10 @@ function stepScenario() {
         // Le niveau de menace, ici même : c'est en voyant le méchant qu'on
         // décide de la difficulté, pas un écran plus loin.
         el("div", { class: "tb-menace", id: "tb-menace" }),
-        el("div", { class: "tb-equipe", id: "tb-equipe" }),
+        estTel() ? null : el("div", { class: "tb-equipe", id: "tb-equipe" }),
     );
     wrap.append(droite);
+    mechantApercuTel = null;
     loadExtTabs();
     Promise.resolve().then(() => {
         rendreSceneMechant(state.scenario);
@@ -4275,6 +4668,7 @@ function stepScenario() {
 
 /** La moitié gauche : le méchant en scène, ses chiffres imprimés, ses livrets. */
 function rendreSceneMechant(sc) {
+    if (estTel()) return rendreSceneMechantTel(sc);
     const scene = document.getElementById("tb-scene");
     if (!scene) return;
     if (!sc) {
@@ -4396,8 +4790,7 @@ function verrouillerCible(sc) {
         eclair.addEventListener("animationend", (ev) => { if (ev.target === eclair) eclair.remove(); });
         setTimeout(() => eclair.remove(), 2800);   // filet, un peu apres la fin de l'animation
     }
-    const nav = document.querySelector(".nav");
-    if (nav) nav.replaceWith(navBar());
+    majNav();
 }
 
 /** Le niveau de menace, sous la grille : règles en tampons, sets en chips. */
@@ -4643,9 +5036,19 @@ async function loadScnGrid() {
             title: ferme ? verrou.condition
                 : (plusieurs ? sc.name + " · " + sc.underlings.length + " " + t("vilains au choix")
                              : nomAvecAuteur(sc.name, sc.auteur || concret.auteur, sc.homebrew || concret.homebrew)),
-            onclick: () => { if (ferme) return; if (plusieurs) ouvrirModaleUnderling(sc); else verrouillerCible(concret); },
-            onmouseenter: () => rendreSceneMechant(concret),
-            onmouseleave: () => rendreSceneMechant(state.scenario),
+            onclick: (e) => {
+                if (ferme) return;
+                if (estTel()) {
+                    // Toucher = aperçu dans le bandeau ; « Choisir » valide.
+                    mechantApercuTel = { sc, concret };
+                    document.querySelectorAll(".tb-port.apercu").forEach((b) => b.classList.remove("apercu"));
+                    e.currentTarget.classList.add("apercu");
+                    return rendreSceneMechantTel(concret);
+                }
+                if (plusieurs) ouvrirModaleUnderling(sc); else verrouillerCible(concret);
+            },
+            onmouseenter: estTel() ? undefined : () => rendreSceneMechant(concret),
+            onmouseleave: estTel() ? undefined : () => rendreSceneMechant(state.scenario),
         },
             portraitScenario(concret),
             el("span", { class: "tb-port-nom" }, nomAvecAuteur(sc.name, sc.auteur || concret.auteur, sc.homebrew || concret.homebrew)),
@@ -4891,6 +5294,12 @@ function blocAvance() {
         ),
     );
 }
+
+enregistrerTraductions(DICO_TEL_EN);
+// Mode téléphone : le passage sous/sur 768 px redessine l'écran ; le bouton
+// Retour du système rejoue l'écran précédent (voir tel.js).
+suivreTel(() => { pileTelReinit(); render(); });
+installerHistorique(appliquerCleTel);
 
 (async () => {
     // Revenir a la preparation desarme toujours le coach du mode Decouverte :

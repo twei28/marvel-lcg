@@ -1,0 +1,286 @@
+/* prepare-tel.css : l'assistant de préparation sur téléphone portrait.
+   Refonte du 09/10/2026 (.planning/todos/2026-10-09-mode-telephone-refonte.md).
+
+   Chargé EN DERNIER, et tout vit sous `@media (max-width:767px)` + `html.tel`
+   (classe posée par js/prepare/tel.js, absente en V2 expérimentale) : à partir
+   de 768 px, ce fichier ne change rien. Le préfixe `html.tel` sert aussi à
+   battre les anciennes couches « <= 600 px » de prepare.css, qu'il remplace.
+
+   Règles tenues partout : zones tactiles de 44 px, aucun débordement
+   horizontal de 320 à 430 px, animations courtes (coupées si le système
+   demande moins de mouvement), mode sobre (html[data-affichage="sobre"]) sans
+   flou ni dégradé. */
+
+@media (max-width: 767px) {
+
+  html.tel, html.tel body { overflow-x: hidden; max-width: 100%; }
+
+  /* ---- L'écran : un en-tête, une zone qui défile, une barre du bas -------- */
+  html.tel #app.tel-assistant {
+    height: 100dvh; min-height: 0; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  html.tel .tel-assistant .layout { flex: 1 1 auto; min-height: 0; display: block; position: relative; }
+  html.tel .tel-assistant .stage,
+  html.tel .tel-assistant .stage-affiche { height: 100%; padding: 0; overflow: auto; }
+  html.tel .tel-assistant .stage:has(> .team-b) { overflow: hidden; }
+
+  /* ---- En-tête fin : logo, langue, burger ; dessous, les étapes ----------- */
+  html.tel .tel-entete {
+    position: relative; z-index: 60; flex: none;
+    display: flex; flex-direction: column; align-items: stretch; gap: 0;
+    min-height: 0; padding: 0;
+    background: #05060a; backdrop-filter: none;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+  }
+  html.tel .tel-rang { position: relative; z-index: 3; display: flex; align-items: center; gap: 6px; padding: 2px 6px 2px 12px; min-height: 48px; }
+  html.tel .tel-rang .spacer { flex: 1; }
+  html.tel .tel-entete .brand { min-width: 44px; justify-content: center; gap: 0; min-height: 44px; display: flex; align-items: center; }
+  html.tel .tel-entete .brand-narwhal { height: 38px; width: 38px; margin: 0; }
+  html.tel .tel-langue, html.tel .tel-burger {
+    min-width: 44px; min-height: 44px; margin: 0; padding: 0 10px;
+    display: inline-grid; place-items: center;
+    border: 0; background: transparent; color: #fff; font-weight: 800; font-size: 15px;
+  }
+  html.tel .tel-burger { font-size: 20px; }
+  /* icones-entete.js impose 34 px en !important aux boutons `.btn-icone` :
+     seule une règle !important plus précise rend les 44 px au téléphone. */
+  html.tel .tel-entete .btn.tel-langue { width: auto !important; height: 44px !important; min-width: 44px; min-height: 44px !important; }
+  html.tel .tel-entete .btn.tel-affichage { width: auto !important; height: 44px !important; min-width: 44px; min-height: 44px !important; padding: 0 12px !important; }
+  html.tel .tel-etapes {
+    position: relative; z-index: 3; display: flex; flex-wrap: nowrap; gap: 0; margin: 0;
+    justify-content: stretch; overflow: visible;
+  }
+  html.tel .tel-etapes .pstep {
+    flex: 1 1 0; min-width: 0; min-height: 44px; padding: 2px 2px 0;
+    flex-direction: column; justify-content: center; gap: 0;
+    font-size: 12px; border-bottom: 3px solid transparent; transform: none;
+  }
+  html.tel .tel-etapes .pstep:hover { transform: none; }
+  html.tel .tel-etapes .pstep .pnum { width: 20px; height: 20px; font-size: 11px; }
+  html.tel .tel-etapes .pstep .plabel { display: block; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  html.tel .tel-etapes .pstep.active { color: #fff; border-bottom-color: var(--affiche-jaune); }
+
+  /* Le menu : un panneau sous l'en-tête, un voile derrière. */
+  html.tel .tel-voile { display: none; position: fixed; inset: 0; z-index: 1; background: rgba(0,0,0,.55); }
+  html.tel .tel-entete.menu-ouvert .tel-voile { display: block; animation: tel-fondu .15s ease-out; }
+  html.tel .tel-menu {
+    display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 2;
+    flex-direction: column; gap: 4px; padding: 8px 12px 12px;
+    background: #0b0d12; border-bottom: 1px solid rgba(255,255,255,.14);
+    max-height: 70dvh; overflow-y: auto;
+  }
+  html.tel .tel-entete.menu-ouvert .tel-menu { display: flex; animation: tel-fondu .15s ease-out; }
+  html.tel .tel-menu .tel-lien {
+    display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 8px;
+    color: #fff; background: transparent; border: 0; text-align: left;
+    font: 700 16px "Segoe UI", system-ui, sans-serif; text-decoration: none;
+  }
+  html.tel .tel-menu .btn, html.tel .tel-menu .btn-affichage { min-height: 44px; align-self: flex-start; }
+  html.tel .tel-menu .reprise-boutons {
+    position: static; display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; padding: 0;
+    overflow: visible; max-width: 100%;
+  }
+  html.tel .tel-menu .reprise-boutons button,
+  html.tel .tel-menu .reprise-boutons a {
+    min-height: 44px; min-width: 44px; padding: 0 12px; font-size: 14px;
+  }
+  html.tel .tel-menu .reprise-boutons .rb-libelle { display: inline; font-size: 14px; }
+
+  /* ---- Le bandeau : l'affiche en haut, qui rétrécit au défilement --------- */
+  html.tel .team-b {
+    position: relative; height: 100%; min-height: 0; overflow: hidden;
+    --bandeau-plein: 160px; --bandeau-h: 160px;
+  }
+  html.tel .tb-scene {
+    position: absolute; left: 0; right: 0; top: 0; bottom: auto; width: auto;
+    height: var(--bandeau-h); min-height: 0; clip-path: none; z-index: 3;
+    overflow: hidden; background: #1e1e1e; border-bottom: 3px solid #1e1e1e;
+  }
+  html.tel .tb-scene::after {
+    background: linear-gradient(0deg, rgba(10,12,16,.95) 0, rgba(10,12,16,.55) 45%, transparent 85%);
+  }
+  html.tel .tb-art { background-size: cover; background-position: center 18%; animation-duration: .18s; }
+  html.tel .tb-art .portrait-duo, html.tel .tb-art .portrait { background-size: cover; }
+  html.tel .tb-trame { opacity: .35; }
+  html.tel .ts-contenu {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+    display: flex; flex-direction: column; gap: 6px; padding: 8px 10px;
+  }
+  html.tel .ts-tampons { display: flex; flex-wrap: wrap; gap: 6px; }
+  html.tel .ts-tampons .tampon {
+    min-height: 22px; padding: 0 8px; font-size: 12px; transform: none; box-shadow: none; border-width: 2px;
+  }
+  html.tel .ts-tampons .tampon > * { transform: none; }
+  html.tel .ts-ligne { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  html.tel .ts-titre { min-width: 0; }
+  html.tel .ts-titre b {
+    display: block; font-size: 24px; line-height: 1.05; color: #fff; text-transform: uppercase;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 0 rgba(0,0,0,.6);
+  }
+  html.tel .ts-titre small {
+    display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--affiche-jaune);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  html.tel .ts-actions { display: flex; gap: 6px; }
+  html.tel .ts-btn {
+    min-height: 44px; min-width: 44px; padding: 0 12px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    border: 2px solid #1e1e1e; background: #2d3746; color: #fff;
+    font: 800 14px "Segoe UI", system-ui, sans-serif; letter-spacing: .02em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  html.tel .ts-btn.jaune { background: var(--affiche-jaune); color: #1e1e1e; flex: 1 1 auto; }
+  html.tel .ts-btn.est-choisi { opacity: .85; }
+  html.tel .ts-actions .ts-btn:not(.jaune) { flex: 0 0 auto; }
+
+  /* Bandeau réduit : nom et traits sur UNE ligne, « Choisir » seul à droite. */
+  html.tel .team-b.compact .ts-tampons { display: none; }
+  html.tel .team-b.compact .ts-contenu { top: 0; justify-content: center; padding: 4px 8px; }
+  html.tel .team-b.compact .ts-ligne { flex-direction: row; align-items: center; gap: 8px; }
+  html.tel .team-b.compact .ts-titre { flex: 1 1 auto; display: flex; align-items: baseline; gap: 8px; }
+  html.tel .team-b.compact .ts-titre b { font-size: 18px; flex: 0 1 auto; }
+  html.tel .team-b.compact .ts-titre small { flex: 1 1 0; min-width: 0; }
+  html.tel .team-b.compact .ts-actions .ts-btn:not(.jaune) { display: none; }
+  html.tel .team-b.compact .ts-actions .ts-btn.jaune { flex: none; }
+
+  /* ---- Ce qui défile : en-tête, filtres, grille --------------------------- */
+  html.tel .tb-droite {
+    position: absolute; inset: 0; width: auto;
+    display: flex; flex-direction: column; gap: 10px;
+    padding: calc(var(--bandeau-plein) + 10px) 10px 12px;
+    overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; z-index: 1;
+  }
+  html.tel .tb-droite > * { flex: none; min-width: 0; max-width: 100%; }
+  html.tel .tb-entete { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+  html.tel .tb-entete b { font-size: 22px; }
+  html.tel .tb-compte { font-size: 11px; letter-spacing: .1em; }
+  html.tel .tb-mode {
+    margin-left: auto; min-height: 44px; max-width: 62%; padding: 0 2px;
+    font-size: 11px; letter-spacing: .06em; text-align: right;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  html.tel .tb-filtres { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  html.tel .tb-filtres .tb-search { flex: 1 1 100%; }
+  html.tel .tb-filtres .tampon { flex: 1 1 auto; justify-content: center; min-width: 0; max-width: 100%; }
+  html.tel input.search, html.tel select, html.tel .tb-search, html.tel .tb-filtres .tampon,
+  html.tel .tel-outils .tampon, html.tel .deck-aspects-bascule, html.tel .ext-tab {
+    min-height: 44px; font-size: 16px;
+  }
+  html.tel .tb-filtres .tampon, html.tel .tel-outils .tampon, html.tel .vh-actions .tampon { font-size: 14px; }
+  html.tel .tampon { transform: none; }
+  html.tel .tampon > * { transform: none; }
+  html.tel .tb-merci { font-size: 12px; }
+
+  /* La grille : trois colonnes, des tuiles qui épousent la largeur. */
+  html.tel .tb-roster {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: auto;
+    gap: 8px; padding: 0; overflow: visible; flex: none; justify-content: stretch;
+  }
+  html.tel .tb-port { width: 100%; height: auto; aspect-ratio: 3 / 4.1; }
+  html.tel .tb-port:hover { transform: none; }
+  html.tel .tb-port-nom { font-size: 11px; padding: 14px 4px 4px; }
+  html.tel .tb-port.apercu::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 0 3px #fff;
+  }
+  html.tel .tb-port.chosen.apercu::after { box-shadow: inset 0 0 0 3px var(--affiche-jaune); }
+
+  /* Les extensions du méchant : une rangée qui défile de côté. */
+  html.tel .ext-tabs { display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  html.tel .ext-tabs::-webkit-scrollbar { display: none; }
+  html.tel .ext-tab { flex: none; }
+  html.tel .tb-roster-scn { margin-top: 0; }
+
+  /* ---- Decks : une carte empilée par deck -------------------------------- */
+  html.tel .tb-entete { order: -3; }
+  html.tel #deck-outils { order: -2; }
+  html.tel .tb-roster-deck { display: flex; flex-direction: column; gap: 10px; }
+  html.tel .tb-deck { width: 100%; padding: 12px; text-align: left; }
+  html.tel .tb-deck:hover { transform: none; }
+  html.tel .tb-deck .do-name { font-size: 16px; }
+  html.tel .tel-deck-actions { display: flex; gap: 8px; margin-top: 10px; }
+  html.tel .tel-deck-actions .ts-btn { flex: 1 1 0; }
+  html.tel .tel-outils { display: flex; flex-wrap: wrap; gap: 8px; }
+  html.tel .tel-outils .tampon { flex: 1 1 auto; justify-content: center; }
+  html.tel .deck-aspects-bascule { width: 100%; }
+  html.tel .deck-aspects.est-deplie { display: flex; flex-direction: column; gap: 10px; }
+
+  /* ---- Barre du bas : équipe, puis Retour / Aléatoire / Continuer --------- */
+  html.tel .nav {
+    position: static; flex: none; z-index: 5;
+    display: flex; flex-direction: column; align-items: stretch; gap: 6px;
+    min-height: 0; padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px));
+    backdrop-filter: none; background: #05060a;
+  }
+  html.tel .tel-equipe-rang { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+  html.tel .tel-equipe-rang .tb-equipe {
+    display: flex; flex: 1 1 auto; min-width: 0; align-items: center; gap: 6px;
+    padding: 0; border: 0; overflow-x: auto; scrollbar-width: none;
+  }
+  html.tel .tel-equipe-rang .tb-equipe::-webkit-scrollbar { display: none; }
+  html.tel .nav .tb-siege {
+    flex: none; width: 44px; height: 44px; aspect-ratio: 1; border-radius: 50%; clip-path: none; padding: 0;
+  }
+  html.tel .nav .tb-siege .portrait, html.tel .nav .tb-siege .portrait-duo { background-size: 240%; background-position: center 12%; }
+  html.tel .nav .tb-siege.actif { box-shadow: 0 0 0 3px var(--affiche-jaune); }
+  html.tel .nav .tb-siege.actif::after { display: none; }
+  html.tel .nav .tb-siege-nom, html.tel .nav .tb-equipe-k { display: none; }
+  html.tel .nav .tb-vs { font-size: 12px; flex: none; }
+  html.tel .nav .tb-siege:hover { transform: none; }
+  html.tel .nav-status { flex: 0 1 auto; max-width: 48%; font-size: 11px; text-align: right; }
+  html.tel .nav > .nav-status { max-width: none; text-align: left; }
+  html.tel .tel-actions { display: flex; gap: 8px; }
+  html.tel .tel-actions .btn { min-height: 44px; flex: 1 1 0; padding: 0 10px; font-size: 14px; white-space: nowrap; }
+  html.tel .tel-actions .tel-retour { flex: 0 0 44px; padding: 0; }
+  html.tel .tel-actions .btn.primary, html.tel .tel-actions .btn.launch { flex: 2 1 0; }
+
+  /* ---- Feuilles basses : un glissement de la poignée les ferme ------------ */
+  html.tel .deck-modal {
+    place-items: end center; padding: 0; backdrop-filter: none; background: rgba(3,4,7,.72);
+  }
+  html.tel .deck-modal-panel {
+    width: 100vw; max-width: none; max-height: 92dvh; display: flex; flex-direction: column;
+    border-radius: 16px 16px 0 0; padding: 0 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    animation: tel-feuille .18s ease-out;
+  }
+  html.tel .deck-modal-panel > * { flex: none; min-width: 0; }
+  html.tel .deck-modal-panel summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+  html.tel .deck-modal-panel.vh-panel::before { display: none; }
+  html.tel .tel-poignee {
+    height: 44px; margin: 0 -12px; display: grid; place-items: center; touch-action: none; cursor: grab;
+  }
+  html.tel .tel-poignee span { width: 44px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.4); }
+  html.tel .dm-close { width: 44px; height: 44px; }
+  html.tel .dm-edit { min-height: 44px; }
+  html.tel .dm-head { flex-wrap: wrap; gap: 8px; }
+  html.tel .dm-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  html.tel .tb-cartes-grille { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  html.tel .vh-panel .vh-actions { flex-wrap: wrap; }
+  html.tel .vh-panel .vh-actions .tampon { min-height: 44px; flex: 1 1 auto; justify-content: center; }
+  html.tel .fiche-heros .fh-art { height: min(26dvh, 220px); }
+  html.tel .carte-grande .cg-image { width: 100%; max-height: 78dvh; object-fit: contain; display: block; }
+  html.tel .feuille-import .tb-search { width: 100%; margin: 8px 0; }
+
+  /* Tout bouton en forme de tampon reste une zone de 44 px au doigt. */
+  html.tel .tel-assistant button.tampon, html.tel .deck-modal-panel button.tampon { min-height: 44px; }
+  html.tel .tel-assistant input[type="range"] { height: 44px; min-width: 120px; margin: 0; }
+
+  @keyframes tel-feuille { from { transform: translateY(100%); } to { transform: none; } }
+  @keyframes tel-fondu { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ---- Mode sobre : pas de flou, pas de dégradé, pas d'animation ---------- */
+  html[data-affichage="sobre"].tel .tel-entete,
+  html[data-affichage="sobre"].tel .nav,
+  html[data-affichage="sobre"].tel .deck-modal { backdrop-filter: none; }
+  html[data-affichage="sobre"].tel .tb-scene::after { background: rgba(10,12,16,.62); }
+  html[data-affichage="sobre"].tel .tb-trame { display: none; }
+  html[data-affichage="sobre"].tel .ts-btn.jaune { background: var(--ambre-terni, #b3a588); color: #1a1a1a; }
+  html[data-affichage="sobre"].tel .tel-assistant *,
+  html[data-affichage="sobre"].tel .deck-modal-panel,
+  html[data-affichage="sobre"].tel .tel-menu,
+  html[data-affichage="sobre"].tel .tel-voile { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+}
+
+@media (max-width: 767px) and (prefers-reduced-motion: reduce) {
+  html.tel .deck-modal-panel, html.tel .tel-menu, html.tel .tel-voile, html.tel .tb-art { animation: none !important; }
+}

@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-09",
         genre: "jeu",
+        fr: "La préparation de partie est pensée pour le téléphone : en-tête avec menu, étapes cliquables, héros en bandeau et grille à trois colonnes. Touche un héros pour le voir, puis « Choisir ». Le bouton Retour de ton téléphone revient à l'étape d'avant.",
+        en: "Game setup is now designed for phones: a slim header with a menu, tappable steps, the hero in a banner and a three-column grid. Tap a hero to preview it, then “Choose”. Your phone's Back button returns to the previous step.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
         fr: "L'éditeur de deck est refait : filtres à gauche, cartes au centre, ton deck toujours visible à droite avec l'aperçu, la courbe des coûts et sa validité. Nouveau : un simulateur de pioche, des statistiques, des filtres par trait, pack et caractéristiques, et une recherche courte comme « t:avenger c:2 ».",
         en: "The deck builder is redone: filters on the left, cards in the middle, your deck always visible on the right with the preview, the cost curve and whether it is valid. New: a draw simulator, statistics, filters by trait, pack and stats, and a short search syntax such as “t:avenger c:2”.",
     },

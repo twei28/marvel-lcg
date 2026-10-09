@@ -20,25 +20,16 @@ async function jusquA(page: Page, etape: 'heros' | 'decks' | 'mechant') {
   await page.getByRole('button', { name: /^Solo/ }).first().click();
   await page.waitForSelector('#hero-grid .tb-port', { timeout: 20000 });
   if (etape === 'heros') return;
-  // ⚠ Sur telephone le premier appui ouvre la FICHE du heros, il ne recrute
-  // pas : c'est « Choisir ce heros » qui recrute (voir SANS_SURVOL, app.js).
+  // ⚠ Sur telephone (refonte du 09/10/2026) le toucher PRESENTE le heros dans
+  // le bandeau ; c'est « Choisir » qui recrute, et l'equipe complete file
+  // d'elle-meme aux Decks (plus de modale d'options).
   await page.locator('#hero-grid .tb-port').filter({ hasText: /^Spider-Man/ }).first().click();
-  await page.waitForTimeout(600);
-  const choisir = page.getByRole('button', { name: /Choisir ce h/i });
-  if (await choisir.count()) await choisir.first().click();
-  await page.waitForTimeout(800);
-  // Spider-Man a des variantes : sa modale d'options s'ouvre d'elle-meme.
-  const options = page.locator('.deck-modal');
-  if (await options.count()) {
-    const valider = options.getByRole('button', { name: /valider/i });
-    if (await valider.count()) await valider.click();
-  }
+  await page.locator('.ts-btn.jaune').click();
+  await page.waitForSelector('#deck-liste .tb-deck', { timeout: 20000 });
   const suivant = async () => {
     await page.getByRole('button', { name: /continuer/i }).click();
     await page.waitForTimeout(900);
   };
-  await suivant();
-  await page.waitForSelector('#deck-liste .tb-deck', { timeout: 20000 });
   if (etape === 'decks') return;
   await suivant();
   await page.waitForSelector('#scn-grid .tb-port', { timeout: 20000 });
@@ -102,6 +93,7 @@ test('la grille des heros tient sur trois colonnes', async ({ page }) => {
 test('le bloc de la menace ne coupe aucune puce', async ({ page }) => {
   await jusquA(page, 'mechant');
   await page.locator('#scn-grid .tb-port').first().click();
+  await page.locator('.ts-btn.jaune').click();
   await page.waitForTimeout(900);
   const g = await page.evaluate(() => {
     const bloc = document.querySelector('#tb-menace') as HTMLElement;
@@ -122,6 +114,7 @@ test('le bloc de la menace ne coupe aucune puce', async ({ page }) => {
 test('l ecran final remplit l ecran, et ses cartes sont lisibles', async ({ page }) => {
   await jusquA(page, 'mechant');
   await page.locator('#scn-grid .tb-port').first().click();
+  await page.locator('.ts-btn.jaune').click();
   await page.waitForTimeout(800);
   await page.getByRole('button', { name: /continuer/i }).click();
   await page.waitForSelector('.faceoff', { timeout: 20000 });
