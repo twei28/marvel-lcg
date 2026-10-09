@@ -11,6 +11,25 @@
 
   // Version publique, SANS compte : ni signalement de bug, ni administration (ils passent par le serveur du site).
   const BUG = new Set(["/post_rapport_bug", "/get_rapport_actif", "/get_site_admin", "/get_messages_prives", "/post_messages_lus"]);
+  // Compteur ANONYME des parties lancees sur play (09/10/2026) : le moteur tourne ici, le site
+  // n'en saurait rien sinon. Texte brut via sendBeacon (pas de preflight CORS), jamais bloquant.
+  function compterPartie(url) {
+    try {
+      if (!location.hostname.startsWith("play.") || !navigator.sendBeacon) return;
+      const d = JSON.parse(url.searchParams.get("data") || "{}");
+      const scenario = JSON.parse(d.campaign_json || "{}");
+      const heros = (d.hero_json || []).map((j) => { try { return JSON.parse(j).name; } catch (e) { return null; } })
+        .filter((n) => typeof n === "string").slice(0, 4);
+      const signal = {
+        mechant: typeof scenario.name === "string" ? scenario.name : null,
+        heros,
+        joueurs: Math.max(1, heros.length),
+        mode: (d.rules || []).includes("mode_campaign") ? "campagne" : "solo",
+        difficulte: scenario.expert ? "expert" : "normal",
+      };
+      navigator.sendBeacon(location.origin.replace("//play.", "//") + "/compteur_play", JSON.stringify(signal));
+    } catch (e) { /* le compteur ne doit jamais gener une partie */ }
+  }
   window.fetch = async (input, init) => {
     const url = new URL(typeof input === "string" ? input : input.url, location.href);
     if (url.origin === location.origin && BUG.has(url.pathname)) {
@@ -18,6 +37,7 @@
       return new Response(corps, { status: url.pathname === "/post_rapport_bug" ? 403 : 200, headers: { "Content-Type": "application/json" } });
     }
     if (!routeMoteur(url)) return natif(input, init);
+    if (url.pathname === "/new") compterPartie(url);
     const methode = ((init && init.method) || (typeof input !== "string" && input.method) || "GET").toUpperCase();
     const corps = init && typeof init.body === "string" ? init.body : "";
     const rep = await M.requete(methode, url.pathname, url.search.slice(1), corps);
@@ -59,6 +79,8 @@
   const MASQUES = /^(🐞\s*)?(Signaler un bug|Report a bug|Mes signalements|My reports|Bug)$/i;
   let ajoute = false;
   const parler = (msg) => { try { window.top.alert(msg); } catch (e) { /* */ } };
+  // Lue a chaque appel : le joueur peut changer de langue sans recharger la page.
+  const tr = (fr, en) => { try { return localStorage.getItem("marvel-langue") === "en" ? en : fr; } catch (e) { return fr; } };
   function bouton(texte, titre, action) {
     const b = document.createElement("button");
     b.type = "button"; b.textContent = texte; b.title = titre; b.addEventListener("click", action); return b;
@@ -70,12 +92,12 @@
     champ.type = "file"; champ.accept = ".json,application/json"; champ.style.display = "none";
     champ.addEventListener("change", async () => {
       const f = champ.files[0]; champ.value = ""; if (!f) return;
-      try { parler((await M.importer(f)) + " fichier(s) importe(s). Ouvre « Reprendre » pour retrouver tes parties."); }
-      catch (e) { parler("Import impossible : " + (e && e.message ? e.message : e)); }
+      try { parler((await M.importer(f)) + tr(" fichier(s) importe(s). Ouvre « Reprendre » pour retrouver tes parties.", " file(s) imported. Open « Resume » to find your games.")); }
+      catch (e) { parler(tr("Import impossible : ", "Import failed: ") + (e && e.message ? e.message : e)); }
     });
     rangee.append(
-      bouton("💾 Exporter mes parties", "Telecharge un fichier avec toutes tes parties et reglages", () => M.exporter().catch((e) => parler("Export impossible : " + e.message))),
-      bouton("📂 Importer", "Recharge un fichier d'export", () => champ.click()),
+      bouton("💾 " + tr("Exporter mes parties", "Export my games"), tr("Telecharge un fichier avec toutes tes parties et reglages", "Downloads a file with all your games and settings"), () => M.exporter().catch((e) => parler(tr("Export impossible : ", "Export failed: ") + e.message))),
+      bouton("📂 " + tr("Importer", "Import"), tr("Recharge un fichier d'export", "Loads an export file"), () => champ.click()),
       champ);
   }
   function nettoyer() {

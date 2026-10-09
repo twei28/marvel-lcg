@@ -1343,6 +1343,18 @@ CREATE TABLE IF NOT EXISTS abandons (
     manigances  TEXT,
     cause       TEXT
 );
+-- Parties lancees sur play (moteur dans le navigateur, sans compte). Anonyme :
+-- ni IP, ni navigateur, ni identifiant. Seulement de quoi compter.
+CREATE TABLE IF NOT EXISTS parties_play (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    jour        TEXT NOT NULL,
+    mechant     TEXT,
+    heros       TEXT,
+    joueurs     INTEGER NOT NULL DEFAULT 1,
+    mode        TEXT,
+    difficulte  TEXT
+);
+CREATE INDEX IF NOT EXISTS parties_play_jour ON parties_play(jour);
 """
 
 
@@ -2048,6 +2060,98 @@ def reinitialisations_ouvertes():
 def supprimer_reinitialisation(jeton: str) -> None:
     with _cx() as cx:
         cx.execute("DELETE FROM reinitialisations WHERE jeton = ?", (jeton,))
+
+
+# ---------------------------------------------------------------------------
+# Compteur anonyme de play (09/10/2026). Le moteur de play tourne dans le
+# navigateur : sans ce signal, le site ne sait rien de ce qui s'y joue.
+# ---------------------------------------------------------------------------
+COMPTEUR_PLAY_MAX_OCTETS = 4096
+COMPTEUR_PLAY_MAX_PAR_JOUR = int(os.environ.get("COMPTEUR_PLAY_MAX_PAR_JOUR", "2000"))
+_PLAY_MODES = {"solo", "campagne"}
+_PLAY_DIFFICULTES = {"normal", "expert"}
+
+
+def _texte_court(valeur, longueur: int = 60) -> str | None:
+    """Une chaine imprimable et courte, ou None. Rien d'autre n'entre en base."""
+    if not isinstance(valeur, str):
+        return None
+    propre = "".join(c for c in valeur if c.isprintable()).strip()
+    return propre[:longueur] or None
+
+
+def enregistrer_partie_play(brut: bytes) -> bool:
+    """Compte une partie lancee sur play. Rend False si le signal est ignore
+    (illisible, vide, ou plafond du jour atteint)."""
+    try:
+        donnees = json.loads(brut.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError):
+        return False
+    if not isinstance(donnees, dict):
+        return False
+    mechant = _texte_court(donnees.get("mechant"))
+    heros_bruts = donnees.get("heros")
+    heros = []
+    if isinstance(heros_bruts, list):
+        heros = [h for h in (_texte_court(x) for x in heros_bruts[:4]) if h]
+    if not mechant and not heros:
+        return False
+    joueurs = donnees.get("joueurs")
+    if not isinstance(joueurs, int) or isinstance(joueurs, bool) or not 1 <= joueurs <= 4:
+        joueurs = max(1, len(heros))
+    mode = donnees.get("mode") if donnees.get("mode") in _PLAY_MODES else "solo"
+    difficulte = donnees.get("difficulte") if donnees.get("difficulte") in _PLAY_DIFFICULTES else None
+    jour = time.strftime("%Y-%m-%d", time.gmtime())
+    with _cx() as cx:
+        deja = cx.execute("SELECT COUNT(*) FROM parties_play WHERE jour = ?", (jour,)).fetchone()[0]
+        if deja >= COMPTEUR_PLAY_MAX_PAR_JOUR:
+            return False
+        cx.execute("INSERT INTO parties_play (jour, mechant, heros, joueurs, mode, difficulte)"
+                   " VALUES (?, ?, ?, ?, ?, ?)",
+                   (jour, mechant, json.dumps(heros, ensure_ascii=False), joueurs, mode, difficulte))
+    return True
+
+
+def stats_play(jours: int = 30, top: int = 10) -> dict:
+    """Parties de play par jour (les `jours` derniers), et les plus joues."""
+    depuis = time.strftime("%Y-%m-%d", time.gmtime(time.time() - (jours - 1) * 86400))
+    with _cx() as cx:
+        par_jour = [(r["jour"], r["n"]) for r in cx.execute(
+            "SELECT jour, COUNT(*) AS n FROM parties_play WHERE jour >= ?"
+            " GROUP BY jour ORDER BY jour DESC", (depuis,))]
+        mechants = [(r["mechant"], r["n"]) for r in cx.execute(
+            "SELECT mechant, COUNT(*) AS n FROM parties_play WHERE jour >= ? AND mechant IS NOT NULL"
+            " GROUP BY mechant ORDER BY n DESC, mechant LIMIT ?", (depuis, top))]
+        compte_heros: dict[str, int] = {}
+        for r in cx.execute("SELECT heros FROM parties_play WHERE jour >= ?", (depuis,)):
+            try:
+                liste = json.loads(r["heros"] or "[]")
+            except ValueError:
+                continue
+            for h in liste if isinstance(liste, list) else []:
+                if isinstance(h, str):
+                    compte_heros[h] = compte_heros.get(h, 0) + 1
+    heros = sorted(compte_heros.items(), key=lambda x: (-x[1], x[0]))[:top]
+    return {"par_jour": par_jour, "mechants": mechants, "heros": heros,
+            "total": sum(n for _, n in par_jour), "jours": jours}
+
+
+def bloc_stats_play() -> str:
+    """Le sous-onglet « Play » de l'administration."""
+    st = stats_play()
+    if not st["total"]:
+        return '<p class="vide">Aucune partie lancee sur play ces %d derniers jours.</p>' % st["jours"]
+
+    def tableau(titre, lignes):
+        corps = "".join("<tr><td>%s</td><td>%d</td></tr>" % (html.escape(str(k)), n) for k, n in lignes)
+        return "<h3>%s</h3><table><tr><th>%s</th><th>Parties</th></tr>%s</table>" % (
+            html.escape(titre), html.escape(titre.split()[0]), corps)
+
+    return ("<p class=\"sous\">%d partie(s) lancee(s) sur play ces %d derniers jours.</p>"
+            % (st["total"], st["jours"])
+            + tableau("Jour (UTC)", st["par_jour"])
+            + tableau("Mechants les plus joues", st["mechants"])
+            + tableau("Heros les plus joues", st["heros"]))
 
 
 def invitation_valide(jeton: str) -> bool:
@@ -3772,7 +3876,13 @@ PAGE_ADMIN = """<!doctype html>
         <button type="button" class="sous-onglet" data-sous="parties-encours" role="tab">En cours</button>
         <button type="button" class="sous-onglet" data-sous="parties-historique" role="tab">Historique</button>
         <button type="button" class="sous-onglet" data-sous="parties-revoir" role="tab">À revoir</button>
+        <button type="button" class="sous-onglet" data-sous="parties-play" role="tab">Play</button>
       </nav>
+      <div class="sous-panneau" data-sous-panneau="parties-play" hidden>
+        <p class="sous">Les parties lancees sur play (le jeu dans le navigateur, sans compte).
+        Compteur anonyme : ni adresse, ni identifiant.</p>
+        {stats_play}
+      </div>
       <div class="sous-panneau" data-sous-panneau="parties-revoir" hidden>
         <p class="sous">Les 3 dernieres parties TERMINEES de chaque joueur (rangees chez l'hote de la
         table). Telecharge le fichier, puis ouvre-le dans « Revoir » sur l'ecran de preparation.</p>
@@ -5462,6 +5572,7 @@ class Handler(BaseHTTPRequestHandler):
                                  badge_joueurs=badge(n_joueurs),
                                  parties=parties,
                                  parties_a_revoir=self._parties_a_revoir(),
+                                 stats_play=bloc_stats_play(),
                                  suivi_max=SUIVI_TERMINEES_MAX,
                                  styles_suivi=SUIVI_STYLE_BLOC,
                                  script_suivi=SUIVI_SCRIPT,
@@ -5922,6 +6033,18 @@ class Handler(BaseHTTPRequestHandler):
         if self._taille_corps() < 0:
             self._corps_refuse()
             return
+
+        if self.chemin == "/compteur_play":
+            # Sans compte et sans cookie : play n'en a pas. Plafond propre a
+            # cette route, juge sur l'annonce AVANT de lire, comme plus haut.
+            taille = self._taille_corps()
+            if taille > COMPTEUR_PLAY_MAX_OCTETS:
+                self._corps_refuse()
+                return
+            enregistrer_partie_play(self.rfile.read(taille))
+            self._repondre(204, b"", "text/plain; charset=utf-8")
+            return
+
         pseudo = self._session()
 
         if self.chemin == "/signalements":
