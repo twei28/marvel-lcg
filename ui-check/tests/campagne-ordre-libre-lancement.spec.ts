@@ -60,7 +60,9 @@ test('choisir une affaire et un vilain lance la bonne partie', async ({ page, re
   await page.waitForURL(/board\.html/, { timeout: 120000 })
   // Le plateau est monté : le vilain choisi et la manigance sont en jeu.
   await expect(page.locator('body')).toContainText(/Bullseye/i, { timeout: 120000 })
-  await expect(page.locator('body')).toContainText(/Casse du musée|Art Museum Heist/i)
+  // Le plateau ecrit le nom francais OFFICIEL de la carte depuis ae946a5d (08/10/2026,
+  // noms mc4db) : « Cambriolage du Musée d'Art », pas le titre de l'ecran de campagne.
+  await expect(page.locator('body')).toContainText(/Cambriolage du Musée d.Art|Casse du musée|Art Museum Heist/i)
 
   // La campagne a enregistré la partie en cours et le vilain retenu.
   const liste = (await (await request.get('/list_campagnes?')).json()) as Array<any>

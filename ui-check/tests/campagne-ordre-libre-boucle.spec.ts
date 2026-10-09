@@ -15,6 +15,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { acheverLaPartie, monde, repondre, sieges } from '../pilote-campagne'
 
 const NOM = 'Essai boucle ordre libre'
 const DECK = JSON.parse(
@@ -25,6 +26,23 @@ let identifiant = ''
 const campagne = async (request: any) => {
   const liste = (await (await request.get('/list_campagnes?')).json()) as Array<any>
   return liste.find((c) => c.id === identifiant)
+}
+
+/**
+ * Repond aux questions de mise en place (manigance 1A a retourner, main de
+ * depart) jusqu'a ce que la partie demarre. Indispensable avant `Gagner()` :
+ * la console differe toute commande tant que la partie n'a pas commence
+ * (engine/console/console.py, `Execute`), et la mise en place attend le OK du
+ * joueur pour retourner la manigance depuis f46f75e1 / b6425dc1.
+ */
+async function finirLaMiseEnPlace(page: Page, request: any) {
+  for (let i = 0; i < 60; i++) {
+    for (const siege of await sieges(request)) await repondre(request, siege)
+    const phase = String((await monde(request)).phase ?? '')
+    if (phase && !/Setup|Mulligan|Init/.test(phase)) return
+    await page.waitForTimeout(400)
+  }
+  throw new Error("La mise en place ne s'est jamais terminee.")
 }
 
 async function lancer(page: Page, affaire: RegExp) {
@@ -55,14 +73,20 @@ test('gagner une affaire l inscrit au carnet, et la suivante démarre avec son e
 
   // 1. Première affaire : Le casse du musée.
   await lancer(page, /^Le casse du musée|^Art Museum Heist/)
+  await finirLaMiseEnPlace(page, request)
 
   // 2. Victoire forcée : le moteur termine la partie comme une vraie victoire.
-  await page.evaluate(() => fetch('/debug?Gagner()'))
+  // La console n'execute une commande `/debug` qu'a la REPONSE suivante du joueur
+  // (engine/controller/controller.py) : `acheverLaPartie` envoie et repond.
+  await acheverLaPartie(page, request, 'Gagner()')
 
   // 3. Le panneau de récompenses s'ouvre et se valide.
   const panneau = page.locator('section.camp-recomp')
   await expect(panneau, 'le panneau de récompenses ne s est pas ouvert').toBeVisible({ timeout: 60000 })
   await page.getByRole('button', { name: /Valider et continuer la campagne|Voir la conclusion/ }).click()
+  // Le panneau ramene lui-meme a l'ecran des campagnes : attendre ce retour, sinon
+  // le `goto` suivant est interrompu par cette navigation.
+  await page.waitForURL(/campagne\.html/, { timeout: 30000 })
 
   // 4. Le carnet porte l'affaire gagnée.
   await expect.poll(async () => (await campagne(request))?.carnet?.['Completed Scenarios'],
@@ -73,6 +97,9 @@ test('gagner une affaire l inscrit au carnet, et la suivante démarre avec son e
 
   // 5. Affaire suivante : son environnement Complété doit être en jeu.
   await lancer(page, /^La fuite|^The Getaway/)
+  // L'environnement entre a l'etape « campagne » de la mise en place, APRES le OK
+  // qui retourne la manigance : on finit donc la mise en place avant de regarder.
+  await finirLaMiseEnPlace(page, request)
   await expect(page.locator('body'), "l environnement de l affaire gagnée n est pas en jeu")
-    .toContainText(/Art Museum Heist|Casse du musée/i, { timeout: 120000 })
+    .toContainText(/Art Museum Heist|Casse du musée|Cambriolage du Musée d.Art/i, { timeout: 120000 })
 })
