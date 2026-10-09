@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-09",
         genre: "jeu",
+        fr: "Préparation de partie : la scène du héros prend moins de place et la grille s'élargit, avec des vignettes plus grandes. On voit bien plus de héros d'un coup, et les étapes Decks et Méchant profitent de la même place.",
+        en: "Game setup: the hero scene takes less room and the grid is wider, with bigger tiles. You see many more heroes at once, and the Decks and Villain steps get the same extra space.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
         fr: "En-tête plus fin, sur une seule ligne : les outils (Reprendre, Revoir, Stats, Signaler un bug, Documents…) deviennent des icônes avec leur nom au survol, et les étapes de la préparation sont numérotées.",
         en: "Slimmer, single-line header: tools (Resume, Replay, Stats, Report a bug, Documents…) become icons with their name on hover, and the setup steps are numbered.",
     },

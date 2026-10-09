@@ -2301,6 +2301,7 @@ function rendreScene(h) {
                 el("small", {}, t("Siège") + " " + (state.activeSlot + 1)),
                 t("Choisis un héros")),
         );
+        ajusterNomGeant(scene);
         return;
     }
     const traits = [...new Set([...(h.traits || []), ...(h.traitsAlterEgo || [])])].slice(0, 4).join(" · ");
@@ -3843,6 +3844,7 @@ function rendreSceneDeck() {
             el("div", { class: "tb-art vide" }),
             el("div", { class: "tb-trame" }),
             el("div", { class: "tb-nomg" }, el("small", {}, t("Arsenal")), t("Aucun héros")));
+        ajusterNomGeant(scene);
         return;
     }
     const st = p.deck ? deckStats(p.deck) : null;
@@ -4281,6 +4283,7 @@ function rendreSceneMechant(sc) {
             el("div", { class: "tb-trame" }),
             el("div", { class: "tb-nomg" }, el("small", {}, t("Méchant")), t("Choisis un méchant")),
         );
+        ajusterNomGeant(scene);
         return;
     }
     const carte = cards.get((sc.villainCards || [])[0] || sc.tileImage);

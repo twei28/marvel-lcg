@@ -62,15 +62,19 @@
      de la coupe, le cadrage vertical de l'art, la taille des portraits. */
   --affiche-jaune:#f0b95f;
   --affiche-ombre:8px 8px 0 #e62429;
-  --affiche-scene-w:58%;
-  --affiche-pente:90px;
+  --affiche-scene-w:32%;
+  /* Le zoom de l'art en scene, rapporte a la HAUTEUR : a 58 % de largeur,
+     `cover` se calait sur la largeur et montrait le haut de la carte ; a 32 %,
+     il se calait sur la hauteur et montrait la carte entiere, texte compris. */
+  --affiche-art-zoom:165%;
+  --affiche-pente:70px;
   --affiche-cadrage:18%;
   --affiche-nom:132px;
   --affiche-recitatif:22px;
-  --affiche-portrait:104px;          /* largeur d'un portrait du roster */
-  --affiche-portrait-h:148px;        /* sa hauteur : le rectangle des anciennes tuiles */
+  --affiche-portrait:132px;          /* largeur d'un portrait du roster (104 avant le 30 / 70) */
+  --affiche-portrait-h:188px;        /* sa hauteur, meme rapport que les anciennes tuiles */
   --affiche-portrait-zoom:154%;
-  --affiche-siege:88px;
+  --affiche-siege:64px;
   --affiche-eclair:2.4s;             /* le temps que la carte et le cri restent a l'ecran */
   --affiche-cri:84px;                /* la taille du cri, la meme pour tous */
   --affiche-siege-petit:60px;        /* les sièges de la table, écran cible */
@@ -1359,7 +1363,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   clip-path:polygon(0 0,100% 0,calc(100% - var(--affiche-pente,90px)) 100%,0 100%);
   background:#1e1e1e;
 }
-.tb-art{position:absolute;inset:0;background:#1e1e1e center var(--affiche-cadrage,18%)/cover no-repeat;animation:entre-en-scene .35s ease}
+.tb-art{position:absolute;inset:0;background:#1e1e1e center var(--affiche-cadrage,18%)/auto var(--affiche-art-zoom,165%) no-repeat;animation:entre-en-scene .35s ease}
 /* PAS de background-size:cover ici (25/09/2026, signale par l'utilisateur,
    qui compare aux vignettes ".tu peux mettre la meme chose sur la grande ?
    on voit bien les persos sur les deux petites") : ce panneau est bien plus
@@ -1390,7 +1394,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .team-b .recitatif{position:absolute;left:32px;top:26px;z-index:3}
 .tb-nomg{
   position:absolute;left:36px;bottom:158px;z-index:2;
-  max-width:calc(var(--affiche-scene-w,58%) - 40px);
+  max-width:calc(100% - var(--affiche-pente,70px) - 30px);
   font-size:var(--affiche-nom,132px);
   /* Jamais un mot coupe en deux : c'est la taille qui cede (ajusterNomGeant,
      app.js), pas le mot. */
@@ -1404,9 +1408,9 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   font-family:"Segoe UI",system-ui,sans-serif;font-style:normal;font-weight:800;font-size:16px;letter-spacing:.28em;
   color:var(--affiche-jaune);text-shadow:none;
 }
-.tb-tampons{position:absolute;left:40px;bottom:110px;z-index:2;display:flex;gap:12px;flex-wrap:wrap;max-width:calc(var(--affiche-scene-w,58%) - 60px)}
+.tb-tampons{position:absolute;left:40px;bottom:110px;z-index:2;display:flex;gap:12px;flex-wrap:wrap;max-width:calc(100% - var(--affiche-pente,70px) - 50px)}
 /* Le pied de scène : la biographie et les livrets, repliés. */
-.tb-bas{position:absolute;left:40px;bottom:24px;z-index:3;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;max-width:calc(var(--affiche-scene-w,58%) - 60px)}
+.tb-bas{position:absolute;left:40px;bottom:24px;z-index:3;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;max-width:calc(100% - var(--affiche-pente,70px) - 50px)}
 .tb-bio{
   min-width:0;flex:0 1 auto;
   background:rgba(8,10,14,.9);border:3px solid #1e1e1e;
@@ -1425,7 +1429,7 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 /* La règle d'un scénario-défi, en clair au-dessus des tampons. */
 .tb-defi{
   position:absolute;left:40px;bottom:158px;z-index:3;
-  max-width:calc(var(--affiche-scene-w,58%) - 60px);
+  max-width:calc(100% - var(--affiche-pente,70px) - 50px);
   display:flex;flex-direction:column;gap:3px;
   padding:8px 14px;
   background:rgba(230,36,41,.16);border:3px solid var(--eux);
