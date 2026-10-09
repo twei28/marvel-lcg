@@ -443,9 +443,9 @@
        el('i', { class: 'fa fa-bar-chart', 'aria-hidden': 'true' }), ' Stats'));
 
   // Hauts faits : DEBRANCHE a la demande de l'utilisateur, comme la banniere
-  // du plateau. La page /achievements.html reste en place et continue d'etre
-  // alimentee : il suffit de remettre ce bouton dans le append ci-dessus pour
-  // la rallumer.
+  // du plateau. La page /achievements.html est retiree (elle redirige vers
+  // /prepare.html, retirer la redirection de son <head> pour la rallumer) ;
+  // les donnees continuent d'etre calculees.
   //
   // el('button', {
   //   onclick: () => { window.location.href = '/achievements.html'; },

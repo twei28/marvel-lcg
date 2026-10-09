@@ -9,7 +9,7 @@ import path from 'node:path';
 
 const SORTIE = process.env.SORTIE_CAPTURES || path.resolve('captures-tmp');
 const PAGES = [
-  'prepare.html', 'campagne.html', 'achievements.html', 'cards.html', 'deck.html', 'deck-builder.html',
+  'prepare.html', 'campagne.html', 'cards.html', 'deck.html', 'deck-builder.html',
   'galerie.html', 'palettes-heros.html', 'rejoindre.html', 'salon.html', 'replay.html', 'scene.html',
 ];
 const fondDuCorps = (page: Page) => page.evaluate(() => getComputedStyle(document.body).backgroundImage + ' | ' + getComputedStyle(document.body).backgroundColor);
