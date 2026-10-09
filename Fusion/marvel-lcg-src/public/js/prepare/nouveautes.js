@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-09",
         genre: "jeu",
+        fr: "Campagne Hunting Season : les pages du livret s'affichent à l'écran de campagne, en français quand le jeu est en français. La traduction posée sur les cartes couvre aussi le verso et les manigances.",
+        en: "Hunting Season campaign: the booklet pages now show on the campaign screen, in French when the game is in French. Translations laid over cards now also cover the back side and schemes.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
         fr: "Les cartes restées en anglais faute de scan français montrent maintenant leur traduction directement sur la carte agrandie, à la place du texte anglais, dans la police des vraies cartes.",
         en: "Cards still shown in English (no French scan) now display their French translation right on the enlarged card, over the English text, in the real card font.",
     },
