@@ -111,10 +111,16 @@ function portraitHeros(membre) {
     });
 }
 
+/** Seule une campagne qui declare `livret_fr` a des pages dans `fr/` : les
+ *  autres iraient chercher une page absente a chaque affichage. */
+function livretFrancais() {
+    return langueActuelle() === "fr" && !!(etat.definition && etat.definition.livret_fr);
+}
+
 /** Une page de livret, cliquable pour l'agrandir. */
 function pageLivret(code, fichier, classe) {
     // En francais, la page traduite si elle existe ; sinon la page anglaise.
-    const francais = langueActuelle() === "fr";
+    const francais = livretFrancais();
     const img = el("img", { class: "cmp-page " + (classe || ""), src: pageLivretUrl(code, fichier, francais ? "fr" : ""), alt: "", loading: "lazy" });
     let repli = francais;
     img.onerror = () => {
@@ -161,7 +167,7 @@ document.addEventListener("keydown", (e) => {
 /** Une page du livre : la version francaise si elle existe, sinon l'anglaise ;
  *  absente des deux, elle sort du livre (couverture d'une boite sans livret). */
 function feuilleDuLivre(code, page, quandAbsente) {
-    const francais = langueActuelle() === "fr";
+    const francais = livretFrancais();
     const img = el("img", {
         class: "cmp-page cmp-page-" + page.classe, alt: "", draggable: "false",
         src: pageLivretUrl(code, page.fichier, francais ? "fr" : ""),

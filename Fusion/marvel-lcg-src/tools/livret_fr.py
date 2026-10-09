@@ -4,6 +4,7 @@ Le livret est vectoriel : chaque bloc de texte anglais est retire du PDF (redact
 texte seul, fond et images intacts), puis le francais est ecrit a la meme place, dans
 les polices du livret. Les pages sont rendues comme `pages_livret.py` les rend, dans
 `public/stories/<code>/fr/`, sous le meme nom que la page anglaise.
+L'ecran de campagne ne les cherche que si `data/campagnes/<code>.json` declare `"livret_fr": true`.
 
     python3 tools/livret_fr.py hunting_season [--pour-de-vrai]
 

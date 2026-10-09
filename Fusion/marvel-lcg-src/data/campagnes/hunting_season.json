@@ -1,6 +1,7 @@
 {
   "version": "1.0",
   "code": "hunting_season",
+  "livret_fr": true,
   "cle_extension": "178. Custom (Hunting Season)",
   "nom": "Saison de Chasse",
   "nom_en": "Hunting Season",
