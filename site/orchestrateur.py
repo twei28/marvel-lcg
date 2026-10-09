@@ -2877,6 +2877,22 @@ def fermer_sessions_de(pseudo: str) -> None:
 # --------------------------------------------------------------------------
 # Site
 # --------------------------------------------------------------------------
+# AFFICHAGE SOBRE sur les pages du site (09/10/2026) : meme reglage que le jeu
+# (cle `mc_affichage_v1`), memes valeurs que la palette du plateau sobre
+# (ui-app/styles/affichage-sobre.css). Desature, jamais de gris force, sans la
+# trame de points. Injecte par `_repondre` apres la premiere balise meta.
+SOBRE_SITE = (
+    b'<script>try{if(localStorage.getItem("mc_affichage_v1")==="sobre")'
+    b'document.documentElement.dataset.affichage="sobre"}catch(e){}</script>'
+    b'<style>html[data-affichage="sobre"]{--bg:#232528;--panel:#2a2c30;--panel-2:#30333a;'
+    b'--border:#3a3e44;--text:#e4e5e8;--muted:#a9adb4;--accent:#5c3f3f;--accent-hover:#6c4a4a;'
+    b'--accent-soft:rgba(108,74,74,.18);--accent-ink:#e4e5e8;--ok:#737c62;--danger:#b39d9d;'
+    b'--warn:#b3a588}html[data-affichage="sobre"] body{background-image:none!important;'
+    b'background-color:#232528!important}html[data-affichage="sobre"] a{color:#9aabb6}'
+    b'html[data-affichage="sobre"] img{filter:saturate(.75)}</style>'
+)
+
+
 PAGE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -4884,6 +4900,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def _repondre(self, code: int, corps: bytes, type_mime="text/html; charset=utf-8",
                   entetes: list[tuple[str, str]] | None = None):
+        if type_mime.startswith("text/html") and b'<meta charset="utf-8">' in corps:
+            corps = corps.replace(b'<meta charset="utf-8">', b'<meta charset="utf-8">' + SOBRE_SITE, 1)
         self.send_response(code)
         self.send_header("Content-Type", type_mime)
         self.send_header("Content-Length", str(len(corps)))

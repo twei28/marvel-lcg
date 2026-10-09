@@ -29,7 +29,8 @@ async function etatSobre(page: Page) {
       teinte: html.dataset.teinte ?? null,
       trame: avant.display === 'none' || avant.content === 'none' || avant.content === '',
       ombreTitre: titre ? getComputedStyle(titre).textShadow : 'none',
-      filtreArt: art ? getComputedStyle(art).filter : 'saturate(0.55)',
+      filtreArt: art ? getComputedStyle(art).filter : 'saturate(0.75)',
+      accents: ['--affiche-jaune', '--agir', '--eux'].map((n) => getComputedStyle(html).getPropertyValue(n).trim()),
     };
   });
 }
@@ -71,7 +72,14 @@ for (const p of PAGES) {
         expect(e.teinte, 'la teinte du fond doit tomber en sobre').toBeNull();
         expect(e.trame, 'la trame BD doit disparaitre').toBe(true);
         expect(e.ombreTitre).toBe('none');
-        expect(e.filtreArt, 'l art de la scene doit etre adouci, pas en noir et blanc').toContain('saturate');
+        expect(e.filtreArt, 'l art de la scene perd 25 % de saturation').toContain('saturate(0.75)');
+        expect(e.filtreArt, 'l art de la scene n est pas assombri').not.toContain('brightness');
+        // Desature, pas gris : chaque accent garde sa teinte (ecart entre canaux), mais ternie (pas le #e62429 d'origine).
+        for (const hex of e.accents) {
+          const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+          expect(Math.max(r, g, b) - Math.min(r, g, b), `accent ${hex} ne doit pas etre gris`).toBeGreaterThan(12);
+          expect(Math.max(r, g, b) - Math.min(r, g, b), `accent ${hex} doit etre terni`).toBeLessThan(90);
+        }
       }
       await ctx.close();
     }

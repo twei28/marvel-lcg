@@ -1,53 +1,94 @@
 /* L'AFFICHAGE SOBRE SUR LES PAGES HORS PLATEAU (09/10/2026).
 
-   Décisions de l'utilisateur (.planning/todos/2026-10-09-mode-sobre-des-menus.md) :
-   plus de trame BD ni d'effets (points, ombres des titres, biseaux, reflets,
-   dégradés : des aplats), plus de couleurs du héros (gris neutres, une seule
-   couleur d'accent, `--agir`, pour l'action principale), illustration de la
-   scène atténuée. Les polices BD restent. Retour du 09/10/2026 : « moins
-   flashy, pas noir et blanc », comme le plateau sobre : l'art garde ses
-   couleurs, seulement adoucies.
+   Principe de l'utilisateur : DÉSATURER, jamais de noir et blanc ni de gris
+   forcés. Les teintes restent (rouge = rouge, vert = vert, ambre = ambre), elles
+   sont ternies avec EXACTEMENT les valeurs de la palette du plateau
+   (ui-app/styles/affichage-sobre.css). Les illustrations perdent 25 % de leur
+   saturation, sans être assombries. Trame de points BD, ombres colorées sous
+   les titres et zoom de la scène sont retirés ; biseaux et formes restent.
 
    La teinte du fond choisie par le joueur est retirée par teinte-page.js.
    ⚠ À CHARGER EN DERNIER, après teinte-pages.css : à spécificité égale, la
    dernière feuille gagne. */
 
 html[data-affichage="sobre"] {
-  --affiche-jaune: #b9bdc4;
-  --gold: #c9ccd2;
-  --eux: #7b8089;
-  --eux2: #8f949d;
-  --eux-halo: rgba(255, 255, 255, .14);
+  /* Palette du plateau sobre. */
+  --rouge-terni: #5c3f3f;
+  --rouge-terni-vif: #6c4a4a;
+  --rouge-terni-clair: #b39d9d;
+  --vert-terni: #737c62;
+  --vert-terni-clair: #a9b096;
+  --ambre-terni: #b3a588;
+  --ambre-terni-clair: #d3c9b4;
+  --bleu-terni: #9aabb6;
+  --bleu-terni-fonce: #3e4b57;
+  --alerte-terni: #8a6e5c;
+
+  /* Rôles des pages : le rouge Marvel devient le rouge terni, l'ambre du héros
+     reste de l'ambre, notre camp reste bleu-gris. */
+  --agir: #5c3f3f;
+  --agir-halo: rgba(108, 74, 74, .45);
+  --red: #5c3f3f;
+  --blue: #9aabb6;
+  --green: #737c62;
+  --cyan: #9aabb6;
+  --affiche-jaune: #b3a588;
+  --gold: #b3a588;
+  --or: #b3a588;
+  --hf-or: #b3a588;
+  --eux: #6c4a4a;
+  --eux2: #8a6464;
+  --eux-halo: rgba(108, 74, 74, .42);
   --nous-halo: rgba(255, 255, 255, .14);
   --affiche-ombre: none;
-  --fo-nous-fond: #2a2c31;
-  --fo-eux-fond: #2a2c31;
-  /* Les fonds et panneaux de chaque page, en gris neutres (ils tiraient sur le bleu). */
-  --ink: #141517;
-  --ink2: #1a1b1e;
-  --steel: #232528;
-  --steel2: #2a2c30;
-  --steel3: #33363b;
-  --line: #3d4046;
-  --soft: #2c2e33;
-  --fond: #1c1d20;
-  --panneau: #232528;
-  --carte: #2a2c30;
-  --hf-fond: #1c1d20;
-  --hf-panneau: #232528;
-  --w-bg-0: #1c1d20;
-  --w-bg-1: #232528;
-  --w-panel: #232528;
-  --w-panel-2: #2a2c30;
-  --w-line: #3d4046;
-  --w-line-soft: #2c2e33;
-  /* Les ors deviennent gris : le rouge reste la seule couleur d'accent. */
-  --or: #d4d6db;
-  --hf-or: #d4d6db;
+  --fo-nous-fond: #3e4b57;
+  --fo-eux-fond: #3a2b2d;
+
+  /* Texte : blanc cassé, gris clair, liens bleu terni. */
+  --txt: #e4e5e8;
+  --dim: #a9adb4;
+  --mute: #7d828a;
+  --lien: #9aabb6;
+
+  /* Fonds : gris du plateau, uni. */
+  --ink: #1c1d20;
+  --ink2: #202226;
+  --steel: #2a2c30;
+  --steel2: #30333a;
+  --steel3: #3a3e44;
+  --line: #3a3e44;
+  --soft: #2f3237;
+  --fond: #232528;
+  --panneau: #2a2c30;
+  --carte: #2f3237;
+  --hf-fond: #232528;
+  --hf-panneau: #2a2c30;
+  --w-bg-0: #232528;
+  --w-bg-1: #2a2c30;
+  --w-panel: #2a2c30;
+  --w-panel-2: #30333a;
+  --w-line: #3a3e44;
+  --w-line-soft: #30333a;
+
+  /* Succès, erreur, avertissement : teintes du plateau. */
+  --ok: #737c62;
+  --danger: #b39d9d;
+  --warn: #b3a588;
+
+  /* Couleurs d'aspect, ternies mais reconnaissables. */
+  --asp-agression: #a05a5c;
+  --asp-justice: #b3a588;
+  --asp-leadership: #6c8aa3;
+  --asp-protection: #73876d;
+  --asp-pool: #9a6a92;
+  --asp-determination: #8a6aa0;
+  --asp-venomized: #6b6b7a;
+  --asp-basic: #9aa0a8;
+  --asp-campaign: #8a7550;
 }
 
 html[data-affichage="sobre"] body {
-  background: #1c1d20 !important;
+  background: #232528 !important;
   background-image: none !important;
 }
 html[data-affichage="sobre"] body::before,
@@ -57,7 +98,7 @@ html[data-affichage="sobre"] .face-a-face .faceoff::after {
   display: none !important;
 }
 
-/* Les titres et noms : plus d'ombre portée colorée. */
+/* Les titres et noms : à plat, sans ombre portée colorée. */
 html[data-affichage="sobre"] h1.affiche,
 html[data-affichage="sobre"] .tb-nomg,
 html[data-affichage="sobre"] .team-b.eux .tb-nomg,
@@ -68,67 +109,138 @@ html[data-affichage="sobre"] .tb-eclair .ono {
   -webkit-text-stroke: 0;
 }
 
-/* La scène : illustration adoucie, voile uni au lieu des dégradés. Sa
-   diagonale reste : sans elle, la scène recouvre « Ton équipe ». */
+/* Les illustrations : 25 % de désaturation, sans assombrir. La traduction posée
+   sur un scan suit le scan. */
+html[data-affichage="sobre"] img,
+html[data-affichage="sobre"] canvas,
+html[data-affichage="sobre"] .traduction-posee,
 html[data-affichage="sobre"] .tb-art,
-html[data-affichage="sobre"] .tb-eclair img {
-  filter: saturate(.55) brightness(.7);
+html[data-affichage="sobre"] .hero-card .portrait,
+html[data-affichage="sobre"] .portrait-duo > *,
+html[data-affichage="sobre"] [style*="background-image"] {
+  filter: saturate(.75);
 }
-html[data-affichage="sobre"] .tb-scene::after,
-html[data-affichage="sobre"] .team-b.eux .tb-scene::after {
-  background: rgba(28, 29, 32, .35) !important;
+/* Un conteneur déjà filtré ne filtre pas ses enfants une seconde fois. */
+html[data-affichage="sobre"] .hero-card .portrait [style*="background-image"],
+html[data-affichage="sobre"] .tb-art img,
+html[data-affichage="sobre"] .portrait-duo img {
+  filter: none;
+}
+
+/* Pastilles et jauges d'aspect : ternies. */
+html[data-affichage="sobre"] .tag.asp,
+html[data-affichage="sobre"] .aspect-bar .seg,
+html[data-affichage="sobre"] .tampon.aspect {
+  filter: saturate(.6);
+}
+html[data-affichage="sobre"] .aspect-aggression { --c-aspect: var(--asp-agression); }
+html[data-affichage="sobre"] .aspect-justice { --c-aspect: var(--asp-justice); }
+html[data-affichage="sobre"] .aspect-leadership { --c-aspect: var(--asp-leadership); }
+html[data-affichage="sobre"] .aspect-protection { --c-aspect: var(--asp-protection); }
+html[data-affichage="sobre"] .aspect-pool { --c-aspect: var(--asp-pool); }
+html[data-affichage="sobre"] .aspect-determination { --c-aspect: var(--asp-determination); }
+html[data-affichage="sobre"] .aspect-venomized { --c-aspect: var(--asp-venomized); }
+html[data-affichage="sobre"] .aspect-basic { --c-aspect: var(--asp-basic); }
+html[data-affichage="sobre"] .aspect-campaign { --c-aspect: var(--asp-campaign); }
+
+/* La scène : image fixe, voile du plateau, diagonale gardée. */
+html[data-affichage="sobre"] .tb-art,
+html[data-affichage="sobre"] .tb-eclair {
+  animation: none !important;
 }
 html[data-affichage="sobre"] .tb-art.vide,
 html[data-affichage="sobre"] .team-b.eux .tb-art.vide {
-  background: #26282d !important;
+  background: #2a2c30 !important;
 }
-html[data-affichage="sobre"] .fo-side.heroes-side,
-html[data-affichage="sobre"] .tb-siege.eux,
-html[data-affichage="sobre"] .cut {
-  clip-path: none !important;
-}
-
-/* Le face-à-face et les panneaux : aplats. */
-html[data-affichage="sobre"] .face-a-face .faceoff,
-html[data-affichage="sobre"] .fo-side.heroes-side {
-  background: #26282d !important;
-}
-html[data-affichage="sobre"] .recap,
-html[data-affichage="sobre"] .mode-pill,
-html[data-affichage="sobre"] .card-hover,
-html[data-affichage="sobre"] .deck-opt,
-html[data-affichage="sobre"] .preset,
-html[data-affichage="sobre"] .tb-deck,
-html[data-affichage="sobre"] .acc-mode,
-html[data-affichage="sobre"] .deck-modal-panel,
-html[data-affichage="sobre"] .ext-tab .box-defis {
-  background: var(--steel, #26282d) !important;
-}
-html[data-affichage="sobre"] .recap-slot.active {
-  background: var(--steel, #26282d) !important;
+/* La teinte du méchant, ternie. */
+html[data-affichage="sobre"] .team-b.eux .tb-scene::after {
+  background: linear-gradient(90deg, rgba(58, 43, 45, .55), transparent 60%) !important;
 }
 
-/* Les tampons biseautés : droits. */
-html[data-affichage="sobre"] .tampon,
-html[data-affichage="sobre"] .tampon > * {
+/* Survol : pas de soulèvement, juste un contour. */
+html[data-affichage="sobre"] .hero-card:hover,
+html[data-affichage="sobre"] .scn-tile:hover,
+html[data-affichage="sobre"] .deck-opt:hover,
+html[data-affichage="sobre"] .ext-tab:hover,
+html[data-affichage="sobre"] .preset:hover,
+html[data-affichage="sobre"] .slot:hover,
+html[data-affichage="sobre"] .acc-mode:hover,
+html[data-affichage="sobre"] .camp-node:not(.locked):hover,
+html[data-affichage="sobre"] .tb-siege:hover,
+html[data-affichage="sobre"] .tb-deck:hover,
+html[data-affichage="sobre"] .recap-slot:hover,
+html[data-affichage="sobre"] .pstep:hover,
+html[data-affichage="sobre"] .btn:hover,
+html[data-affichage="sobre"] .cmp-carte:hover,
+html[data-affichage="sobre"] .g-carte:hover,
+html[data-affichage="sobre"] .tb-carte img:hover,
+html[data-affichage="sobre"] .dm-card:hover img {
   transform: none !important;
+  box-shadow: none !important;
+  outline: 2px solid #b3a588;
+  outline-offset: -2px;
+}
+html[data-affichage="sobre"] .hero-card.chosen {
+  border-color: #b3a588;
+  box-shadow: 0 0 0 2px #b3a588;
 }
 
-/* Campagne. */
+/* Boutons principaux : rouge terni. */
 html[data-affichage="sobre"] .btn.primary,
-html[data-affichage="sobre"] .cmp-segment.sel {
-  background: var(--red, #e62429) !important;
-}
+html[data-affichage="sobre"] .cmp-segment.sel,
 html[data-affichage="sobre"] .cmp-jauge-plein {
-  background: var(--red, #e62429) !important;
+  background: var(--rouge-terni) !important;
+}
+html[data-affichage="sobre"] .btn.primary:hover {
+  background: var(--rouge-terni-vif) !important;
+}
+
+/* Les tampons gardent leur biseau, leur couleur d'ambre est ternie par la palette. */
+html[data-affichage="sobre"] .tampon.jaune,
+html[data-affichage="sobre"] .tampon.on {
+  background: var(--ambre-terni);
+}
+
+/* En-tête : gris du plateau, étape active en rouge terni. */
+html[data-affichage="sobre"] .progress {
+  background: #232528;
+}
+html[data-affichage="sobre"] .pstep.active .pnum {
+  background: var(--rouge-terni);
+  border-color: var(--rouge-terni);
+}
+
+/* Barre de défilement, infobulles, menus déroulants, modales. */
+html[data-affichage="sobre"] ::-webkit-scrollbar-thumb {
+  background: var(--rouge-terni);
+}
+html[data-affichage="sobre"] * {
+  scrollbar-color: var(--rouge-terni) transparent;
+}
+html[data-affichage="sobre"] select,
+html[data-affichage="sobre"] option,
+html[data-affichage="sobre"] [role="tooltip"],
+html[data-affichage="sobre"] .card-hover,
+html[data-affichage="sobre"] .deck-modal-panel {
+  background: #2a2c30;
+  color: var(--txt);
+}
+html[data-affichage="sobre"] .langue-modal,
+html[data-affichage="sobre"] .affichage-modal,
+html[data-affichage="sobre"] .phase-modal,
+html[data-affichage="sobre"] .deck-modal {
+  background: rgba(0, 0, 0, .55);
+}
+html[data-affichage="sobre"] a {
+  color: var(--lien);
+}
+
+/* Le face-à-face : couleurs de siège ternies mais distinctes. */
+html[data-affichage="sobre"] .face-a-face .faceoff {
+  background: linear-gradient(90deg, var(--fo-nous-fond) 49%, var(--fo-eux-fond) 51%) !important;
 }
 
 /* Galerie : le voile sous le texte des cartes, uni. */
 html[data-affichage="sobre"] .g-carte figcaption {
-  background: rgba(5, 6, 8, .85) !important;
-}
-
-/* Les vignettes de héros : même atténuation que l'illustration de la scène. */
-html[data-affichage="sobre"] .hero-card .portrait {
-  filter: saturate(.55) brightness(.7);
+  background: rgba(20, 21, 23, .85) !important;
 }
