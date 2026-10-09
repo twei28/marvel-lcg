@@ -311,8 +311,9 @@ body.db-panneau-filtres .db-page, body.db-panneau-deck .db-page { z-index: 50; }
   #db-apercu { height: 27vh; }
 }
 
-/* --- Mobile : grille plein écran, barre du bas ---------------------------- */
-@media (max-width: 700px) {
+/* --- Mobile : grille plein écran, barre du bas ----------------------------
+   Jusqu'à 767 px (refonte téléphone du 09/10/2026) : dès 768 px, le PC. */
+@media (max-width: 767px) {
   body.db-body { overflow: auto; height: auto; }
   .db-entete .db-titre { font-size: 18px; margin-left: 4px; }
   .db-entete .db-heros { max-width: 120px; margin-left: 4px; letter-spacing: .04em; }

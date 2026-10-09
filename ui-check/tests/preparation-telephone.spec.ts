@@ -16,8 +16,9 @@ test.use({ viewport: { width: 480, height: 1050 }, hasTouch: true, isMobile: tru
 /** Choisit Spider-Man et avance jusqu'a l'ecran demande. */
 async function jusquA(page: Page, etape: 'heros' | 'decks' | 'mechant') {
   await page.goto('/prepare.html');
-  await page.waitForSelector('.acc-mode', { timeout: 20000 });
-  await page.getByRole('button', { name: /^Solo/ }).first().click();
+  // Accueil au téléphone (zone 2, 09/10/2026) : Jouer ouvre la feuille des modes.
+  await page.locator('.acc-tel-jouer').click({ timeout: 20000 });
+  await page.locator('.acc-tel-feuille').getByRole('button', { name: /^Solo/ }).click();
   await page.waitForSelector('#hero-grid .tb-port', { timeout: 20000 });
   if (etape === 'heros') return;
   // ⚠ Sur telephone (refonte du 09/10/2026) le toucher PRESENTE le heros dans

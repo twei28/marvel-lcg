@@ -234,6 +234,64 @@
   html.tel .tel-actions .tel-retour { flex: 0 0 44px; padding: 0; }
   html.tel .tel-actions .btn.primary, html.tel .tel-actions .btn.launch { flex: 2 1 0; }
 
+  /* ---- Accueil (zone 2) : gros bouton Jouer, puis vignettes --------------- */
+  html.tel .accueil-stage { padding: 0; min-height: 0; display: block; }
+  html.tel .acc-tel { display: flex; flex-direction: column; gap: 14px; padding: 14px 12px 28px; max-width: none; }
+  html.tel .acc-tel-titre { display: flex; align-items: center; gap: 12px; }
+  html.tel .acc-tel-titre .acc-narwhal { width: 64px; height: auto; flex: none; }
+  html.tel .acc-tel-titre h1.affiche { font-size: 40px; line-height: .9; margin: 0; }
+  html.tel .acc-tel-jouer {
+    width: 100%; min-height: 128px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+    gap: 6px; padding: 16px 20px; text-align: left; cursor: pointer;
+    background: var(--agir, #e62429); color: #fff; border: 3px solid #1e1e1e; box-shadow: 6px 6px 0 #1e1e1e;
+  }
+  html.tel .acc-tel-jouer b { font-size: 60px; line-height: .85; text-transform: uppercase; }
+  html.tel .acc-tel-jouer small { font-size: 14px; opacity: .92; }
+  html.tel .acc-tel-vignettes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  html.tel .acc-tel-vignette {
+    min-width: 0; min-height: 108px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+    padding: 12px; text-align: left; text-decoration: none; cursor: pointer;
+    color: #fff; background: #1b1f29; border: 3px solid #1e1e1e;
+  }
+  html.tel .acc-tel-vignette i.fa { font-size: 22px; color: var(--affiche-jaune); margin-bottom: auto; }
+  html.tel .acc-tel-vignette b { font-size: 22px; line-height: 1; text-transform: uppercase; overflow-wrap: anywhere; }
+  html.tel .acc-tel-vignette small { color: var(--dim); font-size: 12px; }
+  /* La feuille des façons de jouer : une ligne par mode, ses nombres dessous. */
+  html.tel .acc-tel-feuille-titre { flex: none; margin: 0 0 6px; font-size: 24px; text-transform: uppercase; color: #fff; }
+  html.tel .acc-tel-mode { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; border-top: 1px solid rgba(255,255,255,.08); }
+  html.tel .acc-tel-mode-nom {
+    width: 100%; min-height: 52px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+    gap: 2px; padding: 6px 12px; text-align: left; cursor: pointer;
+    color: #fff; background: #1b1f29; border: 2px solid #1e1e1e;
+  }
+  html.tel .acc-tel-mode-nom b { font-size: 24px; line-height: 1; text-transform: uppercase; }
+  html.tel .acc-tel-mode-nom small { color: var(--dim); font-size: 12px; }
+  html.tel .acc-tel-mode .acc-nombres { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  html.tel .acc-tel-mode .acc-nombre { min-width: 44px; min-height: 44px; }
+  html[data-affichage="sobre"].tel .acc-tel-jouer { box-shadow: 6px 6px 0 #111; }
+
+  /* ---- Reprendre, Statistiques (reprise.js) : feuilles basses ------------ */
+  html.tel .reprise-voile { align-items: flex-end; padding: 0; overflow: hidden; animation: tel-fondu .15s ease-out; }
+  html.tel .reprise-panneau {
+    max-width: none; width: 100vw; max-height: 90dvh; overflow-y: auto; overscroll-behavior: contain;
+    border-radius: 16px 16px 0 0; border-bottom: 0; padding: 0 12px calc(14px + env(safe-area-inset-bottom, 0px));
+    animation: tel-feuille .18s ease-out;
+  }
+  html.tel .reprise-panneau > .tel-poignee { position: sticky; top: 0; z-index: 2; background: #262626; }
+  html.tel .reprise-panneau h2 button { min-width: 44px; min-height: 44px; }
+  html.tel .reprise-ligne { flex-wrap: wrap; }
+  html.tel .reprise-ligne button { min-height: 44px; min-width: 44px; }
+  html.tel .reprise-recherche { min-height: 44px; font-size: 16px; }
+  html.tel .stats-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  /* Les tableaux deviennent des cartes empilées : une ligne = une carte, chaque
+     valeur précédée de son libellé (`data-label`, posé par reprise.js). */
+  html.tel .stats-table, html.tel .stats-table tbody, html.tel .stats-table tr, html.tel .stats-table td { display: block; }
+  html.tel .stats-table tr:has(> th) { display: none; }
+  html.tel .stats-table tr { margin: 0 0 8px; padding: 8px 10px; background: #1e1e1e; border: 1px solid #444; border-radius: 8px; }
+  html.tel .stats-table td { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; border: 0; text-align: right; }
+  html.tel .stats-table td::before { content: attr(data-label); color: #999; font-weight: 600; text-align: left; flex: none; }
+  html.tel .stats-table td:first-child { font-weight: 700; color: #fff; }
+
   /* ---- Feuilles basses : un glissement de la poignée les ferme ------------ */
   html.tel .deck-modal {
     place-items: end center; padding: 0; backdrop-filter: none; background: rgba(3,4,7,.72);
@@ -277,10 +335,13 @@
   html[data-affichage="sobre"].tel .ts-btn.jaune { background: var(--ambre-terni, #b3a588); color: #1a1a1a; }
   html[data-affichage="sobre"].tel .tel-assistant *,
   html[data-affichage="sobre"].tel .deck-modal-panel,
+  html[data-affichage="sobre"].tel .reprise-panneau,
+  html[data-affichage="sobre"].tel .reprise-voile,
   html[data-affichage="sobre"].tel .tel-menu,
   html[data-affichage="sobre"].tel .tel-voile { animation-duration: 1ms !important; transition-duration: 1ms !important; }
 }
 
 @media (max-width: 767px) and (prefers-reduced-motion: reduce) {
-  html.tel .deck-modal-panel, html.tel .tel-menu, html.tel .tel-voile, html.tel .tb-art { animation: none !important; }
+  html.tel .deck-modal-panel, html.tel .tel-menu, html.tel .tel-voile, html.tel .tb-art,
+  html.tel .reprise-panneau, html.tel .reprise-voile { animation: none !important; }
 }

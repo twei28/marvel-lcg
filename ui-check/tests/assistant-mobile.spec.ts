@@ -6,12 +6,15 @@
 // ne change pas.
 //
 //   npm run assistant-mobile
+// Accueil au téléphone (zone 2 de la refonte) : Solo vit dans la feuille du
+// gros bouton « Jouer ».
 import { test, expect } from '@playwright/test';
 
 test.describe("L'assistant au telephone", () => {
   test('un toucher presente le heros dans le bandeau, « Choisir » l assigne', async ({ page }) => {
     await page.goto('/prepare.html');
-    await page.getByRole('button', { name: /^Solo/ }).first().tap();
+    await page.locator('.acc-tel-jouer').tap();
+    await page.locator('.acc-tel-feuille').getByRole('button', { name: /^Solo/ }).tap();
     const tuile = page.locator('.tb-port[data-hero="storm"]');
     await tuile.waitFor({ timeout: 30_000 });
     await tuile.tap();
@@ -28,7 +31,8 @@ test.describe("L'assistant au telephone", () => {
 
   test('la fiche s ouvre depuis le bandeau, en feuille basse pleine largeur', async ({ page }) => {
     await page.goto('/prepare.html');
-    await page.getByRole('button', { name: /^Solo/ }).first().tap();
+    await page.locator('.acc-tel-jouer').tap();
+    await page.locator('.acc-tel-feuille').getByRole('button', { name: /^Solo/ }).tap();
     const tuile = page.locator('.tb-port[data-hero="storm"]');
     await tuile.waitFor({ timeout: 30_000 });
     await tuile.tap();
@@ -52,7 +56,8 @@ test.describe("L'assistant au telephone", () => {
   // paquet legal choisi d'office (decision du 12/09/2026).
   test('un heros sans deck de base recoit tous les paquets d aspect, le premier legal choisi', async ({ page }) => {
     await page.goto('/prepare.html');
-    await page.getByRole('button', { name: /^Solo/ }).first().tap();
+    await page.locator('.acc-tel-jouer').tap();
+    await page.locator('.acc-tel-feuille').getByRole('button', { name: /^Solo/ }).tap();
     await page.locator('.tb-port').first().waitFor({ timeout: 30_000 });
     await page.getByRole('button', { name: /fan-made/i }).first().tap();
     const tuile = page.locator('.tb-port[data-hero="angela"]');

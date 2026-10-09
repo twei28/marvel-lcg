@@ -54,6 +54,8 @@ import { launch } from "/public/js/prepare/launcher.js";
 import { urlNarval } from "/public/js/prepare/narval.js";
 import * as OL from "/public/js/campagne/ordre-libre.js";
 import * as LP from "/public/js/campagne/livre-pages.js";
+import { estTel, suivreTel, enteteTel, feuilleDansHistorique } from "/public/js/tel-pages.js";
+import { installerHistorique, noterEcran, reculerVers } from "/public/js/prepare/tel.js";
 
 const root = document.getElementById("app");
 
@@ -133,7 +135,9 @@ function pageLivret(code, fichier, classe) {
 }
 
 function ouvrirLoupe(src) {
-    const loupe = el("div", { class: "cmp-loupe", onclick: () => loupe.remove() }, el("img", { src, alt: "" }));
+    // Au téléphone, Retour Android referme la loupe (feuille dans l'historique).
+    const fermer = feuilleDansHistorique(() => loupe.remove());
+    const loupe = el("div", { class: "cmp-loupe", onclick: () => fermer() }, el("img", { src, alt: "" }));
     document.body.append(loupe);
 }
 
@@ -212,13 +216,17 @@ function livreOuvert(code, cle, onglets) {
         const pages = presentes(onglet);
         const un = simple(pages.length);
         memo.debut = LP.caler(memo.debut, pages.length, un);
-        const avant = tournee && !MOINS_D_ANIMATION.matches ? {
+        // Au telephone, la page GLISSE de cote (elle a suivi le doigt) au lieu
+        // de pivoter sur une reliure qu'on ne voit pas en page seule.
+        const glisse = sens !== 0 && estTel() && !MOINS_D_ANIMATION.matches;
+        const avant = tournee && !glisse && !MOINS_D_ANIMATION.matches ? {
             src: tournee.querySelector("img").src,
             boite: tournee.querySelector("img").getBoundingClientRect(),
         } : null;
 
         const visibles = pages.slice(memo.debut, memo.debut + (un ? 1 : 2));
-        const double = el("div", { class: "cmp-livre-double" + (visibles.length === 1 ? " seule" : "") },
+        const double = el("div", { class: "cmp-livre-double" + (visibles.length === 1 ? " seule" : "")
+                + (glisse ? (sens > 0 ? " glisse-avance" : " glisse-recule") : "") },
             visibles.map((p) => feuilleDuLivre(code, p, () => {
                 if (_pagesManquantes.has(code + "/" + p.fichier)) return;
                 _pagesManquantes.add(code + "/" + p.fichier);
@@ -270,17 +278,33 @@ function livreOuvert(code, cle, onglets) {
 
     // Balayage du doigt : un geste horizontal franc tourne la page, et le
     // « clic » qui le termine n'ouvre pas la loupe.
+    // Au telephone, la page suit le doigt pendant le geste (glissement
+    // lateral), puis repart a sa place si le geste ne suffit pas.
     function balayage(scene) {
         let depart = null;
         let avale = false;
+        const suivre = (dx) => {
+            const double = scene.querySelector(".cmp-livre-double");
+            if (!double || !estTel()) return;
+            double.classList.remove("glisse-avance", "glisse-recule");
+            double.style.transition = dx === null ? "" : "none";
+            double.style.transform = dx === null ? "" : "translateX(" + dx + "px)";
+        };
         scene.addEventListener("pointerdown", (e) => {
             depart = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY };
         });
+        scene.addEventListener("pointermove", (e) => {
+            if (!depart) return;
+            const dx = e.clientX - depart.x;
+            if (Math.abs(dx) > 8 && Math.abs(dx) > 1.5 * Math.abs(e.clientY - depart.y)) suivre(dx);
+        });
+        scene.addEventListener("pointercancel", () => { depart = null; suivre(null); });
         scene.addEventListener("pointerup", (e) => {
             if (!depart) return;
             const dx = e.clientX - depart.x;
             const dy = e.clientY - depart.y;
             depart = null;
+            suivre(null);
             if (Math.abs(dx) > 50 && Math.abs(dx) > 1.5 * Math.abs(dy)) {
                 avale = true;
                 tourner(dx < 0 ? 1 : -1);
@@ -321,6 +345,8 @@ function entete(sousTitre, retour) {
     // Le titre de l'onglet etait ecrit en dur dans campagne.html, donc en
     // francais meme avec l'interface en anglais. On le pose ici, ou t() existe.
     document.title = t("Campagnes") + " — Marvel Champions";
+    // Téléphone (zone 2 de la refonte du 09/10/2026) : l'en-tête fin à burger.
+    if (estTel()) return enteteTel({ titre: sousTitre, retour: retour || "/prepare.html", ici: "/campagne.html" });
     return el("header", { class: "cmp-entete" },
         el("a", { class: "cmp-marque", href: retour || "/prepare.html" },
             el("span", { class: "cmp-marque-retour" }, "<"),
@@ -427,7 +453,7 @@ function vueCreation() {
             bandeauErreur(),
             el("div", { class: "cmp-titre-rangee" },
                 el("h1", { class: "cmp-titre mvl" }, t("Nouvelle campagne")),
-                el("button", { class: "btn ghost", onclick: () => { etat.vue = "liste"; rendre(); } }, t("Retour")),
+                el("button", { class: "btn ghost", onclick: () => retourVers("liste") }, t("Retour")),
             ),
             champ(t("Boîte"), boite ? boite.resume : "", choixBoite),
             el("div", { class: "cmp-reglages" },
@@ -661,7 +687,7 @@ function vueMarche(campagne, definition) {
             bandeauErreur(),
             el("div", { class: "cmp-titre-rangee" },
                 el("h1", { class: "cmp-titre mvl" }, marche.titre || t("Le Marché")),
-                el("button", { class: "btn ghost", onclick: () => { etat.vue = "campagne"; rendre(); } }, t("Retour")),
+                el("button", { class: "btn ghost", onclick: () => retourVers("campagne") }, t("Retour")),
             ),
             el("p", { class: "cmp-champ-aide" }, marche.aide || ""),
             colonnes.length ? el("div", { class: "cmp-marche" }, colonnes)
@@ -833,7 +859,7 @@ function vueEnquete(campagne, definition) {
             bandeauErreur(),
             el("div", { class: "cmp-titre-rangee" },
                 el("h1", { class: "cmp-titre mvl" }, enquete.titre || t("L'enquête")),
-                el("button", { class: "btn ghost", onclick: () => { etat.vue = "campagne"; rendre(); } }, t("Retour")),
+                el("button", { class: "btn ghost", onclick: () => retourVers("campagne") }, t("Retour")),
             ),
             el("p", { class: "cmp-champ-aide" }, enquete.aide || ""),
             el("p", { class: "cmp-enq-bilan" },
@@ -869,7 +895,7 @@ function vueCampagne() {
     const tentatives = (campagne.tentatives || {})[scenario.id] || 0;
 
     const barre = el("div", { class: "cmp-barre" },
-        el("button", { class: "btn ghost", onclick: () => proteger(async () => {
+        el("button", { class: "btn ghost", onclick: () => reculerVers("liste") || proteger(async () => {
             etat.campagne = null; etat.vue = "liste";
             etat.campagnes = await apiCampagne.liste();
         }) }, t("Toutes les campagnes")),
@@ -1077,7 +1103,7 @@ function vueConclusion(campagne, definition, perdue) {
         ),
         perdue ? null : blocScoreFinal(campagne, definition),
         el("div", { class: "cmp-actions" },
-            el("button", { class: "btn ghost", onclick: () => proteger(async () => {
+            el("button", { class: "btn ghost", onclick: () => reculerVers("liste") || proteger(async () => {
                 etat.campagne = null; etat.vue = "liste";
                 etat.campagnes = await apiCampagne.liste();
             }) }, t("Toutes les campagnes")),
@@ -1116,7 +1142,7 @@ function vueCampagneLibre() {
     const resolues = OL.affaires(definition).length - OL.affairesOuvertes(definition, carnet).length;
 
     const barre = el("div", { class: "cmp-barre" },
-        el("button", { class: "btn ghost", onclick: () => proteger(async () => {
+        el("button", { class: "btn ghost", onclick: () => reculerVers("liste") || proteger(async () => {
             etat.campagne = null; etat.vue = "liste";
             etat.campagnes = await apiCampagne.liste();
         }) }, t("Toutes les campagnes")),
@@ -1513,6 +1539,38 @@ function corrigerTextesMarvel() {
     });
 }
 
+/* ------------------------------------------- Retour Android = vue precedente --
+   Zone 2 de la refonte telephone : chaque vue (liste, creation, campagne,
+   marche, enquete) est une entree d'historique au telephone. Les boutons
+   « Retour » de l'interface reculent dans l'historique quand la vue visee est
+   juste derriere : la pile reste propre (meme principe que l'assistant). */
+const VUES_DE_CAMPAGNE = ["campagne", "marche", "enquete"];
+
+function retourVers(vue) {
+    if (reculerVers(vue)) return;
+    etat.vue = vue;
+    rendre();
+}
+
+installerHistorique((cle) => {
+    if (cle === "liste" || (VUES_DE_CAMPAGNE.includes(cle) && !etat.campagne)) {
+        if (etat.vue === "liste") return;
+        // La liste s'affiche tout de suite (celle qu'on a), puis se rafraichit
+        // sans verrouiller l'ecran : un toucher pendant le rechargement compte.
+        etat.vue = "liste";
+        etat.campagne = null;
+        rendre();
+        apiCampagne.liste().then((liste) => {
+            etat.campagnes = liste;
+            if (etat.vue === "liste") rendre();
+        }).catch(() => undefined);
+        return;
+    }
+    etat.vue = cle;
+    rendre();
+});
+suivreTel(() => rendre());
+
 function rendre() {
     if (etat.vue === "marche" && etat.campagne && etat.definition && etat.definition.marche)
         root.replaceChildren(vueMarche(etat.campagne, etat.definition));
@@ -1524,6 +1582,7 @@ function rendre() {
     // Apres CHAQUE rendu : replaceChildren remet des noeuds neufs, un passage
     // unique au chargement ne tiendrait pas.
     corrigerTextesMarvel();
+    noterEcran(etat.vue);
 }
 
 (async () => {

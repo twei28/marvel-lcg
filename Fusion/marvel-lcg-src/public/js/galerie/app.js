@@ -18,6 +18,7 @@ import { urlNarval } from "/public/js/prepare/narval.js";
 import { picIdLangue } from "/public/js/prepare/scans-fr.js";
 import { carteFr } from "/public/js/prepare/cartes-fr.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
+import { estTel, suivreTel, ajouterPoignee, enteteTel, ouvrirFeuille, feuilleDansHistorique } from "/public/js/tel-pages.js";
 
 /** Image d'une carte dans la langue de l'interface : le scan français quand il
  *  existe, l'anglais sinon (repli assuré par le serveur). Voir scans-fr.js. */
@@ -76,6 +77,12 @@ enregistrerTraductions({
     "Menace initiale": "Starting threat",
     "Escalade": "Escalation",
     "Phase": "Stage",
+    /* Téléphone : la feuille de filtres */
+    "Filtres": "Filters",
+    "Types": "Types",
+    "Extensions": "Expansions",
+    "Effacer": "Clear",
+    "Voir les cartes": "Show the cards",
 });
 
 /* Ordre d'affichage des types dans le filtre + libellé FR. */
@@ -281,6 +288,81 @@ function monterEntete() {
     retour.title = t("Retour à la préparation de partie");
     retour.setAttribute("aria-label", retour.title);
     document.getElementById("zone-langue").append(boutonLangue());
+    if (estTel()) monterTel();
+    suivreTel(() => { if (estTel()) monterTel(); });
+}
+
+/* ---------------------------------------------------------- téléphone --
+   Zone 2 de la refonte téléphone (09/10/2026) : en-tête fin à burger, la
+   recherche seule en haut avec un bouton « Filtres » qui ouvre une feuille à
+   pastilles, trois colonnes de cartes, l'aperçu en feuille basse. Les
+   sélecteurs du PC restent la source de vérité : une pastille les règle. */
+let telMonte = false;
+function monterTel() {
+    if (telMonte) return;
+    telMonte = true;
+    // La rangée d'outils (« Signaler un bug ») vit dans le menu : panneau-bug.js
+    // trouve la rangée existante et s'y ajoute.
+    const outils = document.querySelector(".reprise-boutons") || el("div", { class: "reprise-boutons" });
+    document.body.prepend(enteteTel({ titre: t("Galerie de cartes"), ici: "/galerie.html", extra: [outils] }));
+    const bouton = el("button", { type: "button", class: "g-btn-filtres tel-seul", id: "g-btn-filtres",
+                                  onclick: ouvrirFiltresTel }, t("Filtres"));
+    document.getElementById("filtres").append(bouton);
+    majBoutonFiltres();
+}
+
+function nbFiltresActifs() {
+    return (selectType.value ? 1 : 0) + (selectSet.value ? 1 : 0) + (toggleFan.checked ? 1 : 0);
+}
+
+function majBoutonFiltres() {
+    const b = document.getElementById("g-btn-filtres");
+    if (!b) return;
+    const n = nbFiltresActifs();
+    b.textContent = n ? `${t("Filtres")} (${n})` : t("Filtres");
+    b.classList.toggle("actif", n > 0);
+}
+
+function ouvrirFiltresTel() {
+    const pastille = (libelle, actif, quand) => el("button", {
+        type: "button", class: "g-pastille" + (actif ? " actif" : ""), "aria-pressed": actif ? "true" : "false",
+        onclick: quand }, libelle);
+    const corps = el("div", { class: "g-feuille-filtres" });
+    const voir = el("button", { type: "button", class: "g-voir" });
+    const dessiner = () => {
+        const groupe = (titre, select) => el("section", { class: "g-groupe" },
+            el("h3", null, titre),
+            el("div", { class: "g-pastilles" }, ...Array.from(select.options).filter((o) => o.value).map((o) =>
+                pastille(o.textContent, select.value === o.value, () => {
+                    select.value = select.value === o.value ? "" : o.value;
+                    select.dispatchEvent(new Event("change"));
+                    dessiner();
+                }))));
+        corps.replaceChildren(
+            groupe(t("Types"), selectType),
+            el("section", { class: "g-groupe" },
+                el("div", { class: "g-pastilles" },
+                    pastille("Fan-made", toggleFan.checked, () => {
+                        toggleFan.checked = !toggleFan.checked;
+                        toggleFan.dispatchEvent(new Event("change"));
+                        dessiner();
+                    }))),
+            groupe(t("Extensions"), selectSet));
+        voir.textContent = `${t("Voir les cartes")} (${filtrees.length})`;
+    };
+    const effacer = el("button", { type: "button", class: "g-effacer", onclick: () => {
+        selectType.value = ""; selectSet.value = ""; toggleFan.checked = false;
+        appliquerFiltres();
+        dessiner();
+    } }, t("Effacer"));
+    dessiner();
+    const fermer = ouvrirFeuille({
+        classe: "g-feuille",
+        titre: el("div", { class: "g-feuille-tete" }, el("h2", null, t("Filtres")), effacer),
+        contenu: [corps, el("div", { class: "g-feuille-pied" }, voir)],
+        quandFermee: majBoutonFiltres,
+    });
+    voir.addEventListener("click", () => fermer());
 }
 
 function monterFiltres() {
@@ -336,6 +418,7 @@ function appliquerFiltres() {
         return true;
     });
     redessiner();
+    majBoutonFiltres();
 }
 
 function texteCompteur(n, total) {
@@ -402,8 +485,11 @@ function monterRenduIncremental() {
 
 /* -------------------------------------------------------------- aperçu -- */
 let voile = null;
+let fermetureTel = null;
 
 function fermerApercu() {
+    // Au téléphone, l'aperçu est une feuille inscrite dans l'historique.
+    if (fermetureTel) { const f = fermetureTel; fermetureTel = null; f(); return; }
     if (voile) { voile.remove(); voile = null; }
 }
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") fermerApercu(); });
@@ -460,6 +546,13 @@ function ouvrirApercu(carte) {
     voile = el("div", { class: "g-voile", onclick: (e) => { if (e.target === voile) fermerApercu(); } },
         panneau);
     document.body.append(voile);
+    if (estTel()) {
+        fermetureTel = feuilleDansHistorique(() => {
+            fermetureTel = null;
+            if (voile) { voile.remove(); voile = null; }
+        });
+        ajouterPoignee(panneau, fermerApercu);
+    }
     void poserTraduction(cadre, url, carte.id, carte.traits);
 }
 

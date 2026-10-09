@@ -10,7 +10,9 @@ const BOUTONS_ADMIN = ['🎫 Mes signalements', '⚙️ Administration', '🖼�
 
 async function etapeEquipe(page: Page, admin: boolean) {
   await page.goto('/prepare.html');
-  await page.waitForSelector('.acc-mode', { timeout: 20000 });
+  // Au téléphone (zone 2, 09/10/2026), Solo vit dans la feuille du bouton Jouer.
+  await page.waitForSelector('.acc-mode, .acc-tel-jouer', { timeout: 20000 });
+  if (await page.locator('.acc-tel-jouer').isVisible()) await page.locator('.acc-tel-jouer').click();
   await page.getByRole('button', { name: /^Solo/ }).first().click();
   await page.waitForSelector('header.progress .reprise-boutons', { timeout: 20000 });
   if (admin) {

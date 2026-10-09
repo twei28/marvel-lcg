@@ -76,6 +76,15 @@ async function petitesZones(page: Page): Promise<string[]> {
   });
 }
 
+/** Accueil au téléphone (zone 2) : le gros bouton Jouer ouvre la feuille des
+ *  façons de jouer, où l'on touche Solo. */
+async function solo(page: Page) {
+  const jouer = page.locator('.acc-tel-jouer');
+  await jouer.waitFor({ timeout: 30_000 });
+  await jouer.tap();
+  await page.locator('.acc-tel-feuille').getByRole('button', { name: /^Solo/ }).tap();
+}
+
 async function verifier(page: Page, nom: string) {
   expect(await debordements(page), 'débordement horizontal : ' + nom).toEqual([]);
   expect(await petitesZones(page), 'zones tactiles sous 44 px : ' + nom).toEqual([]);
@@ -94,9 +103,9 @@ for (const { w, h } of FORMATS) {
     test('le parcours complet : sans débordement, zones de 44 px', async ({ page }) => {
       test.setTimeout(120_000);
       await page.goto('/prepare.html');
-      await page.getByRole('button', { name: /^Solo/ }).first().waitFor({ timeout: 30_000 });
+      await page.locator('.acc-tel-jouer').waitFor({ timeout: 30_000 });
       await capturer(page, w, '0-accueil');
-      await page.getByRole('button', { name: /^Solo/ }).first().tap();
+      await solo(page);
 
       // --- Étape Héros : toucher = aperçu, « Choisir » = valide -------------
       const tuile = page.locator('.tb-port[data-hero="storm"]');
@@ -204,7 +213,7 @@ for (const { w, h } of FORMATS) {
 
     test('le menu burger : langue en un toucher, liens, fermeture', async ({ page }) => {
       await page.goto('/prepare.html');
-      await page.getByRole('button', { name: /^Solo/ }).first().tap();
+      await solo(page);
       await page.locator('.tb-port').first().waitFor({ timeout: 30_000 });
       await expect(page.locator('.tel-langue'), 'la langue se change sans ouvrir le menu').toBeVisible();
       await expect(page.locator('.tel-menu')).toBeHidden();
@@ -218,7 +227,7 @@ for (const { w, h } of FORMATS) {
 
     test('la barre d’étapes est cliquable et le Retour du système recule d’une étape', async ({ page }) => {
       await page.goto('/prepare.html');
-      await page.getByRole('button', { name: /^Solo/ }).first().tap();
+      await solo(page);
       await page.locator('.tb-port[data-hero="storm"]').waitFor({ timeout: 30_000 });
       await page.locator('.tb-port[data-hero="storm"]').tap();
       await page.locator('.ts-btn.jaune').tap();
@@ -232,7 +241,7 @@ for (const { w, h } of FORMATS) {
       await page.goBack();
       await expect(page.locator('.pstep.active')).toContainText(/[ée]quipe/i);
       await page.goBack();
-      await expect(page.getByRole('button', { name: /^Solo/ }).first(), 'on retombe sur le choix du mode').toBeVisible();
+      await expect(page.locator('.acc-tel-jouer'), 'on retombe sur l’accueil').toBeVisible();
     });
   });
 }
@@ -244,7 +253,7 @@ test.describe('mode sobre au téléphone', () => {
     await page.addInitScript(() => { try { localStorage.setItem('mc_affichage_v1', 'sobre'); } catch (e) { /* stockage indisponible */ } });
     await page.goto('/prepare.html');
     await expect(page.locator('html')).toHaveAttribute('data-affichage', 'sobre');
-    await page.getByRole('button', { name: /^Solo/ }).first().tap();
+    await solo(page);
     await page.locator('.tb-port[data-hero="storm"]').waitFor({ timeout: 30_000 });
     await page.locator('.tb-port[data-hero="storm"]').tap();
     const flous = await page.evaluate(() => ['.tel-entete', '.nav'].map((s) => getComputedStyle(document.querySelector(s)!).backdropFilter));

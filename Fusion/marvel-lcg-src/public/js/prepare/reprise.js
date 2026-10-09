@@ -168,13 +168,36 @@
 
   // ------------------------------------------------------------- overlays --
   let voile = null;
-  function fermer() {
+  // TELEPHONE (zone 2 de la refonte du 09/10/2026) : sous 768 px (`html.tel`),
+  // le panneau est une feuille basse (prepare-tel.css), inscrite dans
+  // l'historique : Retour Android la referme au lieu de quitter l'ecran.
+  const estTel = () => document.documentElement.classList.contains('tel');
+  function surRetour() {
+    window.removeEventListener('popstate', surRetour);
     if (voile) { voile.remove(); voile = null; }
   }
+  function fermer() {
+    if (!voile) return;
+    voile.remove();
+    voile = null;
+    window.removeEventListener('popstate', surRetour);
+    if (history.state && history.state.telFeuille) history.back();
+  }
   function ouvrir(panneau) {
-    fermer();
-    voile = el('div', { class: 'reprise-voile', onclick: (e) => { if (e.target === voile) fermer(); } }, panneau);
-    document.body.append(voile);
+    const dejaOuvert = !!voile;
+    if (dejaOuvert) voile.replaceChildren(panneau);
+    else {
+      voile = el('div', { class: 'reprise-voile', onclick: (e) => { if (e.target === voile) fermer(); } }, panneau);
+      document.body.append(voile);
+    }
+    if (estTel()) {
+      // Un panneau qui en remplace un autre garde son entree d'historique.
+      if (!dejaOuvert) {
+        try { history.pushState({ telFeuille: 1 }, ''); } catch (e) { /* sans historique, la feuille marche quand meme */ }
+        window.addEventListener('popstate', surRetour);
+      }
+      import('/public/js/prepare/tel.js').then((m) => m.ajouterPoignee(panneau, fermer)).catch(() => undefined);
+    }
   }
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fermer(); });
 
@@ -397,10 +420,12 @@
       const table = el('table', { class: 'stats-table' },
         el('tr', null, el('th', null, titreTexte), el('th', null, t('Parties')), el('th', null, 'Winrate')));
       for (const [nom, ligne] of entrees.slice(0, 12)) {
+        // `data-label` : au telephone, le tableau devient des cartes empilees
+        // et chaque valeur y porte son libelle (prepare-tel.css).
         table.append(el('tr', null,
-          el('td', null, nom),
-          el('td', null, `${ligne.gagnees}/${ligne.jouees}`),
-          el('td', null, `${Math.round((100 * ligne.gagnees) / ligne.jouees)}%`)));
+          el('td', { 'data-label': titreTexte }, nom),
+          el('td', { 'data-label': t('Parties') }, `${ligne.gagnees}/${ligne.jouees}`),
+          el('td', { 'data-label': 'Winrate' }, `${Math.round((100 * ligne.gagnees) / ligne.jouees)}%`)));
       }
       return el('div', { style: 'margin-bottom:1.1rem;' }, table);
     };
@@ -411,11 +436,11 @@
         el('th', null, 'Rounds'), el('th', null, t('Resultat'))));
     for (const partie of parties.slice(-20).reverse()) {
       derniers.append(el('tr', null,
-        el('td', null, dateLisible(partie.time)),
-        el('td', null, (partie.heroes || []).map((h) => h.name).join(', ')),
-        el('td', null, `${partie.scenario || ''}${partie.expert ? ' (Expert)' : ''}`),
-        el('td', null, String(partie.rounds ?? '')),
-        el('td', { class: partie.won ? 'stats-victoire' : 'stats-defaite' },
+        el('td', { 'data-label': 'Date' }, dateLisible(partie.time)),
+        el('td', { 'data-label': t('Heros') }, (partie.heroes || []).map((h) => h.name).join(', ')),
+        el('td', { 'data-label': 'Scenario' }, `${partie.scenario || ''}${partie.expert ? ' (Expert)' : ''}`),
+        el('td', { 'data-label': 'Rounds' }, String(partie.rounds ?? '')),
+        el('td', { 'data-label': t('Resultat'), class: partie.won ? 'stats-victoire' : 'stats-defaite' },
           partie.won ? t('Victoire') : t('Defaite'))));
     }
     zone.append(derniers);

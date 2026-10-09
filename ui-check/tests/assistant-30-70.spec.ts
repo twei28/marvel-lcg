@@ -11,6 +11,9 @@ const ECRANS = [
 
 async function etapeEquipe(page: Page) {
   await page.goto('/prepare.html');
+  // Au téléphone (zone 2, 09/10/2026), Solo vit dans la feuille du bouton Jouer.
+  await page.locator('.acc-tel-jouer, .acc-mode').first().waitFor({ timeout: 30_000 });
+  if (await page.locator('.acc-tel-jouer').isVisible()) await page.locator('.acc-tel-jouer').click();
   await page.getByRole('button', { name: /^Solo/ }).first().click({ timeout: 30_000 });
   await expect(page.locator('#hero-grid .tb-port').first()).toBeVisible({ timeout: 30_000 });
 }

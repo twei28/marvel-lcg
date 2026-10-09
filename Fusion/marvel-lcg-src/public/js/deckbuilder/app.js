@@ -32,6 +32,7 @@ import { NOMS_FR } from "/public/js/prepare/noms-fr.js";
 import { correspondRecherche } from "/public/js/deckbuilder/recherche.js";
 import { versionsDe, versionDansLeDeck, changerVersion } from "/public/js/deckbuilder/arts-reeditions.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
+import { estTel, suivreTel, enteteTel, feuilleDansHistorique } from "/public/js/tel-pages.js";
 import {
     filtresVides, passeFiltres, aspectsParDefaut, comparateur, grouperDeck, courbeDesCouts,
     nombreFiltresActifs, COUTS, PALIERS_STAT, STATS, cleStat,
@@ -370,6 +371,18 @@ function rendreEnTete() {
     const retour = el("a", { class: "brand", href: "/prepare.html", title: t("Préparation"), "aria-label": t("Préparation") },
         el("span", { class: "brand-back" }, "<"),
         el("span", { class: "brand-lockup logo" }, el("img", { class: "brand-narwhal", src: urlNarval(), alt: "" })));
+    // Téléphone (zone 2 de la refonte du 09/10/2026) : l'en-tête fin à burger,
+    // le héros sur sa propre ligne, pleine largeur. L'en-tête du PC reste dans
+    // le DOM, masqué par tel-pages.css, et redevient visible dès 768 px.
+    const ancien = document.querySelector("body > .tp-entete");
+    if (ancien) ancien.remove();
+    if (estTel()) {
+        const entete = enteteTel({ titre: t("Éditeur de deck"), ici: "/deck-builder.html" });
+        entete.append(el("div", { class: "tp-rang2" }, selHero));
+        document.body.prepend(entete);
+        remplacer($("#db-entete"));
+        return;
+    }
     remplacer($("#db-entete"),
         retour,
         boutonLangue("btn ghost btn-langue"),
@@ -1105,10 +1118,27 @@ async function importer(fichier) {
 
 /* ---------------- Clavier et panneaux ---------------- */
 
+let fermetureTel = null;
+
 function fermerPanneaux() {
+    // Au téléphone, le panneau ouvert est inscrit dans l'historique : on recule.
+    if (fermetureTel) { const f = fermetureTel; fermetureTel = null; f(); return true; }
     const ouvert = document.body.classList.contains("db-panneau-filtres") || document.body.classList.contains("db-panneau-deck");
     document.body.classList.remove("db-panneau-filtres", "db-panneau-deck");
     return ouvert;
+}
+
+/** Barre du bas : ouvre le panneau des filtres ou du deck. Au téléphone, il
+ *  glisse depuis son bord et Retour Android le referme. */
+function ouvrirPanneau(nom) {
+    document.body.classList.remove("db-panneau-filtres", "db-panneau-deck");
+    document.body.classList.add("db-panneau-" + nom);
+    if (estTel() && !fermetureTel) {
+        fermetureTel = feuilleDansHistorique(() => {
+            fermetureTel = null;
+            document.body.classList.remove("db-panneau-filtres", "db-panneau-deck");
+        });
+    }
 }
 
 function installerClavier() {
@@ -1197,8 +1227,9 @@ function installerCommandes() {
     $("#db-import-fichier").onchange = (e) => { const f = e.target.files && e.target.files[0]; e.target.value = ""; if (f) importer(f); };
     $("#db-replier").onclick = () => { replierFiltres(true); rendreFiltres(); };
     document.querySelectorAll(".db-fermer-panneau").forEach((b) => { b.onclick = () => fermerPanneaux(); });
-    $("#db-mob-filtres").onclick = () => { document.body.classList.remove("db-panneau-deck"); document.body.classList.add("db-panneau-filtres"); };
-    $("#db-mob-deck").onclick = () => { document.body.classList.remove("db-panneau-filtres"); document.body.classList.add("db-panneau-deck"); };
+    $("#db-mob-filtres").onclick = () => ouvrirPanneau("filtres");
+    $("#db-mob-deck").onclick = () => ouvrirPanneau("deck");
+    suivreTel(() => { if (etat.heroes.length) rendreEnTete(); });
     let replies = false;
     try { replies = localStorage.getItem(CLE_REPLIES) === "1"; } catch { /* préférence non critique */ }
     document.body.classList.toggle("db-filtres-replies", replies);

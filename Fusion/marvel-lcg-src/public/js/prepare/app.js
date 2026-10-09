@@ -36,6 +36,7 @@ import { DICO_TEL_EN } from "/public/js/prepare/dico-tel-en.js";
 import { estTel, suivreTel, installerHistorique, noterEcran, reculerVers,
          brancherBandeau, ajouterPoignee } from "/public/js/prepare/tel.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
+import { ouvrirFeuille } from "/public/js/tel-pages.js";
 import { boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, affichageJamaisChoisi } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
          doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire } from "/public/js/prepare/phase-mode-choix.js";
@@ -735,8 +736,9 @@ let herosApercuTel = null;
 /** Idem pour le méchant : { sc, concret } ou null. */
 let mechantApercuTel = null;
 
-/** En-tête fin : logo, langue (un toucher), burger ; dessous, les étapes. */
-function enteteTel() {
+/** En-tête fin : logo, langue (un toucher), burger ; dessous, les étapes
+ *  (sauf sur l'accueil, `etapes: false`). */
+function enteteTel({ etapes = true } = {}) {
     document.title = t("Préparation de mission") + " — Marvel Champions";
     const fermer = () => { menuTelOuvert = false; majMenuTel(); };
     const lien = (href, libelle, icone) => el("a", { class: "tel-lien", href }, picto(icone), " ", t(libelle));
@@ -761,7 +763,7 @@ function enteteTel() {
                 onclick: () => { menuTelOuvert = !menuTelOuvert; majMenuTel(); },
             }, picto("fa-bars")),
         ),
-        el("div", { class: "steps tel-etapes" }, STEPS.map((label, i) => {
+        !etapes ? null : el("div", { class: "steps tel-etapes" }, STEPS.map((label, i) => {
             const done = i < state.step && stepComplete(i);
             const cls = "pstep" + (i === state.step && !state.accueil ? " active" : "") + (done ? " done" : "");
             return el("button", { class: cls, onclick: () => { menuTelOuvert = false; gotoTel(i); } },
@@ -1019,7 +1021,17 @@ function ouvrirFeuilleImport(i) {
 }
 
 function render() {
-    if (state.accueil) {
+    if (state.accueil && estTel()) {
+        // Téléphone (zone 2 de la refonte du 09/10/2026) : l'en-tête fin, sans
+        // les étapes, puis le gros bouton Jouer et les vignettes.
+        document.title = t("Préparation de mission") + " — Marvel Champions";
+        root.replaceChildren(
+            enteteTel({ etapes: false }),
+            el("div", { class: "layout accueil-layout" },
+                el("main", { class: "stage accueil-stage" }, accueilView()),
+            ),
+        );
+    } else if (state.accueil) {
         // Pas d'en-tête sur l'accueil : logo, langue et onglets d'étapes n'y
         // disent rien, la page EST le titre. Les outils annexes (Reprendre,
         // Stats, Documents, Signaler un bug) gardent leur rangée flottante en
@@ -1963,6 +1975,60 @@ function confirmerLegacy(question, detail) {
 }
 
 /**
+ * L'accueil au téléphone (zone 2 de la refonte du 09/10/2026) : un gros bouton
+ * « Jouer » qui ouvre, en feuille basse, les façons de jouer (les mêmes tuiles
+ * que le PC, nombre de héros compris), puis des vignettes vers le reste du jeu.
+ */
+function accueilTel(tuiles, partir) {
+    const ouvrirModes = () => {
+        let fermer = () => {};
+        const choisir = (tuile, n) => fermer(() => partir(tuile, n));
+        const lignes = tuiles.filter((tu) => tu.mode.id !== "campaign").map((tuile) => {
+            const m = tuile.mode;
+            const nombres = [];
+            if (!m.fixed) {
+                for (let n = (m.min || 1); n <= (m.max || 4); n++) {
+                    if (m.id === "bataille" && n % 2 !== 0) continue;
+                    nombres.push(el("button", {
+                        class: "acc-nombre", type: "button", title: n + " " + t("héros"),
+                        onclick: (e) => { e.stopPropagation(); choisir(tuile, n); },
+                    }, m.id === "bataille" ? (n / 2) + "v" + (n / 2) : String(n)));
+                }
+            }
+            return el("div", { class: "acc-tel-mode" },
+                el("button", { class: "acc-tel-mode-nom", type: "button", onclick: () => choisir(tuile, null) },
+                    el("b", { class: "mvl" }, tuile.libelle),
+                    el("small", {}, tuile.detail)),
+                nombres.length ? el("div", { class: "acc-nombres" }, el("small", {}, t("héros")), ...nombres) : null);
+        });
+        fermer = ouvrirFeuille({
+            classe: "acc-tel-feuille",
+            titre: el("h2", { class: "acc-tel-feuille-titre mvl" }, t("Comment veux-tu jouer ?")),
+            contenu: lignes,
+        });
+    };
+    const campagne = tuiles.find((tu) => tu.mode.id === "campaign");
+    const vignette = (libelle, detail, icone, action) => el(typeof action === "string" ? "a" : "button", {
+        class: "acc-tel-vignette cut",
+        ...(typeof action === "string" ? { href: action } : { type: "button", onclick: action }),
+    }, picto(icone), el("b", { class: "mvl" }, libelle), el("small", {}, detail));
+    return el("section", { class: "step accueil acc-tel" },
+        el("div", { class: "acc-tel-titre" },
+            el("img", { class: "acc-narwhal", src: urlNarval(), alt: "NarwhalChampions" }),
+            el("h1", { class: "affiche" }, "Narwhal", el("br"), "Champions")),
+        el("button", { class: "acc-tel-jouer cut", type: "button", onclick: () => { jouerSon(SON.mode); ouvrirModes(); } },
+            el("b", { class: "mvl" }, t("Jouer")),
+            el("small", {}, t("Solo, coop, bataille, au hasard..."))),
+        el("div", { class: "acc-tel-vignettes" },
+            campagne ? vignette(campagne.libelle, campagne.detail, "fa-book", () => partir(campagne, null)) : null,
+            vignette(t("Galerie"), t("Toutes les cartes"), "fa-th", "/galerie.html"),
+            vignette(t("Éditeur de deck"), t("Construire un deck"), "fa-pencil", "/deck-builder.html"),
+            vignette(t("Mises à jour"), t("Ce qui a changé"), "fa-bullhorn", () => ouvrirNouveautes()),
+        ),
+    );
+}
+
+/**
  * L'écran d'accueil : le titre, et une seule question, comment on joue.
  *
  * Une tuile par mode. Les modes à plusieurs (coop locale, coop en ligne,
@@ -2080,6 +2146,8 @@ function accueilView() {
         el("span", { class: "acc-aide", id: "acc-aide-nouveautes", role: "tooltip" },
            t("Tout ce qui a été ajouté ou corrigé, du plus récent au plus ancien.")),
     ));
+
+    if (estTel()) return accueilTel(tuiles, partir);
 
     return el("section", { class: "step accueil" },
         el("div", { class: "acc-entete" },

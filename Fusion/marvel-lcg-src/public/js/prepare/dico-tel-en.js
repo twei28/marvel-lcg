@@ -25,4 +25,10 @@ export const DICO_TEL_EN = {
     "Lancer la partie": "Start the game",
     "Préparation de mission": "Mission setup",
     "Main": "Hand",
+    // Accueil au téléphone (zone 2)
+    "Jouer": "Play",
+    "Solo, coop, bataille, au hasard...": "Solo, co-op, battle, random...",
+    "Toutes les cartes": "Every card",
+    "Construire un deck": "Build a deck",
+    "Comment veux-tu jouer ?": "How do you want to play?",
 };

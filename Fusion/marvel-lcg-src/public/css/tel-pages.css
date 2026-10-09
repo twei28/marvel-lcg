@@ -1,0 +1,237 @@
+/* tel-pages.css : le mode téléphone des pages hors assistant (galerie,
+   campagne, éditeur de deck). Zone 2 de la refonte du 09/10/2026
+   (.planning/todos/2026-10-09-mode-telephone-refonte.md).
+
+   Même contrat que prepare-tel.css : chargé EN DERNIER, tout vit sous
+   `@media (max-width:767px)` + `html.tel` (classe posée par js/prepare/tel.js).
+   À partir de 768 px, ce fichier ne change rien. Zones tactiles de 44 px,
+   aucun débordement horizontal, animations courtes coupées en sobre ou si le
+   système demande moins de mouvement. Couleurs par variables : la palette
+   sobre (affichage-sobre-pages.css) s'applique d'elle-même. */
+
+/* Hors téléphone, les éléments propres au téléphone n'existent pas à l'écran
+   (une fenêtre qui passe de 767 à 768 px les garde dans le DOM). */
+html:not(.tel) .tp-entete, html:not(.tel) .tel-seul { display: none !important; }
+
+@media (max-width: 767px) {
+
+  html.tel, html.tel body { overflow-x: hidden; max-width: 100%; }
+
+  /* ---- En-tête fin : retour (narval), titre, langue, burger --------------- */
+  html.tel .tp-entete {
+    position: sticky; top: 0; z-index: 60;
+    background: #05060a; border-bottom: 1px solid rgba(255,255,255,.1);
+  }
+  html.tel .tp-rang { position: relative; z-index: 3; display: flex; align-items: center; gap: 4px; min-height: 48px; padding: 2px 4px; }
+  html.tel .tp-retour {
+    flex: none; display: inline-flex; align-items: center; gap: 2px; min-width: 44px; min-height: 44px; padding: 0 4px;
+    color: var(--dim, #a8afbd); text-decoration: none; font-size: 22px; font-weight: 700;
+  }
+  html.tel .tp-narval { width: 34px; height: 34px; display: block; }
+  html.tel .tp-titre {
+    flex: 1 1 auto; min-width: 0; margin: 0; font-size: 18px; line-height: 1.1; color: var(--txt, #f4f6fb);
+    letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  html.tel .tp-entete .tp-langue, html.tel .tp-burger {
+    flex: none; width: auto !important; min-width: 44px; height: 44px !important; min-height: 44px !important; margin: 0;
+    padding: 0 10px !important; display: inline-grid; place-items: center;
+    border: 0 !important; border-radius: 0; background: transparent !important; color: #fff;
+    font: 800 15px "Segoe UI", system-ui, sans-serif; cursor: pointer;
+  }
+  html.tel .tp-burger { font-size: 22px; }
+  html.tel .tp-voile { display: none; position: fixed; inset: 0; z-index: 1; background: rgba(0,0,0,.55); }
+  html.tel .tp-menu {
+    display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 2;
+    flex-direction: column; gap: 2px; padding: 6px 12px 12px;
+    background: #0b0d12; border-bottom: 1px solid rgba(255,255,255,.14);
+    max-height: 70dvh; overflow-y: auto;
+  }
+  html.tel .tp-entete.menu-ouvert .tp-voile { display: block; animation: tp-fondu .15s ease-out; }
+  html.tel .tp-entete.menu-ouvert .tp-menu { display: flex; animation: tp-fondu .15s ease-out; }
+  html.tel .tp-menu .tp-lien {
+    display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 0 8px; margin: 0;
+    color: #fff; background: transparent; border: 0; border-radius: 0; text-align: left; text-decoration: none;
+    font: 700 16px "Segoe UI", system-ui, sans-serif; cursor: pointer;
+  }
+
+  /* Le réglage d'affichage et les outils de la page (Signaler un bug...) :
+     des lignes du menu, libellé visible. icones-entete.js impose 34 px en
+     !important aux `.btn-icone` : seule une règle !important plus précise rend
+     les 44 px. */
+  html.tel .tp-menu .reprise-boutons {
+    position: static; display: flex; flex-direction: column; flex-wrap: nowrap; gap: 2px !important; margin: 0; padding: 0;
+  }
+  html.tel .tp-menu .tp-lien.btn-icone,
+  html.tel .tp-menu .reprise-boutons > button,
+  html.tel .tp-menu .reprise-boutons > a {
+    width: 100% !important; height: 44px !important; min-height: 44px !important; padding: 0 8px !important;
+    display: flex !important; justify-content: flex-start; align-items: center; gap: 10px;
+    background: transparent; border: 0; border-radius: 0; color: #fff; text-decoration: none;
+    font: 700 16px "Segoe UI", system-ui, sans-serif !important;
+  }
+  html.tel .tp-menu .rb-libelle {
+    position: static !important; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal;
+  }
+
+  /* ---- Feuille basse : panneau collé en bas, poignée qui la ferme --------- */
+  html.tel .tp-feuille-voile {
+    position: fixed; inset: 0; z-index: 900; display: flex; align-items: flex-end; justify-content: center;
+    background: rgba(3,4,7,.72); animation: tp-fondu .15s ease-out;
+  }
+  html.tel .tp-feuille {
+    width: 100vw; max-height: 88dvh; display: flex; flex-direction: column; overflow: hidden;
+    background: var(--ink2, #101219); border-top: 1px solid var(--line, #384154);
+    border-radius: 16px 16px 0 0; padding: 0 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    animation: tp-feuille .18s ease-out;
+  }
+  html.tel .tp-feuille > .tel-poignee {
+    flex: none; height: 44px; margin: 0 -12px; display: grid; place-items: center; touch-action: none; cursor: grab;
+  }
+  html.tel .tp-feuille > .tel-poignee span { width: 44px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.4); }
+  html.tel .tp-feuille-corps { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+
+  /* ==== GALERIE ============================================================ */
+  html.tel body:has(> .g-grille) { padding: 0 0 32px; }
+  html.tel .g-entete { display: none; }
+  html.tel .g-filtres {
+    position: sticky; top: 49px; z-index: 50; flex-wrap: nowrap; gap: 8px; margin: 0;
+    padding: 8px 12px; background: var(--ink, #07080c); border-bottom: 1px solid var(--soft, #252c3b);
+  }
+  html.tel .g-filtres input[type="search"] { flex: 1 1 auto; min-width: 0; min-height: 44px; font-size: 16px; }
+  html.tel .g-filtres select, html.tel .g-filtres .g-interrupteur { display: none; }
+  html.tel .g-btn-filtres {
+    flex: none; min-height: 44px; min-width: 44px; padding: 0 14px; border-radius: 8px;
+    border: 1px solid var(--line, #384154); background: var(--steel2, #202635); color: var(--txt, #f4f6fb);
+    font: 800 14px "Segoe UI", system-ui, sans-serif; letter-spacing: .02em; cursor: pointer;
+  }
+  html.tel .g-btn-filtres.actif { border-color: var(--red, #e62429); color: #fff; background: var(--red, #e62429); }
+  html.tel .g-compteur { margin: 8px 12px; }
+  html.tel .g-grille { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 0 12px; }
+  html.tel .g-vide { padding: 40px 12px; }
+  html.tel .g-carte:hover, html.tel .g-carte:focus-visible { transform: none; }
+  html.tel .g-sentinelle button { min-height: 44px; }
+
+  /* La feuille de filtres : des pastilles, un bouton qui referme. */
+  html.tel .g-feuille-tete { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: none; }
+  html.tel .g-feuille-tete h2 { font-size: 18px; color: var(--txt, #f4f6fb); }
+  html.tel .g-effacer {
+    min-height: 44px; padding: 0 12px; background: transparent; border: 0; color: var(--dim, #a8afbd);
+    font: 700 14px "Segoe UI", system-ui, sans-serif; text-decoration: underline; cursor: pointer;
+  }
+  html.tel .g-groupe { margin: 6px 0 14px; }
+  html.tel .g-groupe h3 { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--mute, #727b8c); margin: 0 0 8px; }
+  html.tel .g-pastilles { display: flex; flex-wrap: wrap; gap: 8px; }
+  html.tel .g-pastille {
+    min-height: 44px; max-width: 100%; padding: 0 14px; border-radius: 22px;
+    border: 1px solid var(--line, #384154); background: var(--steel, #181c26); color: var(--dim, #a8afbd);
+    font: 600 14px "Segoe UI", system-ui, sans-serif; cursor: pointer;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  html.tel .g-pastille.actif { border-color: var(--red, #e62429); background: var(--red, #e62429); color: #fff; }
+  html.tel .g-feuille-pied {
+    position: sticky; bottom: 0; padding: 10px 0 0; background: var(--ink2, #101219);
+  }
+  html.tel .g-voir {
+    width: 100%; min-height: 48px; border: 0; border-radius: 8px; background: var(--red, #e62429); color: #fff;
+    font: 800 15px "Segoe UI", system-ui, sans-serif; letter-spacing: .03em; text-transform: uppercase; cursor: pointer;
+  }
+
+  /* L'aperçu d'une carte : une feuille basse. */
+  html.tel .g-voile { align-items: flex-end; padding: 0; overflow: hidden; }
+  html.tel .g-apercu {
+    flex-direction: column; align-items: center; gap: 12px; max-width: none; width: 100vw; max-height: 90dvh;
+    overflow-y: auto; overscroll-behavior: contain; border-radius: 16px 16px 0 0; border-bottom: 0;
+    padding: 0 14px calc(16px + env(safe-area-inset-bottom, 0px));
+    animation: tp-feuille .18s ease-out;
+  }
+  html.tel .g-apercu > .tel-poignee {
+    position: sticky; top: 0; z-index: 2; flex: none; align-self: stretch; height: 44px; margin: 0 -14px;
+    display: grid; place-items: center; touch-action: none; cursor: grab; background: var(--ink2, #101219);
+  }
+  html.tel .g-apercu > .tel-poignee span { width: 44px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.4); }
+  html.tel .g-apercu > * { flex: none; }
+  html.tel .g-apercu-cadre { width: min(300px, 78vw); }
+  html.tel .g-apercu .infos { width: 100%; }
+  html.tel .g-apercu h2 button { min-width: 44px; min-height: 44px; margin: -8px -8px 0 0; }
+  html.tel .g-apercu .lien-cdb { display: inline-flex; align-items: center; min-height: 44px; }
+  html[data-affichage="sobre"].tel .g-apercu { animation-duration: 1ms !important; }
+
+  /* ==== CAMPAGNE =========================================================== */
+  html.tel .cmp-corps { padding-left: 12px; padding-right: 12px; }
+  html.tel [class*="cmp-"] .btn, html.tel .cmp-segment { min-height: 44px; }
+  html.tel .cmp-grille { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  html.tel .cmp-carte:hover { transform: none; }
+  html.tel .cmp-boites { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  html.tel .cmp-boite { width: auto; min-width: 0; }
+  html.tel .cmp-saisie { min-height: 44px; font-size: 16px; }
+  html.tel .cmp-titre-rangee { flex-wrap: wrap; gap: 8px; }
+  html.tel .cmp-carte-suppr { min-width: 44px; min-height: 44px; }
+  html.tel .cmp-erreur-x { min-width: 44px; min-height: 44px; }
+
+  /* Le livre : une page à la fois, qui glisse de côté et suit le doigt. */
+  html.tel .cmp-livre-tete { min-height: 44px; flex-wrap: wrap; }
+  html.tel .cmp-livre-onglet { min-height: 44px; padding: 0 12px; }
+  html.tel .cmp-livre-scene { padding: 0 46px; overflow: hidden; }
+  html.tel .cmp-livre-fleche { width: 44px; height: 64px; font-size: 32px; }
+  html.tel .cmp-livre-double { transition: transform .18s ease-out; will-change: transform; }
+  html.tel .cmp-livre-double.glisse-avance { animation: cmp-glisse-avance .2s ease-out; }
+  html.tel .cmp-livre-double.glisse-recule { animation: cmp-glisse-recule .2s ease-out; }
+  @keyframes cmp-glisse-avance { from { transform: translateX(70%); opacity: .3; } to { transform: none; opacity: 1; } }
+  @keyframes cmp-glisse-recule { from { transform: translateX(-70%); opacity: .3; } to { transform: none; opacity: 1; } }
+  html[data-affichage="sobre"].tel .cmp-livre-double { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+
+  /* ==== ÉDITEUR DE DECK ==================================================== */
+  /* Décision du 09/10 gardée (grille plein écran, barre du bas « Filtres ·
+     Deck », panneaux) : ici seulement l'en-tête fin, les 44 px, et des
+     panneaux qui glissent depuis leur bord. */
+  html.tel #db-entete { display: none; }
+  html.tel .tp-rang2 { position: relative; z-index: 3; padding: 0 8px 8px; }
+  html.tel .tp-rang2 .db-heros {
+    width: 100%; max-width: none; min-height: 44px; margin: 0; padding: 0 10px; font-size: 16px;
+    color: var(--txt, #f4f6fb); background: var(--ink2, #101219); border: 1px solid var(--line, #384154);
+  }
+  html.tel .db-recherche-zone { height: auto; min-height: 46px; }
+  html.tel .db-recherche-zone kbd { display: none; }
+  html.tel .db-recherche { height: 44px; font-size: 16px; }
+  html.tel .db-aide { width: 44px; height: 44px; }
+  html.tel .db-carte-boutons { gap: 4px; bottom: 2px; }
+  html.tel .db-carte-boutons button { width: 44px; height: 44px; font-size: 20px; }
+  html.tel .db-basmob { padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px)); }
+  html.tel .db-basmob button { min-height: 48px; }
+  html.tel .db-fermer-panneau { width: 44px; height: 44px; flex: none; }
+  html.tel .db-ico { width: 44px; height: 44px; flex: none; }
+  html.tel .db-nom { height: 44px; font-size: 16px; }
+  html.tel .db-partir select, html.tel .db-liste-barre select { min-height: 44px; font-size: 16px; }
+  html.tel .db-chip { min-height: 44px; }
+  html.tel .db-chip.rond { min-width: 44px; }
+  html.tel .db-inter { min-height: 44px; display: flex; align-items: center; }
+  html.tel .db-deck-col button, html.tel .db-deck-col select { min-height: 44px; min-width: 44px; }
+  html.tel .db-sec { padding: 2px 0; }
+  html.tel .db-sec > h3 button { min-height: 44px; }
+  html.tel body.db-panneau-filtres .db-filtres-col { z-index: 70; animation: db-depuis-gauche .2s ease-out; }
+  html.tel body.db-panneau-deck .db-deck-col { z-index: 70; animation: db-depuis-droite .2s ease-out; }
+  /* Le panneau couvre tout l'écran : l'en-tête (collant, au-dessus de la
+     grille) s'efface le temps qu'il est ouvert. */
+  html.tel body.db-panneau-filtres > .tp-entete, html.tel body.db-panneau-deck > .tp-entete { visibility: hidden; }
+  @keyframes db-depuis-gauche { from { transform: translateX(-100%); } to { transform: none; } }
+  @keyframes db-depuis-droite { from { transform: translateX(100%); } to { transform: none; } }
+  html[data-affichage="sobre"].tel .db-filtres-col,
+  html[data-affichage="sobre"].tel .db-deck-col { animation-duration: 1ms !important; }
+
+  @keyframes tp-feuille { from { transform: translateY(100%); } to { transform: none; } }
+  @keyframes tp-fondu { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ---- Mode sobre : pas de flou ni de dégradé, animations coupées ---------- */
+  html[data-affichage="sobre"].tel .tp-entete,
+  html[data-affichage="sobre"].tel .tp-menu { background: var(--ink, #1c1d20); }
+  html[data-affichage="sobre"].tel .tp-feuille,
+  html[data-affichage="sobre"].tel .tp-feuille-voile,
+  html[data-affichage="sobre"].tel .tp-menu,
+  html[data-affichage="sobre"].tel .tp-voile { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+}
+
+@media (max-width: 767px) and (prefers-reduced-motion: reduce) {
+  html.tel .tp-feuille, html.tel .tp-feuille-voile, html.tel .tp-menu, html.tel .tp-voile, html.tel .g-apercu,
+  html.tel .cmp-livre-double { animation: none !important; transition: none !important; }
+  html.tel .db-filtres-col, html.tel .db-deck-col { animation: none !important; }
+}
