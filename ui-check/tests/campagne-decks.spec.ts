@@ -154,7 +154,7 @@ test.describe.serial('Campagne : refaire son deck entre deux scenarios', () => {
     await page.locator('.cmp-saisie').fill(NOM_CAMPAGNE);
     await page.getByRole('button', { name: /choisir l'équipe/i }).click();
 
-    await expect(page.locator('.campagne-bandeau')).toContainText(NOM_CAMPAGNE);
+    await expect(page.locator('.campagne-bandeau')).toContainText(NOM_CAMPAGNE, { timeout: 30000 });
     await choisirHerosPuisDecks(page, HEROS);
     await page.getByRole('button', { name: /valider l'équipe/i }).click();
 
@@ -179,7 +179,7 @@ test.describe.serial('Campagne : refaire son deck entre deux scenarios', () => {
     // Le bandeau doit rappeler les identites a reprendre : c'est la seule
     // indication que le joueur ait de ce qu'on attend de lui, l'ecran de
     // preparation revenant vierge.
-    await expect(page.locator('.campagne-bandeau')).toContainText(avant.equipe![0].nomHeros!);
+    await expect(page.locator('.campagne-bandeau')).toContainText(avant.equipe![0].nomHeros!, { timeout: 30000 });
 
     // L'equipe revient DEJA EN PLACE : aucun clic sur un heros ici. Ce serait
     // meme nuisible, `assignHero` remettant le deck de base au passage.

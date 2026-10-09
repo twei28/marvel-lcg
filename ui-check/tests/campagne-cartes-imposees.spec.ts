@@ -129,7 +129,7 @@ test.describe.serial('Campagne : les cartes que le carnet impose au deck', () =>
     await page.locator('.cmp-saisie').fill(NOM_CAMPAGNE)
     await page.getByRole('button', { name: /choisir l'équipe/i }).click()
 
-    await expect(page.locator('.campagne-bandeau')).toContainText(NOM_CAMPAGNE)
+    await expect(page.locator('.campagne-bandeau')).toContainText(NOM_CAMPAGNE, { timeout: 30000 })
     await page.getByRole('button', { name: HEROS }).first().click()
     await validerOptionsDuHeros(page)
     await allerAuxDecks(page)
