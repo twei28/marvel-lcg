@@ -14,6 +14,7 @@
 
 import { cardImageUrl } from "/public/js/prepare/api.js";
 import { t, boutonLangue, enregistrerTraductions, langueActuelle } from "/public/js/prepare/langue.js";
+import { urlNarval } from "/public/js/prepare/narval.js";
 import { picIdLangue } from "/public/js/prepare/scans-fr.js";
 import { carteFr } from "/public/js/prepare/cartes-fr.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
@@ -272,8 +273,13 @@ function monterEntete() {
     document.documentElement.lang = langueActuelle();
     document.getElementById("titre-page").textContent = t("Galerie de cartes");
     const retour = document.getElementById("lien-retour");
-    retour.textContent = "← " + t("Préparation");
+    const narval = document.createElement("img");
+    narval.className = "g-narval";
+    narval.src = urlNarval();
+    narval.alt = "";
+    retour.replaceChildren("<", narval);
     retour.title = t("Retour à la préparation de partie");
+    retour.setAttribute("aria-label", retour.title);
     document.getElementById("zone-langue").append(boutonLangue());
 }
 

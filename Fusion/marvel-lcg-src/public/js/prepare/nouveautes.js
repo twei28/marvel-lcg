@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-09",
         genre: "jeu",
+        fr: "En-tête plus fin, sur une seule ligne : les outils (Reprendre, Revoir, Stats, Signaler un bug, Documents…) deviennent des icônes avec leur nom au survol, et les étapes de la préparation sont numérotées.",
+        en: "Slimmer, single-line header: tools (Resume, Replay, Stats, Report a bug, Documents…) become icons with their name on hover, and the setup steps are numbered.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
         fr: "La traduction posée sur les cartes s'affiche aussi sur les grandes cartes au centre (mise en place, cartes révélées) et sur les arts alternatifs des héros, y compris dans la fenêtre de choix de l'art. Le son de survol des boutons est plus discret.",
         en: "Translations laid over cards now also show on the big cards in the middle (setup, revealed cards) and on alternate hero art, including in the art picker. The button hover sound is quieter.",
     },

@@ -19,12 +19,13 @@ body {
 }
 .hf-barre {
     display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
-    padding: 12px 20px; border-bottom: 1px solid var(--hf-bord);
+    min-height: 52px; padding: 6px 18px; border-bottom: 1px solid var(--hf-bord);
     background: rgba(10, 12, 16, 0.9);
     position: sticky; top: 0; z-index: 5;
 }
 .hf-barre h1 { margin: 0; font-size: 1.15rem; letter-spacing: 0.02em; }
-.hf-retour { color: var(--hf-or); text-decoration: none; font-size: 0.85rem; }
+.hf-retour { color: var(--hf-or); text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+.hf-narval { width: 36px; height: 36px; display: block; }
 .hf-score { color: var(--hf-attenue); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
 .hf-filtres { display: flex; gap: 6px; margin-left: auto; }
 .hf-filtre {

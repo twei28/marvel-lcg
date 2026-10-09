@@ -110,16 +110,16 @@ test('elle est rattachee a son bouton pour les lecteurs d ecran', async ({ page 
   await expect(page.locator(`#${id}`)).toHaveCount(1);
 });
 
-// Le narval, mascotte du site, a cote du logo officiel dans l'en-tete des
-// etapes (image de l'utilisateur, 13/09/2026). Le meme fichier sert d'icone
-// d'onglet et d'icone de l'appli : s'il manque, les trois manquent.
-test('l en-tete porte le narval a cote du logo', async ({ page }) => {
+// Le narval, mascotte du site, seul logo de l'en-tete des etapes depuis
+// l'en-tete fin du 09/10/2026. Le meme fichier sert d'icone d'onglet et
+// d'icone de l'appli : s'il manque, les trois manquent.
+test('l en-tete porte le narval, seul logo', async ({ page }) => {
   await page.getByRole('button', { name: /^Solo/ }).first().click();
   const narval = page.locator('header .brand-narwhal');
   await expect(narval).toBeVisible();
   const ok = await narval.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0);
   expect(ok).toBe(true);
-  await expect(page.locator('header .brand-logo')).toBeVisible();
+  await expect(page.locator('header .brand-logo')).toHaveCount(0);
   await page.locator('header .brand').screenshot({ path: 'C:/tmp/narwhal-header.png' });
 });
 

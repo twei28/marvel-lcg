@@ -75,16 +75,16 @@ button{cursor:pointer}
 /* -------------------------------------------------------------- entete -- */
 .cmp-entete{
   position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:18px;
-  min-height:70px;padding:10px 22px;border-bottom:1px solid rgba(255,255,255,.08);
+  min-height:52px;padding:6px 18px;border-bottom:1px solid rgba(255,255,255,.08);
   background:rgba(8,9,14,.86);backdrop-filter:blur(8px);
 }
 .cmp-marque{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--dim)}
 .cmp-marque:hover{color:#fff}
 .cmp-marque-retour{font-size:22px;line-height:1}
 .cmp-marque-bloc{display:flex;flex-direction:column;gap:2px}
-.cmp-marque-logo{height:22px;display:block}
+.cmp-marque-narval{height:36px;width:36px;display:block}
 .cmp-marque-sous{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--mute)}
-.cmp-langue{margin-left:auto;padding:7px 12px;font-size:11px}
+.cmp-langue{margin-left:auto}
 
 /* --------------------------------------------------------------- corps -- */
 .cmp-corps{width:100%;max-width:1380px;margin:0 auto;padding:26px 22px 60px;flex:1}

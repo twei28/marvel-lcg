@@ -8,6 +8,7 @@
 
 import { CLE_AFFICHAGE, normaliser, inverse, reconcilier, doitProposerLeChoix, SOBRE } from "/public/js/prepare/affichage-choix.js";
 import { t } from "/public/js/prepare/langue.js";
+import { poserIcone } from "/public/js/prepare/icones-entete.js";
 
 export function affichageActuel() {
     try { return normaliser(localStorage.getItem(CLE_AFFICHAGE)); }
@@ -73,11 +74,12 @@ export function affichageJamaisChoisi(reponse) {
 
 function dessinerBouton(bouton) {
     const sobre = affichageActuel() === SOBRE;
-    bouton.textContent = sobre ? t("Affichage sobre") : t("Affichage normal");
     bouton.setAttribute("aria-pressed", sobre ? "true" : "false");
-    bouton.title = sobre
+    bouton.title = "";
+    bouton.dataset.description = sobre
         ? t("Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour revenir à l’affichage normal")
         : t("Affichage normal. Cliquer pour passer en affichage sobre : fond gris, sans couleurs du héros ni animations");
+    poserIcone(bouton, sobre ? "fa-eye-slash" : "fa-eye", sobre ? t("Affichage sobre") : t("Affichage normal"));
 }
 
 /** Bouton Normal / Sobre, à poser à côté du bouton FR / EN. */

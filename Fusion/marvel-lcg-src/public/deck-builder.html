@@ -28,13 +28,16 @@
     header.db-tete {
         position: sticky; top: 0; z-index: 10;
         display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
-        padding: 10px 14px;
+        min-height: 52px; padding: 6px 18px;
         background: rgba(10, 12, 16, 0.94);
         border-bottom: 1px solid var(--bord);
         backdrop-filter: blur(6px);
     }
     .db-titre { font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--or); }
     .db-tete a { color: var(--sourdine); text-decoration: none; font-weight: 700; font-size: 0.85rem; }
+    .db-tete > a { display: flex; align-items: center; gap: 8px; }
+    .db-narval { width: 36px; height: 36px; display: block; }
+    .db-retour { font-size: 1.1rem; }
     .db-tete a:hover { color: #fff; }
     .db-tete select, .db-tete input[type="text"] {
         font: inherit; font-size: 0.85rem; min-height: 32px; padding: 0 8px;

@@ -771,19 +771,18 @@ function progressBar() {
                 // repondait 404 ; « /narwhal » trouve assets/textures/narwhal.png,
                 // exactement comme « /01001a » trouve un scan de carte.
                 el("img", { class: "brand-narwhal", src: urlNarval(), alt: "NarwhalChampions" }),
-                el("img", { class: "brand-logo", src: "/mvc_logo.svg", alt: "Marvel Champions" }),
             ),
         ),
         boutonLangue("btn ghost btn-langue"),
         boutonAffichage("btn ghost"),
-        el("div", { class: "steps" }, STEPS.map((label, i) => {
+        el("div", { class: "steps" }, STEPS.flatMap((label, i) => {
             const done = i < state.step && stepComplete(i);
             const cls = "pstep" + (i === state.step && !state.accueil ? " active" : "") + (done ? " done" : "");
-            // Sans numero devant (demande de l'utilisateur) : la coche seule
-            // marque une etape faite, rien ne marque les autres.
-            return el("button", { class: cls, onclick: () => goto(i) },
-                done ? el("span", { class: "pnum" }, "\u2713") : null,
+            // Numerotees (demande du 09/10/2026), la coche remplace le numero d'une etape faite.
+            const bouton = el("button", { class: cls, onclick: () => goto(i) },
+                el("span", { class: "pnum" }, done ? "\u2713" : String(i + 1)),
                 el("span", { class: "plabel" }, label));
+            return i ? [el("span", { class: "psep", "aria-hidden": "true" }, "\u203a"), bouton] : [bouton];
         })),
     );
     // Adopte la rangee d'outils (Reprendre/Stats/Puzzles/Galerie) creee par

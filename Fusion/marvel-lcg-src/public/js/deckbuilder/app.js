@@ -24,6 +24,8 @@ import { catalog } from "/public/js/prepare/catalog.js";
 import { etat as etatLegacy } from "/public/js/prepare/legacy-fiche.js";
 import { fabriquerDisponibilite } from "/public/js/prepare/legacy-cartes.js";
 import { t, synchroniserLangueServeur, langueActuelle } from "/public/js/prepare/langue.js";
+import { poserIcone } from "/public/js/prepare/icones-entete.js";
+import { urlNarval } from "/public/js/prepare/narval.js";
 import { nomFr, texteFr } from "/public/js/prepare/cartes-fr.js";
 import { NOMS_FR } from "/public/js/prepare/noms-fr.js";
 import { correspondRecherche } from "/public/js/deckbuilder/recherche.js";
@@ -660,17 +662,21 @@ async function sauverDansLeJeu() {
 function traduirePageStatique() {
     document.title = t("Éditeur de deck") + " — Marvel Champions";
     const lien = document.querySelector(".db-tete a");
-    if (lien) lien.textContent = t("← Préparation");
+    if (lien) {
+        lien.replaceChildren(el("span", { class: "db-retour" }, "<"), el("img", { class: "db-narval", src: urlNarval(), alt: "" }));
+        lien.title = t("← Préparation").replace(/^\S+\s*/, "");
+        lien.setAttribute("aria-label", lien.title);
+    }
     const titre = document.querySelector(".db-titre");
     if (titre) titre.textContent = t("Éditeur de deck");
     const nom = $("#db-nom");
     if (nom) nom.placeholder = t("Nom du deck…");
     const brouillon = $("#db-save-draft");
-    if (brouillon) { brouillon.textContent = t("Sauver le brouillon"); brouillon.title = t("Sauver un brouillon dans ce navigateur"); }
+    if (brouillon) { brouillon.title = t("Sauver un brouillon dans ce navigateur"); poserIcone(brouillon, "fa-pencil", t("Sauver le brouillon")); }
     const exporter = $("#db-export");
-    if (exporter) { exporter.textContent = t("Exporter"); exporter.title = t("Télécharger le deck en fichier JSON"); }
+    if (exporter) { exporter.title = t("Télécharger le deck en fichier JSON"); poserIcone(exporter, "fa-download", t("Exporter")); }
     const sauver = $("#db-save-game");
-    if (sauver) { sauver.textContent = t("Sauvegarder dans le jeu"); sauver.title = t("Sauvegarder dans le jeu (apparaît dans la préparation)"); }
+    if (sauver) { sauver.title = t("Sauvegarder dans le jeu (apparaît dans la préparation)"); poserIcone(sauver, "fa-floppy-o", t("Sauvegarder dans le jeu")); }
 }
 
 /** Montre en grand, dans le panneau de droite, la carte que l'on pointe.

@@ -387,7 +387,11 @@ function rangeeBoutons() {
     rangee = document.createElement("div");
     rangee.className = "reprise-boutons";
     const etapes = document.querySelector("header.progress .steps");
+    // Une page avec son propre en-tete (galerie) : la rangee y entre, au lieu
+    // de flotter par-dessus son bouton de langue.
+    const entete = document.querySelector("body > header, main > header, body > div > header");
     if (etapes) etapes.parentElement.insertBefore(rangee, etapes);
+    else if (entete) entete.append(rangee);
     else { rangee.classList.add("est-flottante"); document.body.append(rangee); }
     return rangee;
 }

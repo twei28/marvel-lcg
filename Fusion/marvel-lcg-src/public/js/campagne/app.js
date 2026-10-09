@@ -51,6 +51,7 @@ function couvertureCampagne(code, cleExtension) {
 }
 import { t, langueActuelle, synchroniserLangueServeur, boutonLangue } from "/public/js/prepare/langue.js";
 import { launch } from "/public/js/prepare/launcher.js";
+import { urlNarval } from "/public/js/prepare/narval.js";
 import * as OL from "/public/js/campagne/ordre-libre.js";
 import * as LP from "/public/js/campagne/livre-pages.js";
 
@@ -323,8 +324,8 @@ function entete(sousTitre, retour) {
     return el("header", { class: "cmp-entete" },
         el("a", { class: "cmp-marque", href: retour || "/prepare.html" },
             el("span", { class: "cmp-marque-retour" }, "<"),
+            el("img", { class: "cmp-marque-narval", src: urlNarval(), alt: "NarwhalChampions" }),
             el("span", { class: "cmp-marque-bloc" },
-                el("img", { class: "cmp-marque-logo", src: "/mvc_logo.svg", alt: "Marvel Champions" }),
                 el("span", { class: "cmp-marque-sous" }, sousTitre),
             ),
         ),

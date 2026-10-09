@@ -38,7 +38,8 @@ body{
   display:flex;
   align-items:center;
   gap:14px;
-  padding:18px 0 14px;
+  min-height:52px;
+  padding:6px 0;
   border-bottom:1px solid var(--line);
   margin-bottom:14px;
 }
@@ -55,6 +56,8 @@ body{
   white-space:nowrap;
 }
 .g-retour:hover{background:var(--steel2);color:var(--txt)}
+.g-retour{display:flex;align-items:center;gap:8px;padding:0 8px 0 0;border:0;background:none}
+.g-narval{width:36px;height:36px;display:block}
 .g-entete h1{
   flex:1;
   font-size:clamp(1.1rem,2.4vw,1.5rem);

@@ -7,6 +7,7 @@
 "use strict";
 
 import { DICO_EN_BASE } from "/public/js/prepare/dico-en.js";
+import "/public/js/prepare/icones-entete.js";
 
 const CLE_LANGUE = "marvel-langue";
 
@@ -115,11 +116,12 @@ export async function retenirLangue(langue) {
 export function boutonLangue(classe) {
     const bouton = document.createElement("button");
     bouton.type = "button";
-    bouton.className = classe || "btn-langue";
+    bouton.className = (classe || "btn-langue") + " btn-icone";
     bouton.title = langueActuelle() === "fr"
         ? "Interface et narration en français : cliquer pour passer en anglais"
         : "Interface and narration in English: click to switch to French";
     bouton.textContent = langueActuelle() === "fr" ? "FR" : "EN";
+    bouton.setAttribute("aria-label", langueActuelle() === "fr" ? "Français" : "English");
     bouton.addEventListener("click", () => { basculerLangue(); });
     return bouton;
 }

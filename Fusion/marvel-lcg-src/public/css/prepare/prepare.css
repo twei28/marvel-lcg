@@ -1291,6 +1291,23 @@ button{cursor:pointer}
 .progress .reprise-boutons{margin-left:4px}
 .progress .steps{margin-left:auto}
 
+/* --- En-tête fin, une seule ligne (09/10/2026) -------------------------------
+   Un seul logo (le narval), outils en icônes (icones-entete.js), étapes
+   numérotées plus petites. Tient sur une ligne en compte admin dès 1366 px. */
+.progress{min-height:52px;padding:6px 18px;gap:10px;flex-wrap:nowrap;flex-direction:row;align-items:center}
+.progress .brand{min-width:0;gap:8px;flex:none}
+.progress .brand-back{width:28px;height:28px}
+.progress .brand-narwhal{height:36px;width:36px;margin-right:0}
+.progress .btn-langue,.progress .btn-affichage{margin-left:6px}
+.progress .btn-langue + .btn-affichage{margin-left:0}
+.progress .reprise-boutons{margin-left:6px;min-width:0;flex:0 1 auto;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.progress .reprise-boutons::-webkit-scrollbar{display:none}
+.progress .steps{flex-wrap:nowrap;gap:2px;flex:none}
+.progress .pstep{min-height:34px;padding:4px 6px;gap:6px}
+.progress .pstep .pnum{width:22px;height:22px;font-size:11px}
+.progress .pstep .plabel{font-size:17px}
+.progress .psep{color:var(--line);font-size:16px;line-height:1}
+
 /* ===== Direction « Affiche » (7 septembre) ====================================
    Les briques communes : le cartouche de récitatif (le petit rectangle jaune
    bordé de noir des BD), les tampons penchés, le nom géant. Puis l'étape des
