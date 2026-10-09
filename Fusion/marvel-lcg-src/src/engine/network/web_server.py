@@ -499,4 +499,5 @@ class WebServer:
         self.AddAwaitGetSecurity(r'/{path:.+\.jpg}', handle_image_file)
         self.AddAwaitGetSecurity(r'/{path:.+\.jpeg}', handle_image_file)
         self.AddAwaitGetSecurity(r'/{path:.+\.png}', handle_image_file)
+        self.AddAwaitGetSecurity(r'/{path:.+\.webp}', handle_image_file)
 
