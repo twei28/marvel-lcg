@@ -2188,7 +2188,8 @@ def bloc_stats_play() -> str:
         return present + '<p class="vide">Aucune partie lancee sur play ces %d derniers jours.</p>' % st["jours"]
 
     def tableau(titre, lignes):
-        corps = "".join("<tr><td>%s</td><td>%d</td></tr>" % (html.escape(str(k)), n) for k, n in lignes)
+        corps = "".join('<tr><td data-label="%s">%s</td><td data-label="Parties">%d</td></tr>'
+                        % (html.escape(titre.split()[0]), html.escape(str(k)), n) for k, n in lignes)
         return "<h3>%s</h3><table><tr><th>%s</th><th>Parties</th></tr>%s</table>" % (
             html.escape(titre), html.escape(titre.split()[0]), corps)
 
@@ -3093,6 +3094,43 @@ PAGE = """<!doctype html>
   .avert {{ border:1px solid #9e6a03; background:#1d1a0e; color:var(--warn);
            border-radius:0; padding:.7rem .9rem; margin-bottom:1.5rem; font-size:.9rem; }}
   footer {{ margin-top:2.5rem; color:#5b6270; font-size:.85rem; }}
+  /* ===== TELEPHONE (zone 2 de la refonte du 09/10/2026, fiche
+     .planning/todos/2026-10-09-mode-telephone-refonte.md) ====================
+     Sous 768 px : une barre fine (logo + burger), le menu se deroule dessous,
+     zones tactiles de 44 px. Au-dessus de 768 px, rien ne change. */
+  .barre-burger {{ display:none; }}
+  @media (max-width:767px) {{
+    .barre {{ flex-wrap:wrap; gap:0; padding:.2rem .4rem .2rem 1rem; min-height:52px; }}
+    .barre-logo {{ min-height:44px; }}
+    .barre-burger {{ display:inline-grid; place-items:center; margin-left:auto; min-width:44px; min-height:44px;
+                    padding:0; background:transparent; border:0; color:var(--text); font-size:1.5rem; line-height:1; }}
+    .barre-burger:hover {{ background:transparent; }}
+    .barre-qui, .barre-nav {{ display:none; }}
+    .barre.ouvert .barre-qui {{ display:block; order:3; flex-basis:100%; margin:0; padding:.4rem 0 .1rem; }}
+    .barre.ouvert .barre-nav {{ display:flex; order:4; flex-basis:100%; flex-direction:column; align-items:stretch;
+                               gap:0; margin:0; padding:.2rem 0 .5rem; border-top:1px solid var(--border); }}
+    .barre-nav a {{ display:flex; align-items:center; min-height:44px; font-size:1rem; }}
+    .barre-nav a.lang {{ align-self:flex-start; margin-top:.3rem; }}
+    .lang span {{ display:flex; align-items:center; min-height:42px; padding:0 .9rem; }}
+    main {{ padding-top:4.4rem; }}
+  }}
+  /* Les tableaux deviennent des cartes empilees au telephone : une ligne = une
+     carte, chaque valeur precedee de son libelle (`data-label`). */
+  @media (max-width:767px) {{
+    table, tbody, tr, td {{ display:block; width:100%; }}
+    tr:has(> th) {{ display:none; }}
+    tr {{ margin:0 0 .6rem; padding:.55rem .8rem; background:var(--panel); border:1px solid var(--border); }}
+    td {{ display:flex; justify-content:space-between; gap:1rem; padding:.2rem 0; border:0; text-align:right; }}
+    td::before {{ content:attr(data-label); color:var(--muted); font-size:.85rem; text-align:left; flex:none; }}
+    td[colspan] {{ justify-content:flex-start; text-align:left; }}
+  }}
+  @media (max-width:767px) {{
+    button, input, textarea {{ min-height:44px; }}
+    input, textarea {{ font-size:16px; }}
+    button.rouge, .apres button {{ min-height:44px; padding:.35rem .9rem; }}
+    a.retour {{ display:inline-flex; align-items:center; min-height:44px; }}
+    .table {{ padding:1.1rem 1rem; }}
+  }}
 </style>
 <main>
   {barre}
@@ -3181,14 +3219,20 @@ def _barre(pseudo: str) -> str:
     # est devenue fixe en haut de l'ecran sur toutes les pages connectees.
     # Le logo EST le lien « Accueil » (convention universelle) : l'ancien
     # lien texte separe a ete retire, il aurait fait doublon juste a cote.
+    # ⚠ LE BURGER (zone 2 de la refonte telephone, 09/10/2026) : cache au-dessus
+    # de 768 px par le CSS de la page ; au telephone, il deroule identite et
+    # liens sous la barre fine.
     return ('<header class="barre">'
             '<a href="/" class="barre-logo"><img src="/narwhal.png" alt="" width="512" height="512">'
             'NarwhalChampions</a>'
+            '<button type="button" class="barre-burger" aria-label="%s" aria-expanded="false" '
+            'onclick="var b=this.parentNode;b.classList.toggle(\'ouvert\');'
+            'this.setAttribute(\'aria-expanded\',b.classList.contains(\'ouvert\'))">&#9776;</button>'
             '<div class="barre-qui">%s <strong>%s</strong></div>'
             '<nav class="barre-nav">%s%s%s'
             '<a href="/deconnexion" class="sortie">%s</a>'
             '</nav></header>'
-            % (lang.t("Connecte"), html.escape(pseudo),
+            % (lang.t("Menu"), lang.t("Connecte"), html.escape(pseudo),
                signalements, admin, _bouton_langue(),
                lang.t("Se deconnecter")))
 
@@ -3582,7 +3626,7 @@ def page_arret(pseudo: str) -> bytes:
 
 PAGE_FORMULAIRE = """<!doctype html>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,interactive-widget=resizes-content">
 <title>{titre} — NarwhalChampions</title>
 {tete_appli}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3619,6 +3663,25 @@ PAGE_FORMULAIRE = """<!doctype html>
             border-radius:.5rem; padding:.7rem .9rem; margin-bottom:1.2rem; font-size:.9rem; }}
   p {{ color:var(--muted); font-size:.85rem; line-height:1.6; margin:1.2rem .1rem 0; }}
   a {{ color:var(--accent); }}
+  /* TELEPHONE (zone 2 de la refonte du 09/10/2026) : un bandeau fin colle en
+     haut, le formulaire juste dessous (plus centre dans l'ecran), champs et
+     bouton de 44 px. Le clavier ne cache pas le bouton : la page retrecit
+     avec lui (`interactive-widget`), et le champ touche fait defiler jusqu'au
+     bouton (script plus bas). Au-dessus de 768 px, rien ne change. */
+  @media (max-width:767px) {{
+    body {{ display:block; min-height:100dvh; padding:0 0 1.5rem; }}
+    main {{ max-width:none; }}
+    .marque {{ position:sticky; top:0; z-index:5; gap:.6rem; min-height:52px; margin:0 0 1rem;
+              padding:.35rem 1rem; background:#05060a; border-bottom:1px solid var(--border); }}
+    .marque img {{ width:2.2rem; height:2.2rem; }}
+    .marque h1 {{ font-size:1.3rem; }}
+    .carte {{ margin:0 1rem; padding:1.1rem 1rem; border-radius:.7rem; }}
+    label {{ margin-bottom:.8rem; }}
+    input {{ min-height:44px; font-size:16px; }}
+    button {{ min-height:48px; }}
+    p {{ margin:1rem 1rem 0; }}
+    p a {{ display:inline-flex; align-items:center; min-height:44px; min-width:44px; justify-content:center; }}
+  }}
 </style>
 <main>
   <div class="marque"><img src="/narwhal.png" alt="" width="512" height="512"><h1>{titre}</h1></div>
@@ -3633,6 +3696,17 @@ PAGE_FORMULAIRE = """<!doctype html>
   <p>{pied}</p>
   {bouton_appli}
 </main>
+<script>(function(){{
+  // Telephone : le clavier ne doit pas cacher le bouton d'envoi. Au toucher
+  // d'un champ, une fois le clavier ouvert, on amene le bouton dans l'ecran.
+  if (!window.matchMedia("(max-width: 767px)").matches) return;
+  var bouton = document.querySelector("form button[type=submit]");
+  if (!bouton) return;
+  document.addEventListener("focusin", function (e) {{
+    if (!e.target.matches || !e.target.matches("input")) return;
+    setTimeout(function () {{ bouton.scrollIntoView({{ block: "nearest" }}); }}, 300);
+  }});
+}})();</script>
 """
 
 PAGE_ADMIN = """<!doctype html>
@@ -3838,6 +3912,47 @@ PAGE_ADMIN = """<!doctype html>
   .voir-plus {{ display:block; width:100%; margin-top:.6rem; background:transparent;
                color:var(--muted); border:1px dashed var(--border); font-weight:600; }}
   .voir-plus:hover {{ color:var(--text); border-color:var(--muted); }}
+  /* ===== TELEPHONE (zone 2 de la refonte du 09/10/2026, fiche
+     .planning/todos/2026-10-09-mode-telephone-refonte.md) ====================
+     Sous 768 px : une barre fine (logo + burger), le menu se deroule dessous,
+     zones tactiles de 44 px. Au-dessus de 768 px, rien ne change. */
+  .barre-burger {{ display:none; }}
+  @media (max-width:767px) {{
+    .barre {{ flex-wrap:wrap; gap:0; padding:.2rem .4rem .2rem 1rem; min-height:52px; }}
+    .barre-logo {{ min-height:44px; }}
+    .barre-burger {{ display:inline-grid; place-items:center; margin-left:auto; min-width:44px; min-height:44px;
+                    padding:0; background:transparent; border:0; color:var(--text); font-size:1.5rem; line-height:1; }}
+    .barre-burger:hover {{ background:transparent; }}
+    .barre-qui, .barre-nav {{ display:none; }}
+    .barre.ouvert .barre-qui {{ display:block; order:3; flex-basis:100%; margin:0; padding:.4rem 0 .1rem; }}
+    .barre.ouvert .barre-nav {{ display:flex; order:4; flex-basis:100%; flex-direction:column; align-items:stretch;
+                               gap:0; margin:0; padding:.2rem 0 .5rem; border-top:1px solid var(--border); }}
+    .barre-nav a {{ display:flex; align-items:center; min-height:44px; font-size:1rem; }}
+    .barre-nav a.lang {{ align-self:flex-start; margin-top:.3rem; }}
+    .lang span {{ display:flex; align-items:center; min-height:42px; padding:0 .9rem; }}
+    main {{ padding-top:4.4rem; }}
+  }}
+  /* Les tableaux deviennent des cartes empilees au telephone : une ligne = une
+     carte, chaque valeur precedee de son libelle (`data-label`). */
+  @media (max-width:767px) {{
+    table, tbody, tr, td {{ display:block; width:100%; }}
+    tr:has(> th) {{ display:none; }}
+    tr {{ margin:0 0 .6rem; padding:.55rem .8rem; background:var(--panel); border:1px solid var(--border); }}
+    td {{ display:flex; justify-content:space-between; gap:1rem; padding:.2rem 0; border:0; text-align:right; }}
+    td::before {{ content:attr(data-label); color:var(--muted); font-size:.85rem; text-align:left; flex:none; }}
+    td[colspan] {{ justify-content:flex-start; text-align:left; }}
+  }}
+  @media (max-width:767px) {{
+    .onglets {{ top:52px; }}
+    .onglet, .sous-onglet, .annonce-toggle, button {{ min-height:44px; }}
+    .sous-onglets {{ overflow-x:auto; scrollbar-width:none; gap:1rem; }}
+    .sous-onglet {{ flex:none; min-width:44px; }}
+    .compte-actions button {{ width:44px; height:44px; }}
+    .rapport > summary, .groupe > summary {{ min-height:44px; align-items:center; }}
+    input, textarea, select {{ min-height:44px; font-size:16px; }}
+    .repondre {{ flex-direction:column; align-items:stretch; }}
+    p.sous a, .rapport a, .corps a {{ display:inline-flex; align-items:center; min-height:44px; min-width:44px; }}
+  }}
 </style>
 {styles_suivi}
 <main>
@@ -4544,6 +4659,10 @@ PAGE_SUIVI = """<!doctype html>
   h1 small { color:var(--muted); font-weight:normal; font-size:.8rem; }
   .pied { color:var(--muted); font-size:.75rem; margin-top:1.5rem; text-align:center; }
   .pied a { color:var(--muted); }
+  /* Telephone (zone 2 de la refonte du 09/10/2026) : liens de 44 px. */
+  @media (max-width:767px) {
+    .pied a { display:inline-flex; align-items:center; justify-content:center; min-height:44px; min-width:44px; }
+  }
 </style>
 """ + SUIVI_STYLE_BLOC + """
 <h1>Parties <small id="maj">chargement…</small></h1>
@@ -5597,7 +5716,9 @@ class Handler(BaseHTTPRequestHandler):
         n_rapports = nb_rapports_nouveaux()
         n_joueurs = attente_salon["nouveaux"]
         parties = "".join(
-            "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
+            # `data-label` : au telephone, chaque ligne devient une carte.
+            '<tr><td data-label="Table">%s</td><td data-label="Hote">%s</td>'
+            '<td data-label="Ouverte le">%s</td><td data-label="Fermee le">%s</td></tr>' % (
                 html.escape(p["nom"]), html.escape(p["hote"]),
                 html.escape(p["ouverte_le"]),
                 html.escape(p["fermee_le"] or "en cours"))

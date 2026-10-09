@@ -110,6 +110,7 @@ DICO_EN: dict[str, str] = {
 
     # --- La barre, en haut de chaque page -----------------------------------
     "Connecte": "Signed in",
+    "Menu": "Menu",
     "Se deconnecter": "Sign out",
     "Mes signalements": "My reports",
     "Accueil": "Home",
