@@ -399,6 +399,22 @@ export async function avancerLaPartie(
     if (arret({ monde: m, demande })) return m
     if (m.game_over) return m
 
+    if (!demande) {
+      // Le carre de la phase du mechant (397331a5, 05/10/2026) attend un clic sur
+      // « Suivant » a chaque etape : sans question au moteur, c'est lui qui retient
+      // la partie. Un joueur le clique ; le pilote aussi.
+      // Sur la table, le carre se replie en un bouton rond numerote (18969bfe) :
+      // c'est lui qu'on clique alors, comme dans annonce-attend-le-clic.spec.ts.
+      // Le bouton s'appelle « Suivant (Espace) », puis « Terminer » au bilan : on vise
+      // sa classe, `.deroule-suivant`, plutot que son libelle.
+      const suivant = page.locator('.deroule-suivant').first()
+      const rond = page.locator('.deroule-rond').first()
+      if ((await suivant.count()) && (await suivant.isVisible().catch(() => false))) {
+        await suivant.click().catch(() => undefined)
+      } else if ((await rond.count()) && (await rond.isVisible().catch(() => false))) {
+        await rond.click().catch(() => undefined)
+      }
+    }
     if (demande) {
       const tenables = demande.options.filter(cibleTenable)
       const reponse = /Response|Interrupt/i.test(demande.ability_type) ? tenables[0] : undefined
