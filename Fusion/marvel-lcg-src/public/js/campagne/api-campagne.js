@@ -54,6 +54,8 @@ export const apiCampagne = {
 };
 
 /** URL d'une page de livret d'une campagne. */
-export function pageLivretUrl(code, fichier) {
-    return "/public/stories/" + encodeURIComponent(code) + "/" + encodeURIComponent(fichier);
+export function pageLivretUrl(code, fichier, langue) {
+    // Pages refaites en francais (tools/livret_fr.py) : sous-dossier fr/, meme nom.
+    const sous = langue === "fr" ? "fr/" : "";
+    return "/public/stories/" + encodeURIComponent(code) + "/" + sous + encodeURIComponent(fichier);
 }

@@ -112,8 +112,14 @@ function portraitHeros(membre) {
 
 /** Une page de livret, cliquable pour l'agrandir. */
 function pageLivret(code, fichier, classe) {
-    const img = el("img", { class: "cmp-page " + (classe || ""), src: pageLivretUrl(code, fichier), alt: "", loading: "lazy" });
-    img.onerror = () => img.remove();
+    // En francais, la page traduite si elle existe ; sinon la page anglaise.
+    const francais = langueActuelle() === "fr";
+    const img = el("img", { class: "cmp-page " + (classe || ""), src: pageLivretUrl(code, fichier, francais ? "fr" : ""), alt: "", loading: "lazy" });
+    let repli = francais;
+    img.onerror = () => {
+        if (repli) { repli = false; img.src = pageLivretUrl(code, fichier); return; }
+        img.remove();
+    };
     img.onclick = () => {
         const loupe = el("div", { class: "cmp-loupe", onclick: () => loupe.remove() }, el("img", { src: img.src, alt: "" }));
         document.body.append(loupe);
