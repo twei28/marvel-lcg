@@ -72,21 +72,28 @@ test.describe.serial('Fear No Evil en ordre libre', () => {
     identifiant = await poser(request)
     await ouvrir(page)
 
-    // La planche d'ouverture de la campagne et les trois pages de règles.
+    // Livre ouvert (09/10/2026) : la planche d'ouverture dans l'onglet du
+    // livret, les trois pages de regles dans l'onglet de la campagne.
     const planche = (fichier: string) => page.locator(`img.cmp-page[src*="${fichier}"]`)
+    const onglet = (nom: RegExp) => page.locator('.cmp-livre-onglet', { hasText: nom })
     await expect(planche('00-campagne-intro-1.jpg'), 'la planche d ouverture manque').toBeVisible()
+    await onglet(/Règles de la campagne|Campaign rules/).click()
     await expect(planche('00-campagne-regles-1.jpg')).toBeVisible()
+    await page.keyboard.press('ArrowRight')
     await expect(planche('00-campagne-regles-3.jpg')).toBeVisible()
 
-    // Tant qu'aucune affaire n'est retenue, aucune planche d'affaire.
-    await expect(page.locator('img.cmp-page[src*="-intro-1.jpg"]')).toHaveCount(1)
+    // Tant qu'aucune affaire n'est retenue, le livret n'a que la planche d'ouverture.
+    await onglet(/Le livret|The rulebook/).click()
+    await expect(page.locator('.cmp-livre-compteur')).toHaveText('1 / 1')
 
     await page.getByRole('button', { name: /tirer la progression|draw the progression/i }).click()
     await page.getByRole('button', { name: /^The Getaway|^La fuite/ }).click()
 
     // La BD et la page de règles de l'affaire retenue, et les portraits.
     await expect(planche('02-the_getaway-intro-1.jpg'), 'la BD de l affaire manque').toBeVisible()
+    await page.keyboard.press('ArrowRight')
     await expect(planche('02-the_getaway-regles-1.jpg'), 'la page de règles de l affaire manque').toBeVisible()
+    await page.keyboard.press('ArrowLeft')
     await expect(page.locator('details.cmp-vilains')).toBeVisible()
 
     // Une planche qui n'existe pas se retire d'elle-même (pageLivret.onerror) :

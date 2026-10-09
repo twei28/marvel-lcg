@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-09",
         genre: "jeu",
+        fr: "Écran de campagne : les pages du livret s'ouvrent comme un livre, en double page qu'on tourne avec les flèches (ou le clavier, ou d'un glissement du doigt sur téléphone). Le bouton pour lancer le scénario reste visible sans défiler.",
+        en: "Campaign screen: booklet pages now open like a book, in a two-page spread turned with the arrows (or the keyboard, or a swipe on a phone). The button to start the scenario stays visible without scrolling.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
         fr: "Campagne Hunting Season : les pages du livret s'affichent à l'écran de campagne, en français quand le jeu est en français. La traduction posée sur les cartes couvre aussi le verso et les manigances.",
         en: "Hunting Season campaign: the booklet pages now show on the campaign screen, in French when the game is in French. Translations laid over cards now also cover the back side and schemes.",
     },

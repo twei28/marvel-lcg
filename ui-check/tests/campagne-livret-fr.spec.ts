@@ -33,6 +33,9 @@ async function ouvrir(page: Page, langue: 'fr' | 'en') {
   await page.evaluate((l) => localStorage.setItem('marvel-langue', l), langue)
   await page.goto('/campagne.html', { waitUntil: 'networkidle' })
   await page.locator('.cmp-carte', { hasText: NOM }).locator('.cmp-carte-ouvrir').click()
+  // Livre ouvert (09/10/2026) : la page de Vermin est sur la seconde double
+  // page, apres la couverture et les regles de la campagne.
+  await page.locator('.cmp-livre-fleche.droite').click()
 }
 
 test.beforeAll(async ({ request }) => {

@@ -52,6 +52,7 @@ function couvertureCampagne(code, cleExtension) {
 import { t, langueActuelle, synchroniserLangueServeur, boutonLangue } from "/public/js/prepare/langue.js";
 import { launch } from "/public/js/prepare/launcher.js";
 import * as OL from "/public/js/campagne/ordre-libre.js";
+import * as LP from "/public/js/campagne/livre-pages.js";
 
 const root = document.getElementById("app");
 
@@ -120,11 +121,171 @@ function pageLivret(code, fichier, classe) {
         if (repli) { repli = false; img.src = pageLivretUrl(code, fichier); return; }
         img.remove();
     };
-    img.onclick = () => {
-        const loupe = el("div", { class: "cmp-loupe", onclick: () => loupe.remove() }, el("img", { src: img.src, alt: "" }));
-        document.body.append(loupe);
-    };
+    img.onclick = () => ouvrirLoupe(img.src);
     return img;
+}
+
+function ouvrirLoupe(src) {
+    const loupe = el("div", { class: "cmp-loupe", onclick: () => loupe.remove() }, el("img", { src, alt: "" }));
+    document.body.append(loupe);
+}
+
+/* ------------------------------------------------------- le livre ouvert -- */
+//
+// Les pages du livret en double page, qu'on tourne avec des fleches (ecran et
+// clavier), au lieu de les empiler : le bouton Lancer etait sous trois pages.
+// Une page a la fois sur un ecran etroit, avec balayage du doigt. Le choix des
+// pages par etape vit dans livre-pages.js (pur, teste).
+//
+// L'ecran se reconstruit en entier a chaque `rendre()` : la page ouverte et
+// l'onglet sont gardes ici, par livre (`cle`), pour ne pas revenir au debut a
+// chaque clic sur une option.
+
+const _livres = new Map();
+const _pagesManquantes = new Set();
+let _livreActif = null;
+const ECRAN_ETROIT = window.matchMedia("(max-width: 900px)");
+const MOINS_D_ANIMATION = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+ECRAN_ETROIT.addEventListener("change", () => { if (_livreActif) _livreActif.redessiner(); });
+document.addEventListener("keydown", (e) => {
+    const loupe = document.querySelector(".cmp-loupe");
+    if (e.key === "Escape" && loupe) { loupe.remove(); return; }
+    if (loupe || !_livreActif || !_livreActif.racine.isConnected) return;
+    const cible = e.target || {};
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(cible.tagName || "") || cible.isContentEditable) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); _livreActif.tourner(1); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); _livreActif.tourner(-1); }
+});
+
+/** Une page du livre : la version francaise si elle existe, sinon l'anglaise ;
+ *  absente des deux, elle sort du livre (couverture d'une boite sans livret). */
+function feuilleDuLivre(code, page, quandAbsente) {
+    const francais = langueActuelle() === "fr";
+    const img = el("img", {
+        class: "cmp-page cmp-page-" + page.classe, alt: "", draggable: "false",
+        src: pageLivretUrl(code, page.fichier, francais ? "fr" : ""),
+    });
+    let repli = francais;
+    img.onerror = () => {
+        if (repli) { repli = false; img.src = pageLivretUrl(code, page.fichier); return; }
+        quandAbsente();
+    };
+    img.onclick = () => ouvrirLoupe(img.src);
+    return el("figure", { class: "cmp-livre-feuille" }, img);
+}
+
+function livreOuvert(code, cle, onglets) {
+    if (!onglets.length) return null;
+    const memo = _livres.get(cle) || { onglet: onglets[0].id, debut: 0 };
+    _livres.set(cle, memo);
+    const racine = el("section", { class: "cmp-livre" });
+    const livre = { racine, tourner, redessiner: () => dessiner(0, null) };
+    _livreActif = livre;
+
+    const presentes = (onglet) => onglet.pages.filter((p) => !_pagesManquantes.has(code + "/" + p.fichier));
+    const ongletCourant = () => onglets.find((o) => o.id === memo.onglet) || onglets[0];
+    const simple = (total) => ECRAN_ETROIT.matches || total <= 1;
+
+    function tourner(sens) {
+        const pages = presentes(ongletCourant());
+        const un = simple(pages.length);
+        const suivant = memo.debut + sens * (un ? 1 : 2);
+        if (suivant < 0 || suivant >= pages.length) return;
+        // La feuille qui se tourne : celle de droite pour avancer, celle de
+        // gauche pour reculer, mesuree AVANT de redessiner.
+        const feuilles = racine.querySelectorAll(".cmp-livre-feuille");
+        const tournee = sens > 0 ? feuilles[feuilles.length - 1] : feuilles[0];
+        memo.debut = suivant;
+        dessiner(sens, tournee);
+    }
+
+    function dessiner(sens, tournee) {
+        const onglet = ongletCourant();
+        const pages = presentes(onglet);
+        const un = simple(pages.length);
+        memo.debut = LP.caler(memo.debut, pages.length, un);
+        const avant = tournee && !MOINS_D_ANIMATION.matches ? {
+            src: tournee.querySelector("img").src,
+            boite: tournee.querySelector("img").getBoundingClientRect(),
+        } : null;
+
+        const visibles = pages.slice(memo.debut, memo.debut + (un ? 1 : 2));
+        const double = el("div", { class: "cmp-livre-double" + (visibles.length === 1 ? " seule" : "") },
+            visibles.map((p) => feuilleDuLivre(code, p, () => {
+                if (_pagesManquantes.has(code + "/" + p.fichier)) return;
+                _pagesManquantes.add(code + "/" + p.fichier);
+                dessiner(0, null);
+            })));
+        const fleche = (sens2, signe, libelle, actif) => el("button", {
+            class: "cmp-livre-fleche " + (sens2 < 0 ? "gauche" : "droite"),
+            "aria-label": libelle, title: libelle,
+            disabled: actif ? null : "",
+            onclick: () => tourner(sens2),
+        }, signe);
+        const scene = el("div", { class: "cmp-livre-scene" },
+            pages.length ? double : el("p", { class: "cmp-livre-vide" }, t("Pas de page de livret pour cette étape.")),
+            fleche(-1, "‹", t("Page précédente"), memo.debut > 0),
+            fleche(1, "›", t("Page suivante"), memo.debut + visibles.length < pages.length),
+        );
+        balayage(scene);
+
+        racine.replaceChildren(
+            el("div", { class: "cmp-livre-tete" },
+                onglets.length > 1 ? el("div", { class: "cmp-livre-onglets", role: "tablist" }, onglets.map((o) => el("button", {
+                    class: "cmp-livre-onglet" + (o === onglet ? " sel" : ""), role: "tab",
+                    "aria-selected": o === onglet ? "true" : "false",
+                    onclick: () => { memo.onglet = o.id; memo.debut = 0; dessiner(0, null); },
+                }, t(o.libelle)))) : el("span", { class: "cmp-livre-titre" }, t(onglet.libelle)),
+                el("span", { class: "cmp-livre-compteur" }, LP.compteur(memo.debut, pages.length, un)),
+            ),
+            scene,
+        );
+
+        if (avant) {
+            // Une copie de l'ancienne feuille, posee la ou elle etait, pivote
+            // sur sa reliure : la nouvelle double page est deja dessous.
+            const ici = scene.getBoundingClientRect();
+            const copie = el("div", {
+                class: "cmp-livre-tourne " + (sens > 0 ? "avance" : "recule"),
+                style: {
+                    left: (avant.boite.left - ici.left) + "px",
+                    top: (avant.boite.top - ici.top) + "px",
+                    width: avant.boite.width + "px", height: avant.boite.height + "px",
+                },
+            }, el("img", { src: avant.src, alt: "" }));
+            const fin = () => copie.remove();
+            copie.addEventListener("animationend", fin);
+            setTimeout(fin, 600);
+            scene.append(copie);
+        }
+    }
+
+    // Balayage du doigt : un geste horizontal franc tourne la page, et le
+    // « clic » qui le termine n'ouvre pas la loupe.
+    function balayage(scene) {
+        let depart = null;
+        let avale = false;
+        scene.addEventListener("pointerdown", (e) => {
+            depart = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY };
+        });
+        scene.addEventListener("pointerup", (e) => {
+            if (!depart) return;
+            const dx = e.clientX - depart.x;
+            const dy = e.clientY - depart.y;
+            depart = null;
+            if (Math.abs(dx) > 50 && Math.abs(dx) > 1.5 * Math.abs(dy)) {
+                avale = true;
+                tourner(dx < 0 ? 1 : -1);
+            }
+        });
+        scene.addEventListener("click", (e) => {
+            if (avale) { avale = false; e.stopPropagation(); e.preventDefault(); }
+        }, true);
+    }
+
+    dessiner(0, null);
+    return racine;
 }
 
 function bandeauErreur() {
@@ -723,47 +884,29 @@ function vueCampagne() {
     if (finie) return el("div", { class: "cmp-page-campagne" }, entete(t("Campagne")), barre,
         el("main", { class: "cmp-corps" }, bandeauErreur(), vueConclusion(campagne, definition, perdue)));
 
-    const pages = scenario.pages || {};
-    const intro = (pages.intro || []).map((f) => pageLivret(definition.code, f, "cmp-page-bd"));
-    const regles = (pages.regles || []).map((f) => pageLivret(definition.code, f, "cmp-page-regles"));
-    // `pages_regles` etait documente au format des campagnes et lu par AUCUN
-    // code : les pages de regles valables pour toute la boite, mode expert
-    // compris, dormaient sur le disque. Quatre fichiers concernes avant meme
-    // qu'on en ajoute, trois pour trors et un pour sm. Constate le 10/8/2026.
-    const reglesCampagne = (definition.pages_regles || [])
-        .map((f) => pageLivret(definition.code, f, "cmp-page-regles"));
-
     const sets = duCatalogue
         ? [...(duCatalogue.rawJson.encounter_sets || []), ...(duCatalogue.rawJson.modular_sets || [])]
         : [];
 
-    const colonneRecit = el("section", { class: "cmp-recit" },
-        el("div", { class: "cmp-chapo" },
-            el("span", { class: "cmp-chapo-k" }, t("Scénario") + " " + scenario.numero + " / " + definition.scenarios.length),
-            el("h1", { class: "cmp-chapo-nom mvl" }, langueActuelle() === "en" ? scenario.nom : (scenario.nom_fr || scenario.nom)),
-        ),
-        intro.length ? el("div", { class: "cmp-bd" }, intro) : null,
-        el("p", { class: "cmp-resume" }, scenario.resume),
-    );
+    // Le livret en double page : debut de campagne, ou epilogue du scenario
+    // precedent puis intro et regles de celui-ci (livre-pages.js), et l'onglet
+    // des regles de la campagne. Plus rien d'empile sous le bouton Lancer.
+    const livre = livreOuvert(definition.code, campagne.id + ":" + scenario.id,
+        LP.ongletsLineaires(definition, { index, finie: false, perdue: false, expert: campagne.difficulte === "expert" }));
 
-    const colonneMission = el("aside", { class: "cmp-mission" },
+    const bandeau = el("div", { class: "cmp-bandeau" },
         el("div", { class: "cmp-bloc" },
             el("h2", { class: "cmp-bloc-t" }, t("Ce qui est en jeu")),
+            scenario.resume ? el("p", { class: "cmp-bandeau-resume" }, scenario.resume) : null,
             el("p", { class: "cmp-enjeu" }, scenario.enjeu || ""),
         ),
         el("div", { class: "cmp-bloc" },
             el("h2", { class: "cmp-bloc-t" }, t("Mise en place")),
             el("p", { class: "cmp-bloc-aide" }, t("Imposée par le livret : le jeu la met en place pour toi, y compris ce que la campagne a déjà ajouté.")),
             sets.length ? el("ul", { class: "cmp-sets" }, sets.map(ligneSet)) : null,
-            regles,
         ),
         blocOptionsCampagne(campagne, definition, enCours),
-        reglesCampagne.length ? el("div", { class: "cmp-bloc" },
-            el("h2", { class: "cmp-bloc-t" }, t("Règles de la campagne")),
-            el("p", { class: "cmp-bloc-aide" },
-                t("Les pages du livret qui valent pour toute la campagne, mode expert compris.")),
-            reglesCampagne,
-        ) : null,
+        el("div", { class: "cmp-bloc cmp-bloc-lancer" },
         el("div", { class: "cmp-lancer" },
             tentatives ? el("p", { class: "cmp-tentatives" },
                 tentatives === 1 ? t("Une tentative déjà jouée sur ce scénario.")
@@ -824,14 +967,20 @@ function vueCampagne() {
                 },
             }, t("Abandonner et recommencer")) : null,
         ),
+        ),
     );
 
-    return el("div", { class: "cmp-page-campagne" },
+    return el("div", { class: "cmp-page-campagne avec-livre" },
         entete(t("Campagne")),
         barre,
-        el("main", { class: "cmp-corps cmp-corps-scenario" },
+        el("main", { class: "cmp-corps cmp-corps-livre" },
             bandeauErreur(),
-            el("div", { class: "cmp-duo" }, colonneRecit, colonneMission),
+            el("div", { class: "cmp-chapo cmp-chapo-ligne" },
+                el("span", { class: "cmp-chapo-k" }, t("Scénario") + " " + scenario.numero + " / " + definition.scenarios.length),
+                el("h1", { class: "cmp-chapo-nom mvl" }, langueActuelle() === "en" ? scenario.nom : (scenario.nom_fr || scenario.nom)),
+            ),
+            livre,
+            bandeau,
         ),
     );
 }
@@ -899,8 +1048,9 @@ function vueConclusion(campagne, definition, perdue) {
     const dernier = definition.scenarios[definition.scenarios.length - 1];
     // Pas de planche d'epilogue sur une defaite : celle du livret raconte la
     // victoire, la montrer ici raconterait le contraire de ce qui s'est passe.
-    const epilogue = perdue ? []
-        : ((dernier.pages || {}).epilogue || []).map((f) => pageLivret(definition.code, f, "cmp-page-bd"));
+    const livre = livreOuvert(definition.code, campagne.id + ":fin", LP.ongletsLineaires(definition, {
+        index: definition.scenarios.length, finie: true, perdue, expert: campagne.difficulte === "expert",
+    }));
     const totalTentatives = Object.values(campagne.tentatives || {}).reduce((a, b) => a + b, 0);
     const defaite = (dernier.defaite || {});
 
@@ -910,7 +1060,7 @@ function vueConclusion(campagne, definition, perdue) {
             el("h1", { class: "cmp-chapo-nom mvl" }, campagne.nom),
         ),
         perdue && defaite.texte ? el("p", { class: "cmp-resume" }, defaite.texte) : null,
-        epilogue.length ? el("div", { class: "cmp-bd" }, epilogue) : null,
+        livre,
         el("div", { class: "cmp-bilan" },
             ligneBilan(t("Boîte"), nomBoite(definition)),
             ligneBilan(t("Difficulté"), campagne.difficulte === "expert" ? t("Campagne experte") : t("Standard")),
@@ -1015,21 +1165,17 @@ function vueCampagneLibre() {
     // ⚠ APRES le tableau des affaires, jamais avant : posee en tete, elle
     // poussait le carnet — la seule chose qu'on vient lire sur cet ecran —
     // sous la ligne de flottaison (vu a la capture, 19/09/2026).
-    tableau.append(
-        ...(definition.pages_intro || []).map((f) => pageLivret(definition.code, f, "cmp-page-bd")),
-    );
-
     if (affaireMontree) {
-        const pages = affaireMontree.pages || {};
-        tableau.append(
-            el("div", { class: "cmp-chapo" },
-                el("span", { class: "cmp-chapo-k" }, t("Le livret")),
-                el("h1", { class: "cmp-chapo-nom mvl" }, nomAffaire(affaireMontree)),
-            ),
-            ...(pages.intro || []).map((f) => pageLivret(definition.code, f, "cmp-page-bd")),
-            ...(pages.regles || []).map((f) => pageLivret(definition.code, f, "cmp-page-regles")),
-        );
+        tableau.append(el("div", { class: "cmp-chapo" },
+            el("span", { class: "cmp-chapo-k" }, t("Le livret")),
+            el("h1", { class: "cmp-chapo-nom mvl" }, nomAffaire(affaireMontree)),
+        ));
     }
+    // Planche d'ouverture, pages de l'affaire montree et regles de la campagne,
+    // dans le meme livre ouvert que la vue lineaire.
+    const livreLibre = livreOuvert(definition.code, campagne.id + ":" + (affaireMontree ? affaireMontree.id : "ouverture"),
+        LP.ongletsLibres(definition, { affaire: affaireMontree, expert }));
+    if (livreLibre) tableau.append(livreLibre);
 
     let action;
     if (enCours) action = blocPartieEnCours(campagne, definition, enCours, expert);
@@ -1043,12 +1189,6 @@ function vueCampagneLibre() {
             el("p", { class: "cmp-bloc-aide" }, t("Imposée par le livret : le jeu la met en place pour toi, y compris ce que la campagne a déjà ajouté.")),
             el("p", { class: "cmp-bloc-aide" }, (definition.expert || {}).note && expert ? definition.expert.note : ""),
         ),
-        (definition.pages_regles || []).length ? el("div", { class: "cmp-bloc" },
-            el("h2", { class: "cmp-bloc-t" }, t("Règles de la campagne")),
-            el("p", { class: "cmp-bloc-aide" },
-                t("Les pages du livret qui valent pour toute la campagne, mode expert compris.")),
-            ...definition.pages_regles.map((f) => pageLivret(definition.code, f, "cmp-page-regles")),
-        ) : null,
         enCours ? null : el("div", { class: "cmp-lancer" },
             el("button", {
                 class: "btn ghost",

@@ -215,7 +215,7 @@ test.describe.serial("Campagne : le dernier scénario de l'Ère d'Apocalypse", (
     await expect(conclusion).toBeVisible()
     await expect(conclusion, 'L’écran donne la campagne pour perdue.').not.toHaveClass(/perdue/)
     await expect(
-      conclusion.locator('.cmp-bd img'),
+      conclusion.locator('.cmp-livre-double img.cmp-page'),
       'La planche d’épilogue manque : elle ne s’affiche que sur une campagne gagnée.'
     ).toHaveCount(1)
   })

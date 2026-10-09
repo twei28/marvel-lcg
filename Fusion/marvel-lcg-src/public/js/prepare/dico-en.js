@@ -758,6 +758,12 @@ export const DICO_EN_BASE = {
     "Campagne introuvable.": "Campaign not found.",
     "Les identités ont changé : elles sont figées pour toute la campagne. Rien n'a été modifié.": "The identities changed: they are locked for the whole campaign. Nothing was modified.",
     "Règles de la campagne": "Campaign rules",
+    "Pas de page de livret pour cette étape.": "No booklet page for this step.",
+    "Page précédente": "Previous page",
+    "Page suivante": "Next page",
+    "Épilogue": "Epilogue",
+    "Début de campagne": "Campaign start",
+    "Ce scénario": "This scenario",
     "Les pages du livret qui valent pour toute la campagne, mode expert compris.": "The rulebook pages that apply to the whole campaign, expert mode included.",
     "Imposée par le livret : le jeu la met en place pour toi, y compris ce que la campagne a déjà ajouté.":
       "Dictated by the campaign book: the game sets it up for you, including what the campaign has already added.",

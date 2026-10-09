@@ -217,6 +217,88 @@ button{cursor:pointer}
   .cmp-chapo-nom{font-size:44px}
 }
 
+/* ------------------------------------------------------ le livre ouvert --
+   Decide le 09/10/2026 : les pages du livret en double page, et sous le livre
+   un bandeau (enjeux, mise en place, reglages, Lancer). Sur un ecran de PC, la
+   page tient dans la fenetre : le livre prend la hauteur qui reste, le bandeau
+   est plafonne et defile a l'interieur, et le bouton Lancer reste visible. */
+.cmp-page-campagne.avec-livre{height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+.cmp-corps-livre{max-width:1600px;padding:12px 22px 14px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.cmp-chapo-ligne{display:flex;align-items:baseline;gap:14px;margin:0}
+.cmp-chapo-ligne .cmp-chapo-k{margin:0}
+.cmp-chapo-ligne .cmp-chapo-nom{font-size:34px}
+
+.cmp-livre{display:flex;flex-direction:column;gap:8px;min-height:0}
+.cmp-corps-livre .cmp-livre{flex:1}
+.cmp-livre-tete{display:flex;align-items:center;gap:12px;min-height:30px}
+.cmp-livre-onglets{display:flex;gap:6px;flex-wrap:wrap}
+.cmp-livre-onglet{
+  padding:6px 12px;background:var(--steel2);border:1px solid var(--line);color:var(--dim);
+  border-radius:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+}
+.cmp-livre-onglet:hover{color:#fff;border-color:var(--cyan)}
+.cmp-livre-onglet.sel{border-color:var(--gold);color:#fff;background:rgba(242,201,76,.12)}
+.cmp-livre-titre{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--gold)}
+.cmp-livre-compteur{margin-left:auto;font-size:12px;color:var(--dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.cmp-livre-scene{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 56px;touch-action:pan-y}
+.cmp-livre-double{height:100%;width:100%;display:flex;align-items:center;justify-content:center;gap:6px}
+.cmp-livre-feuille{margin:0;height:100%;min-width:0;flex:0 1 auto;max-width:50%;display:flex;align-items:center}
+.cmp-livre-double.seule .cmp-livre-feuille{max-width:100%}
+.cmp-livre-feuille .cmp-page{max-height:100%;max-width:100%;width:auto;height:auto;margin:0;object-fit:contain}
+.cmp-livre-double:not(.seule) .cmp-livre-feuille:first-child .cmp-page{border-radius:8px 2px 2px 8px}
+.cmp-livre-double:not(.seule) .cmp-livre-feuille:last-child .cmp-page{border-radius:2px 8px 8px 2px}
+.cmp-livre-vide{color:var(--mute);font-size:13px}
+
+.cmp-livre-fleche{
+  position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;
+  display:flex;align-items:center;justify-content:center;font-size:40px;line-height:1;
+  background:rgba(8,9,14,.72);border:1px solid var(--line);color:#fff;border-radius:8px;z-index:3;
+}
+.cmp-livre-fleche:hover{border-color:var(--gold)}
+.cmp-livre-fleche.gauche{left:0}
+.cmp-livre-fleche.droite{right:0}
+.cmp-livre-fleche[disabled]{opacity:.18;cursor:default;border-color:var(--line)}
+
+/* La feuille qui se tourne : une copie de l'ancienne page pivote sur sa reliure. */
+.cmp-livre-tourne{position:absolute;z-index:2;pointer-events:none;backface-visibility:hidden}
+.cmp-livre-tourne img{width:100%;height:100%;display:block;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.cmp-livre-tourne.avance{transform-origin:left center;animation:cmp-tourne-avance .32s ease-in forwards}
+.cmp-livre-tourne.recule{transform-origin:right center;animation:cmp-tourne-recule .32s ease-in forwards}
+@keyframes cmp-tourne-avance{from{transform:perspective(1800px) rotateY(0)}to{transform:perspective(1800px) rotateY(-180deg)}}
+@keyframes cmp-tourne-recule{from{transform:perspective(1800px) rotateY(0)}to{transform:perspective(1800px) rotateY(180deg)}}
+@media (prefers-reduced-motion:reduce){.cmp-livre-tourne{display:none}}
+
+.cmp-bandeau{display:flex;gap:12px;align-items:stretch;flex:none}
+.cmp-bandeau>.cmp-bloc{flex:1 1 0;min-width:0;max-height:178px;overflow:auto;padding:10px 14px;border-radius:8px}
+.cmp-bandeau>.cmp-bloc-lancer{flex:0 0 250px;display:flex;flex-direction:column;justify-content:center}
+.cmp-bandeau .cmp-bloc-t{margin-bottom:6px}
+.cmp-bandeau .cmp-bloc-aide{margin-bottom:6px}
+.cmp-bandeau .cmp-enjeu{font-size:13px;line-height:1.5}
+.cmp-bandeau-resume{font-size:12px;line-height:1.5;color:var(--dim);margin-bottom:6px}
+.cmp-bandeau .cmp-champ{margin-bottom:10px}
+.cmp-bandeau .cmp-lancer{gap:6px}
+.cmp-bandeau .cmp-lancer .btn.ghost{padding:7px 12px;font-size:11px}
+.cmp-bandeau .btn.launch{padding:13px 18px}
+
+.cmp-conclusion .cmp-livre-scene{height:min(68vh,640px);flex:none}
+
+/* Ecran etroit (telephone, tablette en portrait) : une page a la fois, la page
+   defile normalement, le bandeau passe en colonne. */
+@media (max-width:900px){
+  .cmp-page-campagne.avec-livre{height:auto;overflow:visible}
+  .cmp-corps-livre .cmp-livre{flex:none}
+  .cmp-livre-scene{flex:none;height:auto;padding:0 40px}
+  .cmp-livre-double,.cmp-livre-feuille{height:auto}
+  .cmp-livre-feuille .cmp-page{width:100%;max-height:none}
+  .cmp-livre-fleche{width:34px;height:52px;font-size:30px}
+  .cmp-bandeau{flex-direction:column}
+  .cmp-bandeau>.cmp-bloc{flex:none;max-height:none}
+  .cmp-bandeau>.cmp-bloc-lancer{flex:none}
+  .cmp-chapo-ligne{flex-direction:column;gap:2px}
+  .cmp-conclusion .cmp-livre-scene{height:auto}
+}
+
 
 /* ------------------------------------------------------------- Le Marché ---
    Une colonne par héros, chacune avec son solde d'unités et les 28 cartes.

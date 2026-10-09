@@ -1,4 +1,4 @@
-# Écran de campagne : livre ouvert au lieu des pages empilées (décidé le 09/10/2026, PAS ENCORE CODÉ)
+# Écran de campagne : livre ouvert au lieu des pages empilées (décidé et codé le 09/10/2026, validé par l'utilisateur, pas encore déployé)
 
 Problème : `public/js/campagne/app.js` empile les planches (colonne récit) et les pages de règles du scénario puis de la
 campagne (colonne mission) ; le bouton « Lancer le scénario » est sous toutes ces pages, il faut défiler.
@@ -16,3 +16,12 @@ Décisions de l'utilisateur (questions une à une) :
 
 À garder : la loupe au clic, la variante française des pages (`fr/`, repli anglais), les écrans Marché, Enquête,
 conclusion, et la vue « affaires » (pages_intro + affaire montrée, autour de la ligne 1010 d'app.js).
+
+## Fait (09/10/2026)
+- `public/js/campagne/livre-pages.js` (pur) choisit les pages par étape ; `tools/tests-lanceur/livre-pages.test.mjs` (8 tests) vérifie aussi que
+  chaque page déclarée des 11 campagnes apparaît à une étape.
+- `livreOuvert()` dans `app.js` : vue linéaire, conclusion, ordre libre (Fear No Evil). Page absente (couverture d'une boîte sans livret) : retirée du livre.
+- Mesuré : bouton Lancer en bas à 670 px sur 768 et 982 sur 1080, la page ne défile pas.
+- `ui-check/tests/campagne-livre-ouvert.spec.ts` (5), `campagne-livret-fr`, `campagne-aoa`, `campagne-ordre-libre` adaptés et verts sur moteur d'essai.
+- Échecs de la suite `campagne-*` NON liés (plateau en partie, non vérifiés contre l'ancienne version) : cartes-imposees, decks (`.campagne-bandeau`),
+  ordre-libre-boucle (panneau de récompenses), ordre-libre-lancement (nom de manigance), pilote, professor-x ; et `site-en-anglais` sur `/salon.html`.
