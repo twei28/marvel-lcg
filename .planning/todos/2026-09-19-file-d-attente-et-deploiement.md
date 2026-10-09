@@ -3,6 +3,21 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 09/10/2026 (13 h 14) : présence en direct sur play, livret Hunting Season (EN + FR), traduction posée sur le verso et les manigances
+
+Sur « tu peux déployer sur le site Play et le classique ». `deployer-tout.sh` lancé par moi : `board-DGAjw5sz.js` identique au poste sur les deux sites, service actif, 200 ; play. 20 identiques sur 20 ; sauvegarde `code-20261009-1314-a6442708.zip`.
+Commits : `f423178e` (présence), `d8a8f11d` (pages du livret), `17ffe485` (traduction posée verso/paysage), `79ad3ce5` (livret FR), `a6442708` (nouveautés).
+Vérifié en ligne : `/presence_play` répond 204 ; sur play, `stories/hunting_season/` et `stories/hunting_season/fr/` en 200. Site principal : pages derrière la connexion, non testées sans compte.
+Suite : écran de campagne en « livre ouvert » (fiche `2026-10-09-ecran-campagne-livre-ouvert.md`).
+
+## ✅ DÉPLOYÉ LE 09/10/2026 : Hunting Season, traduction posée sur la carte, recherche FR et arts du deckbuilder, play bilingue, compteur des parties play
+
+Sur « on peut commit et deployer ». Lancé par l'utilisateur (le garde-fou bloque mes déploiements) : `deployer-tout.sh` : `board-Csl_p4N4.js` identique au poste sur les deux sites, 200 ; puis `deployer.ps1 -Images` (239 scans hs, après `outils/uniformiser-scans.py --sauvegarde`) ; puis images de play (scans hs dans `originaux/pics`, 25 paysage redressés dans `pivotes/pics`, `resolu/` reconstruit par `installer-images.py` : 28 581 images, 4 HD absentes 60065/60076/60086/60110a).
+Commits : `da82e232` (Hunting Season), `50e811aa` (traduction posée, recherche FR, arts, titre Narwhal), `91a50ef1` (play bilingue + `/compteur_play`), `a53375e6` (.webp), `e1e2fa1e` (nouveautés).
+⚠ À chaque ajout de scans, play a besoin de la même étape d'images (sinon 404 sur play.). La table reconstruite couvre tout le poste : seules 4 HD manquent, les scans des déploiements précédents étaient déjà copiés.
+Parti au déploiement de 13 h 14 : présence en direct et correctif de la traduction posée.
+Non vu en vrai : une partie Hunting Season jouée à la main de bout en bout ; un signal de compteur réellement reçu depuis play.
+
 ## ✅ DÉPLOYÉ LE 08/10/2026 (17 h 28) : roue du hasard, Hellcat, deck Sens de Daredevil, Luke Cage, compteur des piles
 
 Sur « tu peux déployer » (table 2351, celle de l'utilisateur, coupée avec son accord). `deployer-tout.sh` : `board-B00nEiZs.js` identique au poste sur les deux sites, service actif, 200 ; play. 20 identiques sur 20 (moteur changé) ; sons de play. 149 ; sauvegarde `code-20261008-1728-c4d4ec61.zip`. Vérifié présents en prod : `roue.js`/`roue.css`, `set_roue`, le correctif `card.py` (deck spécial sans cache + Tenaces après retournement), `61025.py` avec `CanWorkOnlyInHand`.
@@ -57,7 +72,7 @@ Sur « commit et déploie » de l'utilisateur, table 2351 active (la sienne, acc
   - Matière : `Hunting_Season_Pour_Claude.zip` à la racine du dépôt, préparé par ChatGPT avec le kit. ⚠ Zip TRONQUÉ (pas de répertoire central) : `unzip`/`zipfile` refusent, mais les 520 entrées se récupèrent en lisant les en-têtes locaux (script Python du 08/10, zéro perte). L'original Google Drive : `C:\Users\arnau\Downloads\Hunting Season - Campaign-20261008T113414Z-1-001.zip` (449 Mo).
   - Contenu : 239 fiches JSON (226 cartes physiques), 239 scans de référence, livret PDF, 10 scénarios (5 vilains × standard/expert), 4 modulaires, `campagnes/hunting_season.json`, `campaign.py`, `reference/campaign_rules.py` (XP, Lodge, soins), `POINTS_OUVERTS.md` (11 points).
   - Reste : 231 scripts sur 239 VIDES (`A_FAIRE_CLAUDE`, texte imprimé recopié) ; mécaniques de campagne absentes du moteur (expérience, boutique « The Lodge », marché partagé, pénalités de défaite, Master Hunter) à construire moteur + écran.
-  - Décision en attente : « Swarmed by Rats » (hs018/hs019), imprimée « Interrupt » avec un déclencheur « After » : Interrupt ou Response ?
+  - Décidé le 08/10/2026 : « Swarmed by Rats » = Response. DÉMARRÉ le 08/10/2026 : bloc 0 (données) fait, non commité ; journal `.planning/todos/2026-10-08-portage-hunting-season.md`.
 
 ## BACKLOG ajouté le 07/10/2026 (demandes de l'utilisateur, questions à trancher une à une)
 - [x] FAIT le 08/10/2026 (non commité, non déployé) : Relecture et spectateur : un petit bouton « ⚙ Réglages » (barre de lecture et barre du spectateur) ouvre les réglages DU JOUEUR en lecture seule (note « Réglages du joueur, en lecture seule. », contenu `inert`). Le parent envoie `reglages-du-joueur` au cadre (`CadreJoueur.tsx`), `board.tsx` l'écoute. Vitest vert (63 tests), `tsc` propre. PAS vu dans un navigateur.
