@@ -25,6 +25,9 @@
 //
 // ATTENTION : ce test cree une campagne sur le serveur, la modifie et la
 // supprime. Il ne touche a aucune campagne existante et ne lance aucune partie.
+// Selecteurs mis a jour le 09/10/2026 : la refonte « Affiche » de l'assistant
+// (b8895bca, 07/09) a remplace #db-<i>/.deck-opt par #deck-liste/.tb-deck, et la
+// fenetre des variantes du heros (3d5524b4, 11/09) s'ouvre au clic.
 import { test, expect, type Page, type APIRequestContext } from '@playwright/test'
 
 const NOM_CAMPAGNE = 'Essai automatique - cartes imposees'
@@ -79,19 +82,32 @@ async function ouvrirLaCampagne(page: Page) {
 /** Passe a l'etape des decks, sans toucher au choix de l'etape 1. */
 async function allerAuxDecks(page: Page) {
   await page.getByRole('button', { name: /continuer/i }).click()
-  await expect(page.locator('#db-0')).toBeVisible()
+  await expect(page.locator('#deck-liste')).toBeVisible()
+}
+
+/**
+ * Depuis le commit 3d5524b4 (11/09/2026), un clic sur un heros qui a des
+ * variantes (arts alternatifs, version du deck, identite) ouvre la fenetre
+ * « Options de ce heros » par-dessus l'ecran. On la valide telle quelle.
+ */
+async function validerOptionsDuHeros(page: Page) {
+  const modale = page.locator('.deck-modal')
+  if (await modale.isVisible().catch(() => false)) {
+    await modale.getByRole('button', { name: /valider|confirm/i }).click()
+    await expect(modale).toHaveCount(0)
+  }
 }
 
 /** Retient un paquet d'aspect conseille : fabrique par l'ecran, donc partout. */
 async function retenirUnDeckDAspect(page: Page, rang: number): Promise<string> {
-  const bascule = page.locator('#db-0 .deck-aspects-bascule')
+  const bascule = page.locator('#deck-liste .deck-aspects-bascule', { hasText: /aspect/i })
   await expect(bascule, "Le depliage des paquets d'aspect a disparu.").toBeVisible()
   await bascule.click()
-  const option = page.locator('#db-0 .deck-aspects .deck-opt').nth(rang)
+  const option = page.locator('#deck-liste .deck-aspects.est-deplie .tb-deck').nth(rang)
   await option.scrollIntoViewIfNeeded()
   const nom = (await option.locator('.do-name').innerText()).trim()
   await option.click()
-  await expect(page.locator('#db-0 .deck-opt.sel .do-name')).toHaveText(nom)
+  await expect(page.locator('#deck-liste .tb-deck.chosen .do-name')).toHaveText(nom)
   return nom
 }
 
@@ -115,6 +131,7 @@ test.describe.serial('Campagne : les cartes que le carnet impose au deck', () =>
 
     await expect(page.locator('.campagne-bandeau')).toContainText(NOM_CAMPAGNE)
     await page.getByRole('button', { name: HEROS }).first().click()
+    await validerOptionsDuHeros(page)
     await allerAuxDecks(page)
     await page.getByRole('button', { name: /valider l'équipe/i }).click()
 
@@ -162,7 +179,7 @@ test.describe.serial('Campagne : les cartes que le carnet impose au deck', () =>
     await ouvrirLaCampagne(page)
     await page.getByRole('button', { name: /modifier les decks/i }).click()
     await allerAuxDecks(page)
-    const enCours = page.locator('#db-0 .deck-opt', { hasText: /campagne|campaign/i }).first()
+    const enCours = page.locator('#deck-liste .tb-deck', { hasText: /campagne|campaign/i }).first()
     await expect(enCours, "Le deck en cours de la campagne n'est pas propose.").toBeVisible()
     await enCours.click()
     await page.getByRole('button', { name: /valider les decks/i }).click()

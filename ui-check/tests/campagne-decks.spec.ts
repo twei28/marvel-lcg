@@ -21,6 +21,9 @@
 // ATTENTION : ce test cree une campagne sur le serveur, la modifie, puis la
 // supprime. Il ne touche a aucune campagne existante (il ne connait que la
 // sienne, par son nom) et ne lance aucune partie.
+// Selecteurs mis a jour le 09/10/2026 : la refonte « Affiche » de l'assistant
+// (b8895bca, 07/09) a remplace #db-<i>/.deck-opt par #deck-liste/.tb-deck, et la
+// fenetre des variantes du heros (3d5524b4, 11/09) s'ouvre au clic.
 import { test, expect, type Page, type APIRequestContext } from '@playwright/test';
 
 /** Nom de la campagne temoin. Assez singulier pour n'etre celui de personne. */
@@ -77,13 +80,28 @@ async function ouvrirLaCampagne(page: Page) {
  */
 async function choisirHerosPuisDecks(page: Page, motif: RegExp) {
   await page.getByRole('button', { name: motif }).first().click();
+  await validerOptionsDuHeros(page);
   await allerAuxDecks(page);
 }
+
+/**
+ * Depuis le commit 3d5524b4 (11/09/2026), un clic sur un heros qui a des
+ * variantes (arts alternatifs, version du deck, identite) ouvre la fenetre
+ * « Options de ce heros » par-dessus l'ecran. On la valide telle quelle.
+ */
+async function validerOptionsDuHeros(page: Page) {
+  const modale = page.locator('.deck-modal')
+  if (await modale.isVisible().catch(() => false)) {
+    await modale.getByRole('button', { name: /valider|confirm/i }).click()
+    await expect(modale).toHaveCount(0)
+  }
+}
+
 
 /** Passe a l'etape des decks, sans toucher au choix de l'etape 1. */
 async function allerAuxDecks(page: Page) {
   await page.getByRole('button', { name: /continuer/i }).click();
-  await expect(page.locator('#db-0')).toBeVisible();
+  await expect(page.locator('#deck-liste')).toBeVisible();
 }
 
 /**
@@ -100,14 +118,14 @@ async function allerAuxDecks(page: Page) {
  * cliquer non plus.
  */
 async function retenirUnDeckDAspect(page: Page, rang: number): Promise<string> {
-  const bascule = page.locator('#db-0 .deck-aspects-bascule');
+  const bascule = page.locator('#deck-liste .deck-aspects-bascule', { hasText: /aspect/i });
   await expect(bascule, "Le dépliage des paquets d'aspect a disparu de l'étape des decks.").toBeVisible();
   await bascule.click();
-  const option = page.locator('#db-0 .deck-aspects .deck-opt').nth(rang);
+  const option = page.locator('#deck-liste .deck-aspects.est-deplie .tb-deck').nth(rang);
   await option.scrollIntoViewIfNeeded();
   const nom = (await option.locator('.do-name').innerText()).trim();
   await option.click();
-  await expect(page.locator('#db-0 .deck-opt.sel .do-name')).toHaveText(nom);
+  await expect(page.locator('#deck-liste .tb-deck.chosen .do-name')).toHaveText(nom);
   return nom;
 }
 
@@ -166,15 +184,15 @@ test.describe.serial('Campagne : refaire son deck entre deux scenarios', () => {
     // L'equipe revient DEJA EN PLACE : aucun clic sur un heros ici. Ce serait
     // meme nuisible, `assignHero` remettant le deck de base au passage.
     await expect(
-      page.locator('.hero-card.chosen'),
+      page.locator('.tb-port.chosen'),
       "L'equipe de la campagne n'a pas ete remise en place : l'ecran est reparti d'une page blanche."
     ).toHaveCount(1);
     await allerAuxDecks(page);
 
     // Le deck deja joue a sa propre entree, en tete et retenue : sans elle, le
     // joueur arriverait ici sans savoir lequel de ces paquets est le sien.
-    const enCours = page.locator('#db-0 .deck-opt').first();
-    await expect(enCours).toHaveClass(/\bsel\b/);
+    const enCours = page.locator('#deck-liste .tb-deck').first();
+    await expect(enCours).toHaveClass(/\bchosen\b/);
     await expect(enCours.locator('.do-name')).toHaveText(/campagne|campaign/i);
 
     const deckChoisi = await retenirUnDeckDAspect(page, 0);
@@ -216,7 +234,7 @@ test.describe.serial('Campagne : refaire son deck entre deux scenarios', () => {
     // sinon il serait perdu pour de bon sans le moindre avertissement.
     await choisirHerosPuisDecks(page, HEROS);
 
-    const enCours = page.locator('#db-0 .deck-opt', { hasText: /campagne|campaign/i }).first();
+    const enCours = page.locator('#deck-liste .tb-deck', { hasText: /campagne|campaign/i }).first();
     await expect(
       enCours,
       'Un clic sur son propre heros a fait disparaitre le deck de la campagne de la liste.'
