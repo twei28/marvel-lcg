@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-09",
         genre: "jeu",
+        fr: "L'affichage sobre s'applique maintenant à toutes les pages (préparation, campagne, éditeur de deck, galerie…) : plus de trame BD ni d'ombres colorées, des gris neutres, et l'illustration du héros adoucie.",
+        en: "Muted display now applies to every page (setup, campaign, deck builder, gallery…): no comic halftone or coloured shadows, neutral greys, and a softened hero illustration.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
         fr: "Préparation de partie : la scène du héros prend moins de place et la grille s'élargit, avec des vignettes plus grandes. On voit bien plus de héros d'un coup, et les étapes Decks et Méchant profitent de la même place.",
         en: "Game setup: the hero scene takes less room and the grid is wider, with bigger tiles. You see many more heroes at once, and the Decks and Villain steps get the same extra space.",
     },

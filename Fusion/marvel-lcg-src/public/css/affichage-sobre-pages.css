@@ -1,0 +1,129 @@
+/* L'AFFICHAGE SOBRE SUR LES PAGES HORS PLATEAU (09/10/2026).
+
+   Décisions de l'utilisateur (.planning/todos/2026-10-09-mode-sobre-des-menus.md) :
+   plus de trame BD ni d'effets (points, ombres des titres, biseaux, reflets,
+   dégradés : des aplats), plus de couleurs du héros (gris neutres, une seule
+   couleur d'accent, `--agir`, pour l'action principale), illustration de la
+   scène atténuée. Les polices BD restent. Retour du 09/10/2026 : « moins
+   flashy, pas noir et blanc », comme le plateau sobre : l'art garde ses
+   couleurs, seulement adoucies.
+
+   La teinte du fond choisie par le joueur est retirée par teinte-page.js.
+   ⚠ À CHARGER EN DERNIER, après teinte-pages.css : à spécificité égale, la
+   dernière feuille gagne. */
+
+html[data-affichage="sobre"] {
+  --affiche-jaune: #b9bdc4;
+  --gold: #c9ccd2;
+  --eux: #7b8089;
+  --eux2: #8f949d;
+  --eux-halo: rgba(255, 255, 255, .14);
+  --nous-halo: rgba(255, 255, 255, .14);
+  --affiche-ombre: none;
+  --fo-nous-fond: #2a2c31;
+  --fo-eux-fond: #2a2c31;
+  /* Les fonds et panneaux de chaque page, en gris neutres (ils tiraient sur le bleu). */
+  --ink: #141517;
+  --ink2: #1a1b1e;
+  --steel: #232528;
+  --steel2: #2a2c30;
+  --steel3: #33363b;
+  --line: #3d4046;
+  --soft: #2c2e33;
+  --fond: #1c1d20;
+  --panneau: #232528;
+  --carte: #2a2c30;
+  --hf-fond: #1c1d20;
+  --hf-panneau: #232528;
+  --w-bg-0: #1c1d20;
+  --w-bg-1: #232528;
+  --w-panel: #232528;
+  --w-panel-2: #2a2c30;
+  --w-line: #3d4046;
+  --w-line-soft: #2c2e33;
+  /* Les ors deviennent gris : le rouge reste la seule couleur d'accent. */
+  --or: #d4d6db;
+  --hf-or: #d4d6db;
+}
+
+html[data-affichage="sobre"] body {
+  background: #1c1d20 !important;
+  background-image: none !important;
+}
+html[data-affichage="sobre"] body::before,
+html[data-affichage="sobre"] body::after,
+html[data-affichage="sobre"] .tb-trame,
+html[data-affichage="sobre"] .face-a-face .faceoff::after {
+  display: none !important;
+}
+
+/* Les titres et noms : plus d'ombre portée colorée. */
+html[data-affichage="sobre"] h1.affiche,
+html[data-affichage="sobre"] .tb-nomg,
+html[data-affichage="sobre"] .team-b.eux .tb-nomg,
+html[data-affichage="sobre"] .tb-vs,
+html[data-affichage="sobre"] .target-copy strong,
+html[data-affichage="sobre"] .tb-eclair .ono {
+  text-shadow: none !important;
+  -webkit-text-stroke: 0;
+}
+
+/* La scène : illustration adoucie, voile uni au lieu des dégradés. Sa
+   diagonale reste : sans elle, la scène recouvre « Ton équipe ». */
+html[data-affichage="sobre"] .tb-art,
+html[data-affichage="sobre"] .tb-eclair img {
+  filter: saturate(.55) brightness(.7);
+}
+html[data-affichage="sobre"] .tb-scene::after,
+html[data-affichage="sobre"] .team-b.eux .tb-scene::after {
+  background: rgba(28, 29, 32, .35) !important;
+}
+html[data-affichage="sobre"] .tb-art.vide,
+html[data-affichage="sobre"] .team-b.eux .tb-art.vide {
+  background: #26282d !important;
+}
+html[data-affichage="sobre"] .fo-side.heroes-side,
+html[data-affichage="sobre"] .tb-siege.eux,
+html[data-affichage="sobre"] .cut {
+  clip-path: none !important;
+}
+
+/* Le face-à-face et les panneaux : aplats. */
+html[data-affichage="sobre"] .face-a-face .faceoff,
+html[data-affichage="sobre"] .fo-side.heroes-side {
+  background: #26282d !important;
+}
+html[data-affichage="sobre"] .recap,
+html[data-affichage="sobre"] .mode-pill,
+html[data-affichage="sobre"] .card-hover,
+html[data-affichage="sobre"] .deck-opt,
+html[data-affichage="sobre"] .preset,
+html[data-affichage="sobre"] .tb-deck,
+html[data-affichage="sobre"] .acc-mode,
+html[data-affichage="sobre"] .deck-modal-panel,
+html[data-affichage="sobre"] .ext-tab .box-defis {
+  background: var(--steel, #26282d) !important;
+}
+html[data-affichage="sobre"] .recap-slot.active {
+  background: var(--steel, #26282d) !important;
+}
+
+/* Les tampons biseautés : droits. */
+html[data-affichage="sobre"] .tampon,
+html[data-affichage="sobre"] .tampon > * {
+  transform: none !important;
+}
+
+/* Campagne. */
+html[data-affichage="sobre"] .btn.primary,
+html[data-affichage="sobre"] .cmp-segment.sel {
+  background: var(--red, #e62429) !important;
+}
+html[data-affichage="sobre"] .cmp-jauge-plein {
+  background: var(--red, #e62429) !important;
+}
+
+/* Galerie : le voile sous le texte des cartes, uni. */
+html[data-affichage="sobre"] .g-carte figcaption {
+  background: rgba(5, 6, 8, .85) !important;
+}
