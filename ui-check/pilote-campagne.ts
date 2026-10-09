@@ -409,10 +409,12 @@ export async function avancerLaPartie(
       // sa classe, `.deroule-suivant`, plutot que son libelle.
       const suivant = page.locator('.deroule-suivant').first()
       const rond = page.locator('.deroule-rond').first()
+      // Clic BORNE : un bouton visible mais recouvert ferait attendre Playwright
+      // jusqu'a la fin du test. A defaut, la touche Espace que le bouton annonce.
       if ((await suivant.count()) && (await suivant.isVisible().catch(() => false))) {
-        await suivant.click().catch(() => undefined)
+        await suivant.click({ timeout: 2000 }).catch(() => page.keyboard.press('Space').catch(() => undefined))
       } else if ((await rond.count()) && (await rond.isVisible().catch(() => false))) {
-        await rond.click().catch(() => undefined)
+        await rond.click({ timeout: 2000 }).catch(() => undefined)
       }
     }
     if (demande) {
