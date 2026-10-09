@@ -3,6 +3,13 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 09/10/2026 (15 h 25) : écran de campagne en livre ouvert, traduction posée au centre et sur les arts alternatifs, sons de survol
+
+Sur « commit et deploie ». `deployer-tout.sh` : `board-DDkrEzTv.js` identique au poste sur les deux sites, service actif, 200 ; sauvegarde `code-20261009-1525-b5e2330e.zip`.
+Commits : `fce9ef4f` (livre ouvert), `24abf933` (traduction au centre + 178 arts alternatifs), `74da957e` (fenêtre Options du héros + sons), `007fc543` (livret FR cherché seulement si déclaré), tests de campagne remis à jour (`5dd28737`, `5d9d9438`, `254e6401`, `4572699b`, `ee709806`), `b5e2330e` (nouveautés).
+Non vu en vrai : le livre ouvert en ligne sur le site principal (derrière la connexion).
+Suite : en-tête fin sur une ligne, sur toutes les pages (décidé le 09/10).
+
 ## ✅ DÉPLOYÉ LE 09/10/2026 (13 h 14) : présence en direct sur play, livret Hunting Season (EN + FR), traduction posée sur le verso et les manigances
 
 Sur « tu peux déployer sur le site Play et le classique ». `deployer-tout.sh` lancé par moi : `board-DGAjw5sz.js` identique au poste sur les deux sites, service actif, 200 ; play. 20 identiques sur 20 ; sauvegarde `code-20261009-1314-a6442708.zip`.
