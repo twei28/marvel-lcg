@@ -45,6 +45,12 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-10",
+        genre: "jeu",
+        fr: "Les autres pages suivent sur téléphone. L'accueil s'ouvre sur un gros bouton « Jouer », la galerie a ses filtres en pastilles et trois colonnes, le livre de campagne se tourne du doigt. Connexion, statistiques et administration se lisent en cartes, et le bouton Retour referme ce qui est ouvert.",
+        en: "The other pages follow on phones. The home screen opens on a big “Play” button, the gallery has tap-to-pick filters and three columns, and the campaign book turns with a swipe. Sign-in, statistics and admin read as cards, and the Back button closes whatever is open.",
+    },
+    {
         date: "2026-10-09",
         genre: "jeu",
         fr: "La préparation de partie est pensée pour le téléphone : en-tête avec menu, étapes cliquables, héros en bandeau et grille à trois colonnes. Touche un héros pour le voir, puis « Choisir ». Le bouton Retour de ton téléphone revient à l'étape d'avant.",
