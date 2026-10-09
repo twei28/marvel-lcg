@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-09",
         genre: "jeu",
+        fr: "L'éditeur de deck est refait : filtres à gauche, cartes au centre, ton deck toujours visible à droite avec l'aperçu, la courbe des coûts et sa validité. Nouveau : un simulateur de pioche, des statistiques, des filtres par trait, pack et caractéristiques, et une recherche courte comme « t:avenger c:2 ».",
+        en: "The deck builder is redone: filters on the left, cards in the middle, your deck always visible on the right with the preview, the cost curve and whether it is valid. New: a draw simulator, statistics, filters by trait, pack and stats, and a short search syntax such as “t:avenger c:2”.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
         fr: "L'affichage sobre s'applique maintenant à toutes les pages (préparation, campagne, éditeur de deck, galerie…) : plus de trame BD ni d'ombres colorées, des gris neutres, et l'illustration du héros adoucie.",
         en: "Muted display now applies to every page (setup, campaign, deck builder, gallery…): no comic halftone or coloured shadows, neutral greys, and a softened hero illustration.",
     },
