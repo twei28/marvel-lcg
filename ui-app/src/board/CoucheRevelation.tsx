@@ -16,6 +16,7 @@ import { t } from './langue'
 import type { World, WorldCard } from './world'
 import { estUneCarte } from './world'
 import { nomAffiche } from './noms-cartes-fr'
+import { TraductionSurCarte, typeDeBoite } from './traduction-carte'
 
 type Revelation = {
   cle: string
@@ -23,6 +24,9 @@ type Revelation = {
   nom: string
   etiquette: 'Révélée' | 'Boost'
   paysage: boolean
+  codeCarte: string
+  type: string
+  traits: string[]
 }
 
 const TYPES_PAYSAGE = ['MainScheme', 'EncounterSideScheme', 'PlayerSideScheme']
@@ -88,6 +92,9 @@ export function CoucheRevelation({
           nom: nomAffiche(carte) || t('Carte'),
           etiquette,
           paysage: TYPES_PAYSAGE.includes(carte.card_type),
+          codeCarte: carte.card_id,
+          type: carte.card_type,
+          traits: Object.keys(carte.traits ?? {}),
         })
       }
     }
@@ -116,6 +123,13 @@ export function CoucheRevelation({
               complot revele s'affichait debout, texte a la verticale. */}
           <div className="revelation-cadre">
             <img src={rev.src} alt={rev.nom} />
+            <TraductionSurCarte
+              codeCarte={rev.codeCarte}
+              imageUrl={rev.src}
+              traits={rev.traits}
+              type={typeDeBoite(rev.type)}
+              paysage={rev.paysage}
+            />
           </div>
           <figcaption>{t(rev.etiquette)}</figcaption>
         </figure>

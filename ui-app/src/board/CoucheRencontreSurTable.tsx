@@ -18,7 +18,8 @@
 // sort de l'index du monde et les retourne pour nous.
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { ScanCard, type ScanCardProps } from '../components/ScanCard'
+import type { ScanCardProps } from '../components/ScanCard'
+import { ScanCardTraduite } from './traduction-carte'
 import type { EtapeDeroule } from './deroule-phase'
 import { sceneDe } from './deroule-scene'
 import { t } from './langue'
@@ -150,7 +151,7 @@ export function CoucheRencontreSurTable({
   const carteNue = (props: ScanCardProps) => (
     // Rien de ce que le monde COURANT dit de la carte : la table peut être en
     // avance sur le récit. Même choix que la scène centrale.
-    <ScanCard
+    <ScanCardTraduite
       {...props}
       state={undefined}
       exhausted={false}

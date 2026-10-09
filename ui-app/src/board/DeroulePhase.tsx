@@ -20,7 +20,8 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNod
 import { createPortal } from 'react-dom'
 import { estSpectateur } from './moteur'
 import { indexSpectateur, useEtapeSuivie } from './etape-partagee'
-import { ScanCard, type ScanCardProps } from '../components/ScanCard'
+import type { ScanCardProps } from '../components/ScanCard'
+import { ScanCardTraduite } from './traduction-carte'
 import {
   arreterSurDefaite,
   avecBilan,
@@ -1814,7 +1815,7 @@ export function DeroulePhase({
       // PV, ni pastille de type. La table peut etre en avance sur le
       // recit ; c'est la scene qui donne les chiffres de l'etape, et un
       // « 9/12 » sur la carte contredisait le « 7/12 » de l'etape.
-      <ScanCard
+      <ScanCardTraduite
         {...props}
         state={undefined}
         exhausted={false}

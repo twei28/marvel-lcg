@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { detecterZoneTexte, detecterZoneTextePaysage, formeDuCache, ligneDeTraits, texteEnHtml, type ZoneTexte } from './traduction-posee'
+import { detecterZoneTexte, detecterZoneTextePaysage, elargirPaysage, formeDuCache, ligneDeTraits, texteEnHtml, type ZoneTexte } from './traduction-posee'
 import { TRAITS_FR } from './traits-fr'
 import './traduction-posee.css'
 
@@ -18,10 +18,28 @@ export type CotePaysage = 'gauche' | 'droite'
  * `.scan-a-tourner`). On fait la même rotation sur la toile, pour lire la
  * carte telle qu'elle est affichée. Une image déjà paysage est lue telle quelle.
  */
+/** Code d'image d'une adresse de scan (« /scan/fr_01001a_cb » -> « 01001a_cb »). */
+export function codeImage(url: string): string {
+  const segment = url.split('?')[0]!.split('/').pop() ?? ''
+  return segment.replace(/\.(jpe?g|png|webp)$/i, '').replace(/^fr_/, '')
+}
+
+const SERIES_ALTERNATIVES = /_(cb|rog|rog2|m3t)$/
+
 export function zoneDuScan(url: string, paysage?: CotePaysage): Promise<ZoneTexte | null> {
   const cle = paysage ? `${url}|${paysage}` : url
   const connue = zones.get(cle)
   if (connue) return connue
+  // Les arts alternatifs de héros ont leur propre mise en page : leur zone est
+  // relevée une fois pour toutes, image par image (zones-arts-alternatifs.ts).
+  const code = codeImage(url)
+  if (!paysage && SERIES_ALTERNATIVES.test(code)) {
+    const promesse = import('./zones-arts-alternatifs')
+      .then((module) => module.ZONES_ARTS_ALTERNATIFS[code] ?? null)
+      .catch(() => null)
+    zones.set(cle, promesse)
+    return promesse
+  }
   const promesse = new Promise<ZoneTexte | null>((resoudre) => {
     const image = new Image()
     image.onload = () => {
@@ -44,7 +62,10 @@ export function zoneDuScan(url: string, paysage?: CotePaysage): Promise<ZoneText
         const pixels = contexte.getImageData(0, 0, largeur, hauteur).data
         resoudre(
           paysage
-            ? detecterZoneTextePaysage(pixels, largeur, hauteur, paysage)
+            ? (() => {
+                const zone = detecterZoneTextePaysage(pixels, largeur, hauteur, paysage)
+                return zone ? elargirPaysage(zone, paysage, { pixels, largeur, hauteur }) : null
+              })()
             : detecterZoneTexte(pixels, largeur, hauteur)
         )
       } catch {
@@ -54,8 +75,12 @@ export function zoneDuScan(url: string, paysage?: CotePaysage): Promise<ZoneText
     image.onerror = () => resoudre(null)
     image.src = url
   })
-  zones.set(url, promesse)
+  zones.set(cle, promesse)
   return promesse
+}
+
+function fondSombre([r, g, b]: [number, number, number]): boolean {
+  return 0.299 * r + 0.587 * g + 0.114 * b < 128
 }
 
 /**
@@ -109,9 +134,19 @@ export function TraductionPosee({
       let taille = carte * 0.05
       const plancher = carte * 0.026
       element.style.fontSize = `${taille}px`
+      element.style.top = `${zone.y0 * 100}%`
+      element.style.height = `${(zone.y1 - zone.y0) * 100}%`
       while (element.scrollHeight > element.clientHeight + 1 && taille > plancher) {
         taille -= carte * 0.0015
         element.style.fontSize = `${taille}px`
+      }
+      // Toujours trop long au plancher (petits encadrés de certains arts) : le
+      // cache monte sur l'illustration plutôt que de couper le texte.
+      const hauteurCarte = parent?.clientHeight ?? 0
+      if (hauteurCarte && element.scrollHeight > element.clientHeight + 1) {
+        const voulue = Math.min(element.scrollHeight, zone.y1 * hauteurCarte)
+        element.style.top = `${zone.y1 * hauteurCarte - voulue}px`
+        element.style.height = `${voulue}px`
       }
     }
     ajuster()
@@ -138,6 +173,8 @@ export function TraductionPosee({
         width: `${(zone.x1 - zone.x0) * 100}%`,
         height: `${(zone.y1 - zone.y0) * 100}%`,
         background: `rgb(${zone.fond.join(',')})`,
+        // Fond sombre (certains arts alternatifs) : le texte passe en clair.
+        color: fondSombre(zone.fond) ? '#f4f4f4' : undefined,
         clipPath: forme.clipPath,
       }}
     >

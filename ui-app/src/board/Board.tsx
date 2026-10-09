@@ -24,7 +24,7 @@ import {
 import { createPortal } from 'react-dom'
 import { JetonsCarte, ScanCard, type CardEffectDelta, type ScanCardProps } from '../components/ScanCard'
 import { langueActuelle, t } from './langue'
-import { codeCarteConnu, codeMarvelcdb, lireTextesCdb, texteMarvelcdb, type TexteCdb } from './marvelcdb'
+import { codeMarvelcdb, lireTextesCdb, texteMarvelcdb, type TexteCdb } from './marvelcdb'
 import { usePlacement } from './placement/usePlacement'
 import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import { CoucheGlisser, BulleRefus } from './glisser/CoucheGlisser'
@@ -33,10 +33,8 @@ import { cleDePile, cleDeRangee, coteDe, ranger, type Ordres } from './ordre/ord
 import { useCoteAmeliorations } from './cote-ameliorations'
 import { useReordonner } from './ordre/useReordonner'
 import { cibleSousLePoint, useGlisser, type CibleSurvolee, type EtatGlisser } from './glisser/useGlisser'
-import { aScanFr, scansFrActifs } from './scans-fr'
-import { TEXTES_FR } from './textes-fr'
-import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
-import { TraductionPosee, type CotePaysage } from './TraductionPosee'
+import { TraductionPosee } from './TraductionPosee'
+import { coteDuTexte, useTraductionFr } from './traduction-carte'
 import { texteEnHtml } from './traduction-posee'
 import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Plateau, type UniteAffichee } from './zones'
 import type { World } from './world'
@@ -540,48 +538,6 @@ function Emplacement({
  * les voisines. Le panneau ne capte pas la souris (pointer-events: none en CSS)
  * pour ne pas se re-survoler lui-meme.
  */
-/** Texte officiel FR de la carte, de trois sources qui ne se marchent pas dessus.
- *
- *  1. Le dictionnaire HORS LIGNE des cartes officielles, mais seulement pour
- *     celles qui n'ont pas de scan francais : la ou le scan est en francais, le
- *     texte ferait doublon avec l'image.
- *  2. Le dictionnaire des packs FAN-MADE, traduit a la main. Ces cartes
- *     n'auront JAMAIS de scan francais ni de page marvelcdb : ce texte est le
- *     seul francais que le joueur verra dessus, et c'est pour elles que ce bloc
- *     compte le plus.
- *  3. A defaut, le comportement historique : marvelcdb par reseau, sur option,
- *     coupee par defaut. */
-/** Le texte français à montrer pour une carte affichée en scan anglais, ou rien. */
-function useTraductionFr(codeCarte?: string, artAlternatif = false): string | undefined {
-  // Deux codes, deux rôles. `code` sert de CLÉ aux dictionnaires français et
-  // accepte le fan-made ; `codeCdb` désigne une page marvelcdb, que seules les
-  // cartes officielles possèdent. Les confondre revenait à n'afficher aucun
-  // texte français sur le contenu fan-made.
-  const code = codeCarteConnu(codeCarte)
-  // Un ART ALTERNATIF est un scan anglais, meme sur une carte qui a son scan
-  // francais : il faut alors le texte francais de TOUTES les cartes
-  // (textes-fr-complets.ts, 700 Ko), charge une fois a la demande.
-  const scanAnglais = code !== undefined && scansFrActifs() && (artAlternatif || !aScanFr(code))
-  const [textesComplets, setTextesComplets] = useState<Readonly<Record<string, string | undefined>>>()
-  useEffect(() => {
-    if (!scanAnglais || !artAlternatif || textesComplets) return
-    let vivant = true
-    import('./textes-fr-complets')
-      .then((module) => {
-        if (vivant) setTextesComplets(module.TEXTES_FR_COMPLETS)
-      })
-      .catch(() => undefined)
-    return () => {
-      vivant = false
-    }
-  }, [scanAnglais, artAlternatif, textesComplets])
-  const repli =
-    code && scanAnglais
-      ? (TEXTES_FR[code] ?? TEXTES_FR_FANMADE[code] ?? textesComplets?.[code])
-      : undefined
-  return repli
-}
-
 export function ApercuMarvelcdb({
   codeCarte,
   artAlternatif = false,
@@ -630,11 +586,6 @@ export function ApercuMarvelcdb({
 }
 
 /** Côté de la boîte de texte d'une carte paysage, selon son type imprimé. */
-function coteDuTexte(type: string | undefined): CotePaysage | undefined {
-  if (type === 'MainScheme') return 'gauche'
-  if (type === 'SideScheme') return 'droite'
-  return undefined
-}
 
 /**
  * Une AUTRE face dans l'aperçu (verso d'un recto-verso) : son image, et sa

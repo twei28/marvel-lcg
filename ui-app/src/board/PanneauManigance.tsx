@@ -20,6 +20,7 @@ import { t } from './langue'
 import { nomAffiche } from './noms-cartes-fr'
 import type { WorldCard } from './world'
 import { mouvementReduit } from './affichage'
+import { TraductionSurCarte, typeDeBoite } from './traduction-carte'
 
 /**
  * ⚠ DOIT VALOIR LA MEME CHOSE que la transition de `.panneau-manigance.est-
@@ -41,6 +42,8 @@ export function PanneauManigance({
   onValider,
   retournement = true,
   versoUrl,
+  versoCode,
+  versoType,
 }: {
   carte: WorldCard
   /**
@@ -60,6 +63,9 @@ export function PanneauManigance({
    * de fondu), faute d'image a montrer.
    */
   versoUrl?: string
+  /** Code et type de la face B : sa traduction est posée sur son scan anglais. */
+  versoCode?: string
+  versoType?: string
   /**
    * Poste la reponse au moteur, et dit si elle EST PARTIE (voir
    * `Moteur.repondre`). Un `false` rouvre le bouton : sans ce fait, un envoi
@@ -118,15 +124,30 @@ export function PanneauManigance({
           <div className="panneau-manigance-pivot-tourne">
             <div className="panneau-manigance-cadre">
               <img src={scanUrl(carte.pic_id)} alt={nomAffiche(carte)} />
+              <TraductionSurCarte
+                codeCarte={carte.card_id}
+                imageUrl={scanUrl(carte.pic_id)}
+                traits={Object.keys(carte.traits ?? {})}
+                type={typeDeBoite(carte.card_type)}
+                paysage
+              />
             </div>
             <div className="panneau-manigance-cadre panneau-manigance-cadre-verso">
               <img src={versoUrl} alt="" />
+              <TraductionSurCarte codeCarte={versoCode} imageUrl={versoUrl} type={typeDeBoite(versoType ?? carte.card_type)} paysage />
             </div>
           </div>
         </div>
       ) : (
         <div className="panneau-manigance-cadre">
           <img src={scanUrl(carte.pic_id)} alt={nomAffiche(carte)} />
+              <TraductionSurCarte
+                codeCarte={carte.card_id}
+                imageUrl={scanUrl(carte.pic_id)}
+                traits={Object.keys(carte.traits ?? {})}
+                type={typeDeBoite(carte.card_type)}
+                paysage
+              />
         </div>
       )}
       <button

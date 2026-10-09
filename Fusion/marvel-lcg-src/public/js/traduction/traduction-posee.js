@@ -553,3 +553,42 @@ export function ligneDeTraits(traits, traduction) {
         .map((trait) => `${traduction[trait.toUpperCase()] ?? trait.toUpperCase()}.`)
         .join(' ');
 }
+/**
+ * Marge ajoutée au cache d'une carte PAYSAGE : son texte déborde parfois un peu
+ * de la boîte, sur l'illustration (côté opposé au cadre) et vers le bas
+ * (constaté sur hs004a, Rats and More Rats 1A, 09/10/2026). Avec les pixels de
+ * la carte (largeur x hauteur, RGBA), une ligne ne s'élargit pas quand la bande
+ * ajoutée contient du blanc franc : c'est un badge (« +1 par joueur » de hs004b).
+ */
+export function elargirPaysage(zone, cote, image) {
+    const [avantX, apresX, bas] = cote === 'gauche' ? [0.006, 0.012, 0.012] : [0.012, 0.006, 0.012];
+    const x0 = Math.max(0, zone.x0 - avantX);
+    const x1 = Math.min(1, zone.x1 + apresX);
+    const y1 = Math.min(1, zone.y1 + bas);
+    const n = zone.bords.length;
+    const blancDans = (i, a, b) => {
+        if (!image)
+            return false;
+        const y = Math.floor((zone.y0 + ((zone.y1 - zone.y0) * (i + 0.5)) / n) * image.hauteur);
+        let blancs = 0;
+        for (let x = Math.floor(a * image.largeur); x < Math.ceil(b * image.largeur); x += 1) {
+            const k = (y * image.largeur + x) * 4;
+            if (Math.min(image.pixels[k], image.pixels[k + 1], image.pixels[k + 2]) > 230)
+                blancs += 1;
+        }
+        return blancs >= 2;
+    };
+    // Une ligne creusée autour d'un badge (encoche) garde son bord : seules les
+    // lignes à pleine largeur s'élargissent, et pas sur un badge blanc.
+    const bords = zone.bords.map(([g, d], i) => {
+        const gauche = g <= zone.x0 + 0.005 && !blancDans(i, Math.max(0, g - avantX), g) ? Math.max(0, g - avantX) : g;
+        const droite = d >= zone.x1 - 0.005 && !blancDans(i, d, Math.min(1, d + apresX)) ? Math.min(1, d + apresX) : d;
+        return [gauche, droite];
+    });
+    // La marge du bas prolonge la dernière ligne, au prorata de la hauteur ajoutée.
+    const ajout = Math.round((n * bas) / Math.max(1e-6, zone.y1 - zone.y0));
+    const derniere = bords[bords.length - 1];
+    for (let i = 0; i < ajout && derniere; i += 1)
+        bords.push([derniere[0], derniere[1]]);
+    return { ...zone, x0, x1, y1, bords };
+}

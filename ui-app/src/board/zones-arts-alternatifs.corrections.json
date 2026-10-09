@@ -1,0 +1,83 @@
+{
+  "_lisez_moi": "Zones relevées à l'œil (fractions de la carte : x0, y0, x1, y1) là où la proposition automatique était fausse. Elles l'emportent. \"encadre\" = laisser la traduction sous la carte. Relancer : cd ui-app && python3 outils/zones_arts_alternatifs.py",
+  "01040a_cb": {
+    "rect": [
+      0.03,
+      0.885,
+      0.3,
+      0.94
+    ]
+  },
+  "06001a_cb": {
+    "rect": [
+      0.025,
+      0.83,
+      0.62,
+      0.95
+    ]
+  },
+  "10001a_cb": {
+    "rect": [
+      0.035,
+      0.83,
+      0.64,
+      0.945
+    ]
+  },
+  "21031a_rog": {
+    "rect": [
+      0.04,
+      0.605,
+      0.975,
+      0.915
+    ]
+  },
+  "31001a_rog": {
+    "rect": [
+      0.035,
+      0.6,
+      0.965,
+      0.905
+    ]
+  },
+  "32001b_cb": {
+    "rect": [
+      0.03,
+      0.63,
+      0.67,
+      0.985
+    ]
+  },
+  "35001a_cb": {
+    "rect": [
+      0.03,
+      0.825,
+      0.57,
+      0.935
+    ]
+  },
+  "40001a_cb": {
+    "rect": [
+      0.03,
+      0.835,
+      0.6,
+      0.95
+    ]
+  },
+  "14001b_cb": {
+    "rect": [
+      0.12,
+      0.62,
+      0.7,
+      0.935
+    ]
+  },
+  "15001a_cb": {
+    "rect": [
+      0.08,
+      0.72,
+      0.97,
+      0.975
+    ]
+  }
+}

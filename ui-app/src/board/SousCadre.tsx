@@ -22,7 +22,8 @@
 // `data-choix="n"` (1 a 9) et affiche « (n) », le refus porte `data-refus`.
 
 import type { ReactNode } from 'react'
-import { ScanCard, type ScanCardProps } from '../components/ScanCard'
+import type { ScanCardProps } from '../components/ScanCard'
+import { ScanCardTraduite } from './traduction-carte'
 import type { Option } from './ask'
 import { avecIcones, coutEnIcones } from './icones-ressources'
 import { t } from './langue'
@@ -36,7 +37,7 @@ import type { CibleVue, QuestionDuMoteur, VignetteOption, VueSousCadre } from '.
  */
 export function CarteNue({ scan }: { scan: ScanCardProps }) {
   return (
-    <ScanCard
+    <ScanCardTraduite
       {...scan}
       state={undefined}
       exhausted={false}

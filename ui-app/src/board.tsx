@@ -5052,6 +5052,8 @@ export function PagePartie({
              vient simplement d'entrer en jeu. */
           retournement={priseManigance.question.name === NOM_OPTION_MANIGANCE}
           versoUrl={autresFacesDe(priseManigance.carte, catalogue)[0]?.url}
+          versoCode={autresFacesDe(priseManigance.carte, catalogue)[0]?.code}
+          versoType={autresFacesDe(priseManigance.carte, catalogue)[0]?.type}
           onValider={() =>
             repondre(
               { id: priseManigance.question.id, targets: [], resources: [] },
