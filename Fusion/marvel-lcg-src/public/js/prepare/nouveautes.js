@@ -45,6 +45,24 @@ export const GENRES = {
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-09",
+        genre: "jeu",
+        fr: "Les cartes restées en anglais faute de scan français montrent maintenant leur traduction directement sur la carte agrandie, à la place du texte anglais, dans la police des vraies cartes.",
+        en: "Cards still shown in English (no French scan) now display their French translation right on the enlarged card, over the English text, in the real card font.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
+        fr: "Éditeur de deck : la recherche trouve aussi les cartes par leur nom français, sans se soucier des accents. En anglais, un bouton « Arts » permet de choisir l'illustration des cartes rééditées avec un nouvel art.",
+        en: "Deck builder: search now also finds cards by their French name, accents optional. In English, an « Arts » button lets you pick the artwork of cards reprinted with new art.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
+        fr: "Nouvelle campagne fan-made Hunting Season : affronte Vermin, Scorpion, Lizard, Vulture puis Kraven, et dépense ton expérience au Lodge entre les scénarios. Mode expert et mode Hunter inclus.",
+        en: "New fan-made campaign Hunting Season: face Vermin, Scorpion, Lizard, Vulture and then Kraven, and spend your experience at the Lodge between scenarios. Expert and Hunter modes included.",
+    },
+    {
         date: "2026-10-08",
         genre: "jeu",
         fr: "En relecture et en spectateur, un bouton Réglages affiche les réglages du joueur (lecture seule). Quand un choix n'a qu'une seule option possible, le journal l'indique.",
