@@ -127,3 +127,8 @@ html[data-affichage="sobre"] .cmp-jauge-plein {
 html[data-affichage="sobre"] .g-carte figcaption {
   background: rgba(5, 6, 8, .85) !important;
 }
+
+/* Les vignettes de héros : même atténuation que l'illustration de la scène. */
+html[data-affichage="sobre"] .hero-card .portrait {
+  filter: saturate(.55) brightness(.7);
+}
