@@ -47,6 +47,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-09",
         genre: "jeu",
+        fr: "La traduction posée sur les cartes s'affiche aussi sur les grandes cartes au centre (mise en place, cartes révélées) et sur les arts alternatifs des héros, y compris dans la fenêtre de choix de l'art. Le son de survol des boutons est plus discret.",
+        en: "Translations laid over cards now also show on the big cards in the middle (setup, revealed cards) and on alternate hero art, including in the art picker. The button hover sound is quieter.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
         fr: "Écran de campagne : les pages du livret s'ouvrent comme un livre, en double page qu'on tourne avec les flèches (ou le clavier, ou d'un glissement du doigt sur téléphone). Le bouton pour lancer le scénario reste visible sans défiler.",
         en: "Campaign screen: booklet pages now open like a book, in a two-page spread turned with the arrows (or the keyboard, or a swipe on a phone). The button to start the scenario stays visible without scrolling.",
     },
