@@ -12,7 +12,7 @@
 //
 // Il ne connait ni le descripteur du jeu ni les zones : c'est card-model.ts qui
 // traduit une carte de partie en props d'ici.
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { langueActuelle, t } from '../board/langue'
 import { libelleStatut } from '../board/effets-statuts'
 import { IMAGE_MORSURE } from './morsure'
@@ -232,6 +232,10 @@ export type ScanCardProps = {
    * `grande` : l'apercu agrandi et la vitrine, qui veulent le scan complet.
    */
   taille?: 'table' | 'grande'
+  /** Traits imprimés, réécrits par la traduction posée de l'aperçu agrandi. */
+  traits?: string[]
+  /** Posé SUR le scan, dans son cadre (la traduction de l'aperçu agrandi). */
+  surcouche?: ReactNode
   /**
    * Images des autres faces d'une carte multi-faces (recto-verso, ou 3 formes
    * comme Ant-Man). Portees par les props mais rendues seulement par l'apercu
@@ -526,6 +530,7 @@ export function ScanCard({
   exhausted = false,
   imageUrl,
   taille = 'table',
+  surcouche,
   picId,
   isLandscape = false,
   scanIsPortrait = false,
@@ -728,6 +733,7 @@ export function ScanCard({
           <div className="scan-fallback" aria-hidden="true">
             <span>{facedown ? '?' : name}</span>
           </div>
+          {surcouche}
 
           {pileCount !== undefined ? (
             <span className="pile-count-badge" aria-label={`${pileCount} ${t('cartes dans la pile')}`}>

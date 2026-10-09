@@ -1,0 +1,93 @@
+/* La traduction posée sur la zone de texte du scan (TraductionPosee.tsx).
+   Polices des cartes, fournies par l'utilisateur (public/fonts), converties
+   d'OTF en TTF : le serveur du jeu ne sert pas l'extension .otf. Une seule
+   variable pour changer la police du corps : --police-traduction. */
+@font-face {
+  font-family: 'Avenir Next Carte';
+  src: url('/public/fonts/AvenirNextLTPro-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Avenir Next Carte';
+  src: url('/public/fonts/AvenirNextLTPro-Demi.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Avenir Next Carte';
+  src: url('/public/fonts/AvenirNextLTPro-It.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Komika Title Carte';
+  src: url('/public/fonts/KomikaTitle.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'ChampionsIcons';
+  src: url('/public/fonts/ChampionsIcons.ttf') format('truetype');
+  font-display: swap;
+}
+
+:root {
+  --police-traduction: 'Avenir Next Carte', 'Nunito Sans', sans-serif;
+}
+
+.traduction-posee {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 1.5% 3%;
+  color: #1a1a1a;
+  font-family: var(--police-traduction);
+  font-weight: 400;
+  line-height: 1.18;
+  text-align: left;
+  pointer-events: none;
+}
+
+.traduction-posee b,
+.traduction-posee strong {
+  font-weight: 700;
+}
+
+.traduction-posee i,
+.traduction-posee em {
+  font-style: italic;
+}
+
+.traduction-posee .tp-encoche {
+  display: block;
+}
+.traduction-posee .tp-encoche-gauche {
+  float: left;
+}
+.traduction-posee .tp-encoche-droite {
+  float: right;
+}
+
+/* La ligne des traits, comme sur la carte : centrée, en Komika. */
+.traduction-posee .tp-traits {
+  font-family: 'Komika Title Carte', var(--police-traduction);
+  font-size: 0.82em;
+  text-align: center;
+  margin-bottom: 0.25em;
+}
+
+.traduction-posee .tp-trait {
+  font-family: 'Komika Title Carte', var(--police-traduction);
+  font-size: 0.9em;
+}
+
+.traduction-posee .tp-icone {
+  font-family: 'ChampionsIcons';
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+}

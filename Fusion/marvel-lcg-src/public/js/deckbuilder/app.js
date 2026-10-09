@@ -23,8 +23,12 @@ import { catalog } from "/public/js/prepare/catalog.js";
 // s'ajoutent pas. Voir legacy-cartes.js.
 import { etat as etatLegacy } from "/public/js/prepare/legacy-fiche.js";
 import { fabriquerDisponibilite } from "/public/js/prepare/legacy-cartes.js";
-import { t, synchroniserLangueServeur } from "/public/js/prepare/langue.js";
+import { t, synchroniserLangueServeur, langueActuelle } from "/public/js/prepare/langue.js";
 import { nomFr, texteFr } from "/public/js/prepare/cartes-fr.js";
+import { NOMS_FR } from "/public/js/prepare/noms-fr.js";
+import { correspondRecherche } from "/public/js/deckbuilder/recherche.js";
+import { versionsDe, versionDansLeDeck, changerVersion } from "/public/js/deckbuilder/arts-reeditions.js";
+import { poserTraduction } from "/public/js/traduction/poser.js";
 // Les regles de construction vivent dans regles.js : l'ecran de preparation les
 // applique AUSSI, quand on colle un lien MarvelCDB sur un autre heros.
 import {
@@ -134,6 +138,10 @@ const etat = {
     brouillonId: null,
     // Legacy : null hors du mode ; sinon la disponibilite (voir demarrer).
     legacy: null,
+    // Carte d'origine -> version (illustration) retenue dans la grille.
+    arts: new Map(),
+    // Carte d'origine dont le choix d'illustration est ouvert, ou null.
+    artsOuvert: null,
 };
 
 /** En Legacy, une carte fermée ne s'ajoute pas et se grise. Hors Legacy,
@@ -348,12 +356,8 @@ function passeFiltres(carte) {
         const siens = motsClesDe(carte);
         if (![...f.motsCles].every((mot) => siens.includes(mot))) return false;
     }
-    if (f.texte) {
-        const t = f.texte.toLowerCase();
-        // On cherche dans ce que le joueur LIT : le francais quand il existe.
-        const dedans = `${nomFr(carte)} ${texteFr(carte) || ""} ${(carte.traits || []).join(" ")}`.toLowerCase();
-        if (!dedans.includes(t)) return false;
-    }
+    if (f.texte && !correspondRecherche(carte, f.texte,
+        { nomsFr: NOMS_FR, nomAffiche: nomFr(carte), texteAffiche: texteFr(carte) })) return false;
     return true;
 }
 
@@ -379,7 +383,16 @@ async function rendreGrille() {
     const zone = $("#db-grille");
     const visibles = pool.filter((x) => passeFiltres(x.carte)).slice(0, 400);
     remplacer(zone, 
-        ...visibles.map(({ id, carte }) => {
+        ...visibles.map(({ id: idPool, carte: cartePool }) => {
+            // Une carte réimprimée avec une autre illustration : la vignette
+            // montre la version du deck, sinon celle choisie, sinon l'origine.
+            // Anglais seulement : en francais, l'origine et la reedition ont le
+            // MEME scan (assets/pics-fr), le choix ne changerait rien.
+            const versions = langueActuelle() === "fr" ? [] : versionsDe(cartePool.full_link_id || idPool);
+            const id = versions.length
+                ? (versionDansLeDeck(idPool, etat.choisies) || etat.arts.get(versions[0]) || versions[0])
+                : idPool;
+            const carte = cards.get(id) || cartePool;
             const n = etat.choisies.get(id) || 0;
             // `data-carte` porte l'identifiant jusqu'au DOM : l'apercu du
             // panneau de droite ecoute la grille entiere plutot que de poser
@@ -398,7 +411,13 @@ async function rendreGrille() {
                     el("span", { class: "db-carte-res" }, ressourcesDe(carte).map(iconeRessource)),
                     n ? el("span", { class: "db-count" }, `x${n}`) : null,
                 ),
+                versions.length ? choixIllustration(id, versions) : null,
                 el("div", { class: "db-carte-boutons" },
+                    versions.length ? el("button", {
+                        class: "db-arts-bouton", title: t("Choisir l’illustration"),
+                        "aria-label": t("Choisir l’illustration"),
+                        onclick: () => { etat.artsOuvert = etat.artsOuvert === versions[0] ? null : versions[0]; rendreGrille(); },
+                    }, `${t("Arts")} ${versions.length}`) : null,
                     el("button", { onclick: () => retirer(id), disabled: n === 0 ? "" : undefined }, "−"),
                     el("button", { onclick: () => ajouter(id), disabled: dispo.ouvert ? undefined : "" }, "+"),
                 ),
@@ -406,6 +425,29 @@ async function rendreGrille() {
         }),
     );
     $("#db-grille-info").textContent = `${visibles.length} ${t("carte(s)")}`;
+}
+
+/** Les illustrations d'une carte réimprimée, ouvertes sous sa vignette. Choisir
+ *  une version y passe aussi les copies déjà dans le deck : même carte pour le
+ *  moteur (`full_link`), seule l'image change. */
+function choixIllustration(montre, versions) {
+    if (etat.artsOuvert !== versions[0]) return null;
+    return el("div", { class: "db-arts-choix" },
+        versions.map((v) => {
+            const dispo = dispoCarte(v);
+            return el("img", {
+                src: cardImageUrl(v), alt: v,
+                class: `${v === montre ? "est-active" : ""}${dispo.ouvert ? "" : " est-verrou"}`,
+                title: dispo.ouvert ? undefined : `${t("Pas encore débloquée")} : ${dispo.etiquette}`,
+                onclick: () => {
+                    if (!dispo.ouvert) return;
+                    etat.arts.set(versions[0], v);
+                    changerVersion(etat.choisies, v);
+                    etat.artsOuvert = null;
+                    rendreTout();
+                },
+            });
+        }));
 }
 
 function ajouter(id) {
@@ -660,7 +702,12 @@ function installerApercu() {
         if (!id || id === derniere) return;
         derniere = id;
         const carte = cards.get(id);
-        remplacer(zone, el("img", { src: cardImageUrl(id), alt: carte ? carte.name : id }));
+        // Le cadre a EXACTEMENT la taille du scan : la traduction posée (scan
+        // anglais, langue française) s'y place en pourcentages de la carte.
+        const url = cardImageUrl(id);
+        const cadre = el("div", { class: "db-apercu-cadre" }, el("img", { src: url, alt: carte ? carte.name : id }));
+        remplacer(zone, cadre);
+        void poserTraduction(cadre, url, id, carte ? carte.traits : []);
     });
 }
 

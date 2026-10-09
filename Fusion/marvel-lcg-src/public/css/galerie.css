@@ -201,12 +201,15 @@ body{
   border-radius:12px;
   padding:20px 22px;
 }
-.g-apercu img{
+.g-apercu-cadre{
+  position:relative;
   width:min(320px,42vw);
-  border-radius:12px;
   align-self:flex-start;
+  border-radius:12px;
+  overflow:hidden;
   box-shadow:0 10px 30px rgba(0,0,0,.6);
 }
+.g-apercu-cadre img{display:block;width:100%}
 .g-apercu .infos{flex:1;min-width:0}
 .g-apercu h2{
   font-size:1.25rem;
@@ -271,6 +274,6 @@ body{
 
 @media (max-width:640px){
   .g-apercu{flex-direction:column;align-items:center}
-  .g-apercu img{width:min(320px,80vw)}
+  .g-apercu-cadre{width:min(320px,80vw)}
   .g-apercu .infos{width:100%}
 }

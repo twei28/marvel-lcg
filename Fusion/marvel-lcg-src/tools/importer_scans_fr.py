@@ -445,6 +445,15 @@ def ecrire_modules(attributions, textes, textes_en, noms, noms_en, ids_jeu):
         + "}\n",
         encoding="utf-8",
     )
+    (MARVEL / "public" / "js" / "prepare" / "noms-fr.js").write_text(
+        "// Genere par tools/importer_scans_fr.py — NE PAS EDITER A LA MAIN.\n"
+        "// Copie JS de ui-app/src/board/noms-fr.ts (nom francais OFFICIEL des cartes),\n"
+        "// pour les pages hors plateau : la recherche du deckbuilder.\n"
+        "export const NOMS_FR = {\n"
+        + corps_noms
+        + "};\n",
+        encoding="utf-8",
+    )
     return len(codes), len(sans_scan), len(noms_fr)
 
 

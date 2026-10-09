@@ -36,6 +36,7 @@ import { cibleSousLePoint, useGlisser, type CibleSurvolee, type EtatGlisser } fr
 import { aScanFr, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
+import { TraductionPosee } from './TraductionPosee'
 import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Plateau, type UniteAffichee } from './zones'
 import type { World } from './world'
 import type { EtatInteractif } from './interaction'
@@ -549,13 +550,13 @@ function Emplacement({
  *     compte le plus.
  *  3. A defaut, le comportement historique : marvelcdb par reseau, sur option,
  *     coupee par defaut. */
-export function ApercuMarvelcdb({ codeCarte, artAlternatif = false }: { codeCarte?: string; artAlternatif?: boolean }) {
+/** Le texte français à montrer pour une carte affichée en scan anglais, ou rien. */
+function useTraductionFr(codeCarte?: string, artAlternatif = false): string | undefined {
   // Deux codes, deux rôles. `code` sert de CLÉ aux dictionnaires français et
   // accepte le fan-made ; `codeCdb` désigne une page marvelcdb, que seules les
   // cartes officielles possèdent. Les confondre revenait à n'afficher aucun
   // texte français sur le contenu fan-made.
   const code = codeCarteConnu(codeCarte)
-  const codeCdb = codeMarvelcdb(codeCarte)
   // Un ART ALTERNATIF est un scan anglais, meme sur une carte qui a son scan
   // francais : il faut alors le texte francais de TOUTES les cartes
   // (textes-fr-complets.ts, 700 Ko), charge une fois a la demande.
@@ -577,6 +578,21 @@ export function ApercuMarvelcdb({ codeCarte, artAlternatif = false }: { codeCart
     code && scanAnglais
       ? (TEXTES_FR[code] ?? TEXTES_FR_FANMADE[code] ?? textesComplets?.[code])
       : undefined
+  return repli
+}
+
+export function ApercuMarvelcdb({
+  codeCarte,
+  artAlternatif = false,
+  masquerRepli = false,
+}: {
+  codeCarte?: string
+  artAlternatif?: boolean
+  /** La traduction est déjà posée sur la carte : l'encadré ferait doublon. */
+  masquerRepli?: boolean
+}) {
+  const codeCdb = codeMarvelcdb(codeCarte)
+  const repli = useTraductionFr(codeCarte, artAlternatif)
   const [texte, setTexte] = useState<TexteCdb | null>(null)
   useEffect(() => {
     setTexte(null)
@@ -590,7 +606,7 @@ export function ApercuMarvelcdb({ codeCarte, artAlternatif = false }: { codeCart
     }
   }, [codeCdb, repli])
   const contenu = repli ?? texte?.text
-  if (!contenu) return null
+  if (!contenu || (repli && masquerRepli)) return null
   return (
     <div className="apercu-cdb">
       <span className="apercu-cdb-source">{repli ? t('français') : 'marvelcdb'}</span>
@@ -640,6 +656,19 @@ export function CarteApercu({
   // en portrait pour tenir dans l'eventail (voir card-model : isLandscape).
   const estComplot = carte.kind === 'main-scheme' || carte.kind === 'side-scheme'
   const carteAgrandie = estComplot ? { ...carte, isLandscape: true } : carte
+  // La traduction se pose SUR le scan anglais quand sa zone de texte est
+  // reconnue (cartes portrait) ; l'encadré sous la carte reste le repli.
+  const traduction = useTraductionFr(carte.facedown ? undefined : carte.codeCarte, carte.artAlternatif)
+  const [traductionPosee, setTraductionPosee] = useState(false)
+  const surcouche =
+    traduction && !carteAgrandie.isLandscape && carteAgrandie.imageUrl ? (
+      <TraductionPosee
+        url={carteAgrandie.imageUrl}
+        texte={traduction}
+        traits={carteAgrandie.traits}
+        onPose={setTraductionPosee}
+      />
+    ) : undefined
 
   // L'apercu est le DERNIER servi : il cede la place a tout panneau de decision
   // deja ouvert. Sur une carte recto-verso paysage il fait pres de 930 px de
@@ -719,6 +748,7 @@ export function CarteApercu({
           onSelect={undefined}
           highlight={false}
           taille="grande"
+          surcouche={surcouche}
         />
         {/* POURQUOI ON NE PEUT PAS LA JOUER, juste sous la carte : place apres
             les mots-cles, en petit, on ne le voyait pas (30/09/2026). Une ligne
@@ -787,7 +817,7 @@ export function CarteApercu({
             {t('Crise')} · <b>{carte.crise}</b>
           </p>
         ) : null}
-        {!carte.facedown ? <ApercuMarvelcdb codeCarte={carte.codeCarte} artAlternatif={carte.artAlternatif} /> : null}
+        {!carte.facedown ? <ApercuMarvelcdb codeCarte={carte.codeCarte} artAlternatif={carte.artAlternatif} masquerRepli={traductionPosee && !!surcouche} /> : null}
       </div>
       {/* Carte multi-faces (recto-verso, ou 3 formes comme Ant-Man) : on montre
           AUSSI les autres faces (image seule, badges masques par le CSS car ils

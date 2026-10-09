@@ -288,6 +288,7 @@ const MOTEUR_FR: Record<string, string> = {
   'Obligation Give To Player': 'Obligation remise au joueur',
   'Phase Begin': 'Début de phase',
   'Phase End': 'Fin de phase',
+  'Choose Ability Only Option_Text': 'Seul choix possible',
   'Player Choose Ability': 'Choix d’une capacité',
   'Player Deal Encounter Card': 'Carte rencontre distribuée',
   'Player Drew Cards': 'Cartes piochées',

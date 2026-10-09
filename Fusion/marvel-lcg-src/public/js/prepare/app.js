@@ -1225,9 +1225,9 @@ function demanderLaLangue() {
                 // l'infobulle qui la traduit. Le decouvrir en pleine partie
                 // ressemble a un defaut ; le lire ici, a une regle.
                 el("div", { class: "vh-note" },
-                    "Une carte sans scan dans la langue choisie reste affichée en anglais : sa traduction s'affiche alors dans l'infobulle, sous la carte."),
+                    "Une carte sans scan dans la langue choisie reste affichée en anglais : quand on l'agrandit, sa traduction est posée sur son texte."),
                 el("div", { class: "vh-note lg-en" },
-                    "A card with no scan in the chosen language stays in English: its translation then shows in the tooltip, under the card."),
+                    "A card with no scan in the chosen language stays in English: when enlarged, its translation is laid over its text."),
                 el("div", { class: "vh-note" },
                     "Tu peux changer à tout moment : le bouton FR / EN, en haut de l'écran."),
                 el("div", { class: "vh-note lg-en" },
@@ -1770,7 +1770,7 @@ function accueilView() {
             el("img", { class: "acc-narwhal", src: urlNarval(), alt: "NarwhalChampions" }),
             el("div", { class: "acc-titre" },
                 el("div", { class: "recitatif" }, t("Préparation de mission")),
-                el("h1", { class: "affiche" }, "Marvel", el("br"), "Champions"),
+                el("h1", { class: "affiche" }, "Narwhal", el("br"), "Champions"),
                 el("p", {}, t("Comment veux-tu jouer ?")),
             ),
         ),

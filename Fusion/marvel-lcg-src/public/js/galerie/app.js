@@ -16,6 +16,7 @@ import { cardImageUrl } from "/public/js/prepare/api.js";
 import { t, boutonLangue, enregistrerTraductions, langueActuelle } from "/public/js/prepare/langue.js";
 import { picIdLangue } from "/public/js/prepare/scans-fr.js";
 import { carteFr } from "/public/js/prepare/cartes-fr.js";
+import { poserTraduction } from "/public/js/traduction/poser.js";
 
 /** Image d'une carte dans la langue de l'interface : le scan français quand il
  *  existe, l'anglais sinon (repli assuré par le serveur). Voir scans-fr.js. */
@@ -445,12 +446,15 @@ function ouvrirApercu(carte) {
         }, t("Voir sur marvelcdb ↗")));
     }
 
-    const panneau = el("div", { class: "g-apercu" },
-        el("img", { src: imageCarte(carte.imageId), alt: nom }),
-        infos);
+    // Le cadre a EXACTEMENT la taille du scan : la traduction posée (scan
+    // anglais, langue française) s'y place en pourcentages de la carte.
+    const url = imageCarte(carte.imageId);
+    const cadre = el("div", { class: "g-apercu-cadre" }, el("img", { src: url, alt: nom }));
+    const panneau = el("div", { class: "g-apercu" }, cadre, infos);
     voile = el("div", { class: "g-voile", onclick: (e) => { if (e.target === voile) fermerApercu(); } },
         panneau);
     document.body.append(voile);
+    void poserTraduction(cadre, url, carte.id, carte.traits);
 }
 
 /* ------------------------------------------------------------ démarrage -- */

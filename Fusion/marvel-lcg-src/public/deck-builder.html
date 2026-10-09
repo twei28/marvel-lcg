@@ -119,8 +119,8 @@
        voisines et restait trop petite pour lire un texte de carte. C'est le
        panneau de droite qui montre la carte en grand (#db-apercu). Ici, on se
        contente de dire laquelle est pointée. */
-    .db-carte img:hover { outline: 2px solid var(--or); }
-    .db-carte.est-choisie img { outline: 3px solid var(--or); }
+    .db-carte > img:hover { outline: 2px solid var(--or); }
+    .db-carte.est-choisie > img { outline: 3px solid var(--or); }
     .db-carte-pied { display: flex; align-items: center; gap: 5px; padding: 4px 2px 0; font-size: 0.7rem; }
     .db-carte-pied b { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .db-count { margin-left: auto; color: var(--or); font-weight: 900; }
@@ -137,6 +137,15 @@
         background: rgba(10, 12, 16, 0.85); border: 1px solid var(--bord); border-radius: 6px; cursor: pointer;
     }
     .db-carte-boutons button:disabled { opacity: 0.35; }
+    .db-carte-boutons .db-arts-bouton { width: auto; padding: 0 6px; color: var(--or); }
+    .db-arts-choix {
+        position: absolute; z-index: 5; left: 0; right: 0; top: 32px;
+        display: flex; gap: 6px; padding: 6px; border-radius: 8px;
+        background: rgba(10, 12, 16, 0.95); border: 1px solid var(--bord);
+    }
+    .db-arts-choix img { flex: 1 1 0; min-width: 0; cursor: pointer; opacity: 0.7; }
+    .db-arts-choix img.est-active { opacity: 1; outline: 3px solid var(--or); }
+    .db-arts-choix img.est-verrou { opacity: 0.3; cursor: not-allowed; }
 
     /* Aperçu de la carte pointée.
        Il vit EN HAUT du panneau de droite et y reste collé pendant qu'on fait
@@ -163,6 +172,14 @@
         min-width: 0; min-height: 0;
         width: 100%; height: 100%; object-fit: contain;
         border-radius: 8px; filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
+    }
+    #db-apercu .db-apercu-cadre {
+        position: relative; height: 100%; width: fit-content; max-width: 100%; min-height: 0;
+        border-radius: 8px; overflow: hidden; filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
+    }
+    #db-apercu .db-apercu-cadre img {
+        display: block; height: 100%; width: auto; max-width: 100%; object-fit: contain;
+        filter: none; border-radius: 0;
     }
     #db-apercu .db-apercu-vide {
         padding: 0 18px; font-size: 0.76rem; color: var(--sourdine); text-align: center;

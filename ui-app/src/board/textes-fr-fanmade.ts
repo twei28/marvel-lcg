@@ -2853,4 +2853,482 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   '65017': "1 max par deck.",
   '65018': "1 max par deck.",
   '65019': "1 max par deck.",
+  // hunting_season — Vermin (Villain)
+  'hs001': "[star] <b>Réponse forcée</b> : après que Vermin s'est activé contre vous, défaussez la carte du dessus du deck Rencontre. Si un sbire [[RAT]] a été défaussé de cette façon, mettez-le en jeu engagé avec vous.",
+  // hunting_season — Vermin (Villain)
+  'hs002': "[star] <b>Réponse forcée</b> : après que Vermin s'est activé contre vous, défaussez les 2 cartes du dessus du deck Rencontre. Mettez en jeu engagé avec vous le premier sbire [[RAT]] défaussé de cette façon.",
+  // hunting_season — Vermin (Villain)
+  'hs003': "[star] <b>Réponse forcée</b> : après que Vermin s'est activé contre vous, défaussez les 2 cartes du dessus du deck Rencontre. Mettez en jeu engagé avec vous chaque sbire [[RAT]] défaussé de cette façon. Résolvez l'effet \"Spécial\" d'Even More Rats.",
+  // hunting_season — Rats and More Rats (MainScheme)
+  'hs004a': "<b>Contenu</b> : Vermin (I) et Vermin (II). <i>(Vermin (II) et Vermin (III) à la place en mode expert.)</i> Sets de rencontre Vermin et Standard. Un set de rencontre modulaire <i>(recommandé : Feral Instincts)</i>.\n<b>Mise en place</b> : mettez en jeu l'environnement Even More Rats. Mettez en jeu un sbire Regular Rats engagé avec chaque joueur. Mélangez le deck Rencontre. Passez à l'étape 1B.",
+  // hunting_season — Rats and More Rats (MainScheme)
+  'hs004b': "[star] <b>Réponse forcée</b> : après l'étape 1 de la phase du méchant, placez 1 menace sur chaque sbire [[RAT]]. Résolvez l'effet \"Spécial\" d'Even More Rats.",
+  // hunting_season — Rats, Rats and More Rats (MainScheme)
+  'hs005a': "<b>Une fois révélée</b> : cherchez Bringer of Plague dans le deck Rencontre et la pile de défausse, et révélez-la. Passez à l'étape 2B.",
+  // hunting_season — Rats, Rats and More Rats (MainScheme)
+  'hs005b': "[star] <b>Réponse forcée</b> : après l'étape 1 de la phase du méchant, placez 1 menace sur chaque sbire [[RAT]]. Résolvez l'effet \"Spécial\" d'Even More Rats.\n<b>Si cette manigance est complétée, les rats ont envahi la ville et les joueurs perdent la partie.</b>",
+  // hunting_season — Even More Rats (Environment)
+  'hs006': "La menace sur les sbires [[RAT]] ne peut pas être contrée.\n<b>Spécial</b> : si le total des menaces sur les sbires [[RAT]] et sur la manigance principale est supérieur ou égal à la valeur de menace cible de la manigance principale, l'étape en cours de la manigance principale est complétée.",
+  // hunting_season — Regular Rats (Minion)
+  'hs007': "Renfort.\nX est égal au nombre de sbires [[RAT]] engagés avec vous (3 au maximum).\n<hr />\n[star] <b>Boost</b> : mettez Regular Rats en jeu engagé avec vous.",
+  // hunting_season — Regular Rats (Minion)
+  'hs008': "Renfort.\nX est égal au nombre de sbires [[RAT]] engagés avec vous (3 au maximum).\n<hr />\n[star] <b>Boost</b> : mettez Regular Rats en jeu engagé avec vous.",
+  // hunting_season — Regular Rats (Minion)
+  'hs009': "Renfort.\nX est égal au nombre de sbires [[RAT]] engagés avec vous (3 au maximum).\n<hr />\n[star] <b>Boost</b> : mettez Regular Rats en jeu engagé avec vous.",
+  // hunting_season — Regular Rats (Minion)
+  'hs010': "Renfort.\nX est égal au nombre de sbires [[RAT]] engagés avec vous (3 au maximum).\n<hr />\n[star] <b>Boost</b> : mettez Regular Rats en jeu engagé avec vous.",
+  // hunting_season — Feral Rats (Minion)
+  'hs011': "Renfort. Coup Rapide.\nX est égal au nombre de sbires [[RAT]] engagés avec vous (3 au maximum).\n<hr />\n[star] <b>Boost</b> : mettez Feral Rats en jeu engagé avec vous.",
+  // hunting_season — Feral Rats (Minion)
+  'hs012': "Renfort. Coup Rapide.\nX est égal au nombre de sbires [[RAT]] engagés avec vous (3 au maximum).\n<hr />\n[star] <b>Boost</b> : mettez Feral Rats en jeu engagé avec vous.",
+  // hunting_season — Feral Rats (Minion)
+  'hs013': "Renfort. Coup Rapide.\nX est égal au nombre de sbires [[RAT]] engagés avec vous (3 au maximum).\n<hr />\n[star] <b>Boost</b> : mettez Feral Rats en jeu engagé avec vous.",
+  // hunting_season — Feral Rats (Minion)
+  'hs014': "Renfort. Coup Rapide.\nX est égal au nombre de sbires [[RAT]] engagés avec vous (3 au maximum).\n<hr />\n[star] <b>Boost</b> : mettez Feral Rats en jeu engagé avec vous.",
+  // hunting_season — Vermin Clone (Minion)
+  'hs015': "Garde.\nTant que Vermin Clone est engagé avec vous, les personnages que vous contrôlez ne peuvent pas attaquer Regular Rats et Feral Rats.\n<hr />\n[star] <b>Boost</b> : attribuez une carte de boost supplémentaire à l'ennemi qui attaque pour cette activation.",
+  // hunting_season — Vermin Clone (Minion)
+  'hs016': "Garde.\nTant que Vermin Clone est engagé avec vous, les personnages que vous contrôlez ne peuvent pas attaquer Regular Rats et Feral Rats.\n<hr />\n[star] <b>Boost</b> : attribuez une carte de boost supplémentaire à l'ennemi qui attaque pour cette activation.",
+  // hunting_season — Vermin Clone (Minion)
+  'hs017': "Garde.\nTant que Vermin Clone est engagé avec vous, les personnages que vous contrôlez ne peuvent pas attaquer Regular Rats et Feral Rats.\n<hr />\n[star] <b>Boost</b> : attribuez une carte de boost supplémentaire à l'ennemi qui attaque pour cette activation.",
+  // hunting_season — Swarmed by Rats (Attachment)
+  'hs018': "Attachez-la à votre identité.\nChaque sbire [[RAT]] engagé avec vous gagne garde.\n<b>Interruption</b> : après avoir vaincu un sbire [[RAT]] engagé avec vous, défaussez 2 cartes de votre main → défaussez cette carte.",
+  // hunting_season — Swarmed by Rats (Attachment)
+  'hs019': "Attachez-la à votre identité.\nChaque sbire [[RAT]] engagé avec vous gagne garde.\n<b>Interruption</b> : après avoir vaincu un sbire [[RAT]] engagé avec vous, défaussez 2 cartes de votre main → défaussez cette carte.",
+  // hunting_season — Vermin Cloning (SideScheme)
+  'hs020': "<b>Une fois révélée</b> : cherchez un exemplaire de Vermin Clone dans le deck Rencontre et la pile de défausse, et mettez-le en jeu engagé avec le premier joueur.",
+  // hunting_season — Bringer of Plague (SideScheme)
+  'hs021': "<b>Une fois révélée</b> : placez ici autant de menaces qu'il y en a sur les sbires [[RAT]] en jeu.",
+  // hunting_season — A Mischief of Rats (Treachery)
+  'hs022': "<b>Une fois révélée</b> : défaussez X cartes du deck Rencontre, X étant égal au double du niveau du méchant. Pour chaque sbire [[RAT]] défaussé de cette façon, choisissez soit de placer 2 menaces sur la manigance principale, soit de mettre ce sbire en jeu engagé avec vous.",
+  // hunting_season — A Mischief of Rats (Treachery)
+  'hs023': "<b>Une fois révélée</b> : défaussez X cartes du deck Rencontre, X étant égal au double du niveau du méchant. Pour chaque sbire [[RAT]] défaussé de cette façon, choisissez soit de placer 2 menaces sur la manigance principale, soit de mettre ce sbire en jeu engagé avec vous.",
+  // hunting_season — Rabid Assault (Treachery)
+  'hs024': "<b>Une fois révélée (alter ego)</b> : Vermin manigance. S'il n'y a aucun sbire [[RAT]] engagé avec vous, cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : Vermin vous attaque. S'il n'y a aucun sbire [[RAT]] engagé avec vous, cette carte gagne renfort.",
+  // hunting_season — Rabid Assault (Treachery)
+  'hs025': "<b>Une fois révélée (alter ego)</b> : Vermin manigance. S'il n'y a aucun sbire [[RAT]] engagé avec vous, cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : Vermin vous attaque. S'il n'y a aucun sbire [[RAT]] engagé avec vous, cette carte gagne renfort.",
+  // hunting_season — A Thousand Bites (Treachery)
+  'hs026': "<b>Une fois révélée</b> : pour chaque sbire [[RAT]] engagé avec vous, choisissez soit de placer 1 menace sur ce sbire, soit de subir 1 dégât indirect. Résolvez l'effet \"Spécial\" d'Even More Rats. S'il y a un sbire [[RAT]] ou moins engagé avec vous, cette carte gagne renfort.",
+  // hunting_season — A Thousand Bites (Treachery)
+  'hs027': "<b>Une fois révélée</b> : pour chaque sbire [[RAT]] engagé avec vous, choisissez soit de placer 1 menace sur ce sbire, soit de subir 1 dégât indirect. Résolvez l'effet \"Spécial\" d'Even More Rats. S'il y a un sbire [[RAT]] ou moins engagé avec vous, cette carte gagne renfort.",
+  // hunting_season — A Thousand Bites (Treachery)
+  'hs028': "<b>Une fois révélée</b> : pour chaque sbire [[RAT]] engagé avec vous, choisissez soit de placer 1 menace sur ce sbire, soit de subir 1 dégât indirect. Résolvez l'effet \"Spécial\" d'Even More Rats. S'il y a un sbire [[RAT]] ou moins engagé avec vous, cette carte gagne renfort.",
+  // hunting_season — A Thousand Bites (Treachery)
+  'hs029': "<b>Une fois révélée</b> : pour chaque sbire [[RAT]] engagé avec vous, choisissez soit de placer 1 menace sur ce sbire, soit de subir 1 dégât indirect. Résolvez l'effet \"Spécial\" d'Even More Rats. S'il y a un sbire [[RAT]] ou moins engagé avec vous, cette carte gagne renfort.",
+  // hunting_season — Scorpion (Villain)
+  'hs030': "[star] <b>Interruption forcée</b> : quand la phase du méchant se termine, si Scorpion's Tail n'est pas attachée à Scorpion, mettez-la en jeu et attachez-la à Scorpion.",
+  // hunting_season — Scorpion (Villain)
+  'hs031': "Scorpion ne peut pas être sonné.\n[star] <b>Interruption forcée</b> : quand la phase du méchant se termine, si Scorpion's Tail n'est pas attachée à Scorpion, mettez-la en jeu et attachez-la à Scorpion.",
+  // hunting_season — Scorpion (Villain)
+  'hs032': "Scorpion ne peut pas être sonné.\n<b>Une fois révélé</b> : cherchez Tail Laser dans le deck Rencontre et la pile de défausse, et révélez-la.\n[star] <b>Interruption forcée</b> : quand la phase du méchant se termine, si Scorpion's Tail n'est pas attachée à Scorpion, mettez-la en jeu et attachez-la à Scorpion.",
+  // hunting_season — Thirst for Revenge (MainScheme)
+  'hs033a': "<b>Contenu</b> : Scorpion (I) et Scorpion (II). <i>(Scorpion (II) et Scorpion (III) à la place en mode expert.)</i> Sets de rencontre Scorpion et Standard. Un set de rencontre modulaire <i>(recommandé : Feral Instincts)</i>.\n<b>Mise en place</b> : mettez en jeu le soutien J. Jonah Jameson sous le contrôle du premier joueur. Mettez en jeu l'amélioration Scorpion's Tail et attachez-la à Scorpion. Passez à l'étape 1B.",
+  // hunting_season — Thirst for Revenge (MainScheme)
+  'hs033b': "<b>Une fois accomplie</b> : placez 1 compteur de blessure sur le soutien J. Jonah Jameson.",
+  // hunting_season — Vengeful Pursuit (MainScheme)
+  'hs034a': "<b>Une fois révélée</b> : passez à l'étape 2B.",
+  // hunting_season — Vengeful Pursuit (MainScheme)
+  'hs034b': "<b>Interruption forcée</b> : quand cette manigance devrait être complétée, placez plutôt 1 compteur de blessure sur le soutien J. Jonah Jameson. Ensuite, retirez toutes les menaces de cette manigance ainsi que toutes les améliorations et pièces jointes qui y sont attachées.",
+  // hunting_season — J. Jonah Jameson (Support)
+  'hs035': "Permanent.\n<b>Interruption</b> : quand un personnage allié devrait subir n'importe quelle quantité de dégâts, placez 1 compteur de blessure ici → prévenez tous ces dégâts.\n<b>Interruption forcée</b> : quand il y a 3 + 1[per_hero] compteurs de blessure ou plus ici, les joueurs perdent la partie.",
+  // hunting_season — Scorpion’s Tail (Attachment)
+  'hs036': "[star] <b>Réponse forcée</b> : après que Scorpion a attaqué et infligé des dégâts à un personnage, ce personnage est sonné. S'il est déjà sonné, infligez-lui 1 dégât.\n<b>Interruption</b> : quand Scorpion devrait subir n'importe quelle quantité de dégâts, ces dégâts peuvent être placés ici à la place. Ensuite, s'il y a 10[per_hero] dégâts ou plus ici, mettez Scorpion's Tail de côté, hors jeu. Ensuite, Scorpion subit 8[per_hero] dégâts.",
+  // hunting_season — Tail Armor (Attachment)
+  'hs037': "Déplacez 5 dégâts de Scorpion's Tail vers Scorpion. Attachez-la à Scorpion's Tail. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Interruption forcée</b> : quand des dégâts devraient être placés sur Scorpion's Tail, placez-les ici à la place. S'il y a 8 dégâts ou plus ici, défaussez Tail Armor.",
+  // hunting_season — Honed Stinger (Attachment)
+  'hs038': "Déplacez 5 dégâts de Scorpion's Tail vers Scorpion. Attachez-la à Scorpion's Tail. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Interruption forcée</b> : quand Scorpion attaque, il gagne +1 ATQ pour cette attaque, et l'attaque gagne perçant.\n<hr />\n[star] <b>Boost</b> : mélangez cette carte dans le deck Rencontre.",
+  // hunting_season — Tail Laser (Attachment)
+  'hs039': "Déplacez 5 dégâts de Scorpion's Tail vers Scorpion. Attachez-la à Scorpion's Tail. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Interruption forcée</b> : quand Scorpion attaque, l'attaque gagne à distance et déferlement.\n<hr />\n[star] <b>Boost</b> : mélangez cette carte dans le deck Rencontre.",
+  // hunting_season — Coiled Up (Attachment)
+  'hs040': "Déplacez 5 dégâts de Scorpion's Tail vers Scorpion. Si Scorpion's Tail est attachée à Scorpion, attachez Coiled Up à votre identité. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Interruption forcée</b> : quand Scorpion's Tail est mise de côté, défaussez Coiled Up.",
+  // hunting_season — Coiled Up (Attachment)
+  'hs041': "Déplacez 5 dégâts de Scorpion's Tail vers Scorpion. Si Scorpion's Tail est attachée à Scorpion, attachez Coiled Up à votre identité. Si vous ne pouvez pas, cette carte gagne renfort.\n<b>Interruption forcée</b> : quand Scorpion's Tail est mise de côté, défaussez Coiled Up.",
+  // hunting_season — Human Fly (Minion)
+  'hs042': "<b>Interruption forcée</b> : quand Human Fly devrait subir n'importe quelle quantité de dégâts d'une attaque, prévenez tous ces dégâts. <i>(Limite d'une fois par round.)</i>\n<hr />\n[star] <b>Boost</b> : une fois cette activation terminée, attribuez-vous cette carte comme carte Rencontre face cachée.",
+  // hunting_season — Human Fly (Minion)
+  'hs043': "<b>Interruption forcée</b> : quand Human Fly devrait subir n'importe quelle quantité de dégâts d'une attaque, prévenez tous ces dégâts. <i>(Limite d'une fois par round.)</i>\n<hr />\n[star] <b>Boost</b> : une fois cette activation terminée, attribuez-vous cette carte comme carte Rencontre face cachée.",
+  // hunting_season — Grizzly (Minion)
+  'hs044': "[star] <b>Interruption forcée</b> : quand Grizzly attaque, l'attaque gagne perçant.\n<hr />\n[star] <b>Boost</b> : cette attaque gagne perçant.",
+  // hunting_season — Hippo (Minion)
+  'hs045': "Ténacité.\n<hr />\n[star] <b>Boost</b> : cette attaque gagne déferlement.",
+  // hunting_season — Luring Out Prey (SideScheme)
+  'hs046': "<b>Une fois révélée</b> : placez 1[per_hero] menace supplémentaire ici.",
+  // hunting_season — A Mess of Things (SideScheme)
+  'hs047': "<b>Une fois révélée</b> : placez ici 2 menaces supplémentaires pour chaque personnage allié sonné.",
+  // hunting_season — Tail Enhancements (Treachery)
+  'hs048': "<b>Une fois révélée</b> : défaussez des cartes du deck Rencontre jusqu'à défausser une pièce jointe [[TAIL]]. Révélez cette carte.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) pour chaque pièce jointe [[TAIL]] attachée à Scorpion.",
+  // hunting_season — Tail Enhancements (Treachery)
+  'hs049': "<b>Une fois révélée</b> : défaussez des cartes du deck Rencontre jusqu'à défausser une pièce jointe [[TAIL]]. Révélez cette carte.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) pour chaque pièce jointe [[TAIL]] attachée à Scorpion.",
+  // hunting_season — Stinger Stab (Treachery)
+  'hs050': "<b>Une fois révélée (alter ego)</b> : Scorpion manigance. Si vous êtes sonné, Scorpion gagne +2 MNG pour cette activation.\n<b>Une fois révélée (héros)</b> : Scorpion vous attaque. Après cette activation, si vous êtes sonné, vous êtes désorienté.",
+  // hunting_season — Stinger Stab (Treachery)
+  'hs051': "<b>Une fois révélée (alter ego)</b> : Scorpion manigance. Si vous êtes sonné, Scorpion gagne +2 MNG pour cette activation.\n<b>Une fois révélée (héros)</b> : Scorpion vous attaque. Après cette activation, si vous êtes sonné, vous êtes désorienté.",
+  // hunting_season — Restraining Pincers (Treachery)
+  'hs052': "<b>Une fois révélée</b> : choisissez soit de dépenser [physical][physical], soit de sonner votre identité. Si vous ne pouvez pas, cette carte gagne renfort.\n<hr />\n[star] <b>Boost</b> : si cette activation vous inflige des dégâts, inclinez votre héros.",
+  // hunting_season — Restraining Pincers (Treachery)
+  'hs053': "<b>Une fois révélée</b> : choisissez soit de dépenser [physical][physical], soit de sonner votre identité. Si vous ne pouvez pas, cette carte gagne renfort.\n<hr />\n[star] <b>Boost</b> : si cette activation vous inflige des dégâts, inclinez votre héros.",
+  // hunting_season — Curtis Connors (Villain)
+  'hs054a': "Curtis Connors ne peut pas subir de dégâts.\n[star] <b>Interruption forcée</b> : quand Curtis Connors devrait attaquer, placez plutôt 1 compteur de honte sur l'environnement Reptilian Rage. S'il y a 3 compteurs de honte dessus, Curtis Connors manigance.\n[star] <b>Réponse forcée</b> : après que Curtis Connors a manigancé, retournez Curtis Connors.",
+  // hunting_season — Curtis Connors (Villain)
+  'hs055a': "Curtis Connors ne peut pas subir de dégâts.\n[star] <b>Interruption forcée</b> : quand Curtis Connors devrait attaquer, placez plutôt 1 compteur de honte sur l'environnement Reptilian Rage. S'il y a 3 compteurs de honte dessus, Curtis Connors manigance.\n[star] <b>Réponse forcée</b> : après que Curtis Connors a manigancé, retournez Curtis Connors.",
+  // hunting_season — The Lizard (Villain)
+  'hs054b': "[star] <b>Réponse forcée</b> : après que The Lizard a manigancé, retournez The Lizard.\n<b>Interruption forcée</b> : quand la phase du méchant se termine, défaussez 1[per_hero] cartes du dessus du deck Rencontre. Révélez chaque pièce jointe [[REPTILE]] défaussée de cette façon.",
+  // hunting_season — The Lizard (Villain)
+  'hs055b': "[star] <b>Réponse forcée</b> : après que The Lizard a manigancé, retournez The Lizard.\n<b>Interruption forcée</b> : quand la phase du méchant se termine, défaussez 1[per_hero] cartes du dessus du deck Rencontre. Chaque joueur, dans l'ordre des joueurs, doit révéler la pièce jointe [[REPTILE]] la plus haute de la pile de défausse Rencontre.",
+  // hunting_season — Curtis Connors (Villain)
+  'hs056a': "Curtis Connors ne peut pas subir de dégâts.\n[star] <b>Interruption forcée</b> : quand Curtis Connors devrait attaquer, placez plutôt 2 compteurs de honte sur l'environnement Reptilian Rage. S'il y a 3 compteurs de honte dessus, Curtis Connors manigance.\n[star] <b>Réponse forcée</b> : après que Curtis Connors a manigancé, retournez Curtis Connors.",
+  // hunting_season — The Lizard (Villain)
+  'hs056b': "[star] <b>Réponse forcée</b> : après que The Lizard a manigancé, retournez The Lizard.\n<b>Interruption forcée</b> : quand la phase du méchant se termine, défaussez 2[per_hero] cartes du dessus du deck Rencontre. Chaque joueur, dans l'ordre des joueurs, doit révéler la pièce jointe [[REPTILE]] la plus haute de la pile de défausse Rencontre.",
+  // hunting_season — Using the Mammal Brain (MainScheme)
+  'hs057a': "<b>Contenu</b> : Curtis Connors (I) et Curtis Connors (II). <i>(Curtis Connors (II) et Curtis Connors (III) à la place en mode expert.)</i> Sets de rencontre The Lizard et Standard. Un set de rencontre modulaire <i>(recommandé : Lizard Thralls)</i>.\n<b>Mise en place</b> : mettez en jeu l'environnement Reptilian Rage. Le méchant commence sur sa face Curtis Connors. Passez à l'étape 1B.",
+  // hunting_season — Using the Mammal Brain (MainScheme)
+  'hs057b': "<b>Une fois accomplie</b> : placez des compteurs de honte sur l'environnement Reptilian Rage pour qu'il en ait 3. Si The Lizard n'est pas en jeu, retournez Curtis Connors.",
+  // hunting_season — Reptile Brain Taking Over (MainScheme)
+  'hs058a': "<b>Une fois révélée</b> : cherchez un exemplaire de Reptile Research dans le deck Rencontre et la pile de défausse, et révélez-le. Passez à l'étape 2B.",
+  // hunting_season — Reptile Brain Taking Over (MainScheme)
+  'hs058b': "X est le nombre de cartes [[REPTILE]] en jeu (The Lizard compris).",
+  // hunting_season — No Humanity Left (MainScheme)
+  'hs059a': "<b>Une fois révélée</b> : si The Lizard n'est pas en jeu, retournez Curtis Connors. Placez des compteurs de honte sur l'environnement Reptilian Rage pour qu'il en ait 3. Passez à l'étape 3B.",
+  // hunting_season — No Humanity Left (MainScheme)
+  'hs059b': "The Lizard ne peut pas être retourné.\nLa menace ne peut pas être retirée de cette manigance.\n<b>Si cette étape est complétée, Curtis Connors est mort et les joueurs perdent la partie.</b>",
+  // hunting_season — Reptilian Rage (Environment)
+  'hs060': "The Lizard gagne +1 ATQ pour chaque compteur de honte sur Reptilian Rage. (3 compteurs de honte au maximum.) Tant qu'il y a au moins 1 compteur de honte ici, les attaques de The Lizard gagnent déferlement.\n<b>Réponse forcée</b> : après que The Lizard a attaqué, retirez des compteurs de honte de Reptilian Rage :\nMéchant niveau I : retirez 2 compteurs de honte.\nMéchant niveau II : retirez 1 compteur de honte.\nMéchant niveau III : retirez 0 compteur de honte.",
+  // hunting_season — Enhanced Lizard Senses (Attachment)
+  'hs061': "<b>Une fois révélée</b> : Curtis Connors manigance avec +1[per_hero] MNG. Attachez cette carte à The Lizard.\n<b>Interruption</b> : quand un événement est joué, annulez ses effets et défaussez-le. Ensuite, placez Enhanced Lizard Senses sous la pile de défausse Rencontre.",
+  // hunting_season — Enhanced Lizard Senses (Attachment)
+  'hs062': "<b>Une fois révélée</b> : Curtis Connors manigance avec +1[per_hero] MNG. Attachez cette carte à The Lizard.\n<b>Interruption</b> : quand un événement est joué, annulez ses effets et défaussez-le. Ensuite, placez Enhanced Lizard Senses sous la pile de défausse Rencontre.",
+  // hunting_season — Komodo Claws (Attachment)
+  'hs063': "<b>Une fois révélée</b> : Curtis Connors manigance avec +1[per_hero] MNG. Attachez cette carte à The Lizard.\nThe Lizard gagne riposte 1.\n<b>Action de héros</b> : dépensez une ressource [energy] et subissez 1 dégât → placez Komodo Claws sous la pile de défausse Rencontre.",
+  // hunting_season — Komodo Claws (Attachment)
+  'hs064': "<b>Une fois révélée</b> : Curtis Connors manigance avec +1[per_hero] MNG. Attachez cette carte à The Lizard.\nThe Lizard gagne riposte 1.\n<b>Action de héros</b> : dépensez une ressource [energy] et subissez 1 dégât → placez Komodo Claws sous la pile de défausse Rencontre.",
+  // hunting_season — Lizard Tail (Attachment)
+  'hs065': "<b>Une fois révélée</b> : Curtis Connors manigance avec +1[per_hero] MNG. Attachez cette carte à The Lizard.\n[star] <b>Interruption forcée</b> : quand The Lizard attaque, l'attaque gagne à distance.\n<b>Action de héros</b> : dépensez une ressource [mental] et placez 1 menace sur la manigance principale → placez Lizard Tail sous la pile de défausse Rencontre.",
+  // hunting_season — Alligator Jaws (Attachment)
+  'hs066': "<b>Une fois révélée</b> : Curtis Connors manigance avec +1[per_hero] MNG. Attachez cette carte à The Lizard.\n[star] <b>Interruption forcée</b> : quand The Lizard attaque, l'attaque gagne perçant.\n<b>Action de héros</b> : dépensez une ressource [physical] et inclinez votre héros → placez Alligator Jaws sous la pile de défausse Rencontre.",
+  // hunting_season — Ancient Reptilian Brain (Attachment)
+  'hs067': "<b>Une fois révélée</b> : Curtis Connors manigance avec +1[per_hero] MNG. Attachez cette carte à The Lizard.\n[star] <b>Interruption forcée</b> : quand The Lizard attaque et inflige des dégâts à un personnage, infligez à un autre personnage allié autant de dégâts que l'ATQ du personnage attaqué.\n<b>Action de héros</b> : désorientez votre héros → placez Ancient Reptilian Brain sous la pile de défausse Rencontre.",
+  // hunting_season — Boa Constricted (Attachment)
+  'hs068': "Attachez-la à votre identité.\nL'identité attachée ne peut pas déclencher l'effet \"Action de héros\" des pièces jointes [[REPTILE]].\n<b>Interruption forcée</b> : quand la phase des joueurs se termine, défaussez Boa Constricted.",
+  // hunting_season — Boa Constricted (Attachment)
+  'hs069': "Attachez-la à votre identité.\nL'identité attachée ne peut pas déclencher l'effet \"Action de héros\" des pièces jointes [[REPTILE]].\n<b>Interruption forcée</b> : quand la phase des joueurs se termine, défaussez Boa Constricted.",
+  // hunting_season — Iguana Whip (Treachery)
+  'hs070': "<b>Une fois révélée (alter ego)</b> : cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : le méchant vous attaque. Placez 1 menace sur la manigance principale pour chaque pièce jointe [[REPTILE]] attachée au méchant.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, placez 1 menace sur la manigance principale.",
+  // hunting_season — Iguana Whip (Treachery)
+  'hs071': "<b>Une fois révélée (alter ego)</b> : cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : le méchant vous attaque. Placez 1 menace sur la manigance principale pour chaque pièce jointe [[REPTILE]] attachée au méchant.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, placez 1 menace sur la manigance principale.",
+  // hunting_season — Triggered Transformation (Treachery)
+  'hs072': "<b>Une fois révélée</b> : placez des compteurs de honte sur l'environnement Reptilian Rage pour qu'il en ait 3. Choisissez soit d'incliner votre héros, soit que le méchant manigance. Cette activation ignore les cartes d'état Désorienté.\n<hr />\n[star] <b>Boost</b> : placez 1 compteur de honte sur l'environnement Reptilian Rage.",
+  // hunting_season — Triggered Transformation (Treachery)
+  'hs073': "<b>Une fois révélée</b> : placez des compteurs de honte sur l'environnement Reptilian Rage pour qu'il en ait 3. Choisissez soit d'incliner votre héros, soit que le méchant manigance. Cette activation ignore les cartes d'état Désorienté.\n<hr />\n[star] <b>Boost</b> : placez 1 compteur de honte sur l'environnement Reptilian Rage.",
+  // hunting_season — Shed Skin (Treachery)
+  'hs074': "<b>Une fois révélée</b> : soignez 3 dégâts du méchant et retirez-lui chaque carte d'état. Donnez au méchant une carte d'état Tenace.\n<hr />\n[star] <b>Boost</b> : donnez au méchant une carte d'état Tenace.",
+  // hunting_season — Shed Skin (Treachery)
+  'hs075': "<b>Une fois révélée</b> : soignez 3 dégâts du méchant et retirez-lui chaque carte d'état. Donnez au méchant une carte d'état Tenace.\n<hr />\n[star] <b>Boost</b> : donnez au méchant une carte d'état Tenace.",
+  // hunting_season — Iguana (Minion)
+  'hs076': "[star] Iguana gagne +1 MNG et +1 ATQ pour chaque carte [[REPTILE]] en jeu (+4 MNG et +4 ATQ au maximum).",
+  // hunting_season — The Chameleon (Minion)
+  'hs077': "[star] The Chameleon a une MNG et une ATQ égales à celles du méchant.",
+  // hunting_season — Reptile Research (SideScheme)
+  'hs078': "<b>Une fois révélée</b> : placez 1 menace supplémentaire ici pour chaque carte [[REPTILE]] en jeu.",
+  // hunting_season — Reptile Research (SideScheme)
+  'hs079': "<b>Une fois révélée</b> : placez 1 menace supplémentaire ici pour chaque carte [[REPTILE]] en jeu.",
+  // hunting_season — Vulture (Villain)
+  'hs080': "Tant que Vulture a le trait [[AERIAL]], pour pouvoir attaquer Vulture, l'attaquant ou l'attaque doit avoir le trait [[AERIAL]], ou l'attaque doit être à distance (coût supplémentaire).",
+  // hunting_season — Vulture (Villain)
+  'hs081': "Tant que Vulture a le trait [[AERIAL]], pour pouvoir attaquer Vulture, l'attaquant ou l'attaque doit avoir le trait [[AERIAL]], ou l'attaque doit être à distance (coût supplémentaire).\n[star] <b>Interruption forcée</b> : quand Vulture attaque un personnage à qui il reste moins de la moitié de ses points de vie maximum, il gagne +1 ATQ pour cette attaque.",
+  // hunting_season — Vulture (Villain)
+  'hs082': "Tant que Vulture a le trait [[AERIAL]], pour pouvoir attaquer Vulture, l'attaquant ou l'attaque doit avoir le trait [[AERIAL]], ou l'attaque doit être à distance (coût supplémentaire).\n[star] <b>Interruption forcée</b> : quand Vulture attaque un personnage à qui il reste moins de la moitié de ses points de vie maximum, il gagne +1 ATQ pour cette attaque.",
+  // hunting_season — Aerial Mayhem (MainScheme)
+  'hs083a': "<b>Contenu</b> : Vulture (I) et Vulture (II). <i>(Vulture (II) et Vulture (III) à la place en mode expert.)</i> Sets de rencontre Vulture et Standard. Un set de rencontre modulaire <i>(recommandé : Red Vulture)</i>.\n<b>Mise en place</b> : cherchez l'environnement S.H.I.E.L.D. Wingsuits dans le deck Rencontre et la pile de défausse, et mettez-le en jeu. Passez à l'étape 1B.",
+  // hunting_season — Aerial Mayhem (MainScheme)
+  'hs083b': "<b>Réponse forcée</b> : après qu'un personnage que vous contrôlez sans le trait [[AERIAL]] a contré et retiré des menaces de cette manigance, choisissez soit d'infliger 1 dégât à ce personnage, soit de placer 1 menace sur cette manigance.\n<b>Si cette manigance est complétée, les joueurs perdent la partie.</b>",
+  // hunting_season — S.H.I.E.L.D. Wingsuits (Environment)
+  'hs084': "<b>Action de héros</b> : dépensez une ressource de n'importe quel type → votre héros et chaque allié que vous contrôlez gagnent le trait [[AERIAL]] jusqu'à la fin du round.",
+  // hunting_season — Armadillo (Minion)
+  'hs085': "[star] <b>Réponse forcée</b> : après qu'Armadillo a attaqué et infligé des dégâts à un personnage, ce personnage gagne le trait [[AERIAL]] jusqu'à la fin du round.\n<hr />\n[star] <b>Boost</b> : si cette attaque vous inflige des dégâts, vous gagnez le trait [[AERIAL]] jusqu'à la fin du round.",
+  // hunting_season — White Rabbit (Minion)
+  'hs086': "[star] <b>Réponse forcée</b> : après que White Rabbit vous a attaqué et infligé des dégâts, si vous n'avez pas le trait [[AERIAL]], défaussez une carte au hasard de votre main.\n<hr />\n[star] <b>Boost</b> : si cette attaque vous inflige des dégâts, défaussez une carte de votre main.",
+  // hunting_season — Gibbon (Minion)
+  'hs087': "Garde.\n<b>Interruption forcée</b> : quand Gibbon devrait subir n'importe quelle quantité de dégâts, prévenez 1 de ces dégâts.",
+  // hunting_season — Wing Harness (Attachment)
+  'hs088': "Attachez-la à Vulture.\n[star] <b>Interruption forcée</b> : quand Vulture attaque un personnage qui a le trait [[AERIAL]], il gagne +1 ATQ pour cette attaque.\n<b>Action de héros</b> : inclinez votre héros et défaussez 2 cartes de votre main → défaussez Wing Harness. Vulture perd le trait [[AERIAL]] jusqu'à la fin du tour du joueur actif.",
+  // hunting_season — Metal Talons (Attachment)
+  'hs089': "Attachez-la à Vulture.\nVulture gagne riposte 1.\n[star] <b>Interruption forcée</b> : quand Vulture attaque, l'attaque gagne perçant.\n<b>Réponse de héros</b> : après avoir attaqué Vulture, défaussez une carte de votre main → défaussez Metal Talons.",
+  // hunting_season — Projectile Feathers (Attachment)
+  'hs090': "Attachez-la à Vulture.\n<b>Interruption forcée</b> : quand Vulture vous attaque, défaussez Projectile Feathers et subissez 2 dégâts indirects (3 dégâts indirects à la place si vous avez le trait [[AERIAL]]).\n<b>Action de héros</b> : dépensez des ressources [energy][energy] → défaussez Projectile Feathers. Vulture perd le trait [[AERIAL]] jusqu'à la fin du tour du joueur actif.",
+  // hunting_season — Projectile Feathers (Attachment)
+  'hs091': "Attachez-la à Vulture.\n<b>Interruption forcée</b> : quand Vulture vous attaque, défaussez Projectile Feathers et subissez 2 dégâts indirects (3 dégâts indirects à la place si vous avez le trait [[AERIAL]]).\n<b>Action de héros</b> : dépensez des ressources [energy][energy] → défaussez Projectile Feathers. Vulture perd le trait [[AERIAL]] jusqu'à la fin du tour du joueur actif.",
+  // hunting_season — Forcefully Elevated (Obligation)
+  'hs092': "Vous gagnez le trait [[AERIAL]]. Vous ne pouvez pas passer sous forme d'alter ego.\n<b>Réponse forcée</b> : après avoir attaqué Vulture, choisissez soit de subir 2 dégâts, soit de dépenser une ressource [physical]. Défaussez Forcefully Elevated.",
+  // hunting_season — Forcefully Elevated (Obligation)
+  'hs093': "Vous gagnez le trait [[AERIAL]]. Vous ne pouvez pas passer sous forme d'alter ego.\n<b>Réponse forcée</b> : après avoir attaqué Vulture, choisissez soit de subir 2 dégâts, soit de dépenser une ressource [physical]. Défaussez Forcefully Elevated.",
+  // hunting_season — Aerial Kidnapping (SideScheme)
+  'hs094': "Renfort.\n<b>Interruption forcée</b> : quand la phase du méchant commence, placez 3 menaces sur la manigance principale et défaussez Aerial Kidnapping.\n<b>Une fois déjouée</b> : Vulture perd le trait [[AERIAL]] jusqu'à la fin du tour du joueur actif.",
+  // hunting_season — Aerial Kidnapping (SideScheme)
+  'hs095': "Renfort.\n<b>Interruption forcée</b> : quand la phase du méchant commence, placez 3 menaces sur la manigance principale et défaussez Aerial Kidnapping.\n<b>Une fois déjouée</b> : Vulture perd le trait [[AERIAL]] jusqu'à la fin du tour du joueur actif.",
+  // hunting_season — A Feast for Vultures (SideScheme)
+  'hs096': "<b>Une fois révélée</b> : placez ici 1 menace supplémentaire pour chaque personnage à qui il reste moins de la moitié de ses points de vie maximum.",
+  // hunting_season — Knocked Out of the Sky (Treachery)
+  'hs097': "Renfort.\n<b>Une fois révélée</b> : si vous avez le trait [[AERIAL]], vous perdez le trait [[AERIAL]] jusqu'à la fin du round. Si vous avez perdu le trait [[AERIAL]] de cette façon, subissez 2 dégâts.",
+  // hunting_season — Knocked Out of the Sky (Treachery)
+  'hs098': "Renfort.\n<b>Une fois révélée</b> : si vous avez le trait [[AERIAL]], vous perdez le trait [[AERIAL]] jusqu'à la fin du round. Si vous avez perdu le trait [[AERIAL]] de cette façon, subissez 2 dégâts.",
+  // hunting_season — Knocked Out of the Sky (Treachery)
+  'hs099': "Renfort.\n<b>Une fois révélée</b> : si vous avez le trait [[AERIAL]], vous perdez le trait [[AERIAL]] jusqu'à la fin du round. Si vous avez perdu le trait [[AERIAL]] de cette façon, subissez 2 dégâts.",
+  // hunting_season — Sweeping Swoop (Treachery)
+  'hs100': "<b>Une fois révélée</b> : sonnez votre identité et défaussez 1 carte de votre main. Si vous avez le trait [[AERIAL]], cette carte gagne renfort.\n<hr />\n[star] <b>Boost</b> : si le personnage qui s'active a le trait [[AERIAL]], il reçoit une carte de boost supplémentaire pour cette activation.",
+  // hunting_season — Sweeping Swoop (Treachery)
+  'hs101': "<b>Une fois révélée</b> : sonnez votre identité et défaussez 1 carte de votre main. Si vous avez le trait [[AERIAL]], cette carte gagne renfort.\n<hr />\n[star] <b>Boost</b> : si le personnage qui s'active a le trait [[AERIAL]], il reçoit une carte de boost supplémentaire pour cette activation.",
+  // hunting_season — Ravenous Onslaught (Treachery)
+  'hs102': "<b>Une fois révélée (alter ego)</b> : Vulture manigance. S'il vous reste moins de la moitié de vos points de vie maximum, cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : Vulture vous attaque. S'il vous reste moins de la moitié de vos points de vie maximum, cette carte gagne renfort.",
+  // hunting_season — Ravenous Onslaught (Treachery)
+  'hs103': "<b>Une fois révélée (alter ego)</b> : Vulture manigance. S'il vous reste moins de la moitié de vos points de vie maximum, cette carte gagne renfort.\n<b>Une fois révélée (héros)</b> : Vulture vous attaque. S'il vous reste moins de la moitié de vos points de vie maximum, cette carte gagne renfort.",
+  // hunting_season — Kraven The Hunter (Villain)
+  'hs104': "<b>Interruption forcée</b> : quand un personnage que vous contrôlez attaque Kraven The Hunter, attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. Révélez chaque carte [[TRAP]] qui vous a été attribuée. (Limite d'une fois par round et par joueur.)",
+  // hunting_season — Kraven The Hunter (Villain)
+  'hs105': "<b>Une fois révélé</b> : cherchez la pièce jointe Tooth Necklace dans le deck Rencontre et la pile de défausse, et révélez-la.\n<b>Interruption forcée</b> : quand un personnage que vous contrôlez attaque Kraven The Hunter, attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. Révélez chaque carte [[TRAP]] qui vous a été attribuée. (Limite d'une fois par round et par joueur.)",
+  // hunting_season — Kraven The Hunter (Villain)
+  'hs106': "<b>Une fois révélé</b> : chaque joueur s'attribue une carte [[TRAP]] du deck [[TRAP]].\n<b>Interruption forcée</b> : quand un personnage que vous contrôlez attaque Kraven The Hunter, attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. Révélez chaque carte [[TRAP]] qui vous a été attribuée. (Limite de deux fois par round et par joueur.)",
+  // hunting_season — Acquiring Targets (MainScheme)
+  'hs107a': "<b>Contenu</b> : Kraven The Hunter (I) et Kraven The Hunter (II). <i>(Kraven The Hunter (II) et Kraven The Hunter (III) à la place en mode expert.)</i> Sets de rencontre Kraven The Hunter et Standard. Un set de rencontre modulaire <i>(recommandé : Savage Six)</i>.\n<b>Mise en place</b> : mélangez toutes les cartes [[TRAP]] pour former un deck [[TRAP]] séparé. Passez à l'étape 1B.",
+  // hunting_season — Acquiring Targets (MainScheme)
+  'hs107b': "[star] <b>Interruption forcée</b> : quand vous passez sous forme de héros, placez 2 menaces ici.\n<b>Réponse forcée</b> : après être passé sous forme d'alter ego, retirez 1 menace d'ici.",
+  // hunting_season — The Great Hunt (MainScheme)
+  'hs108a': "<b>Une fois révélée</b> : cherchez la manigance annexe The Calypso Serum dans le deck Rencontre et la pile de défausse, et révélez-la. Mélangez le deck Rencontre. Passez à l'étape 2B.",
+  // hunting_season — The Great Hunt (MainScheme)
+  'hs108b': "<b>Réponse forcée</b> : après qu'une carte [[TRAP]] a été révélée, placez 1 menace ici. (Limite d'une fois par round et par joueur.)\n<b>Si cette manigance est complétée, les joueurs perdent la partie.</b>",
+  // hunting_season — Last Son of Kraven (Minion)
+  'hs109': "<b>Interruption forcée</b> : quand un personnage que vous contrôlez attaque Last Son of Kraven, attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. (Limite d'une fois par round.)\n<hr />\n[star] <b>Boost</b> : une fois cette activation terminée, mélangez cette carte dans le deck Rencontre.",
+  // hunting_season — Chameleon (Minion)
+  'hs110': "Chameleon ne peut pas subir de dégâts.\n<b>Interruption forcée</b> : quand Chameleon devrait attaquer, il manigance à la place.\n<b>Interruption forcée</b> : quand un ennemi devrait être vaincu, défaussez Chameleon à la place.",
+  // hunting_season — Poisoned Dagger (Attachment)
+  'hs111': "Attachez-la à Kraven The Hunter.\n[star] <b>Réponse forcée</b> : après que Kraven The Hunter a attaqué et infligé des dégâts à un personnage, désorientez ce personnage.\n<b>Interruption</b> : quand vous attaquez Kraven The Hunter, défaussez une carte au hasard de votre main → défaussez cette pièce jointe.",
+  // hunting_season — Kraven’s Spear (Attachment)
+  'hs112': "Attachez-la à Kraven The Hunter.\nKraven The Hunter gagne riposte 1.\n<b>Interruption</b> : quand vous attaquez Kraven The Hunter, infligez 3 dégâts à votre identité → défaussez cette pièce jointe.",
+  // hunting_season — Hunting Rifle (Attachment)
+  'hs113': "Attachez-la à Kraven The Hunter.\n<b>Réponse forcée</b> : après que Kraven The Hunter vous a attaqué sans que vous subissiez de dégâts de cette attaque, subissez 1 dégât.\n<b>Interruption</b> : quand vous attaquez Kraven The Hunter, dépensez 2 ressources de n'importe quel type → défaussez cette pièce jointe.",
+  // hunting_season — Tooth Necklace (Attachment)
+  'hs114': "Attachez-la à Kraven The Hunter.\n[star] <b>Réponse forcée</b> : après que Kraven The Hunter a manigancé, cherchez une pièce jointe [[WEAPON]] dans le deck Rencontre et la pile de défausse, et révélez-la.\n<b>Interruption</b> : quand vous attaquez Kraven The Hunter, placez 2[per_hero] menaces sur la manigance principale → défaussez cette pièce jointe.",
+  // hunting_season — The Calypso Serum (SideScheme)
+  'hs115': "<b>Une fois révélée</b> : placez 1[per_hero] menace supplémentaire ici.\nChaque ennemi gagne +1 MNG et +1 ATQ.",
+  // hunting_season — Toxic Gas (SideScheme)
+  'hs116': "<b>Une fois révélée</b> : placez 1[per_hero] menace supplémentaire ici.\nChaque personnage allié subit -1 ATQ.",
+  // hunting_season — Predatory Ambush (Treachery)
+  'hs117': "<b>Une fois révélée</b> : Kraven The Hunter vous attaque. Si vous êtes sous forme d'alter ego, n'attribuez pas de carte de boost au méchant pour cette activation. Si une pièce jointe [[TRAP]] vous est attachée, attribuez-vous une carte [[TRAP]] du deck [[TRAP]].\n<hr />\n[star] <b>Boost</b> : attribuez-vous une carte [[TRAP]] du deck [[TRAP]].",
+  // hunting_season — Predatory Ambush (Treachery)
+  'hs118': "<b>Une fois révélée</b> : Kraven The Hunter vous attaque. Si vous êtes sous forme d'alter ego, n'attribuez pas de carte de boost au méchant pour cette activation. Si une pièce jointe [[TRAP]] vous est attachée, attribuez-vous une carte [[TRAP]] du deck [[TRAP]].\n<hr />\n[star] <b>Boost</b> : attribuez-vous une carte [[TRAP]] du deck [[TRAP]].",
+  // hunting_season — The Hunt Begins (Treachery)
+  'hs119': "<b>Une fois révélée</b> : défaussez X cartes du deck Rencontre, X étant égal au triple du niveau du méchant. Révélez la première pièce jointe [[ITEM]] ou [[WEAPON]] défaussée de cette façon. Si aucune pièce jointe n'a été révélée de cette façon, attribuez-vous une carte [[TRAP]] du deck [[TRAP]].",
+  // hunting_season — The Hunt Begins (Treachery)
+  'hs120': "<b>Une fois révélée</b> : défaussez X cartes du deck Rencontre, X étant égal au triple du niveau du méchant. Révélez la première pièce jointe [[ITEM]] ou [[WEAPON]] défaussée de cette façon. Si aucune pièce jointe n'a été révélée de cette façon, attribuez-vous une carte [[TRAP]] du deck [[TRAP]].",
+  // hunting_season — Big Game Hunter (Treachery)
+  'hs121': "<b>Une fois révélée</b> : Kraven The Hunter attaque le héros qui a le plus de points de vie imprimés. Les autres personnages ne peuvent pas défendre contre cette attaque. Si aucune attaque n'a eu lieu de cette façon, attribuez-vous une carte [[TRAP]] du deck [[TRAP]].",
+  // hunting_season — Big Game Hunter (Treachery)
+  'hs122': "<b>Une fois révélée</b> : Kraven The Hunter attaque le héros qui a le plus de points de vie imprimés. Les autres personnages ne peuvent pas défendre contre cette attaque. Si aucune attaque n'a eu lieu de cette façon, attribuez-vous une carte [[TRAP]] du deck [[TRAP]].",
+  // hunting_season — Stalking Prey (Treachery)
+  'hs123': "<b>Une fois révélée</b> : attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. Placez 1 menace sur la manigance principale pour chaque carte [[TRAP]] qui vous a été attribuée.\n<hr />\n[star] <b>Boost</b> : si au moins 1 carte [[TRAP]] vous a été attribuée, placez 1 menace sur la manigance principale.",
+  // hunting_season — Stalking Prey (Treachery)
+  'hs124': "<b>Une fois révélée</b> : attribuez-vous une carte [[TRAP]] du deck [[TRAP]]. Placez 1 menace sur la manigance principale pour chaque carte [[TRAP]] qui vous a été attribuée.\n<hr />\n[star] <b>Boost</b> : si au moins 1 carte [[TRAP]] vous a été attribuée, placez 1 menace sur la manigance principale.",
+  // hunting_season — Ferocious Lion (Minion)
+  'hs125': "[star] Quand il attaque, Ferocious Lion gagne +1 ATQ si l'attaque n'est pas défendue.\n<b>Réponse forcée</b> : après qu'un personnage contrôlé par le joueur engagé a attaqué Kraven The Hunter, Ferocious Lion attaque ce joueur.",
+  // hunting_season — Ferocious Lion (Minion)
+  'hs126': "[star] Quand il attaque, Ferocious Lion gagne +1 ATQ si l'attaque n'est pas défendue.\n<b>Réponse forcée</b> : après qu'un personnage contrôlé par le joueur engagé a attaqué Kraven The Hunter, Ferocious Lion attaque ce joueur.",
+  // hunting_season — Fierce Cheetah (Minion)
+  'hs127': "Les attaques de Fierce Cheetah gagnent perçant.\n<b>Réponse forcée</b> : après qu'un personnage contrôlé par le joueur engagé a attaqué Kraven The Hunter, Fierce Cheetah attaque ce joueur.",
+  // hunting_season — Fierce Cheetah (Minion)
+  'hs128': "Les attaques de Fierce Cheetah gagnent perçant.\n<b>Réponse forcée</b> : après qu'un personnage contrôlé par le joueur engagé a attaqué Kraven The Hunter, Fierce Cheetah attaque ce joueur.",
+  // hunting_season — Bear Trap (Attachment)
+  'hs129': "<b>Une fois révélée</b> : choisissez soit d'incliner votre identité, soit d'attacher cette carte à votre identité. Si vous avez incliné votre identité, défaussez cette carte.\n<b>Interruption forcée</b> : quand la phase des joueurs se termine, subissez 1 dégât.\n<b>Action</b> : dépensez une ressource [physical] et subissez 2 dégâts → défaussez cette carte.",
+  // hunting_season — Bear Trap (Attachment)
+  'hs130': "<b>Une fois révélée</b> : choisissez soit d'incliner votre identité, soit d'attacher cette carte à votre identité. Si vous avez incliné votre identité, défaussez cette carte.\n<b>Interruption forcée</b> : quand la phase des joueurs se termine, subissez 1 dégât.\n<b>Action</b> : dépensez une ressource [physical] et subissez 2 dégâts → défaussez cette carte.",
+  // hunting_season — Capture Net (Attachment)
+  'hs131': "<b>Une fois révélée</b> : choisissez soit d'incliner votre identité, soit d'attacher cette carte à votre identité. Si vous avez incliné votre identité, défaussez cette carte.\n<b>Interruption forcée</b> : quand la phase des joueurs se termine, dépensez une ressource [physical] ou inclinez votre identité.\n<b>Interruption</b> : quand vous devriez attaquer, dépensez une ressource [physical] → défaussez plutôt Capture Net.",
+  // hunting_season — Capture Net (Attachment)
+  'hs132': "<b>Une fois révélée</b> : choisissez soit d'incliner votre identité, soit d'attacher cette carte à votre identité. Si vous avez incliné votre identité, défaussez cette carte.\n<b>Interruption forcée</b> : quand la phase des joueurs se termine, dépensez une ressource [physical] ou inclinez votre identité.\n<b>Interruption</b> : quand vous devriez attaquer, dépensez une ressource [physical] → défaussez plutôt Capture Net.",
+  // hunting_season — Quicksand (Attachment)
+  'hs133': "<b>Une fois révélée</b> : choisissez soit d'incliner votre identité, soit d'attacher cette carte à votre identité. Si vous avez incliné votre identité, défaussez cette carte.\n<b>Interruption</b> : quand vous jouez une carte événement, annulez ses effets et défaussez cet événement → défaussez Quicksand.",
+  // hunting_season — Quicksand (Attachment)
+  'hs134': "<b>Une fois révélée</b> : choisissez soit d'incliner votre identité, soit d'attacher cette carte à votre identité. Si vous avez incliné votre identité, défaussez cette carte.\n<b>Interruption</b> : quand vous jouez une carte événement, annulez ses effets et défaussez cet événement → défaussez Quicksand.",
+  // hunting_season — Tranquilizer Darts (Treachery)
+  'hs135': "<b>Une fois révélée</b> : choisissez soit de dépenser une ressource [mental], soit de désorienter votre identité. Si vous ne pouvez faire ni l'un ni l'autre, subissez 1 dégât.",
+  // hunting_season — Tranquilizer Darts (Treachery)
+  'hs136': "<b>Une fois révélée</b> : choisissez soit de dépenser une ressource [mental], soit de désorienter votre identité. Si vous ne pouvez faire ni l'un ni l'autre, subissez 1 dégât.",
+  // hunting_season — Tranquilizer Darts (Treachery)
+  'hs137': "<b>Une fois révélée</b> : choisissez soit de dépenser une ressource [mental], soit de désorienter votre identité. Si vous ne pouvez faire ni l'un ni l'autre, subissez 1 dégât.",
+  // hunting_season — Swinging Boulder (Treachery)
+  'hs138': "<b>Une fois révélée</b> : choisissez soit d'incliner votre identité, soit de défausser un allié que vous contrôlez, soit de défausser une amélioration que vous contrôlez, soit de subir 3 dégâts.",
+  // hunting_season — Swinging Boulder (Treachery)
+  'hs139': "<b>Une fois révélée</b> : choisissez soit d'incliner votre identité, soit de défausser un allié que vous contrôlez, soit de défausser une amélioration que vous contrôlez, soit de subir 3 dégâts.",
+  // hunting_season — Swinging Boulder (Treachery)
+  'hs140': "<b>Une fois révélée</b> : choisissez soit d'incliner votre identité, soit de défausser un allié que vous contrôlez, soit de défausser une amélioration que vous contrôlez, soit de subir 3 dégâts.",
+  // hunting_season — Feral Instincts (Attachment)
+  'hs141': "Attachez-la au méchant.\n[star] <b>Interruption forcée</b> : quand le méchant devrait manigancer contre vous, il vous attaque à la place. Cette attaque gagne déferlement. N'attribuez pas de carte de boost au méchant pour cette activation. Ensuite, défaussez Feral Instincts.",
+  // hunting_season — Primal Strength (Attachment)
+  'hs142': "Attachez-la au méchant.\nX est égal au niveau du méchant.\n<b>Interruption</b> : quand le méchant vous attaque, choisissez soit de dépenser des ressources [physical][physical], soit d'incliner votre identité → défaussez Primal Strength.",
+  // hunting_season — Unleashed Beast (Treachery)
+  'hs143': "<b>Une fois révélée</b> : le méchant vous attaque. Si vous êtes sous forme d'alter ego, n'attribuez pas de carte de boost au méchant pour cette activation.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) si cette activation est une attaque.",
+  // hunting_season — Cornered Animal (Treachery)
+  'hs144': "<b>Une fois révélée</b> : vous subissez 1 dégât. Si le méchant a subi 6[per_hero] dégâts ou plus, choisissez soit de dépenser une ressource [energy], soit de subir 2 dégâts indirects. Si le méchant a subi 12[per_hero] dégâts ou plus, choisissez soit de défausser une carte au hasard de votre main, soit de placer 2 menaces sur la manigance principale.",
+  // hunting_season — Cornered Animal (Treachery)
+  'hs145': "<b>Une fois révélée</b> : vous subissez 1 dégât. Si le méchant a subi 6[per_hero] dégâts ou plus, choisissez soit de dépenser une ressource [energy], soit de subir 2 dégâts indirects. Si le méchant a subi 12[per_hero] dégâts ou plus, choisissez soit de défausser une carte au hasard de votre main, soit de placer 2 menaces sur la manigance principale.",
+  // hunting_season — Wake Your Inner Lizard (SideScheme)
+  'hs146': "<b>Une fois révélée</b> : placez 1[per_hero] menace supplémentaire ici.\n<b>Interruption forcée</b> : quand la phase du méchant commence, cherchez un exemplaire de Lizard Thrall dans le deck Rencontre et la pile de défausse, et mettez-le en jeu engagé avec le premier joueur.",
+  // hunting_season — Lizard Thrall (Minion)
+  'hs147': "[star] <b>Interruption forcée</b> : quand Lizard Thrall devrait manigancer, il attaque à la place, sans déclencher son effet \"Interruption forcée\".\n[star] <b>Interruption forcée</b> : quand Lizard Thrall devrait attaquer, il manigance à la place, sans déclencher son effet \"Interruption forcée\".",
+  // hunting_season — Lizard Thrall (Minion)
+  'hs148': "[star] <b>Interruption forcée</b> : quand Lizard Thrall devrait manigancer, il attaque à la place, sans déclencher son effet \"Interruption forcée\".\n[star] <b>Interruption forcée</b> : quand Lizard Thrall devrait attaquer, il manigance à la place, sans déclencher son effet \"Interruption forcée\".",
+  // hunting_season — Lizard Thrall (Minion)
+  'hs149': "[star] <b>Interruption forcée</b> : quand Lizard Thrall devrait manigancer, il attaque à la place, sans déclencher son effet \"Interruption forcée\".\n[star] <b>Interruption forcée</b> : quand Lizard Thrall devrait attaquer, il manigance à la place, sans déclencher son effet \"Interruption forcée\".",
+  // hunting_season — Lizard Thrall (Minion)
+  'hs150': "[star] <b>Interruption forcée</b> : quand Lizard Thrall devrait manigancer, il attaque à la place, sans déclencher son effet \"Interruption forcée\".\n[star] <b>Interruption forcée</b> : quand Lizard Thrall devrait attaquer, il manigance à la place, sans déclencher son effet \"Interruption forcée\".",
+  // hunting_season — Vulture (James Natale) (Minion)
+  'hs151': "Coup Rapide. Vilenie.\n[star] <b>Réponse forcée</b> : après que Vulture (James Natale) vous a attaqué et infligé des dégâts, défaussez autant de cartes du dessus de votre deck que de dégâts subis.",
+  // hunting_season — The Red Vulture (SideScheme)
+  'hs152': "<b>Une fois révélée</b> : cherchez Vulture (James Natale) dans le deck Rencontre et la pile de défausse, et mettez-le en jeu engagé avec l'identité à qui il reste le moins de points de vie.",
+  // hunting_season — Acid Expulsion (Treachery)
+  'hs153': "<b>Une fois révélée</b> : défaussez les 5 cartes du dessus du deck Rencontre. Pour chaque icône de boost sur les cartes défaussées de cette façon, défaussez la carte du dessus de votre deck.\n<hr />\n[star] <b>Boost</b> : après cette attaque, défaussez la carte du dessus de votre deck pour chaque dégât subi lors de cette attaque.",
+  // hunting_season — Acid Expulsion (Treachery)
+  'hs154': "<b>Une fois révélée</b> : défaussez les 5 cartes du dessus du deck Rencontre. Pour chaque icône de boost sur les cartes défaussées de cette façon, défaussez la carte du dessus de votre deck.\n<hr />\n[star] <b>Boost</b> : après cette attaque, défaussez la carte du dessus de votre deck pour chaque dégât subi lors de cette attaque.",
+  // hunting_season — Voracious Ambush (Treachery)
+  'hs155': "<b>Une fois révélée (héros)</b> : Vulture (James Natale) attaque votre héros. Si Vulture (James Natale) ne vous a pas attaqué de cette façon, défaussez les 6 cartes du dessus du deck Rencontre et, si Vulture (James Natale) est dans la pile de défausse Rencontre, mettez-le en jeu engagé avec vous.",
+  // hunting_season — Voracious Ambush (Treachery)
+  'hs156': "<b>Une fois révélée (héros)</b> : Vulture (James Natale) attaque votre héros. Si Vulture (James Natale) ne vous a pas attaqué de cette façon, défaussez les 6 cartes du dessus du deck Rencontre et, si Vulture (James Natale) est dans la pile de défausse Rencontre, mettez-le en jeu engagé avec vous.",
+  // hunting_season — The Savage Six (SideScheme)
+  'hs157': "<b>Une fois révélée</b> : chaque sbire [[SAVAGE SIX]] attaque le héros avec lequel il est engagé. Si aucune attaque n'a eu lieu de cette façon, cherchez un sbire [[SAVAGE SIX]] dans le deck Rencontre et la pile de défausse, et mettez-le en jeu engagé avec le premier joueur.",
+  // hunting_season — Vulture (Minion)
+  'hs158': "[star] <b>Réponse forcée</b> : après que Vulture vous a attaqué, attribuez-vous une carte Rencontre. Ensuite, mélangez Vulture dans le deck Rencontre.\n<hr />\n[star] <b>Boost</b> : une fois cette activation terminée, mélangez cette carte dans le deck Rencontre.",
+  // hunting_season — Rhino (Minion)
+  'hs159': "[star] Les attaques de Rhino gagnent déferlement.\n<b>Interruption forcée</b> : quand la phase du méchant se termine, donnez à Rhino une carte d'état Tenace.\n<hr />\n[star] <b>Boost</b> : cette attaque gagne déferlement.",
+  // hunting_season — Scorpion (Minion)
+  'hs160': "[star] Scorpion gagne +1 MNG tant que l'identité avec laquelle il est engagé est sonnée.\n[star] <b>Réponse forcée</b> : après que Scorpion a attaqué et infligé des dégâts à un personnage, ce personnage est sonné.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) si vous êtes sonné.",
+  // hunting_season — Tarantula (Minion)
+  'hs161': "[star] Tarantula gagne +1 ATQ tant que l'identité avec laquelle il est engagé est désorientée.\n[star] <b>Réponse forcée</b> : après que Tarantula a attaqué et infligé des dégâts à un personnage, ce personnage est désorienté.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) si vous êtes désorienté.",
+  // hunting_season — King Cobra (Minion)
+  'hs162': "Tant que King Cobra est engagé avec vous, votre héros ne peut pas attaquer d'autres ennemis.\n<hr />\n[star] <b>Boost</b> : si cette attaque vous inflige des dégâts, inclinez votre identité.",
+  // hunting_season — Stegron (Minion)
+  'hs163': "[star] Stegron gagne +1 MNG pour chaque ennemi [[SAVAGE SIX]] en jeu (+4 MNG au maximum).\n<b>Réponse forcée</b> : après que Stegron est entré en jeu, il manigance.\n<hr />\n[star] <b>Boost</b> : cette carte gagne +1 icône de boost ([boost]) si au moins un sbire [[SAVAGE SIX]] est en jeu.",
+  // hunting_season — Rocket Raccoon (Ally)
+  'hs164': "Coût d'expérience 4.\n[star] L'attaque de base de Rocket Raccoon gagne à distance, perçant et déferlement.",
+  // hunting_season — Old Man Logan (Ally)
+  'hs165': "Coût d'expérience 4.\n<b>Interruption</b> : quand Old Man Logan défend contre une attaque, infligez à l'attaquant autant de dégâts que l'ATQ d'Old Man Logan.",
+  // hunting_season — Black Cat (Ally)
+  'hs166': "Coût d'expérience 4.\n[star] <b>Réponse forcée</b> : après que Black Cat a contré, défaussez la carte du dessus de votre deck. Si cette carte a une ressource [mental] imprimée, ajoutez-la à votre main.",
+  // hunting_season — Ka-Zar (Ally)
+  'hs167': "Coût d'expérience 4.\n<b>Réponse</b> : après que Ka-Zar est entré en jeu, infligez au méchant autant de dégâts que son niveau.",
+  // hunting_season — Gibbon (Ally)
+  'hs168': "Coût d'expérience 1.\n<b>Interruption</b> : quand Gibbon devrait subir n'importe quelle quantité de dégâts, prévenez 1 de ces dégâts. (Limite d'une fois par phase.)",
+  // hunting_season — Evade (Event)
+  'hs169': "Coût d'expérience 2.\n<b>Interruption</b> : quand vous devriez subir n'importe quelle quantité de dégâts d'une attaque, prévenez 3 de ces dégâts. Si vous n'avez subi aucun dégât de cette attaque, piochez 1 carte.",
+  // hunting_season — Evade (Event)
+  'hs170': "Coût d'expérience 2.\n<b>Interruption</b> : quand vous devriez subir n'importe quelle quantité de dégâts d'une attaque, prévenez 3 de ces dégâts. Si vous n'avez subi aucun dégât de cette attaque, piochez 1 carte.",
+  // hunting_season — Evade (Event)
+  'hs171': "Coût d'expérience 2.\n<b>Interruption</b> : quand vous devriez subir n'importe quelle quantité de dégâts d'une attaque, prévenez 3 de ces dégâts. Si vous n'avez subi aucun dégât de cette attaque, piochez 1 carte.",
+  // hunting_season — Taunt (Event)
+  'hs172': "Coût d'expérience 1.\n<b>Action de héros</b> : attribuez au méchant jusqu'à 3 cartes de boost face cachée. Piochez 1 carte pour chaque carte de boost face cachée attribuée au méchant de cette façon.",
+  // hunting_season — Taunt (Event)
+  'hs173': "Coût d'expérience 1.\n<b>Action de héros</b> : attribuez au méchant jusqu'à 3 cartes de boost face cachée. Piochez 1 carte pour chaque carte de boost face cachée attribuée au méchant de cette façon.",
+  // hunting_season — Taunt (Event)
+  'hs174': "Coût d'expérience 1.\n<b>Action de héros</b> : attribuez au méchant jusqu'à 3 cartes de boost face cachée. Piochez 1 carte pour chaque carte de boost face cachée attribuée au méchant de cette façon.",
+  // hunting_season — Steadfast (Event)
+  'hs175': "Coût d'expérience 3.\n<b>Interruption de héros</b> : quand vous révélez une carte Rencontre, dépensez une ressource [physical] → annulez les effets \"Une fois révélée\" de cette carte Rencontre.",
+  // hunting_season — Steadfast (Event)
+  'hs176': "Coût d'expérience 3.\n<b>Interruption de héros</b> : quand vous révélez une carte Rencontre, dépensez une ressource [physical] → annulez les effets \"Une fois révélée\" de cette carte Rencontre.",
+  // hunting_season — Steadfast (Event)
+  'hs177': "Coût d'expérience 3.\n<b>Interruption de héros</b> : quand vous révélez une carte Rencontre, dépensez une ressource [physical] → annulez les effets \"Une fois révélée\" de cette carte Rencontre.",
+  // hunting_season — Finish Them Off (Event)
+  'hs178': "Coût d'expérience 2.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si cet ennemi a été vaincu de cette façon, piochez 2 cartes.",
+  // hunting_season — Finish Them Off (Event)
+  'hs179': "Coût d'expérience 2.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si cet ennemi a été vaincu de cette façon, piochez 2 cartes.",
+  // hunting_season — Finish Them Off (Event)
+  'hs180': "Coût d'expérience 2.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un ennemi. Si cet ennemi a été vaincu de cette façon, piochez 2 cartes.",
+  // hunting_season — Fresh Tracks (Event)
+  'hs181': "Coût d'expérience 2.\n<b>Interruption</b> : quand vous contrez, augmentez de 2 la quantité de menaces retirée par ce contre. Si ce contre retire la dernière menace d'une manigance, infligez 1 dégât à un ennemi et piochez 1 carte.",
+  // hunting_season — Fresh Tracks (Event)
+  'hs182': "Coût d'expérience 2.\n<b>Interruption</b> : quand vous contrez, augmentez de 2 la quantité de menaces retirée par ce contre. Si ce contre retire la dernière menace d'une manigance, infligez 1 dégât à un ennemi et piochez 1 carte.",
+  // hunting_season — Fresh Tracks (Event)
+  'hs183': "Coût d'expérience 2.\n<b>Interruption</b> : quand vous contrez, augmentez de 2 la quantité de menaces retirée par ce contre. Si ce contre retire la dernière menace d'une manigance, infligez 1 dégât à un ennemi et piochez 1 carte.",
+  // hunting_season — Savage Land (Support)
+  'hs184': "Coût d'expérience 4.\n<b>Action de héros</b> : inclinez Savage Land et infligez 1 dégât à un héros ou à un allié → ce personnage gagne +1 CTR et +1 ATQ jusqu'à la fin du round.",
+  // hunting_season — Hunting Rifle (Upgrade)
+  'hs185': "Coût d'expérience 2.\nRestreint. Utilisations (3 jetons Munition).\n<b>Action de héros</b> <i>(attaque)</i> : inclinez Hunting Rifle et retirez-en 1 jeton Munition → infligez 2 dégâts à un ennemi. Cette attaque gagne à distance.",
+  // hunting_season — Hunting Rifle (Upgrade)
+  'hs186': "Coût d'expérience 2.\nRestreint. Utilisations (3 jetons Munition).\n<b>Action de héros</b> <i>(attaque)</i> : inclinez Hunting Rifle et retirez-en 1 jeton Munition → infligez 2 dégâts à un ennemi. Cette attaque gagne à distance.",
+  // hunting_season — Hunting Rifle (Upgrade)
+  'hs187': "Coût d'expérience 2.\nRestreint. Utilisations (3 jetons Munition).\n<b>Action de héros</b> <i>(attaque)</i> : inclinez Hunting Rifle et retirez-en 1 jeton Munition → infligez 2 dégâts à un ennemi. Cette attaque gagne à distance.",
+  // hunting_season — Hatchet (Upgrade)
+  'hs188': "Coût d'expérience 2.\nRestreint.\n<b>Interruption</b> : quand vous effectuez une attaque de base, inclinez Hatchet → vous gagnez +1 ATQ pour cette attaque.",
+  // hunting_season — Hatchet (Upgrade)
+  'hs189': "Coût d'expérience 2.\nRestreint.\n<b>Interruption</b> : quand vous effectuez une attaque de base, inclinez Hatchet → vous gagnez +1 ATQ pour cette attaque.",
+  // hunting_season — Hatchet (Upgrade)
+  'hs190': "Coût d'expérience 2.\nRestreint.\n<b>Interruption</b> : quand vous effectuez une attaque de base, inclinez Hatchet → vous gagnez +1 ATQ pour cette attaque.",
+  // hunting_season — Hunterbot (Upgrade)
+  'hs191': "Coût d'expérience 3.\n1 max par joueur.\nVotre héros gagne +1 ATQ.\n<b>Interruption forcée</b> : quand vous devriez subir n'importe quelle quantité de dégâts, placez-les ici à la place. Ensuite, s'il y a 3 dégâts ou plus ici, défaussez Hunterbot.",
+  // hunting_season — Hunterbot (Upgrade)
+  'hs192': "Coût d'expérience 3.\n1 max par joueur.\nVotre héros gagne +1 ATQ.\n<b>Interruption forcée</b> : quand vous devriez subir n'importe quelle quantité de dégâts, placez-les ici à la place. Ensuite, s'il y a 3 dégâts ou plus ici, défaussez Hunterbot.",
+  // hunting_season — Hunterbot (Upgrade)
+  'hs193': "Coût d'expérience 3.\n1 max par joueur.\nVotre héros gagne +1 ATQ.\n<b>Interruption forcée</b> : quand vous devriez subir n'importe quelle quantité de dégâts, placez-les ici à la place. Ensuite, s'il y a 3 dégâts ou plus ici, défaussez Hunterbot.",
+  // hunting_season — Trap (Upgrade)
+  'hs194': "Coût d'expérience 1.\n<b>Interruption</b> : quand un ennemi vous attaque, défaussez Trap → infligez 2 dégâts à cet ennemi. Si cet ennemi a été vaincu de cette façon, renvoyez Trap dans votre main.",
+  // hunting_season — Trap (Upgrade)
+  'hs195': "Coût d'expérience 1.\n<b>Interruption</b> : quand un ennemi vous attaque, défaussez Trap → infligez 2 dégâts à cet ennemi. Si cet ennemi a été vaincu de cette façon, renvoyez Trap dans votre main.",
+  // hunting_season — Trap (Upgrade)
+  'hs196': "Coût d'expérience 1.\n<b>Interruption</b> : quand un ennemi vous attaque, défaussez Trap → infligez 2 dégâts à cet ennemi. Si cet ennemi a été vaincu de cette façon, renvoyez Trap dans votre main.",
+  // hunting_season — In Hiding (Upgrade)
+  'hs197': "Coût d'expérience 2.\n<b>Interruption de héros</b> : quand un ennemi devrait vous attaquer, défaussez In Hiding → cet ennemi manigance à la place, sans recevoir de carte de boost pour cette activation.",
+  // hunting_season — In Hiding (Upgrade)
+  'hs198': "Coût d'expérience 2.\n<b>Interruption de héros</b> : quand un ennemi devrait vous attaquer, défaussez In Hiding → cet ennemi manigance à la place, sans recevoir de carte de boost pour cette activation.",
+  // hunting_season — In Hiding (Upgrade)
+  'hs199': "Coût d'expérience 2.\n<b>Interruption de héros</b> : quand un ennemi devrait vous attaquer, défaussez In Hiding → cet ennemi manigance à la place, sans recevoir de carte de boost pour cette activation.",
+  // hunting_season — Vermin (Ally)
+  'hs200': "Vermin entre en jeu avec 3 compteurs de rat.\n<b>Interruption</b> : quand Vermin attaque, retirez-lui un compteur de rat → Vermin ne subit pas de dégâts consécutifs pour cette attaque.",
+  // hunting_season — Scorpion (Ally)
+  'hs201': "<b>Réponse</b> : après que Scorpion a attaqué et infligé des dégâts à un ennemi, infligez 1 dégât à Scorpion → sonnez cet ennemi et infligez-lui 1 dégât.",
+  // hunting_season — Lizard (Ally)
+  'hs202': "Tant que vous êtes sous forme d'alter ego, Lizard gagne +3 CTR.\nTant que vous êtes sous forme de héros, Lizard gagne +3 ATQ.",
+  // hunting_season — Vulture (Ally)
+  'hs203': "<b>Action</b> : inclinez Vulture et infligez-lui 1 dégât → redressez un personnage allié, qui gagne le trait [[AERIAL]] jusqu'à la fin de la phase.",
+  // hunting_season — Vermin (Minion)
+  'hs204': "Vermin entre en jeu avec 3 compteurs de rat.\n<b>Interruption forcée</b> : quand Vermin devrait subir n'importe quelle quantité de dégâts, retirez-lui plutôt un compteur de rat.",
+  // hunting_season — Lizard (Minion)
+  'hs205': "Coup Rapide. Riposte 1.\n<b>Interruption forcée</b> : quand Lizard attaque, l'attaque gagne perçant.",
+  // hunting_season — Son of Kraven (Minion)
+  'hs206': "Coup Rapide.",
+  // hunting_season — Son of Kraven (Minion)
+  'hs210': "Coup Rapide.",
+  // hunting_season — Son of Kraven (Minion)
+  'hs214': "Coup Rapide.",
+  // hunting_season — Son of Kraven (Minion)
+  'hs218': "Coup Rapide.",
+  // hunting_season — Captured! (Obligation)
+  'hs207': "Vous ne pouvez pas changer de forme.\n<b>Action</b> : inclinez votre identité → défaussez Captured!",
+  // hunting_season — Captured! (Obligation)
+  'hs211': "Vous ne pouvez pas changer de forme.\n<b>Action</b> : inclinez votre identité → défaussez Captured!",
+  // hunting_season — Captured! (Obligation)
+  'hs215': "Vous ne pouvez pas changer de forme.\n<b>Action</b> : inclinez votre identité → défaussez Captured!",
+  // hunting_season — Captured! (Obligation)
+  'hs219': "Vous ne pouvez pas changer de forme.\n<b>Action</b> : inclinez votre identité → défaussez Captured!",
+  // hunting_season — Hunted! (Obligation)
+  'hs208': "Chaque sbire engagé avec vous gagne coup rapide.\n<b>Action d'alter ego</b> : défaussez une carte de votre main → défaussez Hunted!",
+  // hunting_season — Hunted! (Obligation)
+  'hs212': "Chaque sbire engagé avec vous gagne coup rapide.\n<b>Action d'alter ego</b> : défaussez une carte de votre main → défaussez Hunted!",
+  // hunting_season — Hunted! (Obligation)
+  'hs216': "Chaque sbire engagé avec vous gagne coup rapide.\n<b>Action d'alter ego</b> : défaussez une carte de votre main → défaussez Hunted!",
+  // hunting_season — Hunted! (Obligation)
+  'hs220': "Chaque sbire engagé avec vous gagne coup rapide.\n<b>Action d'alter ego</b> : défaussez une carte de votre main → défaussez Hunted!",
+  // hunting_season — Poisoned! (Treachery)
+  'hs209': "<b>Une fois révélée</b> : choisissez soit de dépenser une ressource [energy], soit de subir 2 dégâts.",
+  // hunting_season — Poisoned! (Treachery)
+  'hs213': "<b>Une fois révélée</b> : choisissez soit de dépenser une ressource [energy], soit de subir 2 dégâts.",
+  // hunting_season — Poisoned! (Treachery)
+  'hs217': "<b>Une fois révélée</b> : choisissez soit de dépenser une ressource [energy], soit de subir 2 dégâts.",
+  // hunting_season — Poisoned! (Treachery)
+  'hs221': "<b>Une fois révélée</b> : choisissez soit de dépenser une ressource [energy], soit de subir 2 dégâts.",
+  // hunting_season — Rabid Rodents (Environment)
+  'hs222': "<i>Mode Hunter uniquement.</i>\nVermin et Vermin Clone gagnent +1 ATQ.\n<b>Réponse forcée</b> : après qu'un sbire [[RAT]] est entré en jeu, placez 1 menace sur ce sbire.",
+  // hunting_season — Sting of the Scorpion (Environment)
+  'hs223': "<i>Mode Hunter uniquement.</i>\n<b>Réponse forcée</b> : après la fin de la phase du méchant, le premier joueur doit choisir soit de placer 1 compteur de blessure sur J. Jonah Jameson, soit de défausser des cartes du dessus du deck Rencontre jusqu'à défausser une pièce jointe, et de la révéler.",
+  // hunting_season — Cold Blooded (Environment)
+  'hs224': "<i>Mode Hunter uniquement.</i>\nLa valeur de menace cible de la manigance principale est réduite de 1[per_hero].\n<b>Réponse forcée</b> : après que Curtis Connors s'est activé contre votre héros, attribuez-vous 1 carte Rencontre face cachée.",
+  // hunting_season — Aerial Excellence (Environment)
+  'hs225': "<i>Mode Hunter uniquement.</i>\n<b>Réponse forcée</b> : après l'étape 1 de la phase du méchant, placez 1 menace sur la manigance principale pour chaque identité sans le trait [[AERIAL]]. Chaque identité qui a le trait [[AERIAL]] subit 2 dégâts indirects.",
+  // hunting_season — Master Trapper (Environment)
+  'hs226': "<i>Mode Hunter uniquement.</i>\n<b>Réponse forcée</b> : après l'étape 1 de la phase du méchant, attribuez à chaque joueur 1 carte [[TRAP]] face cachée.\n<b>Interruption forcée</b> : quand la pile de défausse [[TRAP]] est remélangée dans le deck [[TRAP]], attribuez au premier joueur 1 carte Rencontre face cachée.",
 }

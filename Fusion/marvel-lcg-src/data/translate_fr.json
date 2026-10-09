@@ -83,7 +83,7 @@
  "{face} was discarded to {into_area} ({effect})": "{face} défaussée vers {into_area} ({effect})",
  "{face} was revealed": "{face} révélée",
  "{face} would be removed from game": "{face} s’apprête à être retirée du jeu",
- "{face} would be revealed ({by_effect})": "{face} s’apprête à être révélée ({by_effect})",
+ "A facedown card would be revealed ({by_effect})": "Une carte face cachée s’apprête à être révélée ({by_effect})",
  "{face} would count boost icons ({boost})": "{face} s’apprête à compter ses icônes de boost ({boost})",
  "{face} would place {counters} '{name}' counter ({by_effect})": "{face} s’apprête à placer {counters} jeton(s) « {name} » ({by_effect})",
  "{face} would ready": "{face} s’apprête à se redresser",

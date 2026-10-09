@@ -1351,8 +1351,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Une mise à jour du jeu est arrivée.': 'A game update has arrived.',
   'Recharger': 'Reload',
   'Langue de l’interface et de la narration': 'Language of the interface and narration',
-  'Langue de l’interface et de la narration. Une carte sans scan dans cette langue reste en anglais : sa traduction s’affiche dans l’infobulle.':
-    'Language of the interface and narration. A card with no scan in this language stays in English: its translation shows in the tooltip.',
+  'Voir les réglages du joueur': 'See the player’s settings',
+  'Réglages du joueur, en lecture seule.': 'Player’s settings, read only.',
+  'Langue de l’interface et de la narration. Une carte sans scan dans cette langue reste en anglais : agrandie, sa traduction est posée sur son texte.':
+    'Interface and narration language. A card with no scan in this language stays in English: when enlarged, its translation is laid over its text.',
   // --- Manquantes, ajoutees le 14/09/2026 -----------------------------
   // ⚠ SOIXANTE ET UNE CLES N'AVAIENT AUCUNE TRADUCTION, et `t()` rend alors
   // la cle telle quelle : le plateau anglais affichait « Partie » dans sa
@@ -1366,6 +1368,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Aucune preuve ne vous sera rendue : le Conseil n’a jamais fini vidé de ses secrets.': 'No evidence will be returned to you: the Council was never emptied of its secrets.',
   'Avancé': 'Advanced',
   'Ce que vous gagnez': 'What you gain',
+  'Scénario perdu : la campagne continue avec les gains de la défaite.': 'Scenario lost: the campaign goes on with the loss rewards.',
   'Ce scénario est à re-préparer': 'This scenario must be set up again',
   'Ce scénario ne rapporte rien à reporter dans le carnet.': 'This scenario yields nothing to record in the log.',
   'Ce scénario ne se rejoue pas : la campagne s’arrête ici.': 'This scenario is not replayed: the campaign ends here.',

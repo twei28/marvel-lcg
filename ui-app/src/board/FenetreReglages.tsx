@@ -393,7 +393,7 @@ export function ContenuOnglet({
           // ⚠ CE QUE LA LANGUE NE PEUT PAS FAIRE, DIT AU MOMENT DU CHOIX
           // (16/09/2026) : une carte sans scan dans cette langue reste en
           // anglais, et l'infobulle prend le relais.
-          detail={t('Langue de l’interface et de la narration. Une carte sans scan dans cette langue reste en anglais : sa traduction s’affiche dans l’infobulle.')}
+          detail={t('Langue de l’interface et de la narration. Une carte sans scan dans cette langue reste en anglais : agrandie, sa traduction est posée sur son texte.')}
         />
         <LigneBascule
           libelle={t('Cartes en français')}

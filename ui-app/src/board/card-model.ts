@@ -516,6 +516,7 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     peeking,
     // Mots-cles (Guard, Piercing...) pour les tooltips de l'apercu.
     keywords: contexte.catalogue.motsCles(card.card_id),
+    traits: contexte.catalogue.traits?.(card.card_id),
     codeCarte: card.card_id,
     aspect: contexte.catalogue.aspect(card.card_id),
     pileCount: contexte.pileCount,

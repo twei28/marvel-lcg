@@ -333,13 +333,13 @@ describe('le mode « Sur la table » est proposé à tous', () => {
     // Demande du 16/09/2026. Tous les scans n'existent pas dans les deux
     // langues : une carte restée en anglais au milieu d'une partie française
     // ressemble à un défaut tant que personne ne l'a annoncé. La phrase est
-    // ici, au moment du choix, et elle nomme le relais : l'infobulle.
+    // ici, au moment du choix, et elle nomme le relais : la traduction posée sur la carte agrandie.
     // ⚠ Le `detail` d'une ligne de réglage devient un attribut `title`, pas du
     // texte : c'est l'infobulle du bouton lui-même. On cherche donc là.
     render(<ContenuOnglet onglet="apparence" p={proprietes()} />)
     const ligne = screen.getByTitle(/Langue de l’interface et de la narration/)
     expect(ligne.getAttribute('title')).toMatch(/sans scan dans cette langue reste en anglais/)
-    expect(ligne.getAttribute('title')).toMatch(/infobulle/)
+    expect(ligne.getAttribute('title')).toMatch(/traduction est posée sur son texte/)
   })
 
   it('il apparaît entre les deux autres, pour tous les joueurs', () => {
