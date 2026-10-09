@@ -80,12 +80,14 @@
   margin-bottom: 0.25em;
 }
 
-.traduction-posee .tp-trait {
+.traduction-posee .tp-trait,
+.apercu-cdb .tp-trait {
   font-family: 'Komika Title Carte', var(--police-traduction);
   font-size: 0.9em;
 }
 
-.traduction-posee .tp-icone {
+.traduction-posee .tp-icone,
+.apercu-cdb .tp-icone {
   font-family: 'ChampionsIcons';
   font-style: normal;
   font-weight: 400;

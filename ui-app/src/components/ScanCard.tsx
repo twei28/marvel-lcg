@@ -241,7 +241,7 @@ export type ScanCardProps = {
    * comme Ant-Man). Portees par les props mais rendues seulement par l'apercu
    * agrandi (CarteApercu), pas par la carte de table.
    */
-  autresFaces?: Array<{ url: string; isLandscape?: boolean }>
+  autresFaces?: Array<{ url: string; isLandscape?: boolean; code?: string; artAlternatif?: boolean; traits?: string[]; type?: string }>
   /** Identifiant du scan, utilise pour les positions calibrees de bulles. */
   picId?: string
   /** Les complots se posent en paysage. Voir isLandscapeType() dans card-model.ts. */

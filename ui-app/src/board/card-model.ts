@@ -327,6 +327,14 @@ export type ContexteCarte = {
  */
 export type AutreFace = {
   url: string
+  /** Le code de CETTE face : c'est lui qui donne sa traduction. */
+  code: string
+  /** Son image est un art alternatif (anglais seulement). */
+  artAlternatif?: boolean
+  /** Ses traits imprimés, pour la traduction posée. */
+  traits?: string[]
+  /** Son type imprimé (« MainScheme »...), pour placer la traduction en paysage. */
+  type?: string
   /**
    * L'orientation de CETTE face, quand le catalogue connait son type ;
    * `undefined` sinon, et l'apercu reprend alors celle de la face visible
@@ -381,7 +389,15 @@ export function autresFacesDe(card: WorldCard, catalogue: Catalogue): AutreFace[
       // l'apercu : sans `picIdAffiche`, l'alter ego y restait en scan
       // standard alors que la carte sur la table portait la serie choisie
       // (signale par l'utilisateur, 03/10/2026, Captain America « Comic »).
-      faces.push({ url: scanUrl(picIdAffiche(dos, undefined)), isLandscape: paysageSelonTypePapier(catalogue.type(dos)) })
+      const pic = picIdAffiche(dos, undefined)
+      faces.push({
+        url: scanUrl(pic),
+        code: dos,
+        artAlternatif: pic !== dos,
+        traits: catalogue.traits?.(dos),
+        type: catalogue.type(dos),
+        isLandscape: paysageSelonTypePapier(catalogue.type(dos)),
+      })
     }
   }
   return faces

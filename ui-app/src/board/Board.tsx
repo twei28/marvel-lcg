@@ -36,7 +36,8 @@ import { cibleSousLePoint, useGlisser, type CibleSurvolee, type EtatGlisser } fr
 import { aScanFr, scansFrActifs } from './scans-fr'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
-import { TraductionPosee } from './TraductionPosee'
+import { TraductionPosee, type CotePaysage } from './TraductionPosee'
+import { texteEnHtml } from './traduction-posee'
 import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Plateau, type UniteAffichee } from './zones'
 import type { World } from './world'
 import type { EtatInteractif } from './interaction'
@@ -616,8 +617,62 @@ export function ApercuMarvelcdb({
           effacerait avec le reste. */}
       <p
         dangerouslySetInnerHTML={{
-          __html: contenu.replace(/<(?!\/?(b|i|em|strong|br)\b)[^>]*>/g, '').replace(/\n/g, '<br />'),
+          // Le français passe par la même mise en forme que la traduction posée
+          // (icônes du jeu, traits) : sinon « [star] » et « [[RAT]] » restaient
+          // écrits tels quels. Le texte marvelcdb garde son nettoyage d'origine.
+          __html: repli
+            ? texteEnHtml(contenu)
+            : contenu.replace(/<(?!\/?(b|i|em|strong|br)\b)[^>]*>/g, '').replace(/\n/g, '<br />'),
         }}
+      />
+    </div>
+  )
+}
+
+/** Côté de la boîte de texte d'une carte paysage, selon son type imprimé. */
+function coteDuTexte(type: string | undefined): CotePaysage | undefined {
+  if (type === 'MainScheme') return 'gauche'
+  if (type === 'SideScheme') return 'droite'
+  return undefined
+}
+
+/**
+ * Une AUTRE face dans l'aperçu (verso d'un recto-verso) : son image, et sa
+ * propre traduction posée dessus, avec le texte de CETTE face.
+ */
+function ApercuAutreFace({
+  carte,
+  face,
+  paysageVisible,
+}: {
+  carte: ScanCardProps
+  face: NonNullable<ScanCardProps['autresFaces']>[number]
+  paysageVisible: boolean
+}) {
+  const estPaysage = face.isLandscape ?? paysageVisible
+  const traduction = useTraductionFr(face.code, face.artAlternatif)
+  const paysage = estPaysage ? coteDuTexte(face.type) : undefined
+  const surcouche =
+    traduction && (!estPaysage || paysage) ? (
+      <TraductionPosee url={face.url} texte={traduction} traits={face.traits} paysage={paysage} />
+    ) : undefined
+  return (
+    <div className={`apercu-face apercu-face-autre${estPaysage ? ' est-paysage' : ''}`}>
+      <span className="apercu-face-label">{t('Autre face')}</span>
+      {/* CHAQUE face porte son orientation : le verso portrait d'un complot
+          ne doit pas heriter du cadre paysage de la face visible. Sans type
+          connu, on garde celle de la face visible, comme avant. */}
+      <ScanCard
+        {...carte}
+        imageUrl={face.url}
+        isLandscape={estPaysage}
+        stats={undefined}
+        allyHp={undefined}
+        schemeThreat={undefined}
+        exhausted={false}
+        onSelect={undefined}
+        highlight={false}
+        surcouche={surcouche}
       />
     </div>
   )
@@ -657,15 +712,18 @@ export function CarteApercu({
   const estComplot = carte.kind === 'main-scheme' || carte.kind === 'side-scheme'
   const carteAgrandie = estComplot ? { ...carte, isLandscape: true } : carte
   // La traduction se pose SUR le scan anglais quand sa zone de texte est
-  // reconnue (cartes portrait) ; l'encadré sous la carte reste le repli.
+  // reconnue (portrait, et manigances en paysage) ; l'encadré sous la carte
+  // reste le repli.
   const traduction = useTraductionFr(carte.facedown ? undefined : carte.codeCarte, carte.artAlternatif)
   const [traductionPosee, setTraductionPosee] = useState(false)
+  const paysage = carteAgrandie.isLandscape ? coteDuTexte(carte.kind === 'main-scheme' ? 'MainScheme' : carte.kind === 'side-scheme' ? 'SideScheme' : undefined) : undefined
   const surcouche =
-    traduction && !carteAgrandie.isLandscape && carteAgrandie.imageUrl ? (
+    traduction && carteAgrandie.imageUrl && (!carteAgrandie.isLandscape || paysage) ? (
       <TraductionPosee
         url={carteAgrandie.imageUrl}
         texte={traduction}
         traits={carteAgrandie.traits}
+        paysage={paysage}
         onPose={setTraductionPosee}
       />
     ) : undefined
@@ -823,26 +881,7 @@ export function CarteApercu({
           AUSSI les autres faces (image seule, badges masques par le CSS car ils
           ne valent pas pour ces faces-la). */}
       {autresFaces.map((face) => (
-        <div
-          className={`apercu-face apercu-face-autre${(face.isLandscape ?? carteAgrandie.isLandscape) ? ' est-paysage' : ''}`}
-          key={face.url}
-        >
-          <span className="apercu-face-label">{t('Autre face')}</span>
-          {/* CHAQUE face porte son orientation : le verso portrait d'un complot
-              ne doit pas heriter du cadre paysage de la face visible. Sans type
-              connu, on garde celle de la face visible, comme avant. */}
-          <ScanCard
-            {...carte}
-            imageUrl={face.url}
-            isLandscape={face.isLandscape ?? carteAgrandie.isLandscape}
-            stats={undefined}
-            allyHp={undefined}
-            schemeThreat={undefined}
-            exhausted={false}
-            onSelect={undefined}
-            highlight={false}
-          />
-        </div>
+        <ApercuAutreFace key={face.url} carte={carte} face={face} paysageVisible={!!carteAgrandie.isLandscape} />
       ))}
     </div>,
     document.body

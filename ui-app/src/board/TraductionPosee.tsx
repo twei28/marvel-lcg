@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { detecterZoneTexte, formeDuCache, ligneDeTraits, texteEnHtml, type ZoneTexte } from './traduction-posee'
+import { detecterZoneTexte, detecterZoneTextePaysage, formeDuCache, ligneDeTraits, texteEnHtml, type ZoneTexte } from './traduction-posee'
 import { TRAITS_FR } from './traits-fr'
 import './traduction-posee.css'
 
@@ -7,22 +7,46 @@ const LARGEUR = 300
 const HAUTEUR = 420
 const zones = new Map<string, Promise<ZoneTexte | null>>()
 
-/** La zone de texte d'un scan, lue une fois par image (cache par adresse). */
-export function zoneDuScan(url: string): Promise<ZoneTexte | null> {
-  const connue = zones.get(url)
+/** Côté de la boîte de texte d'une carte paysage (manigance principale : gauche, annexe : droite). */
+export type CotePaysage = 'gauche' | 'droite'
+
+/**
+ * La zone de texte d'un scan, lue une fois par image (cache par adresse).
+ *
+ * Paysage : le serveur sert les scans paysage REDRESSÉS en portrait, et le
+ * plateau les tourne de 90° dans le sens horaire (ScanCard.css,
+ * `.scan-a-tourner`). On fait la même rotation sur la toile, pour lire la
+ * carte telle qu'elle est affichée. Une image déjà paysage est lue telle quelle.
+ */
+export function zoneDuScan(url: string, paysage?: CotePaysage): Promise<ZoneTexte | null> {
+  const cle = paysage ? `${url}|${paysage}` : url
+  const connue = zones.get(cle)
   if (connue) return connue
   const promesse = new Promise<ZoneTexte | null>((resoudre) => {
     const image = new Image()
     image.onload = () => {
       try {
-        if (image.naturalWidth > image.naturalHeight) return resoudre(null)
+        const imagePaysage = image.naturalWidth > image.naturalHeight
+        if (!paysage && imagePaysage) return resoudre(null)
+        const [largeur, hauteur] = paysage ? [HAUTEUR, LARGEUR] : [LARGEUR, HAUTEUR]
         const toile = document.createElement('canvas')
-        toile.width = LARGEUR
-        toile.height = HAUTEUR
+        toile.width = largeur
+        toile.height = hauteur
         const contexte = toile.getContext('2d', { willReadFrequently: true })
         if (!contexte) return resoudre(null)
-        contexte.drawImage(image, 0, 0, LARGEUR, HAUTEUR)
-        resoudre(detecterZoneTexte(contexte.getImageData(0, 0, LARGEUR, HAUTEUR).data, LARGEUR, HAUTEUR))
+        if (paysage && !imagePaysage) {
+          contexte.translate(largeur, 0)
+          contexte.rotate(Math.PI / 2)
+          contexte.drawImage(image, 0, 0, hauteur, largeur)
+        } else {
+          contexte.drawImage(image, 0, 0, largeur, hauteur)
+        }
+        const pixels = contexte.getImageData(0, 0, largeur, hauteur).data
+        resoudre(
+          paysage
+            ? detecterZoneTextePaysage(pixels, largeur, hauteur, paysage)
+            : detecterZoneTexte(pixels, largeur, hauteur)
+        )
       } catch {
         resoudre(null)
       }
@@ -42,10 +66,13 @@ export function TraductionPosee({
   url,
   texte,
   traits = [],
+  paysage,
   onPose,
 }: {
   url: string
   texte: string
+  /** Carte affichée en paysage : côté attendu de sa boîte de texte. */
+  paysage?: CotePaysage
   /** Traits imprimés : leur ligne est sous le cache, on la réécrit en tête. */
   traits?: readonly string[]
   onPose?: (pose: boolean) => void
@@ -57,7 +84,7 @@ export function TraductionPosee({
     let vivant = true
     setZone(null)
     onPose?.(false)
-    void zoneDuScan(url).then((trouvee) => {
+    void zoneDuScan(url, paysage).then((trouvee) => {
       if (!vivant) return
       setZone(trouvee)
       onPose?.(trouvee !== null)
@@ -67,7 +94,7 @@ export function TraductionPosee({
     }
     // onPose est un rappel de l'appelant : seule l'image compte.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url])
+  }, [url, paysage])
 
   // Le français est plus long que l'anglais : la police baisse jusqu'à ce que
   // le texte tienne, sans descendre sous un plancher lisible.
@@ -75,7 +102,10 @@ export function TraductionPosee({
     const element = boite.current
     if (!zone || !element) return
     const ajuster = () => {
-      const carte = element.parentElement?.clientWidth ?? 300
+      // La largeur d'une carte PORTRAIT de même taille : en paysage, la carte
+      // est plus large que haute, mais ses lettres gardent la même taille.
+      const parent = element.parentElement
+      const carte = parent ? Math.min(parent.clientWidth, (parent.clientHeight * LARGEUR) / HAUTEUR) : 300
       let taille = carte * 0.05
       const plancher = carte * 0.026
       element.style.fontSize = `${taille}px`

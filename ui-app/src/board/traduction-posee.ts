@@ -87,7 +87,25 @@ function morpho(source: Grille, largeur: number, hauteur: number, r: number, dil
  *
  * Null quand rien de net n'apparaît : le texte reste alors dans l'encadré.
  */
-export function detecterZoneTexte(pixels: ArrayLike<number>, largeur: number, hauteur: number): ZoneTexte | null {
+export type OptionsZone = {
+  /** Fraction de la hauteur sous laquelle la bande de texte peut commencer. */
+  debutBande?: number
+  /** Fraction de la hauteur au-dessus de laquelle la zone ne monte pas. */
+  plafond?: number
+  /** Couleur du fond quand il n'est pas gris clair (manigances vertes, crème...). */
+  fond?: [number, number, number]
+}
+
+/** Écart toléré, somme des trois canaux, entre un pixel et le fond donné. */
+const ECART_FOND = 66
+
+export function detecterZoneTexte(
+  pixels: ArrayLike<number>,
+  largeur: number,
+  hauteur: number,
+  options: OptionsZone = {}
+): ZoneTexte | null {
+  const { debutBande = 0.3, plafond = 0.25, fond } = options
   const n = largeur * hauteur
   const L = new Uint8Array(n)
   const F0 = new Uint8Array(n)
@@ -98,9 +116,10 @@ export function detecterZoneTexte(pixels: ArrayLike<number>, largeur: number, ha
     const b = pixels[k * 4 + 2]
     const min = Math.min(r, g, b)
     const ecart = Math.max(r, g, b) - min
-    L[k] = estClair(r, g, b) ? 1 : 0
+    L[k] = (fond ? Math.abs(r - fond[0]) + Math.abs(g - fond[1]) + Math.abs(b - fond[2]) <= ECART_FOND : estClair(r, g, b)) ? 1 : 0
     F0[k] = L[k] || (ecart < 28 && min >= 110) ? 1 : 0
-    neutreFort[k] = ecart < 40 ? 1 : 0
+    // Un fond coloré n'est pas un aplat qui coupe la zone : il EST la zone.
+    neutreFort[k] = ecart < 40 || (fond !== undefined && L[k]) ? 1 : 0
   }
   const lignes: number[] = []
   for (let y = 0; y < hauteur; y += 1) {
@@ -108,7 +127,7 @@ export function detecterZoneTexte(pixels: ArrayLike<number>, largeur: number, ha
     for (let x = 0; x < largeur; x += 1) c += L[y * largeur + x]
     lignes.push(c / largeur)
   }
-  const bande = plusLongueSuite(lignes, 0.42, Math.floor(hauteur * 0.3))
+  const bande = plusLongueSuite(lignes, 0.42, Math.floor(hauteur * debutBande))
   if (!bande || bande[1] - bande[0] + 1 < hauteur * 0.12) return null
   const colonnes: number[] = []
   for (let x = 0; x < largeur; x += 1) {
@@ -120,7 +139,7 @@ export function detecterZoneTexte(pixels: ArrayLike<number>, largeur: number, ha
   if (!etendue || etendue[1] - etendue[0] + 1 < largeur * 0.4) return null
   const [cx0, cx1] = etendue
 
-  const ya = Math.max(Math.floor(hauteur * 0.25), bande[0] - Math.floor(hauteur * 0.2))
+  const ya = Math.max(Math.floor(hauteur * plafond), bande[0] - Math.floor(hauteur * 0.2))
   const yb = Math.min(hauteur - 1, bande[1] + Math.floor(hauteur * 0.15))
   const xa = Math.max(0, cx0 - 2)
   const xb = Math.min(largeur - 1, cx1 + 2)
@@ -261,6 +280,224 @@ export function detecterZoneTexte(pixels: ArrayLike<number>, largeur: number, ha
     fond: [0, 1, 2].map((k) => Math.round(somme[k] / compte)) as [number, number, number],
     bords: bordsPx.map(([g, d]) => [g / largeur, (d + 1) / largeur] as [number, number]),
   }
+}
+
+/**
+ * La couleur du fond de la zone de texte, lue dans un rectangle (fractions de
+ * la carte) : médiane des pixels clairs, ou null s'ils sont trop rares pour
+ * être un fond plutôt qu'un détail de l'illustration.
+ */
+export function couleurDuFond(
+  pixels: ArrayLike<number>,
+  largeur: number,
+  hauteur: number,
+  [fx0, fy0, fx1, fy1]: [number, number, number, number]
+): [number, number, number] | null {
+  const canaux: [number[], number[], number[]] = [[], [], []]
+  let total = 0
+  for (let y = Math.floor(fy0 * hauteur); y < Math.floor(fy1 * hauteur); y += 1) {
+    for (let x = Math.floor(fx0 * largeur); x < Math.floor(fx1 * largeur); x += 1) {
+      const k = (y * largeur + x) * 4
+      total += 1
+      if (Math.min(pixels[k], pixels[k + 1], pixels[k + 2]) < 150) continue
+      canaux[0].push(pixels[k])
+      canaux[1].push(pixels[k + 1])
+      canaux[2].push(pixels[k + 2])
+    }
+  }
+  if (!total || canaux[0].length < total * 0.45) return null
+  return canaux.map((c) => c.sort((a, b) => a - b)[Math.floor(c.length / 2)]) as [number, number, number]
+}
+
+/** Boîtes englobantes des taches sombres connexes d'un masque : [x0, y0, x1, y1, pixels]. */
+function taches(masque: Uint8Array, largeur: number, hauteur: number): Array<[number, number, number, number, number]> {
+  const vu = new Uint8Array(masque.length)
+  const sortie: Array<[number, number, number, number, number]> = []
+  const pile: number[] = []
+  for (let depart = 0; depart < masque.length; depart += 1) {
+    if (!masque[depart] || vu[depart]) continue
+    vu[depart] = 1
+    pile.push(depart)
+    let [x0, y0, x1, y1, n] = [largeur, hauteur, 0, 0, 0]
+    while (pile.length) {
+      const k = pile.pop() as number
+      const x = k % largeur
+      const y = (k - x) / largeur
+      n += 1
+      x0 = Math.min(x0, x)
+      x1 = Math.max(x1, x)
+      y0 = Math.min(y0, y)
+      y1 = Math.max(y1, y)
+      const voisins = [x + 1 < largeur ? k + 1 : -1, x > 0 ? k - 1 : -1, y + 1 < hauteur ? k + largeur : -1, y > 0 ? k - largeur : -1]
+      for (const v of voisins) {
+        if (v >= 0 && masque[v] && !vu[v]) {
+          vu[v] = 1
+          pile.push(v)
+        }
+      }
+    }
+    sortie.push([x0, y0, x1, y1, n])
+  }
+  return sortie
+}
+
+/**
+ * La zone de texte d'une carte PAYSAGE (manigances), dans ses pixels redressés
+ * (420 x 300 conseillé).
+ *
+ * Officielles comme fan-made, les manigances suivent le gabarit FFG : la boîte
+ * d'une manigance principale est à gauche, celle d'une annexe à droite. On lit
+ * la couleur de son fond au cœur de la boîte (vert, crème, gris : pas toujours
+ * clair et neutre), puis on pousse chaque bord tant qu'au moins un quart de la
+ * ligne ou de la colonne est de ce fond : le texte, même dense, n'arrête pas
+ * l'expansion, le cadre sombre et l'illustration si. Le remplissage pixel par
+ * pixel du portrait échoue ici : un texte serré y bouche tous les passages.
+ *
+ * Les taches sombres plus hautes qu'une ligne de texte sont des badges ou des
+ * icônes : contre un bord (menace, +1 par joueur), elles creusent une encoche ;
+ * au milieu (boost, crise), elles restent visibles si plus rien n'est écrit
+ * dessous, sinon la boîte entière est couverte pour que la traduction soit
+ * complète.
+ */
+export function detecterZoneTextePaysage(
+  pixels: ArrayLike<number>,
+  largeur: number,
+  hauteur: number,
+  cote: 'gauche' | 'droite' = 'gauche'
+): ZoneTexte | null {
+  const sondes = { gauche: [0.06, 0.38, 0.44, 0.78], droite: [0.54, 0.38, 0.92, 0.78] } as const
+  const ordre = cote === 'gauche' ? (['gauche', 'droite'] as const) : (['droite', 'gauche'] as const)
+  for (const essai of ordre) {
+    const fond = couleurDuFond(pixels, largeur, hauteur, [...sondes[essai]])
+    if (!fond) continue
+    const F = new Uint8Array(largeur * hauteur)
+    for (let k = 0; k < F.length; k += 1) {
+      const ecart = Math.abs(pixels[k * 4] - fond[0]) + Math.abs(pixels[k * 4 + 1] - fond[1]) + Math.abs(pixels[k * 4 + 2] - fond[2])
+      F[k] = ecart <= ECART_FOND ? 1 : 0
+    }
+    const partLigne = (y: number, a: number, b: number) => {
+      let c = 0
+      for (let x = a; x < b; x += 1) c += F[y * largeur + x]
+      return c / (b - a)
+    }
+    const partColonne = (x: number, a: number, b: number) => {
+      let c = 0
+      for (let y = a; y <= b; y += 1) c += F[y * largeur + x]
+      return c / (b - a + 1)
+    }
+    const [sx0, sy0, sx1, sy1] = sondes[essai]
+    // Chaque bord avance jusqu'au cadre. Le cadre, un onglet (« MAIN SCHEME ») ou
+    // un bandeau (nom du set) sont des SUITES sombres continues ; le texte, même
+    // serré, n'en fait jamais de longues. Il faut aussi rester sur du clair :
+    // le fond, ou le liseré dégradé que certains gabarits fan-made mettent au
+    // bord de la boîte, et sur lequel le texte déborde.
+    const estSombre = (x: number, y: number) => {
+      const k = (y * largeur + x) * 4
+      return pixels[k] + pixels[k + 1] + pixels[k + 2] < 330
+    }
+    const estClairOuFond = (x: number, y: number) => {
+      const k = (y * largeur + x) * 4
+      return F[y * largeur + x] === 1 || Math.min(pixels[k], pixels[k + 1], pixels[k + 2]) >= 150
+    }
+    const ligneDansBoite = (y: number, a: number, b: number) => {
+      if (y < 0 || y >= hauteur) return false
+      let suite = 0
+      let clairs = 0
+      const limite = 0.18 * (b - a + 1)
+      for (let x = a; x <= b; x += 1) {
+        suite = estSombre(x, y) ? suite + 1 : 0
+        if (suite >= limite) return false
+        if (estClairOuFond(x, y)) clairs += 1
+      }
+      return clairs / (b - a + 1) >= 0.3
+    }
+    const colonneDansBoite = (x: number, a: number, b: number) => {
+      if (x < 0 || x >= largeur) return false
+      let suite = 0
+      let clairs = 0
+      // Le cadre court sur presque toute la hauteur ; un badge (« +1 »), lui,
+      // n'en couvre qu'un tiers et doit seulement creuser une encoche.
+      const limite = 0.6 * (b - a + 1)
+      for (let y = a; y <= b; y += 1) {
+        suite = estSombre(x, y) ? suite + 1 : 0
+        if (suite >= limite) return false
+        if (estClairOuFond(x, y)) clairs += 1
+      }
+      return clairs / (b - a + 1) >= 0.3
+    }
+    let haut = Math.floor(sy0 * hauteur)
+    let bas = Math.floor(sy1 * hauteur)
+    let gauche = Math.floor(sx0 * largeur)
+    let droite = Math.floor(sx1 * largeur)
+    // Du clair qui n'est pas le fond (liseré, mais aussi une illustration
+    // claire) n'est accepté que tout près du dernier fond vu : 3 % au plus.
+    const marge = Math.round(Math.max(largeur, hauteur) * 0.03)
+    const avancer = (depart: number, pas: number, borne: number, dedans: (i: number) => boolean, fondIci: (i: number) => boolean) => {
+      let bord = depart
+      let dernierFond = depart
+      for (let i = depart + pas; pas > 0 ? i <= borne : i >= borne; i += pas) {
+        if (!dedans(i) || Math.abs(i - dernierFond) > marge) break
+        bord = i
+        if (fondIci(i)) dernierFond = i
+      }
+      return bord
+    }
+    const etendreCotes = () => {
+      gauche = avancer(gauche, -1, 0, (x) => colonneDansBoite(x, haut, bas), (x) => partColonne(x, haut, bas) >= 0.1)
+      droite = avancer(droite, 1, largeur - 1, (x) => colonneDansBoite(x, haut, bas), (x) => partColonne(x, haut, bas) >= 0.1)
+    }
+    etendreCotes()
+    haut = avancer(haut, -1, Math.floor(hauteur * 0.12), (y) => ligneDansBoite(y, gauche, droite), (y) => partLigne(y, gauche, droite + 1) >= 0.1)
+    bas = avancer(bas, 1, hauteur - 1, (y) => ligneDansBoite(y, gauche, droite), (y) => partLigne(y, gauche, droite + 1) >= 0.1)
+    etendreCotes()
+    if (droite - gauche < largeur * 0.3 || bas - haut < hauteur * 0.3) continue
+
+    const bords: Array<[number, number]> = []
+    for (let y = haut; y <= bas; y += 1) bords.push([gauche, droite])
+    const lb = droite - gauche + 1
+    const masqueSombre = new Uint8Array(lb * (bas - haut + 1))
+    // Trois pixels de bord laissés de côté : un liseré sombre collé à une
+    // icône en ferait une seule tache trop large pour être reconnue.
+    for (let y = haut + 3; y <= bas - 3; y += 1) {
+      for (let x = gauche + 3; x <= droite - 3; x += 1) {
+        const k = (y * largeur + x) * 4
+        masqueSombre[(y - haut) * lb + (x - gauche)] = pixels[k] + pixels[k + 1] + pixels[k + 2] < 330 ? 1 : 0
+      }
+    }
+    let coupe = bas
+    for (const [tx0, ty0, tx1, ty1, n] of taches(masqueSombre, lb, bas - haut + 1)) {
+      const h = ty1 - ty0
+      const l = tx1 - tx0
+      if (h < hauteur * 0.06 || l < largeur * 0.03 || l > largeur * 0.16 || h > hauteur * 0.3 || n < 0.25 * h * l) continue
+      const [ax0, ay0, ax1, ay1] = [tx0 + gauche, ty0 + haut, tx1 + gauche, ty1 + haut]
+      if (ax1 >= droite - largeur * 0.02) {
+        for (let y = Math.max(haut, ay0 - 3); y <= bas; y += 1) bords[y - haut][1] = Math.min(bords[y - haut][1], ax0 - 3)
+      } else if (ax0 <= gauche + largeur * 0.02) {
+        for (let y = Math.max(haut, ay0 - 3); y <= bas; y += 1) bords[y - haut][0] = Math.max(bords[y - haut][0], ax1 + 3)
+      } else if (ay0 > haut + 0.35 * (bas - haut)) {
+        // Plus rien d'écrit sous l'icône (aucune ligne avec des lettres) : on la
+        // laisse visible. Sinon la boîte entière est couverte.
+        let texteDessous = false
+        for (let y = ay1 + 2; y <= bas - Math.round(hauteur * 0.04) && !texteDessous; y += 1) {
+          let sombres = 0
+          for (let x = gauche + 3; x <= droite - 3; x += 1) sombres += masqueSombre[(y - haut) * lb + (x - gauche)]
+          if (sombres / lb >= 0.04) texteDessous = true
+        }
+        if (!texteDessous) coupe = Math.min(coupe, ay0 - 4)
+      }
+    }
+    const fin = coupe - haut + 1
+    const bordsRetenus = bords.slice(0, fin)
+    return {
+      x0: gauche / largeur,
+      y0: haut / hauteur,
+      x1: (droite + 1) / largeur,
+      y1: (coupe + 1) / hauteur,
+      fond,
+      bords: bordsRetenus.map(([g, d]) => [g / largeur, (d + 1) / largeur] as [number, number]),
+    }
+  }
+  return null
 }
 
 /** Glyphes de la police ChampionsIcons (relevés sur public/fonts/ChampionsIcons.ttf). */
