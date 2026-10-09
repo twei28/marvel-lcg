@@ -15,6 +15,9 @@ const HAUTEUR = 420;
 const SCANS_FR_MAISON = new Set(["tough", "stunned", "confused"]);
 const zones = new Map();
 let fanmade = null;
+let complets = null;
+let zonesArts = null;
+const SERIES_ALTERNATIVES = /_(cb|rog|rog2|m3t)$/;
 
 function feuilleDeStyle() {
     if (document.getElementById("traduction-posee-css")) return;
@@ -26,18 +29,38 @@ function feuilleDeStyle() {
 }
 
 /** Le texte français à poser, ou null : seulement en français, seulement sur un
- *  scan resté anglais faute de scan français, et seulement s'il existe. */
-export async function texteAPoser(code) {
+ *  scan resté anglais faute de scan français, et seulement s'il existe.
+ *  `scanAnglais` : l'image montrée est anglaise même si un scan français existe
+ *  (art alternatif, scan HD de la fenêtre des variantes) ; le texte officiel
+ *  complet (textes-fr-complets.js, ~1 Mo) est alors chargé à la demande. */
+export async function texteAPoser(code, { scanAnglais = false } = {}) {
     if (!code || langueActuelle() !== "fr") return null;
-    if (CODES_SCAN_FR.has(code) || SCANS_FR_MAISON.has(code)) return null;
+    if (!scanAnglais && (CODES_SCAN_FR.has(code) || SCANS_FR_MAISON.has(code))) return null;
     if (TEXTES_FR[code]) return TEXTES_FR[code];
     if (CARTES_FR[code]) return texteFr({ card_id: code });
     if (!fanmade) fanmade = import("./textes-fr-fanmade.js").then((m) => m.TEXTES_FR_FANMADE);
-    return (await fanmade)[code] || null;
+    const maison = (await fanmade)[code];
+    if (maison || !scanAnglais) return maison || null;
+    if (!complets) complets = import("./textes-fr-complets.js").then((m) => m.TEXTES_FR_COMPLETS);
+    return (await complets)[code] || null;
+}
+
+/** « /hd/01001a_cb?x » -> « 01001a_cb » */
+function codeImage(url) {
+    return decodeURIComponent(String(url).split("?")[0].split("/").pop() || "").replace(/\.[a-z]+$/i, "");
 }
 
 function zoneDuScan(url) {
     if (zones.has(url)) return zones.get(url);
+    // Les arts alternatifs de héros ont leur zone relevée image par image
+    // (zones-arts-alternatifs.js, même table que le plateau).
+    const image = codeImage(url);
+    if (SERIES_ALTERNATIVES.test(image)) {
+        if (!zonesArts) zonesArts = import("./zones-arts-alternatifs.js").then((m) => m.ZONES_ARTS_ALTERNATIFS);
+        const promesse = zonesArts.then((table) => table[image] || null).catch(() => null);
+        zones.set(url, promesse);
+        return promesse;
+    }
     const promesse = new Promise((resoudre) => {
         const image = new Image();
         image.onload = () => {
@@ -77,8 +100,8 @@ function ajuster(element) {
  * de la taille de l'image `url`). Ne fait rien si la carte n'a rien à poser ou
  * si sa zone de texte n'est pas reconnue. Renvoie true si la pose a eu lieu.
  */
-export async function poserTraduction(cadre, url, code, traits = []) {
-    const texte = await texteAPoser(code);
+export async function poserTraduction(cadre, url, code, traits = [], options = {}) {
+    const texte = await texteAPoser(code, options);
     if (!texte) return false;
     const zone = await zoneDuScan(url);
     if (!zone || !cadre.isConnected) return false;

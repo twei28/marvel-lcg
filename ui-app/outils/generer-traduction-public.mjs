@@ -12,7 +12,10 @@ import ts from 'typescript'
 const ICI = dirname(fileURLToPath(import.meta.url))
 const BOARD = resolve(ICI, '../src/board')
 const SORTIE = resolve(ICI, '../../Fusion/marvel-lcg-src/public/js/traduction')
-export const MODULES = ['traduction-posee', 'traits-fr', 'textes-fr', 'textes-fr-fanmade', 'scans-fr-liste']
+export const MODULES = [
+  'traduction-posee', 'traits-fr', 'textes-fr', 'textes-fr-fanmade', 'scans-fr-liste',
+  'zones-arts-alternatifs', 'textes-fr-complets',
+]
 
 export function transpiler(nom) {
   const source = readFileSync(resolve(BOARD, `${nom}.ts`), 'utf8')

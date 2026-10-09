@@ -9,6 +9,7 @@ import { validate } from "/public/js/prepare/validation.js";
 import { launch } from "/public/js/prepare/launcher.js?v=dfa2d51b";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { STANDARD, cleHeros, codeAlterEgoAffiche } from "/public/js/prepare/arts-heros-choix.js";
+import { poserTraduction } from "/public/js/traduction/poser.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
 import { regrouperUnderlings, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
@@ -26,7 +27,7 @@ import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-d
 // centrales (assignHero, selectScenario) sont aussi appelees a la reprise de
 // session et par le tirage aleatoire, et un son s'y jouerait tout seul au
 // chargement de la page.
-import { jouerSon, jouerReplique, jouerClicRoue, SON } from "/public/js/prepare/sons.js";
+import { jouerSon, jouerReplique, jouerClicRoue, SON, couperSurvolPendant } from "/public/js/prepare/sons.js";
 import { herosTirables, scenariosTirables, tirer, tirerPlusieurs, creerBandeau, caseHeros, caseScenario,
          lireRoue, publierRoue } from "/public/js/prepare/roue.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
@@ -2553,7 +2554,10 @@ function recruter(h, portraitEl) {
 
 function recruterVraiment(h, portraitEl) {
     herosPresente = null;
-    jouerSon(SON.heros);
+    // Avec variantes, la modale s'ouvre aussitôt : pas de bruit de carte posée
+    // par-dessus, la réplique suffit.
+    const avecVariantes = !optionsDuHeros(h, contexteVariantes(h)).aucune;
+    if (!avecVariantes) jouerSon(SON.heros);
     jouerReplique(h.id, "heros");
     const siege = state.activeSlot;
     assignHero(siege, h);
@@ -2583,7 +2587,7 @@ function recruterVraiment(h, portraitEl) {
     if (nav) nav.replaceWith(navBar());
     // Ce héros a des variantes ? La modale s'ouvre tout de suite, pré-remplie
     // de la mémoire. Sans variante, rien : jamais de modale vide.
-    if (!optionsDuHeros(h, contexteVariantes(h)).aucune) ouvrirModaleVariantes(siege, h);
+    if (avecVariantes) ouvrirModaleVariantes(siege, h);
 }
 
 /** Libellé d'une vague : la vague 0 est le Set de base, qui n'en est pas une.
@@ -3203,6 +3207,13 @@ function carrouselArts({ titre, picId, options, actuel, inactif, surChoix }) {
     let figé = !!inactif;
     let delegue = null;
     const image = el("img", { class: "ca-image", alt: "", draggable: "false" });
+    // Le cadre a la taille exacte de l'image : la traduction posée (jeu en
+    // français, scan HD anglais) s'y place en pourcentages de la carte.
+    const cadre = el("div", { class: "ca-cadre" }, image);
+    image.addEventListener("load", () => {
+        if (image.naturalWidth && image.naturalHeight) cadre.style.aspectRatio = `${image.naturalWidth}/${image.naturalHeight}`;
+    });
+    let tirage = 0;
     const nom = el("span", { class: "ca-nom" });
     const compteur = el("span", { class: "ca-compteur" });
     const aller = (n) => {
@@ -3221,7 +3232,7 @@ function carrouselArts({ titre, picId, options, actuel, inactif, surChoix }) {
             if (e.key === "ArrowLeft") { e.preventDefault(); pousser(-1); }
             if (e.key === "ArrowRight") { e.preventDefault(); pousser(1); }
         },
-    }, image);
+    }, cadre);
     let departX = null;
     scene.addEventListener("pointerdown", (e) => { departX = e.clientX; });
     scene.addEventListener("pointerup", (e) => {
@@ -3240,6 +3251,13 @@ function carrouselArts({ titre, picId, options, actuel, inactif, surChoix }) {
     function dessiner() {
         const o = options[idx];
         image.src = cardImageUrlHd(o.code === STANDARD ? picId : `${picId}_${o.code}`);
+        const ce_tirage = ++tirage;
+        const carte = cards.get(picId);
+        const temoin = el("div", { class: "ca-cadre-pose" });
+        cadre.append(temoin);
+        void poserTraduction(temoin, image.src, picId, carte ? carte.traits : [], { scanAnglais: true })
+            .then(() => { if (ce_tirage !== tirage) temoin.remove(); });
+        for (const ancien of cadre.querySelectorAll(".ca-cadre-pose")) if (ancien !== temoin) ancien.remove();
         nom.textContent = o.nom;
         compteur.textContent = options.length > 1 ? `${idx + 1} / ${options.length}` : "";
         noeud.classList.toggle("ca-seul", options.length < 2 && !delegue);
@@ -3377,6 +3395,8 @@ function ouvrirModaleVariantes(i, h) {
     if (!p || !h) return;
     const opts = optionsDuHeros(h, contexteVariantes(h));
     if (opts.aucune) return;
+    // Le bouton qui apparaît sous la souris ne doit pas jouer le son de survol.
+    couperSurvolPendant(400);
     const base = String(h.heroCardId || "").split(",")[0];
     const identites = h.variants || [];
     const choix = {

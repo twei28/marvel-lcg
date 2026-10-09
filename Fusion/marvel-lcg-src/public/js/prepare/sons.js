@@ -25,7 +25,7 @@ const CLE_SONS = "marvel-board-sons";
 const CLE_VOLUME = "marvel-board-volume-sons";
 const VOLUME_PAR_DEFAUT = 20;
 const MAX_SIMULTANES = 2;
-const FACTEUR_SURVOL = 0.35;
+const FACTEUR_SURVOL = 0.175;
 const ECART_SURVOL_MS = 80;
 /** Ce qui se survole sur cet écran : ses boutons et ses tuiles de choix. */
 const SELECTEUR_SURVOL = 'button, [role="button"], .acc-tuile, .tb-carte';
@@ -188,8 +188,17 @@ export function jouerSon(nom) {
 // Le survol : écoute déléguée, souris seulement (au doigt, pas de survol), un
 // seul son par élément survolé, et pas plus d'un toutes les 80 ms.
 let dernierSurvole = null;
+let survolMuetJusqua = 0;
+/** Une fenêtre qui s'ouvre sous la souris ne doit pas faire croire à un survol. */
+export function couperSurvolPendant(ms) {
+    survolMuetJusqua = performance.now() + ms;
+}
 document.addEventListener("pointerover", (evenement) => {
     if (evenement.pointerType && evenement.pointerType !== "mouse") return;
+    if (performance.now() < survolMuetJusqua) {
+        dernierSurvole = evenement.target instanceof Element ? evenement.target.closest(SELECTEUR_SURVOL) : null;
+        return;
+    }
     const cible = evenement.target instanceof Element ? evenement.target.closest(SELECTEUR_SURVOL) : null;
     if (cible === dernierSurvole) return;
     dernierSurvole = cible;
