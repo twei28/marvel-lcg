@@ -10,6 +10,7 @@ import os
 import sys
 import tempfile
 import threading
+import time
 from http.server import ThreadingHTTPServer
 
 _base = os.path.join(tempfile.gettempdir(), "nc-compteur-play.db")
@@ -38,10 +39,10 @@ _port = _serveur.server_address[1]
 threading.Thread(target=_serveur.serve_forever, daemon=True).start()
 
 
-def envoyer(corps: bytes, annonce=None):
+def envoyer(corps: bytes, annonce=None, route="/compteur_play"):
     lien = http.client.HTTPConnection("127.0.0.1", _port, timeout=5)
     try:
-        lien.putrequest("POST", "/compteur_play", skip_accept_encoding=True)
+        lien.putrequest("POST", route, skip_accept_encoding=True)
         lien.putheader("Content-Type", "text/plain;charset=UTF-8")
         lien.putheader("Content-Length", str(len(corps) if annonce is None else annonce))
         lien.endheaders()
@@ -113,6 +114,29 @@ _admin = _rep.read().decode("utf-8", "replace")
 verifier("la page admin se rend (200)", _rep.status == 200, str(_rep.status))
 verifier("avec le sous-onglet Play et ses chiffres",
          'data-sous="parties-play"' in _admin and "Mechants les plus joues" in _admin)
+
+# --- presence en direct ---------------------------------------------------
+import uuid  # noqa: E402
+
+presence = lambda corps, annonce=None: envoyer(corps, annonce, "/presence_play")
+u1, u2 = str(uuid.uuid4()), str(uuid.uuid4())
+verifier("presence : un onglet rend 204", presence(json.dumps({"id": u1}).encode()) == 204)
+presence(json.dumps({"id": u2}).encode())
+presence(json.dumps({"id": u1}).encode())
+verifier("presence : deux onglets distincts comptent 2", o.presents_play() == 2, str(o.presents_play()))
+verifier("presence : un id invalide est ignore",
+         presence(b'{"id":"pas-un-uuid"}') == 204 and presence(b"nimporte") == 204 and o.presents_play() == 2)
+verifier("presence : un corps annonce trop gros est refuse (413)",
+         presence(b"", annonce=o.PRESENCE_PLAY_MAX_OCTETS + 1) == 413)
+verifier("presence : expire apres la duree", o.presents_play(maintenant=time.time() + o.PRESENCE_PLAY_DUREE + 1) == 0)
+o._presence_play.clear()
+o.PRESENCE_PLAY_MAX = 3
+for _ in range(5):
+    o.signaler_presence_play(json.dumps({"id": str(uuid.uuid4())}).encode())
+verifier("presence : le plafond est tenu", o.presents_play() == 3, str(o.presents_play()))
+verifier("presence : affichee dans l'admin", "En ce moment sur play : 3" in o.bloc_stats_play())
+verifier("presence : rien n'est ecrit en base",
+         not any("presence" in r[0] for r in o._cx().execute("SELECT name FROM sqlite_master")))
 
 _serveur.shutdown()
 print("\n%d echec(s)" % len(echecs))

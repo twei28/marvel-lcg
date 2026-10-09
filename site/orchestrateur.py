@@ -2136,18 +2136,63 @@ def stats_play(jours: int = 30, top: int = 10) -> dict:
             "total": sum(n for _, n in par_jour), "jours": jours}
 
 
+# Presence en direct sur play (09/10/2026) : chaque onglet ouvert envoie un
+# identifiant aleatoire toutes les 60 s. EN MEMOIRE seulement (ni base, ni IP) :
+# un redemarrage remet a zero, ce qui est sans gravite pour un compte « en ce
+# moment ».
+PRESENCE_PLAY_MAX_OCTETS = 256
+PRESENCE_PLAY_DUREE = 180
+PRESENCE_PLAY_MAX = 5000
+_RE_UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+_presence_play: dict[str, float] = {}
+_presence_play_verrou = threading.Lock()
+
+
+def _purger_presence(maintenant: float) -> None:
+    limite = maintenant - PRESENCE_PLAY_DUREE
+    for cle in [c for c, t in _presence_play.items() if t < limite]:
+        del _presence_play[cle]
+
+
+def signaler_presence_play(brut: bytes, maintenant: float | None = None) -> bool:
+    """Note un onglet de play actif. Rend False si le signal est ignore."""
+    try:
+        donnees = json.loads(brut.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError):
+        return False
+    ident = donnees.get("id") if isinstance(donnees, dict) else None
+    if not isinstance(ident, str) or not _RE_UUID.match(ident.lower()):
+        return False
+    t = time.time() if maintenant is None else maintenant
+    with _presence_play_verrou:
+        _purger_presence(t)
+        if ident.lower() not in _presence_play and len(_presence_play) >= PRESENCE_PLAY_MAX:
+            return False
+        _presence_play[ident.lower()] = t
+    return True
+
+
+def presents_play(maintenant: float | None = None) -> int:
+    """Nombre d'onglets de play vus depuis moins de PRESENCE_PLAY_DUREE secondes."""
+    t = time.time() if maintenant is None else maintenant
+    with _presence_play_verrou:
+        _purger_presence(t)
+        return len(_presence_play)
+
+
 def bloc_stats_play() -> str:
     """Le sous-onglet « Play » de l'administration."""
     st = stats_play()
+    present = "<p class=\"sous\"><b>En ce moment sur play : %d</b></p>" % presents_play()
     if not st["total"]:
-        return '<p class="vide">Aucune partie lancee sur play ces %d derniers jours.</p>' % st["jours"]
+        return present + '<p class="vide">Aucune partie lancee sur play ces %d derniers jours.</p>' % st["jours"]
 
     def tableau(titre, lignes):
         corps = "".join("<tr><td>%s</td><td>%d</td></tr>" % (html.escape(str(k)), n) for k, n in lignes)
         return "<h3>%s</h3><table><tr><th>%s</th><th>Parties</th></tr>%s</table>" % (
             html.escape(titre), html.escape(titre.split()[0]), corps)
 
-    return ("<p class=\"sous\">%d partie(s) lancee(s) sur play ces %d derniers jours.</p>"
+    return (present + "<p class=\"sous\">%d partie(s) lancee(s) sur play ces %d derniers jours.</p>"
             % (st["total"], st["jours"])
             + tableau("Jour (UTC)", st["par_jour"])
             + tableau("Mechants les plus joues", st["mechants"])
@@ -6042,6 +6087,15 @@ class Handler(BaseHTTPRequestHandler):
                 self._corps_refuse()
                 return
             enregistrer_partie_play(self.rfile.read(taille))
+            self._repondre(204, b"", "text/plain; charset=utf-8")
+            return
+
+        if self.chemin == "/presence_play":
+            taille = self._taille_corps()
+            if taille > PRESENCE_PLAY_MAX_OCTETS:
+                self._corps_refuse()
+                return
+            signaler_presence_play(self.rfile.read(taille))
             self._repondre(204, b"", "text/plain; charset=utf-8")
             return
 

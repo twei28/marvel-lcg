@@ -58,6 +58,19 @@ if (matchMedia("(pointer: coarse)").matches && innerWidth < 900) {
   $("splash").innerHTML = '<h1>Marvel Champions</h1><div id="etat"></div><progress id="bar"></progress><div id="detail"></div><div id="erreur"></div>';
   $("etat").textContent = tr("Preparation du moteur de jeu...", "Preparing the game engine...");
 }
+// Presence en direct (admin du site, sous-onglet Play) : un identifiant aleatoire par onglet, en memoire
+// seulement, envoye toutes les 60 s tant que la page est visible. Texte brut : pas de preflight CORS.
+if (site) {
+  let idPresence = null;
+  try { idPresence = crypto.randomUUID(); } catch (e) { /* navigateur trop ancien : pas de presence */ }
+  const signaler = () => {
+    if (!idPresence || document.hidden) return;
+    try { navigator.sendBeacon(site + "/presence_play", JSON.stringify({ id: idPresence })); } catch (e) { /* jamais bloquant */ }
+  };
+  signaler();
+  setInterval(signaler, 60 * 1000);
+  document.addEventListener("visibilitychange", signaler);
+}
 // Demande au navigateur de ne pas effacer les sauvegardes tout seul (quand il manque de place, ou apres des jours sans visite).
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().then((ok) => { window.__persistant = ok; }).catch(() => {});
 
