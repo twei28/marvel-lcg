@@ -1366,3 +1366,156 @@ EPREUVES += [
         "attendu": {"parmi": [["wd112", ["deck", "main"]], ["wd121", ["deck", "main"]]]},
     },
 ]
+
+
+# ================================================ Hunting Season (hunting_season)
+#
+# Carnet (cards/pack/hunting_season/campaign.py) : « Player N Experience »
+# (solde), « Player N Cards added to deck », « Player N Hero-specific cards
+# removed / to remove », drapeaux « Vermin escaped », « Scorpion joined you »,
+# « Lizard escaped », « Vulture joined you », « Gibbon unlocked », et les
+# reglages « Hunter Mode » / « Master Hunter » ecrits par l'ecran. Une defaite
+# aux scenarios 1 a 4 fait CONTINUER la campagne (decision du 09/10/2026).
+EPREUVES += [
+    {
+        "nom": "hunting_season — victoire contre Vermin au stade 1 : 4 XP, l'allie Vermin va au Master Hunter et revient au deck au scenario 2",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "hs_vermin",
+            # 3 (victoire) + 1 (complot au stade Rats and More Rats) ; un rat
+            # regulier est engage avec le joueur : pas de point « sans rat ».
+            "cles": {"Player 1 Experience": "4", "Player 1 Cards added to deck": "hs200"},
+            "cles_absentes": ["Vermin escaped"],
+            "cles_presentes": ["Player 1 Remaining hit points", "Player 1 Identity"],
+        },
+        "suivant": "hs_scorpion",
+        "attendu": {"parmi": [["hs200", ["deck", "main"]]]},
+    },
+    {
+        "nom": "hunting_season — DEFAITE contre Vermin : 2 XP, Vermin s'echappe, aucun allie gagne",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "fin": "Lose",
+        "carnet_attendu": {
+            "gagnee": False,
+            "scenario": "hs_vermin",
+            "cles": {"Player 1 Experience": "2", "Vermin escaped": "1"},
+            "cles_absentes": ["Player 1 Cards added to deck"],
+        },
+    },
+    {
+        "nom": "hunting_season — DEFAITE contre Scorpion : la penalite « 1 carte de heros » est notee puis appliquee a la mise en place suivante",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "fin": "Lose",
+        "carnet_attendu": {"gagnee": False, "cles": {"Player 1 Hero-specific cards to remove": "1"}},
+        "suivant": "hs_the_lizard",
+        "attendu": {"un_parmi": [["retirees", ["01002", "01003", "01004", "01005", "01006", "01007", "01008", "01009", "01010"]]]},
+    },
+    {
+        "nom": "hunting_season — victoire contre Vulture : Vulture rejoint, Gibbon est debloque, l'allie Vulture est au deck",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "hs_vulture",
+            "cles": {"Vulture joined you": "1", "Gibbon unlocked": "1", "Player 1 Cards added to deck": "hs203"},
+        },
+    },
+    {
+        "nom": "hunting_season — Kraven : les deux fuyards rejoignent le deck rencontre, les deux ralliés en sortent",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "carnet": {"Vermin escaped": "1", "Scorpion joined you": "1", "Lizard escaped": "1"},
+        "carnet_attendu": {"gagnee": True, "cles": {"Vulture joined you": "1"}},
+        "suivant": "hs_kraven_the_hunter",
+        "attendu": {"deck_rencontre": ["hs204", "hs205"], "pas_deck_rencontre": ["hs160", "hs158"]},
+    },
+    {
+        "nom": "hunting_season — temoin Kraven : sans drapeau, ni fuyard ajoute ni rallie retire",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "fin": "Lose",
+        "carnet_attendu": {"gagnee": False, "cles_absentes": ["Vulture joined you"]},
+        "suivant": "hs_kraven_the_hunter",
+        "attendu": {"deck_rencontre": ["hs160", "hs158"], "pas_deck_rencontre": ["hs204", "hs205"]},
+    },
+    {
+        "nom": "hunting_season — les cartes du Lodge achetees (carnet) sont remises au deck a chaque scenario",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "carnet_attendu": {"gagnee": True},
+        # Ce que l'ecran du Lodge inscrit apres l'achat.
+        "choix": {"Player 1 Cards added to deck": "hs200;hs185;hs191"},
+        "suivant": "hs_scorpion",
+        "attendu": {"parmi": [["hs185", ["deck", "main"]], ["hs191", ["deck", "main"]], ["hs200", ["deck", "main"]]]},
+    },
+    {
+        "nom": "hunting_season — mode Hunter en campagne experte : l'environnement du scenario entre en jeu",
+        "scenario": "hs_vermin_expert",
+        "heros": "spider_man",
+        "carnet": {"Hunter Mode": "1"},
+        "carnet_attendu": {"gagnee": True},
+        "suivant": "hs_scorpion_expert",
+        "attendu": {"en_jeu": ["hs223"]},
+    },
+    {
+        "nom": "hunting_season — temoin : mode Hunter coche en campagne STANDARD, aucun environnement",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "carnet": {"Hunter Mode": "1"},
+        "carnet_attendu": {"gagnee": True},
+        "suivant": "hs_scorpion",
+        "attendu": {"pas_en_jeu": ["hs223"]},
+    },
+    {
+        "nom": "hunting_season — campagne experte : les PV restants (plafonnes) sont notes ; blesse et sans XP, le heros prend une carte de son set expert pour revenir au maximum",
+        "scenario": "hs_vermin_expert",
+        "heros": "spider_man",
+        "avant": ["Puzzle.Damage('01001b', 4)"],
+        "carnet_attendu": {"gagnee": True, "cles": {"Player 1 Remaining hit points": "6"}},
+        "choix": {"Player 1 Experience": "0"},
+        "suivant": "hs_scorpion_expert",
+        # Graine 42 : le tirage donne hs209 Poisoned!, pioche a la main de depart,
+        # revelee aussitot (« Take 2 damage », faute d'energie) apres le soin complet.
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "hunting_season — temoin : PV notes au maximum et sans XP, aucune carte du set expert, aucun degat",
+        "scenario": "hs_vermin_expert",
+        "heros": "spider_man",
+        "carnet_attendu": {"gagnee": True, "cles": {"Player 1 Remaining hit points": "10"}},
+        "choix": {"Player 1 Experience": "0"},
+        "suivant": "hs_scorpion_expert",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "hunting_season — campagne experte : un heros vaincu (0 PV) doit prendre une carte de son set expert, meme avec de l'XP",
+        "scenario": "hs_vermin_expert",
+        "heros": "spider_man",
+        "carnet_attendu": {"gagnee": True},
+        "choix": {"Player 1 Remaining hit points": "0", "Player 1 Experience": "0"},
+        "suivant": "hs_scorpion_expert",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "hunting_season — 2 XP depenses a la mise en place : une carte de plus a la main de depart",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "carnet_attendu": {"gagnee": True},
+        "choix": {"Player 1 Experience": "2", "Player 1 Cards added to deck": None},
+        "suivant": "hs_scorpion",
+        "attendu": {"taille_main": 7},
+    },
+    {
+        "nom": "hunting_season — temoin : 1 XP ne suffit pas, main de depart normale",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "carnet_attendu": {"gagnee": True},
+        "choix": {"Player 1 Experience": "1", "Player 1 Cards added to deck": None},
+        "suivant": "hs_scorpion",
+        "attendu": {"taille_main": 6},
+    },
+]

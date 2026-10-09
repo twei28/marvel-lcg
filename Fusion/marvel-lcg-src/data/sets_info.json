@@ -1595,7 +1595,6 @@
   "encounters": [],
   "max_id": "65019"
  },
- "checksum": "9733d80d08ae84ce3766f36eab7acbab734322eb8334abec50ae737f1c1923d8",
  "176. Custom (Red Sonja)": {
   "name": "red_sonja",
   "scenarios": [],
@@ -1613,5 +1612,24 @@
   ],
   "encounters": [],
   "max_id": "cn017"
- }
+ },
+ "178. Custom (Hunting Season)": {
+  "name": "hunting_season",
+  "scenarios": [
+   "hs_vermin",
+   "hs_scorpion",
+   "hs_the_lizard",
+   "hs_vulture",
+   "hs_kraven_the_hunter"
+  ],
+  "heroes": [],
+  "encounters": [
+   "hs_feral_instincts",
+   "hs_lizard_thralls",
+   "hs_red_vulture",
+   "hs_savage_six"
+  ],
+  "max_id": "hs226"
+ },
+ "checksum": "02ce2456475b1c91db7c21b3d250758ee7a6664c2be3e4589a80771e46ae002f"
 }

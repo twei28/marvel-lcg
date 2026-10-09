@@ -1,0 +1,55 @@
+{
+  "version": "0.5.8",
+  "name": "Kraven The Hunter",
+  "villain": [
+    "hs104",
+    "hs105"
+  ],
+  "expert": false,
+  "schemes": [
+    "hs107a,hs107b",
+    "hs108a,hs108b"
+  ],
+  "set_aside": [
+    "hs125",
+    "hs126",
+    "hs127",
+    "hs128",
+    "hs129",
+    "hs130",
+    "hs131",
+    "hs132",
+    "hs133",
+    "hs134",
+    "hs135",
+    "hs136",
+    "hs137",
+    "hs138",
+    "hs139",
+    "hs140"
+  ],
+  "encounters": [
+    "hs109",
+    "hs110",
+    "hs111",
+    "hs112",
+    "hs113",
+    "hs114",
+    "hs115",
+    "hs116",
+    "hs117",
+    "hs118",
+    "hs119",
+    "hs120",
+    "hs121",
+    "hs122",
+    "hs123",
+    "hs124"
+  ],
+  "encounter_sets": [
+    "standard"
+  ],
+  "modular_sets": [
+    "hs_savage_six"
+  ]
+}

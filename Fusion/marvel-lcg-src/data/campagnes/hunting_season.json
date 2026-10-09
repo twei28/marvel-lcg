@@ -1,0 +1,225 @@
+{
+  "version": "1.0",
+  "code": "hunting_season",
+  "cle_extension": "178. Custom (Hunting Season)",
+  "nom": "Saison de Chasse",
+  "nom_en": "Hunting Season",
+  "resume": "Kraven a réveillé les instincts sauvages de plusieurs ennemis. Suivez leur piste et dépensez votre expérience au Lodge.",
+  "resume_en": "Kraven has awakened the animal instincts of several villains. Follow their trail and spend experience at the Lodge.",
+  "expert": {
+    "pv_persistants": true
+  },
+  "pages_regles": [],
+  "scenarios": [
+    {
+      "id": "hs_vermin",
+      "numero": 1,
+      "nom": "Vermin",
+      "nom_fr": "Vermin",
+      "resume": "Affrontez Vermin et appliquez les instructions de campagne du livret.",
+      "enjeu": "Victoire ou défaite, la campagne continue : le résultat change l'expérience gagnée, l'allié de récompense et le deck rencontre de Kraven.",
+      "victoire": [
+        {
+          "cle": "Vermin escaped",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Vermin en fuite",
+          "aide": "Une défaite le note : le sbire Vermin rejoindra le deck rencontre de Kraven."
+        }
+      ],
+      "pages": {},
+      "defaite_continue": true
+    },
+    {
+      "id": "hs_scorpion",
+      "numero": 2,
+      "nom": "Scorpion",
+      "nom_fr": "Scorpion",
+      "resume": "Affrontez Scorpion et appliquez les instructions de campagne du livret.",
+      "enjeu": "Victoire ou défaite, la campagne continue : le résultat change l'expérience gagnée, l'allié de récompense et le deck rencontre de Kraven.",
+      "victoire": [
+        {
+          "cle": "Scorpion joined you",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Scorpion vous a rejoints",
+          "aide": "Une victoire le note : le sbire Scorpion sera retiré du deck rencontre de Kraven."
+        }
+      ],
+      "pages": {},
+      "defaite_continue": true
+    },
+    {
+      "id": "hs_the_lizard",
+      "numero": 3,
+      "nom": "The Lizard",
+      "nom_fr": "The Lizard",
+      "resume": "Affrontez The Lizard et appliquez les instructions de campagne du livret.",
+      "enjeu": "Victoire ou défaite, la campagne continue : le résultat change l'expérience gagnée, l'allié de récompense et le deck rencontre de Kraven.",
+      "victoire": [
+        {
+          "cle": "Lizard escaped",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Lizard en fuite",
+          "aide": "Une défaite le note : le sbire Lizard rejoindra le deck rencontre de Kraven."
+        }
+      ],
+      "pages": {},
+      "defaite_continue": true
+    },
+    {
+      "id": "hs_vulture",
+      "numero": 4,
+      "nom": "Vulture",
+      "nom_fr": "Vulture",
+      "resume": "Affrontez Vulture et appliquez les instructions de campagne du livret.",
+      "enjeu": "Victoire ou défaite, la campagne continue : le résultat change l'expérience gagnée, l'allié de récompense et le deck rencontre de Kraven.",
+      "victoire": [
+        {
+          "cle": "Vulture joined you",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Vulture vous a rejoints",
+          "aide": "Une victoire le note : le sbire Vulture sera retiré du deck rencontre de Kraven."
+        },
+        {
+          "cle": "Gibbon unlocked",
+          "type": "auto",
+          "format": "int",
+          "libelle": "Gibbon disponible au Lodge",
+          "aide": "Une victoire contre Vulture ajoute l'allié Gibbon au Lodge."
+        }
+      ],
+      "pages": {},
+      "defaite_continue": true
+    },
+    {
+      "id": "hs_kraven_the_hunter",
+      "numero": 5,
+      "nom": "Kraven The Hunter",
+      "nom_fr": "Kraven The Hunter",
+      "resume": "Affrontez Kraven The Hunter et appliquez les instructions de campagne du livret.",
+      "enjeu": "Le résultat contre Kraven décide de la campagne.",
+      "victoire": [],
+      "pages": {},
+      "final": true,
+      "defaite": {
+        "quand": "partie_perdue",
+        "expert_seulement": false,
+        "texte": "Kraven a remporté la chasse. La campagne est perdue."
+      }
+    }
+  ],
+  "victoire_commune_expert": [
+    {
+      "cle": "Remaining hit points",
+      "type": "auto",
+      "format": "int",
+      "parJoueur": true,
+      "detection": "pv_restants",
+      "libelle": "PV restants",
+      "aide": "Plafonnés aux PV de base. Ils deviennent les PV de départ du scénario suivant (un héros à 0 doit prendre une carte de son set expert)."
+    }
+  ],
+  "victoire_commune": [
+    {
+      "cle": "Experience",
+      "type": "auto",
+      "format": "int",
+      "parJoueur": true,
+      "libelle": "Expérience disponible",
+      "aide": "Solde après les gains de ce scénario et les dépenses de sa mise en place. Il se dépense au Lodge entre deux scénarios."
+    },
+    {
+      "cle": "Cards added to deck",
+      "type": "auto",
+      "format": "liste",
+      "parJoueur": true,
+      "libelle": "Cartes ajoutées au deck",
+      "aide": "Allié de récompense, achats du Lodge et cartes du set de campagne experte. Le jeu les remet dans le deck à chaque scénario ; elles ne comptent pas dans sa taille."
+    },
+    {
+      "cle": "Hero-specific cards removed",
+      "type": "auto",
+      "format": "liste",
+      "parJoueur": true,
+      "libelle": "Cartes de héros retirées",
+      "aide": "Retirées pour toute la campagne après une défaite aux scénarios 2 ou 3."
+    },
+    {
+      "cle": "Hero-specific cards to remove",
+      "type": "auto",
+      "format": "int",
+      "parJoueur": true,
+      "libelle": "Cartes de héros à retirer",
+      "aide": "Pénalité d'une défaite aux scénarios 2 ou 3 : chaque joueur choisit la carte au début du scénario suivant."
+    }
+  ],
+  "marche": {
+    "cartes": [
+      "hs164",
+      "hs165",
+      "hs166",
+      "hs167",
+      "hs168",
+      "hs169",
+      "hs170",
+      "hs171",
+      "hs172",
+      "hs173",
+      "hs174",
+      "hs175",
+      "hs176",
+      "hs177",
+      "hs178",
+      "hs179",
+      "hs180",
+      "hs181",
+      "hs182",
+      "hs183",
+      "hs184",
+      "hs185",
+      "hs186",
+      "hs187",
+      "hs188",
+      "hs189",
+      "hs190",
+      "hs191",
+      "hs192",
+      "hs193",
+      "hs194",
+      "hs195",
+      "hs196",
+      "hs197",
+      "hs198",
+      "hs199"
+    ],
+    "motif_cout": "Experience Cost (\\d+)",
+    "verrous": {
+      "hs168": "Gibbon unlocked"
+    },
+    "ouvert_apres_premier": true,
+    "cle_unites": "Experience",
+    "cle_cartes": "Cards added to deck",
+    "titre": "Le Lodge",
+    "unite": "XP",
+    "libelle_solde": "XP non dépensée",
+    "aide": "Entre deux scénarios, chaque héros dépense son expérience pour ajouter des cartes du Lodge à son deck. Elles y restent jusqu'à la fin de la campagne et ne comptent pas dans sa taille. Une seule copie de chaque exemplaire pour toute l'équipe."
+  },
+  "options_campagne": [
+    {
+      "cle": "Hunter Mode",
+      "type": "case",
+      "expert_seulement": true,
+      "libelle": "Mode Hunter",
+      "aide": "Campagne experte uniquement : un environnement par scénario rend la chasse bien plus dure."
+    },
+    {
+      "cle": "Master Hunter",
+      "type": "siege",
+      "libelle": "Master Hunter",
+      "aide": "Il départage les égalités et désigne qui reçoit l'allié de récompense quand l'équipe hésite."
+    }
+  ]
+}

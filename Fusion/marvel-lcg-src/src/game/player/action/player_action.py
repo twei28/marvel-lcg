@@ -858,7 +858,7 @@ class PlayerAction:
     # Hand Cards
     def DrawUp(self, size: int|Literal["Max"], by_effect: 'Effect') -> List['CardFace']:
         from game.message import Message
-        from game.card.face.card_type import Obligation
+        from game.card.face.base import EncounterNonVillainCard
         player = self.GetPlayer()
 
         if player.world.is_game_over:
@@ -883,7 +883,11 @@ class PlayerAction:
 
                 count_hand_cards = player.GetCountHandSizeFaces()
                 size = player.hand_size - len(count_hand_cards)
-                size -= len([x for x in faces if Obligation.IsType(x)]) # Fix "04163"
+                # Fix "04163", etendu le 09/10/2026 (Hunting Season, sets de
+                # campagne experte hs206-hs221) : une carte de RENCONTRE piochee
+                # dans le deck du joueur (sbire, traitrise ou obligation) part en
+                # jeu ou est revelee, et ne se remplace pas.
+                size -= len([x for x in faces if EncounterNonVillainCard.IsType(x)])
                 if size > 0:
                     faces += player.DrawUp(size, by_effect)
                 else:

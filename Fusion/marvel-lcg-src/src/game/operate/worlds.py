@@ -737,6 +737,11 @@ class Worlds:
         "HoldingCell",
         "A.I.M.Envelope",
         "S.H.I.E.L.D.Envelope",
+        "TrapDeck",
+        "DealtTrap0",
+        "DealtTrap1",
+        "DealtTrap2",
+        "DealtTrap3",
     ]
 
     SCENARIO_AREA_NAME: TypeAlias = Literal[

@@ -30,6 +30,7 @@ type CartePapier = {
    * le bon scan, pas un scan absent.
    */
   pic_id?: string
+  traits?: string[]
 }
 
 /**
@@ -117,6 +118,8 @@ export type Catalogue = {
    * survoler la carte. Ajoute le 12/09/2026.
    */
   texte(cardId: string): string | undefined
+  /** Les traits IMPRIMÉS (« AERIAL », « Dark Elf »), pour la traduction posée sur le scan. */
+  traits?(cardId: string): string[]
   /**
    * Les cartes dont le nom contient ce fragment, au plus `limite` (40 par
    * defaut). Sert au mode manuel, SEUL endroit ou l'on cherche une carte qui
@@ -170,6 +173,7 @@ export function construire(donnees: unknown): Catalogue {
   const aspects = new Map<string, Aspect>()
   const types = new Map<string, string>()
   const textes = new Map<string, string>()
+  const traits = new Map<string, string[]>()
   /** Nom (et pic_id eventuel) de CHAQUE carte, pour `chercherParNom`. */
   const nomsParCarte = new Map<string, { name: string; pic_id?: string }>()
   const sets = new Map<string, string>()
@@ -181,6 +185,7 @@ export function construire(donnees: unknown): Catalogue {
       const id = carte?.card_id
       if (typeof id !== 'string') continue
       if (typeof carte.text === 'string' && carte.text.trim()) textes.set(id, carte.text)
+      if (Array.isArray(carte.traits) && carte.traits.length > 0) traits.set(id, carte.traits.map(String))
       if (typeof carte.set_name === 'string' && carte.set_name.trim()) sets.set(id, carte.set_name.trim())
       const pv = pvImprimes(carte.desc?.HP)
       if (pv !== undefined) parCarte.set(id, pv)
@@ -225,6 +230,7 @@ export function construire(donnees: unknown): Catalogue {
     aspect: (cardId) => aspects.get(cardId),
     type: (cardId) => types.get(cardId),
     texte: (cardId) => textes.get(cardId),
+    traits: (cardId) => traits.get(cardId) ?? [],
     chercherParNom: (fragment, limite = 40) => {
       const cherche = fragment.trim().toLowerCase()
       if (cherche.length < 2) return []

@@ -50,7 +50,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "Cost", "UnitCost", "HP", "ATK", "THW", "DEF", "REC", "HS", "SCH",
         "RES", "Boost", "Uses",
         "Toughness", "Guard", "Quickstrike", "Retaliate", "Surge", "Assault",
-        "ATK+", "SCH+", "THW+",
+        "ATK+", "SCH+", "THW+", "DEF+",
         "Hazard", "Crisis", "Acceleration", "Amplify",
         "StartingThreat", "TargetThreat", "EscalationThreat",
         "GiveTo", "Nemesis", "Restricted",
@@ -267,6 +267,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # Les « pigeon » vivent sur le complot principal du scenario Vulture :
         # ils remplacent la menace qu'on voudrait retirer, trois pour trois.
         'formula', 'sanity', 'pigeon',
+        'shame',  # CORRECTIF : compteur du pack custom hunting_season (Nugget), Reptilian Rage hs060, max 3
+        'rat',  # CORRECTIF : compteur du pack custom hunting_season (Nugget), Vermin hs200 (allie) et hs204 (sbire)
         # Les Spider-Bots de l'arbre Web-Spinner portent leurs propres compteurs.
         'bot',
         # CORRECTIF : compteur du pack custom iron_lad (CptScorp). Ion

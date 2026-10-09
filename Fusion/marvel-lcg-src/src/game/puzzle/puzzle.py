@@ -71,6 +71,10 @@ class RunPuzzle:
             de_cote = list(self.world.aside_deck.Get(True)) \
                 + [x for p in self.world.const_players for x in p.set_aside_deck.Get(True)] \
                 + [x for p in self.world.const_players for x in p.set_aside_nemesis_sets.Get(True)]
+            # (09/10/2026, Hunting Season) : les decks supplementaires du scenario
+            # (paquet de pieges de Kraven) aussi, sinon `Remove` fabriquait un doublon.
+            de_cote += [x for d in self.world.additional_decks + self.world.additional_discard_piles
+                        for x in d.Get(True)]
             for face in de_cote:
                 if face is not None and face.IsName(card):
                     return face
@@ -718,6 +722,22 @@ class RunPuzzle:
         world.stat.OnPhaseEnd()
 
         Message.AfterPhaseEnd(world.phase_id, "Player", phase_message).Send()
+
+    def EndVillainPhase(self) -> None:
+        """FERME la phase du mechant, comme `phase_end("Villain")` du moteur (Hunting Season : « quand la phase du mechant se termine »)."""
+        from game.message import Message
+        from game.world.phase import Phase
+
+        world = self.world
+        world.phase.SetState(Phase.State.EndPhase)
+        world.current_player = None
+
+        phase_message = Message.WhenPhaseEnd(world.phase_id, "Villain", world)
+        phase_message.Send()
+
+        world.stat.OnPhaseEnd()
+
+        Message.AfterPhaseEnd(world.phase_id, "Villain", phase_message).Send()
 
     def BeginVillainPhase(self) -> None:
         """Ouvre la PHASE DU MECHANT, sans la jouer.

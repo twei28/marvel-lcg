@@ -515,6 +515,13 @@
    "cartes": 22,
    "depuis": "2026-09-25",
    "note": "Auteur RyCoRan (meme gabarit que Red Sonja). cn001a-e identite a CINQ faces (Thief et Barbarian heros + alter-ego Conan, King Conan heros + alter-ego roi mis de cote au Setup, drapeau moteur `hors_pile_identite`), cn002-cn012a/b set heros (11 cartes distinctes, 16 exemplaires dont The Cimmerian recto/verso mise en jeu au Setup), cn013 obligation, cn014-cn017 set nemesis (deux sbires nemesis Hrothgar et Hymdul). Compteurs MAISON `crom` et `serpent`. Aucune decklist d'auteur : player_deck vide. Voir .planning/todos/2026-09-25-portage-conan.md."
+  },
+  "hs": {
+   "pack": "hunting_season",
+   "libelle": "178. Custom (Hunting Season)",
+   "cartes": 239,
+   "depuis": "2026-10-08",
+   "note": "Auteur Nugget. Campagne en cinq scenarios (Vermin, Scorpion, The Lizard, Vulture, Kraven), 239 entrees JSON pour 226 cartes physiques, Lodge, mode expert et Hunter. Portage du 08/10/2026, dossier source .planning/hunting-season/."
   }
  }
 }

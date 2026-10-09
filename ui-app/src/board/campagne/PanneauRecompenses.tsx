@@ -167,7 +167,7 @@ export function PanneauRecompenses({
             expert: campagne.difficulte === 'expert',
             perdue: verdict.perdue,
           })
-          if (!verdict.perdue && !reprise.applicable) {
+          if (!verdict.perdue && !reprise.applicable && !scenario.defaite_continue) {
             setEtat({ phase: 'absent' })
             return
           }
@@ -292,11 +292,15 @@ export function PanneauRecompenses({
       return suite
     })
 
+  // Une défaite qui fait continuer la campagne (`defaite_continue`) a ses
+  // propres gains : ses champs se montrent et se valident comme une victoire.
+  const continueSurDefaite = !gagne && Boolean(scenario.defaite_continue) && !scenario.final
+  const champsVisibles = gagne || continueSurDefaite
   const visibles = champs.filter((c) => conditionRemplie(c, monde as World))
   const manquants = visibles.filter((champ) => {
-    // Aucun champ n'est affiché à la défaite : en exiger un bloquerait le
-    // bouton sur une case que personne ne peut voir ni remplir.
-    if (!gagne) return false
+    // Aucun champ n'est affiché à la défaite (sauf `defaite_continue`) : en
+    // exiger un bloquerait le bouton sur une case que personne ne peut voir.
+    if (!champsVisibles) return false
     if (champ.type !== 'choix' || !champ.obligatoire) return false
     const joueurs = champ.parJoueur ? [...Array(total).keys()] : [0]
     return joueurs.some(
@@ -383,7 +387,7 @@ export function PanneauRecompenses({
         carnet: carnetApres,
         // Une défaite ne termine rien : le scénario reste à jouer. Ce qui se
         // termine, c'est la campagne, et c'est `perdue` qui le dit.
-        termines: gagne
+        termines: gagne || continueSurDefaite
           ? [...new Set([...(campagne.termines ?? []), scenario.id])]
           : (campagne.termines ?? []),
         partieEnCours: null,
@@ -460,7 +464,13 @@ export function PanneauRecompenses({
           détecteur peut se tromper, voir l'en-tête du fichier) ; ce qui
           manquait, c'est de le DIRE — sans cette ligne, un joueur qui trouve
           ces cases vides croirait à un bug plutôt qu'au mode qu'il a choisi. */}
-      {gagne && estModeManuel(monde) && visibles.some((c) => c.type === 'auto') ? (
+      {continueSurDefaite ? (
+        <p className="camp-recomp-defaite">
+          {t('Scénario perdu : la campagne continue avec les gains de la défaite.')}
+        </p>
+      ) : null}
+
+      {champsVisibles && estModeManuel(monde) && visibles.some((c) => c.type === 'auto') ? (
         <p className="camp-recomp-aide-manuel">
           {t(
             'Mode manuel : le moteur ne surveille plus la table, les cases « relevé par le jeu » restent à remplir à la main.'
@@ -468,7 +478,7 @@ export function PanneauRecompenses({
         </p>
       ) : null}
 
-      {visibles.length && gagne ? (
+      {visibles.length && champsVisibles ? (
         <div className="camp-recomp-champs">
           {visibles.map((champ) => (
             <ChampRecompense
@@ -483,7 +493,7 @@ export function PanneauRecompenses({
             />
           ))}
         </div>
-      ) : gagne ? (
+      ) : champsVisibles ? (
         <p className="camp-recomp-rien">
           {estFinal
             ? t('Hydra est vaincue. Rien de plus à reporter : tournez la page.')

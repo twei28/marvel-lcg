@@ -34,6 +34,13 @@ export type ScenarioCampagne = {
   defaite?: RegleDefaite
   /** Ce qu'il faut re-préparer avant de rejouer ce scénario après une défaite. */
   reprise?: RegleReprise
+  /**
+   * Une défaite NE fait PAS rejouer ce scénario : elle a ses propres gains,
+   * notés au carnet, et la campagne passe au suivant (Hunting Season, livret
+   * p.4 à 9 : « LOSS » donne de l'expérience et des pénalités). Le panneau
+   * s'ouvre donc aussi sur une défaite, montre les champs et valide le scénario.
+   */
+  defaite_continue?: boolean
   pages?: { intro?: string[]; regles?: string[]; epilogue?: string[] }
   victoire?: ChampVictoire[]
 }

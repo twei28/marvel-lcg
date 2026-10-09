@@ -43,4 +43,9 @@ describe('nomDeCompteur', () => {
     expect(nomDeCompteur('crom')).toBe('Crom')
     expect(nomDeCompteur('serpent')).toBe('serpent')
   })
+
+  it('traduit le compteur honte de Hunting Season (hs060)', () => {
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('shame')).toBe('honte')
+  })
 })

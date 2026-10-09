@@ -1,0 +1,11 @@
+{
+  "version": "0.5.8",
+  "name": "Feral Instincts",
+  "encounters": [
+    "hs141",
+    "hs142",
+    "hs143",
+    "hs144",
+    "hs145"
+  ]
+}

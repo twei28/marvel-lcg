@@ -1,0 +1,44 @@
+{
+  "version": "0.5.8",
+  "name": "The Lizard",
+  "villain": [
+    "hs055a,hs055b",
+    "hs056a,hs056b"
+  ],
+  "expert": true,
+  "schemes": [
+    "hs057a,hs057b",
+    "hs058a,hs058b",
+    "hs059a,hs059b"
+  ],
+  "set_aside": [],
+  "encounters": [
+    "hs060",
+    "hs061",
+    "hs062",
+    "hs063",
+    "hs064",
+    "hs065",
+    "hs066",
+    "hs067",
+    "hs068",
+    "hs069",
+    "hs070",
+    "hs071",
+    "hs072",
+    "hs073",
+    "hs074",
+    "hs075",
+    "hs076",
+    "hs077",
+    "hs078",
+    "hs079"
+  ],
+  "encounter_sets": [
+    "standard",
+    "expert"
+  ],
+  "modular_sets": [
+    "hs_lizard_thralls"
+  ]
+}

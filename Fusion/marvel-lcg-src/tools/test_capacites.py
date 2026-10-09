@@ -14129,7 +14129,7 @@ CAS = [
         "scenario": "gorr",
         "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('gb012')",
-                          "Puzzle.Exhaust('01001a')",
+                          "Puzzle.Exhaust('Peter Parker')",
                           ],
         "declencher": ["Puzzle.Attack('gb001')"],
         "verifier": "gorr_deux_cartes_defaussees",
@@ -14263,7 +14263,7 @@ CAS = [
                      "4 pour deux"),
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.Reveal('gb020')"],
         "declencher": [],
         "verifier": "gorr_deux_attaques",
@@ -14315,8 +14315,8 @@ CAS = [
                      "`identite.IsConfused()`"),
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
-                          "Puzzle.PutIntoPlay('ih001')", "Puzzle.Confuse('01001a')"],
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+                          "Puzzle.PutIntoPlay('ih001')", "Puzzle.Confuse('01001b')"],
         "declencher": ["Puzzle.Attack('ih001')"],
         "verifier": "etat_attendu",
         # ATQ 1 imprimee + 2 = 3 degats sur un heros incline.
@@ -14327,7 +14327,7 @@ CAS = [
         "pourquoi": "la condition « if you are confused » doit vraiment filtrer",
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.PutIntoPlay('ih001')"],
         "declencher": ["Puzzle.Attack('ih001')"],
         "verifier": "etat_attendu",
@@ -14339,7 +14339,7 @@ CAS = [
                      "`identite.TakeIndirectDamage(this, 3, effect)`"),
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Confuse('01001a')"],
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Confuse('01001b')"],
         "declencher": ["Puzzle.Reveal('ih002')"],
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 3},
@@ -14360,7 +14360,7 @@ CAS = [
                      "`joueur.engaged_minions` et `DoAttackYou`"),
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.PutIntoPlay('ih001')"],
         "declencher": ["Puzzle.Reveal('ih003')"],
         "accepter_choix": True,
@@ -14401,7 +14401,7 @@ CAS = [
         # toute facon) : la substitution laissait le cas vert. L'allie est donc
         # blesse d'abord — il ne lui reste qu'1 PV — et on mesure l'EXCES qui
         # passe sur le heros : 2 degats avec overkill, 0 sans.
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.PutIntoPlay('nv001')", "Puzzle.PutIntoPlay('01058')",
                           "Puzzle.Damage('01058', 2)"],
         "declencher": ["Puzzle.Attack('nv001', defender='01058')"],
@@ -14414,7 +14414,7 @@ CAS = [
                      "+ `Faces.RemoveAllFromGame` : l'allie ne va pas a la defausse"),
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.Reveal('nv002')", "Puzzle.PutIntoPlay('01058')"],
         "declencher": ["Puzzle.Attack('gb001', defender='01058')"],
         "verifier": "nv_allie_retire_du_jeu",
@@ -26850,7 +26850,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')",
                           "Puzzle.PutIntoPlay('01121')",
-                          "Puzzle.Damage('01001a', 5)"],
+                          "Puzzle.Damage('Peter Parker', 5)"],
         "main_exclusive": ["vz011", "01090", "01090"],
         "ne_pas_depenser": ["vz011"],
         "declencher": [],
@@ -27025,7 +27025,7 @@ CAS = [
         "mise_en_place": [],
         "main_exclusive": ["vz022", "01089"],
         "ne_pas_depenser": ["vz022"],
-        "declencher": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.ChangeForm('01001a')"],
         "accepter_choix": True,
         "verifier": "etat_attendu",
         "attendu": {"statuts": [["01001a", "Tough"]]},
@@ -27080,7 +27080,7 @@ CAS = [
         "scenario": "rhino",
         "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')",
-                          "Puzzle.Exhaust('01001a')"],
+                          "Puzzle.Exhaust('Peter Parker')"],
         "main_exclusive": ["vz013", "vz025"],
         "declencher": [],
         "jouer": ["vz013"],
@@ -27182,7 +27182,7 @@ CAS = [
         "scenario": "rhino",
         "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')",
-                          "Puzzle.Damage('01001a', 3)",
+                          "Puzzle.Damage('Peter Parker', 3)",
                           "Puzzle.PutIntoPlay('vz032')"],
         "declencher": ["Puzzle.Action('vz032', 'HeroAction')"],
         "cibles": ["01094"],
@@ -30656,7 +30656,7 @@ CAS = [
                      "⚠ Le heros est INCLINE, sans quoi il se declare defenseur et sa "
                      "DEF absorbe tout (lecon nt003a)"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.PutIntoPlay('mu002')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('01105', '01106')"],
@@ -30671,7 +30671,7 @@ CAS = [
                      "tire rien. Il frappe a 2 + sa seule carte de boost normale (01105 "
                      "I'm Tough, 0 icone) = 2"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.PutIntoPlay('mu002')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('01105', '01126')"],
@@ -30691,7 +30691,7 @@ CAS = [
                      "action — et Backflip aurait en plus PREVENU l'attaque de Muse, "
                      "rendant le cas vert pour la mauvaise raison"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.PutIntoPlay('mu003')"],
         "main_exclusive": ["01007", "01090"],
         "declencher": [], "jouer": ["01007"],
@@ -30705,7 +30705,7 @@ CAS = [
                      "filtre, TOUTE carte jouee declencherait une attaque et le set "
                      "serait injouable"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.PutIntoPlay('mu003')"],
         "main_exclusive": ["05023", "01090"],
         "declencher": [], "jouer": ["05023"],
@@ -30776,7 +30776,7 @@ CAS = [
                      "Muse est seme dans le deck rencontre, le heros est incline : il "
                      "entre en jeu et attaque a 2"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('mu003')"],
         "declencher": ["Puzzle.Reveal('mu006')"],
@@ -30795,7 +30795,7 @@ CAS = [
                      "Avec Backflip ou Enhanced Spider-Sense, le pilote les jouait pour "
                      "PREVENIR l'attaque et le cas mesurait zero degat"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('mu006')"],
         "main_exclusive": ["01006", "01007"],
@@ -30808,7 +30808,7 @@ CAS = [
         "pourquoi": ("le contre-cas : X vaut ZERO et la carte ne boost pas. Rhino frappe "
                      "a 2, sa valeur nue. Sans ce temoin, un X fige passerait inapercu"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('mu006')"],
         "main_exclusive": ["01086", "01090"],
@@ -31487,7 +31487,7 @@ CAS = [
         "pourquoi": ("Hydra Bomber porte 1 icone de boost : « ready 1 character you control "
                      "for each icon ». Peter Parker est incline avant l'entree en jeu"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.CreateEncounterDeck('01110')", "Puzzle.Exhaust('01001b')"],
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01110')", "Puzzle.Exhaust('01001a')"],
         "main_exclusive": ["53017", "01088"],
         "declencher": [], "jouer": ["53017"],
         "verifier": "etat_attendu",
@@ -31500,7 +31500,7 @@ CAS = [
                      "les icones. ⚠ PAS Whirlwind : sa capacite « [star] Boost » compte, la "
                      "carte dit « each icon ([star] and [boost]) »"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.CreateEncounterDeck('39043')", "Puzzle.Exhaust('01001b')"],
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('39043')", "Puzzle.Exhaust('01001a')"],
         "main_exclusive": ["53017", "01088"],
         "declencher": [], "jouer": ["53017"],
         "verifier": "etat_attendu",
@@ -32190,7 +32190,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.Counter('60128b', 'speed', 5)",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.PutIntoPlay('60130')"
@@ -32641,7 +32641,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60144')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.CreatePlayerDeck('01088')"
         ],
         "declencher": [
@@ -32677,7 +32677,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60144')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.CreatePlayerDeck('01089', '01088')"
         ],
         "declencher": [
@@ -32708,7 +32708,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60144')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.CreatePlayerDeck('01088', '01088')"
         ],
         "declencher": [
@@ -32878,7 +32878,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60146')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60146')"
@@ -32908,7 +32908,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60146')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60146')",
@@ -32939,7 +32939,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01101', '01186')",
             "Puzzle.PutIntoPlay('60147')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60147')"
@@ -32963,7 +32963,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01101')",
             "Puzzle.PutIntoPlay('60147')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60147')"
@@ -33011,7 +33011,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60148')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60148')"
@@ -33040,7 +33040,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60148')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60148')"
@@ -33101,7 +33101,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Boost('60149')"
@@ -33233,7 +33233,7 @@ CAS = [
             "Puzzle.Reveal('60150')"
         ],
         "declencher": [
-            "Puzzle.ChangeForm('01001a')"
+            "Puzzle.ChangeForm('01001b')"
         ],
         "verifier": "etat_attendu",
         "main_exclusive": [
@@ -33256,7 +33256,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')"
         ],
         "declencher": [
-            "Puzzle.ChangeForm('01001a')"
+            "Puzzle.ChangeForm('01001b')"
         ],
         "verifier": "etat_attendu",
         "main_exclusive": [
@@ -33402,7 +33402,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -33429,7 +33429,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -33456,7 +33456,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -33583,7 +33583,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01193', '01186', '01193')",
             "Puzzle.PutIntoPlay('60154', under_control=True)",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60086')"
@@ -33620,7 +33620,7 @@ CAS = [
             "Puzzle.PutIntoPlay('60154', under_control=True)",
             "Puzzle.Exhaust('60154')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60086')"
@@ -33938,7 +33938,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -34024,7 +34024,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -34163,7 +34163,7 @@ CAS = [
         "declencher": [
             "Puzzle.PutIntoPlay('60197')",
             "Puzzle.Damage('60197', 4)",
-            "Puzzle.Damage('01001a', 2)",
+            "Puzzle.Damage('Peter Parker', 2)",
             "Puzzle.Attack('01001a', '60197')"
         ],
         "verifier": "fne3p_racket",
@@ -35501,7 +35501,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.Reveal('60177')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
         "declencher": [
@@ -35655,7 +35655,7 @@ CAS = [
             "Puzzle.PutIntoPlay('01101')",
             "Puzzle.Reveal('60196')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('01101')"
@@ -35802,7 +35802,7 @@ CAS = [
             "Puzzle.Remove('60125')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
         "declencher": [
@@ -35827,7 +35827,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.PutIntoPlay('60198')"
@@ -35946,7 +35946,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.PutIntoPlay('60203')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.PutIntoPlay('60200')"
@@ -35985,7 +35985,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01193', '01193', '01186')",
             "Puzzle.PutIntoPlay('60201')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Scheme('60201')",
@@ -36515,7 +36515,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -36546,7 +36546,7 @@ CAS = [
             "Puzzle.Flip('60159a')",
             "Puzzle.Remove('01167')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
         ],
@@ -36566,7 +36566,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
         ],
@@ -36614,7 +36614,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.Stun('60159b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
@@ -36634,7 +36634,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37019,7 +37019,7 @@ CAS = [
             "Puzzle.Counter('60163b', 'support', 1)",
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
         ],
@@ -37047,7 +37047,7 @@ CAS = [
             "Puzzle.Flip('60163a')",
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
         ],
@@ -37396,7 +37396,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37457,7 +37457,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Reveal('60166')",
             "Puzzle.Stun('01001a')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37489,7 +37489,7 @@ CAS = [
             "Puzzle.Reveal('60166')",
             "Puzzle.Stun('01001a')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37518,7 +37518,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -37544,7 +37544,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.Stun('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
@@ -37694,7 +37694,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Reveal('60168')",
             "Puzzle.Confuse('01001a')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37724,7 +37724,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -37759,7 +37759,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.Confuse('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
@@ -37889,7 +37889,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.PutIntoPlay('60170')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37909,7 +37909,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -38324,7 +38324,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -38344,7 +38344,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -39300,7 +39300,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60065')"
@@ -39539,7 +39539,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
             "Puzzle.PutIntoPlay('60069')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60065')"
@@ -39618,7 +39618,7 @@ CAS = [
             "Puzzle.PutIntoPlay('01020', under_control=True)",
             "Puzzle.Reveal('60071')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -39651,7 +39651,7 @@ CAS = [
             "Puzzle.PutIntoPlay('01011', under_control=True)",
             "Puzzle.Reveal('60071')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -39675,7 +39675,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193', '01193')",
             "Puzzle.PutIntoPlay('60072')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60072')"
@@ -39736,7 +39736,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Boost('60073')"
@@ -39769,7 +39769,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -39812,7 +39812,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186')"
         ],
@@ -39959,7 +39959,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60076')"
@@ -39985,7 +39985,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.Counter('60079', 'charge', -2)"
         ],
         "declencher": [
@@ -40399,7 +40399,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -40419,7 +40419,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -40504,7 +40504,7 @@ CAS = [
             "Puzzle.PutIntoPlay('60101')",
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60101')"
@@ -40917,7 +40917,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.SetThreat('60113a', 1)",
             "Puzzle.Thwart('01001a')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -41046,7 +41046,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60110b')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41065,7 +41065,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41129,7 +41129,7 @@ CAS = [
             "Puzzle.Flip('60110b')",
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.PutIntoPlay('01020', under_control=True)",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41173,7 +41173,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60110b')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41282,7 +41282,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41323,7 +41323,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41375,7 +41375,7 @@ CAS = [
             "Puzzle.Remove('60124')",
             "Puzzle.Remove('60125')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41399,7 +41399,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193')"
         ],
@@ -41521,7 +41521,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60086')"
@@ -41546,7 +41546,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.Stun('01001a')"
         ],
         "declencher": [
@@ -41566,7 +41566,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.Stun('01001a')"
         ],
         "declencher": [
@@ -41588,7 +41588,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.Damage('60087', 1)",
             "Puzzle.Damage('60087', 40)",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.Stun('01001a')"
         ],
         "declencher": [
@@ -41609,7 +41609,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60089')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60086')"
@@ -41722,7 +41722,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Boost('60090')"
@@ -41881,7 +41881,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
             "Puzzle.PutIntoPlay('60093')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.Stun('01001a')"
         ],
         "declencher": [
@@ -41902,7 +41902,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
             "Puzzle.PutIntoPlay('60093')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60093')"
@@ -41967,7 +41967,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.Stun('01001a')"
         ],
         "declencher": [
@@ -41987,7 +41987,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Reveal('60096')"
@@ -42081,7 +42081,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Attach('60122', '01001a')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -42404,7 +42404,7 @@ CAS = [
             "Puzzle.Attach('60123', '01001a')",
             "Puzzle.Attach('60124', '01001a')",
             "Puzzle.Attach('60125', '01001a')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Boost('60126')"
@@ -42554,7 +42554,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Boost('60183')"
@@ -42742,7 +42742,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.PutIntoPlay('60192')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60192')"
@@ -42814,7 +42814,7 @@ CAS = [
             "Puzzle.PutIntoPlay('60193')",
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Attack('60193')"
@@ -42838,7 +42838,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('01001a')"
+            "Puzzle.Exhaust('Peter Parker')"
         ],
         "declencher": [
             "Puzzle.Boost('60193')"
@@ -42862,7 +42862,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.PutIntoPlay('60193')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('01001a')",
+            "Puzzle.Exhaust('Peter Parker')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -46395,6 +46395,5009 @@ CAS = [
         "cibles": ["01094"],
         "verifier": "mc4db_redwing_dessus_visible",
     },
+    {
+        "nom": "[hs1] hs007 Regular Rats : 3 RAT engages donnent 3 PV max a chacun (X plafonne a 3)",
+        "pourquoi": "HP X imprime remplace par 1 + ThisGainKeyword(X-1)",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('hs008')",
+            "Puzzle.PutIntoPlay('hs009')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('hs007')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "pv_max": [
+                [
+                    "hs007",
+                    3
+                ],
+                [
+                    "hs008",
+                    3
+                ]
+            ],
+            "en_jeu": [
+                "hs007",
+                "hs008",
+                "hs009"
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs007 Regular Rats : seul, il garde 1 PV max (temoin du plancher)",
+        "pourquoi": "X = 1 quand il est le seul RAT engage",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('hs007')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "pv_max": [
+                [
+                    "hs007",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs001 Vermin : apres son activation, defausse 1 carte et met en jeu le RAT defausse",
+        "pourquoi": "AfterEnemyActivatesAgainstYou(ForcedResponse) ; boost = 1re carte, defausse = 2e",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.CreateEncounterDeck('hs018', 'hs007', 'hs018')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('hs001')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "hs007"
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs001 Vermin : une carte defaussee qui n'est pas un RAT n'entre pas en jeu (temoin)",
+        "pourquoi": "le filtre RAT",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.CreateEncounterDeck('hs018', 'hs019', 'hs018')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('hs001')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "hs019"
+            ],
+            "defausse_rencontre": [
+                "hs019"
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs002 Vermin : defausse 2, met en jeu le PREMIER RAT seulement",
+        "pourquoi": "range 'first RAT'",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.AdvanceVillain()",
+            "Puzzle.CreateEncounterDeck('hs006', 'hs013', 'hs012', 'hs006')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('hs002')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "hs012"
+            ],
+            "hors_jeu": [
+                "hs013"
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs021 Bringer of Plague : place autant de menace que celle portee par les RAT",
+        "pourquoi": "MenaceSurLesRats",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('hs007')",
+            "Puzzle.Token('hs007', 'threat', 2)"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs021')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "menace": [
+                [
+                    "hs021",
+                    5
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs020 Vermin Cloning : met en jeu une copie de Vermin Clone",
+        "pourquoi": "Find.FindAndPutIntoPlay",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.CreateEncounterDeck('hs016')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs020')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "hs016"
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs024 Rabid Assault (heros) : Vermin attaque et la carte prend surge sans RAT engage",
+        "pourquoi": "WhenThisRevealed('Hero') + surge si aucun RAT",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreateEncounterDeck('hs006')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs024')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "carte_du_surge": "hs006"
+        }
+    },
+    {
+        "nom": "[hs1] hs026 A Thousand Bites : un RAT engage, menace sur lui (1er choix du pilote) et surge",
+        "pourquoi": "choix menace ou indirect",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('hs007')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs026')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "jetons": [
+                [
+                    "hs007",
+                    "threat",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs018 Swarmed by Rats : les RAT engages avec vous gagnent guard",
+        "pourquoi": "GiveKeywordToInPlayWhenApplyThis(control_by='You')",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('hs007')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs018')"
+        ],
+        "verifier": "fne3a_mots_cles",
+        "attendu": {
+            "carte": "hs007",
+            "guard": True,
+            "en_jeu": [
+                "hs018"
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs018 Swarmed by Rats : un non-RAT n'a pas guard (temoin)",
+        "pourquoi": "le CardFinder RAT",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('01110')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs018')"
+        ],
+        "verifier": "fne3a_mots_cles",
+        "attendu": {
+            "carte": "01110",
+            "guard": False
+        }
+    },
+    {
+        "nom": "[hs1] hs143 Unleashed Beast : le vilain attaque le joueur",
+        "pourquoi": "DoAttackYou",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.CreateEncounterDeck('hs006')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs143')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite_min": 1
+        }
+    },
+    {
+        "nom": "[hs1] hs144 Cornered Animal : 1 degat au joueur",
+        "pourquoi": "TakeDamage 1",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs144')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite_min": 1
+        }
+    },
+    {
+        "nom": "[hs1] hs145 Cornered Animal : 1 degat au joueur",
+        "pourquoi": "TakeDamage 1",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs145')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite_min": 1
+        }
+    },
+    {
+        "nom": "[hs1] hs025 Rabid Assault (heros) : Vermin attaque et la carte prend surge sans RAT engage",
+        "pourquoi": "WhenThisRevealed('Hero') + surge si aucun RAT",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreateEncounterDeck('hs006')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs025')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "carte_du_surge": "hs006"
+        }
+    },
+    {
+        "nom": "[hs1] hs027 A Thousand Bites : un RAT engage, menace sur lui (1er choix du pilote) et surge",
+        "pourquoi": "choix menace ou indirect",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('hs007')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs027')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "jetons": [
+                [
+                    "hs007",
+                    "threat",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs028 A Thousand Bites : un RAT engage, menace sur lui (1er choix du pilote) et surge",
+        "pourquoi": "choix menace ou indirect",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('hs007')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs028')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "jetons": [
+                [
+                    "hs007",
+                    "threat",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs029 A Thousand Bites : un RAT engage, menace sur lui (1er choix du pilote) et surge",
+        "pourquoi": "choix menace ou indirect",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.PutIntoPlay('hs007')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs029')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "jetons": [
+                [
+                    "hs007",
+                    "threat",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs1] hs015 Vermin Clone : Guard imprime",
+        "pourquoi": "Guard imprime du script",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.PutIntoPlay('hs015')"],
+        "declencher": ["Puzzle.Reveal('hs006')"],
+        "verifier": "fne3a_mots_cles",
+        "attendu": {"carte": "hs015", "guard": True}
+    },
+    {
+        "nom": "[hs1] hs141 Feral Rage : le complot du vilain est remplace par une attaque, la carte est defaussee",
+        "pourquoi": "SetBeInstead",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.PutIntoPlay('hs141')"],
+        "declencher": ["Puzzle.Scheme('hs001')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite_min": 1, "defausse_rencontre": ["hs141"]}
+    },
+    {
+        "nom": "[hs1] hs004a Mise en place : Even More Rats et Regular Rats en jeu",
+        "pourquoi": "Setup de la manigance 1A",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('hs144')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs006"]}
+    },
+    {
+        "nom": "[hs1] hs003 Vermin stade 3 : defausse 2, TOUS les RAT entrent en jeu",
+        "pourquoi": "range 'each RAT'",
+        "scenario": "hs_vermin_expert",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceVillain()", "Puzzle.CreateEncounterDeck('hs018', 'hs007', 'hs008', 'hs018')"],
+        "declencher": ["Puzzle.Attack('hs003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs007", "hs008"]}
+    },
+    {
+        "nom": "[hs1] hs008 Regular Rats : en renfort, entre en jeu engage avec le joueur",
+        "pourquoi": "Boost",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs008')"],
+        "declencher": ["Puzzle.Attack('hs001')"],
+        "verifier": "etat_attendu",
+        "attendu": {'en_jeu': ['hs008']}
+    },
+    {
+        "nom": "[hs1] hs012 Feral Rats : en renfort, entre en jeu engage avec le joueur",
+        "pourquoi": "Boost",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs012')"],
+        "declencher": ["Puzzle.Attack('hs001')"],
+        "verifier": "etat_attendu",
+        "attendu": {'en_jeu': ['hs012']}
+    },
+    {
+        "nom": "[hs1] hs022 A Mischief of Rats : defausse 2 cartes, un RAT peut entrer en jeu ou ajouter de la menace",
+        "pourquoi": "Discard X=2 x stade",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs007','hs007')"],
+        "declencher": ["Puzzle.Reveal('hs022')"],
+        "verifier": "etat_attendu",
+        "attendu": {'defausse_rencontre': ['hs007', 'hs007']}
+    },
+    {
+        "nom": "[hs1] hs005a Rats, Rats and More Rats : Bringer of Plague est revele",
+        "pourquoi": "Search & reveal",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs006','hs021')", "Puzzle.PutIntoPlay('hs007')", "Puzzle.Token('hs007','threat',1)"],
+        "declencher": ['Puzzle.AdvanceMainScheme()'],
+        "verifier": "etat_attendu",
+        "attendu": {'en_jeu': ['hs005b', 'hs021']}
+    },
+    {
+        "nom": "[hs1] hs142 Primal Strength : le vilain de stade 1 gagne ATK+1 (1 imprime + 1)",
+        "pourquoi": "GiveKeywordToAttached",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs006')"],
+        "declencher": ["Puzzle.Reveal('hs142')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["hs001", "attack", 1]]}
+    },
+    {
+        "nom": "[hs1] hs142 Primal Strength : identite prete : l Interrupt defausse Primal Strength (1 degat)",
+        "pourquoi": "GiveKeywordToAttached",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs006')"],
+        "declencher": ["Puzzle.Reveal('hs142')", "Puzzle.Attack('hs001')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hs142"]}
+    },
+    {
+        "nom": "[hs1] hs004b Rats and More Rats 1B : apres l'etape 1, 1 menace sur chaque RAT",
+        "pourquoi": "AfterResolveVillainPhaseStep 1",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs012')"],
+        "declencher": [],
+        "verifier": "hs_apres_etape_1",
+        "attendu": {'jetons': [['hs012', 'threat', 1], ['hs007', 'threat', 1]]}
+    },
+    {
+        "nom": "[hs1] hs004b + hs006 Special : menace des RAT + complot >= cible, le stade est accompli (2A/2B)",
+        "pourquoi": "Special d'Even More Rats",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs012')", "Puzzle.Token('hs012','threat',30)"],
+        "declencher": [],
+        "verifier": "hs_apres_etape_1",
+        "attendu": {'en_jeu': ['hs005b']}
+    },
+    {
+        "nom": "[hs1] hs004b + hs006 Special : sous la cible, le complot n'avance pas (temoin)",
+        "pourquoi": "Special d'Even More Rats",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs012')"],
+        "declencher": [],
+        "verifier": "hs_apres_etape_1",
+        "attendu": {'hors_jeu': ['hs005b']}
+    },
+    {
+        "nom": "[hs1] hs016 Vermin Clone : engage avec vous, vos personnages ne peuvent pas attaquer un Feral Rats",
+        "pourquoi": "PlayersCannotAttackWhile",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs016')", "Puzzle.PutIntoPlay('hs012')"],
+        "declencher": ["Puzzle.ChangeForm('01001b')", "Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["hs012"],
+        "verifier": "etat_attendu",
+        "attendu": {'en_jeu': ['hs012'], 'degats': [['hs012', 0]]}
+    },
+    {
+        "nom": "[hs1] hs016 Vermin Clone : sans le Clone, le Feral Rats est vaincu (temoin)",
+        "pourquoi": "contre-cas",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs012')"],
+        "declencher": ["Puzzle.ChangeForm('01001b')", "Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["hs012"],
+        "verifier": "etat_attendu",
+        "attendu": {'hors_jeu': ['hs012']}
+    },
+    {
+        "nom": "[hs2] hs033a Thirst for Revenge : mise en place, JJ Jameson en jeu, la Queue attachee a Scorpion, stade 1B",
+        "pourquoi": "Setup autonome du complot",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": ["hs035", "hs036", "hs033b"],
+            "hors_jeu": ["hs033a"],
+            "attaches": [["hs030", "hs036"]]
+        }
+    },
+    {
+        "nom": "[hs2] hs035 J. Jonah Jameson : 3 degats sur l identite, ils sont prevenus et JJ recoit 1 compteur de blessure",
+        "pourquoi": "Interrupt de prevention",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Damage('Peter Parker', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "compteurs": [["hs035", "wound", 1]]}
+    },
+    {
+        "nom": "[hs2] hs035 J. Jonah Jameson : le 4e compteur (3 + 1 par heros) fait perdre les joueurs",
+        "pourquoi": "Forced Interrupt de defaite",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PlaceCounters('hs035', 'wound', 3)"],
+        "declencher": ["Puzzle.Damage('Peter Parker', 2)"],
+        "verifier": "hs_partie_perdue",
+        "attendu": {}
+    },
+    {
+        "nom": "[hs2] hs035 J. Jonah Jameson : avec 2 compteurs seulement, la partie continue (temoin)",
+        "pourquoi": "seuil exact",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PlaceCounters('hs035', 'wound', 2)"],
+        "declencher": ["Puzzle.Damage('Peter Parker', 2)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs035", "wound", 3]], "degats_identite": 0}
+    },
+    {
+        "nom": "[hs2] hs036 Scorpion s Tail : donne ATK+1 a Scorpion (2 imprime + 1)",
+        "pourquoi": "ATK+",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["hs030", "attack", 1]]}
+    },
+    {
+        "nom": "[hs2] hs036 Scorpion s Tail : apres une attaque qui blesse, l identite est etourdie",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')"],
+        "declencher": ["Puzzle.Attack('hs030')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01001b", "Stunned"]]}
+    },
+    {
+        "nom": "[hs2] hs030 Scorpion : a la fin de la phase du vilain, la Queue defaussee est remise et attachee",
+        "pourquoi": "Forced Interrupt *",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Discard('hs036')"],
+        "declencher": [],
+        "verifier": "hs_fin_phase_vilain",
+        "attendu": {"attaches": [["hs030", "hs036"]]}
+    },
+    {
+        "nom": "[hs2] hs030 Scorpion : Queue deja attachee, la fin de phase n en ajoute pas une seconde (temoin)",
+        "pourquoi": "pas de doublon",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "hs_fin_phase_vilain",
+        "attendu": {"attaches": [["hs030", "hs036"]], "taille_attaches": [["hs030", 1]]}
+    },
+    {
+        "nom": "[hs2] hs031 Scorpion : ne peut pas etre etourdi",
+        "pourquoi": "UnitCannotBeStunned",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceVillain()"],
+        "declencher": ["Puzzle.Stun('hs031')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["hs031", "Stunned"]]}
+    },
+    {
+        "nom": "[hs2] hs030 Scorpion (stade I) : peut etre etourdi (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Stun('hs030')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["hs030", "Stunned"]]}
+    },
+    {
+        "nom": "[hs2] hs036 Scorpion s Tail : 3 degats sur Scorpion places sur la Queue (1er choix du pilote)",
+        "pourquoi": "Interrupt, replacement",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Damage('hs030', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["hs030", 0]], "jetons": [["hs036", "damage", 3]]}
+    },
+    {
+        "nom": "[hs2] hs036 Scorpion s Tail : a 10 degats la Queue est mise de cote et Scorpion subit 8",
+        "pourquoi": "seuil 10 par heros",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Token('hs036', 'damage', 7)"],
+        "declencher": ["Puzzle.Damage('hs030', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"mis_de_cote_scenario": ["hs036"], "degats": [["hs030", 8]]}
+    },
+    {
+        "nom": "[hs2] hs036 Scorpion s Tail : apres une attaque qui blesse un personnage deja etourdi, 1 degat de plus",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.Stun('Peter Parker')", "Puzzle.CreateEncounterDeck('hs006', 'hs006')"],
+        "declencher": ["Puzzle.Attack('hs030')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4}
+    },
+    {
+        "nom": "[hs2] hs033b Thirst for Revenge : accomplie, JJ Jameson recoit 1 compteur de blessure",
+        "pourquoi": "When Completed",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PlaceThreat('hs033b', 6)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs035", "wound", 1]]}
+    },
+    {
+        "nom": "[hs2] hs034b Vengeful Pursuit : accomplie, remplacee par 1 compteur sur JJ et toute la menace retiree",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme()"],
+        "declencher": ["Puzzle.PlaceThreat('hs034b', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs035", "wound", 1]], "menace": [["hs034b", 0]], "en_jeu": ["hs034b"]}
+    },
+    {
+        "nom": "[hs2] hs034a Vengeful Pursuit : la 1B accomplie, la 2A se revele et passe seule au stade 2B",
+        "pourquoi": "When Revealed : Advance to stage 2B",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PlaceThreat('hs033b', 6)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs034b"], "compteurs": [["hs035", "wound", 1]]}
+    },
+    {
+        "nom": "[hs2] hs037 Tail Armor : 5 degats de la Queue vers Scorpion, s attache a la Queue",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Token('hs036', 'damage', 7)"],
+        "declencher": ["Puzzle.Reveal('hs037')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["hs036", "hs037"]], "jetons": [["hs036", "damage", 2]], "degats": [["hs030", 5]]}
+    },
+    {
+        "nom": "[hs2] hs037 Tail Armor : sans Queue, surge (temoin)",
+        "pourquoi": "surge",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Discard('hs036')", "Puzzle.CreateEncounterDeck('hs006')"],
+        "declencher": ["Puzzle.Reveal('hs037')"],
+        "verifier": "etat_attendu",
+        "attendu": {"carte_du_surge": "hs006"}
+    },
+    {
+        "nom": "[hs2] hs037 Tail Armor : les degats places sur la Queue vont sur l armure",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Reveal('hs037')"],
+        "declencher": ["Puzzle.Damage('hs030', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"jetons": [["hs037", "damage", 3], ["hs036", "damage", 0]]}
+    },
+    {
+        "nom": "[hs2] hs037 Tail Armor : a 8 degats l armure est defaussee",
+        "pourquoi": "8 ou plus",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Reveal('hs037')", "Puzzle.Token('hs037', 'damage', 6)"],
+        "declencher": ["Puzzle.Damage('hs030', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hs037"], "jetons": [["hs036", "damage", 0]]}
+    },
+    {
+        "nom": "[hs2] hs038 Honed Stinger : Scorpion gagne +1 ATK pour l attaque",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.CreateEncounterDeck('hs006', 'hs006')", "Puzzle.Reveal('hs038')"],
+        "declencher": ["Puzzle.Attack('hs030')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4, "attaches": [["hs036", "hs038"]]}
+    },
+    {
+        "nom": "[hs2] hs038 Honed Stinger : en Boost, elle est melangee dans le deck de rencontre",
+        "pourquoi": "Boost",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006', 'hs038')"],
+        "declencher": ["Puzzle.Attack('hs030')"],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_rencontre": ["hs038"]}
+    },
+    {
+        "nom": "[hs2] hs039 Tail Laser : s attache a la Queue",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Token('hs036', 'damage', 3)"],
+        "declencher": ["Puzzle.Reveal('hs039')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["hs036", "hs039"]], "jetons": [["hs036", "damage", 0]], "degats": [["hs030", 3]]}
+    },
+    {
+        "nom": "[hs2] hs040 Coiled Up : s attache a l identite et deplace 5 degats",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Token('hs036', 'damage', 7)"],
+        "declencher": ["Puzzle.Reveal('hs040')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "hs040"]], "jetons": [["hs036", "damage", 2]], "degats": [["hs030", 5]]}
+    },
+    {
+        "nom": "[hs2] hs040 Coiled Up : sans Queue, surge (temoin)",
+        "pourquoi": "surge",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Discard('hs036')", "Puzzle.CreateEncounterDeck('hs006')"],
+        "declencher": ["Puzzle.Reveal('hs040')"],
+        "verifier": "etat_attendu",
+        "attendu": {"carte_du_surge": "hs006"}
+    },
+    {
+        "nom": "[hs2] hs041 Coiled Up : la Queue mise de cote la defausse",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Token('hs036', 'damage', 14)", "Puzzle.Reveal('hs041')"],
+        "declencher": ["Puzzle.Damage('hs030', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hs041"]}
+    },
+    {
+        "nom": "[hs2] hs042 Human Fly : prevent les degats de la premiere attaque",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('hs042')"],
+        "cibles": ["hs042"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["hs042", 0]], "en_jeu": ["hs042"]}
+    },
+    {
+        "nom": "[hs2] hs042 Human Fly : limite une fois par round, la 2e attaque le vainc (temoin d epuisement)",
+        "pourquoi": "Limit once per round",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('hs042')"],
+        "cibles": ["hs042"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('01001a')", "Puzzle.Ready('01001a')", "Puzzle.Attack('01001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hs042"]}
+    },
+    {
+        "nom": "[hs2] hs043 Human Fly : des degats hors attaque ne sont pas prevenus (temoin)",
+        "pourquoi": "is_from_attack",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs043')"],
+        "declencher": ["Puzzle.Damage('hs043', 1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["hs043", 1]]}
+    },
+    {
+        "nom": "[hs2] hs043 Human Fly : en Boost, elle est donnee au joueur apres l activation",
+        "pourquoi": "AfterThisActivation",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.CreateEncounterDeck('hs043')"],
+        "declencher": ["Puzzle.Attack('hs030')"],
+        "verifier": "hs_carte_distribuee",
+        "attendu": {}
+    },
+    {
+        "nom": "[hs2] hs044 Grizzly : son attaque a perforant, le Tenace est defausse et les degats passent",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.PutIntoPlay('hs044')", "Puzzle.Tough('01001b')", "Puzzle.CreateEncounterDeck('hs006', 'hs006')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('hs044')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "statuts_absents": [["01001b", "Tough"]]}
+    },
+    {
+        "nom": "[hs2] hs044 Grizzly : l attaque d un autre vilain n est pas perforante : le Tenace absorbe tout (temoin)",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.Tough('01001b')", "Puzzle.CreateEncounterDeck('hs006', 'hs006')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('hs030')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "statuts_absents": [["01001b", "Tough"]]}
+    },
+    {
+        "nom": "[hs2] hs046 Luring Out Prey : 1 menace de plus par heros",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('hs046')"],
+        "verifier": "etat_attendu",
+        "attendu": {"jetons": [["hs046", "threat", 3]]}
+    },
+    {
+        "nom": "[hs2] hs047 A Mess of Things : 2 menaces de plus par personnage etourdi",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Stun('Peter Parker')"],
+        "declencher": ["Puzzle.Reveal('hs047')"],
+        "verifier": "etat_attendu",
+        "attendu": {"jetons": [["hs047", "threat", 4]]}
+    },
+    {
+        "nom": "[hs2] hs047 A Mess of Things : aucun etourdi, pas de menace en plus (temoin)",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('hs047')"],
+        "verifier": "etat_attendu",
+        "attendu": {"jetons": [["hs047", "threat", 2]]}
+    },
+    {
+        "nom": "[hs2] hs048 Tail Enhancements : defausse jusqu a un attachement TAIL et le revele",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006', 'hs038', 'hs006')"],
+        "declencher": ["Puzzle.Reveal('hs048')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["hs036", "hs038"]], "defausse_rencontre": ["hs006"], "dans_deck_rencontre": ["hs006"]}
+    },
+    {
+        "nom": "[hs2] hs050 Stinger Stab (heros) : Scorpion attaque, etourdi -> confus",
+        "pourquoi": "Hero",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.ChangeForm('01001b')", "Puzzle.Stun('01001b')"],
+        "declencher": ["Puzzle.Reveal('hs050')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01001a", "Stunned"], ["01001a", "Confused"]]}
+    },
+    {
+        "nom": "[hs2] hs052 Restraining Pincers : sans ressource, l identite est etourdie",
+        "pourquoi": "choix",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Exhaust('01001a')"],
+        "main_exclusive": ["09032"],
+        "declencher": ["Puzzle.Reveal('hs052')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01001b", "Stunned"]]}
+    },
+    {
+        "nom": "[hs2] hs052 Restraining Pincers : avec RR en main, on paie et l identite n est pas etourdie (temoin)",
+        "pourquoi": "choix",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Exhaust('01001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('hs052')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["01001b", "Stunned"]]}
+    },
+    {
+        "nom": "[hs2] hs052 Restraining Pincers : deja etourdi et rien a depenser, elle prend surge",
+        "pourquoi": "surge",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Stun('Peter Parker')", "Puzzle.Exhaust('01001a')", "Puzzle.CreateEncounterDeck('hs006')"],
+        "main_exclusive": ["09032"],
+        "declencher": ["Puzzle.Reveal('hs052')"],
+        "verifier": "etat_attendu",
+        "attendu": {"carte_du_surge": "hs006"}
+    },
+    {
+        "nom": "[hs2] hs052 Restraining Pincers : en Boost, des degats a l identite l epuisent",
+        "pourquoi": "Boost",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.CreateEncounterDeck('hs052')"],
+        "declencher": ["Puzzle.Attack('hs030')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["01001b"]}
+    },
+    {
+        "nom": "[hs2] hs032 Scorpion stade 3 : a la revelation, Tail Laser est cherche dans le deck de rencontre et attache a la Queue",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_scorpion_expert",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs039')", "Puzzle.AdvanceVillain()"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["hs036", "hs039"]]}
+    },
+    {
+        "nom": "[hs2] hs032 Scorpion stade 3 : Tail Laser est cherche aussi dans la defausse de rencontre",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_scorpion_expert",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Discard('hs039')", "Puzzle.AdvanceVillain()"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["hs036", "hs039"]]}
+    },
+    {
+        "nom": "[hs2] hs045 Hippo : en Boost, l attaque gagne overkill, l exces passe de l allie au heros",
+        "pourquoi": "WhenCardBecomeBoost(during_attack)",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01058')", "Puzzle.Damage('01058', 2)",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs045')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('hs030', defender='01058')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01058"], "degats_identite": 3}
+    },
+    {
+        "nom": "[hs2] hs045 Hippo : sans le Boost de Hippo, pas d overkill, l exces est perdu (temoin)",
+        "pourquoi": "WhenCardBecomeBoost(during_attack)",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01058')", "Puzzle.Damage('01058', 2)",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs007')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('hs030', defender='01058')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01058"], "degats_identite": 0}
+    },
+    {
+        "nom": "[hs2] hs050 Stinger Stab (alter-ego) : etourdi, Scorpion complote avec +2 SCH",
+        "pourquoi": "Alter-Ego",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.Stun('01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006', 'hs006')"],
+        "declencher": ["Puzzle.Reveal('hs050')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs033b", 5]]}
+    },
+    {
+        "nom": "[hs2] hs050 Stinger Stab (alter-ego) : pas etourdi, Scorpion complote sans bonus (temoin)",
+        "pourquoi": "Alter-Ego",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006', 'hs006')"],
+        "declencher": ["Puzzle.Reveal('hs050')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs033b", 3]]}
+    },
+    {
+        "nom": "[hs3] hs057a Using the Mammal Brain : mise en place, Rage en jeu, Curtis, stade 1B",
+        "pourquoi": "setup",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs060", "hs054a", "hs057b"], "hors_jeu": ["hs057a"]}
+    },
+    {
+        "nom": "[hs3] hs054a Curtis : son attaque pose 1 honte au lieu de frapper",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Attack('hs054a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs060", "shame", 1]], "degats_identite": 0}
+    },
+    {
+        "nom": "[hs3] hs054a Curtis : a 3 honte il manigance puis se retourne en Lizard",
+        "pourquoi": "seuil",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PlaceCounters('hs060', 'shame', 2)", "Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "activer": ["hs054a"],
+        "verifier": "hs_activer",
+        "attendu": {"en_jeu": ["hs054b"], "hors_jeu": ["hs054a"], "compteurs": [["hs060", "shame", 3]]}
+    },
+    {
+        "nom": "[hs3] hs054a Curtis : a 2 honte il ne manigance pas encore (temoin)",
+        "pourquoi": "seuil exact",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PlaceCounters('hs060', 'shame', 1)"],
+        "declencher": ["Puzzle.Attack('hs054a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs054a"], "hors_jeu": ["hs054b"], "compteurs": [["hs060", "shame", 2]]}
+    },
+    {
+        "nom": "[hs3] hs054a Curtis : la honte est plafonnee a 3",
+        "pourquoi": "max 3",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PlaceCounters('hs060', 'shame', 3)", "Puzzle.Remove('hs054b')"],
+        "declencher": ["Puzzle.Attack('hs054a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs060", "shame", 3]]}
+    },
+    {
+        "nom": "[hs3] hs054a Curtis : ne subit aucun degat",
+        "pourquoi": "immunite",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Damage('hs054a', 3)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["hs054a", 0]]}
+    },
+    {
+        "nom": "[hs3] hs060 Reptilian Rage : 2 honte donnent +2 ATK au Lizard (2 imprime + 2)",
+        "pourquoi": "ATK dynamique",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PlaceCounters('hs060', 'shame', 2)", "Puzzle.Flip('hs054a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["hs054b", "attack", 2]]}
+    },
+    {
+        "nom": "[hs3] hs060 Reptilian Rage : apres une attaque du Lizard (stade I), 2 honte retirees",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PlaceCounters('hs060', 'shame', 3)", "Puzzle.Flip('hs054a')"],
+        "declencher": ["Puzzle.Attack('hs054b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs060", "shame", 1]]}
+    },
+    {
+        "nom": "[hs3] hs060 Reptilian Rage : sans honte, aucune retenue sous zero (temoin)",
+        "pourquoi": "plancher",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Flip('hs054a')"],
+        "declencher": ["Puzzle.Attack('hs054b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs060", "shame", 0]]}
+    },
+    {
+        "nom": "[hs3] hs057b Using the Mammal Brain : accomplie (hs058a revele), 3 honte, Curtis se retourne, stade 2 et Reptile Research reveles",
+        "pourquoi": "When Completed + 058a",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs068')"],
+        "declencher": ["Puzzle.PlaceThreat('hs057b', 4)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs060", "shame", 3]], "en_jeu": ["hs054b", "hs058b", "hs078"], "hors_jeu": ["hs054a", "hs057b"]}
+    },
+    {
+        "nom": "[hs3] hs058b Reptile Brain Taking Over : menace de depart = nombre de REPTILE en jeu",
+        "pourquoi": "X",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs068')"],
+        "declencher": ["Puzzle.PlaceThreat('hs057b', 4)"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs058b", 1]]}
+    },
+    {
+        "nom": "[hs3] hs059b No Humanity Left : le Lizard ne peut pas se retourner",
+        "pourquoi": "Interrupt de retournement : apres sa manigance le Lizard devrait se retourner",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Flip('hs054a')", "Puzzle.CreateEncounterDeck('hs068')", "Puzzle.AdvanceMainScheme(4)"],
+        "declencher": ["Puzzle.Flip('hs054b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs059b", "hs054b"], "hors_jeu": ["hs054a"]}
+    },
+    {
+        "nom": "[hs3] hs061 Enhanced Lizard Senses (alter-ego) : Curtis manigance avec +1 SCH et la carte s attache",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs068')"],
+        "declencher": ["Puzzle.Reveal('hs061')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs057b", 3]], "attaches": [["hs054b", "hs061"]]}
+    },
+    {
+        "nom": "[hs3] hs061 Enhanced Lizard Senses : un evenement joue est annule et la carte va au fond de la defausse",
+        "pourquoi": "Interrupt",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs061', 'hs054a')", "Puzzle.ChangeForm('01001b')", "Puzzle.CreateEncounterDiscardPile('hs068', 'hs069')"],
+        "main_exclusive": ["01087", "01088", "01088"],
+        "jouer": ["01087"],
+        "declencher": [],
+        "au_fond": "hs061",
+        "verifier": "hs_au_fond",
+        "attendu": {"defausse": ["01087"], "defausse_rencontre": ["hs061", "hs068", "hs069"]}
+    },
+    {
+        "nom": "[hs3] hs062 Enhanced Lizard Senses : la copie annule aussi un evenement",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs062', 'hs054a')", "Puzzle.ChangeForm('01001b')", "Puzzle.CreateEncounterDiscardPile('hs068', 'hs069')"],
+        "main_exclusive": ["01087", "01088", "01088"],
+        "jouer": ["01087"],
+        "declencher": [],
+        "au_fond": "hs062",
+        "verifier": "hs_au_fond",
+        "attendu": {"defausse": ["01087"], "defausse_rencontre": ["hs062"]}
+    },
+    {
+        "nom": "[hs3] hs063 Komodo Claws : donne retaliate 1 au vilain",
+        "pourquoi": "keyword",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs063', 'hs054a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["hs054a", "retaliate", 1]]}
+    },
+    {
+        "nom": "[hs3] hs063 Komodo Claws : Hero Action, depense une energie, 1 degat, fond de la defausse",
+        "pourquoi": "Hero Action",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs063', 'hs054a')", "Puzzle.ChangeForm('01001b')", "Puzzle.CreateEncounterDiscardPile('hs068')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('hs063', 'HeroAction')"],
+        "au_fond": "hs063",
+        "verifier": "hs_au_fond",
+        "attendu": {"degats_identite": 1}
+    },
+    {
+        "nom": "[hs3] hs063 Komodo Claws : Boa Constricted sur l identite bloque la Hero Action (temoin)",
+        "pourquoi": "Boa",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs063', 'hs054a')", "Puzzle.ChangeForm('01001b')", "Puzzle.Attach('hs068', '01001a')"],
+        "main_exclusive": ["01088"],
+        "declencher": [],
+        "tenter": "Puzzle.Action('hs063', 'HeroAction')",
+        "verifier": "hs_action_bloquee",
+        "attendu": {"degats_identite": 0}
+    },
+    {
+        "nom": "[hs3] hs065 Lizard Tail : l attaque du vilain gagne ranged",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs065', 'hs054a')", "Puzzle.Flip('hs054a')"],
+        "declencher": [],
+        "activer": ["hs054b"],
+        "verifier": "hs_activer",
+        "attendu": {}
+    },
+    {
+        "nom": "[hs3] hs065 Lizard Tail : Hero Action, depense un mental, 1 menace sur le complot, fond de la defausse",
+        "pourquoi": "Hero Action",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs065', 'hs054a')", "Puzzle.ChangeForm('01001b')", "Puzzle.CreateEncounterDiscardPile('hs068')"],
+        "main_exclusive": ["01089"],
+        "declencher": ["Puzzle.Action('hs065', 'HeroAction')"],
+        "au_fond": "hs065",
+        "verifier": "hs_au_fond",
+        "attendu": {"menace": [["hs057b", 1]]}
+    },
+    {
+        "nom": "[hs3] hs066 Alligator Jaws : Hero Action, depense un physique, le heros s incline, fond de la defausse",
+        "pourquoi": "Hero Action",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs066', 'hs054a')", "Puzzle.ChangeForm('01001b')", "Puzzle.CreateEncounterDiscardPile('hs068')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('hs066', 'HeroAction')"],
+        "au_fond": "hs066",
+        "verifier": "hs_au_fond",
+        "attendu": {"exhausted": ["01001a"]}
+    },
+    {
+        "nom": "[hs3] hs061 Enhanced Lizard Senses : sans la carte, l evenement est joue (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Flip('hs054a')"],
+        "main_exclusive": ["01087", "01088", "01088"],
+        "jouer": ["01087"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["01087"], "degats": [["hs054b", 3]]}
+    },
+    {
+        "nom": "[hs3] hs067 Ancient Reptilian Brain : Hero Action, confond le heros, fond de la defausse",
+        "pourquoi": "Hero Action",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs067', 'hs054a')", "Puzzle.ChangeForm('01001b')", "Puzzle.CreateEncounterDiscardPile('hs068')"],
+        "declencher": ["Puzzle.Action('hs067', 'HeroAction')"],
+        "au_fond": "hs067",
+        "verifier": "hs_au_fond",
+        "attendu": {"statuts": [["01001a", "Confused"]]}
+    },
+    {
+        "nom": "[hs3] hs068 Boa Constricted : s attache a l identite du joueur",
+        "pourquoi": "Attach",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('hs068')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "hs068"]]}
+    },
+    {
+        "nom": "[hs3] hs070 Iguana Whip (alter-ego) : prend surge",
+        "pourquoi": "When Revealed (Alter-Ego)",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs068')"],
+        "declencher": ["Puzzle.Reveal('hs070')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "hs068"]]}
+    },
+    {
+        "nom": "[hs3] hs070 Iguana Whip (heros) : le vilain attaque et 1 menace par attachement REPTILE",
+        "pourquoi": "When Revealed (Hero)",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Flip('hs054a')", "Puzzle.Attach('hs065', 'hs054b')", "Puzzle.CreateEncounterDeck('hs068')", "Puzzle.CreatePlayerDeck('01088')", "Puzzle.Exhaust('01001a')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('hs070')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs057b", 1]], "degats_identite": 3}
+    },
+    {
+        "nom": "[hs3] hs072 Triggered Transformation : complete la honte a 3 et le heros s incline",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Reveal('hs072')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs060", "shame", 3]]}
+    },
+    {
+        "nom": "[hs3] hs074 Shed Skin : soigne 3, retire les statuts du vilain et lui donne Tough",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Flip('hs054a')", "Puzzle.Damage('hs054b', 5)", "Puzzle.Stun('hs054b')"],
+        "declencher": ["Puzzle.Reveal('hs074')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["hs054b", 2]], "statuts": [["hs054b", "Tough"]], "statuts_absents": [["hs054b", "Stunned"]]}
+    },
+    {
+        "nom": "[hs3] hs076 Iguana : +1 ATK et +1 SCH par REPTILE en jeu (lui compris)",
+        "pourquoi": "stats dynamiques",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs076')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["hs076", "attack", 1], ["hs076", "scheme", 1]]}
+    },
+    {
+        "nom": "[hs3] hs077 The Chameleon : ATK et SCH egaux a ceux du vilain",
+        "pourquoi": "stats dynamiques",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs077')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["hs077", "attack", 0], ["hs077", "scheme", 2]]}
+    },
+    {
+        "nom": "[hs3] hs078 Reptile Research : 2 de depart plus 1 par REPTILE en jeu",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Flip('hs054a')"],
+        "declencher": ["Puzzle.Reveal('hs078')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs078", 3]]}
+    },
+    {
+        "nom": "[hs3] hs146 Wake Your Inner Lizard : 3 de depart plus 1 par heros",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('hs146')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs146", 4]]}
+    },
+    {
+        "nom": "[hs3] hs146 Wake Your Inner Lizard : au debut de la phase du vilain, un Lizard Thrall entre en jeu",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs146')", "Puzzle.CreateEncounterDeck('hs068', 'hs147')"],
+        "declencher": ["Puzzle.BeginVillainPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs147"]}
+    },
+    {
+        "nom": "[hs3] hs147 Lizard Thrall : une manigance devient une attaque",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs147')"],
+        "declencher": [],
+        "activer": ["hs147"],
+        "verifier": "hs_activer",
+        "attendu": {"degats_identite": 2, "menace": [["hs057b", 0]]}
+    },
+    {
+        "nom": "[hs3] hs147 Lizard Thrall : une attaque devient une manigance (heros)",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('hs147')", "Puzzle.CreatePlayerDeck('01088')", "Puzzle.Exhaust('01001a')"],
+        "main_exclusive": ["01088"],
+        "declencher": [],
+        "activer": ["hs147"],
+        "verifier": "hs_activer",
+        "attendu": {"degats_identite": 0, "menace": [["hs057b", 1]]}
+    },
+    {
+        "nom": "[hs3] hs068 Boa Constricted : defaussee a la fin de la phase joueur",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Attach('hs068', '01001a')"],
+        "declencher": ["Puzzle.EndPlayerPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_rencontre": ["hs068"]}
+    },
+    {
+        "nom": "[hs3] hs069 Boa Constricted : la copie est aussi defaussee en fin de phase joueur",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Attach('hs069', '01001a')"],
+        "declencher": ["Puzzle.EndPlayerPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_rencontre": ["hs069"]}
+    },
+    {
+        "nom": "[hs3] hs079 Reptile Research : la copie compte aussi les REPTILE",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Flip('hs054a')"],
+        "declencher": ["Puzzle.Reveal('hs079')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs079", 3]]}
+    },
+    {
+        "nom": "[hs3] hs075 Shed Skin : la copie soigne aussi 3 et donne Tough",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Flip('hs054a')", "Puzzle.Damage('hs054b', 5)", "Puzzle.Stun('hs054b')"],
+        "declencher": ["Puzzle.Reveal('hs075')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["hs054b", 2]], "statuts": [["hs054b", "Tough"]], "statuts_absents": [["hs054b", "Stunned"]]}
+    },
+    {
+        "nom": "[hs3] hs073 Triggered Transformation : la copie complete aussi la honte a 3",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Reveal('hs073')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs060", "shame", 3]]}
+    },
+    {
+        "nom": "[hs3] hs149 Lizard Thrall : une manigance devient une attaque (copie)",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs149')"],
+        "declencher": [],
+        "activer": ["hs149"],
+        "verifier": "hs_activer",
+        "attendu": {"degats_identite": 2, "menace": [["hs057b", 0]]}
+    },
+    {
+        "nom": "[hs3] hs072 Triggered Transformation (alter-ego) : pas de heros a epuiser, honte a 3 sans plantage",
+        "pourquoi": "regression autoplay : GetHero en alter-ego",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('hs072')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs060", "shame", 3]]}
+    },
+    {
+        "nom": "[hs3] hs054b The Lizard : fin de phase du vilain, defausse 1 carte et revele l attachement REPTILE defausse",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Flip('hs054a')", "Puzzle.CreateEncounterDeck('hs068', 'hs065')", "Puzzle.BeginVillainPhase()"],
+        "declencher": ["Puzzle.EndVillainPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs057b", 1]]}
+    },
+    {
+        "nom": "[hs3] hs054b The Lizard : une carte defaussee qui n est pas un REPTILE n est pas revelee (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Flip('hs054a')", "Puzzle.CreateEncounterDeck('hs065', 'hs068')", "Puzzle.BeginVillainPhase()"],
+        "declencher": ["Puzzle.EndVillainPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs057b", 0]], "defausse_rencontre": ["hs068"]}
+    },
+    {
+        "nom": "[hs3] hs055a Curtis (stade 2) : son attaque pose 1 honte",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceVillain()", "Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "activer": ["hs055a"],
+        "verifier": "hs_activer",
+        "attendu": {"compteurs": [["hs060", "shame", 1]]}
+    },
+    {
+        "nom": "[hs3] hs056a Curtis (stade 3) : son attaque pose 2 honte",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard_expert",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceVillain()", "Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "activer": ["hs056a"],
+        "verifier": "hs_activer",
+        "attendu": {"compteurs": [["hs060", "shame", 2]]}
+    },
+    {
+        "nom": "[hs3] hs055b The Lizard (stade 2) : fin de phase, defausse 1 carte et chaque joueur revele le premier REPTILE de la defausse",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceVillain()", "Puzzle.Flip('hs055a')", "Puzzle.CreateEncounterDeck('hs068', 'hs065')", "Puzzle.BeginVillainPhase()"],
+        "declencher": ["Puzzle.EndVillainPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs057b", 2]]}
+    },
+    {
+        "nom": "[hs3] hs056b The Lizard (stade 3) : fin de phase, defausse 2 cartes",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_the_lizard_expert",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceVillain()", "Puzzle.Flip('hs056a')", "Puzzle.CreateEncounterDeck('hs069', 'hs068', 'hs068')", "Puzzle.BeginVillainPhase()"],
+        "declencher": ["Puzzle.EndVillainPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse_rencontre": ["hs068", "hs068"]}
+    },
+    {
+        "nom": "[hs3] hs071 Iguana Whip : la copie prend surge en alter-ego",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs068')"],
+        "declencher": ["Puzzle.Reveal('hs071')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "hs068"]]}
+    },
+    {
+        "nom": "[hs3] hs148 Lizard Thrall : une manigance devient une attaque (copie)",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs148')"],
+        "declencher": [],
+        "activer": ["hs148"],
+        "verifier": "hs_activer",
+        "attendu": {"degats_identite": 2, "menace": [["hs057b", 0]]}
+    },
+    {
+        "nom": "[hs3] hs150 Lizard Thrall : une manigance devient une attaque (copie)",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('hs150')"],
+        "declencher": [],
+        "activer": ["hs150"],
+        "verifier": "hs_activer",
+        "attendu": {"degats_identite": 2, "menace": [["hs057b", 0]]}
+    },
+    {
+        "nom": "[hs3] hs059b No Humanity Left : le Lizard se retourne normalement sans cette face (temoin)",
+        "pourquoi": "temoin du cas hs059b",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Flip('hs054a')"],
+        "declencher": ["Puzzle.Flip('hs054b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs054a"]}
+    },
+    {
+        "nom": "[hs3] hs059a No Humanity Left : revele sans Lizard, Curtis se retourne et la honte passe de 0 a 3",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('hs068')", "Puzzle.AdvanceMainScheme(4)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["hs060", "shame", 3]], "en_jeu": ["hs054b", "hs059b"], "hors_jeu": ["hs054a"]}
+    },
+    {
+        "nom": "[hs3] hs064 Komodo Claws : la copie donne retaliate 1 au vilain",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs064', 'hs054a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["hs054a", "retaliate", 1]]}
+    },
+    {
+        "nom": "[hs3] hs064 Komodo Claws : la copie, Hero Action, 1 degat et fond de la defausse",
+        "pourquoi": "copie",
+        "scenario": "hs_the_lizard",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Attach('hs064', 'hs054a')", "Puzzle.ChangeForm('01001b')", "Puzzle.CreateEncounterDiscardPile('hs068')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Action('hs064', 'HeroAction')"],
+        "au_fond": "hs064",
+        "verifier": "hs_au_fond",
+        "attendu": {"degats_identite": 1}
+    },
+    {
+        "nom": "[hs4] hs083a Setup : Vulture en jeu et Wingsuits mis en jeu",
+        "pourquoi": "setup",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs080", "hs083b", "hs084"], "hors_jeu": ["hs083a"]}
+    },
+    {
+        "nom": "[hs4] hs152 The Red Vulture : met Vulture (James Natale) en jeu",
+        "pourquoi": "recherche",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs151', 'hs006')"],
+        "declencher": ["Puzzle.Reveal('hs152')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs151"]}
+    },
+    {
+        "nom": "[hs4] hs155 Voracious Ambush (heros) : Vulture Natale defausse du deck est mis en jeu",
+        "pourquoi": "defausse puis jeu",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006', 'hs006', 'hs006', 'hs006', 'hs006', 'hs151', 'hs006', 'hs006', 'hs006')", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Reveal('hs155')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs151"]}
+    },
+    {
+        "nom": "[hs4] hs155 Voracious Ambush (heros) : Vulture Natale en jeu attaque le heros",
+        "pourquoi": "attaque",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006', 'hs151')", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Reveal('hs152')", "Puzzle.Reveal('hs155')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs151"], "degats_identite": 1}
+    },
+    {
+        "nom": "[hs4] hs096 A Feast for Vultures : Vulture sous la moitie de ses PV ajoute 1 menace",
+        "pourquoi": "regle",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006')", "Puzzle.Damage('hs080', 7)"],
+        "declencher": ["Puzzle.Reveal('hs096')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs096", 4]]}
+    },
+    {
+        "nom": "[hs4] hs096 A Feast for Vultures : Vulture a la moitie exacte, aucune menace (temoin)",
+        "pourquoi": "regle",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006')", "Puzzle.Damage('hs080', 6)"],
+        "declencher": ["Puzzle.Reveal('hs096')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs096", 3]]}
+    },
+    {
+        "nom": "[hs4] hs089 Metal Talons : s'attache a Vulture, le complot principal reste en jeu",
+        "pourquoi": "attache",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006')"],
+        "declencher": ["Puzzle.Reveal('hs089')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs089", "hs083b", "hs080"]}
+    },
+    # BLOC4-DEBUT
+    {
+            "nom": "[hs4] hs080 Vulture : attaque sans AERIAL refusee (aucun degat)",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats": [
+                            [
+                                    "hs080",
+                                    0
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs080 Vulture : attaque d'un heros AERIAL acceptee (temoin)",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs092')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_min": [
+                            [
+                                    "hs080",
+                                    1
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs081 Vulture : attaque sans AERIAL refusee (aucun degat)",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.AdvanceVillain()"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "en_jeu": [
+                            "hs081"
+                    ],
+                    "degats": [
+                            [
+                                    "hs081",
+                                    0
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs082 Vulture : attaque sans AERIAL refusee (aucun degat)",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture_expert",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.AdvanceVillain()"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "en_jeu": [
+                            "hs082"
+                    ],
+                    "degats": [
+                            [
+                                    "hs082",
+                                    0
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs097 Knocked Out of the Sky : un heros AERIAL perd AERIAL et subit 2 degats",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs092')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs097')",
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 2,
+                    "degats": [
+                            [
+                                    "hs080",
+                                    0
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs097 Knocked Out of the Sky : sans AERIAL, aucun degat (temoin)",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs097')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 0
+            }
+    },
+    {
+            "nom": "[hs4] hs083b Aerial Mayhem : un personnage sans AERIAL qui contre subit 1 degat",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')"
+            ],
+            "declencher": [
+                    "Puzzle.Thwart('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 1
+            }
+    },
+    {
+            "nom": "[hs4] hs083b Aerial Mayhem : un personnage AERIAL qui contre ne subit rien (temoin)",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs092')"
+            ],
+            "declencher": [
+                    "Puzzle.Thwart('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 0
+            }
+    },
+    {
+            "nom": "[hs4] hs084 S.H.I.E.L.D. Wingsuits : le heros gagne AERIAL et peut attaquer Vulture",
+            "pourquoi": "action",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.PutIntoPlay('hs084')",
+                    "Puzzle.CreateHandCards('01090','01090','01090')"
+            ],
+            "declencher": [
+                    "Puzzle.Action('hs084','HeroAction')",
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_min": [
+                            [
+                                    "hs080",
+                                    1
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs085 Armadillo : apres avoir blesse l'identite, celle-ci gagne AERIAL",
+            "pourquoi": "reponse",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.PutIntoPlay('hs085')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('hs085')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "traits_de": [
+                            [
+                                    "01001b",
+                                    "AERIAL"
+                            ]
+                    ],
+                    "degats_identite": 3
+            }
+    },
+    {
+            "nom": "[hs4] hs085 Armadillo (boost) : si l'attaque blesse, l'identite gagne AERIAL",
+            "pourquoi": "boost",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Exhaust('01001a')"
+            ],
+            "declencher": [
+                    "Puzzle.Boost('hs085')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "traits_de": [
+                            [
+                                    "01001a",
+                                    "AERIAL"
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs086 White Rabbit : apres avoir blesse l'identite sans AERIAL, defausse une carte",
+            "pourquoi": "reponse",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.PutIntoPlay('hs086')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('hs086')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "defausse": [
+                            "01090"
+                    ],
+                    "degats_identite": 1
+            },
+            "main_exclusive": [
+                    "01090"
+            ]
+    },
+    {
+            "nom": "[hs4] hs086 White Rabbit (boost) : si l'attaque blesse, defausse une carte",
+            "pourquoi": "boost",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Exhaust('01001a')"
+            ],
+            "declencher": [
+                    "Puzzle.Boost('hs086')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "defausse": [
+                            "01090"
+                    ]
+            },
+            "main_exclusive": [
+                    "01090"
+            ]
+    },
+    {
+            "nom": "[hs4] hs087 Gibbon : previent 1 des 2 degats subis",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.PutIntoPlay('hs087')"
+            ],
+            "declencher": [
+                    "Puzzle.Damage('hs087',2)"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats": [
+                            [
+                                    "hs087",
+                                    1
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs088 Wing Harness : Vulture frappe une identite AERIAL avec +1 ATK",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.Reveal('hs092')",
+                    "Puzzle.Reveal('hs088')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('hs080')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 3,
+                    "hotes": [
+                            [
+                                    "hs088",
+                                    "hs080"
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs088 Wing Harness : sans AERIAL, pas de bonus (temoin)",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.Reveal('hs088')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('hs080')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 2
+            }
+    },
+    {
+            "nom": "[hs4] hs088 Wing Harness (action) : defausse ceci, Vulture perd AERIAL et le heros peut l'attaquer",
+            "pourquoi": "action",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs088')",
+                    "Puzzle.CreateHandCards('01090','01090','01090')"
+            ],
+            "declencher": [
+                    "Puzzle.Action('hs088','HeroAction')",
+                    "Puzzle.Ready('01001a')",
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "hors_jeu": [
+                            "hs088"
+                    ],
+                    "degats_min": [
+                            [
+                                    "hs080",
+                                    1
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs089 Metal Talons : retaliate 1 contre le heros AERIAL, puis defausse ceci contre une carte",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs092')",
+                    "Puzzle.Reveal('hs089')",
+                    "Puzzle.CreateHandCards('01090','01090','01090')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "hors_jeu": [
+                            "hs089"
+                    ],
+                    "degats_identite": 3
+            }
+    },
+    {
+            "nom": "[hs4] hs090 Projectile Feathers : Vulture attaque, defausse ceci et 2 degats indirects",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs090')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('hs080')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "hors_jeu": [
+                            "hs090"
+                    ],
+                    "degats_identite": 2
+            }
+    },
+    {
+            "nom": "[hs4] hs090 Projectile Feathers : 3 degats indirects contre un heros AERIAL",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs092')",
+                    "Puzzle.Reveal('hs090')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('hs080')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "hors_jeu": [
+                            "hs090"
+                    ],
+                    "degats_identite": 3
+            }
+    },
+    {
+            "nom": "[hs4] hs090 Projectile Feathers (action) : defausse ceci, Vulture perd AERIAL",
+            "pourquoi": "action",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs090')",
+                    "Puzzle.CreateHandCards('01090','01090','01090')"
+            ],
+            "declencher": [
+                    "Puzzle.Action('hs090','HeroAction')",
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "hors_jeu": [
+                            "hs090"
+                    ],
+                    "degats_min": [
+                            [
+                                    "hs080",
+                                    1
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs092 Forcefully Elevated : le heros AERIAL qui attaque Vulture subit 2 degats puis la carte part",
+            "pourquoi": "reponse",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs092')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 2,
+                    "hors_jeu": [
+                            "hs092"
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs094 Aerial Kidnapping : en phase du vilain, 3 menace sur le complot et la carte part",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs094')"
+            ],
+            "declencher": [
+                    "Puzzle.BeginVillainPhase()"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "hors_jeu": [
+                            "hs094"
+                    ],
+                    "menace": [
+                            [
+                                    "hs083b",
+                                    3
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs094 Aerial Kidnapping (vaincue) : Vulture perd AERIAL, le heros peut l'attaquer",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs094')",
+                    "Puzzle.SetThreat('hs094',1)",
+                    "Puzzle.SetThreat('hs083b',0)"
+            ],
+            "declencher": [
+                    "Puzzle.Thwart('01001a')",
+                    "Puzzle.Ready('01001a')",
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_min": [
+                            [
+                                    "hs080",
+                                    1
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs100 Sweeping Swoop : etourdit l'identite et defausse une carte",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs100')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "statuts": [
+                            [
+                                    "01001a",
+                                    "Stunned"
+                            ]
+                    ],
+                    "defausse": [
+                            "01090"
+                    ]
+            },
+            "main_exclusive": [
+                    "01090"
+            ]
+    },
+    {
+            "nom": "[hs4] hs102 Ravenous Onslaught (alter-ego) : Vulture manigance",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs102')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "menace": [
+                            [
+                                    "hs083b",
+                                    5
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs102 Ravenous Onslaught (heros) : Vulture attaque, le heros defend",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs102')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "exhausted": [
+                            "01001a"
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs153 Acid Expulsion : 5 cartes de rencontre defaussees, 2 cartes du deck pour les 2 icones",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006','hs006','hs006','hs006','hs006','hs006','01107')",
+                    "Puzzle.CreatePlayerDeck('01087','01088','01089','01090','01091','01092')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs153')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "defausse": [
+                            "01092",
+                            "01091"
+                    ],
+                    "defausse_rencontre": [
+                            "01107"
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs154 Acid Expulsion : 5 cartes de rencontre defaussees, 2 cartes du deck pour les 2 icones",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006','hs006','hs006','hs006','hs006','hs006','01107')",
+                    "Puzzle.CreatePlayerDeck('01087','01088','01089','01090','01091','01092')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs154')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "defausse": [
+                            "01092",
+                            "01091"
+                    ],
+                    "defausse_rencontre": [
+                            "01107"
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs151 Vulture (James Natale) : apres avoir blesse, defausse autant de cartes du deck que de degats",
+            "pourquoi": "reponse",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.PutIntoPlay('hs151')",
+                    "Puzzle.CreatePlayerDeck('01087','01088','01089','01090','01091','01092')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('hs151')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "defausse": [
+                            "01092"
+                    ],
+                    "degats_identite": 1
+            }
+    },
+    {
+            "nom": "[hs4] hs156 Voracious Ambush (heros) : Vulture Natale defausse du deck est mis en jeu",
+            "pourquoi": "defausse puis jeu",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006','hs006','hs006','hs151','hs006','hs006','hs006')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs156')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "en_jeu": [
+                            "hs151"
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs156 Voracious Ambush (heros) : Vulture Natale en jeu attaque le heros",
+            "pourquoi": "attaque",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs151')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs152')",
+                    "Puzzle.Reveal('hs156')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "en_jeu": [
+                            "hs151"
+                    ],
+                    "degats_identite": 1
+            }
+    },
+    {
+            "nom": "[hs4] hs098 Knocked Out of the Sky : un heros AERIAL perd AERIAL et subit 2 degats",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs092')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs098')",
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 2,
+                    "degats": [
+                            [
+                                    "hs080",
+                                    0
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs098 Knocked Out of the Sky : sans AERIAL, aucun degat (temoin)",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs098')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 0
+            }
+    },
+    {
+            "nom": "[hs4] hs091 Projectile Feathers : Vulture attaque, defausse ceci et 2 degats indirects",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs091')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('hs080')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "hors_jeu": [
+                            "hs091"
+                    ],
+                    "degats_identite": 2
+            }
+    },
+    {
+            "nom": "[hs4] hs091 Projectile Feathers : 3 degats indirects contre un heros AERIAL",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs092')",
+                    "Puzzle.Reveal('hs091')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('hs080')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "hors_jeu": [
+                            "hs091"
+                    ],
+                    "degats_identite": 3
+            }
+    },
+    {
+            "nom": "[hs4] hs091 Projectile Feathers (action) : defausse ceci, Vulture perd AERIAL",
+            "pourquoi": "action",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs091')",
+                    "Puzzle.CreateHandCards('01090','01090','01090')"
+            ],
+            "declencher": [
+                    "Puzzle.Action('hs091','HeroAction')",
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "hors_jeu": [
+                            "hs091"
+                    ],
+                    "degats_min": [
+                            [
+                                    "hs080",
+                                    1
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs093 Forcefully Elevated : le heros AERIAL qui attaque Vulture subit 2 degats puis la carte part",
+            "pourquoi": "reponse",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs093')"
+            ],
+            "declencher": [
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 2,
+                    "hors_jeu": [
+                            "hs093"
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs095 Aerial Kidnapping : en phase du vilain, 3 menace sur le complot et la carte part",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs095')"
+            ],
+            "declencher": [
+                    "Puzzle.BeginVillainPhase()"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "hors_jeu": [
+                            "hs095"
+                    ],
+                    "menace": [
+                            [
+                                    "hs083b",
+                                    3
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs095 Aerial Kidnapping (vaincue) : Vulture perd AERIAL, le heros peut l'attaquer",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs095')",
+                    "Puzzle.SetThreat('hs095',1)",
+                    "Puzzle.SetThreat('hs083b',0)"
+            ],
+            "declencher": [
+                    "Puzzle.Thwart('01001a')",
+                    "Puzzle.Ready('01001a')",
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_min": [
+                            [
+                                    "hs080",
+                                    1
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs101 Sweeping Swoop : etourdit l'identite et defausse une carte",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs101')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "statuts": [
+                            [
+                                    "01001a",
+                                    "Stunned"
+                            ]
+                    ],
+                    "defausse": [
+                            "01090"
+                    ]
+            },
+            "main_exclusive": [
+                    "01090"
+            ]
+    },
+    {
+            "nom": "[hs4] hs103 Ravenous Onslaught (alter-ego) : Vulture manigance",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs103')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "menace": [
+                            [
+                                    "hs083b",
+                                    5
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs103 Ravenous Onslaught (heros) : Vulture attaque, le heros defend",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs103')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "exhausted": [
+                            "01001a"
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs099 Knocked Out of the Sky : un heros AERIAL perd AERIAL et subit 2 degats",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')",
+                    "Puzzle.Reveal('hs092')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs099')",
+                    "Puzzle.Attack('01001a')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 2,
+                    "degats": [
+                            [
+                                    "hs080",
+                                    0
+                            ]
+                    ]
+            }
+    },
+    {
+            "nom": "[hs4] hs099 Knocked Out of the Sky : sans AERIAL, aucun degat (temoin)",
+            "pourquoi": "regle",
+            "scenario": "hs_vulture",
+            "heros": "spider_man",
+            "mise_en_place": [
+                    "Puzzle.EmptyEncounterDeck()",
+                    "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+                    "Puzzle.ChangeForm('01001b')"
+            ],
+            "declencher": [
+                    "Puzzle.Reveal('hs099')"
+            ],
+            "verifier": "etat_attendu",
+            "attendu": {
+                    "degats_identite": 0
+            }
+    },
+    # BLOC4-FIN
+    {
+        "nom": "[hs5] hs107a mise en place : Kraven I et Acquiring Targets en jeu, 16 pieges dans le paquet",
+        "pourquoi": "CreerPaquetsPiege",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs104", "hs107b"], "paquet_pieges": 16}
+    },
+    {
+        "nom": "[hs5] hs125 Ferocious Lion : revele, entre en jeu",
+        "pourquoi": "minion TRAP",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs125')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs125"]}
+    },
+    {
+        "nom": "[hs5] hs163 Stegron : entre en jeu, ne fait pas de degats a l'identite",
+        "pourquoi": "minion SAVAGE SIX",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs163')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs163"]}
+    },
+    {
+        "nom": "[hs5] hs159 Rhino : entre en jeu",
+        "pourquoi": "minion SAVAGE SIX",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs159')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs159"]}
+    },
+    {
+        "nom": "[hs5] hs111 Poisoned Dagger : s'attache a Kraven",
+        "pourquoi": "attach to",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs111')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs111"]}
+    },
+    {
+        "nom": "[hs5] hs115 Calypso Serum : revele, entre en jeu",
+        "pourquoi": "side scheme",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs115')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs115"]}
+    },
+    {
+        "nom": "[hs5] hs104 Kraven I : une attaque du heros distribue un piege (15 restants)",
+        "pourquoi": "Forced Interrupt PiegeSurAttaque",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"paquet_pieges": 15}
+    },
+    {
+        "nom": "[hs5] hs104 Kraven I : une 2e attaque dans le round ne distribue rien (temoin d'epuisement)",
+        "pourquoi": "limite 1 par joueur et par round",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Attack('01001a')", "Puzzle.Attack('01001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"paquet_pieges": 15}
+    },
+    {
+        "nom": "[hs5] hs129 Bear Trap revele : s'attache ou se defausse, jamais les deux",
+        "pourquoi": "choix pilote",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs129')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs129"]}
+    },
+    {
+        "nom": "[hs5] hs133 Quicksand revele",
+        "pourquoi": "choix pilote",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs133')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs133"]}
+    },
+
+
+    {
+        "nom": "[hs5] hs107b : passage en forme heros place 2 menaces",
+        "pourquoi": "WhenUnitWouldChangeForm",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs107b", 2]]}
+    },
+    {
+        "nom": "[hs5] hs107b : passage en alter-ego retire 1 menace (sinon 0)",
+        "pourquoi": "AfterUnitChangeForm",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.ChangeForm('01001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs107b", 1]]}
+    },
+    {
+        "nom": "[hs5] hs110 Chameleon : ne subit aucun degat",
+        "pourquoi": "UnitCannotTakeDamageWhile",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs110')", "Puzzle.Damage('hs110',1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs110"], "degats": [["hs110", 0]]}
+    },
+    {
+        "nom": "[hs5] hs125 Lion prend bien les degats (temoin du cas Chameleon)",
+        "pourquoi": "temoin",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs125')", "Puzzle.Damage('hs125',1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs125"], "degats": [["hs125", 1]]}
+    },
+    {
+        "nom": "[hs5] hs115 Calypso Serum : 3 + 1 par heros de menace et +1 ATK/SCH aux ennemis",
+        "pourquoi": "StartingThreat + additional",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs115')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs115", 4]], "attributs_carte": [["hs104", "attack", 1], ["hs104", "scheme", 1]]}
+    },
+    {
+        "nom": "[hs5] hs123 Stalking Prey : 1 piege distribue, 1 menace sur le complot principal",
+        "pourquoi": "DonnerPiege + PlaceThreat",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs123')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs107b", 1]], "paquet_pieges": 15}
+    },
+    {
+        "nom": "[hs5] hs119 The Hunt Begins : revele la 1re arme defaussee",
+        "pourquoi": "3 cartes defaussees, arme revelee",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006','hs006','hs111')"],
+        "declencher": ["Puzzle.Reveal('hs119')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs111"]}
+    },
+    {
+        "nom": "[hs5] hs105 Kraven II : a la revelation, cherche et revele Tooth Necklace",
+        "pourquoi": "When Revealed search",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs114','hs006','hs006')"],
+        "declencher": ["Puzzle.AdvanceVillain()"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs105", "hs114"]}
+    },
+    {
+        "nom": "[hs5] hs106 (expert) Kraven III : a la revelation, chaque joueur recoit un piege",
+        "pourquoi": "DonnerPiegeATous",
+        "scenario": "hs_kraven_the_hunter_expert",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.AdvanceVillain()"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs106"], "paquet_pieges": 15}
+    },
+    {
+        "nom": "[hs5] hs116 Toxic Gas : 3 + 1 menace par heros, -1 ATK au heros",
+        "pourquoi": "ThisGain",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs116')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs116", 4]], "attributs_carte": []}
+    },
+    {
+        "nom": "[hs5] hs117 Predatory Ambush (alter-ego) : Kraven attaque l'identite, sans piege (pas d'attachement)",
+        "pourquoi": "Kraven attaque",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs117')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "paquet_pieges": 16}
+    },
+    {
+        "nom": "[hs5] hs160 Scorpion : +1 SCH quand l'identite est etourdie",
+        "pourquoi": "ThisGainKeyword",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs160')", "Puzzle.Stun('01001b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs160"], "attributs_carte": [["hs160", "scheme", 1]]}
+    },
+    {
+        "nom": "[hs5] hs160 Scorpion : sans etourdissement, SCH imprime (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs160')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs160"], "attributs_carte": [["hs160", "scheme", 0]]}
+    },
+    {
+        "nom": "[hs5] hs161 Tarantula : +1 ATK quand l'identite est confuse",
+        "pourquoi": "ThisGainKeyword",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs161')", "Puzzle.Confuse('01001b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs161"], "attributs_carte": [["hs161", "attack", 1]]}
+    },
+    {
+        "nom": "[hs5] hs161 Tarantula : sans confusion, ATK imprimee (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs161')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs161"], "attributs_carte": [["hs161", "attack", 0]]}
+    },
+    {
+        "nom": "[hs5] hs163 Stegron : +1 SCH avec lui seul",
+        "pourquoi": "compte SAVAGE SIX",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs163')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs163"], "attributs_carte": [["hs163", "scheme", 1]]}
+    },
+    {
+        "nom": "[hs5] hs163 Stegron : +2 SCH avec Rhino aussi en jeu",
+        "pourquoi": "compte SAVAGE SIX",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs159')", "Puzzle.Reveal('hs163')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs159", "hs163"], "attributs_carte": [["hs163", "scheme", 2]]}
+    },
+    {
+        "nom": "[hs5] hs129 Bear Trap attache : 1 degat a la fin de la phase heros",
+        "pourquoi": "WhenPlayerPhaseEnd",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs129')", "Puzzle.EndPlayerPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs129"], "degats_identite": 1}
+    },
+    {
+        "nom": "[hs5] hs133 Quicksand attache : -1 ATK a l'identite",
+        "pourquoi": "modificateur d'attachement",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs133')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs133"], "attributs_carte": [["01001a", "attack", -1]]}
+    },
+    {
+        "nom": "[hs5] hs140 Swinging Boulder, identite epuisee et sans allie ni amelioration : 3 degats",
+        "pourquoi": "seule option realisable",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs140')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3}
+    },
+    {
+        "nom": "[hs5] hs116 Toxic Gas (forme heros) : -1 ATK au heros (menace non testee ici : Great Responsibility dans la main de spider_man l'annule)",
+        "pourquoi": "ThisGain",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Reveal('hs116')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs116"], "attributs_carte": [["01001a", "attack", -1]]}
+    },
+    {
+        "nom": "[hs5] hs111 Poisoned Dagger : apres que Kraven blesse, l'identite est confuse",
+        "pourquoi": "Forced Response confondre",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs111')", "Puzzle.Attack('hs104')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "statuts": [["01001b", "Confused"]]}
+    },
+    {
+        "nom": "[hs5] hs117 Predatory Ambush avec un piege attache : un piege est aussi distribue",
+        "pourquoi": "condition AUnPiegeAttache",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs129')", "Puzzle.Reveal('hs117')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs129"], "paquet_pieges": 14}
+    },
+    {
+        "nom": "[hs5] hs125 Ferocious Lion : +1 ATK quand l'attaque n'est pas defendue",
+        "pourquoi": "UnitGetATKWhileAttacking",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs125')", "Puzzle.Attack('hs125')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3}
+    },
+    {
+        "nom": "[hs5] hs160 Scorpion : apres avoir blesse, l'identite est etourdie",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs160')", "Puzzle.Attack('hs160')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3, "statuts": [["01001b", "Stunned"]]}
+    },
+    {
+        "nom": "[hs5] hs161 Tarantula : apres avoir blesse, l'identite est confuse",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs161')", "Puzzle.Attack('hs161')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "statuts": [["01001b", "Confused"]]}
+    },
+    {
+        "nom": "[hs5] hs158 Vulture : apres l'attaque, une carte de rencontre est donnee puis Vulture retourne dans le paquet",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs158')", "Puzzle.Attack('hs158')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "hors_jeu": ["hs158"]}
+    },
+    {
+        "nom": "[hs5] hs157 The Savage Six : chaque SAVAGE SIX engage attaque (3 + 2 degats)",
+        "pourquoi": "attaques multiples",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs160')", "Puzzle.Reveal('hs161')", "Puzzle.Reveal('hs157')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 5}
+    },
+    {
+        "nom": "[hs5] hs157 The Savage Six sans SAVAGE SIX en jeu : va chercher Stegron",
+        "pourquoi": "repli de recherche",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs163')"],
+        "declencher": ["Puzzle.Reveal('hs157')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs163"], "degats_identite": 0}
+    },
+    {
+        "nom": "[hs5] hs159 Rhino : recoit un statut Tough a la fin de la phase du vilain",
+        "pourquoi": "WhenPhaseEnd Villain",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs159')", "Puzzle.EndVillainPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["hs159", "Tough"]]}
+    },
+    {
+        "nom": "[hs5] hs108a hs108b : le passage au stade 2 revele Calypso Serum, puis 1 menace par piege revele (limite 1 par round et par joueur)",
+        "pourquoi": "Forced Response avec limite",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs115','hs006')"],
+        "declencher": ["Puzzle.AdvanceMainScheme()", "Puzzle.Reveal('hs129')", "Puzzle.Reveal('hs130')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs108b", "hs115"], "menace": [["hs108b", 1]]}
+    },
+
+    {
+        "nom": "[hs5] hs118 Predatory Ambush (alter-ego) : Kraven attaque l'identite, sans piege (pas d'attachement)",
+        "pourquoi": "Kraven attaque",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs118')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "paquet_pieges": 16}
+    },
+    {
+        "nom": "[hs5] hs120 The Hunt Begins : revele la 1re arme defaussee",
+        "pourquoi": "3 cartes defaussees, arme revelee",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006','hs006','hs111')"],
+        "declencher": ["Puzzle.Reveal('hs120')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs111"]}
+    },
+    {
+        "nom": "[hs5] hs124 Stalking Prey : 1 piege distribue, 1 menace sur le complot principal",
+        "pourquoi": "DonnerPiege + PlaceThreat",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')"],
+        "declencher": ["Puzzle.Reveal('hs124')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["hs107b", 1]], "paquet_pieges": 15}
+    },
+
+    {
+        "nom": "[hs5] hs134 Quicksand revele",
+        "pourquoi": "choix pilote",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs134')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs134"]}
+    },
+    {
+        "nom": "[hs5] hs139 Swinging Boulder, identite epuisee et sans allie ni amelioration : 3 degats",
+        "pourquoi": "seule option realisable",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs139')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3}
+    },
+    {
+        "nom": "[hs5] hs130 Bear Trap attache : 1 degat a la fin de la phase heros",
+        "pourquoi": "WhenPlayerPhaseEnd",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs130')", "Puzzle.EndPlayerPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs130"], "degats_identite": 1}
+    },
+    {
+        "nom": "[hs5] hs131 Capture Net attache : l'attaque du porteur est remplacee : le filet est defausse et Kraven n'a subi aucun degat",
+        "pourquoi": "WhenUnitWouldAttack, porteur est l'attaquant",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs131')", "Puzzle.Ready('01001a')", "Puzzle.Attack('01001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hs131"], "degats": [["hs104", 0]]}
+    },
+    {
+        "nom": "[hs5] hs132 Capture Net attache : l'attaque du porteur est remplacee : le filet est defausse, aucun degat",
+        "pourquoi": "WhenUnitWouldAttack, porteur est l'attaquant",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('hs132')", "Puzzle.Ready('01001a')", "Puzzle.Attack('01001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hs132"], "degats": [["hs104", 0]]}
+    },
+    {
+        "nom": "[hs5] hs109 Last Son of Kraven : le heros l'attaque, un piege est distribue",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.PutIntoPlay('hs109')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "paquet_pieges": 15,
+            "degats": [
+                [
+                    "hs104",
+                    0
+                ]
+            ],
+            "degats_min": [
+                [
+                    "hs109",
+                    1
+                ]
+            ]
+        },
+        "cibles": [
+            "hs109"
+        ],
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs109 Last Son of Kraven : 2e attaque dans le round, aucun 2e piege (temoin d'epuisement)",
+        "pourquoi": "LimitOncePerRound",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.PutIntoPlay('hs109')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')",
+            "Puzzle.Ready('01001a')",
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "paquet_pieges": 15,
+            "degats": [
+                [
+                    "hs104",
+                    0
+                ]
+            ],
+            "degats_min": [
+                [
+                    "hs109",
+                    2
+                ]
+            ]
+        },
+        "cibles": [
+            "hs109"
+        ],
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs109 Last Son of Kraven (boost) : remelange dans le paquet de rencontre apres l'activation",
+        "pourquoi": "Boost",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Boost('hs109')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "dans_deck_rencontre": ["hs109"]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs112 Kraven's Spear : interruption acceptee, 3 degats a l'identite et la lance est defaussee",
+        "pourquoi": "Interrupt + cout",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Remove('hs125', 'hs126', 'hs127', 'hs128', 'hs129', 'hs130', 'hs131', 'hs132', 'hs133', 'hs134', 'hs135', 'hs136', 'hs137', 'hs138', 'hs139', 'hs140')",
+            "Puzzle.Reveal('hs112')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "hs112"
+            ],
+            "degats_identite": 3
+        },
+        "cibles": [
+            "hs104"
+        ],
+        "accepter_choix": True,
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+
+    {
+        "nom": "[hs5] hs113 Hunting Rifle : Kraven attaque sans blesser (Tough), 1 degat quand meme",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Remove('hs125', 'hs126', 'hs127', 'hs128', 'hs129', 'hs130', 'hs131', 'hs132', 'hs133', 'hs134', 'hs135', 'hs136', 'hs137', 'hs138', 'hs139', 'hs140')",
+            "Puzzle.Reveal('hs113')",
+            "Puzzle.Tough('01001b')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('hs104')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 1,
+            "statuts_absents": [
+                [
+                    "01001b",
+                    "Tough"
+                ]
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs113 Hunting Rifle : Kraven blesse normalement, pas de degat en plus (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Remove('hs125', 'hs126', 'hs127', 'hs128', 'hs129', 'hs130', 'hs131', 'hs132', 'hs133', 'hs134', 'hs135', 'hs136', 'hs137', 'hs138', 'hs139', 'hs140')",
+            "Puzzle.Reveal('hs113')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('hs104')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs113 Hunting Rifle : interruption, 2 ressources depensees, le fusil est defausse",
+        "pourquoi": "Interrupt + cout 2 ressources",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Remove('hs125', 'hs126', 'hs127', 'hs128', 'hs129', 'hs130', 'hs131', 'hs132', 'hs133', 'hs134', 'hs135', 'hs136', 'hs137', 'hs138', 'hs139', 'hs140')",
+            "Puzzle.Reveal('hs113')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "hs113"
+            ],
+            "defausse": [
+                "01088"
+            ]
+        },
+        "cibles": [
+            "hs104"
+        ],
+        "accepter_choix": True,
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs114 Tooth Necklace : apres que Kraven manigance, revele une arme du paquet",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs111','hs006')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Remove('hs125', 'hs126', 'hs127', 'hs128', 'hs129', 'hs130', 'hs131', 'hs132', 'hs133', 'hs134', 'hs135', 'hs136', 'hs137', 'hs138', 'hs139', 'hs140')",
+            "Puzzle.Reveal('hs114')"
+        ],
+        "declencher": [
+            "Puzzle.Scheme('hs104')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "hs114",
+                "hs111"
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs114 Tooth Necklace : interruption, 2 menaces sur le complot principal et le collier est defausse",
+        "pourquoi": "Interrupt + cout",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Remove('hs125', 'hs126', 'hs127', 'hs128', 'hs129', 'hs130', 'hs131', 'hs132', 'hs133', 'hs134', 'hs135', 'hs136', 'hs137', 'hs138', 'hs139', 'hs140')",
+            "Puzzle.Reveal('hs114')",
+            "Puzzle.SetThreat('hs107b', 0)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "hs114"
+            ],
+            "menace": [
+                [
+                    "hs107b",
+                    2
+                ]
+            ]
+        },
+        "cibles": [
+            "hs104"
+        ],
+        "accepter_choix": True,
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs121 Big Game Hunter (heros) : Kraven attaque le heros, pas de piege",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs121')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2,
+            "paquet_pieges": 16
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs121 Big Game Hunter (alter-ego) : aucune attaque possible, un piege est distribue",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs121')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 0,
+            "paquet_pieges": 15
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs122 Big Game Hunter (heros) : Kraven attaque le heros, pas de piege",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs122')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2,
+            "paquet_pieges": 16
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs122 Big Game Hunter (alter-ego) : aucune attaque possible, un piege est distribue",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs122')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 0,
+            "paquet_pieges": 15
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs126 Ferocious Lion : apres l'attaque du heros contre Kraven, le Lion attaque (3 sans defense)",
+        "pourquoi": "Forced Response + etoile",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.PutIntoPlay('hs126')",
+            "Puzzle.Remove('hs125', 'hs127', 'hs128', 'hs129', 'hs130', 'hs131', 'hs132', 'hs133', 'hs134', 'hs135', 'hs136', 'hs137', 'hs138', 'hs139', 'hs140')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 3
+        },
+        "cibles": [
+            "hs104"
+        ],
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs127 Fierce Cheetah : riposte a l'attaque contre Kraven, percante (Tough retire et 2 degats)",
+        "pourquoi": "Forced Response + piercing",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.PutIntoPlay('hs127')",
+            "Puzzle.Remove('hs125', 'hs126', 'hs128', 'hs129', 'hs130', 'hs131', 'hs132', 'hs133', 'hs134', 'hs135', 'hs136', 'hs137', 'hs138', 'hs139', 'hs140')",
+            "Puzzle.Tough('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2,
+            "statuts_absents": [
+                [
+                    "01001a",
+                    "Tough"
+                ]
+            ]
+        },
+        "cibles": [
+            "hs104"
+        ],
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs128 Fierce Cheetah : riposte a l'attaque contre Kraven, percante (Tough retire et 2 degats)",
+        "pourquoi": "Forced Response + piercing",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.PutIntoPlay('hs128')",
+            "Puzzle.Remove('hs125', 'hs126', 'hs127', 'hs129', 'hs130', 'hs131', 'hs132', 'hs133', 'hs134', 'hs135', 'hs136', 'hs137', 'hs138', 'hs139', 'hs140')",
+            "Puzzle.Tough('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2,
+            "statuts_absents": [
+                [
+                    "01001a",
+                    "Tough"
+                ]
+            ]
+        },
+        "cibles": [
+            "hs104"
+        ],
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs135 Tranquilizer Darts : sans ressource mentale, l'identite est confuse",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs135')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "01001a",
+                    "Confused"
+                ]
+            ],
+            "degats_identite": 0
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs136 Tranquilizer Darts : sans ressource mentale, l'identite est confuse",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs136')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "01001a",
+                    "Confused"
+                ]
+            ],
+            "degats_identite": 0
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs137 Tranquilizer Darts : sans ressource mentale, l'identite est confuse",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs137')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "01001a",
+                    "Confused"
+                ]
+            ],
+            "degats_identite": 0
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs135 Tranquilizer Darts : deja confuse et sans ressource mentale, 1 degat",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Confuse('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs135')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 1
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs135 Tranquilizer Darts : une ressource mentale en main, elle est depensee, pas de confusion",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Confuse('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs135')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 0,
+            "defausse": [
+                "01089"
+            ]
+        },
+        "main_exclusive": [
+            "01089"
+        ]
+    },
+    {
+        "nom": "[hs5] hs138 Swinging Boulder, identite epuisee et sans allie ni amelioration : 3 degats",
+        "pourquoi": "seule option",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs138')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 3
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs138 Swinging Boulder, identite prete : le 1er choix epuise l'identite, aucun degat",
+        "pourquoi": "When Revealed",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('hs138')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 0,
+            "exhausted": [
+                "01001a"
+            ]
+        },
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+    {
+        "nom": "[hs5] hs162 King Cobra : engage, le heros ne peut pas attaquer Kraven (l'attaque va a Cobra)",
+        "pourquoi": "restriction",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('hs006','hs006','hs006')",
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')",
+            "Puzzle.Remove('hs125', 'hs126', 'hs127', 'hs128', 'hs129', 'hs130', 'hs131', 'hs132', 'hs133', 'hs134', 'hs135', 'hs136', 'hs137', 'hs138', 'hs139', 'hs140')",
+            "Puzzle.PutIntoPlay('hs162')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "hs104",
+                    0
+                ]
+            ],
+            "degats_min": [
+                [
+                    "hs162",
+                    1
+                ]
+            ]
+        },
+        "cibles": [
+            "hs104"
+        ],
+        "main_exclusive": [
+            "01088"
+        ]
+    },
+
+    {
+        "nom": "[hs5] hs162 King Cobra (boost, alter-ego) : l'attaque blesse, l'identite est epuisee",
+        "pourquoi": "Boost : attaque de Kraven sans defense, hs162 au sommet du paquet de rencontre",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('hs006','hs006','hs162')", "Puzzle.CreatePlayerDeck('01088')"],
+        "declencher": ["Puzzle.Attack('hs104')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["01001b"], "degats_identite": 3},
+        "main_exclusive": ["01088"]
+    },
+
+    # BLOC5-FIN
+    {
+        "nom": "[hs6] hs164 Rocket Raccoon : son attaque de base deborde (overkill) sur le vilain",
+        "pourquoi": "[star] overkill",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs164', under_control=True)",
+            "Puzzle.PutIntoPlay('01110')"
+        ],
+        "declencher": [
+            "Puzzle.Attack('hs164')"
+        ],
+        "cibles": [
+            "01110"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "01094",
+                    1
+                ]
+            ],
+            "hors_jeu": [
+                "01110"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs165 Old Man Logan : en defendant, inflige son ATK a l'attaquant",
+        "pourquoi": "Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs165', under_control=True)",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Defend('hs165', '01094')"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "01094",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs166 Black Cat : apres un contre, la carte [mental] du dessus va en main",
+        "pourquoi": "Forced Response",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs166', under_control=True)",
+            "Puzzle.CreatePlayerDeck('01089')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('01097b', 5)",
+            "Puzzle.Thwart('hs166')"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_main": [
+                "01089"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs166 Black Cat : une carte sans [mental] reste defaussee (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs166', under_control=True)",
+            "Puzzle.CreatePlayerDeck('01090')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('01097b', 5)",
+            "Puzzle.Thwart('hs166')"
+        ],
+        "main_exclusive": [
+            "01088"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "defausse": [
+                "01090"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs167 Ka-Zar : a son entree en jeu, degats au vilain egaux a son etape",
+        "pourquoi": "Response",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.PutIntoPlay('hs167', under_control=True)"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "01094",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs168 Gibbon : le premier degat de la phase est previent de 1",
+        "pourquoi": "Interrupt, limite",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs168', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Damage('hs168', 2)"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "hs168",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs168 Gibbon : le second degat de la phase n'est plus previent (temoin d'epuisement)",
+        "pourquoi": "Limit once per phase",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs168', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Damage('hs168', 1)",
+            "Puzzle.Damage('hs168', 2)"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "hs168",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs169 Evade : previent 3 degats d'une attaque ; aucun degat subi, pioche 1",
+        "pourquoi": "Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [],
+        "main_exclusive": [
+            "hs169"
+        ],
+        "activer": [
+            "01094"
+        ],
+        "accepter_choix": True,
+        "verifier": "hs_activer",
+        "attendu": {
+            "degats_identite": 0,
+            "en_main": [
+                "01088"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs172 Taunt : trois cartes boost au vilain, trois cartes piochees",
+        "pourquoi": "Hero Action",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088', '01089', '01090')"
+        ],
+        "declencher": [],
+        "main_exclusive": [
+            "hs172"
+        ],
+        "jouer": [
+            "hs172"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "taille_main": 3
+        }
+    },
+    {
+        "nom": "[hs6] hs175 Steadfast : depense [physical], annule le When Revealed de I'm Tough",
+        "pourquoi": "Hero Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('01105')"
+        ],
+        "main_exclusive": [
+            "hs175",
+            "01090"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts_absents": [
+                [
+                    "01094",
+                    "Tough"
+                ]
+            ],
+            "defausse": [
+                "hs175"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs175 Steadfast : sans la carte, Rhino devient robuste (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.CreatePlayerDeck('01088')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('01105')"
+        ],
+        "main_exclusive": [
+            "01090"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "statuts": [
+                [
+                    "01094",
+                    "Tough"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs178 Finish Them Off : 2 degats, l'ennemi vaincu fait piocher 2",
+        "pourquoi": "Hero Action (attack)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01110')",
+            "Puzzle.CreatePlayerDeck('01088', '01089')"
+        ],
+        "declencher": [],
+        "main_exclusive": [
+            "hs178"
+        ],
+        "jouer": [
+            "hs178"
+        ],
+        "cibles": [
+            "01110"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "hors_jeu": [
+                "01110"
+            ],
+            "taille_main": 2
+        }
+    },
+    {
+        "nom": "[hs6] hs178 Finish Them Off : un ennemi survivant ne fait rien piocher (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('01101')",
+            "Puzzle.CreatePlayerDeck('01088', '01089')"
+        ],
+        "declencher": [],
+        "main_exclusive": [
+            "hs178"
+        ],
+        "jouer": [
+            "hs178"
+        ],
+        "cibles": [
+            "01101"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "01101",
+                    2
+                ]
+            ],
+            "taille_main": 0
+        }
+    },
+    {
+        "nom": "[hs6] hs181 Fresh Tracks : +2 menace retiree ; derniere menace retiree, 1 degat et 1 carte",
+        "pourquoi": "Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+                        "Puzzle.CreatePlayerDeck('01088', '01089')"
+        ],
+        "declencher": [
+            "Puzzle.SetThreat('01097b', 3)",
+            "Puzzle.Thwart('01001a')"
+        ],
+        "main_exclusive": [
+            "hs181"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "menace": [
+                [
+                    "01097b",
+                    0
+                ]
+            ],
+            "degats": [
+                [
+                    "01094",
+                    1
+                ]
+            ],
+            "en_main": [
+                "01089"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs184 Savage Land : 1 degat au heros, +1 ATK et +1 THW jusqu'a la fin du round",
+        "pourquoi": "Hero Action",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('hs184', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Action('hs184', 'HeroAction')"
+        ],
+        "cibles": [
+            "01001a"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 1,
+            "attributs": {
+                "attack": 1,
+                "thwart": 1
+            },
+            "exhausted": [
+                "hs184"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs185 Hunting Rifle : incline, retire une munition, 2 degats a distance",
+        "pourquoi": "Hero Action (attack)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('hs185', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Action('hs185', 'HeroAction')"
+        ],
+        "cibles": [
+            "01094"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "01094",
+                    2
+                ]
+            ],
+            "compteurs": [
+                [
+                    "hs185",
+                    "ammo",
+                    2
+                ]
+            ],
+            "exhausted": [
+                "hs185"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs188 Hatchet : incline, +1 ATK a l'attaque de base",
+        "pourquoi": "Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('hs188', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('01001a')"
+        ],
+        "cibles": [
+            "01094"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "01094",
+                    3
+                ]
+            ],
+            "exhausted": [
+                "hs188"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs191 Hunterbot : +1 ATK au heros, et les degats vont sur lui",
+        "pourquoi": "continu + Forced Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('hs191', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Damage('01001a', 2)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "attributs": {
+                "attack": 1
+            },
+            "degats_identite": 0,
+            "compteurs": [
+                [
+                    "hs191",
+                    "damage",
+                    2
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs191 Hunterbot : 3 degats ou plus, il est defausse",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('hs191', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Damage('01001a', 3)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "defausse": [
+                "hs191"
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "[hs6] hs194 Trap : 2 degats a l'ennemi qui attaque ; vaincu, Trap revient en main",
+        "pourquoi": "Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('hs194', under_control=True)",
+            "Puzzle.PutIntoPlay('01110')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [],
+        "main_exclusive": [
+            "01090"
+        ],
+        "activer": [
+            "01110"
+        ],
+        "accepter_choix": True,
+        "verifier": "hs_activer",
+        "attendu": {
+            "hors_jeu": [
+                "01110"
+            ],
+            "en_main": [
+                "hs194"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs197 In Hiding : l'ennemi manigance au lieu d'attaquer",
+        "pourquoi": "Hero Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('hs197', under_control=True)",
+            "Puzzle.Exhaust('01001a')",
+            "Puzzle.SetThreat('01097b', 0)"
+        ],
+        "declencher": [],
+        "main_exclusive": [
+            "01090"
+        ],
+        "activer": [
+            "01094"
+        ],
+        "accepter_choix": True,
+        "verifier": "hs_activer",
+        "attendu": {
+            "degats_identite": 0,
+            "menace": [
+                [
+                    "01097b",
+                    1
+                ]
+            ],
+            "defausse": [
+                "hs197"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs200 Vermin (allie) : 3 pions rat ; en attaquant, en retire un et ne subit pas de contrecoup",
+        "pourquoi": "Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs200', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('hs200')"
+        ],
+        "cibles": [
+            "01094"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "hs200",
+                    "rat",
+                    2
+                ]
+            ],
+            "degats": [
+                [
+                    "hs200",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs201 Scorpion (allie) : apres avoir blesse, 1 degat a lui -> ennemi etourdi et +1 degat",
+        "pourquoi": "Response",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs201', under_control=True)"
+        ],
+        "declencher": [
+            "Puzzle.Attack('hs201')"
+        ],
+        "cibles": [
+            "01094"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats": [
+                [
+                    "01094",
+                    3
+                ],
+                [
+                    "hs201",
+                    2
+                ]
+            ],
+            "statuts": [
+                [
+                    "01094",
+                    "Stunned"
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs202 Lizard (allie) : +3 THW en alter-ego",
+        "pourquoi": "continu",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs202', under_control=True)"
+        ],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "attributs_carte": [
+                [
+                    "hs202",
+                    "thwart",
+                    3
+                ],
+                [
+                    "hs202",
+                    "attack",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs202 Lizard (allie) : +3 ATK en heros (contre-cas de forme)",
+        "pourquoi": "continu",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('hs202', under_control=True)"
+        ],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "attributs_carte": [
+                [
+                    "hs202",
+                    "thwart",
+                    0
+                ],
+                [
+                    "hs202",
+                    "attack",
+                    3
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs203 Vulture (allie) : incline et 1 degat -> redresse le heros, AERIAL",
+        "pourquoi": "Action",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('hs203', under_control=True)",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.Action('hs203', 'Action')"
+        ],
+        "cibles": [
+            "01001a"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "pret": [
+                "01001a"
+            ],
+            "traits": [
+                "AERIAL"
+            ],
+            "degats": [
+                [
+                    "hs203",
+                    1
+                ]
+            ],
+            "exhausted": [
+                "hs203"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs204 Vermin (sbire) : un pion rat absorbe chaque degat",
+        "pourquoi": "Forced Interrupt",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs204')"
+        ],
+        "declencher": [
+            "Puzzle.Damage('hs204', 5)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "hs204",
+                    "rat",
+                    2
+                ]
+            ],
+            "degats": [
+                [
+                    "hs204",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs204 Vermin (sbire) : sans pion rat, il subit les degats (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs204')",
+            "Puzzle.Damage('hs204', 1)",
+            "Puzzle.Damage('hs204', 1)",
+            "Puzzle.Damage('hs204', 1)"
+        ],
+        "declencher": [
+            "Puzzle.Damage('hs204', 1)"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "hs204",
+                    "rat",
+                    0
+                ]
+            ],
+            "degats": [
+                [
+                    "hs204",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs207 Captured! piochee : entre en jeu chez le joueur, sans remplacement",
+        "pourquoi": "carte de rencontre au deck",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.CreatePlayerDeck('01088', 'hs207')"
+        ],
+        "declencher": [
+            "Puzzle.Draw(1)"
+        ],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "hs207"
+            ],
+            "taille_main": 1
+        }
+    },
+    {
+        "nom": "[hs6] hs209 Poisoned! piochee sans [energy] : revelee, 2 degats",
+        "pourquoi": "When Revealed",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.CreatePlayerDeck('01088', 'hs209')"
+        ],
+        "declencher": [
+            "Puzzle.Draw(1)"
+        ],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 2
+        }
+    },
+    {
+        "nom": "[hs6] hs206 Son of Kraven pioche : entre en jeu engage",
+        "pourquoi": "minion au deck du joueur",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.CreatePlayerDeck('01088', 'hs206')"
+        ],
+        "declencher": [
+            "Puzzle.Draw(1)"
+        ],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "en_jeu": [
+                "hs206"
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs224 Cold Blooded : la menace cible du complot baisse de 1 par heros",
+        "pourquoi": "continu",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs224')"
+        ],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "attributs_carte": [
+                [
+                    "01097b",
+                    "target_threat",
+                    -1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs222 Rabid Rodents : un sbire RAT qui entre en jeu recoit 1 menace",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs222')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('hs012')"
+        ],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "jetons": [
+                [
+                    "hs012",
+                    "threat",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs222 Rabid Rodents : sans l'environnement, aucune menace (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [
+            "Puzzle.PutIntoPlay('hs012')"
+        ],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "jetons": [
+                [
+                    "hs012",
+                    "threat",
+                    0
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs222 Rabid Rodents : Vermin gagne +1 ATK",
+        "pourquoi": "continu",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs222')"
+        ],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "attributs_carte": [
+                [
+                    "hs001",
+                    "attack",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs223 Sting of the Scorpion : fin de phase du vilain, 1 blessure sur Jameson (premier choix)",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_scorpion",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs223')"
+        ],
+        "declencher": [
+            "Puzzle.EndVillainPhase()"
+        ],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "compteurs": [
+                [
+                    "hs035",
+                    "wound",
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs225 Aerial Excellence : etape 1, 1 menace par identite sans AERIAL",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_vulture",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs225')",
+            "Puzzle.SetThreat('hs083b', 0)"
+        ],
+        "declencher": [],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "hs_apres_etape_1",
+        "attendu": {
+            "menace": [
+                [
+                    "hs083b",
+                    1
+                ]
+            ],
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "[hs6] hs226 Master Trapper : etape 1, un piege distribue a chaque joueur",
+        "pourquoi": "Forced Response",
+        "scenario": "hs_kraven_the_hunter",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('hs226')"
+        ],
+        "declencher": [],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "hs_apres_etape_1",
+        "attendu": {
+            "pieges_distribues": [
+                [
+                    0,
+                    1
+                ]
+            ]
+        }
+    },
+    {
+        "nom": "[hs6] hs208 Hunted! : le sbire qui s'engage gagne quickstrike et attaque",
+        "pourquoi": "continu",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.PutIntoPlay('hs208')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('01110')"
+        ],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 1
+        }
+    },
+    {
+        "nom": "[hs6] hs208 Hunted! : sans l'obligation, le sbire n'attaque pas en s'engageant (temoin)",
+        "pourquoi": "temoin",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('01110')"
+        ],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 0
+        }
+    },
+    {
+        "nom": "[hs6] hs205 Lizard (sbire) : quickstrike, l'attaque perce la robustesse",
+        "pourquoi": "Forced Interrupt piercing",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('01001b')",
+            "Puzzle.Tough('01001a')",
+            "Puzzle.Exhaust('01001a')"
+        ],
+        "declencher": [
+            "Puzzle.PutIntoPlay('hs205')"
+        ],
+        "main_exclusive": [
+            "01090"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {
+            "degats_identite": 3,
+            "statuts_absents": [
+                [
+                    "01001a",
+                    "Tough"
+                ]
+            ]
+        }
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -47785,14 +52788,14 @@ IMPRIME = {
 # le meme cas — leurs verificateurs dedies existaient, mais ces cas-la
 # appelaient `etat_attendu`. Toute cle inconnue fait desormais ECHOUER le cas.
 CLES_ETAT_ATTENDU = {
-    'attributs', 'attributs_carte', 'compteurs', 'compteurs_identite', 'compteurs_total',
+    'attaches', 'attributs', 'attributs_carte', 'compteurs', 'compteurs_identite', 'compteurs_total',
     'dans_deck_joueur', 'dans_deck_registered', 'dans_deck_rencontre', 'defausse',
     'defausse_joueur', 'defausse_dessus', 'defausse_rencontre', 'degats', 'degats_identite',
     'degats_identite_min', 'degats_min', 'en_jeu', 'en_jeu_trait', 'en_main', 'en_reserve',
     'exhausted', 'forme', 'hors_jeu', 'icones', 'icones_boost', 'jetons', 'menace',
     'menace_min', 'mis_de_cote', 'pose_sous', 'pret', 'statuts', 'statuts_absents',
     'taille_deck_joueur', 'taille_deck_registered', 'taille_main', 'taille_mis_de_cote',
-    'taille_pose_sous', 'taille_reserve', 'traits', 'traits_absents',
+    'mis_de_cote_scenario', 'taille_attaches', 'taille_pose_sous', 'taille_reserve', 'traits', 'traits_absents',
     # absorbees le 11/09/2026
     'pv_max', 'carte_du_surge', 'accroche_a', 'hotes', 'traits_de',
     # ajoutee le 21/09/2026 (signalement Aghenatak, cartes coincees en
@@ -47803,6 +52806,8 @@ CLES_ETAT_ATTENDU = {
     'en_rising_tide', 'taille_rising_tide', 'rising_tide_face_visible',
     # ajoutee le 25/09/2026 (pack conan, identite a cinq faces)
     'face_identite',
+    # ajoutees le 09/10/2026 (Hunting Season, bloc 5) : paquets de pieges.
+    'paquet_pieges', 'defausse_pieges', 'pieges_distribues',
 }
 
 # ---------------------------------------------------------------- pack fne (bloc 1)
@@ -48961,6 +53966,24 @@ def etat_attendu(monde, aides):
     # Cle `mis_de_cote` (AJOUT 01/09/2026, pack beast) : le `set_aside_deck` du
     # joueur, alias de `additional_discard_pile`. Prouve qu'une carte y est
     # ENCORE — ou, en contre-cas, qu'elle en est bien partie.
+    # Paquets de pieges (Kraven) : `paquet_pieges` / `defausse_pieges` = taille,
+    # `pieges_distribues` = [[rang du joueur, taille]] (paquets DealtTrapN).
+    _decks_hs = getattr(monde, "scenario_decks", {}) or {}
+    for cle, nom in (("paquet_pieges", "TrapDeck"), ("defausse_pieges", "TrapDeck")):
+        if cle in attendu:
+            d = _decks_hs.get(nom)
+            n = None if d is None else (d.deck.GetSize() if cle == "paquet_pieges" else d.discard_pile.GetSize())
+            if n != attendu[cle]:
+                soucis.append(f"{cle} = {n} (attendu {attendu[cle]})")
+    for rang, taille in attendu.get("pieges_distribues") or []:
+        d = _decks_hs.get(f"DealtTrap{rang}")
+        n = None if d is None else d.deck.GetSize()
+        if n != taille:
+            soucis.append(f"pieges distribues au joueur {rang} = {n} (attendu {taille})")
+    for card_id in attendu.get("mis_de_cote_scenario") or []:
+        cartes = [getattr(f.paper, "card_id", None) for f in monde.aside_deck.GetAll()]
+        if card_id not in cartes:
+            soucis.append(f"{card_id} n'est pas mis de cote par le scenario (aside = {cartes})")
     for card_id in attendu.get("mis_de_cote") or []:
         cartes = [getattr(f.paper, "card_id", None)
                   for f in monde.players[0].set_aside_deck.GetAll()]
@@ -49033,6 +54056,14 @@ def etat_attendu(monde, aides):
     # chaque main et la pose face cachee sous elle.
     # ⚠ `Get(True)` et non `Get()` : le drapeau demande aussi les cartes FACE
     # CACHEE, et c'est precisement ainsi que wd084 les pose.
+    for hote, card_id in attendu.get("attaches") or []:
+        face = aides["par_id"](monde, hote)
+        if face is None:
+            soucis.append(f"{hote} introuvable en jeu (attaches)")
+            continue
+        portees = [getattr(f.paper, "card_id", None) for f in face.GetInventoryDeck().GetAll()]
+        if card_id not in portees:
+            soucis.append(f"{card_id} n'est pas attache a {hote} (attaches = {portees})")
     for hote, card_id in attendu.get("pose_sous") or []:
         face = aides["par_id"](monde, hote)
         if face is None:
@@ -49042,6 +54073,15 @@ def etat_attendu(monde, aides):
                   for f in face.GetPlacedCardArea().Get(True)]
         if card_id not in posees:
             soucis.append(f"{card_id} n'est pas pose sous {hote} (pose = {posees})")
+
+    for hote, valeur in attendu.get("taille_attaches") or []:
+        face = aides["par_id"](monde, hote)
+        if face is None:
+            soucis.append(f"{hote} introuvable en jeu (taille_attaches)")
+            continue
+        n = len(list(face.GetInventoryDeck().GetAll()))
+        if n != valeur:
+            soucis.append(f"{n} carte(s) attachee(s) a {hote} (attendu {valeur})")
 
     for hote, valeur in attendu.get("taille_pose_sous") or []:
         face = aides["par_id"](monde, hote)
@@ -52569,6 +57609,52 @@ def gorr_plan_avance_le_complot(monde, aides):
         return False, (f"le complot n'a pas avance en 2B (plan = {restant})")
     return True, "3e compteur plan pose, complot avance en 2B"
 
+def hs_fin_phase_vilain(monde, aides):
+    from game.message import Message
+    Message.WhenPhaseEnd(monde.phase_id, "Villain", monde).Send()
+    return etat_attendu(monde, aides)
+
+def hs_activer(monde, aides):
+    """Hunting Season : joue une VRAIE activation (cas['activer'] = ids, dans l'ordre), sans boost, puis etat_attendu."""
+    from game.effect.rule import GameRule
+    for card_id in aides["cas"].get("activer") or []:
+        ennemi = aides["par_id"](monde, card_id)
+        if ennemi is None:
+            return False, f"{card_id} n'est pas en jeu (activation)"
+        ennemi.DoActivate(monde.players[0], GameRule(ennemi), do_not_give_boost=True)
+    return etat_attendu(monde, aides)
+
+def hs_au_fond(monde, aides):
+    """Hunting Season : etat_attendu, puis `au_fond` (card_id) doit etre la DERNIERE carte de la defausse de rencontre."""
+    from game.operate.worlds import Worlds
+    ok, msg = etat_attendu(monde, aides)
+    if not ok:
+        return ok, msg
+    voulu = aides["cas"].get("au_fond")
+    cartes = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDiscardPileCards(monde)]
+    if not cartes or cartes[-1] != voulu:
+        return False, f"{voulu} n'est pas au fond de la defausse de rencontre (de dessus a dessous : {cartes})"
+    return True, msg
+
+def hs_action_bloquee(monde, aides):
+    """Hunting Season : `tenter` (commande Puzzle) doit etre REFUSEE par le moteur (aucune action disponible)."""
+    from game.puzzle.puzzle import PuzzleHelper
+    try:
+        PuzzleHelper.Exec([aides["cas"]["tenter"]], monde)
+    except AssertionError as exc:
+        if "aucune action" in str(exc):
+            return etat_attendu(monde, aides)
+        return False, f"refus pour une autre raison : {exc}"
+    return False, "l'action a ete acceptee alors qu'elle devait etre bloquee"
+
+def hs_apres_etape_1(monde, aides):
+    """Hunting Season : rejoue la fin de l'etape 1 de la phase du vilain, puis etat_attendu."""
+    _gorr_etape_1_de_la_phase_du_vilain(monde)
+    return etat_attendu(monde, aides)
+
+def hs_partie_perdue(monde, aides):
+    return gorr_partie_perdue(monde, aides)
+
 def gorr_plan_ne_bouge_pas_au_stade_I(monde, aides):
     """gb004b, contre-cas : le vilain au stade I ne pose aucun compteur."""
     _gorr_etape_1_de_la_phase_du_vilain(monde)
@@ -52631,6 +57717,14 @@ def gorr_cartes_distribuees(monde, aides):
         if not cartes:
             return False, "aucune carte de rencontre distribuee"
     return True, "1 carte de rencontre distribuee par joueur"
+
+def hs_carte_distribuee(monde, aides):
+    """hs043 : la carte est distribuee face cachee au joueur, pas encore en jeu."""
+    ids = [getattr(f.paper, "card_id", None)
+           for j in monde.players for f in j.dealt_encounter_cards.Get(True)]
+    if "hs043" not in ids:
+        return False, f"hs043 n'est pas distribuee (distribuees = {ids})"
+    return True, "hs043 attend, face cachee, dans les cartes distribuees"
 
 def gorr_bombe_amorcee(monde, aides):
     """gb005a : la Godbomb est en jeu ET chaque deck contient un Heroes' Labor

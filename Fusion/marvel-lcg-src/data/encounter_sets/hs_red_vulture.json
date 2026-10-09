@@ -1,0 +1,12 @@
+{
+  "version": "0.5.8",
+  "name": "Red Vulture",
+  "encounters": [
+    "hs151",
+    "hs152",
+    "hs153",
+    "hs154",
+    "hs155",
+    "hs156"
+  ]
+}

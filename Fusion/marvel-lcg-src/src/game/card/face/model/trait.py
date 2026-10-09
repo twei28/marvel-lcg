@@ -27,11 +27,13 @@ class ModelTrait(ModelBase):
     def ResetTrait(self):
         this = self.GetThis()
         self.traits_internal: Dict["CardFace.TRAITS", List['CardFace']] = {}
+        self.traits_lost: Dict["CardFace.TRAITS", int] = {}
         for trait in this.paper.traits:
             self.traits_internal[trait] = [this]
     @property
     def traits(self) -> List["CardFace.TRAITS"]:
-        return [x for x in self.traits_internal if len(self.traits_internal[x]) > 0]
+        return [x for x in self.traits_internal
+                if len(self.traits_internal[x]) > 0 and self.traits_lost.get(x, 0) <= 0]
     @property
     def traits_str(self) -> str:
         name = ""
@@ -51,10 +53,18 @@ class ModelTrait(ModelBase):
     def HasTrait(self, *traits: "CardFace.TRAITS") -> bool:
         this = self.GetThis()
         for trait in traits:
+            if self.traits_lost.get(trait, 0) > 0:
+                continue
             if trait in self.traits_internal and self.traits_internal[trait] != [] or \
                 this.IsConsiderAs(trait=trait):
                 return True
         return False
+    @final
+    def SuppressTrait(self, diff: int, trait: "CardFace.TRAITS"):
+        """AJOUT (09/10/2026, pack hunting_season) : « loses the X trait » TEMPORAIRE.
+        Compteur par trait : tant qu'il est > 0, `HasTrait` repond non, quelle que soit la
+        source du trait. Remis a zero avec la face (`ResetTrait`)."""
+        self.traits_lost[trait] = max(0, self.traits_lost.get(trait, 0) + diff)
     @final
     def ShareTrait(self, face: 'CardFace') -> bool:
         return self.HasTrait(*list(face.traits_internal.keys()))

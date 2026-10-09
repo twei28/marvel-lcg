@@ -16,7 +16,7 @@ import { apiCampagne, pageLivretUrl } from "/public/js/campagne/api-campagne.js"
 import { lireBrouillon, ecrireBrouillon, effacerBrouillon } from "/public/js/campagne/brouillon.js";
 import { catalog } from "/public/js/prepare/catalog.js";
 import { cards } from "/public/js/prepare/cards.js";
-import { cardImageUrl, extensionImageUrl } from "/public/js/prepare/api.js";
+import { api, cardImageUrl, extensionImageUrl } from "/public/js/prepare/api.js";
 
 /* La COUVERTURE DU LIVRET d'une campagne, ajoutee le 19/09/2026.
  *
@@ -303,25 +303,42 @@ function vueCreation() {
 // Elles y restent jusqu'a la fin de la campagne (livret p.5), et c'est le
 // moteur qui les y remet a chaque mise en place, depuis le carnet.
 
-/** Cout en unites lu sur la carte : le livret l'ecrit dans son texte. */
-function coutEnUnites(carte) {
-    const m = /Unit Cost (\d+)/i.exec((carte && carte.text) || "");
+/** Cout lu sur la carte : le livret l'ecrit dans son texte (« Unit Cost 2 »
+ *  pour gmw, « Experience Cost 2 » pour Hunting Season, via `motif_cout`). */
+function coutEnUnites(carte, marche) {
+    const motif = new RegExp((marche && marche.motif_cout) || "Unit Cost (\\d+)", "i");
+    const m = motif.exec((carte && carte.text) || "");
     return m ? parseInt(m[1], 10) : null;
 }
 
-/** Les cartes du Marche, dans l'ordre des identifiants du livret. */
-function cartesDuMarche(marche) {
-    const sortie = [];
+/** Les identifiants du Marche : la liste `cartes` si la boite la donne (ids
+ *  non numeriques, « hs164 »), sinon la plage `premiere_carte`..`derniere_carte`. */
+function idsDuMarche(marche) {
+    if (Array.isArray(marche.cartes)) return marche.cartes.map(String);
+    const ids = [];
     const de = parseInt(marche.premiere_carte, 10);
     const a = parseInt(marche.derniere_carte, 10);
-    for (let id = de; id <= a; id++) {
-        const cle = String(id);
+    for (let id = de; id <= a; id++) ids.push(String(id));
+    return ids;
+}
+
+/** Les cartes du Marche, dans l'ordre des identifiants du livret. Une carte
+ *  sous `verrous` (id -> cle du carnet) n'y entre qu'une fois la cle notee :
+ *  Gibbon, « set aside » jusqu'a la victoire contre Vulture. */
+function cartesDuMarche(marche, campagne) {
+    const sortie = [];
+    const verrous = marche.verrous || {};
+    for (const cle of idsDuMarche(marche)) {
+        if (verrous[cle] && !entierCarnet(campagne || {}, verrous[cle])) continue;
         const carte = cards.get(cle);
-        const cout = coutEnUnites(carte);
+        const cout = coutEnUnites(carte, marche);
         if (carte && cout !== null) sortie.push({ id: cle, carte, cout });
     }
     return sortie;
 }
+
+/** Le nom de la monnaie du Marche (« unites », « XP »). */
+const uniteMarche = (marche) => (marche && marche.unite) ? t(marche.unite) : t("unités");
 
 const cleJoueur = (cle, i) => "Player " + (i + 1) + " " + cle;
 const listeCarnet = (campagne, cle) => String((campagne.carnet || {})[cle] || "").split(";").filter(Boolean);
@@ -416,7 +433,7 @@ async function acheterAuMarche(campagne, marche, i, entree) {
     const cleC = cleJoueur(marche.cle_cartes, i);
     const solde = entierCarnet(campagne, cleU);
     const deja = listeCarnet(campagne, cleC);
-    if (entree.cout > solde) throw new Error(t("Pas assez d'unités."));
+    if (entree.cout > solde) throw new Error(t("Solde insuffisant pour cette carte."));
     if (cartesDejaPrises(campagne, marche).has(entree.id)) {
         throw new Error(t("Cette carte du Marché est déjà prise par l'équipe."));
     }
@@ -429,7 +446,7 @@ async function acheterAuMarche(campagne, marche, i, entree) {
 
 function vueMarche(campagne, definition) {
     const marche = definition.marche;
-    const catalogue = cartesDuMarche(marche);
+    const catalogue = cartesDuMarche(marche, campagne);
     const equipe = campagne.equipe || [];
 
     const prises = cartesDejaPrises(campagne, marche);
@@ -446,7 +463,7 @@ function vueMarche(campagne, definition) {
             return el("button", {
                 class: "cmp-marche-carte" + (achetee ? " achetee" : "") + (!achetee && !abordable ? " trop-chere" : ""),
                 disabled: (achetee || !abordable) || undefined,
-                title: entree.carte.name + " — " + entree.cout + " " + t("unités"),
+                title: entree.carte.name + " — " + entree.cout + " " + uniteMarche(marche),
                 onclick: () => proteger(() => acheterAuMarche(campagne, marche, i, entree)),
             },
                 el("img", { src: cardImageUrl(entree.id), alt: entree.carte.name, loading: "lazy" }),
@@ -458,7 +475,7 @@ function vueMarche(campagne, definition) {
         return el("section", { class: "cmp-marche-colonne" },
             el("h2", { class: "cmp-marche-heros mvl" }, membre.nomHeros || membre.heros || (t("Joueur") + " " + (i + 1))),
             el("div", { class: "cmp-marche-solde" },
-                el("strong", {}, String(solde)), " ", t("unités non dépensées"),
+                el("strong", {}, String(solde)), " ", marche.libelle_solde ? t(marche.libelle_solde) : t("unités non dépensées"),
                 deja.length ? el("span", { class: "cmp-marche-compte" }, " · " + deja.length + " " + t("carte(s) achetée(s)")) : null),
             el("div", { class: "cmp-marche-grille" }, vignettes),
         );
@@ -477,6 +494,64 @@ function vueMarche(campagne, definition) {
                 : el("p", { class: "cmp-vide" }, t("Aucune équipe : commencez la campagne d'abord.")),
         ),
     );
+}
+
+/** Le Marche se visite-t-il deja ? Hunting Season : « Between each scenario »,
+ *  donc pas avant le premier (`ouvert_apres_premier`). */
+function marcheOuvert(campagne, definition) {
+    if (!definition.marche || !definition.marche.ouvert_apres_premier) return true;
+    return (campagne.termines || []).length >= 1;
+}
+
+/* ------------------------------------------------- reglages de la campagne -- */
+
+/**
+ * Les choix que le livret fait faire AU DEBUT de la campagne et que le moteur
+ * relit au carnet (Hunting Season : le mode Hunter, le Master Hunter). La boite
+ * les declare (`options_campagne`) ; rien n'est en dur ici. Modifiables tant
+ * qu'aucun scenario n'est joue, figes ensuite.
+ *   type « case »  : carnet[cle] = "1" ou "0" ;
+ *   type « siege » : carnet[cle] = numero du heros (1 a 4).
+ */
+function blocOptionsCampagne(campagne, definition, enCours) {
+    const options = (definition.options_campagne || []).filter((o) =>
+        !o.expert_seulement || campagne.difficulte === "expert");
+    if (!options.length) return null;
+    const figees = enCours || (campagne.termines || []).length > 0;
+    const equipe = campagne.equipe || [];
+    const poser = (cle, valeur) => proteger(async () => {
+        etat.campagne.carnet = { ...(etat.campagne.carnet || {}), [cle]: valeur };
+        etat.campagne = await apiCampagne.enregistrer(etat.campagne);
+    });
+    const lignes = options.map((o) => {
+        const valeur = (campagne.carnet || {})[o.cle] || "";
+        let controle;
+        if (o.type === "siege") {
+            const choisi = parseInt(valeur, 10) || 1;
+            controle = el("div", { class: "cmp-segments" }, equipe.map((m, i) => el("button", {
+                class: "cmp-segment" + (choisi === i + 1 ? " sel" : ""),
+                disabled: figees || undefined,
+                onclick: () => poser(o.cle, String(i + 1)),
+            }, m.nomHeros || m.heros || (t("Joueur") + " " + (i + 1)))));
+        } else {
+            const coche = valeur === "1";
+            controle = el("div", { class: "cmp-segments" },
+                el("button", { class: "cmp-segment" + (!coche ? " sel" : ""), disabled: figees || undefined,
+                    onclick: () => poser(o.cle, "0") }, t("Non")),
+                el("button", { class: "cmp-segment" + (coche ? " sel" : ""), disabled: figees || undefined,
+                    onclick: () => poser(o.cle, "1") }, t("Oui")));
+        }
+        return el("div", { class: "cmp-champ" },
+            el("label", { class: "cmp-champ-k" }, t(o.libelle || o.cle)),
+            controle,
+            o.aide ? el("p", { class: "cmp-champ-aide" }, t(o.aide)) : null);
+    });
+    return el("div", { class: "cmp-bloc" },
+        el("h2", { class: "cmp-bloc-t" }, t("Réglages de la campagne")),
+        el("p", { class: "cmp-bloc-aide" }, figees
+            ? t("Choisis avant le premier scénario : ils ne changent plus.")
+            : t("À choisir avant le premier scénario.")),
+        lignes);
 }
 
 /* ----------------------------------------------------------- vue « enquete » -- */
@@ -673,9 +748,10 @@ function vueCampagne() {
         el("div", { class: "cmp-bloc" },
             el("h2", { class: "cmp-bloc-t" }, t("Mise en place")),
             el("p", { class: "cmp-bloc-aide" }, t("Imposée par le livret : le jeu la met en place pour toi, y compris ce que la campagne a déjà ajouté.")),
-            sets.length ? el("ul", { class: "cmp-sets" }, sets.map((s) => el("li", {}, titreSet(s)))) : null,
+            sets.length ? el("ul", { class: "cmp-sets" }, sets.map(ligneSet)) : null,
             regles,
         ),
+        blocOptionsCampagne(campagne, definition, enCours),
         reglesCampagne.length ? el("div", { class: "cmp-bloc" },
             el("h2", { class: "cmp-bloc-t" }, t("Règles de la campagne")),
             el("p", { class: "cmp-bloc-aide" },
@@ -698,7 +774,7 @@ function vueCampagne() {
             // preparation, seul endroit qui sait choisir un deck, et l'identite
             // est verifiee au retour.
             // Le Marche n'existe que pour la boite qui le declare.
-            (definition.marche && !enCours) ? el("button", {
+            (definition.marche && !enCours && marcheOuvert(campagne, definition)) ? el("button", {
                 class: "btn ghost",
                 onclick: () => { etat.vue = "marche"; rendre(); },
             }, definition.marche.titre || t("Le Marché")) : null,
@@ -1162,6 +1238,24 @@ function ligneBilan(k, v) {
 /** "hydra_assault" -> "Hydra Assault" */
 function titreSet(nom) {
     return String(nom).replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Un set de la mise en place, sous le NOM de son fichier (`name`) : l'identifiant
+ *  d'un set fan-made porte un prefixe (« hs_feral_instincts »). Le titre deduit
+ *  de l'identifiant s'affiche le temps de la lecture, et reste si elle echoue. */
+const _nomsSets = new Map();
+function ligneSet(id) {
+    const li = el("li", {}, _nomsSets.get(id) || titreSet(id));
+    if (!_nomsSets.has(id)) {
+        api.encounterSet(id)
+            .then((json) => {
+                if (!json || !json.name) return;
+                _nomsSets.set(id, json.name);
+                li.textContent = json.name;
+            })
+            .catch(() => undefined);
+    }
+    return li;
 }
 
 /* --------------------------------------------------------------- actions -- */

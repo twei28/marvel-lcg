@@ -1,0 +1,13 @@
+{
+  "version": "0.5.8",
+  "name": "Savage Six",
+  "encounters": [
+    "hs157",
+    "hs158",
+    "hs159",
+    "hs160",
+    "hs161",
+    "hs162",
+    "hs163"
+  ]
+}

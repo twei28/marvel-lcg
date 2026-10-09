@@ -102,6 +102,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // The Coils of Doom (cn013). « Crom » est un nom propre (le dieu cimmérien).
   crom: 'Crom',
   serpent: 'serpent',
+  // Pack hunting_season (09/10/2026) : Reptilian Rage (hs060) pose de la « honte » sur Curtis.
+  shame: 'honte',
 }
 
 /** « steel » → « acier » en français, « steel » en anglais ; « tic_tac_toe_1_1 »

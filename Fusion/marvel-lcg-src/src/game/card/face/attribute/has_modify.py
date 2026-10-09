@@ -16,12 +16,14 @@ class HasModify(HasAttribute):
         self.modify_atk = 0
         self.modify_sch = 0
         self.modify_thw = 0
+        self.modify_def = 0
 
         super().__init__(paper)
 
         self.RegisterAttribute("ATK+", "modify_atk")
         self.RegisterAttribute("SCH+", "modify_sch")
         self.RegisterAttribute("THW+", "modify_thw")
+        self.RegisterAttribute("DEF+", "modify_def")
 
     @override
     def GetAbilities(self) -> List['Ability']:
@@ -30,11 +32,12 @@ class HasModify(HasAttribute):
                 return None
             else:
                 return num
-        if self.modify_atk != 0 or self.modify_sch != 0 or self.modify_thw != 0:
+        if self.modify_atk != 0 or self.modify_sch != 0 or self.modify_thw != 0 or self.modify_def != 0:
             abilities = AbilityFactory.GiveKeywordToAttached(
                 attack=get_value(self.modify_atk),
                 scheme=get_value(self.modify_sch),
                 thwart=get_value(self.modify_thw),
+                defense=get_value(self.modify_def),
             )
         else:
             abilities = []

@@ -66,6 +66,7 @@ class ModelAction(ModelBase):
                     treat_as_blank: bool|None=None,
                     attack_consequential_damage: int|None=None,
                     thwart_consequential_damage: int|None=None,
+                    lose_trait: "CardFace.TRAITS|None"=None,
                     ignore_flip: bool=True,
                     render_ui: bool=False) -> None:
         from game.card.face.card_type import Ally
@@ -135,6 +136,8 @@ class ModelAction(ModelBase):
                 trait=trait,
             ):
                 Message.AfterCardApply_Text([face], by_effect, diff)
+            if lose_trait is not None:
+                face.SuppressTrait(diff, lose_trait)
 
             # if hand_size != None and HasHandSize.IsType(face):
             #     face.GainHandSize(hand_size * diff, by_effect)
@@ -474,6 +477,7 @@ class ModelAction(ModelBase):
                           # `tools/autoplay.py`, jamais par les cas.
                           attack_consequential_damage: int|None=None,
                           thwart_consequential_damage: int|None=None,
+                          lose_trait: "CardFace.TRAITS|None"=None,
                           ignore_flip: bool=True) -> None:
         return self.TemporaryGain(
             by_effect,
@@ -491,6 +495,7 @@ class ModelAction(ModelBase):
             recover=recover,
             attack_consequential_damage=attack_consequential_damage,
             thwart_consequential_damage=thwart_consequential_damage,
+            lose_trait=lose_trait,
             ignore_flip=ignore_flip,
             render_ui=True
         )
@@ -529,11 +534,13 @@ class ModelAction(ModelBase):
                           defense: int|None=None,
                           scheme: int|None=None,
                           thwart: int|None=None,
+                          lose_trait: "CardFace.TRAITS|None"=None,
                           ignore_flip: bool=True) -> None:
         return self.TemporaryGain(
             by_effect,
             None,
             Message.WhenPlayerTurnEnd,
+            lose_trait=lose_trait,
             trait=trait,
             hand_size=hand_size,
             attack=attack,

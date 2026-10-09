@@ -98419,7 +98419,6 @@
    "text": "Max 1 per deck."
   }
  ],
- "checksum": "52473bf3e8d3697c0f579781d00ab561ef52959496ae8265d9a47df4b0b60bfb",
  "red_sonja": [
   {
    "card_id": "rs001a",
@@ -99119,5 +99118,3552 @@
    "set_name": "Conan Nemesis",
    "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for a [[GIANT]] minion and put it into play engaged with you. Otherwise, take 4 damage."
   }
- ]
+ ],
+ "hunting_season": [
+  {
+   "card_id": "hs001",
+   "type": "Villain",
+   "name": "* Vermin",
+   "subtitle": "",
+   "desc": {
+    "HP": "12*",
+    "SCH": "0",
+    "ATK": "1",
+    "Stage": "1"
+   },
+   "traits": [
+    "MUTATE",
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "[star] <b>Forced Response</b>: After Vermin activates against you, discard the top card of the encounter deck. If a [[RAT]] minion was discarded this way, put it into play engaged with you."
+  },
+  {
+   "card_id": "hs002",
+   "type": "Villain",
+   "name": "* Vermin",
+   "subtitle": "",
+   "desc": {
+    "HP": "14*",
+    "SCH": "1",
+    "ATK": "1",
+    "Stage": "2"
+   },
+   "traits": [
+    "MUTATE",
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "[star] <b>Forced Response</b>: After Vermin activates against you, discard the top two cards of the encounter deck. Put the first [[RAT]] minion that was discarded this way, into play engaged with you."
+  },
+  {
+   "card_id": "hs003",
+   "type": "Villain",
+   "name": "* Vermin",
+   "subtitle": "",
+   "desc": {
+    "HP": "20*",
+    "SCH": "1",
+    "ATK": "2",
+    "Stage": "3"
+   },
+   "traits": [
+    "MUTATE",
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "[star] <b>Forced Response</b>: After Vermin activates against you, discard the top two cards of the encounter deck. Put each [[RAT]] minion that was discarded this way, into play engaged with you. Resolve the \"Special\" effect on Even More Rats."
+  },
+  {
+   "card_id": "hs004a",
+   "type": "MainScheme",
+   "name": "Rats and More Rats",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>Contents</b>: Vermin (I) and Vermin (II). <i>(Vermin (II) and Vermin (III) instead for expert mode.)</i> Vermin and Standard encounter sets. One modular encounter set <i>(recommended: Feral Instincts)</i>.\n<b>Setup</b>: Put the Even More Rats environment into play. Put a Regular Rats minion into play engaged with each player. Shuffle the encounter deck. Advance to stage 1B."
+  },
+  {
+   "card_id": "hs004b",
+   "type": "MainScheme",
+   "name": "Rats and More Rats",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1B",
+    "TargetThreat": "6*",
+    "StartingThreat": "1*",
+    "EscalationThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "[star] <b>Forced Response</b>: After step one of the villain phase, place 1 threat on each [[RAT]] minion. Resolve the \"Special\" effect on Even More Rats."
+  },
+  {
+   "card_id": "hs005a",
+   "type": "MainScheme",
+   "name": "Rats, Rats and More Rats",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2A"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for Bringer of Plague and reveal it. Advance to stage 2B."
+  },
+  {
+   "card_id": "hs005b",
+   "type": "MainScheme",
+   "name": "Rats, Rats and More Rats",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2B",
+    "TargetThreat": "8*",
+    "StartingThreat": "1*",
+    "EscalationThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "[star] <b>Forced Response</b>: After step one of the villain phase, place 1 threat on each [[RAT]] minion. Resolve the \"Special\" effect on Even More Rats.\n<b>If this scheme is completed, rats have invaded the city and the players lose the game.</b>"
+  },
+  {
+   "card_id": "hs006",
+   "type": "Environment",
+   "name": "Even More Rats",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "Threat on [[RAT]] minions cannot be thwarted.\n<b>Special</b>: If the total number of threat on [[RAT]] minions and on the main scheme is equal to or more than the target threat value of the main scheme, the current stage of the main scheme is completed."
+  },
+  {
+   "card_id": "hs007",
+   "type": "Minion",
+   "name": "Regular Rats",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "0",
+    "ATK": "1",
+    "Surge": "1",
+    "Boost": "0"
+   },
+   "traits": [
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you."
+  },
+  {
+   "card_id": "hs008",
+   "type": "Minion",
+   "name": "Regular Rats",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "0",
+    "ATK": "1",
+    "Surge": "1",
+    "Boost": "0"
+   },
+   "traits": [
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you."
+  },
+  {
+   "card_id": "hs009",
+   "type": "Minion",
+   "name": "Regular Rats",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "0",
+    "ATK": "1",
+    "Surge": "1",
+    "Boost": "0"
+   },
+   "traits": [
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you."
+  },
+  {
+   "card_id": "hs010",
+   "type": "Minion",
+   "name": "Regular Rats",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "0",
+    "ATK": "1",
+    "Surge": "1",
+    "Boost": "0"
+   },
+   "traits": [
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Surge.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Regular Rats into play engaged with you."
+  },
+  {
+   "card_id": "hs011",
+   "type": "Minion",
+   "name": "Feral Rats",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "0",
+    "ATK": "1",
+    "Surge": "1",
+    "Quickstrike": "1",
+    "Boost": "0"
+   },
+   "traits": [
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you."
+  },
+  {
+   "card_id": "hs012",
+   "type": "Minion",
+   "name": "Feral Rats",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "0",
+    "ATK": "1",
+    "Surge": "1",
+    "Quickstrike": "1",
+    "Boost": "0"
+   },
+   "traits": [
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you."
+  },
+  {
+   "card_id": "hs013",
+   "type": "Minion",
+   "name": "Feral Rats",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "0",
+    "ATK": "1",
+    "Surge": "1",
+    "Quickstrike": "1",
+    "Boost": "0"
+   },
+   "traits": [
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you."
+  },
+  {
+   "card_id": "hs014",
+   "type": "Minion",
+   "name": "Feral Rats",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "0",
+    "ATK": "1",
+    "Surge": "1",
+    "Quickstrike": "1",
+    "Boost": "0"
+   },
+   "traits": [
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Surge. Quickstrike.\nX is equal to the number of [[RAT]] minions engaged with you (to a maximum of 3).\n<hr />\n[star] <b>Boost</b>: Put Feral Rats into play engaged with you."
+  },
+  {
+   "card_id": "hs015",
+   "type": "Minion",
+   "name": "Vermin Clone",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2",
+    "Guard": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "MUTATE",
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Guard.\nWhile Vermin Clone is engaged with you, characters you control cannot attack Regular Rats and Feral Rats.\n<hr />\n[star] <b>Boost</b>: Give the attacking enemy an additional boost card for this activation."
+  },
+  {
+   "card_id": "hs016",
+   "type": "Minion",
+   "name": "Vermin Clone",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2",
+    "Guard": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "MUTATE",
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Guard.\nWhile Vermin Clone is engaged with you, characters you control cannot attack Regular Rats and Feral Rats.\n<hr />\n[star] <b>Boost</b>: Give the attacking enemy an additional boost card for this activation."
+  },
+  {
+   "card_id": "hs017",
+   "type": "Minion",
+   "name": "Vermin Clone",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2",
+    "Guard": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "MUTATE",
+    "RAT"
+   ],
+   "set_name": "Vermin",
+   "text": "Guard.\nWhile Vermin Clone is engaged with you, characters you control cannot attack Regular Rats and Feral Rats.\n<hr />\n[star] <b>Boost</b>: Give the attacking enemy an additional boost card for this activation."
+  },
+  {
+   "card_id": "hs018",
+   "type": "Attachment",
+   "name": "Swarmed by Rats",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Vermin",
+   "text": "Attach to your identity.\nEach [[RAT]] minion engaged with you gains guard.\n<b>Interrupt</b>: After you defeat a [[RAT]] minion engaged with you, discard two cards from your hand → discard this card."
+  },
+  {
+   "card_id": "hs019",
+   "type": "Attachment",
+   "name": "Swarmed by Rats",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Vermin",
+   "text": "Attach to your identity.\nEach [[RAT]] minion engaged with you gains guard.\n<b>Interrupt</b>: After you defeat a [[RAT]] minion engaged with you, discard two cards from your hand → discard this card."
+  },
+  {
+   "card_id": "hs020",
+   "type": "SideScheme",
+   "name": "Vermin Cloning",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Crisis": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for a copy of Vermin Clone and put it into play engaged with the first player."
+  },
+  {
+   "card_id": "hs021",
+   "type": "SideScheme",
+   "name": "Bringer of Plague",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hazard": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed</b>: Place threat here equal to the amount of threat on [[RAT]] minions in play."
+  },
+  {
+   "card_id": "hs022",
+   "type": "Treachery",
+   "name": "A Mischief of Rats",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to double the villain’s stage number. For each [[RAT]] minion discarded this way, choose to either place 2 threat on the main scheme or put that minion into play engaged with you."
+  },
+  {
+   "card_id": "hs023",
+   "type": "Treachery",
+   "name": "A Mischief of Rats",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to double the villain’s stage number. For each [[RAT]] minion discarded this way, choose to either place 2 threat on the main scheme or put that minion into play engaged with you."
+  },
+  {
+   "card_id": "hs024",
+   "type": "Treachery",
+   "name": "Rabid Assault",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Vermin schemes. If there are no [[RAT]] minions engaged with you, this card gains surge.\n<b>When Revealed (Hero)</b>: Vermin attacks you. If there are no [[RAT]] minions engaged with you, this card gains surge."
+  },
+  {
+   "card_id": "hs025",
+   "type": "Treachery",
+   "name": "Rabid Assault",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Vermin schemes. If there are no [[RAT]] minions engaged with you, this card gains surge.\n<b>When Revealed (Hero)</b>: Vermin attacks you. If there are no [[RAT]] minions engaged with you, this card gains surge."
+  },
+  {
+   "card_id": "hs026",
+   "type": "Treachery",
+   "name": "A Thousand Bites",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge."
+  },
+  {
+   "card_id": "hs027",
+   "type": "Treachery",
+   "name": "A Thousand Bites",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge."
+  },
+  {
+   "card_id": "hs028",
+   "type": "Treachery",
+   "name": "A Thousand Bites",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge."
+  },
+  {
+   "card_id": "hs029",
+   "type": "Treachery",
+   "name": "A Thousand Bites",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vermin",
+   "text": "<b>When Revealed</b>: For each [[RAT]] minion engaged with you, choose to either place 1 threat on that minion, or take 1 indirect damage. Resolve the \"Special\" effect on Even More Rats. If there is one or no [[RAT]] minions engaged with you, this card gains surge."
+  },
+  {
+   "card_id": "hs030",
+   "type": "Villain",
+   "name": "* Scorpion",
+   "subtitle": "",
+   "desc": {
+    "HP": "15*",
+    "SCH": "1",
+    "ATK": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "CRIMINAL"
+   ],
+   "set_name": "Scorpion",
+   "text": "[star] <b>Forced Interrupt</b>: When the villain phase ends, if Scorpion’s Tail is not attached to Scorpion, put it into play and attach it to Scorpion."
+  },
+  {
+   "card_id": "hs031",
+   "type": "Villain",
+   "name": "* Scorpion",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "SCH": "2",
+    "ATK": "2",
+    "Stage": "2"
+   },
+   "traits": [
+    "CRIMINAL"
+   ],
+   "set_name": "Scorpion",
+   "text": "Scorpion cannot be stunned.\n[star] <b>Forced Interrupt</b>: When the villain phase ends, if Scorpion’s Tail is not attached to Scorpion, put it into play and attach it to Scorpion."
+  },
+  {
+   "card_id": "hs032",
+   "type": "Villain",
+   "name": "* Scorpion",
+   "subtitle": "",
+   "desc": {
+    "HP": "18*",
+    "SCH": "2",
+    "ATK": "3",
+    "Stage": "3"
+   },
+   "traits": [
+    "CRIMINAL"
+   ],
+   "set_name": "Scorpion",
+   "text": "Scorpion cannot be stunned.\n<b>When Revealed</b>: Search the encounter deck and discard pile for Tail Laser and reveal it.\n[star] <b>Forced Interrupt</b>: When the villain phase ends, if Scorpion’s Tail is not attached to Scorpion, put it into play and attach it to Scorpion."
+  },
+  {
+   "card_id": "hs033a",
+   "type": "MainScheme",
+   "name": "Thirst for Revenge",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>Contents</b>: Scorpion (I) and Scorpion (II). <i>(Scorpion (II) and Scorpion (III) instead for expert mode.)</i> Scorpion and Standard encounter sets. One modular encounter set <i>(recommended: Feral Instincts)</i>.\n<b>Setup</b>: Put the J. Jonah Jameson support into play under the first player’s control. Put the Scorpion’s Tail upgrade into play, and attach it to Scorpion. Advance to stage 1B."
+  },
+  {
+   "card_id": "hs033b",
+   "type": "MainScheme",
+   "name": "Thirst for Revenge",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1B",
+    "StartingThreat": "1*",
+    "TargetThreat": "6*",
+    "EscalationThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>When Completed</b>: Place 1 wound counter on the J. Jonah Jameson support."
+  },
+  {
+   "card_id": "hs034a",
+   "type": "MainScheme",
+   "name": "Vengeful Pursuit",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2A"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>When Revealed</b>: Advance to stage 2B."
+  },
+  {
+   "card_id": "hs034b",
+   "type": "MainScheme",
+   "name": "Vengeful Pursuit",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2B",
+    "StartingThreat": "0",
+    "TargetThreat": "3*",
+    "EscalationThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>Forced Interrupt</b>: When this scheme would be completed, place 1 wound counter on the J. Jonah Jameson support instead. Then, remove all threat from this scheme and any upgrades and attachments attached to it."
+  },
+  {
+   "card_id": "hs035",
+   "type": "Support",
+   "name": "* J. Jonah Jameson",
+   "subtitle": "",
+   "desc": {
+    "Permanent": "1"
+   },
+   "traits": [
+    "PERSONA"
+   ],
+   "set_name": "Scorpion",
+   "text": "Permanent.\n<b>Interrupt</b>: When a friendly character would take any amount of damage, place 1 wound counter here → prevent all of that damage.\n<b>Forced Interrupt</b>: When there are 3 + 1[per_hero] or more wound counters here, the players lose the game."
+  },
+  {
+   "card_id": "hs036",
+   "type": "Attachment",
+   "name": "Scorpion’s Tail",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "set_name": "Scorpion",
+   "text": "[star] <b>Forced Response</b>: After Scorpion attacks and damages a character, that character is stunned. If the character is already stunned, deal 1 damage to that character.\n<b>Interrupt</b>: When Scorpion would take any amount of damage, it may be placed here instead. Then, if there is 10[per_hero] or more damage here, set Scorpion’s Tail aside, out of play. Then, Scorpion takes 8[per_hero] damage."
+  },
+  {
+   "card_id": "hs037",
+   "type": "Attachment",
+   "name": "Tail Armor",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "ARMOR",
+    "TAIL",
+    "TECH"
+   ],
+   "set_name": "Scorpion",
+   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. Attach to Scorpion’s Tail. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When damage would be placed on Scorpion’s Tail, place it here instead. If there is 8 or more damage here, discard Tail Armor."
+  },
+  {
+   "card_id": "hs038",
+   "type": "Attachment",
+   "name": "Honed Stinger",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "TAIL",
+    "TECH"
+   ],
+   "set_name": "Scorpion",
+   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. Attach to Scorpion’s Tail. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion attacks, he gets +1 ATK for that attack, and the attack gains piercing.\n<hr />\n[star] <b>Boost</b>: Shuffle this card into the encounter deck."
+  },
+  {
+   "card_id": "hs039",
+   "type": "Attachment",
+   "name": "Tail Laser",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "TAIL",
+    "TECH"
+   ],
+   "set_name": "Scorpion",
+   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. Attach to Scorpion’s Tail. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion attacks, the attack gains ranged and overkill.\n<hr />\n[star] <b>Boost</b>: Shuffle this card into the encounter deck."
+  },
+  {
+   "card_id": "hs040",
+   "type": "Attachment",
+   "name": "Coiled Up",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "-1",
+    "THW+": "-1",
+    "DEF+": "-1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Scorpion",
+   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. If Scorpion’s Tail is attached to Scorpion, attach Coiled Up to your identity. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion’s Tail is set aside, discard Coiled Up."
+  },
+  {
+   "card_id": "hs041",
+   "type": "Attachment",
+   "name": "Coiled Up",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "-1",
+    "THW+": "-1",
+    "DEF+": "-1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Scorpion",
+   "text": "Move 5 damage from Scorpion’s Tail to Scorpion. If Scorpion’s Tail is attached to Scorpion, attach Coiled Up to your identity. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When Scorpion’s Tail is set aside, discard Coiled Up."
+  },
+  {
+   "card_id": "hs042",
+   "type": "Minion",
+   "name": "Human Fly",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "0",
+    "ATK": "2",
+    "Boost": "0"
+   },
+   "traits": [
+    "AERIAL",
+    "MUTATE"
+   ],
+   "set_name": "Scorpion",
+   "text": "<b>Forced Interrupt</b>: When Human Fly would take any amount of damage from an attack, prevent all of that damage. <i>(Limit once per round.)</i>\n<hr />\n[star] <b>Boost</b>: After this activation ends, deal yourself this card as a facedown encounter card."
+  },
+  {
+   "card_id": "hs043",
+   "type": "Minion",
+   "name": "Human Fly",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "0",
+    "ATK": "2",
+    "Boost": "0"
+   },
+   "traits": [
+    "AERIAL",
+    "MUTATE"
+   ],
+   "set_name": "Scorpion",
+   "text": "<b>Forced Interrupt</b>: When Human Fly would take any amount of damage from an attack, prevent all of that damage. <i>(Limit once per round.)</i>\n<hr />\n[star] <b>Boost</b>: After this activation ends, deal yourself this card as a facedown encounter card."
+  },
+  {
+   "card_id": "hs044",
+   "type": "Minion",
+   "name": "* Grizzly",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "1",
+    "ATK": "3",
+    "Boost": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MUTATE"
+   ],
+   "set_name": "Scorpion",
+   "text": "[star] <b>Forced Interrupt</b>: When Grizzly attacks, the attack gains piercing.\n<hr />\n[star] <b>Boost</b>: This attack gains piercing."
+  },
+  {
+   "card_id": "hs045",
+   "type": "Minion",
+   "name": "* Hippo",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "1",
+    "ATK": "3",
+    "Boost": "1",
+    "Toughness": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MUTATE"
+   ],
+   "set_name": "Scorpion",
+   "text": "Toughness.\n<hr />\n[star] <b>Boost</b>: This attack gains overkill."
+  },
+  {
+   "card_id": "hs046",
+   "type": "SideScheme",
+   "name": "Luring Out Prey",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Crisis": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here."
+  },
+  {
+   "card_id": "hs047",
+   "type": "SideScheme",
+   "name": "A Mess of Things",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Hazard": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>When Revealed</b>: Place 2 additional threat here for each stunned friendly character."
+  },
+  {
+   "card_id": "hs048",
+   "type": "Treachery",
+   "name": "Tail Enhancements",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until a [[TAIL]] attachment is discarded. Reveal that card.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each [[TAIL]] attachment attached to Scorpion."
+  },
+  {
+   "card_id": "hs049",
+   "type": "Treachery",
+   "name": "Tail Enhancements",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until a [[TAIL]] attachment is discarded. Reveal that card.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each [[TAIL]] attachment attached to Scorpion."
+  },
+  {
+   "card_id": "hs050",
+   "type": "Treachery",
+   "name": "Stinger Stab",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Scorpion schemes. If you are stunned, Scorpion gets +2 SCH for this activation.\n<b>When Revealed (Hero)</b>: Scorpion attacks you. After this activation, if you are stunned, you are confused."
+  },
+  {
+   "card_id": "hs051",
+   "type": "Treachery",
+   "name": "Stinger Stab",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Scorpion schemes. If you are stunned, Scorpion gets +2 SCH for this activation.\n<b>When Revealed (Hero)</b>: Scorpion attacks you. After this activation, if you are stunned, you are confused."
+  },
+  {
+   "card_id": "hs052",
+   "type": "Treachery",
+   "name": "Restraining Pincers",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>When Revealed</b>: Choose to either spend [physical][physical] or stun your identity. If you cannot, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If this activation deals damage to you, exhaust your hero."
+  },
+  {
+   "card_id": "hs053",
+   "type": "Treachery",
+   "name": "Restraining Pincers",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Scorpion",
+   "text": "<b>When Revealed</b>: Choose to either spend [physical][physical] or stun your identity. If you cannot, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If this activation deals damage to you, exhaust your hero."
+  },
+  {
+   "card_id": "hs054a",
+   "type": "Villain",
+   "name": "* Curtis Connors",
+   "subtitle": "",
+   "desc": {
+    "HP": "14*",
+    "SCH": "2",
+    "ATK": "0",
+    "Stage": "1"
+   },
+   "traits": [
+    "GENIUS",
+    "SCIENTIST"
+   ],
+   "set_name": "The Lizard",
+   "text": "Curtis Connors cannot take damage.\n[star] <b>Forced Interrupt</b>: When Curtis Connors would attack, place 1 shame counter on the Reptilian Rage environment instead. If there are 3 shame counters there, Curtis Connors schemes.\n[star] <b>Forced Response</b>: After Curtis Connors schemes, flip Curtis Connors."
+  },
+  {
+   "card_id": "hs054b",
+   "type": "Villain",
+   "name": "* The Lizard",
+   "subtitle": "",
+   "desc": {
+    "HP": "14*",
+    "SCH": "0",
+    "ATK": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "[star] <b>Forced Response</b>: After The Lizard schemes, flip The Lizard.\n<b>Forced Interrupt</b>: When the villain phase ends, discard 1[per_hero] cards from the top of the encounter deck. Reveal each [[REPTILE]] attachment that was discarded this way."
+  },
+  {
+   "card_id": "hs055a",
+   "type": "Villain",
+   "name": "* Curtis Connors",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "SCH": "3",
+    "ATK": "0",
+    "Stage": "2"
+   },
+   "traits": [
+    "GENIUS",
+    "SCIENTIST"
+   ],
+   "set_name": "The Lizard",
+   "text": "Curtis Connors cannot take damage.\n[star] <b>Forced Interrupt</b>: When Curtis Connors would attack, place 1 shame counter on the Reptilian Rage environment instead. If there are 3 shame counters there, Curtis Connors schemes.\n[star] <b>Forced Response</b>: After Curtis Connors schemes, flip Curtis Connors."
+  },
+  {
+   "card_id": "hs055b",
+   "type": "Villain",
+   "name": "* The Lizard",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "SCH": "1",
+    "ATK": "2",
+    "Stage": "2"
+   },
+   "traits": [
+    "BRUTE",
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "[star] <b>Forced Response</b>: After The Lizard schemes, flip The Lizard.\n<b>Forced Interrupt</b>: When the villain phase ends, discard 1[per_hero] cards from the top of the encounter deck. Each player in player order must reveal the topmost [[REPTILE]] attachment in the encounter discard pile."
+  },
+  {
+   "card_id": "hs056a",
+   "type": "Villain",
+   "name": "* Curtis Connors",
+   "subtitle": "",
+   "desc": {
+    "HP": "20*",
+    "SCH": "3",
+    "ATK": "0",
+    "Stage": "3"
+   },
+   "traits": [
+    "GENIUS",
+    "SCIENTIST"
+   ],
+   "set_name": "The Lizard",
+   "text": "Curtis Connors cannot take damage.\n[star] <b>Forced Interrupt</b>: When Curtis Connors would attack, place 2 shame counter on the Reptilian Rage environment instead. If there are 3 shame counters there, Curtis Connors schemes.\n[star] <b>Forced Response</b>: After Curtis Connors schemes, flip Curtis Connors."
+  },
+  {
+   "card_id": "hs056b",
+   "type": "Villain",
+   "name": "* The Lizard",
+   "subtitle": "",
+   "desc": {
+    "HP": "20*",
+    "SCH": "2",
+    "ATK": "2",
+    "Stage": "3"
+   },
+   "traits": [
+    "BRUTE",
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "[star] <b>Forced Response</b>: After The Lizard schemes, flip The Lizard.\n<b>Forced Interrupt</b>: When the villain phase ends, discard 2[per_hero] cards from the top of the encounter deck. Each player in player order must reveal the topmost [[REPTILE]] attachment in the encounter discard pile."
+  },
+  {
+   "card_id": "hs057a",
+   "type": "MainScheme",
+   "name": "Using the Mammal Brain",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>Contents</b>: Curtis Connors (I) and Curtis Connors (II). <i>(Curtis Connors (II) and Curtis Connors (III) instead for expert mode.)</i> The Lizard and Standard encounter sets. One modular encounter set <i>(recommended: Lizard Thralls)</i>.\n<b>Setup</b>: Put the Reptilian Rage environment into play. The villain starts on the Curtis Connors side. Advance to stage 1B."
+  },
+  {
+   "card_id": "hs057b",
+   "type": "MainScheme",
+   "name": "Using the Mammal Brain",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1B",
+    "TargetThreat": "4*",
+    "StartingThreat": "0",
+    "EscalationThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Completed</b>: Put shame counters on the Reptilian Rage environment so that it has 3 shame counters on it. If The Lizard is not in play, flip Curtis Connors."
+  },
+  {
+   "card_id": "hs058a",
+   "type": "MainScheme",
+   "name": "Reptile Brain Taking Over",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2A"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for a copy of Reptile Research and reveal it. Advance to stage 2B."
+  },
+  {
+   "card_id": "hs058b",
+   "type": "MainScheme",
+   "name": "Reptile Brain Taking Over",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2B",
+    "TargetThreat": "10*",
+    "StartingThreat": "0",
+    "EscalationThreat": "0"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "X is the number of [[REPTILE]] cards (including The Lizard) in play."
+  },
+  {
+   "card_id": "hs059a",
+   "type": "MainScheme",
+   "name": "No Humanity Left",
+   "subtitle": "",
+   "desc": {
+    "Stage": "3A"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: If The Lizard is not in play, flip Curtis Connors. Put shame counters on the Reptilian Rage environment so that it has 3 shame counters. Advance to stage 3B."
+  },
+  {
+   "card_id": "hs059b",
+   "type": "MainScheme",
+   "name": "No Humanity Left",
+   "subtitle": "",
+   "desc": {
+    "Stage": "3B",
+    "TargetThreat": "6*",
+    "StartingThreat": "0",
+    "EscalationThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "The Lizard cannot be flipped.\nThreat cannot be removed from this scheme.\n<b>If this stage is completed, Curtis Connors is dead and the players lose the game.</b>"
+  },
+  {
+   "card_id": "hs060",
+   "type": "Environment",
+   "name": "Reptilian Rage",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "The Lizard gets +1 ATK for each shame counter on Reptilian Rage. (Max 3 shame counters.) While there is 1 or more shame counters here, The Lizard’s attacks gain overkill.\n<b>Forced Response</b>: After The Lizard attacks, remove shame counters from Reptilian Rage:\nVillain Stage I: Remove 2 shame counters.\nVillain Stage II: Remove 1 shame counter.\nVillain Stage III: Remove 0 shame counters."
+  },
+  {
+   "card_id": "hs061",
+   "type": "Attachment",
+   "name": "Enhanced Lizard Senses",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n<b>Interrupt</b>: When an event is played, cancel the effects of that event and discard it. Then, place Enhanced Lizard Senses at the bottom of the encounter discard pile."
+  },
+  {
+   "card_id": "hs062",
+   "type": "Attachment",
+   "name": "Enhanced Lizard Senses",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n<b>Interrupt</b>: When an event is played, cancel the effects of that event and discard it. Then, place Enhanced Lizard Senses at the bottom of the encounter discard pile."
+  },
+  {
+   "card_id": "hs063",
+   "type": "Attachment",
+   "name": "Komodo Claws",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\nThe Lizard gains retaliate 1.\n<b>Hero Action</b>: Spend a [energy] resource and take 1 damage → place Komodo Claws at the bottom of the encounter discard pile."
+  },
+  {
+   "card_id": "hs064",
+   "type": "Attachment",
+   "name": "Komodo Claws",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\nThe Lizard gains retaliate 1.\n<b>Hero Action</b>: Spend a [energy] resource and take 1 damage → place Komodo Claws at the bottom of the encounter discard pile."
+  },
+  {
+   "card_id": "hs065",
+   "type": "Attachment",
+   "name": "Lizard Tail",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n[star] <b>Forced Interrupt</b>: When The Lizard attacks, the attack gains ranged.\n<b>Hero Action</b>: Spend a [mental] resource and place 1 threat on the main scheme → place Lizard Tail at the bottom of the encounter discard pile."
+  },
+  {
+   "card_id": "hs066",
+   "type": "Attachment",
+   "name": "Alligator Jaws",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n[star] <b>Forced Interrupt</b>: When The Lizard attacks, the attack gains piercing.\n<b>Hero Action</b>: Spend a [physical] resource and exhaust your hero → place Alligator Jaws at the bottom of the encounter discard pile."
+  },
+  {
+   "card_id": "hs067",
+   "type": "Attachment",
+   "name": "Ancient Reptilian Brain",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Curtis Connors schemes with +1[per_hero] SCH. Attach this to the Lizard.\n[star] <b>Forced Interrupt</b>: When The Lizard attacks and damages a character, deal damage to another friendly character equal to the attacked character’s ATK.\n<b>Hero Action</b>: Confuse your hero → place Ancient Reptilian Brain at the bottom of the encounter discard pile."
+  },
+  {
+   "card_id": "hs068",
+   "type": "Attachment",
+   "name": "Boa Constricted",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "The Lizard",
+   "text": "Attach to your identity.\nAttached identity cannot trigger the \"Hero Action\" effect on [[REPTILE]] attachments.\n<b>Forced Interrupt</b>: When the hero phase ends, discard Boa Constricted."
+  },
+  {
+   "card_id": "hs069",
+   "type": "Attachment",
+   "name": "Boa Constricted",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "The Lizard",
+   "text": "Attach to your identity.\nAttached identity cannot trigger the \"Hero Action\" effect on [[REPTILE]] attachments.\n<b>Forced Interrupt</b>: When the hero phase ends, discard Boa Constricted."
+  },
+  {
+   "card_id": "hs070",
+   "type": "Treachery",
+   "name": "Iguana Whip",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: The villain attacks you. Place 1 threat on the main scheme for each [[REPTILE]] attachment attached to the villain.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, place 1 threat on the main scheme."
+  },
+  {
+   "card_id": "hs071",
+   "type": "Treachery",
+   "name": "Iguana Whip",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed (Alter-Ego)</b>: This card gains surge.\n<b>When Revealed (Hero)</b>: The villain attacks you. Place 1 threat on the main scheme for each [[REPTILE]] attachment attached to the villain.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, place 1 threat on the main scheme."
+  },
+  {
+   "card_id": "hs072",
+   "type": "Treachery",
+   "name": "Triggered Transformation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Place shame counters on the Reptilian Rage environment so that it has 3 shame counters. Choose to either exhaust your hero or the villain schemes. This activation ignores confused status cards.\n<hr />\n[star] <b>Boost</b>: Place 1 shame counter on the Reptilian Rage environment."
+  },
+  {
+   "card_id": "hs073",
+   "type": "Treachery",
+   "name": "Triggered Transformation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Place shame counters on the Reptilian Rage environment so that it has 3 shame counters. Choose to either exhaust your hero or the villain schemes. This activation ignores confused status cards.\n<hr />\n[star] <b>Boost</b>: Place 1 shame counter on the Reptilian Rage environment."
+  },
+  {
+   "card_id": "hs074",
+   "type": "Treachery",
+   "name": "Shed Skin",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Heal 3 damage from the villain and remove each status card from him. Give the villain a tough status card.\n<hr />\n[star] <b>Boost</b>: Give the villain a tough status card."
+  },
+  {
+   "card_id": "hs075",
+   "type": "Treachery",
+   "name": "Shed Skin",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Heal 3 damage from the villain and remove each status card from him. Give the villain a tough status card.\n<hr />\n[star] <b>Boost</b>: Give the villain a tough status card."
+  },
+  {
+   "card_id": "hs076",
+   "type": "Minion",
+   "name": "* Iguana",
+   "subtitle": "",
+   "desc": {
+    "HP": "7",
+    "SCH": "0",
+    "ATK": "0",
+    "Boost": "2"
+   },
+   "traits": [
+    "ELITE",
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "[star] Iguana gets +1 SCH and +1 ATK for each [[REPTILE]] card in play (to a maximum of +4 SCH and +4 ATK)."
+  },
+  {
+   "card_id": "hs077",
+   "type": "Minion",
+   "name": "* The Chameleon",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "0",
+    "ATK": "0",
+    "Boost": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "REPTILE"
+   ],
+   "set_name": "The Lizard",
+   "text": "[star] The Chameleon has SCH and ATK equal to the villain’s SCH and ATK."
+  },
+  {
+   "card_id": "hs078",
+   "type": "SideScheme",
+   "name": "Reptile Research",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Hazard": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Place 1 additional threat here for each [[REPTILE]] card in play."
+  },
+  {
+   "card_id": "hs079",
+   "type": "SideScheme",
+   "name": "Reptile Research",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Hazard": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "The Lizard",
+   "text": "<b>When Revealed</b>: Place 1 additional threat here for each [[REPTILE]] card in play."
+  },
+  {
+   "card_id": "hs080",
+   "type": "Villain",
+   "name": "* Vulture",
+   "subtitle": "",
+   "desc": {
+    "HP": "13*",
+    "SCH": "2",
+    "ATK": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "CRIMINAL"
+   ],
+   "set_name": "Vulture",
+   "text": "While Vulture has the [[AERIAL]] trait, as an additional cost to attack Vulture, the attacker or the attack must have the [[AERIAL]] trait, or the attack must have ranged."
+  },
+  {
+   "card_id": "hs081",
+   "type": "Villain",
+   "name": "* Vulture",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "SCH": "2",
+    "ATK": "2",
+    "Stage": "2"
+   },
+   "traits": [
+    "AERIAL",
+    "CRIMINAL"
+   ],
+   "set_name": "Vulture",
+   "text": "While Vulture has the [[AERIAL]] trait, as an additional cost to attack Vulture, the attacker or the attack must have the [[AERIAL]] trait, or the attack must have ranged.\n[star] <b>Forced Interrupt</b>: When Vulture attacks a character with less than half of their maximum hit points remaining, he gets +1 ATK for that attack."
+  },
+  {
+   "card_id": "hs082",
+   "type": "Villain",
+   "name": "* Vulture",
+   "subtitle": "",
+   "desc": {
+    "HP": "19*",
+    "SCH": "3",
+    "ATK": "2",
+    "Stage": "3"
+   },
+   "traits": [
+    "AERIAL",
+    "CRIMINAL"
+   ],
+   "set_name": "Vulture",
+   "text": "While Vulture has the [[AERIAL]] trait, as an additional cost to attack Vulture, the attacker or the attack must have the [[AERIAL]] trait, or the attack must have ranged.\n[star] <b>Forced Interrupt</b>: When Vulture attacks a character with less than half of their maximum hit points remaining, he gets +1 ATK for that attack."
+  },
+  {
+   "card_id": "hs083a",
+   "type": "MainScheme",
+   "name": "Aerial Mayhem",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "<b>Contents</b>: Vulture (I) and Vulture (II). <i>(Vulture (II) and Vulture (III) instead for expert mode.)</i> Vulture and Standard encounter sets. One modular encounter set <i>(recommended: Red Vulture)</i>.\n<b>Setup</b>: Search the encounter deck and discard pile for the S.H.I.E.L.D. Wing Suits environment and put it into play. Advance to stage 1B."
+  },
+  {
+   "card_id": "hs083b",
+   "type": "MainScheme",
+   "name": "Aerial Mayhem",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1B",
+    "TargetThreat": "11*",
+    "StartingThreat": "3*",
+    "EscalationThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "<b>Forced Response</b>: After a character you control without the [[AERIAL]] trait thwarts and removes threat from this scheme, choose to either deal 1 damage to that character or place 1 threat on this scheme.\n<b>If this scheme is completed, the players lose the game.</b>"
+  },
+  {
+   "card_id": "hs084",
+   "type": "Environment",
+   "name": "S.H.I.E.L.D. Wingsuits",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "<b>Hero Action</b>: Spend a resource of any type → your hero and each ally you control gains the [[AERIAL]] trait until the end of the round."
+  },
+  {
+   "card_id": "hs085",
+   "type": "Minion",
+   "name": "* Armadillo",
+   "subtitle": "",
+   "desc": {
+    "HP": "7",
+    "SCH": "1",
+    "ATK": "3",
+    "Boost": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE",
+    "MUTATE"
+   ],
+   "set_name": "Vulture",
+   "text": "[star] <b>Forced Response</b>: After Armadillo attacks and damages a character, that character gains the [[AERIAL]] trait until the end of the round.\n<hr />\n[star] <b>Boost</b>: If this attack damages you, you gain the [[AERIAL]] trait until the end of the round."
+  },
+  {
+   "card_id": "hs086",
+   "type": "Minion",
+   "name": "* White Rabbit",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "1",
+    "Boost": "0"
+   },
+   "traits": [
+    "CRIMINAL"
+   ],
+   "set_name": "Vulture",
+   "text": "[star] <b>Forced Response</b>: After White Rabbit attacks and damages you, if you don’t have the [[AERIAL]] trait, discard a random card from your hand.\n<hr />\n[star] <b>Boost</b>: If this attack damages you, discard a card from your hand."
+  },
+  {
+   "card_id": "hs087",
+   "type": "Minion",
+   "name": "* Gibbon",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "2",
+    "Guard": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MUTANT"
+   ],
+   "set_name": "Vulture",
+   "text": "Guard.\n<b>Forced Interrupt</b>: When Gibbon would take any amount of damage, prevent 1 of that damage."
+  },
+  {
+   "card_id": "hs088",
+   "type": "Attachment",
+   "name": "Wing Harness",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH"
+   ],
+   "set_name": "Vulture",
+   "text": "Attach to Vulture.\n[star] <b>Forced Interrupt</b>: When Vulture attacks a character with the [[AERIAL]] trait, he gets +1 ATK for that attack.\n<b>Hero Action</b>: Exhaust your hero and discard two cards from your hand → discard Wing Harness. Vulture loses the [[AERIAL]] trait until the end of the active player’s turn."
+  },
+  {
+   "card_id": "hs089",
+   "type": "Attachment",
+   "name": "Metal Talons",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Vulture",
+   "text": "Attach to Vulture.\nVulture gains retaliate 1.\n[star] <b>Forced Interrupt</b>: When Vulture attacks, the attack gains piercing.\n<b>Hero Response</b>: After you attack Vulture, discard a card from your hand → discard Metal Talons."
+  },
+  {
+   "card_id": "hs090",
+   "type": "Attachment",
+   "name": "Projectile Feathers",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Vulture",
+   "text": "Attach to Vulture.\n<b>Forced Interrupt</b>: When Vulture attacks you, discard Projectile Feathers and take 2 indirect damage (3 indirect damage instead if you have the [[AERIAL]] trait).\n<b>Hero Action</b>: Spend [energy][energy] resources → discard Projectile Feathers. Vulture loses the [[AERIAL]] trait until the end of the active player’s turn."
+  },
+  {
+   "card_id": "hs091",
+   "type": "Attachment",
+   "name": "Projectile Feathers",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Vulture",
+   "text": "Attach to Vulture.\n<b>Forced Interrupt</b>: When Vulture attacks you, discard Projectile Feathers and take 2 indirect damage (3 indirect damage instead if you have the [[AERIAL]] trait).\n<b>Hero Action</b>: Spend [energy][energy] resources → discard Projectile Feathers. Vulture loses the [[AERIAL]] trait until the end of the active player’s turn."
+  },
+  {
+   "card_id": "hs092",
+   "type": "Obligation",
+   "name": "Forcefully Elevated",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "You gain the [[AERIAL]] trait. You cannot change to alter-ego form.\n<b>Forced Response</b>: After you attack Vulture, choose to either take 2 damage or spend a [physical] resource. Discard Forcefully Elevated."
+  },
+  {
+   "card_id": "hs093",
+   "type": "Obligation",
+   "name": "Forcefully Elevated",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "You gain the [[AERIAL]] trait. You cannot change to alter-ego form.\n<b>Forced Response</b>: After you attack Vulture, choose to either take 2 damage or spend a [physical] resource. Discard Forcefully Elevated."
+  },
+  {
+   "card_id": "hs094",
+   "type": "SideScheme",
+   "name": "Aerial Kidnapping",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Surge": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "Surge.\n<b>Forced Interrupt</b>: When the villain phase begins, place 3 threat on the main scheme and discard Aerial Kidnapping.\n<b>When Defeated</b>: Vulture loses the [[AERIAL]] trait until the end of the active player’s turn."
+  },
+  {
+   "card_id": "hs095",
+   "type": "SideScheme",
+   "name": "Aerial Kidnapping",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Surge": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "Surge.\n<b>Forced Interrupt</b>: When the villain phase begins, place 3 threat on the main scheme and discard Aerial Kidnapping.\n<b>When Defeated</b>: Vulture loses the [[AERIAL]] trait until the end of the active player’s turn."
+  },
+  {
+   "card_id": "hs096",
+   "type": "SideScheme",
+   "name": "A Feast for Vultures",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hazard": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "<b>When Revealed</b>: Place an additional 1 threat here for each character with less than half of their maximum hit points remaining."
+  },
+  {
+   "card_id": "hs097",
+   "type": "Treachery",
+   "name": "Knocked Out of the Sky",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "Surge.\n<b>When Revealed</b>: If you have the [[AERIAL]] trait, you lose the [[AERIAL]] trait until the end of the round. If you lost the [[AERIAL]] trait this way, take 2 damage."
+  },
+  {
+   "card_id": "hs098",
+   "type": "Treachery",
+   "name": "Knocked Out of the Sky",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "Surge.\n<b>When Revealed</b>: If you have the [[AERIAL]] trait, you lose the [[AERIAL]] trait until the end of the round. If you lost the [[AERIAL]] trait this way, take 2 damage."
+  },
+  {
+   "card_id": "hs099",
+   "type": "Treachery",
+   "name": "Knocked Out of the Sky",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "Surge": "1"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "Surge.\n<b>When Revealed</b>: If you have the [[AERIAL]] trait, you lose the [[AERIAL]] trait until the end of the round. If you lost the [[AERIAL]] trait this way, take 2 damage."
+  },
+  {
+   "card_id": "hs100",
+   "type": "Treachery",
+   "name": "Sweeping Swoop",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "<b>When Revealed</b>: Stun your identity and discard 1 card from your hand. If you have the [[AERIAL]] trait, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If the activating character has the [[AERIAL]] trait, it gets an additional boost card for this activation."
+  },
+  {
+   "card_id": "hs101",
+   "type": "Treachery",
+   "name": "Sweeping Swoop",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "<b>When Revealed</b>: Stun your identity and discard 1 card from your hand. If you have the [[AERIAL]] trait, this card gains surge.\n<hr />\n[star] <b>Boost</b>: If the activating character has the [[AERIAL]] trait, it gets an additional boost card for this activation."
+  },
+  {
+   "card_id": "hs102",
+   "type": "Treachery",
+   "name": "Ravenous Onslaught",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Vulture schemes. If you have less than half of your maximum hit points remaining, this card gains surge.\n<b>When Revealed (Hero)</b>: Vulture attacks you. If you have less than half of your maximum hit points remaining this card gains surge."
+  },
+  {
+   "card_id": "hs103",
+   "type": "Treachery",
+   "name": "Ravenous Onslaught",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Vulture",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Vulture schemes. If you have less than half of your maximum hit points remaining, this card gains surge.\n<b>When Revealed (Hero)</b>: Vulture attacks you. If you have less than half of your maximum hit points remaining this card gains surge."
+  },
+  {
+   "card_id": "hs104",
+   "type": "Villain",
+   "name": "* Kraven The Hunter",
+   "subtitle": "",
+   "desc": {
+    "HP": "15*",
+    "SCH": "2",
+    "ATK": "2",
+    "Stage": "1"
+   },
+   "traits": [
+    "MERCENARY",
+    "HUNTER"
+   ],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>Forced Interrupt</b>: When a character you control attacks Kraven The Hunter, deal yourself a [[TRAP]] card from the [[TRAP]] deck. Reveal each [[TRAP]] card that has been dealt to you. (Limit once per round per player.)"
+  },
+  {
+   "card_id": "hs105",
+   "type": "Villain",
+   "name": "* Kraven The Hunter",
+   "subtitle": "",
+   "desc": {
+    "HP": "17*",
+    "SCH": "2",
+    "ATK": "2",
+    "Stage": "2"
+   },
+   "traits": [
+    "MERCENARY",
+    "HUNTER"
+   ],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for the Tooth Necklace attachment and reveal it.\n<b>Forced Interrupt</b>: When a character you control attacks Kraven The Hunter, deal yourself a [[TRAP]] card from the [[TRAP]] deck. Reveal each [[TRAP]] card that has been dealt to you. (Limit once per round per player.)"
+  },
+  {
+   "card_id": "hs106",
+   "type": "Villain",
+   "name": "* Kraven The Hunter",
+   "subtitle": "",
+   "desc": {
+    "HP": "19*",
+    "SCH": "3",
+    "ATK": "3",
+    "Stage": "3"
+   },
+   "traits": [
+    "MERCENARY",
+    "HUNTER"
+   ],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Each player deals themselves a [[TRAP]] card from the [[TRAP]] deck.\n<b>Forced Interrupt</b>: When a character you control attacks Kraven The Hunter, deal yourself a [[TRAP]] card from the [[TRAP]] deck. Reveal each [[TRAP]] card that has been dealt to you. (Limit twice per round per player.)"
+  },
+  {
+   "card_id": "hs107a",
+   "type": "MainScheme",
+   "name": "Acquiring Targets",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1A"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>Contents</b>: Kraven The Hunter (I) and Kraven The Hunter (II). <i>(Kraven The Hunter (II) and Kraven The Hunter (III) instead for expert mode.)</i> Kraven The Hunter and Standard encounter sets. One modular encounter set <i>(recommended: Savage Six)</i>.\n<b>Setup</b>: Shuffle all of the [[TRAP]] cards into a separate [[TRAP]] deck. Advance to stage 1B."
+  },
+  {
+   "card_id": "hs107b",
+   "type": "MainScheme",
+   "name": "Acquiring Targets",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1B",
+    "TargetThreat": "7*",
+    "StartingThreat": "0",
+    "EscalationThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "[star] <b>Forced Interrupt</b>: When you change to hero form, place 2 threat here.\n<b>Forced Response</b>: After you change to alter-ego form, remove 1 threat from here."
+  },
+  {
+   "card_id": "hs108a",
+   "type": "MainScheme",
+   "name": "The Great Hunt",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2A"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for The Calypso Serum side scheme and reveal it. Shuffle the encounter deck. Advance to stage 2B."
+  },
+  {
+   "card_id": "hs108b",
+   "type": "MainScheme",
+   "name": "The Great Hunt",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2B",
+    "TargetThreat": "9*",
+    "StartingThreat": "0",
+    "EscalationThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>Forced Response</b>: After a [[TRAP]] card is revealed, place 1 threat here. (Limit once per round per player.)\n<b>If this scheme is completed, the players lose the game.</b>"
+  },
+  {
+   "card_id": "hs109",
+   "type": "Minion",
+   "name": "* Last Son of Kraven",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "2",
+    "ATK": "3",
+    "Boost": "2"
+   },
+   "traits": [
+    "MERCENARY",
+    "HUNTER",
+    "ELITE"
+   ],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>Forced Interrupt</b>: When a character you control attacks Last Son of Kraven, deal yourself a [[TRAP]] card from the [[TRAP]] deck. (Limit once per round.)\n<hr />\n[star] <b>Boost</b>: After this activation ends, shuffle this card into the encounter deck."
+  },
+  {
+   "card_id": "hs110",
+   "type": "Minion",
+   "name": "* Chameleon",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "1",
+    "ATK": "0",
+    "Boost": "0"
+   },
+   "traits": [
+    "CRIMINAL"
+   ],
+   "set_name": "Kraven The Hunter",
+   "text": "Chameleon cannot take damage.\n<b>Forced Interrupt</b>: When Chameleon would attack, he schemes instead.\n<b>Forced Interrupt</b>: When an enemy would be defeated, discard Chameleon instead."
+  },
+  {
+   "card_id": "hs111",
+   "type": "Attachment",
+   "name": "Poisoned Dagger",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Kraven The Hunter",
+   "text": "Attach to Kraven The Hunter.\n[star] <b>Forced Response</b>: After Kraven The Hunter attacks and damages a character, confuse that character.\n<b>Interrupt</b>: When you attack Kraven The Hunter, discard a random card from your hand → discard this attachment."
+  },
+  {
+   "card_id": "hs112",
+   "type": "Attachment",
+   "name": "* Kraven’s Spear",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "ATK+": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Kraven The Hunter",
+   "text": "Attach to Kraven The Hunter.\nKraven The Hunter gains retaliate 1.\n<b>Interrupt</b>: When you attack Kraven The Hunter, deal 3 damage to your identity → discard this attachment."
+  },
+  {
+   "card_id": "hs113",
+   "type": "Attachment",
+   "name": "Hunting Rifle",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Kraven The Hunter",
+   "text": "Attach to Kraven The Hunter.\n<b>Forced Response</b>: After Kraven The Hunter attacks you and you take no damage from that attack, take 1 damage.\n<b>Interrupt</b>: When you attack Kraven The Hunter, spend any 2 resources → discard this attachment."
+  },
+  {
+   "card_id": "hs114",
+   "type": "Attachment",
+   "name": "Tooth Necklace",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "SCH+": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Kraven The Hunter",
+   "text": "Attach to Kraven The Hunter.\n[star] <b>Forced Response</b>: After Kraven The Hunter schemes, search the encounter deck and discard pile for a [[WEAPON]] attachment and reveal it.\n<b>Interrupt</b>: When you attack Kraven The Hunter, place 2[per_hero] threat on the main scheme → discard this attachment."
+  },
+  {
+   "card_id": "hs115",
+   "type": "SideScheme",
+   "name": "The Calypso Serum",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Hazard": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here.\nEach enemy gets +1 SCH and +1 ATK."
+  },
+  {
+   "card_id": "hs116",
+   "type": "SideScheme",
+   "name": "Toxic Gas",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Acceleration": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here.\nEach friendly character gets -1 ATK."
+  },
+  {
+   "card_id": "hs117",
+   "type": "Treachery",
+   "name": "Predatory Ambush",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Kraven The Hunter attacks you. If you are in alter-ego form, do not give the villain a boost card for this activation. If you have a [[TRAP]] attachment attached to you, deal yourself a [[TRAP]] card from the [[TRAP]] deck.\n<hr />\n[star] <b>Boost</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+  },
+  {
+   "card_id": "hs118",
+   "type": "Treachery",
+   "name": "Predatory Ambush",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Kraven The Hunter attacks you. If you are in alter-ego form, do not give the villain a boost card for this activation. If you have a [[TRAP]] attachment attached to you, deal yourself a [[TRAP]] card from the [[TRAP]] deck.\n<hr />\n[star] <b>Boost</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+  },
+  {
+   "card_id": "hs119",
+   "type": "Treachery",
+   "name": "The Hunt Begins",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to triple the villain’s stage number. Reveal the first [[ITEM]] or [[WEAPON]] attachment discarded this way. If no attachment was revealed this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+  },
+  {
+   "card_id": "hs120",
+   "type": "Treachery",
+   "name": "The Hunt Begins",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Discard X cards from the encounter deck, where X is equal to triple the villain’s stage number. Reveal the first [[ITEM]] or [[WEAPON]] attachment discarded this way. If no attachment was revealed this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+  },
+  {
+   "card_id": "hs121",
+   "type": "Treachery",
+   "name": "Big Game Hunter",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Kraven The Hunter attacks the hero with the highest printed hit points. Other characters cannot defend against this attack. If no attack was made this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+  },
+  {
+   "card_id": "hs122",
+   "type": "Treachery",
+   "name": "Big Game Hunter",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Kraven The Hunter attacks the hero with the highest printed hit points. Other characters cannot defend against this attack. If no attack was made this way, deal yourself a [[TRAP]] card from the [[TRAP]] deck."
+  },
+  {
+   "card_id": "hs123",
+   "type": "Treachery",
+   "name": "Stalking Prey",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck. Place 1 threat on the main scheme for each [[TRAP]] card dealt to you.\n<hr />\n[star] <b>Boost</b>: If you have 1 or more [[TRAP]] cards dealt to you, place 1 threat on the main scheme."
+  },
+  {
+   "card_id": "hs124",
+   "type": "Treachery",
+   "name": "Stalking Prey",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "set_name": "Kraven The Hunter",
+   "text": "<b>When Revealed</b>: Deal yourself a [[TRAP]] card from the [[TRAP]] deck. Place 1 threat on the main scheme for each [[TRAP]] card dealt to you.\n<hr />\n[star] <b>Boost</b>: If you have 1 or more [[TRAP]] cards dealt to you, place 1 threat on the main scheme."
+  },
+  {
+   "card_id": "hs125",
+   "type": "Minion",
+   "name": "Ferocious Lion",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "0",
+    "ATK": "2"
+   },
+   "traits": [
+    "TRAP",
+    "ANIMAL"
+   ],
+   "set_name": "Trap",
+   "text": "[star] While attacking, Ferocious Lion gets +1 ATK if the attack is undefended.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Ferocious Lion attacks that player."
+  },
+  {
+   "card_id": "hs126",
+   "type": "Minion",
+   "name": "Ferocious Lion",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "0",
+    "ATK": "2"
+   },
+   "traits": [
+    "TRAP",
+    "ANIMAL"
+   ],
+   "set_name": "Trap",
+   "text": "[star] While attacking, Ferocious Lion gets +1 ATK if the attack is undefended.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Ferocious Lion attacks that player."
+  },
+  {
+   "card_id": "hs127",
+   "type": "Minion",
+   "name": "Fierce Cheetah",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "0",
+    "ATK": "2"
+   },
+   "traits": [
+    "TRAP",
+    "ANIMAL"
+   ],
+   "set_name": "Trap",
+   "text": "Fierce Cheetah’s attacks gain piercing.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Fierce Cheetah attacks that player."
+  },
+  {
+   "card_id": "hs128",
+   "type": "Minion",
+   "name": "Fierce Cheetah",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "0",
+    "ATK": "2"
+   },
+   "traits": [
+    "TRAP",
+    "ANIMAL"
+   ],
+   "set_name": "Trap",
+   "text": "Fierce Cheetah’s attacks gain piercing.\n<b>Forced Response</b>: After a character controlled by the engaged player attacks Kraven The Hunter, Fierce Cheetah attacks that player."
+  },
+  {
+   "card_id": "hs129",
+   "type": "Attachment",
+   "name": "Bear Trap",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, take 1 damage.\n<b>Action</b>: Spend a [physical] resource and take 2 damage → discard this card."
+  },
+  {
+   "card_id": "hs130",
+   "type": "Attachment",
+   "name": "Bear Trap",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, take 1 damage.\n<b>Action</b>: Spend a [physical] resource and take 2 damage → discard this card."
+  },
+  {
+   "card_id": "hs131",
+   "type": "Attachment",
+   "name": "Capture Net",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, spend a [physical] resource or exhaust your identity.\n<b>Interrupt</b>: When you would attack, spend a [physical] resource → discard Capture Net instead."
+  },
+  {
+   "card_id": "hs132",
+   "type": "Attachment",
+   "name": "Capture Net",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Forced Interrupt</b>: When the hero phase ends, spend a [physical] resource or exhaust your identity.\n<b>Interrupt</b>: When you would attack, spend a [physical] resource → discard Capture Net instead."
+  },
+  {
+   "card_id": "hs133",
+   "type": "Attachment",
+   "name": "Quicksand",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "-1",
+    "THW+": "-1",
+    "DEF+": "-1"
+   },
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Interrupt</b>: When you play an event card, cancel its effects and discard that event → discard Quicksand."
+  },
+  {
+   "card_id": "hs134",
+   "type": "Attachment",
+   "name": "Quicksand",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "-1",
+    "THW+": "-1",
+    "DEF+": "-1"
+   },
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity or attach this card to your identity. If you exhausted your identity, discard this card.\n<b>Interrupt</b>: When you play an event card, cancel its effects and discard that event → discard Quicksand."
+  },
+  {
+   "card_id": "hs135",
+   "type": "Treachery",
+   "name": "Tranquilizer Darts",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either spend a [mental] resource or confuse your identity. If you cannot do either, take 1 damage."
+  },
+  {
+   "card_id": "hs136",
+   "type": "Treachery",
+   "name": "Tranquilizer Darts",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either spend a [mental] resource or confuse your identity. If you cannot do either, take 1 damage."
+  },
+  {
+   "card_id": "hs137",
+   "type": "Treachery",
+   "name": "Tranquilizer Darts",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either spend a [mental] resource or confuse your identity. If you cannot do either, take 1 damage."
+  },
+  {
+   "card_id": "hs138",
+   "type": "Treachery",
+   "name": "Swinging Boulder",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity, discard an ally you control, discard an upgrade you control, or take 3 damage."
+  },
+  {
+   "card_id": "hs139",
+   "type": "Treachery",
+   "name": "Swinging Boulder",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity, discard an ally you control, discard an upgrade you control, or take 3 damage."
+  },
+  {
+   "card_id": "hs140",
+   "type": "Treachery",
+   "name": "Swinging Boulder",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "TRAP"
+   ],
+   "set_name": "Trap",
+   "text": "<b>When Revealed</b>: Choose to either exhaust your identity, discard an ally you control, discard an upgrade you control, or take 3 damage."
+  },
+  {
+   "card_id": "hs141",
+   "type": "Attachment",
+   "name": "Feral Instincts",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "2",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Feral Instincts",
+   "text": "Attach to the villain.\n[star] <b>Forced Interrupt</b>: When the villain would scheme against you, it attacks you instead. This attack gains overkill. Do not give the villain a boost card for this activation. Then, discard Feral Instincts."
+  },
+  {
+   "card_id": "hs142",
+   "type": "Attachment",
+   "name": "Primal Strength",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "0",
+    "Boost": "2"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Feral Instincts",
+   "text": "Attach to the villain.\nX is equal to the villain’s stage number.\n<b>Interrupt</b>: When the villain attacks you, choose to either spend [physical][physical] resources or exhaust your identity → discard Primal Strength."
+  },
+  {
+   "card_id": "hs143",
+   "type": "Treachery",
+   "name": "Unleashed Beast",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Feral Instincts",
+   "text": "<b>When Revealed</b>: The villain attacks you. If you are in alter-ego form, do not give the villain a boost card for this activation.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if this activation is an attack."
+  },
+  {
+   "card_id": "hs144",
+   "type": "Treachery",
+   "name": "Cornered Animal",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Feral Instincts",
+   "text": "<b>When Revealed</b>: You take 1 damage. If the villain has taken 6[per_hero] or more damage, choose to either spend a [energy] resource or take 2 indirect damage. If the villain has taken 12[per_hero] or more damage, choose to either discard a random card from your hand or place 2 threat on the main scheme."
+  },
+  {
+   "card_id": "hs145",
+   "type": "Treachery",
+   "name": "Cornered Animal",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Feral Instincts",
+   "text": "<b>When Revealed</b>: You take 1 damage. If the villain has taken 6[per_hero] or more damage, choose to either spend a [energy] resource or take 2 indirect damage. If the villain has taken 12[per_hero] or more damage, choose to either discard a random card from your hand or place 2 threat on the main scheme."
+  },
+  {
+   "card_id": "hs146",
+   "type": "SideScheme",
+   "name": "Wake Your Inner Lizard",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Lizard Thralls",
+   "text": "<b>When Revealed</b>: Place an additional 1[per_hero] threat here.\n<b>Forced Interrupt</b>: When the villain phase begins, search the encounter deck and discard pile for a copy of Lizard Thrall and put it into play engaged with the first player."
+  },
+  {
+   "card_id": "hs147",
+   "type": "Minion",
+   "name": "Lizard Thrall",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "CIVILIAN",
+    "REPTILE"
+   ],
+   "set_name": "Lizard Thralls",
+   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect."
+  },
+  {
+   "card_id": "hs148",
+   "type": "Minion",
+   "name": "Lizard Thrall",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "CIVILIAN",
+    "REPTILE"
+   ],
+   "set_name": "Lizard Thralls",
+   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect."
+  },
+  {
+   "card_id": "hs149",
+   "type": "Minion",
+   "name": "Lizard Thrall",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "CIVILIAN",
+    "REPTILE"
+   ],
+   "set_name": "Lizard Thralls",
+   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect."
+  },
+  {
+   "card_id": "hs150",
+   "type": "Minion",
+   "name": "Lizard Thrall",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "CIVILIAN",
+    "REPTILE"
+   ],
+   "set_name": "Lizard Thralls",
+   "text": "[star] <b>Forced Interrupt</b>: When Lizard Thrall would scheme, it attacks instead, without triggering its “Forced Interrupt” effect.\n[star] <b>Forced Interrupt</b>: When Lizard Thrall would attack, it schemes instead, without triggering its “Forced Interrupt” effect."
+  },
+  {
+   "card_id": "hs151",
+   "type": "Minion",
+   "name": "* Vulture (James Natale)",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "1",
+    "Boost": "3",
+    "Quickstrike": "1",
+    "Villainous": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "MUTATE"
+   ],
+   "set_name": "Red Vulture",
+   "text": "Quickstrike. Villainous.\n[star] <b>Forced Response</b>: After Vulture (James Natale) attacks and damages you, discard cards from the top of your deck equal to the amount of damage you took."
+  },
+  {
+   "card_id": "hs152",
+   "type": "SideScheme",
+   "name": "The Red Vulture",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Hazard": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Red Vulture",
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for Vulture (James Natale) and put it into play engaged with the identity with the least amount of hit points left."
+  },
+  {
+   "card_id": "hs153",
+   "type": "Treachery",
+   "name": "Acid Expulsion",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Red Vulture",
+   "text": "<b>When Revealed</b>: Discard the top 5 cards of the encounter deck. For each boost icon on the cards discarded this way, discard the top card of your deck.\n<hr />\n[star] <b>Boost</b>: After this attack, discard the top card of your deck for each damage you took from that attack."
+  },
+  {
+   "card_id": "hs154",
+   "type": "Treachery",
+   "name": "Acid Expulsion",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Red Vulture",
+   "text": "<b>When Revealed</b>: Discard the top 5 cards of the encounter deck. For each boost icon on the cards discarded this way, discard the top card of your deck.\n<hr />\n[star] <b>Boost</b>: After this attack, discard the top card of your deck for each damage you took from that attack."
+  },
+  {
+   "card_id": "hs155",
+   "type": "Treachery",
+   "name": "Voracious Ambush",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Red Vulture",
+   "text": "<b>When Revealed (Hero)</b>: Vulture (James Natale) attacks your hero. If Vulture (James Natale) did not attack you this way, discard the top 6 cards of the encounter deck and if Vulture (James Natale) is in the encounter discard pile, put him into play engaged with you."
+  },
+  {
+   "card_id": "hs156",
+   "type": "Treachery",
+   "name": "Voracious Ambush",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Red Vulture",
+   "text": "<b>When Revealed (Hero)</b>: Vulture (James Natale) attacks your hero. If Vulture (James Natale) did not attack you this way, discard the top 6 cards of the encounter deck and if Vulture (James Natale) is in the encounter discard pile, put him into play engaged with you."
+  },
+  {
+   "card_id": "hs157",
+   "type": "SideScheme",
+   "name": "The Savage Six",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*",
+    "Hazard": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Savage Six",
+   "text": "<b>When Revealed</b>: Each [[SAVAGE SIX]] minion attacks the hero it is engaged with. If no attacks were made this way, search the encounter deck and discard pile for a [[SAVAGE SIX]] minion and put it into play engaged with the first player."
+  },
+  {
+   "card_id": "hs158",
+   "type": "Minion",
+   "name": "* Vulture",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "AERIAL",
+    "CRIMINAL",
+    "SAVAGE SIX"
+   ],
+   "set_name": "Savage Six",
+   "text": "[star] <b>Forced Response</b>: After Vulture attacks you, deal yourself an encounter card. Then, shuffle Vulture into the encounter deck.\n<hr />\n[star] <b>Boost</b>: After this activation ends, shuffle this card into the encounter deck."
+  },
+  {
+   "card_id": "hs159",
+   "type": "Minion",
+   "name": "* Rhino",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "1",
+    "ATK": "3",
+    "Boost": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE",
+    "SAVAGE SIX"
+   ],
+   "set_name": "Savage Six",
+   "text": "[star] Rhino’s attacks gain overkill.\n<b>Forced Interrupt</b>: When the villain phase ends, give Rhino a tough status card.\n<hr />\n[star] <b>Boost</b>: This attack gains overkill."
+  },
+  {
+   "card_id": "hs160",
+   "type": "Minion",
+   "name": "* Scorpion",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "2",
+    "ATK": "3",
+    "Boost": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "ELITE",
+    "SAVAGE SIX"
+   ],
+   "set_name": "Savage Six",
+   "text": "[star] Scorpion gets +1 SCH while the identity he is engaged with is stunned.\n[star] <b>Forced Response</b>: After Scorpion attacks and damages a character, that character is stunned.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if you are stunned."
+  },
+  {
+   "card_id": "hs161",
+   "type": "Minion",
+   "name": "* Tarantula",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "CRIMINAL",
+    "SAVAGE SIX"
+   ],
+   "set_name": "Savage Six",
+   "text": "[star] Tarantula gets +1 ATK while the identity he is engaged with is confused.\n[star] <b>Forced Response</b>: After Tarantula attacks and damages a character, that character is confused.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if you are confused."
+  },
+  {
+   "card_id": "hs162",
+   "type": "Minion",
+   "name": "* King Cobra",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "2",
+    "ATK": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "SAVAGE SIX",
+    "SERPENT SOCIETY"
+   ],
+   "set_name": "Savage Six",
+   "text": "While King Cobra is engaged with you, your hero cannot attack other enemies.\n<hr />\n[star] <b>Boost</b>: If this attack deals damage to you, exhaust your identity."
+  },
+  {
+   "card_id": "hs163",
+   "type": "Minion",
+   "name": "* Stegron",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "0",
+    "ATK": "2",
+    "Boost": "1"
+   },
+   "traits": [
+    "REPTILE",
+    "SAVAGE SIX"
+   ],
+   "set_name": "Savage Six",
+   "text": "[star] Stegron gets +1 SCH for each [[SAVAGE SIX]] enemy in play (max +4 SCH).\n<b>Forced Response</b>: After Stegron enters play, he schemes.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) if at least one [[SAVAGE SIX]] minion is in play."
+  },
+  {
+   "card_id": "hs164",
+   "type": "Ally",
+   "name": "* Rocket Raccoon",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "2",
+    "THW": "2*",
+    "ATK": "3*",
+    "HP": "2"
+   },
+   "traits": [
+    "GUARDIAN",
+    "OUTLAW"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 4.\n[star] Rocket Raccoon’s basic attack gains ranged, piercing and overkill."
+  },
+  {
+   "card_id": "hs165",
+   "type": "Ally",
+   "name": "* Old Man Logan",
+   "subtitle": "James Howlett (Earth-807128)",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "3",
+    "THW": "1*",
+    "ATK": "2*",
+    "HP": "5"
+   },
+   "traits": [
+    "MUTANT",
+    "X-MAN"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 4.\n<b>Interrupt</b>: When Old Man Logan defends against an attack, deal damage to the attacker equal to Old Man Logan’s ATK."
+  },
+  {
+   "card_id": "hs166",
+   "type": "Ally",
+   "name": "* Black Cat",
+   "subtitle": "Felicia Hardy",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "4",
+    "THW": "1*",
+    "ATK": "1*",
+    "HP": "3"
+   },
+   "traits": [
+    "HERO FOR HIRE"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 4.\n[star] <b>Forced Response</b>: After Black Cat thwarts, discard the top card of your deck. If that card has a printed [mental] resource, add it to your hand."
+  },
+  {
+   "card_id": "hs167",
+   "type": "Ally",
+   "name": "* Ka-Zar",
+   "subtitle": "Kevin Plunder",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "2",
+    "THW": "2*",
+    "ATK": "2*",
+    "HP": "3"
+   },
+   "traits": [
+    "HUNTER",
+    "SAVAGE LAND"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 4.\n<b>Response</b>: After Ka-Zar enters play, deal damage to the villain equal to the villain’s stage number."
+  },
+  {
+   "card_id": "hs168",
+   "type": "Ally",
+   "name": "* Gibbon",
+   "subtitle": "Martin Blank",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "2",
+    "THW": "1*",
+    "ATK": "1*",
+    "HP": "3"
+   },
+   "traits": [
+    "CRIMINAL",
+    "MUTANT"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 1.\n<b>Interrupt</b>: When Gibbon would take any amount of damage, prevent 1 of that damage. (Limit once per phase.)"
+  },
+  {
+   "card_id": "hs169",
+   "type": "Event",
+   "name": "Evade",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "DEFENSE",
+    "SKILL"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you would take any amount of damage from an attack, prevent 3 of that damage. If you took no damage from this attack, draw 1 card."
+  },
+  {
+   "card_id": "hs170",
+   "type": "Event",
+   "name": "Evade",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "DEFENSE",
+    "SKILL"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you would take any amount of damage from an attack, prevent 3 of that damage. If you took no damage from this attack, draw 1 card."
+  },
+  {
+   "card_id": "hs171",
+   "type": "Event",
+   "name": "Evade",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "DEFENSE",
+    "SKILL"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you would take any amount of damage from an attack, prevent 3 of that damage. If you took no damage from this attack, draw 1 card."
+  },
+  {
+   "card_id": "hs172",
+   "type": "Event",
+   "name": "Taunt",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 1.\n<b>Hero Action</b>: Give the villain up to three facedown boost cards. Draw 1 card for each facedown boost card given to the villain this way."
+  },
+  {
+   "card_id": "hs173",
+   "type": "Event",
+   "name": "Taunt",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 1.\n<b>Hero Action</b>: Give the villain up to three facedown boost cards. Draw 1 card for each facedown boost card given to the villain this way."
+  },
+  {
+   "card_id": "hs174",
+   "type": "Event",
+   "name": "Taunt",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 1.\n<b>Hero Action</b>: Give the villain up to three facedown boost cards. Draw 1 card for each facedown boost card given to the villain this way."
+  },
+  {
+   "card_id": "hs175",
+   "type": "Event",
+   "name": "Steadfast",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 3.\n<b>Hero Interrupt</b>: When you reveal an encounter card, spend a [physical] resource → cancel that encounter card’s “When Revealed” effects."
+  },
+  {
+   "card_id": "hs176",
+   "type": "Event",
+   "name": "Steadfast",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 3.\n<b>Hero Interrupt</b>: When you reveal an encounter card, spend a [physical] resource → cancel that encounter card’s “When Revealed” effects."
+  },
+  {
+   "card_id": "hs177",
+   "type": "Event",
+   "name": "Steadfast",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 3.\n<b>Hero Interrupt</b>: When you reveal an encounter card, spend a [physical] resource → cancel that encounter card’s “When Revealed” effects."
+  },
+  {
+   "card_id": "hs178",
+   "type": "Event",
+   "name": "Finish Them Off",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy was defeated this way, draw 2 cards."
+  },
+  {
+   "card_id": "hs179",
+   "type": "Event",
+   "name": "Finish Them Off",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy was defeated this way, draw 2 cards."
+  },
+  {
+   "card_id": "hs180",
+   "type": "Event",
+   "name": "Finish Them Off",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Hero Action</b> <i>(attack)</i>: Deal 2 damage to an enemy. If that enemy was defeated this way, draw 2 cards."
+  },
+  {
+   "card_id": "hs181",
+   "type": "Event",
+   "name": "Fresh Tracks",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you thwart, increase the amount of threat that thwart removes by 2. If that thwart removes the last threat from a scheme, deal 1 damage to an enemy and draw 1 card."
+  },
+  {
+   "card_id": "hs182",
+   "type": "Event",
+   "name": "Fresh Tracks",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you thwart, increase the amount of threat that thwart removes by 2. If that thwart removes the last threat from a scheme, deal 1 damage to an enemy and draw 1 card."
+  },
+  {
+   "card_id": "hs183",
+   "type": "Event",
+   "name": "Fresh Tracks",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Interrupt</b>: When you thwart, increase the amount of threat that thwart removes by 2. If that thwart removes the last threat from a scheme, deal 1 damage to an enemy and draw 1 card."
+  },
+  {
+   "card_id": "hs184",
+   "type": "Support",
+   "name": "* Savage Land",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "2"
+   },
+   "traits": [
+    "LOCATION",
+    "SAVAGE LAND"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 4.\n<b>Hero Action</b>: Exhaust Savage Land and deal 1 damage to a hero or ally → that character gets +1 THW and +1 ATK until the end of the round."
+  },
+  {
+   "card_id": "hs185",
+   "type": "Upgrade",
+   "name": "Hunting Rifle",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "2",
+    "Restricted": "1",
+    "Uses": "3,ammo"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\nRestricted. Uses (3 ammo counters).\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Hunting Rifle and remove 1 ammo counter from it → deal 2 damage to an enemy. This attack gains ranged."
+  },
+  {
+   "card_id": "hs186",
+   "type": "Upgrade",
+   "name": "Hunting Rifle",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "2",
+    "Restricted": "1",
+    "Uses": "3,ammo"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\nRestricted. Uses (3 ammo counters).\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Hunting Rifle and remove 1 ammo counter from it → deal 2 damage to an enemy. This attack gains ranged."
+  },
+  {
+   "card_id": "hs187",
+   "type": "Upgrade",
+   "name": "Hunting Rifle",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "2",
+    "Restricted": "1",
+    "Uses": "3,ammo"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\nRestricted. Uses (3 ammo counters).\n<b>Hero Action</b> <i>(attack)</i>: Exhaust Hunting Rifle and remove 1 ammo counter from it → deal 2 damage to an enemy. This attack gains ranged."
+  },
+  {
+   "card_id": "hs188",
+   "type": "Upgrade",
+   "name": "Hatchet",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0",
+    "Restricted": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\nRestricted.\n<b>Interrupt</b>: When you make a basic attack exhaust Hatchet → you get +1 ATK for that attack."
+  },
+  {
+   "card_id": "hs189",
+   "type": "Upgrade",
+   "name": "Hatchet",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0",
+    "Restricted": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\nRestricted.\n<b>Interrupt</b>: When you make a basic attack exhaust Hatchet → you get +1 ATK for that attack."
+  },
+  {
+   "card_id": "hs190",
+   "type": "Upgrade",
+   "name": "Hatchet",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0",
+    "Restricted": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\nRestricted.\n<b>Interrupt</b>: When you make a basic attack exhaust Hatchet → you get +1 ATK for that attack."
+  },
+  {
+   "card_id": "hs191",
+   "type": "Upgrade",
+   "name": "Hunterbot",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "1",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "ROBOT"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 3.\nMax 1 per player.\nYour hero gets +1 ATK.\n<b>Forced Interrupt</b>: When you would take any amount of damage, place it here instead. Then, if there is 3 or more damage here, discard Hunterbot."
+  },
+  {
+   "card_id": "hs192",
+   "type": "Upgrade",
+   "name": "Hunterbot",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "1",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "ROBOT"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 3.\nMax 1 per player.\nYour hero gets +1 ATK.\n<b>Forced Interrupt</b>: When you would take any amount of damage, place it here instead. Then, if there is 3 or more damage here, discard Hunterbot."
+  },
+  {
+   "card_id": "hs193",
+   "type": "Upgrade",
+   "name": "Hunterbot",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "1",
+    "MaxPerUnit": "1"
+   },
+   "traits": [
+    "ROBOT"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 3.\nMax 1 per player.\nYour hero gets +1 ATK.\n<b>Forced Interrupt</b>: When you would take any amount of damage, place it here instead. Then, if there is 3 or more damage here, discard Hunterbot."
+  },
+  {
+   "card_id": "hs194",
+   "type": "Upgrade",
+   "name": "Trap",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 1.\n<b>Interrupt</b>: When an enemy attacks you, discard Trap → deal 2 damage to that enemy. If that enemy was defeated this way, return Trap to your hand."
+  },
+  {
+   "card_id": "hs195",
+   "type": "Upgrade",
+   "name": "Trap",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 1.\n<b>Interrupt</b>: When an enemy attacks you, discard Trap → deal 2 damage to that enemy. If that enemy was defeated this way, return Trap to your hand."
+  },
+  {
+   "card_id": "hs196",
+   "type": "Upgrade",
+   "name": "Trap",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 1.\n<b>Interrupt</b>: When an enemy attacks you, discard Trap → deal 2 damage to that enemy. If that enemy was defeated this way, return Trap to your hand."
+  },
+  {
+   "card_id": "hs197",
+   "type": "Upgrade",
+   "name": "In Hiding",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Hero Interrupt</b>: When an enemy would attack you, discard In Hiding → that enemy schemes instead, without getting a boost card for this activation."
+  },
+  {
+   "card_id": "hs198",
+   "type": "Upgrade",
+   "name": "In Hiding",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Hero Interrupt</b>: When an enemy would attack you, discard In Hiding → that enemy schemes instead, without getting a boost card for this activation."
+  },
+  {
+   "card_id": "hs199",
+   "type": "Upgrade",
+   "name": "In Hiding",
+   "subtitle": "",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "RES": "G",
+    "Cost": "0"
+   },
+   "traits": [
+    "PREPARATION"
+   ],
+   "set_name": "The Lodge",
+   "text": "Experience Cost 2.\n<b>Hero Interrupt</b>: When an enemy would attack you, discard In Hiding → that enemy schemes instead, without getting a boost card for this activation."
+  },
+  {
+   "card_id": "hs200",
+   "type": "Ally",
+   "name": "* Vermin",
+   "subtitle": "Edward Whelan",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "Cost": "2",
+    "RES": "R",
+    "THW": "0*",
+    "ATK": "2**",
+    "HP": "2"
+   },
+   "traits": [
+    "MUTATE",
+    "PREDATOR"
+   ],
+   "set_name": "Hunt Campaign Set",
+   "text": "Vermin enters play with 3 rat counters.\n<b>Interrupt</b>: When Vermin attacks, remove a rat counter from him → Vermin does not take consequential damage for this attack."
+  },
+  {
+   "card_id": "hs201",
+   "type": "Ally",
+   "name": "* Scorpion",
+   "subtitle": "MacDonald Gargan",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "Cost": "3",
+    "RES": "Y",
+    "THW": "1*",
+    "ATK": "2*",
+    "HP": "3"
+   },
+   "traits": [
+    "CRIMINAL",
+    "PREDATOR"
+   ],
+   "set_name": "Hunt Campaign Set",
+   "text": "<b>Response</b>: After Scorpion attacks and damages an enemy, deal 1 damage to Scorpion → stun that enemy and deal 1 damage to it."
+  },
+  {
+   "card_id": "hs202",
+   "type": "Ally",
+   "name": "* Lizard",
+   "subtitle": "Curtis Connors",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "Cost": "3",
+    "RES": "B",
+    "THW": "0*",
+    "ATK": "0*",
+    "HP": "3"
+   },
+   "traits": [
+    "GENIUS",
+    "PREDATOR"
+   ],
+   "set_name": "Hunt Campaign Set",
+   "text": "While you are in alter-ego form, Lizard gets +3 THW.\nWhile you are in hero form, Lizard gets +3 ATK."
+  },
+  {
+   "card_id": "hs203",
+   "type": "Ally",
+   "name": "* Vulture",
+   "subtitle": "Adrian Toomes",
+   "desc": {
+    "Class": "Campaign;Basic",
+    "Cost": "3",
+    "RES": "G",
+    "THW": "2*",
+    "ATK": "2*",
+    "HP": "3"
+   },
+   "traits": [
+    "AERIAL",
+    "PREDATOR",
+    "CRIMINAL"
+   ],
+   "set_name": "Hunt Campaign Set",
+   "text": "<b>Action</b>: Exhaust Vulture and deal 1 damage to him → ready a friendly character and that character gains the [[AERIAL]] trait until the end of the phase."
+  },
+  {
+   "card_id": "hs204",
+   "type": "Minion",
+   "name": "* Vermin",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "0",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "MUTATE",
+    "RAT"
+   ],
+   "set_name": "Hunt Campaign Set",
+   "text": "Vermin enters play with 3 rat counters.\n<b>Forced Interrupt</b>: When Vermin would take any amount of damage, remove a rat counter from him instead."
+  },
+  {
+   "card_id": "hs205",
+   "type": "Minion",
+   "name": "* Lizard",
+   "subtitle": "",
+   "desc": {
+    "HP": "6",
+    "SCH": "0",
+    "ATK": "3",
+    "Boost": "3",
+    "Quickstrike": "1",
+    "Retaliate": "1"
+   },
+   "traits": [
+    "BRUTE",
+    "REPTILE"
+   ],
+   "set_name": "Hunt Campaign Set",
+   "text": "Quickstrike. Retaliate 1.\n<b>Forced Interrupt</b>: When Lizard attacks, the attack gains piercing."
+  },
+  {
+   "card_id": "hs206",
+   "type": "Minion",
+   "name": "Son of Kraven",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "1",
+    "ATK": "2",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "HUNTER",
+    "MERCENARY"
+   ],
+   "set_name": "Expert Campaign Set",
+   "text": "Quickstrike."
+  },
+  {
+   "card_id": "hs207",
+   "type": "Obligation",
+   "name": "Captured!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!"
+  },
+  {
+   "card_id": "hs208",
+   "type": "Obligation",
+   "name": "Hunted!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!"
+  },
+  {
+   "card_id": "hs209",
+   "type": "Treachery",
+   "name": "Poisoned!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage."
+  },
+  {
+   "card_id": "hs210",
+   "type": "Minion",
+   "name": "Son of Kraven",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "1",
+    "ATK": "2",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "HUNTER",
+    "MERCENARY"
+   ],
+   "set_name": "Expert Campaign Set",
+   "text": "Quickstrike."
+  },
+  {
+   "card_id": "hs211",
+   "type": "Obligation",
+   "name": "Captured!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!"
+  },
+  {
+   "card_id": "hs212",
+   "type": "Obligation",
+   "name": "Hunted!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!"
+  },
+  {
+   "card_id": "hs213",
+   "type": "Treachery",
+   "name": "Poisoned!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage."
+  },
+  {
+   "card_id": "hs214",
+   "type": "Minion",
+   "name": "Son of Kraven",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "1",
+    "ATK": "2",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "HUNTER",
+    "MERCENARY"
+   ],
+   "set_name": "Expert Campaign Set",
+   "text": "Quickstrike."
+  },
+  {
+   "card_id": "hs215",
+   "type": "Obligation",
+   "name": "Captured!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!"
+  },
+  {
+   "card_id": "hs216",
+   "type": "Obligation",
+   "name": "Hunted!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!"
+  },
+  {
+   "card_id": "hs217",
+   "type": "Treachery",
+   "name": "Poisoned!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage."
+  },
+  {
+   "card_id": "hs218",
+   "type": "Minion",
+   "name": "Son of Kraven",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "1",
+    "ATK": "2",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "HUNTER",
+    "MERCENARY"
+   ],
+   "set_name": "Expert Campaign Set",
+   "text": "Quickstrike."
+  },
+  {
+   "card_id": "hs219",
+   "type": "Obligation",
+   "name": "Captured!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "You cannot change form.\n<b>Action</b>: Exhaust your identity → discard Captured!"
+  },
+  {
+   "card_id": "hs220",
+   "type": "Obligation",
+   "name": "Hunted!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "Each minion engaged with you gains quickstrike.\n<b>Alter-Ego Action</b>: Discard a card from your hand → discard Hunted!"
+  },
+  {
+   "card_id": "hs221",
+   "type": "Treachery",
+   "name": "Poisoned!",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Expert Campaign Set",
+   "text": "<b>When Revealed</b>: Choose to either spend a [energy] resource or take 2 damage."
+  },
+  {
+   "card_id": "hs222",
+   "type": "Environment",
+   "name": "Rabid Rodents",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Hunter Mode",
+   "text": "<i>Hunter Mode Only.</i>\nVermin and Vermin Clone get +1 ATK.\n<b>Forced Response</b>: After a [[RAT]] minion enters play, place 1 threat on that minion."
+  },
+  {
+   "card_id": "hs223",
+   "type": "Environment",
+   "name": "Sting of the Scorpion",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Hunter Mode",
+   "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After the villain phase ends, the first player must choose to either place 1 wound counter on J. Jonah Jameson or discard cards from the top of the encounter deck until an attachment is discarded and reveal it."
+  },
+  {
+   "card_id": "hs224",
+   "type": "Environment",
+   "name": "Cold Blooded",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Hunter Mode",
+   "text": "<i>Hunter Mode Only.</i>\nThe target threat value of the main scheme is reduced by 1[per_hero].\n<b>Forced Response</b>: After Curtis Connors activates against your hero, deal yourself 1 facedown encounter card."
+  },
+  {
+   "card_id": "hs225",
+   "type": "Environment",
+   "name": "Aerial Excellence",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Hunter Mode",
+   "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After step one of the villain phase, place 1 threat on the main scheme for each identity without the [[AERIAL]] trait. Each identity with the [[AERIAL]] trait takes 2 indirect damage."
+  },
+  {
+   "card_id": "hs226",
+   "type": "Environment",
+   "name": "Master Trapper",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Hunter Mode",
+   "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After step one of the villain phase, deal each player 1 facedown [[TRAP]] card.\n<b>Forced Interrupt</b>: When the [[TRAP]] discard pile is shuffled back into the [[TRAP]] deck, deal the first player 1 facedown encounter card."
+  }
+ ],
+ "checksum": "9ada19271de4889e31416a98f2b95aeff2c9a486402e79befb10671f5430a17e"
 }
