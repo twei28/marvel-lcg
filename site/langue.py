@@ -241,6 +241,10 @@ DICO_EN: dict[str, str] = {
         "or just join as a guest.",
     "J’ai un compte": "I have an account",
     "Je suis invite": "I'm a guest",
+
+    # --- Liens de l'administrateur ------------------------------------------
+    "Administration": "Administration",
+    "Suivi des parties": "Game tracking",
 }
 
 
