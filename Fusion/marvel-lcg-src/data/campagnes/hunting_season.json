@@ -9,7 +9,10 @@
   "expert": {
     "pv_persistants": true
   },
-  "pages_regles": [],
+  "pages_regles": [
+    "00-campagne-regles-1.jpg",
+    "00-campagne-regles-2.jpg"
+  ],
   "scenarios": [
     {
       "id": "hs_vermin",
@@ -27,7 +30,11 @@
           "aide": "Une défaite le note : le sbire Vermin rejoindra le deck rencontre de Kraven."
         }
       ],
-      "pages": {},
+      "pages": {
+        "regles": [
+          "01-hs_vermin-regles-1.jpg"
+        ]
+      },
       "defaite_continue": true
     },
     {
@@ -46,7 +53,11 @@
           "aide": "Une victoire le note : le sbire Scorpion sera retiré du deck rencontre de Kraven."
         }
       ],
-      "pages": {},
+      "pages": {
+        "regles": [
+          "02-hs_scorpion-regles-1.jpg"
+        ]
+      },
       "defaite_continue": true
     },
     {
@@ -65,7 +76,12 @@
           "aide": "Une défaite le note : le sbire Lizard rejoindra le deck rencontre de Kraven."
         }
       ],
-      "pages": {},
+      "pages": {
+        "regles": [
+          "03-hs_the_lizard-regles-1.jpg",
+          "03-hs_the_lizard-regles-2.jpg"
+        ]
+      },
       "defaite_continue": true
     },
     {
@@ -91,7 +107,12 @@
           "aide": "Une victoire contre Vulture ajoute l'allié Gibbon au Lodge."
         }
       ],
-      "pages": {},
+      "pages": {
+        "regles": [
+          "04-hs_vulture-regles-1.jpg",
+          "04-hs_vulture-regles-2.jpg"
+        ]
+      },
       "defaite_continue": true
     },
     {
@@ -102,7 +123,12 @@
       "resume": "Affrontez Kraven The Hunter et appliquez les instructions de campagne du livret.",
       "enjeu": "Le résultat contre Kraven décide de la campagne.",
       "victoire": [],
-      "pages": {},
+      "pages": {
+        "regles": [
+          "05-hs_kraven_the_hunter-regles-1.jpg",
+          "05-hs_kraven_the_hunter-regles-2.jpg"
+        ]
+      },
       "final": true,
       "defaite": {
         "quand": "partie_perdue",

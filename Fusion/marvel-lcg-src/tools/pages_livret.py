@@ -29,6 +29,8 @@ import sys
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Le Bureau, a cote du depot : c'est la que vivent les PDF officiels.
 PDFS = os.path.abspath(os.path.join(RACINE, "..", "..", ".."))
+# Racine du depot : un livret fan-made livre avec son pack y vit (`pdf_depot`).
+DEPOT = os.path.abspath(os.path.join(RACINE, "..", ".."))
 LARGEUR = 975
 
 # Les livrets officiels, la ou ils se telechargent. Verifies le 19/09/2026
@@ -58,6 +60,22 @@ LIVRETS = {
 COUVERTURE = "00-couverture.jpg"
 
 CARTES = {
+    "hunting_season": {
+        # Livret fan-made (Nugget), portrait, livre dans le zip du pack. Pas de
+        # planches de BD : le recit et les instructions partagent la page du
+        # scenario, d'ou des scenarios sans intro ni epilogue a part.
+        "pdf_depot": ".planning/hunting-season/reference/HuntingSeason_Campaign_Booklet.pdf",
+        # p2 : regles du mode campagne. p3 : mode Hunter, experience, Lodge.
+        # La p11 (regles de la campagne experte) finit le scenario de Kraven.
+        "regles_campagne": [2, 3],
+        "scenarios": [
+            ("hs_vermin", 1, None, [4], None),
+            ("hs_scorpion", 2, None, [5], None),
+            ("hs_the_lizard", 3, None, [6, 7], None),
+            ("hs_vulture", 4, None, [8, 9], None),
+            ("hs_kraven_the_hunter", 5, None, [10, 11], None),
+        ],
+    },
     "next_evol": {
         "pdf": "mc40_next_evolution_rulebook-web.pdf",
         # p6 : regles du mode campagne. p7 : manigances de campagne et expert.
@@ -166,7 +184,8 @@ def main():
         print("Aucune carte de pages pour « %s ». Voir CARTES dans ce fichier."
               % options.code, file=sys.stderr)
         return 1
-    chemin_pdf = os.path.join(PDFS, carte["pdf"])
+    chemin_pdf = (os.path.join(DEPOT, carte["pdf_depot"]) if "pdf_depot" in carte
+                  else os.path.join(PDFS, carte["pdf"]))
     if not os.path.exists(chemin_pdf):
         print("Livret introuvable : %s" % chemin_pdf, file=sys.stderr)
         return 1
@@ -219,7 +238,7 @@ def main():
             precedent_epilogue = None
         pages_par_scenario[scenario] = bloc
 
-    print("  %d page(s) a rendre depuis %s" % (len(a_rendre), carte["pdf"]))
+    print("  %d page(s) a rendre depuis %s" % (len(a_rendre), os.path.basename(chemin_pdf)))
     for page in sorted(a_rendre):
         print("    p%-3d -> %s" % (page, a_rendre[page]))
 
