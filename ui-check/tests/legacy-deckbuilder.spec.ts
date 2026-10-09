@@ -53,6 +53,7 @@ test('en Legacy, les cartes des boites fermees sont grisees et ne s ajoutent pas
   await expect(premiere).not.toHaveClass(/est-choisie/);
   // Une carte du Set de base, elle, s'ajoute.
   const ouverte = page.locator('#db-grille .db-carte:not(.est-verrou)').first();
+  await ouverte.hover();
   await ouverte.locator('.db-carte-boutons button').nth(1).click();
   await expect(ouverte).toHaveClass(/est-choisie/);
   await page.screenshot({ path: 'C:/tmp/legacy-5-deckbuilder.png' });
@@ -61,12 +62,13 @@ test('en Legacy, les cartes des boites fermees sont grisees et ne s ajoutent pas
 test('les decks de depart proposes sont ceux qu on peut jouer', async ({ page }) => {
   const id = await idSpiderMan(page);
   await page.goto(`/deck-builder.html?hero=${encodeURIComponent(id)}&legacy=1`);
-  await page.waitForSelector('#db-sources .db-chip', { timeout: 30000 });
-  const puces = await page.$$eval('#db-sources .db-chip', (n) => n.map((x) => x.textContent || ''));
+  // « Partir de » est un menu déroulant depuis la refonte du 09/10/2026.
+  await page.waitForSelector('#db-partir optgroup option', { state: 'attached', timeout: 30000 });
+  const puces = await page.$$eval('#db-partir optgroup:not([label="Brouillons"]) option', (n) => n.map((x) => x.textContent || ''));
   expect(puces.some((p) => /Base/.test(p))).toBe(true);
   // Les paquets d'aspect du tableur piochent dans toutes les vagues : aucun
   // ne tient au Set de base.
-  expect(puces.filter((p) => !/Base|Vide/.test(p)).length).toBe(0);
+  expect(puces.filter((p) => !/Base/.test(p)).length).toBe(0);
 });
 
 // ⚠ SANS LE DRAPEAU, RIEN N'EST VERROUILLE, meme avec le mode actif sur le

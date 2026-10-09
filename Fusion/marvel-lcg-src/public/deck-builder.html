@@ -4,278 +4,70 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Éditeur de deck — Marvel Champions</title>
-<style>
-    :root {
-        --fond: #0b0c10;
-        --panneau: #12151c;
-        --bord: rgba(255, 255, 255, 0.12);
-        --texte: #e8edf3;
-        --sourdine: #9fb0c4;
-        --accent: #e62429;
-        --or: #ffd24a;
-    }
-    * { box-sizing: border-box; }
-    body {
-        margin: 0;
-        min-height: 100dvh;
-        color: var(--texte);
-        font-family: Inter, ui-sans-serif, system-ui, "Segoe UI", sans-serif;
-        background:
-            linear-gradient(135deg, rgba(230, 36, 41, 0.14), transparent 30%),
-            linear-gradient(315deg, rgba(53, 167, 255, 0.10), transparent 32%),
-            var(--fond);
-    }
-    header.db-tete {
-        position: sticky; top: 0; z-index: 10;
-        display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
-        min-height: 52px; padding: 6px 18px;
-        background: rgba(10, 12, 16, 0.94);
-        border-bottom: 1px solid var(--bord);
-        backdrop-filter: blur(6px);
-    }
-    .db-titre { font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: var(--or); }
-    .db-tete a { color: var(--sourdine); text-decoration: none; font-weight: 700; font-size: 0.85rem; }
-    .db-tete > a { display: flex; align-items: center; gap: 8px; }
-    .db-narval { width: 36px; height: 36px; display: block; }
-    .db-retour { font-size: 1.1rem; }
-    .db-tete a:hover { color: #fff; }
-    .db-tete select, .db-tete input[type="text"] {
-        font: inherit; font-size: 0.85rem; min-height: 32px; padding: 0 8px;
-        color: var(--texte); background: #232733;
-        border: 1px solid var(--bord); border-radius: 6px;
-    }
-    .db-tete input[type="text"] { width: 220px; }
-    .db-boutons { margin-left: auto; display: flex; gap: 8px; align-items: center; }
-    .db-boutons button {
-        font: inherit; font-size: 0.82rem; font-weight: 800; min-height: 32px; padding: 0 14px;
-        color: var(--texte); background: #1f2937;
-        border: 1px solid var(--bord); border-radius: 7px; cursor: pointer;
-    }
-    .db-boutons button:hover { border-color: rgba(255, 255, 255, 0.4); }
-    #db-save-game { color: #17130a; background: var(--or); border-color: #fff1ad; }
-    #db-save-game:disabled { opacity: 0.45; cursor: default; }
-    #db-status { font-size: 0.8rem; font-weight: 700; color: #9ff0c0; }
-    #db-status.est-erreur { color: #ffb4a8; }
-
-    main { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 12px; padding: 12px 14px; }
-    @media (max-width: 980px) { main { grid-template-columns: 1fr; } }
-
-    .db-panneau {
-        background: var(--panneau);
-        border: 1px solid var(--bord); border-radius: 12px; padding: 12px;
-    }
-
-    /* Filtres */
-    #db-sources, #db-brouillons { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; }
-    .db-sources-label { font-size: 0.72rem; font-weight: 900; text-transform: uppercase; color: var(--sourdine); }
-    #db-filtres { display: grid; gap: 8px; margin-bottom: 10px; }
-    .db-recherche {
-        font: inherit; width: 100%; min-height: 36px; padding: 0 10px;
-        color: var(--texte); background: #1a1e27;
-        border: 1px solid var(--bord); border-radius: 8px;
-    }
-    .db-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-    .db-chip {
-        font: inherit; font-size: 0.74rem; font-weight: 800; padding: 5px 10px;
-        color: var(--sourdine); background: #1a1e27;
-        border: 1px solid var(--bord); border-radius: 999px; cursor: pointer;
-    }
-    .db-chip:hover { color: #fff; }
-    .db-chip.est-actif { color: #fff; border-color: var(--or); background: rgba(255, 210, 74, 0.14); }
-    .db-suppr { padding: 5px 8px; }
-
-    /* Couleurs d'aspect */
-    .aspect-aggression { --c-aspect: #e0484a; }
-    .aspect-justice { --c-aspect: #f2c744; }
-    .aspect-leadership { --c-aspect: #4a9de0; }
-    .aspect-protection { --c-aspect: #55c069; }
-    .aspect-pool { --c-aspect: #e04ac7; }
-    /* Même mauve que le liseré des cartes Détermination sur le plateau
-       (ui-app/src/board/board.css) : une seule couleur pour cet aspect. */
-    .aspect-determination { --c-aspect: #965cc4; }
-    /* Venomized : le moteur peint ses cartes en rgb(38,38,44), mais une
-       pastille aussi sombre serait invisible sur le fond de l'editeur. On
-       garde la teinte en montant la luminosite, exactement comme le lisere du
-       plateau et la pastille de la preparation. Une couleur, partout. */
-    .aspect-venomized { --c-aspect: #6b6b7a; }
-    .aspect-basic { --c-aspect: #a7b2c2; }
-    .aspect-campaign { --c-aspect: #b08d4a; }
-    .db-chip[class*="aspect-"] { border-left: 4px solid var(--c-aspect, var(--bord)); }
-    .db-aspect-point {
-        width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%;
-        background: var(--c-aspect, var(--sourdine));
-    }
-
-    /* Grille de cartes */
-    #db-grille-info { font-size: 0.74rem; color: var(--sourdine); margin-bottom: 6px; }
-    #db-grille {
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(136px, 1fr)); gap: 10px;
-        max-height: calc(100dvh - 250px); overflow-y: auto; padding-right: 4px;
-    }
-    .db-carte { position: relative; border-radius: 8px; }
-    .db-carte img {
-        width: 100%; display: block; border-radius: 8px; cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        transition: transform 120ms ease;
-    }
-    /* Le survol ne grossit plus la vignette SUR PLACE : elle recouvrait ses
-       voisines et restait trop petite pour lire un texte de carte. C'est le
-       panneau de droite qui montre la carte en grand (#db-apercu). Ici, on se
-       contente de dire laquelle est pointée. */
-    .db-carte > img:hover { outline: 2px solid var(--or); }
-    .db-carte.est-choisie > img { outline: 3px solid var(--or); }
-    .db-carte-pied { display: flex; align-items: center; gap: 5px; padding: 4px 2px 0; font-size: 0.7rem; }
-    .db-carte-pied b { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-    .db-count { margin-left: auto; color: var(--or); font-weight: 900; }
-    .db-badge-custom {
-        position: absolute; top: 4px; left: 4px; padding: 1px 5px;
-        font-size: 0.58rem; font-weight: 900; letter-spacing: 0.05em;
-        color: #0a0c10; background: var(--or); border-radius: 4px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); pointer-events: none;
-    }
-    .db-ligne .db-badge-custom { position: static; font-size: 0.52rem; padding: 0 4px; }
-    .db-carte-boutons { position: absolute; top: 4px; right: 4px; display: flex; gap: 3px; }
-    .db-carte-boutons button {
-        width: 24px; height: 24px; font-weight: 900; color: #fff;
-        background: rgba(10, 12, 16, 0.85); border: 1px solid var(--bord); border-radius: 6px; cursor: pointer;
-    }
-    .db-carte-boutons button:disabled { opacity: 0.35; }
-    .db-carte-boutons .db-arts-bouton { width: auto; padding: 0 6px; color: var(--or); }
-    .db-arts-choix {
-        position: absolute; z-index: 5; left: 0; right: 0; top: 32px;
-        display: flex; gap: 6px; padding: 6px; border-radius: 8px;
-        background: rgba(10, 12, 16, 0.95); border: 1px solid var(--bord);
-    }
-    .db-arts-choix img { flex: 1 1 0; min-width: 0; cursor: pointer; opacity: 0.7; }
-    .db-arts-choix img.est-active { opacity: 1; outline: 3px solid var(--or); }
-    .db-arts-choix img.est-verrou { opacity: 0.3; cursor: not-allowed; }
-
-    /* Aperçu de la carte pointée.
-       Il vit EN HAUT du panneau de droite et y reste collé pendant qu'on fait
-       défiler le deck : on compare une carte à la liste sans perdre l'une des
-       deux. La place est réservée en permanence (--h-apercu) pour que le
-       panneau ne saute pas à chaque survol. */
-    #db-apercu {
-        position: sticky; top: 0; z-index: 2;
-        display: grid; place-items: center;
-        /* Assez haut pour qu'une carte PORTRAIT tienne en entier a la largeur
-           du panneau (ratio 225/326), plafonne pour qu'il reste de la place a
-           la liste du deck sur un ecran bas. */
-        height: min(calc((380px - 26px) * 326 / 225), 52dvh);
-        margin: 0 0 10px;
-        background: rgba(0, 0, 0, 0.25); border: 1px solid var(--bord); border-radius: 10px;
-        overflow: hidden;
-    }
-    #db-apercu img {
-        /* `min-*: 0` D'ABORD : un élément de grille a un plancher implicite à sa
-           taille intrinsèque (min-height: auto), et sans le lever l'image
-           imposait ses 510 px de haut à une zone qui en fait 374 — mesuré.
-           `object-fit` ensuite : une manigance est en paysage, et c'est ce qui
-           la fait tenir sans la déformer ni la rogner. */
-        min-width: 0; min-height: 0;
-        width: 100%; height: 100%; object-fit: contain;
-        border-radius: 8px; filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
-    }
-    #db-apercu .db-apercu-cadre {
-        position: relative; height: 100%; width: fit-content; max-width: 100%; min-height: 0;
-        border-radius: 8px; overflow: hidden; filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
-    }
-    #db-apercu .db-apercu-cadre img {
-        display: block; height: 100%; width: auto; max-width: 100%; object-fit: contain;
-        filter: none; border-radius: 0;
-    }
-    #db-apercu .db-apercu-vide {
-        padding: 0 18px; font-size: 0.76rem; color: var(--sourdine); text-align: center;
-    }
-
-    /* Panneau deck */
-    .db-deck-tete { display: grid; gap: 2px; margin-bottom: 8px; }
-    .db-deck-tete b { font-size: 1.05rem; }
-    .db-deck-tete span { font-size: 0.76rem; color: var(--sourdine); }
-    .db-aspects { color: var(--or) !important; font-weight: 800; }
-    .db-deck-lignes { display: grid; gap: 3px; max-height: calc(100dvh - 420px); overflow-y: auto; }
-    .db-ligne {
-        display: flex; align-items: center; gap: 7px; padding: 5px 8px;
-        font-size: 0.8rem; background: #1a1e27; border-radius: 7px; cursor: pointer;
-    }
-    .db-ligne:hover { background: #232a36; }
-    .db-ligne-nom { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-    .db-ligne-type { margin-left: auto; font-size: 0.66rem; color: var(--sourdine); text-transform: uppercase; }
-    .db-vide { color: var(--sourdine); }
-    .db-validation {
-        display: grid; gap: 3px; margin-top: 10px; padding: 9px 11px;
-        font-size: 0.76rem; font-weight: 700; color: #ffb4a8;
-        background: rgba(190, 60, 42, 0.14); border: 1px solid rgba(255, 120, 96, 0.35); border-radius: 9px;
-    }
-    .db-validation.est-ok { color: #9ff0c0; background: rgba(52, 160, 96, 0.14); border-color: rgba(96, 220, 150, 0.4); }
-
-    /* Statistiques du deck */
-    .db-stats { display: grid; gap: 8px; margin: 10px 0; padding: 10px;
-        background: rgba(255,255,255,.04); border: 1px solid #444; border-radius: 8px; }
-    .db-stats-titre { font-size: .68rem; text-transform: uppercase; letter-spacing: .06em;
-        color: var(--sourdine); margin-right: 8px; }
-    .db-stat-barres { display: flex; gap: 10px; align-items: flex-end; height: 64px; margin-top: 4px; }
-    .db-stat-barre { position: relative; width: 34px; height: 100%; display: flex;
-        flex-direction: column; justify-content: flex-end; align-items: center;
-        background: rgba(255,255,255,.05); border-radius: 5px; overflow: hidden; }
-    .db-stat-remplissage { position: absolute; bottom: 0; left: 0; right: 0;
-        background: #b3202b; border-radius: 5px 5px 0 0; }
-    .db-stat-barre b { position: relative; font-size: .75rem; }
-    .db-stat-barre span { position: relative; font-size: .66rem; color: var(--sourdine); }
-    .db-stats-ressources, .db-stats-types { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-    .db-stat-res { padding: 2px 8px; border-radius: 999px; font-size: .72rem; font-weight: 700;
-        border: 1px solid var(--res); color: var(--res); display: inline-flex; align-items: center; gap: 4px; }
-
-    /* Les icônes de ressources du jeu (police ChampionsIcons : P poing, M
-       cerveau, E éclair, W étoile), colorées par ressource. Demande de
-       l'utilisateur, 7 septembre 2026 : des icônes, plus des mots ni des lettres. */
-    @font-face { font-family: "ChampionsIcons"; src: url("/public/fonts/ChampionsIcons.ttf") format("truetype"); font-display: swap; }
-    .icone-res { font-family: "ChampionsIcons"; font-style: normal; font-size: 1.15em; line-height: 1;
-        color: var(--res, #fff);
-        /* Un trait de la meme couleur, plus fonce, autour du dessin (demande de
-           l'utilisateur) : `paint-order` peint le trait SOUS le remplissage. */
-        -webkit-text-stroke: .06em color-mix(in srgb, var(--res, #fff) 55%, #000);
-        paint-order: stroke fill;
-        text-shadow: 0 0 2px rgba(0, 0, 0, .6); }
-    .db-chip-res { display: inline-flex; align-items: center; gap: 6px; }
-    .db-chip-res .icone-res { font-size: 1.3em; }
-    .db-chip-res.est-actif { border-color: var(--or); }
-    .db-carte-res { display: inline-flex; gap: 2px; margin-left: auto; }
-    .db-carte-res .icone-res { font-size: 1em; }
-    .db-stat-type { padding: 2px 8px; border-radius: 999px; font-size: .72rem;
-        border: 1px solid #555; color: var(--sourdine); }
-
-</style>
+    <link rel="stylesheet" href="/public/css/font-awesome.css">
+    <link rel="stylesheet" href="/public/css/prepare/prepare.css?v=6f2394cf">
+    <link rel="stylesheet" href="/public/css/deckbuilder.css?v=1">
     <link rel="stylesheet" href="/public/css/teinte-pages.css?v=1">
     <link rel="stylesheet" href="/public/css/affichage-sobre-pages.css?v=1">
     <script type="module" src="/public/js/teinte-page.js?v=1"></script>
 </head>
-<body>
-<header class="db-tete">
-    <a href="/prepare.html">← Préparation</a>
-    <span class="db-titre">Éditeur de deck</span>
-    <select id="db-hero"></select>
-    <input id="db-nom" type="text" placeholder="Nom du deck…">
-    <div class="db-boutons">
-        <span id="db-status"></span>
-        <button id="db-save-draft" title="Sauver un brouillon dans ce navigateur">Sauver le brouillon</button>
-        <button id="db-export" title="Télécharger le deck en fichier JSON">Exporter</button>
-        <button id="db-save-game" disabled title="Sauvegarder dans le jeu (apparaît dans la préparation)">Sauvegarder dans le jeu</button>
-    </div>
-</header>
-<main>
-    <section class="db-panneau">
-        <div id="db-sources"></div>
-        <div id="db-brouillons"></div>
-        <div id="db-filtres"></div>
-        <div id="db-grille-info"></div>
+<body class="db-body">
+<header class="progress db-entete" id="db-entete"></header>
+<main class="db-page">
+    <aside class="db-col db-filtres-col" id="db-filtres-col">
+        <nav class="db-rail" id="db-rail"></nav>
+        <div class="db-filtres-corps">
+            <div class="db-ftete">
+                <span class="mvl db-ftitre" id="db-ftitre">Filtres</span>
+                <button type="button" class="db-replier" id="db-replier">« Replier</button>
+                <button type="button" class="db-fermer-panneau" data-fermer="filtres" aria-label="Fermer">✕</button>
+            </div>
+            <div id="db-filtres"></div>
+        </div>
+    </aside>
+    <section class="db-col db-centre">
+        <div id="db-legacy-zone"></div>
+        <div class="db-barre">
+            <label class="db-recherche-zone">
+                <input id="db-recherche" class="db-recherche" type="search" autocomplete="off">
+                <kbd>/</kbd>
+            </label>
+            <button type="button" class="db-aide" id="db-aide" aria-expanded="false">?</button>
+            <label class="db-tri"><span id="db-tri-libelle">Tri :</span> <select id="db-tri-grille"></select></label>
+        </div>
+        <div class="db-aide-texte" id="db-aide-texte" hidden></div>
+        <div class="db-info" id="db-info">
+            <span id="db-grille-info"></span>
+            <span class="db-etiquettes" id="db-etiquettes"></span>
+            <span class="db-astuce" id="db-astuce"></span>
+        </div>
         <div id="db-grille"></div>
     </section>
-    <aside class="db-panneau">
-        <figure id="db-apercu"></figure>
+    <aside class="db-col db-deck-col" id="db-deck-col">
+        <div class="db-dtete">
+            <input id="db-nom" class="db-nom" type="text">
+            <button type="button" class="db-ico" id="db-save-game"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+            <button type="button" class="db-ico" id="db-export"><i class="fa fa-download" aria-hidden="true"></i></button>
+            <button type="button" class="db-ico" id="db-import"><i class="fa fa-upload" aria-hidden="true"></i></button>
+            <input type="file" id="db-import-fichier" accept=".json,application/json" hidden>
+            <button type="button" class="db-fermer-panneau" data-fermer="deck" aria-label="Fermer">✕</button>
+        </div>
+        <label class="db-partir"><span id="db-partir-libelle">Partir de :</span> <select id="db-partir"></select></label>
+        <div id="db-status" role="status"></div>
+        <div class="db-apercu-zone">
+            <figure id="db-apercu"></figure>
+            <div class="db-arts" id="db-arts"></div>
+        </div>
+        <div id="db-resume"></div>
+        <div class="db-onglets" id="db-onglets" role="tablist"></div>
         <div id="db-deck"></div>
     </aside>
 </main>
-<script type="module" src="/public/js/deckbuilder/app.js"></script>
+<div class="db-basmob">
+    <button type="button" id="db-mob-filtres"></button>
+    <button type="button" id="db-mob-deck" class="db-mob-deck"></button>
+</div>
+<div class="db-modale" id="db-modale" hidden></div>
+<script type="module" src="/public/js/deckbuilder/app.js?v=2"></script>
 </body>
 </html>

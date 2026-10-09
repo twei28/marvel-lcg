@@ -11,6 +11,8 @@ test('deckbuilder : la traduction se pose sur un scan fan-made anglais', async (
   await page.evaluate(() => localStorage.setItem('marvel-langue', 'fr'))
   await page.reload()
   await page.waitForSelector('.db-chip', { timeout: 30000 })
+  // mw028 est fan-made : caché tant que l'interrupteur n'est pas mis.
+  await page.locator('.db-inter').click()
   await page.locator('.db-recherche').fill('Advice')
   await page.locator('#db-grille [data-carte="mw028"] img').hover()
   const pose = page.locator('#db-apercu .traduction-posee')

@@ -21,6 +21,8 @@ const NON_ASPECTS = new Set([
 test('chaque aspect present dans les donnees a sa puce dans l editeur', async ({ page }) => {
   await page.goto('/deck-builder.html?hero=spider_man');
   await page.waitForSelector('.db-chip', { timeout: 30000 });
+  // Les aspects fan-made ne sont proposés qu'avec l'interrupteur « fan-made ».
+  await page.locator('.db-inter').click();
 
   // Les aspects vus par les DONNEES, pas par une liste ecrite ici.
   const aspects: string[] = await page.evaluate(async () => {
@@ -44,15 +46,14 @@ test('chaque aspect present dans les donnees a sa puce dans l editeur', async ({
 
   // Seules les puces d'ASPECT : la meme classe CSS sert aux sources de cartes
   // (« Vide », « Base : Spider-Man ») et aux types.
-  const puces = (await page.locator('.db-chip[class*="aspect-"]').allInnerTexts())
-    .map((s) => s.trim());
+  // `data-aspect` porte la classe du moteur : le libellé, lui, est traduit.
+  const puces = await page.locator('.db-chip[data-aspect]').evaluateAll(
+    (n) => n.map((x) => x.getAttribute('data-aspect') || ''));
   console.log('ASPECTS DANS LES DONNEES :', attendus.join(', '));
   console.log('PUCES DE L EDITEUR       :', puces.join(', '));
 
   for (const aspect of attendus) {
-    // « 'Pool » s'affiche sans son apostrophe (labelAspect).
-    const libelle = aspect.replace(/^'/, '');
-    expect(puces, `l'aspect ${aspect} n'a pas de puce dans l'editeur`).toContain(libelle);
+    expect(puces, `l'aspect ${aspect} n'a pas de puce dans l'editeur`).toContain(aspect);
   }
 });
 
@@ -62,16 +63,13 @@ test('filtrer sur Determination montre des cartes choisissables', async ({ page 
 
   await page.goto('/deck-builder.html?hero=spider_man');
   await page.waitForSelector('.db-chip', { timeout: 30000 });
-  await page.getByRole('button', { name: 'Determination', exact: true }).click();
-
-  const compte = page.locator('.db-grille-compte, .db-compte').first();
+  await page.locator('.db-inter').click();
+  await page.locator('.db-chip[data-aspect="Determination"]').click();
   await page.waitForTimeout(1000);
-  const texte = await page.locator('body').innerText();
 
   // Le nombre grandira a chaque lot : on demande qu'il y en ait, pas combien.
-  const trouve = texte.match(/(\d+)\s+carte\(s\)/);
-  expect(trouve, 'le compte de cartes filtrees est introuvable').not.toBeNull();
-  console.log('CARTES DETERMINATION PROPOSEES :', trouve![1]);
-  expect(Number(trouve![1])).toBeGreaterThanOrEqual(20);
+  const trouve = Number((await page.locator('#db-grille-info b').innerText()).trim());
+  console.log('CARTES DETERMINATION PROPOSEES :', trouve);
+  expect(trouve).toBeGreaterThanOrEqual(20);
   expect(erreurs.join(' | '), 'erreur JS dans l editeur').toBe('');
 });

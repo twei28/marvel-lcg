@@ -35,7 +35,9 @@ import { expect, test } from '@playwright/test';
 const ECRANS: Array<{ url: string; minimum: number }> = [
   { url: '/prepare.html?ui=new', minimum: 300 },
   { url: '/galerie.html', minimum: 1000 },
-  { url: '/deck-builder.html', minimum: 2000 },
+  // Depuis la refonte du 09/10/2026, la grille ne répète plus le nom sous chaque
+  // scan : la page vivante affiche environ 1 900 caractères (filtres, packs).
+  { url: '/deck-builder.html', minimum: 1000 },
   { url: '/salon.html?p=1', minimum: 300 },
 ]
 

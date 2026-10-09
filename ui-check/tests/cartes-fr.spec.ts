@@ -40,13 +40,15 @@ test('l editeur de deck cherche et affiche en francais', async ({ page }) => {
 
   await page.goto('/deck-builder.html?hero=spider_man');
   await page.waitForSelector('.db-chip', { timeout: 30000 });
+  // Determination est fan-made : caché tant que l'interrupteur n'est pas mis.
+  await page.locator('.db-inter').click();
 
-  // La recherche doit trouver le mot FRANCAIS, celui que le joueur lit.
+  // La recherche doit trouver le mot FRANCAIS, celui que le joueur lit. La
+  // grille ne répète plus le nom sous le scan : il est dans le texte de l'image.
   await page.locator('.db-recherche').first().fill('Escouade');
   await page.waitForTimeout(1000);
 
-  const texte = await page.locator('body').innerText();
-  expect(texte, 'la recherche francaise ne trouve pas la carte')
-    .toContain('Escouade de mercenaires');
+  await expect(page.locator('#db-grille .db-carte img[alt="Escouade de mercenaires"]'),
+    'la recherche francaise ne trouve pas la carte').toHaveCount(1);
   expect(erreurs.join(' | ')).toBe('');
 });

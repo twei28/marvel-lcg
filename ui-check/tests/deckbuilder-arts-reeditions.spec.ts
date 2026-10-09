@@ -1,5 +1,7 @@
 // L'editeur de deck montre les illustrations des cartes reimprimees avec un
-// autre art (arts-reeditions.js) et laisse choisir celle du deck.
+// autre art (arts-reeditions.js) et laisse choisir celle du deck. Depuis la
+// refonte du 09/10/2026, le choix se fait par les vignettes « ARTS » posees a
+// cote de l'apercu.
 import { test, expect } from '@playwright/test';
 
 test('choisir l illustration d une carte reimprimee', async ({ page }) => {
@@ -14,21 +16,20 @@ test('choisir l illustration d une carte reimprimee', async ({ page }) => {
 
   const tuile = page.locator('#db-grille .db-carte').first();
   await expect(tuile).toHaveAttribute('data-carte', '01072');
-  await tuile.locator('.db-arts-bouton').click();
-  const choix = page.locator('.db-arts-choix img');
+  await tuile.hover();
+  const choix = page.locator('#db-arts img');
   await expect(choix).toHaveCount(2);
   await page.screenshot({ path: 'test-results/arts-reeditions-choix.png' });
 
   // Une copie dans le deck, puis on passe sur l'autre art : la copie suit.
-  await page.locator('#db-grille .db-carte').first().locator('.db-carte-boutons button', { hasText: '+' }).click();
+  await tuile.locator('button[data-action="plus"]').click();
   await expect(page.locator('#db-deck .db-ligne[data-carte="01072"]')).toHaveCount(1);
-  // Le choix reste ouvert apres l'ajout.
-  await page.locator('.db-arts-choix img').nth(1).click();
+  await page.locator('#db-arts img[data-version="45019"]').click();
   await expect(page.locator('#db-grille .db-carte').first()).toHaveAttribute('data-carte', '45019');
   await expect(page.locator('#db-deck .db-ligne[data-carte="45019"]')).toHaveCount(1);
   await expect(page.locator('#db-deck .db-ligne[data-carte="01072"]')).toHaveCount(0);
-  await expect(page.locator('#db-deck .db-ligne[data-carte="45019"] b')).toHaveText('x1');
-  await page.locator('#db-grille .db-carte').first().locator('.db-arts-bouton').click();
+  await expect(page.locator('#db-deck .db-ligne[data-carte="45019"] .db-ligne-n')).toHaveText('×1');
+  await expect(page.locator('#db-arts img.est-active')).toHaveAttribute('data-version', '45019');
   await page.waitForTimeout(1500);
   await page.locator('#db-grille').screenshot({ path: 'test-results/arts-reeditions-apres.png' });
   expect(erreurs.join(' | '), 'erreur JS dans l editeur').toBe('');
@@ -42,5 +43,6 @@ test('en francais, pas de choix d illustration (scans FR identiques)', async ({ 
   await page.locator('.db-recherche').fill('Power of Leadership');
   await page.waitForTimeout(500);
   await expect(page.locator('#db-grille .db-carte')).toHaveCount(1);
-  await expect(page.locator('.db-arts-bouton')).toHaveCount(0);
+  await page.locator('#db-grille .db-carte').first().hover();
+  await expect(page.locator('#db-arts img')).toHaveCount(0);
 });
