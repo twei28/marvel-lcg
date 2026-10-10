@@ -7,7 +7,13 @@
 // L'original faisait exactement cela (scene 1920x1080, scale(min(vw/1920,
 // vh/1080)), voir public/js/marvel/scene.js).
 
-import { DISPOSITION_ORIGINE, styleDeGrille, styleDeZone as tailleDeZone, type Disposition } from './table-briques'
+import {
+  DISPOSITION_ORIGINE,
+  elargirManigancePrincipale,
+  styleDeGrille,
+  styleDeZone as tailleDeZone,
+  type Disposition,
+} from './table-briques'
 import { ACCOMPAGNEMENT, assemblerZones } from './table-rendu'
 import { useNomsZones } from './noms-zones'
 import {
@@ -1328,13 +1334,21 @@ export function Board({
 
   // Le nom donne par le joueur (Modifier la table, double-clic) remplace le titre automatique.
   const nomsZones = useNomsZones()
+  // Plusieurs manigances principales cote a cote : la zone principale prend ses
+  // cases sur les annexes (table-briques.ts, `elargirManigancePrincipale`).
+  const nombrePrincipales =
+    plateau.emplacements.find((e) => e.cle === 'complot-principal')?.groupes.flat().length ?? 0
+  const dispositionAffichee = useMemo(
+    () => elargirManigancePrincipale(disposition, nombrePrincipales, SCENE.largeur),
+    [disposition, nombrePrincipales]
+  )
   const zonesRendues = useMemo(
     () =>
-      (bandeManigances ? assemblerZones(plateau, disposition) : []).map((rendue) => {
+      (bandeManigances ? assemblerZones(plateau, dispositionAffichee) : []).map((rendue) => {
         const nom = nomsZones[rendue.aire]
         return nom && rendue.emplacement ? { ...rendue, emplacement: { ...rendue.emplacement, titre: nom } } : rendue
       }),
-    [bandeManigances, plateau, disposition, nomsZones]
+    [bandeManigances, plateau, dispositionAffichee, nomsZones]
   )
   const unEmplacement = (e: EmplacementAffiche, styleDeZone?: CSSProperties, aire?: string) => (
     <Emplacement
@@ -1446,7 +1460,7 @@ export function Board({
               height: `${hauteur}px`,
               // La grille vient des DONNEES (disposition.ts) : a l'origine, la
               // meme que bande-manigances.css.
-              ...(bandeManigances ? styleDeGrille(disposition) : {}),
+              ...(bandeManigances ? styleDeGrille(dispositionAffichee) : {}),
             } as CSSProperties
           }
         >

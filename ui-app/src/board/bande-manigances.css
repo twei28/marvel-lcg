@@ -54,6 +54,20 @@
   --mc-zoom-origine: left top;
 }
 
+/* PLUSIEURS MANIGANCES PRINCIPALES COTE A COTE (10/10/2026, Tower Defense) :
+   elles restent sur UNE ligne, a leur taille ; la colonne `auto` s'elargit
+   d'autant et la place vient des annexes (`minmax(0, 1fr)`), qui se
+   chevauchent alors en eventail. Sur une table personnalisee, la zone gagne
+   ses cases par `elargirManigancePrincipale` (table-briques.ts). */
+.plateau-scene.avec-bande .zone-complot-principal .plateau-cartes,
+.plateau-scene.avec-bande .zone-complot-principal .plateau-groupe {
+  flex-wrap: nowrap;
+}
+
+.plateau-scene.avec-bande .zone-complot-principal .plateau-unite {
+  flex-shrink: 0;
+}
+
 /* La bande alignee sur le CENTRE du mechant : les trois cases centrent leurs
    cartes sur la meme ligne. */
 .plateau-scene.avec-bande .zone-rencontre,

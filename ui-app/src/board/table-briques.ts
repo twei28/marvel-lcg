@@ -198,6 +198,41 @@ export function styleDeGrille(disposition: Disposition): Record<string, string> 
 
 export const GRILLE = { colonnes: 12, lignes: 8 }
 
+/** Une manigance principale posee en paysage (176 px), son liseré et l'ecart. */
+export const LARGEUR_MANIGANCE_PRINCIPALE = 210
+
+/**
+ * PLUSIEURS MANIGANCES PRINCIPALES COTE A COTE (10/10/2026, Tower Defense) : sur
+ * une table personnalisee, la zone principale gagne les cases qui lui manquent
+ * sur celle des annexes, quand celle-ci la jouxte sur les memes rangees. Calcule
+ * au rendu, rien n'est enregistre : quand une principale quitte le jeu, la table
+ * du joueur revient d'elle-meme. La table d'origine, elle, s'elargit par sa
+ * colonne `auto` (bande-manigances.css).
+ */
+export function elargirManigancePrincipale(d: Disposition, nombre: number, largeurScene: number): Disposition {
+  if (d === DISPOSITION_ORIGINE || nombre <= 1) return d
+  const principale = zoneDe(d, 'manigance-principale')
+  const annexes = zoneDe(d, 'manigances-annexes')
+  if (!principale || !annexes || principale === annexes) return d
+  if (principale.ligne !== annexes.ligne || principale.hauteur !== annexes.hauteur) return d
+  const caseL = largeurScene / d.colonnes
+  const seule = principale.briques.length === 1
+  const voulu = seule
+    ? Math.ceil((nombre * LARGEUR_MANIGANCE_PRINCIPALE) / caseL)
+    : principale.largeur + Math.ceil(((nombre - 1) * LARGEUR_MANIGANCE_PRINCIPALE) / caseL)
+  const prendre = Math.min(voulu - principale.largeur, annexes.largeur - 1)
+  if (prendre <= 0) return d
+  const aDroite = annexes.col === principale.col + principale.largeur
+  const aGauche = annexes.col + annexes.largeur === principale.col
+  if (!aDroite && !aGauche) return d
+  const zones = d.zones.map((z) => {
+    if (z === principale) return { ...z, largeur: z.largeur + prendre, col: aGauche ? z.col - prendre : z.col }
+    if (z === annexes) return { ...z, largeur: z.largeur - prendre, col: aDroite ? z.col + prendre : z.col }
+    return z
+  })
+  return { ...d, zones }
+}
+
 const MINIMUM_EPINGLEE: Partial<Record<CleBrique, { largeur: number; hauteur: number }>> = {
   'piles-rencontre': { largeur: 1, hauteur: 2 },
   'piles-joueur': { largeur: 1, hauteur: 2 },
