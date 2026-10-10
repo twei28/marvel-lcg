@@ -84,6 +84,21 @@ DICO_EN: dict[str, str] = {
         "the game down erases nothing. Your guests join your table through "
         "their own link, no account needed. Automatic shutdown after {heures} "
         "h of uptime.",
+    # La mention legale (10/10/2026), texte valide mot pour mot.
+    "Projet de fans non officiel · Marvel Champions © Fantasy Flight Games "
+    "(Asmodee) · Personnages © Marvel · Il faut posséder le jeu pour jouer":
+        "Unofficial fan project · Marvel Champions © Fantasy Flight Games "
+        "(Asmodee) · Characters © Marvel · You must own the game to play",
+    "Projet de fans, gratuit et non officiel. Marvel Champions: The Card Game "
+    "est un jeu de Fantasy Flight Games (Asmodee). Les personnages et "
+    "illustrations Marvel appartiennent à Marvel. Ce site n'est ni affilié à "
+    "ces sociétés ni approuvé par elles. Il sert de vitrine et d'outil de "
+    "jeu : il faut posséder le jeu pour l'utiliser.":
+        "Unofficial, free fan project. Marvel Champions: The Card Game is a "
+        "game by Fantasy Flight Games (Asmodee). Marvel characters and artwork "
+        "belong to Marvel. This site is not affiliated with or endorsed by "
+        "these companies. It is a showcase and play tool: you must own the "
+        "game to use it.",
 
     # --- Connexion et inscription -------------------------------------------
     "Se connecter": "Sign in",

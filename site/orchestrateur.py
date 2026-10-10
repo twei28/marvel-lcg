@@ -3094,6 +3094,7 @@ PAGE = """<!doctype html>
   .avert {{ border:1px solid #9e6a03; background:#1d1a0e; color:var(--warn);
            border-radius:0; padding:.7rem .9rem; margin-bottom:1.5rem; font-size:.9rem; }}
   footer {{ margin-top:2.5rem; color:#5b6270; font-size:.85rem; }}
+  footer .mention-legale {{ display:block; margin-top:.9rem; font-size:.75rem; }}
   /* ===== TELEPHONE (zone 2 de la refonte du 09/10/2026, fiche
      .planning/todos/2026-10-09-mode-telephone-refonte.md) ====================
      Sous 768 px : une barre fine (logo + burger), le menu se deroule dessous,
@@ -3154,7 +3155,22 @@ def _pied_de_page() -> str:
         "hauts faits t'y attendent d'une fois sur l'autre. Eteindre le jeu "
         "n'efface rien. Tes invites, eux, rejoignent ta partie par leur lien "
         "sans avoir besoin d'un compte. Extinction automatique au bout de "
-        "{heures} h d'allumage.").replace("{heures}", str(int(DUREE_MAX_HEURES)))
+        "{heures} h d'allumage.").replace("{heures}", str(int(DUREE_MAX_HEURES))) \
+        + '<span class="mention-legale">%s</span>' % _mention_courte()
+
+
+def _mention_courte() -> str:
+    """La mention legale en une ligne (10/10/2026, texte valide mot pour mot
+    par l'utilisateur : ne pas le reformuler). Jumelle de
+    public/js/mention-legale.js, cote jeu."""
+    return lang.t("Projet de fans non officiel · Marvel Champions © Fantasy Flight Games (Asmodee) · Personnages © Marvel · Il faut posséder le jeu pour jouer")
+
+
+def _mention_complete() -> str:
+    """La mention legale entiere, sur les pages de connexion et d'inscription."""
+    return lang.t("Projet de fans, gratuit et non officiel. Marvel Champions: The Card Game est un jeu de Fantasy Flight Games (Asmodee). "
+                  "Les personnages et illustrations Marvel appartiennent à Marvel. Ce site n'est ni affilié à ces sociétés ni approuvé par elles. "
+                  "Il sert de vitrine et d'outil de jeu : il faut posséder le jeu pour l'utiliser.")
 
 
 def _bouton_langue() -> str:
@@ -3485,6 +3501,7 @@ PAGE_ACTIVITE_DISCORD = """<!doctype html>
              border-radius:.5rem; padding:.8rem; }}
   a.bouton.principal {{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }}
   a.bouton:hover {{ filter:brightness(1.12); }}
+  .mention-legale {{ color:#5b6270; font-size:.75rem; line-height:1.5; margin:1.2rem .1rem 0; }}
 </style>
 <main>
   <div class="marque"><img src="/narwhal.png" alt="" width="512" height="512"><h1>{titre}</h1></div>
@@ -3492,6 +3509,7 @@ PAGE_ACTIVITE_DISCORD = """<!doctype html>
     <p>{texte}</p>
     {corps}
   </div>
+  <p class="mention-legale">{mention}</p>
 </main>
 """
 
@@ -3517,7 +3535,7 @@ def page_activite_discord_participant(hote: str, instance_id: str, prete: bool) 
         texte = lang.t("La table de {hote} n'est pas encore prete. Cette page "
                        "reessaie toute seule.").replace("{hote}", html.escape(hote))
         corps = '<script>setTimeout(function(){location.reload();},3000);</script>'
-        return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps=corps).encode("utf-8")
+        return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps=corps, mention=_mention_courte()).encode("utf-8")
 
     # `da` en query, pas un cookie pose en JS : meme raison que cote hote
     # (`_activite_discord`) -- ce qui survit fiablement au POST /connexion
@@ -3535,14 +3553,14 @@ def page_activite_discord_participant(hote: str, instance_id: str, prete: bool) 
              '</div>'
              % (html.escape(lien_connexion), lang.t("J’ai un compte"),
                 html.escape(lien_invite), lang.t("Je suis invite")))
-    return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps=corps).encode("utf-8")
+    return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps=corps, mention=_mention_courte()).encode("utf-8")
 
 
 def page_activite_discord_complete(hote: str) -> bytes:
     titre = lang.t("Table complete")
     texte = lang.t("La table de {hote} n'a plus de siege libre.").replace(
         "{hote}", html.escape(hote))
-    return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps="").encode("utf-8")
+    return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps="", mention=_mention_courte()).encode("utf-8")
 
 
 # ⚠ LE SDK EST UNE COPIE LOCALE (`site/discord-sdk.mjs`, servie en
@@ -3662,6 +3680,7 @@ PAGE_FORMULAIRE = """<!doctype html>
   .erreur {{ border:1px solid var(--danger); background:#1d1113; color:#ff7b72;
             border-radius:.5rem; padding:.7rem .9rem; margin-bottom:1.2rem; font-size:.9rem; }}
   p {{ color:var(--muted); font-size:.85rem; line-height:1.6; margin:1.2rem .1rem 0; }}
+  p.mention-legale {{ color:#5b6270; font-size:.75rem; }}
   a {{ color:var(--accent); }}
   /* TELEPHONE (zone 2 de la refonte du 09/10/2026) : un bandeau fin colle en
      haut, le formulaire juste dessous (plus centre dans l'ecran), champs et
@@ -3694,6 +3713,7 @@ PAGE_FORMULAIRE = """<!doctype html>
     </form>
   </div>
   <p>{pied}</p>
+  <p class="mention-legale">{mention}</p>
   {bouton_appli}
 </main>
 <script>(function(){{
@@ -5357,7 +5377,7 @@ class Handler(BaseHTTPRequestHandler):
             mdp=lang.t("Mot de passe"),
             champs=champs,
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
-            bouton_appli=_bouton_appli(),
+            bouton_appli=_bouton_appli(), mention=_mention_complete(),
             pied=((lang.t("Tu es invite : ton compte sera actif tout de suite.")
                    if invitation_valide(jeton) else
                    lang.t("Ton compte devra etre valide a la main avant de servir."))
@@ -5382,7 +5402,7 @@ class Handler(BaseHTTPRequestHandler):
             mdp=lang.t("Mot de passe"),
             champs='<input type="hidden" name="r" value="%s">' % html.escape(jeton),
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
-            bouton_appli=_bouton_appli(),
+            bouton_appli=_bouton_appli(), mention=_mention_complete(),
             pied=lang.t("Huit caracteres au minimum. Tes sessions ouvertes seront fermees.")
                  + ' ' + lang.t('<a href="/connexion">Se connecter</a>.'),
         ).encode("utf-8")
@@ -6273,7 +6293,7 @@ class Handler(BaseHTTPRequestHandler):
                 titre=lang.t("Demande enregistree"), action="/connexion",
                 bouton=lang.t("Entrer"), auto="current-password", erreur="",
                 mdp=lang.t("Mot de passe"),
-                bouton_appli=_bouton_appli(),
+                bouton_appli=_bouton_appli(), mention=_mention_complete(),
                 champs='<label>%s<input name="pseudo" '
                        'autocomplete="username" required></label>'
                        % lang.t("Pseudo ou adresse e-mail"),
@@ -6295,7 +6315,7 @@ class Handler(BaseHTTPRequestHandler):
                 champs='<label>%s<input name="pseudo" '
                        'autocomplete="username" value="%s" required></label>'
                        % (lang.t("Pseudo ou adresse e-mail"), html.escape(qui)),
-                bouton_appli=_bouton_appli(),
+                bouton_appli=_bouton_appli(), mention=_mention_complete(),
                 pied=lang.t("Ton nouveau mot de passe est en place : connecte-toi.")).encode("utf-8"))
 
         elif self.chemin == "/connexion":
