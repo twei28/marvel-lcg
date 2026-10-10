@@ -17,6 +17,7 @@ import { useState, type ReactElement, type ReactNode } from 'react'
 import { libellePhase, libelleRound } from '../etat-partie'
 import { t } from '../langue'
 import type { World } from '../world'
+import { installer, useInstallable } from './installation'
 
 export type ActionPrincipale = { libelle: string; suggere?: boolean; agir: () => void }
 
@@ -32,6 +33,7 @@ export function BandeauPortrait({
   actionPrincipale?: ActionPrincipale
 }): ReactElement {
   const [menuOuvert, setMenuOuvert] = useState(false)
+  const installable = useInstallable()
   return (
     <header className="portrait-bandeau">
       <div className="portrait-bandeau-etat" role="status">
@@ -71,6 +73,20 @@ export function BandeauPortrait({
           <nav className="portrait-menu" aria-label={t('Menu')}>
             <span className="portrait-menu-poignee" aria-hidden="true" />
             {menu}
+            {/* Discret, au fond du menu, et seulement quand le navigateur
+                accepte d'installer (zone 3, installation.ts). */}
+            {installable ? (
+              <button
+                type="button"
+                className="portrait-installer"
+                onClick={() => {
+                  setMenuOuvert(false)
+                  void installer()
+                }}
+              >
+                <span aria-hidden="true">⤓</span> {t('Installer l’application')}
+              </button>
+            ) : null}
           </nav>
         </>
       ) : null}

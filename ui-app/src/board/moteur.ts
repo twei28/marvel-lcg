@@ -730,7 +730,13 @@ export async function envoyerReponse(playerId: number, reponse: Reponse | null):
     headers: { 'Content-type': 'application/x-www-form-urlencoded' },
     body: corps,
   })
+  // Le telephone (zone 3, 10/10/2026) ecoute ce signal : vibration de
+  // validation et bandeau « Annuler ». Le plateau PC ne l'ecoute pas.
+  window.dispatchEvent(new CustomEvent(EVENEMENT_REPONSE_ENVOYEE))
 }
+
+/** Emis sur `window` apres chaque reponse envoyee au moteur (`envoyerReponse`). */
+export const EVENEMENT_REPONSE_ENVOYEE = 'marvel:reponse-envoyee'
 
 /**
  * Pendant la phase ennemie, on ne s'arrete (Continue) que sur les evenements

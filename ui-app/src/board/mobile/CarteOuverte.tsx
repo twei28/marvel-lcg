@@ -16,11 +16,14 @@ export function CarteOuverte({
   attachees = [],
   onOuvrirAttachee,
   onFermer,
+  libelleAction,
 }: {
   carte: ScanCardProps
   attachees?: ScanCardProps[]
   onOuvrirAttachee?: (carte: ScanCardProps) => void
   onFermer: () => void
+  /** Le libelle du bouton d'action : « Jouer » pour une carte de la main. */
+  libelleAction?: string
 }) {
   const appui = useAppuiLong(
     carte.onSelect
@@ -46,7 +49,9 @@ export function CarteOuverte({
           {/* Sans onSelect, ScanCard ne rend pas de bouton : la carte est ici
               une image à lire, l'action vit dans le maintien et dans le
               bandeau du dessous. */}
-          <ScanCard {...carte} onSelect={undefined} />
+          {/* Le scan COMPLET, pas la vignette de la table : agrandie a
+              320 px sur un ecran 3x, la vignette etait floue (zone 3). */}
+          <ScanCard {...carte} onSelect={undefined} taille="grande" />
         </div>
 
         {carte.onSelect ? (
@@ -80,7 +85,7 @@ export function CarteOuverte({
                 onFermer()
               }}
             >
-              {t('Utiliser cette carte')}
+              {libelleAction ?? t('Utiliser cette carte')}
             </button>
           ) : null}
           <button type="button" className="carte-ouverte-fermer" onClick={onFermer}>

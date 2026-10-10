@@ -12,7 +12,7 @@
 //
 // Il ne connait ni le descripteur du jeu ni les zones : c'est card-model.ts qui
 // traduit une carte de partie en props d'ici.
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { langueActuelle, t } from '../board/langue'
 import { libelleStatut } from '../board/effets-statuts'
 import { IMAGE_MORSURE } from './morsure'
@@ -158,6 +158,14 @@ export type CardEffectDelta =
  * est rendue telle quelle. Le serveur retombe sur le scan complet quand la
  * vignette manque, le navigateur n'a donc jamais a gerer un echec.
  */
+/**
+ * Le CHARGEMENT PARESSEUX des scans (zone 3 du telephone, 10/10/2026) : sous
+ * ce contexte, une carte hors de l'ecran (bout de bande, fond de main) ne
+ * charge son image qu'en approchant. Pose par le plateau en bandes seulement :
+ * le plateau PC charge comme avant.
+ */
+export const ImagesParesseuses = createContext(false)
+
 export function versVignette(url: string): string {
   // Une carte sans image (piles vides, tests) ne doit pas faire tomber le
   // plateau : on rend ce qu'on a recu, quoi que ce soit.
@@ -606,6 +614,7 @@ export function ScanCard({
   }, [facedown, imageUrl])
   const imageBrute = retournement?.phase === 'dos' ? retournement.dos : imageUrl
   const imageAffichee = taille === 'grande' ? imageBrute : versVignette(imageBrute)
+  const paresseuses = useContext(ImagesParesseuses)
   // Quand la bande porte deja le chiffre (« 8 / 12 »), la pastille ronde
   // n'a plus rien a dire : demande de l'utilisateur, 7 septembre 2026.
   const bandeChiffree = !facedown && jauge?.texte !== undefined
@@ -725,6 +734,8 @@ export function ScanCard({
               src={imageAffichee}
               alt=""
               draggable="false"
+              loading={paresseuses ? 'lazy' : undefined}
+              decoding={paresseuses ? 'async' : undefined}
               onError={(event) => {
                 event.currentTarget.dataset.missing = 'true'
               }}

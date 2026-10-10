@@ -26,6 +26,7 @@ class MimeType:
         '.bmp': 'image/bmp',
         '.webp': 'image/webp',
         '.ico': 'image/x-icon',
+        '.webmanifest': 'application/manifest+json',
         '.ai': 'application/postscript',
         '.apk': 'application/vnd.android.package-archive',
         '.bat': 'application/x-msdownload',

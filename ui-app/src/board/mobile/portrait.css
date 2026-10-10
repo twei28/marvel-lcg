@@ -192,6 +192,16 @@
   .portrait-menu .bh-vue .bh-bouton {
     width: auto;
   }
+  /* « Auto / Manuel » (InterrupteurFacon) : 20 px de haut, releve par le
+     filet de la zone 3 (plateau-telephone.spec.ts). Au doigt, 44. */
+  .portrait-menu .bh-facon {
+    align-self: flex-start;
+  }
+  .portrait-menu .bh-facon-choix {
+    min-height: 44px !important;
+    padding: 0 16px !important;
+    font-size: 0.9rem !important;
+  }
 
   /* --- La table et ses bandes ------------------------------------------ */
   .portrait-table {
@@ -292,25 +302,46 @@
   }
 
   /* --- Les encoches ------------------------------------------------------ */
+  /* FINES ET SEMI-TRANSPARENTES AU REPOS (zone 3, 10/10/2026) : le bouton
+     garde 44 px de large pour le doigt, mais ce qu'on VOIT est une languette
+     de 24 px collee au bord (.encoche-corps), a demi effacee tant qu'on ne la
+     touche pas. Elle couvrait jusque-la 48 px de la bande du heros. */
   .encoche {
     position: fixed;
     bottom: 22vh;
     z-index: 45;
     display: flex;
+    align-items: center;
+    width: 44px;
+    min-height: 72px;
+    padding: 0;
+    font: inherit;
+    color: #fff;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .encoche-corps {
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1px;
-    width: 48px;
+    gap: 4px;
+    width: 24px;
     min-height: 72px;
     padding: 6px 0;
-    font: inherit;
-    color: #fff;
     background: var(--cadre);
     border: 1px solid rgba(255, 255, 255, 0.28);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-    touch-action: none;
+    opacity: 0.55;
+  }
+  .encoche.est-touchee .encoche-corps,
+  .encoche.est-deplacee .encoche-corps,
+  .encoche:active .encoche-corps,
+  .encoche:focus-visible .encoche-corps {
+    opacity: 1;
   }
   /* Pendant qu'on fait defiler la table, les encoches s'effacent : elles se
      posent sur la bande du heros et cachaient une carte sous le doigt. */
@@ -319,36 +350,42 @@
     pointer-events: none;
   }
   .encoche {
-    transition: opacity 180ms ease;
     -webkit-user-select: none;
     user-select: none;
   }
   /* Languette saisie (appui long) : elle se leve et suit le doigt sans delai. */
-  .encoche.est-deplacee {
-    transition: none;
+  .encoche.est-deplacee .encoche-corps {
     transform: scale(1.08);
     border-color: var(--menace-clair);
     box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65);
   }
   .encoche-main {
     right: 0;
+    justify-content: flex-end;
+  }
+  .encoche-main .encoche-corps {
     border-right: none;
-    border-radius: 12px 0 0 12px;
+    border-radius: 10px 0 0 10px;
   }
   .encoche-piles {
     left: 0;
+    justify-content: flex-start;
+    font-size: 1rem;
+  }
+  .encoche-piles .encoche-corps {
     border-left: none;
-    border-radius: 0 12px 12px 0;
-    font-size: 1.3rem;
+    border-radius: 0 10px 10px 0;
   }
   .encoche-nombre {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 900;
     line-height: 1;
     color: var(--menace);
     font-variant-numeric: tabular-nums;
   }
   .encoche-libelle {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
     font-size: 0.55rem;
     font-weight: 800;
     letter-spacing: 0.08em;

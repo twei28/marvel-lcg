@@ -477,6 +477,25 @@ class WebServer:
 
         self.AddAwaitGetSecurity('/favicon.ico', handle_favicon)
 
+        # L'APPLICATION INSTALLEE DU TELEPHONE (zone 3, 10/10/2026) : manifeste,
+        # icones et service worker. SANS session ni controle de version : le
+        # navigateur les demande sans cookie quand il installe, et un manifeste
+        # remplace par la page « vide ton cache » rendrait le jeu ininstallable.
+        # Fichiers statiques et publics, sous public/pwa/ ; le motif n'accepte
+        # qu'un nom simple, jamais un chemin.
+        async def handle_pwa(request: web.Request):
+            return self.ReadFile(request.match_info['fichier'], ['./public/pwa'])
+
+        async def handle_service_worker(request: web.Request):
+            # A la RACINE du site : un service worker ne gouverne que les pages
+            # sous son propre chemin.
+            return self.ReadFile('sw-plateau.js', ['./public/pwa'])
+
+        self.AddAwaitGetSecurity(r'/pwa/{fichier:[a-z0-9-]+\.(?:png|webmanifest)}', handle_pwa,
+                                 need_auth=False, need_check_version=False)
+        self.AddAwaitGetSecurity('/sw-plateau.js', handle_service_worker,
+                                 need_auth=False, need_check_version=False)
+
         self.AddPost(r'/authenticate', handle_authenticate)
         self.AddAwaitGetSecurity(r'/get_version', handle_get_version, need_auth=False, need_check_version=False)
 

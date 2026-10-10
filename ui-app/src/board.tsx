@@ -64,6 +64,9 @@ import {
 } from './board/glisser/cibles'
 import { PlateauMobile } from './board/mobile/PlateauMobile'
 import { useModeMobile, type ReglageMode } from './board/mobile/useModeMobile'
+import { useEcranAllume, useEstTelephone, useVerrouPortrait, useVibrationsDePartie } from './board/mobile/telephone'
+import { useReglagesTelephone } from './board/mobile/reglages-telephone'
+import { EcranTourne } from './board/mobile/EcranTourne'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
 import { CoucheRevelation } from './board/CoucheRevelation'
@@ -1796,6 +1799,12 @@ export function PagePartie({
   // nos pieds, et la valeur sert a une dizaine d'endroits. Ce que ce drapeau
   // fait, et ce qu'il ne fait pas, est dit dans `estSpectateur` (moteur.ts).
   const spectateur = estSpectateur()
+  // LE TELEPHONE PENDANT LA PARTIE (zone 3, 10/10/2026, board/mobile/telephone.ts) :
+  // ecran allume, vibrations, verrou portrait. Rien de tout cela sur un PC.
+  const telephone = useEstTelephone()
+  const reglagesTelephone = useReglagesTelephone()
+  useEcranAllume(telephone)
+  const { tourner: tournerLeTelephone } = useVerrouPortrait(telephone, reglagesTelephone.verrouPortrait)
   // ⚠ LUE UNE FOIS, AU MONTAGE, ET JAMAIS AU CLIC. L'adresse du site ne change
   // pas de la vie d'une page, et la lire au moment où l'on quitte la mettait
   // dans le chemin d'un clic : fenêtre qui ne s'ouvre pas si le moteur traîne,
@@ -3758,6 +3767,8 @@ export function PagePartie({
     fetch('/debug?/undo auto').catch(() => undefined)
   }, [manuel, annulerGesteManuel])
   annulerClavier.current = annulerCoup
+  // Ton tour, attaque subie, action validee : trois vibrations (zone 3).
+  useVibrationsDePartie(etat.monde, playerId, telephone && !spectateur)
 
   // Sortir du plein ecran AVANT de naviguer (spec mobile §6.3) : sinon
   // l'assistant s'ouvre encore en plein ecran, sans barre d'adresse.
@@ -4519,9 +4530,14 @@ export function PagePartie({
         )}
       />
 
+      {tournerLeTelephone ? <EcranTourne /> : null}
+
       <RenduPartie
         world={mondeTable ?? etat.monde}
         playerId={joueurActif}
+        // Le bandeau « Annuler » du telephone (zone 3) appelle la MEME
+        // annulation que le bouton « ↶ Annuler » de la barre.
+        annulerCoup={spectateur ? undefined : annulerCoup}
         bandeManigances={modePlateau !== 'mobile'}
         disposition={editionTable?.d ?? dispositionTable}
         identitePartie={etat.partieId}
@@ -4932,6 +4948,7 @@ export function PagePartie({
         montrerDisposition={surAppareilMobile}
         reglageMode={reglageMode}
         cyclerReglageMode={cyclerReglageMode}
+        telephone={telephone}
       />
       {/* Les trois modales de la refonte du header (24/09/2026), HORS DE LA
           BARRE pour la meme raison que `FenetreReglages` juste au-dessus :

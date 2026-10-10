@@ -71,60 +71,96 @@ describe('MainPortrait', () => {
     expect(screen.getByText('Ta main est vide')).toBeInTheDocument()
   })
 
-  describe('appui long : jouer sans passer par le tap', () => {
+  describe('zone 3 : toucher puis « Jouer », toucher long pour lire', () => {
     afterEach(() => {
       vi.useRealTimers()
     })
 
-    it('un appui long sur la carte appelle onJouer', () => {
-      vi.useFakeTimers()
+    const jouableQuinjet = () =>
+      ({ ...unite('Quinjet'), carte: { ...unite('Quinjet').carte, state: 'playable', onSelect: vi.fn() } }) as UniteAffichee
+
+    it('toucher une carte jouable la choisit, « Jouer » la joue, sans ouvrir sa fiche', () => {
+      const onOuvrir = vi.fn()
       const onJouer = vi.fn()
+      const carte = jouableQuinjet()
       const { container } = render(
-        <MainPortrait ouverte onFermer={() => {}} unites={[unite('Quinjet')]} onOuvrir={() => {}} onJouer={onJouer} />
+        <MainPortrait ouverte onFermer={() => {}} unites={[carte]} onOuvrir={onOuvrir} onJouer={onJouer} jouable={() => true} />
       )
-      const porteuse = container.querySelector('.main-portrait-carte') as Element
-      fireEvent.pointerDown(porteuse)
-      vi.advanceTimersByTime(APPUI_LONG_MS)
+      expect(container.querySelector('.main-feuille-jouer')).toBeNull()
+      fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
+      expect(container.querySelector('.main-portrait-carte')).toHaveClass('est-choisie')
+      expect(onOuvrir).not.toHaveBeenCalled()
+      fireEvent.click(screen.getByRole('button', { name: 'Jouer' }))
       expect(onJouer).toHaveBeenCalledTimes(1)
       expect(onJouer.mock.calls[0]?.[0]).toMatchObject({ cle: 'Quinjet' })
+      // Jouee : le choix retombe, le bouton disparait.
+      expect(container.querySelector('.main-feuille-jouer')).toBeNull()
     })
 
-    it('sans onJouer, le maintien ne declenche rien (la main reste juste lisible)', () => {
-      vi.useFakeTimers()
-      const { container } = render(<MainPortrait ouverte onFermer={() => {}} unites={[unite('Quinjet')]} onOuvrir={() => {}} />)
-      const porteuse = container.querySelector('.main-portrait-carte') as Element
-      expect(() => {
-        fireEvent.pointerDown(porteuse)
-        vi.advanceTimersByTime(APPUI_LONG_MS)
-      }).not.toThrow()
+    it('un second toucher sur la carte choisie la repose ; « Lire » l ouvre en grand', () => {
+      const onOuvrir = vi.fn()
+      const { container } = render(
+        <MainPortrait ouverte onFermer={() => {}} unites={[jouableQuinjet()]} onOuvrir={onOuvrir} onJouer={() => {}} jouable={() => true} />
+      )
+      const scan = container.querySelector('.main-portrait .scan-card') as Element
+      fireEvent.click(scan)
+      fireEvent.click(screen.getByRole('button', { name: 'Lire' }))
+      expect(onOuvrir).toHaveBeenCalledTimes(1)
+      fireEvent.click(scan)
+      expect(container.querySelector('.main-portrait-carte')).not.toHaveClass('est-choisie')
+      expect(container.querySelector('.main-feuille-jouer')).toBeNull()
     })
 
-    it('l appui long annule le tap qui suit : pas d ouverture apres avoir joue', () => {
-      // Point de vigilance du brief : useAppuiLong ne supprime pas lui-meme le
-      // clic qui suit le relachement du doigt, il expose seulement
-      // `vientDeDeclencher()`. Sans le consulter au tap, on jouerait ET on
-      // ouvrirait la carte pour un seul geste.
+    it('une carte qui n est plus jouable perd son bouton « Jouer »', () => {
+      let peutJouer = true
+      const carte = jouableQuinjet()
+      const { container, rerender } = render(
+        <MainPortrait ouverte onFermer={() => {}} unites={[carte]} onOuvrir={() => {}} onJouer={() => {}} jouable={() => peutJouer} />
+      )
+      fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
+      expect(container.querySelector('.main-feuille-jouer')).not.toBeNull()
+      peutJouer = false
+      rerender(
+        <MainPortrait ouverte onFermer={() => {}} unites={[carte]} onOuvrir={() => {}} onJouer={() => {}} jouable={() => peutJouer} />
+      )
+      expect(container.querySelector('.main-feuille-jouer')).toBeNull()
+    })
+
+    it('le toucher long LIT la carte, il ne la joue plus', () => {
       vi.useFakeTimers()
       const onOuvrir = vi.fn()
       const onJouer = vi.fn()
       const { container } = render(
-        <MainPortrait ouverte onFermer={() => {}} unites={[unite('Quinjet')]} onOuvrir={onOuvrir} onJouer={onJouer} />
+        <MainPortrait ouverte onFermer={() => {}} unites={[jouableQuinjet()]} onOuvrir={onOuvrir} onJouer={onJouer} jouable={() => true} />
+      )
+      const porteuse = container.querySelector('.main-portrait-carte') as Element
+      fireEvent.pointerDown(porteuse)
+      vi.advanceTimersByTime(APPUI_LONG_MS)
+      expect(onOuvrir).toHaveBeenCalledTimes(1)
+      expect(onJouer).not.toHaveBeenCalled()
+    })
+
+    it('le clic qui suit le toucher long ne choisit pas la carte en plus', () => {
+      vi.useFakeTimers()
+      const onOuvrir = vi.fn()
+      const { container } = render(
+        <MainPortrait ouverte onFermer={() => {}} unites={[jouableQuinjet()]} onOuvrir={onOuvrir} onJouer={() => {}} jouable={() => true} />
       )
       const porteuse = container.querySelector('.main-portrait-carte') as Element
       fireEvent.pointerDown(porteuse)
       vi.advanceTimersByTime(APPUI_LONG_MS)
       fireEvent.pointerUp(porteuse)
       fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
-      expect(onJouer).toHaveBeenCalledTimes(1)
-      expect(onOuvrir).not.toHaveBeenCalled()
+      expect(onOuvrir).toHaveBeenCalledTimes(1)
+      expect(container.querySelector('.main-portrait-carte')).not.toHaveClass('est-choisie')
     })
 
-    it('un tap simple (sans maintien) ouvre toujours la carte normalement', () => {
+    it('un toucher court sur une carte non jouable l ouvre normalement', () => {
       vi.useFakeTimers()
       const onOuvrir = vi.fn()
       const onJouer = vi.fn()
       const { container } = render(
-        <MainPortrait ouverte onFermer={() => {}} unites={[unite('Quinjet')]} onOuvrir={onOuvrir} onJouer={onJouer} />
+        <MainPortrait ouverte onFermer={() => {}} unites={[unite('Quinjet')]} onOuvrir={onOuvrir} onJouer={onJouer} jouable={() => false} />
       )
       const porteuse = container.querySelector('.main-portrait-carte') as Element
       fireEvent.pointerDown(porteuse)

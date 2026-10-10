@@ -5,11 +5,19 @@
 // Android (`.main-feuille-voile` est dans FERMABLES).
 //
 // La rangee elle-meme est celle du 11/09 : cartes a taille lisible, qui
-// defilent horizontalement. TAP = lire la carte en grand, APPUI LONG = jouer.
+// defilent horizontalement.
+//
+// LE GESTE (zone 3 de la refonte, 10/10/2026, « jouer une carte : toucher,
+// puis bouton Jouer ») :
+//   TOUCHER une carte jouable -> elle se leve, « Jouer » apparait en bas ;
+//   TOUCHER une carte non jouable -> elle s'ouvre en grand, pour la lire ;
+//   TOUCHER LONG -> elle s'ouvre en grand, quelle qu'elle soit (on LIT).
+// L'appui long ne joue plus rien : une carte jouee par un doigt qui s'attarde
+// ne se rattrapait qu'avec « Annuler ».
 //
 // ⚠ ScanCard est rendu EN DIRECT : ses pastilles (cout, PV) restent sur la
 // carte, c'est le choix de la spec du 12/09 (« une pastille par valeur »).
-import { useRef, type ReactElement } from 'react'
+import { useEffect, useRef, useState, type ReactElement } from 'react'
 import { ScanCard } from '../../components/ScanCard'
 import { t } from '../langue'
 import type { UniteAffichee } from '../zones'
@@ -25,27 +33,35 @@ export const SEUIL_FERMETURE = 40
  */
 function CarteMainPortrait({
   unite,
+  choisie,
+  onChoisir,
   onOuvrir,
-  onJouer,
 }: {
   unite: UniteAffichee
+  choisie: boolean
+  /** Absent : la carte ne se choisit pas (pas jouable maintenant). */
+  onChoisir?: (unite: UniteAffichee) => void
   onOuvrir: (unite: UniteAffichee) => void
-  onJouer?: (unite: UniteAffichee) => void
 }): ReactElement {
-  const appui = useAppuiLong(onJouer ? () => onJouer(unite) : undefined)
+  const appui = useAppuiLong(() => onOuvrir(unite))
   return (
-    <span className="main-portrait-carte" data-tactile="carte-main" {...appui.gestes}>
+    <span
+      className={`main-portrait-carte${choisie ? ' est-choisie' : ''}`}
+      data-tactile="carte-main"
+      {...appui.gestes}
+    >
       <ScanCard
         {...unite.carte}
         highlight={false}
         onSelect={() => {
-          // Le maintien vient de jouer la carte : le clic qui suit le
-          // relachement du doigt ne doit pas AUSSI l'ouvrir.
+          // Le maintien vient d'ouvrir la carte : le clic qui suit le
+          // relachement du doigt ne doit pas AUSSI la choisir.
           if (appui.vientDeDeclencher()) return
           // Une CIBLE de la question en cours (défausse de fin de tour, carte
           // à choisir en main) se coche d'un toucher, sans passer par sa fiche.
           const cible = unite.carte.state === 'targetable' || unite.carte.state === 'selected'
           if (cible && unite.carte.onSelect) unite.carte.onSelect()
+          else if (onChoisir) onChoisir(unite)
           else onOuvrir(unite)
         }}
       />
@@ -59,15 +75,26 @@ export function MainPortrait({
   onFermer,
   onOuvrir,
   onJouer,
+  jouable,
 }: {
   unites: UniteAffichee[]
   ouverte: boolean
   onFermer: () => void
   onOuvrir: (unite: UniteAffichee) => void
-  /** Appui long : jouer la carte directement, sans passer par la lecture. */
+  /** Le bouton « Jouer » de la carte choisie. */
   onJouer?: (unite: UniteAffichee) => void
+  /** Cette carte se joue-t-elle maintenant ? Oui : un toucher la choisit. */
+  jouable?: (unite: UniteAffichee) => boolean
 }): ReactElement | null {
   const depart = useRef<number | undefined>(undefined)
+  const [cleChoisie, setCleChoisie] = useState<string | undefined>()
+  // La carte choisie n'existe que tant qu'elle est en main ET jouable : jouee,
+  // defaussee ou devenue injouable, le bouton disparait avec elle.
+  const choisie = cleChoisie === undefined ? undefined : unites.find((u) => u.cle === cleChoisie)
+  const choisieValide = choisie && onJouer && (jouable?.(choisie) ?? false) ? choisie : undefined
+  useEffect(() => {
+    if (!ouverte) setCleChoisie(undefined)
+  }, [ouverte])
   if (!ouverte) return null
   return (
     <>
@@ -99,17 +126,48 @@ export function MainPortrait({
         ) : (
           <div className="main-portrait defile">
             {unites.map((unite) => (
-              <CarteMainPortrait key={unite.cle} unite={unite} onOuvrir={onOuvrir} onJouer={onJouer} />
+              <CarteMainPortrait
+                key={unite.cle}
+                unite={unite}
+                choisie={choisieValide?.cle === unite.cle}
+                onChoisir={
+                  onJouer && jouable?.(unite)
+                    ? (u) => setCleChoisie((avant) => (avant === u.cle ? undefined : u.cle))
+                    : undefined
+                }
+                onOuvrir={onOuvrir}
+              />
             ))}
           </div>
         )}
         <div className="main-feuille-pied">
-          <span className="main-portrait-compte">
-            <b>{unites.length}</b> {t('en main')}
+          {choisieValide ? (
+            <button type="button" className="main-feuille-lire" onClick={() => onOuvrir(choisieValide)}>
+              {t('Lire')}
+            </button>
+          ) : (
+            <span className="main-portrait-compte">
+              <b>{unites.length}</b> {t('en main')}
+            </span>
+          )}
+          <span className="main-feuille-boutons">
+            <button type="button" className="main-feuille-fermer" onClick={onFermer}>
+              {t('Fermer')}
+            </button>
+            {choisieValide ? (
+              <button
+                type="button"
+                className="main-feuille-jouer"
+                data-tactile="jouer"
+                onClick={() => {
+                  setCleChoisie(undefined)
+                  onJouer?.(choisieValide)
+                }}
+              >
+                {t('Jouer')}
+              </button>
+            ) : null}
           </span>
-          <button type="button" className="main-feuille-fermer" onClick={onFermer}>
-            {t('Fermer')}
-          </button>
         </div>
       </section>
     </>
