@@ -344,6 +344,10 @@ class CanHealth(HasHealth):
                 lost_message_helper.would_take_damage_message.would_deal_damage_message,
                 return_messages,
                 by_effect)
+            # Les statistiques AVANT l'envoi, par appel direct : une aptitude
+            # sur ce message ne voyait pas le coup qui finit la partie.
+            from game.rule.statistics import CompterDegats
+            CompterDegats(after_damage_message)
             after_damage_message.Send()
 
         return return_messages

@@ -23577,6 +23577,19 @@ CAS = [
                        "Puzzle.Attack('01094', defender='01001a')", "Puzzle.Draw(2)"],
         "verifier": "stats_de_partie_mesurees",
     },
+    {
+        "nom": "Stats de partie — le coup qui GAGNE la partie est compte au joueur",
+        "pourquoi": ("partie reelle du 10/10/2026 : le coup fatal sur le dernier heros n'etait jamais "
+                     "compte, la partie finissant avant AfterFaceDealDamage. Meme question pour le coup "
+                     "qui vainc le dernier stade du mechant : Rhino II (15 PV) blesse de 14 par une regle, Spider-Man (ATQ 1) l'acheve"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.AdvanceVillain()",
+                          "Puzzle.Damage('01095', 14)"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "verifier": "stats_coup_gagnant",
+    },
     # FIN DU BLOC A2 -----------------------------------------------------------
 
     # ---------------------------------------------------------------- A3 ----
@@ -58873,6 +58886,15 @@ def a2_revelation_de_remplacement(monde, aides):
     return True, (f"{annulee['carte']} annulee par {annulee['annulee_par']}, puis "
                   f"{remplacement['carte']} revelee par {remplacement['revelee_par']} ; "
                   f"{len(attaques)} attaque(s) rattachee(s), effets de l'annulee = {annulee.get('effets')}")
+
+def stats_coup_gagnant(monde, aides):
+    from engine import Engine
+    if not getattr(monde, "is_game_over", False):
+        return False, "la partie n'est pas terminee : le dernier stade n'a pas ete vaincu"
+    siege = Engine.game.session.statistics.sieges.get(0, {})
+    if siege.get('degats_mechant', 0) < 1:
+        return False, f"le coup gagnant n'est pas compte : sieges = {Engine.game.session.statistics.sieges}"
+    return True, f"partie gagnee, degats_mechant = {siege['degats_mechant']}"
 
 def stats_de_partie_mesurees(monde, aides):
     from engine import Engine

@@ -4,6 +4,58 @@ from game.card.face import *
 from game.message import *
 from game.player import *
 
+def _joueur_du_degat(message: 'Message.AfterFaceDealDamage') -> 'Player|None':
+    """Qui a INFLIGE ce degat : l'attaquant s'il en existe un et qu'il
+    appartient a un joueur, sinon la carte payeuse (evenement a degat
+    direct, sans « unite » attaquante) si elle-meme appartient a un
+    joueur."""
+    if message.attacker is not None and Player.IsType(message.attacker.GetControlBy()):
+        return message.attacker.GetControlByPlayer()
+    if PlayerCard.IsType(message.by_effect.this) and Player.IsType(message.by_effect.this.GetControlBy()):
+        return message.by_effect.this.GetControlByPlayer()
+    return None
+
+def CompterDegats(message: 'Message.AfterFaceDealDamage') -> None:
+    """Les statistiques d'un degat, appelees DIRECTEMENT par CanHealth a
+    l'envoi de `AfterFaceDealDamage` (10/10/2026). Ce n'est plus une aptitude
+    declenchee par le message : le message part APRES la defaite, et le coup
+    qui finit la partie (dernier stade du mechant, dernier heros) n'etait
+    jamais compte ; un allie vaincu n'avait plus de controleur."""
+    from engine import Engine
+    from game.statistics.session_statistics import SessionStatistics
+    session = Engine.game.session.statistics
+    stats = Engine.statistics
+    valeur = message.dealt_damage
+
+    # Pris : attribue a la CIBLE, c'est TON heros qui a pris le coup, meme si
+    # c'est un allie d'un autre joueur qui l'a inflige.
+    cible = SessionStatistics.JoueurDe(message.target)
+    if cible is not None:
+        session.Add(message.target, valeur, 'damage_taken')
+        stats.RecordValue("total_damage_taken", valeur)
+        stats.RecordMaximum("max_single_damage_taken", valeur)
+        stats.RecordForSeat(cible, "total_damage_taken", valeur)
+        # `degats_subis` (onglet Stats) se compte dans
+        # CanHealth.TakeDamageWithOverkillTarget, en PV reellement perdus.
+
+    # Inflige.
+    attaquant = message.attacker
+    if (attaquant is not None and Player.IsType(attaquant.GetControlBy())) or \
+            PlayerCard.IsType(message.by_effect.this):
+        session.Add(message.by_effect.this, valeur, 'damage_dealt')
+        stats.RecordValue("total_damage_dealt", valeur)
+        stats.RecordMaximum("max_single_damage_dealt", valeur)
+        joueur = _joueur_du_degat(message)
+        if joueur is not None:
+            stats.RecordForSeat(joueur, "total_damage_dealt", valeur)
+            from game.card.face.base import Villain
+            from game.card.face.card_type import Minion
+            if Villain.IsType(message.target):
+                session.AddSiege(joueur, 'degats_mechant', valeur)
+            elif Minion.IsType(message.target):
+                session.AddSiege(joueur, 'degats_sbires', valeur)
+            stats.RecordMaximumForSeat(joueur, "max_single_damage_dealt", valeur)
+
 def GetStatisticsRule() -> List['Ability']:
     from game.card.face.base import Scheme2
     from game.card.face.base import Unit2
@@ -139,42 +191,6 @@ def GetStatisticsRule() -> List['Ability']:
         for face in message.drew_faces:
             Engine.game.session.statistics.AddCarte(message.GetToPlayer(), face, 'piochee')
 
-    def _joueur_du_degat(message: 'Message.AfterFaceDealDamage') -> 'Player|None':
-        """Qui a INFLIGE ce degat : l'attaquant s'il en existe un et qu'il
-        appartient a un joueur, sinon la carte payeuse (evenement a degat
-        direct, sans « unite » attaquante) si elle-meme appartient a un
-        joueur. Reprend exactement la condition de l'aptitude qui declenche
-        `deal_damage`, pour ne jamais attribuer un degat que le total plat
-        n'aurait pas compte non plus."""
-        if message.attacker is not None and Player.IsType(message.attacker.GetControlBy()):
-            return message.attacker.GetControlByPlayer()
-        if PlayerCard.IsType(message.by_effect.this) and Player.IsType(message.by_effect.this.GetControlBy()):
-            return message.by_effect.this.GetControlByPlayer()
-        return None
-
-    def deal_damage(message: 'Message.AfterFaceDealDamage'):
-        Engine.game.session.statistics.Add(message.by_effect.this, message.dealt_damage, 'damage_dealt')
-        Engine.statistics.RecordValue("total_damage_dealt", message.dealt_damage)
-        Engine.statistics.RecordMaximum("max_single_damage_dealt", message.dealt_damage)
-        joueur = _joueur_du_degat(message)
-        if joueur is not None:
-            Engine.statistics.RecordForSeat(joueur, "total_damage_dealt", message.dealt_damage)
-            from game.card.face.base import Villain
-            from game.card.face.card_type import Minion
-            if Villain.IsType(message.target):
-                Engine.game.session.statistics.AddSiege(joueur, 'degats_mechant', message.dealt_damage)
-            elif Minion.IsType(message.target):
-                Engine.game.session.statistics.AddSiege(joueur, 'degats_sbires', message.dealt_damage)
-            Engine.statistics.RecordMaximumForSeat(joueur, "max_single_damage_dealt", message.dealt_damage)
-
-    def take_damage(message: 'Message.AfterFaceDealDamage'):
-        Engine.game.session.statistics.Add(message.target, message.dealt_damage, 'damage_taken')
-        Engine.statistics.RecordValue("total_damage_taken", message.dealt_damage)
-        Engine.statistics.RecordMaximum("max_single_damage_taken", message.dealt_damage)
-        # ⚠ ATTRIBUE A LA CIBLE : c'est TON heros qui a pris le coup, meme
-        # si c'est un allie d'un autre joueur qui l'a inflige.
-        Engine.statistics.RecordForSeat(message.target.GetControlByPlayer(), "total_damage_taken", message.dealt_damage)
-        # `degats_subis` (onglet Stats) se compte dans CanHealth.TakeDamageNoDeath.
 
     def statistics_record(face: 'CardFace', method: Literal["Resolve", "Play", "Resource", "Reveal", "PutIntoPlay", "Hero", "Attached", "Defeated", "Discard", "Cancel"]):
         if method == "PutIntoPlay":
@@ -441,29 +457,6 @@ def GetStatisticsRule() -> List['Ability']:
             [],
             lambda effect, message:
                 player_drawn(message)
-        ),
-        Ability(
-            AbilityType.Statistics,
-            Message.AfterFaceDealDamage,
-            [
-                lambda effect, message:
-                    Player.IsType(message.target.GetControlBy()),
-            ],
-            lambda effect, message:
-                take_damage(message)
-        ),
-        Ability(
-            AbilityType.Statistics,
-            Message.AfterFaceDealDamage,
-            [
-                lambda effect, message:
-                    # Unit2.IsType(message.attacker) and \
-                    message.attacker != None and \
-                    Player.IsType(message.attacker.GetControlBy()) or \
-                    PlayerCard.IsType(message.by_effect.this),
-            ],
-            lambda effect, message:
-                deal_damage(message)
         ),
         Ability(
             AbilityType.Statistics,
