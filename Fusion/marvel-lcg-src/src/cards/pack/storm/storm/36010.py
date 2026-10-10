@@ -8,7 +8,10 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this.CastTo(Event)
         Unused(this)
 
-        this.RemoveThreatFromSchemes(effect.targets, 3, effect)
+        # CORRECTIF (10/10/2026, audit Storm) : « Remove 3 threat from AMONG
+        # schemes in play ». Une seule manigance visee perdait le reste des 3.
+        # Modele : 34018 Mutant Peacekeepers (chaque designation = 1 menace).
+        this.RemoveThreatFromSchemesTotal(effect.targets, 3, effect)
 
         initiator = effect.GetInitiator()
         hurricane = Worlds.FindCardOnField(
@@ -25,6 +28,6 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.HeroAction,
             torrential_rain
         ).SetPlay().SetLabel('thwart')
-        .SetTarget(Scheme2),
+        .SetTarget(Scheme2, range=(1, 3), repeat_rules="Threat"),
     ]
 

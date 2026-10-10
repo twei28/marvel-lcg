@@ -51945,6 +51945,68 @@ CAS = [
         "verifier": "fne3a_bugle",
         "attendu": {"distribuees_de": [0, []]},
     },
+
+    # ------------------------------------------------ STORM, audit du 10/10/2026
+    {
+        "nom": "36010 Torrential Rain — 3 menaces REPARTIES : 1 sur la principale, 2 sur une annexe",
+        "pourquoi": ("« Remove 3 threat from AMONG schemes in play » : la carte ne visait qu'UNE manigance "
+                     "(`SetTarget(Scheme2)`, portee 1..1) et y retirait les 3. Principale a 1, Bomb Scare a 3 : "
+                     "repartir 1 + 2 vide la principale et laisse 1 sur l'annexe. Modele : 34018 Mutant Peacekeepers"),
+        "scenario": "rhino",
+        "heros": "storm",
+        "mise_en_place": ["Puzzle.ChangeForm('36001b')", "Puzzle.PutIntoPlay('01109')",
+                          "Puzzle.SetThreat('01097b', 1)", "Puzzle.SetThreat('01109', 3)"],
+        "main_exclusive": ["36010", "01088", "01089"],
+        "accepter_choix": True,
+        "declencher": [],
+        "jouer": ["36010"],
+        "cibles": ["01097b", "01109", "01109"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 0], ["01109", 1]], "defausse": ["36010"]},
+    },
+    {
+        "nom": "36010 Torrential Rain — les 3 menaces sur UNE manigance restent possibles (principale 5 -> 2)",
+        "pourquoi": "« among » permet de repartir, pas d'y obliger : trois designations de la principale",
+        "scenario": "rhino",
+        "heros": "storm",
+        "mise_en_place": ["Puzzle.ChangeForm('36001b')", "Puzzle.SetThreat('01097b', 5)"],
+        "main_exclusive": ["36010", "01088", "01089"],
+        "accepter_choix": True,
+        "declencher": [],
+        "jouer": ["36010"],
+        "cibles": ["01097b", "01097b", "01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]], "defausse": ["36010"]},
+    },
+    {
+        "nom": "36012 Flash Freeze — un sbire engage APRES coup, dans la meme phase, a aussi -3 ATQ",
+        "pourquoi": ("« the villain and each minion engaged with you get -3 ATK while attacking you this phase » : "
+                     "la liste des ennemis etait figee au jeu de la carte. Rules Reference, Lasting Effects : une "
+                     "carte qui entre en jeu apres la creation de l'effet est quand meme affectee. Rhino attaque, "
+                     "Flash Freeze est jouee ; Storm est soignee, puis Hydra Soldier (ATQ 2) arrive et attaque : 0"),
+        "scenario": "rhino",
+        "heros": "storm",
+        "mise_en_place": ["Puzzle.ChangeForm('36001b')", "Puzzle.Exhaust('36001a')"],
+        "main_exclusive": ["36012", "01088"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('01094')", "Puzzle.Heal('36001a', 20)", "Puzzle.PutIntoPlay('01182')",
+                       "Puzzle.Attack('01182')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "defausse": ["36012"]},
+    },
+    {
+        "nom": "36012 Flash Freeze — TEMOIN : la phase finie, le sbire frappe normalement (2)",
+        "pourquoi": "« this phase » : l'effet ne survit pas a la fin de phase, sinon le correctif l'aurait rendu permanent",
+        "scenario": "rhino",
+        "heros": "storm",
+        "mise_en_place": ["Puzzle.ChangeForm('36001b')", "Puzzle.Exhaust('36001a')"],
+        "main_exclusive": ["36012", "01088"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('01094')", "Puzzle.Heal('36001a', 20)", "Puzzle.EndPlayerPhase()",
+                       "Puzzle.PutIntoPlay('01182')", "Puzzle.Attack('01182')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "defausse": ["36012"]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
