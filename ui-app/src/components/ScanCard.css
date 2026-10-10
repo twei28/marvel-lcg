@@ -26,7 +26,9 @@
     --accent: #eef3f8;
     --label-bg: rgba(7, 10, 14, 0.9);
     --label-text: #ffffff;
-    --state-glow: rgba(255, 255, 255, 0.12);
+    /* Transparent au repos (10/10/2026) : le blanc a 12 % sur 24 px dessinait une
+       bande claire puis grise autour de chaque carte, juste apres le liseré. */
+    --state-glow: transparent;
     position: relative;
     width: var(--card-w);
     padding: 0;
