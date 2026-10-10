@@ -43,6 +43,29 @@ describe('MainPortrait', () => {
     expect(onOuvrir).toHaveBeenCalledTimes(1)
   })
 
+  it('une carte CIBLE (défausse de fin de tour) se coche d’un tap, sans ouvrir sa fiche', () => {
+    const onOuvrir = vi.fn()
+    const cocher = vi.fn()
+    const cible = { ...unite('Quinjet'), carte: { ...unite('Quinjet').carte, state: 'targetable', onSelect: cocher } } as UniteAffichee
+    const cochee = { ...unite('Backflip'), carte: { ...unite('Backflip').carte, state: 'selected', onSelect: cocher } } as UniteAffichee
+    const { container } = render(<MainPortrait ouverte onFermer={() => {}} unites={[cible, cochee]} onOuvrir={onOuvrir} />)
+    const cartes = container.querySelectorAll('.main-portrait .scan-card')
+    fireEvent.click(cartes[0] as Element)
+    fireEvent.click(cartes[1] as Element)
+    expect(cocher).toHaveBeenCalledTimes(2)
+    expect(onOuvrir).not.toHaveBeenCalled()
+  })
+
+  it('une carte JOUABLE (non cible) ouvre toujours sa fiche au tap', () => {
+    const onOuvrir = vi.fn()
+    const jouer = vi.fn()
+    const jouable = { ...unite('Quinjet'), carte: { ...unite('Quinjet').carte, state: 'playable', onSelect: jouer } } as UniteAffichee
+    const { container } = render(<MainPortrait ouverte onFermer={() => {}} unites={[jouable]} onOuvrir={onOuvrir} />)
+    fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
+    expect(onOuvrir).toHaveBeenCalledTimes(1)
+    expect(jouer).not.toHaveBeenCalled()
+  })
+
   it('main vide : on le dit au lieu de laisser un trou', () => {
     render(<MainPortrait ouverte onFermer={() => {}} unites={[]} onOuvrir={() => {}} />)
     expect(screen.getByText('Ta main est vide')).toBeInTheDocument()

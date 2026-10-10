@@ -42,7 +42,11 @@ function CarteMainPortrait({
           // Le maintien vient de jouer la carte : le clic qui suit le
           // relachement du doigt ne doit pas AUSSI l'ouvrir.
           if (appui.vientDeDeclencher()) return
-          onOuvrir(unite)
+          // Une CIBLE de la question en cours (défausse de fin de tour, carte
+          // à choisir en main) se coche d'un toucher, sans passer par sa fiche.
+          const cible = unite.carte.state === 'targetable' || unite.carte.state === 'selected'
+          if (cible && unite.carte.onSelect) unite.carte.onSelect()
+          else onOuvrir(unite)
         }}
       />
     </span>
