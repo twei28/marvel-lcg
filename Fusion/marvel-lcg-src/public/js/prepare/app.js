@@ -50,7 +50,6 @@ import { NIVEAUX_STANDARD, libelleNiveau, niveauDuScenario } from "/public/js/pr
 import { urlNarval } from "/public/js/prepare/narval.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
 import { HEROS_INFO } from "/public/js/prepare/heros-info.js";
-import { HEROS_AVIS, ECHELLES, TIERS, AVIS_DATE, AVIS_DATE_EN, AVIS_CADRE, AVIS_CADRE_EN } from "/public/js/prepare/heros-avis.js";
 import { GENRES, nouveautesTriees } from "/public/js/prepare/nouveautes.js";
 import { MECHANTS_INFO } from "/public/js/prepare/mechants-info.js";
 import { etatSalon } from "/public/js/prepare/salon-etat.js";
@@ -2571,60 +2570,6 @@ function stepTeam() {
  *  est ouvert la scène efface son nom géant, que le panneau recouvrirait. */
 let bioDepliee = false;
 
-/** Le pli « Pour débuter » a son PROPRE état d'ouverture, séparé de celui de
- *  la biographie : ce sont deux lectures différentes, et un joueur qui ouvre
- *  l'une ne demande pas l'autre. Partager `bioDepliee` les ferait s'ouvrir
- *  ensemble. */
-let avisDeplie = false;
-
-function pliAvis(titre, lignes) {
-    const contenu = lignes.filter(Boolean);
-    if (!contenu.length) return null;
-    const pli = el("details", { class: "tb-bio tb-avis", open: avisDeplie || undefined },
-        el("summary", {}, titre), ...contenu);
-    pli.addEventListener("toggle", () => {
-        avisDeplie = pli.open;
-        const scene = pli.closest(".tb-scene");
-        if (scene) scene.classList.toggle("bio-ouverte", pli.open);
-    });
-    return pli;
-}
-
-/** Ce que la communauté pense de ce héros. Rien pour un héros maison, et rien
- *  pour un officiel dont on n'a pas d'avis sourcé : voir l'en-tête de
- *  `heros-avis.js`, on préfère le silence à une note inventée. */
-function avisDuHeros(h) {
-    const avis = HEROS_AVIS[h.heroCardId];
-    if (!avis) return null;
-    const en = langueActuelle() === "en";
-    const champ = (fr, versionEn) => (en && versionEn) || fr;
-    const note = (cle, libelle) => {
-        const n = avis[cle];
-        if (!n) return null;
-        return detailRow(libelle, n + " / 5 \u00b7 " + t(ECHELLES[cle][n]));
-    };
-    return pliAvis(t("Pour débuter"), [
-        avis.piege ? el("p", { class: "hh-avis-piege" }, champ(avis.piege, avis.piegeEn)) : null,
-        avis.clivant ? el("p", { class: "hh-avis-clivant" }, t("Avis très partagés sur ce héros.")) : null,
-        note("complexite", t("Complexité")),
-        note("puissance", t("Puissance")),
-        note("plaisir", t("Plaisir")),
-        // La phrase rédigée quand on en a une ; sinon le niveau seul, dit en
-        // clair. Jamais de paragraphe vide, et jamais de phrase inventée pour
-        // remplir : voir l'en-tête de `heros-avis.js`.
-        avis.avis
-            ? el("p", { class: "hh-bio" }, champ(avis.avis, avis.avisEn))
-            : (avis.tier
-                ? el("p", { class: "hh-bio" },
-                    t("Classé au niveau") + " " + avis.tier + " — " + t(TIERS[avis.tier]) + ".")
-                : null),
-        el("p", { class: "hh-avis-source" },
-            t("Avis de la communauté") + ", " + champ(AVIS_DATE, AVIS_DATE_EN)
-            + " \u2014 " + champ(AVIS_CADRE, AVIS_CADRE_EN) + "."),
-    ]);
-}
-
-
 function pliBio(titre, lignes) {
     const contenu = lignes.filter(Boolean);
     if (!contenu.length) return null;
@@ -2722,8 +2667,7 @@ function rendreScene(h) {
                 title: t("Identité recto/verso et cartes signature"),
                 onclick: () => ouvrirCartesHeros(h),
             }, t("Voir ses cartes")),
-            bioDuHeros(h),
-            avisDuHeros(h)),
+            bioDuHeros(h)),
     );
     scene.classList.toggle("bio-ouverte", bioDepliee && !!scene.querySelector(".tb-bio"));
     ajusterNomGeant(scene);
@@ -2919,7 +2863,6 @@ function ouvrirFicheHeros(h, portraitEl) {
                 vague ? el("span", { class: "tampon" }, vague) : null,
             ),
             bioDepliee_(bioDuHeros(h)),
-            bioDepliee_(avisDuHeros(h)),
             el("div", { class: "vh-actions" },
                 estTel() ? el("button", {
                     class: "tampon" + (prefs.isFavHero(h.id) ? " on" : ""), onclick: (e) => {
