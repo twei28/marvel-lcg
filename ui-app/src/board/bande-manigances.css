@@ -68,6 +68,13 @@
   flex-shrink: 0;
 }
 
+/* Rangee d'annexes PLEINE (vue a l'ecran le 10/10/2026, 7 annexes) : la
+   derniere touchait le bord droit, sous la languette fixe « Aide »
+   (VoletAideManuel.css), qui en masquait la menace. On lui reserve sa place. */
+.plateau-scene.avec-bande .zone-complots-secondaires .plateau-cartes {
+  padding-right: 30px;
+}
+
 /* La bande alignee sur le CENTRE du mechant : les trois cases centrent leurs
    cartes sur la meme ligne. */
 .plateau-scene.avec-bande .zone-rencontre,
