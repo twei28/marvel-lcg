@@ -56,7 +56,9 @@ import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import { vueSousCadre, type QuestionDuMoteur, type VueSousCadre } from './sous-cadre'
 import { BoutonOption, CarteNue, optionDe, SousCadre } from './SousCadre'
 import {
+  compteurDesRevelations,
   herosViseDe,
+  jaugeCritique,
   PASTILLES,
   pastilleDuTemps,
   pastilles,
@@ -78,6 +80,7 @@ import {
   type VueStade,
 } from './vue-cartouche'
 import './cartouche-phase.css'
+import './cartouche-essai.css'
 
 /** Les gestionnaires de `useGlisserPanneau`, poses sur la ligne du haut. */
 export type GestesDeplacer = {
@@ -158,6 +161,14 @@ export type CartouchePhaseProps = {
   bandeau?: 'phase' | 'pendant-ton-tour' | 'relecture-journal'
   /** « Fermer » de la relecture depuis le journal. */
   onFermer?: () => void
+  /**
+   * L'essai « Nouvelle phase du méchant » (10/10/2026) : calcul pose entre les
+   * vignettes, tampon « ANNULÉE », etiquettes, compteur de cartes, « Réduire »
+   * et « Continuer ». Faux : le rendu d'avant, a l'octet pres.
+   */
+  essai?: boolean
+  /** Essai : retourner le boost suivant (ils ne s'enchainent plus seuls). */
+  montrerBoostSuivant?: () => void
 }
 
 /** Les temps internes qu'une pastille dessine (④ en couvre deux). */
@@ -251,13 +262,117 @@ function Rangee({
   )
 }
 
+/** Un chiffre sous une vignette du calcul pose, ou rien. */
+function Chiffre({ valeur }: { valeur: number | undefined }) {
+  return valeur === undefined ? null : <span className="essai-chiffre">{valeur}</span>
+}
+
+/**
+ * LE CALCUL POSE DE L'ESSAI (questions 9, 41 et 42) : « Klaw 1 + Sonic Boom 0 +
+ * Melter 0 − Storm 0 = 1 », chaque chiffre sous sa carte, le resultat en gros
+ * dans sa boite. Seulement quand la rangee porte ses chiffres (`pose`).
+ */
+function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean }) {
+  const pose = rangee.pose
+  const classes = ['deroule-rangee', 'essai-calcul']
+  if (rangee.annulee) classes.push('est-annulee')
+  if (grisee) classes.push('est-grisee')
+  const jauge = texteJauge(rangee.resultat?.jauge)
+  // Le chiffre se dit SOUS la carte : la legende (« ATQ 1 », « +0 ★ ») ferait
+  // doublon avec lui.
+  const nue = (vignette: Vignette): Vignette => ({ ...vignette, legende: undefined })
+  const operateur = (signe: string) => (
+    <span className="essai-operateur" aria-hidden="true">
+      {signe}
+    </span>
+  )
+  return (
+    <div className={classes.join(' ')} aria-hidden={grisee || undefined}>
+      <div className="deroule-rangee-cartes">
+        {rangee.acteur ? (
+          <span className="essai-terme">
+            <VignetteVue vignette={nue(rangee.acteur)} />
+            <Chiffre valeur={pose?.base} />
+            <small className="essai-sous">{rangee.acteur.legende}</small>
+          </span>
+        ) : null}
+        {rangee.boosts.map((boost, rang) => (
+          <span key={boost.cle} className="essai-groupe">
+            {operateur('+')}
+            <span className="essai-terme">
+              <VignetteVue vignette={nue(boost)} />
+              <Chiffre valeur={boost.apport} />
+              <small className="essai-sous">
+                {t('Boost %1').replace('%1', String(rang + 1))}
+                {boost.etoile ? ' ★' : ''}
+              </small>
+            </span>
+          </span>
+        ))}
+        {rangee.defenseur ? (
+          <span className="essai-groupe">
+            {operateur('−')}
+            <span className="essai-terme">
+              <VignetteVue vignette={nue(rangee.defenseur)} />
+              <Chiffre valeur={pose?.defense} />
+              <small className="essai-sous">{rangee.defenseur.legende}</small>
+            </span>
+          </span>
+        ) : rangee.cibles.length > 0 ? (
+          <span className="essai-groupe">
+            <span className="deroule-vers" aria-hidden="true">
+              →
+            </span>
+            {rangee.cibles.map((cible) => (
+              <span key={cible.cle} className="essai-terme">
+                <VignetteVue vignette={nue(cible)} />
+              </span>
+            ))}
+          </span>
+        ) : null}
+        {rangee.resultat ? (
+          <span
+            className={`essai-groupe essai-resultat${
+              pose && jaugeCritique(rangee.resultat.jauge, pose.jauge) ? ' est-critique' : ''
+            }`}
+          >
+            {operateur('=')}
+            <span className="essai-boite">
+              <strong className="deroule-resultat-texte">{rangee.resultat.texte}</strong>
+              {jauge ? <span className="deroule-jauge">{jauge}</span> : null}
+            </span>
+          </span>
+        ) : rangee.total ? (
+          <span className="essai-groupe essai-resultat">
+            <span className="essai-boite">
+              <strong className="deroule-resultat-texte">{rangee.total.texte}</strong>
+            </span>
+          </span>
+        ) : null}
+        {rangee.annulee ? (
+          <strong className="deroule-annulee-cause">
+            {rangee.annulee.cause ? `${t('Annulée')} · ${rangee.annulee.cause}` : t('Annulée')}
+          </strong>
+        ) : null}
+      </div>
+      {rangee.lignesEtoile.map((ligne) => (
+        <p key={ligne} className="deroule-etoile">
+          {ligne}
+        </p>
+      ))}
+    </div>
+  )
+}
+
 function CarteRevelee({
   revelee,
   grisee = false,
   question,
+  essai = false,
 }: {
   revelee: VueRevelee
   grisee?: boolean
+  essai?: boolean
   /** La question posee par la carte, a la place du resume (D18). */
   question?: ReactNode
 }) {
@@ -268,10 +383,19 @@ function CarteRevelee({
   if (grisee) classes.push('est-grisee')
   return (
     <div className={classes.join(' ')} aria-hidden={grisee || undefined}>
-      {revelee.chaine ? <ChaineRevelee chaine={revelee.chaine} /> : null}
+      {revelee.chaine ? <ChaineRevelee chaine={revelee.chaine} essai={essai} /> : null}
       <VignetteVue vignette={revelee.carte} grande />
       {question ?? (
         <div className="deroule-revelee-texte">
+          {essai && revelee.etiquettes ? (
+            <p className="essai-etiquettes">
+              {revelee.etiquettes.map((etiquette) => (
+                <span key={etiquette} className="essai-etiquette">
+                  {etiquette}
+                </span>
+              ))}
+            </p>
+          ) : null}
           {revelee.surtitreRenfort ? <p className="deroule-surtitre-renfort">{revelee.surtitreRenfort}</p> : null}
           {revelee.typeFr ? <p className="deroule-type">{revelee.typeFr}</p> : null}
           {revelee.lignes.length > 0 ? (
@@ -308,7 +432,7 @@ function CarteRevelee({
 }
 
 /** La chaine Renfort / annulation / remplacement, en petites vignettes (n72). */
-function ChaineRevelee({ chaine }: { chaine: MaillonChaine[] }) {
+function ChaineRevelee({ chaine, essai = false }: { chaine: MaillonChaine[]; essai?: boolean }) {
   return (
     <ol className="deroule-chaine" aria-label={t('Enchaînement des cartes')}>
       {chaine.map((maillon) => {
@@ -320,6 +444,16 @@ function ChaineRevelee({ chaine }: { chaine: MaillonChaine[] }) {
             {maillon.lien ? <span className="deroule-chaine-lien">{`→ ${maillon.lien}`}</span> : null}
             <span className="deroule-chaine-carte">
               <VignetteVue vignette={maillon.vignette} />
+              {essai && maillon.annulee ? (
+                <span className="essai-tampon" aria-hidden="true">
+                  {t('ANNULÉE')}
+                </span>
+              ) : null}
+              {essai && maillon.annuleePar ? (
+                <span className="essai-annuleur">
+                  <VignetteVue vignette={maillon.annuleePar} />
+                </span>
+              ) : null}
               {maillon.annulee ? <span className="deroule-chaine-annulee">{maillon.annulee}</span> : null}
             </span>
           </li>
@@ -409,12 +543,12 @@ function Bilan({ bilan, grisee = false }: { bilan: VueBilan; grisee?: boolean })
   )
 }
 
-function Corps({ corps, grisee }: { corps: VueCorps; grisee: boolean }) {
+function Corps({ corps, grisee, essai = false }: { corps: VueCorps; grisee: boolean; essai?: boolean }) {
   switch (corps.genre) {
     case 'rangee':
-      return <Rangee rangee={corps} grisee={grisee} />
+      return essai && corps.pose ? <RangeeEssai rangee={corps} grisee={grisee} /> : <Rangee rangee={corps} grisee={grisee} />
     case 'revelee':
-      return <CarteRevelee revelee={corps} grisee={grisee} />
+      return <CarteRevelee revelee={corps} grisee={grisee} essai={essai} />
     case 'stade':
       return <Stade stade={corps} grisee={grisee} />
     case 'bilan':
@@ -434,6 +568,7 @@ function LigneDuHaut({
   relire,
   titre,
   page,
+  outils,
 }: {
   /** Vide : pas de pastilles (« Pendant ton tour », D26). */
   liste: Pastille[]
@@ -443,6 +578,8 @@ function LigneDuHaut({
   relire?: (cle: ClePastille) => void
   titre: string
   page?: string
+  /** Essai : ce qui se pose a droite du titre (compteur de cartes, « Réduire »). */
+  outils?: ReactNode
 }) {
   return (
     <header className="deroule-ligne-haut">
@@ -488,7 +625,14 @@ function LigneDuHaut({
         {bandeau ? <p className="deroule-bandeau">{bandeau}</p> : null}
         {page ? <small className="deroule-page">{page}</small> : null}
       </div>
-      <h2 className="deroule-titre-court">{titre}</h2>
+      {outils ? (
+        <div className="essai-titre-ligne">
+          <h2 className="deroule-titre-court">{titre}</h2>
+          {outils}
+        </div>
+      ) : (
+        <h2 className="deroule-titre-court">{titre}</h2>
+      )}
     </header>
   )
 }
@@ -612,6 +756,11 @@ export function CartouchePhase(props: CartouchePhaseProps) {
 
   const horsPhase = props.bandeau === 'pendant-ton-tour'
   const depuisLeJournal = props.bandeau === 'relecture-journal'
+  const essai = props.essai === true
+  // « Réduire » (essai, question 33) : une barre garde la carte en cours, le
+  // plateau redevient visible. Une nouvelle etape le laisse replie : c'est le
+  // joueur qui l'a voulu.
+  const [reduit, setReduit] = useState(false)
 
   // Une question posee AVANT toute etape (la fenetre d'interruption qui
   // precede la menace) s'affiche quand meme : sans elle, plus aucun bouton
@@ -811,6 +960,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     corps = (
       <CarteRevelee
         revelee={corpsRevele}
+        essai={essai}
         question={
           <div className="deroule-question-carte">
             <p className="deroule-question-intitule">{vueQ.intitule}</p>
@@ -833,7 +983,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
       />
     )
   } else if (vuePage) {
-    corps = <Corps corps={vuePage.corps} grisee={grisee} />
+    corps = <Corps corps={vuePage.corps} grisee={grisee} essai={essai} />
   }
 
   // LE REFUS d'une question jouee dans la rangee : a droite, sous les
@@ -860,6 +1010,12 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         ? titreCourt(etapeLue, relu ? contexteRelu(vuePage.etape) : ctx)
         : ''
 
+  // ESSAI : les boosts se retournent au clic, un par un (questions 3 et 10).
+  const boostsRestants =
+    essai && !relu && etape && props.montrerBoostSuivant ? Math.max(0, etape.boosts.length - props.boostsMontres) : 0
+  const compteur =
+    essai && etape && !relu && !horsPhase ? compteurDesRevelations(etapes, etape.cle, props.cartesDistribuees) : undefined
+
   // Hors phase, la touche Espace n'est pas a nous (le tour du joueur pose
   // ses propres questions) : « Suivant » tourne la page, « Continuer » ferme.
   const libelleBouton = horsPhase
@@ -885,6 +1041,28 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   const classes = ['deroule-phase', 'est-scene', 'poignee-glisser']
   if (relu || depuisLeJournal) classes.push('est-relecture')
   if (horsPhase) classes.push('est-hors-phase')
+  if (essai) classes.push('est-essai')
+  if (essai && reduit) classes.push('est-reduit')
+  const outils = essai ? (
+    <span className="essai-outils">
+      {compteur ? (
+        <span className="essai-compteur">
+          <b>{t('Carte %1 / %2').replace('%1', String(compteur.rang)).replace('%2', String(compteur.total))}</b>
+          {compteur.ajouts.length > 0 ? <small>{compteur.ajouts.join(' · ')}</small> : null}
+        </span>
+      ) : null}
+      <button
+        type="button"
+        className="essai-reduire"
+        aria-pressed={reduit}
+        aria-label={reduit ? t('Agrandir le panneau') : t('Réduire le panneau')}
+        title={reduit ? t('Agrandir le panneau') : t('Réduire le panneau')}
+        onClick={() => setReduit((r) => !r)}
+      >
+        {reduit ? '▢' : '–'}
+      </button>
+    </span>
+  ) : undefined
 
   return (
     <section
@@ -903,6 +1081,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         relire={relire ? (cle) => relire({ temps: cle }) : undefined}
         titre={titre}
         page={sequence.length > 1 ? `${page + 1} / ${sequence.length}` : undefined}
+        outils={outils}
       />
       {/* La cle `etape|page` remonte le corps a chaque page : c'est ce qui
           rejoue le glissement d'entree (D35). Entrer en relecture aussi. */}
@@ -949,6 +1128,13 @@ export function CartouchePhase(props: CartouchePhaseProps) {
               {texteFiletProche(props.secondesFilet)}
             </span>
           ) : null}
+          {essai && etape && etape.boosts.length > 0 && !relu ? (
+            <span className="essai-boosts">
+              {t('Boost %1 / %2 retourné')
+                .replace('%1', String(Math.min(props.boostsMontres, etape.boosts.length)))
+                .replace('%2', String(etape.boosts.length))}
+            </span>
+          ) : null}
           {props.defaiteLocale ? <span className="deroule-arret">{texteArretDefaite()}</span> : null}
           {props.tempsParDecision > 0 ? <span className="deroule-timeout">{texteTempsParDecision()}</span> : null}
         </span>
@@ -987,14 +1173,27 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             Ni pendant qu'un autre joueur choisit sur l'etape en cours (D28). */}
         {/* Un spectateur (ou une relecture) ne valide rien : il tourne les
             pages d'une etape, mais l'etape suit le joueur (etape-partagee.ts). */}
-        {etape && !relu && !questionAuJoueur && !annonceEnCours && !attenteSurPlace ? (
+        {boostsRestants > 0 && !questionAuJoueur && !attenteSurPlace ? (
+          <button
+            type="button"
+            className="bh-bouton deroule-suivant essai-continuer"
+            data-boost-suivant=""
+            data-page-suivante=""
+            onClick={() => props.montrerBoostSuivant?.()}
+          >
+            {t('Continuer')} <kbd>{t('Espace')}</kbd>
+          </button>
+        ) : null}
+        {boostsRestants === 0 && etape && !relu && !questionAuJoueur && !annonceEnCours && !attenteSurPlace ? (
           <button
             type="button"
             // Spectateur : visible, grise et inactif sur la derniere page ; il
             // s'allume quand le joueur passe a l'etape suivante (cle).
             key={dernierePage && estSpectateur() ? `suivant-${etape.cle}` : 'suivant'}
             disabled={dernierePage && estSpectateur()}
-            className={`bh-bouton deroule-suivant${dernierePage && estSpectateur() ? ' suivant-spectateur' : ''}`}
+            className={`bh-bouton deroule-suivant${essai ? ' essai-continuer' : ''}${
+              dernierePage && estSpectateur() ? ' suivant-spectateur' : ''
+            }`}
             data-page-suivante={dernierePage ? undefined : ''}
             onClick={() => {
               if (dernierePage) {
@@ -1004,7 +1203,13 @@ export function CartouchePhase(props: CartouchePhaseProps) {
               tournerLaPage()
             }}
           >
-            {libelleBouton}
+            {essai && !horsPhase && !props.defaiteLocale && etape.temps !== 'bilan' ? (
+              <>
+                {t('Continuer')} <kbd>{t('Espace')}</kbd>
+              </>
+            ) : (
+              libelleBouton
+            )}
           </button>
         ) : null}
       </div>

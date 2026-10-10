@@ -83,3 +83,30 @@ export function enVueJoueur(): boolean {
 export function oublierEssais(): void {
   promesse = undefined
 }
+
+/**
+ * L'ESSAI « NOUVELLE PHASE DU MÉCHANT » (10/10/2026), coché par compte dans
+ * /admin. Le site l'écrit dans la configuration de la table du compte ; le
+ * moteur le rend par `/get_essais`. Une seule requête par page, comme plus
+ * haut. Route absente (moteur d'avant, lancé à la main) : pas d'essai.
+ */
+let promessePhase: Promise<boolean> | undefined
+
+export function essaiPhaseMechant(): Promise<boolean> {
+  promessePhase ??= (async () => {
+    try {
+      const reponse = await fetch('/get_essais', { cache: 'no-store' })
+      if (!reponse.ok) return false
+      const donnees = (await reponse.json()) as { phase_mechant?: boolean }
+      return donnees?.phase_mechant === true
+    } catch {
+      return false
+    }
+  })()
+  return promessePhase
+}
+
+/** Pour les tests seulement. */
+export function oublierEssaiPhase(): void {
+  promessePhase = undefined
+}

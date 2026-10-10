@@ -216,6 +216,12 @@ export type VueRangee = {
   total?: { texte: string; gros: boolean }
   /** « 1 par joueur + 1 accélération = 2 » (D12). */
   calcul?: string
+  /**
+   * Les chiffres du calcul POSE (essai du 10/10/2026, question 9) : la valeur
+   * de l'acteur et la defense, pour ecrire « 1 + 0 + 0 − 0 = 1 » entre les
+   * vignettes. Absent : on ne pose rien, plutot qu'un chiffre invente.
+   */
+  pose?: { base?: number; defense?: number; jauge: 'pv' | 'menace' }
   /** Defenseur retenu, marque « défend · DÉF 3 » (D8, D11). */
   defenseur?: Vignette
   /** Le heros vise, la manigance visee (D13) ; les choix viennent du sous-cadre. */
@@ -257,6 +263,11 @@ export type VueRevelee = {
    * pour une carte seule.
    */
   chaine?: MaillonChaine[]
+  /**
+   * Ce qu'il faut savoir de la carte d'un coup d'oeil (essai du 10/10/2026) :
+   * « Ton obligation », « Nouvelle manigance », « Péril : décide seul ».
+   */
+  etiquettes?: string[]
 }
 
 export type MaillonChaine = {
@@ -265,6 +276,8 @@ export type MaillonChaine = {
   lien?: string
   /** « Annulée par X » quand l'effet de cette carte a ete annule. */
   annulee?: string
+  /** La carte qui l'a annulee, en vignette (essai du 10/10/2026, tampon « ANNULÉE »). */
+  annuleePar?: Vignette
   courante: boolean
 }
 
@@ -378,6 +391,7 @@ function typeFrDe(classe: string | undefined, genre: CardKind | undefined): stri
     case 'attachment':
       return t('Attachement')
     case 'SideScheme':
+    case 'EncounterSideScheme':
     case 'side-scheme':
       return t('Manigance annexe')
     case 'Environment':
@@ -603,6 +617,13 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
     acteur,
     boosts,
     total,
+    pose: annulee
+      ? undefined
+      : {
+          base: nombre(socle) ? socle : nombre(imprime) ? imprime : undefined,
+          defense: defenseur && nombre(etape.defense) ? etape.defense : undefined,
+          jauge: attaque ? 'pv' : 'menace',
+        },
     defenseur,
     cibles,
     resultat,
@@ -664,10 +685,12 @@ function vueRevelee(etape: EtapeDeroule, ctx: ContexteVue): VueRevelee {
     ? vignette(`remplacement:${suivanteRemplacement.cle}`, suivanteRemplacement.carteId, nomDe(suivanteRemplacement, ctx), ctx)
     : undefined
 
+  const typeFr = typeFrDe(etape.typeCarte, carte.scan?.kind)
   return {
     genre: 'revelee',
     carte,
-    typeFr: typeFrDe(etape.typeCarte, carte.scan?.kind),
+    typeFr,
+    etiquettes: etiquettesDeLaCarte(etape, typeFr, infoCarteRevelee, jauge),
     lignes,
     jauge,
     renfort,
@@ -677,6 +700,66 @@ function vueRevelee(etape: EtapeDeroule, ctx: ContexteVue): VueRevelee {
     lienRemplacement: suivanteRemplacement ? surtitreEtape(suivanteRemplacement) || undefined : undefined,
     chaine: position === -1 ? undefined : chaineDe(ctx.etapes, position, ctx),
   }
+}
+
+/**
+ * LES ETIQUETTES DE LA CARTE REVELEE (essai du 10/10/2026, questions 26, 28 et
+ * 45) : ce qui doit sauter aux yeux avant meme de lire la carte.
+ */
+function etiquettesDeLaCarte(
+  etape: EtapeDeroule,
+  typeFr: string | undefined,
+  info: InfoRevelee | undefined,
+  jauge: Jauge | undefined
+): string[] | undefined {
+  const etiquettes: string[] = []
+  const genre = etape.typeCarte ?? ''
+  if (/obligation/i.test(genre) || typeFr === t('Obligation')) etiquettes.push(t('Ton obligation'))
+  if (/sidescheme/i.test(genre) || typeFr === t('Manigance annexe')) {
+    const menace = jauge?.apres
+    etiquettes.push(
+      nombre(menace) ? t('Nouvelle manigance : %1').replace('%1', texteMenaces(menace).replace(/^\+/, '')) : t('Nouvelle manigance')
+    )
+  }
+  if ((info?.texteImprime ?? []).some((ligne) => /\bp[ée]ril\b/i.test(ligne))) etiquettes.push(t('Péril : décide seul'))
+  return etiquettes.length > 0 ? etiquettes : undefined
+}
+
+/**
+ * UN ETAT CRITIQUE (essai du 10/10/2026, question 44) : un heros a 3 PV ou
+ * moins (ou au quart de ses PV), une manigance a un pas de son seuil.
+ */
+export function jaugeCritique(jauge: Jauge | undefined, genre: 'pv' | 'menace'): boolean {
+  if (!jauge || !nombre(jauge.apres)) return false
+  if (genre === 'pv') {
+    if (jauge.apres <= 0) return false
+    return jauge.apres <= 3 || (nombre(jauge.plafond) && jauge.apres <= jauge.plafond / 4)
+  }
+  return nombre(jauge.plafond) && jauge.plafond > 0 && jauge.apres >= jauge.plafond * 0.75
+}
+
+/**
+ * « Carte 3 / 3 · +1 Renfort (Weapons Runner) » (essai du 10/10/2026, question
+ * 22) : la place de la carte revelee parmi celles de la phase, et ce qui en a
+ * ajoute en route. Rien hors d'une revelation.
+ */
+export function compteurDesRevelations(
+  etapes: EtapeDeroule[],
+  cle: string,
+  cartesDistribuees: number
+): { rang: number; total: number; ajouts: string[] } | undefined {
+  const revelations = etapes.filter((e) => e.titre === 'revelation' && !e.horsPhase)
+  const rang = revelations.findIndex((e) => e.cle === cle)
+  if (rang === -1) return undefined
+  const ajouts = revelations
+    .filter((e) => e.parSurge || e.reveleePar)
+    .map((e) =>
+      e.reveleePar
+        ? `+1 ${nomNettoye(e.reveleePar) ?? e.reveleePar}`
+        : `+1 ${t('Renfort')}${e.renfortDe ? ` (${e.renfortDe})` : ''}`
+    )
+  const total = Math.max(revelations.length, cartesDistribuees + ajouts.length)
+  return { rang: rang + 1, total, ajouts }
 }
 
 /**
@@ -752,6 +835,10 @@ function chaineDe(etapes: EtapeDeroule[], rang: number, ctx: ContexteVue): Maill
       vignette: vignette(`chaine:${maillon.cle}`, maillon.carteId, nomDe(maillon, ctx), ctx),
       lien: i === 0 ? undefined : lienDuMaillon(maillon),
       annulee: annuleeDuMaillon(maillon),
+      annuleePar:
+        maillon.annuleePar && maillon.annuleeParId !== undefined
+          ? vignette(`annuleur:${maillon.cle}`, maillon.annuleeParId, nomNettoye(maillon.annuleePar), ctx)
+          : undefined,
       courante: r === rang,
     }
   })

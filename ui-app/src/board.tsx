@@ -231,7 +231,7 @@ import {
 } from './board/moteur'
 import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
-import { essaisOuverts } from './board/essais'
+import { essaiPhaseMechant, essaisOuverts } from './board/essais'
 import { VoletJournal } from './board/VoletJournal'
 import { JournalConsole } from './board/JournalConsole'
 import {
@@ -3501,6 +3501,18 @@ export function PagePartie({
       vivant = false
     }
   }, [])
+  // L'essai « Nouvelle phase du méchant » (10/10/2026), coché par compte dans
+  // /admin : faux tant que le serveur n'a pas répondu, comme ci-dessus.
+  const [phaseEssai, setPhaseEssai] = useState(false)
+  useEffect(() => {
+    let vivant = true
+    void essaiPhaseMechant().then((actif) => {
+      if (vivant) setPhaseEssai(actif)
+    })
+    return () => {
+      vivant = false
+    }
+  }, [])
   /**
    * LE FOND PREND LA COULEUR DU HEROS AFFICHE.
    *
@@ -4273,6 +4285,7 @@ export function PagePartie({
             // « Detaille », ou le cartouche pose A COTE DE L'ACTION du mode
             // « Sur la table ».
             presentation={sceneCentrale ? 'scene' : 'table'}
+            essai={phaseEssai}
             attendreBandeau={!bandeauPasse}
             // Distribution retiree en scene PC (D15), liste brute ailleurs.
             etapes={etapesPourLeCartouche.etapes}

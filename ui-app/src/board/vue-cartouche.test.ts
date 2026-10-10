@@ -11,6 +11,8 @@ import { titreEtape } from './deroule-textes'
 import {
   PASTILLES,
   bilanTroisColonnes,
+  compteurDesRevelations,
+  jaugeCritique,
   herosViseDe,
   pastilleDuTemps,
   pastilles,
@@ -746,5 +748,42 @@ describe('la chaine en texte pour le telephone (rapport Yarro n72)', () => {
     expect(sortiesDeLEtape(etapes, boom)).toEqual(['Stepford Cuckoos : défaussée'])
     expect(sortiesDeLEtape(etapes, runner)).toEqual([])
     expect(texteDeLaChaine([runner], 'r', (e) => e.cibleNom)).toBe('')
+  })
+})
+
+describe('ESSAI (10/10/2026) : étiquettes, état critique, compteur', () => {
+  it('une obligation porte « Ton obligation », une manigance annexe « Nouvelle manigance : 3 menaces »', () => {
+    const obligation = etape({ cle: 'r1', temps: 'revelation', titre: 'revelation', typeCarte: 'Obligation' })
+    expect(enRevelee(vueDeLEtape(obligation, contexte([obligation], 0))).etiquettes).toEqual(['Ton obligation'])
+    const annexe = etape({
+      cle: 'r2', temps: 'revelation', titre: 'revelation', typeCarte: 'EncounterSideScheme',
+      effets: [{ genre: 'menace', cible: 'Illegal Arms Factory', cible_id: 72, montant: 3, restant: 3 }],
+    })
+    expect(enRevelee(vueDeLEtape(annexe, contexte([annexe], 0))).etiquettes).toEqual(['Nouvelle manigance : 3 menaces'])
+  })
+
+  it('le Péril se lit dans le texte imprimé ; une traîtrise ordinaire n’a pas d’étiquette', () => {
+    const peril = etape({ cle: 'r3', temps: 'revelation', titre: 'revelation', typeCarte: 'Treachery', carteId: 7 })
+    const info = () => ({ renfort: false, texteImprime: ['Péril. Une fois révélée : …'] })
+    expect(enRevelee(vueDeLEtape(peril, contexte([peril], 0, { infoRevelee: info }))).etiquettes).toEqual([
+      'Péril : décide seul',
+    ])
+    const simple = etape({ cle: 'r4', temps: 'revelation', titre: 'revelation', typeCarte: 'Treachery' })
+    expect(enRevelee(vueDeLEtape(simple, contexte([simple], 0))).etiquettes).toBeUndefined()
+  })
+
+  it('critique : PV à 3 ou moins (pas à 0, le héros est déjà tombé), menace aux trois quarts du seuil', () => {
+    expect(jaugeCritique({ avant: 4, apres: 3, plafond: 10 }, 'pv')).toBe(true)
+    expect(jaugeCritique({ avant: 9, apres: 8, plafond: 10 }, 'pv')).toBe(false)
+    expect(jaugeCritique({ avant: 2, apres: 0, plafond: 10 }, 'pv')).toBe(false)
+    expect(jaugeCritique({ avant: 5, apres: 6, plafond: 8 }, 'menace')).toBe(true)
+    expect(jaugeCritique({ avant: 2, apres: 3, plafond: 8 }, 'menace')).toBe(false)
+  })
+
+  it('compteur : rang parmi les révélations, total = distribuées + ajouts, ajouts nommés', () => {
+    const a = etape({ cle: 'a', temps: 'revelation', titre: 'revelation', suivieDUnRenfort: true })
+    const b = etape({ cle: 'b', temps: 'revelation', titre: 'revelation', parSurge: true, renfortDe: 'Weapons Runner' })
+    expect(compteurDesRevelations([a, b], 'b', 1)).toEqual({ rang: 2, total: 2, ajouts: ['+1 Renfort (Weapons Runner)'] })
+    expect(compteurDesRevelations([a, b], 'absente', 1)).toBeUndefined()
   })
 })

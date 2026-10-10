@@ -1,0 +1,276 @@
+/* L'ESSAI « NOUVELLE PHASE DU MÉCHANT » (10/10/2026), réservé aux comptes
+   cochés dans /admin. Tout vit sous `.est-essai` : sans l'interrupteur, le
+   cartouche d'avant reste intact. Décisions : .planning/todos/
+   2026-10-09-phase-du-mechant-a-ameliorer.md (50 questions, maquette validée). */
+
+/* La carte en cours plus grande (~250 px, question 12). */
+.deroule-phase.est-scene.est-essai {
+  --grande-h: clamp(220px, calc(320px * var(--echelle, 1)), 380px);
+}
+
+/* --- La ligne du haut : le titre, puis compteur de cartes et « Réduire » --- */
+.deroule-phase.est-essai .essai-titre-ligne {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.deroule-phase.est-essai .essai-titre-ligne .deroule-titre-court {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.deroule-phase.est-essai .essai-outils {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deroule-phase.est-essai .essai-compteur {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  padding: 4px 12px;
+  border: 1px solid rgba(240, 185, 95, 0.55);
+  border-radius: 10px;
+  font-size: 0.82rem;
+  color: var(--menace, #f0b95f);
+  white-space: nowrap;
+}
+
+.deroule-phase.est-essai .essai-compteur small {
+  color: rgba(248, 250, 252, 0.8);
+  font-size: 0.72rem;
+}
+
+.deroule-phase.est-essai .essai-reduire {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(248, 250, 252, 0.25);
+  border-radius: 6px;
+  background: rgba(15, 18, 24, 0.6);
+  color: #f8fafc;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Réduit : la barre seule, la carte en cours dans son titre. */
+.deroule-phase.est-scene.est-essai.est-reduit {
+  min-height: 0;
+  inset: auto 0 12px 0;
+  padding: 10px 18px;
+}
+
+.deroule-phase.est-essai.est-reduit .deroule-corps,
+.deroule-phase.est-essai.est-reduit .deroule-boutons,
+.deroule-phase.est-essai.est-reduit .deroule-pastilles {
+  display: none;
+}
+
+/* --- Le calcul posé de l'attaque (questions 9, 41, 42) ---------------------- */
+.deroule-phase.est-essai .essai-calcul {
+  --vignette-h: clamp(110px, calc(140px * var(--echelle, 1)), 190px);
+}
+
+.deroule-phase.est-essai .essai-calcul .deroule-rangee-cartes {
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.deroule-phase.est-essai .essai-groupe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.deroule-phase.est-essai .essai-terme {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+/* La legende vide garde sinon une ligne fantome sous la carte. */
+.deroule-phase.est-essai .essai-terme .deroule-vignette::after {
+  content: none;
+}
+
+.deroule-phase.est-essai .essai-chiffre {
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 1.7rem;
+  line-height: 1;
+  color: #f8fafc;
+}
+
+.deroule-phase.est-essai .essai-sous {
+  max-width: 10em;
+  font-size: 0.74rem;
+  text-align: center;
+  color: rgba(248, 250, 252, 0.75);
+}
+
+.deroule-phase.est-essai .essai-operateur {
+  font-family: inherit;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: rgba(248, 250, 252, 0.85);
+}
+
+.deroule-phase.est-essai .essai-resultat {
+  align-self: center;
+}
+
+.deroule-phase.est-essai .essai-boite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  border: 2px solid #dc2626;
+  border-radius: 8px;
+  background: rgba(127, 29, 29, 0.55);
+}
+
+.deroule-phase.est-essai .essai-boite .deroule-resultat-texte {
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 1.6rem;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.deroule-phase.est-essai .essai-boite .deroule-jauge {
+  font-weight: 700;
+}
+
+/* PV ou menace critiques (question 44) : rouge qui bat. */
+.deroule-phase.est-essai .essai-resultat.est-critique .deroule-jauge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #b91c1c;
+  color: #fff;
+  animation: essai-pouls 1.2s ease-in-out infinite;
+}
+
+@keyframes essai-pouls {
+  50% {
+    box-shadow: 0 0 0 6px rgba(220, 38, 38, 0.35);
+  }
+}
+
+/* --- La chaîne : tampon « ANNULÉE » et la carte qui annule (question 7) ---- */
+.deroule-phase.est-essai .deroule-chaine {
+  --vignette-h: 96px;
+}
+
+.deroule-phase.est-essai .deroule-chaine-carte {
+  position: relative;
+}
+
+.deroule-phase.est-essai .essai-tampon {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  translate: -50% 0;
+  rotate: -14deg;
+  padding: 1px 8px;
+  border: 3px solid #dc2626;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.85);
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  color: #dc2626;
+  pointer-events: none;
+}
+
+.deroule-phase.est-essai .essai-annuleur {
+  --vignette-h: 46px;
+  position: absolute;
+  right: -14px;
+  top: 38%;
+  pointer-events: auto;
+}
+
+.deroule-phase.est-essai .essai-annuleur .deroule-vignette {
+  opacity: 1;
+  box-shadow: 0 0 0 2px #f0b95f;
+  border-radius: 3px;
+}
+
+/* --- Les étiquettes de la carte révélée (questions 26, 28, 45) ------------- */
+.deroule-phase.est-essai .essai-etiquettes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 6px;
+}
+
+.deroule-phase.est-essai .essai-etiquette {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f0b95f;
+  color: #1a1206;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* --- « Continuer · Espace » (question 32) ---------------------------------- */
+.deroule-phase.est-essai .essai-continuer {
+  min-height: 48px;
+  padding: 8px 26px;
+  font-size: 1.15rem;
+}
+
+.deroule-phase.est-essai .essai-continuer kbd,
+.deroule-phase.est-essai .deroule-suivant kbd {
+  margin-left: 6px;
+  font-family: inherit;
+  font-size: 0.72rem;
+  opacity: 0.8;
+}
+
+.deroule-phase.est-essai .essai-boosts {
+  color: rgba(248, 250, 252, 0.75);
+  font-size: 0.85rem;
+}
+
+/* --- Mode sobre : couleurs ternies du plateau, rien ne bat (question 47) --- */
+html[data-affichage='sobre'] .deroule-phase.est-essai .essai-boite {
+  border-color: #6c4a4a;
+  background: #3b2d2d;
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-essai .essai-resultat.est-critique .deroule-jauge {
+  background: #5c3f3f;
+  animation: none;
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-essai .essai-tampon {
+  border-color: #8a5a5a;
+  background: #d9d4cc;
+  color: #6c4a4a;
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-essai .essai-etiquette {
+  background: #b3a588;
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-essai .essai-compteur {
+  border-color: #8a7d64;
+  color: #b3a588;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deroule-phase.est-essai .essai-resultat.est-critique .deroule-jauge {
+    animation: none;
+  }
+}

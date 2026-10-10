@@ -132,6 +132,7 @@ function nomDOnglet(libelle: string): ReactNode {
 export function DeroulePhase({
   etapes,
   presentation = 'scene',
+  essai = false,
   attendreBandeau = false,
   identitePhase,
   identitePartie,
@@ -165,6 +166,13 @@ export function DeroulePhase({
   onEtapeAffichee,
 }: {
   etapes: EtapeDeroule[]
+  /**
+   * L'essai « Nouvelle phase du méchant » (10/10/2026, coché par compte dans
+   * /admin) : le cartouche du bas prend le nouveau rendu, et les boosts se
+   * retournent UN PAR UN au clic au lieu de s'enchainer seuls. Faux : rien ne
+   * change.
+   */
+  essai?: boolean
   /**
    * OU l'etape est racontee. Deux presentations, UNE SEULE mecanique.
    *
@@ -1243,6 +1251,8 @@ export function DeroulePhase({
   useEffect(() => {
     const total = etape?.boosts.length ?? 0
     if (boostsMontres === 0 || boostsMontres >= total) return
+    // L'essai les retourne au clic (« Continuer »), un par un.
+    if (essai && nouvelleScene) return
     const minuteur = window.setTimeout(
       () => setBoostsMontres((n) => n + 1),
       DELAI_BOOST_MS
@@ -1251,7 +1261,7 @@ export function DeroulePhase({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- meme raison :
     // `etape?.cle` et `etape?.boosts.length` suffisent a piloter le
     // minuteur, l'identite de `etape` ne doit pas le redeclencher.
-  }, [boostsMontres, etape?.cle, etape?.boosts.length])
+  }, [boostsMontres, etape?.cle, etape?.boosts.length, essai, nouvelleScene])
 
   // Le cartouche est-il a l'ecran ? Calcule ICI parce que les hooks ci-dessous
   // en dependent, et que la sortie `return null` qui l'applique vient bien plus
@@ -1541,6 +1551,8 @@ export function DeroulePhase({
         secondesFilet={secondesFilet}
         defaiteLocale={defaiteLocale}
         boostsMontres={boostsMontres}
+        essai={essai}
+        montrerBoostSuivant={essai ? () => setBoostsMontres((n) => n + 1) : undefined}
         tempsParDecision={tempsParDecision}
         pvMaxParNom={pvMaxParNom}
         carteScene={carteScene}

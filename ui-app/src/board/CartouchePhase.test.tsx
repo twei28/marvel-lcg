@@ -1098,3 +1098,87 @@ describe('pendant ton tour (D26) : le cartouche hors phase', () => {
     expect(corps()?.getAttribute('aria-label')).toBe('Rhino attaque Spider-Man')
   })
 })
+
+describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
+  const attaqueDeuxBoosts: EtapeDeroule = {
+    ...attaqueResolue,
+    cle: 'activation:9',
+    base: 1,
+    montant: 1,
+    restant: 3,
+    boosts: [
+      { cle: 'b1', nom: 'Sonic Boom', cibleId: 91, apport: 0, etoile: true },
+      { cle: 'b2', nom: 'Melter', cibleId: 92, apport: 0, etoile: true },
+    ],
+  }
+
+  it('sans l’interrupteur, rien ne change : ni classe, ni compteur, ni « Réduire »', () => {
+    monter({ etapes: [attaqueDeuxBoosts] })
+    expect(section()?.classList.contains('est-essai')).toBe(false)
+    expect(document.querySelector('.essai-outils')).toBeNull()
+    expect(document.querySelector('.essai-calcul')).toBeNull()
+  })
+
+  it('le calcul se pose entre les cartes : opérateurs, chiffres, résultat en boîte', () => {
+    monter({ etapes: [attaqueDeuxBoosts], essai: true, montrerBoostSuivant: vi.fn() })
+    expect(section()?.classList.contains('est-essai')).toBe(true)
+    const calcul = document.querySelector('.essai-calcul')
+    expect(calcul).not.toBeNull()
+    const operateurs = [...calcul!.querySelectorAll('.essai-operateur')].map((e) => e.textContent)
+    expect(operateurs).toEqual(['+', '+', '='])
+    expect([...calcul!.querySelectorAll('.essai-chiffre')].map((e) => e.textContent)).toEqual(['1', '0', '0'])
+    expect(calcul!.querySelector('.essai-resultat .deroule-resultat-texte')?.textContent).toBe('1 dégât subi')
+    // Spider-Man à 3 PV sur 10 : critique.
+    expect(calcul!.querySelector('.essai-resultat.est-critique')).not.toBeNull()
+  })
+
+  it('les boosts se retournent au clic : « Continuer » montre le suivant sans valider l’étape', () => {
+    const montrerBoostSuivant = vi.fn()
+    const { props } = monter({ etapes: [attaqueDeuxBoosts], essai: true, boostsMontres: 1, montrerBoostSuivant })
+    const bouton = document.querySelector<HTMLButtonElement>('button[data-boost-suivant]')
+    expect(bouton?.textContent).toContain('Continuer')
+    expect(screen.getByText('Boost 1 / 2 retourné')).toBeInTheDocument()
+    fireEvent.click(bouton!)
+    expect(montrerBoostSuivant).toHaveBeenCalledTimes(1)
+    expect(props.avancer).not.toHaveBeenCalled()
+  })
+
+  it('tous les boosts retournés : « Continuer » valide l’étape', () => {
+    const { props } = monter({ etapes: [attaqueDeuxBoosts], essai: true, boostsMontres: 2, montrerBoostSuivant: vi.fn() })
+    expect(document.querySelector('button[data-boost-suivant]')).toBeNull()
+    const bouton = document.querySelector<HTMLButtonElement>('button.deroule-suivant')
+    expect(bouton?.textContent).toContain('Continuer')
+    fireEvent.click(bouton!)
+    expect(props.avancer).toHaveBeenCalledTimes(1)
+  })
+
+  it('« Réduire » replie le panneau en barre, un second clic le rouvre', () => {
+    monter({ etapes: [attaqueDeuxBoosts], essai: true })
+    const reduire = document.querySelector<HTMLButtonElement>('.essai-reduire')!
+    fireEvent.click(reduire)
+    expect(section()?.classList.contains('est-reduit')).toBe(true)
+    fireEvent.click(reduire)
+    expect(section()?.classList.contains('est-reduit')).toBe(false)
+  })
+
+  it('la chaîne du n°72 : tampon « ANNULÉE », la carte qui annule, et le compteur de cartes', () => {
+    const coureur: EtapeDeroule = {
+      cle: 'rev:1', temps: 'revelation', titre: 'revelation', regle: '', carteId: 65, cibleNom: 'Weapons Runner',
+      boosts: [], suivieDUnRenfort: true,
+    }
+    const vengeance: EtapeDeroule = {
+      cle: 'rev:2', temps: 'revelation', titre: 'revelation', regle: '', carteId: 66, cibleNom: "Klaw's Vengeance",
+      boosts: [], parSurge: true, renfortDe: 'Weapons Runner', annuleePar: 'Stepford Cuckoos', annuleeParId: 32,
+    }
+    const boom: EtapeDeroule = {
+      cle: 'rev:3', temps: 'revelation', titre: 'revelation', regle: '', carteId: 69, cibleNom: 'Sonic Boom',
+      boosts: [], reveleePar: 'Stepford Cuckoos', reveleeParId: 32,
+    }
+    monter({ etapes: [coureur, vengeance, boom], index: 2, essai: true, cartesDistribuees: 1 })
+    expect(document.querySelector('.essai-tampon')?.textContent).toBe('ANNULÉE')
+    expect(document.querySelector('.essai-annuleur [data-card-id], .essai-annuleur .deroule-vignette')).not.toBeNull()
+    expect(document.querySelector('.essai-compteur b')?.textContent).toBe('Carte 3 / 3')
+    expect(document.querySelector('.essai-compteur small')?.textContent).toContain('Renfort (Weapons Runner)')
+    expect(document.querySelector('.essai-compteur small')?.textContent).toContain('Stepford Cuckoos')
+  })
+})
