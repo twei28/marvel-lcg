@@ -68,6 +68,7 @@ import {
   type ContexteVue,
   type InfoRevelee,
   type Jauge,
+  type MaillonChaine,
   type Pastille,
   type Vignette,
   type VueBilan,
@@ -262,10 +263,12 @@ function CarteRevelee({
 }) {
   const jauge = texteJauge(revelee.jauge)
   const classes = ['deroule-revelee']
-  if (revelee.renfort || revelee.renfortInconnu) classes.push('a-renfort')
+  if (revelee.renfort || revelee.renfortInconnu || revelee.remplacement) classes.push('a-renfort')
+  if (revelee.chaine) classes.push('a-chaine')
   if (grisee) classes.push('est-grisee')
   return (
     <div className={classes.join(' ')} aria-hidden={grisee || undefined}>
+      {revelee.chaine ? <ChaineRevelee chaine={revelee.chaine} /> : null}
       <VignetteVue vignette={revelee.carte} grande />
       {question ?? (
         <div className="deroule-revelee-texte">
@@ -294,7 +297,35 @@ function CarteRevelee({
           </span>
         </>
       ) : null}
+      {revelee.remplacement ? (
+        <>
+          <span className="deroule-renfort-fleche">{`→ ${revelee.lienRemplacement ?? ''}`}</span>
+          <VignetteVue vignette={revelee.remplacement} grande />
+        </>
+      ) : null}
     </div>
+  )
+}
+
+/** La chaine Renfort / annulation / remplacement, en petites vignettes (n72). */
+function ChaineRevelee({ chaine }: { chaine: MaillonChaine[] }) {
+  return (
+    <ol className="deroule-chaine" aria-label={t('Enchaînement des cartes')}>
+      {chaine.map((maillon) => {
+        const classes = ['deroule-chaine-maillon']
+        if (maillon.courante) classes.push('est-courante')
+        if (maillon.annulee) classes.push('est-annulee')
+        return (
+          <li key={maillon.vignette.cle} className={classes.join(' ')}>
+            {maillon.lien ? <span className="deroule-chaine-lien">{`→ ${maillon.lien}`}</span> : null}
+            <span className="deroule-chaine-carte">
+              <VignetteVue vignette={maillon.vignette} />
+              {maillon.annulee ? <span className="deroule-chaine-annulee">{maillon.annulee}</span> : null}
+            </span>
+          </li>
+        )
+      })}
+    </ol>
   )
 }
 
@@ -535,7 +566,13 @@ function scansDe(corps: VueCorps | undefined, question: VueSousCadre | undefined
       rangee(corps.rangee)
       break
     case 'revelee':
-      vignettes([corps.carte, corps.renfort, ...(corps.question?.choix ?? [])])
+      vignettes([
+        corps.carte,
+        corps.renfort,
+        corps.remplacement,
+        ...(corps.chaine ?? []).map((maillon) => maillon.vignette),
+        ...(corps.question?.choix ?? []),
+      ])
       break
     case 'stade':
       vignettes([corps.avant, corps.apres])

@@ -657,3 +657,94 @@ describe('D14 bis : le compteur des sbires vient du moteur (05/10/2026)', () => 
     expect(vue[2]?.compteur).toBeUndefined()
   })
 })
+
+describe('la chaine en direct : Renfort, annulation, remplacement (rapport Yarro n72)', () => {
+  const runner = etape({
+    cle: 'revelation:3:0:65', temps: 'revelation', titre: 'revelation', carteId: 65, cibleNom: 'Weapons Runner',
+    suivieDUnRenfort: true,
+  })
+  const vengeance = etape({
+    cle: 'revelation:3:1:66', temps: 'revelation', titre: 'revelation', carteId: 66, cibleNom: "Klaw's Vengeance",
+    parSurge: true, renfortDe: 'Weapons Runner', annuleePar: 'Stepford Cuckoos', annuleeParId: 32,
+    annuleeParSort: 'defaussee', suivieDUnRemplacement: true,
+  })
+  const sonicBoom = etape({
+    cle: 'revelation:3:2:69', temps: 'revelation', titre: 'revelation', carteId: 69, cibleNom: 'Sonic Boom',
+    reveleePar: 'Stepford Cuckoos', reveleeParId: 32,
+  })
+  const chaine = [runner, vengeance, sonicBoom]
+
+  it('chaque carte de la chaine montre les trois maillons, la carte en cours marquee', () => {
+    for (const [rang, e] of chaine.entries()) {
+      const vue = enRevelee(vueDeLEtape(e, contexte(chaine, rang)))
+      expect(vue.chaine?.map((m) => m.vignette.nom)).toEqual(['Weapons Runner', "Klaw's Vengeance", 'Sonic Boom'])
+      expect(vue.chaine?.map((m) => m.courante)).toEqual([0, 1, 2].map((r) => r === rang))
+    }
+    const vue = enRevelee(vueDeLEtape(sonicBoom, contexte(chaine, 2)))
+    expect(vue.chaine?.map((m) => m.lien)).toEqual([undefined, 'Renfort', 'Révélée par Stepford Cuckoos'])
+    expect(vue.chaine?.map((m) => m.annulee)).toEqual([undefined, 'Annulée par Stepford Cuckoos', undefined])
+  })
+
+  it('la carte annulee : la remplacante a cote, et la sortie de Stepford Cuckoos dite', () => {
+    const vue = enRevelee(vueDeLEtape(vengeance, contexte(chaine, 1)))
+    expect(vue.remplacement).toMatchObject({ carteId: 69, nom: 'Sonic Boom' })
+    expect(vue.lienRemplacement).toBe('Révélée par Stepford Cuckoos')
+    expect(vue.lignes).toContain('→ Annulée par Stepford Cuckoos')
+    expect(vue.lignes).toContain('Stepford Cuckoos : défaussée')
+  })
+
+  it('la remplacante redit la sortie de Stepford Cuckoos (l annulee est deja passee a l ecran)', () => {
+    const vue = enRevelee(vueDeLEtape(sonicBoom, contexte(chaine, 2)))
+    expect(vue.lignes[0]).toBe('Stepford Cuckoos : défaussée')
+    // Le texte imprime reste, sous la ligne.
+    const avecTexte = enRevelee(
+      vueDeLEtape(sonicBoom, contexte(chaine, 2, { infoRevelee: () => ({ renfort: false, texteImprime: ['Une fois révélée : …'] }) }))
+    )
+    expect(avecTexte.lignes).toEqual(['Stepford Cuckoos : défaussée', 'Une fois révélée : …'])
+  })
+
+  it('la remplacante se titre par ce qui l a revelee', () => {
+    const vue = enRevelee(vueDeLEtape(sonicBoom, contexte(chaine, 2)))
+    expect(vue.surtitreRenfort).toBe('Révélée par Stepford Cuckoos')
+    expect(titreCourt(sonicBoom, contexte(chaine, 2))).toBe('Révélée par Stepford Cuckoos')
+  })
+
+  it('en anglais', () => {
+    window.localStorage.setItem('marvel-langue', 'en')
+    const vue = enRevelee(vueDeLEtape(vengeance, contexte(chaine, 1)))
+    expect(vue.lienRemplacement).toBe('Revealed by Stepford Cuckoos')
+    expect(vue.lignes).toContain('Stepford Cuckoos: discarded')
+  })
+
+  it('⚠ TEMOIN : une carte seule, ou un Renfort simple, n a pas de chaine', () => {
+    const seule = etape({ cle: 'revelation:3:0:88', temps: 'revelation', titre: 'revelation', carteId: 88, cibleNom: 'Assaut' })
+    expect(enRevelee(vueSeule(seule)).chaine).toBeUndefined()
+    const suite = etape({ ...vengeance, annuleePar: undefined, annuleeParId: undefined, annuleeParSort: undefined, suivieDUnRemplacement: undefined })
+    expect(enRevelee(vueDeLEtape(runner, contexte([runner, suite], 0))).chaine).toBeUndefined()
+  })
+
+  it('une annulation suivie de son remplacement suffit a former une chaine (n71)', () => {
+    const coupe = etape({ ...vengeance, parSurge: undefined, renfortDe: undefined })
+    const vue = enRevelee(vueDeLEtape(coupe, contexte([coupe, sonicBoom], 0)))
+    expect(vue.chaine?.map((m) => m.vignette.nom)).toEqual(["Klaw's Vengeance", 'Sonic Boom'])
+  })
+})
+
+describe('la chaine en texte pour le telephone (rapport Yarro n72)', () => {
+  it('une ligne, la carte annulee marquee, et la sortie de Stepford sur la remplacante', async () => {
+    const { texteDeLaChaine, sortiesDeLEtape } = await import('./vue-cartouche')
+    const runner = etape({ cle: 'r', temps: 'revelation', titre: 'revelation', cibleNom: 'Weapons Runner', suivieDUnRenfort: true })
+    const vengeance = etape({
+      cle: 'v', temps: 'revelation', titre: 'revelation', cibleNom: "Klaw's Vengeance", parSurge: true,
+      annuleePar: 'Stepford Cuckoos', annuleeParId: 32, annuleeParSort: 'defaussee', suivieDUnRemplacement: true,
+    })
+    const boom = etape({ cle: 's', temps: 'revelation', titre: 'revelation', cibleNom: 'Sonic Boom', reveleePar: 'Stepford Cuckoos', reveleeParId: 32 })
+    const etapes = [runner, vengeance, boom]
+    expect(texteDeLaChaine(etapes, 's', (e) => e.cibleNom)).toBe(
+      "Weapons Runner → Renfort → Klaw's Vengeance (Annulée par Stepford Cuckoos) → Révélée par Stepford Cuckoos → Sonic Boom"
+    )
+    expect(sortiesDeLEtape(etapes, boom)).toEqual(['Stepford Cuckoos : défaussée'])
+    expect(sortiesDeLEtape(etapes, runner)).toEqual([])
+    expect(texteDeLaChaine([runner], 'r', (e) => e.cibleNom)).toBe('')
+  })
+})

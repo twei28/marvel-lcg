@@ -16,7 +16,13 @@
 // tait, une valeur presente s'affiche telle quelle, signe compris.
 
 import type { CardKind, ScanCardProps } from '../components/ScanCard'
-import { compteurDeLEtape, type EtapeDeroule, type TempsPhase } from './deroule-phase'
+import {
+  compteurDeLEtape,
+  nomNettoye,
+  precedenteAnnuleePar,
+  type EtapeDeroule,
+  type TempsPhase,
+} from './deroule-phase'
 import {
   libelleDeStatut,
   surtitreEtape,
@@ -24,6 +30,7 @@ import {
   texteActivationAnnulee,
   texteConsequence,
   texteEffet,
+  texteSortieAnnulation,
   titreEtape,
 } from './deroule-textes'
 import { ONGLETS, coupsDe, resumeOnglet } from './frise-phase'
@@ -240,6 +247,25 @@ export type VueRevelee = {
   /** Question posee par la carte, a droite (D18) : posee par le composant. */
   question?: QuestionCarte
   surtitreRenfort?: string
+  /** La carte revelee A LA PLACE de celle-ci, annulee (Stepford Cuckoos, n72). */
+  remplacement?: Vignette
+  /** « Révélée par Stepford Cuckoos », au-dessus de la fleche vers `remplacement`. */
+  lienRemplacement?: string
+  /**
+   * Toute la chaine dont la carte fait partie, dans l'ordre (rapport Yarro n72) :
+   * Weapons Runner → Renfort → Klaw's Vengeance [annulée] → Sonic Boom. Absente
+   * pour une carte seule.
+   */
+  chaine?: MaillonChaine[]
+}
+
+export type MaillonChaine = {
+  vignette: Vignette
+  /** Le lien depuis le maillon precedent : « Renfort », « Révélée par X ». */
+  lien?: string
+  /** « Annulée par X » quand l'effet de cette carte a ete annule. */
+  annulee?: string
+  courante: boolean
 }
 
 export type VueStade = {
@@ -410,7 +436,9 @@ export function titreCourt(etape: EtapeDeroule, ctx: ContexteVue): string {
     }
     case 'revelation': {
       // Une carte enchainee par Renfort se dit par ce qui l'a amenee (D17) :
-      // la carte elle-meme est en grand juste dessous.
+      // la carte elle-meme est en grand juste dessous. Meme regle pour une
+      // carte de remplacement (« Révélée par Stepford Cuckoos », n72).
+      if (etape.reveleePar) return surtitreEtape(etape)
       if (etape.parSurge) return etape.renfortDe ? t('Renfort de %1').replace('%1', etape.renfortDe) : t('Renfort')
       const nom = etape.cibleNom || t('Carte révélée')
       const genre = etape.carteId !== undefined ? ctx.carteScene?.(etape.carteId, true)?.kind : undefined
@@ -598,6 +626,9 @@ function vueRevelee(etape: EtapeDeroule, ctx: ContexteVue): VueRevelee {
   // lieu de resume, plutot qu'un cote droit vide (decision du 05/10/2026).
   const infoCarteRevelee = etape.carteId !== undefined ? ctx.infoRevelee?.(etape.carteId) : undefined
   if (lignes.length === 0 && infoCarteRevelee?.texteImprime?.length) lignes.push(...infoCarteRevelee.texteImprime)
+  const sorties = sortiesDeLEtape(ctx.etapes, etape)
+  if (etape.reveleePar) lignes.unshift(...sorties)
+  else lignes.push(...sorties)
 
   // Une jauge seulement quand la carte n'a fait qu'UNE chose mesuree : avec
   // deux effets, laquelle montrer serait un choix invente.
@@ -627,6 +658,12 @@ function vueRevelee(etape: EtapeDeroule, ctx: ContexteVue): VueRevelee {
   // n'est pas revelee, une case vide la tient (la carte a le mot-cle).
   const renfortInconnu = renfort === undefined && infoCarteRevelee?.renfort === true ? true : undefined
 
+  const position = ctx.etapes.findIndex((autre) => autre.cle === etape.cle)
+  const suivanteRemplacement = position === -1 ? undefined : remplacementDe(ctx.etapes, position)
+  const remplacement = suivanteRemplacement
+    ? vignette(`remplacement:${suivanteRemplacement.cle}`, suivanteRemplacement.carteId, nomDe(suivanteRemplacement, ctx), ctx)
+    : undefined
+
   return {
     genre: 'revelee',
     carte,
@@ -636,7 +673,137 @@ function vueRevelee(etape: EtapeDeroule, ctx: ContexteVue): VueRevelee {
     renfort,
     renfortInconnu,
     surtitreRenfort: surtitreEtape(etape) || undefined,
+    remplacement,
+    lienRemplacement: suivanteRemplacement ? surtitreEtape(suivanteRemplacement) || undefined : undefined,
+    chaine: position === -1 ? undefined : chaineDe(ctx.etapes, position, ctx),
   }
+}
+
+/**
+ * « Stepford Cuckoos : défaussée » (n72) : sur la carte annulee, et aussi sur sa
+ * remplacante. Le panneau retient le moteur jusqu'au « Suivant » : l'annulation
+ * n'arrive a l'ecran qu'avec la carte de remplacement.
+ */
+export function sortiesDeLEtape(etapes: EtapeDeroule[], etape: EtapeDeroule): string[] {
+  const propre = texteSortieAnnulation(etape)
+  if (propre) return [propre]
+  const rang = etapes.findIndex((autre) => autre.cle === etape.cle)
+  if (!etape.reveleePar || rang === -1) return []
+  const annulee = precedenteAnnuleePar(etapes, rang, etapes[rang])
+  const sortie = annulee ? texteSortieAnnulation(annulee) : ''
+  return sortie ? [sortie] : []
+}
+
+function nomDe(etape: EtapeDeroule, ctx: ContexteVue): string | undefined {
+  return (etape.carteId !== undefined ? ctx.nomFr?.(etape.carteId) : undefined) ?? etape.cibleNom
+}
+
+/** La revelation qui REMPLACE celle du rang donne (`reveleePar`), si elle existe. */
+function remplacementDe(etapes: EtapeDeroule[], rang: number): EtapeDeroule | undefined {
+  if (!etapes[rang]?.annuleePar) return undefined
+  for (let apres = rang + 1; apres < etapes.length; apres++) {
+    const suivante = etapes[apres]
+    if (suivante.titre === 'revelation' && suivante.reveleePar && precedenteAnnuleePar(etapes, apres, suivante) === etapes[rang]) {
+      return suivante
+    }
+  }
+  return undefined
+}
+
+/** La revelation que suit celle du rang donne par Renfort (`relierLesRenforts`). */
+function renfortDe(etapes: EtapeDeroule[], rang: number): EtapeDeroule | undefined {
+  if (!etapes[rang]?.suivieDUnRenfort) return undefined
+  return etapes.slice(rang + 1).find((autre) => autre.titre === 'revelation' && autre.parSurge)
+}
+
+/** La revelation dont celle du rang donne est la suite (Renfort ou remplacement). */
+function maillonPrecedent(etapes: EtapeDeroule[], rang: number): number {
+  const etape = etapes[rang]
+  if (etape.titre !== 'revelation') return -1
+  if (etape.reveleePar) {
+    const annulee = precedenteAnnuleePar(etapes, rang, etape)
+    return annulee ? etapes.indexOf(annulee) : -1
+  }
+  if (!etape.parSurge) return -1
+  for (let avant = rang - 1; avant >= 0; avant--) {
+    const precedente = etapes[avant]
+    if (precedente.titre !== 'revelation') continue
+    return renfortDe(etapes, avant) === etape ? avant : -1
+  }
+  return -1
+}
+
+function maillonSuivant(etapes: EtapeDeroule[], rang: number): number {
+  const suivante = remplacementDe(etapes, rang) ?? renfortDe(etapes, rang)
+  return suivante ? etapes.indexOf(suivante) : -1
+}
+
+/**
+ * LA CHAINE EN DIRECT (rapport Yarro n72, 09/10/2026) : la carte et celles
+ * qu'elle a amenees ou qui l'ont amenee, une vignette chacune. Une carte
+ * seule, ou un Renfort simple a deux cartes, n'a pas de chaine.
+ */
+function chaineDe(etapes: EtapeDeroule[], rang: number, ctx: ContexteVue): MaillonChaine[] | undefined {
+  const rangs = rangsDeLaChaine(etapes, rang)
+  if (!rangs) return undefined
+  return rangs.map((r, i) => {
+    const maillon = etapes[r]
+    return {
+      vignette: vignette(`chaine:${maillon.cle}`, maillon.carteId, nomDe(maillon, ctx), ctx),
+      lien: i === 0 ? undefined : lienDuMaillon(maillon),
+      annulee: annuleeDuMaillon(maillon),
+      courante: r === rang,
+    }
+  })
+}
+
+function lienDuMaillon(maillon: EtapeDeroule): string | undefined {
+  return (maillon.reveleePar ? surtitreEtape(maillon) : t('Renfort')) || undefined
+}
+
+function annuleeDuMaillon(maillon: EtapeDeroule): string | undefined {
+  return maillon.annuleePar
+    ? t('Annulée par %1').replace('%1', nomNettoye(maillon.annuleePar) ?? maillon.annuleePar)
+    : undefined
+}
+
+/**
+ * La chaine en une ligne, pour l'ancien rendu du telephone (D36) : « Weapons
+ * Runner → Renfort → Klaw's Vengeance (Annulée par Stepford Cuckoos) →
+ * Révélée par Stepford Cuckoos → Sonic Boom ». Vide sans chaine.
+ */
+export function texteDeLaChaine(etapes: EtapeDeroule[], cle: string, nom: (etape: EtapeDeroule) => string | undefined): string {
+  const rang = etapes.findIndex((autre) => autre.cle === cle)
+  const rangs = rang === -1 ? undefined : rangsDeLaChaine(etapes, rang)
+  if (!rangs) return ''
+  return rangs
+    .map((r, i) => {
+      const maillon = etapes[r]
+      const annulee = annuleeDuMaillon(maillon)
+      const carte = `${nom(maillon) ?? maillon.cibleNom ?? '?'}${annulee ? ` (${annulee})` : ''}`
+      return i === 0 ? carte : `→ ${lienDuMaillon(maillon) ?? ''} → ${carte}`
+    })
+    .join(' ')
+}
+
+/** Les rangs de la chaine dont la carte du rang donne fait partie, dans l'ordre. */
+function rangsDeLaChaine(etapes: EtapeDeroule[], rang: number): number[] | undefined {
+  let debut = rang
+  for (let garde = 0; garde < etapes.length; garde++) {
+    const precedent = maillonPrecedent(etapes, debut)
+    if (precedent === -1 || precedent >= debut) break
+    debut = precedent
+  }
+  const rangs: number[] = [debut]
+  for (let garde = 0; garde < etapes.length; garde++) {
+    const suivant = maillonSuivant(etapes, rangs[rangs.length - 1])
+    if (suivant === -1 || rangs.includes(suivant)) break
+    rangs.push(suivant)
+  }
+  // Un Renfort simple (deux cartes) se dit deja par la fleche a droite.
+  const avecRemplacement = rangs.some((r) => etapes[r].annuleePar || etapes[r].reveleePar)
+  if (rangs.length < 2 || (rangs.length < 3 && !avecRemplacement)) return undefined
+  return rangs
 }
 
 /**

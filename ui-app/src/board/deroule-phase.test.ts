@@ -1895,3 +1895,45 @@ describe('le fait Sonne et le total des sbires', () => {
     expect(compteurDeLEtape([sbire('a')], 0)).toBeUndefined()
   })
 })
+
+describe('la carte de remplacement (rapports Yarro n71 et n72, 09/10/2026)', () => {
+  // Partie n72 : Weapons Runner (Surge) revele Klaw's Vengeance, annulee par
+  // Stepford Cuckoos qui part a la defausse (dernier psi) et revele Sonic Boom.
+  const base = { genre: 'revelation' as const, phase: 'Reveal Encounter Cards', round_id: 3, joueur: 0, joueur_nom: 'Storm' }
+  const runner: FaitRevelation = { ...base, carte: 'Weapons Runner', carte_id: 65, type: 'Minion' }
+  const vengeance: FaitRevelation = {
+    ...base, carte: "Klaw's Vengeance", carte_id: 66, par_surge: true,
+    annulee_par: 'Stepford Cuckoos', annulee_par_id: 32, annulee_par_sort: 'defaussee',
+  }
+  const sonicBoom: FaitRevelation = {
+    ...base, carte: 'Sonic Boom', carte_id: 69, revelee_par: 'Stepford Cuckoos', revelee_par_id: 32,
+  }
+  const attaqueKlaw = attaque({
+    phase: 'Reveal Encounter Cards', round_id: 3, auteur: 'Klaw', auteur_id: 57, cible: 'Storm', cible_id: 1,
+    base: 2, boost: 0, defense: 0, inflige: 2, subi: 2, restant: 8, boosts: [],
+    cause: 'Sonic Boom', cause_id: 69,
+  })
+
+  it('lit revelee_par, et relie la carte annulee a sa remplacante', () => {
+    const etapes = etapesDeroule([runner, vengeance, sonicBoom], [], 3, new Set([57]))
+    const [r, v, s] = etapes.filter((e) => e.titre === 'revelation')
+    expect(r.suivieDUnRenfort).toBe(true)
+    expect(v).toMatchObject({ parSurge: true, renfortDe: 'Weapons Runner', annuleePar: 'Stepford Cuckoos', annuleeParSort: 'defaussee', suivieDUnRemplacement: true })
+    expect(s).toMatchObject({ reveleePar: 'Stepford Cuckoos', reveleeParId: 32 })
+    expect(s.parSurge).toBeUndefined()
+    expect(s.renfortDe).toBeUndefined()
+  })
+
+  it('l attaque causee par la carte de remplacement se range sous elle, pas sous l annulee', () => {
+    const etapes = etapesDeroule([runner, vengeance, sonicBoom, attaqueKlaw], [], 3, new Set([57]))
+    const revelees = etapes.filter((e) => e.titre === 'revelation')
+    expect(revelees.find((e) => e.cibleNom === 'Sonic Boom')?.consequences?.map((c) => c.titre)).toEqual(['attaque'])
+    expect(revelees.find((e) => e.cibleNom === "Klaw's Vengeance")?.consequences).toBeUndefined()
+  })
+
+  it('⚠ TEMOIN : sans annulation par la meme carte, aucun lien de remplacement', () => {
+    const autre = { ...vengeance, annulee_par: 'Black Widow', annulee_par_id: 41 }
+    const etapes = etapesDeroule([runner, autre, sonicBoom], [], 3, new Set([57]))
+    expect(etapes.some((e) => e.suivieDUnRemplacement)).toBe(false)
+  })
+})

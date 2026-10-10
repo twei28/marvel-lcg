@@ -138,6 +138,134 @@ class PlayerAction:
             pass
 
     @staticmethod
+    def _RevelationsEnCours(world: 'World') -> 'List[Dict[str, Any]]':
+        """Pile des revelations de la phase du mechant en cours de resolution.
+
+        Une carte revelee PAR UNE AUTRE (Black Widow 01075 et les cartes qui
+        appellent `RevealEncounterDeckTopCard`) se resout a l'interieur de la
+        premiere : sans cette pile, elle n'avait aucune etape et ses effets
+        tombaient dans la photo de la carte annulee (rapport Yarro n71).
+        """
+        pile = getattr(world, '_revelations_en_cours', None)
+        if pile is None:
+            pile = []
+            setattr(world, '_revelations_en_cours', pile)
+        return pile
+
+    @staticmethod
+    def DebuterRevelationImbriquee(player: 'Player', face: 'CardFace',
+                                   reveal_message: 'Message.WhenPlayerRevealCard',
+                                   is_by_flipping: bool,
+                                   by_effect: 'Effect|None') -> bool:
+        """Une carte rencontre revelee pendant la phase du mechant HORS de la
+        boucle de `RevealEncounterCards` : inscrite avec la carte qui l'a
+        revelee (`revelee_par`), ou `par_surge` quand c'est un Renfort. La
+        photo de la revelation en cours est figee avant elle. Appelee AVANT
+        les interruptions de la carte, sous garde. Vrai si le fait est inscrit."""
+        try:
+            return PlayerAction._DebuterRevelationImbriquee(player, face, reveal_message,
+                                                            is_by_flipping, by_effect)
+        except Exception:
+            return False
+
+    @staticmethod
+    def _DebuterRevelationImbriquee(player: 'Player', face: 'CardFace',
+                                    reveal_message: 'Message.WhenPlayerRevealCard',
+                                    is_by_flipping: bool,
+                                    by_effect: 'Effect|None') -> bool:
+        from game.card.face.base.card_encounter import EncounterCard
+        from game.effect.rule import GameRule, Surge
+        from game.card.face.card_type import MainScheme
+        world = player.world
+        if is_by_flipping or not world.phase.IsVillainPhase():
+            return False
+        # Une CARTE qui en revele une autre (capacite), ou un Renfort. Une regle
+        # du jeu qui revele directement (`Puzzle.Reveal`, mise en place) se tait,
+        # comme avant : seule l'etape 4 journalise les siennes.
+        if by_effect is None or (isinstance(by_effect, GameRule) and not isinstance(by_effect, Surge)):
+            return False
+        if not EncounterCard.IsType(face) or MainScheme.IsType(face):
+            return False
+        if not reveal_message.IsFromEncounterDeck():
+            return False
+        pile = PlayerAction._RevelationsEnCours(world)
+        if any(entree['face'] is face for entree in pile):
+            return False
+        if pile and pile[-1]['effets'] is None:
+            pile[-1]['effets'] = PlayerAction._EffetsDeLaRevelation(pile[-1]['avant'], world)
+        # L'annulation de la carte en cours est connue DES MAINTENANT (la carte
+        # qui annule revele la suivante apres avoir annule) : le panneau en
+        # direct doit la montrer pendant que la remplacante se resout, pas
+        # seulement a la fin de la carte annulee (rapport n72).
+        if pile and 'fait' in pile[-1]:
+            parent = pile[-1]
+            annulation = PlayerAction._Annulation(parent['face'])
+            if annulation:
+                maj = {**parent['fait'], **annulation}
+                if parent['effets']:
+                    maj['effets'] = parent['effets']
+                PlayerAction._JournaliserPhaseDuMechant(parent['joueur'], world.GetPhaseText(), maj)
+        par_surge = isinstance(by_effect, Surge) or bool(getattr(face.card, 'revele_par_surge', False))
+        source = None if par_surge or by_effect is None else getattr(by_effect, 'this', None)
+        fait = {
+            'genre': 'revelation',
+            'carte': face.name,
+            'carte_id': face.card.object_id,
+            'fait_id': (f"revelation:{world.round_id}:{face.card.object_id}"
+                        f":{len(world.stat.faits_mechant)}"),
+            'par_surge': par_surge,
+            'type': PlayerAction._TypeDeLaCarte(face),
+            **({'revelee_par': source.name, 'revelee_par_id': source.card.object_id}
+               if source is not None else {}),
+        }
+        PlayerAction._JournaliserPhaseDuMechant(player, world.GetPhaseText(), fait)
+        face.card.annulee_par = None
+        face.card.annulee_par_face = None
+        pile.append({'face': face, 'avant': PlayerAction._PhotoDeLaTable(world),
+                     'effets': None, 'fait': fait, 'joueur': player, 'imbriquee': True})
+        return True
+
+    @staticmethod
+    def _Annulation(face: 'CardFace') -> 'Dict[str, Any]':
+        """Les champs « Annulee par X » d'un fait de revelation, et ce qu'est
+        devenue la carte X quand l'annulation l'a fait quitter le jeu (Stepford
+        Cuckoos a son dernier psi, rapport Yarro n72)."""
+        annulee = getattr(face.card, 'annulee_par', None)
+        if not annulee:
+            return {}
+        champs: Dict[str, Any] = {'annulee_par': annulee[0], 'annulee_par_id': annulee[1]}
+        source = getattr(face.card, 'annulee_par_face', None)
+        if source is not None and not source.IsInPlay():
+            area = getattr(source.card, 'area', None)
+            defaussee = bool(area is not None and area.flags.is_discards)
+            champs['annulee_par_sort'] = 'defaussee' if defaussee else 'hors_jeu'
+        return champs
+
+    @staticmethod
+    def FinirRevelationImbriquee(face: 'CardFace') -> None:
+        """Fin de la resolution d'une carte inscrite par
+        `DebuterRevelationImbriquee` : le fait est reinscrit a sa place
+        avec ce que la carte a change."""
+        try:
+            world = face.card.world
+            pile = PlayerAction._RevelationsEnCours(world)
+            if not pile or pile[-1]['face'] is not face or not pile[-1].get('imbriquee'):
+                return
+            entree = pile.pop()
+            effets = entree['effets']
+            if effets is None:
+                effets = PlayerAction._EffetsDeLaRevelation(entree['avant'], world)
+            fait = dict(entree['fait'])
+            annulee = PlayerAction._Annulation(face)
+            fait.update(annulee)
+            if effets or annulee:
+                if effets:
+                    fait['effets'] = effets
+                PlayerAction._JournaliserPhaseDuMechant(entree['joueur'], world.GetPhaseText(), fait)
+        except Exception:
+            pass
+
+    @staticmethod
     def _PhotoDeLaTable(world: 'World') -> 'Dict[str, Any]':
         """Ce qu'une carte revelee peut changer, photographie AVANT puis APRES.
 
@@ -323,12 +451,23 @@ class PlayerAction:
             PlayerAction._JournaliserPhaseDuMechant(player, 'Reveal Encounter Cards', revelation)
             avant = PlayerAction._PhotoDeLaTable(world)
             face.card.annulee_par = None
-            face.Reveal(player, GameRule(face))
-            effets = PlayerAction._EffetsDeLaRevelation(avant, world)
+            face.card.annulee_par_face = None
+            pile = PlayerAction._RevelationsEnCours(world)
+            en_cours = {'face': face, 'avant': avant, 'effets': None, 'fait': revelation, 'joueur': player}
+            pile.append(en_cours)
+            try:
+                face.Reveal(player, GameRule(face))
+            finally:
+                if en_cours in pile:
+                    pile.remove(en_cours)
+            # Figee par une carte revelee a l'interieur de celle-ci (n71) : ce
+            # qui suit appartient a la carte de remplacement, pas a celle-ci.
+            effets = en_cours['effets']
+            if effets is None:
+                effets = PlayerAction._EffetsDeLaRevelation(avant, world)
             # « → Annulée par X » (04/10/2026) : posee par WhenEffectBeCancel.
-            annulee = getattr(face.card, 'annulee_par', None)
-            if annulee:
-                revelation = {**revelation, 'annulee_par': annulee[0], 'annulee_par_id': annulee[1]}
+            annulee = PlayerAction._Annulation(face)
+            revelation = {**revelation, **annulee}
             if effets or annulee:
                 PlayerAction._JournaliserPhaseDuMechant(
                     player, 'Reveal Encounter Cards',

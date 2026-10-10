@@ -76,7 +76,13 @@ import './boutons-bd.css'
 import { CartouchePhase, type CartouchePhaseProps } from './CartouchePhase'
 import { boutonPageSuivante, cibleDeLaTouche, clavierBloque } from './clavier-cartouche'
 import type { QuestionDuMoteur } from './sous-cadre'
-import { pastilleDuTemps, type ClePastille, type InfoRevelee } from './vue-cartouche'
+import {
+  pastilleDuTemps,
+  sortiesDeLEtape,
+  texteDeLaChaine,
+  type ClePastille,
+  type InfoRevelee,
+} from './vue-cartouche'
 
 /**
  * Le temps de VOIR une etape qui vise un autre joueur, avant qu'elle passe.
@@ -1621,6 +1627,14 @@ export function DeroulePhase({
   )
   const annulee = texteActivationAnnulee(etapeLue)
   const cause = texteCauseActivation(etapeLue)
+  // La chaine Renfort / annulation / remplacement et la sortie de la carte qui
+  // a annule (rapport Yarro n72), en texte sur ce rendu (telephone, table).
+  const chaineTexte = texteDeLaChaine(
+    etapesAffichees,
+    etape.cle,
+    (e) => (e.carteId !== undefined ? nomFr?.(e.carteId) : undefined) ?? e.cibleNom
+  )
+  const sorties = sortiesDeLEtape(etapesAffichees, etapeLue)
 
   // LA FRISE DES SIX ONGLETS (decisions du 03/10/2026) : la seule chose que le
   // cartouche garde quand il se replie devant une question du moteur.
@@ -2265,6 +2279,10 @@ export function DeroulePhase({
             resterait sur « Klaw va attaquer Colossus » et le joueur
             attendrait un coup qui ne vient pas. */}
         {annulee ? <p className="deroule-annulee">{annulee}</p> : null}
+        {sorties.map((sortie) => (
+          <p key={sortie} className="deroule-annulee">{sortie}</p>
+        ))}
+        {chaineTexte ? <p className="deroule-chaine-texte">{chaineTexte}</p> : null}
         {/* D'ou vient cette activation. Le moteur ne le dit que pour celles
             qui ne viennent PAS de la regle du jeu : la seconde attaque du
             vilain, declenchee par une carte revelee. */}

@@ -366,6 +366,7 @@ class SenderCard:
             # (player_action.py, 04/10/2026). Remise a zero avant chaque revelation.
             try:
                 face.card.annulee_par = (by_effect.this.name, by_effect.this.card.object_id)
+                face.card.annulee_par_face = by_effect.this
             except Exception:
                 pass
             text = TransText("{face}'s {be_cancel_effect} effect was canceled by {by_effect}", face=face, be_cancel_effect=be_cancel_effect, by_effect=by_effect.this)

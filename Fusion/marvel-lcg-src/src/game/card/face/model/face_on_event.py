@@ -284,11 +284,18 @@ class ModelOnEvent(ModelBase):
         this.card.state.is_revealing = True
 
         reveal_message = Message.WhenPlayerRevealCard(this, would_message)
+        # Avant les interruptions : une carte qui en annule une autre et en
+        # revele une de remplacement (Stepford Cuckoos, Black Widow) agit dans
+        # `OnPlayerRevealCard` (rapports Yarro n71 et n72).
+        from game.player.action.player_action import PlayerAction
+        PlayerAction.DebuterRevelationImbriquee(player, this, reveal_message, is_by_flipping, by_effect)
         if not this.OnPlayerRevealCard(reveal_message):
             this.card.state.is_revealing = False
+            PlayerAction.FinirRevelationImbriquee(this)
             return None
         if reveal_message.is_be_instead: # "52008"
             this.card.state.is_revealing = False
+            PlayerAction.FinirRevelationImbriquee(this)
             return None
 
         # Journal de la phase du mechant (ajout local, lu par ui-app) : une
@@ -340,6 +347,7 @@ class ModelOnEvent(ModelBase):
             this.OnAfterCardRevealedEnd(end_message)
 
         this.card.state.is_revealing = False
+        PlayerAction.FinirRevelationImbriquee(this)
 
         Effects.UnRegister(check_effects)
 

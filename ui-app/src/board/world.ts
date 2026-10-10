@@ -364,6 +364,15 @@ export type FaitRevelation = FaitMechantCommun & {
   /** Son effet « Une fois révélée » a été ANNULÉ, par cette carte (04/10/2026). */
   annulee_par?: string
   annulee_par_id?: number
+  /** La carte qui a annulé a quitté le jeu en le faisant (Stepford Cuckoos à son dernier psi). */
+  annulee_par_sort?: 'defaussee' | 'hors_jeu'
+  /**
+   * Carte révélée PAR UNE AUTRE carte pendant la phase du méchant (Black
+   * Widow, Stepford Cuckoos : « révèle une autre carte »), rapports Yarro n71
+   * et n72 (09/10/2026).
+   */
+  revelee_par?: string
+  revelee_par_id?: number
   /**
    * Ce que la carte a CHANGÉ en se révélant, mesuré par le moteur entre une
    * photo de la table avant et après (`PlayerAction._EffetsDeLaRevelation`).

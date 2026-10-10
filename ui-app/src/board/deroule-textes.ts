@@ -5,7 +5,7 @@
 // deux se testent separement, et le decoupage reste verifiable sans toucher
 // au dictionnaire.
 
-import type { EtapeDeroule, LigneBilan } from './deroule-phase'
+import { nomNettoye, type EtapeDeroule, type LigneBilan } from './deroule-phase'
 import { langueActuelle, t } from './langue'
 import { libelleStatut } from './effets-statuts'
 import type { EffetRevelation } from './world'
@@ -161,6 +161,9 @@ export function titreEtape(etape: EtapeDeroule): string {
  * « Renfort » quand la carte qui l'a declenchee n'est pas connue. Vide ailleurs.
  */
 export function surtitreEtape(etape: EtapeDeroule): string {
+  if (etape.titre === 'revelation' && etape.reveleePar) {
+    return t('Révélée par %1').replace('%1', nomNettoye(etape.reveleePar) ?? etape.reveleePar)
+  }
   if (etape.titre !== 'revelation' || !etape.parSurge) return ''
   return etape.renfortDe ? t('Renfort de %1').replace('%1', etape.renfortDe) : t('Renfort')
 }
@@ -170,6 +173,18 @@ export function lignesEtoileBoost(etape: EtapeDeroule): string[] {
   return etape.boosts
     .filter((boost) => boost.etoile)
     .map((boost) => `★ ${boost.nom} : ${t('son effet de boost s’applique')}`)
+}
+
+/**
+ * La carte qui a annule celle-ci a quitte le jeu en le faisant : « Stepford
+ * Cuckoos : défaussée » (rapport Yarro n72, 09/10/2026). Vide ailleurs.
+ */
+export function texteSortieAnnulation(etape: EtapeDeroule): string {
+  if (!etape.annuleePar || !etape.annuleeParSort) return ''
+  const nom = nomNettoye(etape.annuleePar) ?? etape.annuleePar
+  return etape.annuleeParSort === 'defaussee'
+    ? t('%1 : défaussée').replace('%1', nom)
+    : t('%1 : quitte le jeu').replace('%1', nom)
 }
 
 /** La fin d'une carte que suit un Renfort : la suite est une AUTRE carte. */

@@ -1169,3 +1169,84 @@ html[data-affichage='sobre'] .deroule-phase.est-scene.est-hors-phase .deroule-ba
 .deroule-phase.est-scene .deroule-vignette.est-choix:not(.est-indisponible):focus-visible > .deroule-legende {
   filter: brightness(1.1);
 }
+
+/* --- LA CHAINE EN DIRECT (rapport Yarro n72, 09/10/2026) -----------------------
+   Weapons Runner → Renfort → Klaw's Vengeance [annulée] → Sonic Boom, en petites
+   vignettes au-dessus de la carte en grand. Une ligne qui passe a la ligne sur
+   telephone plutot que de deborder. */
+.deroule-phase.est-scene .deroule-revelee.a-chaine {
+  flex-wrap: wrap;
+}
+
+.deroule-phase.est-scene .deroule-chaine {
+  --vignette-h: 64px;
+  flex: 1 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.deroule-phase.est-scene .deroule-chaine-maillon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.deroule-phase.est-scene .deroule-chaine-maillon .deroule-vignette {
+  opacity: 0.75;
+}
+
+.deroule-phase.est-scene .deroule-chaine-maillon.est-courante .deroule-vignette {
+  opacity: 1;
+  outline: 2px solid var(--menace, #f0b95f);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.deroule-phase.est-scene .deroule-chaine-lien {
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--menace, #f0b95f);
+}
+
+.deroule-phase.est-scene .deroule-chaine-carte {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.deroule-phase.est-scene .deroule-chaine-annulee {
+  max-width: 9em;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  color: #ff6b6b;
+}
+
+.deroule-phase.est-scene .deroule-chaine-maillon.est-annulee .deroule-vignette {
+  filter: grayscale(0.7);
+}
+
+@media (max-width: 560px) {
+  .deroule-phase.est-scene .deroule-chaine {
+    --vignette-h: 48px;
+  }
+  .deroule-phase.est-scene .deroule-chaine-lien {
+    white-space: normal;
+    max-width: 6em;
+  }
+}
+
+/* --rouge-vif ternie (#6c4a4a) est illisible en petit texte sur le fond sobre. */
+html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-chaine-annulee {
+  color: #b08a8a;
+}

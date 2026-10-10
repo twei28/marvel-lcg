@@ -351,6 +351,16 @@ export type EtapeDeroule = {
    */
   annuleePar?: string
   annuleeParId?: number
+  /** La carte qui a annule a quitte le jeu en le faisant (n72, 09/10/2026). */
+  annuleeParSort?: 'defaussee' | 'hors_jeu'
+  /**
+   * Sur une revelation : la carte qui l'a REVELEE a la place d'une carte
+   * annulee (Black Widow, Stepford Cuckoos), rapports Yarro n71 et n72.
+   */
+  reveleePar?: string
+  reveleeParId?: number
+  /** Sur une revelation annulee : la carte suivante la REMPLACE (`reveleePar`). */
+  suivieDUnRemplacement?: boolean
   /**
    * Sur une revelation : un Renfort la SUIT (la carte suivante en vient).
    * L'etape finit alors par « → Renfort : une autre carte est révélée ».
@@ -958,6 +968,9 @@ export function etapesDeroule(
       parSurge: fait.par_surge || undefined,
       annuleePar: fait.annulee_par || undefined,
       annuleeParId: fait.annulee_par_id ?? undefined,
+      annuleeParSort: fait.annulee_par_sort || undefined,
+      reveleePar: fait.revelee_par || undefined,
+      reveleeParId: fait.revelee_par_id ?? undefined,
     })
   }
 
@@ -1009,6 +1022,11 @@ export function etapesDeroule(
  */
 function relierLesRenforts(etapes: EtapeDeroule[]): EtapeDeroule[] {
   etapes.forEach((etape, rang) => {
+    if (etape.titre === 'revelation' && etape.reveleePar) {
+      const annulee = precedenteAnnuleePar(etapes, rang, etape)
+      if (annulee) annulee.suivieDUnRemplacement = true
+      return
+    }
     if (etape.titre !== 'revelation' || !etape.parSurge) return
     for (let avant = rang - 1; avant >= 0; avant--) {
       const precedente = etapes[avant]
@@ -1020,6 +1038,27 @@ function relierLesRenforts(etapes: EtapeDeroule[]): EtapeDeroule[] {
     }
   })
   return etapes
+}
+
+/**
+ * La revelation que `etape` REMPLACE : la plus proche avant elle, annulee par
+ * la carte qui a revele `etape` (meme identifiant, a defaut meme nom).
+ */
+export function precedenteAnnuleePar(
+  etapes: EtapeDeroule[],
+  rang: number,
+  etape: EtapeDeroule
+): EtapeDeroule | undefined {
+  for (let avant = rang - 1; avant >= 0; avant--) {
+    const precedente = etapes[avant]
+    if (precedente.titre !== 'revelation' || !precedente.annuleePar) continue
+    const memeCarte =
+      etape.reveleeParId !== undefined && precedente.annuleeParId !== undefined
+        ? precedente.annuleeParId === etape.reveleeParId
+        : nomNettoye(precedente.annuleePar) === nomNettoye(etape.reveleePar)
+    if (memeCarte) return precedente
+  }
+  return undefined
 }
 
 /**

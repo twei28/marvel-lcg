@@ -348,6 +348,38 @@ describe('les etats de la planche (sans question)', () => {
     expect(revelee?.querySelector('.deroule-renfort-vide')?.textContent).toBe('?')
   })
 
+  // Rapport Yarro n72 (09/10/2026) : Weapons Runner → Renfort → Klaw's Vengeance
+  // annulee par Stepford Cuckoos → Sonic Boom. La chaine se dessine en direct,
+  // la case « ? » laisse place a la vraie carte des que son fait existe.
+  const chaineN72: EtapeDeroule[] = [
+    { cle: 'revelation:3:0:65', temps: 'revelation', titre: 'revelation', regle: '', carteId: 65,
+      cibleNom: 'Weapons Runner', suivieDUnRenfort: true, boosts: [] },
+    { cle: 'revelation:3:1:66', temps: 'revelation', titre: 'revelation', regle: '', carteId: 66,
+      cibleNom: "Klaw's Vengeance", parSurge: true, renfortDe: 'Weapons Runner', annuleePar: 'Stepford Cuckoos',
+      annuleeParId: 32, annuleeParSort: 'defaussee', suivieDUnRemplacement: true, boosts: [] },
+    { cle: 'revelation:3:2:69', temps: 'revelation', titre: 'revelation', regle: '', carteId: 69,
+      cibleNom: 'Sonic Boom', reveleePar: 'Stepford Cuckoos', reveleeParId: 32, boosts: [] },
+  ]
+
+  it('n72 : la chaine en petites vignettes, la carte annulee marquee, la sortie de Stepford dite', () => {
+    monter({ etapes: chaineN72, index: 1, infoRevelee: () => ({ renfort: false }) })
+    const maillons = [...document.querySelectorAll('.deroule-chaine .deroule-chaine-maillon')]
+    expect(maillons).toHaveLength(3)
+    expect(maillons[1].classList.contains('est-courante')).toBe(true)
+    expect(maillons[1].classList.contains('est-annulee')).toBe(true)
+    expect(maillons[1].querySelector('.deroule-chaine-annulee')?.textContent).toBe('Annulée par Stepford Cuckoos')
+    expect(maillons[2].querySelector('.deroule-chaine-lien')?.textContent).toBe('→ Révélée par Stepford Cuckoos')
+    expect(screen.getByText('Stepford Cuckoos : défaussée')).toBeInTheDocument()
+    expect(screen.getByText('→ Révélée par Stepford Cuckoos', { selector: '.deroule-renfort-fleche' })).toBeInTheDocument()
+  })
+
+  it('n72 : la case « ? » laisse place a la carte du Renfort des qu elle est connue', () => {
+    monter({ etapes: chaineN72, index: 0, infoRevelee: () => ({ renfort: true }) })
+    const revelee = document.querySelector('.deroule-revelee')
+    expect(revelee?.querySelector('.deroule-renfort-vide')).toBeNull()
+    expect(revelee?.querySelectorAll('.deroule-carte-grande')).toHaveLength(2)
+  })
+
   it('etat 12 : le bilan en trois colonnes, et « Terminer »', () => {
     const bilan: EtapeDeroule = { cle: 'bilan', temps: 'bilan', titre: 'bilan', regle: '', boosts: [] }
     const avancer = vi.fn()
