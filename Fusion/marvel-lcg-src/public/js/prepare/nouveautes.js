@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-10",
         genre: "correction",
+        fr: "Storm : Torrential Rain permet de répartir ses 3 menaces entre plusieurs manigances, et Flash Freeze donne aussi -3 ATQ aux sbires qui s'engagent avec toi plus tard dans la phase.",
+        en: "Storm: Torrential Rain lets you split its 3 threat among several schemes, and Flash Freeze also gives -3 ATK to minions that engage you later in the phase.",
+    },
+    {
+        date: "2026-10-10",
+        genre: "correction",
         fr: "Luke Cage revu carte par carte. Power Man fait bien piocher, le Bracelet métallique protège avant que le Tenace ne parte, Jessica Jones gagne +1 Contre par Tenace et Misty Knight perd son bonus avec son Tenace. Cruisin' for a Bruisin', Take a Stand, Black Belt, Augmented Jaws et Sidewinder fonctionnent comme imprimé.",
         en: "Luke Cage reviewed card by card. Power Man now draws, Metal Bracer reduces damage before a tough card is lost, Jessica Jones gets +1 THW per tough card and Misty Knight loses her bonus with her tough card. Cruisin' for a Bruisin', Take a Stand, Black Belt, Augmented Jaws and Sidewinder now work as printed.",
     },
