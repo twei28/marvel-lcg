@@ -53,10 +53,32 @@ node_modules et assets/pics, `_a_supprimer/` à créer pour la sauvegarde du cod
   `icones-entete.js` forçait à 34 px), modale-heros 3/3 (Storm a un art alternatif : témoin « sans option » =
   Agatha Harkness), fanmade-createurs 3/3 (modale de Storm validée, « Set de base » accepté).
 - ✅ Clé « Accueil du jeu » retirée de `tel-pages.js` (jamais lue ; prepare/app.js a la sienne).
-- Trouvé en passant, PRÉEXISTANT (identique sur HEAD) : `test_capacites` nv001 Shadow Serpent et 60079 Electric
-  Charge (×2) échouent à la mise en place (AssertionError).
+- ✅ `test_capacites` nv001, 60079 (et une centaine d'autres, d'où les 116 rouges de la batterie du 10/10 02h49) :
+  RÉGRESSION DU HARNAIS, pas du moteur. da82e232 (09/10) avait tenté d'échanger `01001a`/`01001b` dans les cas
+  existants via le nom provisoire « Peter Parker », sans la dernière étape : `Exhaust('Peter Parker')` visait une
+  forme absente et fabriquait un doublon détaché, qui fait tomber le rendu. Trouvé par bissection (arbre complet
+  bon à ca43692a, mauvais à da82e232 ; moteur du 09/10 + harnais du 08/10 = vert). 107 lignes de cas rétablies
+  telles qu'au 08/10, repérées par leur position.
+- ✅ Compteurs historiques (`total_damage_taken/dealt`, maxima, par siège) et `degats_mechant/sbires` : le comptage
+  passe d'aptitudes sur `AfterFaceDealDamage` à un appel direct `CompterDegats` depuis CanHealth, avant l'envoi.
+  Le coup qui gagne la partie (dernier stade du méchant) n'était compté nulle part : nouveau cas « Stats de partie
+  — le coup qui GAGNE la partie », rouge avant, vert après. Partie réelle Rhino graine 3 : historique des dégâts
+  subis 10 → 16 (Black Cat et le coup fatal), onglet Stats inchangé. Sémantique conservée (dégâts « infligés »
+  avant prévention), seuls les trous sont bouchés.
 - ✅ Nettoyage : moteur d'essai du port 2331 arrêté par son PID ; worktree `MarvelLCG-build` (propre, commit
   636fb69e) retiré par `git worktree remove` APRÈS `cmd.exe /c rmdir` de ses deux jonctions (pics 6892 et
   node_modules intacts) ; `launcher_essai_fin.py`, `config-essai-fin.json` et `.game-essai-fin` supprimés ;
   14 specs `zz-*` supprimées, dont `zz-gagner` et `zz-relecture-fidele` qui étaient commitées (`git rm`, en
   attente de commit). Aucun fichier suivi d'autre perdu.
+
+## 6. Ajouté le 10/10/2026 après-midi
+- ✅ Luke Cage (rapports n73, n74, n75 + audit du pack) : branche `luke-cage-correctifs`, fiche
+  `2026-10-10-luke-cage-audit.md`. À FUSIONNER dans `mode-manuel` puis déployer ; réponses aux joueurs prêtes.
+- ✅ « Étape par étape Bis » devient « Étape par étape », l'ancienne présentation retirée (décision utilisateur) :
+  branche `phase-mechant-etape-par-etape` (46237b44), worktree `C:\Users\arnau\Desktop\MarvelLCG-bis`. À FUSIONNER :
+  ⚠ touche `DeroulePhase.tsx` et `dico-en.ts`, que le code EN PAUSE modifie aussi (stash ou fusion à la main).
+  ⚠ Le worktree porte deux JONCTIONS (`ui-app\node_modules`, `Fusion\marvel-lcg-src\assets\pics`) : les retirer avec
+  `cmd.exe /c rmdir` AVANT `git worktree remove`.
+- ⏳ Aperçus de la fenêtre « Choisis ta phase du méchant » (`public/img/phase-modes/etape-1..4.jpg`, 05/10) : ils
+  montrent l'ANCIENNE présentation. À refaire avec le nouveau cartouche (décision : plus tard).
+- ⏳ Nouveautés fr + en à écrire avant le déploiement (Luke Cage, Étape par étape unique, stats de fin, console).
