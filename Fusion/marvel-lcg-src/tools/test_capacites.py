@@ -7314,6 +7314,59 @@ CAS = [
         "attendu": {"fouille": ["Puzzle.ChangeForm('60037b')"]},
     },
     {
+        "nom": "60038 Innate Reflexes — Starting ACCEPTE : la carte est dans la main de depart",
+        "pourquoi": ("mot-cle Starting (regles Fear No Evil p.3) : « may search their deck for that "
+                     "card and add it as the first card of their starting hand ». Le pilote accepte "
+                     "la premiere option pendant la mise en place"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": [],
+        "declencher": [],
+        "options_attendues_mise_en_place": ["Add this card to your starting hand"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["60038"]},
+    },
+    {
+        "nom": "60038 Innate Reflexes — Starting REFUSE : la carte n'est pas ajoutee a la main",
+        "pourquoi": ("signalement n°70 de Yarro (09/10/2026) : « j'ai eu ma main avant de pouvoir "
+                     "decider si je voulais une starting ». Le script ajoutait la carte d'office, "
+                     "sans le « may » imprime"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "refuser_mise_en_place": "starting hand",
+        "mise_en_place": [],
+        "declencher": [],
+        "options_attendues_mise_en_place": ["Add this card to your starting hand"],
+        "verifier": "etat_attendu",
+        "attendu": {"absent_main": ["60038"], "taille_main": 6},
+    },
+    {
+        "nom": "61036 Innate Perception — Starting ACCEPTE : la carte est dans la main de depart",
+        "pourquoi": "meme mot-cle Starting, pack Jessica Jones (61034 / 61036 / 61037 ont le meme code)",
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "mise_en_place": [],
+        "declencher": [],
+        "options_attendues_mise_en_place": ["Add this card to your starting hand"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["61036"]},
+    },
+    {
+        "nom": "61036 Innate Perception — Starting REFUSE : la question est posee et le refus laisse une pioche de 6",
+        "pourquoi": ("signalement n°70, meme defaut que 60038. ⚠ Graine 42 : 61036 est la carte du "
+                     "DESSUS du deck melange, la pioche de 6 la ramene donc en main meme refusee. "
+                     "`absent_main` est impossible ici ; la preuve est la question posee (rouge "
+                     "avant correctif) et la main de 6 cartes piochees"),
+        "scenario": "rhino",
+        "heros": "jessica_jones",
+        "refuser_mise_en_place": "starting hand",
+        "mise_en_place": [],
+        "declencher": [],
+        "options_attendues_mise_en_place": ["Add this card to your starting hand"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 6},
+    },
+    {
         "nom": "kb002 Hawkeye (Clint Barton) — Interrupt : defait par degat consequent, se remelange au deck + 1 fleche sur Kate's Bow",
         "pourquoi": ("CORRECTIF DE DONNEES (data/cards.json) : ATK/THW etaient imprimes sans "
                      "asterisque (« 2 »/« 1 »), donc `printed_attack_consequential_damage=0` et "
@@ -23440,6 +23493,46 @@ CAS = [
         "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
         "declencher": [],
         "verifier": "a2_pas_de_doublon_revelation_attaque",
+    },
+    {
+        "nom": "A2 faits — carte de REMPLACEMENT (Stepford Cuckoos) : inscrite « revelee par », photo de l'annulee figee",
+        "pourquoi": ("rapport Yarro n71 (09/10/2026, journal j71) : Caught Off Guard (01188) annulee par "
+                     "Stepford Cuckoos (45049), qui revele Klaw's Vengeance (01122) en remplacement ; Klaw "
+                     "attaque. La carte de remplacement n'avait AUCUN fait, et les degats de l'attaque "
+                     "tombaient dans les effets de la carte annulee. Attendu : un fait `revelation` pour "
+                     "01122 avec `revelee_par` = Stepford Cuckoos, APRES celui de 01188 (annulee_par), "
+                     "l'attaque rattachee a 01122 par `cause_id`, et aucun degat dans les effets de 01188"),
+        "scenario": "klaw",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('45049')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01122', '01122', '01122')"],
+        "main_exclusive": ["01090"],
+        "accepter_choix": True,
+        "declencher": [],
+        "verifier": "a2_revelation_de_remplacement",
+    },
+    {
+        "nom": "A2 faits — Surge puis remplacement (Stepford Cuckoos) : annulee par, puis revelee par",
+        "pourquoi": ("rapport Yarro n72 (09/10/2026, journal j72) : Weapons Runner (01121, Surge) revele "
+                     "Klaw's Vengeance, que Stepford Cuckoos annule ; Sonic Boom est revelee en "
+                     "remplacement. Le cartouche ne montrait que « Weapons Runner → Renfort » puis la "
+                     "carte suivante. Attendu : la carte du Renfort porte `par_surge` et `annulee_par`, "
+                     "la carte de remplacement `revelee_par` = Stepford Cuckoos, dans cet ordre. "
+                     "Stepford n'a plus qu'UN psi, comme dans la partie : elle part a la defausse, "
+                     "et le fait de la carte annulee le dit (`annulee_par_sort`)"),
+        "scenario": "klaw",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('45049')",
+                          "Puzzle.Counter('45049', 'psi', -2)",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01122', '01122', '01122')"],
+        "main_exclusive": ["01090"],
+        "accepter_choix": True,
+        "declencher": [],
+        "verifier": "a2_surge_puis_remplacement",
     },
     # FIN DU BLOC A2 -----------------------------------------------------------
 
@@ -51398,6 +51491,58 @@ CAS = [
             ]
         }
     },
+    # ------------------------------------------------------------------------
+    # 45049 Stepford Cuckoos (pack aoa) : signalement n°72 (Yarro, 09/10/2026),
+    # l'Interrupt n'aurait pas ete proposee sur une traitrise revelee par SURGE.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "45049 Stepford Cuckoos — temoin : traitrise revelee directement, annulee et defaussee",
+        "pourquoi": ("« When a player reveals a treachery, exhaust ... and remove 1 psi counter -> cancel "
+                     "the effects of that card and discard it ». Temoin du cas Surge : meme position, "
+                     "revelation directe"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('45049')",
+                          "Puzzle.CreateEncounterDeck('01105', '01105', '01105')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('01186')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["45049"], "compteurs": [["45049", "psi", 2]],
+                    "defausse_rencontre": ["01186"]},
+    },
+    {
+        "nom": "45049 Stepford Cuckoos — traitrise revelee par le SURGE d'un sbire (Weapons Runner) : annulable",
+        "pourquoi": ("signalement n°72 : Weapons Runner (01121, Surge) entre en jeu, le surge revele une "
+                     "traitrise, l'Interrupt doit etre proposee comme pour une revelation directe"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('45049')",
+                          "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('01121')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01121"], "exhausted": ["45049"], "compteurs": [["45049", "psi", 2]],
+                    "defausse_rencontre": ["01186"]},
+    },
+    {
+        "nom": "45049 Stepford Cuckoos — CONTRE-CAS : deja epuisee, la traitrise du surge n'est pas annulee",
+        "pourquoi": ("le cout « exhaust Stepford Cuckoos » interdit un second usage avant la phase de "
+                     "redressement. Cas typique du signalement n°72 : Stepford annule une premiere "
+                     "traitrise, la carte de remplacement est un sbire avec Surge, et la traitrise "
+                     "revelee par ce Surge ne peut plus etre annulee. Les 3 compteurs psi restent"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('45049')",
+                          "Puzzle.Exhaust('45049')",
+                          "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Reveal('01121')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01121"], "exhausted": ["45049"], "compteurs": [["45049", "psi", 3]]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -52788,7 +52933,7 @@ IMPRIME = {
 # le meme cas — leurs verificateurs dedies existaient, mais ces cas-la
 # appelaient `etat_attendu`. Toute cle inconnue fait desormais ECHOUER le cas.
 CLES_ETAT_ATTENDU = {
-    'attaches', 'attributs', 'attributs_carte', 'compteurs', 'compteurs_identite', 'compteurs_total',
+    'absent_main', 'attaches', 'attributs', 'attributs_carte', 'compteurs', 'compteurs_identite', 'compteurs_total',
     'dans_deck_joueur', 'dans_deck_registered', 'dans_deck_rencontre', 'defausse',
     'defausse_joueur', 'defausse_dessus', 'defausse_rencontre', 'degats', 'degats_identite',
     'degats_identite_min', 'degats_min', 'en_jeu', 'en_jeu_trait', 'en_main', 'en_reserve',
@@ -54002,6 +54147,12 @@ def etat_attendu(monde, aides):
                   for f in monde.players[0].hand_cards.GetAll()]
         if card_id not in cartes:
             soucis.append(f"{card_id} n'est pas en main (main = {cartes})")
+
+    for card_id in attendu.get("absent_main") or []:
+        cartes = [getattr(f.paper, "card_id", None)
+                  for f in monde.players[0].hand_cards.GetAll()]
+        if card_id in cartes:
+            soucis.append(f"{card_id} est en main alors qu'il ne devrait pas (main = {cartes})")
 
     # La RESERVE du pack brawn : zone hors-jeu de 3 cartes au plus, dont les
     # cartes restent jouables et depensables. Sans cette cle, aucun cas ne peut
@@ -58522,6 +58673,103 @@ def a2_pas_de_doublon_revelation_attaque(monde, aides):
                   f"({attaques[0]['auteur']} -> {attaques[0]['cible']}), "
                   f"{len(revelations)} revelation(s) au total")
 
+def _a2_distribue_puis_revele(monde, code):
+    """Distribue `code` pendant le tour du joueur, puis joue l'etape 4."""
+    from game.world.phase import Phase
+    from game.puzzle.puzzle import PuzzleHelper
+
+    joueur = monde.players[0]
+    monde.current_player = joueur
+    monde.phase.SetState(Phase.State.PlayerTurn)
+    PuzzleHelper.Exec([f"Puzzle.Deal('{code}')"], monde)
+    distribuees = [getattr(f.paper, "card_id", None) for f in joueur.dealt_encounter_cards.Get(True)]
+    if code not in distribuees:
+        return f"{code} n'a pas ete distribuee (distribuees = {distribuees})"
+    _a2_vider_le_journal(monde)
+    monde.phase.SetState(Phase.State.RevealsEncounterCards)
+    joueur.RevealEncounterCards()
+    return ""
+
+def _a2_remplacement(monde, annulee, remplacement):
+    """Controle commun : `annulee` porte annulee_par Stepford, `remplacement`
+    porte revelee_par Stepford et vient APRES elle dans le journal."""
+    faits = monde.stat.faits_mechant
+    revelations = [(rang, f) for rang, f in enumerate(faits) if f.get('genre') == 'revelation']
+    premiere = next(((r, f) for r, f in revelations if f.get('annulee_par') == 'Stepford Cuckoos'), None)
+    if premiere is None:
+        return None, None, f"aucune revelation annulee par Stepford Cuckoos ; journal = {faits}"
+    if annulee not in premiere[1]['carte']:
+        return None, None, f"carte annulee = {premiere[1]['carte']!r} (attendu {annulee!r})"
+    seconde = next(((r, f) for r, f in revelations if f.get('revelee_par') == 'Stepford Cuckoos'), None)
+    if seconde is None:
+        return None, None, (f"la carte de remplacement n'a AUCUN fait `revelee_par` ; "
+                            f"journal = {faits}")
+    if remplacement not in seconde[1]['carte']:
+        return None, None, f"carte de remplacement = {seconde[1]['carte']!r} (attendu {remplacement!r})"
+    if not isinstance(seconde[1].get('revelee_par_id'), int):
+        return None, None, f"revelee_par_id absent : {seconde[1]}"
+    if seconde[0] < premiere[0]:
+        return None, None, f"le remplacement est inscrit AVANT la carte annulee ; journal = {faits}"
+    if len([1 for _, f in revelations if f['carte_id'] == seconde[1]['carte_id']]) != 1:
+        return None, None, f"la carte de remplacement a plusieurs faits ; journal = {faits}"
+    return premiere[1], seconde[1], ""
+
+def a2_revelation_de_remplacement(monde, aides):
+    # Le journal tel que le panneau EN DIRECT le lit pendant que la carte de
+    # remplacement se resout, avant la fin de la carte annulee (n72).
+    from game.player.action.player_action import PlayerAction
+    photos = []
+    finir = PlayerAction.FinirRevelationImbriquee
+    def espion(face):
+        photos.append([dict(f) for f in monde.stat.faits_mechant])
+        finir(face)
+    PlayerAction.FinirRevelationImbriquee = staticmethod(espion)
+    try:
+        erreur = _a2_distribue_puis_revele(monde, '01188')
+    finally:
+        PlayerAction.FinirRevelationImbriquee = finir
+    if erreur:
+        return False, erreur
+    if not photos:
+        return False, "aucune carte de remplacement n'a fini sa resolution"
+    en_direct = [f for f in photos[0] if f.get('genre') == 'revelation' and 'Caught Off Guard' in f.get('carte', '')]
+    if not en_direct or en_direct[0].get('annulee_par') != 'Stepford Cuckoos':
+        return False, (f"pendant la carte de remplacement, l'annulation n'est pas encore inscrite : "
+                       f"{photos[0]}")
+    annulee, remplacement, erreur = _a2_remplacement(monde, "Caught Off Guard", "Klaw")
+    if erreur:
+        return False, erreur
+    if 'annulee_par_sort' in annulee:
+        return False, f"Stepford Cuckoos (3 psi) est dite sortie du jeu : {annulee}"
+    degats = [e for e in (annulee.get('effets') or []) if e.get('genre') == 'degats']
+    if degats:
+        return False, (f"les degats de la carte de remplacement sont comptes dans la carte "
+                       f"annulee : {degats}")
+    attaques = _a2_faits(monde, 'attaque')
+    if attaques and not any(a.get('cause_id') == remplacement['carte_id'] for a in attaques):
+        return False, (f"l'attaque n'est pas rattachee a la carte de remplacement "
+                       f"#{remplacement['carte_id']} : {attaques}")
+    return True, (f"{annulee['carte']} annulee par {annulee['annulee_par']}, puis "
+                  f"{remplacement['carte']} revelee par {remplacement['revelee_par']} ; "
+                  f"{len(attaques)} attaque(s) rattachee(s), effets de l'annulee = {annulee.get('effets')}")
+
+def a2_surge_puis_remplacement(monde, aides):
+    erreur = _a2_distribue_puis_revele(monde, '01121')
+    if erreur:
+        return False, erreur
+    annulee, remplacement, erreur = _a2_remplacement(monde, "Klaw", "Klaw")
+    if erreur:
+        return False, erreur
+    if not annulee.get('par_surge'):
+        return False, f"la carte annulee ne porte pas par_surge : {annulee}"
+    if remplacement.get('par_surge'):
+        return False, f"la carte de remplacement porte par_surge : {remplacement}"
+    if annulee.get('annulee_par_sort') != 'defaussee':
+        return False, f"Stepford Cuckoos (dernier psi) n'est pas dite defaussee : {annulee}"
+    return True, (f"Renfort {annulee['carte']} annulee par {annulee['annulee_par']} "
+                  f"({annulee['annulee_par_sort']}), puis "
+                  f"{remplacement['carte']} revelee par {remplacement['revelee_par']}")
+
 # ========================== FIN DU BLOC A2 ==================================
 
 # ============================ BLOC A3 (06/09/2026) ==========================
@@ -60619,6 +60867,12 @@ def executer_un_cas(game_dir, port, index):
         for attendu in cas.get("options_attendues") or []:
             if ok and attendu not in etat.get("options_vues", []):
                 ok, message = False, f"aucune option ne s'appelle « {attendu} » (`options_attendues`) ; vues : {etat.get('options_vues', [])}"
+        # `options_attendues_mise_en_place` (09/10/2026) : meme chose, AVANT le
+        # tour du joueur (question posee pendant la mise en place).
+        for attendu in cas.get("options_attendues_mise_en_place") or []:
+            if ok and attendu not in etat.get("options_vues_mise_en_place", []):
+                ok, message = False, (f"aucune option de mise en place ne s'appelle « {attendu} » ; "
+                                      f"vues : {etat.get('options_vues_mise_en_place', [])}")
         if ok and cas.get("passer_sur_option"):
             if etat.get("passer_absent"):
                 ok, message = False, "le bouton Passer n'est pas offert sur un choix facultatif (`passer_sur_option`)"
@@ -60999,6 +61253,9 @@ def executer_un_cas(game_dir, port, index):
             etat.setdefault("prompts", []).append(str(getattr(data, "prompt_text", "") or ""))
             etat.setdefault("options_vues", []).extend(
                 str(o.get("name", "")).replace("_", " ") for o in options if isinstance(o, dict))
+        elif cas.get("options_attendues_mise_en_place"):
+            etat.setdefault("options_vues_mise_en_place", []).extend(
+                str(o.get("name", "")).replace("_", " ") for o in options if isinstance(o, dict))
         cible_interdit = cas.get("passer_interdit")
         if cible_interdit and etat["phase"] == "cas" and etat["passe_offert"] and (
                 cible_interdit is True or any(
@@ -61287,6 +61544,18 @@ def executer_un_cas(game_dir, port, index):
             force = option_mulligan()
             if force is not None:
                 return force
+            # `refuser_mise_en_place` (09/10/2026, mot-cle Starting) : AVANT le
+            # tour du joueur, repondre « Cancel » a toute question qui propose
+            # une option dont le nom contient ce fragment. Sans elle, le pilote
+            # accepte toujours la premiere option pendant la mise en place, et
+            # un « you may » de mise en place ne peut jamais etre refuse.
+            refus = cas.get("refuser_mise_en_place")
+            if refus and etat["phase"] == "attente" and any(
+                    refus.replace(" ", "_") in str(o.get("name", "")).replace(" ", "_")
+                    for o in options if isinstance(o, dict)):
+                for o in options:
+                    if isinstance(o, dict) and o.get("name") == "Cancel":
+                        return json.dumps({"id": str(o.get("id", 0)), "targets": [], "resources": []})
             # ⚠ LES ESPACES DEVIENNENT DES UNDERSCORES. Le moteur publie le
             # libelle d'un `ForChoiceAbility("Add Yaka Arrow to your hand")`
             # sous la forme `Add_Yaka_Arrow_to_your_hand`. Un `choisir_option`
