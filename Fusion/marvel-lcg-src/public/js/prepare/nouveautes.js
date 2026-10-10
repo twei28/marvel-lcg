@@ -48,6 +48,30 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-10",
+        genre: "correction",
+        fr: "Luke Cage revu carte par carte. Power Man fait bien piocher, le Bracelet métallique protège avant que le Tenace ne parte, Jessica Jones gagne +1 Contre par Tenace et Misty Knight perd son bonus avec son Tenace. Cruisin' for a Bruisin', Take a Stand, Black Belt, Augmented Jaws et Sidewinder fonctionnent comme imprimé.",
+        en: "Luke Cage reviewed card by card. Power Man now draws, Metal Bracer reduces damage before a tough card is lost, Jessica Jones gets +1 THW per tough card and Misty Knight loses her bonus with her tough card. Cruisin' for a Bruisin', Take a Stand, Black Belt, Augmented Jaws and Sidewinder now work as printed.",
+    },
+    {
+        date: "2026-10-10",
+        genre: "jeu",
+        fr: "Quand une action te fait choisir des cartes hors de la table, comme le Contrôle climatique de Storm ou une recherche dans ton deck, une seule fenêtre s'ouvre avec les cartes. Tu touches celle que tu veux, puis Valider.",
+        en: "When an action makes you choose cards that are not on the table, like Storm's Weather Control or a search in your deck, a single window opens with the cards. Tap the one you want, then Confirm.",
+    },
+    {
+        date: "2026-10-10",
+        genre: "jeu",
+        fr: "La phase du méchant n'a plus qu'une présentation « Étape par étape », celle qui s'appelait Bis. La mise en place se montre aussi carte par carte, manigances d'abord, puis les méchants.",
+        en: "The villain phase now has a single Step by step presentation, the one called Bis. Setup is also shown card by card, main schemes first, then the villains.",
+    },
+    {
+        date: "2026-10-10",
+        genre: "correction",
+        fr: "Les statistiques de fin de partie comptent aussi le coup qui gagne ou perd la partie, et les dégâts subis par un allié vaincu.",
+        en: "End-of-game statistics now also count the blow that wins or loses the game, and the damage taken by a defeated ally.",
+    },
+    {
+        date: "2026-10-10",
         genre: "jeu",
         fr: "L'écran de fin de partie a un onglet Stats : tours, temps, dégâts infligés, menace retirée, puis pour chaque héros les dégâts au méchant et aux sbires, la menace retirée, les dégâts évités et subis, les attaques défendues, les cartes jouées et les ressources dépensées. Il montre aussi tes 3 cartes les plus jouées et les 3 cartes piochées mais peu jouées. En multijoueur, les héros sont côte à côte dans un tableau.",
         en: "The end-of-game screen has a Stats tab: turns, time, damage dealt, threat removed, then for each hero damage to the villain and minions, threat removed, damage prevented and taken, attacks defended, cards played and resources spent. It also shows your 3 most played cards and the 3 cards you drew but rarely played. In multiplayer, heroes sit side by side in a table.",
