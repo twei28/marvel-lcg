@@ -442,6 +442,11 @@ def executer_une_epreuve(game_dir, port, index):
             scene.campaign.campaign_log |= {str(k): str(v) for k, v in carnet.items()}
         if "mode_campaign" not in scene.rules:
             scene.rules.append("mode_campaign")
+        # REGLES=confirm_main_scheme,confirm_side_scheme,confirm_scheme_setup_order :
+        # les regles que launcher.js pose sur une partie neuve.
+        for regle in filter(None, os.environ.get("REGLES", "").split(",")):
+            if regle not in scene.rules:
+                scene.rules.append(regle)
         jeu = Engine.game
         jeu.session.SetScene(scene, "Load")
         return jeu
