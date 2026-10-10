@@ -8,6 +8,69 @@ from game.deck import *
 from game.world import *
 from game.player import *
 
+def stats_de_partie(world: 'World') -> Dict[str, Any]:
+    """Les statistiques de la partie pour l'ecran de fin (onglet Stats).
+
+    Tout vient de compteurs MESURES pendant la partie (SessionStatistics,
+    remplis par game/rule/statistics.py et CanAttack._CompterDefense) : rien
+    n'est estime ici. Le temps est fige au premier appel apres la fin, sinon
+    il continuerait de tourner pendant que l'ecran de fin reste affiche.
+    """
+    from engine import Engine
+    from core.lib import Time
+    session = Engine.game.session
+    stats = session.statistics
+    if getattr(stats, 'temps_fin', None) is None:
+        scene = session.scene
+        stats.temps_fin = int(Time.GetTime() - session.start_time + (scene.playtime if scene else 0))
+    joueurs: List[Dict[str, Any]] = []
+    for index, player in enumerate(world.const_players):
+        face = player.GetIdentity()
+        try:
+            hero = player.GetHero()
+            if hero is not None:
+                face = hero
+        except Exception:
+            pass
+        aspects: List[str] = []
+        try:
+            zones = [player.player_deck, player.discard_pile, player.hand_cards]
+            faces = [f for z in zones for f in list(z.GetAll())] + list(player.GetControlCards())
+            for f in faces:
+                lire = getattr(f, 'GetAspect', None)
+                aspect = lire() if lire else None
+                if aspect and aspect not in aspects:
+                    aspects.append(aspect)
+        except Exception:
+            aspects = []
+        identite = player.GetIdentity()
+        cartes = stats.cartes.get(index, {})
+        def ligne(card_id: str, entree: Dict[str, Any], cle: str) -> Dict[str, Any]:
+            return {'card_id': card_id, 'nom': entree['nom'], 'n': entree[cle],
+                    'piochee': entree['piochee'], 'jouee': entree['jouee']}
+        jouees = sorted(((k, v) for k, v in cartes.items() if v['jouee'] > 0),
+                        key=lambda kv: (-kv[1]['jouee'], kv[1]['nom']))
+        # « Moins jouees » au sens de l'utilisateur : PIOCHEES mais jamais ou peu
+        # jouees. Une carte jamais piochee ne dit rien du deck.
+        delaissees = sorted(((k, v) for k, v in cartes.items() if v['piochee'] > 0),
+                            key=lambda kv: (kv[1]['jouee'], -kv[1]['piochee'], kv[1]['nom']))
+        joueurs.append({
+            'siege': index,
+            'heros': face.paper.name,
+            'heros_id': face.paper.card_id,
+            'aspects': aspects,
+            'pv': getattr(identite, 'health', None),
+            'pv_max': getattr(identite, 'max_health', None),
+            'compteurs': dict(stats.sieges.get(index, {})),
+            'plus_jouees': [ligne(k, v, 'jouee') for k, v in jouees[:3]],
+            'moins_jouees': [ligne(k, v, 'jouee') for k, v in delaissees[:3]],
+        })
+    return {
+        'temps': stats.temps_fin,
+        'rounds': world.round_id,
+        'joueurs': joueurs,
+    }
+
 def deck_to_descriptors(deck: 'Deck') -> List['CardDescriptor']:
     return list(chain.from_iterable(
         ToDescriptor.Card(face.card) for face in deck.GetAll()
@@ -139,6 +202,11 @@ class ToDescriptor:
         world_descriptor.game_over = _victoire is not None
         world_descriptor.players_won = bool(_victoire) if _victoire is not None else False
         world_descriptor.game_over_reason = (world.game_over.reason or '') if _victoire is not None else ''
+        if world_descriptor.game_over:
+            try:
+                world_descriptor.stats_partie = stats_de_partie(world)
+            except Exception:
+                world_descriptor.stats_partie = {}
         # Mode competitif : le camp gagnant, et le camp de chaque siege. Sans
         # eux, l'ecran de fin annoncerait la meme chose aux deux tables.
         if world.rule.mode_competitive:

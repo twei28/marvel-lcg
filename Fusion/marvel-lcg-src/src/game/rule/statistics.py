@@ -119,6 +119,9 @@ def GetStatisticsRule() -> List['Ability']:
         joueur = message.by_effect.GetInitiator()
         if joueur is not None:
             Engine.statistics.RecordForSeat(joueur, "total_threats_removed", message.value)
+            from game.card.face.card_type import MainScheme
+            cle = 'menace_principale' if MainScheme.IsType(message.trigger) else 'menace_annexes'
+            Engine.game.session.statistics.AddSiege(joueur, cle, message.value)
 
     def heal_damage(message: 'Message.AfterUnitHealHealth'):
         Engine.statistics.RecordValue("total_damage_healed", message.value)
@@ -133,6 +136,8 @@ def GetStatisticsRule() -> List['Ability']:
         Engine.statistics.RecordValue("total_cards_drawn", message.size)
         Engine.statistics.RecordMaximum("max_single_cards_drawn", message.size)
         Engine.statistics.RecordForSeat(message.GetToPlayer(), "total_cards_drawn", message.size)
+        for face in message.drew_faces:
+            Engine.game.session.statistics.AddCarte(message.GetToPlayer(), face, 'piochee')
 
     def _joueur_du_degat(message: 'Message.AfterFaceDealDamage') -> 'Player|None':
         """Qui a INFLIGE ce degat : l'attaquant s'il en existe un et qu'il
@@ -154,6 +159,12 @@ def GetStatisticsRule() -> List['Ability']:
         joueur = _joueur_du_degat(message)
         if joueur is not None:
             Engine.statistics.RecordForSeat(joueur, "total_damage_dealt", message.dealt_damage)
+            from game.card.face.base import Villain
+            from game.card.face.card_type import Minion
+            if Villain.IsType(message.target):
+                Engine.game.session.statistics.AddSiege(joueur, 'degats_mechant', message.dealt_damage)
+            elif Minion.IsType(message.target):
+                Engine.game.session.statistics.AddSiege(joueur, 'degats_sbires', message.dealt_damage)
             Engine.statistics.RecordMaximumForSeat(joueur, "max_single_damage_dealt", message.dealt_damage)
 
     def take_damage(message: 'Message.AfterFaceDealDamage'):
@@ -163,6 +174,7 @@ def GetStatisticsRule() -> List['Ability']:
         # ⚠ ATTRIBUE A LA CIBLE : c'est TON heros qui a pris le coup, meme
         # si c'est un allie d'un autre joueur qui l'a inflige.
         Engine.statistics.RecordForSeat(message.target.GetControlByPlayer(), "total_damage_taken", message.dealt_damage)
+        Engine.game.session.statistics.AddSiege(message.target.GetControlByPlayer(), 'degats_subis', message.dealt_damage)
 
     def statistics_record(face: 'CardFace', method: Literal["Resolve", "Play", "Resource", "Reveal", "PutIntoPlay", "Hero", "Attached", "Defeated", "Discard", "Cancel"]):
         if method == "PutIntoPlay":
@@ -185,8 +197,11 @@ def GetStatisticsRule() -> List['Ability']:
             Engine.statistics.RecordValue("generate_resources_y", y)
         if g:
             Engine.statistics.RecordValue("generate_resources_g", g)
+        Engine.game.session.statistics.AddSiege(message.GetToPlayer(), 'ressources_depensees', message.res.val)
 
     def statistics_play_aspect(message: 'Message.AfterPlayerPlayedCard'):
+        Engine.game.session.statistics.AddSiege(message.GetToPlayer(), 'cartes_jouees', 1)
+        Engine.game.session.statistics.AddCarte(message.GetToPlayer(), message.played_face, 'jouee')
         statistics_name: Dict[ClassCard.CARD_CLASS, Literal[
             'play_aspect_aggression',
             'play_aspect_justice',

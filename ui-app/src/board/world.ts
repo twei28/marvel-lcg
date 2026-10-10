@@ -705,6 +705,48 @@ export type World = {
    */
   winning_team?: number
   teams?: number[]
+  /** Statistiques de la partie, publiees une fois la partie finie (onglet Stats). */
+  stats_partie?: StatsPartie
+}
+
+/** Une carte des « plus » ou « moins » jouees de l'ecran de fin. */
+export type CarteStat = {
+  card_id: string
+  nom: string
+  n: number
+  piochee: number
+  jouee: number
+}
+
+/** Ce que le moteur MESURE pour un joueur (to_descriptor.py, stats_de_partie). */
+export type StatsJoueur = {
+  siege: number
+  heros: string
+  heros_id: string
+  aspects: string[]
+  pv?: number | null
+  pv_max?: number | null
+  compteurs: Partial<Record<CompteurStat, number>>
+  plus_jouees: CarteStat[]
+  moins_jouees: CarteStat[]
+}
+
+export type CompteurStat =
+  | 'degats_mechant'
+  | 'degats_sbires'
+  | 'menace_principale'
+  | 'menace_annexes'
+  | 'degats_subis'
+  | 'degats_evites'
+  | 'attaques_defendues'
+  | 'cartes_jouees'
+  | 'ressources_depensees'
+
+export type StatsPartie = {
+  /** Duree de la partie en secondes. */
+  temps: number
+  rounds: number
+  joueurs: StatsJoueur[]
 }
 
 /** Familles de types, reprises telles quelles de descriptor.js. */

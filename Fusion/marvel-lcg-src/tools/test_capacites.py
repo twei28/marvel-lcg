@@ -23561,6 +23561,22 @@ CAS = [
         "declencher": [],
         "verifier": "a2_surge_puis_remplacement",
     },
+    {
+        "nom": "Stats de partie — degats, menace, defense et pioche comptes au joueur",
+        "pourquoi": ("ecran de fin, onglet Stats (10/10/2026) : chaque chiffre doit venir d'une MESURE. "
+                     "Spider-Man attaque Rhino (degats au mechant), contre The Break-In! (menace "
+                     "principale), defend l'attaque de Rhino (attaque defendue, degats evites = attaque "
+                     "- degats subis) et pioche 2 cartes (cartes piochees, pour les « moins jouees »)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["01090"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.SetThreat('The Break-In!', 5)", "Puzzle.Attack('01001a')", "Puzzle.Ready('01001a')",
+                       "Puzzle.Thwart('01001a')", "Puzzle.Ready('01001a')",
+                       "Puzzle.Attack('01094', defender='01001a')", "Puzzle.Draw(2)"],
+        "verifier": "stats_de_partie_mesurees",
+    },
     # FIN DU BLOC A2 -----------------------------------------------------------
 
     # ---------------------------------------------------------------- A3 ----
@@ -58857,6 +58873,28 @@ def a2_revelation_de_remplacement(monde, aides):
     return True, (f"{annulee['carte']} annulee par {annulee['annulee_par']}, puis "
                   f"{remplacement['carte']} revelee par {remplacement['revelee_par']} ; "
                   f"{len(attaques)} attaque(s) rattachee(s), effets de l'annulee = {annulee.get('effets')}")
+
+def stats_de_partie_mesurees(monde, aides):
+    from engine import Engine
+    from game.render.to_descriptor import stats_de_partie
+    stats = Engine.game.session.statistics
+    siege = stats.sieges.get(0, {})
+    manque = [cle for cle in ('degats_mechant', 'menace_principale', 'attaques_defendues')
+              if siege.get(cle, 0) <= 0]
+    if manque:
+        return False, f"compteurs a zero : {manque} ; sieges = {stats.sieges}"
+    if siege.get('degats_sbires', 0) or siege.get('menace_annexes', 0):
+        return False, f"degats aux sbires ou menace annexe comptes sans sbire ni annexe : {siege}"
+    piochees = sum(c['piochee'] for c in stats.cartes.get(0, {}).values())
+    if piochees < 2:
+        return False, f"{piochees} carte(s) piochee(s) comptee(s), attendu au moins 2 : {stats.cartes}"
+    publie = stats_de_partie(monde)
+    joueur = publie['joueurs'][0]
+    if joueur['compteurs'].get('degats_mechant') != siege['degats_mechant'] or not joueur['moins_jouees']:
+        return False, f"publication incoherente : {publie}"
+    if not isinstance(publie['temps'], int) or publie['rounds'] < 1:
+        return False, f"temps ou rounds absents : {publie}"
+    return True, f"siege 0 = {siege} ; moins jouees = {[c['nom'] for c in joueur['moins_jouees']]}"
 
 def a2_surge_puis_remplacement(monde, aides):
     erreur = _a2_distribue_puis_revele(monde, '01121')

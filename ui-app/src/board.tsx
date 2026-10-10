@@ -70,6 +70,7 @@ import { EcranTourne } from './board/mobile/EcranTourne'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
 import { CoucheRevelation } from './board/CoucheRevelation'
+import { StatsPartie } from './board/StatsPartie'
 import { CoucheMiseEnPlace, useMiseEnPlacePasAPas } from './board/CoucheMiseEnPlace'
 import { CoucheTriche, useTriche } from './board/CoucheTriche'
 import { installerSurvol, SELECTEUR_SURVOL_PLATEAU, useSons } from './board/sons'
@@ -1705,6 +1706,7 @@ function EcranFinPartie({
       : t('Les héros sont vaincus')
   const rounds = monde?.round_id
   const mechants = (monde?.area_villain ?? []).map((carte) => nomAffiche(carte)).filter(Boolean)
+  const [onglet, setOnglet] = useState<'resultat' | 'stats'>('resultat')
   return (
     <div
       className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}${bataille?.nul ? ' est-nul' : ''}`}
@@ -1725,7 +1727,31 @@ function EcranFinPartie({
       <div className="fin-partie-eclat" aria-hidden="true">
         {bataille?.nul ? t('MATCH NUL !') : gagne ? t('VICTOIRE !') : t('DÉFAITE !')}
       </div>
-      <div className="fin-partie-carte">
+      <div className={`fin-partie-carte${onglet === 'stats' ? ' est-stats' : ''}`}>
+        <div className="fin-partie-onglets" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={onglet === 'resultat'}
+            className={`fin-partie-onglet${onglet === 'resultat' ? ' est-actif' : ''}`}
+            onClick={() => setOnglet('resultat')}
+          >
+            {t('Résultat')}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={onglet === 'stats'}
+            className={`fin-partie-onglet${onglet === 'stats' ? ' est-actif' : ''}`}
+            onClick={() => setOnglet('stats')}
+          >
+            {t('Stats')}
+          </button>
+        </div>
+        {onglet === 'stats' ? <StatsPartie stats={monde?.stats_partie} gagne={gagne} /> : null}
+        {/* Resultat reste MONTE pendant les Stats : les recompenses de campagne
+            deja cochees ne doivent pas se perdre en changeant d'onglet. */}
+        <div className="fin-partie-resultat" style={{ display: onglet === 'stats' ? 'none' : 'contents' }}>
         <span className="fin-partie-eyebrow">{eyebrow}</span>
         <strong className="fin-partie-titre">{titre}</strong>
         {raison ? (
@@ -1772,6 +1798,7 @@ function EcranFinPartie({
             </button>
           </div>
         )}
+        </div>
       </div>
     </div>
   )

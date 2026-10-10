@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-10",
+        genre: "jeu",
+        fr: "L'écran de fin de partie a un onglet Stats : tours, temps, dégâts infligés, menace retirée, puis pour chaque héros les dégâts au méchant et aux sbires, la menace retirée, les dégâts évités et subis, les attaques défendues, les cartes jouées et les ressources dépensées. Il montre aussi tes 3 cartes les plus jouées et les 3 cartes piochées mais peu jouées. En multijoueur, les héros sont côte à côte dans un tableau.",
+        en: "The end-of-game screen has a Stats tab: turns, time, damage dealt, threat removed, then for each hero damage to the villain and minions, threat removed, damage prevented and taken, attacks defended, cards played and resources spent. It also shows your 3 most played cards and the 3 cards you drew but rarely played. In multiplayer, heroes sit side by side in a table.",
+    },
+    {
+        date: "2026-10-10",
         genre: "correction",
         fr: "La mise en place suit l'ordre du livret : tu vois la manigance principale avant tout ce qu'elle met en jeu. Dans Tower Defense, les deux manigances apparaissent avant le choix de dégâts de l'Assaillant de l'Ordre Noir.",
         en: "Setup follows the rulebook order: you see the main scheme before anything it puts into play. In The Tower Defense, both main schemes now appear before the Black Order Besieger damage choice.",

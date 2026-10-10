@@ -128,6 +128,10 @@ class WorldDescriptor:
     # liste est vide hors mode competitif.
     winning_team: int = field(default=-1)
     teams: List[int] = field(default_factory=lambda: [])
+    # Statistiques de la partie, publiees une fois la partie finie (ecran de fin,
+    # onglet Stats, 10/10/2026). Vide tant que la partie continue. Forme :
+    # to_descriptor.py, `stats_de_partie`.
+    stats_partie: Dict[str, Any] = field(default_factory=lambda: {})
     # player
     @dataclass
     class PlayerDescriptor:

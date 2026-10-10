@@ -920,7 +920,23 @@ class CanAttack(CardFace):
             'cible_annoncee_id': (cible_annoncee or cible).card.object_id,
             'base_imprimee': base_imprimee,
         })
+        CanAttack._CompterDefense(cible, defenseur, subi,
+                                  total_avant_defense if total_avant_defense is not None else inflige + defense)
         return True
+
+    @staticmethod
+    def _CompterDefense(cible: 'CardFace', defenseur: 'CardFace|None', subi: int, attaque: int) -> None:
+        """Statistiques de la PARTIE (ecran de fin, 10/10/2026) : ce qu'une
+        attaque ennemie n'a PAS fait (DEF, Tough, preventions), compte au joueur
+        dont le personnage etait vise, et l'attaque defendue, comptee au joueur
+        du defenseur."""
+        from engine import Engine
+        from game.player import Player
+        stats = Engine.game.session.statistics
+        if Player.IsType(cible.GetControlBy()):
+            stats.AddSiege(cible.GetControlByPlayer(), 'degats_evites', max(0, attaque - subi))
+        if defenseur is not None and Player.IsType(defenseur.GetControlBy()):
+            stats.AddSiege(defenseur.GetControlByPlayer(), 'attaques_defendues', 1)
 
     @staticmethod
     def JournaliserManigance(auteur: 'CardFace', manigance: 'CardFace', is_base_scheme: bool,
