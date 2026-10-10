@@ -19,7 +19,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { estSpectateur } from './moteur'
-import { indexSpectateur, useEtapeSuivie } from './etape-partagee'
+import { indexSpectateur, useSuiviDuJoueur } from './etape-partagee'
 import type { ScanCardProps } from '../components/ScanCard'
 import { ScanCardTraduite } from './traduction-carte'
 import {
@@ -754,7 +754,8 @@ export function DeroulePhase({
   // cle. Le repli, lui, se lit et se teste ici, et il rend au joueur ce qu'il
   // doit voir : l'etape de la defaite.
   const spectateur = estSpectateur()
-  const cleSuivie = useEtapeSuivie(spectateur)
+  const suiviDuJoueur = useSuiviDuJoueur(spectateur)
+  const cleSuivie = suiviDuJoueur.cle
   const rangDeLaCle =
     cleCourante === undefined ? -1 : etapesAffichees.findIndex((e) => e.cle === cleCourante)
   const rangValidee =
@@ -773,11 +774,13 @@ export function DeroulePhase({
 
   const etape = etapesAffichees[index]
   const cleAffichee = etape?.cle
+  // Referme (bilan valide), le cartouche publie une etape VIDE : c'est ce que
+  // le spectateur et la relecture lisent pour le refermer au meme moment.
   useEffect(() => {
-    onEtapeAffichee?.(cleAffichee)
+    onEtapeAffichee?.(termine ? undefined : cleAffichee)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- board.tsx passe un
     // setter d'etat, stable ; seule la cle decide.
-  }, [cleAffichee])
+  }, [cleAffichee, termine])
 
   // EST-CE NOTRE HEROS QUI EST TOMBE ? La chute d'un autre joueur se DIT (le
   // crane et « X est vaincu » restent), mais elle n'arrete rien ici : pas de
@@ -1517,6 +1520,10 @@ export function DeroulePhase({
   // dessine dans `CartouchePhase`, et la table comme le telephone gardent le
   // rendu qui suit, inchange. Le composant rend lui-meme `null` quand il n'a
   // rien a montrer (ni etape, ni question avant la premiere etape).
+  // LE SPECTATEUR NE VALIDE RIEN, il suit le joueur : le bilan d'une phase
+  // finie disparait quand le joueur l'a referme (`ferme`, etape-partagee.ts).
+  if (spectateur && !phaseRaconteeEnCours && suiviDuJoueur.ferme) return null
+
   if (nouvelleScene) {
     // LA RELECTURE PAR LES PASTILLES (D22, D23). Le controleur la retient en
     // onglets (six temps, `relecture`) ; le cartouche du bas parle en

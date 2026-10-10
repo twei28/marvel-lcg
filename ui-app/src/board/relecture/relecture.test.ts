@@ -230,3 +230,69 @@ describe('pause entre deux trames (relecture fidele)', () => {
     expect(lecteur.curseursA(lecteur.tempsCourant())).toEqual({ 0: { x: 0.5, y: 0.4, clic: 7 } })
   })
 })
+
+describe('bilan de la phase du mechant en relecture', () => {
+  const OPTIONS_JOUER = JSON.stringify([{ id: 2, name: 'Jouer', bind_id: 2, bind_player_id: 0, all_legal_targets: [], target_num_range: [0, 0] }])
+  const OPTIONS_PAYER = JSON.stringify([{ id: 3, name: 'Payer', bind_id: 3, bind_player_id: 0, all_legal_targets: [], target_num_range: [0, 0] }])
+  const debut = [
+    ligne({ k: 'entete', format: 1, scenario: 'Rhino', joueurs: [{ heros: 'Spider-Man' }], resultat: 'victoire', rounds: 2 }),
+    ligne({ k: 'cle', r: 1, t: 1000, m: monde(1, { phase: 'Enemy Activation' }) }),
+    ligne({ k: 'e', r: 1, t: 1100, p: 0, cle: 'activation:1' }),
+    // La phase finit : le bilan s'affiche, le moteur interroge deja le joueur.
+    ligne({ k: 'd', r: 2, t: 2000, d: { o: { render_id: { v: 2 }, phase: { v: 'Player 1 Turn' } } } }),
+    ligne({ k: 'q', r: 2, t: 2010, p: 0, q: { options_json: OPTIONS_JOUER } }),
+  ]
+
+  it('se referme quand le joueur a publie une etape vide (bilan valide)', () => {
+    const r = analyserRelecture([...debut, ligne({ k: 'e', r: 2, t: 3000, p: 0, cle: '' })].join('\n'))
+    const lecteur = new Lecteur(r, 'test')
+    expect(lecteur.cartoucheFermeA(2500)).toBe(false)
+    expect(lecteur.cartoucheFermeA(3000)).toBe(true)
+  })
+
+  it('partie enregistree sans etape vide : referme des que le joueur repond a une question apres la phase', () => {
+    const r = analyserRelecture(
+      [
+        ...debut,
+        ligne({ k: 'd', r: 3, t: 4000, d: { o: { render_id: { v: 3 } } } }),
+        ligne({ k: 'q', r: 3, t: 4010, p: 0, q: { options_json: OPTIONS_PAYER } }),
+      ].join('\n')
+    )
+    const lecteur = new Lecteur(r, 'test')
+    // La premiere question apres la phase ne prouve rien : le joueur lit encore le bilan.
+    expect(lecteur.cartoucheFermeA(2500)).toBe(false)
+    // Une autre question : il a agi, donc il avait quitte le bilan.
+    expect(lecteur.cartoucheFermeA(4500)).toBe(true)
+  })
+
+  it('une nouvelle phase du mechant remet a zero', () => {
+    const r = analyserRelecture(
+      [
+        ...debut,
+        ligne({ k: 'd', r: 3, t: 4000, d: { o: { render_id: { v: 3 } } } }),
+        ligne({ k: 'q', r: 3, t: 4010, p: 0, q: { options_json: OPTIONS_PAYER } }),
+        ligne({ k: 'd', r: 4, t: 5000, d: { o: { render_id: { v: 4 }, round_id: { v: 2 }, phase: { v: 'Enemy Activation' } } } }),
+        ligne({ k: 'e', r: 4, t: 5100, p: 0, cle: 'activation:2' }),
+      ].join('\n')
+    )
+    const lecteur = new Lecteur(r, 'test')
+    expect(lecteur.cartoucheFermeA(5200)).toBe(false)
+  })
+})
+
+describe('bilan dans une vraie partie (partie-reelle.marvelreplay)', () => {
+  it('reste affiche pendant que le joueur le lit, se referme quand il passe au round suivant', async () => {
+    const { readFileSync } = await import('node:fs')
+    const { dirname, join } = await import('node:path')
+    const { fileURLToPath } = await import('node:url')
+    const brut = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__/partie-reelle.marvelreplay'))
+    const r = await lireRelecture(brut.buffer.slice(brut.byteOffset, brut.byteOffset + brut.byteLength))
+    const bilan = r.etapes.find((e) => e.cle === 'bilan')
+    expect(bilan).toBeDefined()
+    const fermeture = r.etapes.find((e) => e.cle === '' && e.t > (bilan?.t ?? 0))
+    expect(fermeture).toBeDefined()
+    const lecteur = new Lecteur(r, 'test')
+    expect(lecteur.cartoucheFermeA((bilan?.t ?? 0) + 1)).toBe(false)
+    expect(lecteur.cartoucheFermeA(fermeture?.t ?? 0)).toBe(true)
+  })
+})

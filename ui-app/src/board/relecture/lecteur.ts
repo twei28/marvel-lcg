@@ -341,6 +341,37 @@ export class Lecteur {
     return cle
   }
 
+  /**
+   * Vrai si, a cet instant, le joueur avait referme le cartouche : sa derniere
+   * etape publiee est vide (bilan valide). Une partie enregistree avant cette
+   * publication ne l'a pas : le bilan compte alors comme referme des que le
+   * joueur a repondu a une question APRES la phase du mechant (la question
+   * change), puisqu'il ne peut agir qu'apres l'avoir quitte.
+   */
+  cartoucheFermeA(t: number): boolean {
+    let ferme = false
+    for (const e of this.relecture.etapes) {
+      if (e.t > t) break
+      ferme = e.cle === ''
+    }
+    if (ferme) return true
+    let deduit = false
+    let premiere: string | undefined
+    for (const trame of this.relecture.trames) {
+      if (trame.t > t) break
+      if (PHASES_MECHANT.has(trame.monde.phase)) {
+        deduit = false
+        premiere = undefined
+        continue
+      }
+      const empreinte = empreinteDemandes(trame.demandes)
+      if (!empreinte || deduit) continue
+      if (premiere === undefined) premiere = empreinte
+      else if (empreinte !== premiere) deduit = true
+    }
+    return deduit
+  }
+
   private planifier(depuis?: number) {
     window.clearTimeout(this.minuteur)
     const trames = this.relecture.trames

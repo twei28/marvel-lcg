@@ -24,7 +24,7 @@ describe('le mode du joueur suivi (08/10/2026)', () => {
     const { suiviLePlusRecent } = await import('./etape-partagee')
     expect(
       suiviLePlusRecent({ 0: { cle: 'menace', t: 10, mode: 'detaille' }, 1: { cle: '', t: 12, mode: 'sur-table' } })
-    ).toEqual({ cle: 'menace', mode: 'sur-table' })
-    expect(suiviLePlusRecent({ 0: { cle: 'a', t: 1, mode: 'nimporte' } })).toEqual({ cle: 'a', mode: undefined })
+    ).toEqual({ cle: 'menace', mode: 'sur-table', ferme: true })
+    expect(suiviLePlusRecent({ 0: { cle: 'a', t: 1, mode: 'nimporte' } })).toEqual({ cle: 'a', mode: undefined, ferme: false })
   })
 })

@@ -3795,3 +3795,53 @@ describe('cle de l etape lue qui disparait (capture du 07/10/2026, Rhino / Assau
     expect(vues.at(-1)).toBe('menace:1')
   })
 })
+
+describe('bilan referme : publie au spectateur et a la relecture', () => {
+  afterEach(() => {
+    window.history.replaceState(null, '', '/')
+    vi.unstubAllGlobals()
+  })
+
+  it('le joueur qui valide le bilan publie une etape vide', () => {
+    const vues: (string | undefined)[] = []
+    render(
+      <DeroulePhase
+        etapes={etapes}
+        identitePhase={4}
+        phaseMechantEnCours={false}
+        onTerminer={() => {}}
+        onEtapeAffichee={(c) => vues.push(c)}
+      />
+    )
+    const bilan = /^(Terminer|À toi de jouer)$/i
+    for (let garde = 0; garde < 12 && !screen.queryByRole('button', { name: bilan }); garde++) {
+      fireEvent.click(screen.getByRole('button', { name: /Suivant/i }))
+    }
+    expect(vues.at(-1)).toBeDefined()
+    fireEvent.click(screen.getByRole('button', { name: bilan }))
+    expect(vues.at(-1)).toBeUndefined()
+  })
+
+  it('le spectateur cache le bilan quand le joueur l a referme, pas avant', async () => {
+    window.history.replaceState(null, '', '/?spectateur=1')
+    let publie: Record<string, { cle: string; t: number; mode: string }> = { 0: { cle: 'bilan', t: 1, mode: '' } }
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, json: async () => publie })))
+    vi.useFakeTimers()
+    try {
+      const { container } = render(
+        <DeroulePhase etapes={etapes} identitePhase={4} phaseMechantEnCours={false} onTerminer={() => {}} />
+      )
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(50)
+      })
+      expect(container).not.toBeEmptyDOMElement()
+      publie = { 0: { cle: '', t: 2, mode: '' } }
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(800)
+      })
+      expect(container).toBeEmptyDOMElement()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})

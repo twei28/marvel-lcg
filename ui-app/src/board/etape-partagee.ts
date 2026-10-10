@@ -8,8 +8,8 @@ import type { ModePhaseMechant } from './moteur'
 
 export type EtapesLues = Record<string, { cle: string; t: number; mode?: string }>
 
-/** Ce que le spectateur suit du joueur : l'etape qu'il lit, et son mode de phase. */
-export type Suivi = { cle?: string; mode?: ModePhaseMechant }
+/** Ce que le spectateur suit du joueur : l'etape qu'il lit, son mode de phase, et s'il a referme le cartouche. */
+export type Suivi = { cle?: string; mode?: ModePhaseMechant; ferme?: boolean }
 
 const MODES: readonly string[] = ['detaille', 'sur-table', 'instantane']
 export const modeLu = (mode: string | undefined): ModePhaseMechant | undefined =>
@@ -27,11 +27,11 @@ export function publierEtape(siege: number, cle: string | undefined, mode?: Mode
 
 /** Le suivi du joueur le plus recent : son etape (non vide) et son mode (le dernier publie). */
 export function suiviLePlusRecent(etapes: EtapesLues): Suivi {
-  let recent: { t: number; mode?: string } | undefined
+  let recent: { cle: string; t: number; mode?: string } | undefined
   for (const etape of Object.values(etapes)) {
     if (!recent || etape.t > recent.t) recent = etape
   }
-  return { cle: cleLaPlusRecente(etapes), mode: modeLu(recent?.mode) }
+  return { cle: cleLaPlusRecente(etapes), mode: modeLu(recent?.mode), ferme: recent !== undefined && !recent.cle }
 }
 
 /** La cle lue le plus recemment, tous joueurs confondus : celui qui vient de cliquer. */
@@ -55,12 +55,14 @@ export function useSuiviDuJoueur(actif: boolean): Suivi {
   useEffect(() => {
     if (!actif) return
     const changer = (neuf: Suivi) =>
-      setSuivi((ancien) => (ancien.cle === neuf.cle && ancien.mode === neuf.mode ? ancien : neuf))
+      setSuivi((ancien) =>
+        ancien.cle === neuf.cle && ancien.mode === neuf.mode && ancien.ferme === neuf.ferme ? ancien : neuf
+      )
     const lecteur = lecteurActif()
     if (lecteur) {
       const minuteur = window.setInterval(() => {
         const t = lecteur.tempsCourant()
-        changer({ cle: lecteur.etapeA(t), mode: modeLu(lecteur.modeA(t)) })
+        changer({ cle: lecteur.etapeA(t), mode: modeLu(lecteur.modeA(t)), ferme: lecteur.cartoucheFermeA(t) })
       }, 100)
       return () => window.clearInterval(minuteur)
     }
@@ -80,8 +82,4 @@ export function useSuiviDuJoueur(actif: boolean): Suivi {
     }
   }, [actif])
   return suivi
-}
-
-export function useEtapeSuivie(actif: boolean): string | undefined {
-  return useSuiviDuJoueur(actif).cle
 }
