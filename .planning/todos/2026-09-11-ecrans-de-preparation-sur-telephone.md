@@ -1,3 +1,5 @@
+> REMPLACÉE le 09/10/2026 par `2026-10-09-mode-telephone-refonte.md` (50 questions, disposition bandeau + grille 3 colonnes).
+
 # Les écrans de préparation sur téléphone
 
 **Demandé par l'utilisateur le 11/09/2026**, pendant le chantier du plateau

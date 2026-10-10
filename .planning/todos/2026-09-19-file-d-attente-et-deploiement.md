@@ -1843,3 +1843,14 @@ reconstruit à 10:41 (`board-CYxXcc6s.js`, qui contient « ranger les cartes d'u
   `2026-10-06-moteur-dans-le-navigateur-pyodide.md`, section « DÉPLOYÉ le 07/10/2026 ».
 Reste : un prochain `bash ui-app/deployer.sh` puis `deployer.ps1 -Code` enverra le plateau à jour (Alt + glisser compris) ; republier
 `play.` ensuite avec `python3 navigateur/publier.py --oui` pour que les deux versions restent alignées.
+
+## ✅ DÉPLOIEMENT du 10/10/2026 (nuit, 04h27) : commit 76e23ddc, plateau board-ClH3HiXL.js
+Déployé depuis une copie propre du commit (worktree), pour laisser hors ligne le salon invité (en pause, non commité) et la
+refonte de la phase du méchant (en cours). Site normal et play. : même plateau que le poste, 20/20 identiques, 200 partout.
+Contenu : rapports 70 (cartes Starting au choix, une seule par deck), 71/72 (chaîne de remplacement visible dans la phase
+du méchant), choix de coût avec icônes et texte traduit, « Your move », main cochée d'un toucher sur téléphone, mode
+téléphone zones 1 (assistant) et 2 (accueil, galerie, campagne, éditeur, stats, site), nouvel éditeur de deck, mode
+sobre des pages, succès retirés, en-tête fin, 30/70.
+Échec sans effet : la sauvegarde du code (dossier `_a_supprimer` absent de la copie) ; à refaire au prochain déploiement.
+Rapports 70, 71, 72 : réponses envoyées à Yarro et passés en « Traité » le 10/10. En attente : zone 3 du
+téléphone (branche worktree-agent-a4722fdc38ff37a10), refonte de la phase du méchant (interrupteur essai pour Yarro).
