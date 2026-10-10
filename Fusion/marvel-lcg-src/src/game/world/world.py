@@ -547,6 +547,13 @@ class World(WorldAction, WorldFind):
         for scheme in Worlds.GetAllMainSchemes(self):
             scheme.Setup(True)
 
+        # La manigance principale est en jeu depuis l'etape 8 : le joueur la
+        # voit avant les cartes « Setup » de l'etape 11 (une annexe imposee,
+        # Typhoid Mary, Unus...) et avant ses propres capacites (12a).
+        if self.rule.confirm_scheme_setup_order:
+            for scheme in Worlds.GetAllMainSchemes(self):
+                self.ConfirmMainSchemeReveal(scheme)
+
         # [x] 11. Put Setup Cards Into Play
         # A card with the setup keyword begins the game in play.
         decks = [x.player_deck for x in self.const_players] + \
@@ -564,6 +571,10 @@ class World(WorldAction, WorldFind):
         # [x] 12. Resolve Scenario Setup and When Revealed abilities
         self.phase.SetState(Phase.State.ScenarioSetup)
         for scheme in Worlds.GetAllMainSchemes(self):
+            # Deja montree avant l'etape 11 ; sans effet si elle l'a ete. Une
+            # principale arrivee depuis passe ici avant ses capacites (12a).
+            if self.rule.confirm_scheme_setup_order:
+                self.ConfirmMainSchemeReveal(scheme)
             scheme.Setup(False)
             scheme.Advance(None, game_start_effect) # Has already reveal here
 
@@ -1251,6 +1262,17 @@ class World(WorldAction, WorldFind):
             return
         if self.is_game_over:
             return
+        # Une seule fois par carte : la face A se montre quand elle arrive
+        # (mise en place, ou revelation d'une etape 2A/3A), et le retournement
+        # qui suit ses capacites ne la remontre pas.
+        # Sans la regle d'ordre (sauvegarde ancienne), chaque appel pose sa
+        # question, comme avant : seul le retournement 1A -> 1B en posait une.
+        deja = getattr(self, "faces_a_montrees", None) if self.rule.confirm_scheme_setup_order else set()
+        if deja is None:
+            deja = self.faces_a_montrees = set()
+        if scheme.card.object_id in deja:
+            return
+        deja.add(scheme.card.object_id)
         player = self.GetFirstPlayer()
         if player is None or player.is_eliminated:
             return

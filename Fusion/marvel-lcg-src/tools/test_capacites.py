@@ -51570,10 +51570,88 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["01121"], "exhausted": ["45049"], "compteurs": [["45049", "psi", 3]]},
     },
+
+    # ------------------------------------------------------------------------
+    # Ordre de la mise en place (Rules Reference v1.8, Appendix II « Setup »,
+    # etapes 8 et 12a-c) : la manigance principale 1A est en jeu des l'etape 8,
+    # ses capacites « Setup » se resolvent a l'etape 12a. Le joueur doit donc
+    # la VOIR (question Reveal_Main_Scheme) avant tout ce qu'elle met en jeu.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "Mise en place Klaw — la manigance principale se montre AVANT l'annexe qu'elle met en jeu",
+        "pourquoi": ("constat de l'utilisateur, 10/10/2026 : « il montre la manigance annexe puis la "
+                     "principale lors de la mise en place ». Underground Distribution 1A met Defense "
+                     "Network en jeu a l'etape 12a ; la question de la principale n'arrivait qu'au "
+                     "retournement vers 1B (12b), donc apres celle de l'annexe"),
+        "scenario": "klaw",
+        "heros": "spider_man",
+        "regles": ["confirm_main_scheme", "confirm_side_scheme", "confirm_scheme_setup_order"],
+        "tracer_mise_en_place": True,
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "ordre_de_mise_en_place",
+        "attendu": {"ordre": [["Reveal Main Scheme", "01116a"], ["Reveal Side Scheme", None]]},
+    },
+    {
+        "nom": "Mise en place Tower Defense — les deux manigances se montrent AVANT le choix de l'Assaillant",
+        "pourquoi": ("constat de l'utilisateur, 10/10/2026 : il subissait les degats de Black Order "
+                     "Besieger avant d'avoir vu les manigances. Under Siege 1A revele The Armies of "
+                     "Thanos 2A, dont le When Revealed met l'Assaillant en jeu (12a) ; Under Siege ne "
+                     "se montrait qu'au retournement (12b) et The Armies of Thanos jamais"),
+        "scenario": "the_tower_defense",
+        "heros": "spider_man",
+        "regles": ["confirm_main_scheme", "confirm_side_scheme", "confirm_scheme_setup_order"],
+        "tracer_mise_en_place": True,
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "ordre_de_mise_en_place",
+        "attendu": {"ordre": [["Reveal Main Scheme", "21098a"], ["Reveal Main Scheme", "21099a"],
+                              ["Avengers Tower", None]]},
+    },
+    {
+        "nom": "Mise en place Tower Defense — CONTRE-CAS : sans la regle d'ordre, une sauvegarde ancienne garde l'ancien ordre",
+        "pourquoi": ("une sauvegarde rejoue ses reponses dans l'ordre ou elles ont ete posees : une "
+                     "partie lancee avant le 10/10/2026 ne porte pas `confirm_scheme_setup_order` et "
+                     "doit reposer ses questions comme alors (choix de l'Assaillant d'abord)"),
+        "scenario": "the_tower_defense",
+        "heros": "spider_man",
+        "regles": ["confirm_main_scheme", "confirm_side_scheme"],
+        "tracer_mise_en_place": True,
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "ordre_de_mise_en_place",
+        "attendu": {"ordre": [["Avengers Tower", None], ["Reveal Main Scheme", "21099a"],
+                              ["Reveal Main Scheme", "21098a"]]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
 VERIFICATIONS = r'''
+
+def ordre_de_mise_en_place(monde, aides):
+    """Les questions de la mise en place arrivent dans l'ordre attendu.
+
+    `attendu.ordre` : liste de [fragment du nom d'option, card_id porteur ou
+    None]. Chaque element doit apparaitre dans une question POSTERIEURE a celle
+    de l'element precedent (`etat["mise_en_place"]`, note par le pilote).
+    """
+    vues = aides["etat"].get("mise_en_place") or []
+    attendu = (aides["cas"].get("attendu") or {}).get("ordre") or []
+    rang = -1
+    for fragment, card_id in attendu:
+        trouve = None
+        for i in range(rang + 1, len(vues)):
+            for nom, porteur in vues[i]:
+                if fragment.replace("_", " ") in nom and (card_id is None or porteur == card_id):
+                    trouve = i
+                    break
+            if trouve is not None:
+                break
+        if trouve is None:
+            resume = [[n for n, _ in q][:3] + [p for _, p in q][:1] for q in vues]
+            return False, f"{fragment} ({card_id}) absent apres la question {rang} ; vues : {resume}"
+        rang = trouve
+    return True, f"ordre respecte sur {len(vues)} questions de mise en place"
 
 def sentinel_pieces_detruites(monde, aides):
     """Combien de COMPONENT montrent VRAIMENT leur face DESTROYED.
@@ -61280,6 +61358,17 @@ def executer_un_cas(game_dir, port, index):
             etat.setdefault("prompts", []).append(str(getattr(data, "prompt_text", "") or ""))
             etat.setdefault("options_vues", []).extend(
                 str(o.get("name", "")).replace("_", " ") for o in options if isinstance(o, dict))
+        elif cas.get("tracer_mise_en_place"):
+            # Ordre des questions de la mise en place (10/10/2026) : le nom de
+            # chaque option et le card_id de la carte qui porte la question.
+            gestion = monde_courant().object_manager
+            def _porteur(o):
+                objet = gestion.card_dict.get(o.get("bind_id"))
+                face = objet.face if objet is not None else None
+                return getattr(getattr(face, "paper", None), "card_id", None)
+            etat.setdefault("mise_en_place", []).append(
+                [(str(o.get("name", "")).replace("_", " "), _porteur(o))
+                 for o in options if isinstance(o, dict)])
         elif cas.get("options_attendues_mise_en_place"):
             etat.setdefault("options_vues_mise_en_place", []).extend(
                 str(o.get("name", "")).replace("_", " ") for o in options if isinstance(o, dict))
@@ -61752,6 +61841,11 @@ def executer_un_cas(game_dir, port, index):
     # entrant, donc sans `carnet`, donc hors mode campagne : la capacite
     # `WriteCampaignLogAtGameOver` ne partait pas et le fichier n'existait
     # jamais. Le mode ne doit pas dependre du contenu du carnet.
+    # `regles` (10/10/2026) : regles du moteur a poser sur la scene, comme le
+    # lanceur le fait (`confirm_main_scheme` pour les questions de manigance).
+    for regle in cas.get("regles") or []:
+        if regle not in scene.rules:
+            scene.rules.append(regle)
     if cas.get("carnet") or cas.get("campagne"):
         scene.campaign.campaign_log |= {str(k): str(v) for k, v in (cas.get("carnet") or {}).items()}
         if "mode_campaign" not in scene.rules:

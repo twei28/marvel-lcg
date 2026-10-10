@@ -570,6 +570,10 @@ export type World = {
    * porte pas la règle, et le voile d'ouverture ne doit pas l'attendre.
    */
   confirm_main_scheme?: boolean
+  /** Même rôle pour une manigance annexe imposée par le scénario. */
+  confirm_side_scheme?: boolean
+  /** Faces A montrées dans l'ordre du livret, avant leurs capacités (10/10/2026). */
+  confirm_scheme_setup_order?: boolean
   /**
    * Motif du dernier geste manuel refusé, vide quand tout va bien. Posé par
    * `WorldDescriptor.manuel_refus` (tâche 4 ter), lui-même lu depuis

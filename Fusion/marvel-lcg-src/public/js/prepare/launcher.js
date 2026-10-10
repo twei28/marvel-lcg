@@ -53,6 +53,9 @@ function buildRules(state) {
     // jeu (avenant du 15/09/2026). Drapeau SEPARE : une sauvegarde ecrite entre
     // les deux ne porte que le premier et doit se rejouer sans le second.
     rules.push("confirm_side_scheme");
+    // L'ordre du livret pour ces deux temps d'arret (10/10/2026) : drapeau
+    // separe, une sauvegarde ecrite avant pose ses questions dans l'ancien ordre.
+    rules.push("confirm_scheme_setup_order");
     return rules;
 }
 

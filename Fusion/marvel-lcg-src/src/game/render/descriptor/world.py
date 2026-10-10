@@ -47,6 +47,13 @@ class WorldDescriptor:
     # Il doit donc savoir s'il y a une question a attendre : une sauvegarde
     # ancienne ou un puzzle ne porte pas la regle, et n'en posera jamais.
     confirm_main_scheme: bool = field(default=False)
+    # Meme chose pour une manigance annexe imposee par le scenario : le
+    # plateau sait qu'un panneau la montrera, sa mise en place pas a pas ne
+    # la presente donc pas une seconde fois.
+    confirm_side_scheme: bool = field(default=False)
+    # Les faces A se montrent dans l'ordre du livret (avant leurs capacites) :
+    # le plateau ne joue alors plus le retournement dans le panneau.
+    confirm_scheme_setup_order: bool = field(default=False)
     # Le motif du DERNIER geste manuel refuse, vide quand tout va bien.
     #
     # Lu depuis `device_manager.sandbox_last_error` (pose par

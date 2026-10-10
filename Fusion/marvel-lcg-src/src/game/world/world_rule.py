@@ -44,6 +44,12 @@ class WorldRule:
         # avec la principale : une sauvegarde ecrite entre les deux ne porte que
         # le premier, et doit continuer de se rejouer sans le second.
         self.confirm_side_scheme            = VariableBool(self, False, "confirm_side_scheme")
+        # L'ordre du livret pour ces temps d'arret (10/10/2026) : la face A se
+        # montre des qu'elle est en jeu, avant les cartes Setup et avant ses
+        # propres capacites. Drapeau SEPARE pour la meme raison que les deux
+        # precedents : une sauvegarde ecrite avant pose ses questions dans
+        # l'ancien ordre, et doit se rejouer dans cet ordre-la.
+        self.confirm_scheme_setup_order     = VariableBool(self, False, "confirm_scheme_setup_order")
 
         self.v15_all                        = VariableBool(self, False, "v15_all")
 

@@ -60,6 +60,11 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
             from game.effect.rule import GameRule
             first_player = self.card.world.GetFirstPlayer()
             self.PutIntoPlay(first_player, GameRule(self))
+        # Une etape A se montre AVANT ses capacites « When Revealed » : le
+        # joueur voit la manigance avant ce qu'elle met en jeu (Tower Defense,
+        # The Armies of Thanos 2A et ses Black Order Besieger).
+        if self == self.card.printed_faces[0] and self.card.world.rule.confirm_scheme_setup_order:
+            self.card.world.ConfirmMainSchemeReveal(self)
         return super().OnWhenCardRevealed(revealed_message)
 
     @override

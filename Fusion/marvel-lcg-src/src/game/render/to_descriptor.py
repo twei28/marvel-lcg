@@ -70,6 +70,8 @@ class ToDescriptor:
         # commentaire de WorldDescriptor.manuel_actif pour la distinction.
         world_descriptor.manuel_actif = bool(world.manuel_actif)
         world_descriptor.confirm_main_scheme = bool(world.rule.confirm_main_scheme)
+        world_descriptor.confirm_side_scheme = bool(world.rule.confirm_side_scheme)
+        world_descriptor.confirm_scheme_setup_order = bool(world.rule.confirm_scheme_setup_order)
         # Tache 4 ter : la trace d'un geste manuel refuse (DrainSandboxCommands
         # la pose, personne ne la lisait). Projetee telle quelle, sans mode a
         # verifier : le champ est vide hors refus, peu importe le mode.
