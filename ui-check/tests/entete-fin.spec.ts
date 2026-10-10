@@ -14,7 +14,8 @@ async function etapeEquipe(page: Page, admin: boolean) {
   await page.waitForSelector('.acc-mode, .acc-tel-jouer', { timeout: 20000 });
   if (await page.locator('.acc-tel-jouer').isVisible()) await page.locator('.acc-tel-jouer').click();
   await page.getByRole('button', { name: /^Solo/ }).first().click();
-  await page.waitForSelector('header.progress .reprise-boutons', { timeout: 20000 });
+  // Au téléphone, la rangée vit repliée dans le menu du burger : présente, pas visible.
+  await page.waitForSelector('header.progress .reprise-boutons', { timeout: 20000, state: 'attached' });
   if (admin) {
     await page.evaluate((libelles) => {
       const rangee = document.querySelector('.reprise-boutons')!;
@@ -74,14 +75,37 @@ for (const [largeur, langue] of [[1366, 'fr'], [1366, 'en'], [1920, 'fr']] as co
   });
 }
 
-test('mobile : l en-tete reste sur une ligne, sans defilement de page', async ({ page }) => {
+// Au telephone (refonte du 09/10/2026) : l'en-tete n'a plus que le logo, la
+// langue et le burger ; la rangee d'outils (Reprendre, Stats, Bug, admin...)
+// vit DANS le menu du burger, chaque outil a 44 px avec son libelle.
+test('mobile : l en-tete reste sur une ligne, les outils sont dans le burger', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await etapeEquipe(page, true);
-  const boite = await page.locator('header.progress').boundingBox();
-  expect(boite!.height).toBeLessThanOrEqual(70);
+  const rang = await page.locator('.tel-rang').boundingBox();
+  expect(rang!.height, 'la ligne du logo et du burger').toBeLessThanOrEqual(56);
   const deborde = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
   expect(deborde, 'la page defile horizontalement').toBe(false);
-  await page.screenshot({ path: 'test-results/entete-fin-mobile.png', clip: { x: 0, y: 0, width: 390, height: 140 } });
+  // Repliee : aucun outil a l'ecran.
+  const outils = page.locator('.tel-menu .reprise-boutons > button');
+  await expect(page.locator('.tel-menu')).toBeHidden();
+  // Le burger ouvre le menu : les outils y sont, admin compris, a 44 px.
+  await page.locator('#tel-burger').click();
+  await expect(page.locator('.tel-menu')).toBeVisible();
+  await expect(page.locator('#tel-burger')).toHaveAttribute('aria-expanded', 'true');
+  const n = await outils.count();
+  expect(n).toBeGreaterThanOrEqual(11);
+  await expect(outils.filter({ hasText: 'Administration' })).toHaveCount(1);
+  for (let i = 0; i < n; i++) {
+    const b = await outils.nth(i).boundingBox();
+    if (!b) continue;
+    expect(b.height, `outil ${i} sous 44 px`).toBeGreaterThanOrEqual(44);
+    expect(b.x + b.width, `outil ${i} hors de l ecran`).toBeLessThanOrEqual(391);
+  }
+  const debordeOuvert = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
+  expect(debordeOuvert, 'menu ouvert : la page defile horizontalement').toBe(false);
+  await page.screenshot({ path: 'test-results/entete-fin-mobile.png' });
+  await page.locator('#tel-burger').click();
+  await expect(page.locator('.tel-menu')).toBeHidden();
 });
 
 test('le joueur voit aussi ses outils en icones, et en anglais', async ({ page }) => {
