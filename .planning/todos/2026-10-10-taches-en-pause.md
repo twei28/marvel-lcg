@@ -3,7 +3,16 @@
 Règles : UNE tâche à la fois, un point d'avancement régulier, on travaille sur « Étape par étape Bis ». Rien ne se
 déploie sans « déploie » (annonce de 10 min dans l'admin, puis `bash deploiement/deployer-tout.sh`).
 
-## 1. Déploiement en attente (tout est commité sur `mode-manuel`, rien n'est en ligne depuis 76e23ddc)
+## ✅ DÉPLOYÉ le 10/10/2026 à 16h37 (commit 847af4b7, plateau board-C9AZ-Wgw.js)
+Sur « commit et déployer » de l'utilisateur. Annonce de 10 min posée en base (2 connexions vues), puis
+`deployer-tout.sh` depuis une copie propre (worktree `MarvelLCG-deploy`, sans le code en pause) : site normal et
+play. identiques au poste, équivalence play. 20/20, sauvegarde code-20261010-1637-847af4b7.zip, 200 partout.
+Contenu : tout le §1 ci-dessous, plus Luke Cage (9 cartes), la fenêtre de choix hors table (rapport n76 Storm),
+« Étape par étape » unique (ex-Bis), l'ordre de mise en place 1A/2A/méchants/1B/2B, les stats sans trou, la
+console, l'éventail des annexes. Le plateau LOCAL (public/app du poste) n'a PAS été reconstruit : `bash
+ui-app/deployer.sh` pour l'aligner. Rapports n73, n74, n75, n76 : réponses prêtes, encore « nouveau » en base.
+
+## 1. (DÉPLOYÉ, voir ci-dessus) Déploiement en attente
 Bis de Codex (2a50ea4d), mise en place dans l'ordre du livret (960c8765, ee161d42, 396c0054), choix à plusieurs effets
 (6878489f, d8efcd22), liserés nets sans halo (f4c3adf4, 114d3d3c), ombre et lueur des cartes (deb66b13, 636fb69e,
 d21d904a), manigances principales côte à côte (960eab9f), statistiques de fin de partie (69c7d0b2), écran du méchant
@@ -82,3 +91,10 @@ node_modules et assets/pics, `_a_supprimer/` à créer pour la sauvegarde du cod
 - ⏳ Aperçus de la fenêtre « Choisis ta phase du méchant » (`public/img/phase-modes/etape-1..4.jpg`, 05/10) : ils
   montrent l'ANCIENNE présentation. À refaire avec le nouveau cartouche (décision : plus tard).
 - ⏳ Nouveautés fr + en à écrire avant le déploiement (Luke Cage, Étape par étape unique, stats de fin, console).
+- ⏳ Audit Storm (10/10, lecture) : écarts CERTAINS non corrigés : 36010 Torrential Rain (« remove 3 threat from
+  among schemes » codé sur UNE manigance ; modèle 34018) et 36012 Flash Freeze (liste des ennemis figée au jeu de
+  la carte, un sbire engagé plus tard échappe au -3). Doute moteur : Permanent des cartes WEATHER
+  (has_permanent.py:24-26). Aucune carte 36xxx n'a de cas de test.
+- ⏳ Ménage : worktrees `MarvelLCG-bis` et `MarvelLCG-deploy` (jonctions à retirer d'abord), `launcher_essai_mep.py`,
+  `.game-essai-mep`, specs `ui-check/tests/zz-*`.
+
