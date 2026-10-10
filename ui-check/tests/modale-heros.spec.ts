@@ -8,8 +8,10 @@
 //   2. la modale s'ouvre au clic, la version de base est preselectionnee ;
 //   3. choisir Miss Hulk puis Valider se lit dans le rappel de l'etape DECKS ;
 //   4. au retour sur l'ecran, la modale se rouvre SUR le dernier choix ;
-//   5. un heros sans option (Storm) n'ouvre aucune modale : la tuile se
-//      choisit directement.
+//   5. un heros sans option n'ouvre aucune modale : la tuile se choisit
+//      directement. Storm a recu un art alternatif (donc une option) : le
+//      temoin est depuis le 10/10/2026 Agatha Harkness, fan-made sans art,
+//      sans version ni identite alternative.
 //
 //   npm run modale-heros
 //
@@ -97,10 +99,11 @@ test.describe('La modale du heros', () => {
     expect(deck.hero_deck, 'et pas Iron Man (hc002), l’allie de la version de base').not.toContain('hc002');
   });
 
-  test('Storm : aucune option, donc aucune modale, la tuile se choisit directement', async ({ page }) => {
+  test('Agatha Harkness : aucune option, donc aucune modale, la tuile se choisit directement', async ({ page }) => {
     await ouvrirLeRoster(page);
-    await tuile(page, 'storm').click();
-    await expect(tuile(page, 'storm')).toHaveClass(/\bchosen\b/);
+    await montrerLesFanMade(page);
+    await tuile(page, 'agatha_harkness').click();
+    await expect(tuile(page, 'agatha_harkness')).toHaveClass(/\bchosen\b/);
     await expect(page.locator('.vh-panel')).toHaveCount(0);
   });
 });

@@ -5,14 +5,13 @@ const LARGEURS = [360, 390, 480];
 test.describe('La préparation mobile V2 privée', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
 
-  test('la V1 reste le rendu par défaut', async ({ page }) => {
+  // Depuis la refonte telephone du 09/10/2026, le rendu par defaut sous 768 px
+  // est le mode telephone (`html.tel`, js/prepare/tel.js), qui n'a plus de
+  // tuiles `.acc-mode` : la V2 reste reservee au cookie.
+  test('sans cookie, le mode téléphone reste le rendu par défaut', async ({ page }) => {
     await page.goto('/prepare.html');
-    await expect(page.locator('.acc-mode').first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('html')).toHaveClass(/\btel\b/, { timeout: 30_000 });
     await expect(page.locator('html')).not.toHaveAttribute('data-ui-version', 'v2');
-    const hauteur = await page.locator('.acc-mode').first().evaluate(
-      (element) => Math.round(element.getBoundingClientRect().height)
-    );
-    expect(hauteur, 'la V1 ne doit pas recevoir la hauteur compacte V2').not.toBe(76);
   });
 
   test('le cookie active la V2 avant le rendu', async ({ page, context }) => {

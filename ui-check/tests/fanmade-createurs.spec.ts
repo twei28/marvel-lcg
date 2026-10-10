@@ -89,9 +89,10 @@ test.describe('Le filtre fan-made honore les createurs', () => {
     await page.goto('/prepare.html');
     await page.getByRole('button', { name: /^Solo/ }).first().click();
     await expect(page.locator('.tb-port').first()).toBeVisible();
-    // Storm n'a aucune option : sa tuile se choisit d'un clic, sans modale
-    // (meme raison que dans modale-heros.spec.ts).
+    // Storm a un art alternatif depuis l'automne : sa tuile ouvre la modale du
+    // heros, qu'on valide telle quelle (le sujet ici, ce sont les vilains).
     await page.locator('.tb-port[data-hero="storm"]').click();
+    await page.locator('.vh-panel').getByRole('button', { name: /valider/i }).click();
     await page.getByRole('button', { name: /continuer/i }).click();
     await page.getByRole('button', { name: /continuer/i }).click();
 
@@ -105,7 +106,7 @@ test.describe('Le filtre fan-made honore les createurs', () => {
     await expect(tuile('wd_shocker')).toHaveText('Shocker (Ripper3)');
     await page.screenshot({ path: 'fanmade-vilains-createurs.png' });
     // TEMOIN : un vilain officiel reste nu, sinon on attribuerait a tort.
-    await page.getByRole('button', { name: 'Core Set' }).click();
+    await page.getByRole('button', { name: /^(Core Set|Set de base)$/ }).click();
     await expect(tuile('rhino')).toHaveText('Rhino');
 
     // SETS MODULAIRES : la liste « Personnalises » du bloc de difficulte.

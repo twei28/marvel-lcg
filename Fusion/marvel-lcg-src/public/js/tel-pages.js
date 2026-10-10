@@ -18,7 +18,6 @@ export { estTel, suivreTel, ajouterPoignee };
 
 enregistrerTraductions({
     "Menu": "Menu",
-    "Accueil du jeu": "Game home",
     "Jouer": "Play",
     "Campagne": "Campaign",
     "Galerie": "Gallery",

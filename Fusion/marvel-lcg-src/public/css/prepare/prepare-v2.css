@@ -112,6 +112,16 @@
     min-height: 44px;
   }
 
+  /* icones-entete.js impose 34 px en !important a la langue et a
+     l'affichage : seule une regle !important plus precise rend les 44 px
+     (meme parade que prepare-tel.css). */
+  html[data-ui-version="v2"] .progress .btn-langue.btn-icone,
+  html[data-ui-version="v2"] .progress .btn-affichage.btn-icone {
+    width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
   html[data-ui-version="v2"] .progress .reprise-boutons {
     max-width: 132px;
     overflow-x: auto;
