@@ -843,7 +843,13 @@ class PlayerAction:
                 # elargir permet desormais d'annuler APRES avoir vu cette
                 # information, ce qu'on ne peut pas faire a la vraie table.
                 # Assume comme acceptable ici.
-                game.controller_manager.undo.PushNewStep(game.controller_manager.replay.current_step_id)
+                undo = game.controller_manager.undo
+                question_du_tour = type(message) is Message.WhenPlayerInTurn
+                pas_de_la_question = game.controller_manager.replay.current_step_id
+                if question_du_tour:
+                    undo.debut_action = 0
+                    undo.joueur_action = -1
+                undo.PushNewStep(pas_de_la_question)
 
                 # PASSER NE DOIT JAMAIS ETRE UNE OPTION DEGUISEE (30/09/2026).
                 # Sur un choix « you may », il refuse (voir plus bas). Sinon, il
@@ -854,6 +860,11 @@ class PlayerAction:
                 selected, is_cheating = player.GetController().ChoiceOne(effect_list, bind_effect, message, priority, forced, masquer_passer=passer_est_une_option)
 
                 game.controller_manager.undo.UpdateLastStep()
+
+                if question_du_tour and selected is not None and not is_cheating \
+                        and not selected.IsName("Cancel"):
+                    undo.debut_action = pas_de_la_question
+                    undo.joueur_action = player.GetController().player_id
 
                 if message.world.is_game_over:
                     return None, False

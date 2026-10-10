@@ -25,6 +25,11 @@ class AskOptionPayload:
     # d'autre ne doit s'en servir pour decider quoi que ce soit.
     refus_json      : str = field(default="[]") # json, meme forme que options_json
 
+    # Vrai quand cette question fait partie d'une action que CE joueur a lancee
+    # depuis la question du tour : `/undo action` remet la partie avant le
+    # choix de la carte (croix et Echap du plateau).
+    annuler_action  : bool = field(default=False)
+
 class DeviceManager:
 
     def __init__(self) -> None:

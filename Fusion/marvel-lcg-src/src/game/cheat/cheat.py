@@ -164,6 +164,11 @@ class Cheat:
                 game.scene.SetMetadataList('step', undo_count)
 
             step = 1
+            if args == "action":
+                debut = game.controller_manager.undo.debut_action
+                if debut != 0:
+                    try_skip_to(debut)
+                return
             if args == "auto":
                 last_step = game.controller_manager.undo.last_step
                 if last_step != 0:

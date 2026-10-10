@@ -25,6 +25,11 @@ class UndoModule:
     def __init__(self, manager: 'ControllerManager') -> None:
         self.next_step: int = 0
         self.last_step: int = 0
+        # L'action en cours : la question du tour (WhenPlayerInTurn) ou le
+        # joueur l'a lancee, et ce joueur. `/undo action` y revient, avant le
+        # choix de la carte, quel que soit le nombre de sous-questions passees.
+        self.debut_action: int = 0
+        self.joueur_action: int = -1
         self.manager: Final = manager
 
         # message_id, [card_ids]
@@ -43,10 +48,15 @@ class UndoModule:
     def Clean(self, by_undo: bool):
         self.last_step = 0
         self.next_step = 0
+        self.debut_action = 0
+        self.joueur_action = -1
 
         if not by_undo:
             self.undo_effect_card_cache = {}
             self.debug_message_id = {}
+
+    def ActionEnCours(self, player_id: int) -> bool:
+        return self.debut_action != 0 and self.joueur_action == player_id
 
     def PushFastUndo(self, message: 'Message2', effects: List['Effect']):
         from game.message.message_type import CheckNoneMessage

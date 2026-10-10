@@ -412,6 +412,8 @@ class Controller:
                         prompt_text=prompt_text,
                         show_cancel=is_forced == False and not masquer_passer,
                         replay_input=fallthrough_input,
+                        annuler_action=message_name != "WhenPlayerInTurn"
+                            and controller_manager.undo.ActionEnCours(self.player_id),
                     )
                 )
 
