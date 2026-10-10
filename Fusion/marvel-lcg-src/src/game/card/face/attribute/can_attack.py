@@ -931,12 +931,10 @@ class CanAttack(CardFace):
         dont le personnage etait vise, et l'attaque defendue, comptee au joueur
         du defenseur."""
         from engine import Engine
-        from game.player import Player
         stats = Engine.game.session.statistics
-        if Player.IsType(cible.GetControlBy()):
-            stats.AddSiege(cible.GetControlByPlayer(), 'degats_evites', max(0, attaque - subi))
-        if defenseur is not None and Player.IsType(defenseur.GetControlBy()):
-            stats.AddSiege(defenseur.GetControlByPlayer(), 'attaques_defendues', 1)
+        stats.AddSiege(stats.JoueurDe(cible), 'degats_evites', max(0, attaque - subi))
+        if defenseur is not None:
+            stats.AddSiege(stats.JoueurDe(defenseur), 'attaques_defendues', 1)
 
     @staticmethod
     def JournaliserManigance(auteur: 'CardFace', manigance: 'CardFace', is_base_scheme: bool,

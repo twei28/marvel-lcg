@@ -242,6 +242,19 @@ class CanHealth(HasHealth):
             if overkill_target and excess_damage:
                 lost_message_overkill_helper = overkill_target.TakeDamageNoDeath(source, DamageProperty(damage=excess_damage, is_from_overkill=True), by_effect, would_attack_unit_message, from_atk_message=from_atk_message)
 
+            # Statistiques de la PARTIE (onglet Stats) : comptees ICI, avant
+            # la defaite. `AfterFaceDealDamage` part apres : un allie vaincu
+            # n'y a plus de controleur, et le coup fatal sur le dernier heros
+            # finit la partie avant d'etre compte. L'excedent reporte sur la
+            # cible du debordement est compte a CETTE cible, pas deux fois.
+            from engine import Engine
+            stats = Engine.game.session.statistics
+            reporte = excess_damage if overkill_target and excess_damage else 0
+            stats.AddSiege(stats.JoueurDe(self), 'degats_subis', total_took_damage - reporte)
+            if lost_message_overkill_helper and lost_message_overkill_helper.lost_message:
+                stats.AddSiege(stats.JoueurDe(overkill_target), 'degats_subis',
+                               lost_message_overkill_helper.lost_message.value)
+
             units: List['Unit2'] = []
             if self.IsInPlay() and Unit2.IsType(self):
                 units.append(self)

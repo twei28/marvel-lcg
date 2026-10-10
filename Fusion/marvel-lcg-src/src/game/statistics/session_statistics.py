@@ -48,6 +48,17 @@ class SessionStatistics:
         except Exception:
             return None
 
+    @staticmethod
+    def JoueurDe(face: 'CardFace') -> 'Player|None':
+        """Le joueur d'un personnage, MEME vaincu : un allie vaincu par le
+        coup qu'il vient de prendre n'a plus de controleur, on se rabat sur
+        son proprietaire (partie reelle du 10/10/2026, Black Cat)."""
+        from game.player import Player
+        for joueur in (face.GetControlBy(), face.GetOwner()):
+            if Player.IsType(joueur):
+                return joueur
+        return None
+
     def AddSiege(self, player: 'Player|None', name: str, value: int) -> None:
         siege = self._Siege(player)
         if siege is None or value <= 0:

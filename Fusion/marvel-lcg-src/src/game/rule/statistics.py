@@ -174,7 +174,7 @@ def GetStatisticsRule() -> List['Ability']:
         # ⚠ ATTRIBUE A LA CIBLE : c'est TON heros qui a pris le coup, meme
         # si c'est un allie d'un autre joueur qui l'a inflige.
         Engine.statistics.RecordForSeat(message.target.GetControlByPlayer(), "total_damage_taken", message.dealt_damage)
-        Engine.game.session.statistics.AddSiege(message.target.GetControlByPlayer(), 'degats_subis', message.dealt_damage)
+        # `degats_subis` (onglet Stats) se compte dans CanHealth.TakeDamageNoDeath.
 
     def statistics_record(face: 'CardFace', method: Literal["Resolve", "Play", "Resource", "Reveal", "PutIntoPlay", "Hero", "Attached", "Defeated", "Discard", "Cancel"]):
         if method == "PutIntoPlay":
