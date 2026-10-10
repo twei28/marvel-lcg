@@ -46,6 +46,18 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-10",
+        genre: "correction",
+        fr: "Les cartes Starting se prennent au choix : le jeu te demande avant la pioche si tu veux la mettre dans ta main de départ, et l'éditeur refuse un deck qui en compte plus d'une.",
+        en: "Starting cards are now optional: before you draw, the game asks whether to put it in your opening hand, and the deck editor rejects a deck with more than one.",
+    },
+    {
+        date: "2026-10-10",
+        genre: "correction",
+        fr: "Phase du méchant plus lisible : quand une carte en annule une autre et en révèle une nouvelle (Stepford Cuckoos, Black Widow) ou qu'un Renfort arrive, toute la chaîne s'affiche, carte annulée comprise.",
+        en: "Clearer villain phase: when a card cancels another and reveals a new one (Stepford Cuckoos, Black Widow) or a Surge comes in, the whole chain is shown, canceled card included.",
+    },
+    {
+        date: "2026-10-10",
         genre: "jeu",
         fr: "Les autres pages suivent sur téléphone. L'accueil s'ouvre sur un gros bouton « Jouer », la galerie a ses filtres en pastilles et trois colonnes, le livre de campagne se tourne du doigt. Connexion, statistiques et administration se lisent en cartes, et le bouton Retour referme ce qui est ouvert.",
         en: "The other pages follow on phones. The home screen opens on a big “Play” button, the gallery has tap-to-pick filters and three columns, and the campaign book turns with a swipe. Sign-in, statistics and admin read as cards, and the Back button closes whatever is open.",
