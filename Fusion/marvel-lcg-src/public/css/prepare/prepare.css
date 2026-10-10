@@ -1689,8 +1689,10 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .tb-siege.eux{clip-path:polygon(0 0,82% 0,100% 22%,100% 100%,0 100%)}
 .tb-siege.eux.plein{box-shadow:inset 0 0 0 3px var(--eux)}
 .tb-vs{font-family:"Anton",Impact,sans-serif;font-style:italic;font-size:26px;color:#fff;margin:0 4px;text-shadow:3px 3px 0 var(--eux)}
-.team-b .target-docs{position:absolute;left:40px;bottom:6px;z-index:2;margin:0}
-.team-b .target-doc{border:2px solid #1e1e1e;box-shadow:3px 3px 0 #1e1e1e;background:#2d3746;font-size:11px}
+/* Livret et carnet : des tampons dans la rangée du pied de scène, sous les
+   pastilles (ajusterNomGeant fait monter les pastilles si la rangée passe sur
+   deux lignes). */
+.tb-bas a.tampon{text-decoration:none}
 
 /* --- L'accueil (refonte du 7 septembre) : le titre, et le choix du mode ---
    Plein écran, sans colonne de droite ni barre du bas. Les tuiles sont

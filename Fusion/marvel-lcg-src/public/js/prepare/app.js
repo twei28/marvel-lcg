@@ -6,7 +6,7 @@ import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { nomExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=dfa2d51b";
+import { launch } from "/public/js/prepare/launcher.js?v=81cb772f";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { STANDARD, cleHeros, codeAlterEgoAffiche } from "/public/js/prepare/arts-heros-choix.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
@@ -843,6 +843,7 @@ function navBarTel() {
 
 /** Remplace la barre du bas (Continuer s'allume sans reconstruire l'écran). */
 function majNav() {
+    document.querySelectorAll(".tb-mode").forEach((s) => { s.textContent = navStatus(); });
     const nav = document.querySelector(".nav");
     if (!nav) return;
     nav.replaceWith(navBar());
@@ -1081,6 +1082,7 @@ function render() {
     ajusterGrilles();
     surveillerGrilles();
 }
+
 
 function progressBar() {
     if (estTel()) return enteteTel();
@@ -2600,6 +2602,22 @@ function ajusterNomGeant(scene) {
     const nom = scene && scene.querySelector(".tb-nomg");
     if (!nom) return;
     const mesurer = () => {
+        // Les pastilles montent au-dessus du pied de scène quand il prend plus
+        // d'une ligne (livret, carnet, biographie) : jamais plus bas que leur
+        // place d'origine, pour ne rien déplacer quand tout tient.
+        const bas0 = scene.getBoundingClientRect().bottom;
+        let plafond = null;
+        for (const sel of [".tb-bas", ".tb-tampons", ".tb-defi"]) {
+            const bloc = scene.querySelector(sel);
+            if (!bloc || bloc.offsetParent === null) continue;
+            if (plafond !== null) {
+                bloc.style.bottom = "";
+                const origine = parseFloat(getComputedStyle(bloc).bottom) || 0;
+                const voulu = Math.round(bas0 - plafond + 12);
+                if (voulu > origine) bloc.style.bottom = voulu + "px";
+            }
+            plafond = bloc.getBoundingClientRect().top;
+        }
         const dessous = [".tb-tampons", ".tb-defi"]
             .map((sel) => scene.querySelector(sel))
             .filter((e) => e && e.offsetParent !== null);
@@ -4716,7 +4734,7 @@ function rendreSceneMechant(sc) {
         // La règle d'un défi n'est PAS décorative : elle change la partie.
         // Elle s'affiche, quand les livrets et la biographie se replient.
         regleDuDefi(sc),
-        el("div", { class: "tb-bas" }, bioDuMechant(sc), documentsDeLaCible(sc)),
+        el("div", { class: "tb-bas" }, documentsDeLaCible(sc, true), bioDuMechant(sc)),
     );
     scene.classList.toggle("bio-ouverte", bioDepliee && !!scene.querySelector(".tb-bio"));
     ajusterNomGeant(scene);
@@ -4957,19 +4975,22 @@ async function remplirSecondeTable() {
  *  Rend null tant que le panneau n'a pas fini de charger sa liste, et quand
  *  l'extension n'a pas de livret. L'attente est bornée : le Briefing 03 arrive
  *  plusieurs clics après le chargement de la page. */
-function documentsDeLaCible(sc) {
+function documentsDeLaCible(sc, enTampons = false) {
     if (!sc || !sc.extension) return null;
     const livret = livretDExtension(sc.extension);
     const carnet = carnetDExtension(sc.extension);
     if (!livret && !carnet) return null;
     const lien = (fiche, libelle) => fiche
         ? el("a", {
-            class: "target-doc",
+            class: enTampons ? "tampon target-doc" : "target-doc",
             href: "/" + encodeURIComponent(fiche.fichier),
             target: "_blank",
             rel: "noopener",
         }, picto("fa-book"), " " + t(libelle))
         : null;
+    // Sur la scène du PC, les liens s'alignent dans la rangée du pied de scène,
+    // comme « Voir ses cartes » chez le héros.
+    if (enTampons) return [lien(livret, "Livret de règles"), lien(carnet, "Carnet de campagne")];
     return el("div", { class: "target-docs" },
         lien(livret, "Livret de règles"),
         lien(carnet, "Carnet de campagne"),
@@ -5068,6 +5089,51 @@ async function loadScnGrid() {
             (sc.challenges && sc.challenges.length) ? el("span", { class: "st-exp" }, t("DÉFI")) : null,
         );
     }));
+    ajusterTuilesMechants();
+}
+
+/** Sur ordinateur, les vignettes des méchants grandissent pour remplir la
+ *  grille selon leur nombre (3 pour le Set de base), jusqu'à deux fois leur
+ *  taille d'origine. Au-delà de ce qui tient, elles gardent leur taille et la
+ *  grille défile comme avant. */
+const observateurTuiles = typeof ResizeObserver === "function"
+    ? new ResizeObserver(() => ajusterTuilesMechants())
+    : null;
+function ajusterTuilesMechants() {
+    const grille = document.getElementById("scn-grid");
+    if (!grille || estTel()) return;
+    if (observateurTuiles) { observateurTuiles.disconnect(); observateurTuiles.observe(grille); }
+    const n = grille.querySelectorAll(".tb-port").length;
+    const vider = () => {
+        grille.style.removeProperty("--affiche-cible");
+        grille.style.removeProperty("--affiche-cible-h");
+        grille.style.removeProperty("grid-template-columns");
+        grille.style.removeProperty("justify-content");
+    };
+    if (!n) return vider();
+    const cs = getComputedStyle(grille);
+    const racine = getComputedStyle(document.documentElement);
+    const base = parseFloat(racine.getPropertyValue("--affiche-cible")) || 148;
+    const baseH = parseFloat(racine.getPropertyValue("--affiche-cible-h")) || 124;
+    const largeur = grille.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const hauteur = grille.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const gapC = parseFloat(cs.columnGap) || 8;
+    const gapR = parseFloat(cs.rowGap) || 8;
+    let w = 0;
+    for (let c = 1; c <= n; c++) {
+        const r = Math.ceil(n / c);
+        const parLargeur = (largeur - (c - 1) * gapC) / c;
+        const parHauteur = ((hauteur - (r - 1) * gapR) / r) * base / baseH;
+        w = Math.max(w, Math.min(parLargeur, parHauteur, base * 2));
+    }
+    w = Math.floor(w);
+    if (w <= base) return vider();
+    const h = Math.floor(w * baseH / base);
+    if (grille.style.getPropertyValue("--affiche-cible") === w + "px") return;
+    grille.style.setProperty("--affiche-cible", w + "px");
+    grille.style.setProperty("--affiche-cible-h", h + "px");
+    grille.style.setProperty("grid-template-columns", `repeat(auto-fill, ${w}px)`);
+    grille.style.setProperty("justify-content", "start");
 }
 
 
