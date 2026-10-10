@@ -33,8 +33,10 @@ const DICO = path.join(SITE, 'prepare/dico-en.js')
 function codeSeul(fichier: string): string {
   return fs
     .readFileSync(fichier, 'utf8')
-    .replace(/\/\*[\s\S]*?\*\//g, '')
+    // Lignes `//` d'abord : « deck/starter/*.json » dans l'une d'elles ouvrait
+    // sinon un faux bloc `/* … */` qui avalait l'import du dictionnaire.
     .replace(/^\s*\/\/.*$/gm, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
 }
 
 /**
@@ -70,11 +72,22 @@ function clesConnues(): Set<string> {
   return clesDeclarees(codeSeul(DICO))
 }
 
-/** Les clés qu'un fichier traduit LUI-MÊME (mécanismes 2 et 3 ci-dessus). */
+/** Les clés qu'un fichier traduit LUI-MÊME (mécanismes 2 et 3 ci-dessus).
+ *
+ *  Le mécanisme 2 existe aussi sous la forme `enregistrerTraductions(NOM)`, NOM
+ *  importé d'un dictionnaire à part (éditeur de deck, mode téléphone) : on lit
+ *  alors les clés de ce fichier importé.
+ */
 function clesDuFichier(source: string): Set<string> {
   const cles = new Set<string>()
   for (const bloc of source.matchAll(/(?:enregistrerTraductions\(|DICO_EN_LOCAL\s*=\s*)\{([\s\S]*?)\n\s*\}/g)) {
     for (const cle of clesDeclarees(bloc[1])) cles.add(cle)
+  }
+  for (const appel of source.matchAll(/enregistrerTraductions\(\s*([A-Za-z_$][\w$]*)\s*\)/g)) {
+    const nom = appel[1]
+    const imp = source.match(new RegExp(`import\\s*\\{[^}]*\\b${nom}\\b[^}]*\\}\\s*from\\s*["']/public/js/([^"']+)["']`))
+    if (!imp) continue
+    for (const cle of clesDeclarees(codeSeul(path.join(SITE, imp[1])))) cles.add(cle)
   }
   return cles
 }

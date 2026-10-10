@@ -31,4 +31,7 @@ export const DICO_TEL_EN = {
     "Toutes les cartes": "Every card",
     "Construire un deck": "Build a deck",
     "Comment veux-tu jouer ?": "How do you want to play?",
+    "Mode de jeu": "Game mode",
+    "Import": "Import",
+    "Deck": "Deck",
 };
