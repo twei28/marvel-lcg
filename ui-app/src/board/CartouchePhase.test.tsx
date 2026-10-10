@@ -132,12 +132,14 @@ describe('le cadre du cartouche', () => {
     expect(section()?.getAttribute('role')).toBe('dialog')
   })
 
-  it('isole la variante visuelle Bis sans changer le cartouche normal', () => {
-    const normal = monter()
-    expect(section()?.className).not.toContain('est-bis')
-    normal.unmount()
-    monter({ bis: true })
+  // 10/10/2026 : l'ancien « Bis » est LA presentation « Etape par etape ».
+  // Seul le cartouche pose sur la table (`bis={false}`) garde l'ancienne.
+  it('porte la presentation Etape par etape (ex-Bis) par defaut, pas sur la table', () => {
+    const scene = monter()
     expect(section()?.className).toContain('est-bis')
+    scene.unmount()
+    monter({ bis: false })
+    expect(section()?.className).not.toContain('est-bis')
   })
 
   it('l en-tete tient sur deux lignes : la frise des pastilles, puis le titre', () => {

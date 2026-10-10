@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { cleanup, fireEvent, render, renderHook } from '@testing-library/react'
-import { etapesNouvelles, type MemoireMiseEnPlace } from './mise-en-place-pas-a-pas'
+import { etapesNouvelles, mechantAttendLaQuestion, ordonnerRetournements, panneauAvantLaFile, type MemoireMiseEnPlace } from './mise-en-place-pas-a-pas'
 import { CoucheMiseEnPlace, useMiseEnPlacePasAPas } from './CoucheMiseEnPlace'
 import type { World, WorldCard } from './world'
 
@@ -106,6 +106,77 @@ describe('etapesNouvelles', () => {
   })
 })
 
+// L'ORDRE DU LIVRET (Learn to Play, étapes 10 à 12) : le méchant et la
+// manigance principale entrent ensemble, 1A puis 2A se montrent d'abord
+// (décision de l'utilisateur, 10/10/2026), PUIS les méchants ; la manigance ne
+// se retourne qu'après (étape 12), 1B avant 2B. Mesuré sur Tower Defense :
+// Proxima et Corvus passaient avant les panneaux, 2B avant 1B.
+describe('ordre de la mise en place à plusieurs manigances', () => {
+  it('retourne les manigances principales dans l’ordre de la table, pas des numéros de carte', () => {
+    const un = carte(50, 'MainScheme', { pic_id: '21098a' })
+    const deux = carte(40, 'MainScheme', { pic_id: '21099a' })
+    const avant = monde(1, { area_schemes_main: [un, deux] })
+    const { memoire } = etapesNouvelles(new Map(), avant, AVEC_PANNEAUX)
+    const apres = monde(2, {
+      area_schemes_main: [{ ...un, pic_id: '21098b' }, { ...deux, pic_id: '21099b' }],
+    })
+    const { etapes } = etapesNouvelles(memoire, apres, AVEC_PANNEAUX)
+    expect(etapes.map((e) => e.picId)).toEqual(['21098b', '21099b'])
+  })
+
+  it('remet dans l’ordre de la table des retournements arrivés dans DEUX trames (2B puis 1B)', () => {
+    // Tower Defense : la mise en place de 1A révèle 2A, qui se retourne en 2B
+    // AVANT que 1A ne se retourne. Deux trames, 2B d'abord.
+    const un = carte(48, 'MainScheme', { pic_id: '21098a' })
+    const deux = carte(49, 'MainScheme', { pic_id: '21099a' })
+    const tour = carte(84, 'Environment')
+    let mem: MemoireMiseEnPlace = etapesNouvelles(new Map(), monde(1, { area_schemes_main: [un, deux] }), AVEC_PANNEAUX).memoire
+    const t2 = monde(2, { area_schemes_main: [un, { ...deux, pic_id: '21099b' }], area_environment: [tour] })
+    const r2 = etapesNouvelles(mem, t2, AVEC_PANNEAUX)
+    mem = r2.memoire
+    const t3 = monde(3, { area_schemes_main: [{ ...un, pic_id: '21098b' }, { ...deux, pic_id: '21099b' }], area_environment: [tour] })
+    const r3 = etapesNouvelles(mem, t3, AVEC_PANNEAUX)
+    const file = ordonnerRetournements([...r2.etapes, ...r3.etapes], t3, 0)
+    expect(file.map((e) => e.picId)).toEqual(['p84', '21098b', '21099b'])
+  })
+
+  it('un méchant en tête attend la première question du moteur (la trame arrive parfois avant)', () => {
+    const mechant = etapesNouvelles(new Map(), monde(1, { area_villain: [carte(20, 'EncounterVillain')] }), AVEC_PANNEAUX)
+      .etapes[0]
+    const sbire = etapesNouvelles(new Map(), monde(1, { engages: [carte(30, 'Minion')] }), AVEC_PANNEAUX).etapes[0]
+    const base = { enMiseEnPlace: true, confirmPrincipale: true, demandePresente: false }
+    expect(mechantAttendLaQuestion(mechant, base)).toBe(true)
+    expect(mechantAttendLaQuestion(mechant, { ...base, demandePresente: true })).toBe(false)
+    expect(mechantAttendLaQuestion(mechant, { ...base, confirmPrincipale: false })).toBe(false)
+    expect(mechantAttendLaQuestion(mechant, { ...base, enMiseEnPlace: false })).toBe(false)
+    expect(mechantAttendLaQuestion(sbire, base)).toBe(false)
+  })
+
+  it('les `figees` premières étapes ne bougent pas', () => {
+    const un = carte(48, 'MainScheme', { pic_id: '21098b' })
+    const deux = carte(49, 'MainScheme', { pic_id: '21099b' })
+    const m = monde(3, { area_schemes_main: [un, deux] })
+    const a = { cle: 'a', carteId: 49, picId: '21099b', codeCarte: '', type: 'MainScheme', traits: [], legende: 'x', paysage: true }
+    const b = { ...a, cle: 'b', carteId: 48, picId: '21098b' }
+    expect(ordonnerRetournements([a, b], m, 1).map((e) => e.cle)).toEqual(['a', 'b'])
+  })
+
+  it('le panneau de la manigance PRINCIPALE passe avant un méchant en tête de file', () => {
+    const mechant = etapesNouvelles(new Map(), monde(1, { area_villain: [carte(20, 'EncounterVillain')] }), AVEC_PANNEAUX)
+      .etapes[0]
+    expect(panneauAvantLaFile(mechant, carte(10, 'MainScheme'))).toBe(true)
+  })
+
+  it('mais pas avant un sbire, ni pour une manigance annexe (étape 12, après le méchant)', () => {
+    const sbire = etapesNouvelles(new Map(), monde(1, { engages: [carte(30, 'Minion')] }), AVEC_PANNEAUX).etapes[0]
+    const mechant = etapesNouvelles(new Map(), monde(1, { area_villain: [carte(20, 'EncounterVillain')] }), AVEC_PANNEAUX)
+      .etapes[0]
+    expect(panneauAvantLaFile(sbire, carte(10, 'MainScheme'))).toBe(false)
+    expect(panneauAvantLaFile(mechant, carte(11, 'EncounterSideScheme'))).toBe(false)
+    expect(panneauAvantLaFile(undefined, carte(10, 'MainScheme'))).toBe(false)
+  })
+})
+
 describe('CoucheMiseEnPlace', () => {
   afterEach(cleanup)
 
@@ -149,7 +220,7 @@ describe('useMiseEnPlacePasAPas', () => {
     expect(result.current.etape?.carteId).toBe(20)
   })
 
-  it('ne montre rien hors du mode « Étape par étape Bis » (muet)', () => {
+  it('ne montre rien hors du mode « Étape par étape » (muet)', () => {
     const { result } = renderHook(() => useMiseEnPlacePasAPas(m(5), { enCours: true, voile: false, muet: true }))
     expect(result.current.etape).toBeUndefined()
   })

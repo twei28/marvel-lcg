@@ -496,7 +496,6 @@ export function ContenuOnglet({
           valeur={p.modePhase}
           choix={[
             { valeur: 'detaille' as ModePhaseMechant, libelle: t('Étape par étape') },
-            { valeur: 'detaille-bis' as ModePhaseMechant, libelle: t('Étape par étape Bis') },
             // « Sur la table » : OUVERT À TOUS depuis le 05/10/2026, quand la
             // fenêtre de préparation « Choisis ta phase du méchant » l'a
             // présenté à chaque joueur (décision de l'utilisateur). Un mode
@@ -512,7 +511,7 @@ export function ContenuOnglet({
         {/* L'hypothese du mode, dite la ou on le choisit : un « Temps par
             decision » regle a la preparation fait expirer les attentes du
             moteur, qui poursuit sans nous. */}
-        {(p.modePhase === 'detaille' || p.modePhase === 'detaille-bis') && p.tempsParDecision > 0 ? (
+        {p.modePhase === 'detaille' && p.tempsParDecision > 0 ? (
           <p className="ligne-option-note">{p.texteTempsParDecision()}</p>
         ) : null}
         <LigneChoix
@@ -533,9 +532,9 @@ export function ContenuOnglet({
           // D42 (04/10/2026) : en « Étape par étape », la carte révélée se montre
           // en grand DANS le cartouche du bas. La ligne reste, grisée, et dit
           // pourquoi ; les deux autres modes la gardent.
-          disponible={p.modePhase !== 'detaille' && p.modePhase !== 'detaille-bis'}
+          disponible={p.modePhase !== 'detaille'}
           detail={
-            p.modePhase === 'detaille' || p.modePhase === 'detaille-bis'
+            p.modePhase === 'detaille'
               ? t('Le cartouche s’en charge')
               : t('Au centre de l’écran, le temps de la lire')
           }

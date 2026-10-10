@@ -40,22 +40,24 @@ describe('mode detaille', () => {
   // auto »). « sur-table » s'est ajoute le 14/09/2026 : meme rythme que
   // « detaille », autre mise en scene, et il s'intercale entre les deux pour
   // cette raison.
-  it('garde les quatre positions, dans cet ordre', () => {
-    expect(MODES).toEqual(['detaille', 'detaille-bis', 'sur-table', 'instantane'])
+  it('garde les trois positions, dans cet ordre', () => {
+    expect(MODES).toEqual(['detaille', 'sur-table', 'instantane'])
   })
 
   it('affiche son propre libelle, pas celui d un autre mode', () => {
     // Le panneau Options affichait « Instantane » pour le mode detaille,
     // pourtant le defaut : un ternaire a trois branches sans branche pour lui.
     expect(libelleModePhase('detaille')).toBe('Détaillé')
-    expect(libelleModePhase('detaille-bis')).toBe('Étape par étape Bis')
     expect(libelleModePhase('sur-table')).toBe('Sur la table')
     expect(libelleModePhase('instantane')).toBe('Instantané')
   })
 
-  it('la variante Bis conserve exactement le rythme au clic du mode detaille', () => {
-    const monde = { phase: 'Enemy Activation' } as Parameters<typeof decisionAccuse>[1]
-    expect(decisionAccuse('detaille-bis', monde)).toBe(decisionAccuse('detaille', monde))
+  // 10/10/2026 : le Bis EST devenu « Etape par etape ». Un joueur qui l'avait
+  // choisi garde la meme presentation, sous l'unique mode qui reste.
+  it('un ancien reglage « detaille-bis » se relit comme « detaille »', () => {
+    window.localStorage.setItem('marvel-board-mode-phase-mechant', 'detaille-bis')
+    expect(lireModePhaseMechant()).toBe('detaille')
+    window.localStorage.removeItem('marvel-board-mode-phase-mechant')
   })
 })
 

@@ -38,7 +38,7 @@ async function partie(page: Page, largeur: number, hauteur: number) {
       localStorage.setItem('marvel-langue-choisie', '1');
       localStorage.setItem('marvel-langue', en ? 'en' : 'fr');
       // La mise en place pas à pas n'existe que dans ce mode (10/10/2026).
-      localStorage.setItem('marvel-board-mode-phase-mechant', 'detaille-bis');
+      localStorage.setItem('marvel-board-mode-phase-mechant', 'detaille');
     } catch { /* */ }
   }, EN);
   await page.goto('/app/board.html', { waitUntil: 'networkidle' });

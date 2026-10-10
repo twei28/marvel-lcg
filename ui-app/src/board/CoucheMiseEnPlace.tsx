@@ -12,6 +12,7 @@ import type { World } from './world'
 import { TraductionSurCarte, typeDeBoite } from './traduction-carte'
 import {
   etapesNouvelles,
+  ordonnerRetournements,
   type EtapeMiseEnPlace,
   type MemoireMiseEnPlace,
   type Reglages,
@@ -60,7 +61,10 @@ export function useMiseEnPlacePasAPas(monde: World | undefined, etat: EtatMiseEn
       return
     }
     if (!etat.enCours || etat.muet || etapes.length === 0) return
-    setFile((f) => [...f, ...etapes])
+    // Toute la file en attente se reordonne, tete comprise : une etape masquee
+    // (choix de la tour de Tower Defense) n'a pas encore ete vue, et 2B y
+    // attendait quand 1B est arrive.
+    setFile((f) => ordonnerRetournements([...f, ...etapes], monde, 0))
   }, [monde, monde?.render_id, etat.enCours, etat.voile, etat.muet])
 
   const suivant = useCallback(() => setFile((f) => f.slice(1)), [])

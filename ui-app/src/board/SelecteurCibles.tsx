@@ -14,6 +14,21 @@ import { useApercuSurvol } from './apercu-survol'
 import type { CibleHorsTable } from './interaction'
 import { t } from './langue'
 import { useGlisserPanneau } from './placement/useGlisserPanneau'
+import './selecteur-fenetre.css'
+
+/**
+ * LA FENETRE DE CHOIX (rapport n76, Yarro, 10/10/2026). Quand TOUTES les
+ * cibles sont hors table (Controle climatique de Storm, une recherche dans le
+ * deck...), le selecteur ne cohabite plus avec le panneau central qui le
+ * recouvrait : il devient une fenetre, les cartes puis Annuler / Valider.
+ */
+export type FenetreChoix = {
+  choisies: number
+  minimum: number
+  maximum: number
+  valider: () => void
+  annuler: () => void
+}
 
 export type SelecteurCiblesProps = {
   cibles: CibleHorsTable[]
@@ -21,9 +36,11 @@ export type SelecteurCiblesProps = {
   titre: string
   /** Survol d'une carte : la montrer dans l'apercu lateral (comme la table). */
   survoler?: (carte: ScanCardProps | undefined) => void
+  /** Present : le selecteur est une fenetre modale avec ses propres boutons. */
+  fenetre?: FenetreChoix
 }
 
-export function SelecteurCibles({ cibles, titre, survoler }: SelecteurCiblesProps) {
+export function SelecteurCibles({ cibles, titre, survoler, fenetre }: SelecteurCiblesProps) {
   // Survol ecoute sur le CONTENEUR, agrandissement DERIVE de `cibles` : la
   // regle commune, expliquee dans `apercu-survol.ts`. Ici l'agrandissement
   // n'est pas monte par ce panneau mais remonte a la table (`survoler`), d'ou
@@ -45,11 +62,13 @@ export function SelecteurCibles({ cibles, titre, survoler }: SelecteurCiblesProp
 
   if (cibles.length === 0) return null
 
-  return (
+  const pret = fenetre ? fenetre.choisies >= Math.max(1, fenetre.minimum) : false
+  const panneau = (
     <div
-      className="plateau-selecteur"
-      role="group"
-      aria-label={`${t('Cibles possibles :')} ${titre}`}
+      className={`plateau-selecteur${fenetre ? ' est-fenetre' : ''}`}
+      role={fenetre ? 'dialog' : 'group'}
+      aria-modal={fenetre ? true : undefined}
+      aria-label={fenetre ? titre : `${t('Cibles possibles :')} ${titre}`}
       // ⚠ `.plateau-selecteur` centre DEJA avec `transform: translate(-50%,
       // -50%)` en CSS (board.css) : un `transformDecalage` naif ECRASERAIT ce
       // centrage au lieu de s'y ajouter. On compose les deux dans le MEME
@@ -70,10 +89,23 @@ export function SelecteurCibles({ cibles, titre, survoler }: SelecteurCiblesProp
         onPointerUp={gestesGlisser.onPointerUp}
         onPointerCancel={gestesGlisser.onPointerCancel}
       >
-        <span className="plateau-eyebrow">{t('Cibles hors table')}</span>
-        <strong>
-          {titre} · {cibles.length} {cibles.length > 1 ? t('cartes') : t('carte')}
-        </strong>
+        {fenetre ? (
+          <>
+            <strong>{titre}</strong>
+            <span className="plateau-selecteur-compte">
+              {fenetre.maximum > 1
+                ? `${t('Choisis jusqu’à')} ${fenetre.maximum} ${t('cartes')} · ${fenetre.choisies}/${fenetre.maximum}`
+                : t('Choisis une carte')}
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="plateau-eyebrow">{t('Cibles hors table')}</span>
+            <strong>
+              {titre} · {cibles.length} {cibles.length > 1 ? t('cartes') : t('carte')}
+            </strong>
+          </>
+        )}
       </div>
       <div className="plateau-selecteur-cartes">
         {cibles.map((cible) => (
@@ -98,6 +130,24 @@ export function SelecteurCibles({ cibles, titre, survoler }: SelecteurCiblesProp
           </span>
         ))}
       </div>
+      {fenetre ? (
+        <div className="plateau-selecteur-boutons">
+          <button type="button" className="plateau-selecteur-annuler" onClick={fenetre.annuler}>
+            {t('Annuler')}
+          </button>
+          <button
+            type="button"
+            className="plateau-selecteur-valider"
+            disabled={!pret}
+            onClick={() => {
+              if (pret) fenetre.valider()
+            }}
+          >
+            {t('Valider')}
+          </button>
+        </div>
+      ) : null}
     </div>
   )
+  return fenetre ? <div className="plateau-selecteur-voile">{panneau}</div> : panneau
 }
