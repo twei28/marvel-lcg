@@ -232,7 +232,7 @@
        partie claire ou rouge du fond. */
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 0 0 var(--camp-epaisseur, 4px) var(--lisere),
+      0 0 0 calc(3px + var(--camp-epaisseur, 4px)) var(--lisere),
       0 3px 8px rgba(0, 0, 0, 0.4);
   }
 
