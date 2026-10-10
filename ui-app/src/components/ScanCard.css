@@ -166,7 +166,6 @@
   .scan-card.state-source .scan-frame {
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 0 0 5px rgba(255, 255, 255, 0.1),
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
       /* Le liseré mauve de la carte qui agit (le héros, sa source) : 11 px
@@ -174,7 +173,7 @@
          moitié à la demande de l'utilisateur (7 septembre 2026). */
       0 0 0 6px rgba(201, 166, 255, 0.62),
       0 0 18px rgba(240, 185, 95, 0.45),
-      0 18px 32px rgba(0, 0, 0, 0.52);
+      0 3px 8px rgba(0, 0, 0, 0.4);
   }
 
   .scan-card.state-targetable {
@@ -235,15 +234,17 @@
     border-radius: inherit;
     background: var(--fond);
     border: 2px solid var(--accent);
+    /* Ombre COURTE (10/10/2026) : l'ancienne (0 18px 32px, plus un anneau blanc
+       a 10 %) dessinait un bloc sombre arrondi autour des cartes posees sur la
+       partie claire ou rouge du fond. */
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 0 0 5px rgba(255, 255, 255, 0.1),
       /* Anneau + halo de CAMP (vert joueur / rouge mechant). Transparents par
          defaut : une carte sans camp n'a aucun halo. */
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
       0 0 24px var(--state-glow),
-      0 18px 32px rgba(0, 0, 0, 0.52);
+      0 3px 8px rgba(0, 0, 0, 0.4);
   }
 
   /* Halo de camp : on distingue d'un coup d'oeil les cartes du joueur de celles
@@ -269,24 +270,22 @@
   .state-playable .scan-frame {
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 0 0 5px rgba(255, 255, 255, 0.1),
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
       /* Le halo « jouable » etait de 26 px : en main, quinze cartes cote a
          cote en faisaient un bandeau vert continu (constat de l'utilisateur,
          7 septembre 2026). Reduit de moitie, comme le contour de camp. */
       0 0 12px rgba(140, 155, 60, 0.5),
-      0 18px 32px rgba(0, 0, 0, 0.52);
+      0 3px 8px rgba(0, 0, 0, 0.4);
   }
 
   .state-targetable .scan-frame {
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 0 0 5px rgba(255, 255, 255, 0.1),
       0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
       0 0 11px 2px var(--camp-glow, transparent),
       0 0 14px rgba(240, 185, 95, 0.6),
-      0 18px 32px rgba(0, 0, 0, 0.52);
+      0 3px 8px rgba(0, 0, 0, 0.4);
   }
 
   /* --- BANDE DE JAUGE -------------------------------------------------------
@@ -391,13 +390,13 @@
       box-shadow:
         0 0 0 2px rgba(255, 70, 60, 0.32),
         0 0 12px rgba(255, 50, 40, 0.22),
-        0 18px 32px rgba(0, 0, 0, 0.52);
+        0 3px 8px rgba(0, 0, 0, 0.4);
     }
     50% {
       box-shadow:
         0 0 0 3px rgba(255, 70, 60, 0.85),
         0 0 26px 6px rgba(255, 50, 40, 0.6),
-        0 18px 32px rgba(0, 0, 0, 0.52);
+        0 3px 8px rgba(0, 0, 0, 0.4);
     }
   }
 
