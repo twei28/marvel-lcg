@@ -206,3 +206,21 @@ describe('le cartouche du bas (scene PC)', () => {
     expect(narrationAuCentre({ ...affiche, cartoucheHorsPhaseAffiche: false }, { connecte: true, evenementImportant: false })).toBe(true)
   })
 })
+
+describe('« Sur la table » v3 (Q17) : la bulle porte la question à la place du panneau', () => {
+  it('pendant la phase, la question va dans la bulle et pas dans le panneau central', () => {
+    const e = defense({ sceneCentrale: false, bulleSurTable: true })
+    expect(questionDansLaScene(e)).toBe(true)
+    expect(questionDansLePanneau(e)).toBe(false)
+  })
+
+  it('hors phase, le panneau central garde la question', () => {
+    const e = defense({ sceneCentrale: false, bulleSurTable: true, phaseMechantEnCours: false })
+    expect(questionDansLaScene(e)).toBe(false)
+    expect(questionDansLePanneau(e)).toBe(true)
+  })
+
+  it('un ciblage reste sur la table, la bulle ne le prend pas', () => {
+    expect(questionDansLaScene(defense({ sceneCentrale: false, bulleSurTable: true, ciblage: true }))).toBe(false)
+  })
+})

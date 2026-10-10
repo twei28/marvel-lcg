@@ -148,7 +148,7 @@ export function CoucheRencontreSurTable({
     .slice(0, boostsMontres)
     .reduce((somme, boost) => somme + (boost.apport ?? 0), 0)
 
-  const carteNue = (props: ScanCardProps) => (
+  const carteNue = (props: ScanCardProps, garderType = false) => (
     // Rien de ce que le monde COURANT dit de la carte : la table peut être en
     // avance sur le récit. Même choix que la scène centrale.
     <ScanCardTraduite
@@ -159,7 +159,7 @@ export function CoucheRencontreSurTable({
       schemeThreat={undefined}
       allyHp={undefined}
       stats={undefined}
-      labelType={undefined}
+      labelType={garderType ? props.labelType : undefined}
       camp={undefined}
     />
   )
@@ -175,7 +175,9 @@ export function CoucheRencontreSurTable({
         return (
           <div
             key={`boost-${carte.role === 'dos' ? i : carte.id}`}
-            className="rencontre-sortie est-boost"
+            // v3 (Q12) : le dernier boost retourne s'agrandit et reste lisible
+            // jusqu'au clic suivant.
+            className={`rencontre-sortie est-boost${i === boosts.length - 1 ? ' est-zoom' : ''}`}
             style={{
               left: `${place.x}px`,
               top: `${place.y}px`,
@@ -254,7 +256,7 @@ export function CoucheRencontreSurTable({
                   '--depart-y': `${ancre.deck.y - place.y}px`,
                 } as React.CSSProperties}
               >
-                {carteNue(props)}
+                {carteNue(props, true)}
               </div>
             )
           })()

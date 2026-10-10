@@ -100,3 +100,41 @@ export function lignesCompactes(entrees: EntreeHistorique[]): LigneJournal[] {
   const sansPhaseVide = lignes.filter((ligne, i) => ligne.genre !== 'phase' || lignes[i + 1]?.genre === 'fait')
   return sansPhaseVide.filter((ligne, i) => ligne.genre !== 'round' || (sansPhaseVide[i + 1] !== undefined && sansPhaseVide[i + 1].genre !== 'round'))
 }
+
+/**
+ * « SUR LA TABLE » v3 (Q45, 10/10/2026) : dans le journal, la phase du mechant
+ * d'un round se lit en une ligne par etape (les phrases de la bulle) au lieu du
+ * detail technique du moteur. Un round dont les etapes ne sont pas connues
+ * garde son detail : on ne remplace rien par du vide.
+ */
+export function avecEtapesDuMechant(
+  lignes: LigneJournal[],
+  etapesDuRound: (round: number) => string[] | undefined
+): LigneJournal[] {
+  const sortie: LigneJournal[] = []
+  const dejaPosees = new Set<number>()
+  let round: number | undefined
+  const phrases = (r: number | undefined) => (r === undefined ? undefined : etapesDuRound(r))
+  for (const ligne of lignes) {
+    if (ligne.genre === 'round') {
+      round = ligne.round
+      sortie.push(ligne)
+      continue
+    }
+    const duRound = phrases(round)
+    const remplace = duRound !== undefined && duRound.length > 0
+    if (ligne.genre === 'phase') {
+      sortie.push(ligne)
+      if (ligne.famille === 'mechant' && remplace && round !== undefined && !dejaPosees.has(round)) {
+        dejaPosees.add(round)
+        duRound.forEach((texte, rang) =>
+          sortie.push({ genre: 'fait', cle: `${ligne.cle}:etape:${rang}`, texte, type: 'text', famille: 'mechant', cartes: [] })
+        )
+      }
+      continue
+    }
+    if (ligne.famille === 'mechant' && remplace) continue
+    sortie.push(ligne)
+  }
+  return sortie
+}

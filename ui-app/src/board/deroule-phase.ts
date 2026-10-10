@@ -298,6 +298,8 @@ export type EtapeDeroule = {
    * manigance. Les points de vie n'en ont pas, d'ou l'absence frequente.
    */
   plafond?: number
+  /** Sur une manigance : la menace avant la pose, quand le moteur la donne. */
+  menaceAvant?: number
   boosts: BoostDeroule[]
   /**
    * Ou en est une etape d'ACTIVATION, et rien d'autre : les autres temps
@@ -868,6 +870,7 @@ export function etapesDeroule(
       restant,
       // Sur une manigance seulement (le moteur ne le pose pas ailleurs).
       plafond: fait.plafond ?? undefined,
+      menaceAvant: fait.avant ?? undefined,
       defenseurId,
       defenseurNom: defenseurId === undefined ? undefined : nomNettoye(fait.defenseur ?? undefined),
       cibleAnnonceeId: fait.cible_annoncee_id,

@@ -8,7 +8,7 @@ import { t } from './langue'
 import { avecIcones } from './icones-ressources'
 import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { EntreeHistorique } from './HistoriquePartie'
-import { lignesCompactes } from './journal-compact'
+import { avecEtapesDuMechant, lignesCompactes } from './journal-compact'
 import { TexteAvecCartes } from './NomsDeCartes'
 import './JournalConsole.css'
 
@@ -19,6 +19,7 @@ export function JournalConsole({
   telechargerLog,
   journalHeros,
   revuePhase,
+  etapesDuMechant,
   onRevoirPhase,
 }: {
   entrees: EntreeHistorique[]
@@ -31,6 +32,8 @@ export function JournalConsole({
    * lecture seule (RevuePhase). Absente tant qu'il n'y en a pas.
    */
   revuePhase?: ReactNode
+  /** « Sur la table » (v3, Q45) : les phrases des etapes de la phase du mechant d'un round. */
+  etapesDuMechant?: (round: number) => string[] | undefined
   /**
    * Scene PC (D38, refonte du 04/10/2026) : le bouton rouvre la phase dans le
    * cartouche du bas, en relecture, et le journal reste le journal. Prend le
@@ -52,7 +55,9 @@ export function JournalConsole({
     return () => document.removeEventListener('pointerdown', fermer)
   }, [menu])
 
-  const lignes = lignesCompactes(entrees)
+  const lignes = etapesDuMechant
+    ? avecEtapesDuMechant(lignesCompactes(entrees), etapesDuMechant)
+    : lignesCompactes(entrees)
 
   return (
     <section className="journal-console" aria-label={t('Journal de la partie')}>

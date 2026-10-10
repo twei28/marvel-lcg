@@ -1167,9 +1167,12 @@ describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
     expect(calcul).not.toBeNull()
     const operateurs = [...calcul!.querySelectorAll('.essai-operateur')].map((e) => e.textContent)
     expect(operateurs).toEqual(['+', '+'])
-    // Sous l'acteur, le picto ATQ et sa valeur ; sous chaque boost sans icone, un « 0 » grise.
+    // Sous l'acteur, le picto ATQ et sa valeur ; sous chaque boost, sa pastille « +0 BOOST ★ ».
     expect(calcul!.querySelector('.essai-stat.est-atq')?.getAttribute('aria-label')).toBe('ATQ 1')
-    expect([...calcul!.querySelectorAll('.essai-boost-icones.est-vide')].map((e) => e.textContent)).toEqual(['0', '0'])
+    expect([...calcul!.querySelectorAll('.essai-stat.est-boost')].map((e) => e.getAttribute('aria-label'))).toEqual([
+      '+0 BOOST ★',
+      '+0 BOOST ★',
+    ])
     // L'effet ★ de chaque boost se lit sous ses icones.
     expect(calcul!.querySelectorAll('.essai-etoile')).toHaveLength(2)
     expect(calcul!.querySelector('.essai-boite .deroule-resultat-texte')?.textContent).toBe('1 dégât subi')

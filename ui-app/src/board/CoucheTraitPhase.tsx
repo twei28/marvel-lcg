@@ -20,7 +20,7 @@ import { useEffect, useLayoutEffect, useState } from 'react'
 import type { EtapeDeroule } from './deroule-phase'
 import { t } from './langue'
 import { boiteDeCarte, cadreDuPlateau } from './mesures-plateau'
-import { contenuDuTrait, traitEntre, type Trait } from './trait-phase'
+import { alerteMenace, contenuDuTrait, deltaSurTable, traitEntre, type Trait } from './trait-phase'
 
 export function CoucheTraitPhase({
   etape,
@@ -35,8 +35,15 @@ export function CoucheTraitPhase({
   // d'arriver sur la table et volent encore au premier rendu.
   const [seconde, setSeconde] = useState(0)
 
-  const auteurId = etape?.carteId
-  const cibleId = etape?.cibleId
+  // UN SBIRE QUI S'ENGAGE (v3, Q22) : sans auteur ni cible d'activation, le
+  // trait va du sbire entre en jeu vers le heros avec qui il s'engage.
+  const engagement = etape?.effets?.find(
+    (effet): effet is Extract<typeof effet, { genre: 'entree' }> =>
+      effet.genre === 'entree' && effet.engage_avec_id !== undefined
+  )
+  const sansActivation = etape?.carteId === undefined || etape?.cibleId === undefined
+  const auteurId = sansActivation && engagement ? engagement.carte_id : etape?.carteId
+  const cibleId = sansActivation && engagement ? engagement.engage_avec_id : etape?.cibleId
   const cle = etape?.cle
 
   useLayoutEffect(() => {
@@ -132,5 +139,78 @@ export function CoucheTraitPhase({
         </g>
       ) : null}
     </svg>
+  )
+}
+
+/**
+ * L'ALLUMAGE ET LA CARTE TOUCHEE (v3, 10/10/2026, Q6 et Q7).
+ *
+ * Halo dore sur la carte qui agit et sur sa cible, le reste de la table
+ * attenue ; sur la cible d'une etape resolue, la jauge agrandie, son ancien
+ * niveau en fantome, et le nombre qui s'envole au-dessus d'elle.
+ *
+ * ⚠ UNE FEUILLE DE STYLE GENEREE, PAS DES CLASSES POSEES A LA MAIN : React
+ * reecrit la classe des cartes a chaque rendu et effacerait une classe ajoutee
+ * hors de lui. Les identifiants sont des nombres : rien a echapper.
+ */
+export function EffetsSurTable({
+  etape,
+  actif,
+  pvMax,
+}: {
+  etape: EtapeDeroule | undefined
+  actif: boolean
+  pvMax?: number
+}) {
+  const [boite, setBoite] = useState<{ x: number; y: number; w: number } | undefined>(undefined)
+  const delta = etape && actif ? deltaSurTable(etape, pvMax) : undefined
+  const cibleId = etape?.cibleId
+  const cle = etape?.cle
+
+  useLayoutEffect(() => {
+    if (!delta || cibleId === undefined) {
+      setBoite(undefined)
+      return
+    }
+    const c = cadreDuPlateau()
+    const b = c ? boiteDeCarte(cibleId, c) : undefined
+    setBoite(b ? { x: b.x, y: b.y, w: b.w } : undefined)
+    // `delta` change d'objet a chaque rendu : la cle de l'etape suffit.
+  }, [cle, cibleId, delta === undefined])
+
+  if (!actif || !etape) return null
+  const ids = [etape.carteId, etape.cibleId].filter((id): id is number => id !== undefined)
+  if (ids.length === 0) return null
+  const sauf = ids.map((id) => `:not([data-card-id="${id}"])`).join('')
+  const vises = ids.map((id) => `.plateau-cadre .scan-card[data-card-id="${id}"]`).join(',\n')
+  const regles = [
+    `.plateau-cadre .scan-card${sauf}:not(.rencontre-sur-table *) { filter: brightness(0.5) saturate(0.6); }`,
+    `${vises} { outline: 3px solid #f0b95f; outline-offset: 2px; filter: drop-shadow(0 0 10px rgba(240, 185, 95, 0.85)); }`,
+  ]
+  if (delta && cibleId !== undefined) {
+    const jauge = `.plateau-cadre .scan-card[data-card-id="${cibleId}"] .jauge-carte`
+    regles.push(`${jauge} { transform: scale(1.12, 1.8); transition: transform 200ms ease-out; }`)
+    if (delta.avant !== undefined)
+      regles.push(`${jauge}::before { width: ${Math.round(delta.avant * 1000) / 10}%; }`)
+  }
+  if (cibleId !== undefined && alerteMenace(etape)) {
+    regles.push(
+      `.plateau-cadre .scan-card[data-card-id="${cibleId}"] .jauge-carte { animation: jauge-alerte 900ms ease-in-out infinite; }`
+    )
+  }
+  return (
+    <>
+      <style>{regles.join('\n')}</style>
+      {delta && boite ? (
+        <span
+          key={cle}
+          className={`delta-sur-table est-${delta.ton}`}
+          style={{ left: `${boite.x + boite.w / 2}px`, top: `${boite.y}px` }}
+          aria-hidden="true"
+        >
+          {delta.texte}
+        </span>
+      ) : null}
+    </>
   )
 }

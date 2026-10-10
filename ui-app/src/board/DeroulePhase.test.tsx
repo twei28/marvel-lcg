@@ -3454,6 +3454,83 @@ describe('la scène PC délègue au cartouche', () => {
     expect(container.querySelector('.deroule-rond')).not.toBeNull()
   })
 
+  it('la bulle de la table porte la frise en onglets, plus la barre du haut (v3)', () => {
+    const { container } = render(
+      <DeroulePhase etapes={etapes} presentation="table" onTerminer={() => {}} />
+    )
+    const bulle = container.querySelector('.deroule-bulle-table')
+    expect(bulle?.querySelector('.deroule-bulle-onglets.poignee-glisser .deroule-temps')).not.toBeNull()
+    expect(document.querySelector('.deroule-temps-barre')).toBeNull()
+  })
+
+  it('sur la table, Suivant retourne les boosts un par un avant de passer a l etape suivante (Q11)', () => {
+    const avecBoosts: EtapeDeroule[] = [
+      {
+        cle: 'atk',
+        temps: 'mechant',
+        titre: 'attaque',
+        regle: 'regle:activations',
+        etat: 'resolu',
+        carteId: 50,
+        cibleId: 12,
+        auteurNom: 'Ultron',
+        cibleNom: 'Shuri',
+        base: 2,
+        montant: 4,
+        restant: 6,
+        boosts: [
+          { cle: 'b1', nom: 'Assaut', cibleId: 70, apport: 1 },
+          { cle: 'b2', nom: 'Avancée', cibleId: 71, apport: 1 },
+        ],
+      },
+      { cle: 'apres', temps: 'sbires', titre: 'vide', regle: 'regle:activations', boosts: [] },
+    ]
+    const { container } = render(
+      <DeroulePhase etapes={avecBoosts} presentation="table" onTerminer={() => {}} />
+    )
+    const boostsVus = () => container.querySelectorAll('.deroule-bulle-calcul .essai-stat.est-boost').length
+    const suivant = () => container.querySelector<HTMLButtonElement>('.deroule-bulle-table .deroule-rond')!
+    // Le premier se retourne a l'arrivee sur l'etape, les suivants un par clic.
+    expect(boostsVus()).toBe(1)
+    act(() => suivant().click())
+    expect(boostsVus()).toBe(2)
+    act(() => suivant().click())
+    expect(container.querySelector('.deroule-bulle-calcul')).toBeNull()
+  })
+
+  it('sur la table, Echap demande confirmation avant de tout passer (Q32)', () => {
+    const { container } = render(
+      <DeroulePhase etapes={etapes} presentation="table" onTerminer={() => {}} />
+    )
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    })
+    expect(container.querySelector('.deroule-bulle-confirmer')).not.toBeNull()
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    })
+    expect(container.querySelector('.deroule-bulle-confirmer')).toBeNull()
+  })
+
+  it('la bulle de la table devient fantome au survol d une carte, et revient hors des cartes', () => {
+    const { container } = render(
+      <>
+        <div className="scan-card" data-testid="carte-table" />
+        <div data-testid="vide" />
+        <DeroulePhase etapes={etapes} presentation="table" onTerminer={() => {}} />
+      </>
+    )
+    const bulle = () => container.querySelector('.deroule-bulle-table')
+    act(() => {
+      screen.getByTestId('carte-table').dispatchEvent(new MouseEvent('pointerover', { bubbles: true }))
+    })
+    expect(bulle()?.classList.contains('est-fantome')).toBe(true)
+    act(() => {
+      screen.getByTestId('vide').dispatchEvent(new MouseEvent('pointerover', { bubbles: true }))
+    })
+    expect(bulle()?.classList.contains('est-fantome')).toBe(false)
+  })
+
   it('« Suivant (espace) » valide l etape, comme l ancien « Suivant »', () => {
     render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
     fireEvent.click(screen.getByRole('button', { name: 'Suivant (espace)' }))

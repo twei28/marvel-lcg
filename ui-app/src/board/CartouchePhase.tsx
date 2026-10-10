@@ -195,9 +195,15 @@ function VignetteVue({ vignette, grande = false }: { vignette: Vignette; grande?
   const classes = ['deroule-vignette']
   if (grande) classes.push('deroule-carte-grande')
   if (vignette.etat === 'grisee') classes.push('est-grisee')
+  if (vignette.scan && vignette.jauge) classes.push('a-jauge')
   return (
     <figure className={classes.join(' ')} title={vignette.nom || undefined}>
-      {vignette.scan ? <CarteNue scan={vignette.scan} /> : <span className="deroule-vignette-nom">{vignette.nom}</span>}
+      {vignette.scan ? (
+        <CarteNue scan={vignette.scan} jauge={vignette.jauge} />
+      ) : (
+        <span className="deroule-vignette-nom">{vignette.nom}</span>
+      )}
+      {vignette.scan && vignette.recap ? <small className="deroule-recap">{vignette.recap}</small> : null}
       {vignette.legende ? <figcaption className="deroule-legende">{vignette.legende}</figcaption> : null}
     </figure>
   )
@@ -231,7 +237,7 @@ function Rangee({
     <div
       className={classes.join(' ')}
       aria-hidden={grisee || undefined}
-      style={{ '--nb-cartes': Math.max(1, nombreDeCartes(rangee) + nbChoix) } as CSSProperties}
+      style={{ '--nb-cartes': Math.max(1, nombreDeCartes(rangee) + nbChoix), '--poids-cartes': poidsDesCartes(rangee, nbChoix) } as CSSProperties}
     >
       <div className="deroule-rangee-cartes">
         {rangee.acteur ? <VignetteVue vignette={rangee.acteur} /> : null}
@@ -256,6 +262,7 @@ function Rangee({
           <span className="deroule-resultat-gros">
             <strong className="deroule-resultat-texte">{rangee.resultat.texte}</strong>
             {jauge ? <span className="deroule-jauge">{jauge}</span> : null}
+            {rangee.resultat.note ? <small className="deroule-resultat-note">{rangee.resultat.note}</small> : null}
           </span>
         ) : null}
         {rangee.annulee ? (
@@ -275,6 +282,17 @@ function Rangee({
 }
 
 /** Les cartes qu'une rangee pose cote a cote (la taille des vignettes en depend). */
+/** La largeur de la rangée en « cartes portrait » : un complot (paysage) pèse 176/127. */
+function poidsDesCartes(rangee: VueRangee, nbChoix = 0): number {
+  const vignettes = [
+    ...(rangee.acteur ? [rangee.acteur] : []),
+    ...rangee.boosts,
+    ...(rangee.defenseur ? [rangee.defenseur] : rangee.cibles),
+  ]
+  const poids = vignettes.reduce((somme, v) => somme + (v.scan?.isLandscape ? 176 / 127 : 1), 0)
+  return Math.max(1, poids + nbChoix)
+}
+
 function nombreDeCartes(rangee: VueRangee): number {
   return (
     (rangee.acteur ? 1 : 0) + rangee.boosts.length + (rangee.defenseur ? 1 : 0) + (rangee.defenseur ? 0 : rangee.cibles.length)
@@ -298,25 +316,14 @@ export function PictoStat({ genre, valeur }: { genre: 'atq' | 'men' | 'def'; val
   )
 }
 
-/** Les icones de boost d'une carte, une par icone ; aucune : un « 0 » grise. */
-function IconesBoost({ nombre }: { nombre: number }) {
-  if (nombre <= 0)
-    return (
-      <span className="essai-boost-icones est-vide" role="img" aria-label={t('Aucune icône de boost')}>
-        0
-      </span>
-    )
+/** La pastille d'un boost, de la forme de « 2 MEN » : « +1 BOOST », « +0 BOOST ★ ». */
+export function PictoBoost({ nombre, etoile = false }: { nombre: number; etoile?: boolean }) {
+  const valeur = `${nombre < 0 ? '−' : '+'}${Math.abs(nombre)}`
+  const sigle = `${t('BOOST')}${etoile ? ' ★' : ''}`
   return (
-    <span
-      className="essai-boost-icones"
-      role="img"
-      aria-label={t('%1 icône(s) de boost').replace('%1', String(nombre))}
-    >
-      {Array.from({ length: nombre }, (_, i) => (
-        <span key={i} className="essai-boost-icone" aria-hidden="true">
-          B
-        </span>
-      ))}
+    <span className="essai-stat est-boost" role="img" aria-label={`${valeur} ${sigle}`}>
+      <b>{valeur}</b>
+      <small>{sigle}</small>
     </span>
   )
 }
@@ -331,6 +338,7 @@ function ResultatEssai({ rangee }: { rangee: VueRangee }) {
       <span className={`essai-boite${critique ? ' est-critique' : ''}`}>
         <strong className="deroule-resultat-texte">{rangee.resultat.texte}</strong>
         {jauge ? <span className="deroule-jauge">{jauge}</span> : null}
+        {rangee.resultat.note ? <small className="deroule-resultat-note">{rangee.resultat.note}</small> : null}
       </span>
     )
   }
@@ -370,7 +378,7 @@ function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
     <div
       className={classes.join(' ')}
       aria-hidden={grisee || undefined}
-      style={{ '--nb-cartes': Math.max(1, nombreDeCartes(rangee)) } as CSSProperties}
+      style={{ '--nb-cartes': Math.max(1, nombreDeCartes(rangee)), '--poids-cartes': poidsDesCartes(rangee) } as CSSProperties}
     >
       <div className="deroule-rangee-cartes">
         {rangee.acteur ? (
@@ -386,7 +394,7 @@ function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
               {operateur('+')}
               <span className="essai-terme">
                 <VignetteVue vignette={nue(boost)} />
-                <IconesBoost nombre={boost.apport} />
+                <PictoBoost nombre={boost.apport} etoile={boost.etoile} />
                 {boost.etoile ? <small className="essai-etoile">{ligne ?? '★'}</small> : null}
               </span>
             </span>

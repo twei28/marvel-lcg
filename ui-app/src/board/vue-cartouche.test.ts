@@ -9,6 +9,7 @@ import type { EtapeDeroule } from './deroule-phase'
 import { DICO_EN_BASE } from './dico-en'
 import { titreEtape } from './deroule-textes'
 import {
+  recapDeJauge,
   PASTILLES,
   bilanTroisColonnes,
   compteurDesRevelations,
@@ -264,6 +265,21 @@ describe('D13 : la manigance du mechant, et les replis du seuil', () => {
     expect(vue.acteur?.legende).toBe('MAN 1')
     expect(vue.cibles.map((c) => c.carteId)).toEqual([9])
     expect(vue.resultat).toEqual({ texte: '+2 menaces', jauge: { avant: 4, apres: 6, plafond: 7 } })
+  })
+
+  it('la manigance atteint son seuil puis se vide (21099b) : « 3 → 6 / 6 » et « menaces retirées »', () => {
+    const vue = rangee({ ...manigance, montant: 3, restant: 0, plafond: 6, menaceAvant: 3 })
+    expect(vue.resultat).toEqual({
+      texte: '+3 menaces',
+      jauge: { avant: 3, apres: 6, plafond: 6 },
+      note: 'menaces retirées',
+    })
+  })
+
+  it('la menace d avant, quand le moteur la donne, prime sur le calcul (pas de note sans vidage)', () => {
+    const vue = rangee({ ...manigance, plafond: 7, menaceAvant: 4 })
+    expect(vue.resultat).toEqual({ texte: '+2 menaces', jauge: { avant: 4, apres: 6, plafond: 7 } })
+    expect(vue.resultat?.note).toBeUndefined()
   })
 
   it('seuil absent du fait : celui de l etape de menace du round, puis celui du monde, sinon rien', () => {
@@ -785,5 +801,18 @@ describe('ESSAI (10/10/2026) : étiquettes, état critique, compteur', () => {
     const b = etape({ cle: 'b', temps: 'revelation', titre: 'revelation', parSurge: true, renfortDe: 'Weapons Runner' })
     expect(compteurDesRevelations([a, b], 'b', 1)).toEqual({ rang: 2, total: 2, ajouts: ['+1 Renfort (Weapons Runner)'] })
     expect(compteurDesRevelations([a, b], 'absente', 1)).toBeUndefined()
+  })
+})
+
+describe('recapDeJauge', () => {
+  it('dit la bande en mots, avec son changement', () => {
+    expect(recapDeJauge({ remplissage: 0.7, genre: 'pv', alarme: true, texte: '7 / 10' })).toBe('PV 7 / 10')
+    expect(recapDeJauge({ remplissage: 0.6, genre: 'menace', alarme: true, texte: '3 / 5' }, '+1 menace')).toBe(
+      'Menace 3 / 5 · +1 menace'
+    )
+  })
+
+  it('ne dit rien sans bande', () => {
+    expect(recapDeJauge(undefined)).toBeUndefined()
   })
 })

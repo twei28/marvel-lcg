@@ -41,6 +41,11 @@ export type EtatDeLaQuestion = {
   /** Le moteur est dans une des quatre phases du méchant. */
   phaseMechantEnCours: boolean
   /**
+   * Mode « Sur la table » (v3, Q17, 10/10/2026) : pendant la phase, la bulle
+   * porte la question à la place du panneau central. Absent : faux.
+   */
+  bulleSurTable?: boolean
+  /**
    * La question posée est celle de la face A de la manigance principale
    * (`Reveal_Main_Scheme`, voir `manigance-face-a.ts`). Elle a son propre
    * panneau : personne d'autre ne l'affiche.
@@ -91,7 +96,7 @@ function priseParLePanneauManigance(e: EtatDeLaQuestion): boolean {
  */
 export function questionDansLaScene(e: EtatDeLaQuestion): boolean {
   if (priseParLePanneauManigance(e)) return false
-  if (!e.sceneCentrale) return false
+  if (!e.sceneCentrale && !(e.bulleSurTable && e.phaseMechantEnCours)) return false
   // Hors phase, la scene ne prend la question que si le cartouche « Pendant
   // ton tour » est ouvert sur une annonce : sinon rien ne la porterait.
   if (!e.phaseMechantEnCours && e.coupHorsPhaseEnScene !== true) return false

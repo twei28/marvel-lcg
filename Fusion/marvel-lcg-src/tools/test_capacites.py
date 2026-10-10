@@ -3638,6 +3638,36 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"compteurs": [["21100a", "damage", 1]], "degats_min": [["01001a", 3]]},
     },
+    {
+        "nom": "21106 Proxima's Power — Boost : Proxima ajoute l'ATQ de Corvus Glaive (2 + 1, 0 icone)",
+        "pourquoi": ("signale en jeu le 10/10/2026 : le cartouche montrait 1 ATQ et 1 degat avec ce boost. "
+                     "Corvus Glaive (ATQ 1) est en jeu : Proxima (ATQ 2) doit frapper pour 3. Branche "
+                     "« 1 degat a la tour » de son interruption, pour ne pas compter le +2"),
+        "scenario": "the_tower_defense",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('21106')"],
+        "main_exclusive": [],
+        "choisir_option": "deal_1_damage_to_Avengers_Tower",
+        "declencher": ["Puzzle.Attack('21092')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "21106 Proxima's Power — Boost avec Proxima ACTIVE et Corvus inactif : toujours 2 + 1",
+        "pourquoi": ("la partie du 10/10/2026 : Focused Defense avait passe le jeton actif a Proxima, "
+                     "et l'attaque n'a fait qu'1 degat a Storm"),
+        "scenario": "the_tower_defense",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+                          "Puzzle.Attach('21101', '21098b')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('21106')"],
+        "main_exclusive": [],
+        "choisir_option": "deal_1_damage_to_Avengers_Tower",
+        "declencher": ["Puzzle.Attack('21092')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
 
     ############################################################################
     # Vague debloquee par Puzzle.Action et Puzzle.Attack (4/8/2026).

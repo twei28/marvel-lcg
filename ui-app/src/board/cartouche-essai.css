@@ -19,7 +19,7 @@
     110px,
     min(
       var(--plafond-h),
-      calc((var(--carre-l) - 48px - (var(--nb-cartes, 1) - 1) * 52px) / var(--nb-cartes, 1) * 176 / 127)
+      calc((var(--carre-l) - 48px - (var(--nb-cartes, 1) - 1) * 52px) / var(--poids-cartes, 1) * 176 / 127)
     )
   );
 }
@@ -120,6 +120,11 @@
   align-items: center;
   gap: 6px;
   max-width: calc(var(--vignette-h) * 127 / 176 + 24px);
+}
+
+/* Un complot (paysage) est plus large qu'une carte portrait : sa boîte aussi. */
+.deroule-phase.est-essai .essai-terme:has(.scan-card.is-landscape) {
+  max-width: calc(var(--vignette-h) * 176 / 127 + 24px);
 }
 
 /* L'operateur se pose a mi-hauteur de la carte, pas des pictos dessous. */
@@ -507,4 +512,155 @@ body.plateau-sans-animations .scan-card.is-target-pulse .scan-frame {
   html.essai-phase-mechant .scan-card.is-target-pulse .scan-frame {
     animation: none !important;
   }
+}
+
+/* --- RETOUCHES DU 10/10/2026 : cartes, bande, pied, onglets ------------------ */
+
+/* Cartes plus grandes : plafonds relevés, le gap de la rangée resserré. */
+.deroule-phase.est-scene.est-essai {
+  --grande-h: clamp(270px, calc(450px * var(--echelle, 1)), 560px);
+  padding-bottom: 6px;
+  gap: 8px;
+}
+
+.deroule-phase.est-scene.est-essai .deroule-rangee {
+  --plafond-h: calc(380px * var(--echelle, 1));
+}
+
+/* La bande de PV ou de menace (comme sur la table) et son récap en mots. */
+.deroule-phase.est-essai .deroule-vignette.a-jauge {
+  padding-bottom: 6px;
+}
+
+
+/* Le pied : « Continuer » presque collé au bas de la modale. */
+.deroule-phase.est-essai .deroule-corps {
+  margin-bottom: 0;
+}
+
+.deroule-phase.est-essai .essai-continuer,
+.deroule-phase.est-essai .deroule-suivant {
+  --coin: 9px;
+  clip-path: polygon(
+    var(--coin) 0,
+    100% 0,
+    100% calc(100% - var(--coin)),
+    calc(100% - var(--coin)) 100%,
+    0 100%,
+    0 var(--coin)
+  );
+  border-radius: 0;
+}
+
+/* Onglets : biseau Marvel, d'un bord à l'autre, une seule ligne, police qui
+   rétrécit avec la largeur de l'onglet. */
+.deroule-phase.est-scene.est-essai .deroule-pastilles {
+  width: 100%;
+  gap: 4px;
+  border-bottom: 0;
+}
+
+.deroule-phase.est-scene.est-essai .deroule-frise {
+  width: 100%;
+}
+
+.deroule-phase.est-scene.est-essai .deroule-pastille {
+  --coin: 8px;
+  container-type: inline-size;
+  flex: 1 1 0;
+  justify-content: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  padding: 4px 12px;
+  border-radius: 0;
+  clip-path: polygon(
+    var(--coin) 0,
+    100% 0,
+    100% calc(100% - var(--coin)),
+    calc(100% - var(--coin)) 100%,
+    0 100%,
+    0 var(--coin)
+  );
+  color: rgba(248, 250, 252, 0.45);
+  background: #2f3338;
+}
+
+.deroule-phase.est-scene.est-essai .deroule-pastille-bouton {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.deroule-phase.est-scene.est-essai .deroule-pastille-numero,
+.deroule-phase.est-scene.est-essai .deroule-pastille-nom,
+.deroule-phase.est-scene.est-essai .deroule-pastille-resume,
+.deroule-phase.est-scene.est-essai .deroule-pastille-compteur {
+  overflow-wrap: normal;
+  white-space: nowrap;
+  font-size: clamp(0.5rem, 5.6cqi, 0.82rem);
+}
+
+.deroule-phase.est-scene.est-essai .deroule-pastille-numero {
+  font-size: clamp(0.6rem, 6.5cqi, 1rem);
+}
+
+.deroule-phase.est-scene.est-essai .deroule-pastille.est-passe {
+  color: #fff;
+  background: #7d1010;
+}
+
+.deroule-phase.est-scene.est-essai .deroule-pastille.est-courant {
+  flex-grow: 1.6;
+  margin-bottom: 0;
+  color: #fff;
+  background: var(--rouge, #a60000);
+  box-shadow: inset 0 0 0 2px #fff, inset 0 0 14px rgba(255, 255, 255, 0.45);
+}
+
+.deroule-phase.est-scene.est-essai .deroule-pastille:has(> .deroule-pastille-bouton) {
+  cursor: pointer;
+  background: var(--rouge, #a60000);
+}
+
+.deroule-phase.est-scene.est-essai .deroule-pastille:has(> .deroule-pastille-bouton):hover {
+  filter: brightness(1.25);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.deroule-phase.est-scene.est-essai .deroule-pastille.est-relu {
+  box-shadow: inset 0 0 0 2px #fff;
+}
+
+/* --- RETOUCHES DU 10/10/2026 (2) : alignement, pastille de boost ----------- */
+
+/* La pastille de boost : la forme de « 2 MEN », en violet rencontre. */
+.essai-stat.est-boost {
+  --stat: #7b3fb8;
+  --stat-sombre: #351a57;
+}
+
+/* Le calcul pose : des cartes plus grandes. */
+.deroule-phase.est-scene.est-essai .deroule-rangee.essai-calcul {
+  --plafond-h: calc(360px * var(--echelle, 1));
+}
+
+/* Chaque terme : une case de la hauteur d'une carte portrait, la carte centree
+   dedans (un complot en paysage, moins haut, se cale sur le centre comme sur le
+   plateau), puis ses infos. Toutes les infos tombent donc sur la meme ligne. */
+.deroule-phase.est-essai .essai-calcul .essai-terme {
+  display: grid;
+  grid-template-rows: var(--vignette-h) auto auto;
+  justify-items: center;
+  align-items: start;
+  row-gap: 6px;
+}
+
+.deroule-phase.est-essai .essai-calcul .essai-terme > .deroule-vignette {
+  align-self: center;
+}
+
+/* Le complot a sa vraie taille : sa largeur est la hauteur d'une carte portrait. */
+.deroule-phase.est-scene.est-essai .essai-calcul .deroule-vignette .scan-card.is-landscape {
+  --card-w: var(--vignette-h);
 }

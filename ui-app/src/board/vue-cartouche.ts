@@ -15,7 +15,7 @@
 // absent, apport nul, degats subis negatifs existent. Une valeur absente se
 // tait, une valeur presente s'affiche telle quelle, signe compris.
 
-import type { CardKind, ScanCardProps } from '../components/ScanCard'
+import type { CardGauge, CardKind, ScanCardProps } from '../components/ScanCard'
 import {
   compteurDeLEtape,
   nomNettoye,
@@ -204,6 +204,10 @@ export type Vignette = {
   raison?: string
   ordre?: number
   fois?: number
+  /** La bande de la table (PV ou menace), avec les chiffres de l'etape quand elle les donne. */
+  jauge?: CardGauge
+  /** « PV 7 / 10 · 3 dégâts », « Menace 3 / 5 · +1 menace » : la bande en texte, sous la carte. */
+  recap?: string
 }
 
 export type Jauge = { avant?: number; apres?: number; plafond?: number }
@@ -227,7 +231,8 @@ export type VueRangee = {
   /** Le heros vise, la manigance visee (D13) ; les choix viennent du sous-cadre. */
   cibles: Vignette[]
   /** « 1 dégât subi », jauge 10 → 9 / 14 (D11). */
-  resultat?: { texte: string; jauge?: Jauge }
+  /** `note` : « menaces retirées » quand la manigance s'est vidée en atteignant son seuil. */
+  resultat?: { texte: string; jauge?: Jauge; note?: string }
   /** Trait rouge en travers et « ANNULÉE · Étourdi » (D24) ; cause absente toleree (piege 41). */
   annulee?: { cause?: string }
   /** « ★ Charge : … », une ligne par boost etoile (D10). */
@@ -422,7 +427,37 @@ function vignette(cle: string, id: number | undefined, nom: string | undefined, 
     scan,
     nom: nom || (id !== undefined ? ctx.nomFr?.(id) : undefined) || scan?.name || '',
     etat: 'inerte',
+    jauge: scan?.jauge,
+    recap: recapDeJauge(scan?.jauge),
   }
+}
+
+/** « PV 7 / 10 », « Menace 3 / 5 » : la bande de la table dite en mots, et son changement s'il y en a un. */
+export function recapDeJauge(jauge: CardGauge | undefined, changement?: string): string | undefined {
+  if (!jauge?.texte) return undefined
+  const base = `${jauge.genre === 'menace' ? t('Menace') : t('PV')} ${jauge.texte}`
+  return changement ? `${base} · ${changement}` : base
+}
+
+/**
+ * La vignette avec la bande de L'ETAPE : la table peut etre en avance sur le
+ * recit, les chiffres de l'etape priment sur ceux du monde. Sans maximum
+ * connu, la bande du monde reste (rien d'invente).
+ */
+function avecJaugeDeLEtape(
+  v: Vignette,
+  genre: 'pv' | 'menace',
+  jauge: Jauge | undefined,
+  changement: string | undefined
+): Vignette {
+  if (!jauge || !nombre(jauge.apres) || !nombre(jauge.plafond) || jauge.plafond <= 0) return v
+  const bande: CardGauge = {
+    remplissage: Math.min(1, Math.max(0, jauge.apres / jauge.plafond)),
+    genre,
+    alarme: v.jauge?.alarme ?? genre === 'pv',
+    texte: `${jauge.apres} / ${jauge.plafond}`,
+  }
+  return { ...v, jauge: bande, recap: recapDeJauge(bande, changement) }
 }
 
 /** Le titre court Bangers (D30), en Title Case : la MAJUSCULE vient du CSS (text-transform). */
@@ -478,7 +513,7 @@ function plafondDe(etape: EtapeDeroule, ctx: ContexteVue): number | undefined {
 }
 
 /** « 1 par joueur + 1 accélération = 2 » (D12), seulement si le moteur l'a decompose. */
-function calculMenace(etape: EtapeDeroule): string | undefined {
+export function calculMenace(etape: EtapeDeroule): string | undefined {
   const { escalade, acceleration, joueurs } = etape
   if (!nombre(escalade) || !nombre(joueurs) || joueurs < 1) return undefined
   // « par joueur » seulement quand c'est vrai : une escalade qui ne se divise
@@ -503,7 +538,12 @@ function vueMenace(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
       : undefined
   return {
     genre: 'rangee',
-    acteur: vignette(`acteur:${etape.cle}`, etape.cibleId, etape.cibleNom, ctx),
+    acteur: avecJaugeDeLEtape(
+      vignette(`acteur:${etape.cle}`, etape.cibleId, etape.cibleNom, ctx),
+      'menace',
+      jauge,
+      montant !== undefined ? texteMenaces(montant) : undefined
+    ),
     boosts: [],
     calcul: calculMenace(etape),
     cibles: [],
@@ -599,13 +639,33 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
           : undefined,
       }
     } else {
+      // La manigance a pu atteindre son seuil puis se vider (21099b) : on montre
+      // la montee reelle (« 3 → 6 / 6 ») et on dit qu'elle s'est videe.
+      const pic = nombre(etape.menaceAvant) ? etape.menaceAvant + montant : undefined
+      const videe = pic !== undefined && nombre(etape.restant) && etape.restant < pic
       resultat = {
         texte: texteMenaces(montant),
         jauge: nombre(etape.restant)
-          ? { avant: Math.max(0, etape.restant - montant), apres: etape.restant, plafond: plafondDe(etape, ctx) }
+          ? {
+              avant: etape.menaceAvant ?? Math.max(0, etape.restant - montant),
+              apres: videe ? pic : etape.restant,
+              plafond: plafondDe(etape, ctx),
+            }
           : undefined,
+        note: videe ? t('menaces retirées') : undefined,
       }
     }
+  }
+
+  // La cible porte la bande de l'etape resolue : PV apres l'attaque, menace apres la manigance.
+  if (cibles[0] && resultat?.jauge && etape.montant !== undefined) {
+    const montant = etape.montant
+    cibles[0] = avecJaugeDeLEtape(
+      cibles[0],
+      attaque ? 'pv' : 'menace',
+      resultat.jauge,
+      attaque ? `${montant} ${Math.abs(montant) < 2 ? t('dégât') : t('dégâts')}` : texteMenaces(montant)
+    )
   }
 
   const lignesEtoile = montres

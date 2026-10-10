@@ -6340,9 +6340,10 @@
     animation: splash-tour-fond 2200ms ease-out both;
   }
 
+  /* Bleu pour les héros (v3 « Sur la table », Q29, 10/10/2026). */
   .splash-tour.est-heros {
-    --splash-accent: var(--menace);
-    --splash-lueur: rgba(240, 185, 95, 0.42);
+    --splash-accent: #3b8bea;
+    --splash-lueur: rgba(59, 139, 234, 0.42);
   }
 
   .splash-tour.est-mechant {
@@ -9018,6 +9019,434 @@
     }
     .deroule-rond:hover {
       transform: none;
+    }
+  }
+}
+
+@layer utilitaires {
+  /* --- La bulle « Sur la table » v3 (10/10/2026) ------------------------------
+     Taille moyenne, fond sombre, frise en onglets biseautés en tête (elle
+     quitte la barre du haut), déplaçable par cette bande. Fantôme au survol
+     d'une carte de la table : on voit ce qu'elle cachait, les clics passent. */
+  .deroule-bulle-table {
+    --coin: 10px;
+    box-sizing: border-box;
+    width: min(560px, 92%);
+    padding: 0 16px 14px;
+    gap: 10px;
+    background: rgba(17, 17, 20, 0.94);
+    border: 2px solid var(--rouge, #a60000);
+    clip-path: polygon(
+      var(--coin) 0,
+      100% 0,
+      100% calc(100% - var(--coin)),
+      calc(100% - var(--coin)) 100%,
+      0 100%,
+      0 var(--coin)
+    );
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.8);
+    transition: opacity 120ms ease;
+  }
+
+  /* Téléphone (Q37, Q38) : une feuille collée en bas, trois hauteurs. La
+     place calculée pour le PC (left, top, translate en ligne) ne s'applique pas. */
+  .deroule-bulle-table.est-telephone {
+    position: fixed;
+    inset: auto 0 0 0 !important;
+    width: 100%;
+    translate: none !important;
+    clip-path: none;
+    border-width: 2px 0 0;
+    border-radius: 12px 12px 0 0;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    z-index: 500;
+    transition: max-height 180ms ease-out;
+  }
+
+  .deroule-bulle-table.est-telephone.est-reduite {
+    max-height: 120px;
+  }
+
+  .deroule-bulle-table.est-telephone.est-normale {
+    max-height: 45vh;
+  }
+
+  .deroule-bulle-table.est-telephone.est-depliee {
+    max-height: 85vh;
+  }
+
+  .deroule-bulle-table.est-telephone.est-reduite > :not(.deroule-bulle-onglets, .deroule-recit, .deroule-rond-rangee) {
+    display: none;
+  }
+
+  .deroule-bulle-table.est-telephone .deroule-bulle-onglets::before {
+    content: '';
+    display: block;
+    width: 44px;
+    height: 4px;
+    margin: 6px auto 4px;
+    border-radius: 2px;
+    background: rgba(248, 250, 252, 0.5);
+  }
+
+  .deroule-bulle-table.est-fantome {
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .deroule-bulle-onglets {
+    align-self: stretch;
+    margin: 0 -16px;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .deroule-bulle-onglets:active {
+    cursor: grabbing;
+  }
+
+  .deroule-bulle-table .deroule-temps {
+    display: flex;
+    gap: 3px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .deroule-bulle-table .deroule-temps li {
+    --coin: 7px;
+    container-type: inline-size;
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 8px;
+    white-space: nowrap;
+    color: rgba(248, 250, 252, 0.45);
+    background: #2f3338;
+    clip-path: polygon(
+      var(--coin) 0,
+      100% 0,
+      100% calc(100% - var(--coin)),
+      calc(100% - var(--coin)) 100%,
+      0 100%,
+      0 var(--coin)
+    );
+    font-family: Anton, Impact, system-ui, sans-serif;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .deroule-bulle-table .deroule-temps li.est-courant {
+    flex-grow: 1.5;
+    color: #fff;
+    background: var(--rouge, #a60000);
+    box-shadow: inset 0 0 0 2px #fff;
+  }
+
+  .deroule-bulle-table .deroule-temps li.est-passe {
+    color: #fff;
+    background: #7d1010;
+    cursor: pointer;
+  }
+
+  .deroule-bulle-table .deroule-temps li.est-passe:hover {
+    filter: brightness(1.25);
+  }
+
+  .deroule-bulle-table .deroule-temps li.est-vide {
+    text-decoration: line-through;
+  }
+
+  .deroule-bulle-table .deroule-temps li.est-relu {
+    box-shadow: inset 0 0 0 2px #fff;
+  }
+
+  .deroule-bulle-table .deroule-onglet-bouton {
+    all: unset;
+    cursor: pointer;
+    min-width: 0;
+  }
+
+  .deroule-bulle-table .deroule-onglet-nom {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: clamp(0.55rem, 9cqi, 0.82rem);
+  }
+
+  /* Une seule ligne par onglet : le résumé reste au mode détaillé. */
+  .deroule-bulle-table .deroule-onglet-resume {
+    display: none;
+  }
+
+  .deroule-bulle-table .deroule-recit {
+    max-width: 100%;
+  }
+
+  .deroule-bulle-colonnes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    width: 100%;
+  }
+
+  .deroule-bulle-colonne {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    font-size: 13px;
+    color: #fff;
+  }
+
+  .deroule-bulle-colonne-titre {
+    font-family: Anton, Impact, system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #f0b95f;
+  }
+
+  .deroule-bulle-colonne-rien {
+    color: rgba(248, 250, 252, 0.55);
+  }
+
+  .deroule-bulle-table.est-defaite {
+    border-color: #ff3b30;
+  }
+
+  .deroule-bulle-defaite {
+    font-family: Anton, Impact, system-ui, sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.03em;
+    color: #ff5a4f;
+    text-align: center;
+  }
+
+  .deroule-bulle-aide-bouton {
+    position: absolute;
+    top: 40px;
+    right: 10px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid rgba(248, 250, 252, 0.5);
+    background: transparent;
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .deroule-bulle-aide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border: 1px dashed rgba(240, 185, 95, 0.7);
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.35;
+    color: #fff;
+    text-align: center;
+  }
+
+  .deroule-bulle-rang {
+    font-family: Anton, Impact, system-ui, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #f0b95f;
+  }
+
+  .deroule-bulle-ariane,
+  .deroule-bulle-compteur,
+  .deroule-bulle-etoile {
+    max-width: 100%;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.3;
+    color: rgba(248, 250, 252, 0.8);
+  }
+
+  .deroule-bulle-etoile {
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: #f0b95f;
+    color: #1a1206;
+    font-weight: 800;
+  }
+
+  .deroule-bulle-calcul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.85rem;
+  }
+
+  .deroule-bulle-terme {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .deroule-bulle-operateur {
+    font-family: Anton, Impact, system-ui, sans-serif;
+    font-size: 20px;
+    color: #fff;
+  }
+
+  .deroule-bulle-pastille {
+    padding: 4px 10px;
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+    background: linear-gradient(160deg, #1f5fae, #0e2e57);
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+  }
+
+  .deroule-bulle-total {
+    font-family: Anton, Impact, system-ui, sans-serif;
+    font-size: 22px;
+    color: #f0b95f;
+  }
+
+  .deroule-bulle-alerte {
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: #b3261e;
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+    animation: bulle-alerte 900ms ease-in-out infinite;
+  }
+
+  @keyframes bulle-alerte {
+    50% {
+      background: #ff3b30;
+    }
+  }
+
+  .deroule-bulle-confirmer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* Q8 : le gros bouton jaune biseauté, la touche Espace indiquée. */
+  .deroule-bulle-table .deroule-rond {
+    --coin: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 26px;
+    border-radius: 0;
+    clip-path: polygon(
+      var(--coin) 0,
+      100% 0,
+      100% calc(100% - var(--coin)),
+      calc(100% - var(--coin)) 100%,
+      0 100%,
+      0 var(--coin)
+    );
+  }
+
+  .deroule-rond-touche {
+    padding: 1px 6px;
+    border: 1px solid rgba(26, 18, 6, 0.6);
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 11px;
+    opacity: 0.75;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deroule-bulle-table {
+      transition: none;
+    }
+  }
+}
+
+@layer utilitaires {
+  /* --- La carte touchée, sur la table (v3, 10/10/2026, Q7) --------------------
+     La jauge glisse vers sa nouvelle valeur, son ancien niveau reste en
+     fantôme (largeur posée par EffetsSurTable), et le nombre s'envole. */
+  .plateau-cadre .jauge-remplissage {
+    transition: width 600ms ease-out;
+  }
+
+  .plateau-cadre .jauge-carte::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0;
+    background: rgba(255, 255, 255, 0.28);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .delta-sur-table {
+    position: absolute;
+    z-index: 140;
+    transform: translate(-50%, -100%);
+    font-family: Anton, Impact, system-ui, sans-serif;
+    font-size: 30px;
+    line-height: 1;
+    pointer-events: none;
+    text-shadow:
+      0 0 6px rgba(0, 0, 0, 0.95),
+      0 2px 3px rgba(0, 0, 0, 0.9);
+    animation: delta-s-envole 1400ms ease-out forwards;
+  }
+
+  @keyframes jauge-alerte {
+    50% {
+      box-shadow:
+        0 0 0 2px #ff3b30,
+        0 0 14px 4px rgba(255, 59, 48, 0.85);
+    }
+  }
+
+  .delta-sur-table.est-degats {
+    color: #ff5a4f;
+  }
+
+  .delta-sur-table.est-menace {
+    color: #f0b95f;
+  }
+
+  @keyframes delta-s-envole {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -60%) scale(0.7);
+    }
+    15% {
+      opacity: 1;
+      transform: translate(-50%, -100%) scale(1.15);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -260%) scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plateau-cadre .jauge-remplissage {
+      transition: none;
+    }
+    .delta-sur-table {
+      animation: none;
     }
   }
 }

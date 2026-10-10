@@ -245,7 +245,9 @@ export function useSons(
   monde: World | undefined,
   actif: boolean,
   joueurInterroge: boolean,
-  silence = false
+  silence = false,
+  /** Module le volume : plus bas pendant la phase du mechant « Sur la table » (v3, Q36). */
+  facteur = 1
 ) {
   porte = { silence }
   useEffect(() => {
@@ -263,6 +265,6 @@ export function useSons(
     if (joueurInterroge && nom !== 'phase') return
     const geste = dernierGeste.get(FAMILLE[nom] ?? nom)
     if (geste !== undefined && maintenant() - geste < FENETRE_DOUBLON_MS) return
-    jouerSon(nom)
-  }, [monde, monde?.render_id, actif, joueurInterroge, silence])
+    jouerSon(nom, facteur)
+  }, [monde, monde?.render_id, actif, joueurInterroge, silence, facteur])
 }

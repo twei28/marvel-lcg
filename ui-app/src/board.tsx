@@ -143,6 +143,8 @@ import { CiblesScene } from './board/CiblesScene'
 import { DeroulePhase } from './board/DeroulePhase'
 import { BandeauPhase } from './board/BandeauPhase'
 import { entreesPourRepli, etapesDeroule, etapesHorsPhase, nomNettoye, tempsDeLaQuestion } from './board/deroule-phase'
+import { titreEtape } from './board/deroule-textes'
+import { etapeEnLangue } from './board/etape-en-langue'
 import { CoupHorsPhase } from './board/CoupHorsPhase'
 import { CartoucheHorsPhase, RelectureJournal } from './board/CartouchePhase'
 import type { QuestionDuMoteur } from './board/sous-cadre'
@@ -3054,6 +3056,24 @@ export function PagePartie({
       return nouveau
     })
   }, [])
+  // LE JOURNAL « SUR LA TABLE » (v3, Q45) : une ligne par etape de la phase du
+  // mechant, round par round, a la place du detail du moteur.
+  const etapesDuMechantParRound = useMemo(() => {
+    const mechantIds = new Set<number>()
+    for (const carte of cartesMondeParId.values()) {
+      if (kindOf(carte) === 'villain') mechantIds.add(carte.id)
+    }
+    const cache = new Map<number, string[]>()
+    return (round: number): string[] => {
+      const connu = cache.get(round)
+      if (connu) return connu
+      const phrases = etapesDeroule(etat.monde?.faits_mechant ?? [], [], round, mechantIds)
+        .filter((etape) => etape.titre !== 'vide')
+        .map((etape) => titreEtape(etapeEnLangue(etape, nomPorteurFr)))
+      cache.set(round, phrases)
+      return phrases
+    }
+  }, [cartesMondeParId, etat.monde?.faits_mechant, nomPorteurFr])
 
   const basculerScansFr = useCallback(() => {
     setScansFr((v) => {
@@ -3746,7 +3766,13 @@ export function PagePartie({
   // chaque trame de mise en place portant un `sound_name` etait jouee derriere
   // le voile. C'est la seule raison pour laquelle le bloc du voile est calcule
   // ici, au-dessus, et pas juste avant le retour anticipe qui s'en sert.
-  useSons(etat.monde, sons, etat.demande !== undefined, voile || etat.saut === true || (lecteurActif()?.lireControle().muet ?? false))
+  useSons(
+    etat.monde,
+    sons,
+    etat.demande !== undefined,
+    voile || etat.saut === true || (lecteurActif()?.lireControle().muet ?? false),
+    phaseMechantEnCours && !sceneCentrale ? 0.6 : 1
+  )
   // Survol des boutons du Menu et des Réglages (refonte des sons, 07/10/2026).
   useEffect(() => installerSurvol(document, SELECTEUR_SURVOL_PLATEAU), [])
   useMusique(etat.monde, musique)
@@ -4019,6 +4045,7 @@ export function PagePartie({
     // La face A de la manigance a son propre panneau : ni le panneau central,
     // ni la scene, ni la barre du bas ne la proposent en double.
     questionDeLaManigance: priseManigance !== undefined,
+    bulleSurTable: !sceneCentrale,
     // Le cartouche du bas raconte deja chaque etape : la narration centrale se
     // tait pendant la phase (« plus aucun panneau hors du cartouche »).
     cartoucheEnBas: nouvelleScenePC,
@@ -5080,6 +5107,7 @@ export function PagePartie({
           effacer={historique.effacer}
           rapport={rapport}
           telechargerLog={() => rapport.telecharger('partie', 'txt')}
+          etapesDuMechant={sceneCentrale ? undefined : etapesDuMechantParRound}
           // En scene PC, la phase precedente se relit dans le cartouche du bas
           // (D38) ; la table et le telephone gardent la revue du volet.
           revuePhase={

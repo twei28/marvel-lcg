@@ -22,7 +22,7 @@
 // `data-choix="n"` (1 a 9) et affiche « (n) », le refus porte `data-refus`.
 
 import type { ReactNode } from 'react'
-import type { ScanCardProps } from '../components/ScanCard'
+import type { CardGauge, ScanCardProps } from '../components/ScanCard'
 import { ScanCardTraduite } from './traduction-carte'
 import type { Option } from './ask'
 import { avecIcones, coutEnIcones, marquerRessources, ressourcesEnMots } from './icones-ressources'
@@ -34,8 +34,10 @@ import type { CibleVue, QuestionDuMoteur, VignetteOption, VueSousCadre } from '.
  * Une carte du cartouche : NUE, comme dans la scene d'avant. Rien de ce que le
  * monde COURANT dit d'elle (compteurs, PV, jetons) : la table peut etre en
  * avance sur le recit, et c'est la rangee qui donne les chiffres de l'etape.
+ * Seule exception, la bande de PV ou de menace de la table : la meme, avec les
+ * chiffres de l'etape (`vue-cartouche.ts`, `jauge` d'une vignette).
  */
-export function CarteNue({ scan }: { scan: ScanCardProps }) {
+export function CarteNue({ scan, jauge }: { scan: ScanCardProps; jauge?: CardGauge }) {
   return (
     <ScanCardTraduite
       {...scan}
@@ -47,7 +49,7 @@ export function CarteNue({ scan }: { scan: ScanCardProps }) {
       stats={undefined}
       labelType={undefined}
       camp={undefined}
-      jauge={undefined}
+      jauge={jauge}
       jetonMenace={undefined}
       jetonDegats={undefined}
       masquerType

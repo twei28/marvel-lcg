@@ -943,7 +943,8 @@ class CanAttack(CardFace):
                              activation_id: int=0,
                              boost_cards: 'List[CardFace]|None'=None,
                              cible_annoncee: 'CardFace|None'=None,
-                             base_imprimee: 'int|None'=None) -> bool:
+                             base_imprimee: 'int|None'=None,
+                             menace_avant: 'int|None'=None) -> bool:
         """Inscrit une MANIGANCE d'ennemi au meme journal que ses attaques.
 
         Elle vit ici, a cote de son attaque, parce que les deux forment une
@@ -991,6 +992,9 @@ class CanAttack(CardFace):
             # foulee, le plateau ne le relit plus sur elle. None sans seuil.
             'restant': getattr(manigance, 'threat', None),
             'plafond': getattr(manigance, 'target_threat', None),
+            # Menace AVANT la pose : `restant` < avant + pose quand la manigance
+            # s'est videe en atteignant son seuil.
+            'avant': menace_avant,
             'boosts': CanAttack._BoostsPublies(boost_apports, boost_cards),
             'cible_annoncee': (cible_annoncee or manigance).name,
             'cible_annoncee_id': (cible_annoncee or manigance).card.object_id,

@@ -275,6 +275,8 @@ export type FaitActivationResolue = FaitActivationCommun & {
   base_imprimee?: number
   /** Sur une manigance : le seuil de la manigance visée, `null` sans seuil. */
   plafond?: number | null
+  /** Sur une manigance : la menace AVANT la pose (une manigance au seuil peut se vider aussitôt). */
+  avant?: number | null
 }
 
 export type FaitActivation = FaitActivationAnnonce | FaitActivationBoosts | FaitActivationResolue
@@ -386,7 +388,14 @@ export type FaitRevelation = FaitMechantCommun & {
 export type EffetRevelation =
   | { genre: 'menace'; cible: string; cible_id: number; montant: number; restant?: number | null }
   | { genre: 'degats'; cible: string; cible_id: number; montant: number; restant?: number | null }
-  | { genre: 'entree'; carte: string; carte_id: number; type: 'sbire' | 'manigance' | 'environnement' | string }
+  | {
+      genre: 'entree'
+      carte: string
+      carte_id: number
+      type: 'sbire' | 'manigance' | 'environnement' | string
+      /** Un sbire : l'identite du heros avec qui il s'engage (« Sur la table » v3, Q22). */
+      engage_avec_id?: number
+    }
 
 /**
  * Un fait de la phase du méchant, tel que le MOTEUR l'a enregistré.

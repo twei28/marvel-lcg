@@ -159,6 +159,13 @@
   display: none;
 }
 
+/* La question prend toute la place : l'etape grisee s'efface (10/10/2026). Sans
+   cela, le sous-cadre se rangeait a cote d'elle dans le corps en ligne et ses
+   cartes tombaient en colonne etroite sur le bord droit. */
+.deroule-phase.est-scene.est-bis .deroule-corps:has(> .deroule-sous-cadre) > .est-grisee {
+  display: none;
+}
+
 .deroule-phase.est-scene.est-bis .deroule-question-intitule,
 .deroule-phase.est-scene.est-bis .sous-cadre-titre {
   max-width: 680px;

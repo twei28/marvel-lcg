@@ -16,7 +16,15 @@
 // chronologie et dit que le moteur attend le joueur. Ce n'est pas la meme
 // attente que « La suite arrive… », ou c'est le joueur qui attend le moteur.
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from 'react'
 import { createPortal } from 'react-dom'
 import { estSpectateur } from './moteur'
 import { indexSpectateur, useSuiviDuJoueur } from './etape-partagee'
@@ -65,24 +73,26 @@ import { ONGLETS, avecTempsVides, resumeOnglet, type CleOnglet } from './frise-p
 import { DetailCoup, ListeDesCoups } from './DetailCoup'
 import { etapeEnLangue } from './etape-en-langue'
 import { useGlisserPanneau } from './placement/useGlisserPanneau'
-import { CoucheTraitPhase } from './CoucheTraitPhase'
+import { CoucheTraitPhase, EffetsSurTable } from './CoucheTraitPhase'
 import { cartoucheEstAJour } from './cartouche-a-jour'
 import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
-import { contenuDuTrait } from './trait-phase'
+import { alerteMenace, contenuDuTrait } from './trait-phase'
 import './boutons-bd.css'
 // ⚠ APRES boutons-bd.css : CartouchePhase importe sa feuille, qui doit passer
 // la DERNIERE (cartouche-phase.css, hors couche).
-import { CartouchePhase, type CartouchePhaseProps } from './CartouchePhase'
+import { CartouchePhase, PictoBoost, PictoStat, type CartouchePhaseProps } from './CartouchePhase'
 import { boutonPageSuivante, cibleDeLaTouche, clavierBloque } from './clavier-cartouche'
 import type { QuestionDuMoteur } from './sous-cadre'
 import {
+  calculMenace,
   pastilleDuTemps,
   sortiesDeLEtape,
   texteDeLaChaine,
   type ClePastille,
   type InfoRevelee,
 } from './vue-cartouche'
+import './cartouche-essai-tel.css'
 
 /**
  * Le temps de VOIR une etape qui vise un autre joueur, avant qu'elle passe.
@@ -95,6 +105,9 @@ const DELAI_ETAPE_D_UN_AUTRE_MS = 2200
 
 /** Le temps de lire un boost a capacite avant le suivant. */
 const DELAI_BOOST_MS = 1500
+
+/** L'aide de la bulle « Sur la table » a deja ete lue (v3, Q47). */
+const CLE_AIDE_TABLE = 'mc_aide_bulle_table'
 
 // ⚠ PLUS DE « TOUT DEROULER » (Echap) : pas a pas strict, decision de
 // l'utilisateur du 03/10/2026. Le defilement et son delai sont retires.
@@ -483,9 +496,11 @@ export function DeroulePhase({
   // changerait ce que le joueur lit.
   // Deux presentations, une seule mecanique (voir la prop `presentation`).
   // La scene du PC se dessine dans le cartouche du bas (CartouchePhase) ; la
-  // scene du telephone garde le rendu d'avant (D36). Declaree ICI, avant tout
-  // hook qui la lit (`useGlisserPanneau`, plus bas).
-  const nouvelleScene = presentation !== 'table' && !telephone
+  // scene du telephone garde le rendu d'avant (D36), SAUF pendant l'essai de la
+  // « Nouvelle phase du méchant », qui y prend sa feuille basse
+  // (cartouche-essai-tel.css). Declaree ICI, avant tout hook qui la lit
+  // (`useGlisserPanneau`, plus bas).
+  const nouvelleScene = presentation !== 'table' && (!telephone || essai)
   const surTable = presentation === 'table'
   const [cleCourante, setCleCourante] = useState<string>()
   // Vrai une fois la derniere etape validee : le cartouche doit alors
@@ -953,6 +968,23 @@ export function DeroulePhase({
     onTerminer()
   }
 
+  // SUR LA TABLE, Suivant retourne d'abord le boost suivant (v3, Q11), puis
+  // valide l'etape une fois tous ses boosts montres.
+  const avancerSurTable = () => {
+    if (etape && boostsMontres < etape.boosts.length) {
+      onActivite?.()
+      setBoostsMontres((n) => n + 1)
+      return
+    }
+    avancer()
+  }
+
+  // « TOUT PASSER » SUR LA TABLE (v3, Q32) : Echap, puis confirmation dans la
+  // bulle. Les etapes defilent seules jusqu'a la fin de la phase ; une question
+  // du moteur arrete le defilement le temps d'y repondre.
+  const [confirmerPasser, setConfirmerPasser] = useState(false)
+  const [passerTout, setPasserTout] = useState(false)
+
   const reculer = () => {
     // Relire est un geste de joueur comme un autre : le filet anti-blocage
     // repart de zero (voir `onActivite`).
@@ -1146,6 +1178,20 @@ export function DeroulePhase({
       ) {
         return
       }
+      // TAB SUR LA TABLE (v3, Q48) : d'une carte allumee (cliquable) a la
+      // suivante, pour choisir un defenseur ou une reponse sans souris.
+      if (surTable && questionAuJoueur && evenement.key === 'Tab') {
+        const allumees = [
+          ...document.querySelectorAll<HTMLElement>('.plateau-cadre .scan-card.est-agissante'),
+        ]
+        if (allumees.length > 0) {
+          evenement.preventDefault()
+          const ici = allumees.indexOf(document.activeElement as HTMLElement)
+          const pas = evenement.shiftKey ? -1 : 1
+          allumees[(ici + pas + allumees.length) % allumees.length]?.focus()
+          return
+        }
+      }
       // On ne confisque pas Entree/Espace a un bouton du PLATEAU : seul un
       // element interactif EXTERIEUR au cartouche doit garder son activation
       // au clavier normale. Un bouton du cartouche lui-meme (Suivant,
@@ -1188,13 +1234,37 @@ export function DeroulePhase({
           page.click()
           return
         }
-        avancer()
+        if (surTable) avancerSurTable()
+        else avancer()
         return
+      }
+      if (surTable && evenement.key === 'ArrowLeft' && !relecture && index > 0) {
+        evenement.preventDefault()
+        reculer()
+        return
+      }
+      if (surTable && evenement.key === 'Escape' && !clavierBloque(document)) {
+        evenement.preventDefault()
+        setConfirmerPasser((ouvert) => !ouvert)
       }
     }
     document.addEventListener('keydown', auClavier)
     return () => document.removeEventListener('keydown', auClavier)
   })
+
+  useEffect(() => {
+    setPasserTout(false)
+    setConfirmerPasser(false)
+  }, [cleDeLaPhase])
+  useEffect(() => {
+    if (!passerTout || !surTable || !etape || questionAuJoueur || enAttente || termine) return
+    const minuteur = window.setTimeout(() => {
+      setBoostsMontres(etape.boosts.length)
+      avancer()
+    }, 0)
+    return () => window.clearTimeout(minuteur)
+    // `avancer` change a chaque rendu : la cle de l'etape pilote le defilement.
+  }, [passerTout, surTable, etape?.cle, questionAuJoueur, enAttente, termine])
 
   // Combien de boosts sont deja retournes sur l'etape courante. Ils
   // s'enchainent SEULS : c'est l'etape qui attend la validation, pas chaque
@@ -1254,8 +1324,9 @@ export function DeroulePhase({
   useEffect(() => {
     const total = etape?.boosts.length ?? 0
     if (boostsMontres === 0 || boostsMontres >= total) return
-    // L'essai les retourne au clic (« Continuer »), un par un.
-    if (essai && nouvelleScene) return
+    // L'essai les retourne au clic (« Continuer »), un par un ; la table aussi
+    // (v3, Q11 : « retourner un boost par clic »).
+    if ((essai && nouvelleScene) || surTable) return
     const minuteur = window.setTimeout(
       () => setBoostsMontres((n) => n + 1),
       DELAI_BOOST_MS
@@ -1264,7 +1335,7 @@ export function DeroulePhase({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- meme raison :
     // `etape?.cle` et `etape?.boosts.length` suffisent a piloter le
     // minuteur, l'identite de `etape` ne doit pas le redeclencher.
-  }, [boostsMontres, etape?.cle, etape?.boosts.length, essai, nouvelleScene])
+  }, [boostsMontres, etape?.cle, etape?.boosts.length, essai, nouvelleScene, surTable])
 
   // Le cartouche est-il a l'ecran ? Calcule ICI parce que les hooks ci-dessous
   // en dependent, et que la sortie `return null` qui l'applique vient bien plus
@@ -1458,6 +1529,71 @@ export function DeroulePhase({
     onPointerCancel: gestesQuestion.onPointerCancel,
   }
 
+  // LA BULLE « SUR LA TABLE » (v3, 10/10/2026) : fixe mais deplacable par sa
+  // bande d'onglets. Signature constante : la place choisie tient d'une etape
+  // et d'une phase a l'autre.
+  const { decalage: decalageBulle, gestes: gestesBulle } = useGlisserPanneau('bulle-table')
+  const styleBulle: CSSProperties | undefined =
+    decalageBulle.dx !== 0 || decalageBulle.dy !== 0
+      ? { ...styleCartouche, translate: `${decalageBulle.dx}px ${decalageBulle.dy}px` }
+      : styleCartouche
+  // LA FEUILLE DU TELEPHONE (v3, Q37 et Q38) : la bulle se colle en bas de
+  // l'ecran ; un glissement vertical sur ses onglets passe de reduite a
+  // normale a depliee, et retour.
+  const [feuille, setFeuille] = useState<'reduite' | 'normale' | 'depliee'>('normale')
+  const departFeuille = useRef<number | undefined>(undefined)
+  const ORDRE_FEUILLE = ['reduite', 'normale', 'depliee'] as const
+  const gestesFeuille = {
+    onPointerDown: (e: ReactPointerEvent) => {
+      departFeuille.current = e.clientY
+    },
+    onPointerMove: () => {},
+    onPointerUp: (e: ReactPointerEvent) => {
+      const depart = departFeuille.current
+      departFeuille.current = undefined
+      if (depart === undefined || Math.abs(e.clientY - depart) < 30) return
+      const sens = e.clientY < depart ? 1 : -1
+      setFeuille((h) => ORDRE_FEUILLE[Math.min(2, Math.max(0, ORDRE_FEUILLE.indexOf(h) + sens))])
+    },
+    onPointerCancel: () => {
+      departFeuille.current = undefined
+    },
+  }
+  const poignee = telephone ? gestesFeuille : gestesBulle
+  const classeTelephone = telephone ? ` est-telephone est-${feuille}` : ''
+
+  // L'AIDE (v3, Q47) : ouverte d'office la premiere fois, puis au bouton « ? ».
+  const [aideTable, setAideTable] = useState(() => {
+    try {
+      return globalThis.localStorage?.getItem(CLE_AIDE_TABLE) !== 'vue'
+    } catch {
+      return false
+    }
+  })
+  const fermerAideTable = () => {
+    setAideTable(false)
+    try {
+      globalThis.localStorage?.setItem(CLE_AIDE_TABLE, 'vue')
+    } catch {
+      // Stockage indisponible : l'aide reviendra, sans autre gene.
+    }
+  }
+  // Fantome au survol d'une carte de la table : elle ne cache plus ce qu'on
+  // regarde, et les clics passent a travers jusqu'a la souris sortie des cartes.
+  const [bulleFantome, setBulleFantome] = useState(false)
+  useEffect(() => {
+    if (!surTable) return
+    const survol = (e: PointerEvent) => {
+      const cible = e.target instanceof Element ? e.target : null
+      setBulleFantome(Boolean(cible?.closest('.scan-card')) && !cible?.closest('.deroule-bulle-table'))
+    }
+    document.addEventListener('pointerover', survol)
+    return () => {
+      document.removeEventListener('pointerover', survol)
+      setBulleFantome(false)
+    }
+  }, [surTable])
+
   /**
    * ⚠ SUR LA TABLE, LE CARTOUCHE VA DANS LE CADRE DU PLATEAU, par un portail.
    *
@@ -1490,8 +1626,12 @@ export function DeroulePhase({
             comportement de `chronologie`, et c'est exactement sa decision
             « on la saute, mais on le dit ». Il ne coute aucun clic, puisque
             `etapesDeroule` ne fabrique pas d'etape pour lui. */}
-        {chronologieEnBarre}
         <CoucheTraitPhase etape={etape} actif />
+        <EffetsSurTable
+          etape={etape}
+          actif={!questionAuJoueur}
+          pvMax={etape?.cibleNom ? pvMaxParNom?.get(etape.cibleNom) : undefined}
+        />
         {/* Les cartes qui sortent du paquet rencontre : les boosts a cote du
             deck, puis la carte revelee en grand. Meme portail, meme repere. */}
         {/* Le jeton de menace, sur les etapes qui en posent (point 1, et une
@@ -1823,24 +1963,6 @@ export function DeroulePhase({
   // le porte deja (« Hunting Down Heroes gagne 2 menaces ») et le compteur a sa
   // droite donne l'avant et l'apres (« 5 → 7 / 12 »).
 
-  /**
-   * La ligne des temps, portee dans la BARRE DU HAUT.
-   *
-   * ⚠ DEUX CIBLES POSSIBLES, ET CE N'EST PAS UN CAPRICE. `.board-actions` est
-   * sa vraie place, mais cette barre n'existe que dans une vraie partie : la
-   * page des etats enregistres (`?etat=`) ne la monte pas. Sans repli, la ligne
-   * serait invisible dans le seul outil qui permet d'observer une phase du
-   * mechant hors du navigateur - et c'est exactement le trou qui avait laisse
-   * passer un cartouche invisible plus tot dans la journee.
-   */
-  const chronologieEnBarre = (() => {
-    if (!surTable) return null
-    const barre = document.querySelector<HTMLElement>('.board-actions')
-    if (barre) {
-      return createPortal(<span className="deroule-temps-barre">{chronologie}</span>, barre)
-    }
-    return <span className="deroule-temps-barre est-sans-barre">{chronologie}</span>
-  })()
 
   const rendreCarte = (carte: CarteDeScene, position: number) => {
     const props = propsDe(carte)
@@ -2018,6 +2140,35 @@ export function DeroulePhase({
     return enveloppe(null)
   }
 
+  // LA QUESTION DANS LA BULLE (v3, Q17) : sur la table, la bulle remplace le
+  // panneau central. Les cartes possibles restent allumees et cliquables sur
+  // la table ; la bulle dit l'intention et porte les boutons (« Ne pas
+  // defendre »...).
+  if (surTable && questionAuJoueur) {
+    return enveloppe(
+      <div
+        ref={setElCartouche}
+        className={`deroule-rond-place deroule-bulle-table est-question${classeTelephone}${bulleFantome ? ' est-fantome' : ''}`}
+        style={styleBulle}
+        role="dialog"
+        aria-label={t('Phase du méchant')}
+      >
+        {loupe}
+        <div
+          className="deroule-bulle-onglets poignee-glisser"
+          onPointerDown={poignee.onPointerDown}
+          onPointerMove={poignee.onPointerMove}
+          onPointerUp={poignee.onPointerUp}
+          onPointerCancel={poignee.onPointerCancel}
+        >
+          {chronologie}
+        </div>
+        {etapeEstAnnonce ? <span className="deroule-recit">{phraseSurvolable(titreEtape(etapeLue))}</span> : null}
+        <div className="deroule-bulle-question">{question}</div>
+      </div>
+    )
+  }
+
   if (questionAuJoueur) {
     return enveloppe(
       <>
@@ -2102,6 +2253,44 @@ export function DeroulePhase({
     texte: nombreEnClair && phraseEtape.includes(nombreEnClair) ? '' : nombreEnClair,
   }
 
+  // LE CALCUL EN PASTILLES de la bulle (v3, Q10 et Q15) : [ATQ 2] + [+1 BOOST]
+  // − [DÉF 3] sur une activation, « 1 par joueur + 1 accélération = 2 » sur la
+  // menace du point 1. Rien quand l'etape ne porte pas ses chiffres.
+  const boostsVus = etape.boosts.slice(0, boostsMontres)
+  const activation = etape.titre === 'attaque' || etape.titre === 'manigance'
+  const baseCalcul = etape.base ?? etape.valeurAnnoncee
+  const termesMenace = etape.titre === 'menace' ? calculMenace(etapeLue)?.split(' = ') : undefined
+  const calculBulle =
+    activation && baseCalcul !== undefined && (boostsVus.length > 0 || (etape.defense ?? 0) > 0) ? (
+      <span className="deroule-bulle-calcul" aria-label={detailEtape({ ...etapeLue, boosts: boostsVus })}>
+        <PictoStat genre={etape.titre === 'attaque' ? 'atq' : 'men'} valeur={baseCalcul} />
+        {boostsVus.map((boost) => (
+          <span key={boost.cle} className="deroule-bulle-terme">
+            <span className="deroule-bulle-operateur">+</span>
+            <PictoBoost nombre={boost.apport} etoile={boost.etoile} />
+          </span>
+        ))}
+        {(etape.defense ?? 0) > 0 ? (
+          <span className="deroule-bulle-terme">
+            <span className="deroule-bulle-operateur">−</span>
+            <PictoStat genre="def" valeur={etape.defense} />
+          </span>
+        ) : null}
+      </span>
+    ) : termesMenace && termesMenace.length === 2 ? (
+      <span className="deroule-bulle-calcul est-menace">
+        {termesMenace[0].split(' + ').map((terme, rang) => (
+          <span key={terme} className="deroule-bulle-terme">
+            {rang > 0 ? <span className="deroule-bulle-operateur">+</span> : null}
+            <span className="deroule-bulle-pastille">{terme}</span>
+          </span>
+        ))}
+        <span className="deroule-bulle-operateur">=</span>
+        <b className="deroule-bulle-total">{termesMenace[1]}</b>
+      </span>
+    ) : null
+  const alerte = alerteMenace({ ...etape, plafond: plafondConnu })
+
   // Le bandeau d'ouverture joue encore : la table se tait. Voir la prop.
   if (surTable && attendreBandeau) return null
 
@@ -2146,14 +2335,152 @@ export function DeroulePhase({
     )
   }
 
+  // LA DEFAITE SUR LA TABLE (v3, Q44) : le coup fatal a ete joue sur la table,
+  // une bulle en fait le constat avant l'ecran de fin de partie.
+  if (surTable && defaiteLocale && !fatalAMontrerSurTable) {
+    return enveloppe(
+      <div
+        ref={setElCartouche}
+        className={`deroule-rond-place deroule-bulle-table est-defaite${classeTelephone}`}
+        style={styleBulle}
+      >
+        <div
+          className="deroule-bulle-onglets poignee-glisser"
+          onPointerDown={poignee.onPointerDown}
+          onPointerMove={poignee.onPointerMove}
+          onPointerUp={poignee.onPointerUp}
+          onPointerCancel={poignee.onPointerCancel}
+        >
+          {chronologie}
+        </div>
+        <span className="deroule-recit">{phraseSurvolable(phraseEtape)}</span>
+        <span className="deroule-bulle-defaite">
+          <span aria-hidden="true">☠</span> {texteDefaite(etapeLue)}
+        </span>
+        <span className="deroule-bulle-compteur">{texteArretDefaite()}</span>
+        {estSpectateur() ? null : (
+          <span className="deroule-rond-rangee">
+            <button type="button" className="deroule-rond" onClick={avancer}>
+              {t('Continuer')}
+              <kbd className="deroule-rond-touche">{t('Espace')}</kbd>
+            </button>
+          </span>
+        )}
+      </div>
+    )
+  }
+
+  // LE BILAN SUR LA TABLE (v3, Q26 et Q29) : dans la bulle, menaces posees a
+  // gauche, degats subis (et statuts) a droite ; « Terminer la phase » rend la
+  // main, et l'annonce du tour du heros (SplashTour) prend le relais.
+  if (surTable && etape.temps === 'bilan' && !defaiteLocale && etapeLue.bilan) {
+    const menaces = etapeLue.bilan.filter((ligne) => ligne.genre === 'menaces')
+    const coups = etapeLue.bilan.filter((ligne) => ligne.genre !== 'menaces')
+    const colonne = (titre: string, lignes: typeof coups) => (
+      <div className="deroule-bulle-colonne">
+        <b className="deroule-bulle-colonne-titre">{titre}</b>
+        {lignes.length === 0 ? (
+          <span className="deroule-bulle-colonne-rien">{t('Aucune')}</span>
+        ) : (
+          lignes.map((ligne) => (
+            <span key={ligne.cle} className="deroule-bulle-ligne">
+              {texteLigneBilan(ligne)}
+              {compteurLigneBilan(ligne) ? <small> {compteurLigneBilan(ligne)}</small> : null}
+            </span>
+          ))
+        )}
+      </div>
+    )
+    return enveloppe(
+      <div
+        ref={setElCartouche}
+        className={`deroule-rond-place deroule-bulle-table est-bilan${classeTelephone}${bulleFantome ? ' est-fantome' : ''}`}
+        style={styleBulle}
+      >
+        <div
+          className="deroule-bulle-onglets poignee-glisser"
+          onPointerDown={poignee.onPointerDown}
+          onPointerMove={poignee.onPointerMove}
+          onPointerUp={poignee.onPointerUp}
+          onPointerCancel={poignee.onPointerCancel}
+        >
+          {chronologie}
+        </div>
+        <span className="deroule-recit">{titreEtape(etapeLue)}</span>
+        {etapeLue.bilan.length === 0 ? (
+          <span className="deroule-bulle-compteur">{texteBilanVide()}</span>
+        ) : (
+          <div className="deroule-bulle-colonnes">
+            {colonne(t('Menaces posées'), menaces)}
+            {colonne(t('Dégâts subis'), coups)}
+          </div>
+        )}
+        {estSpectateur() ? null : (
+          <span className="deroule-rond-rangee">
+            {index > 0 ? (
+              <button
+                type="button"
+                className="deroule-rond-retour"
+                onClick={reculer}
+                aria-label={t('Précédent')}
+                title={t('Précédent')}
+              >
+                <span aria-hidden="true">‹</span>
+              </button>
+            ) : null}
+            <button type="button" className="deroule-rond" onClick={avancer}>
+              {t('Terminer la phase')}
+              <kbd className="deroule-rond-touche">{t('Espace')}</kbd>
+            </button>
+          </span>
+        )}
+        {enAttente ? (
+          <span className="deroule-rond-mention" aria-live="polite">
+            {texteAttente({ autreJoueur: attendUnAutreJoueur, nom: nomJoueurAttendu })}
+          </span>
+        ) : null}
+      </div>
+    )
+  }
+
   if (surTable && etape.temps !== 'bilan' && (!defaiteLocale || fatalAMontrerSurTable)) {
     return enveloppe(
       <div
         ref={setElCartouche}
-        className="deroule-rond-place"
-        style={styleCartouche}
+        className={`deroule-rond-place deroule-bulle-table${classeTelephone}${bulleFantome ? ' est-fantome' : ''}`}
+        style={styleBulle}
       >
         {loupe}
+        {/* La frise en onglets biseautes, et la poignee pour deplacer la bulle. */}
+        <div
+          className="deroule-bulle-onglets poignee-glisser"
+          onPointerDown={poignee.onPointerDown}
+          onPointerMove={poignee.onPointerMove}
+          onPointerUp={poignee.onPointerUp}
+          onPointerCancel={poignee.onPointerCancel}
+        >
+          {chronologie}
+        </div>
+        <button
+          type="button"
+          className="deroule-bulle-aide-bouton"
+          onClick={() => (aideTable ? fermerAideTable() : setAideTable(true))}
+          aria-label={t('Aide')}
+          aria-expanded={aideTable}
+          title={t('Aide')}
+        >
+          ?
+        </button>
+        {aideTable ? (
+          <span className="deroule-bulle-aide" role="note">
+            <span>{t('Déplace la bulle en tirant ses onglets.')}</span>
+            <span>{t('Survole une carte : la bulle s’efface pour la laisser voir.')}</span>
+            <span>{t('Suivant ou Espace avance, ← revient, Échap passe toute la phase.')}</span>
+            <button type="button" className="bh-bouton" onClick={fermerAideTable}>
+              {t('Compris')}
+            </button>
+          </span>
+        ) : null}
         {/* ⚠ CE QUI VIENT DE SE PASSER, EN UNE LIGNE. L'utilisateur, apres avoir
             vu le bouton seul : « est-ce que c'est possible de mettre ce qu'il
             s'est passe ? Je ne sais pas exactement si tu vois bien ce que je
@@ -2188,10 +2515,33 @@ export function DeroulePhase({
           {phraseSurvolable(phraseEtape)}
           {recit.texte ? <b className="deroule-recit-nombre">{recit.texte}</b> : null}
         </span>
+        {/* v3 (10/10/2026) : le detail sous la phrase. Compteur des sbires,
+            fil d'Ariane, calcul en pastilles (Q10, Q15), avant → apres,
+            effets ★ et alerte de menace (Q16). */}
+        {rang ? (
+          <span className="deroule-bulle-rang">
+            {(etape.temps === 'sbires' ? t('Sbire %1 / %2') : t('%1 sur %2'))
+              .replace('%1', String(rang.rang))
+              .replace('%2', String(rang.total))}
+          </span>
+        ) : null}
+        {chaineTexte || surtitreEtape(etapeLue) ? (
+          <span className="deroule-bulle-ariane">{chaineTexte || surtitreEtape(etapeLue)}</span>
+        ) : null}
+        {calculBulle}
+        {compteur ? <span className="deroule-bulle-compteur">{compteur}</span> : null}
+        {lignesEtoileBoost({ ...etapeLue, boosts: etapeLue.boosts.slice(0, boostsMontres) }).map((ligne) => (
+          <span key={ligne} className="deroule-bulle-etoile">{ligne}</span>
+        ))}
+        {alerte ? (
+          <span className="deroule-bulle-alerte" role="status">
+            {t('Attention : %1 / %2 menaces').replace('%1', String(alerte.restant)).replace('%2', String(alerte.plafond))}
+          </span>
+        ) : null}
         {/* ⚠ PAS DE BOUTON SUR L'ETAPE D'UN AUTRE JOUEUR : elle passe toute
             seule. En montrer un laisserait croire qu'on tient le rythme, alors
             que le moteur attend l'autre siege. */}
-        {viseUnAutreJoueur ? null : (
+        {viseUnAutreJoueur || estSpectateur() ? null : (
         <span className="deroule-rond-rangee">
           {/* ⚠ LA FLECHE RETOUR, choisie par l'utilisateur (14/09/2026) : « oui,
               une petite fleche a cote ». A COTE, donc, et pas au-dessus : elle
@@ -2219,7 +2569,7 @@ export function DeroulePhase({
             // ⚠ SUR UN COUP FATAL, CE BOUTON N'AVANCE PAS : il fait paraitre le
             // panneau, qui demandera ensuite le droit de reprendre la partie.
             // Avancer ici sauterait la fin de la partie du joueur.
-            onClick={fatalAMontrerSurTable ? () => setCoupFatalVuSurTable(true) : avancer}
+            onClick={fatalAMontrerSurTable ? () => setCoupFatalVuSurTable(true) : avancerSurTable}
             // Le texte de l'etape n'est PAS perdu : il devient le nom accessible
             // du bouton et son infobulle. Un lecteur d'ecran l'annonce, et le
             // survol le rend a qui le cherche.
@@ -2227,9 +2577,28 @@ export function DeroulePhase({
             title={titreEtape(etapeLue)}
           >
             {t('Suivant')}
+            <kbd className="deroule-rond-touche">{t('Espace')}</kbd>
           </button>
         </span>
         )}
+        {confirmerPasser && !passerTout ? (
+          <span className="deroule-bulle-confirmer" role="alertdialog" aria-label={t('Passer toute la phase ?')}>
+            {t('Passer toute la phase ?')}
+            <button
+              type="button"
+              className="bh-bouton"
+              onClick={() => {
+                setConfirmerPasser(false)
+                setPasserTout(true)
+              }}
+            >
+              {t('Tout passer')}
+            </button>
+            <button type="button" className="bh-bouton" onClick={() => setConfirmerPasser(false)}>
+              {t('Annuler')}
+            </button>
+          </span>
+        ) : null}
         {/* Les deux seules mentions qui survivent : « la suite arrive » quand on
             attend le moteur ou un autre joueur, et le filet anti-blocage qui va
             jouer. Toutes deux disent pourquoi RIEN NE SE PASSE ; sans elles, le

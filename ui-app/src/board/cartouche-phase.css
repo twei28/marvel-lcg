@@ -1274,3 +1274,21 @@ html[data-affichage='sobre'] .deroule-phase.est-scene.est-hors-phase .deroule-ba
 html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-chaine-annulee {
   color: #b08a8a;
 }
+
+/* Le recap en mots sous la bande de PV ou de menace d'une carte (« 3 menaces »). */
+.deroule-phase.est-scene .deroule-recap {
+  margin-top: 2px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: #fff;
+}
+
+/* « menaces retirées » : la manigance s'est vidée en atteignant son seuil. */
+.deroule-phase.est-scene .deroule-resultat-note {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(248, 250, 252, 0.8);
+}

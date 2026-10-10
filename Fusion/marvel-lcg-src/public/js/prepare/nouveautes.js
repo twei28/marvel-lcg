@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-10",
+        genre: "jeu",
+        fr: "Phase du méchant « Sur la table » refaite. Une bulle déplaçable porte les onglets de la phase, le calcul en pastilles et un gros bouton Suivant (touche Espace). Elle s'efface quand tu survoles une carte. La carte qui agit s'allume, la carte touchée montre sa jauge qui bouge et le nombre qui s'envole. Les boosts se retournent un par clic, la question de défense se pose dans la bulle, et le bilan se lit sur deux colonnes.",
+        en: "The On the table villain phase is redone. A movable bubble holds the phase tabs, the calculation as badges and a big Next button (Space key). It fades when you hover a card. The acting card lights up, the card that is hit shows its gauge moving and the number flying off. Boosts flip one click at a time, the defense question is asked in the bubble, and the summary reads in two columns.",
+    },
+    {
+        date: "2026-10-10",
         genre: "correction",
         fr: "Storm : Torrential Rain permet de répartir ses 3 menaces entre plusieurs manigances, et Flash Freeze donne aussi -3 ATQ aux sbires qui s'engagent avec toi plus tard dans la phase.",
         en: "Storm: Torrential Rain lets you split its 3 threat among several schemes, and Flash Freeze also gives -3 ATK to minions that engage you later in the phase.",

@@ -1,0 +1,119 @@
+/* La nouvelle phase du méchant (essai) SUR TELEPHONE, decisions du 09/10/2026
+   (question 35) : feuille basse d'environ 70 % de la hauteur, reductible, fil
+   vertical, Continuer pleine largeur. Memes contenus que sur PC
+   (cartouche-essai.css) : seule la mise en page change ici.
+
+   Le cartouche se glisse a la souris sur PC (`translate` en style en ligne,
+   DeroulePhase.tsx) : sur telephone il reste colle au bas, d'ou les
+   `!important` sur la position. */
+@media (max-width: 767px) {
+  .deroule-phase.est-scene.est-essai {
+    --grande-h: min(30dvh, 210px);
+    --vignette-h: min(20dvh, 132px);
+    position: fixed;
+    inset: auto 0 0 0;
+    margin: 0;
+    width: 100%;
+    min-height: 0;
+    height: 70dvh;
+    max-height: 70dvh;
+    translate: none !important;
+    transform: none !important;
+    box-sizing: border-box;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-radius: 14px 14px 0 0;
+    overflow: hidden;
+    cursor: auto;
+    gap: 8px;
+  }
+
+  /* Reduit : il ne reste que la ligne du haut, collee au bas de l'ecran. */
+  .deroule-phase.est-scene.est-essai.est-reduit {
+    height: auto;
+  }
+
+  .deroule-phase.est-scene.est-essai .deroule-corps {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Le fil, de haut en bas. */
+  .deroule-phase.est-scene.est-essai .deroule-chaine {
+    --vignette-h: 64px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .deroule-phase.est-scene.est-essai .deroule-chaine-lien {
+    max-width: none;
+    white-space: normal;
+    text-align: center;
+  }
+
+  /* Le calcul : les cartes passent a la ligne plutot que de deborder. */
+  .deroule-phase.est-scene.est-essai .deroule-rangee,
+  .deroule-phase.est-scene.est-essai .deroule-rangee.essai-calcul,
+  .deroule-phase.est-scene.est-essai .essai-calcul .deroule-rangee-cartes {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+  }
+
+  /* Les choix de defense : meme taille, l'un sous l'autre. */
+  .deroule-phase.est-scene.est-essai .essai-choix-defense {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .deroule-phase.est-scene.est-essai .essai-choix {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .deroule-phase.est-scene.est-essai .deroule-boutons {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .deroule-phase.est-scene.est-essai .deroule-mentions {
+    flex: 1 1 100%;
+  }
+
+  .deroule-phase.est-scene.est-essai .deroule-suivant,
+  .deroule-phase.est-scene.est-essai .bh-bouton[data-refus] {
+    flex: 1 1 100%;
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .deroule-phase.est-scene.est-essai .essai-reduire {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* La ligne du titre : les outils (compteur, Reduire) passent dessous plutot
+     que d'ecraser le titre a 0 px de large (il s'etirait alors sur 780 px). */
+  .deroule-phase.est-scene.est-essai .essai-titre-ligne {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .deroule-phase.est-scene.est-essai .essai-titre-ligne .deroule-titre-court {
+    flex: 1 1 60%;
+    min-width: 60%;
+  }
+
+  .deroule-phase.est-scene.est-essai .essai-outils {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  .deroule-phase.est-scene.est-essai .essai-compteur {
+    min-width: 0;
+    white-space: normal;
+  }
+}

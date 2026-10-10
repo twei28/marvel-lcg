@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { lignesCompactes } from './journal-compact'
+import { avecEtapesDuMechant, lignesCompactes, type LigneJournal } from './journal-compact'
 import type { EntreeHistorique } from './HistoriquePartie'
 
 const e = (cle: string, round: number, type: EntreeHistorique['type'], titre: string, detail?: string): EntreeHistorique =>
@@ -86,5 +86,26 @@ describe('le journal compact de la console', () => {
       e('1', 1, 'text', 'Rhino révélée'),
     ])
     expect(lignes.filter((l) => l.genre === 'fait').map((l) => (l.genre === 'fait' ? l.texte : ''))).toEqual(['Rhino révélée'])
+  })
+})
+
+describe('« Sur la table » v3 (Q45) : une ligne par étape de la phase du méchant', () => {
+  const lignes: LigneJournal[] = [
+    { genre: 'round', cle: 'r2', round: 2 },
+    { genre: 'phase', cle: 'pm', famille: 'mechant' },
+    { genre: 'fait', cle: 'f1', texte: 'Ultron s’apprête à infliger 2 dégât(s)', type: 'text', famille: 'mechant', cartes: [] },
+    { genre: 'fait', cle: 'f2', texte: 'Shuri perd 2♡', type: 'text', famille: 'mechant', cartes: [] },
+    { genre: 'phase', cle: 'pj', famille: 'joueurs' },
+    { genre: 'fait', cle: 'f3', texte: 'Shuri joue Énergie', type: 'card', famille: 'joueurs', cartes: [] },
+  ]
+
+  it('le détail du moteur cède la place aux phrases des étapes', () => {
+    const sortie = avecEtapesDuMechant(lignes, (round) => (round === 2 ? ['Ultron attaque Shuri : 2 dégâts'] : undefined))
+    const textes = sortie.filter((l) => l.genre === 'fait').map((l) => (l.genre === 'fait' ? l.texte : ''))
+    expect(textes).toEqual(['Ultron attaque Shuri : 2 dégâts', 'Shuri joue Énergie'])
+  })
+
+  it('un round sans étapes connues garde son détail', () => {
+    expect(avecEtapesDuMechant(lignes, () => [])).toEqual(lignes)
   })
 })

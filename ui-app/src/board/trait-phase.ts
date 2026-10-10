@@ -134,3 +134,43 @@ function surLeBord(
   const t = Math.min(tx, ty)
   return { x: centre.x + dx * t, y: centre.y + dy * t }
 }
+
+/**
+ * CE QUE LA CARTE TOUCHEE MONTRE (v3, 10/10/2026, Q7) : le nombre qui s'envole
+ * (« -3 », « +2 ») et, quand le seuil est connu, l'ancien niveau de sa jauge en
+ * fantome (fraction de 0 a 1). Seulement sur une etape RESOLUE qui a touche une
+ * carte : une annonce n'a encore rien fait.
+ */
+export type DeltaTable = { texte: string; ton: 'degats' | 'menace'; avant?: number }
+
+const borne = (x: number) => Math.min(1, Math.max(0, x))
+
+export function deltaSurTable(etape: EtapeDeroule, pvMax?: number): DeltaTable | undefined {
+  if (etape.etat !== undefined && etape.etat !== 'resolu') return undefined
+  const montant = etape.montant
+  if (montant === undefined || montant === 0 || etape.cibleId === undefined) return undefined
+  const restant = etape.restant
+  if (etape.titre === 'attaque') {
+    const avant = pvMax && restant !== undefined ? borne((restant + montant) / pvMax) : undefined
+    return { texte: `−${montant}`, ton: 'degats', avant }
+  }
+  if (etape.titre === 'manigance' || etape.titre === 'menace') {
+    const plafond = etape.plafond
+    const depart = etape.menaceAvant ?? (restant !== undefined ? restant - montant : undefined)
+    const avant = plafond && depart !== undefined ? borne(depart / plafond) : undefined
+    return { texte: montant > 0 ? `+${montant}` : `−${Math.abs(montant)}`, ton: 'menace', avant }
+  }
+  return undefined
+}
+
+/**
+ * L'ALERTE DE MENACE (v3, Q16) : une manigance a 80 % de son seuil ou plus
+ * apres l'etape. Rend le restant et le seuil, l'appelant redige la phrase.
+ */
+export function alerteMenace(etape: EtapeDeroule): { restant: number; plafond: number } | undefined {
+  if (etape.titre !== 'manigance' && etape.titre !== 'menace') return undefined
+  if (etape.etat !== undefined && etape.etat !== 'resolu') return undefined
+  const { restant, plafond } = etape
+  if (restant === undefined || !plafond) return undefined
+  return restant / plafond >= 0.8 ? { restant, plafond } : undefined
+}

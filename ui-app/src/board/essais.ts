@@ -92,8 +92,9 @@ export function oublierEssais(): void {
  */
 let promessePhase: Promise<boolean> | undefined
 
-export function essaiPhaseMechant(): Promise<boolean> {
+export function essaiPhaseMechant(hote: string = globalThis.location?.hostname ?? ''): Promise<boolean> {
   promessePhase ??= (async () => {
+    if (estHoteLocal(hote)) return true
     try {
       const reponse = await fetch('/get_essais', { cache: 'no-store' })
       if (!reponse.ok) return false

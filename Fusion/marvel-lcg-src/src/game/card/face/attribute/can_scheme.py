@@ -165,6 +165,9 @@ class CanScheme(CardFace):
             boost_apports, boost_cards, value, by_effect,
         )
 
+        # La menace AVANT la pose : une manigance qui atteint son seuil peut se
+        # vider dans la foulee (21099b), `restant` seul ne dit plus d'ou elle partait.
+        menace_avant = getattr(target_scheme, 'threat', None)
         if would_sch_message.remove_threat_instead_of_placing:
             target_scheme.RemoveThreatInternal(this, value, would_sch_message.remove_threat_instead_of_placing)
             value *= - 1
@@ -177,6 +180,7 @@ class CanScheme(CardFace):
                 this, target_scheme, is_base_scheme, boost_apports, value, by_effect,
                 activation_id=annonce_id, boost_cards=boost_cards,
                 cible_annoncee=annonce_cible, base_imprimee=annonce_base,
+                menace_avant=menace_avant,
             )
             # L'intention n'est CONSOMMEE que si un fait resolu a vraiment pris
             # sa place : `JournaliserManigance` a ses propres gardes et sort

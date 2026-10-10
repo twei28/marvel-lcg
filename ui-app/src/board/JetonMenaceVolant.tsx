@@ -94,20 +94,29 @@ export function JetonMenaceVolant({
 
   if (!vol) return null
   const ou = arrive ? vol.arrivee : vol.depart
+  // PLUSIEURS JETONS VISIBLES (v3, Q14) : un par menace posee, jusqu'a six,
+  // partis l'un apres l'autre ; le premier porte le total.
+  const nombre = Math.min(6, Math.max(1, montant ?? 1))
 
   return (
-    <span
-      className={`jeton-menace-volant${arrive ? ' est-arrive' : ''}`}
-      style={{
-        left: `${ou.x}px`,
-        top: `${ou.y}px`,
-        width: `${ou.w}px`,
-        height: `${ou.h}px`,
-        backgroundImage: `url(${jetonMenaceImage})`,
-      }}
-      aria-hidden="true"
-    >
-      {montant !== undefined ? `+${montant}` : ''}
-    </span>
+    <>
+      {Array.from({ length: nombre }, (_, rang) => (
+        <span
+          key={rang}
+          className={`jeton-menace-volant${arrive ? ' est-arrive' : ''}`}
+          style={{
+            left: `${ou.x + (rang % 3) * 8 - 8}px`,
+            top: `${ou.y - Math.floor(rang / 3) * 8}px`,
+            width: `${ou.w}px`,
+            height: `${ou.h}px`,
+            backgroundImage: `url(${jetonMenaceImage})`,
+            transitionDelay: `${rang * 120}ms`,
+          }}
+          aria-hidden="true"
+        >
+          {rang === 0 && montant !== undefined ? `+${montant}` : ''}
+        </span>
+      ))}
+    </>
   )
 }

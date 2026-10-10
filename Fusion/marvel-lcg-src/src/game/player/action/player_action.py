@@ -287,6 +287,9 @@ class PlayerAction:
         for vilain in Worlds.GetAllVillains(world):
             pv[vilain.card.object_id] = (vilain.name, getattr(vilain, 'health', None))
         en_jeu: Dict[int, Tuple[str, str]] = {}
+        # Le heros avec qui chaque sbire est engage (« Sur la table » v3 : le
+        # trait du sbire vers son heros quand il entre en jeu).
+        engages: Dict[int, int] = {}
         for manigance in Worlds.GetAllSideSchemes(world):
             en_jeu[manigance.card.object_id] = (manigance.name, 'manigance')
         for environnement in world.area_environment.Get():
@@ -302,9 +305,11 @@ class PlayerAction:
                 pv[allie.card.object_id] = (allie.name, getattr(allie, 'health', None))
             for sbire in joueur.engaged_minions.Get():
                 en_jeu[sbire.card.object_id] = (sbire.name, 'sbire')
+                if identite is not None:
+                    engages[sbire.card.object_id] = identite.card.object_id
             for environnement in joueur.area_environment.Get():
                 en_jeu[environnement.card.object_id] = (environnement.name, 'environnement')
-        return {'menaces': menaces, 'pv': pv, 'en_jeu': en_jeu}
+        return {'menaces': menaces, 'pv': pv, 'en_jeu': en_jeu, 'engages': engages}
 
     @staticmethod
     def _EffetsDeLaRevelation(avant: 'Dict[str, Any]', world: 'World') -> 'List[Dict[str, Any]]':
@@ -337,7 +342,11 @@ class PlayerAction:
         for object_id, (nom, genre) in apres['en_jeu'].items():
             if object_id in avant['en_jeu']:
                 continue
-            effets.append({'genre': 'entree', 'carte': nom, 'carte_id': object_id, 'type': genre})
+            effet: Dict[str, Any] = {'genre': 'entree', 'carte': nom, 'carte_id': object_id, 'type': genre}
+            vers = apres.get('engages', {}).get(object_id)
+            if vers is not None:
+                effet['engage_avec_id'] = vers
+            effets.append(effet)
         return effets
 
     ################################################################################
