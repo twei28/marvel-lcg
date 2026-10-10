@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-10",
         genre: "jeu",
+        fr: "Sur ordinateur, une action commencée s'annule d'un coup : la touche Échap ou la petite croix de la question remet la partie avant le choix de la carte, même après le paiement.",
+        en: "On a computer, an action you started can be cancelled in one go: Esc or the small cross on the question puts the game back to before you chose the card, even after paying.",
+    },
+    {
+        date: "2026-10-10",
+        genre: "jeu",
         fr: "Sur téléphone, le plateau se joue mieux : touche une carte puis « Jouer », un bandeau « Annuler » après chaque action, la taille du texte, les vibrations et le verrou portrait dans les réglages, et l'écran reste allumé pendant la partie.",
         en: "Better board on phones: tap a card then “Play”, an “Undo” banner after each action, text size, vibrations and portrait lock in the settings, and the screen stays on during the game.",
     },
