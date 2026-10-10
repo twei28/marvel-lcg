@@ -418,6 +418,10 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   [/^Ready your identity$/, () => 'Redresser ton identité'],
   [/^Exhaust your identity$/, () => 'Engager ton identité'],
   [/^Flip to alter-ego form$/, () => 'Passer en forme alter ego'],
+  // Choix « payer un coût » (`ForChoiceAbilityWithCost`, Sonic Boom 01123) : les
+  // jetons [[energy]] restent, ils deviennent des icônes à l'affichage.
+  [/^Spend (\[\[.+)$/, (m) => `Dépenser ${m[1]}`],
+  [/^Exhaust each character you control$/, () => 'Incliner chacun de tes personnages'],
   // « Combien de fois ce choix ? » (player_action.py, `ChooseAbilities(repeat=...)`).
   [/^(\d+) times?$/, (m) => `${m[1]} fois`],
   [/^No repeat$/, () => 'Aucun'],

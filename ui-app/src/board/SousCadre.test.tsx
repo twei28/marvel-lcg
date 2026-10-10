@@ -337,3 +337,17 @@ describe('la confirmation', () => {
     expect(q.interaction.annuler).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('Sonic Boom (capture du n°72) : les choix de coût se lisent', () => {
+  it('« Spend [[energy]][[mental]][[physical]] » devient « Dépenser » et trois icônes ; l’autre choix est traduit', () => {
+    const payer = option(7, 'Spend [[energy]][[mental]][[physical]]', 12)
+    const incliner = option(8, 'Exhaust each character you control', 12)
+    monter(question(demande([payer, incliner], { ability_type: 'Normal', event_name: 'WhenCardRevealed' })))
+    const [b1, b2] = choix()
+    expect(b1?.textContent).toContain('Dépenser')
+    expect(b1?.textContent).not.toContain('[[')
+    expect(b1?.querySelectorAll('i.icone-res')).toHaveLength(3)
+    expect(b1?.getAttribute('aria-label')).not.toContain('[[')
+    expect(b2?.textContent).toContain('Incliner chacun de tes personnages')
+  })
+})

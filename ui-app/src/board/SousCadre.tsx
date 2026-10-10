@@ -25,7 +25,7 @@ import type { ReactNode } from 'react'
 import type { ScanCardProps } from '../components/ScanCard'
 import { ScanCardTraduite } from './traduction-carte'
 import type { Option } from './ask'
-import { avecIcones, coutEnIcones } from './icones-ressources'
+import { avecIcones, coutEnIcones, marquerRessources, ressourcesEnMots } from './icones-ressources'
 import { t } from './langue'
 import { raisonDite } from './phrase-etat'
 import type { CibleVue, QuestionDuMoteur, VignetteOption, VueSousCadre } from './sous-cadre'
@@ -83,7 +83,7 @@ export function BoutonOption({ vignette, choisir }: { vignette: VignetteOption; 
       className={classes.join(' ')}
       data-choix={chiffreClavier(vignette.chiffre)}
       data-option-id={vignette.optionId}
-      aria-label={vignette.nom}
+      aria-label={ressourcesEnMots(vignette.nom)}
       aria-disabled={vignette.indisponible ? true : undefined}
       title={vignette.indisponible ?? vignette.sousTexte}
       onClick={() => {
@@ -104,7 +104,9 @@ export function BoutonOption({ vignette, choisir }: { vignette: VignetteOption; 
           ({vignette.chiffre})
         </span>
       )}
-      <span className={vignette.scan ? 'deroule-legende' : 'deroule-choix-nom'}>{vignette.nom}</span>
+      <span className={vignette.scan ? 'deroule-legende' : 'deroule-choix-nom'}>
+        {avecIcones(marquerRessources(vignette.nom))}
+      </span>
       {vignette.indisponible ? (
         <span className="deroule-raison">{vignette.indisponible}</span>
       ) : vignette.sousTexte ? (

@@ -3,6 +3,7 @@ import { ScanCard, kindLabel, type ScanCardProps } from '../components/ScanCard'
 import { nombreDeRessources, paiementCourant, type Option } from './ask'
 import { classeTonaliteAction } from './action-style'
 import { nomLisible } from './BarreAction'
+import { avecIcones, marquerRessources } from './icones-ressources'
 import type { Catalogue } from './catalogue'
 import { t } from './langue'
 import { nomAffiche } from './noms-cartes-fr'
@@ -650,7 +651,7 @@ export function MenuActionsCarte({
                     onClick={() => choisirOuInformer(option)}
                     onKeyDown={(evenement) => clavierAction(evenement, option)}
                   >
-                    {nom}
+                    {avecIcones(marquerRessources(nom))}
                   </button>
                   {montrerRaison ? (
                     <span className="af-raison">{option.failure_reason}</span>
@@ -743,7 +744,7 @@ export function MenuActionsCarte({
                     onKeyDown={(evenement) => clavierAction(evenement, option)}
                   >
                     <span className="ma-action-principal">
-                      <b>{nom}</b>
+                      <b>{avecIcones(marquerRessources(nom))}</b>
                       {cout ? (
                         <span className="ma-cout">
                           <PipsCout cout={cout} />

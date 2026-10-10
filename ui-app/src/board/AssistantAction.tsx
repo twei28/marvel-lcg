@@ -3,7 +3,7 @@ import type { Demande } from './ask'
 import { classeTonaliteAction } from './action-style'
 import { nomLisible } from './BarreAction'
 import type { Interaction } from './interaction'
-import { avecIcones, coutEnIcones } from './icones-ressources'
+import { avecIcones, coutEnIcones, marquerRessources } from './icones-ressources'
 import { t } from './langue'
 import { consigne, phraseEtat } from './phrase-etat'
 import { usePlacement } from './placement/usePlacement'
@@ -357,7 +357,7 @@ export function AssistantAction({
         onPointerUp={gestesGlisser.onPointerUp}
         onPointerCancel={gestesGlisser.onPointerCancel}
       >
-        <span className="assistant-eyebrow">{nomLisible(interaction.option)}</span>
+        <span className="assistant-eyebrow">{avecIcones(marquerRessources(nomLisible(interaction.option)))}</span>
         <strong>{titre || assistant.titre}</strong>
       </div>
       {assistant.detail ? <span className="assistant-detail">{assistant.detail}</span> : null}
