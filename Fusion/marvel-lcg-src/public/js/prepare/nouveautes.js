@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-10",
+        genre: "correction",
+        fr: "La mise en place suit l'ordre du livret : tu vois la manigance principale avant tout ce qu'elle met en jeu. Dans Tower Defense, les deux manigances apparaissent avant le choix de dégâts de l'Assaillant de l'Ordre Noir.",
+        en: "Setup follows the rulebook order: you see the main scheme before anything it puts into play. In The Tower Defense, both main schemes now appear before the Black Order Besieger damage choice.",
+    },
+    {
+        date: "2026-10-10",
         genre: "jeu",
         fr: "Sur ordinateur, une action commencée s'annule d'un coup : la touche Échap ou la petite croix de la question remet la partie avant le choix de la carte, même après le paiement.",
         en: "On a computer, an action you started can be cancelled in one go: Esc or the small cross on the question puts the game back to before you chose the card, even after paying.",
