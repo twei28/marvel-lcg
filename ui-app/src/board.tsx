@@ -70,6 +70,7 @@ import { EcranTourne } from './board/mobile/EcranTourne'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
 import { CoucheRevelation } from './board/CoucheRevelation'
+import { CoucheMiseEnPlace, useMiseEnPlacePasAPas } from './board/CoucheMiseEnPlace'
 import { CoucheTriche, useTriche } from './board/CoucheTriche'
 import { installerSurvol, SELECTEUR_SURVOL_PLATEAU, useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
@@ -3696,6 +3697,16 @@ export function PagePartie({
     : false
   if (etat.monde && !voile) voileLeve.current = true
 
+  // La mise en place carte par carte (10/10/2026) : chaque carte qui arrive en
+  // jeu se montre en grand, dans l'ordre, et attend « Continuer ». Le panneau
+  // de la manigance attend que la file soit vide pour parler a son tour.
+  const miseEnPlace = useMiseEnPlacePasAPas(etat.monde, {
+    enCours: enMiseEnPlace,
+    voile,
+    // Seulement dans le mode « Étape par étape Bis » (10/10/2026).
+    muet: !sceneCentraleBis || spectateur || estRelecture() || modeManuelDeclare,
+  })
+
   // ⚠ LE SILENCE DE L'OUVERTURE VAUT AUSSI POUR LES SONS. Ce hook est appele
   // AVANT le retour anticipe du voile — les hooks ne se sautent pas — et
   // chaque trame de mise en place portant un `sound_name` etait jouee derriere
@@ -5114,13 +5125,22 @@ export function PagePartie({
           principale, montree en grand pendant que le moteur attend la
           confirmation avant de la retourner (World.ConfirmMainSchemeReveal).
           Le voile ci-dessus garantit que la table est deja montee derriere. */}
-      {priseManigance ? (
+      <CoucheMiseEnPlace
+        etape={miseEnPlace.etape}
+        restantes={miseEnPlace.restantes}
+        suivant={miseEnPlace.suivant}
+        animations={animationsActives}
+      />
+      {priseManigance && !miseEnPlace.etape ? (
         <PanneauManigance
           carte={priseManigance.carte}
           /* Seule la manigance PRINCIPALE se retourne : elle a deux faces
              imprimees et le moteur la retourne. Une annexe n'en a qu'une, elle
-             vient simplement d'entrer en jeu. */
-          retournement={priseManigance.question.name === NOM_OPTION_MANIGANCE}
+             vient simplement d'entrer en jeu. Pendant la mise en place, la
+             face A se montre AVANT ses capacites et le moteur ne la retourne
+             qu'a l'etape 12b : c'est la mise en place pas a pas qui montre
+             alors la face B (10/10/2026). */
+          retournement={priseManigance.question.name === NOM_OPTION_MANIGANCE && !(enMiseEnPlace && etat.monde.confirm_scheme_setup_order === true)}
           versoUrl={autresFacesDe(priseManigance.carte, catalogue)[0]?.url}
           versoCode={autresFacesDe(priseManigance.carte, catalogue)[0]?.code}
           versoType={autresFacesDe(priseManigance.carte, catalogue)[0]?.type}
