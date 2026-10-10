@@ -60,6 +60,8 @@ export type VignetteOption = {
   carteId?: number
   /** `failure_reason` du moteur : l'option se voit, grisee, et dit pourquoi. */
   indisponible?: string
+  /** Defense : la DEF du defenseur et son nom seul, pour le bouton de l'essai. */
+  defense?: { valeur: number; source: string }
 }
 
 export type CibleVue = {
@@ -287,7 +289,11 @@ export function vueSousCadre(
         const source = nomSource(option, q)
         const def = ligneDefense(q.cartesParId.get(option.bind_id), q.nomPorteur)
         const nom = source ? `${t('Défendre avec')} ${source}${def ? ` (${def})` : ''}` : nomLisible(option)
-        return vignetteOption(option, rang + 1, q, nom)
+        const valeur = q.cartesParId.get(option.bind_id)?.info?.defense
+        return {
+          ...vignetteOption(option, rang + 1, q, nom),
+          defense: source && typeof valeur === 'number' ? { valeur, source } : undefined,
+        }
       }),
       autres: options
         .filter((option) => option.name !== 'Defense')

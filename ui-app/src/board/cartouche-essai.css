@@ -3,9 +3,34 @@
    cartouche d'avant reste intact. Décisions : .planning/todos/
    2026-10-09-phase-du-mechant-a-ameliorer.md (50 questions, maquette validée). */
 
-/* La carte en cours plus grande (~250 px, question 12). */
+/* LES CARTES REMPLISSENT LE PANNEAU (decision du 10/10/2026 : « clairement il
+   y a de la place pour afficher les cartes en plus grand »). Le panneau garde sa
+   taille ; la carte en cours vise ~250 px de large et plus si la place le
+   permet. Dans une rangee, la hauteur se plafonne a la fois par la hauteur du
+   panneau et par sa largeur partagee entre ses cartes (`--nb-cartes`, pose par
+   CartouchePhase.tsx), pour que plusieurs cartes ne debordent jamais. */
 .deroule-phase.est-scene.est-essai {
-  --grande-h: clamp(220px, calc(320px * var(--echelle, 1)), 380px);
+  --grande-h: clamp(250px, calc(400px * var(--echelle, 1)), 500px);
+}
+
+.deroule-phase.est-scene.est-essai .deroule-rangee {
+  --plafond-h: calc(330px * var(--echelle, 1));
+  --vignette-h: max(
+    110px,
+    min(
+      var(--plafond-h),
+      calc((var(--carre-l) - 48px - (var(--nb-cartes, 1) - 1) * 52px) / var(--nb-cartes, 1) * 176 / 127)
+    )
+  );
+}
+
+/* Le calcul pose porte pictos et resultat sous ses cartes : un peu moins haut. */
+.deroule-phase.est-scene.est-essai .deroule-rangee.essai-calcul {
+  --plafond-h: calc(260px * var(--echelle, 1));
+}
+
+.deroule-phase.est-scene.est-essai .deroule-rangee .deroule-rangee-cartes {
+  justify-content: center;
 }
 
 /* --- La ligne du haut : le titre, puis compteur de cartes et « Réduire » --- */
@@ -78,13 +103,13 @@
 
 .deroule-phase.est-essai .essai-calcul .deroule-rangee-cartes {
   flex-wrap: nowrap;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
 }
 
 .deroule-phase.est-essai .essai-groupe {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   min-width: 0;
 }
@@ -93,26 +118,98 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 6px;
+  max-width: calc(var(--vignette-h) * 127 / 176 + 24px);
+}
+
+/* L'operateur se pose a mi-hauteur de la carte, pas des pictos dessous. */
+.deroule-phase.est-essai .essai-calcul .essai-operateur,
+.deroule-phase.est-essai .essai-calcul .deroule-vers {
+  align-self: flex-start;
+  margin-top: calc(var(--vignette-h) / 2 - 0.6em);
+}
+
+/* --- Les pictos des caracteristiques (ATQ, MEN, DEF) ------------------------
+   La forme et les couleurs des pastilles des cartes : rouge l'attaque, bleu la
+   manigance, vert la defense ; le chiffre en grand, le sigle dessous. */
+.essai-stat {
+  --stat: #c62828;
+  --stat-sombre: #6d1010;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.6em;
+  padding: 0.2em 0.55em 0.25em;
+  clip-path: polygon(14% 0, 100% 0, 86% 100%, 0 100%);
+  background: linear-gradient(160deg, var(--stat), var(--stat-sombre));
+  color: #fff;
+  line-height: 1;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+.essai-stat b {
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 2.1em;
+  font-weight: 400;
+}
+
+.essai-stat small {
+  font-family: 'Anton', Impact, sans-serif;
+  font-size: 0.72em;
+  letter-spacing: 0.08em;
+}
+
+.essai-stat.est-men {
+  --stat: #1f5fae;
+  --stat-sombre: #0e2e57;
+}
+
+.essai-stat.est-def {
+  --stat: #2e8b3a;
+  --stat-sombre: #124a19;
+}
+
+.deroule-phase.est-essai .essai-terme > .essai-stat {
+  font-size: 1.1rem;
+}
+
+/* --- Les icones de boost, une par icone de la carte ------------------------ */
+.deroule-phase.est-essai .essai-boost-icones {
+  display: flex;
+  justify-content: center;
   gap: 2px;
+  font-family: 'ChampionsIcons';
+  font-size: 2.2rem;
+  line-height: 1;
+  color: #f0b95f;
+  -webkit-text-stroke: 0.04em #3a2808;
+  paint-order: stroke fill;
+}
+
+.deroule-phase.est-essai .essai-boost-icones.est-vide {
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  color: rgba(248, 250, 252, 0.35);
+  -webkit-text-stroke: 0;
+}
+
+/* L'effet ★ d'un boost : un bandeau sous ses icones (l'etape dediee reste). */
+.deroule-phase.est-essai .essai-etoile {
+  display: block;
+  max-width: 100%;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #f0b95f;
+  color: #1a1206;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
 }
 
 /* La legende vide garde sinon une ligne fantome sous la carte. */
 .deroule-phase.est-essai .essai-terme .deroule-vignette::after {
   content: none;
-}
-
-.deroule-phase.est-essai .essai-chiffre {
-  font-family: var(--police-bd, 'Bangers', sans-serif);
-  font-size: 1.7rem;
-  line-height: 1;
-  color: #f8fafc;
-}
-
-.deroule-phase.est-essai .essai-sous {
-  max-width: 10em;
-  font-size: 0.74rem;
-  text-align: center;
-  color: rgba(248, 250, 252, 0.75);
 }
 
 .deroule-phase.est-essai .essai-operateur {
@@ -140,28 +237,22 @@
 
 .deroule-phase.est-essai .essai-boite .deroule-resultat-texte {
   font-family: var(--police-bd, 'Bangers', sans-serif);
-  font-size: 1.6rem;
+  font-size: 1.45rem;
   color: #fff;
-  white-space: nowrap;
+  text-align: center;
 }
 
 .deroule-phase.est-essai .essai-boite .deroule-jauge {
   font-weight: 700;
 }
 
-/* PV ou menace critiques (question 44) : rouge qui bat. */
-.deroule-phase.est-essai .essai-resultat.est-critique .deroule-jauge {
+/* PV ou menace critiques (question 44) : un rouge FIXE, sans pulsation
+   (« ça clignote de partout », 10/10/2026). */
+.deroule-phase.est-essai .essai-boite.est-critique .deroule-jauge {
   padding: 2px 8px;
   border-radius: 6px;
   background: #b91c1c;
   color: #fff;
-  animation: essai-pouls 1.2s ease-in-out infinite;
-}
-
-@keyframes essai-pouls {
-  50% {
-    box-shadow: 0 0 0 6px rgba(220, 38, 38, 0.35);
-  }
 }
 
 /* --- La chaîne : tampon « ANNULÉE » et la carte qui annule (question 7) ---- */
@@ -249,9 +340,32 @@ html[data-affichage='sobre'] .deroule-phase.est-essai .essai-boite {
   background: #3b2d2d;
 }
 
-html[data-affichage='sobre'] .deroule-phase.est-essai .essai-resultat.est-critique .deroule-jauge {
+html[data-affichage='sobre'] .deroule-phase.est-essai .essai-boite.est-critique .deroule-jauge {
   background: #5c3f3f;
-  animation: none;
+}
+
+html[data-affichage='sobre'] .essai-stat {
+  --stat: #7a4b48;
+  --stat-sombre: #4a2f2d;
+}
+
+html[data-affichage='sobre'] .essai-stat.est-men {
+  --stat: #4d5d74;
+  --stat-sombre: #2c3646;
+}
+
+html[data-affichage='sobre'] .essai-stat.est-def,
+html[data-affichage='sobre'] .essai-choix.est-defendre {
+  --stat: #5f7354;
+  --stat-sombre: #3a4734;
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-essai .essai-boost-icones:not(.est-vide) {
+  color: #b3a588;
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-essai .essai-etoile {
+  background: #b3a588;
 }
 
 html[data-affichage='sobre'] .deroule-phase.est-essai .essai-tampon {
@@ -269,8 +383,130 @@ html[data-affichage='sobre'] .deroule-phase.est-essai .essai-compteur {
   color: #b3a588;
 }
 
+/* --- Le choix du defenseur : une rangee de boutons de meme taille -----------
+   Decisions du 10/10/2026 : en bas du panneau, a la place de Suivant, un
+   « Défendre avec X » VERT (la couleur du picto DEF) par defenseur, son picto en
+   tete, et « Ne pas défendre » gris neutre, de la meme taille. Les vignettes de
+   la rangee restent cliquables, sans leur legende (le bouton la dit). */
+.deroule-phase.est-essai .deroule-rangee .est-choix .deroule-legende {
+  display: none;
+}
+
+.deroule-phase.est-essai .essai-choix-defense {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+}
+
+.deroule-phase.est-essai .essai-choix {
+  --stat: #2e8b3a;
+  --stat-sombre: #124a19;
+  --coin: 12px;
+  flex: 1 1 0;
+  min-width: min(260px, 100%);
+  min-height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 18px;
+  border: 0;
+  clip-path: polygon(
+    var(--coin) 0,
+    100% 0,
+    100% calc(100% - var(--coin)),
+    calc(100% - var(--coin)) 100%,
+    0 100%,
+    0 var(--coin)
+  );
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 1.45rem;
+  letter-spacing: 0.04em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: #fff;
+  cursor: pointer;
+}
+
+.deroule-phase.est-essai .essai-choix.est-defendre {
+  background: linear-gradient(160deg, var(--stat), var(--stat-sombre));
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.deroule-phase.est-essai .essai-choix.est-refus {
+  background: #4b5563;
+  box-shadow: inset 0 0 0 2px rgba(203, 213, 225, 0.35);
+}
+
+.deroule-phase.est-essai .essai-choix:hover,
+.deroule-phase.est-essai .essai-choix:focus-visible {
+  filter: brightness(1.15);
+}
+
+.deroule-phase.est-essai .essai-choix[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Le picto DEF dans le bouton : plus petit, avec un liseré pour le detacher. */
+.deroule-phase.est-essai .essai-choix .essai-stat {
+  flex: none;
+  font-size: 0.85rem;
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+/* --- PLUS AUCUNE BOUCLE pendant l'essai (« ça clignote de partout », 10/10/2026)
+   Pastille d'attente, alerte des cartes en danger, cible designee, trait qui
+   defile, Fin du tour, « Voir la table » : leur etat fixe reste, le mouvement
+   s'arrete. `html.essai-phase-mechant` est pose par board.tsx quand l'essai est
+   ouvert pour ce compte. */
+html.essai-phase-mechant .deroule-phase .deroule-pulse,
+html.essai-phase-mechant .scan-card.a-alerte-douce .scan-frame,
+html.essai-phase-mechant .scan-card.a-alerte-forte .scan-frame,
+html.essai-phase-mechant .trait-phase-ligne,
+html.essai-phase-mechant .bh-voir-table.est-actif,
+html.essai-phase-mechant .bouton-fin-tour.est-suggere,
+html.essai-phase-mechant .bh-fin-tour.est-suggere,
+html.essai-phase-mechant .ligne-cible {
+  animation: none !important;
+}
+
+/* --- Le halo des cartes designees sur le plateau (decision du 10/10/2026) ---
+   L'anneau dore de 13 px et sa lueur de 42 px (`.is-target-pulse`,
+   ScanCard.css) dessinaient des carres autour des sbires. Pendant l'essai : un
+   contour FIN, arrondi comme la carte, qui s'eteint en une seconde, une seule
+   fois. Le reste de l'ombre est celui d'une carte au repos. */
+html.essai-phase-mechant .scan-card.is-target-pulse .scan-frame {
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.72),
+    0 0 0 5px rgba(255, 255, 255, 0.1),
+    0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
+    0 0 11px 2px var(--camp-glow, transparent),
+    0 18px 32px rgba(0, 0, 0, 0.52);
+  outline: 2px solid transparent;
+  outline-offset: 5px;
+  animation: essai-contour-entree 1s ease-out 1 !important;
+}
+
+@keyframes essai-contour-entree {
+  from {
+    outline-color: rgba(240, 185, 95, 0.95);
+  }
+  to {
+    outline-color: transparent;
+  }
+}
+
+html[data-affichage='sobre'].essai-phase-mechant .scan-card.is-target-pulse .scan-frame,
+body.plateau-sans-animations .scan-card.is-target-pulse .scan-frame {
+  animation: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .deroule-phase.est-essai .essai-resultat.est-critique .deroule-jauge {
-    animation: none;
+  html.essai-phase-mechant .scan-card.is-target-pulse .scan-frame {
+    animation: none !important;
   }
 }

@@ -55,6 +55,7 @@ import { t } from './langue'
 import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import { vueSousCadre, type QuestionDuMoteur, type VueSousCadre } from './sous-cadre'
 import { BoutonOption, CarteNue, optionDe, SousCadre } from './SousCadre'
+import { avecIcones, marquerRessources } from './icones-ressources'
 import {
   compteurDesRevelations,
   herosViseDe,
@@ -204,6 +205,7 @@ function Rangee({
   choix,
   fin,
   attente = false,
+  nbChoix = 0,
 }: {
   rangee: VueRangee
   grisee: boolean
@@ -212,6 +214,8 @@ function Rangee({
   /** Ce qui ferme la rangee : « Black Panther choisit… » (D28). */
   fin?: ReactNode
   attente?: boolean
+  /** Le nombre de cartes que `choix` pose (la taille des vignettes en depend). */
+  nbChoix?: number
 }) {
   const jauge = texteJauge(rangee.resultat?.jauge)
   const classes = ['deroule-rangee']
@@ -220,7 +224,11 @@ function Rangee({
   if (attente) classes.push('est-attente')
   const vise = rangee.defenseur !== undefined || rangee.cibles.length > 0
   return (
-    <div className={classes.join(' ')} aria-hidden={grisee || undefined}>
+    <div
+      className={classes.join(' ')}
+      aria-hidden={grisee || undefined}
+      style={{ '--nb-cartes': Math.max(1, nombreDeCartes(rangee) + nbChoix) } as CSSProperties}
+    >
       <div className="deroule-rangee-cartes">
         {rangee.acteur ? <VignetteVue vignette={rangee.acteur} /> : null}
         {rangee.boosts.map((boost) => (
@@ -262,60 +270,131 @@ function Rangee({
   )
 }
 
-/** Un chiffre sous une vignette du calcul pose, ou rien. */
-function Chiffre({ valeur }: { valeur: number | undefined }) {
-  return valeur === undefined ? null : <span className="essai-chiffre">{valeur}</span>
+/** Les cartes qu'une rangee pose cote a cote (la taille des vignettes en depend). */
+function nombreDeCartes(rangee: VueRangee): number {
+  return (
+    (rangee.acteur ? 1 : 0) + rangee.boosts.length + (rangee.defenseur ? 1 : 0) + (rangee.defenseur ? 0 : rangee.cibles.length)
+  )
 }
 
 /**
- * LE CALCUL POSE DE L'ESSAI (questions 9, 41 et 42) : « Klaw 1 + Sonic Boom 0 +
- * Melter 0 − Storm 0 = 1 », chaque chiffre sous sa carte, le resultat en gros
- * dans sa boite. Seulement quand la rangee porte ses chiffres (`pose`).
+ * LE PICTO D'UNE CARACTERISTIQUE (essai, decisions du 10/10/2026) : ATQ et MEN
+ * de l'acteur, DEF du defenseur, le chiffre en grand dedans. Les couleurs sont
+ * celles des cartes : rouge pour l'attaque, bleu pour la manigance, vert pour
+ * la defense.
+ */
+export function PictoStat({ genre, valeur }: { genre: 'atq' | 'men' | 'def'; valeur: number | undefined }) {
+  if (valeur === undefined) return null
+  const sigle = genre === 'atq' ? t('ATQ') : genre === 'men' ? t('MEN') : t('DÉF')
+  return (
+    <span className={`essai-stat est-${genre}`} role="img" aria-label={`${sigle} ${valeur}`}>
+      <b>{valeur}</b>
+      <small>{sigle}</small>
+    </span>
+  )
+}
+
+/** Les icones de boost d'une carte, une par icone ; aucune : un « 0 » grise. */
+function IconesBoost({ nombre }: { nombre: number }) {
+  if (nombre <= 0)
+    return (
+      <span className="essai-boost-icones est-vide" role="img" aria-label={t('Aucune icône de boost')}>
+        0
+      </span>
+    )
+  return (
+    <span
+      className="essai-boost-icones"
+      role="img"
+      aria-label={t('%1 icône(s) de boost').replace('%1', String(nombre))}
+    >
+      {Array.from({ length: nombre }, (_, i) => (
+        <span key={i} className="essai-boost-icone" aria-hidden="true">
+          B
+        </span>
+      ))}
+    </span>
+  )
+}
+
+/** Le resultat (« 2 dégâts subis », jauge avant → apres), sous la carte qui le subit. */
+function ResultatEssai({ rangee }: { rangee: VueRangee }) {
+  const pose = rangee.pose
+  if (rangee.resultat) {
+    const jauge = texteJauge(rangee.resultat.jauge)
+    const critique = pose ? jaugeCritique(rangee.resultat.jauge, pose.jauge) : false
+    return (
+      <span className={`essai-boite${critique ? ' est-critique' : ''}`}>
+        <strong className="deroule-resultat-texte">{rangee.resultat.texte}</strong>
+        {jauge ? <span className="deroule-jauge">{jauge}</span> : null}
+      </span>
+    )
+  }
+  if (rangee.total)
+    return (
+      <span className="essai-boite">
+        <strong className="deroule-resultat-texte">{rangee.total.texte}</strong>
+      </span>
+    )
+  return null
+}
+
+/**
+ * LE CALCUL POSE DE L'ESSAI (decisions du 10/10/2026) : sous l'acteur le picto
+ * de la caracteristique utilisee (ATQ ou MEN), sous chaque boost ses icones,
+ * sous le defenseur son picto DEF ; le resultat sous la carte qui le subit.
+ * Le calcul se lit sans un mot : [ATQ] + [boosts] − [DEF].
  */
 function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean }) {
   const pose = rangee.pose
   const classes = ['deroule-rangee', 'essai-calcul']
   if (rangee.annulee) classes.push('est-annulee')
   if (grisee) classes.push('est-grisee')
-  const jauge = texteJauge(rangee.resultat?.jauge)
-  // Le chiffre se dit SOUS la carte : la legende (« ATQ 1 », « +0 ★ ») ferait
-  // doublon avec lui.
+  // La legende (« ATQ 1 », « +0 ★ ») ferait doublon avec les pictos.
   const nue = (vignette: Vignette): Vignette => ({ ...vignette, legende: undefined })
   const operateur = (signe: string) => (
     <span className="essai-operateur" aria-hidden="true">
       {signe}
     </span>
   )
+  // Une ligne « ★ » par boost etoile, dans l'ordre : chacune sous SON boost.
+  const etoiles = [...rangee.lignesEtoile]
+  const statActeur = pose?.jauge === 'menace' ? 'men' : 'atq'
+  const resultat = <ResultatEssai rangee={rangee} />
+  const cible = rangee.defenseur ?? (rangee.cibles.length === 1 ? rangee.cibles[0] : undefined)
   return (
-    <div className={classes.join(' ')} aria-hidden={grisee || undefined}>
+    <div
+      className={classes.join(' ')}
+      aria-hidden={grisee || undefined}
+      style={{ '--nb-cartes': Math.max(1, nombreDeCartes(rangee)) } as CSSProperties}
+    >
       <div className="deroule-rangee-cartes">
         {rangee.acteur ? (
           <span className="essai-terme">
             <VignetteVue vignette={nue(rangee.acteur)} />
-            <Chiffre valeur={pose?.base} />
-            <small className="essai-sous">{rangee.acteur.legende}</small>
+            <PictoStat genre={statActeur} valeur={pose?.base} />
           </span>
         ) : null}
-        {rangee.boosts.map((boost, rang) => (
-          <span key={boost.cle} className="essai-groupe">
-            {operateur('+')}
-            <span className="essai-terme">
-              <VignetteVue vignette={nue(boost)} />
-              <Chiffre valeur={boost.apport} />
-              <small className="essai-sous">
-                {t('Boost %1').replace('%1', String(rang + 1))}
-                {boost.etoile ? ' ★' : ''}
-              </small>
+        {rangee.boosts.map((boost) => {
+          const ligne = boost.etoile ? etoiles.shift() : undefined
+          return (
+            <span key={boost.cle} className="essai-groupe">
+              {operateur('+')}
+              <span className="essai-terme">
+                <VignetteVue vignette={nue(boost)} />
+                <IconesBoost nombre={boost.apport} />
+                {boost.etoile ? <small className="essai-etoile">{ligne ?? '★'}</small> : null}
+              </span>
             </span>
-          </span>
-        ))}
+          )
+        })}
         {rangee.defenseur ? (
           <span className="essai-groupe">
             {operateur('−')}
             <span className="essai-terme">
               <VignetteVue vignette={nue(rangee.defenseur)} />
-              <Chiffre valeur={pose?.defense} />
-              <small className="essai-sous">{rangee.defenseur.legende}</small>
+              <PictoStat genre="def" valeur={pose?.defense} />
+              {resultat}
             </span>
           </span>
         ) : rangee.cibles.length > 0 ? (
@@ -323,39 +402,22 @@ function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
             <span className="deroule-vers" aria-hidden="true">
               →
             </span>
-            {rangee.cibles.map((cible) => (
-              <span key={cible.cle} className="essai-terme">
-                <VignetteVue vignette={nue(cible)} />
+            {rangee.cibles.map((c) => (
+              <span key={c.cle} className="essai-terme">
+                <VignetteVue vignette={nue(c)} />
+                {cible === c ? resultat : null}
               </span>
             ))}
           </span>
         ) : null}
-        {rangee.resultat ? (
-          <span
-            className={`essai-groupe essai-resultat${
-              pose && jaugeCritique(rangee.resultat.jauge, pose.jauge) ? ' est-critique' : ''
-            }`}
-          >
-            {operateur('=')}
-            <span className="essai-boite">
-              <strong className="deroule-resultat-texte">{rangee.resultat.texte}</strong>
-              {jauge ? <span className="deroule-jauge">{jauge}</span> : null}
-            </span>
-          </span>
-        ) : rangee.total ? (
-          <span className="essai-groupe essai-resultat">
-            <span className="essai-boite">
-              <strong className="deroule-resultat-texte">{rangee.total.texte}</strong>
-            </span>
-          </span>
-        ) : null}
+        {!cible ? <span className="essai-groupe essai-resultat">{resultat}</span> : null}
         {rangee.annulee ? (
           <strong className="deroule-annulee-cause">
             {rangee.annulee.cause ? `${t('Annulée')} · ${rangee.annulee.cause}` : t('Annulée')}
           </strong>
         ) : null}
       </div>
-      {rangee.lignesEtoile.map((ligne) => (
+      {etoiles.map((ligne) => (
         <p key={ligne} className="deroule-etoile">
           {ligne}
         </p>
@@ -924,6 +986,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
       <Rangee
         rangee={defenseVue}
         grisee={false}
+        nbChoix={vueQ.defenseurs.length + vueQ.autres.length}
         choix={
           <>
             <span className="deroule-vers" aria-hidden="true">
@@ -999,6 +1062,42 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   } else if (vueQ?.genre === 'choix-carte' && corpsRevele && vueQ.refus) {
     refus = { libelle: vueQ.refus }
   }
+
+  // L'ESSAI (decisions du 10/10/2026) : pendant le choix du defenseur, une
+  // rangee de boutons de meme taille en bas du panneau, un « Défendre avec X »
+  // vert par defenseur (son picto DEF en tete) et « Ne pas défendre » gris.
+  const choixDefense =
+    essai && q && vueQ?.genre === 'defense' ? (
+      <div className="essai-choix-defense" role="group" aria-label={t('Défendre ?')}>
+        {vueQ.defenseurs.map((choix) => (
+          <button
+            key={choix.optionId}
+            type="button"
+            className="essai-choix est-defendre"
+            data-option-id={choix.optionId}
+            aria-disabled={choix.indisponible ? true : undefined}
+            title={choix.indisponible ?? choix.nom}
+            onClick={() => {
+              if (!choix.indisponible) choisir(choix.optionId)
+            }}
+          >
+            {choix.defense ? <PictoStat genre="def" valeur={choix.defense.valeur} /> : null}
+            <span>{choix.defense ? `${t('Défendre avec')} ${choix.defense.source}` : avecIcones(marquerRessources(choix.nom))}</span>
+          </button>
+        ))}
+        {refus ? (
+          <button
+            type="button"
+            className="essai-choix est-refus"
+            data-refus=""
+            title={refus.titre}
+            onClick={q.interaction.annuler}
+          >
+            <span>{refus.libelle}</span>
+          </button>
+        ) : null}
+      </div>
+    ) : null
 
   // Le titre court dit l'attaque meme quand l'etape lue est en retard sur la
   // question de defense (elle arrive avant que l'annonce soit lue).
@@ -1104,6 +1203,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
           <div className="deroule-sous-cadre est-provisoire">{question}</div>
         ) : null}
       </div>
+      {choixDefense}
       <div className="deroule-boutons">
         <span className="deroule-mentions">
           {/* Le joueur a la main : on le dit, et JAMAIS « La suite arrive… »,
@@ -1138,7 +1238,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
           {props.defaiteLocale ? <span className="deroule-arret">{texteArretDefaite()}</span> : null}
           {props.tempsParDecision > 0 ? <span className="deroule-timeout">{texteTempsParDecision()}</span> : null}
         </span>
-        {refus ? (
+        {refus && !choixDefense ? (
           <button
             type="button"
             className="bh-bouton"

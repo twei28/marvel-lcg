@@ -684,6 +684,37 @@ describe('etat 1 : la question de defense, dans la rangee (D7, D37)', () => {
   })
 })
 
+describe('essai : le choix du defenseur en boutons de meme taille (10/10/2026)', () => {
+  function etat1Essai() {
+    const q = questionMoteur(demandeMoteur([defenseSM, defenseBW, sensAraignee]), { ligneSansDefense: 'ATQ 2 + 1 carte boost' })
+    monter({ etapes: [annonce], index: 0, questionAuJoueur: true, questionDuMoteur: q, essai: true })
+    return q
+  }
+
+  it('un bouton vert « Défendre avec X » par defenseur, son picto DEF en tete, puis « Ne pas défendre »', () => {
+    etat1Essai()
+    const rangee = document.querySelector('.essai-choix-defense')!
+    const boutons = [...rangee.querySelectorAll<HTMLButtonElement>('button.essai-choix')]
+    expect(boutons.map((b) => [b.classList.contains('est-defendre'), b.textContent])).toEqual([
+      [true, '3DÉFDéfendre avec Spider-Man'],
+      [true, '1DÉFDéfendre avec Black Widow'],
+      [false, 'Ne pas défendre (ATQ 2 + 1 carte boost)'],
+    ])
+    expect(boutons[0]?.querySelector('.essai-stat.est-def')?.getAttribute('aria-label')).toBe('DÉF 3')
+    // Plus de petit refus a part : un seul « Ne pas défendre », dans la rangee.
+    expect(refusDuCartouche()).toBeNull()
+  })
+
+  it('les deux boutons agissent : defendre avec Spider-Man, ou ne pas defendre', () => {
+    const q = etat1Essai()
+    const boutons = [...document.querySelectorAll<HTMLButtonElement>('.essai-choix-defense button')]
+    fireEvent.click(boutons[0]!)
+    expect(q.choisirOption).toHaveBeenCalledWith(defenseSM)
+    fireEvent.click(boutons[2]!)
+    expect(q.interaction.annuler).toHaveBeenCalledTimes(1)
+  })
+})
+
 describe('etat 2 : pendant la defense (D8)', () => {
   const annonceEnrichie: EtapeDeroule = { ...annonce, defenseurId: SPIDER, defenseurNom: 'Spider-Man', defense: 3 }
 
@@ -1125,11 +1156,15 @@ describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
     const calcul = document.querySelector('.essai-calcul')
     expect(calcul).not.toBeNull()
     const operateurs = [...calcul!.querySelectorAll('.essai-operateur')].map((e) => e.textContent)
-    expect(operateurs).toEqual(['+', '+', '='])
-    expect([...calcul!.querySelectorAll('.essai-chiffre')].map((e) => e.textContent)).toEqual(['1', '0', '0'])
-    expect(calcul!.querySelector('.essai-resultat .deroule-resultat-texte')?.textContent).toBe('1 dégât subi')
-    // Spider-Man à 3 PV sur 10 : critique.
-    expect(calcul!.querySelector('.essai-resultat.est-critique')).not.toBeNull()
+    expect(operateurs).toEqual(['+', '+'])
+    // Sous l'acteur, le picto ATQ et sa valeur ; sous chaque boost sans icone, un « 0 » grise.
+    expect(calcul!.querySelector('.essai-stat.est-atq')?.getAttribute('aria-label')).toBe('ATQ 1')
+    expect([...calcul!.querySelectorAll('.essai-boost-icones.est-vide')].map((e) => e.textContent)).toEqual(['0', '0'])
+    // L'effet ★ de chaque boost se lit sous ses icones.
+    expect(calcul!.querySelectorAll('.essai-etoile')).toHaveLength(2)
+    expect(calcul!.querySelector('.essai-boite .deroule-resultat-texte')?.textContent).toBe('1 dégât subi')
+    // Spider-Man à 3 PV sur 10 : critique, en couleur fixe.
+    expect(calcul!.querySelector('.essai-boite.est-critique')).not.toBeNull()
   })
 
   it('les boosts se retournent au clic : « Continuer » montre le suivant sans valider l’étape', () => {

@@ -3513,6 +3513,12 @@ export function PagePartie({
       vivant = false
     }
   }, [])
+  // La racine porte l'essai : sa feuille de style y coupe toute animation en
+  // boucle (cartouche-essai.css).
+  useEffect(() => {
+    document.documentElement.classList.toggle('essai-phase-mechant', phaseEssai)
+    return () => document.documentElement.classList.remove('essai-phase-mechant')
+  }, [phaseEssai])
   /**
    * LE FOND PREND LA COULEUR DU HEROS AFFICHE.
    *
