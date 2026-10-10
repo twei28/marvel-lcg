@@ -20,7 +20,6 @@
 .scan-card[data-surlignage] {
   outline: 5px solid var(--teinte-surlignage);
   outline-offset: 2px;
-  box-shadow: 0 0 18px 6px var(--teinte-surlignage);
 }
 .scan-card[data-surlignage='bleu'] { --teinte-surlignage: #0059d6; }
 .scan-card[data-surlignage='orange'] { --teinte-surlignage: #d68f00; }

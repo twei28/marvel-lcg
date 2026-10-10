@@ -2257,7 +2257,7 @@
 
   .plateau-regardees .scan-card:hover,
   .plateau-regardees .scan-card:focus-visible {
-    --state-glow: rgba(150, 235, 255, 0.6);
+    --lisere: rgba(67, 180, 255, 0.95);
   }
 
   /* Une UNITE = un porteur et ses upgrades glissees derriere lui. L'unite garde
@@ -2574,7 +2574,7 @@
   }
 
   .plateau-scene .scan-card:hover {
-    --state-glow: rgba(150, 235, 255, 0.6);
+    --lisere: rgba(67, 180, 255, 0.95);
   }
 
   /* --- Apercu au survol : grand, fixe, sur le cote droit --------------------
@@ -2904,20 +2904,15 @@
      demande de l'utilisateur). Deux ajouts, tous deux SCOPÉS à cette zone
      pour ne rien changer ailleurs sur le plateau :
 
-     1) Le halo de camp (ScanCard.css, --camp-ring/--camp-glow, deja vert
-        joueur / rouge rencontre) existait deja mais restait discret. Anneau
-        plus epais et pleinement opaque ici seulement — c'est justement la
-        zone qui melange les deux camps, les autres n'en ont pas besoin. */
-  .zone-terrain-combat .scan-card {
-    --camp-epaisseur: 6px;
-  }
+     1) Le liseré de camp (ScanCard.css, --camp-ring, vert joueur / rouge
+        rencontre) pleinement opaque ici seulement : c'est la zone qui melange
+        les deux camps. Meme epaisseur que partout (4 px) et aucun halo flou
+        depuis le 10/10/2026 (« il faut juste le liseré rouge »). */
   .zone-terrain-combat .scan-card.camp-player {
     --camp-ring: rgba(140, 155, 60, 1);
-    --camp-glow: rgba(140, 155, 60, 0.6);
   }
   .zone-terrain-combat .scan-card.camp-encounter {
     --camp-ring: rgba(166, 0, 0, 1);
-    --camp-glow: rgba(166, 0, 0, 0.65);
   }
 
   /* 2) Un trait fin entre deux groupes qui ont chacun au moins une carte
@@ -3166,19 +3161,11 @@
   }
 
   /* Carte de la MAIN choisie (mulligan, defausse de fin de tour) : elle se
-     souleve nettement avec un petit halo bleu, pour lire le choix d'un coup
+     souleve nettement, liseré bleu (state-selected), pour lire le choix d'un coup
      d'oeil. Limite a .zone-main : les cibles sur la table ne bougent pas. */
   .zone-main .scan-card.state-selected {
     transform: translateY(-22px);
     z-index: 6;
-  }
-
-  .zone-main .scan-card.state-selected .scan-frame {
-    box-shadow:
-      0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 0 0 5px rgba(67, 180, 255, 0.9),
-      0 0 20px 5px rgba(67, 180, 255, 0.55),
-      0 16px 26px rgba(0, 0, 0, 0.55);
   }
 
   /* --- Actions de partie DANS la barre du haut ------------------------------
@@ -5875,8 +5862,6 @@
      laissee sans couleur, elle prend celle de son camp (voir plus bas). */
   .plateau.est-delave .scan-card {
     --camp-ring: transparent;
-    --camp-glow: transparent;
-    --state-glow: transparent;
     --lisere-aspect: #8a94a3;
   }
 

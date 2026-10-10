@@ -157,11 +157,11 @@
    role) ; celle-ci ferme la porte au cas ou une autre classe d'etat, presente
    ou future, repeindrait une carte pendant un geste. */
 .plateau-cadre.est-en-glisser .scan-card {
-  --state-glow: transparent;
+  --lisere: var(--camp-ring, transparent);
 }
 .plateau-cadre.est-en-glisser .scan-card.state-targetable,
 .plateau-cadre.est-en-glisser .scan-card.is-target-pulse {
-  --state-glow: rgba(240, 185, 95, 0.5);
+  --lisere: rgba(240, 185, 95, 0.95);
 }
 
 /* Une zone qui attend cette carte : un cadre en pointilles, discret mais net.

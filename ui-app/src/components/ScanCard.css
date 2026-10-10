@@ -26,9 +26,10 @@
     --accent: #eef3f8;
     --label-bg: rgba(7, 10, 14, 0.9);
     --label-text: #ffffff;
-    /* Transparent au repos (10/10/2026) : le blanc a 12 % sur 24 px dessinait une
-       bande claire puis grise autour de chaque carte, juste apres le liseré. */
-    --state-glow: transparent;
+    /* LE LISERE (10/10/2026, decisions de l'utilisateur) : un seul trait NET
+       autour de la carte, jamais de halo flou. Sa couleur dit le camp au repos ;
+       un etat la remplace (voir « Etats »). */
+    --lisere: var(--camp-ring, transparent);
     position: relative;
     width: var(--card-w);
     padding: 0;
@@ -157,33 +158,29 @@
 
   /* --- Etats ---------------------------------------------------------------- */
 
-  .scan-card.state-selected {
-    --state-glow: rgba(67, 180, 255, 0.56);
+  /* Un etat CHANGE LA COULEUR du liseré, sans rien ajouter de flou. Un seul
+     liseré a la fois ; a specificite egale, la regle la plus basse gagne :
+     camp < jouable < alerte < source < attaquable/ciblable < survol/selection. */
+  .scan-card.state-playable {
+    --lisere: rgba(140, 155, 60, 0.95);
+  }
+
+  .scan-card.a-alerte-douce,
+  .scan-card.a-alerte-forte {
+    --lisere: rgba(255, 70, 60, 0.9);
   }
 
   .scan-card.state-source {
-    --state-glow: rgba(201, 166, 255, 0.62);
-  }
-
-  .scan-card.state-source .scan-frame {
-    box-shadow:
-      0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
-      0 0 11px 2px var(--camp-glow, transparent),
-      /* Le liseré mauve de la carte qui agit (le héros, sa source) : 11 px
-         faisaient un cadre plus large que le contour de camp, réduit de
-         moitié à la demande de l'utilisateur (7 septembre 2026). */
-      0 0 0 6px rgba(201, 166, 255, 0.62),
-      0 0 18px rgba(240, 185, 95, 0.45),
-      0 3px 8px rgba(0, 0, 0, 0.4);
+    --lisere: rgba(201, 166, 255, 0.95);
   }
 
   .scan-card.state-targetable {
-    --state-glow: rgba(240, 185, 95, 0.52);
+    --lisere: rgba(240, 185, 95, 0.95);
   }
 
-  .scan-card.state-playable {
-    --state-glow: rgba(140, 155, 60, 0.48);
+  .scan-card.state-selected,
+  .scan-card.is-highlighted {
+    --lisere: rgba(67, 180, 255, 0.95);
   }
 
   .scan-card.state-disabled {
@@ -215,12 +212,6 @@
     to { transform: perspective(900px) rotateY(0deg); }
   }
 
-  /* Citee par l'evenement en cours. Se cumule avec state-exhausted, d'ou une
-     classe separee plutot qu'un etat de plus. */
-  .scan-card.is-highlighted {
-    --state-glow: rgba(67, 180, 255, 0.62);
-  }
-
   .scan-card.state-hidden {
     opacity: 0.42;
   }
@@ -241,11 +232,7 @@
        partie claire ou rouge du fond. */
     box-shadow:
       0 0 0 3px rgba(0, 0, 0, 0.72),
-      /* Anneau + halo de CAMP (vert joueur / rouge mechant). Transparents par
-         defaut : une carte sans camp n'a aucun halo. */
-      0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
-      0 0 11px 2px var(--camp-glow, transparent),
-      0 0 24px var(--state-glow),
+      0 0 0 var(--camp-epaisseur, 4px) var(--lisere),
       0 3px 8px rgba(0, 0, 0, 0.4);
   }
 
@@ -261,33 +248,10 @@
      la rencontre (voir ui-app/styles/palette.css). */
   .scan-card.camp-player {
     --camp-ring: rgba(140, 155, 60, 0.9);
-    --camp-glow: rgba(140, 155, 60, 0.45);
   }
 
   .scan-card.camp-encounter {
     --camp-ring: rgba(166, 0, 0, 0.9);
-    --camp-glow: rgba(166, 0, 0, 0.5);
-  }
-
-  .state-playable .scan-frame {
-    box-shadow:
-      0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
-      0 0 11px 2px var(--camp-glow, transparent),
-      /* Le halo « jouable » etait de 26 px : en main, quinze cartes cote a
-         cote en faisaient un bandeau vert continu (constat de l'utilisateur,
-         7 septembre 2026). Reduit de moitie, comme le contour de camp. */
-      0 0 12px rgba(140, 155, 60, 0.5),
-      0 3px 8px rgba(0, 0, 0, 0.4);
-  }
-
-  .state-targetable .scan-frame {
-    box-shadow:
-      0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
-      0 0 11px 2px var(--camp-glow, transparent),
-      0 0 14px rgba(240, 185, 95, 0.6),
-      0 3px 8px rgba(0, 0, 0, 0.4);
   }
 
   /* --- BANDE DE JAUGE -------------------------------------------------------
@@ -378,36 +342,10 @@
      lisible), meme vocabulaire que `.is-target-pulse`. Ces regles sont placees
      AVANT elle a dessein : a specificite egale, la carte designee comme cible
      garde sa pulsation doree, qui guide l'action en cours. */
-  .scan-card.a-alerte-douce .scan-frame {
-    animation: alerte-respire 1600ms ease-in-out infinite;
-  }
-
-  .scan-card.a-alerte-forte .scan-frame {
-    animation: alerte-respire 800ms ease-in-out infinite;
-  }
-
-  @keyframes alerte-respire {
-    0%,
-    100% {
-      box-shadow:
-        0 0 0 2px rgba(255, 70, 60, 0.32),
-        0 0 12px rgba(255, 50, 40, 0.22),
-        0 3px 8px rgba(0, 0, 0, 0.4);
-    }
-    50% {
-      box-shadow:
-        0 0 0 3px rgba(255, 70, 60, 0.85),
-        0 0 26px 6px rgba(255, 50, 40, 0.6),
-        0 3px 8px rgba(0, 0, 0, 0.4);
-    }
-  }
+  /* Les alertes sont un liseré rouge NET (voir « Etats »), sans pulsation
+     ni halo (10/10/2026). */
 
   /* Reglage « animations » du plateau : tout se coupe, la bande coloree reste. */
-  body.plateau-sans-animations .scan-card.a-alerte-douce .scan-frame,
-  body.plateau-sans-animations .scan-card.a-alerte-forte .scan-frame {
-    animation: none;
-  }
-
   body.plateau-sans-animations .jauge-remplissage {
     transition: none;
   }
@@ -805,7 +743,6 @@
   .scan-card.est-deck-special {
     --accent: #bd93ff;
     --camp-ring: rgba(167, 110, 255, 0.9);
-    --camp-glow: rgba(150, 90, 255, 0.55);
   }
 
   .scan-card.est-deck-special .kind-pill {
