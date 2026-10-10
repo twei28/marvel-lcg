@@ -411,39 +411,22 @@
     transition: none;
   }
 
+  /* Carte designee (attaquant, cible) : un contour FIN, arrondi comme la carte,
+     qui s'eteint en une seconde, une seule fois (decision du 10/10/2026). L'ancien
+     anneau dore de 13 px, sa lueur de 42 px et sa pulsation dessinaient un cadre
+     carre autour des sbires. */
   .scan-card.is-target-pulse .scan-frame {
-    box-shadow:
-      0 0 0 3px rgba(0, 0, 0, 0.72),
-      0 0 0 5px rgba(255, 255, 255, 0.1),
-      0 0 0 var(--camp-epaisseur, 4px) var(--camp-ring, transparent),
-      0 0 11px 2px var(--camp-glow, transparent),
-      0 0 0 13px rgba(240, 185, 95, 0.86),
-      0 0 42px 12px rgba(240, 185, 95, 0.62),
-      0 18px 32px rgba(0, 0, 0, 0.52);
-    animation: cible-pulse 760ms ease-in-out infinite;
+    outline: 2px solid transparent;
+    outline-offset: 5px;
+    animation: cible-contour 1s ease-out 1;
   }
 
-  @keyframes cible-pulse {
-    0%,
-    100% {
-      box-shadow:
-        0 0 0 3px rgba(0, 0, 0, 0.72),
-        0 0 0 5px rgba(255, 255, 255, 0.1),
-        0 0 0 8px var(--camp-ring, transparent),
-        0 0 22px 4px var(--camp-glow, transparent),
-        0 0 0 11px rgba(240, 185, 95, 0.72),
-        0 0 28px 8px rgba(240, 185, 95, 0.45),
-        0 18px 32px rgba(0, 0, 0, 0.52);
+  @keyframes cible-contour {
+    from {
+      outline-color: rgba(240, 185, 95, 0.95);
     }
-    50% {
-      box-shadow:
-        0 0 0 3px rgba(0, 0, 0, 0.72),
-        0 0 0 5px rgba(255, 255, 255, 0.1),
-        0 0 0 8px var(--camp-ring, transparent),
-        0 0 22px 4px var(--camp-glow, transparent),
-        0 0 0 15px rgba(240, 185, 95, 0.98),
-        0 0 54px 16px rgba(240, 185, 95, 0.78),
-        0 18px 32px rgba(0, 0, 0, 0.52);
+    to {
+      outline-color: transparent;
     }
   }
 
