@@ -43,7 +43,15 @@ export const GENRES = {
 // doigt. La refonte en portrait attend dans
 // `.planning/todos/2026-09-07-parcours-solo-mobile-portrait.md`. On n'annonce
 // pas aux joueurs une facon de jouer qu'on ne leur conseille pas encore.
+// LEVE depuis : le plateau portrait a ete valide le 13/09/2026, et la refonte
+// du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
+    {
+        date: "2026-10-10",
+        genre: "jeu",
+        fr: "Sur téléphone, le plateau se joue mieux : touche une carte puis « Jouer », un bandeau « Annuler » après chaque action, la taille du texte, les vibrations et le verrou portrait dans les réglages, et l'écran reste allumé pendant la partie.",
+        en: "Better board on phones: tap a card then “Play”, an “Undo” banner after each action, text size, vibrations and portrait lock in the settings, and the screen stays on during the game.",
+    },
     {
         date: "2026-10-10",
         genre: "correction",
