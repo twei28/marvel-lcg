@@ -29,6 +29,11 @@ describe('traduireMoteur', () => {
     expect(traduireMoteur('Discard it and deal another')).toBe('La défausser et en distribuer une autre')
   })
 
+  it('traduit le choix du mot-clé Starting (signalement Yarro n°70)', () => {
+    enFrancais()
+    expect(traduireMoteur('Add this card to your starting hand')).toBe('Ajouter cette carte à ta main de départ')
+  })
+
   it('traduit les pouvoirs de base', () => {
     enFrancais()
     expect(traduireMoteur('Attack')).toBe('Attaquer')

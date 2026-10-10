@@ -63,6 +63,8 @@ Gabarit à copier pour chaque nouvelle fiche :
       l'alliée Typhoid Mary de Fear No Evil, relu par le carnet de campagne)
 - [x] requirement.md (« Requirement ([mental]) » : le paiement doit COMPORTER
       les ressources listees, elles ne s'ajoutent pas au cout)
+- [x] starting.md (Fear No Evil : choix FACULTATIF de prendre la carte en main
+      avant la pioche, une seule carte starting par deck)
 
 ⚠ **`Elite` n'est PAS un mot-clé** et n'a donc pas de fiche : c'est un TRAIT.
 Il se déclare dans le tableau `traits` de la carte (`"traits": ["ELITE"]`),

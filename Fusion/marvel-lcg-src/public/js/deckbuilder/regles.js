@@ -522,6 +522,14 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
         const max = Math.min(x.max, maxCopies);
         if (x.n > max) problemes.push(`${t("Trop d’exemplaires de")} « ${x.nom} » : ${x.n}/${max}`);
     }
+    // Livret Fear No Evil p.3 : une seule CARTE avec starting par deck (deux exemplaires d'un titre comptent deux).
+    const starting = [];
+    let nbStarting = 0;
+    for (const [id, n] of choisies) {
+        const c = carte(id);
+        if (c && /(^|\n)\s*Starting\b/.test(String(c.text || ""))) { starting.push(c.name); nbStarting += n; }
+    }
+    if (nbStarting > 1) problemes.push(`${t("Une seule carte Starting par deck :")} ${starting.join(", ")}`);
     problemes.push(...problemesUnicite(hero, choisies, carte, t));
     // Autant de cartes de chaque aspect : Spider-Woman (04031b, ses deux
     // aspects) et Adam Warlock (21031b, les quatre).

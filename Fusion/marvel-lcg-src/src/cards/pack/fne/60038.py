@@ -5,7 +5,14 @@ def GetAbilities() -> Sequence['Ability']:
         if not this.card.area.flags.is_player_deck:
             return
         player = this.GetControlByOrOwner()
-        Faces.AddToHand([this], player, effect)
+
+        def ajouter(targets: Sequence['CardFace']) -> None:
+            Faces.AddToHand([this], player, effect)
+
+        player.MayChooseOneAbility(
+            effect,
+            AbilityFactory.ForChoiceAbility('Add this card to your starting hand', ajouter),
+        )
     return [AbilityFactory.CanPlayThisUpgradeCard(),
             *AbilityFactory.GiveKeywordToAttached(Hero, defense=1),
             AbilityFactory.WhenGameBeginSetup(starting).NoOutOfPlayLimit()]

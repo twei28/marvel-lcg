@@ -54,6 +54,8 @@ const MOTEUR_FR: Record<string, string> = {
   'Discard one': 'En défausser une',
   // Robbie Robertson 60156 : meme defaut, meme correctif (04/10/2026).
   'Discard it and deal another': 'La défausser et en distribuer une autre',
+  // Mot-clé Starting (60038, 61034, 61036, 61037), signalement Yarro n°70.
+  'Add this card to your starting hand': 'Ajouter cette carte à ta main de départ',
 
   // — Étapes de jeu rendues comme des options —
   'Resolve Mulligans': 'Résoudre les mulligans',

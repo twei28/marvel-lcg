@@ -564,6 +564,7 @@ export const DICO_EN_BASE = {
     "Trop d’aspects": "Too many aspects",
     "autorisé :": "allowed:",
     "Trop d’exemplaires de": "Too many copies of",
+    "Une seule carte Starting par deck :": "Only one card with starting per deck:",
     "Il faut autant de cartes de chaque aspect": "Each aspect needs the same number of cards",
     "Il faut les 4 aspects (Adam Warlock)": "All 4 aspects are required (Adam Warlock)",
     "Coût imprimé 3 ou plus interdit (Moon Knight) :": "Printed cost 3 or more not allowed (Moon Knight):",
