@@ -1,0 +1,167 @@
+/* La mise en place carte par carte (CoucheMiseEnPlace.tsx). */
+
+.mep-couche {
+  position: fixed;
+  inset: 0;
+  z-index: 950;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(8, 10, 14, 0.86);
+  /* La question qui suivra reste derrière, illisible : elle viendra après. */
+  backdrop-filter: blur(3px);
+}
+
+.mep-contenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+}
+
+.mep-couche.est-anime .mep-contenu {
+  animation: mep-entree 0.22s ease-out;
+}
+
+@keyframes mep-entree {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+.mep-titre {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.7);
+}
+
+.mep-cadre {
+  position: relative;
+  width: min(300px, 70vw, calc((100vh - 230px) * 176 / 246));
+  aspect-ratio: 127 / 176;
+  overflow: hidden;
+  border-radius: 12px;
+  /* Ombre courte, comme les cartes du plateau (10/10/2026). */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+.mep-cadre img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Les manigances se posent en paysage : le scan servi en portrait tourne dans
+   son cadre (même règle que `.revelation.est-paysage`). */
+.mep-cadre.est-paysage {
+  width: min(460px, 90vw);
+  aspect-ratio: 176 / 127;
+}
+
+.mep-cadre.est-paysage img {
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  width: calc(100% * 127 / 176);
+  height: calc(100% * 176 / 127);
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.mep-legende {
+  margin: 0;
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-align: center;
+}
+
+.mep-detail {
+  margin: -6px 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f0b95f;
+  text-align: center;
+}
+
+.mep-continuer {
+  min-width: 180px;
+  min-height: 44px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 8px;
+  background: #f0b95f;
+  color: #1a1206;
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.mep-continuer:hover,
+.mep-continuer:focus-visible {
+  background: #ffd27a;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.mep-reste {
+  font-family: inherit;
+  opacity: 0.6;
+}
+
+/* La carte arrivée à sa place : un contour fin, arrondi comme la carte. */
+.scan-card.mep-repere {
+  outline: 2px solid #f0b95f;
+  outline-offset: 5px;
+}
+
+.scan-card.mep-repere-anime {
+  animation: mep-repere 1s ease-out 1 forwards;
+}
+
+@keyframes mep-repere {
+  from {
+    outline-color: rgba(240, 185, 95, 0.95);
+  }
+  to {
+    outline-color: transparent;
+  }
+}
+
+.mep-fantome {
+  z-index: 960;
+  pointer-events: none;
+}
+
+html[data-affichage='sobre'] .mep-continuer {
+  background: #b3a588;
+}
+
+html[data-affichage='sobre'] .mep-detail {
+  color: #b3a588;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mep-couche.est-anime .mep-contenu,
+  .scan-card.mep-repere-anime {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .mep-legende {
+    font-size: 1.3rem;
+  }
+
+  .mep-continuer {
+    width: min(100%, 320px);
+  }
+}

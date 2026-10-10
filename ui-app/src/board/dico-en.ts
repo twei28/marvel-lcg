@@ -1729,4 +1729,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Vibrations': 'Vibrations',
   'Ton tour, attaque subie, action validée': 'Your turn, attack taken, action confirmed',
   'Le verrou portrait est actif (Réglages, Apparence).': 'Portrait lock is on (Settings, Appearance).',
+  // ---- La mise en place carte par carte (10/10/2026) ----
+  'Carte de mise en place': 'Setup card',
+  'Manigance principale retournée': 'Main scheme flipped',
+  'Engagé avec': 'Engaged with',
+  'Menace de départ': 'Starting threat',
 }
