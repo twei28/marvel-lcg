@@ -919,4 +919,10 @@ export const DICO_EN_BASE = {
     "Muted display: grey background, no hero colours or animations. Click to go back to the normal display",
   "Affichage normal. Cliquer pour passer en affichage sobre : fond gris, sans couleurs du héros ni animations":
     "Normal display. Click to switch to the muted display: grey background, no hero colours or animations",
+
+    /* ---- Mention legale des pages hors plateau (mention-legale.js, 10/10/2026) ---- */
+    "Projet de fans non officiel · Marvel Champions © Fantasy Flight Games (Asmodee) · Personnages © Marvel · Il faut posséder le jeu pour jouer":
+        "Unofficial fan project · Marvel Champions © Fantasy Flight Games (Asmodee) · Characters © Marvel · You must own the game to play",
+    "Projet de fans, gratuit et non officiel. Marvel Champions: The Card Game est un jeu de Fantasy Flight Games (Asmodee). Les personnages et illustrations Marvel appartiennent à Marvel. Ce site n'est ni affilié à ces sociétés ni approuvé par elles. Il sert de vitrine et d'outil de jeu : il faut posséder le jeu pour l'utiliser.":
+        "Unofficial, free fan project. Marvel Champions: The Card Game is a game by Fantasy Flight Games (Asmodee). Marvel characters and artwork belong to Marvel. This site is not affiliated with or endorsed by these companies. It is a showcase and play tool: you must own the game to use it.",
 };

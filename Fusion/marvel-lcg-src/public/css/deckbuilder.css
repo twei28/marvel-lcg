@@ -329,6 +329,9 @@ body.db-panneau-filtres .db-page, body.db-panneau-deck .db-page { z-index: 50; }
   .db-basmob { display: flex; position: fixed; z-index: 35; left: 0; right: 0; bottom: 0; gap: 8px; padding: 10px; background: rgba(5, 6, 10, .97); border-top: 1px solid var(--line); }
   .db-basmob button { flex: 1; padding: 12px; color: var(--txt); background: var(--steel2); border: 1px solid var(--line); font-weight: 900; font-size: 14px; letter-spacing: .06em; text-transform: uppercase; }
   .db-basmob .db-mob-deck { color: #fff; background: var(--agir); border-color: var(--agir); }
+  /* La mention legale (js/mention-legale.js) vient apres .db-centre : elle
+     garde la meme reserve que lui sous la barre basse fixe. */
+  footer.mention-legale { padding-bottom: 90px; }
   body.db-panneau-filtres .db-filtres-col, body.db-panneau-deck .db-deck-col {
     display: flex; flex-direction: column; position: fixed; z-index: 45; inset: 0; overflow: auto; padding: 14px;
     background: var(--steel);
