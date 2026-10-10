@@ -18,7 +18,10 @@ def GetAbilities() -> Sequence['Ability']:
             # gardaient donc +1/+1 pour le reste de la partie, et le bonus
             # s'empilait a chaque defense. Modele officiel : Wakandan Training
             # (51024), meme formulation, meme appel.
-            ally.GainUntilPhaseEnd(effect, attack=1, thwart=1)
+            # CORRECTIF (10/10/2026) : echeance « fin de la phase des JOUEURS ».
+            # Sans `end_phase`, le bonus tombait a la fin de la phase du mechant,
+            # celle ou l'on defend : il ne servait jamais.
+            ally.GainUntilPhaseEnd(effect, attack=1, thwart=1, end_phase="Player")
 
     return [
         # CORRECTIF (29/08/2026) : `.SetPlay()` manquait.

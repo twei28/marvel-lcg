@@ -620,6 +620,18 @@ class SenderDamage:
             self.property.damage += value
             Message.WhenDamageUpdated_Text(value, by_effect)
 
+        def ReduceDamage(self, value: int, by_effect: 'Effect') -> None:
+            """« Reduce that damage » a l'etape « would be DEALT » (10/10/2026,
+            62010 Metal Bracer). Rules Reference, Damage : cette etape passe AVANT
+            les cartes Tenace ; tombe a 0, les degats ne sont jamais subis et le
+            Tenace reste. `PreventDamage` ci-dessous agit, lui, a l'etape « would
+            TAKE », apres le Tenace."""
+            from game.message import Message
+            assert value >= 0
+            retire = min(value, self.property.damage)
+            self.property.damage -= retire
+            Message.WhenDamageUpdated_Text(-1 * retire, by_effect)
+
         def IsBasicAttack(self) -> bool:
             if self.would_atk_message:
                 return self.would_atk_message.IsBasicAttack()
