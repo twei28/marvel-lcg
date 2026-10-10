@@ -1466,8 +1466,6 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Cartes en français': 'Cards in French',
   'Texte des cartes en français': 'Card text in French',
   'Sous l’aperçu agrandi (chargé depuis fr.marvelcdb.com)': 'Under the enlarged preview (loaded from fr.marvelcdb.com)',
-  'Annonce des exploits': 'Achievement banners',
-  'Bannière « Premier sang », « Double K.O. »…': '"First blood", "Double K.O." banner…',
   'Bruitages': 'Sound effects',
   'Volume des bruitages': 'Sound effects volume',
   'Coups, cartes, jetons, survol des menus': 'Hits, cards, tokens, menu hover',

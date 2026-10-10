@@ -19,8 +19,6 @@ function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
     basculerSons: vi.fn(),
     musique: false,
     basculerMusique: vi.fn(),
-    succes: true,
-    basculerSucces: vi.fn(),
     scansFr: true,
     basculerScansFr: vi.fn(),
     textesCdb: false,
@@ -108,7 +106,6 @@ describe('aucun reglage n’a ete perdu au rangement', () => {
       'Langue',
       'Cartes en français',
       'Texte des cartes en français',
-      'Annonce des exploits',
     ],
     son: ['Bruitages', 'Musique de fond'],
     jeu: [

@@ -320,8 +320,6 @@ export type ProprietesReglages = {
   basculerSons: () => void
   musique: boolean
   basculerMusique: () => void
-  succes: boolean
-  basculerSucces: () => void
   scansFr: boolean
   basculerScansFr: () => void
   textesCdb: boolean
@@ -462,12 +460,6 @@ export function ContenuOnglet({
           detail={t('Sous l’aperçu agrandi (chargé depuis fr.marvelcdb.com)')}
           actif={p.textesCdb}
           onBascule={p.basculerTextesCdb}
-        />
-        <LigneBascule
-          libelle={t('Annonce des exploits')}
-          detail={t('Bannière « Premier sang », « Double K.O. »…')}
-          actif={p.succes}
-          onBascule={p.basculerSucces}
         />
       </>
     )

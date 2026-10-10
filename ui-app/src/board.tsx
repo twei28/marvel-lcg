@@ -208,7 +208,6 @@ import { appliquerEtiquettesTable, lireEtiquettesTable } from './board/etiquette
 import { lecteurActif, estRelecture, type Lecteur } from './board/relecture/lecteur'
 import { PageRelecture } from './board/relecture/PageRelecture'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
-import { CoucheSucces, CLE_SUCCES, lireSuccesActifs } from './board/CoucheSucces'
 import { CLE_MUSIQUE, lireMusiqueActive, useMusique } from './board/musique'
 import {
   Moteur,
@@ -2644,18 +2643,6 @@ export function PagePartie({
     })
   }, [])
 
-  const [succes, setSucces] = useState(lireSuccesActifs)
-  const basculerSucces = useCallback(() => {
-    setSucces((v) => {
-      const nouveau = !v
-      try {
-        window.localStorage.setItem(CLE_SUCCES, nouveau ? 'on' : 'off')
-      } catch {
-        /* preference non critique */
-      }
-      return nouveau
-    })
-  }, [])
 
   const [textesCdb, setTextesCdb] = useState(lireTextesCdb)
 
@@ -4201,7 +4188,6 @@ export function PagePartie({
         reglerApercu={reglerApercuMeteo}
         onReponseFigee={setReponseAmbiance}
       />
-      <CoucheSucces monde={etat.monde} demande={etat.demande} actif={succes} />
       {/* Le preavis du site (mise a jour, coupure). Il barre le dixieme
           superieur de l'ecran, deux secondes toutes les trente, et laisse
           passer les clics : voir BandeauAnnonce. */}
@@ -4909,8 +4895,6 @@ export function PagePartie({
         basculerSons={basculerSons}
         musique={musique}
         basculerMusique={basculerMusique}
-        succes={succes}
-        basculerSucces={basculerSucces}
         scansFr={scansFr}
         basculerScansFr={basculerScansFr}
         textesCdb={textesCdb}
