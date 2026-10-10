@@ -7,6 +7,9 @@ def GetAbilities() -> Sequence['Ability']:
     def process_thw(effect: 'Effect', diff: int, curr: int) -> None:
         effect.this.CastTo(Ally).GainThwart(diff, effect)
     return [
-        AbilityFactory.WhileValid(OnEvent.CardInPlay(Ally), lambda e, m: True, check_fn, process_atk),
-        AbilityFactory.WhileValid(OnEvent.CardInPlay(Ally), lambda e, m: True, check_fn, process_thw),
+        # CORRECTIF (10/10/2026) : « while SHE has a tough status card ». Sur
+        # `CardInPlay` seul, le bonus pose a l'entree (Toughness) n'etait jamais
+        # retire quand son Tenace tombait. Meme defaut que 62002 (rapport n75).
+        AbilityFactory.WhileValid([OnEvent.CardInPlay(Ally), OnEvent.Status("This", 'Tough')], lambda e, m: True, check_fn, process_atk),
+        AbilityFactory.WhileValid([OnEvent.CardInPlay(Ally), OnEvent.Status("This", 'Tough')], lambda e, m: True, check_fn, process_thw),
     ]

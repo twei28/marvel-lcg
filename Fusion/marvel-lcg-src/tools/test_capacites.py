@@ -51652,6 +51652,299 @@ CAS = [
         "attendu": {"ordre": [["Avengers Tower", None], ["Reveal Main Scheme", "21099a"],
                               ["Reveal Main Scheme", "21098a"]]},
     },
+
+    # ------------------------------------------------ LUKE CAGE, audit du 10/10/2026
+    {
+        "nom": "62011 Power Man — un Tenace defausse de Luke Cage : incliner Power Man pioche une carte (rapport n73)",
+        "pourquoi": ("rapport n73 : la Reponse ne partait jamais. `AfterStatusDiscardFrom(..., \"This\", ...)` "
+                     "attendait un Tenace defausse de POWER MAN lui-meme. Rhino (ATQ 2) contre Luke (DEF 1) : "
+                     "le Tenace tombe, Power Man s'incline et la main passe de 1 a 2"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.Attach('62011', '62001a')",
+                          "Puzzle.AddTough('62001a', 2)"],
+        "main_exclusive": ["01089"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2, "exhausted": ["62011"]},
+    },
+    {
+        "nom": "62011 Power Man — CONTRE-CAS : un Tenace defausse d'un ALLIE ne declenche rien",
+        "pourquoi": ("« discarded from Luke Cage » : seul le Tenace de Luke compte. Black Cat (Tenace) "
+                     "defend Rhino : son Tenace tombe, Power Man reste pret, la main reste a 1"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.Attach('62011', '62001a')",
+                          "Puzzle.PutIntoPlay('01002', under_control=True)", "Puzzle.Tough('01002')"],
+        "main_exclusive": ["01089"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('01094', defender='01002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 1, "pret": ["62011"], "statuts_absents": [["01002", "Tough"]]},
+    },
+    {
+        "nom": "62010 Metal Bracer — attaque a 1 : le Bracelet la reduit a 0 AVANT le Tenace, qui reste (rapport n74)",
+        "pourquoi": ("rapport n74 et Rules Reference v1.8 (Damage) : 1. « would be DEALT » (le Bracelet), "
+                     "2. Tenace, 3. « would TAKE ». L'article FFG « Unbreakable » : le Bracelet sert a « conserver "
+                     "ses Tenaces contre les sbires a faible ATQ ». Hydra Mercenary (ATQ 1, un sbire : pas de "
+                     "carte de boost) attaque Luke incline (pas de defense) : 1 degat, reduit a 0, le Tenace reste"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.Attach('62010', '62001a')",
+                          "Puzzle.AddTough('62001a', 1)", "Puzzle.PutIntoPlay('01101')",
+                          "Puzzle.Engage('01101')", "Puzzle.Exhaust('62001a')"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('01101')"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["62010"], "statuts": [["62001a", "Tough"]], "degats_identite": 0},
+    },
+    {
+        "nom": "62010 Metal Bracer — ne s'utilise PAS sur le degat imblocable de Luke Cage",
+        "pourquoi": ("article FFG « Unbreakable » : « les bracelets ne peuvent pas reduire le degat "
+                     "imblocable de la capacite de heros de Luke ». Le moteur le proposait et l'inclinait pour "
+                     "rien. Un Tenace defausse sans degat (bascule Puzzle.Tough) : Luke prend 1, le Bracelet "
+                     "reste pret"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.Attach('62010', '62001a')",
+                          "Puzzle.AddTough('62001a', 1)"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Tough('62001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["62010"], "degats_identite": 1, "statuts_absents": [["62001a", "Tough"]]},
+    },
+    {
+        "nom": "62002 Jessica Jones — 2 Tenaces poses sur Luke APRES elle : +2 CTR (rapport n75)",
+        "pourquoi": ("rapport n75 : 4 Tenaces, CTR 1. Le bonus n'etait recalcule qu'a l'entree ou la sortie "
+                     "d'un allie (`OnEvent.CardInPlay`), jamais quand un Tenace arrive ou part"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('62002', under_control=True)"],
+        "declencher": ["Puzzle.AddTough('62001a', 2)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["62002", "thwart", 2]]},
+    },
+    {
+        "nom": "62002 Jessica Jones — plafond : 6 Tenaces sur Luke ne donnent que +4 CTR",
+        "pourquoi": "« (to a maximum of +4 THW) » ; l'article FFG annonce bien « jusqu'a 5 CTR » (1 + 4)",
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('62002', under_control=True)"],
+        "declencher": ["Puzzle.AddTough('62001a', 6)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["62002", "thwart", 4]]},
+    },
+    {
+        "nom": "62002 Jessica Jones — un Tenace perdu fait baisser le bonus (2 puis 1 : +1 CTR)",
+        "pourquoi": "le recalcul doit valoir dans les deux sens : la defausse d'un Tenace retire 1 CTR",
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('62002', under_control=True)",
+                          "Puzzle.AddTough('62001a', 2)"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Tough('62001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["62002", "thwart", 1]]},
+    },
+    {
+        "nom": "62013 Misty Knight — son Tenace defausse : le +2 ATQ / +2 CTR disparait",
+        "pourquoi": ("« while SHE has a tough status card ». Meme defaut que Jessica Jones : le bonus pose "
+                     "a l'entree (Toughness) n'etait jamais retire"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('62013', under_control=True)"],
+        "declencher": ["Puzzle.Tough('62013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["62013", "attack", 0], ["62013", "thwart", 0]],
+                    "statuts_absents": [["62013", "Tough"]]},
+    },
+    {
+        "nom": "62013 Misty Knight — TEMOIN : entree en jeu avec son Tenace (Toughness), +2 ATQ / +2 CTR",
+        "pourquoi": "ligne de base du cas precedent : sans elle, « 0 » pourrait venir d'un bonus jamais pose",
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')"],
+        "declencher": ["Puzzle.PutIntoPlay('62013', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["62013", "attack", 2], ["62013", "thwart", 2]],
+                    "statuts": [["62013", "Tough"]]},
+    },
+    {
+        "nom": "62009 Cruisin' for a Bruisin' — se joue sur un SBIRE (pas sur Luke) et l'engage",
+        "pourquoi": ("« Attach to a minion » : sans `CanPlayThisUpgradeCard(Minion)`, la cible par defaut etait "
+                     "TON identite (upgrade.py). Hydra Soldier engage avec l'AUTRE joueur (Spider-Man) ; la carte se pose dessus "
+                     "et la Reponse l'engage avec toi"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "heros2": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('01182')",
+                          "Puzzle.Engage('01182', 1)"],
+        "main_exclusive": ["62009"],
+        "accepter_choix": True,
+        "declencher": [],
+        "jouer": ["62009"],
+        "cibles": ["01182"],
+        "verifier": "luke_sbire_engage_et_porte",
+        "sbire": "01182",
+        "porte": "62009",
+    },
+    {
+        "nom": "62009 Cruisin' for a Bruisin' — attaque de BASE contre le sbire : +2 degats et deferlement",
+        "pourquoi": ("Luke (ATQ 2) frappe Hydra Soldier (Garde, 4 PV, deja 1 degat) : 2 + 2 = 4, le sbire tombe et l'exces (1) "
+                     "deferle sur Rhino. Non-regression : l'attaque de base marchait deja"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('01182')", "Puzzle.Damage('01182', 1)",
+                          "Puzzle.Attach('62009', '01182')"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('62001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01182"], "degats": [["01094", 1]]},
+    },
+    {
+        "nom": "62009 Cruisin' for a Bruisin' — attaque d'EVENEMENT (Knuckle Sandwich) contre le sbire : +2 aussi",
+        "pourquoi": ("« ATTACKS against attached minion deal 2 additional damage » : toute attaque. Le +2 ne "
+                     "passait que par l'ATQ de l'attaque de base. Knuckle Sandwich (3) : 3 + 2 = 5 contre 3 PV restants (Hydra Soldier entame de 1), "
+                     "l'exces (2) deferle sur Rhino"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('01182')", "Puzzle.Damage('01182', 1)",
+                          "Puzzle.Attach('62009', '01182')"],
+        "main_exclusive": ["62004", "01088"],
+        "accepter_choix": True,
+        "declencher": [],
+        "jouer": ["62004"],
+        "cibles": ["01182"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01182"], "degats": [["01094", 2]]},
+    },
+    {
+        "nom": "62015 Take a Stand — le bonus SURVIT a la fin de la phase du mechant (ou l'on defend)",
+        "pourquoi": ("« until the end of the PLAYER phase ». `GainUntilPhaseEnd` tombait au premier WhenPhaseEnd, "
+                     "celui de la phase du mechant ou l'on defend : la carte ne servait jamais. Luke defend "
+                     "Rhino, Take a Stand donne +1/+1 a Black Cat, la phase du mechant se termine : le bonus reste"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["62015", "01088"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('01094', defender='62001a')", "Puzzle.EndVillainPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["01002", "attack", 1], ["01002", "thwart", 1]], "defausse": ["62015"]},
+    },
+    {
+        "nom": "62015 Take a Stand — le bonus TOMBE a la fin de la phase des joueurs qui suit",
+        "pourquoi": "l'echeance imprimee : apres la phase du mechant, la fin de la phase des joueurs retire le +1/+1",
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["62015", "01088"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.Attack('01094', defender='62001a')", "Puzzle.EndVillainPhase()",
+                       "Puzzle.EndPlayerPhase()"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["01002", "attack", 0], ["01002", "thwart", 0]], "defausse": ["62015"]},
+    },
+    {
+        "nom": "62031 Augmented Jaws — sans Cottonmouth : sur le mechant, qui gagne +1 ATQ",
+        "pourquoi": ("« +1★ ATK » imprime (scan assets/pics/62031.jpg, marvelcdb attack=1) absent de "
+                     "data/cards.json. « Otherwise, attach to the villain » : Rhino porte la carte et passe a 3"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')"],
+        "declencher": ["Puzzle.PutIntoPlay('62031')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01094", "62031"]], "attributs_carte": [["01094", "attack", 1]]},
+    },
+    {
+        "nom": "62031 Augmented Jaws — Cottonmouth en jeu : c'est LUI qui la porte, pas le mechant",
+        "pourquoi": ("« Attach to Cottonmouth. Otherwise, attach to the villain » : un OU de CardFinder "
+                     "(`Filter.One` garde le type du premier candidat) pouvait choisir le mechant. Modele : 51040 "
+                     "Energy Truncheon, `otherwise_attach_to=Villain`"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('62029')"],
+        "declencher": ["Puzzle.PutIntoPlay('62031')"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["62029", "62031"]], "attributs_carte": [["01094", "attack", 0]]},
+    },
+    {
+        "nom": "62037 Black Belt — se joue sur un allie ami (Iron Fist) : +1 PV",
+        "pourquoi": ("« Attach to a friendly character » : le script passait `\"Character\"`, que ni "
+                     "`Select.From` ni `TARGET_MAP_FUNC` ne reconnaissent. Modele : 34007 / 31029, "
+                     "`CanPlayThisUpgradeCard(Friend)`. Iron Fist (MARTIAL ARTIST) rend la carte jouable"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('62012', under_control=True)"],
+        "main_exclusive": ["62037"],
+        "accepter_choix": True,
+        "declencher": [],
+        "jouer": ["62037"],
+        "cibles": ["62012"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["62012", "62037"]], "attributs_carte": [["62012", "health", 1]]},
+    },
+    {
+        "nom": "62037 Black Belt — se joue aussi sur le HEROS (personnage ami) : trait MARTIAL ARTIST et +1 PV",
+        "pourquoi": "une identite est un personnage ami : Luke porte la ceinture, gagne le trait et 1 PV max",
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('62012', under_control=True)"],
+        "main_exclusive": ["62037"],
+        "accepter_choix": True,
+        "declencher": [],
+        "jouer": ["62037"],
+        "cibles": ["62001a"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["62001a", "62037"]], "traits": ["MARTIAL ARTIST"], "attributs": {"health": 1}},
+    },
+    {
+        "nom": "62037 Black Belt — CONTRE-CAS : jamais sur un ennemi (Rhino ne peut pas la porter)",
+        "pourquoi": "« friendly character » : la cible imposee Rhino doit etre refusee, la ceinture ne va pas sur lui",
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('62012', under_control=True)"],
+        "main_exclusive": ["62037"],
+        "accepter_choix": True,
+        "declencher": [],
+        "jouer": ["62037"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["01094", "health", 0]]},
+    },
+    {
+        "nom": "62033 Sidewinder — attaque, Boost sur le dessus du deck : Sidewinder est distribue a l'attaquant",
+        "pourquoi": ("« discard the top card of the encounter deck. If the discarded card has a Boost ability, "
+                     "deal Sidewinder to the attacking player as a facedown encounter card ». Concussive Blast "
+                     "(01154, Boost) seul dans le deck ; Luke attaque Sidewinder avec Knuckle Sandwich"),
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('62033')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01154')"],
+        "main_exclusive": ["62004", "01088"],
+        "accepter_choix": True,
+        "declencher": [],
+        "jouer": ["62004"],
+        "cibles": ["62033"],
+        "verifier": "fne3a_bugle",
+        "attendu": {"distribuees_de": [0, ["62033"]]},
+    },
+    {
+        "nom": "62033 Sidewinder — CONTRE-CAS : la carte defaussee n'a pas de Boost, rien n'est distribue",
+        "pourquoi": "Hydra Soldier (01182, sans capacite Boost) sur le dessus : Sidewinder reste a l'attaque",
+        "scenario": "rhino",
+        "heros": "luke_cage",
+        "mise_en_place": ["Puzzle.ChangeForm('62001b')", "Puzzle.PutIntoPlay('62033')",
+                          "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01182')"],
+        "main_exclusive": ["62004", "01088"],
+        "accepter_choix": True,
+        "declencher": [],
+        "jouer": ["62004"],
+        "cibles": ["62033"],
+        "verifier": "fne3a_bugle",
+        "attendu": {"distribuees_de": [0, []]},
+    },
 ]
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
@@ -54460,6 +54753,24 @@ def jj_une_autre_manigance_revelee(monde, aides):
         return False, "aucune autre manigance secondaire n'a ete revelee"
     noms = [getattr(x.paper, "card_id", "?") for x in autres]
     return True, f"manigance(s) revelee(s) : {noms}"
+
+def luke_sbire_engage_et_porte(monde, aides):
+    """62009 : le sbire `sbire` porte `porte` ET est engage avec le joueur 0."""
+    cas = aides["cas"]
+    sbire = aides["par_id"](monde, cas["sbire"])
+    if sbire is None:
+        return False, f"{cas['sbire']} introuvable en jeu"
+    portees = [getattr(f.paper, "card_id", None) for f in sbire.GetInventoryDeck().GetAll()]
+    identite = aides["identite"](monde)
+    sur_identite = [getattr(f.paper, "card_id", None) for f in identite.GetInventoryDeck().GetAll()] if identite else []
+    soucis = []
+    if cas["porte"] not in portees:
+        soucis.append(f"{cas['porte']} n'est pas sur le sbire (sbire = {portees}, identite = {sur_identite})")
+    if getattr(sbire, "engaged_player", None) is not monde.players[0]:
+        soucis.append("le sbire n'est pas engage avec le joueur 0")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"{cas['porte']} sur {cas['sbire']}, engage"
 
 def tenaces_identite(monde, aides):
     """Nombre exact de cartes Coriace sur l'identite, et sa face apres le changement."""

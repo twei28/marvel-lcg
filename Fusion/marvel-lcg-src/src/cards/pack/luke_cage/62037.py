@@ -19,8 +19,11 @@ def GetAbilities() -> Sequence['Ability']:
         return False
 
     return [
+        # CORRECTIF (10/10/2026) : « Attach to a FRIENDLY character ».
+        # `"Character"` laissait poser la ceinture sur un ennemi (Rhino gagnait
+        # 1 PV). Modele : 34007 / 31029, `CanPlayThisUpgradeCard(Friend)`.
         AbilityFactory.CanPlayThisUpgradeCard(
-            "Character",
+            Friend,
             conditions=[un_joueur_controle_un_martial_artist],
         ),
         *AbilityFactory.GiveKeywordToAttached("Character", health=1, trait="MARTIAL ARTIST"),

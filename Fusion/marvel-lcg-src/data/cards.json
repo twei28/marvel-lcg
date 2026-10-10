@@ -80616,7 +80616,8 @@
    "name": "Augmented Jaws",
    "subtitle": "",
    "desc": {
-    "Boost": "2"
+    "Boost": "2",
+    "ATK+": "1"
    },
    "traits": [
     "WEAPON"
@@ -102665,5 +102666,5 @@
    "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After step one of the villain phase, deal each player 1 facedown [[TRAP]] card.\n<b>Forced Interrupt</b>: When the [[TRAP]] discard pile is shuffled back into the [[TRAP]] deck, deal the first player 1 facedown encounter card."
   }
  ],
- "checksum": "9ada19271de4889e31416a98f2b95aeff2c9a486402e79befb10671f5430a17e"
+ "checksum": "e15a574c774b9bacb3d8df579d2746972537250315ad6ab8a1251c8573006374"
 }

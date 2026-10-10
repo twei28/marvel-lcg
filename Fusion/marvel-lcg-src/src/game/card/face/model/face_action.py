@@ -68,7 +68,11 @@ class ModelAction(ModelBase):
                     thwart_consequential_damage: int|None=None,
                     lose_trait: "CardFace.TRAITS|None"=None,
                     ignore_flip: bool=True,
-                    render_ui: bool=False) -> None:
+                    render_ui: bool=False,
+                    # (10/10/2026, 62015 Take a Stand) : « until the end of the
+                    # PLAYER phase ». Sans lui, `WhenPhaseEnd` expire au premier
+                    # fin de phase venu, celle du mechant comprise.
+                    end_phase: 'Literal["Player", "Villain"]|None'=None) -> None:
         from game.card.face.card_type import Ally
         from game.operate.effects import Effects
         from game.ability.condition import Condition2
@@ -337,7 +341,7 @@ class ModelAction(ModelBase):
             create_effect(
                 Message.WhenPhaseEnd,
                 lambda effect, message:
-                    True,
+                    end_phase is None or message.phase_name == end_phase,
             )
         elif end_event == Message.WhenRoundEnd:
             create_effect(
@@ -510,7 +514,8 @@ class ModelAction(ModelBase):
                           scheme: int|None=None,
                           thwart: int|None=None,
                           retaliate: int|None=None,
-                          ignore_flip: bool=True) -> None:
+                          ignore_flip: bool=True,
+                          end_phase: 'Literal["Player", "Villain"]|None'=None) -> None:
         return self.TemporaryGain(
             by_effect,
             None,
@@ -523,7 +528,8 @@ class ModelAction(ModelBase):
             thwart=thwart,
             retaliate=retaliate,
             ignore_flip=ignore_flip,
-            render_ui=True
+            render_ui=True,
+            end_phase=end_phase,
         )
 
     def GainUntilTurnEnd(self,
