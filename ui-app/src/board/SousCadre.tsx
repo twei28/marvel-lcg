@@ -73,6 +73,11 @@ export function optionDe(q: QuestionDuMoteur, optionId: number): Option | undefi
  * qu'elle nomme), son numero, son nom, et dessous son texte (D32). Une option
  * indisponible garde sa place et son numero, ne se joue pas, et dit pourquoi.
  */
+/** Des effets au choix sans carte (« Infliger 1 dégât… ») : une colonne de boutons de même hauteur. */
+export function choixEnTexte(vue: { genre: string; choix?: VignetteOption[] }): boolean {
+  return (vue.genre === 'choix-carte' || vue.genre === 'reponses') && !!vue.choix && vue.choix.length > 0 && vue.choix.every((choix) => !choix.scan)
+}
+
 export function BoutonOption({ vignette, choisir }: { vignette: VignetteOption; choisir: () => void }) {
   const classes = ['deroule-vignette', 'est-choix']
   if (!vignette.scan) classes.push('est-texte')
@@ -258,7 +263,9 @@ export function SousCadre({ vue, q }: SousCadreProps) {
         {cout}
         {phrase ? <small className="deroule-sous-cadre-phrase">{phrase}</small> : null}
       </div>
-      {cartes.length > 0 ? <div className="deroule-sous-cadre-cartes">{cartes}</div> : null}
+      {cartes.length > 0 ? (
+        <div className={choixEnTexte(vue) ? 'deroule-sous-cadre-cartes est-textes' : 'deroule-sous-cadre-cartes'}>{cartes}</div>
+      ) : null}
       <div className="deroule-boutons deroule-sous-cadre-boutons">
         {refus ? (
           <button type="button" className="bh-bouton" data-refus="" onClick={i.annuler}>

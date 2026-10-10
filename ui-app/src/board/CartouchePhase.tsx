@@ -54,7 +54,7 @@ import { avecTempsVides, fusionnerDistribution } from './frise-phase'
 import { t } from './langue'
 import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import { vueSousCadre, type QuestionDuMoteur, type VueSousCadre } from './sous-cadre'
-import { BoutonOption, CarteNue, optionDe, SousCadre } from './SousCadre'
+import { BoutonOption, CarteNue, choixEnTexte, optionDe, SousCadre } from './SousCadre'
 import { avecIcones, marquerRessources } from './icones-ressources'
 import {
   compteurDesRevelations,
@@ -980,7 +980,10 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   // Pendant une question, l'etape reste sous les yeux, grisee, derriere le
   // sous-cadre (D4). Sans question structuree (table, banc d'essai), toute
   // question grise l'etape, comme avant.
-  const grisee = q ? vueDuSousCadre !== undefined : questionAuJoueur
+  // Le CHOIX d'un effet d'une carte laisse les cartes en couleur (10/10/2026) :
+  // grisées, on ne voyait plus qui attaque qui au moment de choisir.
+  const choixEnCours = vueDuSousCadre?.genre === 'choix-carte'
+  const grisee = q ? vueDuSousCadre !== undefined && !choixEnCours : questionAuJoueur
   const etapeEstAnnonce = etape?.etat === 'annonce'
   // Une annonce se complete SUR PLACE tant qu'elle est la derniere etape
   // connue (le cartouche est alors « a jour » et le moteur la resout). Une
@@ -1045,7 +1048,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         question={
           <div className="deroule-question-carte">
             <p className="deroule-question-intitule">{vueQ.intitule}</p>
-            <div className="deroule-question-choix">
+            <div className={choixEnTexte(vueQ) ? 'deroule-question-choix est-textes' : 'deroule-question-choix'}>
               {vueQ.choix.map((choix) => (
                 <BoutonOption key={choix.optionId} vignette={choix} choisir={() => choisir(choix.optionId)} />
               ))}

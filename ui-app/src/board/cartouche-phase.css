@@ -886,6 +886,30 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-corps {
   color: #f8fafc;
 }
 
+/* Des effets au choix sans carte (10/10/2026, capture de Proxima) : une colonne
+   de boutons de MEME hauteur (la plus grande), le numero sur la meme ligne que
+   le debut du libelle, un libelle long qui passe a la ligne DANS son bouton. */
+.deroule-phase.est-scene .deroule-sous-cadre-cartes.est-textes,
+.deroule-phase.est-scene .deroule-question-choix.est-textes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: 1fr;
+  justify-items: stretch;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+}
+
+.deroule-phase.est-scene .est-textes > .deroule-vignette.est-texte {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  align-content: center;
+  column-gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /* L'ordre de clic d'un sbire, et les fois ou une cible est prise. */
 .deroule-phase.est-scene .deroule-ordre,
 .deroule-phase.est-scene .deroule-fois {

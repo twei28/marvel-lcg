@@ -199,6 +199,27 @@ describe.each([
     expect(texte).not.toContain('peut réagir')
   })
 
+  it('les boutons d\u2019effet forment une colonne de même hauteur', () => {
+    monter(bis)
+    const conteneur = choix()[0]!.parentElement!
+    expect(conteneur.classList.contains('est-textes')).toBe(true)
+    for (const bouton of choix()) expect(bouton.classList.contains('est-texte')).toBe(true)
+  })
+
+  it('le numéro et le libellé sont deux voisins du même bouton', () => {
+    monter(bis)
+    for (const bouton of choix()) {
+      const enfants = [...bouton.children].map((e) => e.className)
+      expect(enfants.slice(0, 2)).toEqual(['deroule-chiffre', 'deroule-choix-nom'])
+    }
+  })
+
+  it('pendant le choix, les cartes du panneau restent en couleur', () => {
+    monter(bis)
+    expect(document.querySelector('.deroule-rangee.est-grisee, .deroule-revelee.est-grisee')).toBeNull()
+    expect(document.querySelector('.deroule-rangee')).not.toBeNull()
+  })
+
   it('chaque clic active SON effet', () => {
     const q = monter(bis)
     fireEvent.click(choix()[1]!)
