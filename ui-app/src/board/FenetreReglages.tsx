@@ -600,8 +600,8 @@ export function ContenuOnglet({
         detail={t('Ce que dit le panneau quand tu joues une carte')}
       />
       <LigneBascule
-        libelle={t('Pointeurs des autres joueurs')}
-        detail={t('En multijoueur, voir où pointent les autres')}
+        libelle={t('Curseurs des autres joueurs')}
+        detail={t('En multijoueur, voir le curseur des autres joueurs')}
         actif={p.curseurs}
         onBascule={p.basculerCurseurs}
       />

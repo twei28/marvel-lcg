@@ -121,7 +121,7 @@ describe('aucun reglage n’a ete perdu au rangement', () => {
       'Finir mon tour quand je ne peux plus rien jouer',
       'Sauvegarde à chaque phase',
     ],
-    avance: ['Nouveau plateau', 'Aide quand je joue une carte', 'Pointeurs des autres joueurs'],
+    avance: ['Nouveau plateau', 'Aide quand je joue une carte', 'Curseurs des autres joueurs'],
   }
 
   for (const [onglet, libelles] of Object.entries(ATTENDUS)) {

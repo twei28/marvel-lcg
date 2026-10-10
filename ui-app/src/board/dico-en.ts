@@ -1204,7 +1204,6 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Curseurs des autres joueurs': 'Other players’ cursors',
   'Carte de héros': 'Hero card',
   'Art alternatif — mêmes valeurs de jeu': 'Alternate art \u2014 same game values',
-  'En multijoueur, montre où pointent les autres': 'In multiplayer, shows where the others are pointing',
   'Scans en français': 'French card scans',
   'Images des cartes en français quand elles existent':
     'French card images where available',
@@ -1494,8 +1493,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Courte': 'Short',
   'Détaillée': 'Detailed',
   'Ce que dit le panneau quand tu joues une carte': 'What the panel says when you play a card',
-  'Pointeurs des autres joueurs': 'Other players\' pointers',
-  'En multijoueur, voir où pointent les autres': 'In multiplayer, see where others point',
+  'En multijoueur, voir le curseur des autres joueurs': 'In multiplayer, see other players\' cursors',
   'Table complète comme sur PC': 'Full table as on PC',
   'Non : la vue téléphone, adaptée à l’écran': 'No: the phone view, fitted to the screen',
   // Table personnalisable (04/10/2026).
