@@ -91,7 +91,7 @@ node_modules et assets/pics, `_a_supprimer/` à créer pour la sauvegarde du cod
 - ⏳ Aperçus de la fenêtre « Choisis ta phase du méchant » (`public/img/phase-modes/etape-1..4.jpg`, 05/10) : ils
   montrent l'ANCIENNE présentation. À refaire avec le nouveau cartouche (décision : plus tard).
 - ⏳ Nouveautés fr + en à écrire avant le déploiement (Luke Cage, Étape par étape unique, stats de fin, console).
-- ✅ Audit Storm : 36010 et 36012 CORRIGÉS le 10/10 au soir (commit fix(storm), NON déployé), défauts d'origine
+- ✅ Audit Storm : 36010 et 36012 CORRIGÉS le 10/10 au soir (commit 69874750, DÉPLOYÉ le 10/10 à 17h29 : ebba7f47, scripts identiques en ligne, play. 20/20), défauts d'origine
   identiques sur irefrixs/marvel-lcg. Pour mémoire, ce qu'ils étaient : 36010 Torrential Rain (« remove 3 threat from
   among schemes » codé sur UNE manigance ; modèle 34018) et 36012 Flash Freeze (liste des ennemis figée au jeu de
   la carte, un sbire engagé plus tard échappe au -3). Doute moteur : Permanent des cartes WEATHER
