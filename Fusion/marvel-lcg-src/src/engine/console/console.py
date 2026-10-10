@@ -1,5 +1,6 @@
 from core import *
 from engine.controller import *
+from engine.log import Log
 from game.scene.replay import *
 from game.world import *
 from game.effect import *
@@ -98,10 +99,19 @@ class Console:
 
         debug_cmds = self.debug_cmds
         self.debug_cmds = ""
-        if world.scene.is_puzzle:
-            from game.puzzle import PuzzleHelper
-            PuzzleHelper.Exec([debug_cmds], world)
-        else:
-            self.DebugExec([debug_cmds], world)
+        # Le texte vient de `/debug?` tel quel : une faute de frappe levait
+        # une NameError jusqu'a la boucle du jeu. Hors test, on la signale au
+        # plateau comme `Cheat.TryPreDebugExec` ; en test, elle doit casser.
+        try:
+            if world.scene.is_puzzle:
+                from game.puzzle import PuzzleHelper
+                PuzzleHelper.Exec([debug_cmds], world)
+            else:
+                self.DebugExec([debug_cmds], world)
+        except Exception as exc:
+            if Test.IsInTesting():
+                raise
+            info = Log.FailedTrace(CATEGORY_NAME, exc, no_take_as_error=True)
+            world.render.ErrorOccurred(info)
         return True
 
