@@ -28,3 +28,10 @@ describe('le mode du joueur suivi (08/10/2026)', () => {
     expect(suiviLePlusRecent({ 0: { cle: 'a', t: 1, mode: 'nimporte' } })).toEqual({ cle: 'a', mode: undefined, ferme: false })
   })
 })
+
+describe('un joueur encore sur l ancien mode Bis (10/10/2026)', () => {
+  it('son mode publie « detaille-bis » se lit « detaille »', async () => {
+    const { modeLu } = await import('./etape-partagee')
+    expect(modeLu('detaille-bis')).toBe('detaille')
+  })
+})

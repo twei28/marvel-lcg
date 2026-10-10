@@ -49,7 +49,7 @@ import { doitRattraperLesSieges, DELAI_PREMIERE_TRAME_MS } from './sieges-hot-se
  * Le rythme est un confort de LECTURE, pas une regle du jeu : il est donc
  * personnel (localStorage), et en multijoueur chacun le sien.
  */
-export type ModePhaseMechant = 'detaille' | 'detaille-bis' | 'sur-table' | 'instantane'
+export type ModePhaseMechant = 'detaille' | 'sur-table' | 'instantane'
 
 /**
  * Niveau de detail de l'assistant d'action.
@@ -98,7 +98,7 @@ export const MODE_SUR_TABLE_OUVERT = true
 // « detaille » d'abord : c'est le mode par defaut, celui qu'on a en arrivant.
 // « sur-table » s'intercale : il raconte la meme chose que « detaille », au
 // meme rythme, d'ou sa place a cote et non a la fin.
-export const MODES: ModePhaseMechant[] = ['detaille', 'detaille-bis', 'sur-table', 'instantane']
+export const MODES: ModePhaseMechant[] = ['detaille', 'sur-table', 'instantane']
 
 /**
  * MIGRATION EXPLICITE de tout ce qui a existe avant les deux modes actuels,
@@ -179,6 +179,9 @@ export function lireModePhaseMechant(): ModePhaseMechant {
   if (porteDeChantier()) return 'sur-table'
   try {
     const brut = window.localStorage.getItem(CLE_MODE_PHASE)
+    // 10/10/2026 : « Étape par étape Bis » EST devenu « Étape par étape ». Qui
+    // l'avait choisi garde la même présentation, sous l'unique mode restant.
+    if (brut === 'detaille-bis') return 'detaille'
     if (brut && (MODES as string[]).includes(brut)) {
       // ⚠ LE MODE EN CHANTIER NE SE JOUE PAS, meme deja choisi. Sans ce repli,
       // celui qui l'avait selectionne resterait dedans sans pouvoir en sortir :
@@ -323,8 +326,6 @@ export function libelleModePhase(mode: ModePhaseMechant): string {
   switch (mode) {
     case 'detaille':
       return 'Détaillé'
-    case 'detaille-bis':
-      return 'Étape par étape Bis'
     case 'sur-table':
       return 'Sur la table'
     case 'instantane':

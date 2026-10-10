@@ -1520,7 +1520,6 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Musique de fond': 'Background music',
   'Si un fichier de musique est installé': 'If a music file is installed',
   'Étape par étape': 'Step by step',
-  'Étape par étape Bis': 'Step by step Bis',
   'D’un coup': 'All at once',
   'Étape par étape : un « Suivant » par étape de la phase': 'Step by step: one "Next" per step of the phase',
   'Carte révélée en grand': 'Revealed card shown large',

@@ -29,7 +29,7 @@ async function partie(page: Page, largeur: number, hauteur: number, table?: stri
       if (t) localStorage.setItem('mc_table_v1', JSON.stringify({ 'table-1': t }));
       localStorage.setItem('marvel-langue-choisie', '1');
       localStorage.setItem('marvel-langue', 'fr');
-      localStorage.setItem('marvel-board-mode-phase-mechant', 'detaille-bis');
+      localStorage.setItem('marvel-board-mode-phase-mechant', 'detaille');
     } catch { /* */ }
   }, table ?? '');
   await page.goto('/app/board.html', { waitUntil: 'networkidle' });

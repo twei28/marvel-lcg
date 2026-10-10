@@ -3,7 +3,7 @@
 // à la tour des Avengers » OU « +2 ATQ pour cette attaque ». Le cartouche posait
 // deux vignettes identiques de Proxima, le même texte de carte sous chacune, et
 // « Proxima Minuit peut réagir » : rien ne disait quel clic faisait quoi. Même
-// rendu attendu en « Étape par étape » et en « Étape par étape Bis ».
+// rendu attendu en « Étape par étape » (l'ancien Bis, seul depuis le 10/10/2026).
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import { CartouchePhase, type CartouchePhaseProps } from './CartouchePhase'
@@ -144,7 +144,7 @@ const attaque: EtapeDeroule = {
   boosts: [],
 }
 
-function monter(bis: boolean) {
+function monter() {
   const q = question()
   const props: CartouchePhaseProps = {
     refCartouche: () => {},
@@ -164,7 +164,6 @@ function monter(bis: boolean) {
     cartesDistribuees: 0,
     carteScene: scan,
     pvMaxParNom: new Map([['Spider-Man', 10]]),
-    bis,
   }
   render(<CartouchePhase {...props} />)
   return q
@@ -172,12 +171,16 @@ function monter(bis: boolean) {
 
 const choix = () => [...document.querySelectorAll<HTMLButtonElement>('button[data-choix]')]
 
-describe.each([
-  ['Étape par étape', false],
-  ['Étape par étape Bis', true],
-])('%s : Proxima Minuit propose deux effets', (_mode, bis) => {
+describe('Étape par étape : la présentation est celle de l ancien Bis (10/10/2026)', () => {
+  it('le cartouche porte la classe est-bis sans qu on la demande', () => {
+    monter()
+    expect(document.querySelector('.est-bis')).not.toBeNull()
+  })
+})
+
+describe('Étape par étape : Proxima Minuit propose deux effets', () => {
   it('un bouton par effet, nommé par ce qu’il fait', () => {
-    monter(bis)
+    monter()
     expect(choix().map((b) => b.getAttribute('aria-label'))).toEqual([
       'Infliger 1 dégât à la tour des Avengers',
       'Proxima Minuit gagne +2 ATQ pour cette attaque',
@@ -185,7 +188,7 @@ describe.each([
   })
 
   it('ni la carte ni son texte répétés sous chaque bouton', () => {
-    monter(bis)
+    monter()
     for (const bouton of choix()) {
       expect(bouton.querySelector('.deroule-vignette-carte')).toBeNull()
       expect(bouton.textContent).not.toContain('Interruption forcée')
@@ -193,21 +196,21 @@ describe.each([
   })
 
   it('« choisis un effet » : une interruption forcée ne « peut » pas réagir', () => {
-    monter(bis)
+    monter()
     const texte = document.body.textContent ?? ''
     expect(texte).toContain('Proxima Minuit : choisis un effet')
     expect(texte).not.toContain('peut réagir')
   })
 
   it('les boutons d\u2019effet forment une colonne de même hauteur', () => {
-    monter(bis)
+    monter()
     const conteneur = choix()[0]!.parentElement!
     expect(conteneur.classList.contains('est-textes')).toBe(true)
     for (const bouton of choix()) expect(bouton.classList.contains('est-texte')).toBe(true)
   })
 
   it('le numéro et le libellé sont deux voisins du même bouton', () => {
-    monter(bis)
+    monter()
     for (const bouton of choix()) {
       const enfants = [...bouton.children].map((e) => e.className)
       expect(enfants.slice(0, 2)).toEqual(['deroule-chiffre', 'deroule-choix-nom'])
@@ -215,13 +218,13 @@ describe.each([
   })
 
   it('pendant le choix, les cartes du panneau restent en couleur', () => {
-    monter(bis)
+    monter()
     expect(document.querySelector('.deroule-rangee.est-grisee, .deroule-revelee.est-grisee')).toBeNull()
     expect(document.querySelector('.deroule-rangee')).not.toBeNull()
   })
 
   it('chaque clic active SON effet', () => {
-    const q = monter(bis)
+    const q = monter()
     fireEvent.click(choix()[1]!)
     expect(q.choisirOption).toHaveBeenCalledWith(plusDeux)
   })

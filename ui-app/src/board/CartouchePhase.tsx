@@ -169,7 +169,8 @@ export type CartouchePhaseProps = {
    * et « Continuer ». Faux : le rendu d'avant, a l'octet pres.
    */
   essai?: boolean
-  /** Variante visuelle « Étape par étape Bis », sans modifier le rythme. */
+  /** Presentation « Étape par étape » (l'ancien Bis, seule depuis le
+   *  10/10/2026). Vraie par defaut ; faux pour le cartouche pose sur la table. */
   bis?: boolean
   /** Essai : retourner le boost suivant (ils ne s'enchainent plus seuls). */
   montrerBoostSuivant?: () => void
@@ -1162,7 +1163,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   if (relu || depuisLeJournal) classes.push('est-relecture')
   if (horsPhase) classes.push('est-hors-phase')
   if (essai) classes.push('est-essai')
-  if (props.bis) classes.push('est-bis')
+  if (props.bis ?? true) classes.push('est-bis')
   if (essai && reduit) classes.push('est-reduit')
   const outils = essai ? (
     <span className="essai-outils">
@@ -1203,7 +1204,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         titre={titre}
         page={sequence.length > 1 ? `${page + 1} / ${sequence.length}` : undefined}
         outils={outils}
-        numerosCarres={props.bis}
+        numerosCarres={props.bis ?? true}
       />
       {/* La cle `etape|page` remonte le corps a chaque page : c'est ce qui
           rejoue le glissement d'entree (D35). Entrer en relecture aussi. */}

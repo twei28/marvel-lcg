@@ -1510,7 +1510,7 @@ function PageEtat({
   // La scene du PC dessine le cartouche du bas, distribution fondue (D15),
   // comme la partie elle-meme ; le telephone garde le rendu d'avant (D36).
   const cartoucheDuBas =
-    (modePhaseEnregistre === 'detaille' || modePhaseEnregistre === 'detaille-bis') && mode !== 'mobile'
+    modePhaseEnregistre === 'detaille' && mode !== 'mobile'
   const pourLeCartouche = useMemo(
     () =>
       cartoucheDuBas
@@ -1553,8 +1553,7 @@ function PageEtat({
     {manuel ? null : modePhaseEnregistre !== 'instantane' && etapesEnregistrees.length > 0 ? (
       <DeroulePhase
         attendreBandeau={!bandeauFini}
-        presentation={modePhaseEnregistre === 'detaille' || modePhaseEnregistre === 'detaille-bis' ? 'scene' : 'table'}
-        bis={modePhaseEnregistre === 'detaille-bis'}
+        presentation={modePhaseEnregistre === 'detaille' ? 'scene' : 'table'}
         telephone={mode === 'mobile'}
         etapes={pourLeCartouche.etapes}
         cartesDistribuees={pourLeCartouche.cartesDistribuees}
@@ -3152,8 +3151,7 @@ export function PagePartie({
    * mode qui retiendrait sans afficher de cartouche bloquerait la partie
    * jusqu'au filet anti-blocage de 90 secondes.
    */
-  const sceneCentrale = modePhase === 'detaille' || modePhase === 'detaille-bis'
-  const sceneCentraleBis = modePhase === 'detaille-bis'
+  const sceneCentrale = modePhase === 'detaille'
   const unCartouche = modePhase !== 'instantane'
   /**
    * LE CARTOUCHE DU BAS (refonte du 04/10/2026) : la scene du mode « Étape par
@@ -3730,8 +3728,8 @@ export function PagePartie({
   const miseEnPlace = useMiseEnPlacePasAPas(etat.monde, {
     enCours: enMiseEnPlace,
     voile,
-    // Seulement dans le mode « Étape par étape Bis » (10/10/2026).
-    muet: !sceneCentraleBis || spectateur || estRelecture() || modeManuelDeclare,
+    // Seulement dans le mode « Étape par étape » (l'ancien Bis, 10/10/2026).
+    muet: !sceneCentrale || spectateur || estRelecture() || modeManuelDeclare,
   })
 
   // ⚠ LE SILENCE DE L'OUVERTURE VAUT AUSSI POUR LES SONS. Ce hook est appele
@@ -4369,7 +4367,6 @@ export function PagePartie({
             // « Detaille », ou le cartouche pose A COTE DE L'ACTION du mode
             // « Sur la table ».
             presentation={sceneCentrale ? 'scene' : 'table'}
-            bis={sceneCentraleBis}
             essai={phaseEssai}
             attendreBandeau={!bandeauPasse}
             // Distribution retiree en scene PC (D15), liste brute ailleurs.
