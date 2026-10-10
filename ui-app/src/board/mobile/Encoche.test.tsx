@@ -91,6 +91,21 @@ describe('Encoche deplacable (signalement Yarro #40)', () => {
     expect(droite.style.top).toBe('')
   })
 
+  // Zone 3 (10/10/2026) : fine et semi-transparente au repos, pleine opacite
+  // tant que le doigt la tient. La languette visible est `.encoche-corps`.
+  it('s allume au toucher et s efface au relachement', () => {
+    const { bouton } = monter()
+    expect(bouton.querySelector('.encoche-corps')).not.toBeNull()
+    expect(bouton).not.toHaveClass('est-touchee')
+    fireEvent.pointerDown(bouton, { clientX: 5, clientY: 500 })
+    expect(bouton).toHaveClass('est-touchee')
+    fireEvent.pointerUp(bouton)
+    expect(bouton).not.toHaveClass('est-touchee')
+    fireEvent.pointerDown(bouton, { clientX: 5, clientY: 500 })
+    fireEvent.pointerCancel(bouton)
+    expect(bouton).not.toHaveClass('est-touchee')
+  })
+
   // Temoin : un doigt qui part en travers AVANT la fin de l'appui long n'est
   // pas un maintien, la languette ne se saisit pas.
   it('ne se saisit pas si le doigt a bouge avant la fin de l appui long', () => {

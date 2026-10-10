@@ -68,6 +68,9 @@ export function Encoche({
   // l'ecran). Absente : la place d'origine de la feuille de style.
   const [ratio, setRatio] = useState<number | undefined>(() => lireRatio(cote))
   const [enDeplacement, setEnDeplacement] = useState(false)
+  // FINE ET SEMI-TRANSPARENTE AU REPOS (zone 3, 10/10/2026) : pleine opacite
+  // tant que le doigt la tient. La zone tactile, elle, garde ses 44 px.
+  const [touchee, setTouchee] = useState(false)
   const minuteur = useRef<number | undefined>(undefined)
   const deplace = useRef(false)
   const vientDeDeplacer = useRef(false)
@@ -88,13 +91,14 @@ export function Encoche({
   return (
     <button
       type="button"
-      className={`encoche encoche-${cote === 'droite' ? 'main' : 'piles'}${enDeplacement ? ' est-deplacee' : ''}`}
+      className={`encoche encoche-${cote === 'droite' ? 'main' : 'piles'}${enDeplacement ? ' est-deplacee' : ''}${touchee ? ' est-touchee' : ''}`}
       data-tactile={cote === 'droite' ? 'main' : 'tiroir'}
       aria-label={libelle}
       style={style}
       onContextMenu={(evenement) => evenement.preventDefault()}
       onPointerDown={(evenement) => {
         depart.current = evenement.clientX
+        setTouchee(true)
         vientDeSwiper.current = false
         deplace.current = false
         vientDeDeplacer.current = false
@@ -136,6 +140,7 @@ export function Encoche({
       }}
       onPointerUp={() => {
         depart.current = undefined
+        setTouchee(false)
         armerFin()
         if (deplace.current) {
           deplace.current = false
@@ -146,6 +151,7 @@ export function Encoche({
       }}
       onPointerCancel={() => {
         depart.current = undefined
+        setTouchee(false)
         armerFin()
         if (deplace.current) {
           deplace.current = false
@@ -165,8 +171,10 @@ export function Encoche({
         onOuvrir()
       }}
     >
-      {nombre !== undefined ? <b className="encoche-nombre">{nombre}</b> : <span aria-hidden="true">≡</span>}
-      <span className="encoche-libelle">{libelle}</span>
+      <span className="encoche-corps">
+        {nombre !== undefined ? <b className="encoche-nombre">{nombre}</b> : <span aria-hidden="true">≡</span>}
+        <span className="encoche-libelle">{libelle}</span>
+      </span>
     </button>
   )
 }

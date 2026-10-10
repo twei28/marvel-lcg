@@ -1,0 +1,190 @@
+/* telephone.css : la zone 3 de la refonte du telephone (10/10/2026,
+   .planning/todos/2026-10-09-mode-telephone-refonte.md, « Plateau »).
+
+   ⚠ HORS COUCHE, comme affichage-sobre.css : ces regles ne visent que des
+   classes NOUVELLES, posees par le plateau en bandes (`.plateau-portrait`,
+   `.bandeau-annuler`, `.main-feuille-*`, `.ecran-tourne`) ou par lui seul
+   (`html[data-taille-texte]`, retire au demontage). Le plateau PC n'en
+   porte aucune : il ne voit rien de ce fichier.
+
+   Regles tenues : zones tactiles de 44 px, animations courtes et coupees
+   en mode sobre (`body.plateau-sans-animations`) comme quand le systeme
+   demande moins de mouvement. */
+
+/* --- La taille du texte (reglage a trois niveaux) ------------------------
+   Le plateau est ecrit en rem : la racine suffit. */
+html[data-taille-texte='grand'] {
+  font-size: 112.5%;
+}
+html[data-taille-texte='tres-grand'] {
+  font-size: 125%;
+}
+
+/* --- Le bandeau « Annuler » ----------------------------------------------
+   En HAUT, sous le bandeau du plateau : en bas il aurait couvert « Jouer »
+   et « Fermer » de la main, qui reste ouverte apres une carte jouee. */
+.bandeau-annuler {
+  position: fixed;
+  top: calc(52px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  z-index: 660;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 16px);
+  box-sizing: border-box;
+  padding: 0 4px 0 14px;
+  overflow: hidden;
+  color: #e8e9ee;
+  background: rgba(24, 26, 32, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 99px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  transform: translateX(-50%);
+}
+.bandeau-annuler-texte {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.bandeau-annuler-bouton {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  font: inherit;
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: var(--menace);
+  background: transparent;
+  border: none;
+  border-radius: 99px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+/* Le temps qui reste, en filet sous le bandeau. */
+.bandeau-annuler-temps {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--menace);
+  opacity: 0.6;
+  transform-origin: left center;
+}
+
+/* --- La main : « Jouer » ------------------------------------------------- */
+.main-portrait-carte.est-choisie .scan-card {
+  outline: 3px solid var(--menace);
+  outline-offset: 1px;
+}
+.main-feuille-boutons {
+  display: flex;
+  gap: 8px;
+}
+.main-feuille-jouer,
+.main-feuille-lire {
+  min-height: 44px;
+  padding: 0 18px;
+  font: inherit;
+  font-weight: 900;
+  border-radius: 99px;
+  cursor: pointer;
+}
+.main-feuille-jouer {
+  color: var(--fond);
+  background: var(--menace);
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.main-feuille-lire {
+  color: #e8e9ee;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* --- « Installer l'application », discret, au fond du menu « … » -------- */
+.portrait-installer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  text-align: left;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* --- Le verrou portrait, quand le navigateur ne fige pas l'ecran -------- */
+.ecran-tourne {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+  color: #e8e9ee;
+  background: var(--fond, #15171c);
+}
+.ecran-tourne strong {
+  font-size: 1.2rem;
+}
+.ecran-tourne-icone {
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--menace);
+}
+
+/* --- Les animations : courtes, et seulement si personne ne les coupe ---- */
+@media (prefers-reduced-motion: no-preference) {
+  body:not(.plateau-sans-animations) .encoche {
+    transition: opacity 180ms ease;
+  }
+  body:not(.plateau-sans-animations) .encoche-corps {
+    transition: opacity 150ms ease, transform 150ms ease;
+  }
+  body:not(.plateau-sans-animations) .encoche.est-deplacee .encoche-corps {
+    transition: none;
+  }
+  body:not(.plateau-sans-animations) .bandeau-annuler {
+    animation: tel-bandeau-entre 160ms ease-out;
+  }
+  body:not(.plateau-sans-animations) .bandeau-annuler-temps {
+    animation: tel-bandeau-temps 5s linear forwards;
+  }
+  body:not(.plateau-sans-animations) .main-feuille {
+    animation: tel-feuille-monte 180ms ease-out;
+  }
+  body:not(.plateau-sans-animations) .main-feuille-jouer {
+    animation: tel-bandeau-entre 140ms ease-out;
+  }
+}
+@keyframes tel-bandeau-entre {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+@keyframes tel-bandeau-temps {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+@keyframes tel-feuille-monte {
+  from {
+    transform: translateY(24px);
+    opacity: 0.4;
+  }
+}

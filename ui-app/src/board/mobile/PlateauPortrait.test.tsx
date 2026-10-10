@@ -227,6 +227,32 @@ describe('PlateauPortrait — la main derriere son encoche', () => {
     expect(questionSurLaMain([unite('12', { kind: 'event' })], new Map([[99, { role: 'cible', choisie: false } as EtatInteractif]]))).toBe(false)
   })
 
+  it('zone 3 : une carte que le moteur propose de JOUER se choisit d un toucher, puis « Jouer » la joue', () => {
+    const jouer = vi.fn()
+    const main = plateau(emplacement('main', unite('12', { kind: 'event' })))
+    const interactifs = new Map([[12, { role: 'porteur', choisie: false, agir: jouer } as EtatInteractif]])
+    render(<PlateauPortrait world={monde} playerId={0} plateau={main} interactifs={interactifs} />)
+    fireEvent.click(document.querySelector('.encoche-main')!)
+    fireEvent.click(document.querySelector('.main-portrait .scan-card')!)
+    expect(document.querySelector('.carte-ouverte')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Jouer' }))
+    expect(jouer).toHaveBeenCalledTimes(1)
+  })
+
+  it('zone 3 : le toucher long ouvre la carte en grand, avec « Jouer » au lieu de « Utiliser cette carte »', () => {
+    vi.useFakeTimers()
+    const main = plateau(emplacement('main', unite('12', { kind: 'event' })))
+    const interactifs = new Map([[12, { role: 'porteur', choisie: false, agir: () => {} } as EtatInteractif]])
+    render(<PlateauPortrait world={monde} playerId={0} plateau={main} interactifs={interactifs} />)
+    fireEvent.click(document.querySelector('.encoche-main')!)
+    fireEvent.pointerDown(document.querySelector('.main-portrait-carte')!)
+    act(() => {
+      vi.advanceTimersByTime(APPUI_LONG_MS)
+    })
+    expect(document.querySelector('.carte-ouverte')).not.toBeNull()
+    expect(document.querySelector('.carte-ouverte-agir')).toHaveTextContent('Jouer')
+  })
+
   it('en vrai : la question ouvre la main, sa fin la referme, mais pas si le joueur l avait ouverte lui-meme', () => {
     const main = plateau(emplacement('main', unite('12', { kind: 'event' })))
     const question = new Map([[12, { role: 'cible', choisie: false, agir: () => {} } as EtatInteractif]])

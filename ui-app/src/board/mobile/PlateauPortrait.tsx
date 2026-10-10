@@ -12,13 +12,14 @@
 // bandes passent par `Unite` (Board.tsx), qui appelle `avecInteraction`, la
 // seule copie autorisee de cette logique.
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
-import type { CardEffectDelta, ScanCardProps } from '../../components/ScanCard'
+import { ImagesParesseuses, type CardEffectDelta, type ScanCardProps } from '../../components/ScanCard'
 import { PileRegardee, avecInteraction } from '../Board'
 import type { BoardProps } from '../Board'
 import type { EtatInteractif } from '../interaction'
 import { t } from '../langue'
 import type { GroupeDePile, UniteAffichee } from '../zones'
 import { Bande } from './Bande'
+import { BandeauAnnuler } from './BandeauAnnuler'
 import { BandeauPortrait } from './BandeauPortrait'
 import { CarteOuverte } from './CarteOuverte'
 import { Encoche } from './Encoche'
@@ -29,6 +30,7 @@ import { repartirEnBandes } from './bandes-portrait'
 import { useHauteurDeQuestion } from './hauteur-de-question'
 import { useDefilerVersLaCible } from './defiler-vers-la-cible'
 import './portrait.css'
+import './telephone.css'
 
 const AUCUNE_INTERACTION: Map<number, EtatInteractif> = new Map()
 const AUCUN_EFFET: Map<number, CardEffectDelta> = new Map()
@@ -89,9 +91,12 @@ export function PlateauPortrait(props: BoardProps) {
   // La carte lue EN GRAND, au milieu de l'ecran. `props.onCardClick` ne sert
   // pas a lire une carte : il ouvre les ACTIONS du moteur. Lire est un etat
   // local, comme sur le portrait du 11/09.
-  const [carteLue, setCarteLue] = useState<{ carte: ScanCardProps; attachees: ScanCardProps[] } | undefined>()
+  const [carteLue, setCarteLue] = useState<
+    { carte: ScanCardProps; attachees: ScanCardProps[]; libelleAction?: string } | undefined
+  >()
   const ouvrirCarte = useCallback(
-    (carte: ScanCardProps, attachees: ScanCardProps[] = []) => setCarteLue({ carte, attachees }),
+    (carte: ScanCardProps, attachees: ScanCardProps[] = [], libelleAction?: string) =>
+      setCarteLue({ carte, attachees, libelleAction }),
     []
   )
   // La carte ouverte SUIT la question en cours (06/10/2026) : son action est
@@ -187,6 +192,12 @@ export function PlateauPortrait(props: BoardProps) {
     },
     [props.onCardClick, manuelAuDoigt]
   )
+  // « Jouer » (zone 3) : une carte de la main que le moteur propose de JOUER
+  // (role `porteur`), pas une ressource a depenser ni une cible a cocher.
+  const jouable = useCallback(
+    (unite: UniteAffichee) => !manuelAuDoigt && interactifs.get(Number(unite.carte.id))?.role === 'porteur',
+    [interactifs, manuelAuDoigt]
+  )
   const decor = useMemo(
     () => ({
       interactifs,
@@ -212,6 +223,7 @@ export function PlateauPortrait(props: BoardProps) {
     ) : undefined
 
   return (
+    <ImagesParesseuses.Provider value={true}>
     <main
       className={`plateau-portrait${enDefilement ? ' est-en-defilement' : ''}`}
       style={{ '--question-h': `${hauteurDeQuestion}px` } as CSSProperties}
@@ -254,8 +266,8 @@ export function PlateauPortrait(props: BoardProps) {
       />
 
       <TiroirPiles piles={bandes.piles} ouvert={tiroirOuvert} onFermer={() => setTiroirOuvert(false)} onOuvrirPile={ouvrirPile} />
-      {/* Tap = lire la carte en grand (CarteOuverte), appui long = jouer
-          directement, sans engager l'un dans l'autre. */}
+      {/* Toucher une carte jouable = la choisir, puis « Jouer » ; toucher
+          long = la lire en grand (zone 3, MainPortrait.tsx). */}
       <MainPortrait
         unites={main}
         ouverte={mainOuverte}
@@ -264,8 +276,9 @@ export function PlateauPortrait(props: BoardProps) {
           refuseeParLeJoueur.current = true
           setMainOuverte(false)
         }}
-        onOuvrir={(unite) => ouvrirCarte(unite.carte)}
+        onOuvrir={(unite) => ouvrirCarte(unite.carte, [], jouable(unite) ? t('Jouer') : undefined)}
         onJouer={(unite) => agir(unite.carte)}
+        jouable={jouable}
       />
       {carteLue && !actionPerdue ? (
         <CarteOuverte
@@ -273,6 +286,7 @@ export function PlateauPortrait(props: BoardProps) {
           attachees={carteLue.attachees}
           onOuvrirAttachee={(carte) => ouvrirCarte(carte)}
           onFermer={() => setCarteLue(undefined)}
+          libelleAction={carteLue.libelleAction}
         />
       ) : null}
       {pileRegardee ? (
@@ -283,6 +297,8 @@ export function PlateauPortrait(props: BoardProps) {
           fermer={() => setPileRegardee(undefined)}
         />
       ) : null}
+      <BandeauAnnuler annuler={props.annulerCoup} />
     </main>
+    </ImagesParesseuses.Provider>
   )
 }

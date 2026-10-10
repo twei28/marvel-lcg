@@ -37,6 +37,7 @@ import {
   MODE_SUR_TABLE_OUVERT,
 } from './moteur'
 import type { ReglageMode } from './mobile/useModeMobile'
+import { ecrireReglageTelephone, useReglagesTelephone, type TailleTexte } from './mobile/reglages-telephone'
 import type { Affichage } from './affichage'
 import { RoueTeinte } from './RoueTeinte'
 import type { Teinte } from './teinte'
@@ -255,6 +256,53 @@ function LigneCoteAmeliorations() {
   )
 }
 
+/* ---------------------------------------------------------- telephone -- */
+// Zone 3 de la refonte (10/10/2026) : trois reglages du TELEPHONE, montres sur
+// telephone seulement (`telephone`). Autonomes comme `LigneEtiquettesTable` :
+// ils lisent et ecrivent eux-memes leur valeur (mobile/reglages-telephone.ts),
+// et le plateau ouvert suit sans rechargement.
+
+function LigneTailleTexte() {
+  const { tailleTexte } = useReglagesTelephone()
+  return (
+    <LigneChoix
+      libelle={t('Taille du texte')}
+      valeur={tailleTexte}
+      choix={[
+        { valeur: 'normal' as TailleTexte, libelle: t('Normale') },
+        { valeur: 'grand' as TailleTexte, libelle: t('Grande') },
+        { valeur: 'tres-grand' as TailleTexte, libelle: t('Très grande') },
+      ]}
+      onChoisir={(valeur) => ecrireReglageTelephone('tailleTexte', valeur)}
+      detail={t('Bandeau, titres, menus et boutons du plateau')}
+    />
+  )
+}
+
+function LigneVerrouPortrait() {
+  const { verrouPortrait } = useReglagesTelephone()
+  return (
+    <LigneBascule
+      libelle={t('Verrou portrait')}
+      detail={t('Garde le plateau debout quand le téléphone se couche')}
+      actif={verrouPortrait}
+      onBascule={() => ecrireReglageTelephone('verrouPortrait', !verrouPortrait)}
+    />
+  )
+}
+
+function LigneVibrations() {
+  const { vibrations } = useReglagesTelephone()
+  return (
+    <LigneBascule
+      libelle={t('Vibrations')}
+      detail={t('Ton tour, attaque subie, action validée')}
+      actif={vibrations}
+      onBascule={() => ecrireReglageTelephone('vibrations', !vibrations)}
+    />
+  )
+}
+
 /* -------------------------------------------------------------- fenetre -- */
 
 export type ProprietesReglages = {
@@ -315,6 +363,8 @@ export type ProprietesReglages = {
   montrerDisposition: boolean
   reglageMode: ReglageMode
   cyclerReglageMode: () => void
+  /** Sur telephone : taille du texte, verrou portrait, vibrations (zone 3). */
+  telephone?: boolean
 }
 
 export function ContenuOnglet({
@@ -355,6 +405,12 @@ export function ContenuOnglet({
           </div>
         ) : null}
         <LigneEtiquettesTable />
+        {p.telephone ? (
+          <>
+            <LigneTailleTexte />
+            <LigneVerrouPortrait />
+          </>
+        ) : null}
         <LigneBascule
           libelle={t('Animations')}
           detail={t('Cartes qui bougent, secousses, halos')}
@@ -427,6 +483,7 @@ export function ContenuOnglet({
           onBascule={p.basculerSons}
         />
         <LigneVolumeSons disponible={p.sons} />
+        {p.telephone ? <LigneVibrations /> : null}
         <LigneBascule
           libelle={t('Musique de fond')}
           detail={t('Si un fichier de musique est installé')}

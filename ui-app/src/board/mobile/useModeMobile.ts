@@ -16,19 +16,25 @@ export type ModeRendu = 'mobile' | 'pc'
 export const CLE_MODE = 'mode-plateau'
 
 /**
- * Le PETIT COTE de l'ecran decide, pas la largeur.
- *
- * La regle etait `(max-width: 900px), (pointer: coarse)`. Elle attrapait les
+ * Historique : jusqu'au 10/10/2026, le PETIT COTE de l'ecran decidait
+ * (`(max-width: 600px), (max-height: 500px)`). Avant encore, la regle etait `(max-width: 900px), (pointer: coarse)`. Elle attrapait les
  * tablettes, que l'on veut desormais sur le plateau PC (spec du 11/09/2026) :
  * un iPad en paysage a la place d'une vraie table, lui demander de tourner
  * serait absurde. Et `pointer: coarse` seul ne distingue pas un telephone
  * couche d'une tablette.
  *
- *   telephone debout  390x844  -> largeur 390 <= 600  : mobile
- *   telephone couche  844x390  -> hauteur 390 <= 500  : mobile
- *   tablette          768x1024 -> ni l'un ni l'autre  : plateau PC
+ * ⚠ ZONE 3 DE LA REFONTE (10/10/2026) : « a 768 px et plus, disposition PC ;
+ * paysage tolere avec le plateau PC reduit ». C'est donc la LARGEUR qui
+ * decide, a 768 px, comme toutes les pages du telephone (prepare-tel.css,
+ * tel-pages.css). Le plateau PC se met deja a l'echelle de sa fenetre
+ * (useEchelle, Board.tsx) : couche, il tient en entier, en plus petit.
+ *
+ *   telephone debout  390x844  -> largeur 390 < 768  : mobile
+ *   telephone couche  844x390  -> largeur 844        : plateau PC reduit
+ *   petit telephone couche 667x375 -> largeur 667    : mobile (bandes larges)
+ *   tablette          768x1024 -> largeur 768        : plateau PC
  */
-export const REQUETE_MOBILE = '(max-width: 600px), (max-height: 500px)'
+export const REQUETE_MOBILE = '(max-width: 767px)'
 
 /**
  * Sur un ORDINATEUR, on rend toujours le plateau PC — un « mobile » memorise

@@ -907,6 +907,12 @@ export type BoardProps = {
    */
   actionPrincipale?: { libelle: string; suggere?: boolean; agir: () => void }
   /**
+   * L'annulation du menu (« ↶ Annuler », board.tsx). Le telephone la propose
+   * aussi dans un bandeau, cinq secondes apres chaque action (zone 3). Le
+   * plateau PC l'ignore : son bouton est dans la barre.
+   */
+  annulerCoup?: () => void
+  /**
    * Un effet d'ambiance efface les couleurs (le noir et blanc). Le plateau
    * desature alors les SCANS et rend l'aspect par un lisere colore, qui, lui,
    * n'est pas desature parce qu'il est dessine hors de l'image.

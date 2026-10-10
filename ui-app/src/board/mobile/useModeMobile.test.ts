@@ -18,10 +18,17 @@ function correspond(requete: string, largeur: number, hauteur: number): boolean 
   })
 }
 
-describe('REQUETE_MOBILE : le petit côté décide', () => {
+describe('REQUETE_MOBILE : la largeur décide, à 768 px', () => {
   it('prend les téléphones, debout comme couchés', () => {
+    expect(correspond(REQUETE_MOBILE, 320, 640)).toBe(true)
     expect(correspond(REQUETE_MOBILE, 390, 844)).toBe(true)
-    expect(correspond(REQUETE_MOBILE, 844, 390)).toBe(true)
+    expect(correspond(REQUETE_MOBILE, 430, 932)).toBe(true)
+    expect(correspond(REQUETE_MOBILE, 767, 1024)).toBe(true)
+  })
+
+  it('zone 3 : un telephone couche de 768 px et plus prend le plateau PC reduit', () => {
+    expect(correspond(REQUETE_MOBILE, 844, 390)).toBe(false)
+    expect(correspond(REQUETE_MOBILE, 667, 375)).toBe(true)
   })
 
   it('LAISSE les tablettes au plateau PC, dans les deux sens', () => {
