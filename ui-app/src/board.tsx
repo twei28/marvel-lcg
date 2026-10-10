@@ -4052,6 +4052,14 @@ export function PagePartie({
   // validation. Ceux de la table gardent leur halo et restent cliquables
   // derriere le voile : les deux chemins menent au meme `agir`.
   const ciblageEnScene = sceneCentrale && phaseMechantEnCours && interaction.option !== undefined
+  // Rapport n76 (Yarro, 10/10/2026) : quand TOUTES les cibles sont hors table,
+  // le selecteur devient une fenetre avec Annuler / Valider, et le panneau
+  // central (qui le recouvrait) se retire. Des cibles aussi sur la table : la
+  // table doit rester cliquable, on garde l'ancien couple.
+  const fenetreChoix =
+    selecteurOuvert &&
+    !(ciblageEnScene && nouvelleScenePC) &&
+    interaction.ciblesHorsTable.length >= interaction.assistant.ciblePossibles
   // LA QUESTION STRUCTUREE du cartouche du bas (scene PC, lots 4 et 5) : la
   // defense et le choix d'une carte revelee dans sa rangee, le reste dans son
   // sous-cadre. Pendant la phase, c'est DeroulePhase qui la porte ; hors
@@ -4172,9 +4180,20 @@ export function PagePartie({
           cibles={interaction.ciblesHorsTable}
           titre={interaction.option ? nomLisible(interaction.option) : ''}
           survoler={setApercuSelecteur}
+          fenetre={
+            fenetreChoix
+              ? {
+                  choisies: interaction.assistant.cibleNombre,
+                  minimum: interaction.assistant.cibleMinimum,
+                  maximum: interaction.assistant.cibleMaximum,
+                  valider: interaction.valider,
+                  annuler: interaction.annuler,
+                }
+              : undefined
+          }
         />
       )}
-      {apercuSelecteur ? <CarteApercu carte={apercuSelecteur} /> : null}
+      {apercuSelecteur && !fenetreChoix ? <CarteApercu carte={apercuSelecteur} /> : null}
       {interaction.ciblesHorsTable.length === 0 && !interaction.option ? (
         <ModaleCartesRegardees groupes={groupesRegardes} />
       ) : null}
@@ -4250,7 +4269,7 @@ export function PagePartie({
         />
       ) : null}
 
-      {manuel ? null : (
+      {manuel || fenetreChoix ? null : (
         <AssistantAction
           demande={etat.demande}
           interaction={interaction}

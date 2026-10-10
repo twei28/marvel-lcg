@@ -1,0 +1,70 @@
+/* La fenetre de choix (rapport n76, 10/10/2026) : toutes les cibles sont hors
+   table, le selecteur devient une fenetre au-dessus d'un voile, avec ses
+   propres boutons. Le panneau central est masque pendant ce temps (board.tsx). */
+.plateau-selecteur-voile {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  background: rgba(4, 6, 10, 0.62);
+}
+
+.plateau-selecteur.est-fenetre {
+  /* La fenetre suit le nombre de cartes (demande du 10/10/2026) : trois cartes,
+     une fenetre etroite ; beaucoup, elle s'elargit jusqu'a l'ecran et passe a
+     la ligne. */
+  width: max-content;
+  min-width: min(420px, calc(100vw - 32px));
+  max-width: min(1100px, calc(100vw - 32px));
+  max-height: min(90dvh, 760px);
+  overflow: auto;
+}
+
+.plateau-selecteur.est-fenetre .plateau-selecteur-entete {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.plateau-selecteur-compte {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.plateau-selecteur-boutons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 4px 4px;
+}
+
+.plateau-selecteur-boutons button {
+  min-height: 44px;
+  min-width: 120px;
+  padding: 8px 20px;
+  font: inherit;
+  font-weight: 800;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.plateau-selecteur-annuler {
+  color: #e6ebf2;
+  background: rgba(40, 46, 58, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.plateau-selecteur-valider {
+  color: #1b1408;
+  background: #f0b95f;
+  border: 1px solid #f7d7a3;
+}
+
+.plateau-selecteur-valider:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.plateau-selecteur.est-fenetre .plateau-selecteur-cartes {
+  justify-content: center;
+  flex-wrap: wrap;
+}

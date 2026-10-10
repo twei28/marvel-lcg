@@ -1077,7 +1077,13 @@ export function useInteraction(
   ])
 
   const ciblesHorsTable = useMemo<CibleHorsTable[]>(() => {
-    if (!option || etape !== 'target') return []
+    // Rapport n76 (10/10/2026) : quand TOUTES les cibles sont hors table, la
+    // liste reste montee a l'etape « confirm » : la carte choisie y reste en
+    // surbrillance et la fenetre de choix porte son propre « Valider ». Sinon
+    // le choix d'une carte refermait la fenetre et renvoyait au panneau central.
+    const toutesHorsTable =
+      option !== undefined && option.all_legal_targets.length > 0 && option.all_legal_targets.every((c) => !idsAffiches.has(c) || representantsDePile?.get(c) === c)
+    if (!option || (etape !== 'target' && !(etape === 'confirm' && toutesHorsTable))) return []
     const [, max] = option.target_num_range
     const ordonnee = optionEstOrdonnee(option)
     const liste: CibleHorsTable[] = []

@@ -757,29 +757,20 @@ export function MenuActionsCarte({
                         {cible ? <span>{cible}</span> : null}
                       </span>
                     ) : null}
-                    {cibles.length > 0 ? (
+                    {/* Rapport n76 (Yarro, tablette, 10/10/2026) : les cibles HORS
+                        TABLE ne sont plus des etiquettes a toucher (deux sur trois ne
+                        repondaient pas, la troisieme ouvrait une autre fenetre).
+                        Toucher l'action ouvre la fenetre de choix, cartes visibles,
+                        puis Valider. Seules les cibles sur la table restent nommees. */}
+                    {cibles.some((target) => !target.horsTable) ? (
                       <span className="ma-cibles" aria-label={t('Cibles possibles')}>
-                        {cibles.map((target) => {
-                          const contenu = <ContenuCible target={target} />
-                          return target.horsTable && ouvrirCiblesHorsTable ? (
-                            <button
-                              type="button"
-                              className="ma-cible est-hors-table"
-                              key={target.id}
-                              onClick={(evenement) => {
-                                evenement.stopPropagation()
-                                ouvrirCiblesHorsTable(option)
-                              }}
-                              onKeyDown={(evenement) => evenement.stopPropagation()}
-                            >
-                              {contenu}
-                            </button>
-                          ) : (
+                        {cibles
+                          .filter((target) => !target.horsTable)
+                          .map((target) => (
                             <span className="ma-cible" key={target.id}>
-                              {contenu}
+                              <ContenuCible target={target} />
                             </span>
-                          )
-                        })}
+                          ))}
                       </span>
                     ) : null}
                     {schemesNonLegaux.length > 0 ? (
