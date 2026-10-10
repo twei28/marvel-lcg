@@ -23,6 +23,44 @@ const LA_TABLE: Raccourci[] = [
   { touches: 'Réglages › Jeu', effet: '« Améliorations » : à gauche ou à droite de la carte qui les porte' },
 ]
 
+// LE TELEPHONE (10/10/2026) : les touches et le glisser-Alt n'existent pas au
+// doigt. Chaque ligne decrit le geste tel que le code le fait (mobile/).
+const TEL_LE_PLATEAU: Raccourci[] = [
+  { touches: 'Glisser vers le haut ou le bas', effet: 'Passer d’une bande à l’autre : méchant, manigances, ennemis engagés, ton héros' },
+  { touches: 'Glisser de côté sur une bande', effet: 'Faire défiler ses cartes. Le méchant, la manigance principale et ton identité restent au bord.' },
+  { touches: 'Toucher une carte', effet: 'L’ouvrir en grand pour la lire' },
+  { touches: 'Appui long sur une carte', effet: 'Agir avec elle (attaquer, contrer, utiliser son effet)' },
+]
+
+const TEL_TA_MAIN: Raccourci[] = [
+  { touches: 'Languette de droite', effet: 'Ouvrir ta main (toucher, ou glisser vers la gauche). Elle s’ouvre seule quand une question porte sur une carte en main.' },
+  { touches: 'Toucher une carte jouable', effet: 'La choisir : « Lire » et « Jouer » apparaissent en bas. Toucher encore la repose.' },
+  { touches: 'Toucher une autre carte', effet: 'L’ouvrir en grand pour la lire' },
+  { touches: 'Appui long sur une carte', effet: 'L’ouvrir en grand, sans la jouer' },
+  { touches: 'Défausse de fin de tour', effet: 'Un toucher coche ou décoche la carte' },
+  { touches: 'Fermer la main', effet: 'Toucher le fond, glisser vers la droite ou « Fermer »' },
+]
+
+const TEL_PILES: Raccourci[] = [
+  { touches: 'Languette de gauche', effet: 'Ouvrir les piles : ton deck, ta défausse, le deck rencontre, le némésis…' },
+  { touches: 'Toucher une pile', effet: 'Voir ses cartes' },
+  { touches: 'Appui long sur une languette', effet: 'La monter ou la descendre du doigt. Sa place est gardée.' },
+]
+
+const TEL_PENDANT_LA_PARTIE: Raccourci[] = [
+  { touches: 'Bouton du bandeau', effet: 'L’action du moment, comme « Fin du tour »' },
+  { touches: 'Menu « … »', effet: 'Annuler, sauver, historique, réglages, journal, quitter' },
+  { touches: 'Bandeau « Annuler »', effet: 'Pendant 5 secondes après ton action, il la défait' },
+  { touches: 'Phase du méchant', effet: 'Le panneau montre chaque carte révélée. « Suivant » avance, « Continuer » termine.' },
+  { touches: 'Retour d’Android', effet: 'Fermer la fenêtre ouverte au lieu de quitter la partie' },
+]
+
+const TEL_REGLAGES: Raccourci[] = [
+  { touches: 'Réglages › Apparence', effet: '« Taille du texte » (normale, grande, très grande) et « Verrou portrait »' },
+  { touches: 'Réglages › Son', effet: '« Vibrations » : ton tour, attaque subie, action validée' },
+  { touches: 'Menu « … »', effet: '« Installer l’application » : le jeu en plein écran, avec une icône. Seulement si ton navigateur le permet.' },
+]
+
 function Tableau({ titre, lignes }: { titre: string; lignes: Raccourci[] }) {
   return (
     <section className="aide-manuel-groupe">
@@ -41,7 +79,18 @@ function Tableau({ titre, lignes }: { titre: string; lignes: Raccourci[] }) {
   )
 }
 
-export function VoletAideAuto({ ouvert, ouvrir, fermer }: { ouvert: boolean; ouvrir: () => void; fermer: () => void }) {
+export function VoletAideAuto({
+  ouvert,
+  ouvrir,
+  fermer,
+  telephone = false,
+}: {
+  ouvert: boolean
+  ouvrir: () => void
+  fermer: () => void
+  /** Plateau en bandes : l'aide des gestes du doigt, pas celle du clavier. */
+  telephone?: boolean
+}) {
   return (
     <>
       <button
@@ -63,9 +112,21 @@ export function VoletAideAuto({ ouvert, ouvrir, fermer }: { ouvert: boolean; ouv
             </button>
           </header>
           <div className="volet-aide-contenu">
-            <Tableau titre="Pendant la partie" lignes={PENDANT_LA_PARTIE} />
-            <Tableau titre="Ranger tes cartes" lignes={RANGER_SES_CARTES} />
-            <Tableau titre="La table" lignes={LA_TABLE} />
+            {telephone ? (
+              <>
+                <Tableau titre="Le plateau" lignes={TEL_LE_PLATEAU} />
+                <Tableau titre="Ta main" lignes={TEL_TA_MAIN} />
+                <Tableau titre="Les piles" lignes={TEL_PILES} />
+                <Tableau titre="Pendant la partie" lignes={TEL_PENDANT_LA_PARTIE} />
+                <Tableau titre="Réglages du téléphone" lignes={TEL_REGLAGES} />
+              </>
+            ) : (
+              <>
+                <Tableau titre="Pendant la partie" lignes={PENDANT_LA_PARTIE} />
+                <Tableau titre="Ranger tes cartes" lignes={RANGER_SES_CARTES} />
+                <Tableau titre="La table" lignes={LA_TABLE} />
+              </>
+            )}
           </div>
         </aside>
       ) : null}

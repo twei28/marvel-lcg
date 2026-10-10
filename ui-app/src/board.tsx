@@ -4951,7 +4951,12 @@ export function PagePartie({
           <CoucheSelection />
         </>
       ) : (
-        <VoletAideAuto ouvert={aideAutoOuverte} ouvrir={ouvrirAideAuto} fermer={fermerAideAuto} />
+        <VoletAideAuto
+          ouvert={aideAutoOuverte}
+          ouvrir={ouvrirAideAuto}
+          fermer={fermerAideAuto}
+          telephone={modePlateau === 'mobile'}
+        />
       )}
       <VoletJournal ouvert={partieOuverte} ouvrir={ouvrirVolet} fermer={fermerVolet}>
         <CartesDuJournal.Provider value={cartesDuVolet}>
