@@ -3070,12 +3070,6 @@
     padding: 28px 0 4px 4px;
   }
 
-  .zone-complot-principal .plateau-emplacement-titre,
-  .zone-complots-secondaires .plateau-emplacement-titre {
-    right: 4px;
-    left: auto;
-  }
-
   /* ⚠ `.zone-nemesis` A DISPARU le 14/09/2026 : le set némésis a rejoint
      « Mises de côté / autres piles » (voir zones.ts et la grille plus haut).
      Son accent rouge sombre est parti avec elle ; la pile garde son étiquette
