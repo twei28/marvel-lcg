@@ -91,9 +91,11 @@ function texteDemande(demande: Demande): string {
   return t('Choisis une réponse')
 }
 
-function libelleTypeDemande(demande: Demande): string {
+export function libelleTypeDemande(demande: Demande): string {
   // Le surtitre du panneau vient du moteur, donc de l'anglais : on le repasse
-  // par le vocabulaire francais avant de l'afficher.
+  // par le vocabulaire francais avant de l'afficher. « Normal » n'est pas un
+  // mot de joueur, dans aucune langue : « NORMAL » s'affichait en anglais.
+  if (demande.ability_type === 'Normal') return t('À toi de jouer')
   if (demande.ability_type) return traduireMoteur(demande.ability_type)
   const depuisEvenement = demande.event_name
     .replace(/^When/, '')

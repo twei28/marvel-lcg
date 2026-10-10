@@ -1282,6 +1282,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Tour de': 'Turn of',
   'Tour du joueur': 'Player turn',
   'Mulligans': 'Mulligans',
+  'Initialisation': 'Setting up',
   'Log de la partie': 'Game log',
   'Musique': 'Music',
   'Journal, musique, langue': 'Log, music, language',

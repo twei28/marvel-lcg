@@ -40,6 +40,7 @@ export function libellePhase(monde: World | undefined): string {
   }
   if (phase === 'Player Turn End') return t('Fin du tour')
   if (phase === 'Resolve Mulligans') return t('Mulligans')
+  if (phase === 'Initialize') return t('Initialisation')
   if ((PHASES_DU_MECHANT_ORDONNEES as readonly string[]).includes(phase)) {
     return `${t('Phase du méchant')} · ${t(ETAPES_DU_MECHANT[phase as PhaseDuMechant])}`
   }
