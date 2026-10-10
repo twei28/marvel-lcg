@@ -62,7 +62,7 @@ describe('le rythme du mode « Sur la table »', () => {
 
 describe('sa place parmi les modes', () => {
   it('figure dans la liste, entre « Détaillé » et « Instantané »', () => {
-    expect(MODES).toEqual(['detaille', 'sur-table', 'instantane'])
+    expect(MODES).toEqual(['detaille', 'detaille-bis', 'sur-table', 'instantane'])
   })
 
   it('porte son propre libellé', () => {

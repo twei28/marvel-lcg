@@ -132,6 +132,7 @@ function nomDOnglet(libelle: string): ReactNode {
 export function DeroulePhase({
   etapes,
   presentation = 'scene',
+  bis = false,
   essai = false,
   attendreBandeau = false,
   identitePhase,
@@ -166,6 +167,8 @@ export function DeroulePhase({
   onEtapeAffichee,
 }: {
   etapes: EtapeDeroule[]
+  /** Variante locale plus calme et plus lisible du cartouche central. */
+  bis?: boolean
   /**
    * L'essai « Nouvelle phase du méchant » (10/10/2026, coché par compte dans
    * /admin) : le cartouche du bas prend le nouveau rendu, et les boosts se
@@ -1559,6 +1562,7 @@ export function DeroulePhase({
         defaiteLocale={defaiteLocale}
         boostsMontres={boostsMontres}
         essai={essai}
+        bis={bis}
         montrerBoostSuivant={essai ? () => setBoostsMontres((n) => n + 1) : undefined}
         tempsParDecision={tempsParDecision}
         pvMaxParNom={pvMaxParNom}

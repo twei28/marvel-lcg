@@ -49,7 +49,7 @@ import { doitRattraperLesSieges, DELAI_PREMIERE_TRAME_MS } from './sieges-hot-se
  * Le rythme est un confort de LECTURE, pas une regle du jeu : il est donc
  * personnel (localStorage), et en multijoueur chacun le sien.
  */
-export type ModePhaseMechant = 'detaille' | 'sur-table' | 'instantane'
+export type ModePhaseMechant = 'detaille' | 'detaille-bis' | 'sur-table' | 'instantane'
 
 /**
  * Niveau de detail de l'assistant d'action.
@@ -98,7 +98,7 @@ export const MODE_SUR_TABLE_OUVERT = true
 // « detaille » d'abord : c'est le mode par defaut, celui qu'on a en arrivant.
 // « sur-table » s'intercale : il raconte la meme chose que « detaille », au
 // meme rythme, d'ou sa place a cote et non a la fin.
-export const MODES: ModePhaseMechant[] = ['detaille', 'sur-table', 'instantane']
+export const MODES: ModePhaseMechant[] = ['detaille', 'detaille-bis', 'sur-table', 'instantane']
 
 /**
  * MIGRATION EXPLICITE de tout ce qui a existe avant les deux modes actuels,
@@ -323,6 +323,8 @@ export function libelleModePhase(mode: ModePhaseMechant): string {
   switch (mode) {
     case 'detaille':
       return 'Détaillé'
+    case 'detaille-bis':
+      return 'Étape par étape Bis'
     case 'sur-table':
       return 'Sur la table'
     case 'instantane':

@@ -1,0 +1,213 @@
+/* Variante locale « Etape par etape Bis ».
+   La mecanique reste celle du cartouche existant : cette feuille ne change
+   que sa hierarchie visuelle. */
+
+.deroule-phase.est-scene.est-bis {
+  --carre-l: clamp(620px, calc(820px * var(--echelle, 1)), 980px);
+  --grande-h: clamp(230px, calc(300px * var(--echelle, 1)), 360px);
+  --vignette-h: clamp(150px, calc(205px * var(--echelle, 1)), 250px);
+  min-height: min(620px, calc(100dvh - 84px));
+  max-height: calc(100dvh - 64px);
+  padding: 0 28px 24px;
+  gap: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(240, 19, 30, 0.72);
+  border-radius: 12px;
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.deroule-phase.est-scene.est-bis::before {
+  opacity: 0.28;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-ligne-haut {
+  margin: 0 -28px;
+  padding: 14px 28px 12px;
+  gap: 12px;
+  background: linear-gradient(90deg, #7d1017, #3b1115 72%, #241d20);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.deroule-phase.est-scene.est-bis .deroule-pastilles {
+  width: 100%;
+  gap: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(7, 9, 12, 0.48);
+}
+
+.deroule-phase.est-scene.est-bis .deroule-pastille {
+  flex: 1 1 0;
+  justify-content: center;
+  min-width: 0;
+  min-height: 40px;
+  padding: 6px 10px;
+  border-radius: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+  font-family: 'Bangers', Impact, 'Arial Black', sans-serif;
+  font-size: clamp(0.72rem, calc(0.88rem * var(--echelle, 1)), 0.96rem);
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.58);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-pastille:last-child {
+  border-right: 0;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-pastille.est-passe {
+  background: rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.deroule-phase.est-scene.est-bis .deroule-pastille.est-courant {
+  background: #f0131e;
+  color: #fff;
+  box-shadow: inset 0 -4px 0 #ffd45f, inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.deroule-phase.est-scene.est-bis .deroule-pastille-numero,
+.deroule-phase.est-scene.est-bis .deroule-pastille-nom,
+.deroule-phase.est-scene.est-bis .deroule-pastille-bouton {
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  white-space: nowrap;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-pastille-bouton {
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-pastille-nom {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-pastille-numero {
+  min-width: 1.55em;
+  font-family: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.015em;
+  text-align: center;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-pastille-resume,
+.deroule-phase.est-scene.est-bis .deroule-pastille-compteur {
+  display: none;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-titre {
+  margin-top: 2px;
+  font-size: clamp(1.55rem, 2.2vw, 2.15rem);
+  letter-spacing: 0.025em;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-corps {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 0;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-corps::-webkit-scrollbar {
+  display: none;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-rangee,
+.deroule-phase.est-scene.est-bis .deroule-revelee,
+.deroule-phase.est-scene.est-bis .deroule-stade,
+.deroule-phase.est-scene.est-bis .deroule-bilan {
+  width: 100%;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-rangee-cartes,
+.deroule-phase.est-scene.est-bis .deroule-revelee {
+  justify-content: center;
+  gap: 18px;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-resultat-gros,
+.deroule-phase.est-scene.est-bis .deroule-total.est-gros {
+  color: #ffd45f;
+  font-size: clamp(1.45rem, 2.3vw, 2.2rem);
+}
+
+/* Une decision remplace l'action : pas de « fenetre dans la fenetre ». */
+.deroule-phase.est-scene.est-bis .deroule-sous-cadre {
+  position: static;
+  width: min(100%, 720px);
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-sous-cadre::before {
+  display: none;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-question-intitule,
+.deroule-phase.est-scene.est-bis .sous-cadre-titre {
+  max-width: 680px;
+  margin: 0 auto 20px;
+  color: #fff;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-boutons {
+  flex: none;
+  min-height: 52px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.deroule-phase.est-scene.est-bis .bh-bouton,
+.deroule-phase.est-scene.est-bis .deroule-suivant {
+  min-height: 44px;
+  padding-inline: 24px;
+  font-size: 1rem;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-suivant {
+  margin-left: auto;
+  color: #17120a;
+  background: #ffd45f;
+  border-color: #ffe795;
+}
+
+.deroule-phase.est-scene.est-bis .deroule-mentions {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@media (max-width: 900px), (max-height: 720px) {
+  .deroule-phase.est-scene.est-bis {
+    --carre-l: min(94vw, 820px);
+    min-height: min(560px, calc(100dvh - 44px));
+    max-height: calc(100dvh - 28px);
+    padding-inline: 20px;
+  }
+
+  .deroule-phase.est-scene.est-bis .deroule-ligne-haut {
+    margin-inline: -20px;
+    padding-inline: 20px;
+  }
+
+  .deroule-phase.est-scene.est-bis .deroule-pastille-nom {
+    font-size: 0.68rem;
+  }
+}

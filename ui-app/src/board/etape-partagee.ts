@@ -11,7 +11,7 @@ export type EtapesLues = Record<string, { cle: string; t: number; mode?: string 
 /** Ce que le spectateur suit du joueur : l'etape qu'il lit, son mode de phase, et s'il a referme le cartouche. */
 export type Suivi = { cle?: string; mode?: ModePhaseMechant; ferme?: boolean }
 
-const MODES: readonly string[] = ['detaille', 'sur-table', 'instantane']
+const MODES: readonly string[] = ['detaille', 'detaille-bis', 'sur-table', 'instantane']
 export const modeLu = (mode: string | undefined): ModePhaseMechant | undefined =>
   mode && MODES.includes(mode) ? (mode as ModePhaseMechant) : undefined
 

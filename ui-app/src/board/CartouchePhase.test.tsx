@@ -132,6 +132,14 @@ describe('le cadre du cartouche', () => {
     expect(section()?.getAttribute('role')).toBe('dialog')
   })
 
+  it('isole la variante visuelle Bis sans changer le cartouche normal', () => {
+    const normal = monter()
+    expect(section()?.className).not.toContain('est-bis')
+    normal.unmount()
+    monter({ bis: true })
+    expect(section()?.className).toContain('est-bis')
+  })
+
   it('l en-tete tient sur deux lignes : la frise des pastilles, puis le titre', () => {
     monter()
     const haut = document.querySelector('.deroule-ligne-haut')

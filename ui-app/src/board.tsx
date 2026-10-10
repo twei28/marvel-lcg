@@ -1507,7 +1507,8 @@ function PageEtat({
   const modePhaseEnregistre = lireModePhaseMechant()
   // La scene du PC dessine le cartouche du bas, distribution fondue (D15),
   // comme la partie elle-meme ; le telephone garde le rendu d'avant (D36).
-  const cartoucheDuBas = modePhaseEnregistre === 'detaille' && mode !== 'mobile'
+  const cartoucheDuBas =
+    (modePhaseEnregistre === 'detaille' || modePhaseEnregistre === 'detaille-bis') && mode !== 'mobile'
   const pourLeCartouche = useMemo(
     () =>
       cartoucheDuBas
@@ -1550,7 +1551,8 @@ function PageEtat({
     {manuel ? null : modePhaseEnregistre !== 'instantane' && etapesEnregistrees.length > 0 ? (
       <DeroulePhase
         attendreBandeau={!bandeauFini}
-        presentation={modePhaseEnregistre === 'detaille' ? 'scene' : 'table'}
+        presentation={modePhaseEnregistre === 'detaille' || modePhaseEnregistre === 'detaille-bis' ? 'scene' : 'table'}
+        bis={modePhaseEnregistre === 'detaille-bis'}
         telephone={mode === 'mobile'}
         etapes={pourLeCartouche.etapes}
         cartesDistribuees={pourLeCartouche.cartesDistribuees}
@@ -3122,7 +3124,8 @@ export function PagePartie({
    * mode qui retiendrait sans afficher de cartouche bloquerait la partie
    * jusqu'au filet anti-blocage de 90 secondes.
    */
-  const sceneCentrale = modePhase === 'detaille'
+  const sceneCentrale = modePhase === 'detaille' || modePhase === 'detaille-bis'
+  const sceneCentraleBis = modePhase === 'detaille-bis'
   const unCartouche = modePhase !== 'instantane'
   /**
    * LE CARTOUCHE DU BAS (refonte du 04/10/2026) : la scene du mode « Étape par
@@ -4328,6 +4331,7 @@ export function PagePartie({
             // « Detaille », ou le cartouche pose A COTE DE L'ACTION du mode
             // « Sur la table ».
             presentation={sceneCentrale ? 'scene' : 'table'}
+            bis={sceneCentraleBis}
             essai={phaseEssai}
             attendreBandeau={!bandeauPasse}
             // Distribution retiree en scene PC (D15), liste brute ailleurs.

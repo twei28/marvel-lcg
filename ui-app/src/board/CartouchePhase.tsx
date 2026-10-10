@@ -82,6 +82,7 @@ import {
 } from './vue-cartouche'
 import './cartouche-phase.css'
 import './cartouche-essai.css'
+import './cartouche-phase-bis.css'
 
 /** Les gestionnaires de `useGlisserPanneau`, poses sur la ligne du haut. */
 export type GestesDeplacer = {
@@ -168,6 +169,8 @@ export type CartouchePhaseProps = {
    * et « Continuer ». Faux : le rendu d'avant, a l'octet pres.
    */
   essai?: boolean
+  /** Variante visuelle « Étape par étape Bis », sans modifier le rythme. */
+  bis?: boolean
   /** Essai : retourner le boost suivant (ils ne s'enchainent plus seuls). */
   montrerBoostSuivant?: () => void
 }
@@ -631,6 +634,7 @@ function LigneDuHaut({
   titre,
   page,
   outils,
+  numerosCarres = false,
 }: {
   /** Vide : pas de pastilles (« Pendant ton tour », D26). */
   liste: Pastille[]
@@ -642,6 +646,8 @@ function LigneDuHaut({
   page?: string
   /** Essai : ce qui se pose a droite du titre (compteur de cartes, « Réduire »). */
   outils?: ReactNode
+  /** Bis : chiffres simples, la police embarquee ne dessine pas bien ①…⑤. */
+  numerosCarres?: boolean
 }) {
   return (
     <header className="deroule-ligne-haut">
@@ -651,7 +657,19 @@ function LigneDuHaut({
             {liste.map((pastille) => {
               const contenu = (
                 <>
-                  <span className="deroule-pastille-numero">{pastille.numero}</span>
+                  <span className="deroule-pastille-numero">
+                    {numerosCarres
+                      ? pastille.cle === 'mechant'
+                        ? '2A'
+                        : pastille.cle === 'sbires'
+                          ? '2B'
+                          : pastille.cle === 'cartes-rencontre'
+                            ? '3'
+                            : pastille.cle === 'bilan'
+                              ? '✓'
+                              : '1'
+                      : pastille.numero}
+                  </span>
                   <span className="deroule-pastille-nom">{pastille.nom}</span>
                   {pastille.resume ? <small className="deroule-pastille-resume">{pastille.resume}</small> : null}
                   {pastille.compteur ? <small className="deroule-pastille-compteur">{pastille.compteur}</small> : null}
@@ -1141,6 +1159,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   if (relu || depuisLeJournal) classes.push('est-relecture')
   if (horsPhase) classes.push('est-hors-phase')
   if (essai) classes.push('est-essai')
+  if (props.bis) classes.push('est-bis')
   if (essai && reduit) classes.push('est-reduit')
   const outils = essai ? (
     <span className="essai-outils">
@@ -1181,6 +1200,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         titre={titre}
         page={sequence.length > 1 ? `${page + 1} / ${sequence.length}` : undefined}
         outils={outils}
+        numerosCarres={props.bis}
       />
       {/* La cle `etape|page` remonte le corps a chaque page : c'est ce qui
           rejoue le glissement d'entree (D35). Entrer en relecture aussi. */}

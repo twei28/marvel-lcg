@@ -30,7 +30,13 @@ function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
     modePhase: 'detaille',
     changerModePhase: vi.fn(),
     libelleModePhase: (m) =>
-      m === 'detaille' ? 'Détaillé' : m === 'sur-table' ? 'Sur la table' : 'Instantané',
+      m === 'detaille'
+        ? 'Détaillé'
+        : m === 'detaille-bis'
+          ? 'Étape par étape Bis'
+          : m === 'sur-table'
+            ? 'Sur la table'
+            : 'Instantané',
     tempsParDecision: 0,
     texteTempsParDecision: () => 'le moteur n’attend pas',
     validationCourte: false,
@@ -344,12 +350,12 @@ describe('le mode « Sur la table » est proposé à tous', () => {
     // chacun, il doit donc se retrouver ici sans condition. Il raconte la même
     // chose que « Détaillé », au même rythme : sa place est à côté de lui.
     render(<ContenuOnglet onglet="jeu" p={proprietes()} />)
-    expect(modes()).toEqual(['Étape par étape', 'Sur la table', 'D’un coup'])
+    expect(modes()).toEqual(['Étape par étape', 'Étape par étape Bis', 'Sur la table', 'D’un coup'])
   })
 
   it('un mode déjà choisi reste dans la liste', () => {
     render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'sur-table' })} />)
-    expect(modes()).toEqual(['Étape par étape', 'Sur la table', 'D’un coup'])
+    expect(modes()).toEqual(['Étape par étape', 'Étape par étape Bis', 'Sur la table', 'D’un coup'])
   })
 })
 
