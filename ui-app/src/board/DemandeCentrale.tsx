@@ -170,6 +170,11 @@ export function estFenetreDeReaction(demande: Demande): boolean {
   return /^(When|After)/.test(demande.event_name) && demande.event_name !== 'WhenPlayerInTurn'
 }
 
+/** Une capacité FORCÉE (« Forced Interrupt », « Forced Response ») : rien à refuser. */
+export function estForcee(demande: Demande): boolean {
+  return /forced/i.test(demande.ability_type)
+}
+
 /** « Le Crimson Cowl s’apprête à recevoir 1⚠ (Menace de la phase du Méchant) » -> sans la parenthese technique. */
 function sansParentheseTechnique(texte: string): string {
   return texte.replace(/\s*\([^()]*\)\s*$/, '').trim()
@@ -182,14 +187,16 @@ function sansParentheseTechnique(texte: string): string {
 export function phraseDeReaction(
   options: Option[],
   cartesParId: Map<number, WorldCard>,
-  nomPorteur?: (bindId: number) => string | undefined
+  nomPorteur?: (bindId: number) => string | undefined,
+  forcee = false
 ): string {
   const porteurs = [...new Set(options.map((o) => o.bind_id).filter((id) => id !== 0))]
   if (porteurs.length === 1) {
     const nom = nomSourceParId(porteurs[0]!, cartesParId, nomPorteur)
-    if (nom) return `${nom} ${t('peut réagir')}`
+    // Une capacité FORCÉE n'est pas facultative : « peut réagir » mentait.
+    if (nom) return forcee ? `${nom} : ${t('choisis un effet')}` : `${nom} ${t('peut réagir')}`
   }
-  return t('Tu peux réagir')
+  return forcee ? t('Choisis un effet') : t('Tu peux réagir')
 }
 
 function nomSourceParId(
@@ -551,7 +558,7 @@ export function DemandeCentrale({
         {/* Qui peut reagir, en clair : le nom de la capacite seul (« I Object! »)
             ne le dit pas a un nouveau joueur. */}
         {reaction && !enScene ? (
-          <span className="dc-reagit">{phraseDeReaction(options, cartesParId, nomPorteur)}</span>
+          <span className="dc-reagit">{phraseDeReaction(options, cartesParId, nomPorteur, estForcee(demande))}</span>
         ) : null}
       </div>
 

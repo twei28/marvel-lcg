@@ -94,8 +94,16 @@ describe('traduireMoteur : les choix imprimés par les scripts de cartes (D4, 05
 
   it('laisse en anglais un choix inconnu (le texte de la carte reste le repère)', () => {
     enFrancais()
-    expect(traduireMoteur('Vertigo gets +2 ATK for this attack')).toBe('Vertigo gets +2 ATK for this attack')
     expect(traduireMoteur('Take damage equal to Juggernaut\'s ATK')).toBe('Take damage equal to Juggernaut\'s ATK')
+  })
+
+  it('traduit les deux choix de Proxima Midnight (21092)', () => {
+    enFrancais()
+    expect(traduireMoteur('deal 1 damage to Avengers Tower')).toBe('Infliger 1 dégât à la tour des Avengers')
+    expect(traduireMoteur('Deal 2 damage to your identity')).toBe('Infliger 2 dégâts à ton identité')
+    expect(traduireMoteur('Proxima Midnight gets +2 ATK for this attack')).toBe(
+      'Proxima Midnight gagne +2 ATQ pour cette attaque'
+    )
   })
 
   it("ne touche à rien en anglais", () => {

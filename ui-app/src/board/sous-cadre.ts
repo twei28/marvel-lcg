@@ -21,6 +21,7 @@ import { nettoyerNarration, nomLisible } from './BarreAction'
 import type { EtapeDeroule, TempsPhase } from './deroule-phase'
 import {
   estFenetreDeReaction,
+  estForcee,
   libelleRefus,
   nomDeCapacite,
   phraseDeReaction,
@@ -170,6 +171,27 @@ function vignetteOption(option: Option, chiffre: number, q: QuestionDuMoteur, no
     carteId: option.bind_id !== 0 ? option.bind_id : undefined,
     indisponible: option.failure_reason || undefined,
   }
+}
+
+/** La carte qui porte TOUTES les options, s'il n'y en a qu'une. */
+function porteurCommun(options: Option[]): number | undefined {
+  const porteurs = new Set(options.map((option) => option.bind_id))
+  if (porteurs.size !== 1) return undefined
+  const [seul] = porteurs
+  return seul !== 0 ? seul : undefined
+}
+
+/**
+ * Le texte d'un effet au choix : le libellé du moteur, traduit, où le nom
+ * anglais de la carte qui le porte devient son nom affiché (« Proxima Minuit
+ * gagne +2 ATQ »), première lettre en capitale (« deal 1 damage » du script).
+ */
+function libelleDeChoix(option: Option, porteurId: number, q: QuestionDuMoteur): string {
+  let texte = nomLisible(option)
+  const anglais = q.cartesParId.get(porteurId)?.name?.replace(/^\W*/, '')
+  const affiche = nomCarte(porteurId, q)
+  if (anglais && affiche && anglais !== affiche) texte = texte.split(anglais).join(affiche)
+  return texte.charAt(0).toUpperCase() + texte.slice(1)
 }
 
 /** Le nom d'une carte du monde, francais si le plateau le connait. */
@@ -342,6 +364,23 @@ export function vueSousCadre(
     }
   }
 
+  const porteurUnique = porteurCommun(options)
+  if (q.demande.event_name === 'WhenPlayerChooseAbility' && options.length > 1 && porteurUnique !== undefined) {
+    // UNE carte propose plusieurs effets (Proxima Midnight : 1 dégât à la tour
+    // OU +2 ATQ) : un bouton par effet, nommé par son texte. Deux vignettes de
+    // la même carte avec le même texte ne disaient pas lequel faisait quoi.
+    const nom = nomCarte(porteurUnique, q)
+    return {
+      genre: 'choix-carte',
+      intitule: nom ? `${nom} : ${t('choisis un effet')}` : t('Choisis un effet'),
+      choix: options.map((option, rang) => ({
+        ...vignetteOption(option, rang + 1, q, libelleDeChoix(option, porteurUnique, q)),
+        scan: q.carteDeLOption?.(option),
+      })),
+      refus: q.demande.show_cancel ? t('Passer') : undefined,
+    }
+  }
+
   const etape = ctx.etape
   if (
     etape?.titre === 'attaque' &&
@@ -364,7 +403,7 @@ export function vueSousCadre(
   }
   return {
     genre: 'reponses',
-    titre: seule ? titreReponse(seule, q) : phraseDeReaction(options, q.cartesParId, q.nomPorteur),
+    titre: seule ? titreReponse(seule, q) : phraseDeReaction(options, q.cartesParId, q.nomPorteur, estForcee(q.demande)),
     // Une seule reponse : le titre porte deja son texte, le redire sous la
     // vignette l'ecrivait deux fois (planche du lot 6, etat 11a).
     choix: seule ? choix.map((vignette) => ({ ...vignette, sousTexte: undefined })) : choix,

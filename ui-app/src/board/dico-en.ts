@@ -33,6 +33,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   // ---- Fenetre de reaction (12/09/2026) ----
   'peut réagir': 'can react',
   'Tu peux réagir': 'You can react',
+  'choisis un effet': 'choose an effect',
+  'Choisis un effet': 'Choose an effect',
   // ---- Un sbire entre en jeu en pleine phase du mechant (12/09/2026) ----
   'Un sbire entre en jeu': 'A minion enters play',
   // ---- Un ennemi Sonné n'agit pas (05/10/2026) ----

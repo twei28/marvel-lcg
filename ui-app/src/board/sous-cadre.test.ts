@@ -7,6 +7,7 @@ import type { ScanCardProps } from '../components/ScanCard'
 import type { Demande, Option } from './ask'
 import type { EtapeDeroule } from './deroule-phase'
 import type { AssistantInteraction, EtatInteractif, Interaction } from './interaction'
+import { phraseDeReaction } from './DemandeCentrale'
 import { titreReponse, vueSousCadre, type QuestionDuMoteur } from './sous-cadre'
 import type { WorldCard } from './world'
 
@@ -274,6 +275,52 @@ describe('D18 : le choix pose par une carte revelee', () => {
       [1, 'Subir 2 dégâts', undefined],
       [2, 'Placer 1 menace sur la manigance principale', undefined],
     ])
+  })
+})
+
+// Signalé en jeu le 10/10/2026 (Tower Defense) : l'Interruption forcée de
+// Proxima Midnight (21092) posait deux vignettes identiques de Proxima, avec
+// le même texte de carte, sous « Proxima Minuit peut réagir ».
+describe('une carte qui propose plusieurs effets au choix', () => {
+  const proxima = carte(60, 'Proxima Midnight', { card_type: 'Villain' })
+  const cartes = new Map(CARTES).set(60, proxima)
+  const tour = option(11, 'deal 1 damage to Avengers Tower', 60)
+  const atq = option(12, 'Proxima Midnight gets +2 ATK for this attack', 60)
+  const d = demande([tour, atq], {
+    event_name: 'WhenPlayerChooseAbility',
+    ability_type: 'ForcedInterrupt',
+    show_cancel: false,
+  })
+  const q = question(d, interaction(d.options), {
+    cartesParId: cartes,
+    nomPorteur: (id) => (id === 60 ? 'Proxima Minuit' : NOMS_FR[id]),
+  })
+
+  it('un bouton par effet, nommé par son texte, sans répéter la carte', () => {
+    const vue = vueSousCadre(q, { tempsQuestion: 'mechant' })
+    expect(vue.genre).toBe('choix-carte')
+    if (vue.genre !== 'choix-carte') return
+    expect(vue.intitule).toBe('Proxima Minuit : choisis un effet')
+    expect(vue.choix.map((c) => [c.chiffre, c.nom, c.scan, c.sousTexte])).toEqual([
+      [1, 'Infliger 1 dégât à la tour des Avengers', undefined, undefined],
+      [2, 'Proxima Minuit gagne +2 ATQ pour cette attaque', undefined, undefined],
+    ])
+    // Interruption forcée : rien à refuser.
+    expect(vue.refus).toBeUndefined()
+  })
+
+  it('une capacité forcée ne « peut » pas réagir : elle choisit un effet', () => {
+    const noms = (id: number) => (id === 60 ? 'Proxima Minuit' : undefined)
+    expect(phraseDeReaction([tour, atq], cartes, noms, true)).toBe('Proxima Minuit : choisis un effet')
+    expect(phraseDeReaction([tour, atq], cartes, noms)).toBe('Proxima Minuit peut réagir')
+  })
+
+  it('des options de cartes différentes restent des réponses', () => {
+    const autre = option(13, 'Response', 50)
+    const vue = vueSousCadre(question(demande([tour, autre], { event_name: 'WhenPlayerChooseAbility' }), undefined, { cartesParId: cartes }), {
+      tempsQuestion: 'mechant',
+    })
+    expect(vue.genre).toBe('reponses')
   })
 })
 

@@ -3611,6 +3611,33 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats_min": [["av001a", 2]]},
     },
+    {
+        "nom": "21092 Proxima Midnight — Interruption forcee : 1 degat a la tour des Avengers",
+        "pourquoi": ("signale en jeu le 10/10/2026 : les deux branches de l'interruption forcee "
+                     "s'affichaient sous deux vignettes identiques. Branche 1 : la tour des Avengers "
+                     "(21100a) passe de 1 degat (mise en place) a 2 ; elle ne se retourne qu'a 9"),
+        "scenario": "the_tower_defense",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "main_exclusive": [],
+        "choisir_option": "deal_1_damage_to_Avengers_Tower",
+        "declencher": ["Puzzle.Attack('21092')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["21100a"], "compteurs": [["21100a", "damage", 2]]},
+    },
+    {
+        "nom": "21092 Proxima Midnight — Interruption forcee : +2 ATQ pour cette attaque",
+        "pourquoi": ("branche 2 du meme choix : la tour garde son 1 degat de mise en place et le heros "
+                     "encaisse l'ATQ de Proxima augmentee de 2"),
+        "scenario": "the_tower_defense",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "main_exclusive": [],
+        "choisir_option": "Proxima_Midnight_gets_+2_ATK_for_this_attack",
+        "declencher": ["Puzzle.Attack('21092')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["21100a", "damage", 1]], "degats_min": [["01001a", 3]]},
+    },
 
     ############################################################################
     # Vague debloquee par Puzzle.Action et Puzzle.Attack (4/8/2026).
