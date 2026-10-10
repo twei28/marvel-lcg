@@ -249,6 +249,7 @@ import { fondDe, identiteAffichee, palettes, type Couleur } from './board/halo-h
 // les commentaires a leurs points d'appel plus bas pour les rallumer.
 import { SelecteurCibles } from './board/SelecteurCibles'
 import { transformDecalage, useGlisserPanneau } from './board/placement/useGlisserPanneau'
+import { cibleDeLaTouche, SELECTEURS_BLOQUANTS } from './board/clavier-cartouche'
 import { nomLisible } from './board/BarreAction'
 import { construirePlateau, type Plateau } from './board/zones'
 import type { Demande, Option, Reponse } from './board/ask'
@@ -256,6 +257,9 @@ import {
   chargerEtat,
 } from './board/sources'
 import { isScheme, isUnit, isVisibleFor, type World, type WorldCard } from './board/world'
+
+/** Ce qui, ouvert par-dessus le plateau, garde Echap pour se fermer. */
+const OUVERT_PAR_DESSUS = `${SELECTEURS_BLOQUANTS}, .plateau-regardees-voile, .menu-triche, .pile-triche, .pile-triche-voile, .volet-aide, .editeur-table-barre, .modale-menu, .reglages-fond`
 
 // Migration EXPLICITE des anciens reglages de la phase du mechant (voir
 // moteur.ts, `migrerReglagesPhase`), faite UNE FOIS, ici, a l'evaluation du
@@ -3708,6 +3712,23 @@ export function PagePartie({
   // chaque monde reçu. Sans le ref, l'effet se réinstallerait à chaque rendu.
   const rapportClavier = useRef<() => void>(() => {})
   const annulerClavier = useRef<() => void>(() => {})
+  const echapClavier = useRef<() => void>(() => {})
+  // Echap ecoute en CAPTURE sur la fenetre : il passe avant les fenetres qui
+  // se ferment a Echap, et laisse la touche a celle qui est ouverte
+  // par-dessus. L'annulation ne vient qu'au Echap suivant.
+  useEffect(() => {
+    const surEchap = (evenement: KeyboardEvent) => {
+      if (evenement.key !== 'Escape' || evenement.ctrlKey || evenement.metaKey || evenement.altKey) return
+      const cible = evenement.target as HTMLElement | null
+      if (cible && (cible.tagName === 'INPUT' || cible.tagName === 'TEXTAREA' || cible.isContentEditable)) return
+      if (document.querySelector(OUVERT_PAR_DESSUS)) return
+      // Le cartouche du mechant a deja son Echap : le refus (decision D37).
+      if (cibleDeLaTouche('Escape', document.querySelector('.deroule-phase.est-scene'))) return
+      echapClavier.current()
+    }
+    window.addEventListener('keydown', surEchap, true)
+    return () => window.removeEventListener('keydown', surEchap, true)
+  }, [])
   useEffect(() => {
     const surTouche = (evenement: KeyboardEvent) => {
       if (evenement.ctrlKey || evenement.metaKey || evenement.altKey) return
@@ -3754,6 +3775,24 @@ export function PagePartie({
     fetch('/debug?/undo auto').catch(() => undefined)
   }, [manuel, annulerGesteManuel])
   annulerClavier.current = annulerCoup
+
+  // ANNULER L'ACTION EN COURS (croix de la boite de question, touche Echap).
+  // `/undo action` remonte a la question du tour ou la carte a ete choisie,
+  // quel que soit le nombre de sous-questions deja repondues ; U, lui, ne
+  // remonte que d'une decision.
+  const annulerAction = useCallback(() => {
+    fetch('/debug?/undo action').catch(() => undefined)
+  }, [])
+  echapClavier.current = () => {
+    if (manuel || spectateur || telephone) return
+    // Une action encore en composition (cible, paiement) n'a rien envoye au
+    // moteur : on l'abandonne cote plateau, sans rien rejouer.
+    if (interaction.option) {
+      interaction.abandonnerOption()
+      return
+    }
+    if (etat.aNous && etat.demande?.annuler_action) annulerAction()
+  }
   // Ton tour, attaque subie, action validee : trois vibrations (zone 3).
   useVibrationsDePartie(etat.monde, playerId, telephone && !spectateur)
 
@@ -4109,6 +4148,7 @@ export function PagePartie({
           estEnMain={estEnMain}
           ligneSansDefense={ligneSansDefense}
           survolSansDefense={survolSansDefense}
+          annulerAction={annulerAction}
         />
       ) : null}
 
@@ -4412,6 +4452,7 @@ export function PagePartie({
                   ligneSansDefense={ligneSansDefense}
                   survolSansDefense={survolSansDefense}
                   enScene
+                  annulerAction={manuel ? undefined : annulerAction}
                 />
               ) : undefined
             }

@@ -64,6 +64,11 @@ type DemandeCentraleProps = {
    * position fixe, le panneau coule dans la scene a la place de ses boutons.
    */
   enScene?: boolean
+  /**
+   * Remet la partie avant le choix de la carte (`/undo action`). La croix du
+   * coin ne s'affiche que si la question en fait partie (`annuler_action`).
+   */
+  annulerAction?: () => void
 }
 
 /**
@@ -401,6 +406,7 @@ export function DemandeCentrale({
   ligneSansDefense,
   survolSansDefense,
   enScene = false,
+  annulerAction,
 }: DemandeCentraleProps) {
   const reaction = estFenetreDeReaction(demande)
   // UN SEUL CHOIX, SANS « Passer » : le titre recopiait le bouton (« Fin de
@@ -516,6 +522,19 @@ export function DemandeCentrale({
         onPointerUp={enScene ? undefined : gestesGlisser.onPointerUp}
         onPointerCancel={enScene ? undefined : gestesGlisser.onPointerCancel}
       >
+        {demande.annuler_action && annulerAction ? (
+          <button
+            type="button"
+            className="dc-croix"
+            onClick={annulerAction}
+            // Le bandeau est la poignee de deplacement : la croix ne glisse pas.
+            onPointerDown={(evenement) => evenement.stopPropagation()}
+            aria-label={t('Annuler l’action')}
+            title={t('Annuler l’action (Échap)')}
+          >
+            ×
+          </button>
+        ) : null}
         {/* Dans le cartouche du mechant, ni « À toi de jouer » ni « Tu peux
             réagir » (retires le 03/10/2026, demande de l'utilisateur) : la
             phrase et les boutons disent tout. */}

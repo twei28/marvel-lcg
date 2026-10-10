@@ -387,3 +387,24 @@ describe('DemandeCentrale — la question « combien de fois » nomme la carte e
     expect(screen.getByText('2 times')).toBeInTheDocument()
   })
 })
+
+describe('DemandeCentrale — la croix annule l’action en cours', () => {
+  const dansUneAction = (): Demande => ({ ...demande(), annuler_action: true })
+
+  it('montre la croix quand la question fait partie d’une action, et la croix appelle l’annulation', () => {
+    const annulerAction = vi.fn()
+    rendre({ demande: dansUneAction(), annulerAction })
+    fireEvent.click(screen.getByRole('button', { name: 'Annuler l’action' }))
+    expect(annulerAction).toHaveBeenCalledTimes(1)
+  })
+
+  it('ne montre pas de croix hors d’une action (fenêtre de réaction, question du tour)', () => {
+    rendre({ annulerAction: vi.fn() })
+    expect(screen.queryByRole('button', { name: 'Annuler l’action' })).toBeNull()
+  })
+
+  it('ne montre pas de croix sans annulation branchée (mode manuel)', () => {
+    rendre({ demande: dansUneAction() })
+    expect(screen.queryByRole('button', { name: 'Annuler l’action' })).toBeNull()
+  })
+})

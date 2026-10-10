@@ -1220,8 +1220,12 @@ export const DICO_EN_BASE: Record<string, string> = {
     'Weather, setting or image treatment, driven by the cards in play',
   'Présentation au centre des cartes révélées par la Rencontre':
     'Center presentation of cards revealed from the encounter deck',
-  'Raccourcis : E ou Espace = fin du tour, Entrée ou Espace = étape suivante pendant le déroulé d’une phase, U = annuler':
-    'Shortcuts: E or Space = end turn, Enter or Space = next step during a phase breakdown, U = undo',
+  'Raccourcis : E ou Espace = fin du tour, Entrée ou Espace = étape suivante pendant le déroulé d’une phase, U = annuler, Échap = annuler l’action en cours':
+    'Shortcuts: E or Space = end turn, Enter or Space = next step during a phase breakdown, U = undo, Esc = cancel the current action',
+  'Annuler l’action': 'Cancel the action',
+  'Annuler l’action (Échap)': 'Cancel the action (Esc)',
+  'Annuler l’action en cours : la partie revient avant le choix de la carte':
+    'Cancel the current action: the game goes back to before you chose the card',
   'Auto-ciblage': 'Auto-target',
   'Sélectionne d’office la cible quand une seule est légale':
     'Automatically selects the target when only one is legal',

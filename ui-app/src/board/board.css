@@ -992,6 +992,39 @@
     pointer-events: auto;
   }
 
+  /* La croix du coin : remet la partie avant le choix de la carte (Echap). */
+  .dc-texte:has(> .dc-croix) {
+    position: relative;
+    padding-right: 40px;
+  }
+
+  .dc-texte > .dc-croix {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 1;
+    pointer-events: auto;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 50%;
+    background: rgba(15, 17, 21, 0.85);
+    color: rgba(248, 250, 252, 0.8);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .dc-texte > .dc-croix:hover,
+  .dc-texte > .dc-croix:focus-visible {
+    color: #fff;
+    border-color: #fff;
+    background: var(--rouge-vif, #c62828);
+  }
+
   /* Le choix d'une cible dans la scene : les candidats en cartes, a la
      taille des cartes de la scene, puis la validation a la place de Suivant. */
   .cibles-scene {

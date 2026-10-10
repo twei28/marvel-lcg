@@ -616,7 +616,7 @@ export function ContenuOnglet({
       ) : null}
       <p className="options-raccourcis">
         {t(
-          'Raccourcis : E ou Espace = fin du tour, Entrée ou Espace = étape suivante pendant le déroulé d’une phase, U = annuler'
+          'Raccourcis : E ou Espace = fin du tour, Entrée ou Espace = étape suivante pendant le déroulé d’une phase, U = annuler, Échap = annuler l’action en cours'
         )}
       </p>
     </>

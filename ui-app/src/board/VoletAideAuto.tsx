@@ -10,6 +10,7 @@ const PENDANT_LA_PARTIE: Raccourci[] = [
   { touches: 'E  Espace', effet: 'Finir ton tour' },
   { touches: 'Entrée  Espace', effet: 'Étape suivante pendant le déroulé d’une phase' },
   { touches: 'U', effet: 'Annuler' },
+  { touches: 'Échap  ×', effet: 'Annuler l’action en cours : la partie revient avant le choix de la carte' },
 ]
 
 const RANGER_SES_CARTES: Raccourci[] = [

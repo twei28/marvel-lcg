@@ -85,6 +85,12 @@ export type Demande = {
   event_name: string
   show_cancel: boolean
   ability_type: string
+  /**
+   * La question fait partie d'une action que ce joueur a lancee depuis la
+   * question du tour : `/undo action` remet la partie AVANT le choix de la
+   * carte (croix de la boite de question, touche Echap).
+   */
+  annuler_action?: boolean
 }
 
 /** Reponse a poster au moteur. */
@@ -221,6 +227,7 @@ export function lireDemande(brut: unknown): Demande | undefined {
     event_name: texte(o.event_name),
     show_cancel: o.show_cancel === true,
     ability_type: texte(o.ability_type),
+    annuler_action: o.annuler_action === true,
   }
 }
 
