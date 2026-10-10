@@ -11,9 +11,11 @@ from engine.device.web.server.server_blueprints import GameServerBlueprints
 # Mode campagne : definitions livrees (data/campagnes/) et campagnes en cours
 # du joueur (../campagnes/). Fichier absent du depot officiel.
 from engine.device.web.server.server_campagne import GameServerCampagne
+# Essais par compte (10/10/2026) : /get_essais.
+from engine.device.web.server.server_essais import GameServerEssais
 from engine.device.manager.web.manager import WebDeviceManager
 
-class GameServer(GameServerFiles, GameServerHTML, GameServerGet, GameServerNewGame, GameServerSocket, GameServerSync, GameServerUpload, GameServerBlueprints, GameServerCampagne):
+class GameServer(GameServerFiles, GameServerHTML, GameServerGet, GameServerNewGame, GameServerSocket, GameServerSync, GameServerUpload, GameServerBlueprints, GameServerCampagne, GameServerEssais):
 
     def __init__(self, manager: 'WebDeviceManager') -> None:
         self.SetManager(manager)

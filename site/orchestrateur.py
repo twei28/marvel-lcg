@@ -424,6 +424,10 @@ def _config_partie(emplacement: int, partie: Partie) -> str:
     cfg["site_url"] = racine
     if partie.code == ADMIN:
         cfg["site_admin_url"] = racine + "/admin"
+    # Essai « Nouvelle phase du mechant » (10/10/2026) : reserve aux comptes
+    # coches dans /admin. Toute la table le voit, invites compris.
+    if essai_phase_de(partie.code):
+        cfg["essai_phase_mechant"] = True
     # Liste des joueurs et tchat : le MOTEUR interroge le site en local, et le
     # navigateur ne parle qu'a son propre domaine. Sans ce detour il faudrait
     # ouvrir le site aux requetes croisees de p1..p20 et desserrer le SameSite
@@ -1400,6 +1404,10 @@ def initialiser_base() -> None:
         # deja en service.
         if "dernier_message_vu" not in colonnes:
             cx.execute("ALTER TABLE comptes ADD COLUMN dernier_message_vu INTEGER")
+        # L'essai « Nouvelle phase du mechant » (10/10/2026), pose par compte
+        # depuis /admin : 1 = la table de ce compte montre le nouveau panneau.
+        if "essai_phase" not in colonnes:
+            cx.execute("ALTER TABLE comptes ADD COLUMN essai_phase INTEGER NOT NULL DEFAULT 0")
         # Meme precaution pour les bases creees avant la purge des rapports.
         colonnes_rap = {r["name"] for r in cx.execute("PRAGMA table_info(rapports)")}
         if "traite_le" not in colonnes_rap:
@@ -1841,6 +1849,20 @@ def verifier(identifiant: str, mot_de_passe: str) -> str:
         cx.execute("UPDATE comptes SET derniere_connexion = ? WHERE pseudo = ?",
                    (_maintenant(), ligne["pseudo"]))
     return ligne["pseudo"]
+
+
+def essai_phase_de(pseudo: str) -> bool:
+    """La table de ce compte montre-t-elle la nouvelle phase du mechant (essai) ?"""
+    ligne = compte(pseudo)
+    return bool(ligne and "essai_phase" in ligne.keys() and ligne["essai_phase"])
+
+
+def basculer_essai_phase(pseudo: str) -> None:
+    """Active ou coupe l'essai pour ce compte. Pris en compte au prochain
+    allumage de sa table : le moteur lit sa configuration au demarrage."""
+    with VERROU_COMPTES, _cx() as cx:
+        cx.execute("UPDATE comptes SET essai_phase = 1 - COALESCE(essai_phase, 0) WHERE pseudo = ?",
+                   ((pseudo or "").strip().lower(),))
 
 
 def changer_statut(pseudo: str, statut: str) -> None:
@@ -5536,6 +5558,8 @@ class Handler(BaseHTTPRequestHandler):
         ICONE_CHECK = 'M9 16.17 4.83 12l-1.42 1.41L9 19l12-12-1.41-1.42z'
         ICONE_CROIX = ('M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59'
                        ' 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z')
+        ICONE_ESSAI = ('M7 2v2h1v6.17L3.29 18.5A2 2 0 0 0 5 21.5h14a2 2 0 0 0 1.71-3'
+                       'L16 10.17V4h1V2H7zm3 2h4v6.83L16.83 15H7.17L10 10.83V4z')
         ICONE_CLE = ('M7 14a5 5 0 1 1 4.9-6H21v4h-2v3h-3v-3H11.9A5 5 0 0 1 7 14z'
                      'm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6z')
         icone_svg = ('<svg class="icone-action" viewBox="0 0 24 24" aria-hidden="true">'
@@ -5563,18 +5587,28 @@ class Handler(BaseHTTPRequestHandler):
                             '<button type="submit" title="Mot de passe"'
                             ' aria-label="Creer un lien pour choisir un nouveau mot de passe">%s</button>'
                             '</form>' % (html.escape(c["pseudo"]), icone_svg % ICONE_CLE))
+            essai = bool("essai_phase" in c.keys() and c["essai_phase"])
+            actions += ('<form method="post" action="/admin">'
+                        '<input type="hidden" name="action" value="essai_phase">'
+                        '<input type="hidden" name="pseudo" value="%s">'
+                        '<button class="%s" type="submit" title="%s" aria-label="%s">%s</button>'
+                        '</form>' % (html.escape(c["pseudo"]), "oui" if essai else "",
+                                     "Nouvelle phase du méchant (essai) : %s" % ("activée" if essai else "coupée"),
+                                     "Activer ou couper la nouvelle phase du méchant (essai)",
+                                     icone_svg % ICONE_ESSAI))
             classe_etat = {"valide": "oui", "refuse": "non"}.get(statut, "attente")
             initiale = (c["pseudo"] or "?")[:1].upper()
             lignes.append(
                 '<div class="compte-ligne">'
                 '<div class="compte-avatar">%s</div>'
                 '<div class="compte-info">'
-                '<div class="compte-nom">%s <span class="etat-pastille %s">%s</span></div>'
+                '<div class="compte-nom">%s <span class="etat-pastille %s">%s</span>%s</div>'
                 '<div class="compte-meta">%s &middot; demande le %s &middot; %s</div>'
                 '</div>'
                 '<div class="compte-actions">%s</div>'
                 '</div>'
                 % (html.escape(initiale), html.escape(c["pseudo"]), classe_etat, html.escape(statut),
+                   ' <span class="etat-pastille attente">essai phase</span>' if essai else '',
                    html.escape(c["email"] or "—"), html.escape(c["cree"] or "?"),
                    html.escape(_visite_lisible(c)), actions))
         n_comptes = sum(1 for c in comptes_liste if c["statut"] not in ("valide", "refuse"))
@@ -6418,6 +6452,8 @@ class Handler(BaseHTTPRequestHandler):
                     pass          # compte inconnu : rien a creer, la page se reaffiche
             elif action == "reinit_annuler":
                 supprimer_reinitialisation(champs.get("jeton", ""))
+            elif action == "essai_phase":
+                basculer_essai_phase(champs.get("pseudo", ""))
             elif action in ("rapport", "rapport_supprimer", "rapport_repondre"):
                 try:
                     numero = int(champs.get("id", "0"))
