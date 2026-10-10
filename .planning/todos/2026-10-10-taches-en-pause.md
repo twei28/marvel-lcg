@@ -31,10 +31,32 @@ node_modules et assets/pics, `_a_supprimer/` à créer pour la sauvegarde du cod
 - Pages orphelines : Replay, Report, Crédits, Sandbox, Rejoindre.
 - Choix du héros, plus de héros visibles (2026-10-09-choix-du-heros-plus-de-heros.md) : vérifier ce qui reste.
 
-## 5. Petits restes
-- Une commande de console inconnue fait planter le moteur (NameError).
-- Compteurs de combat des stats de fin de partie vérifiés au harnais seulement, pas en partie réelle.
-- Éventail des manigances annexes jamais vu à l'écran.
-- Tests rouges anciens (preparation-v2 360/390/480, fanmade-createurs, modale-heros Storm) ; clé « Accueil » inutilisée.
-- Nettoyage : copie `/mnt/c/Users/arnau/Desktop/MarvelLCG-build` (retirer les jonctions avec `cmd.exe /c rmdir`
-  AVANT de supprimer), `launcher_essai_fin.py` et `config-essai-fin.json`, specs jetables `ui-check/tests/zz-*`.
+## 5. Petits restes (traités le 10/10/2026 après-midi, NON commité, NON déployé)
+- ✅ Console : une commande inconnue (`/debug?xyz`) levait une NameError jusqu'à la boucle du jeu. `Console.Execute`
+  la rattrape, la journalise et la signale au plateau (`ErrorOccurred`), et la relève en test. Témoin :
+  `tools/test_console_inconnue.py` (inconnue signalée, valide toujours exécutée), rouge avant, vert après ;
+  `test_mode_manuel` 81/81.
+- ✅ Stats de fin : 3 vraies parties au pilote (Rhino graine 3, Klaw graines 7 et 11), comparées au journal.
+  Deux trous corrigés : un allié vaincu par le coup qu'il défendait perdait sa défense et ses dégâts subis
+  (plus de contrôleur), et le coup fatal sur le dernier héros n'était jamais compté (la partie finit avant
+  `AfterFaceDealDamage`). `degats_subis` se compte désormais dans `CanHealth.TakeDamageWithOverkillTarget`, avant
+  la défaite ; l'excédent reporté sur la cible du débordement est compté à cette cible. `JoueurDe` retombe sur le
+  propriétaire. Une attaque annulée (Backflip) ne compte plus 1 dégât subi. Le compteur historique
+  `total_damage_taken` n'est pas touché (mêmes trous, à décider). Cas « Stats de partie » du harnais vert.
+- ✅ Éventail des annexes vu à l'écran (Tower Defense, 1 à 7 annexes, 1920 et 1366 ;
+  `.planning/captures-eventail/`) : les cases rétrécissent, chaque titre reste lisible, le survol ouvre la carte.
+  Défaut trouvé et corrigé : rangée pleine, la dernière annexe passait sous la languette fixe « Aide », qui en
+  cachait la menace. `bande-manigances.css` lui réserve 30 px. Plateau local reconstruit (`deployer.sh`,
+  bundle `board-ZKC8CJBP.css`) puis remesuré sans injection : 1880 < 1893 en 1920, 1338 < 1339 en 1366.
+- ✅ Tests rouges anciens, tous en `--project=pc` (leur périmètre déclaré) : preparation-v2 5/5 (le test « V1 par
+  défaut » décrit maintenant le mode téléphone ; la V2 rend 44 px à la langue et à l'affichage, que
+  `icones-entete.js` forçait à 34 px), modale-heros 3/3 (Storm a un art alternatif : témoin « sans option » =
+  Agatha Harkness), fanmade-createurs 3/3 (modale de Storm validée, « Set de base » accepté).
+- ✅ Clé « Accueil du jeu » retirée de `tel-pages.js` (jamais lue ; prepare/app.js a la sienne).
+- Trouvé en passant, PRÉEXISTANT (identique sur HEAD) : `test_capacites` nv001 Shadow Serpent et 60079 Electric
+  Charge (×2) échouent à la mise en place (AssertionError).
+- ✅ Nettoyage : moteur d'essai du port 2331 arrêté par son PID ; worktree `MarvelLCG-build` (propre, commit
+  636fb69e) retiré par `git worktree remove` APRÈS `cmd.exe /c rmdir` de ses deux jonctions (pics 6892 et
+  node_modules intacts) ; `launcher_essai_fin.py`, `config-essai-fin.json` et `.game-essai-fin` supprimés ;
+  14 specs `zz-*` supprimées, dont `zz-gagner` et `zz-relecture-fidele` qui étaient commitées (`git rm`, en
+  attente de commit). Aucun fichier suivi d'autre perdu.
