@@ -72,6 +72,7 @@ import { CoucheCharge } from './board/CoucheCharge'
 import { CoucheRevelation } from './board/CoucheRevelation'
 import { StatsPartie } from './board/StatsPartie'
 import { CoucheMiseEnPlace, useMiseEnPlacePasAPas } from './board/CoucheMiseEnPlace'
+import { mechantAttendLaQuestion, panneauAvantLaFile } from './board/mise-en-place-pas-a-pas'
 import { CoucheTriche, useTriche } from './board/CoucheTriche'
 import { installerSurvol, SELECTEUR_SURVOL_PLATEAU, useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
@@ -3731,6 +3732,14 @@ export function PagePartie({
     // Seulement dans le mode « Étape par étape » (l'ancien Bis, 10/10/2026).
     muet: !sceneCentrale || spectateur || estRelecture() || modeManuelDeclare,
   })
+  // 1A et 2A avant les mechants (livret, etape 10 ; decision du 10/10/2026) :
+  // le panneau de la manigance principale passe devant un mechant en file.
+  const panneauPrioritaire = panneauAvantLaFile(miseEnPlace.etape, priseManigance?.carte)
+  const mechantRetenu = mechantAttendLaQuestion(miseEnPlace.etape, {
+    enMiseEnPlace,
+    confirmPrincipale: etat.monde?.confirm_main_scheme === true,
+    demandePresente: etat.demande !== undefined,
+  })
 
   // ⚠ LE SILENCE DE L'OUVERTURE VAUT AUSSI POUR LES SONS. Ce hook est appele
   // AVANT le retour anticipe du voile — les hooks ne se sautent pas — et
@@ -5150,12 +5159,12 @@ export function PagePartie({
           confirmation avant de la retourner (World.ConfirmMainSchemeReveal).
           Le voile ci-dessus garantit que la table est deja montee derriere. */}
       <CoucheMiseEnPlace
-        etape={miseEnPlace.etape}
+        etape={panneauPrioritaire || mechantRetenu ? undefined : miseEnPlace.etape}
         restantes={miseEnPlace.restantes}
         suivant={miseEnPlace.suivant}
         animations={animationsActives}
       />
-      {priseManigance && !miseEnPlace.etape ? (
+      {priseManigance && (!miseEnPlace.etape || panneauPrioritaire) ? (
         <PanneauManigance
           carte={priseManigance.carte}
           /* Seule la manigance PRINCIPALE se retourne : elle a deux faces

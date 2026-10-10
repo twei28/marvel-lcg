@@ -170,5 +170,73 @@ export function etapesNouvelles(
       changements.push(etape(carte, 'Menace', `${cle}-m`, { cle: 'menace', valeur: maintenant.menace - avant.menace }))
     }
   }
+  // Les retournements de manigances principales dans l'ORDRE DE LA TABLE
+  // (1B avant 2B), pas des numeros de carte : sur Tower Defense, 2B portait le
+  // plus petit numero et passait devant (10/10/2026). Tri stable : le reste ne
+  // bouge pas.
+  const rang = new Map(cartes(monde.area_schemes_main).map((c, i) => [c.id, i]))
+  const rangDe = (e: EtapeMiseEnPlace) => (e.type === 'MainScheme' ? rang.get(e.carteId) ?? 0 : 0)
+  changements.sort((a, b) => (a.type === 'MainScheme' && b.type === 'MainScheme' ? rangDe(a) - rangDe(b) : 0))
   return { etapes: [...arrivees, ...changements], memoire: suite }
 }
+
+/**
+ * LE PANNEAU DE LA MANIGANCE PRINCIPALE AVANT LE MECHANT (10/10/2026).
+ *
+ * Livret « Learn to Play », etape 10 : le paquet du mechant et celui des
+ * manigances principales entrent en jeu ENSEMBLE ; la mise en place de la
+ * manigance (etape 12) et son retournement viennent apres. L'utilisateur veut
+ * voir 1A, 2A, PUIS les mechants. Au lever du voile, la file tient deja les
+ * mechants, et le panneau attendait qu'elle soit vide : il passe devant, mais
+ * seulement devant un mechant, et seulement pour une manigance PRINCIPALE (une
+ * annexe de mise en place arrive a l'etape 12, apres le mechant).
+ */
+export function panneauAvantLaFile(tete: EtapeMiseEnPlace | undefined, carteDuPanneau: WorldCard | undefined): boolean {
+  if (!tete || !carteDuPanneau || carteDuPanneau.card_type !== 'MainScheme') return false
+  return tete.type === 'Villain' || tete.type === 'EncounterVillain'
+}
+
+const RETOURNEMENT = 'Manigance principale retournée'
+
+/**
+ * LES RETOURNEMENTS DANS L'ORDRE DE LA TABLE, MEME ARRIVES EN DEUX TRAMES.
+ *
+ * Tower Defense : la mise en place de 1A revele 2A, qui se retourne en 2B AVANT
+ * que 1A ne se retourne (moteur, etape 12 imbriquee). Les deux retournements
+ * arrivent dans deux trames, 2B d'abord. L'utilisateur veut 1B puis 2B : on
+ * remet les retournements EN ATTENTE dans l'ordre de `area_schemes_main`, sans
+ * deplacer le reste ni l'etape deja affichee (les `figees` premieres).
+ */
+export function ordonnerRetournements(file: EtapeMiseEnPlace[], monde: World, figees: number): EtapeMiseEnPlace[] {
+  const rang = new Map(cartes(monde.area_schemes_main).map((c, i) => [c.id, i]))
+  const places: number[] = []
+  file.forEach((e, i) => {
+    if (i >= figees && e.legende === RETOURNEMENT) places.push(i)
+  })
+  if (places.length < 2) return file
+  const tries = places.map((i) => file[i]).sort((a, b) => (rang.get(a.carteId) ?? 0) - (rang.get(b.carteId) ?? 0))
+  const resultat = [...file]
+  places.forEach((i, k) => {
+    resultat[i] = tries[k]
+  })
+  return resultat
+}
+
+/**
+ * LE MECHANT ATTEND LA PREMIERE QUESTION (10/10/2026).
+ *
+ * Avec la confirmation des manigances principales, la premiere question du
+ * moteur est TOUJOURS le panneau de 1A. Mais la trame du monde peut arriver
+ * avant elle : le mechant, deja en file, passait alors devant (mesure sur Tower
+ * Defense, une fois sur quatre). Tant que le moteur n'a rien demande pendant la
+ * mise en place, un mechant en tete de file attend ; la question ne peut pas
+ * manquer d'arriver (au pire, le mulligan).
+ */
+export function mechantAttendLaQuestion(
+  tete: EtapeMiseEnPlace | undefined,
+  etat: { enMiseEnPlace: boolean; confirmPrincipale: boolean; demandePresente: boolean }
+): boolean {
+  if (!tete || !etat.enMiseEnPlace || !etat.confirmPrincipale || etat.demandePresente) return false
+  return tete.type === 'Villain' || tete.type === 'EncounterVillain'
+}
+
