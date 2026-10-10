@@ -14209,7 +14209,7 @@ CAS = [
         "scenario": "gorr",
         "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('gb012')",
-                          "Puzzle.Exhaust('Peter Parker')",
+                          "Puzzle.Exhaust('01001a')",
                           ],
         "declencher": ["Puzzle.Attack('gb001')"],
         "verifier": "gorr_deux_cartes_defaussees",
@@ -14343,7 +14343,7 @@ CAS = [
                      "4 pour deux"),
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.Reveal('gb020')"],
         "declencher": [],
         "verifier": "gorr_deux_attaques",
@@ -14395,8 +14395,8 @@ CAS = [
                      "`identite.IsConfused()`"),
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
-                          "Puzzle.PutIntoPlay('ih001')", "Puzzle.Confuse('01001b')"],
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
+                          "Puzzle.PutIntoPlay('ih001')", "Puzzle.Confuse('01001a')"],
         "declencher": ["Puzzle.Attack('ih001')"],
         "verifier": "etat_attendu",
         # ATQ 1 imprimee + 2 = 3 degats sur un heros incline.
@@ -14407,7 +14407,7 @@ CAS = [
         "pourquoi": "la condition « if you are confused » doit vraiment filtrer",
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.PutIntoPlay('ih001')"],
         "declencher": ["Puzzle.Attack('ih001')"],
         "verifier": "etat_attendu",
@@ -14419,7 +14419,7 @@ CAS = [
                      "`identite.TakeIndirectDamage(this, 3, effect)`"),
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Confuse('01001b')"],
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Confuse('01001a')"],
         "declencher": ["Puzzle.Reveal('ih002')"],
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 3},
@@ -14440,7 +14440,7 @@ CAS = [
                      "`joueur.engaged_minions` et `DoAttackYou`"),
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.PutIntoPlay('ih001')"],
         "declencher": ["Puzzle.Reveal('ih003')"],
         "accepter_choix": True,
@@ -14481,7 +14481,7 @@ CAS = [
         # toute facon) : la substitution laissait le cas vert. L'allie est donc
         # blesse d'abord — il ne lui reste qu'1 PV — et on mesure l'EXCES qui
         # passe sur le heros : 2 degats avec overkill, 0 sans.
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.PutIntoPlay('nv001')", "Puzzle.PutIntoPlay('01058')",
                           "Puzzle.Damage('01058', 2)"],
         "declencher": ["Puzzle.Attack('nv001', defender='01058')"],
@@ -14494,7 +14494,7 @@ CAS = [
                      "+ `Faces.RemoveAllFromGame` : l'allie ne va pas a la defausse"),
         "scenario": "gorr",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.Reveal('nv002')", "Puzzle.PutIntoPlay('01058')"],
         "declencher": ["Puzzle.Attack('gb001', defender='01058')"],
         "verifier": "nv_allie_retire_du_jeu",
@@ -26986,7 +26986,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')",
                           "Puzzle.PutIntoPlay('01121')",
-                          "Puzzle.Damage('Peter Parker', 5)"],
+                          "Puzzle.Damage('01001a', 5)"],
         "main_exclusive": ["vz011", "01090", "01090"],
         "ne_pas_depenser": ["vz011"],
         "declencher": [],
@@ -27161,7 +27161,7 @@ CAS = [
         "mise_en_place": [],
         "main_exclusive": ["vz022", "01089"],
         "ne_pas_depenser": ["vz022"],
-        "declencher": ["Puzzle.ChangeForm('01001a')"],
+        "declencher": ["Puzzle.ChangeForm('01001b')"],
         "accepter_choix": True,
         "verifier": "etat_attendu",
         "attendu": {"statuts": [["01001a", "Tough"]]},
@@ -27216,7 +27216,7 @@ CAS = [
         "scenario": "rhino",
         "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')",
-                          "Puzzle.Exhaust('Peter Parker')"],
+                          "Puzzle.Exhaust('01001a')"],
         "main_exclusive": ["vz013", "vz025"],
         "declencher": [],
         "jouer": ["vz013"],
@@ -27318,7 +27318,7 @@ CAS = [
         "scenario": "rhino",
         "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')",
-                          "Puzzle.Damage('Peter Parker', 3)",
+                          "Puzzle.Damage('01001a', 3)",
                           "Puzzle.PutIntoPlay('vz032')"],
         "declencher": ["Puzzle.Action('vz032', 'HeroAction')"],
         "cibles": ["01094"],
@@ -30792,7 +30792,7 @@ CAS = [
                      "⚠ Le heros est INCLINE, sans quoi il se declare defenseur et sa "
                      "DEF absorbe tout (lecon nt003a)"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.PutIntoPlay('mu002')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('01105', '01106')"],
@@ -30807,7 +30807,7 @@ CAS = [
                      "tire rien. Il frappe a 2 + sa seule carte de boost normale (01105 "
                      "I'm Tough, 0 icone) = 2"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.PutIntoPlay('mu002')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('01105', '01126')"],
@@ -30827,7 +30827,7 @@ CAS = [
                      "action — et Backflip aurait en plus PREVENU l'attaque de Muse, "
                      "rendant le cas vert pour la mauvaise raison"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.PutIntoPlay('mu003')"],
         "main_exclusive": ["01007", "01090"],
         "declencher": [], "jouer": ["01007"],
@@ -30841,7 +30841,7 @@ CAS = [
                      "filtre, TOUTE carte jouee declencherait une attaque et le set "
                      "serait injouable"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.PutIntoPlay('mu003')"],
         "main_exclusive": ["05023", "01090"],
         "declencher": [], "jouer": ["05023"],
@@ -30912,7 +30912,7 @@ CAS = [
                      "Muse est seme dans le deck rencontre, le heros est incline : il "
                      "entre en jeu et attaque a 2"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('mu003')"],
         "declencher": ["Puzzle.Reveal('mu006')"],
@@ -30931,7 +30931,7 @@ CAS = [
                      "Avec Backflip ou Enhanced Spider-Sense, le pilote les jouait pour "
                      "PREVENIR l'attaque et le cas mesurait zero degat"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('mu006')"],
         "main_exclusive": ["01006", "01007"],
@@ -30944,7 +30944,7 @@ CAS = [
         "pourquoi": ("le contre-cas : X vaut ZERO et la carte ne boost pas. Rhino frappe "
                      "a 2, sa valeur nue. Sans ce temoin, un X fige passerait inapercu"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('Peter Parker')",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('mu006')"],
         "main_exclusive": ["01086", "01090"],
@@ -31623,7 +31623,7 @@ CAS = [
         "pourquoi": ("Hydra Bomber porte 1 icone de boost : « ready 1 character you control "
                      "for each icon ». Peter Parker est incline avant l'entree en jeu"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.CreateEncounterDeck('01110')", "Puzzle.Exhaust('01001a')"],
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01110')", "Puzzle.Exhaust('01001b')"],
         "main_exclusive": ["53017", "01088"],
         "declencher": [], "jouer": ["53017"],
         "verifier": "etat_attendu",
@@ -31636,7 +31636,7 @@ CAS = [
                      "les icones. ⚠ PAS Whirlwind : sa capacite « [star] Boost » compte, la "
                      "carte dit « each icon ([star] and [boost]) »"),
         "scenario": "rhino", "heros": "spider_man",
-        "mise_en_place": ["Puzzle.CreateEncounterDeck('39043')", "Puzzle.Exhaust('01001a')"],
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('39043')", "Puzzle.Exhaust('01001b')"],
         "main_exclusive": ["53017", "01088"],
         "declencher": [], "jouer": ["53017"],
         "verifier": "etat_attendu",
@@ -32326,7 +32326,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.Counter('60128b', 'speed', 5)",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.PutIntoPlay('60130')"
@@ -32777,7 +32777,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60144')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.CreatePlayerDeck('01088')"
         ],
         "declencher": [
@@ -32813,7 +32813,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60144')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.CreatePlayerDeck('01089', '01088')"
         ],
         "declencher": [
@@ -32844,7 +32844,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60144')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.CreatePlayerDeck('01088', '01088')"
         ],
         "declencher": [
@@ -33014,7 +33014,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60146')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60146')"
@@ -33044,7 +33044,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60146')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60146')",
@@ -33075,7 +33075,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01101', '01186')",
             "Puzzle.PutIntoPlay('60147')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60147')"
@@ -33099,7 +33099,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01101')",
             "Puzzle.PutIntoPlay('60147')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60147')"
@@ -33147,7 +33147,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60148')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60148')"
@@ -33176,7 +33176,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60148')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60148')"
@@ -33237,7 +33237,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Boost('60149')"
@@ -33369,7 +33369,7 @@ CAS = [
             "Puzzle.Reveal('60150')"
         ],
         "declencher": [
-            "Puzzle.ChangeForm('01001b')"
+            "Puzzle.ChangeForm('01001a')"
         ],
         "verifier": "etat_attendu",
         "main_exclusive": [
@@ -33392,7 +33392,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')"
         ],
         "declencher": [
-            "Puzzle.ChangeForm('01001b')"
+            "Puzzle.ChangeForm('01001a')"
         ],
         "verifier": "etat_attendu",
         "main_exclusive": [
@@ -33538,7 +33538,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -33565,7 +33565,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -33592,7 +33592,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -33719,7 +33719,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01193', '01186', '01193')",
             "Puzzle.PutIntoPlay('60154', under_control=True)",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60086')"
@@ -33756,7 +33756,7 @@ CAS = [
             "Puzzle.PutIntoPlay('60154', under_control=True)",
             "Puzzle.Exhaust('60154')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60086')"
@@ -34074,7 +34074,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -34160,7 +34160,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -34299,7 +34299,7 @@ CAS = [
         "declencher": [
             "Puzzle.PutIntoPlay('60197')",
             "Puzzle.Damage('60197', 4)",
-            "Puzzle.Damage('Peter Parker', 2)",
+            "Puzzle.Damage('01001a', 2)",
             "Puzzle.Attack('01001a', '60197')"
         ],
         "verifier": "fne3p_racket",
@@ -35637,7 +35637,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.Reveal('60177')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
         "declencher": [
@@ -35791,7 +35791,7 @@ CAS = [
             "Puzzle.PutIntoPlay('01101')",
             "Puzzle.Reveal('60196')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('01101')"
@@ -35938,7 +35938,7 @@ CAS = [
             "Puzzle.Remove('60125')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
         "declencher": [
@@ -35963,7 +35963,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.PutIntoPlay('60198')"
@@ -36082,7 +36082,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.PutIntoPlay('60203')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.PutIntoPlay('60200')"
@@ -36121,7 +36121,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01193', '01193', '01186')",
             "Puzzle.PutIntoPlay('60201')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Scheme('60201')",
@@ -36651,7 +36651,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -36682,7 +36682,7 @@ CAS = [
             "Puzzle.Flip('60159a')",
             "Puzzle.Remove('01167')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
         ],
@@ -36702,7 +36702,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
         ],
@@ -36750,7 +36750,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.Stun('60159b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
@@ -36770,7 +36770,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37155,7 +37155,7 @@ CAS = [
             "Puzzle.Counter('60163b', 'support', 1)",
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
         ],
@@ -37183,7 +37183,7 @@ CAS = [
             "Puzzle.Flip('60163a')",
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')"
         ],
@@ -37532,7 +37532,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37593,7 +37593,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Reveal('60166')",
             "Puzzle.Stun('01001a')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37625,7 +37625,7 @@ CAS = [
             "Puzzle.Reveal('60166')",
             "Puzzle.Stun('01001a')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37654,7 +37654,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -37680,7 +37680,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.Stun('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
@@ -37830,7 +37830,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Reveal('60168')",
             "Puzzle.Confuse('01001a')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -37860,7 +37860,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -37895,7 +37895,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.Confuse('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
@@ -38025,7 +38025,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.PutIntoPlay('60170')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -38045,7 +38045,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -38460,7 +38460,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60159a')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -38480,7 +38480,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -39436,7 +39436,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60065')"
@@ -39675,7 +39675,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
             "Puzzle.PutIntoPlay('60069')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60065')"
@@ -39754,7 +39754,7 @@ CAS = [
             "Puzzle.PutIntoPlay('01020', under_control=True)",
             "Puzzle.Reveal('60071')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -39787,7 +39787,7 @@ CAS = [
             "Puzzle.PutIntoPlay('01011', under_control=True)",
             "Puzzle.Reveal('60071')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -39811,7 +39811,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193', '01193')",
             "Puzzle.PutIntoPlay('60072')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60072')"
@@ -39872,7 +39872,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Boost('60073')"
@@ -39905,7 +39905,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -39948,7 +39948,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186')"
         ],
@@ -40095,7 +40095,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60076')"
@@ -40121,7 +40121,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.Counter('60079', 'charge', -2)"
         ],
         "declencher": [
@@ -40535,7 +40535,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -40555,7 +40555,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -40640,7 +40640,7 @@ CAS = [
             "Puzzle.PutIntoPlay('60101')",
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60101')"
@@ -41053,7 +41053,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.SetThreat('60113a', 1)",
             "Puzzle.Thwart('01001a')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -41182,7 +41182,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60110b')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41201,7 +41201,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41265,7 +41265,7 @@ CAS = [
             "Puzzle.Flip('60110b')",
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.PutIntoPlay('01020', under_control=True)",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41309,7 +41309,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.Flip('60110b')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41418,7 +41418,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41459,7 +41459,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41511,7 +41511,7 @@ CAS = [
             "Puzzle.Remove('60124')",
             "Puzzle.Remove('60125')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186')"
         ],
@@ -41535,7 +41535,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193')"
         ],
@@ -41657,7 +41657,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60086')"
@@ -41682,7 +41682,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.Stun('01001a')"
         ],
         "declencher": [
@@ -41702,7 +41702,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.Stun('01001a')"
         ],
         "declencher": [
@@ -41724,7 +41724,7 @@ CAS = [
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.Damage('60087', 1)",
             "Puzzle.Damage('60087', 40)",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.Stun('01001a')"
         ],
         "declencher": [
@@ -41745,7 +41745,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
             "Puzzle.PutIntoPlay('60089')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60086')"
@@ -41858,7 +41858,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Boost('60090')"
@@ -42017,7 +42017,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
             "Puzzle.PutIntoPlay('60093')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.Stun('01001a')"
         ],
         "declencher": [
@@ -42038,7 +42038,7 @@ CAS = [
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01193', '01193', '01193')",
             "Puzzle.PutIntoPlay('60093')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60093')"
@@ -42103,7 +42103,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.Stun('01001a')"
         ],
         "declencher": [
@@ -42123,7 +42123,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Reveal('60096')"
@@ -42217,7 +42217,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Attach('60122', '01001a')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -42540,7 +42540,7 @@ CAS = [
             "Puzzle.Attach('60123', '01001a')",
             "Puzzle.Attach('60124', '01001a')",
             "Puzzle.Attach('60125', '01001a')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Boost('60126')"
@@ -42690,7 +42690,7 @@ CAS = [
         "heros": "spider_man",
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Boost('60183')"
@@ -42878,7 +42878,7 @@ CAS = [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.PutIntoPlay('60192')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60192')"
@@ -42950,7 +42950,7 @@ CAS = [
             "Puzzle.PutIntoPlay('60193')",
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Attack('60193')"
@@ -42974,7 +42974,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.ChangeForm('01001b')",
             "Puzzle.Tough('01001a')",
-            "Puzzle.Exhaust('Peter Parker')"
+            "Puzzle.Exhaust('01001a')"
         ],
         "declencher": [
             "Puzzle.Boost('60193')"
@@ -42998,7 +42998,7 @@ CAS = [
         "mise_en_place": [
             "Puzzle.PutIntoPlay('60193')",
             "Puzzle.ChangeForm('01001b')",
-            "Puzzle.Exhaust('Peter Parker')",
+            "Puzzle.Exhaust('01001a')",
             "Puzzle.EmptyEncounterDeck()",
             "Puzzle.CreateEncounterDeck('01186', '01186', '01186')"
         ],
@@ -47428,7 +47428,7 @@ CAS = [
         "pourquoi": "Hero",
         "scenario": "hs_scorpion",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.ChangeForm('01001b')", "Puzzle.Stun('01001b')"],
+        "mise_en_place": ["Puzzle.Remove('hs035')", "Puzzle.ChangeForm('01001b')", "Puzzle.Stun('01001a')"],
         "declencher": ["Puzzle.Reveal('hs050')"],
         "verifier": "etat_attendu",
         "attendu": {"statuts": [["01001a", "Stunned"], ["01001a", "Confused"]]}
@@ -47438,7 +47438,7 @@ CAS = [
         "pourquoi": "choix",
         "scenario": "hs_scorpion",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.Exhaust('01001a')"],
+        "mise_en_place": ["Puzzle.Exhaust('01001b')"],
         "main_exclusive": ["09032"],
         "declencher": ["Puzzle.Reveal('hs052')"],
         "verifier": "etat_attendu",
@@ -47449,7 +47449,7 @@ CAS = [
         "pourquoi": "choix",
         "scenario": "hs_scorpion",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.Exhaust('01001a')"],
+        "mise_en_place": ["Puzzle.Exhaust('01001b')"],
         "main_exclusive": ["01090"],
         "declencher": ["Puzzle.Reveal('hs052')"],
         "verifier": "etat_attendu",
@@ -47460,7 +47460,7 @@ CAS = [
         "pourquoi": "surge",
         "scenario": "hs_scorpion",
         "heros": "spider_man",
-        "mise_en_place": ["Puzzle.Stun('Peter Parker')", "Puzzle.Exhaust('01001a')", "Puzzle.CreateEncounterDeck('hs006')"],
+        "mise_en_place": ["Puzzle.Stun('Peter Parker')", "Puzzle.Exhaust('01001b')", "Puzzle.CreateEncounterDeck('hs006')"],
         "main_exclusive": ["09032"],
         "declencher": ["Puzzle.Reveal('hs052')"],
         "verifier": "etat_attendu",
