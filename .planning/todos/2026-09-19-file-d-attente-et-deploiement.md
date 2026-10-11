@@ -3,7 +3,7 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
-## À DÉPLOYER (11/10/2026 soir, NON COMMITÉ) : Daredevil revérifié carte par carte, Melee in the Mojo-seum (ruling FFG n°32), Power Struggle Amplify
+## À DÉPLOYER (11/10/2026 soir, commits `919bcc89` + `88062da0`) : Daredevil revérifié carte par carte, Melee in the Mojo-seum (ruling FFG n°32), Power Struggle Amplify
 
 S'ajoute au commit `8f901d18` (données Daredevil, Power Struggle, Flight Serum, King's Gambit, Enhanced Olfaction n°79), lui aussi pas encore déployé.
 - Moteur : `60009` Deposition (choix Sens facultatif), `60012` Focus the Senses (déplacement des Sens en jeu, manquait), `60018` et `60032` (dégât direct à l'identité, plus indirect), `60035` Stolen Sai (le perçant ne partait jamais : `AttributeError` avalée, vue à l'autoplay), `daredevil/__init__.py` (`optional`), `39002b` Melee in the Mojo-seum (avec Crime Scene Investigation l'Interruption ne se résout pas, la manigance se complète : ruling FFG n°32, rapport n°81 de Yarro), `cards.json` 60095 `Amplify` 1 (ni Hazard ni Acceleration, glyphe `F`), commentaire de `60095.py`, `Puzzle.EmptyAdditionalDeck`.
