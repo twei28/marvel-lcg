@@ -1071,6 +1071,15 @@ class RunPuzzle:
         hote = self.FindOrCreateFace(cible)
         Faces.MoveAllTo([face], hote.components.inventory.deck, self.debug_rule)
 
+    def AttachReel(self, card: CardName, cible: CardName):
+        """Comme `Attach`, mais par le vrai rattachement (`AttachTo2`) : la carte devient
+        « attachee » (`bind_face`) et ses capacites d'amelioration (Interrupt « attached
+        enemy ») sont enregistrees. `Attach` ne fait que deplacer la carte."""
+        from game.card.face.attribute.can_attach import CanAttach
+        face = self.FindOrCreateFace(card)
+        hote = self.FindFaceInPlay(cible)
+        assert face.CastTo(CanAttach).AttachTo2(hote, self.debug_rule), f"{card} n'a pas pu s'attacher a {cible}"
+
     def Engage(self, card: CardName, player: int=0, siege: int|None=None):
         """Engage un sbire avec un joueur, ou l'en desengage s'il y est deja."""
         from game.operate.faces import Faces

@@ -4,7 +4,9 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this.CastTo(Upgrade)
         player = this.GetControlByPlayer()
         identity = player.GetIdentity()
-        identity.effect.RegisterTemp(AbilityFactory.CanGenerateResources(AbilityType.Resource, Resources('GG'), is_play_card=True, who_trigger_this_effect='You'), unregister_after_exec=True, until_phase_end=True)
+        Unused(identity)
+        # Rapport n°79 : une CanGenerateResources temporaire sur l'identite plantait (IndexError, pas de DoGenerateResources).
+        Worlds.UpdateNextCardPlayCost(player, -2, effect, in_this="Phase")
     def defeat_enemy(effect: 'Effect', message: 'Message.WhenUnitBeDefeated') -> None:
         this = effect.this.CastTo(Upgrade)
         SenseDiscard(this, effect)

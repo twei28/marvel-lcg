@@ -62837,7 +62837,7 @@
    "desc": {
     "HP": "10",
     "ATK": "2",
-    "THW": "1",
+    "THW": "2",
     "DEF": "2",
     "HS": "5"
    },
@@ -62846,7 +62846,7 @@
     "MARTIAL ARTIST"
    ],
    "set_name": "Daredevil",
-   "text": "<i>Superhuman Senses</i> — <b>Action</b>: Play the top card of the [[Sense]] deck as if it were in your hand <i>(paying its cost)</i>."
+   "text": "<i>Superhuman Senses</i> — <b>Action</b>: Play the top card of the [[Sense]] deck as if it were in your hand <i>(paying its cost)</i>.\n<b>Forced Interrupt</b>: When a [[Sense]] upgrade would leave play, place it on the bottom of the [[Sense]] deck instead."
   },
   {
    "card_id": "60001b",
@@ -63145,7 +63145,7 @@
     "TITLE"
    ],
    "set_name": "Daredevil",
-   "text": "<b>Hero Action</b>: Exhaust this card and deal 1 damage to Daredeveil → choose:\n• Choose any upgrade from the [[Sense]] deck and play it, ignoring its resource cost. <i>(Do not shuffle.)</i>\n• Ready Daredevil."
+   "text": "<b>Hero Action</b>: Exhaust this card and deal 1 damage to Daredevil → choose:\n• Choose any upgrade from the [[Sense]] deck and play it, ignoring its resource cost. <i>(Do not shuffle.)</i>\n• Ready Daredevil."
   },
   {
    "card_id": "60019",
@@ -64384,7 +64384,7 @@
    "desc": {
     "Boost": "1",
     "StartingThreat": "5",
-    "Acceleration": "1"
+    "Hazard": "1"
    },
    "traits": [],
    "set_name": "Hammerhead",
@@ -65638,7 +65638,7 @@
    },
    "traits": [],
    "set_name": "Kingpin",
-   "text": "<b>Contents</b>: Kingpin (A1) <i>(Kingpin (B1) instead for expert)</i>. Kingpin encounter set. Two modular encounter sets <i>(Tombstone and Tracksuit Mafia)</i>.\n<b>Setup</b>: Each player reveals their set-aside nemesis minion. Each player whose nemesis minion shares a title with a character in play instead removes their nemesis minion from the game, then finds an [[Underling]] minion that is not in play and reveals it."
+   "text": "<b>Contents</b>: Kingpin (A1) <i>(Kingpin (B1) instead for expert mode.)</i> Kingpin encounter set. Two modular encounter sets <i>(Tombstone and Tracksuit Mafia)</i>.\n<b>Setup</b>: Each player reveals their set-aside nemesis minion. Each player whose nemesis minion shares a title with a character in play instead removes their nemesis minion from the game, then finds an [[Underling]] minion that is not in play and reveals it."
   },
   {
    "card_id": "60161b",
@@ -66120,7 +66120,7 @@
    "name": "Flight Serum",
    "subtitle": "",
    "desc": {
-    "Boost": "2",
+    "Boost": "0",
     "SCH+": "1",
     "ATK+": "1"
    },
