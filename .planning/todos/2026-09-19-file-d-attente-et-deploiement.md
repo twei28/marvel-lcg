@@ -3,6 +3,13 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 11/10/2026 (11 h 00) : suppression de deck, import MarvelCDB, Sonic Boom selon le RR 1.8
+
+Sur « Tu peux deployer ». `deployer-tout.sh` depuis `MarvelLCG-deploy` (branche `deploiement-2026-10-11` = `mode-manuel` à `0a2c30a7`) : `board-noe6Xl4D.js` identique au poste sur les deux sites, service actif, 200 ; play. 20 identiques sur 20 ; sauvegarde `code-20261011-1100-0a2c30a7.zip`. Vérifié sur le serveur : `delete_deck` (server_get.py), `_PayerAutantQuePossible` (player_action.py), entrée de nouveautés.
+Commits : `10c77472` (bouton Supprimer + route `/delete_deck`, ordre decklist/deck à l'import, rapport Warnel), `2b32efe2` (choix des cartes rencontre : option de coût payée au maximum, titre + surlignage quand seule), `0a2c30a7` (nouveautés).
+Non vu en vrai : le bouton Supprimer dans l'écran de préparation, la question Sonic Boom dans le navigateur.
+NON PARTI (non commité, en cours) : audit RR 1.8 (errata, FAQ, Team-Up, règles de base), rapports dans le scratchpad de la session `rr18-audit-*.md`.
+
 ## ✅ DÉPLOYÉ LE 09/10/2026 (15 h 25) : écran de campagne en livre ouvert, traduction posée au centre et sur les arts alternatifs, sons de survol
 
 Sur « commit et deploie ». `deployer-tout.sh` : `board-DDkrEzTv.js` identique au poste sur les deux sites, service actif, 200 ; sauvegarde `code-20261009-1525-b5e2330e.zip`.
