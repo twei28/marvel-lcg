@@ -238,7 +238,7 @@ import {
 } from './board/moteur'
 import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
-import { essaiPhaseMechant, essaisOuverts } from './board/essais'
+import { essaisOuverts } from './board/essais'
 import { VoletJournal } from './board/VoletJournal'
 import { JournalConsole } from './board/JournalConsole'
 import {
@@ -3551,18 +3551,8 @@ export function PagePartie({
       vivant = false
     }
   }, [])
-  // L'essai « Nouvelle phase du méchant » (10/10/2026), coché par compte dans
-  // /admin : faux tant que le serveur n'a pas répondu, comme ci-dessus.
-  const [phaseEssai, setPhaseEssai] = useState(false)
-  useEffect(() => {
-    let vivant = true
-    void essaiPhaseMechant().then((actif) => {
-      if (vivant) setPhaseEssai(actif)
-    })
-    return () => {
-      vivant = false
-    }
-  }, [])
+  // La nouvelle phase du méchant, ouverte à tous le 11/10/2026 (PC et téléphone).
+  const phaseEssai = true
   // La racine porte l'essai : sa feuille de style y coupe toute animation en
   // boucle (cartouche-essai.css).
   useEffect(() => {
