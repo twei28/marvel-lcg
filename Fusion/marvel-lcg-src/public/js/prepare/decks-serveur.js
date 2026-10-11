@@ -70,6 +70,18 @@ export async function sauverDeck(deck) {
     }
 }
 
+/** Supprime un deck sauvegardé sur le serveur. `idFichier` est le nom de fichier sans extension. */
+export async function supprimerDeck(idFichier) {
+    const reponse = await fetch("/delete_deck", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ file_name: idFichier }),
+    });
+    const rep = await reponse.json().catch(() => ({}));
+    if (!reponse.ok || rep.error) throw new Error(rep.error || "HTTP " + reponse.status);
+    oublierDecksSauvegardes();
+}
+
 /** Les decks du joueur présents sur le serveur, contenu chargé. */
 async function decksDuServeur() {
     let chemins = [];

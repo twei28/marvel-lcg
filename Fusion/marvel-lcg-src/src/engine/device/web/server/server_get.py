@@ -68,6 +68,23 @@ class GameServerGet(GameServerBase):
             json_lib.dump(deck, f, ensure_ascii=False, indent=4)
         return web.json_response({'result': 'saved', 'file': path})
 
+    async def delete_deck(self, request: web.Request) -> web.Response:
+        # Supprime un deck ecrit par /save_deck. Meme dossier, meme nettoyage du
+        # nom : on ne peut donc viser ni un deck de base ni le dossier commun.
+        import os
+        import re
+        data = await request.json()
+        raw_name = str(data.get('file_name', '') or '')
+        file_name = re.sub('[^a-zA-Z0-9_-]+', '_', raw_name).strip('_')[:60]
+        if not file_name:
+            return web.json_response({'error': 'Invalid name'}, status=400)
+        folder = (DECK_FOLDERS.value[0] if DECK_FOLDERS.value else './deck/custom/')
+        path = FileManager.JoinPath(folder, f'{file_name}.json')
+        if not os.path.isfile(path):
+            return web.json_response({'error': 'Deck not found'}, status=404)
+        os.remove(path)
+        return web.json_response({'result': 'deleted'})
+
     async def sandbox_command(self, request: web.Request) -> web.Response:
         # Mode bac a sable : execute une commande Puzzle.* sur la partie EN COURS.
         # Le moteur sait deja poser une carte en jeu, regler des PV, une menace,
@@ -2191,6 +2208,7 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/quitter_la_table', self.post_quitter_la_table)
         self.AddAwaitGetSecurity('/get_images_cartes', self.get_images_cartes)
         self.AddAwaitGetSecurity('/get_identites', self.get_identites)
+        self.AddPostSecurity('/delete_deck', self.delete_deck)
         self.AddAwaitGetSecurity('/get_site_url', self.get_site_url)
         self.AddAwaitGetSecurity('/get_palettes_heros', self.get_palettes_heros)
         self.AddPostSecurity('/save_palette_heros', self.save_palette_heros)

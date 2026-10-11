@@ -45,7 +45,7 @@ import { roueTeinte, teinteActuelle, choisirTeinte, synchroniserTeinte } from "/
 // ⚠ MEME ADRESSE que la balise de prepare.html (`?v=1` compris) : une autre
 // adresse chargerait le module une seconde fois.
 import { appliquerTeintePage } from "/public/js/teinte-page.js?v=1";
-import { sauverDeck, decksSauvegardesPourHeros } from "/public/js/prepare/decks-serveur.js";
+import { sauverDeck, supprimerDeck, decksSauvegardesPourHeros } from "/public/js/prepare/decks-serveur.js";
 import { NIVEAUX_STANDARD, libelleNiveau, niveauDuScenario } from "/public/js/prepare/niveau-standard.js";
 import { urlNarval } from "/public/js/prepare/narval.js";
 import { DEFIS_INFO } from "/public/js/prepare/defis-info.js";
@@ -3895,7 +3895,9 @@ function mcdbExtractId(input) {
     const m = s.match(/(\d{3,})/);
     return m ? m[1] : "";
 }
-async function mcdbFetch(id) {
+async function mcdbFetch(id, lien) {
+    // Deux numérotations distinctes : l'ordre suit le type de lien collé, pour
+    // qu'un lien /deck/ ne tombe pas sur une decklist sans rapport du même numéro.
     const urls = [
         `https://marvelcdb.com/api/public/decklist/${id}.json`,
         `https://marvelcdb.com/api/public/deck/${id}.json`,
@@ -3920,11 +3922,12 @@ async function mcdbFetch(id) {
 async function importMarvelcdb(slotIndex, input) {
     const id = mcdbExtractId(input);
     if (!id) throw new Error(t("URL/ID marvelcdb invalide."));
-    const data = await mcdbFetch(id);
+    const data = await mcdbFetch(id, input);
     await cards.load();
     // marvelcdb renvoie le heros sous "hero_code" (Marvel Champions), pas
     // "investigator_code" (qui est le champ d'Arkham Horror et reste null ici).
     // Sans ce champ, aucun heros ne matchait -> "hero not available".
+    if (!/decklist/.test(String(lien || ""))) urls.reverse();
     const inv = String(data.hero_code || data.investigator_code || "").split(",")[0];
     const invBase = inv.replace(/[a-z]$/, "");
     const heroes = await catalog.heroes();
@@ -4456,6 +4459,13 @@ async function loadDecks(i) {
             onclick: choisir,
         },
             el("div", { class: "do-name" }, nomDeckAffiche(dk)),
+        const supprimable = dk.source === "saved" && !String(dk.id).startsWith("saved-");
+        const supprimer = async () => {
+            if (on) { alert(t("Choisis d'abord un autre deck, celui-ci est en cours d'utilisation.")); return; }
+            if (!window.confirm(`${t("Supprimer ce deck ?")}\n\n${dk.deck.name}`)) return;
+            try { await supprimerDeck(dk.id); } catch (e) { alert(t("Suppression impossible :") + " " + e.message); return; }
+            loadDecks(i);
+        };
             el("div", { class: "do-tags" },
                 el("span", { class: "tag" }, etiquette),
                 ...dk.aspects.map((a) => el("span", { class: "tag asp", style: { background: ASPECTS[a] || "#555" } }, a)),
@@ -4473,6 +4483,7 @@ async function loadDecks(i) {
             ),
         );
     };
+                    ...(supprimable ? [el("button", { class: "ts-btn", type: "button", onclick: supprimer }, t("Supprimer"))] : []),
 
     // Les paquets d'aspect conseillés sont repliés. Ils sont utiles, mais à
     // quatre ils enterraient le deck de base et les decks sauvegardés — ceux
@@ -4495,6 +4506,7 @@ async function loadDecks(i) {
         const bascule = el("button", {
             type: "button",
             class: "deck-aspects-bascule" + (deplieT ? " est-deplie" : ""),
+                ...(supprimable ? [el("span", { class: "do-view", onclick: (e) => { e.stopPropagation(); e.preventDefault(); supprimer(); } }, t("Supprimer"))] : []),
             "aria-expanded": deplieT ? "true" : "false",
             title: t(CREDIT_TABLEUR),
         }, `${t("Decks du tableur")} (${duTableur.length}) ⓘ`);
