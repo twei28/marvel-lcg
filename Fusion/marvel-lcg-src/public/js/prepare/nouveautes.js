@@ -48,12 +48,6 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-10-11",
-        genre: "jeu",
-        fr: "Nouvelle phase du méchant « Étape par étape » pour tout le monde, sur PC comme sur téléphone : une étape à la fois, avec la carte en grand et un « Continuer » pour passer à la suite.",
-        en: "New \"Step by step\" villain phase for everyone, on PC and phone: one step at a time, with the card shown large and a \"Continue\" button to move on.",
-    },
-    {
-        date: "2026-10-11",
         genre: "correction",
         fr: "Écran de fin : sur l'onglet Stats, l'image DEFEAT ou VICTORY ne cache plus les onglets ni le bas du bilan. Tu peux de nouveau revenir sur Résultat pour quitter.",
         en: "End screen: on the Stats tab, the DEFEAT or VICTORY image no longer hides the tabs or the bottom of the summary. You can go back to Result to leave again.",
