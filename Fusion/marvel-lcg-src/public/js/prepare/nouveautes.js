@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-11",
+        genre: "correction",
+        fr: "Sonic Boom et les choix des cartes rencontre suivent le Rules Reference 1.8 : tu peux choisir de dépenser des ressources même si tu ne peux pas tout payer, et tu paies ce que tu as. Avant, la carte ne faisait parfois rien. Quand une seule option reste possible, elle est surlignée et le jeu explique pourquoi.",
+        en: "Sonic Boom and other encounter card choices now follow Rules Reference 1.8: you can choose to spend resources even if you cannot pay them all, and you pay what you have. Before, the card sometimes did nothing. When only one option is possible, it is highlighted and the game tells you why.",
+    },
+    {
+        date: "2026-10-11",
+        genre: "jeu",
+        fr: "Tu peux supprimer un deck sauvegardé (bouton « Supprimer » dans la liste des decks). Et coller le lien d'un deck MarvelCDB ne risque plus d'importer une autre liste portant le même numéro.",
+        en: "You can delete a saved deck (Delete button in the deck list). And pasting a MarvelCDB deck link no longer risks importing a different list with the same number.",
+    },
+    {
         date: "2026-10-10",
         genre: "jeu",
         fr: "Phase du méchant « Sur la table » refaite. Une bulle déplaçable porte les onglets de la phase, le calcul en pastilles et un gros bouton Suivant (touche Espace). Elle s'efface quand tu survoles une carte. La carte qui agit s'allume, la carte touchée montre sa jauge qui bouge et le nombre qui s'envole. Les boosts se retournent un par clic, la question de défense se pose dans la bulle, et le bilan se lit sur deux colonnes.",
