@@ -3,6 +3,10 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 11/10/2026 (14 h 37) : CORRECTIF, page de préparation cassée depuis 11 h
+
+Signalé par Aghenatak (page bloquée sur « Loading… »). Cause : le commit `10c77472`, indexé partiellement (`git apply --unidiff-zero`), avait posé le bloc « Supprimer » au milieu d'un appel dans `public/js/prepare/app.js` (SyntaxError) et l'inversion decklist/deck dans la mauvaise fonction. Correctif `b7a40c56`, reconstruit depuis `d5c119a5`, testé sur un moteur d'essai lancé depuis `MarvelLCG-deploy` (Chromium : page chargée, 0 erreur). `deployer-tout.sh` (branche `deploiement-2026-10-11b`) : md5 de `app.js` identique poste / serveur, `board-noe6Xl4D.js` sur les deux sites, 200 ; sauvegarde `code-20261011-1437-b7a40c56.zip`. Mémoire ajoutée : indexation partielle.
+
 ## ✅ DÉPLOYÉ LE 11/10/2026 (11 h 00) : suppression de deck, import MarvelCDB, Sonic Boom selon le RR 1.8
 
 Sur « Tu peux deployer ». `deployer-tout.sh` depuis `MarvelLCG-deploy` (branche `deploiement-2026-10-11` = `mode-manuel` à `0a2c30a7`) : `board-noe6Xl4D.js` identique au poste sur les deux sites, service actif, 200 ; play. 20 identiques sur 20 ; sauvegarde `code-20261011-1100-0a2c30a7.zip`. Vérifié sur le serveur : `delete_deck` (server_get.py), `_PayerAutantQuePossible` (player_action.py), entrée de nouveautés.
