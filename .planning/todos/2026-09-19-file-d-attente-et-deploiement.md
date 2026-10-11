@@ -3,6 +3,16 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## À DÉPLOYER (commit `6bff71fb`, 11/10/2026 23 h 30)
+
+- Refus « Max N par joueur » nommé (`check_max_per_player`, `play.py`) : le plateau dit « Tu as déjà le maximum d'exemplaires de cette carte en jeu » au lieu de « Aucune cible possible » (Rapid Response 08031, Interrogation Room 01063). 3 cas de harnais, verts.
+- Multi : avant la première étape de la phase du méchant, les autres joueurs voient que l'hôte choisit (`CartouchePhase.tsx`, `DeroulePhase.tsx`). Tests vitest.
+
+## ✅ DÉPLOYÉ LE 11/10/2026 (23 h 28, `ecd176fe`, plateau `board-0LJviIdr.js`, site + play.)
+
+- RETOUR à l'ancienne « Étape par étape » pour tous (`7eb795d6`, annule `940a01ba` : « la nouvelle n'est pas si claire ») ; la nouvelle modale redevient un essai par compte (/admin).
+- Le refus d'une carte ne s'affiche plus « Injouable » sur celle qui pose la question (`controller.py`, signalement Rapid Response).
+
 ## ✅ DÉPLOYÉ LE 11/10/2026 (20 h 49, `940a01ba`, plateau `board-BP96Azmt.js`, site + play., équivalence 20/20) : Daredevil revérifié carte par carte, Melee in the Mojo-seum (ruling FFG n°32), Power Struggle Amplify
 
 S'ajoute au commit `8f901d18` (données Daredevil, Power Struggle, Flight Serum, King's Gambit, Enhanced Olfaction n°79), lui aussi pas encore déployé.
