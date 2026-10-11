@@ -3902,6 +3902,7 @@ async function mcdbFetch(id, lien) {
         `https://marvelcdb.com/api/public/decklist/${id}.json`,
         `https://marvelcdb.com/api/public/deck/${id}.json`,
     ];
+    if (!/decklist/.test(String(lien || ""))) urls.reverse();
     for (const u of urls) {
         try { const r = await fetch(u); if (r.ok) return await r.json(); } catch (e) {}
     }
@@ -3927,7 +3928,6 @@ async function importMarvelcdb(slotIndex, input) {
     // marvelcdb renvoie le heros sous "hero_code" (Marvel Champions), pas
     // "investigator_code" (qui est le champ d'Arkham Horror et reste null ici).
     // Sans ce champ, aucun heros ne matchait -> "hero not available".
-    if (!/decklist/.test(String(lien || ""))) urls.reverse();
     const inv = String(data.hero_code || data.investigator_code || "").split(",")[0];
     const invBase = inv.replace(/[a-z]$/, "");
     const heroes = await catalog.heroes();
@@ -4434,6 +4434,13 @@ async function loadDecks(i) {
             rendreEquipe();
             majNav();
         };
+        const supprimable = dk.source === "saved" && !String(dk.id).startsWith("saved-");
+        const supprimer = async () => {
+            if (on) { alert(t("Choisis d'abord un autre deck, celui-ci est en cours d'utilisation.")); return; }
+            if (!window.confirm(`${t("Supprimer ce deck ?")}\n\n${dk.deck.name}`)) return;
+            try { await supprimerDeck(dk.id); } catch (e) { alert(t("Suppression impossible :") + " " + e.message); return; }
+            loadDecks(i);
+        };
         // Téléphone : une carte empilée par deck. Plus d'élément interactif
         // imbriqué (la carte entière n'est plus un bouton) : deux vrais boutons.
         if (estTel()) {
@@ -4451,6 +4458,7 @@ async function loadDecks(i) {
                         : [])),
                 el("div", { class: "tel-deck-actions" },
                     el("button", { class: "ts-btn", type: "button", onclick: () => showDeckCards(dk.deck, p.hero, dk.id) }, picto("fa-th"), " ", t("Voir les cartes")),
+                    ...(supprimable ? [el("button", { class: "ts-btn", type: "button", onclick: supprimer }, t("Supprimer"))] : []),
                     el("button", { class: "ts-btn jaune", type: "button", onclick: choisir }, on ? picto("fa-check") : null, on ? " " : null, on ? t("Choisi") : t("Choisir"))),
             );
         }
@@ -4459,13 +4467,6 @@ async function loadDecks(i) {
             onclick: choisir,
         },
             el("div", { class: "do-name" }, nomDeckAffiche(dk)),
-        const supprimable = dk.source === "saved" && !String(dk.id).startsWith("saved-");
-        const supprimer = async () => {
-            if (on) { alert(t("Choisis d'abord un autre deck, celui-ci est en cours d'utilisation.")); return; }
-            if (!window.confirm(`${t("Supprimer ce deck ?")}\n\n${dk.deck.name}`)) return;
-            try { await supprimerDeck(dk.id); } catch (e) { alert(t("Suppression impossible :") + " " + e.message); return; }
-            loadDecks(i);
-        };
             el("div", { class: "do-tags" },
                 el("span", { class: "tag" }, etiquette),
                 ...dk.aspects.map((a) => el("span", { class: "tag asp", style: { background: ASPECTS[a] || "#555" } }, a)),
@@ -4480,10 +4481,10 @@ async function loadDecks(i) {
                       }, "⚠ " + t("Hors règles"))]
                     : []),
                 el("span", { class: "do-view", onclick: (e) => { e.stopPropagation(); e.preventDefault(); showDeckCards(dk.deck, p.hero, dk.id); } }, t("Voir les cartes")),
+                ...(supprimable ? [el("span", { class: "do-view", onclick: (e) => { e.stopPropagation(); e.preventDefault(); supprimer(); } }, t("Supprimer"))] : []),
             ),
         );
     };
-                    ...(supprimable ? [el("button", { class: "ts-btn", type: "button", onclick: supprimer }, t("Supprimer"))] : []),
 
     // Les paquets d'aspect conseillés sont repliés. Ils sont utiles, mais à
     // quatre ils enterraient le deck de base et les decks sauvegardés — ceux
@@ -4506,7 +4507,6 @@ async function loadDecks(i) {
         const bascule = el("button", {
             type: "button",
             class: "deck-aspects-bascule" + (deplieT ? " est-deplie" : ""),
-                ...(supprimable ? [el("span", { class: "do-view", onclick: (e) => { e.stopPropagation(); e.preventDefault(); supprimer(); } }, t("Supprimer"))] : []),
             "aria-expanded": deplieT ? "true" : "false",
             title: t(CREDIT_TABLEUR),
         }, `${t("Decks du tableur")} (${duTableur.length}) ⓘ`);
