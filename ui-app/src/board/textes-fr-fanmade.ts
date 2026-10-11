@@ -33,7 +33,7 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   // aos — A.I.M. Interference ([physical]) (Treachery)
   '50184c': "Incitation 1.\n<b>Une fois révélée</b> : placez 1 compteur de secret sur chaque carte [[Board Member]]. Vous pouvez dépenser X ressources [physical] pour empêcher X de ces compteurs d'être placés.\n<hr />\n[star] <b>Boost</b> : résolvez la capacité \"<b>Une fois révélée</b>\" de cette carte.",
   // fne — Daredevil (Hero)
-  '60001a': "<i>Sens surhumains</i> — <b>Action</b> : jouez la carte du dessus du deck [[Sense]] comme si elle était dans votre main <i>(en payant son coût)</i>.",
+  '60001a': "<i>Sens surhumains</i> — <b>Action</b> : jouez la carte du dessus du deck [[Sense]] comme si elle était dans votre main <i>(en payant son coût)</i>.\n<b>Interruption forcée</b> : quand une amélioration [[Sense]] devrait quitter le jeu, placez-la plutôt sous le deck [[Sense]].",
   // fne — Matt Murdock (AlterEgo)
   '60001b': "Matt Murdock commence la partie avec un deck [[Sense]]. <i>(Voir le livret de règles p. 26.)</i>\n<b>Interruption forcée</b> : quand une amélioration [[Sense]] devrait quitter le jeu, placez-la plutôt sous le deck [[Sense]].",
   // fne — Acute Tactility (Upgrade)

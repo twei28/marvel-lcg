@@ -64384,7 +64384,7 @@
    "desc": {
     "Boost": "1",
     "StartingThreat": "5",
-    "Hazard": "1"
+    "Amplify": "1"
    },
    "traits": [],
    "set_name": "Hammerhead",

@@ -3,6 +3,17 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## À DÉPLOYER (11/10/2026 soir, NON COMMITÉ) : Daredevil revérifié carte par carte, Melee in the Mojo-seum (ruling FFG n°32), Power Struggle Amplify
+
+S'ajoute au commit `8f901d18` (données Daredevil, Power Struggle, Flight Serum, King's Gambit, Enhanced Olfaction n°79), lui aussi pas encore déployé.
+- Moteur : `60009` Deposition (choix Sens facultatif), `60012` Focus the Senses (déplacement des Sens en jeu, manquait), `60018` et `60032` (dégât direct à l'identité, plus indirect), `60035` Stolen Sai (le perçant ne partait jamais : `AttributeError` avalée, vue à l'autoplay), `daredevil/__init__.py` (`optional`), `39002b` Melee in the Mojo-seum (avec Crime Scene Investigation l'Interruption ne se résout pas, la manigance se complète : ruling FFG n°32, rapport n°81 de Yarro), `cards.json` 60095 `Amplify` 1 (ni Hazard ni Acceleration, glyphe `F`), commentaire de `60095.py`, `Puzzle.EmptyAdditionalDeck`.
+- Textes FR : `60001a` (Interruption forcée manquante) dans `ui-app/src/board/textes-fr-fanmade.ts` + copie `public/js/traduction/` ; `27133` Bénévolat (« égal », « votre », `[[CIVIL]]`) dans `textes-fr-complets.ts` + copie + `ERRATA_FR` de `tools/generer_textes_fr_complets.py`. ⚠ Touche `ui-app/src` : lancer `bash ui-app/deployer.sh` avant, vérifier le hash du bundle après.
+- Preuves : cas `tools/test_capacites.py` (60009, 60012, 60018, 60032, 60035, 60095, 60191, 39002b, Sens 60002-60006), rouges par substitution ; `ui-app/src/board/fne-daredevil-sens.test.ts` 3/3 ; autoplay Daredevil et Storm contre Rhino et MaGog (+ Crime), 0 traceback après correctif de 60035. Gabarits dans `.planning/todos/2026-09-18-portage-fear-no-evil.md` (« Revérification du 11/10/2026 »).
+- Nouveautés fr + en écrites dans `public/js/prepare/nouveautes.js` (entrée du 11/10 soir).
+- Réponses aux joueurs : Yarro (n°81, ruling CSI), Aghenatak (n°79, n°80).
+- Plateau : onglet Stats de l'écran de fin (l'image DEFEAT/VICTORY cachait les onglets et le bas de la carte, `stats-partie.css`) ; modale « Étape par étape » (jauge sur le texte sous la carte, haut des cartes rogné, vide sous « Continuer » : `cartouche-phase.css`, `cartouche-essai.css`). Reconstruire le plateau (`bash ui-app/deployer.sh`) avant le déploiement.
+- **Décidé le 11/10 : au prochain déploiement**, ouvrir la nouvelle phase du méchant « Étape par étape » à tous sur PC : la ligne `essai={phaseEssai || modePlateau !== 'mobile'}` de `ui-app/src/board.tsx` (~4427) est encore NON COMMITÉE (autre session, avec d'autres changements du même fichier à isoler). Sur le site, seuls les comptes cochés dans /admin la voient.
+
 ## ✅ DÉPLOYÉ LE 11/10/2026 (14 h 37) : CORRECTIF, page de préparation cassée depuis 11 h
 
 Signalé par Aghenatak (page bloquée sur « Loading… »). Cause : le commit `10c77472`, indexé partiellement (`git apply --unidiff-zero`), avait posé le bloc « Supprimer » au milieu d'un appel dans `public/js/prepare/app.js` (SyntaxError) et l'inversion decklist/deck dans la mauvaise fonction. Correctif `b7a40c56`, reconstruit depuis `d5c119a5`, testé sur un moteur d'essai lancé depuis `MarvelLCG-deploy` (Chromium : page chargée, 0 erreur). `deployer-tout.sh` (branche `deploiement-2026-10-11b`) : md5 de `app.js` identique poste / serveur, `board-noe6Xl4D.js` sur les deux sites, 200 ; sauvegarde `code-20261011-1437-b7a40c56.zip`. Mémoire ajoutée : indexation partielle.

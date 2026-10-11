@@ -3,7 +3,7 @@ def GetAbilities() -> Sequence['Ability']:
     def sensory_overload(effect: 'Effect', message: 'Message.WhenCardEnterPlay') -> None:
         this = effect.this.CastTo(Obligation)
         player = this.GetGaveToPlayer()
-        player.GetIdentity().TakeIndirectDamage(this, 1, effect)
+        player.GetIdentity().CastTo(Unit2).TakeDamage(this, 1, effect)
     def after_recover(effect: 'Effect', message: 'Message.AfterUnitRecovery') -> None:
         this = effect.this.CastTo(Obligation)
         Faces.DiscardAll([this], effect)

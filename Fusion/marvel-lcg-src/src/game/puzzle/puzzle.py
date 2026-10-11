@@ -227,6 +227,14 @@ class RunPuzzle:
         for card in cards:
             CardFactory.GenerateCard(card, first_player.player_deck, self.world)
 
+    def EmptyAdditionalDeck(self):
+        """Retire du jeu toutes les cartes du deck annexe du premier joueur (Sens de Daredevil, ecureuils...)."""
+        from game.operate.faces import Faces
+        player = self.world.GetFirstPlayer()
+        faces = list(player.additional_deck.Get())
+        if faces:
+            Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
+
     def PutOnAdditionalDeckTop(self, *cards: CardName):
         """Remonte des cartes sur le DESSUS du deck annexe du joueur.
 

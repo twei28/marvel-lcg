@@ -4,7 +4,7 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this.CastTo(Upgrade)
         initiator = effect.GetInitiator()
         identity = initiator.GetIdentity()
-        identity.TakeIndirectDamage(this, 1, effect)
+        identity.CastTo(Unit2).TakeDamage(this, 1, effect)
         def play_sense(targets: Sequence['CardFace']):
             PlaySenseUpgradeFree(initiator, effect)
         def ready_dd(targets: Sequence['CardFace']):

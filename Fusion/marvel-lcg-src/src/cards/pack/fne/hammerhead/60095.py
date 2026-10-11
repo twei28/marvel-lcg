@@ -1,6 +1,6 @@
 from . import *
 
-# Power Struggle (side scheme, Acceleration : base automatique)
+# Power Struggle (side scheme, Amplify 1 : base automatique lue dans desc)
 # When Revealed: Defeat the minion with the fewest remaining hit points in
 #   play. Discard cards from the encounter deck until you discard a minion.
 #   Reveal that minion.

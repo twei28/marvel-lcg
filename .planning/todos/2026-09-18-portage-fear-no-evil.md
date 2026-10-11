@@ -2502,3 +2502,82 @@ Deux autres constats de cette passe :
 cas au harnais, le panneau de recompenses a ses propres tests, mais la boucle
 complete « gagner une partie -> le carnet s'ecrit -> la partie suivante monte
 avec l'environnement » n'a jamais ete jouee d'un trait.
+
+## Revérification du 11/10/2026 : Daredevil carte par carte, données relues sur scan, Melee in the Mojo-seum
+
+Demande de l'utilisateur (« il est 100 % correct et fonctionnel ? »), puis « tu peux tout finir ». Chaque doute posé en multichoix, scan à l'appui (Superhuman Senses, Interruptions des Sens, Deposition). Non commité au moment de l'écriture.
+
+Gates communes de la passe :
+- Harnais `tools/test_capacites.py`, dossier d'essai `.game-src-fin` (supprimé après), PARALLELES=4, port 30000 : filtres `600` **119/119**, `601` **304/304**, `602` **30/30**, `3900` **3/3** : 456/456, aucun rouge à rejouer.
+- Autoplay (étape 8), graines 101-108, profil équilibré, modulaire `crime` (pour amener Crime Scene Investigation) : Daredevil contre Rhino 0 V / 8 D, 0 bloquée, 5,9 rounds ; contre MaGog 0 V / 7 D, 1 bloquée, 4,6 rounds ; témoin Storm même fournée : Rhino 0 V / 8 D, 0 bloquée, 5,0 rounds ; MaGog 0 V / 8 D, 0 bloquée, 4,8 rounds. Grep exhaustif des 32 journaux : **1 traceback** au premier passage (`60035`, voir son gabarit), **0** après correctif (fournée Daredevil rejouée). La partie bloquée (MaGog, graine 104) est un arrêt du garde-fou anti-répétition du PILOTE : Move in Shadow (`60027`, non modifié) repose sa question forcée « Remove 1 threat » alors que CSI interdit tout retrait du complot principal ; aucune exception moteur.
+- Lecture des journaux MaGog : avec CSI en jeu, les parties 102/103/105/107 (Daredevil) et 102 (Storm) montrent « La menace ne peut pas être retirée de Melee in the Mojo-seum » puis « est accomplie », sans pose de cotes : le chemin du ruling est bien pris en partie réelle.
+
+#### 60009 : Deposition
+- [x] Étape 2 : `PlaySenseUpgradeFree` (daredevil/__init__.py), plage `(0, 1)` comme `any_number` de `60012`.
+- [x] Étape 5 : « You **may** choose any upgrade from the SENSE deck and play it, ignoring its resource cost. (Do not shuffle.) Remove 2 threat from a scheme » → `optional=True` ; tranché par l'utilisateur (« Rendre le choix facultatif »).
+- [x] Étape 6 : coût 1, 2 menaces : identiques fiche / script.
+- [x] Étape 7 : `60009 Deposition — le choix ... FACULTATIF` (0 choisie : 6 → 4) et `— CONTRE-CAS : ... jouee gratuitement` (6 → 2). Substitution (retrait de `optional=True`) : le cas facultatif ROUGE (« menace = 2, attendu 4 »), le contre-cas vert. Remis : 2/2.
+- [x] 7 bis NON · 8 : autoplay Daredevil ci-dessus, 0 traceback · 8 bis NON (même mise en jeu qu'avant, seule la plage change).
+- Carte terminée : OUI
+
+#### 60012 : Focus the Senses
+- [x] Étape 2 : `AttachTo2` (déplacement d'attachement, détache puis rattache), `ForChoiceAbility.SetTarget(range=(0, n))` (facultatif, comme `PlaySenseUpgradeFree(any_number=True)`).
+- [x] Étape 5 : « You may **move** any number of SENSE upgrades in play **to other cards they can attach to** » : la première moitié MANQUAIT au script (fork du 11/10) ; restrictions d'attache par carte (`60002`/`60003` ennemi ou manigance, `60004`/`60005` ennemi, `60006` manigance), Focus the Senses elle-même exclue des destinations, puis « Choose any number of upgrades from the SENSE deck and put them into play » ; « Threat cannot be removed ... except by Daredevil or Matt Murdock » inchangé.
+- [x] Étape 6 : coût 0, menace de départ 4 : identiques.
+- [x] Étape 7 : 4 cas `60012 Focus the Senses — ...` (déplacement vers un ennemi, refus, Superior Taste vers une AUTRE manigance jamais vers un ennemi, mise en jeu depuis le deck). Substitution (script de HEAD) refaite par moi : déplacement et restriction ROUGES, refus et mise en jeu verts (absence d'effet / moitié déjà présente, assumé). Remis : 4/4.
+- [x] 7 bis NON · 8 : autoplay Daredevil, 0 traceback · 8 bis OUI : `ui-app/src/board/fne-daredevil-sens.test.ts` 3/3 (Radar Sense dessinée sous le sbire, Superior Taste sous la seconde manigance). Le correctif est côté moteur, le plateau est inchangé : le cas est une GARDE de l'état d'arrivée ; calibré en le voyant rouge avec un porteur inexistant (`bind_object_id: 999`).
+- Carte terminée : OUI
+
+#### 60018 : The Man Without Fear
+- [x] Étape 2 : `TakeDamage` direct comme `60007` Elektra (`identity.CastTo(Unit2).TakeDamage`).
+- [x] Étape 5 : « Exhaust this card **and deal 1 damage to Daredevil** → choose » : c'était `TakeIndirectDamage` (répartissable sur un allié), faux ; le choix « Choose any upgrade from the SENSE deck » reste obligatoire une fois l'option prise (pas de « may », contrairement à Deposition).
+- [x] Étape 6 : coût 2, 1 dégât : identiques ; coquille « Daredeveil » corrigée dans la fiche (`8f901d18`).
+- [x] Étape 7 : `60018 The Man Without Fear — 1 degat DIRECT ...option Ready` et `— option jouer un Sens gratuit`, Elektra en jeu. Substitution (ancien `TakeIndirectDamage`, fork du 11/10) : les deux ROUGES (Elektra 1, identité 0). Remis : 2/2.
+- [x] 7 bis NON · 8 : autoplay Daredevil, 0 traceback · 8 bis NON (dégâts chiffrés).
+- Carte terminée : OUI
+
+#### 60032 : Sensory Overload
+- [x] Étape 2 : même correctif que `60018`.
+- [x] Étape 5 : « Forced Response: After a SENSE upgrade enters play, **take 1 damage** » → dégât direct à l'identité du joueur qui l'a reçue (plus d'indirect) ; « Alter-Ego Response: After you recover, discard this card » inchangé.
+- [x] Étape 6 : boost 2, 1 dégât : identiques.
+- [x] Étape 7 : `60032 Sensory Overload — Reponse forcee : 1 degat DIRECT ...` (Elektra en jeu et proposée en premier, Deposition joue un Sens gratuit). Substitution (ancien `TakeIndirectDamage`) : ROUGE (« degats sur 60007 = 1, identite = 0 »). Remis : VERT. La Réponse d'alter ego (non modifiée) n'a pas de cas sujet : à ajouter au prochain passage sur la carte.
+- [x] 7 bis NON · 8 : autoplay Daredevil, 0 traceback · 8 bis NON.
+- Carte terminée : OUI pour la capacité corrigée ; la Réponse d'alter ego reste sans cas (préexistant).
+
+#### 60035 : Stolen Sai (trouvé par l'autoplay)
+- [x] Étape 2 : `UnitAttackGainKeyword(piercing=True)` (`04027` Crossfire, `60192` Mister Fish) ; condition sur `message.attacker` (le message `CheckIfAttackMessageHasKeyword` n'a pas de `trigger`).
+- [x] Étape 5 : « ★ Attached **character**'s attacks gain piercing » : la condition lisait `message.trigger` → `AttributeError` avalée par le moteur à chaque attaque du porteur, le perçant ne partait JAMAIS (journal `autoplay_daredevil_magog_..._101`). « Hero Action: Spend [physical][physical] → attach to Elektra or discard » et le boost inchangés.
+- [x] Étape 6 : ATK +1, boost 1, 2 physiques : identiques.
+- [x] Étape 7 : `60035 Stolen Sai — le porteur (Rhino) attaque en PERCANT` (Tenace sautée, au moins 3 dégâts) et `— Hero Action (2 physiques) : attacher le sai a Elektra`. Substitution (`message.trigger` remis) : le cas perçant ROUGE (« 0 dégât »). Remis : 2/2. Le boost (« If this activation is an attack, it gains piercing ») n'a pas de cas sujet.
+- [x] 7 bis NON · 8 : fournée Daredevil rejouée après correctif : 0 traceback · 8 bis NON (le transfert vers Elektra est un attachement générique, déjà couvert par `fne-oeuvre-volee`).
+- Carte terminée : OUI pour la capacité corrigée ; boost sans cas (préexistant).
+
+#### 60001a : Daredevil (texte FR)
+- [x] Étape 5 : le texte FR posé sur le scan anglais (`ui-app/src/board/textes-fr-fanmade.ts`, prioritaire sur `textes-fr-complets`) oubliait l'« Interruption forcée » ; ajoutée, copie `public/js/traduction/` vérifiée identique à la transpilation (`generer-traduction-public.mjs`). Superhuman Senses gardé « comme en main », sans limite (décision de l'utilisateur ; une Action n'est pas limitée sans « once per »).
+- [x] Étape 6 : THW 2 (`8f901d18`).
+- [x] Étape 7 : moteur inchangé ; `traduction-public.test.ts` et `textes-fr-fanmade.test.ts` 17/17.
+- [x] 8 bis NON (texte).
+- Carte terminée : OUI
+
+#### 39002b : Melee in the Mojo-seum
+- [x] Étape 2 : ruling FFG n°32 (Alex Werner, 27/06/2023, Hall of Heroes post-RRG 1.5) ; RR 1.8 p. 11 « cannot » absolu ; `ThreatCannotBeRemovedFromWhile` de `39037` CSI.
+- [x] Étape 5 : « Forced Interrupt: When this scheme would be completed, place 2[per player] ratings counters on The Champion **and remove all threat from here instead** » : l'Interruption tente d'abord le retrait ; si la menace n'a pas baissé, elle ne se résout pas (pas de `SetBeInstead`, aucune cote) et la manigance se complète. Le `TODO` « players cannot win unless they wow the crowd as The Challengers » reste ouvert (hors de cette passe).
+- [x] Étape 6 : 2 cotes par joueur (`"2*"`), seuil 6 par joueur : inchangés.
+- [x] Étape 7 : 3 cas `39002b Melee in the Mojo-seum — ...` (sans CSI : 2 cotes, menace 0 ; avec CSI : défaite, 0 cote ; CSI retiré d'abord : résolution normale). Substitution (script de HEAD) refaite par moi : le cas CSI ROUGE, les deux autres verts. Remis : 3/3.
+- [x] 7 bis NON · 8 : autoplay MaGog + Crime (Daredevil et Storm), 0 traceback, chemin du ruling vu dans 5 journaux · 8 bis NON (fin de partie et compteurs déjà dessinés).
+- Carte terminée : OUI
+
+#### 60095 : Power Struggle (icône)
+- [x] Étape 5 : l'icône imprimée est le glyphe `F` (**Amplify**) de `public/fonts/ChampionsIcons.ttf`, comparée côte à côte au scan (troisième méthode de `mots-cles/hazard.md`) ; ni `A` (Acceleration, valeur d'origine) ni `H` (Hazard, valeur de `8f901d18`). `cards.json` : `"Amplify": "1"` ; commentaire de `60095.py` corrigé.
+- [x] Étape 6 : 5 menaces, boost 1 : identiques.
+- [x] Étape 7 : `60095 Power Struggle [fne] — porte 1 icone AMPLIFY en jeu` (clé `icones` : Amplify 1, Hazard 0, Acceleration 0). Substitution (`Hazard` remis) : ROUGE. Remis : VERT ; le cas When Revealed existant reste vert.
+- [x] 7 bis NON · 8 NON (donnée lue par le moteur, couverte par le cas) · 8 bis NON.
+- Carte terminée : OUI
+
+#### 60191 : Flight Serum (boost)
+- [x] Étape 5-6 : aucune icône de boost sur le scan : `Boost` 0 (`8f901d18`).
+- [x] Étape 7 : `60191 Flight Serum [fne] — 0 icone de boost` (clé `icones_boost`). Substitution (`Boost` 2) : ROUGE (« 2 icone(s) »). Remis : VERT ; les 3 cas existants verts.
+- [x] 7 bis NON · 8 NON · 8 bis NON.
+- Carte terminée : OUI
+
+Ce que ces gates ne voient pas : aucune partie humaine sur Daredevil ni sur MaGog + CSI depuis ces correctifs. Les autres icônes de manigance du pack (`60020`, `60073`, `60078`, `60082`, `60108`, `60131`, `60173`, `60177`-`60180`, `60189`) n'ont PAS été recomparées aux glyphes : la confusion `F`/`A`/`H` de `60095` pourrait exister ailleurs.

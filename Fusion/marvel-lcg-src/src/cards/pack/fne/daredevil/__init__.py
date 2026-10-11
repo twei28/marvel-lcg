@@ -6,14 +6,14 @@ def SelectSenseTopCard(effect: 'Effect') -> Sequence['CardFace']:
     if face:
         return [face]
     return []
-def PlaySenseUpgradeFree(player: 'Player', by_effect: 'Effect', *, any_number: bool = False) -> None:
+def PlaySenseUpgradeFree(player: 'Player', by_effect: 'Effect', *, any_number: bool = False, optional: bool = False) -> None:
     faces = player.additional_deck.Get()
     if not faces:
         return
     def action(targets: Sequence['CardFace']):
         for face in targets:
             face.CastTo(Upgrade).PutIntoPlay(player, by_effect)
-    rng = ((0, len(faces)) if any_number else (1, 1))
+    rng = ((0, len(faces)) if any_number else ((0, 1) if optional else (1, 1)))
     player.ChooseAbilities(by_effect, AbilityFactory.ForChoiceAbility('Choose an upgrade from the Sense deck and play it, ignoring its resource cost', action).SetTarget(faces, range=rng, not_move=True, not_shuffle=True))
 def RafraichirDessusDeckAnnexe(effect: 'Effect', message: 'Message2') -> None:
     """Vide le cache `is_like_in_hand` des cartes ENCORE dans le deck annexe.

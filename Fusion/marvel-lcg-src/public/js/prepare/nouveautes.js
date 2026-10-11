@@ -49,6 +49,24 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-11",
         genre: "correction",
+        fr: "Écran de fin : sur l'onglet Stats, l'image DEFEAT ou VICTORY ne cache plus les onglets ni le bas du bilan. Tu peux de nouveau revenir sur Résultat pour quitter.",
+        en: "End screen: on the Stats tab, the DEFEAT or VICTORY image no longer hides the tabs or the bottom of the summary. You can go back to Result to leave again.",
+    },
+    {
+        date: "2026-10-11",
+        genre: "correction",
+        fr: "Daredevil revu carte par carte. Focus the Senses déplace aussi tes améliorations Sens, Deposition ne t'oblige plus à jouer un Sens, The Man Without Fear et Sensory Overload blessent Daredevil et plus un allié, et le Stolen Sai de Bullseye rend bien ses attaques perçantes.",
+        en: "Daredevil reviewed card by card. Focus the Senses now also moves your Sense upgrades, Deposition no longer forces you to play a Sense, The Man Without Fear and Sensory Overload damage Daredevil instead of an ally, and Bullseye's Stolen Sai now makes attacks piercing.",
+    },
+    {
+        date: "2026-10-11",
+        genre: "correction",
+        fr: "MaGog : avec Crime Scene Investigation en jeu, Melee in the Mojo-seum ne peut plus retirer sa menace, donc la manigance se complète et la partie est perdue (ruling officiel de FFG). Power Struggle porte une icône Amplify.",
+        en: "MaGog: with Crime Scene Investigation in play, Melee in the Mojo-seum can no longer remove its threat, so the scheme completes and the game is lost (official FFG ruling). Power Struggle carries an Amplify icon.",
+    },
+    {
+        date: "2026-10-11",
+        genre: "correction",
         fr: "Sonic Boom et les choix des cartes rencontre suivent le Rules Reference 1.8 : tu peux choisir de dépenser des ressources même si tu ne peux pas tout payer, et tu paies ce que tu as. Avant, la carte ne faisait parfois rien. Quand une seule option reste possible, elle est surlignée et le jeu explique pourquoi.",
         en: "Sonic Boom and other encounter card choices now follow Rules Reference 1.8: you can choose to spend resources even if you cannot pay them all, and you pay what you have. Before, the card sometimes did nothing. When only one option is possible, it is highlighted and the game tells you why.",
     },

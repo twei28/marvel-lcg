@@ -19,6 +19,6 @@ def GetAbilities() -> Sequence['Ability']:
         # Modele officiel : Crossfire 04027 (during_attack filtre les attaques).
         message.would_atk_message.GainPiercing(effect)
     return [AbilityFactory.AttachToFaceWhenPutIntoPlay(Enemy, highest_atk=True),
-            AbilityFactory.UnitAttackGainKeyword(CardFinder(with_attach=True), piercing=True, conditions=[lambda effect, message: (message.trigger == effect.this.bind_face)]),
+            AbilityFactory.UnitAttackGainKeyword(CardFinder(with_attach=True), piercing=True, conditions=[lambda effect, message: (message.attacker == effect.this.bind_face)]),
             AbilityFactory.WhenInYourPlayTurn(AbilityType.HeroAction, discard_this).SetCostFunc(CostFunc.Spend(Cost('RR'))),
             AbilityFactory.WhenCardBecomeBoost('This', sai_boost, during_attack=True)]

@@ -14154,6 +14154,39 @@ CAS = [
         "verifier": "gorr_partie_perdue",
     },
     {
+        "nom": "39002b Melee in the Mojo-seum — sans CSI, a 6 menaces : 2 cotes sur The Champion, menace a 0, pas de defaite",
+        "pourquoi": ("Interruption forcee « place 2 ratings sur The Champion et retire toute la menace a la place » : "
+                     "comportement nominal, inchange par le correctif du ruling FFG n°32"),
+        "scenario": "magog",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('39003a')"],
+        "declencher": ["Puzzle.SetThreat('39002b', 6)"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["39002b", 0]], "compteurs": [["39003a", "ratings", 2]]},
+    },
+    {
+        "nom": "39002b Melee in the Mojo-seum — avec CSI en jeu, l'Interruption ne se resout pas : defaite, aucune cote",
+        "pourquoi": ("Ruling FFG n°32 (Hall of Heroes, 27/06/2023) + RR 1.8 p.11 (« cannot » l'emporte) : CSI (39037) "
+                     "interdit tout retrait de menace du complot principal, l'Interruption ne peut pas se resoudre, "
+                     "le complot se complete et les joueurs perdent. Rapport de bug n°81"),
+        "scenario": "magog",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('39003a')", "Puzzle.PutIntoPlay('39037')"],
+        "declencher": ["Puzzle.SetThreat('39002b', 6)"],
+        "verifier": "mojo_csi_defaite_sans_cotes",
+    },
+    {
+        "nom": "39002b Melee in the Mojo-seum — CSI retire d'abord : l'Interruption se resout normalement",
+        "pourquoi": ("Contre-cas du precedent : CSI defausse AVANT la complétion, 2 cotes et menace a 0, pas de defaite "
+                     "(prouve que c'est bien CSI, et non le correctif seul, qui amene la defaite)"),
+        "scenario": "magog",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('39003a')", "Puzzle.PutIntoPlay('39037')", "Puzzle.Discard('39037')"],
+        "declencher": ["Puzzle.SetThreat('39002b', 6)"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["39002b", 0]], "compteurs": [["39003a", "ratings", 2]]},
+    },
+    {
         "nom": "gb007b All-Black Necroverse — a 6 necro par joueur, les NECROVERSE gagnent +1 ATQ",
         "pourquoi": ("`GiveKeywordToInPlayWhenApplyThis(..., condition=au_moins(\'6*\'), "
                      "change_on_event=OnEvent.Counter(\'This\', \'necro\'), attack=1)` : "
@@ -42138,6 +42171,22 @@ CAS = [
         }
     },
     {
+        "nom": "60095 Power Struggle [fne] — porte 1 icone AMPLIFY en jeu (ni Hazard ni Acceleration)",
+        "pourquoi": ("scan relu le 11/10/2026 contre les glyphes de ChampionsIcons.ttf : l'icone imprimee est `F` "
+                     "(amplify), pas `H` (hazard, valeur du commit 8f901d18) ni `A` (acceleration, valeur d'origine)"),
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.EmptyEncounterDeck()",
+            "Puzzle.CreateEncounterDeck('01193', '01101', '01186')"
+        ],
+        "declencher": [
+            "Puzzle.Reveal('60095')"
+        ],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["60095"], "icones": [["Amplify", 1], ["Hazard", 0], ["Acceleration", 0]]}
+    },
+    {
         "nom": "60096 Head First! [fne] (Hero) — etourdi : +2 ATK (1+2) puis +1 deja etourdi = 4",
         "pourquoi": "DoAttackYou avec AttackProperty(additional_value=2, overkill=True) (04086)",
         "scenario": "art_museum_heist_hammerhead",
@@ -42895,6 +42944,19 @@ CAS = [
                 "01005"
             ]
         }
+    },
+    {
+        "nom": "60191 Flight Serum [fne] — 0 icone de boost (scan relu le 11/10/2026)",
+        "pourquoi": ("le scan n'imprime aucune icone de boost : `desc.Boost` vaut 0 depuis 8f901d18 (2 avant). "
+                     "Mesure par `icones_boost`, meme chemin que le moteur (CountBoostIconsInternal)"),
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": [
+            "Puzzle.PutIntoPlay('60191')"
+        ],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"icones_boost": [["60191", 0]]}
     },
     {
         "nom": "60192 Mister Fish [fne] — engage le joueur dont l'identite a le moins de PV (partie a deux)",
@@ -44658,6 +44720,314 @@ CAS = [
         "declencher": [],
         "verifier": "daredevil_sens_offert",
         "attendu": {},
+    },
+    {
+        "nom": "60003 Enhanced Olfaction — vaincre l'ennemi porteur reduit de 2 le cout de la carte suivante (rapport n°79, 11/10/2026)",
+        "pourquoi": ("le rapport n°79 (Aghenatak) : la reduction n'etait jamais appliquee, le moteur levait "
+                     "IndexError dans `add_to_pay_list` (`face.effect.Find(func_name=\"DoGenerateResources\")[0]`) : "
+                     "la reduction temporaire posee sur l'identite n'avait pas son `DoGenerateResources`. "
+                     "Preuve par insuffisance : Crisis Interdiction (cout 2) est seule en main, sans aucune "
+                     "ressource, donc impayable sans la reduction"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')",
+                          "Puzzle.Engage('01110')",
+                          "Puzzle.AttachReel('60003', '01110')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["01012"],
+        "declencher": ["Puzzle.Attack('60001a')"],
+        "cibles": ["01110", "01097b"],
+        "jouer": ["01012"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "60009 Deposition — le choix de l'amelioration Sens est FACULTATIF : 0 choisie, 2 menaces retirees quand meme",
+        "pourquoi": ("« You may choose any upgrade from the Sense deck » : sans `accepter_choix` le pilote choisit 0 "
+                     "carte. Aucune amelioration Sens n'est jouee (Superior Taste 60006, sinon, ferait retirer 2 menaces "
+                     "de plus) et les 2 menaces de Deposition partent quand meme : 6 -> 4"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('60005')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["60009", "01088"],
+        "declencher": [],
+        "jouer": ["60009"],
+        "payer_avec": ["01088"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 4]]},
+    },
+    {
+        "nom": "60009 Deposition — CONTRE-CAS : une amelioration Sens choisie est jouee gratuitement + 2 menaces retirees",
+        "pourquoi": ("`accepter_choix` prend le maximum (1 amelioration, ici Superior Taste 60006, la premiere de la liste) : "
+                     "elle est jouee sans payer son cout et, apres le contre de Deposition, sa Reponse retire 2 menaces "
+                     "de plus : 6 - 2 - 2 = 2"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.PutOnAdditionalDeckTop('60005')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["60009", "01088"],
+        "declencher": [],
+        "jouer": ["60009"],
+        "payer_avec": ["01088"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 2]]},
+    },
+    {
+        "nom": "60012 Focus the Senses — When Defeated : une amelioration Sens en jeu est DEPLACEE vers un ennemi (acceptation)",
+        "pourquoi": ("« You may move any number of SENSE upgrades in play to other cards they can attach to » : "
+                     "Radar Sense (ennemi seulement) passe de Rhino 01094 a l'ennemi 01110. Le cas liste la manigance "
+                     "27133 AVANT 01110 dans `cibles` : si la manigance etait une destination legale pour 60005, "
+                     "l'amelioration irait la-bas et le cas rougirait (preuve de la restriction d'attache)"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')",
+                          "Puzzle.Engage('01110')",
+                          "Puzzle.PutIntoPlay('27133')",
+                          "Puzzle.PutIntoPlay('60012')",
+                          "Puzzle.SetThreat('60012', 2)",
+                          "Puzzle.AttachReel('60005', '01094')",
+                          "Puzzle.EmptyAdditionalDeck()"],
+        "declencher": ["Puzzle.Thwart('60001a')"],
+        "cibles": ["60012", "60005", "27133", "01110"],
+        "verifier": "etat_attendu",
+        "attendu": {"accroche_a": [["60005", "01110"]]},
+    },
+    {
+        "nom": "60012 Focus the Senses — CONTRE-CAS : le deplacement se REFUSE (Passer), l'amelioration reste sur son hote",
+        "pourquoi": "« You may » : le pilote choisit 0 amelioration (minimum de la fourchette 0..n) et 60005 reste sur Rhino 01094",
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')",
+                          "Puzzle.Engage('01110')",
+                          "Puzzle.PutIntoPlay('27133')",
+                          "Puzzle.PutIntoPlay('60012')",
+                          "Puzzle.SetThreat('60012', 2)",
+                          "Puzzle.AttachReel('60005', '01094')",
+                          "Puzzle.EmptyAdditionalDeck()"],
+        "declencher": ["Puzzle.Thwart('60001a')"],
+        "cibles": ["60012"],
+        "verifier": "etat_attendu",
+        "attendu": {"accroche_a": [["60005", "01094"]]},
+    },
+    {
+        "nom": "60012 Focus the Senses — Superior Taste (manigance seulement) va vers une AUTRE manigance, jamais vers un ennemi",
+        "pourquoi": ("restriction d'attache : 60006 ne s'attache qu'a une manigance. `cibles` liste l'ennemi 01110 AVANT "
+                     "la manigance 27133 : si l'ennemi etait legal, 60006 irait sur lui"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')",
+                          "Puzzle.Engage('01110')",
+                          "Puzzle.PutIntoPlay('27133')",
+                          "Puzzle.PutIntoPlay('60012')",
+                          "Puzzle.SetThreat('60012', 2)",
+                          "Puzzle.AttachReel('60006', '01097b')",
+                          "Puzzle.EmptyAdditionalDeck()"],
+        "declencher": ["Puzzle.Thwart('60001a')"],
+        "cibles": ["60012", "60006", "01110", "27133"],
+        "verifier": "etat_attendu",
+        "attendu": {"accroche_a": [["60006", "27133"]]},
+    },
+    {
+        "nom": "60012 Focus the Senses — When Defeated : une amelioration du deck Sens est mise en jeu sans payer (2e moitie du texte)",
+        "pourquoi": "apres le deplacement (aucune amelioration en jeu ici), Radar Sense, choisie dans le deck Sens, entre en jeu",
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')",
+                          "Puzzle.PutIntoPlay('60012')",
+                          "Puzzle.SetThreat('60012', 2)",
+                          "Puzzle.PutOnAdditionalDeckTop('60005')"],
+        "declencher": ["Puzzle.Thwart('60001a')"],
+        "cibles": ["60012", "60005"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["60005"]},
+    },
+    {
+        "nom": "60002 Acute Tactility — vaincre l'ennemi porteur redresse l'identite (acceptation)",
+        "pourquoi": ("Interruption FACULTATIVE (« discard this card -> ready your identity ») : accepter "
+                     "defausse la carte et redresse Daredevil, epuise par son attaque"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')",
+                          "Puzzle.Engage('01110')",
+                          "Puzzle.AttachReel('60002', '01110')"],
+        "declencher": ["Puzzle.Attack('60001a')"],
+        "cibles": ["01110"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["60001a"]},
+    },
+    {
+        "nom": "60002 Acute Tactility — CONTRE-CAS : l'Interruption se REFUSE, l'identite reste epuisee",
+        "pourquoi": ("preuve du refus : le bouton Passer est offert sur la question et, repondu, "
+                     "l'identite n'est PAS redressee (une interruption facultative ne part pas seule)"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')",
+                          "Puzzle.Engage('01110')",
+                          "Puzzle.AttachReel('60002', '01110')"],
+        "declencher": ["Puzzle.Attack('60001a')"],
+        "cibles": ["01110"],
+        "passer_sur_option": "Interrupt",
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["60001a"]},
+    },
+    {
+        "nom": "60005 Radar Sense — Reponse apres avoir attaque l'ennemi porteur : 3 degats en plus (acceptation)",
+        "pourquoi": "Reponse FACULTATIVE : accepter inflige 3 degats supplementaires (2 d'attaque + 3)",
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.AttachReel('60005', '01094')"],
+        "declencher": ["Puzzle.Attack('60001a')"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {'degats': [['01094', 5]]},
+    },
+    {
+        "nom": '60005 Radar Sense — CONTRE-CAS : la Reponse se REFUSE, pas de degats en plus',
+        "pourquoi": "preuve du refus : Passer est offert et, repondu, seuls les 2 degats de l'attaque restent",
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.AttachReel('60005', '01094')"],
+        "declencher": ["Puzzle.Attack('60001a')"],
+        "cibles": ["01094"],
+        "passer_sur_option": "Response",
+        "verifier": "etat_attendu",
+        "attendu": {'degats': [['01094', 2]]},
+    },
+    {
+        "nom": '60006 Superior Taste — Reponse apres avoir contre la manigance porteuse : 2 menaces en plus (acceptation)',
+        "pourquoi": 'Reponse FACULTATIVE : accepter retire 2 menaces de plus (THW 2 + 2 : 6 -> 2)',
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.SetThreat('01097b', 6)", "Puzzle.AttachReel('60006', '01097b')"],
+        "declencher": ["Puzzle.Thwart('60001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {'menace': [['01097b', 2]]},
+    },
+    {
+        "nom": '60006 Superior Taste — CONTRE-CAS : la Reponse se REFUSE, seul le contre retire de la menace',
+        "pourquoi": 'preuve du refus : Passer est offert ; repondu, la menace ne baisse que de 2 (6 -> 4)',
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.SetThreat('01097b', 6)", "Puzzle.AttachReel('60006', '01097b')"],
+        "declencher": ["Puzzle.Thwart('60001a')"],
+        "passer_sur_option": "Response",
+        "verifier": "etat_attendu",
+        "attendu": {'menace': [['01097b', 4]]},
+    },
+    {
+        "nom": "60003 Enhanced Olfaction — CONTRE-CAS : l'Interruption se REFUSE, pas de reduction de cout",
+        "pourquoi": ("preuve du refus : Passer est offert ; repondu, Crisis Interdiction (cout 2, aucune ressource) "
+                     "reste impayable et la menace ne bouge pas"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.Engage('01110')", "Puzzle.AttachReel('60003', '01110')", "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["01012"],
+        "declencher": ["Puzzle.Attack('60001a')"],
+        "cibles": ["01110", "01097b"],
+        "passer_sur_option": "Interrupt",
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 6]]},
+    },
+    {
+        "nom": "60004 Heightened Hearing — Interruption de heros quand l'ennemi porteur attaque (acceptation)",
+        "pourquoi": ("Hero Interrupt FACULTATIVE : accepter defausse la carte, -3 ATK et les degats vont a l'identite"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.AttachReel('60004', '01094')"],
+        "declencher": ["Puzzle.Defend('60001a', '01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "60004 Heightened Hearing — CONTRE-CAS : l'Interruption de heros se REFUSE",
+        "pourquoi": "preuve du refus : Passer est offert sur la question de l'Interruption de heros",
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.AttachReel('60004', '01094')"],
+        "declencher": ["Puzzle.Defend('60001a', '01094')"],
+        "passer_sur_option": "Hero_Interrupt",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2},
+    },
+    {
+        "nom": "60018 The Man Without Fear — 1 degat DIRECT a Daredevil (jamais a un allie), option Ready",
+        "pourquoi": ("correctif : TakeIndirectDamage laissait repartir le degat sur un allie ; le texte dit "
+                     "« deal 1 damage to Daredevil ». Avec Elektra en jeu : l'identite prend 1, Elektra 0, "
+                     "Daredevil epuise est pret, la carte est epuisee (cout)"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.PutIntoPlay('60007', under_control=True)",
+                          "Puzzle.PutIntoPlay('60018', under_control=True)", "Puzzle.Exhaust('60001a')"],
+        "declencher": ["Puzzle.Action('60018', 'HeroAction')"],
+        "choisir_option": "Ready_Daredevil",
+        "cibles": ["60007"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "degats": [["60007", 0]], "pret": ["60001a"], "exhausted": ["60018"]},
+    },
+    {
+        "nom": "60018 The Man Without Fear — option jouer un Sens gratuit : l'amelioration entre en jeu",
+        "pourquoi": "2e branche du choix : une amelioration du deck Sens est mise en jeu sans payer ; 1 degat a l'identite, rien a l'allie",
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.PutIntoPlay('60007', under_control=True)",
+                          "Puzzle.PutIntoPlay('60018', under_control=True)", "Puzzle.Engage('01110')"],
+        "declencher": ["Puzzle.Action('60018', 'HeroAction')"],
+        "preferer_option": "Sense deck",
+        "cibles": ["60007"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "degats": [["60007", 0]], "exhausted": ["60018"], "en_jeu_trait": [["SENSE", 1]]},
+    },
+    {
+        "nom": "60035 Stolen Sai — le porteur (Rhino) attaque en PERCANT : la carte Tenace saute et 3 degats passent",
+        "pourquoi": ("correctif du 11/10/2026 (autoplay) : la condition lisait `message.trigger`, absent de "
+                     "CheckIfAttackMessageHasKeyword -> AttributeError avalee, le percant ne partait JAMAIS. "
+                     "Rhino ATK 2 + 1 (sai) = 3 au moins (plus la carte de boost) ; sans percant la carte Tenace absorbe tout (0 degat)"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.AttachReel('60035', '01094')",
+                          "Puzzle.Tough('60001a')", "Puzzle.Exhaust('60001a')"],
+        "main_exclusive": ["60009"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts_absents": [["60001a", "Tough"]], "degats_identite_min": 3},
+    },
+    {
+        "nom": "60035 Stolen Sai — Hero Action (2 physiques) : attacher le sai a Elektra",
+        "pourquoi": "« Spend [physical][physical] → choose to either attach this card to Elektra or discard it » : branche Elektra",
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.PutIntoPlay('60007', under_control=True)",
+                          "Puzzle.AttachReel('60035', '01094')"],
+        "main_exclusive": ["60011", "60017"],
+        "declencher": ["Puzzle.Action('60035', 'HeroAction')"],
+        "payer_avec": ["60011", "60017"],
+        "choisir_option": "Attach_this_card_to_Elektra",
+        "verifier": "etat_attendu",
+        "attendu": {"accroche_a": [["60035", "60007"]]},
+    },
+    {
+        "nom": "60032 Sensory Overload — Reponse forcee : 1 degat DIRECT a l'identite quand un Sens entre en jeu, jamais a un allie",
+        "pourquoi": ("correctif du 11/10/2026 : TakeIndirectDamage laissait repartir le degat sur un allie ; le texte dit "
+                     "« take 1 damage ». Elektra en jeu, `cibles` la propose en premier : avec l'ancien code le degat "
+                     "va sur elle. Deposition (accepter_choix) joue un Sens gratuit, qui declenche l'obligation"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.PutIntoPlay('60007', under_control=True)",
+                          "Puzzle.PutIntoPlay('60032', under_control=True)",
+                          "Puzzle.PutOnAdditionalDeckTop('60005')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "main_exclusive": ["60009", "01088"],
+        "declencher": [],
+        "jouer": ["60009"],
+        "payer_avec": ["01088"],
+        "cibles": ["60007", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "degats": [["60007", 0]]},
     },
     {
         "nom": "27131 Common Criminal — une seule option possible (aucune manigance annexe) : le journal le dit",
@@ -58477,6 +58847,19 @@ def gorr_partie_perdue(monde, aides):
     if monde.game_over.players_won:
         return False, "les joueurs ont GAGNE (attendu : defaite)"
     return True, f"partie perdue ({monde.game_over.reason})"
+
+def mojo_csi_defaite_sans_cotes(monde, aides):
+    """39002b + 39037 : defaite declaree et aucune cote placee sur The Champion."""
+    if not monde.is_game_over:
+        return False, "la partie n'est pas terminee"
+    if monde.game_over.players_won:
+        return False, "les joueurs ont GAGNE (attendu : defaite)"
+    for objet in monde.object_manager.card_dict.values():
+        face = getattr(objet, "face", None) or objet
+        if getattr(getattr(face, "paper", None), "card_id", None) in ("39003a", "39003b"):
+            if face.GetCounters("ratings") != 0:
+                return False, f"{face.GetCounters('ratings')} cotes placees (attendu 0)"
+    return True, f"defaite ({monde.game_over.reason}), aucune cote"
 
 def gorr_attachement_revele(monde, aides):
     """gb016 : la fouille sort un attachement NECROVERSE du deck de rencontre
