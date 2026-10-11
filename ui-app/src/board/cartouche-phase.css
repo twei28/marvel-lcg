@@ -1285,6 +1285,12 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-chaine-annulee {
   color: #fff;
 }
 
+/* La bande de jauge deborde SOUS le cadre (ScanCard.css, marge negative de
+   --jauge-debord) : sans ce retrait, le recap passait dessous (11/10/2026). */
+.deroule-phase.est-scene .deroule-vignette.a-jauge > .deroule-recap {
+  margin-top: calc(var(--jauge-debord) + 2px);
+}
+
 /* « menaces retirées » : la manigance s'est vidée en atteignant son seuil. */
 .deroule-phase.est-scene .deroule-resultat-note {
   display: block;

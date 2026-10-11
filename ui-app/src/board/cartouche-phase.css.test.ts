@@ -270,3 +270,20 @@ describe('la feuille du cartouche du bas', () => {
     }
   })
 })
+
+// Mesure faite au navigateur le 11/10/2026 (feuille construite, 1366x768 et
+// 1920x1080, normal et Sobre) : recap passe sous la jauge (-14 px), haut des
+// cartes du calcul rogne (-4 et -16 px), 62 px de vide sous « Continuer ».
+describe('modale Étape par étape : jauge, cartes du calcul, pied (11/10/2026)', () => {
+  const essai = fs.readFileSync(path.join(__dirname, 'cartouche-essai.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+  it('le recap sous une jauge descend du debord de la bande', () => {
+    expect(corpsDe('.deroule-phase.est-scene .deroule-vignette.a-jauge > .deroule-recap')).toMatch(/margin-top:\s*calc\(var\(--jauge-debord\)/)
+  })
+  it('la case de carte du calcul reserve la jauge et son recap, la vignette calee en haut', () => {
+    expect(essai).toMatch(/\.essai-calcul \.essai-terme \{[^}]*grid-template-rows:\s*calc\(var\(--vignette-h\) \+ var\(--sous-carte\)\)/)
+    expect(essai).toMatch(/\.essai-calcul \.essai-terme > \.deroule-vignette \{[^}]*align-self:\s*start/)
+  })
+  it('le repere de poignee sort du flux de la modale', () => {
+    expect(essai).toMatch(/\.deroule-phase\.est-scene\.est-essai\.poignee-glisser::after \{[^}]*position:\s*absolute/)
+  })
+})

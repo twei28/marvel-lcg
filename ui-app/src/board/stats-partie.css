@@ -28,9 +28,21 @@
   max-width: min(860px, calc(100vw - 24px));
   width: min(860px, calc(100vw - 24px));
   max-height: calc(100dvh - 48px);
+  box-sizing: border-box;
   overflow-y: auto;
   justify-items: stretch;
   text-align: left;
+}
+
+/* Hauteur bornee a ce qui reste sous l'eclat (fin-partie-bd.css), sinon la
+   carte deborde de sa ligne et remonte sous l'image (capture du 11/10/2026). */
+.fin-partie.est-victoire .fin-partie-carte.est-stats,
+.fin-partie.est-defaite:not(.est-nul) .fin-partie-carte.est-stats {
+  max-height: calc(100dvh - 48px - min(640px, 90vw) / 3 + 24px);
+}
+
+.fin-partie.est-nul .fin-partie-carte.est-stats {
+  max-height: calc(100dvh - 48px - min(560px, 86vw) * 9 / 16 + 48px);
 }
 
 .stats-partie {

@@ -664,3 +664,37 @@ body.plateau-sans-animations .scan-card.is-target-pulse .scan-frame {
 .deroule-phase.est-scene.est-essai .essai-calcul .deroule-vignette .scan-card.is-landscape {
   --card-w: var(--vignette-h);
 }
+
+/* --- RETOUCHES DU 11/10/2026 : cartes rognees, vide sous « Continuer » ------- */
+
+/* La case de la carte reserve aussi la bande de jauge et son recap. Elle
+   faisait juste --vignette-h et la vignette y etait centree : jauge et recap la
+   faisaient deborder vers le HAUT, que le corps (overflow: auto) rognait. La
+   reserve est la meme pour tous les termes, donc les pictos restent alignes. */
+.deroule-phase.est-essai .essai-calcul .essai-terme {
+  --sous-carte: calc(var(--jauge-debord) + 0.78rem * 1.1 + 6px);
+  grid-template-rows: calc(var(--vignette-h) + var(--sous-carte)) auto auto;
+}
+
+.deroule-phase.est-essai .essai-calcul .essai-terme > .deroule-vignette {
+  align-self: start;
+}
+
+/* Un complot (paysage, moins haut) reste centre sur la hauteur d'une portrait. */
+.deroule-phase.est-essai .essai-calcul .essai-terme > .deroule-vignette:has(.scan-card.is-landscape) {
+  margin-top: calc(var(--vignette-h) * (1 - 127 / 176) / 2);
+}
+
+/* Le repere de poignee (« ⋮⋮ », board.css) etait un element du flux : une
+   ligne entiere sous le pied. Pose dans le coin bas gauche, hors du flux. */
+.deroule-phase.est-scene.est-essai {
+  padding-bottom: 14px;
+}
+
+.deroule-phase.est-scene.est-essai.poignee-glisser::after {
+  position: absolute;
+  left: 10px;
+  bottom: 1px;
+  margin: 0;
+  line-height: 1;
+}
