@@ -12,12 +12,24 @@ class AbilityFactoryPlay:
 
         if under_any_players_control:
             selector = Select.From("Players")
+            propres = []
         else:
             selector = Select.From("YourIdentity")
+            # « Max 1 per player » (RR 1.8 p.28) : un nom de condition lisible,
+            # pour que le refus dise pourquoi (raisons-refus.ts) au lieu de
+            # « Aucune cible possible ». Le selecteur garde son propre controle.
+            def check_max_per_player(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> bool:
+                joueur = effect.GetInitiator()
+                this = effect.this
+                maximum = getattr(this, "max_per_unit", 256)
+                if joueur is None or maximum >= 256:
+                    return True
+                return joueur.supports.HasThisType(this) < maximum
+            propres = [check_max_per_player]
 
         return AbilityFactoryPlay.CanPlayThisSupportCardSelect(
             selector,
-            conditions=conditions
+            conditions=[*propres, *conditions]
         )
 
     @staticmethod
@@ -73,6 +85,23 @@ class AbilityFactoryPlay:
         from game.card.card_finder import CardFinder
         from game.ability.factory import AbilityFactory
         from game.card.face.card_type import Upgrade
+
+        # « Max 1 per player » (RR 1.8 p.28) sur une amelioration posee sur sa
+        # propre identite (cible par defaut) : meme controle que le selecteur,
+        # mais nomme, pour que le refus se lise (raisons-refus.ts) au lieu de
+        # « Aucune cible possible ». Les autres cibles (« Max 1 per enemy »,
+        # « sous le controle de n'importe quel joueur ») gardent le seul
+        # controle du selecteur, cible par cible.
+        propres: List[Callable[['Effect', 'Message.WhenPlayerInTurn'], bool]] = []
+        if target == None:
+            def check_max_per_player(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> bool:
+                joueur = effect.GetInitiator()
+                this = effect.this
+                maximum = getattr(this, "max_per_unit", 256)
+                if joueur is None or maximum >= 256:
+                    return True
+                return joueur.GetIdentity().GetInventoryDeck().HasThisType(this) < maximum
+            propres.append(check_max_per_player)
 
         if target == None:
             selector = None
@@ -156,6 +185,7 @@ class AbilityFactoryPlay:
             conditions=[
                 lambda effect, message:
                     Condition.FieldHasNotThisUniqueType(effect.this, effect),
+                *propres,
                 *conditions
             ],
         ).SetPlay().SetTargetInternal(selector)

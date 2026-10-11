@@ -1743,6 +1743,26 @@ export function DeroulePhase({
     )
   }
 
+  // L'ATTENTE D'UN AUTRE JOUEUR AVANT LA PREMIERE ETAPE (multi, 11/10/2026) :
+  // l'hote est interroge, les autres ne voyaient rien sur le telephone et sur
+  // la table. Ils voient qui on attend, sans un bouton.
+  if (!etape && !termine && !partieFinie && !questionAuJoueur && attendUnAutreJoueur && phaseMechantEnCours && !spectateur) {
+    return enveloppe(
+      <section
+        ref={setElCartouche}
+        className={classeCartouche('est-attente')}
+        style={styleDeplace}
+        role="status"
+        aria-label={t('Phase du méchant')}
+      >
+        <div className="deroule-poignee poignee-glisser" {...gestesDeplacer} aria-hidden="true" />
+        <span className="deroule-rond-mention" aria-live="polite">
+          {texteAttente({ autreJoueur: true, nom: nomJoueurAttendu })}
+        </span>
+      </section>
+    )
+  }
+
   if (!etape || termine || partieFinie) return null
 
   // L'etape TELLE QU'ON LA LIT : noms francais quand le plateau les connait.

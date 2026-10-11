@@ -176,6 +176,32 @@ describe('cartouche du deroule', () => {
     expect(container).toBeEmptyDOMElement()
   })
 
+  // Multi, 11/10/2026 : au debut de la phase, l'hote est interroge avant la
+  // premiere etape ; sur telephone (rendu d'avant) et sur la table, les autres
+  // joueurs ne voyaient rien. Ils voient maintenant qui on attend.
+  it.each([
+    ['telephone', { telephone: true }],
+    ['sur la table', { presentation: 'table' as const }],
+  ])('sans etape, un autre joueur interroge (%s) : « En attente de Black Panther »', (_nom, mode) => {
+    render(
+      <DeroulePhase
+        etapes={[]}
+        phaseMechantEnCours
+        attendUnAutreJoueur
+        nomJoueurAttendu="Black Panther"
+        onTerminer={() => {}}
+        {...mode}
+      />
+    )
+    expect(screen.getByText('En attente de Black Panther')).toBeInTheDocument()
+    expect(screen.queryAllByRole('button')).toHaveLength(0)
+  })
+
+  it('sans etape, personne d autre attendu : toujours rien (solo)', () => {
+    const { container } = render(<DeroulePhase etapes={[]} phaseMechantEnCours telephone onTerminer={() => {}} />)
+    expect(container).toBeEmptyDOMElement()
+  })
+
   it('disparait une fois la derniere etape validee', () => {
     // Defaut constate en partie reelle : onTerminer ne suffit pas a faire
     // disparaitre le cartouche si l'appelant n'en fait rien (board.tsx passe

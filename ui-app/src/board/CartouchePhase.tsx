@@ -854,8 +854,13 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   // Une question posee AVANT toute etape (la fenetre d'interruption qui
   // precede la menace) s'affiche quand meme : sans elle, plus aucun bouton
   // nulle part (constat du 12/09/2026, DeroulePhase).
+  // Celle d'un AUTRE siege aussi (multi, 11/10/2026) : sans elle, les autres
+  // joueurs ne voyaient rien tant que l'hote n'avait pas repondu.
   const questionSansEtape =
-    etape === undefined && questionAuJoueur && (question !== undefined || props.questionDuMoteur !== undefined)
+    etape === undefined &&
+    (questionAuJoueur
+      ? question !== undefined || props.questionDuMoteur !== undefined
+      : props.questionDUnAutre !== undefined)
   const montre = !efface && (etape !== undefined || questionSansEtape)
   // LA RELECTURE (D22, D23) : jamais devant une question, qui a besoin de
   // l'etape en cours sous les yeux et de ses boutons.

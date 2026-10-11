@@ -106,6 +106,39 @@ CAS = [
         "attendu": {},
     },
     {
+        "nom": "08031 Rapid Response — Max 1 par joueur : une copie deja en jeu, la 2e en main n'est PAS jouable",
+        "pourquoi": '« Max 1 per player » (MaxPerUnit 1) : signalement du 11/10/2026, une 2e copie se posait',
+        "scenario": "rhino",
+        "heros": 'spider_man',
+        "mise_en_place": ["Puzzle.Gain('08031')", "Puzzle.PutIntoPlay('08031', under_control=True)"],
+        "main": ["01088", "01089", "01088"],
+        "declencher": [],
+        "verifier": "max_par_joueur_jouable",
+        "attendu": {"carte": '08031', "jouable": False, "en_jeu": 1, "raison": "check_max_per_player"},
+    },
+    {
+        "nom": '08031 Rapid Response — Max 1 par joueur, TEMOIN : aucune copie en jeu, celle en main est jouable',
+        "pourquoi": "contre-cas du precedent : sans copie en jeu, rien n'interdit de la jouer",
+        "scenario": "rhino",
+        "heros": 'spider_man',
+        "mise_en_place": ["Puzzle.Gain('08031')"],
+        "main": ["01088", "01089", "01088"],
+        "declencher": [],
+        "verifier": "max_par_joueur_jouable",
+        "attendu": {"carte": '08031', "jouable": True, "en_jeu": 0},
+    },
+    {
+        "nom": "01063 Interrogation Room — Max 1 par joueur (soutien) : une copie en jeu, la 2e n'est PAS jouable, raison lisible",
+        "pourquoi": "temoin generique du controle « Max 1 per player » des soutiens (RR 1.8 p.28), meme raison que 08031",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Gain('01063')", "Puzzle.PutIntoPlay('01063', under_control=True)"],
+        "main": ["01088", "01089", "01088"],
+        "declencher": [],
+        "verifier": "max_par_joueur_jouable",
+        "attendu": {"carte": '01063', "jouable": False, "en_jeu": 1, "raison": "check_max_per_player"},
+    },
+    {
         "nom": "56177 Venom Blast — capacite Boost : Sonne, sinon Desoriente",
         "pourquoi": "la capacite Boost n'etait pas implementee du tout (audit 2/8/2026)",
         "scenario": "rhino",
@@ -52497,6 +52530,34 @@ def refus_rattache_a_sa_carte(monde, aides):
     if chat.card.object_id not in ids or rr.card.object_id in ids:
         return False, f"refus rattache a {ids} (Black Cat={chat.card.object_id}, Rapid Response={rr.card.object_id})"
     return True, f"refus rattache a Black Cat ({ids})"
+
+
+def max_par_joueur_jouable(monde, aides):
+    """« Max N per player » : la copie en MAIN est jouable (CanPlayBy) ou non selon
+    le nombre de copies deja en jeu (attendu : carte, jouable, en_jeu)."""
+    attendu = aides["cas"]["attendu"]
+    joueur = monde.players[0]
+    code = attendu["carte"]
+    main = [f for f in joueur.hand_cards.GetAll() if getattr(f.paper, "card_id", None) == code]
+    if not main:
+        return False, f"{code} absente de la main"
+    en_jeu = 0
+    for objet in monde.object_manager.card_dict.values():
+        face = getattr(objet, "face", None)
+        if face is not None and getattr(face.paper, "card_id", None) == code and face.IsInPlay():
+            en_jeu += 1
+    if en_jeu != attendu["en_jeu"]:
+        return False, f"{en_jeu} copie(s) en jeu, attendu {attendu['en_jeu']}"
+    jouable = bool(main[0].CanPlayBy(joueur))
+    if jouable != attendu["jouable"]:
+        return False, f"jouable={jouable} avec {en_jeu} copie(s) en jeu (attendu {attendu['jouable']})"
+    if attendu.get("raison"):
+        raisons = []
+        for effet in main[0].effect.Find(func_name="Play"):
+            raisons += [str(r) for r in effet.failures.reasons.get(joueur.player_id, [])]
+        if attendu["raison"] not in raisons:
+            return False, f"raison du refus = {raisons[-3:]} (attendu {attendu['raison']})"
+    return True, f"jouable={jouable} avec {en_jeu} copie(s) en jeu"
 
 
 def ordre_de_mise_en_place(monde, aides):

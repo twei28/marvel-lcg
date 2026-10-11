@@ -1367,6 +1367,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Rien à dépenser pour payer le coût': 'Nothing available to pay the cost',
   'Une carte ne peut pas payer son propre coût': 'A card cannot pay for itself',
   'Aucune cible possible en ce moment': 'No legal target right now',
+  'Tu as déjà le maximum d’exemplaires de cette carte en jeu': 'You already have the maximum number of copies of this card in play',
   "Cette carte n'est plus en jeu": 'This card is no longer in play',
   'Cette carte a été retirée de la partie': 'This card has been removed from the game',
   'Le texte de cette carte est considéré comme vierge': "This card's text box is treated as blank",

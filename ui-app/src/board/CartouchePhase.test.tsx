@@ -832,6 +832,25 @@ describe('etat 14 : un autre joueur choisit (D28, lecture seule)', () => {
     expect(screen.queryAllByRole('button')).toHaveLength(0)
   })
 
+  // Multi, 11/10/2026 : au tout debut de la phase, le moteur interroge l'hote
+  // AVANT la premiere etape. Les autres joueurs ne voyaient alors RIEN : le
+  // cartouche ne s'affichait sans etape que pour une question posee ici.
+  it('avant toute etape, un autre joueur interroge : « Black Panther choisit… » plutot que rien', () => {
+    monter({
+      etapes: [],
+      index: 0,
+      etape: undefined,
+      ...{
+        attendUnAutreJoueur: true,
+        nomJoueurAttendu: 'Black Panther',
+        questionDUnAutre: { options: [{ id: 1, bindId: PANTHERE, nom: 'Black Panther' }] },
+      },
+    })
+    expect(section()).not.toBeNull()
+    expect(document.querySelector('.deroule-pulse')?.textContent).toBe('Black Panther choisit…')
+    expect(screen.queryAllByRole('button', { name: /Suivant/ })).toHaveLength(0)
+  })
+
   it('sans nom connu : « Un autre joueur choisit… »', () => {
     monter({ etapes: [annonce], index: 0, attendUnAutreJoueur: true, questionDUnAutre: { options: [] } })
     expect(document.querySelector('.deroule-pulse')?.textContent).toBe('Un autre joueur choisit…')

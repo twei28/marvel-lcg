@@ -78,6 +78,8 @@ const PHRASES: Record<string, () => string> = {
 
   // --- Les cibles ---------------------------------------------------------
   'update legal targets': () => t('Aucune cible possible en ce moment'),
+  // « Max 1 per player » (RR 1.8 p.28), condition nommee dans play.py.
+  check_max_per_player: () => t('Tu as déjà le maximum d’exemplaires de cette carte en jeu'),
 
   // --- L'etat de la carte -------------------------------------------------
   'out of play': () => t("Cette carte n'est plus en jeu"),

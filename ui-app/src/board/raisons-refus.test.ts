@@ -47,6 +47,16 @@ describe('la raison pour laquelle une carte est injouable', () => {
     expect(phraseDuRefus('player_is_alter_ego')).toBe("Jouable seulement sous forme d'alter ego")
   })
 
+  it('dit le maximum par joueur, pas « aucune cible » (Réponse Immédiate, 11/10/2026)', () => {
+    enFrancais()
+    // Une 2e copie d'une carte « Max 1 per player » se refusait avec « Aucune
+    // cible possible en ce moment » : le joueur cherchait une cible qui
+    // n'existait pas. play.py nomme maintenant la condition.
+    expect(phraseDuRefus('check_max_per_player')).toBe('Tu as déjà le maximum d’exemplaires de cette carte en jeu')
+    enAnglais()
+    expect(phraseDuRefus('check_max_per_player')).toBe('You already have the maximum number of copies of this card in play')
+  })
+
   it('rend les chiffres du coût, pas une phrase vague', () => {
     enFrancais()
     // Le seul motif du moteur qui porte des nombres. Sans eux, « pas assez de
