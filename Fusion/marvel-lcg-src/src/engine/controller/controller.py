@@ -61,7 +61,10 @@ class Controller:
             derniers = getattr(self.world.render, "derniers_refus", None) or []
             for effect in derniers:
                 try:
-                    descriptor = effect.Render(by_effect, self.player_id)
+                    # Sans `by_effect` : `Render` rendrait le `bind_id` de l'effet qui
+                    # POSE la question, et le refus d'une autre carte s'afficherait
+                    # « Injouable » sur elle (signalement Rapid Response, 11/10/2026).
+                    descriptor = effect.Render(None, self.player_id)
                 except Exception:
                     continue
                 if not descriptor.failure_reason:
@@ -156,7 +159,7 @@ class Controller:
                 continue  # jouable : rien a expliquer
             for effet in effets:
                 try:
-                    descriptor = effet.Render(by_effect, self.player_id)
+                    descriptor = effet.Render(None, self.player_id)
                 except Exception:
                     continue
                 if not descriptor.failure_reason:

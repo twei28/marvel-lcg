@@ -92,6 +92,20 @@ os.environ.setdefault("CAS_PREFIX", str(os.getpid()))
 
 CAS = [
     {
+        "nom": "08031 Rapid Response — un refus d'une AUTRE carte ne s'affiche pas « Injouable » sur Rapid Response",
+        "pourquoi": ("signalement du 11/10/2026 (capture : Réponse Immédiate « INJOUABLE — Aucune cible possible ») : "
+                     "`Effect.Render(by_effect)` rendait le `bind_id` de l'effet qui pose la question, donc le refus "
+                     "d'une autre carte se collait sur la carte qui interroge (`controller.py` RendreLesRefus)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('08031', under_control=True)",
+                          "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "declencher": [],
+        "verifier": "refus_rattache_a_sa_carte",
+        "attendu": {},
+    },
+    {
         "nom": "56177 Venom Blast — capacite Boost : Sonne, sinon Desoriente",
         "pourquoi": "la capacite Boost n'etait pas implementee du tout (audit 2/8/2026)",
         "scenario": "rhino",
@@ -52450,6 +52464,40 @@ CAS = [
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
 VERIFICATIONS = r'''
+
+def refus_rattache_a_sa_carte(monde, aides):
+    """Un refus se rattache a la carte de l'effet REFUSE, jamais a celle de l'effet
+    qui pose la question (`by_effect`). Rapid Response 08031 pose la question,
+    Black Cat 01002 porte le refus « update legal targets »."""
+    from engine.controller.controller import Controller
+    from game.effect.effect_failure import EffectFailure
+    joueur = monde.players[0]
+    def face_de(code):
+        for objet in monde.object_manager.card_dict.values():
+            face = getattr(objet, "face", None) or objet
+            if getattr(getattr(face, "paper", None), "card_id", None) == code and face.effect.Find():
+                return face
+        return None
+    rr, chat = face_de("08031"), face_de("01002")
+    if rr is None or chat is None:
+        return False, f"cartes introuvables (08031={rr}, 01002={chat})"
+    pose = rr.effect.Find()[0]
+    refuse = chat.effect.Find()[0]
+    refuse.failures.Set(joueur, EffectFailure.UpdateLegalTargets)
+    class _Faux:
+        world = monde
+        player_id = joueur.player_id
+        def _RefusDesCartesAJouer(self, by_effect):
+            return []
+    monde.render.derniers_refus = [refuse]
+    refus = Controller.RendreLesRefus(_Faux(), pose)
+    if not refus:
+        return False, "aucun refus rendu"
+    ids = [r.bind_id for r in refus]
+    if chat.card.object_id not in ids or rr.card.object_id in ids:
+        return False, f"refus rattache a {ids} (Black Cat={chat.card.object_id}, Rapid Response={rr.card.object_id})"
+    return True, f"refus rattache a Black Cat ({ids})"
+
 
 def ordre_de_mise_en_place(monde, aides):
     """Les questions de la mise en place arrivent dans l'ordre attendu.

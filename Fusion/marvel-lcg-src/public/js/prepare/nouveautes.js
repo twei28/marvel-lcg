@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-11",
         genre: "correction",
+        fr: "La phase du méchant « Étape par étape » reprend sa présentation habituelle. Et une carte jouable ne s'affiche plus « Injouable » à cause d'une autre carte (vu sur Réponse Immédiate).",
+        en: "The \"Step by step\" villain phase is back to its usual look. And a playable card no longer shows \"Unplayable\" because of another card (seen on Rapid Response).",
+    },
+    {
+        date: "2026-10-11",
+        genre: "correction",
         fr: "Écran de fin : sur l'onglet Stats, l'image DEFEAT ou VICTORY ne cache plus les onglets ni le bas du bilan. Tu peux de nouveau revenir sur Résultat pour quitter.",
         en: "End screen: on the Stats tab, the DEFEAT or VICTORY image no longer hides the tabs or the bottom of the summary. You can go back to Result to leave again.",
     },
