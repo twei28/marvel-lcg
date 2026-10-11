@@ -388,7 +388,8 @@ class SenderPlayer:
             self.for_second_target: Final = for_second_target
             # Le titre que le plateau affiche au-dessus des boutons, quand la question
             # n'est portee par aucune carte (voir `controller.py`, `prompt_text`).
-            self.titre: Final = titre
+            # Reecrit par `_PayerAutantQuePossible` quand aucune option n'est faisable en entier.
+            self.titre: str = titre
             # self.Present(None, "", by_effect.this)
             super().__init__(player=player)
 

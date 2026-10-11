@@ -32,6 +32,8 @@ class EffectDescriptor:
 
     failure_reason: str             # not null if fail
     is_search: bool
+    # Option de cout d'une carte rencontre reduite au plus gros morceau payable : le plateau la surligne.
+    au_maximum: bool = False
 
     # is_ex_effect check `AskOption`
 

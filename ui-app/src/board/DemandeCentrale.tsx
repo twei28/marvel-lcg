@@ -420,7 +420,8 @@ export function DemandeCentrale({
   // phase pour Domino » au-dessus de « FIN DE PHASE / Domino »). Demande de
   // l'utilisateur, 03/10/2026 : garder seulement le bouton. Le bandeau reste en
   // fine barre, parce que c'est lui qui sert de poignee pour deplacer le panneau.
-  const choixUnique = options.length === 1 && !demande.show_cancel && !enScene
+  // Sauf l'option imposee « au maximum » : son titre explique pourquoi elle est seule (Sonic Boom, 11/10/2026).
+  const choixUnique = options.length === 1 && !demande.show_cancel && !enScene && !options[0]?.au_maximum
   // BEAUCOUP DE CHOIX (07/10/2026) : les vignettes rapetissent, puis la liste
   // devient une colonne de lignes (mini-vignette a gauche, bouton a droite). Le
   // refus reste epingle en bas ; seule la liste defile. Voir board.css.
@@ -621,7 +622,7 @@ export function DemandeCentrale({
                 type="button"
                 className={`af-action ${classeTonaliteAction(`${nom} ${demande.ability_type}`)}${
                   indisponible ? ' est-indisponible' : ''
-                }${defense ? ' est-defense' : ''}`}
+                }${defense ? ' est-defense' : ''}${option.au_maximum ? ' est-au-maximum' : ''}`}
                 aria-disabled={indisponible || undefined}
                 title={indisponible ? option.failure_reason : undefined}
                 onFocus={() => activerOption(option, carteAuSurvol?.(option) ?? carteBrute)}

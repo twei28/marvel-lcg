@@ -23,6 +23,8 @@ class EffectContext:
 
         self.is_must_choose = False
         self.only_work_when_no_other_options = False
+        # Option de cout d'une carte rencontre reduite au plus gros morceau payable (`_PayerAutantQuePossible`).
+        self.au_maximum = False
 
         self.target_range: Tuple[int, int] = (0, 0)
         self.all_legal_targets: List['CardFace'] = []

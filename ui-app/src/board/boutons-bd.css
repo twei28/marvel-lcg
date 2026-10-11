@@ -45,6 +45,31 @@
   background: var(--menace);
 }
 
+/* L'OPTION A FAIRE AU MAXIMUM (11/10/2026) : aucune option d'une carte
+   rencontre n'est faisable en entier, le moteur impose celle qu'on peut faire
+   le plus (Sonic Boom). Trait or epais et halo pulse sur le conteneur : le
+   `clip-path` du bouton couperait une ombre exterieure. */
+.demande-centrale .af-action.est-au-maximum {
+  --action-border: #facc15;
+  box-shadow: inset 0 0 0 3px #facc15;
+}
+
+.demande-centrale .af-action-wrap:has(> .af-action.est-au-maximum) {
+  animation: halo-au-maximum 1.6s ease-in-out infinite;
+}
+
+@keyframes halo-au-maximum {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(250, 204, 21, 0.55)); }
+  50% { filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.95)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demande-centrale .af-action-wrap:has(> .af-action.est-au-maximum) {
+    animation: none;
+    filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.85));
+  }
+}
+
 /* LE REFUS, gris et discret : « Passer », « Ne pas défendre », « Annuler »,
    et « Précédent » dans le cartouche. */
 .demande-centrale .dc-pass,

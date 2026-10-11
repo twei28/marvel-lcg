@@ -388,6 +388,31 @@ describe('DemandeCentrale — la question « combien de fois » nomme la carte e
   })
 })
 
+// Sonic Boom, heros incline et ressources incompletes (rapport Yarro, 11/10/2026) :
+// aucune option n'est faisable en entier, le moteur impose celle qu'on peut faire
+// au maximum. Le joueur doit lire POURQUOI, et voir laquelle est imposee.
+describe('DemandeCentrale — aucune option faisable en entier : on le dit et on surligne celle a faire', () => {
+  const titre = '[(81,01123) Sonic Boom]: no option can be done in full. Do as much as you can: Spend [[energy]][[mental]]'
+  const imposee = (): Option => ({ ...option(), id: 3, name: 'Spend [[energy]][[mental]]', bind_id: 0, au_maximum: true })
+  const d = (): Demande =>
+    ({ options: [imposee()], prompt_text: titre, event_name: 'WhenPlayerChooseAbility', show_cancel: false, ability_type: 'ChooseAbility' }) as unknown as Demande
+
+  beforeEach(() => window.localStorage.setItem('marvel-langue', 'fr'))
+  afterEach(() => window.localStorage.clear())
+
+  it('le titre explique en francais et nomme l option imposee', () => {
+    const { container } = rendre({ demande: d(), options: d().options })
+    expect(container.textContent).toContain("aucune option n'est faisable en entier, tu dois en faire une au maximum. Celle-ci : Dépenser")
+  })
+
+  it('le bouton de l option imposee est surligne, pas les autres', () => {
+    const autre = { ...option(), id: 4, name: 'Exhaust each character you control', bind_id: 0 }
+    const { container } = rendre({ demande: d(), options: [imposee(), autre] })
+    expect(container.querySelectorAll('.af-action.est-au-maximum')).toHaveLength(1)
+    expect(container.querySelector('[data-option-id="3"] .af-action')?.classList.contains('est-au-maximum')).toBe(true)
+  })
+})
+
 describe('DemandeCentrale — la croix annule l’action en cours', () => {
   const dansUneAction = (): Demande => ({ ...demande(), annuler_action: true })
 

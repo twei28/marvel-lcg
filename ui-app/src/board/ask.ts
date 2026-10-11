@@ -66,6 +66,8 @@ export type Option = {
   /** Renseigne par le moteur quand l'option n'est pas jouable. */
   failure_reason: string
   is_search: boolean
+  /** Aucune option d'une carte rencontre n'est faisable en entier : celle-ci, réduite au maximum payable, est à faire. */
+  au_maximum?: boolean
 }
 
 export type Demande = {
@@ -185,6 +187,7 @@ function lireOption(brut: unknown): Option | undefined {
       : [],
     failure_reason: texte(o.failure_reason),
     is_search: o.is_search === true,
+    au_maximum: o.au_maximum === true,
   }
 }
 

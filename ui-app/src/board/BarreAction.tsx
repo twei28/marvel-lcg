@@ -8,7 +8,7 @@ import type { Demande, Option } from './ask'
 import type { Interaction } from './interaction'
 import { t } from './langue'
 import { avecIcones, coutEnIcones, marquerRessources } from './icones-ressources'
-import { traduireEffets, traduireMoteur } from './vocabulaire-moteur'
+import { traduireEffets, traduireMoteur, traduireTitreRepetition } from './vocabulaire-moteur'
 
 /**
  * Les noms d'options arrivent avec des soulignes, et parfois prefixes de "p_"
@@ -208,7 +208,7 @@ export function BarreAction({
 
       <div className="plateau-action-texte">
         <span className="plateau-eyebrow">{t('À toi de jouer')}</span>
-        <strong>{demande.prompt_text ? avecIcones(nettoyerNarration(demande.prompt_text)) : t('Choisis une action')}</strong>
+        <strong>{demande.prompt_text ? avecIcones(traduireTitreRepetition(nettoyerNarration(demande.prompt_text))) : t('Choisis une action')}</strong>
         <span className="pa-etape">{etape}</span>
       </div>
 

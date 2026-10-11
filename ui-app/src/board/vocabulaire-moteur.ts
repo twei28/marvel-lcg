@@ -467,6 +467,10 @@ export function traduireTitreRepetition(texte: string): string {
   if (langueActuelle() !== 'fr') return texte
   const total = /^(.+): (.+?)\. How many times\? \(1 to (\d+)\)$/.exec(texte)
   if (total) return `${total[1]} : ${traduireMoteur(total[2]!)}. Combien de fois ? (1 à ${total[3]})`
+  const auMaximum = /^(.+): no option can be done in full\. Do as much as you can: (.+)$/.exec(texte)
+  if (auMaximum) {
+    return `${auMaximum[1]} : aucune option n'est faisable en entier, tu dois en faire une au maximum. Celle-ci : ${traduireMoteur(auMaximum[2]!).replace(/^Spend /, 'Dépenser ')}`
+  }
   const enPlus = /^(.+): (.+?) done \((\d+) of (\d+)\)\. How many more times\?$/.exec(texte)
   if (enPlus) {
     return `${enPlus[1]} : ${traduireMoteur(enPlus[2]!)} fait (${enPlus[3]} sur ${enPlus[4]}). Combien de fois en plus ?`

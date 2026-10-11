@@ -740,8 +740,102 @@ class PlayerAction:
 
         message = Message.WhenPlayerChooseAbility(player, by_effect, step, for_second_target, titre)
         message.Send()
+        repli = self._PayerAutantQuePossible(by_effect, effects, message)
+        if repli is not None:
+            effects = repli
+            imposee = next((e for e in repli if e.context.au_maximum), None)
+            if imposee is not None:
+                message.titre = f"{self._CarteCitee(by_effect)}: no option can be done in full. Do as much as you can: {imposee.GetDisplayName()}"
         # Cannot set `forced=True`, see "39019"
         return self.ChooseEffects(effects, message, forced=forced, priority=priority, passer_refuse=passer_refuse)
+
+    @staticmethod
+    def _CoutPayable(effect: 'Effect') -> bool:
+        """Les moyens de paiement releves par le dernier filtre couvrent-ils le cout ? Chaque carte paie par UN de ses moyens."""
+        import itertools
+        cibles = effect.checker.cost_for_different_target
+        if not effect.ability.NeedCost() or cibles.IsEmpty() or effect.context.ignore_resource_cost:
+            return True
+        paiement = cibles.GetPayment(None)
+        par_source: Dict[Any, List[Resources]] = {}
+        for entree in paiement.payments:
+            for moyen, texte in entree.items():
+                par_source.setdefault(moyen.this, []).append(Resources.FromText(texte))
+        choix = list(par_source.values())
+        combinaisons = 1
+        for moyens in choix:
+            combinaisons *= len(moyens)
+        if combinaisons > 256:
+            # Trop de combinaisons : on ne tranche pas, le paiement normal decidera.
+            return True
+        for tirage in itertools.product(*choix):
+            total = Resources("0")
+            for res in tirage:
+                total = total + res
+            if total.IsMatchCost(paiement.cost):
+                return True
+        return False
+
+    def _PayerAutantQuePossible(self, by_effect: 'Effect', effects: List['Effect'], message: 'Message.WhenPlayerChooseAbility') -> 'List[Effect]|None':
+        """Choix d'une carte RENCONTRE : une option de cout impayable en entier reste choisissable, reduite au plus gros morceau payable.
+
+        Rules Reference v18 p.12, « Choose (Option) » : face a une carte rencontre, seule est
+        interdite l'option qui exige une cible quand il n'y en a aucune ; on peut donc choisir une
+        option qu'on ne remplira qu'en partie, et on la fait au maximum (correction de Proust sur
+        Discord, 11/10/2026 : vrai depuis le RR 1.7, l'ancien ruling FFG de Sonic Boom imposait
+        l'option faisable en entier). Avant, l'option impayable restait offerte telle quelle, le
+        paiement echouait et la carte ne faisait rien (rapport Yarro, 11/10/2026). Une carte JOUEUR
+        n'est pas concernee : le meme article lui interdit les options au cout impayable.
+        Rend None quand rien ne change.
+        """
+        from game.event.manager import EventManager
+        from game.card.face.base.card_encounter import EncounterCard
+        if by_effect.is_rule or not EncounterCard.IsType(by_effect.this):
+            return None
+        player = self.GetPlayer()
+        disponibles = EventManager.FilterAvailableEffects(message, effects, player, player.world, None)
+        options: List['Effect'] = []
+        reduites: List['Effect'] = []
+        for effect in disponibles:
+            if "ForChoiceAbilityWithCost" not in effect.ability.func_names or self._CoutPayable(effect):
+                options.append(effect)
+                continue
+            reduite = self._OptionReduite(effect, by_effect, message)
+            if reduite is not None:
+                options.append(reduite)
+                reduites.append(reduite)
+        if len(options) == len(disponibles) and not reduites:
+            return None
+        if len(options) == 1 and reduites:
+            # Seule option possible : imposee, surlignee par le plateau, sans « Passer ».
+            reduites[0].context.au_maximum = True
+        return options
+
+    def _OptionReduite(self, effect: 'Effect', by_effect: 'Effect', message: 'Message.WhenPlayerChooseAbility') -> 'Effect|None':
+        """La meme option, son cout ramene au plus gros morceau que le joueur peut payer, ou None s'il ne peut rien payer."""
+        import copy
+        from game.event.manager import EventManager
+        from game.element.rbyg import ResRBYG, ResRBYGA
+        player = self.GetPlayer()
+        ability = effect.ability
+        cout = ability.GetCost(effect, [])
+        c = cout.rbyga
+        morceaux = sorted(
+            (ResRBYGA(a, ResRBYG(r, b, y, g, l))
+             for r in range(c.r + 1) for b in range(c.b + 1) for y in range(c.y + 1)
+             for g in range(c.g + 1) for l in range(c.l + 1) for a in range(max(0, c.a) + 1)),
+            key=lambda m: -m.total)
+        for morceau in morceaux:
+            if morceau.total <= 0 or morceau.total >= c.total:
+                continue
+            reduit = Cost(morceau, rule=cout.rule)
+            copie = copy.copy(ability)
+            copie.SetCost(reduit, is_choose_ability=True)
+            copie.SetName(f"Spend {reduit.GetSpendText()}")
+            essai = Effect(effect.this, copie, world=by_effect.world)
+            if EventManager.FilterAvailableEffects(message, [essai], player, player.world, None) and self._CoutPayable(essai):
+                return essai
+        return None
 
     def MayChooseOneAbility(self, by_effect: 'Effect', *abilities: 'Ability') -> 'Effect|None':
         cancel_ability = AbilityFactory.ForChoiceAbility(
@@ -866,6 +960,9 @@ class PlayerAction:
                 # 01123 : Passer = « Exhaust each character »), on le masque.
                 passer_est_une_option = fallthrough_effect is not None and \
                     not fallthrough_effect.IsName("Cancel") and not passer_refuse
+                # L'option imposee « au maximum » (`_PayerAutantQuePossible`) ne s'esquive pas.
+                if any(e.context.au_maximum for e in effect_list):
+                    passer_est_une_option = True
                 selected, is_cheating = player.GetController().ChoiceOne(effect_list, bind_effect, message, priority, forced, masquer_passer=passer_est_une_option)
 
                 game.controller_manager.undo.UpdateLastStep()

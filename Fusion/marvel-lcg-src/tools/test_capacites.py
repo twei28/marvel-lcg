@@ -46499,6 +46499,45 @@ CAS = [
         "attendu": {"taille_main": 3, "exhausted": ["01001b"]},
     },
     {
+        "nom": "01123 Sonic Boom — aucune option faisable en entier (heros incline, une seule ressource) : on depense ce qu'on a",
+        "pourquoi": ("rapport Yarro du 11/10/2026 : heros incline et pas les 3 ressources, la carte ne faisait RIEN "
+                     "(liste d'options vide). Ruling FFG Sonic Boom (hallofheroeslcg.com/official-ffg-rulings) : "
+                     "« If you cannot fulfill either option, then you must do as much as you can, which typically "
+                     "means discarding one or two different resource icons from your hand. »"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Exhaust('01001b')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('01123')"],
+        "passer_interdit": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 0, "defausse_joueur": 7, "exhausted": ["01001b"]},
+    },
+    {
+        "nom": "01123 Sonic Boom — un allie pret, ressources incompletes : Spend reste au choix et se paie au maximum (RR 1.7+)",
+        "pourquoi": ("RR v18 p.12 « Choose (Option) » : face a une carte rencontre, on peut choisir une option "
+                     "qu'on ne remplira qu'en partie (Proust, Discord, 11/10/2026). Avant, Spend impayable "
+                     "retombait sur Exhaust (fallthrough) : Black Cat etait inclinee quoi qu'on choisisse"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Exhaust('01001b')", "Puzzle.PutIntoPlay('01002', under_control=True)"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Reveal('01123')"],
+        "choisir_option": ["Spend_[[energy]][[mental]]", "Spend [[energy]][[mental]]"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 0, "defausse_joueur": 7, "pret": ["01002"]},
+    },
+    {
+        "nom": "01123 Sonic Boom — heros incline mais les 3 ressources en main : l'option Spend est imposee et payee en entier (temoin)",
+        "pourquoi": "temoin du cas precedent : le paiement complet ne doit pas changer",
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Exhaust('01001b')"],
+        "main_exclusive": ["01088", "01089", "01090"],
+        "declencher": ["Puzzle.Reveal('01123')"],
+        "payer_avec": ["01088", "01089", "01090"],
+        "payer_tout": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 0, "defausse_joueur": 9},
+    },
+    {
         "nom": "[mc4db] 04028 Marked for Death — When Revealed : la Mockingbird du joueur Clint, pas celle d'un autre joueur (FAQ)",
         "pourquoi": "FindCardsOnField sans controleur prenait la copie de l'autre joueur (01083 basique, en jeu chez Spider-Man)",
         "scenario": "rhino",
