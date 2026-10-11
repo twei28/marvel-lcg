@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-11",
         genre: "correction",
+        fr: "Quand tu as déjà le maximum d'exemplaires d'une carte en jeu, le jeu te le dit au lieu de « Aucune cible possible ». En multi, au début de la phase du méchant, les autres joueurs voient que l'hôte est en train de choisir.",
+        en: "When you already have the maximum number of copies of a card in play, the game now says so instead of \"No legal target\". In multiplayer, at the start of the villain phase, the other players see that the host is choosing.",
+    },
+    {
+        date: "2026-10-11",
+        genre: "correction",
         fr: "La phase du méchant « Étape par étape » reprend sa présentation habituelle. Et une carte jouable ne s'affiche plus « Injouable » à cause d'une autre carte (vu sur Réponse Immédiate).",
         en: "The \"Step by step\" villain phase is back to its usual look. And a playable card no longer shows \"Unplayable\" because of another card (seen on Rapid Response).",
     },
