@@ -24466,6 +24466,86 @@ CAS = [
         "attendu": {"hors_jeu": ["39043"], "degats": [["01094", 0]]},
     },
     {
+        "nom": "Overkill [regle] — sbire vaincu, un seul mechant : l'exces va a Rhino SANS question d'ordre (RR 1.8 p.31, 12/10/2026)",
+        "pourquoi": ("signalement : le jeu demandait « Simultaneous Overkill » a chaque exces "
+                     "(can_health.py) ; l'ordre ne compte que si les deux unites sont vaincues"),
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('39043')",
+                          "Puzzle.PutIntoPlay('ar008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["39043"],
+        "questions_absentes": ["Simultaneous Overkill"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["39043"], "degats": [["01094", 4]]},
+    },
+    {
+        "nom": "Overkill [regle] — sbire ET mechant vaincus par le meme coup : l'ordre est demande (12/10/2026)",
+        "pourquoi": "Rhino a 12 degats sur 14 : l'exces de 4 l'abat aussi, deux defaites simultanees",
+        "scenario": "rhino",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.Damage('01094', 12)",
+                          "Puzzle.PutIntoPlay('39043')",
+                          "Puzzle.PutIntoPlay('ar008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["39043"],
+        "questions_presentes": ["Simultaneous Overkill"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["39043"]},
+    },
+    {
+        "nom": "Overkill [regle] — plusieurs mechants (Sinister Six) : l'exces va au mechant ACTIF, sans question (FAQ RR 1.8 p.62)",
+        "pourquoi": ("« The villain with the active counter takes the overkill damage » : Worlds.FindVillain -> "
+                     "Scenario.GetVillain prend le mechant IsActive() ; les autres ne sont jamais candidats"),
+        "scenario": "sinister_six",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('39043')",
+                          "Puzzle.PutIntoPlay('ar008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["39043"],
+        "questions_absentes": ["Simultaneous Overkill"],
+        "verifier": "overkill_mechant_actif",
+        "attendu": {"degats_actif": 4},
+    },
+    {
+        "nom": "Overkill [regle] — Wrecking Crew : l'exces va au mechant ACTIF, sans question (decision utilisateur 12/10/2026)",
+        "pourquoi": ("pas de ruling officiel pour Wrecking Crew : on applique la FAQ Sinister Six (RR 1.8 p.62), "
+                     "decision de l'utilisateur du 12/10/2026"),
+        "scenario": "the_wrecking_crew",
+        "heros": "ares",
+        "mise_en_place": ["Puzzle.ChangeToFace('ar001b', 'ar001a')",
+                          "Puzzle.PutIntoPlay('39043')",
+                          "Puzzle.PutIntoPlay('ar008', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Attack('ar001a')"],
+        "cibles": ["39043"],
+        "questions_absentes": ["Simultaneous Overkill"],
+        "verifier": "overkill_mechant_actif",
+        "attendu": {"degats_actif": 4},
+    },
+    {
+        "nom": "Overkill [regle] — ennemi sur un allie : l'exces va a l'identite SANS question d'ordre (12/10/2026)",
+        "pourquoi": "sens inverse : 60149 Rhino (overkill) abat Spider-Woman 2 PV, 1 degat passe au heros",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+                          "Puzzle.PutIntoPlay('60149')",
+                          "Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01011', under_control=True)"],
+        "declencher": ["Puzzle.Attack('60149', '01011')"],
+        "main_exclusive": ["01088"],
+        "questions_absentes": ["Simultaneous Overkill"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "hors_jeu": ["01011"]},
+    },
+    {
         "nom": "ar009 Sundered — le sbire attache prend +1 de chaque attaque : 3 + 1 = 4",
         "pourquoi": ("`WhenUnitWouldTakeDamage(ForcedInterrupt, Enemy, ..., "
                      "is_from_attack=True, conditions=[mon hote])` + `IncreaseDamage(1)`"),
@@ -59191,6 +59271,24 @@ def puzzle_identite_sans_doublon(monde, aides):
     return True, "une seule identite, en alter ego, avec son controleur"
 
 
+def overkill_mechant_actif(monde, aides):
+    """FAQ RR 1.8 p.62 (Sinister Six) : avec plusieurs mechants en jeu, l'exces d'un
+    overkill va au mechant ACTIF (compteur actif), aucun autre n'est touche."""
+    attendu = aides["cas"]["attendu"]
+    mechants = list(monde.GetScenario().area_villain.Get())
+    etat = [(m.name, m.IsActive(), m.max_health - m.health) for m in mechants]
+    if len(mechants) < 2:
+        return False, f"moins de deux mechants en jeu : {etat}"
+    actifs = [e for e in etat if e[1]]
+    if len(actifs) != 1:
+        return False, f"pas exactement un mechant actif : {etat}"
+    if actifs[0][2] != attendu["degats_actif"]:
+        return False, f"le mechant actif a {actifs[0][2]} degats (attendu {attendu['degats_actif']}) : {etat}"
+    if any(e[2] for e in etat if not e[1]):
+        return False, f"un mechant NON actif a pris des degats : {etat}"
+    return True, f"exces sur le mechant actif seulement : {etat}"
+
+
 def gorr_partie_perdue(monde, aides):
     """gb007a : au 12e timer par joueur, les joueurs perdent."""
     if not monde.is_game_over:
@@ -62202,6 +62300,16 @@ def executer_un_cas(game_dir, port, index):
         for attendu in cas.get("prompts_attendus") or []:
             if ok and attendu not in etat.get("prompts", []):
                 ok, message = False, f"aucune question n'a affiche « {attendu} » (`prompts_attendus`) ; vus : {etat.get('prompts', [])}"
+        # `questions_absentes` / `questions_presentes` (12/10/2026) : un texte qui
+        # ne doit apparaitre (ou doit apparaitre) dans AUCUNE question posee
+        # pendant le cas : titre ou nom d'option. Additif.
+        _vus = etat.get("prompts", []) + etat.get("options_vues", [])
+        for interdit in cas.get("questions_absentes") or []:
+            if ok and any(interdit in x for x in _vus):
+                ok, message = False, f"une question « {interdit} » a ete posee (`questions_absentes`) ; vues : {_vus}"
+        for voulu in cas.get("questions_presentes") or []:
+            if ok and not any(voulu in x for x in _vus):
+                ok, message = False, f"aucune question « {voulu} » (`questions_presentes`) ; vues : {_vus}"
         # `options_attendues` (04/10/2026) : le NOM d'une option proposee (le
         # `prompt` d'un `AskChooseFace` devient le nom de l'option, pas le titre
         # de la question). Soulignes lus comme des espaces. Additive.

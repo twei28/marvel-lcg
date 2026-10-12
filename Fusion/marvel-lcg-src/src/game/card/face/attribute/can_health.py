@@ -271,14 +271,22 @@ class CanHealth(HasHealth):
             reste_un_joueur = any(not player.is_eliminated for player in world.const_players)
             first_player = world.GetFirstPlayer() if units and reste_un_joueur else None
 
+            # L'ordre ne compte que si les DEUX unites sont vaincues (ex. le
+            # mechant tombe aussi) : sinon l'excedent va au mechant (ou a
+            # l'identite) sans question (RR 1.8 p.31, signalement 12/10/2026).
+            ordre_a_choisir = sum(1 for u in units if u.health <= 0) >= 2
+
             while units and first_player:
                 if not units:
                     break
 
-                sorted_units = first_player.ChooseOrder(
-                    units,
-                    prompt="Simultaneous Overkill",
-                )
+                if ordre_a_choisir:
+                    sorted_units = first_player.ChooseOrder(
+                        units,
+                        prompt="Simultaneous Overkill",
+                    )
+                else:
+                    sorted_units = list(units)
                 unit = sorted_units[0]
 
                 if unit:
