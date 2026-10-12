@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-12",
         genre: "correction",
+        fr: "En mode « D'un coup », la phase du méchant ne reste plus bloquée quand le jeu te pose une question (défendre, réagir). Swarmed by Rats ne se paie plus qu'avec deux cartes de ta main, et n'est plus proposé si tu en as moins. Quelques cartes ne proposent plus de mauvaises cibles (Mister Fantastic, cartes Determination).",
+        en: "In \"All at once\" mode, the villain phase no longer gets stuck when the game asks you something (defend, respond). Swarmed by Rats is only paid with two cards from your hand, and is no longer offered if you have fewer. A few cards no longer offer wrong targets (Mister Fantastic, Determination cards).",
+    },
+    {
+        date: "2026-10-12",
+        genre: "correction",
         fr: "Le bouton « Fin de phase » est maintenant jaune et plus grand. Pendant la phase du méchant, les dégâts subis par un allié qui défend s'affichent sur lui, et le nom de la carte qui donne un Renfort est traduit. Sur l'accueil, un merci à Irefrixs, auteur du moteur d'origine.",
         en: "The \"End phase\" button is now yellow and larger. During the villain phase, damage taken by a defending ally shows on that ally, and the name of the card giving a Surge is translated. On the home screen, a thank-you to Irefrixs, author of the original engine.",
     },
