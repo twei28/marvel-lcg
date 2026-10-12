@@ -2686,3 +2686,17 @@ html[data-affichage="sobre"] *::after {
     transition-duration: 0s !important;
     transition-delay: 0s !important;
 }
+
+/* Remerciements et mention legale sous la grille de l'accueil (12/10/2026). */
+.acc-merci{display:grid;gap:8px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:14px;line-height:1.55;text-align:center;overflow-wrap:anywhere}
+.acc-merci a{color:var(--gold);font-weight:700}
+.acc-merci a:hover,.acc-merci a:focus-visible{text-decoration:underline}
+html.tel .acc-merci{margin-top:20px;font-size:13px}
+/* PC peu haut (1366x768, 1536x864) : tout l'accueil, remerciements compris, tient sans defiler. */
+@media (min-width:821px) and (max-height:900px){
+  :root{--titre-accueil:88px;--tuile-accueil-h:100px}
+  .accueil-stage,html[data-ui-version="v2"] .accueil-stage{padding-top:16px;padding-bottom:16px}
+  .acc-entete{margin-bottom:14px}
+  .acc-narwhal{width:clamp(130px,14vw,190px)}
+  .acc-merci{margin-top:14px;padding-top:12px}
+}

@@ -929,4 +929,7 @@ export const DICO_EN_BASE = {
         "Unofficial fan project · Marvel Champions © Fantasy Flight Games (Asmodee) · Characters © Marvel · You must own the game to play",
     "Projet de fans, gratuit et non officiel. Marvel Champions: The Card Game est un jeu de Fantasy Flight Games (Asmodee). Les personnages et illustrations Marvel appartiennent à Marvel. Ce site n'est ni affilié à ces sociétés ni approuvé par elles. Il sert de vitrine et d'outil de jeu : il faut posséder le jeu pour l'utiliser.":
         "Unofficial, free fan project. Marvel Champions: The Card Game is a game by Fantasy Flight Games (Asmodee). Marvel characters and artwork belong to Marvel. This site is not affiliated with or endorsed by these companies. It is a showcase and play tool: you must own the game to use it.",
+    /* ---- Remerciements sous la grille de l'accueil (12/10/2026) ---- */
+    "Merci à Irefrixs, auteur du moteur d'origine sur lequel repose ce jeu.":
+        "Thanks to Irefrixs, author of the original engine this game is built on.",
 };

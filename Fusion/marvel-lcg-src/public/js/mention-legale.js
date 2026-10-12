@@ -24,6 +24,8 @@ style.textContent = `
   }
   .mention-legale-complete { font-size: 13px; line-height: 1.6; max-width: 46rem; margin: 0 auto; }
   html[data-affichage="sobre"] .mention-legale { color: var(--mute, #7d828a); }
+  /* Une page qui affiche deja la mention complete (accueil de la preparation) n'a pas besoin de la ligne de pied. */
+  body:has([data-mention-complete]) > footer.mention-legale { display: none; }
 `;
 document.head.appendChild(style);
 

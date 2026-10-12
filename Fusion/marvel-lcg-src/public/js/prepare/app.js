@@ -2026,6 +2026,20 @@ function accueilTel(tuiles, partir) {
             vignette(t("Éditeur de deck"), t("Construire un deck"), "fa-pencil", "/deck-builder.html"),
             vignette(t("Mises à jour"), t("Ce qui a changé"), "fa-bullhorn", () => ouvrirNouveautes()),
         ),
+        blocRemerciements(),
+    );
+}
+
+/** Sous la grille de l'accueil (12/10/2026, demande de l'utilisateur) : le
+ *  merci a l'auteur du moteur d'origine et la mention legale COMPLETE, lisibles
+ *  (pas la ligne grise du pied). `data-mention-complete` retire le pied en
+ *  doublon (mention-legale.js). Texte de la mention valide mot pour mot. */
+function blocRemerciements() {
+    return el("div", { class: "acc-merci", "data-mention-complete": "" },
+        el("p", {},
+            t("Merci à Irefrixs, auteur du moteur d'origine sur lequel repose ce jeu."), " ",
+            el("a", { href: "https://github.com/irefrixs/marvel-lcg", target: "_blank", rel: "noopener" }, "GitHub")),
+        el("p", {}, t("Projet de fans, gratuit et non officiel. Marvel Champions: The Card Game est un jeu de Fantasy Flight Games (Asmodee). Les personnages et illustrations Marvel appartiennent à Marvel. Ce site n'est ni affilié à ces sociétés ni approuvé par elles. Il sert de vitrine et d'outil de jeu : il faut posséder le jeu pour l'utiliser.")),
     );
 }
 
@@ -2163,6 +2177,7 @@ function accueilView() {
             ),
         ),
         grille,
+        blocRemerciements(),
     );
 }
 
