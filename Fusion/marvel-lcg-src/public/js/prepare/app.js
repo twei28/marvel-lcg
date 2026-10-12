@@ -2039,6 +2039,11 @@ function blocRemerciements() {
         el("p", {},
             t("Merci à Irefrixs, auteur du moteur d'origine sur lequel repose ce jeu."), " ",
             el("a", { href: "https://github.com/irefrixs/marvel-lcg", target: "_blank", rel: "noopener" }, "GitHub")),
+        el("p", {},
+            t("Merci aussi aux sites où nous avons trouvé images et informations :"), " ",
+            el("a", { href: "https://marvelcdb.com/", target: "_blank", rel: "noopener" }, "MarvelCDB"), " · ",
+            el("a", { href: "https://hallofheroeslcg.com/", target: "_blank", rel: "noopener" }, "Hall of Heroes"), " · ",
+            el("a", { href: "https://mc4db.merlindumesnil.net/", target: "_blank", rel: "noopener" }, "MC4DB")),
         el("p", {}, t("Projet de fans, gratuit et non officiel. Marvel Champions: The Card Game est un jeu de Fantasy Flight Games (Asmodee). Les personnages et illustrations Marvel appartiennent à Marvel. Ce site n'est ni affilié à ces sociétés ni approuvé par elles. Il sert de vitrine et d'outil de jeu : il faut posséder le jeu pour l'utiliser.")),
     );
 }

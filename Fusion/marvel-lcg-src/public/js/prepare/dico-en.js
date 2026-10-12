@@ -932,4 +932,6 @@ export const DICO_EN_BASE = {
     /* ---- Remerciements sous la grille de l'accueil (12/10/2026) ---- */
     "Merci à Irefrixs, auteur du moteur d'origine sur lequel repose ce jeu.":
         "Thanks to Irefrixs, author of the original engine this game is built on.",
+    "Merci aussi aux sites où nous avons trouvé images et informations :":
+        "Thanks also to the sites where we found images and information:",
 };
