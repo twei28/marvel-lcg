@@ -2401,7 +2401,7 @@ def enregistrer_demande_createur(nom: str, contact: str, genre: str, message: st
     if genre not in GENRES_DEMANDE_CREATEUR:
         raise ValueError(lang.t("Choisis le type de demande."))
     if not message:
-        raise ValueError(lang.t("Ecris ton message."))
+        raise ValueError(lang.t("Écris ton message."))
     with _cx() as cx:
         curseur = cx.execute(
             "INSERT INTO demandes_createurs (quand, nom, contact, genre, message)"
@@ -5514,12 +5514,12 @@ class Handler(BaseHTTPRequestHandler):
         v = {k: html.escape(str((valeurs or {}).get(k, ""))) for k in ("nom", "contact", "genre", "message")}
         if envoye:
             formulaire = ('<p style="margin:0;color:var(--text)">%s</p>'
-                          % lang.t("Merci, ta demande est bien arrivee. Je te reponds des que possible."))
+                          % lang.t("Merci, ta demande est bien arrivée. Je te réponds dès que possible."))
         else:
             options = "".join(
                 '<option value="%s"%s>%s</option>' % (g, " selected" if v["genre"] == g else "", libelle)
-                for g, libelle in (("crediter", lang.t("Me crediter")),
-                                   ("retirer", lang.t("Retirer mes creations"))))
+                for g, libelle in (("crediter", lang.t("Me créditer")),
+                                   ("retirer", lang.t("Retirer mes créations"))))
             formulaire = (
                 '<style>select,textarea{{width:100%;box-sizing:border-box;font:inherit;margin-top:.35rem;'
                 'background:var(--panel-2);color:inherit;border:1px solid var(--border);'
@@ -5537,14 +5537,14 @@ class Handler(BaseHTTPRequestHandler):
                 % (lang.t("Ton nom ou pseudo"), v["nom"],
                    lang.t("Comment te recontacter (e-mail ou Discord)"), v["contact"],
                    lang.t("Ta demande"), options,
-                   lang.t("Ton message : ce que tu as cree, et ou ca apparait sur le site"), v["message"],
+                   lang.t("Ton message : ce que tu as créé, et où ça apparaît sur le site"), v["message"],
                    lang.t("Envoyer")))
         return PAGE_CONTACT_CREATEURS.format(
-            titre=lang.t("Credits et retrait"),
+            titre=lang.t("Crédits et retrait"),
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
             formulaire=formulaire,
-            pied=lang.t("Si j'ai oublie de te crediter, ou si tu veux que tes creations soient"
-                        " retirees du site, dis-le-moi ici. Je lis chaque demande."),
+            pied=lang.t("Si j'ai oublié de te créditer, ou si tu veux que tes créations soient"
+                        " retirées du site, dis-le-moi ici. Je lis chaque demande."),
             mention=_mention_complete(), bouton_appli=_bouton_appli(),
         ).encode("utf-8")
 
@@ -5967,7 +5967,7 @@ class Handler(BaseHTTPRequestHandler):
                               '<input type="hidden" name="action" value="createur_traitee">'
                               '<input type="hidden" name="id" value="%d">'
                               '<button type="submit">Traitee</button></form>' % d["id"])
-                genre = "Me crediter" if d["genre"] == "crediter" else "Retirer mes creations"
+                genre = "Me créditer" if d["genre"] == "crediter" else "Retirer mes créations"
                 corps += ('<details class="rapport">'
                           '<summary><span class="etat %s">%s</span>'
                           '<span class="quoi">%s</span>'
@@ -6468,7 +6468,7 @@ class Handler(BaseHTTPRequestHandler):
             if not debit_createur_ok(self._adresse_client()):
                 self._raccrocher()
                 self._repondre(429, self._page_contact_createurs(
-                    lang.t("Trop de demandes depuis ta connexion. Reessaie dans une heure.")))
+                    lang.t("Trop de demandes depuis ta connexion. Réessaie dans une heure.")))
                 return
             champs = self._champs()
             # Le pot de miel : un humain ne voit pas ce champ et le laisse vide.

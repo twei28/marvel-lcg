@@ -76,7 +76,7 @@ verifier("avec le pot de miel cache", 'name="site_web"' in page and 'class="pot"
 # --- Un envoi valide est enregistre ------------------------------------------
 code, page = appel("POST", "/contact-createurs", valide, ip("10.0.0.1"))
 verifier("POST valide rend 200", code == 200, str(code))
-verifier("avec la confirmation", "ta demande est bien arrivee" in page)
+verifier("avec la confirmation", "ta demande est bien arrivée" in page)
 d = demandes()
 verifier("la demande est enregistree", len(d) == 1 and d[0]["nom"] == "Artiste"
          and d[0]["genre"] == "crediter" and d[0]["etat"] == "nouvelle", str(d))
@@ -91,7 +91,7 @@ verifier("rien d'ecrit pour ces envois", len(demandes()) == 1)
 
 # --- Le pot de miel : meme confirmation, rien d'enregistre --------------------
 code, page = appel("POST", "/contact-createurs", dict(valide, site_web="http://spam"), ip("10.0.0.3"))
-verifier("pot de miel rempli : la meme confirmation", code == 200 and "ta demande est bien arrivee" in page)
+verifier("pot de miel rempli : la meme confirmation", code == 200 and "ta demande est bien arrivée" in page)
 verifier("et rien d'enregistre", len(demandes()) == 1)
 
 # --- La limite par adresse et par heure ---------------------------------------
