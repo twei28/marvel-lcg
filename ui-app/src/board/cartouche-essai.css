@@ -698,3 +698,147 @@ body.plateau-sans-animations .scan-card.is-target-pulse .scan-frame {
   margin: 0;
   line-height: 1;
 }
+
+/* --- LA BOITE FIXE DANS LA COLONNE DE GAUCHE (refonte du 12/10/2026) --------
+   Decisions de .planning/todos/2026-10-12-phase-mechant-schema-et-questions.md :
+   taille et place fixes quel que soit l'ecran, « Continuer » qui ne bouge
+   jamais (demande de l'utilisateur), colonne de GAUCHE (26 bis) qui ne couvre
+   jamais la table ni la main (Q26-27 : la table se decale, Board.tsx la
+   remet a l'echelle), bord a la couleur de l'aspect du joueur concerne (Q14 a
+   Q20, Q57), deplacable et reductible (Q28). Sur PC seulement : le telephone
+   garde sa feuille basse (cartouche-essai-tel.css). */
+@media (min-width: 768px) {
+  :root {
+    --essai-l: 600px;
+    --essai-marge: 12px;
+  }
+
+  body.phase-essai-colonne .plateau-cadre {
+    margin-left: calc(var(--essai-l) + 2 * var(--essai-marge));
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai {
+    --carre-l: var(--essai-l);
+    --grande-h: 220px;
+    position: fixed;
+    inset: auto;
+    top: calc(var(--colonne-haut, 48px) + var(--essai-marge));
+    left: var(--essai-marge);
+    margin: 0;
+    width: var(--essai-l);
+    height: min(580px, calc(100dvh - var(--colonne-haut, 48px) - 2 * var(--essai-marge)));
+    min-height: 0;
+    max-height: none;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: 3px solid var(--cadre-joueur, #7f93a6);
+  }
+
+  /* Les cartes tiennent dans la hauteur de la boite, plus dans sa seule
+     largeur : sinon le resultat sous les cartes etait rogne (mesure du
+     12/10/2026, 1920 x 1080). Le retrecissement par ecran viendra au lot 2. */
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-rangee {
+    --plafond-h: 190px;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-rangee.essai-calcul {
+    --plafond-h: 160px;
+  }
+
+  /* Le corps prend toute la place qui reste, sans jamais pousser le pied. */
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-corps {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Le pied a une hauteur fixe et « Continuer » une taille fixe, cale a
+     droite : le bouton a le meme rectangle sur tous les ecrans. Les boutons
+     du cartouche sont agrandis 1,5 fois (`zoom`, boutons-bd.css) : 52 px de
+     bouton en font 78 a l'ecran, d'ou un pied de 84 px. */
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-boutons {
+    flex: 0 0 84px;
+    height: 84px;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-boutons .deroule-mentions {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-boutons .deroule-suivant {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    width: 220px;
+    height: 52px;
+    margin: 0;
+    justify-content: center;
+  }
+
+  /* Reduite : une barre en haut de la colonne, la colonne reste reservee (la
+     table ne saute pas d'une echelle a l'autre). */
+  .deroule-phase.est-scene.est-essai.est-essai.est-reduit {
+    inset: auto;
+    top: calc(var(--colonne-haut, 48px) + var(--essai-marge));
+    left: var(--essai-marge);
+    height: auto;
+    padding: 10px 18px;
+  }
+
+  /* Le bandeau du haut de la boite reprend la couleur du joueur. */
+  .deroule-phase.est-scene.est-essai.est-essai.est-cadre-joueur .deroule-ligne-haut {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--cadre-joueur) 55%, #12141a), #1d1f26 78%);
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai.est-cadre-commun .deroule-ligne-haut {
+    background: linear-gradient(90deg, #39444f, #1d1f26 78%);
+  }
+
+  /* Meme aspect qu'un joueur assis avant : le bord est raye (Q15). */
+  .deroule-phase.est-scene.est-essai.est-essai.est-cadre-raye {
+    border-image: repeating-linear-gradient(
+        45deg,
+        var(--cadre-joueur) 0 10px,
+        color-mix(in srgb, var(--cadre-joueur) 35%, #000) 10px 20px
+      )
+      3;
+  }
+}
+
+/* La pastille du joueur concerne : sa couleur, ou ses couleurs partagees
+   (Q16), et son numero de siege. */
+.deroule-phase.est-essai .essai-pastille-joueur {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--cadre-pastille, #7f93a6);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+.deroule-phase.est-essai .essai-pastille-joueur b {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 3px #000, 0 1px 2px #000;
+}
+
+.deroule-phase.est-essai.est-cadre-raye .essai-pastille-joueur {
+  background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(0, 0, 0, 0.45) 4px 8px),
+    var(--cadre-pastille, #7f93a6);
+  background-color: var(--cadre-joueur);
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-scene.est-essai.est-essai .deroule-ligne-haut {
+  background: #2a2d33;
+}

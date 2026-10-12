@@ -1249,3 +1249,61 @@ describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
     expect(document.querySelector('.essai-compteur small')?.textContent).toContain('Stepford Cuckoos')
   })
 })
+
+describe('refonte du 12/10/2026, lot 1 : la boite de la colonne de gauche', () => {
+  const pc = (largeurPc: boolean) => {
+    window.matchMedia = ((requete: string) => ({
+      matches: largeurPc && requete.includes('min-width: 768px'),
+      media: requete,
+      addEventListener() {},
+      removeEventListener() {},
+      addListener() {},
+      removeListener() {},
+      onchange: null,
+      dispatchEvent: () => false,
+    })) as unknown as typeof window.matchMedia
+  }
+
+  it("sans l'essai, rien ne change : ni colonne reservee, ni cadre, ni pastille", () => {
+    pc(true)
+    monter({ cadre: { genre: 'joueur', joueur: 0, couleurs: ['#e6be3c'], raye: false, siege: 1 } })
+    expect(document.body.classList.contains('phase-essai-colonne')).toBe(false)
+    expect(section()?.className).not.toMatch(/est-cadre/)
+    expect(document.querySelector('.essai-pastille-joueur')).toBeNull()
+  })
+
+  it('avec l\'essai sur PC, la colonne de gauche est reservee tant que la boite est affichee', () => {
+    pc(true)
+    const { unmount } = monter({ essai: true })
+    expect(document.body.classList.contains('phase-essai-colonne')).toBe(true)
+    unmount()
+    expect(document.body.classList.contains('phase-essai-colonne')).toBe(false)
+  })
+
+  it("monte mais efface (hors de la phase : mise en place, tour du joueur), la table n'est pas decalee", () => {
+    pc(true)
+    monter({ essai: true, efface: true })
+    expect(document.body.classList.contains('phase-essai-colonne')).toBe(false)
+  })
+
+  it('au telephone, pas de colonne : la feuille basse', () => {
+    pc(false)
+    monter({ essai: true })
+    expect(document.body.classList.contains('phase-essai-colonne')).toBe(false)
+  })
+
+  it('le joueur concerne : bord a sa couleur, pastille avec son numero de siege', () => {
+    pc(true)
+    monter({ essai: true, cadre: { genre: 'joueur', joueur: 1, couleurs: ['#d1382c'], raye: true, siege: 2 } })
+    expect(section()?.className).toContain('est-cadre-joueur')
+    expect(section()?.className).toContain('est-cadre-raye')
+    expect(document.querySelector('.essai-pastille-joueur b')?.textContent).toBe('J2')
+  })
+
+  it('un moment commun (menace) : cadre commun, pastille sans numero', () => {
+    pc(true)
+    monter({ essai: true, cadre: { genre: 'commun' } })
+    expect(section()?.className).toContain('est-cadre-commun')
+    expect(document.querySelector('.essai-pastille-joueur b')).toBeNull()
+  })
+})

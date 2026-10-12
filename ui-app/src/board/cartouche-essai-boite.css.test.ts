@@ -1,0 +1,51 @@
+// La boite de la phase du mechant (essai, refonte du 12/10/2026) : verrous sur
+// la feuille. La mesure reelle (« Continuer » au meme pixel) se fait dans un
+// navigateur sur un moteur d'essai ; ici, ce qui la garantit dans la feuille.
+import { describe, expect, it } from 'vitest'
+import fs from 'node:fs'
+import path from 'node:path'
+
+const css = fs.readFileSync(path.join(__dirname, 'cartouche-essai.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+const tel = fs.readFileSync(path.join(__dirname, 'cartouche-essai-tel.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+const bloc = css.slice(css.indexOf('@media (min-width: 768px)'))
+
+function regle(selecteur: string): string {
+  const i = bloc.indexOf(`${selecteur} {`)
+  expect(i, selecteur).toBeGreaterThan(-1)
+  return bloc.slice(i, bloc.indexOf('}', i))
+}
+
+describe('la boite fixe de la colonne de gauche', () => {
+  it('largeur et hauteur fixes, en position fixe a gauche, jamais au centre', () => {
+    const r = regle('.deroule-phase.est-scene.est-essai.est-essai')
+    expect(r).toMatch(/position:\s*fixed/)
+    expect(r).toMatch(/left:\s*var\(--essai-marge\)/)
+    expect(r).toMatch(/width:\s*var\(--essai-l\)/)
+    expect(r).toMatch(/height:\s*min\(580px/)
+    expect(r).toMatch(/border:\s*3px solid var\(--cadre-joueur/)
+  })
+
+  it('la table se decale de la largeur de la boite : rien ne la couvre', () => {
+    expect(regle('body.phase-essai-colonne .plateau-cadre')).toMatch(/margin-left:\s*calc\(var\(--essai-l\)/)
+  })
+
+  it('« Continuer » a une taille fixe dans un pied de hauteur fixe', () => {
+    expect(regle('.deroule-phase.est-scene.est-essai.est-essai .deroule-boutons')).toMatch(/height:\s*84px/)
+    const bouton = regle('.deroule-phase.est-scene.est-essai.est-essai .deroule-boutons .deroule-suivant')
+    expect(bouton).toMatch(/width:\s*220px/)
+    expect(bouton).toMatch(/height:\s*52px/)
+  })
+
+  it('le corps ne pousse jamais le pied, sans barre de defilement', () => {
+    const r = regle('.deroule-phase.est-scene.est-essai.est-essai .deroule-corps')
+    expect(r).toMatch(/flex:\s*1 1 0/)
+    expect(r).toMatch(/overflow:\s*hidden/)
+  })
+})
+
+describe('le telephone', () => {
+  it('feuille basse a environ 40 % de la hauteur (decision 30)', () => {
+    expect(tel).toMatch(/height:\s*40dvh/)
+    expect(tel).not.toMatch(/70dvh/)
+  })
+})

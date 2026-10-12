@@ -73,6 +73,7 @@ import { ONGLETS, avecTempsVides, resumeOnglet, type CleOnglet } from './frise-p
 import { DetailCoup, ListeDesCoups } from './DetailCoup'
 import { etapeEnLangue } from './etape-en-langue'
 import { useGlisserPanneau } from './placement/useGlisserPanneau'
+import { cadreDeLEtape, styleDuCadre, type CadreJoueur } from './couleur-joueur'
 import { CoucheTraitPhase, EffetsSurTable } from './CoucheTraitPhase'
 import { cartoucheEstAJour } from './cartouche-a-jour'
 import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
@@ -166,6 +167,8 @@ export function DeroulePhase({
   echeanceFilet,
   tempsParDecision = 0,
   telephone = false,
+  cadresJoueurs,
+  joueurDeCarte,
   cartesDistribuees = 0,
   texteEtoile,
   infoCarte,
@@ -409,6 +412,14 @@ export function DeroulePhase({
    * pour ce chantier (D36). La table (`presentation="table"`) aussi.
    */
   telephone?: boolean
+  /**
+   * Refonte du 12/10/2026 (essai seulement) : le cadre de chaque joueur
+   * (couleur de son aspect, `couleur-joueur.ts`) et le joueur a qui appartient
+   * une carte de la table. Le bord de la boite prend la couleur du joueur
+   * concerne par l'etape affichee.
+   */
+  cadresJoueurs?: CadreJoueur[]
+  joueurDeCarte?: (id: number | undefined) => number | undefined
   /**
    * Les cartes rencontre DISTRIBUEES pendant la phase, dont les etapes ont ete
    * retirees de la liste avant d'arriver ici (board.tsx, `fusionnerDistribution`,
@@ -1511,12 +1522,18 @@ export function DeroulePhase({
   // du mechant ») ; seule la question se repose a chaque etape.
   // ⚠ LE CARTOUCHE DU BAS revient en bas a la PHASE suivante, jamais d'une
   // etape a l'autre (D2) : sa signature est la phase racontee.
+  // La boite de l'essai sur PC (12/10/2026, decision 28) : sa place choisie a
+  // la main est retenue d'une phase et d'une partie a l'autre.
+  const boiteEssai = essai && nouvelleScene && !telephone
   const { decalage: decalageQuestion, gestes: gestesQuestion } = useGlisserPanneau(
-    nouvelleScene
-      ? `scene|${cleDeLaPhase}`
-      : questionAuJoueur
-        ? `question|${etape?.cle ?? 'sans-etape'}`
-        : 'etapes'
+    boiteEssai
+      ? 'scene-essai'
+      : nouvelleScene
+        ? `scene|${cleDeLaPhase}`
+        : questionAuJoueur
+          ? `question|${etape?.cle ?? 'sans-etape'}`
+          : 'etapes',
+    boiteEssai ? 'marvel-boite-phase-mechant' : undefined
   )
   const styleDeplace: CSSProperties | undefined =
     decalageQuestion.dx !== 0 || decalageQuestion.dy !== 0
@@ -1680,7 +1697,15 @@ export function DeroulePhase({
     return (
       <CartouchePhase
         refCartouche={setElCartouche}
-        style={styleDeplace}
+        style={
+          essai && cadresJoueurs
+            ? {
+                ...styleDeplace,
+                ...(styleDuCadre(cadreDeLEtape(etape, cadresJoueurs, joueurDeCarte ?? (() => undefined))) as CSSProperties),
+              }
+            : styleDeplace
+        }
+        cadre={essai && cadresJoueurs ? cadreDeLEtape(etape, cadresJoueurs, joueurDeCarte ?? (() => undefined)) : undefined}
         gestes={gestesDeplacer}
         etape={etape}
         etapes={etapesAffichees}

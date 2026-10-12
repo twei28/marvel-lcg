@@ -239,6 +239,7 @@ import {
 import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
 import { essaiPhaseMechant, essaisOuverts } from './board/essais'
+import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
 import { JournalConsole } from './board/JournalConsole'
 import {
@@ -3569,6 +3570,10 @@ export function PagePartie({
     document.documentElement.classList.toggle('essai-phase-mechant', phaseEssai)
     return () => document.documentElement.classList.remove('essai-phase-mechant')
   }, [phaseEssai])
+  // Refonte du 12/10/2026 (essai) : la couleur de chaque joueur, tiree de
+  // l'aspect de son deck, et le joueur a qui appartient une carte de la table.
+  const cadresJoueurs = useMemo(() => cadresDesJoueurs(etat.monde, catalogue), [etat.monde, catalogue])
+  const joueurDeCarteMonde = useCallback((id: number | undefined) => joueurDeLaCarte(etat.monde, id), [etat.monde])
   /**
    * LE FOND PREND LA COULEUR DU HEROS AFFICHE.
    *
@@ -4425,6 +4430,8 @@ export function PagePartie({
             // « Sur la table ».
             presentation={sceneCentrale ? 'scene' : 'table'}
             essai={phaseEssai}
+            cadresJoueurs={cadresJoueurs}
+            joueurDeCarte={joueurDeCarteMonde}
             attendreBandeau={!bandeauPasse}
             // Distribution retiree en scene PC (D15), liste brute ailleurs.
             etapes={etapesPourLeCartouche.etapes}

@@ -442,6 +442,8 @@ export type EtapeDeroule = {
    * quelqu'un a defendu, et le heros vise disparaissait de l'etape.
    */
   cibleAnnonceeId?: number
+  /** Siège (index de `World.players`) du joueur qui reçoit ou révèle la carte (points 3 et 4). */
+  joueur?: number
   /** La valeur IMPRIMEE annoncee, avant bonus et boosts. */
   baseImprimee?: number
   /** Sur une annonce enrichie : ce qui sera porte avant la defense. */
@@ -932,6 +934,7 @@ export function etapesDeroule(
       cle: cleDuFait('distribution', fait.round_id ?? round, rang, joueur ?? -1),
       temps: 'distribution',
       titre: 'distribution',
+      joueur,
       regle: 'regle:distribution',
       // Le heros qui recoit. Le nom du FAIT d'abord : il date du moment de la
       // distribution, donc il tient meme si le joueur a depuis change de forme
@@ -964,6 +967,7 @@ export function etapesDeroule(
       titre: 'revelation',
       regle: 'regle:revelation',
       carteId: fait.carte_id,
+      joueur: fait.joueur ?? undefined,
       auteurNom: nomNettoye(fait.joueur_nom ?? undefined)
         ?? nomNettoye(nomsHerosParJoueur[fait.joueur ?? -1]),
       cibleNom: fait.carte,

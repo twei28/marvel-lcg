@@ -53,8 +53,34 @@ export function transformDecalage(decalage: Decalage): CSSProperties | undefined
   return { transform: `translate(${decalage.dx}px, ${decalage.dy}px)` }
 }
 
-export function useGlisserPanneau(signature: string) {
-  const [decalage, setDecalage] = useState<Decalage>(REPOS)
+/** La place choisie a la main, relue au montage (`memoire`). Illisible : le repos. */
+function lireDecalage(cle: string | undefined): Decalage {
+  if (!cle) return REPOS
+  try {
+    const brut = JSON.parse(window.localStorage.getItem(cle) ?? 'null') as Partial<Decalage> | null
+    if (brut && Number.isFinite(brut.dx) && Number.isFinite(brut.dy)) return { dx: Number(brut.dx), dy: Number(brut.dy) }
+  } catch {
+    /* stockage refuse ou valeur abimee : le repos */
+  }
+  return REPOS
+}
+
+/**
+ * `memoire` (12/10/2026, boite de la phase du mechant, decision 28) : la cle
+ * de stockage ou retenir la place choisie, d'une phase et d'une partie a
+ * l'autre. Sans elle, le comportement d'avant : remise a zero a chaque
+ * nouvelle `signature`.
+ */
+export function useGlisserPanneau(signature: string, memoire?: string) {
+  const [decalage, setDecalage] = useState<Decalage>(() => lireDecalage(memoire))
+  useEffect(() => {
+    if (!memoire) return
+    try {
+      window.localStorage.setItem(memoire, JSON.stringify(decalage))
+    } catch {
+      /* stockage refuse : la place vaut pour la session */
+    }
+  }, [memoire, decalage])
   const depart = useRef<{
     x: number
     y: number
@@ -68,8 +94,9 @@ export function useGlisserPanneau(signature: string) {
   // plus qu'elle n'aide : on repart du placement calcule a chaque nouvelle
   // decision, jamais de la derniere position choisie a la main.
   useEffect(() => {
+    if (memoire) return
     setDecalage(REPOS)
-  }, [signature])
+  }, [signature, memoire])
 
   // ⚠ LE SUIVI SE FAIT SUR LA FENETRE, PAS SEULEMENT SUR LA POIGNEE (01/10/2026).
   // La capture du pointeur ne se pose qu'APRES le seuil de 6 px, dans

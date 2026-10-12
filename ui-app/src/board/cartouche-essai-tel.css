@@ -1,5 +1,5 @@
 /* La nouvelle phase du méchant (essai) SUR TELEPHONE, decisions du 09/10/2026
-   (question 35) : feuille basse d'environ 70 % de la hauteur, reductible, fil
+   (question 35) : feuille basse d'environ 40 % de la hauteur (70 % avant la decision 30 du 12/10/2026), reductible, fil
    vertical, Continuer pleine largeur. Memes contenus que sur PC
    (cartouche-essai.css) : seule la mise en page change ici.
 
@@ -15,8 +15,9 @@
     margin: 0;
     width: 100%;
     min-height: 0;
-    height: 70dvh;
-    max-height: 70dvh;
+    /* ~40 % de la hauteur, la table visible au-dessus (decision 30 du 12/10/2026). */
+    height: 40dvh;
+    max-height: 40dvh;
     translate: none !important;
     transform: none !important;
     box-sizing: border-box;

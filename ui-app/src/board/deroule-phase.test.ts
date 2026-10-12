@@ -518,6 +518,16 @@ describe('les cinq temps depuis les faits du moteur', () => {
     faitRevelation(),
   ]
 
+  it('distribution et revelation portent le siege du joueur concerne (couleur du cadre, 12/10/2026)', () => {
+    const etapes = etapesDeroule(
+      [faitDistribution({ joueur: 1 }), faitRevelation({ joueur: 1 })],
+      [],
+      1,
+      new Set([50])
+    )
+    expect(etapes.filter((e) => e.temps === 'distribution' || e.temps === 'revelation').map((e) => e.joueur)).toEqual([1, 1])
+  })
+
   it('produit les cinq temps SANS aucune entree de journal', () => {
     const etapes = etapesDeroule(phaseComplete(), [], 1, new Set([50]))
     expect(etapes.map((e) => e.temps)).toEqual([

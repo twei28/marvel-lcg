@@ -53,6 +53,7 @@ import { etapeEnLangue } from './etape-en-langue'
 import { avecTempsVides, fusionnerDistribution } from './frise-phase'
 import { t } from './langue'
 import { useGlisserPanneau } from './placement/useGlisserPanneau'
+import type { CadreDeLEtape } from './couleur-joueur'
 import { vueSousCadre, type QuestionDuMoteur, type VueSousCadre } from './sous-cadre'
 import { BoutonOption, CarteNue, choixEnTexte, optionDe, SousCadre } from './SousCadre'
 import { avecIcones, marquerRessources } from './icones-ressources'
@@ -174,6 +175,39 @@ export type CartouchePhaseProps = {
   bis?: boolean
   /** Essai : retourner le boost suivant (ils ne s'enchainent plus seuls). */
   montrerBoostSuivant?: () => void
+  /**
+   * Essai (refonte du 12/10/2026) : le joueur concerne par l'etape, dont la
+   * couleur d'aspect fait le bord de la boite (variables posees dans `style`
+   * par DeroulePhase), ou « commun » (gris acier).
+   */
+  cadre?: CadreDeLEtape
+}
+
+/**
+ * LA COLONNE DE GAUCHE (essai, decisions 26 bis et 27) : sur PC, tant que la
+ * boite est affichee, la table se decale a droite d'autant
+ * (`body.phase-essai-colonne`, cartouche-essai.css). La table se recalcule
+ * d'elle-meme (ResizeObserver de Board.tsx) : rien n'est jamais couvert, la
+ * main comprise. Le telephone garde sa feuille basse.
+ */
+function useColonneEssai(actif: boolean) {
+  useEffect(() => {
+    if (!actif || typeof window.matchMedia !== 'function' || !window.matchMedia('(min-width: 768px)').matches) return
+    document.body.classList.add('phase-essai-colonne')
+    // Le haut de la colonne : le haut de la table, sous la barre (qui peut
+    // passer sur deux lignes en fenetre etroite).
+    const caler = () => {
+      const haut = document.querySelector('.plateau-cadre')?.getBoundingClientRect().top
+      if (haut !== undefined) document.documentElement.style.setProperty('--colonne-haut', `${Math.round(haut)}px`)
+    }
+    caler()
+    window.addEventListener('resize', caler)
+    return () => {
+      window.removeEventListener('resize', caler)
+      document.body.classList.remove('phase-essai-colonne')
+      document.documentElement.style.removeProperty('--colonne-haut')
+    }
+  }, [actif])
 }
 
 /** Les temps internes qu'une pastille dessine (④ en couvre deux). */
@@ -862,6 +896,9 @@ export function CartouchePhase(props: CartouchePhaseProps) {
       ? question !== undefined || props.questionDuMoteur !== undefined
       : props.questionDUnAutre !== undefined)
   const montre = !efface && (etape !== undefined || questionSansEtape)
+  // La colonne n'est reservee que si la boite est REELLEMENT affichee : le
+  // composant reste monte, vide, hors de la phase (mise en place, tour du joueur).
+  useColonneEssai(essai && montre)
   // LA RELECTURE (D22, D23) : jamais devant une question, qui a besoin de
   // l'etape en cours sous les yeux et de ses boutons.
   const relu = questionAuJoueur || horsPhase ? undefined : props.relecture
@@ -1178,8 +1215,20 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   if (essai) classes.push('est-essai')
   if (props.bis ?? true) classes.push('est-bis')
   if (essai && reduit) classes.push('est-reduit')
+  if (essai && props.cadre) classes.push(props.cadre.genre === 'commun' ? 'est-cadre-commun' : 'est-cadre-joueur')
+  if (essai && props.cadre?.genre === 'joueur' && props.cadre.raye) classes.push('est-cadre-raye')
   const outils = essai ? (
     <span className="essai-outils">
+      {props.cadre ? (
+        <span
+          className="essai-pastille-joueur"
+          data-cadre={props.cadre.genre}
+          title={props.cadre.genre === 'commun' ? undefined : `${t('Joueur')} ${props.cadre.siege}`}
+          aria-hidden={props.cadre.genre === 'commun' ? true : undefined}
+        >
+          {props.cadre.genre === 'commun' ? null : <b>{`J${props.cadre.siege}`}</b>}
+        </span>
+      ) : null}
       {compteur ? (
         <span className="essai-compteur">
           <b>{t('Carte %1 / %2').replace('%1', String(compteur.rang)).replace('%2', String(compteur.total))}</b>
