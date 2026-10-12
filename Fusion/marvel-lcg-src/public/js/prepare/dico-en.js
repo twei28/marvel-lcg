@@ -934,4 +934,6 @@ export const DICO_EN_BASE = {
         "Thanks to Irefrixs, author of the original engine this game is built on.",
     "Merci aussi aux sites où nous avons trouvé images et informations :":
         "Thanks also to the sites where we found images and information:",
+    "Et à tous les créateurs de fan-made, ainsi qu'à ma maman.":
+        "And to all the fan-made creators, as well as my mom.",
 };
