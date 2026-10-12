@@ -1,0 +1,85 @@
+/* Les flèches de la phase du méchant (refonte, lot 3, essai, 12/10/2026).
+   Par-dessus la table et la boîte (540), sous l'aperçu au survol (545) ; elles
+   ne captent aucun clic. Tracées en 0,5 s, puis fixes. */
+.fleches-phase {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 542;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.fleches-phase path {
+  pointer-events: none;
+}
+
+.fleches-phase .fleche-ombre {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.62);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.fleches-phase .fleche-trait {
+  fill: none;
+  stroke: var(--fleche-couleur, #7f93a6);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+.fleches-phase .fleche-pointe {
+  fill: var(--fleche-couleur, #7f93a6);
+  stroke: rgba(0, 0, 0, 0.75);
+  stroke-width: 1;
+}
+
+.fleches-phase.est-animee .fleche-ombre,
+.fleches-phase.est-animee .fleche-trait {
+  stroke-dasharray: var(--l);
+  animation: fleche-trace 500ms ease-out both;
+}
+
+.fleches-phase.est-animee .fleche-pointe {
+  animation: fleche-pointe 500ms ease-out both;
+}
+
+@keyframes fleche-trace {
+  from {
+    stroke-dashoffset: var(--l);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fleche-pointe {
+  0%,
+  80% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Sobre, sans animations, mouvement réduit : la flèche est posée d'un coup. */
+html[data-affichage='sobre'] .fleches-phase .fleche-ombre,
+html[data-affichage='sobre'] .fleches-phase .fleche-trait,
+html[data-affichage='sobre'] .fleches-phase .fleche-pointe,
+body.plateau-sans-animations .fleches-phase .fleche-ombre,
+body.plateau-sans-animations .fleches-phase .fleche-trait,
+body.plateau-sans-animations .fleches-phase .fleche-pointe {
+  animation: none;
+  stroke-dasharray: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fleches-phase .fleche-ombre,
+  .fleches-phase .fleche-trait,
+  .fleches-phase .fleche-pointe {
+    animation: none;
+    stroke-dasharray: none;
+  }
+}

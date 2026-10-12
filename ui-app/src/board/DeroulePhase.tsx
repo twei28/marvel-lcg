@@ -75,6 +75,7 @@ import { etapeEnLangue } from './etape-en-langue'
 import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import { cadreDeLEtape, styleDuCadre, type CadreJoueur } from './couleur-joueur'
 import { CoucheTraitPhase, EffetsSurTable } from './CoucheTraitPhase'
+import { FlechesPhase } from './FlechesPhase'
 import { cartoucheEstAJour } from './cartouche-a-jour'
 import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
@@ -142,6 +143,9 @@ function nomDOnglet(libelle: string): ReactNode {
     </>
   )
 }
+
+/** Repli stable (une nouvelle fonction a chaque rendu relancerait la mesure des fleches). */
+const joueurInconnu = (): number | undefined => undefined
 
 export function DeroulePhase({
   etapes,
@@ -1695,6 +1699,18 @@ export function DeroulePhase({
     }
     const pastilleRelue = relecture ? pastilleDuTemps(relecture.temps) : undefined
     return (
+      <>
+      {/* LOT 3 (essai, decisions 21 a 25) : les fleches source -> cible, dans
+          la couleur du joueur vise. Seulement quand la boite est affichee. */}
+      {essai && cadresJoueurs ? (
+        <FlechesPhase
+          etape={etape}
+          actif={!termine && !partieFinie && etape !== undefined && !relecture}
+          cadres={cadresJoueurs}
+          joueurDeCarte={joueurDeCarte ?? joueurInconnu}
+          boostsMontres={boostsMontres}
+        />
+      ) : null}
       <CartouchePhase
         refCartouche={setElCartouche}
         style={
@@ -1741,6 +1757,7 @@ export function DeroulePhase({
         relecture={pastilleRelue ? { temps: pastilleRelue } : undefined}
         setRelecture={(r) => setRelecture(r ? { temps: ongletDeLaPastille[r.temps] } : undefined)}
       />
+      </>
     )
   }
 
