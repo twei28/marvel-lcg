@@ -1381,3 +1381,27 @@ describe('refonte du 12/10/2026, lot 2 : cartes, noms et appui long', () => {
     }
   })
 })
+
+// REFONTE, LOT 4 (essai, 12/10/2026, decision 3) : une carte qui entre en jeu se dit d'un bandeau.
+describe('lot 4 : le bandeau de la carte qui entre en jeu', () => {
+  const entree: EtapeDeroule = {
+    cle: 'entree:1:5:77',
+    temps: 'mechant',
+    titre: 'entree',
+    regle: 'regle:entree',
+    carteId: 77,
+    cibleNom: 'Weapons Runner',
+    boosts: [],
+  }
+
+  it('dans l essai : « Nouveau sbire » sous la carte', () => {
+    monter({ etapes: [entree], essai: true })
+    expect(document.querySelector('.essai-bandeau-nouveau')?.textContent).toBe('Nouveau sbire')
+  })
+
+  it('sans l interrupteur : pas de bandeau, rendu inchange', () => {
+    monter({ etapes: [entree] })
+    expect(document.querySelector('.essai-bandeau-nouveau')).toBeNull()
+    expect(document.querySelector('.essai-entree')).toBeNull()
+  })
+})

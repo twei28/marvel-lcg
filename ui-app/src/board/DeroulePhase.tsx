@@ -76,6 +76,7 @@ import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import { cadreDeLEtape, styleDuCadre, type CadreJoueur } from './couleur-joueur'
 import { CoucheTraitPhase, EffetsSurTable } from './CoucheTraitPhase'
 import { FlechesPhase } from './FlechesPhase'
+import { TrajetsPhase } from './TrajetsPhase'
 import { cartoucheEstAJour } from './cartouche-a-jour'
 import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
@@ -184,6 +185,7 @@ export function DeroulePhase({
   onTerminer,
   onDefaiteVue,
   onEtapeAffichee,
+  onAvantResultat,
 }: {
   etapes: EtapeDeroule[]
   /**
@@ -485,6 +487,12 @@ export function DeroulePhase({
    * aucune.
    */
   onEtapeAffichee?: (cle: string | undefined) => void
+  /**
+   * REFONTE, LOT 4 (essai, decision 51) : vrai tant que l'etape affichee
+   * retourne encore ses boosts, avant l'ecran du resultat. La table garde
+   * alors le monde d'avant l'etape (PV et menace pas encore changes).
+   */
+  onAvantResultat?: (avant: boolean) => void
   /** Appele une fois la derniere etape validee. */
   onTerminer: () => void
   /**
@@ -1285,6 +1293,11 @@ export function DeroulePhase({
   // s'enchainent SEULS : c'est l'etape qui attend la validation, pas chaque
   // carte. Une attaque a trois boosts couterait sinon quatre clics.
   const [boostsMontres, setBoostsMontres] = useState(0)
+  const avantResultat = Boolean(essai && etape && etape.boosts.length > 0 && boostsMontres < etape.boosts.length)
+  useEffect(() => {
+    onAvantResultat?.(avantResultat)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- setter d'etat stable
+  }, [avantResultat])
 
   // LA LOUPE : la carte de la scene survolee, ouverte en grand a cote avec
   // son texte, comme une carte de la table (CarteApercu). Decide avec
@@ -1711,6 +1724,8 @@ export function DeroulePhase({
           boostsMontres={boostsMontres}
         />
       ) : null}
+      {/* LOT 4 (essai, decisions 49 a 53) : les cartes volent vers la table et vers leur pile. */}
+      {essai ? <TrajetsPhase actif={!termine && !partieFinie && etape !== undefined && !relecture} /> : null}
       <CartouchePhase
         refCartouche={setElCartouche}
         style={

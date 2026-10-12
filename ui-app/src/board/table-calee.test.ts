@@ -1,7 +1,7 @@
 // La table calee sur le recit : ce qui n'est pas raconte n'apparait pas.
 import { describe, expect, it } from 'vitest'
 import type { EtapeDeroule } from './deroule-phase'
-import { majInstantanes, mondeDeLaTable, type Instantanes } from './table-calee'
+import { cartesAVenir, estEnJeu, majInstantanes, mondeAvantEtape, mondeDeLaTable, sansCartesAVenir, type Instantanes } from './table-calee'
 import type { World } from './world'
 
 const monde = (nom: string) => ({ phase: 'Villain Activation', nom }) as unknown as World
@@ -39,5 +39,67 @@ describe('la table suit l etape affichee, pas le monde le plus recent', () => {
     const inst = majInstantanes(vide, [etape('a1', 'intention')], monde('x'), true)
     expect(mondeDeLaTable(inst, 'bilan', false)).toBeUndefined()
     expect(majInstantanes(inst, [], monde('y'), false).size).toBe(0)
+  })
+})
+
+// REFONTE, LOT 4 (essai, 12/10/2026, decisions 49 et 51).
+
+describe('lot 4 : rien sur la table avant que l ecran ne le raconte', () => {
+  const etapeT = (cle: string, titre: string, carteId?: number) => ({ cle, titre, carteId, boosts: [] }) as unknown as EtapeDeroule
+  const liste = [etapeT('a1', 'attaque', 10), etapeT('e1', 'entree', 77), etapeT('r1', 'revelation', 88), etapeT('m1', 'manigance', 10)]
+
+  it('les cartes que les etapes SUIVANTES feront entrer en jeu', () => {
+    expect([...cartesAVenir(liste, 'a1')].sort()).toEqual([77, 88])
+    expect([...cartesAVenir(liste, 'e1')]).toEqual([88])
+    expect([...cartesAVenir(liste, 'r1')]).toEqual([])
+    expect(cartesAVenir(liste, undefined).size).toBe(0)
+  })
+
+  it('le monde perd les cartes a venir face visible et ce qui leur est attache, pas les cartes face cachee', () => {
+    const carte = (id: number, faceVisible = true, bind = 0) => ({ id, is_face_up: faceVisible, bind_object_id: bind, name: `c${id}` })
+    const m = {
+      phase: 'Villain Activation',
+      players: [{ area_ally: [carte(5), carte(77), carte(91, true, 77)], dealt: [carte(88, false)] }],
+    } as unknown as World
+    const resultat = sansCartesAVenir(m, new Set([77, 88])) as unknown as { players: Array<{ area_ally: Array<{ id: number }>; dealt: Array<{ id: number }> }> }
+    expect(resultat.players[0].area_ally.map((c) => c.id)).toEqual([5])
+    expect(resultat.players[0].dealt.map((c) => c.id)).toEqual([88])
+    // Rien a retirer : le meme objet, sans copie.
+    expect(sansCartesAVenir(m, new Set())).toBe(m)
+  })
+
+  it('avant le resultat, la table montre le monde de l etape precedente', () => {
+    let inst = majInstantanes(vide, [etape('m0', 'resolution')], monde('avant attaque'), true)
+    inst = majInstantanes(inst, [etape('m0', 'resolution'), etape('a1', 'resolution')], monde('apres attaque'), true)
+    const etapes = [etape('m0', 'resolution'), etape('a1', 'resolution')]
+    expect((mondeAvantEtape(inst, etapes, 'a1') as unknown as { nom: string }).nom).toBe('avant attaque')
+    expect(mondeAvantEtape(inst, etapes, 'm0')).toBeUndefined()
+  })
+})
+
+describe('lot 4 : la carte revelee arrive sur la table a SON ecran', () => {
+  const sbire = (faceVisible: boolean) => ({ id: 57, is_face_up: faceVisible, bind_object_id: 0 })
+  const mondeAvec = (nom: string, enJeu: boolean) =>
+    ({ phase: 'Reveal Encounter Cards', nom, area_villain: [], players: [{ engaged_enemies: enJeu ? [sbire(true)] : [] }] }) as unknown as World
+  const revelation = { cle: 'r57', titre: 'revelation', carteId: 57, boosts: [] } as unknown as EtapeDeroule
+
+  it('estEnJeu : sur la table face visible, pas ailleurs', () => {
+    expect(estEnJeu(mondeAvec('a', true), 57)).toBe(true)
+    expect(estEnJeu(mondeAvec('b', false), 57)).toBe(false)
+  })
+
+  it('dans l essai, le monde de la revelation suit jusqu a ce que la carte soit en jeu', () => {
+    let inst = majInstantanes(vide, [revelation], mondeAvec('revelee', false), true, true)
+    inst = majInstantanes(inst, [revelation], mondeAvec('engagee', true), true, true)
+    expect((mondeDeLaTable(inst, 'r57', false) as unknown as { nom: string }).nom).toBe('engagee')
+    // Une fois en jeu, le monde ne bouge plus.
+    inst = majInstantanes(inst, [revelation], mondeAvec('plus tard', true), true, true)
+    expect((mondeDeLaTable(inst, 'r57', false) as unknown as { nom: string }).nom).toBe('engagee')
+  })
+
+  it('sans l essai, comportement d avant : le monde de la revelation ne suit pas', () => {
+    let inst = majInstantanes(vide, [revelation], mondeAvec('revelee', false), true)
+    inst = majInstantanes(inst, [revelation], mondeAvec('engagee', true), true)
+    expect((mondeDeLaTable(inst, 'r57', false) as unknown as { nom: string }).nom).toBe('revelee')
   })
 })

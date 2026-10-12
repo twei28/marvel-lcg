@@ -3948,3 +3948,42 @@ describe('bilan referme : publie au spectateur et a la relecture', () => {
     }
   })
 })
+
+// REFONTE, LOT 4 (essai, 12/10/2026, decision 51) : tant que l'attaque retourne
+// ses boosts, la table doit garder le monde d'avant l'etape.
+describe('lot 4 : l ecran du resultat se signale a la table', () => {
+  const avecBoosts: EtapeDeroule[] = [
+    {
+      cle: 'atk',
+      temps: 'mechant',
+      titre: 'attaque',
+      regle: 'regle:activations',
+      etat: 'resolu',
+      carteId: 50,
+      cibleId: 12,
+      auteurNom: 'Ultron',
+      cibleNom: 'Shuri',
+      base: 2,
+      montant: 4,
+      restant: 6,
+      boosts: [
+        { cle: 'b1', nom: 'Assaut', cibleId: 70, apport: 1 },
+        { cle: 'b2', nom: 'Avancée', cibleId: 71, apport: 1 },
+      ],
+    },
+  ]
+
+  it('dans l essai : vrai pendant les boosts, faux a l ecran du resultat', () => {
+    const vus: boolean[] = []
+    render(<DeroulePhase etapes={avecBoosts} essai onTerminer={() => {}} onAvantResultat={(v) => vus.push(v)} />)
+    expect(vus.at(-1)).toBe(true)
+    act(() => document.querySelector<HTMLButtonElement>('.deroule-suivant')?.click())
+    expect(vus.at(-1)).toBe(false)
+  })
+
+  it('sans l interrupteur : toujours faux, la table calee reste celle d avant le lot 4', () => {
+    const vus: boolean[] = []
+    render(<DeroulePhase etapes={avecBoosts} onTerminer={() => {}} onAvantResultat={(v) => vus.push(v)} />)
+    expect(vus.every((v) => v === false)).toBe(true)
+  })
+})

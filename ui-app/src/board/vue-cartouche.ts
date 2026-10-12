@@ -239,6 +239,8 @@ export type VueRangee = {
   lignesEtoile: string[]
   /** Grisee sous un sous-cadre ou pendant l'attente d'un autre joueur (le composant decide). */
   grisee: boolean
+  /** Une carte qui ENTRE en jeu (refonte, lot 4, decision 3) : bandeau « NOUVEAU SBIRE » dans l'essai. */
+  entree?: { sbire: boolean }
 }
 
 export type QuestionCarte = { intitule: string; choix: Vignette[]; refus?: { libelle: string } }
@@ -1058,6 +1060,7 @@ export function vueDeLEtape(etape: EtapeDeroule, ctx: ContexteVue): VueCorps {
         cibles: [],
         lignesEtoile: [],
         grisee: false,
+        entree: { sbire: true },
       }
     default:
       // Un temps vide, une distribution d'une liste non fondue, un titre libre :

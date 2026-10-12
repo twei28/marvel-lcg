@@ -154,7 +154,7 @@ import { EditeurTable } from './board/EditeurTable'
 import { DISPOSITION_DE_DEPART, DISPOSITION_ORIGINE, type Disposition } from './board/table-briques'
 import { enregistrerDisposition, useDispositionTable } from './board/table-perso'
 import { detailAttaqueComplet, ligneAttaqueConnue } from './board/ligne-attaque'
-import { majInstantanes, mondeDeLaTable, type Instantanes } from './board/table-calee'
+import { cartesAVenir, majInstantanes, mondeAvantEtape, mondeDeLaTable, sansCartesAVenir, type Instantanes } from './board/table-calee'
 import {
   appliquerTeinte,
   chercherTeinteDuCompte,
@@ -2487,22 +2487,44 @@ export function PagePartie({
   // phase, la table dessine le monde de l'etape AFFICHEE par le cartouche, pas
   // le plus recent : sinon le boost ou la carte rencontre se retournaient sur
   // la table avant le « Suivant ». Une question au joueur rend le monde reel.
+  // L'essai « Nouvelle phase du méchant » (10/10/2026), coché par compte dans
+  // /admin : faux tant que le serveur n'a pas répondu, comme plus bas (essais ouverts).
+  const [phaseEssai, setPhaseEssai] = useState(false)
+  useEffect(() => {
+    let vivant = true
+    void essaiPhaseMechant().then((actif) => {
+      if (vivant) setPhaseEssai(actif)
+    })
+    return () => {
+      vivant = false
+    }
+  }, [])
   const instantanesRef = useRef<Instantanes>(new Map())
   const instantanes = useMemo(() => {
     const suivants = majInstantanes(
       instantanesRef.current,
       etapesPhaseMechant,
       etat.monde,
-      PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')
+      PHASES_DU_MECHANT.has(etat.monde?.phase ?? ''),
+      phaseEssai
     )
     instantanesRef.current = suivants
     return suivants
-  }, [etapesPhaseMechant, etat.monde])
-  const mondeTable = mondeDeLaTable(
+  }, [etapesPhaseMechant, etat.monde, phaseEssai])
+  const mondeCale = mondeDeLaTable(
     instantanes,
     cleEtapeAffichee,
     Boolean(etat.aNous && etat.demande)
   )
+  // REFONTE, LOT 4 (essai, decisions 49 et 51) : tant que l'attaque retourne
+  // ses boosts, la table garde le monde d'AVANT l'etape (PV, menace) ; et une
+  // carte qu'une etape suivante fera entrer en jeu n'y est pas encore.
+  const [avantResultat, setAvantResultat] = useState(false)
+  const mondeTable = useMemo(() => {
+    if (!phaseEssai || !mondeCale) return mondeCale
+    const base = (avantResultat ? mondeAvantEtape(instantanes, etapesPhaseMechant, cleEtapeAffichee) : undefined) ?? mondeCale
+    return sansCartesAVenir(base, cartesAVenir(etapesPhaseMechant, cleEtapeAffichee))
+  }, [phaseEssai, mondeCale, avantResultat, instantanes, etapesPhaseMechant, cleEtapeAffichee])
   const plateauTable = useMemo(
     () =>
       mondeTable
@@ -3547,18 +3569,6 @@ export function PagePartie({
     let vivant = true
     void essaisOuverts().then((ouverts) => {
       if (vivant) setEssais(ouverts)
-    })
-    return () => {
-      vivant = false
-    }
-  }, [])
-  // L'essai « Nouvelle phase du méchant » (10/10/2026), coché par compte dans
-  // /admin : faux tant que le serveur n'a pas répondu, comme ci-dessus.
-  const [phaseEssai, setPhaseEssai] = useState(false)
-  useEffect(() => {
-    let vivant = true
-    void essaiPhaseMechant().then((actif) => {
-      if (vivant) setPhaseEssai(actif)
     })
     return () => {
       vivant = false
@@ -4611,6 +4621,7 @@ export function PagePartie({
             onActivite={signalerActivite}
             onTerminer={avancerPasAPas}
             onEtapeAffichee={setCleEtapeAffichee}
+            onAvantResultat={setAvantResultat}
             // Le coup fatal est vu : l'ecran de fin de partie peut paraitre.
             onDefaiteVue={() => setCoupFatalVu(true)}
           />

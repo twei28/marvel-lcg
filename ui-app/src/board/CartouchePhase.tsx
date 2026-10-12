@@ -673,7 +673,16 @@ function Bilan({ bilan, grisee = false }: { bilan: VueBilan; grisee?: boolean })
 function Corps({ corps, grisee, essai = false }: { corps: VueCorps; grisee: boolean; essai?: boolean }) {
   switch (corps.genre) {
     case 'rangee':
-      return essai && corps.pose ? <RangeeEssai rangee={corps} grisee={grisee} /> : <Rangee rangee={corps} grisee={grisee} />
+      if (essai && corps.pose) return <RangeeEssai rangee={corps} grisee={grisee} />
+      // LOT 4 (decision 3) : une carte qui entre en jeu se dit d'un bandeau, puis vole vers la table (TrajetsPhase).
+      if (essai && corps.entree)
+        return (
+          <div className="essai-entree">
+            <Rangee rangee={corps} grisee={grisee} />
+            <strong className="essai-bandeau-nouveau">{corps.entree.sbire ? t('Nouveau sbire') : t('Entre en jeu')}</strong>
+          </div>
+        )
+      return <Rangee rangee={corps} grisee={grisee} />
     case 'revelee':
       return <CarteRevelee revelee={corps} grisee={grisee} essai={essai} />
     case 'stade':
