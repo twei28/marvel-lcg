@@ -1771,6 +1771,13 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .langue-modal .lg-choix.on{border-color:var(--affiche-jaune)}
 .langue-modal .lg-choix b{display:block;font-size:19px}
 .langue-modal .lg-choix small{display:block;color:var(--dim);margin-top:4px;font-size:13px}
+/* Choix des dos de cartes, sous la langue (12/10/2026). */
+.langue-modal .lg-dos-bloc{display:grid;gap:8px;margin:0 0 12px}
+.langue-modal .lg-dos-grille{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.langue-modal .lg-dos{display:flex;align-items:center;gap:12px;padding:8px 12px;text-align:left;cursor:pointer;color:inherit;font:inherit;background:transparent;border:2px solid var(--line)}
+.langue-modal .lg-dos:hover,.langue-modal .lg-dos.on{border-color:var(--affiche-jaune)}
+.langue-modal .lg-dos img{width:44px;height:60px;object-fit:cover;border-radius:4px;flex:none}
+.langue-modal .lg-dos b{font-size:15px}
 
 /* LEGACY (13/09/2026) : ce qui n'est pas encore debloque reste SOUS LES YEUX,
    grise, avec sa condition. Absent de la grille, on ne saurait pas ce qu'on

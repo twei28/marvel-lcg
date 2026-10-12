@@ -197,6 +197,7 @@ import {
 } from './board/manigance-face-a'
 import { PanneauManigance } from './board/PanneauManigance'
 import { CLE_SCANS_FR, scansFrActifs } from './board/scans-fr'
+import { ecrireDosCartes, lireDosCartes, type DosCartes } from './board/dos-cartes'
 import {
   CoucheMeteo,
   CLE_METEO,
@@ -1958,6 +1959,12 @@ export function PagePartie({
   // que decocher l'option en pleine partie rafraichisse l'affichage sans
   // attendre le prochain evenement du moteur.
   const [scansFr, setScansFr] = useState(scansFrActifs)
+  // Le choix des dos de cartes : une dependance du plateau, comme les scans FR.
+  const [dosCartes, setDosCartes] = useState<DosCartes>(lireDosCartes)
+  const changerDosCartes = useCallback((choix: DosCartes) => {
+    ecrireDosCartes(choix)
+    setDosCartes(choix)
+  }, [])
 
   // La table est decoupee AVANT l'interaction : celle-ci a besoin de savoir
   // quelles cartes sont reellement dessinees pour ne rendre cliquable que ce qui
@@ -1995,7 +2002,7 @@ export function PagePartie({
             seulCeJoueur: vueForcee !== null || modePlateau === 'mobile',
           })
         : undefined,
-    [etat.monde, joueurActif, catalogue, scansFr, vueForcee]
+    [etat.monde, joueurActif, catalogue, scansFr, dosCartes, vueForcee]
   )
   // ⚠ LA TABLE NE VOIT PAS LA QUESTION DE LA MANIGANCE. Son panneau la tient
   // (voir `demandeHorsPanneauManigance`) : le halo, le menu d'une carte et le
@@ -2172,7 +2179,8 @@ export function PagePartie({
       imageUrl: scanUrl('encounter'),
       facedown: true,
     }),
-    []
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dosCartes]
   )
   const [optionSurvolee, setOptionSurvolee] = useState<Option | undefined>(undefined)
   const [pulseTemporaire, setPulseTemporaire] = useState<Set<number>>(() => new Set())
@@ -5079,6 +5087,8 @@ export function PagePartie({
         musique={musique}
         basculerMusique={basculerMusique}
         scansFr={scansFr}
+        dosCartes={dosCartes}
+        changerDosCartes={changerDosCartes}
         basculerScansFr={basculerScansFr}
         textesCdb={textesCdb}
         basculerTextesCdb={basculerTextesCdb}

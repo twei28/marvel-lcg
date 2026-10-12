@@ -45,6 +45,7 @@ import type { Teinte } from './teinte'
 import { ecrireFaconParDefaut, lireFaconParDefaut, type FaconDeJouer } from './manuel/facon-de-jouer'
 import { ecrireVolumeSons, jouerSon, lireVolumeSons } from './sons'
 import './reglages.css'
+import type { DosCartes } from './dos-cartes'
 
 /** Les quatre onglets, dans l'ordre ou ils s'affichent. */
 // Rangement du 04/10/2026 (questions une a une) : Apparence, Son, Jeu, Avance.
@@ -361,6 +362,9 @@ export type ProprietesReglages = {
   basculerMusique: () => void
   scansFr: boolean
   basculerScansFr: () => void
+  /** Dos de cartes : officiels Marvel ou NarwhalChampions (dos-cartes.ts). */
+  dosCartes?: DosCartes
+  changerDosCartes?: (choix: DosCartes) => void
   textesCdb: boolean
   basculerTextesCdb: () => void
   basculerLangue: () => void | Promise<void>
@@ -496,6 +500,18 @@ export function ContenuOnglet({
           actif={p.scansFr}
           onBascule={p.basculerScansFr}
         />
+        {p.dosCartes && p.changerDosCartes ? (
+          <LigneChoix
+            libelle={t('Dos de cartes')}
+            valeur={p.dosCartes}
+            choix={[
+              { valeur: 'officiels' as DosCartes, libelle: t('Officiels Marvel') },
+              { valeur: 'narwhal' as DosCartes, libelle: 'NarwhalChampions' },
+            ]}
+            onChoisir={p.changerDosCartes}
+            detail={t('Le dos des cartes face cachée : decks, boosts, cartes rencontre')}
+          />
+        ) : null}
         <LigneBascule
           libelle={t('Texte des cartes en français')}
           detail={t('Sous l’aperçu agrandi (chargé depuis fr.marvelcdb.com)')}

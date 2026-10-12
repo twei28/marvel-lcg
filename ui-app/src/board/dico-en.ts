@@ -1590,6 +1590,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Météo et décor': 'Weather and scenery',
   'Selon les cartes en jeu (pluie de Storm…)': 'Depending on cards in play (Storm\'s rain…)',
   'Cartes en français': 'Cards in French',
+  // Choix des dos de cartes (12/10/2026)
+  'Dos de cartes': 'Card backs',
+  'Officiels Marvel': 'Official Marvel',
+  'Le dos des cartes face cachée : decks, boosts, cartes rencontre': 'The back of face-down cards: decks, boosts, encounter cards',
   'Texte des cartes en français': 'Card text in French',
   'Sous l’aperçu agrandi (chargé depuis fr.marvelcdb.com)': 'Under the enlarged preview (loaded from fr.marvelcdb.com)',
   'Bruitages': 'Sound effects',

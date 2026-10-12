@@ -1521,6 +1521,37 @@ function bandeauEnLigne() {
  *  modales de cet écran : un clic distrait vaudrait réponse, et la question ne
  *  reviendrait jamais. On répond par l'un des deux drapeaux, point.
  */
+const CLE_DOS_CARTES = "marvel-board-dos-cartes";
+function lireDosCartes() {
+    try { return localStorage.getItem(CLE_DOS_CARTES) === "narwhal" ? "narwhal" : "officiels"; }
+    catch (e) { return "officiels"; }
+}
+function choixDosCartes() {
+    const boutons = [];
+    const choisir = (valeur) => {
+        try { localStorage.setItem(CLE_DOS_CARTES, valeur); } catch (e) { /* preference non critique */ }
+        boutons.forEach((b) => b.classList.toggle("on", b.dataset.dos === valeur));
+    };
+    const bouton = (valeur, titre, image) => {
+        const b = el("button", {
+            class: "lg-dos" + (lireDosCartes() === valeur ? " on" : ""),
+            "data-dos": valeur,
+            onclick: () => choisir(valeur),
+        }, el("img", { src: "/scan/" + image, alt: "" }), el("b", {}, titre));
+        boutons.push(b);
+        return b;
+    };
+    return el("div", { class: "lg-dos-bloc" },
+        el("span", { class: "dm-sub" }, "Dos de cartes · Card backs"),
+        el("div", { class: "lg-dos-grille" },
+            bouton("officiels", "Officiels Marvel · Official Marvel", "player"),
+            bouton("narwhal", "NarwhalChampions", "player-narwhal"),
+        ),
+        el("div", { class: "vh-note" },
+            "Modifiable ensuite dans les réglages du plateau · Can be changed later in the board settings."),
+    );
+}
+
 function demanderLaLangue() {
     return new Promise((resolve) => {
         const choisir = async (langue) => {
@@ -1551,6 +1582,11 @@ function demanderLaLangue() {
                     carte("fr", "Français", "Cartes, interface et récit de la partie en français."),
                     carte("en", "English", "Cards, interface and game log in English."),
                 ),
+                // LE DOS DES CARTES (12/10/2026) : officiels par defaut, ou ceux
+                // de NarwhalChampions. Un clic retient le choix sans fermer la
+                // fenetre (c'est la langue qui la ferme). Meme cle que le plateau
+                // (ui-app/src/board/dos-cartes.ts), modifiable dans ses reglages.
+                choixDosCartes(),
                 // ⚠ CE QUE LA LANGUE NE PEUT PAS FAIRE, DIT AVANT LE CHOIX
                 // (16/09/2026). Tous les scans n'existent pas dans les deux
                 // langues : la carte reste alors en anglais, et c'est
