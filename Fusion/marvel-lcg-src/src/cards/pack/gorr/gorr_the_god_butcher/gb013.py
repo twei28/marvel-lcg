@@ -51,6 +51,6 @@ def GetAbilities() -> Sequence['Ability']:
         ),
         AbilityFactory.PlayerActionToDiscardThis(
             AbilityType.HeroAction,
-        ).SetCostFunc(CostFunc.Discard("HandCard", range=(2, 2)))
+        ).SetCostFunc(CostFunc.Discard("YourHandCards", range=(2, 2)))
         .SetCostFunc(CostFunc.DiscardDeckTopCards("YourDeck", 2)),
     ]

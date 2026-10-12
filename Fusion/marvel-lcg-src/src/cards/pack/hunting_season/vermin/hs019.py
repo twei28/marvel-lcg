@@ -5,7 +5,7 @@ from . import *
 # Interrupt (code en Response, decision utilisateur) : After you defeat a RAT minion
 # engaged with you, discard two cards from your hand -> discard this card.
 # Modeles : AttachToFaceWhenPutIntoPlay (dr013), GiveKeywordToInPlayWhenApplyThis,
-# CostFunc.Discard("HandCard", range=(2, 2)) (gorr gb013).
+# CostFunc.Discard("YourHandCards", range=(2, 2)) (gorr gb013).
 
 def GetAbilities() -> Sequence['Ability']:
 
@@ -28,5 +28,5 @@ def GetAbilities() -> Sequence['Ability']:
             Minion,
             DiscardThisCard,
             conditions=[rat_vaincu],
-        ).SetCostFunc(CostFunc.Discard("HandCard", range=(2, 2))),
+        ).SetCostFunc(CostFunc.Discard("YourHandCards", range=(2, 2))),
     ]

@@ -227,6 +227,15 @@ class RunPuzzle:
         for card in cards:
             CardFactory.GenerateCard(card, first_player.player_deck, self.world)
 
+    def EmptyHand(self):
+        """Defausse toute la main du premier joueur (cas « main vide »). `Discard`
+        ne peut pas viser une carte de la main : `FindOrCreateFace` n'y cherche pas."""
+        from game.operate.faces import Faces
+        player = self.world.GetFirstPlayer()
+        faces = list(player.hand_cards.GetAll())
+        if faces:
+            Faces.DiscardAll(faces, DebugRule(faces[0]))
+
     def EmptyAdditionalDeck(self):
         """Retire du jeu toutes les cartes du deck annexe du premier joueur (Sens de Daredevil, ecureuils...)."""
         from game.operate.faces import Faces

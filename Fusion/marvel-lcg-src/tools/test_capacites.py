@@ -47123,6 +47123,64 @@ CAS = [
         }
     },
     {
+        "nom": "hs019 Swarmed by Rats — main VIDE : la capacite n'est pas proposee, l'attachement reste",
+        "pourquoi": "cout discard two cards from your hand : la cible etait la chaine inconnue HandCard, le selecteur tombait sur ses cartes par defaut (en jeu), d'ou 15 possibles meme main vide (signalement 12/10/2026). RR 1.8 p.24 etape 5 et FAQ p.57 : un cout se paie en entier",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('hs019')", "Puzzle.PutIntoPlay('hs007')"],
+        # `Puzzle.Discard` ne vise jamais la main (il cree une copie) : `EmptyHand` la vide vraiment.
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.EmptyHand()", "Puzzle.Attack('01001a')"],
+        "cibles": ["hs007"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs019"], "hors_jeu": ["hs007"], "taille_main": 0},
+    },
+    {
+        "nom": "hs019 Swarmed by Rats — 1 seule carte en main : la capacite n'est pas proposee, rien n'est defausse",
+        "pourquoi": "cout discard two cards from your hand : la cible etait la chaine inconnue HandCard, le selecteur tombait sur ses cartes par defaut (en jeu), d'ou 15 possibles meme main vide (signalement 12/10/2026). RR 1.8 p.24 etape 5 et FAQ p.57 : un cout se paie en entier",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('hs019')", "Puzzle.PutIntoPlay('hs007')"],
+        "main_exclusive": ["01088"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "cibles": ["hs007"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["hs019"], "hors_jeu": ["hs007"], "taille_main": 1},
+    },
+    {
+        "nom": "hs019 Swarmed by Rats — 2 cartes en main : les 2 cartes DE LA MAIN sont defaussees et l'attachement aussi",
+        "pourquoi": "cout discard two cards from your hand : la cible etait la chaine inconnue HandCard, le selecteur tombait sur ses cartes par defaut (en jeu), d'ou 15 possibles meme main vide (signalement 12/10/2026). RR 1.8 p.24 etape 5 et FAQ p.57 : un cout se paie en entier",
+        "scenario": "hs_vermin",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('hs019')", "Puzzle.PutIntoPlay('hs007')"],
+        "main_exclusive": ["01088", "01089"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "cibles": ["hs007"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["hs019", "hs007"], "taille_main": 0},
+    },
+    {
+        "nom": "gb013 Umbral Wings — 1 seule carte en main : l'Action de heros ne peut pas se payer, l'attachement reste",
+        "pourquoi": "cout discard two cards from your hand : la cible etait la chaine inconnue HandCard, le selecteur tombait sur ses cartes par defaut (en jeu), d'ou 15 possibles meme main vide (signalement 12/10/2026). RR 1.8 p.24 etape 5 et FAQ p.57 : un cout se paie en entier ; temoin generique : meme cible fautive sur Umbral Wings",
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('gb013')"],
+        "main_exclusive": ["01088"],
+        "declencher": [],
+        "verifier": "gb013_action_indisponible",
+    },
+    {
+        "nom": "gb013 Umbral Wings — 2 cartes en main : les 2 cartes de la main sont defaussees, l'attachement aussi",
+        "pourquoi": "cout discard two cards from your hand : la cible etait la chaine inconnue HandCard, le selecteur tombait sur ses cartes par defaut (en jeu), d'ou 15 possibles meme main vide (signalement 12/10/2026). RR 1.8 p.24 etape 5 et FAQ p.57 : un cout se paie en entier ; temoin generique : meme cible fautive sur Umbral Wings",
+        "scenario": "gorr",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Reveal('gb013')"],
+        "main_exclusive": ["01088", "01089"],
+        "declencher": ["Puzzle.Action('gb013')"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["gb013"], "taille_main": 0},
+    },
+    {
         "nom": "[hs1] hs002 Vermin : defausse 2, met en jeu le PREMIER RAT seulement",
         "pourquoi": "range 'first RAT'",
         "scenario": "hs_vermin",
@@ -58399,6 +58457,20 @@ def sd020_action_indisponible(monde, aides):
                        f"Permanente ferait planter la partie")
     return True, ("Hero Action declaree mais indisponible tant que The Real Question est "
                   "en jeu")
+
+def gb013_action_indisponible(monde, aides):
+    """gb013 : avec 1 seule carte en main, le cout « defaussez 2 cartes de votre
+    main » ne peut pas se payer : la Hero Action est DECLAREE mais pas proposee
+    (sinon elle se payait avec des cartes EN JEU, cible fautive « HandCard »)."""
+    candidats, effets = _sd_actions_de_carte(monde, "gb013", aides, "HeroAction")
+    if candidats is None:
+        return False, "gb013 n'est pas en jeu : le montage du cas a echoue"
+    if not candidats:
+        return False, "gb013 ne DECLARE aucune Hero Action : le cas ne prouverait rien"
+    if effets:
+        return False, f"la Hero Action de gb013 est proposee avec 1 carte en main ({len(effets)} effet(s))"
+    return True, "Hero Action declaree mais indisponible avec 1 carte en main"
+
 
 def sd021_chaines(monde, aides):
     """sd021 : apres l'attaque du sbire porteur, le heros est SONNE et

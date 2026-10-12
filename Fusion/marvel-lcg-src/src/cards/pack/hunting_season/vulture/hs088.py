@@ -15,5 +15,5 @@ def GetAbilities() -> Sequence['Ability']:
     return [
         AttacherALaRevelation(),
         AbilityFactory.WhenUnitWouldAttack(AbilityType.ForcedInterrupt, Villain, plus_un, conditions=[cible_aerial]),
-        ActionPerdreAerial(None, CostFunc.Exhaust("YourHero"), CostFunc.Discard("HandCard", range=(2, 2))),
+        ActionPerdreAerial(None, CostFunc.Exhaust("YourHero"), CostFunc.Discard("YourHandCards", range=(2, 2))),
     ]
