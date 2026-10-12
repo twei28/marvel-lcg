@@ -101,7 +101,7 @@ describe('effetsAffiches', () => {
   })
 
   it('l apercu prime, et « aucun » impose le vide', () => {
-    expect(effetsAffiches(monde('04081'), true, ['noir'])).toEqual(['noir'])
+    expect(effetsAffiches(monde('04081'), true, ['fog'])).toEqual(['fog'])
     expect(effetsAffiches(monde('04081'), true, [])).toEqual([])
   })
 
@@ -110,7 +110,7 @@ describe('effetsAffiches', () => {
     expect(effetsAffiches(monde('04081'), true, ['rain', 'fog'])).toEqual(['rain', 'fog'])
   })
 
-  it('le noir et blanc est le seul effet qui delave', () => {
-    expect(EFFETS_DELAVANTS).toEqual(['noir'])
+  it('aucun effet ne delave depuis le retrait du noir et blanc (12/10/2026)', () => {
+    expect(EFFETS_DELAVANTS).toEqual([])
   })
 })

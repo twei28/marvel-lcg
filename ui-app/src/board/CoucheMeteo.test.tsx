@@ -192,7 +192,7 @@ describe('les familles de lieux', () => {
     ['45127', 'jungle', 'The Savage Land'],
     ['45133', 'jungle', 'Genosha'],
     // Mojoverse : le genre se lit aux figurants du paquet, pas au titre
-    ['39035', 'noir', 'Dial M for Mojo'],
+    ['39035', 'fog', 'Dial M for Mojo'],
     ['39041', 'embers', "A Game of Mojo's"],
     ['39047', 'horror', 'The Mojo Files'],
     ['39053', 'cyber', 'Mojo Runner'],
@@ -347,7 +347,7 @@ describe('premiereCarteAmbiance', () => {
     expect(premiereCarteAmbiance(m)).toEqual({
       cardId: '39035',
       nom: 'Dial M for Mojo',
-      effet: 'noir',
+      effet: 'fog',
     })
   })
 

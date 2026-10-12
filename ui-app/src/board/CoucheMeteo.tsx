@@ -21,7 +21,7 @@ import type { ReponseAmbiance } from './moteur'
 export const EFFETS_METEO = [
   'rain', 'storm', 'snow', 'fog', 'stars', 'embers',
   'dust', 'neon', 'jungle',
-  'noir', 'horror', 'cyber', 'sitcom', 'sepia', 'sandstorm',
+  'horror', 'cyber', 'sitcom', 'sepia', 'sandstorm',
 ] as const
 export type EffetMeteo = (typeof EFFETS_METEO)[number]
 
@@ -37,7 +37,6 @@ export const LIBELLE_EFFET: Record<EffetMeteo, string> = {
   dust: 'Poussière',
   neon: 'Néons',
   jungle: 'Jungle',
-  noir: 'Noir et blanc',
   horror: 'Horreur',
   cyber: 'Cyber',
   sitcom: 'Sitcom',
@@ -126,7 +125,7 @@ export const METEO_PAR_CARTE: Record<string, EffetMeteo> = {
   // au titre mais aux figurants qui l'accompagnent dans le paquet : Dragnet et
   // Law & Order d'un cote, Dragon et Troll de l'autre, Vampire et Loup-garou,
   // des PROGRAMMES nommes Magneto 2.6, un Gunslinger.
-  '39035': 'noir', // Dial M for Mojo : le polar rendu en noir et blanc
+  '39035': 'fog', // Dial M for Mojo : la brume du polar (le noir et blanc a ete retire le 12/10/2026)
   '39041': 'embers', // A Game of Mojo's, fantasy : le souffle du Dragon
   '39047': 'horror', // The Mojo Files, vampires et loups-garous
   '39053': 'cyber', // Mojo Runner, ennemis PROGRAMME
@@ -267,7 +266,7 @@ export function meteoDuMonde(world: World | undefined): string {
  *  cadre d'une carte ne dit plus son aspect, et le plateau doit la redonner
  *  autrement. Seul le noir et blanc en fait partie : le sepia teinte mais
  *  laisse les teintes distinctes les unes des autres. */
-export const EFFETS_DELAVANTS: readonly string[] = ['noir']
+export const EFFETS_DELAVANTS: readonly string[] = []
 
 /** Les effets réellement affichés, aperçu et interrupteur compris. */
 export function effetsAffiches(
