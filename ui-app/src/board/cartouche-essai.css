@@ -773,6 +773,81 @@ body.plateau-sans-animations .scan-card.is-target-pulse .scan-frame {
     overflow: hidden;
   }
 
+  /* Finition (12/10/2026) : `cartouche-phase.css` laisse le pied passer a la
+     ligne. Avec « Boost 2/2 retourné » et « La phase s'arrête ici », les
+     mentions prenaient toute la premiere ligne et poussaient « Continuer »
+     25 px plus bas. Le pied reste sur UNE ligne ; ce sont les mentions qui
+     passent a la ligne, dans leurs 84 px. */
+  .deroule-phase.est-scene.est-essai.est-essai > .deroule-boutons {
+    flex-wrap: nowrap;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-boutons .deroule-mentions {
+    max-height: 84px;
+    align-content: center;
+    line-height: 1.25;
+  }
+
+  /* « X est vaincu » sous les cartes, sur toute la largeur, et non coince en
+     colonne a droite de la rangee (texte coupe, lot 5c). */
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-corps {
+    flex-wrap: wrap;
+    align-content: safe center;
+  }
+
+  /* Le refus (« Ne pas utiliser… ») est agrandi 1,5 fois par `zoom` : sa
+     largeur se borne donc a la boite divisee par 1,5, et son texte passe a la
+     ligne au lieu de deborder (3 px mesures au lot 2). */
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-boutons [data-refus] {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: calc((var(--essai-l) - 48px) / 1.5);
+    white-space: normal;
+    line-height: 1.15;
+  }
+
+  /* Le titre tient en DEUX lignes au plus : a trois (« Révélée par Stepford
+     Cuckoos », a cote du compteur), il prenait au corps la place des boutons
+     d'une question de paiement (55 px rognes, finition du 12/10/2026). Le
+     compteur se borne, ses ajouts passent en points de suspension. */
+  .deroule-phase.est-scene.est-essai.est-essai .essai-titre-ligne .deroule-titre-court {
+    font-size: 1.45rem;
+    line-height: 1.1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai .essai-compteur {
+    max-width: 210px;
+  }
+
+  /* « 3 Cartes rencontre » etait coupe de 26 px dans son onglet (600 px pour
+     cinq onglets) : moins de marge interieure, et l'onglet le plus long prend
+     un peu plus de largeur que les autres. */
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-pastille {
+    padding: 4px 5px;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-pastille:nth-child(4) {
+    flex-grow: 1.45;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai .essai-compteur small {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai .deroule-corps > .deroule-defaite {
+    flex: 0 0 100%;
+    box-sizing: border-box;
+    margin: 6px 0 0;
+    text-align: center;
+  }
+
   .deroule-phase.est-scene.est-essai.est-essai .deroule-boutons .deroule-suivant {
     flex: 0 0 auto;
     box-sizing: border-box;

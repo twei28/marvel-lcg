@@ -1322,6 +1322,12 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     essai ? props.carteScene : undefined
   )
   const { regardee, survol, quitter, viser } = useApercuSurvol(scans)
+  // Finition (12/10/2026) : la question « de repli » dessine ses propres cartes,
+  // absentes de `scans` ; l'appui long retombe alors sur la carte de la table.
+  const [idAppui, setIdAppui] = useState<string | undefined>(undefined)
+  const apercu =
+    regardee ??
+    (essai && idAppui !== undefined && /^\d+$/.test(idAppui) ? props.carteScene?.(Number(idAppui), true) : undefined)
   const optionSurvolee = useRef<number | undefined>(undefined)
 
   // LOT 2 (essai, decision 55) : les noms de cartes ecrits dans la boite
@@ -1647,12 +1653,16 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     appui.current.minuteur = window.setTimeout(() => {
       appui.current.ouvert = true
       viser(id)
+      setIdAppui(id)
     }, DELAI_APPUI_LONG)
   }
   const finAppui = () => {
     if (!essai) return
     window.clearTimeout(appui.current.minuteur)
-    if (appui.current.ouvert) viser(undefined)
+    if (appui.current.ouvert) {
+      viser(undefined)
+      setIdAppui(undefined)
+    }
   }
   const gestesDuFond = {
     ...props.gestes,
@@ -1685,6 +1695,8 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   if (essai && reduit) classes.push('est-reduit')
   if (essai && props.cadre) classes.push(props.cadre.genre === 'commun' ? 'est-cadre-commun' : 'est-cadre-joueur')
   if (essai && props.cadre?.genre === 'joueur' && props.cadre.raye) classes.push('est-cadre-raye')
+  // Finition : au telephone, la feuille basse s'agrandit seulement le temps d'une question.
+  if (essai && questionAuJoueur) classes.push('a-question')
   const outils = essai ? (
     <span className="essai-outils">
       {props.cadre ? (
@@ -1949,7 +1961,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
           </button>
         ) : null}
       </div>
-      {regardee ? <CarteApercu carte={regardee} classe="au-dessus-du-deroule" /> : null}
+      {apercu ? <CarteApercu carte={apercu} classe="au-dessus-du-deroule" /> : null}
     </section>
     </NomsSurvolables>
   )

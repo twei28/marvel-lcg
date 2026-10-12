@@ -1386,6 +1386,49 @@ describe('refonte du 12/10/2026, lot 2 : cartes, noms et appui long', () => {
   })
 })
 
+// FINITION de la refonte (essai, 12/10/2026).
+describe('finition : feuille du telephone, appui long sur la question de repli', () => {
+  it('pendant une question, la boite de l essai porte a-question (la feuille du telephone grandit)', () => {
+    monter({ index: 1, essai: true, questionAuJoueur: true, question: <p>Que fais-tu ?</p> })
+    expect(section()?.className).toContain('a-question')
+  })
+
+  it('sans question, ou sans l essai, pas de a-question', () => {
+    monter({ index: 1, essai: true })
+    expect(section()?.className).not.toContain('a-question')
+    cleanup()
+    monter({ index: 1, questionAuJoueur: true, question: <p>Que fais-tu ?</p> })
+    expect(section()?.className).not.toContain('a-question')
+  })
+
+  it('au doigt, l appui long sur une carte de la question de repli ouvre sa carte (repli sur la table)', () => {
+    vi.useFakeTimers()
+    try {
+      monter({
+        index: 1,
+        essai: true,
+        questionAuJoueur: true,
+        question: (
+          <button type="button" data-card-id="77">
+            Héliporteur
+          </button>
+        ),
+      })
+      const carte = document.querySelector('.est-provisoire [data-card-id="77"]') as Element
+      expect(carte).not.toBeNull()
+      fireEvent.pointerDown(carte, { pointerType: 'touch' })
+      act(() => {
+        vi.advanceTimersByTime(500)
+      })
+      expect(document.querySelector('.carte-apercu')).not.toBeNull()
+      fireEvent.pointerUp(carte, { pointerType: 'touch' })
+      expect(document.querySelector('.carte-apercu')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})
+
 // REFONTE, LOT 4 (essai, 12/10/2026, decision 3) : une carte qui entre en jeu se dit d'un bandeau.
 describe('lot 4 : le bandeau de la carte qui entre en jeu', () => {
   const entree: EtapeDeroule = {

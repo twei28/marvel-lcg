@@ -28,6 +28,14 @@
     gap: 8px;
   }
 
+  /* Une question a besoin de place (342 px de contenu pour 112 visibles a 40 %,
+     mesure du lot 2) : la feuille monte a 70 % le temps de la question
+     seulement, puis redescend a 40 % (finition du 12/10/2026). */
+  .deroule-phase.est-scene.est-essai.a-question:not(.est-reduit) {
+    height: 70dvh;
+    max-height: 70dvh;
+  }
+
   /* Reduit : il ne reste que la ligne du haut, collee au bas de l'ecran. */
   .deroule-phase.est-scene.est-essai.est-reduit {
     height: auto;

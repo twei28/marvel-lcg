@@ -26,6 +26,10 @@ class GameServerNewGame(GameServerBase):
         self.choix_sieges = {}
         # La roue de « Partie au hasard » aussi : la partie est lancee.
         self.roue = None
+        # Qui fait avancer la phase du mechant en multi (lot 6) se choisit pour
+        # CETTE partie : une nouvelle partie le redemande a l'hote (finition du
+        # 12/10/2026 ; l'ancien choix survivait a /new).
+        self.avance_phase = ''
         # Le carnet arrive du CLIENT, donc ampute de ce qu'il n'a pas le droit
         # de voir. Le serveur y remet ici la part secrete de la campagne — pour
         # Agents of S.H.I.E.L.D., la combinaison de la taupe. Le moteur recoit

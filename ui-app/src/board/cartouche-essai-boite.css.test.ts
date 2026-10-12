@@ -46,7 +46,9 @@ describe('la boite fixe de la colonne de gauche', () => {
 describe('le telephone', () => {
   it('feuille basse a environ 40 % de la hauteur (decision 30)', () => {
     expect(tel).toMatch(/height:\s*40dvh/)
-    expect(tel).not.toMatch(/70dvh/)
+    // 70 % seulement le temps d'une question (finition du 12/10/2026), jamais en regle generale.
+    const sansQuestion = tel.replace(/\.deroule-phase\.est-scene\.est-essai\.a-question:not\(\.est-reduit\) \{[^}]*\}/, '')
+    expect(sansQuestion).not.toMatch(/70dvh/)
   })
 })
 
@@ -66,5 +68,29 @@ describe('lot 2 : une seule taille de carte par ecran', () => {
 
   it('aucun agrandissement sur place au survol dans la boite', () => {
     expect(lot2).toMatch(/\.est-essai \.scan-card:hover \.scan-visuel \{\s*transform: none/)
+  })
+})
+
+describe('finition (12/10/2026) : rien ne pousse « Continuer », rien n est coupe', () => {
+  it('le pied reste sur une ligne : de longues mentions ne font plus descendre Continuer', () => {
+    expect(regle('.deroule-phase.est-scene.est-essai.est-essai > .deroule-boutons')).toMatch(/flex-wrap:\s*nowrap/)
+  })
+
+  it('« X est vaincu » prend toute la largeur, sous les cartes', () => {
+    expect(regle('.deroule-phase.est-scene.est-essai.est-essai .deroule-corps > .deroule-defaite')).toMatch(/flex:\s*0 0 100%/)
+  })
+
+  it('le titre tient en deux lignes au plus', () => {
+    expect(regle('.deroule-phase.est-scene.est-essai.est-essai .essai-titre-ligne .deroule-titre-court')).toMatch(/-webkit-line-clamp:\s*2/)
+  })
+
+  it('le refus agrandi 1,5 fois se borne a la boite', () => {
+    expect(regle('.deroule-phase.est-scene.est-essai.est-essai .deroule-boutons [data-refus]')).toMatch(/max-width:\s*calc\(\(var\(--essai-l\) - 48px\) \/ 1\.5\)/)
+  })
+
+  it('au telephone, la feuille monte a 70 % le temps d une question seulement', () => {
+    const i = tel.indexOf('.deroule-phase.est-scene.est-essai.a-question:not(.est-reduit) {')
+    expect(i).toBeGreaterThan(-1)
+    expect(tel.slice(i, tel.indexOf('}', i))).toMatch(/height:\s*70dvh/)
   })
 })
