@@ -1186,14 +1186,18 @@ describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
     expect(calcul).not.toBeNull()
     const operateurs = [...calcul!.querySelectorAll('.essai-operateur')].map((e) => e.textContent)
     expect(operateurs).toEqual(['+', '+'])
-    // Sous l'acteur, le picto ATQ et sa valeur ; sous chaque boost, sa pastille « +0 BOOST ★ ».
+    // Sous l'acteur, le picto ATQ et sa valeur ; sous chaque boost, ce qu'il ajoute
+    // a l'ATQ (lot 5, decision 36 : « +0 ATQ ★ »).
     expect(calcul!.querySelector('.essai-stat.est-atq')?.getAttribute('aria-label')).toBe('ATQ 1')
     expect([...calcul!.querySelectorAll('.essai-stat.est-boost')].map((e) => e.getAttribute('aria-label'))).toEqual([
-      '+0 BOOST ★',
-      '+0 BOOST ★',
+      '+0 ATQ ★',
+      '+0 ATQ ★',
     ])
-    // L'effet ★ de chaque boost se lit sous ses icones.
-    expect(calcul!.querySelectorAll('.essai-etoile')).toHaveLength(2)
+    // L'effet ★ de chaque boost se lit en clair dans un encadre (lot 5, decision 37).
+    expect(calcul!.querySelectorAll('.essai-encadre-etoile p')).toHaveLength(2)
+    // Le resultat sur sa ligne, sous le calcul (decision 8).
+    expect(calcul!.querySelector('.essai-resultat-ligne .deroule-resultat-texte')?.textContent).toBe('1 dégât subi')
+    expect(calcul!.querySelectorAll('.essai-etoile')).toHaveLength(0)
     expect(calcul!.querySelector('.essai-boite .deroule-resultat-texte')?.textContent).toBe('1 dégât subi')
     // Spider-Man à 3 PV sur 10 : critique, en couleur fixe.
     expect(calcul!.querySelector('.essai-boite.est-critique')).not.toBeNull()
@@ -1403,5 +1407,58 @@ describe('lot 4 : le bandeau de la carte qui entre en jeu', () => {
     monter({ etapes: [entree] })
     expect(document.querySelector('.essai-bandeau-nouveau')).toBeNull()
     expect(document.querySelector('.essai-entree')).toBeNull()
+  })
+})
+
+describe('LOT 5 de la refonte (12/10/2026) : les écrans particuliers, derrière l’essai', () => {
+  const menaceDecomposee: EtapeDeroule = { ...menace, montant: 3, restant: 7, plafond: 7, escalade: 2, joueurs: 2, acceleration: 1 }
+
+  it('menace : une ligne par source, le total, la jauge et « COMPLÉTÉE » au seuil (decision 7)', () => {
+    monter({ etapes: [menaceDecomposee], essai: true })
+    const bloc = document.querySelector('.essai-menace')
+    expect(bloc).not.toBeNull()
+    const lignes = [...bloc!.querySelectorAll('.essai-menace-sources tr')].map((tr) => tr.textContent)
+    expect(lignes).toEqual(['Manigance : 1 par joueur × 2+2', 'Accélération+1', '=+3'])
+    expect(bloc!.querySelector('.essai-menace-chiffres')?.textContent).toBe('4 → 7 / 7')
+    expect(bloc!.querySelector('.essai-tampon-complete')?.textContent).toBe('COMPLÉTÉE')
+  })
+
+  it('menace sous le seuil : pas de tampon', () => {
+    monter({ etapes: [{ ...menaceDecomposee, restant: 5 }], essai: true })
+    expect(document.querySelector('.essai-menace')).not.toBeNull()
+    expect(document.querySelector('.essai-tampon-complete')).toBeNull()
+  })
+
+  it('sans essai, la menace garde l’affichage d’avant', () => {
+    monter({ etapes: [menaceDecomposee] })
+    expect(document.querySelector('.essai-menace')).toBeNull()
+  })
+
+  it('activation annulée : tampon « ANNULÉE » et la carte qui annule (decision 6)', () => {
+    const annulee: EtapeDeroule = { ...annonce, etat: 'annule', annuleePar: 'Stunned', annuleeParId: 555 }
+    monter({ etapes: [annulee], essai: true })
+    expect(document.querySelector('.essai-tampon-rangee')?.textContent).toBe('ANNULÉE')
+    expect(document.querySelector('.essai-annulation .essai-annuleur')).not.toBeNull()
+  })
+
+  it('bilan : la liste courte de la phase, chaque ligne survolable (decision 12)', () => {
+    const bilan: EtapeDeroule = { cle: 'bilan', temps: 'bilan', titre: 'bilan', regle: '', boosts: [] }
+    monter({ etapes: [menaceDecomposee, attaqueResolue, bilan], index: 2, essai: true })
+    const lignes = [...document.querySelectorAll('.essai-bilan-ligne')]
+    expect(lignes).toHaveLength(2)
+    expect(lignes[1].getAttribute('data-card-id')).toBe(String(RHINO))
+    expect(lignes[1].textContent).toContain('3 dégâts')
+  })
+
+  it('activation insérée par une carte : la cause dans le titre (decision 5), pas sans essai', () => {
+    const inseree: EtapeDeroule = { ...attaqueResolue, cle: 'activation:7', cause: 'Hydra Jet-Trooper' }
+    monter({ etapes: [inseree], essai: true })
+    expect(document.querySelector('.deroule-phase')?.textContent).toContain('(Hydra Jet-Trooper)')
+  })
+
+  it('sans essai, le bilan n’a pas de liste courte', () => {
+    const bilan: EtapeDeroule = { cle: 'bilan', temps: 'bilan', titre: 'bilan', regle: '', boosts: [] }
+    monter({ etapes: [menaceDecomposee, attaqueResolue, bilan], index: 2 })
+    expect(document.querySelector('.essai-bilan-liste')).toBeNull()
   })
 })

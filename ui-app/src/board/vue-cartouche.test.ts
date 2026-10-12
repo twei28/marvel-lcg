@@ -827,3 +827,30 @@ describe('recapDeJauge', () => {
     expect(recapDeJauge(undefined)).toBeUndefined()
   })
 })
+
+describe('LOT 5 (essai, decision 9) : les icônes de la carte révélée, expliquées', () => {
+  it('Crise, Accélération, Danger et Incite donnent chacune une étiquette en clair', () => {
+    const revele: EtapeDeroule = {
+      cle: 'revelation:1:9:90', temps: 'revelation', titre: 'revelation', regle: '', carteId: 89, cibleNom: 'Defense Network',
+      typeCarte: 'EncounterSideScheme', boosts: [],
+    }
+    const nombres: Record<number, Partial<Record<string, number>>> = { 89: { crisis: 1, acceleration_icon: 1, hazard: 2, incite: 1 } }
+    const vue = vueDeLEtape(revele, contexte([revele], 0, { infoCarte: (id) => nombres[id] }))
+    if (vue.genre !== 'revelee') throw new Error(`vue ${vue.genre}, revelee attendue`)
+    expect(vue.etiquettes).toEqual(
+      expect.arrayContaining([
+        'Crise : plus de menace retirée de la manigance principale',
+        'Accélération : +1 menace à chaque étape 1',
+        'Danger : +2 carte rencontre à chaque distribution',
+        'Incite 1 : +1 menace sur la manigance principale',
+      ])
+    )
+  })
+
+  it('une carte sans icône n’en reçoit aucune', () => {
+    const revele: EtapeDeroule = { cle: 'r', temps: 'revelation', titre: 'revelation', regle: '', carteId: 88, cibleNom: 'Assaut', typeCarte: 'Treachery', boosts: [] }
+    const vue = vueDeLEtape(revele, contexte([revele], 0, { infoCarte: () => ({ crisis: 0 }) }))
+    if (vue.genre !== 'revelee') throw new Error('revelee attendue')
+    expect(vue.etiquettes).toBeUndefined()
+  })
+})

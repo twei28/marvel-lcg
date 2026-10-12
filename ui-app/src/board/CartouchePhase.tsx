@@ -355,9 +355,11 @@ export function PictoStat({ genre, valeur }: { genre: 'atq' | 'men' | 'def'; val
 }
 
 /** La pastille d'un boost, de la forme de « 2 MEN » : « +1 BOOST », « +0 BOOST ★ ». */
-export function PictoBoost({ nombre, etoile = false }: { nombre: number; etoile?: boolean }) {
+export function PictoBoost({ nombre, etoile = false, stat }: { nombre: number; etoile?: boolean; stat?: 'atq' | 'men' }) {
   const valeur = `${nombre < 0 ? '−' : '+'}${Math.abs(nombre)}`
-  const sigle = `${t('BOOST')}${etoile ? ' ★' : ''}`
+  // LOT 5 (decision 36) : « +2 ATQ » plutot que « +2 BOOST » : ce que le boost ajoute.
+  const base = stat === 'atq' ? t('ATQ') : stat === 'men' ? t('MEN') : t('BOOST')
+  const sigle = `${base}${etoile ? ' ★' : ''}`
   return (
     <span className="essai-stat est-boost" role="img" aria-label={`${valeur} ${sigle}`}>
       <b>{valeur}</b>
@@ -395,7 +397,7 @@ function ResultatEssai({ rangee }: { rangee: VueRangee }) {
  * sous le defenseur son picto DEF ; le resultat sous la carte qui le subit.
  * Le calcul se lit sans un mot : [ATQ] + [boosts] − [DEF].
  */
-function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean }) {
+function RangeeEssai({ rangee, grisee, encadre = false }: { rangee: VueRangee; grisee: boolean; encadre?: boolean }) {
   const pose = rangee.pose
   const classes = ['deroule-rangee', 'essai-calcul']
   if (rangee.annulee) classes.push('est-annulee')
@@ -432,8 +434,8 @@ function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
               {operateur('+')}
               <span className="essai-terme">
                 <VignetteVue vignette={nue(boost)} />
-                <PictoBoost nombre={boost.apport} etoile={boost.etoile} />
-                {boost.etoile ? <small className="essai-etoile"><Texte>{ligne ?? '★'}</Texte></small> : null}
+                <PictoBoost nombre={boost.apport} etoile={boost.etoile} stat={statActeur} />
+                {boost.etoile && !encadre ? <small className="essai-etoile"><Texte>{ligne ?? '★'}</Texte></small> : null}
               </span>
             </span>
           )
@@ -444,7 +446,7 @@ function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
             <span className="essai-terme">
               <VignetteVue vignette={nue(rangee.defenseur)} />
               <PictoStat genre="def" valeur={pose?.defense} />
-              {resultat}
+              {encadre ? null : resultat}
             </span>
           </span>
         ) : rangee.cibles.length > 0 ? (
@@ -455,23 +457,104 @@ function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
             {rangee.cibles.map((c) => (
               <span key={c.cle} className="essai-terme">
                 <VignetteVue vignette={nue(c)} />
-                {cible === c ? resultat : null}
+                {cible === c && !encadre ? resultat : null}
               </span>
             ))}
           </span>
         ) : null}
-        {!cible ? <span className="essai-groupe essai-resultat">{resultat}</span> : null}
+        {!cible && !encadre ? <span className="essai-groupe essai-resultat">{resultat}</span> : null}
         {rangee.annulee ? (
           <strong className="deroule-annulee-cause">
             <Texte>{rangee.annulee.cause ? `${t('Annulée')} · ${rangee.annulee.cause}` : t('Annulée')}</Texte>
           </strong>
         ) : null}
+        {encadre && rangee.annulee ? (
+          // LOT 5 (decision 6) : le tampon, et la carte qui annule a cote.
+          <span className="essai-annulation">
+            <span className="essai-tampon essai-tampon-rangee" aria-hidden="true">
+              {t('ANNULÉE')}
+            </span>
+            {rangee.annulee.par ? (
+              <span className="essai-annuleur">
+                <VignetteVue vignette={rangee.annulee.par} />
+              </span>
+            ) : null}
+          </span>
+        ) : null}
       </div>
-      {etoiles.map((ligne) => (
-        <p key={ligne} className="deroule-etoile">
-          <Texte>{ligne}</Texte>
-        </p>
-      ))}
+      {encadre && (rangee.resultat || rangee.total) ? (
+        // LOT 5 (decision 8) : le resultat sur sa ligne, sous le calcul pose,
+        // plutot que coince sous une carte que l'ecran a pu reduire.
+        <div className="essai-resultat-ligne">{resultat}</div>
+      ) : null}
+      {encadre
+        ? rangee.lignesEtoile.length > 0 ? (
+            // LOT 5 (decision 37) : les lignes ★ recopiees en clair, dans un seul encadre.
+            <div className="essai-encadre-etoile">
+              {rangee.lignesEtoile.map((ligne) => (
+                <p key={ligne}>
+                  <b>{t('★ BOOST')}</b> <Texte>{ligne.replace(/^★\s*/, '')}</Texte>
+                </p>
+              ))}
+            </div>
+          ) : null
+        : etoiles.map((ligne) => (
+            <p key={ligne} className="deroule-etoile">
+              <Texte>{ligne}</Texte>
+            </p>
+          ))}
+    </div>
+  )
+}
+
+/**
+ * LA MENACE DE L'ETAPE 1 (lot 5, decision 7) : le calcul pose, une ligne par
+ * source, le total, la jauge avant → apres sur le seuil, « COMPLÉTÉE ».
+ */
+function MenaceEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean }) {
+  const menace = rangee.menace
+  if (!menace) return null
+  const jauge = menace.jauge
+  const pct = (v: number | undefined) =>
+    jauge && v !== undefined && jauge.plafond ? `${Math.min(100, Math.max(0, (v / jauge.plafond) * 100))}%` : '0%'
+  return (
+    <div className={grisee ? 'essai-menace est-grisee' : 'essai-menace'} aria-hidden={grisee || undefined}>
+      {rangee.acteur ? <VignetteVue vignette={{ ...rangee.acteur, legende: undefined }} /> : null}
+      <div className="essai-menace-calcul">
+        <table className="essai-menace-sources">
+          <tbody>
+            {menace.sources.map((source) => (
+              <tr key={source.libelle}>
+                <td>
+                  <Texte>{source.libelle}</Texte>
+                </td>
+                <td className="essai-menace-valeur">+{source.valeur}</td>
+              </tr>
+            ))}
+            <tr className="essai-menace-total">
+              <td>=</td>
+              <td className="essai-menace-valeur">+{menace.total}</td>
+            </tr>
+          </tbody>
+        </table>
+        {jauge && jauge.apres !== undefined ? (
+          <div className="essai-menace-jauge" role="img" aria-label={`${jauge.avant ?? 0} → ${jauge.apres}${jauge.plafond ? ` / ${jauge.plafond}` : ''}`}>
+            <span className="essai-menace-barre">
+              <span className="essai-menace-avant" style={{ width: pct(jauge.avant) }} />
+              <span className="essai-menace-ajout" style={{ left: pct(jauge.avant), width: `calc(${pct(jauge.apres)} - ${pct(jauge.avant)})` }} />
+            </span>
+            <span className="essai-menace-chiffres">
+              {jauge.avant ?? 0} → <b>{jauge.apres}</b>
+              {jauge.plafond ? ` / ${jauge.plafond}` : ''}
+            </span>
+          </div>
+        ) : null}
+        {menace.complete ? (
+          <span className="essai-tampon essai-tampon-complete" aria-hidden="true">
+            {t('COMPLÉTÉE')}
+          </span>
+        ) : null}
+      </div>
     </div>
   )
 }
@@ -632,7 +715,10 @@ function LigneColonne({ colonne, unite }: { colonne: ColonneJauge; unite: 'degat
   )
 }
 
-function Bilan({ bilan, grisee = false }: { bilan: VueBilan; grisee?: boolean }) {
+/** La liste courte du bilan tient dans la boite fixe : au-dela, « et N autres ». */
+const LIGNES_BILAN_MAX = 10
+
+function Bilan({ bilan, grisee = false, essai = false }: { bilan: VueBilan; grisee?: boolean; essai?: boolean }) {
   // La phase n'a rien coute : on le dit, plutot que trois colonnes vides.
   if (bilan.vide) return <p className="deroule-vide">{texteBilanVide()}</p>
   const rien = <li className="deroule-rien">{t('aucun')}</li>
@@ -666,6 +752,30 @@ function Bilan({ bilan, grisee = false }: { bilan: VueBilan; grisee?: boolean })
           <p className="deroule-vide">{t('Rien de nouveau sur la table')}</p>
         )}
       </section>
+      {essai && bilan.evenements ? (
+        // LOT 5 (decision 12) : la liste courte de la phase ; survoler une ligne
+        // montre sa carte dans l'apercu habituel (meme `data-card-id` qu'une carte).
+        <section className="deroule-colonne essai-bilan-liste">
+          <h3 className="deroule-colonne-titre">{t('La phase en bref')}</h3>
+          <ol className="deroule-lignes">
+            {bilan.evenements.slice(0, LIGNES_BILAN_MAX).map((evenement) => (
+              <li
+                key={evenement.cle}
+                className={evenement.carteId !== undefined ? 'essai-bilan-ligne est-survolable' : 'essai-bilan-ligne'}
+                data-card-id={evenement.carteId !== undefined ? String(evenement.carteId) : undefined}
+                tabIndex={evenement.carteId !== undefined ? 0 : undefined}
+              >
+                {evenement.texte}
+              </li>
+            ))}
+          </ol>
+          {bilan.evenements.length > LIGNES_BILAN_MAX ? (
+            <p className="deroule-vide">
+              {t('et %1 autres').replace('%1', String(bilan.evenements.length - LIGNES_BILAN_MAX))}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
     </div>
   )
 }
@@ -673,7 +783,8 @@ function Bilan({ bilan, grisee = false }: { bilan: VueBilan; grisee?: boolean })
 function Corps({ corps, grisee, essai = false }: { corps: VueCorps; grisee: boolean; essai?: boolean }) {
   switch (corps.genre) {
     case 'rangee':
-      if (essai && corps.pose) return <RangeeEssai rangee={corps} grisee={grisee} />
+      if (essai && corps.menace) return <MenaceEssai rangee={corps} grisee={grisee} />
+      if (essai && (corps.pose || corps.annulee)) return <RangeeEssai rangee={corps} grisee={grisee} encadre />
       // LOT 4 (decision 3) : une carte qui entre en jeu se dit d'un bandeau, puis vole vers la table (TrajetsPhase).
       if (essai && corps.entree)
         return (
@@ -688,7 +799,7 @@ function Corps({ corps, grisee, essai = false }: { corps: VueCorps; grisee: bool
     case 'stade':
       return <Stade stade={corps} grisee={grisee} />
     case 'bilan':
-      return <Bilan bilan={corps} grisee={grisee} />
+      return <Bilan bilan={corps} grisee={grisee} essai={essai} />
     case 'vide':
       return <p className="deroule-vide">{corps.texte}</p>
     case 'attente':
@@ -1348,12 +1459,19 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   // Le titre court dit l'attaque meme quand l'etape lue est en retard sur la
   // question de defense (elle arrive avant que l'annonce soit lue).
   const nomAttaquant = defenseVue?.acteur?.nom
-  const titre =
+  const titreBrut =
     defenseVue && nomAttaquant && etapeLue?.titre !== 'attaque'
       ? t('Attaque de %1').replace('%1', nomAttaquant)
       : etapeLue && vuePage
         ? titreCourt(etapeLue, relu ? contexteRelu(vuePage.etape) : ctx)
         : ''
+  // LOT 5 (essai, decision 5) : une activation inseree par une carte se dit
+  // dans le titre (« Attaque de Rhino (Hydra Jet-Trooper) ») ; d'habitude, le
+  // moteur ne remplit `cause` que dans ce cas.
+  const titre =
+    essai && etapeLue?.cause && (etapeLue.titre === 'attaque' || etapeLue.titre === 'manigance')
+      ? `${titreBrut} (${etapeLue.cause})`
+      : titreBrut
 
   // ESSAI : les boosts se retournent au clic, un par un (questions 3 et 10).
   const boostsRestants =

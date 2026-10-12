@@ -902,3 +902,187 @@ html[data-affichage='sobre'] .deroule-phase.est-scene.est-essai.est-essai .derou
   color: var(--menace, #f0b95f);
   text-decoration-style: solid;
 }
+
+/* --- LOT 5 (refonte du 12/10/2026) : LES ECRANS PARTICULIERS ---------------- */
+
+/* Menace (decision 7) : la manigance a gauche, le calcul pose a droite. */
+.deroule-phase.est-essai .essai-menace {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.deroule-phase.est-essai .essai-menace-calcul {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
+  max-width: 300px;
+}
+
+.deroule-phase.est-essai .essai-menace-sources {
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.deroule-phase.est-essai .essai-menace-sources td {
+  padding: 3px 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.deroule-phase.est-essai .essai-menace-valeur {
+  text-align: right;
+  font-weight: 800;
+  color: #f0b95f;
+  white-space: nowrap;
+}
+
+.deroule-phase.est-essai .essai-menace-total td {
+  border-bottom: none;
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 1.35rem;
+}
+
+.deroule-phase.est-essai .essai-menace-jauge {
+  display: grid;
+  gap: 4px;
+}
+
+.deroule-phase.est-essai .essai-menace-barre {
+  position: relative;
+  display: block;
+  height: 14px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+}
+
+.deroule-phase.est-essai .essai-menace-avant,
+.deroule-phase.est-essai .essai-menace-ajout {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.deroule-phase.est-essai .essai-menace-avant {
+  background: #a16207;
+}
+
+.deroule-phase.est-essai .essai-menace-ajout {
+  background: #facc15;
+}
+
+.deroule-phase.est-essai .essai-menace-chiffres {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95rem;
+}
+
+.deroule-phase.est-essai .essai-tampon-complete {
+  position: static;
+  translate: none;
+  justify-self: start;
+  rotate: -6deg;
+}
+
+/* Boost etoile (decision 37) : les lignes ★ recopiees en clair, dans un seul encadre. */
+.deroule-phase.est-essai .essai-encadre-etoile {
+  display: grid;
+  gap: 2px;
+  margin: 6px 0 0;
+  padding: 4px 8px;
+  border: 2px solid #0e7c86;
+  border-radius: 6px;
+  background: rgba(14, 124, 134, 0.18);
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.deroule-phase.est-essai .essai-encadre-etoile p {
+  margin: 0;
+}
+
+/* Resultat (decision 8) : sur sa ligne, sous le calcul pose. */
+.deroule-phase.est-essai .essai-resultat-ligne {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.deroule-phase.est-essai .essai-resultat-ligne .essai-boite {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 12px;
+  padding: 4px 14px;
+}
+
+.deroule-phase.est-essai .essai-resultat-ligne .essai-boite .deroule-resultat-texte {
+  font-size: 1.2rem;
+}
+
+/* Les pictos suivent la taille des cartes de l'ecran (lot 2) : petits quand elles le sont. */
+.deroule-phase.est-scene.est-essai .essai-terme > .essai-stat {
+  font-size: clamp(0.72rem, calc(var(--essai-carte-h, 170px) * 0.0068), 1.1rem);
+}
+
+.deroule-phase.est-essai .essai-encadre-etoile b {
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  letter-spacing: 0.04em;
+  color: #4fd1d9;
+  margin-right: 4px;
+}
+
+/* Activation annulee (decision 6) : le tampon par-dessus la rangee, la carte qui annule a cote. */
+.deroule-phase.est-essai .deroule-rangee.essai-calcul {
+  position: relative;
+}
+
+.deroule-phase.est-essai .essai-annulation {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.deroule-phase.est-essai .essai-tampon-rangee {
+  position: static;
+  translate: none;
+  font-size: 1.6rem;
+}
+
+.deroule-phase.est-essai .essai-annulation .essai-annuleur {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+}
+
+/* Bilan (decision 12) : la liste courte, une ligne par etape, survolable. */
+.deroule-phase.est-essai .essai-bilan-liste {
+  grid-column: 1 / -1;
+}
+
+.deroule-phase.est-essai .essai-bilan-liste ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 14px;
+  font-size: 0.82rem;
+}
+
+.deroule-phase.est-essai .essai-bilan-ligne {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deroule-phase.est-essai .essai-bilan-ligne.est-survolable {
+  cursor: help;
+  text-decoration: underline dotted rgba(255, 255, 255, 0.45);
+  text-underline-offset: 3px;
+}

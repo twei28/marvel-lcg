@@ -234,7 +234,12 @@ export type VueRangee = {
   /** `note` : « menaces retirées » quand la manigance s'est vidée en atteignant son seuil. */
   resultat?: { texte: string; jauge?: Jauge; note?: string }
   /** Trait rouge en travers et « ANNULÉE · Étourdi » (D24) ; cause absente toleree (piege 41). */
-  annulee?: { cause?: string }
+  annulee?: { cause?: string; par?: Vignette }
+  /**
+   * LOT 5 (essai, decision 7) : la menace de l'etape 1 decomposee source par
+   * source, avec le total, la jauge et « COMPLÉTÉE » quand le seuil est atteint.
+   */
+  menace?: { sources: Array<{ libelle: string; valeur: number }>; total: number; jauge?: Jauge; complete: boolean }
   /** « ★ Charge : … », une ligne par boost etoile (D10). */
   lignesEtoile: string[]
   /** Grisee sous un sous-cadre ou pendant l'attente d'un autre joueur (le composant decide). */
@@ -316,6 +321,8 @@ export type VueBilan = {
   heros: ColonneJauge[]
   nouveautes: Vignette[]
   vide: boolean
+  /** LOT 5 (essai, decision 12) : la liste courte de la phase, une ligne par etape, survolable. */
+  evenements?: Array<{ cle: string; texte: string; carteId?: number }>
 }
 
 export type VueVide = { genre: 'vide'; texte: string }
@@ -531,6 +538,37 @@ function texteMenaces(n: number): string {
   return `${signe(n)} ${Math.abs(n) < 2 ? t('menace') : t('menaces')}`
 }
 
+/**
+ * LA MENACE DECOMPOSEE (lot 5, decision 7) : une ligne par source, comme le
+ * joueur la refait a la main. Seulement ce que le moteur publie : l'escalade
+ * (par joueur quand elle se divise) et les icones d'acceleration.
+ */
+function decompositionMenace(
+  etape: EtapeDeroule,
+  montant: number,
+  jauge: Jauge | undefined,
+  ctx: ContexteVue
+): NonNullable<VueRangee['menace']> {
+  const sources: Array<{ libelle: string; valeur: number }> = []
+  const { escalade, acceleration, joueurs } = etape
+  if (nombre(escalade) && nombre(joueurs) && joueurs >= 1) {
+    sources.push({
+      libelle:
+        escalade % joueurs === 0
+          ? t('Manigance : %1 par joueur × %2').replace('%1', String(escalade / joueurs)).replace('%2', String(joueurs))
+          : t('Manigance'),
+      valeur: escalade,
+    })
+  }
+  if (nombre(acceleration) && acceleration > 0) sources.push({ libelle: t('Accélération'), valeur: acceleration })
+  // Sans decomposition publiee, une seule ligne : le total tel quel.
+  if (sources.length === 0) sources.push({ libelle: t('Manigance'), valeur: montant })
+  const plafond = plafondDe(etape, ctx)
+  const avecSeuil = jauge ? { ...jauge, plafond: jauge.plafond ?? plafond } : undefined
+  const complete = !!avecSeuil && nombre(avecSeuil.apres) && nombre(avecSeuil.plafond) && avecSeuil.plafond > 0 && avecSeuil.apres >= avecSeuil.plafond
+  return { sources, total: montant, jauge: avecSeuil, complete }
+}
+
 /** La menace du point 1 (D12) : la manigance, le calcul, la jauge. */
 function vueMenace(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
   const montant = etape.montant
@@ -539,6 +577,7 @@ function vueMenace(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
       ? { avant: Math.max(0, etape.restant - montant), apres: etape.restant, plafond: seuil(etape.plafond) }
       : undefined
   return {
+    menace: montant !== undefined ? decompositionMenace(etape, montant, jauge, ctx) : undefined,
     genre: 'rangee',
     acteur: avecJaugeDeLEtape(
       vignette(`acteur:${etape.cle}`, etape.cibleId, etape.cibleNom, ctx),
@@ -697,10 +736,34 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
     defenseur: defenseurFinal,
     cibles,
     resultat,
-    annulee: annulee ? (etape.annuleePar ? { cause: libelleDeStatut(etape.annuleePar) } : {}) : undefined,
+    annulee: annulee
+      ? {
+          ...(etape.annuleePar ? { cause: libelleDeStatut(etape.annuleePar) } : {}),
+          // LOT 5 (decision 6) : la carte qui annule, a cote du tampon.
+          ...(etape.annuleeParId !== undefined
+            ? {
+                par: vignette(
+                  `annuleur:${etape.cle}`,
+                  etape.annuleeParId,
+                  etape.annuleePar ? libelleDeStatut(etape.annuleePar) : undefined,
+                  ctx
+                ),
+              }
+            : {}),
+        }
+      : undefined,
     lignesEtoile,
     grisee: false,
   }
+}
+
+/** Le resultat d'une etape en trois mots, pour la liste du bilan : « 3 dégâts », « +2 menaces », « annulée ». */
+function resultatCourt(etape: EtapeDeroule): string | undefined {
+  if (etape.etat === 'annule') return t('annulée')
+  if (etape.montant === undefined || etape.temps === 'revelation' || etape.temps === 'distribution') return undefined
+  if (etape.titre === 'attaque') return `${etape.montant} ${Math.abs(etape.montant) < 2 ? t('dégât') : t('dégâts')}`
+  if (etape.titre === 'manigance' || etape.titre === 'menace') return texteMenaces(etape.montant)
+  return undefined
 }
 
 /** Une carte rencontre revelee (D16, D17) : la carte en grand, son effet resume, le Renfort. */
@@ -760,7 +823,7 @@ function vueRevelee(etape: EtapeDeroule, ctx: ContexteVue): VueRevelee {
     genre: 'revelee',
     carte,
     typeFr,
-    etiquettes: etiquettesDeLaCarte(etape, typeFr, infoCarteRevelee, jauge),
+    etiquettes: etiquettesDeLaCarte(etape, typeFr, infoCarteRevelee, jauge, etape.carteId !== undefined ? ctx.infoCarte?.(etape.carteId) : undefined),
     lignes,
     jauge,
     renfort,
@@ -780,7 +843,8 @@ function etiquettesDeLaCarte(
   etape: EtapeDeroule,
   typeFr: string | undefined,
   info: InfoRevelee | undefined,
-  jauge: Jauge | undefined
+  jauge: Jauge | undefined,
+  nombres?: Partial<Record<string, number>>
 ): string[] | undefined {
   const etiquettes: string[] = []
   const genre = etape.typeCarte ?? ''
@@ -792,6 +856,12 @@ function etiquettesDeLaCarte(
     )
   }
   if ((info?.texteImprime ?? []).some((ligne) => /\bp[ée]ril\b/i.test(ligne))) etiquettes.push(t('Péril : décide seul'))
+  // LOT 5 (decision 9) : les icones de la carte, expliquees en une ligne chacune.
+  const icone = (cle: string) => (nombres && nombre(nombres[cle]) ? (nombres[cle] as number) : 0)
+  if (icone('crisis') > 0) etiquettes.push(t('Crise : plus de menace retirée de la manigance principale'))
+  if (icone('acceleration_icon') > 0) etiquettes.push(t('Accélération : +%1 menace à chaque étape 1').replace('%1', String(icone('acceleration_icon'))))
+  if (icone('hazard') > 0) etiquettes.push(t('Danger : +%1 carte rencontre à chaque distribution').replace('%1', String(icone('hazard'))))
+  if (icone('incite') > 0) etiquettes.push(t('Incite %1 : +%1 menace sur la manigance principale').split('%1').join(String(icone('incite'))))
   return etiquettes.length > 0 ? etiquettes : undefined
 }
 
@@ -1157,7 +1227,16 @@ export function bilanTroisColonnes(etapes: EtapeDeroule[], ctx: ContexteVue): Vu
     )
   })
 
+  // LOT 5 (decision 12) : la liste courte, une ligne par etape racontee.
+  const evenements = etapes
+    .filter((etape) => etape.titre !== 'vide' && etape.temps !== 'bilan')
+    .map((etape) => ({
+      cle: etape.cle,
+      texte: [titreCourt(etape, ctx), resultatCourt(etape)].filter(Boolean).join(' · '),
+      carteId: etape.carteId ?? etape.cibleId,
+    }))
   return {
+    evenements: evenements.length > 0 ? evenements : undefined,
     genre: 'bilan',
     menace: colonnesMenace,
     heros: colonnesHeros,
