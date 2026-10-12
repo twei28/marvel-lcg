@@ -25,6 +25,19 @@ describe('la boite fixe de la colonne de gauche', () => {
     expect(r).toMatch(/border:\s*3px solid var\(--cadre-joueur/)
   })
 
+  it('600 px de large, 520 px sous 1500 px de large', () => {
+    expect(regle(':root')).toMatch(/--essai-l:\s*600px/)
+    const i = bloc.indexOf('@media (max-width: 1499px)')
+    expect(i).toBeGreaterThan(-1)
+    expect(bloc.slice(i, bloc.indexOf('}', i))).toMatch(/--essai-l:\s*520px/)
+    // L'onglet le plus long garde sa police lisible a 520 px. La regle vient
+    // APRES celle de la finition (1.45) : avant, elle etait sans effet.
+    const j = bloc.lastIndexOf('@media (max-width: 1499px)')
+    expect(j).toBeGreaterThan(bloc.indexOf('flex-grow: 1.45'))
+    expect(bloc.slice(j)).toMatch(/\.deroule-pastille:nth-child\(4\) \{\s*flex-grow:\s*1\.8/)
+    expect(bloc.slice(j)).toMatch(/\.deroule-bilan \.deroule-lignes li \{\s*flex-wrap:\s*wrap/)
+  })
+
   it('la table se decale de la largeur de la boite : rien ne la couvre', () => {
     expect(regle('body.phase-essai-colonne .plateau-cadre')).toMatch(/margin-left:\s*calc\(var\(--essai-l\)/)
   })

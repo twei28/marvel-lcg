@@ -713,6 +713,15 @@ body.plateau-sans-animations .scan-card.is-target-pulse .scan-frame {
     --essai-marge: 12px;
   }
 
+  /* Sous 1500 px de large, la table manquait de place : boite de 520 px
+     (decision du 12/10/2026). « Continuer » reste au meme pixel pour une
+     largeur d'ecran donnee. */
+  @media (max-width: 1499px) {
+    :root {
+      --essai-l: 520px;
+    }
+  }
+
   body.phase-essai-colonne .plateau-cadre {
     margin-left: calc(var(--essai-l) + 2 * var(--essai-marge));
   }
@@ -884,6 +893,29 @@ body.plateau-sans-animations .scan-card.is-target-pulse .scan-frame {
         color-mix(in srgb, var(--cadre-joueur) 35%, #000) 10px 20px
       )
       3;
+  }
+
+  /* La boite de 520 px (sous 1500 px de large) : ces regles viennent APRES
+     celles de la finition, qu'elles remplacent a specificite egale. */
+  @media (max-width: 1499px) {
+    /* A 520 px, l'onglet « 3 Cartes rencontre » tombait sous la taille de
+       police minimale et etait coupe de 6 px (mesure du 12/10/2026, 1366 x 657). */
+    .deroule-phase.est-scene.est-essai.est-essai .deroule-pastille:nth-child(4) {
+      flex-grow: 1.8;
+    }
+
+    /* Meme mesure : « Underground Distribution » se cassait au milieu du mot
+       dans la colonne Menace du bilan (anglais) : le chiffre passe sous le
+       nom plutot que de couper le mot. */
+    .deroule-phase.est-scene.est-essai.est-essai .deroule-bilan .deroule-lignes li {
+      flex-wrap: wrap;
+      column-gap: 8px;
+      row-gap: 0;
+    }
+
+    .deroule-phase.est-scene.est-essai.est-essai .deroule-colonne-nom {
+      overflow-wrap: normal;
+    }
   }
 }
 
