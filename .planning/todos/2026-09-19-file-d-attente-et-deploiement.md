@@ -9,9 +9,13 @@ déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 - Remerciements sur toute la largeur, sans défiler sur les vraies zones utiles 1366×657 à 2560×1300 (`5d42f2f7`).
 - Volontairement exclus (cherry-pick) : Team-Up `391ee75e` et lots 1 à 3 de la phase du méchant, à déployer ensemble plus tard.
 
-## À DÉPLOYER AVEC LA NOUVELLE PHASE DU MÉCHANT (décision de l'utilisateur, 12/10)
+## ✅ DÉPLOYÉ LE 12/10/2026 (17 h 44, branche `deploiement-2026-10-12f`, site + play., après annonce de 45 min)
 
-- Team-Up sans cibles à désigner (`391ee75e`, signalement Lilipulse, See No Evil Hear No Evil). Reste : le motif « injouable » sans le 2e personnage dit « Aucune cible possible » au lieu de nommer le personnage manquant.
+- Team-Up sans cibles à désigner (`391ee75e`). Reste : motif « injouable » sans le 2e personnage = « Aucune cible possible ».
+- Déferlement : excédent au méchant (actif) sans question (`cb24302a`).
+- Joueur éliminé en pleine phase : ni carte rencontre ni révélation, plus de blocage (`f5d62287`).
+- play. : compteurs `/presence_play`, `/compteur_play` avec CORP same-site (`060e5dbc`) ; en production depuis 16 h 51, Caddyfile ligne 70 `require-corp` au lieu de `credentialless` (Safari), sauvegarde `/etc/caddy/Caddyfile.avant-coep-20261012-1451`.
+- 1 partie encore ouverte à la fin de l'annonce, interrompue.
 
 ## ✅ DÉPLOYÉ LE 12/10/2026 (après-midi, `2864effb`, site + play.)
 
