@@ -18,6 +18,11 @@ Unused(EffectFailure)
 
 CATEGORY_NAME = "EFFECT"
 
+def IsTeamUpSelection(effect: 'Effect') -> bool:
+    """Le premier selecteur de la capacite est la cible `TeamUp` (les deux personnages nommes)."""
+    selectors = effect.ability.selectors
+    return len(selectors) >= 1 and selectors[0].target_text == "TeamUp"
+
 class Effect(Object):
 
     def __init__(self, face: 'CardFace', ability: 'Ability', *, is_temp: bool=False, is_local: bool=False, world: 'World') -> None:
@@ -624,14 +629,25 @@ class Effect(Object):
         if self.failures.IsNoProcess(bind_player_id):
             failure_reason = ""
 
+        legal_ids = [face.card.object_id for face in self.context.all_legal_targets]
+        target_num_range = list(self.context.target_range)
+        target_payment = get_pay_info(self)
+        # Team-Up est une condition de jeu, pas un choix (RR 1.8 p.43) : rien a
+        # designer, le controleur pose lui-meme les deux personnages nommes.
+        if IsTeamUpSelection(self):
+            legal_ids = []
+            target_num_range = [0, 0]
+            if 0 not in target_payment and target_payment:
+                target_payment = {0: next(iter(target_payment.values()))}
+
         return EffectDescriptor(
             id=self.object_id,
             name=name,
             bind_id=bind_id,
             bind_player_id=bind_player_id,
-            all_legal_targets=[face.card.object_id for face in self.context.all_legal_targets],
-            target_num_range=list(self.context.target_range),
-            target_payment=get_pay_info(self),
+            all_legal_targets=legal_ids,
+            target_num_range=target_num_range,
+            target_payment=target_payment,
             select_rule=select_rule,
             select_rule_param=select_rule_param,
             target_must_include_traits=[f"t_{x}" for x in target_must_include_traits],

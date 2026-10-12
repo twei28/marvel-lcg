@@ -560,6 +560,11 @@ class Controller:
                             break
                     # TODO, update to warning
                     assert found, f"{select_effect=}"
+                # Team-Up : rien n'a ete demande au joueur (Effect.Render), on pose
+                # les deux personnages nommes, cibles imposees de la capacite.
+                from game.effect.effect import IsTeamUpSelection
+                if select_effect.targets == [] and IsTeamUpSelection(select_effect):
+                    select_effect.context.targets_internal.extend(select_effect.context.all_legal_targets)
                 if select_effect.targets == [] and select_effect.context.target_range[0] > 0:
                     assert False, f"{select_effect=} {select_effect.targets=} {select_effect.context.target_range=}"
 

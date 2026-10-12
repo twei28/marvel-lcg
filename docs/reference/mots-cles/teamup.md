@@ -37,3 +37,22 @@
   et on code la condition à la main (`conditions=` sur l'action : au moins
   deux des personnages nommés en jeu côté joueur). Le deckbuilder n'applique
   alors aucune restriction Team-Up à cette carte : écart noté.
+
+
+## Plus aucune cible a designer (12/10/2026, signalement Lilipulse)
+
+- **Regle** : RR 1.8 p.43, une carte Team-Up « ne peut etre jouee que si les deux
+  personnages amis nommes (identite ou allie) sont en jeu ». C'est une CONDITION,
+  pas un choix.
+- **Defaut** : le selecteur `TeamUp` (range 2-2) etait rendu au plateau comme deux
+  cibles a designer ; le plateau n'auto-coche qu'une cible unique, rien ne disait
+  de cliquer les deux personnages (Daredevil etait meme cache sous le panneau) :
+  « Choisir jusqu'a 2 cibles · 0/2 requise(s) » et le joueur restait bloque
+  (60055 See No Evil, Hear No Evil).
+- **Correctif** : `Effect.Render` n'expose ni cibles ni plage pour un premier
+  selecteur `TeamUp` (`IsTeamUpSelection`, `game/effect/effect.py`), et le
+  controleur pose lui-meme les deux personnages quand la reponse arrive sans cible
+  (`engine/controller/controller.py`). Les selecteurs suivants (62023 : ennemi,
+  personnage) restent demandes. Cas : 60055 (aucune cible, meme option deux fois,
+  injouable sans Daredevil), temoin 62023.
+
