@@ -27,7 +27,17 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import { estSpectateur } from './moteur'
-import { indexSpectateur, useSuiviDuJoueur } from './etape-partagee'
+import { indexSpectateur, publierExtrasEtape, useSuiviDuJoueur } from './etape-partagee'
+import {
+  choisirPolitique,
+  lectureASuivre,
+  peutAvancer,
+  siegeMeneur,
+  siegesPrets,
+  tousPrets,
+  useAvanceMulti,
+  type PolitiqueAvance,
+} from './avance-multi'
 import type { ScanCardProps } from '../components/ScanCard'
 import { ScanCardTraduite } from './traduction-carte'
 import {
@@ -84,7 +94,7 @@ import { alerteMenace, contenuDuTrait } from './trait-phase'
 import './boutons-bd.css'
 // ⚠ APRES boutons-bd.css : CartouchePhase importe sa feuille, qui doit passer
 // la DERNIERE (cartouche-phase.css, hors couche).
-import { CartouchePhase, PictoBoost, PictoStat, type CartouchePhaseProps } from './CartouchePhase'
+import { CartouchePhase, PictoBoost, PictoStat, type CartouchePhaseProps, type PiedMulti } from './CartouchePhase'
 import { boutonPageSuivante, cibleDeLaTouche, clavierBloque } from './clavier-cartouche'
 import type { QuestionDuMoteur } from './sous-cadre'
 import {
@@ -175,6 +185,9 @@ export function DeroulePhase({
   telephone = false,
   cadresJoueurs,
   joueurDeCarte,
+  siegeLocal,
+  premierJoueur,
+  nomsJoueurs,
   cartesDistribuees = 0,
   texteEtoile,
   infoCarte,
@@ -427,6 +440,11 @@ export function DeroulePhase({
    */
   cadresJoueurs?: CadreJoueur[]
   joueurDeCarte?: (id: number | undefined) => number | undefined
+  /** Refonte, lot 6 (multi) : le siege de ce joueur et celui du premier joueur du round. */
+  siegeLocal?: number
+  premierJoueur?: number
+  /** Le nom du heros de chaque siege, pour « J1 (Spider-Man) regarde… ». */
+  nomsJoueurs?: string[]
   /**
    * Les cartes rencontre DISTRIBUEES pendant la phase, dont les etapes ont ete
    * retirees de la liste avant d'arriver ici (board.tsx, `fusionnerDistribution`,
@@ -953,7 +971,12 @@ export function DeroulePhase({
     { cle: string; cibleId: number | undefined; montant: number | undefined } | undefined
   >(undefined)
 
+  // LOT 6 (essai, multi) : un joueur qui ne donne pas le rythme ne valide rien
+  // lui-meme ; son cartouche suit celui qui le donne (`suivreLeMeneur`, plus bas).
+  const avanceBloqueeRef = useRef(false)
+  const avanceSuivieRef = useRef(false)
   const avancer = () => {
+    if (avanceBloqueeRef.current && !avanceSuivieRef.current) return
     // Hors phase du mechant, etapes est vide et il n'y a rien a avancer : une
     // touche pressee ne doit alors rien declencher.
     if (!etape) return
@@ -1386,6 +1409,100 @@ export function DeroulePhase({
     // minuteur, l'identite de `etape` ne doit pas le redeclencher.
   }, [boostsMontres, etape?.cle, etape?.boosts.length, essai, nouvelleScene, surTable])
 
+  // LOT 6 (essai, MULTI, decisions 10, 32, 33). Seulement a une vraie table a
+  // plusieurs machines (`herosDesAutresIds` est vide en solo et en hot-seat) :
+  // le solo et le hot-seat ne changent pas.
+  const multi = Boolean(essai && !spectateur && (herosDesAutresIds?.size ?? 0) > 0)
+  const avanceMulti = useAvanceMulti(multi)
+  const politique: PolitiqueAvance | undefined = multi ? avanceMulti.politique : undefined
+  const cadreMulti = multi && cadresJoueurs && etape ? cadreDeLEtape(etape, cadresJoueurs, joueurDeCarte ?? joueurInconnu) : undefined
+  const siegeConcerne = cadreMulti?.genre === 'joueur' ? cadreMulti.joueur : undefined
+  const meneur = siegeMeneur(siegeConcerne, premierJoueur)
+  const siegesTable = (cadresJoueurs ?? []).map((_, rang) => rang)
+  // Avant le choix de l'hote, personne n'avance ; en « tous », on se dit pret
+  // au lieu d'avancer ; en « concerne », seul le meneur avance.
+  const avanceBloquee =
+    multi && (!avanceMulti.charge || politique === undefined || politique === 'tous' || !peutAvancer(politique, siegeLocal, siegeConcerne, premierJoueur))
+  avanceBloqueeRef.current = avanceBloquee
+  const suivreLeMeneur = () => {
+    avanceSuivieRef.current = true
+    try {
+      avancerRef.current()
+    } finally {
+      avanceSuivieRef.current = false
+    }
+  }
+  // Ce que nous lisons, publie pour les autres : les boosts deja retournes.
+  useEffect(() => {
+    if (multi) publierExtrasEtape({ boosts: boostsMontres })
+  }, [multi, boostsMontres, etape?.cle])
+  // Et l'etape que nous venons de valider : celui qui nous suit la valide aussi,
+  // sans quoi le moteur attendrait son accuse de reception a jamais.
+  useEffect(() => {
+    if (multi) publierExtrasEtape({ valide: validee?.cle ?? '' })
+  }, [multi, validee?.cle])
+  // On suit le meneur (« concerne ») ou le dernier qui a clique (« quiconque ») :
+  // une etape d'avance, un clic simule a la fois ; ses boosts ; la fermeture du bilan.
+  const lectureSuivie = multi ? lectureASuivre(politique, avanceMulti.etapes, siegeLocal, meneur) : undefined
+  const rangSuivi = lectureSuivie?.cle ? etapesAffichees.findIndex((e) => e.cle === lectureSuivie.cle) : -1
+  useEffect(() => {
+    if (!multi || !lectureSuivie || questionAuJoueur || termine || !etape) return
+    if (rangSuivi > index) {
+      suivreLeMeneur()
+      return
+    }
+    if (rangSuivi === index && lectureSuivie.boosts > boostsMontres) {
+      setBoostsMontres(Math.min(lectureSuivie.boosts, etape.boosts.length))
+      return
+    }
+    // Le meneur a valide l'etape que nous montrons : nous la validons aussi
+    // (nous passons en attente de la suite, et notre accuse part).
+    if (rangSuivi === index && lectureSuivie.valide === etape.cle && validee?.cle !== etape.cle) {
+      suivreLeMeneur()
+      return
+    }
+    if (lectureSuivie.cle === '' && etape.temps === 'bilan') suivreLeMeneur()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- la lecture suivie (cle, boosts, heure) pilote
+  }, [multi, lectureSuivie?.cle, lectureSuivie?.boosts, lectureSuivie?.valide, lectureSuivie?.t, rangSuivi, index, boostsMontres, questionAuJoueur, termine, etape?.cle, validee?.cle])
+  // « Tout le monde valide » : on avance ensemble quand chaque siege est pret.
+  const prets = multi && politique === 'tous' ? siegesPrets(avanceMulti.etapes, etape?.cle, siegesTable) : []
+  const tousSontPrets = multi && politique === 'tous' && tousPrets(avanceMulti.etapes, etape?.cle, siegesTable)
+  useEffect(() => {
+    if (!tousSontPrets || questionAuJoueur || termine) return
+    suivreLeMeneur()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- la cle de l'etape et l'accord pilotent
+  }, [tousSontPrets, etape?.cle, questionAuJoueur, termine])
+  const nomDuSiege = (siege: number | undefined): string =>
+    siege === undefined
+      ? '?'
+      : nomsJoueurs?.[siege]
+        ? `J${siege + 1} (${nomsJoueurs[siege]})`
+        : `J${siege + 1}`
+  const piedMulti: PiedMulti | undefined = !multi
+    ? undefined
+    : !avanceMulti.charge
+      ? { genre: 'attente-choix' }
+      : politique === undefined
+        ? siegeLocal === 0
+          ? { genre: 'choix-hote', choisir: (choix) => void choisirPolitique(0, choix) }
+          : { genre: 'attente-choix' }
+        : politique === 'tous'
+          ? {
+              genre: 'pret',
+              pret: siegeLocal !== undefined && prets.includes(siegeLocal),
+              pastilles: siegesTable.map((siege) => ({
+                nom: nomDuSiege(siege),
+                couleur: cadresJoueurs?.[siege]?.couleurs[0],
+                pret: prets.includes(siege),
+              })),
+              marquer: () => {
+                if (etape) publierExtrasEtape({ pret: etape.cle })
+              },
+            }
+          : avanceBloquee
+            ? { genre: 'regarde', nom: nomDuSiege(meneur) }
+            : undefined
+
   // Le cartouche est-il a l'ecran ? Calcule ICI parce que les hooks ci-dessous
   // en dependent, et que la sortie `return null` qui l'applique vient bien plus
   // bas : un hook place apres elle ferait tomber tout le plateau.
@@ -1769,6 +1886,7 @@ export function DeroulePhase({
         questionDUnAutre={questionDUnAutre}
         tempsQuestion={tempsQuestion}
         avancer={avancer}
+        multi={piedMulti}
         enAttente={enAttente}
         attendUnAutreJoueur={attendUnAutreJoueur}
         nomJoueurAttendu={nomJoueurAttendu}

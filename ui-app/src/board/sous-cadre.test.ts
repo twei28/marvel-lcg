@@ -419,6 +419,19 @@ describe('l ordre d activation des sbires (forced, pas de refus)', () => {
   })
 })
 
+describe('lot 6 : l ordre des JOUEURS (activations simultanees, decision 47)', () => {
+  const ordre = option(11, 'Players_Activation_Order', 0, { all_legal_targets: [1, 2], target_num_range: [2, 2] })
+  const d = demande([ordre], { show_cancel: false, ability_type: 'Normal', event_name: 'WhenChooseOrder' })
+
+  it('la meme rangee a ordonner, titree pour les joueurs', () => {
+    const vue = vueSousCadre(question(d), {})
+    expect(vue.genre).toBe('ordre')
+    if (vue.genre !== 'ordre') return
+    expect(vue.titre).toBe('Choisis l’ordre des joueurs')
+    expect(vue.cibles.map((c) => c.carteId)).toEqual([1, 2])
+  })
+})
+
 describe('les donnees seules : aucune closure dans la vue', () => {
   it('JSON aller-retour egale la vue', () => {
     const vue = vueSousCadre(question(demande([defenseSM, defenseBW, sensAraignee])), {})

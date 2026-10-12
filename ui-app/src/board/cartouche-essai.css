@@ -1208,3 +1208,69 @@ html.essai-peril-autre .main-feuille {
 .deroule-phase.est-essai > .deroule-corps > * {
   zoom: var(--essai-zoom-corps, 1);
 }
+
+/* --- LOT 6 (multi, 12/10/2026) ------------------------------------------- */
+/* Le joueur qui ne donne pas le rythme : le meme emplacement que Continuer
+   (meme classe), grise, qui dit qui le donne. Rien ne bouge d'un ecran a l'autre. */
+.deroule-phase.est-essai .essai-multi-attente,
+.deroule-phase.est-essai .essai-multi-attente:disabled {
+  opacity: 1;
+  cursor: default;
+  filter: saturate(0.25) brightness(0.8);
+  font-size: 0.9em;
+  white-space: normal;
+  text-align: center;
+}
+
+/* Le choix de l'hote, par-dessus le corps de la boite (premiere phase seulement). */
+.deroule-phase.est-essai .essai-choix-avance {
+  position: absolute;
+  inset: 64px 14px 108px;
+  z-index: 6;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 10px;
+  background: rgba(18, 20, 26, 0.96);
+  border: 2px solid var(--cadre-joueur, #9aa4b2);
+  text-align: center;
+}
+.deroule-phase.est-essai .essai-choix-avance > strong {
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 1.4rem;
+  letter-spacing: 0.03em;
+}
+.deroule-phase.est-essai .essai-choix-avance > span {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+.deroule-phase.est-essai .essai-choix-avance-option {
+  display: grid;
+  gap: 2px;
+  padding: 8px 12px;
+  text-align: left;
+}
+.deroule-phase.est-essai .essai-choix-avance-option small {
+  font-size: 0.78rem;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+/* « Tout le monde valide » : une pastille par joueur, cochee quand il est pret. */
+.deroule-phase.est-essai .essai-prets {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.deroule-phase.est-essai .essai-pret {
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 2px solid var(--couleur-pret, #9aa4b2);
+  font-size: 0.78rem;
+  opacity: 0.6;
+}
+.deroule-phase.est-essai .essai-pret.est-pret {
+  opacity: 1;
+  background: color-mix(in srgb, var(--couleur-pret, #9aa4b2) 35%, transparent);
+}

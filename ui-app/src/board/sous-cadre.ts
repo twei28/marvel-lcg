@@ -89,6 +89,12 @@ export type VueSousCadre =
 
 /** L'option du moteur qui fait choisir l'ordre d'activation des sbires (`enemies.py`). */
 const ORDRE_DES_SBIRES = 'Minion_Activates_Order'
+// Lot 6 (decision 47) : plusieurs activations simultanees chez plusieurs joueurs,
+// le premier joueur range les joueurs (moteur : Enemies.OrdreDesJoueursActives).
+const ORDRE_DES_JOUEURS = 'Players_Activation_Order'
+const estUnOrdre = (nom: string | undefined): boolean => nom === ORDRE_DES_SBIRES || nom === ORDRE_DES_JOUEURS
+const titreDeLOrdre = (nom: string | undefined): string =>
+  nom === ORDRE_DES_JOUEURS ? t('Choisis l’ordre des joueurs') : t('Choisir l’ordre')
 
 /**
  * Les noms d'option qui ne sont qu'un TYPE de capacite, pas un nom propre.
@@ -248,8 +254,8 @@ export function vueSousCadre(
 
   if (i.option) {
     const engagee = i.option
-    if (engagee.name === ORDRE_DES_SBIRES) {
-      return { genre: 'ordre', titre: t('Choisir l’ordre'), cibles: ciblesDe(q), prete: i.prete }
+    if (estUnOrdre(engagee.name)) {
+      return { genre: 'ordre', titre: titreDeLOrdre(engagee.name), cibles: ciblesDe(q), prete: i.prete }
     }
     const titre = titreReponse(engagee, q)
     if (i.assistant.etape === 'target') {
@@ -325,11 +331,11 @@ export function vueSousCadre(
   }
 
   const seule = options.length === 1 ? options[0] : undefined
-  if (seule?.name === ORDRE_DES_SBIRES) {
-    // Pas encore engagee : les memes sbires, a cliquer dans l'ordre.
+  if (seule && estUnOrdre(seule.name)) {
+    // Pas encore engagee : les memes sbires (ou les identites des joueurs), a cliquer dans l'ordre.
     return {
       genre: 'ordre',
-      titre: t('Choisir l’ordre'),
+      titre: titreDeLOrdre(seule.name),
       cibles: [...new Set(seule.all_legal_targets)].map((id) => ({
         carteId: id,
         scan: q.carteScene(id, true),

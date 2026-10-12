@@ -139,6 +139,41 @@ class Enemies:
         )
 
     @staticmethod
+    def OrdreDesJoueursActives(effect: 'Effect', finder: 'CardFinder|None',
+                               concerne: Callable[['Player'], bool]|None=None) -> List['Player']:
+        """L'ordre des joueurs pour des activations SIMULTANEES chez plusieurs joueurs.
+
+        RR 1.8 p.6 : quand plusieurs activations sont declenchees en meme temps, le
+        PREMIER JOUEUR choisit leur ordre (refonte de la phase du mechant, decision 47,
+        12/10/2026). Un seul joueur concerne : l'ordre des joueurs, sans question.
+        """
+        from game.operate.worlds import Worlds
+        joueurs = list(Worlds.GetPlayers(effect))
+        concernes = [j for j in joueurs
+                     if (concerne is None or concerne(j)) and j.GetEngagedMinions(finder)]
+        if len(concernes) < 2:
+            return joueurs
+        par_identite = {id(j.GetIdentity()): j for j in concernes}
+        premier = effect.world.GetFirstPlayer()
+        identites = premier.ChooseOrder([j.GetIdentity() for j in concernes],
+                                        prompt="Players Activation Order")
+        ordre = [par_identite[id(i)] for i in identites if id(i) in par_identite]
+        ordre += [j for j in concernes if j not in ordre]
+        return ordre + [j for j in joueurs if j not in ordre]
+
+    @staticmethod
+    def _PourChaqueJoueurDansLOrdre(effect: 'Effect', joueurs: List['Player'],
+                                    action: Callable[['Player'], 'Enemies.ActivatedResult']) -> 'Enemies.ActivatedResult':
+        resultat = Enemies.ActivatedResult()
+        for joueur in joueurs:
+            obtenu = action(joueur)
+            if obtenu is not None:
+                resultat += obtenu
+            if effect.world.is_game_over:
+                break
+        return resultat
+
+    @staticmethod
     def AllMinionActivateAgainstEngagedPlayer(effect: 'Effect',
                                             *,
                                             trait: "CardFace.TRAITS|None"=None,
@@ -159,7 +194,8 @@ class Enemies:
                 include_villain=False,
             )
 
-        activated_result = Players.ForEachPlayer(effect, action, Enemies.ActivatedResult())
+        ordre = Enemies.OrdreDesJoueursActives(effect, finder)
+        activated_result = Enemies._PourChaqueJoueurDansLOrdre(effect, ordre, action)
         if activated_result.activated_cnt == 0 and if_no_activate:
             if_no_activate()
         return activated_result
@@ -186,7 +222,8 @@ class Enemies:
                 include_villain=False,
             )
 
-        activated_result = Players.ForEachPlayer(effect, action, Enemies.ActivatedResult())
+        ordre = Enemies.OrdreDesJoueursActives(effect, finder, concerne=lambda j: j.IsHero())
+        activated_result = Enemies._PourChaqueJoueurDansLOrdre(effect, ordre, action)
         if activated_result.activated_cnt == 0 and if_no_attack:
             if_no_attack()
         return activated_result

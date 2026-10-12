@@ -98,6 +98,24 @@ export type GestesDeplacer = {
   onPointerCancel: () => void
 }
 
+/**
+ * Refonte, lot 6 (essai, MULTI) : le pied de la boite quand ce joueur ne donne
+ * pas seul le rythme. `choix-hote` : l'hote choisit qui fait avancer (premiere
+ * phase) ; `attente-choix` : les autres l'attendent ; `regarde` : un autre joueur
+ * donne le rythme, ce joueur voit le meme ecran sans bouton ; `pret` : chacun se
+ * dit pret, on avance ensemble.
+ */
+export type PiedMulti =
+  | { genre: 'choix-hote'; choisir: (politique: 'concerne' | 'tous' | 'quiconque') => void }
+  | { genre: 'attente-choix' }
+  | { genre: 'regarde'; nom: string }
+  | {
+      genre: 'pret'
+      pret: boolean
+      pastilles: Array<{ nom: string; couleur?: string; pret: boolean }>
+      marquer: () => void
+    }
+
 export type CartouchePhaseProps = {
   /** `setElCartouche` du controleur : la section a mesurer. */
   refCartouche: (el: HTMLElement | null) => void
@@ -136,6 +154,8 @@ export type CartouchePhaseProps = {
   }
   tempsQuestion?: TempsPhase
   avancer: () => void
+  /** Lot 6 (essai, multi) : le pied quand ce joueur ne donne pas seul le rythme. */
+  multi?: PiedMulti
   enAttente: boolean
   attendUnAutreJoueur: boolean
   nomJoueurAttendu?: string
@@ -1598,6 +1618,9 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     essai && !relu && etape && props.montrerBoostSuivant ? Math.max(0, etape.boosts.length - props.boostsMontres) : 0
   const compteur =
     essai && etape && !relu && !horsPhase ? compteurDesRevelations(etapes, etape.cle, props.cartesDistribuees) : undefined
+  // Lot 6 (essai, multi) : ce joueur ne donne pas le rythme, son pied dit qui le donne.
+  const multiSansBouton =
+    props.multi?.genre === 'regarde' || props.multi?.genre === 'attente-choix' || props.multi?.genre === 'choix-hote'
 
   // Hors phase, la touche Espace n'est pas a nous (le tour du joueur pose
   // ses propres questions) : « Suivant » tourne la page, « Continuer » ferme.
@@ -1750,6 +1773,30 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         ) : null}
       </div>
       {choixDefense}
+      {props.multi?.genre === 'choix-hote' ? (
+        <div className="essai-choix-avance" role="group" aria-label={t('Qui fait avancer la phase du méchant ?')}>
+          <strong>{t('Qui fait avancer la phase du méchant ?')}</strong>
+          <span>{t('Ton choix vaut pour toute la partie. Tu pourras le changer dans les réglages.')}</span>
+          {(
+            [
+              ['concerne', t('Le joueur concerné'), t('Celui que l’ennemi vise ou qui révèle ; le premier joueur pour la menace et le bilan.')],
+              ['tous', t('Tout le monde valide'), t('Chacun clique « Prêt » ; on avance quand tout le monde l’est.')],
+              ['quiconque', t('N’importe qui'), t('Le premier qui clique fait avancer tout le monde.')],
+            ] as const
+          ).map(([valeur, titre, detail]) => (
+            <button
+              key={valeur}
+              type="button"
+              className="bh-bouton essai-choix-avance-option"
+              data-politique={valeur}
+              onClick={() => (props.multi?.genre === 'choix-hote' ? props.multi.choisir(valeur) : undefined)}
+            >
+              <b>{titre}</b>
+              <small>{detail}</small>
+            </button>
+          ))}
+        </div>
+      ) : null}
       <div className="deroule-boutons">
         <span className="deroule-mentions">
           {/* Le joueur a la main : on le dit, et JAMAIS « La suite arrive… »,
@@ -1782,6 +1829,20 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             </span>
           ) : null}
           {props.defaiteLocale ? <span className="deroule-arret">{texteArretDefaite()}</span> : null}
+          {props.multi?.genre === 'pret' ? (
+            <span className="essai-prets" aria-live="polite">
+              {props.multi.pastilles.map((pastille) => (
+                <span
+                  key={pastille.nom}
+                  className={`essai-pret${pastille.pret ? ' est-pret' : ''}`}
+                  style={pastille.couleur ? ({ '--couleur-pret': pastille.couleur } as CSSProperties) : undefined}
+                >
+                  {pastille.nom}
+                  {pastille.pret ? ' ✓' : ''}
+                </span>
+              ))}
+            </span>
+          ) : null}
           {props.tempsParDecision > 0 ? <span className="deroule-timeout">{texteTempsParDecision()}</span> : null}
         </span>
         {refus && !choixDefense ? (
@@ -1819,7 +1880,16 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             Ni pendant qu'un autre joueur choisit sur l'etape en cours (D28). */}
         {/* Un spectateur (ou une relecture) ne valide rien : il tourne les
             pages d'une etape, mais l'etape suit le joueur (etape-partagee.ts). */}
-        {boostsRestants > 0 && !questionAuJoueur && !attenteSurPlace ? (
+        {multiSansBouton && etape && !relu && !questionAuJoueur ? (
+          <button type="button" disabled className="bh-bouton deroule-suivant essai-continuer essai-multi-attente" aria-live="polite">
+            {props.multi?.genre === 'regarde'
+              ? t('%1 regarde…').replace('%1', props.multi.nom)
+              : props.multi?.genre === 'choix-hote'
+                ? t('Choisis d’abord qui fait avancer')
+                : t('L’hôte choisit qui fait avancer…')}
+          </button>
+        ) : null}
+        {boostsRestants > 0 && !questionAuJoueur && !attenteSurPlace && !multiSansBouton ? (
           <button
             type="button"
             className="bh-bouton deroule-suivant essai-continuer"
@@ -1830,7 +1900,27 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             {t('Continuer')} <kbd>{t('Espace')}</kbd>
           </button>
         ) : null}
-        {boostsRestants === 0 && etape && !relu && !questionAuJoueur && !annonceEnCours && !attenteSurPlace ? (
+        {props.multi?.genre === 'pret' && boostsRestants === 0 && etape && dernierePage && !relu && !questionAuJoueur && !annonceEnCours && !attenteSurPlace ? (
+          <button
+            type="button"
+            disabled={props.multi.pret}
+            className="bh-bouton deroule-suivant essai-continuer"
+            data-pret=""
+            data-page-suivante=""
+            onClick={props.multi.marquer}
+          >
+            {props.multi.pret ? (
+              t('Prêt ✓ %1 / %2')
+                .replace('%1', String(props.multi.pastilles.filter((p) => p.pret).length))
+                .replace('%2', String(props.multi.pastilles.length))
+            ) : (
+              <>
+                {t('Prêt')} <kbd>{t('Espace')}</kbd>
+              </>
+            )}
+          </button>
+        ) : null}
+        {boostsRestants === 0 && etape && !relu && !questionAuJoueur && !annonceEnCours && !attenteSurPlace && !multiSansBouton && !(props.multi?.genre === 'pret' && dernierePage) ? (
           <button
             type="button"
             // Spectateur : visible, grise et inactif sur la derniere page ; il

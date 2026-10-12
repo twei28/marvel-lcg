@@ -3591,6 +3591,18 @@ export function PagePartie({
   // l'aspect de son deck, et le joueur a qui appartient une carte de la table.
   const cadresJoueurs = useMemo(() => cadresDesJoueurs(etat.monde, catalogue), [etat.monde, catalogue])
   const joueurDeCarteMonde = useCallback((id: number | undefined) => joueurDeLaCarte(etat.monde, id), [etat.monde])
+  // Refonte, lot 6 (multi) : le premier joueur du round, pour les moments communs
+  // (« le joueur concerne, sinon le premier joueur »).
+  const premierJoueurMonde = useMemo(() => {
+    const rang = (etat.monde?.players ?? []).findIndex(
+      (joueur) => ((joueur.area_hero ?? [])[0]?.info['k_first_player_token'] ?? 0) > 0
+    )
+    return rang === -1 ? undefined : rang
+  }, [etat.monde])
+  const nomsJoueursMonde = useMemo(
+    () => (etat.monde?.players ?? []).map((joueur) => String((joueur.area_hero ?? [])[0]?.name ?? '').replace(/^[*✱\s]+/, '')),
+    [etat.monde]
+  )
   /**
    * LE FOND PREND LA COULEUR DU HEROS AFFICHE.
    *
@@ -4449,6 +4461,9 @@ export function PagePartie({
             essai={phaseEssai}
             cadresJoueurs={cadresJoueurs}
             joueurDeCarte={joueurDeCarteMonde}
+            siegeLocal={playerId}
+            premierJoueur={premierJoueurMonde}
+            nomsJoueurs={nomsJoueursMonde}
             attendreBandeau={!bandeauPasse}
             // Distribution retiree en scene PC (D15), liste brute ailleurs.
             etapes={etapesPourLeCartouche.etapes}
@@ -5070,6 +5085,7 @@ export function PagePartie({
         basculerLangue={basculerLangue}
         modePhase={modePhaseChoisi}
         changerModePhase={choisirModePhase}
+        avancePhaseHote={phaseEssai && !spectateur && playerId === 0 && herosDesAutresIds.size > 0}
         libelleModePhase={libelleModePhase}
         tempsParDecision={etat.maxTimeout}
         texteTempsParDecision={texteTempsParDecision}

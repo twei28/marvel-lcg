@@ -1389,6 +1389,26 @@ export const DICO_EN_BASE: Record<string, string> = {
   'VAINCU': 'DEFEATED',
   'Attaque Rapide de %1': 'Quickstrike attack by %1',
   'Attaque Rapide': 'Quickstrike attack',
+  // Lot 6 de la refonte de la phase du méchant (essai, multi, 12/10/2026)
+  'Qui fait avancer la phase du méchant ?': 'Who moves the villain phase forward?',
+  'Ton choix vaut pour toute la partie. Tu pourras le changer dans les réglages.':
+    'Your choice applies to the whole game. You can change it in the settings.',
+  'Le joueur concerné': 'The player concerned',
+  'Celui que l’ennemi vise ou qui révèle ; le premier joueur pour la menace et le bilan.':
+    'The one the enemy targets or who reveals; the first player for threat and the summary.',
+  'Tout le monde valide': 'Everyone confirms',
+  'Chacun clique « Prêt » ; on avance quand tout le monde l’est.':
+    'Everyone clicks “Ready”; it moves on once everyone is.',
+  'N’importe qui': 'Anyone',
+  'Le premier qui clique fait avancer tout le monde.': 'The first one to click moves everyone forward.',
+  '%1 regarde…': '%1 is looking…',
+  'Choisis d’abord qui fait avancer': 'First choose who moves things forward',
+  'L’hôte choisit qui fait avancer…': 'The host is choosing who moves things forward…',
+  'Prêt': 'Ready',
+  'Prêt ✓ %1 / %2': 'Ready ✓ %1 / %2',
+  'Qui fait avancer (multi)': 'Who moves forward (multiplayer)',
+  'Pour toute la table, dans cette partie': 'For the whole table, in this game',
+  'Choisis l’ordre des joueurs': 'Choose the order of the players',
   // Lot 5c de la refonte de la phase du méchant (essai, 12/10/2026)
   'ÉLIMINÉ': 'ELIMINATED',
   'Cartes': 'Cards',

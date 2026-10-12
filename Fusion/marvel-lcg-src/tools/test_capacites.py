@@ -92,6 +92,33 @@ os.environ.setdefault("CAS_PREFIX", str(os.getpid()))
 
 CAS = [
     {
+        "nom": "[lot6] activations simultanees chez DEUX joueurs : le premier joueur choisit l'ordre (Combined Effort, RR 1.8 p.6)",
+        "pourquoi": ("refonte de la phase du mechant, lot 6 (decision 47) : « chaque sbire Elite s'active contre "
+                     "le joueur avec qui il est engage » touche J1 (Sandman) et J2 (Radioactive Man) en meme temps ; "
+                     "RR p.6 : le premier joueur choisit l'ordre. Le moteur faisait toujours J1 puis J2 sans rien demander"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.Engage('01102', player=0)", "Puzzle.Engage('01129', player=1)"],
+        "declencher": ["Puzzle.Reveal('24069')"],
+        "questions_presentes": ["Players Activation Order"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01102", "01129"]},
+    },
+    {
+        "nom": "[lot6] activations simultanees chez UN SEUL joueur : aucune question d'ordre entre joueurs (contre-cas)",
+        "pourquoi": ("meme carte, seul J1 a un sbire Elite : l'ordre des joueurs ne se pose pas, rien n'est demande "
+                     "(solo et hot-seat inchanges)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.Engage('01102', player=0)"],
+        "declencher": ["Puzzle.Reveal('24069')"],
+        "questions_absentes": ["Players Activation Order"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01102"]},
+    },
+    {
         "nom": "[elimination] joueur elimine : la phase du mechant ne lui distribue ni ne lui revele de carte rencontre",
         "pourquoi": ("RR 1.8 p.34 : un joueur elimine ne participe plus ; ses cartes hors de sa propriete "
                      "rejoignent la defausse de leur proprietaire. `VillainPhase` bouclait sur "

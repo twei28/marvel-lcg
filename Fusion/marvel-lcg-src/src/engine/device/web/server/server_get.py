@@ -749,12 +749,46 @@ class GameServerGet(GameServerBase):
         mode = data.get('mode')
         self.etapes_lues[p] = {'cle': str(data.get('cle') or '')[:200], 't': time.time(),
                                'mode': mode if mode in ('detaille', 'sur-table', 'instantane') else ''}
+        # Refonte de la phase du mechant, lot 6 (multi, 12/10/2026) : les boosts deja
+        # retournes sur l'etape lue, et la cle pour laquelle le joueur s'est dit
+        # « pret » (choix « tout le monde valide »). Cosmetiques, comme le reste.
+        try:
+            boosts = int(data.get('boosts') or 0)
+        except Exception:
+            boosts = 0
+        self.etapes_lues[p]['boosts'] = max(0, min(boosts, 50))
+        self.etapes_lues[p]['pret'] = str(data.get('pret') or '')[:200]
+        # La cle que ce joueur vient de VALIDER : celui qui suit la valide aussi,
+        # sinon le moteur attendrait son accuse de reception a jamais.
+        self.etapes_lues[p]['valide'] = str(data.get('valide') or '')[:200]
         from engine.enregistrement import Enregistrement
         Enregistrement.Evenement('e', {'p': p, 'cle': self.etapes_lues[p]['cle'], 'mode': self.etapes_lues[p]['mode']})
         return web.json_response({'result': 'ok'})
 
     async def get_etapes(self, request: web.Request) -> web.Response:
         return web.json_response(getattr(self, 'etapes_lues', {}))
+
+    # QUI FAIT AVANCER LA PHASE DU MECHANT EN MULTI (refonte, lot 6, decisions 32-33) :
+    # choisi par l'hote a la premiere phase du mechant, garde pour toute la partie,
+    # modifiable ensuite. « concerne » : le joueur concerne (le premier joueur pour
+    # les moments communs) ; « tous » : chacun se dit pret ; « quiconque » : le
+    # premier qui clique. Vide : pas encore choisi.
+    async def set_avance_phase(self, request: web.Request) -> web.Response:
+        data = await request.json()
+        politique = data.get('politique')
+        if politique not in ('concerne', 'tous', 'quiconque'):
+            return web.json_response({'error': 'politique inconnue'}, status=400)
+        try:
+            p = int(data.get('p'))
+        except Exception:
+            return web.json_response({'error': 'p required'}, status=400)
+        if p != 0:
+            return web.json_response({'error': "seul l'hote choisit"}, status=403)
+        self.avance_phase = politique
+        return web.json_response({'result': 'ok', 'politique': politique})
+
+    async def get_avance_phase(self, request: web.Request) -> web.Response:
+        return web.json_response({'politique': getattr(self, 'avance_phase', '')})
 
     # CE QUE LE JOUEUR VOIT, pour le spectateur et la relecture (08/10/2026,
     # « voir 100 % de ce que le joueur a vu ») : sa selection dans une fenetre,
@@ -2182,6 +2216,8 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_cursors', self.get_cursors)
         self.AddPostSecurity('/set_etape', self.set_etape)
         self.AddAwaitGetSecurity('/get_etapes', self.get_etapes)
+        self.AddPostSecurity('/set_avance_phase', self.set_avance_phase)
+        self.AddAwaitGetSecurity('/get_avance_phase', self.get_avance_phase)
         self.AddPostSecurity('/set_vu', self.set_vu)
         self.AddAwaitGetSecurity('/get_vus', self.get_vus)
         self.AddPostSecurity('/set_marque', self.set_marque)

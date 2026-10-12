@@ -26,6 +26,7 @@
 import { ecrireEtiquettesTable, lireEtiquettesTable } from './etiquettes-table'
 import { ecrireCoteAmeliorations, lireCoteAmeliorations, type CoteAmeliorations } from './cote-ameliorations'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { choisirPolitique, lirePolitique, type PolitiqueAvance } from './avance-multi'
 import { transformDecalage, useGlisserPanneau } from './placement/useGlisserPanneau'
 import { ReglagesApercuAmbiance, type ApercuMeteo } from './CoucheMeteo'
 import { t, langueActuelle } from './langue'
@@ -115,6 +116,44 @@ export function LigneBascule({
 }
 
 /** Une ligne « choix entre N », en pastilles. Meme regle de retrait et de gris. */
+/**
+ * Lot 6 (essai, multi) : la regle « qui fait avancer la phase du mechant »,
+ * choisie par l'hote a la premiere phase, modifiable ici par lui seul. Lue a
+ * l'ouverture ; absente tant qu'elle n'a pas ete choisie.
+ */
+function LigneAvancePhase() {
+  const [politique, setPolitique] = useState<PolitiqueAvance | undefined>(undefined)
+  useEffect(() => {
+    let vivant = true
+    void fetch('/get_avance_phase', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((d: { politique?: string }) => {
+        if (vivant) setPolitique(lirePolitique(d?.politique))
+      })
+      .catch(() => undefined)
+    return () => {
+      vivant = false
+    }
+  }, [])
+  if (politique === undefined) return null
+  return (
+    <LigneChoix
+      libelle={t('Qui fait avancer (multi)')}
+      valeur={politique}
+      choix={[
+        { valeur: 'concerne' as PolitiqueAvance, libelle: t('Le joueur concerné') },
+        { valeur: 'tous' as PolitiqueAvance, libelle: t('Tout le monde valide') },
+        { valeur: 'quiconque' as PolitiqueAvance, libelle: t('N’importe qui') },
+      ]}
+      onChoisir={(choix) => {
+        setPolitique(choix)
+        void choisirPolitique(0, choix)
+      }}
+      detail={t('Pour toute la table, dans cette partie')}
+    />
+  )
+}
+
 export function LigneChoix<T extends string | number>({
   libelle,
   valeur,
@@ -328,6 +367,8 @@ export type ProprietesReglages = {
 
   modePhase: ModePhaseMechant
   changerModePhase: (mode: ModePhaseMechant) => void
+  /** Lot 6 (essai, multi) : l'hote peut changer qui fait avancer la phase du mechant. */
+  avancePhaseHote?: boolean
   libelleModePhase: (mode: ModePhaseMechant) => string
   /** « Temps par decision » du moteur, en secondes ; 0 = sans limite. */
   tempsParDecision: number
@@ -508,6 +549,7 @@ export function ContenuOnglet({
           onChoisir={p.changerModePhase}
           detail={t('Étape par étape : un « Suivant » par étape de la phase')}
         />
+        {p.avancePhaseHote ? <LigneAvancePhase /> : null}
         {/* L'hypothese du mode, dite la ou on le choisit : un « Temps par
             decision » regle a la preparation fait expirer les attentes du
             moteur, qui poursuit sans nous. */}

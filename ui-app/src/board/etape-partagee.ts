@@ -19,12 +19,34 @@ export const modeLu = (mode: string | undefined): ModePhaseMechant | undefined =
 
 export const DELAI_LECTURE_ETAPES_MS = 700
 
-export function publierEtape(siege: number, cle: string | undefined, mode?: ModePhaseMechant): void {
+// Refonte, lot 6 (multi) : avec l'etape, les boosts deja retournes et la cle pour
+// laquelle le joueur s'est dit « pret ». Le serveur remplace l'enregistrement
+// entier a chaque envoi : on garde donc le dernier etat pour le renvoyer complet.
+let dernierEnvoi: { siege: number; cle: string; mode: string } | undefined
+let extras: { boosts: number; pret: string; valide: string } = { boosts: 0, pret: '', valide: '' }
+
+function envoyer(): void {
+  if (!dernierEnvoi) return
   void fetch('/set_etape', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ p: siege, cle: cle ?? '', mode: mode ?? '' }),
+    body: JSON.stringify({ p: dernierEnvoi.siege, cle: dernierEnvoi.cle, mode: dernierEnvoi.mode, ...extras }),
   }).catch(() => undefined)
+}
+
+export function publierEtape(siege: number, cle: string | undefined, mode?: ModePhaseMechant): void {
+  const neuve = cle ?? ''
+  if (dernierEnvoi?.cle !== neuve) extras = { ...extras, boosts: 0 }
+  dernierEnvoi = { siege, cle: neuve, mode: mode ?? '' }
+  envoyer()
+}
+
+/** Les boosts retournes ou la cle « pret » ont change sur l'etape deja publiee. */
+export function publierExtrasEtape(neufs: Partial<{ boosts: number; pret: string; valide: string }>): void {
+  const suivant = { ...extras, ...neufs }
+  if (suivant.boosts === extras.boosts && suivant.pret === extras.pret && suivant.valide === extras.valide) return
+  extras = suivant
+  envoyer()
 }
 
 /** Le suivi du joueur le plus recent : son etape (non vide) et son mode (le dernier publie). */
