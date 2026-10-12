@@ -26,7 +26,7 @@ const carte = (cardId: string, nom: string) => ({
 /** Un monde minimal : seules les zones qui comptent pour le cas sont remplies. */
 const monde = (zones: Record<string, unknown>): World => zones as unknown as World
 
-/** Le décor du Mojoverse qui passe le plateau en noir et blanc. */
+/** Le décor du Mojoverse qui pose une ambiance (la brume depuis le 12/10/2026). */
 const AVEC_DECOR = monde({ area_environment: [carte('39035', 'Dial M for Mojo')] })
 /** Un autre décor, pour vérifier qu'on ne redemande pas à la carte suivante. */
 const AUTRE_DECOR = monde({ area_environment: [carte('45127', 'The Savage Land')] })
@@ -72,7 +72,7 @@ describe('quand la modale se montre', () => {
     poser()
     expect(modaleVisible()).toBe(true)
     expect(screen.getByText('Dial M for Mojo')).toBeTruthy()
-    expect(screen.getByText(/Noir et blanc/)).toBeTruthy()
+    expect(screen.getByText(/Brume/)).toBeTruthy()
   })
 
   it('dit où reprendre la main', () => {
