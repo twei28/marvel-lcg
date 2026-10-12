@@ -204,6 +204,17 @@ describe('D10, D11 : la rangee resolue, figee, le chiffre final en gros', () => 
     expect(vue.cibles.map((c) => c.carteId)).toEqual([40])
   })
 
+  it('un allie defend et encaisse : la bande et « 1 dégât » vont sur l allie, jamais sur le heros vise (capture k2-25)', () => {
+    const allie = { ...resoluRhino, cibleId: 41, cibleNom: 'Black Widow', defenseurId: 41, defenseurNom: 'Black Widow', defense: 0, restant: 1 }
+    const vue = rangee(allie, { pvMaxParNom: new Map([['Black Widow', 2]]) })
+    expect(vue.resultat?.jauge).toEqual({ avant: 2, apres: 1, plafond: 2 })
+    expect(vue.defenseur?.jauge?.texte).toBe('1 / 2')
+    expect(vue.defenseur?.recap).toBe('PV 1 / 2 · 1 dégât')
+    expect(vue.cibles.map((c) => c.carteId)).toEqual([40])
+    expect(vue.cibles[0].recap ?? '').not.toContain('dégât')
+    expect(vue.cibles[0].jauge?.texte).not.toBe('1 / 2')
+  })
+
   it('un allie n a pas de DEF : « défend » seul, jamais « DÉF 0 » (planche du lot 6)', () => {
     const allie = { ...resoluRhino, cibleId: 41, cibleNom: 'Black Widow', defenseurId: 41, defenseurNom: 'Black Widow', defense: 0 }
     expect(rangee(allie).defenseur?.legende).toBe('défend')

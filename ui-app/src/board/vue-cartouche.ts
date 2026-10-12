@@ -657,15 +657,23 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
     }
   }
 
-  // La cible porte la bande de l'etape resolue : PV apres l'attaque, menace apres la manigance.
-  if (cibles[0] && resultat?.jauge && etape.montant !== undefined) {
+  // La bande de l'etape resolue va sur la carte qui l'a ENCAISSEE (`cibleId`) :
+  // l'allie defenseur quand il a defendu, jamais le heros vise (capture k2-25).
+  let defenseurFinal = defenseur
+  if (resultat?.jauge && etape.montant !== undefined) {
     const montant = etape.montant
-    cibles[0] = avecJaugeDeLEtape(
-      cibles[0],
-      attaque ? 'pv' : 'menace',
-      resultat.jauge,
-      attaque ? `${montant} ${Math.abs(montant) < 2 ? t('dégât') : t('dégâts')}` : texteMenaces(montant)
-    )
+    const avecBande = (v: Vignette) =>
+      avecJaugeDeLEtape(
+        v,
+        attaque ? 'pv' : 'menace',
+        resultat.jauge,
+        attaque ? `${montant} ${Math.abs(montant) < 2 ? t('dégât') : t('dégâts')}` : texteMenaces(montant)
+      )
+    if (defenseur && etape.cibleId !== undefined && defenseur.carteId === etape.cibleId) {
+      defenseurFinal = avecBande(defenseur)
+    } else if (cibles[0]) {
+      cibles[0] = avecBande(cibles[0])
+    }
   }
 
   const lignesEtoile = montres
@@ -684,7 +692,7 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
           defense: defenseur && nombre(etape.defense) ? etape.defense : undefined,
           jauge: attaque ? 'pv' : 'menace',
         },
-    defenseur,
+    defenseur: defenseurFinal,
     cibles,
     resultat,
     annulee: annulee ? (etape.annuleePar ? { cause: libelleDeStatut(etape.annuleePar) } : {}) : undefined,
