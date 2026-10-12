@@ -92,6 +92,19 @@ os.environ.setdefault("CAS_PREFIX", str(os.getpid()))
 
 CAS = [
     {
+        "nom": "Puzzle.ChangeForm sur la face CACHEE d'une identite en jeu : pas de doublon detache (identity.py:42, 12/10/2026)",
+        "pourquoi": ("deux sous-agents de mesure ont vu une AssertionError (GetControlByPlayer, identity.py:42) : "
+                     "`ChangeForm('01001b')` alors que Spider-Man etait deja sur 01001a ne trouvait pas la carte en jeu "
+                     "(recherche sur la face visible seulement) et CREAIT une copie de Peter Parker sans controleur, "
+                     "que le rendu suivant faisait planter. Deux ChangeForm successifs : heros puis retour alter ego"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "puzzle_identite_sans_doublon",
+        "attendu": {},
+    },
+    {
         "nom": "08031 Rapid Response — un refus d'une AUTRE carte ne s'affiche pas « Injouable » sur Rapid Response",
         "pourquoi": ("signalement du 11/10/2026 (capture : Réponse Immédiate « INJOUABLE — Aucune cible possible ») : "
                      "`Effect.Render(by_effect)` rendait le `bind_id` de l'effet qui pose la question, donc le refus "
@@ -59097,6 +59110,25 @@ def gorr_bombe_amorcee(monde, aides):
             return False, ("Heroes' Labor appartient au SCENARIO : son dos serait "
                            "une carte de rencontre, pas un dos joueur")
     return True, "Godbomb en jeu, un Heroes' Labor a dos joueur par deck"
+
+def puzzle_identite_sans_doublon(monde, aides):
+    """Une seule carte Spider-Man / Peter Parker, avec un controleur, revenue en alter ego."""
+    cartes = []
+    for objet in monde.object_manager.card_dict.values():
+        faces = [getattr(objet, "face", None)] + list(getattr(objet, "back_faces", []) or [])
+        if any(getattr(getattr(f, "paper", None), "card_id", None) in ("01001a", "01001b") for f in faces if f is not None):
+            cartes.append(objet)
+    if len(cartes) != 1:
+        return False, f"{len(cartes)} carte(s) Spider-Man/Peter Parker (attendu 1 : doublon detache)"
+    face = cartes[0].face
+    if face.paper.card_id != "01001b":
+        return False, f"face visible {face.paper.card_id} (attendu 01001b apres deux changements)"
+    try:
+        face.GetControlByPlayer()
+    except AssertionError:
+        return False, "identite sans controleur"
+    return True, "une seule identite, en alter ego, avec son controleur"
+
 
 def gorr_partie_perdue(monde, aides):
     """gb007a : au 12e timer par joueur, les joueurs perdent."""

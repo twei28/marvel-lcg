@@ -52,6 +52,14 @@ class RunPuzzle:
                 face = objet.face
                 if face is not None and face.IsInPlay() and face.IsName(card):
                     return face
+                # La face CACHEE d'une carte en jeu (« 01001b » alors que Spider-Man
+                # est sur 01001a) : sans cela, un doublon detache etait cree, sans
+                # controleur, et le rendu suivant plantait (identity.py:42,
+                # GetControlByPlayer, 12/10/2026).
+                if face is not None and face.IsInPlay() and any(
+                        autre is not face and autre.IsName(card)
+                        for autre in getattr(objet, 'back_faces', ())):
+                    return face
 
             # ⚠ APRES la recherche « en jeu », pas avant (corrige le
             # 18/09/2026 au soir) : une carte peut exister EN DEUX EXEMPLAIRES,
