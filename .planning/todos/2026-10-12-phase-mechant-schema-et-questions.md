@@ -79,3 +79,14 @@ Références retenues par l'utilisateur : **couleur par joueur**, **lignes qui r
 | 57 | Rouge Agressivité contre rouge méchant | Moments communs (menace, bilan, manigance complétée) en **gris acier**, le rouge reste à l'Agressivité |
 | 48 | Écran plus chargé que la boîte | **Les cartes rétrécissent** pour tout faire tenir, jamais de barre de défilement ; la loupe reste |
 | 40 | Robuste / Perçant / Overkill | **Deux flèches + lignes** : attaquant → défenseur, puis défenseur → identité « Overkill 3 » ; une ligne par mot-clé dans le calcul |
+
+## Avancement de la refonte (essai, local)
+
+- Lot 1 (`cc31bb9d`) : boîte fixe 600×580 à gauche, Continuer immobile [247,531,338,78], couleurs d'aspect, gris acier, déplaçable/réductible.
+- Lot 2 (`b6b30eab`) : cartes de même taille par écran (réduites ensemble), boost non retourné sans nom, survol carte/nom vers l'aperçu à droite, appui long.
+- Restes à reprendre en finition (après le lot 6) :
+  - appui long sans effet sur la question « de repli » (sous-cadre `est-provisoire`) au téléphone ;
+  - feuille basse du téléphone (40 %) trop petite pour une question (342 px de contenu pour 112 visibles) ;
+  - bouton « Ne pas utiliser… » (zoom 1,5) qui dépasse de 3 px dans l'écran de question ;
+  - à 1366×768, la table rétrécit nettement à côté de la colonne.
+
