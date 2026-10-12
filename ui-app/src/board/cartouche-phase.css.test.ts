@@ -287,3 +287,22 @@ describe('modale Étape par étape : jauge, cartes du calcul, pied (11/10/2026)'
     expect(essai).toMatch(/\.deroule-phase\.est-scene\.est-essai\.poignee-glisser::after \{[^}]*position:\s*absolute/)
   })
 })
+
+// Capture du 12/10/2026 (k2-25, Klaw + Boom Sonique, Black Widow défend) : la
+// rangée de l'attaque, plus haute que le corps, était CENTRÉE dans une zone en
+// `overflow: auto` et débordait vers le haut, hors de portée du défilement :
+// le haut des cartes était rogné. Le centrage doit être « safe ».
+describe('modale Étape par étape : contenu plus haut que le corps (12/10/2026)', () => {
+  const bis = fs
+    .readFileSync(path.join(__dirname, 'cartouche-phase-bis.css'), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+  const corps = [...bis.matchAll(/([^{}]+)\{([^}]*)\}/g)]
+    .filter((m) => m[1].split(',').map((s) => s.trim()).includes('.deroule-phase.est-scene.est-bis .deroule-corps'))
+    .map((m) => m[2])
+    .join('\n')
+  it('le corps défile mais centre en mode safe, jamais au-dessus du bord', () => {
+    expect(corps).toMatch(/overflow:\s*auto/)
+    expect(corps).toMatch(/align-items:\s*safe center/)
+    expect(corps).toMatch(/justify-content:\s*safe center/)
+  })
+})

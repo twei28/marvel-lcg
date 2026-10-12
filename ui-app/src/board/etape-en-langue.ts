@@ -50,5 +50,6 @@ export function etapeEnLangue(etape: EtapeDeroule, nomFr?: (id: number) => strin
     })),
     consequences: etape.consequences?.map((consequence) => etapeEnLangue(consequence, nomFr)),
     annuleePar: enFrancais(etape.annuleeParId, etape.annuleePar),
+    renfortDe: enFrancais(etape.renfortDeId, etape.renfortDe),
   }
 }

@@ -113,8 +113,10 @@
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  /* « safe » : un contenu plus haut que le corps part du haut au lieu de
+     déborder au-dessus, hors de portée du défilement (k2-25, 12/10/2026). */
+  align-items: safe center;
+  justify-content: safe center;
   padding: 4px 0;
   overflow: auto;
   scrollbar-width: none;

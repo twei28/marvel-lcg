@@ -5,6 +5,7 @@
 // boost, defense) qu'aucune deduction ne saurait reconstituer. Le journal
 // complete pour ce que les faits ne couvrent pas.
 import { describe, expect, it } from 'vitest'
+import { etapeEnLangue } from './etape-en-langue'
 import {
   arreterSurDefaite,
   avecBilan,
@@ -662,6 +663,25 @@ describe('les cinq temps depuis les faits du moteur', () => {
     )
     expect(etapes.map((e) => e.renfortDe)).toEqual([undefined, 'Carte A', 'Carte B'])
     expect(etapes.map((e) => e.suivieDUnRenfort)).toEqual([true, true, undefined])
+  })
+
+  // Capture du 12/10/2026 : « Renfort de Caught Off Guard » dans une partie en
+  // francais. Le nom de la carte d'origine doit passer par la traduction des
+  // noms, comme le titre de la carte revelee.
+  it('traduit le nom de la carte d origine du Renfort', () => {
+    const etapes = etapesDeroule(
+      [
+        faitRevelation({ carte: 'Caught Off Guard', carte_id: 11 }),
+        faitRevelation({ carte: 'Weapons Runner', carte_id: 12, par_surge: true }),
+      ],
+      [],
+      1,
+      AUCUN_MECHANT
+    )
+    const noms: Record<number, string> = { 11: 'Pris par Surprise', 12: "Trafiquant d'Armes" }
+    const lue = etapeEnLangue(etapes[1], (id) => noms[id])
+    expect(lue.renfortDe).toBe('Pris par Surprise')
+    expect(lue.cibleNom).toBe("Trafiquant d'Armes")
   })
 
   it('porte qui a annule une activation ou une carte revelee (04/10/2026)', () => {

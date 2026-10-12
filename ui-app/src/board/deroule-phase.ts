@@ -343,6 +343,8 @@ export type EtapeDeroule = {
    * aucune revelation ne la precede.
    */
   renfortDe?: string
+  /** L'identifiant de cette carte d'origine, pour traduire `renfortDe` (etape-en-langue.ts). */
+  renfortDeId?: number
   /** Un coup du mechant HORS de sa phase (tour d'un joueur), 03/10/2026. */
   horsPhase?: boolean
   /** Sur une etape de changement de stade : ce qui change (04/10/2026). */
@@ -1036,6 +1038,7 @@ function relierLesRenforts(etapes: EtapeDeroule[]): EtapeDeroule[] {
       if (precedente.titre !== 'revelation') continue
       if (etape.auteurNom && precedente.auteurNom && precedente.auteurNom !== etape.auteurNom) continue
       etape.renfortDe = nomNettoye(precedente.cibleNom)
+      etape.renfortDeId = precedente.carteId
       precedente.suivieDUnRenfort = true
       return
     }
