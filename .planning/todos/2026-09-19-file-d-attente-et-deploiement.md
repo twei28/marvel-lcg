@@ -3,6 +3,12 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 12/10/2026 (10 h 39, `d65dda70`, plateau `board-CbQvrNyj.js`, site + play.)
+
+- Accueil : remerciements à Irefrixs + lien GitHub + mention légale complète sous les tuiles, visibles sans défiler sur PC (`f89c576e`).
+- Bouton du choix unique « Fin de phase » jaune et plus grand (`312cb227`).
+- Phase du méchant : nom de la carte à Renfort traduit, rangée d'attaque plus rognée (`85fc4d0c`), jauge PV sur la carte qui encaisse (`5d45e774`).
+
 ## ✅ DÉPLOYÉ LE 11/10/2026 (23 h 49, `bf4b7c1c` = `6bff71fb` + nouveautés, plateau `board-BABLA4E8.js`, site + play., équivalence 20/20)
 
 - Refus « Max N par joueur » nommé (`check_max_per_player`, `play.py`) : le plateau dit « Tu as déjà le maximum d'exemplaires de cette carte en jeu » au lieu de « Aucune cible possible » (Rapid Response 08031, Interrogation Room 01063). 3 cas de harnais, verts.
