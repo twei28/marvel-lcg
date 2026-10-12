@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-12",
         genre: "correction",
+        fr: "Les cartes Team-Up (par exemple Ne vois et n'entends aucun mal) se jouent sans devoir désigner les deux personnages. Déferlement : les dégâts en trop sur un sbire vont directement au méchant, sans question.",
+        en: "Team-Up cards (for example See No Evil, Hear No Evil) are played without having to pick the two characters. Overkill: excess damage on a minion goes straight to the villain, with no question.",
+    },
+    {
+        date: "2026-10-12",
+        genre: "correction",
         fr: "En mode « D'un coup », la phase du méchant ne reste plus bloquée quand le jeu te pose une question (défendre, réagir). Swarmed by Rats ne se paie plus qu'avec deux cartes de ta main, et n'est plus proposé si tu en as moins. Quelques cartes ne proposent plus de mauvaises cibles (Mister Fantastic, cartes Determination).",
         en: "In \"All at once\" mode, the villain phase no longer gets stuck when the game asks you something (defend, respond). Swarmed by Rats is only paid with two cards from your hand, and is no longer offered if you have fewer. A few cards no longer offer wrong targets (Mister Fantastic, Determination cards).",
     },
