@@ -4045,7 +4045,9 @@ export function PagePartie({
     // La face A de la manigance a son propre panneau : ni le panneau central,
     // ni la scene, ni la barre du bas ne la proposent en double.
     questionDeLaManigance: priseManigance !== undefined,
-    bulleSurTable: !sceneCentrale,
+    // Seul « Sur la table » a une bulle : en « D'un coup », la question restait
+    // muette et la phase bloquee (12/10/2026).
+    bulleSurTable: modePhase === 'sur-table',
     // Le cartouche du bas raconte deja chaque etape : la narration centrale se
     // tait pendant la phase (« plus aucun panneau hors du cartouche »).
     cartoucheEnBas: nouvelleScenePC,
