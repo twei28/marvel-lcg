@@ -6449,7 +6449,10 @@ class Handler(BaseHTTPRequestHandler):
                 self._corps_refuse()
                 return
             enregistrer_partie_play(self.rfile.read(taille))
-            self._repondre(204, b"", "text/plain; charset=utf-8")
+            # play. est isole (COEP require-corp, pour Safari, 12/10/2026) : sans
+            # CORP, le navigateur refuse cette reponse venue du site principal.
+            self._repondre(204, b"", "text/plain; charset=utf-8",
+                           [("Cross-Origin-Resource-Policy", "same-site")])
             return
 
         if self.chemin == "/presence_play":
@@ -6458,7 +6461,10 @@ class Handler(BaseHTTPRequestHandler):
                 self._corps_refuse()
                 return
             signaler_presence_play(self.rfile.read(taille))
-            self._repondre(204, b"", "text/plain; charset=utf-8")
+            # play. est isole (COEP require-corp, pour Safari, 12/10/2026) : sans
+            # CORP, le navigateur refuse cette reponse venue du site principal.
+            self._repondre(204, b"", "text/plain; charset=utf-8",
+                           [("Cross-Origin-Resource-Policy", "same-site")])
             return
 
         if self.chemin == "/contact-createurs":

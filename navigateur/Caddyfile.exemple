@@ -8,7 +8,7 @@
 #	handle @play {
 #		encode zstd gzip
 #		header Cross-Origin-Opener-Policy same-origin
-#		header Cross-Origin-Embedder-Policy credentialless
+#		header Cross-Origin-Embedder-Policy require-corp
 #		header X-Content-Type-Options nosniff
 #
 #		# Version du paquet et page de demarrage : jamais en cache. Le reste porte un ?v=<version> ou ne change pas.

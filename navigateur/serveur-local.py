@@ -43,7 +43,7 @@ class H(http.server.SimpleHTTPRequestHandler):
         super().__init__(*a, directory=RACINE, **k)
     def end_headers(self):
         self.send_header("Cross-Origin-Opener-Policy", "same-origin")
-        self.send_header("Cross-Origin-Embedder-Policy", "credentialless")
+        self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
         self.send_header("Cache-Control", "no-store")
         super().end_headers()
     def log_message(self, *a): pass
