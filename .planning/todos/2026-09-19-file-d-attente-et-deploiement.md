@@ -3,6 +3,12 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 12/10/2026 (fin d'après-midi, branche `deploiement-2026-10-12e` = `2864effb` + 3 cherry-picks, site + play.)
+
+- Accueil : phrase « si j'ai oublié de te créditer » + lien vers le formulaire public `https://narwhalchampions.com/contact-createurs` (crédit ou retrait des créations, anti-spam, section dans /admin) (`44f9fa9d`, `bd2bab3a`).
+- Remerciements sur toute la largeur, sans défiler sur les vraies zones utiles 1366×657 à 2560×1300 (`5d42f2f7`).
+- Volontairement exclus (cherry-pick) : Team-Up `391ee75e` et lots 1 à 3 de la phase du méchant, à déployer ensemble plus tard.
+
 ## À DÉPLOYER AVEC LA NOUVELLE PHASE DU MÉCHANT (décision de l'utilisateur, 12/10)
 
 - Team-Up sans cibles à désigner (`391ee75e`, signalement Lilipulse, See No Evil Hear No Evil). Reste : le motif « injouable » sans le 2e personnage dit « Aucune cible possible » au lieu de nommer le personnage manquant.
