@@ -3,6 +3,13 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## ✅ DÉPLOYÉ LE 12/10/2026 (11 h 41, `0c5af428`, plateau `board-IXiSviLg.js`, site + play.)
+
+- Mode « D'un coup » : la question du moteur s'affiche de nouveau pendant la phase du méchant (`d0427249`, régression du 10/10 `d5c119a5`).
+- Coût « défausser N cartes de ta main » sur la vraie main : Swarmed by Rats hs018/hs019, Umbral Wings gb013, Wing Harness hs088 (`b9b134f8`).
+- Porte `tools/verifier_cibles.py` + dt031, dt082, dt084, iw002 (`b0d9ea78`).
+- Non déployé, essai seulement : lot 1 de la refonte de la phase du méchant (`cc31bb9d`).
+
 ## ✅ DÉPLOYÉ LE 12/10/2026 (10 h 39, `d65dda70`, plateau `board-CbQvrNyj.js`, site + play.)
 
 - Accueil : remerciements à Irefrixs + lien GitHub + mention légale complète sous les tuiles, visibles sans défiler sur PC (`f89c576e`).
