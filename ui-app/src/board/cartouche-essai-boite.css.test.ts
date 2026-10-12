@@ -49,3 +49,22 @@ describe('le telephone', () => {
     expect(tel).not.toMatch(/70dvh/)
   })
 })
+
+describe('lot 2 : une seule taille de carte par ecran', () => {
+  const lot2 = css.slice(css.indexOf('.deroule-phase.est-scene.est-essai.est-essai,\n.deroule-phase.est-scene.est-essai.est-essai * {'))
+
+  it('toutes les hauteurs de carte de la boite suivent --essai-carte-h, sur chaque element', () => {
+    expect(lot2.length, 'la regle du lot 2').toBeGreaterThan(0)
+    const r = lot2.slice(0, lot2.indexOf('}'))
+    expect(r).toMatch(/--vignette-h:\s*var\(--essai-carte-h, 170px\) !important/)
+    expect(r).toMatch(/--grande-h:\s*var\(--essai-carte-h, 170px\) !important/)
+  })
+
+  it('les nouveautes du bilan ne sont plus a 70 %', () => {
+    expect(lot2).toMatch(/\.deroule-nouveautes \.deroule-vignette \.scan-card \{\s*--card-w: calc\(var\(--vignette-h\) \* 127 \/ 176\)/)
+  })
+
+  it('aucun agrandissement sur place au survol dans la boite', () => {
+    expect(lot2).toMatch(/\.est-essai \.scan-card:hover \.scan-visuel \{\s*transform: none/)
+  })
+})

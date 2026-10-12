@@ -26,7 +26,9 @@
 //  - la relecture depuis le journal (`RelectureJournal`, D38).
 
 import {
+  useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -57,6 +59,8 @@ import type { CadreDeLEtape } from './couleur-joueur'
 import { vueSousCadre, type QuestionDuMoteur, type VueSousCadre } from './sous-cadre'
 import { BoutonOption, CarteNue, choixEnTexte, optionDe, SousCadre } from './SousCadre'
 import { avecIcones, marquerRessources } from './icones-ressources'
+import { NomsSurvolables, Texte, nomsMontrables, type NomDeCarte } from './noms-survolables'
+import { ajusterLesCartes, deborde, hauteurPosee } from './essai-tailles'
 import {
   compteurDesRevelations,
   herosViseDe,
@@ -238,7 +242,7 @@ function VignetteVue({ vignette, grande = false }: { vignette: Vignette; grande?
         <span className="deroule-vignette-nom">{vignette.nom}</span>
       )}
       {vignette.scan && vignette.recap ? <small className="deroule-recap">{vignette.recap}</small> : null}
-      {vignette.legende ? <figcaption className="deroule-legende">{vignette.legende}</figcaption> : null}
+      {vignette.legende ? <figcaption className="deroule-legende"><Texte>{vignette.legende}</Texte></figcaption> : null}
     </figure>
   )
 }
@@ -294,21 +298,21 @@ function Rangee({
         {choix}
         {rangee.resultat ? (
           <span className="deroule-resultat-gros">
-            <strong className="deroule-resultat-texte">{rangee.resultat.texte}</strong>
+            <strong className="deroule-resultat-texte"><Texte>{rangee.resultat.texte}</Texte></strong>
             {jauge ? <span className="deroule-jauge">{jauge}</span> : null}
-            {rangee.resultat.note ? <small className="deroule-resultat-note">{rangee.resultat.note}</small> : null}
+            {rangee.resultat.note ? <small className="deroule-resultat-note"><Texte>{rangee.resultat.note}</Texte></small> : null}
           </span>
         ) : null}
         {rangee.annulee ? (
           <strong className="deroule-annulee-cause">
-            {rangee.annulee.cause ? `${t('Annulée')} · ${rangee.annulee.cause}` : t('Annulée')}
+            <Texte>{rangee.annulee.cause ? `${t('Annulée')} · ${rangee.annulee.cause}` : t('Annulée')}</Texte>
           </strong>
         ) : null}
         {fin}
       </div>
       {rangee.lignesEtoile.map((ligne) => (
         <p key={ligne} className="deroule-etoile">
-          {ligne}
+          <Texte>{ligne}</Texte>
         </p>
       ))}
     </div>
@@ -370,9 +374,9 @@ function ResultatEssai({ rangee }: { rangee: VueRangee }) {
     const critique = pose ? jaugeCritique(rangee.resultat.jauge, pose.jauge) : false
     return (
       <span className={`essai-boite${critique ? ' est-critique' : ''}`}>
-        <strong className="deroule-resultat-texte">{rangee.resultat.texte}</strong>
+        <strong className="deroule-resultat-texte"><Texte>{rangee.resultat.texte}</Texte></strong>
         {jauge ? <span className="deroule-jauge">{jauge}</span> : null}
-        {rangee.resultat.note ? <small className="deroule-resultat-note">{rangee.resultat.note}</small> : null}
+        {rangee.resultat.note ? <small className="deroule-resultat-note"><Texte>{rangee.resultat.note}</Texte></small> : null}
       </span>
     )
   }
@@ -429,7 +433,7 @@ function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
               <span className="essai-terme">
                 <VignetteVue vignette={nue(boost)} />
                 <PictoBoost nombre={boost.apport} etoile={boost.etoile} />
-                {boost.etoile ? <small className="essai-etoile">{ligne ?? '★'}</small> : null}
+                {boost.etoile ? <small className="essai-etoile"><Texte>{ligne ?? '★'}</Texte></small> : null}
               </span>
             </span>
           )
@@ -459,13 +463,13 @@ function RangeeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
         {!cible ? <span className="essai-groupe essai-resultat">{resultat}</span> : null}
         {rangee.annulee ? (
           <strong className="deroule-annulee-cause">
-            {rangee.annulee.cause ? `${t('Annulée')} · ${rangee.annulee.cause}` : t('Annulée')}
+            <Texte>{rangee.annulee.cause ? `${t('Annulée')} · ${rangee.annulee.cause}` : t('Annulée')}</Texte>
           </strong>
         ) : null}
       </div>
       {etoiles.map((ligne) => (
         <p key={ligne} className="deroule-etoile">
-          {ligne}
+          <Texte>{ligne}</Texte>
         </p>
       ))}
     </div>
@@ -504,12 +508,14 @@ function CarteRevelee({
               ))}
             </p>
           ) : null}
-          {revelee.surtitreRenfort ? <p className="deroule-surtitre-renfort">{revelee.surtitreRenfort}</p> : null}
+          {revelee.surtitreRenfort ? <p className="deroule-surtitre-renfort"><Texte>{revelee.surtitreRenfort}</Texte></p> : null}
           {revelee.typeFr ? <p className="deroule-type">{revelee.typeFr}</p> : null}
           {revelee.lignes.length > 0 ? (
             <ul className="deroule-lignes">
               {revelee.lignes.map((ligne, rang) => (
-                <li key={rang}>{ligne}</li>
+                <li key={rang}>
+                  <Texte>{ligne}</Texte>
+                </li>
               ))}
             </ul>
           ) : null}
@@ -549,7 +555,12 @@ function ChaineRevelee({ chaine, essai = false }: { chaine: MaillonChaine[]; ess
         if (maillon.annulee) classes.push('est-annulee')
         return (
           <li key={maillon.vignette.cle} className={classes.join(' ')}>
-            {maillon.lien ? <span className="deroule-chaine-lien">{`→ ${maillon.lien}`}</span> : null}
+            {maillon.lien ? (
+              <span className="deroule-chaine-lien">
+                {'→ '}
+                <Texte>{maillon.lien}</Texte>
+              </span>
+            ) : null}
             <span className="deroule-chaine-carte">
               <VignetteVue vignette={maillon.vignette} />
               {essai && maillon.annulee ? (
@@ -562,7 +573,11 @@ function ChaineRevelee({ chaine, essai = false }: { chaine: MaillonChaine[]; ess
                   <VignetteVue vignette={maillon.annuleePar} />
                 </span>
               ) : null}
-              {maillon.annulee ? <span className="deroule-chaine-annulee">{maillon.annulee}</span> : null}
+              {maillon.annulee ? (
+                <span className="deroule-chaine-annulee">
+                  <Texte>{maillon.annulee}</Texte>
+                </span>
+              ) : null}
             </span>
           </li>
         )
@@ -586,7 +601,9 @@ function Stade({ stade, grisee = false }: { stade: VueStade; grisee?: boolean })
       {stade.deltas.length > 0 ? (
         <ul className="deroule-lignes">
           {stade.deltas.map((delta) => (
-            <li key={delta}>{delta}</li>
+            <li key={delta}>
+              <Texte>{delta}</Texte>
+            </li>
           ))}
         </ul>
       ) : null}
@@ -603,7 +620,9 @@ function LigneColonne({ colonne, unite }: { colonne: ColonneJauge; unite: 'degat
       : `+${colonne.total} ${colonne.total < 2 ? t('menace') : t('menaces')}`
   return (
     <li>
-      <span className="deroule-colonne-nom">{colonne.nom}</span> <span className="deroule-jauge">{jauge || cout}</span>
+      <span className="deroule-colonne-nom">
+        <Texte>{colonne.nom}</Texte>
+      </span> <span className="deroule-jauge">{jauge || cout}</span>
       {colonne.statuts?.map((statut) => (
         <small key={statut} className="deroule-statut">
           {statut}
@@ -750,11 +769,15 @@ function LigneDuHaut({
       </div>
       {outils ? (
         <div className="essai-titre-ligne">
-          <h2 className="deroule-titre-court">{titre}</h2>
+          <h2 className="deroule-titre-court">
+            <Texte>{titre}</Texte>
+          </h2>
           {outils}
         </div>
       ) : (
-        <h2 className="deroule-titre-court">{titre}</h2>
+        <h2 className="deroule-titre-court">
+          <Texte>{titre}</Texte>
+        </h2>
       )}
     </header>
   )
@@ -819,7 +842,63 @@ function vignettesDUnAutre(
 }
 
 /** Toutes les cartes que le cartouche dessine : la loupe les retrouve par `data-card-id` (piege 8). */
-function scansDe(corps: VueCorps | undefined, question: VueSousCadre | undefined, autres: Vignette[]): ScanCardProps[] {
+/** Au doigt : au-dela, l'appui est un appui long (ouvre la carte en grand). */
+const DELAI_APPUI_LONG = 450
+
+/**
+ * Les noms ecrits dans la boite, avec leur carte : ceux de l'etape (auteur,
+ * cible, defenseur, boosts) et ceux des vignettes dessinees. `nomsMontrables`
+ * ne garde que ceux que la loupe sait montrer.
+ */
+function candidatsDesNoms(
+  lue: EtapeDeroule | undefined,
+  corps: VueCorps | undefined,
+  autres: Array<Vignette | undefined>
+): Array<{ nom?: string; carteId?: number }> {
+  const candidats: Array<{ nom?: string; carteId?: number }> = []
+  const vignettes = (liste: Array<Vignette | undefined>) => {
+    for (const v of liste) if (v) candidats.push({ nom: v.nom, carteId: v.carteId })
+  }
+  if (lue) {
+    candidats.push(
+      { nom: lue.auteurNom, carteId: lue.carteId },
+      { nom: lue.cibleNom, carteId: lue.cibleId },
+      { nom: lue.defenseurNom, carteId: lue.defenseurId },
+      ...lue.boosts.map((boost) => ({ nom: boost.nom, carteId: boost.cibleId }))
+    )
+  }
+  vignettes(autres)
+  const rangee = (r: VueRangee) => vignettes([r.acteur, ...r.boosts, r.defenseur, ...r.cibles])
+  switch (corps?.genre) {
+    case 'rangee':
+      rangee(corps)
+      break
+    case 'attente':
+      rangee(corps.rangee)
+      break
+    case 'revelee':
+      vignettes([corps.carte, corps.renfort, corps.remplacement, ...(corps.chaine ?? []).flatMap((m) => [m.vignette, m.annuleePar])])
+      break
+    case 'stade':
+      vignettes([corps.avant, corps.apres])
+      break
+    case 'bilan':
+      vignettes(corps.nouveautes)
+      for (const colonne of [...corps.menace, ...corps.heros]) candidats.push({ nom: colonne.nom, carteId: colonne.carteId })
+      break
+    default:
+      break
+  }
+  return candidats
+}
+
+function scansDe(
+  corps: VueCorps | undefined,
+  question: VueSousCadre | undefined,
+  autres: Vignette[],
+  /** Essai : les noms du bilan (heros, allies, manigances) ouvrent aussi leur carte. */
+  carteScene?: (id: number, faceVisible: boolean) => ScanCardProps | undefined
+): ScanCardProps[] {
   const scans: Array<ScanCardProps | undefined> = autres.map((v) => v.scan)
   const vignettes = (liste: Array<Vignette | undefined>) => {
     for (const v of liste) scans.push(v?.scan)
@@ -837,7 +916,7 @@ function scansDe(corps: VueCorps | undefined, question: VueSousCadre | undefined
         corps.carte,
         corps.renfort,
         corps.remplacement,
-        ...(corps.chaine ?? []).map((maillon) => maillon.vignette),
+        ...(corps.chaine ?? []).flatMap((maillon) => [maillon.vignette, maillon.annuleePar]),
         ...(corps.question?.choix ?? []),
       ])
       break
@@ -846,6 +925,11 @@ function scansDe(corps: VueCorps | undefined, question: VueSousCadre | undefined
       break
     case 'bilan':
       vignettes(corps.nouveautes)
+      if (carteScene) {
+        for (const colonne of [...corps.menace, ...corps.heros]) {
+          if (colonne.carteId !== undefined) scans.push(carteScene(colonne.carteId, true))
+        }
+      }
       break
     default:
       break
@@ -979,14 +1063,95 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   // retrouvee dans la liste COURANTE (`apercu-survol.ts`) : une carte qui
   // quitte le cartouche emporte son agrandissement. Il s'ouvre juste
   // au-dessus du cartouche, centre sur la vignette survolee.
-  const scans = scansDe(vuePage?.corps, vueQ, [...vignettesAttente, ...(defenseVue?.acteur ? [defenseVue.acteur] : [])])
-  const { regardee, survol, quitter } = useApercuSurvol(scans)
+  const scans = scansDe(
+    vuePage?.corps,
+    vueQ,
+    [...vignettesAttente, ...(defenseVue?.acteur ? [defenseVue.acteur] : [])],
+    essai ? props.carteScene : undefined
+  )
+  const { regardee, survol, quitter, viser } = useApercuSurvol(scans)
   const optionSurvolee = useRef<number | undefined>(undefined)
+
+  // LOT 2 (essai, decision 55) : les noms de cartes ecrits dans la boite
+  // ouvrent la carte a droite, comme les cartes elles-memes.
+  const nomsDeLaBoite: NomDeCarte[] = essai
+    ? nomsMontrables(candidatsDesNoms(vuePage?.lue, vuePage?.corps, [...vignettesAttente, ...(defenseVue ? [defenseVue.acteur, ...defenseVue.cibles] : [])]), scans)
+    : []
+
+  // LOT 2 (essai, decisions 29, 48, 54) : une seule taille de carte par ecran,
+  // qui rapetisse toute ensemble si l'ecran ne tient pas (`essai-tailles.ts`).
+  // L'ecran est la page lue dans son etat : etape, page, boosts retournes,
+  // question posee ou non. Un nouvel ecran repart de la plus grande taille ;
+  // le meme ecran qui grandit (une question qui s'ajoute) ne fait que descendre.
+  const refSection = useRef<HTMLElement | null>(null)
+  const refCartouche = props.refCartouche
+  const poserSection = useCallback(
+    (el: HTMLElement | null) => {
+      refSection.current = el
+      refCartouche(el)
+    },
+    [refCartouche]
+  )
+  const ecranDesCartes = [
+    vuePage?.etape.cle ?? 'sans-etape',
+    vuePage?.etape.etat ?? '',
+    page,
+    props.boostsMontres,
+    questionAuJoueur ? 'question' : '',
+    vueQ?.genre ?? '',
+    attenteSurPlace ? 'attente' : '',
+    relu?.temps ?? '',
+  ].join('|')
+  const ecranAjuste = useRef('')
+  const [, setRecalage] = useState(0)
+  useLayoutEffect(() => {
+    const section = refSection.current
+    if (!section) return
+    if (!essai || reduit) {
+      section.style.removeProperty('--essai-carte-h')
+      ecranAjuste.current = ''
+      return
+    }
+    const corps = section.querySelector<HTMLElement>(':scope > .deroule-corps')
+    if (!corps) return
+    if (ecranAjuste.current !== ecranDesCartes) {
+      ecranAjuste.current = ecranDesCartes
+      ajusterLesCartes(section, corps)
+    } else if (deborde(corps)) {
+      ajusterLesCartes(section, corps, hauteurPosee(section))
+    }
+  })
+  // Une mesure prise pendant une animation (le glissement d'entree du corps,
+  // le bandeau de phase) lit des positions decalees : on remesure, depuis la
+  // plus grande taille, a la fin de chaque animation et a chaque redimension.
+  useEffect(() => {
+    if (!essai) return
+    const section = refSection.current
+    const recaler = () => {
+      ecranAjuste.current = ''
+      setRecalage((n) => n + 1)
+    }
+    window.addEventListener('resize', recaler)
+    section?.addEventListener('animationend', recaler)
+    section?.addEventListener('transitionend', recaler)
+    return () => {
+      window.removeEventListener('resize', recaler)
+      section?.removeEventListener('animationend', recaler)
+      section?.removeEventListener('transitionend', recaler)
+    }
+  }, [essai, montre])
+
+  // LOT 2 (essai, decision 56) : au doigt, un APPUI LONG sur une carte ou un
+  // nom ouvre la carte en grand, relacher la ferme. L'appui court ne fait
+  // rien : le survol emule qui suit un appui ne doit pas l'ouvrir, et le clic
+  // qui suit un appui long ne doit pas choisir la carte.
+  const appui = useRef<{ minuteur?: number; ouvert: boolean; doigt: boolean }>({ ouvert: false, doigt: false })
+  useEffect(() => () => window.clearTimeout(appui.current.minuteur), [])
 
   if (!montre) return null
 
   const survolerSection = (evenement: ReactMouseEvent<HTMLElement>) => {
-    survol(evenement)
+    if (!(essai && appui.current.doigt)) survol(evenement)
     const cible = evenement.target as HTMLElement
     // Le survol d'une option la signale a la table (pulse des cibles), comme
     // dans le panneau d'avant ; une option indisponible ne pulse pas.
@@ -1201,12 +1366,45 @@ export function CartouchePhase(props: CartouchePhaseProps) {
 
   // On attrape le carre sur tout fond libre : jamais sur une carte, un bouton
   // ou un champ, qui gardent leur clic.
+  const debutAppui = (evenement: ReactPointerEvent<HTMLElement>) => {
+    if (!essai) return
+    appui.current.doigt = evenement.pointerType !== 'mouse'
+    appui.current.ouvert = false
+    window.clearTimeout(appui.current.minuteur)
+    if (!appui.current.doigt) return
+    const id = (evenement.target as HTMLElement).closest<HTMLElement>('[data-card-id]')?.dataset.cardId
+    if (!id) return
+    appui.current.minuteur = window.setTimeout(() => {
+      appui.current.ouvert = true
+      viser(id)
+    }, DELAI_APPUI_LONG)
+  }
+  const finAppui = () => {
+    if (!essai) return
+    window.clearTimeout(appui.current.minuteur)
+    if (appui.current.ouvert) viser(undefined)
+  }
   const gestesDuFond = {
     ...props.gestes,
     onPointerDown: (evenement: ReactPointerEvent<HTMLElement>) => {
+      debutAppui(evenement)
       if ((evenement.target as HTMLElement).closest('button, [data-card-id], a, input, select, textarea')) return
       props.gestes.onPointerDown(evenement)
     },
+    onPointerUp: (evenement: ReactPointerEvent<HTMLElement>) => {
+      finAppui()
+      props.gestes.onPointerUp(evenement)
+    },
+    onPointerCancel: () => {
+      finAppui()
+      props.gestes.onPointerCancel()
+    },
+  }
+  const avalerApresAppuiLong = (evenement: ReactMouseEvent<HTMLElement>) => {
+    if (!essai || !appui.current.ouvert) return
+    appui.current.ouvert = false
+    evenement.preventDefault()
+    evenement.stopPropagation()
   }
 
   const classes = ['deroule-phase', 'est-scene', 'poignee-glisser']
@@ -1232,7 +1430,11 @@ export function CartouchePhase(props: CartouchePhaseProps) {
       {compteur ? (
         <span className="essai-compteur">
           <b>{t('Carte %1 / %2').replace('%1', String(compteur.rang)).replace('%2', String(compteur.total))}</b>
-          {compteur.ajouts.length > 0 ? <small>{compteur.ajouts.join(' · ')}</small> : null}
+          {compteur.ajouts.length > 0 ? (
+            <small>
+              <Texte>{compteur.ajouts.join(' · ')}</Texte>
+            </small>
+          ) : null}
         </span>
       ) : null}
       <button
@@ -1249,8 +1451,9 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   ) : undefined
 
   return (
+    <NomsSurvolables value={nomsDeLaBoite}>
     <section
-      ref={props.refCartouche}
+      ref={poserSection}
       className={classes.join(' ')}
       style={props.style}
       {...gestesDuFond}
@@ -1258,6 +1461,14 @@ export function CartouchePhase(props: CartouchePhaseProps) {
       aria-label={horsPhase ? t('Pendant ton tour') : t('Phase du méchant')}
       onMouseOver={survolerSection}
       onMouseLeave={quitterSection}
+      onClickCapture={essai ? avalerApresAppuiLong : undefined}
+      onContextMenu={
+        essai
+          ? (evenement) => {
+              if ((evenement.target as HTMLElement).closest('[data-card-id]')) evenement.preventDefault()
+            }
+          : undefined
+      }
     >
       <LigneDuHaut
         liste={horsPhase ? [] : liste}
@@ -1401,6 +1612,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
       </div>
       {regardee ? <CarteApercu carte={regardee} classe="au-dessus-du-deroule" /> : null}
     </section>
+    </NomsSurvolables>
   )
 }
 

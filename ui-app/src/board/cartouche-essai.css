@@ -842,3 +842,63 @@ body.plateau-sans-animations .scan-card.is-target-pulse .scan-frame {
 html[data-affichage='sobre'] .deroule-phase.est-scene.est-essai.est-essai .deroule-ligne-haut {
   background: #2a2d33;
 }
+
+/* --- LOT 2 (refonte du 12/10/2026) : UNE SEULE TAILLE DE CARTE PAR ECRAN -----
+   Decisions 29, 48 et 54 : toutes les cartes de la boite ont la meme hauteur,
+   `--essai-carte-h`, posee sur la boite par `essai-tailles.ts` (170 px au plus,
+   moins si l'ecran ne tient pas : toutes rapetissent ensemble, jamais de
+   defilement). Les regles d'avant posaient des hauteurs differentes selon le
+   role (grande carte revelee, chaine, bilan) : elles sont toutes couvertes ici,
+   sur chaque element (une variable redefinie plus bas dans l'arbre gagnerait
+   sinon). La carte qui annule, posee EN TAMPON sur celle qu'elle annule, garde
+   sa petite taille : sa mise en scene est celle du lot 5. */
+.deroule-phase.est-scene.est-essai.est-essai,
+.deroule-phase.est-scene.est-essai.est-essai * {
+  --vignette-h: var(--essai-carte-h, 170px) !important;
+  --grande-h: var(--essai-carte-h, 170px) !important;
+}
+
+.deroule-phase.est-scene.est-essai.est-essai .essai-annuleur,
+.deroule-phase.est-scene.est-essai.est-essai .essai-annuleur * {
+  --vignette-h: 46px !important;
+}
+
+/* Le bilan montrait ses nouveautes a 70 % : meme taille que le reste. */
+.deroule-phase.est-scene.est-essai.est-essai .deroule-nouveautes .deroule-vignette .scan-card {
+  --card-w: calc(var(--vignette-h) * 127 / 176);
+}
+
+.deroule-phase.est-scene.est-essai.est-essai .deroule-nouveautes .deroule-vignette .scan-card.is-landscape {
+  --card-w: calc(var(--vignette-h) * 176 / 127);
+}
+
+/* Pas d'agrandissement sur place au survol, ou que soit la carte dans la
+   boite : la carte s'ouvre dans l'apercu habituel, a droite du plateau. */
+.deroule-phase.est-scene.est-essai .scan-card:hover {
+  filter: none;
+  z-index: auto;
+}
+
+.deroule-phase.est-scene.est-essai .scan-card:hover .scan-visuel {
+  transform: none;
+}
+
+/* Au doigt : l'appui long ouvre la carte, sans menu du navigateur. */
+.deroule-phase.est-scene.est-essai [data-card-id] {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Un nom de carte survolable (decision 55) : souligne en pointilles. */
+.deroule-phase.est-essai .essai-nom {
+  font-weight: inherit;
+  text-decoration: underline dotted currentColor 1.5px;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+.deroule-phase.est-essai .essai-nom:hover {
+  color: var(--menace, #f0b95f);
+  text-decoration-style: solid;
+}

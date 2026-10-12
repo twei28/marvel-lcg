@@ -7,7 +7,7 @@
 // Les textes passent par `ecran` (piege 24) : une phrase decoupee en plusieurs
 // elements reste trouvable.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, fireEvent, render } from '@testing-library/react'
+import { act, cleanup, fireEvent, render } from '@testing-library/react'
 import { CartoucheHorsPhase, CartouchePhase, RelectureJournal, type CartouchePhaseProps } from './CartouchePhase'
 import type { EtapeDeroule } from './deroule-phase'
 import type { ScanCardProps } from '../components/ScanCard'
@@ -1305,5 +1305,79 @@ describe('refonte du 12/10/2026, lot 1 : la boite de la colonne de gauche', () =
     monter({ essai: true, cadre: { genre: 'commun' } })
     expect(section()?.className).toContain('est-cadre-commun')
     expect(document.querySelector('.essai-pastille-joueur b')).toBeNull()
+  })
+})
+
+describe('refonte du 12/10/2026, lot 2 : cartes, noms et appui long', () => {
+  it("sans l'essai, rien ne change : aucun nom survolable, aucune taille posee", () => {
+    monter({ index: 1 })
+    expect(document.querySelector('.essai-nom')).toBeNull()
+    expect(section()?.style.getPropertyValue('--essai-carte-h')).toBe('')
+  })
+
+  it('avec l essai, une taille de carte est posee sur la boite (170 px quand tout tient)', () => {
+    monter({ index: 1, essai: true })
+    expect(section()?.style.getPropertyValue('--essai-carte-h')).toBe('170px')
+  })
+
+  it('une animation qui se termine dans la boite relance la mesure depuis la plus grande taille', () => {
+    monter({ index: 1, essai: true })
+    section()?.style.setProperty('--essai-carte-h', '60px')
+    fireEvent.animationEnd(section() as Element)
+    expect(section()?.style.getPropertyValue('--essai-carte-h')).toBe('170px')
+  })
+
+  it('reduite, la boite ne porte plus de taille de carte', () => {
+    monter({ index: 1, essai: true })
+    fireEvent.click(document.querySelector('.essai-reduire') as Element)
+    expect(section()?.style.getPropertyValue('--essai-carte-h')).toBe('')
+  })
+
+  it('le nom de l attaquant dans le titre est survolable et ouvre sa carte dans l apercu', () => {
+    monter({ index: 1, essai: true })
+    const nom = document.querySelector<HTMLElement>(`.deroule-titre-court .essai-nom[data-card-id="${RHINO}"]`)
+    expect(nom?.textContent).toBe('Rhino')
+    fireEvent.mouseOver(nom as Element)
+    expect(document.querySelector('.carte-apercu')).not.toBeNull()
+  })
+
+  it('un boost pas encore retourne ne montre ni sa carte ni son nom', () => {
+    monter({ index: 1, essai: true, boostsMontres: 0, montrerBoostSuivant: () => {} })
+    expect(document.querySelector('[data-card-id="91"]')).toBeNull()
+    expect(section()?.textContent).not.toContain('Charge')
+  })
+
+  it('au doigt, un appui long sur une carte l ouvre en grand ; relacher la ferme', () => {
+    vi.useFakeTimers()
+    try {
+      monter({ index: 1, essai: true })
+      const carte = document.querySelector(`.deroule-corps [data-card-id="${RHINO}"]`) as Element
+      fireEvent.pointerDown(carte, { pointerType: 'touch' })
+      act(() => {
+        vi.advanceTimersByTime(500)
+      })
+      expect(document.querySelector('.carte-apercu')).not.toBeNull()
+      fireEvent.pointerUp(carte, { pointerType: 'touch' })
+      expect(document.querySelector('.carte-apercu')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('au doigt, un appui court n ouvre rien, meme avec le survol emule qui suit', () => {
+    vi.useFakeTimers()
+    try {
+      monter({ index: 1, essai: true })
+      const carte = document.querySelector(`.deroule-corps [data-card-id="${RHINO}"]`) as Element
+      fireEvent.pointerDown(carte, { pointerType: 'touch' })
+      act(() => {
+        vi.advanceTimersByTime(100)
+      })
+      fireEvent.pointerUp(carte, { pointerType: 'touch' })
+      fireEvent.mouseOver(carte)
+      expect(document.querySelector('.carte-apercu')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })
