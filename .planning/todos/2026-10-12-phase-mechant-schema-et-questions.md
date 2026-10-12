@@ -89,4 +89,13 @@ Références retenues par l'utilisateur : **couleur par joueur**, **lignes qui r
   - feuille basse du téléphone (40 %) trop petite pour une question (342 px de contenu pour 112 visibles) ;
   - bouton « Ne pas utiliser… » (zoom 1,5) qui dépasse de 3 px dans l'écran de question ;
   - à 1366×768, la table rétrécit nettement à côté de la colonne.
+- Lot 3 (`8e61d72a`) flèches ; lot 4 (`08a1bf75`) trajets et chiffres calés ; lot 5a (`5f075f67`), 5b (`04dd3d06`), 5c (`612ed7f4`) écrans particuliers.
+- Restes ajoutés par le lot 5c (partie Klaw réelle, 1366×657) :
+  - Continuer descend de 25 px sur une « Attaque de Klaw » (ligne « Boost 2/2 retourné · La phase s'arrête ici ») : décision 1 violée, à corriger ;
+  - débordement de 16 px sur « Révélée par Stepford Cuckoos » (mesuré avant le zoom 0,8) ;
+  - étiquette « Captain America est vaincu » coupée à droite ;
+  - la PAGE défile à 1366×657 sur tous les écrans (peut-être antérieur à la refonte, à vérifier) ;
+  - décision 46 (réponses en attente) impossible telle quelle : le moteur résout les réponses à l'envoi, rien n'est « en attente » à publier ;
+  - Riposte, Péril et élimination pas vus en vraie partie.
+- Bug moteur trouvé : un joueur ÉLIMINÉ révèle encore sa carte rencontre, la partie se bloque (correction lancée le 12/10).
 
