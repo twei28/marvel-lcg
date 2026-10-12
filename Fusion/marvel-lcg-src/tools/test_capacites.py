@@ -2922,6 +2922,18 @@ CAS = [
         "verifier": "iw_mister_fantastic_a_choisi",
     },
     {
+        "nom": "iw002 * Mister Fantastic — l'option defausse ne propose QUE le dessus de ta defausse (porte verifier_cibles, 12/10/2026)",
+        "pourquoi": ("\"YourDiscardPileTop\" est un lieu (from_where), pas une cible : passe comme cible, il retombait "
+                     "en silence sur les cartes en jeu, et l'option laissait prendre en main Rhino ou une manigance"),
+        "scenario": "rhino",
+        "heros": "invisible_woman",
+        "mise_en_place": ["Puzzle.ChangeForm('iw001b')", "Puzzle.Discard('01088')"],
+        "declencher": ["Puzzle.PutIntoPlay('iw002')"],
+        "preferer_option": "Add the top card",
+        "verifier": "cibles_legales_proposees",
+        "attendu": {"option": "Add the top card", "contient": ["01088"], "exclut": ["01094", "01097b"]},
+    },
+    {
         "nom": "iw013 Family Time — l'obligation se resout depuis la forme heros",
         "pourquoi": "obligation du pack, jamais jouee",
         "scenario": "rhino",
@@ -46630,6 +46642,48 @@ CAS = [
                     "degats": [["01094", 0], ["01101", 0]]},
     },
     {
+        "nom": "dt082 Tough Call [dt] — « a character » : seuls des personnages sont proposes (porte verifier_cibles, 12/10/2026)",
+        "pourquoi": ("la cible \"Character\" n'existe pas dans le moteur : elle retombait en silence sur toutes les "
+                     "cartes en jeu, manigance principale comprise. `Unit2` = un personnage"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "main_exclusive": ["dt082", "01088"],
+        "declencher": [],
+        "jouer": ["dt082"],
+        "payer_avec": ["01088"],
+        "cibles": ["01094"],
+        "verifier": "cibles_legales_proposees",
+        "attendu": {"porteur": "dt082", "contient": ["01094"], "exclut": ["01097b"]},
+    },
+    {
+        "nom": "dt031 Act on Impulse [dt] — « give a character a status card » : seuls des personnages sont proposes (porte verifier_cibles)",
+        "pourquoi": "meme cible \"Character\" inconnue que dt082, dans le choix des trois statuts",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "main_exclusive": ["dt031", "01088"],
+        "declencher": ["Puzzle.ChangeForm('01001b')"],
+        "payer_avec": ["01088"],
+        "cibles": ["01094"],
+        "verifier": "cibles_legales_proposees",
+        "attendu": {"option": "Give a character a", "contient": ["01094"], "exclut": ["01097b"]},
+    },
+    {
+        "nom": "dt084 Off the Cuff [dt] — Spontaneity deja en jeu : « 1 damage to a character » ne propose que des personnages (porte verifier_cibles)",
+        "pourquoi": "meme cible \"Character\" inconnue ; la branche ne s'ouvre que si Spontaneity (dt021) est deja en jeu",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('dt021', under_control=True)"],
+        "main_exclusive": ["dt084", "01044"],
+        "declencher": [],
+        "jouer": ["dt084"],
+        "payer_avec": ["01044"],
+        "cibles": ["01094"],
+        "verifier": "cibles_legales_proposees",
+        "attendu": {"option": "Deal 1 damage to a character", "contient": ["01094"], "exclut": ["01097b", "dt021"]},
+    },
+    {
         "nom": "dt105 Venompool [dt] — Alias : gratuit quand Deadpool (Wade Wilson) est controle, et Deadpool est defausse a l'entree en jeu",
         "pourquoi": ("les quatre porteurs d'Alias avaient un `subtitle` VIDE dans cards.json (29/09/2026) : "
                      "le mot-cle etait inerte. Main vide sauf la carte : elle ne peut entrer en jeu "
@@ -58472,6 +58526,29 @@ def gb013_action_indisponible(monde, aides):
     return True, "Hero Action declaree mais indisponible avec 1 carte en main"
 
 
+def cibles_legales_proposees(monde, aides):
+    """Porte verifier_cibles.py (12/10/2026) : les cibles legales qu'une option a
+    PROPOSEES au joueur. attendu = {"option": fragment du nom (facultatif),
+    "porteur": card_id de la carte (facultatif), "contient": [card_id...],
+    "exclut": [card_id...]}. Un nom de cible inconnu du moteur retombe en silence
+    sur les cartes en jeu : `exclut` le rend visible."""
+    attendu = aides["cas"]["attendu"]
+    vues = [e for e in aides["etat"].get("cibles_legales", [])
+            if (not attendu.get("option") or attendu["option"] in e["option"])
+            and (not attendu.get("porteur") or e["porteur"] == attendu["porteur"])]
+    if not vues:
+        noms = sorted({(e["option"], e["porteur"]) for e in aides["etat"].get("cibles_legales", [])})
+        return False, f"option jamais proposee ; vues : {noms[:12]}"
+    cibles = set()
+    for e in vues:
+        cibles.update(c for c in e["cibles"] if c)
+    manquantes = [c for c in attendu.get("contient", []) if c not in cibles]
+    interdites = [c for c in attendu.get("exclut", []) if c in cibles]
+    if manquantes or interdites:
+        return False, f"cibles proposees {sorted(cibles)} ; manquantes {manquantes} ; interdites {interdites}"
+    return True, f"cibles proposees {sorted(cibles)}"
+
+
 def sd021_chaines(monde, aides):
     """sd021 : apres l'attaque du sbire porteur, le heros est SONNE et
     l'attachement est defausse."""
@@ -62424,6 +62501,27 @@ def executer_un_cas(game_dir, port, index):
             etat.setdefault("prompts", []).append(str(getattr(data, "prompt_text", "") or ""))
             etat.setdefault("options_vues", []).extend(
                 str(o.get("name", "")).replace("_", " ") for o in options if isinstance(o, dict))
+            # `cibles_legales` (12/10/2026, porte verifier_cibles.py) : pour chaque
+            # option vue, le card_id de sa carte porteuse et ses cibles legales.
+            # Lu par `cibles_legales_proposees`. Additif : aucun cas existant ne
+            # le lit.
+            _objets = monde_courant().object_manager.card_dict
+            def _card_id(objet_id):
+                objet = _objets.get(objet_id)
+                if objet is None:
+                    try:
+                        objet = _objets.get(int(objet_id))
+                    except (TypeError, ValueError):
+                        objet = None
+                face = objet.face if objet is not None else None
+                return getattr(getattr(face, "paper", None), "card_id", None)
+            for o in options:
+                if isinstance(o, dict):
+                    etat.setdefault("cibles_legales", []).append({
+                        "option": str(o.get("name", "")).replace("_", " "),
+                        "porteur": _card_id(o.get("bind_id")),
+                        "cibles": [_card_id(x) for x in (o.get("all_legal_targets") or [])],
+                    })
         elif cas.get("tracer_mise_en_place"):
             # Ordre des questions de la mise en place (10/10/2026) : le nom de
             # chaque option et le card_id de la carte qui porte la question.

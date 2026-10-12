@@ -15,7 +15,7 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityFactory.ForChoiceAbility(
                 "Add the top card of your discard pile to your hand",
                 lambda targets: Faces.MoveAllTo(targets, player.hand_cards, effect),
-            ).SetTarget("YourDiscardPileTop", range=(0, 1)),
+            ).SetTarget(from_where=["YourDiscardPileTop"], range=(0, 1)),
         )
 
     return [

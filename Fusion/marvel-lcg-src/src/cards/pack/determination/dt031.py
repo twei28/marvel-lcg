@@ -18,7 +18,7 @@ def GetAbilities() -> Sequence['Ability']:
                     "Give a character a %s status card" % statut.lower(),
                     lambda targets, statut=statut:
                         Faces.GiveStatus(targets, statut, effect)
-                ).SetTarget("Character")
+                ).SetTarget(Unit2)
                 for statut in ("Tough", "Stunned", "Confused")
             ]
         )

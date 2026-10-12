@@ -18,5 +18,5 @@ def GetAbilities() -> Sequence['Ability']:
             tough_call
         ).SetPlay()
         .SetCostFunc(CostFunc.TakeDamage(2, "Initiator"))
-        .SetTarget("Character"),
+        .SetTarget(Unit2),
     ]

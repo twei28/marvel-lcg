@@ -32,7 +32,7 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityFactory.ForChoiceAbility(
                 "Deal 1 damage to a character, then place a status card on them",
                 frapper
-            ).SetTarget("Character")
+            ).SetTarget(Unit2)
         )
 
     return [
