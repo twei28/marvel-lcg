@@ -1359,6 +1359,20 @@ CREATE TABLE IF NOT EXISTS parties_play (
     difficulte  TEXT
 );
 CREATE INDEX IF NOT EXISTS parties_play_jour ON parties_play(jour);
+-- LES DEMANDES DES CREATEURS (12/10/2026) : un createur (image, carte, contenu
+-- fan-made) qui n'a pas ete credite, ou qui veut que ses creations soient
+-- retirees, l'ecrit depuis le lien de l'accueil. Sans compte : `contact` est
+-- ce qu'il a donne pour etre recontacte (e-mail ou Discord), rien d'autre.
+-- `genre` vaut « crediter » ou « retirer ».
+CREATE TABLE IF NOT EXISTS demandes_createurs (
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    quand    TEXT NOT NULL,
+    nom      TEXT NOT NULL,
+    contact  TEXT NOT NULL,
+    genre    TEXT NOT NULL,
+    message  TEXT NOT NULL,
+    etat     TEXT NOT NULL DEFAULT 'nouvelle'
+);
 """
 
 
@@ -2344,6 +2358,71 @@ def debit_rapport_ok(hote: str) -> bool:
         return False
     recents.append(maintenant)
     return True
+
+
+# --------------------------------------------------------------------------
+# Les demandes des createurs (12/10/2026)
+# --------------------------------------------------------------------------
+# Formulaire PUBLIC, sans compte (lien « ce formulaire » sous les remerciements
+# de l'accueil) : n'importe qui peut ecrire. D'ou un pot de miel, un plafond par
+# adresse et par heure, et des champs tronques, comme pour les rapports.
+GENRES_DEMANDE_CREATEUR = ("crediter", "retirer")
+DEMANDES_CREATEURS_PAR_HEURE = int(os.environ.get("DEMANDES_CREATEURS_PAR_HEURE", "5"))
+_ENVOIS_CREATEURS: dict[str, list[float]] = {}
+_VERROU_CREATEURS = threading.Lock()
+
+
+def debit_createur_ok(adresse: str) -> bool:
+    """Vrai si `adresse` peut encore envoyer une demande dans l'heure, et la compte.
+
+    ⚠ ON COMPTE CHAQUE ENVOI, VALIDE OU NON : un robot qui enverrait des
+    formulaires incomplets en boucle doit buter sur le plafond comme les autres.
+    """
+    maintenant = time.time()
+    with _VERROU_CREATEURS:
+        recents = [t for t in _ENVOIS_CREATEURS.get(adresse, []) if maintenant - t < 3600]
+        if len(recents) >= DEMANDES_CREATEURS_PAR_HEURE:
+            _ENVOIS_CREATEURS[adresse] = recents
+            return False
+        recents.append(maintenant)
+        _ENVOIS_CREATEURS[adresse] = recents
+        return True
+
+
+def enregistrer_demande_createur(nom: str, contact: str, genre: str, message: str) -> int:
+    """Range une demande et rend son numero. LEVE ValueError si un champ manque."""
+    nom = " ".join(str(nom or "").split())[:80]
+    contact = " ".join(str(contact or "").split())[:160]
+    message = str(message or "").strip()[:4000]
+    if not nom:
+        raise ValueError(lang.t("Indique ton nom ou ton pseudo."))
+    if not contact:
+        raise ValueError(lang.t("Indique un moyen de te recontacter (e-mail ou Discord)."))
+    if genre not in GENRES_DEMANDE_CREATEUR:
+        raise ValueError(lang.t("Choisis le type de demande."))
+    if not message:
+        raise ValueError(lang.t("Ecris ton message."))
+    with _cx() as cx:
+        curseur = cx.execute(
+            "INSERT INTO demandes_createurs (quand, nom, contact, genre, message)"
+            " VALUES (?,?,?,?,?)", (_maintenant(), nom, contact, genre, message))
+        return int(curseur.lastrowid)
+
+
+def demandes_createurs(limite: int = 100) -> list[dict]:
+    """Les demandes, les nouvelles d'abord, puis les plus recentes."""
+    with _cx() as cx:
+        return [dict(r) for r in cx.execute(
+            "SELECT * FROM demandes_createurs ORDER BY etat = 'traitee', id DESC LIMIT ?",
+            (limite,))]
+
+
+def marquer_demande_createur(numero: int, etat: str) -> None:
+    """Passe une demande a « traitee » (ou la rouvre en « nouvelle »)."""
+    if etat not in ("nouvelle", "traitee"):
+        return
+    with _cx() as cx:
+        cx.execute("UPDATE demandes_createurs SET etat = ? WHERE id = ?", (etat, numero))
 
 
 def enregistrer_rapport(hote: str, champs: dict, compte_verifie: str | None = None) -> int:
@@ -4955,6 +5034,16 @@ def _avec_heure_locale(gabarit: str, nom: str) -> str:
 PAGE = _avec_heure_locale(PAGE, "PAGE")
 PAGE_ADMIN = _avec_heure_locale(PAGE_ADMIN, "PAGE_ADMIN")
 
+# La page des demandes des createurs (12/10/2026) : le gabarit commun des
+# formulaires, dont le `<form>` (qui impose un champ mot de passe) est remplace
+# par un champ libre. ⚠ LEVE si le bloc n'est pas trouve : un `sub` muet
+# laisserait le champ mot de passe sur un formulaire public.
+PAGE_CONTACT_CREATEURS, _n_form = re.subn(
+    r'<form method="post" action="\{action\}">.*?</form>', "{formulaire}",
+    PAGE_FORMULAIRE, count=1, flags=re.S)
+if _n_form != 1:
+    raise RuntimeError("PAGE_FORMULAIRE n'a plus de <form> : la page des createurs ne peut pas s'en servir")
+
 
 def _icone_appli(nom: str) -> bytes | None:
     # ⚠ DEUX FAMILLES D'IMAGES, ET ELLES NE SUIVENT PAS LA MEME REGLE.
@@ -5416,6 +5505,49 @@ class Handler(BaseHTTPRequestHandler):
                       "{jours}", str(EXPIRATION_JOURS))),
         ).encode("utf-8")
 
+    def _page_contact_createurs(self, erreur: str = "", valeurs: dict | None = None,
+                                envoye: bool = False) -> bytes:
+        """Le formulaire public des createurs, ou sa confirmation (`envoye`).
+
+        TOUT ce que le visiteur a tape et qu'on lui remontre (en cas d'erreur)
+        passe par html.escape."""
+        v = {k: html.escape(str((valeurs or {}).get(k, ""))) for k in ("nom", "contact", "genre", "message")}
+        if envoye:
+            formulaire = ('<p style="margin:0;color:var(--text)">%s</p>'
+                          % lang.t("Merci, ta demande est bien arrivee. Je te reponds des que possible."))
+        else:
+            options = "".join(
+                '<option value="%s"%s>%s</option>' % (g, " selected" if v["genre"] == g else "", libelle)
+                for g, libelle in (("crediter", lang.t("Me crediter")),
+                                   ("retirer", lang.t("Retirer mes creations"))))
+            formulaire = (
+                '<style>select,textarea{{width:100%;box-sizing:border-box;font:inherit;margin-top:.35rem;'
+                'background:var(--panel-2);color:inherit;border:1px solid var(--border);'
+                'border-radius:.5rem;padding:.65rem .9rem}}textarea{{min-height:8rem;resize:vertical}}'
+                '.pot{{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}}</style>'
+                .replace("{{", "{").replace("}}", "}")
+                + '<form method="post" action="/contact-createurs">'
+                '<div class="pot" aria-hidden="true"><label>Site web<input name="site_web" '
+                'tabindex="-1" autocomplete="off"></label></div>'
+                '<label>%s<input name="nom" maxlength="80" required value="%s"></label>'
+                '<label>%s<input name="contact" maxlength="160" required value="%s"></label>'
+                '<label>%s<select name="genre" required>%s</select></label>'
+                '<label>%s<textarea name="message" maxlength="4000" required>%s</textarea></label>'
+                '<button type="submit">%s</button></form>'
+                % (lang.t("Ton nom ou pseudo"), v["nom"],
+                   lang.t("Comment te recontacter (e-mail ou Discord)"), v["contact"],
+                   lang.t("Ta demande"), options,
+                   lang.t("Ton message : ce que tu as cree, et ou ca apparait sur le site"), v["message"],
+                   lang.t("Envoyer")))
+        return PAGE_CONTACT_CREATEURS.format(
+            titre=lang.t("Credits et retrait"),
+            erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
+            formulaire=formulaire,
+            pied=lang.t("Si j'ai oublie de te crediter, ou si tu veux que tes creations soient"
+                        " retirees du site, dis-le-moi ici. Je lis chaque demande."),
+            mention=_mention_complete(), bouton_appli=_bouton_appli(),
+        ).encode("utf-8")
+
     def _formulaire_reinitialisation(self, jeton: str, erreur: str = "") -> bytes:
         """Le formulaire du nouveau mot de passe, sur le gabarit commun."""
         return PAGE_FORMULAIRE.format(
@@ -5706,6 +5838,7 @@ class Handler(BaseHTTPRequestHandler):
                            "".join(self._bloc_rapport(r) for r in groupe)))
         if not rapports:
             rapports = '<p class="sous">Aucun rapport. Bonne nouvelle.</p>'
+        rapports = self._bloc_demandes_createurs() + rapports
         # L'annonce : son etat en une phrase, et le bouton d'annulation qui
         # n'existe que s'il y a quelque chose a annuler.
         en_cours = annonce_courante()
@@ -5815,6 +5948,39 @@ class Handler(BaseHTTPRequestHandler):
                                  styles_suivi=SUIVI_STYLE_BLOC,
                                  script_suivi=SUIVI_SCRIPT,
                                  script_onglets=ADMIN_ONGLETS_SCRIPT).encode("utf-8")
+
+    @staticmethod
+    def _bloc_demandes_createurs() -> str:
+        """Les demandes des createurs (12/10/2026), en tete du panneau des
+        rapports. TOUT ce qui vient du formulaire passe par html.escape : il est
+        public, n'importe qui y ecrit."""
+        demandes = demandes_createurs()
+        nouvelles = sum(1 for d in demandes if d["etat"] != "traitee")
+        if not demandes:
+            corps = '<p class="sous">Aucune demande pour le moment.</p>'
+        else:
+            corps = ""
+            for d in demandes:
+                bouton = ""
+                if d["etat"] != "traitee":
+                    bouton = ('<form method="post" action="/admin">'
+                              '<input type="hidden" name="action" value="createur_traitee">'
+                              '<input type="hidden" name="id" value="%d">'
+                              '<button type="submit">Traitee</button></form>' % d["id"])
+                genre = "Me crediter" if d["genre"] == "crediter" else "Retirer mes creations"
+                corps += ('<details class="rapport">'
+                          '<summary><span class="etat %s">%s</span>'
+                          '<span class="quoi">%s</span>'
+                          '<span class="meta">%s &middot; %s &middot; %s</span></summary>'
+                          '<div class="corps"><p>%s</p><p>%s</p></div></details>'
+                          % ("traite" if d["etat"] == "traitee" else "nouveau",
+                             html.escape(d["etat"]), html.escape(genre),
+                             html.escape(d["nom"]), html.escape(d["contact"]),
+                             _horodate(d["quand"] or ""),
+                             html.escape(d["message"]).replace("\n", "<br>"), bouton))
+        return ('<details class="groupe"%s><summary>Demandes des createurs '
+                '<span class="etat nouveau">%d</span></summary>%s</details>'
+                % (" open" if nouvelles else "", nouvelles, corps))
 
     @staticmethod
     def _bloc_rapport(r: dict) -> str:
@@ -6043,6 +6209,9 @@ class Handler(BaseHTTPRequestHandler):
             for _t in tickets_de(pseudo):
                 marquer_ticket_lu(_t["id"], "joueur")
             self._repondre(200, page_signalements(pseudo))
+        elif self.chemin == "/contact-createurs":
+            # Public et sans compte : le lien vient de l'accueil du jeu.
+            self._repondre(200, self._page_contact_createurs())
         elif self.chemin.startswith("/inscription"):
             requete = urllib.parse.urlparse(self.path)
             jeton = urllib.parse.parse_qs(requete.query).get("i", [""])[0]
@@ -6292,6 +6461,31 @@ class Handler(BaseHTTPRequestHandler):
             self._repondre(204, b"", "text/plain; charset=utf-8")
             return
 
+        if self.chemin == "/contact-createurs":
+            # Sans compte : le corps est deja plafonne par MAX_CORPS_OCTETS.
+            # ⚠ LE FREIN PASSE AVANT LA LECTURE DES CHAMPS, et compte chaque
+            # envoi : voir `debit_createur_ok`.
+            if not debit_createur_ok(self._adresse_client()):
+                self._raccrocher()
+                self._repondre(429, self._page_contact_createurs(
+                    lang.t("Trop de demandes depuis ta connexion. Reessaie dans une heure.")))
+                return
+            champs = self._champs()
+            # Le pot de miel : un humain ne voit pas ce champ et le laisse vide.
+            # Un robot qui le remplit recoit la meme confirmation, sans rien
+            # enregistrer : il n'apprend pas qu'il a ete repere.
+            if str(champs.get("site_web", "")).strip():
+                self._repondre(200, self._page_contact_createurs(envoye=True))
+                return
+            try:
+                enregistrer_demande_createur(champs.get("nom", ""), champs.get("contact", ""),
+                                             champs.get("genre", ""), champs.get("message", ""))
+            except ValueError as erreur:
+                self._repondre(400, self._page_contact_createurs(str(erreur), champs))
+                return
+            self._repondre(200, self._page_contact_createurs(envoye=True))
+            return
+
         pseudo = self._session()
 
         if self.chemin == "/signalements":
@@ -6474,6 +6668,11 @@ class Handler(BaseHTTPRequestHandler):
                 supprimer_reinitialisation(champs.get("jeton", ""))
             elif action == "essai_phase":
                 basculer_essai_phase(champs.get("pseudo", ""))
+            elif action == "createur_traitee":
+                try:
+                    marquer_demande_createur(int(champs.get("id", "0")), "traitee")
+                except ValueError:
+                    pass
             elif action in ("rapport", "rapport_supprimer", "rapport_repondre"):
                 try:
                     numero = int(champs.get("id", "0"))

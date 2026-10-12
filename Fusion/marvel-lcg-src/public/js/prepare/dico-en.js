@@ -936,4 +936,9 @@ export const DICO_EN_BASE = {
         "Thanks also to the sites where we found images and information:",
     "Et à tous les créateurs de fan-made, ainsi qu'à ma maman.":
         "And to all the fan-made creators, as well as my mom.",
+    "Si j'ai oublié de te créditer pour une image, une carte ou un contenu, j'en suis désolé : dis-le-moi via":
+        "If I forgot to credit you for an image, a card or any content, I'm sorry: let me know through",
+    "ce formulaire": "this form",
+    "et je corrige au plus vite. Tu peux aussi me demander de retirer tes créations du site par le même formulaire.":
+        "and I'll fix it as soon as possible. You can also ask me to remove your creations from the site through the same form.",
 };

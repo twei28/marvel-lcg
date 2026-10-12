@@ -261,6 +261,29 @@ DICO_EN: dict[str, str] = {
     # --- Liens de l'administrateur ------------------------------------------
     "Administration": "Administration",
     "Suivi des parties": "Game tracking",
+
+    # --- Demandes des createurs (12/10/2026) ---------------------------------
+    "Credits et retrait": "Credits and removal",
+    "Si j'ai oublie de te crediter, ou si tu veux que tes creations soient"
+    " retirees du site, dis-le-moi ici. Je lis chaque demande.":
+        "If I forgot to credit you, or if you want your creations removed from the"
+        " site, tell me here. I read every request.",
+    "Ton nom ou pseudo": "Your name or nickname",
+    "Comment te recontacter (e-mail ou Discord)": "How to reach you (e-mail or Discord)",
+    "Ta demande": "Your request",
+    "Me crediter": "Credit me",
+    "Retirer mes creations": "Remove my creations",
+    "Ton message : ce que tu as cree, et ou ca apparait sur le site":
+        "Your message: what you created, and where it appears on the site",
+    "Merci, ta demande est bien arrivee. Je te reponds des que possible.":
+        "Thanks, your request has arrived. I'll get back to you as soon as possible.",
+    "Indique ton nom ou ton pseudo.": "Please enter your name or nickname.",
+    "Indique un moyen de te recontacter (e-mail ou Discord).":
+        "Please enter a way to reach you (e-mail or Discord).",
+    "Choisis le type de demande.": "Please choose the type of request.",
+    "Ecris ton message.": "Please write your message.",
+    "Trop de demandes depuis ta connexion. Reessaie dans une heure.":
+        "Too many requests from your connection. Try again in an hour.",
 }
 
 

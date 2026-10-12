@@ -2694,9 +2694,9 @@ html[data-affichage="sobre"] *::after {
 html.tel .acc-merci{margin-top:20px;font-size:13px}
 /* PC peu haut (1366x768, 1536x864) : tout l'accueil, remerciements compris, tient sans defiler. */
 @media (min-width:821px) and (max-height:900px){
-  :root{--titre-accueil:88px;--tuile-accueil-h:100px}
-  .accueil-stage,html[data-ui-version="v2"] .accueil-stage{padding-top:16px;padding-bottom:16px}
-  .acc-entete{margin-bottom:14px}
-  .acc-narwhal{width:clamp(130px,14vw,190px)}
-  .acc-merci{margin-top:10px;padding-top:10px;gap:4px;font-size:13px;line-height:1.45}
+  :root{--titre-accueil:80px;--tuile-accueil-h:92px}
+  .accueil-stage,html[data-ui-version="v2"] .accueil-stage{padding-top:12px;padding-bottom:10px}
+  .acc-entete{margin-bottom:10px}
+  .acc-narwhal{width:clamp(120px,13vw,175px)}
+  .acc-merci{margin-top:8px;padding-top:8px;gap:3px;font-size:12.5px;line-height:1.4}
 }
