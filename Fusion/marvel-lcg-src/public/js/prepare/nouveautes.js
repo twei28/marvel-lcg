@@ -47,6 +47,12 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-10-12",
+        genre: "correction",
+        fr: "Le bouton « Fin de phase » est maintenant jaune et plus grand. Pendant la phase du méchant, les dégâts subis par un allié qui défend s'affichent sur lui, et le nom de la carte qui donne un Renfort est traduit. Sur l'accueil, un merci à Irefrixs, auteur du moteur d'origine.",
+        en: "The \"End phase\" button is now yellow and larger. During the villain phase, damage taken by a defending ally shows on that ally, and the name of the card giving a Surge is translated. On the home screen, a thank-you to Irefrixs, author of the original engine.",
+    },
+    {
         date: "2026-10-11",
         genre: "correction",
         fr: "Quand tu as déjà le maximum d'exemplaires d'une carte en jeu, le jeu te le dit au lieu de « Aucune cible possible ». En multi, au début de la phase du méchant, les autres joueurs voient que l'hôte est en train de choisir.",
