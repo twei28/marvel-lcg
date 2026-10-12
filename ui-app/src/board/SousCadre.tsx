@@ -21,7 +21,7 @@
 // Convention du clavier (D37, clavier-cartouche.ts) : chaque choix porte
 // `data-choix="n"` (1 a 9) et affiche « (n) », le refus porte `data-refus`.
 
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import type { CardGauge, ScanCardProps } from '../components/ScanCard'
 import { ScanCardTraduite } from './traduction-carte'
 import type { Option } from './ask'
@@ -124,8 +124,9 @@ export function BoutonOption({ vignette, choisir }: { vignette: VignetteOption; 
 }
 
 /** Une cible, une carte de la main qui paie, ou un sbire a ordonner. */
-function BoutonCarte({ cible, rang, agir }: { cible: CibleVue; rang: number; agir: () => void }) {
+function BoutonCarte({ cible, rang, agir, couleur }: { cible: CibleVue; rang: number; agir: () => void; couleur?: string }) {
   const classes = ['deroule-vignette', 'est-choix']
+  if (couleur) classes.push('est-cadre-joueur')
   if (cible.choisie) classes.push('est-choisie')
   if (cible.pulse) classes.push('est-pulse')
   return (
@@ -137,6 +138,7 @@ function BoutonCarte({ cible, rang, agir }: { cible: CibleVue; rang: number; agi
       aria-label={cible.nom}
       aria-pressed={cible.choisie}
       onClick={agir}
+      style={couleur ? ({ '--couleur-joueur': couleur } as CSSProperties) : undefined}
     >
       <span className="deroule-vignette-carte">
         {cible.scan ? <CarteNue scan={cible.scan} /> : <span className="deroule-vignette-nom">{cible.nom}</span>}
@@ -162,9 +164,15 @@ export type SousCadreProps = {
   vue: VueDuSousCadre
   /** Les gestionnaires : le sous-cadre n'en a pas d'autres. */
   q: QuestionDuMoteur
+  /**
+   * Refonte, lot 5c (essai, decisions 41 et 47) : l'ordre se range aussi d'un coup
+   * (« Ordre de la table »), et chaque carte porte la couleur du joueur concerne.
+   */
+  essai?: boolean
+  couleurDeCarte?: (carteId: number) => string | undefined
 }
 
-export function SousCadre({ vue, q }: SousCadreProps) {
+export function SousCadre({ vue, q, essai = false, couleurDeCarte }: SousCadreProps) {
   const i = q.interaction
   const choisirOption = (optionId: number) => {
     const option = optionDe(q, optionId)
@@ -195,6 +203,7 @@ export function SousCadre({ vue, q }: SousCadreProps) {
   let refus: string | undefined
   let valider: { libelle: string; prete: boolean } | undefined
   let cout: ReactNode
+  let ordreDeLaTable: (() => void) | undefined
 
   switch (vue.genre) {
     case 'reponses':
@@ -224,8 +233,19 @@ export function SousCadre({ vue, q }: SousCadreProps) {
     case 'ordre':
       titre = vue.titre
       cartes = vue.cibles.map((cible, rang) => (
-        <BoutonCarte key={cible.carteId} cible={cible} rang={rang + 1} agir={() => agirSur(cible)} />
+        <BoutonCarte
+          key={cible.carteId}
+          cible={cible}
+          rang={rang + 1}
+          agir={() => agirSur(cible)}
+          couleur={essai ? couleurDeCarte?.(cible.carteId) : undefined}
+        />
       ))
+      if (essai) {
+        // LOT 5c (decision 41) : tout l'ordre d'un coup, celui de la table, puis Confirmer.
+        const ordre = i.option ?? i.options[0] ?? q.demande.options[0]
+        if (ordre) ordreDeLaTable = () => q.choisirOption(ordre, vue.cibles.map((cible) => cible.carteId))
+      }
       // Question FORCEE : aucun refus. « Confirmer » des que l'ordre est complet.
       valider = { libelle: t('Confirmer'), prete: vue.prete }
       break
@@ -272,6 +292,11 @@ export function SousCadre({ vue, q }: SousCadreProps) {
         {refus ? (
           <button type="button" className="bh-bouton" data-refus="" onClick={i.annuler}>
             {refus}
+          </button>
+        ) : null}
+        {ordreDeLaTable ? (
+          <button type="button" className="bh-bouton" data-ordre-table="" onClick={ordreDeLaTable}>
+            {t('Ordre de la table')}
           </button>
         ) : null}
         {valider ? (

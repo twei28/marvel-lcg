@@ -90,6 +90,50 @@ class PlayerAction:
         })
 
     @staticmethod
+    def _RaisonDistribution(player: 'Player', by_effect: 'Effect', by_surge: bool) -> 'Dict[str, Any]':
+        """La raison d'une carte distribuee (lot 5c) : 'base', 'danger', 'renfort' ou 'carte'."""
+        from game.effect.rule import GameRule, Surge
+        try:
+            this = getattr(by_effect, 'this', None)
+            nom = getattr(this, 'name', None)
+            if by_surge or isinstance(by_effect, Surge):
+                return {'raison': 'renfort', **({'source': nom} if nom else {})}
+            if type(by_effect) is GameRule and this is not None:
+                identite = player.GetIdentity()
+                if identite is not None and this.card is identite.card:
+                    return {'raison': 'base'}
+                if getattr(this, 'hazard', 0):
+                    return {'raison': 'danger', **({'source': nom} if nom else {})}
+            return {'raison': 'carte', **({'source': nom} if nom else {})}
+        except Exception:
+            return {'raison': 'carte'}
+
+    @staticmethod
+    def _DetailDistribution(player: 'Player', face: 'CardFace') -> 'Dict[str, Any]':
+        """Ce que le fait de distribution dit de sa carte (lot 5c, decision 42).
+
+        La premiere carte de l'etape 3 pour ce joueur rappelle aussi celles qu'il a
+        deja recues plus tot dans la phase (sbire vaincu, boost) : `deja`.
+        """
+        detail: 'Dict[str, Any]' = dict(getattr(face.card, 'distribution_info', None) or {'raison': 'carte'})
+        try:
+            world = player.world
+            siege = PlayerAction._SiegeDuJoueur(player)
+            premiere = not any(
+                fait.get('genre') == 'distribution' and fait.get('joueur') == siege
+                and fait.get('round_id') == world.round_id
+                for fait in world.stat.faits_mechant)
+            if premiere:
+                deja = [dict(getattr(autre.card, 'distribution_info', None) or {'raison': 'carte'})
+                        for autre in player.dealt_encounter_cards.Get()
+                        if autre is not None and autre is not face]
+                if deja:
+                    detail['deja'] = deja
+        except Exception:
+            pass
+        return detail
+
+    @staticmethod
     def _TypeDeLaCarte(face: 'CardFace') -> str:
         """Le type d'une carte rencontre, en anglais du moteur (`Treachery`)."""
         return getattr(face, 'type_name', type(face).__name__)
@@ -373,6 +417,9 @@ class PlayerAction:
         # pour ne pas croire qu'un effet d'annulation a echoue alors qu'une
         # DEUXIEME carte, sans rapport, vient d'etre revelee.
         face.card.revele_par_surge = by_surge
+        # Refonte de la phase du mechant (lot 5c, decision 42) : POURQUOI cette
+        # carte est distribuee, pour le tableau de l'etape 3.
+        face.card.distribution_info = PlayerAction._RaisonDistribution(player, by_effect, by_surge)
 
         pos = None
         if world.rule.v16_reveal:
@@ -393,7 +440,8 @@ class PlayerAction:
         # montrer. La carte reste face cachee : le fait ne dit pas laquelle,
         # seulement a qui.
         PlayerAction._JournaliserPhaseDuMechant(
-            player, 'Deal Encounter Cards', {'genre': 'distribution'})
+            player, 'Deal Encounter Cards', {'genre': 'distribution',
+                                             **PlayerAction._DetailDistribution(player, face)})
 
     # facedown
     def DealEncounterCards(self, size: int, by_effect: 'Effect', *, by_surge: bool=False) -> None:

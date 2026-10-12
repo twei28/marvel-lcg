@@ -32,6 +32,7 @@ import type {
   FaitStade,
   FaitStatut,
   MotsClesDuCoup,
+  RaisonDistribution,
   RiposteDuCoup,
   StatsStade,
 } from './world'
@@ -462,6 +463,14 @@ export type EtapeDeroule = {
   joueurs?: number
   /** Sur une revelation : le type de la carte, nom de classe du moteur (« Treachery »). */
   typeCarte?: string
+  /**
+   * Refonte, lot 5c (decision 42) : sur une distribution, la raison de chaque carte
+   * recue (regle, Danger, Renfort, carte), dans l'ordre ; les cartes recues plus tot
+   * dans la phase d'abord.
+   */
+  raisonsCartes?: Array<{ raison: RaisonDistribution; source?: string }>
+  /** Refonte, lot 5c : le tableau de l'etape 3, une ligne par joueur (essai). */
+  lignesDistribution?: Array<{ joueur?: number; nom?: string; cartes: number; raisons: Array<{ raison: RaisonDistribution; source?: string }> }>
   /** Sur un stade : la carte d'avant et les stats imprimees avant et apres. */
   stadeAvantId?: number
   statsAvant?: StatsStade
@@ -918,7 +927,15 @@ export function etapesDeroule(
   // determiner le siege garde son etape a lui : deux cartes anonymes ne sont
   // pas forcement pour le meme joueur, et les fondre inventerait un fait que
   // personne n'a enregistre.
-  type GroupeDistribution = FaitRange<FaitDistribution> & { joueur?: number; cartes: number }
+  type GroupeDistribution = FaitRange<FaitDistribution> & {
+    joueur?: number
+    cartes: number
+    raisons: Array<{ raison: RaisonDistribution; source?: string }>
+  }
+  const raisonDe = (r: { raison?: RaisonDistribution; source?: string }) => ({
+    raison: r.raison ?? 'carte',
+    ...(r.source ? { source: r.source } : {}),
+  })
   const parSiege = new Map<number, GroupeDistribution>()
   const groupes: GroupeDistribution[] = []
   for (const { fait, rang } of faitsDistribution) {
@@ -926,14 +943,17 @@ export function etapesDeroule(
     const deja = joueur === undefined ? undefined : parSiege.get(joueur)
     if (deja) {
       deja.cartes += 1
+      deja.raisons.push(raisonDe(fait))
       continue
     }
-    const groupe: GroupeDistribution = { fait, rang, joueur, cartes: 1 }
+    // Les cartes recues PLUS TOT dans la phase (sbire vaincu, boost) ne sont pas
+    // comptees dans `cartes` : elles ne font pas partie de l'etape 3.
+    const groupe: GroupeDistribution = { fait, rang, joueur, cartes: 1, raisons: [...(fait.deja ?? []).map(raisonDe), raisonDe(fait)] }
     if (joueur !== undefined) parSiege.set(joueur, groupe)
     groupes.push(groupe)
   }
 
-  for (const { fait, rang, joueur, cartes } of trierParOrdreDuTour(
+  for (const { fait, rang, joueur, cartes, raisons } of trierParOrdreDuTour(
     groupes,
     premierJoueurId,
     nomsHerosParJoueur.length
@@ -955,6 +975,8 @@ export function etapesDeroule(
       // Le nombre de cartes recues, jamais un compteur de la table : voir
       // `EtapeDeroule.montant`.
       montant: cartes,
+      // Lot 5c : publiees par un moteur recent seulement ; sinon rien.
+      ...(raisons.some((r) => r.raison !== 'carte' || r.source) ? { raisonsCartes: raisons } : {}),
       // Pas de carte : elle est FACE CACHEE, et la nommer ici revelerait au
       // joueur ce que la regle lui cache jusqu'au point 4. Pas de cible non
       // plus : la mise en scene (`sceneDe`) ne doit RIEN mettre en avant ni

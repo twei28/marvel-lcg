@@ -322,6 +322,26 @@ describe('l ordre d activation des sbires', () => {
     fireEvent.click(choix()[1]!)
     expect(q.choisirOption).toHaveBeenCalledWith(ordre, [61])
   })
+
+  // Refonte, lot 5c (decisions 41 et 47) : seulement dans l'essai.
+  const bouton = () => document.querySelector<HTMLButtonElement>('button[data-ordre-table]')
+  it('essai : « Ordre de la table » range tout d un coup, dans l ordre de la table', () => {
+    const q = question(d)
+    const vue = vueSousCadre(q, {})
+    if (vue.genre === 'defense' || vue.genre === 'pendant-defense') throw new Error(vue.genre)
+    render(<SousCadre vue={vue} q={q} essai couleurDeCarte={(id) => (id === 60 ? '#f2c200' : undefined)} />)
+    fireEvent.click(bouton()!)
+    expect(q.choisirOption).toHaveBeenCalledWith(ordre, [60, 61])
+    // La couleur du joueur concerne, sur la seule carte qui en a une.
+    expect(choix()[0]!.style.getPropertyValue('--couleur-joueur')).toBe('#f2c200')
+    expect(choix()[1]!.classList.contains('est-cadre-joueur')).toBe(false)
+  })
+
+  it('sans essai : ni bouton « Ordre de la table », ni couleur', () => {
+    monter(question(d))
+    expect(bouton()).toBeNull()
+    expect(choix()[0]!.classList.contains('est-cadre-joueur')).toBe(false)
+  })
 })
 
 describe('la confirmation', () => {

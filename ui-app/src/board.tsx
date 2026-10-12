@@ -80,6 +80,7 @@ import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalog
 import { extraireBoost, extraireCapacite, extraireEffetRevele } from './board/texte-capacite'
 import type { InfoRevelee } from './board/vue-cartouche'
 import { fusionnerDistribution, retenirCartesDistribuees, type DistribueesRetenues } from './board/frise-phase'
+import { avecTableauDistribution } from './board/etapes-essai'
 import { quitterPleinEcran } from './board/mobile/plein-ecran'
 import {
   atterrir,
@@ -3210,10 +3211,16 @@ export function PagePartie({
   // d'ici.
   const etapesPourLeCartouche = useMemo(
     () =>
-      nouvelleScenePC
-        ? fusionnerDistribution(etapesPhaseMechant)
-        : { etapes: etapesPhaseMechant, cartesDistribuees: 0 },
-    [nouvelleScenePC, etapesPhaseMechant]
+      // Lot 5c (essai, decision 42) : la distribution devient UN tableau par joueur.
+      phaseEssai
+        ? {
+            etapes: avecTableauDistribution(etapesPhaseMechant),
+            cartesDistribuees: fusionnerDistribution(etapesPhaseMechant).cartesDistribuees,
+          }
+        : nouvelleScenePC
+          ? fusionnerDistribution(etapesPhaseMechant)
+          : { etapes: etapesPhaseMechant, cartesDistribuees: 0 },
+    [phaseEssai, nouvelleScenePC, etapesPhaseMechant]
   )
   // Le compte des cartes distribuees, retenu pour la PHASE : le bilan le lit
   // apres que le round a tourne (voir `retenirCartesDistribuees`). Un `ref`

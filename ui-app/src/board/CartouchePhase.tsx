@@ -83,6 +83,7 @@ import {
   type VueCorps,
   type VueRangee,
   type VueRevelee,
+  type VueDistribution,
   type VueStade,
 } from './vue-cartouche'
 import './cartouche-phase.css'
@@ -185,6 +186,8 @@ export type CartouchePhaseProps = {
    * par DeroulePhase), ou « commun » (gris acier).
    */
   cadre?: CadreDeLEtape
+  /** Essai, lot 5c (decision 47) : la couleur du joueur a qui appartient une carte (ordre des activations). */
+  couleurDeCarte?: (carteId: number) => string | undefined
 }
 
 /**
@@ -684,7 +687,91 @@ function ChaineRevelee({ chaine, essai = false }: { chaine: MaillonChaine[]; ess
   )
 }
 
-function Stade({ stade, grisee = false }: { stade: VueStade; grisee?: boolean }) {
+/** LOT 5c (decision 38) : l'effet ★ differe d'un boost, sur son ecran a part. */
+function EtoileDiffereeEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean }) {
+  const differee = rangee.etoileDifferee
+  return (
+    <div className={grisee ? 'deroule-rangee essai-etoile-differee est-grisee' : 'deroule-rangee essai-etoile-differee'} aria-hidden={grisee || undefined}>
+      <div className="deroule-rangee-cartes" style={{ '--nb-cartes': 1 + rangee.cibles.length } as CSSProperties}>
+        {rangee.acteur ? <VignetteVue vignette={{ ...rangee.acteur, legende: undefined }} /> : null}
+        {rangee.cibles.length > 0 ? (
+          <span className="deroule-vers" aria-hidden="true">
+            →
+          </span>
+        ) : null}
+        {rangee.cibles.map((cible) => (
+          <VignetteVue key={cible.cle} vignette={cible} />
+        ))}
+      </div>
+      {differee ? (
+        <div className="essai-encadre-etoile">
+          <p>
+            <b>{t('★ BOOST')}</b> <Texte>{differee.texte.replace(/^★\s*/, '')}</Texte>
+          </p>
+          <p className="essai-etoile-issue">
+            <Texte>{differee.issue}</Texte>
+          </p>
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+/** LOT 5c (decision 45) : un heros elimine en pleine phase. */
+function EliminationEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean }) {
+  return (
+    <div className={grisee ? 'deroule-rangee essai-elimination est-grisee' : 'deroule-rangee essai-elimination'} aria-hidden={grisee || undefined}>
+      <div className="deroule-rangee-cartes" style={{ '--nb-cartes': 1 } as CSSProperties}>
+        {rangee.acteur ? <VignetteVue vignette={{ ...rangee.acteur, legende: undefined }} /> : null}
+        <span className="essai-tampon essai-tampon-rangee" aria-hidden="true">
+          {t('ÉLIMINÉ')}
+        </span>
+      </div>
+      {rangee.resultat ? (
+        <p className="essai-resultat-ligne">
+          <Texte>{rangee.resultat.texte}</Texte>
+        </p>
+      ) : null}
+    </div>
+  )
+}
+
+/** LOT 5c (decision 42) : la distribution de l'etape 3 en tableau, une ligne par joueur. */
+function DistributionEssai({ distribution, grisee }: { distribution: VueDistribution; grisee: boolean }) {
+  return (
+    <div className={grisee ? 'essai-distribution est-grisee' : 'essai-distribution'} aria-hidden={grisee || undefined}>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{t('Joueur')}</th>
+            <th scope="col">{t('Cartes')}</th>
+            <th scope="col">{t('Pourquoi')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {distribution.lignes.map((ligne) => (
+            <tr key={ligne.cle} data-siege={ligne.joueur}>
+              <td>
+                <Texte>{ligne.nom}</Texte>
+              </td>
+              <td className="essai-distribution-dos" aria-label={`${ligne.cartes}`}>
+                {Array.from({ length: Math.max(ligne.raisons.length, ligne.cartes) }, (_, i) => (
+                  <span key={i} className="essai-dos-mini" aria-hidden="true" />
+                ))}
+                <b>{ligne.raisons.length > ligne.cartes ? ligne.raisons.length : ligne.cartes}</b>
+              </td>
+              <td>
+                {ligne.raisons.length > 0 ? <Texte>{ligne.raisons.join(' · ')}</Texte> : <span>{t('la règle (1 par joueur)')}</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function Stade({ stade, grisee = false, essai = false }: { stade: VueStade; grisee?: boolean; essai?: boolean }) {
   return (
     <div className={grisee ? 'deroule-stade est-grisee' : 'deroule-stade'} aria-hidden={grisee || undefined}>
       {stade.avant ? (
@@ -704,6 +791,12 @@ function Stade({ stade, grisee = false }: { stade: VueStade; grisee?: boolean })
             </li>
           ))}
         </ul>
+      ) : null}
+      {essai && stade.suite ? (
+        // LOT 5c (decision 11) : ce qui se passe ensuite.
+        <p className="essai-stade-suite">
+          <Texte>{stade.suite}</Texte>
+        </p>
       ) : null}
     </div>
   )
@@ -799,6 +892,8 @@ function Corps({ corps, grisee, essai = false }: { corps: VueCorps; grisee: bool
   switch (corps.genre) {
     case 'rangee':
       if (essai && corps.menace) return <MenaceEssai rangee={corps} grisee={grisee} />
+      if (essai && corps.etoileDifferee) return <EtoileDiffereeEssai rangee={corps} grisee={grisee} />
+      if (essai && corps.elimine) return <EliminationEssai rangee={corps} grisee={grisee} />
       if (essai && (corps.pose || corps.annulee || corps.riposte)) return <RangeeEssai rangee={corps} grisee={grisee} encadre />
       // LOT 4 (decision 3) : une carte qui entre en jeu se dit d'un bandeau, puis vole vers la table (TrajetsPhase).
       if (essai && corps.entree)
@@ -812,7 +907,9 @@ function Corps({ corps, grisee, essai = false }: { corps: VueCorps; grisee: bool
     case 'revelee':
       return <CarteRevelee revelee={corps} grisee={grisee} essai={essai} />
     case 'stade':
-      return <Stade stade={corps} grisee={grisee} />
+      return <Stade stade={corps} grisee={grisee} essai={essai} />
+    case 'distribution':
+      return <DistributionEssai distribution={corps} grisee={grisee} />
     case 'bilan':
       return <Bilan bilan={corps} grisee={grisee} essai={essai} />
     case 'vide':
@@ -1642,7 +1739,9 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             <span aria-hidden="true">☠</span> {texteDefaite(etapeLue)}
           </p>
         ) : null}
-        {q && vueDuSousCadre ? <SousCadre vue={vueDuSousCadre} q={q} /> : null}
+        {q && vueDuSousCadre ? (
+          <SousCadre vue={vueDuSousCadre} q={q} essai={essai} couleurDeCarte={essai ? props.couleurDeCarte : undefined} />
+        ) : null}
         {/* Le repli de la table, du telephone et du banc d'essai : la
             question rendue par le plateau. Jamais a cote d'une question
             structuree, qui a deja ses boutons. */}

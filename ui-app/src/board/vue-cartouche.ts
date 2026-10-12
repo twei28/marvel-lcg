@@ -250,6 +250,10 @@ export type VueRangee = {
   motsCles?: string[]
   /** Lot 5b (decision 39) : l'ecran de la Riposte. */
   riposte?: { vaincu: boolean }
+  /** Lot 5c (decision 38) : l'effet ★ differe d'un boost, sur son ecran a part. */
+  etoileDifferee?: { texte: string; issue: string }
+  /** Lot 5c (decision 45) : un heros elimine. */
+  elimine?: boolean
 }
 
 export type QuestionCarte = { intitule: string; choix: Vignette[]; refus?: { libelle: string } }
@@ -303,6 +307,15 @@ export type VueStade = {
   apres: Vignette
   /** « PV 14 → 15 », « ATQ 2 → 3 », « Menace 7 » */
   deltas: string[]
+  /** Lot 5c (decision 11) : ce qui se passe ensuite, dit en une ligne (essai). */
+  suite?: string
+}
+
+/** Lot 5c (decision 42) : le tableau de la distribution de l'etape 3, une ligne par joueur. */
+export type VueDistribution = {
+  genre: 'distribution'
+  lignes: Array<{ cle: string; nom: string; joueur?: number; cartes: number; raisons: string[] }>
+  total: number
 }
 
 /**
@@ -333,7 +346,7 @@ export type VueVide = { genre: 'vide'; texte: string }
 export type VueAttente = { genre: 'attente'; rangee: VueRangee; texte: string }
 export type VueQuestionSeule = { genre: 'question-seule' }
 
-export type VueCorps = VueRangee | VueRevelee | VueStade | VueBilan | VueVide | VueAttente | VueQuestionSeule
+export type VueCorps = VueRangee | VueRevelee | VueStade | VueBilan | VueVide | VueAttente | VueQuestionSeule | VueDistribution
 
 export type ContexteVue = {
   /** Les etapes BRUTES de la phase (noms du moteur) : ce qui se cherche par nom anglais. */
@@ -482,6 +495,12 @@ export function titreCourt(etape: EtapeDeroule, ctx: ContexteVue): string {
       return t('Manigance')
     case 'riposte':
       return etape.auteurNom ? t('Riposte de %1').replace('%1', etape.auteurNom) : t('Riposte')
+    case 'etoile-differe':
+      return etape.auteurNom ? t('Effet ★ de %1').replace('%1', etape.auteurNom) : t('Effet ★')
+    case 'elimination':
+      return etape.cibleNom ? t('%1 est éliminé').replace('%1', etape.cibleNom) : t('Un héros est éliminé')
+    case 'distribution-tableau':
+      return t('Cartes rencontre distribuées')
     case 'menace':
       return t('Menace')
     case 'bilan':
@@ -781,6 +800,53 @@ export function lignesMotsCles(etape: EtapeDeroule): string[] | undefined {
 }
 
 /** Lot 5b (decision 39) : la Riposte, un ecran a part, la carte touchee frappe l'attaquant. */
+/** Lot 5c (decision 38) : l'effet ★ differe, au moment ou il s'applique. */
+function vueEtoileDifferee(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
+  const texte = (etape.carteId !== undefined ? ctx.texteEtoile?.(etape.carteId) : undefined) ?? t('son effet de boost s’applique')
+  const degats = /\b(deals? damage|inflige[nt]? des dégâts)\b/i.test(texte)
+  const sansDefense = /\b(undefended|n.est pas défendue)\b/i.test(texte)
+  let issue = t('S’applique maintenant, à la fin de l’activation.')
+  if (degats) {
+    issue =
+      (etape.montant ?? 0) > 0
+        ? t('Condition remplie : %1 subis, l’effet s’applique.').replace('%1', `${etape.montant} ${(etape.montant ?? 0) < 2 ? t('dégât') : t('dégâts')}`)
+        : t('Sans effet : aucun dégât subi.')
+  } else if (sansDefense) {
+    issue = etape.defenseurId === undefined ? t('Condition remplie : l’attaque n’était pas défendue.') : t('Sans effet : l’attaque était défendue.')
+  }
+  return {
+    genre: 'rangee',
+    acteur: { ...vignette(`etoile:${etape.cle}`, etape.carteId, etape.auteurNom, ctx), legende: '★' },
+    boosts: [],
+    cibles: etape.cibleId !== undefined ? [vignette(`cible:${etape.cibleId}`, etape.cibleId, etape.cibleNom, ctx)] : [],
+    lignesEtoile: [],
+    grisee: false,
+    etoileDifferee: { texte: `★ ${texte}`, issue },
+  }
+}
+
+const LIBELLE_RAISON: Record<string, string> = {
+  base: 'la règle (1 par joueur)',
+  danger: 'Danger',
+  renfort: 'Renfort',
+  carte: 'effet de carte',
+}
+
+/** Lot 5c (decision 42) : le tableau de la distribution, la raison de chaque carte en clair. */
+function vueDistribution(etape: EtapeDeroule): VueDistribution {
+  const lignes = (etape.lignesDistribution ?? []).map((ligne, rang) => ({
+    cle: `${etape.cle}:${ligne.joueur ?? rang}`,
+    nom: ligne.nom ?? `${t('Joueur')} ${(ligne.joueur ?? rang) + 1}`,
+    joueur: ligne.joueur,
+    cartes: ligne.cartes,
+    raisons: ligne.raisons.map((r) => {
+      const libelle = t(LIBELLE_RAISON[r.raison] ?? 'effet de carte')
+      return r.source && r.raison !== 'base' ? `${libelle} : ${r.source}` : libelle
+    }),
+  }))
+  return { genre: 'distribution', lignes, total: etape.montant ?? lignes.reduce((s, l) => s + l.cartes, 0) }
+}
+
 function vueRiposte(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
   const montant = etape.montant ?? 0
   const pvMax = seuil(etape.cibleNom ? ctx.pvMaxParNom?.get(etape.cibleNom) : undefined)
@@ -1138,6 +1204,10 @@ function vueStade(etape: EtapeDeroule, ctx: ContexteVue): VueStade {
       : undefined,
     apres: vignette(`apres:${etape.carteId ?? ''}`, etape.carteId, etape.cibleNom, ctx),
     deltas,
+    suite:
+      etape.stade === 'mechant'
+        ? t('Le méchant continue avec ce nouveau stade. La phase continue.')
+        : t('La nouvelle manigance entre en jeu avec sa menace de départ. La phase continue.'),
   }
 }
 
@@ -1154,6 +1224,21 @@ export function vueDeLEtape(etape: EtapeDeroule, ctx: ContexteVue): VueCorps {
       return vueActivation(etape, ctx)
     case 'riposte':
       return vueRiposte(etape, ctx)
+    case 'etoile-differe':
+      return vueEtoileDifferee(etape, ctx)
+    case 'elimination':
+      return {
+        genre: 'rangee',
+        acteur: { ...vignette(`elimine:${etape.cle}`, etape.carteId, etape.cibleNom, ctx), legende: t('ÉLIMINÉ') },
+        boosts: [],
+        cibles: [],
+        resultat: { texte: t('Ses sbires passent au joueur suivant. La phase continue.') },
+        lignesEtoile: [],
+        grisee: false,
+        elimine: true,
+      }
+    case 'distribution-tableau':
+      return vueDistribution(etape)
     case 'menace':
       return vueMenace(etape, ctx)
     case 'revelation':

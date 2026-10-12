@@ -96,7 +96,7 @@ import {
   type InfoRevelee,
 } from './vue-cartouche'
 import './cartouche-essai-tel.css'
-import { avecEtapesRiposte } from './etapes-essai'
+import { avecEcranElimination, avecEtapesEtoileDifferee, avecEtapesRiposte } from './etapes-essai'
 
 /**
  * Le temps de VOIR une etape qui vise un autre joueur, avant qu'elle passe.
@@ -508,7 +508,11 @@ export function DeroulePhase({
   onDefaiteVue?: () => void
 }) {
   // Refonte, lot 5b (essai) : la Riposte devient une étape à part (décision 39).
-  const etapes = useMemo(() => (essai ? avecEtapesRiposte(etapesRecues) : etapesRecues), [essai, etapesRecues])
+  // Lot 5c (essai) : l'effet ★ differe (decision 38) et l'elimination (45) ont aussi leur ecran.
+  const etapes = useMemo(
+    () => (essai ? avecEcranElimination(avecEtapesEtoileDifferee(avecEtapesRiposte(etapesRecues), texteEtoile)) : etapesRecues),
+    [essai, etapesRecues, texteEtoile]
+  )
   // LA CLE de l'etape que le joueur lit, jamais son numero. L'index se
   // retrouve a partir d'elle a chaque rendu (voir plus bas) : une etape qui
   // s'insere en amont ne fait donc plus reculer le joueur d'un cran, et
@@ -828,6 +832,20 @@ export function DeroulePhase({
   // « La phase s'arrete ici. », pas de bouton « Continuer », pas d'ecran de fin
   // retenu. La phase continue, et ce joueur-ci a encore des coups a lire.
   const defaiteLocale = etape !== undefined && estDefaiteLocale(etape, herosLocauxIds)
+  // LOT 5c (essai, decision 44) : une carte a Péril revelee par UN AUTRE joueur grise
+  // nos cartes : on ne joue rien et on ne conseille pas pendant sa resolution.
+  const perilDUnAutre = Boolean(
+    essai &&
+      etape?.titre === 'revelation' &&
+      etape.joueur !== undefined &&
+      etape.carteId !== undefined &&
+      (infoRevelee?.(etape.carteId)?.texteImprime ?? []).some((ligne) => /\bp[ée]ril\b/i.test(ligne)) &&
+      ![...(herosLocauxIds ?? [])].some((id) => (joueurDeCarte ?? joueurInconnu)(id) === etape.joueur)
+  )
+  useEffect(() => {
+    document.documentElement.classList.toggle('essai-peril-autre', perilDUnAutre)
+    return () => document.documentElement.classList.remove('essai-peril-autre')
+  }, [perilDUnAutre])
   /**
    * LE COUP FATAL SE VOIT SUR LA TABLE AVANT SON PANNEAU.
    *
@@ -1762,6 +1780,14 @@ export function DeroulePhase({
         // 10/10/2026 ; le cartouche pose sur la table garde la sienne.
         bis={presentation === 'scene'}
         montrerBoostSuivant={essai ? () => setBoostsMontres((n) => n + 1) : undefined}
+        couleurDeCarte={
+          essai && cadresJoueurs
+            ? (id: number) => {
+                const siege = (joueurDeCarte ?? joueurInconnu)(id)
+                return siege === undefined ? undefined : cadresJoueurs[siege]?.couleurs[0]
+              }
+            : undefined
+        }
         tempsParDecision={tempsParDecision}
         pvMaxParNom={pvMaxParNom}
         carteScene={carteScene}

@@ -34,3 +34,109 @@ export function avecEtapesRiposte(etapes: EtapeDeroule[]): EtapeDeroule[] {
   }
   return suite
 }
+
+/**
+ * LOT 5c (décision 42) : la distribution de l'étape 3 en UN tableau, une ligne par
+ * joueur avec la raison de chaque carte, à la place des étapes « X reçoit N cartes ».
+ */
+export function avecTableauDistribution(etapes: EtapeDeroule[]): EtapeDeroule[] {
+  const distributions = etapes.filter((etape) => etape.temps === 'distribution' && etape.titre === 'distribution')
+  if (distributions.length === 0) return etapes
+  const premiere = distributions[0]
+  const tableau: EtapeDeroule = {
+    cle: `${premiere.cle}:tableau`,
+    temps: 'distribution',
+    titre: 'distribution-tableau',
+    regle: 'regle:distribution',
+    boosts: [],
+    montant: distributions.reduce((somme, etape) => somme + (etape.montant ?? 1), 0),
+    lignesDistribution: distributions.map((etape) => ({
+      joueur: etape.joueur,
+      nom: etape.auteurNom,
+      cartes: etape.montant ?? 1,
+      raisons: etape.raisonsCartes ?? [],
+    })),
+  }
+  const suite: EtapeDeroule[] = []
+  for (const etape of etapes) {
+    if (etape === premiere) suite.push(tableau)
+    else if (!(etape.temps === 'distribution' && etape.titre === 'distribution')) suite.push(etape)
+  }
+  return suite
+}
+
+/** Un effet ★ qui s'applique APRÈS le retournement (« si cette activation… », « après cette activation… »). */
+export function effetEtoileDiffere(texte: string | undefined): boolean {
+  if (!texte) return false
+  return /\b(if|after) this (activation|attack)\b/i.test(texte) || /\b(si|après) cette (activation|attaque)\b/i.test(texte)
+}
+
+/**
+ * LOT 5c (décision 38) : l'effet ★ différé d'un boost a son écran à part, au moment
+ * où il s'applique, juste après l'attaque (et sa Riposte). `texteEtoile` donne le
+ * texte ★ du boost ; seule l'essai appelle cette fonction.
+ */
+export function avecEtapesEtoileDifferee(
+  etapes: EtapeDeroule[],
+  texteEtoile: ((carteId: number) => string | undefined) | undefined
+): EtapeDeroule[] {
+  if (!texteEtoile) return etapes
+  const suite: EtapeDeroule[] = []
+  let attente: EtapeDeroule[] = []
+  const vider = () => {
+    suite.push(...attente)
+    attente = []
+  }
+  for (const etape of etapes) {
+    // Les étapes d'effet différé se placent après l'attaque ET sa Riposte.
+    if (attente.length > 0 && etape.titre !== 'riposte') vider()
+    suite.push(etape)
+    if ((etape.titre !== 'attaque' && etape.titre !== 'manigance') || etape.etat !== 'resolu') continue
+    for (const boost of etape.boosts) {
+      if (!boost.etoile) continue
+      const texte = texteEtoile(boost.cibleId)
+      if (!effetEtoileDiffere(texte)) continue
+      attente.push({
+        cle: `${etape.cle}:etoile:${boost.cle}`,
+        temps: etape.temps,
+        titre: 'etoile-differe',
+        regle: 'regle:boost',
+        carteId: boost.cibleId,
+        auteurNom: boost.nom,
+        cibleId: etape.cibleId,
+        cibleNom: etape.cibleNom,
+        montant: etape.montant,
+        defenseurId: etape.defenseurId,
+        etat: 'resolu',
+        boosts: [],
+        rangSbire: etape.rangSbire,
+        totalSbires: etape.totalSbires,
+      })
+    }
+  }
+  vider()
+  return suite
+}
+
+/** LOT 5c (décision 45) : un héros mis à terre a son écran dédié, juste après le coup. */
+export function avecEcranElimination(etapes: EtapeDeroule[]): EtapeDeroule[] {
+  if (!etapes.some((etape) => etape.defaite)) return etapes
+  const suite: EtapeDeroule[] = []
+  for (const etape of etapes) {
+    suite.push(etape)
+    if (!etape.defaite) continue
+    suite.push({
+      cle: `${etape.cle}:elimination`,
+      temps: etape.temps,
+      titre: 'elimination',
+      regle: 'regle:elimination',
+      carteId: etape.cibleAnnonceeId ?? etape.cibleId,
+      cibleId: etape.cibleAnnonceeId ?? etape.cibleId,
+      cibleNom: etape.cibleNom,
+      joueur: etape.joueur,
+      etat: 'resolu',
+      boosts: [],
+    })
+  }
+  return suite
+}

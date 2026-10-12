@@ -8,6 +8,9 @@
 export const CARTE_MAX = 170
 export const CARTE_MIN = 56
 const PAS = 0.9
+/** Lot 5c : dernier recours quand les cartes sont au minimum et que le TEXTE deborde encore. */
+export const ZOOM_MIN = 0.8
+const PAS_ZOOM = 0.05
 
 /**
  * De combien le contenu deborde du corps, en pixels (0 : tout tient). Le corps
@@ -42,6 +45,8 @@ export function hauteurPosee(section: HTMLElement): number {
  */
 export function ajusterLesCartes(section: HTMLElement, corps: HTMLElement, depart = CARTE_MAX, marge = 2): number {
   const poser = (h: number) => section.style.setProperty('--essai-carte-h', `${h}px`)
+  const zoomer = (z: number) => section.style.setProperty('--essai-zoom-corps', String(z))
+  zoomer(1)
   let hauteur = Math.max(CARTE_MIN, Math.min(CARTE_MAX, depart))
   poser(hauteur)
   // La meilleure taille : le plus petit excedent, et a excedent egal la plus
@@ -55,5 +60,19 @@ export function ajusterLesCartes(section: HTMLElement, corps: HTMLElement, depar
     if (e < meilleure.excedent) meilleure = { hauteur, excedent: e }
   }
   poser(meilleure.hauteur)
+  // LOT 5c : les cartes au plus petit et ca deborde encore (le texte d'une longue
+  // chaine revelee) : tout le contenu du corps rapetisse d'un cran, jamais sous
+  // ZOOM_MIN. A excedent egal, le plus grand zoom reste.
+  if (meilleure.excedent > marge) {
+    let zoom = 1
+    let mieux = { zoom, excedent: meilleure.excedent }
+    while (mieux.excedent > marge && zoom > ZOOM_MIN) {
+      zoom = Math.max(ZOOM_MIN, Math.round((zoom - PAS_ZOOM) * 100) / 100)
+      zoomer(zoom)
+      const e = excedent(corps)
+      if (e < mieux.excedent) mieux = { zoom, excedent: e }
+    }
+    zoomer(mieux.zoom)
+  }
   return meilleure.hauteur
 }

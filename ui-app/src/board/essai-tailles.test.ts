@@ -1,7 +1,7 @@
 // Lot 2 de la refonte (12/10/2026) : une seule taille de carte par ecran, qui
 // rapetisse toute ensemble quand l'ecran ne tient pas dans la boite.
 import { describe, expect, it } from 'vitest'
-import { ajusterLesCartes, CARTE_MAX, CARTE_MIN, deborde, excedent, hauteurPosee } from './essai-tailles'
+import { ajusterLesCartes, CARTE_MAX, CARTE_MIN, deborde, excedent, hauteurPosee, ZOOM_MIN } from './essai-tailles'
 
 /** Un rectangle factice : jsdom ne met rien en page. */
 function rect(haut: number, gauche: number, largeur: number, hauteur: number): DOMRect {
@@ -66,6 +66,35 @@ describe('essai-tailles : les cartes tiennent dans la boite', () => {
     const { corps } = monter()
     corps.firstElementChild!.getBoundingClientRect = () => rect(900, 900, 0, 0)
     expect(deborde(corps)).toBe(false)
+  })
+})
+
+describe('lot 5c : le texte qui deborde encore, cartes au minimum', () => {
+  const zoom = (section: HTMLElement) => parseFloat(section.style.getPropertyValue('--essai-zoom-corps') || '1')
+  it('quand les cartes n y peuvent rien, le contenu du corps rapetisse d un cran jusqu a tenir', () => {
+    const { section, corps } = monter()
+    // 330 px de texte quelle que soit la carte : seul le zoom le fait tenir (300 px).
+    corps.firstElementChild!.getBoundingClientRect = () => rect(0, 0, 500, 330 * zoom(section))
+    expect(ajusterLesCartes(section, corps)).toBe(CARTE_MAX)
+    expect(zoom(section)).toBe(0.9)
+    expect(zoom(section)).toBeLessThan(1)
+    expect(zoom(section)).toBeGreaterThanOrEqual(ZOOM_MIN)
+    expect(deborde(corps)).toBe(false)
+  })
+
+  it('un ecran qui tient garde le zoom a 1, et un nouvel ajustement le remet a 1', () => {
+    const { section, corps } = monter()
+    section.style.setProperty('--essai-zoom-corps', '0.85')
+    corps.firstElementChild!.getBoundingClientRect = () => rect(0, 0, 500, 200)
+    ajusterLesCartes(section, corps)
+    expect(zoom(section)).toBe(1)
+  })
+
+  it('un debordement que le zoom ne change pas laisse le zoom a 1', () => {
+    const { section, corps } = monter()
+    corps.firstElementChild!.getBoundingClientRect = () => rect(0, 0, 500, 50 * hauteurPosee(section))
+    ajusterLesCartes(section, corps)
+    expect(zoom(section)).toBe(1)
   })
 })
 

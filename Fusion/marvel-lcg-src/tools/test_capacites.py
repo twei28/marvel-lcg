@@ -23604,6 +23604,17 @@ CAS = [
         "verifier": "a2_fait_distribution",
     },
     {
+        "nom": "[lot5c] distribution — chaque fait dit POURQUOI la carte est distribuee (regle, Danger, Renfort, carte) et rappelle les cartes deja recues",
+        "pourquoi": ("refonte de la phase du mechant, lot 5c (decision 42) : le tableau de l'etape 3 "
+                     "dit la raison de chaque carte. `raison`/`source` sur chaque fait, `deja` sur la "
+                     "premiere carte de l'etape 3 d'un joueur (ici une carte recue pendant son tour)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "lot5c_raisons_distribution",
+    },
+    {
         "nom": "A2 faits — l'etape 4 journalise chaque carte revelee, avec son joueur",
         "pourquoi": ("meme cause que la menace : les revelations venaient du journal "
                      "local, perdu au rechargement. Le fait porte le siege du joueur, "
@@ -60031,6 +60042,46 @@ def a2_fait_distribution(monde, aides):
     if fait['joueur'] != _a2_siege(monde, joueur):
         return False, f"joueur = {fait['joueur']} (siege attendu {_a2_siege(monde, joueur)})"
     return True, f"fait distribution : siege {fait['joueur']} ({fait.get('joueur_nom')})"
+
+def lot5c_raisons_distribution(monde, aides):
+    """Lot 5c (decision 42) : `raison`, `source` et `deja` sur les faits de l'etape 3."""
+    from game.world.phase import Phase
+    from game.effect.rule import GameRule, Surge
+    from game.puzzle.puzzle import PuzzleHelper
+    from game.operate.worlds import Worlds
+
+    joueur = monde.players[0]
+    monde.current_player = joueur
+    manigance = Worlds.GetAllMainSchemes(monde)[0]
+
+    # Une carte recue PENDANT LE TOUR (effet de carte) : aucun fait, mais elle sera rappelee.
+    _a2_vider_le_journal(monde)
+    monde.phase.SetState(Phase.State.PlayerTurn)
+    joueur.DealEncounterCards(1, GameRule(manigance))
+
+    # Un Danger en jeu (Breakin' & Takin', 01107).
+    PuzzleHelper.Exec(["Puzzle.PutIntoPlay('01107')"], monde)
+    danger = next((f for f in Worlds.GetHazardFaces(joueur.GetGameArea())), None)
+    if danger is None:
+        return False, "aucune carte avec Danger en jeu apres Puzzle.PutIntoPlay('01107')"
+
+    _a2_vider_le_journal(monde)
+    monde.phase.SetState(Phase.State.DealEncounterCards)
+    joueur.DealEncounterCards(1, GameRule(joueur.GetIdentity()))
+    joueur.DealEncounterCards(1, GameRule(danger))
+    joueur.DealEncounterCards(1, Surge(danger), by_surge=True)
+    faits = _a2_faits(monde, 'distribution')
+    vus = [(f.get('raison'), f.get('source')) for f in faits]
+    attendu = [('base', None), ('danger', danger.name), ('renfort', danger.name)]
+    if vus != attendu:
+        return False, f"raisons {vus} (attendu {attendu}) ; journal = {faits}"
+    deja = faits[0].get('deja')
+    if deja != [{'raison': 'carte', 'source': manigance.name}]:
+        return False, f"deja = {deja!r} (attendu la carte recue pendant le tour, source {manigance.name!r})"
+    if any('deja' in f for f in faits[1:]):
+        return False, f"`deja` repete sur une carte suivante : {faits}"
+    return True, f"raisons {vus}, deja {deja}"
+
 
 def a2_fait_revelation(monde, aides):
     """Etape 4 : chaque carte revelee inscrit un fait `revelation`."""

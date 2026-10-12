@@ -344,7 +344,15 @@ export type FaitDistribution = FaitMechantCommun & {
   joueur?: number | null
   /** Son identité au moment du fait, alter ego compris. */
   joueur_nom?: string | null
+  /** Refonte, lot 5c (décision 42) : pourquoi cette carte est distribuée, et par quelle carte. */
+  raison?: RaisonDistribution
+  source?: string
+  /** Sur la première carte de l'étape 3 d'un joueur : celles qu'il a déjà reçues plus tôt dans la phase. */
+  deja?: Array<{ raison?: RaisonDistribution; source?: string }>
 }
+
+/** Pourquoi une carte rencontre est distribuée (lot 5c) : la règle, un Danger, un Renfort ou une carte. */
+export type RaisonDistribution = 'base' | 'danger' | 'renfort' | 'carte'
 
 /**
  * Une carte rencontre révélée par un joueur au POINT 4.
