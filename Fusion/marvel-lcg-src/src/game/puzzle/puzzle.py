@@ -764,6 +764,15 @@ class RunPuzzle:
 
         Message.AfterPhaseEnd(world.phase_id, "Villain", phase_message).Send()
 
+    def RunVillainPhase(self) -> None:
+        """Joue les etapes 1 a 4 de la phase du mechant (`World.VillainPhase`).
+
+        AJOUT (12/10/2026) : un joueur elimine pendant la partie recevait encore
+        une carte rencontre a l'etape 3 et la revelait a l'etape 4, et le moteur
+        l'attendait (partie bloquee). Aucun cas ne jouait une phase du mechant
+        entiere apres une elimination."""
+        self.world.VillainPhase()
+
     def BeginVillainPhase(self) -> None:
         """Ouvre la PHASE DU MECHANT, sans la jouer.
 

@@ -92,6 +92,25 @@ os.environ.setdefault("CAS_PREFIX", str(os.getpid()))
 
 CAS = [
     {
+        "nom": "[elimination] joueur elimine : la phase du mechant ne lui distribue ni ne lui revele de carte rencontre",
+        "pourquoi": ("RR 1.8 p.34 : un joueur elimine ne participe plus ; ses cartes hors de sa propriete "
+                     "rejoignent la defausse de leur proprietaire. `VillainPhase` bouclait sur "
+                     "`const_players`, qui garde les elimines : l'etape 3 lui distribuait une carte, "
+                     "l'etape 4 la revelait et le moteur attendait ce joueur (partie bloquee, vu par le "
+                     "lot 5c, 12/10/2026)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "heros2": "black_panther",
+        "regles": ["v16_all"],
+        # Black Panther (2e joueur) en heros a 1 PV : Rhino l'attaque a l'etape 2,
+        # il ne defend pas (« Passer »), il est elimine EN PLEINE PHASE.
+        "mise_en_place": ["Puzzle.ChangeForm('01040b')", "Puzzle.Damage('01040a', 10)"],
+        "declencher": ["Puzzle.RunVillainPhase()"],
+        "passer_sur_option": "Defen",
+        "verifier": "elimine_sans_carte_rencontre",
+        "attendu": {},
+    },
+    {
         "nom": "Puzzle.ChangeForm sur la face CACHEE d'une identite en jeu : pas de doublon detache (identity.py:42, 12/10/2026)",
         "pourquoi": ("deux sous-agents de mesure ont vu une AssertionError (GetControlByPlayer, identity.py:42) : "
                      "`ChangeForm('01001b')` alors que Spider-Man etait deja sur 01001a ne trouvait pas la carte en jeu "
@@ -59398,6 +59417,34 @@ def lot5b_fait_attaque(monde, aides):
     if soucis:
         return False, "; ".join(soucis) + f" ; fait = {fait}"
     return True, "fait d'attaque conforme : " + ", ".join(f"{c}={v!r}" for c, v in attendu["valeurs"])
+
+
+def elimine_sans_carte_rencontre(monde, aides):
+    """Le joueur elimine n'a recu ni revele aucune carte rencontre pendant la phase du mechant."""
+    from game.player.action.player_action import PlayerAction
+    # `const_players` ne garde que les joueurs EN JEU : on retrouve l'elimine
+    # par sa carte d'identite.
+    elimines = []
+    for objet in monde.object_manager.card_dict.values():
+        face = getattr(objet, "face", None) or objet
+        if getattr(getattr(face, "paper", None), "card_id", None) in ("01040a", "01040b"):
+            j = face.GetOwnerPlayer()
+            if j is not None and j.is_eliminated and j not in elimines:
+                elimines.append(j)
+    if not elimines:
+        return False, "Black Panther n'est pas elimine (mise en place ratee)"
+    for j in elimines:
+        if j.dealt_encounter_cards.GetSize():
+            return False, f"le joueur elimine garde {j.dealt_encounter_cards.GetSize()} carte(s) distribuee(s)"
+        vues = [f for f in monde.stat.faits_mechant
+                if f.get('genre') in ('distribution', 'revelation') and f.get('joueur') == PlayerAction._SiegeDuJoueur(j)]
+        if vues:
+            return False, f"faits pour le joueur elimine : {[f.get('genre') for f in vues]}"
+    restants = [j for j in monde.const_players if not j.is_eliminated]
+    revelees = [f for f in monde.stat.faits_mechant if f.get('genre') == 'revelation']
+    if not revelees:
+        return False, "aucune carte revelee : la phase ne s'est pas jouee pour le joueur restant"
+    return True, f"{len(revelees)} revelation(s), toutes pour les joueurs restants ({len(restants)})"
 
 
 def gorr_partie_perdue(monde, aides):

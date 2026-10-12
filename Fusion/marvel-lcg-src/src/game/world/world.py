@@ -751,6 +751,10 @@ class World(WorldAction, WorldFind):
 
         def enemy_activation() -> None:
             for player in phase_players:
+                # RR 1.8 p.34 : un joueur elimine ne participe plus. `phase_players`
+                # vient de `const_players`, qui garde les elimines.
+                if player.is_eliminated:
+                    continue
                 self.current_player = player
                 effect = GameRule(player.GetIdentity())
                 Worlds.Enemies.VillainAndEngagedMinionsActivateAgainstYou(effect, player)
@@ -762,6 +766,8 @@ class World(WorldAction, WorldFind):
 
             hazards: Dict[GameArea, List[HasHazard]] = {}
             for player in phase_players:
+                if player.is_eliminated:
+                    continue
                 game_area = player.GetGameArea()
 
                 if game_area not in hazards:
@@ -782,8 +788,13 @@ class World(WorldAction, WorldFind):
             return
 
         def reveal_encounter_cards() -> None:
-            while any(player.dealt_encounter_cards.GetSize() != 0 for player in phase_players):
-                for player in phase_players:
+            # Un joueur elimine pendant la phase ne revele rien : ses cartes
+            # distribuees ont rejoint la defausse a son elimination (RR 1.8 p.34,
+            # etape 3), et le moteur l'attendait sinon (partie bloquee, 12/10/2026).
+            def restants() -> List['Player']:
+                return [p for p in phase_players if not p.is_eliminated]
+            while any(player.dealt_encounter_cards.GetSize() != 0 for player in restants()):
+                for player in restants():
                     self.current_player = player
                     player.RevealEncounterCards()
                     if self.is_game_over:
