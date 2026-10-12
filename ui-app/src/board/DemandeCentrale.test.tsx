@@ -236,6 +236,19 @@ describe('DemandeCentrale — un seul choix ne se dit pas deux fois', () => {
     expect(container.querySelectorAll('.af-action-wrap')).toHaveLength(1)
   })
 
+  // 12/10/2026 : « le bouton Fin de phase n'est pas tres visible » -> le jaune de Continuer, plus grand.
+  it('le choix unique porte est-choix-unique (jaune, plus grand) ; pas avec « Passer » ni a deux choix', () => {
+    const { container, unmount } = rendre({ demande: finDePhase() })
+    expect(container.querySelector('.dc-boutons.est-choix-unique .af-action')).not.toBeNull()
+    unmount()
+    const avecPasser = rendre({ demande: { ...finDePhase(), show_cancel: true } })
+    expect(avecPasser.container.querySelector('.est-choix-unique')).toBeNull()
+    avecPasser.unmount()
+    const deux = [option(), { ...option(), id: 8 }]
+    const aDeux = rendre({ demande: { ...finDePhase(), options: deux }, options: deux })
+    expect(aDeux.container.querySelector('.est-choix-unique')).toBeNull()
+  })
+
   it('avec « Passer », le titre reste : il dit ce qui declenche la fenetre', () => {
     const { container } = rendre({ demande: { ...finDePhase(), show_cancel: true } })
     expect(screen.getByText('Fin de phase pour Domino')).toBeTruthy()

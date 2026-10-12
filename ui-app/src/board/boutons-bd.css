@@ -124,3 +124,16 @@
     zoom: 1.2;
   }
 }
+
+/* LE CHOIX UNIQUE (« Fin de phase », 12/10/2026 : « pas tres visible », gris
+   sur gris) : le jaune de « Continuer » et plus grand, a la meme place. */
+.demande-centrale .dc-boutons.est-choix-unique .af-action {
+  --action-border: var(--menace-clair);
+  color: #14100a;
+  background: var(--menace);
+  min-width: 240px;
+  max-width: 320px;
+  min-height: 64px;
+  padding: 12px 26px;
+  font-size: 1.5rem;
+}

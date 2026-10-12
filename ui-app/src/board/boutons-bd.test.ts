@@ -24,6 +24,17 @@ describe('les boutons des questions en style BD', () => {
     for (const s of selecteurs) expect(s).toMatch(/^\.(demande-centrale|assistant-action|deroule-phase)(:not\([^)]*\))? /)
   })
 
+  it('le choix unique (Fin de phase) prend le jaune de « Continuer », en plus grand', () => {
+    const css = lire('boutons-bd.css')
+    const continuer = /\.demande-centrale \.dc-continue,\s*\.assistant-action \.assistant-confirmer,[^{]*\{([^}]*)\}/.exec(css)?.[1] ?? ''
+    const unique = /\.demande-centrale \.dc-boutons\.est-choix-unique \.af-action \{([^}]*)\}/.exec(css)?.[1] ?? ''
+    expect(continuer).toContain('background: var(--menace)')
+    expect(unique).toContain('background: var(--menace)')
+    expect(unique).toContain('color: #14100a')
+    expect(unique).toMatch(/min-height: (\d+)px/)
+    expect(Number(/min-height: (\d+)px/.exec(unique)?.[1])).toBeGreaterThan(48)
+  })
+
   it('coins coupes, police Bangers, plus d arrondi ; refus gris', () => {
     const css = lire('boutons-bd.css')
     expect(css).toContain('clip-path: polygon(')

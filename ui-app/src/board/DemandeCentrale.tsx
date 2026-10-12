@@ -563,7 +563,7 @@ export function DemandeCentrale({
         ) : null}
       </div>
 
-      <div className="af-boutons dc-boutons" onMouseOver={survolerZone} onMouseLeave={quitterZone}>
+      <div className={`af-boutons dc-boutons${choixUnique ? ' est-choix-unique' : ''}`} onMouseOver={survolerZone} onMouseLeave={quitterZone}>
         {/*
           ⚠ UNE SEULE VIGNETTE PAR IMAGE, ET PAS UNE PAR BOUTON.
           Signale en jeu le 15/09/2026, capture a l'appui : « pourquoi il montre
