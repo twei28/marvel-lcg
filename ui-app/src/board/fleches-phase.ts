@@ -75,6 +75,9 @@ export function flechesDeLEtape(etape: EtapeDeroule | undefined, ctx: ContexteFl
     } else {
       ajouter({ lieu: 'table', id: etape.carteId }, cible, couleurDuJoueurDe(cible, ctx))
     }
+    // Lot 5b (decision 40) : le Déferlement, de la carte abattue vers celle qui reçoit l'excès.
+    const overkill = etape.motsCles?.overkill
+    if (overkill) ajouter({ lieu: 'table', id: cible }, overkill.cible_id, couleurDuJoueurDe(overkill.cible_id, ctx))
   }
 
   // Les boosts ★ déjà retournés : s'ils sont entrés en jeu, de la boîte à leur place.

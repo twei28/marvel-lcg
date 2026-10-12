@@ -96,6 +96,7 @@ import {
   type InfoRevelee,
 } from './vue-cartouche'
 import './cartouche-essai-tel.css'
+import { avecEtapesRiposte } from './etapes-essai'
 
 /**
  * Le temps de VOIR une etape qui vise un autre joueur, avant qu'elle passe.
@@ -149,7 +150,7 @@ function nomDOnglet(libelle: string): ReactNode {
 const joueurInconnu = (): number | undefined => undefined
 
 export function DeroulePhase({
-  etapes,
+  etapes: etapesRecues,
   presentation = 'scene',
   essai = false,
   attendreBandeau = false,
@@ -506,6 +507,8 @@ export function DeroulePhase({
    */
   onDefaiteVue?: () => void
 }) {
+  // Refonte, lot 5b (essai) : la Riposte devient une étape à part (décision 39).
+  const etapes = useMemo(() => (essai ? avecEtapesRiposte(etapesRecues) : etapesRecues), [essai, etapesRecues])
   // LA CLE de l'etape que le joueur lit, jamais son numero. L'index se
   // retrouve a partir d'elle a chaque rendu (voir plus bas) : une etape qui
   // s'insere en amont ne fait donc plus reculer le joueur d'un cran, et

@@ -31,6 +31,8 @@ import type {
   FaitSonne,
   FaitStade,
   FaitStatut,
+  MotsClesDuCoup,
+  RiposteDuCoup,
   StatsStade,
 } from './world'
 
@@ -355,6 +357,12 @@ export type EtapeDeroule = {
    */
   annuleePar?: string
   annuleeParId?: number
+  /** Refonte, lot 5b (decision 43) : une attaque Rapide (Quickstrike). */
+  rapide?: boolean
+  /** Refonte, lot 5b : ce que Perçant, Robuste et Déferlement ont fait sur ce coup. */
+  motsCles?: MotsClesDuCoup
+  /** Refonte, lot 5b : la Riposte de la carte touchée contre l'attaquant (son écran à part dans l'essai). */
+  riposte?: RiposteDuCoup
   /** La carte qui a annule a quitte le jeu en le faisant (n72, 09/10/2026). */
   annuleeParSort?: 'defaussee' | 'hors_jeu'
   /**
@@ -818,6 +826,7 @@ export function etapesDeroule(
       causeId: fait.cause_id ?? undefined,
       rangSbire: fait.rang_sbire,
       totalSbires: fait.total_sbires,
+      rapide: fait.rapide || undefined,
     }
 
     // LE TEMPS INTERMEDIAIRE (fait `boosts`, 04/10/2026) : defenseur choisi,
@@ -883,6 +892,8 @@ export function etapesDeroule(
       // que la ou il dit quelque chose.
       defaite: defaite ? true : undefined,
       boosts: boostsDeroule(fait.boosts),
+      motsCles: fait.mots_cles && Object.keys(fait.mots_cles).length > 0 ? fait.mots_cles : undefined,
+      riposte: fait.riposte ?? undefined,
     })
   })
 

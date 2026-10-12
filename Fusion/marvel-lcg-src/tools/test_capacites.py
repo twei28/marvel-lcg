@@ -24546,6 +24546,84 @@ CAS = [
         "attendu": {"degats_identite": 1, "hors_jeu": ["01011"]},
     },
     {
+        "nom": "[lot5b] fait d'attaque — Robuste : Rhino frappe un allie robuste, le fait publie mots_cles.robuste (12/10/2026)",
+        "pourquoi": "refonte de la phase du mechant, lot 5b (decision 40) : une ligne « Robuste » dans le calcul pose",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+                          "Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01011', under_control=True)",
+                          "Puzzle.Tough('01011')"],
+        "declencher": ["Puzzle.Attack('01094', '01011')"],
+        "main_exclusive": ["01088"],
+        "verifier": "lot5b_fait_attaque",
+        "attendu": {"auteur_nom": "Rhino", "valeurs": [["mots_cles.robuste", True], ["mots_cles.percant", None]]},
+    },
+    {
+        "nom": "[lot5b] fait d'attaque — Percant : Rhino au Stolen Sai fait sauter la carte Tenace, le fait publie mots_cles.percant",
+        "pourquoi": "refonte de la phase du mechant, lot 5b (decision 40) : une ligne « Perçant » dans le calcul pose",
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.AttachReel('60035', '01094')",
+                          "Puzzle.Tough('60001a')", "Puzzle.Exhaust('60001a')"],
+        "main_exclusive": ["60009"],
+        "declencher": ["Puzzle.Attack('01094')"],
+        "verifier": "lot5b_fait_attaque",
+        "attendu": {"auteur_nom": "Rhino", "valeurs": [["mots_cles.percant", True], ["mots_cles.robuste", None]]},
+    },
+    {
+        "nom": "[lot5b] fait d'attaque — Deferlement : l'exces sur l'allie abattu est publie (cible et degats)",
+        "pourquoi": "refonte de la phase du mechant, lot 5b (decision 40) : deux fleches et une ligne « Déferlement »",
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+                          "Puzzle.PutIntoPlay('60149')",
+                          "Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01011', under_control=True)"],
+        "declencher": ["Puzzle.Attack('60149', '01011')"],
+        "main_exclusive": ["01088"],
+        "verifier": "lot5b_fait_attaque",
+        "attendu": {"auteur_nom": "Rhino", "valeurs": [["mots_cles.overkill.degats", 1]]},
+    },
+    {
+        "nom": "[lot5b] fait d'attaque — Riposte : Radioactive Man abattu par la riposte, le fait porte riposte.vaincu",
+        "pourquoi": "refonte de la phase du mechant, lot 5b (decision 39) : la Riposte a son ecran a part ; regles d'avant la 1.8 (riposte AVANT le journal)",
+        "scenario": "rhino", "heros": "wolverine_x23",
+        "mise_en_place": ["Puzzle.ChangeForm('wx001b')", "Puzzle.PutIntoPlay('wx009', under_control=True)",
+                          "Puzzle.PutIntoPlay('01129')", "Puzzle.Damage('01129', 6)"],
+        "main_exclusive": ["01090", "01090"],
+        "declencher": ["Puzzle.Attack('01129')"],
+        "cibles": ["01129"],
+        "verifier": "lot5b_fait_attaque",
+        "attendu": {"auteur_nom": "Radioactive Man", "valeurs": [["riposte.vaincu", True]]},
+    },
+    {
+        "nom": "[lot5b] fait d'attaque — Rapide : Tombstone entre en jeu et attaque, le fait porte rapide",
+        "pourquoi": "refonte de la phase du mechant, lot 5b (decision 43) : annonce puis ecran « Attaque Rapide » ; la cause etait vide (nom de l'attaquant refuse)",
+        "scenario": "art_museum_heist_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('60198')"],
+        "verifier": "lot5b_fait_attaque",
+        "attendu": {"auteur_nom": "Tombstone", "valeurs": [["rapide", True]]},
+    },
+    {
+        "nom": "[lot5b] fait d'attaque — temoin : une attaque ordinaire de Rhino ne porte ni rapide, ni mots_cles, ni riposte",
+        "pourquoi": "les champs du lot 5b ne paraissent que la ou ils disent quelque chose",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+                          "Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01011', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01094', '01011')"],
+        "main_exclusive": ["01088"],
+        "verifier": "lot5b_fait_attaque",
+        "attendu": {"auteur_nom": "Rhino", "valeurs": [["rapide", None], ["mots_cles", None], ["riposte", None]]},
+    },
+    {
         "nom": "ar009 Sundered — le sbire attache prend +1 de chaque attaque : 3 + 1 = 4",
         "pourquoi": ("`WhenUnitWouldTakeDamage(ForcedInterrupt, Enemy, ..., "
                      "is_from_attack=True, conditions=[mon hote])` + `IncreaseDamage(1)`"),
@@ -59287,6 +59365,28 @@ def overkill_mechant_actif(monde, aides):
     if any(e[2] for e in etat if not e[1]):
         return False, f"un mechant NON actif a pris des degats : {etat}"
     return True, f"exces sur le mechant actif seulement : {etat}"
+
+
+def lot5b_fait_attaque(monde, aides):
+    """Refonte de la phase du mechant, lot 5b : ce que le fait d'attaque RESOLU de
+    `auteur_nom` publie. `valeurs` : [[chemin pointe, valeur]] ; valeur None = absent."""
+    attendu = aides["cas"]["attendu"]
+    faits = [f for f in monde.stat.faits_mechant
+             if f.get('genre') == 'attaque' and f.get('etat') in (None, 'resolu')
+             and attendu["auteur_nom"] in str(f.get('auteur', ''))]
+    if not faits:
+        return False, f"aucun fait d'attaque resolu de {attendu['auteur_nom']} ; journal = {monde.stat.faits_mechant}"
+    fait = faits[-1]
+    soucis = []
+    for chemin, valeur in attendu["valeurs"]:
+        courant = fait
+        for morceau in chemin.split('.'):
+            courant = courant.get(morceau) if isinstance(courant, dict) else None
+        if courant != valeur:
+            soucis.append(f"{chemin} = {courant!r} (attendu {valeur!r})")
+    if soucis:
+        return False, "; ".join(soucis) + f" ; fait = {fait}"
+    return True, "fait d'attaque conforme : " + ", ".join(f"{c}={v!r}" for c, v in attendu["valeurs"])
 
 
 def gorr_partie_perdue(monde, aides):

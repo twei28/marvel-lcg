@@ -246,6 +246,10 @@ export type VueRangee = {
   grisee: boolean
   /** Une carte qui ENTRE en jeu (refonte, lot 4, decision 3) : bandeau « NOUVEAU SBIRE » dans l'essai. */
   entree?: { sbire: boolean }
+  /** Lot 5b (decision 40) : une ligne par mot-cle qui a joue sur le coup (Perçant, Robuste, Déferlement). */
+  motsCles?: string[]
+  /** Lot 5b (decision 39) : l'ecran de la Riposte. */
+  riposte?: { vaincu: boolean }
 }
 
 export type QuestionCarte = { intitule: string; choix: Vignette[]; refus?: { libelle: string } }
@@ -476,6 +480,8 @@ export function titreCourt(etape: EtapeDeroule, ctx: ContexteVue): string {
       return etape.auteurNom ? t('Attaque de %1').replace('%1', etape.auteurNom) : t('Attaque')
     case 'manigance':
       return t('Manigance')
+    case 'riposte':
+      return etape.auteurNom ? t('Riposte de %1').replace('%1', etape.auteurNom) : t('Riposte')
     case 'menace':
       return t('Menace')
     case 'bilan':
@@ -754,6 +760,48 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
       : undefined,
     lignesEtoile,
     grisee: false,
+    motsCles: resolue && !annulee ? lignesMotsCles(etape) : undefined,
+  }
+}
+
+/** Lot 5b (decision 40) : ce que Perçant, Robuste et Déferlement ont fait, une ligne chacun. */
+export function lignesMotsCles(etape: EtapeDeroule): string[] | undefined {
+  const mots = etape.motsCles
+  if (!mots) return undefined
+  const lignes: string[] = []
+  if (mots.percant) lignes.push(t('Perçant : la carte Robuste est défaussée avant les dégâts'))
+  if (mots.robuste) lignes.push(t('Robuste : la carte Robuste absorbe tout le coup'))
+  if (mots.overkill)
+    lignes.push(
+      t('Déferlement : %1 en trop sur %2')
+        .replace('%1', `${mots.overkill.degats} ${mots.overkill.degats < 2 ? t('dégât') : t('dégâts')}`)
+        .replace('%2', nomNettoye(mots.overkill.cible) ?? mots.overkill.cible)
+    )
+  return lignes.length > 0 ? lignes : undefined
+}
+
+/** Lot 5b (decision 39) : la Riposte, un ecran a part, la carte touchee frappe l'attaquant. */
+function vueRiposte(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
+  const montant = etape.montant ?? 0
+  const pvMax = seuil(etape.cibleNom ? ctx.pvMaxParNom?.get(etape.cibleNom) : undefined)
+  const jauge: Jauge | undefined = nombre(etape.restant)
+    ? {
+        avant: pvMax !== undefined ? Math.min(etape.restant + montant, pvMax) : etape.restant + montant,
+        apres: Math.max(0, etape.restant),
+        plafond: pvMax,
+      }
+    : undefined
+  const texteDegats = `${montant} ${montant < 2 ? t('dégât') : t('dégâts')}`
+  const cible = vignette(`cible:${etape.cibleId ?? ''}`, etape.cibleId, etape.cibleNom, ctx)
+  return {
+    genre: 'rangee',
+    acteur: { ...vignette(`acteur:${etape.cle}`, etape.carteId, etape.auteurNom, ctx), legende: t('Riposte') },
+    boosts: [],
+    cibles: [jauge ? avecJaugeDeLEtape(cible, 'pv', jauge, texteDegats) : cible],
+    resultat: { texte: etape.riposte?.vaincu ? `${texteDegats} · ${t('VAINCU')}` : texteDegats, jauge },
+    lignesEtoile: [],
+    grisee: false,
+    riposte: { vaincu: Boolean(etape.riposte?.vaincu) },
   }
 }
 
@@ -1104,6 +1152,8 @@ export function vueDeLEtape(etape: EtapeDeroule, ctx: ContexteVue): VueCorps {
     case 'attaque':
     case 'manigance':
       return vueActivation(etape, ctx)
+    case 'riposte':
+      return vueRiposte(etape, ctx)
     case 'menace':
       return vueMenace(etape, ctx)
     case 'revelation':

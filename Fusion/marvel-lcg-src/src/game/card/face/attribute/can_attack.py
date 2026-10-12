@@ -412,9 +412,13 @@ class CanAttack(CardFace):
             # unit_health = target.health
 
             excess_damage = 0
+            # Refonte de la phase du mechant (lot 5b) : Robuste/Percant lus AVANT le coup.
+            avait_robuste = bool(getattr(atk_target, 'IsTough', lambda: False)())
+            percant = False
             if would_attack_unit_message.IsPiercing():
                 if atk_target.IsTough():
                     atk_target.DiscardTough(by_effect, rule="All")
+                    percant = True
 
             from game.card.face.card_type import Ally
             from game.card.face.card_type import Minion
@@ -515,6 +519,9 @@ class CanAttack(CardFace):
                     boost_cards=boost_cards,
                     defenseur=defenseur_retenu, cible_annoncee=target,
                     base_imprimee=annonce_base,
+                    mots_cles=CanAttack._MotsClesDuCoup(
+                        percant, avait_robuste and not percant and calculated_damage > 0 and took_damage == 0,
+                        damaged_overkill_target, excess_damage),
                 )
                 # L'intention est CONSOMMEE, mais SEULEMENT si un fait resolu a
                 # vraiment pris sa place : `JournaliserActivation` a ses propres
@@ -714,6 +721,8 @@ class CanAttack(CardFace):
                 # La valeur IMPRIMEE : l'attaque ou la manigance de l'auteur
                 # avant les cartes de boost, qui ne sont pas encore retournees.
                 'base': base,
+                # Lot 5b (decision 43) : une attaque Rapide (Quickstrike) se dit comme telle.
+                **({'rapide': True} if CanAttack._EstRapide(by_effect) else {}),
             })
             return activation_id
         except Exception:
@@ -839,7 +848,8 @@ class CanAttack(CardFace):
                               boost_cards: 'List[CardFace]|None'=None,
                               defenseur: 'CardFace|None'=None,
                               cible_annoncee: 'CardFace|None'=None,
-                              base_imprimee: 'int|None'=None) -> bool:
+                              base_imprimee: 'int|None'=None,
+                              mots_cles: 'Dict[str, Any]|None'=None) -> bool:
         """Inscrit une attaque D'ENNEMI au journal du bilan de phase.
 
         On ne journalise que les ennemis : ce panneau raconte la phase du
@@ -919,10 +929,40 @@ class CanAttack(CardFace):
             'cible_annoncee': (cible_annoncee or cible).name,
             'cible_annoncee_id': (cible_annoncee or cible).card.object_id,
             'base_imprimee': base_imprimee,
+            # Lot 5b : Percant, Robuste, Deferlement, publies seulement quand ils ont joue.
+            **({'mots_cles': mots_cles} if mots_cles else {}),
+            **({'rapide': True} if CanAttack._EstRapide(by_effect) else {}),
+            # Une Riposte resolue avant ce journal (regles d'avant la 1.8), voir can_retaliate.py.
+            **({'riposte': riposte_avant} if (riposte_avant := world.stat.__dict__.get('ripostes_en_attente', {}).pop(
+                (attaquant.card.object_id, cible.card.object_id), None)) else {}),
         })
         CanAttack._CompterDefense(cible, defenseur, subi,
                                   total_avant_defense if total_avant_defense is not None else inflige + defense)
         return True
+
+    @staticmethod
+    def _EstRapide(by_effect: 'Effect|None') -> bool:
+        """L'activation vient de la regle Rapide (Quickstrike, can_quickstrike.py)."""
+        try:
+            from game.effect.rule import Quickstrike
+            return isinstance(by_effect, Quickstrike)
+        except Exception:
+            return False
+
+    @staticmethod
+    def _MotsClesDuCoup(percant: bool, robuste: bool, overkill_cible: 'CardFace|None',
+                        excedent: int) -> 'Dict[str, Any]':
+        """Ce que Percant, Robuste et Deferlement ont fait sur CE coup (refonte, lot 5b)."""
+        mots: 'Dict[str, Any]' = {}
+        if percant:
+            mots['percant'] = True
+        if robuste:
+            mots['robuste'] = True
+        if overkill_cible is not None and excedent > 0:
+            mots['overkill'] = {'cible': overkill_cible.name,
+                                'cible_id': overkill_cible.card.object_id,
+                                'degats': excedent}
+        return mots
 
     @staticmethod
     def _CompterDefense(cible: 'CardFace', defenseur: 'CardFace|None', subi: int, attaque: int) -> None:

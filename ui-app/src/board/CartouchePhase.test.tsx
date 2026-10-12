@@ -1461,4 +1461,35 @@ describe('LOT 5 de la refonte (12/10/2026) : les écrans particuliers, derrière
     monter({ etapes: [menaceDecomposee, attaqueResolue, bilan], index: 2 })
     expect(document.querySelector('.essai-bilan-liste')).toBeNull()
   })
+  it('LOT 5b : attaque Rapide titree comme telle en essai (decision 43), inchangee sans essai', () => {
+    const rapide: EtapeDeroule = { ...attaqueResolue, cle: 'activation:8', rapide: true }
+    monter({ etapes: [rapide], essai: true })
+    expect(document.querySelector('.deroule-phase')?.textContent).toContain('Attaque Rapide')
+    cleanup()
+    monter({ etapes: [rapide] })
+    expect(document.querySelector('.deroule-phase')?.textContent).not.toContain('Attaque Rapide')
+  })
+
+  it('LOT 5b : lignes Perçant / Robuste / Déferlement sous le resultat en essai (decision 40), rien sans essai', () => {
+    const coup: EtapeDeroule = { ...attaqueResolue, cle: 'activation:9', motsCles: { robuste: true } }
+    monter({ etapes: [coup], essai: true })
+    expect(document.querySelector('.essai-mots-cles')?.textContent).toContain('Robuste')
+    cleanup()
+    monter({ etapes: [coup] })
+    expect(document.querySelector('.essai-mots-cles')).toBeNull()
+  })
+
+  it('LOT 5b : ecran Riposte avec son tampon (decision 39)', () => {
+    const riposte: EtapeDeroule = {
+      ...attaqueResolue,
+      cle: 'activation:1:riposte',
+      titre: 'riposte',
+      riposte: { degats: 1, restant: 0, vaincu: true },
+      montant: 1,
+      restant: 0,
+    }
+    monter({ etapes: [riposte], essai: true })
+    expect(document.querySelector('.essai-tampon-riposte')?.textContent).toBe('RIPOSTE')
+    expect(document.querySelector('.deroule-phase')?.textContent).toContain('VAINCU')
+  })
 })

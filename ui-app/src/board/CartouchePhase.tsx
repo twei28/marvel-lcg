@@ -401,6 +401,7 @@ function RangeeEssai({ rangee, grisee, encadre = false }: { rangee: VueRangee; g
   const pose = rangee.pose
   const classes = ['deroule-rangee', 'essai-calcul']
   if (rangee.annulee) classes.push('est-annulee')
+  if (rangee.riposte) classes.push('est-riposte')
   if (grisee) classes.push('est-grisee')
   // La legende (« ATQ 1 », « +0 ★ ») ferait doublon avec les pictos.
   const nue = (vignette: Vignette): Vignette => ({ ...vignette, legende: undefined })
@@ -420,6 +421,10 @@ function RangeeEssai({ rangee, grisee, encadre = false }: { rangee: VueRangee; g
       aria-hidden={grisee || undefined}
       style={{ '--nb-cartes': Math.max(1, nombreDeCartes(rangee)), '--poids-cartes': poidsDesCartes(rangee) } as CSSProperties}
     >
+      {rangee.riposte ? (
+        // LOT 5b (decision 39) : la Riposte, son ecran a part, la fleche part de la carte touchee.
+        <span className="essai-tampon-riposte">{t('RIPOSTE')}</span>
+      ) : null}
       <div className="deroule-rangee-cartes">
         {rangee.acteur ? (
           <span className="essai-terme">
@@ -486,6 +491,16 @@ function RangeeEssai({ rangee, grisee, encadre = false }: { rangee: VueRangee; g
         // LOT 5 (decision 8) : le resultat sur sa ligne, sous le calcul pose,
         // plutot que coince sous une carte que l'ecran a pu reduire.
         <div className="essai-resultat-ligne">{resultat}</div>
+      ) : null}
+      {encadre && rangee.motsCles && rangee.motsCles.length > 0 ? (
+        // LOT 5b (decision 40) : une ligne par mot-cle qui a joue (Perçant, Robuste, Déferlement).
+        <ul className="essai-mots-cles">
+          {rangee.motsCles.map((ligne) => (
+            <li key={ligne}>
+              <Texte>{ligne}</Texte>
+            </li>
+          ))}
+        </ul>
       ) : null}
       {encadre
         ? rangee.lignesEtoile.length > 0 ? (
@@ -784,7 +799,7 @@ function Corps({ corps, grisee, essai = false }: { corps: VueCorps; grisee: bool
   switch (corps.genre) {
     case 'rangee':
       if (essai && corps.menace) return <MenaceEssai rangee={corps} grisee={grisee} />
-      if (essai && (corps.pose || corps.annulee)) return <RangeeEssai rangee={corps} grisee={grisee} encadre />
+      if (essai && (corps.pose || corps.annulee || corps.riposte)) return <RangeeEssai rangee={corps} grisee={grisee} encadre />
       // LOT 4 (decision 3) : une carte qui entre en jeu se dit d'un bandeau, puis vole vers la table (TrajetsPhase).
       if (essai && corps.entree)
         return (
@@ -1468,10 +1483,18 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   // LOT 5 (essai, decision 5) : une activation inseree par une carte se dit
   // dans le titre (« Attaque de Rhino (Hydra Jet-Trooper) ») ; d'habitude, le
   // moteur ne remplit `cause` que dans ce cas.
+  // LOT 5b (essai, decision 43) : une attaque Rapide se dit comme telle, de l'annonce au resultat.
+  const titreRapide =
+    essai && etapeLue?.rapide && etapeLue.titre === 'attaque'
+      ? etapeLue.auteurNom
+        ? t('Attaque Rapide de %1').replace('%1', etapeLue.auteurNom)
+        : t('Attaque Rapide')
+      : undefined
   const titre =
-    essai && etapeLue?.cause && (etapeLue.titre === 'attaque' || etapeLue.titre === 'manigance')
+    titreRapide ??
+    (essai && etapeLue?.cause && (etapeLue.titre === 'attaque' || etapeLue.titre === 'manigance')
       ? `${titreBrut} (${etapeLue.cause})`
-      : titreBrut
+      : titreBrut)
 
   // ESSAI : les boosts se retournent au clic, un par un (questions 3 et 10).
   const boostsRestants =

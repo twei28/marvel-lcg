@@ -28,6 +28,31 @@ class HasRetaliate(HasAttribute):
 
 class CanRetaliate(HasRetaliate):
 
+    @staticmethod
+    def _JournaliserRiposte(riposteur: 'Any', attaquant: 'Any', valeur: int, resultat: 'Any') -> None:
+        """Refonte de la phase du mechant (lot 5b) : la Riposte est accrochee au fait
+        d'attaque qu'elle suit (meme attaquant, meme cible), pour son ecran a part.
+        Journal d'affichage : sous garde, il ne peut rien interrompre."""
+        try:
+            world = riposteur.card.world
+            subi = getattr(resultat, 'took_damage', valeur) if resultat is not None else 0
+            riposte = {
+                'degats': subi if isinstance(subi, int) else valeur,
+                'restant': getattr(attaquant, 'health', None),
+                'vaincu': bool(attaquant.IsDefeated() or not attaquant.IsInPlay()),
+            }
+            for fait in reversed(world.stat.faits_mechant):
+                if fait.get('genre') == 'attaque' and fait.get('etat') in (None, 'resolu') \
+                        and fait.get('auteur_id') == attaquant.card.object_id \
+                        and fait.get('cible_id') == riposteur.card.object_id and 'riposte' not in fait:
+                    fait['riposte'] = riposte
+                    return
+            # Riposte AVANT le journal (regles d'avant la 1.8) : le fait d'attaque la reprend.
+            attente = world.stat.__dict__.setdefault('ripostes_en_attente', {})
+            attente[(attaquant.card.object_id, riposteur.card.object_id)] = riposte
+        except Exception:
+            pass
+
     @final
     def ResolveRetaliate(self, atk_message: 'Message.WhenUnitWouldAttackUnit'):
         from game.effect.rule import Retaliate
@@ -38,7 +63,9 @@ class CanRetaliate(HasRetaliate):
                 if not atk_message.IsRanged() and \
                     not self.IsDefeated() and \
                     not atk_message.IsIgnoreRetaliate():
-                    return attacker.TakeDamage(self, self.retaliate, Retaliate(self))
+                    resultat = attacker.TakeDamage(self, self.retaliate, Retaliate(self))
+                    CanRetaliate._JournaliserRiposte(self, attacker, self.retaliate, resultat)
+                    return resultat
                 else:
                     ignore_message = Message.AfterIgnoreKeywordOnCard(attacker, [self], "Retaliate")
                     ignore_message.Send()

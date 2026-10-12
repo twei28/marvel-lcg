@@ -151,6 +151,8 @@ type FaitMechantCommun = {
  * passé déjà résolu et le joueur ne voyait jamais le coup venir.
  */
 type FaitActivationCommun = FaitMechantCommun & {
+  /** Refonte, lot 5b (decision 43) : l'activation vient de Rapide (Quickstrike). */
+  rapide?: boolean
   genre: 'attaque' | 'manigance'
   /**
    * Le numéro de l'activation dans le round (`WorldStat.NouvelleActivation`).
@@ -277,7 +279,19 @@ export type FaitActivationResolue = FaitActivationCommun & {
   plafond?: number | null
   /** Sur une manigance : la menace AVANT la pose (une manigance au seuil peut se vider aussitôt). */
   avant?: number | null
+  /** Refonte, lot 5b (12/10/2026) : ce que Perçant, Robuste et Déferlement ont fait sur ce coup. */
+  mots_cles?: MotsClesDuCoup
+  /** Refonte, lot 5b : la Riposte de la carte touchée contre l'attaquant. */
+  riposte?: RiposteDuCoup
 }
+
+export type MotsClesDuCoup = {
+  percant?: boolean
+  robuste?: boolean
+  overkill?: { cible: string; cible_id: number; degats: number }
+}
+
+export type RiposteDuCoup = { degats: number; restant?: number | null; vaincu?: boolean }
 
 export type FaitActivation = FaitActivationAnnonce | FaitActivationBoosts | FaitActivationResolue
 
