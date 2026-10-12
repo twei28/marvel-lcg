@@ -3,6 +3,15 @@
 Écrit le 19/09/2026. **À relire et à mettre à jour juste après chaque
 déploiement** : c'est le seul endroit qui dit ce qui est parti et ce qui reste.
 
+## À DÉPLOYER AVEC LA NOUVELLE PHASE DU MÉCHANT (décision de l'utilisateur, 12/10)
+
+- Team-Up sans cibles à désigner (`391ee75e`, signalement Lilipulse, See No Evil Hear No Evil). Reste : le motif « injouable » sans le 2e personnage dit « Aucune cible possible » au lieu de nommer le personnage manquant.
+
+## ✅ DÉPLOYÉ LE 12/10/2026 (après-midi, `2864effb`, site + play.)
+
+- Accueil : remerciements aux sites des images (MarvelCDB, Hall of Heroes, MC4DB), aux créateurs de fan-made et à « ma maman » (`87b470e7`, `ac64c7a0`, `2864effb`).
+- Embarqués mais visibles seulement des comptes « essai » : lots 1 et 2 de la refonte de la phase du méchant (`cc31bb9d`, `b6b30eab`).
+
 ## ✅ DÉPLOYÉ LE 12/10/2026 (11 h 41, `0c5af428`, plateau `board-IXiSviLg.js`, site + play.)
 
 - Mode « D'un coup » : la question du moteur s'affiche de nouveau pendant la phase du méchant (`d0427249`, régression du 10/10 `d5c119a5`).
