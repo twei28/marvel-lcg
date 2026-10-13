@@ -1555,3 +1555,26 @@ html.essai-peril-autre .main-feuille {
   margin: 0;
   color: rgba(248, 250, 252, 0.75);
 }
+
+/* Un changement de stade secoue la boîte, une fois (13/10/2026, encadré ②). */
+@keyframes essai-secousse {
+  0%, 100% { translate: 0 0; }
+  20% { translate: -6px 0; }
+  45% { translate: 6px 0; }
+  70% { translate: -3px 0; }
+}
+
+.deroule-phase.est-essai.est-secousse {
+  animation: essai-secousse 0.32s ease-out 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deroule-phase.est-essai.est-secousse {
+    animation: none;
+  }
+}
+
+html[data-affichage='sobre'] .deroule-phase.est-essai.est-secousse,
+body.plateau-sans-animations .deroule-phase.est-essai.est-secousse {
+  animation: none;
+}

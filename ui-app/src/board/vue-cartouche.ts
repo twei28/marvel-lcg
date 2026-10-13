@@ -1266,7 +1266,8 @@ export function vueDeLEtape(etape: EtapeDeroule, ctx: ContexteVue): VueCorps {
         acteur: { ...vignette(`elimine:${etape.cle}`, etape.carteId, etape.cibleNom, ctx), legende: t('ÉLIMINÉ') },
         boosts: [],
         cibles: [],
-        resultat: { texte: t('Ses sbires passent au joueur suivant. La phase continue.') },
+        // 13/10/2026 (encadré ⑧, Rules Reference « PLAYER ELIMINATION ») : il gagne ou perd avec le groupe.
+        resultat: { texte: t('Ses sbires passent au joueur suivant. La phase continue.'), note: t('Il reste dans la partie : il gagne ou perd avec son équipe.') },
         lignesEtoile: [],
         grisee: false,
         elimine: true,

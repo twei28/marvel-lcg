@@ -20,6 +20,7 @@ import { coupsDeLEtape, pointDeLaCourbe, type Coup, type Fige } from './coups-su
 import type { EtapeDeroule } from './deroule-phase'
 import { carteDeLaTable, elementDuBout, rect } from './FlechesPhase'
 import { traceEntre, type TraceFleche } from './fleches-phase'
+import { jouerSon } from './sons'
 import { animationsCoupees } from './TrajetsPhase'
 import { DUREE_TRAJET_MS } from './trajets-phase'
 import './jetons-coups.css'
@@ -126,6 +127,9 @@ export function useCoupsEnVol(
     for (const v of partis) {
       const arrivee = () => {
         v.el.remove()
+        // 13/10/2026 (encadré ①) : un petit « tac » quand le jeton se pose, le son
+        // « token » du moteur (famille jeton), coupé avec les sons du jeu.
+        jouerSon('token')
         setEnVol((liste) => {
           const reste = liste.filter((f) => !(f.genre === v.coup.genre && f.cibleId === v.coup.cibleId))
           return reste.length === 0 ? AUCUN : reste

@@ -1281,6 +1281,13 @@ describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
     expect(document.querySelector('.essai-dos-rencontre')).toBeNull()
   })
 
+  it('13/10/2026 : une 2e attaque du même ennemi, causée par une carte, se numérote', () => {
+    const premiere = { ...attaqueResolue, cle: 'a1', boosts: [] }
+    const seconde = { ...attaqueResolue, cle: 'a2', cause: 'Hydra Jet-Trooper', boosts: [] }
+    monter({ etapes: [premiere, seconde], index: 1, essai: true })
+    expect(document.querySelector('.deroule-titre-court')?.textContent).toMatch(/\(2e, Hydra Jet-Trooper\)$/)
+  })
+
   it('13/10/2026 : « (sbire 2/3) » dans le titre d’une activation de sbire', () => {
     monter({ etapes: [{ ...attaqueResolue, temps: 'sbires', rangSbire: 2, totalSbires: 3, boosts: [] }], essai: true })
     expect(document.querySelector('.deroule-titre-court')?.textContent).toMatch(/\(sbire 2\/3\)$/)

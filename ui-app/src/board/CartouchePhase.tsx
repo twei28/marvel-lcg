@@ -1723,10 +1723,21 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         ? t('Attaque Rapide de %1').replace('%1', etapeLue.auteurNom)
         : t('Attaque Rapide')
       : undefined
+  // 13/10/2026 (encadré ⑨) : une 2e activation du même ennemi se numérote,
+  // « Attaque de Klaw (2e, Hydra Jet-Trooper) ».
+  const rangActivation =
+    essai && etapeLue?.cause && etapeLue.carteId !== undefined
+      ? etapes.filter(
+          (e, i) =>
+            i <= etapes.findIndex((x) => x.cle === etapeLue.cle) &&
+            e.carteId === etapeLue.carteId &&
+            (e.titre === 'attaque' || e.titre === 'manigance')
+        ).length
+      : 0
   const titreSansRang =
     titreRapide ??
     (essai && etapeLue?.cause && (etapeLue.titre === 'attaque' || etapeLue.titre === 'manigance')
-      ? `${titreBrut} (${etapeLue.cause})`
+      ? `${titreBrut} (${rangActivation >= 2 ? `${t('%1e').replace('%1', String(rangActivation))}, ` : ''}${etapeLue.cause})`
       : titreBrut)
   // 13/10/2026 (encadré ⑩) : « Attaque du Fondeur (sbire 2/3) », seulement à partir de deux sbires.
   const titre =
@@ -1870,6 +1881,8 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   if (essai) classes.push('est-essai')
   if (props.bis ?? true) classes.push('est-bis')
   if (essai && reduit) classes.push('est-reduit')
+  // 13/10/2026 (encadré ②) : un changement de stade secoue la boîte (rien en sobre ni en mouvement réduit).
+  if (essai && etapeLue?.titre === 'stade') classes.push('est-secousse')
   if (essai && props.cadre) classes.push(props.cadre.genre === 'commun' ? 'est-cadre-commun' : 'est-cadre-joueur')
   if (essai && props.cadre?.genre === 'joueur' && props.cadre.raye) classes.push('est-cadre-raye')
   // Finition : au telephone, la feuille basse s'agrandit seulement le temps d'une question.
