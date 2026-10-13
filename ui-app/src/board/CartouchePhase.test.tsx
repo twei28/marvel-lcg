@@ -694,6 +694,23 @@ describe('etat 1 : la question de defense, dans la rangee (D7, D37)', () => {
   })
 })
 
+describe('essai : « Ask », demander a un autre joueur de defendre (13/10/2026)', () => {
+  // Signale : « pourquoi il affiche deux fois Ironheart ? ». Le moteur rattache
+  // « Ask » au heros attaque ; la boite montrait sa carte une seconde fois, muette.
+  it('un bouton bleu qui dit a qui l on demande, sans seconde carte du heros attaque', () => {
+    const demanderAide = optionMoteur(12, 'Ask', SPIDER, { all_legal_targets: [VEUVE], target_num_range: [1, 1] })
+    const q = questionMoteur(demandeMoteur([defenseSM, demanderAide]))
+    monter({ etapes: [annonce], index: 0, questionAuJoueur: true, questionDuMoteur: q, essai: true })
+    const bouton = document.querySelector<HTMLButtonElement>('.essai-choix.est-demande')
+    expect(bouton?.textContent).toBe('Demander à Black Widow de défendre')
+    // La rangee de cartes ne montre que TES defenseurs : le bouton bleu suffit.
+    const vignettes = [...document.querySelectorAll<HTMLElement>('button.deroule-vignette[data-choix]')]
+    expect(vignettes).toHaveLength(1)
+    fireEvent.click(bouton!)
+    expect(q.choisirOption).toHaveBeenCalledWith(demanderAide)
+  })
+})
+
 describe('essai : le choix du defenseur en boutons de meme taille (10/10/2026)', () => {
   function etat1Essai() {
     const q = questionMoteur(demandeMoteur([defenseSM, defenseBW, sensAraignee]), { ligneSansDefense: 'ATQ 2 + 1 carte boost' })
@@ -1248,7 +1265,11 @@ describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
     monter({ etapes: [coureur, vengeance, boom], index: 2, essai: true, cartesDistribuees: 1 })
     expect(document.querySelector('.essai-tampon')?.textContent).toBe('ANNULÉE')
     expect(document.querySelector('.essai-annuleur [data-card-id], .essai-annuleur .deroule-vignette')).not.toBeNull()
-    expect(document.querySelector('.essai-compteur b')?.textContent).toBe('Carte 3 / 3')
+    // 13/10/2026 : le numero passe dans le titre (« Carte rencontre r/t · heros »),
+    // la carte revelee dessous ; le badge de droite ne garde que les ajouts.
+    expect(document.querySelector('.deroule-titre-court')?.textContent).toMatch(/^Carte rencontre \d+\/\d+/)
+    expect(document.querySelector('.deroule-sous-titre')).not.toBeNull()
+    expect(document.querySelector('.essai-compteur > b')).toBeNull()
     expect(document.querySelector('.essai-compteur small')?.textContent).toContain('Renfort (Weapons Runner)')
     expect(document.querySelector('.essai-compteur small')?.textContent).toContain('Stepford Cuckoos')
   })

@@ -1017,6 +1017,35 @@ export function compteurDesRevelations(
 }
 
 /**
+ * L'etape 3 dite par joueur (essai, demande de l'utilisateur du 13/10/2026) :
+ * « Carte rencontre 2/2 · Captain America ». Le rang et le total comptent les
+ * cartes de CE joueur (son choix), le nom est son heros ou son alter ego.
+ * Le total prend ce qu'il a recu a la distribution, plus les Renforts et les
+ * cartes revelees en remplacement : il est connu des sa premiere carte.
+ */
+export function rencontreDuJoueur(
+  etapes: EtapeDeroule[],
+  cle: string
+): { rang: number; total: number; nom?: string } | undefined {
+  const revelations = etapes.filter((e) => e.titre === 'revelation' && !e.horsPhase)
+  const etape = revelations.find((e) => e.cle === cle)
+  if (!etape) return undefined
+  const duJoueur = revelations.filter((e) => e.joueur === etape.joueur)
+  let distribuees = 0
+  let enTableau = 0
+  for (const e of etapes) {
+    if (e.titre === 'distribution' && e.joueur === etape.joueur) distribuees += e.montant ?? 1
+    for (const ligne of e.lignesDistribution ?? []) if (ligne.joueur === etape.joueur) enTableau += ligne.cartes
+  }
+  const ajouts = duJoueur.filter((e) => e.parSurge || e.reveleePar).length
+  return {
+    rang: duJoueur.findIndex((e) => e.cle === cle) + 1,
+    total: Math.max(duJoueur.length, Math.max(distribuees, enTableau) + ajouts),
+    nom: nomNettoye(etape.auteurNom),
+  }
+}
+
+/**
  * « Stepford Cuckoos : défaussée » (n72) : sur la carte annulee, et aussi sur sa
  * remplacante. Le panneau retient le moteur jusqu'au « Suivant » : l'annulation
  * n'arrive a l'ecran qu'avec la carte de remplacement.

@@ -716,6 +716,15 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-corps {
   color: rgba(248, 250, 252, 0.75);
 }
 
+/* Sous le titre « Carte rencontre 2/2 · X » : la carte revelee (13/10/2026). */
+.deroule-phase.est-scene .deroule-sous-titre {
+  margin: 0 0 2px;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: rgba(248, 250, 252, 0.85);
+}
+
 /* L'astuce « clique la carte sur la table » (13/10/2026) : discrete, sous la consigne. */
 .deroule-phase.est-scene .deroule-sous-cadre-astuce {
   font-style: italic;

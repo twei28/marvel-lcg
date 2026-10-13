@@ -63,6 +63,7 @@ import { NomsSurvolables, Texte, nomsMontrables, type NomDeCarte } from './noms-
 import { ajusterLesCartes, deborde, hauteurPosee } from './essai-tailles'
 import {
   compteurDesRevelations,
+  rencontreDuJoueur,
   herosViseDe,
   jaugeCritique,
   PASTILLES,
@@ -946,6 +947,7 @@ function LigneDuHaut({
   bandeau,
   relire,
   titre,
+  sousTitre,
   page,
   outils,
   numerosCarres = false,
@@ -957,6 +959,8 @@ function LigneDuHaut({
   /** Relire une pastille passee (D22) ; absent, aucune ne se clique. */
   relire?: (cle: ClePastille) => void
   titre: string
+  /** Sous le titre : la carte revelee, quand le titre dit « Carte rencontre 2/2 · X ». */
+  sousTitre?: string
   page?: string
   /** Essai : ce qui se pose a droite du titre (compteur de cartes, « Réduire »). */
   outils?: ReactNode
@@ -1031,6 +1035,11 @@ function LigneDuHaut({
           <Texte>{titre}</Texte>
         </h2>
       )}
+      {sousTitre ? (
+        <p className="deroule-sous-titre">
+          <Texte>{sousTitre}</Texte>
+        </p>
+      ) : null}
     </header>
   )
 }
@@ -1477,17 +1486,20 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   // LE CORPS, selon ce que la question demande.
   let corps: ReactNode = null
   if (defenseVue && vueQ?.genre === 'defense') {
+    // Essai (13/10/2026) : « Demander à X de défendre » a son bouton bleu en bas ;
+    // la rangee ne montre que l'attaquant et TES defenseurs (choix de l'utilisateur).
+    const autresEnCarte = essai ? vueQ.autres.filter((choix) => !choix.demande) : vueQ.autres
     corps = (
       <Rangee
         rangee={defenseVue}
         grisee={false}
-        nbChoix={vueQ.defenseurs.length + vueQ.autres.length}
+        nbChoix={vueQ.defenseurs.length + autresEnCarte.length}
         choix={
           <>
             <span className="deroule-vers" aria-hidden="true">
               →
             </span>
-            {[...vueQ.defenseurs, ...vueQ.autres].map((choix) => (
+            {[...vueQ.defenseurs, ...autresEnCarte].map((choix) => (
               <BoutonOption key={choix.optionId} vignette={choix} choisir={() => choisir(choix.optionId)} />
             ))}
           </>
@@ -1582,6 +1594,23 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             <span>{choix.defense ? `${t('Défendre avec')} ${choix.defense.source}` : avecIcones(marquerRessources(choix.nom))}</span>
           </button>
         ))}
+        {vueQ.autres
+          .filter((choix) => choix.demande)
+          .map((choix) => (
+            <button
+              key={choix.optionId}
+              type="button"
+              className="essai-choix est-demande"
+              data-option-id={choix.optionId}
+              aria-disabled={choix.indisponible ? true : undefined}
+              title={choix.indisponible ?? choix.nom}
+              onClick={() => {
+                if (!choix.indisponible) choisir(choix.optionId)
+              }}
+            >
+              <span>{choix.nom}</span>
+            </button>
+          ))}
         {refus ? (
           <button
             type="button"
@@ -1626,6 +1655,13 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     essai && !relu && etape && props.montrerBoostSuivant ? Math.max(0, etape.boosts.length - props.boostsMontres) : 0
   const compteur =
     essai && etape && !relu && !horsPhase ? compteurDesRevelations(etapes, etape.cle, props.cartesDistribuees) : undefined
+  // Essai (13/10/2026) : « Carte rencontre 2/2 · Captain America » en titre, la
+  // carte revelee dessous. Le compteur de droite ne garde que les Renforts.
+  const rencontre = essai && etapeLue && !relu && !horsPhase ? rencontreDuJoueur(etapes, etapeLue.cle) : undefined
+  const titreAffiche = rencontre
+    ? `${t('Carte rencontre %1/%2').replace('%1', String(rencontre.rang)).replace('%2', String(rencontre.total))}${rencontre.nom ? ` · ${rencontre.nom}` : ''}`
+    : titre
+  const sousTitre = rencontre ? titre : undefined
   // Lot 6 (essai, multi) : ce joueur ne donne pas le rythme, son pied dit qui le donne.
   const multiSansBouton =
     props.multi?.genre === 'regarde' || props.multi?.genre === 'attente-choix' || props.multi?.genre === 'choix-hote'
@@ -1711,9 +1747,9 @@ export function CartouchePhase(props: CartouchePhaseProps) {
           {props.cadre.genre === 'commun' ? null : <b>{`J${props.cadre.siege}`}</b>}
         </span>
       ) : null}
-      {compteur ? (
+      {compteur && (!rencontre || compteur.ajouts.length > 0) ? (
         <span className="essai-compteur">
-          <b>{t('Carte %1 / %2').replace('%1', String(compteur.rang)).replace('%2', String(compteur.total))}</b>
+          {rencontre ? null : <b>{t('Carte %1 / %2').replace('%1', String(compteur.rang)).replace('%2', String(compteur.total))}</b>}
           {compteur.ajouts.length > 0 ? (
             <small>
               <Texte>{compteur.ajouts.join(' · ')}</Texte>
@@ -1758,7 +1794,8 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         liste={horsPhase ? [] : liste}
         bandeau={horsPhase ? t('Pendant ton tour') : relu || depuisLeJournal ? t('Relecture') : undefined}
         relire={relire ? (cle) => relire({ temps: cle }) : undefined}
-        titre={titre}
+        titre={titreAffiche}
+        sousTitre={sousTitre}
         page={sequence.length > 1 ? `${page + 1} / ${sequence.length}` : undefined}
         outils={outils}
         numerosCarres={props.bis ?? true}

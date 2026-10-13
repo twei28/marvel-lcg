@@ -82,6 +82,8 @@ function lesCas(): Cas[] {
   const reponses = IDS.slice(0, 4).map((id, i) => option(20 + i, 'Response', id))
   const effets = IDS.slice(0, 4).map((_, i) => option(40 + i, `Effet ${i + 1}`, 100))
   const defenses = IDS.slice(0, 4).map((id, i) => option(60 + i, 'Defense', id, { all_legal_targets: [1], target_num_range: [1, 1] }))
+  // Multijoueur : « Demander à X de défendre » s'ajoute aux defenseurs (13/10/2026).
+  const demanderAide = option(70, 'Ask', IDS[0], { all_legal_targets: [1], target_num_range: [1, 1] })
   return [
     { nom: 'cibles-8', classe: 'est-cibles', etape: etapeRevelation, q: question(demande([viser]), interaction([viser], { option: viser, cartes: cibles(8), raison: 'Choisis encore 1 cible', assistant: assistant({ etape: 'target', cibleMinimum: 1, cibleMaximum: 1 }) })) },
     { nom: 'paiement-8', classe: 'est-paiement', etape: etapeRevelation, q: question(demande([payer], { ability_type: 'Interrupt' }), interaction([payer], { option: payer, cartes: cibles(8, 'ressource'), assistant: assistant({ etape: 'payment', titre: 'Payer le coût', detail: '0/3 payé', coutRequis: 3, coutSlots: [{ index: 0, rempli: false }, { index: 1, rempli: false }, { index: 2, rempli: false }] }) })) },
@@ -89,7 +91,7 @@ function lesCas(): Cas[] {
     { nom: 'reponses-4', classe: 'est-reponses', etape: etapeAnnonce, q: question(demande(reponses, { event_name: 'WhenDamage' })) },
     { nom: 'choix-carte-4', classe: 'deroule-question-carte, .est-choix-carte', etape: etapeRevelation, q: question(demande(effets, { event_name: 'WhenPlayerChooseAbility' })) },
     { nom: 'confirmer', classe: 'est-confirmer', etape: etapeRevelation, q: question(demande([payer], { ability_type: 'Interrupt' }), interaction([payer], { option: payer, prete: true, assistant: assistant({ etape: 'confirm' }) })) },
-    { nom: 'defense-4', classe: 'essai-choix-defense', etape: etapeAnnonce, q: question(demande(defenses, { event_name: 'WhenEnemyAttack' })) },
+    { nom: 'defense-4', classe: 'essai-choix-defense', etape: etapeAnnonce, q: question(demande([...defenses, demanderAide], { event_name: 'WhenEnemyAttack' })) },
   ]
 }
 

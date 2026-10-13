@@ -63,6 +63,8 @@ export type VignetteOption = {
   indisponible?: string
   /** Defense : la DEF du defenseur et son nom seul, pour le bouton de l'essai. */
   defense?: { valeur: number; source: string }
+  /** « Demander à X de défendre » : un bouton de la rangee de defense de l'essai. */
+  demande?: boolean
 }
 
 export type CibleVue = {
@@ -176,6 +178,33 @@ function vignetteOption(option: Option, chiffre: number, q: QuestionDuMoteur, no
       (option.bind_id !== 0 ? q.carteScene(option.bind_id, true) : undefined),
     carteId: option.bind_id !== 0 ? option.bind_id : undefined,
     indisponible: option.failure_reason || undefined,
+  }
+}
+
+/**
+ * « Ask » (moteur, player_setup.py) : si le heros attaque ne defend pas, un AUTRE
+ * joueur peut defendre a sa place. Le moteur la rattache au heros attaque : la
+ * boite montrait donc une seconde fois sa carte, sans rien dire (signale le
+ * 13/10/2026, « pourquoi il affiche deux fois Ironheart ? »). Elle montre le
+ * heros a qui l'on demande, et le dit.
+ */
+const DEMANDER_A_UN_AUTRE = 'Ask'
+
+function vignetteDemande(option: Option, chiffre: number, q: QuestionDuMoteur): VignetteOption {
+  const aides = [...new Set(option.all_legal_targets)]
+  const seul = aides.length === 1 ? aides[0] : undefined
+  const nom =
+    seul !== undefined
+      ? t('Demander à %1 de défendre').replace('%1', nomCarte(seul, q))
+      : t('Demander à un autre joueur de défendre')
+  return {
+    optionId: option.id,
+    chiffre,
+    nom,
+    scan: seul !== undefined ? q.carteScene(seul, true) : undefined,
+    carteId: seul,
+    indisponible: option.failure_reason || undefined,
+    demande: true,
   }
 }
 
@@ -325,7 +354,7 @@ export function vueSousCadre(
       }),
       autres: options
         .filter((option) => option.name !== 'Defense')
-        .map((option, rang) => vignetteOption(option, defenses.length + rang + 1, q)),
+        .map((option, rang) => (option.name === DEMANDER_A_UN_AUTRE ? vignetteDemande(option, defenses.length + rang + 1, q) : vignetteOption(option, defenses.length + rang + 1, q))),
       refus: q.ligneSansDefense ? `${refus} (${q.ligneSansDefense})` : refus,
     }
   }

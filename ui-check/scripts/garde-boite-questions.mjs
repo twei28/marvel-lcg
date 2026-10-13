@@ -58,6 +58,8 @@ for (const [l, h] of TAILLES) {
         let pire = Math.max(0, corps.scrollHeight - corps.clientHeight, corps.scrollWidth - corps.clientWidth)
         const b = corps.getBoundingClientRect()
         for (const el of corps.querySelectorAll('*')) {
+          // Le banc n'a pas les images : le nom de secours d'une carte (.scan-fallback) n'existe pas en partie.
+          if (el.closest('.scan-fallback')) continue
           const r = el.getBoundingClientRect()
           if (!r.width || !r.height) continue
           pire = Math.max(pire, r.bottom - b.bottom, r.right - b.right, b.top - r.top, b.left - r.left)
@@ -96,11 +98,22 @@ for (const [l, h] of TAILLES) {
         const dans = (z) => r.top >= z.top - 1 && r.bottom <= z.bottom + 1 && r.left >= z.left - 1 && r.right <= z.right + 1
         if (!dans(boite) || (corps.contains(bouton) && !dans(zoneCorps))) rognes.push((bouton.textContent || '').trim().slice(0, 30))
       }
-      return { carte: meilleure.hauteur, zoom, excedent: excedent(), rognes }
+      // Le pire element, pour savoir quoi corriger sans deviner.
+      let pire = { de: 0, quoi: '' }
+      const bc = corps.getBoundingClientRect()
+      for (const el of corps.querySelectorAll('*')) {
+          // Le banc n'a pas les images : le nom de secours d'une carte (.scan-fallback) n'existe pas en partie.
+          if (el.closest('.scan-fallback')) continue
+        const r = el.getBoundingClientRect()
+        if (!r.width || !r.height) continue
+        const de = Math.max(r.bottom - bc.bottom, r.right - bc.right, bc.top - r.top, bc.left - r.left)
+        if (de > pire.de) pire = { de: Math.round(de), quoi: `${el.parentElement?.className ?? ""} > ${el.tagName.toLowerCase()}.${[...el.classList].join(".")} « ${(el.textContent || "").trim().slice(0, 30)} » ${["bas", "droite", "haut", "gauche"][[r.bottom - bc.bottom, r.right - bc.right, bc.top - r.top, bc.left - r.left].indexOf(de)]}` }
+      }
+      return { carte: meilleure.hauteur, zoom, excedent: excedent(), rognes, pire }
     })
     const nom = `${fichier.replace('.html', '')} @ ${l}x${h}`
     if (m.excedent > 2 || m.rognes.length > 0) {
-      ecarts.push(`${nom} : excedent ${m.excedent} px, boutons rognes ${JSON.stringify(m.rognes)}`)
+      ecarts.push(`${nom} : excedent ${m.excedent} px (${m.pire.quoi}), boutons rognes ${JSON.stringify(m.rognes)}`)
       // Une capture de chaque ecart, a cote des pires cas, pour voir avant de corriger.
       fs.mkdirSync(path.join(CAS, 'ecarts'), { recursive: true })
       await onglet.screenshot({ path: path.join(CAS, 'ecarts', `${fichier.replace('.html', '')}-${l}x${h}.png`), clip: { x: 0, y: 0, width: Math.min(l, 640), height: h } })
