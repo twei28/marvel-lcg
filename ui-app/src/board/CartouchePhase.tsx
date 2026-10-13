@@ -410,7 +410,16 @@ function ResultatEssai({ rangee }: { rangee: VueRangee }) {
         {rangee.resultat.tampon ? (
           <span className={`essai-tampon essai-tampon-${rangee.resultat.tampon === 'K.O.' ? 'ko' : 'vaincu'}`}>{t(rangee.resultat.tampon)}</span>
         ) : null}
-        <strong className="deroule-resultat-texte"><Texte>{rangee.resultat.texte}</Texte></strong>
+        <strong className={`deroule-resultat-texte${rangee.resultat.nul ? ' est-nul' : ''}`}>
+          {rangee.resultat.barre ? (
+            <>
+              <s className="essai-barre">{rangee.resultat.barre}</s>
+              {' → '}
+            </>
+          ) : null}
+          <Texte>{rangee.resultat.texte}</Texte>
+        </strong>
+        {rangee.resultat.raison ? <small className="essai-raison">{rangee.resultat.raison}</small> : null}
         {jauge ? <span className="deroule-jauge">{jauge}</span> : null}
         {rangee.resultat.note ? <small className="deroule-resultat-note"><Texte>{rangee.resultat.note}</Texte></small> : null}
         {pose?.jauge === 'menace' ? <AlerteSeuil jauge={rangee.resultat.jauge} /> : null}
@@ -600,7 +609,15 @@ function MenaceEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
             ))}
             <tr className="essai-menace-total">
               <td>=</td>
-              <td className="essai-menace-valeur">+{menace.total}</td>
+              <td className="essai-menace-valeur">
+                {/* 13/10/2026 : moins que prévu, la somme barrée puis la vraie pose. */}
+                {menace.prevu !== undefined ? (
+                  <>
+                    <s className="essai-barre">+{menace.prevu}</s>{' '}
+                  </>
+                ) : null}
+                +{menace.total}
+              </td>
             </tr>
           </tbody>
         </table>

@@ -1708,6 +1708,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Réponse de %1': '%1 responds',
   'Interruption de %1': '%1 interrupts',
   'Choisir l’ordre': 'Choose the order',
+  'AUCUN DÉGÂT': 'NO DAMAGE',
+  'réduit': 'reduced',
   '%1e': '#%1',
   'Il reste dans la partie : il gagne ou perd avec son équipe.': 'They stay in the game: they win or lose with their team.',
   'remplace %1': 'replaces %1',

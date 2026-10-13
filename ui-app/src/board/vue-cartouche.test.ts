@@ -322,6 +322,21 @@ describe('piege 40 : des valeurs nulles, rien d invente', () => {
     expect(vaincu.resultat).toEqual({ texte: '4 dégâts subis', jauge: { avant: 2, apres: 0, plafond: 2 }, tampon: 'VAINCU' })
   })
 
+  it('13/10/2026 : un coup qui a fait moins que prevu, la valeur prevue barree et la raison', () => {
+    const robuste = rangee({ ...resoluRhino, inflige: 3, montant: 0, motsCles: { robuste: true } })
+    expect(robuste.resultat).toMatchObject({ texte: 'AUCUN DÉGÂT', barre: '3 dégâts', raison: 'Robuste', nul: true })
+    const reduit = rangee({ ...resoluRhino, inflige: 3, montant: 1 })
+    expect(reduit.resultat).toMatchObject({ barre: '3 dégâts', raison: 'réduit' })
+    expect(rangee(resoluRhino).resultat?.barre).toBeUndefined()
+  })
+
+  it('13/10/2026 : une menace posee plus petite que ses sources, la somme barree', () => {
+    const vue = vueDeLEtape(etape({ ...menace, montant: 1, escalade: 2, acceleration: 1, joueurs: 2 }), contexte([], 0))
+    expect(vue.genre === 'rangee' ? vue.menace?.prevu : 'pas une rangee').toBe(3)
+    const normale = vueDeLEtape(etape({ ...menace, montant: 3, escalade: 2, acceleration: 1, joueurs: 2 }), contexte([], 0))
+    expect(normale.genre === 'rangee' ? normale.menace?.prevu : 'pas une rangee').toBeUndefined()
+  })
+
   it('PV max inconnu : la jauge n a pas de plafond', () => {
     expect(rangee(resoluRhino).resultat?.jauge).toEqual({ avant: 10, apres: 9 })
   })

@@ -233,14 +233,20 @@ export type VueRangee = {
   /** « 1 dégât subi », jauge 10 → 9 / 14 (D11). */
   /** `note` : « menaces retirées » quand la manigance s'est vidée en atteignant son seuil. */
   /** `tampon` (13/10/2026) : « K.O. » quand le heros tombe, « VAINCU » pour un allie ou un sbire a 0. */
-  resultat?: { texte: string; jauge?: Jauge; note?: string; tampon?: 'K.O.' | 'VAINCU' }
+  /**
+   * `tampon` (13/10/2026) : « K.O. » quand le heros tombe, « VAINCU » pour un allie ou un sbire a 0.
+   * `barre` et `raison` : ce que le coup aurait fait, barre, et pourquoi il a fait moins.
+   * `nul` : aucun degat, dit en vert.
+   */
+  resultat?: { texte: string; jauge?: Jauge; note?: string; tampon?: 'K.O.' | 'VAINCU'; barre?: string; raison?: string; nul?: boolean }
   /** Trait rouge en travers et « ANNULÉE · Étourdi » (D24) ; cause absente toleree (piege 41). */
   annulee?: { cause?: string; par?: Vignette }
   /**
    * LOT 5 (essai, decision 7) : la menace de l'etape 1 decomposee source par
    * source, avec le total, la jauge et « COMPLÉTÉE » quand le seuil est atteint.
    */
-  menace?: { sources: Array<{ libelle: string; valeur: number }>; total: number; jauge?: Jauge; complete: boolean }
+  /** `prevu` (13/10/2026) : la somme des sources quand le moteur a posé MOINS (une carte a réduit la menace). */
+  menace?: { sources: Array<{ libelle: string; valeur: number }>; total: number; jauge?: Jauge; complete: boolean; prevu?: number }
   /** « ★ Charge : … », une ligne par boost etoile (D10). */
   lignesEtoile: string[]
   /** Grisee sous un sous-cadre ou pendant l'attente d'un autre joueur (le composant decide). */
@@ -595,7 +601,8 @@ function decompositionMenace(
   const plafond = plafondDe(etape, ctx)
   const avecSeuil = jauge ? { ...jauge, plafond: jauge.plafond ?? plafond } : undefined
   const complete = !!avecSeuil && nombre(avecSeuil.apres) && nombre(avecSeuil.plafond) && avecSeuil.plafond > 0 && avecSeuil.apres >= avecSeuil.plafond
-  return { sources, total: montant, jauge: avecSeuil, complete }
+  const somme = sources.reduce((acc, source) => acc + source.valeur, 0)
+  return { sources, total: montant, jauge: avecSeuil, complete, prevu: somme > montant ? somme : undefined }
 }
 
 /** La menace du point 1 (D12) : la manigance, le calcul, la jauge. */
@@ -694,8 +701,18 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
     const montant = etape.montant
     if (attaque) {
       const pvMax = seuil(brute.cibleNom ? ctx.pvMaxParNom?.get(brute.cibleNom) : undefined)
+      // 13/10/2026 (encadré ④) : le coup a fait moins que prévu (Robuste, réduction) :
+      // la valeur prévue barrée, et la raison. Rien d'inventé : `inflige` et `subi` viennent du moteur.
+      const inflige = etape.inflige
+      const reduit = nombre(inflige) && inflige > montant
       resultat = {
-        texte: `${montant} ${Math.abs(montant) < 2 ? t('dégât subi') : t('dégâts subis')}`,
+        texte:
+          montant === 0
+            ? t('AUCUN DÉGÂT')
+            : `${montant} ${Math.abs(montant) < 2 ? t('dégât subi') : t('dégâts subis')}`,
+        barre: reduit ? `${inflige} ${inflige < 2 ? t('dégât') : t('dégâts')}` : undefined,
+        raison: reduit ? (etape.motsCles?.robuste ? t('Robuste') : t('réduit')) : undefined,
+        nul: montant === 0 || undefined,
         // L'AVANT se deduit du restant et du subi, borne par le maximum : un
         // coup de 6 sur 4 PV laisse la cible a 0, elle n'avait pas 6 PV.
         // L'APRES s'arrete a 0 : un allie vaincu arrive du moteur avec un

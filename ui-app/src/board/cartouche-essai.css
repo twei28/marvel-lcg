@@ -1578,3 +1578,19 @@ html[data-affichage='sobre'] .deroule-phase.est-essai.est-secousse,
 body.plateau-sans-animations .deroule-phase.est-essai.est-secousse {
   animation: none;
 }
+
+/* Le coup qui a fait moins que prévu (13/10/2026) : la valeur prévue barrée, la raison dessous. */
+.deroule-phase.est-essai .essai-barre {
+  color: rgba(248, 250, 252, 0.55);
+  text-decoration-thickness: 2px;
+}
+
+.deroule-phase.est-essai .essai-raison {
+  display: block;
+  font-weight: 700;
+  color: #9fd3a8;
+}
+
+.deroule-phase.est-essai .deroule-resultat-texte.est-nul {
+  color: #3fae53;
+}
