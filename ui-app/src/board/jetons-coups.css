@@ -1,0 +1,30 @@
+/* Les jetons des coups de la phase du mechant (essai, 13/10/2026) : le vrai
+   jeton du jeu, en grand, le nombre dessus. Au-dessus de tout, sans jamais
+   capter un clic. L'image est posee en ligne par `JetonsCoups.tsx`. */
+.jeton-coup {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 625;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  pointer-events: none;
+  background: center / contain no-repeat;
+  color: #000;
+  font-family: Anton, Impact, system-ui, sans-serif;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  -webkit-text-stroke: 1.5px #fff;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.7));
+}
+
+/* Dans un triangle, le centre optique est plus bas que le centre geometrique
+   (meme decalage que le jeton pose sur une manigance). */
+.jeton-coup.est-menace {
+  padding-top: 16px;
+}

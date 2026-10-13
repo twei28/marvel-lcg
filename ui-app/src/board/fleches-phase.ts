@@ -67,7 +67,11 @@ export function flechesDeLEtape(etape: EtapeDeroule | undefined, ctx: ContexteFl
   // Une activation, ou un coup porté par une carte de la table (Riposte).
   if (!estRevelation && etape.carteId !== undefined && cible !== undefined) {
     if (etape.titre === 'manigance') {
-      ajouter({ lieu: 'table', id: etape.carteId }, cible, COULEUR_COMMUNE)
+      // 13/10/2026 : le mechant manigance DEPUIS LA BOITE, comme l'etape 1. Sa
+      // carte est collee a la manigance sur la table : le trait de l'une a
+      // l'autre ne se voyait pas, et le jeton de menace n'avait pas de chemin.
+      // Un sbire, lui, est loin de la manigance : son trait part de sa carte.
+      ajouter(etape.temps === 'sbires' ? { lieu: 'table', id: etape.carteId } : { lieu: 'boite-corps' }, cible, COULEUR_COMMUNE)
     } else if (etape.defenseurId !== undefined && etape.defenseurId !== cible) {
       // Le défenseur n'est pas la carte touchée : Overkill, ou défenseur parti.
       ajouter({ lieu: 'table', id: etape.carteId }, etape.defenseurId, couleurDuJoueurDe(etape.defenseurId, ctx))
@@ -128,7 +132,7 @@ export function bordVers(r: Rect, vers: Point): Point {
   return { x: cx + dx * k, y: cy + dy * k }
 }
 
-export type TraceFleche = { d: string; pointe: string; longueur: number; depart: Point; arrivee: Point }
+export type TraceFleche = { d: string; pointe: string; longueur: number; depart: Point; arrivee: Point; controle: Point }
 
 /** La courbe d'un rectangle à l'autre : du bord de la source au bord de la cible, bombée vers le haut. */
 export function traceEntre(de: Rect, vers: Rect): TraceFleche {
@@ -161,5 +165,6 @@ export function traceEntre(de: Rect, vers: Rect): TraceFleche {
     longueur: Math.ceil(longueur),
     depart,
     arrivee,
+    controle: { x: mx, y: my },
   }
 }

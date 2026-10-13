@@ -42,9 +42,14 @@ describe('flechesDeLEtape (lot 3, decisions 21 a 25, 39, 40)', () => {
     expect(f[0].vers.id).toBe(77)
   })
 
-  it('manigance du mechant : vers la manigance, en gris acier', () => {
-    const f = flechesDeLEtape(base({ titre: 'manigance', carteId: 50, cibleId: 60 }), ctx)
-    expect(f).toEqual([{ cle: 'table-50>60', de: { lieu: 'table', id: 50 }, vers: { lieu: 'table', id: 60 }, couleur: COULEUR_COMMUNE }])
+  it('manigance du mechant : de la boite vers la manigance, en gris acier', () => {
+    const f = flechesDeLEtape(base({ temps: 'mechant', titre: 'manigance', carteId: 50, cibleId: 60 }), ctx)
+    expect(f).toEqual([{ cle: 'corps>60', de: { lieu: 'boite-corps' }, vers: { lieu: 'table', id: 60 }, couleur: COULEUR_COMMUNE }])
+  })
+
+  it('manigance d un sbire : de sa carte vers la manigance', () => {
+    const f = flechesDeLEtape(base({ temps: 'sbires', titre: 'manigance', carteId: 70, cibleId: 60 }), ctx)
+    expect(f).toEqual([{ cle: 'table-70>60', de: { lieu: 'table', id: 70 }, vers: { lieu: 'table', id: 60 }, couleur: COULEUR_COMMUNE }])
   })
 
   it('etape 1 : de la boite vers la manigance, en gris acier', () => {

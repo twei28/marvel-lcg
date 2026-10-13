@@ -22,7 +22,7 @@ const CALME_MS = 150
 
 const VRAIE_PILE = /(deck|defausse|discard|victoire|retirees|mise-de-cote|nemesis|set-aside)/
 
-function animationsCoupees(): boolean {
+export function animationsCoupees(): boolean {
   if (typeof window === 'undefined') return true
   if (document.body.classList.contains('plateau-sans-animations')) return true
   if (document.documentElement.getAttribute('data-affichage') === 'sobre') return true

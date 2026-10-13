@@ -155,6 +155,9 @@ import { EditeurTable } from './board/EditeurTable'
 import { DISPOSITION_DE_DEPART, DISPOSITION_ORIGINE, type Disposition } from './board/table-briques'
 import { enregistrerDisposition, useDispositionTable } from './board/table-perso'
 import { detailAttaqueComplet, ligneAttaqueConnue } from './board/ligne-attaque'
+import { useCoupsEnVol } from './board/JetonsCoups'
+import { avecCompteursFiges } from './board/coups-sur-table'
+import { avecEtapesRiposte } from './board/etapes-essai'
 import { cartesAVenir, majInstantanes, mondeAvantEtape, mondeDeLaTable, sansCartesAVenir, type Instantanes } from './board/table-calee'
 import {
   appliquerTeinte,
@@ -2529,11 +2532,17 @@ export function PagePartie({
   // ses boosts, la table garde le monde d'AVANT l'etape (PV, menace) ; et une
   // carte qu'une etape suivante fera entrer en jeu n'y est pas encore.
   const [avantResultat, setAvantResultat] = useState(false)
+  // La Riposte a son ecran dans l'essai (DeroulePhase) : ses coups doivent s'y retrouver.
+  const etapesDesCoups = useMemo(() => (phaseEssai ? avecEtapesRiposte(etapesPhaseMechant) : etapesPhaseMechant), [phaseEssai, etapesPhaseMechant])
+  const compteursFiges = useCoupsEnVol(etapesDesCoups, cleEtapeAffichee, phaseEssai, !avantResultat)
   const mondeTable = useMemo(() => {
     if (!phaseEssai || !mondeCale) return mondeCale
     const base = (avantResultat ? mondeAvantEtape(instantanes, etapesPhaseMechant, cleEtapeAffichee) : undefined) ?? mondeCale
-    return sansCartesAVenir(base, cartesAVenir(etapesPhaseMechant, cleEtapeAffichee))
-  }, [phaseEssai, mondeCale, avantResultat, instantanes, etapesPhaseMechant, cleEtapeAffichee])
+    const monde = sansCartesAVenir(base, cartesAVenir(etapesPhaseMechant, cleEtapeAffichee))
+    // Essai, 13/10/2026 : les cartes que l'ecran touche (menace, PV) gardent
+    // leur valeur d'AVANT ; le jeton qui vole au clic les met a jour en arrivant.
+    return avecCompteursFiges(monde, compteursFiges)
+  }, [phaseEssai, mondeCale, avantResultat, instantanes, etapesPhaseMechant, cleEtapeAffichee, compteursFiges])
   const plateauTable = useMemo(
     () =>
       mondeTable

@@ -1,0 +1,167 @@
+// Les jetons des coups de la phase du mechant (essai, 13/10/2026).
+//
+// Demande de l'utilisateur : la table montre les compteurs d'AVANT l'ecran
+// (`coups-sur-table.ts`). Pour chaque coup, UN jeton, le vrai jeton du jeu
+// (triangle de menace, jeton de degats), en grand, portant son nombre, attend
+// au debut du trait des que l'ecran parait. Au clic sur Continuer, il suit la
+// courbe du trait jusqu'a la carte, et le compteur change a son arrivee.
+//
+// ⚠ LE VRAI JETON, PAS UN ROND : premiere version, des disques jaunes, un par
+// point. Retour : « que ce soit le bon token triangulaire et qu'on voie dans le
+// token le nombre ». Meme lecon que le 14/09/2026 (`JetonMenaceVolant.tsx`).
+//
+// Un nouvel ecran termine les vols d'un coup, comme pour les cartes (decision
+// 53). Sobre, sans animations ou mouvement reduit : pas de jeton, les compteurs
+// sont tout de suite a jour.
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import jetonDegatsImage from '../components/jetons/degats.png'
+import jetonMenaceImage from '../components/jetons/menace.png'
+import { coupsDeLEtape, pointDeLaCourbe, type Coup, type Fige } from './coups-sur-table'
+import type { EtapeDeroule } from './deroule-phase'
+import { carteDeLaTable, elementDuBout, rect } from './FlechesPhase'
+import { traceEntre, type TraceFleche } from './fleches-phase'
+import { animationsCoupees } from './TrajetsPhase'
+import { DUREE_TRAJET_MS } from './trajets-phase'
+import './jetons-coups.css'
+
+/** Le trait du coup : de sa source (boite, carte de la boite, carte de la table) a la carte touchee. */
+function traceDu(c: Coup): TraceFleche | undefined {
+  const rCible = rect(carteDeLaTable(c.cibleId))
+  const rSource = rect(elementDuBout(c.depuis))
+  return rCible && rSource ? traceEntre(rSource, rCible) : undefined
+}
+
+function placer(el: HTMLElement, x: number, y: number) {
+  el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`
+}
+
+function creerJeton(c: Coup): HTMLElement {
+  const el = document.createElement('div')
+  el.className = `jeton-coup est-${c.genre}`
+  el.style.backgroundImage = `url(${c.genre === 'menace' ? jetonMenaceImage : jetonDegatsImage})`
+  el.style.visibility = 'hidden'
+  el.textContent = c.genre === 'menace' ? `+${c.montant}` : `-${c.montant}`
+  el.setAttribute('aria-hidden', 'true')
+  document.body.append(el)
+  return el
+}
+
+type EnAttente = { el: HTMLElement; coup: Coup }
+
+const AUCUN: Fige[] = []
+
+/**
+ * Les compteurs que la table doit figer : ceux de l'ecran affiche (valeur
+ * d'avant), puis, pendant les vols qui suivent le clic, ceux des coups encore
+ * en l'air.
+ */
+export function useCoupsEnVol(
+  etapes: readonly EtapeDeroule[],
+  cle: string | undefined,
+  actif: boolean,
+  /** Faux tant que l'attaque retourne encore ses boosts : le total n'est pas encore dit. */
+  pret = true
+): Fige[] {
+  const [enVol, setEnVol] = useState<Fige[]>(AUCUN)
+  const enAttente = useRef<EnAttente[]>([])
+  const volants = useRef<Array<{ el: HTMLElement; coup: Coup }>>([])
+  const derniereCle = useRef<string | undefined>(undefined)
+  const [salve, setSalve] = useState(0)
+
+  // Avant la peinture : le nouvel ecran ne doit jamais montrer le chiffre final une image.
+  useLayoutEffect(() => {
+    if (derniereCle.current === cle) return
+    derniereCle.current = cle
+    for (const v of volants.current.splice(0)) v.el.remove()
+    const repris = enAttente.current.splice(0).filter((a) => a.el.style.visibility !== 'hidden')
+    if (!actif || cle === undefined || repris.length === 0) {
+      for (const a of repris) a.el.remove()
+      setEnVol(AUCUN)
+      return
+    }
+    volants.current = repris
+    setEnVol(repris.map(({ coup }) => ({ genre: coup.genre, cibleId: coup.cibleId, valeur: coup.avant })))
+    setSalve((n) => n + 1)
+  }, [cle, actif])
+
+  // Les jetons qui attendent, tant que l'ecran est affiche.
+  const coups = actif ? coupsDeLEtape(etapes.find((e) => e.cle === cle)) : []
+  const signature = coups.map((c) => `${c.genre}:${c.cibleId}:${c.avant}:${c.montant}:${JSON.stringify(c.depuis)}`).join('|')
+  useEffect(() => {
+    if (!pret || cle === undefined || coups.length === 0) return
+    if (typeof document === 'undefined' || animationsCoupees()) return
+    const mes = coups.filter((c) => c.montant > 0).map((coup) => ({ el: creerJeton(coup), coup }))
+    enAttente.current = mes
+    // La boite et la table bougent encore au premier rendu : on repose les jetons au repos.
+    const poser = () => {
+      for (const { el, coup } of mes) {
+        if (!enAttente.current.some((a) => a.el === el)) continue
+        const trace = traceDu(coup)
+        if (!trace) continue
+        placer(el, trace.depart.x, trace.depart.y)
+        el.style.visibility = ''
+      }
+    }
+    poser()
+    const minuteurs = [260, 720].map((ms) => window.setTimeout(poser, ms))
+    window.addEventListener('resize', poser)
+    return () => {
+      for (const m of minuteurs) window.clearTimeout(m)
+      window.removeEventListener('resize', poser)
+      // Repris pour voler (clic sur Continuer) : ce n'est plus a nous de les enlever.
+      for (const { el } of mes) {
+        if (enAttente.current.some((a) => a.el === el)) el.remove()
+      }
+      enAttente.current = enAttente.current.filter((a) => !mes.some((m) => m.el === a.el))
+    }
+    // `coups` est recalcule a chaque rendu : sa signature suffit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cle, signature, pret])
+
+  // Les vols, du debut de chaque trait a sa carte.
+  useEffect(() => {
+    const partis = volants.current
+    if (partis.length === 0) return
+    const animations: Animation[] = []
+    for (const v of partis) {
+      const arrivee = () => {
+        v.el.remove()
+        setEnVol((liste) => {
+          const reste = liste.filter((f) => !(f.genre === v.coup.genre && f.cibleId === v.coup.cibleId))
+          return reste.length === 0 ? AUCUN : reste
+        })
+      }
+      const trace = traceDu(v.coup)
+      if (!trace) {
+        arrivee()
+        continue
+      }
+      const cles = Array.from({ length: 13 }, (_, k) => {
+        const p = pointDeLaCourbe(trace.depart, trace.controle, trace.arrivee, k / 12)
+        return { transform: `translate(${p.x}px, ${p.y}px) translate(-50%, -50%)`, offset: k / 12 }
+      })
+      const animation = v.el.animate(cles, { duration: DUREE_TRAJET_MS, easing: 'cubic-bezier(0.3, 0.7, 0.2, 1)', fill: 'forwards' })
+      animation.onfinish = arrivee
+      animations.push(animation)
+    }
+    return () => {
+      for (const a of animations) a.onfinish = null
+      for (const v of partis) v.el.remove()
+    }
+  }, [salve])
+
+  // Ecran affiche : ses coups figes a leur valeur d'avant. Pendant les vols : ceux
+  // encore en l'air. Toujours le MEME tableau tant que rien ne change : le plateau
+  // entier se reconstruit sur lui.
+  const figesEcran = useMemo(
+    () => (coups.length === 0 ? AUCUN : coups.map((c) => ({ genre: c.genre, cibleId: c.cibleId, valeur: c.avant }))),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [signature]
+  )
+  // Les deux a la fois : l'ecran qui suit le clic fige deja ses propres cartes.
+  // Les vols viennent en dernier : sur une meme carte, le jeton en l'air gagne.
+  return useMemo(
+    () => (enVol.length === 0 ? figesEcran : figesEcran.length === 0 ? enVol : [...figesEcran, ...enVol]),
+    [enVol, figesEcran]
+  )
+}

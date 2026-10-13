@@ -17,7 +17,7 @@ import './fleches-phase.css'
 
 type Dessin = { cle: string; couleur: string; trace: TraceFleche }
 
-function rect(el: Element | null | undefined): Rect | undefined {
+export function rect(el: Element | null | undefined): Rect | undefined {
   if (!el) return undefined
   const r = el.getBoundingClientRect()
   if (r.width === 0 || r.height === 0) return undefined
@@ -29,13 +29,13 @@ function rect(el: Element | null | undefined): Rect | undefined {
  * FACE CACHÉE : une carte rencontre distribuée attend encore près du méchant,
  * ce n'est pas sa place (mesuré le 12/10/2026 sur Trafiquant d'Armes).
  */
-function carteDeLaTable(id: number): HTMLElement | undefined {
+export function carteDeLaTable(id: number): HTMLElement | undefined {
   const candidates = document.querySelectorAll<HTMLElement>(`.plateau-cadre .scan-card[data-card-id="${id}"]`)
   for (const el of candidates) if (!el.closest('.deroule-phase') && !el.classList.contains('is-facedown')) return el
   return undefined
 }
 
-function elementDuBout(bout: BoutFleche): Element | undefined {
+export function elementDuBout(bout: BoutFleche): Element | undefined {
   if (bout.lieu === 'table') return carteDeLaTable(bout.id)
   const boite = document.querySelector('.deroule-phase.est-essai')
   if (!boite) return undefined
