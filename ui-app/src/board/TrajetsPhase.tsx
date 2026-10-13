@@ -48,7 +48,7 @@ function cartesDeLaTable(): Map<number, { el: HTMLElement; mesure: Mesure }> {
   return resultat
 }
 
-function copieVolante(src: string | undefined, depart: DOMRect): HTMLElement {
+export function copieVolante(src: string | undefined, depart: DOMRect): HTMLElement {
   const copie = document.createElement('div')
   copie.className = 'trajet-copie'
   Object.assign(copie.style, {
@@ -67,7 +67,7 @@ function copieVolante(src: string | undefined, depart: DOMRect): HTMLElement {
   return copie
 }
 
-function voler(copie: HTMLElement, depart: DOMRect, arrivee: DOMRect, fondu: boolean): Animation {
+export function voler(copie: HTMLElement, depart: DOMRect, arrivee: DOMRect, fondu: boolean): Animation {
   const dx = arrivee.left - depart.left
   const dy = arrivee.top - depart.top
   const sx = arrivee.width / Math.max(1, depart.width)
@@ -118,6 +118,8 @@ export function TrajetsPhase({ actif }: { actif: boolean }) {
       for (const id of arrivees) {
         const cible = maintenant.get(id)
         if (!cible) continue
+        // Mise en jeu par un boost ★ : elle attend le clic (EtoilesEnAttente.tsx).
+        if (cible.el.hasAttribute('data-etoile-attente')) continue
         const source =
           boite?.querySelector<HTMLElement>(`.scan-card[data-card-id="${id}"]`) ??
           boite?.querySelector<HTMLElement>('.deroule-corps') ??

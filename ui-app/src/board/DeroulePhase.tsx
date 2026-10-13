@@ -87,6 +87,7 @@ import { cadreDeLEtape, styleDuCadre, type CadreJoueur } from './couleur-joueur'
 import { CoucheTraitPhase, EffetsSurTable } from './CoucheTraitPhase'
 import { FlechesPhase } from './FlechesPhase'
 import { TrajetsPhase } from './TrajetsPhase'
+import { EtoilesEnAttente } from './EtoilesEnAttente'
 import { cartoucheEstAJour } from './cartouche-a-jour'
 import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
@@ -1385,7 +1386,10 @@ export function DeroulePhase({
   } = useApercuSurvol(cartesVisibles, (carte) => propsDe(carte)?.id)
 
   useEffect(() => {
-    setBoostsMontres(etape?.boosts.length ? 1 : 0)
+    // Essai (13/10/2026, demande de l'utilisateur) : les boosts arrivent TOUS face
+    // cachee, et un seul clic les retourne ensemble (« comme pour Klaw, j'aimerais
+    // que les deux s'affichent en même temps »).
+    setBoostsMontres(etape?.boosts.length ? (essai && nouvelleScene ? 0 : 1) : 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `etape` est
     // reconstruit a chaque trame du moteur (meme piege que dans
     // useDerouleScene.ts et TraitCible.tsx) : en dependre remettrait
@@ -1864,6 +1868,10 @@ export function DeroulePhase({
       ) : null}
       {/* LOT 4 (essai, decisions 49 a 53) : les cartes volent vers la table et vers leur pile. */}
       {essai ? <TrajetsPhase actif={!termine && !partieFinie && etape !== undefined && !relecture} /> : null}
+      {/* Essai, 13/10/2026 : ce qu'un boost ★ met en jeu n'arrive sur la table qu'au clic. */}
+      {essai ? (
+        <EtoilesEnAttente etape={etape} boostsMontres={boostsMontres} actif={!termine && !partieFinie && !relecture} />
+      ) : null}
       <CartouchePhase
         refCartouche={setElCartouche}
         style={
@@ -1897,7 +1905,7 @@ export function DeroulePhase({
         // L'ancien « Bis » est LA presentation du cartouche central depuis le
         // 10/10/2026 ; le cartouche pose sur la table garde la sienne.
         bis={presentation === 'scene'}
-        montrerBoostSuivant={essai ? () => setBoostsMontres((n) => n + 1) : undefined}
+        montrerBoostSuivant={essai ? () => setBoostsMontres(etape?.boosts.length ?? 0) : undefined}
         couleurDeCarte={
           essai && cadresJoueurs
             ? (id: number) => {

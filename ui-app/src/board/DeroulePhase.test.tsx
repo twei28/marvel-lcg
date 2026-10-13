@@ -3981,6 +3981,15 @@ describe('lot 4 : l ecran du resultat se signale a la table', () => {
     expect(vus.at(-1)).toBe(false)
   })
 
+  // Demande de l'utilisateur (13/10/2026) : « quand il y a plusieurs cartes boost,
+  // comme pour Klaw, j'aimerais bien que les deux s'affichent en même temps ».
+  it('dans l essai : les deux boosts arrivent caches, UN clic les retourne ensemble', () => {
+    render(<DeroulePhase etapes={avecBoosts} essai onTerminer={() => {}} />)
+    expect(document.querySelector('button[data-boost-suivant]')).not.toBeNull()
+    act(() => document.querySelector<HTMLButtonElement>('button[data-boost-suivant]')?.click())
+    expect(document.querySelector('button[data-boost-suivant]')).toBeNull()
+  })
+
   it('sans l interrupteur : toujours faux, la table calee reste celle d avant le lot 4', () => {
     const vus: boolean[] = []
     render(<DeroulePhase etapes={avecBoosts} onTerminer={() => {}} onAvantResultat={(v) => vus.push(v)} />)
