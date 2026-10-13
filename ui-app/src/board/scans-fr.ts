@@ -9,6 +9,7 @@
 //
 // Ce module est le SEUL endroit ou la regle est ecrite. scanUrl() l'appelle.
 import { CODES_SCAN_FR } from './scans-fr-liste'
+import { dosPicId, estDosGenerique } from './dos-cartes'
 
 export const CLE_SCANS_FR = 'marvel-board-scans-fr'
 export const PREFIXE_FR = 'fr_'
@@ -35,6 +36,8 @@ export function aScanFr(picId: string): boolean {
 
 /** Nom de fichier a demander au serveur pour cette carte. */
 export function picIdFr(picId: string): string {
+  // Les dos génériques suivent le choix « Dos de cartes » (dos-cartes.ts).
+  if (estDosGenerique(picId)) return dosPicId(picId)
   if (!scansFrActifs()) return picId
   return aScanFr(picId) ? PREFIXE_FR + picId : picId
 }
