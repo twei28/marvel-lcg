@@ -98,12 +98,21 @@ export function avecEtapesEtoileDifferee(
   for (const etape of etapes) {
     // Les étapes d'effet différé se placent après l'attaque ET sa Riposte.
     if (attente.length > 0 && etape.titre !== 'riposte') vider()
-    suite.push(etape)
-    if ((etape.titre !== 'attaque' && etape.titre !== 'manigance') || etape.etat !== 'resolu') continue
+    if ((etape.titre !== 'attaque' && etape.titre !== 'manigance') || etape.etat !== 'resolu') {
+      suite.push(etape)
+      continue
+    }
+    // 13/10/2026 (encadré ⑥) : un ★ « si cette attaque inflige des dégâts » sur une
+    // attaque qui n'a rien infligé n'a pas d'écran : une ligne sur le résultat.
+    const sansEffet: string[] = []
     for (const boost of etape.boosts) {
       if (!boost.etoile) continue
       const texte = texteEtoile(boost.cibleId)
       if (!effetEtoileDiffere(texte)) continue
+      if (etape.titre === 'attaque' && (etape.montant ?? 0) === 0 && conditionDegats(texte)) {
+        sansEffet.push(boost.nom)
+        continue
+      }
       attente.push({
         cle: `${etape.cle}:etoile:${boost.cle}`,
         temps: etape.temps,
@@ -121,9 +130,19 @@ export function avecEtapesEtoileDifferee(
         totalSbires: etape.totalSbires,
       })
     }
+    suite.push(sansEffet.length > 0 ? { ...etape, etoilesSansEffet: sansEffet } : etape)
   }
   vider()
   return suite
+}
+
+/** Le ★ ne joue que si l'attaque a infligé des dégâts (FR et EN). */
+function conditionDegats(texte: string | undefined): boolean {
+  if (!texte) return false
+  return (
+    /\bif this (attack|activation) deals damage\b/i.test(texte) ||
+    /\bsi cette (attaque|activation) (vous )?(inflige|cause) des dégâts/i.test(texte)
+  )
 }
 
 /** LOT 5c (décision 45) : un héros mis à terre a son écran dédié, juste après le coup. */

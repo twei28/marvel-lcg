@@ -246,7 +246,7 @@ export type VueRangee = {
    * source, avec le total, la jauge et « COMPLÉTÉE » quand le seuil est atteint.
    */
   /** `prevu` (13/10/2026) : la somme des sources quand le moteur a posé MOINS (une carte a réduit la menace). */
-  menace?: { sources: Array<{ libelle: string; valeur: number }>; total: number; jauge?: Jauge; complete: boolean; prevu?: number }
+  menace?: { sources: Array<{ libelle: string; valeur: number; parJoueur?: boolean }>; total: number; jauge?: Jauge; complete: boolean; prevu?: number }
   /** « ★ Charge : … », une ligne par boost etoile (D10). */
   lignesEtoile: string[]
   /** Grisee sous un sous-cadre ou pendant l'attente d'un autre joueur (le composant decide). */
@@ -586,7 +586,7 @@ function decompositionMenace(
   jauge: Jauge | undefined,
   ctx: ContexteVue
 ): NonNullable<VueRangee['menace']> {
-  const sources: Array<{ libelle: string; valeur: number }> = []
+  const sources: Array<{ libelle: string; valeur: number; parJoueur?: boolean }> = []
   const { escalade, acceleration, joueurs } = etape
   if (nombre(escalade) && nombre(joueurs) && joueurs >= 1) {
     sources.push({
@@ -595,6 +595,8 @@ function decompositionMenace(
           ? t('Manigance : %1 par joueur × %2').replace('%1', String(escalade / joueurs)).replace('%2', String(joueurs))
           : t('Manigance'),
       valeur: escalade,
+      // 13/10/2026 (encadré ①) : la ligne qui compte les joueurs porte leurs pastilles.
+      parJoueur: escalade % joueurs === 0,
     })
   }
   if (nombre(acceleration) && acceleration > 0) sources.push({ libelle: t('Accélération'), valeur: acceleration })
@@ -713,6 +715,12 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
             ? t('AUCUN DÉGÂT')
             : `${montant} ${Math.abs(montant) < 2 ? t('dégât subi') : t('dégâts subis')}`,
         barre: reduit ? `${inflige} ${inflige < 2 ? t('dégât') : t('dégâts')}` : undefined,
+        // 13/10/2026 (encadré ⑥) : un ★ sans effet, dit en une ligne sous le résultat.
+        note: etape.etoilesSansEffet?.length
+          ? etape.etoilesSansEffet
+              .map((nom) => `★ ${nomNettoye(nom) ?? nom} : ${t('sans effet (aucun dégât)')}`)
+              .join(' · ')
+          : undefined,
         raison: reduit ? (etape.motsCles?.robuste ? t('Robuste') : t('réduit')) : undefined,
         nul: montant === 0 || undefined,
         // L'AVANT se deduit du restant et du subi, borne par le maximum : un

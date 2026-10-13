@@ -1708,6 +1708,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Réponse de %1': '%1 responds',
   'Interruption de %1': '%1 interrupts',
   'Choisir l’ordre': 'Choose the order',
+  'sans effet (aucun dégât)': 'no effect (no damage)',
   'Recherche : rien trouvé': 'Search: nothing found',
   'Trouvé : %1': 'Found: %1',
   'Paquet rencontre mélangé': 'Encounter deck shuffled',

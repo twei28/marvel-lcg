@@ -1288,6 +1288,15 @@ describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
     expect(document.querySelector('.deroule-titre-court')?.textContent).toMatch(/\(2e, Hydra Jet-Trooper\)$/)
   })
 
+  it('13/10/2026 : en multijoueur, les pastilles des joueurs sur la ligne « par joueur » de la menace', () => {
+    const menaceMulti = { ...menace, escalade: 2, acceleration: 0, joueurs: 2, montant: 2, restant: 4 }
+    monter({ etapes: [menaceMulti], index: 0, essai: true, couleursJoueurs: ['#e8c33a', '#4a8fd8'] })
+    expect(document.querySelectorAll('.essai-pastille-joueur-mini')).toHaveLength(2)
+    cleanup()
+    monter({ etapes: [menaceMulti], index: 0, essai: true })
+    expect(document.querySelectorAll('.essai-pastille-joueur-mini')).toHaveLength(0)
+  })
+
   it('13/10/2026 : « (sbire 2/3) » dans le titre d’une activation de sbire', () => {
     monter({ etapes: [{ ...attaqueResolue, temps: 'sbires', rangSbire: 2, totalSbires: 3, boosts: [] }], essai: true })
     expect(document.querySelector('.deroule-titre-court')?.textContent).toMatch(/\(sbire 2\/3\)$/)

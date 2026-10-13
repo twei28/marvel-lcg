@@ -1594,3 +1594,18 @@ body.plateau-sans-animations .deroule-phase.est-essai.est-secousse {
 .deroule-phase.est-essai .deroule-resultat-texte.est-nul {
   color: #3fae53;
 }
+
+/* Les pastilles des joueurs comptés dans la menace (13/10/2026, encadré ①). */
+.deroule-phase.est-essai .essai-pastilles-joueurs {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.deroule-phase.est-essai .essai-pastille-joueur-mini {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+}

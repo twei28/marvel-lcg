@@ -1342,6 +1342,8 @@ export function DeroulePhase({
   const [boostsMontres, setBoostsMontres] = useState(0)
   // 13/10/2026 (encadré ⑫) : les cartes révélées déjà retournées, par clé d'étape.
   const [cartesRetournees, setCartesRetournees] = useState<ReadonlySet<string>>(() => new Set())
+  // 13/10/2026 (encadré ①) : les pastilles des joueurs dans le calcul de menace.
+  const couleursDesJoueurs = useMemo(() => (essai && cadresJoueurs ? cadresJoueurs.map((c) => c.couleurs[0]) : undefined), [essai, cadresJoueurs])
   const avantResultat = Boolean(essai && etape && etape.boosts.length > 0 && boostsMontres < etape.boosts.length)
   useEffect(() => {
     onAvantResultat?.(avantResultat)
@@ -1916,6 +1918,7 @@ export function DeroulePhase({
         montrerBoostSuivant={essai ? () => setBoostsMontres(etape?.boosts.length ?? 0) : undefined}
         carteCachee={essai && nouvelleScene && etape?.titre === 'revelation' && !cartesRetournees.has(etape.cle)}
         retournerCarte={() => etape && setCartesRetournees((deja) => new Set(deja).add(etape.cle))}
+        couleursJoueurs={couleursDesJoueurs}
         couleurDeCarte={
           essai && cadresJoueurs
             ? (id: number) => {

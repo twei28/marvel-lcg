@@ -26,7 +26,9 @@
 //  - la relecture depuis le journal (`RelectureJournal`, D38).
 
 import {
+  createContext,
   useCallback,
+  useContext,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -207,6 +209,8 @@ export type CartouchePhaseProps = {
    */
   carteCachee?: boolean
   retournerCarte?: () => void
+  /** Essai (13/10/2026) : la couleur de chaque joueur à la table, dans l'ordre des sièges. */
+  couleursJoueurs?: readonly string[]
   /**
    * Essai (refonte du 12/10/2026) : le joueur concerne par l'etape, dont la
    * couleur d'aspect fait le bord de la boite (variables posees dans `style`
@@ -587,7 +591,12 @@ function AlerteSeuil({ jauge }: { jauge: { apres?: number; plafond?: number } | 
   return texte ? <p className="essai-alerte-seuil">{texte}</p> : null
 }
 
+/** Les couleurs des joueurs à la table (essai, 13/10/2026), pour les pastilles du calcul de menace. */
+const AUCUNE_COULEUR: readonly string[] = []
+const CouleursJoueurs = createContext<readonly string[]>(AUCUNE_COULEUR)
+
 function MenaceEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean }) {
+  const couleursJoueurs = useContext(CouleursJoueurs)
   const menace = rangee.menace
   if (!menace) return null
   const jauge = menace.jauge
@@ -603,6 +612,14 @@ function MenaceEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
               <tr key={source.libelle}>
                 <td>
                   <Texte>{source.libelle}</Texte>
+                  {/* 13/10/2026 (encadré ①) : en multijoueur, les pastilles des joueurs comptés. */}
+                  {source.parJoueur && couleursJoueurs.length >= 2 ? (
+                    <span className="essai-pastilles-joueurs" aria-hidden="true">
+                      {couleursJoueurs.map((couleur, rang) => (
+                        <span key={rang} className="essai-pastille-joueur-mini" style={{ background: couleur }} />
+                      ))}
+                    </span>
+                  ) : null}
                 </td>
                 <td className="essai-menace-valeur">+{source.valeur}</td>
               </tr>
@@ -1940,6 +1957,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   ) : undefined
 
   return (
+    <CouleursJoueurs.Provider value={props.couleursJoueurs ?? AUCUNE_COULEUR}>
     <NomsSurvolables value={nomsDeLaBoite}>
     <section
       ref={poserSection}
@@ -2127,6 +2145,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
       {apercu ? <CarteApercu carte={apercu} classe="au-dessus-du-deroule" /> : null}
     </section>
     </NomsSurvolables>
+    </CouleursJoueurs.Provider>
   )
 }
 

@@ -124,6 +124,16 @@ describe('l effet ★ differe (decision 38)', () => {
     expect(titreCourt(ecran, ctx([ecran]))).toBe('Effet ★ de Sonic Boom')
   })
 
+  it('13/10/2026 : condition « inflige des dégâts » non remplie, pas d ecran, une ligne sur le resultat', () => {
+    const suite = avecEtapesEtoileDifferee([{ ...attaque, montant: 0 }], texteEtoile)
+    expect(suite.map((e) => e.titre)).toEqual(['attaque'])
+    expect(suite[0].etoilesSansEffet).toEqual(['Sonic Boom'])
+    const vue = vueDeLEtape(suite[0], ctx(suite, { texteEtoile })) as VueRangee
+    expect(vue.resultat?.note).toBe('★ Sonic Boom : sans effet (aucun dégât)')
+    // Condition remplie : l'écran à part reste.
+    expect(avecEtapesEtoileDifferee([attaque], texteEtoile).map((e) => e.titre)).toEqual(['attaque', 'etoile-differe'])
+  })
+
   it('sans texte ★ ou sur une annonce : rien n est insere', () => {
     expect(avecEtapesEtoileDifferee([attaque], undefined)).toEqual([attaque])
     expect(avecEtapesEtoileDifferee([{ ...attaque, etat: 'annonce' }], texteEtoile)).toHaveLength(1)
