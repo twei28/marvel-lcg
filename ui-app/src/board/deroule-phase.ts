@@ -29,6 +29,7 @@ import type {
   FaitMenace,
   FaitRevelation,
   FaitSonne,
+  FaitPaquetVide,
   FaitStade,
   FaitStatut,
   MotsClesDuCoup,
@@ -118,6 +119,9 @@ function estRevelation(fait: FaitMechant): fait is FaitRevelation {
 }
 function estStade(fait: FaitMechant): fait is FaitStade {
   return fait.genre === 'stade'
+}
+function estPaquetVide(fait: FaitMechant): fait is FaitPaquetVide {
+  return fait.genre === 'paquet_vide'
 }
 function estSonne(fait: FaitMechant): fait is FaitSonne {
   return fait.genre === 'sonne'
@@ -334,6 +338,8 @@ export type EtapeDeroule = {
    * le dit pas.
    */
   effets?: EffetRevelation[]
+  /** Les recherches rencontre de la carte révélée (13/10/2026) : trouvée ou non, paquet fouillé. */
+  recherches?: Array<{ trouve: string[]; paquet: boolean }>
   /**
    * Sur une revelation : cette carte a ete revelee par un Renfort (Surge)
    * declenche par la precedente, pas par la distribution ordinaire du point
@@ -724,6 +730,21 @@ export function etapesDeroule(
     // UN CHANGEMENT DE STADE en pleine phase : une etape a part, la nouvelle
     // carte en grand (decision du 03/10/2026). Meme temps qu'une entree : celui
     // de l'activation en cours, ou celui de sa phase.
+    // 13/10/2026 (encadré ②) : le paquet rencontre vide, un petit écran à lui.
+    if (estPaquetVide(fait)) {
+      etapes.push({
+        cle: cleDuFait('paquet-vide', fait.round_id ?? round, rang, fait.cible_id),
+        temps: tempsDeLEntree(rang, fait.phase),
+        titre: 'paquet-vide',
+        regle: '',
+        cibleId: fait.cible_id,
+        cibleNom: nomNettoye(fait.cible),
+        montant: 1,
+        restant: fait.jetons ?? undefined,
+        boosts: [],
+      })
+      return
+    }
     if (estStade(fait)) {
       etapes.push({
         cle: cleDuFait('stade', fait.round_id ?? round, rang, fait.carte_id),
@@ -1015,6 +1036,7 @@ export function etapesDeroule(
       typeCarte: fait.type || undefined,
       boosts: [],
       effets: fait.effets && fait.effets.length > 0 ? fait.effets : undefined,
+      recherches: fait.recherches && fait.recherches.length > 0 ? fait.recherches : undefined,
       parSurge: fait.par_surge || undefined,
       annuleePar: fait.annulee_par || undefined,
       annuleeParId: fait.annulee_par_id ?? undefined,

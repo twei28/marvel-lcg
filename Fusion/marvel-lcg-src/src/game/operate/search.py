@@ -355,7 +355,7 @@ class Search:
 
         from game.operate.search_internal import SearchInternal
 
-        return SearchInternal.SearchForCardsInternal(
+        trouvees = SearchInternal.SearchForCardsInternal(
             by_effect,
             who_perform,
             faces,
@@ -366,6 +366,15 @@ class Search:
             not_move=not_move,
             range=range,
         )
+        # Refonte de la phase du mechant (13/10/2026, encadre 12) : une
+        # recherche dans le paquet ou la defausse rencontre, faite par une carte
+        # revelee, se publie avec son fait, trouvee ou non. Sans elle, « rien
+        # trouve » ne laissait aucune trace et le joueur ne savait pas pourquoi
+        # la carte n'avait rien fait.
+        if include_encounter_deck or include_encounter_discard_pile:
+            from game.player.action.player_action import PlayerAction
+            PlayerAction.NoterRecherche(by_effect.world, trouvees, fouille_paquet=include_encounter_deck)
+        return trouvees
 
     @staticmethod
     def Collection(by_effect: 'Effect',

@@ -556,6 +556,10 @@ class Worlds:
         if return_other_faces != None:
             return_other_faces.clear()
             return_other_faces.extend(other)
+        # 13/10/2026 (encadre 12) : « defausser jusqu'a trouver » se publie comme
+        # une recherche, trouvee ou non, sur la carte revelee en cours.
+        from game.player.action.player_action import PlayerAction
+        PlayerAction.NoterRecherche(by_effect.world, [face] if face else [], fouille_paquet=True)
         return face
 
     @staticmethod

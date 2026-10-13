@@ -133,6 +133,8 @@ const PHASE_PAR_GENRE: Record<FaitMechant['genre'], PhaseDuMechant> = {
   stade: 'Enemy Activation',
   // Un ennemi Sonné n'agit pas : sa phase reelle le range (05/10/2026).
   sonne: 'Enemy Activation',
+  // Le paquet rencontre vide (13/10/2026) : sa phase reelle le range.
+  paquet_vide: 'Reveal Encounter Cards',
 }
 
 function faitsDeLEtape(faits: FaitMechant[], phase: string): FaitMechant[] {
@@ -471,6 +473,16 @@ function lignesDuMoteur(faits: FaitMechant[], noms: Noms): Ligne[] {
         genre: 'carte',
         titre: `${noms.carte(fait.auteur_id) ?? fait.auteur} : ${t(fait.temps === 'manigance' ? 'Sonné, ne manigance pas' : 'Sonné, n’attaque pas')}`,
         cibleId: fait.auteur_id,
+      }
+    }
+
+    // Le paquet rencontre vide (13/10/2026) : une ligne, la même phrase que le cartouche.
+    if (fait.genre === 'paquet_vide') {
+      return {
+        cle: `moteur:${index}:paquet-vide:${fait.cible_id}`,
+        genre: 'carte',
+        titre: `${t('Paquet rencontre vide')} : ${t('+1 jeton d’accélération')}`,
+        cibleId: fait.cible_id,
       }
     }
 

@@ -13,7 +13,7 @@ import type { EtapeDeroule } from './deroule-phase'
 import type { BoutFleche, Point } from './fleches-phase'
 import type { World } from './world'
 
-export type GenreCoup = 'menace' | 'degats'
+export type GenreCoup = 'menace' | 'degats' | 'acceleration'
 
 /**
  * Un coup de l'ecran : `montant` jetons de `genre` partent de `depuis` vers la
@@ -26,11 +26,15 @@ export type Coup = { genre: GenreCoup; cibleId: number; avant: number; montant: 
 const CORPS: BoutFleche = { lieu: 'boite-corps' }
 
 /** Le champ du monde qui porte le compteur : menace sur la carte, PV restants. */
-export const CHAMP: Record<GenreCoup, 'k_threat' | 'health'> = { menace: 'k_threat', degats: 'health' }
+export const CHAMP: Record<GenreCoup, 'k_threat' | 'health' | 'k_acceleration_token'> = {
+  menace: 'k_threat',
+  degats: 'health',
+  acceleration: 'k_acceleration_token',
+}
 
 /** Le compteur avant le coup, a partir de celui d'apres. */
 function avantDe(genre: GenreCoup, restant: number, montant: number): number {
-  return genre === 'menace' ? Math.max(0, restant - montant) : restant + montant
+  return genre === 'degats' ? restant + montant : Math.max(0, restant - montant)
 }
 
 function coup(genre: GenreCoup, cibleId: number | undefined, montant: number | undefined, restant: number | null | undefined, depuis: BoutFleche, avant?: number): Coup | undefined {
@@ -57,6 +61,9 @@ export function coupsDeLEtape(etape: EtapeDeroule | undefined): Coup[] {
     if (riposte && typeof riposte.restant === 'number' && riposte.degats > 0) {
       coups.push({ genre: 'degats', cibleId: carteId, avant: riposte.restant + riposte.degats, montant: 0, depuis: CORPS })
     }
+  } else if (titre === 'paquet-vide') {
+    // 13/10/2026 (encadré ②) : le jeton d'accélération vole de la boîte à la manigance.
+    coups.push(coup('acceleration', cibleId, montant, restant, CORPS))
   } else if (titre === 'riposte' && carteId !== undefined) {
     coups.push(coup('degats', cibleId, montant, restant, { lieu: 'table', id: carteId }))
   }

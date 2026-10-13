@@ -62,6 +62,11 @@ describe('les coups d un ecran', () => {
     expect(c[0].depuis).toEqual({ lieu: 'boite', id: 99 })
   })
 
+  it('13/10/2026 : paquet vide, un jeton d acceleration de la boite vers la manigance', () => {
+    const c = coupsDeLEtape(etape({ temps: 'revelation', titre: 'paquet-vide', cibleId: 48, montant: 1, restant: 2 }))
+    expect(c).toEqual([{ genre: 'acceleration', cibleId: 48, avant: 1, montant: 1, depuis: CORPS }])
+  })
+
   it('une annonce, une annulation ou un coup sans chiffre : rien', () => {
     expect(coupsDeLEtape(etape({ temps: 'mechant', titre: 'attaque', etat: 'annonce', carteId: 50, cibleId: 12, montant: 3, restant: 7 }))).toEqual([])
     expect(coupsDeLEtape(etape({ cibleId: 7, montant: 2, restant: 2, etat: 'annule' }))).toEqual([])

@@ -518,6 +518,24 @@ describe('les cinq temps depuis les faits du moteur', () => {
     faitRevelation(),
   ]
 
+  it('13/10/2026 : le paquet rencontre vide pendant la phase a son ecran, a sa place', () => {
+    const etapes = etapesDeroule(
+      [faitRevelation(), { genre: 'paquet_vide', phase: 'Reveal Encounter Cards', round_id: 1, cible: 'Trafic Clandestin', cible_id: 48, jetons: 1 }],
+      [],
+      1,
+      new Set([50])
+    )
+    const paquet = etapes.find((e) => e.titre === 'paquet-vide')
+    expect(paquet).toMatchObject({ temps: 'revelation', cibleId: 48, cibleNom: 'Trafic Clandestin', montant: 1, restant: 1 })
+  })
+
+  it('13/10/2026 : les recherches d une carte revelee passent du fait a l etape', () => {
+    const etapes = etapesDeroule([faitRevelation({ recherches: [{ trouve: [], paquet: true }] })], [], 1, new Set([50]))
+    expect(etapes.find((e) => e.temps === 'revelation')?.recherches).toEqual([{ trouve: [], paquet: true }])
+    const sans = etapesDeroule([faitRevelation()], [], 1, new Set([50]))
+    expect(sans.find((e) => e.temps === 'revelation')?.recherches).toBeUndefined()
+  })
+
   it('distribution et revelation portent le siege du joueur concerne (couleur du cadre, 12/10/2026)', () => {
     const etapes = etapesDeroule(
       [faitDistribution({ joueur: 1 }), faitRevelation({ joueur: 1 })],

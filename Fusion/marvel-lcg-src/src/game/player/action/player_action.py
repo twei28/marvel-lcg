@@ -270,6 +270,23 @@ class PlayerAction:
         return True
 
     @staticmethod
+    def NoterRecherche(world: 'World', trouvees: 'Sequence[CardFace]', *, fouille_paquet: bool) -> None:
+        """Note une recherche rencontre sur la carte revelee en cours (13/10/2026).
+
+        `trouve` : les noms des cartes trouvees, vide si rien ; `paquet` : le
+        paquet rencontre a ete fouille (donc remelange). Hors d'une revelation
+        de la phase du mechant, rien n'est note.
+        """
+        try:
+            pile = PlayerAction._RevelationsEnCours(world)
+            if not pile:
+                return
+            pile[-1].setdefault('recherches', []).append(
+                {'trouve': [face.name for face in trouvees], 'paquet': bool(fouille_paquet)})
+        except Exception:
+            pass
+
+    @staticmethod
     def _Annulation(face: 'CardFace') -> 'Dict[str, Any]':
         """Les champs « Annulee par X » d'un fait de revelation, et ce qu'est
         devenue la carte X quand l'annulation l'a fait quitter le jeu (Stepford
@@ -302,7 +319,10 @@ class PlayerAction:
             fait = dict(entree['fait'])
             annulee = PlayerAction._Annulation(face)
             fait.update(annulee)
-            if effets or annulee:
+            recherches = entree.get('recherches')
+            if recherches:
+                fait['recherches'] = recherches
+            if effets or annulee or recherches:
                 if effets:
                     fait['effets'] = effets
                 PlayerAction._JournaliserPhaseDuMechant(entree['joueur'], world.GetPhaseText(), fait)
@@ -525,7 +545,10 @@ class PlayerAction:
             # « → Annulée par X » (04/10/2026) : posee par WhenEffectBeCancel.
             annulee = PlayerAction._Annulation(face)
             revelation = {**revelation, **annulee}
-            if effets or annulee:
+            # 13/10/2026 (encadre 12) : les recherches faites par cette carte.
+            if en_cours.get('recherches'):
+                revelation['recherches'] = en_cours['recherches']
+            if effets or annulee or en_cours.get('recherches'):
                 PlayerAction._JournaliserPhaseDuMechant(
                     player, 'Reveal Encounter Cards',
                     {**revelation, **({'effets': effets} if effets else {})})

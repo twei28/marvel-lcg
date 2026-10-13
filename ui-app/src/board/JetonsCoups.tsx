@@ -14,6 +14,7 @@
 // 53). Sobre, sans animations ou mouvement reduit : pas de jeton, les compteurs
 // sont tout de suite a jour.
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import jetonAccelerationImage from '../components/jetons/acceleration.png'
 import jetonDegatsImage from '../components/jetons/degats.png'
 import jetonMenaceImage from '../components/jetons/menace.png'
 import { coupsDeLEtape, pointDeLaCourbe, type Coup, type Fige } from './coups-sur-table'
@@ -39,9 +40,10 @@ function placer(el: HTMLElement, x: number, y: number) {
 function creerJeton(c: Coup): HTMLElement {
   const el = document.createElement('div')
   el.className = `jeton-coup est-${c.genre}`
-  el.style.backgroundImage = `url(${c.genre === 'menace' ? jetonMenaceImage : jetonDegatsImage})`
+  const image = c.genre === 'menace' ? jetonMenaceImage : c.genre === 'acceleration' ? jetonAccelerationImage : jetonDegatsImage
+  el.style.backgroundImage = `url(${image})`
   el.style.visibility = 'hidden'
-  el.textContent = c.genre === 'menace' ? `+${c.montant}` : `-${c.montant}`
+  el.textContent = c.genre === 'degats' ? `-${c.montant}` : c.genre === 'acceleration' ? '' : `+${c.montant}`
   el.setAttribute('aria-hidden', 'true')
   document.body.append(el)
   return el

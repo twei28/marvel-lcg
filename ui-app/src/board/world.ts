@@ -385,6 +385,12 @@ export type FaitRevelation = FaitMechantCommun & {
    * 04/10/2026. Absent sur un moteur plus ancien.
    */
   type?: string
+  /**
+   * Les recherches rencontre faites par la carte (13/10/2026, moteur
+   * `PlayerAction.NoterRecherche`) : ce qu'elle a trouvé (vide : rien), et si
+   * le paquet rencontre a été fouillé, donc remélangé. Absent sur un moteur plus ancien.
+   */
+  recherches?: Array<{ trouve: string[]; paquet: boolean }>
   /** Son effet « Une fois révélée » a été ANNULÉ, par cette carte (04/10/2026). */
   annulee_par?: string
   annulee_par_id?: number
@@ -524,7 +530,21 @@ export type StatsStade = {
   seuil?: number | null
 }
 
+/**
+ * Le paquet rencontre s'est vidé PENDANT la phase (13/10/2026, encadré ②) : la
+ * défausse est remélangée et un jeton d'accélération posé sur la manigance
+ * principale (moteur : scenario.py, `process_after_shuffle`).
+ */
+export type FaitPaquetVide = FaitMechantCommun & {
+  genre: 'paquet_vide'
+  cible: string
+  cible_id: number
+  /** Ses jetons d'accélération APRÈS la pose. */
+  jetons?: number
+}
+
 export type FaitMechant =
+  | FaitPaquetVide
   | FaitStade
   | FaitActivation
   | FaitMenace

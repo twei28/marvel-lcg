@@ -523,6 +523,8 @@ export function titreCourt(etape: EtapeDeroule, ctx: ContexteVue): string {
       return libelleDeStatut(etape.statut) || titreEtape(etape)
     case 'sonne':
       return t('Sonné')
+    case 'paquet-vide':
+      return t('Paquet rencontre vide')
     case 'stade': {
       const numero = etape.carteId !== undefined ? ctx.infoCarte?.(etape.carteId)?.printed_stage : undefined
       return nombre(numero) && numero > 0 ? t('Stade %1').replace('%1', romain(numero)) : t('Stade suivant')
@@ -902,6 +904,24 @@ function resultatCourt(etape: EtapeDeroule): string | undefined {
   return undefined
 }
 
+/**
+ * Les recherches d'une carte révélée (13/10/2026, encadré ⑫) : « Recherche :
+ * rien trouvé » ou « Trouvé : X », puis « Paquet rencontre mélangé » si le
+ * paquet a été fouillé. Rien d'inventé : tout vient du fait du moteur.
+ */
+export function textesRecherches(recherches: EtapeDeroule['recherches']): string[] {
+  const lignes: string[] = []
+  for (const recherche of recherches ?? []) {
+    lignes.push(
+      recherche.trouve.length === 0
+        ? t('Recherche : rien trouvé')
+        : t('Trouvé : %1').replace('%1', recherche.trouve.map((nom) => nomNettoye(nom) ?? nom).join(', '))
+    )
+    if (recherche.paquet) lignes.push(t('Paquet rencontre mélangé'))
+  }
+  return lignes
+}
+
 /** Une carte rencontre revelee (D16, D17) : la carte en grand, son effet resume, le Renfort. */
 function vueRevelee(etape: EtapeDeroule, ctx: ContexteVue): VueRevelee {
   const carte = vignette(`carte:${etape.cle}`, etape.carteId, etape.cibleNom, ctx)
@@ -916,6 +936,8 @@ function vueRevelee(etape: EtapeDeroule, ctx: ContexteVue): VueRevelee {
   // lieu de resume, plutot qu'un cote droit vide (decision du 05/10/2026).
   const infoCarteRevelee = etape.carteId !== undefined ? ctx.infoRevelee?.(etape.carteId) : undefined
   if (lignes.length === 0 && infoCarteRevelee?.texteImprime?.length) lignes.push(...infoCarteRevelee.texteImprime)
+  // 13/10/2026 (encadré ⑫) : ce qu'une recherche a donné, trouvé ou non, après le texte.
+  lignes.push(...textesRecherches(etape.recherches))
   const sorties = sortiesDeLEtape(ctx.etapes, etape)
   if (etape.reveleePar) lignes.unshift(...sorties)
   else lignes.push(...sorties)
@@ -1299,6 +1321,20 @@ export function vueDeLEtape(etape: EtapeDeroule, ctx: ContexteVue): VueCorps {
       return vueSonne(etape, ctx)
     case 'stade':
       return vueStade(etape, ctx)
+    case 'paquet-vide':
+      // 13/10/2026 (encadré ②) : la manigance qui reçoit le jeton, et ce que ça change.
+      return {
+        genre: 'rangee',
+        acteur: vignette(`acteur:${etape.cle}`, etape.cibleId, etape.cibleNom, ctx),
+        boosts: [],
+        cibles: [],
+        resultat: {
+          texte: t('Défausse remélangée : un nouveau paquet'),
+          note: t('+1 jeton d’accélération : +1 menace à chaque étape 1'),
+        },
+        lignesEtoile: [],
+        grisee: false,
+      }
     case 'statut':
       return {
         genre: 'rangee',

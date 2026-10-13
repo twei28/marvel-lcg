@@ -47,6 +47,21 @@ class Scenario(User):
             scheme = Worlds.FindMainScheme(by_effect)
             if scheme:
                 scheme.PlaceAccelerationToken(1, GameRule(scheme))
+                # Refonte de la phase du mechant (13/10/2026, encadre 2) : le
+                # paquet vide pendant la phase a son ecran, « defausse
+                # remelangee, +1 jeton d'acceleration ». Hors de la phase, rien.
+                try:
+                    world = scheme.card.world
+                    if world.phase.IsVillainPhase():
+                        world.stat.RecordFaitMechant(world.round_id, {
+                            'genre': 'paquet_vide',
+                            'phase': world.GetPhaseText(),
+                            'cible': scheme.name,
+                            'cible_id': scheme.card.object_id,
+                            'jetons': scheme.acceleration_token,
+                        })
+                except Exception:
+                    pass
         deck.BindDiscardPile(discard_pile, process_after_shuffle)
         return deck, discard_pile
 

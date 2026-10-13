@@ -19,6 +19,7 @@ import {
   pastilles,
   tempsAfficheDe,
   titreCourt,
+  textesRecherches,
   vueDeLEtape,
   type ContexteVue,
   type VueBilan,
@@ -335,6 +336,12 @@ describe('piege 40 : des valeurs nulles, rien d invente', () => {
     expect(vue.genre === 'rangee' ? vue.menace?.prevu : 'pas une rangee').toBe(3)
     const normale = vueDeLEtape(etape({ ...menace, montant: 3, escalade: 2, acceleration: 1, joueurs: 2 }), contexte([], 0))
     expect(normale.genre === 'rangee' ? normale.menace?.prevu : 'pas une rangee').toBeUndefined()
+  })
+
+  it('13/10/2026 : ce qu une recherche a donne, trouvee ou non', () => {
+    expect(textesRecherches([{ trouve: [], paquet: true }])).toEqual(['Recherche : rien trouvé', 'Paquet rencontre mélangé'])
+    expect(textesRecherches([{ trouve: ['* Le Requin-Tigre'], paquet: false }])).toEqual(['Trouvé : Le Requin-Tigre'])
+    expect(textesRecherches(undefined)).toEqual([])
   })
 
   it('PV max inconnu : la jauge n a pas de plafond', () => {

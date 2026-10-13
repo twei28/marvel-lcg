@@ -48,6 +48,11 @@ class WorldStat:
         #                  auteur_id, cible, cible_id, statut_retire, annule_par,
         #                  annule_par_id, fait_id, et rang_sbire/total_sbires
         #                  pour un sbire.
+        #   'paquet_vide'  (13/10/2026) le paquet rencontre s'est vide PENDANT la
+        #                  phase : defausse remelangee, +1 jeton d'acceleration.
+        #                  game/player/scenario.py, process_after_shuffle.
+        #                  Champs : phase, cible, cible_id (la manigance
+        #                  principale), jetons (ses jetons d'acceleration apres).
         #
         # Les activations (points 2) sont inscrites QUELLE QUE SOIT la phase :
         # une carte revelee peut faire frapper le vilain, et le client range le
