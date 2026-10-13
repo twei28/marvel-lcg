@@ -872,7 +872,13 @@ const LIGNES_BILAN_MAX = 10
 
 function Bilan({ bilan, grisee = false, essai = false }: { bilan: VueBilan; grisee?: boolean; essai?: boolean }) {
   // La phase n'a rien coute : on le dit, plutot que trois colonnes vides.
-  if (bilan.vide) return <p className="deroule-vide">{texteBilanVide()}</p>
+  if (bilan.vide)
+    // 13/10/2026 (encadré ⑱) : dans l'essai, en grand et en vert.
+    return essai ? (
+      <p className="deroule-vide essai-bilan-calme">{t('Rien de grave cette phase')}</p>
+    ) : (
+      <p className="deroule-vide">{texteBilanVide()}</p>
+    )
   const rien = <li className="deroule-rien">{t('aucun')}</li>
   return (
     <div className={grisee ? 'deroule-bilan est-grisee' : 'deroule-bilan'} aria-hidden={grisee || undefined}>
@@ -996,6 +1002,9 @@ function LigneDuHaut({
         {liste.length > 0 ? (
           <ol className="deroule-pastilles">
             {liste.map((pastille) => {
+              // 13/10/2026 (encadré ⑩) : une étape passée sans rien (2B sans sbire)
+              // reste grisée, son nom remplacé par « — ».
+              const vide = numerosCarres && pastille.etat === 'passe' && pastille.resume === t('aucun')
               const contenu = (
                 <>
                   <span className="deroule-pastille-numero">
@@ -1011,15 +1020,15 @@ function LigneDuHaut({
                               : '1'
                       : pastille.numero}
                   </span>
-                  <span className="deroule-pastille-nom">{pastille.nom}</span>
-                  {pastille.resume ? <small className="deroule-pastille-resume">{pastille.resume}</small> : null}
+                  <span className="deroule-pastille-nom">{vide ? '—' : pastille.nom}</span>
+                  {pastille.resume && !vide ? <small className="deroule-pastille-resume">{pastille.resume}</small> : null}
                   {pastille.compteur ? <small className="deroule-pastille-compteur">{pastille.compteur}</small> : null}
                 </>
               )
               return (
                 <li
                   key={pastille.cle}
-                  className={`deroule-pastille est-${pastille.etat}${pastille.relu ? ' est-relu' : ''}`}
+                  className={`deroule-pastille est-${pastille.etat}${pastille.relu ? ' est-relu' : ''}${vide ? ' est-vide' : ''}`}
                   title={pastille.libelle}
                 >
                   {/* Une pastille passee se relit d'un clic (D22) : un bouton,
@@ -1694,11 +1703,16 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         ? t('Attaque Rapide de %1').replace('%1', etapeLue.auteurNom)
         : t('Attaque Rapide')
       : undefined
-  const titre =
+  const titreSansRang =
     titreRapide ??
     (essai && etapeLue?.cause && (etapeLue.titre === 'attaque' || etapeLue.titre === 'manigance')
       ? `${titreBrut} (${etapeLue.cause})`
       : titreBrut)
+  // 13/10/2026 (encadré ⑩) : « Attaque du Fondeur (sbire 2/3) », seulement à partir de deux sbires.
+  const titre =
+    essai && etapeLue?.temps === 'sbires' && etapeLue.rangSbire !== undefined && (etapeLue.totalSbires ?? 0) >= 2
+      ? `${titreSansRang} (${t('sbire %1/%2').replace('%1', String(etapeLue.rangSbire)).replace('%2', String(etapeLue.totalSbires))})`
+      : titreSansRang
 
   // ESSAI : les boosts se retournent au clic, un par un (questions 3 et 10).
   const boostsRestants =

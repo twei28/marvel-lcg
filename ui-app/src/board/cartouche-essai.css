@@ -1523,3 +1523,13 @@ html.essai-peril-autre .main-feuille {
   background: linear-gradient(160deg, var(--stat), var(--stat-sombre));
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.45);
 }
+
+/* Bilan d'une phase sans conséquence (13/10/2026) : en grand, en vert. */
+.deroule-phase.est-essai .essai-bilan-calme {
+  margin: 12px 0;
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 1.8rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: #3fae53;
+}

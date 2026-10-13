@@ -501,7 +501,10 @@ export function titreCourt(etape: EtapeDeroule, ctx: ContexteVue): string {
     case 'elimination':
       return etape.cibleNom ? t('%1 est éliminé').replace('%1', etape.cibleNom) : t('Un héros est éliminé')
     case 'distribution-tableau':
-      return t('Cartes rencontre distribuées')
+      // 13/10/2026 (encadré ⑪) : « Distribution : 3 cartes rencontre ».
+      return etape.montant !== undefined
+        ? t('Distribution : %1').replace('%1', `${etape.montant} ${etape.montant < 2 ? t('carte rencontre') : t('cartes rencontre')}`)
+        : t('Cartes rencontre distribuées')
     case 'menace':
       return t('Menace')
     case 'bilan':

@@ -67,7 +67,16 @@ describe('la distribution en tableau (decision 42)', () => {
       ['Spider-Man', 2, ['la règle (1 par joueur)', 'Danger : Illegal Arms Factory']],
       ['Hulk', 1, []],
     ])
-    expect(titreCourt(suite[1], ctx(suite))).toBe('Cartes rencontre distribuées')
+    // 13/10/2026 (encadré ⑪) : le titre dit combien.
+    expect(titreCourt(suite[1], ctx(suite))).toBe('Distribution : 3 cartes rencontre')
+  })
+
+  it('13/10/2026 : en solo, une seule carte sans raison particulière n a pas d ecran', () => {
+    const d1 = base({ cle: 'd1', temps: 'distribution', titre: 'distribution', joueur: 0, auteurNom: 'Spider-Man', montant: 1, raisonsCartes: [{ raison: 'base' }] })
+    const apres = base({ cle: 'r', temps: 'revelation', titre: 'revelation' })
+    expect(avecTableauDistribution([d1, apres]).map((e) => e.cle)).toEqual(['r'])
+    const danger = base({ ...d1, raisonsCartes: [{ raison: 'danger', source: 'Illegal Arms Factory' }] })
+    expect(avecTableauDistribution([danger, apres]).map((e) => e.cle)).toEqual(['d1:tableau', 'r'])
   })
 
   it('sans distribution, la meme liste', () => {
@@ -163,7 +172,7 @@ describe('le rendu (essai seulement)', () => {
 
   it('le tableau de distribution', () => {
     const [tableau] = avecTableauDistribution([
-      base({ cle: 'd1', temps: 'distribution', titre: 'distribution', joueur: 0, auteurNom: 'Spider-Man', montant: 1 }),
+      base({ cle: 'd1', temps: 'distribution', titre: 'distribution', joueur: 0, auteurNom: 'Spider-Man', montant: 2 }),
     ])
     monter([tableau], true)
     expect(document.querySelector('.essai-distribution table')?.textContent).toContain('Spider-Man')

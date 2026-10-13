@@ -57,10 +57,18 @@ export function avecTableauDistribution(etapes: EtapeDeroule[]): EtapeDeroule[] 
       raisons: etape.raisonsCartes ?? [],
     })),
   }
+  // 13/10/2026 (encadré ⑪) : en solo, UNE carte sans raison particulière n'a
+  // pas d'écran ; on passe directement à sa révélation.
+  const lignes = tableau.lignesDistribution ?? []
+  const seule =
+    lignes.length === 1 &&
+    lignes[0].cartes === 1 &&
+    lignes[0].raisons.every((r) => r.raison === 'base' && !r.source)
   const suite: EtapeDeroule[] = []
   for (const etape of etapes) {
-    if (etape === premiere) suite.push(tableau)
-    else if (!(etape.temps === 'distribution' && etape.titre === 'distribution')) suite.push(etape)
+    if (etape === premiere) {
+      if (!seule) suite.push(tableau)
+    } else if (!(etape.temps === 'distribution' && etape.titre === 'distribution')) suite.push(etape)
   }
   return suite
 }

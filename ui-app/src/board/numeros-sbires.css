@@ -1,0 +1,30 @@
+/* Les numéros d'activation des sbires sur la table (essai, 13/10/2026). */
+.numeros-sbires {
+  position: fixed;
+  inset: 0;
+  z-index: 610;
+  pointer-events: none;
+}
+
+.numero-sbire {
+  position: fixed;
+  translate: -60% -40%;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #14100a;
+  background: var(--menace, #f5b301);
+  color: #14100a;
+  font-family: var(--police-bd, 'Bangers', sans-serif);
+  font-size: 1.1rem;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+}
+
+.numero-sbire.est-passe {
+  background: #5b6475;
+  color: #d5dbe5;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}

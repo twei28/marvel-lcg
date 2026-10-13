@@ -2,6 +2,8 @@
 import { cleanup, render } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { PictoBoost, texteAlerteSeuil } from './CartouchePhase'
+import type { EtapeDeroule } from './deroule-phase'
+import { numerosDesSbires } from './NumerosSbires'
 
 afterEach(() => cleanup())
 
@@ -31,5 +33,26 @@ describe('④ boost à 0 : « +0 » gris', () => {
       </>
     )
     expect(container.querySelectorAll('.est-nul')).toHaveLength(0)
+  })
+})
+
+
+describe('⑩ numéros d’ordre des sbires sur la table', () => {
+  const sbire = (cle: string, carteId: number, rangSbire: number, totalSbires = 3) =>
+    ({ cle, temps: 'sbires', titre: 'attaque', regle: '', carteId, rangSbire, totalSbires, boosts: [] }) as EtapeDeroule
+  const etapes = [sbire('a', 60, 1), sbire('b', 61, 2), sbire('c', 62, 3)]
+
+  it('chaque sbire a son numéro ; ceux déjà passés sont barrés', () => {
+    expect(numerosDesSbires(etapes, 'b')).toEqual([
+      { carteId: 60, rang: 1, passe: true },
+      { carteId: 61, rang: 2, passe: false },
+      { carteId: 62, rang: 3, passe: false },
+    ])
+  })
+
+  it('hors de l’étape 2B, ou avec un seul sbire : rien', () => {
+    const menace = { cle: 'm', temps: 'menace', titre: 'menace', regle: '', boosts: [] } as EtapeDeroule
+    expect(numerosDesSbires([menace, ...etapes], 'm')).toEqual([])
+    expect(numerosDesSbires([sbire('x', 60, 1, 1)], 'x')).toEqual([])
   })
 })

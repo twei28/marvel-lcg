@@ -409,6 +409,12 @@ describe('le bilan vide', () => {
     expect(document.querySelector('.deroule-colonne')).toBeNull()
     expect(screen.getByRole('button', { name: 'Terminer' })).toBeInTheDocument()
   })
+
+  it('13/10/2026 : dans l essai, « Rien de grave cette phase » en grand', () => {
+    const bilan: EtapeDeroule = { cle: 'bilan', temps: 'bilan', titre: 'bilan', regle: '', boosts: [] }
+    monter({ etapes: [bilan], index: 0, essai: true })
+    expect(document.querySelector('.essai-bilan-calme')?.textContent).toBe('Rien de grave cette phase')
+  })
 })
 
 describe('le pied du cartouche', () => {
@@ -1238,6 +1244,19 @@ describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
     expect(calcul!.querySelector('.essai-boite .deroule-resultat-texte')?.textContent).toBe('1 dégât subi')
     // Spider-Man à 3 PV sur 10 : critique, en couleur fixe.
     expect(calcul!.querySelector('.essai-boite.est-critique')).not.toBeNull()
+  })
+
+  it('13/10/2026 : une étape passée sans rien (2B sans sbire) est grisée, son nom remplacé par « — »', () => {
+    const revelation = { cle: 'rev:1', temps: 'revelation', titre: 'revelation', regle: '', carteId: 99, joueur: 0, cibleNom: 'Explosion', boosts: [] } as EtapeDeroule
+    monter({ etapes: [menace, revelation], index: 1, essai: true })
+    const sbires = [...document.querySelectorAll('.deroule-pastille')].find((li) => li.textContent?.includes('2B'))
+    expect(sbires?.classList.contains('est-vide')).toBe(true)
+    expect(sbires?.querySelector('.deroule-pastille-nom')?.textContent).toBe('—')
+  })
+
+  it('13/10/2026 : « (sbire 2/3) » dans le titre d’une activation de sbire', () => {
+    monter({ etapes: [{ ...attaqueResolue, temps: 'sbires', rangSbire: 2, totalSbires: 3, boosts: [] }], essai: true })
+    expect(document.querySelector('.deroule-titre-court')?.textContent).toMatch(/\(sbire 2\/3\)$/)
   })
 
   it('13/10/2026 : « VAINCU » sous un allié ou un sbire à 0, « K.O. » quand le héros tombe', () => {

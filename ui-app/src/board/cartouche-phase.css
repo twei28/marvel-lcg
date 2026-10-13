@@ -725,6 +725,11 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-corps {
   color: rgba(248, 250, 252, 0.85);
 }
 
+/* Une étape passée sans rien (2B sans sbire, 13/10/2026) : grisée, « — ». */
+.deroule-phase.est-scene .deroule-pastille.est-vide {
+  opacity: 0.4;
+}
+
 /* L'astuce « clique la carte sur la table » (13/10/2026) : discrete, sous la consigne. */
 .deroule-phase.est-scene .deroule-sous-cadre-astuce {
   font-style: italic;
