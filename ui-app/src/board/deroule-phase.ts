@@ -370,6 +370,8 @@ export type EtapeDeroule = {
   rapide?: boolean
   /** Refonte, lot 5b : ce que Perçant, Robuste et Déferlement ont fait sur ce coup. */
   motsCles?: MotsClesDuCoup
+  /** 13/10/2026 : les cartes qui ont réduit le coup, et de combien. */
+  reductions?: Array<{ source: string; valeur: number }>
   /** Refonte, lot 5b : la Riposte de la carte touchée contre l'attaquant (son écran à part dans l'essai). */
   riposte?: RiposteDuCoup
   /** La carte qui a annule a quitte le jeu en le faisant (n72, 09/10/2026). */
@@ -674,6 +676,7 @@ export function etapesDeroule(
       escalade: fait.escalade,
       acceleration: fait.acceleration,
       joueurs: fait.joueurs,
+      reductions: fait.reductions && fait.reductions.length > 0 ? fait.reductions : undefined,
       boosts: [],
     })
   }
@@ -760,6 +763,7 @@ export function etapesDeroule(
         stadeAvantId: fait.avant_id,
         statsAvant: fait.stats_avant,
         statsApres: fait.stats_apres,
+        effets: fait.effets && fait.effets.length > 0 ? fait.effets : undefined,
         boosts: [],
       })
       return
@@ -933,6 +937,7 @@ export function etapesDeroule(
       defaite: defaite ? true : undefined,
       boosts: boostsDeroule(fait.boosts),
       motsCles: fait.mots_cles && Object.keys(fait.mots_cles).length > 0 ? fait.mots_cles : undefined,
+      reductions: fait.reductions && fait.reductions.length > 0 ? fait.reductions : undefined,
       riposte: fait.riposte ?? undefined,
     })
   })

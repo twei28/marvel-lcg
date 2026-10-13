@@ -329,6 +329,16 @@ describe('piege 40 : des valeurs nulles, rien d invente', () => {
     const reduit = rangee({ ...resoluRhino, inflige: 3, montant: 1 })
     expect(reduit.resultat).toMatchObject({ barre: '3 dégâts', raison: 'réduit' })
     expect(rangee(resoluRhino).resultat?.barre).toBeUndefined()
+    const nomme = rangee({ ...resoluRhino, inflige: 4, montant: 2, reductions: [{ source: 'Bouclier', valeur: 2 }] })
+    expect(nomme.resultat).toMatchObject({ barre: '4 dégâts', raison: 'Bouclier −2' })
+  })
+
+  it('13/10/2026 : les cartes qui reduisent la menace, en lignes negatives, et sur une manigance', () => {
+    const vue = vueDeLEtape(etape({ ...menace, montant: 1, escalade: 2, acceleration: 0, joueurs: 2, reductions: [{ source: 'Surveillance', valeur: 1 }] }), contexte([], 0))
+    expect(vue.genre === 'rangee' ? vue.menace?.sources.at(-1) : undefined).toEqual({ libelle: 'Surveillance', valeur: -1 })
+    expect(vue.genre === 'rangee' ? vue.menace?.prevu : undefined).toBe(2)
+    const manigance = rangee({ ...resoluRhino, titre: 'manigance', montant: 1, restant: 4, reductions: [{ source: 'Surveillance', valeur: 2 }] })
+    expect(manigance.resultat).toMatchObject({ raison: 'Surveillance −2' })
   })
 
   it('13/10/2026 : une menace posee plus petite que ses sources, la somme barree', () => {

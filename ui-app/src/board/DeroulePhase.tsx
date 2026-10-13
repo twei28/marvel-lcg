@@ -109,7 +109,7 @@ import {
   type InfoRevelee,
 } from './vue-cartouche'
 import './cartouche-essai-tel.css'
-import { avecEcranElimination, avecEtapesEtoileDifferee, avecEtapesRiposte } from './etapes-essai'
+import { avecEcranElimination, avecEcranStadeRevele, avecEtapesEtoileDifferee, avecEtapesRiposte } from './etapes-essai'
 
 /**
  * Le temps de VOIR une etape qui vise un autre joueur, avant qu'elle passe.
@@ -531,7 +531,10 @@ export function DeroulePhase({
   // Refonte, lot 5b (essai) : la Riposte devient une étape à part (décision 39).
   // Lot 5c (essai) : l'effet ★ differe (decision 38) et l'elimination (45) ont aussi leur ecran.
   const etapes = useMemo(
-    () => (essai ? avecEcranElimination(avecEtapesEtoileDifferee(avecEtapesRiposte(etapesRecues), texteEtoile)) : etapesRecues),
+    () =>
+      essai
+        ? avecEcranStadeRevele(avecEcranElimination(avecEtapesEtoileDifferee(avecEtapesRiposte(etapesRecues), texteEtoile)))
+        : etapesRecues,
     [essai, etapesRecues, texteEtoile]
   )
   // LA CLE de l'etape que le joueur lit, jamais son numero. L'index se

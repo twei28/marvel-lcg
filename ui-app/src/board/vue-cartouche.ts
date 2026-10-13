@@ -525,6 +525,8 @@ export function titreCourt(etape: EtapeDeroule, ctx: ContexteVue): string {
       return t('Sonné')
     case 'paquet-vide':
       return t('Paquet rencontre vide')
+    case 'stade-revele':
+      return etape.cibleNom ? t('%1 : une fois révélé').replace('%1', etape.cibleNom) : t('Une fois révélé')
     case 'stade': {
       const numero = etape.carteId !== undefined ? ctx.infoCarte?.(etape.carteId)?.printed_stage : undefined
       return nombre(numero) && numero > 0 ? t('Stade %1').replace('%1', romain(numero)) : t('Stade suivant')
@@ -602,11 +604,19 @@ function decompositionMenace(
   if (nombre(acceleration) && acceleration > 0) sources.push({ libelle: t('Accélération'), valeur: acceleration })
   // Sans decomposition publiee, une seule ligne : le total tel quel.
   if (sources.length === 0) sources.push({ libelle: t('Manigance'), valeur: montant })
+  // 13/10/2026 : la somme prévue, puis chaque carte qui a réduit la pose (« Surveillance −1 »).
+  const prevuAvantReductions = sources.reduce((acc, source) => acc + source.valeur, 0)
+  for (const r of etape.reductions ?? []) sources.push({ libelle: nomNettoye(r.source) ?? r.source, valeur: -r.valeur })
   const plafond = plafondDe(etape, ctx)
   const avecSeuil = jauge ? { ...jauge, plafond: jauge.plafond ?? plafond } : undefined
   const complete = !!avecSeuil && nombre(avecSeuil.apres) && nombre(avecSeuil.plafond) && avecSeuil.plafond > 0 && avecSeuil.apres >= avecSeuil.plafond
-  const somme = sources.reduce((acc, source) => acc + source.valeur, 0)
-  return { sources, total: montant, jauge: avecSeuil, complete, prevu: somme > montant ? somme : undefined }
+  return {
+    sources,
+    total: montant,
+    jauge: avecSeuil,
+    complete,
+    prevu: prevuAvantReductions > montant ? prevuAvantReductions : undefined,
+  }
 }
 
 /** La menace du point 1 (D12) : la manigance, le calcul, la jauge. */
@@ -721,7 +731,14 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
               .map((nom) => `★ ${nomNettoye(nom) ?? nom} : ${t('sans effet (aucun dégât)')}`)
               .join(' · ')
           : undefined,
-        raison: reduit ? (etape.motsCles?.robuste ? t('Robuste') : t('réduit')) : undefined,
+        // La carte responsable quand le moteur la publie (« Bouclier −2 »), sinon Robuste ou « réduit ».
+        raison: reduit
+          ? etape.reductions?.length
+            ? etape.reductions.map((r) => `${nomNettoye(r.source) ?? r.source} −${r.valeur}`).join(' · ')
+            : etape.motsCles?.robuste
+              ? t('Robuste')
+              : t('réduit')
+          : undefined,
         nul: montant === 0 || undefined,
         // L'AVANT se deduit du restant et du subi, borne par le maximum : un
         // coup de 6 sur 4 PV laisse la cible a 0, elle n'avait pas 6 PV.
@@ -751,6 +768,13 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
             }
           : undefined,
         note: videe ? t('menaces retirées') : undefined,
+        // 13/10/2026 : des cartes ont réduit la menace posée : la valeur prévue barrée, et elles.
+        ...(etape.reductions?.length
+          ? {
+              barre: texteMenaces(montant + etape.reductions.reduce((acc, r) => acc + r.valeur, 0)),
+              raison: etape.reductions.map((r) => `${nomNettoye(r.source) ?? r.source} −${r.valeur}`).join(' · '),
+            }
+          : {}),
       }
     }
   }
@@ -1324,6 +1348,7 @@ export function vueDeLEtape(etape: EtapeDeroule, ctx: ContexteVue): VueCorps {
     case 'menace':
       return vueMenace(etape, ctx)
     case 'revelation':
+    case 'stade-revele':
       return vueRevelee(etape, ctx)
     case 'sonne':
       return vueSonne(etape, ctx)

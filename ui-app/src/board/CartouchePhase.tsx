@@ -621,7 +621,9 @@ function MenaceEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
                     </span>
                   ) : null}
                 </td>
-                <td className="essai-menace-valeur">+{source.valeur}</td>
+                <td className={`essai-menace-valeur${source.valeur < 0 ? ' est-reduction' : ''}`}>
+                  {source.valeur < 0 ? `−${-source.valeur}` : `+${source.valeur}`}
+                </td>
               </tr>
             ))}
             <tr className="essai-menace-total">

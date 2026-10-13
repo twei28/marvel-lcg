@@ -188,6 +188,8 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
                 'restant': self.threat,
                 'plafond': self.target_threat,
                 **decomposition,
+                # 13/10/2026 : les cartes qui ont reduit cette pose, et de combien.
+                **world.stat.ChampReductions(world, self.card.object_id),
             })
 
     def Advance(self, to_face: Literal["2A", "3A"]|CardFace|None, by_effect: 'Effect') -> None:

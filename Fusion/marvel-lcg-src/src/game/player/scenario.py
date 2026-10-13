@@ -163,6 +163,7 @@ class Scenario(User):
             # objet, et apres coup l'ancienne face rendait les PV max de la
             # nouvelle (mesure sur Ultron : 22 au lieu de 17).
             stats_avant = self.world.stat.StatsDuStade(prev_villain, courantes=False)
+            photo_avant = self.world.stat.PhotoAvantStade(self.world)
 
             world = by_effect.world
 
@@ -237,7 +238,7 @@ class Scenario(User):
             after_message = Message.AfterVillainAdvanced(new_villain, by_effect, message)
             after_message.Send()
             self.world.stat.RecordStade(self.world, 'mechant', prev_villain, new_villain,
-                                        stats_avant=stats_avant)
+                                        stats_avant=stats_avant, photo_avant=photo_avant)
         pass
 
         if to_villain:

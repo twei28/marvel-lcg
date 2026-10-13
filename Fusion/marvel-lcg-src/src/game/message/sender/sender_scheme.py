@@ -85,14 +85,25 @@ class SenderScheme:
             text = TransText("{scheme} would place {value}{symbol} ({effect})", scheme=scheme, value=value, symbol=Symbol.threat, effect=by_effect)
             self.Present(text, "", scheme, by_effect.this)
 
+        def _NoterReduction(self, valeur: int, by_effect: 'Effect') -> None:
+            # 13/10/2026 : la carte qui reduit la menace, pour le fait (« Surveillance -1 »).
+            from game.world.world_stat import WorldStat
+            try:
+                WorldStat.NoterReduction(self.trigger.card.world, self.trigger.card.object_id, by_effect, valeur)
+            except Exception:
+                pass
+
         def UpdateValue(self, value: int, by_effect: 'Effect'):
             self.value += value
+            if value < 0:
+                self._NoterReduction(-value, by_effect)
 
         def PreventThreat(self, value: int|Literal["All"], by_effect: 'Effect') -> int:
             from game.message import Message
             if value == "All":
                 prevented = self.value
                 self.value = 0
+                self._NoterReduction(prevented, by_effect)
             else:
                 assert value > 0
                 prevented = value

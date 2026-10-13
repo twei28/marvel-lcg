@@ -797,17 +797,27 @@ class SenderDamage:
             self.property.damage += value
             Message.WhenDamageUpdated_Text(value, by_effect)
 
+        def _NoterReduction(self, valeur: int, by_effect: 'Effect') -> None:
+            # 13/10/2026 : la carte qui reduit, pour le fait d'attaque (« Bouclier -2 »).
+            from game.world.world_stat import WorldStat
+            try:
+                WorldStat.NoterReduction(self.trigger.card.world, self.trigger.card.object_id, by_effect, valeur)
+            except Exception:
+                pass
+
         def ReduceDamage(self, value: int, by_effect: 'Effect'):
             assert value >= 0 # Fix "24039"
             from game.message import Message
             self.property.damage -= value
             Message.WhenDamageUpdated_Text(-1 * value, by_effect)
+            self._NoterReduction(value, by_effect)
 
         def ReduceDamageTo(self, value: int, by_effect: 'Effect'):
             from game.message import Message
             diff = self.property.damage - value
             self.property.damage = value
             Message.WhenDamageUpdated_Text(-1 * diff, by_effect)
+            self._NoterReduction(diff, by_effect)
 
         def PreventAllDamageInternal(self):
             from game.card.face.card_type import Minion
@@ -859,6 +869,7 @@ class SenderDamage:
             from game.message import Message
             message = Message.AfterDamageBePrevented(self.trigger, prevent_damage, self.property, by_effect, self.would_atk_message)
             message.Send()
+            self._NoterReduction(prevent_damage, by_effect)
             return prevent_damage
 
         def SetCannotTakeMoreThanDamage(self, value: int, by_effect: 'Effect'):

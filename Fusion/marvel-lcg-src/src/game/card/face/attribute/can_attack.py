@@ -931,6 +931,8 @@ class CanAttack(CardFace):
             'base_imprimee': base_imprimee,
             # Lot 5b : Percant, Robuste, Deferlement, publies seulement quand ils ont joue.
             **({'mots_cles': mots_cles} if mots_cles else {}),
+            # 13/10/2026 : les cartes qui ont reduit le coup, et de combien.
+            **world.stat.ChampReductions(world, cible.card.object_id),
             **({'rapide': True} if CanAttack._EstRapide(by_effect) else {}),
             # Une Riposte resolue avant ce journal (regles d'avant la 1.8), voir can_retaliate.py.
             **({'riposte': riposte_avant} if (riposte_avant := world.stat.__dict__.get('ripostes_en_attente', {}).pop(
@@ -1039,6 +1041,8 @@ class CanAttack(CardFace):
             'cible_annoncee': (cible_annoncee or manigance).name,
             'cible_annoncee_id': (cible_annoncee or manigance).card.object_id,
             'base_imprimee': base_imprimee,
+            # 13/10/2026 : les cartes qui ont reduit cette pose, et de combien.
+            **world.stat.ChampReductions(world, manigance.card.object_id),
         })
         return True
 

@@ -137,6 +137,11 @@ class WorldStat:
         pour cet appel, mais rien ne garantit qu'il ne le reutilise pas.
         """
         self._DemarrerLeRound(round_id)
+        # 13/10/2026 : une activation qui s'annonce repart d'un registre de
+        # reductions vide ; celles d'avant (une traitrise, une autre attaque)
+        # ne lui appartiennent pas.
+        if fait.get('etat') == 'annonce':
+            self._reductions_en_cours = {}
         complet = {**fait, 'round_id': round_id}
         en_cours = self.sbire_en_cours
         if en_cours is not None and 'auteur_id' in fait \
@@ -183,10 +188,74 @@ class WorldStat:
             self._faits_mechant_round = round_id
             self.faits_mechant = []
             self._activation_suivante = 0
+            self._reductions_en_cours = {}
+
+    @staticmethod
+    def NoterReduction(world: 'Any', cible_id: int, by_effect: 'Any', valeur: int) -> None:
+        """Une reduction de degats sur `cible_id`, et la carte qui l'a causee
+        (13/10/2026, encadres 1 et 4 : « 4 degats barre -> 2, Bouclier -2 »).
+        Pendant la phase du mechant seulement ; le fait d'attaque la reprend
+        (`PrendreReductions`) quand il est inscrit."""
+        try:
+            if valeur <= 0 or not world.phase.IsVillainPhase():
+                return
+            source = getattr(by_effect, 'this', None)
+            nom = getattr(source, 'name', None)
+            if not nom:
+                return
+            reductions = getattr(world.stat, '_reductions_en_cours', None)
+            if reductions is None:
+                reductions = {}
+                setattr(world.stat, '_reductions_en_cours', reductions)
+            reductions.setdefault(cible_id, []).append({'source': nom, 'valeur': int(valeur)})
+        except Exception:
+            pass
+
+    @staticmethod
+    def ChampReductions(world: 'Any', cible_id: int) -> 'Dict[str, Any]':
+        """Le champ `reductions` d'un fait, ou rien s'il n'y en a pas."""
+        reductions = WorldStat.PrendreReductions(world, cible_id)
+        return {'reductions': reductions} if reductions else {}
+
+    @staticmethod
+    def PrendreReductions(world: 'Any', cible_id: int) -> 'List[Dict[str, Any]]':
+        """Les reductions notees sur `cible_id`, retirees du registre."""
+        try:
+            reductions = getattr(world.stat, '_reductions_en_cours', None) or {}
+            return reductions.pop(cible_id, [])
+        except Exception:
+            return []
+
+    @staticmethod
+    def PhotoAvantStade(world: 'Any') -> 'Dict[str, Any]|None':
+        """La table AVANT un changement de stade (13/10/2026), hors phase : rien."""
+        try:
+            if not world.phase.IsVillainPhase():
+                return None
+            from game.player.action.player_action import PlayerAction
+            return PlayerAction._PhotoDeLaTable(world)
+        except Exception:
+            return None
+
+    @staticmethod
+    def _EffetsDuStade(world: 'Any', photo_avant: 'Dict[str, Any]|None', apres: 'Any') -> 'Dict[str, Any]':
+        if photo_avant is None:
+            return {}
+        try:
+            from game.player.action.player_action import PlayerAction
+            # La menace de depart de la NOUVELLE carte n'est pas un effet : l'ecran
+            # du stade la montre deja (et une face A retournee garde son objet).
+            nouvelle = apres.card.object_id
+            effets = [e for e in PlayerAction._EffetsDeLaRevelation(photo_avant, world)
+                      if not (e.get('genre') == 'menace' and e.get('cible_id') == nouvelle)]
+            return {'effets': effets} if effets else {}
+        except Exception:
+            return {}
 
     @staticmethod
     def RecordStade(world: 'Any', quoi: str, avant: 'Any', apres: 'Any',
-                    stats_avant: 'Dict[str, int]|None' = None) -> None:
+                    stats_avant: 'Dict[str, int]|None' = None,
+                    photo_avant: 'Dict[str, Any]|None' = None) -> None:
         """CHANGEMENT DE STADE en pleine phase du mechant (04/10/2026) : la
         manigance principale ou le mechant passe au stade suivant. Le cartouche
         en fait une etape a part, la nouvelle carte en grand. Hors phase du
@@ -211,6 +280,11 @@ class WorldStat:
                 **({'avant_id': avant.card.object_id} if avant is not None else {}),
                 **({'stats_avant': stats_avant} if avant is not None and stats_avant else {}),
                 'stats_apres': WorldStat.StatsDuStade(apres, courantes=True),
+                # 13/10/2026 (encadre 2) : ce que les « Une fois revele » du
+                # nouveau stade ont fait sur la table (faces A et B ensemble :
+                # elles se resolvent dans le meme appel). Meme photo que les
+                # cartes rencontre revelees.
+                **WorldStat._EffetsDuStade(world, photo_avant, apres),
             })
         except Exception:
             pass

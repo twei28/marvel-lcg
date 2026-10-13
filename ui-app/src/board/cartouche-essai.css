@@ -1609,3 +1609,8 @@ body.plateau-sans-animations .deroule-phase.est-essai.est-secousse {
   border-radius: 50%;
   border: 1px solid rgba(0, 0, 0, 0.6);
 }
+
+/* Une carte qui a réduit la menace (13/10/2026) : sa ligne en vert. */
+.deroule-phase.est-essai .essai-menace-valeur.est-reduction {
+  color: #3fae53;
+}

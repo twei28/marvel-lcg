@@ -67,7 +67,7 @@ export function coupsDeLEtape(etape: EtapeDeroule | undefined): Coup[] {
   } else if (titre === 'riposte' && carteId !== undefined) {
     coups.push(coup('degats', cibleId, montant, restant, { lieu: 'table', id: carteId }))
   }
-  if (temps === 'revelation' || titre === 'entree') {
+  if (temps === 'revelation' || titre === 'entree' || titre === 'stade-revele') {
     const depuis: BoutFleche = temps === 'revelation' && carteId !== undefined ? { lieu: 'boite', id: carteId } : CORPS
     for (const effet of etape.effets ?? []) {
       if (effet.genre === 'menace') coups.push(coup('menace', effet.cible_id, effet.montant, effet.restant, depuis))

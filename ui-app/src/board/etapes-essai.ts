@@ -167,3 +167,32 @@ export function avecEcranElimination(etapes: EtapeDeroule[]): EtapeDeroule[] {
   }
   return suite
 }
+
+/**
+ * 13/10/2026 (encadré ②) : un nouveau stade qui a fait quelque chose en se
+ * révélant (une manigance annexe mise en jeu, des dégâts…) a son écran juste
+ * après celui du stade. Un stade sans effet n'en a pas.
+ */
+export function avecEcranStadeRevele(etapes: EtapeDeroule[]): EtapeDeroule[] {
+  if (!etapes.some((etape) => etape.titre === 'stade' && etape.effets?.length)) return etapes
+  const suite: EtapeDeroule[] = []
+  for (const etape of etapes) {
+    if (etape.titre === 'stade' && etape.effets?.length) {
+      // L'écran du stade garde l'avant → après ; ses effets passent à l'écran suivant.
+      suite.push({ ...etape, effets: undefined })
+      suite.push({
+        cle: `${etape.cle}:revele`,
+        temps: etape.temps,
+        titre: 'stade-revele',
+        regle: '',
+        carteId: etape.carteId,
+        cibleNom: etape.cibleNom,
+        effets: etape.effets,
+        boosts: [],
+      })
+      continue
+    }
+    suite.push(etape)
+  }
+  return suite
+}
