@@ -694,6 +694,24 @@ describe('etat 1 : la question de defense, dans la rangee (D7, D37)', () => {
   })
 })
 
+describe('essai : ce qu on peut jouer avant de defendre (13/10/2026)', () => {
+  it('une rangee a part, boutons dores, sous les defenseurs', () => {
+    const q = questionMoteur(demandeMoteur([defenseSM, sensAraignee]))
+    monter({ etapes: [annonce], index: 0, questionAuJoueur: true, questionDuMoteur: q, essai: true })
+    const rangee = document.querySelector('.essai-avant-defendre')
+    expect(rangee?.querySelector('p')?.textContent).toBe('Avant de défendre, tu peux jouer :')
+    const jouer = rangee?.querySelectorAll<HTMLButtonElement>('.essai-choix.est-jouer') ?? []
+    expect(jouer).toHaveLength(1)
+    fireEvent.click(jouer[0])
+    expect(q.choisirOption).toHaveBeenCalledWith(sensAraignee)
+  })
+
+  it('sans carte jouable : pas de rangee', () => {
+    monter({ etapes: [annonce], index: 0, questionAuJoueur: true, questionDuMoteur: questionMoteur(demandeMoteur([defenseSM])), essai: true })
+    expect(document.querySelector('.essai-avant-defendre')).toBeNull()
+  })
+})
+
 describe('essai : « Ask », demander a un autre joueur de defendre (13/10/2026)', () => {
   // Signale : « pourquoi il affiche deux fois Ironheart ? ». Le moteur rattache
   // « Ask » au heros attaque ; la boite montrait sa carte une seconde fois, muette.
@@ -721,7 +739,9 @@ describe('essai : le choix du defenseur en boutons de meme taille (10/10/2026)',
   it('un bouton vert « Défendre avec X » par defenseur, son picto DEF en tete, puis « Ne pas défendre »', () => {
     etat1Essai()
     const rangee = document.querySelector('.essai-choix-defense')!
-    const boutons = [...rangee.querySelectorAll<HTMLButtonElement>('button.essai-choix')]
+    // Les cartes jouables avant de defendre ont leur rangee doree a part (13/10/2026).
+    const boutons = [...rangee.querySelectorAll<HTMLButtonElement>('button.essai-choix:not(.est-jouer)')]
+    expect(rangee.querySelectorAll('button.essai-choix.est-jouer')).toHaveLength(1)
     expect(boutons.map((b) => [b.classList.contains('est-defendre'), b.textContent])).toEqual([
       [true, '3DÉFDéfendre avec Spider-Man'],
       [true, '1DÉFDéfendre avec Black Widow'],
@@ -734,7 +754,7 @@ describe('essai : le choix du defenseur en boutons de meme taille (10/10/2026)',
 
   it('les deux boutons agissent : defendre avec Spider-Man, ou ne pas defendre', () => {
     const q = etat1Essai()
-    const boutons = [...document.querySelectorAll<HTMLButtonElement>('.essai-choix-defense button')]
+    const boutons = [...document.querySelectorAll<HTMLButtonElement>('.essai-choix-defense button:not(.est-jouer)')]
     fireEvent.click(boutons[0]!)
     expect(q.choisirOption).toHaveBeenCalledWith(defenseSM)
     fireEvent.click(boutons[2]!)
@@ -1220,12 +1240,25 @@ describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
     expect(calcul!.querySelector('.essai-boite.est-critique')).not.toBeNull()
   })
 
+  it('13/10/2026 : « VAINCU » sous un allié ou un sbire à 0, « K.O. » quand le héros tombe', () => {
+    monter({ etapes: [{ ...attaqueResolue, restant: 0, boosts: [] }], essai: true })
+    expect(document.querySelector('.essai-tampon-vaincu')?.textContent).toBe('VAINCU')
+    cleanup()
+    monter({ etapes: [{ ...attaqueResolue, restant: 0, defaite: true, boosts: [] }], essai: true })
+    expect(document.querySelector('.essai-tampon-ko')?.textContent).toBe('K.O.')
+    cleanup()
+    monter({ etapes: [{ ...attaqueResolue, boosts: [] }], essai: true })
+    expect(document.querySelector('.essai-tampon-ko, .essai-tampon-vaincu')).toBeNull()
+  })
+
   it('les boosts se retournent au clic : « Continuer » montre le suivant sans valider l’étape', () => {
     const montrerBoostSuivant = vi.fn()
     const { props } = monter({ etapes: [attaqueDeuxBoosts], essai: true, boostsMontres: 1, montrerBoostSuivant })
     const bouton = document.querySelector<HTMLButtonElement>('button[data-boost-suivant]')
     expect(bouton?.textContent).toContain('Continuer')
-    expect(screen.getByText('Boost 1 / 2 retourné')).toBeInTheDocument()
+    // 13/10/2026 : plus de « Boost 1 / 2 retourné », et le pied ne porte que des boutons.
+    expect(screen.queryByText(/Boost \d+ \/ \d+ retourné/)).toBeNull()
+    expect(document.querySelector('section.deroule-phase > .deroule-boutons .deroule-mentions')).toBeNull()
     fireEvent.click(bouton!)
     expect(montrerBoostSuivant).toHaveBeenCalledTimes(1)
     expect(props.avancer).not.toHaveBeenCalled()

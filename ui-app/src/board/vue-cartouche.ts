@@ -232,7 +232,8 @@ export type VueRangee = {
   cibles: Vignette[]
   /** « 1 dégât subi », jauge 10 → 9 / 14 (D11). */
   /** `note` : « menaces retirées » quand la manigance s'est vidée en atteignant son seuil. */
-  resultat?: { texte: string; jauge?: Jauge; note?: string }
+  /** `tampon` (13/10/2026) : « K.O. » quand le heros tombe, « VAINCU » pour un allie ou un sbire a 0. */
+  resultat?: { texte: string; jauge?: Jauge; note?: string; tampon?: 'K.O.' | 'VAINCU' }
   /** Trait rouge en travers et « ANNULÉE · Étourdi » (D24) ; cause absente toleree (piege 41). */
   annulee?: { cause?: string; par?: Vignette }
   /**
@@ -703,6 +704,7 @@ function vueActivation(etape: EtapeDeroule, ctx: ContexteVue): VueRangee {
               plafond: pvMax,
             }
           : undefined,
+        tampon: etape.defaite ? 'K.O.' : nombre(etape.restant) && etape.restant <= 0 ? 'VAINCU' : undefined,
       }
     } else {
       // La manigance a pu atteindre son seuil puis se vider (21099b) : on montre

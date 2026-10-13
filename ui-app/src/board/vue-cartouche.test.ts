@@ -318,7 +318,8 @@ describe('piege 40 : des valeurs nulles, rien d invente', () => {
       { ...resoluRhino, cibleId: 41, cibleNom: 'Black Widow', montant: 4, restant: -2 },
       { pvMaxParNom: new Map([['Black Widow', 2]]) }
     )
-    expect(vaincu.resultat).toEqual({ texte: '4 dégâts subis', jauge: { avant: 2, apres: 0, plafond: 2 } })
+    // 13/10/2026 : a 0, le tampon « VAINCU ».
+    expect(vaincu.resultat).toEqual({ texte: '4 dégâts subis', jauge: { avant: 2, apres: 0, plafond: 2 }, tampon: 'VAINCU' })
   })
 
   it('PV max inconnu : la jauge n a pas de plafond', () => {

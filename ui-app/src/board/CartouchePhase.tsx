@@ -385,7 +385,8 @@ export function PictoBoost({ nombre, etoile = false, stat }: { nombre: number; e
   const base = stat === 'atq' ? t('ATQ') : stat === 'men' ? t('MEN') : t('BOOST')
   const sigle = `${base}${etoile ? ' ★' : ''}`
   return (
-    <span className="essai-stat est-boost" role="img" aria-label={`${valeur} ${sigle}`}>
+    // 13/10/2026 : un boost a 0 (sans ★) se dit en gris, il n'a rien apporte.
+    <span className={`essai-stat est-boost${nombre === 0 && !etoile ? ' est-nul' : ''}`} role="img" aria-label={`${valeur} ${sigle}`}>
       <b>{valeur}</b>
       <small>{sigle}</small>
     </span>
@@ -400,9 +401,13 @@ function ResultatEssai({ rangee }: { rangee: VueRangee }) {
     const critique = pose ? jaugeCritique(rangee.resultat.jauge, pose.jauge) : false
     return (
       <span className={`essai-boite${critique ? ' est-critique' : ''}`}>
+        {rangee.resultat.tampon ? (
+          <span className={`essai-tampon essai-tampon-${rangee.resultat.tampon === 'K.O.' ? 'ko' : 'vaincu'}`}>{t(rangee.resultat.tampon)}</span>
+        ) : null}
         <strong className="deroule-resultat-texte"><Texte>{rangee.resultat.texte}</Texte></strong>
         {jauge ? <span className="deroule-jauge">{jauge}</span> : null}
         {rangee.resultat.note ? <small className="deroule-resultat-note"><Texte>{rangee.resultat.note}</Texte></small> : null}
+        {pose?.jauge === 'menace' ? <AlerteSeuil jauge={rangee.resultat.jauge} /> : null}
       </span>
     )
   }
@@ -461,7 +466,7 @@ function RangeeEssai({ rangee, grisee, encadre = false }: { rangee: VueRangee; g
           return (
             <span key={boost.cle} className="essai-groupe">
               {operateur('+')}
-              <span className="essai-terme">
+              <span className={`essai-terme${boost.apport === 0 && !boost.etoile ? ' est-nul' : ''}`}>
                 <VignetteVue vignette={nue(boost)} />
                 <PictoBoost nombre={boost.apport} etoile={boost.etoile} stat={statActeur} />
                 {boost.etoile && !encadre ? <small className="essai-etoile"><Texte>{ligne ?? '★'}</Texte></small> : null}
@@ -550,6 +555,23 @@ function RangeeEssai({ rangee, grisee, encadre = false }: { rangee: VueRangee; g
  * LA MENACE DE L'ETAPE 1 (lot 5, decision 7) : le calcul pose, une ligne par
  * source, le total, la jauge avant → apres sur le seuil, « COMPLÉTÉE ».
  */
+/**
+ * 13/10/2026 (decision ① seuil proche) : « Encore N avant la défaite » en rouge,
+ * des qu'il reste 2 menaces ou moins avant le seuil. Seule une manigance a seuil
+ * (la principale) en a un : une annexe n'en a pas.
+ */
+export function texteAlerteSeuil(jauge: { apres?: number; plafond?: number } | undefined): string | undefined {
+  if (!jauge || jauge.apres === undefined || !jauge.plafond) return undefined
+  const reste = jauge.plafond - jauge.apres
+  if (reste <= 0 || reste > 2) return undefined
+  return t('Encore %1 avant la défaite').replace('%1', String(reste))
+}
+
+function AlerteSeuil({ jauge }: { jauge: { apres?: number; plafond?: number } | undefined }) {
+  const texte = texteAlerteSeuil(jauge)
+  return texte ? <p className="essai-alerte-seuil">{texte}</p> : null
+}
+
 function MenaceEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean }) {
   const menace = rangee.menace
   if (!menace) return null
@@ -588,6 +610,7 @@ function MenaceEssai({ rangee, grisee }: { rangee: VueRangee; grisee: boolean })
             </span>
           </div>
         ) : null}
+        <AlerteSeuil jauge={menace.complete ? undefined : jauge} />
         {menace.complete ? (
           <span className="essai-tampon essai-tampon-complete" aria-hidden="true">
             {t('COMPLÉTÉE')}
@@ -1591,9 +1614,36 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             }}
           >
             {choix.defense ? <PictoStat genre="def" valeur={choix.defense.valeur} /> : null}
-            <span>{choix.defense ? `${t('Défendre avec')} ${choix.defense.source}` : avecIcones(marquerRessources(choix.nom))}</span>
+            <span>
+              {choix.defense ? `${t('Défendre avec')} ${choix.defense.source}` : avecIcones(marquerRessources(choix.nom))}
+              {/* 13/10/2026 : grisé AVEC la raison, dite dans le bouton. */}
+              {choix.indisponible ? ` · ${choix.indisponible}` : null}
+            </span>
           </button>
         ))}
+        {/* 13/10/2026 : ce qu'on peut jouer AVANT de défendre (Interruptions), à part, en doré. */}
+        {vueQ.autres.some((choix) => !choix.demande) ? (
+          <div className="essai-avant-defendre" role="group" aria-label={t('Avant de défendre, tu peux jouer :')}>
+            <p>{t('Avant de défendre, tu peux jouer :')}</p>
+            {vueQ.autres
+              .filter((choix) => !choix.demande)
+              .map((choix) => (
+                <button
+                  key={choix.optionId}
+                  type="button"
+                  className="essai-choix est-jouer"
+                  data-option-id={choix.optionId}
+                  aria-disabled={choix.indisponible ? true : undefined}
+                  title={choix.sousTexte ?? choix.indisponible ?? choix.nom}
+                  onClick={() => {
+                    if (!choix.indisponible) choisir(choix.optionId)
+                  }}
+                >
+                  <span>{avecIcones(marquerRessources(choix.nom))}</span>
+                </button>
+              ))}
+          </div>
+        ) : null}
         {vueQ.autres
           .filter((choix) => choix.demande)
           .map((choix) => (
@@ -1725,6 +1775,50 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     evenement.stopPropagation()
   }
 
+  // Essai (13/10/2026, decision « pied = Continuer seul ») : les mentions passent
+  // en bas du corps ; « Boost N / N retourné » disparait, on voit les cartes.
+  const mentions = (
+      <span className="deroule-mentions">
+        {/* Le joueur a la main : on le dit, et JAMAIS « La suite arrive… »,
+            qui parlerait du moteur (piege 3). Une question structuree n'a
+            pas besoin qu'on la dise : elle est a l'ecran. */}
+        {questionAuJoueur && question === undefined && !q ? (
+          <span className="deroule-fenetre" aria-live="polite">
+            {etapeEstAnnonce ? texteFenetreReponse() : t('Le moteur attend ta réponse')}
+          </span>
+        ) : null}
+        {attente && !attenteDansLaRangee ? <span className="deroule-pulse">{texteAttenteNommee}</span> : null}
+        {props.enAttente && !questionAuJoueur && !attente ? (
+          <span className="deroule-attente" aria-live="polite">
+            {texteAttente({
+              autreJoueur: props.attendUnAutreJoueur,
+              nom: props.nomJoueurAttendu,
+            })}
+          </span>
+        ) : null}
+        {props.secondesFilet !== undefined ? (
+          <span className="deroule-filet" aria-live="polite">
+            {texteFiletProche(props.secondesFilet)}
+          </span>
+        ) : null}
+        {props.defaiteLocale ? <span className="deroule-arret">{texteArretDefaite()}</span> : null}
+        {props.multi?.genre === 'pret' ? (
+          <span className="essai-prets" aria-live="polite">
+            {props.multi.pastilles.map((pastille) => (
+              <span
+                key={pastille.nom}
+                className={`essai-pret${pastille.pret ? ' est-pret' : ''}`}
+                style={pastille.couleur ? ({ '--couleur-pret': pastille.couleur } as CSSProperties) : undefined}
+              >
+                {pastille.nom}
+                {pastille.pret ? ' ✓' : ''}
+              </span>
+            ))}
+          </span>
+        ) : null}
+        {props.tempsParDecision > 0 ? <span className="deroule-timeout">{texteTempsParDecision()}</span> : null}
+      </span>
+  )
   const classes = ['deroule-phase', 'est-scene', 'poignee-glisser']
   if (relu || depuisLeJournal) classes.push('est-relecture')
   if (horsPhase) classes.push('est-hors-phase')
@@ -1822,6 +1916,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         {questionAuJoueur && !q && question !== undefined ? (
           <div className="deroule-sous-cadre est-provisoire">{question}</div>
         ) : null}
+        {essai ? mentions : null}
       </div>
       {choixDefense}
       {props.multi?.genre === 'choix-hote' ? (
@@ -1849,53 +1944,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         </div>
       ) : null}
       <div className="deroule-boutons">
-        <span className="deroule-mentions">
-          {/* Le joueur a la main : on le dit, et JAMAIS « La suite arrive… »,
-              qui parlerait du moteur (piege 3). Une question structuree n'a
-              pas besoin qu'on la dise : elle est a l'ecran. */}
-          {questionAuJoueur && question === undefined && !q ? (
-            <span className="deroule-fenetre" aria-live="polite">
-              {etapeEstAnnonce ? texteFenetreReponse() : t('Le moteur attend ta réponse')}
-            </span>
-          ) : null}
-          {attente && !attenteDansLaRangee ? <span className="deroule-pulse">{texteAttenteNommee}</span> : null}
-          {props.enAttente && !questionAuJoueur && !attente ? (
-            <span className="deroule-attente" aria-live="polite">
-              {texteAttente({
-                autreJoueur: props.attendUnAutreJoueur,
-                nom: props.nomJoueurAttendu,
-              })}
-            </span>
-          ) : null}
-          {props.secondesFilet !== undefined ? (
-            <span className="deroule-filet" aria-live="polite">
-              {texteFiletProche(props.secondesFilet)}
-            </span>
-          ) : null}
-          {essai && etape && etape.boosts.length > 0 && !relu ? (
-            <span className="essai-boosts">
-              {t('Boost %1 / %2 retourné')
-                .replace('%1', String(Math.min(props.boostsMontres, etape.boosts.length)))
-                .replace('%2', String(etape.boosts.length))}
-            </span>
-          ) : null}
-          {props.defaiteLocale ? <span className="deroule-arret">{texteArretDefaite()}</span> : null}
-          {props.multi?.genre === 'pret' ? (
-            <span className="essai-prets" aria-live="polite">
-              {props.multi.pastilles.map((pastille) => (
-                <span
-                  key={pastille.nom}
-                  className={`essai-pret${pastille.pret ? ' est-pret' : ''}`}
-                  style={pastille.couleur ? ({ '--couleur-pret': pastille.couleur } as CSSProperties) : undefined}
-                >
-                  {pastille.nom}
-                  {pastille.pret ? ' ✓' : ''}
-                </span>
-              ))}
-            </span>
-          ) : null}
-          {props.tempsParDecision > 0 ? <span className="deroule-timeout">{texteTempsParDecision()}</span> : null}
-        </span>
+        {essai ? null : mentions}
         {refus && !choixDefense ? (
           <button
             type="button"
