@@ -1,218 +1,183 @@
-# Roadmap : Refonte Design / UI / UX Marvel LCG
+# Roadmap : v1.1 Tablette et téléphone
 
-> ## ⚠ État réel au 12/08/2026 : cette roadmap n'a pas été suivie dans l'ordre
->
-> Elle datait du 28 juillet et marquait les phases 2 à 7 comme non faites. C'était
-> devenu faux et trompeur : **la refonte a été livrée, mais par un autre chemin que
-> celui prévu ici.** Relu et corrigé phase par phase le 12/08/2026, sur mesure des
-> fichiers servis et des tests qui les couvrent.
->
-> Ce qui a changé de route :
->
-> * **le plateau a été REÉCRIT en React** (`ui-app/src/board/`, servi en
->   `/app/board.html`) au lieu d'être restylé par étapes. Les phases 5, 6 et 7 ont
->   donc été traitées ensemble, dans le même composant ;
-> * **l'écran de préparation a été refait en JavaScript non compilé**
->   (`public/js/prepare/app.js`), pas en React. La phase 4 est fonctionnellement
->   tenue, sans passer par la stack de la phase 2 ;
-> * **la tokenisation des écrans anciens n'a jamais eu lieu** : `tokens.css` est
->   déployé mais **référencé par aucune page** (vérifié le 12/08). Les plans 02-05
->   à 02-10 sont donc réellement ouverts — mais leur intérêt a fondu, puisque les
->   écrans qu'ils visaient sont remplacés ou en voie de l'être.
->
-> **À NE PAS FAIRE** : reprendre les plans 02-05 à 02-10 tels quels, ni « finir »
-> les phases 5 à 7 comme si rien n'existait. Lire l'état par phase ci-dessous.
->
-> L'état du mode campagne, qui a occupé l'essentiel du travail depuis, n'est pas
-> dans cette roadmap du tout : il vit dans `docs/rapports/CAMPAGNES.md` et
-> `.twei/SESSION.md`.
-
+Jalon ouvert le 13/10/2026. La roadmap v1.0 (phases 1 à 7, refonte UI) est archivée dans
+`.planning/milestones/v1.0-ROADMAP.md`. Exigences : `.planning/REQUIREMENTS.md`.
+Recherche : `.planning/research/v1.1/` (SUMMARY, ARCHITECTURE, PITFALLS).
 
 ## Vue d'ensemble
 
-La refonte se fait **surface par surface, en étranglement**, sans jamais toucher au moteur Python ni au runtime `public/js/marvel/` (sources perdues, même statut de code généré). On commence par poser un filet de sécurité (captures de référence, fixtures, bascule `?ui=old`), puis les fondations partagées (stack React/TS/Vite servie par le serveur existant + design system tokenisé qui améliore aussi l'ancien), puis on forge le composant pivot (la Carte) sur deux écrans pilotes réels (coquille/menu). La préparation de partie suit. Le plateau, où l'utilisateur passe 95 % de son temps, est découpé en **trois phases de risque strictement croissant** (restylage → modèle de layout responsive/tactile → interactions et asks) : jamais en bloc, jamais en dernière minute, chaque étape réversible d'un clic.
+La tablette n'est pas une troisième mise en page : c'est le plateau PC existant, plus un axe
+de saisie (doigt ou souris) détecté sur le dernier geste. On pose d'abord ce détecteur et un
+filet Playwright qui touche vraiment (phase 8, bloquante), puis on rend le plateau PC
+jouable au doigt en deux lots (phases 9 et 10). Les menus du téléphone touchent des fichiers
+disjoints du plateau et avancent en parallèle de la tablette (phase 11). Le plateau du
+téléphone est refait ensuite, dans la structure tranchée le 13/10 (paysage en deux colonnes
+dérivées des bandes du portrait), en deux lots (phases 12 et 13). Le mode manuel au doigt
+vient en dernier, une fois l'aperçu et les cibles tactiles posés (phase 14).
 
-**Hors périmètre v1 :** galerie de cartes, deck builder et replay restent sur leurs écrans actuels (fonctionnels) et sont différés en v1.x. Le responsive n'est pas une phase finale : il est dans la definition of done de chaque écran ; seul le plateau mérite une phase de layout dédiée car c'est un changement de modèle, pas une adaptation CSS.
+La « décision d'orientation » que la recherche plaçait en phase propre est déjà prise
+(décisions de cadrage du 13/10 dans REQUIREMENTS.md) : elle n'a donc pas de phase.
+
+## Règles communes à toutes les phases
+
+- **Aucune dépendance ajoutée** (décision de cadrage, recherche STACK).
+- **Aucune modification des règles du moteur.**
+- **Déploiement seulement sur « déploie » explicite de l'utilisateur.** Une phase terminée
+  n'est pas une phase déployée. Avant tout déploiement : entrées fr + en des nouveautés,
+  `bash ui-app/deployer.sh`, contrôle du hash du bundle et du HEAD.
+- **`boutons-bd.test.ts` est déjà rouge avant le jalon** : ce rouge n'est pas une régression
+  de la phase en cours. Toute AUTRE suite rouge l'est jusqu'à preuve du contraire.
+- **Avant de toucher `Board.tsx` ou `board.css`** (phases 9, 10, 12, 13, 14) : lire
+  `git stash list` (deux sessions ont déjà travaillé sur le même arbre) et vérifier que la
+  refonte de la phase du méchant est close, ses fichiers étant les mêmes.
 
 ## Phases
 
-Marqueurs : `[x]` tenue, `[~]` partiellement tenue (le détail dit quoi), `[ ]` non faite.
-
-**Numérotation :**
-- Phases entières (1, 2, 3) : travail planifié du jalon
-- Phases décimales (2.1, 2.2) : insertions urgentes (marquées INSERTED)
-
-- [x] **Phase 1 : Filet de sécurité et boucle de dev** (BLOQUANTE, terminée le 2026-07-28 — 6/6 plans) - Rien ne bouge visuellement avant d'avoir de quoi détecter une régression
-- [~] **Phase 2 : Fondations** — **stack LIVRÉE, tokens partagés NON.** React 19 + TS + Vite buildé dans `public/app/` et servi par le serveur Python sans toucher au backend (critères 1 et 5 tenus, plans 02-01 à 02-04). Mais `tokens.css` n'est lié par AUCUNE page : les critères 2, 3 et 4 (un token change l'ancien et le nouveau, thème sombre, aspects sans couleur) ne sont pas tenus. Plans 02-05 à 02-10 ouverts, et à réévaluer plutôt qu'à dérouler
-- [~] **Phase 3 : Pilotes** — **la Carte est faite, la coquille non.** Le composant pivot existe et sert partout dans le plateau (`card-model.ts`, tuiles lisibles, inspection au survol sans occlusion : critères 1 et 2 tenus). Il n'y a pas de hub React ni de navigation persistante : `main.html` reste la page d'accueil d'origine (critères 3 et 4 non tenus)
-- [x] **Phase 4 : Préparation de partie** — **tenue, autrement.** `public/js/prepare/app.js` (2 500 lignes, hors React) : étapes avec retour arrière sans perte, galerie de héros, decks de départ / sauvegardés / import MarvelCDB, reprise de la dernière configuration, aide sur chaque champ de carnet de campagne. Éprouvée par `npm run lancement` et par les suites de campagne
-- [x] **Phase 5 : Plateau A** — **tenue par la réécriture React.** Tuiles lisibles, zones délimitées et étiquetées, compteurs sur les tuiles, indicateur de phase. aucune ligne du runtime historique n'a été modifiée. En revanche `?ui=old` **n'est plus une sortie de secours** : décision du 12/08/2026, l'ancienne interface n'est plus maintenue (voir `STATE.md`)
-- [x] **Phase 6 : Plateau B** — **tenue.** L'homothétie unique a disparu : le placement est un modèle de zones par palier (`ui-app/src/board/placement/`, avec ses tests `boites.test.ts` et `placer.test.ts`), et `ui-check/tests/plateau-mobile.spec.ts` le surveille sur gabarits tablette et mobile. Revue le 07/09/2026 : paysage obligatoire, vraies cartes en deux rangées (`ui-app/src/board/mobile/PlateauPaysage.tsx`), filet `ui-check/tests/plateau-paysage.spec.ts`. Spec `docs/superpowers/specs/2026-09-07-parcours-solo-mobile-design.md`.
-- [x] **Phase 7 : Plateau C** — **tenue.** Les demandes du moteur s'affichent dans la demande centrale et la barre d'action (jamais en modale surgissante), on joue au clic par `MenuActionsCarte`, `ConfirmationJeu` ne demande que l'irréversible, `CoucheAnimations` montre origine et cible, `HistoriquePartie` répond à « que vient-il de se passer ? ». Une partie complète a été menée dans cette UI par le pilote de test (`ui-check/pilote-campagne.ts`, 12/08/2026)
+- [ ] **Phase 8 : Fondations tactiles et filet de tests** (BLOQUANTE) : le jeu sait si on joue au doigt ou à la souris, quel plateau afficher, et un filet de tests touche vraiment
+- [ ] **Phase 9 : Tablette T1, aperçu refermable** : sur tablette, toucher une carte ne laisse plus jamais un aperçu collé ni de toucher fantôme
+- [ ] **Phase 10 : Tablette T2, cibles et infobulles** : tout ce qui se touche sur la tablette est assez grand, s'explique, et se feuillette
+- [ ] **Phase 11 : Menus du téléphone** : toutes les pages hors partie se naviguent au pouce par une barre en bas (parallélisable avec 9 et 10)
+- [ ] **Phase 12 : Plateau du téléphone, paysage et rotations** : téléphone couché en deux colonnes, rien ne se recouvre après des rotations
+- [ ] **Phase 13 : Plateau du téléphone, repères et réglages** : le joueur voit ce que le moteur attend hors champ, comprend les mots-clés, et n'a que des réglages qui marchent
+- [ ] **Phase 14 : Mode manuel au doigt** : le mode manuel se joue au doigt par une barre d'outils
 
 ## Détail des phases
 
-### Phase 1 : Filet de sécurité et boucle de dev
-**Objectif** : Disposer d'un moyen objectif de détecter toute régression visuelle ou fonctionnelle avant la première ligne de refonte.
-**Dépend de** : Rien (première phase, bloquante pour toutes les autres)
-**Requirements** : FOUND-01
+### Phase 8 : Fondations tactiles et filet de tests
+**Objectif** : Le jeu distingue doigt et souris d'après le dernier geste, sait quel plateau afficher (y compris sur les écrans limites), et un filet Playwright tactile existe avant le premier changement visible.
+**Dépend de** : Rien (première phase du jalon, bloquante pour toutes les autres)
+**Exigences** : SAISIE-01, SAISIE-02, SAISIE-03, SAISIE-04, TEST-01, TEST-03
 **Critères de succès** (ce qui doit être VRAI) :
-  1. Une commande unique capture les écrans actuels (6 écrans × 3 gabarits PC/tablette/mobile) et, à la relance, signale toute différence visuelle.
-  2. 20 à 40 fixtures `get_world` issues de l'autoplay sont rejouables hors partie : on peut afficher un état de plateau sans lancer une partie réelle.
-  3. Sur toute page en cours de migration, l'utilisateur revient à l'ancienne version par `?ui=old` et le jeu reste jouable de bout en bout.
-  4. Un test automatisé vérifie qu'une partie se lance depuis l'écran de préparation actuel et atteint le plateau (contrat `/new?data=` gelé avant d'y toucher).
-**Note** : la contrainte d'intouchabilité du moteur est étendue explicitement au runtime `public/js/marvel/` dans PROJECT.md. Le nouveau code est une fonction pure de `get_world`, écrit à côté, sans lire le JS existant.
-**Plans** : 6 plans
+  1. Sur un iPad (y compris un iPad qui se déclare Mac), toucher l'écran met le jeu en mode doigt, et utiliser ensuite le trackpad le remet en mode souris, sans que la mise en page saute sous le doigt.
+  2. Le joueur règle « Écran tactile : automatique / toujours / jamais » et « Plateau : automatique / téléphone / tablette » ; le choix est respecté à la fois sur le plateau et sur les pages de menus, et survit au rechargement.
+  3. Sur un écran limite (iPad mini en portrait, écran partagé), le joueur se voit demander une seule fois à l'arrivée s'il veut le plateau téléphone ou tablette ; il ne la revoit plus ensuite et peut changer d'avis dans les réglages.
+  4. Une commande lance les tests Playwright sur un gabarit tablette tactile (Chromium) et un gabarit iPad WebKit, avec de vrais touchers.
+  5. Un signalement envoyé depuis la partie contient la taille de l'écran, les zones sûres, le mode de saisie et le plateau choisi.
+**Points de vigilance** : relever l'état des suites AVANT tout changement (`boutons-bd.test.ts` déjà rouge) pour que le filet distingue l'existant d'une régression. Un seul propriétaire de l'attribut de saisie, partagé entre le plateau React et les pages JS non compilées ; la disposition par largeur (`useModeMobile.ts`) reste un axe séparé.
+**Plans** : à définir
 
-Plans:
-- [x] 01-01-PLAN.md — Contraintes actées, harnais Playwright installé, 18 images de référence figées (terminé le 2026-07-28)
-- [x] 01-02-PLAN.md — Page de comparaison avant/après en français et validation explicite des références (terminé le 2026-07-28)
-- [x] 01-03-PLAN.md — 34 fixtures `get_world` issues de 5 parties autoplay + `/fixtures.html` (terminé le 2026-07-28)
-- [x] 01-04-PLAN.md — Bascule `?ui=old` mémorisée, démontrée sur l'écran de préparation (terminé le 2026-07-28)
-- [x] 01-05-PLAN.md — Contrat `/new?data=` gelé (8 clés typées) et arrivée au plateau vérifiée automatiquement (terminé le 2026-07-28)
-- [x] 01-06-PLAN.md — Livraison (re-zip `Fusion/`, autoplay 0 traceback) et vérification d'ensemble validée par l'utilisateur (terminé le 2026-07-28)
-
-### Phase 2 : Fondations — stack et design system tokenisé
-**Objectif** : Une base technique et visuelle unique alimente simultanément les écrans anciens et les nouveaux, pour un coût payé une seule fois.
-**Dépend de** : Phase 1
-**Requirements** : FOUND-02, FOUND-03, ACC-01, ACC-02
+### Phase 9 : Tablette T1, aperçu refermable
+**Objectif** : Sur tablette au doigt, lire une carte ne la joue jamais et l'aperçu se referme toujours ; le PC reste strictement inchangé.
+**Dépend de** : Phase 8
+**Exigences** : TAB-01, TAB-02, TAB-09
 **Critères de succès** (ce qui doit être VRAI) :
-  1. Une page construite en React 19 + TS + Vite, buildée dans `public/app/`, s'affiche via le serveur Python **sans aucune modification du backend**, à côté des pages actuelles toujours fonctionnelles.
-  2. Modifier un token (couleur, typo, espacement) change l'apparence des écrans anciens ET nouveaux en même temps.
-  3. Le thème sombre s'active par bascule de tokens, sans retoucher un seul composant.
-  4. Chaque aspect (justice / leadership / agression / protection) reste identifiable sans la couleur (icône + libellé), et les contrastes du texte de règles et des compteurs passent le seuil défini par les tokens.
-  5. Un simple rechargement sert toujours la dernière version des assets : plus de `?v=N` à incrémenter à la main.
-**Séquence obligatoire** (piège documenté) : captures de référence → purge des `!important` de `wizard.css` → `@layer` → tokens. Poser `@layer` avant la purge inverse l'ordre des couches et aggrave la situation. Contrainte serveur : routage par extension en liste blanche stricte, tout asset de build doit s'y conformer sous peine d'échec silencieux.
-**Plans** : 10 plans
+  1. Sur tablette, toucher une carte ouvre l'aperçu et le menu ensemble ; toucher ailleurs ou la croix les referme, sans déclencher la carte qui se trouve dessous.
+  2. Un appui long sur une carte n'ouvre ni la loupe ni le menu d'iOS, et un double toucher ne zoome pas la page.
+  3. Avec « Écran tactile : jamais », le plateau PC est identique au pixel à son état d'avant le jalon (comparaison de captures sur les gabarits PC).
+  4. Les cas ci-dessus passent dans le filet tactile de la phase 8 (Chromium tactile et WebKit iPad).
+**Points de vigilance** : `git stash list` et clôture de la refonte de la phase du méchant vérifiées avant la première ligne dans `Board.tsx`.
+**Definition of done** : TAB-09 (PC identique au pixel avec « jamais ») vérifié par captures.
+**Plans** : à définir
 
-Plans:
-- [x] 02-01-PLAN.md — Filet étendu aux 3 panneaux cachés du wizard (9 références de plus) — terminé le 2026-07-28
-- [x] 02-02-PLAN.md — Projet Vite 8 + React 19 + TS 6, vitrine minimale, garde-fou d'extensions — terminé le 2026-07-28
-- [x] 02-03-PLAN.md — Déploiement vers le jeu, service prouvé par le serveur Python, fin des `?v=N` — terminé le 2026-07-28
-- [x] 02-04-PLAN.md — Purge des 105 `!important` de `wizard.css`, styles en ligne extraits — terminé le 2026-07-28 (2 exceptions documentées, 0 différence de style calculé)
-- [ ] 02-05-PLAN.md — `@layer` posé, `tokens.css` lié en premier, tout l'existant dans `legacy`
-- [ ] 02-06-PLAN.md — `tokens.css` complet (2 thèmes, aspects), contrôle de contraste, `menu/style.css` tokenisé
-- [ ] 02-07-PLAN.md — `wizard.css` et `prepare.css` tokenisés, critère 2 mesuré
-- [ ] 02-08-PLAN.md — Aspects partagés (icône + libellé), palette unique, ACC-01
-- [ ] 02-09-PLAN.md — Vitrine finale, bascule de thème, vitrine sous surveillance, axe contraste
-- [ ] 02-10-PLAN.md — Livraison (re-zip `Fusion/`, autoplay 0 traceback) et vérification d'ensemble
-
-### Phase 3 : Pilotes — composant Carte et coquille/menu
-**Objectif** : Le composant le plus important du projet est forgé sur deux écrans réels, et l'utilisateur entre dans l'app par un hub clair.
-**Dépend de** : Phase 2
-**Requirements** : FOUND-04, SHELL-01, SHELL-02, SHELL-03
+### Phase 10 : Tablette T2, cibles et infobulles
+**Objectif** : Tout ce que le joueur touche sur la tablette est assez grand, s'explique sans survol, et la main se feuillette au doigt.
+**Dépend de** : Phase 9 (réutilise l'aperçu posé par T1)
+**Exigences** : TAB-03, TAB-04, TAB-05, TAB-06, TAB-07
 **Critères de succès** (ce qui doit être VRAI) :
-  1. L'utilisateur lit le nom, le coût, les stats, les icônes et les statuts d'une carte **sans ouvrir le scan** (tuile lisible, art recadré).
-  2. L'utilisateur inspecte le texte réel de la carte (rendu en HTML depuis `cards.json`) et son scan complet au survol (PC), à l'appui long (tactile) ou au clavier, **sans que la carte concernée soit masquée**.
-  3. À l'ouverture de l'app, l'utilisateur voit un hub avec une action primaire évidente (Reprendre / Nouvelle partie).
-  4. L'utilisateur navigue via une navigation persistante à libellés texte (latérale sur PC, basse sur mobile) et revient en arrière depuis n'importe quel écran sans rien perdre.
-  5. Les primitives réutilisées par ces deux écrans (boutons, panneaux, dialogues, onglets) existent comme composants du design system — aucun composant créé sans deux usages réels.
-**Rationale d'ordre** : le menu est la surface pilote de l'étranglement (la plus simple), la Carte le composant pivot (le plus dense). Les deux ensemble évitent le double piège « design-system-first paralysant » et « screens-first qui dérive ». Zoomer le scan ne peut pas résoudre la lisibilité : 65 % des scans font 300x435.
-**Plans** : TBD
+  1. Les boutons de la barre du haut, les compteurs et la croix mesurent au moins 44 px à l'écran, même quand le plateau est réduit.
+  2. Un appui long sur une icône affiche son libellé ; un simple toucher l'active.
+  3. Toucher une carte injouable affiche la raison pour laquelle elle ne peut pas être jouée.
+  4. Une carte de la main agrandie se feuillette en glissant à gauche ou à droite vers les autres cartes de la main.
+  5. L'agrandissement de l'identité propose « voir l'autre face » sans changer la forme du héros en jeu.
+**Points de vigilance** : mêmes vérifications que la phase 9 avant de toucher `Board.tsx`.
+**Definition of done** : TAB-09 (rattachée à la phase 9) revérifiée par captures : avec « Écran tactile : jamais », le plateau PC reste identique au pixel.
+**Plans** : à définir
 
-### Phase 4 : Préparation de partie
-**Objectif** : L'utilisateur configure et lance une partie sans jamais se demander quoi remplir ni pourquoi le bouton est grisé.
-**Dépend de** : Phase 3
-**Requirements** : PREP-01, PREP-02, PREP-03, PREP-04, PREP-05, PREP-06
+### Phase 11 : Menus du téléphone
+**Objectif** : Sur téléphone, toutes les pages hors partie se parcourent au pouce par une barre de navigation en bas, et le jeu installé s'ouvre toujours sur l'accueil.
+**Dépend de** : Phase 8 (balise du détecteur de saisie). Fichiers disjoints du plateau : peut avancer en parallèle des phases 9 et 10.
+**Exigences** : TELM-01, TELM-02, TELM-03, TELM-04
 **Critères de succès** (ce qui doit être VRAI) :
-  1. L'utilisateur configure et lance une partie de bout en bout via 6 étapes (Mode → Héros → Decks → Scénario → Difficulté → Récapitulatif), avec stepper visible, retour arrière sans perte de saisie, récapitulatif de ses choix visible en permanence, et arrivée au plateau identique à l'ancien écran.
-  2. Quand le lancement est bloqué, le bouton final affiche la raison exacte du blocage.
-  3. L'utilisateur choisit son héros dans une galerie visuelle (art, aspect) et son deck parmi deck de départ / deck perso / import MarvelCDB.
-  4. Depuis l'accueil, l'utilisateur relance sa dernière configuration en un geste et reprend une sauvegarde.
-  5. Chaque champ des campaign logs des 4 formats (MTS / MG / NeXt / AoA) affiche une aide expliquant quoi y mettre.
-**Recherche approfondie recommandée** : contrat `/new?data=` et vocabulaire des `rules` (`mode_skirmish`, `v16_all`…) non documentés ; clés et validation des campaign logs différentes selon les 4 formats. Base de travail existante : `Fusion/PREPARE-UI-PLAN.md`.
-**Plans** : TBD
+  1. Depuis n'importe quelle page, une barre en bas mène aux 4 ou 5 destinations principales ; le burger ne contient plus que la langue, le compte et les mises à jour.
+  2. L'assistant de préparation (Héros, Équipe, Decks, Méchant) se déroule jusqu'au lancement sans que la barre du bas ne masque un bouton ni l'inverse.
+  3. Accueil, galerie, éditeur, campagne et connexion utilisent la même barre du bas, et le livre de campagne se feuillette en glissant.
+  4. Ouvrir le jeu depuis l'icône de l'écran d'accueil arrive sur l'accueil, jamais sur une ancienne partie.
+**Points de vigilance** : le salon invité reste hors périmètre (en pause depuis le 10/10). La recherche signale que l'arbitrage barre du bas ne repose que sur des études génériques : le revérifier à l'œil sur captures avant de l'étendre à toutes les pages.
+**Plans** : à définir
 
-### Phase 5 : Plateau A — restylage et lisibilité
-**Objectif** : En partie, l'utilisateur lit le plateau d'un coup d'œil — sans que rien du comportement de jeu n'ait changé.
-**Dépend de** : Phase 3 (composant Carte), Phase 1 (bascule `?ui=old`)
-**Requirements** : BOARD-01, BOARD-02, BOARD-03, BOARD-04, BOARD-13
+### Phase 12 : Plateau du téléphone, paysage et rotations
+**Objectif** : Le téléphone couché affiche les bandes du portrait sur deux colonnes, et la partie reste jouable quel que soit le nombre de rotations.
+**Dépend de** : Phase 8
+**Exigences** : TELP-01, TELP-02, SAISIE-05, TEST-02
 **Critères de succès** (ce qui doit être VRAI) :
-  1. Chaque carte du plateau est une tuile lisible (nom, coût, stats, icônes, statuts) sans zoom ni panoramique.
-  2. L'utilisateur inspecte le scan complet et le texte d'une carte du plateau au survol, à l'appui long ou au clavier, sans occlusion de la carte concernée et sans modale bloquante.
-  3. Les zones (vilain, schémas, rencontre, et par joueur : identité, alliés, améliorations, main, decks, ressources) sont visuellement délimitées et étiquetées.
-  4. Les compteurs (dégâts, menace, statuts, ressources) sont lisibles directement sur les tuiles, en fort contraste.
-  5. Un indicateur permanent montre la phase, le tour et l'action attendue ; le survol ou l'appui sur un mot-clé (Retaliate, Guard, Confused…) affiche son rappel de règle.
-**Definition of done** : une partie complète se joue sans traceback (autoplay 0 traceback), `?ui=old` reste à un clic, aucune ligne du runtime existant n'est modifiée.
-**Plans** : TBD
+  1. Téléphone couché, le joueur voit la rencontre à gauche, son héros à droite et sa main en languette, au lieu du plateau PC réduit.
+  2. Après n'importe quel nombre de rotations, aucun bouton (Fin du tour compris) ne recouvre la main, et une carte agrandie s'affiche en entier.
+  3. Sur iPhone et iPad, aucun bouton ni aucune carte ne passe sous l'encoche ou dans un coin arrondi, en portrait comme en paysage.
+  4. Un test enchaîne 6 rotations et vérifie que la main et chaque bouton restent touchables.
+**Points de vigilance** : `git stash list` et clôture de la refonte de la phase du méchant vérifiées avant de toucher `Board.tsx` et l'aiguillage du plateau. `viewport-fit=cover` ne s'ajoute qu'avec l'audit complet des marges qui va avec. La recherche n'a pas maquetté la mise en page à deux colonnes : maquettes bâties sur le portrait existant avant le code.
+**Plans** : à définir
 
-### Phase 6 : Plateau B — modèle de layout, responsive et tactile
-**Objectif** : Le plateau devient réellement jouable sur tablette et mobile, par changement de modèle de layout et non par retouche CSS.
-**Dépend de** : Phase 5
-**Requirements** : BOARD-11, BOARD-12, MOB-01, MOB-02, MOB-03
+### Phase 13 : Plateau du téléphone, repères et réglages
+**Objectif** : Sur téléphone, le joueur ne rate jamais une demande du moteur hors de l'écran, comprend les mots-clés d'une carte, et ne voit que des réglages qui fonctionnent sur son appareil.
+**Dépend de** : Phase 12 (les repères se posent sur les bandes et onglets des deux orientations)
+**Exigences** : TELP-03, TELP-04, TELP-05, TELP-06
 **Critères de succès** (ce qui doit être VRAI) :
-  1. Sur petit écran, l'utilisateur passe d'une zone du plateau à l'autre (onglets / carrousel / focus) au lieu de subir un plateau compressé illisible.
-  2. Toutes les cibles tactiles font au moins 44 px, chaque survol a son équivalent appui long, les zones sûres sont respectées et les actions principales sont atteignables au pouce.
-  3. La partie invite à passer en paysage sans jamais bloquer ; les menus restent utilisables en portrait.
-  4. En solo multi-héros, l'aire du joueur actif s'affiche en grand et les autres en bandeaux repliés montrant leurs compteurs clés.
-  5. L'utilisateur obtient une vue d'ensemble du plateau par dézoom **sémantique** (moins d'information, tuiles condensées), jamais par réduction optique.
-**Piège adressé** : l'homothétie unique `scale = min(vw/1920, vh/1080)` rend tout `@media` inopérant (cartes à 26 px, texte à 5 px en portrait). Il s'agit d'une table de zones par palier de viewport, décidée en amont.
-**Recherche approfondie recommandée** : géométrie du plateau coopératif à 4 joueurs sur mobile (focus exclusif vs vue condensée) — aucun précédent industrie solide ; seuils de lisibilité de carte à vérifier sur appareil réel avant de figer les paliers.
-**Plans** : TBD
+  1. Quand le moteur demande une cible ou une réponse hors de l'écran, une pastille apparaît sur la bande ou l'onglet concerné, et disparaît une fois la demande traitée.
+  2. La carte agrandie explique ses mots-clés (Retaliate, Guard…) sous le scan.
+  3. Le bandeau Annuler, la taille du texte, l'écran allumé, les vibrations et l'installation fonctionnent en portrait et en paysage.
+  4. Sur iPhone, les réglages vibrations, verrou portrait et plein écran n'apparaissent pas ; sur Android et PC ils sont inchangés.
+**Points de vigilance** : mêmes vérifications que la phase 12 avant de toucher `Board.tsx`.
+**Plans** : à définir
 
-### Phase 7 : Plateau C — interactions, asks et animations
-**Objectif** : L'utilisateur joue toute la partie depuis la nouvelle interface, au clic comme au doigt, sans jamais être surpris par une modale ni perdre le fil.
-**Dépend de** : Phase 6
-**Requirements** : BOARD-05, BOARD-06, BOARD-07, BOARD-08, BOARD-09, BOARD-10, ACC-03
+### Phase 14 : Mode manuel au doigt
+**Objectif** : Le mode manuel se joue au doigt : on choisit un outil, puis on touche les cartes visées.
+**Dépend de** : Phases 9 et 10 (aperçu refermable et cibles tactiles)
+**Exigences** : TAB-08
 **Critères de succès** (ce qui doit être VRAI) :
-  1. Toute demande du moteur s'affiche dans une barre fixe (intitulé, options, annuler / passer) — jamais en modale surgissante.
-  2. L'utilisateur joue une carte au clic ou au tap (sélection → effet → cibles → coût), sans drag obligatoire ; la main s'affiche en rangée, se déplie au survol/focus, et les cartes jouables sont visuellement distinguées.
-  3. Seules les actions irréversibles demandent confirmation, et l'annulation (undo) est visible en permanence depuis le plateau.
-  4. Les animations montrent l'origine, la destination et la cible des dégâts ; leur vitesse est réglable, elles sont interruptibles et `prefers-reduced-motion` les neutralise.
-  5. L'utilisateur consulte un journal de partie qui répond à « que vient-il de se passer ? ».
-**Definition of done** : une partie complète jouée de bout en bout dans la nouvelle UI, sur PC et sur mobile, avant de retirer quoi que ce soit de l'ancien.
-**Recherche approfondie recommandée** : inventorier depuis le moteur le vocabulaire complet de `select_rule`, `ability_type`, `event_name` avant conception — un cas non couvert bloquerait une partie.
-**Plans** : TBD
+  1. Le joueur choisit un outil dans une barre (par exemple « jeton +1 ») et chaque carte qu'il touche ensuite reçoit l'effet, sans ouvrir l'aperçu à la place.
+  2. Le joueur voit à tout moment quel outil est actif et peut le relâcher pour revenir au toucher normal.
+  3. À la souris, le mode manuel se comporte comme avant le jalon.
+**Points de vigilance** : la branche courante s'appelle `mode-manuel` et un stash `WIP on mode-manuel` existe : le lire avant d'écrire quoi que ce soit. Mêmes vérifications avant `Board.tsx`.
+**Definition of done** : TAB-09 revérifiée par captures (PC identique au pixel avec « Écran tactile : jamais »).
+**Plans** : à définir
 
-## Couverture des requirements
+## Couverture des exigences
 
-| Requirement | Phase |
-|-------------|-------|
-| FOUND-01 | Phase 1 |
-| FOUND-02 | Phase 2 |
-| FOUND-03 | Phase 2 |
-| ACC-01 | Phase 2 |
-| ACC-02 | Phase 2 |
-| FOUND-04 | Phase 3 |
-| SHELL-01 | Phase 3 |
-| SHELL-02 | Phase 3 |
-| SHELL-03 | Phase 3 |
-| PREP-01 | Phase 4 |
-| PREP-02 | Phase 4 |
-| PREP-03 | Phase 4 |
-| PREP-04 | Phase 4 |
-| PREP-05 | Phase 4 |
-| PREP-06 | Phase 4 |
-| BOARD-01 | Phase 5 |
-| BOARD-02 | Phase 5 |
-| BOARD-03 | Phase 5 |
-| BOARD-04 | Phase 5 |
-| BOARD-13 | Phase 5 |
-| BOARD-11 | Phase 6 |
-| BOARD-12 | Phase 6 |
-| MOB-01 | Phase 6 |
-| MOB-02 | Phase 6 |
-| MOB-03 | Phase 6 |
-| BOARD-05 | Phase 7 |
-| BOARD-06 | Phase 7 |
-| BOARD-07 | Phase 7 |
-| BOARD-08 | Phase 7 |
-| BOARD-09 | Phase 7 |
-| BOARD-10 | Phase 7 |
-| ACC-03 | Phase 7 |
+| Exigence | Phase |
+|----------|-------|
+| SAISIE-01 | 8 |
+| SAISIE-02 | 8 |
+| SAISIE-03 | 8 |
+| SAISIE-04 | 8 |
+| SAISIE-05 | 12 |
+| TAB-01 | 9 |
+| TAB-02 | 9 |
+| TAB-03 | 10 |
+| TAB-04 | 10 |
+| TAB-05 | 10 |
+| TAB-06 | 10 |
+| TAB-07 | 10 |
+| TAB-08 | 14 |
+| TAB-09 | 9 (DoD des phases 10 et 14) |
+| TELP-01 | 12 |
+| TELP-02 | 12 |
+| TELP-03 | 13 |
+| TELP-04 | 13 |
+| TELP-05 | 13 |
+| TELP-06 | 13 |
+| TELM-01 | 11 |
+| TELM-02 | 11 |
+| TELM-03 | 11 |
+| TELM-04 | 11 |
+| TEST-01 | 8 |
+| TEST-02 | 12 |
+| TEST-03 | 8 |
 
-**32 / 32 requirements v1 mappés — aucun orphelin, aucun doublon.**
+**Couverture : 27/27, aucune exigence orpheline, aucune en double.**
+
+## Ordre d'exécution
+
+8 (bloquante), puis 9 et 11 en parallèle, 10 après 9, 12 après 8 (de préférence après 10 pour
+ne pas croiser deux chantiers dans `Board.tsx`), 13 après 12, 14 après 10.
 
 ## Progression
 
-**Ordre d'exécution :** les phases s'exécutent dans l'ordre numérique : 1 → 2 → 3 → 4 → 5 → 6 → 7
-
-| Phase | Plans terminés | Statut | Terminée le |
-|-------|----------------|--------|-------------|
-| 1. Filet de sécurité | 6/6 | Complete | 2026-07-28 |
-| 2. Fondations (stack + design system) | 0/10 | Not started | - |
-| 3. Pilotes (Carte + coquille) | 0/TBD | Not started | - |
-| 4. Préparation de partie | 0/TBD | Not started | - |
-| 5. Plateau A — restylage | 0/TBD | Not started | - |
-| 6. Plateau B — layout/tactile | 0/TBD | Not started | - |
-| 7. Plateau C — interactions | 0/TBD | Not started | - |
+| Phase | Plans terminés | Statut | Terminée |
+|-------|----------------|--------|----------|
+| 8. Fondations tactiles et filet de tests | 0/? | Pas commencée | - |
+| 9. Tablette T1, aperçu refermable | 0/? | Pas commencée | - |
+| 10. Tablette T2, cibles et infobulles | 0/? | Pas commencée | - |
+| 11. Menus du téléphone | 0/? | Pas commencée | - |
+| 12. Plateau du téléphone, paysage et rotations | 0/? | Pas commencée | - |
+| 13. Plateau du téléphone, repères et réglages | 0/? | Pas commencée | - |
+| 14. Mode manuel au doigt | 0/? | Pas commencée | - |

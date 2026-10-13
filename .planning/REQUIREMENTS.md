@@ -74,5 +74,32 @@ Exigences v1.0 archivées dans `.planning/milestones/v1.0-REQUIREMENTS.md`.
 
 | Requirement | Phase | Statut |
 |-------------|-------|--------|
+| SAISIE-01 | Phase 8 | En attente |
+| SAISIE-02 | Phase 8 | En attente |
+| SAISIE-03 | Phase 8 | En attente |
+| SAISIE-04 | Phase 8 | En attente |
+| SAISIE-05 | Phase 12 | En attente |
+| TAB-01 | Phase 9 | En attente |
+| TAB-02 | Phase 9 | En attente |
+| TAB-03 | Phase 10 | En attente |
+| TAB-04 | Phase 10 | En attente |
+| TAB-05 | Phase 10 | En attente |
+| TAB-06 | Phase 10 | En attente |
+| TAB-07 | Phase 10 | En attente |
+| TAB-08 | Phase 14 | En attente |
+| TAB-09 | Phase 9 (DoD des phases 10 et 14) | En attente |
+| TELP-01 | Phase 12 | En attente |
+| TELP-02 | Phase 12 | En attente |
+| TELP-03 | Phase 13 | En attente |
+| TELP-04 | Phase 13 | En attente |
+| TELP-05 | Phase 13 | En attente |
+| TELP-06 | Phase 13 | En attente |
+| TELM-01 | Phase 11 | En attente |
+| TELM-02 | Phase 11 | En attente |
+| TELM-03 | Phase 11 | En attente |
+| TELM-04 | Phase 11 | En attente |
+| TEST-01 | Phase 8 | En attente |
+| TEST-02 | Phase 12 | En attente |
+| TEST-03 | Phase 8 | En attente |
 
-*(rempli par la roadmap)*
+**Couverture : 27/27 exigences v1.1 rattachées, aucune orpheline.**

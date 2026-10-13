@@ -10,10 +10,12 @@ Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 ## Position actuelle
 
 Jalon : **v1.1 Tablette et téléphone** (phases numérotées à partir de 8)
-Phase : pas commencée (définition des requirements)
-Plan : —
-Statut : définition des requirements
-Dernière activité : 2026-10-13, démarrage du jalon v1.1
+Phase : 8 sur 8 à 14 (Fondations tactiles et filet de tests), pas commencée
+Plan : à définir (`/gsd:plan-phase 8`)
+Statut : roadmap créée, prête pour la planification
+Dernière activité : 2026-10-13, roadmap v1.1 créée (7 phases, 27 exigences rattachées)
+
+Progression : [░░░░░░░░░░] 0 %
 
 ## Historique v1.0 (état mesuré le 12/08/2026)
 
