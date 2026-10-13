@@ -77,6 +77,32 @@ describe('les cartes volent vers la table et vers leur pile', () => {
     expect(dansLeDeck.classList.contains('trajet-arrivee')).toBe(false)
   })
 
+  it('13/10/2026 : un dos distribué vole depuis le paquet rencontre, en dos', async () => {
+    render(<TrajetsPhase actif />)
+    const deck = document.createElement('div')
+    deck.dataset.pile = 'rencontre-encounter-deck'
+    const dos = carte(88)
+    dos.classList.add('is-facedown')
+    await act(async () => {
+      table.append(deck, dos)
+      await new Promise((r) => window.setTimeout(r, 250))
+    })
+    expect(dos.classList.contains('trajet-arrivee')).toBe(true)
+    expect(document.querySelectorAll('.trajet-copie.est-dos')).toHaveLength(1)
+  })
+
+  it('13/10/2026 : un dos qui disparait (il est revele) ne part pas vers une defausse', async () => {
+    const dos = carte(89)
+    dos.classList.add('is-facedown')
+    table.append(dos)
+    render(<TrajetsPhase actif />)
+    await act(async () => {
+      dos.remove()
+      await new Promise((r) => window.setTimeout(r, 250))
+    })
+    expect(document.querySelectorAll('.trajet-copie.est-depart')).toHaveLength(0)
+  })
+
   it('en affichage sobre, rien ne vole', async () => {
     document.documentElement.setAttribute('data-affichage', 'sobre')
     render(<TrajetsPhase actif />)

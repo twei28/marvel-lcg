@@ -51,3 +51,9 @@
 html[data-affichage='sobre'] .deroule-phase.est-essai .essai-bandeau-nouveau {
   transform: none;
 }
+
+/* Un dos distribué qui vole du paquet rencontre vers son joueur (13/10/2026). */
+.trajet-copie.est-dos {
+  background: repeating-linear-gradient(45deg, #b8432f 0 6px, #9a3424 6px 12px);
+  border: 2px solid #e0794a;
+}

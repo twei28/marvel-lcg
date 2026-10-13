@@ -15,7 +15,7 @@ import { useEffect, useRef } from 'react'
 import { changementDeTable, DUREE_TRAJET_MS, pileDeDepart, type Releve } from './trajets-phase'
 import './trajets-phase.css'
 
-type Mesure = Releve & { rect: DOMRect; src?: string }
+type Mesure = Releve & { rect: DOMRect; src?: string; dos?: boolean }
 
 /** Le temps de repos de la table avant de comparer (ms). */
 const CALME_MS = 150
@@ -37,13 +37,17 @@ function cartesDeLaTable(): Map<number, { el: HTMLElement; mesure: Mesure }> {
     // Les vraies piles (decks, defausses...) ne comptent pas : une rangee FONDUE
     // (les sbires engages, « terrain-combat-engages ») porte aussi `data-pile`.
     if (VRAIE_PILE.test(el.closest('[data-pile]')?.getAttribute('data-pile') ?? '')) continue
-    if (el.classList.contains('is-facedown') || el.classList.contains('kind-status')) continue
+    if (el.classList.contains('kind-status')) continue
+    // 13/10/2026 (encadré ⑪) : une carte face cachée compte aussi, pour que les
+    // dos distribués arrivent du paquet rencontre. Elle ne « part » jamais : sa
+    // disparition, c'est sa révélation, pas un trajet vers la défausse.
+    const dos = el.classList.contains('is-facedown')
     const id = Number(el.dataset.cardId)
     if (!Number.isFinite(id) || resultat.has(id)) continue
     const rect = el.getBoundingClientRect()
     if (rect.width === 0 || rect.height === 0) continue
     const camp = el.classList.contains('camp-encounter') ? 'encounter' : el.classList.contains('camp-player') ? 'player' : undefined
-    resultat.set(id, { el, mesure: { id, camp, rect, src: el.querySelector('img')?.getAttribute('src') ?? undefined } })
+    resultat.set(id, { el, mesure: { id, camp, rect, dos, src: dos ? undefined : el.querySelector('img')?.getAttribute('src') ?? undefined } })
   }
   return resultat
 }
@@ -120,7 +124,10 @@ export function TrajetsPhase({ actif }: { actif: boolean }) {
         if (!cible) continue
         // Mise en jeu par un boost ★ : elle attend le clic (EtoilesEnAttente.tsx).
         if (cible.el.hasAttribute('data-etoile-attente')) continue
+        // Un dos distribué part du paquet rencontre ; une carte révélée, de la boîte.
+        const paquet = cible.mesure.dos ? document.querySelector<HTMLElement>('.plateau-cadre [data-pile$="encounter-deck"]') : null
         const source =
+          paquet ??
           boite?.querySelector<HTMLElement>(`.scan-card[data-card-id="${id}"]`) ??
           boite?.querySelector<HTMLElement>('.deroule-corps') ??
           boite
@@ -128,6 +135,7 @@ export function TrajetsPhase({ actif }: { actif: boolean }) {
         const depart = source.getBoundingClientRect()
         cible.el.classList.add('trajet-arrivee')
         const copie = copieVolante(cible.mesure.src, depart)
+        if (cible.mesure.dos) copie.classList.add('est-dos')
         const animation = voler(copie, depart, cible.mesure.rect, false)
         const fin = () => {
           copie.remove()
@@ -140,6 +148,7 @@ export function TrajetsPhase({ actif }: { actif: boolean }) {
         enCours.current.push({ animation, fin })
       }
       for (const parti of departs) {
+        if (parti.dos) continue
         const pile = document.querySelector<HTMLElement>(`.plateau-cadre ${pileDeDepart(parti.camp)}`)
         const arrivee = pile?.getBoundingClientRect()
         const copie = copieVolante(parti.src, parti.rect)

@@ -89,6 +89,7 @@ import { FlechesPhase } from './FlechesPhase'
 import { TrajetsPhase } from './TrajetsPhase'
 import { EtoilesEnAttente } from './EtoilesEnAttente'
 import { NumerosSbires } from './NumerosSbires'
+import { DepartsDeLaBoite } from './DepartsDeLaBoite'
 import { cartoucheEstAJour } from './cartouche-a-jour'
 import { CoucheRencontreSurTable } from './CoucheRencontreSurTable'
 import { JetonMenaceVolant } from './JetonMenaceVolant'
@@ -1869,6 +1870,8 @@ export function DeroulePhase({
       ) : null}
       {/* LOT 4 (essai, decisions 49 a 53) : les cartes volent vers la table et vers leur pile. */}
       {essai ? <TrajetsPhase actif={!termine && !partieFinie && etape !== undefined && !relecture} /> : null}
+      {/* Essai, 13/10/2026 (encadrés ④ ⑫) : boosts et traîtrises vers la défausse rencontre au clic. */}
+      {essai ? <DepartsDeLaBoite etape={etape} boostsMontres={boostsMontres} actif={!termine && !partieFinie && !relecture} /> : null}
       {/* Essai, 13/10/2026 (encadré ⑩) : le numéro d'ordre de chaque sbire, sur la table. */}
       {essai ? <NumerosSbires etapes={etapes} cle={etape?.cle} actif={!termine && !partieFinie && !relecture} /> : null}
       {/* Essai, 13/10/2026 : ce qu'un boost ★ met en jeu n'arrive sur la table qu'au clic. */}
