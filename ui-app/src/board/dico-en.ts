@@ -1708,6 +1708,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Réponse de %1': '%1 responds',
   'Interruption de %1': '%1 interrupts',
   'Choisir l’ordre': 'Choose the order',
+  'remplace %1': 'replaces %1',
+  'Clique sur Continuer pour la retourner.': 'Click Continue to flip it.',
   'sbire %1/%2': 'minion %1/%2',
   'Distribution : %1': 'Dealt: %1',
   'carte rencontre': 'encounter card',

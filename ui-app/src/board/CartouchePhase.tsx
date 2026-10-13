@@ -39,7 +39,7 @@ import {
 import type { ScanCardProps } from '../components/ScanCard'
 import { useApercuSurvol } from './apercu-survol'
 import { CarteApercu } from './Board'
-import { avecBilan, type EtapeDeroule, type TempsPhase } from './deroule-phase'
+import { avecBilan, nomNettoye, precedenteAnnuleePar, type EtapeDeroule, type TempsPhase } from './deroule-phase'
 import { estSpectateur } from './moteur'
 import {
   texteArretDefaite,
@@ -201,6 +201,12 @@ export type CartouchePhaseProps = {
   bis?: boolean
   /** Essai : retourner le boost suivant (ils ne s'enchainent plus seuls). */
   montrerBoostSuivant?: () => void
+  /**
+   * Essai (13/10/2026, encadré ⑫) : la carte révélée arrive face cachée ; le
+   * premier clic la retourne (`retournerCarte`), le suivant passe à la suite.
+   */
+  carteCachee?: boolean
+  retournerCarte?: () => void
   /**
    * Essai (refonte du 12/10/2026) : le joueur concerne par l'etape, dont la
    * couleur d'aspect fait le bord de la boite (variables posees dans `style`
@@ -1604,6 +1610,20 @@ export function CartouchePhase(props: CartouchePhaseProps) {
     refus = { libelle: vueQ.refus }
   }
 
+  // 13/10/2026 (encadré ⑫) : tant qu'elle n'est pas retournée, la carte révélée
+  // n'est qu'un dos ; une question du moteur la montre toujours.
+  // Un joueur qui regarde sans bouton (multi) ne pourrait jamais la retourner : chez lui, elle arrive retournée.
+  const regardeSansBouton = props.multi?.genre === 'regarde' || props.multi?.genre === 'attente-choix' || props.multi?.genre === 'choix-hote'
+  const carteCacheeIci = Boolean(essai && !relu && props.carteCachee && etapeLue?.titre === 'revelation' && !questionAuJoueur && !regardeSansBouton)
+  if (carteCacheeIci) {
+    corps = (
+      <div className="essai-revelation-cachee">
+        <span className="essai-dos-rencontre" aria-hidden="true" />
+        <p>{t('Clique sur Continuer pour la retourner.')}</p>
+      </div>
+    )
+  }
+
   // L'ESSAI (decisions du 10/10/2026) : pendant le choix du defenseur, une
   // rangee de boutons de meme taille en bas du panneau, un « Défendre avec X »
   // vert par defenseur (son picto DEF en tete) et « Ne pas défendre » gris.
@@ -1716,16 +1736,27 @@ export function CartouchePhase(props: CartouchePhaseProps) {
 
   // ESSAI : les boosts se retournent au clic, un par un (questions 3 et 10).
   const boostsRestants =
-    essai && !relu && etape && props.montrerBoostSuivant ? Math.max(0, etape.boosts.length - props.boostsMontres) : 0
+    (essai && !relu && etape && props.montrerBoostSuivant ? Math.max(0, etape.boosts.length - props.boostsMontres) : 0) +
+    (carteCacheeIci ? 1 : 0)
   const compteur =
     essai && etape && !relu && !horsPhase ? compteurDesRevelations(etapes, etape.cle, props.cartesDistribuees) : undefined
   // Essai (13/10/2026) : « Carte rencontre 2/2 · Captain America » en titre, la
   // carte revelee dessous. Le compteur de droite ne garde que les Renforts.
   const rencontre = essai && etapeLue && !relu && !horsPhase ? rencontreDuJoueur(etapes, etapeLue.cle) : undefined
+  // 13/10/2026 (encadrés ⑯ ⑰) : la carte de Renfort le dit dans le titre, une
+  // remplaçante dit quelle carte elle remplace sous le titre.
+  const remplacee =
+    rencontre && etapeLue?.reveleePar
+      ? precedenteAnnuleePar(etapes, etapes.findIndex((e) => e.cle === etapeLue.cle), etapeLue)
+      : undefined
   const titreAffiche = rencontre
-    ? `${t('Carte rencontre %1/%2').replace('%1', String(rencontre.rang)).replace('%2', String(rencontre.total))}${rencontre.nom ? ` · ${rencontre.nom}` : ''}`
+    ? `${t('Carte rencontre %1/%2').replace('%1', String(rencontre.rang)).replace('%2', String(rencontre.total))}${rencontre.nom ? ` · ${rencontre.nom}` : ''}${etapeLue?.parSurge ? ` (${t('Renfort')})` : ''}`
     : titre
-  const sousTitre = rencontre ? titre : undefined
+  const sousTitre = rencontre
+    ? remplacee?.cibleNom
+      ? `${titre} · ${t('remplace %1').replace('%1', nomNettoye(remplacee.cibleNom) ?? remplacee.cibleNom)}`
+      : titre
+    : undefined
   // Lot 6 (essai, multi) : ce joueur ne donne pas le rythme, son pied dit qui le donne.
   const multiSansBouton =
     props.multi?.genre === 'regarde' || props.multi?.genre === 'attente-choix' || props.multi?.genre === 'choix-hote'
@@ -2009,7 +2040,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
             className="bh-bouton deroule-suivant essai-continuer"
             data-boost-suivant=""
             data-page-suivante=""
-            onClick={() => props.montrerBoostSuivant?.()}
+            onClick={() => (carteCacheeIci ? props.retournerCarte?.() : props.montrerBoostSuivant?.())}
           >
             {t('Continuer')} <kbd>{t('Espace')}</kbd>
           </button>

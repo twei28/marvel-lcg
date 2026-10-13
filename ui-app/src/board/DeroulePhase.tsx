@@ -1340,6 +1340,8 @@ export function DeroulePhase({
   // s'enchainent SEULS : c'est l'etape qui attend la validation, pas chaque
   // carte. Une attaque a trois boosts couterait sinon quatre clics.
   const [boostsMontres, setBoostsMontres] = useState(0)
+  // 13/10/2026 (encadré ⑫) : les cartes révélées déjà retournées, par clé d'étape.
+  const [cartesRetournees, setCartesRetournees] = useState<ReadonlySet<string>>(() => new Set())
   const avantResultat = Boolean(essai && etape && etape.boosts.length > 0 && boostsMontres < etape.boosts.length)
   useEffect(() => {
     onAvantResultat?.(avantResultat)
@@ -1912,6 +1914,8 @@ export function DeroulePhase({
         // 10/10/2026 ; le cartouche pose sur la table garde la sienne.
         bis={presentation === 'scene'}
         montrerBoostSuivant={essai ? () => setBoostsMontres(etape?.boosts.length ?? 0) : undefined}
+        carteCachee={essai && nouvelleScene && etape?.titre === 'revelation' && !cartesRetournees.has(etape.cle)}
+        retournerCarte={() => etape && setCartesRetournees((deja) => new Set(deja).add(etape.cle))}
         couleurDeCarte={
           essai && cadresJoueurs
             ? (id: number) => {

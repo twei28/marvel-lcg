@@ -1533,3 +1533,25 @@ html.essai-peril-autre .main-feuille {
   text-align: center;
   color: #3fae53;
 }
+
+/* La carte révélée encore face cachée (13/10/2026, encadré ⑫). */
+.deroule-phase.est-essai .essai-revelation-cachee {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin: auto;
+}
+
+.deroule-phase.est-essai .essai-dos-rencontre {
+  width: calc(var(--essai-carte-h, 170px) * 127 / 176);
+  height: var(--essai-carte-h, 170px);
+  border-radius: 8px;
+  border: 3px solid #e0794a;
+  background: repeating-linear-gradient(45deg, #b8432f 0 10px, #9a3424 10px 20px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.deroule-phase.est-essai .essai-revelation-cachee > p {
+  margin: 0;
+  color: rgba(248, 250, 252, 0.75);
+}

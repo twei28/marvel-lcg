@@ -1254,6 +1254,33 @@ describe('ESSAI « Nouvelle phase du méchant » (10/10/2026)', () => {
     expect(sbires?.querySelector('.deroule-pastille-nom')?.textContent).toBe('—')
   })
 
+  it('13/10/2026 : la carte de Renfort le dit, une remplaçante dit qui elle remplace', () => {
+    const rev = (cle: string, o: Partial<EtapeDeroule>) =>
+      ({ cle, temps: 'revelation', titre: 'revelation', regle: '', joueur: 0, auteurNom: 'Ironheart', boosts: [], ...o }) as EtapeDeroule
+    const a = rev('r1', { carteId: 70, cibleNom: 'Agent Double' })
+    const b = rev('r2', { carteId: 71, cibleNom: 'Explosion', parSurge: true })
+    monter({ etapes: [a, b], index: 1, essai: true })
+    expect(document.querySelector('.deroule-titre-court')?.textContent).toBe('Carte rencontre 2/2 · Ironheart (Renfort)')
+    cleanup()
+    const annulee = rev('r1', { carteId: 70, cibleNom: 'Trafiquant', annuleePar: 'Stepford Cuckoos', annuleeParId: 9 })
+    const remplacante = rev('r2', { carteId: 72, cibleNom: 'Explosion', reveleePar: 'Stepford Cuckoos', reveleeParId: 9 })
+    monter({ etapes: [annulee, remplacante], index: 1, essai: true })
+    expect(document.querySelector('.deroule-sous-titre')?.textContent).toMatch(/remplace Trafiquant$/)
+  })
+
+  it('13/10/2026 : la carte révélée arrive face cachée, Continuer la retourne sans valider', () => {
+    const rev = { cle: 'r1', temps: 'revelation', titre: 'revelation', regle: '', joueur: 0, carteId: 70, cibleNom: 'Explosion', boosts: [] } as EtapeDeroule
+    const retournerCarte = vi.fn()
+    const { props } = monter({ etapes: [rev], index: 0, essai: true, carteCachee: true, retournerCarte, montrerBoostSuivant: vi.fn() })
+    expect(document.querySelector('.essai-dos-rencontre')).not.toBeNull()
+    fireEvent.click(document.querySelector<HTMLButtonElement>('button[data-boost-suivant]')!)
+    expect(retournerCarte).toHaveBeenCalledTimes(1)
+    expect(props.avancer).not.toHaveBeenCalled()
+    cleanup()
+    monter({ etapes: [rev], index: 0, essai: true, carteCachee: false, retournerCarte, montrerBoostSuivant: vi.fn() })
+    expect(document.querySelector('.essai-dos-rencontre')).toBeNull()
+  })
+
   it('13/10/2026 : « (sbire 2/3) » dans le titre d’une activation de sbire', () => {
     monter({ etapes: [{ ...attaqueResolue, temps: 'sbires', rangSbire: 2, totalSbires: 3, boosts: [] }], essai: true })
     expect(document.querySelector('.deroule-titre-court')?.textContent).toMatch(/\(sbire 2\/3\)$/)
