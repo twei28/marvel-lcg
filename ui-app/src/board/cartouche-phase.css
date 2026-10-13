@@ -716,6 +716,12 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-corps {
   color: rgba(248, 250, 252, 0.75);
 }
 
+/* L'astuce « clique la carte sur la table » (13/10/2026) : discrete, sous la consigne. */
+.deroule-phase.est-scene .deroule-sous-cadre-astuce {
+  font-style: italic;
+  font-weight: 600;
+}
+
 .deroule-phase.est-scene .deroule-sous-cadre-cartes {
   min-width: 0;
   display: flex;

@@ -199,6 +199,12 @@ export function SousCadre({ vue, q, essai = false, couleurDeCarte }: SousCadrePr
   let titre: string
   let compte: string | undefined
   let phrase: string | undefined
+  // Demande de l'utilisateur (13/10/2026) : dire qu'on peut aussi cliquer la
+  // carte sur la table (ou dans la main). Seulement si c'est VRAI : la carte a
+  // une action, que le plateau pose sur elle par la meme source (`avecInteraction`).
+  let astuce: string | undefined
+  const cliquableAilleurs = (cartesVues: Array<{ carteId: number; horsTable?: boolean }>) =>
+    cartesVues.some((carte) => !carte.horsTable && i.cartes.get(carte.carteId)?.agir !== undefined)
   let cartes: ReactNode[] = []
   let refus: string | undefined
   let valider: { libelle: string; prete: boolean } | undefined
@@ -227,6 +233,7 @@ export function SousCadre({ vue, q, essai = false, couleurDeCarte }: SousCadrePr
       cartes = vue.cibles.map((cible, rang) => (
         <BoutonCarte key={`${cible.horsTable ? 'h' : 't'}${cible.carteId}`} cible={cible} rang={rang + 1} agir={() => agirSur(cible)} />
       ))
+      if (cliquableAilleurs(vue.cibles)) astuce = t('Tu peux aussi cliquer la carte directement sur la table.')
       refus = t('Annuler')
       valider = { libelle: t('Confirmer'), prete: vue.prete }
       break
@@ -246,6 +253,7 @@ export function SousCadre({ vue, q, essai = false, couleurDeCarte }: SousCadrePr
         const ordre = i.option ?? i.options[0] ?? q.demande.options[0]
         if (ordre) ordreDeLaTable = () => q.choisirOption(ordre, vue.cibles.map((cible) => cible.carteId))
       }
+      if (cliquableAilleurs(vue.cibles)) astuce = t('Tu peux aussi cliquer les cartes directement sur la table.')
       // Question FORCEE : aucun refus. « Confirmer » des que l'ordre est complet.
       valider = { libelle: t('Confirmer'), prete: vue.prete }
       break
@@ -265,6 +273,7 @@ export function SousCadre({ vue, q, essai = false, couleurDeCarte }: SousCadrePr
       cartes = vue.cartesMain.map((carte, rang) => (
         <BoutonCarte key={carte.carteId} cible={carte} rang={rang + 1} agir={() => agirSur(carte)} />
       ))
+      if (cliquableAilleurs(vue.cartesMain)) astuce = t('Tu peux aussi cliquer les cartes directement dans ta main.')
       refus = t('Annuler')
       valider = { libelle: vue.libelleJouer, prete: vue.prete }
       break
@@ -279,11 +288,22 @@ export function SousCadre({ vue, q, essai = false, couleurDeCarte }: SousCadrePr
   return (
     <div className={`deroule-sous-cadre est-${vue.genre}`} role="group" aria-label={titre}>
       <div className="deroule-sous-cadre-tete">
-        <strong className="deroule-sous-cadre-titre">{titre}</strong>
+        {/* L'infobulle garde le texte entier : la boite de l'essai le coupe a trois lignes. */}
+        <strong className="deroule-sous-cadre-titre" title={titre}>
+          {titre}
+        </strong>
         {compte ? <small className="deroule-sous-cadre-compte">{compte}</small> : null}
         {vue.genre === 'paiement' && vue.consigne ? <small className="deroule-sous-cadre-compte">{vue.consigne}</small> : null}
         {cout}
-        {phrase ? <small className="deroule-sous-cadre-phrase">{phrase}</small> : null}
+        {/* L'astuce suit la consigne sur la MEME ligne : une ligne de plus faisait
+            deborder le paiement a 1366 x 657 (garde des questions, 13/10/2026). */}
+        {phrase || astuce ? (
+          <small className="deroule-sous-cadre-phrase">
+            {phrase}
+            {phrase && astuce ? ' · ' : null}
+            {astuce ? <span className="deroule-sous-cadre-astuce">{astuce}</span> : null}
+          </small>
+        ) : null}
       </div>
       {cartes.length > 0 ? (
         <div className={choixEnTexte(vue) ? 'deroule-sous-cadre-cartes est-textes' : 'deroule-sous-cadre-cartes'}>{cartes}</div>

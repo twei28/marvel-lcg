@@ -436,6 +436,17 @@ html[data-affichage='sobre'] .deroule-phase.est-essai .essai-compteur {
   cursor: pointer;
 }
 
+/* Ecran bas (1366 x 657 utiles, garde des questions du 13/10/2026) : quatre
+   defenseurs et le refus, a 64 px chacun, rognaient la rangee de cartes de 39 px.
+   Des boutons un peu moins hauts, la meme lecture. */
+@media (min-width: 768px) and (max-height: 700px) {
+  .deroule-phase.est-essai .essai-choix {
+    min-height: 50px;
+    padding: 5px 16px;
+    font-size: 1.3rem;
+  }
+}
+
 .deroule-phase.est-essai .essai-choix.est-defendre {
   background: linear-gradient(160deg, var(--stat), var(--stat-sombre));
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
@@ -735,7 +746,11 @@ body.plateau-sans-animations .scan-card.is-target-pulse .scan-frame {
     left: var(--essai-marge);
     margin: 0;
     width: var(--essai-l);
-    height: min(580px, calc(100dvh - var(--colonne-haut, 48px) - 2 * var(--essai-marge)));
+    /* Toute la hauteur disponible (demande de l'utilisateur, 13/10/2026) : a
+       580 px, une question du moteur (Maitres du Chaos, cinq cibles) rognait
+       ses boutons. La boite garde la meme taille sur tous les ecrans d'une
+       meme fenetre, « Continuer » ne bouge donc toujours pas. */
+    height: calc(100dvh - var(--colonne-haut, 48px) - 2 * var(--essai-marge));
     min-height: 0;
     max-height: none;
     box-sizing: border-box;
@@ -789,6 +804,55 @@ body.plateau-sans-animations .scan-card.is-target-pulse .scan-frame {
      passent a la ligne, dans leurs 84 px. */
   .deroule-phase.est-scene.est-essai.est-essai > .deroule-boutons {
     flex-wrap: nowrap;
+  }
+
+  /* Pendant une question, le pied n'a pas de bouton (« Continuer » attend la
+     reponse) : il disparait et ses 84 px vont a la question, dont les boutons
+     prennent sa place en bas. Avant (13/10/2026), une question a cinq cibles
+     tenait dans 308 px : cartes au minimum, et ses boutons rognes quand meme. */
+  .deroule-phase.est-scene.est-essai.est-essai.a-question > .deroule-boutons:not(:has(button)) {
+    display: none;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai.a-question > .deroule-corps:has(> .deroule-sous-cadre) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai.a-question > .deroule-corps > .deroule-sous-cadre {
+    flex: 1 1 auto;
+    justify-content: flex-start;
+  }
+
+  /* Mesure du garde des questions (13/10/2026, ui-check/scripts/garde-boite-questions.mjs) :
+     - le texte de la carte, recopie en tete de la question, prenait six lignes : trois
+       suffisent, le texte entier reste dans l'infobulle et sur la carte elle-meme ;
+     - l'etiquette de nom, plus large que sa carte, ne laissait que trois cartes par
+       ligne : elle passe a la ligne a la largeur de sa carte ;
+     - la pointe de « Confirmer » depassait de 3 px a droite du corps. */
+  .deroule-phase.est-scene.est-essai.est-essai.a-question .deroule-sous-cadre-titre,
+  .deroule-phase.est-scene.est-essai.est-essai.a-question .deroule-question-intitule {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai.a-question .deroule-sous-cadre .deroule-vignette.est-choix:not(.est-indisponible) > .deroule-legende {
+    max-width: max(calc(var(--vignette-h) * 1.5), 92px);
+    padding: 5px 8px;
+    font-size: 0.9rem;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai.a-question .deroule-sous-cadre .deroule-sous-texte {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+  }
+
+  .deroule-phase.est-scene.est-essai.est-essai.a-question .deroule-sous-cadre-boutons {
+    padding-right: 4px;
   }
 
   .deroule-phase.est-scene.est-essai.est-essai .deroule-boutons .deroule-mentions {

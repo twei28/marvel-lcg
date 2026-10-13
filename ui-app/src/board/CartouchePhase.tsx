@@ -1521,7 +1521,9 @@ export function CartouchePhase(props: CartouchePhaseProps) {
         essai={essai}
         question={
           <div className="deroule-question-carte">
-            <p className="deroule-question-intitule">{vueQ.intitule}</p>
+            <p className="deroule-question-intitule" title={vueQ.intitule}>
+              {vueQ.intitule}
+            </p>
             <div className={choixEnTexte(vueQ) ? 'deroule-question-choix est-textes' : 'deroule-question-choix'}>
               {vueQ.choix.map((choix) => (
                 <BoutonOption key={choix.optionId} vignette={choix} choisir={() => choisir(choix.optionId)} />

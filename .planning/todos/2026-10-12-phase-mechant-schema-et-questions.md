@@ -99,3 +99,11 @@ Références retenues par l'utilisateur : **couleur par joueur**, **lignes qui r
   - Riposte, Péril et élimination pas vus en vraie partie.
 - Bug moteur trouvé : un joueur ÉLIMINÉ révèle encore sa carte rencontre, la partie se bloque (correction lancée le 12/10).
 
+
+## Retours du 13/10/2026 (essai, local, commités, non déployés)
+
+- Coups de la phase (menace, manigances du méchant et des sbires, attaques, Riposte, effets chiffrés des cartes révélées) : la table garde les compteurs d'avant l'écran ; UN jeton par coup (vrai jeton du jeu `components/jetons/menace.png` ou `degats.png`, « +N » / « -N », 84 px) attend au début du trait et vole au clic sur Continuer (`JetonsCoups.tsx`, `coups-sur-table.ts`). Manigance du méchant : trait depuis la boîte (sa carte est collée à la manigance) ; sbire : depuis sa carte. Le jeton n'apparaît qu'une fois les boosts retournés.
+- Boîte : **toute la hauteur disponible** (remplace les 580 px du lot 1). Pendant une question, le pied vide disparaît et la question prend sa place (question à 5 cibles : boutons rognés avant, mesuré dans Chromium).
+- Indication « Tu peux aussi cliquer… » (table pour cibles et ordre, main pour le paiement), seulement quand la carte a vraiment une action ; sur la ligne de la consigne.
+- Garde `ui-check/scripts/garde-boite-questions.mjs` (lancé par `ui-app/deployer.sh`) : 7 sortes de questions, pires cas réalistes, 4 fenêtres. Il a imposé : texte de carte limité à 3 lignes, étiquettes de nom à la largeur de la carte, boutons de défense moins hauts sous 700 px.
+- Étape 3 : après un Annuler, le repli ne lit plus le journal d'un futur annulé, et ne prend plus que les cartes `:revealed` (Quinjet et Frappe héroïque affichés comme cartes rencontre).

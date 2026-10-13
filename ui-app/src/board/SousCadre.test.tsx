@@ -229,7 +229,8 @@ describe('D5 : le ciblage', () => {
     const { q } = ciblage(false)
     const confirmer = screen.getByRole('button', { name: 'Confirmer' })
     expect(confirmer).toBeDisabled()
-    expect(screen.getByText('Choisis encore 1 cible')).toBeInTheDocument()
+    // La consigne partage sa ligne avec l'indication « clique aussi sur la table ».
+    expect(document.querySelector('.deroule-sous-cadre-phrase')?.textContent).toMatch(/^Choisis encore 1 cible/)
     fireEvent.click(refus()!)
     expect(refus()?.textContent).toBe('Annuler')
     expect(q.interaction.annuler).toHaveBeenCalledTimes(1)
@@ -237,6 +238,41 @@ describe('D5 : le ciblage', () => {
     const pret = ciblage(true)
     fireEvent.click(screen.getByRole('button', { name: 'Confirmer' }))
     expect(pret.q.interaction.valider).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('l indication « clique aussi sur la table » (13/10/2026)', () => {
+  const astuce = () => document.querySelector('.deroule-sous-cadre-astuce')?.textContent
+
+  it('cibles de la table cliquables : l indication est la', () => {
+    const viser = option(9, 'Response', 50, { all_legal_targets: [12, 41], target_num_range: [1, 1] })
+    const cartes = new Map<number, EtatInteractif>([[12, { role: 'cible', choisie: false, agir: vi.fn() }]])
+    monter(question(demande([viser]), interaction([viser], { option: viser, cartes, assistant: assistant({ etape: 'target' }) })))
+    expect(astuce()).toBe('Tu peux aussi cliquer la carte directement sur la table.')
+  })
+
+  it('seulement des cartes hors table : pas d indication, ce serait faux', () => {
+    const viser = option(9, 'Response', 50, { all_legal_targets: [], target_num_range: [1, 1] })
+    const i = interaction([viser], {
+      option: viser,
+      ciblesHorsTable: [{ props: { id: '200', name: 'Carte du deck', kind: 'unknown', imageUrl: '' }, choisie: false, agir: vi.fn() }],
+      assistant: assistant({ etape: 'target' }),
+    })
+    monter(question(demande([viser]), i))
+    expect(astuce()).toBeUndefined()
+  })
+
+  it('paiement : l indication parle de la main', () => {
+    const jouer = option(4, 'Play', 90)
+    const cartes = new Map<number, EtatInteractif>([[91, { role: 'ressource', choisie: false, agir: vi.fn() }]])
+    monter(question(demande([jouer]), interaction([jouer], { option: jouer, cartes, assistant: assistant({ etape: 'payment' }) })))
+    expect(astuce()).toBe('Tu peux aussi cliquer les cartes directement dans ta main.')
+  })
+
+  it('ordre pas encore engage : les sbires de la table n ont pas d action, pas d indication', () => {
+    const ordre = option(10, 'Minion_Activates_Order', 0, { all_legal_targets: [60, 61], target_num_range: [2, 2] })
+    monter(question(demande([ordre], { show_cancel: false, ability_type: 'Normal', event_name: 'WhenChooseOrder' })))
+    expect(astuce()).toBeUndefined()
   })
 })
 
@@ -283,7 +319,7 @@ describe('D6 : le paiement, avec les cartes de la main', () => {
     const pastilles = [...document.querySelectorAll('.deroule-cout-pastille')]
     expect(pastilles).toHaveLength(2)
     expect(pastilles.map((p) => p.classList.contains('est-rempli'))).toEqual([true, false])
-    expect(screen.getByText('1/2 payé')).toBeInTheDocument()
+    expect(document.querySelector('.deroule-sous-cadre-phrase')?.textContent).toMatch(/^1\/2 payé/)
     expect(screen.getByRole('button', { name: 'Jouer Backflip' })).toBeDisabled()
     cleanup()
     const { q } = paiement(true)

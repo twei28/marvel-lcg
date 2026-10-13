@@ -29,6 +29,11 @@ npm run verifier-sortie
 # La boite de question du centre ne doit JAMAIS avoir de barre de defilement ni deborder (07/10/2026) :
 # le garde monte la vraie feuille de style, de 1 a 14 defenseurs, sur quatre tailles de fenetre.
 (cd "$RACINE_APP/../ui-check" && node scripts/garde-boite-defense.mjs)
+# Les questions de la boite de la phase du mechant (essai) : aucun bouton rogne, rien hors de
+# la boite, pour chaque sorte de question et quatre tailles de fenetre (13/10/2026). Le test
+# ecrit les pires cas, le garde les mesure dans Chromium avec la feuille qu'on vient de construire.
+npx vitest run src/board/boite-questions.pires-cas.test.tsx
+(cd "$RACINE_APP/../ui-check" && node scripts/garde-boite-questions.mjs)
 
 deployer_vers() {
   local JEU="$1"

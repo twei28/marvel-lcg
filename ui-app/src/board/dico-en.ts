@@ -1708,6 +1708,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Réponse de %1': '%1 responds',
   'Interruption de %1': '%1 interrupts',
   'Choisir l’ordre': 'Choose the order',
+  'Tu peux aussi cliquer la carte directement sur la table.': 'You can also click the card directly on the table.',
+  'Tu peux aussi cliquer les cartes directement sur la table.': 'You can also click the cards directly on the table.',
+  'Tu peux aussi cliquer les cartes directement dans ta main.': 'You can also click the cards directly in your hand.',
   'Jouer %1': 'Play %1',
   // Le bilan en trois colonnes (D19) et le reglage (D42).
   'Héros et alliés': 'Heroes and allies',

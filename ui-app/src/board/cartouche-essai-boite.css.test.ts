@@ -21,7 +21,8 @@ describe('la boite fixe de la colonne de gauche', () => {
     expect(r).toMatch(/position:\s*fixed/)
     expect(r).toMatch(/left:\s*var\(--essai-marge\)/)
     expect(r).toMatch(/width:\s*var\(--essai-l\)/)
-    expect(r).toMatch(/height:\s*min\(580px/)
+    // Toute la hauteur disponible (13/10/2026), sans plafond.
+    expect(r).toMatch(/height:\s*calc\(100dvh - var\(--colonne-haut, 48px\) - 2 \* var\(--essai-marge\)\)/)
     expect(r).toMatch(/border:\s*3px solid var\(--cadre-joueur/)
   })
 
