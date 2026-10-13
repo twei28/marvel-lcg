@@ -74,6 +74,8 @@ refermable, cibles 44 px, barre du bas, paysage téléphone) n'entre ici.
 ### Décisions prises après la recherche (13/10)
 - **Ligne « Plateau » masquée sur PC** : on garde la protection actuelle contre
   l'enfermement dans un plateau téléphone étiré sur grand écran (test existant).
+- **« Table complète comme sur PC » est remplacée** par « Plateau » (validé par
+  l'utilisateur le 13/10) : la ligne disparaît, la valeur `pc` migre vers « Tablette ».
 - **« Plateau » ne change que le plateau en phase 8** : la valeur est partagée et réglable
   depuis les menus, mais son effet sur la mise en page des menus vient avec la phase 11.
 - Gabarits : tablette tactile Chromium + WebKit **iPad (820x1180)** + WebKit **iPad mini
