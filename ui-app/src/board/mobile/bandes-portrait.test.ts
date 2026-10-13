@@ -49,7 +49,35 @@ describe('repartirEnBandes', () => {
       )
     )
     expect(bandes.heros.epinglee?.cle).toBe('peter')
-    expect(bandes.heros.unites.map((u) => u.cle)).toEqual(['soutien', 'oblig'])
+    // Une ligne par famille (retour de Raven, 12/10/2026) : le soutien et
+    // l'obligation ont leur ligne, plus celle du heros.
+    expect(bandes.heros.unites).toEqual([])
+    expect(bandes.soutiens.unites.map((u) => u.cle)).toEqual(['soutien', 'oblig'])
+  })
+
+  it('une ligne par famille : heros + allies, soutiens, ameliorations (retour de Raven)', () => {
+    const casque = { id: 'casque', name: 'Casque', kind: 'upgrade', imageUrl: '' } as ScanCardProps
+    const tenace = { id: 'tenace', name: 'Tenace', kind: 'status', imageUrl: '' } as ScanCardProps
+    const bandes = repartirEnBandes(
+      plateau(
+        emplacement(
+          'terrain-soutien',
+          unite('carol', { kind: 'hero' }, { attachees: [casque, tenace] }),
+          unite('quinjet', { kind: 'support' }),
+          unite('lance-toile', { kind: 'upgrade' })
+        ),
+        emplacement('terrain-combat', unite('wasp', { kind: 'ally' }, { attachees: [{ ...casque, id: 'sur-wasp' }] }), unite('sbire', { kind: 'minion' }))
+      )
+    )
+    expect(bandes.heros.epinglee?.cle).toBe('carol')
+    expect(bandes.heros.unites.map((u) => u.cle)).toEqual(['wasp'])
+    expect(bandes.soutiens.unites.map((u) => u.cle)).toEqual(['quinjet'])
+    // L'amelioration de l'identite quitte sa carte pour la ligne ; son statut reste.
+    expect(bandes.ameliorations.unites.map((u) => u.carte.id)).toEqual(['casque', 'lance-toile'])
+    expect(bandes.heros.epinglee?.attachees.map((a) => a.id)).toEqual(['tenace'])
+    // Celle d'un allie reste sur son porteur.
+    expect(bandes.heros.unites[0].attachees.map((a) => a.id)).toEqual(['sur-wasp'])
+    expect(bandes.engages.unites.map((u) => u.cle)).toEqual(['sbire'])
   })
 
   it('range toutes les piles a part, reperees par leur cle, deck special compris', () => {
@@ -73,9 +101,10 @@ describe('repartirEnBandes', () => {
     ])
     expect(bandes.piles[0].compte).toBe(30)
     expect(bandes.piles[3].titre).toBe('Némésis')
-    // Le deck special qui n'est pas une pile (l'invocation posee) reste chez le heros.
-    expect(bandes.heros.unites.map((u) => u.cle)).toEqual(['invocation'])
-    expect(bandes.heros.unites.some((u) => u.cle === 'soutien-deck')).toBe(false)
+    // Le deck special qui n'est pas une pile (l'invocation posee) reste cote
+    // joueur, dans la ligne de sa famille (un soutien).
+    expect(bandes.soutiens.unites.map((u) => u.cle)).toEqual(['invocation'])
+    expect(bandes.soutiens.unites.some((u) => u.cle === 'soutien-deck')).toBe(false)
   })
 
   it('rend les quatre bandes et la main meme quand tout est vide', () => {

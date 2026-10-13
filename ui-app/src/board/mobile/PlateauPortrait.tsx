@@ -3,7 +3,8 @@
 //
 // Un bandeau fixe en haut (phase, menu « … », Fin du tour), puis une table
 // qui defile verticalement avec quatre bandes horizontales (mechant,
-// manigances, engages, mon heros), chacune defilant du doigt. La main est
+// manigances, engages, mon heros), chacune defilant du doigt, plus les
+// soutiens et les ameliorations sur leur propre ligne quand il y en a. La main est
 // cachee derriere l'encoche de droite, les piles derriere celle de gauche.
 // Meme plateau en paysage, avec des bandes plus larges (portrait.css).
 //
@@ -92,11 +93,11 @@ export function PlateauPortrait(props: BoardProps) {
   // pas a lire une carte : il ouvre les ACTIONS du moteur. Lire est un etat
   // local, comme sur le portrait du 11/09.
   const [carteLue, setCarteLue] = useState<
-    { carte: ScanCardProps; attachees: ScanCardProps[]; libelleAction?: string } | undefined
+    { carte: ScanCardProps; attachees: ScanCardProps[]; libelleAction?: string; deLaMain?: boolean } | undefined
   >()
   const ouvrirCarte = useCallback(
-    (carte: ScanCardProps, attachees: ScanCardProps[] = [], libelleAction?: string) =>
-      setCarteLue({ carte, attachees, libelleAction }),
+    (carte: ScanCardProps, attachees: ScanCardProps[] = [], libelleAction?: string, deLaMain?: boolean) =>
+      setCarteLue({ carte, attachees, libelleAction, deLaMain }),
     []
   )
   // La carte ouverte SUIT la question en cours (06/10/2026) : son action est
@@ -198,6 +199,22 @@ export function PlateauPortrait(props: BoardProps) {
     (unite: UniteAffichee) => !manuelAuDoigt && interactifs.get(Number(unite.carte.id))?.role === 'porteur',
     [interactifs, manuelAuDoigt]
   )
+  // Une carte de la main ouverte en grand garde sa place dans la main : un
+  // glisser du doigt passe a sa voisine (retour de Raven, 12/10/2026).
+  const ouvrirDeLaMain = useCallback(
+    (unite: UniteAffichee) => ouvrirCarte(unite.carte, [], jouable(unite) ? t('Jouer') : undefined, true),
+    [ouvrirCarte, jouable]
+  )
+  const rangDansLaMain = carteLue?.deLaMain ? main.findIndex((u) => u.carte.id === carteLue.carte.id) : -1
+  const voisines =
+    rangDansLaMain < 0
+      ? undefined
+      : {
+          position: rangDansLaMain + 1,
+          total: main.length,
+          precedente: rangDansLaMain > 0 ? () => ouvrirDeLaMain(main[rangDansLaMain - 1]) : undefined,
+          suivante: rangDansLaMain < main.length - 1 ? () => ouvrirDeLaMain(main[rangDansLaMain + 1]) : undefined,
+        }
   const decor = useMemo(
     () => ({
       interactifs,
@@ -252,6 +269,14 @@ export function PlateauPortrait(props: BoardProps) {
           decor={decor}
           {...bandes.heros}
         />
+        {/* Une ligne par famille (retour de Raven, 12/10/2026) : vides, elles
+            ne prennent pas de place. */}
+        {bandes.soutiens.unites.length > 0 ? (
+          <Bande cle="soutiens" titre={t('Soutiens')} texteVide="" decor={decor} {...bandes.soutiens} />
+        ) : null}
+        {bandes.ameliorations.unites.length > 0 ? (
+          <Bande cle="ameliorations" titre={t('Améliorations')} texteVide="" decor={decor} {...bandes.ameliorations} />
+        ) : null}
       </div>
 
       <Encoche cote="gauche" libelle={t('Piles')} onOuvrir={() => setTiroirOuvert(true)} />
@@ -276,13 +301,15 @@ export function PlateauPortrait(props: BoardProps) {
           refuseeParLeJoueur.current = true
           setMainOuverte(false)
         }}
-        onOuvrir={(unite) => ouvrirCarte(unite.carte, [], jouable(unite) ? t('Jouer') : undefined)}
+        onOuvrir={ouvrirDeLaMain}
         onJouer={(unite) => agir(unite.carte)}
         jouable={jouable}
       />
       {carteLue && !actionPerdue ? (
         <CarteOuverte
+          key={carteLue.carte.id}
           carte={carteLueActuelle ?? carteLue.carte}
+          voisines={voisines}
           attachees={carteLue.attachees}
           onOuvrirAttachee={(carte) => ouvrirCarte(carte)}
           onFermer={() => setCarteLue(undefined)}

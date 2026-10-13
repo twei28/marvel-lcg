@@ -50,7 +50,8 @@ describe('PlateauPortrait — les quatre bandes', () => {
     expect(container.querySelector('.bande-manigances .est-epinglee [data-card-id="effraction"]')).not.toBeNull()
     expect(container.querySelector('.bande-manigances .bande-carte:not(.est-epinglee)[data-card-id="annexe"]')).not.toBeNull()
     expect(container.querySelector('.bande-heros .est-epinglee[data-card-id="peter"]')).not.toBeNull()
-    expect(container.querySelector('.bande-heros .bande-carte:not(.est-epinglee)[data-card-id="soutien"]')).not.toBeNull()
+    // Le soutien a sa propre ligne (retour de Raven, 13/10/2026).
+    expect(container.querySelector('.bande-soutiens .bande-carte[data-card-id="soutien"]')).not.toBeNull()
   })
 
   it('tait la pastille « Manigance principale / annexe », que la bande repete deja', () => {

@@ -18,7 +18,7 @@ import type { EtatInteractif } from '../interaction'
 import type { GroupeDePile, UniteAffichee } from '../zones'
 import { useAppuiLong } from './useAppuiLong'
 
-export type CleBande = 'vilain' | 'manigances' | 'engages' | 'heros'
+export type CleBande = 'vilain' | 'manigances' | 'engages' | 'heros' | 'soutiens' | 'ameliorations'
 
 type Decor = {
   interactifs: Map<number, EtatInteractif>
@@ -110,9 +110,12 @@ export function Bande({
   // Dans Manigances, « Manigance principale » et « Manigance annexe » sont
   // tout aussi redondantes, et a trois cartes par ecran elles se marchaient
   // dessus (releve sur le S24, 12/09/2026) : la zone se declare du nom du
-  // type lui-meme, ce qui la rend muette.
+  // type lui-meme, ce qui la rend muette. Meme chose dans les lignes des
+  // soutiens et des ameliorations (13/10/2026).
   const titreZoneDe = (unite: UniteAffichee): string =>
-    cle === 'manigances' ? (unite.carte.labelType ?? t(kindLabel[unite.carte.kind])) : titre
+    cle === 'manigances' || cle === 'soutiens' || cle === 'ameliorations'
+      ? (unite.carte.labelType ?? t(kindLabel[unite.carte.kind]))
+      : titre
   return (
     <section className={`bande bande-${cle}${vide ? ' est-vide' : ''}`} aria-label={titre}>
       <header className="bande-entete">

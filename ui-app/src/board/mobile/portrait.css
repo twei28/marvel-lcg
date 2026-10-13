@@ -610,15 +610,71 @@
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.3);
   }
+  /* Retours de Raven (12/10/2026) : l'autre face d'une carte recto-verso, et
+     les voisines de main (le glisser du doigt, doublé de deux flèches). */
+  .carte-ouverte-face {
+    min-height: 44px;
+    padding: 9px 16px;
+    font: inherit;
+    font-weight: 800;
+    color: #e8e9ee;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 99px;
+    cursor: pointer;
+  }
+  /* L'autre face n'est qu'une image : les pastilles, stats et jauges sont
+     celles de la face en jeu (meme regle que l'apercu du PC, board.css). */
+  .carte-ouverte-scan.est-autre-face .top-strip,
+  .carte-ouverte-scan.est-autre-face .scan-stats-calee,
+  .carte-ouverte-scan.est-autre-face .scan-stat,
+  .carte-ouverte-scan.est-autre-face .scheme-threat-badge,
+  .carte-ouverte-scan.est-autre-face .ally-hp-badge,
+  .carte-ouverte-scan.est-autre-face .jauge-carte,
+  .carte-ouverte-scan.est-autre-face .jeton-carte,
+  .carte-ouverte-scan.est-autre-face .jetons-compteurs {
+    display: none;
+  }
+  .carte-ouverte-voisines {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: rgba(255, 255, 255, 0.82);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  .carte-ouverte-voisine {
+    min-width: 44px;
+    min-height: 44px;
+    font: inherit;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #e8e9ee;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 99px;
+    cursor: pointer;
+  }
+  .carte-ouverte-voisine:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .carte-ouverte {
+    touch-action: pan-y;
+  }
 
   /* --- Pas de loupe au doigt --------------------------------------------
      ScanCard.css agrandit `.scan-visuel` de 2,5x sur `:hover` et
      `:focus-visible` : c'est la consultation a la souris du plateau PC. Ici
      il n'y a pas de souris, et le tap POSE LE FOCUS — la carte grossissait
      donc a chaque fois qu'on la jouait. Le portrait a son propre geste de
-     lecture, le tap qui ouvre la carte. Meme couche que ScanCard.css. */
+     lecture, le tap qui ouvre la carte. Meme couche que ScanCard.css.
+     La carte ouverte en grand vit dans <body> (CarteOuverte.tsx) : elle est
+     nommee a part. */
   .plateau-portrait .scan-card:hover .scan-visuel,
-  .plateau-portrait .scan-card:focus-visible .scan-visuel {
+  .plateau-portrait .scan-card:focus-visible .scan-visuel,
+  .carte-ouverte-voile .scan-card:hover .scan-visuel,
+  .carte-ouverte-voile .scan-card:focus-visible .scan-visuel {
     transform: none;
   }
   .plateau-portrait .plateau-unite:hover {
@@ -631,8 +687,23 @@
    { --card-w: 108px }` de ScanCard.css (voir l'en-tete). Trois cartes par
    largeur d'ecran en portrait, cinq en paysage (spec du 12/09/2026). */
 @layer utilitaires {
-  .plateau-portrait .scan-card {
+  .plateau-portrait .scan-card,
+  .carte-ouverte-voile .scan-card {
     --inspect-scale: 1;
+  }
+  /* Sur le telephone, les ameliorations d'un porteur (allie, ennemi) se
+     posent A COTE de lui, a plat, sans chevauchement : la place que board.css
+     leur reserve en `padding` pour le decalage du PC (derriere le porteur)
+     ne sert plus. Le reglage « ameliorations a gauche » les passe devant
+     (retour de Raven, 12/10/2026 : il etait sans effet en vertical).
+     En `utilitaires`, comme la regle de board.css qu'elle remplace. */
+  .bande-rail .plateau-unite {
+    gap: 6px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .bande-rail .est-attachee.est-a-gauche {
+    order: -1;
   }
   .bande-rail .scan-card {
     --card-w: clamp(140px, calc((100vw - 48px) / 3), 200px);

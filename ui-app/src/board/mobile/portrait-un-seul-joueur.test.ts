@@ -33,8 +33,12 @@ function nomsDuBlocHeros(seulCeJoueur: boolean): string[] {
     catalogue: catalogueVide,
     seulCeJoueur,
   })
-  const heros = repartirEnBandes(plateau).heros
-  return [heros.epinglee, ...heros.unites].flatMap((unite) => (unite ? [unite.carte.name] : []))
+  // Le bloc du joueur tient sur trois lignes depuis le 13/10/2026 (heros et
+  // allies, soutiens, ameliorations : retour de Raven).
+  const bandes = repartirEnBandes(plateau)
+  return [bandes.heros.epinglee, ...bandes.heros.unites, ...bandes.soutiens.unites, ...bandes.ameliorations.unites].flatMap(
+    (unite) => (unite ? [unite.carte.name] : [])
+  )
 }
 
 describe('le bloc « Ton héros » en multijoueur', () => {

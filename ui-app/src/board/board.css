@@ -2686,6 +2686,29 @@
     --largeur-face-paysage: min(398px, 30vw);
   }
 
+  /* ECRAN BAS (telephone couche, 390 a 430 px de haut) : la carte agrandie,
+     haute de 478 px, sortait par le bas, on n'en voyait que la moitie haute
+     (retour de Raven, iPhone, 12/10/2026). Sa largeur suit alors la hauteur
+     de l'ecran, moins l'etiquette du dessus et une marge (52 px). Ce qui se
+     lit SOUS la carte (mots-cles, statuts) peut encore deborder : la carte,
+     elle, est entiere. */
+  @media (max-height: 560px) {
+    .carte-apercu {
+      --largeur-face: min(345px, calc((100dvh - 52px) * 127 / 176));
+      --largeur-face-paysage: min(506px, calc((100dvh - 52px) * 176 / 127));
+    }
+
+    .carte-apercu.a-faces-2 {
+      --largeur-face: min(315px, 30vw, calc((100dvh - 52px) * 127 / 176));
+      --largeur-face-paysage: min(460px, 42vw, calc((100dvh - 52px) * 176 / 127));
+    }
+
+    .carte-apercu.a-faces-3 {
+      --largeur-face: min(272px, 21vw, calc((100dvh - 52px) * 127 / 176));
+      --largeur-face-paysage: min(398px, 30vw, calc((100dvh - 52px) * 176 / 127));
+    }
+  }
+
   /* Conan (5 faces : Conan / Thief / Barbarian / King Conan / Conan roi) est
      le premier heros a depasser 3 faces. Un premier essai les avait retrecies
      (meme taper que .a-faces-2/.a-faces-3) : illisibles, revenu en arriere
@@ -5553,6 +5576,16 @@
 
   .bouton-fin-tour:hover {
     filter: brightness(1.08);
+  }
+
+  /* TELEPHONE COUCHE : la main occupe le bas de l'ecran, et ce bouton flottant
+     s'y posait en plein milieu, sur les cartes, impossibles a toucher (retour
+     de Raven, iPhone, 12/10/2026). La barre du haut porte deja « Fin du
+     tour » (`.bh-fin-tour`) : le doublon flottant s'efface. */
+  @media (pointer: coarse) and (orientation: landscape) and (max-height: 560px) {
+    .bouton-fin-tour {
+      display: none;
+    }
   }
 
   /* --- Choix des arts alternatifs (promos FFG) ------------------------------ */

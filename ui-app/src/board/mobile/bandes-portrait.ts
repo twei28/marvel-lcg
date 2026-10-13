@@ -5,6 +5,13 @@
 // main a part (elle vit derriere l'encoche de droite) et les piles a part
 // (derriere l'encoche de gauche). Fonction pure : aucun rendu ici.
 //
+// UNE LIGNE PAR FAMILLE cote joueur (retour de Raven, iPhone, 12/10/2026 :
+// « une ligne avec le heros et les allies, une ligne avec les soutiens, une
+// ligne avec les ameliorations ») : en une seule ligne, l'identite epinglee
+// recouvrait les cartes qui defilaient, et la ligne s'allongeait sans fin.
+// Les ameliorations posees sur l'IDENTITE quittent sa carte pour leur ligne ;
+// celles d'un allie ou d'un ennemi restent sur leur porteur.
+//
 // Verifie contre `construirePlateau` (zones.ts) : `rencontre` est LE mechant
 // (airesVilains), `terrain-combat` melange allies, sbires engages et
 // environnement dans les memes groupes (le seul emplacement a deux camps), et
@@ -29,7 +36,10 @@ export type BandesPortrait = {
   vilain: BandePortrait
   manigances: BandePortrait
   engages: BandePortrait
+  /** L'identite (epinglee) et les allies. */
   heros: BandePortrait
+  soutiens: BandePortrait
+  ameliorations: BandePortrait
   main: UniteAffichee[]
   piles: PileAffichee[]
 }
@@ -55,6 +65,19 @@ function versPile(unite: UniteAffichee): PileAffichee {
   }
 }
 
+type Famille = 'heros' | 'soutiens' | 'ameliorations'
+
+function familleDe(unite: UniteAffichee): Famille {
+  if (unite.carte.kind === 'ally') return 'heros'
+  if (unite.carte.kind === 'upgrade') return 'ameliorations'
+  return 'soutiens'
+}
+
+/** Une amelioration retiree de l'identite devient une unite de sa ligne. */
+function versUnite(carte: UniteAffichee['carte']): UniteAffichee {
+  return { cle: `amelioration-${carte.id}`, carte, attachees: [] }
+}
+
 export function repartirEnBandes(plateau: Plateau): BandesPortrait {
   const emplacements = (cle: CleEmplacement): EmplacementAffiche[] =>
     plateau.emplacements.filter((emplacement) => emplacement.cle === cle)
@@ -64,8 +87,20 @@ export function repartirEnBandes(plateau: Plateau): BandesPortrait {
   const combat = unites('terrain-combat')
   const rencontre = unites('rencontre')
   const soutien = unites('terrain-soutien')
-  const identite = soutien.find((unite) => IDENTITES.has(unite.carte.kind))
+  const identiteBrute = soutien.find((unite) => IDENTITES.has(unite.carte.kind))
+  // Ses ameliorations partent dans leur ligne ; ses statuts restent sous elle.
+  const surIdentite = identiteBrute?.attachees.filter((carte) => carte.kind === 'upgrade') ?? []
+  const identite = identiteBrute && {
+    ...identiteBrute,
+    attachees: identiteBrute.attachees.filter((carte) => carte.kind !== 'upgrade'),
+  }
   const speciaux = EMPLACEMENTS_SPECIAUX.flatMap(unites)
+  const coteJoueur = [
+    ...soutien.filter((unite) => unite !== identiteBrute),
+    ...combat.filter((unite) => unite.carte.kind === 'ally'),
+    ...speciaux.filter((unite) => !estUnePile(unite)),
+  ]
+  const deLaFamille = (famille: Famille) => coteJoueur.filter((unite) => familleDe(unite) === famille)
 
   const piles: PileAffichee[] = [
     ...EMPLACEMENTS_DE_PILES.flatMap(unites).map(versPile),
@@ -86,12 +121,10 @@ export function repartirEnBandes(plateau: Plateau): BandesPortrait {
     },
     heros: {
       epinglee: identite,
-      unites: [
-        ...soutien.filter((unite) => unite !== identite),
-        ...combat.filter((unite) => unite.carte.kind === 'ally'),
-        ...speciaux.filter((unite) => !estUnePile(unite)),
-      ],
+      unites: deLaFamille('heros'),
     },
+    soutiens: { unites: deLaFamille('soutiens') },
+    ameliorations: { unites: [...surIdentite.map(versUnite), ...deLaFamille('ameliorations')] },
     main: unites('main'),
     piles,
   }

@@ -341,6 +341,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Voir les': 'See the',
   'stades': 'stages',
   'Autre face': 'Other side',
+  'Face en jeu': 'Side in play',
+  'Carte précédente': 'Previous card',
+  'Carte suivante': 'Next card',
   'entrée(s) inattendue(s)': 'unexpected entry(ies)',
 
   // ---- board/zones.ts : titres de zones ----
