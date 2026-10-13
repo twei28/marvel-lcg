@@ -9783,3 +9783,35 @@
   opacity: 0.75;
   font-style: italic;
 }
+
+/* Le joueur éliminé regarde la suite (13/10/2026, encadré ⑧) : un bandeau discret en haut. */
+.bandeau-spectateur {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 52px);
+  left: 50%;
+  translate: -50% 0;
+  z-index: 640;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(17, 20, 28, 0.92);
+  color: #e8ecf2;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.bandeau-spectateur-quitter {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #9aa6b8;
+  font: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+  white-space: nowrap;
+}

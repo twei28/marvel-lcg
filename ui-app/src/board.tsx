@@ -4718,6 +4718,18 @@ export function PagePartie({
 
       {tournerLeTelephone ? <EcranTourne /> : null}
 
+      {/* 13/10/2026 (encadré ⑧) : ton héros est éliminé, les autres jouent encore.
+          Tu regardes la suite ; tu gagnes ou tu perds avec ton équipe (Rules
+          Reference, PLAYER ELIMINATION). Ta zone a déjà quitté la table. */}
+      {estMultijoueur() && !spectateur && etat.monde?.players?.[playerId]?.is_eliminated && !etat.monde?.game_over ? (
+        <div className="bandeau-spectateur" role="status">
+          <span>{t('Tu es éliminé : tu regardes la suite. Tu gagnes ou tu perds avec ton équipe.')}</span>
+          <button type="button" className="bandeau-spectateur-quitter" onClick={() => void retourMenuPrincipal()}>
+            {t('Quitter la partie')}
+          </button>
+        </div>
+      ) : null}
+
       <RenduPartie
         world={mondeTable ?? etat.monde}
         playerId={joueurActif}

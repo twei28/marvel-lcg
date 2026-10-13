@@ -1708,6 +1708,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Réponse de %1': '%1 responds',
   'Interruption de %1': '%1 interrupts',
   'Choisir l’ordre': 'Choose the order',
+  'Tu es éliminé : tu regardes la suite. Tu gagnes ou tu perds avec ton équipe.': 'You are eliminated: you watch the rest. You win or lose with your team.',
+  'Quitter la partie': 'Leave the game',
   'sans effet (aucun dégât)': 'no effect (no damage)',
   'Recherche : rien trouvé': 'Search: nothing found',
   'Trouvé : %1': 'Found: %1',
