@@ -9,6 +9,14 @@ Voir : .planning/PROJECT.md (mis à jour le 2026-07-28)
 
 ## Position actuelle
 
+Jalon : **v1.1 Tablette et téléphone** (phases numérotées à partir de 8)
+Phase : pas commencée (définition des requirements)
+Plan : —
+Statut : définition des requirements
+Dernière activité : 2026-10-13, démarrage du jalon v1.1
+
+## Historique v1.0 (état mesuré le 12/08/2026)
+
 > ⚠ **Ce fichier a dormi du 3 au 12 août 2026.** Ce qui suit a été mesuré le
 > 12/08/2026 ; tout ce qui parle de « phase 2 en cours » plus bas dans le contexte
 > accumulé est à lire comme un historique, pas comme un état.

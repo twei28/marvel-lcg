@@ -8,6 +8,17 @@ Jeu numérique non officiel Marvel Champions LCG (usage strictement personnel, a
 
 Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mobile, sans jamais toucher aux règles du moteur.
 
+## Current Milestone: v1.1 Tablette et téléphone
+
+**Goal:** Rendre le jeu agréable au doigt sur tablette et repenser entièrement le téléphone (plateau et menus) à partir d'une nouvelle recherche, orientation portrait/paysage comprise.
+
+**Target features:**
+- Mode tablette : le plateau PC rendu tactile (décisions de `.planning/todos/2026-10-12-mode-tablette.md`, lots T1 et T2)
+- Refonte du téléphone, plateau ET menus (assistant, galerie, éditeur, campagne, salon), fondée sur l'état de l'art des jeux de cartes mobiles
+- Décision d'orientation de la partie sur téléphone (portrait, paysage ou les deux), prise avant de refaire le plateau
+
+**Base existante à ne pas ignorer :** la refonte téléphone d'octobre (zones 1 à 3, commits `28d9756b`, `b8ce6864`, `58f32dde`) et les 7 retours de Raven (`959f1402`) sont faits. La recherche les prend comme point de départ, pas comme table rase.
+
 ## Requirements
 
 ### Validated
@@ -23,7 +34,13 @@ Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mob
 
 ### Active
 
-<!-- Hypothèses jusqu'à validation. Affinées après la phase de recherche. -->
+<!-- v1.1 : affinés après la recherche, détail dans REQUIREMENTS.md. -->
+
+- [ ] Plateau PC jouable au doigt sur tablette (détection du geste, aperçu refermable, cibles de 44 px)
+- [ ] Téléphone repensé : plateau, assistant et pages de menus
+- [ ] Orientation de la partie sur téléphone tranchée par la recherche
+
+<!-- Historique v1.0, conservé tel quel (voir ROADMAP.md pour l'état réel). -->
 
 - [ ] Recherche : état de l'art des interfaces de jeux de cartes digitaux (MTG Arena, Marvel Snap, LotR LCG digital, Arkham...) → 2-3 directions visuelles proposées
 - [ ] Décision techno frontend éclairée par la recherche (moderniser le vanilla vs reconstruire en React+TS+Vite)
@@ -73,4 +90,4 @@ Une interface digne du contenu : belle, claire et fluide sur PC, tablette et mob
 | Runtime `public/js/marvel/` intouchable au même titre que le moteur | Sources perdues, protocole interne non documenté ; le nouveau code doit être une fonction pure de `get_world` | ✓ Good |
 
 ---
-*Last updated: 2026-07-28 after phase 01 plan 01 (filet de sécurité : contraintes d'environnement actées)*
+*Last updated: 2026-10-13 au démarrage du jalon v1.1 Tablette et téléphone*
