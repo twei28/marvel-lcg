@@ -56,7 +56,18 @@ La « décision d'orientation » que la recherche plaçait en phase propre est d
   4. Une commande lance les tests Playwright sur un gabarit tablette tactile (Chromium) et un gabarit iPad WebKit, avec de vrais touchers.
   5. Un signalement envoyé depuis la partie contient la taille de l'écran, les zones sûres, le mode de saisie et le plateau choisi.
 **Points de vigilance** : relever l'état des suites AVANT tout changement (tout vert au 13/10, `boutons-bd.test.ts` compris) pour que le filet distingue l'existant d'une régression. Un seul propriétaire de l'attribut de saisie, partagé entre le plateau React et les pages JS non compilées ; la disposition par largeur (`useModeMobile.ts`) reste un axe séparé.
-**Plans** : à définir
+**Plans** : 11 plans en 7 vagues
+- [ ] 08-01-PLAN.md : base des suites relevée avant tout changement, moteur d'essai p8 (vague 1)
+- [ ] 08-02-PLAN.md : saisie.js en TDD, détection doigt/souris, réglages par appareil, mesures (vague 2)
+- [ ] 08-03-PLAN.md : filet Playwright tactile (tablette Chromium, iPad et iPad mini WebKit) sur le jeu d'avant (vague 2)
+- [ ] 08-04-PLAN.md : saisie.ts et useModeMobile, forme du plateau selon réglage et écran limite (vague 3)
+- [ ] 08-05-PLAN.md : saisie.js dans les pages, module « Écran et plateau », empreintes deployer.sh (vague 3)
+- [ ] 08-06-PLAN.md : réglages Écran tactile et Plateau dans les Réglages du plateau (vague 4)
+- [ ] 08-07-PLAN.md : mesures d'écran jointes à chaque signalement (vague 4)
+- [ ] 08-08-PLAN.md : bouton dans les menus, question d'écran limite à l'accueil (vague 4)
+- [ ] 08-09-PLAN.md : question d'écran limite à l'entrée du plateau (vague 5)
+- [ ] 08-10-PLAN.md : filet tactile complet (bascule, réglages, question, signalement) (vague 6)
+- [ ] 08-11-PLAN.md : non-régression contre la base, planche validée, nettoyage (vague 7, checkpoint)
 
 ### Phase 9 : Tablette T1, aperçu refermable
 **Objectif** : Sur tablette au doigt, lire une carte ne la joue jamais et l'aperçu se referme toujours ; le PC reste strictement inchangé.
@@ -176,7 +187,7 @@ ne pas croiser deux chantiers dans `Board.tsx`), 13 après 12, 14 après 10.
 
 | Phase | Plans terminés | Statut | Terminée |
 |-------|----------------|--------|----------|
-| 8. Fondations tactiles et filet de tests | 0/? | Pas commencée | - |
+| 8. Fondations tactiles et filet de tests | 0/11 | Planifiée | - |
 | 9. Tablette T1, aperçu refermable | 0/? | Pas commencée | - |
 | 10. Tablette T2, cibles et infobulles | 0/? | Pas commencée | - |
 | 11. Menus du téléphone | 0/? | Pas commencée | - |
