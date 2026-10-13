@@ -65,7 +65,17 @@ refermable, cibles 44 px, barre du bas, paysage téléphone) n'entre ici.
 - Jointes **partout où l'on peut signaler**, pas seulement depuis la partie.
 - Filet tactile de la phase 8 : **plateau sur fixture** (toucher une carte, ouvrir Réglages)
   + **accueil** (question écran limite). État de toutes les suites relevé AVANT tout
-  changement (`boutons-bd.test.ts` déjà rouge).
+  changement (tout vert au 13/10, `boutons-bd.test.ts` compris : mesuré par la recherche).
+- **Réglages testés sur une vraie partie** lancée sur un moteur d'essai séparé (port dédié,
+  cache séparé) : le plateau sur fixture n'a ni Réglages ni signalement, et on ne l'en dote
+  pas pour le test. La fixture reste utilisée pour « toucher une carte ». (Décidé après
+  recherche, 13/10.)
+
+### Décisions prises après la recherche (13/10)
+- **Ligne « Plateau » masquée sur PC** : on garde la protection actuelle contre
+  l'enfermement dans un plateau téléphone étiré sur grand écran (test existant).
+- **« Plateau » ne change que le plateau en phase 8** : la valeur est partagée et réglable
+  depuis les menus, mais son effet sur la mise en page des menus vient avec la phase 11.
 - Gabarits : tablette tactile Chromium + WebKit **iPad (820x1180)** + WebKit **iPad mini
   debout (744x1133)**, avec `hasTouch` et vrais touchers.
 

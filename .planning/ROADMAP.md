@@ -25,8 +25,10 @@ La « décision d'orientation » que la recherche plaçait en phase propre est d
 - **Déploiement seulement sur « déploie » explicite de l'utilisateur.** Une phase terminée
   n'est pas une phase déployée. Avant tout déploiement : entrées fr + en des nouveautés,
   `bash ui-app/deployer.sh`, contrôle du hash du bundle et du HEAD.
-- **`boutons-bd.test.ts` est déjà rouge avant le jalon** : ce rouge n'est pas une régression
-  de la phase en cours. Toute AUTRE suite rouge l'est jusqu'à preuve du contraire.
+- **Base des suites mesurée le 13/10 (recherche phase 8) : tout est vert**, `boutons-bd.test.ts`
+  compris (Vitest 290 fichiers / 3315 tests, `tsc`, `node --test` 187/187). Toute suite rouge
+  est donc une régression jusqu'à preuve du contraire. Relever la base à nouveau au début de
+  chaque phase : l'arbre est partagé avec d'autres sessions.
 - **Avant de toucher `Board.tsx` ou `board.css`** (phases 9, 10, 12, 13, 14) : lire
   `git stash list` (deux sessions ont déjà travaillé sur le même arbre) et vérifier que la
   refonte de la phase du méchant est close, ses fichiers étant les mêmes.
@@ -53,7 +55,7 @@ La « décision d'orientation » que la recherche plaçait en phase propre est d
   3. Sur un écran limite (iPad mini en portrait, écran partagé), le joueur se voit demander une seule fois à l'arrivée s'il veut le plateau téléphone ou tablette ; il ne la revoit plus ensuite et peut changer d'avis dans les réglages.
   4. Une commande lance les tests Playwright sur un gabarit tablette tactile (Chromium) et un gabarit iPad WebKit, avec de vrais touchers.
   5. Un signalement envoyé depuis la partie contient la taille de l'écran, les zones sûres, le mode de saisie et le plateau choisi.
-**Points de vigilance** : relever l'état des suites AVANT tout changement (`boutons-bd.test.ts` déjà rouge) pour que le filet distingue l'existant d'une régression. Un seul propriétaire de l'attribut de saisie, partagé entre le plateau React et les pages JS non compilées ; la disposition par largeur (`useModeMobile.ts`) reste un axe séparé.
+**Points de vigilance** : relever l'état des suites AVANT tout changement (tout vert au 13/10, `boutons-bd.test.ts` compris) pour que le filet distingue l'existant d'une régression. Un seul propriétaire de l'attribut de saisie, partagé entre le plateau React et les pages JS non compilées ; la disposition par largeur (`useModeMobile.ts`) reste un axe séparé.
 **Plans** : à définir
 
 ### Phase 9 : Tablette T1, aperçu refermable
