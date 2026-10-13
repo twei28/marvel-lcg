@@ -507,9 +507,17 @@ function tempsDe(phase: string | undefined): TempsPhase | undefined {
  */
 export function entreesPourRepli(
   entrees: EntreeHistorique[],
-  phaseMechantEnCours: boolean
+  phaseMechantEnCours: boolean,
+  renderActuel?: number
 ): EntreeHistorique[] {
-  return phaseMechantEnCours ? entrees : []
+  if (!phaseMechantEnCours) return []
+  // Signalement du 13/10/2026 : apres un « Annuler » en pleine phase du
+  // mechant, le journal (garde expres a travers l'Undo) portait encore la
+  // version annulee du round, et l'etape 3 montrait « Quinjet défaussé » et
+  // « Frappe héroïque joué », cartes du joueur qui n'etaient pas en jeu. Une
+  // ligne d'un rendu POSTERIEUR au monde affiche vient forcement d'un futur
+  // annule : le repli ne la lit pas.
+  return renderActuel === undefined ? entrees : entrees.filter((e) => e.renderId <= renderActuel)
 }
 
 /**
@@ -1032,9 +1040,15 @@ export function etapesDeroule(
     // « DiscardPile<3> ») ne produisent PAS d'etape : constate en partie,
     // 8 etapes de ce genre sur 12, en anglais et illisibles, noyaient les
     // quatre etapes utiles. Elles restent entieres dans le journal a droite.
+    //
+    // Signalement du 13/10/2026 : seules les cartes REVELEES (`:revealed`,
+    // voir HistoriquePartie) sont des cartes rencontre. Une carte du joueur
+    // jouee ou defaussee a ce moment (`:play`, `:discard`) n'a rien a faire a
+    // l'etape 3 : « Quinjet défaussé » y paraissait comme une carte rencontre.
     const cartesRevelees = duRound.filter(
       (e) =>
         e.type === 'card' &&
+        e.cle.endsWith(':revealed') &&
         (tempsDe(e.phase) === 'revelation' || tempsDe(e.phase) === 'distribution')
     )
     for (const e of trierParOrdreDuTour(cartesRevelees, premierJoueurId, nomsHerosParJoueur.length)) {

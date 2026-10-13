@@ -214,7 +214,7 @@ describe('etapesDeroule', () => {
   it('fait une etape par carte revelee', () => {
     const etapes = etapesDeroule([], [
       entree({
-        cle: 'c1',
+        cle: 'c1:77:revealed',
         type: 'card',
         phase: 'Reveal Encounter Cards',
         titre: 'Icy Grip revelee',
@@ -239,7 +239,7 @@ describe('etapesDeroule', () => {
     it('accueille aussi les cartes marquees sous la distribution', () => {
       const etapes = etapesDeroule(
         [],
-        [entree({ cle: 'c1', type: 'card', phase: 'Deal Encounter Cards', nomCarte: 'Sonic Boom', cibleId: 77 })],
+        [entree({ cle: 'c1:revealed', type: 'card', phase: 'Deal Encounter Cards', nomCarte: 'Sonic Boom', cibleId: 77 })],
         1,
         AUCUN_MECHANT
       )
@@ -256,9 +256,9 @@ describe('etapesDeroule', () => {
       const etapes = etapesDeroule(
         [],
         [
-          entree({ cle: 'a', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 }),
-          entree({ cle: 'c', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte C', joueur: 2 }),
-          entree({ cle: 'b', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte B', joueur: 1 }),
+          entree({ cle: 'a:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 }),
+          entree({ cle: 'c:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte C', joueur: 2 }),
+          entree({ cle: 'b:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte B', joueur: 1 }),
         ],
         1,
         AUCUN_MECHANT,
@@ -274,8 +274,8 @@ describe('etapesDeroule', () => {
       const etapes = etapesDeroule(
         [],
         [
-          entree({ cle: 'a', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 }),
-          entree({ cle: 'b', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte B', joueur: 1 }),
+          entree({ cle: 'a:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 }),
+          entree({ cle: 'b:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte B', joueur: 1 }),
         ],
         1,
         AUCUN_MECHANT,
@@ -290,7 +290,7 @@ describe('etapesDeroule', () => {
     it('en solo, l ordre ne bouge pas et aucun compteur n apparait', () => {
       const etapes = etapesDeroule(
         [],
-        [entree({ cle: 'a', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 })],
+        [entree({ cle: 'a:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 })],
         1,
         AUCUN_MECHANT,
         undefined,
@@ -306,7 +306,7 @@ describe('etapesDeroule', () => {
     it('nomme le heros qui revele, nettoye de son prefixe decoratif', () => {
       const etapes = etapesDeroule(
         [],
-        [entree({ cle: 'a', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Bombe à retardement', joueur: 0 })],
+        [entree({ cle: 'a:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Bombe à retardement', joueur: 0 })],
         1,
         AUCUN_MECHANT,
         undefined,
@@ -326,8 +326,8 @@ describe('etapesDeroule', () => {
         [
           // Le plus recent en tete, comme le vrai journal : b est arrivee
           // apres a.
-          entree({ cle: 'b', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte B', joueur: 1 }),
-          entree({ cle: 'a', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 }),
+          entree({ cle: 'b:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte B', joueur: 1 }),
+          entree({ cle: 'a:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Carte A', joueur: 0 }),
         ],
         1,
         AUCUN_MECHANT
@@ -411,9 +411,9 @@ describe('etapesDeroule', () => {
     // vieilles cartes s'afficheraient en plus a l'envers.
     const journalTroisRounds: EntreeHistorique[] = [
       // Le plus recent d'abord, comme le fait vraiment historique.entrees.
-      entree({ cle: 'r3-b', round: 3, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R3-B', nomCarte: 'Carte R3-B', cibleId: 3 }),
-      entree({ cle: 'r3-a', round: 3, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R3-A', nomCarte: 'Carte R3-A', cibleId: 2 }),
-      entree({ cle: 'r2', round: 2, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R2', nomCarte: 'Carte R2', cibleId: 1 }),
+      entree({ cle: 'r3-b:revealed', round: 3, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R3-B', nomCarte: 'Carte R3-B', cibleId: 3 }),
+      entree({ cle: 'r3-a:revealed', round: 3, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R3-A', nomCarte: 'Carte R3-A', cibleId: 2 }),
+      entree({ cle: 'r2:revealed', round: 2, type: 'card', phase: 'Reveal Encounter Cards', titre: 'Carte R2', nomCarte: 'Carte R2', cibleId: 1 }),
       entree({ cle: 'r1', round: 1, type: 'threat', phase: 'Main Scheme Place Threat', titre: 'Menace R1' }),
     ]
 
@@ -429,7 +429,7 @@ describe('etapesDeroule', () => {
       // Le journal les stocke la plus recente en tete (r3-b avant r3-a) : le
       // deroule doit les montrer dans l'ordre ou elles ont eu lieu.
       const etapes = etapesDeroule([], journalTroisRounds, 3, AUCUN_MECHANT)
-      expect(etapes.map((e) => e.cle)).toEqual(['carte:r3-a', 'carte:r3-b'])
+      expect(etapes.map((e) => e.cle)).toEqual(['carte:r3-a:revealed', 'carte:r3-b:revealed'])
     })
 
     it('ne melange pas un autre round dans le decompte', () => {
@@ -800,7 +800,7 @@ describe('les cinq temps depuis les faits du moteur', () => {
     // reconstruction locale.
     const etapes = etapesDeroule(
       [faitDistribution()],
-      [entree({ cle: 'c1', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Sonic Boom' })],
+      [entree({ cle: '118:card:Sonic Boom révélée:61:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Sonic Boom' })],
       1,
       AUCUN_MECHANT
     )
@@ -822,13 +822,27 @@ describe('les cinq temps depuis les faits du moteur', () => {
   it('replie sur le journal quand AUCUN fait de carte n existe pour le round', () => {
     const etapes = etapesDeroule(
       [faitMenace()],
-      [entree({ cle: 'c1', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Sonic Boom' })],
+      [entree({ cle: '118:card:Sonic Boom révélée:61:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Sonic Boom' })],
       1,
       AUCUN_MECHANT
     )
     const revelations = etapes.filter((e) => e.temps === 'revelation')
     expect(revelations).toHaveLength(1)
     expect(revelations[0].cibleNom).toBe('Sonic Boom')
+  })
+
+  it('le repli ne prend jamais une carte du joueur jouee ou defaussee pour une carte rencontre', () => {
+    const etapes = etapesDeroule(
+      [faitMenace()],
+      [
+        entree({ cle: '124:card:Quinjet défaussé:39:discard', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Quinjet' }),
+        entree({ cle: '124:card:Frappe héroïque joué:13:play', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Frappe héroïque' }),
+        entree({ cle: '124:card:Sonic Boom révélée:61:revealed', type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Sonic Boom' }),
+      ],
+      1,
+      AUCUN_MECHANT
+    )
+    expect(etapes.filter((e) => e.temps === 'revelation').map((e) => e.cibleNom)).toEqual(['Sonic Boom'])
   })
 
   it('ne replie pas sur les faits d un AUTRE round', () => {
@@ -864,6 +878,24 @@ describe('le journal de repli apres un Undo', () => {
   it('pendant la phase du mechant, le repli relit toujours le journal', () => {
     const etapes = etapesDeroule([], entreesPourRepli(phaseDAvant, true), 1, AUCUN_MECHANT)
     expect(etapes.filter((e) => e.temps === 'menace')).toHaveLength(1)
+  })
+
+  // Signalement du 13/10/2026 : un « Annuler » en pleine phase ramene le monde
+  // au rendu 79, le journal garde la version annulee (rendus 118 a 124), et
+  // l'etape 3 montrait des cartes du joueur jamais revelees.
+  it('apres un Annuler, le repli ne lit pas les lignes d un futur annule', () => {
+    const futur = [
+      entree({ cle: '124:card:Quinjet révélée:39:revealed', renderId: 124, type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Quinjet' }),
+      entree({ cle: 'm', renderId: 70 }),
+    ]
+    const etapes = etapesDeroule([], entreesPourRepli(futur, true, 79), 1, AUCUN_MECHANT)
+    expect(etapes.filter((e) => e.temps === 'revelation')).toHaveLength(0)
+    expect(etapes.filter((e) => e.temps === 'menace')).toHaveLength(1)
+  })
+
+  it('une ligne du rendu affiche lui-meme reste lisible', () => {
+    const lignes = [entree({ cle: '79:card:Sonic Boom révélée:61:revealed', renderId: 79, type: 'card', phase: 'Reveal Encounter Cards', nomCarte: 'Sonic Boom' })]
+    expect(entreesPourRepli(lignes, true, 79)).toHaveLength(1)
   })
 })
 
@@ -1011,7 +1043,7 @@ describe('le bilan de fin de phase', () => {
       [],
       [
         entree({
-          cle: 'c1',
+          cle: 'c1:77:revealed',
           type: 'card',
           phase: 'Reveal Encounter Cards',
           titre: 'Icy Grip révélée',
@@ -1071,7 +1103,7 @@ describe('le bilan de fin de phase', () => {
         [],
         [
           entree({
-            cle: 'c1',
+            cle: 'c1:77:revealed',
             type: 'card',
             phase: 'Reveal Encounter Cards',
             titre: 'Icy Grip révélée',

@@ -2443,7 +2443,7 @@ export function PagePartie({
     )
     return etapesDeroule(
       etat.monde?.faits_mechant ?? [],
-      entreesPourRepli(historique.entrees, PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')),
+      entreesPourRepli(historique.entrees, PHASES_DU_MECHANT.has(etat.monde?.phase ?? ''), etat.monde?.render_id),
       etat.monde?.round_id ?? 0,
       mechantIds,
       herosVaincusIds,
