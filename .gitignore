@@ -161,3 +161,6 @@ deploiement/construction-plateau.log
 # Jeu dans le navigateur : paquet genere et caches de telechargement.
 navigateur/dist/
 navigateur/.cache/
+
+# Environnement Python du lanceur Linux (LANCEUR-LINUX.sh), propre a la machine.
+.venv-linux/
