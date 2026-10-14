@@ -43,3 +43,6 @@ propre (le nemesis est également géré nativement).
   capacité annexe, jamais le mot-clé Quickstrike lui-même.
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+
+**Rules Reference 1.8 (22/07/2026)** : « If a minion with the quickstrike keyword is being revealed, the quickstrike keyword resolves after any "When Revealed" abilities on that minion are resolved. » Moteur : règle `v18_reveal_keywords` (posée par `v18_all`) ; `Minion.OnEngagePlayer` diffère alors `ResolveQuickstrike` avec `RunAt.AfterRevealed` quand `card.state.is_revealing`. Sans la règle (sauvegardes d'avant), l'attaque part avant les When Revealed. Cas : `[RR1.8] 56079 Hellcat`.

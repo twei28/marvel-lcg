@@ -10,6 +10,9 @@
 
 import type { World, WorldCard } from './world'
 import { estUneCarte } from './world'
+import type { Fige } from './coups-sur-table'
+
+export type GenreEtape = 'arrivee' | 'retournement' | 'degats' | 'menace'
 
 export type EtapeMiseEnPlace = {
   cle: string
@@ -23,9 +26,13 @@ export type EtapeMiseEnPlace = {
   /** Nom du héros pour « Engagé avec », ou nombre pour un dégât / une menace. */
   detail?: { cle: string; valeur: string | number }
   paysage: boolean
+  /** Ce que l'étape change sur la table (absent : une arrivée). */
+  genre?: GenreEtape
+  /** La carte AVANT l'étape : ce que la table montre tant qu'on n'a pas cliqué. */
+  avant?: { pic?: string; code?: string; pv?: number; menace?: number }
 }
 
-type Vu = { pic: string; pv?: number; menace?: number }
+type Vu = { pic: string; code?: string; pv?: number; menace?: number }
 
 /** Ce que le plateau a déjà présenté, par identifiant de carte. */
 export type MemoireMiseEnPlace = Map<number, Vu>
@@ -95,9 +102,13 @@ function etape(
   carte: WorldCard,
   legende: string,
   cle: string,
-  detail?: EtapeMiseEnPlace['detail']
+  detail?: EtapeMiseEnPlace['detail'],
+  genre: GenreEtape = 'arrivee',
+  avant?: EtapeMiseEnPlace['avant']
 ): EtapeMiseEnPlace {
   return {
+    genre,
+    avant,
     cle,
     carteId: carte.id,
     picId: carte.pic_id,
@@ -138,7 +149,7 @@ export function etapesNouvelles(
   const enJeu = [...cartesEnJeu(monde)].sort((a, b) => a.carte.id - b.carte.id)
   for (const { carte, engageAvec } of enJeu) {
     const avant = memoire.get(carte.id)
-    const maintenant: Vu = { pic: carte.pic_id, pv: pv(carte), menace: menace(carte) }
+    const maintenant: Vu = { pic: carte.pic_id, code: carte.card_id, pv: pv(carte), menace: menace(carte) }
     suite.set(carte.id, maintenant)
     const visible = carte.is_face_up && Boolean(carte.pic_id)
     if (!visible) continue
@@ -154,12 +165,16 @@ export function etapesNouvelles(
     if (avant.pic !== carte.pic_id && carte.card_type === 'MainScheme') {
       const m = maintenant.menace
       changements.push(
-        etape(carte, 'Manigance principale retournée', `${cle}-r`, m ? { cle: 'menace de départ', valeur: m } : undefined)
+        etape(carte, 'Manigance principale retournée', `${cle}-r`, m ? { cle: 'menace de départ', valeur: m } : undefined, 'retournement', {
+          pic: avant.pic,
+          code: avant.code,
+          menace: avant.menace,
+        })
       )
       continue
     }
     if (avant.pv !== undefined && maintenant.pv !== undefined && maintenant.pv < avant.pv) {
-      changements.push(etape(carte, 'Dégâts', `${cle}-d`, { cle: 'dégâts', valeur: avant.pv - maintenant.pv }))
+      changements.push(etape(carte, 'Dégâts', `${cle}-d`, { cle: 'dégâts', valeur: avant.pv - maintenant.pv }, 'degats', { pv: avant.pv }))
     }
     if (
       carte.card_type !== 'MainScheme' &&
@@ -167,7 +182,9 @@ export function etapesNouvelles(
       maintenant.menace !== undefined &&
       maintenant.menace > avant.menace
     ) {
-      changements.push(etape(carte, 'Menace', `${cle}-m`, { cle: 'menace', valeur: maintenant.menace - avant.menace }))
+      changements.push(etape(carte, 'Menace', `${cle}-m`, { cle: 'menace', valeur: maintenant.menace - avant.menace }, 'menace', {
+          menace: avant.menace,
+        }))
     }
   }
   // Les retournements de manigances principales dans l'ORDRE DE LA TABLE
@@ -240,3 +257,56 @@ export function mechantAttendLaQuestion(
   return tete.type === 'Villain' || tete.type === 'EncounterVillain'
 }
 
+
+/**
+ * CE QUE LA TABLE NE MONTRE PAS ENCORE (13/10/2026, décisions de l'utilisateur).
+ *
+ * « Elles sont déjà présentes sur le plateau, donc c'est un petit peu bête » :
+ * tant qu'une carte n'a pas eu son « Continuer », sa place reste un contour en
+ * pointillés ; un jeton (dégâts, menace) garde sa valeur d'avant ; une
+ * manigance principale garde sa face d'avant. La manigance que le panneau
+ * présente (`panneauId`) attend elle aussi en pointillés.
+ *
+ * Plusieurs étapes sur la même carte : la valeur d'avant est celle de la
+ * PREMIÈRE en attente.
+ */
+export type AttenteSurTable = {
+  cachees: Set<number>
+  figes: Fige[]
+  faces: Map<number, { pic: string; code?: string; menace?: number }>
+}
+
+export function attenteSurTable(file: readonly EtapeMiseEnPlace[], panneauId?: number): AttenteSurTable {
+  const cachees = new Set<number>()
+  const figes: Fige[] = []
+  const faces = new Map<number, { pic: string; code?: string; menace?: number }>()
+  if (panneauId !== undefined) cachees.add(panneauId)
+  const fige = (genre: Fige['genre'], cibleId: number, valeur: number | undefined) => {
+    if (valeur === undefined || figes.some((f) => f.genre === genre && f.cibleId === cibleId)) return
+    figes.push({ genre, cibleId, valeur })
+  }
+  for (const e of file) {
+    const genre = e.genre ?? 'arrivee'
+    if (genre === 'arrivee') cachees.add(e.carteId)
+    else if (genre === 'degats') fige('degats', e.carteId, e.avant?.pv)
+    else if (genre === 'menace') fige('menace', e.carteId, e.avant?.menace)
+    else if (e.avant?.pic && !faces.has(e.carteId)) faces.set(e.carteId, { pic: e.avant.pic, code: e.avant.code, menace: e.avant.menace })
+  }
+  return { cachees, figes, faces }
+}
+
+/** Le monde où chaque manigance de `faces` montre encore sa face d'avant. */
+export function avecFacesDAvant(monde: World, faces: AttenteSurTable['faces']): World {
+  if (faces.size === 0) return monde
+  const principales = cartes(monde.area_schemes_main)
+  if (!principales.some((c) => faces.has(c.id))) return monde
+  return {
+    ...monde,
+    area_schemes_main: principales.map((c) => {
+      const f = faces.get(c.id)
+      if (!f) return c
+      const info = f.menace === undefined ? c.info : { ...c.info, k_threat: f.menace }
+      return { ...c, pic_id: f.pic, card_id: f.code ?? c.card_id, info }
+    }),
+  }
+}

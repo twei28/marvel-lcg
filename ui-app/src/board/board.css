@@ -178,6 +178,23 @@
     overflow: visible;
   }
 
+  /* Telephone couche (Board.tsx, ECHELLE_MIN_PAYSAGE_TEL) : la table depasse
+     l'ecran et se fait glisser au doigt. `zoom` (et non `scale`) pour que la
+     taille reelle de la scene ouvre le defilement du cadre. */
+  body.plateau-paysage-tel .plateau-cadre {
+    overflow: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body.plateau-paysage-tel .plateau-scene {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    zoom: var(--echelle, 1);
+  }
+
   /* Table de taille fixe, centree et mise a l'echelle.
      Lecture voulue : vilain + main scheme + deck rencontre en haut, combat au
      milieu, side schemes sur le cote, main du joueur en bas. */

@@ -8,7 +8,7 @@
     <!-- Pictos de l'en-tete (refonte du 7 septembre) : un emoji est dessine par
          le systeme, donc different sur chaque machine et jamais dans nos couleurs. -->
     <link rel="stylesheet" href="/public/css/font-awesome.css">
-    <link rel="stylesheet" href="/public/css/prepare/prepare.css?v=d7b0e662">
+    <link rel="stylesheet" href="/public/css/prepare/prepare.css?v=f5b9d755">
     <link rel="stylesheet" href="/public/css/prepare/prepare-v2.css?v=1">
     <link rel="stylesheet" href="/public/css/prepare/roue.css?v=1">
     <link rel="stylesheet" href="/public/css/teinte-pages.css?v=1">
@@ -21,7 +21,7 @@
     <div id="app">
         <div class="loading" style="padding:60px;text-align:center">Loading…</div>
     </div>
-    <script type="module" src="/public/js/prepare/app.js?v=02d5c367"></script>
+    <script type="module" src="/public/js/prepare/app.js?v=30e13bd5"></script>
     <script src="/public/js/prepare/reprise.js?v=4" defer></script>
     <!-- Preavis du site (mise a jour imminente, coupure) : module autonome,
          il se pose tout seul en haut de l'ecran. Voir annonce.js. -->
@@ -33,6 +33,9 @@
     <!-- Pastille « un message t'attend » : rien ne s'affiche tant que personne
          n'ecrit. Ne remet pas le tchat retire le 12/09. Voir messages.js. -->
     <script src="/public/js/prepare/messages.js?v=1" defer></script>
+    <!-- Invitations a la table d'un autre joueur (13/10/2026) : la fenetre
+         « X t'invite a sa partie ». Module autonome, voir invitations.js. -->
+    <script src="/public/js/prepare/invitations.js?v=1" defer></script>
     <!-- Bouton « 🃏 Galerie » : DEBRANCHE a la demande de l'utilisateur, la
          barre du haut etant trop chargee. lien-galerie.js reste dans
          js/prepare/ et /galerie.html reste servie (le salon y renvoie

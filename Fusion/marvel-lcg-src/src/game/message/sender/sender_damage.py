@@ -789,8 +789,10 @@ class SenderDamage:
         def IsBePrevent(self) -> bool:
             return self.be_prevent
 
-        def IncreaseDamage(self, value: int, by_effect: 'Effect'):
-            if self.IsOverkill():
+        def IncreaseDamage(self, value: int, by_effect: 'Effect', *, inclure_overkill: bool=False):
+            # `inclure_overkill` : l'effet augmente AUSSI l'exces transfere par overkill (RR 1.8 FAQ,
+            # 39066 Wild Wild Mojo : « the total overkill damage dealt is increased by 2 »).
+            if self.IsOverkill() and not inclure_overkill:
                 return
             assert value >= 0
             from game.message import Message

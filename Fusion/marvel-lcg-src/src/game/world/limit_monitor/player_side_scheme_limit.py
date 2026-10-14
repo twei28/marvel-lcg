@@ -9,7 +9,7 @@ class PlayerSideSchemeLimit:
     def __init__(self, world: 'World') -> None:
         self.world = world
 
-    def CheckLimit(self) -> bool:
+    def CheckLimit(self, chooser: 'Player|None' = None) -> bool:
         from game.operate.faces import Faces
         from game.effect.rule import GameRule
         from game.card.card_finder import CardFinder
@@ -28,7 +28,10 @@ class PlayerSideSchemeLimit:
             if world.is_game_over:
                 return False
 
-            player = world.GetFirstPlayer()
+            # RR 1.8 p.33 : c'est le joueur qui met en jeu la manigance au-dela de la
+            # limite qui choisit celle a defausser (avant : toujours le premier joueur).
+            player = chooser if chooser is not None and world.rule.v18_side_scheme_limit and not chooser.is_eliminated \
+                else world.GetFirstPlayer()
             # CORRECTIF (ajout volontaire) : les player side schemes marqués
             # not_count_player_side_scheme_limit (schemes campagne NeXt Evolution,
             # « does not count against the player side scheme limit ») sont exclus.

@@ -828,6 +828,11 @@ class PlayerAction:
         if not effect.ability.NeedCost() or cibles.IsEmpty() or effect.context.ignore_resource_cost:
             return True
         paiement = cibles.GetPayment(None)
+        # « Up to N » : le joueur choisit combien il depense, de 0 a N. Le total de la main n'a
+        # pas a tenir sous N (signalement Phocea du 13/10/2026 : Sanctuary disparaissait des que
+        # la main avait plus de 3 [physical], tout etant additionne ci-dessous).
+        if paiement.cost.rule.up_to:
+            return True
         par_source: Dict[Any, List[Resources]] = {}
         for entree in paiement.payments:
             for moyen, texte in entree.items():

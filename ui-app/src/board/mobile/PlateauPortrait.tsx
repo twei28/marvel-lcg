@@ -292,7 +292,7 @@ export function PlateauPortrait(props: BoardProps) {
 
       <TiroirPiles piles={bandes.piles} ouvert={tiroirOuvert} onFermer={() => setTiroirOuvert(false)} onOuvrirPile={ouvrirPile} />
       {/* Toucher une carte jouable = la choisir, puis « Jouer » ; toucher
-          long = la lire en grand (zone 3, MainPortrait.tsx). */}
+          long = la jouer (MainPortrait.tsx). */}
       <MainPortrait
         unites={main}
         ouverte={mainOuverte}

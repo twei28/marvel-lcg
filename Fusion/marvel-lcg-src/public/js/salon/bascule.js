@@ -176,3 +176,42 @@ export function oublierRepere(stockage, siege) {
         stockage.removeItem(cleRepere(siege));
     } catch (e) { /* stockage refusé : rien à effacer de toute façon */ }
 }
+
+/* ---------------- Le dernier choix, pour rejouer en un clic --------------- */
+//
+// Demande de l'utilisateur, 13/10/2026 : en fin de partie l'équipe reste
+// ensemble, et quand l'hôte en crée une nouvelle, l'invité retrouve la
+// sélection avec son héros et son deck d'avant DÉJÀ COCHÉS (« un clic sur Je
+// suis prêt suffit pour rejouer pareil »). Ce n'est PAS le repère ci-dessus :
+// lui s'efface dès que l'invité bascule dans sa partie, ce choix-ci doit au
+// contraire lui survivre jusqu'à la manche suivante. Même durée de vie : une
+// soirée, jamais la suivante.
+
+export function cleDernierChoix(siege) {
+    return `mc-salon-dernier-${siege}`;
+}
+
+/** Retient le héros et le deck que cet invité vient d'envoyer. */
+export function memoriserDernierChoix(stockage, siege, heroCardId, deckId, maintenant) {
+    if (!heroCardId || !deckId) return;
+    try {
+        stockage.setItem(cleDernierChoix(siege), JSON.stringify({
+            h: String(heroCardId), k: String(deckId), t: maintenant,
+        }));
+    } catch (e) { /* stockage refusé : on rechoisira à la main */ }
+}
+
+/** Relit le dernier choix de ce siège : `{heros, deck}`, ou null (absent,
+ *  illisible, ou plus vieux que DUREE_MEMOIRE). */
+export function relireDernierChoix(stockage, siege, maintenant) {
+    try {
+        const brut = stockage.getItem(cleDernierChoix(siege));
+        if (!brut) return null;
+        const { h, k, t } = JSON.parse(brut);
+        if (typeof t !== "number" || !h || !k) return null;
+        if (maintenant - t > DUREE_MEMOIRE) return null;
+        return { heros: String(h), deck: String(k) };
+    } catch (e) {
+        return null;
+    }
+}

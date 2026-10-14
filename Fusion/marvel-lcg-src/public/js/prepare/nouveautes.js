@@ -199,6 +199,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-10-09",
         genre: "jeu",
+        fr: "L'écran de l'invité reprend l'habillage de l'assistant : héros à gauche, grille à droite, puis choix du deck. Une fois prêt, tu vois l'équipe se former (qui est assis où, et contre quel méchant) en attendant le lancement.",
+        en: "The guest screen now matches the setup wizard: hero on the left, grid on the right, then deck choice. Once ready, you watch the team take shape (who sits where, and against which villain) while waiting for the host to start.",
+    },
+    {
+        date: "2026-10-09",
+        genre: "jeu",
         fr: "L'affichage sobre s'applique maintenant à toutes les pages (préparation, campagne, éditeur de deck, galerie…) : plus de trame BD ni d'ombres colorées, des gris neutres, et l'illustration du héros adoucie.",
         en: "Muted display now applies to every page (setup, campaign, deck builder, gallery…): no comic halftone or coloured shadows, neutral greys, and a softened hero illustration.",
     },

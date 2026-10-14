@@ -2153,6 +2153,27 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 .liens-copier:hover { background: rgba(255, 255, 255, 0.12); }
 .liens-copier.ok { color: var(--agir); border-color: var(--agir-halo); }
 .liens-aide { opacity: 0.7; font-size: 12px; }
+/* Inviter un connecte (13/10/2026) : les deux entrees, puis par siege l'etat
+   en direct, la liste des connectes et le lien a copier. */
+.invit-entrees { display: flex; flex-wrap: wrap; gap: 8px; }
+.invit-ligne { min-height: 34px; }
+.invit-liste {
+    flex: 1 1 200px;
+    min-width: 0;
+    font: inherit;
+    font-size: 13px;
+    color: inherit;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 4px;
+    padding: 5px 8px;
+}
+.invit-bouton { padding: 5px 12px; }
+.invit-bouton:disabled { opacity: 0.45; cursor: default; }
+.invit-etat { flex: 1 1 200px; font-size: 13px; }
+.invit-etat.est-pret { color: var(--agir); }
+.invit-etat.est-attente { color: var(--affiche-jaune); }
+.invit-etat.est-refus { color: #ff8a80; }
 
 /* Etat du salon dans le bandeau de l hote : qui a choisi, et quoi.
    Pleine largeur du bandeau (flex-basis 100%) pour passer sous le texte

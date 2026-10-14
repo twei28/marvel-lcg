@@ -1,0 +1,20 @@
+{
+  "Custom (Hunting Season)": {
+    "name": "hunting_season",
+    "scenarios": [
+      "hs_vermin",
+      "hs_scorpion",
+      "hs_the_lizard",
+      "hs_vulture",
+      "hs_kraven_the_hunter"
+    ],
+    "heroes": [],
+    "encounters": [
+      "hs_feral_instincts",
+      "hs_lizard_thralls",
+      "hs_red_vulture",
+      "hs_savage_six"
+    ],
+    "max_id": "hs226"
+  }
+}

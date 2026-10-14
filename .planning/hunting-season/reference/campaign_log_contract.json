@@ -1,0 +1,22 @@
+{
+  "native_keys": [
+    "Experience",
+    "Cards added to deck",
+    "Hero-specific cards removed",
+    "Remaining hit points",
+    "Vermin escaped",
+    "Scorpion joined you",
+    "Lizard escaped",
+    "Vulture joined you",
+    "Gibbon unlocked"
+  ],
+  "setup_keys_to_integrate": [
+    "Hunter Mode",
+    "Master Hunter",
+    "Lodge stock",
+    "Player number"
+  ],
+  "player_key_format": "Player N <key>",
+  "value_format": "TEXT; lists separated by semicolons",
+  "unsupported_UI": "Market stock, XP transactions, owner/tie decisions, inter-scenario removals, one-time setup purchases require repository inspection."
+}

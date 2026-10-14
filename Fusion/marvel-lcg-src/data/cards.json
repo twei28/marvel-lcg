@@ -820,7 +820,7 @@
     "AVENGER"
    ],
    "set_name": "Iron Man",
-   "text": "You get +1 hand size for each [[Tech]] upgrade you control (to a maximum hand size of 7)."
+   "text": "You get +1 hand size for each [[Tech]] upgrade you control (to a maximum of +6 hand size)."
   },
   {
    "card_id": "01029b",
@@ -5190,7 +5190,7 @@
    },
    "traits": [],
    "set_name": "Hawkeye Nemesis",
-   "text": "<b>When Revealed:</b> The Clint Barton player searches their hand, deck, discard pile, and play area for Mockingbird and places her faceup beneath this card. When this scheme is defeated, return Mockingbird to her owner's hand."
+   "text": "<b>When Revealed:</b> The Clint Barton player searches their hand, deck, discard pile, and play area for Mockingbird and tucks her faceup beneath this card. When this scheme is defeated, return the tucked Mockingbird to her owner's hand."
   },
   {
    "card_id": "04029",
@@ -27298,7 +27298,7 @@
     "ILLUSION"
    ],
    "set_name": "Whispers of Paranoia",
-   "text": "Treat attached ally as a minion with a blank text box (except for [[traits]]). Attach minion's SCH is equal to its printed THW and it does not take consequential damage.\r\n<b>When Revealed</b>: Attach to the ally you control with the lowest cost. If you cannot, this card gains surge."
+   "text": "Treat attached ally as a minion with a blank text box (except for [[traits]]). Attach minion's SCH is equal to its printed THW and it does not take consequential damage.\r\n<b>When Revealed</b>: Attach to the ally you control with the lowest cost. Attached ally engages its controller. Otherwise, this card gains surge."
   },
   {
    "card_id": "27172",
@@ -57463,7 +57463,7 @@
   {
    "card_id": "56019",
    "type": "Ally",
-   "name": "* Yellow Jacket",
+   "name": "* Yellowjacket",
    "subtitle": "Hank Pym",
    "desc": {
     "Cost": "3",
@@ -57477,7 +57477,7 @@
     "AVENGER"
    ],
    "set_name": "",
-   "text": "Play only if you have the [[Avenger]] trait.\n<b>Response</b>: After Yellow Jacket enters play, search the top 5 cards of your deck for an upgrade and add it to your hand."
+   "text": "Play only if you have the [[Avenger]] trait.\n<b>Response</b>: After Yellowjacket enters play, search the top 5 cards of your deck for an upgrade and add it to your hand."
   },
   {
    "card_id": "56020",
@@ -58281,7 +58281,7 @@
   {
    "card_id": "56073",
    "type": "Minion",
-   "name": "* Yellow Jacket",
+   "name": "* Yellowjacket",
    "subtitle": "",
    "desc": {
     "HP": "4",
@@ -58689,7 +58689,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Captain Marvel",
-   "text": "Permanent.\n<b>Forced Response</b>: After a leader, hero, or ally attacks Captain Marvel, place 1 energy counter here. Then, if there are at least 4 energy counters here, remove all of them → Captain Marvel attacks that character. This attack gains overkill."
+   "text": "Permanent.\n<b>Forced Response</b>: After a leader, hero, or ally attacks Captain Marvel, place 1 energy counter here. Then, if there are at least 4 energy counters here, remove all of them and Captain Marvel attacks that character. This attack gains overkill."
   },
   {
    "card_id": "56099",
@@ -61559,7 +61559,7 @@
    },
    "traits": [],
    "set_name": "Vision",
-   "text": "<b>Action</b>: Choose an attachment on the enemy leader with the text \"<b>Hero Response</b>\" or \"<b>Hero Interrupt</b>\" and discard it."
+   "text": "<b>Action</b>: Choose an attachment on the enemy leader with the text \"<b>Hero Action</b>\" or \"<b>Hero Response</b>\" and discard it."
   },
   {
    "card_id": "57077",
@@ -102666,5 +102666,5 @@
    "text": "<i>Hunter Mode Only.</i>\n<b>Forced Response</b>: After step one of the villain phase, deal each player 1 facedown [[TRAP]] card.\n<b>Forced Interrupt</b>: When the [[TRAP]] discard pile is shuffled back into the [[TRAP]] deck, deal the first player 1 facedown encounter card."
   }
  ],
- "checksum": "e15a574c774b9bacb3d8df579d2746972537250315ad6ab8a1251c8573006374"
+ "checksum": "072ef074503a8a553dfbd656848def103cafcb322c271155362d2b12b7def430"
 }

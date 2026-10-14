@@ -2330,6 +2330,164 @@ def presence():
     return sortie
 
 
+# --- Inviter un joueur connecte a sa table (13/10/2026) ---------------------
+# Demande de l'utilisateur : a l'etape « Coop en ligne », a cote de « Creer des
+# liens », l'hote peut « Inviter quelqu'un de connecte ». L'invite voit une
+# petite fenetre « X t'invite a sa partie · Rejoindre / Refuser » sur n'importe
+# quelle page du site ; l'hote suit l'etat en direct sous chaque nom. Decisions
+# completes : .planning/todos/2026-10-13-inviter-un-connecte.md.
+#
+# ⚠ EN MEMOIRE, PAS EN BASE, ET C'EST VOULU. Une invitation porte une cle de
+# siege, qui meurt avec la table (`cles_sieges` change a chaque allumage) : une
+# invitation qui survivrait a un redemarrage du site ouvrirait une porte qui
+# n'existe plus. PARTIES vit deja en memoire pour la meme raison.
+#
+# ⚠ LE LIEN NE SORT QU'A L'ACCEPTATION, ET SEULEMENT POUR L'INVITE. Il ouvre
+# un siege : le lister dans « invitations recues » le donnerait a quiconque
+# lit la liste par-dessus l'epaule du destinataire avant qu'il ait dit oui.
+
+# Sans reponse au-dela, l'invitation s'eteint chez l'invite et l'hote lit
+# « Sans reponse · Relancer ».
+DUREE_INVITATION = 120
+
+INVITATIONS_TABLE: dict[str, dict] = {}     # id -> invitation
+_VERROU_INVITATIONS = threading.Lock()
+
+
+def connectes(sauf: str = "") -> list[str]:
+    """Les comptes valides qui ont donne signe de vie depuis moins de DELAI_PRESENCE.
+
+    « Connecte » au sens de la demande : une page du site ouverte et visible.
+    Ce n'est PAS l'etat « partie » de `presence()`, qui dit seulement qu'un
+    moteur tourne pour ce compte : il tourne des heures apres que son
+    proprietaire a ferme l'onglet.
+    """
+    sortie = []
+    for ligne in liste_comptes():
+        if ligne["statut"] != "valide" or ligne["pseudo"] == sauf:
+            continue
+        vu = ligne["vu_le"] if "vu_le" in ligne.keys() else None
+        ecart = _secondes_depuis(vu) if vu else None
+        if ecart is not None and ecart < DELAI_PRESENCE:
+            sortie.append(ligne["pseudo"])
+    return sortie
+
+
+def _etat_invitation(inv: dict, maintenant: float) -> str:
+    if inv["etat"] == "envoyee" and maintenant - inv["cree"] > DUREE_INVITATION:
+        return "sans_reponse"
+    return inv["etat"]
+
+
+def inviter_a_la_table(hote: str, invite: str, siege: int) -> "dict | str":
+    """Envoie une invitation. Rend l'invitation, ou un message d'erreur."""
+    if not invite or invite == hote:
+        return "invite inconnu"
+    if invite not in connectes(sauf=hote):
+        return "pas connecte"
+    partie = PARTIES.get(hote)
+    if partie is None or not partie.vivant():
+        return "pas de table"
+    # Le siege 0 est l'hote ; au-dela du nombre de joueurs fixe par l'hote,
+    # il n'y a pas de place a donner.
+    if not 1 <= siege < min(4, len(partie.cles_sieges)):
+        return "siege invalide"
+    lien = f"{partie.base_url()}/claim_seat?p={siege}&key={partie.cles_sieges[siege]}&to=salon"
+    maintenant = time.time()
+    with _VERROU_INVITATIONS:
+        # Une seule invitation vivante par siege : relancer ou inviter
+        # quelqu'un d'autre remplace la precedente.
+        for inv in INVITATIONS_TABLE.values():
+            if inv["hote"] == hote and inv["siege"] == siege and inv["etat"] == "envoyee":
+                inv["etat"] = "remplacee"
+        inv = {"id": secrets.token_urlsafe(9), "hote": hote, "invite": invite,
+               "siege": siege, "lien": lien, "etat": "envoyee", "cree": maintenant}
+        INVITATIONS_TABLE[inv["id"]] = inv
+        # Ménage : on ne garde pas les invitations de la veille.
+        for cle in [c for c, i in INVITATIONS_TABLE.items() if maintenant - i["cree"] > 6 * 3600]:
+            del INVITATIONS_TABLE[cle]
+    return inv
+
+
+def invitations_pour(invite: str) -> list[dict]:
+    """Ce qui attend une reponse de ce compte : qui, et pour quel siege. Jamais le lien."""
+    maintenant = time.time()
+    with _VERROU_INVITATIONS:
+        return [{"id": i["id"], "hote": i["hote"], "siege": i["siege"]}
+                for i in INVITATIONS_TABLE.values()
+                if i["invite"] == invite and _etat_invitation(i, maintenant) == "envoyee"]
+
+
+def repondre_invitation(invite: str, ident: str, oui: bool) -> "str | None":
+    """Accepte ou refuse. Rend le lien du siege si l'invite accepte, sinon None."""
+    maintenant = time.time()
+    with _VERROU_INVITATIONS:
+        inv = INVITATIONS_TABLE.get(ident)
+        if inv is None or inv["invite"] != invite or _etat_invitation(inv, maintenant) != "envoyee":
+            return None
+        inv["etat"] = "acceptee" if oui else "refusee"
+        return inv["lien"] if oui else None
+
+
+def invitations_de(hote: str) -> dict:
+    """L'etat de la derniere invitation de chaque siege, pour l'hote : {siege: {invite, etat}}."""
+    maintenant = time.time()
+    sortie: dict = {}
+    with _VERROU_INVITATIONS:
+        # Ordre d'ENVOI (un dict garde l'ordre d'insertion) : la derniere
+        # invitation d'un siege est celle qui compte.
+        for inv in INVITATIONS_TABLE.values():
+            if inv["hote"] != hote or inv["etat"] == "remplacee":
+                continue
+            sortie[str(inv["siege"])] = {"invite": inv["invite"],
+                                         "etat": _etat_invitation(inv, maintenant)}
+    return sortie
+
+
+# Au-dela, on ne lit plus : un dossier de decks n'en tient jamais autant, et
+# une table ne doit pas pouvoir faire lire n'importe quoi au site.
+MAX_DECKS_INVITE = 200
+
+
+def decks_de_l_invite(hote: str, siege: int) -> dict:
+    """Les decks du COMPTE de l'invite assis a ce siege, s'il y est venu par invitation.
+
+    Decision 3 du 13/10/2026 : l'invite qui a un compte retrouve SES decks. Ils
+    vivent dans sa place (`deck/serveur-<place>/`, tools/config_serveur.py), que
+    la table de l'hote ne peut pas lire : le site, lui, connait les deux.
+
+    ⚠ ON NE LIT QUE POUR UNE INVITATION ACCEPTEE A CE SIEGE. Sans elle, le site
+    ne sait pas qui est assis la (un lien copie ne dit rien du compte), et lire
+    « les decks de n'importe qui » serait une fuite. Lecture seule : l'invite
+    choisit, le salon enregistre la copie choisie chez l'hote.
+    """
+    invite = ""
+    with _VERROU_INVITATIONS:
+        for inv in INVITATIONS_TABLE.values():
+            if inv["hote"] == hote and inv["siege"] == siege and inv["etat"] == "acceptee":
+                invite = inv["invite"]
+    if not invite:
+        return {"invite": "", "decks": []}
+    place = emplacement_de(invite)
+    if not place:
+        return {"invite": invite, "decks": []}
+    dossier = os.path.join(RACINE_JEU, ".game", "deck", f"serveur-{place}")
+    decks = []
+    try:
+        noms = sorted(n for n in os.listdir(dossier) if n.endswith(".json"))
+    except OSError:
+        noms = []
+    for nom in noms[:MAX_DECKS_INVITE]:
+        try:
+            with open(os.path.join(dossier, nom), encoding="utf-8") as f:
+                deck = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if isinstance(deck, dict) and deck.get("hero"):
+            decks.append({"id": nom[:-5], "deck": deck})
+    return {"invite": invite, "decks": decks}
+
+
 # On ne garde pas l'historique complet : un tchat de salon sert a se retrouver,
 # pas a archiver. Au-dela, les plus anciens partent.
 MESSAGES_GARDES = 200
@@ -6702,7 +6860,10 @@ class Handler(BaseHTTPRequestHandler):
             self._rediriger("/admin")
 
         elif self.chemin in ("/api/vue", "/api/dire", "/api/bug", "/api/annonce",
-                           "/api/prives", "/api/prives_lus", "/api/eteindre"):
+                           "/api/prives", "/api/prives_lus", "/api/eteindre",
+                           "/api/connectes", "/api/inviter", "/api/invitations",
+                           "/api/invitation_reponse", "/api/invitations_envoyees",
+                           "/api/decks_invite"):
             # ⚠ CES ROUTES NE SONT PAS POUR LE NAVIGATEUR. Elles sont appelees
             # par le MOTEUR, en 127.0.0.1, et s'authentifient par le jeton de
             # partie plutot que par le cookie de session : le navigateur est sur
@@ -6815,6 +6976,63 @@ class Handler(BaseHTTPRequestHandler):
                 # apparaitre « en ligne » quelqu'un qui a laisse un onglet
                 # ouvert.
                 self._repondre(200, json.dumps(annonce_courante() or {},
+                                               ensure_ascii=False).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            # --- Inviter un connecte (13/10/2026) ----------------------------
+            # `qui` est le titulaire de la table qui relaie : l'hote quand il
+            # invite, l'invite quand il lit ou repond depuis SA table. Le moteur
+            # n'ouvre ces routes qu'au siege 0 (server_get.py).
+            if self.chemin == "/api/connectes":
+                self._repondre(200, json.dumps({"connectes": connectes(sauf=qui)},
+                                               ensure_ascii=False).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/inviter":
+                try:
+                    siege = int(champs.get("siege", "0") or "0")
+                except ValueError:
+                    siege = 0
+                resultat = inviter_a_la_table(qui, str(champs.get("a") or ""), siege)
+                if isinstance(resultat, str):
+                    self._repondre(400, json.dumps({"error": resultat}).encode("utf-8"),
+                                   "application/json; charset=utf-8")
+                    return
+                self._repondre(200, b'{"ok":true}', "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/invitations":
+                # ⚠ CE SONDAGE-CI VAUT SIGNE DE VIE, contrairement a /api/prives.
+                # « Connecte » veut dire ici « une page du site ouverte sous ses
+                # yeux » : c'est exactement ce qu'il prouve, puisque le module
+                # des invitations (public/js/invitations.js) se tait des que
+                # l'onglet est cache. Sans lui, personne n'etait jamais « en
+                # ligne » plus de deux minutes apres son arrivee.
+                toucher_presence(qui)
+                self._repondre(200, json.dumps({"invitations": invitations_pour(qui)},
+                                               ensure_ascii=False).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/invitation_reponse":
+                oui = str(champs.get("oui", "")) == "1"
+                lien = repondre_invitation(qui, str(champs.get("id") or ""), oui)
+                if oui and not lien:
+                    self._repondre(409, b'{"error":"invitation expiree"}',
+                                   "application/json; charset=utf-8")
+                    return
+                self._repondre(200, json.dumps({"ok": True, "lien": lien or ""}).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/decks_invite":
+                try:
+                    siege = int(champs.get("siege", "0") or "0")
+                except ValueError:
+                    siege = 0
+                self._repondre(200, json.dumps(decks_de_l_invite(qui, siege),
+                                               ensure_ascii=False).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/invitations_envoyees":
+                self._repondre(200, json.dumps({"sieges": invitations_de(qui)},
                                                ensure_ascii=False).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return

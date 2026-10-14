@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr"><meta charset="utf-8"><title>Aperçu de phase</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:#14161b;color:#eee;font:15px/1.35 Arial,sans-serif}
+h1{font-size:20px;margin:0 0 16px}
+.row{display:flex;gap:20px}
+.col{flex:1}
+.cap{font-weight:bold;font-size:17px;margin:0 0 4px;color:#ffd24a}
+.sub{color:#aaa;font-size:13px;margin:0 0 10px;min-height:34px}
+.ecran{height:430px;background:#0b0c10;border:2px solid #444;border-radius:8px;position:relative;overflow:hidden}
+.table{position:absolute;inset:0;background:linear-gradient(135deg,#1b1020,#0d1a2b);opacity:.7}
+.carte{position:absolute;width:44px;height:62px;border-radius:4px;background:#556;border:1px solid #889}
+.panneau .carte{position:static;flex:none}
+.panneau{position:absolute;background:#1c1d22;border:2px solid #c0222b;border-radius:8px;padding:12px}
+.titre{font-weight:bold;letter-spacing:.04em;color:#fff;margin-bottom:8px;font-size:14px;text-transform:uppercase}
+.l{padding:6px 8px;border-left:3px solid #555;margin:4px 0;background:#26272d;font-size:13px}
+.l b{color:#ffd24a}
+.l.on{border-color:#ffd24a;background:#3a3320}
+.l.fait{opacity:.45;text-decoration:line-through}
+.btn{display:inline-block;background:#ffd24a;color:#111;font-weight:bold;padding:8px 18px;border-radius:4px;margin-top:8px}
+.etat{color:#9ad;font-size:12px}
+</style>
+<h1>Aperçu de début de phase du méchant : où s'affiche la liste ?</h1>
+<div class="row">
+
+<div class="col">
+<p class="cap">A. Seule, avec Continuer</p>
+<p class="sub">Au début de la phase, la liste prend tout l'écran. Tu lis, tu cliques, et la phase démarre.</p>
+<div class="ecran"><div class="table"></div>
+ <div class="panneau" style="left:30px;right:30px;top:40px">
+  <div class="titre">Phase du méchant : ce qui va arriver</div>
+  <div class="l"><b>1 Menace</b> : +3 (1 de base, 1 icône, 1 jeton)</div>
+  <div class="l"><b>2 Spider-Man</b> : Klaw attaque. Puis 1 sbire.</div>
+  <div class="l"><b>2 Black Widow</b> : Klaw manigance (alter-ego)</div>
+  <div class="l"><b>3 Rencontre</b> : 3 cartes (1 par joueur, 1 Hazard)</div>
+  <div class="l"><b>5 Ensuite</b> : jeton premier joueur à Black Widow</div>
+  <span class="btn">CONTINUER</span>
+ </div>
+</div></div>
+
+<div class="col">
+<p class="cap">B. Toujours visible à côté</p>
+<p class="sub">Pas d'écran à part : la liste reste à gauche pendant toute la phase, la ligne en cours s'allume.</p>
+<div class="ecran"><div class="table"></div>
+ <div class="panneau" style="left:12px;width:150px;top:20px;padding:8px">
+  <div class="titre" style="font-size:12px">Ce qui va arriver</div>
+  <div class="l fait">1 Menace +3</div>
+  <div class="l on">2 Spider-Man : Klaw attaque</div>
+  <div class="l">2 Black Widow : manigance</div>
+  <div class="l">3 Rencontre : 3 cartes</div>
+  <div class="l">5 Premier joueur</div>
+ </div>
+ <div class="panneau" style="left:176px;right:12px;top:20px">
+  <div class="titre">Attaque de Klaw sur Spider-Man</div>
+  <div style="display:flex;gap:8px;margin:14px 0">
+   <div class="carte" style="width:70px;height:98px"></div>
+   <div class="carte" style="width:70px;height:98px"></div>
+   <div class="carte" style="width:70px;height:98px"></div>
+  </div>
+  <div class="etat">ATQ 2 + boost 1 − DÉF 3 = 0 dégât</div>
+  <span class="btn">CONTINUER</span>
+ </div>
+</div></div>
+
+<div class="col">
+<p class="cap">C. Seule puis réduite en barre</p>
+<p class="sub">Comme A au départ. Dès que tu cliques Continuer, la liste se range en barre fine en haut (ce que montre cette image).</p>
+<div class="ecran"><div class="table"></div>
+ <div class="panneau" style="left:12px;right:12px;top:12px;padding:6px 8px;display:flex;gap:6px;font-size:12px">
+  <div class="l fait" style="margin:0">1 Menace</div>
+  <div class="l on" style="margin:0">2 Spider-Man</div>
+  <div class="l" style="margin:0">2 B. Widow</div>
+  <div class="l" style="margin:0">3 Rencontre</div>
+  <div class="l" style="margin:0">5 1er joueur</div>
+ </div>
+ <div class="panneau" style="left:30px;right:30px;top:70px">
+  <div class="titre">Attaque de Klaw sur Spider-Man</div>
+  <div style="display:flex;gap:8px;margin:14px 0">
+   <div class="carte" style="width:70px;height:98px"></div>
+   <div class="carte" style="width:70px;height:98px"></div>
+   <div class="carte" style="width:70px;height:98px"></div>
+  </div>
+  <div class="etat">ATQ 2 + boost 1 − DÉF 3 = 0 dégât</div>
+  <span class="btn">CONTINUER</span>
+ </div>
+</div></div>
+
+</div></html>

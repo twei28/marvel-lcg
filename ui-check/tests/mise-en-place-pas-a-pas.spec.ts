@@ -102,3 +102,99 @@ test('Tower Defense : la mise en place sur téléphone (360 px)', async ({ page 
   const largeur = await page.evaluate(() => document.documentElement.scrollWidth);
   expect(largeur).toBeLessThanOrEqual(360);
 });
+
+/** Les cartes que la table montre en pointillés, et si leur contenu est bien caché. */
+async function enAttente(page: Page): Promise<{ id: string; existe: boolean; cachee: boolean }[]> {
+  return page.evaluate(() => {
+    const style = [...document.querySelectorAll('style')].find((s) => s.textContent?.includes('outline: 2px dashed'));
+    const ids = [...new Set([...(style?.textContent ?? '').matchAll(/data-card-id="(\d+)"/g)].map((m) => m[1]))];
+    return ids.map((id) => {
+      const el = document.querySelector<HTMLElement>(`.scan-card[data-card-id="${id}"]:not(.mep-fantome)`);
+      const enfant = el?.firstElementChild as HTMLElement | null | undefined;
+      // La pile des stades à venir derrière la carte attend avec elle.
+      const stades = [...(el?.parentElement?.querySelectorAll<HTMLElement>(':scope > .stage-arriere') ?? [])];
+      const stadesCaches = stades.every((st) => getComputedStyle(st).visibility === 'hidden');
+      return { id, existe: Boolean(el), cachee: enfant ? getComputedStyle(enfant).visibility === 'hidden' && stadesCaches : false };
+    });
+  });
+}
+
+// 13/10/2026 : la table ne montre une carte qu'après son « Continuer ».
+test('Tower Defense : les cartes attendent leur « Continuer » en pointillés (PC)', async ({ page }) => {
+  test.skip(process.env.MEP !== 'apres', 'comportement du 13/10/2026');
+  test.setTimeout(240_000);
+  fs.mkdirSync(SORTIE, { recursive: true });
+  await partie(page, 1920, 1080);
+  let etapesVues = 0;
+  let poseesVues = 0;
+  let volVu = false;
+  let retournementsVus = 0;
+  const vus: string[] = [];
+  for (let i = 0; i < 60; i++) {
+    await page.waitForTimeout(600);
+    if (await page.locator('.mep-couche').isVisible().catch(() => false)) {
+      const legende = (await page.locator('.mep-legende').innerText()).trim();
+      const retournement = /retourn|flipped/i.test(legende);
+      const jeton = /^(Dégâts|Menace|Damage|Threat)$/i.test(legende);
+      const avant = await enAttente(page);
+      for (const c of avant) expect(c, `carte ${c.id} en pointillés`).toMatchObject({ existe: true, cachee: true });
+      if (!retournement && !jeton) expect(avant.length, `${legende} : la carte attend en pointillés`).toBeGreaterThan(0);
+      // Un retournement : la table montre encore l'autre face, la nouvelle n'arrive qu'au clic.
+      // Le plateau sert /vignette/<image>, la grande carte /scan/<image> : on compare le nom.
+      const grande = ((await page.locator('.mep-cadre img').getAttribute('src')) ?? '').split('/').pop() ?? '';
+      const surTable = (nom: string) =>
+        page.evaluate(
+          (n) => [...document.querySelectorAll('.scan-card:not(.mep-fantome) img')].some((i) => (i.getAttribute('src') ?? '').split('/').pop() === n),
+          nom
+        );
+      if (retournement) expect(await surTable(grande), 'face B pas encore sur la table').toBe(false);
+      vus.push(legende);
+      if (etapesVues === 0) await page.screenshot({ path: path.join(SORTIE, `table-attente-avant.png`) });
+      await page.locator('.mep-continuer').click();
+      await page.waitForTimeout(180);
+      if (await page.locator('.mep-couche.est-en-vol').isVisible().catch(() => false)) {
+        if (!volVu) await page.screenshot({ path: path.join(SORTIE, `table-attente-vol.png`) });
+        volVu = true;
+      }
+      await page.waitForTimeout(700);
+      const apres = new Set((await enAttente(page)).map((c) => c.id));
+      const posees = avant.filter((c) => !apres.has(c.id))
+      for (const c of posees) {
+        const visible = await page.evaluate((id) => {
+          const el = document.querySelector<HTMLElement>(`.scan-card[data-card-id="${id}"]`);
+          const enfant = el?.firstElementChild as HTMLElement | null | undefined;
+          return enfant ? getComputedStyle(enfant).visibility !== 'hidden' : false;
+        }, c.id);
+        expect(visible, `carte ${c.id} posée et visible`).toBe(true);
+      }
+      poseesVues += posees.length;
+      if (retournement) {
+        expect(await surTable(grande), 'face B sur la table après le clic').toBe(true);
+        retournementsVus++;
+      }
+      if (etapesVues === 0) await page.screenshot({ path: path.join(SORTIE, `table-attente-apres.png`) });
+      etapesVues++;
+      continue;
+    }
+    const panneau = page.locator('.panneau-manigance');
+    if (await panneau.isVisible().catch(() => false)) {
+      const attente = await enAttente(page);
+      expect(attente.length, 'la manigance du panneau attend en pointillés').toBeGreaterThan(0);
+      await panneau.locator('button').last().click();
+      await panneau.waitFor({ state: 'hidden', timeout: 8000 }).catch(() => {});
+      continue;
+    }
+    const tour = page.getByRole('button', { name: /Avengers Tower|Tour des Avengers/i }).first();
+    if (await tour.isVisible().catch(() => false)) {
+      await tour.click();
+      continue;
+    }
+    if (await page.getByText(/mulligan/i).first().isVisible().catch(() => false)) break;
+  }
+  console.log(`étapes ${etapesVues} (${vus.join(' | ')}), cartes posées ${poseesVues}, retournements ${retournementsVus}, vol vu ${volVu}`);
+  expect(etapesVues).toBeGreaterThan(2);
+  expect(poseesVues).toBeGreaterThan(0);
+  expect(volVu).toBe(true);
+  // Au mulligan, plus rien n'attend.
+  expect(await enAttente(page)).toEqual([]);
+});

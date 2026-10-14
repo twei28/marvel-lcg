@@ -1,0 +1,11 @@
+{
+  "version": "0.5.8",
+  "name": "Lizard Thralls",
+  "encounters": [
+    "hs146",
+    "hs147",
+    "hs148",
+    "hs149",
+    "hs150"
+  ]
+}

@@ -3,6 +3,10 @@
 // Chaque carte qui arrive en jeu s'affiche en grand au centre, plateau
 // assombri, avec sa légende ; « Continuer » (ou Espace) la fait glisser à sa
 // place, où un contour arrondi la repère brièvement, une seule fois.
+//
+// Tant qu'elle attend son tour, la table ne la montre pas : sa place est un
+// contour en pointillés (13/10/2026, voir `attenteSurTable`). Pendant le vol,
+// le voile s'efface pour qu'on la voie se poser.
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import './mise-en-place.css'
@@ -67,8 +71,34 @@ export function useMiseEnPlacePasAPas(monde: World | undefined, etat: EtatMiseEn
     setFile((f) => ordonnerRetournements([...f, ...etapes], monde, 0))
   }, [monde, monde?.render_id, etat.enCours, etat.voile, etat.muet])
 
+  // Plus de mise en place (partie lancée, ou finie avant d'y arriver) : ce qui
+  // attendait encore n'a plus rien à montrer. Effet à part : la fin ne vient
+  // pas forcément avec une trame neuve.
+  useEffect(() => {
+    if (!etat.enCours || etat.muet) setFile((f) => (f.length ? [] : f))
+  }, [etat.enCours, etat.muet])
+
+  // ⚠ LA TRAME OÙ UNE CARTE ARRIVE EST DESSINÉE AVANT L'EFFET CI-DESSUS : sans
+  // cet aperçu, la carte s'affichait à sa place le temps d'une image avant de
+  // passer en pointillés. La mémoire n'a pas encore vu la trame : on la compare
+  // sans rien retenir. Pas de useMemo : une fois la trame retenue par l'effet,
+  // l'aperçu doit tomber à vide, sinon la carte restait en pointillés.
+  const apercu =
+    !monde || !etat.enCours || etat.voile || etat.muet || monde.render_id === dernier.current
+      ? []
+      : etapesNouvelles(memoire.current, monde, {
+          panneauPrincipale: monde.confirm_main_scheme === true,
+          panneauAnnexe: monde.confirm_side_scheme === true,
+        }).etapes
+
   const suivant = useCallback(() => setFile((f) => f.slice(1)), [])
-  return { etape: file[0] as EtapeMiseEnPlace | undefined, restantes: file.length, suivant }
+  return {
+    etape: file[0] as EtapeMiseEnPlace | undefined,
+    restantes: file.length,
+    suivant,
+    /** Les étapes pas encore validées, celle affichée comprise. */
+    enAttente: apercu.length > 0 ? [...file, ...apercu] : file,
+  }
 }
 
 function marquer(carteId: number, animations: boolean) {
@@ -79,12 +109,17 @@ function marquer(carteId: number, animations: boolean) {
   window.setTimeout(() => cible.classList.remove('mep-repere', 'mep-repere-anime'), 1000)
 }
 
-function glisser(depart: HTMLElement | null, carteId: number) {
+export const DUREE_VOL = 400
+
+/** Une copie de `depart` vole vers la carte de la table ; `fini` à l'arrivée (tout de suite si rien ne vole). */
+export function glisser(depart: HTMLElement | null, carteId: number, fini?: () => void) {
   const cible = document.querySelector<HTMLElement>(`.scan-card[data-card-id="${carteId}"]`)
-  if (!depart || !cible || typeof depart.animate !== 'function') return
-  const a = depart.getBoundingClientRect()
-  const b = cible.getBoundingClientRect()
-  if (!a.width || !b.width) return
+  const a = depart?.getBoundingClientRect()
+  const b = cible?.getBoundingClientRect()
+  if (!depart || !a || !b || typeof depart.animate !== 'function' || !a.width || !b.width) {
+    fini?.()
+    return
+  }
   const fantome = depart.cloneNode(true) as HTMLElement
   fantome.className = `${depart.className} mep-fantome`
   Object.assign(fantome.style, {
@@ -101,10 +136,42 @@ function glisser(depart: HTMLElement | null, carteId: number) {
   const echelle = Math.min(b.width / a.width, b.height / a.height)
   const anim = fantome.animate(
     [{ transform: 'none', opacity: 1 }, { transform: `translate(${dx}px, ${dy}px) scale(${echelle})`, opacity: 0.85 }],
-    { duration: 320, easing: 'ease-in' }
+    { duration: DUREE_VOL, easing: 'ease-in-out' }
   )
-  anim.onfinish = () => fantome.remove()
-  anim.oncancel = () => fantome.remove()
+  // Un seul appel, même si l'animation et le filet arrivent tous les deux.
+  let fait = false
+  const finir = () => {
+    fantome.remove()
+    if (fait) return
+    fait = true
+    fini?.()
+  }
+  anim.onfinish = finir
+  anim.oncancel = finir
+  window.setTimeout(finir, DUREE_VOL + 300)
+}
+
+/**
+ * Les places en attente : un contour en pointillés à la taille de la carte,
+ * pour que rien ne bouge quand elle se pose (décision du 13/10/2026).
+ */
+export function PlacesEnAttente({ ids }: { ids: ReadonlySet<number> }) {
+  if (ids.size === 0) return null
+  const cartesVisees = [...ids].map((id) => `.scan-card[data-card-id="${id}"]:not(.mep-fantome)`)
+  return (
+    <style>
+      {[
+        `${cartesVisees.join(',\n')} { outline: 2px dashed rgba(240, 185, 95, 0.75); outline-offset: -2px; background: transparent !important; box-shadow: none !important; filter: none !important; animation: none !important; }`,
+        `${cartesVisees.map((c) => `${c} > *`).join(',\n')} { visibility: hidden !important; }`,
+        // Les stades à venir empilés derrière la carte, et leur loupe (Board.tsx,
+        // `stagesArriere`) : à côté de la carte, pas dedans. Sur Tower Defense,
+        // Proxima Midnight II et 2A restaient visibles au-dessus des pointillés.
+        `${[...ids]
+          .map((id) => `.plateau-unite:has(> .scan-card[data-card-id="${id}"]) > :is(.stage-arriere, .stages-bouton)`)
+          .join(',\n')} { visibility: hidden !important; }`,
+      ].join('\n')}
+    </style>
+  )
 }
 
 export function CoucheMiseEnPlace({
@@ -120,13 +187,23 @@ export function CoucheMiseEnPlace({
   animations: boolean
 }) {
   const cadre = useRef<HTMLDivElement>(null)
+  const [enVol, setEnVol] = useState(false)
 
   const continuer = useCallback(() => {
-    if (!etape) return
-    if (animations) glisser(cadre.current, etape.carteId)
-    marquer(etape.carteId, animations)
-    suivant()
-  }, [etape, animations, suivant])
+    if (!etape || enVol) return
+    const poser = () => {
+      setEnVol(false)
+      // La place se remplit (pointillés retirés, jeton mis à jour), puis la suivante.
+      suivant()
+      marquer(etape.carteId, animations)
+    }
+    if (!animations) {
+      poser()
+      return
+    }
+    setEnVol(true)
+    glisser(cadre.current, etape.carteId, poser)
+  }, [etape, enVol, animations, suivant])
 
   useEffect(() => {
     if (!etape) return
@@ -151,7 +228,7 @@ export function CoucheMiseEnPlace({
   else if (detail?.cle === 'menace de départ') ligne = `${t('Menace de départ')} : ${detail.valeur}`
 
   return (
-    <div className={`mep-couche${animations ? ' est-anime' : ''}`} role="dialog" aria-modal="true" aria-label={t('Mise en place')}>
+    <div className={`mep-couche${animations ? ' est-anime' : ''}${enVol ? ' est-en-vol' : ''}`} role="dialog" aria-modal="true" aria-label={t('Mise en place')}>
       <div className="mep-contenu" key={etape.cle}>
         <p className="mep-titre">{t('Mise en place')}</p>
         <div ref={cadre} className={`mep-cadre${etape.paysage ? ' est-paysage' : ''}`}>

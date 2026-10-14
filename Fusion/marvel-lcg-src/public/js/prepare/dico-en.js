@@ -7,6 +7,34 @@
 "use strict";
 
 export const DICO_EN_BASE = {
+    /* ---- Inviter un connecté (13/10/2026) ---- */
+    "Ton deck": "Your deck",
+    "Envoi de ton deck…": "Sending your deck…",
+    "L’équipe": "The team",
+    "Choisis ton héros, puis ton deck.": "Pick your hero, then your deck.",
+    "Créer des liens": "Create links",
+    "Inviter quelqu’un de connecté": "Invite someone online",
+    "Copier le lien": "Copy link",
+    "Copie ce lien :": "Copy this link:",
+    "Choisir un joueur connecté": "Pick an online player",
+    "Personne n’est connecté": "Nobody is online",
+    "Inviter": "Invite",
+    "Réinviter": "Invite again",
+    "Invité…": "Invited…",
+    "A rejoint · choisit son héros": "Joined · picking a hero",
+    "A refusé": "Declined",
+    "Sans réponse": "No answer",
+    "prêt": "ready",
+    "Invitation impossible : ce joueur n’est plus connecté.": "Could not invite: this player is no longer online.",
+    "Invite un joueur connecté, ou envoie un lien à un ami sans compte. Chacun choisit son héros et son deck de son côté.": "Invite an online player, or send a link to a friend without an account. Everyone picks their own hero and deck.",
+    /* ---- L'équipe reste ensemble (13/10/2026) ---- */
+    "Comme la partie d’avant": "Same as last game",
+    "Je suis prêt": "I'm ready",
+    "Ton héros et ton deck de la partie d’avant sont prêts : clique sur « Je suis prêt », ou change.": "Your hero and deck from last game are ready: click “I'm ready”, or change them.",
+    /* ---- Salon invité refondu (09/10/2026) ---- */
+    "Decks": "Decks",
+    "Choisit…": "Choosing…",
+    "Pas encore choisi": "Not chosen yet",
     /* ---- Partie au hasard : la roue (08/10/2026) ---- */
     "Partie au hasard": "Random game",
     "Héros et scénario tirés au sort": "Heroes and scenario drawn at random",
@@ -321,14 +349,14 @@ export const DICO_EN_BASE = {
     "Version tableur, mutant": "Spreadsheet version, mutant",
     "Decks du fichier « Marvel Champions Universal Prebuilt Decks » de acharlie1377 (Austin Charlie), sur BoardGameGeek. Conçus par un joueur : ce ne sont pas les decks officiels des héros.": "Decks from the \"Marvel Champions Universal Prebuilt Decks\" file by acharlie1377 (Austin Charlie), on BoardGameGeek. Made by a player: these are not the heroes' official decks.",
     "Voir les cartes": "View cards",
-    "Voir le deck": "View deck",
-    "Modifier": "Edit",
-    "Ouvrir ce deck dans l’éditeur": "Open this deck in the editor",
-    "6 cartes TECH/SPELL d’autres aspects": "6 TECH/SPELL cards from other aspects",
     "Supprimer": "Delete",
     "Supprimer ce deck ?": "Delete this deck?",
     "Suppression impossible :": "Could not delete:",
     "Choisis d'abord un autre deck, celui-ci est en cours d'utilisation.": "Pick another deck first, this one is in use.",
+    "Voir le deck": "View deck",
+    "Modifier": "Edit",
+    "Ouvrir ce deck dans l’éditeur": "Open this deck in the editor",
+    "6 cartes TECH/SPELL d’autres aspects": "6 TECH/SPELL cards from other aspects",
     "+ au plus": "+ at most",
     "Hors aspect : au plus": "Off-aspect: at most",
     "hors aspect": "off-aspect",
@@ -603,8 +631,8 @@ export const DICO_EN_BASE = {
     "Impossible de récupérer les liens.": "Could not fetch the links.",
     "2 à 4 héros, chacun choisit le sien": "2 to 4 heroes, each player picks their own",
     "Partie en ligne": "Online game",
-    "Choisis seulement TON héros et TON deck. Les autres joueurs choisissent les leurs depuis le lien que tu leur as envoyé.":
-        "Pick only YOUR hero and YOUR deck. The other players pick theirs from the link you sent them.",
+    "Choisis seulement TON héros et TON deck. Les autres joueurs choisissent les leurs de leur côté, par ton lien ou ton invitation.":
+        "Pick only YOUR hero and YOUR deck. The other players pick theirs on their side, through your link or your invitation.",
     "Ce joueur choisit depuis son propre écran": "This player chooses from their own screen",
     "En multi, c’est toujours le Joueur 1 qui commence : les sièges restent attachés aux personnes.":
         "In multiplayer, Player 1 always goes first: seats stay tied to people.",
@@ -941,4 +969,7 @@ export const DICO_EN_BASE = {
     "ce formulaire": "this form",
     "et je corrige au plus vite. Tu peux aussi me demander de retirer tes créations du site par le même formulaire.":
         "and I'll fix it as soon as possible. You can also ask me to remove your creations from the site through the same form.",
+    /* ---- Echange Team-Up a la mise en place (RR 1.8, 11/10/2026) ---- */
+    "{qui} : « {retirer} » correspond au héros d’un autre joueur. Règle Team-Up (Rules Reference 1.8) : la remplacer par « {ajouter} » pour cette partie ?":
+        "{qui}: “{retirer}” matches another player’s hero. Team-Up rule (Rules Reference 1.8): replace it with “{ajouter}” for this game?",
 };

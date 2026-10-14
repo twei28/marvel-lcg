@@ -403,3 +403,51 @@ test('oublierRepere efface bien la ligne du siege', async ({ page }) => {
   });
   expect(restant).toBe(null);
 });
+
+// L'EQUIPE RESTE ENSEMBLE (13/10/2026) : le dernier choix survit a la bascule
+// dans la partie (le repere, lui, s'efface), pour etre pre-coche a la manche
+// suivante. Une soiree, jamais la suivante.
+test('le dernier choix survit a l’oubli du repere et se perime comme lui', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const mod: any = await import('/js/salon/bascule.js');
+    const boite: Record<string, string> = {};
+    const stockage = {
+      getItem: (k: string) => (k in boite ? boite[k] : null),
+      setItem: (k: string, v: string) => { boite[k] = v; },
+      removeItem: (k: string) => { delete boite[k]; },
+    };
+    mod.memoriserRepere(stockage, 2, '01001a', 'aa:1', 1_000_000);
+    mod.memoriserDernierChoix(stockage, 2, '01001a', 'deck-justice', 1_000_000);
+    mod.oublierRepere(stockage, 2);
+    return {
+      apresBascule: mod.relireDernierChoix(stockage, 2, 1_000_000),
+      autreSiege: mod.relireDernierChoix(stockage, 1, 1_000_000),
+      lendemain: mod.relireDernierChoix(stockage, 2, 1_000_000 + mod.DUREE_MEMOIRE + 1),
+    };
+  });
+  expect(r.apresBascule).toEqual({ heros: '01001a', deck: 'deck-justice' });
+  expect(r.autreSiege).toBe(null);
+  expect(r.lendemain).toBe(null);
+});
+
+test('dernier choix : rien a retenir sans deck, et un stockage en panne ne casse rien', async ({ page }) => {
+  const r = await page.evaluate(async () => {
+    const mod: any = await import('/js/salon/bascule.js');
+    const boite: Record<string, string> = {};
+    const stockage = {
+      getItem: (k: string) => (k in boite ? boite[k] : null),
+      setItem: (k: string, v: string) => { boite[k] = v; },
+      removeItem: (k: string) => { delete boite[k]; },
+    };
+    mod.memoriserDernierChoix(stockage, 1, '01001a', '', 1_000_000);
+    const casse = {
+      getItem: () => { throw new Error('refuse'); },
+      setItem: () => { throw new Error('refuse'); },
+      removeItem: () => { throw new Error('refuse'); },
+    };
+    mod.memoriserDernierChoix(casse, 1, '01001a', 'deck', 1_000_000);
+    return { sansDeck: mod.relireDernierChoix(stockage, 1, 1_000_000), panne: mod.relireDernierChoix(casse, 1, 1_000_000) };
+  });
+  expect(r.sansDeck).toBe(null);
+  expect(r.panne).toBe(null);
+});

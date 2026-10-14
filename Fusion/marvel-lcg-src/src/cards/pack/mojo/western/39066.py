@@ -9,7 +9,8 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this.CastTo(Environment)
         Unused(this)
 
-        message.IncreaseDamage(1, effect)
+        # RR 1.8 FAQ : +1 sur les degats initiaux, puis +1 sur l'exces d'overkill (+2 au total).
+        message.IncreaseDamage(1, effect, inclure_overkill=True)
 
 
     return [

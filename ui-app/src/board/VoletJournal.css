@@ -115,6 +115,16 @@
     bottom: max(10px, calc(22vh - 104px));
     padding: 10px 4px;
   }
+
+  /* Au doigt : 44 px minimum pour tout ce qui se touche dans le volet. */
+  .volet-journal button {
+    min-height: 44px;
+  }
+
+  /* La main ouverte couvre le bas de l'ecran : la languette s'efface. */
+  body:has(.main-feuille) .volet-journal-languette {
+    display: none;
+  }
 }
 
 @media (max-height: 520px) {

@@ -126,12 +126,26 @@ describe('MainPortrait', () => {
       expect(container.querySelector('.main-feuille-jouer')).toBeNull()
     })
 
-    it('le toucher long LIT la carte, il ne la joue plus', () => {
+    it('le toucher long JOUE une carte jouable, sans ouvrir sa fiche', () => {
       vi.useFakeTimers()
       const onOuvrir = vi.fn()
       const onJouer = vi.fn()
       const { container } = render(
         <MainPortrait ouverte onFermer={() => {}} unites={[jouableQuinjet()]} onOuvrir={onOuvrir} onJouer={onJouer} jouable={() => true} />
+      )
+      const porteuse = container.querySelector('.main-portrait-carte') as Element
+      fireEvent.pointerDown(porteuse)
+      vi.advanceTimersByTime(APPUI_LONG_MS)
+      expect(onJouer).toHaveBeenCalledTimes(1)
+      expect(onOuvrir).not.toHaveBeenCalled()
+    })
+
+    it('le toucher long LIT une carte qui ne se joue pas', () => {
+      vi.useFakeTimers()
+      const onOuvrir = vi.fn()
+      const onJouer = vi.fn()
+      const { container } = render(
+        <MainPortrait ouverte onFermer={() => {}} unites={[unite('Quinjet')]} onOuvrir={onOuvrir} onJouer={onJouer} jouable={() => false} />
       )
       const porteuse = container.querySelector('.main-portrait-carte') as Element
       fireEvent.pointerDown(porteuse)
@@ -142,16 +156,16 @@ describe('MainPortrait', () => {
 
     it('le clic qui suit le toucher long ne choisit pas la carte en plus', () => {
       vi.useFakeTimers()
-      const onOuvrir = vi.fn()
+      const onJouer = vi.fn()
       const { container } = render(
-        <MainPortrait ouverte onFermer={() => {}} unites={[jouableQuinjet()]} onOuvrir={onOuvrir} onJouer={() => {}} jouable={() => true} />
+        <MainPortrait ouverte onFermer={() => {}} unites={[jouableQuinjet()]} onOuvrir={() => {}} onJouer={onJouer} jouable={() => true} />
       )
       const porteuse = container.querySelector('.main-portrait-carte') as Element
       fireEvent.pointerDown(porteuse)
       vi.advanceTimersByTime(APPUI_LONG_MS)
       fireEvent.pointerUp(porteuse)
       fireEvent.click(container.querySelector('.main-portrait .scan-card') as Element)
-      expect(onOuvrir).toHaveBeenCalledTimes(1)
+      expect(onJouer).toHaveBeenCalledTimes(1)
       expect(container.querySelector('.main-portrait-carte')).not.toHaveClass('est-choisie')
     })
 

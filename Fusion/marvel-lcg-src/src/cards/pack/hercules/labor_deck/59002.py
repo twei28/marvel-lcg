@@ -48,4 +48,5 @@ def GetAbilities() -> Sequence['Ability']:
     return [AbilityFactory.WhenThisRevealed(None, when_revealed),
             *AbilityFactory.GiveKeywordToAttached(CardFinder(with_attach=True), health=6, trait='ELITE'),
             AbilityFactory.UnitCannotTakeDamageWhile(AbilityType.NonKeyword, None, conditions=[check_not_hercules]),
-            AbilityFactory.AfterCardLeavePlay(AbilityType.ForcedResponse, 'This', after_leave).LimitOncePerPhase()]
+            AbilityFactory.AfterCardLeavePlay(AbilityType.ForcedResponse, 'This', after_leave).LimitOncePerPhase(),
+            CapaciteRetourAuDeckLabor()]

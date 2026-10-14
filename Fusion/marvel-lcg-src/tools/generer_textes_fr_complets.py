@@ -30,6 +30,18 @@ import importer_scans_fr as imp  # noqa: E402
 SORTIE = ICI.parent.parent.parent / "ui-app" / "src" / "board" / "textes-fr-complets.ts"
 
 
+# Errata officiels (Rules Reference 1.7 et 1.8) absents des traductions FR imprimees : appliques par-dessus.
+ERRATA_FR = {
+    "01029a": "Votre taille de main augmente de +1 pour chaque amélioration [[TECH]] que vous contrôlez (jusqu'à +6 de taille de main maximum).",
+    "04028": "<b>Une fois révélée</b> : le joueur de Clint Barton cherche Mockingbird dans sa main, son deck, sa pile de défausse ou zone de jeu et la glisse, face visible, sous cette carte. Quand cette manigance est déjouée, renvoyez la Mockingbird glissée dans la main de son propriétaire.",
+    "08009": "Black Widow gagne +1 DEF.\n<b>Réponse de héros</b> : après avoir résolu la capacité d'une carte [[Préparation]] que vous contrôlez, inclinez le Costume Synthétique → redressez Black Widow.",
+    "56098": "Permanent.\n<b>Réponse forcée</b> : après qu'un leader, un héros ou un allié a attaqué Captain Marvel, placez 1 jeton Énergie ici. Ensuite, s'il y a au moins 4 jetons Énergie sur cette carte, retirez-les tous et Captain Marvel attaque ce personnage. Cette attaque gagne Déferlement.",
+    "57065": "Riposte 2. Ténacité.\n<b>Une fois révélée</b> : résolvez la capacité « <b>Une fois révélée</b> » de la traîtrise la plus proche du dessus de la pile de défausse Rencontre. (Une fois par phase max.)",
+    "27133": "Vous ne pouvez pas contrer cette manigance.\n<b>Action d'alter ego</b> : dépensez 2 ressources de n'importe quel type → retirez de cette manigance un nombre de menaces égal à la REC de votre alter ego. Si votre identité a le trait [[CIVIL]], piochez 1 carte.",
+    "27171":"L'allié attaché perd le texte imprimé dans sa boîte de texte <i> sauf les [[TRAIT]])</i> et est considéré comme un sbire. La MNG du sbire attaché est égale à son CTR imprimé et il ne subit pas de dégâts consécutifs.\n<b>Une fois révélée</b> : attachez cette carte à l'allié que vous contrôlez ayant le coût le moins élevé. L'allié attaché engage son contrôleur. Sinon, cette carte gagne Renfort.",
+}
+
+
 def main() -> int:
     catalogue = json.loads(imp.CARTES_JEU.read_text(encoding="utf-8"))
     codes_du_jeu = set()
@@ -49,6 +61,9 @@ def main() -> int:
         if textes_en.get(code, "").strip() == texte.strip():
             continue  # pas traduit : l'anglais sous un titre francais serait un mensonge
         gardes[code] = texte
+    for code, texte in ERRATA_FR.items():
+        if code in codes_du_jeu:
+            gardes[code] = texte
     lignes = [
         "// Genere par tools/generer_textes_fr_complets.py — NE PAS EDITER A LA MAIN.",
         "//",

@@ -74,13 +74,22 @@ class CanTeamwork(HasTeamwork):
                     break
 
             if has_teamwork:
-                if self.card.world.rule.v16_teamwork:
-                    minion = self.card.CastTo(Minion)
-                    minion.DoActivate(minion.GetEngagedPlayer(), Teamwork(minion))
-                else:
-                    for minion in minions:
-                        if minion.teamwork == self.teamwork and not minion.IsDefeated():
+                def activer():
+                    if self.card.world.rule.v16_teamwork:
+                        minion = self.card.CastTo(Minion)
+                        if minion.IsInPlay():
                             minion.DoActivate(minion.GetEngagedPlayer(), Teamwork(minion))
+                    else:
+                        for minion in minions:
+                            if minion.teamwork == self.teamwork and not minion.IsDefeated():
+                                minion.DoActivate(minion.GetEngagedPlayer(), Teamwork(minion))
+                # RR 1.8 p.44 : un sbire en cours de revelation resout Teamwork APRES
+                # ses capacites « When Revealed ».
+                if self.card.world.rule.v18_reveal_keywords and self.card.state.is_revealing:
+                    from game.operate.run_at import RunAt
+                    RunAt.AfterRevealed(self.CastTo(CardFace), activer)
+                else:
+                    activer()
 
         return super().OnAfterCardEnterPlay(message)
 

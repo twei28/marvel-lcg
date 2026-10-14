@@ -6,7 +6,7 @@ import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, titreDeVague } from "/public/js/prepare/catalog.js";
 import { nomExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=81cb772f";
+import { launch } from "/public/js/prepare/launcher.js?v=0bd7678d";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { STANDARD, cleHeros, codeAlterEgoAffiche } from "/public/js/prepare/arts-heros-choix.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
@@ -1081,8 +1081,33 @@ function render() {
     fixMarvelText();
     ajusterGrilles();
     surveillerGrilles();
+    publierEquipeHote();
 }
 
+/** Dit au salon des invités qui joue quoi, SANS les decks (route gardée côté
+ *  serveur, voir `set_equipe_hote`). Les sièges des invités se publient d'eux
+ *  mêmes : on ne donne ici que ceux que l'hôte a posés. L'empreinte évite de
+ *  réémettre à chaque rendu. */
+let derniereEquipePubliee = "";
+function publierEquipeHote() {
+    if (!enLigne() || state.accueil) return;
+    const heros = {};
+    activePlayers().forEach((p, i) => {
+        if (p.hero && !p.duSalon) heros[String(i)] = p.hero.heroCardId;
+    });
+    const corps = JSON.stringify({
+        nombre: state.playerCount,
+        heros,
+        scenario: state.scenario ? state.scenario.id : "",
+    });
+    if (corps === derniereEquipePubliee) return;
+    derniereEquipePubliee = corps;
+    fetch("/set_equipe_hote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: corps,
+    }).then((r) => { if (!r.ok) derniereEquipePubliee = ""; }, () => { derniereEquipePubliee = ""; });
+}
 
 function progressBar() {
     if (estTel()) return enteteTel();
@@ -1433,14 +1458,157 @@ async function genererLiens() {
     render();
 }
 
+/* ---------------- Inviter un connecte (13/10/2026) ----------------
+   Demande de l'utilisateur : a cote des liens, « Inviter quelqu'un de
+   connecte ». Chaque siege libre propose les DEUX (decision 6) : un ami sans
+   compte garde son lien. L'etat de chaque invite se suit en direct sous son
+   nom (decision 4). Decisions : .planning/todos/2026-10-13-inviter-un-connecte.md.
+   Tout passe par le moteur (get_connectes, post_inviter,
+   get_invitations_envoyees), qui relaie au site et ne repond qu'au siege 0. */
+
+const invitationsHote = {
+    ouvert: false,
+    actif: false,          // un site est-il derriere cette table ?
+    connectes: [],
+    envoyees: {},          // siege -> {invite, etat}
+    choisi: {},            // siege -> pseudo selectionne dans la liste
+    erreur: {},            // siege -> message
+    empreinte: "",
+    minuteur: null,
+};
+
+async function sonderInvitationsHote() {
+    const avant = invitationsHote.empreinte;
+    try {
+        const r = await fetch("get_connectes?", { cache: "no-store" });
+        const b = await r.json();
+        invitationsHote.actif = !!(b && b.actif);
+        invitationsHote.connectes = Array.isArray(b && b.connectes) ? b.connectes : [];
+    } catch (e) { /* table muette : on garde ce qu'on avait */ }
+    try {
+        const r = await fetch("get_invitations_envoyees?", { cache: "no-store" });
+        const b = await r.json();
+        invitationsHote.envoyees = (b && b.sieges) || {};
+    } catch (e) { /* idem */ }
+    // ⚠ ON NE REPEINT QUE SI QUELQUE CHOSE A CHANGE : `render()` reconstruit
+    // tout l'assistant, et une liste deroulante ouverte se refermerait sous les
+    // doigts de l'hote toutes les trois secondes.
+    invitationsHote.empreinte = JSON.stringify([invitationsHote.actif, invitationsHote.connectes, invitationsHote.envoyees]);
+    if (invitationsHote.empreinte !== avant) render();
+}
+
+function boucleInvitationsHote() {
+    clearTimeout(invitationsHote.minuteur);
+    const suivant = () => {
+        invitationsHote.minuteur = setTimeout(async () => {
+            if (!invitationsHote.ouvert) return;
+            if (!document.hidden) await sonderInvitationsHote();
+            suivant();
+        }, 3000);
+    };
+    suivant();
+}
+
+async function ouvrirInvitations() {
+    invitationsHote.ouvert = true;
+    // Les cles servent aux liens ET disent au moteur qu'on monte une table
+    // ordinaire (`table_ordinaire`, voir get_liens_sieges).
+    if (!liensInvites.cles) await genererLiens();
+    await sonderInvitationsHote();
+    render();
+    boucleInvitationsHote();
+}
+
+async function inviterAuSiege(p, pseudo) {
+    invitationsHote.erreur[p] = "";
+    if (!pseudo) return;
+    try {
+        const r = await fetch("post_inviter", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ a: pseudo, siege: p }),
+        });
+        if (!r.ok) invitationsHote.erreur[p] = t("Invitation impossible : ce joueur n’est plus connecté.");
+    } catch (e) {
+        invitationsHote.erreur[p] = t("Invitation impossible : ce joueur n’est plus connecté.");
+    }
+    invitationsHote.empreinte = "";
+    await sonderInvitationsHote();
+    render();
+}
+
+/** Ce que l'hote lit sous le siege `p` : {texte, classe, relancer}. Null : siege libre. */
+function etatDuSiege(p) {
+    const inv = invitationsHote.envoyees[String(p)];
+    const choix = state.salon.choixParSiege.get(p);
+    const joueur = state.players[p];
+    const qui = inv ? inv.invite + " · " : "";
+    if (choix && joueur && joueur.hero) {
+        return { texte: `${qui}${joueur.hero.name} · ${t("prêt")}`, classe: "est-pret" };
+    }
+    if (!inv) return null;
+    if (inv.etat === "envoyee") return { texte: `${qui}${t("Invité…")}`, classe: "est-attente" };
+    if (inv.etat === "acceptee") return { texte: `${qui}${t("A rejoint · choisit son héros")}`, classe: "est-attente" };
+    if (inv.etat === "refusee") return { texte: `${qui}${t("A refusé")}`, classe: "est-refus", relancer: inv.invite };
+    return { texte: `${qui}${t("Sans réponse")}`, classe: "est-refus", relancer: inv.invite };
+}
+
+function ligneDuSiege(p) {
+    const url = lienDuSiege(p);
+    const etat = etatDuSiege(p);
+    const boutonCopier = el("button", {
+        class: "liens-copier" + (liensInvites.copie === p ? " ok" : ""),
+        title: url,
+        onclick: async () => {
+            try {
+                await navigator.clipboard.writeText(url);
+                liensInvites.copie = p;
+            } catch (e) {
+                // Presse-papier refuse : le lien reste lisible dans la bulle.
+                liensInvites.copie = -1;
+                window.prompt(t("Copie ce lien :"), url);
+            }
+            render();
+        },
+    }, liensInvites.copie === p ? t("Copié") : t("Copier le lien"));
+
+    // Siege occupe ou en attente de reponse : l'etat, et rien a choisir.
+    const libre = !etat || etat.relancer;
+    const inviter = [];
+    if (libre && invitationsHote.actif) {
+        const proposes = invitationsHote.connectes;
+        const choisi = invitationsHote.choisi[p] || (etat && etat.relancer) || "";
+        const liste = el("select", {
+            class: "invit-liste",
+            onchange: (ev) => { invitationsHote.choisi[p] = ev.target.value; },
+        },
+            el("option", { value: "" }, proposes.length ? t("Choisir un joueur connecté") : t("Personne n’est connecté")),
+            ...proposes.map((pseudo) => el("option", { value: pseudo, selected: pseudo === choisi }, pseudo)));
+        inviter.push(liste, el("button", {
+            class: "liens-bouton invit-bouton",
+            disabled: !proposes.length,
+            onclick: () => inviterAuSiege(p, invitationsHote.choisi[p] || choisi),
+        }, etat && etat.relancer ? t("Réinviter") : t("Inviter")));
+    }
+    return el("div", { class: "liens-ligne invit-ligne" },
+        el("span", { class: "liens-qui" }, t("Joueur") + " " + (p + 1)),
+        etat ? el("span", { class: "invit-etat " + etat.classe }, etat.texte) : null,
+        ...inviter,
+        // Un siege deja pris n'a plus besoin de son lien.
+        etat && !etat.relancer ? null : boutonCopier,
+        invitationsHote.erreur[p] ? el("small", { class: "liens-erreur" }, invitationsHote.erreur[p]) : null,
+    );
+}
+
 function blocLiens() {
     // A un seul heros il n'y a personne a inviter : le bouton mentirait.
     if (state.playerCount < 2) return null;
 
-    if (!liensInvites.cles) {
+    if (!invitationsHote.ouvert) {
         return el("div", { class: "liens-invites" },
-            el("button", { class: "liens-bouton", onclick: genererLiens },
-                t("Générer les liens à envoyer")),
+            el("div", { class: "invit-entrees" },
+                el("button", { class: "liens-bouton", onclick: ouvrirInvitations }, t("Créer des liens")),
+                el("button", { class: "liens-bouton", onclick: ouvrirInvitations }, t("Inviter quelqu’un de connecté"))),
             liensInvites.erreur
                 ? el("small", { class: "liens-erreur" }, liensInvites.erreur)
                 : null,
@@ -1448,34 +1616,14 @@ function blocLiens() {
     }
 
     const bloc = el("div", { class: "liens-invites ouvert" });
-    // Un lien par siege d'INVITE, et le nombre suit celui des heros choisis :
-    // le siege 0 est celui de l'hote, deja devant son ecran.
-    for (let p = 1; p < state.playerCount; p += 1) {
-        const url = lienDuSiege(p);
-        bloc.append(el("div", { class: "liens-ligne" },
-            el("span", { class: "liens-qui" }, t("Joueur") + " " + (p + 1)),
-            el("input", {
-                class: "liens-url", readonly: true, value: url,
-                onclick: (ev) => ev.target.select(),
-            }),
-            el("button", {
-                class: "liens-copier" + (liensInvites.copie === p ? " ok" : ""),
-                onclick: async () => {
-                    try {
-                        await navigator.clipboard.writeText(url);
-                        liensInvites.copie = p;
-                    } catch (e) {
-                        // Presse-papier refuse (page non securisee, permission) :
-                        // le champ reste selectionnable a la main.
-                        liensInvites.copie = -1;
-                    }
-                    render();
-                },
-            }, liensInvites.copie === p ? t("Copié") : t("Copier")),
-        ));
-    }
+    // Un siege par INVITE, et le nombre suit celui des heros choisis : le
+    // siege 0 est celui de l'hote, deja devant son ecran.
+    for (let p = 1; p < state.playerCount; p += 1) bloc.append(ligneDuSiege(p));
     bloc.append(el("small", { class: "liens-aide" },
-        t("Un lien par personne, à envoyer. Chacun choisit son héros et son deck depuis le sien.")));
+        invitationsHote.actif
+            ? t("Invite un joueur connecté, ou envoie un lien à un ami sans compte. Chacun choisit son héros et son deck de son côté.")
+            : t("Un lien par personne, à envoyer. Chacun choisit son héros et son deck depuis le sien.")));
+    if (liensInvites.erreur) bloc.append(el("small", { class: "liens-erreur" }, liensInvites.erreur));
     return bloc;
 }
 
@@ -1502,7 +1650,7 @@ function bandeauEnLigne() {
 
     return el("div", { class: "salon-bandeau" },
         el("b", { class: "mvl" }, t("Partie en ligne")),
-        el("span", {}, t("Choisis seulement TON héros et TON deck. Les autres joueurs choisissent les leurs depuis le lien que tu leur as envoyé.")),
+        el("span", {}, t("Choisis seulement TON héros et TON deck. Les autres joueurs choisissent les leurs de leur côté, par ton lien ou ton invitation.")),
         el("ul", { class: "salon-sieges" }, ...lignes),
     );
 }
@@ -4659,14 +4807,19 @@ function verifierDeck(deck) {
     // deck signature est imposé par le héros, en quantités fixes qui dépassent
     // parfois trois — Black Panther a cinq « Wakanda Forever! ». Sans cette
     // distinction, le contrôle accusait les decks officiels du jeu.
+    // Une copie partage le titre ET le sous-titre (RR « Copy »), comme dans
+    // deckbuilder/regles.js : les allies « Spider-Woman » de Madame Web, aux
+    // sous-titres differents, ne sont pas des copies.
     const personnalisable = deck.player_deck || [];
+    const cleCopie = (id) => { const c = cards.get(id); return `${_titre(id)}|${(c && c.subtitle) || ""}`; };
     const parTitre = new Map();
     for (const id of personnalisable) {
-        const cle = _titre(id);
+        const cle = cleCopie(id);
         parTitre.set(cle, (parTitre.get(cle) || 0) + 1);
     }
-    for (const [titre, nombre] of parTitre) {
-        const id = personnalisable.find((x) => _titre(x) === titre);
+    for (const [cle, nombre] of parTitre) {
+        const id = personnalisable.find((x) => cleCopie(x) === cle);
+        const titre = _titre(id);
         const max = _plafond(id);
         if (nombre > max) {
             const propre = String(titre).replace(/^\*\s*/, "");
@@ -5506,6 +5659,13 @@ installerHistorique(appliquerCleTel);
     try { phaseVue = localStorage.getItem(CLE_PHASE_MODE_VU); } catch (e) { /* stockage indisponible */ }
     if (!creationCampagne() && doitProposerLaPhase(phaseVue)) {
         await demanderLaPhaseDuMechant();
+    }
+    // L'EQUIPE RESTE ENSEMBLE (13/10/2026) : l'hote qui rouvre la preparation
+    // le signale a sa table, et les invites restes sur l'ecran de fin
+    // reviennent tout seuls a leur salon. Le moteur ignore l'appel d'une table
+    // locale et le refuse a qui ne tient pas le siege 0 : rien a verifier ici.
+    if (!creationCampagne()) {
+        fetch("/annoncer_preparation", { method: "POST" }).catch(() => { /* table muette : rien a annoncer */ });
     }
     // Le salon ne concerne que le multi, mais on sonde toujours : la reponse
     // dit elle-meme si on y est (multi:false en solo, et tout reste inerte).

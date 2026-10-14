@@ -1,0 +1,47 @@
+{
+  "version": "0.5.8",
+  "name": "Vermin",
+  "villain": [
+    "hs002",
+    "hs003"
+  ],
+  "expert": true,
+  "schemes": [
+    "hs004a,hs004b",
+    "hs005a,hs005b"
+  ],
+  "set_aside": [],
+  "encounters": [
+    "hs006",
+    "hs007",
+    "hs008",
+    "hs009",
+    "hs010",
+    "hs011",
+    "hs012",
+    "hs013",
+    "hs014",
+    "hs015",
+    "hs016",
+    "hs017",
+    "hs018",
+    "hs019",
+    "hs020",
+    "hs021",
+    "hs022",
+    "hs023",
+    "hs024",
+    "hs025",
+    "hs026",
+    "hs027",
+    "hs028",
+    "hs029"
+  ],
+  "encounter_sets": [
+    "standard",
+    "expert"
+  ],
+  "modular_sets": [
+    "hs_feral_instincts"
+  ]
+}

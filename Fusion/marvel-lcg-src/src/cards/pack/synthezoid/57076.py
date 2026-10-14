@@ -7,7 +7,7 @@ def GetAbilities() -> Sequence['Ability']:
         leader = Worlds.GetEnemyLeader(effect)
         if not leader:
             return
-        attachments = [x for x in leader.GetAttachedAttachments() if ('Hero Response' in (x.paper.text or '')) or ('Hero Interrupt' in (x.paper.text or ''))]
+        attachments = [x for x in leader.GetAttachedAttachments() if ('Hero Action' in (x.paper.text or '')) or ('Hero Response' in (x.paper.text or ''))]
         if attachments:
             def action(targets: Sequence['CardFace']):
                 Faces.DiscardAll(list(targets), effect)

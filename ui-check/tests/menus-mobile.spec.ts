@@ -51,7 +51,7 @@ async function ouvrirLEtat(page: Page) {
   const menu = page.locator('.portrait-menu-bouton');
   await expect(menu).toBeVisible({ timeout: 30_000 });
   await menu.tap();
-  await expect(page.locator('.portrait-menu .bh-options').first()).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator('.portrait-menu .bh-plus').first()).toBeVisible({ timeout: 30_000 });
 }
 
 /** La feuille tient dans l'ecran (plus de barre du bas depuis le 12/09/2026). */
@@ -86,7 +86,7 @@ test.describe('Les menus du plateau portrait en feuilles', () => {
   // donc qu'elle tient dans l'ecran du telephone et que ses onglets sont la.
   test('Reglages : une fenetre a onglets qui tient dans l ecran', async ({ page }) => {
     await ouvrirLEtat(page);
-    await page.locator('.bh-options').first().tap();
+    await page.locator('.bh-plus').first().tap();
     const fenetre = page.locator('.reglages-fenetre');
     await expect(fenetre).toBeVisible();
 
@@ -105,26 +105,34 @@ test.describe('Les menus du plateau portrait en feuilles', () => {
     // ⚠ Un sous-reglage inutilisable reste VISIBLE : c'est le coeur du
     // changement, un reglage qui apparait est un reglage qu'on ne decouvre
     // jamais.
-    await page.getByRole('tab', { name: /Déroulé/ }).tap();
-    await expect(page.locator('.ligne-option', { hasText: 'Vitesse du déroulé' })).toBeVisible();
+    // Depuis le 04/10/2026 les onglets sont Apparence, Son, Jeu, Avancé.
+    await page.getByRole('tab', { name: /Jeu/ }).tap();
+    await expect(page.locator('.ligne-option', { hasText: 'Phase du méchant' }).first()).toBeVisible();
 
     await page.locator('.reglages-fermer').tap();
     await expect(fenetre).toHaveCount(0);
   });
 
-  test('Historique : une feuille haute, refermee par un tap en dehors', async ({ page }) => {
+  // L'historique vit dans le VOLET du journal depuis le 03/10/2026
+  // (VoletJournal.tsx) : sur telephone il prend tout l'ecran.
+  test('Journal : le volet prend l ecran et se referme', async ({ page }) => {
     await ouvrirLEtat(page);
-    await page.locator('.bh-history').first().tap();
-    await verifierLaFeuille(page, '.historique-panneau');
-    await page.touchscreen.tap(240, 20);
-    await expect(page.locator('.historique-panneau')).toHaveCount(0);
+    await page.locator('.portrait-menu-bouton').tap();
+    await page.locator('.volet-journal-languette').tap();
+    // Le volet glisse depuis la droite : on attend la fin du glissement.
+    await expect.poll(async () => (await page.locator('.volet-journal').boundingBox())?.x ?? 999).toBeLessThanOrEqual(1);
+    await verifierLaFeuille(page, '.volet-journal');
+    const boite = (await page.locator('.volet-journal').boundingBox())!;
+    expect(Math.round(boite.width)).toBeLessThanOrEqual(page.viewportSize()!.width);
+    await page.locator('.volet-journal .reglages-fermer').tap();
+    await expect(page.locator('.volet-journal')).toHaveCount(0);
   });
 
   // Le Retour Android (retour-android.ts) : la feuille du sommet se referme,
   // la page reste. Sans lui, le Retour quittait le plateau au milieu d'une partie.
   test('Le Retour referme la feuille au lieu de quitter la partie', async ({ page }) => {
     await ouvrirLEtat(page);
-    await page.locator('.bh-options').first().tap();
+    await page.locator('.bh-plus').first().tap();
     await expect(page.locator('.reglages-fond')).toBeVisible();
     await page.goBack();
     await expect(page.locator('.reglages-fond')).toHaveCount(0);
@@ -163,7 +171,8 @@ test.describe('Les menus du plateau portrait en feuilles', () => {
     await expect(page.locator('.portrait-menu .bh-reglages')).toHaveCount(0);
     await expect(page.locator('.portrait-menu .bh-musique'),
                  'la musique devrait etre dans les reglages').toHaveCount(0);
-    for (const ligne of ['.bh-history', '.bh-options', '.bh-journal', '.bh-log', '.bh-langue', '.bh-menu']) {
+    // Historique et log vivent dans le volet du journal depuis le 03/10/2026.
+    for (const ligne of ['.bh-plus', '.bh-undo', '.bh-save', '.bh-langue', '.bh-menu']) {
       await expect(page.locator(`.portrait-menu ${ligne}`).first(), `${ligne} manque dans la feuille`).toBeVisible();
     }
     await page.locator('.portrait-menu-bouton').tap();

@@ -41,4 +41,5 @@ def GetAbilities() -> Sequence['Ability']:
             Atonement(effect, player)
     return [AbilityFactory.WhenThisRevealed(None, when_revealed),
             AbilityFactory.WhenUnitWouldAttack(AbilityType.ForcedInterrupt, Villain, protect_humanity, conditions=[check_attacks_hercules]),
-            AbilityFactory.AfterCardLeavePlay(AbilityType.ForcedResponse, 'This', after_leave).LimitOncePerPhase()]
+            AbilityFactory.AfterCardLeavePlay(AbilityType.ForcedResponse, 'This', after_leave).LimitOncePerPhase(),
+            CapaciteRetourAuDeckLabor()]

@@ -240,3 +240,19 @@ accélération (②), faces A/B séparées (②), pastille « 1 réponse possibl
 ★ sans effet en une ligne (⑥), branche non appliquée du texte en gris (⑫).
 Reste côté affichage : pastilles des joueurs dans le calcul de menace (①), halo des défenseurs sur
 la table (③, à vérifier), mode spectateur de l'éliminé (⑧).
+
+Suite de l'implémentation (13/10, commits 390b2da0, ad373d74, 461a7e67 et le bandeau de l'éliminé) :
+valeurs réduites barrées (attaque : Robuste ou « réduit » ; menace : somme barrée), recherches
+publiées par le moteur (« Recherche : rien trouvé », « Trouvé : X », « Paquet rencontre mélangé »),
+paquet rencontre vide (fait moteur `paquet_vide`, écran, jeton d'accélération qui vole), ★ sans effet
+en une ligne, pastilles des joueurs dans la menace, bandeau du joueur éliminé.
+
+Non fait, et pourquoi :
+- effet compté (« 3 sbires × 1 ») : même raison, le calcul vit dans le script de chaque carte ;
+- branche non appliquée du texte en gris : il faudrait comprendre le texte de chaque carte ;
+- pastille « 1 réponse possible » : le moteur ne calcule les réponses jouables qu'au moment de les
+  proposer (décision 46) ;
+- faces A et B sur DEUX écrans : elles se résolvent dans le même appel du moteur ; leurs effets sont
+  publiés ensemble sur un écran « une fois révélé » (fait le 13/10, avec la carte qui réduit un coup).
+- Agent 13 restée affichée morte jusqu'au rechargement (partie du 13/10, 14:05) : cause non trouvée
+  par lecture ; demander un « Signaler un bug » avant de recharger la prochaine fois.

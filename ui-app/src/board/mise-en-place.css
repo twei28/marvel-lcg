@@ -12,6 +12,19 @@
   backdrop-filter: blur(3px);
 }
 
+/* Le vol vers la table (13/10/2026) : le voile s'efface pour qu'on voie la
+   carte se poser dans ses pointillés ; la copie qui vole est hors de la couche. */
+.mep-couche.est-en-vol {
+  background: transparent;
+  backdrop-filter: none;
+  pointer-events: none;
+  transition: background 0.3s ease-out;
+}
+
+.mep-couche.est-en-vol .mep-contenu {
+  visibility: hidden;
+}
+
 .mep-contenu {
   display: flex;
   flex-direction: column;

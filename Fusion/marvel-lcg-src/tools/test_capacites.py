@@ -92,52 +92,6 @@ os.environ.setdefault("CAS_PREFIX", str(os.getpid()))
 
 CAS = [
     {
-        "nom": "[lot6] activations simultanees chez DEUX joueurs : le premier joueur choisit l'ordre (Combined Effort, RR 1.8 p.6)",
-        "pourquoi": ("refonte de la phase du mechant, lot 6 (decision 47) : « chaque sbire Elite s'active contre "
-                     "le joueur avec qui il est engage » touche J1 (Sandman) et J2 (Radioactive Man) en meme temps ; "
-                     "RR p.6 : le premier joueur choisit l'ordre. Le moteur faisait toujours J1 puis J2 sans rien demander"),
-        "scenario": "rhino",
-        "heros": "spider_man",
-        "heros2": "hawkeye",
-        "mise_en_place": ["Puzzle.Engage('01102', player=0)", "Puzzle.Engage('01129', player=1)"],
-        "declencher": ["Puzzle.Reveal('24069')"],
-        "questions_presentes": ["Players Activation Order"],
-        "verifier": "etat_attendu",
-        "attendu": {"en_jeu": ["01102", "01129"]},
-    },
-    {
-        "nom": "[lot6] activations simultanees chez UN SEUL joueur : aucune question d'ordre entre joueurs (contre-cas)",
-        "pourquoi": ("meme carte, seul J1 a un sbire Elite : l'ordre des joueurs ne se pose pas, rien n'est demande "
-                     "(solo et hot-seat inchanges)"),
-        "scenario": "rhino",
-        "heros": "spider_man",
-        "heros2": "hawkeye",
-        "mise_en_place": ["Puzzle.Engage('01102', player=0)"],
-        "declencher": ["Puzzle.Reveal('24069')"],
-        "questions_absentes": ["Players Activation Order"],
-        "verifier": "etat_attendu",
-        "attendu": {"en_jeu": ["01102"]},
-    },
-    {
-        "nom": "[elimination] joueur elimine : la phase du mechant ne lui distribue ni ne lui revele de carte rencontre",
-        "pourquoi": ("RR 1.8 p.34 : un joueur elimine ne participe plus ; ses cartes hors de sa propriete "
-                     "rejoignent la defausse de leur proprietaire. `VillainPhase` bouclait sur "
-                     "`const_players`, qui garde les elimines : l'etape 3 lui distribuait une carte, "
-                     "l'etape 4 la revelait et le moteur attendait ce joueur (partie bloquee, vu par le "
-                     "lot 5c, 12/10/2026)"),
-        "scenario": "rhino",
-        "heros": "spider_man",
-        "heros2": "black_panther",
-        "regles": ["v16_all"],
-        # Black Panther (2e joueur) en heros a 1 PV : Rhino l'attaque a l'etape 2,
-        # il ne defend pas (« Passer »), il est elimine EN PLEINE PHASE.
-        "mise_en_place": ["Puzzle.ChangeForm('01040b')", "Puzzle.Damage('01040a', 10)"],
-        "declencher": ["Puzzle.RunVillainPhase()"],
-        "passer_sur_option": "Defen",
-        "verifier": "elimine_sans_carte_rencontre",
-        "attendu": {},
-    },
-    {
         "nom": "Puzzle.ChangeForm sur la face CACHEE d'une identite en jeu : pas de doublon detache (identity.py:42, 12/10/2026)",
         "pourquoi": ("deux sous-agents de mesure ont vu une AssertionError (GetControlByPlayer, identity.py:42) : "
                      "`ChangeForm('01001b')` alors que Spider-Man etait deja sur 01001a ne trouvait pas la carte en jeu "
@@ -6683,6 +6637,7 @@ CAS = [
     },
     {
         "nom": "ok023 War Drumming — branche IDENTITE CIVILE : gagne renfort",
+        "surge_hors_phase": 1,
         "pourquoi": "ThisCardGainSurge, verifie indirectement par la carte Rencontre supplementaire distribuee",
         "scenario": "rhino",
         "heros": "okoye",
@@ -14469,6 +14424,7 @@ CAS = [
     },
     {
         "nom": "gb017 Gleeful Savagery — en alter-ego, 1 degat indirect et surge",
+        "surge_hors_phase": 1,
         "pourquoi": ("`WhenThisRevealed(\'Alter-Ego\')` : "
                      "`identite.TakeIndirectDamage(this, 1, effect)` + `ThisCardGainSurge`. "
                      "Modele 01145"),
@@ -21934,6 +21890,7 @@ CAS = [
     },
     {
         "nom": "sn011 In Walks Trouble — branche « reveler au hasard » : pile vide, la carte gagne Deferlement",
+        "surge_hors_phase": 1,
         "pourquoi": ("⚠ « If you cannot, this card gains SURGE » : « you cannot » = la pile "
                      "est VIDE. Mot-piege « if you cannot » (`wd028`) — le cas doit prouver "
                      "que la branche est ATTEIGNABLE, donc pile vide.\n"
@@ -22855,6 +22812,7 @@ CAS = [
     },
     {
         "nom": "bc012 Luck's Ran Out — CONTRE-CAS : pile vide, la carte gagne Deferlement",
+        "surge_hors_phase": 1,
         "pourquoi": ("⚠ « If you cannot, this card gains SURGE » : « you cannot » = la "
                      "pile est VIDE. Mot-piege « if you cannot » (`wd028`) — le cas doit "
                      "prouver que la branche est ATTEIGNABLE.\n"
@@ -23659,6 +23617,33 @@ CAS = [
         "mise_en_place": [],
         "declencher": [],
         "verifier": "lot5c_raisons_distribution",
+    },
+    {
+        "nom": "[lot6] activations simultanees chez DEUX joueurs : le premier joueur choisit l'ordre (Combined Effort, RR 1.8 p.6)",
+        "pourquoi": ("refonte de la phase du mechant, lot 6 (decision 47) : « chaque sbire Elite s'active contre "
+                     "le joueur avec qui il est engage » touche J1 (Sandman) et J2 (Radioactive Man) en meme temps ; "
+                     "RR p.6 : le premier joueur choisit l'ordre. Le moteur faisait toujours J1 puis J2 sans rien demander"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.Engage('01102', player=0)", "Puzzle.Engage('01129', player=1)"],
+        "declencher": ["Puzzle.Reveal('24069')"],
+        "questions_presentes": ["Players Activation Order"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01102", "01129"]},
+    },
+    {
+        "nom": "[lot6] activations simultanees chez UN SEUL joueur : aucune question d'ordre entre joueurs (contre-cas)",
+        "pourquoi": ("meme carte, seul J1 a un sbire Elite : l'ordre des joueurs ne se pose pas, rien n'est demande "
+                     "(solo et hot-seat inchanges)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.Engage('01102', player=0)"],
+        "declencher": ["Puzzle.Reveal('24069')"],
+        "questions_absentes": ["Players Activation Order"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01102"]},
     },
     {
         "nom": "A2 faits — l'etape 4 journalise chaque carte revelee, avec son joueur",
@@ -26905,6 +26890,7 @@ CAS = [
     },
     {
         "nom": "su018 Goblin Glider — SURGE : un second planeur n'a plus de cible et revele une carte de plus",
+        "surge_hors_phase": 1,
         "pourquoi": ("« If you cannot [attach], this card gains surge ». Declaree non testable "
                      "le 08/09/2026 : « elle demande un plateau SANS aucun ennemi, et retirer "
                      "le vilain fait tomber la partie ». Lecture trop etroite : la cible est "
@@ -28193,6 +28179,7 @@ CAS = [
     },
     {
         "nom": "ip037 Manipulate Realities — sans Molecule Man en jeu, elle prend deferlement",
+        "surge_hors_phase": 1,
         "pourquoi": ("« Otherwise, this card gains surge. » Molecule Man absent : la branche "
                      "de repli est forcee. Le deferlement se lit comme attribut de la carte"),
         "scenario": "rhino",
@@ -31088,6 +31075,7 @@ CAS = [
     },
     {
         "nom": "SURGE (moteur) — TEMOIN : un renfort revele UNE carte, et la carte revelee ne renforce pas d'elle-meme",
+        "surge_hors_phase": 1,
         "pourquoi": ("Temoin moteur du 11/09/2026. Assault revelee en alter-ego gagne surge et "
                      "revele Illegal Arms Factory (set Klaw, sans surge) qui entre en jeu : "
                      "Masters of Mayhem reste dans le deck. ⚠ Pas de carte du set Rhino en "
@@ -32157,6 +32145,53 @@ CAS = [
         "attendu": {"deck_de_scenario": "InfinityStone"},
     },
     {
+        "nom": "21116 Sanctuary — vaincue : 3 ressources [physical] depensees de la main -> 6 degats a Thanos",
+        "pourquoi": ("signalement Phocea du 13/10/2026 (« la reaction de Sanctuaire ne se declenche pas ») : "
+                     "journal « s'active » puis rien, alors que la main avait 5 ressources [physical]. "
+                     "RR p.4 : un When Defeated se resout, la partie apres « may » est au choix. RR p.48 : "
+                     "la carte quitte le jeu APRES son When Defeated, et son « cannot take damage from "
+                     "player cards » (errata RRG 1.6) ne bloque pas ses propres degats"),
+        "scenario": "thanos",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.SetThreat('21116', 1)"],
+        "main_exclusive": ["05015", "05015", "01092"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "cibles": ["21116"],
+        "preferer_option": "Spend",
+        "surpayer": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["21111", 6]]},
+    },
+    {
+        "nom": "21116 Sanctuary — vaincue : la depense est PROPOSEE et se refuse (temoin, Thanos intact)",
+        "pourquoi": "temoin du cas precedent : « may » se refuse, et le refus ne doit rien infliger",
+        "scenario": "thanos",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.SetThreat('21116', 1)"],
+        "main_exclusive": ["05015", "05015", "01092"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "cibles": ["21116"],
+        "passer_sur_option": "Spend",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["21111", 0]]},
+    },
+    {
+        "nom": "21116 Sanctuary — vaincue par VENOM (main du signalement Phocea) -> 6 degats a Thanos",
+        "pourquoi": ("le signalement Phocea jouait Venom : meme main [physical] que le rapport "
+                     "(Black Widow, Helicarrier, Tackle, Grasping Tendrils). 4 [physical] > plafond 3 : "
+                     "`_CoutPayable` additionnait toute la main et jugeait l'option impayable (regression du 11/10)"),
+        "scenario": "thanos",
+        "heros": "venom",
+        "mise_en_place": ["Puzzle.ChangeForm('20001b')", "Puzzle.SetThreat('21116', 1)"],
+        "main_exclusive": ["01075", "01092", "05015", "20003"],
+        "declencher": ["Puzzle.Thwart('20001a')"],
+        "cibles": ["21116"],
+        # PAS `surpayer` : il depenserait les 4, au-dela du plafond « up to 3 ».
+        "preferer_option": "Spend",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["21111", 6]]},
+    },
+    {
         "nom": "59003 Embody Pathos — le contre d'un ALLIE ne retire aucune menace",
         "pourquoi": ("signalement Aghenatak du 02/10/2026 : « les allies peuvent participer aux travaux d'Hercules ». Le script prenait l'identite de l'INITIATEUR (le joueur, donc toujours Hercules) au lieu de la carte qui contre : Thor (THW 3) retirait la menace"),
         "scenario": "rhino",
@@ -32199,6 +32234,102 @@ CAS = [
         "cibles": ["59037"],
         "verifier": "etat_attendu",
         "attendu": {"degats": [["59037", 6]]},
+    },
+    # ------------------------------------------------------------------------
+    # RULES REFERENCE 1.8, APPENDIX IV (FAQ) : entrees nouvelles ou modifiees
+    # (audit du 11/10/2026). Overkill/Tough, Power Stone, Wild Wild Mojo, Labors.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "[RR1.8 FAQ] 59002 Labor — quitte le jeu hors victoire : remise SOUS le deck Labor",
+        "pourquoi": ("RR 1.8 FAQ Hercules : « Any time a Labor card leaves play other than being "
+                     "placed in the victory display, place it on the bottom of the Labor deck. » "
+                     "Avant, la Labor partait a la defausse et le deck Labor s'epuisait"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": ["Puzzle.Reveal('59002')"],
+        "declencher": ["Puzzle.Discard('59002')"],
+        "verifier": "hercules_labor_sous_le_deck",
+        "attendu": {},
+    },
+    {
+        "nom": "[RR1.8 FAQ] 59003 Labor — revelee SANS cible : defaussee (pas remise sous le deck Labor)",
+        "pourquoi": ("RR 1.8 FAQ Hercules : « What happens if a labor card fails to find a target "
+                     "when it is revealed? A: That Labor card is discarded. » Une carte revelee "
+                     "n'est pas en jeu (RR « Reveal ») : elle ne « quitte » pas le jeu, la phrase "
+                     "sur le deck Labor ne s'applique pas. Olympic Feud est retire et le deck "
+                     "rencontre vide avant (Bomb Scare 01109 y serait une cible)"),
+        "scenario": "rhino",
+        "heros": "hercules",
+        "mise_en_place": ["Puzzle.Remove('59038')", "Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('59003')"],
+        "verifier": "hercules_labor_sans_cible_defaussee",
+        "attendu": {},
+    },
+    {
+        "nom": "[RR1.8 FAQ] 16149 Power Stone — identite eliminee (partie a 2) : la pierre s'attache au vilain",
+        "pourquoi": ("RR 1.8 FAQ Power Stone : « If a player is eliminated from the game while a "
+                     "permanent attachment is in their play area, they resolve the \"attach to\" text "
+                     "of that attachment. » + Player Elimination etape 3. Avant, l'etape 3 n'etait "
+                     "qu'un commentaire et la pierre partait a la defausse de rencontre (reponse 1.7)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "heros2": "black_panther",
+        # L'etape 3 vit avec l'etape 4 sous `v16_player_elimination`, pose en vraie partie par `v16_all`.
+        "regles": ["v16_all"],
+        "mise_en_place": ["Puzzle.PutIntoPlay('16149')", "Puzzle.Attach('16149', '01001b')"],
+        "declencher": ["Puzzle.Damage('01001b', 99)"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01094", "16149"]]},
+    },
+    {
+        "nom": "[elimination] joueur elimine : la phase du mechant ne lui distribue ni ne lui revele de carte rencontre",
+        "pourquoi": ("RR 1.8 p.34 : un joueur elimine ne participe plus ; ses cartes hors de sa propriete "
+                     "rejoignent la defausse de leur proprietaire. `VillainPhase` bouclait sur "
+                     "`const_players`, qui garde les elimines : l'etape 3 lui distribuait une carte, "
+                     "l'etape 4 la revelait et le moteur attendait ce joueur (partie bloquee, vu par le "
+                     "lot 5c, 12/10/2026)"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "heros2": "black_panther",
+        "regles": ["v16_all"],
+        # Black Panther (2e joueur) en heros a 1 PV : Rhino l'attaque a l'etape 2,
+        # il ne defend pas (« Passer »), il est elimine EN PLEINE PHASE.
+        "mise_en_place": ["Puzzle.ChangeForm('01040b')", "Puzzle.Damage('01040a', 10)"],
+        "declencher": ["Puzzle.RunVillainPhase()"],
+        "passer_sur_option": "Defen",
+        "verifier": "elimine_sans_carte_rencontre",
+        "attendu": {},
+    },
+    {
+        "nom": "[RR1.8 FAQ] 39066 Wild Wild Mojo — overkill : +1 sur l'allie ET +1 sur l'exces (Rhino 2 sur Spider-Woman 2 PV : 2 passent)",
+        "pourquoi": ("RR 1.8 FAQ : « the total overkill damage dealt is increased by 2 ». Rhino ATK 2 "
+                     "(boost 0) : l'allie subit 3, exces 1, +1 sur l'identite = 2. Avant : la garde "
+                     "`IncreaseDamage` ignorait l'exces, identite a 1"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+                          "Puzzle.PutIntoPlay('39066')", "Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01011', under_control=True)"],
+        "declencher": ["Puzzle.Attack('01094', '01011')"],
+        "main_exclusive": ["01088"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "hors_jeu": ["01011"]},
+    },
+    {
+        "nom": "[RR1.8 FAQ] Overkill sur un allie avec Tough : rien ne passe a l'identite (60149 Rhino sur Spider-Woman robuste)",
+        "pourquoi": ("RR 1.8 FAQ (Core Set, keyword) : « Only excess damage \"taken\" by the ally gets "
+                     "dealt to the identity by the overkill keyword, and a tough status card prevents "
+                     "the character from \"taking\" any damage. » Temoin : le meme cas sans Tough "
+                     "laisse passer 1 degat (cas 60149 Rhino [fne3a])"),
+        "scenario": "the_raft_breakout_hammerhead",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01186', '01186', '01186')",
+                          "Puzzle.PutIntoPlay('60149')", "Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('01011', under_control=True)", "Puzzle.Tough('01011')"],
+        "declencher": ["Puzzle.Attack('60149', '01011')"],
+        "main_exclusive": ["01088"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "en_jeu": ["01011"]},
     },
     {
         "nom": "59002 Defeat the Hydra — le sbire marque vaincu par Hercules valide le Travail",
@@ -32708,6 +32839,7 @@ CAS = [
     },
     {
         "nom": "60130 Escort Vehicle [fne3a] — 9 compteurs speed : aussi surge, le temoin du dessus du deck est revele",
+        "surge_hors_phase": 1,
         "pourquoi": "seuil(9) ; en alter-ego, quickstrike n'attaque pas ; temoin Hydra Mercenary",
         "scenario": "the_getaway_hammerhead",
         "heros": "spider_man",
@@ -34687,6 +34819,7 @@ CAS = [
     },
     {
         "nom": "60139 Shop Proprietor [fne3p] — revele : entre en jeu sous ton controle et surge ; quand il quitte le jeu : 4 menaces sur ton complot",
+        "surge_hors_phase": 1,
         "pourquoi": "WhenRevealed PutIntoPlay(under_control) + ThisCardGainSurge ; WhenCardLeavePlay(This) -> ComplotDuJoueur ; 5 = 4 + 1 de Battle in the Bodega (le surge revele Assault : le vilain attaque un personnage de cette aire)",
         "scenario": "protection_racket_hammerhead",
         "heros": "spider_man",
@@ -34891,6 +35024,7 @@ CAS = [
     },
     {
         "nom": "60186 Sports Car [fne3b] — aucun ennemi sans VEHICLE : surge",
+        "surge_hors_phase": 1,
         "pourquoi": "if_cannot_gain_surge ; le van est deja sur Hammerhead, seul ennemi ; temoin = sbire du dessus",
         "scenario": "art_museum_heist_hammerhead",
         "heros": "spider_man",
@@ -36056,6 +36190,7 @@ CAS = [
     },
     {
         "nom": "60195 Cold as Ice [fne3b] — aucun sbire : surge",
+        "surge_hors_phase": 1,
         "pourquoi": "if_cannot_gain_surge ; temoin = sbire du dessus",
         "scenario": "art_museum_heist_hammerhead",
         "heros": "spider_man",
@@ -36438,7 +36573,8 @@ CAS = [
     },
     {
         "nom": "60200 Ivan Banionis [fne3b] — Teamwork (TRACKSUIT), base desc : entre en jeu avec Tracksuit Bro deja la : les deux s'activent (2 + 2)",
-        "pourquoi": "regle par defaut du moteur (v16_teamwork False) : TOUS les sbires au Teamwork correspondant s'activent ; heros incline, pas de defense",
+        "pourquoi": ("regle par defaut du moteur (v16_teamwork False) : TOUS les sbires au Teamwork correspondant s'activent ; heros incline, pas de defense. "
+                     "RR 1.6+ (v16_teamwork, vraie partie) : seul le sbire qui entre s'active, donc 2"),
         "scenario": "art_museum_heist_hammerhead",
         "heros": "spider_man",
         "mise_en_place": [
@@ -36451,6 +36587,7 @@ CAS = [
             "Puzzle.PutIntoPlay('60200')"
         ],
         "verifier": "etat_attendu",
+        "attendu_par_regle": {"v16_teamwork": {"degats_identite": 2}},
         "attendu": {
             "degats_identite": 4
         }
@@ -37684,6 +37821,7 @@ CAS = [
     },
     {
         "nom": "60164 Bear Hug [fne4] — Kingpin A1 (pas MARTIAL ARTIST) : surge, la carte ne s'attache pas",
+        "surge_hors_phase": 1,
         "pourquoi": "selecteur YourHero + check_effect_fn KingpinArtMartial ; if_cannot_operation -> ThisCardGainSurge ; temoin = sbire du dessus",
         "scenario": "kingpin_fne",
         "heros": "spider_man",
@@ -38119,6 +38257,7 @@ CAS = [
     },
     {
         "nom": "60167 Mountain of Muscle [fne4] — Kingpin A1 : surge, pas d'attache",
+        "surge_hors_phase": 1,
         "pourquoi": "AttachToFaceWhenPutIntoPlay(CardFinder(Kingpin, trait MARTIAL ARTIST), if_cannot_gain_surge)",
         "scenario": "kingpin_fne",
         "heros": "spider_man",
@@ -38853,6 +38992,7 @@ CAS = [
     },
     {
         "nom": "60175 Bag of Tricks [fne4] — set nemesis vide : surge",
+        "surge_hors_phase": 1,
         "pourquoi": "ThisCardGainSurge ; les 4 cartes de la reserve retirees par Puzzle.Remove (fouille set_aside_nemesis_sets depuis le 18/09/2026, D4) ; temoin = sbire du dessus",
         "scenario": "kingpin_fne",
         "heros": "spider_man",
@@ -39536,6 +39676,7 @@ CAS = [
     },
     {
         "nom": "60206b The Getaway (Failed) [fne5] — en jeu ; chaque joueur revele un attachement du deck rencontre a la mise en place (1 oeuvre au Setup + 1 revelee + 1 par l'Art Thief qu'elle appelle = 3 attachements)",
+        "surge_hors_phase": 1,
         "pourquoi": "Find.FindAndReveal(Attachment) par joueur",
         "scenario": "art_museum_heist_hammerhead",
         "heros": "spider_man",
@@ -40848,6 +40989,7 @@ CAS = [
     },
     {
         "nom": "60084 Energy Overload [fne2] — aucune carte [energy] en main : surge",
+        "surge_hors_phase": 1,
         "pourquoi": "ThisCardGainSurge ; temoin = sbire du dessus",
         "scenario": "art_museum_heist_electro",
         "heros": "spider_man",
@@ -41015,6 +41157,7 @@ CAS = [
     },
     {
         "nom": "60100 Converted [fne2] — aucun allie : surge",
+        "surge_hors_phase": 1,
         "pourquoi": "if_cannot -> ThisCardGainSurge",
         "scenario": "art_museum_heist_purple_man",
         "heros": "spider_man",
@@ -41283,6 +41426,7 @@ CAS = [
     },
     {
         "nom": "60109 Sway the Masses [fne2] — un sbire INFLUENCED de la defausse est revele",
+        "surge_hors_phase": 1,
         "pourquoi": "Search.SearchForCard(include_encounter_discard_pile) ; Judge en defausse",
         "scenario": "art_museum_heist_purple_man",
         "heros": "spider_man",
@@ -41302,6 +41446,7 @@ CAS = [
     },
     {
         "nom": "60109 Sway the Masses [fne2] — defausse vide : surge",
+        "surge_hors_phase": 1,
         "pourquoi": "ThisCardGainSurge ; temoin = sbire du dessus",
         "scenario": "art_museum_heist_purple_man",
         "heros": "spider_man",
@@ -41897,6 +42042,7 @@ CAS = [
     },
     {
         "nom": "60119 Scavenged Bulwark [fne2] — revelee : la vilaine devient robuste, et surge",
+        "surge_hors_phase": 1,
         "pourquoi": "GiveStatus Tough + Surge (desc) ; temoin = sbire du dessus",
         "scenario": "art_museum_heist_typhoid_mary",
         "heros": "spider_man",
@@ -42581,6 +42727,7 @@ CAS = [
     },
     {
         "nom": "60096 Head First! [fne] (Alter-Ego) — surge : le sbire temoin du dessus du deck entre en jeu",
+        "surge_hors_phase": 1,
         "pourquoi": "WhenThisRevealed('Alter-Ego', ThisCardGainSurge) (01106) ; la partie commence en alter-ego",
         "scenario": "art_museum_heist_hammerhead",
         "heros": "spider_man",
@@ -42699,6 +42846,7 @@ CAS = [
     },
     {
         "nom": "60122 Impossible Object [fne] — revelee : s'attache au vilain, le desoriente, surge",
+        "surge_hors_phase": 1,
         "pourquoi": "AttachToFaceWhenPutIntoPlay(Villain) + AfterCardAttachTo ForcedResponse + desc.Surge ; les oeuvres de la mise en place sont retirees (Pottery donnerait stalwart)",
         "scenario": "art_museum_heist_hammerhead",
         "heros": "spider_man",
@@ -43023,6 +43171,7 @@ CAS = [
     },
     {
         "nom": "60127 Tug of War [fne] — sinon : une oeuvre de l'identite va au vilain et surge",
+        "surge_hors_phase": 1,
         "pourquoi": "Otherwise + ThisCardGainSurge ; main vide, aucune branche payante ; temoin de surge = sbire du dessus",
         "scenario": "art_museum_heist_hammerhead",
         "heros": "spider_man",
@@ -43251,6 +43400,7 @@ CAS = [
     },
     {
         "nom": "60191 Flight Serum [fne] — aucun ennemi non-AERIAL : surge",
+        "surge_hors_phase": 1,
         "pourquoi": "if_cannot_gain_surge=True ; Hammerhead porte deja un serum, la 2e copie du deck est revelee ; temoin de surge = sbire du dessus",
         "scenario": "art_museum_heist_hammerhead",
         "heros": "spider_man",
@@ -47060,6 +47210,17 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 1},
     },
+    # --- Errata RR 1.8 (audit du 11/10/2026, scratchpad rr18-audit-D-errata.md) ---
+    {
+        "nom": "[rr18] 57065 Moon Knight — ne resout QUE le When Revealed de la traitrise : pas de Surge (Exhaustion)",
+        "pourquoi": ("texte : « Resolve the When Revealed ability of the topmost treachery ». Le script REVELAIT la "
+                     "traitrise : le Surge d'Exhaustion 01191 revelait en plus Concussive Blast (1 degat)"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.CreateEncounterDiscardPile('01191')", "Puzzle.CreateEncounterDeck('01154')"],
+        "declencher": ["Puzzle.Reveal('57065')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "exhausted": ["01001b"]},
+    },
     {
         "nom": "[mc4db] 04136 Bitter Rival — When Revealed : UN personnage epuise PAR manigance annexe, obligatoire (errata RRG 1.5)",
         "pourquoi": "range=('Zero', n) laissait n'en epuiser aucun ; deux manigances annexes, deux personnages : les deux s'inclinent",
@@ -47242,6 +47403,122 @@ CAS = [
         "jouer": ["01067"],
         "payer_avec": ["01072"],
         "verifier": "pol_double",
+    },
+    # ---- Rules Reference 1.8 (22/07/2026), regles de base : `regles` pose `v18_all`
+    # comme le lanceur le fait pour une partie neuve (v16_all aussi). Les cas
+    # « temoin RR 1.7 » gardent l'ancien comportement des sauvegardes d'avant.
+    {
+        "nom": "[RR1.8] 01191 Exhaustion — Surge hors phase du mechant : la carte suivante est DISTRIBUEE face cachee, pas revelee",
+        "pourquoi": ("RR 1.8 p.42 « Surge » : « deals themself a facedown encounter card » (equivaut a When Revealed : "
+                     "Deal yourself 1 facedown encounter card). En 1.7 : « reveals an additional encounter card »"),
+        "scenario": "rhino", "heros": "spider_man",
+        "regles": ["v16_all", "v18_all"],
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01107')"],
+        "declencher": ["Puzzle.Reveal('01191')"],
+        "verifier": "ares_cartes_rencontre_distribuees",
+        "attendu": {"distribuees": 1},
+    },
+    {
+        "nom": "[RR1.8] 01191 Exhaustion — temoin RR 1.7 (sauvegarde d'avant) : Surge revele la carte suivante tout de suite",
+        "sans_v18": True,
+        "pourquoi": "les sauvegardes sans `v18_surge` doivent se rejouer a l'identique",
+        "scenario": "rhino", "heros": "spider_man",
+        "regles": ["v16_all"],
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('01107')"],
+        "declencher": ["Puzzle.Reveal('01191')"],
+        "verifier": "ares_cartes_rencontre_distribuees",
+        "attendu": {"distribuees": 0},
+    },
+    {
+        "nom": "[RR1.8] 56079 Hellcat — Quickstrike resolu APRES son When Revealed (sonne d'abord, attaque ensuite)",
+        "pourquoi": ("RR 1.8 p.35 « Quickstrike » : « If a minion with the quickstrike keyword is being revealed, the "
+                     "quickstrike keyword resolves after any When Revealed abilities on that minion are resolved »"),
+        "scenario": "rhino", "heros": "spider_man",
+        "regles": ["v16_all", "v18_all"],
+        "mise_en_place": ["Puzzle.ChangeToFace('01001b', '01001a')"],
+        "declencher": ["Puzzle.Reveal('56079')"],
+        "verifier": "rr18_ordre_journal",
+        "attendu": {"depuis": "Hellcat\\] r[ée]v[ée]l[ée]e|Hellcat\\] revealed", "avant": "(gagne|gains) .*Stunned", "apres": "attaqu|attack"},
+    },
+    {
+        "nom": "[RR1.8] 56074 Wasp — Teamwork resolu APRES son When Revealed (menace posee d'abord, activation ensuite)",
+        "pourquoi": ("RR 1.8 p.44 « Teamwork » : « If a minion with the teamwork keyword is being revealed, the teamwork "
+                     "keyword resolves after any When Revealed abilities on that minion are resolved ». Hellcat (Avenger) "
+                     "deja en jeu pour declencher le Teamwork"),
+        "scenario": "rhino", "heros": "spider_man",
+        "regles": ["v16_all", "v18_all"],
+        "mise_en_place": ["Puzzle.PutIntoPlay('56079')"],
+        "declencher": ["Puzzle.Reveal('56074')"],
+        "verifier": "rr18_ordre_journal",
+        "attendu": {"depuis": "Wasp\\] r[ée]v[ée]l[ée]e|Wasp\\] revealed", "avant": "Wasp\\] s.active|Wasp\\] activates", "apres": "\\(Teamwork\\)"},
+    },
+    {
+        "nom": "[RR1.8] 02023 Goblin Soldier — When Defeated (interruption forcee) AVANT l'Interrupt facultatif de Priority Target",
+        "pourquoi": ("RR 1.8 p.5 (priorite) et p.47 : « When Defeated » equivaut a « Forced Interrupt : When this card is "
+                     "defeated » ; les interruptions forcees passent avant les interruptions facultatives. En 1.7, "
+                     "When Defeated etait range avec Boost/When Revealed, APRES les Interrupt"),
+        "scenario": "rhino", "heros": "cyclops",
+        "regles": ["v16_all", "v18_all"],
+        "mise_en_place": ["Puzzle.ChangeToFace('33001b', '33001a')", "Puzzle.PutIntoPlay('02023')",
+                          "Puzzle.PutIntoPlay('33007', under_control=True)", "Puzzle.Attach('33007', '02023')",
+                          "Puzzle.Damage('02023', 4)"],
+        "declencher": ["Puzzle.Attack('33001a', '02023')"],
+        "verifier": "rr18_ordre_journal",
+        "attendu": {"depuis": "Cyclops.*attaque|Cyclops.*attacks", "avant": "Goblin Soldier\\] s.active", "apres": "pioche|draws"},
+    },
+    {
+        "nom": "[RR1.8] 46018 limite des manigances annexes de joueur : c'est le joueur qui joue la carte qui choisit (2e joueur)",
+        "pourquoi": ("RR 1.8 p.33 : « A player may play a player side scheme even while at the player side scheme limit. "
+                     "If they do, they must choose a player side scheme to discard. » Avant : toujours le premier joueur. "
+                     "Mesure directe sur `CheckLimit(chooser)`, la limite abaissee a 0 pour depasser avec une seule carte"),
+        "scenario": "rhino", "heros": "spider_man", "heros2": "captain_marvel",
+        "regles": ["v16_all", "v18_all"],
+        "mise_en_place": ["Puzzle.PutIntoPlay('46018', under_control=True)"],
+        "declencher": [],
+        "verifier": "rr18_limite_manigances_choix",
+        "attendu": {"choisit": 1},
+    },
+    {
+        "nom": "[RR1.8] 46018 limite des manigances annexes de joueur — temoin RR 1.7 (sauvegarde d'avant) : le premier joueur choisit",
+        "sans_v18": True,
+        "pourquoi": "les sauvegardes sans `v18_side_scheme_limit` doivent se rejouer a l'identique",
+        "scenario": "rhino", "heros": "spider_man", "heros2": "captain_marvel",
+        "regles": ["v16_all"],
+        "mise_en_place": ["Puzzle.PutIntoPlay('46018', under_control=True)"],
+        "declencher": [],
+        "verifier": "rr18_limite_manigances_choix",
+        "attendu": {"choisit": 0},
+    },
+    {
+        "nom": "[RR1.8] wx009 riposte = reponse forcee : Radioactive Man (1 PV) attaque, sa reponse forcee ET la riposte partent dans la meme fenetre",
+        "pourquoi": ("RR 1.8 p.38 : « Retaliate X » equivaut a « Forced Response : After this character is attacked, deal X "
+                     "damage to the attacker » ; p.8 etape 6 : reponses forcees « after attacks / after is attacked » dans "
+                     "l'ordre choisi. En 1.7 la riposte partait d'office AVANT : Radioactive Man (1 PV) mourait et sa "
+                     "reponse « discard 1 card at random » ne partait pas. Ici on choisit sa reponse en premier"),
+        "scenario": "rhino", "heros": "wolverine_x23",
+        "regles": ["v16_all", "v18_all"],
+        "mise_en_place": ["Puzzle.ChangeForm('wx001b')", "Puzzle.PutIntoPlay('wx009', under_control=True)",
+                          "Puzzle.PutIntoPlay('01129')", "Puzzle.Damage('01129', 6)"],
+        "main_exclusive": ["01090", "01090"],
+        "declencher": ["Puzzle.Attack('01129')"],
+        # La question d'ordre des reponses forcees simultanees (RR 1.8) : on designe Radioactive Man.
+        "choisir_option": ["Forced abilities would initiate at the same moment", "Forced_abilities_would_initiate_at_the_same_moment"],
+        "cibles": ["01129"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 1, "hors_jeu": ["01129"]},
+    },
+    {
+        "nom": "[RR1.8] wx009 riposte — temoin RR 1.7 (sauvegarde d'avant) : la riposte part d'office avant, Radioactive Man meurt sans faire defausser",
+        "sans_v18": True,
+        "pourquoi": "les sauvegardes sans `v18_retaliate` doivent se rejouer a l'identique",
+        "scenario": "rhino", "heros": "wolverine_x23",
+        "regles": ["v16_all"],
+        "mise_en_place": ["Puzzle.ChangeForm('wx001b')", "Puzzle.PutIntoPlay('wx009', under_control=True)",
+                          "Puzzle.PutIntoPlay('01129')", "Puzzle.Damage('01129', 6)"],
+        "main_exclusive": ["01090", "01090"],
+        "declencher": ["Puzzle.Attack('01129')"],
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2, "hors_jeu": ["01129"]},
     },
     {
         "nom": "01123 Sonic Boom — pas de bouton Passer (il equivalait a l'option Exhaust) et l'option Exhaust epuise les personnages",
@@ -48705,6 +48982,7 @@ CAS = [
     },
     {
         "nom": "[hs3] hs070 Iguana Whip (alter-ego) : prend surge",
+        "surge_hors_phase": 1,
         "pourquoi": "When Revealed (Alter-Ego)",
         "scenario": "hs_the_lizard",
         "heros": "spider_man",
@@ -48952,6 +49230,7 @@ CAS = [
     },
     {
         "nom": "[hs3] hs071 Iguana Whip : la copie prend surge en alter-ego",
+        "surge_hors_phase": 1,
         "pourquoi": "copie",
         "scenario": "hs_the_lizard",
         "heros": "spider_man",
@@ -52456,6 +52735,7 @@ CAS = [
     },
     {
         "nom": "45049 Stepford Cuckoos — traitrise revelee par le SURGE d'un sbire (Weapons Runner) : annulable",
+        "surge_hors_phase": 1,
         "pourquoi": ("signalement n°72 : Weapons Runner (01121, Surge) entre en jeu, le surge revele une "
                      "traitrise, l'Interrupt doit etre proposee comme pour une revelation directe"),
         "scenario": "rhino",
@@ -52898,7 +53178,6 @@ CAS = [
 # ------------------------------------------------- verifications outillees --
 # Definies ici en texte pour rester dans le processus fils (voir plus bas).
 VERIFICATIONS = r'''
-
 def refus_rattache_a_sa_carte(monde, aides):
     """Un refus se rattache a la carte de l'effet REFUSE, jamais a celle de l'effet
     qui pose la question (`by_effect`). Rapid Response 08031 pose la question,
@@ -58071,6 +58350,63 @@ def _journal_du_cas(aides):
         return None, f"journal introuvable ({chemin_log}) : {exc}"
 
 
+
+def rr18_ordre_journal(monde, aides):
+    """RR 1.8 : dans le journal de CE cas, apres la derniere ligne `depuis`, la
+    premiere ligne `avant` precede la premiere ligne `apres` (regex)."""
+    import re
+    attendu = aides["cas"]["attendu"]
+    contenu, erreur = _journal_du_cas(aides)
+    if erreur:
+        return False, erreur
+    lignes = [l for l in contenu.splitlines() if l.startswith(">")]
+    debut = 0
+    if attendu.get("depuis"):
+        reperes = [i for i, l in enumerate(lignes) if re.search(attendu["depuis"], l)]
+        if not reperes:
+            return False, f"repere introuvable : {attendu['depuis']}"
+        debut = reperes[-1]
+    suite = lignes[debut:]
+    ia = next((i for i, l in enumerate(suite) if re.search(attendu["avant"], l)), None)
+    ib = next((i for i, l in enumerate(suite) if re.search(attendu["apres"], l)), None)
+    if ia is None or ib is None:
+        return False, f"ligne absente (avant={ia}, apres={ib}) ; extrait : " + " | ".join(suite[:12])
+    if ia < ib:
+        return True, f"ordre conforme : « {suite[ia].strip()[:70]} » puis « {suite[ib].strip()[:70]} »"
+    return False, f"ordre inverse : « {suite[ib].strip()[:70]} » AVANT « {suite[ia].strip()[:70]} »"
+
+
+def rr18_limite_manigances_choix(monde, aides):
+    """RR 1.8 p.33 : qui est interroge par `PlayerSideSchemeLimit.CheckLimit(chooser=joueur 2)` ?
+    La limite est abaissee a 0 le temps de l'appel ; la question est interceptee (aucune defausse)."""
+    attendu = aides["cas"]["attendu"]
+    interroges = []
+    class _Arret(Exception):
+        pass
+    joueur2 = monde.players[1]
+    classe = type(joueur2)
+    origine = classe.__dict__.get("ChooseAbilities")
+    def intercepte(self, *args, **kwargs):
+        interroges.append(self.player_id)
+        raise _Arret()
+    classe.ChooseAbilities = intercepte
+    nombre = monde.__dict__["started_player_num"]
+    monde.__dict__["started_player_num"] = -1
+    try:
+        try:
+            monde.limit_player_side_scheme.CheckLimit(joueur2)
+        except _Arret:
+            pass
+    finally:
+        monde.__dict__["started_player_num"] = nombre
+        if origine is None:
+            del classe.ChooseAbilities
+        else:
+            classe.ChooseAbilities = origine
+    if interroges != [attendu["choisit"]]:
+        return False, f"joueur(s) interroge(s) : {interroges}, attendu [{attendu['choisit']}]"
+    return True, f"le joueur {interroges[0]} choisit la manigance a defausser"
+
 def journal_ordre_paiement_dit(monde, aides):
     """Yarro n30 : payer avec 2 cartes ecrit UNE ligne qui donne l'ordre."""
     contenu, erreur = _journal_du_cas(aides)
@@ -62214,6 +62550,40 @@ def hercules_travaux_et_dons_melanges(monde, aides):
     return True, "six cartes, deck melange a la mise en place"
 
 
+def hercules_labor_sous_le_deck(monde, aides):
+    """RR 1.8 FAQ : la Labor 59002 sortie du jeu (hors victoire) est la carte du DESSOUS du deck annexe.
+    `Puzzle.Reveal` revele une COPIE : l'originale reste dans le deck (dessus ou ailleurs)."""
+    joueur = monde.players[0]
+    faces = [f for f in joueur.additional_deck.Get() if f is not None]
+    ids = [getattr(f.paper, "card_id", "?") for f in faces]
+    if not faces or ids[0] != "59002":
+        defausse = [getattr(f.paper, "card_id", "?") for f in joueur.discard_pile.Get()]
+        return False, f"dessous du deck annexe = {ids[:1]} (attendu 59002) ; deck = {ids} ; defausse = {defausse}"
+    if faces[0].IsFaceUp():
+        return False, "59002 est sous le deck Labor mais face visible"
+    return True, f"59002 sous le deck Labor, face cachee (deck = {ids})"
+
+
+def hercules_labor_sans_cible_defaussee(monde, aides):
+    """RR 1.8 FAQ : une Labor revelee sans cible est defaussee, et ne retourne pas dans le deck Labor."""
+    from game.operate.worlds import Worlds
+    joueur = monde.players[0]
+    deck = [getattr(f.paper, "card_id", "?") for f in joueur.additional_deck.Get() if f is not None]
+    defausse = [getattr(f.paper, "card_id", "?") for f in joueur.discard_pile.Get()]
+    defausse += [getattr(f.paper, "card_id", "?") for f in Worlds.GetEncounterDiscardPileCards(monde)]
+    en_jeu = [getattr(o.face.paper, "card_id", "?") for o in monde.object_manager.card_dict.values()
+              if o.face is not None and o.face.IsInPlay()]
+    # `Puzzle.Reveal` fabrique une COPIE (l'originale reste dans le deck Labor, melange
+    # a la mise en place) : seule une deuxieme 59003 dans le deck serait un retour.
+    if deck.count("59003") > 1:
+        return False, f"la 59003 revelee est revenue dans le deck Labor (deck = {deck})"
+    if "59003" in en_jeu:
+        return False, "59003 est restee en jeu sans cible"
+    if "59003" not in defausse:
+        return False, f"59003 introuvable dans les defausses ({defausse})"
+    return True, "59003 sans cible : defaussee"
+
+
 def daredevil_sens_offert(monde, aides):
     """Le moteur OFFRE-t-il un Play sur le dessus du deck Sense, et pas dessous ?"""
     joueur = monde.players[0]
@@ -62899,6 +63269,25 @@ def executer_un_cas(game_dir, port, index):
             traceback.print_exc()
             rendre(False, f"echec de la mise en place : {type(exc).__name__}: {exc}")
 
+        # `surge_hors_phase: N` (RR 1.8, 11/10/2026) : le cas revele pendant le tour
+        # une carte a surge. En regle `v18_surge`, le surge DISTRIBUE N carte(s)
+        # face cachee au lieu de les reveler : on l'exige (N cartes distribuees,
+        # aucune revelee), puis on joue l'etape 4 de la phase du mechant
+        # (`RevealEncounterCards`) pour que la suite du cas mesure la meme chose
+        # que dans l'ancien regime, ou la carte etait revelee tout de suite.
+        if cas.get("surge_hors_phase") and monde.rule.v18_surge and not monde.is_game_over:
+            voulu = int(cas["surge_hors_phase"])
+            n = sum(len(list(j.dealt_encounter_cards.GetAll())) for j in monde.players)
+            if n != voulu:
+                rendre(False, f"RR 1.8 : {n} carte(s) distribuee(s) face cachee par le surge, attendu {voulu}")
+            for j in monde.players:
+                if len(list(j.dealt_encounter_cards.GetAll())) and not monde.is_game_over:
+                    j.RevealEncounterCards()
+        # `attendu_par_regle` : {"<regle>": {...}} remplace `attendu` quand la regle
+        # du moteur est active (une regle du Rules Reference qui change le resultat).
+        for regle, autre in (cas.get("attendu_par_regle") or {}).items():
+            if getattr(monde.rule, regle, False):
+                cas["attendu"] = autre
         espace = {}
         exec(VERIFICATIONS, espace)
         try:
@@ -63420,6 +63809,12 @@ def executer_un_cas(game_dir, port, index):
     # carte par carte ce que la bascule deplace.
     if os.environ.get("REGLES_V16") and "v16_all" not in scene.rules:
         scene.rules.append("v16_all")
+    # `REGLES_V18=1` : idem pour les regles du Rules Reference 1.8 (`v18_all`),
+    # que le lanceur pose sur toute partie neuve depuis le 11/10/2026.
+    # `sans_v18: True` : un temoin des regles d'avant (sauvegarde ancienne), que
+    # `REGLES_V18` ne doit pas basculer.
+    if os.environ.get("REGLES_V18") and "v18_all" not in scene.rules and not cas.get("sans_v18"):
+        scene.rules.append("v18_all")
     # `carnet` : un cas de CAMPAGNE. Le carnet est celui que le lanceur passe
     # en `campaignLog` ; la regle `mode_campaign` rend `Worlds.IsCampaign`
     # vrai, sans quoi aucune capacite `WhenCampaignSetup` ne part

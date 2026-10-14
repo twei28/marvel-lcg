@@ -71,8 +71,8 @@ import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
 import { CoucheRevelation } from './board/CoucheRevelation'
 import { StatsPartie } from './board/StatsPartie'
-import { CoucheMiseEnPlace, useMiseEnPlacePasAPas } from './board/CoucheMiseEnPlace'
-import { mechantAttendLaQuestion, panneauAvantLaFile } from './board/mise-en-place-pas-a-pas'
+import { CoucheMiseEnPlace, PlacesEnAttente, glisser, useMiseEnPlacePasAPas } from './board/CoucheMiseEnPlace'
+import { attenteSurTable, avecFacesDAvant, mechantAttendLaQuestion, panneauAvantLaFile } from './board/mise-en-place-pas-a-pas'
 import { CoucheTriche, useTriche } from './board/CoucheTriche'
 import { installerSurvol, SELECTEUR_SURVOL_PLATEAU, useSons } from './board/sons'
 import { useHaloStatut } from './board/halo-statut'
@@ -91,6 +91,7 @@ import {
   natureDuDepart,
   type Site,
 } from './board/quitter-la-table'
+import { adresseApresPartie, estInviteDeTable, useRetourAuSalon } from './board/retour-salon'
 import { estFenetreDeReaction } from './board/DemandeCentrale'
 import {
   narrationAuCentre,
@@ -1670,6 +1671,7 @@ function EcranFinPartie({
   bataille,
   monde,
   siege,
+  retourSalon = false,
   onMenu,
   onDeconnexion,
 }: {
@@ -1688,6 +1690,8 @@ function EcranFinPartie({
    * sert pour savoir quelles cases nous appartiennent.
    */
   siege: number
+  /** Invité d'une table répartie : « Retour » mène à son salon (retour-salon.ts). */
+  retourSalon?: boolean
   onMenu: () => void
   onDeconnexion: () => void
 }) {
@@ -1796,7 +1800,7 @@ function EcranFinPartie({
         ) : (
           <div className="fin-partie-choix-sortie">
             <button type="button" className="fin-partie-menu" onClick={onMenu}>
-              {t('Retour au choix du héros')}
+              {retourSalon ? t('Retour au salon') : t('Retour au choix du héros')}
             </button>
             <a className="fin-partie-menu" href="/get_enregistrement" download="partie.marvelreplay">
               {t('Télécharger la partie')}
@@ -3800,12 +3804,40 @@ export function PagePartie({
   // La mise en place carte par carte (10/10/2026) : chaque carte qui arrive en
   // jeu se montre en grand, dans l'ordre, et attend « Continuer ». Le panneau
   // de la manigance attend que la file soit vide pour parler a son tour.
+  // Seulement dans le mode « Étape par étape » (l'ancien Bis, 10/10/2026).
+  const miseEnPlaceMuette = !sceneCentrale || spectateur || estRelecture() || modeManuelDeclare
   const miseEnPlace = useMiseEnPlacePasAPas(etat.monde, {
-    enCours: enMiseEnPlace,
+    // Une partie finie pendant la mise en place ne la montre plus : l'écran de
+    // fin passait SOUS la carte en attente (vu en essai à deux, 13/10/2026).
+    enCours: enMiseEnPlace && !partieFinieMoteur,
     voile,
-    // Seulement dans le mode « Étape par étape » (l'ancien Bis, 10/10/2026).
-    muet: !sceneCentrale || spectateur || estRelecture() || modeManuelDeclare,
+    muet: miseEnPlaceMuette,
   })
+  // La table ne montre que ce qui a eu son « Continuer » (13/10/2026) : places
+  // en pointilles, jetons et face de manigance d'avant. La manigance que le
+  // panneau presente attend aussi.
+  const panneauEnAttente = enMiseEnPlace && !miseEnPlaceMuette && !voile ? priseManigance?.carte.id : undefined
+  const attenteMep = useMemo(
+    () => attenteSurTable(miseEnPlace.enAttente, panneauEnAttente),
+    [miseEnPlace.enAttente, panneauEnAttente]
+  )
+  const mondeAffiche = mondeTable ?? etat.monde
+  const mondeSurTable = useMemo(
+    () => (mondeAffiche ? avecFacesDAvant(avecCompteursFiges(mondeAffiche, attenteMep.figes), attenteMep.faces) : undefined),
+    [mondeAffiche, attenteMep]
+  )
+  const plateauSurTable = useMemo(
+    () =>
+      mondeSurTable && mondeSurTable !== mondeAffiche
+        ? construirePlateau(mondeSurTable, {
+            playerId: joueurActif,
+            viewerId: playerId,
+            catalogue,
+            seulCeJoueur: vueForcee !== null || modePlateau === 'mobile',
+          })
+        : undefined,
+    [mondeSurTable, mondeAffiche, joueurActif, playerId, catalogue, vueForcee, modePlateau]
+  )
   // 1A et 2A avant les mechants (livret, etape 10 ; decision du 10/10/2026) :
   // le panneau de la manigance principale passe devant un mechant en file.
   const panneauPrioritaire = panneauAvantLaFile(miseEnPlace.etape, priseManigance?.carte)
@@ -3932,10 +3964,17 @@ export function PagePartie({
 
   // Sortir du plein ecran AVANT de naviguer (spec mobile §6.3) : sinon
   // l'assistant s'ouvre encore en plein ecran, sans barre d'adresse.
+  // L'invité d'une table répartie retourne à SON salon, pas à l'assistant de
+  // l'hôte (13/10/2026, board/retour-salon.ts).
+  const navigateurTable = { siege: playerId, multi: estMultijoueur(), spectateur }
+  const inviteDeTable = estInviteDeTable(navigateurTable)
+  const adresseRetour = adresseApresPartie(navigateurTable)
   const retourMenu = useCallback(() => {
     quitterPleinEcran()
-    atterrir('/prepare.html')
-  }, [])
+    atterrir(adresseRetour)
+  }, [adresseRetour])
+  // Resté sur l'écran de fin, l'invité rejoint son salon dès que l'hôte prépare la suivante.
+  useRetourAuSalon(Boolean(finPartieAffichee) && inviteDeTable, playerId)
 
   // ⌂ QUITTER, C'EST FERMER LA TABLE (21/09/2026), et non plus seulement
   // changer d'écran. Le pourquoi — le salon qui expédiait les invités sur
@@ -4734,7 +4773,7 @@ export function PagePartie({
       ) : null}
 
       <RenduPartie
-        world={mondeTable ?? etat.monde}
+        world={mondeSurTable ?? mondeTable ?? etat.monde}
         playerId={joueurActif}
         // Le bandeau « Annuler » du telephone (zone 3) appelle la MEME
         // annulation que le bouton « ↶ Annuler » de la barre.
@@ -4756,7 +4795,7 @@ export function PagePartie({
             />
           ) : undefined
         }
-        plateau={plateauTable ?? plateau}
+        plateau={plateauSurTable ?? plateauTable ?? plateau}
         effets={effets}
         heroActifId={heroActifId}
         // Le bandeau portrait n'a pas de quoi recalculer « qui agit » (il ne
@@ -5282,6 +5321,7 @@ export function PagePartie({
           principale, montree en grand pendant que le moteur attend la
           confirmation avant de la retourner (World.ConfirmMainSchemeReveal).
           Le voile ci-dessus garantit que la table est deja montee derriere. */}
+      <PlacesEnAttente ids={attenteMep.cachees} />
       <CoucheMiseEnPlace
         etape={panneauPrioritaire || mechantRetenu ? undefined : miseEnPlace.etape}
         restantes={miseEnPlace.restantes}
@@ -5301,6 +5341,7 @@ export function PagePartie({
           versoUrl={autresFacesDe(priseManigance.carte, catalogue)[0]?.url}
           versoCode={autresFacesDe(priseManigance.carte, catalogue)[0]?.code}
           versoType={autresFacesDe(priseManigance.carte, catalogue)[0]?.type}
+          voleVers={animationsActives ? panneauEnAttente : undefined}
           onValider={() =>
             repondre(
               { id: priseManigance.question.id, targets: [], resources: [] },
@@ -5320,6 +5361,7 @@ export function PagePartie({
           raison={etat.monde.game_over_reason}
           monde={etat.monde}
           siege={playerId}
+          retourSalon={inviteDeTable}
           onMenu={retourMenu}
           onDeconnexion={retourMenuPrincipal}
         />

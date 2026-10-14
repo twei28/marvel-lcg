@@ -1,0 +1,703 @@
+Nugget
+Nugget
+
+2
+ “I have found dignity, not in 
+the cities, but in the jungle. I 
+have found honor, not in the 
+civilized, but in the primal. 
+I have found morality, I 
+have found meaning — in 
+the hunt.” 
+– Kraven the Hunter
+Welcome to Hunting 
+Season! This custom 
+campaign expansion comes 
+with ﬁve custom scenarios 
+that tell the story of a 
+crazed hunter going after 
+animal-themed villains for 
+his own sense of morality.
+VILLAIN CARDS
+VILLAIN CARDS
+Each of the ﬁve new scenarios in this expansion features 
+a new villain: Vermin, Scorpion, The Lizard, Vulture, and 
+Kraven the Hunter. Each scenario has its own section in this 
+rulebook.
+IDENTITY CARDS
+IDENTITY CARDS
+There are no new heroes included in this expansion, but I 
+recommend using animal-themed heroes such as Spider-
+Man, Spider-Woman, Black Panther, Ant-Man or Wasp, to 
+truly immerse yourself in the hunting theme.
+COMPONENTS
+COMPONENTS
+226 cards, consisting of 57 player cards, 15 villain cards, 
+138 encounter cards, and 16 trap cards.
+NEW MODE OF PLAY
+NEW MODE OF PLAY
+Each of the scenarios in this custom expansion can be 
+played individually as standalone adventures, or as part of 
+one epic campaign.
+CAMPAIGN MODE RULES
+CAMPAIGN MODE RULES
+Campaign mode combines all ﬁve scenarios in the Hunting 
+Season expansion into one epic experience where the 
+outcome of each game impacts the next scenario. To 
+complete the campaign, the players must win all ﬁve 
+scenarios in numerical order, starting with scenario #1 – 
+Vermin and ending with scenario #5 – Kraven the Hunter.
+To begin a campaign, the players start by choosing their 
+heroes. Each player must use their chosen identity for 
+the entire campaign, but they are free to change aspects 
+and alter the contents of their deck following the deck 
+customization rules in the Marvel Champions Rules 
+Reference between scenarios.
+To play a scenario in campaign mode, set up the scenario 
+as per the normal rules of the game. Then, follow that 
+scenario’s setup instructions in the order in which they are 
+listed in the Campaign Instructions.
+When the game ends, if the players won, follow that 
+scenario’s victory instructions in the order in which they 
+are listed in the Campaign Instructions. If the players lost, 
+follow that scenario’s loss instructions in the order in which 
+they are listed in the Campaign Instructions.
+CAMPAIGN LOG
+CAMPAIGN LOG
+The campaign log found on the last page of this rulebook 
+tracks the progress of the entire campaign. At the end of 
+each scenario, the players record their results by entering 
+the required information in the campaign log.
+CARDS ADDED TO DECKS
+CARDS ADDED TO DECKS
+During a campaign, cards can be added to players’ decks 
+as part of a scenario’s victory instructions, or in between 
+scenarios in The Lodge (see page 3). When a card is added 
+to a player’s deck this way, write that card’s title in the 
+matching ﬁeld of the campaign log.
+Added cards must be included in the player’s deck for the 
+rest of the campaign. Cards added to the deck as part of 
+a campaign do not count toward a player’s minimum or 
+maximum deck size.
+Cards that were created speciﬁcally for use in the Hunting 
+Season campaign cannot be included in any player’s deck 
+unless they are playing that campaign and the players 
+were directed to add them to their decks by the Campaign 
+Instructions.
+EXPERT CAMPAIGN
+EXPERT CAMPAIGN
+For players who want a more challenging campaign 
+experience, The Hunting Season expansion comes with 
+everything you need to play an expert campaign. The rules 
+for this alternate play format are found on page 11.
+ Some setup, victory and loss instructions are 
+preceded by Expert Campaign Only. Players should 
+ignore these instructions unless they are playing an 
+expert campaign.
+HUNTING SEASON CAMPAIGN
+HUNTING SEASON CAMPAIGN
+
+3
+HUNTER MODE
+HUNTER MODE
+For players who want an expert campaign with 
+more challenge, The Hunting Season expansion 
+comes with a “Hunter Mode” environment for 
+each scenario that increases the difﬁculty. The 
+rules for this alternate play format are found on 
+page 11.
+ Some setup, victory and loss instructions 
+are preceded by Hunter Mode Only. Players 
+should ignore these instructions unless they are 
+playing an expert campaign on Hunter Mode.
+EXPERIENCE
+EXPERIENCE
+During a campaign, in a scenario’s victory and 
+loss instructions, players will earn Experience 
+based on their performance. This symbolizes that 
+hero’s experience with hunting and the wild. A 
+player’s current number of Experience must be 
+written down in the campaign log.
+THE LODGE
+THE LODGE
+Between each scenario, players get the option to 
+add cards to their deck from The Lodge. These 
+cards have the text “Experience Cost” followed 
+by a number. This number states how much 
+Experience a player must spend to add that card 
+to their deck. This act symbolizes the hero using 
+their hunting experience to gain new skills, allies 
+and items. After spending their Experience, that 
+player must write down in the campaign log how 
+much Experience they have left.
+The cards available in The Lodge at the start of 
+the campaign is: Rocket Raccoon (x1), Old Man 
+Logan (x1), Black Cat (x1), Ka-Zar (x1), Evade 
+(x3), Taunt (x3), Steadfast (x3), Finish Them 
+Off (x3), Fresh Tracks (x3), Savage Land (x1), 
+Hunting Riﬂe (x3), Hatchet (x3), Hunterbot (x3), 
+Trap (x3), and In Hiding (x3).
+Gibbon (x1) is set aside and cannot be added to 
+any player’s deck until the campaign instructs the 
+card to be added to The Lodge.
+THE MASTER HUNTER
+THE MASTER HUNTER
+At the start of the campaign the players decide 
+on which player to give the title of Master Hunter. 
+If the players are unable to decide, the title goes 
+to the player who last met an untamed animal 
+in the wild. The Master Hunter will be instructed 
+to make decisions or decide ties during the 
+campaign by the campaign instructions of some 
+scenarios.
+
+4
+SCENARIO #1 – VERMIN
+SCENARIO #1 – VERMIN
+The human-rat hybrid Vermin has come out of the sewers of 
+New York City and brought with him a giant swarm of rats. 
+We don’t know what has triggered his actions, but that is not 
+important right now. The NYPD ofﬁcers and the S.H.I.E.L.D. 
+soldiers stationed there stand defenseless against the 
+many rats threatening to invade the city. Vermin cannot be 
+reasoned with in his enraged state, so we need your help to 
+defeat him, which will hopefully cause the rats following him 
+to return to the sewers.
+Villain Deck: Vermin (I), Vermin (II)
+Remove Vermin (I) and add Vermin (III) for expert mode.
+Main Scheme Deck: Rats and More Rats; Rats, Rats and 
+More Rats
+Encounter Deck: Vermin set, Feral Instincts, and Standard 
+set. (The Standard set can be found in the Marvel 
+Champions core-set.)
+The Feral Instincts set can be removed from this scenario 
+and/or added to other scenarios when using the scenario 
+customization rules.
+CAMPAIGN INSTRUCTIONS
+CAMPAIGN INSTRUCTIONS
+SETUP:
+ Each player records their identity in the campaign log 
+found on the last page of this rulebook. Players cannot 
+switch identities during a campaign.
+ Hunter Mode Only: Put the Rabid Rodents 
+environment from the Hunter Mode set into play.
+VICTORY:
+You have successfully defeated Vermin, and the remaining 
+rats have skittered back into the sewers. When you ask 
+Vermin why he did what he did, he says: “Big hairy man ﬁnd 
+Vermin... hurt Vermin... Vermin get mad and lose control. 
+Vermin must ﬁnd hairy man and hurt him back! Vermin 
+come with you?”
+ The players decide on one player to add the Vermin 
+ally from the Hunt Campaign set to their deck. If they are 
+unable to decide, the Master Hunter decides.
+ Each player earns 3 Experience.
+ Each player not engaged with any rat minions earns 
+1 Experience.
+ If the current stage of the main Scheme is Rats and 
+More Rats, each player earns 1 Experience.
+ Expert Campaign Only: Record each identity’s 
+remaining hit points in the campaign log, as well as any 
+cards added to their deck and any Experience earned.
+ Hunter Mode Only: Each player earns 1 Experience.
+LOSS:
+Failing to defeat Vermin, the rat swarm grows ever larger, 
+and New York City is put into quarantine to contain it. 
+Vermin runs away, but no one is able to follow him and see 
+where he’s headed.
+ Each player earns 2 Experience.
+ Each player not engaged with any rat minions, earns 
+1 Experience.
+ Record in your campaign log that Vermin escaped.
+ Expert Campaign Only: Record each identity’s 
+remaining hit points in the campaign log, as well as any 
+Experience earned.
+VISITING THE LODGE:
+The players may now add cards to their decks from The 
+Lodge by spending their Experience, before moving on to 
+the next scenario.
+
+5
+SCENARIO #2 – SCORPION
+SCENARIO #2 – SCORPION
+A few days go by as you attempt to recover from your ﬁght 
+with Vermin. Suddenly you get a call from S.H.I.E.L.D.:
+“The famous media personality J. Jonah Jameson Jr. has 
+reported that Scorpion is seeking revenge against him 
+for something that happened between them in the past. 
+This info has been known for a while, but it’s only now that 
+Scorpion has decided to get revenge, possibly hoping to 
+kill his target. We need you to defeat Scorpion before he 
+gets his pincers in Mr. Jameson.”
+Villain Deck: Scorpion (I), Scorpion (II)
+Remove Scorpion (I) and add Scorpion (III) for expert mode.
+Main Scheme Deck: Thirst for Revenge, Vengeful Pursuit
+Encounter Deck: Scorpion set, Feral Instincts, and 
+Standard set. (The Standard set can be found in the Marvel 
+Champions core-set.)
+The Feral Instincts set can be removed from this scenario 
+and/or added to other scenarios when using the scenario 
+customization rules.
+CAMPAIGN INSTRUCTIONS
+CAMPAIGN INSTRUCTIONS
+SETUP:
+ Each player may spend 2 Experience to increase their 
+starting hand size by 1. The additional card a player 
+draws this way is only drawn during setup.
+ Expert Campaign Only: Set each player’s hit points 
+to their remaining hit point value recorded in the 
+campaign log for the previous scenario.
+ Expert Campaign Only: Each player may spend any 
+amount of Experience they have, and heal 1 damage 
+from their identity for each Experience they spend this 
+way.
+ Expert Campaign Only: Each player may add 1 
+random obligation from their expert campaign set to 
+their deck to heal their identity to its full hit point value.
+ Hunter Mode Only: Put the Sting of the Scorpion 
+environment from the Hunter Mode set into play.
+VICTORY:
+You have successfully defeated Scorpion and protected J. 
+Jonah. Jameson from his wrath. When Scorpion comes to, 
+he says: “I’ve wanted to kill that snake Jameson for ages! 
+I’ve been a good guy and restrained myself, but a few days 
+ago, a guy injected me with some kind of serum that made 
+me lose my mind. I didn’t see who he was, but he had a 
+stupid Russian accent. I have to come with you to get my 
+revenge on that creep.”
+ The players decide on the player who owns the least 
+amount of predator allies, to add the Scorpion ally from 
+the Hunt Campaign set to their deck. The Master Hunter 
+decides ties.
+ Record in your campaign log that Scorpion joined 
+you.
+ Each player earns 3 Experience.
+ If the J. Jonah Jameson support has 1 or no wound 
+counters on it, each player earns 1 Experience. Jameson 
+says this: “That was a close call. You heroes are still 
+MENACES, but I will go a bit lighter on you in the future”.
+ If the Scorpion’s Tail attachment is set aside, each 
+player earns 1 Experience.
+ Expert Campaign Only: Record each identity’s 
+remaining hit points in the campaign log, as well as any 
+cards added to their deck and any Experience earned.
+ Hunter Mode Only: Each player earns 1 Experience.
+LOSS:
+Scorpion gets a hold of J. Jonah. Jameson Jr. and kills him 
+in cold blood. The enraged ﬁend ignores you, and runs 
+away somewhere, without anyone able to track him.
+ Each player earns 2 Experience.
+ If the Scorpion’s Tail attachment is set aside, each 
+player earns 1 Experience.
+ Watching Jameson die like that was traumatizing. 
+Each player must remove 1 hero-speciﬁc card from their 
+deck from the game.
+ Expert Campaign Only: Record each identity’s 
+remaining hit points in the campaign log, as well as any 
+cards removed from their deck, and any Experience 
+earned.
+VISITING THE LODGE:
+The players may now add cards to their decks from The 
+Lodge by spending their Experience, before moving on to 
+the next scenario.
+
+6
+SCENARIO #3 – LIZARD
+SCENARIO #3 – LIZARD
+A few days go by as you attempt 
+to recover from your ﬁght with 
+Scorpion. Suddenly you get a call 
+from Dr. Curtis Connors:
+“There’s no easy way to say this. 
+He’s speaking to me again, and 
+I’ve been feeling strange lately. 
+I thought I had gotten rid of him 
+for good. Please come and help 
+me before I hurt anyone.”
+Villain Deck: Curtis Connors (I), Curtis Connors (II)
+Remove Curtis Connors (I) and add Curtis Connors (III) for 
+expert mode.
+Main Scheme Deck: Using the Mammal Brain, Reptile 
+Brain Taking Over, No Humanity Left.
+Encounter Deck: Lizard set, Lizard Thralls, and Standard 
+set. (The Standard set can be found in the Marvel 
+Champions core-set.)
+The Lizard Thralls set can be removed from this scenario 
+and/or added to other scenarios when using the scenario 
+customization rules.
+TWO VILLAIN FORMS
+TWO VILLAIN FORMS
+This villain has two forms, same as in the scenario Risky 
+Business, and the same rules apply here for when the villain 
+changes form and when a villain stage is defeated.
+After the villain changes form, all attachment cards, status 
+cards, boost cards, damage, and other game elements 
+associated with the villain remain as they are. After a villain 
+stage is defeated, the next stage of the villain deck enters 
+play on the same side as the just defeated stage.
+CAMPAIGN INSTRUCTIONS
+CAMPAIGN INSTRUCTIONS
+SETUP:
+ Each player may spend 2 Experience to increase their 
+starting hand size by 1. The additional card a player 
+draws this way is only drawn during setup.
+ Expert Campaign Only: Set each player’s hit points 
+to their remaining hit point value recorded in the 
+campaign log for the previous scenario.
+ Expert Campaign Only: Each player may spend any 
+amount of Experience they have, and heal 1 damage 
+from their identity for each Experience they spend this 
+way.
+ Expert Campaign Only: Each player may add 1 
+random obligation from their expert campaign set to 
+their deck to heal their identity to its full hit point value.
+ Hunter Mode Only: Put the Cold-Blooded 
+environment from the Hunter Mode set into play.
+VICTORY:
+After defeating the Lizard, it takes a little while before Curtis 
+Connors recuperates. When he does, he says this: “I’m 
+deeply sorry for my actions. I’m not one to make excuses, 
+but I believe this recent event was caused by a man that 
+broke into my apartment a few days ago. He beat me up 
+and injected me with something he called Instinct-X, which 
+I assume is what awoke my animal instincts. I don’t know 
+who he was, but he was clad in animal hide. If you can give 
+me another chance, and let me join you, I can help you 
+ﬁnd him.”
+ The players decide on the player who owns the least 
+amount of predator allies, to add the Lizard ally from 
+the Hunt Campaign set to their deck. The Master Hunter 
+decides ties.
+ Each player earns 3 Experience.
+ If the current stage of the main scheme is Using the 
+Mammal Brain or Reptile
+Brain Taking Over, each player earns 1 Experience.
+ If the Lizard has less than 1 reptile attachment per 
+player attached to him, each player earns 1 Experience.
+ Expert Campaign Only: Record each identity’s 
+remaining hit points in the campaign log, as well as any 
+cards added to their deck and any Experience earned.
+ Hunter Mode Only: Each player earns 1 Experience.
+LOSS:
+Any trace of Curtis Connors is completely gone, and all that 
+remains is the monstrous Lizard. It screeches at you, before 
+running away somewhere.
+ Each player earns 2 Experience.
+ If the current stage of the main scheme is Using the 
+Mammal Brain or Reptile Brain Taking Over, each player 
+earns 1 Experience.
+ If the Lizard has less than 1 reptile attachment per 
+player attached to him, each player earns 1 Experience.
+ Not being able to save Curtis Connors was 
+devastating. Each player must remove 1 hero-speciﬁc 
+card from their deck from the game.
+
+7
+ Record in your campaign log that Lizard escaped.
+ Expert Campaign Only: Record each identity’s 
+remaining hit points in the campaign log, as well as any 
+cards removed from their deck, and any Experience 
+earned.
+VISITING THE LODGE:
+The players may now add cards to their decks from The 
+Lodge by spending their Experience, before moving on to 
+the next scenario.
+
+8
+SCENARIO #4 – VULTURE
+SCENARIO #4 – VULTURE
+A few days go by as you attempt to recover from your ﬁght 
+with Lizard, and no new clues have come up about the 
+culprit behind all of this. Right now, the only thing you can 
+do is wait for another peculiar event to happen and try 
+to gather info from it. Speak of the devil! A man-bird like 
+creature swoops through your window, picks you up and 
+drops you on the asphalt outside your apartment. You look 
+up and see that this menacing creature is Vulture, grinning 
+down at you. Before you’re able to react, he ﬂies off to cause 
+more mayhem.
+Villain Deck: Vulture (I), Vulture (II)
+Remove Vulture (I) and add Vulture (III) for expert mode.
+Main Scheme Deck: Aerial Mayhem
+Encounter Deck: Vulture set, Red Vulture, and Standard 
+set. (The Standard set can be found in the Marvel 
+Champions core-set.)
+The Red Vulture set can be removed from this scenario 
+and/or added to other scenarios when using the scenario 
+customization rules.
+AERIAL TRACKERS
+AERIAL TRACKERS
+This scenario comes with two-sided aerial trackers which 
+makes it easier to know if a character has the aerial trait 
+or not. You’re not required to use it, but it will be helpful, 
+because a lot of characters will gain aerial in this scenario. 
+While a character has aerial, the aerial tracker is on the 
+Aerial side, and while a character doesn’t have aerial, the 
+aerial tracker is on the Grounded side. This tracker may 
+look like a status card, but it isn’t a status card, and it won’t 
+interact with any effects referring to status cards.
+CAMPAIGN INSTRUCTIONS
+CAMPAIGN INSTRUCTIONS
+SETUP:
+ Each player may spend 2 Experience to increase their 
+starting hand size by 1. The additional card a player 
+draws this way is only drawn during setup.
+ Expert Campaign Only: Set each player’s hit points 
+to their remaining hit point value recorded in the 
+campaign log for the previous scenario.
+ Expert Campaign Only: Each player may spend any 
+amount of Experience they have, and heal 1 damage 
+from their identity for each Experience they spend this 
+way.
+ Expert Campaign Only: Each player may add 1 
+random obligation from their expert campaign set to 
+their deck to heal their identity to its full hit point value.
+ Hunter Mode Only: Put the Aerial Excellence 
+environment from the Hunter Mode set into play.
+VICTORY:
+Vulture falls to the ground, and sits there for a while with a 
+stern expression. When he ﬁnally opens his mouth (beak?), 
+he says this: “I know I can be cruel, but what I just did was 
+out of my control. Kraven the Hunter jumped me earlier and 
+injected me with some concoction of his, probably made 
+from jungle herbs, knowing him. We were in the Sinister 
+Six together, that traitor! Kraven thinks he can mess with 
+the Vulture?! He can’t be far from here, so I should easily 
+be able to spot him from the sky. I hate to admit it, but I’ll 
+probably need your assistance in taking him down...”
+ The players decide on the player who owns the least 
+amount of predator allies, to add the Vulture ally from 
+the Hunt Campaign set to their deck. The Master Hunter 
+decides ties.
+ Record in your campaign log that Vulture joined you.
+  Each player earns 3 Experience.
+ Each player with half or more of their maximum hit 
+points remaining, earns 1 Experience.
+ If the main scheme has less than 7 threat per player 
+on it, each player earns 1 Experience.
+ Add the set aside Gibbon ally to the Lodge.
+ Expert Campaign Only: Record each identity’s 
+remaining hit points in the campaign log, as well as any 
+cards added to their deck and any Experience earned.
+ Hunter Mode Only: Each player earns 1 Experience.
+
+9
+LOSS:
+Having failed to stop Vulture, he ﬁnally gets bored of his 
+mayhem-making, and ﬂies away. You were prepared for 
+this, and was able to attach a GPS tracker to him during the 
+ﬁght. Hopefully he leads you straight to the craven behind 
+all of this.
+ Each player earns 2 Experience.
+ Each player with half or more of their maximum hit 
+points remaining, earns 1 Experience.
+ If the main scheme has less than 7 threat per player 
+on it, each player earns 1 Experience.
+ Expert Campaign Only: Record each identity’s 
+remaining hit points in the campaign log, as well as any 
+cards removed from their deck, and any Experience 
+earned.
+VISITING THE LODGE:
+The players may now add cards to their decks from The 
+Lodge by spending their Experience, before moving on to 
+the next and ﬁnal scenario.
+
+10
+SCENARIO #5 – KRAVEN  
+SCENARIO #5 – KRAVEN  
+THE HUNTER
+THE HUNTER
+By following Vulture, you attempt to ﬁnd the mastermind 
+behind this past few week’s string of events. Unfortunately, 
+the mastermind ﬁnds you ﬁrst. You hear a bullet shot 
+whizzing past you, hitting the ground. It came from a sniper 
+standing on the roof of a building in front of you. Even 
+though the sniper is far away, you can clearly see who it 
+is. Dressed in fashionable leopard skin and wearing a lion 
+mane around his neck, stands the proud hunter Sergei 
+Kravinoff, infamously known as Kraven the Hunter.
+Villain Deck: Kraven The Hunter (I), Kraven The Hunter (II)
+Remove Kraven The Hunter (I) and add Kraven The Hunter 
+(III) for expert mode.
+Main Scheme Deck: Acquiring Targets, The Great Hunt
+Encounter Deck: Kraven the Hunter set, Savage Six, and 
+Standard set. (The Standard set can be found in the Marvel 
+Champions core-set.)
+The Savage Six set can be removed from this scenario 
+and/or added to other scenarios when using the scenario 
+customization rules.
+TRAP DECK
+TRAP DECK
+Kraven the Hunter starts the game with a special “trap” 
+deck. To create the trap deck, shufﬂe all 16 of Kraven the 
+Hunter’s trap cards together (Ferocious Lion (x2), Fierce 
+Cheetah (x2), Bear Trap (x2), Capture Net (x2), Quicksand 
+(x2), Tranquilizer Darts (x3), Swinging Boulder (x3)). Then, 
+place the trap deck face down next to the encounter deck.
+During the game, trap cards will be dealt face down from 
+the trap deck. When trap cards are revealed and then 
+discarded, they are placed in a special discard pile that 
+belongs to the trap deck. If the trap deck is ever empty, 
+shufﬂe the trap discard pile back into the trap deck. There 
+is no penalty for doing this.
+RULES CLARIFICATIONS
+RULES CLARIFICATIONS
+Q. When you deal yourself a trap card, do you reveal 
+it as well?
+A. You only reveal your trap cards when you are instructed 
+to. In this scenario, only the “Forced Interrupt”-effect on 
+Kraven the Hunter will instruct you to reveal the trap cards 
+that have been dealt to you.
+Q What happens to the enemy that would be defeated 
+in Chameleon’s “Forced Interrupt”-effect?
+A. The instance of damage that would defeat the enemy is 
+healed from that enemy.
+Q. What happens when you’re instructed to deal 
+yourself a trap card, but there are no trap cards left in 
+the deck and discard pile?
+A. Nothing happens. If you cannot resolve the text, then 
+you ignore that text.
+Q. Do trap cards count as encounter cards for the 
+purpose of effects that refer to encounter cards?
+A. No, trap cards do not count as encounter cards.
+CAMPAIGN INSTRUCTIONS
+CAMPAIGN INSTRUCTIONS
+SETUP:
+ If Vermin escaped, add the Vermin minion from the 
+Hunt Campaign set to the encounter deck.
+ If Scorpion joined you, remove the Scorpion minion in 
+the encounter deck from the game.
+ If Lizard escaped, add the Lizard minion from the Hunt 
+Campaign set to the encounter deck.
+ If Vulture joined you, remove the Vulture minion in the 
+encounter deck from the game.
+ Each player may spend 2 Experience to increase their 
+starting hand size by 1. The additional card a player 
+draws this way is only drawn during setup.
+ Expert Campaign Only: Set each player’s hit points 
+to their remaining hit point value recorded in the 
+campaign log for the previous scenario.
+ Expert Campaign Only: Each player may spend any 
+amount of Experience they have, and heal 1 damage 
+from their identity for each Experience they spend this 
+way.
+ Expert Campaign Only: Each player may add 1 
+random obligation from their expert campaign set to 
+their deck to heal their identity to its full hit point value.
+ Hunter Mode Only: Put the Master Trapper 
+environment from the Hunter Mode set into play.
+
+11
+VICTORY:
+Kraven falls to his knees, with his head hanging low. You ask 
+him why he did all of this. He lifts his head up, revealing a 
+prideful grin and says: “It is dishonorable to take the name 
+of an animal, unless you fully become the animal. Fiends 
+like Scorpion, Vulture, and the others need to be taught that 
+lesson. They must understand what it costs to be an animal, 
+so I simply triggered the feral instincts in their brains and let 
+them see what it’s like. I knew it would catch your attention, 
+but I didn’t expect you to actually defeat me. It would seem 
+I have become Kraven the Hunted! Thank you, heroes, for 
+giving me the hunt of a lifetime.” Kraven collapses on the 
+ground, and is later conﬁrmed dead. The animal-themed 
+villains are arrested, despite their lack of control in their 
+recent crimes, but that is to be decided by the judicial 
+system. The heroes pat themselves on the back for putting 
+an end to Kraven’s madness, but feel bad that it had to go 
+down this way.
+ Kraven the Hunter is defeated and the players win the 
+campaign!
+LOSS:
+In a hallucinatory state, you see Kraven pointing a riﬂe at 
+you and say: “You heroes gave me a great hunt! As the apex 
+predator I must now kill my prey...” Usually, the villain would 
+hold a dramatic monologue at this point, giving the heroes 
+enough time to escape, but this is not that type of story. 
+The last thing you hear before you all die is a thundering 
+KRA-KOOOMMM!!!
+ Kraven the Hunter has defeated you and the players 
+lose the campaign...
+EXPERT CAMPAIGN RULES
+EXPERT CAMPAIGN RULES
+For players who want a more challenging campaign 
+experience, the Hunting Season custom expansion comes 
+with everything you need to play an expert campaign.
+EXPERT CAMPAIGN SET
+EXPERT CAMPAIGN SET
+There are four encounter sets labeled “Expert Campaign 
+Set.” Each set contains the same four encounter cards with 
+player-card backs. These cards can be added to a player’s 
+deck during a campaign.
+At the beginning of a campaign, each player is assigned 
+a number from 1 to 4 in the campaign log. Each Expert 
+Campaign Set is also numbered from 1 to 4. When a player 
+is instructed to add a card from their expert-encounter set 
+to their deck, they must take that card from the set that 
+matches their player number.
+PERSISTENT DAMAGE
+PERSISTENT DAMAGE
+While playing the Hunting Season campaign at the expert 
+level, each player must record their remaining hit points in 
+the campaign log after they win a game. This determines 
+each player’s starting hit points for the next scenario. If a 
+player’s remaining hit point value is higher than their base 
+hit point value, record their base hit points in the campaign 
+log instead. The setup instructions for each scenario offer 
+players the opportunity to restore their identity to their 
+full hit point value by adding an encounter card from their 
+expert-campaign set to their deck.
+If a player is defeated during a scenario that their 
+teammates go on to win, they can rejoin their teammates 
+for the next scenario by adding an encounter card to their 
+deck during setup to restore their identity to full hit points.
+ENCOUNTER CARDS  
+ENCOUNTER CARDS  
+IN PLAYER DECKS
+IN PLAYER DECKS
+The encounter cards in the expert campaign sets have 
+player-card backs because they are meant to be added to 
+player decks, but they are still encounter cards.
+When a player draws an encounter card from their deck, 
+they must immediately put that card into play in their play 
+area. They do not draw a card to replace that encounter 
+card.
+These encounter cards represent the consequences of 
+a player’s choices. As a result, only the player with the 
+encounter card in their play area can use their abilities to 
+deal with that card.
+HUNTER MODE ENVIRONMENTS
+HUNTER MODE ENVIRONMENTS
+When starting an expert campaign, the players can choose 
+to play on Hunter Mode. Playing on Hunter Mode counts 
+as playing an expert campaign and therefore follows all 
+the rules of an expert campaign, with the addition of an 
+environment for each scenario. A named environment is 
+put into play at the setup of each scenario if the players are 
+playing in Hunter Mode, and increases the difﬁculty of the 
+scenario considerably. To get the highest-level difﬁculty 
+for this campaign without playing the scenarios on heroic 
+difﬁculty, the players should play an expert campaign on 
+Hunter Mode and against each scenario on expert.
+
+12
+CAMPAIGN LOG
+CAMPAIGN LOG
+CREDITS
+CREDITS
+The campaign and each scenario in this custom expansion was 
+made by me, Nugget. Below is my name on different platforms 
+if you want to give me suggestions, feedback or ask questions.
+Discord: Nugget#4580
+Boardgamegeek: @ExplosiveNugget
+Reddit: u/ExplosiveNugget
+Facebook: Anders Nordberg
+The templates used to make the cards are owned by 
+Hitch#2776 on discord. All of the art used in this custom 
+expansion is owned by Marvel.
+The Marvel Champions LCG is owned by FFG.
+Thanks to Rainy on the Marvel Champions LCG Homebrew 
+Discord server for coming up with the name of the campaign.
+Thanks to people like Icenick, stranger danger, Rainy, 
+NEBookWorm, CptScorp and others who have playtested this 
+campaign and/or the scenarios included in it.

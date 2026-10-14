@@ -963,6 +963,98 @@ class GameServerGet(GameServerBase):
             'sieges': {str(p): c for p, c in choix.items()},
         })
 
+    # --- L'equipe en formation, vue de l'invite (09/10/2026) ------------------
+    # Le salon montre a l'invite qui est assis ou et contre qui l'equipe va
+    # jouer. L'hote publie ce qu'il a choisi (`set_equipe_hote`), les invites
+    # publient deja le leur (`set_choix_siege`) ; `get_equipe_salon` ne rend que
+    # des IDENTIFIANTS de cartes heros et le scenario. Jamais un deck, jamais une
+    # main : meme principe que `get_heros_du_siege`, qui interdit a un invite de
+    # lire le siege du voisin. Un siege non choisi rend une chaine vide.
+    async def set_equipe_hote(self, request: web.Request) -> web.Response:
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        try:
+            data = await request.json()
+        except Exception:
+            return web.json_response({'error': 'json required'}, status=400)
+        if not isinstance(data, dict):
+            return web.json_response({'error': 'json required'}, status=400)
+        passwords = SEAT_PASSWORDS.value
+        if bool(passwords) and any(passwords) and not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'host only'}, status=403)
+        try:
+            nombre = int(data.get('nombre', 0))
+        except Exception:
+            nombre = 0
+        if not 1 <= nombre <= 4:
+            return web.json_response({'error': 'bad count'}, status=400)
+
+        def ident(valeur) -> str:
+            texte = str(valeur or '')
+            return texte if len(texte) <= 80 else ''
+
+        heros_bruts = data.get('heros') or {}
+        if not isinstance(heros_bruts, dict):
+            return web.json_response({'error': 'bad heroes'}, status=400)
+        heros = {}
+        for p in range(nombre):
+            identifiant = ident(heros_bruts.get(str(p)))
+            if identifiant:
+                heros[str(p)] = identifiant
+        self.equipe_hote = {'nombre': nombre, 'heros': heros,
+                            'scenario': ident(data.get('scenario'))}
+        return web.json_response({'result': 'ok'})
+
+    async def get_equipe_salon(self, request: web.Request) -> web.Response:
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        try:
+            p = int(request.rel_url.query.get('p', ''))
+        except Exception:
+            return web.json_response({'error': 'p required'}, status=400)
+        if p < 0:
+            return web.json_response({'error': 'p required'}, status=400)
+        passwords = SEAT_PASSWORDS.value
+        if bool(passwords) and any(passwords) and not self.tient_le_siege(request, p):
+            return web.json_response({'error': 'not your seat'}, status=403)
+        hote = getattr(self, 'equipe_hote', None) or {}
+        choix = getattr(self, 'choix_sieges', {})
+        nombre = int(hote.get('nombre', 0))
+        sieges = {}
+        for q in range(max(nombre, p + 1)):
+            if q in choix:
+                sieges[str(q)] = str(choix[q].get('hero_card_id', ''))
+            else:
+                sieges[str(q)] = (hote.get('heros') or {}).get(str(q), '')
+        return web.json_response({
+            'nombre': nombre,
+            'sieges': sieges,
+            'scenario': hote.get('scenario', ''),
+        })
+
+    # --- L'equipe reste ensemble entre deux manches (13/10/2026) -------------
+    # Demande de l'utilisateur : « en fin de partie, que les joueurs qu'on a
+    # invites restent dans le meme lobby, et des qu'on cree une partie, qu'ils
+    # aient de nouveau acces a la selection ». L'invite reste sur son ecran de
+    # fin ; des que l'HOTE rouvre la preparation, son plateau le ramene au
+    # salon (ui-app, `useRetourAuSalon`). Le signal est un simple compteur :
+    # seul son CHANGEMENT compte, releve par l'invite a la fin de la partie.
+    #
+    # Ecriture reservee au siege 0 (meme garde stricte que les cles) : un
+    # invite ne doit pas pouvoir expedier les autres au salon en pleine partie.
+    async def annoncer_preparation(self, request: web.Request) -> web.Response:
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            # Table locale : personne a ramener nulle part.
+            return web.json_response({'n': 0})
+        if not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'host only'}, status=403)
+        self.preparations_hote = getattr(self, 'preparations_hote', 0) + 1
+        return web.json_response({'n': self.preparations_hote})
+
+    async def get_preparation(self, request: web.Request) -> web.Response:
+        # Lisible par tout le monde : un compteur ne dit rien de la partie.
+        return web.json_response({'n': getattr(self, 'preparations_hote', 0)})
+
     # --- La roue de « Partie au hasard » (08/10/2026) ------------------------
     # En ligne, tout le salon voit les bandeaux tourner et s'arreter sur les
     # MEMES resultats. Le tirage est fait UNE fois, chez celui qui lance ou
@@ -1580,6 +1672,92 @@ class GameServerGet(GameServerBase):
         await self._appeler_site('/api/prives_lus', {}, secondes=3)
         return web.json_response({'ok': True})
 
+    # --- Inviter un joueur connecte (13/10/2026) -----------------------------
+    # Relais vers le site, comme le tchat : le navigateur est sur p<N>.<domaine>
+    # et son cookie de site ne voyage pas jusque-la. Le site sait de quel compte
+    # il s'agit par le jeton de la TABLE ; c'est pourquoi tout est RESERVE AU
+    # SIEGE 0 : un invite assis ici n'est pas le titulaire du compte, il ne doit
+    # ni inviter en son nom, ni lire les invitations qu'il a recues.
+    # Decisions : .planning/todos/2026-10-13-inviter-un-connecte.md.
+    def _hote_du_compte(self, request: web.Request) -> bool:
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        return not (passwords and any(passwords)) or self.tient_le_siege(request, 0)
+
+    async def get_connectes(self, request: web.Request) -> web.Response:
+        if not self._hote_du_compte(request):
+            return web.json_response({'actif': False, 'connectes': []})
+        donnees = await self._appeler_site('/api/connectes', {}, secondes=3)
+        if donnees is None:
+            # Partie locale ou site muet : rien a proposer, l'ecran garde ses liens.
+            return web.json_response({'actif': False, 'connectes': []})
+        return web.json_response({'actif': True, 'connectes': donnees.get('connectes', [])})
+
+    async def post_inviter(self, request: web.Request) -> web.Response:
+        if not self._hote_du_compte(request):
+            return web.json_response({'error': 'not the host'}, status=403)
+        try:
+            data = await request.json()
+            siege = int(data.get('siege'))
+        except Exception:
+            return web.json_response({'error': 'siege required'}, status=400)
+        statut, donnees = await self._appeler_site(
+            '/api/inviter', {'a': str(data.get('a', '') or ''), 'siege': siege},
+            secondes=5, avec_statut=True)
+        if statut == 0:
+            return web.json_response({'error': 'site injoignable'}, status=503)
+        if statut != 200:
+            return web.json_response({'error': 'refuse'}, status=statut)
+        return web.json_response({'ok': True})
+
+    async def get_invitations(self, request: web.Request) -> web.Response:
+        if not self._hote_du_compte(request):
+            return web.json_response({'invitations': []})
+        donnees = await self._appeler_site('/api/invitations', {}, secondes=3)
+        return web.json_response(donnees or {'invitations': []})
+
+    async def post_invitation_reponse(self, request: web.Request) -> web.Response:
+        if not self._hote_du_compte(request):
+            return web.json_response({'error': 'not the host'}, status=403)
+        try:
+            data = await request.json()
+        except Exception:
+            return web.json_response({'error': 'json required'}, status=400)
+        statut, donnees = await self._appeler_site(
+            '/api/invitation_reponse',
+            {'id': str(data.get('id', '') or ''), 'oui': '1' if data.get('oui') else '0'},
+            secondes=5, avec_statut=True)
+        if statut == 0:
+            return web.json_response({'error': 'site injoignable'}, status=503)
+        if statut != 200:
+            return web.json_response({'error': 'expiree'}, status=statut)
+        return web.json_response({'ok': True, 'lien': (donnees or {}).get('lien', '')})
+
+    async def get_invitations_envoyees(self, request: web.Request) -> web.Response:
+        if not self._hote_du_compte(request):
+            return web.json_response({'sieges': {}})
+        donnees = await self._appeler_site('/api/invitations_envoyees', {}, secondes=3)
+        return web.json_response(donnees or {'sieges': {}})
+
+    async def get_decks_invite(self, request: web.Request) -> web.Response:
+        """Les decks du COMPTE de l'invite assis au siege `p` (decision 3, 13/10/2026).
+
+        ⚠ L'INVERSE DES ROUTES CI-DESSUS : reserve a celui qui tient CE siege,
+        pas a l'hote. Ce sont les decks de l'invite ; ni l'hote ni un voisin
+        n'ont a les lire. Le site ne les rend que si ce siege a ete pris par
+        une invitation acceptee : il sait alors de quel compte il s'agit.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        try:
+            p = int(request.rel_url.query.get('p', ''))
+        except Exception:
+            return web.json_response({'error': 'p required'}, status=400)
+        passwords = SEAT_PASSWORDS.value
+        if p < 1 or not (passwords and any(passwords)) or not self.tient_le_siege(request, p):
+            return web.json_response({'invite': '', 'decks': []})
+        donnees = await self._appeler_site('/api/decks_invite', {'siege': p}, secondes=5)
+        return web.json_response(donnees or {'invite': '', 'decks': []})
+
     async def post_quitter_la_table(self, request: web.Request) -> web.Response:
         """L'HOTE a fini : la table doit cesser d'exister.
 
@@ -2175,6 +2353,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/list_encounter_sets', self.list_encounter_sets)
         self.AddAwaitGetSecurity('/list_deck', self.list_deck)
         self.AddPostSecurity('/save_deck', self.save_deck)
+        self.AddPostSecurity('/delete_deck', self.delete_deck)
         self.AddPostSecurity('/sandbox_command', self.sandbox_command)
         self.AddPostSecurity('/manuel_undo', self.manuel_undo)
         self.AddPostSecurity('/manuel_pause', self.manuel_pause)
@@ -2227,6 +2406,16 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_ma_partie', self.get_ma_partie)
         self.AddPostSecurity('/set_choix_siege', self.set_choix_siege)
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)
+        self.AddPostSecurity('/set_equipe_hote', self.set_equipe_hote)
+        self.AddAwaitGetSecurity('/get_equipe_salon', self.get_equipe_salon)
+        self.AddPostSecurity('/annoncer_preparation', self.annoncer_preparation)
+        self.AddAwaitGetSecurity('/get_connectes', self.get_connectes)
+        self.AddPostSecurity('/post_inviter', self.post_inviter)
+        self.AddAwaitGetSecurity('/get_invitations', self.get_invitations)
+        self.AddPostSecurity('/post_invitation_reponse', self.post_invitation_reponse)
+        self.AddAwaitGetSecurity('/get_invitations_envoyees', self.get_invitations_envoyees)
+        self.AddAwaitGetSecurity('/get_decks_invite', self.get_decks_invite)
+        self.AddAwaitGetSecurity('/get_preparation', self.get_preparation)
         self.AddPostSecurity('/set_roue', self.set_roue)
         self.AddAwaitGetSecurity('/get_roue', self.get_roue)
         self.AddAwaitGetSecurity('/get_heros_du_siege', self.get_heros_du_siege)
@@ -2244,7 +2433,6 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/quitter_la_table', self.post_quitter_la_table)
         self.AddAwaitGetSecurity('/get_images_cartes', self.get_images_cartes)
         self.AddAwaitGetSecurity('/get_identites', self.get_identites)
-        self.AddPostSecurity('/delete_deck', self.delete_deck)
         self.AddAwaitGetSecurity('/get_site_url', self.get_site_url)
         self.AddAwaitGetSecurity('/get_palettes_heros', self.get_palettes_heros)
         self.AddPostSecurity('/save_palette_heros', self.save_palette_heros)

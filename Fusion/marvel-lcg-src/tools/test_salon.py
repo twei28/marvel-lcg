@@ -104,6 +104,20 @@ def lire_liens(cookie=None):
         return 0, {}
 
 
+def preparation(post=False, cookie=None):
+    """/annoncer_preparation (POST) ou /get_preparation (GET) : rend (code, n)."""
+    entetes = {"Cookie": cookie} if cookie else {}
+    chemin = "/annoncer_preparation" if post else "/get_preparation"
+    requete = urllib.request.Request(BASE + chemin, data=b"" if post else None, headers=entetes)
+    try:
+        with urllib.request.urlopen(requete, timeout=5) as reponse:
+            return reponse.status, json.loads(reponse.read().decode("utf-8")).get("n")
+    except urllib.error.HTTPError as erreur:
+        return erreur.code, None
+    except Exception:
+        return 0, None
+
+
 def creer_partie():
     # Un VRAI descripteur, sur le modele de ce que construit le wizard
     # (public/js/prepare/launcher.js, buildDescriptor). Un descripteur invalide
@@ -148,6 +162,9 @@ try:
         code, _ = poster({"p": 1, "hero_card_id": "mw001a", "deck_id": "madame_web"})
         verifier("solo : aucune protection de siege, l'ecriture passe",
                  code == 200, f"code={code}")
+        code, n = preparation(post=True)
+        verifier("solo : annoncer la preparation ne fait rien", code == 200 and n == 0,
+                 f"code={code} n={n}")
         code, corps = lire_liens()
         verifier("solo : aucun lien a distribuer",
                  code == 200 and corps.get("multi") is False and corps.get("cles") == [],
@@ -212,6 +229,21 @@ try:
     verifier("liens : l'hote recoit les quatre cles",
              code == 200 and corps.get("multi") is True
              and corps.get("cles") == MOTS_DE_PASSE, f"code={code} {corps}")
+
+    # --- L'equipe reste ensemble (13/10/2026) -------------------------------
+    # L'hote qui rouvre la preparation fait avancer un compteur ; les invites
+    # restes sur l'ecran de fin le lisent et reviennent au salon. Un invite ne
+    # doit pas pouvoir l'avancer : il expedierait les autres au salon.
+    code, avant = preparation()
+    verifier("preparation : compteur lisible par tous", code == 200 and avant == 0,
+             f"code={code} n={avant}")
+    code, _ = preparation(post=True)
+    verifier("preparation : sans jeton -> 403", code == 403, f"code={code}")
+    code, _ = preparation(post=True, cookie=cookie_j1)
+    verifier("preparation : un invite n'annonce rien -> 403", code == 403, f"code={code}")
+    code, n = preparation(post=True, cookie=cookie_h0)
+    verifier("preparation : l'hote annonce, le compteur avance",
+             code == 200 and n == 1 and preparation()[1] == 1, f"code={code} n={n}")
 
     # --- La page du salon est-elle servie, et le lien y mene-t-il ? ---------
     # Le RENDU (grille de heros, liste de decks) demande un navigateur : il est

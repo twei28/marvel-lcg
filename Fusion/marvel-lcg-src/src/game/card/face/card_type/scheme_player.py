@@ -27,6 +27,9 @@ class PlayerSideScheme(SchemeSide2, CanCrisis, HasAmplify, HasVictory, HasPerman
     @override
     def OnAfterCardEnterPlay(self, message: 'Message.AfterCardEnterPlay') -> None:
         world = self.card.world
-        world.limit_player_side_scheme.CheckLimit()
+        from game.player import Player
+        initiateur = getattr(message.by_effect, "initiator", None)
+        joueur = initiateur if isinstance(initiateur, Player) and initiateur.IsHero() else None
+        world.limit_player_side_scheme.CheckLimit(joueur)
         return super().OnAfterCardEnterPlay(message)
 

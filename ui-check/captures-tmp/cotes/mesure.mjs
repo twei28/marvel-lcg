@@ -1,0 +1,47 @@
+import { chromium } from '@playwright/test'
+const DOSSIER = 'captures-tmp/cotes'
+const nav = await chromium.launch()
+const page = await nav.newPage({ viewport: { width: 1600, height: 900 } })
+const erreurs = []
+page.on('pageerror', (e) => erreurs.push(String(e)))
+async function ouvrir(cote) {
+  await page.goto('http://127.0.0.1:8771/app/board.html?relecture=1')
+  await page.evaluate((c) => { if (c) localStorage.setItem('mc_ameliorations_cote', c); else localStorage.removeItem('mc_ameliorations_cote'); sessionStorage.clear() }, cote)
+  await page.reload()
+  await page.setInputFiles('input[type=file]', `${DOSSIER}/test.marvelreplay`)
+  await page.waitForSelector('.relecture-fiche')
+  await page.click('.relecture-fiche .relecture-bouton-lecture')
+  await page.waitForSelector('[data-card-id="61"]', { timeout: 10000 })
+  await page.waitForTimeout(800)
+}
+const rect = (id) => page.evaluate((i) => { const r = document.querySelector(`[data-card-id="${i}"]`)?.getBoundingClientRect(); return r ? [Math.round(r.left), Math.round(r.right)] : null }, id)
+const etat = async () => ({ heros: await rect(1), u20: await rect(20), u61: await rect(61), u62: await rect(62), dd: await rect(23), u63: await rect(63),
+  gauche: await page.evaluate(() => [...document.querySelectorAll('.est-a-gauche > .scan-card')].map((c) => c.dataset.cardId)) })
+await ouvrir(null)
+console.log('DROITE', JSON.stringify(await etat()))
+await page.screenshot({ path: `${DOSSIER}/1-droite.png` })
+await ouvrir('gauche')
+console.log('GAUCHE', JSON.stringify(await etat()))
+await page.screenshot({ path: `${DOSSIER}/2-gauche.png` })
+// Alt + glisser 62 a droite du heros
+await ouvrir(null)
+const h = await page.evaluate(() => { const r = document.querySelector('[data-card-id="1"]').getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top, h: r.height } })
+const src = await page.evaluate(() => { const r = document.querySelector('[data-card-id="62"]').getBoundingClientRect(); return { x: r.left + r.width - 10, y: r.top + r.height / 2 } })
+await page.evaluate(() => { window.__log = []; for (const t of ['pointerdown','pointermove']) document.addEventListener(t, (e) => { if (window.__log.length < 6) window.__log.push([t, e.altKey, e.target.closest('.scan-card')?.dataset.cardId, e.target.className]) }, true) })
+await page.keyboard.down('Alt')
+await page.mouse.move(src.x, src.y)
+await page.mouse.down()
+const cible = { x: h.l + 10, y: h.t + h.h / 2 }
+for (let k = 1; k <= 8; k++) await page.mouse.move(src.x + (cible.x - src.x) * k / 8, src.y + (cible.y - src.y) * k / 8)
+await page.waitForTimeout(200)
+const pendant = await page.evaluate(() => ({ trait: document.querySelector('.ordre-repere')?.getBoundingClientRect().left, cadre: !!document.querySelector('.ordre-cadre') }))
+console.log('LOG', JSON.stringify(await page.evaluate(() => window.__log)))
+console.log('PENDANT', JSON.stringify(pendant), 'heros', JSON.stringify(h))
+await page.screenshot({ path: `${DOSSIER}/3-geste.png` })
+await page.mouse.up()
+await page.keyboard.up('Alt')
+await page.waitForTimeout(500)
+console.log('APRES', JSON.stringify(await etat()))
+await page.screenshot({ path: `${DOSSIER}/4-apres.png` })
+console.log('ERREURS', JSON.stringify(erreurs))
+await nav.close()

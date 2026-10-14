@@ -1,0 +1,23 @@
+const { chromium } = require("C:/Users/arnau/Desktop/Marvel LCG/ui-check/node_modules/playwright");
+const out = "C:/Users/arnau/Desktop/Marvel LCG/.tmb-captures/";
+(async () => {
+  const b = await chromium.launch({ channel: "chrome" });
+  const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+  await p.goto("http://localhost:5199/?sandbox=patches");
+  await p.waitForTimeout(1500);
+  await p.getByText("Tantrum", { exact: true }).first().click();
+  await p.getByText("Picket", { exact: true }).first().click();
+  const btns = p.getByRole("button");
+  const names = (await btns.allInnerTexts()).map(t => t.replace(/\s+/g, " "));
+  const gk = names.indexOf("Goblin King");
+  const plus = [];
+  for (let i = gk + 1; i < names.length; i++) if (names[i] === "+") plus.push(i);
+  console.log("plus baddies:", plus.length);
+  for (const i of [plus[0], plus[1], plus[2]]) await btns.nth(i).click();
+  await p.screenshot({ path: out + "sb-config.png", fullPage: true });
+  await p.getByRole("button", { name: /Démarrer/ }).click();
+  await p.waitForTimeout(9000);
+  await p.screenshot({ path: out + "combat2.png" });
+  console.log((await p.innerText("body")).replace(/\s+/g, " ").slice(0, 700));
+  await b.close();
+})().catch(e => { console.error(e.message); process.exit(1); });

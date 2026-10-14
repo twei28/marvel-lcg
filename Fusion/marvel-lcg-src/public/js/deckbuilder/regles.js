@@ -352,12 +352,12 @@ export function choisiesDuDeck(hero, deck) {
  *   - meme titre, sans sous-titre ni titre d'alter ego des deux cotes ;
  *   - ou le sous-titre / titre d'alter ego de l'une egale le titre, le
  *     sous-titre ou le titre d'alter ego de l'autre. */
-const titreDe = (c) => String((c && c.name) || "").replace(/^\*\s*/, "").trim();
-const estUnique = (c) => /^\*/.test(String((c && c.name) || ""));
+export const titreDe = (c) => String((c && c.name) || "").replace(/^\*\s*/, "").trim();
+export const estUnique = (c) => /^\*/.test(String((c && c.name) || ""));
 const cleCopie = (c) => `${titreDe(c)}|${String((c && c.subtitle) || "").trim()}`;
 const cleCopieU = (u) => `${u.t}|${u.s}`;
 
-function correspondent(a, b) {
+export function correspondent(a, b) {
     if (a.t === b.t && !a.s && !b.s && !a.alt && !b.alt) return true;
     const autres = (x) => [x.t, x.s, x.alt].filter(Boolean);
     return [a.s, a.alt].filter(Boolean).some((v) => autres(b).includes(v))
@@ -413,7 +413,9 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     if (!hero) return { ok: false, problemes: [t("Choisis un héros")], total: 0 };
     const marvelous = estStanLee(hero);
     // Stan Lee n'a pas de cartes signature a lui : les 15 sont a choisir ici.
-    const signature = marvelous ? 0 : ((hero.deck && hero.deck.hero_deck) || []).length;
+    // RR « Deck Customization » : les cartes permanent ne comptent pas dans les 40 a 50.
+    const estPermanente = (c) => !!(c && c.desc && c.desc.Permanent);
+    const signature = marvelous ? 0 : ((hero.deck && hero.deck.hero_deck) || []).filter((id) => !estPermanente(carte(String(id).split(",")[0]))).length;
     let total = signature;
     let empruntees = 0;
     const parTitre = new Map();
@@ -432,7 +434,7 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     for (const [id, n] of choisies) {
         const c = carte(id);
         if (!c) continue;
-        total += n;
+        if (!estPermanente(c)) total += n;
         const copie = cleCopie(c);
         parTitre.set(copie, {
             n: (parTitre.get(copie)?.n || 0) + n,

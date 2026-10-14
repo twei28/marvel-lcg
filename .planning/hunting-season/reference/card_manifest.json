@@ -1,0 +1,2543 @@
+[
+  {
+    "card_id": "hs001",
+    "set_name": "Vermin",
+    "name": "* Vermin",
+    "source": "Vermin (Marvel)/1-I-Vermin-Vermin.png",
+    "image": "reference/cards/hs001.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs002",
+    "set_name": "Vermin",
+    "name": "* Vermin",
+    "source": "Vermin (Marvel)/2-II-Vermin-Vermin .png",
+    "image": "reference/cards/hs002.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs003",
+    "set_name": "Vermin",
+    "name": "* Vermin",
+    "source": "Vermin (Marvel)/3-III-Vermin-Vermin .png",
+    "image": "reference/cards/hs003.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs004a",
+    "set_name": "Vermin",
+    "name": "Rats and More Rats",
+    "source": "Vermin (Marvel)/4A-RatsAndMoreRats-Vermin.png",
+    "image": "reference/cards/hs004a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs004b",
+    "set_name": "Vermin",
+    "name": "Rats and More Rats",
+    "source": "Vermin (Marvel)/4B-RatsAndMoreRats-Vermin.png",
+    "image": "reference/cards/hs004b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs005a",
+    "set_name": "Vermin",
+    "name": "Rats, Rats and More Rats",
+    "source": "Vermin (Marvel)/5A-RatsRatsAndMoreRats-Vermin.png",
+    "image": "reference/cards/hs005a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs005b",
+    "set_name": "Vermin",
+    "name": "Rats, Rats and More Rats",
+    "source": "Vermin (Marvel)/5B-RatsRatsAndMoreRats.png",
+    "image": "reference/cards/hs005b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs006",
+    "set_name": "Vermin",
+    "name": "Even More Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/6-EvenMoreRats-Vermin.png",
+    "image": "reference/cards/hs006.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs007",
+    "set_name": "Vermin",
+    "name": "Regular Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/7-RegularRats-Vermin.png",
+    "image": "reference/cards/hs007.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs008",
+    "set_name": "Vermin",
+    "name": "Regular Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/8-RegularRats-Vermin.png",
+    "image": "reference/cards/hs008.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs009",
+    "set_name": "Vermin",
+    "name": "Regular Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/9-RegularRats-Vermin.png",
+    "image": "reference/cards/hs009.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs010",
+    "set_name": "Vermin",
+    "name": "Regular Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/10-RegularRats-Vermin.png",
+    "image": "reference/cards/hs010.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs011",
+    "set_name": "Vermin",
+    "name": "Feral Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/11-FeralRats-Vermin.png",
+    "image": "reference/cards/hs011.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs012",
+    "set_name": "Vermin",
+    "name": "Feral Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/12-FeralRats-Vermin.png",
+    "image": "reference/cards/hs012.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs013",
+    "set_name": "Vermin",
+    "name": "Feral Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/13-FeralRats-Vermin.png",
+    "image": "reference/cards/hs013.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs014",
+    "set_name": "Vermin",
+    "name": "Feral Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/14-FeralRats-Vermin.png",
+    "image": "reference/cards/hs014.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs015",
+    "set_name": "Vermin",
+    "name": "Vermin Clone",
+    "source": "Vermin (Marvel)/Encounter Cards/15-VerminClone-Vermin.png",
+    "image": "reference/cards/hs015.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs016",
+    "set_name": "Vermin",
+    "name": "Vermin Clone",
+    "source": "Vermin (Marvel)/Encounter Cards/16-VerminClone-Vermin.png",
+    "image": "reference/cards/hs016.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs017",
+    "set_name": "Vermin",
+    "name": "Vermin Clone",
+    "source": "Vermin (Marvel)/Encounter Cards/17-VerminClone-Vermin.png",
+    "image": "reference/cards/hs017.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs018",
+    "set_name": "Vermin",
+    "name": "Swarmed by Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/18-SwarmedByRats-Vermin.png",
+    "image": "reference/cards/hs018.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs019",
+    "set_name": "Vermin",
+    "name": "Swarmed by Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/19-SwarmedByRats-Vermin.png",
+    "image": "reference/cards/hs019.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs020",
+    "set_name": "Vermin",
+    "name": "Vermin Cloning",
+    "source": "Vermin (Marvel)/Encounter Cards/20-VerminCloning-Vermin.png",
+    "image": "reference/cards/hs020.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs021",
+    "set_name": "Vermin",
+    "name": "Bringer of Plague",
+    "source": "Vermin (Marvel)/Encounter Cards/21-BringerOfPlague-Vermin.png",
+    "image": "reference/cards/hs021.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs022",
+    "set_name": "Vermin",
+    "name": "A Mischief of Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/22-MischiefOfRats-Vermin.png",
+    "image": "reference/cards/hs022.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs023",
+    "set_name": "Vermin",
+    "name": "A Mischief of Rats",
+    "source": "Vermin (Marvel)/Encounter Cards/23-MischiefOfRats-Vermin.png",
+    "image": "reference/cards/hs023.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs024",
+    "set_name": "Vermin",
+    "name": "Rabid Assault",
+    "source": "Vermin (Marvel)/Encounter Cards/24-RabidAssault-Vermin.png",
+    "image": "reference/cards/hs024.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs025",
+    "set_name": "Vermin",
+    "name": "Rabid Assault",
+    "source": "Vermin (Marvel)/Encounter Cards/25-RabidAssault-Vermin.png",
+    "image": "reference/cards/hs025.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs026",
+    "set_name": "Vermin",
+    "name": "A Thousand Bites",
+    "source": "Vermin (Marvel)/Encounter Cards/26-AThousandBites-Vermin.png",
+    "image": "reference/cards/hs026.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs027",
+    "set_name": "Vermin",
+    "name": "A Thousand Bites",
+    "source": "Vermin (Marvel)/Encounter Cards/27-AThousandBites-Vermin.png",
+    "image": "reference/cards/hs027.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs028",
+    "set_name": "Vermin",
+    "name": "A Thousand Bites",
+    "source": "Vermin (Marvel)/Encounter Cards/28-AThousandBites-Vermin.png",
+    "image": "reference/cards/hs028.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs029",
+    "set_name": "Vermin",
+    "name": "A Thousand Bites",
+    "source": "Vermin (Marvel)/Encounter Cards/29-AThousandBites-Vermin.png",
+    "image": "reference/cards/hs029.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs030",
+    "set_name": "Scorpion",
+    "name": "* Scorpion",
+    "source": "Scorpion (Marvel)/1-I-Villain-Scorpion.png",
+    "image": "reference/cards/hs030.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs031",
+    "set_name": "Scorpion",
+    "name": "* Scorpion",
+    "source": "Scorpion (Marvel)/2-II-Villain-Scorpion.png",
+    "image": "reference/cards/hs031.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs032",
+    "set_name": "Scorpion",
+    "name": "* Scorpion",
+    "source": "Scorpion (Marvel)/3-III-Villain-Scorpion.png",
+    "image": "reference/cards/hs032.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs033a",
+    "set_name": "Scorpion",
+    "name": "Thirst for Revenge",
+    "source": "Scorpion (Marvel)/4A-ThirstForRevenge-Scorpion.png",
+    "image": "reference/cards/hs033a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs033b",
+    "set_name": "Scorpion",
+    "name": "Thirst for Revenge",
+    "source": "Scorpion (Marvel)/4B-ThirstForRevenge-Scorpion.png",
+    "image": "reference/cards/hs033b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs034a",
+    "set_name": "Scorpion",
+    "name": "Vengeful Pursuit",
+    "source": "Scorpion (Marvel)/5A-VengefulPursuit-Scorpion.png",
+    "image": "reference/cards/hs034a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs034b",
+    "set_name": "Scorpion",
+    "name": "Vengeful Pursuit",
+    "source": "Scorpion (Marvel)/5B-VengefulPursuit-Scorpion.png",
+    "image": "reference/cards/hs034b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs035",
+    "set_name": "Scorpion",
+    "name": "* J. Jonah Jameson",
+    "source": "Scorpion (Marvel)/6-JJonahJameson-Scorpion.png",
+    "image": "reference/cards/hs035.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs036",
+    "set_name": "Scorpion",
+    "name": "Scorpion’s Tail",
+    "source": "Scorpion (Marvel)/Encounter Cards/7-ScorpionsTail-Scorpion.png",
+    "image": "reference/cards/hs036.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs037",
+    "set_name": "Scorpion",
+    "name": "Tail Armor",
+    "source": "Scorpion (Marvel)/Encounter Cards/8-TailArmor-Scorpion.png",
+    "image": "reference/cards/hs037.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs038",
+    "set_name": "Scorpion",
+    "name": "Honed Stinger",
+    "source": "Scorpion (Marvel)/Encounter Cards/9-HonedStinger-Scorpion.png",
+    "image": "reference/cards/hs038.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs039",
+    "set_name": "Scorpion",
+    "name": "Tail Laser",
+    "source": "Scorpion (Marvel)/Encounter Cards/10-TailLaser-Scorpion.png",
+    "image": "reference/cards/hs039.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs040",
+    "set_name": "Scorpion",
+    "name": "Coiled Up",
+    "source": "Scorpion (Marvel)/Encounter Cards/11-CoiledUp-Scorpion.png",
+    "image": "reference/cards/hs040.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs041",
+    "set_name": "Scorpion",
+    "name": "Coiled Up",
+    "source": "Scorpion (Marvel)/Encounter Cards/12-CoiledUp-Scorpion.png",
+    "image": "reference/cards/hs041.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs042",
+    "set_name": "Scorpion",
+    "name": "Human Fly",
+    "source": "Scorpion (Marvel)/Encounter Cards/13-HumanFly-Scorpion.png",
+    "image": "reference/cards/hs042.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs043",
+    "set_name": "Scorpion",
+    "name": "Human Fly",
+    "source": "Scorpion (Marvel)/Encounter Cards/14-HumanFly-Scorpion.png",
+    "image": "reference/cards/hs043.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs044",
+    "set_name": "Scorpion",
+    "name": "* Grizzly",
+    "source": "Scorpion (Marvel)/Encounter Cards/15-Grizzly-Scorpion.png",
+    "image": "reference/cards/hs044.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs045",
+    "set_name": "Scorpion",
+    "name": "* Hippo",
+    "source": "Scorpion (Marvel)/Encounter Cards/16-Hippo-Scorpion.png",
+    "image": "reference/cards/hs045.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "implemented_from_documented_APIs"
+  },
+  {
+    "card_id": "hs046",
+    "set_name": "Scorpion",
+    "name": "Luring Out Prey",
+    "source": "Scorpion (Marvel)/Encounter Cards/17-LuringOutPrey-Scorpion.png",
+    "image": "reference/cards/hs046.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs047",
+    "set_name": "Scorpion",
+    "name": "A Mess of Things",
+    "source": "Scorpion (Marvel)/Encounter Cards/18-AMessOfThings-Scorpion.png",
+    "image": "reference/cards/hs047.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs048",
+    "set_name": "Scorpion",
+    "name": "Tail Enhancements",
+    "source": "Scorpion (Marvel)/Encounter Cards/19-TailEnhancements-Scorpion.png",
+    "image": "reference/cards/hs048.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs049",
+    "set_name": "Scorpion",
+    "name": "Tail Enhancements",
+    "source": "Scorpion (Marvel)/Encounter Cards/20-TailEnhancements-Scorpion.png",
+    "image": "reference/cards/hs049.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs050",
+    "set_name": "Scorpion",
+    "name": "Stinger Stab",
+    "source": "Scorpion (Marvel)/Encounter Cards/21-StingerStab-Scorpion.png",
+    "image": "reference/cards/hs050.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs051",
+    "set_name": "Scorpion",
+    "name": "Stinger Stab",
+    "source": "Scorpion (Marvel)/Encounter Cards/22-StingerStab-Scorpion.png",
+    "image": "reference/cards/hs051.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs052",
+    "set_name": "Scorpion",
+    "name": "Restraining Pincers",
+    "source": "Scorpion (Marvel)/Encounter Cards/23-RestrainingPincers-Scorpion.png",
+    "image": "reference/cards/hs052.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs053",
+    "set_name": "Scorpion",
+    "name": "Restraining Pincers",
+    "source": "Scorpion (Marvel)/Encounter Cards/24-RestrainingPincers-Scorpion.png",
+    "image": "reference/cards/hs053.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs054a",
+    "set_name": "The Lizard",
+    "name": "* Curtis Connors",
+    "source": "The Lizard (Marvel)/1-I-CurtisConnors-TheLizard.png",
+    "image": "reference/cards/hs054a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs054b",
+    "set_name": "The Lizard",
+    "name": "* The Lizard",
+    "source": "The Lizard (Marvel)/1-I-TheLizard-TheLizard.png",
+    "image": "reference/cards/hs054b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs055a",
+    "set_name": "The Lizard",
+    "name": "* Curtis Connors",
+    "source": "The Lizard (Marvel)/2-II-CurtisConnors-TheLizard.png",
+    "image": "reference/cards/hs055a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs055b",
+    "set_name": "The Lizard",
+    "name": "* The Lizard",
+    "source": "The Lizard (Marvel)/2-II-TheLizard-TheLizard.png",
+    "image": "reference/cards/hs055b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs056a",
+    "set_name": "The Lizard",
+    "name": "* Curtis Connors",
+    "source": "The Lizard (Marvel)/3-III-CurtisConnors-TheLizard.png",
+    "image": "reference/cards/hs056a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs056b",
+    "set_name": "The Lizard",
+    "name": "* The Lizard",
+    "source": "The Lizard (Marvel)/3-III-TheLizard-TheLizard.png",
+    "image": "reference/cards/hs056b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs057a",
+    "set_name": "The Lizard",
+    "name": "Using the Mammal Brain",
+    "source": "The Lizard (Marvel)/4A-UsingTheMammalBrain-TheLizard.png",
+    "image": "reference/cards/hs057a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs057b",
+    "set_name": "The Lizard",
+    "name": "Using the Mammal Brain",
+    "source": "The Lizard (Marvel)/4B-UsingTheMammalBrain-TheLizard.png",
+    "image": "reference/cards/hs057b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs058a",
+    "set_name": "The Lizard",
+    "name": "Reptile Brain Taking Over",
+    "source": "The Lizard (Marvel)/5A-ReptileBrainTakingOver-TheLizard.png",
+    "image": "reference/cards/hs058a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs058b",
+    "set_name": "The Lizard",
+    "name": "Reptile Brain Taking Over",
+    "source": "The Lizard (Marvel)/5B-ReptileBrainTakingOver-TheLizard.png",
+    "image": "reference/cards/hs058b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs059a",
+    "set_name": "The Lizard",
+    "name": "No Humanity Left",
+    "source": "The Lizard (Marvel)/6A-NoHumanityLeft-TheLizard.png",
+    "image": "reference/cards/hs059a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs059b",
+    "set_name": "The Lizard",
+    "name": "No Humanity Left",
+    "source": "The Lizard (Marvel)/6B-NoHumanityLeft-TheLizard.png",
+    "image": "reference/cards/hs059b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs060",
+    "set_name": "The Lizard",
+    "name": "Reptilian Rage",
+    "source": "The Lizard (Marvel)/Encounter Cards/7-ReptilianRage-TheLizard.png",
+    "image": "reference/cards/hs060.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs061",
+    "set_name": "The Lizard",
+    "name": "Enhanced Lizard Senses",
+    "source": "The Lizard (Marvel)/Encounter Cards/8-EnhancedLizardSenses-TheLizard.png",
+    "image": "reference/cards/hs061.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs062",
+    "set_name": "The Lizard",
+    "name": "Enhanced Lizard Senses",
+    "source": "The Lizard (Marvel)/Encounter Cards/9-EnhancedLizardSenses-TheLizard.png",
+    "image": "reference/cards/hs062.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs063",
+    "set_name": "The Lizard",
+    "name": "Komodo Claws",
+    "source": "The Lizard (Marvel)/Encounter Cards/10-KomodoClaws-TheLizard.png",
+    "image": "reference/cards/hs063.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs064",
+    "set_name": "The Lizard",
+    "name": "Komodo Claws",
+    "source": "The Lizard (Marvel)/Encounter Cards/11-KomodoClaws-TheLizard.png",
+    "image": "reference/cards/hs064.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs065",
+    "set_name": "The Lizard",
+    "name": "Lizard Tail",
+    "source": "The Lizard (Marvel)/Encounter Cards/12-LizardTail-TheLizard.png",
+    "image": "reference/cards/hs065.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs066",
+    "set_name": "The Lizard",
+    "name": "Alligator Jaws",
+    "source": "The Lizard (Marvel)/Encounter Cards/13-AlligatorJaws-TheLizard.png",
+    "image": "reference/cards/hs066.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs067",
+    "set_name": "The Lizard",
+    "name": "Ancient Reptilian Brain",
+    "source": "The Lizard (Marvel)/Encounter Cards/14-AncientReptilianBrain-TheLizard.png",
+    "image": "reference/cards/hs067.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs068",
+    "set_name": "The Lizard",
+    "name": "Boa Constricted",
+    "source": "The Lizard (Marvel)/Encounter Cards/15-BoaConstricted-TheLizard.png",
+    "image": "reference/cards/hs068.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs069",
+    "set_name": "The Lizard",
+    "name": "Boa Constricted",
+    "source": "The Lizard (Marvel)/Encounter Cards/16-BoaConstricted-TheLizard.png",
+    "image": "reference/cards/hs069.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs070",
+    "set_name": "The Lizard",
+    "name": "Iguana Whip",
+    "source": "The Lizard (Marvel)/Encounter Cards/17-IguanaWhip-TheLizard.png",
+    "image": "reference/cards/hs070.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs071",
+    "set_name": "The Lizard",
+    "name": "Iguana Whip",
+    "source": "The Lizard (Marvel)/Encounter Cards/18-IguanaWhip-TheLizard.png",
+    "image": "reference/cards/hs071.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs072",
+    "set_name": "The Lizard",
+    "name": "Triggered Transformation",
+    "source": "The Lizard (Marvel)/Encounter Cards/19-TriggeredTransformation-TheLizard.png",
+    "image": "reference/cards/hs072.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs073",
+    "set_name": "The Lizard",
+    "name": "Triggered Transformation",
+    "source": "The Lizard (Marvel)/Encounter Cards/20-TriggeredTransformation-TheLizard.png",
+    "image": "reference/cards/hs073.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs074",
+    "set_name": "The Lizard",
+    "name": "Shed Skin",
+    "source": "The Lizard (Marvel)/Encounter Cards/21-ShedSkin-TheLizard.png",
+    "image": "reference/cards/hs074.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs075",
+    "set_name": "The Lizard",
+    "name": "Shed Skin",
+    "source": "The Lizard (Marvel)/Encounter Cards/22-ShedSkin-TheLizard.png",
+    "image": "reference/cards/hs075.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs076",
+    "set_name": "The Lizard",
+    "name": "* Iguana",
+    "source": "The Lizard (Marvel)/Encounter Cards/23-Iguana-TheLizard.png",
+    "image": "reference/cards/hs076.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs077",
+    "set_name": "The Lizard",
+    "name": "* The Chameleon",
+    "source": "The Lizard (Marvel)/Encounter Cards/24-TheChameleon-TheLizard.png",
+    "image": "reference/cards/hs077.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs078",
+    "set_name": "The Lizard",
+    "name": "Reptile Research",
+    "source": "The Lizard (Marvel)/Encounter Cards/25-ReptileResearch.png",
+    "image": "reference/cards/hs078.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs079",
+    "set_name": "The Lizard",
+    "name": "Reptile Research",
+    "source": "The Lizard (Marvel)/Encounter Cards/26-ReptileResearch.png",
+    "image": "reference/cards/hs079.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs080",
+    "set_name": "Vulture",
+    "name": "* Vulture",
+    "source": "Vulture (Marvel)/1-I-Villain-Vulture.png",
+    "image": "reference/cards/hs080.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs081",
+    "set_name": "Vulture",
+    "name": "* Vulture",
+    "source": "Vulture (Marvel)/2-II-Villain-Vulture.png",
+    "image": "reference/cards/hs081.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs082",
+    "set_name": "Vulture",
+    "name": "* Vulture",
+    "source": "Vulture (Marvel)/3-III-Villain-Vulture.png",
+    "image": "reference/cards/hs082.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs083a",
+    "set_name": "Vulture",
+    "name": "Aerial Mayhem",
+    "source": "Vulture (Marvel)/4A-AerialMayhem-Vulture.png",
+    "image": "reference/cards/hs083a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs083b",
+    "set_name": "Vulture",
+    "name": "Aerial Mayhem",
+    "source": "Vulture (Marvel)/4B-AerialMayhem-Vulture.png",
+    "image": "reference/cards/hs083b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs084",
+    "set_name": "Vulture",
+    "name": "S.H.I.E.L.D. Wingsuits",
+    "source": "Vulture (Marvel)/Encounter Cards/5-SHIELDWingSuits-Vulture.png",
+    "image": "reference/cards/hs084.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs085",
+    "set_name": "Vulture",
+    "name": "* Armadillo",
+    "source": "Vulture (Marvel)/Encounter Cards/6-Armadillo-Vulture.png",
+    "image": "reference/cards/hs085.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs086",
+    "set_name": "Vulture",
+    "name": "* White Rabbit",
+    "source": "Vulture (Marvel)/Encounter Cards/7-WhiteRabbit-Vulture.png",
+    "image": "reference/cards/hs086.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs087",
+    "set_name": "Vulture",
+    "name": "* Gibbon",
+    "source": "Vulture (Marvel)/Encounter Cards/8-Gibbon-Vulture.png",
+    "image": "reference/cards/hs087.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "implemented_from_documented_APIs"
+  },
+  {
+    "card_id": "hs088",
+    "set_name": "Vulture",
+    "name": "Wing Harness",
+    "source": "Vulture (Marvel)/Encounter Cards/9-WingHarness-Vulture.png",
+    "image": "reference/cards/hs088.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs089",
+    "set_name": "Vulture",
+    "name": "Metal Talons",
+    "source": "Vulture (Marvel)/Encounter Cards/10-MetalTalons-Vulture.png",
+    "image": "reference/cards/hs089.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs090",
+    "set_name": "Vulture",
+    "name": "Projectile Feathers",
+    "source": "Vulture (Marvel)/Encounter Cards/11-ProjectileFeathers-Vulture.png",
+    "image": "reference/cards/hs090.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs091",
+    "set_name": "Vulture",
+    "name": "Projectile Feathers",
+    "source": "Vulture (Marvel)/Encounter Cards/12-ProjectileFeathers-Vulture.png",
+    "image": "reference/cards/hs091.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs092",
+    "set_name": "Vulture",
+    "name": "Forcefully Elevated",
+    "source": "Vulture (Marvel)/Encounter Cards/13-ForcefullyElevated-Vulture.png",
+    "image": "reference/cards/hs092.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs093",
+    "set_name": "Vulture",
+    "name": "Forcefully Elevated",
+    "source": "Vulture (Marvel)/Encounter Cards/14-ForcefullyElevated-Vulture.png",
+    "image": "reference/cards/hs093.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs094",
+    "set_name": "Vulture",
+    "name": "Aerial Kidnapping",
+    "source": "Vulture (Marvel)/Encounter Cards/15-AerialKidnapping.png",
+    "image": "reference/cards/hs094.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs095",
+    "set_name": "Vulture",
+    "name": "Aerial Kidnapping",
+    "source": "Vulture (Marvel)/Encounter Cards/16-AerialKidnapping.png",
+    "image": "reference/cards/hs095.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs096",
+    "set_name": "Vulture",
+    "name": "A Feast for Vultures",
+    "source": "Vulture (Marvel)/Encounter Cards/17-AFeastForVultures-Vulture.png",
+    "image": "reference/cards/hs096.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs097",
+    "set_name": "Vulture",
+    "name": "Knocked Out of the Sky",
+    "source": "Vulture (Marvel)/Encounter Cards/18-KnockedOutOfTheSky.png",
+    "image": "reference/cards/hs097.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs098",
+    "set_name": "Vulture",
+    "name": "Knocked Out of the Sky",
+    "source": "Vulture (Marvel)/Encounter Cards/19-KnockedOutOfTheSky.png",
+    "image": "reference/cards/hs098.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs099",
+    "set_name": "Vulture",
+    "name": "Knocked Out of the Sky",
+    "source": "Vulture (Marvel)/Encounter Cards/20-KnockedOutOfTheSky.png",
+    "image": "reference/cards/hs099.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs100",
+    "set_name": "Vulture",
+    "name": "Sweeping Swoop",
+    "source": "Vulture (Marvel)/Encounter Cards/21-Sweeping Swoop-Vulture.png",
+    "image": "reference/cards/hs100.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs101",
+    "set_name": "Vulture",
+    "name": "Sweeping Swoop",
+    "source": "Vulture (Marvel)/Encounter Cards/22-Sweeping Swoop-Vulture.png",
+    "image": "reference/cards/hs101.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs102",
+    "set_name": "Vulture",
+    "name": "Ravenous Onslaught",
+    "source": "Vulture (Marvel)/Encounter Cards/23-RavenousOnslaught.png",
+    "image": "reference/cards/hs102.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs103",
+    "set_name": "Vulture",
+    "name": "Ravenous Onslaught",
+    "source": "Vulture (Marvel)/Encounter Cards/24-RavenousOnslaught.png",
+    "image": "reference/cards/hs103.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs104",
+    "set_name": "Kraven The Hunter",
+    "name": "* Kraven The Hunter",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 1,
+      "bbox": [
+        21.100000381469727,
+        14.79998779296875,
+        195.3000030517578,
+        264.79998779296875
+      ],
+      "cell": 9
+    },
+    "image": "reference/cards/hs104.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs105",
+    "set_name": "Kraven The Hunter",
+    "name": "* Kraven The Hunter",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 1,
+      "bbox": [
+        219.5,
+        14.79998779296875,
+        393.79998779296875,
+        264.79998779296875
+      ],
+      "cell": 1
+    },
+    "image": "reference/cards/hs105.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs106",
+    "set_name": "Kraven The Hunter",
+    "name": "* Kraven The Hunter",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 1,
+      "bbox": [
+        418.0,
+        14.79998779296875,
+        592.2000122070312,
+        264.79998779296875
+      ],
+      "cell": 2
+    },
+    "image": "reference/cards/hs106.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs107a",
+    "set_name": "Kraven The Hunter",
+    "name": "Acquiring Targets",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 1,
+      "bbox": [
+        21.100000381469727,
+        269.8999938964844,
+        195.3000030517578,
+        520.0
+      ],
+      "cell": 3
+    },
+    "image": "reference/cards/hs107a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs107b",
+    "set_name": "Kraven The Hunter",
+    "name": "Acquiring Targets",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 1,
+      "bbox": [
+        219.5,
+        269.8999938964844,
+        393.79998779296875,
+        520.0
+      ],
+      "cell": 4
+    },
+    "image": "reference/cards/hs107b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs108a",
+    "set_name": "Kraven The Hunter",
+    "name": "The Great Hunt",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 1,
+      "bbox": [
+        418.0,
+        269.8999938964844,
+        592.2000122070312,
+        520.0
+      ],
+      "cell": 5
+    },
+    "image": "reference/cards/hs108a.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs108b",
+    "set_name": "Kraven The Hunter",
+    "name": "The Great Hunt",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 1,
+      "bbox": [
+        21.100000381469727,
+        525.0999755859375,
+        195.3000030517578,
+        775.0999755859375
+      ],
+      "cell": 6
+    },
+    "image": "reference/cards/hs108b.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs109",
+    "set_name": "Kraven The Hunter",
+    "name": "* Last Son of Kraven",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 1,
+      "bbox": [
+        219.5,
+        525.0999755859375,
+        393.79998779296875,
+        775.0999755859375
+      ],
+      "cell": 7
+    },
+    "image": "reference/cards/hs109.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs110",
+    "set_name": "Kraven The Hunter",
+    "name": "* Chameleon",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 1,
+      "bbox": [
+        418.0,
+        525.0999755859375,
+        592.2000122070312,
+        775.0999755859375
+      ],
+      "cell": 8
+    },
+    "image": "reference/cards/hs110.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs111",
+    "set_name": "Kraven The Hunter",
+    "name": "Poisoned Dagger",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 3,
+      "bbox": [
+        21.100000381469727,
+        14.79998779296875,
+        195.3000030517578,
+        264.79998779296875
+      ],
+      "cell": 1
+    },
+    "image": "reference/cards/hs111.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs112",
+    "set_name": "Kraven The Hunter",
+    "name": "* Kraven’s Spear",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 3,
+      "bbox": [
+        219.5,
+        14.79998779296875,
+        393.79998779296875,
+        264.79998779296875
+      ],
+      "cell": 2
+    },
+    "image": "reference/cards/hs112.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs113",
+    "set_name": "Kraven The Hunter",
+    "name": "Hunting Rifle",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 3,
+      "bbox": [
+        418.0,
+        14.79998779296875,
+        592.2000122070312,
+        264.79998779296875
+      ],
+      "cell": 3
+    },
+    "image": "reference/cards/hs113.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs114",
+    "set_name": "Kraven The Hunter",
+    "name": "Tooth Necklace",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 3,
+      "bbox": [
+        21.100000381469727,
+        269.8999938964844,
+        195.3000030517578,
+        520.0
+      ],
+      "cell": 4
+    },
+    "image": "reference/cards/hs114.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs115",
+    "set_name": "Kraven The Hunter",
+    "name": "The Calypso Serum",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 3,
+      "bbox": [
+        219.5,
+        269.8999938964844,
+        393.79998779296875,
+        520.0
+      ],
+      "cell": 5
+    },
+    "image": "reference/cards/hs115.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs116",
+    "set_name": "Kraven The Hunter",
+    "name": "Toxic Gas",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 3,
+      "bbox": [
+        418.0,
+        269.8999938964844,
+        592.2000122070312,
+        520.0
+      ],
+      "cell": 6
+    },
+    "image": "reference/cards/hs116.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs117",
+    "set_name": "Kraven The Hunter",
+    "name": "Predatory Ambush",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 3,
+      "bbox": [
+        21.100000381469727,
+        525.0999755859375,
+        195.3000030517578,
+        775.0999755859375
+      ],
+      "cell": 7
+    },
+    "image": "reference/cards/hs117.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs118",
+    "set_name": "Kraven The Hunter",
+    "name": "Predatory Ambush",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 3,
+      "bbox": [
+        219.5,
+        525.0999755859375,
+        393.79998779296875,
+        775.0999755859375
+      ],
+      "cell": 8
+    },
+    "image": "reference/cards/hs118.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs119",
+    "set_name": "Kraven The Hunter",
+    "name": "The Hunt Begins",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 3,
+      "bbox": [
+        418.0,
+        525.0999755859375,
+        592.2000122070312,
+        775.0999755859375
+      ],
+      "cell": 9
+    },
+    "image": "reference/cards/hs119.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs120",
+    "set_name": "Kraven The Hunter",
+    "name": "The Hunt Begins",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 5,
+      "bbox": [
+        21.100000381469727,
+        14.79998779296875,
+        195.3000030517578,
+        264.79998779296875
+      ],
+      "cell": 1
+    },
+    "image": "reference/cards/hs120.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs121",
+    "set_name": "Kraven The Hunter",
+    "name": "Big Game Hunter",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 5,
+      "bbox": [
+        219.5,
+        14.79998779296875,
+        393.79998779296875,
+        264.79998779296875
+      ],
+      "cell": 2
+    },
+    "image": "reference/cards/hs121.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs122",
+    "set_name": "Kraven The Hunter",
+    "name": "Big Game Hunter",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 5,
+      "bbox": [
+        418.0,
+        14.79998779296875,
+        592.2000122070312,
+        264.79998779296875
+      ],
+      "cell": 3
+    },
+    "image": "reference/cards/hs122.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs123",
+    "set_name": "Kraven The Hunter",
+    "name": "Stalking Prey",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 5,
+      "bbox": [
+        21.100000381469727,
+        269.8999938964844,
+        195.3000030517578,
+        520.0
+      ],
+      "cell": 4
+    },
+    "image": "reference/cards/hs123.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs124",
+    "set_name": "Kraven The Hunter",
+    "name": "Stalking Prey",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 5,
+      "bbox": [
+        219.5,
+        269.8999938964844,
+        393.79998779296875,
+        520.0
+      ],
+      "cell": 5
+    },
+    "image": "reference/cards/hs124.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs125",
+    "set_name": "Trap",
+    "name": "Ferocious Lion",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 5,
+      "bbox": [
+        418.0,
+        269.8999938964844,
+        592.2000122070312,
+        520.0
+      ],
+      "cell": 6
+    },
+    "image": "reference/cards/hs125.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs126",
+    "set_name": "Trap",
+    "name": "Ferocious Lion",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 5,
+      "bbox": [
+        21.100000381469727,
+        525.0999755859375,
+        195.3000030517578,
+        775.0999755859375
+      ],
+      "cell": 7
+    },
+    "image": "reference/cards/hs126.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs127",
+    "set_name": "Trap",
+    "name": "Fierce Cheetah",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 5,
+      "bbox": [
+        219.5,
+        525.0999755859375,
+        393.79998779296875,
+        775.0999755859375
+      ],
+      "cell": 8
+    },
+    "image": "reference/cards/hs127.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs128",
+    "set_name": "Trap",
+    "name": "Fierce Cheetah",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 5,
+      "bbox": [
+        418.0,
+        525.0999755859375,
+        592.2000122070312,
+        775.0999755859375
+      ],
+      "cell": 9
+    },
+    "image": "reference/cards/hs128.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs129",
+    "set_name": "Trap",
+    "name": "Bear Trap",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 7,
+      "bbox": [
+        21.100000381469727,
+        14.79998779296875,
+        195.3000030517578,
+        264.79998779296875
+      ],
+      "cell": 1
+    },
+    "image": "reference/cards/hs129.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs130",
+    "set_name": "Trap",
+    "name": "Bear Trap",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 7,
+      "bbox": [
+        219.5,
+        14.79998779296875,
+        393.79998779296875,
+        264.79998779296875
+      ],
+      "cell": 2
+    },
+    "image": "reference/cards/hs130.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs131",
+    "set_name": "Trap",
+    "name": "Capture Net",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 7,
+      "bbox": [
+        418.0,
+        14.79998779296875,
+        592.2000122070312,
+        264.79998779296875
+      ],
+      "cell": 3
+    },
+    "image": "reference/cards/hs131.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs132",
+    "set_name": "Trap",
+    "name": "Capture Net",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 7,
+      "bbox": [
+        21.100000381469727,
+        269.8999938964844,
+        195.3000030517578,
+        520.0
+      ],
+      "cell": 4
+    },
+    "image": "reference/cards/hs132.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs133",
+    "set_name": "Trap",
+    "name": "Quicksand",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 7,
+      "bbox": [
+        219.5,
+        269.8999938964844,
+        393.79998779296875,
+        520.0
+      ],
+      "cell": 5
+    },
+    "image": "reference/cards/hs133.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs134",
+    "set_name": "Trap",
+    "name": "Quicksand",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 7,
+      "bbox": [
+        418.0,
+        269.8999938964844,
+        592.2000122070312,
+        520.0
+      ],
+      "cell": 6
+    },
+    "image": "reference/cards/hs134.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs135",
+    "set_name": "Trap",
+    "name": "Tranquilizer Darts",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 7,
+      "bbox": [
+        21.100000381469727,
+        525.0999755859375,
+        195.3000030517578,
+        775.0999755859375
+      ],
+      "cell": 7
+    },
+    "image": "reference/cards/hs135.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs136",
+    "set_name": "Trap",
+    "name": "Tranquilizer Darts",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 7,
+      "bbox": [
+        219.5,
+        525.0999755859375,
+        393.79998779296875,
+        775.0999755859375
+      ],
+      "cell": 8
+    },
+    "image": "reference/cards/hs136.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs137",
+    "set_name": "Trap",
+    "name": "Tranquilizer Darts",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 7,
+      "bbox": [
+        418.0,
+        525.0999755859375,
+        592.2000122070312,
+        775.0999755859375
+      ],
+      "cell": 9
+    },
+    "image": "reference/cards/hs137.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs138",
+    "set_name": "Trap",
+    "name": "Swinging Boulder",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 9,
+      "bbox": [
+        21.100000381469727,
+        14.79998779296875,
+        195.3000030517578,
+        264.79998779296875
+      ],
+      "cell": 1
+    },
+    "image": "reference/cards/hs138.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs139",
+    "set_name": "Trap",
+    "name": "Swinging Boulder",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 9,
+      "bbox": [
+        219.5,
+        14.79998779296875,
+        393.79998779296875,
+        264.79998779296875
+      ],
+      "cell": 2
+    },
+    "image": "reference/cards/hs139.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs140",
+    "set_name": "Trap",
+    "name": "Swinging Boulder",
+    "source": {
+      "pdf": "Print-KravenTheHunter.pdf",
+      "page": 9,
+      "bbox": [
+        418.0,
+        14.79998779296875,
+        592.2000122070312,
+        264.79998779296875
+      ],
+      "cell": 3
+    },
+    "image": "reference/cards/hs140.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs141",
+    "set_name": "Feral Instincts",
+    "name": "Feral Instincts",
+    "source": "Modular Sets/Feral Instincts (Marvel)/1-FeralInstincts-FeralInstincts.png",
+    "image": "reference/cards/hs141.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs142",
+    "set_name": "Feral Instincts",
+    "name": "Primal Strength",
+    "source": "Modular Sets/Feral Instincts (Marvel)/2-PrimalStrength-FeralInstincts.png",
+    "image": "reference/cards/hs142.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs143",
+    "set_name": "Feral Instincts",
+    "name": "Unleashed Beast",
+    "source": "Modular Sets/Feral Instincts (Marvel)/3-UnleashedBeast-FeralInstincts.png",
+    "image": "reference/cards/hs143.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs144",
+    "set_name": "Feral Instincts",
+    "name": "Cornered Animal",
+    "source": "Modular Sets/Feral Instincts (Marvel)/4-CorneredAnimal-FeralInstincts.png",
+    "image": "reference/cards/hs144.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs145",
+    "set_name": "Feral Instincts",
+    "name": "Cornered Animal",
+    "source": "Modular Sets/Feral Instincts (Marvel)/5-CorneredAnimal-FeralInstincts.png",
+    "image": "reference/cards/hs145.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs146",
+    "set_name": "Lizard Thralls",
+    "name": "Wake Your Inner Lizard",
+    "source": "Modular Sets/Lizard Thralls (Marvel)/1-WakeYourInnerLizard-LizardThralls.png",
+    "image": "reference/cards/hs146.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs147",
+    "set_name": "Lizard Thralls",
+    "name": "Lizard Thrall",
+    "source": "Modular Sets/Lizard Thralls (Marvel)/2-LizardThrall-LizardThralls.png",
+    "image": "reference/cards/hs147.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs148",
+    "set_name": "Lizard Thralls",
+    "name": "Lizard Thrall",
+    "source": "Modular Sets/Lizard Thralls (Marvel)/3-LizardThrall-LizardThralls.png",
+    "image": "reference/cards/hs148.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs149",
+    "set_name": "Lizard Thralls",
+    "name": "Lizard Thrall",
+    "source": "Modular Sets/Lizard Thralls (Marvel)/4-LizardThrall-LizardThralls.png",
+    "image": "reference/cards/hs149.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs150",
+    "set_name": "Lizard Thralls",
+    "name": "Lizard Thrall",
+    "source": "Modular Sets/Lizard Thralls (Marvel)/5-LizardThrall-LizardThralls.png",
+    "image": "reference/cards/hs150.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs151",
+    "set_name": "Red Vulture",
+    "name": "* Vulture (James Natale)",
+    "source": "Modular Sets/Red Vulture (Marvel)/1-Vulture-RedVulture.png",
+    "image": "reference/cards/hs151.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs152",
+    "set_name": "Red Vulture",
+    "name": "The Red Vulture",
+    "source": "Modular Sets/Red Vulture (Marvel)/2-TheRedVulture-RedVulture.png",
+    "image": "reference/cards/hs152.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs153",
+    "set_name": "Red Vulture",
+    "name": "Acid Expulsion",
+    "source": "Modular Sets/Red Vulture (Marvel)/3-AcidExpulsion-RedVulture.png",
+    "image": "reference/cards/hs153.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs154",
+    "set_name": "Red Vulture",
+    "name": "Acid Expulsion",
+    "source": "Modular Sets/Red Vulture (Marvel)/4-AcidExpulsion-RedVulture.png",
+    "image": "reference/cards/hs154.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs155",
+    "set_name": "Red Vulture",
+    "name": "Voracious Ambush",
+    "source": "Modular Sets/Red Vulture (Marvel)/5-VoraciousAmbush-RedVulture.png",
+    "image": "reference/cards/hs155.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs156",
+    "set_name": "Red Vulture",
+    "name": "Voracious Ambush",
+    "source": "Modular Sets/Red Vulture (Marvel)/6-VoraciousAmbush-RedVulture.png",
+    "image": "reference/cards/hs156.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs157",
+    "set_name": "Savage Six",
+    "name": "The Savage Six",
+    "source": "Modular Sets/Savage Six (Marvel)/1-TheSavageSix-SavageSix.png",
+    "image": "reference/cards/hs157.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs158",
+    "set_name": "Savage Six",
+    "name": "* Vulture",
+    "source": "Modular Sets/Savage Six (Marvel)/2-Vulture-SavageSix.png",
+    "image": "reference/cards/hs158.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs159",
+    "set_name": "Savage Six",
+    "name": "* Rhino",
+    "source": "Modular Sets/Savage Six (Marvel)/3-Rhino-SavageSix.png",
+    "image": "reference/cards/hs159.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs160",
+    "set_name": "Savage Six",
+    "name": "* Scorpion",
+    "source": "Modular Sets/Savage Six (Marvel)/4-Scorpion-SavageSix.png",
+    "image": "reference/cards/hs160.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs161",
+    "set_name": "Savage Six",
+    "name": "* Tarantula",
+    "source": "Modular Sets/Savage Six (Marvel)/5-Tarantula-SavageSix.png",
+    "image": "reference/cards/hs161.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs162",
+    "set_name": "Savage Six",
+    "name": "* King Cobra",
+    "source": "Modular Sets/Savage Six (Marvel)/6-KingCobra-SavageSix.png",
+    "image": "reference/cards/hs162.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs163",
+    "set_name": "Savage Six",
+    "name": "* Stegron",
+    "source": "Modular Sets/Savage Six (Marvel)/7-Stegron-SavageSix.png",
+    "image": "reference/cards/hs163.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs164",
+    "set_name": "The Lodge",
+    "name": "* Rocket Raccoon",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge1-RocketRaccoon-Campaign.png",
+    "image": "reference/cards/hs164.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs165",
+    "set_name": "The Lodge",
+    "name": "* Old Man Logan",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge2-OldManLogan-Campaign.png",
+    "image": "reference/cards/hs165.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs166",
+    "set_name": "The Lodge",
+    "name": "* Black Cat",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge3-BlackCat-Campaign.png",
+    "image": "reference/cards/hs166.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs167",
+    "set_name": "The Lodge",
+    "name": "* Ka-Zar",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge4-KaZar-Campaign.png",
+    "image": "reference/cards/hs167.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs168",
+    "set_name": "The Lodge",
+    "name": "* Gibbon",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge5-Gibbon-Campaign.png",
+    "image": "reference/cards/hs168.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "implemented_from_documented_APIs"
+  },
+  {
+    "card_id": "hs169",
+    "set_name": "The Lodge",
+    "name": "Evade",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge6-Evade-Campaign.png",
+    "image": "reference/cards/hs169.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs170",
+    "set_name": "The Lodge",
+    "name": "Evade",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge7-Evade-Campaign.png",
+    "image": "reference/cards/hs170.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs171",
+    "set_name": "The Lodge",
+    "name": "Evade",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge8-Evade-Campaign.png",
+    "image": "reference/cards/hs171.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs172",
+    "set_name": "The Lodge",
+    "name": "Taunt",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge9-Taunt-Campaign.png",
+    "image": "reference/cards/hs172.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs173",
+    "set_name": "The Lodge",
+    "name": "Taunt",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge10-Taunt-Campaign.png",
+    "image": "reference/cards/hs173.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs174",
+    "set_name": "The Lodge",
+    "name": "Taunt",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge11-Taunt-Campaign.png",
+    "image": "reference/cards/hs174.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs175",
+    "set_name": "The Lodge",
+    "name": "Steadfast",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge12-Steadfast-Campaign.png",
+    "image": "reference/cards/hs175.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs176",
+    "set_name": "The Lodge",
+    "name": "Steadfast",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge13-Steadfast-Campaign.png",
+    "image": "reference/cards/hs176.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs177",
+    "set_name": "The Lodge",
+    "name": "Steadfast",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge14-Steadfast-Campaign.png",
+    "image": "reference/cards/hs177.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs178",
+    "set_name": "The Lodge",
+    "name": "Finish Them Off",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge15-FinishThemOff-Campaign.png",
+    "image": "reference/cards/hs178.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs179",
+    "set_name": "The Lodge",
+    "name": "Finish Them Off",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge16-FinishThemOff-Campaign.png",
+    "image": "reference/cards/hs179.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs180",
+    "set_name": "The Lodge",
+    "name": "Finish Them Off",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge17-FinishThemOff-Campaign.png",
+    "image": "reference/cards/hs180.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs181",
+    "set_name": "The Lodge",
+    "name": "Fresh Tracks",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge18-FreshTracks-Campaign.png",
+    "image": "reference/cards/hs181.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs182",
+    "set_name": "The Lodge",
+    "name": "Fresh Tracks",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge19-FreshTracks-Campaign.png",
+    "image": "reference/cards/hs182.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs183",
+    "set_name": "The Lodge",
+    "name": "Fresh Tracks",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge20-FreshTracks-Campaign.png",
+    "image": "reference/cards/hs183.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs184",
+    "set_name": "The Lodge",
+    "name": "* Savage Land",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge21-SavageLand-Campaign.png",
+    "image": "reference/cards/hs184.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs185",
+    "set_name": "The Lodge",
+    "name": "Hunting Rifle",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge22-HuntingRifle-Campaign.png",
+    "image": "reference/cards/hs185.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs186",
+    "set_name": "The Lodge",
+    "name": "Hunting Rifle",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge23-HuntingRifle-Campaign.png",
+    "image": "reference/cards/hs186.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs187",
+    "set_name": "The Lodge",
+    "name": "Hunting Rifle",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge24-HuntingRifle-Campaign.png",
+    "image": "reference/cards/hs187.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs188",
+    "set_name": "The Lodge",
+    "name": "Hatchet",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge25-Hatchet-Campaign.png",
+    "image": "reference/cards/hs188.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs189",
+    "set_name": "The Lodge",
+    "name": "Hatchet",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge26-Hatchet-Campaign.png",
+    "image": "reference/cards/hs189.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs190",
+    "set_name": "The Lodge",
+    "name": "Hatchet",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge27-Hatchet-Campaign.png",
+    "image": "reference/cards/hs190.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs191",
+    "set_name": "The Lodge",
+    "name": "Hunterbot",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge28-Hunterbot-Campaign.png",
+    "image": "reference/cards/hs191.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs192",
+    "set_name": "The Lodge",
+    "name": "Hunterbot",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge29-Hunterbot-Campaign.png",
+    "image": "reference/cards/hs192.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs193",
+    "set_name": "The Lodge",
+    "name": "Hunterbot",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge30-Hunterbot-Campaign.png",
+    "image": "reference/cards/hs193.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs194",
+    "set_name": "The Lodge",
+    "name": "Trap",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge31-Trap-Campaign.png",
+    "image": "reference/cards/hs194.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs195",
+    "set_name": "The Lodge",
+    "name": "Trap",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge32-Trap-Campaign.png",
+    "image": "reference/cards/hs195.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs196",
+    "set_name": "The Lodge",
+    "name": "Trap",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge33-Trap-Campaign.png",
+    "image": "reference/cards/hs196.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs197",
+    "set_name": "The Lodge",
+    "name": "In Hiding",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge34-InHiding-Campaign.png",
+    "image": "reference/cards/hs197.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs198",
+    "set_name": "The Lodge",
+    "name": "In Hiding",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge35-InHiding-Campaign.png",
+    "image": "reference/cards/hs198.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs199",
+    "set_name": "The Lodge",
+    "name": "In Hiding",
+    "source": "Hunting Season - Campaign/The Lodge/Lodge36-InHiding-Campaign.png",
+    "image": "reference/cards/hs199.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs200",
+    "set_name": "Hunt Campaign Set",
+    "name": "* Vermin",
+    "source": "Hunting Season - Campaign/Hunt Campaign Set - Allies/Reward1-VerminAlly-Campaign.png",
+    "image": "reference/cards/hs200.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs201",
+    "set_name": "Hunt Campaign Set",
+    "name": "* Scorpion",
+    "source": "Hunting Season - Campaign/Hunt Campaign Set - Allies/Reward2-ScorpionAlly-Campaign.png",
+    "image": "reference/cards/hs201.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs202",
+    "set_name": "Hunt Campaign Set",
+    "name": "* Lizard",
+    "source": "Hunting Season - Campaign/Hunt Campaign Set - Allies/Reward3-LizardAlly-Campaign.png",
+    "image": "reference/cards/hs202.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs203",
+    "set_name": "Hunt Campaign Set",
+    "name": "* Vulture",
+    "source": "Hunting Season - Campaign/Hunt Campaign Set - Allies/Reward4-VultureAlly-Campaign.png",
+    "image": "reference/cards/hs203.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs204",
+    "set_name": "Hunt Campaign Set",
+    "name": "* Vermin",
+    "source": "Hunting Season - Campaign/Hunt Campaign Set - Minions/Punishment1-VerminMinion-Campaign.png",
+    "image": "reference/cards/hs204.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs205",
+    "set_name": "Hunt Campaign Set",
+    "name": "* Lizard",
+    "source": "Hunting Season - Campaign/Hunt Campaign Set - Minions/Punishment2-LizardMinion-Campaign.png",
+    "image": "reference/cards/hs205.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "implemented_from_documented_APIs"
+  },
+  {
+    "card_id": "hs206",
+    "set_name": "Expert Campaign Set",
+    "name": "Son of Kraven",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/1-Expert1-SonOfKraven-Campaign.png",
+    "image": "reference/cards/hs206.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "implemented_from_documented_APIs"
+  },
+  {
+    "card_id": "hs207",
+    "set_name": "Expert Campaign Set",
+    "name": "Captured!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/2-Expert1-Captured-Campaign.png",
+    "image": "reference/cards/hs207.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs208",
+    "set_name": "Expert Campaign Set",
+    "name": "Hunted!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/3-Expert1-Hunted-Campaign.png",
+    "image": "reference/cards/hs208.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs209",
+    "set_name": "Expert Campaign Set",
+    "name": "Poisoned!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/4-Expert1-Poisoned-Campaign.png",
+    "image": "reference/cards/hs209.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs210",
+    "set_name": "Expert Campaign Set",
+    "name": "Son of Kraven",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/1-Expert2-SonOfKraven-Campaign.png",
+    "image": "reference/cards/hs210.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "implemented_from_documented_APIs"
+  },
+  {
+    "card_id": "hs211",
+    "set_name": "Expert Campaign Set",
+    "name": "Captured!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/2-Expert2-Captured-Campaign.png",
+    "image": "reference/cards/hs211.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs212",
+    "set_name": "Expert Campaign Set",
+    "name": "Hunted!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/3-Expert2-Hunted-Campaign.png",
+    "image": "reference/cards/hs212.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs213",
+    "set_name": "Expert Campaign Set",
+    "name": "Poisoned!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/4-Expert2-Poisoned-Campaign.png",
+    "image": "reference/cards/hs213.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs214",
+    "set_name": "Expert Campaign Set",
+    "name": "Son of Kraven",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/1-Expert3-SonOfKraven-Campaign.png",
+    "image": "reference/cards/hs214.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "implemented_from_documented_APIs"
+  },
+  {
+    "card_id": "hs215",
+    "set_name": "Expert Campaign Set",
+    "name": "Captured!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/2-Expert3-Captured-Campaign.png",
+    "image": "reference/cards/hs215.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs216",
+    "set_name": "Expert Campaign Set",
+    "name": "Hunted!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/3-Expert3-Hunted-Campaign.png",
+    "image": "reference/cards/hs216.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs217",
+    "set_name": "Expert Campaign Set",
+    "name": "Poisoned!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/4-Expert3-Poisoned-Campaign.png",
+    "image": "reference/cards/hs217.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs218",
+    "set_name": "Expert Campaign Set",
+    "name": "Son of Kraven",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/1-Expert4-SonOfKraven-Campaign.png",
+    "image": "reference/cards/hs218.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "implemented_from_documented_APIs"
+  },
+  {
+    "card_id": "hs219",
+    "set_name": "Expert Campaign Set",
+    "name": "Captured!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/2-Expert4-Captured-Campaign.png",
+    "image": "reference/cards/hs219.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs220",
+    "set_name": "Expert Campaign Set",
+    "name": "Hunted!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/3-Expert4-Hunted-Campaign.png",
+    "image": "reference/cards/hs220.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs221",
+    "set_name": "Expert Campaign Set",
+    "name": "Poisoned!",
+    "source": "Hunting Season - Campaign/Expert Campaign Set/4-Expert4-Poisoned-Campaign.png",
+    "image": "reference/cards/hs221.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs222",
+    "set_name": "Hunter Mode",
+    "name": "Rabid Rodents",
+    "source": "Hunting Season - Campaign/Hunter Mode - Environments/HunterMode1-Vermin.png",
+    "image": "reference/cards/hs222.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs223",
+    "set_name": "Hunter Mode",
+    "name": "Sting of the Scorpion",
+    "source": "Hunting Season - Campaign/Hunter Mode - Environments/HunterMode2-Scorpion.png",
+    "image": "reference/cards/hs223.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs224",
+    "set_name": "Hunter Mode",
+    "name": "Cold Blooded",
+    "source": "Hunting Season - Campaign/Hunter Mode - Environments/HunterMode3-Lizard.png",
+    "image": "reference/cards/hs224.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs225",
+    "set_name": "Hunter Mode",
+    "name": "Aerial Excellence",
+    "source": "Hunting Season - Campaign/Hunter Mode - Environments/HunterMode4-Vulture.png",
+    "image": "reference/cards/hs225.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  },
+  {
+    "card_id": "hs226",
+    "set_name": "Hunter Mode",
+    "name": "Master Trapper",
+    "source": "Hunting Season - Campaign/Hunter Mode - Environments/HunterMode5-Kraven.png",
+    "image": "reference/cards/hs226.jpg",
+    "transcription": "gameplay_manual;flavour_omitted",
+    "script_status": "partial"
+  }
+]

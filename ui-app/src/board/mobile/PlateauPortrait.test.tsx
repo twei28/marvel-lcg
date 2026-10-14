@@ -240,16 +240,28 @@ describe('PlateauPortrait — la main derriere son encoche', () => {
     expect(jouer).toHaveBeenCalledTimes(1)
   })
 
-  it('zone 3 : le toucher long ouvre la carte en grand, avec « Jouer » au lieu de « Utiliser cette carte »', () => {
+  it('le toucher long JOUE une carte jouable de la main, sans ouvrir sa fiche (10/10/2026)', () => {
     vi.useFakeTimers()
+    const agir = vi.fn()
     const main = plateau(emplacement('main', unite('12', { kind: 'event' })))
-    const interactifs = new Map([[12, { role: 'porteur', choisie: false, agir: () => {} } as EtatInteractif]])
+    const interactifs = new Map([[12, { role: 'porteur', choisie: false, agir } as EtatInteractif]])
     render(<PlateauPortrait world={monde} playerId={0} plateau={main} interactifs={interactifs} />)
     fireEvent.click(document.querySelector('.encoche-main')!)
     fireEvent.pointerDown(document.querySelector('.main-portrait-carte')!)
     act(() => {
       vi.advanceTimersByTime(APPUI_LONG_MS)
     })
+    expect(agir).toHaveBeenCalledTimes(1)
+    expect(document.querySelector('.carte-ouverte')).toBeNull()
+  })
+
+  it('« Lire » ouvre la carte choisie en grand, avec « Jouer » au lieu de « Utiliser cette carte »', () => {
+    const main = plateau(emplacement('main', unite('12', { kind: 'event' })))
+    const interactifs = new Map([[12, { role: 'porteur', choisie: false, agir: () => {} } as EtatInteractif]])
+    render(<PlateauPortrait world={monde} playerId={0} plateau={main} interactifs={interactifs} />)
+    fireEvent.click(document.querySelector('.encoche-main')!)
+    fireEvent.click(document.querySelector('.main-portrait .scan-card')!)
+    fireEvent.click(document.querySelector('.main-feuille-lire')!)
     expect(document.querySelector('.carte-ouverte')).not.toBeNull()
     expect(document.querySelector('.carte-ouverte-agir')).toHaveTextContent('Jouer')
   })

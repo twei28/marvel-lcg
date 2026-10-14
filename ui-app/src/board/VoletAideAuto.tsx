@@ -37,7 +37,7 @@ const TEL_TA_MAIN: Raccourci[] = [
   { touches: 'Languette de droite', effet: 'Ouvrir ta main (toucher, ou glisser vers la gauche). Elle s’ouvre seule quand une question porte sur une carte en main.' },
   { touches: 'Toucher une carte jouable', effet: 'La choisir : « Lire » et « Jouer » apparaissent en bas. Toucher encore la repose.' },
   { touches: 'Toucher une autre carte', effet: 'L’ouvrir en grand pour la lire' },
-  { touches: 'Appui long sur une carte', effet: 'L’ouvrir en grand, sans la jouer' },
+  { touches: 'Appui long sur une carte', effet: 'La jouer tout de suite si elle est jouable, sinon l’ouvrir en grand' },
   { touches: 'Défausse de fin de tour', effet: 'Un toucher coche ou décoche la carte' },
   { touches: 'Fermer la main', effet: 'Toucher le fond, glisser vers la droite ou « Fermer »' },
 ]

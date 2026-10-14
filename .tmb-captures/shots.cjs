@@ -1,0 +1,21 @@
+const { chromium } = require("C:/Users/arnau/Desktop/Marvel LCG/ui-check/node_modules/playwright");
+const out = "C:/Users/arnau/Desktop/Marvel LCG/.tmb-captures/";
+(async () => {
+  const b = await chromium.launch({ channel: "chrome" });
+  const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+  await p.goto("http://localhost:5199/");
+  await p.waitForTimeout(1500);
+  await p.getByRole("button", { name: /^Patches/ }).click();
+  await p.getByRole("button", { name: /^Picket/ }).click();
+  await p.screenshot({ path: out + "1-selection.png" });
+  await p.getByRole("button", { name: /Voir le chip de Mulmesh/ }).click();
+  await p.waitForTimeout(800);
+  await p.screenshot({ path: out + "2-fiche-tyran.png" });
+  await p.locator("button:has-text(\"×\")").first().click();
+  await p.waitForTimeout(400);
+  await p.getByRole("button", { name: "Commencer l'aventure" }).click();
+  await p.waitForTimeout(4000);
+  await p.screenshot({ path: out + "3-apres-start.png" });
+  console.log((await p.innerText("body")).slice(0, 1500));
+  await b.close();
+})().catch(e => { console.error(e.message); process.exit(1); });

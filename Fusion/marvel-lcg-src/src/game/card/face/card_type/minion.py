@@ -125,7 +125,13 @@ class Minion(Enemy, CanQuickstrike, CanTeamwork, HasGuard, HasPatrol, HasVillain
         engaged_message = Message.WhenMinionEngagePlayer(would_message)
         engaged_message.Send()
 
-        self.ResolveQuickstrike(player)
+        # RR 1.8 p.35 : un sbire en cours de revelation resout Quickstrike APRES
+        # ses capacites « When Revealed ».
+        if self.card.world.rule.v18_reveal_keywords and self.card.state.is_revealing:
+            from game.operate.run_at import RunAt
+            RunAt.AfterRevealed(self, lambda: self.ResolveQuickstrike(player))
+        else:
+            self.ResolveQuickstrike(player)
 
         after_message = Message.AfterMinionEngagePlayer(self, player, engaged_message)
         after_message.Send()

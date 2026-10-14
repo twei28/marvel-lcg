@@ -42,7 +42,10 @@ class CanSurge(HasSurge):
             effect = Surge(self)
 
             world = self.card.world
-            if world.rule.fix_surge:
+            # RR 1.8 p.42 : « deals themself a facedown encounter card ». La carte
+            # reste face cachee hors phase du mechant ; a l'etape 4, la boucle de
+            # `RevealEncounterCards` la revele dans la foulee.
+            if world.rule.fix_surge and not world.rule.v18_surge:
                 def action():
                     face = Worlds.PopEncounterCard(effect)
                     face.Reveal(player, effect)

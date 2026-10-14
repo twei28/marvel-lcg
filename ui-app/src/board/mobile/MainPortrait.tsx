@@ -11,9 +11,10 @@
 // puis bouton Jouer ») :
 //   TOUCHER une carte jouable -> elle se leve, « Jouer » apparait en bas ;
 //   TOUCHER une carte non jouable -> elle s'ouvre en grand, pour la lire ;
-//   TOUCHER LONG -> elle s'ouvre en grand, quelle qu'elle soit (on LIT).
-// L'appui long ne joue plus rien : une carte jouee par un doigt qui s'attarde
-// ne se rattrapait qu'avec « Annuler ».
+//   TOUCHER LONG -> elle se JOUE si elle est jouable, sinon elle s'ouvre en
+//   grand. Meme regle que sur les bandes (decision du 10/10/2026) : toucher
+//   = lire, appui long = agir. Le bandeau « Annuler » rattrape un doigt
+//   qui s'attarde.
 //
 // ⚠ ScanCard est rendu EN DIRECT : ses pastilles (cout, PV) restent sur la
 // carte, c'est le choix de la spec du 12/09 (« une pastille par valeur »).
@@ -36,14 +37,17 @@ function CarteMainPortrait({
   choisie,
   onChoisir,
   onOuvrir,
+  onAgir,
 }: {
   unite: UniteAffichee
   choisie: boolean
   /** Absent : la carte ne se choisit pas (pas jouable maintenant). */
   onChoisir?: (unite: UniteAffichee) => void
   onOuvrir: (unite: UniteAffichee) => void
+  /** L'appui long : joue la carte. Absent (pas jouable) : il la lit. */
+  onAgir?: (unite: UniteAffichee) => void
 }): ReactElement {
-  const appui = useAppuiLong(() => onOuvrir(unite))
+  const appui = useAppuiLong(() => (onAgir ? onAgir(unite) : onOuvrir(unite)))
   return (
     <span
       className={`main-portrait-carte${choisie ? ' est-choisie' : ''}`}
@@ -54,8 +58,8 @@ function CarteMainPortrait({
         {...unite.carte}
         highlight={false}
         onSelect={() => {
-          // Le maintien vient d'ouvrir la carte : le clic qui suit le
-          // relachement du doigt ne doit pas AUSSI la choisir.
+          // Le maintien vient de jouer ou d'ouvrir la carte : le clic qui
+          // suit le relachement du doigt ne doit pas AUSSI la choisir.
           if (appui.vientDeDeclencher()) return
           // Une CIBLE de la question en cours (défausse de fin de tour, carte
           // à choisir en main) se coche d'un toucher, sans passer par sa fiche.
@@ -136,6 +140,14 @@ export function MainPortrait({
                     : undefined
                 }
                 onOuvrir={onOuvrir}
+                onAgir={
+                  onJouer && jouable?.(unite)
+                    ? (u) => {
+                        setCleChoisie(undefined)
+                        onJouer(u)
+                      }
+                    : undefined
+                }
               />
             ))}
           </div>

@@ -62,7 +62,8 @@ class EffectInvoker:
                             if atk_target not in retaliated_unit:
                                 retaliated_unit.add(atk_target)
                                 if Unit2.IsType(atk_target) and \
-                                    atk_target.IsInPlay():
+                                    atk_target.IsInPlay() and \
+                                    not world.rule.v18_retaliate:
                                     atk_target.ResolveRetaliate(would_atk_unit_message)
 
                 for message in message.atk_messages:

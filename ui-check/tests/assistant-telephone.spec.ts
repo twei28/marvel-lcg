@@ -202,6 +202,10 @@ for (const { w, h } of FORMATS) {
       await capturer(page, w, '8-mechant-apercu');
       await page.locator('.ts-btn.jaune').tap();
       await expect(page.getByRole('button', { name: /^continuer/i })).toBeEnabled({ timeout: 8_000 });
+      // L'en-tête de l'étape nomme le méchant choisi (il restait « inconnu »).
+      for (const mode of await page.locator('.tb-mode').all()) {
+        await expect(mode).not.toContainText(/inconnu/i);
+      }
       await verifier(page, 'méchant choisi');
 
       // --- Étape Final -----------------------------------------------------------

@@ -24,6 +24,7 @@ class GameServerNewGame(GameServerBase):
         # GameServer herite de GameServerGet et de GameServerNewGame :
         # `self.choix_sieges` est le meme attribut des deux cotes.
         self.choix_sieges = {}
+        self.equipe_hote = None
         # La roue de « Partie au hasard » aussi : la partie est lancee.
         self.roue = None
         # Qui fait avancer la phase du mechant en multi (lot 6) se choisit pour

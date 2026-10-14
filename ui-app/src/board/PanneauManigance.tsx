@@ -21,6 +21,7 @@ import { nomAffiche } from './noms-cartes-fr'
 import type { WorldCard } from './world'
 import { mouvementReduit } from './affichage'
 import { TraductionSurCarte, typeDeBoite } from './traduction-carte'
+import { glisser } from './CoucheMiseEnPlace'
 
 /**
  * ⚠ DOIT VALOIR LA MEME CHOSE que la transition de `.panneau-manigance.est-
@@ -44,8 +45,14 @@ export function PanneauManigance({
   versoUrl,
   versoCode,
   versoType,
+  voleVers,
 }: {
   carte: WorldCard
+  /**
+   * Pendant la mise en place (13/10/2026) : la carte de la table, en
+   * pointillés, vers laquelle la manigance vole au OK. Absent : aucun vol.
+   */
+  voleVers?: number
   /**
    * La carte se retourne-t-elle au OK ?
    *
@@ -84,6 +91,7 @@ export function PanneauManigance({
   const [pivote, setPivote] = useState(false)
   const pivoter = versoUrl !== undefined && retournement
   const idMinuteur = useRef<number | undefined>(undefined)
+  const cadre = useRef<HTMLDivElement>(null)
   const monte = useRef(true)
 
   useEffect(
@@ -102,6 +110,7 @@ export function PanneauManigance({
   // minuterie. La carte revient alors sur sa face A, ce qui est la verite : le
   // moteur attend toujours la meme reponse.
   const envoyer = async () => {
+    if (voleVers !== undefined && !mouvementReduit()) glisser(cadre.current, voleVers)
     const partie = await onValider()
     if (!partie && monte.current) setEnvoye(false)
   }
@@ -120,7 +129,7 @@ export function PanneauManigance({
           « le main scheme n'est pas en paysage ». Meme montage que
           `CoucheRevelation`, qui avait deja paye ce defaut le 09/09. */}
       {pivoter ? (
-        <div className="panneau-manigance-pivot">
+        <div ref={cadre} className="panneau-manigance-pivot">
           <div className="panneau-manigance-pivot-tourne">
             <div className="panneau-manigance-cadre">
               <img src={scanUrl(carte.pic_id)} alt={nomAffiche(carte)} />
@@ -139,7 +148,7 @@ export function PanneauManigance({
           </div>
         </div>
       ) : (
-        <div className="panneau-manigance-cadre">
+        <div ref={cadre} className="panneau-manigance-cadre">
           <img src={scanUrl(carte.pic_id)} alt={nomAffiche(carte)} />
               <TraductionSurCarte
                 codeCarte={carte.card_id}

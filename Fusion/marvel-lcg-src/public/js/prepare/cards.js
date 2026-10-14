@@ -24,6 +24,9 @@ export const cards = {
     /** Toutes les cartes chargees. Sert a batir des index (auteur par set) une
      *  seule fois, plutot qu'a chercher carte par carte. */
     all() { return Object.values(_cs.const_card_dict || {}); },
+    /** Les identifiants du catalogue. Une reimpression (`full_link`) partage l'objet de
+     *  l'originale, dont `card_id` ne dit donc pas sous quel numero on l'a trouvee. */
+    ids() { return Object.keys(_cs.const_card_dict || {}); },
     /** sets_info (SetInfo par extension). */
     sets() { return _cs.sets_json; },
     /** Aspect lisible depuis une carte (champ `class`). */

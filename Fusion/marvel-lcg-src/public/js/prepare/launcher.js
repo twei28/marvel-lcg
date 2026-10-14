@@ -4,6 +4,9 @@
 import { catalog } from "/public/js/prepare/catalog.js";
 import { appliquerTutoriel } from "/public/js/prepare/tutoriel-etat.js";
 import { appliquerNiveau } from "/public/js/prepare/niveau-standard.js";
+import { cards } from "/public/js/prepare/cards.js";
+import { t } from "/public/js/prepare/langue.js";
+import { echangesTeamUp, appliquerEchange } from "/public/js/prepare/team-up.js";
 
 const uniq = (arr) => [...new Set(arr)];
 
@@ -30,6 +33,9 @@ function buildRules(state) {
     if (h > 0) rules.push("mode_heroic_" + h);
     // Règles v16 débrayables depuis le bloc « Avancé » (actives par défaut).
     if (state.reglesV16 !== false) rules.push("v16_all");
+    // Rules Reference 1.8 : toujours pour une partie neuve (les sauvegardes
+    // d'avant ne portent pas la regle et se rejouent dans les anciennes).
+    rules.push("v18_all");
     // La tuile « Bac a sable » du selecteur de modes. Le mode passe par
     // `rules`, donc il est inscrit dans la scene et survit au chargement
     // d'une sauvegarde — on saura toujours si une victoire comptait.
@@ -186,8 +192,35 @@ async function preparerGarnissage(descriptor) {
     } catch (e) { /* stockage indisponible : le mode reste jouable */ }
 }
 
+/**
+ * Les échanges Team-Up de la mise en place (RR 1.8, annexe I) : « may », donc
+ * une question par échange possible. Le deck sauvegardé n'est pas touché, seul
+ * le deck de CETTE partie change (la règle vaut à chaque mise en place).
+ */
+async function proposerEchangesTeamUp(state) {
+    const retenus = (state.players || []).slice(0, state.playerCount);
+    const joueurs = retenus
+        .map((p, index) => ({ index, deck: p && p.deck ? { ...p.deck, hero: (p.identity && p.identity.hero) || p.deck.hero } : null }))
+        .filter((j) => j.deck);
+    if (joueurs.length < 2) return state;
+    await cards.load();
+    const echanges = echangesTeamUp(joueurs, (id) => cards.get(id), cards.ids());
+    if (!echanges.length) return state;
+    const nom = (id) => { const c = cards.get(id); return c ? String(c.name).replace(/^\*\s*/, "") : id; };
+    const players = [...state.players];
+    for (const e of echanges) {
+        const p = players[e.joueur];
+        const qui = (p.hero && p.hero.name) || `${t("Joueur")} ${e.joueur + 1}`;
+        const question = t("{qui} : « {retirer} » correspond au héros d’un autre joueur. Règle Team-Up (Rules Reference 1.8) : la remplacer par « {ajouter} » pour cette partie ?")
+            .replace("{qui}", qui).replace("{retirer}", nom(e.retirer)).replace("{ajouter}", nom(e.ajouter));
+        if (window.confirm(question)) players[e.joueur] = { ...p, deck: appliquerEchange(p.deck, e) };
+    }
+    return { ...state, players };
+}
+
 /** Crée la scène puis rejoint la partie (hot-seat = joue tous les héros en local). */
 export async function launch(state) {
+    state = await proposerEchangesTeamUp(state);
     const descriptor = await buildDescriptor(state);
     const cmd = encodeURIComponent(JSON.stringify(descriptor));
     const res = await fetch("new?data=" + cmd);

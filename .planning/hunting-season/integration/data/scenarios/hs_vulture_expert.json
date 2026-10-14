@@ -1,0 +1,42 @@
+{
+  "version": "0.5.8",
+  "name": "Vulture",
+  "villain": [
+    "hs081",
+    "hs082"
+  ],
+  "expert": true,
+  "schemes": [
+    "hs083a,hs083b"
+  ],
+  "set_aside": [],
+  "encounters": [
+    "hs084",
+    "hs085",
+    "hs086",
+    "hs087",
+    "hs088",
+    "hs089",
+    "hs090",
+    "hs091",
+    "hs092",
+    "hs093",
+    "hs094",
+    "hs095",
+    "hs096",
+    "hs097",
+    "hs098",
+    "hs099",
+    "hs100",
+    "hs101",
+    "hs102",
+    "hs103"
+  ],
+  "encounter_sets": [
+    "standard",
+    "expert"
+  ],
+  "modular_sets": [
+    "hs_red_vulture"
+  ]
+}

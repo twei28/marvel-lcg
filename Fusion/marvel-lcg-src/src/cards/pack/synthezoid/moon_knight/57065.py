@@ -10,7 +10,8 @@ def GetAbilities() -> Sequence['Ability']:
                 treachery = face
                 break
         if treachery:
-            treachery.Reveal(player, effect)
+            # « Resolve the When Revealed ability », pas une revelation : Reveal() jouait aussi le Renfort.
+            Faces.ResolveAbility([treachery], player, AbilityType.WhenRevealed, effect)
     # Errata RRG 1.8 (MC4DB, 29/09/2026) : « (Limit once per phase.) » -- sans
     # cette limite, une traitrise qui revele a son tour Moon Knight bouclait.
     return [AbilityFactory.WhenThisRevealed(None, when_revealed).LimitOncePerPhase()]

@@ -10,14 +10,18 @@
 // seule ne donne aucun droit.
 "use strict";
 import { catalog } from "/public/js/prepare/catalog.js";
-import { cardImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js";
+import { cardImageUrlEn, cardImageUrlHd, oublierDecksSauvegardes } from "/public/js/prepare/api.js";
 import { t, boutonLangue } from "/public/js/prepare/langue.js";
 import { cards } from "/public/js/prepare/cards.js";
+import { boutonAffichage } from "/public/js/prepare/affichage.js";
+import { poserIcone } from "/public/js/prepare/icones-entete.js";
+import { urlNarval } from "/public/js/prepare/narval.js";
 import { versDeckMoteur } from "/public/js/marvelcdb/conversion.js";
 import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
 import { demanderForcage } from "/public/js/prepare/deck-force.js";
 import {
     decisionSalon, memoriserRepere, relireRepere, oublierRepere,
+    memoriserDernierChoix, relireDernierChoix,
 } from "/public/js/salon/bascule.js";
 import {
     herosTirables, scenariosTirables, tirer, creerBandeau, caseHeros, caseScenario, lireRoue, publierRoue,
@@ -25,7 +29,9 @@ import {
 
 const siege = Number(new URLSearchParams(location.search).get("p") ?? "-1");
 
-const etat = { hero: null, deckChoisi: null };
+// `propose` : le deck de la manche d'avant, pré-coché mais PAS encore envoyé
+// (13/10/2026, « un clic sur Je suis prêt suffit pour rejouer pareil »).
+const etat = { hero: null, deckChoisi: null, propose: null };
 
 // ⚠ LES DEUX SIGNAUX QUI DISENT « CETTE PARTIE EST LA MIENNE », et aucun des
 // deux ne tient seul (voir bascule.js) :
@@ -68,22 +74,35 @@ function statut(texte, erreur = false) {
     zone.classList.toggle("est-erreur", erreur);
 }
 
-/** Le bandeau d'attente : visible dès que HÉROS ET DECK sont choisis.
- *  Sans lui, l'invité reste devant la grille sans savoir s'il a fini quelque
- *  chose. Il n'a effectivement plus rien à faire : le salon bascule tout seul
- *  vers le plateau quand l'hôte lance (voir surveillerLeLancement). */
+/** Le bandeau d'attente, DANS la scène : visible dès que HÉROS ET DECK sont
+ *  choisis. Sans lui, l'invité reste devant la grille sans savoir s'il a fini
+ *  quelque chose. Il n'a effectivement plus rien à faire : le salon bascule
+ *  tout seul vers le plateau quand l'hôte lance (voir surveillerLeLancement).
+ *  Il porte aussi l'équipe en formation (voir sonderEquipe). */
+let attenteVisible = false;
 function bandeauAttente(pret) {
     const zone = $("#salon-attente");
     if (!zone) return;
-    zone.classList.toggle("est-visible", !!pret);
-    if (pret) {
-        // Le titre est traduit ICI et non dans le HTML : sinon un joueur en
-        // anglais lirait « Tu es prêt » en dur au milieu du reste traduit.
-        const titre = zone.querySelector("b");
-        if (titre) titre.firstChild.textContent = t("Tu es prêt");
-        const detail = $("#salon-attente-detail");
-        if (detail) detail.textContent = t("En attente du lancement de la partie par l’hôte.");
+    attenteVisible = !!pret;
+    // ⚠ L'ÉQUIPE ET LE MÉCHANT DE L'HÔTE RESTENT VISIBLES AVANT D'ÊTRE PRÊT
+    // (13/10/2026, décision 3 de .planning/todos/2026-10-13-inviter-un-connecte.md) :
+    // l'invité voit, au fur et à mesure, contre qui l'hôte a choisi de jouer.
+    // Seuls le titre et la phrase changent quand il est prêt.
+    zone.classList.add("est-visible");
+    $("#salon-b").classList.add("en-attente");
+    // Le titre est traduit ICI et non dans le HTML : sinon un joueur en
+    // anglais lirait « Tu es prêt » en dur au milieu du reste traduit.
+    const titre = zone.querySelector("b");
+    if (titre) titre.firstChild.textContent = pret ? t("Tu es prêt") : t("L’équipe");
+    const points = zone.querySelector(".points");
+    if (points) points.hidden = !pret;
+    const detail = $("#salon-attente-detail");
+    if (detail) {
+        detail.textContent = pret
+            ? t("En attente du lancement de la partie par l’hôte.")
+            : t("Choisis ton héros, puis ton deck.");
     }
+    sonderEquipe();
 }
 
 /* ---------------- Envoi du choix ---------------- */
@@ -122,7 +141,9 @@ async function envoyerChoix(deck) {
         return;
     }
     etat.deckChoisi = deck;
+    etat.propose = null;
     monChoix = etat.hero.heroCardId;
+    memoriserDernierChoix(window.localStorage, siege, etat.hero.heroCardId, deck.id, Date.now());
     // Le repère relevé plus haut est retenu AVEC le choix : c'est ce qui le
     // fait survivre au rechargement, là où `/new` aura vidé `choix_sieges`.
     //
@@ -261,41 +282,325 @@ function champImport() {
     );
 }
 
+/* ---------------- Habillage : la même grammaire que l'assistant ---------------- */
+
+const ASPECTS = {
+    aggression: "#d83b32", justice: "#efc34a", leadership: "#2f7de1", protection: "#35a865",
+    basic: "#9aa0aa", pool: "#a34ad9", determination: "#965cc4",
+};
+
+const idBase = (heroCardId) => String(heroCardId || "").split(",")[0];
+
+function portrait(cardId, cls) {
+    return el("div", {
+        class: "portrait " + (cls || ""),
+        style: cardId ? { backgroundImage: `url(${cardImageUrlEn(cardId)})` } : {},
+    });
+}
+
+/** Un héros à deux identités (Cloak & Dagger) partage sa tuile en diagonale. */
+function portraitHeros(hero) {
+    if (hero && hero.lie) {
+        return el("div", { class: "portrait-duo" },
+            portrait(hero.heroCardId, "duo duo-a"),
+            portrait(hero.lie.heroCardId, "duo duo-b"));
+    }
+    return portrait(hero && hero.heroCardId);
+}
+
+function nomHeros(hero) {
+    if (!hero) return "";
+    if (hero.lie) {
+        const nomDeck = String((hero.deck && hero.deck.name) || "").replace(/^\*\s*/, "").trim();
+        return nomDeck || hero.name;
+    }
+    return hero.name;
+}
+
+function portraitScenario(sc) {
+    const ids = (sc && sc.villainCards) || [];
+    if (ids.length < 2) {
+        return el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrlEn(sc.tileImage)}")` } });
+    }
+    const n = Math.min(ids.length, 4);
+    return el("div", { class: `portrait portrait-multi n${n}` },
+        ...ids.slice(0, 4).map((id) => el("i", { style: { backgroundImage: `url("${cardImageUrlEn(id)}")` } })));
+}
+
+function barreAspects(deck) {
+    const parAspect = {};
+    for (const id of ((deck && deck.player_deck) || [])) {
+        const a = cards.aspectOf(id) || "basic";
+        parAspect[a] = (parAspect[a] || 0) + 1;
+    }
+    const ordre = ["aggression", "justice", "leadership", "protection", "basic", "pool"];
+    return el("div", { class: "aspect-bar" },
+        ...ordre.filter((a) => parAspect[a]).map((a) => el("span", {
+            class: "seg", style: { background: ASPECTS[a], flex: parAspect[a] }, title: a + " : " + parAspect[a],
+        })));
+}
+
+/** Le nom géant ne se coupe jamais : c'est sa taille qui cède. */
+function ajusterNom() {
+    const scene = $("#tb-scene");
+    const nom = scene && scene.querySelector(".tb-nomg");
+    if (!nom) return;
+    nom.style.fontSize = "";
+    const mesurer = () => {
+        let taille = parseFloat(getComputedStyle(nom).fontSize);
+        while (taille > 28 && (nom.scrollWidth > nom.clientWidth + 1 || nom.offsetHeight > scene.clientHeight * 0.4)) {
+            taille -= 4;
+            nom.style.fontSize = taille + "px";
+        }
+    };
+    requestAnimationFrame(() => requestAnimationFrame(mesurer));
+}
+
+/** La scène : l'art, le nom, ou l'invitation à choisir. `libre` remplace le
+ *  texte par défaut quand il n'y a pas de héros (campagne). */
+function rendreScene(hero, libre = null) {
+    const fond = $("#salon-fond");
+    if (!fond) return;
+    const petit = `${t("Joueur")} ${siege + 1}`;
+    if (!hero) {
+        fond.replaceChildren(
+            el("div", { class: "tb-art vide" }),
+            el("div", { class: "tb-trame" }),
+            el("div", { class: "tb-nomg" },
+                el("small", {}, (libre && libre.petit) || petit),
+                (libre && libre.grand) || t("Choisis un héros")),
+        );
+        ajusterNom();
+        return;
+    }
+    const traits = [...new Set([...(hero.traits || []), ...(hero.traitsAlterEgo || [])])].slice(0, 4).join(" · ");
+    fond.replaceChildren(
+        // Scan anglais même en français : le scan FR porte un filigrane, très
+        // visible à cette taille (même choix que l'assistant).
+        hero.lie
+            ? el("div", { class: "tb-art" }, portraitHeros(hero))
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(idBase(hero.heroCardId))}")` } }),
+        el("div", { class: "tb-trame" }),
+        el("div", { class: "tb-nomg" }, el("small", {}, traits || petit), nomHeros(hero)),
+    );
+    ajusterNom();
+}
+
+/** Les deux étapes, dans l'en-tête, comme « 1 Équipe › 2 Decks » de l'assistant. */
+let etapeActuelle = 1;
+function majEtapes() {
+    const barre = $("#salon-barre");
+    if (!barre) return;
+    barre.querySelectorAll(".pstep").forEach((bouton, i) => {
+        const fait = i + 1 < etapeActuelle && !!etat.hero;
+        bouton.classList.toggle("active", i + 1 === etapeActuelle);
+        bouton.classList.toggle("done", fait);
+        bouton.querySelector(".pnum").textContent = fait ? "\u2713" : String(i + 1);
+        bouton.disabled = i === 1 && !etat.hero;
+    });
+    $("#salon-titre").textContent = etapeActuelle === 1 ? t("Héros") : t("Decks");
+}
+
+function retourAuxHeros() {
+    etat.hero = null;
+    etat.deckChoisi = null;
+    etat.propose = null;
+    bandeauAttente(false);
+    rendreHeros();
+}
+
+function construireBarre() {
+    const barre = $("#salon-barre");
+    const galerie = el("a", { class: "btn ghost salon-galerie", href: "/galerie.html", target: "_blank", rel: "noopener" });
+    poserIcone(galerie, "fa-clone", t("Parcourir les cartes"));
+    const etape = (i, libelle, action) => el("button", { class: "pstep", onclick: action },
+        el("span", { class: "pnum" }, String(i)),
+        el("span", { class: "plabel" }, libelle));
+    barre.replaceChildren(
+        el("span", { class: "brand" },
+            el("img", { class: "brand-narwhal", src: urlNarval(), alt: "NarwhalChampions" })),
+        el("div", { class: "salon-barre-outils" },
+            boutonLangue("btn ghost btn-langue"), boutonAffichage("btn ghost"), galerie),
+        el("div", { class: "steps" },
+            etape(1, t("Héros"), () => { if (etapeActuelle !== 1) retourAuxHeros(); }),
+            el("span", { class: "psep", "aria-hidden": "true" }, "\u203a"),
+            etape(2, t("Decks"), () => { if (etat.hero) rendreDecks(); })),
+    );
+    majEtapes();
+}
+
+/* ---------------- Les decks du compte de l'invité (13/10/2026) ----------------
+   Décision 3 : l'invité venu par une invitation (il a un compte) retrouve SES
+   decks. Le moteur ne les rend qu'à celui qui tient ce siège, et le site
+   seulement si ce siège a été pris par une invitation acceptée : un invité
+   arrivé par un simple lien n'en a pas, et rien ne change pour lui. */
+
+let decksDuCompte = null;     // {invite, decks:[{id, deck}]}, lu une fois
+
+async function lireDecksDuCompte() {
+    if (decksDuCompte) return decksDuCompte;
+    try {
+        const reponse = await fetch(`get_decks_invite?p=${siege}`, { cache: "no-store" });
+        const brut = reponse.ok ? await reponse.json() : null;
+        decksDuCompte = {
+            invite: String((brut && brut.invite) || ""),
+            decks: Array.isArray(brut && brut.decks) ? brut.decks : [],
+        };
+    } catch (e) {
+        // Table muette : on réessaiera au prochain passage sur les decks.
+        return { invite: "", decks: [] };
+    }
+    return decksDuCompte;
+}
+
+/** Les decks du compte qui vont à ce héros, au format des options du salon. */
+async function decksDuCompteDuHeros(hero) {
+    const { decks } = await lireDecksDuCompte();
+    return decks
+        .filter((d) => d && d.deck && d.deck.hero && String(d.deck.hero[0] || "").split(",")[0] === hero.heroCardId)
+        .map((d) => ({ id: d.id, name: d.deck.name || d.id, source: "compte", deck: d.deck, aspects: d.deck.aspects || [] }));
+}
+
+/** Choisir un deck du compte : la table de l'hôte n'en a pas de copie, on la
+ *  lui enregistre (comme un import MarvelCDB), puis on envoie le choix. */
+async function choisirDeckDuCompte(dk) {
+    const nom = `compte-${dk.id}-siege${siege}`.replace(/[^a-zA-Z0-9_-]+/g, "_").slice(0, 60);
+    statut(t("Envoi de ton deck…"));
+    try {
+        const reponse = await fetch("/save_deck", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ file_name: nom, deck: dk.deck }),
+        });
+        const rep = await reponse.json().catch(() => ({}));
+        if (!reponse.ok || rep.error) throw new Error(rep.error || "refus");
+    } catch (e) {
+        statut(t("Le serveur a refusé le deck."), true);
+        return;
+    }
+    oublierDecksSauvegardes();
+    await envoyerChoix({ id: nom, name: dk.name, source: "saved", deck: dk.deck });
+}
+
 /* ---------------- Rendu ---------------- */
 
 async function rendreDecks() {
-    const decks = await catalog.decksForHero(etat.hero);
-    $("#salon-choix").replaceChildren(
-        el("button", {
-            class: "salon-retour",
-            onclick: () => { etat.hero = null; etat.deckChoisi = null; bandeauAttente(false); rendreHeros(); },
-        }, `← ${t("Changer de héros")}`),
-        el("h2", {}, `${etat.hero.name} — ${t("choisis ton deck")}`),
-        ...decks.map((dk) => el("button", {
-            class: `salon-deck${etat.deckChoisi && etat.deckChoisi.id === dk.id ? " est-choisi" : ""}`,
-            onclick: () => envoyerChoix(dk),
+    etapeActuelle = 2;
+    majEtapes();
+    rendreScene(etat.hero);
+    const [duCompte, communs] = await Promise.all([
+        decksDuCompteDuHeros(etat.hero),
+        catalog.decksForHero(etat.hero),
+    ]);
+    // Les copies déjà enregistrées chez l'hôte (« compte-… ») ne se montrent
+    // qu'une fois, sous leur forme « Ton deck ».
+    const decks = [...duCompte, ...communs.filter((d) => !String(d.id).startsWith(`compte-`))];
+    // Le joueur a pu revenir aux héros pendant la lecture.
+    if (etapeActuelle !== 2) return;
+    $("#tb-compte").textContent = decks.length + " " + t("decks");
+    const option = (dk) => {
+        // Un deck du compte est enregistré chez l'hôte sous `compte-<id>-siegeN`.
+        const copie = dk.source === "compte" ? `compte-${dk.id}-siege${siege}`.replace(/[^a-zA-Z0-9_-]+/g, "_").slice(0, 60) : dk.id;
+        const choisi = (etat.deckChoisi && etat.deckChoisi.id === copie)
+            || (!etat.deckChoisi && etat.propose && etat.propose.id === copie);
+        const taille = ((dk.deck && dk.deck.player_deck) || []).length;
+        return el("button", {
+            class: `tb-deck salon-deck${choisi ? " chosen est-choisi" : ""}`,
+            onclick: () => (dk.source === "compte" ? choisirDeckDuCompte(dk) : envoyerChoix(dk)),
         },
-            el("b", {}, dk.name),
-            el("span", {}, (dk.aspects && dk.aspects.length ? dk.aspects.join(" + ") : t("Deck de base")))
-        )),
+            el("div", { class: "do-name" }, dk.name),
+            el("div", { class: "do-tags" },
+                dk.source === "compte" ? el("span", { class: "tag salon-tag-compte" }, t("Ton deck")) : null,
+                dk.aspects && dk.aspects.length
+                    ? dk.aspects.map((a) => el("span", { class: "tag asp", style: { background: ASPECTS[a] || "#555" } }, a))
+                    : el("span", { class: "tag" }, t("Deck de base"))),
+            barreAspects(dk.deck),
+            taille ? el("div", { class: "do-foot" }, el("span", { class: "do-size" }, taille + " " + t("cartes"))) : null,
+        );
+    };
+    // La manche d'avant, pré-cochée : un seul clic pour rejouer pareil.
+    const propose = !etat.deckChoisi && etat.propose ? etat.propose : null;
+    // ⚠ `replaceChildren` ECRIT « null » en toutes lettres (vu en essai le
+    // 13/10/2026) : le bandeau absent est filtre, pas passe tel quel.
+    $("#salon-choix").replaceChildren(...[
+        el("button", { class: "salon-retour", onclick: retourAuxHeros }, `← ${t("Changer de héros")}`),
+        propose ? el("div", { class: "salon-rejouer" },
+            el("p", {}, `${t("Comme la partie d’avant")} : ${nomHeros(etat.hero)} — ${propose.name}`),
+            el("button", { class: "salon-pret", onclick: () => envoyerChoix(propose) }, t("Je suis prêt"))) : null,
+        el("div", { class: "hero-grid tb-roster tb-roster-deck" }, ...decks.map(option)),
         champImport(),
-    );
+    ].filter(Boolean));
 }
 
 async function rendreHeros() {
+    etapeActuelle = 1;
+    majEtapes();
+    rendreScene(etat.hero);
     const heroes = await catalog.heroes();
+    if (etapeActuelle !== 1) return;
+    $("#tb-compte").textContent = heroes.length + " " + t("héros");
     $("#salon-choix").replaceChildren(
-        el("h2", {}, t("Choisis ton héros")),
-        el("div", { class: "salon-grille" },
+        el("div", { class: "hero-grid tb-roster", id: "salon-grille" },
             ...heroes.map((h) => el("button", {
-                class: "salon-hero",
+                class: "tb-port salon-hero",
+                title: nomHeros(h),
+                "data-hero": h.id,
                 onclick: () => { etat.hero = h; rendreDecks(); },
+                onmouseenter: () => rendreScene(h),
+                onfocus: () => rendreScene(h),
+                onmouseleave: () => rendreScene(etat.hero),
             },
-                el("img", { src: cardImageUrl(h.heroCardId), loading: "lazy", alt: h.name }),
-                el("span", {}, h.name)
-            ))
-        )
+                portraitHeros(h),
+                el("span", { class: "tb-port-nom" }, nomHeros(h)),
+            ))),
     );
+}
+
+/* ---------------- L'équipe en formation (09/10/2026) ----------------
+   Pendant l'attente, la scène montre qui est assis où et contre qui on joue.
+   `/get_equipe_salon` ne rend que des identifiants de cartes héros et le
+   scénario : jamais un deck. Gardée par le cookie de siège côté serveur. */
+
+let equipeAffichee = "";
+let tousLesScenarios = null;
+
+async function scenarioPar(id) {
+    if (!id) return null;
+    if (!tousLesScenarios) {
+        try { tousLesScenarios = await catalog.tousLesScenarios(); } catch (e) { return null; }
+    }
+    return tousLesScenarios.find((sc) => sc.id === id || (sc.scenarioIds || []).includes(id)) || null;
+}
+
+async function sonderEquipe() {
+    if (sansChoix || document.hidden) return;
+    let brut = { nombre: 0, sieges: {}, scenario: "" };
+    try {
+        const reponse = await fetch(`get_equipe_salon?p=${siege}`, { cache: "no-store" });
+        if (reponse.ok) brut = await reponse.json();
+    } catch (e) { /* on montre au moins ma propre place */ }
+    const mien = etat.hero ? etat.hero.heroCardId : "";
+    const empreinte = JSON.stringify([brut, mien]);
+    if (empreinte === equipeAffichee) return;
+    const heroes = await catalog.heroes();
+    const scenario = await scenarioPar(brut.scenario);
+    const nombre = Math.max(Number(brut.nombre) || 0, siege + 1);
+    const places = [];
+    for (let p = 0; p < nombre; p++) {
+        const id = p === siege ? mien : String((brut.sieges || {})[String(p)] || "");
+        const hero = id ? heroes.find((h) => h.heroCardId === id) : null;
+        places.push(el("div", { class: "salon-place" + (hero ? "" : " attend") + (p === siege ? " moi" : "") },
+            el("div", { class: "tb-siege" }, hero ? portraitHeros(hero) : el("span", { class: "plus" }, "?")),
+            el("small", {}, `${t("Joueur")} ${p + 1}`, el("i", {}, hero ? nomHeros(hero) : t("Choisit…"))),
+        ));
+    }
+    places.push(el("span", { class: "salon-contre", "aria-hidden": "true" }, "VS"));
+    places.push(el("div", { class: "salon-place mechant" + (scenario ? "" : " attend") },
+        el("div", { class: "tb-siege" }, scenario ? portraitScenario(scenario) : el("span", { class: "plus" }, "?")),
+        el("small", {}, t("Méchant"), el("i", {}, scenario ? scenario.name : t("Pas encore choisi"))),
+    ));
+    equipeAffichee = empreinte;
+    $("#salon-equipe").replaceChildren(...places);
 }
 
 /* ---------------- Bascule vers le plateau ---------------- */
@@ -336,6 +641,9 @@ async function lireLaTable() {
  *  un avertissement serait périmé dès que l'invité change d'avis entre-temps. */
 function statutNormal() {
     if (sansChoix) return t("L’équipe est fixée par la campagne : il n’y a rien à choisir.");
+    if (etat.hero && etat.propose && !etat.deckChoisi) {
+        return t("Ton héros et ton deck de la partie d’avant sont prêts : clique sur « Je suis prêt », ou change.");
+    }
     if (etat.hero && etat.deckChoisi) {
         return `${t("Ton choix actuel")} : ${etat.hero.name} — ${etat.deckChoisi.name}. `
             + t("Tu peux encore changer d’avis.");
@@ -517,17 +825,23 @@ async function campagneEnCours() {
     }
 }
 
-function rendreCampagne(campagne) {
+async function rendreCampagne(campagne) {
     const membre = (campagne.equipe || [])[siege];
     const nom = membre ? (membre.nomHeros || membre.heros) : null;
-    $("#salon-choix").replaceChildren(
+    const heroes = await catalog.heroes().catch(() => []);
+    const hero = membre ? heroes.find((h) => h.id === membre.heros || h.heroCardId === membre.heros) : null;
+    $("#salon-barre .steps").hidden = true;
+    $("#salon-titre").textContent = t("Campagne en cours");
+    $("#tb-compte").textContent = "";
+    rendreScene(hero || null, { grand: nom || campagne.nom || t("Campagne en cours") });
+    $("#salon-choix").replaceChildren(el("div", { class: "salon-campagne" },
         el("h2", {}, campagne.nom || t("Campagne en cours")),
         nom
             ? el("p", { class: "salon-campagne-heros" },
                 el("b", {}, t("Tu tiens")), " ", nom)
             : el("p", { class: "salon-campagne-heros" },
                 t("Aucun héros n’est prévu pour ce siège dans cette campagne.")),
-    );
+    ));
     if (nom) {
         statut(t("L’équipe est fixée par la campagne : il n’y a rien à choisir."));
         bandeauAttente(true);
@@ -725,19 +1039,34 @@ async function reprendreChoixExistant() {
     }
 }
 
+/** La manche d'avant : héros et deck pré-cochés, rien n'est envoyé. L'invité
+ *  confirme d'un clic sur « Je suis prêt », ou change. */
+async function reprendreDernierChoix() {
+    const dernier = relireDernierChoix(window.localStorage, siege, Date.now());
+    if (!dernier) return;
+    try {
+        const heroes = await catalog.heroes();
+        const hero = heroes.find((h) => h.heroCardId === dernier.heros);
+        if (!hero) return;
+        const decks = await catalog.decksForHero(hero);
+        const deck = decks.find((d) => d.id === dernier.deck);
+        if (!deck) return;
+        etat.hero = hero;
+        etat.propose = deck;
+        statut(t("Ton héros et ton deck de la partie d’avant sont prêts : clique sur « Je suis prêt », ou change."));
+    } catch (e) {
+        /* catalogue indisponible : on repart de la grille */
+    }
+}
+
 async function demarrer() {
+    construireBarre();
     if (!Number.isInteger(siege) || siege < 0) {
         statut(t("Ouvre ton lien personnel : c’est lui qui réserve ton siège."), true);
         return;
     }
     // Libellé affiché = index technique + 1. Voir salon-etat.js.
     $("#salon-entete").textContent = `${t("Tu es le")} ${t("Joueur")} ${siege + 1}`;
-    // Bouton 🌐 FR/EN, comme le wizard et le plateau (guide §11).
-    $("#salon-entete").append(" ", boutonLangue("salon-langue"));
-    // Le lien vers la galerie est ecrit en francais dans la page : on le
-    // retraduit ici, comme le bandeau d'attente juste au-dessus.
-    const galerie = document.querySelector(".salon-galerie");
-    if (galerie) galerie.textContent = "🃏 " + t("Parcourir les cartes");
     // ⚠ ET LE TITRE DE L'ONGLET AUSSI. Il etait le dernier texte francais en
     // dur de cet ecran : tout le corps etait deja retraduit ici, le `<title>`
     // ne l'etait pas. Un invite anglophone lisait « choisis ton heros » dans
@@ -768,7 +1097,7 @@ async function demarrer() {
         // et elle y suffit : la question est « une partie a-t-elle demarre
         // depuis que je suis arrive ? ».
         sansChoix = true;
-        rendreCampagne(campagne);
+        await rendreCampagne(campagne);
         surveillerLeLancement();
         return;
     }
@@ -776,10 +1105,13 @@ async function demarrer() {
     statut(t("Choisis ton héros, puis ton deck. L’hôte lancera quand tout le monde aura choisi."));
 
     await reprendreChoixExistant();
+    if (!etat.deckChoisi) await reprendreDernierChoix();
+    if (!etat.deckChoisi) bandeauAttente(false);
     if (etat.hero) await rendreDecks();
     else await rendreHeros();
 
     surveillerLeLancement();
+    setInterval(sonderEquipe, 2000);
     boucleRoue();
 }
 

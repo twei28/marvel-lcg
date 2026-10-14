@@ -60,6 +60,16 @@ class WorldRule:
         self.v16_referential_ability        = VariableBool(self, False, "v16_referential_ability")
         self.v16_confuse_stun               = VariableBool(self, False, "v16_confuse_stun")
 
+        # Rules Reference 1.8 (22/07/2026). PAR DEFAUT A FAUX, comme `confirm_*` :
+        # une sauvegarde ecrite avant ne porte pas ces regles et se rejoue a
+        # l'identique. Le lanceur pousse `v18_all` pour les parties neuves.
+        self.v18_all                        = VariableBool(self, False, "v18_all")
+        self.v18_surge                      = VariableBool(self, False, "v18_surge")
+        self.v18_reveal_keywords            = VariableBool(self, False, "v18_reveal_keywords")
+        self.v18_when_defeated              = VariableBool(self, False, "v18_when_defeated")
+        self.v18_side_scheme_limit          = VariableBool(self, False, "v18_side_scheme_limit")
+        self.v18_retaliate                  = VariableBool(self, False, "v18_retaliate")
+
         self.fix_surge                      = VariableBool(self, True, "fix_surge")
         self.fix_treachery                  = VariableBool(self, True, "fix_treachery")
         self.encounter_cards_ignore_crisis  = VariableBool(self, True, "encounter_cards_ignore_crisis")
@@ -110,6 +120,11 @@ class WorldRule:
             for var in self.vars_bool:
                 if var.version:
                     var.Set(var.version == "v15")
+
+        if self.v18_all:
+            for var in self.vars_bool:
+                if var.name_true.startswith("v18_"):
+                    var.Set(True)
 
         # for var in self.vars_bool:
         #     if var.name_false in rules:

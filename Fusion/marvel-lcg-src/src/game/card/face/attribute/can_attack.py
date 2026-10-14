@@ -494,8 +494,11 @@ class CanAttack(CardFace):
             total_dealt_damage += calculated_damage
 
             if is_not_delay:
-                retaliate_message = atk_target.ResolveRetaliate(would_attack_unit_message)
-                attacker_is_defeated += retaliate_message != None and isinstance(retaliate_message, Message.AfterUnitDefeatedUnit)
+                # RR 1.8 : la riposte est une reponse forcee (`CanRetaliate.GetAbilities`),
+                # resolue dans la fenetre d'`AfterUnitAttackUnit` plus bas.
+                if not world.rule.v18_retaliate:
+                    retaliate_message = atk_target.ResolveRetaliate(would_attack_unit_message)
+                    attacker_is_defeated += retaliate_message != None and isinstance(retaliate_message, Message.AfterUnitDefeatedUnit)
 
                 if being_atk_message.defense_messages:
                     defend_against_message = Message.AfterUnitDefendEnd(being_atk_message.defense_messages, would_atk_message, calculated_damage, took_damage)
@@ -537,6 +540,10 @@ class CanAttack(CardFace):
             atk_end_message = Message.AfterUnitAttackUnit(this, atk_target, attacked_you, damaged_overkill_target, took_damage_targets, calculated_damage, took_damage, excess_damage, boost_cards, would_attack_unit_message, being_atk_message.defense_messages)
             if is_not_delay:
                 atk_end_message.Send()
+                # RR 1.8 : « attaquant vaincu » se relit sur l'etat du monde apres la
+                # fenetre des reponses forcees (riposte comprise).
+                if world.rule.v18_retaliate and (this.IsDefeated() or not this.IsInPlay()):
+                    attacker_is_defeated += 1
             atk_end_messages.append(atk_end_message)
 
             damage_targets += took_damage_targets

@@ -189,10 +189,15 @@ class Player(User, PlayerAsk, PlayerCards, PlayerGet, PlayerAction, ):
                             Faces.DiscardAll(schemes, rule)
                             Faces.RemoveAllFromGame(main_schemes, rule)
 
-                    # 3. If there are cards in the eliminated player’s play area
-                    # that are not owned by that player, place each of those
-                    # cards in its owner’s discard pile (even if that card has
-                    # the permanent keyword)
+                    # 3. For each card in the eliminated player's play area that
+                    # are not owned by that player: an attachment with the
+                    # permanent keyword resolves its "attach to" text (no text or
+                    # no valid target: removed from the game). RR 1.8 FAQ 16149
+                    # Power Stone : « the Power Stone would be attached to the
+                    # villain ». Seul ce cas est traite ici ; les autres cartes
+                    # non possedees suivent toujours l'etape 5.
+                    if world.rule.v16_player_elimination:
+                        self.EliminerAttachementsPermanentsEtrangers(rule)
 
                     # 4. Place each card owned by the eliminated player in the
                     # eliminated player’s discard pile
@@ -230,6 +235,34 @@ class Player(User, PlayerAsk, PlayerCards, PlayerGet, PlayerAction, ):
 
                 message = Message.WhenPlayerEliminated(self)
                 message.Send()
+
+    def EliminerAttachementsPermanentsEtrangers(self, rule: 'Effect') -> None:
+        """Etape 3 de l'elimination, pour les attachements permanents que ce joueur ne possede pas."""
+        from game.card.face.card_type import Attachment
+        from game.card.face.attribute.has_permanent import HasPermanent
+        from game.operate.filter import Filter
+        from game.effect.rule import GameRule
+        porteurs: List['CardFace'] = [*self.area_hero.Get(), *self.allies.Get(), *self.supports.Get()]
+        for porteur in porteurs:
+            for attachement in list(porteur.GetAttachedAttachments()):
+                if attachement.GetOwner() is self:
+                    continue
+                if not (HasPermanent.IsType(attachement) and attachement.permanent):
+                    continue
+                cible = None
+                for capacite in attachement.ability.Find(func_name="AttachToWhenEnterPlay"):
+                    selecteur = getattr(capacite, "attach_selector", None)
+                    if selecteur is None:
+                        continue
+                    cibles = [c for c in selecteur.GetAllLegalTargets(GameRule(attachement))
+                              if c not in porteurs]
+                    if cibles:
+                        cible = Filter.One(cibles, rule)
+                        break
+                if cible is not None:
+                    attachement.CastTo(Attachment).AttachTo2(cible, rule)
+                else:
+                    Faces.RemoveAllFromGame([attachement], rule)
 
     ################################################################################
     # Controller

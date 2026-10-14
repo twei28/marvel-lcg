@@ -29,6 +29,28 @@ class HasRetaliate(HasAttribute):
 class CanRetaliate(HasRetaliate):
 
     @staticmethod
+    def AbiliteRiposte() -> 'Ability':
+        """RR 1.8 p.38 : « Retaliate X » equivaut a « Forced Response : After this character
+        is attacked, deal X damage to the attacker. » UNE capacite pour toute la partie, posee
+        par `EventManager.RegisterPlayRule` SEULEMENT sous `v18_retaliate` : par carte, elle
+        decalerait les identifiants d'effets (rejeu des sauvegardes d'avant) et casserait les
+        faces creees sans carte (`TreatAsMinion`, mw026 Veranke)."""
+        def riposte(effect: 'Effect', message: 'Message.AfterUnitAttackUnit') -> None:
+            message.attacked.CastTo(CanRetaliate).ResolveRetaliate(message.would_atk_unit_message)
+
+        def a_riposte(effect: 'Effect', message: 'Message.AfterUnitAttackUnit') -> bool:
+            cible = message.attacked
+            return CanRetaliate.IsType(cible) and cible.IsInPlay() and cible.retaliate > 0
+
+        return AbilityFactory.AfterUnitAttackUnit(
+            AbilityType.ForcedResponse,
+            None,
+            None,
+            riposte,
+            conditions=[a_riposte]
+        ).SetName("Retaliate").NoOutOfPlayLimit()
+
+    @staticmethod
     def _JournaliserRiposte(riposteur: 'Any', attaquant: 'Any', valeur: int, resultat: 'Any') -> None:
         """Refonte de la phase du mechant (lot 5b) : la Riposte est accrochee au fait
         d'attaque qu'elle suit (meme attaquant, meme cible), pour son ecran a part.

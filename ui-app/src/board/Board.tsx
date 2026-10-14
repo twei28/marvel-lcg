@@ -139,6 +139,20 @@ function echelleMaximale(): number {
  * en dessous de 1 rien ne change, au-dessus ces details grandissent avec le
  * reste de la table, ce qui est le comportement voulu. Voir board.css.
  */
+/**
+ * Telephone COUCHE (paysage, ecran bas, doigt) : la table entiere y tiendrait a
+ * l'echelle ~0,36, soit des cartes de 45 px illisibles. On garde donc une
+ * echelle minimale et la table se fait glisser au doigt dans les deux sens
+ * (`body.plateau-paysage-tel`, board.css). Retour de l'utilisateur, 10/10/2026.
+ */
+export const ECHELLE_MIN_PAYSAGE_TEL = 0.75
+const REQUETE_PAYSAGE_TEL = '(pointer: coarse) and (orientation: landscape) and (max-height: 520px)'
+
+export function echelleDeLaTable(largeur: number, hauteur: number, maximum: number, paysageTel: boolean): number {
+  const tient = Math.min(maximum, largeur / SCENE.largeur, hauteur / SCENE.hauteur)
+  return paysageTel ? Math.min(maximum, Math.max(tient, ECHELLE_MIN_PAYSAGE_TEL)) : tient
+}
+
 function useEchelle(cadre: React.RefObject<HTMLDivElement | null>) {
   const [mise, setMise] = useState({
     echelle: 1,
@@ -153,10 +167,12 @@ function useEchelle(cadre: React.RefObject<HTMLDivElement | null>) {
     const recalculer = () => {
       const { width, height } = element.getBoundingClientRect()
       if (width === 0 || height === 0) return
-      const echelle = Math.min(
-        echelleMaximale(),
-        width / SCENE.largeur,
-        height / SCENE.hauteur
+      const paysageTel =
+        typeof window.matchMedia === 'function' && window.matchMedia(REQUETE_PAYSAGE_TEL).matches
+      const echelle = echelleDeLaTable(width, height, echelleMaximale(), paysageTel)
+      document.body.classList.toggle(
+        'plateau-paysage-tel',
+        paysageTel && (echelle > width / SCENE.largeur || echelle > height / SCENE.hauteur)
       )
       setMise({
         echelle,
@@ -175,6 +191,7 @@ function useEchelle(cadre: React.RefObject<HTMLDivElement | null>) {
     return () => {
       observateur.disconnect()
       document.documentElement.style.removeProperty('--echelle')
+      document.body.classList.remove('plateau-paysage-tel')
     }
   }, [cadre])
 

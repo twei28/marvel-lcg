@@ -21,7 +21,7 @@ def GetAbilities() -> Sequence['Ability']:
             power_stone,
             dealt_more_than_damage=3,
         ),
-        # Q: If an identity who controls the Power Stone is defeated, what happens to the Power Stone?
-        # A: If a player is eliminated from the game while a permanent card they do not own is in their play area, place that permanent card in its owner’s discard pile. In the case of the Power Stone, place it in the encounter discard pile
+        # RR 1.8 FAQ : identite vaincue -> la pierre resout son « attach to » et s'attache au vilain.
+        # Gere par l'etape 3 de l'elimination (`Player.EliminerAttachementsPermanentsEtrangers`).
     ]
 

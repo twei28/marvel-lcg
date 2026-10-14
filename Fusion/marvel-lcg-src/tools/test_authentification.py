@@ -231,6 +231,22 @@ try:
     code, _, _ = demander("/get_heros_du_siege?p=2", cookie=cookie_spectateur)
     verifier("spectateur : aucun siege ne s'ouvre a lui", code == 403, f"code={code}")
 
+    # ⚠ L'EQUIPE DU SALON (09/10/2026). L'hote publie les heros et le scenario
+    # (jamais un deck), l'invite les lit. Seul le siege 0 ecrit ; chacun ne lit
+    # que depuis son propre siege ; le spectateur n'entre pas.
+    corps_equipe = {"nombre": 2, "heros": {"0": "01001a"}, "scenario": ""}
+    code = poster("/set_equipe_hote", corps_equipe, cookie=cookie_invite)
+    verifier("invite : il ne publie pas l'equipe de l'hote", code == 403, f"code={code}")
+    code = poster("/set_equipe_hote", corps_equipe, cookie=cookie_hote)
+    verifier("hote : il publie l'equipe", code == 200, f"code={code}")
+    code, corps, _ = demander("/get_equipe_salon?p=1", cookie=cookie_invite)
+    verifier("invite : il lit l'equipe depuis SON siege",
+             code == 200 and '"01001a"' in corps and "deck" not in corps, f"code={code} {corps[:80]}")
+    code, _, _ = demander("/get_equipe_salon?p=2", cookie=cookie_invite)
+    verifier("invite : l'equipe lue depuis le siege d'un AUTRE lui est refusee", code == 403, f"code={code}")
+    code, _, _ = demander("/get_equipe_salon?p=0", cookie=cookie_spectateur)
+    verifier("spectateur : l'equipe du salon lui est refusee", code == 403, f"code={code}")
+
     # --- 4. Une mauvaise cle n'ouvre rien -----------------------------------
     code, _, cookies = demander("/claim_seat?p=1&key=NIMPORTEQUOI&to=salon", suivre=False)
     verifier("mauvaise cle : refusee", code == 403, f"code={code}")

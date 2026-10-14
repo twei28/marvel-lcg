@@ -43,3 +43,6 @@ code sa capacité d'ATTACHEMENT (donner Defense 1 et Retaliate 1 à
 Captain America), pas le mot-clé Retaliate en tant que tel.
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+
+**Rules Reference 1.8 (22/07/2026)** : Retaliate devient « Forced Response : After this character is attacked, deal X damage to the attacker », résolu avec les autres réponses forcées « after attacks / after is attacked », dans l'ordre choisi (le bullet 1.7 « 1. after takes damage 2. Retaliate X 3. after attacked » est supprimé). Moteur : règle `v18_retaliate` (posée par `v18_all`). Sous cette règle, `EventManager.RegisterPlayRule` pose UNE réponse forcée de règle pour toute la partie (`CanRetaliate.AbiliteRiposte()`, sur `AfterUnitAttackUnit`, pour toute cible attaquée qui a Retaliate), et les deux appels directs (`can_attack.py`, `effect_invoke.py`) sont sautés ; « attaquant vaincu » se relit sur l'état du monde après la fenêtre. Pas une capacité par carte : un premier essai l'ajoutait dans `CardFactory.CreateFace` et cassait les faces créées sans carte (`TreatAsMinion` : mw026 Veranke, av014, av015, sw023). Sans la règle (sauvegardes d'avant), rien n'est ajouté : les identifiants d'effets, donc le rejeu, restent identiques. Cas : `[RR1.8] wx009 riposte` (Radioactive Man à 1 PV : sa réponse forcée fait défausser avant la riposte, et le témoin 1.7).

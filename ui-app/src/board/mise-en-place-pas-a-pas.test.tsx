@@ -1,7 +1,15 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { cleanup, fireEvent, render, renderHook } from '@testing-library/react'
-import { etapesNouvelles, mechantAttendLaQuestion, ordonnerRetournements, panneauAvantLaFile, type MemoireMiseEnPlace } from './mise-en-place-pas-a-pas'
-import { CoucheMiseEnPlace, useMiseEnPlacePasAPas } from './CoucheMiseEnPlace'
+import {
+  attenteSurTable,
+  avecFacesDAvant,
+  etapesNouvelles,
+  mechantAttendLaQuestion,
+  ordonnerRetournements,
+  panneauAvantLaFile,
+  type MemoireMiseEnPlace,
+} from './mise-en-place-pas-a-pas'
+import { CoucheMiseEnPlace, PlacesEnAttente, useMiseEnPlacePasAPas } from './CoucheMiseEnPlace'
 import type { World, WorldCard } from './world'
 
 function carte(id: number, card_type: string, extra: Partial<WorldCard> = {}): WorldCard {
@@ -225,8 +233,93 @@ describe('useMiseEnPlacePasAPas', () => {
     expect(result.current.etape).toBeUndefined()
   })
 
+  it('vide sa file quand la mise en place s’arrête (partie finie avant la fin)', () => {
+    const { result, rerender } = renderHook(({ enCours }) => useMiseEnPlacePasAPas(m(5), { enCours, voile: false, muet: false }), {
+      initialProps: { enCours: true },
+    })
+    expect(result.current.etape?.carteId).toBe(20)
+    rerender({ enCours: false })
+    expect(result.current.etape).toBeUndefined()
+    expect(result.current.enAttente).toEqual([])
+  })
+
   it('ne rejoue pas la table d’une partie déjà commencée', () => {
     const { result } = renderHook(() => useMiseEnPlacePasAPas(m(5), { enCours: false, voile: false, muet: false }))
     expect(result.current.etape).toBeUndefined()
+  })
+})
+
+describe('la table attend le « Continuer » (13/10/2026)', () => {
+  afterEach(cleanup)
+
+  it('cache les cartes à venir, fige les jetons et la face d’avant de la manigance', () => {
+    const avant = monde(1, {
+      area_schemes_main: [carte(10, 'MainScheme', { pic_id: '1a', card_id: 'c1a', info: { k_threat: 0 } })],
+      area_schemes_side: [carte(30, 'EncounterSideScheme', { info: { k_threat: 2 } })],
+      heros: [carte(1, 'Hero', { info: { health: 10 } })],
+    })
+    const { memoire } = etapesNouvelles(new Map(), avant, SANS_PANNEAU)
+    const apres = monde(2, {
+      area_villain: [carte(20, 'EncounterVillain')],
+      area_schemes_main: [carte(10, 'MainScheme', { pic_id: '1b', card_id: 'c1b', info: { k_threat: 4 } })],
+      area_schemes_side: [carte(30, 'EncounterSideScheme', { info: { k_threat: 5 } })],
+      heros: [carte(1, 'Hero', { info: { health: 8 } })],
+    })
+    const { etapes } = etapesNouvelles(memoire, apres, SANS_PANNEAU)
+    const attente = attenteSurTable(etapes)
+    expect([...attente.cachees]).toEqual([20])
+    expect(attente.figes).toEqual(
+      expect.arrayContaining([
+        { genre: 'degats', cibleId: 1, valeur: 10 },
+        { genre: 'menace', cibleId: 30, valeur: 2 },
+      ])
+    )
+    expect(attente.faces.get(10)).toEqual({ pic: '1a', code: 'c1a', menace: 0 })
+    const table = avecFacesDAvant(apres, attente.faces)
+    expect(table.area_schemes_main[0]).toMatchObject({ pic_id: '1a', card_id: 'c1a', info: { k_threat: 0 } })
+  })
+
+  it('la valeur d’avant est celle de la PREMIÈRE étape en attente sur la carte', () => {
+    const base = { codeCarte: '', type: 'Hero', traits: [], paysage: false, picId: 'p1', carteId: 1, legende: 'Dégâts' }
+    const attente = attenteSurTable([
+      { ...base, cle: 'a', genre: 'degats', avant: { pv: 10 } },
+      { ...base, cle: 'b', genre: 'degats', avant: { pv: 8 } },
+    ])
+    expect(attente.figes).toEqual([{ genre: 'degats', cibleId: 1, valeur: 10 }])
+  })
+
+  it('la manigance présentée par le panneau attend aussi ; une file vide ne touche à rien', () => {
+    const vide = attenteSurTable([])
+    expect(vide.cachees.size).toBe(0)
+    expect(vide.figes).toEqual([])
+    const m = monde(1)
+    expect(avecFacesDAvant(m, vide.faces)).toBe(m)
+    expect([...attenteSurTable([], 10).cachees]).toEqual([10])
+  })
+
+  it('dessine les pointillés des seules cartes en attente', () => {
+    const vue = render(<PlacesEnAttente ids={new Set([20])} />)
+    expect(vue.container.innerHTML).toContain('data-card-id="20"')
+    // La pile des stades derrière la carte attend avec elle.
+    expect(vue.container.innerHTML).toContain('.stage-arriere')
+    cleanup()
+    expect(render(<PlacesEnAttente ids={new Set()} />).container.innerHTML).toBe('')
+  })
+
+  it('le hook donne la carte en attente, et la libère au « Continuer »', () => {
+    const m = monde(5, { area_villain: [carte(20, 'EncounterVillain')] })
+    const { result, rerender } = renderHook(() => useMiseEnPlacePasAPas(m, { enCours: true, voile: false, muet: false }))
+    expect(result.current.enAttente.map((e) => e.carteId)).toEqual([20])
+    result.current.suivant()
+    rerender()
+    expect(result.current.enAttente).toEqual([])
+  })
+
+  it('avec animations, « Continuer » passe à la suivante même sans vol possible', () => {
+    let appels = 0
+    const e = { cle: 'k', carteId: 20, picId: 'p20', codeCarte: '', type: 'Minion', traits: [], legende: 'Sbire', paysage: false }
+    const vue = render(<CoucheMiseEnPlace etape={e} restantes={1} suivant={() => appels++} animations />)
+    fireEvent.click(vue.getByRole('button'))
+    expect(appels).toBe(1)
   })
 })

@@ -32,7 +32,7 @@ import sys
 os.environ.setdefault("RELEASE", "1")
 
 CAS = ["preparation_1v1", "preparation_2v2", "verdicts", "cartes_du_leader", "switching_sides",
-       "partie_1v1", "partie_2v2"]
+       "partie_1v1", "partie_2v2", "phased_out_57076"]
 
 # Les 4 leaders de Civil War et leurs 4 cartes joueur (relevees dans
 # `data/cards.json`, set du leader, types joueur uniquement).
@@ -521,6 +521,43 @@ def cas_switching_sides(game_dir: str, dit) -> None:
     dit("la fenetre de rachat est offerte a un joueur de l'autre table")
 
 
+def cas_phased_out_57076(game_dir: str, dit) -> None:
+    """57076 « Phased Out », errata RR 1.8 : « Hero Interrupt » devient « Hero Action ».
+
+    Le leader ennemi porte Taskmaster's Sword (« Hero Action ») et Cap's Helmet
+    (« Hero Response »). Avant l'errata, seule la seconde etait visee. La
+    capacite est appelee directement, comme pour 56128b."""
+    _, monde = monter(game_dir, ["tigra", "hulkling"], [0, 1],
+                      "iron_man", "captain_america", 1)
+    from game.card.factory import CardFactory
+    from game.effect.rule import GameRule
+    from game.operate.faces import Faces
+    from game.operate.worlds import Worlds
+    joueur = monde.GetTeamPlayers(0)[0]
+    leader = Worlds.FindVillainByGameArea(monde.GetTeamGameArea(0))
+    verifier(leader is not None, "pas de leader sur la table du camp 0")
+    # Le leader arrive deja equipe (Powered Gauntlets, « Hero Response ») : on
+    # le deshabille pour que l'epee soit la SEULE cible possible.
+    deja = list(leader.GetAttachedAttachments())
+    if deja:
+        Faces.DiscardAll(deja, GameRule(leader))
+    verifier(not leader.GetAttachedAttachments(), "le leader porte encore une piece jointe")
+    epee = CardFactory.GenerateCard("57023", leader.encounter_deck, monde).face
+    Faces.MoveAllTo([epee], leader.components.inventory.deck, GameRule(epee))
+    verifier(epee in leader.GetAttachedAttachments(), "l'epee n'est pas attachee au leader")
+
+    carte = CardFactory.GenerateCard("57076", joueur.hand_cards, monde).face
+    from game.message import Message
+    effets = carte.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+    verifier(len(effets) == 1, f"{len(effets)} capacite(s) Play au lieu de 1")
+    effet = effets[0]
+    effet.context.initiator = joueur
+    effet.ability.operation(effet, None)
+    verifier(epee not in leader.GetAttachedAttachments(),
+             "la piece jointe « Hero Action » est restee sur le leader")
+    dit("la piece jointe « Hero Action » du leader est defaussee")
+
+
 class FausseRevelation:
     """Le message que la capacite lit : seul `GetToPlayer` lui sert."""
 
@@ -547,6 +584,8 @@ def lancer_un_cas(game_dir: str, nom: str) -> int:
             cas_cartes_du_leader(game_dir, dit)
         elif nom == "switching_sides":
             cas_switching_sides(game_dir, dit)
+        elif nom == "phased_out_57076":
+            cas_phased_out_57076(game_dir, dit)
         elif nom == "partie_1v1":
             cas_partie(game_dir, 1, dit)
         elif nom == "partie_2v2":

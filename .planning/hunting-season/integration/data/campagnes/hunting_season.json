@@ -1,0 +1,247 @@
+{
+  "version": "1.0",
+  "code": "hunting_season",
+  "cle_extension": "A_FAIRE_CLAUDE",
+  "nom": "Saison de Chasse",
+  "nom_en": "Hunting Season",
+  "resume": "Kraven a réveillé les instincts sauvages de plusieurs ennemis. Suivez leur piste et dépensez votre expérience au Lodge.",
+  "resume_en": "Kraven has awakened the animal instincts of several villains. Follow their trail and spend experience at the Lodge.",
+  "expert": {
+    "pv_persistants": true
+  },
+  "pages_regles": [],
+  "scenarios": [
+    {
+      "id": "hs_vermin",
+      "numero": 1,
+      "nom": "Vermin",
+      "nom_fr": "Vermin",
+      "resume": "Affrontez Vermin et appliquez les instructions de campagne du livret.",
+      "enjeu": "Le résultat change vos gains d’expérience et vos cartes pour la suite.",
+      "victoire": [
+        {
+          "cle": "Experience",
+          "type": "auto",
+          "format": "int",
+          "parJoueur": true,
+          "libelle": "Expérience disponible",
+          "aide": "Solde après gains et dépenses, conservé entre les scénarios."
+        },
+        {
+          "cle": "Cards added to deck",
+          "type": "auto",
+          "format": "liste",
+          "parJoueur": true,
+          "libelle": "Cartes ajoutées au deck",
+          "aide": "Toutes les cartes imposées, achats et pénalités de campagne."
+        },
+        {
+          "cle": "Hero-specific cards removed",
+          "type": "auto",
+          "format": "liste",
+          "parJoueur": true,
+          "libelle": "Cartes spécifiques retirées",
+          "aide": "Copies retirées définitivement après une défaite aux scénarios 2 ou 3."
+        },
+        {
+          "cle": "Vermin escaped",
+          "type": "auto",
+          "format": "int",
+          "parJoueur": false,
+          "libelle": "Vermin en fuite",
+          "aide": "Détermine les cartes disponibles ou le paquet Rencontre de Kraven."
+        }
+      ],
+      "pages": {}
+    },
+    {
+      "id": "hs_scorpion",
+      "numero": 2,
+      "nom": "Scorpion",
+      "nom_fr": "Scorpion",
+      "resume": "Affrontez Scorpion et appliquez les instructions de campagne du livret.",
+      "enjeu": "Le résultat change vos gains d’expérience et vos cartes pour la suite.",
+      "victoire": [
+        {
+          "cle": "Experience",
+          "type": "auto",
+          "format": "int",
+          "parJoueur": true,
+          "libelle": "Expérience disponible",
+          "aide": "Solde après gains et dépenses, conservé entre les scénarios."
+        },
+        {
+          "cle": "Cards added to deck",
+          "type": "auto",
+          "format": "liste",
+          "parJoueur": true,
+          "libelle": "Cartes ajoutées au deck",
+          "aide": "Toutes les cartes imposées, achats et pénalités de campagne."
+        },
+        {
+          "cle": "Hero-specific cards removed",
+          "type": "auto",
+          "format": "liste",
+          "parJoueur": true,
+          "libelle": "Cartes spécifiques retirées",
+          "aide": "Copies retirées définitivement après une défaite aux scénarios 2 ou 3."
+        },
+        {
+          "cle": "Scorpion joined you",
+          "type": "auto",
+          "format": "int",
+          "parJoueur": false,
+          "libelle": "Scorpion rallié",
+          "aide": "Détermine les cartes disponibles ou le paquet Rencontre de Kraven."
+        }
+      ],
+      "pages": {}
+    },
+    {
+      "id": "hs_the_lizard",
+      "numero": 3,
+      "nom": "The Lizard",
+      "nom_fr": "The Lizard",
+      "resume": "Affrontez The Lizard et appliquez les instructions de campagne du livret.",
+      "enjeu": "Le résultat change vos gains d’expérience et vos cartes pour la suite.",
+      "victoire": [
+        {
+          "cle": "Experience",
+          "type": "auto",
+          "format": "int",
+          "parJoueur": true,
+          "libelle": "Expérience disponible",
+          "aide": "Solde après gains et dépenses, conservé entre les scénarios."
+        },
+        {
+          "cle": "Cards added to deck",
+          "type": "auto",
+          "format": "liste",
+          "parJoueur": true,
+          "libelle": "Cartes ajoutées au deck",
+          "aide": "Toutes les cartes imposées, achats et pénalités de campagne."
+        },
+        {
+          "cle": "Hero-specific cards removed",
+          "type": "auto",
+          "format": "liste",
+          "parJoueur": true,
+          "libelle": "Cartes spécifiques retirées",
+          "aide": "Copies retirées définitivement après une défaite aux scénarios 2 ou 3."
+        },
+        {
+          "cle": "Lizard escaped",
+          "type": "auto",
+          "format": "int",
+          "parJoueur": false,
+          "libelle": "Lizard en fuite",
+          "aide": "Détermine les cartes disponibles ou le paquet Rencontre de Kraven."
+        }
+      ],
+      "pages": {}
+    },
+    {
+      "id": "hs_vulture",
+      "numero": 4,
+      "nom": "Vulture",
+      "nom_fr": "Vulture",
+      "resume": "Affrontez Vulture et appliquez les instructions de campagne du livret.",
+      "enjeu": "Le résultat change vos gains d’expérience et vos cartes pour la suite.",
+      "victoire": [
+        {
+          "cle": "Experience",
+          "type": "auto",
+          "format": "int",
+          "parJoueur": true,
+          "libelle": "Expérience disponible",
+          "aide": "Solde après gains et dépenses, conservé entre les scénarios."
+        },
+        {
+          "cle": "Cards added to deck",
+          "type": "auto",
+          "format": "liste",
+          "parJoueur": true,
+          "libelle": "Cartes ajoutées au deck",
+          "aide": "Toutes les cartes imposées, achats et pénalités de campagne."
+        },
+        {
+          "cle": "Hero-specific cards removed",
+          "type": "auto",
+          "format": "liste",
+          "parJoueur": true,
+          "libelle": "Cartes spécifiques retirées",
+          "aide": "Copies retirées définitivement après une défaite aux scénarios 2 ou 3."
+        },
+        {
+          "cle": "Vulture joined you",
+          "type": "auto",
+          "format": "int",
+          "parJoueur": false,
+          "libelle": "Vulture rallié",
+          "aide": "Détermine les cartes disponibles ou le paquet Rencontre de Kraven."
+        },
+        {
+          "cle": "Gibbon unlocked",
+          "type": "auto",
+          "format": "int",
+          "parJoueur": false,
+          "libelle": "Gibbon disponible au Lodge",
+          "aide": "Détermine les cartes disponibles ou le paquet Rencontre de Kraven."
+        }
+      ],
+      "pages": {}
+    },
+    {
+      "id": "hs_kraven_the_hunter",
+      "numero": 5,
+      "nom": "Kraven The Hunter",
+      "nom_fr": "Kraven The Hunter",
+      "resume": "Affrontez Kraven The Hunter et appliquez les instructions de campagne du livret.",
+      "enjeu": "Cette rencontre décide du résultat final de la campagne.",
+      "victoire": [
+        {
+          "cle": "Experience",
+          "type": "auto",
+          "format": "int",
+          "parJoueur": true,
+          "libelle": "Expérience disponible",
+          "aide": "Solde après gains et dépenses, conservé entre les scénarios."
+        },
+        {
+          "cle": "Cards added to deck",
+          "type": "auto",
+          "format": "liste",
+          "parJoueur": true,
+          "libelle": "Cartes ajoutées au deck",
+          "aide": "Toutes les cartes imposées, achats et pénalités de campagne."
+        },
+        {
+          "cle": "Hero-specific cards removed",
+          "type": "auto",
+          "format": "liste",
+          "parJoueur": true,
+          "libelle": "Cartes spécifiques retirées",
+          "aide": "Copies retirées définitivement après une défaite aux scénarios 2 ou 3."
+        }
+      ],
+      "pages": {},
+      "final": true,
+      "defaite": {
+        "quand": "partie_perdue",
+        "expert_seulement": false,
+        "texte": "Kraven a remporté la chasse. La campagne est perdue."
+      }
+    }
+  ],
+  "victoire_commune_expert": [
+    {
+      "cle": "Remaining hit points",
+      "type": "auto",
+      "format": "int",
+      "parJoueur": true,
+      "detection": "pv_restants",
+      "libelle": "PV restants",
+      "aide": "Limiter aux PV de base, puis restaurer au prochain scénario."
+    }
+  ]
+}

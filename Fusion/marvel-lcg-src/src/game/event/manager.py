@@ -111,7 +111,15 @@ class EventManager:
                 self.event_size.Add(event)
                 category = self.GetEffectCategory(effect, event)
                 assert category != "Paying"
-                self.AddEffectsList(category, event, effect.ability.priority, effect)
+                self.AddEffectsList(category, event, self.Priorite(effect), effect)
+
+    def Priorite(self, effect: 'Effect') -> 'TimingPriority':
+        """La priorite de resolution. RR 1.8 p.5 et p.47 : « When Defeated » equivaut a
+        « Forced Interrupt : When this card is defeated », donc passe avec les interruptions
+        forcees (en 1.7, avec Boost et When Revealed, apres les interruptions facultatives)."""
+        if self.world.rule.v18_when_defeated and effect.ability.flags.is_when_defeated:
+            return TimingPriority.ForcedInterrupt
+        return effect.ability.priority
 
     def UnRegisterEffect(self, effect: 'Effect'):
         effect.is_unregister = True
@@ -122,7 +130,7 @@ class EventManager:
         for event in events:
             self.registered_message_type[event] -= 1
             category = self.GetEffectCategory(effect, event)
-            effects_list = self.FindEffectsList(category, event, effect.ability.priority)
+            effects_list = self.FindEffectsList(category, event, self.Priorite(effect))
             if effect.is_local:
                 assert effect not in effects_list
             else:
@@ -142,6 +150,9 @@ class EventManager:
         world.insert = insert
         for ability in GetGamePlayRules():
             insert.effect.Registers(ability)
+        if world.rule.v18_retaliate:
+            from game.card.face.attribute.can_retaliate import CanRetaliate
+            insert.effect.Registers(CanRetaliate.AbiliteRiposte())
         from engine import Engine
         if Engine.statistics.CanRegisterAbility():
             for ability in GetStatisticsRule():
@@ -316,7 +327,7 @@ class EventManager:
                         if type(message) in self.effects["Optional"] and \
                             priority in self.effects["Optional"][type(message)]:
 
-                            optional_effects = [x for x in self.effects["Optional"][type(message)][priority] if x.ability.priority == priority] + local_optional_effects
+                            optional_effects = [x for x in self.effects["Optional"][type(message)][priority] if self.Priorite(x) == priority] + local_optional_effects
                             optional_effects = Types.RemoveDuplicates(optional_effects)
 
                         if is_cheating:
@@ -868,7 +879,7 @@ class EventManager:
                         found_local_effects: List['Effect'] = []
 
                         for check_effect in local_effects:
-                            if check_effect.ability.priority == priority:
+                            if self.Priorite(check_effect) == priority:
                                 found_local_effects.append(check_effect)
 
                         if found_local_effects:
@@ -899,7 +910,7 @@ class EventManager:
                     size += len(check_effects[category])
             if local_effects:
                 for check_effect in local_effects:
-                    if check_effect.ability.priority == priority:
+                    if self.Priorite(check_effect) == priority:
                         if check_effect.is_forced or is_playing_res:
                             local_effect_priority_forced.append(check_effect)
                         else:

@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-08",
+  "card_entries": 239,
+  "physical_cards": 226,
+  "source_images": 239,
+  "scenario_configurations": 10,
+  "modular_sets": 4,
+  "python_files": 256,
+  "script_status": {
+    "partial": 231,
+    "implemented_from_documented_APIs": 8
+  },
+  "checks": [
+    "JSON parsing",
+    "required card fields",
+    "string desc values",
+    "unique IDs",
+    "continuous physical numbering",
+    "scenario and module card references",
+    "trap cards excluded from encounter decks",
+    "Python AST syntax",
+    "one source image per card entry"
+  ],
+  "not_run": [
+    "engine imports",
+    "game simulation",
+    "repository integration",
+    "gameplay tests"
+  ],
+  "open_decision": "Swarmed by Rats timing: Interrupt printed with After trigger",
+  "flavour_transcription_complete": false,
+  "ready_to_play": false
+}

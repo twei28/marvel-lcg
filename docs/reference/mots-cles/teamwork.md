@@ -54,3 +54,6 @@ Pierce et `38030` Skullbuster (set Reavers), même montage.
 est le premier contenu maison à l'imprimer, sur `ls015` Skurge —
 `Teamwork (ASGARD)` — et il a exigé l'ajout du trait `TEMPTATION` à l'énum
 pour ses deux attachements, mais pas d'`ASGARD`, déjà présent.
+
+
+**Rules Reference 1.8 (22/07/2026)** : « If a minion with the teamwork keyword is being revealed, the teamwork keyword resolves after any "When Revealed" abilities on that minion are resolved. » Moteur : règle `v18_reveal_keywords` (posée par `v18_all`) ; `CanTeamwork.OnAfterCardEnterPlay` diffère alors l'activation avec `RunAt.AfterRevealed` quand `card.state.is_revealing`. Cas : `[RR1.8] 56074 Wasp`.

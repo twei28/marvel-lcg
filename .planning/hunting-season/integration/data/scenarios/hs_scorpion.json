@@ -1,0 +1,41 @@
+{
+  "version": "0.5.8",
+  "name": "Scorpion",
+  "villain": [
+    "hs030",
+    "hs031"
+  ],
+  "expert": false,
+  "schemes": [
+    "hs033a,hs033b",
+    "hs034a,hs034b"
+  ],
+  "set_aside": [],
+  "encounters": [
+    "hs035",
+    "hs036",
+    "hs037",
+    "hs038",
+    "hs039",
+    "hs040",
+    "hs041",
+    "hs042",
+    "hs043",
+    "hs044",
+    "hs045",
+    "hs046",
+    "hs047",
+    "hs048",
+    "hs049",
+    "hs050",
+    "hs051",
+    "hs052",
+    "hs053"
+  ],
+  "encounter_sets": [
+    "standard"
+  ],
+  "modular_sets": [
+    "hs_feral_instincts"
+  ]
+}

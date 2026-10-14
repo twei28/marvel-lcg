@@ -18,6 +18,26 @@ def PutTopGiftIntoPlay(effect: 'Effect', player: 'Player') -> None:
     face = GetAdditionalDeckTop(player, 'GIFT')
     if face:
         face.CastTo(Upgrade).PutIntoPlay(player, effect, under_control=True)
+def JoueurHercules(effect: 'Effect') -> 'Player|None':
+    """Le joueur qui joue Hercules : une Labor attachee a un sbire n'a pas de controleur joueur."""
+    for candidat in Worlds.GetPlayers(effect):
+        identite = candidat.GetIdentity()
+        if identite and identite.IsName('Hercules'):
+            return candidat
+    return None
+def RemettreSousLeDeckLabor(effect: 'Effect', message: 'Message.AfterCardLeavePlay') -> None:
+    """RR 1.8 FAQ (Hercules) : « Any time a Labor card leaves play other than being placed in the
+    victory display, place it on the bottom of the Labor deck. » Sans limite : a CHAQUE sortie."""
+    this = effect.this
+    if this.card.area.flags.is_victory_display:
+        return
+    player = JoueurHercules(effect)
+    if player is None:
+        return
+    Faces.FlipAllTo([this], False, effect)
+    this.card.MoveToBottom(player.additional_deck, effect)
+def CapaciteRetourAuDeckLabor() -> 'Ability':
+    return AbilityFactory.AfterCardLeavePlay(AbilityType.ForcedResponse, 'This', RemettreSousLeDeckLabor)
 def Atonement(effect: 'Effect', player: 'Player') -> None:
     world = effect.world
     key = f'AtonementUsedThisPhase P{player.player_id}'

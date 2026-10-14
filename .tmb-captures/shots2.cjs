@@ -1,0 +1,25 @@
+const { chromium } = require("C:/Users/arnau/Desktop/Marvel LCG/ui-check/node_modules/playwright");
+const out = "C:/Users/arnau/Desktop/Marvel LCG/.tmb-captures/";
+(async () => {
+  const b = await chromium.launch({ channel: "chrome" });
+  const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+  await p.goto("http://localhost:5199/");
+  await p.waitForTimeout(1500);
+  await p.getByRole("button", { name: /^Patches/ }).click();
+  await p.getByRole("button", { name: /^Picket/ }).click();
+  await p.getByRole("button", { name: "Commencer l'aventure" }).click();
+  await p.waitForTimeout(2500);
+  await p.getByRole("button", { name: "Terminer l'entraînement" }).click();
+  await p.waitForTimeout(2500);
+  await p.waitForTimeout(5000);
+  await p.screenshot({ path: out + "4-carte-du-monde.png" });
+  await p.getByRole("button", { name: "Piocher la rencontre suivante" }).click();
+  await p.waitForTimeout(4000);
+  await p.screenshot({ path: out + "6-apres-pioche.png" });
+  await p.getByText("CLIQUEZ POUR CHOISIR").first().click();
+  await p.waitForTimeout(2500);
+  await p.screenshot({ path: out + "7-choix.png" });
+  console.log("BOUTONS:", JSON.stringify((await p.getByRole("button").allInnerTexts()).slice(0, 40)));
+  console.log((await p.innerText("body")).slice(0, 1200));
+  await b.close();
+})().catch(e => { console.error(e.message); process.exit(1); });
