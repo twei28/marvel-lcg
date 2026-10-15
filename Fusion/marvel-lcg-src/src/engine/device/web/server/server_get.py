@@ -1991,7 +1991,7 @@ class GameServerGet(GameServerBase):
     # Les preferences du compte : une liste FERMEE de cles et de valeurs. Rien
     # d'autre n'est jamais ecrit, un fichier ne doit pas accepter n'importe quoi
     # du navigateur.
-    PREFERENCES_PERMISES = {'affichage': ('normal', 'sobre')}
+    PREFERENCES_PERMISES = {'affichage': ('normal', 'sobre', 'epure')}
 
     # La TEINTE du fond (04/10/2026) : « h,s,l », trois entiers bornes. Les
     # bornes sont celles de la roue (`board/teinte.ts`,

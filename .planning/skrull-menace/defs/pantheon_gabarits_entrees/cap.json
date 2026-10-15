@@ -1,0 +1,594 @@
+{
+ "reussis": 98,
+ "total": 98,
+ "cas": [
+  {
+   "index": 3424,
+   "nom": "[pantheon] sk170a Setup normal : Kly'bn I face visible, 1 jeton de foi, complot 1B, environnement mis de cote",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3425,
+   "nom": "[pantheon] sk171a Setup EXPERT : Kly'bn II en jeu (stade II), 1 jeton de foi",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3426,
+   "nom": "[pantheon] sk173a Setup : les ensembles obligatoires sont dans le deck rencontre (Dard'van Sect, Skrull Pantheon, Standard)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3427,
+   "nom": "[pantheon] sk170a Changement de stade : Kly'bn I vaincu -> Kly'bn II du MEME cote (face Kly'bn), jeton de foi conserve + 1",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3428,
+   "nom": "[pantheon] sk170b Changement de stade : Sl'gur't I vaincu -> Sl'gur't II du MEME cote (face Sl'gur't)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3429,
+   "nom": "[pantheon] sk174b PV partages : 4 degats subis face Kly'bn restent sur la face Sl'gur't apres le retournement",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3430,
+   "nom": "[pantheon] sk171b En vaincre un suffit : Sl'gur't II vaincu (face visible) = victoire, sans avoir touche a Kly'bn",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3431,
+   "nom": "[pantheon] sk171a Dernier stade vaincu (face Kly'bn) : victoire des joueurs",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3432,
+   "nom": "[pantheon] sk171a TEMOIN : stade II blesse mais pas vaincu : pas de victoire",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3433,
+   "nom": "[pantheon] sk172a Expert : stade II vaincu -> stade III (face Kly'bn), carte d'etat Robuste donnee a la revelation",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3434,
+   "nom": "[pantheon] sk172b Expert : stade II vaincu face Sl'gur't -> stade III face Sl'gur't, Robuste donnee (« give HER a tough status card »)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3435,
+   "nom": "[pantheon] sk172a Expert : dernier stade (III) vaincu = victoire",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3436,
+   "nom": "[pantheon] sk170a PV par stade et par joueur : 15 / 18 / 20 (deux joueurs : 30 au stade I)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3437,
+   "nom": "[pantheon] sk174b Retournement (« Flip the villain » de 2B) : les attachements du mechant sont defausses",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3438,
+   "nom": "[pantheon] sk174b TEMOIN : sans retournement l'attachement reste sur le mechant",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3439,
+   "nom": "[pantheon] sk174b Retournement : les cartes d'etat (Sonne, Desoriente, Robuste) sont defaussees",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3440,
+   "nom": "[pantheon] sk174b TEMOIN : sans retournement les trois cartes d'etat restent",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3441,
+   "nom": "[pantheon] sk174b Retournement : les cartes de boost face cachee du mechant sont defaussees",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3442,
+   "nom": "[pantheon] sk174b TEMOIN : sans retournement la carte de boost reste au mechant",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3443,
+   "nom": "[pantheon] sk174b Retournement : les jetons de foi et les degats SURVIVENT, et la face d'arrivee pose son jeton (When Revealed)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3444,
+   "nom": "[pantheon] sk170b Retournement vers Kly'bn (aller-retour) : la face Kly'bn resout SON When Revealed",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3445,
+   "nom": "[pantheon] sk172a Retournement au stade III : Robuste defaussee puis REDONNEE par le When Revealed de la face d'arrivee",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3446,
+   "nom": "[pantheon] sk170a Reponse forcee Kly'bn : 1 jeton de foi = 1 carte du dessus defaussee, distribuee si ce n'est PAS une traitrise",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3447,
+   "nom": "[pantheon] sk170a Reponse forcee Kly'bn : une TRAITRISE defaussee n'est PAS distribuee (Exhaustion reste en defausse, le heros reste pret)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3448,
+   "nom": "[pantheon] sk170a Reponse forcee : « in player order » : 3 sbires, 2 joueurs -> le premier joueur en recoit 2, le second 1",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3449,
+   "nom": "[pantheon] sk170b Reponse forcee Sl'gur't : seules les TRAITRISES defaussees sont distribuees (Exhaustion distribuee, heros incline ; le sbire reste en defausse)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3450,
+   "nom": "[pantheon] sk173b Derniere menace retiree : environnement DESTROYED en jeu, complot directement en 2B (sans 2A), mechant retourne",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3451,
+   "nom": "[pantheon] sk173b Derniere menace retiree par un CONTRE reel (heros en forme heros, THW 1) : meme resultat",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3452,
+   "nom": "[pantheon] sk173b TEMOIN : il reste de la menace -> rien ne se passe (environnement toujours de cote)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3453,
+   "nom": "[pantheon] sk173b When Completed : seuil atteint (9) -> environnement STRONGHOLD, stade 2A resolu (Strengthen the Faith revele +2 menace), puis 2B retourne le mechant",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3454,
+   "nom": "[pantheon] sk173b TEMOIN : 8 menaces ne suffisent pas (seuil 9[per_hero])",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3455,
+   "nom": "[pantheon] sk174a Revelation : Strengthen the Faith est cherchee aussi dans la DEFAUSSE rencontre",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3456,
+   "nom": "[pantheon] sk174a Revelation, TEMOIN : aucune Strengthen the Faith nulle part -> rien n'est revele, le stade 2B s'installe quand meme",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3457,
+   "nom": "[pantheon] sk174a Revelation : deux joueurs -> menace de Strengthen = 2*2 + 2*2 = 8",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3458,
+   "nom": "[pantheon] sk174b Revelation : le mechant sur la face Sl'gur't est retourne vers Kly'bn",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3459,
+   "nom": "[pantheon] sk174b 2B accompli : les joueurs perdent la partie",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3460,
+   "nom": "[pantheon] sk174b TEMOIN : 11 menaces ne perdent pas la partie",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3461,
+   "nom": "[pantheon] sk175a Stronghold : Action de heros OFFERTE avec 2 ressources de meme type (Energy YY) ; retire 1 jeton de foi",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3462,
+   "nom": "[pantheon] sk175a Stronghold : deux ressources de types DIFFERENTS (1 mental + 1 energie) ne PAIENT PAS le cout : aucun jeton retire, main intacte",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3463,
+   "nom": "[pantheon] sk175a Stronghold, TEMOIN : meme main, la carte Energy (YY) rend l'Action offerte",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3464,
+   "nom": "[pantheon] sk175b Destroyed : Action OFFERTE avec deux ressources de types DIFFERENTS ; retire 1 jeton de foi",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3465,
+   "nom": "[pantheon] sk175b Destroyed : Action NON offerte sans aucun jeton de foi",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3466,
+   "nom": "[pantheon] sk175a Stronghold : Action NON offerte sans aucun jeton de foi",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3467,
+   "nom": "[pantheon] sk175a Stade 1 : tant que le complot n'a pas avance, l'environnement reste hors jeu (les jetons ne peuvent pas etre retires)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3468,
+   "nom": "[pantheon] sk176 Blessed by Kly'bn : s'attache au sbire de plus FAIBLE MNG (Hydra Mercenary 0, pas Skrull Scientist 3) et lui donne +X MNG (X = 1 jeton de foi)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3469,
+   "nom": "[pantheon] sk176 Blessed by Kly'bn : le bonus SUIT les jetons de foi (1 -> 3 -> 2)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3470,
+   "nom": "[pantheon] sk176 Blessed by Kly'bn : aucun sbire en jeu -> la carte gagne Renfort (revele la carte suivante)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3471,
+   "nom": "[pantheon] sk176 Boost (manigance) : +2 icones de boost : la manigance du mechant place 2 + 1 + 2 = 5 menaces (deux joueurs)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3472,
+   "nom": "[pantheon] sk176 Boost, TEMOIN : pendant une ATTAQUE les 2 icones ne s'ajoutent pas (1 + 1 = 2 degats au heros)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3473,
+   "nom": "[pantheon] sk177 Blessed by Sl'gur't : s'attache au sbire de plus FAIBLE ATQ (Skrull Scientist 0, pas Hydra Mercenary 1) et lui donne +X ATQ",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3474,
+   "nom": "[pantheon] sk177 Blessed by Sl'gur't : le bonus SUIT les jetons de foi (1 -> 3)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3475,
+   "nom": "[pantheon] sk177 Blessed by Sl'gur't : aucun sbire en jeu -> Renfort",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3476,
+   "nom": "[pantheon] sk177 Boost (attaque) : +2 icones : l'attaque du mechant inflige 1 + 1 + 2 = 4 degats",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3477,
+   "nom": "[pantheon] sk177 Boost, TEMOIN : pendant une MANIGANCE les 2 icones ne s'ajoutent pas (2 + 1 = 3 menaces, deux joueurs)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3478,
+   "nom": "[pantheon] sk178 Nogor : +1 MNG, +1 ATQ et +1 PV par jeton de foi sur le mechant (1 jeton)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3479,
+   "nom": "[pantheon] sk178 Nogor : les bonus suivent les jetons (1 -> 4) et un Nogor blesse ne guerit pas",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3480,
+   "nom": "[pantheon] sk178 Nogor revele : retourne le mechant (When Revealed)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3481,
+   "nom": "[pantheon] sk178 Nogor en Boost : retourne le mechant (face visible d'arrivee = Sl'gur't)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3482,
+   "nom": "[pantheon] sk179 Shapeless Wastes : Hinder 2[per_hero] + menace fixe 2 = 4 menaces (un joueur)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3483,
+   "nom": "[pantheon] sk179 Shapeless Wastes : deux joueurs -> 2 + 2*2 = 6 menaces",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3484,
+   "nom": "[pantheon] sk179 Reponse forcee : un sbire SKRULL vaincu -> le mechant est retourne",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3485,
+   "nom": "[pantheon] sk179 Reponse forcee : un sbire NON-Skrull vaincu -> 1 jeton de foi (pas de retournement)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3486,
+   "nom": "[pantheon] sk179 Reponse forcee : un ALLIE non-Skrull vaincu -> 1 jeton de foi",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3487,
+   "nom": "[pantheon] sk179 Reponse forcee, TEMOIN : sans la carte en jeu, un sbire vaincu ne pose aucun jeton",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3488,
+   "nom": "[pantheon] sk180 Strengthen the Faith : menace 2[per_hero] a la revelation (un joueur : 2 ; deux joueurs : 4)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3489,
+   "nom": "[pantheon] sk180 Reponse forcee : un sbire SKRULL entre en jeu -> 1 jeton de foi",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3490,
+   "nom": "[pantheon] sk180 Reponse forcee, TEMOIN : un sbire NON-Skrull entre en jeu -> rien",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3491,
+   "nom": "[pantheon] sk180 Reponse forcee, TEMOIN : un ALLIE ne declenche pas (« SKRULL minion »)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3492,
+   "nom": "[pantheon] sk180 Boost : place 1 jeton de foi (pendant l'attaque du mechant)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3493,
+   "nom": "[pantheon] sk181 Prayer to Kly'bn : Kly'bn en jeu -> il s'active contre le joueur (heros : ATQ 1 + 0 = 1 degat)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3494,
+   "nom": "[pantheon] sk181 Prayer to Kly'bn : Kly'bn PAS en jeu (face Sl'gur't visible) -> le mechant est retourne vers Kly'bn",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3495,
+   "nom": "[pantheon] sk181 Boost : Kly'bn pas en jeu -> retourne le mechant (face visible Sl'gur't, attaque du mechant)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3496,
+   "nom": "[pantheon] sk181 Boost, TEMOIN : Kly'bn EN jeu -> pas de retournement",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3497,
+   "nom": "[pantheon] sk182 Prayer to Sl'gur't : Sl'gur't en jeu -> elle s'active contre le joueur (heros : ATQ 2 = 2 degats)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3498,
+   "nom": "[pantheon] sk182 Prayer to Sl'gur't : Sl'gur't PAS en jeu (face Kly'bn visible) -> le mechant est retourne vers Sl'gur't",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3499,
+   "nom": "[pantheon] sk182 Boost : Sl'gur't pas en jeu -> retourne le mechant (face visible Kly'bn)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3500,
+   "nom": "[pantheon] sk182 Boost, TEMOIN : Sl'gur't EN jeu -> pas de retournement",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3501,
+   "nom": "[pantheon] sk183 Talisman of the Skrulls : Nogor est cherche dans le DECK et revele (il retourne le mechant), pas de Renfort",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3502,
+   "nom": "[pantheon] sk183 Talisman : Nogor est cherche aussi dans la DEFAUSSE rencontre",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3503,
+   "nom": "[pantheon] sk183 Talisman : Nogor introuvable -> la carte gagne Renfort (le sbire au-dessus du deck est revele)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3504,
+   "nom": "[pantheon] sk183 Talisman : Nogor deja EN JEU -> il n'entre pas en jeu : Renfort",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3505,
+   "nom": "[pantheon] sk184 Dard'van Fanatic : 1 degat a chaque personnage qu'on controle (choix 1)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3506,
+   "nom": "[pantheon] sk184 Dard'van Fanatic : 1 menace sur chaque complot en jeu (choix 2), complot principal compris",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3507,
+   "nom": "[pantheon] sk184 Dard'van Fanatic : le choix des degats touche aussi les allies que le joueur controle",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3508,
+   "nom": "[pantheon] sk185 Dard'van Priest : « When Revealed » : il comploter (menace sur le complot principal)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3509,
+   "nom": "[pantheon] sk185 Dard'van Priest : Interruption forcee : il N'ATTAQUE PAS, il resout le When Revealed d'une carte en jeu (Fanatic : 1 degat au heros)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3510,
+   "nom": "[pantheon] sk185 Dard'van Priest : le choix peut viser le MECHANT : +1 jeton de foi",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3511,
+   "nom": "[pantheon] sk185 Dard'van Priest, TEMOIN : sans l'Interruption, une attaque ordinaire n'a aucun effet de revelation (foi inchangee)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3512,
+   "nom": "[pantheon] sk186 Dard'van Sect : le mechant recoit 1 carte de boost face cachee ; menace 2[per_hero] ; icone Hazard",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3513,
+   "nom": "[pantheon] sk187 Collective Prayers : defausse 1 carte par personnage en jeu (identite + mechant = 2) et revele celles du set Dard'van Sect",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3514,
+   "nom": "[pantheon] sk187 Collective Prayers : le nombre de cartes suit le nombre de personnages (identite + allie + mechant = 3)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3515,
+   "nom": "[pantheon] sk188 Sectarian Practices : resout le When Revealed d'une carte en jeu (choix force : le mechant, +1 jeton de foi), pas de Renfort",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3516,
+   "nom": "[pantheon] sk188 Sectarian Practices : le When Revealed du complot 2B (« flip the villain ») peut etre choisi",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3517,
+   "nom": "[pantheon] sk171a Reponse forcee Kly'bn II (expert) : 1 jeton de foi = 1 carte du dessus defaussee et distribuee (sbire)",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3518,
+   "nom": "[pantheon] sk171b Reponse forcee Sl'gur't II (expert) : seule la traitrise est distribuee (Exhaustion : heros incline), le sbire reste en defausse",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3519,
+   "nom": "[pantheon] sk172a Reponse forcee Kly'bn III (expert) : le sbire defausse est distribue ; la carte d'etat Robuste est en place",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3520,
+   "nom": "[pantheon] sk172b Reponse forcee Sl'gur't III (expert) : 3 jetons de foi = 3 cartes defaussees, seule la traitrise est distribuee",
+   "ok": true,
+   "message": "etat Pantheon conforme"
+  },
+  {
+   "index": 3521,
+   "nom": "[pantheon] sk188 Sectarian Practices (autre scenario, Rhino) : aucune carte en jeu avec un When Revealed -> Renfort (la carte suivante est revelee)",
+   "ok": true,
+   "message": "etat conforme"
+  }
+ ]
+}

@@ -138,6 +138,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # (CAMOUFLAGED = allie / Spider-Woman, REVEALED = sbire / Queen Veranke) et le
         # trait IMPOSTOR des 20 cartes double face du paquet Impostor. Purement declaratif.
         "CAMOUFLAGED", "REVEALED", "IMPOSTOR",
+        # (15/10/2026) Skrull Pantheon (Kajislav) : « GOD » (Kly'bn / Sl'gur't), purement declaratif.
+        "GOD",
         "TRAINING", "TEAM", "SPECIALIZATION", "TECHNIQUE",
         "ACTIVATION ORDER 1", "ACTIVATION ORDER 2", "ACTIVATION ORDER 3", "ACTIVATION ORDER 4", "ACTIVATION ORDER 5", "ACTIVATION ORDER 6",
         "TRAP!",
@@ -379,6 +381,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (15/10/2026) : scenario Secret Invasion (Kajislav). 'suspicion' : jetons de
         # SOUPCON de l'environnement « Who Do You Trust? ».
         'suspicion',
+        # AJOUT (15/10/2026) : scenario Skrull Pantheon (Kajislav). 'faith' : jetons de FOI
+        # poses sur le mechant Kly'bn / Sl'gur't (insert p.14). Sans cette entree `IsCounter`
+        # refuse le nom et la pose du jeton echoue.
+        'faith',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

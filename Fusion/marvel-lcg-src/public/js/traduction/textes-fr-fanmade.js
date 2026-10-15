@@ -3643,4 +3643,182 @@ export const TEXTES_FR_FANMADE = {
     'sk168': "Le méchant gagne le trait [[REVENGER]].\n<b>Une fois révélée</b> : placez 1 menace supplémentaire ici pour chaque ennemi [[REVENGER]] en jeu.",
     // skrull_menace — Forming the Revengers (Treachery)
     'sk169': "<b>Une fois révélée</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'une carte avec le trait [[REVENGER]] soit défaussée. Révélez cette carte.",
+    // skrull_menace — Spider-Woman (Veranke) (Villain, Secret Invasion)
+    'sk189a': "Spider-Woman ne peut pas subir de dégâts.\n[star] <b>Réponse forcée</b> : après que Spider-Woman vous a attaqué, placez 1 jeton de soupçon sur \"Who Do You Trust?\".\n<i>You are a Skrull!</i> — <b>Action de héros</b> : inclinez un héros et dépensez 1[per_hero] ressources de n'importe quel type → retournez Spider-Woman. <i>(Les joueurs peuvent payer les coûts de cette capacité en groupe.)</i>",
+    // skrull_menace — Queen Veranke (Villain, Secret Invasion)
+    'sk189b': "<b>Réponse forcée</b> : après la fin de la phase du Méchant, si un joueur est sous forme d'alter ego, retournez Queen Veranke.\n<b>Une fois vaincue</b> : retirez tous les jetons de soupçon de \"Who Do You Trust?\".",
+    // skrull_menace — Spider-Woman (Veranke) (Villain, Secret Invasion)
+    'sk190a': "Spider-Woman ne peut pas subir de dégâts.\n[star] <b>Réponse forcée</b> : après que Spider-Woman vous a attaqué, placez 1 jeton de soupçon sur \"Who Do You Trust?\".\n<i>You are a Skrull!</i> — <b>Action de héros</b> : inclinez un héros et dépensez 1[per_hero] ressources de n'importe quel type → retournez Spider-Woman. <i>(Les joueurs peuvent payer les coûts de cette capacité en groupe.)</i>",
+    // skrull_menace — Queen Veranke (Villain, Secret Invasion)
+    'sk190b': "<b>Réponse forcée</b> : après la fin de la phase du Méchant, si un joueur est sous forme d'alter ego, retournez Queen Veranke.\n<b>Une fois vaincue</b> : retirez tous les jetons de soupçon de \"Who Do You Trust?\".",
+    // skrull_menace — Spider-Woman (Veranke) (Villain, Secret Invasion)
+    'sk191a': "Spider-Woman ne peut pas subir de dégâts.\n[star] <b>Réponse forcée</b> : après que Spider-Woman vous a attaqué, placez 1 jeton de soupçon sur \"Who Do You Trust?\".\n<i>You are a Skrull!</i> — <b>Action de héros</b> : inclinez un héros et dépensez 1[per_hero] ressources de n'importe quel type → retournez Spider-Woman. <i>(Les joueurs peuvent payer les coûts de cette capacité en groupe.)</i>",
+    // skrull_menace — Queen Veranke (Villain, Secret Invasion)
+    'sk191b': "<b>Réponse forcée</b> : après la fin de la phase du Méchant, si un joueur est sous forme d'alter ego, retournez Queen Veranke. Sinon, défaussez la première carte du deck Rencontre ; si c'est une traîtrise, retournez Queen Veranke.",
+    // skrull_menace — The Infiltration Has Begun (MainScheme, Secret Invasion)
+    'sk192a': "<b>Contenu</b> : Spider-Woman (I) et Spider-Woman (II) <i>(Spider-Woman (II) et Spider-Woman (III) en mode expert)</i>. Les sets de rencontre Secret Invasion et Standard. Un set de rencontre modulaire <i>(Army of Skrulls)</i>.\n<b>Mise en place</b> : créez le deck [[IMPOSTOR]] et placez-le à côté du deck Rencontre <i>(voir l'encart)</i>. Mettez en jeu l'environnement \"Who Do You Trust?\".",
+    // skrull_menace — The Infiltration Has Begun (MainScheme, Secret Invasion)
+    'sk192b': "[star] Placez 1 menace supplémentaire ici pour chaque ennemi [[SKRULL]] en jeu et chaque allié [[IMPOSTOR]] en jeu.\n<b>Réponse forcée</b> : après la fin de votre tour, s'il y a moins de 2[per_hero] jetons de soupçon sur \"Who Do You Trust?\", mettez en jeu sous votre contrôle un allié [[CAMOUFLAGED]] pris au hasard dans le deck [[IMPOSTOR]].",
+    // skrull_menace — The Skrull Invasion (MainScheme, Secret Invasion)
+    'sk193a': "<b>Une fois révélée</b> : si Mistrust and Paranoia est en jeu, retirez 2[per_hero] jetons de soupçon de \"Who Do You Trust?\". Sinon, cherchez Mistrust and Paranoia et révélez-le.",
+    // skrull_menace — The Skrull Invasion (MainScheme, Secret Invasion)
+    'sk193b': "X est égal à deux fois le nombre d'ennemis [[SKRULL]] en jeu.\n<b>Réponse forcée</b> : après la fin de votre tour, s'il y a moins de 2[per_hero] jetons de soupçon sur \"Who Do You Trust?\", mettez en jeu, engagé avec vous, un sbire [[REVEALED]] pris au hasard dans le deck [[IMPOSTOR]].\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // skrull_menace — "Who Do You Trust?" (Environment, Secret Invasion)
+    'sk194': "<b>Interruption forcée</b> : quand n'importe quelle quantité de menaces est placée sur la manigance principale, retirez d'ici une quantité égale de jetons de soupçon.\n<b>Interruption forcée</b> : quand n'importe quelle quantité de menaces est retirée de la manigance principale, placez ici une quantité égale de jetons de soupçon.",
+    // skrull_menace — Impostor (Attachment, Secret Invasion)
+    'sk195': "Considérez l'allié attaché comme un sbire [[SKRULL]] dont la boîte de texte est vide. Sa MNG est égale à son CTR imprimé et il ne subit pas de dégâts consécutifs.\n<b>Une fois révélée</b> : attachez cette carte à l'allié non-[[SKRULL]] ayant le plus de points de vie restants qui n'a pas d'exemplaire d'Impostor attaché. L'allié attaché s'engage avec son contrôleur. Sinon, le méchant manigance.",
+    // skrull_menace — Super-Skrull Enhancement (Attachment, Secret Invasion)
+    'sk196': "Attachez cette carte au sbire [[SKRULL]] ayant le plus de points de vie restants qui n'a pas d'autre Super-Skrull Enhancement attaché. Si vous ne pouvez pas, choisissez un allié [[CAMOUFLAGED]], retournez-le et attachez-lui cette carte. Sinon, cette carte gagne Renfort.\nLe sbire attaché gagne 2 points de vie.\n<hr />\n[star] <b>Boost</b> : révélez cette carte, après la fin de cette activation.",
+    // skrull_menace — Super-Skrull Enhancement (Attachment, Secret Invasion)
+    'sk197': "Attachez cette carte au sbire [[SKRULL]] ayant le plus de points de vie restants qui n'a pas d'autre Super-Skrull Enhancement attaché. Si vous ne pouvez pas, choisissez un allié [[CAMOUFLAGED]], retournez-le et attachez-lui cette carte. Sinon, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : révélez cette carte, après la fin de cette activation.",
+    // skrull_menace — Super-Skrull Enhancement (Attachment, Secret Invasion)
+    'sk198': "Attachez cette carte au sbire [[SKRULL]] ayant le plus de points de vie restants qui n'a pas d'autre Super-Skrull Enhancement attaché. Si vous ne pouvez pas, choisissez un allié [[CAMOUFLAGED]], retournez-le et attachez-lui cette carte. Sinon, cette carte gagne Renfort.\nLe sbire attaché gagne Riposte 1.\n<hr />\n[star] <b>Boost</b> : révélez cette carte, après la fin de cette activation.",
+    // skrull_menace — Chaos on the Battlefield (SideScheme, Secret Invasion)
+    'sk199': "Incitation 2.\n<b>Une fois révélée</b> : placez ici X menaces supplémentaires, X étant égal à la MNG totale de tous les personnages [[IMPOSTOR]] en jeu.",
+    // skrull_menace — Fulfill the Prophecy (SideScheme, Secret Invasion)
+    'sk200': "Entrave 1[per_hero].\nChaque sbire [[SKRULL]] gagne Garde et Patrouille.",
+    // skrull_menace — Mistrust and Paranoia (SideScheme, Secret Invasion)
+    'sk201': "Les joueurs ne peuvent pas attaquer les sbires engagés avec d'autres joueurs, ni défendre contre eux. Les joueurs ne peuvent pas payer en groupe les coûts d'une carte ou d'une capacité.\n<b>Une fois révélée</b> : placez ici 1 menace supplémentaire pour chaque personnage allié en jeu.",
+    // skrull_menace — Arrival of Impostors (Treachery, Secret Invasion)
+    'sk202': "<b>Une fois révélée</b> : chaque joueur met en jeu sous son contrôle un allié [[CAMOUFLAGED]] pris au hasard dans le deck [[IMPOSTOR]].\n<hr />\n[star] <b>Boost</b> : mettez en jeu sous votre contrôle un allié [[CAMOUFLAGED]] pris au hasard dans le deck [[IMPOSTOR]].",
+    // skrull_menace — Camouflage (Treachery, Secret Invasion)
+    'sk203': "<b>Une fois révélée</b> (Queen Veranke) : retournez Queen Veranke. Retirez 3 jetons de soupçon de \"Who Do You Trust?\".\n<b>Une fois révélée</b> (Spider-Woman) : Spider-Woman manigance.\n<hr />\n[star] <b>Boost</b> : retournez Queen Veranke, après la fin de cette activation.",
+    // skrull_menace — Glory to the Skrull Empire (Treachery, Secret Invasion)
+    'sk204': "<b>Une fois révélée</b> : donnez une carte d'état Tenace au méchant et à chaque sbire [[SKRULL]] engagé avec vous. Si le méchant a déjà une carte d'état Tenace, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : donnez une carte d'état Tenace au méchant.",
+    // skrull_menace — Infiltration Ritual (Treachery, Secret Invasion)
+    'sk205': "<b>Une fois révélée</b> : mettez en jeu sous le contrôle de n'importe quel joueur un allié [[CAMOUFLAGED]] pris au hasard dans le deck [[IMPOSTOR]]. Si vous ne pouvez pas, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : retirez 3 jetons de soupçon de \"Who Do You Trust?\".",
+    // skrull_menace — Invasion Fleet (Treachery, Secret Invasion)
+    'sk206': "<b>Une fois révélée</b> : chaque joueur met en jeu, engagé avec lui, un sbire [[REVEALED]] pris au hasard dans le deck [[IMPOSTOR]].\n<hr />\n[star] <b>Boost</b> : mettez en jeu, engagé avec vous, un sbire [[REVEALED]] pris au hasard dans le deck [[IMPOSTOR]].",
+    // skrull_menace — Revelation (Treachery, Secret Invasion)
+    'sk207': "<b>Une fois révélée</b> : retournez l'allié [[CAMOUFLAGED]] ayant le plus de points de vie restants. Si vous ne pouvez pas, mettez en jeu, engagé avec vous, un sbire [[REVEALED]] pris au hasard dans le deck [[IMPOSTOR]].\n<hr />\n[star] <b>Boost</b> : retournez 1 allié [[CAMOUFLAGED]] que vous contrôlez, après la fin de cette activation.",
+    // skrull_menace — Captain America (Pitt'o Nili) (Ally, Secret Invasion)
+    'sk208a': "<b>Interruption forcée</b> : quand Captain America est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Pitt'o Nili (Minion, Secret Invasion)
+    'sk208b': "Garde. <i>(Tant que ce sbire est engagé avec vous, vous ne pouvez pas attaquer le méchant.)</i>\n<b>Une fois révélé</b> : soignez tous les dégâts de Pitt'o Nili et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Captain Marvel (Khn'nr) (Ally, Secret Invasion)
+    'sk209a': "<b>Interruption forcée</b> : quand Captain Marvel est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Khn'nr (Minion, Secret Invasion)
+    'sk209b': "<b>Une fois révélé</b> : soignez tous les dégâts de Khn'nr et mettez-le en jeu, engagé avec vous.\n<b>Une fois vaincu</b> : retirez tous les jetons de soupçon de \"Who Do You Trust?\".",
+    // skrull_menace — Captain Marvel (M'lanz) (Ally, Secret Invasion)
+    'sk210a': "<b>Interruption forcée</b> : quand Captain Marvel est censée quitter le jeu, retournez-la à la place.",
+    // skrull_menace — M'lanz (Minion, Secret Invasion)
+    'sk210b': "<b>Une fois révélé</b> : soignez tous les dégâts de M'lanz et mettez-la en jeu, engagée avec vous.\n[star] <b>Interruption forcée</b> : quand M'lanz vous attaque, résolvez également son attaque contre chaque autre héros.",
+    // skrull_menace — Carnage (Zr'x) (Ally, Secret Invasion)
+    'sk211a': "<b>Interruption forcée</b> : quand Carnage est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Zr'x (Minion, Secret Invasion)
+    'sk211b': "Ténacité. <i>(Ce personnage entre en jeu avec une carte d'état Tenace.)</i>\n<b>Une fois révélé</b> : soignez tous les dégâts de Zr'x et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Daredevil (Trl'k) (Ally, Secret Invasion)
+    'sk212a': "<b>Interruption forcée</b> : quand Daredevil est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Trl'k (Minion, Secret Invasion)
+    'sk212b': "Tant que le joueur engagé est engagé avec un autre sbire [[SKRULL]], Trl'k ne peut pas subir de dégâts.\n<b>Une fois révélé</b> : soignez tous les dégâts de Trl'k et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Deathlok (Fry'lu) (Ally, Secret Invasion)
+    'sk213a': "<b>Interruption forcée</b> : quand Deathlok est censée quitter le jeu, retournez-la à la place.",
+    // skrull_menace — Fry'lu (Minion, Secret Invasion)
+    'sk213b': "<b>Une fois révélé</b> : soignez tous les dégâts de Fry'lu et mettez-la en jeu, engagée avec vous.\n<b>Une fois vaincue</b> : donnez une carte Rencontre face cachée au joueur qui a vaincu Fry'lu.",
+    // skrull_menace — Dum Dum Dugan (Sn'Tlo) (Ally, Secret Invasion)
+    'sk214a': "<b>Interruption forcée</b> : quand Dum Dum Dugan est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Sn'Tlo (Minion, Secret Invasion)
+    'sk214b': "Diminuez de 1 la quantité de dégâts que Sn'Tlo subit à chaque attaque.\n<b>Une fois révélé</b> : soignez tous les dégâts de Sn'Tlo et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Elektra (Siri) (Ally, Secret Invasion)
+    'sk215a': "<b>Interruption forcée</b> : quand Elektra est censée quitter le jeu, retournez-la à la place.",
+    // skrull_menace — Siri (Minion, Secret Invasion)
+    'sk215b': "Patrouille. <i>(Tant que ce sbire est engagé avec vous, vous ne pouvez pas déjouer la manigance principale.)</i>\n<b>Une fois révélé</b> : soignez tous les dégâts de Siri et mettez-la en jeu, engagée avec vous.",
+    // skrull_menace — Giant-Man (D'lutz) (Ally, Secret Invasion)
+    'sk216a': "<b>Interruption forcée</b> : quand Giant-Man est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — D'lutz (Minion, Secret Invasion)
+    'sk216b': "Riposte 1.\n<b>Une fois révélé</b> : soignez tous les dégâts de D'lutz et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Invisible Woman (De'Lila) (Ally, Secret Invasion)
+    'sk217a': "<b>Interruption forcée</b> : quand Invisible Woman est censée quitter le jeu, retournez-la à la place.",
+    // skrull_menace — De'Lila (Minion, Secret Invasion)
+    'sk217b': "En tant que coût supplémentaire pour attaquer De'Lila, vous devez dépenser 1 ressource de n'importe quel type.\n<b>Une fois révélé</b> : soignez tous les dégâts de De'Lila et mettez-la en jeu, engagée avec vous.",
+    // skrull_menace — Iron Fist (Grrix) (Ally, Secret Invasion)
+    'sk218a': "<b>Interruption forcée</b> : quand Iron Fist est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Grrix (Minion, Secret Invasion)
+    'sk218b': "<b>Une fois révélé</b> : soignez tous les dégâts de Grrix et mettez-le en jeu, engagé avec vous.\n<b>Une fois vaincu</b> : le méchant attaque le joueur qui a vaincu Grrix <i>(même si ce joueur est sous forme d'alter ego)</i>.",
+    // skrull_menace — Iron Man (Ssrov) (Ally, Secret Invasion)
+    'sk219a': "<b>Interruption forcée</b> : quand Iron Man est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Ssrov (Minion, Secret Invasion)
+    'sk219b': "[star] Tant que le méchant a le trait [[REVEALED]], Ssrov gagne +1 MNG et +1 ATQ.\n<b>Une fois révélé</b> : soignez tous les dégâts de Ssrov et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Moon Knight (Hs'fld) (Ally, Secret Invasion)
+    'sk220a': "<b>Interruption forcée</b> : quand Moon Knight est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Hs'fld (Minion, Secret Invasion)
+    'sk220b': "<b>Une fois révélé</b> : soignez tous les dégâts de Hs'fld et mettez-le en jeu, engagé avec vous.\n<b>Une fois vaincu</b> : le joueur qui a vaincu Hs'fld met en jeu sous son contrôle un allié [[CAMOUFLAGED]] pris au hasard dans le deck [[IMPOSTOR]].",
+    // skrull_menace — Nick Fury (H'kurrek) (Ally, Secret Invasion)
+    'sk221a': "<b>Interruption forcée</b> : quand Nick Fury est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — H'kurrek (Minion, Secret Invasion)
+    'sk221b': "[star] Les attaques de H'kurrek gagnent Déferlement, Perçant et Distance.\n<b>Une fois révélé</b> : soignez tous les dégâts de H'kurrek et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Phoenix (Korya) (Ally, Secret Invasion)
+    'sk222a': "<b>Interruption forcée</b> : quand Phoenix est censée quitter le jeu, retournez-la à la place.",
+    // skrull_menace — Korya (Minion, Secret Invasion)
+    'sk222b': "<b>Une fois révélé</b> : soignez tous les dégâts de Korya et mettez-la en jeu, engagée avec vous.\n[star] <b>Réponse forcée</b> : après que Korya vous a attaqué, défaussez la première carte du deck de chaque joueur.",
+    // skrull_menace — Spider-Man (Ch'Gra) (Ally, Secret Invasion)
+    'sk223a': "<b>Interruption forcée</b> : quand Spider-Man est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Ch'Gra (Minion, Secret Invasion)
+    'sk223b': "<b>Une fois révélé</b> : soignez tous les dégâts de Hagar et mettez-le en jeu, engagé avec vous.\n<b>Une fois vaincu</b> : retournez Queen Veranke.",
+    // skrull_menace — Thor (Hagar) (Ally, Secret Invasion)
+    'sk224a': "<b>Interruption forcée</b> : quand Thor est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Hagar (Minion, Secret Invasion)
+    'sk224b': "[star] Les attaques de Hagar infligent des dégâts indirects.\n<b>Une fois révélé</b> : soignez tous les dégâts de Hagar et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Venom (Dharr) (Ally, Secret Invasion)
+    'sk225a': "<b>Interruption forcée</b> : quand Venom est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Dharr (Minion, Secret Invasion)
+    'sk225b': "Vilenie. <i>(Quand ce sbire s'active, donnez-lui une carte de boost.)</i>\n<b>Une fois révélé</b> : soignez tous les dégâts de Dharr et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Wolverine (V'lrym) (Ally, Secret Invasion)
+    'sk226a': "<b>Interruption forcée</b> : quand Wolverine est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — V'lrym (Minion, Secret Invasion)
+    'sk226b': "Coup rapide.\n<b>Une fois révélé</b> : soignez tous les dégâts de V'lrym et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Yellowjacket (Criti Noll) (Ally, Secret Invasion)
+    'sk227a': "<b>Interruption forcée</b> : quand Yellowjacket est censé quitter le jeu, retournez-le à la place.",
+    // skrull_menace — Criti Noll (Minion, Secret Invasion)
+    'sk227b': "Incitation 3. <i>(Quand cette carte est révélée, placez 3 menaces sur la manigance principale.)</i>\n<b>Une fois révélé</b> : soignez tous les dégâts de Criti Noll et mettez-le en jeu, engagé avec vous.",
+    // skrull_menace — Kly'bn (Villain, stade I)
+    'sk170a': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Kly'bn.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Kly'bn. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui n'est pas une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+    // skrull_menace — Sl'gur't (Villain, stade I)
+    'sk170b': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Sl'gur't.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Sl'gur't. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui est une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+    // skrull_menace — Kly'bn (Villain, stade II)
+    'sk171a': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Kly'bn.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Kly'bn. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui n'est pas une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+    // skrull_menace — Sl'gur't (Villain, stade II)
+    'sk171b': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Sl'gur't.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Sl'gur't. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui est une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+    // skrull_menace — Kly'bn (Villain, stade III)
+    'sk172a': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Kly'bn et donnez-lui une carte d'état Tenace.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Kly'bn. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui n'est pas une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+    // skrull_menace — Sl'gur't (Villain, stade III)
+    'sk172b': "<b>Une fois révélé</b> : placez 1 jeton de foi sur Sl'gur't et donnez-lui une carte d'état Tenace.\n<b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, défaussez la carte du dessus du deck Rencontre pour chaque jeton de foi sur Sl'gur't. Attribuez à chaque joueur, dans l'ordre des joueurs, chaque carte qui est une traîtrise défaussée de cette façon comme carte Rencontre face cachée.",
+    // skrull_menace — Protect the Pantheon (MainScheme, 1A)
+    'sk173a': "<b>Contenu</b> : Kly'bn (I) et Kly'bn (II) <i>(Kly'bn (II) et Kly'bn (III) en mode expert)</i>. Les sets de rencontre Skrull Pantheon, Dard'van Sect et Standard. Un set de rencontre modulaire <i>(Skrull Society)</i>.\n<b>Mise en place</b> : mettez l'environnement Skrull Pantheon de côté, hors du jeu.",
+    // skrull_menace — Protect the Pantheon (MainScheme, 1B)
+    'sk173b': "<b>Interruption forcée</b> : quand la dernière menace est retirée de cette manigance, mettez en jeu l'environnement Skrull Pantheon mis de côté, face <b><i>DESTROYED</i></b> visible. Avancez au stade 2B.\n<b>Une fois achevé</b> : mettez en jeu l'environnement Skrull Pantheon mis de côté, face <b><i>STRONGHOLD</i></b> visible. Avancez au stade 2A.",
+    // skrull_menace — Slaying the False Gods (MainScheme, 2A)
+    'sk174a': "<i>Kly'bn, l'Éternel Skrull, et Sl'gur't des Noms Infinis sont présentés comme l'empereur et l'impératrice du Panthéon skrull.</i>\n<b>Une fois révélée</b> : cherchez la manigance annexe Strengthen the Faith dans le deck Rencontre ou la pile de défausse rencontre, révélez-la et placez-y 2[per_hero] menaces supplémentaires.",
+    // skrull_menace — Slaying the False Gods (MainScheme, 2B)
+    'sk174b': "<i>Kly'bn et Sl'gur't ont indirectement soutenu la création et l'expansion de l'Empire skrull. Ils ont conquis et asservi les panthéons des races conquises, près de 1000 panthéons. Maintenant, le duo en veut aux dieux de la Terre.</i>\n<b>Une fois révélée</b> : retournez le méchant.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // skrull_menace — Skrull Pantheon (Environment, Stronghold)
+    'sk175a': "<b>Action de héros</b> : dépensez 2 ressources du même type → retirez 1 jeton de foi du méchant.\n<i>Kly'bn et Sl'gur't se sont unis et sont montés à la divinité, devenant les chefs du Panthéon skrull.</i>",
+    // skrull_menace — Skrull Pantheon (Environment, Destroyed)
+    'sk175b': "<b>Action de héros</b> : dépensez 2 ressources de n'importe quel type → retirez 1 jeton de foi du méchant.\n<i>Le Panthéon skrull a été détruit avec succès et la Divinité skrull est devenue vraiment furieuse.</i>",
+    // skrull_menace — Blessed by Kly'bn (Attachment)
+    'sk176': "Attachez cette carte au sbire ayant la MNG la plus faible. Sinon, cette carte gagne Renfort.\nX est égal au nombre de jetons de foi sur le méchant.\n<hr />\n[star] <b>Boost</b> : si cette activation est une manigance, cette carte gagne +2 icônes de boost ([boost][boost]) pour cette activation.",
+    // skrull_menace — Blessed by Sl'gur't (Attachment)
+    'sk177': "Attachez cette carte au sbire ayant l'ATQ la plus faible. Sinon, cette carte gagne Renfort.\nX est égal au nombre de jetons de foi sur le méchant.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, cette carte gagne +2 icônes de boost ([boost][boost]) pour cette activation.",
+    // skrull_menace — Nogor (Minion)
+    'sk178': "[star] Nogor gagne +1 MNG, +1 ATQ et +1 point de vie pour chaque jeton de foi sur le méchant.\n<b>Une fois révélé</b> : retournez le méchant.\n<hr />\n[star] <b>Boost</b> : retournez le méchant.\n<i>\"Je suis le harnais vivant du pouvoir des dieux.\"</i>",
+    // skrull_menace — Shapeless Wastes (SideScheme)
+    'sk179': "<i>L'équivalent skrull de l'Enfer est connu sous le nom de Shapeless Wastes.</i>\nEntrave 2[per_hero].\n<b>Réponse forcée</b> : après qu'un allié ou un sbire est vaincu, si ce personnage a le trait [[SKRULL]], retournez le méchant. Sinon, placez 1 jeton de foi sur le méchant.",
+    // skrull_menace — Strengthen the Faith (SideScheme)
+    'sk180': "<i>La plupart des Skrulls vénèrent Kly'bn, l'Éternel Skrull, et Sl'gur't des Noms Infinis. Ce sont les seuls vrais dieux de l'Empire skrull.</i>\n<b>Réponse forcée</b> : après qu'un sbire [[SKRULL]] entre en jeu, placez 1 jeton de foi sur le méchant.\n<hr />\n[star] <b>Boost</b> : placez 1 jeton de foi sur le méchant.",
+    // skrull_menace — Prayer to Kly'bn (Treachery)
+    'sk181': "<b>Une fois révélée</b> : si Kly'bn est en jeu, il s'active contre vous. Sinon, retournez le méchant.\n<hr />\n[star] <b>Boost</b> : si Kly'bn n'est pas en jeu, retournez le méchant.\n<i>\"Car je suis Kly'bn. Je suis l'Éternel Skrull. Et je vous aime.\" —Kly'bn</i>",
+    // skrull_menace — Prayer to Sl'gur't (Treachery)
+    'sk182': "<b>Une fois révélée</b> : si Sl'gur't est en jeu, elle s'active contre vous. Sinon, retournez le méchant.\n<hr />\n[star] <b>Boost</b> : si Sl'gur't n'est pas en jeu, retournez le méchant.\n<i>\"Comment vous appelle-t-on ? Je vous prie, dites-le-nous...\" —Sl'gur't</i>",
+    // skrull_menace — Talisman of the Skrulls (Treachery)
+    'sk183': "<b>Une fois révélée</b> : cherchez Nogor dans le deck Rencontre ou la pile de défausse rencontre et révélez-le. Si Nogor n'est pas entré en jeu de cette façon, cette carte gagne Renfort.\n<i>\"Le Talisman est la représentation des dieux, et sa présence est requise pour assurer la bénédiction des dieux sur nos entreprises\" —Jazinda</i>",
+    // skrull_menace — Dard'van Fanatic (Minion)
+    'sk184': "<b>Une fois révélé</b> : choisissez : soit vous infligez 1 dégât à chaque personnage que vous contrôlez, soit vous placez 1 menace sur chaque manigance en jeu.\n<i>\"J'appartiens à la secte Dard'van. Certains la considèrent comme extrême.\" —Grrix</i>",
+    // skrull_menace — Dard'van Priest (Minion)
+    'sk185': "<b>Une fois révélé</b> : Dard'van Priest manigance.\n[star] <b>Interruption forcée</b> : quand Dard'van Priest est censé attaquer, choisissez à la place une carte en jeu qui a une capacité \"<b>Une fois révélé</b>\" et résolvez cette capacité.\n<i>\"Il vous aime.\"</i>",
+    // skrull_menace — Dard'van Sect (SideScheme)
+    'sk186': "<i>Une secte zélée de l'Empire skrull qui suit des prophéties annonçant que la Terre deviendra la nouvelle patrie de la race skrull.</i>\n<b>Une fois révélée</b> : donnez 1 carte de boost face cachée au méchant.",
+    // skrull_menace — Collective Prayers (Treachery)
+    'sk187': "<b>Une fois révélée</b> : défaussez la carte du dessus du deck Rencontre pour chaque personnage en jeu. Révélez chaque carte défaussée de cette façon qui appartient au set de rencontre Dard'van Sect.\n<i>\"...le premier nous aime tous de la même façon.\" —Grrix</i>",
+    // skrull_menace — Sectarian Practices (Treachery)
+    'sk188': "<b>Une fois révélée</b> : choisissez une carte en jeu qui a une capacité \"<b>Une fois révélé</b>\" et résolvez cette capacité. Si vous ne pouvez pas, cette carte gagne Renfort.\n<i>\"La confiance. Que savent les humains de la confiance ? Vous n'arrivez même pas à vous accorder sur un seul dieu.\" —Nogor</i>",
 };

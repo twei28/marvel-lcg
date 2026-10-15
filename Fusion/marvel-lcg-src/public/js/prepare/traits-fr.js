@@ -89,6 +89,7 @@ export const TRAITS_FR = {
   "GIANT": "GÉANT",
   "GIFT": "CADEAU",
   "GOBLIN": "BOUFFON",
+  "GOD": "DIEU",
   "GOOD BOY": "BON CHIEN",
   "GUARDIAN": "GARDIEN",
   "GUILD": "GUILDE",
