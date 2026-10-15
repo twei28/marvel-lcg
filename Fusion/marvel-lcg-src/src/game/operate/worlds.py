@@ -750,6 +750,11 @@ class Worlds:
         # scenario Skrull Empire, 9 environnements faces cachees dont chaque
         # complot principal face B revele la carte du dessus.
         "PlanetDeck",
+        # AJOUT (15/10/2026, pack custom skrull_menace, scenario Super-Skrull) :
+        # le paquet SUPERPOWER, 4 attachements melanges a cote du complot
+        # principal ; « reveal the top card of the SUPERPOWER deck » l'attache
+        # au Super-Skrull. Avec sa defausse (les cartes lui reviennent).
+        "SuperpowerDeck",
     ]
 
     SCENARIO_AREA_NAME: TypeAlias = Literal[

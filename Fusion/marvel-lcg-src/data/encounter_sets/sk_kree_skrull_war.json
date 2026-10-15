@@ -1,0 +1,11 @@
+{
+  "version": "0.5.8",
+  "name": "Kree-Skrull War",
+  "encounters": [
+    "sk136",
+    "sk137",
+    "sk138",
+    "sk139",
+    "sk140"
+  ]
+}
