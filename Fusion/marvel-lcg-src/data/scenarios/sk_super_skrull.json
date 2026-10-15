@@ -1,0 +1,46 @@
+{
+  "version": "0.5.8",
+  "name": "Super-Skrull",
+  "villain": [
+    "sk117",
+    "sk118"
+  ],
+  "expert": false,
+  "schemes": [
+    "sk120a,sk120b",
+    "sk121a,sk121b"
+  ],
+  "set_aside": [
+    "sk122",
+    "sk123",
+    "sk124",
+    "sk125"
+  ],
+  "encounters": [
+    "sk126",
+    "sk126",
+    "sk126",
+    "sk127",
+    "sk128",
+    "sk129",
+    "sk130",
+    "sk131",
+    "sk132",
+    "sk133",
+    "sk133",
+    "sk133",
+    "sk134",
+    "sk134",
+    "sk134",
+    "sk134",
+    "sk135",
+    "sk135"
+  ],
+  "encounter_sets": [
+    "standard"
+  ],
+  "modular_sets": [
+    "sk_army_of_skrulls",
+    "sk_kree_skrull_war"
+  ]
+}

@@ -104464,7 +104464,404 @@
    "set_name": "Lyja Nemesis",
    "text": "<b>When Revealed</b>: Search your deck for all identity-specific cards, shuffle your deck and place those cards on the bottom of your deck in any order.",
    "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk117",
+   "type": "Villain",
+   "name": "* Super-Skrull",
+   "subtitle": "",
+   "desc": {
+    "HP": "14*",
+    "ATK": "2",
+    "SCH": "1",
+    "Stage": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "<b>Forced Response</b>: After resolving step two of the villain phase, shuffle each [[SUPERPOWER]] attachment from play into the [[SUPERPOWER]] deck and reveal the top card of the [[SUPERPOWER]] deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk118",
+   "type": "Villain",
+   "name": "* Super-Skrull",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "ATK": "2",
+    "SCH": "1",
+    "Stage": "2"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "<b>Forced Response</b>: After resolving step two of the villain phase, shuffle each [[SUPERPOWER]] attachment from play into the [[SUPERPOWER]] deck and reveal the top 2 cards of the [[SUPERPOWER]] deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk119",
+   "type": "Villain",
+   "name": "* Super-Skrull",
+   "subtitle": "",
+   "desc": {
+    "HP": "19*",
+    "ATK": "2",
+    "SCH": "2",
+    "Stage": "3"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "<b>Forced Response</b>: After resolving step two of the villain phase, shuffle each [[SUPERPOWER]] attachment from play into the [[SUPERPOWER]] deck and reveal the top 2 cards of the [[SUPERPOWER]] deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk120a",
+   "type": "MainScheme",
+   "name": "Searching for the Heir",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Super-Skrull",
+   "text": "<b>Contents</b>: Super-Skrull I and Super-Skrull II <i>(Super-Skrull III for expert mode)</i>. Super-Skrull and Standard encounter sets. Two modular encounter sets <i>(Army of Skrulls and Kree-Skrull War)</i>.\n<b>Setup</b>: Shuffle each [[SUPERPOWER]] attachment into the [[SUPERPOWER]] deck and set it next to the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk120b",
+   "type": "MainScheme",
+   "name": "Searching for the Heir",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1",
+    "TargetThreat": "6*",
+    "EscalationThreat": "1*",
+    "StartingThreat": "0"
+   },
+   "traits": [],
+   "set_name": "Super-Skrull",
+   "text": "<i>Learning that Princess Anelle had a child with his old foe, the original Captain Marvel, and that the Skrull Empire was seeking out this heir, named Dorrek VIII, the Super-Skrull made it his mission to be the first to find the boy, hidden on planet Earth.</i>\n<b>When Revealed</b>: Reveal the top card of the [[SUPERPOWER]] deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk121a",
+   "type": "MainScheme",
+   "name": "Heir to the Throne",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Super-Skrull",
+   "text": "<i>The Super-Skrull broadcasted to all Skrull worlds that he had located Dorrek VIII, who turned out to be Hulkling, a member of the recently formed Young Avengers team.</i>\n<b>When Revealed</b>: If Lord Kl'rt is in play, deal each player a facedown encounter card. Otherwise, search the encounter deck and discard pile for Lord Kl'rt and attach it to Super-Skrull. Shuffle the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk121b",
+   "type": "MainScheme",
+   "name": "Heir to the Throne",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2",
+    "TargetThreat": "12*",
+    "EscalationThreat": "2*",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "set_name": "Super-Skrull",
+   "text": "<i>Kl'rt, the Super-Skrull, revealed Hulkling the truth about his past. He insisted that he must return to his people so that they could reunite the Skrull Empire.</i>\n<b>When Revealed</b>: Reveal the top card of the [[SUPERPOWER]] deck.\n<b>If this stage is completed, the players lose the game.</b>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk122",
+   "type": "Attachment",
+   "name": "Flexibility",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "1"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "Attach to Super-Skrull.\nSuper-Skrull gains stalwart and his attacks gain ranged.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk123",
+   "type": "Attachment",
+   "name": "Invisibility",
+   "subtitle": "",
+   "desc": {
+    "SCH+": "1"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "Attach to Super-Skrull.\nAs an additional cost to attack Super-Skrull, you must spend 1 resource of any type.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk124",
+   "type": "Attachment",
+   "name": "Pyrokinesis",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1"
+   },
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "Attach to Super-Skrull.\n<b>Forced Response</b>: After a friendly character thwarts the main scheme, deal 1 damage to it.\n[star] Super-Skrull's attacks gain piercing.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk125",
+   "type": "Attachment",
+   "name": "Rock Mimicry",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "SUPERPOWER"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "Attach to Super-Skrull.\n[star] <b>Forced Interrupt</b>: When Super-Skrull attacks, give him 1 additional boost card for this activation.\n[star] Super-Skrull's attacks gain overkill.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk126",
+   "type": "Attachment",
+   "name": "Invisible Forcefield",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Super-Skrull",
+   "text": "Attach to the enemy with the highest printed hit points and without another Invisible Forcefield attached. If you cannot, this card gains surge.\n<b>Forced Interrupt</b>: When any amount of damage would be dealt to attached character, place it here instead. Then, if there is at least 5 damage here, discard this card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk127",
+   "type": "Attachment",
+   "name": "Lord Kl'rt",
+   "subtitle": "",
+   "desc": {
+    "Amplify": "1"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "Attach to Super-Skrull.\n<b>Hero Action</b>: Reveal the top card of the [[SUPERPOWER]] deck → discard this card.\n<hr />\n[star] <b>Boost</b>: Reveal this card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk128",
+   "type": "Minion",
+   "name": "* Mt'nox",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "2*",
+    "Boost": "1"
+   },
+   "traits": [
+    "ELITE",
+    "MYSTIC",
+    "SKRULL"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "[star] <b>Forced Response</b>: After Mt'nox makes an undefended attack against you, discard the top card of your deck. If that card's printed resource has:\n[physical] - Give the villain a tough status card.\n[energy] - You are stunned.\n[mental] - You are confused.\n[wild] - All of the above.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk129",
+   "type": "Minion",
+   "name": "* Praxagora",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "3*",
+    "Boost": "1"
+   },
+   "traits": [
+    "ELITE",
+    "ROBOT"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "[star] Praxagora's attacks gain overkill.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk130",
+   "type": "Minion",
+   "name": "* R'kin",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "2",
+    "ATK": "1",
+    "Boost": "2"
+   },
+   "traits": [
+    "GENIUS",
+    "SKRULL"
+   ],
+   "set_name": "Super-Skrull",
+   "text": "<b>When Defeated</b>: Discard cards from the top of the encounter deck until an attachment is discarded. Reveal that card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk131",
+   "type": "SideScheme",
+   "name": "Galactic Council Membership",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "3*"
+   },
+   "traits": [],
+   "set_name": "Super-Skrull",
+   "text": "<i>The Galactic Council is an intergalactic organization which was created to deal with important matters in the universe. Represented are the races of eight galaxies and other dimensions.</i>\n<b>Forced Response</b>: After a player attacks Super-Skrull, place 1 threat on the main scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk132",
+   "type": "SideScheme",
+   "name": "Skrull Warlords",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Super-Skrull",
+   "text": "<i>The Super-Skrull became one of many Warlords seeking to re-unite the divided Skrull territories. He became one of the six most powerful Warlords who united themselves against this common foe.</i>\n<b>Forced Response</b>: After a card enters play under any player's control, give the villain a facedown boost card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk133",
+   "type": "Treachery",
+   "name": "Hypnotic Gaze",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Super-Skrull",
+   "text": "<b>When Revealed</b>: Discard the top 2 cards of your deck. For each [physical] resource discarded this way stun a character you control, for each [mental] resource discarded this way confuse a character you control.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk134",
+   "type": "Treachery",
+   "name": "Power Multiplying",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Super-Skrull",
+   "text": "<b>When Revealed</b>: Reveal the top card of the [[SUPERPOWER]] deck. If you cannot, this card gains surge.\n<hr />\n[star] <b>Boost</b>: This card gets +1 boost icon ([boost]) for each [[SUPERPOWER]] attachment attached to Super-Skrull.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk135",
+   "type": "Treachery",
+   "name": "Villain's Versatility",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Super-Skrull",
+   "text": "<b>When Revealed</b>: If Super-Skrull has the following [[SUPERPOWER]] attachment attached:\n• Pyrokinesis - Take 3 indirect damage.\n• Rock Mimicry - Give Super-Skrull a tough status card.\n• Flexibility - Discard 1 card from your hand.\n• Invisibility - Place 2 threat on the main scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk136",
+   "type": "Minion",
+   "name": "* Bel-Dann",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "3",
+    "Boost": "2"
+   },
+   "traits": [
+    "ELITE",
+    "KREE"
+   ],
+   "set_name": "Kree-Skrull War",
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for Raksor and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk137",
+   "type": "Minion",
+   "name": "* Raksor",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "ELITE",
+    "SKRULL"
+   ],
+   "set_name": "Kree-Skrull War",
+   "text": "<b>When Revealed</b>: Search the encounter deck and discard pile for Bel-Dann and put him into play engaged with you.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk138",
+   "type": "SideScheme",
+   "name": "Earth Involvement",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1*",
+    "Permanent": "1",
+    "Setup": "1"
+   },
+   "traits": [],
+   "set_name": "Kree-Skrull War",
+   "text": "<i>Both the Kree and Skrulls are involving Earth in their plans in this intergalactic war.</i>\nPermanent. Setup.\nWhile there is at least 1 threat here, this card gains a crisis icon ([crisis]).\n<b>Forced Response</b>: After a card that belongs to the Kree-Skrull War encounter set is revealed, place 2 threat here.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk139",
+   "type": "Treachery",
+   "name": "Imperial Kree Army",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Kree-Skrull War",
+   "text": "<b>When Revealed</b>: Discard the top card of the encounter deck. Deal 1 damage to each character you control for each boost icon ([boost]) discarded this way.\n<hr />\n[star] <b>Boost</b>: Place 2 threat on Earth Involvement.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk140",
+   "type": "Treachery",
+   "name": "Skrull Imperial Fleet",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Kree-Skrull War",
+   "text": "<b>When Revealed</b>: Discard the top card of the encounter deck. Place 1 threat on each scheme in play for each boost icon ([boost]) discarded this way.\n<hr />\n[star] <b>Boost</b>: Place 2 threat on Earth Involvement.",
+   "custom": "Kajislav"
   }
  ],
- "checksum": "a1da8eca7d113debdf30a43fb78767c5445cd0cbd1d663984d9047a25a99f039"
+ "checksum": "e986bca280df7d16db691e7c8354086691b5b0da5f2a0dd38e750da20dfbf79f"
 }
