@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.skrull_menace.campaign import CampaignSetup
 
 # Rise of the Skrull Empire — complot principal 1A (mise en place).
 # Contents: All villains (I) and (II) (stages (II) and (III) instead for the
@@ -40,6 +41,7 @@ def GetAbilities() -> Sequence['Ability']:
             env.PutIntoPlay(Worlds.GetFirstPlayer(effect), effect)
 
     return [
+        *CampaignSetup(1),  # mode campagne : mise en place, regle de cooperation, releve du carnet
         AbilityFactory.WhenCardSetupBeforePutSetupCards(avant),
         AbilityFactory.WhenCardSetup("This", mise_en_place),
     ]

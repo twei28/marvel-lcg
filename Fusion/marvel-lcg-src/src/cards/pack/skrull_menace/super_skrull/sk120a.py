@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.skrull_menace.campaign import CampaignSetup
 
 # Searching for the Heir 1A — complot principal, face A (mise en place).
 # Contents: Super-Skrull I and Super-Skrull II (Super-Skrull III for expert
@@ -30,5 +31,6 @@ def GetAbilities() -> Sequence['Ability']:
         CreerPaquetSuperpouvoir(effect)
 
     return [
+        *CampaignSetup(2),  # mode campagne : mise en place, regle de cooperation, releve du carnet
         AbilityFactory.WhenCardSetup("This", mise_en_place),
     ]

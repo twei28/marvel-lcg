@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.skrull_menace.campaign import CampaignSetup
 
 # Power Skrull Engineering 1A — complot principal, face A (mise en place).
 # Contents: Paibok I and Paibok II (Paibok II and Paibok III for expert mode).
@@ -22,5 +23,6 @@ def GetAbilities() -> Sequence['Ability']:
         PoserMaitrise(effect)
 
     return [
+        *CampaignSetup(3),  # mode campagne : mise en place, regle de cooperation, releve du carnet
         AbilityFactory.WhenCardSetup("This", mise_en_place),
     ]
