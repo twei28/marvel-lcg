@@ -107973,5 +107973,1255 @@
    "custom": "Kajislav"
   }
  ],
- "checksum": "4ddf4334e8829a6fb349856915bc6a9db9a788cadb5dcb93714fd5427e55eb11"
+ "leonardo": [
+  {
+   "card_id": "tl001a",
+   "type": "Hero",
+   "name": "* Leonardo",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "2",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE"
+   ],
+   "text": "<i>Kenjutsu</i> — <b>Action</b>: Ready a [[WEAPON]] upgrade you control. <i>(Limit once per round.)</i>",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl001b",
+   "type": "AlterEgo",
+   "name": "* Leo",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "TEENAGER",
+    "MUTANT",
+    "TURTLE"
+   ],
+   "text": "<b>Action</b>: Discard 1 card from your hand → search your deck and discard pile for up to 2 [[KATANA]] upgrades and put them into play, exhausted. <i>(Shuffle.)</i>",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl002",
+   "type": "Ally",
+   "name": "* Splinter",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "RAT",
+    "SENSEI"
+   ],
+   "text": "<b>Response</b>: After Splinter enters play, choose an identity-specific card in your discard pile and put it on top of your deck.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl003",
+   "type": "Event",
+   "name": "Uke Nagashi",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "SKILL"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense)</i>: When Leonardo defends against an attack, he gets +2 DEF for that attack. If you paid for this card with a [physical] resource, ready Leonardo.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl004",
+   "type": "Event",
+   "name": "Vigilant",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 3 threat from a scheme. If you paid for this card with a [mental] resource, ready a [[KATANA]] upgrade you control.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl005",
+   "type": "Event",
+   "name": "Stoicism",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "text": "<b>Hero Action</b>: Ready Leonardo. If you paid for this card with a [energy] resource, ready a [[KATANA]] upgrade you control.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl006",
+   "type": "Event",
+   "name": "Yo Ko Giri",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "SKILL"
+   ],
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 5 damage to an enemy. This attack gains piercing. If you paid for this card with [energy][mental][physical] resources, you may return this card to your hand.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl007",
+   "type": "Support",
+   "name": "* Leo's Greenhouse",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "SKYLINE"
+   ],
+   "text": "<b>Alter-Ego Action</b>: Exhaust Leo's Greenhouse and discard 1 card from your hand → draw 2 cards and heal 2 damage from your identity.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl008",
+   "type": "Upgrade",
+   "name": "Iaijutsu",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "STANCE"
+   ],
+   "text": "<b>Hero Interrupt</b>: When an enemy initiates an attack, exhaust a [[KATANA]] upgrade you control → you may play an [[ATTACK]] event with a \"<b>Hero Action</b>\" ability from your hand <i>(paying its cost)</i>. If this attack defeats an enemy, draw 1 card.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl009",
+   "type": "Upgrade",
+   "name": "Taichō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust a [[KATANA]] upgrade you control → ready this card.\n<b>Hero Response</b>: After an ally takes consequential damage ([consequential]), exhaust this card → ready that ally.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl010",
+   "type": "Upgrade",
+   "name": "Nukitsuke",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "STANCE"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust Nukitsuke → ready a [[KATANA]] upgrade you control.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl011",
+   "type": "Upgrade",
+   "name": "* Leonardo's Katana",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "KATANA",
+    "NINJA",
+    "WEAPON"
+   ],
+   "text": "Restricted.\nEach [[KATANA]] upgrade you control gains: \"<b>Hero Resource</b>: Exhaust this card → generate a [wild] resource for an identity-specific card.\"",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl012",
+   "type": "Upgrade",
+   "name": "* Leonardo's Other Katana",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "KATANA",
+    "NINJA",
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Action</b>: Choose a friendly character and exhaust 2 [[KATANA]] upgrades you control → that character gets +1 to each of their basic powers until the end of the round.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl013",
+   "type": "Obligation",
+   "name": "Brainwashed Betrayal",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Leo"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Leo player.</i></b>\nFlip to hero form and discard an ally you control. You cannot attack the villain.\n<b>Forced Response</b>: After your turn begins, deal 3 damage to an ally.\n<b>Alter-Ego Action</b>: Exhaust Leo and take 2 damage → remove Brainwashed Betrayal from the game.",
+   "set_name": "Leonardo",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl014",
+   "type": "SideScheme",
+   "name": "Foot Patrol",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "2",
+    "Crisis": "1"
+   },
+   "traits": [],
+   "text": "<i>Karai is on patrol with the Foot Clan.</i>\n<b>When Defeated</b>: Search the encounter deck and discard pile for a [[FOOT CLAN]] minion and put it into play engaged with the first player.",
+   "set_name": "Leonardo Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl015",
+   "type": "Minion",
+   "name": "* Karai",
+   "subtitle": "",
+   "desc": {
+    "HP": "2",
+    "SCH": "1",
+    "ATK": "1",
+    "Nemesis": "Leonardo"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "text": "<b>When Revealed</b>: Cloak Karai.\n<b>When Defeated</b>: Cloak the villain.\n<i>(Leonardo's nemesis minion.)</i>\n<hr />\n[star] <b>Boost</b>: Deal this card to the first player as a facedown encounter card.",
+   "set_name": "Leonardo Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tl016",
+   "type": "Minion",
+   "name": "Foot Soldiers",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "1",
+    "ATK": "1",
+    "Boost": "1",
+    "Nemesis": "Leonardo"
+   },
+   "traits": [
+    "FOOT CLAN",
+    "NINJA"
+   ],
+   "text": "<b>When Revealed</b>: Cloak Foot Soldiers.",
+   "set_name": "Leonardo Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "donatello": [
+  {
+   "card_id": "td001a",
+   "type": "Hero",
+   "name": "* Donatello",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "1",
+    "THW": "2",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE"
+   ],
+   "text": "<i>Kashikoi</i> — <b>Action</b>: Spend [mental][mental] resources → draw 2 cards. <i>(Limit once per round.)</i>",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td001b",
+   "type": "AlterEgo",
+   "name": "* Donnie",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "GENIUS",
+    "TEENAGER",
+    "MUTANT",
+    "TURTLE"
+   ],
+   "text": "<b>Action</b>: Discard 1 card from your hand → search your deck and discard pile for Donatello's Bo or Donatello's Shell and put it into play, exhausted. <i>(Shuffle.)</i>",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td002",
+   "type": "Ally",
+   "name": "* Metalhead",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "HP": "1",
+    "ATK": "2*",
+    "THW": "2*",
+    "Toughness": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ANDROID"
+   ],
+   "text": "Toughness.\n<b>Interrupt</b>: When Donatello defends against an attack, spend a [mental] resource → play Metalhead from your hand or Donatello's Shell without paying his resource cost.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td003",
+   "type": "Event",
+   "name": "Bō Tobu",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "DEFENSE",
+    "THWART"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(defense/thwart)</i>: When you would take damage from an attack, prevent 3 of that damage and remove 3 threat from a scheme.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td004",
+   "type": "Event",
+   "name": "Chūdan-Ura-Uke",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "DEFENSE"
+   ],
+   "text": "<b>Hero Interrupt</b> <i>(attack/defense)</i>: When you would take damage from an attack, prevent 3 of that damage and deal 3 damage to the attacking enemy.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td005",
+   "type": "Event",
+   "name": "Improvised Tactics",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TACTIC"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust a [[TECH]] upgrade you control → choose two (you cannot choose the same option twice):\n• Cloak two friendly characters.\n• Stun or confuse an enemy.\n• Draw 2 cards.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td006",
+   "type": "Event",
+   "name": "Singularity",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "Play only if you control the Anti-Gravity Gauntlet upgrade.\n<b>Hero Action</b> <i>(attack)</i>: Deal 10 damage to an enemy. This attack gains overkill, piercing, and ranged.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td007",
+   "type": "Resource",
+   "name": "Inspired Brilliance",
+   "subtitle": "",
+   "desc": {
+    "RES": "BG",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td008",
+   "type": "Support",
+   "name": "* Donnie's Lab",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "SEWERS"
+   ],
+   "text": "<b>Alter-Ego Action</b>: Exhaust Donnie's Lab → add an [[ANDROID]], [[ITEM]], or [[TECH]] card in your discard pile to your hand.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td009",
+   "type": "Upgrade",
+   "name": "* Anti-Gravity Gauntlet",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [
+    "TECH",
+    "WEAPON"
+   ],
+   "text": "Donatello gets +1 ATK.\n<b>Hero Interrupt</b>: When you play an [[ATTACK]] event, exhaust Anti-Gravity Gauntlet and discard 1 card from your hand → increase the amount of damage that event does by 3.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td010",
+   "type": "Upgrade",
+   "name": "* Truevision Goggles",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ITEM",
+    "TECH"
+   ],
+   "text": "<b>Hero Interrupt</b>: When you make a basic thwart, exhaust Truevision Goggles → you get +1 THW for that thwart. You may discard a status card from an enemy.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td011",
+   "type": "Upgrade",
+   "name": "* Donatello's Bō",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "BO",
+    "WEAPON"
+   ],
+   "text": "Restricted.\n<b>Hero Action</b>: Exhaust this card → ready Donatello.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td012",
+   "type": "Upgrade",
+   "name": "* Donatello's Shell",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ARMOR",
+    "TECH"
+   ],
+   "text": "You may play, spend, or discard cards tucked here as if they were in your hand. <i>(Max 1 tucked card.)</i>\n<b>Hero Action</b>: Exhaust Donatello's Shell → choose a card in your hand and tuck it here.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td013",
+   "type": "Obligation",
+   "name": "Broken Shell",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Donnie"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Donnie player.</i></b>\nFlip to alter-ego form and you lose 5 hit points. If this would defeat your identity, set your hit point dial to 1 instead. You cannot change to hero form.\n<b>Alter-Ego Action</b>: Spend [mental][mental] resources or discard Donatello's Shell from play → remove Broken Shell from the game.",
+   "set_name": "Donatello",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td014",
+   "type": "SideScheme",
+   "name": "Exterminate!",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Boost": "2",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "text": "<i>Baxter Stockman has sent out his machines to find and exterminate the turtles.</i>\n<b>When Defeated</b>: Search the encounter deck and discard pile for a [[MOUSERS]] or [[FLYBORGS]] minion and put it into play engaged with the first player.",
+   "set_name": "Donatello Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td015",
+   "type": "Minion",
+   "name": "* Baxter Stockman",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "2",
+    "ATK": "0",
+    "Boost": "2",
+    "Quickstrike": "1",
+    "Nemesis": "Donatello"
+   },
+   "traits": [
+    "GENIUS"
+   ],
+   "text": "Quickstrike.\nBaxter Stockman cannot take damage while there are any [[MOUSERS]] or [[FLYBORGS]] in play.\n<b>Forced Interrupt</b>: When Baxter Stockman would attack you, he schemes instead.\n<i>(Donatello's nemesis minion.)</i>",
+   "set_name": "Donatello Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td016",
+   "type": "Minion",
+   "name": "Plague of M.O.U.S.E.R.s",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "0",
+    "ATK": "0",
+    "Boost": "1"
+   },
+   "traits": [
+    "MOUSERS",
+    "SWARM"
+   ],
+   "text": "Enters play with 2 swarm counters on them.\n[star] This minion's SCH, ATK, and hit points are equal to the number of swarm counters here.\n<b>Forced Interrupt</b>: When this minion takes any amount of damage, remove that many swarm counters from here instead.",
+   "set_name": "Donatello Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "td017",
+   "type": "Minion",
+   "name": "Flight of Flyborgs",
+   "subtitle": "",
+   "desc": {
+    "HP": "1",
+    "SCH": "0",
+    "ATK": "0",
+    "Boost": "3"
+   },
+   "traits": [
+    "AERIAL",
+    "FLYBORGS",
+    "SWARM"
+   ],
+   "text": "Enters play with 4 swarm counters on them.\n[star] This minion's SCH, ATK, and hit points are equal to the number of swarm counters here.\n<b>Forced Interrupt</b>: When this minion takes any amount of damage, remove that number of swarm counters from here instead.",
+   "set_name": "Donatello Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "michelangelo": [
+  {
+   "card_id": "tm001a",
+   "type": "Hero",
+   "name": "* Michelangelo",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE"
+   ],
+   "set_name": "Michelangelo",
+   "text": "<i>Booyakasha</i> — <b>Response</b>: After you use a basic power <i>(THW, ATK, or DEF)</i>, move up to 3 threat from one scheme to another scheme. You cannot move threat onto a side scheme with 5[per_hero] or more threat on it.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm001b",
+   "type": "AlterEgo",
+   "name": "* Mikey",
+   "subtitle": "",
+   "desc": {
+    "HP": "11",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "TEENAGER",
+    "MUTANT",
+    "TURTLE"
+   ],
+   "set_name": "Michelangelo",
+   "text": "<b>Setup</b>: Put the I'm Here to Help player side scheme into play.\n<b>Action</b>: Discard 1 card from your hand → search your deck and discard pile for up to 2 [[NUNCHUCK]] upgrades and put them into play, exhausted. <i>(Shuffle.)</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm002",
+   "type": "Ally",
+   "name": "* Slash",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "2",
+    "ATK": "3**",
+    "THW": "0*",
+    "RES": "R",
+    "Retaliate": "1",
+    "Toughness": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "MUTANIMAL",
+    "TURTLE"
+   ],
+   "set_name": "Michelangelo",
+   "text": "Retaliate 1. Toughness.\n[star] Slash's attacks gain piercing.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm003",
+   "type": "Event",
+   "name": "Call for Help",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Michelangelo",
+   "text": "<b>Hero Action</b>: Search your deck and discard pile for an ally or the I'm Here to Help player side scheme and add it to your hand. <i>(Shuffle.)</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm004",
+   "type": "Event",
+   "name": "Impulsive",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Michelangelo",
+   "text": "<b>Hero Action</b>: Place 2 threat on the main scheme → ready Michelangelo and a [[WEAPON]] you control. Draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm005",
+   "type": "Event",
+   "name": "Kaiten",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Michelangelo",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. You may exhaust a [[NUNCHUCK]] upgrade you control to confuse or stun that enemy.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm006",
+   "type": "Event",
+   "name": "Majime",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK",
+    "THWART"
+   ],
+   "set_name": "Michelangelo",
+   "text": "<b>Hero Action</b> <i>(attack/thwart)</i>: Take X damage <i>(to a maximum of 3)</i> → remove X threat from a scheme and deal X damage to an enemy.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm007",
+   "type": "Resource",
+   "name": "Optimism",
+   "subtitle": "",
+   "desc": {
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Michelangelo",
+   "text": "<b>Response</b>: After you spend this card, heal 1 damage from your identity and draw 1 card.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm008",
+   "type": "Support",
+   "name": "* Mikey's Couch",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "SEWERS"
+   ],
+   "set_name": "Michelangelo",
+   "text": "Mikey gets +1 REC.\n<b>Alter-Ego Action</b>: Exhaust Mikey's Couch → choose up to 2 cards in your discard pile and shuffle them into your deck.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm009",
+   "type": "PlayerSideScheme",
+   "name": "* I'm Here to Help",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "Y",
+    "StartingThreat": "3",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "set_name": "Michelangelo",
+   "text": "This card does not count against the player side scheme limit.\n<b>Forced Response</b>: After the player phase ends, remove 1 threat from this card.\n<b>Hero Interrupt</b>: When this scheme is defeated, draw 3 cards <i>(only the Michelangelo player can trigger this ability)</i>.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm010",
+   "type": "Upgrade",
+   "name": "* Mikey's Skateboard",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NYC",
+    "VEHICLE"
+   ],
+   "set_name": "Michelangelo",
+   "text": "<b>Response</b>: After you change form, exhaust Mikey's Skateboard → ready your identity.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm011",
+   "type": "Upgrade",
+   "name": "* Michelangelo's Nunchuck",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "NUNCHUCK",
+    "WEAPON"
+   ],
+   "set_name": "Michelangelo",
+   "text": "Restricted.\nEach [[NUNCHUCK]] upgrade you control gains: \"<b>Hero Response</b>: After you play an event, exhaust this card → your hero gets +1 to a basic power until the end of the round.\"",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm012",
+   "type": "Upgrade",
+   "name": "* Michelangelo's Other Nunchuck",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "NUNCHUCK",
+    "WEAPON"
+   ],
+   "set_name": "Michelangelo",
+   "text": "Restricted.\nEach [[NUNCHUCK]] upgrade you control gains: \"<b>Hero Interrupt</b>: When you would take damage from an attack, exhaust this card → reduce that damage by 1 and deal 1 damage to the attacking enemy.\"",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm013",
+   "type": "Obligation",
+   "name": "All Alone",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Mikey"
+   },
+   "traits": [],
+   "set_name": "Michelangelo",
+   "text": "<b><i>Give to the Mikey player.</i></b>\nFlip to alter-ego form. Exhaust each ally and support you control. You cannot change forms.\n<b>Alter-Ego Action</b>: Exhaust your identity and discard 1 card from your hand → remove All Alone from the game.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm014",
+   "type": "SideScheme",
+   "name": "Sewer Problems",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "4*",
+    "Crisis": "1",
+    "Boost": "3"
+   },
+   "traits": [],
+   "set_name": "Michelangelo Nemesis",
+   "text": "<i>Something terrible has been growing in the sewers.</i>\n<b>When Revealed</b>: Each player discards the top 3 cards of their deck.",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm015",
+   "type": "Minion",
+   "name": "* Wyrm",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "1",
+    "ATK": "3",
+    "Boost": "2",
+    "Toughness": "1",
+    "Nemesis": "Michelangelo"
+   },
+   "traits": [
+    "WORMS"
+   ],
+   "set_name": "Michelangelo Nemesis",
+   "text": "Toughness.\n<b>When Defeated</b>: Shuffle Wyrm into the encounter deck.\n<i>(Michelangelo's nemesis minion.)</i>",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tm016",
+   "type": "Treachery",
+   "name": "Smash!",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Michelangelo Nemesis",
+   "text": "<b>When Revealed</b>: You take 2 indirect damage.",
+   "custom": "Inkwire"
+  }
+ ],
+ "raphael": [
+  {
+   "card_id": "tr001a",
+   "type": "Hero",
+   "name": "* Raphael",
+   "subtitle": "",
+   "desc": {
+    "HP": "14",
+    "ATK": "3",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "4"
+   },
+   "traits": [
+    "NINJA",
+    "TURTLE"
+   ],
+   "text": "Each rage counter on Raphael can be spent as if it were a [physical] resource.\n<i>Yaban Hito</i> — <b>Response</b>: After Raphael takes any amount of damage from an attack, place 1 rage counter on him (to a maximum of 3).",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr001b",
+   "type": "AlterEgo",
+   "name": "* Raph",
+   "subtitle": "",
+   "desc": {
+    "HP": "14",
+    "REC": "4",
+    "HS": "5"
+   },
+   "traits": [
+    "MUTANT",
+    "TEENAGER",
+    "TURTLE"
+   ],
+   "text": "<b>Action</b>: Discard 1 card from your hand → search your deck and discard pile for up to 2 [[SAI]] upgrades and put them into play, exhausted. <i>(Shuffle.)</i>",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr002",
+   "type": "Ally",
+   "name": "* Casey Jones",
+   "subtitle": "",
+   "desc": {
+    "Cost": "3",
+    "HP": "2",
+    "THW": "2*",
+    "ATK": "2*",
+    "RES": "G",
+    "Class": "Hero"
+   },
+   "traits": [
+    "VIGILANTE"
+   ],
+   "text": "<b>Response</b>: After Casey Jones enters play, deal 1 damage to Raphael and each minion engaged with you. Place 1 rage counter on Raphael.",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr003",
+   "type": "Event",
+   "name": "Disarm",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Requirement": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "THWART"
+   ],
+   "text": "Requirement ([physical]).\n<b>Hero Action</b> <i>(thwart)</i>: Remove 4 threat from a scheme. You may discard a [[SAI]] upgrade you control to discard an attachment with the text \"<b>Hero Action</b>\" or \"<b>Hero Response</b>\" from an enemy.",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr004",
+   "type": "Event",
+   "name": "Headbutt",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Requirement": "RR",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "Requirement ([physical][physical]).\n<b>Hero Action</b> <i>(attack)</i>: Deal 4 damage to an enemy. Stun or confuse that enemy.",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr005",
+   "type": "Event",
+   "name": "Savage Assault",
+   "subtitle": "",
+   "desc": {
+    "Cost": "4",
+    "RES": "R",
+    "Requirement": "RRR",
+    "Class": "Hero"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "text": "Requirement ([physical][physical][physical]).\n<b>Hero Action</b> <i>(attack)</i>: Deal 10 damage divided among enemies as you choose.",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr006",
+   "type": "Event",
+   "name": "Unbridled Fury",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "Max 1 per phase.\n<b>Hero Action</b>: Raphael gets +2 ATK until the end of the round. If you paid for this card using a [physical] resource, draw 1 card.",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr007",
+   "type": "Resource",
+   "name": "Seething Rage",
+   "subtitle": "",
+   "desc": {
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [],
+   "text": "<b>Response</b>: After you spend this card, heal 2 damage from Raphael and place 1 rage counter on him (to a maximum of 3).",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr008",
+   "type": "Support",
+   "name": "* Shell Cycle",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NYC",
+    "VEHICLE"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust Shell Cycle and spend 2 resources of any type → ready your hero. If you paid for this ability using [physical][physical] resources, you get +1 THW until the end of the round.",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr009",
+   "type": "Support",
+   "name": "* Raph's Punching Bag",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "LOCATION",
+    "NYC",
+    "SEWERS"
+   ],
+   "text": "Raph gets +2 REC.\n<b>Alter-Ego Action</b>: Exhaust Raph's Punching Bag and remove all rage counters from your identity → draw 1 card for each rage counter removed this way.",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr010",
+   "type": "Upgrade",
+   "name": "Gekido",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "text": "<b>Hero Action</b>: Exhaust Gekido → choose:\n• Place 1 rage counter on Raphael.\n• Heal 1 damage from Raphael.",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr011",
+   "type": "Upgrade",
+   "name": "* Raphael's Sai",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "SAI",
+    "WEAPON"
+   ],
+   "text": "Restricted.\nEach [[SAI]] upgrade you control gains: \"<b>Hero Action</b> <i>(attack)</i>: Exhaust this card and take 1 damage → deal 1 damage to an enemy.\"",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr012",
+   "type": "Upgrade",
+   "name": "* Raphael's Other Sai",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Restricted": "1",
+    "Class": "Hero"
+   },
+   "traits": [
+    "NINJA",
+    "SAI",
+    "WEAPON"
+   ],
+   "text": "Restricted.\nEach [[SAI]] upgrade you control gains: \"<b>Hero Response</b>: After Raphael defeats an enemy, exhaust this card → draw 1 card.\"",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr013",
+   "type": "Obligation",
+   "name": "Out of Control",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Raph"
+   },
+   "traits": [],
+   "text": "<b><i>Give to the Raph player.</i></b>\nFlip to hero form and exhaust your identity. You cannot change forms, thwart, or defend.\n<b>Hero Action</b>: Remove 2 rage counters from Raphael → flip to alter-ego form and discard Out of Control.",
+   "set_name": "Raphael",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr014",
+   "type": "SideScheme",
+   "name": "Mutagen Bomb",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "StartingThreat": "2*"
+   },
+   "traits": [],
+   "text": "<i>Old Hobb has weaponized mutagen into bombs.</i>\n<b>Forced Response</b>: After resolving step one of the villain phase, place 1 timer counter here. Then, if there are 2 or more timer counters here, discard this card and deal each player 1 facedown encounter card.",
+   "set_name": "Raphael Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr015",
+   "type": "Minion",
+   "name": "* Old Hob",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "ATK": "2",
+    "SCH": "2",
+    "Boost": "2",
+    "Toughness": "1",
+    "Quickstrike": "1",
+    "Nemesis": "Raphael"
+   },
+   "traits": [
+    "CAT",
+    "MUTANIMAL"
+   ],
+   "text": "Toughness. Quickstrike.\n<i>(Raphael's nemesis minion.)</i>",
+   "set_name": "Raphael Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr016",
+   "type": "Treachery",
+   "name": "Insurrection",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "text": "<b>When Revealed</b>: Discard 1 ally you control. If you cannot, discard 1 card from your hand.\n<hr />\n[star] <b>Boost</b>: Discard 1 ready ally you control.",
+   "set_name": "Raphael Nemesis",
+   "custom": "Inkwire"
+  },
+  {
+   "card_id": "tr017",
+   "type": "Treachery",
+   "name": "Prepare to Rally",
+   "subtitle": "",
+   "desc": {
+    "Boost": "0"
+   },
+   "traits": [],
+   "text": "<b>When Revealed</b>: Discard 1 card from your hand.\n<hr />\n[star] <b>Boost</b>: Discard 1 card from your hand.",
+   "set_name": "Raphael Nemesis",
+   "custom": "Inkwire"
+  }
+ ],
+ "checksum": "5e5f8f259aec1c9078083d5310736fd4ff0a684138615a72d9925d6a81be2475"
 }

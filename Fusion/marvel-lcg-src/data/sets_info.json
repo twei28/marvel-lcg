@@ -1664,5 +1664,41 @@
   ],
   "max_id": "sk289b"
  },
- "checksum": "a814efbd51876f17e605ceee6bc261396477db0ba476894a754fb5c3607862e7"
+ "179. Custom (Leonardo)": {
+  "name": "leonardo",
+  "scenarios": [],
+  "heroes": [
+   "leonardo"
+  ],
+  "encounters": [],
+  "max_id": "tl016"
+ },
+ "180. Custom (Donatello)": {
+  "name": "donatello",
+  "scenarios": [],
+  "heroes": [
+   "donatello"
+  ],
+  "encounters": [],
+  "max_id": "td017"
+ },
+ "181. Custom (Michelangelo)": {
+  "name": "michelangelo",
+  "scenarios": [],
+  "heroes": [
+   "michelangelo"
+  ],
+  "encounters": [],
+  "max_id": "tm016"
+ },
+ "182. Custom (Raphael)": {
+  "name": "raphael",
+  "scenarios": [],
+  "heroes": [
+   "raphael"
+  ],
+  "encounters": [],
+  "max_id": "tr017"
+ },
+ "checksum": "32680d599ccbb433ac71d590b1dd65102ee290709a6ae8cb9c2da40d7ae633b4"
 }

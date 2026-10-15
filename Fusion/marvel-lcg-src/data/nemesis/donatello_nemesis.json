@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Donatello Nemesis",
+    "encounters": [
+        "td014",
+        "td015",
+        "td016",
+        "td016",
+        "td017"
+    ]
+}

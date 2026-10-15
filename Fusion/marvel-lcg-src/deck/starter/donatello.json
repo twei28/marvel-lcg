@@ -1,0 +1,40 @@
+{
+    "version": "0.5.8",
+    "name": "Donatello",
+    "metadata": {
+        "url": "",
+        "deck_note": "player_deck VOLONTAIREMENT VIDE (PROCESSUS-HEROS etape 3, consigne du 06/09/2026) : le zip TMNT Heroes/Donatello v3 ne contient aucune decklist d'aspect. hero_deck = les 15 cartes signature (x/15 imprimes), obligations = Broken Shell, nemesis_set = les 5 cartes (x/5 imprimes). Auteur : Inkwire (TMNT Heroes)."
+    },
+    "hero": [
+        "td001a,td001b"
+    ],
+    "hero_deck": [
+        "td002",
+        "td003",
+        "td003",
+        "td004",
+        "td004",
+        "td005",
+        "td005",
+        "td006",
+        "td007",
+        "td007",
+        "td008",
+        "td009",
+        "td010",
+        "td011",
+        "td012"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "td013"
+    ],
+    "nemesis_set": [
+        "td014",
+        "td015",
+        "td016",
+        "td016",
+        "td017"
+    ],
+    "player_deck": []
+}

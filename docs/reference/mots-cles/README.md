@@ -138,6 +138,18 @@ la plus fréquente sur un pack vilain.
       zéro ligne de code. ⚠ À ne pas confondre avec le set officiel « The
       Initiative »)
 
+- [ ] cloak.md (pack `leonardo`, TMNT : mot-clé imprimé en verbe sur tl015 et
+      tl016 et JAMAIS défini — fiche créée le 15/10/2026 SANS définition ni
+      mécanisme, stub `Cloak()` en attente de la réponse de l'utilisateur,
+      question Q1 de `.planning/tmnt/leonardo-phase-a.md`)
+
+- [x] cloak.md (pack `donatello`, TMNT Heroes : mot-clé employé UNE fois et
+      JAMAIS défini — AUCUN arbitrage, stub inerte, question Q-TD-05)
+- [x] swarm.md (pack `donatello` : trait + compteur `swarm`, mécanique dans le
+      texte de `td016` / `td017`)
+- [x] tuck.md (terme officiel, `td012` Donatello's Shell ; jamais documenté
+      avant ce pack)
+
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 
 Vérification faite avec l'heuristique `<b>([A-Z][a-zA-Z ]{2,20})</b>` sur

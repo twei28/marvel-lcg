@@ -200,6 +200,15 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # et soutiens (Crusader « INITIATIVE », Paibok « S.W.O.R.D. », Skymax « SQUADRON SUPREME », Xavin
         # « RUNAWAYS », Skrull Kill Krew « CREW »). Purement declaratif, comme les autres.
         "INITIATIVE", "S.W.O.R.D.", "SQUADRON SUPREME", "RUNAWAYS", "CREW",
+        # CORRECTIF : traits du pack custom leonardo (Inkwire, TMNT Heroes).
+        # ⚠ KATANA n'est PAS decoratif : tl001b/tl004/tl005/tl008/tl009/tl010
+        # cherchent les ameliorations par ce trait.
+        "NINJA", "TURTLE", "TEENAGER", "RAT", "SENSEI", "KATANA", "STANCE",
+        "FOOT CLAN", "NYC", "SKYLINE",
+        # CORRECTIF : traits du pack custom donatello (Inkwire, TMNT Heroes).
+        # MOUSERS / FLYBORGS ne sont pas decoratifs : td014 et td015 les lisent.
+        "BO", "SEWERS",
+        "MOUSERS", "FLYBORGS", "SWARM",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -304,6 +313,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # carte TECH controlee (pose a la main, desc.Uses ne sait pas porter
         # un compte dynamique) et le depense en Hero Resource.
         'ion',
+        # CORRECTIF : compteur du pack custom donatello (Inkwire). Les sbires
+        # td016 / td017 (SWARM) entrent en jeu avec 2 / 4 « swarm » ; leur
+        # ATQ, MNG et PV valent ce nombre.
+        'swarm',
         # CORRECTIF : compteurs du pack custom dazzler (Lord Havok). Le « sound »
         # marque un SONG de la Setlist deja repete (« Rehearsal » n'accepte qu'un
         # SONG SANS compteur) ; le « knife » alimente les interruptions de

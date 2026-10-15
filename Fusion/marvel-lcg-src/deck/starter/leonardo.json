@@ -1,0 +1,41 @@
+{
+    "version": "0.5.8",
+    "name": "Leonardo",
+    "metadata": {
+        "url": "",
+        "aspect_note": "Aucune decklist fournie par l'auteur (Inkwire) : le zip contient les 2 faces heros, l'insert de regles Katana, les 15 exemplaires signature, l'obligation et les 5 cartes nemesis. player_deck VIDE (consigne du 06/09/2026, PROCESSUS-HEROS etape 3).",
+        "katana_note": "Deux cartes KATANA seulement (tl011 et tl012), toutes deux Restricted. tl001b (Leo) les met en jeu inclinees, jusqu'a 2."
+    },
+    "hero": [
+        "tl001a,tl001b"
+    ],
+    "hero_deck": [
+        "tl002",
+        "tl003",
+        "tl003",
+        "tl004",
+        "tl004",
+        "tl005",
+        "tl005",
+        "tl006",
+        "tl006",
+        "tl007",
+        "tl008",
+        "tl009",
+        "tl010",
+        "tl011",
+        "tl012"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "tl013"
+    ],
+    "nemesis_set": [
+        "tl014",
+        "tl015",
+        "tl016",
+        "tl016",
+        "tl016"
+    ],
+    "player_deck": []
+}

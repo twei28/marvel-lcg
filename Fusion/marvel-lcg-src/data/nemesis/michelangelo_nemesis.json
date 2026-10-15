@@ -1,0 +1,11 @@
+{
+    "version": "0.5.9",
+    "name": "Michelangelo Nemesis",
+    "encounters": [
+        "tm014",
+        "tm015",
+        "tm016",
+        "tm016",
+        "tm016"
+    ]
+}

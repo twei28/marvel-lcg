@@ -522,6 +522,34 @@
    "cartes": 239,
    "depuis": "2026-10-08",
    "note": "Auteur Nugget. Campagne en cinq scenarios (Vermin, Scorpion, The Lizard, Vulture, Kraven), 239 entrees JSON pour 226 cartes physiques, Lodge, mode expert et Hunter. Portage du 08/10/2026, dossier source .planning/hunting-season/."
+  },
+  "tl": {
+   "pack": "leonardo",
+   "libelle": "179. Custom (Leonardo)",
+   "cartes": 17,
+   "depuis": "2026-10-15",
+   "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Leonardo v3 ». tl001a Leonardo (HEROS) / tl001b Leo (ALTER-EGO), tl002-tl012 signature (11 card_id pour 15 exemplaires), tl013 obligation Brainwashed Betrayal, tl014-tl016 set nemesis 'Leonardo Nemesis' (Foot Patrol, Karai, Foot Soldiers x3). Mot-cle maison NON DEFINI : Cloak (tl015, tl016). Armes KATANA : insert de regles non transcrit en carte."
+  },
+  "td": {
+   "pack": "donatello",
+   "libelle": "180. Custom (Donatello)",
+   "cartes": 18,
+   "depuis": "2026-10-15",
+   "note": "Cree le 15/10/2026, PHASE A (construction), NON VALIDE. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Donatello v3 ». td001a Donatello (HEROS) / td001b Donnie (ALTER-EGO), td002-td012 signature (11 card_id pour 15 exemplaires), td013 obligation Broken Shell (set Donatello), td014-td017 set nemesis Baxter Stockman (set Donatello Nemesis, 5 cartes). Quatre heros TMNT portes en parallele : td Donatello, tl Leonardo, tm Michelangelo, tr Raphael. Voir .planning/tmnt/donatello-phase-a.md."
+  },
+  "tm": {
+   "pack": "michelangelo",
+   "libelle": "181. Custom (Michelangelo)",
+   "cartes": 17,
+   "depuis": "2026-10-15",
+   "note": "Cree le 15/10/2026. Auteur Inkwire, zip « TMNT Heroes / Michelangelo v3 ». tm001a Michelangelo (HEROS) / tm001b Mikey (ALTER-EGO), tm002-tm012 signature (11 card_id pour 15 exemplaires), tm013 obligation All Alone (GiveTo « Mikey »), tm014-tm016 set nemesis (Sewer Problems, Wyrm, Smash! x3). tm009 I'm Here to Help est une manigance-joueur du deck, mise en jeu par le Setup de tm001b. tm011/tm012 : « each NUNCHUCK upgrade you control gains » via GiveAbilityToInPlayWhenApplyThis. Traits NUNCHUCK, NINJA, TURTLE, MUTANIMAL, TEENAGER, NYC, SEWERS, WORMS : AUCUN fichier moteur partage touche. Les trois autres tortues TMNT ont leurs prefixes tl, td, tr. PHASE A seulement : aucun cas de test, aucune gate lancee."
+  },
+  "tr": {
+   "pack": "raphael",
+   "libelle": "182. Custom (Raphael)",
+   "cartes": 18,
+   "depuis": "2026-10-15",
+   "note": "Cree le 15/10/2026. Auteur Inkwire (TMNT Heroes), zip « TMNT Heroes / Raphael v3 ». tr001a Raphael (HEROS) / tr001b Raph (ALTER-EGO), tr002-tr012 signature (11 card_id pour 15 exemplaires), tr013 obligation Out of Control (bandeau RAPHAEL, donc module dans raphael/raphael/), tr014-tr017 set nemesis Old Hob (Insurrection x2). Compteur `rage` (deja dans l'enum), jouable comme ressource [physical] par le heros (modele Spider-Ham 30001a). Prefixes freres : Leonardo `tl`, Donatello `td`, Michelangelo `tm`. PHASE A seulement (construction) : aucune validation, voir .planning/tmnt/raphael-phase-a.md."
   }
  }
 }
