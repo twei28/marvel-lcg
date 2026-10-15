@@ -164,3 +164,16 @@ navigateur/.cache/
 
 # Environnement Python du lanceur Linux (LANCEUR-LINUX.sh), propre a la machine.
 .venv-linux/
+
+# Sauvegarde GitHub (15/10/2026) : fichiers lourds ou personnels de la racine
+/*.zip
+/*.mkv
+/*.mp4
+/*.png
+/*.jpg
+.claude/
+parties-joueurs/
+.planning/captures-*/
+ui-check/captures-tmp/
+.planning/hunting-season/reference/*.pdf
+ui-check/*.png
