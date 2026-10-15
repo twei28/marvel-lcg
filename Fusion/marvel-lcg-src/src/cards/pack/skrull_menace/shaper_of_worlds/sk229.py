@@ -28,6 +28,12 @@ def GetAbilities() -> Sequence['Ability']:
 
     def mise_de_cote(effect: 'Effect', message: 'Message.WhenGameWouldBegin') -> None:
         Unused(message)
+        # Mode campagne Skrull Menace : le carnet DIT ou est chaque carte du set (en jeu, mis de cote,
+        # ailleurs), `cards/pack/skrull_menace/campaign.py` les place une a une a la mise en place. Les
+        # remettre toutes de cote ici defairait ce qu'il vient de poser (un Shaper « in another game
+        # area » doit rester dans le deck rencontre).
+        if Worlds.IsCampaign(effect):
+            return
         if effect.this.card.area.flags.is_encounter_deck:
             MettreDeCoteLeSet(effect)
 

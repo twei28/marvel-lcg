@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.skrull_menace.campaign import CampaignSetup
 
 # The Infiltration Has Begun 1A — complot principal, face A (mise en place).
 # Contents: Spider-Woman I and Spider-Woman II (Spider-Woman II and Spider-Woman III instead for expert mode). Secret
@@ -30,5 +31,6 @@ def GetAbilities() -> Sequence['Ability']:
             env[0].PutIntoPlay(Worlds.GetFirstPlayer(effect), effect)
 
     return [
+        *CampaignSetup(5),  # mode campagne : mise en place, regle de cooperation, releve du carnet
         AbilityFactory.WhenCardSetup("This", mise_en_place),
     ]

@@ -1309,8 +1309,14 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                 sets.append(nom)
         campagne["encounter_sets"] = sets
 
+    # AJOUT 16/10/2026 (mode campagne Skrull Menace) : `AUTOPLAY_REGLES` (« mode_campaign »)
+    # et `AUTOPLAY_CARNET` (JSON du carnet de campagne entrant) font jouer le pilote EN MODE
+    # CAMPAGNE, mise en place de campagne et regles de cooperation comprises. Sans ces variables :
+    # aucune regle, aucun carnet, comportement inchange.
+    regles = [r.strip() for r in (os.environ.get("AUTOPLAY_REGLES") or "").split(",") if r.strip()]
+    carnet = {str(k): str(v) for k, v in json.loads(os.environ.get("AUTOPLAY_CARNET") or "{}").items()}
     scene = SceneLoader.NewFromJson(json.dumps(campagne), None, [texte_deck],
-                                    graine, [], {})
+                                    graine, regles, carnet)
     jeu = Engine.game
     jeu.session.SetScene(scene, "Load")
     try:

@@ -1,0 +1,236 @@
+{
+ "version": "1.0",
+ "code": "skrull_menace",
+ "cle_extension": "143. Custom (Skrull Menace)",
+ "nom": "Menace Skrull",
+ "nom_en": "Skrull Menace",
+ "resume": "Cinq scénarios où l'Empire Skrull tente de conquérir la Terre, de sa grande époque à sa chute. Gagnez-les tous, dans l'ordre, avec la même identité : chaque sbire vaincu peut rallier votre cause et vous offrir ses cartes.",
+ "resume_en": "Five scenarios in which the Skrull Empire tries to conquer Earth, from its heyday to its downfall. Win them all, in order, with the same identity: every minion you defeat may rally to your cause and lend you its cards.",
+ "expert": {
+  "pv_persistants": true
+ },
+ "pages_regles": [
+  "00-campagne-regles-1.jpg",
+  "00-campagne-regles-2.jpg",
+  "00-campagne-regles-3.jpg"
+ ],
+ "scenarios": [
+  {
+   "id": "sk_skrull_empire",
+   "numero": 1,
+   "nom": "Skrull Empire",
+   "nom_fr": "Empire Skrull",
+   "resume": "Dorrek, R'Klll et S'Byll se relaient à la tête d'un empire qui a colonisé la moitié de la galaxie d'Andromède. Les planètes qu'il conquiert le rendent plus fort à chaque manigance menée à terme.",
+   "enjeu": "Le tirage d'un ensemble Skrull Elite, Shaper of Worlds et Cosmic Cube Creation entrent dans la campagne : ce que vous y vaincrez rejoindra la zone de coopération.",
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [
+     "01-sk_skrull_empire-regles-1.jpg",
+     "01-sk_skrull_empire-regles-2.jpg"
+    ],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "sk_super_skrull",
+   "numero": 2,
+   "nom": "Super-Skrull",
+   "nom_fr": "Super-Skrull",
+   "resume": "Le trône skrull est dévoré par Galactus. Kl'rt, le Super-Skrull, doué des pouvoirs des Quatre Fantastiques, cherche l'héritier qui réunira son peuple.",
+   "enjeu": "La victoire ajoute le Super-Skrull et « Searching for Powers » à la zone de coopération.",
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [
+     "02-sk_super_skrull-regles-0.jpg",
+     "02-sk_super_skrull-regles-1.jpg",
+     "02-sk_super_skrull-regles-2.jpg"
+    ],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "sk_paibok",
+   "numero": 3,
+   "nom": "Paibok",
+   "nom_fr": "Paibok",
+   "resume": "Les scientifiques skrulls ont fait de Paibok un super-soldat doté des pouvoirs de plusieurs X-Men, et il s'est allié aux New Revengers. Qui l'arrêtera avant qu'il n'ait maîtrisé tous ses pouvoirs ?",
+   "enjeu": "La victoire ajoute Paibok et « Skrull Military Training » à la zone de coopération.",
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [
+     "03-sk_paibok-regles-1.jpg",
+     "03-sk_paibok-regles-2.jpg"
+    ],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "sk_skrull_pantheon",
+   "numero": 4,
+   "nom": "Skrull Pantheon",
+   "nom_fr": "Panthéon Skrull",
+   "resume": "Kly'bn et Sl'gur't, les seuls vrais dieux de l'Empire, sont venus détruire le panthéon des dieux de la Terre. Leur foi les protège tant que le Panthéon tient.",
+   "enjeu": "Dernière occasion de rallier une Elite avant la Reine.",
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [
+     "04-sk_skrull_pantheon-regles-1.jpg",
+     "04-sk_skrull_pantheon-regles-2.jpg"
+    ],
+    "epilogue": []
+   }
+  },
+  {
+   "id": "sk_secret_invasion",
+   "numero": 5,
+   "nom": "Secret Invasion",
+   "nom_fr": "Invasion Secrète",
+   "resume": "Sans foyer, les Skrulls sont acculés. Veranke, bannie pour sa foi, a été proclamée Reine : sous les traits de Spider-Woman, elle prépare l'invasion de la Terre.",
+   "enjeu": "Fin de la campagne : Veranke vaincue, la Terre est sauve.",
+   "final": true,
+   "victoire": [],
+   "pages": {
+    "intro": [],
+    "regles": [
+     "05-sk_secret_invasion-regles-1.jpg",
+     "05-sk_secret_invasion-regles-2.jpg"
+    ],
+    "epilogue": []
+   }
+  }
+ ],
+ "victoire_commune": [
+  {
+   "cle": "Cooperation Area",
+   "type": "auto",
+   "format": "liste",
+   "options": [
+    "sk263",
+    "sk264",
+    "sk265",
+    "sk266",
+    "sk267",
+    "sk268",
+    "sk269",
+    "sk270",
+    "sk271",
+    "sk272",
+    "sk273",
+    "sk274",
+    "sk275",
+    "sk276",
+    "sk277",
+    "sk278",
+    "sk279",
+    "sk280",
+    "sk281",
+    "sk282",
+    "sk283",
+    "sk284",
+    "sk285",
+    "sk286",
+    "sk287",
+    "sk288",
+    "sk230a",
+    "sk230b",
+    "sk230c",
+    "sk230d"
+   ],
+   "libelle": "Zone de coopération",
+   "aide": "Les cartes de campagne que les Skrulls ralliés mettent à votre disposition. Au début des scénarios 2 à 5, chaque joueur peut en mélanger une de chaque type (allié, manigance annexe de joueur, ressource, soutien, amélioration) à son deck : elles ne comptent pas dans sa taille et sont rendues à la zone après la partie. Cochez ou décochez pour corriger."
+  },
+  {
+   "cle": "Cooperation Progress",
+   "type": "auto",
+   "format": "liste",
+   "libelle": "Tableau de coopération",
+   "aide": "Une case par « Carte: exigence » cochée. Chaque sbire ou manigance annexe de la pile de victoire coche UNE seule exigence ; quand toutes celles d'une carte sont cochées, elle rejoint la zone de coopération."
+  },
+  {
+   "cle": "Shaper of Worlds Game Area",
+   "type": "auto",
+   "format": "liste",
+   "libelle": "Shaper of Worlds : où est-il ?",
+   "aide": "« In play », « Set aside, out of play » ou « In another game area ». Au scénario suivant : en jeu, mis de côté, ou remélangé au deck rencontre."
+  },
+  {
+   "cle": "Cosmic Cube Creation Game Area",
+   "type": "auto",
+   "format": "liste",
+   "libelle": "Cosmic Cube Creation : où est-il ?",
+   "aide": "« In play », « In the victory display », « In another game area » ou « Removed from campaign ». Dans la pile de victoire, il quitte la campagne et les quatre fragments rejoignent la zone de coopération."
+  },
+  {
+   "cle": "Skrull Elite: Crusader",
+   "type": "auto",
+   "format": "liste",
+   "libelle": "Skrull Elite Crusader",
+   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et la manigance annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
+  },
+  {
+   "cle": "Skrull Elite: Jazinda",
+   "type": "auto",
+   "format": "liste",
+   "libelle": "Skrull Elite Jazinda",
+   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et la manigance annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
+  },
+  {
+   "cle": "Skrull Elite: Skymax",
+   "type": "auto",
+   "format": "liste",
+   "libelle": "Skrull Elite Skymax",
+   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et la manigance annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
+  },
+  {
+   "cle": "Skrull Elite: War Skrull",
+   "type": "auto",
+   "format": "liste",
+   "libelle": "Skrull Elite War Skrull",
+   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et la manigance annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
+  },
+  {
+   "cle": "Skrull Elite: Xavin",
+   "type": "auto",
+   "format": "liste",
+   "libelle": "Skrull Elite Xavin",
+   "aide": "« In the victory display » : l'ensemble et son sbire quittent la campagne, l'allié du même nom et la manigance annexe de joueur de son aspect rejoignent la zone de coopération. « In another game area » : l'ensemble est remélangé au deck rencontre du scénario suivant. Vide : jamais tirée."
+  }
+ ],
+ "victoire_commune_expert": [
+  {
+   "cle": "Remaining hit points",
+   "type": "auto",
+   "format": "int",
+   "parJoueur": true,
+   "detection": "pv_restants",
+   "libelle": "PV restants",
+   "aide": "Ils deviennent les PV de départ du scénario suivant, plafonnés aux PV de base de l'identité ; chaque joueur peut les soigner au complet avec un pion Accélération sur la manigance principale."
+  },
+  {
+   "cle": "Eliminated Players",
+   "type": "auto",
+   "format": "liste",
+   "libelle": "Joueurs éliminés",
+   "aide": "Numéros de siège des joueurs vaincus pendant la partie. Au scénario suivant, un joueur éliminé revient en plaçant un pion Accélération sur la manigance principale ; sinon il ne joue pas."
+  }
+ ],
+ "options_campagne": [
+  {
+   "cle": "Alternative Standard Set",
+   "type": "case",
+   "libelle": "Standard Skrull à la place de Standard",
+   "aide": "Les ensembles alternatifs sont de même difficulté mais plus perfides : le méchant a plus de chances de manigancer."
+  },
+  {
+   "cle": "Alternative Expert Set",
+   "type": "case",
+   "expert_seulement": true,
+   "libelle": "Expert Skrull à la place d'Expert",
+   "aide": "Campagne experte uniquement : l'ensemble Expert Skrull remplace l'ensemble Expert."
+  }
+ ]
+}
