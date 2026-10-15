@@ -521,3 +521,35 @@ html[data-epure] header.progress .pstep .pnum {
   background: var(--w98-titre) !important;
   color: #ffffff !important;
 }
+
+/* Fenêtre « Choisis ton affichage » / Options : cartes en gris Windows,
+   aperçu de la teinte masqué (la teinte ne joue pas en épuré). */
+html[data-epure] .affichage-modal .af-choix {
+  background: var(--w98-face) !important;
+  color: #000000 !important;
+  border: 0 !important;
+  box-shadow: var(--w98-relief) !important;
+}
+html[data-epure] .affichage-modal .af-choix.on {
+  box-shadow: inset 0 0 0 2px var(--w98-titre), var(--w98-relief) !important;
+}
+html[data-epure] .affichage-modal .af-choix b,
+html[data-epure] .affichage-modal .af-choix small,
+html[data-epure] .affichage-modal .af-teinte > b,
+html[data-epure] .affichage-modal .af-teinte > small,
+html[data-epure] .affichage-modal .rt-clarte {
+  color: #000000 !important;
+}
+html[data-epure] .affichage-modal .rt-origine {
+  background: var(--w98-face) !important;
+  color: #000000 !important;
+  border: 0 !important;
+  box-shadow: var(--w98-relief);
+}
+html[data-epure] .affichage-modal .rt-apercu {
+  display: none;
+}
+
+html[data-epure] .acc-entete p {
+  color: #000000 !important;
+}

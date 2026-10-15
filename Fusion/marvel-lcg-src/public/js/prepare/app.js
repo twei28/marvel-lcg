@@ -37,7 +37,7 @@ import { estTel, suivreTel, installerHistorique, noterEcran, reculerVers,
          brancherBandeau, ajouterPoignee } from "/public/js/prepare/tel.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { ouvrirFeuille } from "/public/js/tel-pages.js";
-import { boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, affichageJamaisChoisi } from "/public/js/prepare/affichage.js";
+import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, affichageJamaisChoisi } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
          doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire } from "/public/js/prepare/phase-mode-choix.js";
 import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
@@ -1766,12 +1766,12 @@ function demanderLaLangue() {
  *  ⚠ Même règle que la langue : on ne la ferme pas en cliquant à côté, un clic
  *  distrait vaudrait réponse et la question ne reviendrait jamais.
  */
-function demanderLAffichage() {
+function demanderLAffichage({ rouvert = false } = {}) {
     return new Promise((resolve) => {
         // Les cartes SE CHOISISSENT, elles ne ferment plus : la roue de la
         // couleur du fond vit dans la meme fenetre (choix de l'utilisateur,
         // 04/10/2026), et c'est « Valider » qui ferme le tout.
-        let choixAffichage = "normal";
+        let choixAffichage = rouvert ? affichageActuel() : "normal";
         let choixTeinte = teinteActuelle();
         const cartes = [];
         const carte = (valeur, titre, sous) => {
@@ -1820,6 +1820,7 @@ function demanderLAffichage() {
                 el("div", { class: "vh-note" },
                     t("Tu pourras changer à tout moment : bouton Affichage en haut de cette page, ou Réglages en partie.")),
                 el("div", { class: "af-valider" },
+                    rouvert ? el("button", { class: "btn ghost", onclick: () => { fermerModale(overlay); resolve(); } }, t("Annuler")) : null,
                     el("button", { class: "btn primary", onclick: valider }, t("Valider"))),
             ),
         );
@@ -2210,6 +2211,7 @@ function accueilTel(tuiles, partir) {
             vignette(t("Galerie"), t("Toutes les cartes"), "fa-th", "/galerie.html"),
             vignette(t("Éditeur de deck"), t("Construire un deck"), "fa-pencil", "/deck-builder.html"),
             vignette(t("Mises à jour"), t("Ce qui a changé"), "fa-bullhorn", () => ouvrirNouveautes()),
+            vignette(t("Options"), t("Affichage, couleurs"), "fa-cog", () => demanderLAffichage({ rouvert: true })),
         ),
         blocRemerciements(),
     );
@@ -2355,6 +2357,20 @@ function accueilView() {
         ),
         el("span", { class: "acc-aide", id: "acc-aide-nouveautes", role: "tooltip" },
            t("Tout ce qui a été ajouté ou corrigé, du plus récent au plus ancien.")),
+    ));
+
+    // Les options, comme en partie (demande du 15/10/2026) : la fenêtre
+    // d'affichage (Normal / Sobre / Épuré, couleur du fond), rouverte à volonté.
+    grille.append(el("div", { class: "acc-tuile" },
+        el("button", {
+            class: "acc-mode cut acc-options-tuile",
+            onclick: () => demanderLAffichage({ rouvert: true }),
+        },
+            el("span", { class: "acc-copy" },
+                el("b", { class: "mvl" }, t("Options")),
+                el("small", {}, t("Affichage, couleurs")),
+            ),
+        ),
     ));
 
     if (estTel()) return accueilTel(tuiles, partir);

@@ -873,6 +873,8 @@ export const DICO_EN_BASE = {
   // prepare : la tuile « Mises a jour » de l'accueil et sa modale
   'Mises à jour': 'Updates',
   'Ce qui a changé': "What's changed",
+  'Options': "Options",
+  'Affichage, couleurs': "Display, colours",
   'Tout ce qui a été ajouté ou corrigé, du plus récent au plus ancien.':
     'Everything added or fixed, newest first.',
   // prepare/decks-serveur.js : le serveur n'a pas pris le deck importe
