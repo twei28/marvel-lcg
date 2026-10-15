@@ -104,3 +104,18 @@ l'image. Je poserai ces questions a l'utilisateur et tu (ou moi) corrigerons.
   `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>` et `Claude-Session: https://claude.ai/code/session_01Fr5EHa4uWZF6muMMGeLMU3`.
 - Rapport final COURT (< 25 lignes) : ce qui est fait, resultats chiffres, fichiers partages touches, questions ouvertes
   (renvoie a `defs/<bloc>_questions.md`), ce qui reste.
+
+## Complement (lot 2, 15/10/2026) — retours du lot 1 (Lyja, Super-Skrull, Paibok : deja fusionnes dans ta copie)
+- Modeles de reference supplementaires : `lyja/` (recherche + remelange + « place on top », cartes joueur dans le deck
+  rencontre), `super_skrull/` (paquet de scenario cree a la mise en place, SUPERPOWER), `paibok/` (jetons maison sur un
+  mechant, Boost rejoues comme effet actif), leurs `tools/cas/*.py`, `defs/*_questions.md` et `defs/*_moteur.md`.
+- `Puzzle.PutIntoPlay` sur une carte d'un paquet de scenario special ne l'attache pas : utilise `Puzzle.Reveal` (chemin reel).
+- Un cas « up to » exige `surpayer: True` et des cartes a UNE icone en main ; `tools/cas/` : un cas qui dessine/place une carte
+  d'un deck special se verifie dans le descripteur (sonde), pas avec `en_jeu`.
+- Une icone au milieu de la boite de texte d'une carte : verifie-la contre les icones deja validees (Crisis, Acceleration,
+  Hazard, Amplify) ; la transcription disait parfois « icone de heros » a tort.
+- Decisions deja prises (NOTES.md, fin de fichier) : respecte-les. Les fichiers partages (data/cards.json, sets_info.json)
+  seront refusionnes par moi en rejouant tes `defs/inserer_*.py` : ne les modifie qu'ainsi.
+- Lance `tsc --noEmit` ET `npx vitest run <ton test>` dans `ui-app` pour tout test plateau que tu ajoutes (le typage est strict :
+  `counters?.find`, etc.). Ne commite pas les liens `assets/pics` / `assets/pics-fr` laisses par preparer-worktree.
+- Machine chargee (plusieurs agents + validation) : `PARALLELES=2` max, et si un cas « processus mort » apparait, relance-le seul.
