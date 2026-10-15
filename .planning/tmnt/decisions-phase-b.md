@@ -19,3 +19,11 @@ Une ligne par réponse. Source : conversation du 15/10/2026.
 - **Donatello's Shell (td012)** : **fidélité 100 %** exigée : « jouer, dépenser OU DÉFAUSSER comme si en main » doit être rendu en entier (étendre le moteur : coût « défausser de la main » doit accepter la carte glissée). Règle générale : pas d'approximation (voir mémoire fidelite-cartes-100-pour-cent).
 - **Essaims td016/td017 (PV ★)** : par la même règle, PV = nombre de compteurs swarm, **suivis dynamiquement** (pas de mort « à la main »).
 - **Extermination! (td014)** : nom corrigé (le scan dit « Extermination! », l'agent avait écrit « Exterminate! »). Traits **pluriels MOUSERS / FLYBORGS** conservés.
+- **Michelangelo, I'm Here to Help (tm009/tm001b)** : au Setup, **fouille du deck** (la carte reste dans les 15, 12/15).
+- **Michelangelo, tm009 pioche 3** : plus de question, l'insert tranche : forme héros obligatoire + « only the Michelangelo player » = propriétaire.
+- **Michelangelo, Nunchuck (tm011/tm012)** : plus de question, l'insert dit « either NUNCHUCK (or both) » : vrai octroi à tous les Nunchuck, comme Leonardo/Katana.
+- **Majime (tm006)** : X = **dégâts réellement subis** (le script écrit par l'agent utilise le nombre déclaré : À CORRIGER).
+- **Booyakasha (tm001a)** : annexe vidée = **vaincue** ; **Crise bloque** le déplacement depuis la manigance principale (le script écrit ne bloque pas : À CORRIGER, vérifier `MoveThreat` du moteur).
+- **Impulsive (tm004)** : **jouable sans WEAPON** (seul le coût doit être payable).
+- **Sewer Problems (tm014)** : icône centrale = **Crise 1** (même glyphe que 01108 Crowd Control, vérifié par découpe).
+- **Michelangelo « Hero Spin »** : une seule face héros, rien de plus (tm001a).
