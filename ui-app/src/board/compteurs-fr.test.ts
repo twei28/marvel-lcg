@@ -52,6 +52,12 @@ describe('nomDeCompteur', () => {
     expect(nomDeCompteur('absorption')).toBe('absorption')
   })
 
+  it('traduit le compteur du scenario Skrull Pantheon (faith)', () => {
+    // Jetons de foi sur Kly'bn / Sl'gur't (sk170) : sans entree, le plateau ecrivait « faith ».
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('faith')).toBe('foi')
+  })
+
   it('traduit le compteur honte de Hunting Season (hs060)', () => {
     vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
     expect(nomDeCompteur('shame')).toBe('honte')

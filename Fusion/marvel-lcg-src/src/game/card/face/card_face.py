@@ -134,6 +134,8 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # modulaire, l'environnement O.M.N.I.T.R.O.N.I.C.U.S.) et « COMPUTER ».
         # Purement declaratif cote enum, les capacites de Paibok et du set les lisent.
         "POWER SKRULL", "REVENGER", "COMPUTER",
+        # (15/10/2026) Skrull Pantheon (Kajislav) : « GOD » (Kly'bn / Sl'gur't), purement declaratif.
+        "GOD",
         "TRAINING", "TEAM", "SPECIALIZATION", "TECHNIQUE",
         "ACTIVATION ORDER 1", "ACTIVATION ORDER 2", "ACTIVATION ORDER 3", "ACTIVATION ORDER 4", "ACTIVATION ORDER 5", "ACTIVATION ORDER 6",
         "TRAP!",
@@ -372,6 +374,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # 'absorption' : Asti the All-Seeing (sk163). Sans ces entrees `IsCounter`
         # refuse le nom et la pose du compteur echoue.
         'mastery', 'absorption',
+        # AJOUT (15/10/2026) : scenario Skrull Pantheon (Kajislav). 'faith' : jetons de FOI
+        # poses sur le mechant Kly'bn / Sl'gur't (insert p.14). Sans cette entree `IsCounter`
+        # refuse le nom et la pose du jeton echoue.
+        'faith',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

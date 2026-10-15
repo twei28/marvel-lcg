@@ -108,6 +108,9 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // All-Seeing (sk163, set New Revengers).
   mastery: 'maîtrise',
   absorption: 'absorption',
+  // Pack skrull_menace, scenario Skrull Pantheon (15/10/2026) : les jetons de FOI poses sur le
+  // mechant Kly'bn / Sl'gur't (insert p.14).
+  faith: 'foi',
   // Pack hunting_season (09/10/2026) : Reptilian Rage (hs060) pose de la « honte » sur Curtis.
   shame: 'honte',
 }
