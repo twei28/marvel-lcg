@@ -108,6 +108,7 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // All-Seeing (sk163, set New Revengers).
   mastery: 'maîtrise',
   absorption: 'absorption',
+  suspicion: 'soupçon',
   // Pack hunting_season (09/10/2026) : Reptilian Rage (hs060) pose de la « honte » sur Curtis.
   shame: 'honte',
 }

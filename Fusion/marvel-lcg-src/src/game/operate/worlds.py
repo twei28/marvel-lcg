@@ -755,6 +755,10 @@ class Worlds:
         # principal ; « reveal the top card of the SUPERPOWER deck » l'attache
         # au Super-Skrull. Avec sa defausse (les cartes lui reviennent).
         "SuperpowerDeck",
+        # AJOUT (15/10/2026, pack custom skrull_menace, scenario Secret Invasion) : le
+        # paquet IMPOSTOR, 20 cartes double face (allie CAMOUFLAGED / sbire REVEALED),
+        # avec sa defausse (insert p.16).
+        "ImpostorDeck",
     ]
 
     SCENARIO_AREA_NAME: TypeAlias = Literal[

@@ -1,6 +1,36 @@
 from . import *
 
-def CheckAnyPlayerMayHelpPay(paying_for_face) -> bool:
+def PaiementEnGroupeInterdit(world) -> bool:
+    # AJOUT (15/10/2026, pack custom skrull_menace, scenario Secret Invasion) :
+    # « Players cannot pay any card's or ability's costs as a group »
+    # (sk201 Mistrust and Paranoia). Une carte en jeu (complot annexe, environnement
+    # ou mechant) qui porte l'attribut `interdit_paiement_en_groupe` ferme le
+    # paiement en groupe : mot-cle Alliance, Coordinated Effort et capacites
+    # marquees `cout_en_groupe` (ci-dessous). Forces Combined (cd003) n'est PAS
+    # concerne : c'est le paiement d'UN joueur depuis ses deux mains.
+    try:
+        zones = [world.area_schemes_side, world.area_environment, world.scenario.area_villain]
+        for zone in zones:
+            for face in zone.GetAll():
+                if getattr(face, 'interdit_paiement_en_groupe', False):
+                    return True
+    except Exception:
+        pass
+    return False
+
+def CheckAnyPlayerMayHelpPay(paying_for_face, paying_for_effect=None) -> bool:
+    # AJOUT (15/10/2026, skrull_menace, Secret Invasion) : une capacite marquee
+    # `cout_en_groupe` (« The players can pay this ability's costs as a group »,
+    # sk189a Spider-Woman « You are a Skrull! ») s'ouvre a tous les joueurs, sauf
+    # si le paiement en groupe est interdit (sk201).
+    try:
+        bloque = PaiementEnGroupeInterdit(paying_for_face.card.world)
+    except Exception:
+        bloque = False
+    if not bloque and paying_for_effect is not None:
+        ability = getattr(paying_for_effect, 'ability', None)
+        if ability is not None and getattr(ability, 'cout_en_groupe', False):
+            return True
     # CORRECTIF (ajout volontaire) : Coordinated Effort 58032 — tant qu'il est
     # attaché à une carte, tout joueur peut aider à payer les coûts de celle-ci
     # (même voie que le mot-clé Alliance des events Civil War).
@@ -8,7 +38,7 @@ def CheckAnyPlayerMayHelpPay(paying_for_face) -> bool:
         upgrades = paying_for_face.GetAttachedUpgrades()
     except Exception:
         return False
-    if any(x.IsName('Coordinated Effort') for x in upgrades):
+    if not bloque and any(x.IsName('Coordinated Effort') for x in upgrades):
         return True
 
     # CORRECTIF (5/8/2026) : Forces Combined cd003 — Cloak & Dagger sont deux
@@ -74,9 +104,10 @@ class AbilityFactoryResources:
             if not this.IsLikeInHand():
                 return False
             if Event.IsType(message.paying_for_effect.this):
-                if message.paying_for_effect.this.alliance:
+                if message.paying_for_effect.this.alliance and \
+                        not PaiementEnGroupeInterdit(message.paying_for_effect.this.card.world):
                     return True
-            if CheckAnyPlayerMayHelpPay(message.paying_for_effect.this):
+            if CheckAnyPlayerMayHelpPay(message.paying_for_effect.this, message.paying_for_effect):
                 return True
             if effect.ability.CheckAnyPlayerCanTriggerThis(effect):
                 return True
@@ -300,9 +331,10 @@ class AbilityFactoryResources:
             if not effect.this.IsInPlay():
                 return False
             if Event.IsType(message.paying_for_effect.this):
-                if message.paying_for_effect.this.alliance:
+                if message.paying_for_effect.this.alliance and \
+                        not PaiementEnGroupeInterdit(message.paying_for_effect.this.card.world):
                     return True
-            if CheckAnyPlayerMayHelpPay(message.paying_for_effect.this):
+            if CheckAnyPlayerMayHelpPay(message.paying_for_effect.this, message.paying_for_effect):
                 return True
             # Hack
             player = message.GetToPlayer()

@@ -422,6 +422,7 @@ class EventManager:
         from game.card.face.card_type import Support
         from game.card.face.card_type import Attachment
         from game.card.face.card_type import Environment
+        from game.card.face.base import Villain
         from game.card.face.card_type import Resource
         from game.card.face.card_type import Event
         from game.card.face.card_type import Obligation
@@ -500,6 +501,14 @@ class EventManager:
                     check_player = current_player
                 elif Environment.IsType(this):
                     # Fix "27077a"
+                    check_player = current_player
+                elif Villain.IsType(this):
+                    # AJOUT (15/10/2026, pack custom skrull_menace, scenario Secret
+                    # Invasion) : « You are a Skrull! », Action de heros portee par le
+                    # MECHANT (sk189a). Le controleur d'un mechant est le scenario, pas un
+                    # joueur : sans cette branche, l'action etait ecartee par la
+                    # comparaison de joueurs plus bas (aucun joueur n'est le scenario).
+                    # Meme traitement que l'environnement (27077a) : le joueur courant.
                     check_player = current_player
                 elif effect.ability.flags.is_play_turn_option or \
                     effect.ability.flags.is_basic_power or \

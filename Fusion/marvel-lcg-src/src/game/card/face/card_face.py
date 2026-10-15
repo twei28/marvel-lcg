@@ -134,6 +134,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # modulaire, l'environnement O.M.N.I.T.R.O.N.I.C.U.S.) et « COMPUTER ».
         # Purement declaratif cote enum, les capacites de Paibok et du set les lisent.
         "POWER SKRULL", "REVENGER", "COMPUTER",
+        # (15/10/2026) Secret Invasion (Kajislav) : les deux etats d'un Skrull infiltre
+        # (CAMOUFLAGED = allie / Spider-Woman, REVEALED = sbire / Queen Veranke) et le
+        # trait IMPOSTOR des 20 cartes double face du paquet Impostor. Purement declaratif.
+        "CAMOUFLAGED", "REVEALED", "IMPOSTOR",
         "TRAINING", "TEAM", "SPECIALIZATION", "TECHNIQUE",
         "ACTIVATION ORDER 1", "ACTIVATION ORDER 2", "ACTIVATION ORDER 3", "ACTIVATION ORDER 4", "ACTIVATION ORDER 5", "ACTIVATION ORDER 6",
         "TRAP!",
@@ -372,6 +376,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # 'absorption' : Asti the All-Seeing (sk163). Sans ces entrees `IsCounter`
         # refuse le nom et la pose du compteur echoue.
         'mastery', 'absorption',
+        # AJOUT (15/10/2026) : scenario Secret Invasion (Kajislav). 'suspicion' : jetons de
+        # SOUPCON de l'environnement « Who Do You Trust? ».
+        'suspicion',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

@@ -52,6 +52,12 @@ describe('nomDeCompteur', () => {
     expect(nomDeCompteur('absorption')).toBe('absorption')
   })
 
+  it('traduit le compteur de soupcon de Secret Invasion (sk194)', () => {
+    // Jetons de soupcon sur l'environnement « Who Do You Trust? » : sans entree, le plateau ecrivait « suspicion ».
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('suspicion')).toBe('soupçon')
+  })
+
   it('traduit le compteur honte de Hunting Season (hs060)', () => {
     vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
     expect(nomDeCompteur('shame')).toBe('honte')
