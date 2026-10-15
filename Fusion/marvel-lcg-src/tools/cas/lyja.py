@@ -491,6 +491,17 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"pret": ["sk037a", "sk038", "sk044", "sk047"], "exhausted": ["sk045"]},
     },
+    {
+        "nom": "[lyja] sk058 Laser Tag — CONTRE-CAS Team-Up : sans Human Torch en jeu, l'evenement n'est pas jouable",
+        "pourquoi": "« Team-Up (Human Torch and Lyja) » : seule Lyja est la, sk058 reste en main (Human Torch absent)",
+        **HEROS,
+        "mise_en_place": [FORME_HEROS],
+        "main_exclusive": ["sk058", "01088"],
+        "declencher": [],
+        "jouer": ["sk058"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["sk058"]},
+    },
     # ===================================================================== sk062
     {
         "nom": "[lyja] sk062 Baxter Building — cout 4 reduit a 3 avec un personnage FANTASTIC FOUR (Lyja) : jouable avec 3 ressources",
@@ -572,6 +583,20 @@ CAS = [
         "jouer": ["sk064"],
         "verifier": "etat_attendu",
         "attendu": {"hors_jeu": ["sk064"], "en_main": ["sk064"]},
+    },
+    {
+        "nom": "[lyja] sk064 Fantastic Four Member — TEMOIN D'EPUISEMENT « Max 1 per character » : le 2e exemplaire ne se pose pas sur le meme allie",
+        "pourquoi": ("deux exemplaires en main (deck [sk064, sk064] + Gain x2), les deux visent Mockingbird : le 1er s'y pose (4 PV), "
+                     "le 2e est refuse sur elle (MaxPerUnit 1) et va ailleurs ou reste en main : PV max de Mockingbird = 4, jamais 5"),
+        **HEROS,
+        "mise_en_place": [FORME_HEROS, "Puzzle.EmptyHand()", "Puzzle.EmptyPlayerDeck()",
+                          "Puzzle.CreatePlayerDeck('sk064', 'sk064')", "Puzzle.PutIntoPlay('01083', under_control=True)",
+                          "Puzzle.Gain('sk064')", "Puzzle.Gain('sk064')"],
+        "cibles": ["01083"],
+        "declencher": [],
+        "jouer": ["sk064", "sk064"],
+        "verifier": "etat_attendu",
+        "attendu": {"pv_max": [["01083", 4]]},
     },
     # ===================================================================== sk065
     {

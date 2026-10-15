@@ -13,7 +13,7 @@ from . import *
 #    et `does_not_take_consequential_damage` restent respectes. On AJUSTE donc ces deux
 #    champs juste avant, sur `WhenUnitUseBasicPower` (modele **`20010`** / **`tg009`** :
 #    « when you use a basic power », message.would_message), sans reinventer le calcul.
-#  - **`af.py`/`50117`** pour `Faces.PlaceCountersOn(cibles, 1, 'nom', effect)`.
+#  - **`50117`** Psionic Force Field pour `Faces.PlaceCountersOn(cibles, n, 'nom', effect)`.
 #  - **`16152`** pour les cibles d'un pouvoir (attaque : `would_message.attacked_targets` ;
 #    contre : `would_message.schemes`).
 #

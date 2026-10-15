@@ -5,12 +5,12 @@ from . import *
 # Hero Action: Ready Human Torch, Lyja, and each SUPERPOWER upgrade you control.
 #
 # Cartes de reference :
-#  - **`dz...`** Coolest Team-Up Ever! (dazzler/dz038) : un evenement Team-Up =
+#  - **`dz038`** Love from Beyond the Stars / **`dz037`** (dazzler) : un evenement Team-Up =
 #    `.SetTarget("TeamUp")` en PREMIER selecteur (database.py:222) ; TeamUp et
 #    MaxPerDeck sont lus dans `desc` (« Human Torch;Lyja », « 1 »).
-#  - **`31001a`** / **`an001a`** : `Faces.ReadyAll(faces, effect)`.
-#  - **`Worlds.FindCardsOnField`/`controller.GetControlCards2(CardFinder2(...))`** pour
-#    « each SUPERPOWER upgrade you control ».
+#  - **`31009`** / **`an001a`** : `Faces.ReadyAll(faces, effect)`.
+#  - **`joueur.GetControlAllies()` / `GetControlUpgrade()`** (modele **`taskmaster 08026`**,
+#    `GetControlUpgrade`) pour « each SUPERPOWER upgrade you control ».
 #
 # ⚠ Mots-pieges (PROCESSUS-CARTE etape 5) :
 #  - « Team-Up (Human Torch AND Lyja) » : les DEUX en jeu (Human Torch = allie, Lyja =

@@ -7,8 +7,9 @@ from . import *
 # ★ Boost: Draw 2 cards.
 #
 # Cartes de reference :
-#  - **`22005`** (choix) et **`wd077b`** pour `AskChooseFace` ; **`Worlds.GetOnFieldCards`**
-#    pour balayer ce qui est en jeu (attachements poses sur un ennemi, un heros...).
+#  - **`player.AskChooseFace(faces, effect)`** (player_ask.py:272) pour designer l'attachement ;
+#    **`Worlds.GetOnFieldCards`** pour balayer ce qui est en jeu (attachements poses sur un
+#    ennemi, un heros...).
 #  - **`CardFinder(with_texts=["Hero Action", "Hero Response"])`** (checker.py:66) : le
 #    moteur sait deja lire « le texte Hero Action / Hero Response » d'une carte ; le
 #    helper du set `ADesUsagesOuUnTexteDeHeros` fait la meme lecture et y ajoute le

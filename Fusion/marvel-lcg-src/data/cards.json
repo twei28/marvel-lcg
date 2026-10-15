@@ -104379,7 +104379,8 @@
    "desc": {
     "Cost": "0",
     "RES": "B",
-    "Class": "Basic"
+    "Class": "Basic",
+    "MaxPerUnit": "1"
    },
    "traits": [
     "TITLE"
@@ -104465,5 +104466,5 @@
    "custom": "Kajislav"
   }
  ],
- "checksum": "9b47b767d5b460d943e3deb4cffbe48a6a4cee57a808aeb16384f23d2e409c52"
+ "checksum": "a1da8eca7d113debdf30a43fb78767c5445cd0cbd1d663984d9047a25a99f039"
 }
