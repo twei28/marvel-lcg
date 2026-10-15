@@ -1616,7 +1616,7 @@ export const TEXTES_FR_FANMADE = {
     // doctor_doom — "This World Is Mine!" (Event, x3)
     'dd004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 8 dégâts à un ennemi. Si vous avez payé cette carte uniquement avec des ressources [mental], cette attaque gagne <b><i>Déferlement</i></b> et <b><i>Perçage</i></b>.",
     // doctor_doom — "Doom Prevails" (Event, signature)
-    'dd005': "<b>Action de héros</b> : regardez les 3 cartes du dessus du deck de rencontre. Infligez X dégâts répartis entre les ennemis en jeu, où X est le nombre d'icônes ([star] et [boost]) dans la zone de boost de ces cartes. Si vous avez payé cette carte uniquement avec des ressources [mental], retirez aussi X menaces réparties entre les manigances en jeu.",
+    'dd005': "<b>Action de héros</b> : regardez les 3 cartes du dessus du deck de rencontre. Infligez X dégâts répartis entre les ennemis en jeu, où X est le nombre d'icônes ([star] et [boost]) dans le champ de boost de ces cartes. Si vous avez payé cette carte uniquement avec des ressources [mental], retirez aussi X menaces réparties entre les manigances en jeu.",
     // doctor_doom — "Pain Is For Lesser Men!" (Event, x2)
     'dd006': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, empêchez tous ces dégâts. Si vous avez payé cette carte uniquement avec des ressources [mental], sonnez et désorientez l'ennemi.",
     // doctor_doom — Unparalleled Genius (Resource [mental]x3, x2)
@@ -2147,7 +2147,7 @@ export const TEXTES_FR_FANMADE = {
     // spider_man_noir — * Electro Noir (Minion némésis)
     'sn013': "Riposte 1.\n[star] <b>Interruption forcée</b> : quand Electro Noir s'active contre vous, donnez-lui comme carte de boost une carte de rencontre au hasard glissée sous votre identité. Sinon, donnez-lui une carte de boost face cachée du dessus du deck rencontre.\n<i>(Sbire némésis de Spider-Man Noir.)</i>",
     // spider_man_noir — Lightning Strikes Twice (Treachery némésis, x2)
-    'sn014': "<b>Une fois révélée</b> : glissez la carte du dessus du deck rencontre sous votre identité <i>(jusqu'à un maximum de 3 cartes)</i>. Pour chaque icône ([star] et [boost]) dans la zone de boost des cartes glissées sous votre identité, subissez 1 dégât <i>(jusqu'à un maximum de 4 dégâts)</i>.\n<hr />\n[star] <b>Boost</b> : après cette activation, cet ennemi s'active de nouveau.",
+    'sn014': "<b>Une fois révélée</b> : glissez la carte du dessus du deck rencontre sous votre identité <i>(jusqu'à un maximum de 3 cartes)</i>. Pour chaque icône ([star] et [boost]) dans le champ de boost des cartes glissées sous votre identité, subissez 1 dégât <i>(jusqu'à un maximum de 4 dégâts)</i>.\n<hr />\n[star] <b>Boost</b> : après cette activation, cet ennemi s'active de nouveau.",
     // spider_man_noir — Thunderstorm (Environment némésis) — ⚠ HOMONYME de 36004
     'sn015': "Les cartes de ce set gagnent Déferlement.\n<b>Réponse forcée</b> : après que le mot-clé Déferlement d'une carte de rencontre est résolu <i>(y compris celui de cette carte)</i>, le joueur qui le résout subit 1 dégât indirect s'il est sous forme de héros.\n<b>Action de héros</b> : dépensez des ressources [energy] [energy] → défaussez cette carte.",
     // black_cat — * Black Cat (Hero) — ⚠ HOMONYME de 01002, wd045 et vp002
@@ -2161,19 +2161,19 @@ export const TEXTES_FR_FANMADE = {
     // black_cat — * Big Heist (manigance annexe JOUEUR)
     'bc004': "Seuls les personnages [[THIEF]] peuvent retirer de la menace de cette manigance.\n<b>Une fois vaincue</b> : choisissez :\n• Cherchez dans votre collection une amélioration basique ou d'aspect et jouez-la sans payer son coût en ressources.\n• Glissez sous Black Cat une amélioration attachée en jeu portant le texte \"<b>Action de héros</b>\" ou \"<b>Réponse de héros</b>\".\n• Piochez 3 cartes.",
     // black_cat — Cat Burglary (Event, x2) — ⚠ HOMONYME de la capacité de bc001b
-    'bc005': "<b>Action de héros</b> <i>(contre)</i> : regardez les 3 cartes du dessus du deck rencontre et défaussez-en 1. Retirez 1 menace d'une manigance, plus 1 menace supplémentaire par icône ([star] et [boost]) dans la zone de boost de cette carte. Glissez-la sous Black Cat.",
+    'bc005': "<b>Action de héros</b> <i>(contre)</i> : regardez les 3 cartes du dessus du deck rencontre et défaussez-en 1. Retirez 1 menace d'une manigance, plus 1 menace supplémentaire par icône ([star] et [boost]) dans le champ de boost de cette carte. Glissez-la sous Black Cat.",
     // black_cat — Lucky Hit (Event, x2)
     'bc006': "<b>Action de héros</b> <i>(attaque)</i> : défaussez les 2 cartes du dessus du deck rencontre et infligez 1 dégât à un ennemi par icône ([star] et [boost]) défaussée de cette façon. Glissez une de ces cartes sous Black Cat.",
     // black_cat — Misfortune (Event, x2)
-    'bc007': "<b>Interruption de héros</b> : quand une carte de boost est retournée pendant l'activation d'un ennemi, glissez-la plutôt sous votre héros. Cet ennemi gagne -1 ATQ et -1 MNG pour cette activation par icône ([star] et [boost]) dans la zone de boost de cette carte.",
+    'bc007': "<b>Interruption de héros</b> : quand une carte de boost est retournée pendant l'activation d'un ennemi, glissez-la plutôt sous votre héros. Cet ennemi gagne -1 ATQ et -1 MNG pour cette activation par icône ([star] et [boost]) dans le champ de boost de cette carte.",
     // black_cat — * Black Cat's Claws (Upgrade)
-    'bc008': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Black Cat's Claws et défaussez la carte du dessus du deck rencontre → infligez à un ennemi autant de dégâts qu'il y a d'icônes dans la zone de boost de cette carte. Si ce nombre était 0, glissez-la sous Black Cat.",
+    'bc008': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Black Cat's Claws et défaussez la carte du dessus du deck rencontre → infligez à un ennemi autant de dégâts qu'il y a d'icônes dans le champ de boost de cette carte. Si ce nombre était 0, glissez-la sous Black Cat.",
     // black_cat — Grappling Hook (Upgrade, x2) — ⚠ HOMONYME de 08008 et 50069
     'bc009': "<b>Action de héros</b> : inclinez Grappling Hook et défaussez une carte glissée sous Black Cat → redressez Black Cat et glissez sous elle la carte du dessus du deck rencontre.",
     // black_cat — Ill Gotten Gains (Upgrade, x2)
     'bc010': "<b>Ressource</b> : inclinez cette carte → générez une ressource [wild] <i>([wild][wild] à la place pour une amélioration attachée)</i>.\n<b>Réponse</b> : après que vous défaussez du jeu une amélioration attachée portant le texte \"<b>Action de héros</b>\" ou \"<b>Réponse de héros</b>\", glissez-la sous votre identité.",
     // black_cat — Nine Lives (Upgrade, x2)
-    'bc011': "<b>Interruption de héros</b> : quand Black Cat subirait des dégâts, quel qu'en soit le nombre, inclinez Nine Lives et défaussez la carte du dessus du deck rencontre → prévenez 1 de ces dégâts par icône ([star] et [boost]) dans la zone de boost de cette carte.",
+    'bc011': "<b>Interruption de héros</b> : quand Black Cat subirait des dégâts, quel qu'en soit le nombre, inclinez Nine Lives et défaussez la carte du dessus du deck rencontre → prévenez 1 de ces dégâts par icône ([star] et [boost]) dans le champ de boost de cette carte.",
     // black_cat — Luck's Ran Out (Obligation)
     'bc012': "<b><i>Donnez-la au joueur de Felicia Hardy.</i></b>\nRévélez une carte au hasard glissée sous votre identité. Si vous ne pouvez pas, cette carte gagne <b><i>Déferlement</i></b>. Défaussez cette carte.",
     // cameo_compliment — Lock It Down (Support, aspect JUSTICE)
@@ -3496,7 +3496,7 @@ export const TEXTES_FR_FANMADE = {
     // skrull_menace — Lazerfist (Upgrade)
     'sk044': "Lyja gagne +1 ATQ.\n<b>Ressource de héros</b> : inclinez Lazerfist → générez une ressource [energy].",
     // skrull_menace — Ministerial Tiara (Upgrade)
-    'sk045': "<b>Interruption</b> : quand une carte de boost est retournée face visible, si cette carte a une icône étoile ([star]) dans le champ de boost, inclinez cette carte → piochez 1 carte.",
+    'sk045': "<b>Interruption</b> : quand une carte de boost est retournée face visible, si cette carte a une icône d'étoile ([star]) dans son champ de boost, inclinez cette carte → piochez 1 carte.",
     // skrull_menace — Mole (Upgrade)
     'sk046': "<b>Interruption de héros</b> : quand une carte [[TREACHERY]] est défaussée du dessus du deck Rencontre, inclinez Mole → résolvez la capacité \"<b>Une fois révélée</b>\" de cette carte.",
     // skrull_menace — Shapeshifter (Upgrade)

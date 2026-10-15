@@ -9,6 +9,7 @@ import { langueActuelle } from './langue'
 
 const COMPTEURS_FR: Readonly<Record<string, string>> = {
   counter: 'compteur',
+  revelation: 'révélation',
   attack: 'attaque',
   web: 'toile',
   glory: 'gloire',
