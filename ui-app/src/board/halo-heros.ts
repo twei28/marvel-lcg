@@ -121,16 +121,26 @@ export function fondDe(couleurs: readonly Couleur[] | undefined, sombre: string)
  *
  * Même ordre que `fondDe` (primaire au coin, tertiaire au milieu, secondaire
  * au bord) et même règle des héros à une ou deux couleurs : on répète la
- * dernière. Arrêts NETS (deux positions par couleur), aucun dégradé ni flou.
+ * dernière. Arrêts NETS (deux positions par couleur), aucun dégradé ni flou. La bande du
+ * milieu est trois fois plus fine que les deux autres. Largeur doublee le
+ * 15/10/2026 (44 -> 96 px) : « qu'elles prennent plus de place ».
  * Rend une valeur de `background`, posée sur un pseudo-élément du coin.
  */
-export function marqueDe(couleurs: readonly Couleur[] | undefined, largeurBande = 44): string | undefined {
+export function marqueDe(couleurs: readonly Couleur[] | undefined, largeurBande = 96): string | undefined {
   if (!couleurs || couleurs.length === 0) return undefined
   const rgb = (c: Couleur) => `rgb(${c[0]},${c[1]},${c[2]})`
   const derniere = couleurs[couleurs.length - 1]
   const bandes = [0, 2, 1].map((i) => couleurs[i] ?? derniere)
-  const arrets = bandes.map((c, i) => `${rgb(c)} ${i * largeurBande}px ${(i + 1) * largeurBande}px`)
-  return `linear-gradient(315deg, ${arrets.join(', ')}, transparent ${bandes.length * largeurBande}px)`
+  // ⚠ LA BANDE DU MILIEU FAIT UN TIERS DES AUTRES (demande du 15/10/2026).
+  const largeurs = [largeurBande, Math.round((largeurBande / 3) * 100) / 100, largeurBande]
+  let debut = 0
+  const arrets = bandes.map((c, i) => {
+    const fin = Math.round((debut + largeurs[i]) * 100) / 100
+    const arret = `${rgb(c)} ${debut}px ${fin}px`
+    debut = fin
+    return arret
+  })
+  return `linear-gradient(315deg, ${arrets.join(', ')}, transparent ${debut}px)`
 }
 
 /** La forme minimale dont le halo a besoin : qui est assis, et sa carte d'identité. */

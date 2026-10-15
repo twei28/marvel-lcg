@@ -1,0 +1,313 @@
+/* L'AFFICHAGE EPURE SUR LES PAGES HORS PLATEAU (15/10/2026).
+
+   Jumeau de ui-app/styles/affichage-epure.css (le plateau). Demande de
+   l'utilisateur : un style Windows 98 « pour tout ce qui est selection des
+   persos et tout » : cadres gris en relief, barre de titre bleu marine uni,
+   boutons biseautes, aucun decor.
+
+   ⚠ L'EPURE EST UN SOBRE EN PLUS DEPOUILLE : `data-affichage` vaut `sobre` pour
+   les deux, `data-epure` ajoute ce qui suit. affichage-sobre-pages.css joue
+   donc deja (couleurs ternies, sans trame ni ombres colorees).
+   ⚠ A CHARGER APRES affichage-sobre-pages.css : a specificite egale, la
+   derniere feuille gagne. Normal et Sobre ne voient rien de ceci. */
+
+html[data-epure] {
+  --w98-face: #c0c0c0;
+  --w98-clair: #ffffff;
+  --w98-ombre: #808080;
+  --w98-noir: #000000;
+  --w98-titre: #000080;
+  --w98-police: Tahoma, 'MS Sans Serif', 'Segoe UI', Arial, sans-serif;
+  --w98-relief: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+  --w98-creux: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #000;
+}
+
+/* --- 1. Le fond de la page et la police -------------------------------------- */
+html[data-epure],
+html[data-epure] body {
+  background: #2a2a2a;
+  color: #e8e8e8;
+  font-family: var(--w98-police);
+}
+
+/* --- 2. Ce qu'on retire ------------------------------------------------------ */
+html[data-epure] .tb-trame,
+html[data-epure] .tb-art,
+html[data-epure] .acc-aide {
+  display: none;
+}
+
+/* ⚠ Les remerciements (.acc-merci) et la mention legale (footer.mention-legale)
+   restent TOUJOURS visibles : credits et mention d'auteur, jamais decoratifs. */
+html[data-epure] .acc-merci,
+html[data-epure] footer.mention-legale {
+  color: #e8e8e8;
+}
+html[data-epure] .acc-merci a,
+html[data-epure] footer.mention-legale a {
+  color: #8cb4ff;
+}
+
+/* --- 3. Les titres : plus de lettres geantes inclinees ----------------------- */
+html[data-epure] h1.affiche,
+html[data-epure] .recitatif,
+html[data-epure] .tb-nomg,
+html[data-epure] .mvl {
+  font-family: var(--w98-police);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
+  transform: none;
+  -webkit-text-stroke: 0;
+}
+
+html[data-epure] h1.affiche {
+  font-size: 30px;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+html[data-epure] .tb-nomg {
+  font-size: 24px;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+html[data-epure] .acc-titre .recitatif {
+  background: var(--w98-titre);
+  color: #ffffff;
+  box-shadow: none;
+  border-radius: 0;
+  font-size: 12px;
+  padding: 3px 8px;
+}
+
+/* --- 4. Les boutons : gris en relief, texte noir ----------------------------- */
+html[data-epure] .btn,
+html[data-epure] .btn.ghost,
+html[data-epure] .btn.primary,
+html[data-epure] .btn-icone,
+html[data-epure] .acc-mode,
+html[data-epure] .acc-mode.cut,
+html[data-epure] .acc-nombre,
+html[data-epure] .pstep,
+html[data-epure] .tampon,
+html[data-epure] .tb-mode,
+html[data-epure] .pb-bouton,
+html[data-epure] .pb-fermer,
+html[data-epure] .pd-fermer {
+  background: var(--w98-face);
+  color: #000000;
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief);
+  clip-path: none;
+  font-family: var(--w98-police);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
+  transform: none;
+  animation: none;
+}
+
+html[data-epure] .btn *,
+html[data-epure] .acc-mode *,
+html[data-epure] .pstep *,
+html[data-epure] .tampon * {
+  color: inherit;
+  text-shadow: none;
+}
+
+html[data-epure] .btn:active,
+html[data-epure] .acc-mode:active,
+html[data-epure] .acc-nombre:active,
+html[data-epure] .pstep.active,
+html[data-epure] .pb-bouton:active {
+  box-shadow: var(--w98-creux);
+}
+
+/* Le bouton par defaut (« Continuer ») : cadre noir autour. */
+html[data-epure] .btn.primary {
+  outline: 1px solid #000000;
+  font-weight: 700;
+}
+
+html[data-epure] .btn:disabled,
+html[data-epure] .btn.primary:disabled {
+  color: var(--w98-ombre);
+  text-shadow: 1px 1px #ffffff;
+  outline: 0;
+}
+
+html[data-epure] .acc-mode .mvl {
+  color: #000000;
+  font-size: 14px;
+}
+
+html[data-epure] .acc-copy {
+  color: #000000;
+}
+
+/* --- 5. Les barres du haut et du bas : barre d'outils Win 98 ----------------- */
+html[data-epure] header.progress,
+html[data-epure] footer.nav {
+  background: var(--w98-face);
+  color: #000000;
+  border: 0;
+  box-shadow: var(--w98-relief);
+  backdrop-filter: none;
+  font-family: var(--w98-police);
+}
+
+html[data-epure] footer.nav .nav-status,
+html[data-epure] header.progress .plabel,
+html[data-epure] header.progress .pnum {
+  color: #000000;
+  font-family: var(--w98-police);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* --- 6. Les fenetres : cadre en relief, barre de titre bleu marine ----------- */
+html[data-epure] .pb-panneau,
+html[data-epure] .pd-panneau,
+html[data-epure] .deck-modal-panel,
+html[data-epure] .tb-droite {
+  background: var(--w98-face);
+  color: #000000;
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief), 4px 4px 0 rgba(0, 0, 0, 0.45);
+  backdrop-filter: none;
+  font-family: var(--w98-police);
+}
+
+html[data-epure] .tb-droite {
+  box-shadow: var(--w98-relief);
+}
+
+html[data-epure] .pb-titre,
+html[data-epure] .pd-titre,
+html[data-epure] .deck-modal-panel .dm-head,
+html[data-epure] .tb-entete {
+  background: var(--w98-titre);
+  color: #ffffff;
+  font-family: var(--w98-police);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 3px 8px;
+  border-radius: 0;
+}
+
+html[data-epure] .pb-titre *,
+html[data-epure] .pd-titre *,
+html[data-epure] .deck-modal-panel .dm-head *,
+html[data-epure] .tb-entete * {
+  color: #ffffff;
+  font-family: var(--w98-police);
+  letter-spacing: 0;
+}
+
+html[data-epure] .pb-corps,
+html[data-epure] .pd-corps,
+html[data-epure] .pb-corps *,
+html[data-epure] .pd-corps *:not(a) {
+  color: #000000;
+}
+
+/* --- 7. Les champs : creux blanc --------------------------------------------- */
+html[data-epure] input,
+html[data-epure] select,
+html[data-epure] textarea,
+html[data-epure] .search,
+html[data-epure] .sel {
+  background: #ffffff;
+  color: #000000;
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-creux);
+  font-family: var(--w98-police);
+}
+
+/* --- 8. Les portraits de heros : cadre plat, aucune lueur -------------------- */
+html[data-epure] .tb-port,
+html[data-epure] .tb-port .portrait,
+html[data-epure] .tb-siege {
+  border-radius: 0;
+  clip-path: none;
+  box-shadow: none;
+  filter: none;
+}
+
+html[data-epure] .tb-port {
+  background: var(--w98-face);
+  box-shadow: var(--w98-relief);
+}
+
+html[data-epure] .tb-port.choisi,
+html[data-epure] .tb-port.on,
+html[data-epure] .tb-siege.actif {
+  box-shadow: var(--w98-creux);
+  outline: 2px solid var(--w98-titre);
+}
+
+html[data-epure] .tb-port-nom {
+  background: var(--w98-face);
+  color: #000000;
+  font-family: var(--w98-police);
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-epure] .tb-equipe-k,
+html[data-epure] .tb-compte,
+html[data-epure] .tb-siege-nom {
+  color: #e8e8e8;
+  font-family: var(--w98-police);
+  letter-spacing: 0;
+}
+
+/* --- 9. Retouches apres capture ---------------------------------------------- */
+/* Le panneau de gauche (« Siege 1 / Choisis un heros ») : un panneau gris. */
+html[data-epure] .tb-scene {
+  background: var(--w98-face);
+  color: #000000;
+  box-shadow: var(--w98-relief);
+}
+
+html[data-epure] .tb-scene .tb-nomg,
+html[data-epure] .tb-scene * {
+  color: #000000;
+  text-shadow: none;
+}
+
+/* Le mode dans la barre de titre (« Solo · 1 heros ») : du texte blanc, sans bouton. */
+html[data-epure] .tb-entete .tb-mode {
+  background: transparent;
+  box-shadow: none;
+  color: #ffffff;
+}
+
+html[data-epure] .tb-equipe-k,
+html[data-epure] .tb-compte {
+  opacity: 1;
+  color: #e8e8e8;
+}
+
+html[data-epure] .pnum {
+  background: var(--w98-titre);
+  color: #ffffff;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+html[data-epure] header.progress .pstep .pnum {
+  color: #ffffff;
+}

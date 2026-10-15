@@ -165,6 +165,13 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
     expect(changerAffichage).toHaveBeenCalledWith('sobre')
   })
 
+  it('choisir l affichage epure', () => {
+    const changerAffichage = vi.fn()
+    render(<ContenuOnglet onglet="apparence" p={proprietes({ changerAffichage })} />)
+    fireEvent.click(screen.getByText('Épuré'))
+    expect(changerAffichage).toHaveBeenCalledWith('epure')
+  })
+
   it('en affichage sobre, « Animations » reste visible mais inerte et sur « Non »', () => {
     const basculerAnimations = vi.fn()
     render(<ContenuOnglet onglet="apparence" p={proprietes({ affichage: 'sobre', basculerAnimations })} />)

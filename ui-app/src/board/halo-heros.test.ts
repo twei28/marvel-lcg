@@ -6,7 +6,7 @@
 // serveur sans le fichier, une reponse abimee, tout cela doit rendre un plateau
 // NORMAL. Un fond casse serait pire que pas de couleur du tout.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { fondDe, identiteAffichee, oublierPalettes, palettes, type Couleur } from './halo-heros'
+import { fondDe, identiteAffichee, marqueDe, oublierPalettes, palettes, type Couleur } from './halo-heros'
 
 const ROUGE: Couleur = [140, 41, 31]
 const BLEU: Couleur = [32, 43, 114]
@@ -155,5 +155,30 @@ describe('la couleur suit le heros AFFICHE', () => {
     expect(identiteAffichee(table, 7)).toBe('')
     expect(identiteAffichee(null, 0)).toBe('')
     expect(identiteAffichee({}, 0)).toBe('')
+  })
+})
+
+// L'affichage EPURE remplace la bande floue par trois bandes plates (15/10/2026).
+describe('la marque aplatie de l affichage epure', () => {
+  it('sans palette, aucune marque', () => {
+    expect(marqueDe(undefined)).toBeUndefined()
+    expect(marqueDe([])).toBeUndefined()
+  })
+
+  it('trois bandes nettes : primaire au coin, tertiaire fine au milieu, secondaire au bord', () => {
+    const marque = marqueDe([ROUGE, BLEU, BLANC], 40)!
+    expect(marque).toContain('315deg')
+    // Deux positions par couleur : un arret net, jamais un degrade.
+    // Celle du milieu (40 / 3 = 13,33 px) fait un tiers des deux autres (40 px).
+    expect(marque).toContain('rgb(140,41,31) 0px 40px')
+    expect(marque).toContain('rgb(219,220,222) 40px 53.33px')
+    expect(marque).toContain('rgb(32,43,114) 53.33px 93.33px')
+    expect(marque).toContain('transparent 93.33px')
+    expect(marque).not.toContain('rgba')
+  })
+
+  it('un heros a deux couleurs repete la derniere', () => {
+    const marque = marqueDe([ROUGE, BLEU], 40)!
+    expect(marque.match(/rgb\(32,43,114\)/g)).toHaveLength(2)
   })
 })

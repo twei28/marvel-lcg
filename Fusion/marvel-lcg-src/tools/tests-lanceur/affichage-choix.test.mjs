@@ -3,7 +3,7 @@
 //     node --test tools/tests-lanceur/affichage-choix.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { normaliser, inverse, reconcilier, CLE_AFFICHAGE } from "../../public/js/prepare/affichage-choix.js";
+import { normaliser, suivant, attributsDe, reconcilier, CLE_AFFICHAGE } from "../../public/js/prepare/affichage-choix.js";
 
 test("la clé est celle que lit le plateau", () => {
     assert.equal(CLE_AFFICHAGE, "mc_affichage_v1");
@@ -12,12 +12,30 @@ test("la clé est celle que lit le plateau", () => {
 test("toute valeur inconnue vaut normal", () => {
     for (const v of [undefined, null, "", "fluo", "SOBRE", 1]) assert.equal(normaliser(v), "normal");
     assert.equal(normaliser("sobre"), "sobre");
+    assert.equal(normaliser("epure"), "epure");
 });
 
-test("inverse bascule entre les deux modes", () => {
-    assert.equal(inverse("normal"), "sobre");
-    assert.equal(inverse("sobre"), "normal");
-    assert.equal(inverse(undefined), "sobre");
+test("suivant fait tourner : normal, sobre, épuré, normal", () => {
+    assert.equal(suivant("normal"), "sobre");
+    assert.equal(suivant("sobre"), "epure");
+    assert.equal(suivant("epure"), "normal");
+    assert.equal(suivant(undefined), "sobre");
+});
+
+test("l'épuré est un sobre de plus : data-affichage vaut sobre, data-epure s'ajoute", () => {
+    assert.deepEqual(attributsDe("normal"), { affichage: "normal", epure: false });
+    assert.deepEqual(attributsDe("sobre"), { affichage: "sobre", epure: false });
+    assert.deepEqual(attributsDe("epure"), { affichage: "sobre", epure: true });
+});
+
+test("un navigateur qui a rangé « epure » a déjà choisi", () => {
+    assert.equal(doitProposerLeChoix("epure", null), false);
+    assert.equal(doitProposerLeChoix(null, null), true);
+});
+
+test("compte sans fichier : l'épuré du navigateur y est versé", () => {
+    assert.deepEqual(reconcilier("epure", { compte: true, existe: false, preferences: {} }),
+        { affichage: "epure", pousser: { affichage: "epure" } });
 });
 
 test("invité ou moteur local : le navigateur reste maître", () => {

@@ -63,6 +63,12 @@ try:
              statut == 200 and corps["existe"] and corps["preferences"] == {"affichage": "sobre"}, corps)
     verifier("ecrit a cote du fichier d'arts", os.path.isfile(attendu), os.listdir(dossier))
 
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {"affichage": "epure"}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("le mode epure est une valeur permise",
+             corps["preferences"] == {"affichage": "epure"}, corps["preferences"])
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {"affichage": "sobre"}}))
+
     appeler(serveur.save_preferences, Requete(cookie, {"changements": {
         "affichage": "fluo", "../x": "sobre", "langue": "en"}}))
     _, corps = appeler(serveur.get_preferences, Requete(cookie))

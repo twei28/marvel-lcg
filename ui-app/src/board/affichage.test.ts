@@ -42,6 +42,18 @@ describe('affichage', () => {
     expect(appel).toHaveBeenCalledWith('/save_preferences', expect.objectContaining({ method: 'POST' }))
   })
 
+  it('l epure est un sobre de plus : data-affichage vaut sobre, data-epure s ajoute', () => {
+    expect(normaliserAffichage('epure')).toBe('epure')
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response('{}'))))
+    ecrireAffichage('epure')
+    expect(window.localStorage.getItem(CLE_AFFICHAGE)).toBe('epure')
+    expect(document.documentElement.dataset.affichage).toBe('sobre')
+    expect(document.documentElement.dataset.epure).toBe('oui')
+    expect(mouvementReduit()).toBe(true)
+    ecrireAffichage('sobre')
+    expect(document.documentElement.dataset.epure).toBeUndefined()
+  })
+
   it('le compte ne fait foi que s il a deja un fichier', () => {
     expect(affichageDuCompte({ compte: false, existe: false, preferences: {} })).toBeUndefined()
     expect(affichageDuCompte({ compte: true, existe: false, preferences: {} })).toBeUndefined()
@@ -72,6 +84,30 @@ describe('styles/affichage-sobre.css', () => {
       .filter(Boolean)
     expect(selecteurs.length).toBeGreaterThan(20)
     for (const s of selecteurs) expect(s.startsWith("html[data-affichage='sobre']"), s).toBe(true)
+  })
+
+  it('ne declare aucune couche (elle doit passer devant toutes)', () => {
+    expect(feuille).not.toMatch(/@layer/)
+  })
+})
+
+// ⚠ NORMAL ET SOBRE NE DOIVENT RIEN VOIR DE LA FEUILLE EPURE (15/10/2026) : une
+// seule regle sans `html[data-epure]` changerait le plateau de tout le monde.
+// Meme garde pour la feuille des pages hors plateau.
+describe.each([
+  ['styles/affichage-epure.css', '../../styles/affichage-epure.css'],
+  ['public/css/affichage-epure-pages.css', '../../../Fusion/marvel-lcg-src/public/css/affichage-epure-pages.css'],
+])('%s', (_nom, chemin) => {
+  const feuille = readFileSync(join(dirname(fileURLToPath(import.meta.url)), chemin), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+
+  it('chaque selecteur commence par html[data-epure]', () => {
+    const selecteurs = [...feuille.matchAll(/([^{}]+)\{[^{}]*\}/g)]
+      .flatMap((m) => m[1].split(','))
+      .map((s) => s.trim())
+      .filter(Boolean)
+    expect(selecteurs.length).toBeGreaterThan(20)
+    for (const s of selecteurs) expect(s.startsWith('html[data-epure]'), s).toBe(true)
   })
 
   it('ne declare aucune couche (elle doit passer devant toutes)', () => {

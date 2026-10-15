@@ -1,0 +1,330 @@
+/* AFFICHAGE EPURE (reglage « Affichage : Normal / Sobre / Epure », board/affichage.ts).
+
+   Demande de l'utilisateur, 15/10/2026 : un mode « vraiment tres epure » pour le
+   plateau. Decisions (une par une, en multichoix) :
+     - on retire ce qui n'est pas indispensable (titres de zones, decors, fleches
+       de phase, stats) ET on aplatit ce qui reste ;
+     - les trois couleurs du heros restent, en trois BANDES EN BIAIS aplaties dans
+       le coin bas droit (pas de halo) ;
+     - style Windows 98 (cadres en relief gris, barre de titre bleu marine uni),
+       sur la selection ET sur les fenetres du plateau ;
+     - barre du haut tres fine ; languettes Aide / Journal gardees, en Win 98 ;
+     - cartes nues (plus d'etiquette de type), barres de PV gardees.
+
+   ⚠ L'EPURE EST UN SOBRE EN PLUS DEPOUILLE. `appliquerAffichage` pose
+   `data-affichage='sobre'` ET `data-epure='oui'` : toute la feuille sobre (gris,
+   sans mouvement) joue deja ; celle-ci n'ajoute que le reste. Mode Normal et
+   Sobre ne voient aucune de ces regles (tout est prefixe par `data-epure`).
+
+   ⚠ HORS DE TOUTE COUCHE, COMME affichage-sobre.css : les feuilles du plateau
+   vivent dans des `@layer`, une regle hors couche passe devant sans `!important`.
+
+   ⚠ LE CARTOUCHE DE PHASE N'EST PAS CACHE EN ENTIER : il porte les boutons
+   « Suivant » / « Continuer » qui font avancer la partie. On retire ses
+   decorations (fleches, trajets, bandeau en biais) et on le passe en fenetre
+   Win 98. */
+
+/* --- 1. La palette Windows 98 ------------------------------------------------ */
+html[data-epure] {
+  --w98-face: #c0c0c0;
+  --w98-clair: #ffffff;
+  --w98-ombre: #808080;
+  --w98-noir: #000000;
+  --w98-titre: #000080;
+  --w98-texte: #000000;
+  --w98-police: Tahoma, 'MS Sans Serif', 'Segoe UI', Arial, sans-serif;
+  /* Le relief : clair en haut a gauche, sombre en bas a droite. */
+  --w98-relief: inset -1px -1px var(--w98-noir), inset 1px 1px var(--w98-clair),
+    inset -2px -2px var(--w98-ombre), inset 2px 2px #dfdfdf;
+  --w98-creux: inset -1px -1px var(--w98-clair), inset 1px 1px var(--w98-ombre),
+    inset -2px -2px #dfdfdf, inset 2px 2px var(--w98-noir);
+}
+
+/* --- 2. La table : gris neutre, la marque du heros au coin ------------------- */
+html[data-epure],
+html[data-epure] body,
+html[data-epure] .plateau-scene,
+html[data-epure] body.a-halo-heros .plateau-scene,
+html[data-epure] #scene {
+  background: #2a2a2a;
+  box-shadow: none;
+}
+
+/* Trois bandes en biais, aplaties (halo-heros.ts, `marqueDe`). Le pseudo-element
+   ne capte aucun clic. */
+html[data-epure] body.a-marque-heros .plateau-scene::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 320px;
+  height: 320px;
+  background: var(--marque-heros, none);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- 3. Ce qu'on retire ------------------------------------------------------ */
+html[data-epure] .plateau-emplacement-titre,
+html[data-epure] .fleches-phase,
+html[data-epure] .trajet-copie,
+html[data-epure] .stats-partie,
+html[data-epure] .meteo-couche,
+html[data-epure] .deroule-phase::before,
+html[data-epure] .deroule-phase::after,
+html[data-epure] .plateau-emplacement .kind-pill {
+  display: none;
+}
+
+/* Cartes nues : un contour gris fin, aucune etiquette, aucune lueur. */
+html[data-epure] .scan-card {
+  box-shadow: none;
+}
+
+/* --- 4. La barre du haut : tres fine ----------------------------------------- */
+html[data-epure] .plateau-barre {
+  min-height: 0;
+  height: 26px;
+  padding: 1px 4px;
+  gap: 2px;
+  background: var(--w98-face);
+  border-bottom: 1px solid var(--w98-noir);
+  box-shadow: inset 0 1px var(--w98-clair);
+  font: 11px/1 var(--w98-police);
+  color: var(--w98-texte);
+}
+
+html[data-epure] .plateau-barre * {
+  font-family: var(--w98-police);
+  text-shadow: none;
+}
+
+html[data-epure] .plateau-barre button,
+html[data-epure] .plateau-barre .mode-actions {
+  min-height: 0;
+  height: 22px;
+  padding: 0 8px;
+  font-size: 11px;
+  background: var(--w98-face);
+  color: var(--w98-texte);
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief);
+}
+
+html[data-epure] .plateau-barre button:active,
+html[data-epure] .plateau-barre button[aria-pressed='true'] {
+  box-shadow: var(--w98-creux);
+}
+
+/* --- 5. Les fenetres : cadre en relief, barre de titre bleu marine ----------- */
+html[data-epure] .reglages-fenetre,
+html[data-epure] .deroule-phase,
+html[data-epure] .demande-centrale,
+html[data-epure] .fin-partie-carte,
+html[data-epure] .assistant-action,
+html[data-epure] .deck-modal-panel {
+  background: var(--w98-face);
+  color: var(--w98-texte);
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief), 4px 4px 0 rgba(0, 0, 0, 0.45);
+  font-family: var(--w98-police);
+  text-shadow: none;
+  backdrop-filter: none;
+}
+
+html[data-epure] .reglages-fenetre *,
+html[data-epure] .deroule-phase *,
+html[data-epure] .demande-centrale *,
+html[data-epure] .assistant-action *,
+html[data-epure] .deck-modal-panel * {
+  font-family: var(--w98-police);
+  text-shadow: none;
+}
+
+html[data-epure] .reglages-tete,
+html[data-epure] .deroule-phase .deroule-titre,
+html[data-epure] .deck-modal-panel .dm-head {
+  background: var(--w98-titre);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 0;
+}
+
+html[data-epure] .reglages-tete *,
+html[data-epure] .deroule-phase .deroule-titre *,
+html[data-epure] .deck-modal-panel .dm-head * {
+  color: #ffffff;
+}
+
+/* --- 6. Les boutons : biseautes, gris ---------------------------------------- */
+html[data-epure] .reglages-fenetre button,
+html[data-epure] .deroule-phase .deroule-boutons .bh-bouton,
+html[data-epure] .deroule-phase .deroule-boutons .deroule-suivant,
+html[data-epure] .demande-centrale button,
+html[data-epure] .assistant-action button,
+html[data-epure] .deck-modal-panel button,
+html[data-epure] .deck-modal-panel .btn,
+html[data-epure] .fin-partie-carte button {
+  background: var(--w98-face);
+  color: var(--w98-texte);
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  clip-path: none;
+  animation: none;
+}
+
+html[data-epure] .reglages-fenetre button:active,
+html[data-epure] .deroule-phase .deroule-boutons .bh-bouton:active,
+html[data-epure] .demande-centrale button:active,
+html[data-epure] .assistant-action button:active,
+html[data-epure] .deck-modal-panel button:active {
+  box-shadow: var(--w98-creux);
+}
+
+/* Le bouton par defaut d'une fenetre Win 98 : cadre noir autour. */
+html[data-epure] .deroule-phase .deroule-boutons .deroule-suivant,
+html[data-epure] .assistant-action .assistant-confirmer,
+html[data-epure] .deck-modal-panel .btn.primary {
+  outline: 1px solid var(--w98-noir);
+  font-weight: 700;
+}
+
+/* --- 7. Les languettes Aide et Journal : gardees, en Win 98 ------------------ */
+html[data-epure] .volet-aide-languette,
+html[data-epure] .volet-journal-languette {
+  background: var(--w98-face);
+  color: var(--w98-texte);
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-relief);
+  font-family: var(--w98-police);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+/* --- 8. Les champs et les listes des fenetres : creux blanc ------------------ */
+html[data-epure] .reglages-fenetre input[type='text'],
+html[data-epure] .reglages-fenetre select,
+html[data-epure] .deck-modal-panel input,
+html[data-epure] .deck-modal-panel select {
+  background: #ffffff;
+  color: var(--w98-texte);
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--w98-creux);
+}
+
+/* --- 9. Les textes poses SUR le gris de la barre et des fenetres ------------- */
+html[data-epure] .plateau-barre .bh-etat,
+html[data-epure] .plateau-barre .bh-etat strong,
+html[data-epure] .plateau-barre .bh-etat span,
+html[data-epure] .plateau-barre .bh-etat em {
+  color: var(--w98-texte);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-epure] .plateau-barre .bh-etat strong {
+  font-weight: 700;
+}
+
+/* La bascule Auto / Manuel : deux cases, l'active en creux. */
+html[data-epure] .plateau-barre .bh-facon {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  gap: 1px;
+}
+
+html[data-epure] .plateau-barre .bh-facon-choix {
+  padding: 0 6px;
+}
+
+html[data-epure] .plateau-barre .bh-facon-choix.est-actif {
+  box-shadow: var(--w98-creux);
+  font-weight: 700;
+}
+
+/* Le bouton « Fin du tour » inactif : texte gris, comme un bouton Win 98 grise. */
+html[data-epure] .plateau-barre button:disabled {
+  color: var(--w98-ombre);
+  text-shadow: 1px 1px var(--w98-clair);
+}
+
+/* La fenetre de question du bas (mulligan, choix...) : un panneau gris, le texte
+   en noir, aucune pastille doree ni cadre a coins coupes. */
+html[data-epure] .assistant-action .assistant-simple-action,
+html[data-epure] .assistant-action .assistant-simple-indication {
+  background: var(--w98-face);
+  color: var(--w98-texte);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  clip-path: none;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+html[data-epure] .assistant-action .assistant-simple-action {
+  align-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+  height: auto;
+  min-height: 0;
+  padding: 3px 6px;
+  margin: 0;
+  text-align: left;
+  background: var(--w98-titre);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+html[data-epure] .assistant-action .assistant-simple-indication {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+html[data-epure] .assistant-action .assistant-confirmer {
+  font-size: 13px;
+  font-style: normal;
+  padding: 4px 16px;
+}
+
+/* --- 10. Aucun contour de couleur autour des cartes (demande du 15/10/2026) ---
+   Ni le camp (vert / rouge), ni l'etat (jouable, ciblable, source, designee).
+   Il reste un trait gris fin et neutre, pour que les cartes se detachent de la
+   table et que celles qu'on peut choisir restent reperables. */
+html[data-epure] .scan-card,
+html[data-epure] .scan-card.camp-player,
+html[data-epure] .scan-card.camp-encounter,
+html[data-epure] .scan-card.state-playable,
+html[data-epure] .scan-card.state-targetable,
+html[data-epure] .scan-card.state-source,
+html[data-epure] .scan-card.state-selected,
+html[data-epure] .scan-card.a-alerte-douce,
+html[data-epure] .scan-card.a-alerte-forte,
+html[data-epure] .scan-card.is-highlighted {
+  --lisere: transparent;
+  --camp-ring: transparent;
+  --contour-sobre: transparent;
+  --state-glow: transparent;
+  --camp-glow: transparent;
+}
+
+html[data-epure] .scan-frame,
+html[data-epure] .state-playable .scan-frame,
+html[data-epure] .state-targetable .scan-frame,
+html[data-epure] .scan-card.state-source .scan-frame {
+  box-shadow: 0 0 0 1px #6e6e6e;
+}
