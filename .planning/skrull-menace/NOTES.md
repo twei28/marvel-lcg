@@ -70,7 +70,7 @@ Chaque carte : docs/reference/PROCESSUS-CARTE.md ; héros : PROCESSUS-HEROS.md.
 - Hulkling : FAIT et commite (0c0d05cf). Testable en local (LANCEUR-LINUX.sh).
 - Scenario 1 Skrull Empire (sk070-116) : scripts, donnees, textes FR, tests (72 cas [sk-e]), plateau, gabarits ecrits ; EN ATTENTE du commit (batterie complete relancee apres l'ajout de pv_sur_environnement dans villain.py).
 - Decisions utilisateur : PV de l'environnement = vrai cadran ; **PAS de deploiement avant la fin des 5 scenarios ET de la campagne** (deployer.sh interdit d'ici la).
-- Reste : Lyja, scenarios 2-5, campagne (data/campagnes/skrull_menace.json, Cooperation Area, etats entre scenarios, expert).
+- Tout est fait (15-16/10/2026) : Lyja, scenarios 2-5, modulaires, 26 cartes de campagne, mode campagne (voir CAMPAGNE-MODE.md).
 - Piege decouvert : un meme nom unique d'un stade a l'autre (« * Emperor Dorrek I ») -> retirer l'ancien AVANT de reveler le nouveau (FinDeStade).
 - Dette hors perimetre : 4 cas Squirrel Girl rouges (sg006/007/009/013), anterieurs a Skrull Menace.
 

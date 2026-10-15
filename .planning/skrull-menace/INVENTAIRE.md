@@ -13,20 +13,20 @@ et la carte « Impostor » de Secret Invasion) : un seul script à écrire (mod�
 | Bloc | card_id `sk` | Cartes (fiches) | Statut |
 |---|---|---|---|
 | Hulkling (héros) | 001-036 | 31 | FAIT, commité |
-| Lyja (héros + némésis) | 037-069 | 33 | à faire |
+| Lyja (héros + némésis) | 037-069 | 33 | fait |
 | Skrull Empire (scénario 1) | 070-106 | 51 avec les modulaires ci-dessous | FAIT, en attente de commit |
 | Skrull Society / Army of Skrulls | 107-116 | 10 | FAIT (avec le scénario 1) |
-| Super-Skrull (scénario 2) | 117-135 | 19 | à faire |
-| Kree-Skrull War (modulaire) | 136-140 | 5 (+ variante de mise en page de Bel-Dann, même carte) | à faire |
-| Paibok (scénario 3) | 141-160 | 20 | à faire |
-| New Revengers (modulaire) | 161-169 | 9 | à faire |
-| Skrull Pantheon (scénario 4) | 170-183 | 14 | à faire |
-| Dard'van Sect (modulaire) | 184-188 | 5 | à faire |
-| Secret Invasion (scénario 5) | 189-227 | 9 setup + 17 rencontre + 20 Impostor (double face) | à faire |
-| Shaper of Worlds (modulaire) | 228-230 | 3 + 4 fragments | à faire |
-| Crusader / Jazinda / Skymax / War Skrull / Xavin (élites, modulaires) | 231-253 | 23 | à faire |
-| Standard Skrull / Expert Skrull | 254-262 | 9 | à faire |
-| Campagne : alliés, side schemes joueur, soutiens, améliorations, rappel | 263-288 | 26 | à faire |
+| Super-Skrull (scénario 2) | 117-135 | 19 | fait |
+| Kree-Skrull War (modulaire) | 136-140 | 5 (+ variante de mise en page de Bel-Dann, même carte) | fait |
+| Paibok (scénario 3) | 141-160 | 20 | fait |
+| New Revengers (modulaire) | 161-169 | 9 | fait |
+| Skrull Pantheon (scénario 4) | 170-183 | 14 | fait |
+| Dard'van Sect (modulaire) | 184-188 | 5 | fait |
+| Secret Invasion (scénario 5) | 189-227 | 9 setup + 17 rencontre + 20 Impostor (double face) | fait |
+| Shaper of Worlds (modulaire) | 228-230 | 3 + 4 fragments | fait |
+| Crusader / Jazinda / Skymax / War Skrull / Xavin (élites, modulaires) | 231-253 | 23 | fait |
+| Standard Skrull / Expert Skrull | 254-262 | 9 | fait |
+| Campagne : alliés, side schemes joueur, soutiens, améliorations, rappel | 263-288 | 26 | fait |
 
 Hors périmètre du coffret de campagne, NON transcrit : héros « Super-Skrull (Beta) » (15 cartes + 4 de mise en place),
 héros « Wiccan (1.1) » (1 carte), cartes Veranke de « Earth Under Siege » (autre extension, 4 cartes + cadran de PV).

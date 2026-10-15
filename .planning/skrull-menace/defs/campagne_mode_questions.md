@@ -66,7 +66,7 @@ Une entree par doute : la phrase, les lectures possibles, celle retenue, ou la c
 - A faire cote deck-builder / catalogue (hors de ma portee) : « These cards cannot be included in any deck unless playing the Skrull
   Menace campaign » : les cartes 263-288 devraient etre ABSENTES du constructeur de decks.
 
-### Q11. La carte « Cooperation Progress Reminder » (p.6, images `cooperation progress reminder*.png`)
+### Q11. La carte « Cooperation Progress Reminder » (RESOLUE : creee, sk289a / sk289b) (p.6, images `cooperation progress reminder*.png`)
 - C'est une aide de jeu physique (« each player MAY take » une carte). La REGLE qu'elle rappelle est implementee pour tous les
   joueurs ; la carte elle-meme n'est pas creee (pas de card_id dans la plage 263-288 : elle n'est pas numerotee). Si on la veut dans le
   jeu (une carte inerte au dos « Do not flip this unless you intend to build cooperation »), c'est une carte de plus pour l'agent des cartes.
@@ -80,7 +80,7 @@ Une entree par doute : la phrase, les lectures possibles, celle retenue, ou la c
 - Le carnet imprime a une colonne par scenario 1-4 (zone du Shaper, du Cube, de chaque Elite). Le jeu ne garde que la DERNIERE valeur : c'est la seule
   que les instructions de mise en place relisent. L'historique des cases cochees par scenario n'est pas conserve.
 
-## Interface (plateau et ecran de campagne) — a decider, rien d'ecrit hors donnees
+## Interface (plateau et ecran de campagne) — FAITE le 16/10/2026 sauf 5 et 6 (voir CAMPAGNE-MODE.md)
 
 Ce qui existe et suffit pour jouer : le panneau de fin de partie montre la zone de cooperation (les 30 cartes en vignettes cliquables, celles
 de la zone sont cochees, corrigeables), le tableau (champ texte) et les zones du Shaper, du Cube et de chaque Elite (champs texte) ; les

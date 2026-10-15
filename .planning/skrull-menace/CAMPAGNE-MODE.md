@@ -49,15 +49,31 @@ Fichiers : `src/cards/pack/skrull_menace/campaign.py` (moteur), `data/campagnes/
 | 13 | Victoire finale : Veranke vaincue au scenario 5 | 17 | `final: true` (le panneau dit « La campagne est gagnée ») ; `Releve` du niveau 5 ne note que les PV | `CAMPAGNE ENTIERE` (5e etape), spec Playwright du panneau pour le scenario 2 | aucun enregistrement au 5, le livret n'en demande aucun |
 | 14 | Une defaite ne coute rien | 5 | `Releve` rend `{}` quand `players_won` est faux ; le panneau n'ecrit rien | le harnais (`fin: "Lose"` : carnet intact) | l'Elite est redessinee au nouvel essai (Q3) |
 
-## Ce qui n'est PAS fait (et pourquoi)
+## Interface et ce qui a ete decide (15-16/10/2026)
 
-- **La carte « Cooperation Progress Reminder »** : aide de jeu physique, sans numero ; la regle est dans le moteur pour tous (Q11).
-- **Une vraie UI pour la zone et le tableau** (onglets, vignettes, choix manuel des cases) : decrite dans `defs/campagne_mode_questions.md`
-  (section Interface). Aujourd'hui : champs du panneau de fin de partie (zone = 30 vignettes cliquables, tableau = texte).
-- **Les cartes sk263-sk288** : portees (branche fusionnee le 15/10/2026, gabarits `CAMPAGNE-CARTES-GABARITS.md`, 111 cas `[campagne_cartes]`
-  verts). Les cas de `campagne_mode` utilisent les vraies cartes des qu'elles existent (32/32 apres la fusion). Q10 faite : `SETS_RESERVES_A_LA_CAMPAGNE`
-  (`public/js/deckbuilder/regles.js`) retire les 26 cartes du constructeur et de l'import de decks.
-- **L'historique du journal par scenario** (p.22-23, une colonne par scenario) : seule la derniere valeur est gardee (Q13).
+- **Les cartes sk263-sk288 et la carte « Cooperation Progress Reminder » (sk289a/b)** : portees, fusionnees, 111 cas `[campagne_cartes]`
+  verts. Absentes du constructeur de decks et de l'import (`SETS_RESERVES_A_LA_CAMPAGNE`, `public/js/deckbuilder/regles.js`).
+- **Ecran « Coopération »** (`vueCooperation`, bloc `cooperation` de `skrull_menace.json`) : la zone en cinq colonnes (presentes en couleur,
+  les autres en gris), le tableau de la p.24 (13 lignes, 34 cases, ligne complete = « gagnée »), le journal par scenario.
+- **Journal par scenario** (Q13) : `campagne.historique[<scenario>]`, ecrit par le panneau de recompenses a chaque scenario gagne ; la colonne
+  « Maintenant » est le carnet. Rien ne le relit pour jouer.
+- **Choix des cartes de la zone AVANT la partie**, sur vignettes (`vueChoixDeLaZone`, bouton « Cartes de la zone » aux scenarios 2 a 5) :
+  cle `Player N Cooperation Deck` lue par `_cartes_de_la_zone` (une carte inconnue, hors zone, deja prise ou 2e du meme type est ignoree ;
+  `none` = rien). Rien de choisi : les questions de la mise en place comme avant. 4 chaines + mutation (3 rouges sur 4 sans la lecture).
+- **Tableau « Cooperation Progress » en cases dans le panneau de fin de partie** (champ `cases`) : le jeu propose l'assignation, le joueur
+  corrige case par case (Q1).
+- **Questions du jeu en francais** : cooperation, zone, campagne experte (`vocabulaire-moteur.ts`).
+- **Partie reelle dans le navigateur** (`ui-check/tests/campagne-skrull-ecran-reel.spec.ts`) : cartes choisies a l'ecran dans le deck et
+  en main, texte lisible (captures relues), question de cooperation affichee en francais, reponse qui defausse le dessus du deck.
+
+## Ce qui n'est PAS fait (decisions, pas oublis)
+
+- **L'Elite du scenario a venir, affichee avant le lancement** : le livret la fait tirer AU HASARD a la mise en place (p.9) ; la montrer avant
+  reviendrait a deplacer le tirage. Le journal de l'ecran Cooperation montre ce qui a deja ete tire (case vide = jamais tiree).
+- **Un bouton a cote de la carte vaincue** pour la cooperation : la question standard (« Défausser le dessus de ton deck pour placer ... ») est
+  deja posee a l'ecran, en francais, avec « Annuler ».
+- **La mise en pile de victoire par la console de debug** : un coup donne par la console n'enchaine pas la suite de la regle (artefact de
+  l'outil, pas de la carte) ; la mise en pile est prouvee par les 7 chaines `cooperation —`.
 
 ## Comment rejouer les preuves
 
@@ -74,7 +90,7 @@ UI_CHECK_BASE=http://127.0.0.1:31900 npx playwright test tests/campagne-skrull-m
 
 ## Resultats (16/10/2026)
 
-- 32 chaines `[campagne_mode]` : 32/32 (dont la campagne entiere de 5 scenarios, les cas experte avec joueur elimine, la regle de cooperation).
+- 36 chaines `[campagne_mode]` : 36/36 (dont la campagne entiere de 5 scenarios, les cas experte avec joueur elimine, la regle de cooperation).
 - Preuve par mutation : 9 mutations d'une ligne du module (REVEALED, defausse du dessus, retrait de l'Elite en pile de victoire,
   Shaper « In play », unicite des cartes de la zone, ajouts du scenario 2, `*CampaignSetup(2)` de sk120a, joueur qui refuse le pion,
   plafond des PV) : toutes tuees par au moins une chaine.
