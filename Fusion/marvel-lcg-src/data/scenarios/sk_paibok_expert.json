@@ -1,0 +1,46 @@
+{
+  "version": "0.5.8",
+  "name": "Paibok",
+  "villain": [
+    "sk142",
+    "sk143"
+  ],
+  "expert": true,
+  "schemes": [
+    "sk144a,sk144b",
+    "sk145a,sk145b"
+  ],
+  "set_aside": [],
+  "encounters": [
+    "sk146",
+    "sk147",
+    "sk147",
+    "sk148",
+    "sk149",
+    "sk149",
+    "sk150",
+    "sk151",
+    "sk152",
+    "sk153",
+    "sk153",
+    "sk154",
+    "sk155",
+    "sk156",
+    "sk157",
+    "sk157",
+    "sk158",
+    "sk159",
+    "sk159",
+    "sk160",
+    "sk160",
+    "sk160",
+    "sk160"
+  ],
+  "encounter_sets": [
+    "standard",
+    "expert"
+  ],
+  "modular_sets": [
+    "sk_new_revengers"
+  ]
+}

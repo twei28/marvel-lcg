@@ -102,6 +102,11 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   // The Coils of Doom (cn013). « Crom » est un nom propre (le dieu cimmérien).
   crom: 'Crom',
   serpent: 'serpent',
+  // Pack skrull_menace, scenario Paibok (15/10/2026) : les jetons de MAITRISE poses sur
+  // Paibok (compteur maison, insert p.12) et les jetons d'ABSORPTION d'Asti the
+  // All-Seeing (sk163, set New Revengers).
+  mastery: 'maîtrise',
+  absorption: 'absorption',
   // Pack hunting_season (09/10/2026) : Reptilian Rage (hs060) pose de la « honte » sur Curtis.
   shame: 'honte',
 }

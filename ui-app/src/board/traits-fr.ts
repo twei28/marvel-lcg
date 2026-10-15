@@ -45,6 +45,7 @@ export const TRAITS_FR: Readonly<Record<string, string | undefined>> = {
   "CIVILIAN": "CIVIL",
   "COMPLETED": "TERMINÉ",
   "COMPONENT": "COMPOSANT",
+  "COMPUTER": "ORDINATEUR",
   "CONFIDENT": "CONFIANT",
   "CONTROLLED": "CONTRÔLÉ",
   "CORNERED": "ACCULÉ",

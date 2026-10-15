@@ -129,6 +129,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # resolvent comme des traitrises. Purement declaratif cote enum ;
         # les capacites de Lyja, Mole, Untrustworthiness et Paibok le lisent.
         "TREACHERY",
+        # (15/10/2026) Paibok / New Revengers (Kajislav) : « POWER SKRULL » (les quatre
+        # attachements de pouvoir de Paibok), « REVENGER » (les sbires du set
+        # modulaire, l'environnement O.M.N.I.T.R.O.N.I.C.U.S.) et « COMPUTER ».
+        # Purement declaratif cote enum, les capacites de Paibok et du set les lisent.
+        "POWER SKRULL", "REVENGER", "COMPUTER",
         "TRAINING", "TEAM", "SPECIALIZATION", "TECHNIQUE",
         "ACTIVATION ORDER 1", "ACTIVATION ORDER 2", "ACTIVATION ORDER 3", "ACTIVATION ORDER 4", "ACTIVATION ORDER 5", "ACTIVATION ORDER 6",
         "TRAP!",
@@ -357,6 +362,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (25/09/2026) : pack custom conan (RyCoRan). 'crom' sur The Cimmerian
         # (cn012a/b), 'serpent' sur l'obligation cn013 The Coils of Doom (Uses).
         'crom', 'serpent',
+        # AJOUT (15/10/2026) : pack custom skrull_menace, scenario Paibok (Kajislav).
+        # 'mastery' : jetons de MAITRISE poses sur Paibok (compteur maison, insert p.12) ;
+        # 'absorption' : Asti the All-Seeing (sk163). Sans ces entrees `IsCounter`
+        # refuse le nom et la pose du compteur echoue.
+        'mastery', 'absorption',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)
