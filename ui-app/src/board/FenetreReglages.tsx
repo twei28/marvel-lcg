@@ -418,7 +418,7 @@ export function ContenuOnglet({
   p: ProprietesReglages
 }) {
   if (onglet === 'apparence') {
-    const sobre = p.affichage === 'sobre'
+    const sobre = p.affichage !== 'normal'
     return (
       <>
         <LigneChoix
@@ -427,9 +427,10 @@ export function ContenuOnglet({
           choix={[
             { valeur: 'normal' as Affichage, libelle: t('Normal') },
             { valeur: 'sobre' as Affichage, libelle: t('Sobre') },
+            { valeur: 'epure' as Affichage, libelle: t('Épuré') },
           ]}
           onChoisir={p.changerAffichage}
-          detail={t('Sobre : fond gris, sans couleurs ni animations')}
+          detail={t('Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, style Windows 98')}
         />
         {/* La couleur du fond (04/10/2026) : la table change en direct. */}
         {p.changerTeinte && p.reinitialiserTeinte ? (

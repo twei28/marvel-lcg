@@ -12,7 +12,7 @@
 "use strict";
 
 import { CLE_TEINTE, SEUIL_TABLE_CLAIRE, bornerTeinte, lireTeinte, variablesDeTeinte } from "/public/js/prepare/teinte-choix.js";
-import { CLE_AFFICHAGE, SOBRE, normaliser } from "/public/js/prepare/affichage-choix.js";
+import { CLE_AFFICHAGE, SOBRE, normaliser, poserAttributs } from "/public/js/prepare/affichage-choix.js";
 
 const NOMS = Object.keys(variablesDeTeinte({ h: 0, s: 0, l: 20 }));
 
@@ -41,12 +41,12 @@ function lireAffichage() {
     catch (e) { return normaliser(null); }
 }
 
-if (!document.documentElement.dataset.affichage) document.documentElement.dataset.affichage = lireAffichage();
+if (!document.documentElement.dataset.affichage) poserAttributs(document.documentElement, lireAffichage());
 appliquerTeintePage(lireDuNavigateur());
 // La bascule de l'en-tete change `data-affichage` sans recharger : suivre.
 new MutationObserver(() => appliquerTeintePage(teinteDemandee)).observe(document.documentElement, { attributes: true, attributeFilter: ["data-affichage"] });
 // Un autre onglet (le plateau, la preparation) a change la couleur ou l'affichage : suivre.
 window.addEventListener("storage", (e) => {
-    if (e.key === CLE_AFFICHAGE || e.key === null) document.documentElement.dataset.affichage = lireAffichage();
+    if (e.key === CLE_AFFICHAGE || e.key === null) poserAttributs(document.documentElement, lireAffichage());
     if (e.key === CLE_TEINTE || e.key === null) appliquerTeintePage(lireDuNavigateur());
 });

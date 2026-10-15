@@ -1,4 +1,4 @@
-// affichage.js : le réglage « Affichage : Normal / Sobre » de la préparation.
+// affichage.js : le réglage « Affichage : Normal / Sobre / Épuré » de la préparation.
 //
 // Le choix vit dans le navigateur (`mc_affichage_v1`, lu aussi par le plateau)
 // et, quand il y a un compte, sur le serveur (`/get_preferences`,
@@ -6,7 +6,7 @@
 // feuilles de style lisent : aucun rechargement n'est nécessaire.
 "use strict";
 
-import { CLE_AFFICHAGE, normaliser, inverse, reconcilier, doitProposerLeChoix, SOBRE } from "/public/js/prepare/affichage-choix.js";
+import { CLE_AFFICHAGE, normaliser, suivant, reconcilier, doitProposerLeChoix, poserAttributs, NORMAL, SOBRE, EPURE } from "/public/js/prepare/affichage-choix.js";
 import { t } from "/public/js/prepare/langue.js";
 import { poserIcone } from "/public/js/prepare/icones-entete.js";
 
@@ -16,7 +16,7 @@ export function affichageActuel() {
 }
 
 export function appliquerAffichage(valeur = affichageActuel()) {
-    document.documentElement.dataset.affichage = normaliser(valeur);
+    poserAttributs(document.documentElement, valeur);
 }
 
 // Vue Player de l'administrateur (lien-admin.js) : ni lu ni écrit sur le compte.
@@ -73,21 +73,23 @@ export function affichageJamaisChoisi(reponse) {
 }
 
 function dessinerBouton(bouton) {
-    const sobre = affichageActuel() === SOBRE;
-    bouton.setAttribute("aria-pressed", sobre ? "true" : "false");
+    const mode = affichageActuel();
+    bouton.setAttribute("aria-pressed", mode === NORMAL ? "false" : "true");
     bouton.title = "";
-    bouton.dataset.description = sobre
-        ? t("Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour revenir à l’affichage normal")
-        : t("Affichage normal. Cliquer pour passer en affichage sobre : fond gris, sans couleurs du héros ni animations");
-    poserIcone(bouton, sobre ? "fa-eye-slash" : "fa-eye", sobre ? t("Affichage sobre") : t("Affichage normal"));
+    bouton.dataset.description = mode === EPURE
+        ? t("Affichage épuré : gris, sans décor, le strict nécessaire. Cliquer pour revenir à l’affichage normal")
+        : mode === SOBRE
+            ? t("Affichage sobre : fond gris, sans couleurs du héros ni animations. Cliquer pour passer en affichage épuré")
+            : t("Affichage normal. Cliquer pour passer en affichage sobre : fond gris, sans couleurs du héros ni animations");
+    poserIcone(bouton, mode === NORMAL ? "fa-eye" : "fa-eye-slash", mode === EPURE ? t("Affichage épuré") : mode === SOBRE ? t("Affichage sobre") : t("Affichage normal"));
 }
 
-/** Bouton Normal / Sobre, à poser à côté du bouton FR / EN. */
+/** Bouton Normal / Sobre / Épuré, à poser à côté du bouton FR / EN. */
 export function boutonAffichage(classe) {
     const bouton = document.createElement("button");
     bouton.type = "button";
     bouton.className = (classe || "") + " btn-affichage";
     dessinerBouton(bouton);
-    bouton.addEventListener("click", () => { choisirAffichage(inverse(affichageActuel())); });
+    bouton.addEventListener("click", () => { choisirAffichage(suivant(affichageActuel())); });
     return bouton;
 }

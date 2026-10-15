@@ -256,7 +256,7 @@ import {
   lireAffichage,
   type Affichage,
 } from './board/affichage'
-import { fondDe, identiteAffichee, palettes, type Couleur } from './board/halo-heros'
+import { fondDe, identiteAffichee, marqueDe, palettes, type Couleur } from './board/halo-heros'
 // CouchePasAPas et usePasAPas : DEBRANCHES a la demande de l'utilisateur, voir
 // les commentaires a leurs points d'appel plus bas pour les rallumer.
 import { SelecteurCibles } from './board/SelecteurCibles'
@@ -2322,7 +2322,7 @@ export function PagePartie({
   // L'affichage sobre coupe les animations sans toucher au reglage du joueur :
   // revenir en normal lui rend ce qu'il avait choisi.
   const [affichage, setAffichage] = useState<Affichage>(lireAffichage)
-  const animationsActives = animations && affichage !== 'sobre'
+  const animationsActives = animations && affichage === 'normal'
   useEffect(() => {
     appliquerAffichage(affichage)
   }, [affichage])
@@ -3645,16 +3645,24 @@ export function PagePartie({
     const corps = document.body
     let vivant = true
     if (!essais || !identite || affichage === 'sobre') {
-      corps.classList.remove('a-halo-heros')
+      corps.classList.remove('a-halo-heros', 'a-marque-heros')
       return
     }
     void palettes().then((catalogue) => {
       if (!vivant) return
       const couleurs: Couleur[] | undefined = catalogue[identite]
       if (!couleurs || couleurs.length === 0) {
-        corps.classList.remove('a-halo-heros')
+        corps.classList.remove('a-halo-heros', 'a-marque-heros')
         return
       }
+      // EPURE : trois bandes plates au coin, jamais le halo (affichage-epure.css).
+      if (affichage === 'epure') {
+        racine.style.setProperty('--marque-heros', marqueDe(couleurs) ?? 'none')
+        corps.classList.remove('a-halo-heros')
+        corps.classList.add('a-marque-heros')
+        return
+      }
+      corps.classList.remove('a-marque-heros')
       racine.style.setProperty(
         '--fond-plateau',
         fondDe(couleurs, 'var(--fond-halo-base, linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98)))')

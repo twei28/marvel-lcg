@@ -9,10 +9,15 @@ import { enVueJoueur } from './essais'
 
 export const CLE_AFFICHAGE = 'mc_affichage_v1'
 
-export type Affichage = 'normal' | 'sobre'
+export type Affichage = 'normal' | 'sobre' | 'epure'
 
 export function normaliserAffichage(valeur: unknown): Affichage {
-  return valeur === 'sobre' ? 'sobre' : 'normal'
+  return valeur === 'sobre' || valeur === 'epure' ? valeur : 'normal'
+}
+
+/** Sobre ou epure : les deux coupent couleurs vives et mouvement. */
+export function estSobreOuEpure(affichage: Affichage): boolean {
+  return affichage !== 'normal'
 }
 
 export function lireAffichage(): Affichage {
@@ -23,8 +28,17 @@ export function lireAffichage(): Affichage {
   }
 }
 
+/**
+ * ⚠ L'EPURE EST UN SOBRE EN PLUS DEPOUILLE. `data-affichage` vaut `sobre` pour
+ * les deux, donc toute la feuille sobre (gris, sans mouvement) et chaque test
+ * `=== 'sobre'` jouent aussi en epure ; `data-epure` ajoute le reste
+ * (`styles/affichage-epure.css`).
+ */
 export function appliquerAffichage(affichage: Affichage): void {
-  document.documentElement.dataset.affichage = affichage
+  const racine = document.documentElement
+  racine.dataset.affichage = affichage === 'normal' ? 'normal' : 'sobre'
+  if (affichage === 'epure') racine.dataset.epure = 'oui'
+  else delete racine.dataset.epure
 }
 
 function envoyer(changements: Record<string, Affichage>): void {

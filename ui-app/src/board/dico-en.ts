@@ -1587,7 +1587,9 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Son': 'Sound',
   'Jeu': 'Game',
   'Style d’affichage': 'Display style',
-  'Sobre : fond gris, sans couleurs ni animations': 'Plain: grey background, no colours or animations',
+  'Sobre : fond gris, sans couleurs ni animations. Épuré : en plus, sans décor, style Windows 98':
+    'Muted: grey background, no colours or animations. Minimal: also no decoration, Windows 98 style',
+  'Épuré': 'Minimal',
   'Couleur de la table': 'Table colour',
   'Placement des zones': 'Zone layout',
   'Cartes qui bougent, secousses, halos': 'Moving cards, shakes, glows',

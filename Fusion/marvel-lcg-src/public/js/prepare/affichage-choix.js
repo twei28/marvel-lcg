@@ -1,7 +1,7 @@
-// affichage-choix.js : le réglage « Affichage : Normal / Sobre ».
+// affichage-choix.js : le réglage « Affichage : Normal / Sobre / Épuré ».
 //
 // Une seule clé de stockage, `mc_affichage_v1`, lue AUSSI par le plateau
-// (ui-app/src/board/affichage.ts). Valeurs : "normal" (défaut) ou "sobre".
+// (ui-app/src/board/affichage.ts). Valeurs : "normal" (défaut), "sobre" ou "epure".
 //
 // Module PUR (ni DOM ni stockage) : testé par
 // `node --test tools/tests-lanceur/affichage-choix.test.mjs`.
@@ -10,14 +10,35 @@
 export const CLE_AFFICHAGE = "mc_affichage_v1";
 export const NORMAL = "normal";
 export const SOBRE = "sobre";
+export const EPURE = "epure";
 
 /** Toute valeur inconnue (absente, abîmée, ancienne) vaut « normal ». */
 export function normaliser(valeur) {
-    return valeur === SOBRE ? SOBRE : NORMAL;
+    return valeur === SOBRE || valeur === EPURE ? valeur : NORMAL;
 }
 
-export function inverse(valeur) {
-    return normaliser(valeur) === SOBRE ? NORMAL : SOBRE;
+/** Le bouton de l'en-tête fait tourner : normal, sobre, épuré, normal... */
+export function suivant(valeur) {
+    const v = normaliser(valeur);
+    return v === NORMAL ? SOBRE : v === SOBRE ? EPURE : NORMAL;
+}
+
+/**
+ * Les attributs posés sur <html>. ⚠ L'ÉPURÉ EST UN SOBRE EN PLUS DÉPOUILLÉ :
+ * `data-affichage` vaut « sobre » pour les deux (toute la feuille sobre et
+ * chaque test `=== "sobre"` valent aussi en épuré), `data-epure` ajoute le
+ * reste. Jumeau de `appliquerAffichage` (ui-app/src/board/affichage.ts).
+ */
+export function attributsDe(valeur) {
+    const v = normaliser(valeur);
+    return { affichage: v === NORMAL ? NORMAL : SOBRE, epure: v === EPURE };
+}
+
+/** Pose ces attributs sur un élément (<html>). */
+export function poserAttributs(racine, valeur) {
+    const a = attributsDe(valeur);
+    racine.dataset.affichage = a.affichage;
+    if (a.epure) racine.dataset.epure = "oui"; else delete racine.dataset.epure;
 }
 
 /**
@@ -34,7 +55,7 @@ export function reconcilier(local, reponse) {
     if (!reponse || !reponse.compte) return null;
     const ici = normaliser(local);
     if (!reponse.existe) {
-        return { affichage: ici, pousser: ici === SOBRE ? { affichage: SOBRE } : {} };
+        return { affichage: ici, pousser: ici !== NORMAL ? { affichage: ici } : {} };
     }
     const prefs = reponse.preferences || {};
     return { affichage: normaliser(prefs.affichage), pousser: {} };
@@ -50,7 +71,7 @@ export function reconcilier(local, reponse) {
  *  - le compte dont le fichier de préférences porte déjà `affichage`.
  */
 export function doitProposerLeChoix(local, reponse) {
-    if (local === NORMAL || local === SOBRE) return false;
+    if (local === NORMAL || local === SOBRE || local === EPURE) return false;
     const prefs = reponse && reponse.compte && reponse.existe ? (reponse.preferences || {}) : {};
     return !Object.prototype.hasOwnProperty.call(prefs, "affichage");
 }

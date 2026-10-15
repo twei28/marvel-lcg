@@ -114,6 +114,25 @@ export function fondDe(couleurs: readonly Couleur[] | undefined, sombre: string)
   return `linear-gradient(315deg, ${etapes.join(', ')}, ${rgba(fin, 0)} 50%), ${sombre}`
 }
 
+/**
+ * La marque du héros en affichage ÉPURÉ : trois BANDES EN BIAIS, aplaties, au
+ * coin bas droit (demande de l'utilisateur, 15/10/2026 : « trois couleurs
+ * aplaties, pas en halo », forme choisie : trois bandes en biais).
+ *
+ * Même ordre que `fondDe` (primaire au coin, tertiaire au milieu, secondaire
+ * au bord) et même règle des héros à une ou deux couleurs : on répète la
+ * dernière. Arrêts NETS (deux positions par couleur), aucun dégradé ni flou.
+ * Rend une valeur de `background`, posée sur un pseudo-élément du coin.
+ */
+export function marqueDe(couleurs: readonly Couleur[] | undefined, largeurBande = 44): string | undefined {
+  if (!couleurs || couleurs.length === 0) return undefined
+  const rgb = (c: Couleur) => `rgb(${c[0]},${c[1]},${c[2]})`
+  const derniere = couleurs[couleurs.length - 1]
+  const bandes = [0, 2, 1].map((i) => couleurs[i] ?? derniere)
+  const arrets = bandes.map((c, i) => `${rgb(c)} ${i * largeurBande}px ${(i + 1) * largeurBande}px`)
+  return `linear-gradient(315deg, ${arrets.join(', ')}, transparent ${bandes.length * largeurBande}px)`
+}
+
 /** La forme minimale dont le halo a besoin : qui est assis, et sa carte d'identité. */
 export type MondeVuDuHalo = {
   players?: Array<{ area_hero?: Array<{ card_id?: string }> }>
