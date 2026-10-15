@@ -27,6 +27,13 @@ def GetAbilities() -> Sequence['Ability']:
         boost = message.boost_message
         if boost.is_cancel_boost_ability:
             return
+        # ⚠ `ResolveAbility` direct SAUTE les conditions de la capacite (« during an attack »,
+        # « if this attack is undefended »...) que le moteur evalue avant la 1re resolution : on
+        # les rejoue ici avec le message d'origine, sinon un Boost reserve aux attaques partirait
+        # aussi sur une manigance (constate en autoplay : Vermin, AttributeError `would_atk_message`).
+        boosts = message.trigger.effect.Find(type=AbilityType.Boost)
+        if not boosts or not all(condition(boosts[0], boost) for condition in boosts[0].ability.conditions):
+            return
         message.trigger.ResolveAbility(boost.GetToPlayer(), AbilityType.Boost, effect, boost)
 
     def revelation(effect: 'Effect', message: 'Message.WhenCardRevealed') -> None:

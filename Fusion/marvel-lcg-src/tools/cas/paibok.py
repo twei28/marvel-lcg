@@ -24,7 +24,7 @@ def _c(nom, pourquoi, mise, declencher, attendu, **cle):
 
 CAS = [
     # ===================================================================== mise en place
-    _c("sk144a/sk144b Setup : Paibok I en jeu, 1 jeton de maitrise, complot 1B, UN attachement POWER SKRULL",
+    _c("sk144a Setup (puis 1B sk144b) : Paibok I en jeu, 1 jeton de maitrise, complot 1B, UN attachement POWER SKRULL",
        "1A pose le jeton ('mastery') sur Paibok ; 1B revele un POWER SKRULL qui s'attache a Paibok",
        [], [], {"en_jeu": ["sk141", "sk144b"], "maitrise": 1, "nb_pouvoirs": 1, "mechant_id": "sk141"}),
     _c("sk144b Revelation a la mise en place : la defausse rencontre est REMELANGEE dans le deck (defausse vide)",

@@ -43,8 +43,9 @@ for c in CARDS:
     if mod:
         src = open(mod).read()
         entete = "\n".join(l[2:] for l in src.splitlines() if l.startswith("# "))
-        refs = re.findall(r"`([\w]{4,8})`", " ".join(l for l in entete.splitlines() if "reference" in l.lower() or "**`" in l))
-        refs = list(dict.fromkeys(refs))[:5]
+        # card_id cites en reference : tout ce qui, entre accents graves, ressemble a un card_id
+        refs = re.findall(r"`((?:\d{5}[ab]?|[a-z]{1,12}\d{3}[ab]?|sk\d{3}[ab]?))`", entete)
+        refs = [r for r in dict.fromkeys(refs) if r != cid][:6]
         pieges = re.findall(r"« ([^»]+) »", " ".join(l for l in entete.splitlines() if "⚠" in l or "Mots-pieges" in l))
         out.append(f"- [x] Etape 2 : carte(s) de reference : {', '.join(f'`{r}`' for r in refs) or 'voir en-tete'} "
                    f"(detail et justification en tete de `{os.path.relpath(mod, W)}`).")

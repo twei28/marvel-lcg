@@ -18,7 +18,9 @@ from . import *
 def GetAbilities() -> Sequence['Ability']:
 
     def boost(effect: 'Effect', message: 'Message.WhenCardBecomeBoost') -> None:
-        message.would_atk_message.SetDealIndirectDamage(effect)
+        attaque = getattr(message, 'would_atk_message', None)
+        if attaque is not None:
+            attaque.SetDealIndirectDamage(effect)
 
     return [
         AbilityFactory.UnitAttackGainKeyword("This", indirect_damage=True),

@@ -1,0 +1,33 @@
+SUBST sk141 : rouges 1/4 ⚠ un cas reste vert sans module
+SUBST sk142 : rouges 3/5 ⚠ un cas reste vert sans module
+SUBST sk143 : rouges 2/2
+SUBST sk144a : rouges 1/1
+SUBST sk144b : rouges 1/1
+SUBST sk145a : rouges 2/2
+SUBST sk145b : rouges 3/5 ⚠ un cas reste vert sans module
+SUBST sk146 : rouges 3/3
+SUBST sk147 : rouges 5/8 ⚠ un cas reste vert sans module
+SUBST sk148 : rouges 5/5
+SUBST sk149 : rouges 4/5 ⚠ un cas reste vert sans module
+SUBST sk150 : rouges 4/5 ⚠ un cas reste vert sans module
+SUBST sk151 : rouges 4/5 ⚠ un cas reste vert sans module
+SUBST sk152 : rouges 3/4 ⚠ un cas reste vert sans module
+SUBST sk153 : rouges 4/6 ⚠ un cas reste vert sans module
+SUBST sk154 : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk155 : rouges 1/2 ⚠ un cas reste vert sans module
+SUBST sk156 : rouges 1/2 ⚠ un cas reste vert sans module
+SUBST sk157 : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk158 : rouges 3/3
+SUBST sk159 : rouges 3/3
+SUBST sk161 : rouges 2/5 ⚠ un cas reste vert sans module
+SUBST sk162 : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk163 : rouges 3/3
+SUBST sk164 : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk165 : rouges 5/6 ⚠ un cas reste vert sans module
+SUBST sk166 : rouges 2/4 ⚠ un cas reste vert sans module
+SUBST sk167 : rouges 1/3 ⚠ un cas reste vert sans module
+SUBST sk168 : rouges 4/5 ⚠ un cas reste vert sans module
+SUBST sk169 : rouges 2/2
+SUBST sk160 : rouges 2/2
+SUBST sk157 : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk166 : rouges 2/4 ⚠ un cas reste vert sans module
