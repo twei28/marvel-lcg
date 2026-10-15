@@ -1,0 +1,1356 @@
+{
+ "reussis": 225,
+ "total": 225,
+ "cas": [
+  {
+   "index": 3424,
+   "nom": "[secret_invasion] sk189a Setup (1A sk192a, puis 1B sk192b) : Veranke CAMOUFLAGED, environnement en jeu, paquet IMPOSTOR de 20 cartes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3425,
+   "nom": "[secret_invasion] sk192a Setup EXPERT : on commence au stade II (sk190a), meme paquet et meme environnement",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3426,
+   "nom": "[secret_invasion] sk192b Valeurs par joueur : 2 joueurs, Veranke I a 28 PV et la menace de depart vaut 4",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3427,
+   "nom": "[secret_invasion] sk189a valeurs imprimees : PV 14[per_hero], MNG 2, ATQ 2",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3428,
+   "nom": "[secret_invasion] sk189b valeurs imprimees : PV 14[per_hero], MNG 2, ATQ 2",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3429,
+   "nom": "[secret_invasion] sk189a ne peut pas subir de degats ; TEMOIN sk189b (face REVEALED) : les degats passent",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3430,
+   "nom": "[secret_invasion] sk189a ne subit aucun degat meme a 99 : jamais vaincue sous sa forme CAMOUFLAGED",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3431,
+   "nom": "[secret_invasion] sk189a Reponse forcee : apres qu'elle t'attaque, 1 jeton de soupcon ; TEMOIN sk189b : aucun",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3432,
+   "nom": "[secret_invasion] sk189a « You are a Skrull! » : incline un heros et depense 1 ressource -> Veranke se retourne sur sk189b",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3433,
+   "nom": "[secret_invasion] sk189a « You are a Skrull! » sans ressource : le cout n'est pas paye, Veranke reste sk189a",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3434,
+   "nom": "[secret_invasion] sk189a « You are a Skrull! » : 2 joueurs, le cout (2 ressources) se paie EN GROUPE avec la main de l'autre joueur",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3435,
+   "nom": "[secret_invasion] sk189a « You are a Skrull! » : meme montage mais Mistrust and Paranoia (sk201) interdit le paiement en groupe : rien",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3436,
+   "nom": "[secret_invasion] sk190a valeurs imprimees : PV 18[per_hero], MNG 3, ATQ 2",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3437,
+   "nom": "[secret_invasion] sk190b valeurs imprimees : PV 18[per_hero], MNG 2, ATQ 3",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3438,
+   "nom": "[secret_invasion] sk190a ne peut pas subir de degats ; TEMOIN sk190b (face REVEALED) : les degats passent",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3439,
+   "nom": "[secret_invasion] sk190a ne subit aucun degat meme a 99 : jamais vaincue sous sa forme CAMOUFLAGED",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3440,
+   "nom": "[secret_invasion] sk190a Reponse forcee : apres qu'elle t'attaque, 1 jeton de soupcon ; TEMOIN sk190b : aucun",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3441,
+   "nom": "[secret_invasion] sk190a « You are a Skrull! » : incline un heros et depense 1 ressource -> Veranke se retourne sur sk190b",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3442,
+   "nom": "[secret_invasion] sk190a « You are a Skrull! » sans ressource : le cout n'est pas paye, Veranke reste sk190a",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3443,
+   "nom": "[secret_invasion] sk191a valeurs imprimees : PV 21[per_hero], MNG 3, ATQ 3",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3444,
+   "nom": "[secret_invasion] sk191b valeurs imprimees : PV 21[per_hero], MNG 2, ATQ 4",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3445,
+   "nom": "[secret_invasion] sk191a ne peut pas subir de degats ; TEMOIN sk191b (face REVEALED) : les degats passent",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3446,
+   "nom": "[secret_invasion] sk191a ne subit aucun degat meme a 99 : jamais vaincue sous sa forme CAMOUFLAGED",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3447,
+   "nom": "[secret_invasion] sk191a Reponse forcee : apres qu'elle t'attaque, 1 jeton de soupcon ; TEMOIN sk191b : aucun",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3448,
+   "nom": "[secret_invasion] sk191a « You are a Skrull! » : incline un heros et depense 1 ressource -> Veranke se retourne sur sk191b",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3449,
+   "nom": "[secret_invasion] sk191a « You are a Skrull! » sans ressource : le cout n'est pas paye, Veranke reste sk191a",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3450,
+   "nom": "[secret_invasion] sk189b Reponse forcee : fin de la phase du mechant avec un joueur en ALTER EGO -> Queen Veranke se retourne sur Spider-Woman",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3451,
+   "nom": "[secret_invasion] sk189b Reponse forcee : TEMOIN, tous les joueurs en forme HEROS -> Queen Veranke reste REVEALED",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3452,
+   "nom": "[secret_invasion] sk190b Reponse forcee : stade II, un alter ego -> retourne sur Spider-Woman (sk190a)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3453,
+   "nom": "[secret_invasion] sk190b Reponse forcee : TEMOIN stade II, forme heros -> reste sk190b",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3454,
+   "nom": "[secret_invasion] sk191b Reponse forcee : stade III, un alter ego -> retourne sur Spider-Woman, SANS defausser la carte du deck",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3455,
+   "nom": "[secret_invasion] sk191b Reponse forcee : stade III, forme heros, la carte defaussee est une TRAITRISE -> Queen Veranke se retourne",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3456,
+   "nom": "[secret_invasion] sk191b Reponse forcee : TEMOIN stade III, forme heros, la carte defaussee n'est PAS une traitrise -> reste sk191b",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3457,
+   "nom": "[secret_invasion] sk189b Une fois vaincue : retire TOUS les jetons de soupcon ; le stade II arrive du MEME COTE (Queen Veranke, sk190b)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3458,
+   "nom": "[secret_invasion] sk189b TEMOIN : meme montage SANS vaincre la reine (13 degats sur 14) : les jetons restent",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3459,
+   "nom": "[secret_invasion] sk190b Une fois vaincue : retire les jetons ; stade III du meme cote (sk191b)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3460,
+   "nom": "[secret_invasion] sk191b Dernier stade vaincu : pas de « When Defeated », les jetons restent et les joueurs GAGNENT",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3461,
+   "nom": "[secret_invasion] sk189a Avancee de stade depuis la face A : le stade II arrive sur la face A (sk190a)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3462,
+   "nom": "[secret_invasion] sk189b Avancee de stade depuis la face B (REVEALED) : le stade II arrive sur la face B (sk190b), les degats restent",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3463,
+   "nom": "[secret_invasion] sk189b Retournements successifs : les degats RESTENT sur la carte (5 apres deux retournements)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3464,
+   "nom": "[secret_invasion] sk208a Interruption forcee : l'allie Pitt'o Nili devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk208b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3465,
+   "nom": "[secret_invasion] sk208a valeurs imprimees de l'allie : PV 4, ATQ avec 2 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3466,
+   "nom": "[secret_invasion] sk209a Interruption forcee : l'allie Khn'nr devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk209b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3467,
+   "nom": "[secret_invasion] sk209a valeurs imprimees de l'allie : PV 3, ATQ avec 1 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3468,
+   "nom": "[secret_invasion] sk210a Interruption forcee : l'allie M'lanz devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk210b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3469,
+   "nom": "[secret_invasion] sk210a valeurs imprimees de l'allie : PV 4, ATQ avec 2 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3470,
+   "nom": "[secret_invasion] sk211a Interruption forcee : l'allie Zr'x devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk211b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3471,
+   "nom": "[secret_invasion] sk211a valeurs imprimees de l'allie : PV 3, ATQ avec 2 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3472,
+   "nom": "[secret_invasion] sk212a Interruption forcee : l'allie Trl'k devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk212b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3473,
+   "nom": "[secret_invasion] sk212a valeurs imprimees de l'allie : PV 2, ATQ avec 1 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3474,
+   "nom": "[secret_invasion] sk213a Interruption forcee : l'allie Fry'lu devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk213b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3475,
+   "nom": "[secret_invasion] sk213a valeurs imprimees de l'allie : PV 3, ATQ avec 2 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3476,
+   "nom": "[secret_invasion] sk214a Interruption forcee : l'allie Sn'Tlo devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk214b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3477,
+   "nom": "[secret_invasion] sk214a valeurs imprimees de l'allie : PV 4, ATQ avec 1 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3478,
+   "nom": "[secret_invasion] sk215a Interruption forcee : l'allie Siri devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk215b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3479,
+   "nom": "[secret_invasion] sk215a valeurs imprimees de l'allie : PV 4, ATQ avec 2 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3480,
+   "nom": "[secret_invasion] sk216a Interruption forcee : l'allie D'lutz devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk216b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3481,
+   "nom": "[secret_invasion] sk216a valeurs imprimees de l'allie : PV 4, ATQ avec 2 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3482,
+   "nom": "[secret_invasion] sk217a Interruption forcee : l'allie De'Lila devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk217b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3483,
+   "nom": "[secret_invasion] sk217a valeurs imprimees de l'allie : PV 3, ATQ avec 1 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3484,
+   "nom": "[secret_invasion] sk218a Interruption forcee : l'allie Grrix devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk218b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3485,
+   "nom": "[secret_invasion] sk218a valeurs imprimees de l'allie : PV 3, ATQ avec 1 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3486,
+   "nom": "[secret_invasion] sk219a Interruption forcee : l'allie Ssrov devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk219b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3487,
+   "nom": "[secret_invasion] sk219a valeurs imprimees de l'allie : PV 4, ATQ avec 2 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3488,
+   "nom": "[secret_invasion] sk220a Interruption forcee : l'allie Hs'fld devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk220b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3489,
+   "nom": "[secret_invasion] sk220a valeurs imprimees de l'allie : PV 3, ATQ avec 2 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3490,
+   "nom": "[secret_invasion] sk221a Interruption forcee : l'allie H'kurrek devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk221b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3491,
+   "nom": "[secret_invasion] sk221a valeurs imprimees de l'allie : PV 2, ATQ avec 1 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3492,
+   "nom": "[secret_invasion] sk222a Interruption forcee : l'allie Korya devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk222b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3493,
+   "nom": "[secret_invasion] sk222a valeurs imprimees de l'allie : PV 3, ATQ avec 2 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3494,
+   "nom": "[secret_invasion] sk223a Interruption forcee : l'allie Ch'Gra devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk223b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3495,
+   "nom": "[secret_invasion] sk223a valeurs imprimees de l'allie : PV 2, ATQ avec 1 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3496,
+   "nom": "[secret_invasion] sk224a Interruption forcee : l'allie Hagar devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk224b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3497,
+   "nom": "[secret_invasion] sk224a valeurs imprimees de l'allie : PV 4, ATQ avec 2 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3498,
+   "nom": "[secret_invasion] sk225a Interruption forcee : l'allie Dharr devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk225b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3499,
+   "nom": "[secret_invasion] sk225a valeurs imprimees de l'allie : PV 3, ATQ avec 1 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3500,
+   "nom": "[secret_invasion] sk226a Interruption forcee : l'allie V'lrym devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk226b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3501,
+   "nom": "[secret_invasion] sk226a valeurs imprimees de l'allie : PV 3, ATQ avec 1 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3502,
+   "nom": "[secret_invasion] sk227a Interruption forcee : l'allie Criti Noll devrait QUITTER le jeu (vaincu), il se RETOURNE : sbire sk227b engage, PV soignes",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3503,
+   "nom": "[secret_invasion] sk227a valeurs imprimees de l'allie : PV 3, ATQ avec 1 degat(s) consequentiel(s), traits CAMOUFLAGED IMPOSTOR SKRULL",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3504,
+   "nom": "[secret_invasion] sk208a attaque : subit ses 2 degat(s) consequentiel(s) (les pastilles de l'ATQ) et peut attaquer le mechant",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3505,
+   "nom": "[secret_invasion] sk209a attaque : subit ses 1 degat(s) consequentiel(s) (les pastilles de l'ATQ) et peut attaquer le mechant",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3506,
+   "nom": "[secret_invasion] sk212a attaque : subit ses 1 degat(s) consequentiel(s) (les pastilles de l'ATQ) et peut attaquer le mechant",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3507,
+   "nom": "[secret_invasion] sk208a ne peut pas CONTRER : son pouvoir THW ne retire aucune menace",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3508,
+   "nom": "[secret_invasion] sk212a ne peut pas CONTRER : son pouvoir THW ne retire aucune menace",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3509,
+   "nom": "[secret_invasion] sk227a ne peut pas CONTRER : son pouvoir THW ne retire aucune menace",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3510,
+   "nom": "[secret_invasion] sk208a TEMOIN du contre : un allie ordinaire (01041 Shuri, THW 1) retire bien de la menace",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3511,
+   "nom": "[secret_invasion] sk208a defend : un allie CAMOUFLAGED peut defendre (il encaisse l'attaque, 1 degat de l'Hydra Mercenary)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3512,
+   "nom": "[secret_invasion] sk208a Interruption forcee : une DEFAUSSE ordinaire (pas une defaite) retourne aussi l'allie",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3513,
+   "nom": "[secret_invasion] sk208a Retourner l'allie : cartes d'etat, ameliorations (01074 Inspired) et jetons partent, le sbire arrive nu",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3514,
+   "nom": "[secret_invasion] sk208a Retourner l'allie d'un AUTRE joueur : le sbire engage le joueur qui CONTROLAIT l'allie (pas celui qui revele)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3515,
+   "nom": "[secret_invasion] sk208a Mise en jeu sous le controle d'un joueur : Arrival of Impostors donne UN allie a CHAQUE joueur (2 joueurs)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3516,
+   "nom": "[secret_invasion] sk208a Paquet vide : on y REMELANGE la defausse IMPOSTOR, sans penalite (aucun jeton d'acceleration)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3517,
+   "nom": "[secret_invasion] sk208b Le sbire REVEALED qui quitte le jeu va dans la DEFAUSSE IMPOSTOR (pas dans la defausse rencontre)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3518,
+   "nom": "[secret_invasion] sk208a Une allie en trop : la limite d'allies (3) s'applique a un allie CAMOUFLAGED ; l'excedent se retourne ou part",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3519,
+   "nom": "[secret_invasion] sk208b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3520,
+   "nom": "[secret_invasion] sk209b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3521,
+   "nom": "[secret_invasion] sk210b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3522,
+   "nom": "[secret_invasion] sk211b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3523,
+   "nom": "[secret_invasion] sk212b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3524,
+   "nom": "[secret_invasion] sk213b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3525,
+   "nom": "[secret_invasion] sk214b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3526,
+   "nom": "[secret_invasion] sk215b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3527,
+   "nom": "[secret_invasion] sk216b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3528,
+   "nom": "[secret_invasion] sk217b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3529,
+   "nom": "[secret_invasion] sk218b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3530,
+   "nom": "[secret_invasion] sk219b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3531,
+   "nom": "[secret_invasion] sk220b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3532,
+   "nom": "[secret_invasion] sk221b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3533,
+   "nom": "[secret_invasion] sk222b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3534,
+   "nom": "[secret_invasion] sk223b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3535,
+   "nom": "[secret_invasion] sk224b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3536,
+   "nom": "[secret_invasion] sk225b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3537,
+   "nom": "[secret_invasion] sk226b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3538,
+   "nom": "[secret_invasion] sk227b Une fois revele : soigne tout et s'engage avec le joueur qui le revele (Invasion Fleet, 1 joueur)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3539,
+   "nom": "[secret_invasion] sk208b Guard : mot-cle natif lu dans desc, le sbire garde le mechant",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3540,
+   "nom": "[secret_invasion] sk209b Une fois vaincu : retire TOUS les jetons de soupcon de Who Do You Trust?",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3541,
+   "nom": "[secret_invasion] sk209b TEMOIN : sans la defaite, les 3 jetons restent",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3542,
+   "nom": "[secret_invasion] sk210b ★ Interruption forcee : quand M'lanz t'attaque, son attaque est AUSSI resolue contre chaque autre heros (2 joueurs en forme heros)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3543,
+   "nom": "[secret_invasion] sk210b TEMOIN : un sbire ordinaire (01101) n'attaque que SON joueur, le heros 2 est indemne",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3544,
+   "nom": "[secret_invasion] sk211b Toughness : le sbire entre en jeu avec une carte Robuste",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3545,
+   "nom": "[secret_invasion] sk212b ne peut pas subir de degats tant que le joueur engage est engage avec un AUTRE sbire SKRULL (Skrull Warrior sk110)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3546,
+   "nom": "[secret_invasion] sk212b TEMOIN : seul engage, Trl'k subit les 3 degats",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3547,
+   "nom": "[secret_invasion] sk213b Une fois vaincu : le joueur qui l'a vaincu recoit une carte rencontre FACE CACHEE",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3548,
+   "nom": "[secret_invasion] sk214b Reduit de 1 les degats de chaque attaque : l'ATQ 2 de Spider-Man n'en inflige que 1",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3549,
+   "nom": "[secret_invasion] sk214b TEMOIN : un sbire ordinaire subit les 2 degats de la meme attaque",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3550,
+   "nom": "[secret_invasion] sk215b Patrol : mot-cle natif, le joueur engage ne peut pas contrer le complot principal",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3551,
+   "nom": "[secret_invasion] sk216b Retaliate 1 : le heros qui l'attaque subit 1 degat",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3552,
+   "nom": "[secret_invasion] sk217b Cout additionnel : pour l'attaquer il faut depenser 1 ressource (la carte 01088 de la main est depensee)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3553,
+   "nom": "[secret_invasion] sk217b Cout additionnel : sans ressource a depenser, l'attaque n'a pas lieu (aucun degat)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3554,
+   "nom": "[secret_invasion] sk218b Une fois vaincu : le mechant attaque le joueur qui l'a vaincu, MEME SI ce joueur est en alter ego",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3555,
+   "nom": "[secret_invasion] sk218b TEMOIN : tant que Grrix vit, le mechant n'attaque pas",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3556,
+   "nom": "[secret_invasion] sk219b ★ Tant que le mechant est CAMOUFLAGED : SCH et ATQ imprimes (1 / 2)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3557,
+   "nom": "[secret_invasion] sk219b ★ Tant que le mechant est REVEALED (Queen Veranke) : +1 SCH et +1 ATQ (2 / 3), puis retour a 1 / 2 quand elle se camoufle",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3558,
+   "nom": "[secret_invasion] sk219b ★ +1 SCH +1 ATQ : le bonus RETOMBE quand le mechant repasse CAMOUFLAGED",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3559,
+   "nom": "[secret_invasion] sk220b Une fois vaincu : le joueur qui l'a vaincu met un allie CAMOUFLAGED du paquet en jeu sous son controle",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3560,
+   "nom": "[secret_invasion] sk221b ★ Ses attaques gagnent OVERKILL : un allie qui defend a 1 PV restant, l'exces d'un degat passe au heros",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3561,
+   "nom": "[secret_invasion] sk221b TEMOIN overkill : Hydra Mercenary (ATQ 1) contre le meme defenseur : pas d'exces, le heros est indemne",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3562,
+   "nom": "[secret_invasion] sk221b ★ Ses attaques gagnent PIERCING : le heros Robuste subit quand meme les 2 degats",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3563,
+   "nom": "[secret_invasion] sk221b TEMOIN piercing : Hydra Mercenary contre le heros Robuste : la carte Robuste absorbe, aucun degat",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3564,
+   "nom": "[secret_invasion] sk221b ★ Ses attaques gagnent RANGED : le defenseur 04014 U.S. Agent (Riposte) ne riposte pas",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3565,
+   "nom": "[secret_invasion] sk221b TEMOIN ranged : Hydra Mercenary contre U.S. Agent (Riposte 1) : il subit 1 degat",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3566,
+   "nom": "[secret_invasion] sk222b ★ Reponse forcee : apres qu'elle t'attaque, la carte du dessus de TON deck est defaussee (deck de 3 cartes : le temoin suivant en perd 1 par la pioche, Korya en perd 2)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3567,
+   "nom": "[secret_invasion] sk222b TEMOIN : un sbire ordinaire (01101) qui attaque ne defausse rien du deck",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3568,
+   "nom": "[secret_invasion] sk223b Une fois vaincu : retourne Queen Veranke (sk189b -> Spider-Woman sk189a)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3569,
+   "nom": "[secret_invasion] sk224b ★ Ses attaques infligent des degats INDIRECTS : le defenseur n'encaisse rien",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3570,
+   "nom": "[secret_invasion] sk225b Villainous : mot-cle natif, une carte de boost a chaque activation",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3571,
+   "nom": "[secret_invasion] sk226b Quickstrike : en arrivant engage avec un heros, il attaque immediatement (au moins 2 degats)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3572,
+   "nom": "[secret_invasion] sk227b Incite 3 : a la revelation, 3 menaces sur le complot principal",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3573,
+   "nom": "[secret_invasion] sk208a Phase du mechant, joueur en ALTER EGO : l'allie maniganche (SCH 1), subit 1 degat consequentiel et ne s'incline pas",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3574,
+   "nom": "[secret_invasion] sk212a Phase du mechant, joueur en ALTER EGO : l'allie maniganche (SCH 2), subit 1 degat consequentiel et ne s'incline pas",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3575,
+   "nom": "[secret_invasion] sk227a Phase du mechant, joueur en ALTER EGO : l'allie maniganche (SCH 3), subit 1 degat consequentiel et ne s'incline pas",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3576,
+   "nom": "[secret_invasion] sk208a TEMOIN : joueur en forme HEROS, l'allie ne maniganche pas (aucun degat consequentiel)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3577,
+   "nom": "[secret_invasion] sk208a Menace posee par la manigance de l'allie : SCH 1 de plus que sans lui (temoin : meme montage sans allie)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3578,
+   "nom": "[secret_invasion] sk192b TEMOIN de la manigance de l'allie : sans allie, la menace est inferieure de 2 (1 d'escalade supplementaire + 1 de SCH)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3579,
+   "nom": "[secret_invasion] sk192b ★ Escalade : +1 par ennemi SKRULL et par allie IMPOSTOR : Veranke seule -> 1 (imprime) + 1 = 2",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3580,
+   "nom": "[secret_invasion] sk192b ★ Escalade : avec UN allie IMPOSTOR en plus : 3",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3581,
+   "nom": "[secret_invasion] sk192b ★ Escalade : un SBIRE SKRULL compte (+1) mais pas comme « allie IMPOSTOR » ; Veranke + Skrull Warrior + allie = 4",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3582,
+   "nom": "[secret_invasion] sk192b Reponse forcee : fin du tour, moins de 2[per_hero] jetons de soupcon -> un allie CAMOUFLAGED au hasard sous le controle du joueur",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3583,
+   "nom": "[secret_invasion] sk192b Reponse forcee : 1 jeton de soupcon (< 2) : l'allie arrive encore",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3584,
+   "nom": "[secret_invasion] sk192b Reponse forcee : TEMOIN, 2 jetons de soupcon (= 2[per_hero]) : aucun allie n'arrive",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3585,
+   "nom": "[secret_invasion] sk192b Reponse forcee : 2 joueurs, seuil 2[per_hero] = 4 : 3 jetons laissent encore arriver un allie, sous le controle du joueur dont le tour finit",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3586,
+   "nom": "[secret_invasion] sk193a Une fois revele (Mistrust and Paranoia DEJA en jeu) : retire 2[per_hero] jetons de soupcon et ne cherche rien",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3587,
+   "nom": "[secret_invasion] sk193a Une fois revele (Mistrust absent) : cherche Mistrust and Paranoia dans le deck rencontre et le REVELE, sans retirer de jeton",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3588,
+   "nom": "[secret_invasion] sk193a Une fois revele : Mistrust cherche aussi dans la DEFAUSSE rencontre",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3589,
+   "nom": "[secret_invasion] sk193b ★ Escalade X : 2 par ennemi SKRULL : Veranke + Skrull Warrior = 4",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3590,
+   "nom": "[secret_invasion] sk193b ★ Escalade X : Veranke seule : 2",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3591,
+   "nom": "[secret_invasion] sk193b Valeurs imprimees : objectif 14[per_hero], escalade 0 (X), menace de depart 1[per_hero]",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3592,
+   "nom": "[secret_invasion] sk193b Reponse forcee : fin du tour, moins de 2[per_hero] jetons -> un SBIRE REVEALED du paquet, ENGAGE avec le joueur",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3593,
+   "nom": "[secret_invasion] sk193b Reponse forcee : TEMOIN 2 jetons de soupcon : aucun sbire",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3594,
+   "nom": "[secret_invasion] sk193b Dernier stade : un complot accompli = les joueurs PERDENT",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3595,
+   "nom": "[secret_invasion] sk194 Menace POSEE sur le complot principal (manigance du mechant) : autant de jetons de soupcon sont RETIRES",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3596,
+   "nom": "[secret_invasion] sk194 Menace posee : les jetons ne descendent pas sous 0",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3597,
+   "nom": "[secret_invasion] sk194 Menace RETIREE du complot principal (contre du heros) : autant de jetons de soupcon sont POSES",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3598,
+   "nom": "[secret_invasion] sk194 Menace retiree : seule la menace REELLEMENT retiree compte (1 menace presente, retrait de 3 : 1 jeton de plus)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3599,
+   "nom": "[secret_invasion] sk194 Menace posee sur un complot ANNEXE : aucun jeton retire (seul le complot PRINCIPAL compte)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3600,
+   "nom": "[secret_invasion] sk195 Impostor : un allie NON SKRULL (01002 Black Cat) devient un sbire SKRULL engage",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3601,
+   "nom": "[secret_invasion] sk195 Impostor : les allies Impostor CAMOUFLAGED sont deja SKRULL, ils ne sont pas cibles : le mechant maniganche",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3602,
+   "nom": "[secret_invasion] sk195 Impostor : sans allie, le mechant maniganche",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3603,
+   "nom": "[secret_invasion] sk196 Super-Skrull Enhancement : s'attache au sbire SKRULL qui a le plus de PV restants (Skrull Commander, 5 PV)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3604,
+   "nom": "[secret_invasion] sk196 Super-Skrull Enhancement : « without another » : une SECONDE amelioration va sur l'AUTRE sbire (Skrull Warrior)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3605,
+   "nom": "[secret_invasion] sk196 Super-Skrull Enhancement : sans sbire SKRULL, l'allie CAMOUFLAGED est RETOURNE puis la carte s'attache au sbire revele",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3606,
+   "nom": "[secret_invasion] sk196 Super-Skrull Enhancement : ni sbire SKRULL ni allie CAMOUFLAGED : la carte gagne SURGE (revele la suivante)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3607,
+   "nom": "[secret_invasion] sk196 Super-Skrull Enhancement ★ Boost : revelee APRES l'activation, elle s'attache au Skrull Commander",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3608,
+   "nom": "[secret_invasion] sk197 Super-Skrull Enhancement : s'attache au sbire SKRULL qui a le plus de PV restants (Skrull Commander, 5 PV)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3609,
+   "nom": "[secret_invasion] sk197 Super-Skrull Enhancement : « without another » : une SECONDE amelioration va sur l'AUTRE sbire (Skrull Warrior)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3610,
+   "nom": "[secret_invasion] sk197 Super-Skrull Enhancement : sans sbire SKRULL, l'allie CAMOUFLAGED est RETOURNE puis la carte s'attache au sbire revele",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3611,
+   "nom": "[secret_invasion] sk197 Super-Skrull Enhancement : ni sbire SKRULL ni allie CAMOUFLAGED : la carte gagne SURGE (revele la suivante)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3612,
+   "nom": "[secret_invasion] sk197 Super-Skrull Enhancement ★ Boost : revelee APRES l'activation, elle s'attache au Skrull Commander",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3613,
+   "nom": "[secret_invasion] sk198 Super-Skrull Enhancement : s'attache au sbire SKRULL qui a le plus de PV restants (Skrull Commander, 5 PV)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3614,
+   "nom": "[secret_invasion] sk198 Super-Skrull Enhancement : « without another » : une SECONDE amelioration va sur l'AUTRE sbire (Skrull Warrior)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3615,
+   "nom": "[secret_invasion] sk198 Super-Skrull Enhancement : sans sbire SKRULL, l'allie CAMOUFLAGED est RETOURNE puis la carte s'attache au sbire revele",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3616,
+   "nom": "[secret_invasion] sk198 Super-Skrull Enhancement : ni sbire SKRULL ni allie CAMOUFLAGED : la carte gagne SURGE (revele la suivante)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3617,
+   "nom": "[secret_invasion] sk198 Super-Skrull Enhancement ★ Boost : revelee APRES l'activation, elle s'attache au Skrull Commander",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3618,
+   "nom": "[secret_invasion] sk199 Chaos on the Battlefield : X = SCH total des IMPOSTOR en jeu (allie sk208a SCH 1 + sbire sk212b SCH 2 = 3) : 1 + 3 = 4 menaces",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3619,
+   "nom": "[secret_invasion] sk199 Chaos on the Battlefield : sans IMPOSTOR, X = 0 : seulement la menace de depart (1)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3620,
+   "nom": "[secret_invasion] sk199 Chaos on the Battlefield : Incite 2 (+2 sur le complot principal) et icone Acceleration",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3621,
+   "nom": "[secret_invasion] sk200 Fulfill the Prophecy : chaque sbire SKRULL gagne Guard ET Patrol (Skrull Warrior, qui a deja Guard)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3622,
+   "nom": "[secret_invasion] sk200 Fulfill the Prophecy : TEMOIN sans la carte, le Commander n'a ni Guard ni Patrol",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3623,
+   "nom": "[secret_invasion] sk200 Fulfill the Prophecy : Hinder 1[per_hero] et menace 3",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3624,
+   "nom": "[secret_invasion] sk201 Mistrust and Paranoia : menace de depart 2 + 1 par personnage ami en jeu (2 joueurs : 2 identites -> 4)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3625,
+   "nom": "[secret_invasion] sk201 Mistrust and Paranoia : compte aussi les allies (1 joueur, identite + Black Cat = 2) : 2 + 2 = 4",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3626,
+   "nom": "[secret_invasion] sk201 Mistrust and Paranoia : un joueur ne peut PAS attaquer un sbire engage avec un AUTRE joueur",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3627,
+   "nom": "[secret_invasion] sk201 Mistrust and Paranoia : TEMOIN, le meme sbire engage avec le joueur 0 est attaque normalement (2 degats)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3628,
+   "nom": "[secret_invasion] sk201 Mistrust and Paranoia : un allie du joueur 1 ne peut PAS defendre contre un sbire engage avec le joueur 0",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3629,
+   "nom": "[secret_invasion] sk201 TEMOIN : sans Mistrust, l'allie du joueur 1 defend bien contre le sbire du joueur 0",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3630,
+   "nom": "[secret_invasion] sk202 Arrival of Impostors ★ Boost : un allie CAMOUFLAGED arrive sous le controle du joueur attaque",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3631,
+   "nom": "[secret_invasion] sk203 Camouflage Une fois revelee (Queen Veranke) : la retourne SUR Spider-Woman et retire 3 jetons de soupcon",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3632,
+   "nom": "[secret_invasion] sk203 Camouflage Une fois revelee (Spider-Woman) : Spider-Woman MANIGANCE, ne se retourne pas, ne touche pas aux jetons",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3633,
+   "nom": "[secret_invasion] sk203 Camouflage ★ Boost : Queen Veranke se retourne sur Spider-Woman APRES l'activation",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3634,
+   "nom": "[secret_invasion] sk203 Camouflage ★ Boost : TEMOIN, Spider-Woman (deja camouflee) n'est pas retournee",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3635,
+   "nom": "[secret_invasion] sk204 Glory to the Skrull Empire : le mechant ET chaque sbire SKRULL engage avec toi recoivent une carte Robuste",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3636,
+   "nom": "[secret_invasion] sk204 Glory to the Skrull Empire : un sbire SKRULL engage avec un AUTRE joueur ne recoit rien",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3637,
+   "nom": "[secret_invasion] sk204 Glory to the Skrull Empire : le mechant avait DEJA une carte Robuste : la carte gagne SURGE",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3638,
+   "nom": "[secret_invasion] sk204 Glory to the Skrull Empire : TEMOIN sans carte Robuste prealable, pas de surge",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3639,
+   "nom": "[secret_invasion] sk204 Glory to the Skrull Empire ★ Boost : le mechant recoit une carte Robuste",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3640,
+   "nom": "[secret_invasion] sk205 Infiltration Ritual : un allie CAMOUFLAGED du paquet entre en jeu sous le controle d'UN joueur (1 joueur : lui)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3641,
+   "nom": "[secret_invasion] sk205 Infiltration Ritual : 2 joueurs, le joueur qui revele DESIGNE le joueur : l'allie arrive sous le controle de l'un des deux",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3642,
+   "nom": "[secret_invasion] sk205 Infiltration Ritual : paquet et defausse vides -> la carte gagne SURGE",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3643,
+   "nom": "[secret_invasion] sk205 Infiltration Ritual ★ Boost : retire 3 jetons de soupcon",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3644,
+   "nom": "[secret_invasion] sk206 Invasion Fleet : CHAQUE joueur recoit un sbire REVEALED du paquet, engage avec LUI (2 joueurs)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3645,
+   "nom": "[secret_invasion] sk206 Invasion Fleet ★ Boost : un sbire REVEALED du paquet, engage avec le joueur attaque",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3646,
+   "nom": "[secret_invasion] sk207 Revelation : retourne l'allie CAMOUFLAGED qui a le PLUS de PV RESTANTS (l'autre, blesse, reste allie)",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3647,
+   "nom": "[secret_invasion] sk207 Revelation : sans allie CAMOUFLAGED, un sbire REVEALED du paquet vient engager le joueur",
+   "ok": true,
+   "message": "etat conforme"
+  },
+  {
+   "index": 3648,
+   "nom": "[secret_invasion] sk207 Revelation ★ Boost : retourne UN allie CAMOUFLAGED que tu controles, APRES l'activation",
+   "ok": true,
+   "message": "etat conforme"
+  }
+ ]
+}
