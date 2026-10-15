@@ -17,7 +17,7 @@
   // skrull_menace — Lazerfist (Upgrade)
   'sk044': "Lyja gagne +1 ATQ.\n<b>Ressource de héros</b> : inclinez Lazerfist → générez une ressource [energy].",
   // skrull_menace — Ministerial Tiara (Upgrade)
-  'sk045': "<b>Interruption</b> : quand une carte de boost est retournée face visible, si cette carte a une icône étoile ([star]) dans la zone de boost, inclinez cette carte → piochez 1 carte.",
+  'sk045': "<b>Interruption</b> : quand une carte de boost est retournée face visible, si cette carte a une icône d'étoile ([star]) dans son champ de boost, inclinez cette carte → piochez 1 carte.",
   // skrull_menace — Mole (Upgrade)
   'sk046': "<b>Interruption de héros</b> : quand une carte [[TREACHERY]] est défaussée du dessus du deck Rencontre, inclinez Mole → résolvez la capacité \"<b>Une fois révélée</b>\" de cette carte.",
   // skrull_menace — Shapeshifter (Upgrade)
@@ -27,9 +27,9 @@
   // skrull_menace — Going Ballistic (Event)
   'sk052': "<b>Action de héros</b> <i>(attaque)</i> : défaussez votre main. Infligez 2 dégâts à un ennemi (jusqu'à un maximum de 6) pour chaque carte défaussée de cette façon.",
   // skrull_menace — Hit the Weak Spot (Event)
-  'sk053': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un sbire pour chaque icône ([star] <i>et</i> [boost]) dans la zone de boost de ce sbire. Cette attaque gagne Perçant.",
+  'sk053': "<b>Action de héros</b> <i>(attaque)</i> : infligez 2 dégâts à un sbire pour chaque icône ([star] <i>et</i> [boost]) dans le champ de boost de ce sbire. Cette attaque gagne Perçant.",
   // skrull_menace — Invisible Woman (Ally)
-  'sk056': "Invisible Woman subit +1 dégât consécutif pour chaque compteur de révélation sur la cible de son pouvoir de base.\n<b>Réponse forcée</b> : après qu'Invisible Woman a utilisé un pouvoir de base, placez 1 compteur de révélation sur la cible de ce pouvoir.",
+  'sk056': "Invisible Woman subit +1 dégât consécutif pour chaque jeton de révélation sur la cible de son pouvoir de base.\n<b>Réponse forcée</b> : après qu'Invisible Woman a utilisé un pouvoir de base, placez 1 jeton de révélation sur la cible de ce pouvoir.",
   // skrull_menace — Mister Fantastic (Ally)
   'sk057': "<b>Ressource</b> : inclinez Mister Fantastic et infligez-lui 1 dégât → générez une ressource [mental].",
   // skrull_menace — Laser Tag (Event)

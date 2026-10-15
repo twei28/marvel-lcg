@@ -46,7 +46,7 @@ CARDS = [
    "Reduce the cost to play this card by 1 if you control a [[FANTASTIC FOUR]] character.\n<b>Resource</b>: Exhaust Baxter Building → generate a [wild] resource for any player."),
  c("sk063","Support","* Fantasti-Car",{"Cost":"2","RES":"Y","Class":"Basic"},["FANTASTIC FOUR","VEHICLE"],
    "<b>Response</b>: After Fantasti-Car enters play, ready a [[FANTASTIC FOUR]] card.\n<b>Alter-Ego Action</b>: Exhaust Fantasti-Car → choose a player. That player may shuffle 1 card from their discard pile into their deck."),
- c("sk064","Upgrade","Fantastic Four Member",{"Cost":"0","RES":"B","Class":"Basic"},["TITLE"],
+ c("sk064","Upgrade","Fantastic Four Member",{"Cost":"0","RES":"B","Class":"Basic","MaxPerUnit":"1"},["TITLE"],
    "Play only if your identity has the [[FANTASTIC FOUR]] trait.\nAttach to a friendly character. Max 1 per character.\nAttached character gets +1 hit point and gains the [[FANTASTIC FOUR]] trait."),
  c("sk065","Obligation","Untrustworthiness",{"Boost":"2","GiveTo":"Laura Green"},[],
    "<b><i>Give to the Laura Green player.</i></b>\n<b>Forced Interrupt</b>: When a \"<b>Boost</b>\" or \"<b>When Revealed</b>\" ability on a [[TREACHERY]] card would be resolved, cancel that ability. Then, deal yourself 1 facedown encounter card.\n<b>Alter-Ego Action</b>: Exhaust Laura Green → discard Untrustworthiness."),

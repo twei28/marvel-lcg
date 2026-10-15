@@ -312,6 +312,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # counters) » : sans cette entree, `IsCounter('individual')` echoue et
         # la carte tombe a la mise en place, comme 'style' ci-dessus.
         'individual',
+        # CORRECTIF (15/10/2026) : compteur du pack custom skrull_menace, heros
+        # Lyja (Kajislav). sk056 Invisible Woman pose 1 compteur « revelation »
+        # sur la cible de chacun de ses pouvoirs de base et subit +1 degat
+        # consecutif par compteur deja present sur la cible suivante.
+        'revelation',
         # CORRECTIF : compteur du pack custom speed (CptScorp). L'insert du pack
         # decrit les « explosive counters » : la capacite du heros en pose un sur
         # un ennemi ou une manigance (max 1 par carte), ils sont retires en fin de
