@@ -1660,10 +1660,12 @@ export const HEROS_INFO = {
         bioEn: "Pearl Pangan, known as Wave, is a Filipino American heroine able to manipulate water and waves with devastating force. A member of the Agents of Atlas, she lends her hydrokinetic powers to a team of Asian and Asian American heroes too often overlooked by the mainstream super-teams. Her blunt attitude and pride in her heritage color every appearance she makes.",
         civil: "Pearl Pangan",
         equipes: "Agents of Atlas",
+    },
     "tl001a": {
         bio: "Leonardo est l'aine et le chef des Tortues Ninja : quatre tortues mutantes elevees dans les egouts de New York par leur maitre, le rat mutant Splinter, qui leur a enseigne le ninjutsu. Reconnaissable a son bandeau bleu et a ses deux katanas, il porte le poids du commandement avec une discipline de samourai, meditant, cultivant son jardin et veillant sur ses freres. Sa rigueur et son sens du devoir sont aussi ses points faibles : face au Clan du Pied de Shredder, il lui arrive de douter de lui-meme.",
         bioEn: "Leonardo is the eldest and the leader of the Teenage Mutant Ninja Turtles: four mutant turtles raised in the sewers of New York by their master, the mutant rat Splinter, who taught them ninjutsu. Recognisable by his blue mask and twin katanas, he carries the burden of command with a samurai's discipline, meditating, tending his garden and watching over his brothers. His rigour and sense of duty are also his weak points: facing Shredder's Foot Clan, he sometimes doubts himself.",
         civil: "Leo",
+    },
     "tr001a": {
         bio: "Raphael est l'une des quatre Tortues Ninja, quatre tortues ordinaires transformees par un flot de mutagene et elevees dans les egouts de New York par leur maitre, le rat Splinter, qui leur apprend le ninjutsu. Raph est celui qui frappe d'abord : colerique, protecteur jusqu'a la brutalite, il manie une paire de sai et porte le masque rouge. Ses freres lui reprochent son temperament, mais c'est lui qui encaisse les coups pour eux, et plus il est pousse a bout, plus il devient dangereux. Sous la capuche d'un simple adolescent de la ville, il cache mal ce qu'il est.",
         bioEn: "Raphael is one of the four Teenage Mutant Ninja Turtles, ordinary turtles transformed by a spill of mutagen and raised in the sewers of New York by their master, the rat Splinter, who teaches them ninjutsu. Raph is the one who strikes first: hot-tempered, protective to the point of brutality, he wields a pair of sai and wears the red mask. His brothers blame him for his temper, but he is the one who takes the hits for them, and the further he is pushed the more dangerous he gets. Under a hooded teenager's disguise, he hides what he is badly.",
@@ -1674,6 +1676,7 @@ export const HEROS_INFO = {
         equipesEn: "Teenage Mutant Ninja Turtles",
         ennemis: "Shredder, le Clan du Pied, Karai",
         ennemisEn: "Shredder, the Foot Clan, Karai",
+    },
     "td001a": {
         bio: "Donatello est le genie de la fratrie : une des quatre Tortues Ninja, mutee dans les egouts de New York et formee aux arts martiaux par le maitre Splinter. Reconnaissable a son bandeau violet et a son baton bo, il est l'inventeur de la famille : armes, vehicules, robots, tout ce qui sort de son laboratoire sert a ses freres. Plus pose que les autres, il prefere trouver la faille du probleme avant de frapper, mais ne laisse jamais personne de sa famille en danger.",
         bioEn: "Donatello is the genius of the family: one of the four Teenage Mutant Ninja Turtles, mutated in the sewers of New York and trained in the martial arts by Master Splinter. Recognisable by his purple mask and his bo staff, he is the family's inventor: weapons, vehicles, robots, everything that comes out of his lab serves his brothers. Calmer than the others, he would rather find the flaw in a problem before striking, but never leaves anyone in his family in danger.",
@@ -1684,6 +1687,7 @@ export const HEROS_INFO = {
         equipesEn: "Teenage Mutant Ninja Turtles",
         ennemis: "Shredder, Baxter Stockman, Krang",
         ennemisEn: "Shredder, Baxter Stockman, Krang",
+    },
     "tm001a": {
         bio: "Michelangelo est la plus jeune des quatre Tortues Ninja : un adolescent mute par un flot de mutagene, eleve dans les egouts de New York par le maitre Splinter, et entraine aux arts martiaux avec ses trois freres. Joyeux, impulsif, fou de pizza, de skateboard et de jeux video, il masque derriere ses blagues un vrai sens de la famille. Il se bat au nunchaku, les deux armes tournoyant a la fois, et son optimisme sert souvent de colle a une fratrie qui ne s'entend pas toujours.",
         bioEn: "Michelangelo is the youngest of the four Teenage Mutant Ninja Turtles: a teenager mutated by a splash of mutagen, raised in the sewers of New York by the master Splinter and trained in martial arts alongside his three brothers. Cheerful, impulsive, crazy about pizza, skateboards and video games, he hides a real sense of family behind the jokes. He fights with nunchaku, both weapons spinning at once, and his optimism is often the glue for brothers who do not always get along.",

@@ -3971,13 +3971,13 @@ export const TEXTES_FR_FANMADE = {
     // michelangelo — Mikey (AlterEgo)
     'tm001b': "<b>Mise en place</b> : mettez en jeu la manigance annexe de joueur I'm Here to Help.\n<b>Action</b> : défaussez 1 carte de votre main → cherchez jusqu'à 2 améliorations [[NUNCHUCK]] dans votre deck et votre défausse et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
     // michelangelo — Slash (Ally)
-    'tm002': "Riposte 1. Robustesse.\n[star] Les attaques de Slash gagnent Perçant.",
+    'tm002': "Riposte 1. Ténacité.\n[star] Les attaques de Slash gagnent Perçant.",
     // michelangelo — Call for Help (Event)
     'tm003': "<b>Action de héros</b> : cherchez dans votre deck et votre défausse un allié ou la manigance annexe de joueur I'm Here to Help et ajoutez-le à votre main. <i>(Mélangez.)</i>",
     // michelangelo — Impulsive (Event, x2)
     'tm004': "<b>Action de héros</b> : placez 2 menaces sur la manigance principale → redressez Michelangelo et une amélioration [[WEAPON]] que vous contrôlez. Piochez 1 carte.",
     // michelangelo — Kaiten (Event, x2)
-    'tm005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Vous pouvez incliner une amélioration [[NUNCHUCK]] que vous contrôlez pour désorienter ou étourdir cet ennemi.",
+    'tm005': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Vous pouvez incliner une amélioration [[NUNCHUCK]] que vous contrôlez pour désorienter ou sonner cet ennemi.",
     // michelangelo — Majime (Event, x2)
     'tm006': "<b>Action de héros</b> <i>(attaque/contre)</i> : subissez X dégâts <i>(jusqu'à un maximum de 3)</i> → retirez X menaces d'une manigance et infligez X dégâts à un ennemi.",
     // michelangelo — Optimism (Resource, x2)
@@ -3997,7 +3997,7 @@ export const TEXTES_FR_FANMADE = {
     // michelangelo_nemesis — Sewer Problems (SideScheme)
     'tm014': "<i>Quelque chose de terrible grandit dans les égouts.</i>\n<b>Une fois révélée</b> : chaque joueur défausse les 3 premières cartes de son deck.",
     // michelangelo_nemesis — Wyrm (Minion)
-    'tm015': "Robustesse.\n<b>Une fois vaincu</b> : mélangez Wyrm dans le deck rencontre.\n<i>(Sbire némésis de Michelangelo.)</i>",
+    'tm015': "Ténacité.\n<b>Une fois vaincu</b> : mélangez Wyrm dans le deck rencontre.\n<i>(Sbire némésis de Michelangelo.)</i>",
     // michelangelo_nemesis — Smash! (Treachery, x3)
     'tm016': "<b>Une fois révélée</b> : vous subissez 2 dégâts indirects.",
     // raphael — * Raphael (Hero)
@@ -4031,7 +4031,7 @@ export const TEXTES_FR_FANMADE = {
     // raphael — Mutagen Bomb (SideScheme némésis)
     'tr014': "<i>Old Hobb a transformé le mutagène en bombes.</i>\n<b>Réponse forcée</b> : après la résolution de l'étape un de la phase du vilain, placez 1 compteur de minuteur ici. Ensuite, s'il y a 2 compteurs de minuteur ou plus ici, défaussez cette carte et distribuez à chaque joueur 1 carte rencontre face cachée.",
     // raphael — * Old Hob (Minion némésis)
-    'tr015': "Robuste. Coup Rapide.\n<i>(Sbire némésis de Raphael.)</i>",
+    'tr015': "Ténacité. Coup Rapide.\n<i>(Sbire némésis de Raphael.)</i>",
     // raphael — Insurrection (Treachery némésis)
     'tr016': "<b>Une fois révélée</b> : défaussez 1 allié que vous contrôlez. Si vous ne pouvez pas, défaussez 1 carte de votre main.\n<hr />\n[star] <b>Boost</b> : défaussez 1 allié redressé que vous contrôlez.",
     // raphael — Prepare to Rally (Treachery némésis)

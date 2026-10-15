@@ -222,7 +222,11 @@ button{cursor:pointer}
    un bandeau (enjeux, mise en place, reglages, Lancer). Sur un ecran de PC, la
    page tient dans la fenetre : le livre prend la hauteur qui reste, le bandeau
    est plafonne et defile a l'interieur, et le bouton Lancer reste visible. */
-.cmp-page-campagne.avec-livre{height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+/* Le pied de page (mention legale) est ajoute au body APRES la page : sans ce flex, il depasse la fenetre de sa hauteur et la page defile. */
+body:has(.cmp-page-campagne.avec-livre){display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+.cmp-page-campagne.avec-livre{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+body:has(.cmp-page-campagne.avec-livre)>footer.mention-legale{flex:none}
+body:has(.cmp-page-campagne.avec-livre)>#app{flex:1 1 auto;min-height:0;height:auto;display:flex;flex-direction:column}
 .cmp-corps-livre{max-width:1600px;padding:12px 22px 14px;display:flex;flex-direction:column;gap:10px;min-height:0}
 .cmp-chapo-ligne{display:flex;align-items:baseline;gap:14px;margin:0}
 .cmp-chapo-ligne .cmp-chapo-k{margin:0}
@@ -286,6 +290,8 @@ button{cursor:pointer}
 /* Ecran etroit (telephone, tablette en portrait) : une page a la fois, la page
    defile normalement, le bandeau passe en colonne. */
 @media (max-width:900px){
+  body:has(.cmp-page-campagne.avec-livre){display:block;height:auto;overflow:visible}
+  body:has(.cmp-page-campagne.avec-livre)>#app{display:block}
   .cmp-page-campagne.avec-livre{height:auto;overflow:visible}
   .cmp-corps-livre .cmp-livre{flex:none}
   .cmp-livre-scene{flex:none;height:auto;padding:0 40px}
