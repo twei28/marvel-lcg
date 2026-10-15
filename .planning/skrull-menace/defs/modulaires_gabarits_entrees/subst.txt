@@ -1,0 +1,46 @@
+SUBST sk228 : rouges 2/4 ⚠ un cas reste vert sans module
+SUBST sk229 : rouges 4/4
+EMPREINTE IDENTIQUE avant/apres
+SUBST sk231 : rouges 5/5
+SUBST sk232 : rouges 4/5 ⚠ un cas reste vert sans module
+SUBST sk233 : rouges 3/3
+SUBST sk234 : rouges 2/2
+SUBST sk235 : rouges 3/3
+SUBST sk236 : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk237 : rouges 6/11 ⚠ un cas reste vert sans module
+SUBST sk238 : rouges 3/3
+SUBST sk239 : rouges 2/3 ⚠ un cas reste vert sans module
+EMPREINTE IDENTIQUE avant/apres
+SUBST sk240 : rouges 1/2 ⚠ un cas reste vert sans module
+SUBST sk241 : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk242 : rouges 3/5 ⚠ un cas reste vert sans module
+SUBST sk243 : rouges 1/3 ⚠ un cas reste vert sans module
+SUBST sk244 : rouges 3/4 ⚠ un cas reste vert sans module
+SUBST sk245 : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk248 : rouges 1/2 ⚠ un cas reste vert sans module
+SUBST sk249 : rouges 3/6 ⚠ un cas reste vert sans module
+EMPREINTE IDENTIQUE avant/apres
+SUBST sk250 : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk251 : rouges 6/7 ⚠ un cas reste vert sans module
+SUBST sk252 : rouges 1/1
+SUBST sk253 : rouges 2/2
+SUBST sk255 : rouges 2/2
+SUBST sk256 : rouges 2/2
+SUBST sk257 : rouges 2/2
+SUBST sk258 : rouges 2/2
+SUBST sk259 : rouges 3/3
+EMPREINTE IDENTIQUE avant/apres
+SUBST sk260 : rouges 2/3 ⚠ un cas reste vert sans module
+SUBST sk261 : rouges 1/1
+SUBST sk262 : rouges 2/2
+EMPREINTE IDENTIQUE avant/apres
+ECHEC [modulaires] sk246 Impostor (War Skrull) revele : un allie devient un sbire SKRULL engage (meme code que sk098, `ability_link`)
+ECHEC [modulaires] sk246 Impostor (War Skrull) revele SANS allie : le mechant complote (menace sur le complot principal)
+ECHEC [modulaires] sk254 Impostor (Standard Skrull) revele : un allie devient un sbire SKRULL engage (meme code que sk098, `ability_link`)
+ECHEC [modulaires] sk254 Impostor (Standard Skrull) SANS allie : le mechant complote
+BILAN : 0/4 cas passes
+EMPREINTE IDENTIQUE
+ECHEC [modulaires] sk247 Skrull Commander (War Skrull) : les AUTRES sbires SKRULL gagnent +1 ATQ (meme code que sk113, `ability_link`)
+ECHEC [modulaires] sk247 Skrull Commander (War Skrull) Boost : si l'activation est une attaque, +2 icones (1 + 2 = 3 icones : Rhino ATQ 2 + 3 = 5 degats)
+BILAN : 0/2 cas passes
+EMPREINTE IDENTIQUE

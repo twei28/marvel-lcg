@@ -1,0 +1,708 @@
+{
+ "reussis": 117,
+ "total": 117,
+ "cas": [
+  {
+   "index": 3311,
+   "nom": "[modulaires] sets modulaires : les 6 sets entrent dans le deck rencontre (sauf le sbire et les fragments de Shaper, mis de cote)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3312,
+   "nom": "[modulaires] sk229 mise en place : le sbire Shaper of Worlds et les 4 fragments sont MIS DE COTE (insert du set)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3313,
+   "nom": "[modulaires] Standard Skrull REMPLACE Standard : deck = Rhino + les 7 cartes Standard Skrull, aucune carte Standard",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3314,
+   "nom": "[modulaires] Standard Skrull + Expert Skrull REMPLACENT Standard + Expert (mode expert) : 7 + 3 cartes, aucune carte officielle",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3315,
+   "nom": "[modulaires] sk228 Reponse forcee : un joueur attaque Shaper of Worlds -> la carte est melangee dans SON deck",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3316,
+   "nom": "[modulaires] sk228 Reponse forcee, TEMOIN : attaquer un AUTRE sbire ne melange pas Shaper (il reste en jeu)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3317,
+   "nom": "[modulaires] sk228 Interruption forcee : Shaper entre en MAIN (pioche) -> 4 cartes du deck rencontre defaussees, Shaper en jeu, main vide",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3318,
+   "nom": "[modulaires] sk228 Interruption forcee, TEMOIN : une carte ordinaire piochee ne declenche rien (rien n'est defausse du deck rencontre)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3319,
+   "nom": "[modulaires] sk229 Cosmic Cube Creation revelee : le Shaper MIS DE COTE entre en jeu engage ; menace 2 + Hinder 4 ; icone Acceleration",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3320,
+   "nom": "[modulaires] sk229 Quand vaincu : le joueur choisit un fragment MIS DE COTE et le melange dans son deck",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3321,
+   "nom": "[modulaires] sk229 Quand vaincu a DEUX joueurs : CHAQUE joueur choisit son propre fragment (un fragment pris n'est plus offert au suivant)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3322,
+   "nom": "[modulaires] sk231 Crusader revele a DEUX joueurs : seuls les personnages du joueur a qui il est revele subissent le degat",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3323,
+   "nom": "[modulaires] sk230a Cosmic Cube Fragment (YYY) : une ressource qui vaut TROIS energies (paie Crisis Interdiction, cout 2)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3324,
+   "nom": "[modulaires] sk230b Cosmic Cube Fragment (BBB) : trois icones MENTALES (paie le cout [mental][mental] de Distracted, qui se defausse)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3325,
+   "nom": "[modulaires] sk230c Cosmic Cube Fragment (RRR) : trois icones PHYSIQUES (paie le cout [physical] de Skrull Energy Gun, qui change d'ennemi)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3326,
+   "nom": "[modulaires] sk230d Cosmic Cube Fragment (RBY) : trois icones de TROIS couleurs (paie Swinging Web Kick, cout 3 : 8 degats a Rhino)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3327,
+   "nom": "[modulaires] sk231 Crusader revele : 1 degat a CHAQUE personnage qu'on controle (identite et allie), aucune carte de boost si personne ne tombe",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3328,
+   "nom": "[modulaires] sk231 Crusader revele : un allie VAINCU par ce degat -> 1 carte de boost face cachee au mechant",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3329,
+   "nom": "[modulaires] sk231 Crusader revele : DEUX allies vaincus -> 2 cartes de boost",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3330,
+   "nom": "[modulaires] sk231 Boost : la carte retournee en boost entre en jeu ENGAGEE avec le joueur",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3331,
+   "nom": "[modulaires] sk232 Enemy Adaptation revelee avec un sbire SKRULL en jeu : elle s'attache a lui (+1 MNG, +1 ATQ)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3332,
+   "nom": "[modulaires] sk232 Enemy Adaptation : SANS sbire SKRULL (un sbire non-Skrull est en jeu), elle s'attache au MECHANT",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3333,
+   "nom": "[modulaires] sk232 Enemy Adaptation : « You cannot defend against attached enemy's attacks » -> le heros ne peut pas defendre",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3334,
+   "nom": "[modulaires] sk232 Enemy Adaptation, TEMOIN : sans l'attachement le heros DEFEND et ne subit rien (Skrull Commander 2 ATQ contre DEF 3)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3335,
+   "nom": "[modulaires] sk232 Action de heros : donne 1 carte de boost au mechant -> la carte est defaussee",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3336,
+   "nom": "[modulaires] sk233 Freedom Ring revelee avec Crusader en jeu : elle s'attache a lui, qui devient VILLAINOUS",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3337,
+   "nom": "[modulaires] sk233 Freedom Ring, Crusader ABSENT : defausse jusqu'a un sbire, le met en jeu engage et s'y attache (Villainous)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3338,
+   "nom": "[modulaires] sk233 Freedom Ring, Crusader absent et AUCUN sbire dans le deck : 1 carte de boost face cachee au mechant",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3339,
+   "nom": "[modulaires] sk234 Spy Training revelee : un allie qu'on controle est VAINCU et le mechant recoit 1 carte de boost ; menace 3, Hazard",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3340,
+   "nom": "[modulaires] sk234 Spy Training revelee SANS allie : la carte de boost est donnee quand meme (lecture : effets independants)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3341,
+   "nom": "[modulaires] sk235 Rivals to the End : le sbire choisi attaque le heros DEUX fois de suite (Skrull Commander ATQ 2 x 2 = 4 degats)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3342,
+   "nom": "[modulaires] sk235 Rivals to the End en ALTER-EGO : aucune attaque -> 1 carte de boost par personnage qu'on controle (identite + allie = 2)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3343,
+   "nom": "[modulaires] sk235 Rivals to the End, aucun sbire en jeu (heros) : aucune attaque -> 1 carte de boost (identite seule)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3344,
+   "nom": "[modulaires] sk236 Jazinda en jeu : le MECHANT gagne +1 MNG",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3345,
+   "nom": "[modulaires] sk236 Jazinda, TEMOIN : sans elle le mechant garde son MNG imprime",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3346,
+   "nom": "[modulaires] sk236 Boost : la carte retournee en boost entre en jeu ENGAGEE avec le joueur",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3347,
+   "nom": "[modulaires] sk237 Skrull Energy Gun revelee avec un sbire SKRULL en jeu : elle s'attache a lui (+1 ATQ)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3348,
+   "nom": "[modulaires] sk237 Skrull Energy Gun : les attaques de l'hote SKRULL gagnent OVERKILL (Black Cat, 2 PV, defend contre ATQ 3 : l'exces 1 passe au heros)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3349,
+   "nom": "[modulaires] sk237 Skrull Energy Gun, TEMOIN : sans l'arme, ATQ 2 contre Black Cat (2 PV) : pas d'exces, le heros est intact",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3350,
+   "nom": "[modulaires] sk237 Skrull Energy Gun : PIERCING -> l'attaque ignore la carte Robuste de Volstagg et lui inflige ses 3 degats",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3351,
+   "nom": "[modulaires] sk237 Skrull Energy Gun, TEMOIN : sans l'arme, la carte Robuste de Volstagg absorbe l'attaque (0 degat)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3352,
+   "nom": "[modulaires] sk237 Skrull Energy Gun : RANGED -> la Riposte de Volstagg est ignoree (le sbire ne perd aucun PV)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3353,
+   "nom": "[modulaires] sk237 Skrull Energy Gun, TEMOIN : sans l'arme, la Riposte de Volstagg blesse Skrull Commander (1 degat)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3354,
+   "nom": "[modulaires] sk237 Skrull Energy Gun sur un ennemi NON SKRULL (le mechant Rhino) : ni overkill ni piercing ni ranged, seulement +1 ATQ",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3355,
+   "nom": "[modulaires] sk237 Action de heros : depenser une ressource [physical] -> la carte passe a un AUTRE ennemi (le mechant)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3356,
+   "nom": "[modulaires] sk237 Action de heros SANS choisir la cible (le pilote prend la premiere) : l'hote n'est JAMAIS une cible offerte",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3357,
+   "nom": "[modulaires] sk237 Action de heros, aucun AUTRE ennemi (la carte est sur le mechant, seul ennemi) : l'action n'est PAS offerte",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3358,
+   "nom": "[modulaires] sk238 Sy-Torak Gem revelee avec Jazinda en jeu : elle s'attache a elle (+1 ATQ, +3 PV)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3359,
+   "nom": "[modulaires] sk238 Sy-Torak Gem, Jazinda ABSENTE : elle s'attache au MECHANT (Rhino 14 -> 17 PV)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3360,
+   "nom": "[modulaires] sk238 Action de heros : carte de boost au mechant ET une ressource [energy] -> la carte est defaussee",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3361,
+   "nom": "[modulaires] sk239 Stealing for the Empire revelee : defausse jusqu'a un attachement, le revele, menace sur le complot PRINCIPAL = ses icones (Sy-Torak Gem : 3)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3362,
+   "nom": "[modulaires] sk239 Stealing for the Empire : attachement a 2 icones (Charge) -> 2 menaces sur le complot principal",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3363,
+   "nom": "[modulaires] sk239 Stealing for the Empire, aucun attachement dans le deck : pas de menace sur le complot principal",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3364,
+   "nom": "[modulaires] sk240 Skrull of Royal Blood : les cartes de la defausse rencontre au MAXIMUM d'icones de boost (2 : Charge et Ivory Horn) retournent dans le deck",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3365,
+   "nom": "[modulaires] sk240 Skrull of Royal Blood : surge natif -> la carte du dessus du deck est revelee aussi",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3366,
+   "nom": "[modulaires] sk241 Skymax revele : TOUS les sbires de la defausse rencontre retournent dans le deck (la traitrise reste)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3367,
+   "nom": "[modulaires] sk241 Skymax revele, TEMOIN : une defausse sans sbire ne bouge pas",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3368,
+   "nom": "[modulaires] sk241 Boost : la carte retournee en boost entre en jeu ENGAGEE avec le joueur",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3369,
+   "nom": "[modulaires] sk242 Changing Appearance revelee avec un sbire SKRULL : elle s'attache a lui (+2 MNG)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3370,
+   "nom": "[modulaires] sk242 Changing Appearance : l'ennemi attache NE PEUT PAS ETRE ATTAQUE (le heros frappe Rhino a la place, Skrull Commander est intact)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3371,
+   "nom": "[modulaires] sk242 Changing Appearance, TEMOIN : sans l'attachement le heros attaque Skrull Commander (2 degats)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3372,
+   "nom": "[modulaires] sk242 Interruption forcee : l'ennemi attache qui allait attaquer COMPLOTE a la place (MNG 2 + 2 = 4 menaces), puis la carte est defaussee",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3373,
+   "nom": "[modulaires] sk242 Interruption forcee, TEMOIN : sans l'attachement le meme sbire ATTAQUE (2 degats au heros, aucune menace)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3374,
+   "nom": "[modulaires] sk243 Surprising Alliance : un allie DEFAUSSE de la main entre en jeu engage comme SBIRE (SCH = THW imprime 1), il ne va pas a la defausse",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3375,
+   "nom": "[modulaires] sk243 Surprising Alliance, TEMOIN : sans le complot l'allie defausse va a la defausse du joueur",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3376,
+   "nom": "[modulaires] sk243 Surprising Alliance, TEMOIN : un evenement defausse de la main (Backflip) va a la defausse normalement",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3377,
+   "nom": "[modulaires] sk244 Shape Alteration : retire Sonne et Desoriente des ennemis SKRULL et leur donne Robuste ; un ennemi non-Skrull est intact",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3378,
+   "nom": "[modulaires] sk244 Shape Alteration : aucun ennemi SKRULL en jeu -> SURGE (la carte du dessus est revelee)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3379,
+   "nom": "[modulaires] sk244 Shape Alteration, TEMOIN : avec un ennemi SKRULL en jeu, PAS de surge (le deck n'est pas touche)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3380,
+   "nom": "[modulaires] sk244 Boost : un ennemi SKRULL (au choix du joueur) recoit une carte Robuste",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3381,
+   "nom": "[modulaires] sk245 Reponse forcee : War Skrull attaque le joueur -> les 2 cartes du dessus de SON deck sont defaussees (3 -> 1)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3382,
+   "nom": "[modulaires] sk245 Reponse forcee, TEMOIN : l'attaque d'un AUTRE sbire ne defausse rien (le deck garde ses 3 cartes)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3383,
+   "nom": "[modulaires] sk245 Boost : la carte retournee en boost entre en jeu ENGAGEE avec le joueur",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3384,
+   "nom": "[modulaires] sk246 Impostor (War Skrull) revele : un allie devient un sbire SKRULL engage (meme code que sk098, `ability_link`)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3385,
+   "nom": "[modulaires] sk246 Impostor (War Skrull) revele SANS allie : le mechant complote (menace sur le complot principal)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3386,
+   "nom": "[modulaires] sk247 Skrull Commander (War Skrull) : les AUTRES sbires SKRULL gagnent +1 ATQ (meme code que sk113, `ability_link`)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3387,
+   "nom": "[modulaires] sk247 Skrull Commander (War Skrull) Boost : si l'activation est une attaque, +2 icones (1 + 2 = 3 icones : Rhino ATQ 2 + 3 = 5 degats)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3388,
+   "nom": "[modulaires] sk248 Skrull Geneticist Boost : le joueur se distribue 1 carte rencontre face cachee",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3389,
+   "nom": "[modulaires] sk248 Skrull Geneticist en jeu : icone HAZARD (1 carte rencontre de plus a la phase du mechant)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3390,
+   "nom": "[modulaires] sk249 Cloning Program : chaque sbire SKRULL active UNE FOIS DE PLUS a l'etape 2 de la phase du mechant (Rhino 2 + Commander 2 + 2 = 6)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3391,
+   "nom": "[modulaires] sk249 Cloning Program, TEMOIN : sans le complot la meme phase fait 4 degats (Rhino 2 + Commander 2)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3392,
+   "nom": "[modulaires] sk249 Cloning Program, DEUX exemplaires : deux activations de plus (2 + 2 + 2 + 2 = 8)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3393,
+   "nom": "[modulaires] sk249 Cloning Program : une attaque HORS de l'etape 2 (Puzzle.Attack) n'est pas doublee (2 degats)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3394,
+   "nom": "[modulaires] sk249 Cloning Program : la menace ne peut PAS etre retiree tant qu'AUCUN sbire SKRULL n'est en jeu (4 menaces restent)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3395,
+   "nom": "[modulaires] sk249 Cloning Program, TEMOIN : avec un sbire SKRULL en jeu la meme contre retire 1 menace (4 -> 3)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3396,
+   "nom": "[modulaires] sk250 Xavin revele : defausse jusqu'a une TRAITRISE (un sbire est defausse au passage) et la revele (Advance : le mechant complote)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3397,
+   "nom": "[modulaires] sk250 Xavin revele : AUCUNE traitrise dans le deck -> tout le deck est defausse, rien n'est revele (pas de menace)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3398,
+   "nom": "[modulaires] sk250 Boost : la carte retournee en boost entre en jeu ENGAGEE avec le joueur",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3399,
+   "nom": "[modulaires] sk251 Invisible Forcefield revele : elle s'attache a l'ennemi aux PV imprimes les plus eleves (Rhino 14 > Skrull Commander 5)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3400,
+   "nom": "[modulaires] sk251 Invisible Forcefield : un SECOND exemplaire ne s'attache pas au meme ennemi, il va au suivant (Skrull Commander)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3401,
+   "nom": "[modulaires] sk251 Invisible Forcefield : aucun ennemi eligible (le mechant en porte deja une, aucun sbire) -> SURGE",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3402,
+   "nom": "[modulaires] sk251 Interruption forcee : les degats infliges a l'ennemi attache vont SUR la carte (Rhino intact, 2 jetons de degat)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3403,
+   "nom": "[modulaires] sk251 Interruption forcee, TEMOIN : sans la carte l'attaque blesse Rhino (2 degats)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3404,
+   "nom": "[modulaires] sk251 Seuil : 3 degats deja poses + 2 = 5 -> la carte est DEFAUSSEE, Rhino toujours intact",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3405,
+   "nom": "[modulaires] sk251 Seuil, TEMOIN : 2 degats deja poses + 2 = 4 -> la carte RESTE en jeu avec 4 jetons",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3406,
+   "nom": "[modulaires] sk252 Super-Skrull Training Program revele : chaque ennemi SKRULL recoit une carte Robuste (le mechant non-Skrull non) ; icone Amplify",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3407,
+   "nom": "[modulaires] sk253 Going Nova revelee : 2 degats indirects (1 joueur) -> l'identite les subit",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3408,
+   "nom": "[modulaires] sk253 Going Nova revelee a DEUX joueurs : 4 degats indirects repartis entre tous les personnages (4 sur les deux identites)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3409,
+   "nom": "[modulaires] sk254 Impostor (Standard Skrull) revele : un allie devient un sbire SKRULL engage (meme code que sk098, `ability_link`)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3410,
+   "nom": "[modulaires] sk254 Impostor (Standard Skrull) SANS allie : le mechant complote",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3411,
+   "nom": "[modulaires] sk255 Cursed by the Past (rien en jeu) : le Vautour (sbire nemesis) et Highway Robbery (complot nemesis) sont reveles, le RESTE du set va dans le deck rencontre",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3412,
+   "nom": "[modulaires] sk255 Cursed by the Past (Vautour et complot DEJA en jeu) : le Vautour active contre soi, le complot recoit sa menace de depart (3 + 3 = 6)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3413,
+   "nom": "[modulaires] sk256 Experiment Subject : une amelioration qu'on controle est defaussee, le mechant ne complote pas",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3414,
+   "nom": "[modulaires] sk256 Experiment Subject SANS amelioration : le mechant complote (menace 1)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3415,
+   "nom": "[modulaires] sk257 Forge Ahead : chaque sbire engage avec soi complote (Skrull Commander MNG 2) et le mechant NE complote PAS",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3416,
+   "nom": "[modulaires] sk257 Forge Ahead SANS sbire engage : le mechant complote (menace 1)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3417,
+   "nom": "[modulaires] sk258 Mobilization (alter-ego) : chaque sbire en jeu s'engage avec LE JOUEUR, puis le mechant complote",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3418,
+   "nom": "[modulaires] sk258 Mobilization (heros) : le mechant ET chaque sbire engage attaquent (Rhino 2 + Skrull Commander 2 = 4 degats)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3419,
+   "nom": "[modulaires] sk259 Stick to the Plan : le mechant attaque le heros qui a le plus de PV RESTANTS (Captain Marvel 12 contre Spider-Man 10)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3420,
+   "nom": "[modulaires] sk259 Stick to the Plan : PV RESTANTS (pas PV max) : Captain Marvel a 3 degats (9 restants) -> Spider-Man (10) est attaque",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3421,
+   "nom": "[modulaires] sk259 Stick to the Plan, joueur en ALTER-EGO : aucun heros -> aucune attaque, le mechant complote",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3422,
+   "nom": "[modulaires] sk260 Replaced Archenemy (nemesis hors jeu) : le Vautour est trouve, la carte s'y attache, il est revele ; il gagne SKRULL et +1 MNG",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3423,
+   "nom": "[modulaires] sk260 Replaced Archenemy (Vautour DEJA en jeu) : elle s'y attache puis il active contre soi (alter-ego : il complote, MNG 1 + 1 = 2)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3424,
+   "nom": "[modulaires] sk260 Replaced Archenemy : aucun sbire nemesis trouvable (retire de la partie) -> la carte est defaussee",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3425,
+   "nom": "[modulaires] sk261 Focused Attention : le mechant recoit 1 carte de boost face cachee ; surge natif (la carte du dessus est revelee)",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3426,
+   "nom": "[modulaires] sk262 Tricky Assault : le joueur passe en forme HEROS, le mechant l'attaque ; attaque NON defendue -> le mechant complote en plus",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  },
+  {
+   "index": 3427,
+   "nom": "[modulaires] sk262 Tricky Assault, attaque DEFENDUE (Spider-Man DEF 3) : aucun degat et le mechant ne complote pas",
+   "ok": true,
+   "message": "etat modulaires conforme"
+  }
+ ]
+}
