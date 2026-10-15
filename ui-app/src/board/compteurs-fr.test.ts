@@ -44,6 +44,14 @@ describe('nomDeCompteur', () => {
     expect(nomDeCompteur('serpent')).toBe('serpent')
   })
 
+  it('traduit les compteurs du scenario Paibok (mastery, absorption)', () => {
+    // Jetons de maitrise sur Paibok (sk141) et d'absorption sur Asti (sk163) : sans entree,
+    // le plateau ecrivait « mastery » en pleine partie francaise.
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('mastery')).toBe('maîtrise')
+    expect(nomDeCompteur('absorption')).toBe('absorption')
+  })
+
   it('traduit le compteur honte de Hunting Season (hs060)', () => {
     vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
     expect(nomDeCompteur('shame')).toBe('honte')

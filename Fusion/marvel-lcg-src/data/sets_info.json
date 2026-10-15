@@ -1635,7 +1635,8 @@
   "name": "skrull_menace",
   "scenarios": [
    "sk_skrull_empire",
-   "sk_super_skrull"
+   "sk_super_skrull",
+   "sk_paibok"
   ],
   "heroes": [
    "hulkling_kajislav",
@@ -1644,9 +1645,11 @@
   "encounters": [
    "sk_army_of_skrulls",
    "sk_skrull_society",
-   "sk_kree_skrull_war"
+   "sk_kree_skrull_war",
+   "sk_paibok",
+   "sk_new_revengers"
   ],
-  "max_id": "sk140"
+  "max_id": "sk169"
  },
- "checksum": "b26f58b026819cd6264b1db49ed7ff0dfff89d77cc86a4b6f8ff807ebff2524e"
+ "checksum": "1bc8106fb2ee0aa13b84a816ede6e28f39f893211e4a882103d062e6d1516473"
 }

@@ -104861,7 +104861,502 @@
    "set_name": "Kree-Skrull War",
    "text": "<b>When Revealed</b>: Discard the top card of the encounter deck. Place 1 threat on each scheme in play for each boost icon ([boost]) discarded this way.\n<hr />\n[star] <b>Boost</b>: Place 2 threat on Earth Involvement.",
    "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk141",
+   "type": "Villain",
+   "name": "* Paibok",
+   "subtitle": "",
+   "desc": {
+    "HP": "13*",
+    "ATK": "2",
+    "SCH": "1",
+    "Toughness": "1",
+    "Stage": "1"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Paibok",
+   "text": "Toughness.\nWhile the number of [[POWER SKRULL]] cards attached to Paibok is equal to or less than the number of mastery counters on him, [[POWER SKRULL]] cards cannot be discarded.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk142",
+   "type": "Villain",
+   "name": "* Paibok",
+   "subtitle": "",
+   "desc": {
+    "HP": "16*",
+    "ATK": "2",
+    "SCH": "2",
+    "Toughness": "1",
+    "Stage": "2"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Paibok",
+   "text": "Toughness.\nWhile the number of [[POWER SKRULL]] cards attached to Paibok is equal to or less than the number of mastery counters on him, [[POWER SKRULL]] cards cannot be discarded.\n<b>When Revealed</b>: Search the encounter deck and discard pile for a [[POWER SKRULL]] card and reveal it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk143",
+   "type": "Villain",
+   "name": "* Paibok",
+   "subtitle": "",
+   "desc": {
+    "HP": "20*",
+    "ATK": "3",
+    "SCH": "3",
+    "Toughness": "1",
+    "Stage": "3"
+   },
+   "traits": [
+    "SKRULL"
+   ],
+   "set_name": "Paibok",
+   "text": "Toughness.\nWhile the number of [[POWER SKRULL]] cards attached to Paibok is equal to or less than the number of mastery counters on him, [[POWER SKRULL]] cards cannot be discarded.\n<b>When Revealed</b>: Search the encounter deck and discard pile for a [[POWER SKRULL]] card and reveal it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk144a",
+   "type": "MainScheme",
+   "name": "Power Skrull Engineering",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1"
+   },
+   "traits": [],
+   "set_name": "Paibok",
+   "text": "<b>Contents</b>: Paibok I and Paibok II <i>(Paibok II and Paibok III for expert mode)</i>. Paibok and Standard encounter sets. One modular encounter set <i>(New Revengers)</i>.\n<b>Setup</b>: Place 1 mastery counter on Paibok.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk144b",
+   "type": "MainScheme",
+   "name": "Power Skrull Engineering",
+   "subtitle": "",
+   "desc": {
+    "Stage": "1",
+    "TargetThreat": "5*",
+    "EscalationThreat": "1*",
+    "StartingThreat": "1*"
+   },
+   "traits": [],
+   "set_name": "Paibok",
+   "text": "<b>When Revealed</b>: Discard cards from the encounter deck until a [[POWER SKRULL]] card is discarded. Reveal that card. Shuffle the encounter discard pile into the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk145a",
+   "type": "MainScheme",
+   "name": "Mastering Superpowers",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2"
+   },
+   "traits": [],
+   "set_name": "Paibok",
+   "text": "<b>When Revealed</b>: Place 1 mastery counter on Paibok. Then, if Captain Paibok is in play, resolve its \"<b>Boost</b>\" ability. Otherwise, search the encounter deck and discard pile for Captain Paibok and attach it to Paibok. Shuffle the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk145b",
+   "type": "MainScheme",
+   "name": "Mastering Superpowers",
+   "subtitle": "",
+   "desc": {
+    "Stage": "2",
+    "TargetThreat": "5*",
+    "EscalationThreat": "1*",
+    "StartingThreat": "0"
+   },
+   "traits": [],
+   "set_name": "Paibok",
+   "text": "[star] <b>Forced Interrupt</b>: When this scheme would be completed, place 1 mastery counter on Paibok and remove all threat from here instead. Then, discard cards from the encounter deck until a [[POWER SKRULL]] card is discarded. Reveal that card.\n<b>When the player phase ends, if all 4 [[POWER SKRULL]] cards are attached to Paibok, the players lose the game.</b>",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk146",
+   "type": "Attachment",
+   "name": "Captain Paibok",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "Hazard": "1"
+   },
+   "traits": [
+    "TITLE"
+   ],
+   "set_name": "Paibok",
+   "text": "Attach to Paibok.\n<b>Hero Action</b>: Resolve the \"<b>Boost</b>\" ability on each attachment in play that belongs to the Paibok encounter set → discard this card.\n<hr />\n[star] <b>Boost</b>: Heal 2 damage from Paibok.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk147",
+   "type": "Attachment",
+   "name": "Distracted",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Paibok",
+   "text": "Attach to your identity.\n<b>Forced Interrupt</b>: When you thwart, reduce the amount of threat that thwart removes by 1.\n<b>Hero Action</b>: Spend [mental][mental] resources → discard this card.\n<hr />\n[star] <b>Boost</b>: Place 1 threat on the main scheme.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk148",
+   "type": "Attachment",
+   "name": "Electricity Projection",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "ATK+": "1"
+   },
+   "traits": [
+    "POWER SKRULL"
+   ],
+   "set_name": "Paibok",
+   "text": "Attach to Paibok.\nPaibok gains retaliate 1.\n<b>Hero Action</b>: Spend [mental][physical] resources → discard this card.\n<hr />\n[star] <b>Boost</b>: Stun a character you control.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk149",
+   "type": "Attachment",
+   "name": "Hypnotized",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Paibok",
+   "text": "Attach to your identity.\nAs an additional cost to change form, you must spend 1 resource of any type.\n<b>Hero Action</b>: Spend [energy][energy] resources → discard this card.\n<hr />\n[star] <b>Boost</b>: Discard 1 card from your hand.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk150",
+   "type": "Attachment",
+   "name": "Ice Control",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "SCH+": "1"
+   },
+   "traits": [
+    "POWER SKRULL"
+   ],
+   "set_name": "Paibok",
+   "text": "Attach to Paibok.\n[star] <b>Forced Response</b>: After Paibok attacks you, exhaust a character you control.\n<b>Hero Action</b>: Spend 3 resources of any type → discard this card.\n<hr />\n[star] <b>Boost</b>: Exhaust a character you control.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk151",
+   "type": "Attachment",
+   "name": "Metallic Skin",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "ATK+": "1"
+   },
+   "traits": [
+    "POWER SKRULL"
+   ],
+   "set_name": "Paibok",
+   "text": "Attach to Paibok.\n<b>Forced Response</b>: After Paibok takes damage, give him a tough status card.\n<b>Hero Action</b>: Spend [energy][mental] resources → discard this card.\n<hr />\n[star] <b>Boost</b>: Give Paibok a tough status card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk152",
+   "type": "Attachment",
+   "name": "Shapeshifting",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1",
+    "SCH+": "1"
+   },
+   "traits": [
+    "POWER SKRULL"
+   ],
+   "set_name": "Paibok",
+   "text": "Attach to Paibok.\nPaibok gains stalwart and the [[AERIAL]] trait.\n<b>Hero Action</b>: Spend [energy][physical] resources → discard this card.\n<hr />\n[star] <b>Boost</b>: Confuse a character you control.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk153",
+   "type": "Attachment",
+   "name": "Trapped in Ice",
+   "subtitle": "",
+   "desc": {},
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Paibok",
+   "text": "Attach to your identity.\n<b>Forced Interrupt</b>: When you attack, reduce the amount of damage that attacks deals by 1.\n<b>Hero Action</b>: Spend [physical][physical] resources → discard this card.\n<hr />\n[star] <b>Boost</b>: Take 1 damage.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk154",
+   "type": "Minion",
+   "name": "* Devos the Devastator",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "4",
+    "Boost": "4"
+   },
+   "traits": [
+    "ELITE"
+   ],
+   "set_name": "Paibok",
+   "text": "<b>Forced Response</b>: After a status card is placed on a friendly character, Devos the Devastator activates against the player who controls that character.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk155",
+   "type": "Minion",
+   "name": "* General Kalamari",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "2"
+   },
+   "traits": [
+    "ELITE",
+    "SKRULL",
+    "SOLDIER"
+   ],
+   "set_name": "Paibok",
+   "text": "<b>When Defeated</b>: The player who defeated General Kalamari resolves the \"<b>Boost</b>\" ability on each attachment in play, that belongs to the Paibok encounter set.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk156",
+   "type": "SideScheme",
+   "name": "Galactic Ambassador",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Acceleration": "1",
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Paibok",
+   "text": "<b>When Revealed</b>: Place 2 additional threat here for each friendly character with a status card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk157",
+   "type": "SideScheme",
+   "name": "Settling Scores",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2",
+    "Hinder": "2*",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Paibok",
+   "text": "Hinder 2[per_hero].\nResolve the \"<b>Boost</b>\" ability on each boost card 1 additional time.\n<b>When Revealed</b>: Shuffle each [[POWER SKRULL]] card from the encounter discard pile into the encounter deck.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk158",
+   "type": "Treachery",
+   "name": "Council Manipulation",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "Paibok",
+   "text": "<b>When Revealed</b>: Paibok schemes. If you are stunned or confused, this card gains surge.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk159",
+   "type": "Treachery",
+   "name": "Getting Ruthless",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Paibok",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Resolve the \"<b>Boost</b>\" ability on each attachment in play that belongs to the Paibok encounter set.\n<b>When Revealed (Hero)</b>: Paibok attacks you. Give him 1 additional boost card if you are stunned or confused.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk160",
+   "type": "Treachery",
+   "name": "Power Demonstration",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "Paibok",
+   "text": "<b>When Revealed</b>: Resolve the \"<b>Boost</b>\" ability on each attachment in play that belongs to the Paibok encounter set.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk161",
+   "type": "Environment",
+   "name": "O.M.N.I.T.R.O.N.I.C.U.S.",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [
+    "COMPUTER",
+    "REVENGER"
+   ],
+   "set_name": "New Revengers",
+   "text": "Each [[REVENGER]] minion gains villainous.\n<b>Hero Action</b>: If there is no [[REVENGER]] enemy in play, spend [energy][energy] resources → discard this card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk162",
+   "type": "Minion",
+   "name": "* Angar the Screamer",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "2*",
+    "Boost": "1"
+   },
+   "traits": [
+    "REVENGER"
+   ],
+   "set_name": "New Revengers",
+   "text": "[star] Angar the Screamer's attacks gain ranged.\n<b>Forced Interrupt</b>: When Angar the Screamer attacks you, also resolve his attack against each other hero.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk163",
+   "type": "Minion",
+   "name": "* Asti the All-Seeing",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "2",
+    "ATK": "1",
+    "Boost": "1"
+   },
+   "traits": [
+    "REVENGER"
+   ],
+   "set_name": "New Revengers",
+   "text": "<b>Forced Interrupt</b>: When Asti the All-Seeing takes any amount of damage, place 1 absorption counter on it.\n<b>When Defeated</b>: Assign 2 indirect damage among players for each absorption counter on Asti the All-Seeing.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk164",
+   "type": "Minion",
+   "name": "* Skar",
+   "subtitle": "",
+   "desc": {
+    "HP": "4",
+    "SCH": "1",
+    "ATK": "3*",
+    "Boost": "2"
+   },
+   "traits": [
+    "REVENGER"
+   ],
+   "set_name": "New Revengers",
+   "text": "[star] Skar's attacks gain overkill.\n<b>When Revealed</b>: Exhaust a character you control.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk165",
+   "type": "Minion",
+   "name": "* The Maker",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "3",
+    "ATK": "1",
+    "Boost": "3"
+   },
+   "traits": [
+    "ELITE",
+    "REVENGER"
+   ],
+   "set_name": "New Revengers",
+   "text": "The Maker cannot take damage while another [[REVENGER]] enemy is in play.\n<b>When Revealed</b>: Search the encounter deck and discard pile for The Revenge Time side scheme and reveal it.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk166",
+   "type": "Minion",
+   "name": "* Vermin",
+   "subtitle": "",
+   "desc": {
+    "HP": "5",
+    "SCH": "1",
+    "ATK": "2*",
+    "Boost": "1"
+   },
+   "traits": [
+    "REVENGER"
+   ],
+   "set_name": "New Revengers",
+   "text": "[star] Vermin's attacks deal indirect damage.\n<hr />\n[star] <b>Boost</b>: If this activation is an attack, it deals indirect damage.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk167",
+   "type": "Minion",
+   "name": "* White Tiger",
+   "subtitle": "",
+   "desc": {
+    "HP": "3",
+    "SCH": "2",
+    "ATK": "2",
+    "Boost": "2",
+    "Quickstrike": "1"
+   },
+   "traits": [
+    "REVENGER"
+   ],
+   "set_name": "New Revengers",
+   "text": "Quickstrike. <i>(After this minion engages your hero, it attacks you.)</i>\n<b>When Defeated</b>: Give the villain 1 facedown boost card.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk168",
+   "type": "SideScheme",
+   "name": "The Revenge Time",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "2*",
+    "Acceleration": "1",
+    "Boost": "2"
+   },
+   "traits": [],
+   "set_name": "New Revengers",
+   "text": "The villain gains the [[REVENGER]] trait.\n<b>When Revealed</b>: Place 1 additional threat here for each [[REVENGER]] enemy in play.",
+   "custom": "Kajislav"
+  },
+  {
+   "card_id": "sk169",
+   "type": "Treachery",
+   "name": "Forming the Revengers",
+   "subtitle": "",
+   "desc": {
+    "Boost": "1"
+   },
+   "traits": [],
+   "set_name": "New Revengers",
+   "text": "<b>When Revealed</b>: Discard cards from the top of the encounter deck until a card with the [[REVENGER]] trait is discarded. Reveal that card.",
+   "custom": "Kajislav"
   }
  ],
- "checksum": "e986bca280df7d16db691e7c8354086691b5b0da5f2a0dd38e750da20dfbf79f"
+ "checksum": "b4f1829dfd0fc8fa1df6231bb3edb113223265cc28e06065984e3c5779edcc52"
 }

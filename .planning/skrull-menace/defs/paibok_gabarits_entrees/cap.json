@@ -1,0 +1,684 @@
+{
+ "reussis": 113,
+ "total": 113,
+ "cas": [
+  {
+   "index": 3244,
+   "nom": "[paibok] sk144a Setup (puis 1B sk144b) : Paibok I en jeu, 1 jeton de maitrise, complot 1B, UN attachement POWER SKRULL",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3245,
+   "nom": "[paibok] sk144b Revelation a la mise en place : la defausse rencontre est REMELANGEE dans le deck (defausse vide)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3246,
+   "nom": "[paibok] sk142 Setup EXPERT : Paibok II, 1 jeton, DEUX POWER SKRULL (1B + « When Revealed » de Paibok II)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3247,
+   "nom": "[paibok] sk141 pouvoirs VERROUILLES : 1 POWER SKRULL, 1 jeton -> impossible de le defausser",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3248,
+   "nom": "[paibok] sk141 pouvoirs verrouilles, TEMOIN : 2 POWER SKRULL pour 1 jeton -> on peut en defausser un",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3249,
+   "nom": "[paibok] sk141 pouvoirs verrouilles, TEMOIN : 0 jeton -> le POWER SKRULL se defausse",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3250,
+   "nom": "[paibok] sk141 la regle ne vise QUE les POWER SKRULL : Captain Paibok (TITLE) se defausse malgre le verrou",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3251,
+   "nom": "[paibok] sk145b Forced Interrupt : le complot « serait accompli » -> jeton +1, menace remise a 0, un POWER SKRULL revele du deck",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3252,
+   "nom": "[paibok] sk145b « discard until POWER SKRULL », bord du deck : le POWER SKRULL est la DERNIERE carte du deck",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3253,
+   "nom": "[paibok] sk145a Revelation : jeton de maitrise +1 ET Captain Paibok (du deck) s'attache a Paibok",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3254,
+   "nom": "[paibok] sk145a Revelation, branche « Captain Paibok est en jeu » : son Boost soigne 2 degats de Paibok",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3255,
+   "nom": "[paibok] sk145b « when the player phase ends, if all 4 POWER SKRULL are attached to Paibok, the players lose »",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3256,
+   "nom": "[paibok] sk145b defaite, TEMOIN : seulement 3 POWER SKRULL -> pas de defaite",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3257,
+   "nom": "[paibok] sk145b defaite, TEMOIN : quatre POWER SKRULL mais le complot 1B (pas 2B) est en jeu -> pas de defaite",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3258,
+   "nom": "[paibok] sk148 Electricity Projection : Paibok gagne Riposte 1 et +1 ATQ",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3259,
+   "nom": "[paibok] sk148 Electricity Projection : Boost -> un personnage qu'on controle est etourdi",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3260,
+   "nom": "[paibok] sk148 Electricity Projection : Action de heros [mental][physical] -> la carte est defaussee (2 POWER SKRULL, 1 jeton)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3261,
+   "nom": "[paibok] sk148 Action de heros NON OFFERTE quand les pouvoirs sont verrouilles (1 POWER SKRULL, 1 jeton)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3262,
+   "nom": "[paibok] sk148 Action de heros OFFERTE des qu'il y a plus d'attachements que de jetons (TEMOIN)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3263,
+   "nom": "[paibok] sk150 Ice Control : Paibok gagne +1 MNG (le badge ATQ a etoile n'a pas de valeur)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3264,
+   "nom": "[paibok] sk150 Ice Control : Reponse forcee -> apres que Paibok l'attaque, un de ses personnages s'incline",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3265,
+   "nom": "[paibok] sk150 Ice Control, TEMOIN : sans l'attachement, le heros attaque sans defense reste pret",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3266,
+   "nom": "[paibok] sk150 Ice Control : Boost -> un personnage qu'on controle s'incline",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3267,
+   "nom": "[paibok] sk150 Ice Control : Action de heros « 3 ressources de n'importe quel type » -> defaussee (2 POWER SKRULL, 1 jeton)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3268,
+   "nom": "[paibok] sk151 Metallic Skin : Paibok gagne +1 ATQ",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3269,
+   "nom": "[paibok] sk151 Metallic Skin : Reponse forcee -> apres des degats, Paibok recoit une carte Robuste",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3270,
+   "nom": "[paibok] sk151 Metallic Skin, TEMOIN : sans l'attachement, apres des degats Paibok n'est PAS Robuste",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3271,
+   "nom": "[paibok] sk151 Metallic Skin : Boost -> Paibok recoit une carte Robuste",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3272,
+   "nom": "[paibok] sk151 Metallic Skin : Action de heros [energy][mental] -> defaussee (2 POWER SKRULL, 1 jeton)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3273,
+   "nom": "[paibok] sk152 Shapeshifting : Paibok gagne Solide, le trait AERIAL et +1 MNG",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3274,
+   "nom": "[paibok] sk152 Shapeshifting, TEMOIN : sans l'attachement, Paibok n'est ni Solide ni AERIAL",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3275,
+   "nom": "[paibok] sk152 Shapeshifting : Boost -> un personnage qu'on controle est desoriente",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3276,
+   "nom": "[paibok] sk152 Shapeshifting : Action de heros [energy][physical] -> defaussee (2 POWER SKRULL, 1 jeton)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3277,
+   "nom": "[paibok] sk146 Captain Paibok : s'attache a Paibok et porte une icone HAZARD",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3278,
+   "nom": "[paibok] sk146 Captain Paibok : Boost -> Paibok soigne 2 degats",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3279,
+   "nom": "[paibok] sk146 Captain Paibok : Action de heros -> resout le Boost de CHAQUE attachement du set (cout), puis se defausse",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3280,
+   "nom": "[paibok] sk147 Distracted : s'attache a l'identite",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3281,
+   "nom": "[paibok] sk147 Distracted : Interruption forcee -> un contre retire 1 menace de MOINS (4 -> 4 au lieu de 3)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3282,
+   "nom": "[paibok] sk147 Distracted, TEMOIN : sans l'attachement le meme contre retire 1 menace (4 -> 3)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3283,
+   "nom": "[paibok] sk147 Distracted : Boost -> 1 menace sur le complot principal (en plus de la manigance de Paibok)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3284,
+   "nom": "[paibok] sk147 Distracted, TEMOIN : une carte de boost sans effet ne pose que la manigance (1 + 1 = 2)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3285,
+   "nom": "[paibok] sk147 Distracted : Action de heros [mental][mental] -> defaussee",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3286,
+   "nom": "[paibok] sk149 Hypnotized : changer de forme coute 1 ressource de plus (Energy depensee, heros en forme heros)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3287,
+   "nom": "[paibok] sk149 Hypnotized, TEMOIN : sans l'attachement le changement de forme ne coute rien",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3288,
+   "nom": "[paibok] sk149 Hypnotized : sans ressource a depenser, le changement de forme est REFUSE",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3289,
+   "nom": "[paibok] sk149 Hypnotized : Boost -> defausse 1 carte de la main",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3290,
+   "nom": "[paibok] sk149 Hypnotized : Action de heros [energy][energy] -> defaussee",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3291,
+   "nom": "[paibok] sk153 Trapped in Ice : Interruption forcee -> l'attaque de Spider-Man inflige 1 degat de moins (2 -> 1)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3292,
+   "nom": "[paibok] sk153 Trapped in Ice, TEMOIN : sans l'attachement la meme attaque inflige 2 degats",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3293,
+   "nom": "[paibok] sk153 Trapped in Ice : Boost -> le joueur subit 1 degat",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3294,
+   "nom": "[paibok] sk153 Trapped in Ice : Action de heros [physical][physical] -> defaussee",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3295,
+   "nom": "[paibok] sk154 Devos : un statut sur un personnage AMI -> Devos s'active contre son joueur (attaque ATQ 4)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3296,
+   "nom": "[paibok] sk154 Devos, TEMOIN : un statut sur un ENNEMI (Paibok) ne le declenche pas",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3297,
+   "nom": "[paibok] sk154 Devos : le joueur est en alter ego -> Devos MANIGANCE (menace +1 sur le complot principal)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3298,
+   "nom": "[paibok] sk155 General Kalamari : vaincu -> le joueur resout le Boost de chaque attachement du set (Distracted : +1 menace)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3299,
+   "nom": "[paibok] sk155 General Kalamari, TEMOIN : sans attachement du set, sa defaite ne change pas la menace",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3300,
+   "nom": "[paibok] sk156 Galactic Ambassador : AUCUN personnage avec un statut -> menace de depart seule (2), icone Acceleration",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3301,
+   "nom": "[paibok] sk156 Galactic Ambassador : 2 personnages avec un statut (l'un en a deux) -> +2 par personnage = 2 + 4",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3302,
+   "nom": "[paibok] sk157 Settling Scores : Hinder 2[per_hero] natif -> 2 + 2 = 4 menaces",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3303,
+   "nom": "[paibok] sk157 Settling Scores : revelee -> seuls les POWER SKRULL de la DEFAUSSE rencontre retournent dans le deck",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3304,
+   "nom": "[paibok] sk157 Settling Scores : chaque Boost est resolu UNE FOIS DE PLUS (Distracted : 1 + 2 = 3 menaces ajoutees)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3305,
+   "nom": "[paibok] sk158 Council Manipulation : Paibok manigance (1 + 1 = 2) ; joueur ni sonne ni desoriente -> PAS de surge",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3306,
+   "nom": "[paibok] sk158 Council Manipulation : joueur SONNE -> la carte gagne surge (le sbire du dessus est revele)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3307,
+   "nom": "[paibok] sk158 Council Manipulation : joueur DESORIENTE -> surge aussi",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3308,
+   "nom": "[paibok] sk159 Getting Ruthless (alter ego) : resout le Boost de chaque attachement du set (Distracted : +1 menace)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3309,
+   "nom": "[paibok] sk159 Getting Ruthless (heros) : Paibok attaque le joueur (ATQ 2 + 1 carte de boost de 1 icone = 3)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3310,
+   "nom": "[paibok] sk159 Getting Ruthless (heros) : joueur SONNE -> UNE carte de boost de plus (ATQ 2 + 2 icones = 4)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3311,
+   "nom": "[paibok] sk160 Power Demonstration : resout le Boost de chaque attachement du set (Distracted : +1 menace)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3312,
+   "nom": "[paibok] sk160 Power Demonstration : plusieurs attachements -> tous resolus (Distracted +1 menace ET Captain Paibok soigne 2)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3313,
+   "nom": "[paibok] sk161 O.M.N.I.T.R.O.N.I.C.U.S. : chaque sbire REVENGER gagne villainous",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3314,
+   "nom": "[paibok] sk161 O.M.N.I.T.R.O.N.I.C.U.S., TEMOIN : sans l'environnement, Angar n'est pas villainous",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3315,
+   "nom": "[paibok] sk161 O.M.N.I.T.R.O.N.I.C.U.S. : un sbire qui n'est PAS REVENGER n'est pas villainous",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3316,
+   "nom": "[paibok] sk161 O.M.N.I.T.R.O.N.I.C.U.S. : Action de heros [energy][energy] -> defaussee quand AUCUN ennemi REVENGER n'est en jeu",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3317,
+   "nom": "[paibok] sk161 O.M.N.I.T.R.O.N.I.C.U.S. : Action de heros NON OFFERTE tant qu'un ennemi REVENGER est en jeu",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3318,
+   "nom": "[paibok] sk162 Angar the Screamer : ses attaques gagnent RANGED -> la Riposte du heros (Black Panther) ne le touche pas",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3319,
+   "nom": "[paibok] sk162 Angar, TEMOIN : un sbire SANS ranged (Hydra Mercenary) subit la Riposte 1 de Black Panther",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3320,
+   "nom": "[paibok] sk162 Angar : quand il attaque un heros, son attaque est AUSSI resolue contre l'autre heros (2 joueurs)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3321,
+   "nom": "[paibok] sk163 Asti the All-Seeing : chaque coup pose 1 jeton d'absorption (2 coups = 2 jetons)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3322,
+   "nom": "[paibok] sk163 Asti : vaincu avec 1 jeton -> 2 degats INDIRECTS repartis entre les joueurs (1 joueur : 2)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3323,
+   "nom": "[paibok] sk163 Asti : vaincu avec 3 jetons -> 6 degats indirects (2 par jeton)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3324,
+   "nom": "[paibok] sk164 Skar : ses attaques gagnent OVERKILL -> l'exces sur l'allie vaincu passe au heros (3 - 1 PV = 2)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3325,
+   "nom": "[paibok] sk164 Skar, TEMOIN : Shocker (ATQ 2, sans overkill) vainc l'allie sans rien deverser sur le heros",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3326,
+   "nom": "[paibok] sk164 Skar : revele (heros) -> un personnage qu'on controle s'incline",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3327,
+   "nom": "[paibok] sk165 The Maker : ne subit AUCUN degat tant qu'un AUTRE ennemi REVENGER est en jeu",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3328,
+   "nom": "[paibok] sk165 The Maker, TEMOIN : seul Revenger en jeu, il subit les degats",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3329,
+   "nom": "[paibok] sk165 The Maker : le MECHANT devenu REVENGER (The Revenge Time) suffit a le rendre invulnerable",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3330,
+   "nom": "[paibok] sk165 The Maker : revele -> cherche The Revenge Time dans le deck et la defausse et la revele",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3331,
+   "nom": "[paibok] sk165 The Maker : The Revenge Time dans la DEFAUSSE rencontre est trouvee aussi",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3332,
+   "nom": "[paibok] sk166 Vermin : ses attaques sont INDIRECTES -> le joueur REPARTIT les degats : l'allie (Black Cat) les encaisse, le heros non",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3333,
+   "nom": "[paibok] sk166 Vermin, TEMOIN : Shocker (ATQ 2, direct) frappe le HEROS, l'allie est intact",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3334,
+   "nom": "[paibok] sk166 Vermin : Boost -> l'attaque de Paibok (ATQ 2 + 1 icone = 3) devient INDIRECTE : l'allie encaisse, le heros non",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3335,
+   "nom": "[paibok] sk166 Vermin, TEMOIN : une carte de boost de 1 icone sans effet -> attaque DIRECTE : le heros encaisse 3, l'allie est intact",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3336,
+   "nom": "[paibok] sk167 White Tiger : Quickstrike (natif) -> elle attaque des son engagement avec le heros (ATQ 2)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3337,
+   "nom": "[paibok] sk167 White Tiger : vaincue -> le mechant recoit 1 carte de boost face cachee",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3338,
+   "nom": "[paibok] sk167 White Tiger, TEMOIN : un autre sbire vaincu ne donne aucune carte de boost au mechant",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3339,
+   "nom": "[paibok] sk168 The Revenge Time : le MECHANT gagne le trait REVENGER ; icone Acceleration",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3340,
+   "nom": "[paibok] sk168 The Revenge Time, TEMOIN : sans la carte le mechant n'est pas REVENGER",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3341,
+   "nom": "[paibok] sk168 The Revenge Time : revelee -> +1 menace par ennemi REVENGER en jeu (2 sbires + le mechant = 3 : 2 + 3)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3342,
+   "nom": "[paibok] sk168 The Revenge Time : aucun sbire REVENGER -> seul le mechant compte (2 + 1)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3343,
+   "nom": "[paibok] sk169 Forming the Revengers : defausse jusqu'a une carte REVENGER (un sbire) et la revele",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3344,
+   "nom": "[paibok] sk169 Forming the Revengers : « a card WITH the REVENGER trait » : l'ENVIRONNEMENT O.M.N.I.T.R.O.N.I.C.U.S. convient",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3345,
+   "nom": "[paibok] sk142 Changement de stade : Paibok II garde ses jetons de maitrise ET ses attachements",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3346,
+   "nom": "[paibok] sk142 Paibok II revele : cherche un POWER SKRULL dans le DECK rencontre et le revele (il s'attache)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3347,
+   "nom": "[paibok] sk142 Paibok II revele : un POWER SKRULL dans la DEFAUSSE rencontre est trouve aussi",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3348,
+   "nom": "[paibok] sk142 Paibok II revele, TEMOIN : aucun POWER SKRULL dans le deck ni la defausse -> rien n'est attache",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3349,
+   "nom": "[paibok] sk143 Paibok III (expert) revele : cherche un POWER SKRULL et le revele (stade II -> stade III)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3350,
+   "nom": "[paibok] sk143 Paibok III : la regle des pouvoirs s'applique aussi au stade III (1 pouvoir, jetons >= 1 -> verrouille)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3351,
+   "nom": "[paibok] sk153 Trapped in Ice : un EVENEMENT d'attaque (Swinging Web Kick, 8 degats) est reduit lui aussi (7)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3352,
+   "nom": "[paibok] sk153 Trapped in Ice, TEMOIN : sans l'attachement Swinging Web Kick inflige 8",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3353,
+   "nom": "[paibok] sk147 Distracted : un EVENEMENT de contre (Crisis Interdiction, 2 menaces) retire 1 menace de moins",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3354,
+   "nom": "[paibok] sk147 Distracted, TEMOIN : sans l'attachement Crisis Interdiction retire 2 menaces (4 -> 2)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3355,
+   "nom": "[paibok] sk168 The Revenge Time dans un AUTRE scenario (Rhino) : le mechant Rhino devient REVENGER (menace 2 + 1)",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  },
+  {
+   "index": 3356,
+   "nom": "[paibok] sk165 The Maker dans le scenario Rhino : revele, il trouve The Revenge Time ; Rhino devenu REVENGER le rend invulnerable",
+   "ok": true,
+   "message": "etat Paibok conforme"
+  }
+ ]
+}
