@@ -34,6 +34,21 @@ describe('traduireMoteur', () => {
     expect(traduireMoteur('Add this card to your starting hand')).toBe('Ajouter cette carte à ta main de départ')
   })
 
+  it('traduit les choix de la campagne Skrull Menace (cooperation, zone, campagne experte)', () => {
+    enFrancais()
+    expect(traduireMoteur('Discard the top card of your deck to place Skrull Warrior in the victory display')).toBe(
+      'Défausser le dessus de ton deck pour placer Skrull Warrior dans la pile de victoire'
+    )
+    expect(traduireMoteur('Cooperation Area: add a card (PlayerSideScheme)')).toBe(
+      'Zone de coopération : ajouter une carte (manigance annexe de joueur)'
+    )
+    expect(traduireMoteur('Place 1 acceleration token on the main scheme to heal to full')).toContain('te soigner complètement')
+    enAnglais()
+    expect(traduireMoteur('Discard the top card of your deck to place Skrull Warrior in the victory display')).toBe(
+      'Discard the top card of your deck to place Skrull Warrior in the victory display'
+    )
+  })
+
   it('traduit les pouvoirs de base', () => {
     enFrancais()
     expect(traduireMoteur('Attack')).toBe('Attaquer')

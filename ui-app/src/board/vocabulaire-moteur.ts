@@ -401,7 +401,23 @@ const menaces = (n: string) => `${n} ${Number(n) > 1 ? 'menaces' : 'menace'}`
  * anglais, comme un nom de capacité : le texte de la carte en grand est le
  * repère.
  */
+const TYPES_ZONE_FR: Record<string, string> = {
+  Ally: 'allié',
+  PlayerSideScheme: 'manigance annexe de joueur',
+  Resource: 'ressource',
+  Support: 'soutien',
+  Upgrade: 'amélioration',
+}
+
 const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
+  // Campagne Skrull Menace (`skrull_menace/campaign.py`) : la règle de coopération, la zone, la campagne experte.
+  [/^Discard the top card of your deck to place (.+) in the victory display$/,
+    (m) => `Défausser le dessus de ton deck pour placer ${m[1]} dans la pile de victoire`],
+  [/^Cooperation Area: add a card \((.+)\)$/, (m) => `Zone de coopération : ajouter une carte (${TYPES_ZONE_FR[m[1]!] ?? m[1]})`],
+  [/^Place 1 acceleration token on the main scheme to rejoin the team at full hit points$/,
+    () => 'Placer 1 jeton Accélération sur la manigance principale pour rejoindre l’équipe avec tous tes points de vie'],
+  [/^Place 1 acceleration token on the main scheme to heal to full$/,
+    () => 'Placer 1 jeton Accélération sur la manigance principale pour te soigner complètement'],
   [/^Take (\d+) indirect damage$/, (m) => `Subir ${m[1]} ${Number(m[1]) > 1 ? 'dégâts indirects' : 'dégât indirect'}`],
   [/^Take (\d+) damage$/, (m) => `Subir ${degats(m[1]!)}`],
   [/^Place (\d+) threat on the main scheme$/, (m) => `Placer ${menaces(m[1]!)} sur la manigance principale`],
