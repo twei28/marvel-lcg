@@ -1422,6 +1422,19 @@ export const HEROS_INFO = {
         apparition: "Amazing Spider-Man #656 (2011)",
     },
 
+    "sk001a": {
+        bio: "Teddy Altman a grandi a New York en se croyant humain, avant d'apprendre qu'il est le fils du Kree Mar-Vell et de la princesse skrull Anelle : l'heritier de deux empires ennemis depuis des millenaires. Metamorphe comme les Skrulls, dote de la force des Kree, il fonde les Jeunes Vengeurs aux cotes de Wiccan, qui deviendra son mari. Sous le nom de Dorrek VIII, il finit par prendre la tete de l'alliance Kree-Skrull, sans jamais savoir tout a fait de quel cote il est ne.",
+        bioEn: "Teddy Altman grew up in New York believing he was human, until he learned he is the son of the Kree Mar-Vell and the Skrull princess Anelle: heir to two empires at war for millennia. A shapeshifter like the Skrulls, with the strength of the Kree, he founds the Young Avengers alongside Wiccan, who will become his husband. As Dorrek VIII he ends up leading the Kree-Skrull alliance, never quite sure which side he was born on.",
+        civil: "Theodore « Teddy » Altman (Dorrek VIII)",
+        civilEn: "Theodore \"Teddy\" Altman (Dorrek VIII)",
+        base: "New York",
+        equipes: "Jeunes Vengeurs, Vengeurs",
+        equipesEn: "Young Avengers, Avengers",
+        ennemis: "l'Empire skrull, l'Empire kree",
+        ennemisEn: "the Skrull Empire, the Kree Empire",
+        apparition: "Young Avengers #1 (2005)",
+    },
+
     "im001a": {
         bio: "Tony Stark est un industriel milliardaire dont l'usine d'armement a fait la fortune, jusqu'a ce qu'un eclat d'obus se loge pres de son coeur et qu'un electro-aimant de fortune l'empeche de le tuer. De cette prison de metal il a fait une armure, puis un metier. La Model 42 est la plus intime de ses armures : une nuee de composants stockes sous sa peau, qu'il appelle a lui par la pensee. Genie, ingenieur, alcoolique en remission, il repare le monde avec la meme obstination qu'il met a se reparer lui-meme.",
         bioEn: "Tony Stark is a billionaire industrialist who made his fortune building weapons, until a shrapnel fragment lodged near his heart and a makeshift electromagnet was all that kept it from killing him. He turned that metal prison into a suit of armour, then into a calling. The Model 42 is the most intimate of his suits: a swarm of components stored beneath his skin, summoned by thought alone. Genius, engineer, recovering alcoholic, he repairs the world with the same stubbornness he brings to repairing himself.",

@@ -3313,4 +3313,66 @@ export const TEXTES_FR_FANMADE = {
     'hs225': "<i>Mode Hunter uniquement.</i>\n<b>Réponse forcée</b> : après l'étape 1 de la phase du méchant, placez 1 menace sur la manigance principale pour chaque identité sans le trait [[AERIAL]]. Chaque identité qui a le trait [[AERIAL]] subit 2 dégâts indirects.",
     // hunting_season — Master Trapper (Environment)
     'hs226': "<i>Mode Hunter uniquement.</i>\n<b>Réponse forcée</b> : après l'étape 1 de la phase du méchant, attribuez à chaque joueur 1 carte [[TRAP]] face cachée.\n<b>Interruption forcée</b> : quand la pile de défausse [[TRAP]] est remélangée dans le deck [[TRAP]], attribuez au premier joueur 1 carte Rencontre face cachée.",
+    // skrull_menace — Hulkling (Hero)
+    'sk001a': "<i>Descendant des deux races</i> — <b>Réponse</b> : après avoir joué depuis votre main une carte avec le trait [[KREE]] ou [[SKRULL]], si vous partagez ce trait, piochez 1 carte. <i>(Limite d'une fois par round.)</i>",
+    // skrull_menace — Teddy Altman (AlterEgo)
+    'sk001b': "<i>Hybride Kree/Skrull</i> — <b>Mise en place</b> : mettez en jeu votre amélioration de forme d'origine, face Skrull Origin visible.\n<b>Réponse</b> : après avoir changé de forme d'origine, soignez 1 dégât de Teddy Altman.",
+    // skrull_menace — Skrull Origin (Upgrade)
+    'sk002a': "Forme d'origine. Permanent.\nHulkling gagne le trait [[SKRULL]].\n<b>Action</b> : inclinez cette carte → retournez cette carte.\n<b>Réponse</b> : après avoir dépensé une carte avec le trait [[KREE]], inclinez cette carte → piochez 1 carte.",
+    // skrull_menace — Kree Origin (Upgrade)
+    'sk002b': "Forme d'origine. Permanent.\nHulkling gagne le trait [[KREE]].\n<b>Action</b> : inclinez cette carte → retournez cette carte.\n<b>Réponse</b> : après avoir dépensé une carte avec le trait [[SKRULL]], inclinez cette carte → piochez 1 carte.",
+    // skrull_menace — Wiccan (Ally)
+    'sk003': "Tant que vous avez le trait [[KREE]], Wiccan gagne +1 ATQ.\nTant que vous avez le trait [[SKRULL]], Wiccan gagne +1 CTR.",
+    // skrull_menace — Kree Durability (Event)
+    'sk004': "<b>Réponse de héros</b> : après avoir changé de forme, redressez Hulkling et donnez-lui une carte d'état Tenace.",
+    // skrull_menace — Kree Ferocity (Event)
+    'sk005': "<b>Interruption de héros</b> : quand vous effectuez une attaque de base, vous gagnez +6 ATQ pour cette attaque. Vous pouvez subir 2 dégâts indirects → cette attaque gagne déferlement.",
+    // skrull_menace — Shift and Strike (Event)
+    'sk006': "<b>Réponse de héros</b> <i>(attaque)</i> : après avoir changé de forme, infligez 4 dégâts à un ennemi. Si vous avez le trait [[SKRULL]], désorientez cet ennemi. Si vous avez le trait [[KREE]], sonnez cet ennemi.",
+    // skrull_menace — Skrull Infiltration (Event)
+    'sk007': "<b>Action de héros</b> <i>(contre)</i> : retirez 4 menaces d'une manigance. Vous pouvez subir 2 dégâts indirects → ce contre ignore le mot-clé patrouille et l'icône de crise ([crisis]).",
+    // skrull_menace — Skrull Regeneration (Event)
+    'sk008': "<b>Action de héros</b> : redressez Hulkling. Soignez 2 dégâts de Hulkling pour chaque ressource surpayée pour cette carte.",
+    // skrull_menace — Alliance (Support)
+    'sk009': "<b>Réponse</b> : après avoir joué depuis votre main une carte avec le trait [[KREE]], infligez 1 dégât à un ennemi.\n<b>Réponse</b> : après avoir joué depuis votre main une carte avec le trait [[SKRULL]], retirez 1 menace de la manigance principale.",
+    // skrull_menace — Ancestors (Support)
+    'sk010': "Utilisations (2 compteurs individual).\n<b>Action</b> : inclinez cette carte et retirez-en 1 compteur individual → choisissez 1 carte de votre main ou en jeu. Cette carte gagne le trait [[KREE]] ou [[SKRULL]] jusqu'à la fin du round.",
+    // skrull_menace — Changeling (Upgrade)
+    'sk011': "Hulkling gagne le trait [[AERIAL]].\n<b>Interruption</b> : quand vous utilisez une capacité de base, inclinez Changeling → vous gagnez +1 à cette capacité pour cette utilisation.",
+    // skrull_menace — Emperor Dorrek-Vell (Upgrade)
+    'sk012': "Tant que vous avez le trait [[KREE]], chaque allié que vous contrôlez gagne +1 ATQ.\nTant que vous avez le trait [[SKRULL]], chaque allié que vous contrôlez gagne +1 CTR.",
+    // skrull_menace — Excelsior (Upgrade)
+    'sk013': "Restreint. <i>(Maximum 2 cartes restreintes par joueur.)</i>\nTant qu'Excelsior est redressée, les attaques de base de Hulkling gagnent perçant.\n<b>Ressource</b> : inclinez Excelsior → générez une ressource [energy].",
+    // skrull_menace — Nega Rings (Upgrade)
+    'sk014': "<b>Action de héros</b> : inclinez Nega Rings et dépensez une ressource [energy] → choisissez une carte de votre main et échangez-la avec une carte de votre choix de votre défausse.",
+    // skrull_menace — Lauri-Ell (Ally)
+    'sk015': "<b>Réponse</b> : après que Lauri-Ell a subi des dégâts, quels qu'ils soient, d'une attaque, donnez-lui une carte d'état Tenace.",
+    // skrull_menace — Mur-G'nn (Ally)
+    'sk016': "<b>Action</b> : inclinez Mur-G'nn et infligez-lui 1 dégât → défaussez la carte du dessus de votre deck. Si la ressource imprimée de cette carte a :\n[physical] - redressez une carte que vous contrôlez.\n[energy] - donnez une carte d'état Tenace à une identité.\n[mental] - soignez 3 dégâts d'un personnage.",
+    // skrull_menace — Provoked! (Event)
+    'sk019': "<b>Réponse de héros</b> : après vous être défendu contre une attaque et avoir subi au moins 1 dégât, redressez votre héros.",
+    // skrull_menace — Deflect the Blow (Upgrade)
+    'sk021': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quels qu'ils soient, d'une attaque, défaussez Deflect the Blow et inclinez votre héros, prévenez la totalité de ces dégâts.",
+    // skrull_menace — Talos (Ally)
+    'sk023': "<b>Interruption</b> : quand Talos devrait subir des dégâts consécutifs, quels qu'ils soient, infligez ces dégâts à un autre personnage que vous contrôlez.",
+    // skrull_menace — Drunk in Love (Event)
+    'sk024': "<b>Action</b> : désorientez votre identité → soignez-en 4 dégâts.",
+    // skrull_menace — Strength in Otherness (Event)
+    'sk025': "En Équipe (Hulkling et Wiccan). 1 max par deck.\n<b>Action de héros</b> <i>(attaque/contre)</i> : retirez 1 menace de la manigance principale et infligez 1 dégât au méchant pour chaque type de carte différent dans votre défausse.",
+    // skrull_menace — Glorious Flight (Upgrade)
+    'sk029': "Ne jouez cette carte que si vous avez un trait [[AERIAL]].\n<b>Réponse de héros</b> : après avoir vaincu un ennemi ou une manigance annexe, défaussez Glorious Flight → redressez votre héros.",
+    // skrull_menace — Pride (Upgrade)
+    'sk030': "1 max par joueur.\n<b>Action</b> : inclinez Pride → défaussez la carte du dessus de votre deck. Si c'est une carte propre à une identité, ajoutez-la à votre main.",
+    // skrull_menace — Interracial Hatred (Obligation)
+    'sk031': "<b><i>Donnez cette carte au joueur Teddy Altman.</i></b>\nLes cartes avec le trait [[KREE]] et [[SKRULL]] que vous contrôlez ne peuvent pas se redresser.\n<b>Action d'alter ego</b> : inclinez Teddy Altman → défaussez cette obligation.",
+    // skrull_menace — Empress R'Klll (Minion)
+    'sk032': "Vilenie.\n[star] Les attaques d'Empress R'Klll gagnent perçant.\n<b>Une fois révélée</b> : Empress R'Klll attaque chaque joueur sous forme de héros.\n<i>(Sbire némésis de Hulkling.)</i>",
+    // skrull_menace — DNA Masking (SideScheme)
+    'sk033': "Les sbires ne peuvent pas subir de dégâts.\nLes menaces ne peuvent pas être retirées de DNA Masking tant qu'il n'y a aucun sbire en jeu.",
+    // skrull_menace — Inhibited (Attachment)
+    'sk034': "Attachez cette carte à votre identité.\nVous ne pouvez pas changer de forme ni jouer de cartes qui partagent un [[TRAIT]] avec votre identité.\n<b>Action</b> : dépensez des ressources [physical][physical] → défaussez cette carte.",
+    // skrull_menace — Assailed by Their Own (Treachery)
+    'sk035': "<b>Une fois révélée (alter ego)</b> : inclinez votre identité.\n<b>Une fois révélée (héros)</b> : choisissez un personnage en jeu <i>(autre que votre identité)</i> qui partage un [[TRAIT]] avec votre héros. Subissez X dégâts, X étant égal à l'ATQ du personnage choisi. Sinon, inclinez votre identité.",
+    // skrull_menace — Swapping Roles (Treachery)
+    'sk036': "<b>Une fois révélée</b> : inclinez chaque carte que vous contrôlez qui partage un [[TRAIT]] avec votre identité <i>(y compris votre identité)</i>.\n[star] <b>Boost</b> : inclinez chaque carte que vous contrôlez qui partage un [[TRAIT]] avec votre identité <i>(à l'exception de votre identité)</i>.",
 };

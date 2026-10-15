@@ -1631,5 +1631,14 @@
   ],
   "max_id": "hs226"
  },
- "checksum": "02ce2456475b1c91db7c21b3d250758ee7a6664c2be3e4589a80771e46ae002f"
+ "143. Custom (Skrull Menace)": {
+  "name": "skrull_menace",
+  "scenarios": [],
+  "heroes": [
+   "hulkling_kajislav"
+  ],
+  "encounters": [],
+  "max_id": "sk036"
+ },
+ "checksum": "20fb0017753e9b359117ae116ebc1a190358e85d4147bc762d1def8ed0f11603"
 }

@@ -116,6 +116,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # declaratif : TRAITS n'est qu'un `Literal` de typage, aucun controle
         # ne le lit a l'execution (cf. l'unique usage, cards/paper.py:13).
         "LIZARD",
+        # CORRECTIF (15/10/2026) : trait du pack custom skrull_menace
+        # (Kajislav). sk001b * Teddy Altman, l'alter-ego de Hulkling, porte
+        # « HYBRID. » (mi-Kree, mi-Skrull). Purement declaratif, comme LIZARD.
+        "HYBRID",
         "TRAINING", "TEAM", "SPECIALIZATION", "TECHNIQUE",
         "ACTIVATION ORDER 1", "ACTIVATION ORDER 2", "ACTIVATION ORDER 3", "ACTIVATION ORDER 4", "ACTIVATION ORDER 5", "ACTIVATION ORDER 6",
         "TRAP!",
@@ -294,6 +298,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # (ok010) place des compteurs "phalanx" (max 3) et les depense en
         # ressources [physical] via son pouvoir de ressource.
         'phalanx',
+        # CORRECTIF (15/10/2026) : compteur du pack custom skrull_menace
+        # (Kajislav). sk010 Ancestors entre en jeu avec « Uses (2 individual
+        # counters) » : sans cette entree, `IsCounter('individual')` echoue et
+        # la carte tombe a la mise en place, comme 'style' ci-dessus.
+        'individual',
         # CORRECTIF : compteur du pack custom speed (CptScorp). L'insert du pack
         # decrit les « explosive counters » : la capacite du heros en pose un sur
         # un ennemi ou une manigance (max 1 par carte), ils sont retires en fin de

@@ -368,9 +368,9 @@
   "sk": {
    "pack": "skrull_menace",
    "libelle": "143. Custom (Skrull Menace)",
-   "cartes": 0,
+   "cartes": 31,
    "depuis": "2026-08-29",
-   "note": "RESERVE, pas encore cree. Difficulte 5/5. CAMPAGNE COMPLETE (pas un simple heros/vilain) : 4 scenarios, 5 vilains/nemesis jouables, systeme de Cooperation Area/victory display. Rulebook 24 pages. A traiter en toute fin de plan vu l'ampleur, avant Galactic Storm car pas de nouveaux heros a stater. Voir .planning/todos/2026-08-29-plan-heros-vilains-fanmade.md."
+   "note": "EN COURS depuis le 15/10/2026. Auteur Kajislav, archive « MC custom content by Kajislav » (Drive, 4 zip) : le materiel COMPLET est enfin la (heros, scenarios, sets modulaires, cartes de campagne), contrairement aux zips de septembre qui n'avaient que la couche campagne. CAMPAGNE de 5 scenarios (Skrull Empire, Super-Skrull, Paibok, Skrull Pantheon, Secret Invasion), 2 heros (Hulkling, Lyja), ~12 sets modulaires, 26 cartes de campagne (n° 263-288), Cooperation Area. card_id = `sk` + numero IMPRIME sur 3 chiffres (+a/b). LIVRE : heros Hulkling (31 card_id, sk001a-sk036 ; set « Hulkling (Kajislav) » car un Hulkling OFFICIEL existe, cw 56029a). Trait HYBRID et compteur 'individual' ajoutes aux enums. Plan, decisions et transcriptions : .planning/skrull-menace/."
   },
   "sm": {
    "pack": "spider_man_2099",
